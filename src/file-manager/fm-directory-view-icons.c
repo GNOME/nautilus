@@ -28,6 +28,8 @@
 
 #include <gnome.h>
 
+#include <libnautilus/nautilus-gtk-macros.h>
+
 #include "fm-directory-view.h"
 #include "fm-directory-view-icons.h"
 
@@ -52,19 +54,18 @@ static void icon_container_selection_changed_cb (GnomeIconContainer *container,
 static void
 fm_directory_view_icons_destroy (GtkObject *object)
 {
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
 static void
-fm_directory_view_icons_class_init (FMDirectoryViewIconsClass *class)
+fm_directory_view_icons_initialize_class (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
+	object_class = GTK_OBJECT_CLASS (klass);
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	
@@ -73,46 +74,23 @@ fm_directory_view_icons_class_init (FMDirectoryViewIconsClass *class)
 }
 
 static void
-fm_directory_view_icons_init (FMDirectoryViewIcons *directory_view)
+fm_directory_view_icons_initialize (gpointer object, gpointer klass)
 {
 	GnomeIconContainer *icon_container;
 	
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (directory_view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (object));
 
 	/* FIXME: eventually get rid of set_mode call entirely. */
-	fm_directory_view_set_mode (FM_DIRECTORY_VIEW (directory_view), 
+	fm_directory_view_set_mode (FM_DIRECTORY_VIEW (object), 
 				    FM_DIRECTORY_VIEW_MODE_ICONS);
 
-	g_assert (GTK_BIN (directory_view)->child == NULL);
-	icon_container = create_icon_container (directory_view);
+	g_assert (GTK_BIN (object)->child == NULL);
+	icon_container = create_icon_container (object);
 	gnome_icon_container_set_icon_mode
 		(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
 }
 
-GtkType
-fm_directory_view_icons_get_type (void)
-{
-	static GtkType directory_view_icons_type = 0;
-
-	if (directory_view_icons_type == 0) {
-		static GtkTypeInfo directory_view_icons_info = {
-			"FMDirectoryViewIcons",
-			sizeof (FMDirectoryViewIcons),
-			sizeof (FMDirectoryViewIconsClass),
-			(GtkClassInitFunc) fm_directory_view_icons_class_init,
-			(GtkObjectInitFunc) fm_directory_view_icons_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL
-		};
-
-		directory_view_icons_type
-			= gtk_type_unique (fm_directory_view_get_type (),
-					   &directory_view_icons_info);
-	}
-
-	return directory_view_icons_type;
-}
+NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
 GtkWidget *
 fm_directory_view_icons_new (void)

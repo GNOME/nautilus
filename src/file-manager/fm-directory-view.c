@@ -31,6 +31,7 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/gnome-icon-container.h>
 #include <libnautilus/gtkflist.h>
+#include <libnautilus/nautilus-gtk-macros.h>
 
 #include "fm-directory-view.h"
 #include "fm-icon-cache.h"
@@ -55,9 +56,6 @@ static GtkScrolledWindowClass *parent_class = NULL;
    given fm_get_current_icon_cache()
 */
 static FMIconCache *icm = NULL;
-
-/* forward declarations */
-static void fm_directory_view_real_clear (FMDirectoryView *view);
 
 void
 display_selection_info (FMDirectoryView *view,
@@ -306,6 +304,8 @@ destroy (GtkObject *object)
 }
 
 
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear);
+
 static void
 class_init (FMDirectoryViewClass *class)
 {
@@ -324,7 +324,10 @@ class_init (FMDirectoryViewClass *class)
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
 
-	class->clear = fm_directory_view_real_clear;
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
+					      class,
+					      fm_directory_view,
+					      clear);
 }
 
 static void
@@ -676,15 +679,6 @@ fm_directory_view_clear (FMDirectoryView *view)
 	g_print ("called fm_directory_view_clear");
 
 	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[CLEAR]);
-}
-
-static void
-fm_directory_view_real_clear (FMDirectoryView *view)
-{
-	/* FIXME: Create and deploy macros to handle this common debug-only error
-	 * such that nondebug code doesn't have any function at all.
-	 */
-	g_warning("Bogus! Subclass should've replaced this default signal handler");
 }
 
 void

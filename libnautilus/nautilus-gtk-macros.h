@@ -73,4 +73,45 @@ G_STMT_START { \
 		(* parent_class_cast_macro (parent_class)->signal) parameters; \
 } G_STMT_END
 
+
+#ifndef G_DISABLE_ASSERT
+
+/* Define a signal that is not implemented by this class but must be 
+ * implemented by subclasses. This macro should be used inside the
+ * class initialization function. The companion macro NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL
+ * must be used earlier in the file. Called like this:
+ * 
+ * NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
+ *					 class,
+ *					 fm_directory_view,
+ *					 clear); 
+ */
+#define NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(class_cast_macro, class_pointer, class_name_in_function_format, signal) \
+\
+* (void (**)(void)) &class_cast_macro (class_pointer)->signal = class_name_in_function_format##_unimplemented_##signal;
+
+/* Provide a debug-only implementation of a signal that must be implemented
+ * by subclasses. The debug-only implementation fires a warning if it is called.
+ * This macro should be placed as if it were a function, earlier in the file
+ * than the class initialization function. Called like this:
+ * 
+ * NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear);
+ */
+#define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal) \
+\
+static void \
+class_name_in_function_format##_unimplemented_##signal (void) \
+{ \
+	g_warning ("Failed to override signal %s->%s", #class_name_in_function_format, #signal); \
+}
+
+#else
+
+#define NAUTILUS_DEFINE_MUST_OVERRIDE_SIGNAL(class_cast_macro, class_pointer, class_name_in_function_format, signal)
+#define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal)
+
+#endif /* G_DISABLE_ASSERT */
+
+
+
 #endif /* NAUTILUS_GTK_MACROS_H */

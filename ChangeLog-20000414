@@ -1,3 +1,37 @@
+2000-01-13  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus/nautilus-gtk-macros.h: Defined macros
+	for use when a signal must be overridden by subclasses.
+	* src/file-manager/fm-directory-view.c: Deployed these
+	new macros for the "clear" signal. 
+	NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL is outside any 
+	function, and
+	(class_init): NAUTILUS_MUST_OVERRIDE_SIGNAL is in here.
+	(fm_directory_view_real_clear): Eliminated this in favor
+	of the above macros.
+	* src/file-manager/fm-directory-view-icons.c:   
+	(fm_directory_view_icons_get_type): Replaced function with
+	NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_icons_init): Renamed to 
+	fm_directory_view_icons_initialize and standardized parameters 
+	to work with NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_icons_class_init): Renamed to 
+	fm_directory_view_icons_initialize_class and standardized 
+	parameters to work with NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_icons_destroy): Deployed
+	NAUTILUS_CALL_PARENT_CLASS macro.
+	* src/file-manager/fm-directory-view-list.c:   
+	(fm_directory_view_list_get_type): Replaced function with
+	NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_list_init): Renamed to 
+	fm_directory_view_list_initialize and standardized parameters 
+	to work with NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_list_class_init): Renamed to 
+	fm_directory_view_list_initialize_class and standardized 
+	parameters to work with NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+	(fm_directory_view_list_destroy): Deployed
+	NAUTILUS_CALL_PARENT_CLASS macro.
+	
 2000-01-12  John Sullivan  <sullivan@eazel.com>
 
 	More work at pushing appropriate fm_directory_view code

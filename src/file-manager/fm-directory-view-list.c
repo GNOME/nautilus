@@ -29,6 +29,7 @@
 #include <gnome.h>
 
 #include <libnautilus/gtkflist.h>
+#include <libnautilus/nautilus-gtk-macros.h>
 
 #include "fm-directory-view.h"
 #include "fm-directory-view-list.h"
@@ -54,19 +55,18 @@ static void fm_directory_view_list_clear (FMDirectoryView *view);
 static void
 fm_directory_view_list_destroy (GtkObject *object)
 {
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
 static void
-fm_directory_view_list_class_init (FMDirectoryViewListClass *class)
+fm_directory_view_list_initialize_class (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
+	object_class = GTK_OBJECT_CLASS (klass);
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	
@@ -75,42 +75,19 @@ fm_directory_view_list_class_init (FMDirectoryViewListClass *class)
 }
 
 static void
-fm_directory_view_list_init (FMDirectoryViewList *directory_view)
+fm_directory_view_list_initialize (gpointer object, gpointer klass)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (directory_view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (object));
 
 	/* FIXME: eventually get rid of set_mode call entirely. */
-	fm_directory_view_set_mode (FM_DIRECTORY_VIEW (directory_view), 
+	fm_directory_view_set_mode (FM_DIRECTORY_VIEW (object), 
 				    FM_DIRECTORY_VIEW_MODE_DETAILED);
 
-	g_assert (GTK_BIN (directory_view)->child == NULL);
-	create_flist (directory_view);
+	g_assert (GTK_BIN (object)->child == NULL);
+	create_flist (object);
 }
 
-GtkType
-fm_directory_view_list_get_type (void)
-{
-	static GtkType directory_view_list_type = 0;
-
-	if (directory_view_list_type == 0) {
-		static GtkTypeInfo directory_view_list_info = {
-			"FMDirectoryViewList",
-			sizeof (FMDirectoryViewList),
-			sizeof (FMDirectoryViewListClass),
-			(GtkClassInitFunc) fm_directory_view_list_class_init,
-			(GtkObjectInitFunc) fm_directory_view_list_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL
-		};
-
-		directory_view_list_type
-			= gtk_type_unique (fm_directory_view_get_type (),
-					   &directory_view_list_info);
-	}
-
-	return directory_view_list_type;
-}
+NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
 GtkWidget *
 fm_directory_view_list_new (void)
