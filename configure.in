@@ -852,7 +852,7 @@ then
 	then
 		vers=`gnome-config --modversion ammonite | sed -e "s/[^-]*-//" | \
 			awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2 * 100 + $3;}'`
-		if test "$vers" -ge 807; then
+		if test "$vers" -ge 1000; then
 			ammonite_ok=true;
 		else
 			ammonite_ok=false
