@@ -1,3 +1,13 @@
+2001-02-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize), (theme_style_set_callback),
+	(render_theme_name_and_description), (add_pixbuf_to_theme_list),
+	(add_theme):
+	fixed bug 5951, hard-coded geometry in the theme selector, by
+	implementing the design that Arlo wanted, with the theme name
+	above the theme description instead of in separate columns.
+	
 2001-02-12  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* src/Makefile.am: disabled "make check" by commenting
