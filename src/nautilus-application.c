@@ -28,6 +28,19 @@ nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer c
   return NULL;
 }
 
+/**
+ * nautilus_app_exiting:
+ * 
+ * Called after the main event loop has finished, just before the
+ * program ends. Don't call from anywhere else.
+ **/
+void
+nautilus_app_exiting()
+{
+  /* Do those things that gotta be done just once before quitting */
+  nautilus_prefs_save();
+}
+
 void
 nautilus_app_init(const char *initial_url)
 {
@@ -53,7 +66,6 @@ nautilus_app_destroy_window(GtkObject *obj)
   if(window_count <= 0)
     {
       gtk_main_quit();
-      nautilus_prefs_save();
     }
 }
 

@@ -70,5 +70,8 @@ int main(int argc, char *argv[])
     bonobo_main();
   }
 
+  /* One last chance for cleanup before program finishes. */
+  nautilus_app_exiting();
+
   return 0;
 }
