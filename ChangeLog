@@ -1,3 +1,12 @@
+2000-12-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-window-toolbars.c: (theme_changed_callback):
+	fixed bug where throbber was mispositioned after theme changes by
+	forcing a toolbar resize when the theme changes.
+	
+	* icons/eazel/i-directory.xml:
+	tweaked folder emblem positions
+	
 2000-12-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-view.c

@@ -248,6 +248,10 @@ theme_changed_callback (gpointer callback_data)
 {
 	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
 	set_up_throbber_frame_type (NAUTILUS_WINDOW (callback_data));
+
+	/* make sure we resize the toolbar to get the throbber positioned properly */
+	nautilus_window_hide_tool_bar (NAUTILUS_WINDOW (callback_data));
+	nautilus_window_show_tool_bar (NAUTILUS_WINDOW (callback_data));
 }
 
 /* initialize the toolbar */
