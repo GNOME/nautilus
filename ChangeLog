@@ -1,5 +1,15 @@
 2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/adapter/nautilus-adapter-file-load-strategy.c
+	(nautilus_adapter_file_load_strategy_destroy): Another
+	uninitialized variable.
+	* components/adapter/nautilus-adapter-stream-load-strategy.c
+	(nautilus_adapter_stream_load_strategy_destroy): Another
+	uninitialized variable. Thanks to Will LaShell for pointing these
+	out.
+
+2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
+
 	* components/adapter/nautilus-adapter-progressive-load-strategy.c
 	(nautilus_adapter_progressive_load_strategy_destroy): Fix
 	unuinitialized variable use (thanks to Will LaShell).

@@ -85,6 +85,8 @@ nautilus_adapter_file_load_strategy_destroy (GtkObject *object)
 	NautilusAdapterFileLoadStrategy *strategy;
 	CORBA_Environment ev;
 
+	strategy = NAUTILUS_ADAPTER_FILE_LOAD_STRATEGY (object);
+
 	if (strategy->details->persist_file != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (strategy->details->persist_file, &ev);

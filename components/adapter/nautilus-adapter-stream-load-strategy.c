@@ -86,6 +86,8 @@ nautilus_adapter_stream_load_strategy_destroy (GtkObject *object)
 	NautilusAdapterStreamLoadStrategy *strategy;
 	CORBA_Environment ev;
 
+	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (object);
+
 	if (strategy->details->persist_stream != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (strategy->details->persist_stream, &ev);
