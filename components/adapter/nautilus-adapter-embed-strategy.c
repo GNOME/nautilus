@@ -120,8 +120,8 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 
 	CORBA_exception_init (&ev);
 
-	control = Bonobo_Unknown_query_interface (component,
-						  "IDL:Bonobo/Control:1.0", &ev);
+	control = Bonobo_Unknown_queryInterface (component,
+						 "IDL:Bonobo/Control:1.0", &ev);
 	
 
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control, &ev)) {
@@ -130,8 +130,8 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 		return nautilus_adapter_control_embed_strategy_new (control, CORBA_OBJECT_NIL);
 	}
 
-	embeddable = Bonobo_Unknown_query_interface (component,
-						     "IDL:Bonobo/Embeddable:1.0", &ev);
+	embeddable = Bonobo_Unknown_queryInterface (component,
+						    "IDL:Bonobo/Embeddable:1.0", &ev);
 	
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
 		CORBA_exception_free (&ev);

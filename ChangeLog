@@ -1,3 +1,51 @@
+2000-11-03  Darin Adler  <darin@eazel.com>
+
+	* README: Tell everyone that we are back on bonobo HEAD.
+	* configure.in: Make sure Nautilus doesn't try to compile with the
+	old bonobo.
+	
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	(nautilus_adapter_embed_strategy_get):
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	(nautilus_adapter_load_strategy_get):
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	(nautilus_adapter_progressive_load_strategy_load_location):
+	* components/history/nautilus-history-view.c:
+	(history_view_frame_call_begin):
+	* libnautilus/nautilus-undo.c: (set_up_bonobo_control):
+	* libnautilus/nautilus-view.c: (view_frame_call_begin):
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_zoomable_ensure_zoomable_frame):
+	Fix all the callers of query_interface in CORBA to call it
+	queryInterface (I used the Bonobo script to do it).
+	
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_set_arg), (nautilus_window_get_arg),
+	(nautilus_window_set_content_view_widget): Update for BonoboWin ->
+	BonoboWindow change. Once again, the change was done by the Bonobo
+	script (but I had to undo the spaces it ate after BONOBO_WIN).
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/time/idl/trilobite-eazel-time-service.idl:
+	* components/services/trilobite/idl/trilobite-service.idl:
+	* components/services/trilobite/sample/idl/sample-service.idl:
+	* libnautilus-adapter/nautilus-adapter-factory.idl:
+	* libnautilus/nautilus-distributed-undo.idl:
+	* libnautilus/nautilus-view-component.idl:
+	Since IDL dependencies don't work, I touched every IDL file to
+	make the switchover smoother. This only works if people update
+	before they try to build and fail, otherwise they need to do:
+		find -name '*.xml' | xargs touch
+	(Maciej and I want to add dependency support to orbit-idl to make
+	this problem go away long term).
+	
+	* src/nautilus-desktop-window.c: (realize):
+	The script updated this comment to, so I let it.
+	
+	* user-guide/C/Makefile.am: Took out the botched change I made to
+	this file. Mathieu did the correct one.
+
 2000-11-03  Mathieu Lacage  <mathieu@eazel.com>
 
 	Hopefully, fix bug 4055 for true.

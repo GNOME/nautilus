@@ -208,7 +208,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 	gnome_vfs_file_info_clear (&file_info);
 
 	if (result == GNOME_VFS_OK && file_info.valid_fields | GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
-		Bonobo_ProgressiveDataSink_set_size (strategy->details->progressive_data_sink, 
+		Bonobo_ProgressiveDataSink_setSize (strategy->details->progressive_data_sink, 
 						     (long) file_info.size, &ev);
 		CHECK_IF_STOPPED;
 	}
@@ -219,7 +219,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 		if (result == GNOME_VFS_OK) {
 			iobuf->_length = bytes_read;
 
-			Bonobo_ProgressiveDataSink_add_data (strategy->details->progressive_data_sink, iobuf, &ev);
+			Bonobo_ProgressiveDataSink_addData (strategy->details->progressive_data_sink, iobuf, &ev);
 			
 			CHECK_IF_STOPPED;
 			

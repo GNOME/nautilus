@@ -49,7 +49,7 @@ typedef struct NautilusWindow NautilusWindow;
 #endif
 
 typedef struct {
-        BonoboWinClass parent_spot;
+        BonoboWindowClass parent_spot;
 } NautilusWindowClass;
 
 typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
@@ -64,7 +64,7 @@ typedef enum {
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
-        BonoboWin parent_object;
+        BonoboWindow parent_object;
         
         NautilusWindowDetails *details;
         

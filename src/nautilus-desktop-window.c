@@ -164,7 +164,7 @@ realize (GtkWidget *widget)
 
 	window = NAUTILUS_DESKTOP_WINDOW (widget);
 
-	/* Hide unused pieces of the BonoboWin.
+	/* Hide unused pieces of the BonoboWindow.
 	 * We don't want a menu bar, toolbars, or status bar on the desktop.
 	 * But we don't want to hide the client area!
 	 */

@@ -69,7 +69,7 @@ history_view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
 	
 	CORBA_exception_init (ev);
-	return Bonobo_Unknown_query_interface 
+	return Bonobo_Unknown_queryInterface 
 		(bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view)),
 		 "IDL:Nautilus/HistoryFrame:1.0", ev);
 }

@@ -136,8 +136,8 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 
 	CORBA_exception_init (&ev);
 
-	progressive_data_sink = Bonobo_Unknown_query_interface (component,
-								"IDL:Bonobo/ProgressiveDataSink:1.0", &ev);
+	progressive_data_sink = Bonobo_Unknown_queryInterface (component,
+							       "IDL:Bonobo/ProgressiveDataSink:1.0", &ev);
 	
 
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (progressive_data_sink, &ev)) {
@@ -147,8 +147,8 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 	}
 
 
-	persist_stream = Bonobo_Unknown_query_interface (component,
-							 "IDL:Bonobo/PersistStream:1.0", &ev);
+	persist_stream = Bonobo_Unknown_queryInterface (component,
+							"IDL:Bonobo/PersistStream:1.0", &ev);
 	
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (persist_stream, &ev)) {
 		CORBA_exception_free (&ev);
@@ -157,10 +157,9 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 	}
 
 
-	persist_file = Bonobo_Unknown_query_interface (component,
-						       "IDL:Bonobo/PersistFile:1.0", &ev);
+	persist_file = Bonobo_Unknown_queryInterface (component,
+						      "IDL:Bonobo/PersistFile:1.0", &ev);
 	
-
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (persist_file, &ev)) {
 		CORBA_exception_free (&ev);
 		

@@ -312,7 +312,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 	
 	CORBA_exception_init (ev);
 
-	view_frame = Bonobo_Unknown_query_interface 
+	view_frame = Bonobo_Unknown_queryInterface 
 		(bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view)),
 		 "IDL:Nautilus/ViewFrame:1.0", ev);
 

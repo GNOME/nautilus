@@ -30,6 +30,4 @@ dist-hook:
 	-cp $(srcdir)/fdl.sgml $(distdir)
 	-cp $(srcdir)/img/*.png $(distdir)/img
 
-EXTRA_DIST = fdl.sgml
-
 .PHONY : html

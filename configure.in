@@ -443,7 +443,29 @@ AC_MSG_ERROR([
 *** Gtk+ 1.2.0 or better is required. The latest version of GTK
 *** is always available from ftp://ftp.gtk.org/.]))
 
-AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl )
+AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+
+dnl
+dnl We need the right version of bonobo because
+dnl the IDLs have changed.
+dnl
+AC_MSG_CHECKING(for Bonobo >= 0.27)
+if gnome-config --libs bonobox > /dev/null 2>&1; then
+	vers=`gnome-config --modversion bonobo | sed -e "s/bonobo-//" | \
+		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
+	if test "$vers" -ge 27; then
+		bonobo_ok=true
+	else
+		bonobo_ok=false
+	fi
+else
+	bonobo_ok=false
+fi
+if $bonobo_ok; then
+	AC_MSG_RESULT($vers found)
+else
+	AC_MSG_ERROR(Bonobo 0.27 or newer is required to compile Nautilus)
+fi
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)

@@ -538,7 +538,7 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 	CORBA_exception_init (&ev);
 	
 	if (CORBA_Object_is_nil (view->details->zoomable_frame, &ev)) {
-		view->details->zoomable_frame = Bonobo_Unknown_query_interface 
+		view->details->zoomable_frame = Bonobo_Unknown_queryInterface 
 			(bonobo_control_get_control_frame 
 			 (BONOBO_CONTROL (nautilus_zoomable_get_bonobo_control (view))),
 			 "IDL:Nautilus/ZoomableFrame:1.0", &ev);
