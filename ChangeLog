@@ -1,3 +1,17 @@
+2001-02-13  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_use_self_contained_metatfile_factory),
+	(get_metafile), (nautilus_directory_set_file_metadata_list):
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-metafile.c: (destroy),
+	(corba_get_list):
+	* src/nautilus-main.c: (main):
+	The metafile code now circumvents oaf when nautilus is performing
+	a self check - bug 6552.
+
 2001-02-13  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* nautilus.spec.in: re-enabled building...

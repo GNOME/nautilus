@@ -28,8 +28,6 @@
 #include <libnautilus-extensions/nautilus-metafile-server.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
-/* we only include this to get METAFILE_FACTORY_IID
- */
 #include <libnautilus-extensions/nautilus-metafile-factory.h>
 
 #include <liboaf/liboaf.h>
@@ -48,14 +46,29 @@ free_factory (void)
 	CORBA_exception_free (&ev);
 }
 
+static gboolean get_factory_from_oaf = TRUE;
+
+void
+nautilus_directory_use_self_contained_metafile_factory (void)
+{
+	get_factory_from_oaf = FALSE;
+}
+
 static Nautilus_Metafile
 get_metafile (NautilusDirectory *directory, CORBA_Environment *ev)
 {
 	char * uri;
 	Nautilus_Metafile metafile;
+	NautilusMetafileFactory *instance;
 
 	if (CORBA_Object_is_nil (the_factory, ev)) {
-		the_factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, NULL);
+		if (get_factory_from_oaf) {
+			the_factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, NULL);
+		} else {
+			instance = nautilus_metafile_factory_get_instance ();
+			the_factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), ev);
+			bonobo_object_unref (BONOBO_OBJECT (instance));
+		}
 		g_atexit (free_factory);
 	}
 	
@@ -215,7 +228,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 	/* We allocate our buffer with CORBA calls, so CORBA_free will clean it
 	 * all up if we set release to TRUE.
 	 */
-	CORBA_sequence_set_release (list, TRUE);
+	CORBA_sequence_set_release (list, CORBA_TRUE);
 
 	buf_pos  = 0;
 	list_ptr = list;

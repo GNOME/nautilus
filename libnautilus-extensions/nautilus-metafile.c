@@ -268,7 +268,7 @@ corba_get_list (PortableServer_Servant  servant,
 	/* We allocate our buffer with CORBA calls, so the caller will clean it
 	 * all up if we set release to TRUE.
 	 */
-	CORBA_sequence_set_release (result, TRUE);
+	CORBA_sequence_set_release (result, CORBA_TRUE);
 
 	buf_pos  = 0;
 	list_ptr = metadata_list;

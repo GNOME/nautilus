@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
+#include <libnautilus-extensions/nautilus-directory-metafile.h>
 #include <liboaf/liboaf.h>
 #include <popt.h>
 #include <stdlib.h>
@@ -248,6 +249,7 @@ main (int argc, char *argv[])
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		/* Run the checks for nautilus and libnautilus (each twice). */
+		nautilus_directory_use_self_contained_metafile_factory ();
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
 		nautilus_exit_if_self_checks_failed ();

@@ -72,3 +72,5 @@ void     nautilus_directory_remove_file_metadata           (NautilusDirectory *d
 void     nautilus_directory_rename_file_metadata           (NautilusDirectory *directory,
 							    const char        *old_file_name,
 							    const char        *new_file_name);
+
+void	 nautilus_directory_use_self_contained_metafile_factory (void);
