@@ -127,7 +127,6 @@ MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
 MOZILLA_COMPONENT_DEBUG_FLAGS = 
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
-MOZILLA_EAZEL_PROTOCOL_HANDLER_LIBS = 
 MOZILLA_MILESTONE = 17
 NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include
@@ -166,14 +165,14 @@ CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
 
 CFLAGS = -g
 
-bin_PROGRAMS = nautilus-installer
+bin_PROGRAMS = eazel-installer
 
-nautilus_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
+eazel_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
 
 
-nautilus_installer_LDFLAGS = -static
+eazel_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+eazel_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -184,9 +183,9 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
 LDFLAGS = 
 LIBS = 
-nautilus_installer_OBJECTS =  main.o support.o callbacks.o proxy.o \
+eazel_installer_OBJECTS =  main.o support.o callbacks.o proxy.o \
 installer.o
-nautilus_installer_DEPENDENCIES =  \
+eazel_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
@@ -206,8 +205,8 @@ TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/callbacks.P .deps/installer.P .deps/main.P \
 .deps/proxy.P .deps/support.P
-SOURCES = $(nautilus_installer_SOURCES)
-OBJECTS = $(nautilus_installer_OBJECTS)
+SOURCES = $(eazel_installer_SOURCES)
+OBJECTS = $(eazel_installer_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -277,9 +276,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-nautilus-installer: $(nautilus_installer_OBJECTS) $(nautilus_installer_DEPENDENCIES)
-	@rm -f nautilus-installer
-	$(LINK) $(nautilus_installer_LDFLAGS) $(nautilus_installer_OBJECTS) $(nautilus_installer_LDADD) $(LIBS)
+eazel-installer: $(eazel_installer_OBJECTS) $(eazel_installer_DEPENDENCIES)
+	@rm -f eazel-installer
+	$(LINK) $(eazel_installer_LDFLAGS) $(eazel_installer_OBJECTS) $(eazel_installer_LDADD) $(LIBS)
 
 tags: TAGS
 
@@ -440,10 +439,9 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
+#
 #	/usr/lib/libesd.a \
 #	/usr/lib/libaudiofile.a \
-
-#
 #        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
 #	/gnome-source/nautilus/components/services/install/lib/libinstall.a			\
 #	$(GNOME_LIBDIR) 	\

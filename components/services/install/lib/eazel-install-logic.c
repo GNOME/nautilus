@@ -381,8 +381,8 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			if (strcmp (pack->name, owner->name)) {
 				trilobite_debug ("file %s from package %s conflicts with file from package %s", 
 						 filename, pack->name, owner->name);
-				result = TRUE;					
 
+				result = TRUE;
 				if (eazel_install_check_if_related_package (service, pack, owner)) {
 					trilobite_debug ("Package %s may be related to %s", 
 							 owner->name, pack->name);
@@ -1095,12 +1095,8 @@ eazel_install_check_if_depends_on (PackageData *pack,
 	gboolean result = FALSE;
 	GList *iterator;
 
-	trilobite_debug ("eazel_install_check_if_depends_on");
 	for (iterator = pack->soft_depends; !result && iterator; glist_step (iterator)) {
 		PackageData *nisse = (PackageData*)iterator->data;
-		trilobite_debug ("comparing %s (0x%x) with %s (0x%x)", 
-				 nisse->name, nisse, 
-				 dep->name, dep);
 		if (nisse == dep) {
 			result = TRUE;
 		} else if (eazel_install_check_if_depends_on (nisse, dep)) {
@@ -1148,7 +1144,6 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 	for (iterator = pack->soft_depends; iterator; iterator = g_list_next (iterator)) {
 		PackageData *sub;
 		sub = (PackageData*)iterator->data;
-		trilobite_debug ("prune_helper (%s->soft_depends)", sub->name);
 		eazel_install_prune_packages_helper (service, packages, pruned, sub);
 	}
 	
@@ -1157,7 +1152,6 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 		PackageData *super;
 		
 		super = (PackageData*)iterator->data;
-		trilobite_debug ("prune_helper (%s)", super->name);
 		/* FIXME bugzilla.eazel.com: 3542
 		   This is the cause of 3542. 
 		   In this specific case, gnome-print is removed from the toplevel and from
@@ -1215,8 +1209,8 @@ eazel_install_prune_packages (EazelInstall *service,
 						     &pruned,
 						     pack);
 		for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
-			PackageData *pack;
-			pack = (PackageData*)iterator->data;
+			PackageData *pack = (PackageData*)iterator->data;
+			trilobite_debug ("%s pruned", pack->name);
 			(*packages) = g_list_remove (*packages, pack);
 		};
 	} 
@@ -1743,18 +1737,22 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 					}
 				} else {
 					GList *break_iterator;
+					gboolean fail_it = FALSE;
 					for (break_iterator = breaks; break_iterator; glist_step (break_iterator)) {
 						PackageData *broken_package = (PackageData*)break_iterator->data;
 						if (g_list_find_custom (*packages, 
 									broken_package->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
 							trilobite_debug ("breaking %s but we're updating it", broken_package->name);
-							packagedata_destroy (broken_package, FALSE);
+							/* packagedata_destroy (broken_package, FALSE); */
 						} else {
+							fail_it = TRUE;
 							packagedata_add_pack_to_breaks (pack, broken_package);
 						}
 					}
-					tmp_failed = g_list_prepend (tmp_failed, pack);
+					if (fail_it) {
+						tmp_failed = g_list_prepend (tmp_failed, pack);
+					}
 				}
 			} else {
 				/* No file conflicts */

@@ -1,3 +1,22 @@
+2000-10-10  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_check_if_depends_on),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_prune_packages),
+	Removed debug spam.
+	(eazel_install_do_file_conflict_check):
+	3858 wasn't fixed yet, should be now.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_search_url_for_package):
+	Commented out all occurences of the &flag= use, pending fix of bug
+	3481 and 3482.
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-any-width-bin.c:
