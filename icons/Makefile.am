@@ -16,6 +16,9 @@ icon_DATA =					\
 	i-nfs.png				\
 	i-printer.png				\
 	i-regular.png				\
+	i-regular-192.png			\
+	i-regular-72.png			\
+	i-regular-96.png			\
 	i-sock.png				\
 	i-stalled.png				\
 	i-symlink.png				\

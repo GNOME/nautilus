@@ -60,6 +60,9 @@ GtkType               nautilus_icons_controller_get_type       (void);
 /* Icon operations. */
 NautilusScalableIcon *nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
 								NautilusControllerIcon  *icon);
+char *	              nautilus_icons_controller_get_icon_property (NautilusIconsController *controller,
+								NautilusControllerIcon  *icon,
+								const gchar *property_name);
 char *                nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
 								NautilusControllerIcon  *icon);
 char *                nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
@@ -76,6 +79,9 @@ struct _NautilusIconsControllerClass
 
 	NautilusScalableIcon * (*get_icon_image) (NautilusIconsController *controller,
 				                  NautilusControllerIcon  *icon);
+	char *  	       (* get_icon_property) (NautilusIconsController *controller,
+						  NautilusControllerIcon  *icon,
+						  const gchar *property_name);
 	char *                 (* get_icon_text) (NautilusIconsController *controller,
 						  NautilusControllerIcon  *icon);
 	char *                 (* get_icon_uri)  (NautilusIconsController *controller,

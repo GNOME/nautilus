@@ -27,6 +27,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libart_lgpl/art_rgb_pixbuf_affine.h>
 #include <libgnomeui/gnome-canvas-util.h>
@@ -43,6 +44,7 @@ struct _NautilusIconsViewIconItemDetails {
 	/* The image, text, font. */
 	GdkPixbuf *pixbuf;
 	char* text;
+	char* text_source;
 	GdkFont *font;
 	
 	/* Size of the text at current font. */
@@ -56,9 +58,7 @@ struct _NautilusIconsViewIconItemDetails {
 	guint show_stretch_handles : 1;
 };
 
-
-
-/* Object argument IDs. */
+/* Object argument IDs. */
 enum {
 	ARG_0,
 	ARG_PIXBUF,
@@ -66,7 +66,8 @@ enum {
 	ARG_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION,
-    	ARG_HIGHLIGHTED_FOR_DROP
+    	ARG_HIGHLIGHTED_FOR_DROP,
+    	ARG_TEXT_SOURCE
 };
 
 /* constants */
@@ -76,6 +77,7 @@ enum {
 /* Bitmap for stippled selection rectangles. */
 static GdkBitmap *stipple;
 static char stipple_bits[] = { 0x02, 0x01 };
+static GdkFont *mini_text_font;
 
 /* GtkObject */
 static void   nautilus_icons_view_icon_item_initialize_class          (NautilusIconsViewIconItemClass  *class);
@@ -150,6 +152,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::highlighted_for_drop",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
+	gtk_object_add_arg_type ("NautilusIconsViewIconItem::text_source",
+				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT_SOURCE);
 
 	object_class->destroy = nautilus_icons_view_icon_item_destroy;
 	object_class->set_arg = nautilus_icons_view_icon_item_set_arg;
@@ -162,6 +166,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 	item_class->bounds = nautilus_icons_view_icon_item_bounds;
 
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
+        /* FIXME: the font shouldn't be hard-wired like this */
+        mini_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 }
 
 /* Object initialization function for the icon item. */
@@ -271,6 +277,14 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 			return;
 		details->is_highlighted_for_drop = GTK_VALUE_BOOL (*arg);
 		break;
+        
+        case ARG_TEXT_SOURCE:
+		if (nautilus_strcmp (details->text_source, GTK_VALUE_STRING (*arg)) == 0)
+			return;
+
+		g_free (details->text_source);
+		details->text_source = g_strdup (GTK_VALUE_STRING (*arg));
+		break;
 
 	default:
 		g_warning ("nautilus_icons_view_item_item_set_arg on unknown argument");
@@ -312,6 +326,10 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
 		
         case ARG_HIGHLIGHTED_FOR_DROP:
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_drop;
+                break;
+        
+        case ARG_TEXT_SOURCE:
+		GTK_VALUE_STRING (*arg) = g_strdup (details->text_source);
                 break;
 		
         default:
@@ -486,6 +504,56 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 	draw_or_measure_text_box (item, drawable, icon_left, icon_bottom);
 }
 
+/* utility routine to draw the mini-text inside text files */
+/* FIXME: soon, we should cache the text in the object instead of reading each time we draw, so we can work well over the network */
+
+static void
+draw_mini_text(GnomeCanvasItem* item, GdkDrawable *drawable, gint x_pos, gint y_pos, gint icon_width, gint icon_height, gchar *text_source)
+{
+	FILE *text_file;
+	gchar *file_name;
+	GdkRectangle clip_rect;
+	NautilusIconsViewIconItem *icon_item;
+	NautilusIconsViewIconItemDetails *details;
+	gchar text_buffer[256];
+	int cur_x = x_pos + 6;
+	int cur_y = y_pos + 13;
+	int y_limit = y_pos + icon_height - 8;
+        
+	GdkGC *gc = gdk_gc_new (drawable);
+	
+	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
+	details = icon_item->details;
+        
+	/* clip to the icon bounds */         
+	clip_rect.x = x_pos;
+	clip_rect.y = y_pos;
+	clip_rect.width = icon_width - 4;
+	clip_rect.height = icon_height;
+	gdk_gc_set_clip_rectangle(gc, &clip_rect);
+        
+	/* Draw the first few lines of the text file until we fill up the icon */
+	/* FIXME: need to use gnome_vfs to read the file  */
+	
+	file_name = details->text_source;
+	if (nautilus_has_prefix(details->text_source, "file://"))
+		file_name += 7;
+        text_file = fopen(file_name, "r");
+	if (text_file != NULL) {
+		while (fgets(text_buffer, 256, text_file))
+		{
+			gdk_draw_string(drawable, mini_text_font, gc, cur_x, cur_y, text_buffer);
+			cur_y += 9;
+			if (cur_y > y_limit)
+   				break;
+   		}
+   	
+   		fclose(text_file);  	
+   	}
+   	
+   	gdk_gc_unref(gc);
+}
+
 /* Draw the icon item. */
 static void
 nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
@@ -494,6 +562,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	NautilusIconsViewIconItem *icon_item;
 	NautilusIconsViewIconItemDetails *details;
 	ArtIRect pixbuf_rect, drawable_rect, draw_rect;
+	gint zoom_index;
 	GdkGC *gc;
 	
 	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
@@ -521,7 +590,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 				 draw_rect.x0, draw_rect.y0);
 	}
 
-	/* Draw stretching handles. */
+	/* Draw stretching handles (if necessary) . */
 	if (details->show_stretch_handles) {
 		gc = gdk_gc_new (drawable);
 		
@@ -549,7 +618,14 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 		gdk_gc_unref (gc);
 	}
 	
-	/* Draw the text. */
+	/* if necessary, draw the mini-text in the icon, obtained from the text source */
+	zoom_index = gnome_icon_container_get_zoom_level(GNOME_ICON_CONTAINER(item->canvas));
+	if (details->text_source && strlen(details->text_source) && (zoom_index >= NAUTILUS_ZOOM_LEVEL_STANDARD))
+		draw_mini_text(item, drawable, pixbuf_rect.x0 - x, pixbuf_rect.y0 - y, 
+			pixbuf_rect.x1 - pixbuf_rect.x0, pixbuf_rect.y1 - pixbuf_rect.y0,
+			details->text_source);
+	
+	/* Draw the label text. */
 	nautilus_icons_view_draw_text_box
 		(item, drawable,
 		 pixbuf_rect.x0 - x, pixbuf_rect.y1 - y);

@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+ /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
    fm-icons-controller.c: Controller that puts NautilusFile together
    with the GnomeIconContainer.
@@ -24,6 +24,9 @@
 */
 
 #include <config.h>
+#include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-string.h>
+
 #include "fm-icons-controller.h"
 
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -32,6 +35,9 @@ static void                  fm_icons_controller_initialize_class (FMIconsContro
 static void                  fm_icons_controller_initialize       (FMIconsController       *controller);
 static NautilusScalableIcon *fm_icons_controller_get_icon_image   (NautilusIconsController *controller,
 								   NautilusControllerIcon  *icon);
+static char *		     fm_icons_controller_get_icon_property (NautilusIconsController *controller,
+								   NautilusControllerIcon  *icon,
+								   const gchar *property_name);
 static char *                fm_icons_controller_get_icon_text    (NautilusIconsController *controller,
 								   NautilusControllerIcon  *icon);
 static char *                fm_icons_controller_get_icon_uri     (NautilusIconsController *controller,
@@ -47,6 +53,7 @@ fm_icons_controller_initialize_class (FMIconsControllerClass *klass)
 	abstract_class = NAUTILUS_ICONS_CONTROLLER_CLASS (klass);
 
 	abstract_class->get_icon_image = fm_icons_controller_get_icon_image;
+	abstract_class->get_icon_property = fm_icons_controller_get_icon_property;
 	abstract_class->get_icon_text = fm_icons_controller_get_icon_text;
 	abstract_class->get_icon_uri = fm_icons_controller_get_icon_uri;
 }
@@ -75,6 +82,36 @@ fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 {
 	/* Get the appropriate image for the file. */
 	return nautilus_icon_factory_get_icon_for_file (NAUTILUS_FILE (icon));
+}
+
+/* return properties about the icon, keyed by the passed_in string.  If the property doesn't apply,
+   return an empty string */
+/* for now, the only property is "contents_as_text" */
+/* We live dangerously, and consider files with NULL mime types to be text files; we can stop doing
+   this when we have better mime-type routines */
+   
+/* FIXME: we need a better way to know when to use the mini-text than 
+   the theme name starting with eazel... */
+  
+static char *
+fm_icons_controller_get_icon_property (NautilusIconsController *controller,
+				   NautilusControllerIcon *icon,
+				   const gchar *property_name)
+{
+	if (!strcmp(property_name, "contents_as_text")) {
+		const gchar *mime_type;
+		gchar *theme_name = nautilus_icon_factory_get_theme();
+		gboolean use_text = nautilus_has_prefix(theme_name, "eazel");
+		g_free(theme_name);
+		
+		mime_type = nautilus_file_get_mime_type(NAUTILUS_FILE(icon));
+		if (use_text && (!mime_type || nautilus_has_prefix(mime_type, "text/")))
+			return nautilus_file_get_uri(NAUTILUS_FILE(icon));
+	}
+	
+	/* nothing applied, so return an empty string */
+	 
+	return strdup("");		
 }
 
 static char *

@@ -2352,6 +2352,7 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	NautilusScalableIcon *scalable_icon;
 	GdkPixbuf *pixbuf;
 	char *label;
+	char *contents_as_text;
 	GdkFont *font;
 
 	details = container->details;
@@ -2367,14 +2368,19 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 	font = details->label_font[details->zoom_level];
         
+	contents_as_text = nautilus_icons_controller_get_icon_property  
+		(details->controller, icon->data, "contents_as_text");
+	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "pixbuf", pixbuf,
 			       "text", label,
 			       "font", font,
+			       "text_source", contents_as_text,
 			       NULL);
 	
 	gdk_pixbuf_unref (pixbuf);
 	g_free (label);
+        g_free (contents_as_text);
 }
 
 void
