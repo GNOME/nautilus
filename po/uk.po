@@ -93,9 +93,8 @@ msgid "Hardware view"
 msgstr "Перегляд апаратного забезпечення"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:5
-#, fuzzy
 msgid "View as Hardware"
-msgstr "Апаратне забезпечення"
+msgstr "Показати як апаратне забезпечення"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:6
 msgid "hardware view"
@@ -458,9 +457,8 @@ msgid "Nautilus content view that fails on command"
 msgstr ""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
-#, fuzzy
 msgid "View as Content Loser"
-msgstr "Показати як ╕нше"
+msgstr ""
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -2030,13 +2028,12 @@ msgid "Verbose output"
 msgstr "Детальний вив╕д"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:136
-#, fuzzy
 msgid "Install a specific package version"
-msgstr "Встановлення пакет╕в"
+msgstr "Встановити певну верс╕ю пакету"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:167
 msgid "*** You cannot specify more then one protocol type.\n"
-msgstr ""
+msgstr "*** Ви не можете встановлювати б╕льше одного типу протоколу.\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:184
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
@@ -2135,17 +2132,17 @@ msgid "Cancelling operation\n"
 msgstr "В╕дм╕на операц╕╖\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:690
-#, fuzzy, c-format
+#, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "Готов╕ до встановлення %d пакет╕в, %d Кб\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:694
-#, fuzzy, c-format
+#, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "Готов╕ до видалення %d пакет╕в, %d Кб\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:698
-#, fuzzy, c-format
+#, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "Готов╕ до в╕дновлення %d пакет╕в, %d Кб\n"
 
@@ -2153,7 +2150,7 @@ msgstr "Готов╕ до в╕дновлення %d пакет╕в, %d Кб\n"
 #: components/services/install/command-line/eazel-alt-install-corba.c:713
 #, c-format
 msgid "\t╥ %s and it's dependencies\n"
-msgstr ""
+msgstr "\t- %s та його залежност╕\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:716
@@ -2164,25 +2161,25 @@ msgstr "\t- %s\n"
 #: components/services/install/command-line/eazel-alt-install-corba.c:738
 #, c-format
 msgid "Dependency : %s needs %s\n"
-msgstr ""
+msgstr "Залежн╕сть : %s вимага╓ %s\n"
 
 #. I18N note: %s is a package name
 #: components/services/install/command-line/eazel-alt-install-corba.c:756
 #, c-format
 msgid "Package %s failed md5 check!\n"
-msgstr ""
+msgstr "Не пройшла перев╕рка MD5 пакету %s!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:758
 #, c-format
 msgid "\t╥ server MD5 checksum is %s\n"
-msgstr ""
+msgstr "\t- серверна контрольна сума MD5 - %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:760
 #, c-format
 msgid "\t╥ actual MD5 checksum is %s\n"
-msgstr ""
+msgstr "\t- актуальна контрольна сума MD5 - %s\n"
 
 #. I18N note: the (y/n) is translateable. There is later a 1 character
 #. string with the context "y" which is the "yes" indicator.
@@ -2208,17 +2205,15 @@ msgstr "т"
 #. "j" "ja" "JA" etc.
 #: components/services/install/command-line/eazel-alt-install-corba.c:867
 msgid "Should I delete the RPM files? (y/n) "
-msgstr ""
+msgstr "Стерти ц╕ файли RPM? (т/н) "
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:899
-#, fuzzy
 msgid "Operation ok\n"
-msgstr "Нац╕ональний рок"
+msgstr "Операц╕ю виконано\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:901
-#, fuzzy
 msgid "Operation failed\n"
-msgstr "Сертиф╕ковано"
+msgstr "Зб╕й операц╕╖\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1018
 msgid "Installing"
@@ -2230,7 +2225,7 @@ msgstr "Видалення"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1042
 msgid "Only one operation at a time please."
-msgstr ""
+msgstr "Лише одна операц╕я за раз, будь ласка."
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1047
 #: components/services/install/command-line/eazel-alt-install-corba.c:1055
@@ -2238,7 +2233,7 @@ msgstr ""
 #: components/services/install/command-line/eazel-alt-install-corba.c:1106
 #, c-format
 msgid "%s: --help for usage\n"
-msgstr ""
+msgstr "%s: --help для в╕дображення правил використання\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1071
 #, c-format
@@ -2287,7 +2282,7 @@ msgstr ""
 #: components/services/install/command-line/eazel-alt-install-corba.c:1125
 #, c-format
 msgid "exit code %d\n"
-msgstr ""
+msgstr "код виходу %d\n"
 
 #: components/services/install/command-line/eazel-gen-xml.c:41
 msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
@@ -2353,9 +2348,9 @@ msgid "MD5 mismatch, package %s may be compromised"
 msgstr "В╕дсутн╕й MD5, пакет %s може бути п╕дроблено"
 
 #: components/services/install/lib/eazel-install-logic2.c:173
-#, fuzzy, c-format
+#, c-format
 msgid "No MD5 available for %s"
-msgstr "Нема╓ опису теми %s"
+msgstr "Нема╓ MD5 для %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
@@ -2418,7 +2413,7 @@ msgstr ""
 #: components/services/install/lib/eazel-install-logic2.c:1156
 #, c-format
 msgid "Checking dependencies for %s"
-msgstr ""
+msgstr "Перев╕рка залежностей для %s"
 
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
@@ -2431,12 +2426,12 @@ msgstr "Вибрано \"%s\" (%s)"
 #: components/services/install/lib/eazel-install-logic2.c:1769
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
-msgstr ""
+msgstr "поновлення %s до верс╕╖ %s-%s вир╕шу╓ конфл╕кт"
 
 #: components/services/install/lib/eazel-install-logic2.c:1786
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
-msgstr ""
+msgstr "доступне поновлення до %s (%s-%s) не вир╕шу╓ конфл╕кт"
 
 #: components/services/install/lib/eazel-install-logic2.c:1793
 #, c-format
@@ -2617,13 +2612,13 @@ msgid "%s is already installed"
 msgstr "%s вже встановлено"
 
 #: components/services/install/lib/eazel-install-problem.c:252
-#, fuzzy, c-format
+#, c-format
 msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
 msgstr ""
 "%s, що ╓ нов╕шим, вже встановлено, а зам╕ну на попередн╕ верс╕╖ заборонено"
 
 #: components/services/install/lib/eazel-install-problem.c:256
-#, fuzzy, c-format
+#, c-format
 msgid "%s, which is older, needs upgrade and upgrade is not enabled"
 msgstr "%s, що ╓ стар╕шим, вже встановлено, а поновлення заборонено"
 
@@ -2887,9 +2882,9 @@ msgid "Cannot open %s"
 msgstr "Неможливо в╕дкрити %s"
 
 #: components/services/install-view/nautilus-service-install-view.c:418
-#, fuzzy, c-format
+#, c-format
 msgid " ╥ %s is in the GNOME footprint menu under %s"
-msgstr " - %s ╓ в меню GNOME п╕д %s"
+msgstr " - %s ╓ в меню GNOME footprint п╕д %s"
 
 #: components/services/install-view/nautilus-service-install-view.c:436
 #, c-format
@@ -2951,9 +2946,8 @@ msgid "Aborted"
 msgstr "Скасовано"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:2
-#, fuzzy
 msgid "Install Viewer"
-msgstr "Не вдалося встановити"
+msgstr "Перегляд встановлення"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:3
 msgid "Nautilus Service Install View"
@@ -2972,9 +2966,8 @@ msgid "Service Install View Component's Factory"
 msgstr ""
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:7
-#, fuzzy
 msgid "View as Install"
-msgstr "Показати як %s"
+msgstr "Показати як встановлення"
 
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 msgid "Factory for the install service"
@@ -3125,9 +3118,8 @@ msgid "Change Password"
 msgstr "Зм╕на паролю"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:2
-#, fuzzy
 msgid "Change Password Viewer"
-msgstr "Зм╕на паролю"
+msgstr "Перегляд зм╕ни паролю"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
 msgid "Eazel Change Password View"
@@ -3146,9 +3138,8 @@ msgid "Service Login View Component's Factory"
 msgstr ""
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:7
-#, fuzzy
 msgid "View as Change Password"
-msgstr "Зм╕на паролю"
+msgstr "Показати як зм╕ну паролю"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:295
 msgid "Unknown Date"
@@ -3224,9 +3215,8 @@ msgid "Go There"
 msgstr "Перейти сюди"
 
 #: components/services/summary/nautilus-summary-view.c:119
-#, fuzzy
 msgid "More Info"
-msgstr "╤нформац╕я"
+msgstr "Докладн╕ше"
 
 #: components/services/summary/nautilus-summary-view.c:130
 msgid "Account Preferences"
@@ -3502,7 +3492,6 @@ msgid "Text"
 msgstr "Текст"
 
 #: components/text/Nautilus_View_text.oaf.in.h:3
-#, fuzzy
 msgid "Text Viewer"
 msgstr "Перегляд тексту"
 
@@ -3515,9 +3504,8 @@ msgid "Text view factory"
 msgstr "Фабрика перегляду тексту"
 
 #: components/text/Nautilus_View_text.oaf.in.h:6
-#, fuzzy
 msgid "View as Text"
-msgstr "Показати як %s"
+msgstr "Показати як текст"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -7891,17 +7879,14 @@ msgid ""
 msgstr ""
 
 #: src/nautilus-first-time-druid.c:880
-#, fuzzy
 msgid "Use Nautilus to draw the desktop."
 msgstr "Використовувати Наут╕лус для малювання робочого столу"
 
 #: src/nautilus-first-time-druid.c:886
-#, fuzzy
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Перенести п╕ктограми робочого столу GMC у робочий ст╕л Наут╕луса."
 
 #: src/nautilus-first-time-druid.c:891
-#, fuzzy
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Запускати Наут╕лус на початку сеансу GNOME."
 
@@ -7914,18 +7899,16 @@ msgid ""
 msgstr ""
 
 #: src/nautilus-first-time-druid.c:934
-#, fuzzy
 msgid "Enable fast search"
-msgstr "Швидкий пошук"
+msgstr "Ув╕мкнути швидкий пошук"
 
 #: src/nautilus-first-time-druid.c:1028
 msgid "Nautilus First Time Setup"
 msgstr "Початкове встановлення Наут╕луса"
 
 #: src/nautilus-first-time-druid.c:1058
-#, fuzzy
 msgid "Welcome to Nautilus"
-msgstr "Ласкаво просимо у Наут╕лус!"
+msgstr "Ласкаво просимо у Наут╕лус"
 
 #: src/nautilus-first-time-druid.c:1060
 msgid ""
@@ -7956,9 +7939,8 @@ msgstr ""
 
 #. set up the user level page
 #: src/nautilus-first-time-druid.c:1088
-#, fuzzy
 msgid "Choose Your User Level"
-msgstr "Виб╕р р╕вня користувача"
+msgstr "Вибер╕ть ваш р╕вень користувача"
 
 #. set up the GMC transition page
 #: src/nautilus-first-time-druid.c:1092
@@ -7967,14 +7949,13 @@ msgstr ""
 
 #. set up the `Launch Medusa' page
 #: src/nautilus-first-time-druid.c:1096
-#, fuzzy
 msgid "Fast Searches"
-msgstr "Швидкий пошук"
+msgstr "Швидк╕ пошуки"
 
 #. set up the update page
 #: src/nautilus-first-time-druid.c:1100
 msgid "Checking Your Internet Connection"
-msgstr ""
+msgstr "Перев╕рка вашого з'╓днання з ╤нтернетом"
 
 #. set up the update feedback page
 #: src/nautilus-first-time-druid.c:1108
@@ -7992,7 +7973,6 @@ msgid "Decoding Update..."
 msgstr "Декодування поновлень..."
 
 #: src/nautilus-first-time-druid.c:1208
-#, fuzzy
 msgid "Update Complete. Click Next to Continue."
 msgstr "Поновлення завершено... Натисн╕ть \"Дал╕\" для продовження."
 
@@ -8001,9 +7981,8 @@ msgstr "Поновлення завершено... Натисн╕ть \"Дал╕\" для продовження."
 #. * best thing to do is silently fail
 #.
 #: src/nautilus-first-time-druid.c:1221
-#, fuzzy
 msgid "No Update Available... Press Next to Continue."
-msgstr "Поновлення завершено... Натисн╕ть \"Дал╕\" для продовження."
+msgstr "Поновлення не доступне... Натисн╕ть \"Дал╕\" для продовження."
 
 #. set the window title
 #: src/nautilus-link-set-window.c:189
@@ -8200,11 +8179,13 @@ msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
 msgstr ""
+"Вибачте, але \"%s\" -- це д╕йсне ключове слово.  Будь ласка. обер╕ть ╕ншу "
+"назву для цього."
 
 #: src/nautilus-property-browser.c:1360
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-msgstr ""
+msgstr "Вибачте, але зображення %s неможливо встановити як емблему."
 
 #: src/nautilus-property-browser.c:2012
 msgid "Select A Category:"
@@ -8215,17 +8196,14 @@ msgid "Cancel Remove"
 msgstr "В╕дм╕нити видалення"
 
 #: src/nautilus-property-browser.c:2024
-#, fuzzy
 msgid "  Add a New Pattern  "
 msgstr "  Додати новий в╕зерунок  "
 
 #: src/nautilus-property-browser.c:2027
-#, fuzzy
 msgid "  Add a New Color  "
 msgstr "  Додати новий кол╕р  "
 
 #: src/nautilus-property-browser.c:2030
-#, fuzzy
 msgid "  Add a New Emblem  "
 msgstr "  Додати нову емблему  "
 
@@ -8254,17 +8232,14 @@ msgid "Emblems:"
 msgstr "Емблеми:"
 
 #: src/nautilus-property-browser.c:2092
-#, fuzzy
 msgid "  Remove a Pattern  "
 msgstr "  Видалити в╕зерунок  "
 
 #: src/nautilus-property-browser.c:2095
-#, fuzzy
 msgid "  Remove a Color  "
 msgstr "  Видалити кол╕р  "
 
 #: src/nautilus-property-browser.c:2098
-#, fuzzy
 msgid "  Remove an Emblem  "
 msgstr "  Видалити емблему  "
 
@@ -8470,25 +8445,23 @@ msgstr ""
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "Фабрика для оболонки Наут╕луса ╕ файлового менеджера"
 
 #: src/Nautilus_shell.oaf.in.h:2
 msgid "Icons"
 msgstr "П╕ктограми"
 
 #: src/Nautilus_shell.oaf.in.h:3
-#, fuzzy
 msgid "Icons Viewer"
-msgstr "перегляд %s"
+msgstr "Перегляд п╕ктограм"
 
 #: src/Nautilus_shell.oaf.in.h:4
 msgid "List"
 msgstr "Список"
 
 #: src/Nautilus_shell.oaf.in.h:5
-#, fuzzy
 msgid "List Viewer"
-msgstr "перегляд %s"
+msgstr "Перегляд списку"
 
 #: src/Nautilus_shell.oaf.in.h:6
 msgid "Nautilus factory"
@@ -8557,14 +8530,12 @@ msgid "Search List"
 msgstr "Список пошуку"
 
 #: src/Nautilus_shell.oaf.in.h:20
-#, fuzzy
 msgid "View as Icons"
-msgstr "Показати як %s"
+msgstr "Показати як п╕ктограми"
 
 #: src/Nautilus_shell.oaf.in.h:21
-#, fuzzy
 msgid "View as List"
-msgstr "Показати як %s"
+msgstr "Показати як список"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid " Advanced"
@@ -8595,7 +8566,6 @@ msgid "Change the visibility of this window's status bar"
 msgstr "Зм╕нити видим╕сть панел╕ стану цього в╕кна"
 
 #: src/nautilus-shell-ui.xml.h:9
-#, fuzzy
 msgid "Change the visibility of this window's toolbar"
 msgstr "Зм╕нити видим╕сть панел╕ ╕нструмент╕в цього в╕кна"
 
@@ -8706,7 +8676,6 @@ msgid "Hide Status Bar"
 msgstr "Прибрати панель стану"
 
 #: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:434
-#, fuzzy
 msgid "Hide Toolbar"
 msgstr "Прибрати панель ╕нструмент╕в"
 
@@ -8721,7 +8690,6 @@ msgid "Nautilus Release _Notes"
 msgstr "Параметри Наут╕луса"
 
 #: src/nautilus-shell-ui.xml.h:41
-#, fuzzy
 msgid "Nautilus User _Manual"
 msgstr "╤нструкц╕я користувача Наут╕луса"
 
@@ -8838,7 +8806,6 @@ msgid "Zoom _Out"
 msgstr "Зменшити"
 
 #: src/nautilus-shell-ui.xml.h:71
-#, fuzzy
 msgid "_About Nautilus"
 msgstr "Про Наут╕лус"
 
@@ -8876,9 +8843,8 @@ msgid "_Edit Bookmarks..."
 msgstr "Редагування закладок..."
 
 #: src/nautilus-shell-ui.xml.h:81
-#, fuzzy
 msgid "_Feedback"
-msgstr "Зворотн╕й зв'язок..."
+msgstr "Зворотн╕й зв'язок"
 
 #: src/nautilus-shell-ui.xml.h:83 src/nautilus-window-menus.c:1306
 msgid "_Find"
@@ -9262,7 +9228,6 @@ msgid "Show Sidebar"
 msgstr "Показати б╕чну панель"
 
 #: src/nautilus-window-menus.c:435
-#, fuzzy
 msgid "Show Toolbar"
 msgstr "Показати панель ╕нструмент╕в"
 
