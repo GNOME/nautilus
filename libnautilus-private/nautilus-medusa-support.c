@@ -127,7 +127,8 @@ nautilus_medusa_check_cron_is_enabled (void)
 		
 		stat_file_process_name = strchr (stat_file_data, ' ');
 		
-		if (nautilus_str_has_prefix (stat_file_process_name, " (crond)")) {
+		if (nautilus_str_has_prefix (stat_file_process_name, " (crond)") ||
+		    nautilus_str_has_prefix (stat_file_process_name, " (cron)")) {
 			status = NAUTILUS_CRON_STATUS_ON;
 			break;
 		}

@@ -1,3 +1,10 @@
+2001-03-24  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_check_cron_is_enabled):
+	Add check for "cron" as well as "crond" so that cron will
+	also be recognized on Debian.
+
 2001-03-23  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
