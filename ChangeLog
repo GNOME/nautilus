@@ -1,3 +1,71 @@
+2000-06-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/html/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/rpmview/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/websearch/Makefile.am:
+	* configure.in:
+	* cut-n-paste-code/.cvsignore:
+	* cut-n-paste-code/Makefile.am:
+	* cut-n-paste-code/README:
+	* cut-n-paste-code/widgets/.cvsignore:
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/e-paned/.cvsignore:
+	* cut-n-paste-code/widgets/e-paned/Makefile.am:
+	* cut-n-paste-code/widgets/e-paned/e-hpaned.c: (e_hpaned_get_type),
+	(e_hpaned_class_init), (e_hpaned_init), (e_hpaned_new),
+	(e_hpaned_size_request), (e_hpaned_size_allocate), (e_hpaned_draw),
+	(e_hpaned_xor_line), (e_hpaned_button_press),
+	(e_hpaned_button_release), (e_hpaned_motion),
+	(e_hpaned_handle_shown):
+	* cut-n-paste-code/widgets/e-paned/e-hpaned.h:
+	* cut-n-paste-code/widgets/e-paned/e-paned.c: (e_paned_get_type),
+	(e_paned_class_init), (e_paned_child_type), (e_paned_init),
+	(e_paned_set_arg), (e_paned_get_arg), (e_paned_realize),
+	(e_paned_map), (e_paned_unmap), (e_paned_unrealize),
+	(e_paned_expose), (e_paned_add1), (e_paned_add2), (e_paned_pack1),
+	(e_paned_pack2), (e_paned_add), (e_paned_remove), (e_paned_forall),
+	(e_paned_get_position), (e_paned_set_position),
+	(e_paned_set_handle_size), (e_paned_compute_position),
+	(e_paned_handle_shown), (e_paned_quantized_size):
+	* cut-n-paste-code/widgets/e-paned/e-paned.h:
+	* cut-n-paste-code/widgets/e-paned/e-vpaned.c: (e_vpaned_get_type),
+	(e_vpaned_class_init), (e_vpaned_init), (e_vpaned_new),
+	(e_vpaned_size_request), (e_vpaned_size_allocate), (e_vpaned_draw),
+	(e_vpaned_xor_line), (e_vpaned_button_press),
+	(e_vpaned_button_release), (e_vpaned_motion),
+	(e_vpaned_handle_shown):
+	* cut-n-paste-code/widgets/e-paned/e-vpaned.h:
+	* helper-utilities/authenticate/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/README:
+	* libnautilus/README:
+	* src/Makefile.am:
+	* test/Makefile.am:
+	Added a place to put cut-n-paste code.  Cut-n-pasted the e-paned
+	widget from evolution.  Yes, and evil thing to do.  Send me mail
+	with alternative solutions.
+
+	Also added README files for libnautilus and
+	libnautilus-extenstions to clarify thieir public vs internal
+	state.
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_real_set_content_view):
+	Use the new NautilusHorizontalSplitter widget instead of 
+	the gtk one.
+
 2000-06-14  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 173 (UI for reverting directory view background 
