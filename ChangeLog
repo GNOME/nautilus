@@ -1,5 +1,17 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	Add hook for scalable fonts test which im going to add soon.
+
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_text_width), New convenience function to
+	measure just the text width.
+	(nautilus_self_check_scalable_font): Add hook for scalable fonts
+	test which im going to add soon.
+
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-scalable-font.c:
 	(nautilus_scalable_font_draw_text),
 	(nautilus_scalable_font_draw_text_lines_with_dimensions),
