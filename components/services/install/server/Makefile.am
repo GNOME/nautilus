@@ -23,14 +23,6 @@ INCLUDES = \
 	$(XML_CFLAGS) 		\
 	$(NULL)
 
-LDFLAGS = \
-	$(OAF_LIBS) 	\
-	$(GHTTP_LIBS) 	\
-	$(VFS_LIBS)	\
-	$(NULL)
-
-
-
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = trilobite-eazel-install-service.png
 

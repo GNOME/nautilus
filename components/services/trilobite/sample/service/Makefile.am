@@ -23,12 +23,6 @@ INCLUDES =								\
 	$(XML_CFLAGS) 							\
 	$(NULL)
 
-LDFLAGS = 							\
-	$(GLIB_LIBS)						\
-	$(OAF_LIBS) 						\
-	$(NULL)
-
-
 oafdir = $(datadir)/oaf
 
 oaf_DATA = trilobite-eazel-sample-service.oafinfo

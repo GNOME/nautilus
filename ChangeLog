@@ -1,3 +1,11 @@
+2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/services/install/server/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	Dont hardcode LDFLAGS in these makefiles, otherwise LDFLAGS cant
+	be globally set at configure time.
+	
 2000-10-04  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.h:

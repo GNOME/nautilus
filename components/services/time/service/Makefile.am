@@ -22,14 +22,6 @@ INCLUDES = \
 	$(XML_CFLAGS) 		\
 	$(NULL)
 
-LDFLAGS = \
-	$(BONOBO_LIBS) \
-	$(OAF_LIBS) 	\
-	$(GHTTP_LIBS) 	\
-	$(NULL)
-
-
-
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = trilobite-eazel-time-service.png
 
@@ -79,8 +71,10 @@ trilobite_eazel_time_service_SOURCES =		\
 trilobite_eazel_time_service_LDADD =	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
+	$(BONOBO_LIBS) \
+	$(OAF_LIBS) \
+	$(GHTTP_LIBS) \
 	$(NULL)
-
 
 ## Extra stuff
 
