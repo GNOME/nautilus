@@ -9,6 +9,7 @@ CPPFLAGS = \
 	$(NULL)
 
 INCLUDES = \
+	-I$(srcdir)		\
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I/usr/include/rpm	\

@@ -26,7 +26,7 @@
 #ifndef _TRILOBITE_ROOT_CLIENT_PUBLIC_H_
 #define _TRILOBITE_ROOT_CLIENT_PUBLIC_H_
 
-#include <libtrilobite/trilobite-service.h>
+#include <trilobite-service.h>
 
 #ifdef __cplusplus
 extern "C" {
