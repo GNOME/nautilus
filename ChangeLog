@@ -1,3 +1,25 @@
+2000-10-08  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 3549, services button disappeared due to UI handler
+	change, by adding it on the fly if EAZEL_SERVICES is set.  Currently,
+	it comes after the throbber, but that will be fixed when the
+	throbber is positioned properly again.
+	
+	* src/nautilus-window-menus.c: (stop_button_callback),
+	(services_button_callback), (nautilus_window_initialize_menus):
+	added bonobo verb for services and it's handler.  Also, added one
+	for the stop button, which was inadvertently lost during the
+	translation.
+	
+	* src/nautilus-window-toolbars.c: (set_up_toolbar_images),
+	(nautilus_window_initialize_toolbars):
+	if EAZEL_SERVICES is set, add the services button and handle it's
+	image.
+	
+	* icons/Makefile.am:
+	* icons/Services.png:
+	added Services image to default theme.
+	
 2000-10-08  Josh Barrow  <josh@eazel.com>
 
 	* src/nautilus-shell-ui.xml:

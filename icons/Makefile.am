@@ -183,6 +183,7 @@ icon_DATA =\
 	rightarrow.png \
 	search.png \
 	SearchWeb.png \
+	Services.png \
 	temp-home.png \
 	text-selection-frame.png \
 	theme_preview.png \

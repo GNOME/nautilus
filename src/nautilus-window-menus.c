@@ -35,6 +35,7 @@
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
 #include "nautilus-theme-selector.h"
+#include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
@@ -244,6 +245,22 @@ file_menu_web_search_callback (BonoboUIComponent *component,
 			       const char *verb)
 {
 	nautilus_window_go_web_search (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+stop_button_callback (BonoboUIComponent *component, 
+			       gpointer user_data, 
+			       const char *verb)
+{
+	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+services_button_callback (BonoboUIComponent *component, 
+			       gpointer user_data, 
+			       const char *verb)
+{
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "eazel:");
 }
 
 static void
@@ -1440,6 +1457,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
+		BONOBO_UI_VERB ("Stop", stop_button_callback),
+		BONOBO_UI_VERB ("Services", services_button_callback),
 #ifdef UIH	
 	/* The next set of verbs doesn't work. Need some different mechanism for radio items apparently */
 #endif

@@ -55,20 +55,6 @@ static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window
 */
 #endif
 
-/* toolbar definitions */
-
-#define TOOLBAR_BACK_BUTTON_INDEX		0
-#define TOOLBAR_FORWARD_BUTTON_INDEX		1
-#define TOOLBAR_UP_BUTTON_INDEX			2
-#define TOOLBAR_RELOAD_BUTTON_INDEX		3
-/* separator */
-#define TOOLBAR_HOME_BUTTON_INDEX		5
-#define TOOLBAR_SEARCH_LOCAL_BUTTON_INDEX	6
-#define TOOLBAR_SEARCH_WEB_BUTTON_INDEX		7
-/* separator */
-#define TOOLBAR_STOP_BUTTON_INDEX		9
-#define TOOLBAR_SERVICES_INDEX			10
-
 #define GNOME_STOCK_PIXMAP_WEBSEARCH "SearchWeb"
 
 /*
@@ -215,6 +201,10 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_button (window, "Toggle Find Mode", "Search");
 	set_up_button (window, "Go to Web Search", "SearchWeb");
 	set_up_button (window, "Stop", "Stop");
+
+#ifdef EAZEL_SERVICES
+	set_up_button (window, "Services", "Services");
+#endif	
 }
 
 static GtkWidget *
@@ -278,9 +268,14 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	GtkWidget *frame;
 	BonoboControl *throbber_wrapper;
+
+/* add the services button if necessary */
+#ifdef EAZEL_SERVICES
+	bonobo_ui_component_set (window->details->shell_ui, "/Tool Bar/", _("<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To Eazel Services\" verb=\"\"/>"), NULL);
+#endif
 	
 	set_up_toolbar_images (window);
-	
+
 	window->throbber = allocate_throbber ();	
 	frame = set_up_throbber_frame_type (window);
 	
