@@ -198,6 +198,70 @@ compare_component_with_view (OAF_ServerInfo *info, NautilusViewIdentifier *ident
 }
 
 static gboolean
+is_application_default_for_type (GnomeVFSMimeApplication *application, const char *mime_type)
+{
+	GnomeVFSMimeApplication *default_application;
+	gboolean result;
+
+	g_assert (application != NULL);
+
+	default_application = gnome_vfs_mime_get_default_application (mime_type);
+	result = (default_application != NULL && strcmp (default_application->id, application->id) == 0);
+
+	gnome_vfs_mime_application_free (default_application);
+
+	return result;
+}
+
+static gboolean
+is_component_default_for_type (NautilusViewIdentifier *identifier, const char *mime_type)
+{
+	OAF_ServerInfo *default_component;
+	gboolean result;
+
+	g_assert (identifier != NULL);
+
+	default_component = gnome_vfs_mime_get_default_component (mime_type);
+	result = (default_component != NULL && strcmp (default_component->iid, identifier->iid) == 0);
+
+	CORBA_free (default_component);
+
+	return result;
+}
+
+static gboolean
+is_application_default_for_uri (GnomeVFSMimeApplication *application, const char *uri)
+{
+	GnomeVFSMimeApplication *default_application;
+	gboolean result;
+
+	g_assert (application != NULL);
+
+	default_application = nautilus_mime_get_default_application_for_uri (uri);
+	result = (default_application != NULL && strcmp (default_application->id, application->id) == 0);
+
+	gnome_vfs_mime_application_free (default_application);
+
+	return result;
+}
+
+static gboolean
+is_component_default_for_uri (NautilusViewIdentifier *identifier, const char *uri)
+{
+	OAF_ServerInfo *default_component;
+	gboolean result;
+
+	g_assert (identifier != NULL);
+
+	default_component = nautilus_mime_get_default_component_for_uri (uri);
+	result = (default_component != NULL && strcmp (default_component->iid, identifier->iid) == 0);
+
+	CORBA_free (default_component);
+
+	return result;
+}
+
+static gboolean
 is_component_in_short_list (NautilusViewIdentifier *identifier, const char *mime_type)
 {
 	GList *list;
@@ -257,6 +321,64 @@ is_application_in_short_list_for_uri (GnomeVFSMimeApplication *application, cons
 				     (GCompareFunc)compare_mime_applications) 
 		 != NULL;
 	gnome_vfs_mime_application_list_free (list);
+
+	return result;
+}
+
+static gboolean
+is_default_for_file_type (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *mime_type;
+	GnomeVFSMimeActionType action_type;
+	gboolean result;
+	
+	g_assert (GNOME_IS_DIALOG (program_chooser));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (data != NULL);
+
+	mime_type = nautilus_file_get_mime_type (file);
+	action_type = nautilus_program_chooser_get_type (program_chooser);
+
+	if (action_type != gnome_vfs_mime_get_default_action_type (mime_type)) {
+		return FALSE;
+	}
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
+		result = is_component_default_for_type ((NautilusViewIdentifier *)data, mime_type);
+	} else {
+		result = is_application_default_for_type ((GnomeVFSMimeApplication *)data, mime_type);
+	}
+
+	g_free (mime_type);
+
+	return result;
+}
+
+static gboolean
+is_default_for_file (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *uri;
+	GnomeVFSMimeActionType action_type;
+	gboolean result;
+	
+	g_assert (GNOME_IS_DIALOG (program_chooser));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (data != NULL);
+
+	uri = nautilus_file_get_uri (file);
+	action_type = nautilus_program_chooser_get_type (program_chooser);
+
+	if (action_type != nautilus_mime_get_default_action_type_for_uri (uri)) {
+		return FALSE;
+	}
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
+		result = is_component_default_for_uri ((NautilusViewIdentifier *)data, uri);
+	} else {
+		result = is_application_default_for_uri ((GnomeVFSMimeApplication *)data, uri);
+	}
+
+	g_free (uri);
 
 	return result;
 }
@@ -338,9 +460,19 @@ update_selected_item_details (GnomeDialog *dialog)
 		/* row_text is now a pointer to the text in the list. */
 		frame_label_text = g_strdup (row_text);
 
-		if (is_in_short_list_for_file_type (dialog, file, selected_row_data)) {
+		if (is_default_for_file_type (dialog, file, selected_row_data)) {
 			file_type = nautilus_file_get_string_attribute (file, "type");
-			status_label_text = g_strdup_printf (_("Is in the menu for all \"%s\" items."), 
+			status_label_text = g_strdup_printf (_("Is the default for \"%s\" items."), 
+					      		     file_type);	
+			g_free (file_type);
+		} else if (is_default_for_file (dialog, file, selected_row_data)) {
+	  		file_name = nautilus_file_get_name (file);	
+			status_label_text = g_strdup_printf (_("Is the default for \"%s\"."), 
+					      		     file_name);				
+			g_free (file_name);
+		} else if (is_in_short_list_for_file_type (dialog, file, selected_row_data)) {
+			file_type = nautilus_file_get_string_attribute (file, "type");
+			status_label_text = g_strdup_printf (_("Is in the menu for \"%s\" items."), 
 					      		     file_type);	
 			g_free (file_type);
 		} else if (is_in_short_list_for_file (dialog, file, selected_row_data)) {
@@ -349,10 +481,10 @@ update_selected_item_details (GnomeDialog *dialog)
 					      		     file_name);				
 			g_free (file_name);
 		} else {
-	  		file_name = nautilus_file_get_name (file);	
-			status_label_text = g_strdup_printf (_("Is not in the menu for \"%s\"."), 
-					      		     file_name);
-			g_free (file_name);
+			file_type = nautilus_file_get_string_attribute (file, "type");
+			status_label_text = g_strdup_printf (_("Is not in the menu for \"%s\" items."), 
+					      		     file_type);
+			g_free (file_type);
 		}				     
 	} else {
 		frame_label_text = NULL;
@@ -460,13 +592,106 @@ remove_from_short_list_for_type (GnomeDialog *program_chooser, NautilusFile *fil
 }
 
 static void
+remove_default_for_type (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *mime_type;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+	    	if (is_application_default_for_type ((GnomeVFSMimeApplication *)data, mime_type)) {
+			gnome_vfs_mime_set_default_application (mime_type, NULL);
+	        }
+	} else {
+		if (is_component_default_for_type ((NautilusViewIdentifier *)data, mime_type)) {
+			gnome_vfs_mime_set_default_component (mime_type, NULL);
+		}
+	}
+
+	g_free (mime_type);
+}
+
+static void
+remove_default_for_item (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *uri;
+
+	uri = nautilus_file_get_uri (file);
+	
+	if (nautilus_program_chooser_get_type (program_chooser) 
+	    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+	    	/* If the default is just falling through to the default for this type,
+	    	 * don't do anything here.
+	    	 */
+	    	if (nautilus_mime_is_default_application_for_uri_user_chosen (uri)) {
+	    		if (is_application_default_for_uri ((GnomeVFSMimeApplication *)data, uri)) {
+				nautilus_mime_set_default_application_for_uri (uri, NULL);
+		        }
+	    	}
+	} else {
+	    	/* If the default is just falling through to the default for this type,
+	    	 * don't do anything here.
+	    	 */
+	    	if (nautilus_mime_is_default_component_for_uri_user_chosen (uri)) {
+	    		if (is_component_default_for_uri ((NautilusViewIdentifier *)data, uri)) {
+				nautilus_mime_set_default_component_for_uri (uri, NULL);
+		        }
+	    	}
+	}
+
+	g_free (uri);
+}
+
+static void
+set_default_for_type (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *mime_type;
+	GnomeVFSMimeActionType action_type;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	action_type = nautilus_program_chooser_get_type (program_chooser);
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		gnome_vfs_mime_set_default_application (mime_type, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		gnome_vfs_mime_set_default_component (mime_type, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	gnome_vfs_mime_set_default_action_type (mime_type, action_type);
+	
+	g_free (mime_type);
+}
+
+static void
+set_default_for_item (GnomeDialog *program_chooser, NautilusFile *file, gpointer data)
+{
+	char *uri;
+	GnomeVFSMimeActionType action_type;
+
+	uri = nautilus_file_get_uri (file);
+	action_type = nautilus_program_chooser_get_type (program_chooser);
+
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		nautilus_mime_set_default_application_for_uri (uri, ((GnomeVFSMimeApplication *)data)->id);
+	} else {
+		nautilus_mime_set_default_component_for_uri (uri, ((NautilusViewIdentifier *)data)->iid);
+	}
+
+	nautilus_mime_set_default_action_type_for_uri (uri, action_type);
+	
+	g_free (uri);
+}
+
+static void
 run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 {
 	GnomeDialog *program_chooser;
 	NautilusFile *file;
 	GtkCList *clist;
 	GtkWidget *dialog;
-	GtkRadioButton *type_radio_button, *item_radio_button, *none_radio_button;
+	GtkWidget *frame, *framed_vbox;
+	GtkRadioButton *type_radio_button, *type_default_radio_button, *item_radio_button, *item_default_radio_button, *none_radio_button;
 	GtkRadioButton *old_active_button;
 	char *radio_button_text;
 	char *file_type, *file_name;
@@ -481,6 +706,9 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	
 	file = nautilus_program_chooser_get_file (program_chooser);
 	clist = nautilus_program_chooser_get_clist (program_chooser);
+
+	file_type = nautilus_file_get_string_attribute (file, "type");
+	file_name = nautilus_file_get_name (file);
 
 	selected_row = nautilus_gtk_clist_get_first_selected_row (clist);
 	if (selected_row < 0 || !gtk_clist_get_text (clist, 
@@ -500,38 +728,63 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 				   NULL);
 	g_free (title);
 
+	/* Labeled frame to avoid repeating text in each radio button,
+	 * and to look nice.
+	 */
+	frame = gtk_frame_new (row_text);
+	gtk_widget_show (frame);
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), frame, FALSE, FALSE, 0);
+
+  	framed_vbox = gtk_vbox_new (FALSE, GNOME_PAD);
+  	gtk_widget_show (framed_vbox);
+  	gtk_container_add (GTK_CONTAINER (frame), framed_vbox);
+  	gtk_container_set_border_width (GTK_CONTAINER (framed_vbox), GNOME_PAD);
+
+
 	/* Radio button for adding to short list for file type. */
-	file_type = nautilus_file_get_string_attribute (file, "type");
-	radio_button_text = g_strdup_printf ("Include %s in the menu for all \"%s\" items", 
-					     row_text, file_type);
-	type_radio_button = pack_radio_button (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-					       radio_button_text,
-					       NULL);
-	g_free (file_type);
+	radio_button_text = g_strdup_printf (_("Include in the menu for \"%s\" items"), 
+					     file_type);
+	type_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, NULL);
+	g_free (radio_button_text);
+	
+
+	/* Radio button for setting default for file type. */
+	radio_button_text = g_strdup_printf (_("Use as default for \"%s\" items"), 
+					     file_type);
+	type_default_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
 	
 
 	/* Radio button for adding to short list for specific file. */
-	file_name = nautilus_file_get_name (file);
-	radio_button_text = g_strdup_printf ("Include %s in the menu just for \"%s\"", 
-					   row_text, file_name);
-	item_radio_button = pack_radio_button (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-					       radio_button_text,
-					       type_radio_button);
+	radio_button_text = g_strdup_printf (_("Include in the menu just for \"%s\""), 
+					     file_name);
+	item_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
 
-	/* Radio button for not including program in short list for type or file. */
-	radio_button_text = g_strdup_printf ("Don't include %s in the menu for \"%s\"", 
-					   row_text, file_name);
-	none_radio_button = pack_radio_button (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-					       radio_button_text,
-					       item_radio_button);
-	g_free (file_name);
+	/* Radio button for setting default for specific file. */
+	radio_button_text = g_strdup_printf (_("Use as default just for \"%s\""), 
+					     file_name);
+	item_default_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
+	
+
+	/* Radio button for not including program in short list for type or file. */
+	radio_button_text = g_strdup_printf (_("Don't include in the menu for \"%s\" items"), 
+					     file_type);
+	none_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
+	g_free (radio_button_text);
+
+
+	g_free (file_type);
+	g_free (file_name);
 
 	/* Activate the correct radio button. */
 	selected_row_data = gtk_clist_get_row_data (clist, selected_row);
-	if (is_in_short_list_for_file_type (program_chooser, file, selected_row_data)) {
+	if (is_default_for_file_type (program_chooser, file, selected_row_data)) {
+		old_active_button = type_default_radio_button;
+	} else if (is_default_for_file (program_chooser, file, selected_row_data)) {
+		old_active_button = item_default_radio_button;
+	} else if (is_in_short_list_for_file_type (program_chooser, file, selected_row_data)) {
 		old_active_button = type_radio_button;
 	} else if (is_in_short_list_for_file (program_chooser, file, selected_row_data)) {
 		old_active_button = item_radio_button;	
@@ -556,30 +809,45 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 
 	if (gnome_dialog_run (GNOME_DIALOG (dialog)) == GNOME_OK) {
 		if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (old_active_button))) {
-			/* Selected button has changed, update stuff as necessary. */
+			/* Selected button has changed, update stuff as necessary. 
+			 * Rather than keep track of a whole bunch of transitions, we
+			 * start by removing this program from everything and then
+			 * add it back in as appropriate based on the new setting.
+			 */
+			if (old_active_button == item_radio_button) {
+				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+				remove_from_short_list_for_file (program_chooser, file, selected_row_data);
+			} else if (old_active_button == item_default_radio_button) {
+				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+				remove_from_short_list_for_file (program_chooser, file, selected_row_data);
+				remove_default_for_item (program_chooser, file, selected_row_data);
+			} else if (old_active_button == type_radio_button) {
+				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+			} else if (old_active_button == type_default_radio_button) {
+				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+				remove_default_for_type (program_chooser, file, selected_row_data);
+			} else {
+				g_assert (old_active_button == none_radio_button);
+				/* Nothing to remove anywhere for this case. */
+			}
 
 			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (item_radio_button))) {
-				if (old_active_button == type_radio_button) {
-					remove_from_short_list_for_type (program_chooser, file, selected_row_data);
-				} else {
-					g_assert (old_active_button == none_radio_button);
-				}
 				add_to_short_list_for_file (program_chooser, file, selected_row_data);
+			} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (item_default_radio_button))) {
+				add_to_short_list_for_file (program_chooser, file, selected_row_data);
+				set_default_for_item (program_chooser, file, selected_row_data);
 			} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (type_radio_button))) {
-				if (old_active_button == item_radio_button) {
-					remove_from_short_list_for_file (program_chooser, file, selected_row_data);
-				} else {
-					g_assert (old_active_button == none_radio_button);
-				}
 				add_to_short_list_for_type (program_chooser, file, selected_row_data);
+				/* To remove it from the "removed" list if necessary. */
+				add_to_short_list_for_file (program_chooser, file, selected_row_data);
+			} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (type_default_radio_button))) {
+				add_to_short_list_for_type (program_chooser, file, selected_row_data);
+				/* To remove it from the "removed" list if necessary. */
+				add_to_short_list_for_type (program_chooser, file, selected_row_data);
+				set_default_for_type (program_chooser, file, selected_row_data);
 			} else {
 				g_assert (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (none_radio_button)));
-				if (old_active_button == item_radio_button) {
-					remove_from_short_list_for_file (program_chooser, file, selected_row_data);
-				} else {
-					g_assert (old_active_button == type_radio_button);
-				}
-				remove_from_short_list_for_type (program_chooser, file, selected_row_data);
+				/* Nothing to add anywhere for this case. */
 			}
 
 			update_selected_item_details (program_chooser);
