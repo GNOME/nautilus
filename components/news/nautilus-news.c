@@ -100,6 +100,8 @@ typedef struct {
 	
 	GtkWidget *main_box;
 	GtkWidget *news_display;
+	GtkWidget *news_display_scrolled_window;
+	GtkWidget *empty_message;
 	
 	GtkWidget *configure_box;
 	GtkWidget *checkbox_list;
@@ -184,6 +186,7 @@ typedef struct {
 #define TIME_MARGIN_OFFSET 2
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
+#define EMPTY_MESSAGE_WIDTH 100
 #define MAX_ITEM_COUNT 6
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
 
@@ -199,6 +202,7 @@ static char* get_xml_path (const char *file_name, gboolean force_local);
 static int check_for_updates (gpointer callback_data);
 static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
 static void nautilus_news_clear_changed_flags (News* news_data);
+static void set_views_for_mode (News *news);
 
 static void add_channel_entry (News *news_data, const char *channel_name,
 			       int index, gboolean is_showing);
@@ -259,9 +263,11 @@ set_bonobo_properties (BonoboPropertyBag *bag,
                 break;
         }
  
- 	/* when closed, clear the changed flags */
+ 	/* when closed, clear the changed flags; also, exit configure mode */
         case CLOSE_NOTIFY: {
 		nautilus_news_clear_changed_flags (news);
+		news->configure_mode = FALSE;
+		set_views_for_mode (news);
 		break;
 	}
 	
@@ -728,6 +734,10 @@ static void
 toggle_open_state (RSSChannelData *channel_data)
 {
 	channel_data->is_open = !channel_data->is_open;
+	if (!channel_data->is_open) {
+		channel_data->channel_changed = FALSE;
+	}
+	
 	update_size_and_redraw (channel_data->owner);	
 	nautilus_news_save_channel_state (channel_data->owner);
 }
@@ -1515,24 +1525,57 @@ nautilus_news_load_images (News *news_data)
 	}
 }
 
-/* here's the button callback routine that toggles between display modes  */
-static void
-configure_button_clicked (GtkWidget *widget, News *news)
+/* utility to count the visible channels */
+static int
+count_visible_channels (News *news)
 {
-	news->configure_mode = !news->configure_mode;
+	GList *current_item;
+	RSSChannelData *current_channel;
+	int visible_count;
+
+	visible_count = 0;
+	current_item = news->channel_list;
+	while (current_item != NULL) {
+		current_channel = (RSSChannelData *) current_item->data;
+		if (current_channel->is_showing) {
+			visible_count += 1;
+		}
+		current_item = current_item->next;
+	}
+	return visible_count;
+}
+
+/* utility to show and hide the views based on the mode */
+static void
+set_views_for_mode (News *news)
+{
 	if (news->configure_mode) {
 		gtk_widget_show_all (news->configure_box);
 		gtk_widget_hide_all (news->main_box);
 		gtk_widget_hide_all (news->edit_site_box);
 	} else {
-		/* when exiting configure mode, update everything */		
 		gtk_widget_show_all (news->main_box);
 		gtk_widget_hide_all (news->configure_box);
 		gtk_widget_hide_all (news->edit_site_box);
+	
+		if (count_visible_channels (news) == 0) {
+			gtk_widget_hide (news->news_display_scrolled_window);
+		} else {
+			gtk_widget_hide (news->empty_message);
+		}
+	}
+}
 
+/* here's the button callback routine that toggles between display modes  */
+static void
+configure_button_clicked (GtkWidget *widget, News *news)
+{
+	news->configure_mode = !news->configure_mode;
+	set_views_for_mode (news);
+	if (!news->configure_mode) {
+		/* when exiting configure mode, update everything */		
 		nautilus_news_save_channel_state (news);		
 		check_for_updates (news);
-		update_size_and_redraw (news);
 	}
 }
 
@@ -1562,9 +1605,11 @@ static void
 add_site_from_fields (GtkWidget *widget, News *news)
 {
 	char *site_name, *site_location;
-	char *temp_str;
+	char *temp_str, *buffer;
 	RSSChannelData *channel_data;
-	int channel_count;
+	GnomeVFSResult result;
+	int channel_count, byte_count;
+	gboolean got_xml_file;
 	
 	site_name = gtk_entry_get_text (GTK_ENTRY (news->item_name_field));
 	site_location = gtk_entry_get_text (GTK_ENTRY (news->item_location_field));
@@ -1575,7 +1620,7 @@ add_site_from_fields (GtkWidget *widget, News *news)
 		return;
 	}
 	if (site_location == NULL || strlen(site_location) == 0) {
-		eel_show_error_dialog (_("Sorry, but you have not specified a location for the site!"), _("Missing Location Name Error"), NULL);
+		eel_show_error_dialog (_("Sorry, but you have not specified a URL for the site!"), _("Missing URL Error"), NULL);
 		return;
 	}
 	
@@ -1585,7 +1630,17 @@ add_site_from_fields (GtkWidget *widget, News *news)
 		g_free (site_location);
 		site_location = temp_str;
 	}
+
+	/* verify that we can read the specified location and that it's an xml file */
+	result = eel_read_entire_file (site_location, &byte_count, &buffer);
+	got_xml_file = (result == GNOME_VFS_OK) && eel_istr_has_prefix (buffer, "<?xml");
+	g_free (buffer);
+	if (!got_xml_file) {
+		eel_show_error_dialog (_("Sorry, but the specified url doesn't seem to be a valid RSS file!"), _("Invalid RSS URL"), NULL);
+		return;
+	}
 	
+	/* make the new channel */		
 	channel_data = nautilus_news_make_new_channel (news, site_name, site_location, TRUE, TRUE);
 	if (channel_data != NULL) {
 		news->channel_list = g_list_insert_sorted (news->channel_list,
@@ -1925,7 +1980,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
-	label = news_label_new (_("Site Location:"));
+	label = news_label_new (_("Site RSS URL:"));
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_location_field = nautilus_entry_new ();
@@ -2025,7 +2080,7 @@ set_up_main_widgets (News *news, GtkWidget *container)
 {
         GtkWidget *button_box;
 	GtkWidget *scrolled_window;
-        
+	
 	/* allocate a vbox to hold all of the main UI elements elements */
         news->main_box = gtk_vbox_new (FALSE, 0);
         gtk_box_pack_start (GTK_BOX (container), news->main_box, TRUE, TRUE, 0);
@@ -2040,7 +2095,17 @@ set_up_main_widgets (News *news, GtkWidget *container)
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled_window), news->news_display);
 	gtk_box_pack_start (GTK_BOX (news->main_box), scrolled_window, TRUE, TRUE, 0);
- 
+ 	news->news_display_scrolled_window = scrolled_window;
+	
+	/* add the empty message */
+	news->empty_message = eel_label_new (_("Click the \'Select Sites\' button to select websites to view their current headlines here."));
+	eel_label_set_smooth_font_size (EEL_LABEL (news->empty_message), 14);
+	eel_label_set_wrap (EEL_LABEL (news->empty_message), TRUE);	
+	eel_label_set_smooth_line_wrap_width (EEL_LABEL (news->empty_message), EMPTY_MESSAGE_WIDTH);
+
+	gtk_box_pack_start (GTK_BOX (news->main_box), news->empty_message, TRUE,
+		TRUE, 0);
+	
  	/* connect the appropriate signals for drawing and event handling */
  	gtk_signal_connect (GTK_OBJECT (news->news_display), "expose_event",
 		      (GtkSignalFunc) nautilus_news_expose_event, news);
@@ -2085,11 +2150,7 @@ make_news_view (const char *iid, gpointer callback_data)
 	/* set up the fonts */
  	news->font = eel_scalable_font_get_default_font ();
  	news->bold_font = eel_scalable_font_get_default_bold_font ();
-       
-        /* default to the main mode */
-	gtk_widget_show (main_container);
-	gtk_widget_show_all (news->main_box);
-	
+       	
 	/* load some images */
 	nautilus_news_load_images (news);
 
@@ -2121,6 +2182,10 @@ make_news_view (const char *iid, gpointer callback_data)
  
  	/* populate the configuration list */
 	add_channels_to_lists (news);
+
+        /* default to the main mode */
+	gtk_widget_show (main_container);
+	set_views_for_mode (news);
 
   	/* return the nautilus view */    
         return news->view;

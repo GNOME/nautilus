@@ -1,3 +1,26 @@
+2001-04-26  Andy Hertzfeld  <andy@eazel.com>
+
+	changed the news panel not to display any sites by default, since
+	it's obnoxious to be doing periodic I/O to sites that weren't explicitly
+	enabled.  Added an instructive message about the news panel that is
+	displayed when no sites are enabled.
+	
+	Also, made it immediately test new rss urls when they are input, and
+	display an error dialog instead of adding them if they fail.
+	
+	Also, make it always display the main news display (not configuration
+	stuff) when the panel is opened, even if it was in configure mode
+	when closed. Plus a few smaller tweaks.
+	
+	* components/news/nautilus-news.c: (set_bonobo_properties),
+	(toggle_open_state), (count_visible_channels),
+	(set_views_for_mode), (configure_button_clicked),
+	(add_site_from_fields), (make_add_widgets), (set_up_main_widgets),
+	(make_news_view):
+	
+	* components/news/news_channels.xml:
+	turn off all the channels by default
+	
 2001-04-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in: Make the control-center (capplet module) check
