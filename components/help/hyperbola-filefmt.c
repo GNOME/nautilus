@@ -1023,12 +1023,24 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
 {
 	xmlDocPtr toc_doc;
 	xmlNodePtr next_child;
+	errorSAXFunc xml_error_handler;
+    	warningSAXFunc xml_warning_handler;
+    	fatalErrorSAXFunc xml_fatal_error_handler;
 
 	int pos;
 
 	unsigned int levels_to_process = 5;
 
+	xml_error_handler = xmlDefaultSAXHandler.error;
+	xmlDefaultSAXHandler.error = NULL;
+	xml_warning_handler = xmlDefaultSAXHandler.warning;
+	xmlDefaultSAXHandler.warning = NULL;
+	xml_fatal_error_handler = xmlDefaultSAXHandler.fatalError;
+	xmlDefaultSAXHandler.fatalError = NULL;
 	toc_doc = xmlParseFile (toc_file);
+	xmlDefaultSAXHandler.error = xml_error_handler;
+    	xmlDefaultSAXHandler.warning = xml_warning_handler;
+    	xmlDefaultSAXHandler.fatalError = xml_fatal_error_handler;
 
 	if (!toc_doc) {
 		g_warning ("Unable to parse ScrollKeeper TOC XML file:\n\t%s",
@@ -1299,16 +1311,20 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	xmlDocPtr doc;
 	FILE *pipe;
 
-	char *xml_location;
+	char *xml_location, *locale;
 	int bytes_read;
 	
 	char *tree_path[] = { NULL };
+
+	locale = getenv ("LANG");
+	if (locale == NULL)
+	    return;
 
 	xml_location = g_new0 (char, 1024);
 
 	/* Use g_snprintf here because we don't know how long the location will be */
 	g_snprintf (xml_location, 1024, "scrollkeeper-get-content-list %s",
-		    getenv ("LANG"));
+		    locale);
 
 	pipe = popen (xml_location, "r");
 	bytes_read = fread ((void *) xml_location, sizeof (char), 1024, pipe);
@@ -1456,9 +1472,12 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
 	FILE *pipe;
 	int bytes_read;
 
-
     	if (doc == NULL || doc->root == NULL)
         	return;
+
+	locale = getenv("LANG");
+	if (locale == NULL)
+		return;
 		
 	pipe = popen ("scrollkeeper-config --omfdir", "r");
 	bytes_read = fread ((void *) omf_dir, sizeof (char), 128, pipe);
@@ -1475,8 +1494,6 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
 	/* Exit code of 0 means we got a path back from ScrollKeeper */
 	if (pclose (pipe))
 		return;
-	
-    	locale = getenv("LANG");
 	
     	for(doc_node = doc->root->childs; doc_node != NULL; 
             doc_node = doc_node->next) {
