@@ -74,7 +74,16 @@ typedef enum ElementIndex {
 	USERINPUT,
 	CAUTION, /* 65 */
 	LEGALPARA,
-	UNDEFINED /* 67 */
+	FIRSTTERM,
+	STRUCTNAME,
+	STRUCTFIELD,
+	FUNCSYNOPSIS, /* 70 */
+	FUNCPROTOTYPE,
+	FUNCDEF,
+	FUNCPARAMS,
+	PARAMDEF,
+	VOID, /* 75 */
+	UNDEFINED /* 76 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

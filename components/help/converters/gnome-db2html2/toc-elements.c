@@ -86,6 +86,15 @@ ElementInfo toc_elements[] = {
 	{ USERINPUT, "userinput", NULL, NULL, NULL},
 	{ CAUTION, "caution", NULL, NULL, NULL},
 	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
+	{ FIRSTTERM, "firstterm", NULL, NULL, NULL},
+	{ STRUCTNAME, "structname", NULL, NULL, NULL},
+	{ STRUCTFIELD, "structfield", NULL, NULL, NULL},
+	{ FUNCSYNOPSIS, "funcsynopsis", NULL, NULL, NULL},
+	{ FUNCPROTOTYPE, "funcprototype", NULL, NULL, NULL},
+	{ FUNCDEF, "funcdef", NULL, NULL, NULL},
+	{ FUNCPARAMS, "funcparams", NULL, NULL, NULL},
+	{ PARAMDEF, "paramdef", NULL, NULL, NULL},
+	{ VOID, "void", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

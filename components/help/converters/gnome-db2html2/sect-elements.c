@@ -72,6 +72,15 @@ ElementInfo sect_elements[] = {
 	{ USERINPUT, "userinput", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ CAUTION, "caution", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
+	{ FIRSTTERM, "firstterm", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
+	{ STRUCTNAME, "structname", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ STRUCTFIELD, "structfield", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ FUNCSYNOPSIS, "funcsynopsis", (startElementSAXFunc) sect_funcsynopsis_start_element, (endElementSAXFunc) sect_funcsynopsis_end_element, NULL},
+	{ FUNCPROTOTYPE, "funcprototype", (startElementSAXFunc) sect_funcprototype_start_element, NULL, NULL},
+	{ FUNCDEF, "funcdef", NULL, NULL, (charactersSAXFunc) sect_funcdef_characters},
+	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (startElementSAXFunc) sect_funcparams_end_element, NULL},
+	{ PARAMDEF, "paramdef", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ VOID, "void", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -82,6 +91,7 @@ sect_print (Context *context, gchar *format, ...)
 	gchar *string;
 	GSList *list;
 	ElementIndex index;
+	GString *footnote;
 
 	g_return_if_fail (format != NULL);
 
@@ -90,22 +100,24 @@ sect_print (Context *context, gchar *format, ...)
 	va_end (args);
 
 	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
+	list = g_slist_prepend (list, GINT_TO_POINTER (FUNCSYNOPSIS));
 	index = find_first_parent (context, list);
 
-	if (index == UNDEFINED) {
-		/* EVIL EVIL EVIL HACK UNTIL ENTITIES GET FIXED */
+	switch (index) {
+	case FUNCSYNOPSIS:
+		break;
+	case FOOTNOTE:
+		list = g_slist_last (context->footnotes);
+		footnote = (GString *) list->data;
+		g_string_append (footnote, string);
+		break;
+	default:
 		if ((*string == '<') && (*(string +1) == '\000'))
 			printf ("&lt;");
 		else if ((*string == '&') && (*(string +1) == '\000'))
 			printf ("&amp;");
 		else
 			printf (string);
-	} else {
-		GString *footnote;
-
-		list = g_slist_last (context->footnotes);
-		footnote = (GString *) list->data;
-		g_string_append (footnote, string);
 	}
 	g_free (string);
 }
@@ -1053,7 +1065,6 @@ sect_programlisting_end_element (Context *context,
 static gchar *
 sect_get_infobox_logo (const gchar *name)
 {
-
 	if (!strcasecmp (name, "tip"))
 		return gnome_pixmap_file ("gnome-info.png");
 	else if (!strcasecmp (name, "warning"))
@@ -1129,4 +1140,85 @@ sect_keysym_end_element (Context *context, const gchar *name)
 		return;
 
 	sect_print (context, ")</B>");
+}
+
+void
+sect_funcsynopsis_start_element (Context        *context,
+				 const gchar    *name,
+				 const xmlChar **atrs)
+{
+}
+
+void
+sect_funcsynopsis_end_element (Context        *context,
+			       const gchar    *name)
+{
+	
+}
+
+void
+sect_funcprototype_start_element (Context        *context,
+				  const gchar    *name,
+				  const xmlChar **atrs)
+{
+	SectFuncProtoInfo *proto;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	proto = g_new0 (SectFuncProtoInfo, 1);
+	((SectContext *) context->data)->func_synopsis =
+		g_list_append (((SectContext *) context->data)->func_synopsis,
+			       proto);
+}
+
+
+void
+sect_funcdef_characters (Context        *context,
+			 const gchar    *chars,
+			 int             len)
+{
+	SectFuncProtoInfo *proto;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	if (((SectContext *) context->data)->func_synopsis == NULL)
+		return;
+
+	proto = g_new0 (SectFuncProtoInfo, 1);
+	proto = (SectFuncProtoInfo *) ((SectContext *) context->data)->func_synopsis->data;
+	if (proto->retval == NULL)
+		proto->retval = g_strndup (chars, len);
+}
+
+void
+sect_funcparams_start_element (Context        *context,
+			       const gchar    *name,
+			       const xmlChar **atrs)
+{
+	
+}
+
+void
+sect_funcparams_end_element (Context        *context,
+			     const gchar    *name)
+{
+	
+}
+
+void
+sect_paramdef_characters (Context        *context,
+			  const gchar    *chars,
+			  int             len)
+{
+	
+}
+
+void
+sect_parameter_characters (Context        *context,
+			   const gchar    *chars,
+			   int             len)
+{
+	
 }

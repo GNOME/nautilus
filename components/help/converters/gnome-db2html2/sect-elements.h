@@ -15,6 +15,13 @@ typedef enum SectContextState {
 	DONE_WITH_SECT
 } SectContextState;
 
+typedef struct _SectFuncProtoInfo SectFuncProtoInfo;
+struct _SectFuncProtoInfo {
+	gchar *retval;
+	gchar *func;
+	GList *prams;
+};
+	
 typedef struct _SectContext SectContext;
 struct _SectContext {
 	HeaderInfo *header;
@@ -26,7 +33,7 @@ struct _SectContext {
 	GHashTable *title_hash;
 	GString *legalpara;
 	/* A list full of GStrings. */
-	GList *footnotes;
+	GList *func_synopsis;
 };
 
 void sect_print (Context *context, gchar *format, ...);
@@ -79,5 +86,13 @@ void sect_infobox_end_element (Context *context, const gchar *name);
 void sect_cdata_characters (Context *context, const gchar *chars, int len);
 void sect_keysym_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_keysym_end_element (Context *context, const gchar *name);
+void sect_funcsynopsis_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_funcsynopsis_end_element (Context *context, const gchar *name);
+void sect_funcprototype_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_funcdef_characters (Context *context, const gchar *chars, int len);
+void sect_funcparams_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_funcparams_end_element (Context *context, const gchar *name);
+void sect_paramdef_characters (Context *context, const gchar *chars, int len);
+void sect_parameter_characters (Context *context, const gchar *chars, int len);
 
 #endif
