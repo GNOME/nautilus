@@ -2713,6 +2713,7 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 			 */
 			/* Keep in sync with nautilus_get_uri_shortname_for_display */
 			if (has_local_path (file)) {
+				g_free (name);
 				uri = nautilus_file_get_uri (file);
 				local_file = gnome_vfs_get_local_path_from_uri (uri);
 				name = g_filename_display_basename (local_file);

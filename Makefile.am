@@ -44,20 +44,6 @@ EXTRA_DIST=					\
 	$(desktop_in_files)			\
 	$(NULL)
 
-nautilus_connect_server_SOURCES= \
-	nautilus-connect-server-dialog.c	\
-	nautilus-connect-server-dialog.h	\
-	nautilus-connect-server-dialog-main.c	\
-	nautilus-connect-server-dialog-main.h	\
-	nautilus-location-entry.c		\
-	nautilus-location-entry.h		\
-	$(NULL)
-
-nautilus_connect_server_CFLAGS= \
-	-DNAUTILUS_CONNECT_SERVER_PROGRAM	\
-	$(NULL)
-
-
 CLEANFILES = $(desktop_DATA)
 
 DISTCLEANFILES = \
