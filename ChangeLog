@@ -1,5 +1,15 @@
 2000-05-24  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog): Oops. Missed one case of
+	"metaview" -> "sidebar-view".
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_pixbuf_aa), (draw_label_text_aa),
+	(nautilus_icon_canvas_item_render): Some minor code tweaks.
+
+2000-05-24  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-view-component.idl:
 	* src/Makefile.am:
 	* src/ntl-index-panel.c: (nautilus_index_panel_add_meta_view):
@@ -218,9 +228,9 @@
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	(draw_label_text_aa), (nautilus_icon_canvas_item_render):
-	made the text beneath the icons draw properly on the anti-aliased canvas.  There may
-	be performance issues that require caching, but first I want to try this
-	straightforward approach.
+	made the text beneath the icons draw properly on the anti-aliased
+	canvas.  There may be performance issues that require caching, but
+	first I want to try this straightforward approach.
 	
 2000-05-23  Ramiro Estrugo  <ramiro@eazel.com>
 

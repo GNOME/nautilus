@@ -141,9 +141,8 @@ global_preferences_create_dialog (void)
 		for (p = view_identifiers; p != NULL; p = p->next) {
 			identifier = (NautilusViewIdentifier *) (p->data);
 
-			sidebar_view_pref = g_strconcat ("/nautilus/metaviews/", 
-						      identifier->iid,
-						      NULL);
+			sidebar_view_pref = g_strconcat ("/nautilus/sidebar-views/", 
+							 identifier->iid, NULL);
 
 			nautilus_preferences_pane_add_item_to_nth_group 
 				(NAUTILUS_PREFERENCES_PANE (sidebar_view_pane),
@@ -241,7 +240,6 @@ nautilus_global_preferences_get_sidebar_view_iids (void)
 
 	sidebar_view_names = nautilus_string_list_new ();
 
-
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
 		nautilus_string_list_insert (sidebar_view_names, 
@@ -282,7 +280,8 @@ nautilus_preferences_register_sidebar_view_preferences_for_ui (void)
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
 
-		preference_key = g_strconcat ("/nautilus/sidebar-views/", identifier->iid, NULL);
+		preference_key = g_strconcat ("/nautilus/sidebar-views/",
+					      identifier->iid, NULL);
 
 		nautilus_preferences_set_info (preference_key,
 					       identifier->name,

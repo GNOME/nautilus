@@ -931,29 +931,33 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 static void
 draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
 {
+	void (* affine_function)
+		(art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
+		 const art_u8 *src, int src_width, int src_height, int src_rowstride,
+		 const double affine[6],
+		 ArtFilterLevel level,
+		 ArtAlphaGamma *alpha_gamma);
+
 	affine[4] += x_offset;
 	affine[5] += y_offset;
+
+	affine_function = gdk_pixbuf_get_has_alpha (pixbuf)
+		? art_rgb_rgba_affine
+		: art_rgb_affine;
 	
-	if (gdk_pixbuf_get_has_alpha(pixbuf))
-		art_rgb_rgba_affine (buf->buf,
-				     buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
-				     buf->buf_rowstride,
-				     gdk_pixbuf_get_pixels(pixbuf),
-				     gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
-				     gdk_pixbuf_get_rowstride(pixbuf),
-				     affine,
-				     ART_FILTER_NEAREST,
-				     NULL);
-	else
-		art_rgb_affine (buf->buf,
-				buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
-				buf->buf_rowstride,
-				gdk_pixbuf_get_pixels(pixbuf),
-				gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
-				gdk_pixbuf_get_rowstride(pixbuf),
-				affine,
-				ART_FILTER_NEAREST,
-				NULL);
+	(* affine_function)
+		(buf->buf,
+		 buf->rect.x0, buf->rect.y0,
+		 buf->rect.x1, buf->rect.y1,
+		 buf->buf_rowstride,
+		 gdk_pixbuf_get_pixels (pixbuf),
+		 gdk_pixbuf_get_width (pixbuf),
+		 gdk_pixbuf_get_height (pixbuf),
+		 gdk_pixbuf_get_rowstride (pixbuf),
+		 affine,
+		 ART_FILTER_NEAREST,
+		 NULL);
+
 	affine[4] -= x_offset;
 	affine[5] -= y_offset;
 }
@@ -1046,13 +1050,19 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 
 	/* allocate a pixmap to draw the text into, and clear it to white */
 	pixmap = gdk_pixmap_new (NULL, icon_item->details->text_width, icon_item->details->text_height, visual->depth);
-	gc = gdk_gc_new (pixmap);
 
 	/* Set up the background. */
 	needs_highlight = icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop;
 	
-	gdk_rgb_gc_set_foreground (gc, needs_highlight ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE);
-	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, icon_item->details->text_width, icon_item->details->text_height);
+	gc = gdk_gc_new (pixmap);
+	gdk_rgb_gc_set_foreground (gc,
+				   needs_highlight
+				   ? NAUTILUS_RGB_COLOR_BLACK
+				   : NAUTILUS_RGB_COLOR_WHITE);
+	gdk_draw_rectangle (pixmap, gc, TRUE,
+			    0, 0,
+			    icon_item->details->text_width,
+			    icon_item->details->text_height);
 	gdk_gc_unref (gc);
 	
 	/* use a common routine to draw the label into the pixmap */
@@ -1060,11 +1070,12 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	
 	/* turn it into a pixbuf */
 	colormap = gdk_colormap_new (visual, FALSE);
-	text_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, colormap,
-						    0, 0,
-						    0, 0, 
-						    icon_item->details->text_width, 
-						    icon_item->details->text_height);
+	text_pixbuf = gdk_pixbuf_get_from_drawable
+		(NULL, pixmap, colormap,
+		 0, 0,
+		 0, 0, 
+		 icon_item->details->text_width, 
+		 icon_item->details->text_height);
 	gdk_colormap_unref (colormap);
 	gdk_pixmap_unref (pixmap);
 	
@@ -1074,14 +1085,15 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 		text_pixbuf_with_alpha = text_pixbuf;
 	} else {
 		text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
-			(text_pixbuf,
-		 	TRUE, pixels[0], pixels[1], pixels[2]);
+			(text_pixbuf, TRUE,
+			 pixels[0], pixels[1], pixels[2]);
 		gdk_pixbuf_unref (text_pixbuf);
 	}
 	
-	i2c[4] -= x_delta;
 	/* draw the pixbuf containing the label */
-	draw_pixbuf_aa(text_pixbuf_with_alpha, buf, i2c, 0, 0);
+	i2c[4] -= x_delta;
+	draw_pixbuf_aa (text_pixbuf_with_alpha, buf, i2c, 0, 0);
+	i2c[4] += x_delta;
 	gdk_pixbuf_unref (text_pixbuf_with_alpha);
 }
 
@@ -1090,13 +1102,12 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 static void
 nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
-	
-	int x_delta;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	NautilusIconCanvasItem *icon_item;
 	double i2c[6];
+	int x_delta;
 
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	
