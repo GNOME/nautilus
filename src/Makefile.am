@@ -13,6 +13,7 @@ INCLUDES =							\
 	-I$(top_srcdir)/cut-n-paste-code			\
 	-I$(top_builddir)/libnautilus-private 			\
 	$(CORE_CFLAGS) 						\
+	$(EXIF_CFLAGS)						\
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DLIBDIR=\""$(libdir)"\" 				\
@@ -30,6 +31,7 @@ LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
         $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la \
 	$(CORE_LIBS) \
+	$(EXIF_LIBS) \
 	$(POPT_LIBS) \
 	$(NULL)
 
@@ -117,6 +119,8 @@ nautilus_SOURCES = \
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.c	\
 	nautilus-switchable-search-bar.h	\
+	nautilus-image-properties-page.c	\
+	nautilus-image-properties-page.h	\
 	nautilus-window-manage-views.c		\
 	nautilus-window-manage-views.h		\
 	nautilus-window-menus.c         	\

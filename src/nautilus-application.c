@@ -39,6 +39,7 @@
 #include "nautilus-history-sidebar.h"
 #include "nautilus-notes-viewer.h"
 #include "nautilus-emblem-sidebar.h"
+#include "nautilus-image-properties-page.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -178,8 +179,11 @@ nautilus_application_instance_init (NautilusApplication *application)
 	nautilus_information_panel_register ();
 	fm_tree_view_register ();
 	nautilus_history_sidebar_register ();
-	nautilus_notes_viewer_register ();
+	nautilus_notes_viewer_register (); /* also property page */
 	nautilus_emblem_sidebar_register ();
+
+	/* register property pages */
+	nautilus_image_properties_page_register ();
 }
 
 NautilusApplication *

@@ -78,7 +78,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusNotesViewer, nautilus_notes_viewer, GTK_TYPE_SC
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						nautilus_notes_viewer_sidebar_iface_init));
 
-GType nautilus_notes_viewer_provider_get_type (void);
+static GType nautilus_notes_viewer_provider_get_type (void);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusNotesViewerProvider, nautilus_notes_viewer_provider, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
