@@ -51,7 +51,7 @@ struct NautilusDragWindowDetails {
  * event. This seems to be large enough to work, but small enough to be
  * unnoticeable to the user.
  */
-#define WINDOW_FOCUS_TIMEOUT 50
+#define WINDOW_FOCUS_TIMEOUT 500
 
 /* Key used to store a NautilusDragWindowDetails structure in each
  * registered window's object data hash
@@ -237,11 +237,12 @@ drag_begin_emission_callback (GSignalInvocationHint *ihint,
 	GtkWidget *window;
 	NautilusDragWindowDetails *details;
 
-	window = gtk_widget_get_ancestor (GTK_WIDGET (g_value_get_object (&params[0])),
-					  GTK_TYPE_WINDOW);
+        window = gtk_widget_get_toplevel (GTK_WIDGET (g_value_get_object (&params[0])));
+
 	if (window != NULL) {
 		details = get_details (GTK_WINDOW (window));
 		if (details != NULL) {
+
 			details->pending_focus = FALSE;
 			details->pending_raise = FALSE;
 		}

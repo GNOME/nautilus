@@ -1,3 +1,10 @@
+2002-02-26  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-drag-window.c 
+	(drag_begin_emission_callback): 
+	Use gtk_widget_get_toplevel to find out the top-level
+	window.
+	
 2002-02-25  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/nautilus-drag-window.c:
