@@ -30,6 +30,7 @@
 #include <libeazelinstall.h>
 #include "../lib/eazel-install-metadata.h"
 #include "libtrilobite/libtrilobite.h"
+#include "libtrilobite/libammonite-gtk.h"
 
 #include <rpm/rpmlib.h>
 #include <gnome-xml/tree.h>
@@ -81,6 +82,8 @@ static void	  service_install_stop_loading_callback		 (NautilusView				*nautilus
 								  NautilusServiceInstallView		*view);
 static void       generate_install_form                          (NautilusServiceInstallView		*view);
 static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView		*view,
+								  const char				*uri);
+static void       nautilus_service_install_view_update_from_uri_finish  (NautilusServiceInstallView		*view,
 								  const char				*uri);
 static void       show_overall_feedback                          (NautilusServiceInstallView		*view,
 								  char					*progress_message);
@@ -427,8 +430,10 @@ nautilus_service_install_view_destroy (GtkObject *object)
 	view = NAUTILUS_SERVICE_INSTALL_VIEW (object);
 
 	CORBA_exception_init (&ev);
-	service = eazel_install_callback_corba_objref (view->details->installer);
-	GNOME_Trilobite_Eazel_Install_stop (service, &ev);
+	if (view->details->installer != NULL) {
+		service = eazel_install_callback_corba_objref (view->details->installer);
+		GNOME_Trilobite_Eazel_Install_stop (service, &ev);
+	}
 	CORBA_exception_free (&ev);
 
 	g_free (view->details->uri);
@@ -543,6 +548,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			if (*(p+1)) {
 				g_free (*host);
 				*host = g_strdup (p+1);
+				result = TRUE;
 			}
 		} else {
 			g_free (*host);
@@ -1336,7 +1342,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		 * -- but only if they haven't set jump-after-install off
 		 */
 		if ((view->details->username != NULL) &&
-		    (strcasecmp (view->details->username, "anonymous") == 0)) {
+		    (strcasecmp (view->details->username, EAZELPROXY_USERNAME_ANONYMOUS) == 0)) {
 			/* send anonymous users elsewhere, so they won't have to login */
 			message = g_strdup (NEXT_URL_ANONYMOUS);
 		} else {
@@ -1469,8 +1475,76 @@ set_root_client (BonoboObjectClient *service, NautilusServiceInstallView *view)
 }
 
 
+static void /* AmmonitePromptLoginCb */
+user_login_callback (
+	gpointer user_data, 
+	const EazelProxy_User *user, 
+	const EazelProxy_AuthnFailInfo *fail_info,
+	AmmoniteDialogButton button_pressed)
+{
+	NautilusServiceInstallView *view;
+
+	view = NAUTILUS_SERVICE_INSTALL_VIEW (user_data);
+
+	/* if the view has been destroyed while the callback was gone, just drop everything */
+	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT(view))) {
+		if (fail_info == NULL) {
+			/* login succeeded */
+			nautilus_service_install_view_update_from_uri_finish (view, view->details->uri);
+		} else {
+			if (button_pressed == AMMONITE_BUTTON_REGISTER) {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					EAZEL_ACCOUNT_REGISTER_URI);
+			} else if (button_pressed == AMMONITE_BUTTON_FORGOT) {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					EAZEL_ACCOUNT_FORGOTPW_URI);
+			} else {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					NEXT_URL_ANONYMOUS);
+			}
+		}
+	}
+
+	gtk_object_unref (GTK_OBJECT(view));
+
+}
+
+
 static void
 nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view, const char *uri)
+{
+	char *host;
+	int port;
+
+	host = NULL;
+
+	nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username);
+
+	if (host == NULL) {
+		/* Ensure that the user is logged in.  Note that the "anonymous" user
+		 * will not be prompted
+		 */
+
+		gtk_object_ref (GTK_OBJECT(view));
+
+		show_overall_feedback (view, _("Checking for authorization..."));
+
+		/* Cancel a pending login request, if there was one...*/
+		ammonite_prompt_login_async_cancel (user_login_callback);
+		ammonite_do_prompt_login_async (view->details->username, NULL, NULL, view->details->username == NULL ? TRUE: FALSE, view, user_login_callback);
+	} else {
+		nautilus_service_install_view_update_from_uri_finish (view, uri);
+	}
+
+	g_free (host);
+	host = NULL;
+}
+
+static void
+nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView *view, const char *uri)
 {
 	PackageData		*pack;
 	CategoryData		*category_data;
@@ -1491,11 +1565,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 		port = 80;
 	}
 
-	/* FIXME: this is very very wrong!  apparently this was needed to hack around some bug in ammonite,
-	 * but realistically in the future we'll need the username to be picked up from ammonite, not made up
-	 * like this.
-	 */
-	view->details->username = g_strdup ("anonymous");
 	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username));
 
 	if (! view->details->categories) {
@@ -1620,6 +1689,7 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	generate_install_form (view);
 
 	nautilus_view_report_load_underway (NAUTILUS_VIEW (view->details->nautilus_view));
+
 	nautilus_service_install_view_update_from_uri (view, uri);
 }
 

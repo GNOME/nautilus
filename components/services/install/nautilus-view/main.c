@@ -29,6 +29,8 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include "nautilus-service-install-view.h"
+#include <libtrilobite/libammonite.h>
+#include <gconf/gconf.h>
 
 static int object_count = 0;
 
@@ -84,9 +86,14 @@ main (int argc, char *argv[])
 
 	orb = oaf_init (argc, argv);
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	gconf_init (argc, argv, NULL);
+
+	ammonite_init (bonobo_poa());
 
 	/* log to stderr, for now (but leave debug mode off) */
 	trilobite_set_log_handler (stderr, G_LOG_DOMAIN);
+
+	ammonite_init (bonobo_poa());
 
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_service_install_view_factory:e59e53d1-e3d1-46fe-ae28-3ec5c56b7d32", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 

@@ -44,6 +44,7 @@ nautilus_service_install_view_LDADD =			\
 	$(GCONF_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(OAF_LIBS)					\
+	$(AMMONITE_LIBS)				\
 	$(VFS_LIBS)					\
 	$(RPM_LIBS)					\
 	$(NULL)

@@ -50,7 +50,7 @@ goto_online_storage (BonoboUIComponent *component,
 	char			*user_name;
 
 	if ( ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
+		user_name = ammonite_get_default_user_username ();
 	} else {
 		user_name = NULL;
 	}
@@ -80,7 +80,7 @@ goto_software_catalog (BonoboUIComponent *component,
 	char 			*user_name;
 
 	if (ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
+		user_name = ammonite_get_default_user_username ();
 
 		logged_in = (NULL != user_name);
 		g_free (user_name);

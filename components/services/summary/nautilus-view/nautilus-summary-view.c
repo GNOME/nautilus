@@ -123,7 +123,7 @@ update_header (NautilusSummaryView *view)
 
 	if (view->details->logged_in) {
 		g_free (view->details->user_name);
-		view->details->user_name = ammonite_get_default_user_username (view->details->user_control);
+		view->details->user_name = ammonite_get_default_user_username ();
 		text = g_strdup_printf (_("Welcome, %s!"), view->details->user_name);
 		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (view->details->header), text);
 		g_free (text);
@@ -846,7 +846,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	g_print ("start load\n");
 #endif
 
-	user_name = ammonite_get_default_user_username (view->details->user_control);
+	user_name = ammonite_get_default_user_username ();
 	view->details->logged_in = (NULL != user_name);
 	g_free (user_name);
 	user_name = NULL;

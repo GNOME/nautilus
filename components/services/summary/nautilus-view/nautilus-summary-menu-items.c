@@ -137,7 +137,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 		bonobo_ui_component_add_verb_list_with_data 
 			(bonobo_control_get_ui_component (control), verbs, view);
 
-		user_name = ammonite_get_default_user_username (view->details->user_control);
+		user_name = ammonite_get_default_user_username ();
 		logged_in = (NULL != user_name);
 		update_menu_items (view, logged_in);
 		g_free (user_name);

@@ -1,3 +1,30 @@
+2001-02-01  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <robey@eazel.com>
+
+	Bug 6103 a user can install any package from softcat without login 
+	Bug 4514 error msg when register during softcat install 
+
+	Login dialog for the install view, with working registration, cancel,
+	etc.
+
+
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/nautilus-view/main.c: (main):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(nautilus_install_parse_uri), (nautilus_service_install_done),
+	(user_login_callback),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_update_from_uri_finish),
+	(nautilus_service_install_view_load_uri):
+	* components/services/summary/nautilus-view/nautilus-summary-menu-i
+	tems.c: (merge_bonobo_menu_items):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (update_header), (nautilus_summary_view_load_uri):
+	* src/nautilus-window-service-ui.c: (goto_online_storage),
+	(goto_software_catalog):
+
 2001-02-01  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:
