@@ -345,7 +345,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to\nyour level of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
+	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\nlevel of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	gtk_widget_show (label);
@@ -403,7 +403,7 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("Eazel offers a growing number of services to \nhelp you install and maintain new software and manage \nyour files across the network.  If you want to find out more \nabout Eazel services, just press the 'Next' button. "));
+	label = make_anti_aliased_label (_("Eazel offers a growing number of services to help you\n install and maintain new software and manage your files\n across the network.  Choose an option below, and the\ninformation will be presented in Nautilus after you've\nfinished setting up."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -675,7 +675,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog),
-			      _("Initial Preferences"));
+			      _("Nautilus First Time Setup"));
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
   	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
   	/* Ensure there's a main event loop while the druid is running. */
