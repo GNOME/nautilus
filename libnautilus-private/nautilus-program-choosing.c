@@ -31,6 +31,7 @@
 #include "nautilus-string.h"
 
 #include <libgnomeui/gnome-uidefs.h>
+#include <stdlib.h>
 
 static gboolean
 any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFile *file)
@@ -214,16 +215,45 @@ nautilus_choose_application_for_file (NautilusFile *file,
  * Fork off a process to launch an application with a given uri as
  * a parameter.
  * 
+ * @application: The application to be launched.
+ * @uri: Passed as a parameter to the application. "file://" is stripped
+ * from the beginning if present.
+ */
+void
+nautilus_launch_application (GnomeVFSMimeApplication *application, const char *uri)
+{
+	char *command_string;
+
+	/* FIXME: make this respect the can_open_uris setting . */
+
+	if (application->requires_terminal) {
+		command_string = g_strconcat ("gnome-terminal -x ", application->command, NULL);
+	} else {
+		command_string = g_strdup (application->command);
+	}
+
+	nautilus_launch_application_from_command (command_string, uri);
+
+	g_free (command_string);
+}
+
+
+/**
+ * nautilus_launch_application_from_command:
+ * 
+ * Fork off a process to launch an application with a given uri as
+ * a parameter.
+ * 
  * @command_string: The application to be launched, with any desired
  * command-line options.
  * @uri: Passed as a parameter to the application. "file://" is stripped
  * from the beginning if present.
  */
 void
-nautilus_launch_application (const char *command_string, const char *uri)
+nautilus_launch_application_from_command (const char *command_string, const char *uri)
 {
 	const char *uri_parameter;
-	pid_t new_process_id;
+	char *full_command;
 
 	if (nautilus_str_has_prefix (uri, "file://")) {
 		uri_parameter = uri + 7;
@@ -231,9 +261,14 @@ nautilus_launch_application (const char *command_string, const char *uri)
 		uri_parameter = uri;
 	}
 
-	new_process_id = fork();
-	if (new_process_id == 0) {
-		execlp (command_string, command_string, uri_parameter, NULL);
-		exit (0);
-	}	
+	if (uri_parameter != NULL) {
+		full_command = g_strconcat (command_string, " ", uri_parameter, " &", NULL);
+	} else {
+		full_command = g_strconcat (command_string, " &", NULL);
+	}
+
+	system (full_command);
+
+	g_free (full_command);
 }
+
