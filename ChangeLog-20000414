@@ -1,5 +1,12 @@
 2000-01-18  John Sullivan <sullivan@eazel.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_load_uri): Set directory list to NULL
+	but don't destroy it; this fixes crash entering a directory
+	and then going up. Will ask Ettore about real fix.
+
+2000-01-18  John Sullivan <sullivan@eazel.com>
+
 	* src/ntl-window-msgs.c:
 	(nautilus_window_refresh_title): Sets the window title to
 	Nautilus: x, where x is short name of current location.

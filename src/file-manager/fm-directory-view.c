@@ -672,8 +672,8 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		gnome_vfs_uri_unref (view->details->uri);
 	view->details->uri = gnome_vfs_uri_new (uri);
 
-	if (view->details->directory_list != NULL)
-		gnome_vfs_directory_list_destroy (view->details->directory_list);
+	/* FIXME: Does this leak? Where are we supposed to destroy the old value? */
+	view->details->directory_list = NULL;
 	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 
 
