@@ -60,6 +60,10 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/time.h>
+
+/* Time in seconds to cache getpwuid results */
+#define GETPWUID_CACHE_TIME (5*60)
 
 #undef NAUTILUS_FILE_DEBUG_REF
 
@@ -560,6 +564,48 @@ get_file_for_parent_directory (NautilusFile *file)
 	return result;
 }
 
+struct NautilusUserInfo {
+	uid_t user_id;
+	
+	gboolean has_primary_group;
+	gid_t primary_group;
+	
+	int num_supplementary_groups;
+	gid_t supplementary_groups[NGROUPS_MAX];
+};
+
+/* Returns a pointer to the cached info, does not need freeing */
+static struct NautilusUserInfo *
+nautilus_file_get_user_info (void)
+{
+	static struct timeval cached_time;
+	static struct NautilusUserInfo info;
+	static gboolean has_cached_info = FALSE;
+	struct passwd *password_info;
+	struct timeval now;
+
+	gettimeofday (&now, NULL);
+	
+	if (!has_cached_info ||
+	    ((now.tv_sec - cached_time.tv_sec) > GETPWUID_CACHE_TIME)) {
+		cached_time = now;
+		has_cached_info = TRUE;
+		g_print ("FOO!\n");
+		info.user_id = geteuid ();
+		
+		info.has_primary_group = FALSE;
+		/* No need to free result of getpwuid. */
+		password_info = getpwuid (info.user_id);
+		if (password_info) {
+			info.has_primary_group = TRUE;
+			info.primary_group = password_info->pw_gid;
+		}
+		info.num_supplementary_groups = getgroups (NGROUPS_MAX, info.supplementary_groups);
+	}
+
+	return &info;
+}
+
 /**
  * nautilus_file_denies_access_permission:
  * 
@@ -582,10 +628,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 				        GnomeVFSFilePermissions group_permission,
 				        GnomeVFSFilePermissions other_permission)
 {
-	uid_t user_id;
-	struct passwd *password_info;
-	gid_t supplementary_groups[NGROUPS_MAX];
-	int num_supplementary_groups;
+	struct NautilusUserInfo *user_info;
 	int i;
 
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -602,11 +645,14 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 		return FALSE;
 	}
 
-	/* Check the user. */
-	user_id = geteuid ();
+	/* This is called often. Cache the user information for five minutes */
 
+	user_info = nautilus_file_get_user_info ();
+
+	/* Check the user. */
+	
 	/* Root is not forbidden to do anything. */
-	if (user_id == 0) {
+	if (user_info->user_id == 0) {
 		return FALSE;
 	}
 
@@ -615,26 +661,23 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (user_id == (uid_t) file->details->info->uid) {
+	if (user_info->user_id == (uid_t) file->details->info->uid) {
 		return (file->details->info->permissions & owner_permission) == 0;
 	}
 
-	/* No need to free result of getpwuid. */
-	password_info = getpwuid (user_id);
 
 	/* Group member's access is governed by the group bits. */
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (password_info != NULL
-	    && password_info->pw_gid == (gid_t) file->details->info->gid) {
+	if (user_info->has_primary_group
+	    && user_info->primary_group == (gid_t) file->details->info->gid) {
 		return (file->details->info->permissions & group_permission) == 0;
 	}
 	/* Check supplementary groups */
-	num_supplementary_groups = getgroups (NGROUPS_MAX, supplementary_groups);
-	for (i = 0; i < num_supplementary_groups; i++) {
-		if ((gid_t) file->details->info->gid == supplementary_groups[i]) {
+	for (i = 0; i < user_info->num_supplementary_groups; i++) {
+		if ((gid_t) file->details->info->gid == user_info->supplementary_groups[i]) {
 			return (file->details->info->permissions & group_permission) == 0;
 		}
 	}
