@@ -1,3 +1,17 @@
+2000-10-16  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_get_first_selected_row),
+	(nautilus_list_get_last_selected_row):
+	* libnautilus-extensions/nautilus-list.h:
+
+	Finished up Matt Bissiri's earlier checkin for him.
+	Removed the confusingly almost-redundant
+	nautilus_clist_get_first/last_selected_row; made
+	nautilus_list_get_last_selected_row public to match
+	get_first_selected_row. Thanks to Matt for the patch.
+
 2000-10-16  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c: Changed

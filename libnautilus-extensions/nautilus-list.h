@@ -150,6 +150,7 @@ void         nautilus_list_select_row            (NautilusList            *list,
 NautilusCListRow *nautilus_list_row_at                (NautilusList            *list,
 						  int                      y);
 int	     nautilus_list_get_first_selected_row (NautilusList		  *list);
+int	     nautilus_list_get_last_selected_row (NautilusList		  *list);
 void         nautilus_list_each_selected_row     (NautilusList            *list,
 						  NautilusEachRowFunction  function,
 						  gpointer                 data);

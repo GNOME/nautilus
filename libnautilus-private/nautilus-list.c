@@ -1194,18 +1194,6 @@ nautilus_list_reveal_row (NautilusList *list, int row_index)
      	}
 }
 
-static int
-nautilus_clist_get_first_selected_row (NautilusCList  *list)
-{
-	return nautilus_gtk_clist_get_first_selected_row ((GtkCList *)list);
-}
-
-static int
-nautilus_clist_get_last_selected_row (NautilusCList *list)
-{
-	return nautilus_gtk_clist_get_last_selected_row ((GtkCList *)list);
-}
-
 static void
 nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *event,
 			          	     GtkScrollType scroll_type, gboolean jump_to_end)
@@ -1234,8 +1222,8 @@ nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *ev
 		} else {
 			start_row = (scroll_type == GTK_SCROLL_STEP_FORWARD 
 					|| scroll_type == GTK_SCROLL_PAGE_FORWARD ?
-				     nautilus_clist_get_last_selected_row (clist) :
-				     nautilus_clist_get_first_selected_row (clist));
+				     nautilus_list_get_last_selected_row (list) :
+				     nautilus_list_get_first_selected_row (list));
 		}
 
 		/* If there's no row to start with, select the row farthest toward the end.
@@ -3326,6 +3314,12 @@ nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction fun
 	}
 }
 
+/**
+ * nautilus_list_get_first_selected_row:
+ * 
+ * Get the index of the first selected row, or -1 if no rows are selected.
+ * @list: Any NautilusList
+ **/
 int
 nautilus_list_get_first_selected_row (NautilusList *list)
 {
@@ -3341,6 +3335,31 @@ nautilus_list_get_first_selected_row (NautilusList *list)
 		row = p->data;
 		if (row->state == GTK_STATE_SELECTED) 
 			return row_index;
+	}
+
+	return -1;
+}
+
+/**
+ * nautilus_list_get_last_selected_row:
+ * 
+ * Get the index of the last selected row, or -1 if no rows are selected.
+ * @list: Any GtkCList
+ **/
+int 
+nautilus_list_get_last_selected_row (NautilusList *list)
+{
+	NautilusCListRow *row;
+	GList *p;
+	int row_index;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
+
+	for (p = NAUTILUS_CLIST (list)->row_list_end, row_index = NAUTILUS_CLIST (list)->rows - 1; p != NULL; p = p->prev, --row_index) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) {
+			return row_index;	
+		}
 	}
 
 	return -1;
