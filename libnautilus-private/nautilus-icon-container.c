@@ -233,17 +233,15 @@ icon_set_selected (NautilusIconContainer *container,
 		   NautilusIcon *icon,
 		   gboolean select)
 {
-	/* Since is_selected is a bit field, we have to do the ! business
-	 * to be sure we have either a 1 or a 0. Similarly, the caller
-	 * might pass a value other than 1 or 0 so we have to pass do the
-	 * same thing there.
-	 */
-	if (!select == !icon->is_selected) {
+	g_assert (select == FALSE || select == TRUE);
+	g_assert (icon->is_selected == FALSE || icon->is_selected == TRUE);
+
+	if (select == icon->is_selected) {
 		return FALSE;
 	}
 
 	icon_toggle_selected (container, icon);
-	g_assert (!select == !icon->is_selected);
+	g_assert (select == icon->is_selected);
 	return TRUE;
 }
 
@@ -756,13 +754,11 @@ rubberband_select (NautilusIconContainer *container,
 		is_in = nautilus_icon_canvas_item_hit_test_rectangle
 			(icon->item, current_rect);
 
-		/* Since was_selected_before_rubberband is a bitfield,
-		 * we have to use !! to convert it to 0 or 1. Otherwise
-		 * it might have the value -1.
-		 */
+		g_assert (icon->was_selected_before_rubberband == FALSE
+			  || icon->was_selected_before_rubberband == TRUE);
 		selection_changed |= icon_set_selected
 			(container, icon,
-			 is_in ^ !!icon->was_selected_before_rubberband);
+			 is_in ^ icon->was_selected_before_rubberband);
 	}
 
 	g_list_free (icons);

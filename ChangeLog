@@ -1,3 +1,60 @@
+2000-05-16  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_metadata_from_node), (get_metadata_list_from_node),
+	(create_metafile_root), (nautilus_directory_get_metadata),
+	(nautilus_directory_get_metadata_list),
+	(nautilus_directory_get_boolean_metadata),
+	(nautilus_directory_set_boolean_metadata),
+	(nautilus_directory_get_integer_metadata),
+	(nautilus_directory_set_integer_metadata),
+	(nautilus_directory_get_file_metadata_node),
+	(nautilus_directory_get_file_metadata),
+	(nautilus_directory_get_file_metadata_list), (real_set_metadata),
+	(real_set_metadata_list), (metadata_key_new),
+	(metadata_key_destroy), (metadata_key_hash),
+	(metadata_key_hash_equal), (metadata_value_new),
+	(metadata_value_new_list), (metadata_value_destroy),
+	(metadata_value_equal), (set_metadata_in_metafile),
+	(set_metadata_eat_parameters),
+	(free_metadata_changes_hash_table_entry),
+	(destroy_metadata_changes_hash_table),
+	(nautilus_directory_metafile_destroy),
+	(nautilus_directory_set_metadata),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list):
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy):
+	* libnautilus-extensions/nautilus-file.c:
+	Moved metafile code into its own source file. Also worked on making
+	it all bottleneck so we can store it before we read in a metafile.
+	
+	* src/file-manager/fm-list-view.c: (select_matching_name_callback):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	Added nautilus_boolean_bit for use in bit fields where gboolean
+	results in a signed bitfield.
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_list_copy), (nautilus_g_str_list_equal),
+	(nautilus_g_str_list_copy): Added functions for dealing with a
+	list of C strings. Also got rid of const GList *. For GList we
+	don't use const because the functions in <glib.h> don't.
+	(nautilus_g_ptr_array_new_from_list), (nautilus_g_ptr_array_sort),
+	(nautilus_g_ptr_array_search): Renamed the new functions and types
+	to more closely match the standard. For example, the types must
+	have a Nautilus prefix.
+	
+	* src/ntl-window.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_selected), (rubberband_select):
+	Switched to use the nautilus_boolean_bit type.
+
+	* components/html/glibwww-callbacks.c:
+	Moved <config.h> include down to fix some warnings.
+	
 2000-05-16  Pavel Cisler <pavel@eazel.com>
 
 	Added keyboard type-ahead selection to the list view.
@@ -39,7 +96,7 @@
 	* src/file-manager/fm-list-view.c:
 	(fm_list_view_initialize_class),
 	(compare_rows_by_name), (match_row_name),
-	(select_matching_name_callback), :
+	(select_matching_name_callback):
 	Connect to new NautilusList signals. Add calls for sorting and 
 	searching a pointer array by NautilusFile name.
 
@@ -49,7 +106,8 @@
 
 2000-05-16  Andy Hertzfeld  <andy@eazel.com>
 
-	started work on cleaning up the music view, but it's still in an interim state.
+	started work on cleaning up the music view, but it's still in an
+	interim state.
 	
 	* components/music/nautilus-music-view.c:
 	(nautilus_music_view_initialize),
@@ -79,8 +137,9 @@
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(bounds_changed_callback):
 	A long time ago I removed the parameter from the bounds_changed
-	signal of the canvas item and did a half-assed job. This made
-	it crash a lot for martin. Finished the job.
+	signal of the canvas item and I did a half-assed job which left
+	the code broken. This made it crash a lot for Martin Baulig
+	<baulig@suse.de>. So I finished the job.
 
 2000-05-15  J Shane Culpepper  <pepper@eazel.com>
 

@@ -25,10 +25,11 @@
 */
 
 #include <config.h>
-#include <sys/time.h>
 #include "nautilus-glib-extensions.h"
 
+#include <sys/time.h>
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-string.h"
 
 
 /**
@@ -130,14 +131,13 @@ nautilus_g_list_equal (GList *list_a, GList *list_b)
 /**
  * nautilus_g_list_copy
  *
- * @list: List list to copy.
- * Return value: shallow copy of @list.
+ * @list: List to copy.
+ * Return value: Shallow copy of @list.
  **/
 GList *
-nautilus_g_list_copy (const GList *list)
+nautilus_g_list_copy (GList *list)
 {
-	const GList *p;
-	GList *result;
+	GList *p, *result;
 
 	result = NULL;
 	
@@ -145,8 +145,53 @@ nautilus_g_list_copy (const GList *list)
 		return NULL;
 	}
 
-	for (p = g_list_last ((GList *)list); p != NULL; p = p->prev) {
+	for (p = g_list_last (list); p != NULL; p = p->prev) {
 		result = g_list_prepend (result, p->data);
+	}
+	return result;
+}
+
+/**
+ * nautilus_g_str_list_equal
+ *
+ * Compares two lists of C strings to see if they are equal.
+ * @list_a: First list.
+ * @list_b: Second list.
+ *
+ * Return value: TRUE if the lists contain the same strings.
+ **/
+gboolean
+nautilus_g_str_list_equal (GList *list_a, GList *list_b)
+{
+	GList *p, *q;
+
+	for (p = list_a, q = list_b; p != NULL && q != NULL; p = p->next, q = q->next) {
+		if (nautilus_strcmp (p->data, q->data) != 0) {
+			return FALSE;
+		}
+	}
+	return p == NULL && q == NULL;
+}
+
+/**
+ * nautilus_g_str_list_copy
+ *
+ * @list: List of strings and/or NULLs to copy.
+ * Return value: Deep copy of @list.
+ **/
+GList *
+nautilus_g_str_list_copy (GList *list)
+{
+	GList *p, *result;
+
+	result = NULL;
+	
+	if (list == NULL) {
+		return NULL;
+	}
+
+	for (p = g_list_last (list); p != NULL; p = p->prev) {
+		result = g_list_prepend (result, g_strdup (p->data));
 	}
 	return result;
 }
@@ -213,7 +258,7 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
 }
 
 /**
- * nautilus_g_ptr_array_copy_list
+ * nautilus_g_ptr_array_new_from_list
  * 
  * Copies (shallow) a list of pointers into an array of pointers.
  * 
@@ -223,12 +268,12 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
  * from @list
  */
 GPtrArray *
-nautilus_g_ptr_array_copy_list (const GList *list)
+nautilus_g_ptr_array_new_from_list (GList *list)
 {
 	GPtrArray *array;
 	int size;
 	int index;
-	const GList *p;
+	GList *p;
 
 	array = g_ptr_array_new ();
 	size = g_list_length ((GList *)list);
@@ -254,42 +299,40 @@ nautilus_g_ptr_array_copy_list (const GList *list)
  */
 void
 nautilus_g_ptr_array_sort (GPtrArray *array,
-			   CompareWithContext sort_function,
+			   NautilusCompareFunction sort_function,
 			   void *context)
 {
-	size_t count;
-	size_t r;
-	size_t l;
-	void **base;
-	void **lp;
-	void **rp;
+	/* FIXME: Is there a good reason this doesn't use qsort? */
+
+	size_t count, r, l, j;
+	void **base, **lp, **rp, **ip, **jp, **tmpp;
+	void *tmp;
 
 	count = array->len;
 
-	if (count < 2)
+	if (count < 2) {
 		return;
+	}
 
 	r = count;
 	l = (r / 2) + 1;
 
-	base = (void **)array->pdata;
+	base = (void **) array->pdata;
 	lp = base + (l - 1);
 	rp = base + (r - 1);
 
 	for (;;) {
-		void **jp;
-		size_t j;
-
 		if (l > 1) {
 			l--;
 			lp--;
 		} else {
-			void *tmp = *lp;
+			tmp = *lp;
 			*lp = *rp;
 			*rp = tmp;
 
-			if (--r == 1)
+			if (--r == 1) {
 				return;
+			}
 
 			rp--;
 		}
@@ -299,26 +342,22 @@ nautilus_g_ptr_array_sort (GPtrArray *array,
 		jp = base + (j - 1);
 		
 		while (j * 2 <= r) {
-			void **ip;
-			void *tmp;
-			
 			j *= 2;
 			
 			ip = jp;
 			jp = base + (j - 1);
 			
 			if (j < r) {
-				void **tmp;
-
-				tmp = jp + 1;
-				if (sort_function(*jp, *tmp, context) < 0) {
+				tmpp = jp + 1;
+				if (sort_function(*jp, *tmpp, context) < 0) {
 					j++;
-					jp = tmp;
+					jp = tmpp;
 				}
 			}
 			
-			if (sort_function (*ip, *jp, context) >= 0) 
+			if (sort_function (*ip, *jp, context) >= 0) {
 				break;
+			}
 
 			tmp = *ip;
 			*ip = *jp;
@@ -346,12 +385,11 @@ nautilus_g_ptr_array_sort (GPtrArray *array,
  */
 int
 nautilus_g_ptr_array_search (GPtrArray *array, 
-			     SearchWithContext search_function,
+			     NautilusSearchFunction search_function,
 			     void *context,
 			     gboolean match_only)
 {
-	int r;
-	int l;
+	int r, l;
 	int resulting_index;
 	int compare_result;
 	void *item;
@@ -361,7 +399,6 @@ nautilus_g_ptr_array_search (GPtrArray *array,
 	resulting_index = 0;
 	compare_result = 0;
 	
-	
 	for (l = 0; l <= r; ) {
 		resulting_index = (l + r) / 2;
 
@@ -369,19 +406,22 @@ nautilus_g_ptr_array_search (GPtrArray *array,
 
 		compare_result = (search_function) (item, context);
 		
-		if (compare_result > 0)
+		if (compare_result > 0) {
 			r = resulting_index - 1;
-		else if (compare_result < 0)
+		} else if (compare_result < 0) {
 			l = resulting_index + 1;
-		else
+		} else {
 			return resulting_index;
+		}
 	}
 
-	if (compare_result < 0)
-		resulting_index++;       
+	if (compare_result < 0) {
+		resulting_index++;
+	}
 
-	if (match_only && compare_result != 0)
+	if (match_only && compare_result != 0) {
 		return -1;
+	}
 
 	return resulting_index;
 }

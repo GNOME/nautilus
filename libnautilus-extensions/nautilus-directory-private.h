@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.c: Nautilus directory model.
+   nautilus-directory-private.h: Nautilus directory model.
  
    Copyright (C) 1999, 2000 Eazel, Inc.
   
@@ -40,19 +40,23 @@ typedef struct TopLeftTextReadState TopLeftTextReadState;
 
 struct NautilusDirectoryDetails
 {
+	/* The location. */
 	char *uri_text;
 	GnomeVFSURI *uri;
 	GnomeVFSURI *metafile_uri;
 	GnomeVFSURI *alternate_metafile_uri;
 
+	/* The file objects. */
 	GList *files;
 
-	xmlDoc *metafile;
-
+	/* The metadata. */
 	gboolean metafile_read;
+	xmlDoc *metafile;
+	GHashTable *metadata_changes;
+
+	/* State for reading and writing metadata. */
 	gboolean use_alternate_metafile;
 	MetafileReadState *metafile_read_state;
-
 	guint write_metafile_idle_id;
 	MetafileWriteState *metafile_write_state;
 
@@ -129,27 +133,6 @@ void          nautilus_async_destroying_file               (NautilusFile        
 /* Calls shared between directory, file, and async. code. */
 NautilusFile *nautilus_directory_find_file                 (NautilusDirectory         *directory,
 							    const char                *file_name);
-char *        nautilus_directory_get_file_metadata         (NautilusDirectory         *directory,
-							    const char                *file_name,
-							    const char                *key,
-							    const char                *default_metadata);
-GList *       nautilus_directory_get_file_metadata_list    (NautilusDirectory         *directory,
-							    const char                *file_name,
-							    const char                *list_key,
-							    const char                *list_subkey);
-gboolean      nautilus_directory_set_file_metadata         (NautilusDirectory         *directory,
-							    const char                *file_name,
-							    const char                *key,
-							    const char                *default_metadata,
-							    const char                *metadata);
-gboolean      nautilus_directory_set_file_metadata_list    (NautilusDirectory         *directory,
-							    const char                *file_name,
-							    const char                *list_key,
-							    const char                *list_subkey,
-							    GList                     *list);
-xmlNode *     nautilus_directory_get_file_metadata_node    (NautilusDirectory         *directory,
-							    const char                *file_name,
-							    gboolean                   create);
 void          nautilus_directory_emit_metadata_changed     (NautilusDirectory         *directory);
 void          nautilus_directory_emit_files_added          (NautilusDirectory         *directory,
 							    GList                     *added_files);

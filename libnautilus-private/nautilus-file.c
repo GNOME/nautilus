@@ -29,6 +29,7 @@
 #include <grp.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <gtk/gtksignal.h>
 
@@ -39,18 +40,16 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 
-#include <stdlib.h>
 #include <parser.h>
-#include <xmlmemory.h>
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
-#include "nautilus-xml-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
 #include "nautilus-string.h"
-#include "nautilus-directory-private.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-directory-private.h"
+#include "nautilus-directory-metafile.h"
 
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,

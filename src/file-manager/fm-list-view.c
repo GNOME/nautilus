@@ -336,7 +336,7 @@ select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListVie
 	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
 
 	/* build an array of rows */
-	array = nautilus_g_ptr_array_copy_list (GTK_CLIST (widget)->row_list);
+	array = nautilus_g_ptr_array_new_from_list (GTK_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
 	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);

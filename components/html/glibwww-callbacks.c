@@ -1,8 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-#include <config.h>
 #include "glibwww.h"
 #include <HTEvent.h>
 #include <HTTimer.h>
+#include <config.h>
 
 #define WWW_HIGH_PRIORITY (G_PRIORITY_HIGH_IDLE + 50)
 #define WWW_LOW_PRIORITY G_PRIORITY_LOW

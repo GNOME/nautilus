@@ -29,6 +29,7 @@
 #define NTL_WINDOW_H
 
 #include <libgnomeui/gnome-app.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include "ntl-uri-map.h"
 #include "ntl-view.h"
@@ -113,15 +114,15 @@ struct _NautilusWindow {
   NautilusLocationChangeType location_change_type;
   guint location_change_distance;
   
-  gboolean changes_pending : 1;
-  gboolean views_shown : 1;
-  gboolean view_bombed_out : 1;
-  gboolean view_activation_complete : 1;
-  gboolean sent_update_view : 1;
-  gboolean cv_progress_initial : 1;
-  gboolean cv_progress_done : 1;
-  gboolean cv_progress_error : 1;
-  gboolean reset_to_idle : 1;
+  nautilus_boolean_bit changes_pending : 1;
+  nautilus_boolean_bit views_shown : 1;
+  nautilus_boolean_bit view_bombed_out : 1;
+  nautilus_boolean_bit view_activation_complete : 1;
+  nautilus_boolean_bit sent_update_view : 1;
+  nautilus_boolean_bit cv_progress_initial : 1;
+  nautilus_boolean_bit cv_progress_done : 1;
+  nautilus_boolean_bit cv_progress_error : 1;
+  nautilus_boolean_bit reset_to_idle : 1;
 };
 
 GtkType          nautilus_window_get_type          	(void);

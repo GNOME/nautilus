@@ -71,6 +71,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-private.h			\
 	nautilus-file-private.h			\
 	nautilus-directory-private.h		\
+	nautilus-directory-metafile.h		\
 	nautilus-lib-self-check-functions.h	\
 	bonobo-stream-vfs.c			\
 	gtkscrollframe.c			\
@@ -83,6 +84,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-default-file-icon.h		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
+	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
 	nautilus-entry.c			\
 	nautilus-file-changes-queue.c		\

@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_ICON_CONTAINER_PRIVATE_H
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-icon-container.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-icon-factory.h"
@@ -47,10 +48,10 @@ typedef struct {
 	double scale_x, scale_y;
 
 	/* Whether this item is selected. */
-	gboolean is_selected : 1;
+	nautilus_boolean_bit is_selected : 1;
 
 	/* Whether this item was selected before rubberbanding. */
-	gboolean was_selected_before_rubberband : 1;
+	nautilus_boolean_bit was_selected_before_rubberband : 1;
 
 	/* Grid space occupied by this icon. */
 	ArtIRect grid_rectangle;

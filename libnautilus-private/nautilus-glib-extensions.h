@@ -30,43 +30,57 @@
 #include <time.h>
 #include <glib.h>
 
+/* A gboolean variant for bit fields. */
+typedef guint nautilus_boolean_bit;
+
 /* Use this until we can switch to G_N_ELEMENTS. */
 #define NAUTILUS_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 
+/* Callback functions that have user data. */
+typedef int (* NautilusCompareFunction) (gconstpointer a,
+					 gconstpointer b,
+					 gpointer callback_data);
+typedef int (* NautilusSearchFunction)  (gconstpointer item,
+					 gpointer callback_data);
+
 /* Date & time functions. */
-GDate *  nautilus_g_date_new_tm             (struct tm   	  *time_pieces);
-char *   nautilus_strdup_strftime           (const char  	  *format,
-					     struct tm   	  *time_pieces);
+GDate *    nautilus_g_date_new_tm             (struct tm                *time_pieces);
+char *     nautilus_strdup_strftime           (const char               *format,
+					       struct tm                *time_pieces);
 
 /* List functions. */
-gboolean nautilus_g_list_exactly_one_item   (GList       	  *list);
-gboolean nautilus_g_list_more_than_one_item (GList       	  *list);
-gboolean nautilus_g_list_equal              (GList       	  *list_a,
-					     GList       	  *list_b);
-GList *  nautilus_g_list_copy		    (const GList 	  *list);
-void     nautilus_g_list_free_deep          (GList       	  *list);
-void     nautilus_g_list_safe_for_each      (GList       	  *list,
-					     GFunc        	  function,
-					     gpointer     	  user_data);
+gboolean   nautilus_g_list_exactly_one_item   (GList                    *list);
+gboolean   nautilus_g_list_more_than_one_item (GList                    *list);
+gboolean   nautilus_g_list_equal              (GList                    *list_a,
+					       GList                    *list_b);
+GList *    nautilus_g_list_copy               (GList                    *list);
+void       nautilus_g_list_safe_for_each      (GList                    *list,
+					       GFunc                     function,
+					       gpointer                  user_data);
+
+/* List functions for lists of g_free'able objects. */
+void       nautilus_g_list_free_deep          (GList                    *list);
+
+/* List functions for lists of C strings. */
+gboolean   nautilus_g_str_list_equal          (GList                    *str_list_a,
+					       GList                    *str_list_b);
+GList *    nautilus_g_str_list_copy           (GList                    *str_list);
 
 /* GPtrArray functions */
-typedef int (* CompareWithContext)(gconstpointer , gconstpointer , void *);
-typedef int (* SearchWithContext)(gconstpointer item, void *context);
-
-GPtrArray *nautilus_g_ptr_array_copy_list   (const GList 	  *list);
-void 	   nautilus_g_ptr_array_sort	    (GPtrArray   	  *array,
-					     CompareWithContext   sort_function,
-					     void 		  *context);
-int 	   nautilus_g_ptr_array_search	    (GPtrArray   	  *array,
-					     SearchWithContext    search_function,
-					     void 		  *context,
-					     gboolean		  match_only);
+GPtrArray *nautilus_g_ptr_array_new_from_list (GList                    *list);
+void       nautilus_g_ptr_array_sort          (GPtrArray                *array,
+					       NautilusCompareFunction   compare_callback,
+					       gpointer                  callback_data);
+int        nautilus_g_ptr_array_search        (GPtrArray                *array,
+					       NautilusSearchFunction    search_callback,
+					       gpointer                  callback_data,
+					       gboolean                  match_only);
 
 /* NULL terminated string arrays (strv). */
-int      nautilus_g_strv_find               (char       	  **strv,
-					     const char  	  *find_me);
+int        nautilus_g_strv_find               (char                    **strv,
+					       const char               *find_me);
 
 /* return the time in microseconds since the machine was started */
-gint64	 nautilus_get_system_time	    (void);
+gint64     nautilus_get_system_time           (void);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */
