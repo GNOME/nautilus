@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2000-10-29 04:41+0100\n"
-"PO-Revision-Date: 2000-11-03 23:38+02:00\n"
+"PO-Revision-Date: 2000-11-04 11:38+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -390,59 +390,59 @@ msgstr "%s for %s"
 msgid "Verifying %s..."
 msgstr "Efterprøver %s..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:108
+#: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
 msgid "%s would not work anymore\n"
 msgstr "%s ville ikke virke mere\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:111
+#: components/rpmview/nautilus-rpm-view-install.c:110
 #, c-format
 msgid "%s would break other installed packages\n"
 msgstr "%s ville ødelægge andre installerede pakker\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:116
+#: components/rpmview/nautilus-rpm-view-install.c:115
 #, c-format
 msgid "%s is needed, but could not be found\n"
 msgstr "%s er nødvendig, men kunne ikke findes\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:121
+#: components/rpmview/nautilus-rpm-view-install.c:120
 #, c-format
 msgid "%s was already installed\n"
 msgstr "%s var allerede installeret\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:124
+#: components/rpmview/nautilus-rpm-view-install.c:123
 #, c-format
 msgid "%s causes a circular dependency problem\n"
 msgstr "%s forårsager et problem med cirkulære afhængigheder\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:143
+#: components/rpmview/nautilus-rpm-view-install.c:142
 #, c-format
 msgid "Installing %s failed because of the following issue(s):\n"
 msgstr "Installation af %s mislykkedes pga følgende problem(er):\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:145
+#: components/rpmview/nautilus-rpm-view-install.c:144
 #, c-format
 msgid "Uninstalling %s failed because of the following issue(s):\n"
 msgstr "Afinstallation af %s mislykkedes pga følgende problem(er):\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:240
+#: components/rpmview/nautilus-rpm-view-install.c:241
 msgid "Uninstall failed..."
 msgstr "Afinstallering mislykkedes..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:241
+#: components/rpmview/nautilus-rpm-view-install.c:242
 msgid "Uninstall Failed"
 msgstr "Afinstallering mislykkedes"
 
-#: components/rpmview/nautilus-rpm-view-install.c:243
+#: components/rpmview/nautilus-rpm-view-install.c:244
 msgid "Install failed..."
 msgstr "Installering mislykkedes"
 
-#: components/rpmview/nautilus-rpm-view-install.c:244
+#: components/rpmview/nautilus-rpm-view-install.c:245
 msgid "Install Failed"
 msgstr "Installation mislykkedes"
 
-#: components/rpmview/nautilus-rpm-view-install.c:288
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1084
+#: components/rpmview/nautilus-rpm-view-install.c:297
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1112
 msgid "Incorrect password."
 msgstr "Ugyldig adgangskode."
 
@@ -750,31 +750,47 @@ msgstr "Fjerner pakke %s (0x%x) %s"
 msgid "Preparing package system"
 msgstr "Forbereder pakkesystem"
 
-#: components/services/install/lib/eazel-install-logic.c:1475
+#: components/services/install/lib/eazel-install-logic.c:1478
+#, c-format
+msgid "%s-%s version %s-%s already installed"
+msgstr "%s-%s version %s-%s er allerede installeret"
+
+#: components/services/install/lib/eazel-install-logic.c:1482
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s version %s er allerede installeret"
 
-#: components/services/install/lib/eazel-install-logic.c:1481
+#: components/services/install/lib/eazel-install-logic.c:1491
+#: components/services/install/lib/eazel-install-logic.c:1496
 #, c-format
-msgid "%s upgrades from version %s to %s"
-msgstr "%s opgraderinger fra version %s til %s"
+msgid "%s upgrades from version %s-%s to %s-%s"
+msgstr "%s opgraderinger fra version %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1488
+#: components/services/install/lib/eazel-install-logic.c:1505
+#, c-format
+msgid "%s downgrades from version %s-%s to %s-%s"
+msgstr "%s nedgraderinger fra version %s-%s til %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1510
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra version %s til %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1508
+#: components/services/install/lib/eazel-install-logic.c:1532
+#, c-format
+msgid "%s installs version %s-%s"
+msgstr "%s installerer version %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1537
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer version %s"
 
-#: components/services/install/lib/eazel-install-logic.c:2102
+#: components/services/install/lib/eazel-install-logic.c:2134
 msgid "Dependencies appear ok"
 msgstr "Afhængigheder ser ok ud"
 
-#: components/services/install/lib/eazel-install-logic.c:2105
+#: components/services/install/lib/eazel-install-logic.c:2137
 msgid "But there are file conflicts"
 msgstr "Men der er filkonflikter"
 
@@ -782,33 +798,33 @@ msgstr "Men der er filkonflikter"
 msgid "Could not set URLType from config file!"
 msgstr "Kunne ikke sætte URLType fra konfigurationsfilen!"
 
-#: components/services/install/lib/eazel-install-object.c:564
+#: components/services/install/lib/eazel-install-object.c:582
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Transaktioner gemmes i %s"
 
-#: components/services/install/lib/eazel-install-object.c:567
+#: components/services/install/lib/eazel-install-object.c:585
 msgid "Transactions are not stored, could not find home dir"
 msgstr "Transaktioner gemmes ikke, kunne ikke finde hjemmekatalog"
 
-#: components/services/install/lib/eazel-install-object.c:753
+#: components/services/install/lib/eazel-install-object.c:772
 msgid "Getting package list from remote server ...\n"
 msgstr "Henter pakkeliste fra ekstern tjener ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:773
+#: components/services/install/lib/eazel-install-object.c:792
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Kan ikke modtage package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:818
+#: components/services/install/lib/eazel-install-object.c:863
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "Kan ikke skrive til fil %s, bruger standard log behandler"
 
-#: components/services/install/lib/eazel-install-object.c:930
+#: components/services/install/lib/eazel-install-object.c:983
 msgid "Install failed"
 msgstr "Installering fejlede"
 
-#: components/services/install/lib/eazel-install-object.c:973
+#: components/services/install/lib/eazel-install-object.c:1026
 msgid "Uninstall failed"
 msgstr "Afinstallering fejlede"
 
@@ -899,13 +915,13 @@ msgstr "Pakke %s havde version %s og ikke %s"
 msgid "File download failed"
 msgstr "Hentning af fil mislykkedes"
 
-#: components/services/install/lib/eazel-install-protocols.c:736
-#: components/services/install/lib/eazel-install-protocols.c:741
+#: components/services/install/lib/eazel-install-protocols.c:749
+#: components/services/install/lib/eazel-install-protocols.c:754
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Kunne ikke hente en URL for %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:746
+#: components/services/install/lib/eazel-install-protocols.c:759
 #, c-format
 msgid "Could not retrieve a URL for id %s"
 msgstr "Kunne ikke hente en URL for ID %s"
@@ -914,45 +930,45 @@ msgstr "Kunne ikke hente en URL for ID %s"
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr "Aftestningsmodus aktiveret. Pakker vil ikke blive installeret..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:250
+#: components/services/install/lib/eazel-install-rpm-glue.c:251
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åben)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:255
+#: components/services/install/lib/eazel-install-rpm-glue.c:256
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åben)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:316
+#: components/services/install/lib/eazel-install-rpm-glue.c:317
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åbnede pakkedatabase i %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:321
+#: components/services/install/lib/eazel-install-rpm-glue.c:322
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åbning af pakkedatabase i %s mislykkedes!"
 
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:480
+#: components/services/install/lib/eazel-install-rpm-glue.c:481
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er afhængig af %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:616
+#: components/services/install/lib/eazel-install-rpm-glue.c:617
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Pakke %s er i konflikt med %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:630
+#: components/services/install/lib/eazel-install-rpm-glue.c:631
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Behandler afhængighed for %s, behøver bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:637
+#: components/services/install/lib/eazel-install-rpm-glue.c:638
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Behandler afhængigheder for %s, behøver pakke %s"
@@ -1155,34 +1171,46 @@ msgstr "Installerer \"%s\""
 msgid "Version: %s"
 msgstr "Version: %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:857
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:853
 #, c-format
 msgid " · %s is in the KDE menu.\n"
 msgstr " · %s er i KDE-menuen.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:864
 #, c-format
 msgid " · %s is in the Gnome menu under %s.\n"
 msgstr " · %s er i GNOME-menuen under %s.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:872
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
 #, c-format
 msgid " · %s is in the Gnome menu.\n"
 msgstr " · %s er i GNOME-menuen.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:918
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:904
+msgid "I ran into problems while installing."
+msgstr "Løb ind i problemer ved installation."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:905
+msgid "I'd like to try the following :"
+msgstr "Vil nu forsøge følgende:"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:914
+msgid "Is this ok ?"
+msgstr "Er dette ok?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:955
 msgid "Installation complete!"
 msgstr "Installation fuldført!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:920
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:957
 msgid "Installation aborted."
 msgstr "Installation afbrudt."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:922
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:959
 msgid "Installation failed!"
 msgstr "Installation mislykkedes!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:928
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:972
 #, c-format
 msgid ""
 "%s\n"
@@ -1193,7 +1221,7 @@ msgstr ""
 "%s\n"
 "Slet RPM-filene som er til overs?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:932
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:976
 #, c-format
 msgid ""
 "%s\n"
@@ -1202,7 +1230,7 @@ msgstr ""
 "%s\n"
 "Slet RPM-filene som er til overs?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:952
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:996
 msgid ""
 "\n"
 "A core package of Nautilus has been\n"
@@ -1216,44 +1244,41 @@ msgstr ""
 "\n"
 "Ønsker du at gøre dette nu?\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1009
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1072
 msgid "This package has already been installed."
 msgstr "Denne pakke er allerede installeret."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1022
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1086
+#, c-format
 msgid ""
-"Installation Failed!\n"
+"Installation failed on %s\n"
 "\n"
 msgstr ""
-"Installation mislykkedes!\n"
+"Installation mislykkedes ved %s\n"
 "\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1047
-msgid "Should I delete the leftover RPM files?"
-msgstr "Slet RPM-filene som er til overs?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1203
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1231
 msgid "Downloading remote package"
 msgstr "Henter ekstern pakke"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1205
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1233
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Henter \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1207
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1235
 msgid "Downloading some package"
 msgstr "Henter en pakke"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1249
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1277
 msgid "Contacting install server ..."
 msgstr "Kontakter installationstjener..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1301
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1329
 msgid "Package download aborted."
 msgstr "Nedlasting af pakke afbrudt."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1303
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1331
 msgid "Aborted."
 msgstr "Afbrudt."
 
@@ -1379,11 +1404,13 @@ msgstr "Tillægstjenester"
 
 #: components/services/summary/nautilus-view/nautilus-summary-view.c:527
 msgid ""
+"\n"
 "Check back here for new system management\n"
 "services that will help make Linux easier to use."
 msgstr ""
+"\n"
 "Kom tilbage senere for at se nye systemhåndterings-\n"
-"tjenester som vil gøre Linux nemmere at bruge."
+"tjenester som vil hjælpe med at gøre Linux nemmere at bruge."
 
 #. add the tab
 #: components/services/summary/nautilus-view/nautilus-summary-view.c:566
@@ -1430,8 +1457,8 @@ msgid ""
 "account.  Please try again, or check your email for an account activation "
 "notice."
 msgstr ""
-"Dit brugernavn og adgangskode var ikke korrekt, eller du har ikke aktiveret din "
-"konto. Prøv venligst igen, eller tjek din e-post for en besked om "
+"Dit brugernavn og adgangskode var ikke korrekt, eller du har ikke aktiveret "
+"din konto. Prøv venligst igen, eller tjek din e-post for en besked om "
 "aktivering af konto."
 
 #: components/services/summary/nautilus-view/nautilus-summary-view.c:1304
@@ -2614,7 +2641,7 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludér ikke i menuen for \"%s\" opføringer."
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1182
-#: src/file-manager/fm-list-view.c:1885
+#: src/file-manager/fm-list-view.c:1890
 #: src/file-manager/fm-search-list-view.c:272
 #: src/nautilus-bookmarks-window.c:161 src/nautilus-search-bar-criterion.c:66
 msgid "Name"
@@ -3559,19 +3586,19 @@ msgstr "_manuel"
 msgid "pointing at \"%s\""
 msgstr "peger til \"%s\""
 
-#: src/file-manager/fm-list-view.c:1891
+#: src/file-manager/fm-list-view.c:1896
 #: src/file-manager/fm-search-list-view.c:284
 #: src/nautilus-search-bar-criterion.c:69
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:1897
+#: src/file-manager/fm-list-view.c:1902
 #: src/file-manager/fm-search-list-view.c:290
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:1903
+#: src/file-manager/fm-list-view.c:1908
 #: src/file-manager/fm-search-list-view.c:296
 msgid "Date Modified"
 msgstr "Dato for ændring"
@@ -4077,8 +4104,8 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:348
 msgid ""
-"User levels provide a way to adjust the software to\n"
-"your level of technical expertise.  Pick an initial level that you\n"
+"User levels provide a way to adjust the software to your\n"
+"level of technical expertise.  Pick an initial level that you\n"
 "feel comfortable with; you can always change it later."
 msgstr ""
 "Brugerniveauer giver dig en måde at tilpasse programmellet til\n"
@@ -4112,15 +4139,17 @@ msgstr ""
 #. allocate a descriptive label
 #: src/nautilus-first-time-druid.c:406
 msgid ""
-"Eazel offers a growing number of services to \n"
-"help you install and maintain new software and manage \n"
-"your files across the network.  If you want to find out more \n"
-"about Eazel services, just press the 'Next' button. "
+"Eazel offers a growing number of services to help you\n"
+" install and maintain new software and manage your files\n"
+" across the network.  Choose an option below, and the\n"
+"information will be presented in Nautilus after you've\n"
+"finished setting up."
 msgstr ""
 "Eazel tilbyder et voksende antal tjenester til at\n"
 "hjælpe dig med at installere og vedligeholde nyt programmel\n"
-"og at håndtere dine filer over netværket. Hvis du ønsker at finde\n"
-"ud af mere om Eazel tjenester, så tryk bare på 'Næste'-knappen. "
+"og at håndtere dine filer over netværket. Vælg en mulighed nedenfor\n"
+"og informationen vil blive vist i Nautilus efter at du har\n"
+"afsluttet opsætningen."
 
 #: src/nautilus-first-time-druid.c:410
 msgid "Eazel Services"
@@ -4213,8 +4242,8 @@ msgid "Downloading Nautilus updates..."
 msgstr "Henter Nautilus-opdateringer..."
 
 #: src/nautilus-first-time-druid.c:678
-msgid "Initial Preferences"
-msgstr "Forhåndsdefinerede brugervalg"
+msgid "Nautilus First Time Setup"
+msgstr "Nautilus første-gangs opsætning"
 
 #. make the title label
 #: src/nautilus-first-time-druid.c:707
@@ -5003,7 +5032,7 @@ msgstr "Advarsel"
 
 #: src/nautilus-shell.c:203
 msgid ""
-"Thank you for your interest in Nautilus Preview Release 2.\n"
+"Thank you for your interest in Nautilus.\n"
 " \n"
 "As with any software under development, you should exercise caution when "
 "using Nautilus.  Eazel does not provide any guarantee that it will work "
@@ -5439,53 +5468,59 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%.0f%%"
 msgstr "%.0f%%"
 
-msgid "RPM package database query failed !"
-msgstr "Forespørgsel på RPM pakkedatabase mislykkedes!"
+#~ msgid "Should I delete the leftover RPM files?"
+#~ msgstr "Slet RPM-filene som er til overs?"
 
-msgid "Nautilus updated"
-msgstr "Nautilus opdateret"
+#~ msgid "Initial Preferences"
+#~ msgstr "Forhåndsdefinerede brugervalg"
 
-msgid "%s %s: would not work anymore\n"
-msgstr "%s %s: ville ikke virke mere\n"
+#~ msgid "RPM package database query failed !"
+#~ msgstr "Forespørgsel på RPM pakkedatabase mislykkedes!"
 
-msgid "%s %s: couldn't find this package\n"
-msgstr "%s %s: kunne ikke finde denne pakke\n"
+#~ msgid "Nautilus updated"
+#~ msgstr "Nautilus opdateret"
 
-msgid "%s %s: source package (not supported)\n"
-msgstr "%s %s: kildepakke (ikke understøttet)\n"
+#~ msgid "%s %s: would not work anymore\n"
+#~ msgstr "%s %s: ville ikke virke mere\n"
 
-msgid "%s %s: would break other installed packages\n"
-msgstr "%s %s: ville ødelægge andre installerede pakker\n"
+#~ msgid "%s %s: couldn't find this package\n"
+#~ msgstr "%s %s: kunne ikke finde denne pakke\n"
 
-msgid "%s %s: conflicts with installed files\n"
-msgstr "%s %s: i konflikt med installerede filer\n"
+#~ msgid "%s %s: source package (not supported)\n"
+#~ msgstr "%s %s: kildepakke (ikke understøttet)\n"
 
-msgid "%s %s: already installed\n"
-msgstr "%s %s: allerede installeret\n"
+#~ msgid "%s %s: would break other installed packages\n"
+#~ msgstr "%s %s: ville ødelægge andre installerede pakker\n"
 
-msgid "Cannot create temporary directory"
-msgstr "Kan ikke oprette midlertidigt katalog"
+#~ msgid "%s %s: conflicts with installed files\n"
+#~ msgstr "%s %s: i konflikt med installerede filer\n"
 
-msgid "Oops! Your user name or password were not correct. Please try again:"
-msgstr "Dit brugernavn eller passord var ikke korrekt. Venligst prøv igen:"
+#~ msgid "%s %s: already installed\n"
+#~ msgstr "%s %s: allerede installeret\n"
 
-msgid ""
-"The Nautilus shell is under development; it's not ready for daily use. Some "
-"features are not yet done, partly done, or unstable. The program doesn't "
-"look or act exactly the way it will in version 1.0.\n"
-"\n"
-"If you do decide to test this version of Nautilus, beware. The program could "
-"do something unpredictable and may even delete or overwrite files on your "
-"computer.\n"
-"\n"
-"For more information, visit http://nautilus.eazel.com."
-msgstr ""
-"Nautilus skallet er under udvikling; det er ikke klart for daglig brug. "
-"Mange funktioner, er ikke fuldført, er delvis færdig eller ustabile. Dette "
-"programmet vil ikke se ud eller opføre sig slik det vil i version 1.0.\n"
-"\n"
-"Hvis du bestemmer dig for at prøve denne version af Nautilus, så vær "
-"forsigtig. Programmet vil kunne gøre uforudsete ting og vil til og med "
-"kunne slette eller overskrive filer på din datamaskine.\n"
-"\n"
-"For mere information, se http://nautilus.eazel.com."
+#~ msgid "Cannot create temporary directory"
+#~ msgstr "Kan ikke oprette midlertidigt katalog"
+
+#~ msgid "Oops! Your user name or password were not correct. Please try again:"
+#~ msgstr "Dit brugernavn eller passord var ikke korrekt. Venligst prøv igen:"
+
+#~ msgid ""
+#~ "The Nautilus shell is under development; it's not ready for daily use. Some "
+#~ "features are not yet done, partly done, or unstable. The program doesn't "
+#~ "look or act exactly the way it will in version 1.0.\n"
+#~ "\n"
+#~ "If you do decide to test this version of Nautilus, beware. The program could "
+#~ "do something unpredictable and may even delete or overwrite files on your "
+#~ "computer.\n"
+#~ "\n"
+#~ "For more information, visit http://nautilus.eazel.com."
+#~ msgstr ""
+#~ "Nautilus skallet er under udvikling; det er ikke klart for daglig brug. "
+#~ "Mange funktioner, er ikke fuldført, er delvis færdig eller ustabile. Dette "
+#~ "programmet vil ikke se ud eller opføre sig slik det vil i version 1.0.\n"
+#~ "\n"
+#~ "Hvis du bestemmer dig for at prøve denne version af Nautilus, så vær "
+#~ "forsigtig. Programmet vil kunne gøre uforudsete ting og vil til og med kunne "
+#~ "slette eller overskrive filer på din datamaskine.\n"
+#~ "\n"
+#~ "For mere information, se http://nautilus.eazel.com."
