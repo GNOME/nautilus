@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: nautilus 2.5.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-06-01 09:36+0200\n"
-"PO-Revision-Date: 2004-04-21 02:07+0900\n"
+"PO-Revision-Date: 2004-07-29 05:14+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1338,26 +1338,25 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "참으로 설정하면, 컴퓨터 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 컴퓨터 아이콘을 바탕 화면에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "참으로 설정하면, 홈 폴더 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 홈 폴더 아이콘을 바탕 화면에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "참으로 설정하면, 휴지통 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 휴지통 아이콘을 바탕 화면에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "참으로 설정하면, 휴지통 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 마운트한 볼륨에 연결된 아이콘을 바탕 화면에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1459,9 +1458,8 @@ msgid "Show location bar in new windows"
 msgstr "새 창에서 위치 표시줄을 보여줍니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid "Show mounted volumes on the desktop"
-msgstr "바탕 화면에 홈 아이콘을 보입니다"
+msgstr "바탕 화면에 마운트한 볼륨을 보여줍니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
@@ -1551,7 +1549,7 @@ msgstr "새 창에서 가장자리 창의 기본 너비."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
-msgstr "데스크탑 아이콘에 사용할 글꼴."
+msgstr "바탕 화면 아이콘에 사용할 글꼴."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "The side pane view to show in newly opened windows."
@@ -4157,28 +4155,24 @@ msgid "Cancel Open?"
 msgstr "열기를 취소하시겠습니까?"
 
 #: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
-#, fuzzy
 msgid "Comment"
-msgstr "Covalent"
+msgstr "설명"
 
 #: src/file-manager/fm-ditem-page.c:341
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/file-manager/fm-ditem-page.c:345
-#, fuzzy
 msgid "Link"
 msgstr "바로 가기"
 
 #: src/file-manager/fm-ditem-page.c:352
-#, fuzzy
 msgid "Command"
-msgstr "컴팩"
+msgstr "명령어"
 
 #: src/file-manager/fm-ditem-page.c:356
-#, fuzzy
 msgid "Launcher"
-msgstr "실행기 편집"
+msgstr "실행 아이콘"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4724,12 +4718,12 @@ msgstr "바탕 화면 바꾸기(_B)"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:3
 msgid "Create L_auncher"
-msgstr "실행기 만들기(_A)"
+msgstr "실행 아이콘 만들기(_A)"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
 #: src/file-manager/nautilus-directory-view-ui.xml.h:8
 msgid "Create a new launcher"
-msgstr "새 실행기를 만듭니다"
+msgstr "새 실행 아이콘을 만듭니다"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
@@ -4802,11 +4796,11 @@ msgstr "각각 선택한 항목을 하나 더 만듭니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Edit Launcher"
-msgstr "실행기 편집"
+msgstr "실행 아이콘 편집"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Edit the launcher information"
-msgstr "실행기 정보를 고칩니다"
+msgstr "실행 아이콘 정보를 고칩니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Format the selected volume"
@@ -5287,9 +5281,8 @@ msgid "500 KB"
 msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-#, fuzzy
 msgid "<span weight=\"bold\">Behavior</span>"
-msgstr "<span weight=\"bold\">행동</span>"
+msgstr "<span weight=\"bold\">동작</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">Default View</span>"
@@ -6270,18 +6263,16 @@ msgid "Show %s"
 msgstr "%s 보기"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "모든 상위 폴더 닫기(_P)"
+msgstr "모든 폴더 닫기(_E)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "모든 상위 폴더 닫기(_P)"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "모든 찾아보기 창을 닫습니다"
+msgstr "모든 폴더 창을 닫습니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6454,9 +6445,9 @@ msgid "Display this location with \"%s\""
 msgstr "이 위치를 \"%s\"(으)로 보여줍니다"
 
 #: src/nautilus-window.c:1157
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (사본)%s"
+msgstr "%s (%s 컴퓨터)"
 
 #: src/nautilus-window.c:1598
 msgid "Application ID"
