@@ -1,3 +1,16 @@
+2002-07-11  Dave Camp  <dave@ximian.com>
+
+	* components/history/nautilus-history-view.c: (update_history):
+	Don't block the selection_changed signal.
+	(row_activated_callback): Moved here from
+	selection_changed_callback.
+	(update_click_policy), (click_policy_changed_callback): New
+	functions.
+	(nautilus_history_view_instance_init): Connect to row_activated,
+	set up a preferences callback for the click policy, and call
+	update_click_policy().
+	(nautilus_history_view_finalize): Remove the preferences callback.
+
 2002-07-10  Damon Chaplin  <damon@ximian.com>
 
 	* libnautilus-private/nautilus-program-choosing.c
@@ -99,6 +112,23 @@
 	(make_category_link): upd.
 	(build_radio_accessibility_relations): kill - uses
 	real radio buttons now.
+
+2002-07-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies):
+	* src/nautilus-location-bar.c: (nautilus_location_bar_init):
+	* src/nautilus-preferences-dialog.c:
+	(global_preferences_populate_sidebar_panels_callback),
+	(preferences_dialog_populate_themes_group):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_instance_init):
+	* src/nautilus-window-manage-views.c: (load_content_view),
+	(determined_initial_view_callback),
+	(nautilus_window_set_sidebar_panels):
+	* src/nautilus-window-menus.c: (refresh_bookmarks_menu):
+	* src/nautilus-window.c: (nautilus_window_go_home):
 
 2002-07-09  Dave Camp  <dave@ximian.com>
 

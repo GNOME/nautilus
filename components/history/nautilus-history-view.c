@@ -29,6 +29,8 @@
 
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-preferences.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkliststore.h>
@@ -37,6 +39,8 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-bookmark.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+
 #include "nautilus-history-view.h"
 
 #define FACTORY_IID "OAFIID:Nautilus_History_View_Factory"
@@ -123,11 +127,9 @@ update_history (NautilusHistoryView    *view,
 
 	selection = GTK_TREE_SELECTION (gtk_tree_view_get_selection (view->tree_view));
 
-	g_signal_handler_block (selection, view->selection_changed_id);
 	if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
-	g_signal_handler_unblock (selection, view->selection_changed_id);
 	
   	view->stop_updating_history = NULL;
 }
@@ -143,34 +145,53 @@ history_changed_callback (NautilusHistoryView    *view,
 }
 
 static void
-on_selection_changed (GtkTreeSelection *selection,
-		      gpointer user_data)
+row_activated_callback (GtkTreeView *tree_view,
+			GtkTreePath *path,
+			GtkTreeViewColumn *column,
+			gpointer user_data)
 {
 	NautilusHistoryView *view;
-	GtkTreeIter          iter;
-	NautilusBookmark    *bookmark;
-	char                *uri;
-
-	g_return_if_fail (user_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_HISTORY_VIEW (user_data));
-
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	NautilusBookmark *bookmark;
+	char *uri;
+	
 	view = NAUTILUS_HISTORY_VIEW (user_data);
-
-	/* If this function returns FALSE, we don't have any rows selected */
-	if (! gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+	model = gtk_tree_view_get_model (tree_view);
+	
+	if (!gtk_tree_model_get_iter (model, &iter, path)) {
 		return;
 	}
-
-	gtk_tree_model_get (GTK_TREE_MODEL (gtk_tree_view_get_model (view->tree_view)), &iter,
-			    HISTORY_VIEW_COLUMN_BOOKMARK, &bookmark,
-			    -1);
+	
+	gtk_tree_model_get 
+		(model, &iter, HISTORY_VIEW_COLUMN_BOOKMARK, &bookmark, -1);
 	
 	/* Navigate to the clicked location. */
 	uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (bookmark));
 	nautilus_view_open_location_in_this_window
 		(NAUTILUS_VIEW (view), uri);
-	g_free (uri);
+	g_free (uri);	
+}
 
+static void
+update_click_policy (NautilusHistoryView *view)
+{
+	int policy;
+	
+	policy = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
+	
+	eel_gtk_tree_view_set_activate_on_single_click
+		(view->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
+static void
+click_policy_changed_callback (gpointer user_data)
+{
+	NautilusHistoryView *view;
+	
+	view = NAUTILUS_HISTORY_VIEW (user_data);
+
+	update_click_policy (view);
 }
 
 static void
@@ -228,13 +249,18 @@ nautilus_history_view_instance_init (NautilusHistoryView *view)
 
 	selection = gtk_tree_view_get_selection (tree_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);	
-	view->selection_changed_id = g_signal_connect_object
-		(selection, "changed",
-		 G_CALLBACK (on_selection_changed), view, 0);
+
+	g_signal_connect_object
+		(tree_view, "row_activated", 
+		 G_CALLBACK (row_activated_callback), view, 0);
 	
 	g_signal_connect_object (view, "history_changed",
 				 G_CALLBACK (history_changed_callback), view, 0);
 
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				      click_policy_changed_callback,
+				      view);
+	update_click_policy (view);
 }
 
 static void
@@ -243,6 +269,10 @@ nautilus_history_view_finalize (GObject *object)
 	NautilusHistoryView *view;
 	
 	view = NAUTILUS_HISTORY_VIEW (object);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					 click_policy_changed_callback,
+					 view);
 
 	if (view->stop_updating_history != NULL) {
 		*view->stop_updating_history = TRUE;

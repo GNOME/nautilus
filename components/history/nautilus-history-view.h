@@ -39,7 +39,6 @@
 typedef struct {
 	NautilusView      parent;
 	GtkTreeView      *tree_view;
-	guint             selection_changed_id;
 	gboolean         *stop_updating_history;
 } NautilusHistoryView;
 
