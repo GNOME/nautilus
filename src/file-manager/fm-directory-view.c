@@ -115,9 +115,13 @@ struct FMDirectoryViewDetails
 
 	gboolean loading;
 	gboolean menus_merged;
+	gboolean menu_states_untrustworthy;
 
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
+
+	gboolean batching_selection_level;
+	gboolean selection_changed_while_batched;
 };
 
 /* forward declarations */
@@ -405,6 +409,43 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 	return gnome_dialog_run (dialog) == GNOME_OK;
 }
 
+static gboolean
+selection_contains_one_item_in_menu_callback (FMDirectoryView *view, GList *selection)
+{
+	if (nautilus_g_list_exactly_one_item (selection)) {
+		return TRUE;
+	}
+
+	/* If we've requested a menu update that hasn't yet occurred, then
+	 * the mismatch here doesn't surprise us, and we won't complain.
+	 * Otherwise, we will complain.
+	 */
+	if (!view->details->menu_states_untrustworthy) {
+		g_warning ("expected one selected item, found %d", 	
+			   g_list_length (selection));
+	}
+
+	return FALSE;
+}
+
+static gboolean
+selection_not_empty_in_menu_callback (FMDirectoryView *view, GList *selection)
+{
+	if (selection != NULL) {
+		return TRUE;
+	}
+
+	/* If we've requested a menu update that hasn't yet occurred, then
+	 * the mismatch here doesn't surprise us, and we won't complain.
+	 * Otherwise, we will complain.
+	 */
+	if (!view->details->menu_states_untrustworthy) {
+		g_warning ("empty selection found when selection was expected");
+	}
+
+	return FALSE;
+}
+
 /**
  * Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
@@ -423,11 +464,11 @@ open_callback (gpointer ignored, gpointer callback_data)
         /* UI should have prevented this from being called unless exactly
          * one item is selected.
          */
-        g_assert (nautilus_g_list_exactly_one_item (selection));
-        
-	fm_directory_view_activate_file (view, 
-	                                 NAUTILUS_FILE (selection->data), 
-	                                 FALSE);        
+        if (selection_contains_one_item_in_menu_callback (view, selection)) {
+		fm_directory_view_activate_file (view, 
+		                                 NAUTILUS_FILE (selection->data), 
+		                                 FALSE);        
+        }        
 
 	nautilus_file_list_free (selection);
 }
@@ -634,14 +675,6 @@ other_viewer_callback (gpointer ignored, gpointer callback_data)
 				 GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 }
 
-static void
-check_selection_not_empty (GList *selection)
-{
-	if (selection == NULL) {
-		g_warning ("UI should have prevented this from being called with empty selection");
-	}
-}
-
 /**
  * Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
@@ -654,8 +687,9 @@ trash_callback (gpointer *ignored, gpointer callback_data)
         
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	check_selection_not_empty (selection);
-        fm_directory_view_trash_or_delete_files (view, selection);
+	if (selection_not_empty_in_menu_callback (view, selection)) {
+	        fm_directory_view_trash_or_delete_files (view, selection);
+	}
 
         nautilus_file_list_free (selection);
 }
@@ -674,8 +708,9 @@ duplicate_callback (gpointer *ignored, gpointer callback_data)
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	check_selection_not_empty (selection);
-        fm_directory_view_duplicate_selection (view, selection);
+	if (selection_not_empty_in_menu_callback (view, selection)) {
+	        fm_directory_view_duplicate_selection (view, selection);
+	}
 
         nautilus_file_list_free (selection);
 }
@@ -694,8 +729,9 @@ create_link_callback (gpointer ignored, gpointer callback_data)
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	check_selection_not_empty (selection);
-        fm_directory_view_create_links_for_files (view, selection);
+	if (selection_not_empty_in_menu_callback (view, selection)) {
+	        fm_directory_view_create_links_for_files (view, selection);
+	}
 
         nautilus_file_list_free (selection);
 }
@@ -742,9 +778,10 @@ open_properties_window_callback (gpointer ignored, gpointer callback_data)
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	check_selection_not_empty (selection);
-	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
-		g_list_foreach (selection, open_one_properties_window, view);
+	if (selection_not_empty_in_menu_callback (view, selection)) {
+		if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+			g_list_foreach (selection, open_one_properties_window, view);
+		}
 	}
 
         nautilus_file_list_free (selection);
@@ -3465,16 +3502,13 @@ static void
 schedule_update_menus (FMDirectoryView *view) 
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	view->details->menu_states_untrustworthy = TRUE;
 	
 	if (view->details->menus_merged
 	    && view->details->update_menus_idle_id == 0) {
-	    	/* Using a gtk_timeout_add instead of gtk_idle_add here to partially work
-	    	 * around a performance problem where bonobo set sensitivity calls 
-	    	 * take too long to execute.
-	    	 */
 		view->details->update_menus_idle_id
-			= gtk_timeout_add (300,
-				 update_menus_idle_callback, view);
+			= gtk_idle_add (update_menus_idle_callback, view);
 	}
 }
 
@@ -3491,14 +3525,24 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	/* Schedule an update of menu item states to match selection */
-	schedule_update_menus (view);
-
 	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0)
 		view->details->display_selection_idle_id
 			= gtk_idle_add (display_selection_info_idle_callback,
 					view);
+
+	if (view->details->batching_selection_level != 0) {
+		view->details->selection_changed_while_batched = TRUE;
+	} else {
+		/* Here is the work we do only when we're not
+		 * batching selection changes. In other words, it's the slower
+		 * stuff that we don't want to slow down selection techniques
+		 * such as rubberband-selecting in icon view.
+		 */
+
+		/* Schedule an update of menu item states to match selection */
+		schedule_update_menus (view);
+	}
 }
 
 static gboolean
@@ -4121,6 +4165,8 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 	NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 update_menus, (view));
+
+	view->details->menu_states_untrustworthy = FALSE;
 }
 
 static void
@@ -4259,4 +4305,26 @@ fm_directory_view_trash_state_changed_callback (NautilusTrashMonitor *trash_moni
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
 	schedule_update_menus (view);
+}
+
+void
+fm_directory_view_start_batching_selection_changes (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	++view->details->batching_selection_level;
+	view->details->selection_changed_while_batched = FALSE;
+}
+
+void
+fm_directory_view_stop_batching_selection_changes (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (view->details->batching_selection_level > 0);
+
+	if (--view->details->batching_selection_level == 0) {
+		if (view->details->selection_changed_while_batched) {
+			fm_directory_view_notify_selection_changed (view);
+		}
+	}
 }

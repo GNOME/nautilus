@@ -132,6 +132,8 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 /* The NautilusIconContainer signals.  */
 enum {
 	ACTIVATE,
+	BAND_SELECT_STARTED,
+	BAND_SELECT_ENDED,
 	BUTTON_PRESS,
 	CAN_ACCEPT_ITEM,
 	COMPARE_ICONS,
@@ -1236,6 +1238,9 @@ start_rubberbanding (NautilusIconContainer *container,
 	details = container->details;
 	band_info = &details->rubberband_info;
 
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[BAND_SELECT_STARTED]);
+
 	for (p = details->icons; p != NULL; p = p->next) {
 		NautilusIcon *icon;
 
@@ -1330,6 +1335,10 @@ stop_rubberbanding (NautilusIconContainer *container,
 	/* FIXME bugzilla.eazel.com 2475: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
+
+
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[BAND_SELECT_ENDED]);
 }
 
 /* Keyboard navigation.  */
@@ -2810,6 +2819,22 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_BOOL);
+	signals[BAND_SELECT_STARTED]
+		= gtk_signal_new ("band_select_started",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     band_select_started),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
+	signals[BAND_SELECT_ENDED]
+		= gtk_signal_new ("band_select_ended",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     band_select_ended),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 

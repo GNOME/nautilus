@@ -330,6 +330,8 @@ void               fm_directory_view_begin_loading                  (FMDirectory
  */
 void               fm_directory_view_activate_files                 (FMDirectoryView       *view,
 								     GList          	   *files);								     
+void		   fm_directory_view_start_batching_selection_changes (FMDirectoryView	   *view);
+void		   fm_directory_view_stop_batching_selection_changes (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_confirm_multiple_windows	    (FMDirectoryView	   *view,
 								     int		    window_count);
 void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,

@@ -1685,6 +1685,26 @@ icon_container_activate_callback (NautilusIconContainer *container,
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), file_list);
 }
 
+static void
+band_select_started_callback (NautilusIconContainer *container,
+			      FMIconView *icon_view)
+{
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+
+	fm_directory_view_start_batching_selection_changes (FM_DIRECTORY_VIEW (icon_view));
+}
+
+static void
+band_select_ended_callback (NautilusIconContainer *container,
+			    FMIconView *icon_view)
+{
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+
+	fm_directory_view_stop_batching_selection_changes (FM_DIRECTORY_VIEW (icon_view));
+}
+
 /* handle the preview signal by inspecting the mime type.  For now, we only preview sound files. */
 
 /* here's the timer task that actually plays the file using mpg123. */
@@ -2309,6 +2329,14 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "activate",
 			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "band_select_started",
+			    GTK_SIGNAL_FUNC (band_select_started_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "band_select_ended",
+			    GTK_SIGNAL_FUNC (band_select_ended_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "compare_icons",

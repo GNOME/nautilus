@@ -119,6 +119,8 @@ typedef struct {
 						   NautilusIconData *icon_b);
 
 	/* Notifications for the whole container. */
+	void	     (* band_select_started)	  (NautilusIconContainer *container);
+	void	     (* band_select_ended)	  (NautilusIconContainer *container);
 	void         (* selection_changed) 	  (NautilusIconContainer *container);
 	void         (* layout_changed)           (NautilusIconContainer *container);
 

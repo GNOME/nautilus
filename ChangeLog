@@ -1,3 +1,58 @@
+2000-09-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 558 (Rubber-band selection of files in icon
+	view gradually degrades)
+
+	Now the menu-updating code does not run while rubberband
+	selecting (but does run immediately thereafter).
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding), (stop_rubberbanding),
+	(nautilus_icon_container_initialize_class): New signals
+	"band_select_started" and "band_select_ended" emitted
+	just when you'd expect.
+	
+	* src/file-manager/fm-directory-view.h:
+	Prototypes for new functions (intended to be called only
+	by subclasses) fm_directory_view_start_batching_selection_changes
+	and fm_directory_view_stop_batching_selection_changes.
+	
+	* src/file-manager/fm-directory-view.c:
+	Added details fields: guint batching_selection_level,
+	gboolean selection_changed_while_batched, gboolean
+	menu_states_untrustworthy
+	(selection_contains_one_item_in_menu_callback),
+	(selection_not_empty_in_menu_callback): New helper functions
+	that report if the selection matches expectations and complain
+	via g_warning if they don't match and we trust the menu state.
+	(open_callback), (trash_callback), (duplicate_callback), 
+	(create_link_callback),	(open_properties_window_callback):
+	Use these new helper functions to verify that the menu state
+	matches expectations but not crash if it doesn't.
+	
+	(schedule_update_menus): Change timeout back to idle now that
+	it isn't affecting the band-select case; mark menu states as
+	untrustworthy.
+	(fm_directory_view_update_menus): mark menu states as
+	trustworthy.
+
+	(fm_directory_view_notify_selection_changed): If we're batching
+	selection changes, remember that the selection changed; otherwise,
+	do the work that you only do when not batching (update menus).
+	
+	(fm_directory_view_start_batching_selection_changes): Increment
+	the batching level counter.
+	(fm_directory_view_stop_batching_selection_changes): Decrement
+	the batching level counter. If it reaches zero, and the selection
+	changed while batched, call notify_selection_changed.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(band_select_started_callback): start batching selection changes.
+	(band_select_ended_callback): stop batching selection changes.
+	(create_icon_container): connect to band_select_started and
+	band_select_ended signals of icon container.
+
 2000-09-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3018, should not be able to remove special icons
