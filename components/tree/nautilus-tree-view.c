@@ -923,7 +923,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 		return;
 	}
 
-	expanded_most_recent_node = FALSE;
+	expanded_last_valid_node = FALSE;
 
 	for (p = view->details->in_progress_select_uris; p != NULL; p = p->next) {
 		uri = (char *) p->data;
@@ -936,7 +936,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			break;
 		}
 
-		expanded_last_view_node = FALSE;
+		expanded_last_valid_node = FALSE;
 		last_valid_view_node = view_node;
 
 		if (p->next != NULL) {
@@ -948,7 +948,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree), view_node)) {
 				nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
 						       view_node);
-				expanded_last_view_node = TRUE;
+				expanded_last_valid_node = TRUE;
 			}
 		} else {
 			g_free (view->details->selected_uri);
@@ -973,7 +973,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	
 	view->details->in_progress_select_uris = p;
 	
-	if (!expanded_last_view_node) {
+	if (!expanded_last_valid_node) {
 		/* Force a shallow reload. */
 		reload_model_node (view,
 				   nautilus_tree_view_node_to_model_node (view,
