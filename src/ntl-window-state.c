@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /*
  *  Nautilus
@@ -25,21 +25,49 @@
  */
 
 #include "nautilus.h"
+#include "nautilus-global-preferences.h"
 
 void
-nautilus_window_set_initial_state(NautilusWindow *window, const char *initial_url)
+nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_url)
 {
-  if(initial_url)
-    nautilus_window_goto_uri(window, initial_url);
-  else
-    {
-      GString* path_name;
+	if (initial_url)
+	{
+		nautilus_window_goto_uri (window, initial_url);
+	}
+	else
+	{
+		GString *path_name;
+		gint user_level;
 
-      path_name = g_string_new("file://");
-      g_string_append(path_name, g_get_home_dir());
-      nautilus_window_goto_uri(window, path_name->str);
-      g_string_free(path_name, TRUE);
-    }
+		path_name = g_string_new ("file://");
+
+		user_level = nautilus_prefs_get_enum (nautilus_prefs_global_get_prefs (),
+						      NAUTILUS_PREFS_USER_LEVEL);
+
+#define ANDY_WILL_FIX_THIS_IN_A_BIT 1
+
+
+#if ANDY_WILL_FIX_THIS_IN_A_BIT
+		switch (user_level)
+		{
+		case NAUTILUS_USER_LEVEL_NOVICE:
+		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
+			g_string_append (path_name, "/tmp");
+			break;
+
+		case NAUTILUS_USER_LEVEL_HACKER:
+		case NAUTILUS_USER_LEVEL_ETTORE:
+			g_string_append (path_name, g_get_home_dir ());
+			break;
+		}
+#else
+		g_string_append (path_name, g_get_home_dir ());
+#endif
+		
+		nautilus_window_goto_uri (window, path_name->str);
+
+		g_string_free (path_name, TRUE);
+	}
 }
 
 void

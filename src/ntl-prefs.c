@@ -31,7 +31,7 @@ PrefsPageInfo pages[] = {
   {NULL, NULL, NULL, NULL, NULL}
 };
 
-NautilusPrefs nautilus_prefs = {0,0, NULL};
+NautilusPrefsOld nautilus_prefs = {0,0, NULL};
 
 void
 nautilus_prefs_save(void)
@@ -46,8 +46,8 @@ nautilus_prefs_save(void)
     pieces[i] = cur->data;
   gnome_config_set_vector("/nautilus/prefs/global_meta_views", npieces, (const char **)pieces);
 
-  gnome_config_set_bool("/nautilus/prefs/window_alwaysnew", nautilus_prefs.window_alwaysnew);
-  gnome_config_set_bool("/nautilus/prefs/window_search_existing", nautilus_prefs.window_search_existing);
+  gnome_config_set_bool("/nautilus/prefs/caca::window_alwaysnew", nautilus_prefs.window_alwaysnew);
+  gnome_config_set_bool("/nautilus/prefs/caca2::window_search_existing", nautilus_prefs.window_search_existing);
 
   gnome_config_sync();
 }
@@ -63,9 +63,9 @@ nautilus_prefs_load(void)
     }
 
   nautilus_prefs.window_alwaysnew = 
-    gnome_config_get_bool("/nautilus/prefs/window_alwaysnew=0");
+    gnome_config_get_bool("/nautilus/prefs/caca::window_alwaysnew=0");
   nautilus_prefs.window_search_existing =
-    gnome_config_get_bool("/nautilus/prefs/window_search_existing=0");
+    gnome_config_get_bool("/nautilus/prefs/caca2::window_search_existing=0");
 
   {
     int npieces;

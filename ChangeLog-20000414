@@ -1,5 +1,44 @@
 2000-03-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/Makefile.am
+	Moved prefs things to nautilus-widgets.
+	Use alphabetization technology on the source list.
+	
+	* src/nautilus-global-preferences.c,
+	  src/nautilus-global-preferences.h:
+	New files that to deal with preferences that are
+	global to nautilus.
+
+	* src/nautilus-window-menus.c:
+	Use the new preferences dialog.
+	
+	* src/ntl-window-state.c:
+	Go to a different home directory based on the user level.
+	Commented off until andy makes a nice default home directory
+	for novice users.
+
+	* src/ntl-prefs.c,
+	  src/ntl-prefs.h:
+	Renamed a typedef to avoid conflict.  This is a temporary hack.
+	
+	* src/nautilus-prefs-box.c
+	  src/nautilus-prefs-box.h,
+	  src/nautilus-prefs-dialog.c,
+	  src/nautilus-prefs-dialog.h,
+	  src/nautilus-prefs-group-check.c,
+	  src/nautilus-prefs-group-check.h,
+	  src/nautilus-prefs-group-radio.c,
+	  src/nautilus-prefs-group-radio.h,
+	  src/nautilus-prefs-group.c,
+	  src/nautilus-prefs-group.h,
+	  src/nautilus-prefs-pane.c,
+	  src/nautilus-prefs-pane.h,
+	  src/ntl-prefs.c,
+	  src/ntl-prefs.h:
+	Moved prefs widegtry things to nautilus-widgets.
+	
+2000-03-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/Makefile.am,
 	  nautilus-widgets/nautilus-preferences-box.c
 	  nautilus-widgets/nautilus-preferences-box.h,

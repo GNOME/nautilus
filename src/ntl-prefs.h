@@ -8,9 +8,9 @@ typedef struct {
   guchar window_search_existing : 1;
 
   GSList *global_meta_views;
-} NautilusPrefs;
+} NautilusPrefsOld;
 
-extern NautilusPrefs nautilus_prefs;
+extern NautilusPrefsOld nautilus_prefs;
 
 void nautilus_prefs_load(void);
 void nautilus_prefs_save(void);

@@ -29,6 +29,7 @@
 #include "ntl-app.h"
 #include "ntl-prefs.h"
 #include "ntl-window-private.h"
+#include "nautilus-global-preferences.h"
 
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
@@ -104,7 +105,9 @@ static void
 general_settings_cb (GtkWidget *widget,
                      GtkWindow *mainwin)
 {
-  nautilus_prefs_ui_show(mainwin);
+/* 	nautilus_prefs_ui_show (mainwin); */
+
+	nautilus_prefs_global_show_dialog ();
 }
 
 static GnomeUIInfo file_menu_info[] = {
