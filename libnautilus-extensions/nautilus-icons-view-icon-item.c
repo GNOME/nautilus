@@ -464,37 +464,11 @@ compute_viewport_affine (NautilusIconsViewIconItem *icon_view_item, double *view
 	x = priv->x;
 	y = priv->y;
 
-	/* Convert i_len and j_len into scaling factors */
+	si_len = w / priv->pixbuf->art_pixbuf->width;
+	sj_len = h / priv->pixbuf->art_pixbuf->height;
 
-	if (i_len > GNOME_CANVAS_EPSILON)
-		si_len = 1.0 / i_len;
-	else
-		si_len = 0.0;
-
-	si_len *= w / priv->pixbuf->art_pixbuf->width;
-
-	if (j_len > GNOME_CANVAS_EPSILON)
-		sj_len = 1.0 / j_len;
-	else
-		sj_len = 0.0;
-
-	sj_len *= h / priv->pixbuf->art_pixbuf->height;
-
-	/* Calculate translation offsets */
-
-	if (i_len > GNOME_CANVAS_EPSILON)
-		ti_len = 1.0 / i_len;
-	else
-		ti_len = 0.0;
-
-	ti_len *= x;
-
-	if (j_len > GNOME_CANVAS_EPSILON)
-		tj_len = 1.0 / j_len;
-	else
-		tj_len = 0.0;
-
-	tj_len *= y;
+	ti_len = x;
+	tj_len = y;
 
 	/* Compute the final affine */
 
