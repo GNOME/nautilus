@@ -1,5 +1,15 @@
 2002-02-22  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(remove_context_menu_timeout): New.
+	(clear_drag_state): Use remove_context_menu_timeout.
+	(motion_notify_event): Use remove_context_menu_timeout.
+	This fixes a bug where you might end up with two timeouts.
+	Remove the code marked "KLUDGE ALERT" which seemed to mess
+	up dragging coordinates.
+
+2002-02-22  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-icon-text-item.c: Remove.
 	* libnautilus-private/nautilus-icon-text-item.h: Remove.

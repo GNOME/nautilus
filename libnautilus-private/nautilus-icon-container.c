@@ -2572,14 +2572,20 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 }
 
 static void
-clear_drag_state (NautilusIconContainer *container)
+remove_context_menu_timeout (NautilusIconContainer *container)
 {
-	container->details->drag_icon = NULL;
-	container->details->drag_state = DRAG_STATE_INITIAL;
 	if (container->details->context_menu_timeout_id != 0) {
 		gtk_timeout_remove (container->details->context_menu_timeout_id);
 		container->details->context_menu_timeout_id = 0;
 	}
+}
+
+static void
+clear_drag_state (NautilusIconContainer *container)
+{
+	container->details->drag_icon = NULL;
+	container->details->drag_state = DRAG_STATE_INITIAL;
+	remove_context_menu_tiemout (container);
 }
 
 static gboolean
@@ -2813,15 +2819,11 @@ motion_notify_event (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
 
+	remove_context_menu_timeout (container);
+
 	if (details->drag_button != 0) {
 		switch (details->drag_state) {
 		case DRAG_STATE_MOVE_COPY_OR_MENU:
-			if (details->drag_started) {
-				break;
-			}
-			gtk_timeout_remove (details->context_menu_timeout_id);
-			/* fall through */
-
 		case DRAG_STATE_MOVE_OR_COPY:
 			if (details->drag_started) {
 				break;
@@ -2836,12 +2838,6 @@ motion_notify_event (GtkWidget *widget,
 				details->drag_started = TRUE;
 
 				end_renaming_mode (container, TRUE);
-				
-				/* KLUDGE ALERT: Poke the starting values into the motion
-				 * structure so that dragging behaves as expected.
-				 */
-				event->x = details->drag_x;
-				event->y = details->drag_y;
 			
 				nautilus_icon_dnd_begin_drag (container,
 							      details->drag_state == DRAG_STATE_MOVE_OR_COPY
@@ -3497,10 +3493,10 @@ handle_icon_button_press (NautilusIconContainer *container,
 			 * context menu click or a drag start.
 			 */
 			if (details->context_menu_timeout_id == 0) {
-				details->context_menu_timeout_id = gtk_timeout_add (
-					CONTEXT_MENU_TIMEOUT_INTERVAL, 
-					show_context_menu_callback, 
-					context_menu_parameters_new (container, event));
+				details->context_menu_timeout_id = gtk_timeout_add
+					(CONTEXT_MENU_TIMEOUT_INTERVAL, 
+					 show_context_menu_callback, 
+					 context_menu_parameters_new (container, event));
 			}
 		}
 	}
