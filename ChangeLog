@@ -1,3 +1,15 @@
+2000-11-01  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical),
+	(nautilus_self_check_file_utilities):
+	Hook up new GnomeVFS "make canonical" calls to fix test cases
+	Darin needed to work for the bug he is fixing.
+	Switched the test cases to their intended values, now that they pass.
+	Get rid of some crufty workarounds that weren't really needed
+	after my previous fix to not add extra '//' to some URIs and
+	removed the respective tests.
+
 2000-11-01  Mathieu Lacage  <mathieu@eazel.com>
 
 	This is completely useless but I needed a break from "usefull"
