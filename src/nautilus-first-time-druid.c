@@ -355,21 +355,21 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 		   "familiar with the working of "
 		   "GNOME and Linux."),
 		 NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
 	hbox = make_hbox_user_level_radio_button
 		(1, radio_buttons, "intermediate.png",
 		 _("Intermediate"),
 		 _("For non-technical users that are comfortable with\n"
 		   "their GNOME and Linux environment."),
 				       NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
 	hbox = make_hbox_user_level_radio_button
 		(2, radio_buttons, "expert.png",
 		 _("Advanced"),
 		 _("For technical users that have the need to be exposed\n"
 		   "to every detail of their operating system."),
 		 NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
 
 	user_level = nautilus_user_level_manager_get_user_level ();
 	g_assert (user_level >= 0 && user_level < 3);
@@ -456,7 +456,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 					radio_buttons);
 
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Yes, verify my web connection and update Nautilus now."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, I do not wish to verify my web connect and update Nautilus now."));	
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, I don't wish to connect and update Nautilus now."));	
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
