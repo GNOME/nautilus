@@ -24,7 +24,7 @@
 */
 
 #include <string.h>
-
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-search-uri.h"
 
 static NautilusSearchBarMode      other_search_mode        (NautilusSearchBarMode mode);
@@ -41,28 +41,36 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 {
 	char **words;
 	char *search_uri;
+	char *fragment;
+	char *escaped_fragment;
 	int length, i; 
 
 	g_return_val_if_fail (search_criteria != NULL, NULL);
 
 	words = g_new0 (char *, strlen (search_criteria));
 	words = g_strsplit (search_criteria, " ", strlen (search_criteria));
-	length = strlen ("gnome-search:[file:///]");
+	/* FIXME: this should eventually be: length = strlen ("[file%3A%2F%2F%2F]"); */
+	length = strlen ("[file:///]");
 	/* Count total length */
 	for (i = 0; words[i] != NULL; i++) {
 		length += strlen (words[i]) + strlen ("file_name contains & ");
 	}
-	search_uri = g_new0 (char, length);
-	sprintf (search_uri, "gnome-search:[file:///]");
+	fragment = g_new0 (char, length);
+	/* FIXME: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
+	sprintf (fragment, "[file:///]");
 	if (words[0] != NULL) {
 		for (i = 0; words[i+1] != NULL; i++) {
-			strcat (search_uri, "file_name contains ");
-			strcat (search_uri, words[i]);
-			strcat (search_uri, " & ");
+			strcat (fragment, "file_name contains ");
+			strcat (fragment, words[i]);
+			strcat (fragment, " & ");
 		}
-	strcat (search_uri, "file_name contains ");
-		strcat (search_uri, words[i]);
+	strcat (fragment, "file_name contains ");
+		strcat (fragment, words[i]);
 	}
+	escaped_fragment = gnome_vfs_escape_string (fragment);
+	g_free (fragment);
+	search_uri = g_strconcat ("search:", escaped_fragment, NULL);
+	g_free (escaped_fragment);
 #ifdef SEARCH_URI_DEBUG
 	printf ("Made uri %s from simple search criteria %s\n",
 		search_uri, search_criteria);
