@@ -25,11 +25,6 @@ main (int argc, char* argv[])
 {
 	GdkPixbuf		*pixbuf;
 	NautilusScalableFont	*font;
-	guint			num_text_lines;
-	guint			*text_line_widths;
-	guint			*text_line_heights;
-	guint			max_width_out;
-	guint			total_height_out;
 
 	const char		*text = "\nLine Two\n\nLine Four\n\n\nLine Seven\n";
 	const guint		font_width = 48;
@@ -40,6 +35,7 @@ main (int argc, char* argv[])
 
 	GdkRectangle blue_area;
 	ArtIRect     clip_area;
+	ArtIRect     whole_area;
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
@@ -50,64 +46,81 @@ main (int argc, char* argv[])
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 
-	blue_area.x = 20;
+	/* Measure some text lines */
+	{
+		guint	num_text_lines;
+		guint	*text_line_widths;
+		guint	*text_line_heights;
+		guint	max_width_out;
+		guint	total_height_out;
+
+		num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
+		
+		text_line_widths = g_new (guint, num_text_lines);
+		text_line_heights = g_new (guint, num_text_lines);
+		
+		nautilus_scalable_font_measure_text_lines (font,
+							   font_width,
+							   font_height,
+							   text,
+							   num_text_lines,
+							   text_line_widths,
+							   text_line_heights,
+							   &max_width_out,
+							   &total_height_out);
+
+		g_print ("num_text_lines = %d, max_width = %d, total_height = %d\n",
+			 num_text_lines,
+			 max_width_out,
+			 total_height_out);
+		
+		g_free (text_line_widths);
+		g_free (text_line_heights);
+	}
+
+	blue_area.x = 300;
 	blue_area.y = 20;
 	blue_area.width = 100;
 	blue_area.height = 400;
 
 	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, &blue_area, NAUTILUS_RGBA_COLOR_PACK (0, 0, 255, 255));
 	
-	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
-
-	text_line_widths = g_new (guint, num_text_lines);
-	text_line_heights = g_new (guint, num_text_lines);
-
-	nautilus_scalable_font_measure_text_lines (font,
-						   font_width,
-						   font_height,
-						   text,
-						   num_text_lines,
-						   text_line_widths,
-						   text_line_heights,
-						   &max_width_out,
-						   &total_height_out);
-
-	g_print ("max_width = %d, total_height = %d\n", max_width_out, total_height_out);
-
 	clip_area.x0 = blue_area.x;
 	clip_area.y0 = blue_area.y;
 	clip_area.x1 = blue_area.x + blue_area.width;
 	clip_area.y1 = blue_area.y + blue_area.height;
 
-#if 0	
+	whole_area.x0 = 0;
+	whole_area.y0 = 0;
+	whole_area.x1 = whole_area.x0 + pixbuf_width;
+	whole_area.y1 = whole_area.y0 + pixbuf_height;
+
+	/* Draw some green text clipped by the whole pixbuf area */
 	nautilus_scalable_font_draw_text_lines (font,
 						pixbuf,
 						0,
 						0,
-						&clip_area,
+						&whole_area,
 						font_width,
 						font_height,
 						text,
-						num_text_lines,
-						text_line_widths,
-						text_line_heights,
 						GTK_JUSTIFY_LEFT,
 						2,
-						NAUTILUS_RGB_COLOR_RED,
+						NAUTILUS_RGBA_COLOR_PACK (0, 255, 0, 255),
 						255);
-#else
+
+	/* Draw some red text clipped by the blue area */
 	nautilus_scalable_font_draw_text (font,
 					  pixbuf,
-					  10,
-					  30,
+					  clip_area.x0,
+					  clip_area.y0,
 					  &clip_area,
 					  font_width,
 					  font_height,
 					  "Something",
 					  strlen ("Something"),
-					  NAUTILUS_RGB_COLOR_RED,
+					  NAUTILUS_RGBA_COLOR_PACK (255, 0, 0, 255),
 					  255);
-#endif
 
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
 

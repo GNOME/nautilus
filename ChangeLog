@@ -1,5 +1,21 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Simpify the text line drawing function to not reuqire passing in
+	the number of lines or their dimensions.  Compute these when
+	needed.  An alternate function that accepts the dimensions is
+	available as well.
+
+	* test/test-nautilus-font.c: (main):
+	Draw both text lines and single line clipped text to test more
+	stuff.
+	
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Complete task 1733 - need mozilla component support for grokking
 	eazel: uris.
 

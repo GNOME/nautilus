@@ -357,41 +357,41 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 		if (label->detail->drop_shadow_offset > 0) {
 			text_x += label->detail->drop_shadow_offset;
 			text_y += label->detail->drop_shadow_offset;
-			nautilus_scalable_font_draw_text_lines (label->detail->font,
-								buffer,
-								text_x,
-								text_y,
-								&clip_area,
-								label->detail->font_size,
-								label->detail->font_size,
-								label->detail->text,
-								label->detail->num_text_lines,
-								label->detail->text_line_widths,
-								label->detail->text_line_heights,
-								label->detail->text_justification,
-								label->detail->line_offset,
-								label->detail->drop_shadow_color,
-								label->detail->text_alpha);
+			nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
+										buffer,
+										text_x,
+										text_y,
+										&clip_area,
+										label->detail->font_size,
+										label->detail->font_size,
+										label->detail->text,
+										label->detail->num_text_lines,
+										label->detail->text_line_widths,
+										label->detail->text_line_heights,
+										label->detail->text_justification,
+										label->detail->line_offset,
+										label->detail->drop_shadow_color,
+										label->detail->text_alpha);
 
 			text_x -= label->detail->drop_shadow_offset;
 			text_y -= label->detail->drop_shadow_offset;
 		}
 
-		nautilus_scalable_font_draw_text_lines (label->detail->font,
-							buffer,
-							text_x,
-							text_y,
-							&clip_area,
-							label->detail->font_size,
-							label->detail->font_size,
-							label->detail->text,
-							label->detail->num_text_lines,
-							label->detail->text_line_widths,
-							label->detail->text_line_heights,
-							label->detail->text_justification,
-							label->detail->line_offset,
-							label->detail->text_color,
-							label->detail->text_alpha);
+		nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
+									buffer,
+									text_x,
+									text_y,
+									&clip_area,
+									label->detail->font_size,
+									label->detail->font_size,
+									label->detail->text,
+									label->detail->num_text_lines,
+									label->detail->text_line_widths,
+									label->detail->text_line_heights,
+									label->detail->text_justification,
+									label->detail->line_offset,
+									label->detail->text_color,
+									label->detail->text_alpha);
 	}
 }
 
