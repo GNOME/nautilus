@@ -120,7 +120,7 @@ static GtkTargetEntry target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "property/keyword", 0, TARGET_KEYWORD },
-	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
+	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 typedef enum {

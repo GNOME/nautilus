@@ -67,7 +67,7 @@ enum {
 static GtkTargetEntry hardware_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
-	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
+	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 static void nautilus_hardware_view_drag_data_received (GtkWidget                 *widget,

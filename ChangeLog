@@ -1,3 +1,22 @@
+2000-06-15  Pavel Cisler  <pavel@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	* components/html/ntl-web-browser.oafinfo:
+	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
+	* components/music/nautilus-music-view.c:
+	* components/music/nautilus-music-view.oafinfo:
+	* components/rpmview/nautilus-rpm-view.c:
+	* components/shell/shell.oafinfo:
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_build_selection_list):
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_type_as_string):
+	* src/nautilus-sidebar.c:
+	* src/nautilus.oafinfo:
+	Convert a bunch of illegal mime types "special/*" to 
+	legal equivalents.
+	
 2000-06-15  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added a requirment for ORbit 0.5.1

@@ -128,7 +128,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 		if (*p == '\n' || *p == '\0') {
 			result = g_list_prepend (result, item);
 			if (p == 0) {
-				g_warning ("Invalid special/x-gnome-icon-list data received: "
+				g_warning ("Invalid x-special/gnome-icon-list data received: "
 					   "missing newline character.");
 				break;
 			} else {
@@ -146,7 +146,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 						  &item->icon_x, &item->icon_y,
 						  &item->icon_width, &item->icon_height) == 4;
 		if (!item->got_icon_position) {
-			g_warning ("Invalid special/x-gnome-icon-list data received: "
+			g_warning ("Invalid x-special/gnome-icon-list data received: "
 				   "invalid icon position specification.");
 		}
 
@@ -154,7 +154,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 
 		p = memchr (p, '\r', size);
 		if (p == NULL || p[1] != '\n') {
-			g_warning ("Invalid special/x-gnome-icon-list data received: "
+			g_warning ("Invalid x-special/gnome-icon-list data received: "
 				   "missing newline character.");
 			if (p == NULL) {
 				break;
@@ -243,7 +243,7 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 
-/* Encode a "special/x-gnome-icon-list" selection.
+/* Encode a "x-special/gnome-icon-list" selection.
    Along with the URIs of the dragged files, this encodes
    the location and size of each icon relative to the cursor.
 */

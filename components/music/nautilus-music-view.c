@@ -138,7 +138,7 @@ static GtkTargetEntry music_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
-	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
+	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 #define DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
