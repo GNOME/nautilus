@@ -125,8 +125,6 @@ struct NautilusWindow {
         NautilusLocationChangeType location_change_type;
         guint location_change_distance;
         
-        gboolean views_shown;
-        gboolean view_bombed_out;
         gboolean view_activation_complete;
         gboolean sent_update_view;
         gboolean cv_progress_initial;

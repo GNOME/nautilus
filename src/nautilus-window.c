@@ -1553,9 +1553,7 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 
 	if (new_view != NULL) {
 		gtk_widget_show (GTK_WIDGET (new_view));
-		
-		nautilus_view_frame_activate (new_view); 
-		
+
 		/* FIXME bugzilla.eazel.com 1243: 
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
@@ -1576,7 +1574,6 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	} else {
 		gtk_widget_hide (window->zoom_control);
 	}
-
 
 	window->content_view = new_view;
 }

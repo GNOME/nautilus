@@ -104,17 +104,16 @@ typedef struct {
 GtkType               nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
                                                                      NautilusUndoManager *undo_manager);
-gboolean              nautilus_view_frame_load_client               (NautilusViewFrame   *view,
+void                  nautilus_view_frame_load_client               (NautilusViewFrame   *view,
                                                                      const char          *iid);
 void                  nautilus_view_frame_load_client_async         (NautilusViewFrame   *view,
                                                                      const char          *iid);
-void                  nautilus_view_frame_stop_activation           (NautilusViewFrame   *view);
 const char *          nautilus_view_frame_get_iid                   (NautilusViewFrame   *view);
+void                  nautilus_view_frame_stop                      (NautilusViewFrame   *view);
 
 /* calls to Nautilus:View functions */
 void                  nautilus_view_frame_load_location             (NautilusViewFrame   *view,
                                                                      const char          *location);
-void                  nautilus_view_frame_stop_loading              (NautilusViewFrame   *view);
 void                  nautilus_view_frame_selection_changed         (NautilusViewFrame   *view,
                                                                      GList               *selection);
 void                  nautilus_view_frame_title_changed             (NautilusViewFrame   *view,
@@ -138,8 +137,6 @@ gboolean              nautilus_view_frame_is_zoomable               (NautilusVie
 char *                nautilus_view_frame_get_label                 (NautilusViewFrame   *view);
 void                  nautilus_view_frame_set_label                 (NautilusViewFrame   *view,
                                                                      const char          *label);
-void                  nautilus_view_frame_activate                  (NautilusViewFrame   *view);
-
 /* view state */
 char *                nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
 gboolean              nautilus_view_frame_get_is_underway           (NautilusViewFrame   *view);

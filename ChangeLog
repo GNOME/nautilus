@@ -1,3 +1,134 @@
+2001-01-25  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Some preparation work for doing async. activation. This amounts
+	to another pass cleaning up the legendary "state machine" as well
+	as some other cleanups in the async. activation code.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(oaf_activation_callback), (nautilus_bonobo_activate_from_id),
+	(nautilus_bonobo_activate_cancel): Fix interface of activation to
+	be cleaner. Also handle case where callback is called right away.
+
+	Add queuing to NautilusView so that all incoming CORBA calls are
+	dispatched at idle time. This can fix some otherwise-difficult
+	re-entrancy problems. The widget destroy call can still come in at
+	any time though. Also this same fix may be needed for the
+	NautilusViewFrame side.
+	
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c: (execute_queued_calls): Function
+	to dequeue and execute calls.
+	(dequeue_calls_at_idle): Cover to call it at idle time.
+	(discard_queued_calls): Discard calls without executing them, for
+	use at destroy time.
+	(queue_incoming_call): Simple cover to queue and schedule an
+	idle-time dequeue pass.
+	(nautilus_g_list_from_uri_list): Need to make a full copy, not
+	a shallow copy, now that we are queuing things for a hile.
+	(call_load_location), (call_stop_loading),
+	(call_selection_changed), (call_title_changed),
+	(call_history_changed): Simple functions that get queued.
+	(list_deep_free_cover): GDestroyNotify-compatible function for one
+	destroy case.
+	(history_dup): Function to copy the history list, since that is
+	now queued instead of used right away.
+	(impl_Nautilus_View_load_location),
+	(impl_Nautilus_View_stop_loading),
+	(impl_Nautilus_View_selection_changed),
+	(impl_Nautilus_View_title_changed),
+	(impl_Nautilus_View_history_changed): Change these all to queue
+	the incoming call instead of doing work right away.
+	(nautilus_view_destroy): Discard the queue.
+	
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_open_location_force_new_window),
+	(impl_Nautilus_ViewFrame_report_selection_change): These calls now
+	use the deep copy, since the shallow one is no longer available.
+	This is good since we probably will be doing queuing here later,
+	so we'll need the deep copy.
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class): Set up a map default signal
+	handler to activate the control. This is better than the old way,
+	where we had an explicit call to do it.
+	(nautilus_view_frame_destroy_client): Remove unused
+	CORBA_Environment.
+	(view_frame_activated): Remove unneeded ACTIVATING state. Also
+	send the client_loaded signal in here, so you can't "forget".
+	(view_frame_wait), (view_frame_underway),
+	(view_frame_wait_is_over), (view_frame_loaded),
+	(view_frame_failed): Remove unneeded ACTIVATING state.
+	(check_if_view_is_gone): Simplify logic and make sure to check the
+	value of the exception and not just the function result.
+	(attach_client): Fix CORBA_Exception that was allocated twice and
+	that could also be allocated and not freed in some cases.
+	(activation_callback), (nautilus_view_frame_load_client_async):
+	Better names, use new API, still not tested.
+	(nautilus_view_frame_load_client): Get rid of function result and
+	use unified interface for telling about success and failure so that
+	sync. and async. interfaces will be the same.
+	(nautilus_view_frame_stop): Renamed this single function, which
+	will soon stop either activation that's in process or loading
+	that's in process with a single call. For now it's just the same
+	as the old stop_loading call.
+	(nautilus_view_frame_map): New override to activate the control.
+	This replaces the old explicit activate call.
+	(send_history), (nautilus_view_frame_get_is_underway): Remove
+	unneeded ACTIVATING state.
+
+	* src/nautilus-window.h:
+	* src/nautilus-window-manage-views.c:
+	(location_has_really_changed): Assume that new_content_view is not
+	NULL. The old code was trying to be inappropriately "general".
+	(disconnect_destroy_unref_view): Remove now-unused function.
+	(load_content_view): Don't use a return value any more, since it's
+	important to set up new_content_view before any signals happen.
+	Get rid of code that handles failure right at the start, since
+	we now get all failures through the signal handler.
+	(handle_view_failure): Add FIXME comments. Minor refactoring.
+	(cancel_location_change): Eliminated now-uneeded views_shown and
+	view_bombed_out booleans.
+	(load_view_for_new_location): New load_content_view doesn't return
+	a value any more.
+	(update_state): Changed this to be a loop instead of returning a
+	boolean and always being called in a loop. Also simplified logic
+	so that views_shown and view_bombed_out aren't needed any more.
+	(nautilus_window_end_location_change_callback): Use update_state
+	directly instead of calling the old clunky change_state cover.
+	(nautilus_window_begin_location_change): Use update_state directly
+	instead of calling the old clunky change_state cover.
+	(stop_loading): Call the new simple nautilus_view_frame_stop
+	instead of nautilus_view_frame_stop_loading.
+	(natuilus_window_stop_loading): Use update_state directly instead
+	of calling the old clunky change_state cover.
+	(nautilus_window_set_content_view): Use update_state directly instead
+	of calling the old clunky change_state cover.
+	(nautilus_window_set_sidebar_panels): Handle failures with
+	callback instead of looking at return value (which no longer
+	exists).
+	(client_loaded_callback): Add this new callback that's done when
+	the view is activated and ready to go.
+	(failed_callback): Use update_state directly instead of calling
+	the old clunky change_state cover.
+	(load_underway_callback): Use update_state directly instead of
+	calling the old clunky change_state cover.
+	(load_complete_callback): Use update_state directly instead of
+	calling the old clunky change_state cover.
+
+	* src/nautilus-window.c:
+	(nautilus_window_set_content_view_widget): Get rid of explicit
+	activation, no longer needed now that NautilusViewFrame handles it
+	directly.
+	
+	* test/test-nautilus-async-activation.c: (activation_callback),
+	(main): Change to use new async. API.
+	
+	* user-guide/gnufdl/.cvsignore: Add to ignore some missing files.
+
 2001-01-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-window-manage-views.c

@@ -91,7 +91,7 @@ void               nautilus_view_set_title                            (NautilusV
  * which is why they are public.
  */
 Nautilus_URIList * nautilus_uri_list_from_g_list                      (GList                  *list);
-GList *            nautilus_shallow_g_list_from_uri_list              (const Nautilus_URIList *uri_list);
+GList *            nautilus_g_list_from_uri_list                      (const Nautilus_URIList *uri_list);
 
 /* Simpler API for setting up and getting the UI component. */
 BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusView           *view,

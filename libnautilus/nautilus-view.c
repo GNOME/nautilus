@@ -4,7 +4,7 @@
  *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           Maciej Stachowiak <mjs@eazel.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 
@@ -36,7 +37,9 @@
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum {
@@ -52,12 +55,23 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusViewDetails {
 	BonoboControl *control;
+	GList *call_queue;
+	guint dequeue_calls_at_idle_id;
 };
 
 typedef struct {
 	POA_Nautilus_View servant;
 	NautilusView *bonobo_object;
 } impl_POA_Nautilus_View;
+
+typedef void (* ViewFunction) (NautilusView *view,
+			       gpointer callback_data);
+
+typedef struct {
+	ViewFunction call;
+	gpointer callback_data;
+	GDestroyNotify destroy_callback_data;
+} IncomingCall;
 
 static void impl_Nautilus_View_load_location     (PortableServer_Servant  servant,
 						  CORBA_char             *location,
@@ -97,11 +111,92 @@ static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 	&libnautilus_Nautilus_View_epv
 };
 
-/* Makes a GList but does not copy the strings.
- * Free the list with g_list_free.
- */
+static void
+execute_queued_calls (NautilusView *view)
+{
+	GList *queue, *node;
+	IncomingCall *call;
+
+	/* We could receive more incoming calls while dispatching
+	 * these, so keep going until the call queue is empty.
+	 */
+	while (view->details->call_queue != NULL) {
+		queue = g_list_reverse (view->details->call_queue);
+		view->details->call_queue = NULL;
+
+		for (node = queue; node != NULL; node = node->next) {
+			call = node->data;
+
+			(* call->call) (view, call->callback_data);
+			if (call->destroy_callback_data != NULL) {
+				(* call->destroy_callback_data) (call->callback_data);
+			}
+		}
+
+		g_list_free (queue);
+	}
+}
+
+static gboolean
+dequeue_calls_at_idle (gpointer callback_data)
+{
+	NautilusView *view;
+
+	view = NAUTILUS_VIEW (callback_data);
+	execute_queued_calls (view);
+	view->details->dequeue_calls_at_idle_id = 0;
+	return FALSE;
+}
+
+static void
+discard_queued_calls (NautilusView *view)
+{
+	GList *queue, *node;
+	IncomingCall *call;
+
+	queue = view->details->call_queue;
+	view->details->call_queue = NULL;
+	
+	for (node = queue; node != NULL; node = node->next) {
+		call = node->data;
+		
+		if (call->destroy_callback_data != NULL) {
+			(* call->destroy_callback_data) (call->callback_data);
+		}
+	}
+	
+	g_list_free (queue);
+
+	g_assert (view->details->call_queue == NULL);
+}
+
+static void
+queue_incoming_call (PortableServer_Servant servant,
+		     ViewFunction call,
+		     gpointer callback_data,
+		     GDestroyNotify destroy_callback_data)
+{
+	NautilusView *view;
+	IncomingCall *incoming_call;
+
+	view = ((impl_POA_Nautilus_View *) servant)->bonobo_object;
+
+	incoming_call = g_new (IncomingCall, 1);
+	incoming_call->call = call;
+	incoming_call->callback_data = callback_data;
+	incoming_call->destroy_callback_data = destroy_callback_data;
+
+	view->details->call_queue = g_list_prepend
+		(view->details->call_queue, incoming_call);
+
+	if (view->details->dequeue_calls_at_idle_id == 0) {
+		view->details->dequeue_calls_at_idle_id = gtk_idle_add
+			(dequeue_calls_at_idle, view);
+	}
+}
+
 GList *
-nautilus_shallow_g_list_from_uri_list (const Nautilus_URIList *uri_list)
+nautilus_g_list_from_uri_list (const Nautilus_URIList *uri_list)
 {
 	GList *list;
 	guint i;
@@ -109,7 +204,7 @@ nautilus_shallow_g_list_from_uri_list (const Nautilus_URIList *uri_list)
 	list = NULL;
 	for (i = 0; i < uri_list->_length; i++) {
 		list = g_list_prepend
-			(list, uri_list->_buffer[i]);
+			(list, g_strdup (uri_list->_buffer[i]));
 	}
 	return g_list_reverse (list);
 }
@@ -141,21 +236,96 @@ nautilus_uri_list_from_g_list (GList *list)
 }
 
 static void
+call_load_location (NautilusView *view,
+		    gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[LOAD_LOCATION],
+			 callback_data);
+}
+
+static void
+call_stop_loading (NautilusView *view,
+		   gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[STOP_LOADING]);
+}
+
+static void
+call_selection_changed (NautilusView *view,
+			gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[SELECTION_CHANGED],
+			 callback_data);
+}
+
+static void
+call_title_changed (NautilusView *view,
+		    gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[TITLE_CHANGED],
+			 callback_data);
+}
+
+static void
+call_history_changed (NautilusView *view,
+		      gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[HISTORY_CHANGED],
+			 callback_data);
+}
+
+static void
+list_deep_free_cover (gpointer callback_data)
+{
+	gnome_vfs_list_deep_free (callback_data);
+}
+
+static Nautilus_History *
+history_dup (const Nautilus_History *history)
+{
+	Nautilus_History *dup;
+	int length, i;
+
+	length = history->_length;
+
+	dup = Nautilus_History__alloc ();
+	dup->_maximum = length;
+	dup->_length = length;
+	dup->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	for (i = 0; i < length; i++) {
+		dup->_buffer[i].title = CORBA_string_dup (history->_buffer[i].title);
+		dup->_buffer[i].location = CORBA_string_dup (history->_buffer[i].location);
+		dup->_buffer[i].icon = CORBA_string_dup (history->_buffer[i].icon);
+	}
+	CORBA_sequence_set_release (dup, CORBA_TRUE);
+
+	return dup;
+}
+
+static void
 impl_Nautilus_View_load_location (PortableServer_Servant servant,
 				  CORBA_char *location,
 				  CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[LOAD_LOCATION],
-			 location);
+	queue_incoming_call (servant,
+			     call_load_location,
+			     g_strdup (location),
+			     g_free);
 }
 
 static void
 impl_Nautilus_View_stop_loading (PortableServer_Servant servant,
 				 CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[STOP_LOADING]);
+	queue_incoming_call (servant,
+			     call_stop_loading,
+			     NULL,
+			     NULL);
 }
 
 static void
@@ -163,15 +333,10 @@ impl_Nautilus_View_selection_changed (PortableServer_Servant servant,
 				      const Nautilus_URIList *selection,
 				      CORBA_Environment *ev)
 {
-	GList *selection_as_g_list;
-
-	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
-
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[SELECTION_CHANGED],
-			 selection_as_g_list);
-
-	g_list_free (selection_as_g_list);
+	queue_incoming_call (servant,
+			     call_selection_changed,
+			     nautilus_g_list_from_uri_list (selection),
+			     list_deep_free_cover);
 }
 
 static void 
@@ -179,9 +344,10 @@ impl_Nautilus_View_title_changed (PortableServer_Servant servant,
 				  const CORBA_char *title,
 				  CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[TITLE_CHANGED],
-			 title);
+	queue_incoming_call (servant,
+			     call_title_changed,
+			     g_strdup (title),
+			     g_free);
 }
 
 static void 
@@ -189,13 +355,15 @@ impl_Nautilus_View_history_changed (PortableServer_Servant servant,
 				    const Nautilus_History *history,
 				    CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[HISTORY_CHANGED],
-			 history);
+	queue_incoming_call (servant,
+			     call_history_changed,
+			     history_dup (history),
+			     CORBA_free);
 }
 
 static void
-impl_Nautilus_View__destroy (BonoboObject *object, PortableServer_Servant servant)
+impl_Nautilus_View__destroy (BonoboObject *object,
+			     PortableServer_Servant servant)
 {
 	PortableServer_ObjectId *object_id;
 	CORBA_Environment ev;
@@ -320,7 +488,6 @@ nautilus_view_construct (NautilusView   *view,
 		(view, bonobo_control_new (widget));
 }
 
-
 NautilusView *
 nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 					     BonoboControl  *control)
@@ -335,12 +502,20 @@ nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 	return view;
 }
 
-
-
 static void
 nautilus_view_destroy (GtkObject *object)
 {
-	g_free (NAUTILUS_VIEW (object)->details);
+	NautilusView *view;
+
+	view = NAUTILUS_VIEW (object);
+
+	discard_queued_calls (view);
+
+	if (view->details->dequeue_calls_at_idle_id != 0) {
+		gtk_idle_remove (view->details->dequeue_calls_at_idle_id);
+	}
+
+	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }

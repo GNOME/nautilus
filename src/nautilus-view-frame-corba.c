@@ -174,10 +174,10 @@ impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant s
 	if (view == NULL) {
 		return;
 	}
-	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
+	selection_as_g_list = nautilus_g_list_from_uri_list (selection);
 	nautilus_view_frame_open_location_force_new_window
 		(view, location, selection_as_g_list);
-	g_list_free (selection_as_g_list);
+	nautilus_g_list_free_deep (selection_as_g_list);
 }
 
 static void
@@ -192,10 +192,10 @@ impl_Nautilus_ViewFrame_report_selection_change (PortableServer_Servant servant,
 	if (view == NULL) {
 		return;
 	}
-	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
+	selection_as_g_list = nautilus_g_list_from_uri_list (selection);
 	nautilus_view_frame_report_selection_change
 		(view, selection_as_g_list);
-	g_list_free (selection_as_g_list);
+	nautilus_g_list_free_deep (selection_as_g_list);
 }
 
 static void

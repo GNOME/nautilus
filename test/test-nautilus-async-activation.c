@@ -19,6 +19,7 @@
 
    Author: Mathieu Lacage <mathieu@eazel.com>
 */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -31,36 +32,33 @@
 
 #define IID "OAFIID:bonobo_calculator:fab8c2a7-9576-437c-aa3a-a8617408970f"
 
-
-
-static void 
-activation_callback (CORBA_Object object_reference, gpointer data)
+static void
+activation_callback (NautilusBonoboActivationHandle *handle,
+		     Bonobo_Unknown activated_object,
+		     gpointer callback_data)
 {
 	GtkWidget *window;
 	GtkWidget *control;
-	CORBA_Environment exc;
 
-	window = GTK_WIDGET (data);
+	window = GTK_WIDGET (callback_data);
 
-	if (CORBA_Object_is_nil (object_reference, &exc)) {
-		/* no activation */
+	if (activated_object == CORBA_OBJECT_NIL) {
 		g_print ("activation failed\n");
-		gtk_main_quit ();
+	} else {
+		control = bonobo_widget_new_control_from_objref (activated_object,
+								 CORBA_OBJECT_NIL);
+		gtk_container_add (GTK_CONTAINER (window), control);
+		gtk_widget_show (GTK_WIDGET (control));
+		
+		g_print ("activation suceeded\n");
 	}
-
-	control = bonobo_widget_new_control_from_objref (object_reference, CORBA_OBJECT_NIL);
-	gtk_container_add (GTK_CONTAINER (window), control);
-	gtk_widget_show (GTK_WIDGET (control));
-
-	g_print ("activation suceeded\n");
 }
 
-
-
-int main (int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-	NautilusBonoboActivate *activate;
 	GtkWidget *window;
+	NautilusBonoboActivationHandle *handle;
 
 	gtk_init (&argc, &argv);
 	oaf_init (argc, argv);
@@ -72,15 +70,13 @@ int main (int argc, char *argv[])
 	gtk_signal_connect (GTK_OBJECT (window), "destroy",
 			    gtk_main_quit, NULL);
 	gtk_widget_show_all (GTK_WIDGET (window));
-
-
-	activate = nautilus_bonobo_activate_from_id (IID, activation_callback, window);
-
+	
+	
+	handle = nautilus_bonobo_activate_from_id (IID, activation_callback, window);
 #if 0
-	nautilus_bonobo_activate_stop (activate);
+	nautilus_bonobo_activate_stop (handle);
 #endif
 	bonobo_main ();
 
 	return 0;
 }
-
