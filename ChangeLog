@@ -1,3 +1,10 @@
+2000-10-21  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* components/help/converters/gnome-db2html2/toc-elements.c:
+	(toc_sect_end_element): Add in 'break;' at the appropriate areas of
+	the code. Should fix some issues. DOH!! This was also needed to fix
+	Bug #3863. Thank god for testers.
+
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* configure.in: Added pl to ALL_LINGUAS.
