@@ -86,7 +86,7 @@
  * subclasses are in fm-directory-view.h 
  */
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN                      		"/commands/Open"
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW        		"/commands/OpenNew"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE        		"/commands/OpenAlternate"
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH				"/commands/Open With"
 #define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER				"/commands/New Folder"
 #define FM_DIRECTORY_VIEW_COMMAND_DELETE                    		"/commands/Delete"
@@ -102,7 +102,7 @@
 #define FM_DIRECTORY_VIEW_COMMAND_COPY_FILES				"/commands/Copy Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES	   			"/commands/Paste Files"
 
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE        		"/menu/File/Open Placeholder/OpenAlternate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS				"/menu/File/Open Placeholder/Scripts"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
@@ -488,38 +488,40 @@ selection_not_empty_in_menu_callback (FMDirectoryView *view, GList *selection)
 static void
 open_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-        FMDirectoryView *view;
-        GList *selection;
-        
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	GList *selection;
+	FMDirectoryView *view;
 
-        view = FM_DIRECTORY_VIEW (callback_data);
+	view = FM_DIRECTORY_VIEW (callback_data);
+
 	selection = fm_directory_view_get_selection (view);
-
-        /* UI should have prevented this from being called unless exactly
-         * one item is selected.
-         */
-        if (selection_contains_one_item_in_menu_callback (view, selection)) {
-		fm_directory_view_activate_file (view, 
-		                                 NAUTILUS_FILE (selection->data), 
-		                                 RESPECT_PREFERENCE);        
-        }        
-
+	fm_directory_view_activate_files (view, selection);
 	nautilus_file_list_free (selection);
 }
 
 static void
-open_in_new_window_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+open_alternate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-        FMDirectoryView *view;
-        GList *selection;
-        
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view;
+	GList *selection;
+	char *uri;
 
-        view = FM_DIRECTORY_VIEW (callback_data);
+	view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
-		g_list_foreach (selection, open_one_in_new_window, view);
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	        /* UI should have prevented this from being called unless exactly
+	         * one item is selected.
+	         */
+	        if (selection_contains_one_item_in_menu_callback (view, selection)) {
+	        	uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+			nautilus_view_open_location_in_this_window
+				(view->details->nautilus_view, uri);
+			g_free (uri);
+	        }        
+	} else {
+		if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+			g_list_foreach (selection, open_one_in_new_window, view);
+		}
 	}
 
 	nautilus_file_list_free (selection);
@@ -1179,6 +1181,9 @@ fm_directory_view_initialize (FMDirectoryView *view)
 
 	filtering_changed_callback (view);
 	
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					   schedule_update_menus_callback,
+					   view);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					   filtering_changed_callback,
 					   view);
@@ -1258,6 +1263,9 @@ fm_directory_view_destroy (GtkObject *object)
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					      schedule_update_menus_callback,
+					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					      schedule_update_menus_callback,
 					      view);
@@ -3902,7 +3910,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("New Folder", new_folder_callback),
 		BONOBO_UI_VERB ("Open Scripts Folder", open_scripts_folder_callback),
 		BONOBO_UI_VERB ("Open", open_callback),
-		BONOBO_UI_VERB ("OpenNew", open_in_new_window_callback),
+		BONOBO_UI_VERB ("OpenAlternate", open_alternate_callback),
 		BONOBO_UI_VERB ("OtherApplication", other_application_callback),
 		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
@@ -4005,29 +4013,34 @@ real_update_menus (FMDirectoryView *view)
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
-				       selection_count == 1);
-	
-	if (selection_count <= 1) {
-		label_with_underscore = g_strdup (_("Open _in New Window"));
+				       selection_count != 0);
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+		nautilus_bonobo_set_sensitive (view->details->ui, 
+					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+					       selection_count == 1);
+		nautilus_bonobo_set_label_for_menu_item_and_command 
+			(view->details->ui,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE,
+			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+			 _("Open _in This Window"));
 	} else {
-		label_with_underscore = g_strdup_printf (_("Open _in %d New Windows"), selection_count);
-	}
-	nautilus_bonobo_set_label_for_menu_item_and_command 
-		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
-		 FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
-		 label_with_underscore);
-	g_free (label_with_underscore);
-				   
-	/* If the only selected item is launchable, dim out "Open in New Window"
-	 * to avoid confusion about how it differs from "Open" in this case (it
-	 * doesn't differ; they would do the same thing).
-	 */
-	nautilus_bonobo_set_sensitive (view->details->ui, 
-				       FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
-				       selection_count == 1
-				        ? !file_is_launchable (NAUTILUS_FILE (selection->data))
-				        : selection_count != 0);
+		if (selection_count <= 1) {
+			label_with_underscore = g_strdup (_("Open _in New Window"));
+		} else {
+			label_with_underscore = g_strdup_printf (_("Open _in %d New Windows"), selection_count);
+		}
+		nautilus_bonobo_set_label_for_menu_item_and_command 
+			(view->details->ui,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE,
+			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+			 label_with_underscore);
+		g_free (label_with_underscore);
+					   
+		nautilus_bonobo_set_sensitive (view->details->ui, 
+					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+					       selection_count != 0);
+	}	
 
 	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
@@ -5173,17 +5186,26 @@ static void
 filtering_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
+	gboolean new_show_hidden, new_show_backup;
+	gboolean filtering_actually_changed;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
+	filtering_actually_changed = FALSE;
 
-	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-	
-	directory_view->details->show_backup_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	new_show_hidden = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+	if (new_show_hidden  != directory_view->details->show_hidden_files) {
+		filtering_actually_changed = TRUE;
+		directory_view->details->show_hidden_files = new_show_hidden ;
+	}
+
+	new_show_backup = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	if (new_show_backup != directory_view->details->show_backup_files) {
+		filtering_actually_changed = TRUE;
+		directory_view->details->show_backup_files = new_show_backup;
+	}
 
 	/* Reload the current uri so that the filtering changes take place. */
-	if (directory_view->details->model != NULL) {
+	if (filtering_actually_changed && directory_view->details->model != NULL) {
 		load_directory (directory_view,
 				directory_view->details->model);
 	}

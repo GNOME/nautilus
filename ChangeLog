@@ -1,3 +1,60 @@
+2001-03-23  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 2968 (Control-O insufficient for keyboard activation
+	of selected files)
+
+	Fixed bug 5688 (Context menu on the desktop shouldn't have
+	"Open in New Window")
+
+	In the new design, "Open" is always sensitive. It follows the user's
+	preference, except if the user's preference is "use same window" and
+	there are multiple items selected. "Open in New Window" is only
+	available when the preference is "use same window". If the preference
+	is "use new window", "Open in New Window" is replaced by "Open in
+	This Window", which is enabled only if there is exactly one item
+	selected (and which never launches an external application).
+
+	"Open in New Window" and "Open in This Window" both have 
+	Control-Shift-O as a keyboard equivalent (only one of them
+	is visible at a time, of course).
+
+	The desktop right-click menu only has "Open", which behaves the
+	same way it does currently.
+
+	I think the only slightly useful behavior that has been lost is
+	the ability to specifically open an item in a new window via the
+	menu item as opposed to opening it in a way that will find an
+	existing window if there is one. Them's the breaks.
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Changed "OpenNew" to "OpenAlternate" for clarity;
+	added Control-Shift-O as accelerator for OpenAlternate.
+	
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	Set hidden attribute on OpenAlternate command.
+
+	* src/file-manager/fm-directory-view.c: 
+	(open_callback): Changed to call the same code that hitting
+	Enter calls, instead of only activating a single selected item.
+	(open_alternate_callback): Renamed from open_in_new_window_callback, 
+	checks new-window preference and handles selected items accordingly.
+	(fm_directory_view_initialize): add preferences callback to update
+	menus when new-window preference changes.
+	(fm_directory_view_destroy): remove preferences callback.
+	(real_merge_menus): updated for name changes.
+	(real_update_menus): rework sensitivity and label logic for Open
+	and Open in New/This Window menu items.
+
+	(filtering_changed_callback): Check whether the filtering preferences
+	have actually changed before deciding to reload the directory; this
+	reduces redrawing when switching user levels. The preference callbacks
+	are called when the user level changes even if the preference value
+	hasn't actually changed. Other places could use similar checks, some of
+	which I may do later if Ramiro doesn't fix the preference mechanism
+	itself first.
+
 2001-03-23  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

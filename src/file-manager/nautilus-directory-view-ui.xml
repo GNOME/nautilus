@@ -18,7 +18,7 @@
 	<cmd name="Open"
          _label="Open"
 	 _tip="Open the selected item in this window"/>
-	<cmd name="OpenNew"
+	<cmd name="OpenAlternate"
          _label="Open in New Window"
 	 _tip="Open each selected item in a new window"/>
 	<cmd name="Open Scripts Folder"
@@ -72,9 +72,10 @@
 				  _label="_Open"
 				  accel="*Control*o"
 				  verb="Open"/>
-			<menuitem name="OpenNew"
+			<menuitem name="OpenAlternate"
 				  _label="Open _in New Window"
-				  verb="OpenNew"/>
+				  accel="*Control**Shift*o"
+				  verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 _tip="Choose a program with which to open the selected item">
@@ -180,7 +181,7 @@
 	<popup name="selection" tearoff="0">
 		<placeholder name="Open Placeholder" delimit="none">
 			<menuitem name="Open" verb="Open"/>
-			<menuitem name="OpenNew" verb="OpenNew"/>
+			<menuitem name="OpenAlternate" verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open With" 
 				 tearoff="0"
