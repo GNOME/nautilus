@@ -25,6 +25,7 @@
  */
 
 #include "nautilus.h"
+#include <libnautilus/nautilus-file-utilities.h>
 #include <libnautilus/nautilus-global-preferences.h>
 
 void
@@ -36,20 +37,24 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 	}
 	else
 	{
-		GString *path_name;
-		gint user_level;
+		GString		*path_name;
+		gint		user_level;
+		const char	*user_top_directory;
 
 		path_name = g_string_new ("file://");
-
+		
 		user_level = nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
 							    NAUTILUS_PREFERENCES_USER_LEVEL);
-
+		
 		switch (user_level)
 		{
 		case NAUTILUS_USER_LEVEL_NOVICE:
 		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
-			/* Will be something better soon */
-			g_string_append (path_name, g_get_home_dir ());
+			
+			user_top_directory = nautilus_user_top_directory ();
+			
+			g_string_append (path_name, user_top_directory);
+
 			break;
 
 		case NAUTILUS_USER_LEVEL_HACKER:
