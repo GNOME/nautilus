@@ -163,7 +163,6 @@ register_icons (void)
 			    (sizes[j].gtk == 0 ||
 			     gtk_icon_info_get_base_size (info) == sizes[j].pixel)) {
 				icon = gtk_icon_info_get_filename (info);
-				g_print ("filename: %s\n", icon);
 				gtk_icon_source_set_filename (source, icon);
 				if (sizes[j].gtk == 0) {
 					gtk_icon_source_set_size (source, 0);
