@@ -272,6 +272,8 @@ ui_remove_idle_handler (NautilusWindow *window)
 void
 nautilus_window_ui_freeze (NautilusWindow *window)
 {
+	g_object_ref (window);
+
 	if (window->details->ui_change_depth == 0) {
 		ui_remove_idle_handler (window);
 	}
@@ -300,6 +302,8 @@ nautilus_window_ui_thaw (NautilusWindow *window)
 		|| window->details->ui_pending_initialize_menus_part_2)) {
 		ui_install_idle_handler (window);
 	}
+
+	g_object_unref (window);
 }
 
 /* Unconditionally synchronize the BonoboUI of WINDOW. */
@@ -961,11 +965,13 @@ nautilus_window_finalize (GObject *object)
 	if (window->details->shell_ui != NULL) {
 		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
 		bonobo_object_unref (window->details->shell_ui);
+		window->details->shell_ui = NULL;
 	}
 
 	if (window->details->status_ui != NULL) {
 		bonobo_ui_component_unset_container (window->details->status_ui, NULL);
 		bonobo_object_unref (window->details->status_ui);
+		window->details->status_ui = NULL;
 	}
 
 	nautilus_file_unref (window->details->viewed_file);

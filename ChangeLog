@@ -1,5 +1,15 @@
 2003-04-23  Alexander Larsson  <alexl@redhat.com>
 
+	Patch from Michael Meeks in bug #87414.
+	
+	* src/nautilus-window.c (nautilus_window_finalize):
+	NULL various pointers to help debugging.
+	(nautilus_window_ui_thaw, nautilus_window_ui_freeze): 
+	hold a reference on the window over the various
+	re-enterancy points guarded by the freeze / thaw.
+
+2003-04-23  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/apps_nautilus_preferences.schemas:
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
