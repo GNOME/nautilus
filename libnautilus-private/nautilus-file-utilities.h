@@ -42,16 +42,9 @@ char *   nautilus_make_path                          (const char *path,
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
 char *   nautilus_get_user_directory                 (void);
-char *   nautilus_get_user_main_directory            (void);
 char *   nautilus_get_desktop_directory              (void);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
-
-
-/* See if the user_main_directory exists. This should be called before
- * nautilus_get_user_main_directory, which creates the directory.
- */
-gboolean nautilus_user_main_directory_exists         (void);
 
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file

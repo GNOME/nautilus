@@ -27,6 +27,7 @@ CDDALIBADD =
 endif
 
 libnautilus_private_la_LDFLAGS =	\
+	-ldesktopfile			\
 	$(dependency_static_libs)	\
 	$(NAUTILUS_PRIVATE_LIBS)	\
 	$(ESD_LIBS)			\
@@ -50,6 +51,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-bookmark.c \
 	nautilus-customization-data.c \
 	nautilus-default-file-icon.c \
+	nautilus-desktop-file.c	\
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-metafile-monitor.c \
@@ -111,6 +113,7 @@ noinst_HEADERS = \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.h \
+	nautilus-desktop-file.h	\
 	nautilus-directory-background.h \
 	nautilus-directory-metafile-monitor.h \
 	nautilus-directory-metafile.h \

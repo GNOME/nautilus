@@ -101,8 +101,8 @@
 #define USER_MANUAL_URI		"help:nautilus-user-manual"
 #define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
 #define RELEASE_NOTES_URI	"help:nautilus-release-notes"
-#define CUSTOMER_SUPPORT_URI	"http://support.eazel.com"
-#define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
+#define CUSTOMER_SUPPORT_URI	"http://www.redhat.com/support/"
+#define START_HERE_URI          "starthere:"
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -345,6 +345,15 @@ go_menu_home_callback (BonoboUIComponent *component,
 		       const char *verb) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+go_menu_start_here_callback (BonoboUIComponent *component, 
+			     gpointer user_data, 
+			     const char *verb) 
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       START_HERE_URI);
 }
 
 static void
@@ -693,15 +702,6 @@ help_menu_support (BonoboUIComponent *component,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
 			       CUSTOMER_SUPPORT_URI);
-}
-
-static void
-help_menu_nautilus_feedback_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
-{
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       CUSTOMER_FEEDBACK_URI);
 }
 
 /* utility routine to return an image corresponding to the passed-in user level */
@@ -1276,6 +1276,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
+		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
 		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
@@ -1302,7 +1303,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
 		BONOBO_UI_VERB ("Nautilus Release Notes", help_menu_nautilus_release_notes_callback),
 		BONOBO_UI_VERB ("Support", help_menu_support),
-		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 
 		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),
 		BONOBO_UI_VERB ("Switch to Intermediate Level", user_level_menu_item_callback),

@@ -94,7 +94,7 @@ uri_is_local (const char *uri)
 	is_local = gnome_vfs_uri_is_local (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
-	return is_local;	
+	return is_local;
 }
 
 static gboolean

@@ -49,6 +49,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libnautilus-private/nautilus-audio-player.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-directory-background.h>
@@ -2033,6 +2034,16 @@ get_icon_text_callback (NautilusIconContainer *container,
 			return;
 		}
 	}
+
+	actual_uri = nautilus_file_get_uri (file);
+	if (strcmp (gnome_vfs_mime_type_from_name_or_default (actual_uri, ""),
+		    "application/x-gnome-app-info") == 0 &&
+	    nautilus_file_is_local (file)) {
+		*additional_text = NULL;
+		return;
+	}
+
+	g_free (actual_uri);
 	
 	/* Find out what attributes go below each icon. */
 	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);

@@ -238,7 +238,6 @@ static gboolean
 check_required_directories (NautilusApplication *application)
 {
 	char *user_directory;
-	char *user_main_directory;
 	char *desktop_directory;
 	EelStringList *directories;
 	char *directories_as_string;
@@ -250,7 +249,6 @@ check_required_directories (NautilusApplication *application)
 	g_assert (NAUTILUS_IS_APPLICATION (application));
 
 	user_directory = nautilus_get_user_directory ();
-	user_main_directory = nautilus_get_user_main_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
 	directories = eel_string_list_new (TRUE);
@@ -258,12 +256,7 @@ check_required_directories (NautilusApplication *application)
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
 		eel_string_list_insert (directories, user_directory);
 	}
-	g_free (user_directory);
-	    
-	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		eel_string_list_insert (directories, user_main_directory);
-	}
-	g_free (user_main_directory);
+	g_free (user_directory);	    
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
 		eel_string_list_insert (directories, desktop_directory);
@@ -415,6 +408,35 @@ migrate_old_nautilus_files (void)
 	g_free (old_desktop_dir);
 }
 
+static gint
+create_starthere_link_callback (gpointer data)
+{
+	char *desktop_path;
+	char *desktop_link_file;
+	char *cmd;
+	
+	/* Create default services icon on the desktop */
+	desktop_path = nautilus_get_desktop_directory ();
+	desktop_link_file = nautilus_make_path (desktop_path,
+						"starthere.desktop");
+
+	cmd = g_strconcat ("/bin/cp ",
+			   NAUTILUS_DATADIR,
+			   "/starthere.desktop ",
+			   desktop_link_file,
+			   NULL);
+
+	if (system (cmd) != 0) {
+		g_warning ("Failed to execute command '%s'\n", cmd);
+	}
+	
+	g_free (desktop_path);
+	g_free (desktop_link_file);
+	g_free (cmd);
+	
+	return FALSE;
+}
+
 static void
 finish_startup (NautilusApplication *application)
 {
@@ -463,8 +485,12 @@ nautilus_application_startup (NautilusApplication *application,
 
 	/* Run the first time startup druid if needed. */
 	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		nautilus_first_time_druid_show (application, urls);
-		return;
+		/* Do this at idle time, once nautilus has initialized
+		 * itself. Otherwise we may spawn a second nautilus
+		 * process when looking for a metadata factory..
+		 */
+		g_idle_add (create_starthere_link_callback, NULL);
+		nautilus_set_first_time_file_flag ();
 	}
 
 	CORBA_exception_init (&ev);

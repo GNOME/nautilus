@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-file.h"
 
+#include "nautilus-desktop-file.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
@@ -1514,6 +1515,13 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 	return compare;
 }
 
+static gboolean
+has_unwriteable_emblem (NautilusFile *file)
+{
+	/* FIXME - what should this do? */
+	return FALSE;
+}
+
 static int
 get_automatic_emblems_as_integer (NautilusFile *file)
 {
@@ -1525,7 +1533,7 @@ get_automatic_emblems_as_integer (NautilusFile *file)
 	integer <<= 1;
 	integer |= !nautilus_file_can_read (file);
 	integer <<= 1;
-	integer |= !nautilus_file_can_write (file);
+	integer |= has_unwriteable_emblem (file);
 	integer <<= 1;
 	integer |= nautilus_file_is_in_trash (file);
 
@@ -1542,7 +1550,7 @@ prepend_automatic_emblem_names (NautilusFile *file,
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
-	if (!nautilus_file_can_write (file)) {
+	if (has_unwriteable_emblem (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
 	}
@@ -2207,7 +2215,6 @@ char *
 nautilus_file_get_name (NautilusFile *file)
 {
 	char *name;
-	GnomeDesktopEntry *entry;
 	char *path, *uri;
 	char *caption;
 	int size, res;
@@ -2217,27 +2224,40 @@ nautilus_file_get_name (NautilusFile *file)
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
+	/* handle .desktop files */
 	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
 		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
 
 		name = NULL;
-		if (path != NULL) {
-			entry = gnome_desktop_entry_load (path);
-			if (entry != NULL) {
-				name = g_strdup (entry->name);
-				gnome_desktop_entry_free (entry);
-			}
+		if (nautilus_file_is_local (file)) {
+			name = nautilus_desktop_file_get_name (uri);
 		}
 		
-		g_free (path);
 		g_free (uri);
-
+		uri = NULL;
+		
 		if (name != NULL) {
 			return name;
 		}
 	}
 
+	/* honor .directory found inside a directory */
+	if (nautilus_file_is_directory (file) &&
+	    nautilus_file_is_local (file)) {
+		char *dot_dir_uri;
+		char *file_uri;
+		
+		file_uri = nautilus_file_get_uri (file);
+		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
+		g_free (file_uri);
+		
+		name = nautilus_desktop_file_get_name (dot_dir_uri);
+		g_free (dot_dir_uri);
+
+		if (name != NULL)
+			return name;
+	}
+	
 	/* Desktop directories contain special "URL" files, handle
 	 * those by using the gnome metadata caption.
 	 */

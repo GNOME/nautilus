@@ -164,8 +164,8 @@ druid_cancel (GtkWidget *druid)
 
 /* handle the final page finishing  */
 
-static void
-druid_set_first_time_file_flag (void)
+void
+nautilus_set_first_time_file_flag (void)
 {
 	FILE *stream;
 	char *user_directory, *druid_flag_file_name;
@@ -194,19 +194,14 @@ druid_set_first_time_file_flag (void)
 static void
 druid_finished (GtkWidget *druid_page)
 {
-	char *user_main_directory;
 	const char *signup_uris[3];
 	
 	
 	/* Hide druid so we don't have a blocked dialog visible while we process the startup tasks. */
-	gtk_widget_hide_all (gtk_widget_get_toplevel (druid_page));
-	
-	user_main_directory = nautilus_get_user_main_directory ();
-
-	g_free (user_main_directory);
+	gtk_widget_hide_all (gtk_widget_get_toplevel (druid_page));	
 
 	/* write out the first time file to indicate that we've successfully traversed the druid */
-	druid_set_first_time_file_flag ();
+	nautilus_set_first_time_file_flag ();
 
 	/* Do the user level config */
 	eel_preferences_set_user_level (current_user_level);
@@ -240,7 +235,7 @@ druid_finished (GtkWidget *druid_page)
 		gtk_idle_add (convert_gmc_desktop_icons, NULL);
 	}
 #endif
-	
+ 	
 	/* Time to start. Hooray! */
 	nautilus_application_startup (save_application, FALSE, FALSE, draw_desktop, 
 				      FALSE, FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
@@ -1268,7 +1263,7 @@ initiate_file_download (GnomeDruid *druid)
 	/* FIXME bugzilla.eazel.com 5054: We might hang here for a while; if we do, we don't want
 	 * the user to get forced through the druid again
 	 */
-	druid_set_first_time_file_flag ();
+	nautilus_set_first_time_file_flag ();
 
 	/* We need to exercise the main loop so that gnome-vfs can get its
 	 * gconf callback for the HTTP proxy autoconfiguration case.

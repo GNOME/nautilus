@@ -59,6 +59,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-desktop-file.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -1071,16 +1072,11 @@ static float fm_directory_view_preferred_zoom_levels[] = {
 static NautilusDirectory *
 get_scripts_directory (void)
 {
-	char *main_directory_path;
 	char *scripts_directory_path;
-	NautilusDirectory *directory;
-	
-	main_directory_path = nautilus_get_user_main_directory ();
-	/* Localizers: This is the name of a directory that's created in ~/Nautilus, and
-	 * stores the scripts that appear in the Scripts submenu.
-	 */
-	scripts_directory_path = nautilus_make_path (main_directory_path, _("scripts"));
-	g_free (main_directory_path);
+	NautilusDirectory *directory;	
+
+	scripts_directory_path = nautilus_make_path (g_get_home_dir (),
+						     ".nautilus-scripts");
 
 	if (!g_file_exists (scripts_directory_path)) {
 		mkdir (scripts_directory_path, 
@@ -4406,7 +4402,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	FMDirectoryView *view;
 	char *uri, *command, *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
-	GnomeDesktopEntry *entry;
 	ActivationAction action;
 	
 	parameters = callback_data;
@@ -4452,18 +4447,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (action != ACTIVATION_ACTION_DO_NOTHING
 	    && strcmp (gnome_vfs_mime_type_from_name_or_default (uri, ""),
-		       "application/x-gnome-app-info") == 0) {
-
-		executable_path = gnome_vfs_get_local_path_from_uri (uri);
-		if (executable_path != NULL) {
-			entry = gnome_desktop_entry_load (executable_path);
-			if (entry != NULL) {
-				gnome_desktop_entry_launch (entry);
-			}
-			gnome_desktop_entry_free (entry);
-		}
-		g_free (executable_path);
-
+		       "application/x-gnome-app-info") == 0
+	    && nautilus_file_is_local (file)) {
+		nautilus_desktop_file_launch (uri);
+		
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	}
 	

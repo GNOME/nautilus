@@ -29,6 +29,7 @@
 #include "nautilus-icon-factory.h"
 
 #include "nautilus-default-file-icon.h"
+#include "nautilus-desktop-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -57,9 +58,11 @@
 #include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <librsvg/rsvg.h>
 #include <stdio.h>
@@ -1431,7 +1434,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
  	int file_size, size, res;
  	NautilusScalableIcon *scalable_icon;
 	char *directory_uri;
-	GnomeDesktopEntry *entry;
 	
 	if (file == NULL) {
 		return NULL;
@@ -1501,9 +1503,32 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			}
 		}
 	}
+
+
+	/* Handle .desktop files */
+	if (uri == NULL && icon_name == NULL &&
+	    nautilus_file_is_mime_type (file, "application/x-gnome-app-info") &&
+	    /* sync I/O, so locally only */
+	    nautilus_file_is_local (file)) {
+		uri = nautilus_desktop_file_get_icon (file_uri);
+	}
+
+	/* .directory files */
+	if (uri == NULL && icon_name == NULL &&
+	    nautilus_file_is_directory (file) &&
+	    /* sync I/O, so locally only */
+	    nautilus_file_is_local (file)) {
+		char *dot_dir_uri;
+		
+		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
+		uri = nautilus_desktop_file_get_icon (dot_dir_uri);
+		g_free (dot_dir_uri);
+	}
+
 	
 	/* Handle nautilus link xml files, which may specify their own image */	
-	if (nautilus_file_is_nautilus_link (file)) {
+	if (uri == NULL && icon_name == NULL &&
+	    nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 		if (file_path != NULL) {
@@ -1528,23 +1553,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		}
 	}
 
-	/* Handle .desktop files. */
-	if (uri == NULL
-	    && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
-		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
-		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		if (file_path != NULL) {
-			entry = gnome_desktop_entry_load (file_path);
-			if (entry != NULL) {
-				if (entry->icon != NULL) {
-					uri = gnome_vfs_get_uri_from_local_path (entry->icon);
-				}
-				gnome_desktop_entry_free (entry);
-			}
-			g_free (file_path);
-		}
-	}
-	
 	/* handle SVG files */
 	if (uri == NULL && icon_name == NULL
 	    && nautilus_file_is_mime_type (file, "image/svg")) {
@@ -1553,7 +1561,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	
 	/* Get the generic icon set for this file. */
         g_free (file_uri);
-        if (icon_name == NULL) {
+        if (uri == NULL && icon_name == NULL) {
 		icon_name = get_icon_name_for_file (file);
 	}
 
@@ -1562,7 +1570,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(uri, mime_type, icon_name, modifier, top_left_text);
-
+	
 	g_free (uri);
 	g_free (mime_type);
 	g_free (icon_name);
@@ -1866,12 +1874,15 @@ load_named_icon (const char *name,
 {
 	char *path;
 	GdkPixbuf *pixbuf;
-
+	
 	path = get_icon_file_path (name, modifier,
 				   size_in_pixels, optimized_for_aa,
 				   details);
+	
 	pixbuf = load_icon_from_path (path, size_in_pixels, FALSE,
 				      eel_str_has_prefix (name, EMBLEM_NAME_PREFIX));
+
+	
 	g_free (path);
 
 	if (pixbuf == NULL) {
