@@ -1,3 +1,9 @@
+2001-06-10 John Fleck <jfleck@inkstain.net>
+
+	* components/help/converters/gnome-db2html3/Makefile.am:
+	fix segfault caused by the fact that we were linking to both
+	libxml1 and 2
+
 2001-06-09  Dan Mueth  <d-mueth@uchicago.edu>
 
 	Updated Nautilus User Manual for 1.0.4.
