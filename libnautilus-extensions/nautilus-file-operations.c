@@ -1319,7 +1319,7 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 				progress_info->duplicate_name,
 				progress_info->duplicate_count);
 		} else {
-			progress_info->duplicate_name = g_strdup_printf ("%s %d", 
+			progress_info->duplicate_name = g_strdup_printf ("%s%%20%d", 
 				progress_info->duplicate_name,
 				progress_info->duplicate_count);
 		}

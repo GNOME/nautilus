@@ -1624,8 +1624,8 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 		if (debuting_uri_data->added_files != NULL) {
 			fm_directory_view_set_selection (directory_view, debuting_uri_data->added_files);
 			fm_directory_view_reveal_selection (directory_view);
-			debuting_uri_data_free (debuting_uri_data);
 		}
+		debuting_uri_data_free (debuting_uri_data);
 	} else {
 		/* We need to run after the default handler adds the folder we want to
 		 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we

@@ -1,3 +1,13 @@
+2000-10-25  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(new_folder_xfer_callback):
+	new_folder_xfer_callback was not escaping the space in
+	duplicate_name, this was causing us to not recognize
+	second and subsequent new folders (& select them).
+	* src/file-manager/fm-directory-view.c: (copy_move_done_callback):
+	moved free call to better spot
+
 2000-10-25  J Shane Culpepper  <pepper@eazel.com>
 
 	* src/nautilus-window-service-ui.c: (goto_online_storage):
