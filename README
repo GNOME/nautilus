@@ -100,64 +100,6 @@ packages by trying to execute "package-config --version" (ie:
 gnome-config --version will report gnome-libs version, gconf-config
 --version will report gconf's version).
 
-        Compiling from tarballs.
-        ------------------------
-If you are compiling from tarballs, (ie: using released versions of
-nautilus and the relevant packages), you want to follow the
-instructions below.
-
-The following lists the packages and the versions they should report.
-
-    module             version            configure options       dist.
-    ------             ------             -----------------       ----- 
-    rpm                <see below>        --enable-eazel-services RH6.2 or higher
-    popt:              <1.5, but not from GNOME CVS, see below>   RH6.2
-    glib:              1.2.8                                      HC1.2
-    gtk+:              1.2.8                                      HC1.2
-    imlib:             1.9.8.1                                    HC1.2
-    gnome-xml:         1.8.10                                     HC1.2
-    ORBit:             0.5.5                                      HC1.2
-    gnome-libs:        1.2.7              --enable-prefer-db1     HC1.2
-    gnome-http:        1.0.7					  HC1.2
-    oaf:               0.6.2 			                  HC1.2
-    gconf:             0.11
-    gdk-pixbuf:        0.9.0              --enable-canvas-pixbuf  HC1.2
-    gnome-print:       0.24					  HC1.2
-    control-center     1.2.2					  HC1.2
-    gnome-vfs:         HEAD 
-    bonobo:            0.26					  HC
-    libglade:          0.14				  	  HC1.2
-    libunicode:        0.4					  HC
-    medusa:            HEAD
-    ammonite:          HEAD
-    nautilus:          0.2   
-
-RH6.2 == Version from Red Hat 6.2 OK
-HC1.2 == Version from Helix Code Gnome 1.2 OK
-HC == Helix Code may be from Evolution Preview
-
-If you are running Helix Code's GNOME, you should not need recompile
-the packages marked "HC1.2" provided you have installed the
-corresponding development packages.
-
-We assume you want to install these packages in another prefix than
-/usr since you want to keep a working system. For the following, we
-assume you are installing in /usr/local. ie: ${prefix}=/usr/local
-
-Redefine your PATH environment variable: 
-        export PATH=$PATH:${prefix}/bin
-Redefine your LD_LIBRARY_PATH environment variable: 
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${prefix}/lib
-Redefine your GNOME_PATH environment variable: 
-        export GNOME_PATH=$GNOME_PATH:${prefix}
-
-In the order defined above and with the specific options detailed
-above, you should run the configure scripts with: "./configure
---prefix=${prefix} --special-options" Then, run make; get root and run
-make install.
-
-You should get a running nautilus soon after. :)
-
         Compiling from cvs.
         -------------------
 Compiling from cvs usually requires more work and some packages may
@@ -180,12 +122,11 @@ The following lists the packages and the versions that are required.
     oaf:               oaf-stable-0-6
     gconf:             gconf-1-0          --disable-debug
     gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
-    gnome-print:       HEAD
+    gnome-print:       GNOME_PRINT_0_25
     control-center     control-center-1-0
-    gnome-vfs:         HEAD
+    gnome-vfs:         gnome-vfs-1
     bonobo:            HEAD
     ammonite           HEAD
-    xpdf:              HEAD
     medusa:            HEAD
     nautilus:          HEAD
 
