@@ -65,6 +65,7 @@ struct _NautilusSummaryViewDetails {
 	gboolean	*logged_in;
 
 	/* Services control panel */
+	GtkTable	*services_table;
 	GtkWidget	*services_icon_container;
 	GtkWidget	*services_icon_widget;
 	char		*services_icon_name;
@@ -93,25 +94,31 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*maintenance_label;
 	GtkWidget	*logout_button;
 	GtkWidget	*logout_label;
-	/* Always available */
-	GtkWidget	*community_button;
-	GtkWidget	*community_label;
 
 	/* Eazel news panel */
 	gboolean	*news_has_data;
+	GtkTable	*service_news_table;
 	GtkWidget	*news_icon_container;
+	GtkWidget	*news_icon_widget;
 	char		*news_icon_name;
+	GtkWidget	*news_description_header_widget;
 	char		*news_description_header;
+	GtkWidget	*news_description_body_widget;
 	char		*news_description_body;
 
 	/* Update control panel */
 	gboolean	*updates_has_data;
+	GtkTable	*updates_table;
 	GtkWidget	*update_icon_container;
+	GtkWidget	*update_icon_widget;
 	char		*update_icon_name;
+	GtkWidget	*update_description_header_widget;
 	char		*update_description_header;
+	GtkWidget	*update_description_body_widget;
 	char		*update_description_body;
 	GtkWidget	*update_button_container;
 	GtkWidget	*update_goto_button;
+	GtkWidget	*update_goto_label_widget;
 	char		*update_goto_label;
 	char		*update_redirect;
 
@@ -131,6 +138,12 @@ static void	summary_load_location_callback		(NautilusView			*nautilus_view,
 							 const char			*location,
 	 						 NautilusSummaryView		*view);
 static void	generate_summary_form			(NautilusSummaryView		*view);
+static void	generate_service_entry_row		(NautilusSummaryView		*view,
+							 int				row);
+static void	generate_eazel_news_entry_row		(NautilusSummaryView		*view,
+							 int				row);
+static void	generate_update_news_entry_row		(NautilusSummaryView		*view,
+							 int				row);
 static void	login_button_cb				(GtkWidget			*button,
 							 NautilusSummaryView		*view); 
 static void	maintenance_button_cb			(GtkWidget			*button,
@@ -145,8 +158,6 @@ static void	goto_update_cb				(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 static void	register_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view);
-static void	community_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -160,12 +171,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget	*small_title;
 	GtkWidget	*temp_box;
 	GtkWidget	*temp_hbox;
-	GtkWidget	*temp_icon;
-	GtkWidget	*temp_label;
-	GtkWidget	*temp_button;
-	GtkTable	*services_table;
-	GtkTable	*service_news_table;
-	GtkTable	*updates_table;
 	GtkWidget	*button_box;
 
 	/* set to default not logged in for now */
@@ -208,43 +213,40 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
 
-	/* Create the parent table to hold 3 rows */
-	services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
+	/* Create the parent table to hold 5 rows */
+	view->details->services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
 
-	/* Generate first column with fake icon */
-	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
+	/* Build the first column with static data for now */
 	view->details->services_icon_name = g_strdup_printf ("vault-service-icon.png");
-	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_BACKGROUND_COLOR);
-	g_assert (view->details->services_icon_widget != NULL);
-	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
-	gtk_widget_show (view->details->services_icon_widget);
-	gtk_table_attach (services_table, view->details->services_icon_container, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->services_icon_container);
-
-	/* Generate second Column with fake service title and summary */
-	view->details->services_description_body_widget = nautilus_label_new ("Vault Service:\n Your remote file storage");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
-	gtk_table_attach (services_table, view->details->services_description_body_widget, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->services_description_body_widget);
-
-	/* Add the redirect button to the third column */
-	view->details->services_button_container = gtk_hbox_new (TRUE, 0);
-	view->details->services_goto_button = gtk_button_new ();
-	view->details->services_goto_label = g_strdup_printf ("  Go to Vault  ");
-	view->details->services_goto_label_widget = nautilus_label_new (view->details->services_goto_label);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_goto_label_widget), 12);
-	gtk_widget_show (view->details->services_goto_label_widget);
-	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
-	gtk_box_pack_start (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 13);
+	view->details->services_description_body = g_strdup_printf ("Vault Service:\n Your remote file storage");
+	view->details->services_goto_label = g_strdup_printf ("   Go to Vault!   ");
 	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/services.html");
-	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), view);
-	gtk_widget_show (view->details->services_goto_button);
-	gtk_table_attach (services_table, view->details->services_button_container, 2, 3, 0, 1, 0, 0, 0, 0);
-	gtk_widget_show (view->details->services_button_container);
+	generate_service_entry_row (view, 1);
+
+	/* Build the second column with static data for now */
+	view->details->services_icon_name = g_strdup_printf ("softcat-service-icon.png");
+	view->details->services_description_body = g_strdup_printf ("Eazel's software catalog:\n Look for the latest software here!");
+	view->details->services_goto_label = g_strdup_printf (" Go to SoftCat! ");
+	view->details->services_redirect = g_strdup_printf ("http://www.eazel.com/register.html");
+	generate_service_entry_row (view, 2);
+
+	/* Build the third column with static data for now */
+	view->details->services_icon_name = g_strdup_printf ("inventory-service-icon.png");
+	view->details->services_description_body = g_strdup_printf ("Inventory Sync Service:\n Update your inventory now!");
+	view->details->services_goto_label = g_strdup_printf ("Go to Inventory View");
+	view->details->services_redirect = g_strdup_printf ("eazel-inventory:");
+	generate_service_entry_row (view, 3);
+
+	/* Build the fourth column with static data for now */
+	view->details->services_icon_name = g_strdup_printf ("time-sync-service-icon.png");
+	view->details->services_description_body = g_strdup_printf ("Time Sync Service:\n Update your clock now!");
+	view->details->services_goto_label = g_strdup_printf ("  Sync time now!  ");
+	view->details->services_redirect = g_strdup_printf ("http://nautilus.eazel.com");
+	generate_service_entry_row (view, 4);
 
 	/* draw parent vbox and connect it to the login frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (services_table), 0, 0, 0);
-	gtk_widget_show (GTK_WIDGET (services_table));
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (view->details->services_table));
 	gtk_widget_show (temp_box);
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
@@ -322,7 +324,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		/* register button */
 		view->details->register_button = gtk_button_new ();
-		view->details->register_label = nautilus_label_new (" Register Now! ");
+		view->details->register_label = nautilus_label_new ("    Register Now!    ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->register_label), 12);
 		gtk_widget_show (view->details->register_label);
 		gtk_container_add (GTK_CONTAINER (view->details->register_button), view->details->register_label);
@@ -337,7 +339,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	else {
 		/* maintenance button */
 		view->details->maintenance_button = gtk_button_new ();
-		view->details->maintenance_label = nautilus_label_new (" I need some help! ");
+		view->details->maintenance_label = nautilus_label_new ("  I need some help!  ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->maintenance_label), 12);
 		gtk_widget_show (view->details->maintenance_label);
 		gtk_container_add (GTK_CONTAINER (view->details->maintenance_button), view->details->maintenance_label);
@@ -351,7 +353,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		/* logout button */
 		view->details->logout_button = gtk_button_new ();
-		view->details->logout_label = nautilus_label_new (" Log me out! ");
+		view->details->logout_label = nautilus_label_new ("     Log me out!     ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->logout_label), 12);
 		gtk_widget_show (view->details->logout_label);
 		gtk_container_add (GTK_CONTAINER (view->details->logout_button), view->details->logout_label);
@@ -363,20 +365,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_widget_show (button_box);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 	}
-
-	/* community button */
-	view->details->community_button = gtk_button_new ();
-	view->details->community_label = nautilus_label_new (" Go to Eazel Community! ");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->community_label), 12);
-	gtk_widget_show (view->details->community_label);
-	gtk_container_add (GTK_CONTAINER (view->details->community_button), view->details->community_label);
-	button_box = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (button_box), view->details->community_button, FALSE, FALSE, 21);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->community_button, FALSE, FALSE, 1);
-	gtk_signal_connect (GTK_OBJECT (view->details->community_button), "clicked", GTK_SIGNAL_FUNC (community_button_cb), view);
-	gtk_widget_show (view->details->community_button);
-	gtk_widget_show (button_box);
-	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_widget_show (temp_box);
@@ -405,26 +393,16 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
 	gtk_widget_show (small_title);
 
-	service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
+	view->details->service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
 
-	/* Generate first column with fake icon */
-	temp_hbox = gtk_hbox_new (TRUE, 4);
-	temp_icon = create_image_widget ("emblem-changed.gif", DEFAULT_BACKGROUND_COLOR);
-	g_assert (temp_icon != NULL);
-	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
-	gtk_widget_show (temp_icon);
-	gtk_table_attach (service_news_table, temp_hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_hbox);
-
-	/* Generate second Column with fake service title and summary */
-	temp_label = nautilus_label_new ("The Eazel servers will be down this Friday!");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
-	gtk_table_attach (service_news_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_label);
+	/* Build the first column with static data for now */
+	view->details->news_icon_name = g_strdup_printf ("services-warning.png");
+	view->details->news_description_body = g_strdup_printf ("The Eazel servers will be down this friday!");
+	generate_eazel_news_entry_row (view, 1);
 
 	/* draw parent vbox and connect it to the login frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (service_news_table), 0, 0, 0);
-	gtk_widget_show (GTK_WIDGET (service_news_table));
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (view->details->service_news_table));
 	gtk_widget_show (temp_box);
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
@@ -447,46 +425,113 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
 	gtk_widget_show (small_title);
 
-	updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
+	/* create the default update table with 4 rows */
+	view->details->updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
 
-	/* Generate first column with fake icon */
-	temp_hbox = gtk_hbox_new (TRUE, 4);
-	temp_icon = create_image_widget ("netscape.png", DEFAULT_BACKGROUND_COLOR);
-	g_assert (temp_icon != NULL);
-	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
-	gtk_widget_show (temp_icon);
-	gtk_table_attach (updates_table, temp_hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_hbox);
-
-	/* Generate second Column with fake service title and summary */
-	temp_label = nautilus_label_new ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
-	gtk_table_attach (updates_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_label);
-
-	/* Add the redirect button to the third column */
-	temp_button = gtk_button_new ();
-	temp_label = nautilus_label_new (" Update Netscape Now! ");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
-	gtk_widget_show (temp_label);
-	gtk_container_add (GTK_CONTAINER (temp_button), temp_label);
-	temp_hbox = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_button, FALSE, FALSE, 13);
+	/* Build the first column with static data for now */
+	view->details->update_icon_name = g_strdup_printf ("netscape.png");
+	view->details->update_description_body = g_strdup_printf ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
+	view->details->update_goto_label = g_strdup_printf (" Update Nescape Now! ");
 	view->details->update_redirect = g_strdup_printf ("http://download.netscape.com");
-	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), view);
-	gtk_widget_show (temp_button);
-	gtk_table_attach (updates_table, temp_hbox, 2, 3, 0, 1, 0, 0, 0, 0);
-	gtk_widget_show (temp_hbox);
+	generate_update_news_entry_row (view, 1);
 
 	/* draw parent vbox and connect it to the login frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (updates_table), 0, 0, 0);
-	gtk_widget_show (GTK_WIDGET (updates_table));
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (view->details->updates_table));
 	gtk_widget_show (temp_box);
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
 	/* draw the parent frame box */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), 0, 0, 4);
 	gtk_widget_show (GTK_WIDGET (parent));
+}
+
+static void
+generate_service_entry_row  (NautilusSummaryView	*view, int	row)
+{
+	/* Generate first column with service icon */
+	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
+	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_BACKGROUND_COLOR);
+	g_assert (view->details->services_icon_widget != NULL);
+	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
+	gtk_widget_show (view->details->services_icon_widget);
+	gtk_table_attach (view->details->services_table, view->details->services_icon_container, 0, 1, row - 1 , row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->services_icon_container);
+
+	/* Generate second Column with service title and summary */
+	view->details->services_description_body_widget = nautilus_label_new (view->details->services_description_body);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
+	gtk_table_attach (view->details->services_table, view->details->services_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->services_description_body_widget);
+
+	/* Add the redirect button to the third column */
+	view->details->services_button_container = gtk_hbox_new (TRUE, 0);
+	view->details->services_goto_button = gtk_button_new ();
+	view->details->services_goto_label_widget = nautilus_label_new (view->details->services_goto_label);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_goto_label_widget), 12);
+	gtk_widget_show (view->details->services_goto_label_widget);
+	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
+	gtk_box_pack_start (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 13);
+	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), view);
+	gtk_widget_show (view->details->services_goto_button);
+	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
+	gtk_widget_show (view->details->services_button_container);
+
+}
+
+static void
+generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
+{
+
+	/* Generate first column with icon */
+	view->details->news_icon_container = gtk_hbox_new (TRUE, 4);
+	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_BACKGROUND_COLOR);
+	g_assert (view->details->news_icon_widget != NULL);
+	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
+	gtk_widget_show (view->details->news_icon_widget);
+	gtk_table_attach (view->details->service_news_table, view->details->news_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->news_icon_container);
+
+	/* Generate second Column with news content */
+	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
+	gtk_table_attach (view->details->service_news_table, view->details->news_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->news_description_body_widget);
+
+}
+
+static void
+generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
+{
+
+	/* Generate first column with icon */
+	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
+	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_BACKGROUND_COLOR);
+	g_assert (view->details->update_icon_widget != NULL);
+	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, 0, 0, 0);
+	gtk_widget_show (view->details->update_icon_widget);
+	gtk_table_attach (view->details->updates_table, view->details->update_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->update_icon_container);
+
+	/* Generate second Column with update title and summary */
+	view->details->update_description_body_widget = nautilus_label_new (view->details->update_description_body);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_body_widget), 12);
+	gtk_table_attach (view->details->updates_table, view->details->update_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (view->details->update_description_body_widget);
+
+	/* Add the redirect button to the third column */
+	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
+	view->details->update_goto_button = gtk_button_new ();
+	view->details->update_goto_label_widget = nautilus_label_new (view->details->update_goto_label);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_goto_label_widget), 12);
+	gtk_widget_show (view->details->update_goto_label_widget);
+	gtk_container_add (GTK_CONTAINER (view->details->update_goto_button), view->details->update_goto_label_widget);
+	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_goto_button, FALSE, FALSE, 13);
+	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), view);
+	gtk_widget_show (view->details->update_goto_button);
+	gtk_table_attach (view->details->updates_table, view->details->update_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
+	gtk_widget_show (view->details->update_button_container);
+
 }
 
 /* callback to enable / disable the login button when something is typed into the field */
@@ -650,15 +695,6 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 /* callback to handle the maintenance button.  Right now only does a simple redirect. */
 static void
 maintenance_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
-{
-
-	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
-
-}
-
-/* callback to handle the community button.  Right now only does a simple redirect. */
-static void
-community_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
 	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
