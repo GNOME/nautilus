@@ -54,6 +54,7 @@ typedef enum {
 	NAUTILUS_DETERMINE_VIEW_ACCESS_DENIED,
 	NAUTILUS_DETERMINE_VIEW_HOST_NOT_FOUND,
 	NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS,
+	NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER,
 } NautilusDetermineViewResult;
 
 typedef void (* NautilusDetermineViewCallback) (NautilusDetermineViewHandle  *handle,

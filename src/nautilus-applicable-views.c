@@ -66,6 +66,8 @@ get_view_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_result)
                 return NAUTILUS_DETERMINE_VIEW_HOST_NOT_FOUND;
 	case GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS:
 		return NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS;
+        case GNOME_VFS_ERROR_NO_MASTER_BROWSER:
+                return NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER;
         case GNOME_VFS_ERROR_GENERIC:
         case GNOME_VFS_ERROR_INTERNAL:
                 /* These two have occurred at least once in the web browser component */

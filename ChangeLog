@@ -1,3 +1,14 @@
+2002-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-applicable-views.c:
+	* src/nautilus-applicable-views.h:
+	Add NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER result.
+
+	* src/nautilus-window-manage-views.c:
+	Give nice error message when there is no master browser.
+
+	Note: This change requires gnome-vfs cvs after the 2.1.4 release.
+	
 2002-12-09  James Willcox  <jwillcox@gnome.org>
 
 	* libnautilus-private/nautilus-icon-factory.c:

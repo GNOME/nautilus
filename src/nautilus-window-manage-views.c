@@ -1376,6 +1376,13 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                                  uri_for_display);
 		break;
 
+        case NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER:
+                error_message = g_strdup_printf
+                        (_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
+                           "Check that an SMB server is running in the local network."),
+                         uri_for_display);
+                break;
+
 	case NAUTILUS_DETERMINE_VIEW_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (location)) {
 			/* FIXME bugzilla.gnome.org 42458: Need to give
@@ -1389,17 +1396,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                    "don't have an index, that the Medusa indexer is running."));
 			dialog_title = g_strdup (_("Searching Unavailable"));
 			break;
-		} else {
-			/* This is a special case for the smb: module */
-			if (eel_istr_has_prefix(location, "smb:") == 0)
-			{
-				error_message = g_strdup_printf
-					(_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
-					"Check that an SMB server is running in the local network."),
-					uri_for_display);
-				break;
-			}
-		}
+		} 
 		/* else fall through */
         default:
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
