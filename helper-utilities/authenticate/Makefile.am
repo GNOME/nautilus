@@ -1,4 +1,4 @@
- NULL =
+NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \

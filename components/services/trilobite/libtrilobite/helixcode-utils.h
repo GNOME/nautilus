@@ -35,30 +35,8 @@
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
-typedef enum _DistributionType DistributionType;
-
-enum _DistributionType {
-        DISTRO_REDHAT_5,           /* Red Hat 5.x (glibc 2.0) */
-        DISTRO_REDHAT_6,           /* Red Hat 6.0 (glibc 2.1) */
-        DISTRO_REDHAT_6_1,         /* Red Hat 6.1 (glibc 2.1) */
-        DISTRO_REDHAT_6_2,         /* Red Hat 6.2 (glibc 2.1) */
-        DISTRO_MANDRAKE_6_1,       /* Mandrake 6.1 (glibc 2.1) */
-        DISTRO_MANDRAKE_7,         /* Mandrake 7.0 */
-        DISTRO_CALDERA,            /* Caldera */
-        DISTRO_SUSE,               /* SuSE */
-        DISTRO_LINUXPPC,           /* LinuxPPC */
-        DISTRO_TURBOLINUX_4,       /* TurboLinux 4 */
-        DISTRO_TURBOLINUX_6,       /* TurboLinux 6 */
-        DISTRO_COREL,              /* Corel Linux */
-        DISTRO_DEBIAN_2_1,         /* Debian Linux 2.1 */
-        DISTRO_DEBIAN_2_2,         /* Debian Linux 2.2 */
-        DISTRO_UNKNOWN             /* Everything Else */
-};
-
 char* xml_get_value (xmlNode* node, const char* name);
 gboolean check_for_root_user (void);
 gboolean check_for_redhat (void);
-DistributionType determine_distribution_type (void);
-char* get_distribution_name (const DistributionType* dtype);
 
 #endif /* __HELIXCODE_INSTALL_UTILS_H__ */
