@@ -771,6 +771,7 @@ trash_or_delete_selected_files (FMDirectoryView *view)
         
 	selection = fm_directory_view_get_selection (view);
 	trash_or_delete_files (view, selection);					 
+	fm_directory_view_set_selection (view, NULL);
         nautilus_file_list_free (selection);
 }
 
