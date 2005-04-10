@@ -224,6 +224,8 @@ struct FMDirectoryViewDetails
 	gboolean batching_selection_level;
 	gboolean selection_changed_while_batched;
 
+	gboolean selection_was_removed;
+
 	gboolean metadata_for_directory_as_file_pending;
 	gboolean metadata_for_files_in_directory_pending;
 
@@ -768,11 +770,17 @@ static void
 trash_or_delete_selected_files (FMDirectoryView *view)
 {
         GList *selection;
-        
-	selection = fm_directory_view_get_selection (view);
-	trash_or_delete_files (view, selection);					 
-	fm_directory_view_set_selection (view, NULL);
-        nautilus_file_list_free (selection);
+
+	/* This might be rapidly called multiple times for the same selection
+	 * when using keybindings. So we remember if the current selection
+	 * was already removed (but the view doesn't know about it yet).
+	 */
+	if (!view->details->selection_was_removed) {
+		selection = fm_directory_view_get_selection (view);
+		trash_or_delete_files (view, selection);					 
+		nautilus_file_list_free (selection);
+		view->details->selection_was_removed = TRUE;
+	}
 }
 
 static gboolean
@@ -6499,6 +6507,8 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 	GList *selection;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	view->details->selection_was_removed = FALSE;
 
 	if (!view->details->selection_change_is_due_to_shell) {
 		view->details->send_selection_change_to_shell = TRUE;

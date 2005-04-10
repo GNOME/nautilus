@@ -1,6 +1,17 @@
 2005-04-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:
+	(trash_or_delete_selected_files),
+	(fm_directory_view_notify_selection_changed):
+	Remember if the current selection was already removed
+	and don't try to remove it again.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_remove_file):
+	Only set a new selection if the removal affects the current selection.
+		
+2005-04-10  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
 	(trash_or_delete_selected_files):
 	Unset selection so the same file won't be deleted twice via a binding.
 
