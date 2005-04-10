@@ -1457,12 +1457,10 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 		
 	   fm_list_model_remove_file (list_view->details->model, file);
 	   
-	   if (list_view->details->new_selection_path) {
-	       gtk_tree_path_free (list_view->details->new_selection_path);
-	       list_view->details->new_selection_path = NULL;
-	   }
-
-	   if(gtk_tree_row_reference_valid(row_reference)) {
+	   if (gtk_tree_row_reference_valid (row_reference)) {
+	      if (list_view->details->new_selection_path) {
+	          gtk_tree_path_free (list_view->details->new_selection_path);
+	      }
 	      list_view->details->new_selection_path = gtk_tree_row_reference_get_path (row_reference);
 	   }
 	  
