@@ -1,3 +1,16 @@
+2005-04-10  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(trash_or_delete_selected_files):
+	Unset selection so the same file won't be deleted twice via a binding.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_end_file_changes),
+	(fm_list_view_remove_file), (fm_list_view_finalize),
+	(fm_list_view_class_init):
+	Store the new selection and set it after a batch of changes,
+	not on every removal. Speeds up deleting from the list view
+	by preventing a redraw for each removed file.
+
 2005-04-05  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:

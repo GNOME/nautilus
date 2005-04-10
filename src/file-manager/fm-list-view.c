@@ -97,7 +97,9 @@ struct FMListViewDetails {
 	GtkTargetList *source_target_list;
 
 	GtkTreePath *double_click_path[2]; /* Both clicks in a double click need to be on the same row */
-	
+
+	GtkTreePath *new_selection_path;   /* Path of the new selection after removing a file */
+
 	guint drag_button;
 	int drag_x;
 	int drag_y;
@@ -1396,6 +1398,22 @@ fm_list_view_is_empty (FMDirectoryView *view)
 }
 
 static void
+fm_list_view_end_file_changes (FMDirectoryView *view)
+{
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (view);
+
+	if (list_view->details->new_selection_path) {
+		gtk_tree_view_set_cursor (list_view->details->tree_view,
+					  list_view->details->new_selection_path,
+					  NULL, FALSE);
+		gtk_tree_path_free (list_view->details->new_selection_path);
+		list_view->details->new_selection_path = NULL;
+	}
+}
+
+static void
 fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
 	GtkTreePath *path;
@@ -1431,11 +1449,13 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 		
 	   fm_list_model_remove_file (list_view->details->model, file);
 	   
+	   if (list_view->details->new_selection_path) {
+	       gtk_tree_path_free (list_view->details->new_selection_path);
+	       list_view->details->new_selection_path = NULL;
+	   }
+
 	   if(gtk_tree_row_reference_valid(row_reference)) {
-	      path = gtk_tree_row_reference_get_path (row_reference);
-	      gtk_tree_view_set_cursor (list_view->details->tree_view, path, NULL, FALSE);
-              gtk_tree_path_free (path);
-	      
+	      list_view->details->new_selection_path = gtk_tree_row_reference_get_path (row_reference);
 	   }
 	  
 	   if(row_reference) {
@@ -2079,6 +2099,9 @@ fm_list_view_finalize (GObject *object)
 	if (list_view->details->double_click_path[1]) {
 		gtk_tree_path_free (list_view->details->double_click_path[1]);
 	}
+	if (list_view->details->new_selection_path) {
+		gtk_tree_path_free (list_view->details->new_selection_path);
+	}
 
 	gtk_target_list_unref (list_view->details->source_target_list);
 	
@@ -2210,6 +2233,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->get_zoom_level = fm_list_view_get_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
+	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
