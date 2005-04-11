@@ -194,6 +194,8 @@ struct FMDirectoryViewDetails
 	guint done_loading_handler_id;
 	guint file_changed_handler_id;
 
+	guint delayed_rename_file_id;
+
 	GList *new_added_files;
 	GList *new_changed_files;
 
@@ -1685,6 +1687,11 @@ fm_directory_view_destroy (GtkObject *object)
 	if (view->details->display_selection_idle_id != 0) {
 		g_source_remove (view->details->display_selection_idle_id);
 		view->details->display_selection_idle_id = 0;
+	}
+
+	if (view->details->delayed_rename_file_id != 0) {
+		g_source_remove (view->details->delayed_rename_file_id);
+		view->details->delayed_rename_file_id = 0;
 	}
 
 	if (view->details->model) {
@@ -3341,8 +3348,12 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 		data = g_new (RenameData, 1);
 		data->view = g_object_ref (view);
 		data->new_file = nautilus_file_ref (new_file);
-		g_timeout_add (100, (GSourceFunc)delayed_rename_file_hack_callback,
-			       data);
+		if (view->details->delayed_rename_file_id != 0) {
+			g_source_remove (view->details->delayed_rename_file_id);
+		}
+		view->details->delayed_rename_file_id = 
+			g_timeout_add (100, (GSourceFunc)delayed_rename_file_hack_callback,
+				       data);
 		
 		return;
 	}
