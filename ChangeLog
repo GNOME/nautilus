@@ -1,3 +1,10 @@
+2005-04-11  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (rename_file):
+	Remove delayed_rename timeout when registering a new one
+	or destroying the view.
+
 2005-04-11  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
