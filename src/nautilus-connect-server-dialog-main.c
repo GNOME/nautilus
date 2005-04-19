@@ -109,6 +109,8 @@ main (int argc, char *argv[])
 
 	eel_preferences_init ("/apps/nautilus");
 
+	gtk_window_set_default_icon_name ("gnome-fs-directory");
+
 	dialog = nautilus_connect_server_dialog_new (NULL);
 
 	open_dialogs = 1;
