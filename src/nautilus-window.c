@@ -662,23 +662,17 @@ add_view_as_menu_item (NautilusWindow *window,
 		       int index, /* extra_viewer is always index 0 */
 		       guint merge_id)
 {
-	char *tip;
 	const NautilusViewInfo *info;
-	char *label;
 	GtkRadioAction *action;
 	char *action_name;
 	ActivateViewData *data;
 
 	info = nautilus_view_factory_lookup (identifier);
-
-	label = g_strdup_printf (_("View as %s"), _(info->label_with_mnemonic));
-	tip = g_strdup_printf (_("Display this location with \"%s\""),
-			       _(info->label));
 	
 	action_name = g_strdup_printf ("view_as_%d", index);
 	action = gtk_radio_action_new (action_name,
-				       label,
-				       tip,
+				       _(info->view_as_label_with_mnemonic),
+				       _(info->display_location_label),
 				       NULL,
 				       0);
 
@@ -690,9 +684,6 @@ add_view_as_menu_item (NautilusWindow *window,
 		   as it can get deleted/changed later */
 		window->details->view_as_radio_action = action;
 	}
-	
-	g_free (label);
-	g_free (tip);
 
 	data = g_new (ActivateViewData, 1);
 	data->window = window;

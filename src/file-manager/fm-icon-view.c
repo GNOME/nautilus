@@ -2671,7 +2671,11 @@ fm_icon_view_supports_uri (const char *uri,
 static NautilusViewInfo fm_icon_view = {
 	FM_ICON_VIEW_ID,
 	N_("Icons"),
-	N_("_Icons"),
+	N_("View as Icons"),
+	N_("View as _Icons"),
+	N_("The icon view encountered an error."),
+	N_("The icon view encountered an error while starting up."),
+	N_("Display this location with the icon view."),
 	fm_icon_view_create,
 	fm_icon_view_supports_uri
 };
@@ -2680,7 +2684,11 @@ void
 fm_icon_view_register (void)
 {
 	fm_icon_view.label = _(fm_icon_view.label);
-	fm_icon_view.label_with_mnemonic = _(fm_icon_view.label_with_mnemonic);
+	fm_icon_view.view_as_label = _(fm_icon_view.view_as_label);
+	fm_icon_view.view_as_label_with_mnemonic = _(fm_icon_view.view_as_label_with_mnemonic);
+	fm_icon_view.error_label = _(fm_icon_view.error_label);
+	fm_icon_view.startup_error_label = _(fm_icon_view.startup_error_label);
+	fm_icon_view.display_location_label = _(fm_icon_view.display_location_label);
 	
 	nautilus_view_factory_register (&fm_icon_view);
 }

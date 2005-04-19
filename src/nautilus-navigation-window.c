@@ -604,14 +604,11 @@ create_view_as_menu_item (NautilusWindow *window,
 			  guint index)
 {
 	GtkWidget *menu_item;
-        char *menu_label;
 	const NautilusViewInfo *info;
 
 	info = nautilus_view_factory_lookup (identifier);
 
-	menu_label = g_strdup_printf (_("View as %s"), _(info->label));
-	menu_item = gtk_menu_item_new_with_mnemonic (menu_label);
-	g_free (menu_label);
+	menu_item = gtk_menu_item_new_with_mnemonic (_(info->view_as_label));
 
 	g_signal_connect_object (menu_item, "activate",
 				 G_CALLBACK (view_as_menu_switch_views_callback),

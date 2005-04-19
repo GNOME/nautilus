@@ -565,40 +565,52 @@ nautilus_window_get_view_label (NautilusWindow *window)
 	return g_strdup (info->label);
 }
 
-static void
-report_content_view_failure_to_user_internal (NautilusWindow *window,
-                                     	      NautilusView *view,
-                                     	      const char *message,
-					      const char *detail)
+char *
+nautilus_window_get_view_error_label (NautilusWindow *window)
 {
-	char *label;
+	const NautilusViewInfo *info;
 
-	label = nautilus_window_get_view_label (window);
-	message = g_strdup_printf (message, label);
-	eel_show_error_dialog (message, detail, _("View Failed"), GTK_WINDOW (window));
-	g_free (label);
+	info = nautilus_view_factory_lookup (nautilus_window_get_content_view_id (window));
+
+	return g_strdup (info->error_label);
+}
+
+char *
+nautilus_window_get_view_startup_error_label (NautilusWindow *window)
+{
+	const NautilusViewInfo *info;
+
+	info = nautilus_view_factory_lookup (nautilus_window_get_content_view_id (window));
+
+	return g_strdup (info->startup_error_label);
 }
 
 static void
 report_current_content_view_failure_to_user (NautilusWindow *window,
                                      	     NautilusView *view)
 {
-	report_content_view_failure_to_user_internal 
-		(window,
-		 view,
-		 _("The %s view encountered an error and can't continue."),
-		 _("You can choose another view or go to a different location."));
+	char *message;
+
+	message = nautilus_window_get_view_startup_error_label (window);
+	eel_show_error_dialog (message,
+			       _("You can choose another view or go to a different location."),
+			       _("View Failed"),
+			       GTK_WINDOW (window));
+	g_free (message);
 }
 
 static void
 report_nascent_content_view_failure_to_user (NautilusWindow *window,
                                      	     NautilusView *view)
 {
-	report_content_view_failure_to_user_internal 
-		(window,
-		 view,
-		 _("The %s view encountered an error while starting up."),
-		 _("The location cannot be displayed with this viewer."));
+	char *message;
+
+	message = nautilus_window_get_view_error_label (window);
+	eel_show_error_dialog (message,
+			       _("The location cannot be displayed with this viewer."),
+			       _("View Failed"),
+			       GTK_WINDOW (window));
+	g_free (message);
 }
 
 

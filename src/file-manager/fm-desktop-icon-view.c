@@ -798,7 +798,11 @@ fm_desktop_icon_view_supports_uri (const char *uri,
 static NautilusViewInfo fm_desktop_icon_view = {
 	FM_DESKTOP_ICON_VIEW_ID,
 	N_("Desktop"),
-	N_("_Desktop"),
+	N_("View as Desktop"),
+	N_("View as _Desktop"),
+	N_("The desktop view encountered an error."),
+	N_("The desktop view encountered an error while starting up."),
+	N_("Display this location with the desktop view."),
 	fm_desktop_icon_view_create,
 	fm_desktop_icon_view_supports_uri
 };
@@ -807,7 +811,11 @@ void
 fm_desktop_icon_view_register (void)
 {
 	fm_desktop_icon_view.label = _(fm_desktop_icon_view.label);
-	fm_desktop_icon_view.label_with_mnemonic = _(fm_desktop_icon_view.label_with_mnemonic);
+	fm_desktop_icon_view.view_as_label = _(fm_desktop_icon_view.view_as_label);
+	fm_desktop_icon_view.view_as_label_with_mnemonic = _(fm_desktop_icon_view.view_as_label_with_mnemonic);
+	fm_desktop_icon_view.error_label = _(fm_desktop_icon_view.error_label);
+	fm_desktop_icon_view.startup_error_label = _(fm_desktop_icon_view.startup_error_label);
+	fm_desktop_icon_view.display_location_label = _(fm_desktop_icon_view.display_location_label);
 	
 	nautilus_view_factory_register (&fm_desktop_icon_view);
 }

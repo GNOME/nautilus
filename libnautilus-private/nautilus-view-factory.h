@@ -37,8 +37,12 @@ typedef struct _NautilusViewInfo NautilusViewInfo;
 
 struct _NautilusViewInfo {
 	char *id;
-	char *label;
-	char *label_with_mnemonic;
+	char *label;                       /* Foo View */
+	char *view_as_label;               /* View as Foo */
+	char *view_as_label_with_mnemonic; /* View as _Foo */
+	char *error_label;                 /* The foo view encountered an error. */
+	char *startup_error_label;         /* The foo view encountered an error while starting up. */
+	char *display_location_label;      /* Display this location with the foo view. */
 	NautilusView * (*create) (NautilusWindowInfo *window);
 	/* BONOBOTODO: More args here */
 	gboolean (*supports_uri) (const char *uri,
