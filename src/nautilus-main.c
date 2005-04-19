@@ -428,6 +428,8 @@ main (int argc, char *argv[])
 			 startup_id_copy,
 			 geometry,
 			 args);
+		g_free (startup_id_copy);
+
 		if (is_event_loop_needed ()) {
 			gtk_main ();
 		}

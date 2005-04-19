@@ -1,5 +1,10 @@
 2005-04-19  Kjartan Maraas  <kmaraas@gnome.org>
 
+	* src/nautilus-main.c: (main): Plug a leak. Closes
+	bug #172234.
+
+2005-04-19  Kjartan Maraas  <kmaraas@gnome.org>
+
 	* libnautilus-private/nautilus-directory-async.c:
 	(read_dot_hidden_file): Plug two leaks.
 
