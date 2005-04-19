@@ -1971,6 +1971,7 @@ read_dot_hidden_file (NautilusDirectory *directory)
 
 	file_info = gnome_vfs_file_info_new ();
 	if (!file_info) {
+		gnome_vfs_uri_unref (dot_hidden_vfs_uri);
 		return;
 	}
 	
@@ -1978,6 +1979,7 @@ read_dot_hidden_file (NautilusDirectory *directory)
 		dot_hidden_vfs_uri,
 		file_info, 
 		GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
+		gnome_vfs_uri_unref (dot_hidden_vfs_uri);
 		gnome_vfs_file_info_unref (file_info);
 		return;
 	}
@@ -1988,6 +1990,7 @@ read_dot_hidden_file (NautilusDirectory *directory)
 	gnome_vfs_file_info_unref (file_info);
 		
 	if (!file_ok) {
+		gnome_vfs_uri_unref (dot_hidden_vfs_uri);
 		return;
 	}
 	
