@@ -1,3 +1,9 @@
+2005-04-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(read_dot_hidden_file): Plug leaks here too. There
+	were three actually :-)
+
 2005-04-18  Dennis Cranston  <dennis_cranston at yahoo com>
 
 	* src/nautilus-connect-server-dialog-main.c: (main)
