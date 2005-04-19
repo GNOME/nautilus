@@ -5,7 +5,6 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 PKG_NAME="nautilus"
-REQUIRED_AUTOMAKE_VERSION=1.7
 
 (test -f $srcdir/configure.in \
   && test -f $srcdir/README \
@@ -19,4 +18,4 @@ which gnome-autogen.sh || {
     echo "You need to install gnome-common from the GNOME CVS"
     exit 1
 }
-. gnome-autogen.sh
+REQUIRED_AUTOMAKE_VERSION=1.7 . gnome-autogen.sh
