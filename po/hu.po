@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-18 13:44+0000\n"
-"PO-Revision-Date: 2005-04-18 18:40+0200\n"
+"POT-Creation-Date: 2005-04-23 21:56+0000\n"
+"PO-Revision-Date: 2005-04-24 01:40+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -1331,7 +1331,9 @@ msgstr ""
 msgid ""
 "If you want to unmount the volume, please use Unmount Volume in the right-"
 "click menu of the volume."
-msgstr "Ha le szeretné választani a kötetet, használja a jobb gombos menü \"Kötet leválasztása\" parancsát."
+msgstr ""
+"Ha le szeretné választani a kötetet, használja a jobb gombos menü \"Kötet "
+"leválasztása\" parancsát."
 
 #: ../libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
@@ -2751,12 +2753,12 @@ msgstr "%s megnyitása"
 #: ../libnautilus-private/nautilus-program-choosing.c:591
 #: ../libnautilus-private/nautilus-program-choosing.c:599
 #: ../libnautilus-private/nautilus-program-choosing.c:604
-#: ../src/nautilus-window-manage-views.c:1342
-#: ../src/nautilus-window-manage-views.c:1348
-#: ../src/nautilus-window-manage-views.c:1376
-#: ../src/nautilus-window-manage-views.c:1384
-#: ../src/nautilus-window-manage-views.c:1390
-#: ../src/nautilus-window-manage-views.c:1411
+#: ../src/nautilus-window-manage-views.c:1354
+#: ../src/nautilus-window-manage-views.c:1360
+#: ../src/nautilus-window-manage-views.c:1388
+#: ../src/nautilus-window-manage-views.c:1396
+#: ../src/nautilus-window-manage-views.c:1402
+#: ../src/nautilus-window-manage-views.c:1423
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t."
@@ -2768,29 +2770,29 @@ msgid "There was an error launching the application."
 msgstr "Hiba történt az alkalmazás indításakor."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1386
+#: ../src/nautilus-window-manage-views.c:1398
 msgid "The attempt to log in failed."
 msgstr "A bejelentkezési kísérlet sikertelen volt."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:606
-#: ../src/nautilus-window-manage-views.c:1392
+#: ../src/nautilus-window-manage-views.c:1404
 msgid "Access was denied."
 msgstr "Hozzáférés megtagadva."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1403
+#: ../src/nautilus-window-manage-views.c:1415
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a(z) \"%s\" gép nem található."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:614
-#: ../src/nautilus-window-manage-views.c:1406
+#: ../src/nautilus-window-manage-views.c:1418
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Ellenőrizze, hogy nem gépelt-e el valamit és hogy jók-e a proxy beállításai."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:619
 #: ../src/nautilus-connect-server-dialog.c:140
-#: ../src/nautilus-window-manage-views.c:1364
+#: ../src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "A(z) \"%s\" nem érvényes hely."
@@ -2799,20 +2801,20 @@ msgstr "A(z) \"%s\" nem érvényes hely."
 #: ../libnautilus-private/nautilus-program-choosing.c:629
 #: ../src/nautilus-connect-server-dialog.c:142
 #: ../src/nautilus-property-browser.c:1096
-#: ../src/nautilus-window-manage-views.c:1359
-#: ../src/nautilus-window-manage-views.c:1367
+#: ../src/nautilus-window-manage-views.c:1371
+#: ../src/nautilus-window-manage-views.c:1379
 msgid "Please check the spelling and try again."
 msgstr "Ellenőrizze, hogy mindent jól írt-e be és próbálja meg újra."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:626
-#: ../src/nautilus-window-manage-views.c:1356
+#: ../src/nautilus-window-manage-views.c:1368
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "A(z) \"%s\" nem található."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:644
 #: ../src/nautilus-connect-server-dialog-main.c:72
-#: ../src/nautilus-window-manage-views.c:1432
+#: ../src/nautilus-window-manage-views.c:1444
 msgid "Can't Display Location"
 msgstr "Nem lehet megjeleníteni a helyet"
 
@@ -2997,8 +2999,24 @@ msgid "Desktop"
 msgstr "Munkaasztal"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:801
-msgid "_Desktop"
-msgstr "_Munkaasztal"
+msgid "View as Desktop"
+msgstr "Megjelenítés munkaasztalként"
+
+#: ../src/file-manager/fm-desktop-icon-view.c:802
+msgid "View as _Desktop"
+msgstr "Megjelenítés _munkaasztalként"
+
+#: ../src/file-manager/fm-desktop-icon-view.c:803
+msgid "The desktop view encountered an error."
+msgstr "A munkaasztal-nézet hibát észlelt."
+
+#: ../src/file-manager/fm-desktop-icon-view.c:804
+msgid "The desktop view encountered an error while starting up."
+msgstr "A munkaasztal-nézet hibát észlelt induláskor."
+
+#: ../src/file-manager/fm-desktop-icon-view.c:805
+msgid "Display this location with the desktop view."
+msgstr "Ezen hely megjelenítése a munkaasztal-nézettel."
 
 #: ../src/file-manager/fm-directory-view.c:514
 #, c-format
@@ -4097,8 +4115,24 @@ msgid "Icons"
 msgstr "Ikonok"
 
 #: ../src/file-manager/fm-icon-view.c:2674
-msgid "_Icons"
-msgstr "_Ikonok"
+msgid "View as Icons"
+msgstr "Megjelenítés ikonokként"
+
+#: ../src/file-manager/fm-icon-view.c:2675
+msgid "View as _Icons"
+msgstr "Megjelenítés _ikonokként"
+
+#: ../src/file-manager/fm-icon-view.c:2676
+msgid "The icon view encountered an error."
+msgstr "Az ikonnézet hibát észlelt."
+
+#: ../src/file-manager/fm-icon-view.c:2677
+msgid "The icon view encountered an error while starting up."
+msgstr "Az ikonnézet hibát észlelt induláskor."
+
+#: ../src/file-manager/fm-icon-view.c:2678
+msgid "Display this location with the icon view."
+msgstr "Ezen hely megjelenítése az ikonnézettel."
 
 #: ../src/file-manager/fm-list-view.c:1625
 #, c-format
@@ -4126,8 +4160,24 @@ msgid "List"
 msgstr "Lista"
 
 #: ../src/file-manager/fm-list-view.c:2342
-msgid "_List"
-msgstr "Li_sta"
+msgid "View as List"
+msgstr "Listanézet"
+
+#: ../src/file-manager/fm-list-view.c:2343
+msgid "View as _List"
+msgstr "_Listanézet"
+
+#: ../src/file-manager/fm-list-view.c:2344
+msgid "The list view encountered an error."
+msgstr "A listanézet hibát észlelt."
+
+#: ../src/file-manager/fm-list-view.c:2345
+msgid "The list view encountered an error while starting up."
+msgstr "A listanézet hibát észlelt induláskor."
+
+#: ../src/file-manager/fm-list-view.c:2346
+msgid "Display this location with the list view."
+msgstr "Ezen hely megjelenítése a listanézettel."
 
 #: ../src/file-manager/fm-properties-window.c:495
 msgid "You can't assign more than one custom icon at a time!"
@@ -4661,7 +4711,7 @@ msgstr "Meg kell adnia egy nevet a kiszolgálónak."
 msgid "Please enter a name and try again."
 msgstr "Írjon be egy nevet és próbálja meg újra."
 
-#: ../src/nautilus-connect-server-dialog.c:269 ../src/nautilus-window.c:981
+#: ../src/nautilus-connect-server-dialog.c:269 ../src/nautilus-window.c:972
 #, c-format
 msgid "%s on %s"
 msgstr "%s ezen: %s"
@@ -4929,7 +4979,7 @@ msgstr "Mindig"
 
 #: ../src/nautilus-file-management-properties.glade.h:39
 msgid "Always open in _browser windows"
-msgstr "Megnyitás mindig új bön_gészőablakban"
+msgstr "Megnyitás mindig a bön_gészőablakokban"
 
 #: ../src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
@@ -5487,12 +5537,7 @@ msgstr "_Előre"
 msgid "Go to the next visited location"
 msgstr "Ugrás a következő meglátogatott helyre"
 
-#: ../src/nautilus-navigation-window.c:612 ../src/nautilus-window.c:674
-#, c-format
-msgid "View as %s"
-msgstr "Nézet mint: %s"
-
-#: ../src/nautilus-navigation-window.c:688
+#: ../src/nautilus-navigation-window.c:685
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Fájlböngésző"
@@ -5739,56 +5784,47 @@ msgstr "pörgettyű"
 msgid "provides visual status"
 msgstr "jelzi a Nautilus állapotát"
 
-#: ../src/nautilus-window-manage-views.c:578
-msgid "View Failed"
-msgstr "Sikertelen megtekintés"
-
-#: ../src/nautilus-window-manage-views.c:589
-#, c-format
-msgid "The %s view encountered an error and can't continue."
-msgstr "A(z) %s nézet hibát észlelt és nem tud tovább futni."
-
-#: ../src/nautilus-window-manage-views.c:590
+#: ../src/nautilus-window-manage-views.c:596
 msgid "You can choose another view or go to a different location."
 msgstr "Választhat másik nézetet vagy megnézhet egy másik helyet."
 
-#: ../src/nautilus-window-manage-views.c:600
-#, c-format
-msgid "The %s view encountered an error while starting up."
-msgstr "A(z) %s nézet hibát észlelt induláskor."
+#: ../src/nautilus-window-manage-views.c:597
+#: ../src/nautilus-window-manage-views.c:611
+msgid "View Failed"
+msgstr "Sikertelen megtekintés"
 
-#: ../src/nautilus-window-manage-views.c:601
+#: ../src/nautilus-window-manage-views.c:610
 msgid "The location cannot be displayed with this viewer."
 msgstr "A helyet nem lehet megjeleníteni ezzel a nézőkével."
 
-#: ../src/nautilus-window-manage-views.c:988
+#: ../src/nautilus-window-manage-views.c:1000
 msgid "Content View"
 msgstr "Tartalomnézet"
 
-#: ../src/nautilus-window-manage-views.c:989
+#: ../src/nautilus-window-manage-views.c:1001
 msgid "View of the current folder"
 msgstr "A jelenlegi mappa nézete"
 
-#: ../src/nautilus-window-manage-views.c:1345
+#: ../src/nautilus-window-manage-views.c:1357
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
 "A Nautilusnak nincs olyan telepített nézőkéje, amellyel meg tudná jeleníteni "
 "a mappát."
 
-#: ../src/nautilus-window-manage-views.c:1351
+#: ../src/nautilus-window-manage-views.c:1363
 msgid "The location is not a folder."
 msgstr "A hely nem egy mappa."
 
-#: ../src/nautilus-window-manage-views.c:1378
+#: ../src/nautilus-window-manage-views.c:1390
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "A Nautilus nem tudja kezelni a(z) %s helyeket."
 
-#: ../src/nautilus-window-manage-views.c:1413
+#: ../src/nautilus-window-manage-views.c:1425
 msgid "Check that your proxy settings are correct."
 msgstr "Ellenőrizze a proxy beállításait."
 
-#: ../src/nautilus-window-manage-views.c:1418
+#: ../src/nautilus-window-manage-views.c:1430
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5797,16 +5833,16 @@ msgstr ""
 "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a Nautilus nem tud kapcsolatba "
 "lépni az SMB-mesterböngészővel."
 
-#: ../src/nautilus-window-manage-views.c:1421
+#: ../src/nautilus-window-manage-views.c:1433
 msgid "Check that an SMB server is running in the local network."
 msgstr "Ellenőrizze, hogy fut-e az SMB kiszolgáló a helyi hálózaton."
 
-#: ../src/nautilus-window-manage-views.c:1426
+#: ../src/nautilus-window-manage-views.c:1438
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "A Nautilus nem tudja megjeleníteni a(z) \"%s\"-t."
 
-#: ../src/nautilus-window-manage-views.c:1428
+#: ../src/nautilus-window-manage-views.c:1440
 msgid "Please select another viewer and try again."
 msgstr "Válasszon ki egy másik nézőkét és próbálja meg újra."
 
@@ -6060,16 +6096,11 @@ msgstr "Ugrás a CD/DVD-készítőre"
 msgid "_Up"
 msgstr "_Fel"
 
-#: ../src/nautilus-window.c:675
-#, c-format
-msgid "Display this location with \"%s\""
-msgstr "Megjelenítés a következővel: \"%s\""
-
-#: ../src/nautilus-window.c:1461
+#: ../src/nautilus-window.c:1452
 msgid "Application"
 msgstr "Alkalmazás"
 
-#: ../src/nautilus-window.c:1462
+#: ../src/nautilus-window.c:1453
 msgid "The NautilusApplication associated with this window."
 msgstr "Az ablakhoz rendelt NautilusApplication."
 
