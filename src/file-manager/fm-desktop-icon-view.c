@@ -590,14 +590,6 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-action_new_terminal_callback (GtkAction *action, gpointer data)
-{
-        g_assert (FM_DIRECTORY_VIEW (data));
-
-	eel_gnome_open_terminal_on_screen (NULL, gtk_widget_get_screen (GTK_WIDGET (data)));
-}
-
-static void
 action_new_launcher_callback (GtkAction *action, gpointer data)
 {
 	char *desktop_directory;
@@ -694,22 +686,27 @@ real_update_menus (FMDirectoryView *view)
 }
 
 static GtkActionEntry desktop_view_entries[] = {
-  { "New Terminal", NULL,                  /* name, stock id */
-    N_("Open T_erminal"), NULL,                /* label, accelerator */
-    N_("Open a new GNOME terminal window"),                   /* tooltip */ 
-    G_CALLBACK (action_new_terminal_callback) },
-  { "New Launcher Desktop", NULL,                  /* name, stock id */
-    N_("Create L_auncher..."), NULL,                /* label, accelerator */
-    N_("Create a new launcher"),                   /* tooltip */ 
-    G_CALLBACK (action_new_launcher_callback) },
-  { "Change Background", NULL,                  /* name, stock id */
-    N_("Change Desktop _Background"), NULL,                /* label, accelerator */
-    N_("Show a window that lets you set your desktop background's pattern or color"),                   /* tooltip */ 
-    G_CALLBACK (action_change_background_callback) },
-  { "Empty Trash Conditional", NULL,                  /* name, stock id */
-    N_("Empty Trash"), NULL,                /* label, accelerator */
-    N_("Delete all items in the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_empty_trash_conditional_callback) },
+	/* name, stock id */
+	{ "New Launcher Desktop", NULL,
+	  /* label, accelerator */
+	  N_("Create L_auncher..."), NULL,
+	  /* tooltip */
+	  N_("Create a new launcher"),
+	  G_CALLBACK (action_new_launcher_callback) },
+	/* name, stock id */
+	{ "Change Background", NULL,
+	  /* label, accelerator */
+	  N_("Change Desktop _Background"), NULL,
+	  /* tooltip */
+	  N_("Show a window that lets you set your desktop background's pattern or color"),
+	  G_CALLBACK (action_change_background_callback) },
+	/* name, stock id */
+	{ "Empty Trash Conditional", NULL,
+	  /* label, accelerator */
+	  N_("Empty Trash"), NULL,
+	  /* tooltip */
+	  N_("Delete all items in the Trash"),
+	  G_CALLBACK (action_empty_trash_conditional_callback) },
 };
 
 static void

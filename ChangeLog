@@ -1,3 +1,14 @@
+2005-04-27  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	Remove "Open New Terminal" from desktop menu.
+	Patch from Luca Ferretti <elle.uca@libero.it>
+
+	If you really need this, install the nautilus-open-terminal
+	extension. It does this even better than the removed code.
+	Also, in newer Metacity there is a a way to set a keybinding
+	for "new terminal".
+	
 2005-04-19  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/nautilus-main.c: (main): Merge fix for leak
