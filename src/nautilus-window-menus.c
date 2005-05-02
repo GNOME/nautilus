@@ -637,7 +637,7 @@ static GtkActionEntry main_entries[] = {
     N_("Show the contents in less detail"),                                      /* tooltip */ 
     G_CALLBACK (action_zoom_out_callback) },
   { "Zoom Normal", GTK_STOCK_ZOOM_100,                        /* name, stock id */
-    N_("Normal Si_ze"), NULL,           /* label, accelerator */
+    N_("Normal Si_ze"), "<control>0",           /* label, accelerator */
     N_("Show the contents at the normal size"),                                      /* tooltip */ 
     G_CALLBACK (action_zoom_normal_callback) },
   { "Connect to Server", NULL,                        /* name, stock id */
