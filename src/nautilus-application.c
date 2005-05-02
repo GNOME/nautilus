@@ -83,8 +83,10 @@
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <bonobo-activation/bonobo-activation.h>
+#ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
 #include <libsn/sn-launchee.h>
+#endif
 
 /* Needed for the is_kdesktop_present check */
 #include <gdk/gdkx.h>
@@ -984,6 +986,8 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 									   screen);
 }
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+
 static void
 sn_error_trap_push (SnDisplay *display,
                     Display   *xdisplay)
@@ -1057,6 +1061,8 @@ end_startup_notification (GtkWidget  *widget,
 	sn_display_unref (sn_display);
 }
 
+#endif
+
 NautilusWindow *
 nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 							    NautilusWindow      *requesting_window,
@@ -1083,8 +1089,10 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		}
 
 		if (eel_uris_match (existing_location, location)) {
+#ifdef HAVE_STARTUP_NOTIFICATION
 			end_startup_notification (GTK_WIDGET (existing_window),
 						  startup_id);
+#endif
 
 			gtk_window_present (GTK_WINDOW (existing_window));
 			if (new_selection) {
@@ -1095,8 +1103,10 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 	}
 
 	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, startup_id, screen);
+#ifdef HAVE_STARTUP_NOTIFICATION
 	end_startup_notification (GTK_WIDGET (window),
 				  startup_id);
+#endif
 	if (requesting_window) {
 		/* Center the window over the requesting window by default */
 		int orig_x, orig_y, orig_width, orig_height;
@@ -1139,8 +1149,10 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
+#ifdef HAVE_STARTUP_NOTIFICATION
 	end_startup_notification (GTK_WIDGET (window),
 				  startup_id);
+#endif
 
 	return window;
 }

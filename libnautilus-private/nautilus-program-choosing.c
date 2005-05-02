@@ -855,7 +855,9 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	const GList *p;
 	int total, count;
 	char **envp;
+#ifdef HAVE_STARTUP_NOTIFICATION
 	Time timestamp;
+#endif
 
 	/* strip the leading command specifier */
 	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
@@ -946,8 +948,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 
 	error = NULL;
 
+#ifdef HAVE_STARTUP_NOTIFICATION
 	timestamp = slowly_and_stupidly_obtain_timestamp (GDK_WINDOW_XDISPLAY (GTK_WIDGET (parent_window)->window));
 	gnome_desktop_item_set_launch_time (ditem, timestamp);
+#endif
 	gnome_desktop_item_launch_with_env (ditem, (GList *) parameter_uris,
 					    flags, envp,
 					    &error);
