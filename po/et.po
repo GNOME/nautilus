@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-21 12:53+0000\n"
+"POT-Creation-Date: 2005-04-30 21:04+0000\n"
 "PO-Revision-Date: 2005-04-19 21:55+0300\n"
 "Last-Translator:  Sven Sapelson <sven.sapelson@gmail.com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -146,7 +146,7 @@ msgstr "Objekti mustri muutmiseks lohista muster objektile"
 
 #: ../data/browser.xml.h:32
 msgid "Drag an emblem to an object to add it to the object"
-msgstr "Objekti embleemi lisamiseks lohista see objektile"
+msgstr "Objektile embleemi lisamiseks lohista see objektile"
 
 #: ../data/browser.xml.h:33
 msgid "Eclipse"
@@ -195,7 +195,7 @@ msgstr "Graniit"
 
 #: ../data/browser.xml.h:44
 msgid "Grapefruit"
-msgstr "Greipfruut"
+msgstr "Greip"
 
 #: ../data/browser.xml.h:45
 msgid "Green Weave"
@@ -267,7 +267,7 @@ msgstr "Oh ei!"
 
 #: ../data/browser.xml.h:62
 msgid "Onyx"
-msgstr "Onyx"
+msgstr "Oonüks"
 
 #: ../data/browser.xml.h:63
 msgid "Orange"
@@ -327,7 +327,7 @@ msgstr "Suusarajad"
 
 #: ../data/browser.xml.h:77
 msgid "Snow Ridge"
-msgstr "Lume vaod"
+msgstr "Lumevaod"
 
 #: ../data/browser.xml.h:78
 msgid "Sound"
@@ -371,7 +371,7 @@ msgstr "Valge"
 
 #: ../data/browser.xml.h:88
 msgid "White Ribs"
-msgstr "Valged ribid"
+msgstr "Valged ribad"
 
 #: ../data/browser.xml.h:89
 msgid "_Emblems"
@@ -423,12 +423,11 @@ msgstr "Kasutajale nähtav veeru kirjeldus"
 
 #: ../libnautilus-extension/nautilus-column.c:204
 msgid "xalign"
-msgstr ""
+msgstr "Horisontaalne joondamine"
 
 #: ../libnautilus-extension/nautilus-column.c:205
-#, fuzzy
 msgid "The x-alignment of the column"
-msgstr "Veerude joondamine"
+msgstr "Veergude horisontaalne joondamine"
 
 #: ../libnautilus-extension/nautilus-menu-item.c:207
 msgid "Name of the item"
@@ -456,7 +455,7 @@ msgstr "Menüüs näidatava ikooni nimi"
 
 #: ../libnautilus-extension/nautilus-menu-item.c:235
 msgid "Sensitive"
-msgstr ""
+msgstr "Tundlikkus"
 
 #: ../libnautilus-extension/nautilus-menu-item.c:236
 msgid "Whether the menu item is sensitive"
@@ -527,7 +526,7 @@ msgstr "Kohandatud taust"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 #, fuzzy
 msgid "Custom Side Pane Background Set"
-msgstr "Sea _taustapildiks"
+msgstr "Kõrvalpaani taustapilt"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Date Format"
@@ -544,11 +543,12 @@ msgstr "Vaikimisi tausta failinimi"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 #, fuzzy
 msgid "Default Side Pane Background Color"
-msgstr "Kasuta _vaikimisi tausta"
+msgstr "Kõrvalpaani _vaikimisi taustavärv"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
+#, fuzzy
 msgid "Default Side Pane Background Filename"
-msgstr ""
+msgstr "Kõrvalpaani vaikimisi tausta failinimi"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
@@ -564,20 +564,19 @@ msgid "Default folder viewer"
 msgstr "Vaikimisi _suurendus:"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-#, fuzzy
 msgid "Default icon zoom level"
-msgstr "Vaikimisi _suurendus:"
+msgstr "Ikoonide vaikimisi _suurus"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
 msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
+#, fuzzy
 msgid "Default list of columns visible in the list view."
-msgstr ""
+msgstr "Vaikimisi nähtavate veergude loend nimekirjavaates."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
-#, fuzzy
 msgid "Default list zoom level"
 msgstr "Nimekirja vaikimisi _suurendus:"
 
@@ -596,7 +595,7 @@ msgstr "Nimekirjavaate vaikimisi suurendus"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 #, fuzzy
 msgid "Desktop computer icon name"
-msgstr "Töölaua koduikooni nimi"
+msgstr "Töölaua arvutiikooni nimi"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -630,7 +629,7 @@ msgstr "Kataloogi vaikimisi tausta failinimi."
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
-msgstr "Kõrvalpaneeli vaikimisi tausta failinimi."
+msgstr "Kõrvalpaani vaikimisi tausta failinimi."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid ""
@@ -648,20 +647,21 @@ msgstr "Koduikoon on töölaual nähtav"
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
-msgstr ""
+msgstr "Kui valik on aktiivne, näitab Nautilus kõrvalpaanis ainult "
+"katalooge. Vastasel juhul näitab Nautilus katalooge ja faile."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr ""
+msgstr "Kui valik on aktiivne, näidatakse uutel akendel asukohariba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr ""
+msgstr "Kui valik on aktiivne, näidatakse uutel akendel kõrvalpaani."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr ""
+msgstr "Kui valik on aktiivne, näidatakse uutel akendel olekuriba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "If set to true, newly opened windows will have toolbars visible."
@@ -674,49 +674,53 @@ msgid ""
 msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
-msgstr "Prügikast peab töölauale jääma."
+msgstr "Kui valik on aktiivne, näitab Nautilus ikoonivaates ja " 
+"nimekirjavaates katalooge failidest eespool."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
-msgstr ""
+msgstr "Kui valik on aktiivne, küsib Nautilus kinnitust enne failide prügikasti "
+"tõstmist."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then Nautilus will bring up a new Nautilus window by default "
 "whenever an item is opened."
-msgstr ""
+msgstr "Kui valik on aktiivne, kuvab Nautilus iga kirje avamisel uue akna."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
-#, fuzzy
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr "Nautilus näitab töölaual ikoone."
+msgstr "Kui valik on aktiivne, näitab Nautilus töölaual ikoone."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous#, fuzzy, so use caution."
-msgstr ""
+"feature can be dangerous, so use caution."
+msgstr "Kui valik on aktiivne, lubab Nautilus faile kohapeal kustutada ilma neid " 
+"prügikasti tõstmata. See omadus võib olla ohtlik ja seda tuleks "
+"kasutada ettevaatusega."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "Kui valik on aktiivne, kasutab Nautilus kasutaja kodukataloogi kui töölauda. Kui valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
+msgstr ""
+"Kui valik on aktiivne, kasutab Nautilus kasutaja kodukataloogi kui töölauda. "
+"Kui valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
-msgstr ""
+msgstr "Kui valik on aktiivne, näitab Nautilus kõiki aknaid sirvijana. Nii toimis Nautilus "
+"enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -729,38 +733,41 @@ msgstr ""
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
-msgstr "Failihaldur näitab peidetud faile. Peidetud failid algavad punktiga või on kirjas kataloogi failis nimega .hidden"
+msgstr ""
+"Kui valik on aktiivne, näitab failihaldur näitab peidetud faile. Peidetud "
+"failid algavad punktiga või on kirjas kataloogi failis nimega .hidden"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr ""
+msgstr "Kui valik on aktiivne, viitab ikoon töölaualt asukohale 'Arvuti'. "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr ""
+msgstr "Kui valik on aktiivne, viitab ikoon töölaualt kodukataloogile."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr ""
+msgstr "Kui valik on aktiivne, viitab ikoon töölaualt prügikasti."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "Töölaud näitab ühendatud kettaseadmete ikoone."
+msgstr "Kui valik on aktiivne, näitab töölaud ühendatud kettaseadmete ikoone."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
-msgstr ""
+msgstr "Kui valik on aktiivne, sorteeritakse failid uues aknas tagurpidi ehk "
+"kui failid on sorteeritud näiteks nime järgi, alustatakse tähest 'ü,' mitte 'a'."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -772,16 +779,16 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr ""
+msgstr "Kui valik on aktiivne, paigutatakse ikoonid uues aknas tihedamasse rivisse. "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
-msgstr ""
+msgstr "Kui valik on aktiivne, näidatakse silte ikooni kõrval, mitte all."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, new windows will use manual layout by default."
-msgstr ""
+msgstr "Kui valik on aktiivne, paigutatakse ikoonid uutes akendes vaikimisi käsitsi."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
@@ -795,9 +802,8 @@ msgid "List of possible captions on icons"
 msgstr "Võimalike ikoonipealkirjade nimekiri"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Maximum handled files in a folder"
-msgstr "Suurim käitletavate failide arv kataloogi kohta"
+msgstr "Suurim käideldavate failide arv kataloogi kohta"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum image size for thumbnailing"
@@ -810,8 +816,9 @@ msgid ""
 msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#, fuzzy
 msgid "Nautilus handles drawing the desktop"
-msgstr "Nautilus näitab töölauda"
+msgstr "Töölauda seadeid haldab Nautilus"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Nautilus uses the users home folder as the desktop"
@@ -838,7 +845,7 @@ msgstr "Korrasta elemendid uues aknas vastupidiselt"
 #. Translators: please note this can choose the default font and the size. e.g. "Monospace 8". Please do not translate "Sans". In most cases, this should be left alone.
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Sans 10"
-msgstr ""
+msgstr "Sans 10"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show folders first in windows"
@@ -920,7 +927,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
-msgstr "Töölaual kasutatav kirjastiil."
+msgstr "Töölaua ikoonidel kasutatav kirjastiil."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
@@ -987,11 +994,11 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "When to show number of items in a folder"
-msgstr ""
+msgstr "Millal näidata kataloogis olevate kirjete arvu"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "When to show preview text in icons"
-msgstr "Millal ikoonide eelvaadet näidata"
+msgstr "Millal näidata ikoonide eelvaadet"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "When to show thumbnails of image files"
@@ -1165,11 +1172,11 @@ msgstr "MIME tüüp"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:114
 msgid "The mime type of the file."
-msgstr "Faili mime tüüp."
+msgstr "Faili mime-tüüp."
 
 #: ../libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
-msgstr "ennista"
+msgstr "lähtesta"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:442
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:163
@@ -1179,13 +1186,15 @@ msgstr "töölaual"
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "You cannot delete a volume icon."
-msgstr "Kettaikooni ei saa kustutada"
+msgstr "Kettaseadme ikooni ei saa kustutada"
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:106
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
-msgstr "Kui soovid kettaseadet väljastada, vali ikoonil pareklikiga avanevast menüüst 'väljasta'."
+msgstr ""
+"Kui soovid kettaseadet väljastada, vali ikoonil pareklikiga avanevast "
+"menüüst 'väljasta'."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:108
 msgid "Can't Delete Volume"
@@ -1201,7 +1210,7 @@ msgstr "_Kopeeri siia"
 
 #: ../libnautilus-private/nautilus-dnd.c:641
 msgid "_Link here"
-msgstr "L_ingi siia"
+msgstr "V_iita siia"
 
 #: ../libnautilus-private/nautilus-dnd.c:646
 msgid "Set as _Background"
@@ -1317,7 +1326,8 @@ msgstr "Viga kustutamisel."
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
-msgstr "\"%s\" ei saa kustutada, kuna sul puuduvad õigused muuta ülemkataloogi."
+msgstr ""
+"\"%s\" ei saa kustutada, kuna sul puuduvad õigused muuta ülemkataloogi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:577
 #, c-format
@@ -1330,7 +1340,8 @@ msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"Kirjet \"%s\" ei saa liigutada, kuna sul puuduvad õigused muuta seda või selle ülemkataloogi."
+"Kirjet \"%s\" ei saa liigutada, kuna sul puuduvad õigused muuta seda või "
+"selle ülemkataloogi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:613
 #, c-format
@@ -1348,7 +1359,7 @@ msgid ""
 "change it or its parent folder."
 msgstr ""
 "\"%s\" ei saa prügikasti liigutada, sest sul ei ole õigusi muuta seda "
-"kataloogi või selle kataloogi ülemkataloogi."
+"kataloogi või selle ülemkataloogi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:645
 msgid "Error while copying."
@@ -1430,7 +1441,7 @@ msgstr "Viga \"%s\", \"%s\" liigutamisel."
 #: ../libnautilus-private/nautilus-file-operations.c:749
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
-msgstr "Viga \"%s\" lingi \"%s\" loomisel."
+msgstr "Viga \"%s\" viida \"%s\" loomisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:755
 #, c-format
@@ -1467,7 +1478,7 @@ msgstr "Viga liigutamisel"
 
 #: ../libnautilus-private/nautilus-file-operations.c:916
 msgid "Error While Linking"
-msgstr "Viga linkimisel"
+msgstr "Viga viida loomisel"
 
 #: ../libnautilus-private/nautilus-file-operations.c:921
 msgid "Error While Deleting"
@@ -1494,9 +1505,8 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"Nime juba kasutakse erikirje jaoks ja seda ei saa eemaldada ega "
-"asendada. Kui siiski soovid kirjet liigutada, nimeta see ümber ja "
-"proovi uuesti."
+"Nime juba kasutakse erikirje jaoks ja seda ei saa eemaldada ega asendada. "
+"Kui siiski soovid kirjet liigutada, nimeta see ümber ja proovi uuesti."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1066
 #, c-format
@@ -1508,9 +1518,8 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"Nime juba kasutakse erikirje jaoks ja seda ei saa eemaldada ega "
-"asendada. Kui siiski soovid seda kirjet kopeerida, nimeta see ümber ja "
-"proovi uuesti."
+"Nime juba kasutakse erikirje jaoks ja seda ei saa eemaldada ega asendada. "
+"Kui siiski soovid seda kirjet kopeerida, nimeta see ümber ja proovi uuesti."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1075
 msgid "Unable to Replace File"
@@ -1572,7 +1581,7 @@ msgstr "viit failile %s"
 #: ../libnautilus-private/nautilus-file-operations.c:1199
 #, c-format
 msgid "another link to %s"
-msgstr "lingi %s veelkord"
+msgstr "viita %s veelkord"
 
 #. Localizers: Feel free to leave out the "st" suffix
 #. * if there's no way to do that nicely for a
@@ -1581,25 +1590,25 @@ msgstr "lingi %s veelkord"
 #: ../libnautilus-private/nautilus-file-operations.c:1215
 #, c-format
 msgid "%dst link to %s"
-msgstr "%d. %s link"
+msgstr "%d. %s viit"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1219
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%d. %s link"
+msgstr "%d. %s viit"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1223
 #, c-format
 msgid "%drd link to %s"
-msgstr "%d. %s link"
+msgstr "%d. %s viit"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1227
 #, c-format
 msgid "%dth link to %s"
-msgstr "%d. %s link"
+msgstr "%d. %s viit"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -1742,7 +1751,7 @@ msgstr "Liigutamise lõpetamine..."
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:1956
 msgid "Creating links to files"
-msgstr "Failidele linkide loomine"
+msgstr "Viitade loomine failidele"
 
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:1958
@@ -1752,7 +1761,7 @@ msgstr "Faili viitamine:"
 #. localizers: label prepended to the name of the current file linked
 #: ../libnautilus-private/nautilus-file-operations.c:1960
 msgid "Linking"
-msgstr "Linkimisel:"
+msgstr "Viitamine"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1961
 msgid "Preparing to Create Links..."
@@ -1760,7 +1769,7 @@ msgstr "Ettevalmistused viitade loomiseks..."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1962
 msgid "Finishing Creating Links..."
-msgstr "Linkide loomise lõpetamine..."
+msgstr "Viitade loomise lõpetamine..."
 
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:1968
@@ -2006,7 +2015,7 @@ msgid "today, 00:00 PM"
 msgstr "täna, 00:00"
 
 #: ../libnautilus-private/nautilus-file.c:2978
-msgid "today, %-I:%M %p" 
+msgid "today, %-I:%M %p"
 msgstr "täna, %H:%M"
 
 #: ../libnautilus-private/nautilus-file.c:2980
@@ -2166,9 +2175,9 @@ msgid ""
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
-"Ei suuda leida kirjeldust, isegi mitte \"x-kataloog/normaalne\". See tähendab "
-"tõenäoliselt, et gnome-vfs.keys fail on vales kohas või ei ole leitav mingil "
-"muul põhjusel."
+"Ei suuda leida kirjeldust, isegi mitte \"x-kataloog/normaalne\". See "
+"tähendab tõenäoliselt, et gnome-vfs.keys fail on vales kohas või ei ole "
+"leitav mingil muul põhjusel."
 
 #: ../libnautilus-private/nautilus-file.c:4733
 #, c-format
@@ -2181,11 +2190,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file.c:4749
 msgid "link"
-msgstr "link"
+msgstr "viit"
 
 #: ../libnautilus-private/nautilus-file.c:4769
 msgid "link (broken)"
-msgstr "link (katkenud)"
+msgstr "viit (katkenud)"
 
 #: ../libnautilus-private/nautilus-file.c:6197
 #: ../libnautilus-private/nautilus-global-preferences.c:540
@@ -2460,7 +2469,6 @@ msgid "Color of the selection box"
 msgstr "Valikukasti värv"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4282
-#, fuzzy
 msgid "Selection Box Alpha"
 msgstr "Valikukasti läbipaistvus"
 
@@ -2469,7 +2477,6 @@ msgid "Opacity of the selection box"
 msgstr "Valikukasti läbipaistvus"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4290
-#, fuzzy
 msgid "Highlight Alpha"
 msgstr "Esiletõste läbipaistvus"
 
@@ -2497,7 +2504,9 @@ msgstr "Värv, mida kasutatakse teksti heleda taustana"
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
-msgstr "Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see element sinna, kuhu ta on lohistatud? See muudab praegust paigutust." 
+msgstr ""
+"Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see "
+"element sinna, kuhu ta on lohistatud? See muudab praegust paigutust."
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:756
 #: ../libnautilus-private/nautilus-icon-dnd.c:760
@@ -2510,20 +2519,25 @@ msgstr "See kataloog kasutab automaatset paigutust"
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
-msgstr "Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see element sinna, kuhu ta on lohistatud? See muudab praegust paigutust." 
+msgstr ""
+"Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see "
+"element sinna, kuhu ta on lohistatud? See muudab praegust paigutust."
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:764
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
-msgstr "Kas soovid vahetada paigutuse sätteid ja jätta elemendi sinna, kuhu ta on lohistatud?"
+msgstr ""
+"Kas soovid vahetada paigutuse sätteid ja jätta elemendi sinna, kuhu ta on "
+"lohistatud?"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:767
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
 msgstr ""
-"Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see element sinna, kuhu ta on lohistatud?"
+"Kas muuta elementide automaatne paigutus käsitsi paigutuseks ja jätta see "
+"element sinna, kuhu ta on lohistatud?"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:773
 msgid "Switch to Manual Layout?"
@@ -2555,7 +2569,8 @@ msgstr "Tõrge avamisel, kas soovid valida mõnd teist käsku?"
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
-msgstr "Vaikimisi käsk ei saa avada \"%s\", sest ei saa ligi failidele asukohaga \"%s"
+msgstr ""
+"Vaikimisi käsk ei saa avada \"%s\", sest ei saa ligi failidele asukohaga \"%s"
 "\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:150
@@ -2690,7 +2705,7 @@ msgstr "See on turvakaalutlustel keelatud. "
 #: ../libnautilus-private/nautilus-program-choosing.c:876
 #, fuzzy
 msgid "Can't Execute Remote Links"
-msgstr "Kauglinki ei saa käivitada"
+msgstr "Kaugviita ei saa käivitada"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:886
 #: ../libnautilus-private/nautilus-program-choosing.c:955
@@ -2840,7 +2855,7 @@ msgstr "Vaheta töölaua _taust"
 #: ../src/file-manager/fm-desktop-icon-view.c:707
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
-msgstr "Näita akent, mis lubab valida töölaua tausta mustrit või värvi"
+msgstr "Näita akent, mis lubab valida töölaua taustamustrit või värvi"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:710
@@ -3004,15 +3019,13 @@ msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Faili \"%s\" ei saa prügikasti panna."
 
 #: ../src/file-manager/fm-directory-view.c:3134
-#, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "\"%s\" ei saa prügikasti panna. Kas soovid kohe kustutada?"
+msgstr "Kirjeid ei saa prügikasti tõsta. Kas soovid need kohe kustutada?"
 
 #: ../src/file-manager/fm-directory-view.c:3137
-#, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "\"%s\" ei saa prügikasti panna. Kas soovid kohe kustutada?"
+msgstr "Mõningaid kirjeid ei saa prügikasti tõsta. Kas soovid need kohe kustutada?"
 
 #: ../src/file-manager/fm-directory-view.c:3144
 msgid "Delete Immediately?"
@@ -3031,16 +3044,16 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "Oled sa kindel, et soovid \"%s\" kustutada jäädavalt prügikastist?"
-msgstr[1] "Oled sa kindel, et soovid \"%s\" kustutada jäädavalt prügikastist?"
+msgstr[0] "Kas oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
+msgstr[1] "Kas oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
 
 #: ../src/file-manager/fm-directory-view.c:3189
 msgid "If you delete an item, it will be permanently lost."
-msgstr ""
+msgstr "Kui kustutad kirje, on see jäädavalt kadunud."
 
 #: ../src/file-manager/fm-directory-view.c:3190
 msgid "Delete From Trash?"
-msgstr "Kustutada prügikastist?"
+msgstr "Kas kustutada prügikastist?"
 
 #: ../src/file-manager/fm-directory-view.c:3678
 #, c-format
@@ -3050,12 +3063,12 @@ msgstr "Ava programmiga \"%s\""
 #: ../src/file-manager/fm-directory-view.c:3679
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "Kasuta \"%s\" avamaks valitud elementi"
+msgstr "Kasuta \"%s\" valitud kirje avamiseks"
 
 #: ../src/file-manager/fm-directory-view.c:3768
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr "Kas soovid käivitada \"%s\" või selle sisu kuvada?"
+msgstr "Kas soovid käivitada \"%s\" või kuvada selle sisu?"
 
 #: ../src/file-manager/fm-directory-view.c:3770
 #, c-format
@@ -3108,8 +3121,7 @@ msgstr "Loo dokument mallist \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:5046
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr ""
-"Kõik käivitatavad failid selles kataloogis ilmuvad Skriptide menüüsse."
+msgstr "Kõik käivitatavad failid selles kataloogis ilmuvad Skriptide menüüsse."
 
 #: ../src/file-manager/fm-directory-view.c:5048
 #, fuzzy
@@ -3117,8 +3129,7 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Menüüst skripti valides käivitatakse see valitud kirjel sisendparameetrina "
-"valitud elemendi nime."
+"Menüüst skripti valides käivitatakse see valitud kirjel sisendparameetrina."
 
 #: ../src/file-manager/fm-directory-view.c:5050
 msgid "About Scripts"
@@ -3188,9 +3199,8 @@ msgstr "Viga ühendamisel"
 
 #: ../src/file-manager/fm-directory-view.c:5477
 #: ../src/file-manager/fm-tree-view.c:1060
-#, fuzzy
 msgid "Unmount Error"
-msgstr "Lahtiühendamise viga"
+msgstr "Viga ühenduse katkestamisel"
 
 #: ../src/file-manager/fm-directory-view.c:5490
 #: ../src/file-manager/fm-tree-view.c:1057
@@ -3200,14 +3210,13 @@ msgstr "Viga väljastamisel"
 #: ../src/file-manager/fm-directory-view.c:5639
 #, c-format
 msgid "Connect to Server %s"
-msgstr "Ühendumine serverisse %s"
+msgstr "Ühendamine serveriga %s"
 
 #: ../src/file-manager/fm-directory-view.c:5644
 msgid "_Connect"
 msgstr "Ü_hendu"
 
 #: ../src/file-manager/fm-directory-view.c:5658
-#, fuzzy
 msgid "Link _name:"
 msgstr "_Viida nimi:"
 
@@ -3223,7 +3232,7 @@ msgstr "Ava _programmiga..."
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:5738
 msgid "Choose a program with which to open the selected item"
-msgstr "Vali programm millega avada valitud element"
+msgstr "Vali rakendus, millega valitud kirje avada"
 
 #: ../src/file-manager/fm-directory-view.c:5739
 msgid "_Scripts"
@@ -3404,7 +3413,7 @@ msgstr "Tee _viit"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5822
 msgid "Create a symbolic link for each selected item"
-msgstr "Loo igale valitud kirjele sümboolne link"
+msgstr "Loo igale valitud kirjele sümboolne viit"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5825
@@ -3450,14 +3459,14 @@ msgstr "_Taasta vaikimisi vaade"
 #, fuzzy
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
-"Sortimisjärjestuse ja suurendusastme lähtestamine selle vaate jaoks "
-"vastavaks eelistustele"
+"Sortimisjärjestuse ja suurenduse lähtestamine vastavalt selle vaate jaoks "
+"seatud eelistustele"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5841
 #, fuzzy
 msgid "Connect To This Server"
-msgstr "Võrguserverid"
+msgstr "Ühenda serveriga"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5842
@@ -3471,16 +3480,14 @@ msgstr "_Ühenda kettaseade"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5846
-#, fuzzy
 msgid "Mount the selected volume"
-msgstr "Ühenda valitud kettaseade."
+msgstr "Ühenda valitud kettaseade"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5849
 #: ../src/file-manager/fm-tree-view.c:745
-#, fuzzy
 msgid "_Unmount Volume"
-msgstr "_Ühenda ketas lahti"
+msgstr "_Katkesta ühendus kettaseadmega"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5850
@@ -3495,7 +3502,7 @@ msgstr "_Väljasta"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5854
 msgid "Eject the selected volume"
-msgstr "Katkesta ühendus valitud kettaseadmega."
+msgstr "Väljasta valitud kettaseade"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5857
@@ -3545,7 +3552,7 @@ msgstr "Kustutab kõik elemendid lõplikult"
 
 #: ../src/file-manager/fm-directory-view.c:6316
 msgid "Ma_ke Links"
-msgstr "Tee _lingid"
+msgstr "Tee _viidad"
 
 #: ../src/file-manager/fm-directory-view.c:6351
 msgid "Cu_t File"
@@ -3557,20 +3564,20 @@ msgstr "_Kopeeri fail"
 
 #: ../src/file-manager/fm-directory-view.c:6598
 msgid "The link is broken, do you want to move it to the Trash?"
-msgstr "Link on katkenud, kas soovid selle prügikasti tõsta?"
+msgstr "Viit on katkenud, kas soovid selle prügikasti tõsta?"
 
 #: ../src/file-manager/fm-directory-view.c:6600
 msgid "This link can't be used, because it has no target."
-msgstr "Seda linki ei saa kasutada, sest sellel ei ole sihtkohta."
+msgstr "Seda viita ei saa kasutada, sest sellel ei ole sihtkohta."
 
 #: ../src/file-manager/fm-directory-view.c:6602
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr "Seda linki ei saa kasutada, sest sihtkohta \"%s\" ei ole olemas."
+msgstr "Seda viita ei saa kasutada, sest sihtkohta \"%s\" ei ole olemas."
 
 #: ../src/file-manager/fm-directory-view.c:6607
 msgid "Broken Link"
-msgstr "Katkenud link"
+msgstr "Katkenud viit"
 
 #: ../src/file-manager/fm-directory-view.c:6927
 #, c-format
@@ -3584,12 +3591,11 @@ msgstr "Kas katkestada avamine?"
 #: ../src/file-manager/fm-directory-view.c:7813
 #, fuzzy
 msgid "Download location?"
-msgstr "Kas sa soovid vaadata %d asukohta?"
+msgstr "Kas soovid vaadata %d asukohta?"
 
 #: ../src/file-manager/fm-directory-view.c:7816
-#, fuzzy
 msgid "You can download it or make a link to it."
-msgstr "Sa ei saa kataloogi iseendasse liigutada."
+msgstr "Selle saab alla laadida või sellele viida tekitada."
 
 #: ../src/file-manager/fm-directory-view.c:7819
 msgid "Make a _Link"
@@ -3691,8 +3697,7 @@ msgstr "Sul puuduvad vajalikud õigused \"%s\" ümbernimetamiseks."
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
-msgstr ""
-"Nimi \"%s\" ei sobi, sest sisaldab tähte \"/\". Palun vali teine nimi."
+msgstr "Nimi \"%s\" ei sobi, sest sisaldab tähte \"/\". Palun vali teine nimi."
 
 #: ../src/file-manager/fm-error-reporting.c:122
 #, c-format
@@ -3749,7 +3754,7 @@ msgstr "Ei saa muuta \"%s\" omanikku, sest see asub kirjutuskaitsega kettal."
 #: ../src/file-manager/fm-error-reporting.c:210
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Vabandust, ei saa \"%s\" omanikku muuta."
+msgstr "Vabandust, \"%s\" omanikku ei saa muuta."
 
 #: ../src/file-manager/fm-error-reporting.c:213
 msgid "The owner could not be changed."
@@ -3794,7 +3799,7 @@ msgstr "_nime järgi"
 #: ../src/file-manager/fm-icon-view.c:135
 #: ../src/file-manager/fm-icon-view.c:1431
 msgid "Keep icons sorted by name in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud nime järgi"
+msgstr "Reastab ikoonid ridades nime järgi"
 
 #: ../src/file-manager/fm-icon-view.c:141
 msgid "by _Size"
@@ -3803,7 +3808,7 @@ msgstr "_suuruse järgi"
 #: ../src/file-manager/fm-icon-view.c:142
 #: ../src/file-manager/fm-icon-view.c:1435
 msgid "Keep icons sorted by size in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud suuruse järgi"
+msgstr "Reastab ikoonid ridades suuruse järgi"
 
 #: ../src/file-manager/fm-icon-view.c:148
 msgid "by _Type"
@@ -3812,7 +3817,7 @@ msgstr "_tüübi järgi"
 #: ../src/file-manager/fm-icon-view.c:149
 #: ../src/file-manager/fm-icon-view.c:1439
 msgid "Keep icons sorted by type in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud tüübi järgi"
+msgstr "Reastab ikoonid ridades tüübi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:155
 msgid "by Modification _Date"
@@ -3821,7 +3826,7 @@ msgstr "_muutmisaja järgi"
 #: ../src/file-manager/fm-icon-view.c:156
 #: ../src/file-manager/fm-icon-view.c:1443
 msgid "Keep icons sorted by modification date in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud muutmisaja järgi"
+msgstr "Reastab ikoonid ridades muutmisaja järgi"
 
 #: ../src/file-manager/fm-icon-view.c:162
 msgid "by _Emblems"
@@ -3830,7 +3835,7 @@ msgstr "_embleemi järgi"
 #: ../src/file-manager/fm-icon-view.c:163
 #: ../src/file-manager/fm-icon-view.c:1447
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud embleemi järgi"
+msgstr "Reastab ikoonid ridades embleemi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:1391
 msgid "Arran_ge Items"
@@ -3866,7 +3871,7 @@ msgstr "Järjestab _nime järgi"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1402
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Korrastab ikoonid aknas paremini ning hoiab ära kattuvuse"
+msgstr "Korrastab ikoonid aknas paremini ning hoiab ära nende kattuvuse"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1408
@@ -3889,8 +3894,8 @@ msgid "Display icons in the opposite order"
 msgstr "Kuvab ikoonid vastupidises järjestuses"
 
 #. name, stock id
-#, fuzzy
 #: ../src/file-manager/fm-icon-view.c:1418
+#, fuzzy
 msgid "_Keep Aligned"
 msgstr "Reasta ikoonid"
 
@@ -3906,7 +3911,7 @@ msgstr "_Käsitsi"
 
 #: ../src/file-manager/fm-icon-view.c:1427
 msgid "Leave icons wherever they are dropped"
-msgstr "Jäta ikoonid sinna, kuhu nad lohistatakse"
+msgstr "Jätab ikoonid sinna, kuhu nad lohistatakse"
 
 #: ../src/file-manager/fm-icon-view.c:1430
 msgid "By _Name"
@@ -3971,17 +3976,17 @@ msgstr "Nimekiri"
 
 #: ../src/file-manager/fm-list-view.c:2342
 msgid "_List"
-msgstr "Nimekiri"
+msgstr "_Nimekiri"
 
 #: ../src/file-manager/fm-properties-window.c:484
 msgid "You can't assign more than one custom icon at a time!"
-msgstr "Rohkem kui üht "
+msgstr "Rohkem kui üht seadistatud ikooni korraga ei saa lisada."
 
 #: ../src/file-manager/fm-properties-window.c:485
 #: ../src/nautilus-information-panel.c:548
 #, fuzzy
 msgid "Please drag just one image to set a custom icon."
-msgstr "Eriikooni seadmiseks lohista vaid üht pilti"
+msgstr "Eriikooni seadmiseks lohista vaid üht pilti."
 
 #: ../src/file-manager/fm-properties-window.c:486
 #: ../src/nautilus-information-panel.c:549
@@ -3990,9 +3995,8 @@ msgstr "Rohkem kui üks pilt"
 
 #: ../src/file-manager/fm-properties-window.c:495
 #: ../src/nautilus-information-panel.c:568
-#, fuzzy
 msgid "The file that you dropped is not local."
-msgstr "Fail, mille poetasid, ei ole kohalik."
+msgstr "Fail, mille lohistasid, ei ole kohalik."
 
 #: ../src/file-manager/fm-properties-window.c:496
 #: ../src/file-manager/fm-properties-window.c:503
@@ -4007,9 +4011,8 @@ msgstr "Ainult kohalikud pildid"
 
 #: ../src/file-manager/fm-properties-window.c:502
 #: ../src/nautilus-information-panel.c:575
-#, fuzzy
 msgid "The file that you dropped is not an image."
-msgstr "Fail, mille poetasid, ei ole pilt."
+msgstr "Fail, mille lohistasid, ei ole pilt."
 
 #: ../src/file-manager/fm-properties-window.c:504
 #: ../src/nautilus-information-panel.c:577
@@ -4116,7 +4119,7 @@ msgstr "Asukoht:"
 #: ../src/file-manager/fm-properties-window.c:2346
 #, fuzzy
 msgid "Volume:"
-msgstr "DVD ketas"
+msgstr "Kettaseade:"
 
 #: ../src/file-manager/fm-properties-window.c:2350
 msgid "Free space:"
@@ -4182,7 +4185,7 @@ msgstr "_Kleepuv"
 #: ../src/file-manager/fm-properties-window.c:2949
 #, fuzzy
 msgid "You are not the owner, so you can't change these permissions."
-msgstr "Failiõigusi saab määrata ainult faili omanik."
+msgstr "Sa ei ole faili omanik ega saa selle faili õigusi määrata."
 
 #: ../src/file-manager/fm-properties-window.c:2963
 msgid "File _owner:"
@@ -4227,11 +4230,11 @@ msgstr "Viimati muudetud:"
 #: ../src/file-manager/fm-properties-window.c:3099
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
-msgstr "\"%s\" õiguseid ei saa tuvastada."
+msgstr "\"%s\" õigusi ei saa tuvastada."
 
 #: ../src/file-manager/fm-properties-window.c:3102
 msgid "The permissions of the selected file could not be determined."
-msgstr "Valitud faili õiguseid ei saa tuvastada."
+msgstr "Valitud faili õigusi ei saa tuvastada."
 
 #: ../src/file-manager/fm-properties-window.c:3260
 msgid "There was an error displaying help."
@@ -4247,12 +4250,11 @@ msgstr "Ava programmiga"
 
 #: ../src/file-manager/fm-properties-window.c:3655
 msgid "Cancel Showing Properties Window?"
-msgstr "Tühistan omaduste akna näitamise?"
+msgstr "Kas tühistada omaduste akna näitamise?"
 
 #: ../src/file-manager/fm-properties-window.c:3656
-#, fuzzy
 msgid "Creating Properties window."
-msgstr "Omaduste akna loomine"
+msgstr "Akna loomine omaduste seadistamiseks."
 
 #: ../src/file-manager/fm-properties-window.c:3813
 msgid "Select an icon"
@@ -4334,9 +4336,9 @@ msgid "Couldn't Create Required Folders"
 msgstr "Vajalikke katalooge ei saa luua"
 
 #: ../src/nautilus-application.c:260
-#, fuzzy c-format
+#, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr "Nautilus ei saa luua järgmisi katalooge %s."
+msgstr "Nautilus ei saa luua järgmisi katalooge: %s."
 
 #: ../src/nautilus-application.c:262
 #, fuzzy
@@ -4352,13 +4354,12 @@ msgstr ""
 "Nautilus saaks vajalikud kataloogid luua."
 
 #: ../src/nautilus-application.c:330
-#, fuzzy
 msgid "Link To Old Desktop"
-msgstr "ekraanil"
+msgstr "Viit vanale töölauale"
 
 #: ../src/nautilus-application.c:346
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr ""
+msgstr "Töölauale loodi viit nimega 'Viit vanale töölauale'."
 
 #: ../src/nautilus-application.c:347
 msgid ""
@@ -4367,9 +4368,8 @@ msgid ""
 msgstr ""
 
 #: ../src/nautilus-application.c:349
-#, fuzzy
 msgid "Migrated Old Desktop"
-msgstr "ekraanil"
+msgstr "Vana töölaud ümber tõstetud"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -4507,9 +4507,8 @@ msgid "_Server:"
 msgstr "_Server:"
 
 #: ../src/nautilus-connect-server-dialog.c:451
-#, fuzzy
 msgid "Optional information:"
-msgstr "Mittekohustuslik teave:"
+msgstr "Valikuline teave:"
 
 #: ../src/nautilus-connect-server-dialog.c:463
 #, fuzzy
@@ -4574,7 +4573,7 @@ msgstr "Sirvi _võrku"
 
 #: ../src/nautilus-connect-server-dialog.c:699
 msgid "C_onnect"
-msgstr "Ü_hendu"
+msgstr "Ü_henda"
 
 #: ../src/nautilus-emblem-sidebar.c:241
 #, c-format
@@ -4582,13 +4581,11 @@ msgid "Couldn't remove emblem with name '%s'."
 msgstr "Embleemi nimega '%s' ei saa eemaldada."
 
 #: ../src/nautilus-emblem-sidebar.c:242
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
 msgstr ""
-"Ei saa embleemi '%s' eemaldada. See on tõenäoliselt püsiv embleem, mida "
-"kasutaja pole lisanud."
+"See on tõenäoliselt püsiv embleem, mida kasutaja pole lisanud."
 
 #: ../src/nautilus-emblem-sidebar.c:243
 msgid "Couldn't Remove Emblem"
@@ -4600,16 +4597,13 @@ msgid "Couldn't rename emblem with name '%s'."
 msgstr "Embleemi nimega '%s' ei saa ümber nimetada."
 
 #: ../src/nautilus-emblem-sidebar.c:277
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
 msgstr ""
-"Ei saa embleemi '%s' ümbernimetada. See on tõenäoliselt alaline embleem,mida "
-"sine ei ole lisanud."
+"See on tõenäoliselt püsiv embleem, mida kasutaja pole lisanud."
 
 #: ../src/nautilus-emblem-sidebar.c:278
-#, fuzzy
 msgid "Couldn't Rename Emblem"
 msgstr "Ei saa embleemi ümber nimetada"
 
@@ -4619,7 +4613,7 @@ msgstr "Nimeta embleem ümber"
 
 #: ../src/nautilus-emblem-sidebar.c:316
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Sisesta embleemi uus nimi:"
+msgstr "Sisesta embleemile uus nimi:"
 
 #: ../src/nautilus-emblem-sidebar.c:370
 msgid "Rename"
@@ -4634,39 +4628,32 @@ msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
-"Sisesta iga embleemi järele kirjeldav nimi. Seda kasutatakse edaspidi "
-"teistes kohtades embleemi nimena"
+"Sisesta iga embleemi järele kirjeldav nimi. Seda kasutatakse "
+"teistes kohtades edaspidi embleemi nimena."
 
 #: ../src/nautilus-emblem-sidebar.c:560
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
-"Sisesta embleemi järele kirjeldav nimi. Seda kasutatakse edaspidi "
-"teistes kohtades embleemi nimena"
+"Sisesta embleemi järele kirjeldav nimi. Seda kasutatakse "
+"teistes kohtades edaspidi embleemi nimena."
 
 #: ../src/nautilus-emblem-sidebar.c:779
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr ""
-"Mõningaid faile ei saa lisada embleemidena, sest need ei paista olevat "
-"sobivad pildid."
+msgstr "Mõningaid faile ei saa embleemina lisada."
 
 #: ../src/nautilus-emblem-sidebar.c:779 ../src/nautilus-emblem-sidebar.c:781
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "Fail '%s' ei ole korrektne pildifail."
+msgstr "Embleemid ei ole ilmselt korrektsed pildifailid."
 
 #: ../src/nautilus-emblem-sidebar.c:779 ../src/nautilus-emblem-sidebar.c:781
 msgid "Couldn't Add Emblems"
 msgstr "Embleeme ei saa lisada"
 
 #: ../src/nautilus-emblem-sidebar.c:781
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr ""
-"Ühtegi faili ei saa lisada embleemina, sest need ei paista olevat sobivad "
-"pildid."
+msgstr "Ühtegi faili ei saa embleemina lisada."
 
 #: ../src/nautilus-emblem-sidebar.c:802 ../src/nautilus-emblem-sidebar.c:827
 #: ../src/nautilus-emblem-sidebar.c:877
@@ -4689,7 +4676,7 @@ msgstr "Fail '%s' ei ole korrektne pildifail."
 
 #: ../src/nautilus-emblem-sidebar.c:825
 msgid "The dragged file does not appear to be a valid image."
-msgstr "Lohistatud fail ei ole sobilik pildi fail."
+msgstr "Lohistatud fail ei ole korrektne pildifail."
 
 #: ../src/nautilus-file-management-properties.c:307
 msgid "None"
@@ -4777,7 +4764,7 @@ msgstr "Alati avatakse _sirvija aknas"
 
 #: ../src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "_Küsi kasutajalt luba prügikasti tühjendamisel ja failide kustutamisel"
+msgstr "_Küsi kinnitust prügikasti tühjendamisel ja failide kustutamisel"
 
 #: ../src/nautilus-file-management-properties.glade.h:41
 msgid "Behavior"
@@ -4788,13 +4775,11 @@ msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Vali teabe järjekord ikooni all. Täpsem info ilmub ikoonide suurendamisel."
+"Vali teabe esitamise järjekord ikooni all. Täpsem info ilmub ikoonide suurendamisel."
 
 #: ../src/nautilus-file-management-properties.glade.h:48
-#, fuzzy
 msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Vali teabe järjekord ikooni all. Täpsem info ilmub ikoonide suurendamisel."
+msgstr "Vali teabe esitamise järjekord nimekirjavaates."
 
 #: ../src/nautilus-file-management-properties.glade.h:49
 msgid "Count _number of items:"
@@ -4818,7 +4803,7 @@ msgstr "_Luba kustutada ilma prügikasti saatmata"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "List Columns"
-msgstr ""
+msgstr "Veerud nimekirjas"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Local Files Only"
@@ -4838,7 +4823,7 @@ msgstr "Eelvaade"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Preview _sound files:"
-msgstr "_Helifailide eelvaade"
+msgstr "_Helifailide eelkuva"
 
 #: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Show _only folders"
@@ -4921,13 +4906,12 @@ msgid "group"
 msgstr "grupp"
 
 #: ../src/nautilus-file-management-properties.glade.h:83
-#, fuzzy
 msgid "informal"
-msgstr "Info"
+msgstr "mitteametlik"
 
 #: ../src/nautilus-file-management-properties.glade.h:84
 msgid "iso"
-msgstr ""
+msgstr "iso"
 
 #: ../src/nautilus-file-management-properties.glade.h:85
 msgid "locale"
@@ -4998,8 +4982,9 @@ msgid "Metering Mode"
 msgstr "Mõõtmisviis"
 
 #: ../src/nautilus-image-properties-page.c:226
+#, fuzzy
 msgid "Flash Fired"
-msgstr ""
+msgstr "Välklambi kasutamine"
 
 #: ../src/nautilus-image-properties-page.c:227
 msgid "Focal Length"
@@ -5038,7 +5023,7 @@ msgstr[1] ""
 
 #: ../src/nautilus-image-properties-page.c:264
 msgid "Failed to load image information"
-msgstr "Tõrge pildi teabe laadimise"
+msgstr "Viga pilditeabe laadimisel"
 
 #: ../src/nautilus-image-properties-page.c:414
 msgid "loading..."
@@ -5062,10 +5047,8 @@ msgid "You can't assign more than one custom icon at a time."
 msgstr "Rohkem kui üht kohandatud ikooni korraga ei saa lisada"
 
 #: ../src/nautilus-information-panel.c:576
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr ""
-"Fail, mille sa poetasid, ei ole kohalik. Ikoonideks saab kasutada vaid kohalikke pildifaile."
+msgstr "Ikoonidena saab kasutada vaid kohalikke pildifaile."
 
 #: ../src/nautilus-information-panel.c:891
 #, c-format
@@ -5073,12 +5056,10 @@ msgid "Open with %s"
 msgstr "Ava programmiga %s"
 
 #: ../src/nautilus-information-panel.c:984
-#, fuzzy
 msgid "Unable to launch the cd burner application."
 msgstr "CD-kirjutamise rakendust ei saa käivitada"
 
 #: ../src/nautilus-information-panel.c:985
-#, fuzzy
 msgid "Can't Launch CD Burner"
 msgstr "CD-kirjutajat ei saa käivitada"
 
@@ -5124,6 +5105,7 @@ msgid "Create the initial window with the given geometry."
 msgstr "Loob esimese akna näidatud suuruse ja asukohaga"
 
 #: ../src/nautilus-main.c:271
+#, fuzzy
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
@@ -5135,7 +5117,7 @@ msgstr ""
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
+msgstr "Ära halda töölaua tausta (eirab eelistuste aknas valitud sätteid)."
 
 #: ../src/nautilus-main.c:277
 msgid "open a browser window."
@@ -5182,21 +5164,19 @@ msgstr "nautilus: --geometry võtit ei saa kasutada rohkem kui ühe URI'ga.\n"
 #: ../src/nautilus-navigation-window-menus.c:127
 #, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "Kas oled kindel, et soovid \"%s\" jäädavalt kustutada?"
+msgstr "Kas oled kindel, et soovid ajaloo unustada?"
 
 #: ../src/nautilus-navigation-window-menus.c:128
-#, fuzzy
 msgid "If you do, you will be doomed to repeat it."
 msgstr "Kui nii teed, siis jäädki tegema."
 
 #: ../src/nautilus-navigation-window-menus.c:130
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "Kas oled kindel, et tahad oma külastatud asukohtade loendi tühjendada?"
+msgstr "Kas oled kindel, et tahad oma külastatud asukohtade loendi puhastada?"
 
 #: ../src/nautilus-navigation-window-menus.c:132
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr ""
-"Kui tühjendad asukohtade loendi, siis selles loendis olevad kirjed "
+msgstr "Kui puhastad asukohtade loendi, siis selles loendis olevad kirjed "
 "kustutatakse lõplikult."
 
 #: ../src/nautilus-navigation-window-menus.c:138
@@ -5213,9 +5193,9 @@ msgstr ""
 "viitavad kirjed kustutada?"
 
 #: ../src/nautilus-navigation-window-menus.c:289
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
-msgstr "Asukohta \"%s\" ei ole enam olemas."
+msgstr "Asukohta \"%s\" ei ole olemas."
 
 #: ../src/nautilus-navigation-window-menus.c:292
 msgid "Bookmark for Nonexistent Location"
@@ -5241,9 +5221,8 @@ msgstr "_Uue akna avamine"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:548
-#, fuzzy
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Ava näidatud asukohta uus Nautiluse aken"
+msgstr "Ava näidatud asukoha jaoks uus Nautiluse aken"
 
 #: ../src/nautilus-navigation-window-menus.c:550
 msgid "Close _All Windows"
@@ -5261,14 +5240,12 @@ msgstr "_Asukohale..."
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:554
 #: ../src/nautilus-spatial-window.c:582
-#, fuzzy
 msgid "Specify a location to open"
 msgstr "Näita asukoht, mida avada"
 
 #: ../src/nautilus-navigation-window-menus.c:556
-#, fuzzy
 msgid "Clea_r History"
-msgstr "Ajaloo tühjendamine"
+msgstr "Ajaloo puhastamine"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:557
@@ -5445,10 +5422,9 @@ msgstr "Mustri ei suudetud paigaldada"
 
 #: ../src/nautilus-property-browser.c:1113
 msgid "Sorry, but you can't replace the reset image."
-msgstr ""
+msgstr "Vabandust, kuid lähtestamissümbolit ei saa asendada."
 
 #: ../src/nautilus-property-browser.c:1114
-#, fuzzy
 msgid "Reset is a special image that cannot be deleted."
 msgstr "Lähtestamissümbolit ei saa kustutada."
 
@@ -5942,7 +5918,6 @@ msgid "Zoom"
 msgstr "Suurendus"
 
 #: ../src/nautilus-zoom-control.c:808
-#, fuzzy
 msgid "Set the zoom level of the current view"
 msgstr "Seab praeguse vaate suurendusastme"
 
