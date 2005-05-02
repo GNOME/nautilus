@@ -2838,7 +2838,9 @@ keyboard_space (NautilusIconContainer *container,
 						       leftmost_in_top_row,
 						       NULL);
 			}
-			set_keyboard_focus (container, icon);
+			if (icon != NULL) {
+				set_keyboard_focus (container, icon);
+			}
 		}
 	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
 		activate_selected_items_alternate (container, NULL);
