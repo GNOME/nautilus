@@ -1,3 +1,11 @@
+2005-05-02  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(keyboard_space): Prevent nautilus from crashing on press of
+	Ctrl+Space in an empty directory. Fixes bug #302018.
+
+	Patch from Vinay M R  <vinay.mandyakoppal@wipro.com>
+	
 2005-05-02  Frederic Crozat  <fcrozat@mandriva.com>
 
 	* libnautilus-private/nautilus-program-choosing.c:
