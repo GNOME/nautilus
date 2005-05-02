@@ -1,3 +1,12 @@
+2005-05-02  Frederic Crozat  <fcrozat@mandriva.com>
+
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_desktop_file):
+	* src/nautilus-application.c:
+	(nautilus_application_present_spatial_window_with_selection),
+	(nautilus_application_create_navigation_window):
+	fix build when startup notification isn't installed.
+
 2005-05-02  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
