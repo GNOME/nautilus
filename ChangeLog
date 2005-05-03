@@ -1,3 +1,20 @@
+2005-05-03  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.[ch]:
+	(display_pending_files), (fm_directory_view_freeze_updates),
+	(fm_directory_view_unfreeze_updates), (queue_pending_files):
+	Allow freeze of update processing inside a view.
+	
+	* src/file-manager/fm-list-view.c:
+	(cell_renderer_editing_canceled), (cell_renderer_edited),
+	(create_and_set_up_tree_view), (fm_list_view_start_renaming_file):
+	Freeze and unfreeze the list view when renaming.
+
+        Workaround for bug #87701: Updates to the list view are put on
+	hold during rename to prevent losing editing focus. If too many
+	changes are queued while being frozen, further changes are thrown
+	away and the view is marked for reload.
+
 2005-05-02  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-window-menus.c:

@@ -107,6 +107,8 @@
 #define RESPONSE_DISPLAY 1001
 #define RESPONSE_RUN_IN_TERMINAL 1002
 
+#define MAX_QUEUED_UPDATES 500
+
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER   	"/MenuBar/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/MenuBar/File/Open Placeholder/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/MenuBar/File/Open Placeholder/Scripts/Scripts Placeholder"
@@ -216,6 +218,14 @@ struct FMDirectoryViewDetails
 	gboolean scripts_invalid;
 	gboolean templates_invalid;
 	gboolean reported_load_error;
+
+	/* flag to indicate that no file updates should be dispatched to subclasses.
+	 * This is a workaround for bug #87701 that prevents the list view from
+	 * losing focus when the underlying GtkTreeView is updated.
+	 */
+	gboolean updates_frozen;
+	guint	 updates_queued;
+	gboolean needs_reload;
 
 	gboolean sort_directories_first;
 
@@ -2393,6 +2403,12 @@ process_old_files (FMDirectoryView *view)
 static void
 display_pending_files (FMDirectoryView *view)
 {
+
+	/* Don't dispatch any updates while the view is frozen. */
+	if (view->details->updates_frozen) {
+		return;
+	}
+
 	process_new_files (view);
 	process_old_files (view);
 
@@ -2402,6 +2418,30 @@ display_pending_files (FMDirectoryView *view)
 		done_loading (view);
 	}
 }
+
+void
+fm_directory_view_freeze_updates (FMDirectoryView *view)
+{
+	view->details->updates_frozen = TRUE;
+	view->details->updates_queued = 0;
+	view->details->needs_reload = FALSE;
+}
+
+void
+fm_directory_view_unfreeze_updates (FMDirectoryView *view)
+{
+	view->details->updates_frozen = FALSE;
+
+	if (view->details->needs_reload) {
+		view->details->needs_reload = FALSE;
+		if (view->details->model != NULL) {
+			load_directory (view, view->details->model);
+		}
+	} else {
+		schedule_idle_display_of_pending_files (view);
+	}
+}
+
 
 static gboolean
 display_selection_info_idle_callback (gpointer data)
@@ -2530,6 +2570,22 @@ queue_pending_files (FMDirectoryView *view,
 {
 	if (files == NULL) {
 		return;
+	}
+
+	/* Don't queue any more updates if we need to reload anyway */
+	if (view->details->needs_reload) {
+		return;
+	}
+
+	if (view->details->updates_frozen) {
+		view->details->updates_queued += g_list_length (files);
+		/* Mark the directory for reload when there are too much queued
+		 * changes to prevent the pending list from growing infinitely.
+		 */
+		if (view->details->updates_queued > MAX_QUEUED_UPDATES) {
+			view->details->needs_reload = TRUE;
+			return;
+		}
 	}
 
 	*pending_list = g_list_concat (nautilus_file_list_copy (files),

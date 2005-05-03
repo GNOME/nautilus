@@ -828,6 +828,13 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 }
 
 static void
+cell_renderer_editing_canceled (GtkCellRendererText *cell,
+				FMListView          *view)
+{
+	fm_directory_view_unfreeze_updates (FM_DIRECTORY_VIEW (view));
+}
+
+static void
 cell_renderer_edited (GtkCellRendererText *cell,
 		      const char          *path_str,
 		      const char          *new_text,
@@ -873,6 +880,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 		      "editable", FALSE,
 		      NULL);
 
+	fm_directory_view_unfreeze_updates (FM_DIRECTORY_VIEW (view));
 }
 
 static char *
@@ -1125,6 +1133,7 @@ create_and_set_up_tree_view (FMListView *view)
 			cell = gtk_cell_renderer_text_new ();
 			view->details->file_name_cell = (GtkCellRendererText *)cell;
 			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
+			g_signal_connect (cell, "editing-canceled", G_CALLBACK (cell_renderer_editing_canceled), view);
 			
 			gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
 			gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
@@ -1930,6 +1939,9 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
 		return;
 	}
+
+	/* Freeze updates to the view to prevent losing rename focus when the tree view updates */
+	fm_directory_view_freeze_updates (FM_DIRECTORY_VIEW (view));
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
 
