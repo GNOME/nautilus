@@ -1,3 +1,11 @@
+2005-05-08  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-thumbnails.c:
+	(thumbnail_thread_start):
+	Don't try to thumbnail files which have been modified in the
+	last few seconds to avoid constantly re-thumbnailing them.
+	Current cool-off period is three seconds. Fixes bug #107418.
+
 2005-05-03  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.[ch]:
