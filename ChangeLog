@@ -1,3 +1,11 @@
+2005-05-11  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_look_for_dot_directory_file), (make_dot_directory_uri),
+	(link_info_start), (lacks_link_info):
+	Kill dotfile-related code. ".directory" supporting schemas have
+	gone. Fixes #142343.
+
 2005-05-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:

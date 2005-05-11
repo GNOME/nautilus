@@ -1709,53 +1709,12 @@ wants_mime_list (const Request *request)
 {
 	return request->mime_list;
 }
-
-static gboolean
-should_look_for_dot_directory_file (NautilusFile *file)
-{
-	char *uri;
-	guint i;
-
-	const char *schemes [] = {
-		"preferences:",
-		"preferences-all-users:",
-		"all-preferences:",
-		"system-settings:",
-		"server-settings:",
-		"favorites:",
-		"start-here:",
-		"applications:",
-		"applications-all-users:",
-		"all-applications:"
-	};
-
-	uri = file->details->directory->details->uri;
-
-	/* We special-case the file shcme so we won't have
-	 * to go through the list every time
-	 */
-	if (eel_str_has_prefix (uri, "file:")) {
-		return FALSE;
-	}
-
-	for (i = 0; i < G_N_ELEMENTS (schemes); i++) {
-		if (eel_str_has_prefix (uri, schemes[i])) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 static gboolean
 lacks_link_info (NautilusFile *file)
 {
 	if (file->details->file_info_is_up_to_date && 
 	    !file->details->link_info_is_up_to_date) {
 		if (nautilus_file_is_nautilus_link (file)) {
-			return TRUE;
-		} else if (nautilus_file_is_directory (file) &&
-			should_look_for_dot_directory_file (file)) {
 			return TRUE;
 		} else {
 			link_info_done (file->details->directory, file, NULL, NULL, NULL, 0, 0);
@@ -3021,43 +2980,6 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 	nautilus_directory_unref (directory);
 }
 
-
-static char *
-make_dot_directory_uri (const char *uri)
-{
-	char *dot_directory_uri;
-	GnomeVFSURI *vfs_uri;
-	GnomeVFSURI *dot_dir_vfs_uri;
-
-	/* FIXME: what we really need is a uri_append_file_name call
-	 * that works on strings, so we can avoid the VFS parsing step.
-	 */
-
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-	
-	dot_dir_vfs_uri = gnome_vfs_uri_append_file_name (vfs_uri, ".directory");
-
-	/* This does sync I/O but is allowed here since otherwise nautilus won't start showing the
-	 * directory's contents before all the scheduled calls of "look for .directory file" have been
-	 * finished. 
-	 */
-	if (gnome_vfs_uri_is_local (dot_dir_vfs_uri)) {
-		dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
-	}
-	else {
-		dot_directory_uri = NULL;
-	}
-	
-	gnome_vfs_uri_unref (vfs_uri);
-	gnome_vfs_uri_unref (dot_dir_vfs_uri);
-
-	return dot_directory_uri;
-}
-
-
 static void
 link_info_stop (NautilusDirectory *directory)
 {
@@ -3086,8 +3008,8 @@ static void
 link_info_start (NautilusDirectory *directory,
 		 NautilusFile *file)
 {
-	char *uri, *dot_directory_uri = NULL;
-	gboolean nautilus_style_link, is_directory;
+	char *uri;
+	gboolean nautilus_style_link;
 	int file_size;
 	char *file_contents;
 	GnomeVFSResult result;
@@ -3104,16 +3026,10 @@ link_info_start (NautilusDirectory *directory,
 
 	/* Figure out if it is a link. */
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
-        is_directory = nautilus_file_is_directory (file);
-
 	uri = nautilus_file_get_uri (file);
 	
-	if (is_directory) {
-		dot_directory_uri = make_dot_directory_uri (uri);
-	}
-	
 	/* If it's not a link we are done. If it is, we need to read it. */
-	if (!(nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
+	if (!nautilus_style_link) {
 		link_info_done (directory, file, NULL, NULL, NULL, 0, 0);
 	} else if (should_read_link_info_sync (file)) {
 		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
@@ -3127,27 +3043,17 @@ link_info_start (NautilusDirectory *directory,
 		 */
 	} else {
 		if (!async_job_start (directory, "link info")) {
-			g_free (dot_directory_uri);
 			g_free (uri);
 			return;
 		}
 
 		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
 		directory->details->link_info_read_state->file = file;
-		if (is_directory) {
-			directory->details->link_info_read_state->handle = eel_read_entire_file_async
-				(dot_directory_uri,
-				 GNOME_VFS_PRIORITY_DEFAULT,
-				 link_info_nautilus_link_read_callback,
-				 directory);
-			g_free (dot_directory_uri);
-		} else {
-			directory->details->link_info_read_state->handle = eel_read_entire_file_async
-				(uri,
-				 GNOME_VFS_PRIORITY_DEFAULT,
-				 link_info_nautilus_link_read_callback,
-				 directory);
-		}
+		directory->details->link_info_read_state->handle = eel_read_entire_file_async
+			(uri,
+			 GNOME_VFS_PRIORITY_DEFAULT,
+			 link_info_nautilus_link_read_callback,
+			 directory);
 	}
 	g_free (uri);
 }
