@@ -5806,6 +5806,7 @@ static GtkActionEntry directory_view_entries[] = {
     G_CALLBACK (action_new_folder_callback) },
   { "No Templates", NULL, N_("No templates Installed") },               /* name, stock id, label */
   { "New Empty File", NULL,                  /* name, stock id */
+    /* translators: this is used to indicate that a file doesn't contain anything */
     N_("_Empty File"), NULL,                /* label, accelerator */
     N_("Create a new empty file inside this folder"),                   /* tooltip */ 
     G_CALLBACK (action_new_empty_file_callback) },
@@ -5916,7 +5917,7 @@ static GtkActionEntry directory_view_entries[] = {
 static GtkToggleActionEntry directory_view_toggle_entries[] = {
   { "Show Hidden Files", NULL,                  /* name, stock id */
     N_("Show _Hidden Files"), "<control>H",                /* label, accelerator */
-    N_("Toggles the display of hidden files in the current window"),                   /* tooltip */ 
+    N_("Toggle the display of hidden files in the current window"),                   /* tooltip */ 
     G_CALLBACK (action_show_hidden_files_callback),
     TRUE },
 };
