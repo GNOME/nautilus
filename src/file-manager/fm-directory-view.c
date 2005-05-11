@@ -5752,6 +5752,7 @@ static GtkActionEntry directory_view_entries[] = {
     G_CALLBACK (action_new_folder_callback) },
   { "No Templates", NULL, N_("No templates Installed") },               /* name, stock id, label */
   { "New Empty File", NULL,                  /* name, stock id */
+    /* translators: this is used to indicate that a file doesn't contain anything */
     N_("_Empty File"), NULL,                /* label, accelerator */
     N_("Create a new empty file inside this folder"),                   /* tooltip */ 
     G_CALLBACK (action_new_empty_file_callback) },

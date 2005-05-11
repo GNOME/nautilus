@@ -451,6 +451,7 @@ nautilus_get_vfs_method_display_name (char *method)
 	} else if (g_ascii_strcasecmp (method, "smb") == 0 ) {
 		return _("Windows Network");
 	} else if (g_ascii_strcasecmp (method, "dns-sd") == 0 ) {
+		/* translators: this is the title of the "dns-sd:///" location */
 		return _("Services in");
 	}
 	return NULL;
