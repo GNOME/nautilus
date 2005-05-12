@@ -406,7 +406,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
 			     drag_types, G_N_ELEMENTS (drag_types),
-			     GDK_ACTION_LINK);
+			     GDK_ACTION_COPY | GDK_ACTION_LINK);
 	g_signal_connect_object (event_box, "drag_data_get",
 				 G_CALLBACK (drag_data_get_callback), bar, 0);
 
