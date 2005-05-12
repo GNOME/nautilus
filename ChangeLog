@@ -1,5 +1,11 @@
 2005-05-12  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-clipboard.c:
+	(merge_in_clipboard_menu_items), (merge_out_clipboard_menu_items):
+	Don't merge UI twice. Fixes #301854.
+
+2005-05-12  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-location-bar.c:
 	(nautilus_location_bar_init):
 	Make "Location:" label GDK_ACTION_COPY drag source.
