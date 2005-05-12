@@ -202,7 +202,6 @@ set_clipboard_menu_items_insensitive (GtkActionGroup *action_group)
 typedef struct {
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
-	guint merge_id;
 	gboolean editable_shares_selection_changes;
 } TargetCallbackData;
 
@@ -222,23 +221,6 @@ set_clipboard_items_are_merged_in (GObject *widget_as_object,
 			   GINT_TO_POINTER (merged_in));
 }
 
-static char * clipboard_ui =
-"<ui>"
-"<menubar name='MenuBar'>"
-"	<menu action='Edit'>"
-"		<menuitem name='Cut' "
-"			  action='Cut'/>"
-"		<menuitem name='Copy' "
-"			  action='Copy'/>"
-"		<menuitem name='Paste' "
-"			  action='Paste'/>"
-"		<menuitem name='Select All'"
-"			  action='Select All'/>"
-"	</menu>"
-"</menubar>"
-"</ui>";
-
-
 static void
 merge_in_clipboard_menu_items (GObject *widget_as_object,
 			       TargetCallbackData *target_data)
@@ -251,9 +233,6 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 
 	gtk_ui_manager_insert_action_group (target_data->ui_manager,
 					    target_data->action_group, 0);
-	
-	target_data->merge_id = gtk_ui_manager_add_ui_from_string (target_data->ui_manager,
-								   clipboard_ui, -1, NULL);
 
 	set_paste_sensitive_if_clipboard_contains_data (target_data->action_group);
 	
@@ -283,12 +262,6 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 
 	gtk_ui_manager_remove_action_group (target_data->ui_manager,
 					    target_data->action_group);
-	
-	if (target_data->merge_id != 0) {
-		gtk_ui_manager_remove_ui (target_data->ui_manager,
-					  target_data->merge_id);
-		target_data->merge_id = 0;
-	}
 
 	g_signal_handlers_disconnect_matched (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
 					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
