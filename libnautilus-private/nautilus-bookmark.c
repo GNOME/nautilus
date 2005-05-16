@@ -351,7 +351,6 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 		 * we will notice.
 		 */
 		nautilus_bookmark_disconnect_file (bookmark);
-		nautilus_bookmark_connect_file (bookmark);
 		should_emit_appearance_changed_signal = TRUE;		
 	} else if (nautilus_bookmark_update_icon (bookmark)) {
 		/* File hasn't gone away, but it has changed

@@ -1,3 +1,15 @@
+2005-05-16  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-bookmark.c:
+	(bookmark_file_changed_callback):
+	Don't loop when a bookmarked file is removed
+	
+	* src/file-manager/fm-directory-view.c: (process_new_files):
+	Don't call get_file_info for files no longer in the directory
+	(was caused by the ready_to_load call).
+
+	This fixes #165530 and likely #170761
+
 2005-05-12  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-clipboard.c:
