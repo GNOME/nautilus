@@ -32,6 +32,7 @@
 #define FM_ACTION_NEW_FOLDER "New Folder"
 #define FM_ACTION_PROPERTIES "Properties"
 #define FM_ACTION_PROPERTIES_ACCEL "PropertiesAccel"
+#define FM_ACTION_SELF_PROPERTIES "SelfProperties"
 #define FM_ACTION_NO_TEMPLATES "No Templates"
 #define FM_ACTION_EMPTY_TRASH "Empty Trash"
 #define FM_ACTION_CUT "Cut"

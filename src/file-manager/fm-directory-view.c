@@ -1134,6 +1134,23 @@ action_properties_callback (GtkAction *action,
         nautilus_file_list_free (selection);
 }
 
+static void
+action_self_properties_callback (GtkAction *action,
+				 gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	GList           *files;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	files = g_list_append (NULL, view->details->directory_as_file);
+
+	fm_properties_window_present (files, GTK_WIDGET (view));
+
+	nautilus_file_list_free (files);
+}
+
 static gboolean
 all_files_in_trash (GList *files)
 {
@@ -5800,6 +5817,10 @@ static GtkActionEntry directory_view_entries[] = {
     "PropertiesAccel", "<control>I",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_properties_callback) },
+  { "SelfProperties", GTK_STOCK_PROPERTIES,                  /* name, stock id */
+    N_("_Properties"), NULL,                /* label, accelerator */
+    N_("View or modify the properties of the open folder"),                   /* tooltip */ 
+    G_CALLBACK (action_self_properties_callback) },
   { "New Folder", NULL,                  /* name, stock id */
     N_("Create _Folder"), "<control><shift>N",                /* label, accelerator */
     N_("Create a new empty folder inside this folder"),                   /* tooltip */ 
@@ -6389,6 +6410,11 @@ real_update_menus (FMDirectoryView *view)
 					      FM_ACTION_PROPERTIES_ACCEL);
 	gtk_action_set_sensitive (action,
 				  selection_count != 0 &&
+				  fm_directory_view_supports_properties (view));
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELF_PROPERTIES);
+	gtk_action_set_sensitive (action,
 				  fm_directory_view_supports_properties (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
