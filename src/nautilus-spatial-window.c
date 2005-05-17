@@ -507,6 +507,19 @@ menu_popup_pos (GtkMenu   *menu,
 	*push_in = TRUE;
 }
 
+static gboolean
+location_button_pressed_callback (GtkWidget      *widget,
+				  GdkEventButton *event,
+				  NautilusWindow *window)
+{
+	if (event->button == 3 &&
+	    window->content_view != NULL) {
+		nautilus_view_pop_up_location_context_menu (window->content_view, event);
+	}
+
+	return FALSE;
+}
+
 static void
 location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *window)
 {
@@ -716,6 +729,10 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_widget_show (window->details->content_box);
 
 	window->details->location_button = gtk_button_new ();
+	g_signal_connect (window->details->location_button,
+			  "button-press-event",
+			  G_CALLBACK (location_button_pressed_callback),
+			  window);
 	gtk_button_set_relief (GTK_BUTTON (window->details->location_button),
 			       GTK_RELIEF_NORMAL);
 	rc_style = gtk_widget_get_modifier_style (window->details->location_button);

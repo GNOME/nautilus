@@ -258,6 +258,33 @@ style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 	gtk_widget_set_size_request (widget, width, -1);
 }
 
+static gboolean
+label_button_pressed_callback (GtkWidget             *widget,
+			       GdkEventButton        *event)
+{
+	NautilusNavigationWindow *window;
+	NautilusView             *view;
+	GtkWidget                *label;
+
+	if (event->button != 3) {
+		return FALSE;
+	}
+
+	window = nautilus_location_bar_get_window (widget->parent);
+	view = NAUTILUS_WINDOW (window)->content_view;
+	label = GTK_BIN (widget)->child;
+	/* only pop-up if the URI in the entry matches the displayed location */
+	if (view == NULL ||
+	    strcmp (gtk_label_get_text (GTK_LABEL (label)), LOCATION_LABEL)) {
+		return FALSE;
+	}
+
+	nautilus_view_pop_up_location_context_menu (view, event);
+
+	return FALSE;
+}
+
+
 static int
 get_editable_number_of_chars (GtkEditable *editable)
 {
@@ -401,6 +428,11 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	eel_accessibility_set_up_label_widget_relation (label, entry);
 
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
+
+
+	/* Label context menu */
+	g_signal_connect (event_box, "button-press-event",
+			  G_CALLBACK (label_button_pressed_callback), NULL);
 
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (event_box), 

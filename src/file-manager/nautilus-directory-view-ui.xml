@@ -149,4 +149,21 @@
         </placeholder>
         <menuitem name="Connect To Server Link" action="Connect To Server Link"/>
 </popup>
+<popup name="location">
+	<placeholder name="Open Placeholder">
+		<menuitem name="LocationOpenAlternate" action="LocationOpenAlternate"/>
+	</placeholder>
+	<separator/>
+	<placeholder name="Clipboard Actions">
+		<menuitem name="Cut" action="LocationCut"/>
+		<menuitem name="Copy" action="LocationCopy"/>
+	</placeholder>
+	<separator/>
+	<placeholder name="Dangerous File Actions">
+		<menuitem name="Trash" action="LocationTrash"/>
+		<menuitem name="Delete" action="LocationDelete"/>
+	</placeholder>
+	<separator/>
+	<menuitem name="Properties" action="SelfProperties"/>
+</popup>
 </ui>

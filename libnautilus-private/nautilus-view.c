@@ -249,3 +249,14 @@ nautilus_view_get_zoom_level (NautilusView *view)
 	
 	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_zoom_level) (view);
 }
+
+void
+nautilus_view_pop_up_location_context_menu (NautilusView   *view,
+					    GdkEventButton *event)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+
+	if (NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu != NULL) {
+		(* NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu) (view, event);
+	}
+}

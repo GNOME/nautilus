@@ -125,6 +125,8 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	"/background/Before Zoom Items/New Object Items/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_NEW_DOCUMENTS_PLACEHOLDER "/background/Before Zoom Items/New Object Items/New Documents/New Documents Placeholder"
 
+#define FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION				"/location"
+
 #define MAX_MENU_LEVELS 5
 
 enum {
@@ -369,6 +371,20 @@ static void action_mount_volume_callback           (GtkAction *action,
 						    gpointer   data);
 static void action_unmount_volume_callback         (GtkAction *action,
 						    gpointer   data);
+
+/* location popup-related actions */
+
+static void action_location_open_alternate_callback (GtkAction *action,
+						     gpointer   callback_data);
+
+static void action_location_cut_callback            (GtkAction *action,
+						     gpointer   callback_data);
+static void action_location_copy_callback           (GtkAction *action,
+						     gpointer   callback_data);
+static void action_location_trash_callback          (GtkAction *action,
+						     gpointer   callback_data);
+static void action_location_delete_callback         (GtkAction *action,
+						     gpointer   callback_data);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -1578,6 +1594,8 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
         iface->can_zoom_in = (gpointer)fm_directory_view_can_zoom_in;
         iface->can_zoom_out = (gpointer)fm_directory_view_can_zoom_out;
 	iface->get_zoom_level = (gpointer)fm_directory_view_get_zoom_level;
+
+	iface->pop_up_location_context_menu = (gpointer)fm_directory_view_pop_up_location_context_menu;
 }
 
 static void
@@ -5260,15 +5278,13 @@ convert_file_list_to_uri_list (GList *files)
 	
 static void
 copy_or_cut_files (FMDirectoryView *view,
-		   gboolean cut)
+		   GList           *clipboard_contents,
+		   gboolean         cut)
 {
 	int count;
 	char *status_string, *name;
-	GList *clipboard_contents;
 	ClipboardInfo *info;
 	
-	clipboard_contents = fm_directory_view_get_selection (view);
-
 	info = g_new0 (ClipboardInfo, 1);
 	info->file_uris = convert_file_list_to_uri_list (clipboard_contents);
 	info->cut = cut;
@@ -5311,8 +5327,6 @@ copy_or_cut_files (FMDirectoryView *view,
 		}
 	}
 
-	nautilus_file_list_free (clipboard_contents);
-	
 	nautilus_window_info_set_status (view->details->window,
 					 status_string);
 	g_free (status_string);
@@ -5322,14 +5336,28 @@ static void
 action_copy_files_callback (GtkAction *action,
 			    gpointer callback_data)
 {
-	copy_or_cut_files (callback_data, FALSE);
+	FMDirectoryView *view;
+	GList *selection;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	selection = fm_directory_view_get_selection (view);
+	copy_or_cut_files (view, selection, FALSE);
+	nautilus_file_list_free (selection);
 }
 
 static void
 action_cut_files_callback (GtkAction *action,
 			   gpointer callback_data)
 {
-	copy_or_cut_files (callback_data, TRUE);
+	FMDirectoryView *view;
+	GList *selection;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	selection = fm_directory_view_get_selection (view);
+	copy_or_cut_files (view, selection, TRUE);
+	nautilus_file_list_free (selection);
 }
 
 static GList *
@@ -5761,6 +5789,101 @@ action_connect_to_server_link_callback (GtkAction *action,
 }
 
 static void
+action_location_open_alternate_callback (GtkAction *action,
+					 gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = view->details->directory_as_file;
+	g_return_if_fail (file != NULL);
+
+	fm_directory_view_activate_file (view,
+					 file,
+					 NAUTILUS_WINDOW_OPEN_IN_NAVIGATION,
+					 0);
+}
+
+static void
+action_location_cut_callback (GtkAction *action,
+			      gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	GList *files;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	g_return_if_fail (file != NULL);
+
+	files = g_list_append (NULL, file);
+	copy_or_cut_files (view, files, TRUE);
+	g_list_free (files);
+}
+
+static void
+action_location_copy_callback (GtkAction *action,
+			       gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	GList *files;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	g_return_if_fail (file != NULL);
+
+	files = g_list_append (NULL, file);
+	copy_or_cut_files (view, files, FALSE);
+	g_list_free (files);
+}
+
+static void
+action_location_trash_callback (GtkAction *action,
+				gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	GList *files;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	g_return_if_fail (file != NULL);
+
+	files = g_list_append (NULL, file);
+	trash_or_delete_files (view, files);
+	g_list_free (files);
+}
+
+static void
+action_location_delete_callback (GtkAction *action,
+				 gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	char *file_uri;
+	GList *files;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	g_return_if_fail (file != NULL);
+
+	file_uri = nautilus_file_get_uri (file);
+
+	files = g_list_append (NULL, file_uri);
+	nautilus_file_operations_delete (files, GTK_WIDGET (view));
+
+	g_free (file_uri);
+	g_list_free (files);
+}
+
+static void
 fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 {
 	NautilusWindowShowHiddenFilesMode mode;
@@ -5933,6 +6056,30 @@ static GtkActionEntry directory_view_entries[] = {
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_open_close_parent_callback) },
+
+  /* Location-specific actions */
+  { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,                  /* name, stock id */
+    N_("Open in Navigation Window"), "",                /* label, accelerator */
+    N_("Open the open folder in a navigation window"),                   /* tooltip */ 
+    G_CALLBACK (action_location_open_alternate_callback) },
+
+  { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,                  /* name, stock id */
+    NULL, "",                /* label, accelerator */
+    N_("Prepare the open folder to be moved with a Paste Files command"),                   /* tooltip */ 
+    G_CALLBACK (action_location_cut_callback) },
+  { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,                  /* name, stock id */
+    NULL, "",                /* label, accelerator */
+    N_("Prepare the open folder to be copied with a Paste Files command"),                   /* tooltip */ 
+    G_CALLBACK (action_location_copy_callback) },
+
+  { FM_ACTION_LOCATION_TRASH, GTK_STOCK_DELETE,                  /* name, stock id */
+    N_("Mo_ve to Trash"), "",                /* label, accelerator */
+    N_("Move the open folder to the Trash"),                   /* tooltip */ 
+    G_CALLBACK (action_location_trash_callback) },
+  { FM_ACTION_LOCATION_DELETE, GTK_STOCK_DELETE,                  /* name, stock id */
+    N_("_Delete"), "",                /* label, accelerator */
+    N_("Delete the open folder, without moving to the Trash"),                   /* tooltip */ 
+    G_CALLBACK (action_location_delete_callback) },
 };
 
 static GtkToggleActionEntry directory_view_toggle_entries[] = {
@@ -6223,6 +6370,62 @@ real_update_paste_menu (FMDirectoryView *view,
 }
 
 static void
+real_update_location_menu (FMDirectoryView *view)
+{
+	GtkAction *action;
+	gboolean is_read_only;
+	gboolean show_separate_delete_command;
+	char *label;
+	char *tip;
+
+	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
+		label = _("Open in New Window");
+	} else {
+		label = _("_Browse Folder");
+	}
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_OPEN_ALTERNATE);
+	g_object_set (action,
+		      "label", label,
+		      NULL);
+
+	is_read_only = fm_directory_view_is_read_only (view);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_CUT);
+	gtk_action_set_sensitive (action, !is_read_only);
+
+	if (view->details->directory_as_file != NULL &&
+	    nautilus_file_is_in_trash (view->details->directory_as_file)) {
+		label = _("_Delete from Trash");
+		tip = _("Delete the open folder permanently");
+		show_separate_delete_command = FALSE;
+	} else {
+		label = _("Mo_ve to Trash");
+		tip = _("Move the open folder to the Trash");
+		show_separate_delete_command = show_delete_command_auto_value;
+	}
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_TRASH);
+	g_object_set (action,
+		      "label", label,
+		      "tooltip", tip,
+		      NULL);
+	gtk_action_set_sensitive (action, !is_read_only);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_DELETE);
+	gtk_action_set_visible (action, show_separate_delete_command);
+	if (show_separate_delete_command) {
+		gtk_action_set_sensitive (action, !is_read_only);
+	}
+
+	/* we silently assume that fm_directory_view_supports_properties always returns the same value.
+	 * Therefore, we don't update the sensitivity of FM_ACTION_SELF_PROPERTIES */
+}
+
+static void
 clipboard_changed_callback (NautilusClipboardMonitor *monitor, FMDirectoryView *view)
 {
 	GList *selection;
@@ -6487,7 +6690,7 @@ real_update_menus (FMDirectoryView *view)
  **/
 void 
 fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view, 
-						  GdkEventButton *event)
+						  GdkEventButton  *event)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -6514,7 +6717,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
  **/
 void 
 fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view, 
-						  GdkEventButton *event)
+						  GdkEventButton  *event)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -6525,6 +6728,30 @@ fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
 
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      event);
+}
+
+/**
+ * fm_directory_view_pop_up_location_context_menu
+ *
+ * Pop up a context menu appropriate to the view globally.
+ * @view: FMDirectoryView of interest.
+ * @event: GdkEventButton triggering the popup.
+ *
+ **/
+void 
+fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view, 
+						GdkEventButton  *event)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* always update the menu before showing it. Shouldn't be too expensive. */
+	real_update_location_menu (view);
+
+	eel_pop_up_context_menu (create_popup_menu 
+				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      event);
