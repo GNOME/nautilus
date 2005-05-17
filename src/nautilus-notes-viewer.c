@@ -29,7 +29,6 @@
 
 #include "nautilus-notes-viewer.h"
 
-#include "nautilus-file-utilities.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
@@ -42,6 +41,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-clipboard.h>
