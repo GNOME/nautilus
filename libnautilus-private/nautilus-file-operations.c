@@ -932,36 +932,25 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				TRUE, GTK_MESSAGE_ERROR, text, detail, dialog_title, GTK_STOCK_OK, NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
-		} else if ((error_location == ERROR_LOCATION_SOURCE
-				|| error_location == ERROR_LOCATION_SOURCE_PARENT
-				|| error_location == ERROR_LOCATION_SOURCE_OR_PARENT)
-			&& (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS
-				|| error_kind == ERROR_NOT_READABLE)) {
-			/* The error could have happened on any of the files
-			 * in the moved/copied/deleted hierarchy, we can probably
-			 * continue. Allow the user to skip.
-			 */
+		} else if (progress_info->files_total == 1) {
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, 
 				 GTK_MESSAGE_ERROR, text, 
 				 detail, dialog_title,
-				 GTK_STOCK_CANCEL, _("_Skip"), NULL);
-				 
+				 GTK_STOCK_CANCEL, _("_Retry"), NULL);
+
 			switch (error_dialog_button_pressed) {
 			case 0:
-			case GTK_RESPONSE_DELETE_EVENT:
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			case 1:
-				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_RETRY;
 				break;
 			default:
 				g_assert_not_reached ();
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}
-								
 		} else {
-			/* Generic error, offer to retry and skip. */
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, 
 				 GTK_MESSAGE_ERROR, text, 
@@ -983,7 +972,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}
 		}
-			
+
 		g_free (text);
 		g_free (detail);
 		g_free (formatted_source_name);

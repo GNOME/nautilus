@@ -1,3 +1,11 @@
+2005-05-17  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_vfs_error):
+	Offer "Skip", "Cancel", "Retry" in XFer Error prompt
+	if more than one file is transferred. Otherwise, just
+	offer "Cancel" and "Retry".
+
 2005-05-17  Alexander Larsson  <alexl@redhat.com>
 
 	* nautilus-folder-handler.desktop.in (Exec):
