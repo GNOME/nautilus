@@ -72,6 +72,7 @@ typedef struct {
                                             NautilusView *new_view);
         void   (* set_throbber_active) (NautilusWindow *window,
                                         gboolean active);
+	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
         void   (* prompt_for_location) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* show_window)  (NautilusWindow *window);

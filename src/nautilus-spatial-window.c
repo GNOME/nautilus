@@ -81,6 +81,11 @@
 
 #define MAX_TITLE_LENGTH 180
 
+#define SPATIAL_ACTION_PLACES               "Places"
+#define SPATIAL_ACTION_GO_TO_LOCATION       "Go to Location"
+#define SPATIAL_ACTION_CLOSE_PARENT_FOLDERS "Close Parent Folders"
+#define SPATIAL_ACTION_CLOSE_ALL_FOLDERS    "Close All Folders"
+
 struct _NautilusSpatialWindowDetails {
         GtkActionGroup *spatial_action_group; /* owned by ui_manager */
 	char *last_geometry;	
@@ -407,6 +412,20 @@ real_set_throbber_active (NautilusWindow *window, gboolean active)
 	}
 }
 
+static void
+real_set_allow_up (NautilusWindow *window, gboolean allow)
+{
+	NautilusSpatialWindow *spatial;
+	GtkAction *action;
+
+	spatial = NAUTILUS_SPATIAL_WINDOW (window);
+
+	action = gtk_action_group_get_action (spatial->details->spatial_action_group,
+					      SPATIAL_ACTION_CLOSE_PARENT_FOLDERS);
+	gtk_action_set_sensitive (action, allow);
+
+	NAUTILUS_WINDOW_CLASS (parent_class)->set_allow_up (window, allow);
+}
 
 static void
 location_menu_item_activated_callback (GtkWidget *menu_item,
@@ -660,14 +679,14 @@ action_go_to_location_callback (GtkAction *action,
 }			   
 
 static GtkActionEntry spatial_entries[] = {
-  { "Places", NULL, N_("_Places") },               /* name, stock id, label */
-  { "Go to Location", NULL, N_("Open _Location..."), /* name, stock id, label */
+  { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },               /* name, stock id, label */
+  { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."), /* name, stock id, label */
     "<control>L", N_("Specify a location to open"),
     G_CALLBACK (action_go_to_location_callback) },
-  { "Close Parent Folders", NULL, N_("Close P_arent Folders"), /* name, stock id, label */
+  { SPATIAL_ACTION_CLOSE_PARENT_FOLDERS, NULL, N_("Close P_arent Folders"), /* name, stock id, label */
     "<control><shift>W", N_("Close this folder's parents"),
     G_CALLBACK (action_close_parent_folders_callback) },
-  { "Close All Folders", NULL, N_("Clos_e All Folders"), /* name, stock id, label */
+  { SPATIAL_ACTION_CLOSE_ALL_FOLDERS, NULL, N_("Clos_e All Folders"), /* name, stock id, label */
     "<control>Q", N_("Close all folder windows"),
     G_CALLBACK (action_close_all_folders_callback) },
 };
@@ -706,7 +725,6 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 				 rc_style);
 
 	gtk_widget_show (window->details->location_button);
-
 	hbox = gtk_hbox_new (FALSE, 3);
 	gtk_container_add (GTK_CONTAINER (window->details->location_button), 
 			   hbox);
@@ -792,7 +810,8 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS(class)->set_throbber_active =
 		real_set_throbber_active;
-
+	NAUTILUS_WINDOW_CLASS(class)->set_allow_up =
+		real_set_allow_up;
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_SHIFT_MASK,

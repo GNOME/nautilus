@@ -274,8 +274,9 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 	eel_g_list_free_deep (selection);
 }
 
-void
-nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
+static void
+real_set_allow_up (NautilusWindow *window,
+		   gboolean        allow)
 {
 	GtkAction *action;
 	
@@ -287,6 +288,13 @@ nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_UP_ACCEL);
 	gtk_action_set_sensitive (action, allow);
+}
+
+void
+nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
+{
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 set_allow_up, (window, allow));
 }
 
 void
@@ -1445,6 +1453,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->set_title = real_set_title;
 	class->set_content_view_widget = real_set_content_view_widget;
 	class->load_view_as_menu = real_load_view_as_menu;
+	class->set_allow_up = real_set_allow_up;
 
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 ARG_APP,

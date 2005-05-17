@@ -1,5 +1,17 @@
 2005-05-17  Christian Neumair  <chris@gnome-de.org>
 
+	* src/nautilus-spatial-window.c:
+	(real_set_allow_up), (nautilus_spatial_window_class_init)
+	* src/nautilus-window.c:
+	* src/nautilus-window.h:
+	(nautilus_window_allow_up), (real_set_allow_up),
+	(nautilus_window_class_init):
+	Add set_allow_up method to NautilusWindowClass,
+	make "Close All Parents" in spatial windows insensitive
+	if there are no parent folders.
+
+2005-05-17  Christian Neumair  <chris@gnome-de.org>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(handle_transfer_vfs_error):
 	Offer "Skip", "Cancel", "Retry" in XFer Error prompt
