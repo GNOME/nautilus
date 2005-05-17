@@ -1,3 +1,29 @@
+Major changes in 2.11.1 are:
+* Use authentication in external connect to server app
+* UI polish
+* Allow DnD of location button icon.
+* Context menus on location button and location label in browser
+* Fix memory leaks
+* Fix crashes
+* Speed up delete in list view
+* Fix rename in list view breaking when there was a file change
+* Removed "new terminal" from desktop context menu
+  If you want this, install the nautilus-open-terminal extension,
+  its much better than this feature ever was.
+* Don't thumbnail files constantly if they're changing
+* Fixed a loop that could happen on remote locations when removing
+  a directory.
+* Add properties of the current folder menu item to background
+  context menu
+* Use --no-desktop in default folder handler to avoid taking over
+  the desktop if you don't run gnome.
+
+Major changes in 2.10.1 are:
+* Use less memory for desktop background
+* Make authentication work for the external connect-to-server dialog
+* Fix leaks
+* Redraw less in the list view when deleting
+
 Major changes in 2.10.0 are:
 * Some fixes for startup notification to avoid focus-stealing
 * Center the file management prefs dialog
