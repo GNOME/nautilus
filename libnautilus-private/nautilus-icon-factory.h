@@ -117,6 +117,9 @@ GList *               nautilus_icon_factory_get_emblem_icons_for_file    (Nautil
 									  EelStringList               *exclude);
 char *                nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);
 
+guint                 nautilus_icon_factory_get_larger_icon_size         (guint size);
+guint                 nautilus_icon_factory_get_smaller_icon_size        (guint size);
+
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
  * This allows scaling in both dimensions. All other calls assume

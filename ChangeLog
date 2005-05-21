@@ -1,3 +1,19 @@
+2005-05-21  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-icon-factory.h:
+	(get_smaller_icon_size), (get_larger_icon_size),
+	(nautilus_icon_factory_get_smaller_icon_size),
+	(nautilus_icon_factory_get_larger_icon_size):
+	Make get_(larger|smaller)_icon_size public.
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_size_allocate),
+	(get_best_icon_size):
+	Use the best-fitting folder icon for the sidebar
+	instead of hardcoding NAUTILUS_ICON_SIZE_LARGE.
+	Fixes #48190.
+
 2005-05-17  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

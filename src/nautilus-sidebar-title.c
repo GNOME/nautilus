@@ -89,6 +89,8 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*emblem_box;
 	GtkWidget		*notes;
 
+	guint                    best_icon_size;
+
 	gboolean		 determined_icon;
 };
 
@@ -278,6 +280,21 @@ get_property_from_component (NautilusSidebarTitle *sidebar_title, const char *pr
 	return NULL;
 }
 
+static guint
+get_best_icon_size (NautilusSidebarTitle *sidebar_title)
+{
+	gint width;
+
+	width = GTK_WIDGET (sidebar_title)->allocation.width - TITLE_PADDING;
+
+	if (width < 0) {
+		/* use smallest available icon size */
+		return nautilus_icon_factory_get_smaller_icon_size (0);
+	} else {
+		return nautilus_icon_factory_get_smaller_icon_size ((guint) width);
+	}
+}
+
 /* set up the icon image */
 static void
 update_icon (NautilusSidebarTitle *sidebar_title)
@@ -297,7 +314,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
-								    NAUTILUS_ICON_SIZE_LARGE);
+								    sidebar_title->details->best_icon_size);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
@@ -616,16 +633,26 @@ static void
 nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 				      GtkAllocation *allocation)
 {
+	NautilusSidebarTitle *sidebar_title;
 	guint16 old_width;
+	guint best_icon_size;
+
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);
 
 	old_width = widget->allocation.width;
 
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	if (old_width != widget->allocation.width) {
+		best_icon_size = get_best_icon_size (sidebar_title);
+		if (best_icon_size != sidebar_title->details->best_icon_size) {
+			sidebar_title->details->best_icon_size = best_icon_size;
+			update_icon (sidebar_title);
+		}
+
 		/* update the title font and info format as the size changes. */
-		update_title_font (NAUTILUS_SIDEBAR_TITLE (widget));
-		update_more_info (NAUTILUS_SIDEBAR_TITLE (widget));	
+		update_title_font (sidebar_title);
+		update_more_info (sidebar_title);	
 	}
 }
 
