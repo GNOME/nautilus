@@ -8,7 +8,7 @@ PKG_NAME="nautilus"
 
 (test -f $srcdir/configure.in \
   && test -f $srcdir/README \
-  && test -d $srcdir/libnautilus) || {
+  && test -d $srcdir/libnautilus-private) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
     echo " top-level $PKG_NAME directory"
     exit 1
