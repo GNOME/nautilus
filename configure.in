@@ -78,23 +78,24 @@ fi
 
 AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
-PKG_CHECK_MODULES(ALL, 
- [esound >= esound_minver dnl
-  bonobo-activation-2.0 >= bonobo_activation_minver dnl
-  eel-2.0 >= eel_minver dnl
-  glib-2.0 >= glib_minver dnl
-  gnome-desktop-2.0 >= gnome_desktop_minver dnl
-  gnome-vfs-2.0 >= gnome_vfs_minver dnl
-  ORBit-2.0 >= orbit_minver dnl
-  pango >= pango_minver dnl
-  gtk+-2.0 >= gtk_minver dnl
-  libart-2.0 >= art_minver dnl
-  libbonobo-2.0 >= bonobo_minver dnl
-  libgnome-2.0 >= gnome_minver dnl
-  libgnomeui-2.0 >= gnome_ui_minver dnl
-  librsvg-2.0 >= rsvg_minver dnl
-  libxml-2.0 >= xml_minver dnl
-  $STARTUP_NOTIFICATION_PACKAGE])
+PKG_CHECK_MODULES(ALL, [
+	esound			>= esound_minver
+	bonobo-activation-2.0	>= bonobo_activation_minver
+	eel-2.0			>= eel_minver
+	glib-2.0		>= glib_minver
+	gnome-desktop-2.0	>= gnome_desktop_minver
+	gnome-vfs-2.0		>= gnome_vfs_minver
+	ORBit-2.0		>= orbit_minver
+	pango			>= pango_minver
+	gtk+-2.0		>= gtk_minver
+	libart-2.0		>= art_minver
+	libbonobo-2.0		>= bonobo_minver
+	libgnome-2.0		>= gnome_minver
+	libgnomeui-2.0		>= gnome_ui_minver
+	librsvg-2.0		>= rsvg_minver
+	libxml-2.0		>= xml_minver
+	$STARTUP_NOTIFICATION_PACKAGE
+])
 dnl ==========================================================================
 
 ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko li lt lv mi mk ml mn ms nb ne nl nn no nso pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta th tk tr uk vi wa xh yi zh_CN zh_TW zu"
