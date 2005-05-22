@@ -6246,10 +6246,10 @@ real_update_menus (FMDirectoryView *view)
 
 	show_open_alternate = file_list_all_are_folders (selection);
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-		if (selection_count == 0) {
+		if (selection_count == 0 || selection_count == 1) {
 			label_with_underscore = g_strdup (_("Open in New Window"));
 		} else {
-			label_with_underscore = g_strdup_printf (ngettext("Open in New Window",
+			label_with_underscore = g_strdup_printf (ngettext("Open in %d New Window",
 									  "Open in %d New Windows",
 									  selection_count), 
 								 selection_count);

@@ -1,3 +1,11 @@
+2005-05-23  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Fix a string conflict between the c-format plural string and
+	non-c-format strings. Fixes bug #167344.
+
+	Patch from Changwoo Ryu <cwryu@debian.org>
+
 2005-05-12  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-clipboard.c:
