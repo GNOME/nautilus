@@ -826,7 +826,7 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
-"如果为 true，新窗口岁的文件将以逆序排序。即，如果是按照名称排序的话，会"
+"如果为 true，新窗口中的文件将以逆序排序。即，如果是按照名称排序的话，会"
 "将“z”排在最前面，将“a”排在最后面。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
@@ -836,7 +836,7 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
-"如果为 true，新窗口岁的文件将以逆序排序。即，如果是按照名称排序的话，会"
+"如果为 true，新窗口中的文件将以逆序排序。即，如果是按照名称排序的话，会"
 "将“z”排在最前面，将“a”排在最后面；如果是按照大小排序的话，会将最大的文件排在"
 "最前面，将最小的文件排在最后面。"
 
@@ -3565,10 +3565,13 @@ msgstr "用“%s”打开(_O)"
 
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:6229
-#: src/file-manager/fm-directory-view.c:6231
 #: src/file-manager/fm-tree-view.c:1110
-#, c-format
 msgid "Open in New Window"
+msgstr "在新窗口中打开"
+
+#: src/file-manager/fm-directory-view.c:6231
+#, c-format
+msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "在 %d 个新窗口中打开"
 
