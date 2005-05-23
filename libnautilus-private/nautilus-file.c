@@ -1708,10 +1708,10 @@ static int
 compare_directories_by_count (NautilusFile *file_1, NautilusFile *file_2)
 {
 	/* Sort order:
-	 *   Directories with n items
-	 *   Directories with 0 items
-	 *   Directories with "unknowable" # of items
 	 *   Directories with unknown # of items
+	 *   Directories with "unknowable" # of items
+	 *   Directories with 0 items
+	 *   Directories with n items
 	 */
 
 	Knowledge count_known_1, count_known_2;
@@ -1720,10 +1720,10 @@ compare_directories_by_count (NautilusFile *file_1, NautilusFile *file_2)
 	count_known_1 = get_item_count (file_1, &count_1);
 	count_known_2 = get_item_count (file_2, &count_2);
 
-	if (count_known_1 < count_known_2) {
+	if (count_known_1 > count_known_2) {
 		return -1;
 	}
-	if (count_known_1 > count_known_2) {
+	if (count_known_1 < count_known_2) {
 		return +1;
 	}
 
@@ -1734,10 +1734,10 @@ compare_directories_by_count (NautilusFile *file_1, NautilusFile *file_2)
 		return 0;
 	}
 
-	if (count_1 > count_2) {
+	if (count_1 < count_2) {
 		return -1;
 	}
-	if (count_1 < count_2) {
+	if (count_1 > count_2) {
 		return +1;
 	}
 
@@ -1748,10 +1748,10 @@ static int
 compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
 {
 	/* Sort order:
-	 *   Files with large sizes.
-	 *   Files with smaller sizes.
-	 *   Files with "unknowable" size.
 	 *   Files with unknown size.
+	 *   Files with "unknowable" size.
+	 *   Files with smaller sizes.
+	 *   Files with large sizes.
 	 */
 
 	Knowledge size_known_1, size_known_2;
@@ -1760,10 +1760,10 @@ compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
 	size_known_1 = get_size (file_1, &size_1);
 	size_known_2 = get_size (file_2, &size_2);
 
-	if (size_known_1 < size_known_2) {
+	if (size_known_1 > size_known_2) {
 		return -1;
 	}
-	if (size_known_1 > size_known_2) {
+	if (size_known_1 < size_known_2) {
 		return +1;
 	}
 
@@ -1774,10 +1774,10 @@ compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
 		return 0;
 	}
 
-	if (size_1 > size_2) {
+	if (size_1 < size_2) {
 		return -1;
 	}
-	if (size_1 < size_2) {
+	if (size_1 > size_2) {
 		return +1;
 	}
 
@@ -2094,10 +2094,10 @@ static int
 compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
 {
 	/* Sort order:
-	 *   Files with newer times.
-	 *   Files with older times.
-	 *   Files with "unknowable" times.
 	 *   Files with unknown times.
+	 *   Files with "unknowable" times.
+	 *   Files with older times.
+	 *   Files with newer times.
 	 */
 
 	Knowledge time_known_1, time_known_2;
@@ -2106,10 +2106,10 @@ compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
 	time_known_1 = get_modification_time (file_1, &time_1);
 	time_known_2 = get_modification_time (file_2, &time_2);
 
-	if (time_known_1 < time_known_2) {
+	if (time_known_1 > time_known_2) {
 		return -1;
 	}
-	if (time_known_1 > time_known_2) {
+	if (time_known_1 < time_known_2) {
 		return +1;
 	}
 	
@@ -2120,10 +2120,10 @@ compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
 		return 0;
 	}
 		
-	if (time_1 > time_2) {
+	if (time_1 < time_2) {
 		return -1;
 	}
-	if (time_1 < time_2) {
+	if (time_1 > time_2) {
 		return +1;
 	}
 
