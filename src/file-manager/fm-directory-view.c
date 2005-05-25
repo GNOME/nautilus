@@ -8410,6 +8410,39 @@ fm_directory_view_set_property (GObject         *object,
     }
 }
 
+/* handle Shift+Scroll, which will cause a zoom-in/out */
+static gboolean
+fm_directory_view_scroll_event (GtkWidget *widget,
+				GdkEventScroll *event)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (widget);
+
+	if (event->state & GDK_SHIFT_MASK) {
+		switch (event->direction) {
+		case GDK_SCROLL_UP:
+			/* Zoom In */
+			fm_directory_view_bump_zoom_level (directory_view, 1);
+			return TRUE;
+
+		case GDK_SCROLL_DOWN:
+			/* Zoom Out */
+			fm_directory_view_bump_zoom_level (directory_view, -1);
+			return TRUE;
+
+		case GDK_SCROLL_LEFT:
+		case GDK_SCROLL_RIGHT:
+			break;
+
+		default:
+			g_assert_not_reached ();
+		}
+	}
+
+	return GTK_WIDGET_CLASS (parent_class)->scroll_event (widget, event);
+}
+
 static void
 fm_directory_view_class_init (FMDirectoryViewClass *klass)
 {
@@ -8424,6 +8457,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	G_OBJECT_CLASS (klass)->set_property = fm_directory_view_set_property;
 
 	GTK_OBJECT_CLASS (klass)->destroy = fm_directory_view_destroy;
+
+	widget_class->scroll_event = fm_directory_view_scroll_event;
 
 	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
 	 * uses by default. It does us no good.
