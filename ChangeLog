@@ -1,3 +1,26 @@
+2005-05-26  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Fix empty trash accelerator. Fixes #173059.
+
+	* libnautilus-private/nautilus-clipboard.c: (cut_callback),
+	(copy_callback), (paste_callback), (editable_select_all_callback),
+	(text_view_select_all_callback), (action_cut_callback),
+	(action_copy_callback), (action_paste_callback),
+	(action_select_all_callback), (merge_in_clipboard_menu_items),
+	(selection_changed_callback), (nautilus_clipboard_real_set_up),
+	(nautilus_clipboard_set_up_editable),
+	(nautilus_clipboard_set_up_text_view):
+	* libnautilus-private/nautilus-clipboard.h:
+	(nautilus_clipboard_set_up_text_view):
+	* src/nautilus-notes-viewer.c:
+	Add nautilus_clipboard_set_up_text_view, setup clipboard for
+	notes text view.
+
+	* src/nautilus-window-menus.c: (action_about_nautilus_callback):
+	Fix two possible memory leaks. Kudos to Brian Pepple for tracking this
+	issue down and providing a patch. Fixes #305551.
+
 2005-05-25  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-directory-view.c:

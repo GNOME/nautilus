@@ -38,101 +38,101 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktext.h>
+#include <gtk/gtktextview.h>
 #include <string.h>
 
-typedef void (* EditableFunction) (GtkEditable *editable);
+typedef void (* SelectAllCallback) (gpointer target);
 
 static void selection_changed_callback            (GtkWidget *widget,
 						   gpointer callback_data);
 static void owner_change_callback (GtkClipboard        *clipboard,
 				   GdkEventOwnerChange *event,
 				   gpointer callback_data);
-     
+typedef struct {
+	GtkUIManager *ui_manager;
+	GtkActionGroup *action_group;
+	gboolean shares_selection_changes;
+
+	SelectAllCallback select_all_callback;
+} TargetCallbackData;
+
+static void
+cut_callback (gpointer target)
+{
+	g_return_if_fail (target != NULL);
+
+	g_signal_emit_by_name (target, "cut-clipboard");
+}
+
+static void
+copy_callback (gpointer target)
+{
+	g_return_if_fail (target != NULL);
+
+	g_signal_emit_by_name (target, "copy-clipboard");
+}
+
+static void
+paste_callback (gpointer target)
+{
+	g_return_if_fail (target != NULL);
+
+	g_signal_emit_by_name (target, "paste-clipboard");
+}
+
+static void
+editable_select_all_callback (gpointer target)
+{
+	GtkEditable *editable;
+
+	editable = GTK_EDITABLE (target);
+	g_return_if_fail (editable != NULL);
+
+	gtk_editable_set_position (editable, -1);
+	gtk_editable_select_region (editable, 0, -1);
+}
+
+static void
+text_view_select_all_callback (gpointer target)
+{
+	g_return_if_fail (GTK_IS_TEXT_VIEW (target));
+
+	g_signal_emit_by_name (target, "select-all", TRUE);
+}
+
 static void
 action_cut_callback (GtkAction *action,
 		     gpointer callback_data)
 {
-	gtk_editable_cut_clipboard (GTK_EDITABLE (callback_data));
+	cut_callback (callback_data);
 }
 
 static void
 action_copy_callback (GtkAction *action,
 		      gpointer callback_data)
 {
-	gtk_editable_copy_clipboard (GTK_EDITABLE (callback_data));
+	copy_callback (callback_data);
 }
 
 static void
 action_paste_callback (GtkAction *action,
 		       gpointer callback_data)
 {
-	gtk_editable_paste_clipboard (GTK_EDITABLE (callback_data));
-}
-
-static void
-select_all (GtkEditable *editable)
-{	
-	gtk_editable_set_position (editable, -1);
-	gtk_editable_select_region (editable, 0, -1);
-}
-
-
-static void
-idle_source_destroy_callback (gpointer data,
-			      GObject *where_the_object_was)
-{
-	g_source_destroy (data);
-}
-
-static gboolean
-select_all_idle_callback (gpointer callback_data)
-{
-	GtkEditable *editable;
-	GSource *source;
-
-	editable = GTK_EDITABLE (callback_data);
-
-	source = g_object_get_data (G_OBJECT (editable), 
-				    "clipboard-select-all-source");
-
-	g_object_weak_unref (G_OBJECT (editable), 
-			     idle_source_destroy_callback,
-			     source);
-	
-	g_object_set_data (G_OBJECT (editable), 
-			   "clipboard-select-all-source",
-			   NULL);
-
-	select_all (editable);
-
-	return FALSE;
+	paste_callback (callback_data);
 }
 
 static void
 action_select_all_callback (GtkAction *action,
 			    gpointer callback_data)
 {
-	GSource *source;
-	GtkEditable *editable;
+	TargetCallbackData *target_data;
 
-	editable = GTK_EDITABLE (callback_data);
+	g_return_if_fail (callback_data != NULL);
 
-	if (g_object_get_data (G_OBJECT (editable), 
-			       "clipboard-select-all-source")) {
-		return;
-	}
+	target_data = g_object_get_data (callback_data, "Nautilus:clipboard_target_data");
+	g_return_if_fail (target_data != NULL);
 
-	source = g_idle_source_new ();
-	g_source_set_callback (source, select_all_idle_callback, editable, NULL);
-	g_object_weak_ref (G_OBJECT (editable),
-			   idle_source_destroy_callback,
-			   source);
-	g_source_attach (source, NULL);
-	g_source_unref (source);
-
-	g_object_set_data (G_OBJECT (editable),
-			   "clipboard-select-all-source", 
-			   source);
+	target_data->select_all_callback (callback_data);
 }
 
 static void
@@ -199,12 +199,6 @@ set_clipboard_menu_items_insensitive (GtkActionGroup *action_group)
 	gtk_action_set_sensitive (action, FALSE);
 }
 
-typedef struct {
-	GtkUIManager *ui_manager;
-	GtkActionGroup *action_group;
-	gboolean editable_shares_selection_changes;
-} TargetCallbackData;
-
 static gboolean
 clipboard_items_are_merged_in (GtkWidget *widget)
 {
@@ -229,7 +223,7 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 
 	g_assert (target_data != NULL);
 	
-	add_selection_callback = target_data->editable_shares_selection_changes;
+	add_selection_callback = target_data->shares_selection_changes;
 
 	gtk_ui_manager_insert_action_group (target_data->ui_manager,
 					    target_data->action_group, 0);
@@ -269,7 +263,7 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 					      G_CALLBACK (owner_change_callback),
 					      target_data);
 	
-	selection_callback_was_added = target_data->editable_shares_selection_changes;
+	selection_callback_was_added = target_data->shares_selection_changes;
 
 	if (selection_callback_was_added) {
 		g_signal_handlers_disconnect_matched (widget_as_object,
@@ -312,6 +306,7 @@ selection_changed_callback (GtkWidget *widget,
 	g_assert (target_data != NULL);
 
 	editable = GTK_EDITABLE (widget);
+	g_return_if_fail (editable != NULL);
 
 	if (gtk_editable_get_selection_bounds (editable, &start, &end) && start != end) {
 		set_clipboard_menu_items_sensitive (target_data->action_group);
@@ -376,7 +371,8 @@ static GtkActionEntry clipboard_entries[] = {
 static TargetCallbackData *
 initialize_clipboard_component_with_callback_data (GtkEditable *target,
 						   GtkUIManager *ui_manager,
-						   gboolean shares_selection_changes)
+						   gboolean shares_selection_changes,
+						   SelectAllCallback select_all_callback)
 {
 	GtkActionGroup *action_group;
 	TargetCallbackData *target_data;
@@ -394,25 +390,25 @@ initialize_clipboard_component_with_callback_data (GtkEditable *target,
 	target_data = g_new (TargetCallbackData, 1);
 	target_data->ui_manager = ui_manager;
 	target_data->action_group = action_group;
-	target_data->editable_shares_selection_changes = shares_selection_changes;
+	target_data->shares_selection_changes = shares_selection_changes;
+	target_data->select_all_callback = select_all_callback;
 	
 	return target_data;
 }
 
-void
-nautilus_clipboard_set_up_editable (GtkEditable *target,
-				    GtkUIManager *ui_manager,
-				    gboolean shares_selection_changes)
+static void
+nautilus_clipboard_real_set_up (gpointer target,
+				GtkUIManager *ui_manager,
+				gboolean shares_selection_changes,
+				SelectAllCallback select_all_callback)
 {
 	TargetCallbackData *target_data;
-	
-	g_return_if_fail (GTK_IS_EDITABLE (target));
-	g_return_if_fail (ui_manager != NULL);
 
 	target_data = initialize_clipboard_component_with_callback_data
 		(target, 
 		 ui_manager,
-		 shares_selection_changes);
+		 shares_selection_changes,
+		 select_all_callback);
 
 	g_signal_connect (target, "focus_in_event",
 			  G_CALLBACK (focus_changed_callback), target_data);
@@ -421,10 +417,39 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 	g_signal_connect (target, "destroy",
 			  G_CALLBACK (target_destroy_callback), target_data);
 
-	g_object_weak_ref (G_OBJECT (target), (GWeakNotify) target_data_free, target_data);
-	
+	g_object_set_data_full (G_OBJECT (target), "Nautilus:clipboard_target_data",
+				target_data, (GDestroyNotify) target_data_free);
+
 	/* Call the focus changed callback once to merge if the window is
 	 * already in focus.
 	 */
 	focus_changed_callback (GTK_WIDGET (target), NULL, target_data);
 }
+
+void
+nautilus_clipboard_set_up_editable (GtkEditable *target,
+				    GtkUIManager *ui_manager,
+				    gboolean shares_selection_changes)
+{
+	g_return_if_fail (GTK_IS_EDITABLE (target));
+	g_return_if_fail (GTK_IS_UI_MANAGER (ui_manager));
+
+	nautilus_clipboard_real_set_up (target, ui_manager,
+					shares_selection_changes,
+					editable_select_all_callback);
+}
+
+void
+nautilus_clipboard_set_up_text_view (GtkTextView *target,
+				     GtkUIManager *ui_manager,
+				     gboolean shares_selection_changes)
+{
+	g_return_if_fail (GTK_IS_TEXT_VIEW (target));
+	g_return_if_fail (GTK_IS_UI_MANAGER (ui_manager));
+
+	nautilus_clipboard_real_set_up (target, ui_manager,
+					shares_selection_changes,
+					text_view_select_all_callback);
+}
+
+

@@ -5983,7 +5983,7 @@ static GtkActionEntry directory_view_entries[] = {
     N_("Show the folder containing the scripts that appear in this menu"),                   /* tooltip */ 
     G_CALLBACK (action_open_scripts_folder_callback) },
   { "Empty Trash", NULL,                  /* name, stock id */
-    N_("_Empty Trash"), NULL,                /* label, accelerator */
+    N_("E_mpty Trash"), NULL,                /* label, accelerator */
     N_("Delete all items in the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_empty_trash_callback) },
   { "Cut", GTK_STOCK_CUT,                  /* name, stock id */
@@ -6623,7 +6623,7 @@ real_update_menus (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_EMPTY_TRASH);
 	g_object_set (action,
-		      "label", _("_Empty Trash"),
+		      "label", _("E_mpty Trash"),
 		      NULL);
 	gtk_action_set_sensitive (action, !nautilus_trash_monitor_is_empty ());
 	gtk_action_set_visible (action, should_show_empty_trash (view));

@@ -430,14 +430,11 @@ nautilus_notes_viewer_set_parent_window (NautilusNotesViewer *sidebar,
         sidebar->details->uri = nautilus_window_info_get_current_location (window);
         notes_load_metainfo (sidebar);
 
-        /* handle selections */
-#ifdef GNOME2_CONVERSION_COMPLETE
         /* note_text_field is a text-view, not a GtkEditable */
-	nautilus_clipboard_set_up_editable
-                (GTK_EDITABLE (sidebar->details->note_text_field),
+	nautilus_clipboard_set_up_text_view
+		(GTK_TEXT_VIEW (sidebar->details->note_text_field),
 		 nautilus_window_info_get_ui_manager (window),
 		 FALSE);
-#endif
 }
 
 static NautilusSidebar *

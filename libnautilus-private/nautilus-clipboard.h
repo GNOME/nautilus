@@ -27,19 +27,24 @@
 #define NAUTILUS_CLIPBOARD_H
 
 #include <gtk/gtkeditable.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkuimanager.h>
 
-/* This makes this editable put clipboard commands into the passed UI
- * manager when the editable is in focus. Callers in Nautilus
- * normally get the UI manager from
+/* This makes this editable or text view put clipboard commands into
+ * the passed UI manager when the editable/text view is in focus.
+ * Callers in Nautilus normally get the UI manager from
  * nautilus_window_get_ui_manager. */
 /* The shares selection changes argument should be set to true if the
- * editable is a widget that uses the signal "selection_changed" to
- * tell others about text selection changes.  The NautilusEntry widget
+ * widget uses the signal "selection_changed" to tell others about
+ * text selection changes.  The NautilusEntry widget
  * is currently the only widget in nautilus that shares selection
- * changes.  */
+ * changes. This feature currently only works for GtkEditables. */
 void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
 						    GtkUIManager       *ui_manager,
 						    gboolean            shares_selection_changes);
+void nautilus_clipboard_set_up_text_view           (GtkTextView        *target,
+						    GtkUIManager       *ui_manager,
+						    gboolean            shares_selection_changes);
+
 
 #endif /* NAUTILUS_CLIPBOARD_H */
