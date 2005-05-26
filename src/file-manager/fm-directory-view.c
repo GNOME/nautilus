@@ -5301,27 +5301,27 @@ copy_or_cut_files (FMDirectoryView *view,
 		name = nautilus_file_get_display_name (clipboard_contents->data);
 		if (cut) {
 			status_string = g_strdup_printf (_("\"%s\" will be moved "
-							   "if you select the Paste Files command"),
+							   "if you select the Paste command"),
 							 name);
 		} else {
 			status_string = g_strdup_printf (_("\"%s\" will be copied "
-							   "if you select the Paste Files command"),
+							   "if you select the Paste command"),
 							 name);
 		}
 		g_free (name);
 	} else {
 		if (cut) {
 			status_string = g_strdup_printf (ngettext("The %d selected item will be moved "
-								  "if you select the Paste Files command",
+								  "if you select the Paste command",
 								  "The %d selected items will be moved "
-								  "if you select the Paste Files command",
+								  "if you select the Paste command",
 								  count),
 							 count);
 		} else {
 			status_string = g_strdup_printf (ngettext("The %d selected item will be copied "
-								  "if you select the Paste Files command",
+								  "if you select the Paste command",
 								  "The %d selected items will be copied "
-								  "if you select the Paste Files command",
+								  "if you select the Paste command",
 								  count),
 							 count);
 		}
@@ -5987,25 +5987,25 @@ static GtkActionEntry directory_view_entries[] = {
     N_("Delete all items in the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_empty_trash_callback) },
   { "Cut", GTK_STOCK_CUT,                  /* name, stock id */
-    N_("Cu_t Files"), "<control>x",                /* label, accelerator */
-    N_("Prepare the selected files to be moved with a Paste Files command"),                   /* tooltip */ 
+    NULL, NULL,                /* label, accelerator */
+    N_("Prepare the selected files to be moved with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_cut_files_callback) },
   { "Copy", GTK_STOCK_COPY,                  /* name, stock id */
-    N_("_Copy Files"), "<control>c",                /* label, accelerator */
-    N_("Prepare the selected files to be copied with a Paste Files command"),                   /* tooltip */ 
+    NULL, NULL,                /* label, accelerator */
+    N_("Prepare the selected files to be copied with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_copy_files_callback) },
   { "Paste", GTK_STOCK_PASTE,                  /* name, stock id */
-    N_("_Paste Files"), "<control>v",                /* label, accelerator */
-    N_("Move or copy files previously selected by a Cut Files or Copy Files command"),                   /* tooltip */ 
+    NULL, NULL,                /* label, accelerator */
+    N_("Move or copy files previously selected by a Cut or Copy command"),                   /* tooltip */ 
     G_CALLBACK (action_paste_files_callback) },
   /* We make accelerator "" instead of null here to not inherit the stock
      accelerator for paste */
   { "Paste Files Into", GTK_STOCK_PASTE,                  /* name, stock id */
-    N_("_Paste Files Into Folder"), "",                /* label, accelerator */
-    N_("Move or copy files previously selected by a Cut Files or Copy Files command into the selected folder"),                   /* tooltip */ 
+    N_("_Paste Into Folder"), "",                /* label, accelerator */
+    N_("Move or copy files previously selected by a Cut or Copy command into the selected folder"),                   /* tooltip */ 
     G_CALLBACK (action_paste_files_into_callback) },
   { "Select All", NULL,                  /* name, stock id */
-    N_("Select _All Files"), "<control>A",                /* label, accelerator */
+    N_("Select _All"), "<control>A",                /* label, accelerator */
     N_("Select all items in this window"),                   /* tooltip */ 
     G_CALLBACK (action_select_all_callback) },
   { "Select Pattern", NULL,                  /* name, stock id */
@@ -6065,11 +6065,11 @@ static GtkActionEntry directory_view_entries[] = {
 
   { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,                  /* name, stock id */
     NULL, "",                /* label, accelerator */
-    N_("Prepare the open folder to be moved with a Paste Files command"),                   /* tooltip */ 
+    N_("Prepare the open folder to be moved with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_cut_callback) },
   { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,                  /* name, stock id */
     NULL, "",                /* label, accelerator */
-    N_("Prepare the open folder to be copied with a Paste Files command"),                   /* tooltip */ 
+    N_("Prepare the open folder to be copied with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_copy_callback) },
 
   { FM_ACTION_LOCATION_TRASH, GTK_STOCK_DELETE,                  /* name, stock id */
@@ -6638,20 +6638,10 @@ real_update_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CUT);
-	g_object_set (action, "label",
-		      selection_count == 1
-		      ? _("Cu_t File")
-		      : _("Cu_t Files"),
-		      NULL);
 	gtk_action_set_sensitive (action, can_delete_files);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_COPY);
-	g_object_set (action, "label",
-		      selection_count == 1
-		      ? _("_Copy File")
-		      : _("_Copy Files"),
-		      NULL);
 	gtk_action_set_sensitive (action, can_copy_files);
 
 	real_update_paste_menu (view, selection, selection_count);

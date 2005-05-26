@@ -893,11 +893,11 @@ copy_or_cut_files (FMTreeView *view,
 	name = nautilus_file_get_display_name (view->details->popup_file);
 	if (cut) {
 		status_string = g_strdup_printf (_("\"%s\" will be moved "
-						   "if you select the Paste Files command"),
+						   "if you select the Paste command"),
 						 name);
 	} else {
 		status_string = g_strdup_printf (_("\"%s\" will be copied "
-						   "if you select the Paste Files command"),
+						   "if you select the Paste command"),
 						 name);
 	}
 	g_free (name);
@@ -1096,7 +1096,7 @@ create_popup_menu (FMTreeView *view)
 	menu_image = gtk_image_new_from_stock (GTK_STOCK_OPEN,
 					       GTK_ICON_SIZE_MENU);
 	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Open"));
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Open"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
 				       menu_image);
 	g_signal_connect (menu_item, "activate",
@@ -1133,12 +1133,7 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
 	
 	/* add the "cut folder" menu item */
-	menu_image = gtk_image_new_from_stock (GTK_STOCK_CUT,
-					       GTK_ICON_SIZE_MENU);
-	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Cut Folder"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
-				       menu_image);
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CUT, NULL);
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_cut_cb),
 			  view);
@@ -1147,12 +1142,7 @@ create_popup_menu (FMTreeView *view)
 	view->details->popup_cut = menu_item;
 	
 	/* add the "copy folder" menu item */
-	menu_image = gtk_image_new_from_stock (GTK_STOCK_COPY,
-					       GTK_ICON_SIZE_MENU);
-	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Copy Folder"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
-				       menu_image);
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_COPY, NULL);
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_copy_cb),
 			  view);
@@ -1164,7 +1154,7 @@ create_popup_menu (FMTreeView *view)
 	menu_image = gtk_image_new_from_stock (GTK_STOCK_PASTE,
 					       GTK_ICON_SIZE_MENU);
 	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Paste Files into Folder"));
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Paste Into Folder"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
 				       menu_image);
 	g_signal_connect (menu_item, "activate",
@@ -1197,12 +1187,7 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
 	
 	/* add the "properties" menu item */
-	menu_image = gtk_image_new_from_stock (GTK_STOCK_PROPERTIES,
-					       GTK_ICON_SIZE_MENU);
-	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Properties"));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
-				       menu_image);
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PROPERTIES, NULL);
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_properties_cb),
 			  view);

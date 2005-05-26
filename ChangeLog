@@ -1,5 +1,15 @@
 2005-05-26  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-clipboard.c:
+	* src/file-manager/fm-directory-view.c:
+	(copy_or_cut_files), (real_update_menus):
+	* src/file-manager/fm-tree-view.c:
+	(copy_or_cut_files), (create_popup_menu):
+	Remove qualifiers from Cut/Copy/Paste, except for "Paste Into
+	Folders". Fixes #95112.
+
+2005-05-26  Christian Neumair  <chris@gnome-de.org>
+
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
 	Fix empty trash accelerator. Fixes #173059.
 
