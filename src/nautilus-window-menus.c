@@ -420,12 +420,12 @@ action_about_nautilus_callback (GtkAction *action,
 	char *logo_path;
 	GdkPixbuf *logo;
 
-	license_trans = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n",
-				     _(license[2]), "\n\n", NULL);
-
 	if (about == NULL) {
  
 		about = gtk_about_dialog_new ();
+
+		license_trans = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n",
+					     _(license[2]), "\n\n", NULL);
 
 		/* Translators should localize the following string
 		 * which will be displayed at the bottom of the about
@@ -456,8 +456,11 @@ action_about_nautilus_callback (GtkAction *action,
 		
 		if (logo != NULL) {
 			g_object_unref (logo);
-		}
-		
+		}		
+
+		g_free (license_trans);
+		g_free (logo_path);
+
 		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
 
 		eel_add_weak_pointer (&about);

@@ -1,3 +1,9 @@
+2005-05-26  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-window-menus.c: (action_about_nautilus_callback):
+	Fix two possible memory leaks. Kudos to Brian Pepple for tracking this
+	issue down and providing a patch. Fixes #305551.
+
 2005-05-23  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
