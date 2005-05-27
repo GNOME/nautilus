@@ -58,6 +58,7 @@ struct _NautilusConnectServerDialogDetails {
 	GtkWidget *share_entry;
 	GtkWidget *port_entry;
 	GtkWidget *folder_entry;
+	GtkWidget *domain_entry;
 	GtkWidget *user_entry;
 
 	GtkWidget *name_entry;
@@ -97,6 +98,7 @@ nautilus_connect_server_dialog_finalize (GObject *object)
 	g_object_unref (dialog->details->share_entry);
 	g_object_unref (dialog->details->port_entry);
 	g_object_unref (dialog->details->folder_entry);
+	g_object_unref (dialog->details->domain_entry);
 	g_object_unref (dialog->details->user_entry);
 	g_object_unref (dialog->details->name_entry);
 	
@@ -147,9 +149,9 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			gnome_vfs_uri_unref (vfs_uri);
 		}
 	} else {
-		char *method, *user, *port, *initial_path, *server, *folder;
+		char *method, *user, *port, *initial_path, *server, *folder ,*domain ;
 		char *t, *join;
-		gboolean free_initial_path, free_user, free_port;
+		gboolean free_initial_path, free_user, free_domain, free_port;
 
 		server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
 		if (strlen (server) == 0) {
@@ -164,8 +166,10 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		user = "";
 		port = "";
 		initial_path = "";
+		domain = "";
 		free_initial_path = FALSE;
 		free_user = FALSE;
+		free_domain = FALSE;
 		free_port = FALSE;
 		switch (type) {
 		case TYPE_SSH:
@@ -207,6 +211,17 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 			g_free (t);
 		}
+		if (dialog->details->domain_entry->parent != NULL) {
+	
+			free_domain = TRUE;
+
+			domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
+			
+			if (strlen (domain) != 0) {
+				g_free (user);
+				user = g_strconcat (domain , ";" , user, NULL);
+			}
+		}
 
 		if (folder[0] != 0 &&
 		    folder[0] != '/') {
@@ -240,6 +255,9 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		g_free (folder);
 		if (free_user) {
 			g_free (user);
+		}
+		if (free_domain) {
+			g_free (domain);
 		}
 	}
 	
@@ -343,7 +361,7 @@ static void
 setup_for_type (NautilusConnectServerDialog *dialog)
 {
 	int type, i;
-	gboolean show_share, show_port, show_user;
+	gboolean show_share, show_port, show_user, show_domain;
 	GtkWidget *label, *table;
 
 	type = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
@@ -371,6 +389,10 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	if (dialog->details->user_entry->parent != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
 				      dialog->details->user_entry);
+	}
+	if (dialog->details->domain_entry->parent != NULL) {
+		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
+				      dialog->details->domain_entry);
 	}
 	if (dialog->details->name_entry->parent != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
@@ -416,16 +438,19 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 		show_share = FALSE;
 		show_port = TRUE;
 		show_user = TRUE;
+		show_domain = FALSE;
 		break;
 	case TYPE_ANON_FTP:
 		show_share = FALSE;
 		show_port = TRUE;
 		show_user = FALSE;
+		show_domain = FALSE;
 		break;
 	case TYPE_SMB:
 		show_share = TRUE;
 		show_port = FALSE;
 		show_user = TRUE;
+		show_domain =TRUE;
 		break;
 	}
 
@@ -540,6 +565,28 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 
 		i++;
 	}
+
+	if (show_domain) {
+		label = gtk_label_new_with_mnemonic (_("_Domain Name:"));
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_widget_show (label);
+		gtk_table_attach (GTK_TABLE (table), label,
+				  0, 1,
+				  i, i+1,
+				  GTK_FILL, GTK_FILL,
+				  0, 0);
+
+                gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->domain_entry);
+                gtk_widget_show (dialog->details->domain_entry);
+                gtk_table_attach (GTK_TABLE (table), dialog->details->domain_entry,
+                                  1, 2,
+                                  i, i+1,
+                                  GTK_FILL | GTK_EXPAND, GTK_FILL,
+                                  0, 0);
+
+                i++;
+        }
+
 
 
  connection_name:
@@ -676,6 +723,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	g_signal_connect (dialog->details->port_entry, "insert_text", G_CALLBACK (port_insert_text),
 			  NULL);
 	dialog->details->folder_entry = gtk_entry_new ();
+	dialog->details->domain_entry = gtk_entry_new ();
 	dialog->details->user_entry = gtk_entry_new ();
 	dialog->details->name_entry = gtk_entry_new ();
 	/* We need an extra ref so we can remove them from the table */
@@ -684,6 +732,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	g_object_ref (dialog->details->share_entry);
 	g_object_ref (dialog->details->port_entry);
 	g_object_ref (dialog->details->folder_entry);
+	g_object_ref (dialog->details->domain_entry);
 	g_object_ref (dialog->details->user_entry);
 	g_object_ref (dialog->details->name_entry);
 	

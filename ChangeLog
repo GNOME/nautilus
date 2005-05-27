@@ -1,3 +1,12 @@
+2005-05-18  Dinoop Thomas  <dinoop.thomas@wipro.com>
+	
+	* src/nautilus-connect-server-dialog.c:
+	(connect_to_server), (nautilus_connect_server_dialog_finalize),
+	(nautilus_connect_server_dialog_init), (setup_for_type):
+	Added a domain field to enter domain name for Windows share in
+	Connect to server dialog.
+	Fixes bug #304760.
+
 2005-05-26  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-clipboard.c:
