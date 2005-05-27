@@ -56,6 +56,9 @@
 /* Should never be a reasonable actual mtime */
 #define INVALID_MTIME 0
 
+/* Cool-off period between last file modification time and thumbnail creation */
+#define THUMBNAIL_CREATION_DELAY_SECS 3
+
 static gpointer thumbnail_thread_start (gpointer data);
 
 /* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
@@ -509,6 +512,7 @@ thumbnail_thread_start (gpointer data)
 	NautilusThumbnailInfo *info = NULL;
 	GdkPixbuf *pixbuf;
 	time_t current_orig_mtime = 0;
+	time_t current_time;
 
 	/* We loop until there are no more thumbails to make, at which point
 	   we exit the thread. */
@@ -564,6 +568,21 @@ thumbnail_thread_start (gpointer data)
 #endif
 		pthread_mutex_unlock (&thumbnails_mutex);
 
+		time (&current_time);
+
+		/* Don't try to create a thumbnail if the file was modified recently.
+		   This prevents constant re-thumbnailing of changing files. */ 
+		if (current_time < current_orig_mtime + THUMBNAIL_CREATION_DELAY_SECS &&
+		    current_time >= current_orig_mtime) {
+#ifdef DEBUG_THUMBNAILS
+			g_message ("(Thumbnail Thread) Skipping: %s\n",
+				   info->image_uri);
+#endif
+			/* Reschedule thumbnailing via a change notification */
+			g_timeout_add (1000, thumbnail_thread_notify_file_changed,
+				       g_strdup (info->image_uri));
+ 			continue;
+		}
 
 		/* Create the thumbnail. */
 #ifdef DEBUG_THUMBNAILS
