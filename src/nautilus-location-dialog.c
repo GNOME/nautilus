@@ -190,9 +190,9 @@ nautilus_location_dialog_new (NautilusWindow *window)
 	char *formatted_location;
 	
 	dialog = gtk_widget_new (NAUTILUS_TYPE_LOCATION_DIALOG, NULL);
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
 	if (window) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
 		NAUTILUS_LOCATION_DIALOG (dialog)->details->window = window;

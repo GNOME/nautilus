@@ -1,3 +1,9 @@
+2005-05-27  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-location-dialog.c: (nautilus_location_dialog_new):
+	Only set dialog transient if a parent window was specified.
+	Fixes #142814.
+
 2005-05-27  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c:
