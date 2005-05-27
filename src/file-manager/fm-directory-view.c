@@ -6619,6 +6619,8 @@ real_update_menus (FMDirectoryView *view)
 					      FM_ACTION_SELF_PROPERTIES);
 	gtk_action_set_sensitive (action,
 				  fm_directory_view_supports_properties (view));
+	gtk_action_set_visible (action,
+				!FM_IS_DESKTOP_ICON_VIEW (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_EMPTY_TRASH);
