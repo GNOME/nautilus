@@ -1,3 +1,16 @@
+2005-05-27  Christian Persch  <chpe@cvs.gnome.org>
+
+	* src/nautilus-navigation-action.c: (set_tooltip_callback),
+	(connect_proxy), (nautilus_navigation_action_finalize),
+	(nautilus_navigation_action_set_property),
+	(nautilus_navigation_action_get_property),
+	(nautilus_navigation_action_class_init),
+	(nautilus_navigation_action_init):
+	* src/nautilus-navigation-window-menus.c:
+	(nautilus_navigation_window_initialize_actions):
+	Add specific tooltips to the drop-down arrow of Back/Forward
+	toolbar items. Fixes bug #86569.
+
 2005-05-18  Dinoop Thomas  <dinoop.thomas@wipro.com>
 	
 	* src/nautilus-connect-server-dialog.c:

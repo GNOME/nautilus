@@ -48,11 +48,13 @@ struct NautilusNavigationActionPrivate
 {
 	NautilusNavigationWindow *window;
 	NautilusNavigationDirection direction;
+	char *arrow_tooltip;
 };
 
 enum
 {
 	PROP_0,
+	PROP_ARROW_TOOLTIP,
 	PROP_DIRECTION,
 	PROP_WINDOW
 };
@@ -174,28 +176,19 @@ show_menu_callback (GtkMenuToolButton *button,
 	}
 }
 
-static void
-nautilus_navigation_action_sync_tooltip (GtkAction  *action, 
-					 GParamSpec *pspec, 
-					 GtkWidget  *proxy)
+static gboolean
+set_tooltip_callback (GtkMenuToolButton *proxy,
+		      GtkTooltips *tooltips,
+		      const char *tip,
+		      const char *tip_private,
+		      NautilusNavigationAction *action)
 {
-	char *tooltip;
-	
-	g_return_if_fail (GTK_IS_TOOL_ITEM (proxy));
-	
-	if (GTK_IS_TOOLBAR (gtk_widget_get_parent (proxy)))  {
-		GtkToolbar *toolbar = GTK_TOOLBAR (gtk_widget_get_parent (proxy));
+	gtk_menu_tool_button_set_arrow_tooltip (proxy, tooltips,
+						action->priv->arrow_tooltip,
+						NULL);
 
-		g_object_get (action, "tooltip", &tooltip, NULL);
-
-		gtk_menu_tool_button_set_arrow_tooltip (GTK_MENU_TOOL_BUTTON (proxy),
-							toolbar->tooltips,
-							tooltip,
-							NULL);
-		g_free (tooltip);
-	}
+	return FALSE;
 }
-
 
 static void
 connect_proxy (GtkAction *action, GtkWidget *proxy)
@@ -206,15 +199,24 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 		menu = gtk_menu_new ();
 		gtk_menu_tool_button_set_menu (GTK_MENU_TOOL_BUTTON (proxy),
 					       menu);
-		g_signal_connect_object (action, "notify::tooltip",
-					 G_CALLBACK (nautilus_navigation_action_sync_tooltip), 
-					 proxy, 0);
+		g_signal_connect (proxy, "set-tooltip",
+				  G_CALLBACK (set_tooltip_callback), action);
 		
 		g_signal_connect (proxy, "show-menu",
 				  G_CALLBACK (show_menu_callback), action);
 	}
 
 	(* GTK_ACTION_CLASS (parent_class)->connect_proxy) (action, proxy);
+}
+
+static void
+nautilus_navigation_action_finalize (GObject *object)
+{
+	NautilusNavigationAction *action = NAUTILUS_NAVIGATION_ACTION (object);
+
+	g_free (action->priv->arrow_tooltip);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 static void
@@ -229,6 +231,10 @@ nautilus_navigation_action_set_property (GObject *object,
 
 	switch (prop_id)
 	{
+		case PROP_ARROW_TOOLTIP:
+			g_free (nav->priv->arrow_tooltip);
+			nav->priv->arrow_tooltip = g_value_dup_string (value);
+			break;
 		case PROP_DIRECTION:
 			nav->priv->direction = g_value_get_int (value);
 			break;
@@ -250,6 +256,9 @@ nautilus_navigation_action_get_property (GObject *object,
 
 	switch (prop_id)
 	{
+		case PROP_ARROW_TOOLTIP:
+			g_value_set_string (value, nav->priv->arrow_tooltip);
+			break;
 		case PROP_DIRECTION:
 			g_value_set_int (value, nav->priv->direction);
 			break;
@@ -265,6 +274,7 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 	GtkActionClass *action_class = GTK_ACTION_CLASS (class);
 
+	object_class->finalize = nautilus_navigation_action_finalize;
 	object_class->set_property = nautilus_navigation_action_set_property;
 	object_class->get_property = nautilus_navigation_action_get_property;
 
@@ -273,6 +283,13 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
 	action_class->toolbar_item_type = GTK_TYPE_MENU_TOOL_BUTTON;
 	action_class->connect_proxy = connect_proxy;
 
+	g_object_class_install_property (object_class,
+                                         PROP_ARROW_TOOLTIP,
+                                         g_param_spec_string ("arrow-tooltip",
+                                                              "Arrow Tooltip",
+                                                              "Arrow Tooltip",
+							      NULL,
+							      G_PARAM_READWRITE));
 	g_object_class_install_property (object_class,
                                          PROP_DIRECTION,
                                          g_param_spec_int ("direction",
@@ -298,5 +315,3 @@ nautilus_navigation_action_init (NautilusNavigationAction *action)
 {
         action->priv = NAUTILUS_NAVIGATION_ACTION_GET_PRIVATE (action);
 }
-
-
