@@ -8172,6 +8172,8 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 	char *container_uri;
 	GArray *points;
 	char **bits;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
 	GList *uri_list = NULL;
 
 	if (encoded_url == NULL) {
@@ -8185,28 +8187,6 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("Drag and drop is only supported on local file systems."),
-					 _("Drag and Drop Error"),
-					 fm_directory_view_get_containing_window (view));
-		g_free (container_uri);
-		return;
-	}
-
-	if (action == GDK_ACTION_ASK) {
-		action = ask_link_action (view);
-		if (action == 0) {
-			g_free (container_uri);
-			return;
-		}
-	}
-
-	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
-	 * and we don't support combinations either. */
-	if ((action != GDK_ACTION_DEFAULT) &&
-	    (action != GDK_ACTION_COPY) &&
-	    (action != GDK_ACTION_MOVE) &&
-	    (action != GDK_ACTION_LINK)) {
-		eel_show_warning_dialog (_("Drag and drop is not supported."),
-					 _("An invalid drag type was used."),
 					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (view));
 		g_free (container_uri);
@@ -8227,6 +8207,43 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 	default:
 		url = bits[0];
 		title = bits[1];
+	}
+
+	if (action == GDK_ACTION_ASK) {
+		file_info = gnome_vfs_file_info_new ();
+		result = gnome_vfs_get_file_info (url, file_info,
+		    GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		    | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+		if ( eel_strcasecmp (file_info->mime_type, "text/html") == 0 ||
+		    eel_strcasecmp (file_info->mime_type, "text/xml") == 0 ||
+		    eel_strcasecmp (file_info->mime_type, "application/xhtml+xml") == 0) {
+			action = GDK_ACTION_LINK;
+		} else if (eel_strcasecmp (file_info->mime_type, "text/plain") == 0) {
+			action = ask_link_action (view);
+		} else {
+			action = GDK_ACTION_COPY;
+		}
+		gnome_vfs_file_info_unref (file_info);
+		
+		if (action == 0) {
+			g_free (container_uri);
+			return;
+		}
+	}
+
+	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
+	 * and we don't support combinations either. */
+	if ((action != GDK_ACTION_DEFAULT) &&
+	    (action != GDK_ACTION_COPY) &&
+	    (action != GDK_ACTION_MOVE) &&
+	    (action != GDK_ACTION_LINK)) {
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("An invalid drag type was used."),
+					 _("Drag and Drop Error"),
+					 fm_directory_view_get_containing_window (view));
+		g_free (container_uri);
+		return;
 	}
 
 	if (action == GDK_ACTION_LINK) {
