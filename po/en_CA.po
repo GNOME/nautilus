@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-19 14:49-0400\n"
-"PO-Revision-Date: 2005-05-19 20:03-0400\n"
+"POT-Creation-Date: 2005-05-27 14:24-0400\n"
+"PO-Revision-Date: 2005-05-27 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -379,12 +379,12 @@ msgstr "_Emblems"
 msgid "_Patterns"
 msgstr "_Patterns"
 
-#: ../libbackground/applier.c:256
+#: ../libbackground/applier.c:255
 #: ../libnautilus-private/nautilus-column-utilities.c:58
 msgid "Type"
 msgstr "Type"
 
-#: ../libbackground/applier.c:257
+#: ../libbackground/applier.c:256
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -392,31 +392,31 @@ msgstr ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
 
-#: ../libbackground/applier.c:264
+#: ../libbackground/applier.c:263
 msgid "Preview Width"
 msgstr "Preview Width"
 
-#: ../libbackground/applier.c:265
+#: ../libbackground/applier.c:264
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr "Width if applier is a preview. Defaults to 64."
 
-#: ../libbackground/applier.c:272
+#: ../libbackground/applier.c:271
 msgid "Preview Height"
 msgstr "Preview Height"
 
-#: ../libbackground/applier.c:273
+#: ../libbackground/applier.c:272
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr "Height if applier is a preview. Defaults to 48."
 
-#: ../libbackground/applier.c:280
+#: ../libbackground/applier.c:279
 msgid "Screen"
 msgstr "Screen"
 
-#: ../libbackground/applier.c:281
+#: ../libbackground/applier.c:280
 msgid "Screen on which BGApplier is to draw"
 msgstr "Screen on which BGApplier is to draw"
 
-#: ../libbackground/applier.c:625
+#: ../libbackground/applier.c:624
 msgid "Disabled"
 msgstr "Disabled"
 
@@ -1146,42 +1146,31 @@ msgid "Width of the side pane"
 msgstr "Width of the side pane"
 
 #. name, stock id
-#: ../libnautilus-private/nautilus-clipboard.c:359
-msgid "Cut _Text"
-msgstr "Cut _Text"
-
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:360
+#: ../libnautilus-private/nautilus-clipboard.c:355
 msgid "Cut the selected text to the clipboard"
 msgstr "Cut the selected text to the clipboard"
 
 #. name, stock id
-#: ../libnautilus-private/nautilus-clipboard.c:363
-msgid "_Copy Text"
-msgstr "_Copy Text"
-
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:364
+#: ../libnautilus-private/nautilus-clipboard.c:359
 msgid "Copy the selected text to the clipboard"
 msgstr "Copy the selected text to the clipboard"
 
 #. name, stock id
-#: ../libnautilus-private/nautilus-clipboard.c:367
-msgid "_Paste Text"
-msgstr "_Paste Text"
-
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:368
+#: ../libnautilus-private/nautilus-clipboard.c:363
 msgid "Paste the text stored on the clipboard"
 msgstr "Paste the text stored on the clipboard"
 
 #. name, stock id
-#: ../libnautilus-private/nautilus-clipboard.c:371
+#: ../libnautilus-private/nautilus-clipboard.c:366
+#: ../src/file-manager/fm-directory-view.c:6008
 msgid "Select _All"
 msgstr "Select _All"
 
 #. label, accelerator
-#: ../libnautilus-private/nautilus-clipboard.c:372
+#: ../libnautilus-private/nautilus-clipboard.c:367
 msgid "Select all the text in a text field"
 msgstr "Select all the text in a text field"
 
@@ -1678,7 +1667,7 @@ msgstr "Replace _All"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1184
 #: ../libnautilus-private/nautilus-file.c:4755
-#: ../src/file-manager/fm-directory-view.c:8250
+#: ../src/file-manager/fm-directory-view.c:8257
 #, c-format
 msgid "link to %s"
 msgstr "link to %s"
@@ -2047,10 +2036,7 @@ msgstr ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 
-#. name, stock id
 #: ../libnautilus-private/nautilus-file-operations.c:2577
-#: ../src/file-manager/fm-directory-view.c:5986
-#: ../src/file-manager/fm-directory-view.c:6626
 msgid "_Empty Trash"
 msgstr "_Empty Trash"
 
@@ -2773,7 +2759,7 @@ msgstr ""
 "Check that the spelling is correct and that your proxy settings are correct."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:619
-#: ../src/nautilus-connect-server-dialog.c:140
+#: ../src/nautilus-connect-server-dialog.c:142
 #: ../src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -2781,7 +2767,7 @@ msgstr "\"%s\" is not a valid location."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:622
 #: ../libnautilus-private/nautilus-program-choosing.c:629
-#: ../src/nautilus-connect-server-dialog.c:142
+#: ../src/nautilus-connect-server-dialog.c:144
 #: ../src/nautilus-property-browser.c:1096
 #: ../src/nautilus-window-manage-views.c:1371
 #: ../src/nautilus-window-manage-views.c:1379
@@ -2878,7 +2864,7 @@ msgstr "Change how files are managed"
 msgid "File Management"
 msgstr "File Management"
 
-#: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1252
+#: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1237
 msgid "Home Folder"
 msgstr "Home Folder"
 
@@ -2926,7 +2912,10 @@ msgstr "Produces metafile objects for accessing Nautilus metadata"
 msgid "Background"
 msgstr "Background"
 
+#. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
+#: ../src/file-manager/fm-directory-view.c:5986
+#: ../src/file-manager/fm-directory-view.c:6626
 msgid "E_mpty Trash"
 msgstr "E_mpty Trash"
 
@@ -3304,36 +3293,34 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:5303
 #: ../src/file-manager/fm-tree-view.c:895
 #, c-format
-msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "\"%s\" will be moved if you select the Paste Files command"
+msgid "\"%s\" will be moved if you select the Paste command"
+msgstr "\"%s\" will be moved if you select the Paste command"
 
 #: ../src/file-manager/fm-directory-view.c:5307
 #: ../src/file-manager/fm-tree-view.c:899
 #, c-format
-msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "\"%s\" will be copied if you select the Paste Files command"
+msgid "\"%s\" will be copied if you select the Paste command"
+msgstr "\"%s\" will be copied if you select the Paste command"
 
 #: ../src/file-manager/fm-directory-view.c:5314
 #, c-format
-msgid ""
-"The %d selected item will be moved if you select the Paste Files command"
+msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
-"The %d selected items will be moved if you select the Paste Files command"
+"The %d selected items will be moved if you select the Paste command"
 msgstr[0] ""
-"The %d selected item will be moved if you select the Paste Files command"
+"The %d selected item will be moved if you select the Paste command"
 msgstr[1] ""
-"The %d selected items will be moved if you select the Paste Files command"
+"The %d selected items will be moved if you select the Paste command"
 
 #: ../src/file-manager/fm-directory-view.c:5321
 #, c-format
-msgid ""
-"The %d selected item will be copied if you select the Paste Files command"
+msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
-"The %d selected items will be copied if you select the Paste Files command"
+"The %d selected items will be copied if you select the Paste command"
 msgstr[0] ""
-"The %d selected item will be copied if you select the Paste Files command"
+"The %d selected item will be copied if you select the Paste command"
 msgstr[1] ""
-"The %d selected items will be copied if you select the Paste Files command"
+"The %d selected items will be copied if you select the Paste command"
 
 #: ../src/file-manager/fm-directory-view.c:5414
 #: ../src/file-manager/fm-tree-view.c:975
@@ -3341,7 +3328,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
 #: ../src/file-manager/fm-directory-view.c:5521
-#: ../src/file-manager/fm-directory-view.c:7125
+#: ../src/file-manager/fm-directory-view.c:7115
 msgid "Mount Error"
 msgstr "Mount Error"
 
@@ -3427,6 +3414,7 @@ msgstr "Create a new empty file inside this folder"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5962
 #: ../src/file-manager/fm-directory-view.c:6527
+#: ../src/file-manager/fm-tree-view.c:1099
 msgid "_Open"
 msgstr "_Open"
 
@@ -3471,59 +3459,39 @@ msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Show the folder containing the scripts that appear in this menu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:5990
-#: ../src/file-manager/fm-directory-view.c:6644
-msgid "Cu_t Files"
-msgstr "Cu_t Files"
-
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5991
-msgid "Prepare the selected files to be moved with a Paste Files command"
-msgstr "Prepare the selected files to be moved with a Paste Files command"
+msgid "Prepare the selected files to be moved with a Paste command"
+msgstr "Prepare the selected files to be moved with a Paste command"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:5994
-#: ../src/file-manager/fm-directory-view.c:6653
-msgid "_Copy Files"
-msgstr "_Copy Files"
-
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5995
-msgid "Prepare the selected files to be copied with a Paste Files command"
-msgstr "Prepare the selected files to be copied with a Paste Files command"
+msgid "Prepare the selected files to be copied with a Paste command"
+msgstr "Prepare the selected files to be copied with a Paste command"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:5998
-msgid "_Paste Files"
-msgstr "_Paste Files"
-
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5999
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
-msgstr ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut or Copy command"
+msgstr "Move or copy files previously selected by a Cut or Copy command"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6004
-msgid "_Paste Files Into Folder"
-msgstr "_Paste Files Into Folder"
+#: ../src/file-manager/fm-tree-view.c:1157
+msgid "_Paste Into Folder"
+msgstr "_Paste Into Folder"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6005
 msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command "
-"into the selected folder"
+"Move or copy files previously selected by a Cut or Copy command into the "
+"selected folder"
 msgstr ""
-"Move or copy files previously selected by a Cut Files or Copy Files command "
-"into the selected folder"
-
-#. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6008
-msgid "Select _All Files"
-msgstr "Select _All Files"
+"Move or copy files previously selected by a Cut or Copy command into the "
+"selected folder"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6009
@@ -3576,7 +3544,7 @@ msgstr "Rename selected item"
 #: ../src/file-manager/fm-directory-view.c:6076
 #: ../src/file-manager/fm-directory-view.c:6404
 #: ../src/file-manager/fm-directory-view.c:6570
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6913
 msgid "Mo_ve to Trash"
 msgstr "Mo_ve to Trash"
 
@@ -3662,14 +3630,14 @@ msgstr "Open the open folder in a navigation window"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6068
-msgid "Prepare the open folder to be moved with a Paste Files command"
-msgstr "Prepare the open folder to be moved with a Paste Files command"
+msgid "Prepare the open folder to be moved with a Paste command"
+msgstr "Prepare the open folder to be moved with a Paste command"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6072
-msgid "Prepare the open folder to be copied with a Paste Files command"
-msgstr "Prepare the open folder to be copied with a Paste Files command"
+msgid "Prepare the open folder to be copied with a Paste command"
+msgstr "Prepare the open folder to be copied with a Paste command"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6077
@@ -3748,74 +3716,66 @@ msgstr "Delete all selected items permanently"
 msgid "Ma_ke Links"
 msgstr "Ma_ke Links"
 
-#: ../src/file-manager/fm-directory-view.c:6643
-msgid "Cu_t File"
-msgstr "Cu_t File"
-
-#: ../src/file-manager/fm-directory-view.c:6652
-msgid "_Copy File"
-msgstr "_Copy File"
-
-#: ../src/file-manager/fm-directory-view.c:6914
+#: ../src/file-manager/fm-directory-view.c:6904
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "The link is broken, do you want to move it to the Trash?"
 
-#: ../src/file-manager/fm-directory-view.c:6916
+#: ../src/file-manager/fm-directory-view.c:6906
 msgid "This link can't be used, because it has no target."
 msgstr "This link can't be used, because it has no target."
 
-#: ../src/file-manager/fm-directory-view.c:6918
+#: ../src/file-manager/fm-directory-view.c:6908
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "This link can't be used, because its target \"%s\" doesn't exist."
 
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6913
 msgid "Broken Link"
 msgstr "Broken Link"
 
-#: ../src/file-manager/fm-directory-view.c:7243
+#: ../src/file-manager/fm-directory-view.c:7233
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:7250
+#: ../src/file-manager/fm-directory-view.c:7240
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
 
-#: ../src/file-manager/fm-directory-view.c:8129
+#: ../src/file-manager/fm-directory-view.c:8119
 msgid "Download location?"
 msgstr "Download location?"
 
-#: ../src/file-manager/fm-directory-view.c:8132
+#: ../src/file-manager/fm-directory-view.c:8122
 msgid "You can download it or make a link to it."
 msgstr "You can download it or make a link to it."
 
-#: ../src/file-manager/fm-directory-view.c:8135
+#: ../src/file-manager/fm-directory-view.c:8125
 msgid "Make a _Link"
 msgstr "Make a _Link"
 
-#: ../src/file-manager/fm-directory-view.c:8139
+#: ../src/file-manager/fm-directory-view.c:8129
 msgid "_Download"
 msgstr "_Download"
 
-#: ../src/file-manager/fm-directory-view.c:8196
-#: ../src/file-manager/fm-directory-view.c:8218
-#: ../src/file-manager/fm-directory-view.c:8332
+#: ../src/file-manager/fm-directory-view.c:8188
+#: ../src/file-manager/fm-directory-view.c:8241
+#: ../src/file-manager/fm-directory-view.c:8339
 msgid "Drag and drop is not supported."
 msgstr "Drag and drop is not supported."
 
-#: ../src/file-manager/fm-directory-view.c:8197
+#: ../src/file-manager/fm-directory-view.c:8189
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Drag and drop is only supported on local file systems."
 
-#: ../src/file-manager/fm-directory-view.c:8198
-#: ../src/file-manager/fm-directory-view.c:8220
-#: ../src/file-manager/fm-directory-view.c:8334
+#: ../src/file-manager/fm-directory-view.c:8190
+#: ../src/file-manager/fm-directory-view.c:8243
+#: ../src/file-manager/fm-directory-view.c:8341
 msgid "Drag and Drop Error"
 msgstr "Drag and Drop Error"
 
-#: ../src/file-manager/fm-directory-view.c:8219
-#: ../src/file-manager/fm-directory-view.c:8333
+#: ../src/file-manager/fm-directory-view.c:8242
+#: ../src/file-manager/fm-directory-view.c:8340
 msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
@@ -4244,7 +4204,6 @@ msgid "Images Only"
 msgstr "Images Only"
 
 #: ../src/file-manager/fm-properties-window.c:995
-#: ../src/file-manager/fm-tree-view.c:1203
 msgid "Properties"
 msgstr "Properties"
 
@@ -4494,40 +4453,24 @@ msgstr "Loading..."
 msgid "E_ject"
 msgstr "E_ject"
 
-#: ../src/file-manager/fm-tree-view.c:1099
-msgid "Open"
-msgstr "Open"
-
 #. add the "create folder" menu item
 #: ../src/file-manager/fm-tree-view.c:1123
 msgid "Create Folder"
 msgstr "Create Folder"
 
-#: ../src/file-manager/fm-tree-view.c:1139
-msgid "Cut Folder"
-msgstr "Cut Folder"
-
-#: ../src/file-manager/fm-tree-view.c:1153
-msgid "Copy Folder"
-msgstr "Copy Folder"
-
-#: ../src/file-manager/fm-tree-view.c:1167
-msgid "Paste Files into Folder"
-msgstr "Paste Files into Folder"
-
-#: ../src/file-manager/fm-tree-view.c:1185
+#: ../src/file-manager/fm-tree-view.c:1175
 msgid "Move to Trash"
 msgstr "Move to Trash"
 
-#: ../src/file-manager/fm-tree-view.c:1254
+#: ../src/file-manager/fm-tree-view.c:1239
 msgid "Filesystem"
 msgstr "Filesystem"
 
-#: ../src/file-manager/fm-tree-view.c:1256
+#: ../src/file-manager/fm-tree-view.c:1241
 msgid "Network Neighbourhood"
 msgstr "Network Neighbourhood"
 
-#: ../src/file-manager/fm-tree-view.c:1497
+#: ../src/file-manager/fm-tree-view.c:1482
 msgid "Tree"
 msgstr "Tree"
 
@@ -4688,7 +4631,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:154
 #: ../src/nautilus-file-management-properties.c:229
-#: ../src/nautilus-property-browser.c:1445 ../src/nautilus-window-menus.c:502
+#: ../src/nautilus-property-browser.c:1445 ../src/nautilus-window-menus.c:505
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4722,97 +4665,101 @@ msgstr "Edit Bookmarks"
 msgid "Can't display location \"%s\""
 msgstr "Cannot display location \"%s\""
 
-#: ../src/nautilus-connect-server-dialog.c:143
-#: ../src/nautilus-connect-server-dialog.c:158
+#: ../src/nautilus-connect-server-dialog.c:145
+#: ../src/nautilus-connect-server-dialog.c:160
 msgid "Can't Connect to Server"
 msgstr "Can't Connect to Server"
 
-#: ../src/nautilus-connect-server-dialog.c:156
+#: ../src/nautilus-connect-server-dialog.c:158
 msgid "You must enter a name for the server."
 msgstr "You must enter a name for the server."
 
-#: ../src/nautilus-connect-server-dialog.c:157
+#: ../src/nautilus-connect-server-dialog.c:159
 msgid "Please enter a name and try again."
 msgstr "Please enter a name and try again."
 
-#: ../src/nautilus-connect-server-dialog.c:269 ../src/nautilus-window.c:980
+#: ../src/nautilus-connect-server-dialog.c:287 ../src/nautilus-window.c:980
 #, c-format
 msgid "%s on %s"
 msgstr "%s on %s"
 
-#: ../src/nautilus-connect-server-dialog.c:388
+#: ../src/nautilus-connect-server-dialog.c:410
 msgid "_Location (URI):"
 msgstr "_Location (URI):"
 
-#: ../src/nautilus-connect-server-dialog.c:432
+#: ../src/nautilus-connect-server-dialog.c:457
 msgid "_Server:"
 msgstr "_Server:"
 
-#: ../src/nautilus-connect-server-dialog.c:451
+#: ../src/nautilus-connect-server-dialog.c:476
 msgid "Optional information:"
 msgstr "Optional information:"
 
-#: ../src/nautilus-connect-server-dialog.c:463
+#: ../src/nautilus-connect-server-dialog.c:488
 msgid "_Share:"
 msgstr "_Share:"
 
-#: ../src/nautilus-connect-server-dialog.c:484
+#: ../src/nautilus-connect-server-dialog.c:509
 msgid "_Port:"
 msgstr "_Port:"
 
-#: ../src/nautilus-connect-server-dialog.c:504
+#: ../src/nautilus-connect-server-dialog.c:529
 msgid "_Folder:"
 msgstr "_Folder:"
 
-#: ../src/nautilus-connect-server-dialog.c:524
+#: ../src/nautilus-connect-server-dialog.c:549
 msgid "_User Name:"
 msgstr "_User Name:"
 
-#: ../src/nautilus-connect-server-dialog.c:547
+#: ../src/nautilus-connect-server-dialog.c:570
+msgid "_Domain Name:"
+msgstr "_Domain Name:"
+
+#: ../src/nautilus-connect-server-dialog.c:594
 msgid "_Name to use for connection:"
 msgstr "_Name to use for connection:"
 
-#: ../src/nautilus-connect-server-dialog.c:605
+#: ../src/nautilus-connect-server-dialog.c:652
 msgid "Connect to Server"
 msgstr "Connect to Server"
 
-#: ../src/nautilus-connect-server-dialog.c:622
+#: ../src/nautilus-connect-server-dialog.c:669
 msgid "Service _type:"
 msgstr "Service _type:"
 
-#: ../src/nautilus-connect-server-dialog.c:631
+#: ../src/nautilus-connect-server-dialog.c:678
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/nautilus-connect-server-dialog.c:633
+#: ../src/nautilus-connect-server-dialog.c:680
 msgid "Public FTP"
 msgstr "Public FTP"
 
-#: ../src/nautilus-connect-server-dialog.c:635
+#: ../src/nautilus-connect-server-dialog.c:682
 msgid "FTP (with login)"
 msgstr "FTP (with login)"
 
-#: ../src/nautilus-connect-server-dialog.c:637
+#: ../src/nautilus-connect-server-dialog.c:684
 msgid "Windows share"
 msgstr "Windows share"
 
-#: ../src/nautilus-connect-server-dialog.c:639
+#: ../src/nautilus-connect-server-dialog.c:686
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: ../src/nautilus-connect-server-dialog.c:641
+#: ../src/nautilus-connect-server-dialog.c:688
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Secure WebDAV (HTTPS)"
 
-#: ../src/nautilus-connect-server-dialog.c:643
+#: ../src/nautilus-connect-server-dialog.c:690
 msgid "Custom Location"
 msgstr "Custom Location"
 
-#: ../src/nautilus-connect-server-dialog.c:693
+#: ../src/nautilus-connect-server-dialog.c:742
 msgid "Browse _Network"
 msgstr "Browse _Network"
 
-#: ../src/nautilus-connect-server-dialog.c:699
+#: ../src/nautilus-connect-server-dialog.c:748
 msgid "C_onnect"
 msgstr "C_onnect"
 
@@ -5551,20 +5498,28 @@ msgstr "_Back"
 msgid "Go to the previous visited location"
 msgstr "Go to the previous visited location"
 
-#: ../src/nautilus-navigation-window-menus.c:620
+#: ../src/nautilus-navigation-window-menus.c:607
+msgid "Back history"
+msgstr "Back history"
+
+#: ../src/nautilus-navigation-window-menus.c:621
 msgid "_Forward"
 msgstr "_Forward"
 
-#: ../src/nautilus-navigation-window-menus.c:622
+#: ../src/nautilus-navigation-window-menus.c:623
 msgid "Go to the next visited location"
 msgstr "Go to the next visited location"
+
+#: ../src/nautilus-navigation-window-menus.c:624
+msgid "Forward history"
+msgstr "Forward history"
 
 #: ../src/nautilus-navigation-window.c:685
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - File Browser"
 
-#: ../src/nautilus-notes-viewer.c:388 ../src/nautilus-notes-viewer.c:495
+#: ../src/nautilus-notes-viewer.c:388 ../src/nautilus-notes-viewer.c:492
 msgid "Notes"
 msgstr "Notes"
 
@@ -5922,41 +5877,41 @@ msgstr ""
 "Maintainer: Adam Weinberger <adamw@gnome.org>\n"
 "Alexander Winston <alexander.winston@comcast.net>"
 
-#: ../src/nautilus-window-menus.c:590
+#: ../src/nautilus-window-menus.c:593
 msgid "_File"
 msgstr "_File"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:591
+#: ../src/nautilus-window-menus.c:594
 msgid "_Edit"
 msgstr "_Edit"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:592
+#: ../src/nautilus-window-menus.c:595
 msgid "_View"
 msgstr "_View"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:593
+#: ../src/nautilus-window-menus.c:596
 msgid "_Help"
 msgstr "_Help"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:595
+#: ../src/nautilus-window-menus.c:598
 msgid "_Close"
 msgstr "_Close"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:596
+#: ../src/nautilus-window-menus.c:599
 msgid "Close this folder"
 msgstr "Close this folder"
 
-#: ../src/nautilus-window-menus.c:599
+#: ../src/nautilus-window-menus.c:602
 msgid "_Backgrounds and Emblems..."
 msgstr "_Backgrounds and Emblems..."
 
-#: ../src/nautilus-window-menus.c:600
+#: ../src/nautilus-window-menus.c:603
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -5964,153 +5919,153 @@ msgstr ""
 "Display patterns, colours, and emblems that can be used to customize "
 "appearance"
 
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:606
 msgid "Prefere_nces"
 msgstr "Prefere_nces"
 
-#: ../src/nautilus-window-menus.c:604
+#: ../src/nautilus-window-menus.c:607
 msgid "Edit Nautilus preferences"
 msgstr "Edit Nautilus preferences"
 
-#: ../src/nautilus-window-menus.c:606
+#: ../src/nautilus-window-menus.c:609
 msgid "_Undo"
 msgstr "_Undo"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:610
 msgid "Undo the last text change"
 msgstr "Undo the last text change"
 
-#: ../src/nautilus-window-menus.c:609
+#: ../src/nautilus-window-menus.c:612
 msgid "Open _Parent"
 msgstr "Open _Parent"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:613
 msgid "Open the parent folder"
 msgstr "Open the parent folder"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:619
 msgid "_Stop"
 msgstr "_Stop"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:623
 msgid "_Reload"
 msgstr "_Reload"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:624
+#: ../src/nautilus-window-menus.c:627
 msgid "_Contents"
 msgstr "_Contents"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:625
+#: ../src/nautilus-window-menus.c:628
 msgid "Display Nautilus help"
 msgstr "Display Nautilus help"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:628
+#: ../src/nautilus-window-menus.c:631
 msgid "_About"
 msgstr "_About"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:629
+#: ../src/nautilus-window-menus.c:632
 msgid "Display credits for the creators of Nautilus"
 msgstr "Display credits for the creators of Nautilus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:632
+#: ../src/nautilus-window-menus.c:635
 msgid "Zoom _In"
 msgstr "Zoom _In"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:633 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:636 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Show the contents in more detail"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:639
 msgid "Zoom _Out"
 msgstr "Zoom _Out"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:637 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:640 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Show the contents in less detail"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:640
+#: ../src/nautilus-window-menus.c:643
 msgid "Normal Si_ze"
 msgstr "Normal Si_ze"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:641
+#: ../src/nautilus-window-menus.c:644
 msgid "Show the contents at the normal size"
 msgstr "Show the contents at the normal size"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:644
+#: ../src/nautilus-window-menus.c:647
 msgid "Connect to _Server..."
 msgstr "Connect to _Server..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:645
+#: ../src/nautilus-window-menus.c:648
 msgid "Set up a connection to a network server"
 msgstr "Set up a connection to a network server"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:648
+#: ../src/nautilus-window-menus.c:651
 msgid "_Home"
 msgstr "_Home"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:649
+#: ../src/nautilus-window-menus.c:652
 msgid "Go to the home folder"
 msgstr "Go to the home folder"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:652
+#: ../src/nautilus-window-menus.c:655
 msgid "_Computer"
 msgstr "_Computer"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:653
+#: ../src/nautilus-window-menus.c:656
 msgid "Go to the computer location"
 msgstr "Go to the computer location"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:656
+#: ../src/nautilus-window-menus.c:659
 msgid "T_emplates"
 msgstr "T_emplates"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:657
+#: ../src/nautilus-window-menus.c:660
 msgid "Go to the templates folder"
 msgstr "Go to the templates folder"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:660
+#: ../src/nautilus-window-menus.c:663
 msgid "_Trash"
 msgstr "_Trash"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:661
+#: ../src/nautilus-window-menus.c:664
 msgid "Go to the trash folder"
 msgstr "Go to the trash folder"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:664
+#: ../src/nautilus-window-menus.c:667
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD Creator"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:665
+#: ../src/nautilus-window-menus.c:668
 msgid "Go to the CD/DVD Creator"
 msgstr "Go to the CD/DVD Creator"
 
-#: ../src/nautilus-window-menus.c:691
+#: ../src/nautilus-window-menus.c:694
 msgid "_Up"
 msgstr "_Up"
 
