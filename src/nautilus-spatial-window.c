@@ -98,7 +98,7 @@ struct _NautilusSpatialWindowDetails {
 	GnomeVFSURI *location;
 };
 
-static GtkTargetEntry location_button_drag_types[] = {
+static const GtkTargetEntry location_button_drag_types[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },

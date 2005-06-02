@@ -1,5 +1,27 @@
 2005-05-02  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-clipboard.c:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-ditem-page.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-model.c:
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-emblem-sidebar.c
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-zoom-controls.c:
+	Also declare GtkToggleActionEntry, GtkRadioActionEntry and
+	GtkTargetEntry as well as some char and int arrays const.
+
+2005-05-02  Christian Neumair  <chris@gnome-de.org>
+
 	* src/file-manager/fm-desktop-icon-view.c:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-icon-view.c:

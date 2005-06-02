@@ -1014,7 +1014,7 @@ create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	GtkTargetEntry *drag_types;
+	const GtkTargetEntry *drag_types;
 	GtkBindingSet *binding_set;
 	AtkObject *atk_obj;
 	int num_drag_types;	

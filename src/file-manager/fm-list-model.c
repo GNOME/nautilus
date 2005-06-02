@@ -67,7 +67,7 @@ typedef struct {
 	GList *path_list;
 } DragDataGetInfo;
 
-static GtkTargetEntry drag_types [] = {
+static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
@@ -930,7 +930,7 @@ fm_list_model_set_drag_view (FMListModel *model,
 }
 
 void
-fm_list_model_get_drag_types (GtkTargetEntry **entries,
+fm_list_model_get_drag_types (const GtkTargetEntry **entries,
 			      int *num_entries)
 {
 	*entries = drag_types;

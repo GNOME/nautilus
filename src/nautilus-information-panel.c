@@ -131,7 +131,7 @@ enum {
 	TARGET_GNOME_URI_LIST
 };
 
-static GtkTargetEntry target_table[] = {
+static const GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "property/bgimage", 0, TARGET_BGIMAGE },

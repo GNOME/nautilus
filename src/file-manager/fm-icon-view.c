@@ -85,7 +85,7 @@
 #define POPUP_PATH_ICON_APPEARANCE		"/selection/Icon Appearance Items"
 
 typedef struct {
-	NautilusFileSortType sort_type;
+	const NautilusFileSortType sort_type;
 	const char *metadata_text;
 	const char *action;
 	const char *menu_label;
@@ -1405,7 +1405,7 @@ static const GtkActionEntry icon_view_entries[] = {
     G_CALLBACK (action_clean_up_callback) },
 };
 
-static GtkToggleActionEntry icon_view_toggle_entries[] = {
+static const GtkToggleActionEntry icon_view_toggle_entries[] = {
   { "Tighter Layout", NULL,                               /* name, stock id */
     N_("Compact _Layout"), NULL,                     /* label, accelerator */
     N_("Toggle using a tighter layout scheme"),      /* tooltip */ 
@@ -1423,7 +1423,7 @@ static GtkToggleActionEntry icon_view_toggle_entries[] = {
     0 },
 };
 
-static GtkRadioActionEntry arrange_radio_entries[] = {
+static const GtkRadioActionEntry arrange_radio_entries[] = {
   { "Manual Layout", NULL,
     N_("_Manually"), NULL,
     N_("Leave icons wherever they are dropped"),

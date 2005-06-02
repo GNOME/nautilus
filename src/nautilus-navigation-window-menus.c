@@ -564,7 +564,7 @@ static const GtkActionEntry navigation_entries[] = {
     G_CALLBACK (action_edit_bookmarks_callback) },
 };
 
-static GtkToggleActionEntry navigation_toggle_entries[] = {
+static const GtkToggleActionEntry navigation_toggle_entries[] = {
   { "Show Hide Sidebar", NULL,                 /* name, stock id */
     N_("_Side Pane"), "F9",                    /* label, accelerator */     
     N_("Change the visibility of this window's sidebar"),                       /* tooltip */

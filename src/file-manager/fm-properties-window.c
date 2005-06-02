@@ -167,7 +167,7 @@ enum {
 	TARGET_RESET_BACKGROUND
 };
 
-static GtkTargetEntry target_table[] = {
+static const GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
 	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }

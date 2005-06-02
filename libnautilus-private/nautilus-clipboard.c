@@ -349,7 +349,7 @@ target_data_free (TargetCallbackData *target_data)
 	g_free (target_data);
 }
 
-static GtkActionEntry clipboard_entries[] = {
+static const GtkActionEntry clipboard_entries[] = {
   { "Cut", GTK_STOCK_CUT,                  /* name, stock id */
     NULL, NULL,                /* label, accelerator */
     N_("Cut the selected text to the clipboard"),                   /* tooltip */ 

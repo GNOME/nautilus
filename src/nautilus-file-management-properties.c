@@ -76,13 +76,13 @@
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_optionmenu"
 
-static const char *default_view_values[] = {
+static const char * const default_view_values[] = {
 	"icon_view",
 	"list_view",
 	NULL
 };
 
-static const char *zoom_values[] = {
+static const char * const zoom_values[] = {
 	"smallest",
 	"smaller",
 	"small",
@@ -93,7 +93,7 @@ static const char *zoom_values[] = {
 	NULL
 };
 
-static const char *sort_order_values[] = {
+static const char * const sort_order_values[] = {
 	"name",
 	"size",
 	"type",
@@ -102,47 +102,47 @@ static const char *sort_order_values[] = {
 	NULL
 };
 
-static const char *date_format_values[] = {
+static const char * const date_format_values[] = {
 	"locale",
 	"iso",
 	"informal",
 	NULL
 };
 
-static const char *preview_values[] = {
+static const char * const preview_values[] = {
 	"always",
 	"local_only",
 	"never",
 	NULL
 };
 
-static const char *click_behavior_components[] = {
+static const char * const click_behavior_components[] = {
 	"single_click_radiobutton",
 	"double_click_radiobutton",
 	NULL
 };
 
-static const char *click_behavior_values[] = {
+static const char * const click_behavior_values[] = {
 	"single",
 	"double",
 	NULL
 };
 
-static const char *executable_text_components[] = {
+static const char * const executable_text_components[] = {
 	"scripts_execute_radiobutton",
 	"scripts_view_radiobutton",
 	"scripts_confirm_radiobutton",
 	NULL
 };
 
-static const char *executable_text_values[] = {
+static const char * const executable_text_values[] = {
 	"launch",
 	"display",
 	"ask",
 	NULL
 };
 
-static int thumbnail_limit_values[] = {
+static const int thumbnail_limit_values[] = {
 	102400,
 	512000,
 	1048576,
@@ -154,7 +154,7 @@ static int thumbnail_limit_values[] = {
 	-1
 };
 
-static const char *icon_captions_components[] = {
+static const char * const icon_captions_components[] = {
 	"captions_0_optionmenu",
 	"captions_1_optionmenu",
 	"captions_2_optionmenu",
@@ -605,56 +605,56 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
 							       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-							       default_view_values);
+							       (const char **) default_view_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,						     
 							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-							       zoom_values);
+							       (const char **) zoom_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
 							       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-							       zoom_values);
+							       (const char **) zoom_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-							       sort_order_values);
+							       (const char **) sort_order_values);
 	eel_preferences_glade_connect_string_enum_option_menu_slave (xml_dialog,
 								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
 								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-							       preview_values);
+							       (const char **) preview_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-							       preview_values);
+							       (const char **) preview_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET,
 							       NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-							       preview_values);
+							       (const char **) preview_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-							       preview_values);
+							       (const char **) preview_values);
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
 							       NAUTILUS_PREFERENCES_DATE_FORMAT,
-							       date_format_values);
+							       (const char **) date_format_values);
 
 	eel_preferences_glade_connect_string_enum_radio_button (xml_dialog,
-								click_behavior_components,
+								(const char **) click_behavior_components,
 								NAUTILUS_PREFERENCES_CLICK_POLICY,
-								click_behavior_values);
+								(const char **) click_behavior_values);
 	eel_preferences_glade_connect_string_enum_radio_button (xml_dialog,
-								executable_text_components,
+								(const char **) executable_text_components,
 								NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-								executable_text_values);
+								(const char **) executable_text_values);
 
 	eel_preferences_glade_connect_int_enum (xml_dialog,
 						NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,
 						NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-						thumbnail_limit_values);
+						(const int *) thumbnail_limit_values);
 
 
 	nautilus_file_management_properties_dialog_setup_icon_caption_page (xml_dialog);

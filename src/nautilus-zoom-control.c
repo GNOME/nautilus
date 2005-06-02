@@ -80,19 +80,19 @@ static guint signals[LAST_SIGNAL];
 
 static gpointer accessible_parent_class;
 
-static const char *nautilus_zoom_control_accessible_action_names[] = {
+static const char * const nautilus_zoom_control_accessible_action_names[] = {
 	N_("Zoom In"),
 	N_("Zoom Out"),
 	N_("Zoom to Default"),
 };
 
-static int nautilus_zoom_control_accessible_action_signals[] = {
+static const int nautilus_zoom_control_accessible_action_signals[] = {
 	ZOOM_IN,
 	ZOOM_OUT,
 	ZOOM_TO_DEFAULT,
 };
 
-static const char *nautilus_zoom_control_accessible_action_descriptions[] = {
+static const char * const nautilus_zoom_control_accessible_action_descriptions[] = {
 	N_("Show the contents in more detail"),
 	N_("Show the contents in less detail"),
 	N_("Show in the default detail level"),

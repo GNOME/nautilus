@@ -107,7 +107,7 @@ void              fm_list_model_set_drag_view (FMListModel *model,
 					       int begin_x, 
 					       int begin_y);
 
-void              fm_list_model_get_drag_types (GtkTargetEntry **entries,
+void              fm_list_model_get_drag_types (const GtkTargetEntry **entries,
 						int *num_entries);
 
 

@@ -82,13 +82,13 @@ enum {
 	NAUTILUS_DND_NTARGETS
 };
 
-static GtkTargetEntry drag_types [] = {
+static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_DND_URI_LIST_TYPE,   0, NAUTILUS_DND_URI_LIST },
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
 	{ NAUTILUS_DND_URL_TYPE,        0, NAUTILUS_DND_URL }
 };
 
-static GtkTargetEntry drop_types [] = {
+static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_DND_URI_LIST_TYPE,   0, NAUTILUS_DND_URI_LIST },
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
 	{ NAUTILUS_DND_URL_TYPE,        0, NAUTILUS_DND_URL }

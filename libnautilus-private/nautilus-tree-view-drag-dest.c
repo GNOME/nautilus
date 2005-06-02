@@ -74,7 +74,7 @@ GNOME_CLASS_BOILERPLATE (NautilusTreeViewDragDest,
 			 nautilus_tree_view_drag_dest,
 			 GObject, G_TYPE_OBJECT);
 
-static GtkTargetEntry drag_types [] = {
+static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }

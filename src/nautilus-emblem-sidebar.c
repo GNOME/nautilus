@@ -94,7 +94,7 @@ static void nautilus_emblem_sidebar_iface_init        (NautilusSidebarIface     
 static void sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
 static GType nautilus_emblem_sidebar_provider_get_type (void);
 
-static GtkTargetEntry drag_types[] = {
+static const GtkTargetEntry drag_types[] = {
 	{"property/keyword", 0, 0 }
 };
 
@@ -104,7 +104,7 @@ enum {
 	TARGET_NETSCAPE_URL
 };
 
-static GtkTargetEntry dest_types[] = {
+static const GtkTargetEntry dest_types[] = {
 	{"text/uri-list", 0, TARGET_URI_LIST},
 	{"text/plain", 0, TARGET_URI},
 	{"_NETSCAPE_URL", 0, TARGET_NETSCAPE_URL}
