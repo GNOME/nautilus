@@ -5508,6 +5508,11 @@ real_action_rename (FMDirectoryView *view,
 
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		file = NAUTILUS_FILE (selection->data);
+		if (!select_all) {
+			/* directories don't have a file extension, so
+			 * they are always pre-selected as a whole */
+			select_all = nautilus_file_is_directory (file);
+		}
 		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
 	}
 

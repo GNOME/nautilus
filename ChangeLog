@@ -1,5 +1,11 @@
 2005-06-02  Christian Neumair  <chris@gnome-de.org>
 
+	* src/file-manager/fm-directory-view.c: (real_action_rename):
+	Always pre-select the whole name of a directory when renaming it.
+	Fixes #306217.
+
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
+
 	* libnautilus-private/nautilus-file.c: (compare_by_emblems),
 	(get_automatic_emblems_as_integer):
 	* libnautilus-private/nautilus-file-private.h:
@@ -16,7 +22,7 @@
 	* src/nautilus-window-menus.c:
 	Bind control-= to zoom-in. Fixes #306225.
 
-2005-05-02  Christian Neumair  <chris@gnome-de.org>
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-clipboard.c:
 	* libnautilus-private/nautilus-icon-dnd.c:
