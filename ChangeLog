@@ -1,3 +1,13 @@
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_scroll_event):
+	Change scroll zoom modifier to control. Fixes #79352.
+
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c:
+	Bind control-= to zoom-in. Fixes #306225.
+
 2005-05-02  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-clipboard.c:
@@ -20,7 +30,7 @@
 	Also declare GtkToggleActionEntry, GtkRadioActionEntry and
 	GtkTargetEntry as well as some char and int arrays const.
 
-2005-05-02  Christian Neumair  <chris@gnome-de.org>
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-desktop-icon-view.c:
 	* src/file-manager/fm-directory-view.c:

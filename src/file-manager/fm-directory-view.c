@@ -8450,7 +8450,7 @@ fm_directory_view_scroll_event (GtkWidget *widget,
 
 	directory_view = FM_DIRECTORY_VIEW (widget);
 
-	if (event->state & GDK_SHIFT_MASK) {
+	if (event->state & GDK_CONTROL_MASK) {
 		switch (event->direction) {
 		case GDK_SCROLL_UP:
 			/* Zoom In */
