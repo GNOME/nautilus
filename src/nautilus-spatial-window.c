@@ -691,7 +691,7 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window);
 }			   
 
-static GtkActionEntry spatial_entries[] = {
+static const GtkActionEntry spatial_entries[] = {
   { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },               /* name, stock id, label */
   { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."), /* name, stock id, label */
     "<control>L", N_("Specify a location to open"),

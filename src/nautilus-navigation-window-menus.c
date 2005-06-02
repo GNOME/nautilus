@@ -541,7 +541,7 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window);
 }			   
 
-static GtkActionEntry navigation_entries[] = {
+static const GtkActionEntry navigation_entries[] = {
   { "Go", NULL, N_("_Go") },               /* name, stock id, label */
   { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
   { "New Window", NULL, N_("Open New _Window"),               /* name, stock id, label */

@@ -1,3 +1,15 @@
+2005-05-02  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	Declare GtkActionEntry arrays const. Thanks to Paolo Borelli for
+	pointing this out.
+
 2005-06-02  Rodrigo Moya <rodrigo@novell.com>
 
 	* libnautilus-extension/libnautilus-extension.pc.in: added

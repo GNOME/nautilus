@@ -1690,7 +1690,7 @@ action_visible_columns_callback (GtkAction *action,
 	}
 }
 
-static GtkActionEntry list_view_entries[] = {
+static const GtkActionEntry list_view_entries[] = {
   { "Visible Columns", NULL,                  /* name, stock id */
     N_("Visible _Columns..."), NULL,                /* label, accelerator */
     N_("Select the columns visible in this folder"),                   /* tooltip */ 

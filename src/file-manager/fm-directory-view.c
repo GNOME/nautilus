@@ -5946,7 +5946,7 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 
 }
 
-static GtkActionEntry directory_view_entries[] = {
+static const GtkActionEntry directory_view_entries[] = {
   { "New Documents", NULL, N_("Create _Document") },               /* name, stock id, label */
   { "Open With", NULL, N_("Open Wit_h"),               /* name, stock id, label */
     NULL, N_("Choose a program with which to open the selected item") },
@@ -6104,7 +6104,7 @@ static GtkActionEntry directory_view_entries[] = {
     G_CALLBACK (action_location_delete_callback) },
 };
 
-static GtkToggleActionEntry directory_view_toggle_entries[] = {
+static const GtkToggleActionEntry directory_view_toggle_entries[] = {
   { "Show Hidden Files", NULL,                  /* name, stock id */
     N_("Show _Hidden Files"), "<control>H",                /* label, accelerator */
     N_("Toggle the display of hidden files in the current window"),                   /* tooltip */ 

@@ -685,7 +685,7 @@ real_update_menus (FMDirectoryView *view)
 	}
 }
 
-static GtkActionEntry desktop_view_entries[] = {
+static const GtkActionEntry desktop_view_entries[] = {
 	/* name, stock id */
 	{ "New Launcher Desktop", NULL,
 	  /* label, accelerator */

@@ -589,7 +589,7 @@ connect_proxy_cb (GtkUIManager *manager,
 	
 }
 
-static GtkActionEntry main_entries[] = {
+static const GtkActionEntry main_entries[] = {
   { "File", NULL, N_("_File") },               /* name, stock id, label */
   { "Edit", NULL, N_("_Edit") },               /* name, stock id, label */
   { "View", NULL, N_("_View") },               /* name, stock id, label */
