@@ -238,9 +238,9 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		return;
 	}
 
-	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+	dir = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems",
 			       g_get_home_dir ());
-	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+	stat_dir = g_strdup_printf ("%s/.icons/hicolor",
 				    g_get_home_dir ());
 
 	vfs_uri = gnome_vfs_uri_new (dir);
@@ -304,7 +304,7 @@ nautilus_emblem_can_remove_emblem (const char *keyword)
 	char *path;
 	gboolean ret = TRUE;
 	
-	path = g_strdup_printf ("%s/.icons/gnome/48x48/emblems/emblem-%s.png",
+	path = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems/emblem-%s.png",
 				g_get_home_dir (), keyword);
 
 	if (access (path, F_OK|W_OK) != 0) {
@@ -322,7 +322,7 @@ nautilus_emblem_can_rename_emblem (const char *keyword)
 	char *path;
 	gboolean ret = TRUE;
 	
-	path = g_strdup_printf ("%s/.icons/gnome/48x48/emblems/emblem-%s.png",
+	path = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems/emblem-%s.png",
 				g_get_home_dir (), keyword);
 
 	if (access (path, F_OK|R_OK) != 0) {
@@ -343,9 +343,9 @@ nautilus_emblem_remove_emblem (const char *keyword)
 	struct utimbuf ubuf;
 	
 	 
-	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+	dir = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems",
 			       g_get_home_dir ());
-	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+	stat_dir = g_strdup_printf ("%s/.icons/hicolor",
 				    g_get_home_dir ());
 
 	path = g_strdup_printf ("%s/emblem-%s.png", dir, keyword);
@@ -392,9 +392,9 @@ nautilus_emblem_rename_emblem (const char *keyword, const char *name)
 	struct utimbuf ubuf;
 	FILE *file;
 	
-	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+	dir = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems",
 			       g_get_home_dir ());
-	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+	stat_dir = g_strdup_printf ("%s/.icons/hicolor",
 				    g_get_home_dir ());
 
 	path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
