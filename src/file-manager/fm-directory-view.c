@@ -361,6 +361,8 @@ static void action_paste_files_callback            (GtkAction *action,
 						    gpointer   callback_data);
 static void action_rename_callback                 (GtkAction *action,
 						    gpointer   callback_data);
+static void action_rename_select_all_callback      (GtkAction *action,
+						    gpointer   callback_data);
 static void action_show_hidden_files_callback      (GtkAction *action,
 						    gpointer   callback_data);
 static void action_paste_files_into_callback       (GtkAction *action,
@@ -3387,7 +3389,9 @@ can_rename_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-start_renaming_file (FMDirectoryView *view, NautilusFile *file)
+start_renaming_file (FMDirectoryView *view,
+		     NautilusFile *file,
+		     gboolean select_all)
 {
 	if (file !=  NULL) {
 		fm_directory_view_select_file (view, file);
@@ -3408,7 +3412,7 @@ delayed_rename_file_hack_callback (RenameData *data)
 	view = data->view;
 	new_file = data->new_file;
 
-	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file));
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
 	fm_directory_view_reveal_selection (view);
 	
 	g_object_unref (data->view);
@@ -3452,7 +3456,7 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 	/* no need to select because start_renaming_file selects
 	 * fm_directory_view_select_file (view, new_file);
 	 */
-	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file));
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
 	fm_directory_view_reveal_selection (view);
 }
 
@@ -5492,22 +5496,36 @@ action_paste_files_into_callback (GtkAction *action,
 }
 
 static void
-action_rename_callback (GtkAction *action,
-			gpointer callback_data)
+real_action_rename (FMDirectoryView *view,
+		    gboolean select_all)
 {
-	FMDirectoryView *view;
 	NautilusFile *file;
 	GList *selection;
-	
-	view = FM_DIRECTORY_VIEW (callback_data);
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
 	selection = fm_directory_view_get_selection (view);
 
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		file = NAUTILUS_FILE (selection->data);
-		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file));
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file, select_all));
 	}
 
 	nautilus_file_list_free (selection);
+}
+
+static void
+action_rename_callback (GtkAction *action,
+			gpointer callback_data)
+{
+	real_action_rename (FM_DIRECTORY_VIEW (callback_data), FALSE);
+}
+
+static void
+action_rename_select_all_callback (GtkAction *action,
+				   gpointer callback_data)
+{
+	real_action_rename (FM_DIRECTORY_VIEW (callback_data), TRUE);
 }
 
 static void
@@ -6024,6 +6042,10 @@ static GtkActionEntry directory_view_entries[] = {
     N_("_Rename..."), "F2",                /* label, accelerator */
     N_("Rename selected item"),                   /* tooltip */ 
     G_CALLBACK (action_rename_callback) },
+  { "RenameSelectAll", NULL,                  /* name, stock id */
+    NULL, "<shift>F2",                /* label, accelerator */
+    NULL,                   /* tooltip */ 
+    G_CALLBACK (action_rename_select_all_callback) },
   { "Trash", GTK_STOCK_DELETE,                  /* name, stock id */
     N_("Mo_ve to Trash"), "<control>T",                /* label, accelerator */
     N_("Move each selected item to the Trash"),                   /* tooltip */ 

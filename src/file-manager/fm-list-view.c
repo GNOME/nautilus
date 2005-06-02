@@ -1920,7 +1920,9 @@ fm_list_view_can_zoom_out (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
+fm_list_view_start_renaming_file (FMDirectoryView *view,
+				  NautilusFile *file,
+				  gboolean select_all)
 {
 	FMListView *list_view;
 	GtkTreeIter iter;
@@ -1966,8 +1968,13 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	g_free (list_view->details->original_name);
 
 	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
-	eel_filename_get_rename_region (list_view->details->original_name,
-					&start_offset, &end_offset);
+	if (select_all) {
+		start_offset = 0;
+		end_offset = -1;
+	} else {
+		eel_filename_get_rename_region (list_view->details->original_name,
+						&start_offset, &end_offset);
+	}
 	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
 	
 	gtk_tree_path_free (path);

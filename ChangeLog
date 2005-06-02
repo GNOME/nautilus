@@ -1,3 +1,18 @@
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-container.h:
+	(process_pending_icon_to_rename),
+	(nautilus_icon_container_start_renaming_selected_item):
+	* src/file-manager/fm-directory-view.c: (start_renaming_file),
+	(real_action_rename), (action_rename_callback),
+	(action_rename_select_all_callback):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_start_renaming_file):
+	* src/file-manager/fm-list-view.c: (fm_list_view_start_renaming_file):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Bind shift-f2 to rename whole file. Fixes #131467.
+
 2005-05-27  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):

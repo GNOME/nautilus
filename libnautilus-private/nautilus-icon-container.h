@@ -247,7 +247,8 @@ gboolean          nautilus_icon_container_has_stretch_handles           (Nautilu
 gboolean          nautilus_icon_container_is_stretched                  (NautilusIconContainer  *container);
 void              nautilus_icon_container_show_stretch_handles          (NautilusIconContainer  *container);
 void              nautilus_icon_container_unstretch                     (NautilusIconContainer  *container);
-void              nautilus_icon_container_start_renaming_selected_item  (NautilusIconContainer  *container);
+void              nautilus_icon_container_start_renaming_selected_item  (NautilusIconContainer  *container,
+									 gboolean                select_all);
 
 /* options */
 NautilusZoomLevel nautilus_icon_container_get_zoom_level                (NautilusIconContainer  *view);

@@ -266,8 +266,12 @@ struct FMDirectoryViewClass {
 
 	gboolean (* can_rename_file)            (FMDirectoryView *view,
 						 NautilusFile *file);
+	/* select_all specifies whether the whole filename should be selected
+	 * or only its basename (i.e. everything except the extension)
+	 * */
 	void	 (* start_renaming_file)        (FMDirectoryView *view,
-					  	 NautilusFile *file);
+					  	 NautilusFile *file,
+						 gboolean select_all);
 
 	gboolean (* file_still_belongs)		(FMDirectoryView *view,
 						 NautilusFile	 *file);

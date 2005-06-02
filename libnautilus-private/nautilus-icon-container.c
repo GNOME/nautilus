@@ -6100,7 +6100,7 @@ process_pending_icon_to_rename (NautilusIconContainer *container)
 	
 	if (pending_icon_to_rename != NULL) {
 		if (pending_icon_to_rename->is_selected && !has_multiple_selection (container)) {
-			nautilus_icon_container_start_renaming_selected_item (container);
+			nautilus_icon_container_start_renaming_selected_item (container, FALSE);
 		} else {
 			set_pending_icon_to_rename (container, NULL);
 		}
@@ -6122,11 +6122,14 @@ is_renaming (NautilusIconContainer *container)
 /**
  * nautilus_icon_container_start_renaming_selected_item
  * @container: An icon container widget.
+ * @select_all: Whether the whole file should initially be selected, or
+ *              only its basename (i.e. everything except its extension).
  * 
  * Displays the edit name widget on the first selected icon
  **/
 void
-nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container)
+nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container,
+						      gboolean select_all)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -6224,7 +6227,12 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				     width, -1);
 	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),
 				     editable_text);
-	eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
+	if (select_all) {
+		start_offset = 0;
+		end_offset = -1;
+	} else {
+		eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
+	}
 	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
 					  start_offset,
 					  end_offset);

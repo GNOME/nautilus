@@ -1377,14 +1377,16 @@ fm_icon_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_icon_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
+fm_icon_view_start_renaming_file (FMDirectoryView *view,
+				  NautilusFile *file,
+				  gboolean select_all)
 {
 	/* call parent class to make sure the right icon is selected */
-	FM_DIRECTORY_VIEW_CLASS(fm_icon_view_parent_class)->start_renaming_file (view, file);
+	FM_DIRECTORY_VIEW_CLASS(fm_icon_view_parent_class)->start_renaming_file (view, file, select_all);
 	
 	/* start renaming */
 	nautilus_icon_container_start_renaming_selected_item
-		(get_icon_container (FM_ICON_VIEW (view)));
+		(get_icon_container (FM_ICON_VIEW (view)), select_all);
 }
 
 static GtkActionEntry icon_view_entries[] = {
