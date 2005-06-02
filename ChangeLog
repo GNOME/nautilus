@@ -1,5 +1,13 @@
 2005-06-02  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-file.c: (compare_by_emblems),
+	(get_automatic_emblems_as_integer):
+	* libnautilus-private/nautilus-file-private.h:
+	Only take user-added emblems ("keywords") into account when sorting by
+	emblems. Fixes #166376.
+
+2005-06-02  Christian Neumair  <chris@gnome-de.org>
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_scroll_event):
 	Change scroll zoom modifier to control. Fixes #79352.

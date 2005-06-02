@@ -44,7 +44,6 @@ typedef enum {
 } Knowledge;
 
 typedef struct {
-	int automatic_emblems_as_integer;
 	char emblem_keywords[1];
 } NautilusFileSortByEmblemCache;
 

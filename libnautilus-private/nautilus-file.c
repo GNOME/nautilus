@@ -1894,30 +1894,6 @@ file_is_desktop (NautilusFile *file)
 							   file->details->relative_uri);
 }
 
-static int
-get_automatic_emblems_as_integer (NautilusFile *file)
-{
-	int integer;
-
-	/* Keep in proper order for sorting. */
-
-	integer = nautilus_file_is_symbolic_link (file);
-	integer <<= 1;
-	integer |= !nautilus_file_can_read (file);
-	integer <<= 1;
-	integer |= !nautilus_file_can_write (file);
-	integer <<= 1;
-	integer |= file_has_note (file);
-	integer <<= 1;
-	integer |= file_is_desktop (file);
-	integer <<= 1;
-#if TRASH_IS_FAST_ENOUGH
-	integer |= nautilus_file_is_in_trash (file);
-#endif
-
-	return integer;
-}
-
 static GList *
 prepend_automatic_emblem_names (NautilusFile *file,
 				GList *names)
@@ -1989,10 +1965,6 @@ fill_emblem_cache_if_needed (NautilusFile *file)
 	*scanner = 0;
 
 	eel_g_list_free_deep (keywords);
-
-	/* Chache the values of the automatic emblems. */
-	file->details->compare_by_emblem_cache->automatic_emblems_as_integer
-		= get_automatic_emblems_as_integer (file);	
 }
 
 static int
@@ -2001,21 +1973,11 @@ compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 	const char *keyword_cache_1, *keyword_cache_2;
 	size_t length;
 	int compare_result;
- 
 
 	fill_emblem_cache_if_needed (file_1);
 	fill_emblem_cache_if_needed (file_2);
 
-	/* Compare automatic emblems. */
-	if (file_1->details->compare_by_emblem_cache->automatic_emblems_as_integer <
-		file_2->details->compare_by_emblem_cache->automatic_emblems_as_integer) {
-		return +1;
-	} else if (file_1->details->compare_by_emblem_cache->automatic_emblems_as_integer >
-		file_2->details->compare_by_emblem_cache->automatic_emblems_as_integer) {
-		return -1;
-	}
-
-	/* Compare each keyword. */
+	/* We ignore automatic emblems, and only sort by user-added keywords. */
 	compare_result = 0;
 	keyword_cache_1 = file_1->details->compare_by_emblem_cache->emblem_keywords;
 	keyword_cache_2 = file_2->details->compare_by_emblem_cache->emblem_keywords;
