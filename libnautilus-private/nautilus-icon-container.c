@@ -4268,42 +4268,42 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("frame_text",
-								       _("Frame Text"),
-								       _("Draw a frame around unselected text"),
+								       "Frame Text",
+								       "Draw a frame around unselected text",
 								       FALSE,
 								       G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("selection_box_color",
-								     _("Selection Box Color"),
-								     _("Color of the selection box"),
+								     "Selection Box Color",
+								     "Color of the selection box",
 								     GDK_TYPE_COLOR,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uchar ("selection_box_alpha",
-								     _("Selection Box Alpha"),
-								     _("Opacity of the selection box"),
+								     "Selection Box Alpha",
+								     "Opacity of the selection box",
 								     0, 0xff,
 								     DEFAULT_SELECTION_BOX_ALPHA,
 								     G_PARAM_READABLE));
 
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uchar ("highlight_alpha",
-								     _("Highlight Alpha"),
-								     _("Opacity of the highlight for selected icons"),
+								     "Highlight Alpha",
+								     "Opacity of the highlight for selected icons",
 								     0, 0xff,
 								     DEFAULT_HIGHLIGHT_ALPHA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("light_info_color",
-								     _("Light Info Color"),
-								     _("Color used for information text against a dark background"),
+								     "Light Info Color",
+								     "Color used for information text against a dark background",
 								     GDK_TYPE_COLOR,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("dark_info_color",
-								     _("Dark Info Color"),
-								     _("Color used for information text against a light background"),
+								     "Dark Info Color",
+								     "Color used for information text against a light background",
 								     GDK_TYPE_COLOR,
 								     G_PARAM_READABLE));
 }

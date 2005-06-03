@@ -1458,8 +1458,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 ARG_APP,
 					 g_param_spec_object ("app",
-							      _("Application"),
-							      _("The NautilusApplication associated with this window."),
+							      "Application",
+							      "The NautilusApplication associated with this window.",
 							      NAUTILUS_TYPE_APPLICATION,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	

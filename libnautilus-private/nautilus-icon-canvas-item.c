@@ -2893,32 +2893,32 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 		object_class,
 		PROP_EDITABLE_TEXT,
 		g_param_spec_string ("editable_text",
-				     _("editable text"),
-				     _("the editable label"),
+				     "editable text",
+				     "the editable label",
 				     "", G_PARAM_READWRITE));
 
         g_object_class_install_property (
 		object_class,
 		PROP_ADDITIONAL_TEXT,
 		g_param_spec_string ("additional_text",
-				     _("additional text"),
-				     _("some more text"),
+				     "additional text",
+				     "some more text",
 				     "", G_PARAM_READWRITE));
 
         g_object_class_install_property (
 		object_class,
 		PROP_HIGHLIGHTED_FOR_SELECTION,
 		g_param_spec_boolean ("highlighted_for_selection",
-				      _("highlighted for selection"),
-				      _("whether we are highlighted for a selection"),
+				      "highlighted for selection",
+				      "whether we are highlighted for a selection",
 				      FALSE, G_PARAM_READWRITE)); 
 
         g_object_class_install_property (
 		object_class,
 		PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
 		g_param_spec_boolean ("highlighted_as_keyboard_focus",
-				      _("highlighted as keyboard focus"),
-				      _("whether we are highlighted to render keyboard focus"),
+				      "highlighted as keyboard focus",
+				      "whether we are highlighted to render keyboard focus",
 				      FALSE, G_PARAM_READWRITE)); 
 
 
@@ -2926,8 +2926,8 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 		object_class,
 		PROP_HIGHLIGHTED_FOR_DROP,
 		g_param_spec_boolean ("highlighted_for_drop",
-				      _("highlighted for drop"),
-				      _("whether we are highlighted for a D&D drop"),
+				      "highlighted for drop",
+				      "whether we are highlighted for a D&D drop",
 				      FALSE, G_PARAM_READWRITE)); 
 
 	item_class->update = nautilus_icon_canvas_item_update;

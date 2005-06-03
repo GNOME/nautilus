@@ -1,3 +1,19 @@
+2005-06-03  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-extension/nautilus-column.c:
+	(nautilus_column_class_init):
+	* libnautilus-extension/nautilus-menu-item.c:
+	(nautilus_menu_item_class_init):
+	* libnautilus-extension/nautilus-property-page.c:
+	(nautilus_property_page_class_init):
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_class_init):
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_class_init):
+	* src/nautilus-window.c: (nautilus_window_class_init):
+	Don't mark object property names/descriptions for translation. Fixes
+	#135281.
+
 2005-06-02  Sebastien Bacher  <seb128@debian.org>
 
 	* libnautilus-private/nautilus-emblem-utils.c:

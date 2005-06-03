@@ -173,22 +173,22 @@ nautilus_property_page_class_init (NautilusPropertyPageClass *class)
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 PROP_NAME,
 					 g_param_spec_string ("name",
-							      _("Name"),
-							      _("Name of the page"),
+							      "Name",
+							      "Name of the page",
 							      NULL,
 							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 PROP_LABEL,
 					 g_param_spec_object ("label",
-							      _("Label"),
-							      _("Label widget to display in the notebook tab"),
+							      "Label",
+							      "Label widget to display in the notebook tab",
 							      GTK_TYPE_WIDGET,
 							      G_PARAM_READWRITE));
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 PROP_PAGE,
 					 g_param_spec_object ("page",
-							      _("Page"),
-							      _("Widget for the property page"),
+							      "Page",
+							      "Widget for the property page",
 							      GTK_TYPE_WIDGET,
 							      G_PARAM_READWRITE));
 }
