@@ -404,6 +404,10 @@ nautilus_clipboard_real_set_up (gpointer target,
 {
 	TargetCallbackData *target_data;
 
+	if (g_object_get_data (G_OBJECT (target), "Nautilus:clipboard_target_data") != NULL) {
+		return;
+	}
+
 	target_data = initialize_clipboard_component_with_callback_data
 		(target, 
 		 ui_manager,
