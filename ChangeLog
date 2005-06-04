@@ -1,5 +1,13 @@
 2005-06-04  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window-manage-views.c: (load_new_location),
+	(update_for_new_location):
+	Set the displayed location when the location is really
+	changed, not when we set out to do it. Fixes the
+	"bookmark uri mismatch" warning.
+
+2005-06-04  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-directory-view.c:
 	* src/nautilus-shell-ui.xml:
 	* src/nautilus-window-menus.c:

@@ -1045,8 +1045,6 @@ load_new_location (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (location != NULL);
 
-        set_displayed_location (window, location);
-
 	selection_copy = eel_g_str_list_copy (selection);
 
 	view = NULL;
@@ -1133,7 +1131,9 @@ update_for_new_location (NautilusWindow *window)
         
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
-        
+
+	set_displayed_location (window, new_location);
+
         update_history (window, window->details->location_change_type, new_location);
                 
         /* Set the new location. */
