@@ -6048,7 +6048,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Rename selected item"),                   /* tooltip */ 
     G_CALLBACK (action_rename_callback) },
   { "RenameSelectAll", NULL,                  /* name, stock id */
-    NULL, "<shift>F2",                /* label, accelerator */
+    "RenameSelectAll", "<shift>F2",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_rename_select_all_callback) },
   { "Trash", GTK_STOCK_DELETE,                  /* name, stock id */
