@@ -401,7 +401,7 @@ add_buttons (NautilusColumnChooser *chooser)
 			    FALSE, FALSE, 0);
 
 	chooser->details->move_down_button = button_new_with_mnemonic (GTK_STOCK_GO_DOWN,
-								       _("Move _Down"));
+								       _("Move Dow_n"));
 	g_signal_connect (chooser->details->move_down_button, 
 			  "clicked",  G_CALLBACK (move_down_clicked_callback),
 			  chooser);
@@ -420,7 +420,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->show_button,
 			    FALSE, FALSE, 0);
 
-	chooser->details->hide_button = gtk_button_new_with_mnemonic (_("_Hide"));
+	chooser->details->hide_button = gtk_button_new_with_mnemonic (_("Hi_de"));
 	g_signal_connect (chooser->details->hide_button, 
 			  "clicked",  G_CALLBACK (hide_clicked_callback),
 			  chooser);
@@ -433,7 +433,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);	
 
-	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("_Use Default"));
+	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Use De_fault"));
 	g_signal_connect (chooser->details->use_default_button, 
 			  "clicked",  G_CALLBACK (use_default_clicked_callback),
 			  chooser);

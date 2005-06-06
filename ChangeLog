@@ -1,5 +1,12 @@
 2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-column-chooser.c: (add_buttons):
+	Fix conflicting mnemonics in the column chooser (#167475).
+	
+	Patch from Michael Terry <mike@mterry.name>
+
+2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-tree-model.c: (fm_tree_model_get_value):
 	Use "(No subfolders)" instead of misleading "(Empty)" label
 	if files are not to be shown in the tree. Fixes #85141.
