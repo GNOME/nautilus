@@ -184,6 +184,8 @@ static void          nautilus_icon_container_start_monitor_top_left (NautilusIco
 static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
 								     NautilusIconContainer *container);
 static void          nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container);
+static void          reveal_icon                                    (NautilusIconContainer *container,
+								     NautilusIcon *icon);
 
 
 static gpointer accessible_parent_class;
@@ -1817,6 +1819,7 @@ select_one_unselect_others (NautilusIconContainer *container,
 	if (selection_changed && icon_to_select != NULL) {
 		AtkObject *atk_object = eel_accessibility_for_object (icon_to_select->item);
 		atk_focus_tracker_notify (atk_object);
+		reveal_icon (container, icon_to_select);
 	}
 	return selection_changed;
 }
