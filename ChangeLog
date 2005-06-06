@@ -1,5 +1,13 @@
 2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-tree-model.c: (fm_tree_model_get_value):
+	Use "(No subfolders)" instead of misleading "(Empty)" label
+	if files are not to be shown in the tree. Fixes #85141.
+
+	Patch from Christian Neumair <chris@gnome-de.org>
+
+2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(select_one_unselect_others):
 	Reveal icon when selecting it. Fixes #121111.

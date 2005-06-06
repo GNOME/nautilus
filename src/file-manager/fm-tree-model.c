@@ -1195,10 +1195,12 @@ static void
 fm_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *value)
 {
 	TreeNode *node, *parent;
+	FMTreeModel *fm_model;
 
 	g_return_if_fail (FM_IS_TREE_MODEL (model));
 	g_return_if_fail (iter_is_valid (FM_TREE_MODEL (model), iter));
 	
+	fm_model = FM_TREE_MODEL (model);
 	node = iter->user_data;
 
 	switch (column) {
@@ -1207,7 +1209,10 @@ fm_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 		if (node == NULL) {
 			parent = iter->user_data2;
 			g_value_set_static_string (value, parent->done_loading
-						   ? _("(Empty)") : _("Loading..."));
+							  ? fm_model->details->show_only_directories
+							    ? _("(No subfolders)")
+							    : _("(Empty)")
+							  : _("Loading..."));
 		} else {
 			g_value_set_string (value, tree_node_get_display_name (node));
 		}
