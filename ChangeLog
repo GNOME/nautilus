@@ -1,5 +1,11 @@
 2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-tree-model.c: (fm_tree_model_get_value):
+	Back out the "(Empty)" vs. "(No subfolders)" change. The string
+	is too wide for the tree and gets even wider in some locales.
+
+2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-column-chooser.c: (add_buttons):
 	Fix conflicting mnemonics in the column chooser (#167475).
 	
