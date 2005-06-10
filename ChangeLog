@@ -1,3 +1,16 @@
+2005-06-10  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c: (convert_lines_to_str_list):
+	* src/file-manager/fm-tree-view.c: (convert_lines_to_str_list):
+	Always initialize cut.
+
+	* configure.in:
+	Add --Wno-pointer-sign
+
+	Fix gcc4 compilation (#303491/#307038).
+	Based on patches from James M. Cape <jcape@ignore-your.tv>
+	and Kjartan Maraas <kmaraas@gnome.org>
+
 2005-06-08  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
