@@ -5321,15 +5321,15 @@ convert_lines_to_str_list (char **lines, gboolean *cut)
 	int i;
 	GList *result;
 
+	*cut = FALSE;
+
 	if (lines[0] == NULL) {
 		return NULL;
 	}
 
 	if (strcmp (lines[0], "cut") == 0) {
 		*cut = TRUE;
-	} else if (strcmp (lines[0], "copy") == 0) {
-		*cut = FALSE;
-	} else {
+	} else if (strcmp (lines[0], "copy") != 0) {
 		return NULL;
 	}
 
