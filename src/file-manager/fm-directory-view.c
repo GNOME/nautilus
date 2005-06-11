@@ -8390,6 +8390,12 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 	}
 	g_strfreev (uri_list);
 
+	/* do nothing if no real uris are left */
+	if (real_uri_list == NULL) {
+		g_free (container_uri);
+		return;
+	}
+
 	if (n_uris == 1) {
 		GdkPoint tmp_point = { 0, 0 };
 
