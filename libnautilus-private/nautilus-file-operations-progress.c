@@ -506,6 +506,7 @@ nautilus_file_operations_progress_new (const char *title,
 	primary_text = g_strconcat ("<big><b>", title, "</b></big>", NULL);
 	gtk_label_set_markup(GTK_LABEL (progress->details->primary_text_label),
 			primary_text);
+	g_free (primary_text);
 
 	gtk_dialog_add_button (GTK_DIALOG (widget), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
@@ -575,10 +576,12 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 		operation_markup = g_strconcat ("<i>", progress_verb, "</i>", NULL);
 		gtk_label_set_markup (GTK_LABEL (progress->details->operation_name_label),
 				    operation_markup);
+		g_free (operation_markup);
 
 		item_markup = g_strconcat ("<i>\"", item_name, "\"</i>", NULL);
 
 		gtk_label_set_markup (GTK_LABEL (progress->details->item_name), item_markup);
+		g_free (item_markup);
 
 		progress->details->file_index = file_index;
 

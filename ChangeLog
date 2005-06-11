@@ -1,3 +1,12 @@
+2005-06-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libnautilus-private/nautilus-emblem-utils.c:
+	(nautilus_emblem_install_custom_emblem): Free the path.
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_new_file): Free markup strings.
+	Closes bug #307138.
+
 2005-06-10  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/file-manager/fm-directory-view.c:
