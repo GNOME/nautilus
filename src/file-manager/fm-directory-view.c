@@ -8391,7 +8391,7 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 	g_strfreev (uri_list);
 
 	/* do nothing if no real uris are left */
-	if (real_uri_list == NULL) {
+	if (n_uris == 0) {
 		g_free (container_uri);
 		return;
 	}

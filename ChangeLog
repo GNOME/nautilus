@@ -2,6 +2,12 @@
 
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_handle_uri_list_drop):
+	Check for n_uris instead of real_uri_list. Looks neater.
+
+2005-06-11  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_handle_uri_list_drop):
 	Don't try to start a file operation if there are no real uris
 	left after sanitizing the list. Fixes #306246.
 
