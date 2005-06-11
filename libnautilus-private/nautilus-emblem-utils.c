@@ -269,7 +269,8 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	if (display_name != NULL) {
 		path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
 		file = fopen (path, "w+");
-		
+		g_free (path);
+
 		if (file == NULL) {
 			eel_show_error_dialog (_("The emblem cannot be installed."),
 					       _("Sorry, unable to save custom emblem name."), 
