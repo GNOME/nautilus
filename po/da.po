@@ -25,16 +25,16 @@
 #   side bar -> sidepanel (alle andre 'bar' er linjer)
 #   trash -> papirkurven
 #
-# Husk at tilføje dig i credit-listen (besked-identifikation "Translator Credits")
+# Husk at tilføje dig i credit-listen (msgid "translator-credits")
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-07 21:54+0200\n"
-"PO-Revision-Date: 2005-06-07 21:54+0200\n"
+"POT-Creation-Date: 2005-06-14 15:56+0200\n"
+"PO-Revision-Date: 2005-06-14 16:25+0200\n"
 "Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
-"Language-Team: Danish <dansk@klid.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1061,7 +1061,6 @@ msgid "Move _Up"
 msgstr "Flyt _op"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:404
-#, fuzzy
 msgid "Move Dow_n"
 msgstr "Flyt _ned"
 
@@ -1070,12 +1069,10 @@ msgid "_Show"
 msgstr "_Vis"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:423
-#, fuzzy
 msgid "Hi_de"
 msgstr "_Skjul"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:436
-#, fuzzy
 msgid "Use De_fault"
 msgstr "_Benyt standard"
 
@@ -1172,9 +1169,9 @@ msgid "on the desktop"
 msgstr "på skrivebordet"
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "Du kan ikke kopiere objekter til papirkurven."
+msgstr "Du kan ikke flytte arkivet \"%s\" til papirkurven."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
 msgid ""
@@ -1185,13 +1182,12 @@ msgstr ""
 "skubbe mediet ud."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
-#, fuzzy
 msgid ""
 "If you want to unmount the volume, please use Unmount Volume in the right-"
 "click menu of the volume."
 msgstr ""
-"Vælg punktet 'skub ud' i højrekliksmenuen for arkivet hvis du ønsker at "
-"skubbe mediet ud."
+"Vælg punktet \"afmontér arkiv\" i højrekliksmenuen for arkivet hvis du "
+"ønsker at afmontere arkivet."
 
 #: ../libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
@@ -1225,7 +1221,7 @@ msgstr "Vælg som baggrund for _denne mappe"
 #: ../libnautilus-private/nautilus-emblem-utils.c:197
 #: ../libnautilus-private/nautilus-emblem-utils.c:202
 #: ../libnautilus-private/nautilus-emblem-utils.c:257
-#: ../libnautilus-private/nautilus-emblem-utils.c:274
+#: ../libnautilus-private/nautilus-emblem-utils.c:275
 msgid "The emblem cannot be installed."
 msgstr "Emblemet kan ikke installeres."
 
@@ -1236,7 +1232,7 @@ msgstr "Beklager, men du skal angive et ikke-tomt nøgleord for det nye emblem."
 #: ../libnautilus-private/nautilus-emblem-utils.c:199
 #: ../libnautilus-private/nautilus-emblem-utils.c:204
 #: ../libnautilus-private/nautilus-emblem-utils.c:259
-#: ../libnautilus-private/nautilus-emblem-utils.c:276
+#: ../libnautilus-private/nautilus-emblem-utils.c:277
 msgid "Couldn't Install Emblem"
 msgstr "Kunne ikke installere emblem"
 
@@ -1268,14 +1264,14 @@ msgstr "Kunne ikke installere emblem"
 msgid "Sorry, unable to save custom emblem."
 msgstr "Beklager, kunne ikke gemme brugerdefineret emblem."
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:275
+#: ../libnautilus-private/nautilus-emblem-utils.c:276
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Beklager, kunne ikke gemme brugerdefineret emblemnavn."
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:169
-#, fuzzy, c-format
+#, c-format
 msgid "%s %ld of %ld %s"
-msgstr "%ld af %ld"
+msgstr "%s %ld af %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:448
 #, c-format
@@ -2752,9 +2748,8 @@ msgstr "_Tøm papirkurv"
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
 #: ../src/file-manager/fm-directory-view.c:5981
-#, fuzzy
 msgid "Create L_auncher..."
-msgstr "Opret _genvej"
+msgstr "Opret _genvej..."
 
 #. tooltip
 #. label, accelerator
@@ -2793,29 +2788,24 @@ msgid "Desktop"
 msgstr "Skrivebord"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:798
-#, fuzzy
 msgid "View as Desktop"
-msgstr "Vis som tekst"
+msgstr "Vis som skrivebord"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:799
-#, fuzzy
 msgid "View as _Desktop"
-msgstr "Vis som _liste"
+msgstr "Vis som _skrivebord"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:800
-#, fuzzy
 msgid "The desktop view encountered an error."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Skrivebordsvisningen stødte på en fejl."
 
 #: ../src/file-manager/fm-desktop-icon-view.c:801
-#, fuzzy
 msgid "The desktop view encountered an error while starting up."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Skrivebordsvisningen stødte på en fejl ved start."
 
 #: ../src/file-manager/fm-desktop-icon-view.c:802
-#, fuzzy
 msgid "Display this location with the desktop view."
-msgstr "Vis dette sted med \"%s\""
+msgstr "Vis stedet med skrivebordsvisningen."
 
 #: ../src/file-manager/fm-directory-view.c:542
 #, c-format
@@ -2965,12 +2955,22 @@ msgstr ""
 "Kan ikke flytte objekter til papirkurven. Ønsker du at slette dem med det "
 "samme?"
 
+#: ../src/file-manager/fm-directory-view.c:3228
+#, c-format
+msgid "None of the %d selected items can be moved to the Trash"
+msgstr "Ingen af de %d valgte elementer kan flyttes til papirkurven"
+
 #: ../src/file-manager/fm-directory-view.c:3230
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Kan ikke flytte nogle objekter til papirkurven. Ønsker du at slette dem med "
 "det samme?"
+
+#: ../src/file-manager/fm-directory-view.c:3231
+#, c-format
+msgid "%d of the selected items cannot be moved to the Trash"
+msgstr "%d af de valgte elementer kan ikke flyttes til papirkurven"
 
 #: ../src/file-manager/fm-directory-view.c:3237
 msgid "Delete Immediately?"
@@ -3135,37 +3135,37 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5307
 #: ../src/file-manager/fm-tree-view.c:895
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
-msgstr "\"%s\" vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
+msgstr "\"%s\" vil blive flyttet hvis du vælger kommandoen \"indsæt filer\""
 
 #: ../src/file-manager/fm-directory-view.c:5311
 #: ../src/file-manager/fm-tree-view.c:899
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
-msgstr "\"%s\" vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
+msgstr "\"%s\" vil blive kopieret hvis du vælger kommandoen \"indsæt filer\""
 
 #: ../src/file-manager/fm-directory-view.c:5318
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
 msgstr[0] ""
-"%d valgt objekt vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
+"%d valgt objekt vil blive flyttet hvis du vælger kommandoen \"indsæt filer\""
 msgstr[1] ""
-"De %d valgte objekter vil blive flyttet hvis du vælger kommandoen 'indsæt "
-"filer'"
+"De %d valgte objekter vil blive flyttet hvis du "
+"vælger kommandoen \"indsæt filer\""
 
 #: ../src/file-manager/fm-directory-view.c:5325
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
 msgstr[0] ""
-"%d valgt objekt vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
+"%d valgt objekt vil blive kopieret hvis du vælger kommandoen \"indsæt filer\""
 msgstr[1] ""
-"De %d valgte objekter vil blive kopieret hvis du vælger kommandoen 'indsæt "
-"filer'"
+"De %d valgte objekter vil blive kopieret hvis du vælger "
+"kommandoen \"indsæt filer\""
 
 #: ../src/file-manager/fm-directory-view.c:5418
 #: ../src/file-manager/fm-tree-view.c:975
@@ -3227,9 +3227,8 @@ msgstr "Vis eller ændr egenskaberne for hver af de valgte objekter"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5968
-#, fuzzy
 msgid "View or modify the properties of the open folder"
-msgstr "Vis eller ændr egenskaberne for hver af de valgte objekter"
+msgstr "Vis eller ændr egenskaberne for den åbne mappe"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5971
@@ -3307,46 +3306,43 @@ msgstr "Vis den mappe som indeholder kommandolinjeprogrammerne i denne menu"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6014
-#, fuzzy
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr ""
-"Forbered de valgte filer til at blive flyttet med en 'indsæt filer'-kommando"
+"Forbered de valgte filer til at blive flyttet med "
+"en \"indsæt filer\"-kommando"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6018
-#, fuzzy
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr ""
-"Forbered de valgte filer til at blive kopieret med en 'indsæt filer'-kommando"
+"Forbered de valgte filer til at blive kopieret med "
+"en \"indsæt filer\"-kommando"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6022
-#, fuzzy
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
-"Flyt eller kopiér filer som tidligere var udvalgt med en 'klip filer'- eller "
-"'kopiér filer'-kommando"
+"Flyt eller kopiér filer som tidligere var valgt med "
+"en \"klip filer\"- eller \"kopiér filer\"-kommando"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6027
 #: ../src/file-manager/fm-tree-view.c:1157
-#, fuzzy
 msgid "_Paste Into Folder"
 msgstr "_Indsæt filer i mappe"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6028
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr ""
-"Flyt eller kopiér filer som tidligere var udvalgt med en 'klip filer'- eller "
-"'kopiér filer'-kommando, ind i den valgte mappe"
+"Flyt eller kopiér filer som tidligere var udvalgt med "
+"en \"klip filer\"- eller \"kopiér filer\"-kommando, ind i den valgte mappe"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6032
@@ -3481,38 +3477,35 @@ msgstr "Åbn fil og luk vindue"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6090
-#, fuzzy
 msgid "Open the open folder in a navigation window"
-msgstr "Åbn hver valgt objekt i et navigationsvindue"
+msgstr "Åbn den åbne mappe i et navigationsvindue"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6095
-#, fuzzy
 msgid "Prepare the open folder to be moved with a Paste command"
 msgstr ""
-"Forbered de valgte filer til at blive flyttet med en 'indsæt filer'-kommando"
+"Forbered den åbne mappe til til at blive flyttet med "
+"en \"indsæt filer\"-kommando"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6099
-#, fuzzy
 msgid "Prepare the open folder to be copied with a Paste command"
 msgstr ""
-"Forbered de valgte filer til at blive kopieret med en 'indsæt filer'-kommando"
+"Forbered den åbne mappe til at blive kopieret med "
+"en \"indsæt filer\"-kommando"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6104
 #: ../src/file-manager/fm-directory-view.c:6432
-#, fuzzy
 msgid "Move the open folder to the Trash"
-msgstr "Flytter filer til papirkurv"
+msgstr "Flyt den åbne mappe til papirkurven"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6108
-#, fuzzy
 msgid "Delete the open folder, without moving to the Trash"
-msgstr "Slet alle valgte objekter uden at flytte dem til papirkurven."
+msgstr "Slet den åbne mappe, uden at flytte den til papirkurven"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6114
@@ -3521,15 +3514,14 @@ msgstr "Vis sk_julte filer"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6115
-#, fuzzy
 msgid "Toggle the display of hidden files in the current window"
-msgstr "Skifter mellem om skjulte filer vises i det aktuelle vindue"
+msgstr "Skift mellem om skjulte filer vises i det aktuelle vindue"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6141
-#, fuzzy, c-format
+#, c-format
 msgid "Run or manage scripts from %s"
-msgstr "Kør eller håndter programmer fra ~/.gnome2/nautilus-scripts"
+msgstr "Kør eller håndtér programmer fra %s"
 
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/file-manager/fm-directory-view.c:6143
@@ -3554,9 +3546,8 @@ msgid "_Delete from Trash"
 msgstr "_Slet fra papirkurv"
 
 #: ../src/file-manager/fm-directory-view.c:6428
-#, fuzzy
 msgid "Delete the open folder permanently"
-msgstr "Slet alle valgte elementer permanent"
+msgstr "Slet den åbne mappe permanent"
 
 #: ../src/file-manager/fm-directory-view.c:6543
 #, c-format
@@ -3988,19 +3979,16 @@ msgid "View as _Icons"
 msgstr "Vis som _ikoner"
 
 #: ../src/file-manager/fm-icon-view.c:2678
-#, fuzzy
 msgid "The icon view encountered an error."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Ikonvisningen stødte på en fejl."
 
 #: ../src/file-manager/fm-icon-view.c:2679
-#, fuzzy
 msgid "The icon view encountered an error while starting up."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Ikonvisningen stødte på en fejl ved start."
 
 #: ../src/file-manager/fm-icon-view.c:2680
-#, fuzzy
 msgid "Display this location with the icon view."
-msgstr "Vis dette sted med \"%s\""
+msgstr "Vis dette sted med ikonvisningen."
 
 #: ../src/file-manager/fm-list-view.c:1634
 #, c-format
@@ -4034,19 +4022,16 @@ msgid "View as _List"
 msgstr "Vis som _liste"
 
 #: ../src/file-manager/fm-list-view.c:2363
-#, fuzzy
 msgid "The list view encountered an error."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Listevisningen stødte på en fejl."
 
 #: ../src/file-manager/fm-list-view.c:2364
-#, fuzzy
 msgid "The list view encountered an error while starting up."
-msgstr "%s-visningen stødte på en fejl ved start."
+msgstr "Listevisningen stødte på en fejl ved start."
 
 #: ../src/file-manager/fm-list-view.c:2365
-#, fuzzy
 msgid "Display this location with the list view."
-msgstr "Vis dette sted med \"%s\""
+msgstr "Vis dette sted med listevisningen."
 
 #: ../src/file-manager/fm-properties-window.c:495
 msgid "You can't assign more than one custom icon at a time!"
@@ -4150,9 +4135,8 @@ msgid "Basic"
 msgstr "Generelt"
 
 #: ../src/file-manager/fm-properties-window.c:2337
-#, fuzzy
 msgid "Names:"
-msgstr "_Navne:"
+msgstr "Navne:"
 
 #: ../src/file-manager/fm-properties-window.c:2339
 msgid "_Name:"
@@ -4606,9 +4590,8 @@ msgid "_User Name:"
 msgstr "_Brugernavn:"
 
 #: ../src/nautilus-connect-server-dialog.c:570
-#, fuzzy
 msgid "_Domain Name:"
-msgstr "_Navn:"
+msgstr "_Domænenavn:"
 
 #: ../src/nautilus-connect-server-dialog.c:594
 msgid "_Name to use for connection:"
@@ -5398,9 +5381,8 @@ msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøgte sted"
 
 #: ../src/nautilus-navigation-window-menus.c:607
-#, fuzzy
 msgid "Back history"
-msgstr "Ryd historik"
+msgstr "Tilbage i historik"
 
 #: ../src/nautilus-navigation-window-menus.c:621
 msgid "_Forward"
@@ -5411,9 +5393,8 @@ msgid "Go to the next visited location"
 msgstr "Gå til næste besøgte sted"
 
 #: ../src/nautilus-navigation-window-menus.c:624
-#, fuzzy
 msgid "Forward history"
-msgstr "Ryd historik"
+msgstr "Fremad i historik"
 
 #: ../src/nautilus-navigation-window.c:685
 #, c-format
@@ -5781,8 +5762,8 @@ msgstr ""
 "Martin Willemoes Hansen\n"
 "Ole Laursen\n"
 "\n"
-"Dansk-gruppen <dansk@klid.dk>\n"
-"Mere info: http://www.klid.dk/dansk/"
+"Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
+"Mere info: http://www.dansk-gruppen.dk"
 
 #: ../src/nautilus-window-menus.c:593
 msgid "_File"
