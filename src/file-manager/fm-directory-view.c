@@ -3597,7 +3597,10 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 	data = (NewFolderData *)user_data;
 	
 	directory_view = data->directory_view;
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+
+	if (directory_view == NULL) {
+		goto fail;
+	}
 
 	g_signal_handlers_disconnect_by_func (directory_view,
 					      G_CALLBACK (track_newly_added_uris),
@@ -3635,7 +3638,23 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 
  fail:
 	g_hash_table_destroy (data->added_uris);
+	eel_remove_weak_pointer (&data->directory_view);
 	g_free (data);
+}
+
+
+static NewFolderData *
+new_folder_data_new (FMDirectoryView *directory_view)
+{
+	NewFolderData *data;
+
+	data = g_new (NewFolderData, 1);
+	data->directory_view = directory_view;
+	data->added_uris = g_hash_table_new_full (g_str_hash, g_str_equal,
+						  g_free, NULL);
+	eel_add_weak_pointer (&data->directory_view);
+
+	return data;
 }
 
 void
@@ -3644,11 +3663,8 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	char *parent_uri;
 	NewFolderData *data;
 
-	data = g_new (NewFolderData, 1);
-	data->directory_view = directory_view;
-	data->added_uris = g_hash_table_new_full (g_str_hash, g_str_equal,
-						  g_free, NULL);
-	
+	data = new_folder_data_new (directory_view);
+
 	g_signal_connect_data (directory_view,
 			       "add_file",
 			       G_CALLBACK (track_newly_added_uris),
@@ -3672,10 +3688,7 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 	char *source_uri;
 	NewFolderData *data;
 
-	data = g_new (NewFolderData, 1);
-	data->directory_view = directory_view;
-	data->added_uris = g_hash_table_new_full (g_str_hash, g_str_equal,
-						  g_free, NULL);
+	data = new_folder_data_new (directory_view);
 
 	g_signal_connect_data (directory_view,
 			       "add_file",
