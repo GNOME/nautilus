@@ -1321,7 +1321,6 @@ drag_highlight_expose (GtkWidget      *widget,
 			    widget->style->black_gc,
 			    FALSE,
 			    x, y, width - 1, height - 1);
-
 	
 	return FALSE;
 }
@@ -1342,33 +1341,43 @@ dnd_highlight_queue_redraw (GtkWidget *widget)
 	width = widget->allocation.width;
 	height = widget->allocation.height;
 
+	/* we don't know how wide the shadow is exactly,
+	 * so we expose a 10-pixel wide border
+	 */
 	gtk_widget_queue_draw_area (widget,
 				    0, 0,
-				    width, 1);
+				    width, 10);
 	gtk_widget_queue_draw_area (widget,
 				    0, 0,
-				    1, height);
+				    10, height);
 	gtk_widget_queue_draw_area (widget,
-				    0, height - 1,
-				    width, 1);
+				    0, height - 10,
+				    width, 10);
 	gtk_widget_queue_draw_area (widget,
-				    width - 1, 0,
-				    1, height);
+				    width - 10, 0,
+				    10, height);
 }
 
 static void
 start_dnd_highlight (GtkWidget *widget)
 {
 	NautilusIconDndInfo *dnd_info;
+	GtkWidget *toplevel;
 	
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
+
+	toplevel = gtk_widget_get_toplevel (widget);
+	if (toplevel != NULL &&
+	    g_object_get_data (G_OBJECT (toplevel), "is_desktop_window")) {
+		return;
+	}
 
 	if (!dnd_info->highlighted) {
 		dnd_info->highlighted = TRUE;
 		g_signal_connect_after (widget, "expose_event",
 					G_CALLBACK (drag_highlight_expose),
 					NULL);
-		gtk_widget_queue_draw (widget);
+		dnd_highlight_queue_redraw (widget);
 	}
 }
 
@@ -1380,11 +1389,11 @@ stop_dnd_highlight (GtkWidget *widget)
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
 
 	if (dnd_info->highlighted) {
-		dnd_info->highlighted = FALSE;
 		g_signal_handlers_disconnect_by_func (widget,
 						      drag_highlight_expose,
 						      NULL);
-		gtk_widget_queue_draw (widget);
+		dnd_highlight_queue_redraw (widget);
+		dnd_info->highlighted = FALSE;
 	}
 }
 
