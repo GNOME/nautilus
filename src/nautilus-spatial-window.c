@@ -94,6 +94,7 @@ struct _NautilusSpatialWindowDetails {
 	GtkWidget *content_box;
 	GtkWidget *location_button;
 	GtkWidget *location_label;
+	GtkWidget *location_icon;
 
 	GnomeVFSURI *location;
 };
@@ -471,6 +472,30 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 }
 
 static void
+got_file_info_for_location_menu_callback (NautilusFile *file,
+					  gpointer callback_data)
+{	
+	GtkWidget *icon;
+	GtkWidget *menu_item = callback_data;
+	char *icon_name;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+	icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+	if (icon_name) {
+		icon = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+	} else {
+		icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+	}
+	
+	if (icon) {
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), icon);
+	}
+	g_object_unref (file);
+	g_object_unref (menu_item);
+}
+
+static void
 menu_deactivate_callback (GtkWidget *menu,
 			  gpointer   data)
 {
@@ -523,7 +548,7 @@ location_button_pressed_callback (GtkWidget      *widget,
 static void
 location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *window)
 {
-	GtkWidget *popup, *menu_item, *first_item;
+	GtkWidget *popup, *menu_item, *first_item = NULL;
 	GnomeVFSURI *uri;
 	GnomeVFSURI *child_uri;
 	char *name;
@@ -537,17 +562,25 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 	uri = gnome_vfs_uri_ref (window->details->location);
 	child_uri = NULL;
 	while (uri != NULL) {
+		NautilusFile *file;
+		char *uri_string;
+
 		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
+		g_free (name);
 		if (first_item == NULL) {
-			GtkWidget *open_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
-
-			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), open_icon);
-
 			first_item = menu_item;
 		}
 		
-		g_free (name);
+		uri_string = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+		file = nautilus_file_get (uri_string);
+		g_object_ref (menu_item);
+		nautilus_file_call_when_ready (file,
+					       NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
+					       got_file_info_for_location_menu_callback,
+					       menu_item);
+		g_free (uri_string);		
+
 		gtk_widget_show (menu_item);
 		g_signal_connect (menu_item, "activate",
 				  G_CALLBACK (location_menu_item_activated_callback),
@@ -663,11 +696,31 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 		uri = gnome_vfs_uri_new (location);
 	}
 	if (uri != NULL) {
+		NautilusFile *file;
+		GnomeVFSResult vfs_result_code;
+		
 		name = nautilus_get_uri_shortname_for_display (uri);
 		gtk_label_set_label (GTK_LABEL (window->details->location_label),
 				     name);
 		g_free (name);
 		gtk_widget_set_sensitive (window->details->location_button, TRUE);
+
+		file = nautilus_file_get (location);
+		vfs_result_code = nautilus_file_get_file_info_result (file);
+		if (vfs_result_code == GNOME_VFS_OK) {
+			char *icon_name;
+
+			icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);		
+			if (icon_name) {
+				gtk_image_set_from_icon_name (GTK_IMAGE (window->details->location_icon), 
+							      icon_name, GTK_ICON_SIZE_MENU);
+			} else {
+				gtk_image_set_from_stock (GTK_IMAGE (window->details->location_icon),
+							  GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+			}
+		}
+		g_object_unref (file);
+
 	} else {
 		gtk_label_set_label (GTK_LABEL (window->details->location_label),
 				     "");
@@ -713,7 +766,6 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	const char *ui;
-	GtkWidget *folder_icon;
 	
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
@@ -747,9 +799,9 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 			   hbox);
 	gtk_widget_show (hbox);
 
-	folder_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
-	gtk_box_pack_start (GTK_BOX (hbox), folder_icon, FALSE, FALSE, 0);
-	gtk_widget_show (folder_icon);
+	window->details->location_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_icon, FALSE, FALSE, 0);
+	gtk_widget_show (window->details->location_icon);
 	
 	window->details->location_label = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_label,
