@@ -1,3 +1,11 @@
+2005-06-15  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c: (new_folder_done),
+	(new_folder_data_new), (fm_directory_view_new_folder),
+	(fm_directory_view_new_file):
+	Don't try to setup renaming if the view was already destroyed.
+	Fixes a crash when closing a window while creating files/folders.
+
 2005-06-11  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:
