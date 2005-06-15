@@ -392,5 +392,9 @@ void                fm_directory_view_handle_uri_list_drop             (FMDirect
 									int               y);
 void                fm_directory_view_freeze_updates                   (FMDirectoryView  *view);
 void                fm_directory_view_unfreeze_updates                 (FMDirectoryView  *view);
+void                fm_directory_view_add_subdirectory                (FMDirectoryView  *view,
+									NautilusDirectory*directory);
+void                fm_directory_view_remove_subdirectory             (FMDirectoryView  *view,
+									NautilusDirectory*directory);
 
 #endif /* FM_DIRECTORY_VIEW_H */

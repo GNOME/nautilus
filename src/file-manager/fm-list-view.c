@@ -430,8 +430,10 @@ motion_notify_callback (GtkWidget *widget,
 				gtk_drag_set_icon_default (context);
 			}
 		}		      
+		return TRUE;
 	}
-	return TRUE;
+	
+	return FALSE;
 }
 
 static void
@@ -458,6 +460,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	static gint64 last_click_time = 0;
 	static int click_count = 0;
 	int double_click_time;
+	int expander_size, horizontal_separator;
+	NautilusFile *file;
 
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
@@ -543,12 +547,25 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 				call_parent = FALSE;
 			} 
 			
+			file = fm_list_model_file_for_path (view->details->model, path);
+			if (file == NULL) {
+				/* this is the dummy loading node */
+				call_parent = FALSE;
+			} else {
+				nautilus_file_unref (file);
+			}
+
 			if ((event->button == 1 || event->button == 2) &&
 			    ((event->state & GDK_CONTROL_MASK) != 0 ||
 			     (event->state & GDK_SHIFT_MASK) == 0)) {
 				view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
 				if (view->details->row_selected_on_button_down) {
-					call_parent = FALSE;
+					gtk_widget_style_get (widget,
+						"expander-size", &expander_size,
+						"horizontal-separator", &horizontal_separator,
+						NULL);
+					call_parent = (event->x <= horizontal_separator / 2 +
+						gtk_tree_path_get_depth (path) * expander_size);
 				} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
 					call_parent = FALSE;
 					gtk_tree_selection_select_path (selection, path);
@@ -611,7 +628,6 @@ button_release_callback (GtkWidget *widget,
 		stop_drag_check (view);
 		if (!view->details->drag_started) {
 			fm_list_view_did_not_drag (view, event);
-			return TRUE;
 		}
 	}
 	return FALSE;
@@ -737,6 +753,38 @@ popup_menu_callback (GtkWidget *widget, gpointer callback_data)
 	do_popup_menu (widget, view, NULL);
 
 	return TRUE;
+}
+
+static void
+subdirectory_done_loading_callback (NautilusDirectory *directory, FMListView *view)
+{
+	fm_list_model_subdirectory_done_loading (view->details->model, directory);
+}
+
+static void
+row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *path, gpointer callback_data)
+{
+ 	FMListView *view;
+ 	NautilusFile *file;
+ 	NautilusDirectory *directory;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	file = fm_list_model_file_for_path (view->details->model, path);
+	directory = nautilus_directory_get_for_file (file);
+
+	fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
+	
+	if (nautilus_directory_are_all_files_seen (directory)) {
+		fm_list_model_subdirectory_done_loading (view->details->model,
+							  directory);
+	} else {
+		g_signal_connect_object (directory, "done_loading",
+			G_CALLBACK (subdirectory_done_loading_callback),
+			view, 0);
+	}
+	
+	nautilus_directory_unref (directory);
 }
 
 static gboolean
@@ -1069,6 +1117,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (key_press_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "popup_menu",
                                  G_CALLBACK (popup_menu_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "row_expanded",
+                                 G_CALLBACK (row_expanded_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
@@ -1180,7 +1230,15 @@ create_and_set_up_tree_view (FMListView *view)
 static void
 fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
-	fm_list_model_add_file (FM_LIST_VIEW (view)->details->model, file);
+	FMListModel *model;
+	
+	model = FM_LIST_VIEW (view)->details->model;
+	if (!fm_list_model_add_file (model, file)) {
+		fm_directory_view_remove_subdirectory (view,
+					nautilus_directory_get_for_file (file));
+		fm_list_model_remove_file (model, file);
+		fm_list_model_add_file (model, file);
+	}
 }
 
 static GList *
@@ -1374,8 +1432,10 @@ fm_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path,
 			    FM_LIST_MODEL_FILE_COLUMN, &file,
 			    -1);
 
-	nautilus_file_ref (file);
-	(* list) = g_list_prepend ((* list), file);
+	if (file != NULL) {
+		nautilus_file_ref (file);
+		(* list) = g_list_prepend ((* list), file);
+	}
 }
 
 static GList *

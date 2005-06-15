@@ -54,6 +54,7 @@ struct _NautilusTreeViewDragDestDetails {
 
 	guint highlight_id;
 	guint scroll_id;
+	guint expand_id;
 };
 
 enum {
@@ -130,6 +131,33 @@ remove_scroll_timeout (NautilusTreeViewDragDest *dest)
 	if (dest->details->scroll_id) {
 		g_source_remove (dest->details->scroll_id);
 		dest->details->scroll_id = 0;
+	}
+}
+
+static int
+expand_timeout (gpointer data)
+{
+	GtkTreeView *tree_view;
+	GtkTreePath *drop_path;
+	
+	tree_view = GTK_TREE_VIEW (data);
+	
+	gtk_tree_view_get_drag_dest_row (tree_view, &drop_path, NULL);
+	
+	if (drop_path) {
+		gtk_tree_view_expand_row (tree_view, drop_path, FALSE);
+		gtk_tree_path_free (drop_path);
+	}
+
+	return FALSE;
+}
+
+static void
+remove_expand_timeout (NautilusTreeViewDragDest *dest)
+{
+	if (dest->details->expand_id) {
+		g_source_remove (dest->details->expand_id);
+		dest->details->expand_id = 0;
 	}
 }
 
@@ -369,7 +397,9 @@ drag_motion_callback (GtkWidget *widget,
 {
 	NautilusTreeViewDragDest *dest;
 	GtkTreePath *path;
-	GtkTreePath *drop_path;
+	GtkTreePath *drop_path, *old_drop_path;
+	GtkTreeModel *model;
+	GtkTreeIter drop_iter;
 	GtkTreeViewDropPosition pos;
 	guint action;
 
@@ -386,10 +416,27 @@ drag_motion_callback (GtkWidget *widget,
 	
 	action = get_drop_action (dest, context, drop_path);
 	
+	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (widget), &old_drop_path,
+					 NULL);
+	
 	if (action) {
 		set_drag_dest_row (dest, drop_path);
+		model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
+		if (drop_path == NULL || (old_drop_path != NULL &&
+		    gtk_tree_path_compare (old_drop_path, drop_path) != 0)) {
+			remove_expand_timeout (dest);
+		}
+		if (dest->details->expand_id == 0 && drop_path != NULL) {
+			gtk_tree_model_get_iter (model, &drop_iter, drop_path);
+			if (gtk_tree_model_iter_has_child (model, &drop_iter)) {
+				dest->details->expand_id = g_timeout_add (500,
+						expand_timeout,
+						dest->details->tree_view);
+			}
+		}
 	} else {
 		clear_drag_dest_row (dest);
+		remove_expand_timeout (dest);
 	}
 	
 	if (path) {
@@ -398,6 +445,10 @@ drag_motion_callback (GtkWidget *widget,
 	
 	if (drop_path) {
 		gtk_tree_path_free (drop_path);
+	}
+	
+	if (old_drop_path) {
+		gtk_tree_path_free (old_drop_path);
 	}
 	
 	if (dest->details->scroll_id == 0) {
@@ -427,6 +478,7 @@ drag_leave_callback (GtkWidget *widget,
 	free_drag_data (dest);
 
 	remove_scroll_timeout (dest);
+	remove_expand_timeout (dest);
 }
 
 static void
@@ -612,6 +664,7 @@ drag_drop_callback (GtkWidget *widget,
 
 	get_drag_data (dest, context, time);
 	remove_scroll_timeout (dest);
+	remove_expand_timeout (dest);
 	clear_drag_dest_row (dest);
 	
 	return TRUE;
@@ -626,6 +679,7 @@ tree_view_weak_notify (gpointer user_data,
 	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (user_data);
 	
 	remove_scroll_timeout (dest);
+	remove_expand_timeout (dest);
 
 	dest->details->tree_view = NULL;
 }
@@ -644,6 +698,7 @@ nautilus_tree_view_drag_dest_dispose (GObject *object)
 	}
 	
 	remove_scroll_timeout (dest);
+	remove_expand_timeout (dest);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }

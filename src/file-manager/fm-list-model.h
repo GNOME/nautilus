@@ -26,6 +26,7 @@
 #include <gtk/gtktreeview.h>
 #include <gdk/gdkdnd.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-extension/nautilus-column.h>
 
@@ -70,7 +71,7 @@ typedef struct {
 } FMListModelClass;
 
 GType    fm_list_model_get_type                          (void);
-void     fm_list_model_add_file                          (FMListModel          *model,
+gboolean fm_list_model_add_file                          (FMListModel          *model,
 							  NautilusFile         *file);
 void     fm_list_model_file_changed                      (FMListModel          *model,
 							  NautilusFile         *file);
@@ -115,4 +116,8 @@ int               fm_list_model_add_column (FMListModel *model,
 					    NautilusColumn *column);
 int               fm_list_model_get_column_number (FMListModel *model,
 						   const char *column_name);
+						   
+void              fm_list_model_subdirectory_done_loading (FMListModel       *model,
+							    NautilusDirectory *directory);
+						   
 #endif /* FM_LIST_MODEL_H */

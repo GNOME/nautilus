@@ -1,5 +1,21 @@
 2005-06-15  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Add hover expansion
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	Add support for adding/removing subdirectories.
+	
+	* src/file-manager/fm-list-model.[ch]:
+	Add support for subdirectories making this a tree view.
+	
+	* src/file-manager/fm-list-view.c:
+	Turn listview into a treeview.
+
+	Patch from Jürg Billeter <j@bitron.ch>
+	
+2005-06-15  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-spatial-window.c:
 	Add icons for path menu.
 	Patch from Vincent Noel <vincent.noel@gmail.com>
