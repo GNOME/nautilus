@@ -457,7 +457,7 @@ refresh_go_menu (NautilusNavigationWindow *window)
 	gtk_ui_manager_insert_action_group (ui_manager,
 					    window->details->go_menu_action_group,
 					    -1);
-
+	g_object_unref (window->details->go_menu_action_group);
 	
 	/* Add in a new set of history items. */
 	for (node = nautilus_get_history_list (), index = 0;

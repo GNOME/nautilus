@@ -1,3 +1,9 @@
+2005-06-16  Anders Carlsson  <andersca@imendio.com>
+
+	* src/nautilus-navigation-window-menus.c: (refresh_go_menu):
+	Unref the action group after inserting it. This makes
+	a NautilusFile memory leak go away.
+
 2005-06-16  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.[ch]:
