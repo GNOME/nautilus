@@ -38,6 +38,13 @@
 #include <libnautilus-private/nautilus-dnd.h>
 #include <gsequence/gsequence.h>
 
+enum {
+	SUBDIRECTORY_UNLOADED,
+	LAST_SIGNAL
+};
+
+static guint list_model_signals[LAST_SIGNAL] = { 0 };
+
 static int fm_list_model_file_entry_compare_func (gconstpointer a,
 				       gconstpointer b,
 				       gpointer      user_data);
@@ -76,6 +83,7 @@ typedef struct FileEntry FileEntry;
 
 struct FileEntry {
 	NautilusFile *file;
+	NautilusDirectory *subdirectory;
 	FileEntry *parent;
 	GSequence *files;
 	GSequencePtr ptr;
@@ -95,6 +103,9 @@ static void
 file_entry_free (FileEntry *file_entry)
 {
 	nautilus_file_unref (file_entry->file);
+	if (file_entry->subdirectory != NULL) {
+		nautilus_directory_unref (file_entry->subdirectory);
+	}
 	if (file_entry->files != NULL) {
 		g_sequence_free (file_entry->files);
 	}
@@ -119,6 +130,8 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	switch (index) {
 	case FM_LIST_MODEL_FILE_COLUMN:
 		return NAUTILUS_TYPE_FILE;
+	case FM_LIST_MODEL_SUBDIRECTORY_COLUMN:
+		return NAUTILUS_TYPE_DIRECTORY;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
@@ -239,6 +252,11 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		g_value_init (value, NAUTILUS_TYPE_FILE);
 
 		g_value_set_object (value, file);
+		break;
+	case FM_LIST_MODEL_SUBDIRECTORY_COLUMN:
+		g_value_init (value, NAUTILUS_TYPE_DIRECTORY);
+
+		g_value_set_object (value, file_entry->subdirectory);
 		break;
 	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
 	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
@@ -498,8 +516,8 @@ fm_list_model_get_tree_iter_from_file (FMListModel *model, NautilusFile *file, G
 
 static int
 fm_list_model_file_entry_compare_func (gconstpointer a,
-			    gconstpointer b,
-			    gpointer      user_data)
+				       gconstpointer b,
+				       gpointer      user_data)
 {
 	FileEntry *file_entry1;
 	FileEntry *file_entry2;
@@ -770,17 +788,36 @@ fm_list_model_multi_drag_data_delete (EggTreeMultiDragSource *drag_source, GList
 	return TRUE;
 }
 
+static void
+add_dummy_row (FMListModel *model, FileEntry *parent_entry)
+{
+	FileEntry *dummy_file_entry;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	
+	dummy_file_entry = g_new0 (FileEntry, 1);
+	dummy_file_entry->parent = parent_entry;
+	dummy_file_entry->ptr = g_sequence_insert_sorted (parent_entry->files, dummy_file_entry,
+							  fm_list_model_file_entry_compare_func, model);
+	iter.stamp = model->details->stamp;
+	iter.user_data = dummy_file_entry->ptr;
+	
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+	gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
+	gtk_tree_path_free (path);
+}
+
 gboolean
 fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 {
-	GtkTreeIter iter, child_iter;
-	GtkTreePath *path, *child_path;
-	FileEntry *file_entry, *child_file_entry;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	FileEntry *file_entry;
 	NautilusFile *parent_file;
 	GSequencePtr parent_ptr;
 	GSequence *files;
 	gboolean replace_dummy;
-	
+
 	/* We may only add each file once. */
 	if (fm_list_model_get_tree_iter_from_file (model, file, NULL)) {
 		return FALSE;
@@ -791,7 +828,8 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 	file_entry = g_new0 (FileEntry, 1);
 	file_entry->file = file;
 	file_entry->parent = NULL;
-	file_entry->files = g_sequence_new ((GDestroyNotify)file_entry_free);
+	file_entry->subdirectory = NULL;
+	file_entry->files = NULL;
 	
 	files = model->details->files;
 	
@@ -810,6 +848,7 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 				FileEntry *dummy_entry = g_sequence_ptr_get_data (dummy_ptr);
 				if (dummy_entry->file == NULL) {
 					/* replace the dummy loading entry */
+					model->details->stamp++;
 					g_sequence_remove (dummy_ptr);
 					
 					replace_dummy = TRUE;
@@ -832,18 +871,11 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 	} else {
 		gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
 	}
-	if (nautilus_file_is_directory (file)) {
-	
-		child_file_entry = g_new0 (FileEntry, 1);
-		child_file_entry->parent = file_entry;
-		child_file_entry->ptr = g_sequence_insert_sorted (file_entry->files, child_file_entry,
-					    fm_list_model_file_entry_compare_func, model);
-		child_iter.stamp = model->details->stamp;
-		child_iter.user_data = child_file_entry->ptr;
 
-		child_path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &child_iter);
-		gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), child_path, &child_iter);
-		gtk_tree_path_free (child_path);
+	if (nautilus_file_is_directory (file)) {
+		file_entry->files = g_sequence_new ((GDestroyNotify)file_entry_free);
+
+		add_dummy_row (model, file_entry);
 
 		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (model),
 						      path, &iter);
@@ -888,14 +920,14 @@ fm_list_model_get_length (FMListModel *model)
 	return g_sequence_get_length (model->details->files);
 }
 
-
 static void
 fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 {
 	GSequencePtr ptr, child_ptr;
-	FileEntry *file_entry, *child_file_entry;
+	FileEntry *file_entry, *child_file_entry, *parent_file_entry;
 	GtkTreePath *path;
-	GtkTreeIter dummy_iter;
+	GtkTreeIter parent_iter;
+	gboolean add_dummy;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 	ptr = iter->user_data;
@@ -910,6 +942,7 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 							child_file_entry->file);
 			} else {
 				gtk_tree_path_append_index (path, 0);
+				model->details->stamp++;
 				g_sequence_remove (child_ptr);
 				gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 				gtk_tree_path_up (path);
@@ -920,27 +953,37 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 
 	g_hash_table_remove (model->details->reverse_map, file_entry->file);
 
-	if (file_entry->parent &&
-	    g_sequence_get_length (file_entry->parent->files) == 1 &&
+	add_dummy = FALSE;
+	parent_file_entry = file_entry->parent;
+	if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 1 &&
 	    file_entry->file != NULL) {
-		/* this is the last non-dummy child, change it to a dummy node */
-		dummy_iter.stamp = model->details->stamp++;
-		dummy_iter.user_data = ptr;
-		
-		nautilus_file_unref (file_entry->file);
-		file_entry->file = NULL;
-		file_entry->loaded = TRUE;
-		
-		gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path,
-					    &dummy_iter);
-	} else {
-		g_sequence_remove (ptr);
+		/* this is the last non-dummy child, add a dummy node */
+		add_dummy = TRUE;
+	}
 
-		model->details->stamp++;
-		gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+	if (file_entry->subdirectory != NULL) {
+		g_signal_emit (model,
+			       list_model_signals[SUBDIRECTORY_UNLOADED], 0,
+			       file_entry->subdirectory);
 	}
 	
+	g_sequence_remove (ptr);
+	
+	model->details->stamp++;
+	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+	
 	gtk_tree_path_free (path);
+
+	if (add_dummy) {
+		add_dummy_row (model, parent_file_entry);
+	} else if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 0) {
+		parent_iter.stamp = model->details->stamp;
+		parent_iter.user_data = parent_file_entry->ptr;
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &parent_iter);
+		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (model),
+						      path, &parent_iter);
+		gtk_tree_path_free (path);
+	}
 }
 
 void
@@ -958,7 +1001,7 @@ fm_list_model_clear_directory (FMListModel *model, GSequence *files)
 {
 	GtkTreeIter iter;
 	FileEntry *file_entry;
-	
+
 	while (g_sequence_get_length (files) > 0) {
 		iter.user_data = g_sequence_get_begin_ptr (files);
 
@@ -996,6 +1039,67 @@ fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
 	}
 	return file;
 }
+
+gboolean
+fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, NautilusDirectory **directory)
+{
+	GtkTreeIter iter;
+	FileEntry *file_entry;
+	
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (model), &iter, path)) {
+		return FALSE;
+	}
+
+	file_entry = g_sequence_ptr_get_data (iter.user_data);
+	if (file_entry->file == NULL ||
+	    file_entry->subdirectory != NULL) {
+		return FALSE;
+	}
+
+	file_entry->subdirectory = nautilus_directory_get_for_file (file_entry->file);
+	nautilus_directory_ref (file_entry->subdirectory);
+	*directory = file_entry->subdirectory;
+	
+	return TRUE;
+}
+
+/* removes all children of the subfolder and unloads the subdirectory */
+void
+fm_list_model_unload_subdirectory (FMListModel *model, GtkTreeIter *iter)
+{
+	GSequencePtr child_ptr;
+	FileEntry *file_entry, *child_file_entry;
+	
+	file_entry = g_sequence_ptr_get_data (iter->user_data);
+	if (file_entry->file == NULL ||
+	    file_entry->subdirectory == NULL) {
+		return;
+	}
+
+	/* Remove all children */
+	while (g_sequence_get_length (file_entry->files) > 0) {
+		child_ptr = g_sequence_get_begin_ptr (file_entry->files);
+		child_file_entry = g_sequence_ptr_get_data (child_ptr);
+		if (child_file_entry->file == NULL) {
+			/* Don't delete the dummy node */
+			break;
+		} else {
+			fm_list_model_remove_file (model,
+						   child_file_entry->file);
+		}
+	}
+
+	/* Emit unload signal */
+	g_signal_emit (model,
+		       list_model_signals[SUBDIRECTORY_UNLOADED], 0,
+		       file_entry->subdirectory);
+
+	/* actually unload */
+	nautilus_directory_unref (file_entry->subdirectory);
+	file_entry->subdirectory = NULL;
+}
+
+
 
 void
 fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean sort_directories_first)
@@ -1277,6 +1381,16 @@ fm_list_model_class_init (FMListModelClass *klass)
 
 	object_class->finalize = fm_list_model_finalize;
 	object_class->dispose = fm_list_model_dispose;
+
+      list_model_signals[SUBDIRECTORY_UNLOADED] =
+        g_signal_new ("subdirectory_unloaded",
+                      FM_TYPE_LIST_MODEL,
+                      G_SIGNAL_RUN_FIRST,
+                      G_STRUCT_OFFSET (FMListModelClass, subdirectory_unloaded),
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__OBJECT,
+                      G_TYPE_NONE, 1,
+                      NAUTILUS_TYPE_DIRECTORY);
 }
 
 static void

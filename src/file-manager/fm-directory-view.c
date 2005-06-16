@@ -2758,43 +2758,45 @@ fm_directory_view_queue_file_change (FMDirectoryView *view, NautilusFile *file)
 
 void
 fm_directory_view_add_subdirectory (FMDirectoryView  *view,
-				     NautilusDirectory*directory)
+				    NautilusDirectory*directory)
 {
 	NautilusFileAttributes attributes;
 
-	if (g_list_find (view->details->subdirectory_list, directory) == NULL) {
-		nautilus_directory_ref (directory);
+	g_assert (!g_list_find (view->details->subdirectory_list, directory));
+	
+	nautilus_directory_ref (directory);
 
-		attributes = nautilus_icon_factory_get_required_file_attributes ();
-		attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
-			NAUTILUS_FILE_ATTRIBUTE_METADATA |
-			NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
-			NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
-			NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
-
-		nautilus_directory_file_monitor_add (directory,
-						     &view->details->model,
-						     view->details->show_hidden_files,
-						     view->details->show_backup_files,
-						     attributes,
-						     files_added_callback, view);
-
-	    	g_signal_connect
-			(directory, "files_added",
-			 G_CALLBACK (files_added_callback), view);
-		g_signal_connect
-			(directory, "files_changed",
-			 G_CALLBACK (files_changed_callback), view);
- 
-		view->details->subdirectory_list = g_list_prepend (
-				view->details->subdirectory_list, directory);
-	}
+	attributes = nautilus_icon_factory_get_required_file_attributes ();
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
+		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
+	
+	nautilus_directory_file_monitor_add (directory,
+					     &view->details->model,
+					     view->details->show_hidden_files,
+					     view->details->show_backup_files,
+					     attributes,
+					     files_added_callback, view);
+	
+	g_signal_connect
+		(directory, "files_added",
+		 G_CALLBACK (files_added_callback), view);
+	g_signal_connect
+		(directory, "files_changed",
+		 G_CALLBACK (files_changed_callback), view);
+	
+	view->details->subdirectory_list = g_list_prepend (
+			   view->details->subdirectory_list, directory);
 }
 
-static void
-real_remove_subdirectory (FMDirectoryView  *view,
-			   NautilusDirectory*directory)
+void
+fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
+					NautilusDirectory*directory)
 {
+	g_assert (g_list_find (view->details->subdirectory_list, directory));
+	
 	view->details->subdirectory_list = g_list_remove (
 				view->details->subdirectory_list, directory);
 
@@ -2808,34 +2810,6 @@ real_remove_subdirectory (FMDirectoryView  *view,
 	nautilus_directory_file_monitor_remove (directory, &view->details->model);
 
 	nautilus_directory_unref (directory);
-}
-
-void
-fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
-					NautilusDirectory*directory)
-{
-	GList *node;
-	NautilusFile *parent, *file1, *file2;
-	NautilusDirectory *subdir;
-	
-	parent = nautilus_directory_get_corresponding_file (directory);
-	
-	for (node = view->details->subdirectory_list; node != NULL;) {
-		file1 = nautilus_directory_get_corresponding_file (node->data);
-		while (file1 != parent && file1 != NULL) {
-			file2 = nautilus_file_get_parent (file1);
-			nautilus_file_unref (file1);
-			file1 = file2;
-		}
-		subdir = NAUTILUS_DIRECTORY (node->data);
-		node = node->next;
-		if (file1 == parent) {
-			real_remove_subdirectory (view, subdir);
-		}
-		if (file1 != NULL) {
-			nautilus_file_unref (file1);
-		}
-	}
 }
 
 /**
@@ -7494,7 +7468,7 @@ load_directory (FMDirectoryView *view,
 	schedule_update_menus (view);
 	
 	while (view->details->subdirectory_list != NULL) {
-		real_remove_subdirectory (view,
+		fm_directory_view_remove_subdirectory (view,
 				view->details->subdirectory_list->data);
 	}
 

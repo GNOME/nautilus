@@ -131,6 +131,9 @@ struct SelectionForeachData {
  */
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	28
 
+/* We wait two seconds after row is collapsed to unload the subdirectory */
+#define COLLAPSE_TO_UNLOAD_DELAY 2000 
+
 static int                      click_policy_auto_value;
 static char *              	default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
@@ -782,26 +785,103 @@ static void
 row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *path, gpointer callback_data)
 {
  	FMListView *view;
- 	NautilusFile *file;
  	NautilusDirectory *directory;
 
 	view = FM_LIST_VIEW (callback_data);
 
-	file = fm_list_model_file_for_path (view->details->model, path);
-	directory = nautilus_directory_get_for_file (file);
-
-	fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
-	
-	if (nautilus_directory_are_all_files_seen (directory)) {
-		fm_list_model_subdirectory_done_loading (view->details->model,
-							  directory);
-	} else {
-		g_signal_connect_object (directory, "done_loading",
-			G_CALLBACK (subdirectory_done_loading_callback),
-			view, 0);
+	if (fm_list_model_load_subdirectory (view->details->model, path, &directory)) {
+		fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
+		
+		if (nautilus_directory_are_all_files_seen (directory)) {
+			fm_list_model_subdirectory_done_loading (view->details->model,
+								 directory);
+		} else {
+			g_signal_connect_object (directory, "done_loading",
+						 G_CALLBACK (subdirectory_done_loading_callback),
+						 view, 0);
+		}
+		
+		nautilus_directory_unref (directory);
 	}
+}
+
+struct UnloadDelayData {
+	NautilusFile *file;
+	FMListView *view;
+};
+
+static gboolean
+unload_file_timeout (gpointer data)
+{
+	struct UnloadDelayData *unload_data = data;
+	GtkTreeIter iter;
+	FMListModel *model;
+	GtkTreePath *path;
+
+	if (unload_data->view != NULL) {
+		model = unload_data->view->details->model;
+		if (fm_list_model_get_tree_iter_from_file (model,
+							   unload_data->file,
+							   &iter)) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+			if (!gtk_tree_view_row_expanded (unload_data->view->details->tree_view,
+							 path)) {
+				fm_list_model_unload_subdirectory (model, &iter);
+			}
+			gtk_tree_path_free (path);
+		}
+	}
+
+	eel_remove_weak_pointer (&unload_data->view);
 	
-	nautilus_directory_unref (directory);
+	
+	g_object_unref (unload_data->file);
+	g_free (unload_data);
+	return FALSE;
+}
+
+static void
+row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *path, gpointer callback_data)
+{
+ 	FMListView *view;
+ 	NautilusFile *file;
+	struct UnloadDelayData *unload_data;
+	
+	view = FM_LIST_VIEW (callback_data);
+		
+	gtk_tree_model_get (GTK_TREE_MODEL (view->details->model), 
+			    iter, 
+			    FM_LIST_MODEL_FILE_COLUMN, &file,
+			    -1);
+	
+	unload_data = g_new (struct UnloadDelayData, 1);
+	unload_data->view = view;
+	unload_data->file = file;
+
+	eel_add_weak_pointer (&unload_data->view);
+	
+	g_timeout_add (COLLAPSE_TO_UNLOAD_DELAY,
+		       unload_file_timeout,
+		       unload_data);
+}
+
+
+static void
+subdirectory_unloaded_callback (FMListModel *model,
+				NautilusDirectory *directory,
+				gpointer callback_data)
+{
+	FMListView *view;
+	
+	g_return_if_fail (FM_IS_LIST_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	view = FM_LIST_VIEW(callback_data);
+	
+	g_signal_handlers_disconnect_by_func (directory,
+					      G_CALLBACK (subdirectory_done_loading_callback),
+					      view);
+	fm_directory_view_remove_subdirectory (FM_DIRECTORY_VIEW (view), directory);
 }
 
 static gboolean
@@ -1136,6 +1216,8 @@ create_and_set_up_tree_view (FMListView *view)
                                  G_CALLBACK (popup_menu_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "row_expanded",
                                  G_CALLBACK (row_expanded_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "row_collapsed",
+                                 G_CALLBACK (row_collapsed_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
@@ -1145,6 +1227,9 @@ create_and_set_up_tree_view (FMListView *view)
 
 	g_signal_connect_object (view->details->model, "sort_column_changed",
 				 G_CALLBACK (sort_column_changed_callback), view, 0);
+	
+	g_signal_connect_object (view->details->model, "subdirectory_unloaded",
+				 G_CALLBACK (subdirectory_unloaded_callback), view, 0);
 
 	view->details->source_target_list = 
 		gtk_target_list_new (drag_types, num_drag_types);
@@ -1250,12 +1335,7 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	FMListModel *model;
 	
 	model = FM_LIST_VIEW (view)->details->model;
-	if (!fm_list_model_add_file (model, file)) {
-		fm_directory_view_remove_subdirectory (view,
-					nautilus_directory_get_for_file (file));
-		fm_list_model_remove_file (model, file);
-		fm_list_model_add_file (model, file);
-	}
+	fm_list_model_add_file (model, file);
 }
 
 static GList *
@@ -1591,7 +1671,7 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 	   gtk_tree_path_free (file_path);
 		
 	   fm_list_model_remove_file (list_view->details->model, file);
-	   
+
 	   if (gtk_tree_row_reference_valid (row_reference)) {
 	      if (list_view->details->new_selection_path) {
 	          gtk_tree_path_free (list_view->details->new_selection_path);

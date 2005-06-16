@@ -41,6 +41,7 @@
 
 enum {
 	FM_LIST_MODEL_FILE_COLUMN,
+	FM_LIST_MODEL_SUBDIRECTORY_COLUMN,
 	FM_LIST_MODEL_SMALLEST_ICON_COLUMN,
 	FM_LIST_MODEL_SMALLER_ICON_COLUMN,
 	FM_LIST_MODEL_SMALL_ICON_COLUMN,
@@ -68,6 +69,9 @@ typedef struct FMListModel {
 
 typedef struct {
 	GObjectClass parent_class;
+
+	void (* subdirectory_unloaded)(FMListModel *model,
+				       NautilusDirectory *subdirectory);
 } FMListModelClass;
 
 GType    fm_list_model_get_type                          (void);
@@ -100,8 +104,8 @@ NautilusZoomLevel fm_list_model_get_zoom_level_from_emblem_column_id (int       
 int               fm_list_model_get_emblem_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
 
 NautilusFile *    fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path);
-
-
+gboolean          fm_list_model_load_subdirectory (FMListModel *model, GtkTreePath *path, NautilusDirectory **directory);
+void              fm_list_model_unload_subdirectory (FMListModel *model, GtkTreeIter *iter);
 
 void              fm_list_model_set_drag_view (FMListModel *model,
 					       GtkTreeView *view,

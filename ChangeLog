@@ -1,3 +1,27 @@
+2005-06-16  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Slightly slower auto hover expand.
+	
+	* src/file-manager/fm-directory-view.c:
+	Make add/remove_subdirectory more straightforward.
+	Now remove just removes the NautilusDirectory passed in, and
+	you're not allowed to add multiple times or remove non-added.
+	
+	* src/file-manager/fm-list-model.[ch]:
+	Actually track the NautilusDirectories that are added to the
+	FMDirectoryView so we can easily remove them when the files are
+	removed. This was causing problem before where directories for
+	removed files weren't removed.
+
+	Emits the subdirectory_unloaded signal when subdirectories go away.
+
+	Add support for unloading subdirectories.
+	
+	* src/file-manager/fm-list-view.c:
+	Unload subdirectories in timeout on collapse.
+	remove subdirectories when they get unloaded.
+
 2005-06-16  Anders Carlsson  <andersca@imendio.com>
 
 	* src/nautilus-navigation-window-menus.c 

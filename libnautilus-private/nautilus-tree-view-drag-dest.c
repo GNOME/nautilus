@@ -42,6 +42,8 @@
 
 #define AUTO_SCROLL_MARGIN 20
 
+#define HOVER_EXPAND_TIMEOUT 1000
+
 struct _NautilusTreeViewDragDestDetails {
 	GtkTreeView *tree_view;
 
@@ -429,9 +431,9 @@ drag_motion_callback (GtkWidget *widget,
 		if (dest->details->expand_id == 0 && drop_path != NULL) {
 			gtk_tree_model_get_iter (model, &drop_iter, drop_path);
 			if (gtk_tree_model_iter_has_child (model, &drop_iter)) {
-				dest->details->expand_id = g_timeout_add (500,
-						expand_timeout,
-						dest->details->tree_view);
+				dest->details->expand_id = g_timeout_add (HOVER_EXPAND_TIMEOUT,
+									  expand_timeout,
+									  dest->details->tree_view);
 			}
 		}
 	} else {
