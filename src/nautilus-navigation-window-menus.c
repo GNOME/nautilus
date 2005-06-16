@@ -713,6 +713,7 @@ append_dynamic_bookmarks (NautilusNavigationWindow *window)
 	gtk_ui_manager_insert_action_group (ui_manager,
 					    window->details->bookmarks_action_group,
 					    -1);
+	g_object_unref (window->details->bookmarks_action_group);
 
 	/* append new set of bookmarks */
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
