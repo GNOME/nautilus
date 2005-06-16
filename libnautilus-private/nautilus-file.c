@@ -2636,7 +2636,11 @@ nautilus_file_get_display_name_collation_key (NautilusFile *file)
 	}
 
 	display_name = nautilus_file_get_display_name_nocopy (file);
+#if GLIB_MAJOR_VERSION >= 2 && GLIB_MINOR_VERSION >= 7
+	file->details->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
+#else
 	file->details->display_name_collation_key = g_utf8_collate_key (display_name, -1);
+#endif
 
 	return file->details->display_name_collation_key;
 }
