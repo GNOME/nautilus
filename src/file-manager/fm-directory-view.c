@@ -1731,6 +1731,11 @@ fm_directory_view_destroy (GtkObject *object)
 		remove_directory_from_templates_directory_list (view, node->data);
 	}
 
+	while (view->details->subdirectory_list != NULL) {
+		fm_directory_view_remove_subdirectory (view,
+				view->details->subdirectory_list->data);
+	}
+
 	remove_update_menus_timeout_callback (view);
 	remove_update_status_idle_callback (view);
 
