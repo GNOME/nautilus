@@ -1,3 +1,19 @@
+2005-06-16  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/fm-icon-view.c
+	add fm_directory_view_get_selection_for_file_transfer and
+	use it for all file transfers
+
+	* src/file-manager/fm-list-view.c:
+	Implement fm_directory_view_get_selection_for_file_transfer by
+	filtering out all files there a parent is also in the selection.
+	Do the same for the dnd source list.
+	
+	* src/file-manager/fm-list-model.c:
+	Allow deletion of dummy node so that clearing the model
+	doesn't loop forever.
+
 2005-06-15  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c: (new_folder_done),

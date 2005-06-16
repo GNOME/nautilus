@@ -2540,6 +2540,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
+	fm_directory_view_class->get_selection_for_file_transfer = fm_icon_view_get_selection;
 	fm_directory_view_class->get_item_count = fm_icon_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_icon_view_is_empty;
 	fm_directory_view_class->remove_file = fm_icon_view_remove_file;

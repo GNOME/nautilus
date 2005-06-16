@@ -135,6 +135,15 @@ struct FMDirectoryViewClass {
 	 */
 	GList *	(* get_selection) 	 	(FMDirectoryView *view);
 	
+	/* get_selection_for_file_transfer  is a function pointer for
+	 * subclasses to replace (override). Subclasses must replace it
+	 * with a function that returns a newly-allocated GList of
+	 * NautilusFile pointers. The difference from get_selection is
+	 * that any files in the selection that also has a parent folder
+	 * in the selection is not included.
+	 */
+	GList *	(* get_selection_for_file_transfer)(FMDirectoryView *view);
+	
         /* select_all is a function pointer that subclasses must override to
          * select all of the items in the view */
         void     (* select_all)	         	(FMDirectoryView *view);
@@ -305,6 +314,7 @@ gboolean            fm_directory_view_can_accept_item                  (Nautilus
 									FMDirectoryView  *view);
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
+GList *             fm_directory_view_get_selection_for_file_transfer  (FMDirectoryView  *view);
 void                fm_directory_view_stop                             (FMDirectoryView  *view);
 guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_in                      (FMDirectoryView  *view);

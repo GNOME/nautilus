@@ -119,6 +119,11 @@ struct FMListViewDetails {
 	char *original_name;
 };
 
+struct SelectionForeachData {
+	GList *list;
+	GtkTreeSelection *selection;
+};
+
 /*
  * The row height should be large enough to not clip emblems.
  * Computing this would be costly, so we just choose a number
@@ -133,15 +138,16 @@ static NautilusZoomLevel        default_zoom_level_auto_value;
 static GList *                  default_visible_columns_auto_value;
 static GList *                  default_column_order_auto_value;
 
-static GList *fm_list_view_get_selection   (FMDirectoryView   *view);
-static void   fm_list_view_set_zoom_level  (FMListView        *view,
-					    NautilusZoomLevel  new_level,
-					    gboolean           always_set_level);
-static void   fm_list_view_scale_font_size (FMListView        *view,
-					    NautilusZoomLevel  new_level);
-static void   fm_list_view_scroll_to_file  (FMListView        *view,
-					    NautilusFile      *file);
-static void   fm_list_view_iface_init      (NautilusViewIface *iface);
+static GList *fm_list_view_get_selection                   (FMDirectoryView   *view);
+static GList *fm_list_view_get_selection_for_file_transfer (FMDirectoryView   *view);
+static void   fm_list_view_set_zoom_level                  (FMListView        *view,
+							    NautilusZoomLevel  new_level,
+							    gboolean           always_set_level);
+static void   fm_list_view_scale_font_size                 (FMListView        *view,
+							    NautilusZoomLevel  new_level);
+static void   fm_list_view_scroll_to_file                  (FMListView        *view,
+							    NautilusFile      *file);
+static void   fm_list_view_iface_init                      (NautilusViewIface *iface);
 
 
 
@@ -305,35 +311,46 @@ drag_data_get_callback (GtkWidget *widget,
 }
 
 static void
-selection_foreach (GtkTreeModel *model,
-		   GtkTreePath *path,
-		   GtkTreeIter *iter,
-		   gpointer data)
+filtered_selection_foreach (GtkTreeModel *model,
+			    GtkTreePath *path,
+			    GtkTreeIter *iter,
+			    gpointer data)
 {
-	GList **list;
+	struct SelectionForeachData *selection_data;
+	GtkTreeIter parent;
+	GtkTreeIter child;
 	
-	list = (GList**)data;
+	selection_data = data;
+
+	/* If the parent folder is also selected, don't include this file in the
+	 * file operation, since that would copy it to the toplevel target instead
+	 * of keeping it as a child of the copied folder
+	 */
+	child = *iter;
+	while (gtk_tree_model_iter_parent (model, &parent, &child)) {
+		if (gtk_tree_selection_iter_is_selected (selection_data->selection,
+							 &parent)) {
+			return;
+		}
+		child = parent;
+	}
 	
-	*list = g_list_prepend (*list, 
-				gtk_tree_row_reference_new (model, path));
-	
+	selection_data->list = g_list_prepend (selection_data->list, 
+					       gtk_tree_row_reference_new (model, path));
 }
 
 static GList *
-get_selection_refs (GtkTreeView *tree_view)
+get_filtered_selection_refs (GtkTreeView *tree_view)
 {
-	GtkTreeSelection *selection;
-	GList *ref_list;
-	
-	ref_list = NULL;
-	
-	selection = gtk_tree_view_get_selection (tree_view);
-	gtk_tree_selection_selected_foreach (selection, 
-					     selection_foreach, 
-					     &ref_list);
-	ref_list = g_list_reverse (ref_list);
+	struct SelectionForeachData selection_data;
 
-	return ref_list;
+	selection_data.list = NULL;
+	selection_data.selection = gtk_tree_view_get_selection (tree_view);
+	
+	gtk_tree_selection_selected_foreach (selection_data.selection, 
+					     filtered_selection_foreach, 
+					     &selection_data);
+	return g_list_reverse (selection_data.list);
 }
 
 static void
@@ -414,7 +431,7 @@ motion_notify_callback (GtkWidget *widget,
 			stop_drag_check (view);
 			view->details->drag_started = TRUE;
 			
-			ref_list = get_selection_refs (GTK_TREE_VIEW (widget));
+			ref_list = get_filtered_selection_refs (GTK_TREE_VIEW (widget));
 			g_object_set_data_full (G_OBJECT (context),
 						"drag-info",
 						ref_list,
@@ -1448,8 +1465,57 @@ fm_list_view_get_selection (FMDirectoryView *view)
 	gtk_tree_selection_selected_foreach (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view),
 					     fm_list_view_get_selection_foreach_func, &list);
 
-	return list;
+	return g_list_reverse (list);
 }
+
+static void
+fm_list_view_get_selection_for_file_transfer_foreach_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	NautilusFile *file;
+	struct SelectionForeachData *selection_data;
+	GtkTreeIter parent, child;
+
+	selection_data = data;
+
+	gtk_tree_model_get (model, iter,
+			    FM_LIST_MODEL_FILE_COLUMN, &file,
+			    -1);
+
+	if (file != NULL) {
+		/* If the parent folder is also selected, don't include this file in the
+		 * file operation, since that would copy it to the toplevel target instead
+		 * of keeping it as a child of the copied folder
+		 */
+		child = *iter;
+		while (gtk_tree_model_iter_parent (model, &parent, &child)) {
+			if (gtk_tree_selection_iter_is_selected (selection_data->selection,
+								 &parent)) {
+				return;
+			}
+			child = parent;
+		}
+		
+		nautilus_file_ref (file);
+		selection_data->list = g_list_prepend (selection_data->list, file);
+	}
+}
+
+
+static GList *
+fm_list_view_get_selection_for_file_transfer (FMDirectoryView *view)
+{
+	struct SelectionForeachData selection_data;
+
+	selection_data.list = NULL;
+	selection_data.selection = gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view);
+
+	gtk_tree_selection_selected_foreach (selection_data.selection,
+					     fm_list_view_get_selection_for_file_transfer_foreach_func, &selection_data);
+
+	return g_list_reverse (selection_data.list);
+}
+
+
 
 
 static guint
@@ -2302,6 +2368,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
+	fm_directory_view_class->get_selection_for_file_transfer = fm_list_view_get_selection_for_file_transfer;
 	fm_directory_view_class->get_item_count = fm_list_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;

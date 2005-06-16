@@ -920,8 +920,10 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 
 	g_hash_table_remove (model->details->reverse_map, file_entry->file);
 
-	if (file_entry->parent && g_sequence_get_length (file_entry->parent->files) == 1) {
-		/* this is the last child, change it to a dummy node */
+	if (file_entry->parent &&
+	    g_sequence_get_length (file_entry->parent->files) == 1 &&
+	    file_entry->file != NULL) {
+		/* this is the last non-dummy child, change it to a dummy node */
 		dummy_iter.stamp = model->details->stamp++;
 		dummy_iter.user_data = ptr;
 		

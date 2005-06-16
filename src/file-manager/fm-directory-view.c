@@ -400,6 +400,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection_for_file_transfer)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_item_count)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, is_empty)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, reset_to_defaults)
@@ -808,7 +809,7 @@ trash_or_delete_selected_files (FMDirectoryView *view)
 	 * was already removed (but the view doesn't know about it yet).
 	 */
 	if (!view->details->selection_was_removed) {
-		selection = fm_directory_view_get_selection (view);
+		selection = fm_directory_view_get_selection_for_file_transfer (view);
 		trash_or_delete_files (view, selection);					 
 		nautilus_file_list_free (selection);
 		view->details->selection_was_removed = TRUE;
@@ -882,7 +883,7 @@ delete_selected_files (FMDirectoryView *view)
 	GList *node;
 	GList *file_uris;
 
-	selection = fm_directory_view_get_selection (view);
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	if (selection == NULL) {
 		return;
 	}
@@ -931,7 +932,7 @@ action_duplicate_callback (GtkAction *action,
         GArray *selected_item_locations;
  
         view = FM_DIRECTORY_VIEW (callback_data);
-	selection = fm_directory_view_get_selection (view);
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		/* FIXME bugzilla.gnome.org 45061:
 		 * should change things here so that we use a get_icon_locations (view, selection).
@@ -3064,6 +3065,17 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_selection, (view));
 }
+
+GList *
+fm_directory_view_get_selection_for_file_transfer (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selection_for_file_transfer, (view));
+}
+
 
 guint
 fm_directory_view_get_item_count (FMDirectoryView *view)
@@ -5456,7 +5468,7 @@ action_copy_files_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, FALSE);
 	nautilus_file_list_free (selection);
 }
@@ -5470,7 +5482,7 @@ action_cut_files_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	selection = fm_directory_view_get_selection (view);
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
 	copy_or_cut_files (view, selection, TRUE);
 	nautilus_file_list_free (selection);
 }
@@ -8729,6 +8741,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_background_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection_for_file_transfer);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_item_count);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, is_empty);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, reset_to_defaults);
