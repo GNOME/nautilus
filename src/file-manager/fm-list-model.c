@@ -43,6 +43,9 @@ enum {
 	LAST_SIGNAL
 };
 
+/* msec delay after Loading... dummy row turns into (empty) */
+#define LOADING_TO_EMPTY_DELAY 100
+
 static guint list_model_signals[LAST_SIGNAL] = { 0 };
 
 static int fm_list_model_file_entry_compare_func (gconstpointer a,
@@ -1510,44 +1513,82 @@ fm_list_model_get_type (void)
 	return object_type;
 }
 
-void
-fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *directory)
+struct ChangeDummyData {
+	FMListModel *model;
+	NautilusFile *file;
+};
+
+static gboolean
+change_dummy_row_callback (gpointer callback_data)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	FileEntry *file_entry, *dummy_entry;
-	NautilusFile *parent_file;
 	GSequencePtr parent_ptr, dummy_ptr;
+	FMListModel *model;
 	GSequence *files;
+	
+	struct ChangeDummyData *data;
+	data = callback_data;
+
+	if (data->model != NULL) {
+		model = data->model;
+		
+		parent_ptr = g_hash_table_lookup (model->details->reverse_map,
+						  data->file);
+		file_entry = g_sequence_ptr_get_data (parent_ptr);
+
+		file_entry->loaded = 1;
+		files = file_entry->files;
+	
+		if (g_sequence_get_length (files) == 1) {
+			dummy_ptr = g_sequence_get_ptr_at_pos (file_entry->files, 0);
+			dummy_entry = g_sequence_ptr_get_data (dummy_ptr);
+			if (dummy_entry->file == NULL) {
+				/* was the dummy file */
+				
+				iter.stamp = model->details->stamp;
+				iter.user_data = dummy_ptr;
+				
+				path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+				gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
+				gtk_tree_path_free (path);
+			}
+		}
+	}
+
+	eel_remove_weak_pointer (&data->model);
+	nautilus_file_unref (data->file);
+	g_free (data);
+	
+	return FALSE;
+}
+
+void
+fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *directory)
+{
+	NautilusFile *parent_file;
+	GSequencePtr parent_ptr;
+	struct ChangeDummyData *data;
 
 	parent_file = nautilus_directory_get_corresponding_file (directory);
 	parent_ptr = g_hash_table_lookup (model->details->reverse_map,
 					  parent_file);
-	nautilus_file_unref (parent_file);
 	if (parent_ptr == NULL) {
-		return;
-	}
-	
-	file_entry = g_sequence_ptr_get_data (parent_ptr);
-	file_entry->loaded = 1;
-	files = file_entry->files;
-	if (g_sequence_get_length (files) == 0) {
+		nautilus_file_unref (parent_file);
 		return;
 	}
 
-	dummy_ptr = g_sequence_get_ptr_at_pos (files, 0);
-	dummy_entry = g_sequence_ptr_get_data (dummy_ptr);
-	if (dummy_entry->file != NULL) {
-		/* real file */
-		return;
-	}
-	
-	iter.stamp = model->details->stamp;
-	iter.user_data = dummy_ptr;
+	/* Delay slightly before sending the change even for the dummy
+	 * row, to avoid flicker from loading -> empty -> file if we
+	 * get files added quickly.
+	 */
+	data = g_new (struct ChangeDummyData, 1);
+	data->model = model;
+	data->file = nautilus_file_ref (parent_file);
+	eel_add_weak_pointer (&data->model);
 
-	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-	
-	gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
+	g_timeout_add (LOADING_TO_EMPTY_DELAY, change_dummy_row_callback, data);
 
-	gtk_tree_path_free (path);
+	nautilus_file_unref (parent_file);
 }
