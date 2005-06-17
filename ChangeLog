@@ -1,5 +1,15 @@
 2005-06-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-model.c (fm_list_model_add_file):
+	Handle moves between open subdirectories. We handle
+	this in file adding when the file already exists in
+	the tree, but in another place. This is sort of a hack,
+	but is required due to how the list view merges the initial
+	change being sent to the original directory and the add to the
+	new directory.
+
+2005-06-17  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(nautilus_file_operations_copy_move):
 	Handle duplication of files in two subdirectories at

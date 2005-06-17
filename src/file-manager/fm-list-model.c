@@ -814,13 +814,41 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 	GtkTreePath *path;
 	FileEntry *file_entry;
 	NautilusFile *parent_file;
-	GSequencePtr parent_ptr;
+	GSequencePtr ptr, parent_ptr;
 	GSequence *files;
 	gboolean replace_dummy;
 
-	/* We may only add each file once. */
-	if (fm_list_model_get_tree_iter_from_file (model, file, NULL)) {
-		return FALSE;
+	/* We may only add each file once, in one dir. */
+	ptr = g_hash_table_lookup (model->details->reverse_map, file);
+	if (ptr != NULL) {
+		file_entry = g_sequence_ptr_get_data (ptr);
+		
+		parent_file = nautilus_file_get_parent (file);
+		if (parent_file == NULL) {
+			return FALSE;
+		}
+		parent_ptr = g_hash_table_lookup (model->details->reverse_map,
+						  parent_file);
+		nautilus_file_unref (parent_file);
+		if (/* toplevel parent */
+		    (file_entry->parent == NULL && parent_ptr == NULL) ||
+		    /* same in-tree parent */
+		    (file_entry->parent != NULL && parent_ptr != NULL &&
+		     file_entry->parent->ptr == parent_ptr) ) {
+			/* Don't add twice in same place */
+			return FALSE; 
+		}
+
+		/* file has a new parent, due to a move
+		 * this happens because a move results in a
+		 * CHANGE event and an ADD event, and
+		 * if the target directory of the move is
+		 * added to the FMDirectoryView
+		 * then we won't remove the changed file.
+		 */
+		fm_list_model_remove_file (model, file);
+
+		/* Now add it back again in the new place. */
 	}
 
 	nautilus_file_ref (file);
