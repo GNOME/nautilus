@@ -955,9 +955,7 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 	FileEntry *file_entry, *child_file_entry, *parent_file_entry;
 	GtkTreePath *path;
 	GtkTreeIter parent_iter;
-	gboolean add_dummy;
 
-	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 	ptr = iter->user_data;
 	file_entry = g_sequence_ptr_get_data (ptr);
 	
@@ -969,24 +967,29 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 				fm_list_model_remove_file (model,
 							child_file_entry->file);
 			} else {
+				path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 				gtk_tree_path_append_index (path, 0);
 				model->details->stamp++;
 				g_sequence_remove (child_ptr);
 				gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
-				gtk_tree_path_up (path);
+				gtk_tree_path_free (path);
 			}
-
 		}
+			
+		/* the parent iter didn't actually change */
+		iter->stamp = model->details->stamp;
 	}
 
 	g_hash_table_remove (model->details->reverse_map, file_entry->file);
 
-	add_dummy = FALSE;
 	parent_file_entry = file_entry->parent;
 	if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 1 &&
 	    file_entry->file != NULL) {
 		/* this is the last non-dummy child, add a dummy node */
-		add_dummy = TRUE;
+		/* We need to do this before removing the last file to avoid
+		 * collapsing the row.
+		 */
+		add_dummy_row (model, parent_file_entry);
 	}
 
 	if (file_entry->subdirectory != NULL) {
@@ -995,16 +998,15 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 			       file_entry->subdirectory);
 	}
 	
-	g_sequence_remove (ptr);
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 	
+	g_sequence_remove (ptr);
 	model->details->stamp++;
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	
 	gtk_tree_path_free (path);
 
-	if (add_dummy) {
-		add_dummy_row (model, parent_file_entry);
-	} else if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 0) {
+	if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 0) {
 		parent_iter.stamp = model->details->stamp;
 		parent_iter.user_data = parent_file_entry->ptr;
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &parent_iter);

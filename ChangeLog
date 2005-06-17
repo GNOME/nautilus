@@ -1,5 +1,11 @@
 2005-06-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-model.c: (fm_list_model_remove):
+	On remove, add dummy node before removing file so the
+	row isn't collapsed.
+
+2005-06-17  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-model.c: (fm_list_model_get_value),
 	(fm_list_model_unload_subdirectory),
 	(fm_list_model_subdirectory_done_loading):
