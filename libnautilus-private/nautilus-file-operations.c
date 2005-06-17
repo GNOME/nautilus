@@ -1841,9 +1841,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		} else {
 			/* duplication */
 			target_uri = gnome_vfs_uri_ref (source_uri);
-			if (target_dir_uri == NULL) {
-				target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
+			if (target_dir_uri != NULL) {
+				gnome_vfs_uri_unref (target_dir_uri);
 			}
+			target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
 		}
 		
 		if (target_uri != NULL) {
