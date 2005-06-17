@@ -974,10 +974,11 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 				gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 				gtk_tree_path_free (path);
 			}
+			
+			/* the parent iter didn't actually change */
+			iter->stamp = model->details->stamp;
 		}
 			
-		/* the parent iter didn't actually change */
-		iter->stamp = model->details->stamp;
 	}
 
 	g_hash_table_remove (model->details->reverse_map, file_entry->file);
