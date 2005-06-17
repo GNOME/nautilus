@@ -481,7 +481,6 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	static int click_count = 0;
 	int double_click_time;
 	int expander_size, horizontal_separator;
-	NautilusFile *file;
 
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
@@ -567,14 +566,6 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 				call_parent = FALSE;
 			} 
 			
-			file = fm_list_model_file_for_path (view->details->model, path);
-			if (file == NULL) {
-				/* this is the dummy loading node */
-				call_parent = FALSE;
-			} else {
-				nautilus_file_unref (file);
-			}
-
 			if ((event->button == 1 || event->button == 2) &&
 			    ((event->state & GDK_CONTROL_MASK) != 0 ||
 			     (event->state & GDK_SHIFT_MASK) == 0)) {

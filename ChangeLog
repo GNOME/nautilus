@@ -1,5 +1,12 @@
 2005-06-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c: (button_press_callback):
+	Allow selection of the dummy node. Otherwise things
+	got all strange: You could still select it using ranges, and
+	if you double clicked on it you activated the old selection.
+
+2005-06-17  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-model.c: (fm_list_model_remove):
 	On remove, add dummy node before removing file so the
 	row isn't collapsed.
