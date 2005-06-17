@@ -1,5 +1,13 @@
 2005-06-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_value),
+	(fm_list_model_unload_subdirectory),
+	(fm_list_model_subdirectory_done_loading):
+	Keep track of done_loading in parent instead of in dummy node.
+	That way it doesn't get lost when the dummy node is recreated.
+
+2005-06-17  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-model.c (fm_list_model_add_file):
 	Handle moves between open subdirectories. We handle
 	this in file adding when the file already exists in

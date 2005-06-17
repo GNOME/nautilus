@@ -357,7 +357,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 									       attribute);
 				g_value_set_string_take_ownership (value, str);
 			} else if (!strcmp (attribute, "name")) {
-				if (file_entry->loaded) {
+				if (file_entry->parent->loaded) {
 					g_value_set_string (value, _("(Empty)"));
 				} else {
 					g_value_set_string (value, _("Loading..."));
@@ -1104,6 +1104,8 @@ fm_list_model_unload_subdirectory (FMListModel *model, GtkTreeIter *iter)
 		return;
 	}
 
+	file_entry->loaded = 0;
+	
 	/* Remove all children */
 	while (g_sequence_get_length (file_entry->files) > 0) {
 		child_ptr = g_sequence_get_begin_ptr (file_entry->files);
@@ -1524,6 +1526,7 @@ fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *
 	}
 	
 	file_entry = g_sequence_ptr_get_data (parent_ptr);
+	file_entry->loaded = 1;
 	files = file_entry->files;
 	if (g_sequence_get_length (files) == 0) {
 		return;
@@ -1535,8 +1538,6 @@ fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *
 		/* real file */
 		return;
 	}
-	
-	dummy_entry->loaded = 1;
 	
 	iter.stamp = model->details->stamp;
 	iter.user_data = dummy_ptr;
