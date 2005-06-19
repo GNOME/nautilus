@@ -479,14 +479,14 @@ nautilus_throbber_finalize (GObject *object)
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 	
-	g_free (throbber->details);
-
 	if (throbber->details->icon_theme_changed_tag != 0) {
 		g_signal_handler_disconnect (gtk_icon_theme_get_default (),
 					     throbber->details->icon_theme_changed_tag);
 		throbber->details->icon_theme_changed_tag = 0;
 	}
-	
+
+	g_free (throbber->details);
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
