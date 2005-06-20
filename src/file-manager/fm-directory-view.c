@@ -5499,7 +5499,8 @@ paste_clipboard_data (FMDirectoryView *view,
 	char **lines;
 	gboolean cut;
 	GList *item_uris;
-	
+
+	cut = FALSE;
 	if (selection_data->type != copied_files_atom
 	    || selection_data->length <= 0) {
 		item_uris = NULL;
