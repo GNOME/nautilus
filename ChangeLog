@@ -1,3 +1,11 @@
+2005-06-20  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(start_or_stop_io), (file_needs_high_priority_work_done),
+	(file_needs_low_priority_work_done):
+	Make mime sniffing a high priority job. Prevents activation
+	from getting blocked by deep count I/O. (#145560)
+
 2005-06-15  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c: (new_folder_done),
