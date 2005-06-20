@@ -4358,13 +4358,13 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
-	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = -3 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = -2 * PANGO_SCALE;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = -2 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = -0 * PANGO_SCALE;
         details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 0 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 2 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 4 * PANGO_SCALE;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 4 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 0 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 0 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 0 * PANGO_SCALE;
 
 	container->details = details;
 
