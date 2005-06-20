@@ -257,8 +257,7 @@ fm_list_view_did_not_drag (FMListView *view,
 		if ((event->button == 1 || event->button == 2)
 		    && ((event->state & GDK_CONTROL_MASK) != 0 ||
 			(event->state & GDK_SHIFT_MASK) == 0)
-		    && view->details->row_selected_on_button_down
-		    && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)) {
+		    && view->details->row_selected_on_button_down) {
 			if (!button_event_modifies_selection (event)) {
 				gtk_tree_selection_unselect_all (selection);
 				gtk_tree_selection_select_path (selection, path);
