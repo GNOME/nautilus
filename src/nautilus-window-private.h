@@ -171,6 +171,7 @@ void               nautilus_window_initialize_menus                      (Nautil
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
                                                                           NautilusBookmark  *bookmark, 
                                                                           const char        *parent_path,
+                                                                          const char        *parent_id,
                                                                           guint              index_in_parent,
                                                                           GtkActionGroup    *action_group,
                                                                           guint              merge_id,

@@ -138,6 +138,7 @@ void
 nautilus_menus_append_bookmark_to_menu (NautilusWindow *window, 
 					NautilusBookmark *bookmark, 
 					const char *parent_path,
+					const char *parent_id,
 					guint index_in_parent,
 					GtkActionGroup *action_group,
 					guint merge_id,
@@ -168,7 +169,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	/* Create menu item with pixbuf */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
 
-	action_name = g_strdup_printf ("bookmark_%d", index_in_parent);
+	action_name = g_strdup_printf ("bookmark_%s_%d", parent_id, index_in_parent);
 
 	action = gtk_action_new (action_name,
 				 display_name,
