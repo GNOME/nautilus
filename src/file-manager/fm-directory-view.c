@@ -4015,7 +4015,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 							   menu_path, popup_path);
 		}
 		gnome_vfs_mime_application_list_free (applications);
-		
+		gnome_vfs_mime_application_free (default_app);
 		g_free (uri);
 
 		submenu_visible = (num_applications > 3);
@@ -6140,8 +6140,8 @@ real_update_menus_volumes (FMDirectoryView *view,
 			     eel_istr_has_prefix (uri, "dav:") ||
 			     eel_istr_has_prefix (uri, "davs:"))) {
 				show_connect = TRUE;
-				g_free (uri);
 			}
+			g_free (uri);
 		} else if (nautilus_file_is_mime_type (file,
 						       "x-directory/smb-share")) {
 			show_connect = TRUE;
