@@ -2447,7 +2447,11 @@ process_old_files (FMDirectoryView *view)
 		nautilus_file_list_free (view->details->old_added_files);
 		view->details->old_added_files = NULL;
 
-		nautilus_file_list_free (view->details->old_changed_files);
+		/* We free files_changed here instead of view->details->old_changed_files 
+		 * because the call to eel_g_lists_sort_and_check_for_intersection might
+		 * change the first element, and so we might lose files to free.
+		 */
+		nautilus_file_list_free (files_changed);
 		view->details->old_changed_files = NULL;
 	}
 
