@@ -3251,7 +3251,6 @@ start_or_stop_io (NautilusDirectory *directory)
 
 		if (file_needs_low_priority_work_done (directory, file)) {
 			/* Start getting attributes if possible */
-			file_info_start (directory, file); /* for slow mime type */
 			directory_count_start (directory, file);
 			deep_count_start (directory, file);
 			mime_list_start (directory, file);
@@ -3480,6 +3479,10 @@ file_needs_high_priority_work_done (NautilusDirectory *directory,
 		return TRUE;
 	}
 
+	if (is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
+		return TRUE;
+	}
+
 	return FALSE;
 }
 
@@ -3496,10 +3499,6 @@ file_needs_low_priority_work_done (NautilusDirectory *directory,
 	}
 
 	if (is_needy (file, lacks_mime_list, wants_mime_list)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
 		return TRUE;
 	}
 
