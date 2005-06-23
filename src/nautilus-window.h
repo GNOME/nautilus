@@ -54,6 +54,7 @@ typedef struct {
         GtkWindowClass parent_spot;
 
         NautilusWindowType window_type;
+        const char *bookmarks_placeholder;
 
 	/* Function pointers for overriding, without corresponding signals */
 

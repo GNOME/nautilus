@@ -1,5 +1,23 @@
 2005-06-23  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-bookmark-list.c:
+	Fix handling of notification of .gtk-bookmark file changes.
+	
+	* src/Makefile.am:
+	* src/nautilus-window-bookmarks.[ch]: 
+	* src/nautilus-application.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.[ch]:
+	Move most bookmark stuff to nautilus-window-bookmarks and
+	put bookmarks in spatial windows too.
+
+2005-06-23  Alexander Larsson  <alexl@redhat.com>
+
         Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
 	
 	* src/nautilus-bookmark-list.[ch]:

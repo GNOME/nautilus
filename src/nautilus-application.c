@@ -49,6 +49,7 @@
 #include "nautilus-navigation-window.h"
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
+#include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>

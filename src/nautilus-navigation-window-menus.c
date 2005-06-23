@@ -39,10 +39,9 @@
 #include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
-#include <eel/eel-debug.h>
+#include "nautilus-window-bookmarks.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -63,20 +62,10 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
-#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
 
 #define RESPONSE_FORGET		1000
 
-static GtkWindow *bookmarks_window = NULL;
-static NautilusBookmarkList *bookmarks = NULL;
-
 static void                  schedule_refresh_go_menu                      (NautilusNavigationWindow   *window);
-static void                  append_dynamic_bookmarks                      (NautilusNavigationWindow   *window);
-static void                  schedule_refresh_bookmarks_menu               (NautilusNavigationWindow   *window);
-static void                  refresh_bookmarks_menu                        (NautilusNavigationWindow   *window);
-static void                  add_bookmark_for_current_location             (NautilusNavigationWindow   *window);
-static void                  edit_bookmarks                                (NautilusNavigationWindow   *window);
-static NautilusBookmarkList *get_bookmark_list                             (void);
 
 static void
 action_close_all_windows_callback (GtkAction *action, 
@@ -226,178 +215,14 @@ static void
 action_add_bookmark_callback (GtkAction *action,
 			      gpointer user_data)
 {
-        add_bookmark_for_current_location (NAUTILUS_NAVIGATION_WINDOW (user_data));
+        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
 }
 
 static void
 action_edit_bookmarks_callback (GtkAction *action, 
 				gpointer user_data)
 {
-        edit_bookmarks (NAUTILUS_NAVIGATION_WINDOW (user_data));
-}
-
-static void
-free_bookmark_list (void)
-{
-	g_object_unref (bookmarks);
-}
-
-static NautilusBookmarkList *
-get_bookmark_list (void)
-{
-        if (bookmarks == NULL) {
-                bookmarks = nautilus_bookmark_list_new ();
-                eel_debug_call_at_shutdown (free_bookmark_list);
-        }
-	
-        return bookmarks;
-}
-
-
-static void
-remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
-{
-	const char *uri;
-
-	g_assert (GTK_IS_DIALOG (dialog));
-	g_assert (callback_data != NULL);
-
-	if (response == GTK_RESPONSE_YES) {
-		uri = callback_data;
-		nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
-	}
-
-	gtk_object_destroy (GTK_OBJECT (dialog));
-}
-
-static void
-show_bogus_bookmark_window (NautilusWindow *window,
-			    NautilusBookmark *bookmark)
-{
-	GtkDialog *dialog;
-	char *uri;
-	char *uri_for_display;
-	char *prompt;
-	char *detail;
-
-	uri = nautilus_bookmark_get_uri (bookmark);
-	uri_for_display = eel_format_uri_for_display (uri);
-	
-	prompt = _("Do you want to remove any bookmarks with the "
-		   "non-existing location from your list?");
-	detail = g_strdup_printf (_("The location \"%s\" does not exist."), uri_for_display);
-	
-	dialog = eel_show_yes_no_dialog (prompt, detail,
-					 _("Bookmark for Nonexistent Location"),
-					 _("Remove"), GTK_STOCK_CANCEL,
-					 GTK_WINDOW (window));
-	
-	eel_gtk_signal_connect_free_data
-		(GTK_OBJECT (dialog),
-		 "response",
-		 G_CALLBACK (remove_bookmarks_for_uri_if_yes),
-		 g_strdup (uri));
-	
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
-
-	g_free (uri);
-	g_free (uri_for_display);
-	g_free (detail);
-}
-
-static GtkWindow *
-get_or_create_bookmarks_window (GObject *undo_manager_source)
-{
-	if (bookmarks_window == NULL) {
-		bookmarks_window = create_bookmarks_window (get_bookmark_list(), undo_manager_source);
-	} else {
-		edit_bookmarks_dialog_set_signals (undo_manager_source);
-	}
-
-	return bookmarks_window;
-}
-
-/**
- * nautilus_bookmarks_exiting:
- * 
- * Last chance to save state before app exits.
- * Called when application exits; don't call from anywhere else.
- **/
-void
-nautilus_bookmarks_exiting (void)
-{
-	if (bookmarks_window != NULL) {
-		nautilus_bookmarks_window_save_geometry (bookmarks_window);
-	}
-}
-
-/**
- * add_bookmark_for_current_location
- * 
- * Add a bookmark for the displayed location to the bookmarks menu.
- * Does nothing if there's already a bookmark for the displayed location.
- */
-static void
-add_bookmark_for_current_location (NautilusNavigationWindow *window)
-{
-	NautilusBookmark *bookmark;
-
-	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	bookmark = NAUTILUS_WINDOW (window)->current_location_bookmark;
-
-	if (!nautilus_bookmark_list_contains (get_bookmark_list (), bookmark)) {
-		nautilus_bookmark_list_append (get_bookmark_list (), bookmark); 
-	}
-}
-
-static void
-edit_bookmarks (NautilusNavigationWindow *window)
-{
-	GtkWindow *dialog;
-
-	dialog = get_or_create_bookmarks_window (G_OBJECT (window));
-
-	gtk_window_set_screen (
-		dialog, gtk_window_get_screen (GTK_WINDOW (window)));
-        gtk_window_present (dialog);
-}
-
-static void
-refresh_bookmarks_menu (NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	/* Unregister any pending call to this function. */
-	nautilus_navigation_window_remove_bookmarks_menu_callback (window);
-
-	nautilus_navigation_window_remove_bookmarks_menu_items (window);
-	append_dynamic_bookmarks (window);
-}
-
-/**
- * nautilus_navigation_window_initialize_bookmarks_menu
- * 
- * Fill in bookmarks menu with stored bookmarks, and wire up signals
- * so we'll be notified when bookmark list changes.
- */
-static void 
-nautilus_navigation_window_initialize_bookmarks_menu (NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	/* Construct the initial set of bookmarks. */
-	refresh_bookmarks_menu (window);
-
-	/* Recreate dynamic part of menu if bookmark list changes */
-	g_signal_connect_object (get_bookmark_list (), "contents_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu),
-				 window, G_CONNECT_SWAPPED);
-
-	/* Recreate static & dynamic parts of menu if icon theme changes */
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu),
-				 window, G_CONNECT_SWAPPED);
+        nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
 
 void
@@ -426,6 +251,30 @@ nautilus_navigation_window_remove_go_menu_items (NautilusNavigationWindow *windo
 		window->details->go_menu_action_group = NULL;
 	}
 }
+
+static void
+show_bogus_history_window (NautilusWindow *window,
+			    NautilusBookmark *bookmark)
+{
+	char *uri;
+	char *uri_for_display;
+	char *detail;
+
+	uri = nautilus_bookmark_get_uri (bookmark);
+	uri_for_display = eel_format_uri_for_display (uri);
+	
+	detail = g_strdup_printf (_("The location \"%s\" does not exist."), uri_for_display);
+
+	eel_show_warning_dialog (_("The history location doesn't exist."),
+				 detail,
+				 _("Bookmark for Nonexistent Location"),
+				 GTK_WINDOW (window));
+
+	g_free (uri);
+	g_free (uri_for_display);
+	g_free (detail);
+}
+
 
 /**
  * refresh_go_menu:
@@ -471,7 +320,7 @@ refresh_go_menu (NautilusNavigationWindow *window)
 			 window->details->go_menu_action_group,
 			 window->details->go_menu_merge_id,
 			 G_CALLBACK (schedule_refresh_go_menu),
-			 show_bogus_bookmark_window);
+			 show_bogus_history_window);
 	}
 }
 
@@ -660,98 +509,5 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 
         nautilus_navigation_window_initialize_go_menu (window);
-        nautilus_navigation_window_initialize_bookmarks_menu (window);
-
 }
-
-void
-nautilus_navigation_window_remove_bookmarks_menu_callback (NautilusNavigationWindow *window)
-{
-        if (window->details->refresh_bookmarks_menu_idle_id != 0) {
-                g_source_remove (window->details->refresh_bookmarks_menu_idle_id);
-		window->details->refresh_bookmarks_menu_idle_id = 0;
-        }
-}
-
-void
-nautilus_navigation_window_remove_bookmarks_menu_items (NautilusNavigationWindow *window)
-{
-	GtkUIManager *ui_manager;
-	
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-	if (window->details->bookmarks_merge_id != 0) {
-		gtk_ui_manager_remove_ui (ui_manager,
-					  window->details->bookmarks_merge_id);
-		window->details->bookmarks_merge_id = 0;
-	}
-	if (window->details->bookmarks_action_group != NULL) {
-		gtk_ui_manager_remove_action_group (ui_manager,
-						    window->details->bookmarks_action_group);
-		window->details->bookmarks_action_group = NULL;
-	}
-}
-
-static void
-append_dynamic_bookmarks (NautilusNavigationWindow *window)
-{
-        NautilusBookmarkList *bookmarks;
-	guint bookmark_count;
-	guint index;
-	GtkUIManager *ui_manager;
-
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	g_assert (window->details->bookmarks_merge_id == 0);
-	g_assert (window->details->bookmarks_action_group == NULL);
-
-	bookmarks = get_bookmark_list ();
-
-	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
-	
-	window->details->bookmarks_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
-	window->details->bookmarks_action_group = gtk_action_group_new ("BookmarksGroup");
-
-	gtk_ui_manager_insert_action_group (ui_manager,
-					    window->details->bookmarks_action_group,
-					    -1);
-	g_object_unref (window->details->bookmarks_action_group);
-
-	/* append new set of bookmarks */
-	bookmark_count = nautilus_bookmark_list_length (bookmarks);
-	for (index = 0; index < bookmark_count; ++index) {
-		nautilus_menus_append_bookmark_to_menu
-			(NAUTILUS_WINDOW (window), 
-			 nautilus_bookmark_list_item_at (bookmarks, index),
-			 MENU_PATH_BOOKMARKS_PLACEHOLDER,
-			 "dynamic",
-			 index,
-			 window->details->bookmarks_action_group,
-			 window->details->bookmarks_merge_id,
-			 G_CALLBACK (schedule_refresh_bookmarks_menu), 
-			 show_bogus_bookmark_window);
-	}
-}
-
-static gboolean
-refresh_bookmarks_menu_idle_callback (gpointer data)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (data));
-
-	refresh_bookmarks_menu (NAUTILUS_NAVIGATION_WINDOW (data));
-
-        /* Don't call this again (unless rescheduled) */
-        return FALSE;
-}
-
-static void
-schedule_refresh_bookmarks_menu (NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	if (window->details->refresh_bookmarks_menu_idle_id == 0) {
-                window->details->refresh_bookmarks_menu_idle_id
-                        = g_idle_add (refresh_bookmarks_menu_idle_callback,
-				      window);
-	}	
-}
-
 

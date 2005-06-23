@@ -93,6 +93,8 @@
 
 #define MAX_TITLE_LENGTH 180
 
+#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
+
 enum {
 	ARG_0,
 	ARG_APP_ID,
@@ -435,7 +437,6 @@ nautilus_navigation_window_finalize (GObject *object)
 	
 	window = NAUTILUS_NAVIGATION_WINDOW (object);
 
-	nautilus_navigation_window_remove_bookmarks_menu_callback (window);
 	nautilus_navigation_window_remove_go_menu_callback (window);
 	nautilus_navigation_window_clear_back_list (window);
 	nautilus_navigation_window_clear_forward_list (window);
@@ -1090,7 +1091,8 @@ static void
 nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 {
 	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_NAVIGATION;
-
+	NAUTILUS_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_BOOKMARKS_PLACEHOLDER;
+	
 	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_navigation_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;

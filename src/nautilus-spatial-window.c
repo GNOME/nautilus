@@ -30,6 +30,7 @@
 #include <config.h>
 #include "nautilus-spatial-window.h"
 #include "nautilus-window-private.h"
+#include "nautilus-window-bookmarks.h"
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
@@ -85,6 +86,7 @@
 #define SPATIAL_ACTION_GO_TO_LOCATION       "Go to Location"
 #define SPATIAL_ACTION_CLOSE_PARENT_FOLDERS "Close Parent Folders"
 #define SPATIAL_ACTION_CLOSE_ALL_FOLDERS    "Close All Folders"
+#define MENU_PATH_SPATIAL_BOOKMARKS_PLACEHOLDER	"/MenuBar/Other Menus/Places/Bookmarks Placeholder"
 
 struct _NautilusSpatialWindowDetails {
         GtkActionGroup *spatial_action_group; /* owned by ui_manager */
@@ -744,6 +746,20 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window);
 }			   
 
+static void
+action_add_bookmark_callback (GtkAction *action,
+			      gpointer user_data)
+{
+        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+action_edit_bookmarks_callback (GtkAction *action, 
+				gpointer user_data)
+{
+        nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
+}
+
 static const GtkActionEntry spatial_entries[] = {
   { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },               /* name, stock id, label */
   { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."), /* name, stock id, label */
@@ -755,6 +771,12 @@ static const GtkActionEntry spatial_entries[] = {
   { SPATIAL_ACTION_CLOSE_ALL_FOLDERS, NULL, N_("Clos_e All Folders"), /* name, stock id, label */
     "<control>Q", N_("Close all folder windows"),
     G_CALLBACK (action_close_all_folders_callback) },
+  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"), /* name, stock id, label */
+    "<control>d", N_("Add a bookmark for the current location to this menu"),
+    G_CALLBACK (action_add_bookmark_callback) },
+  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
+    "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
+    G_CALLBACK (action_edit_bookmarks_callback) },
 };
 
 static void
@@ -859,6 +881,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 	GtkBindingSet *binding_set;
 	
 	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_SPATIAL;
+	NAUTILUS_WINDOW_CLASS (class)->bookmarks_placeholder = MENU_PATH_SPATIAL_BOOKMARKS_PLACEHOLDER;
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_spatial_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_spatial_window_destroy;

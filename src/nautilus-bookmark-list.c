@@ -158,16 +158,19 @@ static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {	
 	
-	char 		      *uri;
+	char *file, *uri;
+	GnomeVFSResult res;
 
 	nautilus_bookmark_list_load_file (bookmarks);
-	uri = nautilus_bookmark_list_get_file_path ();
-	gnome_vfs_monitor_add ( &bookmarks->handle,
+	file = nautilus_bookmark_list_get_file_path ();
+	uri = gnome_vfs_get_uri_from_local_path (file);
+	res = gnome_vfs_monitor_add ( &bookmarks->handle,
 				uri,
 				GNOME_VFS_MONITOR_FILE,
 				bookmark_monitor_notify_cb,
 				bookmarks);
 	g_free (uri);
+	g_free (file);
 }
 
 EEL_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
@@ -573,6 +576,7 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 		/* temporarily disable bookmark file monitoring when writing file */
 		if (bookmarks->handle != NULL) {
 			gnome_vfs_monitor_cancel (bookmarks->handle);
+			bookmarks->handle = NULL;
 		}
 
       		if (rename (tmp_filename, filename) == -1) {
@@ -598,7 +602,6 @@ io_error:
 	}	
 
 out:	
-	
 	
 	/* re-enable bookmark file monitoring */
 	gnome_vfs_monitor_add (&bookmarks->handle,
@@ -648,7 +651,8 @@ bookmark_monitor_notify_cb (GnomeVFSMonitorHandle    *handle,
 		            GnomeVFSMonitorEventType  event_type,
 		            gpointer                  user_data)
 {
-	if (event_type == GNOME_VFS_MONITOR_EVENT_CHANGED) {
+	if (event_type == GNOME_VFS_MONITOR_EVENT_CHANGED ||
+	    event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
 		g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST(user_data)));
 		nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST(user_data));
 		g_signal_emit (user_data, 

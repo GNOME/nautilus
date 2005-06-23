@@ -61,6 +61,10 @@ struct NautilusWindowDetails
         guint extensions_menu_merge_id;
         GtkActionGroup *extensions_menu_action_group;
 
+        GtkActionGroup *bookmarks_action_group;
+        guint refresh_bookmarks_menu_idle_id;
+        guint bookmarks_merge_id;
+        
         /* Current location. */
         char *location;
 	char *title;
@@ -103,10 +107,6 @@ struct _NautilusNavigationWindowDetails {
         NautilusSidebar *current_side_panel;
 
 	/* Menus */
-        GtkActionGroup *bookmarks_action_group;
-        guint refresh_bookmarks_menu_idle_id;
-        guint bookmarks_merge_id;
-        
         GtkActionGroup *go_menu_action_group;
 	guint refresh_go_menu_idle_id;
         guint go_menu_merge_id;

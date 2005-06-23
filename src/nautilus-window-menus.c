@@ -36,6 +36,7 @@
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
+#include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
 #include <eel/eel-debug.h>
@@ -718,6 +719,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
 		gtk_action_set_visible (action, FALSE);
 	}
+
+	nautilus_window_initialize_bookmarks_menu (window);
 }
 
 static GList *
@@ -809,3 +812,5 @@ nautilus_window_load_extension_menus (NautilusWindow *window)
 
 	g_list_free (items);
 }
+
+

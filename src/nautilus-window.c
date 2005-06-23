@@ -37,6 +37,7 @@
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
+#include "nautilus-window-bookmarks.h"
 #include "nautilus-zoom-control.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
@@ -535,6 +536,8 @@ nautilus_window_finalize (GObject *object)
 	
 	window = NAUTILUS_WINDOW (object);
 
+	nautilus_window_remove_bookmarks_menu_callback (window);
+	
 	nautilus_window_manage_views_finalize (window);
 
 	nautilus_window_set_viewed_file (window, NULL);

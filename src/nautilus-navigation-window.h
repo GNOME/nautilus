@@ -85,7 +85,6 @@ void     nautilus_navigation_window_allow_forward        (NautilusNavigationWind
 void     nautilus_navigation_window_clear_back_list      (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_clear_forward_list   (NautilusNavigationWindow *window);
 void     nautilus_forget_history                         (void);
-void     nautilus_bookmarks_exiting                      (void);
 gint     nautilus_navigation_window_get_base_page_index  (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_location_bar    (NautilusNavigationWindow *window,
                                                           gboolean                  save_preference);
