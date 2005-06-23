@@ -29,6 +29,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
+#include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -46,6 +47,42 @@
 #define DESKTOP_DIRECTORY_NAME "Desktop"
 #define LEGACY_DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
+
+
+char *
+nautilus_compute_title_for_uri (const char *text_uri)
+{
+	NautilusFile *file;
+	GnomeVFSURI *uri;
+	char *title, *displayname;
+	const char *hostname;
+
+	hostname = NULL;
+
+	if (text_uri) {
+		file = nautilus_file_get (text_uri);
+		uri = gnome_vfs_uri_new (text_uri);
+		if (uri && !gnome_vfs_uri_is_local (uri)) {
+			hostname = gnome_vfs_uri_get_host_name (uri);
+		}
+		displayname = nautilus_file_get_display_name (file);
+		if (hostname) {
+			title = g_strdup_printf (_("%s on %s"), displayname, hostname);
+			g_free (displayname);
+		} else {
+			title = displayname;
+		}
+		if (uri) {
+			gnome_vfs_uri_unref (uri);
+		}
+		nautilus_file_unref (file);
+	} else {
+		title = g_strdup ("");
+	}
+	
+	return title;
+}
+
 
 gboolean
 nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)

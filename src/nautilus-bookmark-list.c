@@ -28,7 +28,6 @@
 #include <config.h>
 #include "nautilus-bookmark-list.h"
 
-#include "nautilus-bookmark-parsing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -36,9 +35,18 @@
 #include <gtk/gtksignal.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libgnome/gnome-macros.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <stdlib.h>
+
+#define MAX_BOOKMARK_LENGTH 80
 
 enum {
 	CONTENTS_CHANGED,
@@ -49,15 +57,80 @@ static guint signals[LAST_SIGNAL];
 static char *window_geometry;
 
 /* forward declarations */
-static void        append_bookmark_node                 (gpointer              list_element,
-							 gpointer              user_data);
+
 static void        destroy                              (GtkObject            *object);
-static const char *nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks);
+static char * 	   nautilus_bookmark_list_get_file_path ();
+static void	   nautilus_bookmark_list_class_init 	(NautilusBookmarkListClass *class);
 static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
 static void        set_window_geometry_internal         (const char           *string);
 static void        stop_monitoring_bookmark             (NautilusBookmarkList *bookmarks,
 							 NautilusBookmark     *bookmark);
+static void 	   bookmark_monitor_notify_cb 		(GnomeVFSMonitorHandle    *handle,
+		   	    				 const gchar              *monitor_uri,
+					                 const gchar              *info_uri,
+		            				 GnomeVFSMonitorEventType  event_type,
+		            				 gpointer                  user_data);
+
+
+static char *
+get_default_bookmark_name (const char *text_uri)
+{
+	char *title;
+
+	title = nautilus_compute_title_for_uri (text_uri);
+	title = eel_str_middle_truncate (title, MAX_BOOKMARK_LENGTH);	
+	return title;
+
+}
+
+static NautilusBookmark *
+new_bookmark_from_uri (const char *uri, const char *label)
+{
+	NautilusBookmark *new_bookmark;
+	NautilusFile *file;
+	char *name, *icon_name;
+	gboolean has_label;
+
+	has_label = FALSE;
+	if (!label) { 
+		name = get_default_bookmark_name (uri);
+	} else {
+		name = g_strdup (label);
+		has_label = TRUE;
+	}
+	
+	if (uri) {
+		file = nautilus_file_get (uri);
+		icon_name = NULL;
+		if (nautilus_icon_factory_is_icon_ready_for_file (file)) {
+			icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+		}
+		if (!icon_name) {
+			icon_name = g_strdup ("gnome-fs-directory");
+		}
+	
+		new_bookmark = nautilus_bookmark_new_with_icon (uri, name, has_label, icon_name);
+		nautilus_file_unref (file);
+		g_free (icon_name);
+		g_free (name);
+
+		return new_bookmark;
+	}
+	
+	g_free (name);
+	return NULL;
+}
+
+static char *
+nautilus_bookmark_list_get_file_path ()
+{
+	char *file_path;
+	file_path = g_build_filename (g_get_home_dir (),
+			       		      ".gtk-bookmarks",
+			       		      NULL);
+	return file_path;
+}
 
 /* Initialization.  */
 
@@ -83,8 +156,18 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 
 static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
-{
+{	
+	
+	char 		      *uri;
+
 	nautilus_bookmark_list_load_file (bookmarks);
+	uri = nautilus_bookmark_list_get_file_path ();
+	gnome_vfs_monitor_add ( &bookmarks->handle,
+				uri,
+				GNOME_VFS_MONITOR_FILE,
+				bookmark_monitor_notify_cb,
+				bookmarks);
+	g_free (uri);
 }
 
 EEL_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
@@ -110,46 +193,14 @@ clear (NautilusBookmarkList *bookmarks)
 static void
 destroy (GtkObject *object)
 {
+	if (NAUTILUS_BOOKMARK_LIST (object)->handle != NULL) {
+		gnome_vfs_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->handle);
+		NAUTILUS_BOOKMARK_LIST (object)->handle = NULL;
+	}
 	clear (NAUTILUS_BOOKMARK_LIST (object));
 }
 
-/**
- * append_bookmark_node:
- * 
- * Foreach function; add a single bookmark xml node to a root node.
- * @data: a NautilusBookmark * that is the data of a GList node
- * @user_data: the xmlNodePtr to add a node to.
- **/
-static void
-append_bookmark_node (gpointer data, gpointer user_data)
-{
-	xmlNodePtr root_node, bookmark_node;
-	NautilusBookmark *bookmark;
-	char *icon;
-	char *bookmark_uri, *bookmark_name;
 
-	g_assert (NAUTILUS_IS_BOOKMARK (data));
-
-	bookmark = NAUTILUS_BOOKMARK (data);
-	root_node = (xmlNodePtr) user_data;	
-
-	bookmark_name = nautilus_bookmark_get_name (bookmark);
-	bookmark_uri = nautilus_bookmark_get_uri (bookmark);
-
-	bookmark_node = xmlNewChild (root_node, NULL, "bookmark", NULL);
-	xmlSetProp (bookmark_node, "name", bookmark_name);
-	xmlSetProp (bookmark_node, "uri", bookmark_uri);
-
-	g_free (bookmark_name);
-	g_free (bookmark_uri);
-
-	icon = nautilus_bookmark_get_icon (bookmark);
-	if (icon != NULL) {
-		/* Don't bother storing modifier or embedded text for bookmarks. */
-		xmlSetProp (bookmark_node, "icon_name", icon);
-		g_free (icon);
-	}
-}
 
 static void
 bookmark_in_list_changed_callback (NautilusBookmark *bookmark,
@@ -310,22 +361,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 	}
 }
 
-static const char *
-nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks)
-{
-	/* currently hardwired */
 
-	static char *file_path = NULL;
-	char *user_directory;
-
-	if (file_path == NULL) {
-		user_directory = nautilus_get_user_directory ();
-		file_path = g_build_filename (user_directory, "bookmarks.xml", NULL);
-		g_free (user_directory);
-	}
-
-	return file_path;
-}
 
 /**
  * nautilus_bookmark_list_get_window_geometry:
@@ -409,41 +445,50 @@ nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
 static void
 nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
-	xmlDocPtr doc;
-	xmlNodePtr node;
+	char *filename, *contents;
+
+	filename = nautilus_bookmark_list_get_file_path ();
 
 	/* Wipe out old list. */
 	clear (bookmarks);
 
-	if (!g_file_test (nautilus_bookmark_list_get_file_path (bookmarks),
+	if (!g_file_test (filename,
 			  G_FILE_TEST_EXISTS)) {
+		g_free (filename);
 		return;
 	}
 
 	/* Read new list from file */
-	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
-	for (node = eel_xml_get_root_children (doc);
-	     node != NULL;
-	     node = node->next) {
+	GError **error = NULL;
+	if (g_file_get_contents (filename, &contents, NULL, error)) {
+        	char **lines;
+      		int i;
+		lines = g_strsplit (contents, "\n", -1);
+      	 	for (i = 0; lines[i]; i++) {
+	  		if (lines[i][0]) {
+				/* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space */
+				/* we must seperate the bookmark uri and the potential label */
+ 				char *space, *label;
 
-		if (node->type != XML_ELEMENT_NODE) {
-			continue;
-		}
+				label = NULL;
+      				space = strchr (lines[i], ' ');
+      				if (space) {
+					*space = '\0';
+					label = g_strdup (space + 1);
+				}	
+				insert_bookmark_internal (bookmarks, 
+						          new_bookmark_from_uri (lines[i], label), 
+						          -1);
 
-		if (strcmp (node->name, "bookmark") == 0) {
-			insert_bookmark_internal (bookmarks, 
-						  nautilus_bookmark_new_from_node (node), 
-						  -1);
-		} else if (strcmp (node->name, "window") == 0) {
-			xmlChar *geometry_string;
-			
-			geometry_string = xmlGetProp (node, "geometry");
-			set_window_geometry_internal (geometry_string);
-			xmlFree (geometry_string);
+				if (label) {
+					g_free (label);
+				}
+			}
 		}
+      		g_free (contents);
+       		g_strfreev (lines);
 	}
-	
-	xmlFreeDoc(doc);
+	g_free (filename);
 }
 
 /**
@@ -474,25 +519,99 @@ nautilus_bookmark_list_new (void)
 static void
 nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 {
-	xmlDocPtr doc;
-	xmlNodePtr root, node;
+	char *tmp_filename, *filename;
+	NautilusBookmark *bookmark;
+	FILE *file;
+	int fd;
+	int saved_errno;
 
-	doc = xmlNewDoc ("1.0");
-	root = xmlNewDocNode (doc, NULL, "bookmarks", NULL);
-	xmlDocSetRootElement (doc, root);
+	filename = nautilus_bookmark_list_get_file_path ();
+	tmp_filename = g_strconcat(filename, "XXXXXX", NULL); 
+ 
+ 	/* First, write a temporary file */                                                                                     
+	fd = g_mkstemp (tmp_filename);
+  	if (fd == -1) {
+		g_warning ("make %s failed", tmp_filename);
+      		saved_errno = errno;
+      		goto io_error;
+    	}
 
-	/* save window position */
-	if (window_geometry != NULL) {
-		node = xmlNewChild (root, NULL, "window", NULL);
-		xmlSetProp (node, "geometry", window_geometry);
-	}
+  	if ((file = fdopen (fd, "w")) != NULL) {
+      		GList *l;
 
-	/* save bookmarks */
-	g_list_foreach (bookmarks->list, append_bookmark_node, root);
+	      	for (l = bookmarks->list; l; l = l->next) {
+			char *bookmark_string;
+			bookmark = NAUTILUS_BOOKMARK (l->data);
+			
+			/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
+			if (nautilus_bookmark_get_has_custom_name (bookmark)) {
+				char *label, *uri;
+				label = nautilus_bookmark_get_name (bookmark);
+				uri = nautilus_bookmark_get_uri (bookmark);
+				bookmark_string = g_strconcat (uri, " ", label, NULL);
+				g_free (uri);
+				g_free (label); 
+			} else {
+				bookmark_string = nautilus_bookmark_get_uri (bookmark);
+			}
+			if (fputs (bookmark_string, file) == EOF || fputs ("\n", file) == EOF) {
+	    			saved_errno = errno;
+				g_warning ("writing %s to file failed", bookmark_string); 
+				g_free (bookmark_string);
+	    			goto io_error;
+			}	
+			g_free (bookmark_string);
+		}
 
-	xmlSaveFile (nautilus_bookmark_list_get_file_path (bookmarks), doc);
-	xmlFreeDoc (doc);
+		if (fclose (file) == EOF) {
+	  		saved_errno = errno;
+			g_warning ("fclose file failed");
+	  		goto io_error;
+		}
+
+
+		/* temporarily disable bookmark file monitoring when writing file */
+		if (bookmarks->handle != NULL) {
+			gnome_vfs_monitor_cancel (bookmarks->handle);
+		}
+
+      		if (rename (tmp_filename, filename) == -1) {
+			g_warning ("rename failed");
+	  		saved_errno = errno;
+	  		goto io_error;
+		}
+
+      		goto out;
+    	} else {
+      		saved_errno = errno;
+
+      		/* fdopen() failed, so we can't do much error checking here anyway */
+      		close (fd);
+    	}
+
+io_error:
+	g_warning ("Bookmark saving failed (%d)", saved_errno );
+
+
+	if (fd != -1) {
+		unlink (tmp_filename); /* again, not much error checking we can do here */
+	}	
+
+out:	
+	
+	
+	/* re-enable bookmark file monitoring */
+	gnome_vfs_monitor_add (&bookmarks->handle,
+			        filename,
+				GNOME_VFS_MONITOR_FILE,
+				bookmark_monitor_notify_cb,
+				bookmarks);
+	
+	g_free (filename);
+  	g_free (tmp_filename);
+
 }
+
 
 /**
  * nautilus_bookmark_list_set_window_geometry:
@@ -521,3 +640,19 @@ set_window_geometry_internal (const char *string)
 	g_free (window_geometry);
 	window_geometry = g_strdup (string);
 }
+
+static void 
+bookmark_monitor_notify_cb (GnomeVFSMonitorHandle    *handle,
+		   	    const gchar              *monitor_uri,
+		            const gchar              *info_uri,
+		            GnomeVFSMonitorEventType  event_type,
+		            gpointer                  user_data)
+{
+	if (event_type == GNOME_VFS_MONITOR_EVENT_CHANGED) {
+		g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST(user_data)));
+		nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST(user_data));
+		g_signal_emit (user_data, 
+			       signals[CONTENTS_CHANGED], 0);
+	}
+}
+

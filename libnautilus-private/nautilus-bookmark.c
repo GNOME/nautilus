@@ -55,6 +55,7 @@ static guint signals[LAST_SIGNAL];
 struct NautilusBookmarkDetails
 {
 	char *name;
+	gboolean has_custom_name;
 	char *uri;
 	char *icon;
 	NautilusFile *file;
@@ -192,6 +193,7 @@ nautilus_bookmark_copy (NautilusBookmark *bookmark)
 	return nautilus_bookmark_new_with_icon (
 			bookmark->details->uri,
 			bookmark->details->name,
+			bookmark->details->has_custom_name,
 			bookmark->details->icon);
 }
 
@@ -202,6 +204,16 @@ nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 
 	return g_strdup (bookmark->details->name);
 }
+
+
+gboolean
+nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
+{
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
+
+	return (bookmark->details->has_custom_name);
+}
+
 
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
@@ -280,6 +292,12 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
 
 	return TRUE;
+}
+
+void
+nautilus_bookmark_set_has_custom_name (NautilusBookmark *bookmark, gboolean has_custom_name)
+{
+	bookmark->details->has_custom_name = has_custom_name;
 }
 
 static gboolean
@@ -408,7 +426,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 NautilusBookmark *
 nautilus_bookmark_new (const char *uri, const char *name)
 {
-	return nautilus_bookmark_new_with_icon (uri, name, NULL);
+	return nautilus_bookmark_new_with_icon (uri, name, FALSE, NULL);
 }
 
 static void
@@ -458,7 +476,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 }
 
 NautilusBookmark *
-nautilus_bookmark_new_with_icon (const char *uri, const char *name, 
+nautilus_bookmark_new_with_icon (const char *uri, const char *name, gboolean has_custom_name,
 				 const char *icon)
 {
 	NautilusBookmark *new_bookmark;
@@ -469,7 +487,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 
 	new_bookmark->details->name = g_strdup (name);
 	new_bookmark->details->uri = g_strdup (uri);
-
+	new_bookmark->details->has_custom_name = has_custom_name;
 	new_bookmark->details->icon = g_strdup (icon);
 
 	nautilus_bookmark_connect_file (new_bookmark);

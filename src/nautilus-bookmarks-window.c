@@ -57,6 +57,7 @@ static int		     name_field_changed_signal_id;
 static GtkWidget	    *remove_button = NULL;
 static GtkWidget            *jump_button = NULL;
 static gboolean		     text_changed = FALSE;
+static gboolean		     name_text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
 static int		     uri_field_changed_signal_id;
 static int		     row_changed_signal_id;
@@ -302,6 +303,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 		GTK_TREE_SELECTION (gtk_tree_view_get_selection (bookmark_list_widget));
 
 	name_field = nautilus_entry_new ();
+	
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (glade_xml_get_widget (gui, "bookmark_name_placeholder")),
 			    name_field, TRUE, TRUE, 0);
@@ -529,6 +531,7 @@ on_name_field_changed (GtkEditable *editable,
 			    gtk_entry_get_text (GTK_ENTRY (name_field)),
 			    -1);
 	text_changed = TRUE;
+	name_text_changed = TRUE;
 }
 
 static void
@@ -765,6 +768,7 @@ on_selection_changed (GtkTreeSelection *treeselection,
 	g_signal_handler_unblock (uri_field, uri_field_changed_signal_id);
 
 	text_changed = FALSE;
+	name_text_changed = FALSE;
 
 	g_free (name);
 	g_free (uri);
@@ -785,6 +789,8 @@ update_bookmark_from_text (void)
 		bookmark = nautilus_bookmark_new
 			(gtk_entry_get_text (GTK_ENTRY (uri_field)),
 			 gtk_entry_get_text (GTK_ENTRY (name_field)));
+
+		nautilus_bookmark_set_has_custom_name (bookmark, name_text_changed);
 
 		selected_row = get_selected_row ();
 

@@ -57,8 +57,6 @@ nautilus_SOURCES = \
 	nautilus-application.h			\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
-	nautilus-bookmark-parsing.c		\
-	nautilus-bookmark-parsing.h		\
 	nautilus-bookmarks-window.c		\
 	nautilus-bookmarks-window.h		\
 	nautilus-connect-server-dialog.c	\

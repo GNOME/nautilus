@@ -1,3 +1,23 @@
+2005-06-23  Alexander Larsson  <alexl@redhat.com>
+
+        Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
+	
+	* src/nautilus-bookmark-list.[ch]:
+	Share bookmarks with gtk+.
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	* src/nautilus-window.c: (real_get_title):
+	Move compute_default_title to nautilus_compute_title_for_uri.
+	
+	* libnautilus-private/nautilus-bookmark.[ch]:
+	* src/nautilus-bookmarks-window.c: 
+	Add has_custom_name boolean to NautilusBookmark
+	
+	* src/Makefile.am:
+	* src/nautilus-bookmark-parsing.[ch]:
+	* src/nautilus-navigation-window-menus.c:
+	Remove no longer needed files nautilus-bookmark-parsing.[ch].
+	
 2005-06-20  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/file-manager/fm-directory-view.c: (reset_open_with_menu),

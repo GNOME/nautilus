@@ -959,39 +959,6 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-static char *
-compute_default_title (const char *text_uri)
-{
-	NautilusFile *file;
-	GnomeVFSURI *uri;
-	char *title, *displayname;
-	const char *hostname;
-
-	hostname = NULL;
-
-	if (text_uri) {
-		file = nautilus_file_get (text_uri);
-		uri = gnome_vfs_uri_new (text_uri);
-		if (uri && !gnome_vfs_uri_is_local (uri)) {
-			hostname = gnome_vfs_uri_get_host_name (uri);
-		}
-		displayname = nautilus_file_get_display_name (file);
-		if (hostname) {
-			title = g_strdup_printf (_("%s on %s"), displayname, hostname);
-			g_free (displayname);
-		} else {
-			title = displayname;
-		}
-		if (uri) {
-			gnome_vfs_uri_unref (uri);
-		}
-		nautilus_file_unref (file);
-	} else {
-		title = g_strdup ("");
-	}
-	
-	return title;
-}
 
 static char *
 real_get_title (NautilusWindow *window)
@@ -1007,7 +974,7 @@ real_get_title (NautilusWindow *window)
         }
         
 	if (title == NULL) {
-                title = compute_default_title (window->details->location);
+                title = nautilus_compute_title_for_uri (window->details->location);
         }
 
 	return title;

@@ -33,7 +33,6 @@
 #include "nautilus-navigation-action.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
-#include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
