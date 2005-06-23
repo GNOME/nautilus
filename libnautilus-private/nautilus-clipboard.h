@@ -37,14 +37,13 @@
 /* The shares selection changes argument should be set to true if the
  * widget uses the signal "selection_changed" to tell others about
  * text selection changes.  The NautilusEntry widget
- * is currently the only widget in nautilus that shares selection
- * changes. This feature currently only works for GtkEditables. */
+ * is currently the only editable in nautilus that shares selection
+ * changes. */
 void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
 						    GtkUIManager       *ui_manager,
 						    gboolean            shares_selection_changes);
 void nautilus_clipboard_set_up_text_view           (GtkTextView        *target,
-						    GtkUIManager       *ui_manager,
-						    gboolean            shares_selection_changes);
+						    GtkUIManager       *ui_manager);
 
 
 #endif /* NAUTILUS_CLIPBOARD_H */

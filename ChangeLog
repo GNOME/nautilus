@@ -1,3 +1,17 @@
+2005-06-23  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-clipboard.c:
+	(editable_connect_callbacks), (editable_disconnect_callbacks),
+	(text_buffer_update_sensitivity), (text_buffer_delete_range),
+	(text_buffer_mark_set), (text_view_connect_callbacks),
+	(text_view_disconnect_callbacks), (merge_in_clipboard_menu_items),
+	(initialize_clipboard_component_with_callback_data),
+	(nautilus_clipboard_real_set_up),
+	(nautilus_clipboard_set_up_text_view):
+	* libnautilus-private/nautilus-clipboard.h:
+	Properly set text view paste action sensitivity on clipboard changes.
+	Fixes #306127.
+
 2005-06-23  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-bookmark-list.c:

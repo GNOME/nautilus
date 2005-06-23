@@ -41,20 +41,27 @@
 #include <gtk/gtktextview.h>
 #include <string.h>
 
-typedef void (* SelectAllCallback) (gpointer target);
+typedef struct _TargetCallbackData TargetCallbackData;
+
+typedef void (* SelectAllCallback)    (gpointer target);
+typedef void (* ConnectCallbacksFunc) (GObject            *object,
+				       TargetCallbackData *target_data);
 
 static void selection_changed_callback            (GtkWidget *widget,
 						   gpointer callback_data);
 static void owner_change_callback (GtkClipboard        *clipboard,
 				   GdkEventOwnerChange *event,
 				   gpointer callback_data);
-typedef struct {
+struct _TargetCallbackData {
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
 	gboolean shares_selection_changes;
 
 	SelectAllCallback select_all_callback;
-} TargetCallbackData;
+
+	ConnectCallbacksFunc connect_callbacks;
+	ConnectCallbacksFunc disconnect_callbacks;
+};
 
 static void
 cut_callback (gpointer target)
@@ -216,6 +223,93 @@ set_clipboard_items_are_merged_in (GObject *widget_as_object,
 }
 
 static void
+editable_connect_callbacks (GObject *object,
+			    TargetCallbackData *target_data)
+{
+	g_signal_connect_after (object, "selection_changed",
+				G_CALLBACK (selection_changed_callback), target_data);
+	selection_changed_callback (GTK_WIDGET (object),
+				    target_data);
+}
+
+static void
+editable_disconnect_callbacks (GObject *object,
+			       TargetCallbackData *target_data)
+{
+	g_signal_handlers_disconnect_matched (object,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL,
+					      G_CALLBACK (selection_changed_callback),
+					      target_data);
+}
+
+static void
+text_buffer_update_sensitivity (GtkTextBuffer *buffer,
+				TargetCallbackData *target_data)
+{
+	g_assert (GTK_IS_TEXT_BUFFER (buffer));
+	g_assert (target_data != NULL);
+
+	if (gtk_text_buffer_get_selection_bounds (buffer, NULL, NULL)) {
+		set_clipboard_menu_items_sensitive (target_data->action_group);
+	} else {
+		set_clipboard_menu_items_insensitive (target_data->action_group);
+	}
+}
+
+static void
+text_buffer_delete_range (GtkTextBuffer *buffer,
+			  GtkTextIter   *iter1,
+			  GtkTextIter   *iter2,
+			  TargetCallbackData *target_data)
+{
+	text_buffer_update_sensitivity (buffer, target_data);
+}
+
+static void
+text_buffer_mark_set (GtkTextBuffer *buffer,
+		      GtkTextIter *iter,
+		      GtkTextMark *mark,
+		      TargetCallbackData *target_data)
+{
+	/* anonymous marks with NULL names refer to cursor moves */
+	if (gtk_text_mark_get_name (mark) != NULL) {
+		text_buffer_update_sensitivity (buffer, target_data);
+	}
+}
+
+static void
+text_view_connect_callbacks (GObject *object,
+			     TargetCallbackData *target_data)
+{
+	GtkTextBuffer *buffer;
+
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (object));
+	g_assert (buffer);
+
+	g_signal_connect_after (buffer, "mark-set",
+				G_CALLBACK (text_buffer_mark_set), target_data);
+	g_signal_connect_after (buffer, "delete-range",
+				G_CALLBACK (text_buffer_delete_range), target_data);
+	text_buffer_update_sensitivity (buffer, target_data);
+}
+
+static void
+text_view_disconnect_callbacks (GObject *object,
+				TargetCallbackData *target_data)
+{
+	GtkTextBuffer *buffer;
+
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (object));
+	g_assert (buffer);
+
+	g_signal_handlers_disconnect_matched (buffer,
+					      G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL, NULL,
+					      target_data);
+}
+
+static void
 merge_in_clipboard_menu_items (GObject *widget_as_object,
 			       TargetCallbackData *target_data)
 {
@@ -234,10 +328,7 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 			  G_CALLBACK (owner_change_callback), target_data);
 	
 	if (add_selection_callback) {
-		g_signal_connect_after (widget_as_object, "selection_changed",
-					G_CALLBACK (selection_changed_callback), target_data);
-		selection_changed_callback (GTK_WIDGET (widget_as_object),
-					    target_data);
+		target_data->connect_callbacks (widget_as_object, target_data);
 	} else {
 		/* If we don't use sensitivity, everything should be on */
 		set_clipboard_menu_items_sensitive (target_data->action_group);
@@ -266,11 +357,7 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 	selection_callback_was_added = target_data->shares_selection_changes;
 
 	if (selection_callback_was_added) {
-		g_signal_handlers_disconnect_matched (widget_as_object,
-						      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
-						      0, 0, NULL,
-						      G_CALLBACK (selection_changed_callback),
-						      target_data);
+		target_data->disconnect_callbacks (widget_as_object, target_data);
 	}
 	set_clipboard_items_are_merged_in (widget_as_object, FALSE);
 }
@@ -372,7 +459,9 @@ static TargetCallbackData *
 initialize_clipboard_component_with_callback_data (GtkEditable *target,
 						   GtkUIManager *ui_manager,
 						   gboolean shares_selection_changes,
-						   SelectAllCallback select_all_callback)
+						   SelectAllCallback select_all_callback,
+						   ConnectCallbacksFunc connect_callbacks,
+						   ConnectCallbacksFunc disconnect_callbacks)
 {
 	GtkActionGroup *action_group;
 	TargetCallbackData *target_data;
@@ -392,7 +481,9 @@ initialize_clipboard_component_with_callback_data (GtkEditable *target,
 	target_data->action_group = action_group;
 	target_data->shares_selection_changes = shares_selection_changes;
 	target_data->select_all_callback = select_all_callback;
-	
+	target_data->connect_callbacks = connect_callbacks;
+	target_data->disconnect_callbacks = disconnect_callbacks;
+
 	return target_data;
 }
 
@@ -400,7 +491,9 @@ static void
 nautilus_clipboard_real_set_up (gpointer target,
 				GtkUIManager *ui_manager,
 				gboolean shares_selection_changes,
-				SelectAllCallback select_all_callback)
+				SelectAllCallback select_all_callback,
+				ConnectCallbacksFunc connect_callbacks,
+				ConnectCallbacksFunc disconnect_callbacks)
 {
 	TargetCallbackData *target_data;
 
@@ -412,7 +505,9 @@ nautilus_clipboard_real_set_up (gpointer target,
 		(target, 
 		 ui_manager,
 		 shares_selection_changes,
-		 select_all_callback);
+		 select_all_callback,
+		 connect_callbacks,
+		 disconnect_callbacks);
 
 	g_signal_connect (target, "focus_in_event",
 			  G_CALLBACK (focus_changed_callback), target_data);
@@ -440,20 +535,22 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 
 	nautilus_clipboard_real_set_up (target, ui_manager,
 					shares_selection_changes,
-					editable_select_all_callback);
+					editable_select_all_callback,
+					editable_connect_callbacks,
+					editable_disconnect_callbacks);
 }
 
 void
 nautilus_clipboard_set_up_text_view (GtkTextView *target,
-				     GtkUIManager *ui_manager,
-				     gboolean shares_selection_changes)
+				     GtkUIManager *ui_manager)
 {
 	g_return_if_fail (GTK_IS_TEXT_VIEW (target));
 	g_return_if_fail (GTK_IS_UI_MANAGER (ui_manager));
 
-	nautilus_clipboard_real_set_up (target, ui_manager,
-					shares_selection_changes,
-					text_view_select_all_callback);
+	nautilus_clipboard_real_set_up (target, ui_manager, TRUE,
+					text_view_select_all_callback,
+					text_view_connect_callbacks,
+					text_view_disconnect_callbacks);
 }
 
 
