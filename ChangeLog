@@ -1,3 +1,9 @@
+2005-06-03  Dinoop Thomas <dinoop.thomas@wipro.com>
+	
+	* libnautilus-private/nautilus-file-operations.c:
+	(parse_previous_duplicate_name): Use strchr instead of strrchr to parse the
+	base name from the file name. (Fixes #306341).
+
 2005-06-28  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-sidebar.[ch]:

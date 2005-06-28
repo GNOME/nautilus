@@ -1327,7 +1327,7 @@ parse_previous_duplicate_name (const char *name,
 
 	g_assert (name[0] != '\0');
 	
-	*suffix = strrchr (name + 1, '.');
+	*suffix = strchr (name + 1, '.');
 	if (*suffix == NULL || (*suffix)[1] == '\0') {
 		/* no suffix */
 		*suffix = "";
