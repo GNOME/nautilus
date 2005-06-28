@@ -42,6 +42,7 @@
 
 typedef struct {
 	char *title;
+	char *tooltip;
 	GtkWidget *widget;
 	GtkWidget *menu_item;
 	GtkWidget *shortcut;
@@ -94,6 +95,7 @@ static void
 side_panel_free (SidePanel *panel)
 {
 	g_free (panel->title);
+	g_free (panel->tooltip);
 	g_free (panel);
 }
 
@@ -473,7 +475,8 @@ nautilus_side_pane_new (void)
 void
 nautilus_side_pane_add_panel (NautilusSidePane *side_pane, 
 			      GtkWidget *widget, 
-			      const char *title)
+			      const char *title,
+			      const char *tooltip)
 {
 	SidePanel *panel;
 
@@ -482,9 +485,11 @@ nautilus_side_pane_add_panel (NautilusSidePane *side_pane,
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (title != NULL);
+	g_return_if_fail (tooltip != NULL);
 
 	panel = g_new0 (SidePanel, 1);
 	panel->title = g_strdup (title);
+	panel->tooltip = g_strdup (tooltip);
 	panel->widget = widget;
 
 	gtk_widget_show (widget);	
@@ -584,7 +589,6 @@ create_shortcut (NautilusSidePane *side_pane,
 {
 	GtkWidget *button;
 	GtkWidget *image;
-	char *tip;
 	
 	button = gtk_button_new ();
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
@@ -593,9 +597,7 @@ create_shortcut (NautilusSidePane *side_pane,
 	g_signal_connect (button, "clicked", 
 			  G_CALLBACK (shortcut_clicked_callback), side_pane);
 
-	tip = g_strdup_printf (_("Show %s"), panel->title);
-	gtk_tooltips_set_tip (side_pane->details->tooltips, button, tip, NULL);
-	g_free (tip);
+	gtk_tooltips_set_tip (side_pane->details->tooltips, button, panel->tooltip, NULL);
 
 	image = gtk_image_new_from_pixbuf (pixbuf);
 	gtk_widget_show (image);

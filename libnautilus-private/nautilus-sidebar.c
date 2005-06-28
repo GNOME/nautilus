@@ -97,6 +97,14 @@ nautilus_sidebar_get_tab_label (NautilusSidebar *sidebar)
 	return (* NAUTILUS_SIDEBAR_GET_IFACE (sidebar)->get_tab_label) (sidebar);
 }
 
+char *
+nautilus_sidebar_get_tab_tooltip (NautilusSidebar *sidebar)
+{
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR (sidebar), NULL);
+	
+	return (* NAUTILUS_SIDEBAR_GET_IFACE (sidebar)->get_tab_tooltip) (sidebar);
+}
+
 GdkPixbuf *
 nautilus_sidebar_get_tab_icon (NautilusSidebar *sidebar)
 {

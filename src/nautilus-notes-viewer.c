@@ -388,6 +388,12 @@ nautilus_notes_viewer_get_tab_label (NautilusSidebar *sidebar)
 	return g_strdup (_("Notes"));
 }
 
+static char *
+nautilus_notes_viewer_get_tab_tooltip (NautilusSidebar *sidebar)
+{
+	return g_strdup (_("Show Notes"));
+}
+
 static GdkPixbuf *
 nautilus_notes_viewer_get_tab_icon (NautilusSidebar *sidebar)
 {
@@ -415,6 +421,7 @@ nautilus_notes_viewer_sidebar_iface_init (NautilusSidebarIface *iface)
 {
 	iface->get_sidebar_id = nautilus_notes_viewer_get_sidebar_id;
 	iface->get_tab_label = nautilus_notes_viewer_get_tab_label;
+	iface->get_tab_tooltip = nautilus_notes_viewer_get_tab_tooltip;
 	iface->get_tab_icon = nautilus_notes_viewer_get_tab_icon;
 	iface->is_visible_changed = nautilus_notes_viewer_is_visible_changed;
 }

@@ -49,6 +49,7 @@ struct _NautilusSidebarIface
 	/* VTable: */
 	const char *   (* get_sidebar_id)         (NautilusSidebar *sidebar);
 	char *         (* get_tab_label)          (NautilusSidebar *sidebar);
+	char *         (* get_tab_tooltip)        (NautilusSidebar *sidebar);
         GdkPixbuf *    (* get_tab_icon)           (NautilusSidebar *sidebar);
         void           (* is_visible_changed)     (NautilusSidebar *sidebar,
 						   gboolean         is_visible);
@@ -69,6 +70,7 @@ GType             nautilus_sidebar_get_type             (void);
 
 const char *nautilus_sidebar_get_sidebar_id     (NautilusSidebar *sidebar);
 char *      nautilus_sidebar_get_tab_label      (NautilusSidebar *sidebar);
+char *      nautilus_sidebar_get_tab_tooltip    (NautilusSidebar *sidebar);
 GdkPixbuf * nautilus_sidebar_get_tab_icon       (NautilusSidebar *sidebar);
 void        nautilus_sidebar_is_visible_changed (NautilusSidebar *sidebar,
 						 gboolean         is_visible);

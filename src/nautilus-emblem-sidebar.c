@@ -1045,6 +1045,12 @@ nautilus_emblem_sidebar_get_tab_label (NautilusSidebar *sidebar)
 	return g_strdup (_("Emblems"));
 }
 
+static char *
+nautilus_emblem_sidebar_get_tab_tooltip (NautilusSidebar *sidebar)
+{
+	return g_strdup (_("Show Emblems"));
+}
+
 static GdkPixbuf *
 nautilus_emblem_sidebar_get_tab_icon (NautilusSidebar *sidebar)
 {
@@ -1063,6 +1069,7 @@ nautilus_emblem_sidebar_iface_init (NautilusSidebarIface *iface)
 {
 	iface->get_sidebar_id = nautilus_emblem_sidebar_get_sidebar_id;
 	iface->get_tab_label = nautilus_emblem_sidebar_get_tab_label;
+	iface->get_tab_tooltip = nautilus_emblem_sidebar_get_tab_tooltip;
 	iface->get_tab_icon = nautilus_emblem_sidebar_get_tab_icon;
 	iface->is_visible_changed = nautilus_emblem_sidebar_is_visible_changed;
 }

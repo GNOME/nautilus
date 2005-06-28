@@ -456,6 +456,7 @@ nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
 {
 	const char *sidebar_id;
 	char *label;
+	char *tooltip;
 	char *default_id;
 	GdkPixbuf *icon;
 
@@ -465,9 +466,12 @@ nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
 	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);	
 
 	label = nautilus_sidebar_get_tab_label (sidebar_panel);
+	tooltip = nautilus_sidebar_get_tab_tooltip (sidebar_panel);
 	nautilus_side_pane_add_panel (window->sidebar, 
 				      GTK_WIDGET (sidebar_panel), 
-				      label);
+				      label,
+				      tooltip);
+	g_free (tooltip);
 	g_free (label);
 
 	icon = nautilus_sidebar_get_tab_icon (sidebar_panel);

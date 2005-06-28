@@ -1483,6 +1483,12 @@ fm_tree_view_get_tab_label (NautilusSidebar *sidebar)
 	return g_strdup (_("Tree"));
 }
 
+static char *
+fm_tree_view_get_tab_tooltip (NautilusSidebar *sidebar)
+{
+	return g_strdup (_("Show Tree"));
+}
+
 static GdkPixbuf *
 fm_tree_view_get_tab_icon (NautilusSidebar *sidebar)
 {
@@ -1508,6 +1514,7 @@ fm_tree_view_iface_init (NautilusSidebarIface *iface)
 {
 	iface->get_sidebar_id = fm_tree_view_get_sidebar_id;
 	iface->get_tab_label = fm_tree_view_get_tab_label;
+	iface->get_tab_tooltip = fm_tree_view_get_tab_tooltip;
 	iface->get_tab_icon = fm_tree_view_get_tab_icon;
 	iface->is_visible_changed = fm_tree_view_is_visible_changed;
 }
