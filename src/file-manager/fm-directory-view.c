@@ -50,6 +50,8 @@
 #include <eel/eel-marshal.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkclipboard.h>
+#include <gtk/gtkiconfactory.h>
+#include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkselection.h>
@@ -6225,6 +6227,29 @@ static const GtkToggleActionEntry directory_view_toggle_entries[] = {
 };
 
 static void
+connect_proxy (FMDirectoryView *view,
+	       GtkAction *action,
+	       GtkWidget *proxy,
+	       GtkActionGroup *action_group)
+{
+	GdkPixbuf *pixbuf;
+	GtkWidget *image;
+
+	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_FILE) == 0 &&
+	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
+		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+						   "gnome-fs-regular",
+						   NAUTILUS_ICON_SIZE_FOR_MENUS,
+						   0, NULL);
+
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
+
+		gdk_pixbuf_unref (pixbuf);
+	}
+}
+
+static void
 real_merge_menus (FMDirectoryView *view)
 {
 	GtkActionGroup *action_group;
@@ -6254,6 +6279,10 @@ real_merge_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (action_group, FM_ACTION_NO_TEMPLATES);
 	gtk_action_set_sensitive (action, FALSE);
+
+	g_signal_connect_object (action_group, "connect-proxy",
+				 G_CALLBACK (connect_proxy), G_OBJECT (view),
+				 G_CONNECT_SWAPPED);
 
 	/* Insert action group at end so clipboard action group ends up before it */
 	gtk_ui_manager_insert_action_group (ui_manager, action_group, -1);
