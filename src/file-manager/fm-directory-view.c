@@ -6194,25 +6194,25 @@ static const GtkActionEntry directory_view_entries[] = {
   /* Location-specific actions */
   { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,                  /* name, stock id */
     N_("Open in Navigation Window"), "",                /* label, accelerator */
-    N_("Open the open folder in a navigation window"),                   /* tooltip */ 
+    N_("Open this folder in a navigation window"),                   /* tooltip */ 
     G_CALLBACK (action_location_open_alternate_callback) },
 
   { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,                  /* name, stock id */
     NULL, "",                /* label, accelerator */
-    N_("Prepare the open folder to be moved with a Paste command"),                   /* tooltip */ 
+    N_("Prepare this folder to be moved with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_cut_callback) },
   { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,                  /* name, stock id */
     NULL, "",                /* label, accelerator */
-    N_("Prepare the open folder to be copied with a Paste command"),                   /* tooltip */ 
+    N_("Prepare this folder to be copied with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_copy_callback) },
 
   { FM_ACTION_LOCATION_TRASH, GTK_STOCK_DELETE,                  /* name, stock id */
     N_("Mo_ve to Trash"), "",                /* label, accelerator */
-    N_("Move the open folder to the Trash"),                   /* tooltip */ 
+    N_("Move this folder to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_trash_callback) },
   { FM_ACTION_LOCATION_DELETE, GTK_STOCK_DELETE,                  /* name, stock id */
     N_("_Delete"), "",                /* label, accelerator */
-    N_("Delete the open folder, without moving to the Trash"),                   /* tooltip */ 
+    N_("Delete this folder, without moving to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_delete_callback) },
 };
 
