@@ -36,6 +36,7 @@
 #include "file-manager/fm-tree-view.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-history-sidebar.h"
+#include "nautilus-places-sidebar.h"
 #include "nautilus-notes-viewer.h"
 #include "nautilus-emblem-sidebar.h"
 #include "nautilus-image-properties-page.h"
@@ -179,6 +180,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	fm_list_view_register ();
 
 	/* register sidebars */
+	nautilus_places_sidebar_register ();
 	nautilus_information_panel_register ();
 	fm_tree_view_register ();
 	nautilus_history_sidebar_register ();

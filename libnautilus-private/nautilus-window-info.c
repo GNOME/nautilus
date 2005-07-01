@@ -217,6 +217,15 @@ nautilus_window_info_get_history (NautilusWindowInfo *window)
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_history) (window);
 }
 
+NautilusBookmarkList *
+nautilus_window_info_get_bookmark_list (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), NULL);
+	
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_bookmark_list) (window);
+}
+
+
 char *
 nautilus_window_info_get_current_location (NautilusWindowInfo *window)
 {

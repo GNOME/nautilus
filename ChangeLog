@@ -1,5 +1,21 @@
 2005-07-01  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-window.c:
+	Add nautilus_window_info_get_bookmark_list
+	
+	* src/Makefile.am:
+	* src/nautilus-application.c:
+	* src/nautilus-places-sidebar.[ch]:
+	Add new places sidebar.
+
+	Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
+
+	* src/file-manager/fm-tree-view.c:
+	Fix runtime warnings.
+	
+2005-07-01  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-actions.h:
 	* src/file-manager/fm-directory-view.c:
 	Add icon for empty file in create menu.

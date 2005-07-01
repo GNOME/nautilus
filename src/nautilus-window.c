@@ -32,6 +32,7 @@
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
+#include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-main.h"
@@ -1385,6 +1386,12 @@ nautilus_window_set_hidden_files_mode (NautilusWindowInfo *window,
 			       mode);
 }
 
+static NautilusBookmarkList *
+nautilus_window_get_bookmark_list (NautilusWindow *window)
+{
+  return nautilus_get_bookmark_list ();
+}
+
 static void
 nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 {
@@ -1399,6 +1406,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_window_type = nautilus_window_get_window_type;
 	iface->get_title = nautilus_window_get_cached_title;
 	iface->get_history = nautilus_window_get_history;
+	iface->get_bookmark_list = nautilus_window_get_bookmark_list;
 	iface->get_current_location = nautilus_window_get_location;
 	iface->get_ui_manager = nautilus_window_get_ui_manager;
 	iface->get_selection_count = nautilus_window_get_selection_count;
