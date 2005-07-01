@@ -2628,8 +2628,8 @@ nautilus_self_check_file_operations (void)
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo.txt", 1), "foo (copy).txt");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt", 1), "foo foo (copy).txt");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt", 1), "foo foo (copy).txt txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1), "foo.. (copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1), "foo... (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1), "foo (copy)...txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1), "foo (copy)...");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo. (copy)", 1), "foo. (another copy)");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy)", 1), "foo (another copy)");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy).txt", 1), "foo (another copy).txt");
