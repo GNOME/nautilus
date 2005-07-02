@@ -194,7 +194,7 @@ try_to_expand_path (gpointer callback_data)
 
 	/* Trailing whitespace is OK here since the cursor is known to
 	   be at the end of the text and therefor after the whitespace. */
-	current_path = eel_make_uri_from_input_with_trailing_ws (user_location);
+	current_path = gnome_vfs_make_uri_from_input_with_trailing_ws (user_location);
 	if (!eel_istr_has_prefix (current_path, "file://")) {
 		g_free (user_location);
 		g_free (current_path);
