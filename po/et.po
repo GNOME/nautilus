@@ -520,7 +520,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
-msgstr ""
+msgstr "Praegune Nautiluse teema (maha kantud)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Custom Background Set"
@@ -560,7 +560,7 @@ msgstr "Vaikimisi _suurendus:"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
-msgstr ""
+msgstr "Vaikimisi kaustade vaatur"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default icon zoom level"
@@ -571,7 +571,6 @@ msgid "Default list of columns visible in the list view"
 msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Default list of columns visible in the list view."
 msgstr "Vaikimisi nähtavate veergude loend nimekirjavaates."
 
@@ -2665,8 +2664,7 @@ msgstr "\"%s\" pole võimalik kuvada kuna hosti \"%s\" pole võimalik leida."
 #: ../src/nautilus-window-manage-views.c:1407
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Kontrolli, kas õigekiri ja proksi seaded on täpsed."
+msgstr "Kontrolli, kas õigekiri ja proksi seaded on täpsed."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:619
 #: ../src/nautilus-connect-server-dialog.c:140
@@ -3040,15 +3038,17 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Kas oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
 
 #: ../src/file-manager/fm-directory-view.c:3180
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "Kas oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
-msgstr[1] "Kas oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
+msgstr[0] ""
+"Kas oled kindel, et soovid prügikastist jäädavalt kustutada %d valitud faili?"
+msgstr[1] ""
+"Kas oled kindel, et soovid prügikastist jäädavalt kustutada %d valitud faili?"
 
 #: ../src/file-manager/fm-directory-view.c:3189
 msgid "If you delete an item, it will be permanently lost."
@@ -3614,9 +3614,9 @@ msgid "Drag and drop is not supported."
 msgstr "Pukseerimine ei ole toetatud."
 
 #: ../src/file-manager/fm-directory-view.c:7881
-#, fuzzy
 msgid "Drag and drop is only supported on local file systems."
-msgstr "Lohistamine ja paigutamine on võimalik vaid kohalikul failisüsteemil"
+msgstr ""
+"Lohistamine ja paigutamine on võimalik vaid kohaliku failisüsteemi ulatuses."
 
 #: ../src/file-manager/fm-directory-view.c:7882
 #: ../src/file-manager/fm-directory-view.c:7904
@@ -3904,7 +3904,6 @@ msgstr "_Hoia reastatult"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1419
-#, fuzzy
 msgid "Keep icons lined up on a grid"
 msgstr "Hoiab ikoonid ridadesse järjestatult"
 
@@ -4303,7 +4302,7 @@ msgstr "Failisüsteem"
 
 #: ../src/file-manager/fm-tree-view.c:1256
 msgid "Network Neighbourhood"
-msgstr ""
+msgstr "Võrgunaabrus"
 
 #: ../src/file-manager/fm-tree-view.c:1497
 msgid "Tree"
@@ -4359,7 +4358,7 @@ msgstr ""
 
 #: ../src/nautilus-application.c:349
 msgid "Migrated Old Desktop"
-msgstr "ekraanil"
+msgstr ""
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -4770,8 +4769,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Vali teabe järjekord ikooni all. Täpsem info ilmub ikoonide suurendamisel."
+msgstr "Vali nimekirjavaates ilmuva teabe järjekord."
 
 #: ../src/nautilus-file-management-properties.glade.h:49
 msgid "Count _number of items:"
@@ -4899,7 +4897,7 @@ msgstr "grupp"
 
 #: ../src/nautilus-file-management-properties.glade.h:83
 msgid "informal"
-msgstr "Info"
+msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:84
 msgid "iso"
@@ -4994,7 +4992,7 @@ msgid "Software"
 msgstr "Tarkvara"
 
 #: ../src/nautilus-image-properties-page.c:249
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -5004,11 +5002,7 @@ msgid_plural ""
 msgstr[0] ""
 "<b>Pildi tüüp:</b> %s (%s)\n"
 "<b>Mõõtmed:</b> %dx%d pikslit\n"
-"<b>Pildi tüüp:</b> %s (%s)\n"
-"<b>Mõõtmed:</b> %dx%d pikslit\n"
 msgstr[1] ""
-"<b>Pildi tüüp:</b> %s (%s)\n"
-"<b>Mõõtmed:</b> %dx%d pikslit\n"
 "<b>Pildi tüüp:</b> %s (%s)\n"
 "<b>Mõõtmed:</b> %dx%d pikslit\n"
 
@@ -5039,9 +5033,7 @@ msgstr "Rohkem kui üht kohandatud ikooni korraga pole võimalik lisada"
 
 #: ../src/nautilus-information-panel.c:576
 msgid "You can only use images as custom icons."
-msgstr ""
-"Fail, mille sa poetasid, ei ole kohalik. Ikoonideks saab kasutada vaid "
-"kohalikke pildifaile."
+msgstr "Pilte saab kasutada ainult kohandatud ikoonidena."
 
 #: ../src/nautilus-information-panel.c:891
 #, c-format
@@ -5050,7 +5042,7 @@ msgstr "Ava programmiga %s"
 
 #: ../src/nautilus-information-panel.c:984
 msgid "Unable to launch the cd burner application."
-msgstr "CD-kirjutamise rakendust pole võimalik käivitada"
+msgstr "CD-kirjutamise rakendust pole võimalik käivitada."
 
 #: ../src/nautilus-information-panel.c:985
 msgid "Can't Launch CD Burner"
@@ -5136,10 +5128,9 @@ msgstr "Nautilus"
 #. translators: %s is an option (e.g. --check)
 #: ../src/nautilus-main.c:363 ../src/nautilus-main.c:372
 #: ../src/nautilus-main.c:377
-#, fuzzy, c-format
+#, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr ""
-"nautilus: --check võtit pole võimalik kasutada koos teiste võtmetega.\n"
+msgstr "nautilus: %s'i ei saa kasutada koos URI'ga.\n"
 
 #: ../src/nautilus-main.c:368
 #, c-format
@@ -5157,13 +5148,12 @@ msgstr ""
 #. * implemented this feature so I could use this joke.
 #.
 #: ../src/nautilus-navigation-window-menus.c:127
-#, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "Kas oled kindel, et soovid \"%s\" jäädavalt kustutada?"
+msgstr "Kas oled kindel, et soovid ajaloo unustada?"
 
 #: ../src/nautilus-navigation-window-menus.c:128
 msgid "If you do, you will be doomed to repeat it."
-msgstr "Kui nii teed, siis jäädki tegema."
+msgstr "Kui sa teed, siis jäädki seda tegema."
 
 #: ../src/nautilus-navigation-window-menus.c:130
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -5189,7 +5179,7 @@ msgstr ""
 "viitavad kirjed kustutada?"
 
 #: ../src/nautilus-navigation-window-menus.c:289
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "Asukohta \"%s\" ei ole enam olemas."
 
@@ -5218,7 +5208,7 @@ msgstr "_Uue akna avamine"
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:548
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Ava näidatud asukohta uus Nautiluse aken"
+msgstr "Ava näidatud asukoha jaoks uus Nautiluse aken"
 
 #: ../src/nautilus-navigation-window-menus.c:550
 msgid "Close _All Windows"
@@ -5237,11 +5227,11 @@ msgstr "_Asukohale..."
 #: ../src/nautilus-navigation-window-menus.c:554
 #: ../src/nautilus-spatial-window.c:582
 msgid "Specify a location to open"
-msgstr "Näita asukoht, mida avada"
+msgstr "Määra avamiseks asukoht"
 
 #: ../src/nautilus-navigation-window-menus.c:556
 msgid "Clea_r History"
-msgstr "Ajaloo tühjendamine"
+msgstr "_Ajaloo tühjendamine"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:557
@@ -5320,9 +5310,9 @@ msgid "View as %s"
 msgstr "Vaata kui %s"
 
 #: ../src/nautilus-navigation-window.c:689
-#, fuzzy, c-format
+#, c-format
 msgid "%s - File Browser"
-msgstr "Faili omanik:"
+msgstr "%s - Failisirvija"
 
 #: ../src/nautilus-notes-viewer.c:388 ../src/nautilus-notes-viewer.c:495
 msgid "Notes"
@@ -5422,7 +5412,7 @@ msgstr "Vabandust, kuid lähtestamissümbolit pole võimalik asendada."
 
 #: ../src/nautilus-property-browser.c:1114
 msgid "Reset is a special image that cannot be deleted."
-msgstr "Lähtestamissümbolit pole võimalik kustutada."
+msgstr "Lähtestamissümbol on spetsiaalne pilt, mida pole võimalik kustutada."
 
 #: ../src/nautilus-property-browser.c:1115
 #: ../src/nautilus-property-browser.c:1319
@@ -5597,11 +5587,10 @@ msgid "View of the current folder"
 msgstr "Käesoleva kausta vaade"
 
 #: ../src/nautilus-window-manage-views.c:1346
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
-"Nautilusele ei ole paigaldatud vaatlemisprogrammi, mis vastaks sellele "
-"failivormingule."
+"Nautilusele ei ole paigaldatud vaatlemisprogrammi, millega saaks  seda "
+"kausta kuvada."
 
 #: ../src/nautilus-window-manage-views.c:1352
 msgid "The location is not a folder."
@@ -5633,9 +5622,8 @@ msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ei saa \"%s\" kuvada."
 
 #: ../src/nautilus-window-manage-views.c:1429
-#, fuzzy
 msgid "Please select another viewer and try again."
-msgstr "Palun vali teine rakendus ja proovi uuesti"
+msgstr "Palun vali teine rakendus ja proovi uuesti."
 
 #: ../src/nautilus-window-menus.c:175
 msgid "Go to the location specified by this bookmark"
