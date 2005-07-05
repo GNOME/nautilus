@@ -97,15 +97,22 @@ typedef struct {
 						   GList *item_uris,
 						   GdkPoint *relative_item_points,
 						   const char *target_uri,
-						   int copy_action,
+						   GdkDragAction action,
 						   int x,
 						   int y);
 	void	     (* handle_url)		  (NautilusIconContainer *container,
 						   char *url,
+						   GdkDragAction action,
 						   int x,
 						   int y);
 	void	     (* handle_uri_list)    	  (NautilusIconContainer *container,
 						   char *uri_list,
+						   GdkDragAction action,
+						   int x,
+						   int y);
+	void	     (* handle_text)		  (NautilusIconContainer *container,
+						   char *text,
+						   GdkDragAction action,
 						   int x,
 						   int y);
 

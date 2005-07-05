@@ -3677,12 +3677,9 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	g_free (parent_uri);
 }
 
-void
-fm_directory_view_new_file (FMDirectoryView *directory_view,
-			    NautilusFile *source)
+static NewFolderData *
+setup_new_folder_data (FMDirectoryView *directory_view)
 {
-	char *parent_uri;
-	char *source_uri;
 	NewFolderData *data;
 
 	data = new_folder_data_new (directory_view);
@@ -3694,20 +3691,58 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 			       (GClosureNotify)NULL,
 			       G_CONNECT_AFTER);
 
-	
-	source_uri = NULL;
-	if (source != NULL) {
-		source_uri = nautilus_file_get_uri (source);
-	}
+	return data;
+}
+
+static void
+fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
+						  const char *initial_contents)
+{
+	NewFolderData *data;
+	char *parent_uri;
+
+	data = setup_new_folder_data (directory_view);
+
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
+
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
 					   parent_uri,
-					   source_uri,
+					   initial_contents,
 					   new_folder_done, data);
+
+	g_free (parent_uri);
+}
+
+void
+fm_directory_view_new_file (FMDirectoryView *directory_view,
+			    NautilusFile *source)
+{
+	NewFolderData *data;
+	char *parent_uri;
+	char *source_uri;
+
+	if (source == NULL) {
+		fm_directory_view_new_file_with_initial_contents (directory_view, NULL);
+		return;
+	}
+
+	g_return_if_fail (nautilus_file_is_local (source));
+
+	data = setup_new_folder_data (directory_view);
+
+	source_uri = nautilus_file_get_uri (source);
+	parent_uri = fm_directory_view_get_backing_uri (directory_view);
+
+	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
+							 parent_uri,
+							 NULL,
+							 source_uri,
+							 FALSE,
+							 new_folder_done, data);
+
 	g_free (parent_uri);
 	g_free (source_uri);
 }
-
 
 /* handle the open command */
 
@@ -8558,6 +8593,31 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 
 	g_free (container_uri);
 }
+
+void
+fm_directory_view_handle_text_drop (FMDirectoryView  *view,
+				    const char       *text,
+				    GdkDragAction     action,
+				    int               x,
+				    int               y)
+{
+	char *container_uri;
+
+	if (text == NULL) {
+		return;
+	}
+
+	g_return_if_fail (action == GDK_ACTION_COPY);
+
+	container_uri = fm_directory_view_get_backing_uri (view);
+	g_return_if_fail (container_uri != NULL);
+
+	fm_directory_view_new_file_with_initial_contents (
+		view, text);
+
+	g_free (container_uri);
+}
+
 
 static void
 real_sort_files (FMDirectoryView *view, GList **files)

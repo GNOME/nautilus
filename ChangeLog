@@ -1,3 +1,20 @@
+2005-07-05  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-dnd.h:
+	Change NAUTILUS_ICON_DND_TEXT_TYPE to UTF-8 string.
+
+	* libnautilus-private/nautilus-file-operations.[ch]:
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-marshal.list:
+	* libnautilus-private/nautilus-tree-view-drag-dest.[ch]:
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-tree-view.c:
+	Enable dropping of text, which will create a new file containing the
+	dropped text. Fix drop handle marshallers.
+
 2005-07-02  Christian Kellner  <gicmo@gnome.org>
 
 	* src/nautilus-location-entry.c:

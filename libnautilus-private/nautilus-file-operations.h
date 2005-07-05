@@ -27,6 +27,7 @@
 #ifndef NAUTILUS_FILE_OPERATIONS_H
 #define NAUTILUS_FILE_OPERATIONS_H
 
+#include <gdk/gdkdnd.h>
 #include <gtk/gtkwidget.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 
@@ -53,9 +54,17 @@ void nautilus_file_operations_new_folder  (GtkWidget                 *parent_vie
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
 					   const char                *parent_dir,
-					   const char                *source_uri_text,
+					   const char                *initial_contents,
 					   NautilusNewFileCallback    done_callback,
 					   gpointer                   data);
+void nautilus_file_operations_new_file_from_template (GtkWidget               *parent_view,
+						      const char              *parent_dir,
+						      const char              *target_filename,
+						      const char              *template_uri,
+						      gboolean                 move_template,
+						      NautilusNewFileCallback  done_callback,
+						      gpointer                 data);
+
 void nautilus_file_operations_delete      (const GList               *item_uris,
 					   GtkWidget                 *parent_view);
 

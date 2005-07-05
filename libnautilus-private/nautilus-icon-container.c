@@ -231,6 +231,7 @@ enum {
 	MOVE_COPY_ITEMS,
 	HANDLE_URL,
 	HANDLE_URI_LIST,
+	HANDLE_TEXT,
 	PREVIEW,
 	SELECTION_CHANGED,
 	ICON_ADDED,
@@ -4117,12 +4118,12 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 move_copy_items),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_POINTER_POINTER_INT_INT_INT,
+		                nautilus_marshal_VOID__POINTER_POINTER_POINTER_ENUM_INT_INT,
 		                G_TYPE_NONE, 6,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER,
-				G_TYPE_INT,
+				GDK_TYPE_DRAG_ACTION,
 				G_TYPE_INT,
 				G_TYPE_INT);
 	signals[HANDLE_URL]
@@ -4132,10 +4133,10 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_url),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__STRING_INT_INT_INT,
+		                nautilus_marshal_VOID__STRING_ENUM_INT_INT,
 		                G_TYPE_NONE, 4,
 				G_TYPE_STRING,
-				G_TYPE_INT,
+				GDK_TYPE_DRAG_ACTION,
 				G_TYPE_INT,
 				G_TYPE_INT);
 	signals[HANDLE_URI_LIST] 
@@ -4145,13 +4146,25 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__STRING_INT_INT_INT,
+		                nautilus_marshal_VOID__STRING_ENUM_INT_INT,
 		                G_TYPE_NONE, 4,
 				G_TYPE_STRING,
-				G_TYPE_INT,
+				GDK_TYPE_DRAG_ACTION,
 				G_TYPE_INT,
 				G_TYPE_INT);
-
+	signals[HANDLE_TEXT]
+		= g_signal_new ("handle_text",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
+						 handle_text),
+		                NULL, NULL,
+		                nautilus_marshal_VOID__STRING_ENUM_INT_INT,
+		                G_TYPE_NONE, 4,
+				G_TYPE_STRING,
+				GDK_TYPE_DRAG_ACTION,
+				G_TYPE_INT,
+				G_TYPE_INT);
 	signals[GET_CONTAINER_URI] 
 		= g_signal_new ("get_container_uri",
 		                G_TYPE_FROM_CLASS (class),

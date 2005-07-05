@@ -2477,6 +2477,14 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 						item_uris, action, x, y);
 }
 
+static void
+icon_view_handle_text (NautilusIconContainer *container, const char *text,
+		       GdkDragAction action, int x, int y, FMIconView *view)
+{
+	fm_directory_view_handle_text_drop (FM_DIRECTORY_VIEW (view),
+					    text, action, x, y);
+}
+
 static char *
 icon_view_get_first_visible_file (NautilusView *view)
 {
@@ -2643,6 +2651,8 @@ fm_icon_view_init (FMIconView *icon_view)
 				 G_CALLBACK (icon_view_handle_url), icon_view, 0);
 	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
 				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
+	g_signal_connect_object (get_icon_container (icon_view), "handle_text",
+				 G_CALLBACK (icon_view_handle_text), icon_view, 0);
 }
 
 static NautilusView *

@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <stdio.h>
 #include "nautilus-file-operations.h"
 
 #include "nautilus-file-operations-progress.h"
@@ -38,6 +39,7 @@
 #include <eel/eel-vfs-extensions.h>
 
 #include <gnome.h>
+#include <gdk/gdkdnd.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmessagedialog.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -2231,7 +2233,6 @@ typedef struct {
 	NautilusNewFileCallback done_callback;
 	gpointer data;
 	GtkWidget *parent_view;
-	char *empty_file;
 	GHashTable *debuting_uris;
 } NewFileTransferState;
 
@@ -2298,11 +2299,6 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 
 		(* state->done_callback) (uri, state->data);
 		/* uri is owned by hashtable, don't free */
-
-		if (state->empty_file != NULL) {
-			unlink (state->empty_file);
-			g_free (state->empty_file);
-		}
 		eel_remove_weak_pointer (&state->parent_view);
 		g_hash_table_destroy (state->debuting_uris);
 		g_free (state);
@@ -2351,61 +2347,48 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 }
 
 void 
-nautilus_file_operations_new_file (GtkWidget *parent_view, 
-				   const char *parent_dir,
-				   const char *source_uri_text,
-				   NautilusNewFileCallback done_callback,
-				   gpointer data)
+nautilus_file_operations_new_file_from_template (GtkWidget *parent_view, 
+						 const char *parent_dir,
+						 const char *target_filename,
+						 const char *template_uri,
+						 gboolean move_template,
+						 NautilusNewFileCallback done_callback,
+						 gpointer data)
 {
 	GList *target_uri_list;
 	GList *source_uri_list;
 	GnomeVFSURI *target_uri, *parent_uri, *source_uri;
-	char *filename;
+	GnomeVFSXferOptions options;
 	NewFileTransferState *state;
 	SyncTransferInfo *sync_transfer_info;
+	char *tmp;
+
+	g_assert (parent_dir != NULL);
+	g_assert (template_uri != NULL);
 
 	state = g_new (NewFileTransferState, 1);
 	state->done_callback = done_callback;
 	state->data = data;
 	state->parent_view = parent_view;
-	state->empty_file = NULL;
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
 
-	if (source_uri_text != NULL) {
-		source_uri = gnome_vfs_uri_new (source_uri_text);
-		if (source_uri == NULL) {
-			(*done_callback) (NULL, data);
-			g_free (state);
-			return;
-		}
-		filename = gnome_vfs_uri_extract_short_path_name (source_uri);
-		target_uri = gnome_vfs_uri_append_string (parent_uri, filename);
-		g_free (filename);
-	} else {
-		char empty_file[] = "/tmp/emptyXXXXXX";
-		char *empty_uri;
-		int fd;
-
-		fd = mkstemp (empty_file);
-		if (fd == -1) {
-			(*done_callback) (NULL, data);
-			g_free (state);
-		}
-		close (fd);
-
-		empty_uri = gnome_vfs_get_uri_from_local_path (empty_file);
-		source_uri = gnome_vfs_uri_new (empty_uri);
-		g_free (empty_uri);
-		
-		state->empty_file = g_strdup (empty_file);
-		
-		filename = g_filename_from_utf8 (_("new file"), -1, NULL, NULL, NULL);
-		target_uri = gnome_vfs_uri_append_file_name (parent_uri, filename);
-		g_free (filename);
+	source_uri = gnome_vfs_uri_new (template_uri);
+	if (source_uri == NULL) {
+		(*done_callback) (NULL, data);
+		g_free (state);
+		return;
 	}
-	
+
+	if (target_filename != NULL) {
+		target_uri = gnome_vfs_uri_append_file_name (parent_uri, target_filename);
+	} else {
+		tmp = gnome_vfs_uri_extract_short_name (source_uri);
+		target_uri = gnome_vfs_uri_append_file_name (parent_uri, tmp);
+		g_free (tmp);
+	}
+
 	state->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	eel_add_weak_pointer (&state->parent_view);
 
@@ -2415,9 +2398,14 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	sync_transfer_info = g_new (SyncTransferInfo, 1);
 	sync_transfer_info->iterator = NULL;
 	sync_transfer_info->debuting_uris = state->debuting_uris;
-	
+
+	options = GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+	if (move_template) {
+		options |= GNOME_VFS_XFER_REMOVESOURCE;
+	}
+
 	gnome_vfs_async_xfer (&state->handle, source_uri_list, target_uri_list,
-	      		      GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+	      		      options,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 			      GNOME_VFS_PRIORITY_DEFAULT,
@@ -2427,6 +2415,50 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_list_free (source_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
+}
+
+void 
+nautilus_file_operations_new_file (GtkWidget *parent_view, 
+				   const char *parent_dir,
+				   const char *initial_contents,
+				   NautilusNewFileCallback done_callback,
+				   gpointer data)
+{
+	char source_file_str[] = "/tmp/nautilus-sourceXXXXXX";
+	char *source_file_uri;
+	FILE *source_file;
+	char *target_filename;
+	int fd;
+
+	fd = mkstemp (source_file_str);
+	if (fd == -1) {
+		(*done_callback) (NULL, data);
+		return;
+	}
+
+	if (initial_contents != NULL) {
+		source_file = fdopen (fd, "a+");
+
+		fprintf (source_file, "%s", initial_contents);
+		fclose (source_file);
+	}
+
+	close (fd);
+
+	target_filename = g_filename_from_utf8 (_("new file"), -1, NULL, NULL, NULL);
+
+	source_file_uri = gnome_vfs_get_uri_from_local_path (source_file_str);
+
+	nautilus_file_operations_new_file_from_template (parent_view, 
+							 parent_dir,
+							 target_filename,
+							 source_file_uri,
+							 TRUE,
+							 done_callback,
+							 data);
+
+	g_free (source_file_uri);
+	g_free (target_filename);
 }
 
 void 

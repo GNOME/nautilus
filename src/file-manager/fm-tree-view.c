@@ -547,7 +547,7 @@ static void
 move_copy_items_callback (NautilusTreeViewDragDest *dest,
 			  const GList *item_uris,
 			  const char *target_uri,
-			  guint action,
+			  GdkDragAction action,
 			  int x,
 			  int y,
 			  gpointer user_data)

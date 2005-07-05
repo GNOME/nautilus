@@ -65,6 +65,7 @@ enum {
 	MOVE_COPY_ITEMS,
 	HANDLE_URL,
 	HANDLE_URI_LIST,
+	HANDLE_TEXT,
 	LAST_SIGNAL
 };
 
@@ -80,7 +81,8 @@ GNOME_CLASS_BOILERPLATE (NautilusTreeViewDragDest,
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }
+	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
+	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 	/* FIXME: Should handle emblems once the list view supports them */
 };
 
@@ -384,6 +386,17 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 		
 	case NAUTILUS_ICON_DND_URI_LIST :
 		return context->suggested_action;
+
+	case NAUTILUS_ICON_DND_TEXT:
+		drop_target = get_drop_target (dest, path);
+
+		if (!drop_target) {
+			return 0;
+		}
+
+		g_free (drop_target);
+
+		return GDK_ACTION_COPY;
 	}
 
 	return 0;
@@ -580,6 +593,26 @@ receive_dropped_uri_list (NautilusTreeViewDragDest *dest,
 }
 
 static void
+receive_dropped_text (NautilusTreeViewDragDest *dest,
+		      GdkDragContext *context,
+		      int x, int y)
+{
+	char *text;
+
+	if (!dest->details->drag_data) {
+		return;
+	}
+
+	text = gtk_selection_data_get_text (dest->details->drag_data);
+	g_signal_emit (dest, signals[HANDLE_TEXT], 0,
+		       (char *) text,
+		       context->action,
+		       x, y);
+	g_free (text);
+}
+
+
+static void
 receive_dropped_url (NautilusTreeViewDragDest *dest,
 		     GdkDragContext *context,
 		     int x, int y)
@@ -633,6 +666,10 @@ drag_data_received_callback (GtkWidget *widget,
 			break;
 		case NAUTILUS_ICON_DND_URI_LIST :
 			receive_dropped_uri_list (dest, context, x, y);
+			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_TEXT:
+			receive_dropped_text (dest, context, x, y);
 			success = TRUE;
 			break;
 		}
@@ -762,11 +799,11 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 					       move_copy_items),
 			      NULL, NULL,
 			      
-			      nautilus_marshal_VOID__POINTER_STRING_UINT_INT_INT,
+			      nautilus_marshal_VOID__POINTER_STRING_ENUM_INT_INT,
 			      G_TYPE_NONE, 5,
 			      G_TYPE_POINTER,
 			      G_TYPE_STRING,
-			      G_TYPE_UINT,
+			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
 	signals[HANDLE_URL] =
@@ -776,10 +813,10 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_url),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_INT_INT_INT,
+			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
 			      G_TYPE_NONE, 4,
 			      G_TYPE_STRING,
-			      G_TYPE_INT,
+			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
 	signals[HANDLE_URI_LIST] =
@@ -789,10 +826,23 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_uri_list),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_INT_INT_INT,
+			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
 			      G_TYPE_NONE, 4,
 			      G_TYPE_STRING,
+			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
+			      G_TYPE_INT);
+	signals[HANDLE_TEXT] =
+		g_signal_new ("handle_text",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
+					       handle_text),
+			      NULL, NULL,
+			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
+			      G_TYPE_NONE, 4,
+			      G_TYPE_STRING,
+			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
 }

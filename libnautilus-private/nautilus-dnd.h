@@ -32,7 +32,7 @@
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE  "x-special/gnome-icon-list"
 #define NAUTILUS_ICON_DND_URI_LIST_TYPE         "text/uri-list"
-#define NAUTILUS_ICON_DND_TEXT_TYPE             "text/plain"
+#define NAUTILUS_ICON_DND_TEXT_TYPE             "UTF8_STRING"
 #define NAUTILUS_ICON_DND_URL_TYPE	        "_NETSCAPE_URL"
 #define NAUTILUS_ICON_DND_COLOR_TYPE            "application/x-color"
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"

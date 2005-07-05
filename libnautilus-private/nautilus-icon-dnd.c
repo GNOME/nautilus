@@ -72,6 +72,7 @@ static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
+	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
@@ -643,6 +644,20 @@ receive_dropped_uri_list (NautilusIconContainer *container, const char *uri_list
 				 x, y);
 }
 
+/* handle dropped text */
+static void
+receive_dropped_text (NautilusIconContainer *container, const char *text, GdkDragAction action, int x, int y)
+{	
+	if (text == NULL) {
+		return;
+	}
+	
+	g_signal_emit_by_name (container, "handle_text",
+			       text,
+			       action,
+			       x, y);
+}
+
 static int
 auto_scroll_timeout_callback (gpointer data)
 {
@@ -1131,6 +1146,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		break;
 
 	case NAUTILUS_ICON_DND_TEXT:
+		*action = GDK_ACTION_COPY;
 		break;
 	}
 }
@@ -1551,6 +1567,7 @@ drag_data_received_callback (GtkWidget *widget,
 {
     	NautilusDragInfo *drag_info;
 	EelBackground *background;
+	char *tmp;
 	gboolean success;
 
 	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
@@ -1566,6 +1583,7 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_KEYWORD:
 	case NAUTILUS_ICON_DND_URI_LIST:
+	case NAUTILUS_ICON_DND_TEXT:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 		/* Save the data so we can do the actual work on drop. */
 		if (drag_info->selection_data != NULL) {
@@ -1627,6 +1645,14 @@ drag_data_received_callback (GtkWidget *widget,
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char *) data->data, context->action, x, y);
 			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_TEXT:
+			tmp = gtk_selection_data_get_text (data);
+			receive_dropped_text
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 (char *) tmp, context->action, x, y);
+			success = TRUE;
+			g_free (tmp);
 			break;
 		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 			background = eel_get_widget_background (widget);

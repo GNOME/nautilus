@@ -400,6 +400,11 @@ void                fm_directory_view_handle_uri_list_drop             (FMDirect
 									GdkDragAction     action,
 									int               x,
 									int               y);
+void                fm_directory_view_handle_text_drop                 (FMDirectoryView  *view,
+									const char       *text,
+									GdkDragAction     action,
+									int               x,
+									int               y);
 void                fm_directory_view_freeze_updates                   (FMDirectoryView  *view);
 void                fm_directory_view_unfreeze_updates                 (FMDirectoryView  *view);
 void                fm_directory_view_add_subdirectory                (FMDirectoryView  *view,
