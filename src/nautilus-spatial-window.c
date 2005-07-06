@@ -105,7 +105,6 @@ static const GtkTargetEntry location_button_drag_types[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 };
 
 GNOME_CLASS_BOILERPLATE (NautilusSpatialWindow, nautilus_spatial_window,
@@ -787,6 +786,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	GtkWidget *hbox;
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
+	GtkTargetList *targets;
 	const char *ui;
 	
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
@@ -846,7 +846,10 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 			  "drag_data_get",
 			  G_CALLBACK (location_button_drag_data_get_callback),
 			  window);
-	
+
+	targets = gtk_drag_source_get_target_list (window->details->location_button);
+	gtk_target_list_add_text_targets (targets, NAUTILUS_ICON_DND_TEXT);
+
 	gtk_widget_set_sensitive (window->details->location_button, FALSE);
 	g_signal_connect (window->details->location_button, 
 			  "clicked", 

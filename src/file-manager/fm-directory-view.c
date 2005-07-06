@@ -895,7 +895,8 @@ delete_selected_files (FMDirectoryView *view)
 		file_uris = g_list_prepend (file_uris,
 					    nautilus_file_get_uri ((NautilusFile *) node->data));
 	}
-	
+	file_uris = g_list_reverse (file_uris);
+
 	if (confirm_delete_directly (view, 
 				     file_uris)) {
 		nautilus_file_operations_delete (file_uris, GTK_WIDGET (view));

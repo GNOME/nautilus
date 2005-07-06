@@ -65,14 +65,12 @@ static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 };
 
 static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
@@ -376,12 +374,16 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 	GList *target;
 	GtkTargetList *list;
 	
-	if (drop_types_list == NULL)
+	if (drop_types_list == NULL) {
 		drop_types_list = gtk_target_list_new (drop_types,
 						       G_N_ELEMENTS (drop_types) - 1);
-	if (drop_types_list_root == NULL)
+		gtk_target_list_add_text_targets (drop_types_list, NAUTILUS_ICON_DND_TEXT);
+	}
+	if (drop_types_list_root == NULL) {
 		drop_types_list_root = gtk_target_list_new (drop_types,
 							    G_N_ELEMENTS (drop_types));
+		gtk_target_list_add_text_targets (drop_types_list_root, NAUTILUS_ICON_DND_TEXT);
+	}
 
 	if (nautilus_icon_container_get_is_desktop (NAUTILUS_ICON_CONTAINER (widget))) {
 		list = drop_types_list_root;
@@ -1696,6 +1698,7 @@ void
 nautilus_icon_dnd_init (NautilusIconContainer *container,
 			GdkBitmap *stipple)
 {
+	GtkTargetList *targets;
 	int n_elements;
 	
 	g_return_if_fail (container != NULL);
@@ -1704,7 +1707,7 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 
 	container->details->dnd_info = g_new0 (NautilusIconDndInfo, 1);
 	nautilus_drag_init (&container->details->dnd_info->drag_info,
-		drag_types, G_N_ELEMENTS (drag_types));
+		drag_types, G_N_ELEMENTS (drag_types), TRUE);
 
 	/* Set up the widget as a drag destination.
 	 * (But not a source, as drags starting from this widget will be
@@ -1719,6 +1722,9 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 			   0,
 			   drop_types, n_elements,
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK);
+
+	targets = gtk_drag_dest_get_target_list (GTK_WIDGET (container));
+	gtk_target_list_add_text_targets (targets, NAUTILUS_ICON_DND_TEXT);
 
 	/* Messages for outgoing drag. */
 	g_signal_connect (container, "drag_data_get",

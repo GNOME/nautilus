@@ -82,7 +82,6 @@ static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 	/* FIXME: Should handle emblems once the list view supports them */
 };
 
@@ -853,6 +852,7 @@ NautilusTreeViewDragDest *
 nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 {
 	NautilusTreeViewDragDest *dest;
+	GtkTargetList *targets;
 	
 	dest = g_object_new (NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST, NULL);
 
@@ -862,8 +862,11 @@ nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 	
 	gtk_drag_dest_set (GTK_WIDGET (tree_view),
 			   0, drag_types, G_N_ELEMENTS (drag_types),
-			   GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK);	
-	
+			   GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK);
+
+	targets = gtk_drag_dest_get_target_list (GTK_WIDGET (tree_view));
+	gtk_target_list_add_text_targets (targets, NAUTILUS_ICON_DND_TEXT);
+
 	g_signal_connect_object (tree_view,
 				 "drag_motion",
 				 G_CALLBACK (drag_motion_callback),

@@ -70,10 +70,16 @@
 void
 nautilus_drag_init (NautilusDragInfo     *drag_info,
 		    const GtkTargetEntry *drag_types,
-		    int                   drag_type_count)
+		    int                   drag_type_count,
+		    gboolean              add_text_targets)
 {
 	drag_info->target_list = gtk_target_list_new (drag_types,
 						   drag_type_count);
+
+	if (add_text_targets) {
+		gtk_target_list_add_text_targets (drag_info->target_list,
+						  NAUTILUS_ICON_DND_TEXT);
+	}
 
 	drag_info->drop_occured = FALSE;
 	drag_info->need_to_destroy = FALSE;

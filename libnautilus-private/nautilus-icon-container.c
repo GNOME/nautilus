@@ -5414,7 +5414,7 @@ nautilus_icon_container_get_selection (NautilusIconContainer *container)
 		}
 	}
 
-	return list;
+	return g_list_reverse (list);
 }
 
 /* Returns an array of GdkPoints of locations of the icons. */

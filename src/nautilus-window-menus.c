@@ -641,9 +641,17 @@ static const GtkActionEntry main_entries[] = {
     "ZoomInAccel", "<control>equal",           /* label, accelerator */
     NULL,                                      /* tooltip */ 
     G_CALLBACK (action_zoom_in_callback) },
+  { "ZoomInAccel2", NULL,                        /* name, stock id */
+    "ZoomInAccel2", "<control>KP_Add",           /* label, accelerator */
+    NULL,                                      /* tooltip */ 
+    G_CALLBACK (action_zoom_in_callback) },
   { "Zoom Out", GTK_STOCK_ZOOM_OUT,                        /* name, stock id */
     N_("Zoom _Out"), "<control>minus",           /* label, accelerator */
     N_("Show the contents in less detail"),                                      /* tooltip */ 
+    G_CALLBACK (action_zoom_out_callback) },
+  { "ZoomOutAccel", NULL,                        /* name, stock id */
+    "ZoomOutAccel", "<control>KP_Subtract",           /* label, accelerator */
+    NULL,                                      /* tooltip */ 
     G_CALLBACK (action_zoom_out_callback) },
   { "Zoom Normal", GTK_STOCK_ZOOM_100,                        /* name, stock id */
     N_("Normal Si_ze"), "<control>0",           /* label, accelerator */

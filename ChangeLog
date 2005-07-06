@@ -1,3 +1,30 @@
+2005-07-06  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_selection):
+	* src/file-manager/fm-directory-view.c: (delete_selected_files):
+	Correctly sort files before operating on them. Fixes #308884.
+
+	* libnautilus-private/nautilus-dnd.c: (nautilus_drag_init):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(get_data_on_first_target_we_support), (nautilus_icon_dnd_init):
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(nautilus_tree_view_drag_dest_new):
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_instance_init):
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_multi_drag_data_get):
+	Use GTK+ helpers for text D'n'D.
+
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c:
+	Register control-+/- keys on keypad for zooming. Fixes #309018.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(new_file_transfer_callback):
+	Fix template duplicate numbering. Fixes #307252.
+
 2005-07-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:

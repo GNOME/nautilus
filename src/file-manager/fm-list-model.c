@@ -97,7 +97,6 @@ static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 };
 
 static GtkTargetList *drag_target_list = NULL;
@@ -766,7 +765,8 @@ fm_list_model_multi_drag_data_get (EggTreeMultiDragSource *drag_source,
 	if (!drag_target_list) {
 		drag_target_list = gtk_target_list_new 
 			(drag_types, G_N_ELEMENTS (drag_types));
-
+		gtk_target_list_add_text_targets (
+			drag_target_list, NAUTILUS_ICON_DND_TEXT);
 	}
 
 	if (gtk_target_list_find (drag_target_list,

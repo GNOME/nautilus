@@ -2285,6 +2285,7 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 {
 	NewFileTransferState *state;
 	char *temp_string;
+	char **temp_strings;
 	char *uri;
 	
 	state = (NewFileTransferState *) data;
@@ -2325,10 +2326,20 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 					 progress_info->duplicate_name,
 					 progress_info->duplicate_count);
 			} else {
-				progress_info->duplicate_name = g_strdup_printf
-					("%s%%20%d", 
-					 progress_info->duplicate_name,
-					 progress_info->duplicate_count);
+				temp_strings = g_strsplit (temp_string, ".", 2);
+				if (temp_strings[1] != NULL) {
+					progress_info->duplicate_name = g_strdup_printf
+						("%s%%20%d.%s", 
+						 temp_strings[0],
+						 progress_info->duplicate_count,
+						 temp_strings[1]);
+				} else {
+					progress_info->duplicate_name = g_strdup_printf
+						("%s%%20%d", 
+						 progress_info->duplicate_name,
+						 progress_info->duplicate_count);
+				}
+				g_strfreev (temp_strings);
 			}
 			g_free (temp_string);
 			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;

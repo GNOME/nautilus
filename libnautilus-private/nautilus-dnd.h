@@ -32,7 +32,6 @@
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE  "x-special/gnome-icon-list"
 #define NAUTILUS_ICON_DND_URI_LIST_TYPE         "text/uri-list"
-#define NAUTILUS_ICON_DND_TEXT_TYPE             "UTF8_STRING"
 #define NAUTILUS_ICON_DND_URL_TYPE	        "_NETSCAPE_URL"
 #define NAUTILUS_ICON_DND_COLOR_TYPE            "application/x-color"
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"
@@ -107,7 +106,8 @@ typedef void 		(* NautilusDragEachSelectedItemIterator)	(NautilusDragEachSelecte
 
 void                        nautilus_drag_init                          (NautilusDragInfo                     *drag_info,
 									 const GtkTargetEntry                 *drag_types,
-									 int                                   drag_type_count);
+									 int                                   drag_type_count,
+									 gboolean                              add_text_targets);
 void                        nautilus_drag_finalize                      (NautilusDragInfo                     *drag_info);
 NautilusDragSelectionItem  *nautilus_drag_selection_item_new            (void);
 void                        nautilus_drag_destroy_selection_list        (GList                                *selection_list);
