@@ -115,6 +115,7 @@
 
 #define DEFAULT_SELECTION_BOX_ALPHA 0x40
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
+#define DEFAULT_NORMAL_ALPHA 0xff
 #define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
 #define DEFAULT_DARK_INFO_COLOR  0x33337F
 
@@ -4311,6 +4312,13 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     DEFAULT_HIGHLIGHT_ALPHA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uchar ("normal_alpha",
+								     _("Normal Alpha"),
+								     _("Opacity of the normal icons if frame_text is set"),
+								     0, 0xff,
+								     DEFAULT_NORMAL_ALPHA,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("light_info_color",
 								     "Light Info Color",
 								     "Color used for information text against a dark background",
@@ -6586,7 +6594,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
 	GtkStyle *style;
-	guchar highlight_alpha;
+	guchar highlight_alpha, normal_alpha;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
@@ -6614,6 +6622,17 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 				     style->base[GTK_STATE_ACTIVE].green >> 8, 
 				     style->base[GTK_STATE_ACTIVE].blue >> 8,
 				     highlight_alpha);
+	
+	/* load the normal color */
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "normal_alpha", &normal_alpha,
+			      NULL);
+	
+	container->details->normal_color_rgba = 
+		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8, 
+				     style->base[GTK_STATE_NORMAL].green >> 8, 
+				     style->base[GTK_STATE_NORMAL].blue >> 8,
+				     normal_alpha);
 
 	setup_label_gcs (container);
 }

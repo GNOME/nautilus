@@ -199,6 +199,7 @@ struct NautilusIconContainerDetails {
 	GdkPixbuf *highlight_frame;
 	guint32    highlight_color_rgba;
 	guint32    active_color_rgba;
+	guint32    normal_color_rgba;
 	
 	/* colors for text labels */
 	GdkGC   *label_gcs    [LAST_LABEL_COLOR];

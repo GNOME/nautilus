@@ -1047,7 +1047,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		if (needs_frame && !needs_highlight && details->text_width > 0 && details->text_height > 0) {
 			draw_frame (item, 
 				    drawable,
-				    eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_NORMAL]),
+				    container->details->normal_color_rgba,
 				    create_mask,
 				    text_rect.x0,
 				    text_rect.y0,
