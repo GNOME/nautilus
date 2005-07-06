@@ -489,6 +489,7 @@ get_property_pages (NautilusPropertyPageProvider *provider,
         uri = nautilus_file_info_get_uri (file);
 	
 	viewer = g_object_new (nautilus_notes_viewer_get_type (), NULL);
+        g_free (viewer->details->uri);
         viewer->details->uri = uri;
         notes_load_metainfo (viewer);
 

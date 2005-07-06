@@ -160,7 +160,10 @@ show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
 		if (gtk_tree_model_get_iter (model, &cur_iter, path)) {
 			if (fm_tree_model_file_get_iter (view->details->child_model,
 							       iter, file, &cur_iter)) {
+				gtk_tree_path_free (path);
 				return TRUE;
+			} else {
+				gtk_tree_path_free (path);
 			}
 		}
 	}

@@ -1347,6 +1347,8 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 						       stripped_keyword,
 						       stripped_keyword,
 						       GTK_WINDOW (property_browser));
+		if (pixbuf != NULL)
+			g_object_unref (pixbuf);
 
 		nautilus_emblem_refresh_list ();
 		
@@ -1728,6 +1730,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 		g_free (path);
 		property_image = labeled_image_new (_("Erase"), object_pixbuf, "erase", PANGO_SCALE_LARGE);
+		g_object_unref (object_pixbuf);
 		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
 		gtk_container_add (GTK_CONTAINER (image_table), property_image);

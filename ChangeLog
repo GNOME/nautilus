@@ -1,3 +1,15 @@
+2005-07-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/file-manager/fm-tree-view.c: (show_iter_for_file):
+	Free the tree paths.
+	* src/nautilus-notes-viewer.c: (get_property_pages): Close
+	a tiny leak. (1 byte :-)
+	* src/nautilus-property-browser.c: (emblem_dialog_clicked),
+	(make_properties_from_directories): Unref pixbufs.
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_set_location_button): Free icon name
+	Closes bug #307291 and bug #308540.
+
 2005-07-06  Danilo Šegan  <danilo@gnome.org>
 
 	* src/file-manager/nautilus-directory-view-ui.xml: Add space

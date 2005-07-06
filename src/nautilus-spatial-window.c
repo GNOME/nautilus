@@ -715,6 +715,7 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 			if (icon_name) {
 				gtk_image_set_from_icon_name (GTK_IMAGE (window->details->location_icon), 
 							      icon_name, GTK_ICON_SIZE_MENU);
+				g_free (icon_name);
 			} else {
 				gtk_image_set_from_stock (GTK_IMAGE (window->details->location_icon),
 							  GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
