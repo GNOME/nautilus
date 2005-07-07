@@ -328,7 +328,9 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 {
 	char *item;
 	char *from_path;
+	char *from_text;
 	char *to_path;
+	char *to_text;
 	char *progress_label_text;
 	const char *from_prefix;
 	const char *to_prefix;
@@ -336,8 +338,8 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 	int length;
 
 	item = NULL;
-	from_path = NULL;
-	to_path = NULL;
+	from_text = NULL;
+	to_text = NULL;
 	from_prefix = "";
 	to_prefix = "";
 	progress_label_text = NULL;
@@ -351,6 +353,14 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 		length = strlen (from_path);
 		if (from_path [length - 1] == '/') {
 			from_path [length - 1] = '\0';
+		}
+
+		if (g_str_has_prefix (from_uri, "file://")) {
+			from_text = from_path;
+		} else {
+			from_text = g_strdup_printf (_("%s on %s"),
+				from_path, gnome_vfs_uri_get_host_name (uri));
+			g_free (from_path);
 		}
 		
 		gnome_vfs_uri_unref (uri);
@@ -370,6 +380,14 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 			to_path [length - 1] = '\0';
 		}
 
+		if (g_str_has_prefix (to_uri, "file://")) {
+			to_text = to_path;
+		} else {
+			to_text = g_strdup_printf (_("%s on %s"),
+				to_path, gnome_vfs_uri_get_host_name (uri));
+			g_free (to_path);
+		}
+
 		gnome_vfs_uri_unref (uri);
 		/* "To" dialog label, source path gets placed next to it in the dialog */
 		to_prefix = _("To:");
@@ -379,14 +397,14 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 		(dialog,
 		 progress_label_text != NULL ? progress_label_text : "",
 		 item != NULL ? item : "",
-		 from_path != NULL ? from_path : "",
-		 to_path != NULL ? to_path : "",
+		 from_text != NULL ? from_text : "",
+		 to_text != NULL ? to_text : "",
 		 from_prefix, to_prefix, index, size);
 
 	g_free (progress_label_text);
 	g_free (item);
-	g_free (from_path);
-	g_free (to_path);
+	g_free (from_text);
+	g_free (to_text);
 }
 
 static int

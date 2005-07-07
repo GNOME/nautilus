@@ -1,3 +1,13 @@
+2005-07-06  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-window.c: (add_view_as_menu_item):
+	Connect accelerators with "View as" menu items. Fixes #139908.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(progress_dialog_set_to_from_item_text):
+	When operating on remote locations, also display hostname in copy/move
+	progress dialog.
+
 2005-07-06  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/file-manager/fm-tree-view.c: (show_iter_for_file):

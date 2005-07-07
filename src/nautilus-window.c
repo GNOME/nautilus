@@ -679,6 +679,10 @@ add_view_as_menu_item (NautilusWindow *window,
 	char *action_name;
 	ActivateViewData *data;
 
+	char *accel;
+	char *accel_path;
+	unsigned int accel_keyval;
+
 	info = nautilus_view_factory_lookup (identifier);
 	
 	action_name = g_strdup_printf ("view_as_%d", index);
@@ -687,6 +691,21 @@ add_view_as_menu_item (NautilusWindow *window,
 				       _(info->display_location_label),
 				       NULL,
 				       0);
+
+	if (index >= 1 && index <= 9) {
+		accel = g_strdup_printf ("%d", index);
+
+		accel_path = g_strdup_printf ("<Nautilus-Window>/%s", action_name);
+
+		accel_keyval = gdk_keyval_from_name (accel);
+		g_assert (accel_keyval != GDK_VoidSymbol);
+
+		gtk_accel_map_add_entry (accel_path, accel_keyval, GDK_CONTROL_MASK);
+		gtk_action_set_accel_path (GTK_ACTION (action), accel_path);
+
+		g_free (accel);
+		g_free (accel_path);
+	}
 
 	if (window->details->view_as_radio_action != NULL) {
 		gtk_radio_action_set_group (action,
