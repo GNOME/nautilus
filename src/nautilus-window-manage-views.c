@@ -31,6 +31,7 @@
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-location-bar.h"
+#include "nautilus-pathbar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
@@ -347,10 +348,12 @@ viewed_file_changed_callback (NautilusFile *file,
                         update_up_button (window);
 #if !NEW_UI_COMPLETE
                         if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-                                /* Change the location bar to match the current location. */
+                                /* Change the location bar and path bar to match the current location. */
                                 nautilus_navigation_bar_set_location
                                         (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
                                          window->details->location);
+				nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar),
+					    window->details->location);
                         }                  
                         if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
                                 /* Change the location button to match the current location. */
@@ -1171,10 +1174,11 @@ update_for_new_location (NautilusWindow *window)
                 nautilus_navigation_window_allow_back (NAUTILUS_NAVIGATION_WINDOW (window), NAUTILUS_NAVIGATION_WINDOW (window)->back_list != NULL);
                 nautilus_navigation_window_allow_forward (NAUTILUS_NAVIGATION_WINDOW (window), NAUTILUS_NAVIGATION_WINDOW (window)->forward_list != NULL);
 
-                /* Change the location bar to match the current location. */
+                /* Change the location bar and path bar to match the current location. */
                 nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
                                                       window->details->location);
-
+		nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar),
+					    window->details->location);
 		nautilus_navigation_window_load_extension_toolbar_items (NAUTILUS_NAVIGATION_WINDOW (window));
         }
         

@@ -52,6 +52,21 @@
          </long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/always_use_location_entry</key>
+      <applyto>/apps/nautilus/preferences/always_use_location_entry</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Always use the location entry, instead of the pathbar</short>
+         <long>
+           If set to true, then Nautilus browser windows will always use a textual
+	   input entry for the location toolbar, instead of the pathbar.
+         </long>
+      </locale>
+    </schema>
     
     <schema>
       <key>/schemas/apps/nautilus/preferences/confirm_trash</key>

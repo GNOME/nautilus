@@ -423,12 +423,12 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
     N_("Location _Bar"), NULL,                    /* label, accelerator */     
     N_("Change the visibility of this window's location bar"),                    /* tooltip */
     G_CALLBACK (action_show_hide_location_bar_callback),
-    TRUE  },                                    /* is_active */
+    TRUE},                                    /* is_active */
   { "Show Hide Statusbar", NULL,                 /* name, stock id */
     N_("St_atusbar"), NULL,                    /* label, accelerator */     
     N_("Change the visibility of this window's statusbar"),                    /* tooltip */
     G_CALLBACK (action_show_hide_statusbar_callback),
-    TRUE  },                                    /* is_active */
+    TRUE},                                    /* is_active */
 };
 
 void 

@@ -93,6 +93,8 @@ nautilus_SOURCES = \
 	nautilus-navigation-window.h            \
 	nautilus-notes-viewer.c			\
 	nautilus-notes-viewer.h			\
+	nautilus-pathbar.c			\
+	nautilus-pathbar.h			\
 	nautilus-places-sidebar.c		\
 	nautilus-places-sidebar.h		\
 	nautilus-property-browser.c     	\

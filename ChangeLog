@@ -1,3 +1,23 @@
+2005-07-08  Alexander Larsson  <alexl@redhat.com>
+
+        Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
+	
+	* src/Makefile.am:
+	* src/nautilus-pathbar.[ch]:
+	New pathbar widget. Based on code from gtk.
+	
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-private.h:
+	Use pathbar in browser window.
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	Add always_use_location_entry prefs.
+	
+	* src/nautilus-navigation-window-menus.c:
+	Whitespace fixup.
+
 2005-07-07  Joe Shaw  <joeshaw@novell.com>
 
 	* configure.in: Bump required gnome-vfs version up to

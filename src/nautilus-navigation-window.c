@@ -37,6 +37,7 @@
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
 #include "nautilus-location-bar.h"
+#include "nautilus-pathbar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <eel/eel-accessibility.h>
@@ -81,6 +82,7 @@
 #include <math.h>
 #include <sys/time.h>
 
+
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
  * for the desktop window.
@@ -110,6 +112,10 @@ static void side_panel_image_changed_callback        (NautilusSidebar          *
 static void navigation_bar_location_changed_callback (GtkWidget                *widget,
 						      const char               *uri,
 						      NautilusNavigationWindow *window);
+static void path_bar_location_changed_callback       (GtkWidget                *widget,
+						      const char               *uri,
+						      NautilusNavigationWindow *window);
+static void always_use_location_entry_changed        (gpointer                  callback_data);
 
 
 GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
@@ -123,6 +129,7 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	GtkWidget *location_bar;
 	GtkWidget *view_as_menu_vbox;
 	GtkToolItem *item;
+	GtkWidget *hbox;
 	
 	window->details = g_new0 (NautilusNavigationWindowDetails, 1);
 
@@ -141,7 +148,7 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_initialize_menus (window);
-
+	
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 	toolbar = gtk_ui_manager_get_widget (ui_manager, "/Toolbar");
 	window->details->toolbar = toolbar;
@@ -164,21 +171,35 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	/* set up location bar */
 	location_bar = gtk_toolbar_new ();
 	window->details->location_bar = location_bar;
-	
-	window->navigation_bar = nautilus_location_bar_new (window);
-	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
-	g_signal_connect_object (window->navigation_bar, "location_changed",
-				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
-
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
 
 	item = gtk_tool_item_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (item), GNOME_PAD_SMALL);
 	gtk_widget_show (GTK_WIDGET (item));
 	gtk_tool_item_set_expand (item, TRUE);
-	gtk_container_add (GTK_CONTAINER (item),  window->navigation_bar);
+	gtk_container_add (GTK_CONTAINER (item),  hbox);
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
 			    item, -1);
+
+	window->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
+ 	gtk_widget_show (window->path_bar);
+	
+	g_signal_connect_object (window->path_bar, "path_clicked",
+				 G_CALLBACK (path_bar_location_changed_callback), window, 0);
+	
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    window->path_bar,
+			    TRUE, TRUE, 0);
+
+	window->navigation_bar = nautilus_location_bar_new (window);
+	g_signal_connect_object (window->navigation_bar, "location_changed",
+				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
+
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    window->navigation_bar,
+			    TRUE, TRUE, 0);
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set.
 	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
@@ -229,9 +250,36 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 			  0, 1,                   2, 3,
 			  GTK_EXPAND | GTK_FILL,  0,
 			  0,                      0);
-	
-	
+
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
+						  always_use_location_entry_changed,
+						  window, G_OBJECT (window));
 }
+
+static void
+always_use_location_entry_changed (gpointer callback_data)
+{
+	NautilusNavigationWindow *window;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+		nautilus_navigation_window_hide_path_bar (window);
+	} else {
+		nautilus_navigation_window_show_path_bar (window);
+	}
+}
+
+
+static void
+path_bar_location_changed_callback (GtkWidget *widget,
+				    const char *uri,
+				    NautilusNavigationWindow *window)
+{
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+}
+
 
 static void
 navigation_bar_location_changed_callback (GtkWidget *widget,
@@ -240,13 +288,20 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 {
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	if (window->details->temporary_navigation_bar) {
+	if (window->details->temporary_location_bar) {
 		if (nautilus_navigation_window_location_bar_showing (window)) {
 			nautilus_navigation_window_hide_location_bar (window, FALSE);
+		}
+		window->details->temporary_location_bar = FALSE;
+	}
+	if (window->details->temporary_navigation_bar) {
+		if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+			nautilus_navigation_window_show_path_bar (window);
 		}
 		window->details->temporary_navigation_bar = FALSE;
 	}
 
+	
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
 }
 
@@ -418,10 +473,11 @@ nautilus_navigation_window_destroy (GtkObject *object)
 
 	window->view_as_option_menu = NULL;
 	window->navigation_bar = NULL;
+	window->path_bar = NULL;
 	window->zoom_control = NULL;
 
 	window->details->content_paned = NULL;
-
+	
 	if (window->details->tooltips) {
 		g_object_unref (G_OBJECT (window->details->tooltips));
 		window->details->tooltips = NULL;
@@ -733,10 +789,11 @@ static void
 real_set_content_view_widget (NautilusWindow *nautilus_window,
 			      NautilusView *new_view)
 {
+	
 	NautilusNavigationWindow *window;
-	
+
 	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
-	
+
 	disconnect_view (window, nautilus_window->content_view);
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, 
@@ -783,6 +840,10 @@ nautilus_navigation_window_show_location_bar_temporarily (NautilusNavigationWind
 {
 	if (!nautilus_navigation_window_location_bar_showing (window)) {
 		nautilus_navigation_window_show_location_bar (window, FALSE);
+		window->details->temporary_location_bar = TRUE;
+	}
+	if (nautilus_navigation_window_path_bar_showing (window)) {
+		nautilus_navigation_window_hide_path_bar (window);
 		window->details->temporary_navigation_bar = TRUE;
 	}
 	nautilus_navigation_bar_activate 
@@ -871,7 +932,7 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 void 
 nautilus_navigation_window_hide_location_bar (NautilusNavigationWindow *window, gboolean save_preference)
 {
-	window->details->temporary_navigation_bar = FALSE;
+	window->details->temporary_location_bar = FALSE;
 	gtk_widget_hide (window->details->location_bar);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 	if (save_preference &&
@@ -896,6 +957,31 @@ nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *windo
 {
 	if (window->details->location_bar != NULL) {
 		return GTK_WIDGET_VISIBLE (window->details->location_bar);
+	}
+	/* If we're not visible yet we haven't changed visibility, so its TRUE */
+	return TRUE;
+}
+
+void 
+nautilus_navigation_window_hide_path_bar (NautilusNavigationWindow *window)
+{
+	window->details->temporary_navigation_bar = FALSE;
+	gtk_widget_hide (window->path_bar);
+	gtk_widget_show (window->navigation_bar);
+}
+
+void 
+nautilus_navigation_window_show_path_bar (NautilusNavigationWindow *window)
+{
+	gtk_widget_show (window->path_bar);
+	gtk_widget_hide (window->navigation_bar);
+}
+
+gboolean
+nautilus_navigation_window_path_bar_showing (NautilusNavigationWindow *window)
+{
+	if (window->path_bar != NULL) {
+		return GTK_WIDGET_VISIBLE (window->path_bar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;
@@ -1012,6 +1098,8 @@ nautilus_navigation_window_get_base_page_index (NautilusNavigationWindow *window
 	return forward_count;
 }
 
+
+
 /**
  * nautilus_navigation_window_show:
  * @widget:	GtkWidget
@@ -1035,6 +1123,12 @@ nautilus_navigation_window_show (GtkWidget *widget)
 		nautilus_navigation_window_hide_location_bar (window, FALSE);
 	}
 
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+		nautilus_navigation_window_hide_path_bar (window);
+	} else {
+		nautilus_navigation_window_show_path_bar (window);
+	}
+	
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
 		nautilus_navigation_window_show_sidebar (window);
 	} else {

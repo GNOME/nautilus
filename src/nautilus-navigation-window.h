@@ -31,6 +31,7 @@
 #define NAUTILUS_NAVIGATION_WINDOW_H
 
 #include <bonobo/bonobo-window.h>
+#include <gtk/gtktoolitem.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-sidebar.h>
@@ -47,7 +48,7 @@
 
 typedef struct _NautilusNavigationWindow        NautilusNavigationWindow;
 typedef struct _NautilusNavigationWindowClass   NautilusNavigationWindowClass;
-typedef struct _NautilusNavigationWindowDetails NautilusNavigationWindowDetails;
+typedef struct _NautilusNavigationWindowDetails NautilusNavigationWindowDetails; 
 
 struct _NautilusNavigationWindow {
         NautilusWindow parent_object;
@@ -58,7 +59,8 @@ struct _NautilusNavigationWindow {
         NautilusSidePane *sidebar;
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
-        
+	GtkWidget *path_bar;
+       
         /* Back/Forward chain, and history list. 
          * The data in these lists are NautilusBookmark pointers. 
          */
@@ -90,6 +92,11 @@ void     nautilus_navigation_window_hide_location_bar    (NautilusNavigationWind
                                                           gboolean                  save_preference);
 void     nautilus_navigation_window_show_location_bar    (NautilusNavigationWindow *window,
                                                           gboolean                  save_preference);
+
+void     nautilus_navigation_window_hide_path_bar        (NautilusNavigationWindow *window);
+void     nautilus_navigation_window_show_path_bar        (NautilusNavigationWindow *window);
+gboolean nautilus_navigation_window_path_bar_showing 	 (NautilusNavigationWindow *window);
+
 gboolean nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow *window);

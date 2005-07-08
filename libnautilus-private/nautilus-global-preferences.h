@@ -82,6 +82,7 @@ typedef enum
 
 /* Which views should be displayed for new windows */
 #define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"
+#define NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY		"preferences/always_use_location_entry"
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
 #define NAUTILUS_PREFERENCES_SIDE_PANE_VIEW                     "preferences/side_pane_view"
