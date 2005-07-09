@@ -1675,6 +1675,7 @@ nautilus_window_reload (NautilusWindow *window)
 {
 	char *location;
         char *current_pos;
+	GList *selection;
 	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1687,11 +1688,15 @@ nautilus_window_reload (NautilusWindow *window)
 	 */
 	location = g_strdup (window->details->location);
 	current_pos = NULL;
-	if (window->content_view != NULL)
+	selection = NULL;
+	if (window->content_view != NULL) {
 		current_pos = nautilus_view_get_first_visible_file (window->content_view);
+		selection = nautilus_view_get_selection (window->content_view);
+	}
 	begin_location_change
-		(window, location, NULL,
+		(window, location, selection,
 		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
         g_free (current_pos);
 	g_free (location);
+	eel_g_list_free_deep (selection);
 }
