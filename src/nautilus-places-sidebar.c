@@ -167,7 +167,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	
  	mount_uri = "file:///"; // No need to strdup
 	last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-			       _("Filesystem"), "gnome-fs-blockdev", mount_uri);
+			       _("Filesystem"), "gnome-dev-harddisk", mount_uri);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	

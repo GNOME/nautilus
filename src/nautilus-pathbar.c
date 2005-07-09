@@ -67,7 +67,7 @@ static gboolean desktop_is_home;
 #define DEFAULT_ICON 		"gnome-fs-directory"
 #define DEFAULT_DESKTOP_ICON 	"gnome-fs-desktop"
 #define DEFAULT_HOME_ICON 	"gnome-fs-home"
-#define DEFAULT_FILESYSTEM_ICON "gnome-fs-blockdev"
+#define DEFAULT_FILESYSTEM_ICON	"gnome-dev-harddisk"
 
 typedef struct _ButtonData ButtonData;
 

@@ -1,5 +1,14 @@
 2005-07-09  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-pathbar.c:
+	* src/nautilus-places-sidebar.c: (update_places):
+	Use the same icon for filesystem as the gtk file chooser.
+	Fixes #309825.
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-07-09  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-places-sidebar.c: (nautilus_places_sidebar_init):
 	Remove extra ScrolledWindow container. Fixes #309832.
 
