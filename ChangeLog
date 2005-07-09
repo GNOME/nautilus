@@ -1,5 +1,10 @@
 2005-07-09  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-places-sidebar.c: (nautilus_places_sidebar_init):
+	Remove extra ScrolledWindow container. Fixes #309832.
+
+2005-07-09  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-window-manage-views.c: (nautilus_window_reload):
 	Preserve the selection when refreshing the view. Fixes #48383.
 

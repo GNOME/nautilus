@@ -368,21 +368,10 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	GtkTreeViewColumn *col;
 	GtkCellRenderer   *cell;
 	GtkTreeSelection  *selection;
-	GtkWidget 	  *swin;
    	GtkWidget 	  *vbox;
   	
 	vbox = gtk_vbox_new (FALSE, 6);
   	gtk_widget_show (vbox);
-
- 	/* Scrolled window */
-	swin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
-		  		        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
-				             GTK_SHADOW_IN);
-	gtk_widget_show (swin);
-  	gtk_box_pack_start (GTK_BOX (vbox), swin, TRUE, TRUE, 0);
-
 
   	/* tree view */
 	tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -418,7 +407,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     );
 
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (sidebar->store));
-	gtk_container_add (GTK_CONTAINER (swin), GTK_WIDGET (tree_view));
+	gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
 	gtk_widget_show (GTK_WIDGET (tree_view));
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
