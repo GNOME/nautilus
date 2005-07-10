@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-08 16:23-0400\n"
-"PO-Revision-Date: 2005-07-08 20:03-0400\n"
+"POT-Creation-Date: 2005-07-10 17:58-0400\n"
+"PO-Revision-Date: 2005-07-10 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -154,7 +154,7 @@ msgid "Envy"
 msgstr "Envy"
 
 #: data/browser.xml.h:35 src/nautilus-emblem-sidebar.c:941
-#: src/nautilus-property-browser.c:1732
+#: src/nautilus-property-browser.c:1754
 msgid "Erase"
 msgstr "Erase"
 
@@ -4445,7 +4445,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:155
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1447 src/nautilus-window-menus.c:507
+#: src/nautilus-property-browser.c:1469 src/nautilus-window-menus.c:507
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5349,11 +5349,11 @@ msgstr "Show Notes"
 msgid "Home"
 msgstr "Home"
 
-#: src/nautilus-places-sidebar.c:488
+#: src/nautilus-places-sidebar.c:477
 msgid "Places"
 msgstr "Places"
 
-#: src/nautilus-places-sidebar.c:494
+#: src/nautilus-places-sidebar.c:483
 msgid "Show Places"
 msgstr "Show Places"
 
@@ -5452,8 +5452,8 @@ msgstr "Sorry, but you can't replace the reset image."
 msgid "Reset is a special image that cannot be deleted."
 msgstr "Reset is a special image that cannot be deleted."
 
-#: src/nautilus-property-browser.c:1114 src/nautilus-property-browser.c:1318
-#: src/nautilus-property-browser.c:1334
+#: src/nautilus-property-browser.c:1114 src/nautilus-property-browser.c:1340
+#: src/nautilus-property-browser.c:1356
 msgid "Not an Image"
 msgstr "Not an Image"
 
@@ -5466,84 +5466,88 @@ msgstr "Sorry, but the pattern %s couldn't be installed."
 msgid "Select an image file to add as a pattern"
 msgstr "Select an image file to add as a pattern"
 
-#: src/nautilus-property-browser.c:1226
+#: src/nautilus-property-browser.c:1217 src/nautilus-property-browser.c:1248
 msgid "The color cannot be installed."
 msgstr "The colour cannot be installed."
 
-#: src/nautilus-property-browser.c:1227
-msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr "Sorry, but you must specify a non-blank name for the new colour."
+#: src/nautilus-property-browser.c:1218
+msgid "Sorry, but you must specify an unused color name for the new color."
+msgstr "Sorry, but you must specify an unused colour name for the new colour."
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1219 src/nautilus-property-browser.c:1250
 msgid "Couldn't Install Color"
 msgstr "Couldn't Install Colour"
 
-#: src/nautilus-property-browser.c:1280
+#: src/nautilus-property-browser.c:1249
+msgid "Sorry, but you must specify a non-blank name for the new color."
+msgstr "Sorry, but you must specify a non-blank name for the new colour."
+
+#: src/nautilus-property-browser.c:1302
 msgid "Select a color to add"
 msgstr "Select a colour to add"
 
-#: src/nautilus-property-browser.c:1317 src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1339 src/nautilus-property-browser.c:1355
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Sorry, but \"%s\" is not a usable image file."
 
-#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
+#: src/nautilus-property-browser.c:1340 src/nautilus-property-browser.c:1356
 msgid "The file is not an image."
 msgstr "The file is not an image."
 
-#: src/nautilus-property-browser.c:2042
+#: src/nautilus-property-browser.c:2064
 msgid "Select a Category:"
 msgstr "Select a Category:"
 
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2073
 msgid "C_ancel Remove"
 msgstr "C_ancel Remove"
 
-#: src/nautilus-property-browser.c:2057
+#: src/nautilus-property-browser.c:2079
 msgid "_Add a New Pattern..."
 msgstr "_Add a New Pattern..."
 
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2082
 msgid "_Add a New Color..."
 msgstr "_Add a New Colour..."
 
-#: src/nautilus-property-browser.c:2063
+#: src/nautilus-property-browser.c:2085
 msgid "_Add a New Emblem..."
 msgstr "_Add a New Emblem..."
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2108
 msgid "Click on a pattern to remove it"
 msgstr "Click on a pattern to remove it"
 
-#: src/nautilus-property-browser.c:2089
+#: src/nautilus-property-browser.c:2111
 msgid "Click on a color to remove it"
 msgstr "Click on a colour to remove it"
 
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2114
 msgid "Click on an emblem to remove it"
 msgstr "Click on an emblem to remove it"
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2123
 msgid "Patterns:"
 msgstr "Patterns:"
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2126
 msgid "Colors:"
 msgstr "Colours:"
 
-#: src/nautilus-property-browser.c:2107
+#: src/nautilus-property-browser.c:2129
 msgid "Emblems:"
 msgstr "Emblems:"
 
-#: src/nautilus-property-browser.c:2127
+#: src/nautilus-property-browser.c:2149
 msgid "_Remove a Pattern..."
 msgstr "_Remove a Pattern..."
 
-#: src/nautilus-property-browser.c:2130
+#: src/nautilus-property-browser.c:2152
 msgid "_Remove a Color..."
 msgstr "_Remove a Colour..."
 
-#: src/nautilus-property-browser.c:2133
+#: src/nautilus-property-browser.c:2155
 msgid "_Remove an Emblem..."
 msgstr "_Remove an Emblem..."
 
