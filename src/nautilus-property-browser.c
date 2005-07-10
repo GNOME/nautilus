@@ -1208,9 +1208,15 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 	char *color_spec;
 	const char *color_name;
 	char *stripped_color_name;
+	xmlDocPtr document;
+	xmlNodePtr cur_node,children_node;
+	xmlChar *child_color_name,*child_color_name_deleted;
+	gboolean color_name_exists=FALSE;
 	
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
+	document =read_browser_xml(property_browser);
+	cur_node=get_color_category(document);
 
 	if (which_button == GTK_RESPONSE_OK) {
 		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
@@ -1228,8 +1234,25 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 			                       _("Couldn't Install Color"), GTK_WINDOW (property_browser));
 		
 		} else {
+			if(cur_node!=NULL)
+				{
+					for(children_node=cur_node->xmlChildrenNode;children_node!=NULL;children_node=children_node->next)
+						{
+							child_color_name=xmlGetProp(children_node,"name");
+							child_color_name_deleted=xmlGetProp(children_node,"deleted");
+							if(xmlStrcmp(color_name,child_color_name)==0 && child_color_name_deleted ==NULL){
+								color_name_exists=TRUE;
+								xmlFree(child_color_name);
+								break;
+							}
+							xmlFree(child_color_name);
+						}
+				}
+			if(!color_name_exists)
+				{
 			add_color_to_file (property_browser, color_spec, stripped_color_name);
 			nautilus_property_browser_update_contents(property_browser);
+				}
 		}
 		g_free (stripped_color_name);
 		g_free(color_spec);	
