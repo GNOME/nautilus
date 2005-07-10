@@ -1178,8 +1178,10 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 static void
 add_color_to_file (NautilusPropertyBrowser *property_browser, const char *color_spec, const char *color_name)
 {
-	xmlNodePtr cur_node, new_color_node;
+	xmlNodePtr cur_node, new_color_node, children_node;
 	xmlDocPtr document;
+	xmlChar *child_color_name;
+	gboolean color_name_exists = FALSE;
 
 	document = read_browser_xml (property_browser);
 	if (document == NULL) {
@@ -1189,13 +1191,33 @@ add_color_to_file (NautilusPropertyBrowser *property_browser, const char *color_
 	/* find the colors category */
 	cur_node = get_color_category (document);
 	if (cur_node != NULL) {
-		/* add a new color node */
-		new_color_node = xmlNewChild (cur_node, NULL, "color", NULL);
-		xmlNodeSetContent (new_color_node, color_spec);
-		xmlSetProp (new_color_node, "local", "1");
-		xmlSetProp (new_color_node, "name", color_name);
+		/* check if theres already a color whith that name */
+		children_node = cur_node->xmlChildrenNode;
+		while (children_node != NULL) {
+			child_color_name = xmlGetProp (children_node, "name");	
+			if (xmlStrcmp (color_name, child_color_name) == 0) {
+				color_name_exists = TRUE;
+				xmlFree (child_color_name);
+				break;
+			}
+			xmlFree (child_color_name);
+
+			children_node = children_node->next;
+		}
 		
-		write_browser_xml (property_browser, document);
+		/* add a new color node */
+		if (!color_name_exists) {
+			new_color_node = xmlNewChild (cur_node, NULL, "color", NULL);
+			xmlNodeSetContent (new_color_node, color_spec);
+			xmlSetProp (new_color_node, "local", "1");
+			xmlSetProp (new_color_node, "name", color_name);
+				
+			write_browser_xml (property_browser, document);
+		} else {
+			eel_show_error_dialog (_("The color cannot be installed."),
+					       _("Sorry, but you must specify an unused color name for the new color."), 
+			                       _("Couldn't Install Color"), GTK_WINDOW (property_browser));
+		}
 	}
 	
 	xmlFreeDoc (document);
@@ -1208,15 +1230,9 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 	char *color_spec;
 	const char *color_name;
 	char *stripped_color_name;
-	xmlDocPtr document;
-	xmlNodePtr cur_node,children_node;
-	xmlChar *child_color_name,*child_color_name_deleted;
-	gboolean color_name_exists=FALSE;
 	
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
-	document =read_browser_xml(property_browser);
-	cur_node=get_color_category(document);
 
 	if (which_button == GTK_RESPONSE_OK) {
 		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
@@ -1234,25 +1250,8 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 			                       _("Couldn't Install Color"), GTK_WINDOW (property_browser));
 		
 		} else {
-			if(cur_node!=NULL)
-				{
-					for(children_node=cur_node->xmlChildrenNode;children_node!=NULL;children_node=children_node->next)
-						{
-							child_color_name=xmlGetProp(children_node,"name");
-							child_color_name_deleted=xmlGetProp(children_node,"deleted");
-							if(xmlStrcmp(color_name,child_color_name)==0 && child_color_name_deleted ==NULL){
-								color_name_exists=TRUE;
-								xmlFree(child_color_name);
-								break;
-							}
-							xmlFree(child_color_name);
-						}
-				}
-			if(!color_name_exists)
-				{
 			add_color_to_file (property_browser, color_spec, stripped_color_name);
 			nautilus_property_browser_update_contents(property_browser);
-				}
 		}
 		g_free (stripped_color_name);
 		g_free(color_spec);	
