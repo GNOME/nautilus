@@ -3048,7 +3048,7 @@ msgstr "\"%s\" נבחר (%s)"
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
-msgstr[0] "פריט אחד נבחר (%s)"
+msgstr[0] "פריט %d נבחר (%s)"
 msgstr[1] "%d פריטים נבחרו (%s)"
 
 #. Folders selected also, use "other" terminology
@@ -3056,7 +3056,7 @@ msgstr[1] "%d פריטים נבחרו (%s)"
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
-msgstr[0] "פריט אחר אחד נבחר (%s)"
+msgstr[0] "פריט אחר %d נבחר (%s)"
 msgstr[1] "%d פריטים אחרים נבחרו (%s)"
 
 #: src/file-manager/fm-directory-view.c:1863
@@ -4143,8 +4143,8 @@ msgstr "בלתי קריא"
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "פריט אחד, עם גודל %s"
-msgstr[1] "%d פרים, עם גודל   %s  %d"
+msgstr[0] "פריט %d, עם גודל %s"
+msgstr[1] "‏%d פריטים, סה\"כ %s"
 
 #: src/file-manager/fm-properties-window.c:1839
 msgid "(some contents unreadable)"
@@ -5188,39 +5188,43 @@ msgstr "פתח מיקום"
 msgid "_Location:"
 msgstr "_מיקום:"
 
+# console messages
+
 #: src/nautilus-main.c:212
 msgid "Perform a quick set of self-check tests."
-msgstr "בצע מספר בדיקות עצמיות מהירות."
+msgstr "Perform a quick set of self-check tests."
 
 #: src/nautilus-main.c:215
 msgid "Create the initial window with the given geometry."
-msgstr "צור את החלון הפנימי בגאומטריה הנתונה."
+msgstr "Create the initial window with the given geometry."
 
 #: src/nautilus-main.c:215
 msgid "GEOMETRY"
-msgstr "גאומטריה"
+msgstr "GEOMETRY"
 
 #: src/nautilus-main.c:217
 msgid "Only create windows for explicitly specified URIs."
-msgstr "צור חלונות רק לכתובות שצוינו במיוחד."
+msgstr "Only create windows for explicitly specified URIs."
 
 #: src/nautilus-main.c:219
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr "אל תנהל את שולחן העבודה (התעלם מהעדפות שהוגדרו בחלון ההעדפות)"
+msgstr ""
+"Do not manage the desktop (ignore the preference set in the preferences "
+"dialog)."
 
 #: src/nautilus-main.c:221
 msgid "open a browser window."
-msgstr "פתח חלון דפדפן."
+msgstr "open a browser window."
 
 #: src/nautilus-main.c:223
 msgid "Quit Nautilus."
-msgstr "צא מנאוטילוס."
+msgstr "Quit Nautilus."
 
 #: src/nautilus-main.c:225
 msgid "Restart Nautilus."
-msgstr "הפעל מחדש את נאוטילוס."
+msgstr "Restart Nautilus.."
 
 #: src/nautilus-main.c:258
 msgid "File Manager"
@@ -5236,17 +5240,17 @@ msgstr "נאוטילוס"
 #: src/nautilus-main.c:287 src/nautilus-main.c:296 src/nautilus-main.c:301
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "נאוטילוס: לא ניתן להשתמש ב %s עם כתובות.\n"
+msgstr "nautilus: %s cannot be used with URIs.\n"
 
 #: src/nautilus-main.c:292
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
-msgstr "נאוטילוס: לא ניתן להשתמש בבדיקה עם יישומים אחרים.\n"
+msgstr "nautilus: --check cannot be used with other options.\n"
 
 #: src/nautilus-main.c:306
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
-msgstr "נאוטילוס: לא ניתן להשתמש בגאומטריה ביותר מכתובת אחת.\n"
+msgstr "nautilus: --geometry cannot be used with more than one URI.\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
