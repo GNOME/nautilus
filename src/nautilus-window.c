@@ -299,6 +299,20 @@ nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 			 set_allow_up, (window, allow));
 }
 
+static void
+update_cursor (NautilusWindow *window)
+{
+	GdkCursor *cursor;
+
+	if (window->details->allow_stop) {
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
+		gdk_cursor_unref (cursor);
+	} else {
+		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
+	}
+}
+
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
@@ -309,6 +323,14 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_STOP);
 	gtk_action_set_sensitive (action, allow);
+
+	if (window->details->allow_stop != allow) {
+		window->details->allow_stop = allow;
+
+		if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
+			update_cursor (window);
+		}
+	}
 	
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
 			 set_throbber_active, (window, allow));
@@ -641,6 +663,12 @@ nautilus_window_size_request (GtkWidget		*widget,
 	}
 }
 
+static void
+nautilus_window_realize (GtkWidget *widget)
+{
+	GTK_WIDGET_CLASS (nautilus_window_parent_class)->realize (widget);
+	update_cursor (NAUTILUS_WINDOW (widget));
+}
 
 /*
  * Main API
@@ -1445,6 +1473,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
+	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
 	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
 	class->get_title = real_get_title;
 	class->set_title = real_set_title;
