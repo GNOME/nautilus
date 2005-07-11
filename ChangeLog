@@ -1,5 +1,10 @@
 2005-07-11  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-places-sidebar.c:
+	Remove gtk_range_get_adjustment assertion warnings.
+
+2005-07-11  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-global-preferences.[ch]:
 	* src/nautilus-actions.h:
 	* src/nautilus-navigation-window-menus.c:
@@ -7,6 +12,8 @@
 	* src/nautilus-navigation-window.c:
 	Add toggle to hide/show main toolbar.
 
+        Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
+	
 2005-07-10  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-property-browser.c: (add_color_to_browser): Don't allow
