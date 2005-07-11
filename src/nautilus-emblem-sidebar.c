@@ -239,7 +239,7 @@ nautilus_emblem_sidebar_delete_cb (GtkWidget *menu_item,
 		send_emblems_changed ();
 	} else {
 		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'."), emblem_sidebar->details->popup_emblem_display_name);
-		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one you added yourself."),
+		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
 				       _("Couldn't Remove Emblem"),
 				       NULL);
 		g_free (error);

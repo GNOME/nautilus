@@ -768,21 +768,21 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("Do you want to switch to manual layout and leave this item where you dropped it? "
+			message = no_translate("Do you want to switch to manual layout and leave this item where you dropped it? "
 			"This will clobber the stored manual layout.");
-			detail = _("This folder uses automatic layout.");
+			detail = no_translate("This folder uses automatic layout.");
 		} else {
-			message = _("Do you want to switch to manual layout and leave these items where you dropped them? "
+			message = no_translate("Do you want to switch to manual layout and leave these items where you dropped them? "
 			"This will clobber the stored manual layout.");
-			detail = _("This folder uses automatic layout.");
+			detail = no_translate("This folder uses automatic layout.");
 		}
 	} else {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("Do you want to switch to manual layout and leave this item where you dropped it?");
-			detail = _("This folder uses automatic layout.");
+			message = no_translate("Do you want to switch to manual layout and leave this item where you dropped it?");
+			detail = no_translate("This folder uses automatic layout.");
 		} else {
-			message = _("Do you want to switch to manual layout and leave these items where you dropped them?");
-			detail = _("This folder uses automatic layout.");
+			message = no_translate("Do you want to switch to manual layout and leave these items where you dropped them?");
+			detail = no_translate("This folder uses automatic layout.");
 
 		}
 	}

@@ -266,6 +266,23 @@ is_multi_file_window (FMPropertiesWindow *window)
 	return FALSE;
 }
 
+static int
+get_not_gone_original_file_count (FMPropertiesWindow *window)
+{
+	GList *l;
+	int count;
+
+	count = 0;
+
+	for (l = window->details->original_files; l != NULL; l = l->next) {
+		if (!nautilus_file_is_gone (NAUTILUS_FILE (l->data))) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
 static NautilusFile *
 get_original_file (FMPropertiesWindow *window) 
 {
@@ -2333,11 +2350,8 @@ create_basic_page (FMPropertiesWindow *window)
 	gtk_box_pack_start (GTK_BOX (hbox), icon_aligner, TRUE, TRUE, 0);
 
 	/* Name label */
-	if (is_multi_file_window (window)) {
-		name_label = gtk_label_new_with_mnemonic (_("Names:"));
-	} else {
-		name_label = gtk_label_new_with_mnemonic (_("_Name:"));
-	}
+	name_label = gtk_label_new_with_mnemonic (ngettext ("_Name:", "_Names:",
+							    get_not_gone_original_file_count (window)));
 	eel_gtk_label_make_bold (GTK_LABEL (name_label));
 	gtk_widget_show (name_label);
 	gtk_box_pack_end (GTK_BOX (hbox), name_label, FALSE, FALSE, 0);

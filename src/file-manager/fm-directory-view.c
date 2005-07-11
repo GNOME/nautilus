@@ -6580,7 +6580,8 @@ real_update_location_menu (FMDirectoryView *view)
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 		label = _("Open in New Window");
 	} else {
-		label = _("_Browse Folder");
+		label = g_strdup (ngettext ("_Browse Folder",
+					    "_Browse Folders", 1));
 	}
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_OPEN_ALTERNATE);
@@ -6740,11 +6741,9 @@ real_update_menus (FMDirectoryView *view)
 								 selection_count);
 		}
 	} else {
-		if (selection_count <= 1) {
-			label_with_underscore = g_strdup (_("_Browse Folder"));
-		} else {
-			label_with_underscore = g_strdup_printf (_("_Browse Folders"));
-		}
+		label_with_underscore = g_strdup (ngettext ("_Browse Folder",
+							    "_Browse Folders",
+							    selection_count));
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -6798,9 +6797,9 @@ real_update_menus (FMDirectoryView *view)
 					      FM_ACTION_CREATE_LINK);
 	gtk_action_set_sensitive (action, can_link_files);
 	g_object_set (action, "label",
-		      selection_count > 1
-		      ? _("Ma_ke Links")
-		      : _("Ma_ke Link"),
+		      ngettext ("Ma_ke Link",
+			      	"Ma_ke Links",
+				selection_count),
 		      NULL);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
