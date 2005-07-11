@@ -106,6 +106,8 @@ struct FMListViewDetails {
 
 	gboolean drag_started;
 
+	gboolean ignore_button_release;
+
 	gboolean row_selected_on_button_down;
 
 	/* typeahead selection state */
@@ -480,6 +482,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	static int click_count = 0;
 	int double_click_time;
 	int expander_size, horizontal_separator;
+	gboolean on_expander;
 
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
@@ -515,7 +518,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		return TRUE;
 	}
 
-	
+	view->details->ignore_button_release = FALSE;
+
 	call_parent = TRUE;
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
@@ -568,17 +572,23 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			if ((event->button == 1 || event->button == 2) &&
 			    ((event->state & GDK_CONTROL_MASK) != 0 ||
 			     (event->state & GDK_SHIFT_MASK) == 0)) {
+				gtk_widget_style_get (widget,
+						      "expander-size", &expander_size,
+						      "horizontal-separator", &horizontal_separator,
+						      NULL);
+				on_expander = (event->x <= horizontal_separator / 2 +
+					       gtk_tree_path_get_depth (path) * expander_size);
+
+				
 				view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
 				if (view->details->row_selected_on_button_down) {
-					gtk_widget_style_get (widget,
-						"expander-size", &expander_size,
-						"horizontal-separator", &horizontal_separator,
-						NULL);
-					call_parent = (event->x <= horizontal_separator / 2 +
-						gtk_tree_path_get_depth (path) * expander_size);
+					call_parent = on_expander;
+					view->details->ignore_button_release = call_parent;
 				} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
 					call_parent = FALSE;
 					gtk_tree_selection_select_path (selection, path);
+				} else {
+					view->details->ignore_button_release = on_expander;
 				}
 			}
 		
@@ -636,7 +646,8 @@ button_release_callback (GtkWidget *widget,
 
 	if (event->button == view->details->drag_button) {
 		stop_drag_check (view);
-		if (!view->details->drag_started) {
+		if (!view->details->drag_started &&
+		    !view->details->ignore_button_release) {
 			fm_list_view_did_not_drag (view, event);
 		}
 	}
