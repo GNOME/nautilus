@@ -317,13 +317,15 @@ desktop_volumes_visible_changed (gpointer callback_data)
 	volume_monitor = gnome_vfs_get_volume_monitor ();
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE) && monitor->details->volume_links == NULL) {
-		volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
-		for (l = volumes; l != NULL; l = l->next) {
-			create_volume_link (monitor, l->data);
-			gnome_vfs_volume_unref (l->data);
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
+		if (monitor->details->volume_links == NULL) {
+			volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+			for (l = volumes; l != NULL; l = l->next) {
+				create_volume_link (monitor, l->data);
+				gnome_vfs_volume_unref (l->data);
+			}
+			g_list_free (volumes);
 		}
-		g_list_free (volumes);
 	} else {
 		g_list_foreach (monitor->details->volume_links, (GFunc)g_object_unref, NULL);
 		g_list_free (monitor->details->volume_links);
