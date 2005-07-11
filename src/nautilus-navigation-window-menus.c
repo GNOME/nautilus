@@ -144,6 +144,23 @@ action_clear_history_callback (GtkAction *action,
 }
 
 static void
+action_show_hide_toolbar_callback (GtkAction *action, 
+				   gpointer user_data)
+{
+	NautilusNavigationWindow *window;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
+
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		nautilus_navigation_window_show_toolbar (window);
+	} else {
+		nautilus_navigation_window_hide_toolbar (window);
+	}
+}
+
+
+
+static void
 action_show_hide_sidebar_callback (GtkAction *action, 
 				   gpointer user_data)
 {
@@ -194,6 +211,11 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 	GtkAction *action;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_SHOW_HIDE_TOOLBAR);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      nautilus_navigation_window_toolbar_showing (window));
 
 	action = gtk_action_group_get_action (window->details->navigation_action_group,
 					      NAUTILUS_ACTION_SHOW_HIDE_SIDEBAR);
@@ -414,6 +436,11 @@ static const GtkActionEntry navigation_entries[] = {
 };
 
 static const GtkToggleActionEntry navigation_toggle_entries[] = {
+  { "Show Hide Toolbar", NULL,                 /* name, stock id */
+    N_("_Main Toolbar"), NULL,                    /* label, accelerator */     
+    N_("Change the visibility of this window's main toolbar"),                       /* tooltip */
+    G_CALLBACK (action_show_hide_toolbar_callback),
+    TRUE}, /* is_active */
   { "Show Hide Sidebar", NULL,                 /* name, stock id */
     N_("_Side Pane"), "F9",                    /* label, accelerator */     
     N_("Change the visibility of this window's sidebar"),                       /* tooltip */

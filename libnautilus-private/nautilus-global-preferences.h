@@ -85,6 +85,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY		"preferences/always_use_location_entry"
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
+#define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
 #define NAUTILUS_PREFERENCES_SIDE_PANE_VIEW                     "preferences/side_pane_view"
 #define NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY 	"preferences/navigation_window_saved_geometry"
 

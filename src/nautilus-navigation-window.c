@@ -1031,6 +1031,29 @@ nautilus_navigation_window_status_bar_showing (NautilusNavigationWindow *window)
 	return TRUE;
 }
 
+
+void 
+nautilus_navigation_window_hide_toolbar (NautilusNavigationWindow *window)
+{
+	gtk_widget_hide (window->details->toolbar);
+	nautilus_navigation_window_update_show_hide_menu_items (window);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
+	}
+}
+
+void 
+nautilus_navigation_window_show_toolbar (NautilusNavigationWindow *window)
+{
+	gtk_widget_show (window->details->toolbar);
+	nautilus_navigation_window_update_show_hide_menu_items (window);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR) &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
+	}
+}
+
 void 
 nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
 {
@@ -1117,6 +1140,13 @@ nautilus_navigation_window_show (GtkWidget *widget)
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 
 	 */
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		nautilus_navigation_window_show_toolbar (window);
+	} else {
+		nautilus_navigation_window_hide_toolbar (window);
+	}
+
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
 		nautilus_navigation_window_show_location_bar (window, FALSE);
 	} else {
