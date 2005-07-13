@@ -97,7 +97,8 @@ nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
 {
 	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
 
-	return eel_str_has_suffix (name_or_relative_uri, "~");
+	return g_str_has_suffix (name_or_relative_uri, "~") &&
+	       !g_str_equal (name_or_relative_uri, "~");
 }
 
 /**
