@@ -1,5 +1,10 @@
 2005-07-13  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file):
+	Don't scroll to end of column on rename (#309964).
+
+2005-07-13  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-utilities.c:
 	Files with name "~" are not backups. (#170607)
 	Patch from Christian Neumair <chris@gnome-de.org>

@@ -2172,7 +2172,7 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 	gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
 				      path,
 				      list_view->details->file_name_column,
-				      FALSE, 0.0, 1.0);
+				      FALSE, 0.0, 0.0);
 	gtk_tree_view_set_cursor (list_view->details->tree_view,
 				  path,
 				  list_view->details->file_name_column,
