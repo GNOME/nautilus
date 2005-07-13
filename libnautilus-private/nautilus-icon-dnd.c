@@ -1257,34 +1257,22 @@ drag_leave_callback (GtkWidget *widget,
 	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
 }
 
-void
-nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
-			      GdkDragAction actions,
-			      int button,
-			      GdkEventMotion *event,
-			      int                    start_x,
-			      int                    start_y)
+static void
+drag_begin_callback (GtkWidget      *widget,
+		     GdkDragContext *context,
+		     gpointer        data)
 {
-	NautilusIconDndInfo *dnd_info;
-	EelCanvas *canvas;
-	GdkDragContext *context;
+	NautilusIconContainer *container;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
-	int x_offset, y_offset;
 	double x1, y1, x2, y2, winx, winy;
-	
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (event != NULL);
+	int x_offset, y_offset;
+	int start_x, start_y;
 
-	dnd_info = container->details->dnd_info;
-	g_return_if_fail (dnd_info != NULL);
-	
-	/* Notice that the event is in bin_window coordinates, because of
-           the way the canvas handles events.
-	*/
-	canvas = EEL_CANVAS (container);
-	dnd_info->drag_info.start_x = start_x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
-	dnd_info->drag_info.start_y = start_y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
+	container = NAUTILUS_ICON_CONTAINER (widget);
+
+	start_x = container->details->dnd_info->drag_info.start_x + gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
+	start_y = container->details->dnd_info->drag_info.start_y + gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
 
         /* create a pixmap and mask to drag with */
         pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);
@@ -1296,24 +1284,46 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         /* compute the image's offset */
 	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (container->details->drag_icon->item),
 				    &x1, &y1, &x2, &y2);
-	eel_canvas_world_to_window (canvas, x1, y1,  &winx, &winy);
+	eel_canvas_world_to_window (EEL_CANVAS (container), 
+				    x1, y1,  &winx, &winy);
         x_offset = start_x - winx;
         y_offset = start_y - winy;
-        
+
+	gtk_drag_set_icon_pixmap (context,
+				  gtk_widget_get_colormap (GTK_WIDGET (container)),
+				  pixmap, mask,
+				  x_offset, y_offset);
+}
+
+void
+nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
+			      GdkDragAction actions,
+			      int button,
+			      GdkEventMotion *event,
+			      int                    start_x,
+			      int                    start_y)
+{
+	NautilusIconDndInfo *dnd_info;
+	GdkDragContext *context;
+	
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (event != NULL);
+
+	dnd_info = container->details->dnd_info;
+	g_return_if_fail (dnd_info != NULL);
+	
+	/* Notice that the event is in bin_window coordinates, because of
+           the way the canvas handles events.
+	*/
+	dnd_info->drag_info.start_x = start_x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
+	dnd_info->drag_info.start_y = start_y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));	
+
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
 				  dnd_info->drag_info.target_list,
 				  actions,
 				  button,
 				  (GdkEvent *) event);
-
-	if (context) {
-		/* set the icon for dragging */
-		gtk_drag_set_icon_pixmap (context,
-					  gtk_widget_get_colormap (GTK_WIDGET (container)),
-					  pixmap, mask,
-					  x_offset, y_offset);
-	}
 }
 
 static gboolean
@@ -1726,7 +1736,10 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	targets = gtk_drag_dest_get_target_list (GTK_WIDGET (container));
 	gtk_target_list_add_text_targets (targets, NAUTILUS_ICON_DND_TEXT);
 
+	
 	/* Messages for outgoing drag. */
+	g_signal_connect (container, "drag_begin", 
+			  G_CALLBACK (drag_begin_callback), NULL);
 	g_signal_connect (container, "drag_data_get",
 			  G_CALLBACK (drag_data_get_callback), NULL);
 	g_signal_connect (container, "drag_end",
