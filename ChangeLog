@@ -1,3 +1,13 @@
+2005-07-13  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-navigation-window.c: (bookmark_list_get_uri_index,
+	path_bar_location_changed_callback): Try to reload visited locations
+	from history before doing a full location change. Fixes #310068.
+
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init): Track
+	SHOW_DIRECTORY_ITEM_COUNTS preference and update label on change.
+	Fixes #92862.
+
 2005-07-13  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-navigation-window.c:

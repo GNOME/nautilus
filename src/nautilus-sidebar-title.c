@@ -73,6 +73,7 @@ static void                update_icon                             (NautilusSide
 static GtkWidget *         sidebar_title_create_title_label        (void);
 static GtkWidget *         sidebar_title_create_more_info_label    (void);
 static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
+static void		   update_more_info			   (NautilusSidebarTitle      *sidebar_title);
 static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
 static void                style_set                               (GtkWidget                 *widget,
 								    GtkStyle                  *previous_style);
@@ -176,6 +177,11 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* initialize the label colors & fonts */
 	style_set (GTK_WIDGET (sidebar_title), NULL);
+
+	eel_preferences_add_callback_while_alive (
+		NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+		(EelPreferencesCallback) update_more_info,
+		sidebar_title, G_OBJECT (sidebar_title));
 }
 
 /* destroy by throwing away private storage */

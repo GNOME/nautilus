@@ -270,14 +270,47 @@ always_use_location_entry_changed (gpointer callback_data)
 	}
 }
 
+static int
+bookmark_list_get_uri_index (GList *list,
+			     const char *uri)
+{
+	NautilusBookmark *bookmark;
+	GList *l;
+	char *tmp;
+	int i;
+
+	g_return_val_if_fail (uri != NULL, -1);
+
+	for (i = 0, l = list; l != NULL; i++, l = l->next) {
+		bookmark = NAUTILUS_BOOKMARK (l->data);
+
+		tmp = nautilus_bookmark_get_uri (bookmark);
+		if (strcmp (tmp, uri) == 0) {
+			g_free (tmp);
+			return i;
+		}
+		g_free (tmp);
+	}
+
+	return -1;
+}
 
 static void
 path_bar_location_changed_callback (GtkWidget *widget,
 				    const char *uri,
 				    NautilusNavigationWindow *window)
 {
+	int i;
+
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+
+	/* check whether we already visited the target location */
+	i = bookmark_list_get_uri_index (window->back_list, uri);
+	if (i >= 0) {
+		nautilus_navigation_window_back_or_forward (window, TRUE, i);
+	} else {
+		nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+	}
 }
 
 
