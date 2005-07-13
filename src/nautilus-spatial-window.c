@@ -755,10 +755,10 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 		gtk_hbox_new (FALSE, 0);
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_box,
-			  /* X direction */       /* Y direction */
-			  0, 1,                   1, 4,
-			  GTK_EXPAND | GTK_FILL,  GTK_EXPAND | GTK_FILL,
-			  0,                      0);
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               1, 4,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
+			  0,                                  0);
 	gtk_widget_show (window->details->content_box);
 
 	window->details->location_button = gtk_button_new ();

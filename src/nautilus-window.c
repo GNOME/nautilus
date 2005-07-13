@@ -158,10 +158,10 @@ nautilus_window_init (NautilusWindow *window)
 	window->details->statusbar = statusbar;
 	gtk_table_attach (GTK_TABLE (table),
 			  statusbar,
-			  /* X direction */       /* Y direction */
-			  0, 1,                   4, 5,
-			  GTK_EXPAND | GTK_FILL,  0,
-			  0,                      0);
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               4, 5,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
 	window->details->help_message_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR (statusbar), "help_message");
 	gtk_widget_show (statusbar);
@@ -173,10 +173,10 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_widget_show (menu);
 	gtk_table_attach (GTK_TABLE (table),
 			  menu, 
-			  /* X direction */          /* Y direction */
-			  0, 1,                      0, 1,
-			  GTK_EXPAND | GTK_FILL,     0,
-			  0,                         0);
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               0, 1,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
 
 	
 	/* Register IconFactory callback to update the window border icon

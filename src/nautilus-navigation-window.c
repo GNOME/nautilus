@@ -140,10 +140,10 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
-			  /* X direction */       /* Y direction */
-			  0, 1,                   3, 4,
-			  GTK_EXPAND | GTK_FILL,  GTK_EXPAND | GTK_FILL,
-			  0,                      0);
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               3, 4,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
+			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
 	nautilus_navigation_window_initialize_actions (window);
@@ -154,10 +154,10 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	window->details->toolbar = toolbar;
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  toolbar,
-			  /* X direction */       /* Y direction */
-			  0, 1,                   1, 2,
-			  GTK_EXPAND | GTK_FILL,  0,
-			  0,                      0);
+			  /* X direction */                   /* Y direction */
+			  0, 1,                               1, 2,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
+			  0,                                  0);
 	gtk_widget_show (toolbar);
 
 	nautilus_navigation_window_initialize_toolbars (window);
@@ -246,10 +246,10 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  location_bar,
-			  /* X direction */       /* Y direction */
-			  0, 1,                   2, 3,
-			  GTK_EXPAND | GTK_FILL,  0,
-			  0,                      0);
+			  /* X direction */                    /* Y direction */
+			  0, 1,                                2, 3,
+			  GTK_EXPAND | GTK_FILL | GTK_SHRINK,  0,
+			  0,                                   0);
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY,
 						  always_use_location_entry_changed,
