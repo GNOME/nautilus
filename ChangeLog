@@ -1,5 +1,11 @@
 2005-07-13  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(volume_delete_dialog): Refer to the volume context menu as "popup
+	menu", and not as "right-click menu". Fixes #308248.
+
+2005-07-13  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-navigation-window.c: (bookmark_list_get_uri_index,
 	path_bar_location_changed_callback): Try to reload visited locations
 	from history before doing a full location change. Fixes #310068.
