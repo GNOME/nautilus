@@ -1,3 +1,12 @@
+2005-07-15  Vincent Noel  <vnoel@cox.net>
+
+	* src/nautilus-information-panel.c: (make_button_box),
+	(add_command_buttons):
+	* src/nautilus-sidebar-title.c: (sidebar_title_create_title_label),
+	(sidebar_title_create_more_info_label): Ellipsize everything in
+	the information side pane, and make labels selectable. Fixes
+	#310386, #80429 and #43858.
+
 2005-07-14  Elijah Newren  <newren@gmail.com>
 
 	* configure.in: Bump required startup-notification version up to

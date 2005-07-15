@@ -252,7 +252,7 @@ make_button_box (NautilusInformationPanel *information_panel)
 	gtk_widget_show (GTK_WIDGET (information_panel->details->button_box));
 	gtk_box_pack_start (GTK_BOX (information_panel->details->button_box_centerer),
 			    GTK_WIDGET (information_panel->details->button_box),
-			    TRUE, FALSE, 0);
+			    TRUE, TRUE, 0);
 	information_panel->details->has_buttons = FALSE;
 }
 
@@ -886,7 +886,7 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 {
 	char *id_string, *temp_str;
 	GList *p;
-	GtkWidget *temp_button;
+	GtkWidget *temp_button, *label;
 	GnomeVFSMimeApplication *application;
 
 	/* There's always at least the "Open with..." button */
@@ -897,6 +897,8 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 
 		temp_str = g_strdup_printf (_("Open with %s"), application->name);
 	        temp_button = gtk_button_new_with_label (temp_str);
+		label = GTK_BIN (temp_button)->child;
+		gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
 		g_free (temp_str);
 		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
 				    temp_button, 
