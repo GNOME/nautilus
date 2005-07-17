@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-12 23:40+0200\n"
-"PO-Revision-Date: 2005-07-12 23:49+0200\n"
+"POT-Creation-Date: 2005-07-17 19:16+0200\n"
+"PO-Revision-Date: 2005-07-17 19:17+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -898,7 +898,14 @@ msgid ""
 "icon. If set to \"always\" then always plays the sound, even if the file is "
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local file systems. If set to \"never\" then it never previews sound."
-msgstr "Compensación de velocidad para cuando se hace una reproducción previa de un archivo de sonido al colocar el ratón sobre los iconos de los archivos. Si está definido como «always» entonces se reproducirá el sonido, aún si el archivo se encuentra en un servidor remoto. Si está definido como «local_only» entonces la reproducción previa sólo se realizará sobre archivos locales. Si está definido com «never» entonces nunca de reproducirá previamente el sonido."
+msgstr ""
+"Compensación de velocidad para cuando se hace una reproducción previa de un "
+"archivo de sonido al colocar el ratón sobre los iconos de los archivos. Si "
+"está definido como «always» entonces se reproducirá el sonido, aún si el "
+"archivo se encuentra en un servidor remoto. Si está definido como "
+"«local_only» entonces la reproducción previa sólo se realizará sobre "
+"archivos locales. Si está definido com «never» entonces nunca de reproducirá "
+"previamente el sonido."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
@@ -907,7 +914,14 @@ msgid ""
 "folder is on a remote server. If set to \"local_only\" then only show "
 "previews for local file systems. If set to \"never\" then never bother to "
 "read preview data."
-msgstr "Compensación de velocidad para cuando se muestran previamente los contenidos de un archivo de texto en el icono del archivo. Si está definido como «always» entonces siempre se mostrará una previsualización, aún si la carpeta se encuentra en un servidor remoto. Si está definido como «local_only» entonces sólo se previsualizará en los sistemas de archivos locales. Si está definido como «never» entonces nunca se leerán datos para la previsualización."
+msgstr ""
+"Compensación de velocidad para cuando se muestran previamente los contenidos "
+"de un archivo de texto en el icono del archivo. Si está definido como "
+"«always» entonces siempre se mostrará una previsualización, aún si la "
+"carpeta se encuentra en un servidor remoto. Si está definido como "
+"«local_only» entonces sólo se previsualizará en los sistemas de archivos "
+"locales. Si está definido como «never» entonces nunca se leerán datos para "
+"la previsualización."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -916,7 +930,13 @@ msgid ""
 "If set to \"local_only\" then only show thumbnails for local file systems. "
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
-msgstr "Compensación de velocidad para cuando se muestran archivos de imágenes como una miniatura. Si está definido como «always» entonces siempre se miniaturizará, aún si la carpeta se encuentra en un servidor remoto. Si está definido como «local_only» entonces sólo se miniaturizará en los sistemas de archivos locales. Si está definido como «never» entonces no se miniaturizarán la imágenes, sólo se mostrará un icono genérico."
+msgstr ""
+"Compensación de velocidad para cuando se muestran archivos de imágenes como "
+"una miniatura. Si está definido como «always» entonces siempre se "
+"miniaturizará, aún si la carpeta se encuentra en un servidor remoto. Si está "
+"definido como «local_only» entonces sólo se miniaturizará en los sistemas de "
+"archivos locales. Si está definido como «never» entonces no se "
+"miniaturizarán la imágenes, sólo se mostrará un icono genérico."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
@@ -924,7 +944,13 @@ msgid ""
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local_only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
-msgstr "Compensación de velocidad para cuando se muestra la cantidad de elementos en una carpeta. Si está definido como «always» entonces siempre se contarán, aún si la carpeta se encuentra en un servidor remoto. Si está definido como «local_only» entonces sólo se contarán en los sistemas de archivos locales. Si está definido como «never» entonces nunca se contarán la cantidad de elementos."
+msgstr ""
+"Compensación de velocidad para cuando se muestra la cantidad de elementos en "
+"una carpeta. Si está definido como «always» entonces siempre se contarán, "
+"aún si la carpeta se encuentra en un servidor remoto. Si está definido como "
+"«local_only» entonces sólo se contarán en los sistemas de archivos locales. "
+"Si está definido como «never» entonces nunca se contarán la cantidad de "
+"elementos."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
@@ -1144,7 +1170,7 @@ msgstr "U_sar el predeterminado"
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1285
+#: ../src/file-manager/fm-list-view.c:1395
 msgid "Name"
 msgstr "Nombre"
 
@@ -1264,19 +1290,15 @@ msgstr "No puede mover el volumen «%s» a la papelera."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
 msgid ""
-"If you want to eject the volume, please use Eject in the right-click menu of "
+"If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
-msgstr ""
-"Si quiere expulsar el volumen, utilice la opción «Expulsar» del menú que "
-"aparece al pulsar el botón derecho sobre el volumen."
+msgstr "Si quiere expulsar el volumen, utilice la opción «Expulsar» del menú emergente del volumen."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
 msgid ""
-"If you want to unmount the volume, please use Unmount Volume in the right-"
-"click menu of the volume."
-msgstr ""
-"Si quiere desmontar el volumen, utilice la opción «Desmontar volumen» del "
-"menú que aparece al pulsar el botón derecho sobre el volumen."
+"If you want to unmount the volume, please use \"Unmount Volume\" in the "
+"popup menu of the volume."
+msgstr "Si quiere desmontar el volumen, utilice la opción «Desmontar volumen» del menú emergente del volumen."
 
 # libnautilus-private/nautilus-program-chooser.c:1344
 #: ../libnautilus-private/nautilus-dnd.c:637
@@ -2116,39 +2138,39 @@ msgstr ""
 msgid "_Empty Trash"
 msgstr "_Vaciar la papelera"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:479
+#: ../libnautilus-private/nautilus-file-utilities.c:480
 #: ../libnautilus-private/nautilus-global-preferences.c:542
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Equipo"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: ../libnautilus-private/nautilus-file-utilities.c:481
+#: ../libnautilus-private/nautilus-file-utilities.c:482
 msgid "Network"
 msgstr "Red"
 
 # libnautilus-private/nautilus-global-preferences.c:216
-#: ../libnautilus-private/nautilus-file-utilities.c:483
+#: ../libnautilus-private/nautilus-file-utilities.c:484
 msgid "Fonts"
 msgstr "Tipografías"
 
 # components/music/nautilus-music-view.c:198
-#: ../libnautilus-private/nautilus-file-utilities.c:485
+#: ../libnautilus-private/nautilus-file-utilities.c:486
 msgid "Themes"
 msgstr "Temas"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:487
+#: ../libnautilus-private/nautilus-file-utilities.c:488
 msgid "CD/DVD Creator"
 msgstr "Grabador de CD/DVD"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: ../libnautilus-private/nautilus-file-utilities.c:489
+#: ../libnautilus-private/nautilus-file-utilities.c:490
 msgid "Windows Network"
 msgstr "Red Windows"
 
 # src/nautilus-window-toolbars.c:161
 #. translators: this is the title of the "dns-sd:///" location
-#: ../libnautilus-private/nautilus-file-utilities.c:492
+#: ../libnautilus-private/nautilus-file-utilities.c:493
 msgid "Services in"
 msgstr "Servicios internos"
 
@@ -2538,7 +2560,7 @@ msgstr "Vista icono"
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
 #: ../libnautilus-private/nautilus-global-preferences.c:177
-#: ../src/file-manager/fm-list-view.c:1339
+#: ../src/file-manager/fm-list-view.c:1449
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "Vista lista"
@@ -4357,23 +4379,23 @@ msgstr "(Vacío)"
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: ../src/file-manager/fm-list-view.c:1850
+#: ../src/file-manager/fm-list-view.c:1960
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnas visibles"
 
 # src/file-manager/fm-icon-text-window.c:267
-#: ../src/file-manager/fm-list-view.c:1869
+#: ../src/file-manager/fm-list-view.c:1979
 msgid "Choose the order of information to appear in this folder."
 msgstr "Seleccione el orden en que aparecerá la información en esta carpeta."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1911
+#: ../src/file-manager/fm-list-view.c:2021
 msgid "Visible _Columns..."
 msgstr "_Columnas visibles..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1912
+#: ../src/file-manager/fm-list-view.c:2022
 msgid "Select the columns visible in this folder"
 msgstr "Seleccione las columnas visibles en esta carpeta"
 
@@ -4381,32 +4403,32 @@ msgstr "Seleccione las columnas visibles en esta carpeta"
 # libnautilus-private/nautilus-search-bar-criterion.c:71
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
-#: ../src/file-manager/fm-list-view.c:2577
+#: ../src/file-manager/fm-list-view.c:2704
 msgid "List"
 msgstr "lista"
 
 # libnautilus-private/nautilus-program-chooser.c:188
 # src/nautilus-window.c:606
-#: ../src/file-manager/fm-list-view.c:2578
+#: ../src/file-manager/fm-list-view.c:2705
 msgid "View as List"
 msgstr "Ver como lista"
 
 # libnautilus-private/nautilus-program-chooser.c:188
 # src/nautilus-window.c:606
-#: ../src/file-manager/fm-list-view.c:2579
+#: ../src/file-manager/fm-list-view.c:2706
 msgid "View as _List"
 msgstr "Ver como _lista"
 
-#: ../src/file-manager/fm-list-view.c:2580
+#: ../src/file-manager/fm-list-view.c:2707
 msgid "The list view encountered an error."
 msgstr "La vista de lista ha encontrado un error."
 
-#: ../src/file-manager/fm-list-view.c:2581
+#: ../src/file-manager/fm-list-view.c:2708
 msgid "The list view encountered an error while starting up."
 msgstr "La vista de lista ha encontrado un error mientras se iniciaba."
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: ../src/file-manager/fm-list-view.c:2582
+#: ../src/file-manager/fm-list-view.c:2709
 msgid "Display this location with the list view."
 msgstr "Mostrar este lugar con la vista de lista."
 
@@ -5645,22 +5667,22 @@ msgstr "Solamente puede usar imágenes locales como iconos personalizados."
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
-#: ../src/nautilus-information-panel.c:991
+#: ../src/nautilus-information-panel.c:993
 msgid "Unable to launch the cd burner application."
 msgstr "No se puede ejecutar la aplicación de grabación de CD."
 
-#: ../src/nautilus-information-panel.c:992
+#: ../src/nautilus-information-panel.c:994
 msgid "Can't Launch CD Burner"
 msgstr "No se puede ejecutar el grabador de CD"
 
 # src/file-manager/fm-directory-view.c:2154
 #. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1037
+#: ../src/nautilus-information-panel.c:1039
 msgid "Empty _Trash"
 msgstr "Vaciar la _papelera"
 
 #. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1053
+#: ../src/nautilus-information-panel.c:1055
 msgid "_Write contents to CD"
 msgstr "_Grabar el contenido en un CD"
 
@@ -5890,7 +5912,8 @@ msgstr "Barra _principal"
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:441
 msgid "Change the visibility of this window's main toolbar"
-msgstr "Cambia la visibilidad de esta barra de herramientas principal de esta ventana"
+msgstr ""
+"Cambia la visibilidad de esta barra de herramientas principal de esta ventana"
 
 # libnautilus-private/nautilus-global-preferences.c:165
 #. is_active
@@ -5956,7 +5979,7 @@ msgid "Forward history"
 msgstr "Adelantar histórico"
 
 # src/file-manager/fm-properties-window.c:1526
-#: ../src/nautilus-navigation-window.c:746
+#: ../src/nautilus-navigation-window.c:779
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Navegador de archivos"
@@ -6115,7 +6138,8 @@ msgstr "El color se pudo instalar."
 
 #: ../src/nautilus-property-browser.c:1218
 msgid "Sorry, but you must specify an unused color name for the new color."
-msgstr "Lo siento, pero debe especificar un nombre de color no usado color nuevo."
+msgstr ""
+"Lo siento, pero debe especificar un nombre de color no usado color nuevo."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
 #: ../src/nautilus-property-browser.c:1219
