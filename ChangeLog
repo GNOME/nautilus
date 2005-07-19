@@ -1,5 +1,22 @@
 2005-07-19  Mark McLoughlin  <mark@skynet.ie>
 
+	* src/file-manager/fm-icon-view.c:
+	(play_file), (preview_audio): track the pid of the currently
+	running sound process using a static variable and kill it
+	before starting any new process.
+	(can_play_sound): copy from nautilus-sound.c
+	
+	* src/nautilus-application.c: (finish_startup): don't call
+	nautilus_sound_init()
+
+	* libnautilus-private/nautilus-sound.[ch]: remove old code
+	to track the currently runing sound process using a GConf
+	key.
+	
+	* libnautilus-private/Makefile.am: remove nautilus-sound.[ch]
+	
+2005-07-19  Mark McLoughlin  <mark@skynet.ie>
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	(nautilus_global_preferences_init): remove code to import
 	some preferences which were deprecated in GNOME 2.2.

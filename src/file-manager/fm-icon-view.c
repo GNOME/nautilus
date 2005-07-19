@@ -69,7 +69,6 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <locale.h>
@@ -78,6 +77,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <esd.h>
 
 #define USE_OLD_AUDIO_PREVIEW 1
 #define READ_CHUNK_SIZE 16384
@@ -167,6 +167,10 @@ static const SortCriterion sort_criteria[] = {
 static gboolean default_sort_in_reverse_order = FALSE;
 static int preview_sound_auto_value;
 static gboolean gnome_esd_enabled_auto_value;
+
+#if USE_OLD_AUDIO_PREVIEW
+static pid_t audio_preview_pid = 0;
+#endif
 
 static void                 fm_icon_view_set_directory_sort_by        (FMIconView           *icon_view,
 								       NautilusFile         *file,
@@ -1784,7 +1788,11 @@ play_file (gpointer callback_data)
 		pclose(sound_process);
 		_exit (0);
 	} else if (mp3_pid > (pid_t) 0) {
-		nautilus_sound_register_sound (mp3_pid);
+		if (audio_preview_pid > 0) {
+			kill (-audio_preview_pid, SIGTERM);
+			waitpid (audio_preview_pid, NULL, 0);
+		}
+		audio_preview_pid = mp3_pid;
 	}
 		
 	g_free (file_uri);
@@ -1831,7 +1839,11 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 {		
 	/* Stop current audio playback */
 #if USE_OLD_AUDIO_PREVIEW
-	nautilus_sound_kill_sound ();
+	if (audio_preview_pid > 0) {
+		kill (-audio_preview_pid, SIGTERM);
+		waitpid (audio_preview_pid, NULL, 0);
+		audio_preview_pid = 0;
+	}
 #else
 	if (icon_view->details->audio_player_data != NULL) {
 		nautilus_audio_player_stop (icon_view->details->audio_player_data);
@@ -1875,6 +1887,29 @@ should_preview_sound (NautilusFile *file)
 	return nautilus_file_is_local (file);
 }
 
+static inline gboolean
+can_play_sound (void)
+{
+	int open_result;
+
+#if USE_OLD_AUDIO_PREVIEW			
+	/* first see if there's already one in progress; if so, return true */
+	if (audio_preview_pid > 0) {
+		return TRUE;
+	}
+#endif
+
+	/* Now check and see if system has audio out capabilites */
+        open_result = esd_open_sound (NULL);
+        if (open_result == -1) {
+                return FALSE;
+        }
+
+	esd_close (open_result);
+
+	return TRUE;
+}
+
 static int
 icon_container_preview_callback (NautilusIconContainer *container,
 				 NautilusFile *file,
@@ -1896,7 +1931,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 		     || eel_istr_has_prefix (mime_type, "application/x-ogg"))
 		    && eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0
 		    && eel_strcasecmp (mime_type, "audio/x-mpegurl") != 0
-		    && nautilus_sound_can_play_sound ()) {
+		    && can_play_sound ()) {
 			result = 1;
 			preview_audio (icon_view, file, start_flag);
 		}	

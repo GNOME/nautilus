@@ -80,7 +80,6 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metafile-factory.h>
 #include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
@@ -366,9 +365,6 @@ finish_startup (NautilusApplication *application)
 
 	nautilus_module_add_type (FM_TYPE_DITEM_PAGE);
 	
-	/* initialize the sound machinery */
-	nautilus_sound_init ();
-
 	/* initialize URI authentication manager */
 	gnome_authentication_manager_init ();
 
