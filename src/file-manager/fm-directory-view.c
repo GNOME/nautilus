@@ -6248,7 +6248,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Mo_ve to Trash"), "",                /* label, accelerator */
     N_("Move this folder to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_trash_callback) },
-  { FM_ACTION_LOCATION_DELETE, GTK_STOCK_DELETE,                  /* name, stock id */
+  { FM_ACTION_LOCATION_DELETE, NULL,                  /* name, stock id */
     N_("_Delete"), "",                /* label, accelerator */
     N_("Delete this folder, without moving to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_delete_callback) },
