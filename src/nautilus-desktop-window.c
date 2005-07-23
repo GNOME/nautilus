@@ -246,6 +246,12 @@ real_get_title (NautilusWindow *window)
 	return g_strdup (_("Desktop"));
 }
 
+static char *
+real_get_icon_name (NautilusWindow *window)
+{
+	return g_strdup ("gnome-fs-desktop");
+}
+
 static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
@@ -262,4 +268,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 		= real_add_current_location_to_history_list;
 	NAUTILUS_WINDOW_CLASS (class)->get_title 
 		= real_get_title;
+	NAUTILUS_WINDOW_CLASS (class)->get_icon_name
+		= real_get_icon_name;
+
 }

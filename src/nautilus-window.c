@@ -1109,15 +1109,10 @@ nautilus_window_update_title (NautilusWindow *window)
 void
 nautilus_window_update_icon (NautilusWindow *window)
 {
-	char *icon_name = NULL;
+	char *icon_name;
 
-	/* Desktop window special icon */
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		icon_name = g_strdup ("gnome-fs-desktop");
-	} else {
-		icon_name = nautilus_icon_factory_get_icon_for_file (window->details->viewed_file,
-								     FALSE);
-	}
+	icon_name = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
+						       get_icon_name, (window));
 
 	if (icon_name != NULL) {
 		gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);

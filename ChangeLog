@@ -1,3 +1,17 @@
+2005-07-23  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-desktop-window.c: (real_get_icon_name),
+	(nautilus_desktop_window_class_init):
+	* src/nautilus-navigation-window.c: (real_get_icon_name),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-spatial-window.c: (real_get_icon_name),
+	(nautilus_spatial_window_class_init):
+	* src/nautilus-window.c: (nautilus_window_update_icon):
+	* src/nautilus-window.h:
+	Use file-manager icon for browser windows. Fixes bug #166516.
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
 2005-07-19  Mark McLoughlin  <mark@skynet.ie>
 
 	* src/file-manager/fm-icon-view.c:

@@ -784,6 +784,12 @@ real_set_title (NautilusWindow *window, const char *title)
 	g_free (full_title);
 }
 
+static char *
+real_get_icon_name (NautilusWindow *window)
+{
+	return g_strdup ("file-manager");
+}
+
 static void
 zoom_level_changed_callback (NautilusView *view,
                              NautilusNavigationWindow *window)
@@ -1263,6 +1269,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = real_set_title;
+	NAUTILUS_WINDOW_CLASS (class)->get_icon_name = real_get_icon_name;
 	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
 }

@@ -313,6 +313,12 @@ real_prompt_for_location (NautilusWindow *window)
 	gtk_widget_show (dialog);
 }
 
+static char *
+real_get_icon_name (NautilusWindow *window)
+{
+	return nautilus_icon_factory_get_icon_for_file (window->details->viewed_file, FALSE);
+}
+
 static void
 real_set_title (NautilusWindow *window, const char *title)
 {
@@ -853,6 +859,8 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
 		real_prompt_for_location;
+	NAUTILUS_WINDOW_CLASS (class)->get_icon_name =
+		real_get_icon_name;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = 
 		real_set_title;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = 
