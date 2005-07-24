@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-16 11:22+0200\n"
-"PO-Revision-Date: 2005-07-16 11:28+0200\n"
+"POT-Creation-Date: 2005-07-24 18:59+0200\n"
+"PO-Revision-Date: 2005-07-24 19:03+0200\n"
 "Last-Translator: Terance Edward Sola <terance@lyse.net>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -396,7 +396,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
-msgstr ""
+msgstr "Alltid bruk adressefeltet i stedet for stilinjen"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
@@ -816,7 +816,6 @@ msgid "Side pane view"
 msgstr "Sidepanelvisning"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -830,7 +829,6 @@ msgstr ""
 "forhåndsvises."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -844,7 +842,6 @@ msgstr ""
 "lokale filsystemer. Sett til «never» for å slå av forhåndsvisninger."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -858,7 +855,6 @@ msgstr ""
 "satt til «never» vil miniatyrer aldri vises, kun et vanlig ikon."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1159,19 +1155,16 @@ msgid "You cannot move the volume \"%s\" to the trash."
 msgstr "Du kan ikke flytte volum «%s» til papirkurven."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
-msgstr "Vennligst bruk menyvalget «Løs ut» hvis du ønsker å løse ut volumet."
+msgstr "Vennligst bruk menyvalget «Løs ut» i volumets kontekstmeny hvis du ønsker å løse ut volumet."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
-#, fuzzy
 msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
-msgstr ""
-"Høyreklikk på volumet og velg «Avmonter volum» hvis du vil avmontere volumet."
+msgstr "Velg «Avmonter volum» i volumets kontekstmeny hvis du vil avmontere volumet."
 
 #: ../libnautilus-private/nautilus-dnd.c:637
 msgid "_Move here"
@@ -1926,7 +1919,7 @@ msgid "_Empty Trash"
 msgstr "_Tøm papirkurv"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:480
-#: ../libnautilus-private/nautilus-global-preferences.c:542
+#: ../libnautilus-private/nautilus-global-preferences.c:512
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Datamaskin"
@@ -2175,201 +2168,201 @@ msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
 #: ../libnautilus-private/nautilus-file.c:6163
-#: ../libnautilus-private/nautilus-global-preferences.c:548
+#: ../libnautilus-private/nautilus-global-preferences.c:518
 #: ../libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "Papirkurv"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:100
+#: ../libnautilus-private/nautilus-global-preferences.c:70
 msgid "_Always"
 msgstr "_Alltid"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:101
+#: ../libnautilus-private/nautilus-global-preferences.c:71
 msgid "_Local File Only"
 msgstr "Kun _lokal fil"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:102
+#: ../libnautilus-private/nautilus-global-preferences.c:72
 msgid "_Never"
 msgstr "A_ldri"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:108
+#: ../libnautilus-private/nautilus-global-preferences.c:78
 #: ../src/nautilus-file-management-properties.glade.h:14
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:110
+#: ../libnautilus-private/nautilus-global-preferences.c:80
 #: ../src/nautilus-file-management-properties.glade.h:20
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:112
+#: ../libnautilus-private/nautilus-global-preferences.c:82
 #: ../src/nautilus-file-management-properties.glade.h:23
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:114
+#: ../libnautilus-private/nautilus-global-preferences.c:84
 #: ../src/nautilus-file-management-properties.glade.h:8
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:116
+#: ../libnautilus-private/nautilus-global-preferences.c:86
 #: ../src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:118
+#: ../libnautilus-private/nautilus-global-preferences.c:88
 #: ../src/nautilus-file-management-properties.glade.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:120
+#: ../libnautilus-private/nautilus-global-preferences.c:90
 #: ../src/nautilus-file-management-properties.glade.h:17
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:125
+#: ../libnautilus-private/nautilus-global-preferences.c:95
 msgid "100 K"
 msgstr "100 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:126
+#: ../libnautilus-private/nautilus-global-preferences.c:96
 msgid "500 K"
 msgstr "500 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:127
+#: ../libnautilus-private/nautilus-global-preferences.c:97
 #: ../src/nautilus-file-management-properties.glade.h:3
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:128
+#: ../libnautilus-private/nautilus-global-preferences.c:98
 #: ../src/nautilus-file-management-properties.glade.h:15
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:129
+#: ../libnautilus-private/nautilus-global-preferences.c:99
 #: ../src/nautilus-file-management-properties.glade.h:18
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:130
+#: ../libnautilus-private/nautilus-global-preferences.c:100
 #: ../src/nautilus-file-management-properties.glade.h:4
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:131
+#: ../libnautilus-private/nautilus-global-preferences.c:101
 #: ../src/nautilus-file-management-properties.glade.h:6
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:137
+#: ../libnautilus-private/nautilus-global-preferences.c:107
 msgid "Activate items with a _single click"
 msgstr "Aktiver oppføringer med _enkeltklikk"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:141
+#: ../libnautilus-private/nautilus-global-preferences.c:111
 msgid "Activate items with a _double click"
 msgstr "Aktiver oppføringer med _dobbeltklikk"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../libnautilus-private/nautilus-global-preferences.c:119
 msgid "E_xecute files when they are clicked"
 msgstr "K_jør filer når de klikkes"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:153
+#: ../libnautilus-private/nautilus-global-preferences.c:123
 msgid "Display _files when they are clicked"
 msgstr "Vis _filer når de klikkes"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:157
+#: ../libnautilus-private/nautilus-global-preferences.c:127
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Ask each time"
 msgstr "_Spør hver gang"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:165
+#: ../libnautilus-private/nautilus-global-preferences.c:135
 msgid "Search for files by file name only"
 msgstr "Kun søk etter filer på navn"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:169
+#: ../libnautilus-private/nautilus-global-preferences.c:139
 msgid "Search for files by file name and file properties"
 msgstr "Søk etter filer på tekstinnhold og egenskaper"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:176
+#: ../libnautilus-private/nautilus-global-preferences.c:146
 #: ../src/file-manager/fm-icon-container.c:500
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Icon View"
 msgstr "Ikonvisning"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:177
+#: ../libnautilus-private/nautilus-global-preferences.c:147
 #: ../src/file-manager/fm-list-view.c:1449
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "Listevisning"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:182
+#: ../libnautilus-private/nautilus-global-preferences.c:152
 msgid "Manually"
 msgstr "Manuelt"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:184
+#: ../libnautilus-private/nautilus-global-preferences.c:154
 #: ../src/nautilus-file-management-properties.glade.h:44
 msgid "By Name"
 msgstr "Etter navn"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:185
+#: ../libnautilus-private/nautilus-global-preferences.c:155
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "By Size"
 msgstr "Etter størrelse"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:186
+#: ../libnautilus-private/nautilus-global-preferences.c:156
 #: ../src/nautilus-file-management-properties.glade.h:46
 msgid "By Type"
 msgstr "Etter type"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:187
+#: ../libnautilus-private/nautilus-global-preferences.c:157
 #: ../src/nautilus-file-management-properties.glade.h:43
 msgid "By Modification Date"
 msgstr "Etter endringsdato"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:188
+#: ../libnautilus-private/nautilus-global-preferences.c:158
 #: ../src/nautilus-file-management-properties.glade.h:42
 msgid "By Emblems"
 msgstr "Etter emblemer"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:193
+#: ../libnautilus-private/nautilus-global-preferences.c:163
 msgid "8"
 msgstr "8"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:194
+#: ../libnautilus-private/nautilus-global-preferences.c:164
 msgid "10"
 msgstr "10"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:195
+#: ../libnautilus-private/nautilus-global-preferences.c:165
 msgid "12"
 msgstr "12"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:196
+#: ../libnautilus-private/nautilus-global-preferences.c:166
 msgid "14"
 msgstr "14"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:197
+#: ../libnautilus-private/nautilus-global-preferences.c:167
 msgid "16"
 msgstr "16"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:198
+#: ../libnautilus-private/nautilus-global-preferences.c:168
 msgid "18"
 msgstr "18"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:199
+#: ../libnautilus-private/nautilus-global-preferences.c:169
 msgid "20"
 msgstr "20"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:200
+#: ../libnautilus-private/nautilus-global-preferences.c:170
 msgid "22"
 msgstr "22"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:201
+#: ../libnautilus-private/nautilus-global-preferences.c:171
 msgid "24"
 msgstr "24"
 
@@ -2381,7 +2374,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:536
+#: ../libnautilus-private/nautilus-global-preferences.c:506
 #, c-format
 msgid "%s's Home"
 msgstr "Hjem til %s"
@@ -2396,7 +2389,7 @@ msgstr "Normal alpha"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4317
 msgid "Opacity of the normal icons if frame_text is set"
-msgstr ""
+msgstr "Gjennomsiktighet for normale ikoner hvis frame_text er satt"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:790
 msgid "Switch to Manual Layout?"
@@ -3743,7 +3736,7 @@ msgid "by _Name"
 msgstr "etter _navn"
 
 #: ../src/file-manager/fm-icon-view.c:135
-#: ../src/file-manager/fm-icon-view.c:1433
+#: ../src/file-manager/fm-icon-view.c:1437
 msgid "Keep icons sorted by name in rows"
 msgstr "Behold ikoner sortert etter navn i rader"
 
@@ -3752,7 +3745,7 @@ msgid "by _Size"
 msgstr "etter _størrelse"
 
 #: ../src/file-manager/fm-icon-view.c:142
-#: ../src/file-manager/fm-icon-view.c:1437
+#: ../src/file-manager/fm-icon-view.c:1441
 msgid "Keep icons sorted by size in rows"
 msgstr "Behold ikoner sortert etter størrelse i rader"
 
@@ -3761,7 +3754,7 @@ msgid "by _Type"
 msgstr "etter _type"
 
 #: ../src/file-manager/fm-icon-view.c:149
-#: ../src/file-manager/fm-icon-view.c:1441
+#: ../src/file-manager/fm-icon-view.c:1445
 msgid "Keep icons sorted by type in rows"
 msgstr "Behold ikoner sortert etter type i rader"
 
@@ -3770,7 +3763,7 @@ msgid "by Modification _Date"
 msgstr "etter endrings_dato"
 
 #: ../src/file-manager/fm-icon-view.c:156
-#: ../src/file-manager/fm-icon-view.c:1445
+#: ../src/file-manager/fm-icon-view.c:1449
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Behold ikoner sortert etter endringsdato i rader"
 
@@ -3779,136 +3772,136 @@ msgid "by _Emblems"
 msgstr "etter _emblemer"
 
 #: ../src/file-manager/fm-icon-view.c:163
-#: ../src/file-manager/fm-icon-view.c:1449
+#: ../src/file-manager/fm-icon-view.c:1453
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Behold ikoner sortert etter emblemer i rader"
 
-#: ../src/file-manager/fm-icon-view.c:1393
+#: ../src/file-manager/fm-icon-view.c:1397
 msgid "Arran_ge Items"
 msgstr "_Plasser oppføringer"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1395
+#: ../src/file-manager/fm-icon-view.c:1399
 msgid "Str_etch Icon"
 msgstr "Str_ekk ikon"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1396
+#: ../src/file-manager/fm-icon-view.c:1400
 msgid "Make the selected icon stretchable"
 msgstr "Gjør valgt ikon strekkbart"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1399
-#: ../src/file-manager/fm-icon-view.c:1550
+#: ../src/file-manager/fm-icon-view.c:1403
+#: ../src/file-manager/fm-icon-view.c:1554
 msgid "Restore Icons' Original Si_zes"
 msgstr "G_jenopprett ikonenes opprinnelige størrelser"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1400
+#: ../src/file-manager/fm-icon-view.c:1404
 msgid "Restore each selected icon to its original size"
 msgstr "Gjenopprett original størrelse for alle valgte ikoner"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1403
+#: ../src/file-manager/fm-icon-view.c:1407
 msgid "Clean _Up by Name"
 msgstr "Rydd _opp etter navn"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1404
+#: ../src/file-manager/fm-icon-view.c:1408
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Plasser ikonene på nytt slik at de passer bedre til vinduene og unngår "
 "overlapping"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1410
+#: ../src/file-manager/fm-icon-view.c:1414
 msgid "Compact _Layout"
 msgstr "Tettere p_lassering"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1411
+#: ../src/file-manager/fm-icon-view.c:1415
 msgid "Toggle using a tighter layout scheme"
 msgstr "Slå av/på bruk av tettere plassering"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1415
+#: ../src/file-manager/fm-icon-view.c:1419
 msgid "Re_versed Order"
 msgstr "Om_vendt rekkefølge"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1416
+#: ../src/file-manager/fm-icon-view.c:1420
 msgid "Display icons in the opposite order"
 msgstr "Vis ikoner i omvendt rekkefølge"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1420
+#: ../src/file-manager/fm-icon-view.c:1424
 msgid "_Keep Aligned"
 msgstr "_Behold justert"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1421
+#: ../src/file-manager/fm-icon-view.c:1425
 msgid "Keep icons lined up on a grid"
 msgstr "Behold ikoner justert i et rutenett"
 
-#: ../src/file-manager/fm-icon-view.c:1428
+#: ../src/file-manager/fm-icon-view.c:1432
 msgid "_Manually"
 msgstr "_Manuelt"
 
-#: ../src/file-manager/fm-icon-view.c:1429
+#: ../src/file-manager/fm-icon-view.c:1433
 msgid "Leave icons wherever they are dropped"
 msgstr "La ikoner bli hvor de slippes"
 
-#: ../src/file-manager/fm-icon-view.c:1432
+#: ../src/file-manager/fm-icon-view.c:1436
 msgid "By _Name"
 msgstr "Etter _navn"
 
-#: ../src/file-manager/fm-icon-view.c:1436
+#: ../src/file-manager/fm-icon-view.c:1440
 msgid "By _Size"
 msgstr "Etter _størrelse"
 
-#: ../src/file-manager/fm-icon-view.c:1440
+#: ../src/file-manager/fm-icon-view.c:1444
 msgid "By _Type"
 msgstr "Etter _type"
 
-#: ../src/file-manager/fm-icon-view.c:1444
+#: ../src/file-manager/fm-icon-view.c:1448
 msgid "By Modification _Date"
 msgstr "Etter endrings_dato"
 
-#: ../src/file-manager/fm-icon-view.c:1448
+#: ../src/file-manager/fm-icon-view.c:1452
 msgid "By _Emblems"
 msgstr "Etter _emblemer"
 
-#: ../src/file-manager/fm-icon-view.c:1551
+#: ../src/file-manager/fm-icon-view.c:1555
 msgid "Restore Icon's Original Si_ze"
 msgstr "G_jenopprett ikonets opprinnelige størrelse"
 
-#: ../src/file-manager/fm-icon-view.c:1912
+#: ../src/file-manager/fm-icon-view.c:1947
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til «%s»"
 
-#: ../src/file-manager/fm-icon-view.c:2686
+#: ../src/file-manager/fm-icon-view.c:2721
 msgid "Icons"
 msgstr "Ikoner"
 
-#: ../src/file-manager/fm-icon-view.c:2687
+#: ../src/file-manager/fm-icon-view.c:2722
 msgid "View as Icons"
 msgstr "Vis som ikoner"
 
-#: ../src/file-manager/fm-icon-view.c:2688
+#: ../src/file-manager/fm-icon-view.c:2723
 msgid "View as _Icons"
 msgstr "Vis som _ikoner"
 
-#: ../src/file-manager/fm-icon-view.c:2689
+#: ../src/file-manager/fm-icon-view.c:2724
 msgid "The icon view encountered an error."
 msgstr "Ikonvisningen ble utsatt for en feil."
 
-#: ../src/file-manager/fm-icon-view.c:2690
+#: ../src/file-manager/fm-icon-view.c:2725
 msgid "The icon view encountered an error while starting up."
 msgstr "Ikonvisningen ble utsatt for en feil under oppstart."
 
-#: ../src/file-manager/fm-icon-view.c:2691
+#: ../src/file-manager/fm-icon-view.c:2726
 msgid "Display this location with the icon view."
 msgstr "Vis denne lokasjonen med ikonvisning."
 
@@ -4272,16 +4265,16 @@ msgstr "Tre"
 msgid "Show Tree"
 msgstr "Vis tre"
 
-#: ../src/nautilus-application.c:258
+#: ../src/nautilus-application.c:257
 msgid "Couldn't Create Required Folder"
 msgstr "Kunne ikke opprette nødvendig mappe"
 
-#: ../src/nautilus-application.c:259
+#: ../src/nautilus-application.c:258
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus kunne ikke opprette nødvendig mappe «%s»."
 
-#: ../src/nautilus-application.c:261
+#: ../src/nautilus-application.c:260
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4289,16 +4282,16 @@ msgstr ""
 "Opprett denne mappen før du kjører Nautilus, eller endre rettighetene slik "
 "at Nautilus kan opprette den."
 
-#: ../src/nautilus-application.c:264
+#: ../src/nautilus-application.c:263
 msgid "Couldn't Create Required Folders"
 msgstr "Kunne ikke opprette nødvendige mapper"
 
-#: ../src/nautilus-application.c:265
+#: ../src/nautilus-application.c:264
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus kunne ikke opprette følgende mapper som kreves: %s."
 
-#: ../src/nautilus-application.c:267
+#: ../src/nautilus-application.c:266
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4306,17 +4299,17 @@ msgstr ""
 "Vennligst opprett disse mappene før du kjører Nautilus, eller sett "
 "rettigheter slik at Nautilus kan opprette dem."
 
-#: ../src/nautilus-application.c:335
+#: ../src/nautilus-application.c:334
 msgid "Link To Old Desktop"
 msgstr "Lenke til gammelt skrivebord"
 
-#: ../src/nautilus-application.c:351
+#: ../src/nautilus-application.c:350
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 "En lenke med navn «Lenke til gammelt skrivebord» ble opprettet på "
 "skrivebodet."
 
-#: ../src/nautilus-application.c:352
+#: ../src/nautilus-application.c:351
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4324,7 +4317,7 @@ msgstr ""
 "Plasseringen for skrivebordskatalogen er endret i GNOME 2.4. Du kan åpne "
 "lenken for å flytte over filene du ønsker før du eventuelt sletter lenken."
 
-#: ../src/nautilus-application.c:354
+#: ../src/nautilus-application.c:353
 msgid "Migrated Old Desktop"
 msgstr "Migrerte gammelt skrivebord"
 
@@ -4338,7 +4331,7 @@ msgstr "Migrerte gammelt skrivebord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:515
+#: ../src/nautilus-application.c:511
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4349,7 +4342,7 @@ msgstr ""
 "datamaskinen på nytt eller installere Nautilus på nytt."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:521
+#: ../src/nautilus-application.c:517
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4396,12 +4389,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:551 ../src/nautilus-application.c:569
-#: ../src/nautilus-application.c:576
+#: ../src/nautilus-application.c:547 ../src/nautilus-application.c:565
+#: ../src/nautilus-application.c:572
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: ../src/nautilus-application.c:552
+#: ../src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4409,7 +4402,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra Bonobo under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: ../src/nautilus-application.c:570
+#: ../src/nautilus-application.c:566
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4419,7 +4412,7 @@ msgstr ""
 "å finne factory. Du kan fikse problemet ved å drepe bonobo-activation-server "
 "og starte Nautilus på nytt."
 
-#: ../src/nautilus-application.c:577
+#: ../src/nautilus-application.c:573
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5130,7 +5123,7 @@ msgid "File Manager"
 msgstr "Filhåndterer"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:324
+#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:330
 #: ../src/nautilus-window-menus.c:444 ../src/nautilus-window.c:149
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5225,7 +5218,7 @@ msgstr "P_lassering..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:425
-#: ../src/nautilus-spatial-window.c:724
+#: ../src/nautilus-spatial-window.c:730
 msgid "Specify a location to open"
 msgstr "Oppgi en lokasjon som skal åpnes"
 
@@ -5239,24 +5232,24 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Tøm innhold av Go-menyen og fram/tilbake- listene"
 
 #: ../src/nautilus-navigation-window-menus.c:430
-#: ../src/nautilus-spatial-window.c:732
+#: ../src/nautilus-spatial-window.c:738
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:431
-#: ../src/nautilus-spatial-window.c:733
+#: ../src/nautilus-spatial-window.c:739
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Legg til et bokmerke for nåværende adresse i denne menyen"
 
 #: ../src/nautilus-navigation-window-menus.c:433
-#: ../src/nautilus-spatial-window.c:735
+#: ../src/nautilus-spatial-window.c:741
 msgid "_Edit Bookmarks"
 msgstr "R_ediger bokmerker"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:434
-#: ../src/nautilus-spatial-window.c:736
+#: ../src/nautilus-spatial-window.c:742
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
 
@@ -5556,30 +5549,30 @@ msgstr "Fje_rn et emblem..."
 msgid "Close the side pane"
 msgstr "Lukk sidepanelet"
 
-#: ../src/nautilus-spatial-window.c:722
+#: ../src/nautilus-spatial-window.c:728
 msgid "_Places"
 msgstr "_Steder"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:723
+#: ../src/nautilus-spatial-window.c:729
 msgid "Open _Location..."
 msgstr "Åpne _lokasjon..."
 
-#: ../src/nautilus-spatial-window.c:726
+#: ../src/nautilus-spatial-window.c:732
 msgid "Close P_arent Folders"
 msgstr "Lukk opph_avsmapper"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:727
+#: ../src/nautilus-spatial-window.c:733
 msgid "Close this folder's parents"
 msgstr "Lukk denne mappens opphav"
 
-#: ../src/nautilus-spatial-window.c:729
+#: ../src/nautilus-spatial-window.c:735
 msgid "Clos_e All Folders"
 msgstr "Lukk all_e mapper"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:730
+#: ../src/nautilus-spatial-window.c:736
 msgid "Close all folder windows"
 msgstr "Lukk alle mappevinduer"
 
@@ -5938,50 +5931,3 @@ msgstr "Nettverkstjenere"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine nettverkstjenere i filhåndtereren Nautilus"
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave this item where you "
-#~ "dropped it? This will clobber the stored manual layout."
-#~ msgstr ""
-#~ "Vil du bytte til manuell plassering og la oppføringen bli hvor du slapp "
-#~ "den? Dette vil overskrive den lagrede manuelle plasseringen."
-
-#~ msgid "This folder uses automatic layout."
-#~ msgstr "Denne mappen bruker automatisk plassering."
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave these items where you "
-#~ "dropped them? This will clobber the stored manual layout."
-#~ msgstr ""
-#~ "Vil du bytte til manuell plassering og la disse oppføringene bli hvor du "
-#~ "slapp dem? Dette vil overskrive den lagrede manuelle plasseringen."
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave this item where you "
-#~ "dropped it?"
-#~ msgstr ""
-#~ "Vil du bytte til manuell plassering og la denne oppføringen bli hvor du "
-#~ "slapp den?"
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave these items where you "
-#~ "dropped them?"
-#~ msgstr ""
-#~ "Vil du bytte til manuell plassering og la disse oppføringene bli hvor du "
-#~ "slapp dem?"
-
-#~ msgid "_Browse Folders"
-#~ msgstr "_Bla gjennom mapper"
-
-#~ msgid "Ma_ke Links"
-#~ msgstr "Opprett _lenker"
-
-#~ msgid "Names:"
-#~ msgstr "Navn:"
-
-#~ msgid ""
-#~ "This is probably because the emblem is a permanent one, and not one you "
-#~ "added yourself."
-#~ msgstr ""
-#~ "Dette skjer sannsynligvis fordi emblemet er permanent, og ikke et du har "
-#~ "lagt til selv."
