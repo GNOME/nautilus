@@ -1505,11 +1505,15 @@ static char *
 get_display_name_for_folder (const char *file_path)
 {
 	GnomeVFSURI *vfs_uri;
+	NautilusFile *file;
 	char *name;
 
 	vfs_uri = gnome_vfs_uri_new (file_path);
  	if (vfs_uri == NULL) {
-		return NULL;
+		file = nautilus_file_get (file_path);
+		name = nautilus_file_get_display_name (file);
+		nautilus_file_unref (file);
+		return name;
 	}
 	name = nautilus_get_uri_shortname_for_display (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);	
