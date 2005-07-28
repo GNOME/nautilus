@@ -502,6 +502,8 @@ nautilus_file_operations_progress_new (const char *title,
 
 	gtk_window_set_title (GTK_WINDOW (widget), title);
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "file_progress", "Nautilus");
+	/* ensure that minimize button is shown and the window appears in the tasklist */
+	gtk_window_set_type_hint (GTK_WINDOW (widget), GDK_WINDOW_TYPE_HINT_NORMAL);
 
 	primary_text = g_strconcat ("<big><b>", title, "</b></big>", NULL);
 	gtk_label_set_markup(GTK_LABEL (progress->details->primary_text_label),
