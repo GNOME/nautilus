@@ -1,3 +1,9 @@
+2005-07-28  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-dnd.c: (nautilus_drag_default_drop_action_for_icons):
+	Default to move action for locations on other file systems if they
+	should be moved to their parent folder. Fixes #61269.
+
 2005-07-26  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-pathbar.c: (get_display_name_for_folder):
