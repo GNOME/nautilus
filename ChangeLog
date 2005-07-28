@@ -1,6 +1,14 @@
 2005-07-28  Christian Neumair  <chris@gnome-de.org>
 
-	* src/nautilus-dnd.c: (nautilus_drag_default_drop_action_for_icons):
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new):
+	Set type hint to GDK_WINDOW_TYPE_HINT_NORMAL so that progress dialog
+	appears in tasklist and is minimizable. Fixes #310676.
+
+2005-07-28  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_icons):
 	Default to move action for locations on other file systems if they
 	should be moved to their parent folder. Fixes #61269.
 
