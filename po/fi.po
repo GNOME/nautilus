@@ -2,8 +2,8 @@
 # Suomennos: http://gnome-fi.sourceforge.net/
 #
 # Copyright (C) 2002 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2002.
-#
+# Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2005.
+# Ilkka Tuohela <hile@iki.fi>, 2005.
 #
 # Suomennossuositukset tai -ehdotukset:
 #
@@ -24,9 +24,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-25 05:51+0300\n"
-"PO-Revision-Date: 2005-02-09 01:48+0200\n"
-"Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
+"POT-Creation-Date: 2005-07-30 11:46+0300\n"
+"PO-Revision-Date: 2005-07-30 12:11+0300\n"
+"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -414,7 +414,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
-msgstr ""
+msgstr "Käytä aina sijaintia polkupalkin sijasta"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
@@ -596,6 +596,8 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
+"Jos tosi, Nautiluksen selausikkunat käyttävät aina tekstimuotoista "
+"syötekenttä sijainnin näyttämiseen polkupalkin sijasta."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -823,20 +825,19 @@ msgid "Side pane view"
 msgstr "Sivupaneelinäkymä"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
-"Nopeuskompromissi äänitiedoston esikuuntelussa, kun hiiri on niiden päällä. "
-"Jos arvo on \"always\", ääni soi vaikka tiedosto olisi etäpalvelimella. Jos "
-"arvo on \"local_only\", vain paikallisissa tiedostojärjestelmissä olevat "
-"tiedostot soivat. Jos \"never\", esikuuntelu ei ole käytössä."
+"Nopeuskompromissi äänitiedoston esikuuntelussa, kun hiiri on "
+"tiedoston kuvakkeen päällä. Jos arvo on \"always\", ääni soi vaikka tiedosto "
+"olisi etäpalvelimella. Jos arvo on \"local_only\", vain paikallisissa "
+"tiedostojärjestelmissä olevat tiedostot soivat. Jos \"never\", esikuuntelu "
+"ei ole käytössä."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -850,7 +851,6 @@ msgstr ""
 "tiedostojärjestelmillä. Jos \"never\", esikatselu ei näy."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -865,7 +865,6 @@ msgstr ""
 "kuvake."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1061,7 +1060,6 @@ msgid "Move _Up"
 msgstr "Siirrä _ylös"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:404
-#, fuzzy
 msgid "Move Dow_n"
 msgstr "Siirrä _alas"
 
@@ -1070,12 +1068,10 @@ msgid "_Show"
 msgstr "_Näytä"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:423
-#, fuzzy
 msgid "Hi_de"
 msgstr "P_iilota"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:436
-#, fuzzy
 msgid "Use De_fault"
 msgstr "Käytä _oletusta"
 
@@ -1172,54 +1168,52 @@ msgid "on the desktop"
 msgstr "työpöydällä"
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "Kohteita ei voi kopioida roskakoriin."
+msgstr "Taltiota \"%s\" ei voida siirtää roskakoriin."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
 msgstr ""
-"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" oikealla "
-"painikkeella aukeavasta kuvakkeen kontekstivalikosta."
+"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" taltion "
+"kontekstivalikosta."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
-#, fuzzy
 msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
 msgstr ""
-"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" oikealla "
-"painikkeella aukeavasta kuvakkeen kontekstivalikosta."
+"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" taltion "
+"kontekstivalikosta."
 
-#: ../libnautilus-private/nautilus-dnd.c:637
+#: ../libnautilus-private/nautilus-dnd.c:640
 msgid "_Move here"
 msgstr "_Siirrä tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:642
+#: ../libnautilus-private/nautilus-dnd.c:645
 msgid "_Copy here"
 msgstr "_Kopioi tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:647
+#: ../libnautilus-private/nautilus-dnd.c:650
 msgid "_Link here"
 msgstr "_Linkitä tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:652
+#: ../libnautilus-private/nautilus-dnd.c:655
 msgid "Set as _Background"
 msgstr "Aseta _taustaksi"
 
-#: ../libnautilus-private/nautilus-dnd.c:661
-#: ../libnautilus-private/nautilus-dnd.c:716
+#: ../libnautilus-private/nautilus-dnd.c:664
+#: ../libnautilus-private/nautilus-dnd.c:719
 msgid "Cancel"
 msgstr "Peru"
 
-#: ../libnautilus-private/nautilus-dnd.c:702
+#: ../libnautilus-private/nautilus-dnd.c:705
 msgid "Set as background for _all folders"
 msgstr "Aseta _kaikkien kansioiden taustaksi"
 
-#: ../libnautilus-private/nautilus-dnd.c:707
+#: ../libnautilus-private/nautilus-dnd.c:710
 msgid "Set as background for _this folder"
 msgstr "Aseta _tämän kansion taustaksi"
 
@@ -1274,9 +1268,9 @@ msgid "Sorry, unable to save custom emblem name."
 msgstr "Muun tunnusmerkin nimen tallentaminen epäonnistui."
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:169
-#, fuzzy, c-format
+#, c-format
 msgid "%s %ld of %ld %s"
-msgstr "%ld / %ld"
+msgstr "%s %ld / %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:448
 #, c-format
@@ -2421,11 +2415,11 @@ msgstr "Valittu suorakulmio"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4316
 msgid "Normal Alpha"
-msgstr ""
+msgstr "Normaali peittävyys"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4317
 msgid "Opacity of the normal icons if frame_text is set"
-msgstr ""
+msgstr "Normaalien kuvakkeiden peittävyys, jos frame_text on asetettu"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:790
 msgid "Switch to Manual Layout?"
@@ -2670,7 +2664,6 @@ msgid "View your home folder in the Nautilus file manager"
 msgstr "Katsele kotikansiotasi Nautilus-tiedostonhallintaohjelmalla"
 
 #: ../nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Browse the file system with the file manager"
 msgstr "Selaa tiedostojärjestelmää tiedostonhallinnasta"
 
@@ -2721,9 +2714,8 @@ msgstr "T_yhjennä roskakori"
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
 #: ../src/file-manager/fm-directory-view.c:6126
-#, fuzzy
 msgid "Create L_auncher..."
-msgstr "Luo _käynnistin"
+msgstr "Luo _käynnistin..."
 
 #. tooltip
 #. label, accelerator
@@ -2762,29 +2754,24 @@ msgid "Desktop"
 msgstr "Työpöytä"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:798
-#, fuzzy
 msgid "View as Desktop"
-msgstr "Näytä luettelona"
+msgstr "Näytä työpöytänä"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:799
-#, fuzzy
 msgid "View as _Desktop"
-msgstr "Näytä _luettelona"
+msgstr "Näytä _työpöytänä"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:800
-#, fuzzy
 msgid "The desktop view encountered an error."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Työpöytänäkymässä tapahtui virhe."
 
 #: ../src/file-manager/fm-desktop-icon-view.c:801
-#, fuzzy
 msgid "The desktop view encountered an error while starting up."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Työpöytänäkymää käynnistettäessä tapahtui virhe."
 
 #: ../src/file-manager/fm-desktop-icon-view.c:802
-#, fuzzy
 msgid "Display this location with the desktop view."
-msgstr "Näytä tämä sijainti katselimella \"%s\""
+msgstr "Näytä tämä sijainti työpöytänäkymänä."
 
 #: ../src/file-manager/fm-directory-view.c:547
 #, c-format
@@ -2929,9 +2916,9 @@ msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
 
 #: ../src/file-manager/fm-directory-view.c:3324
-#, fuzzy, c-format
+#, c-format
 msgid "None of the %d selected items can be moved to the Trash"
-msgstr "Siirrä jokainen valittu kohde roskakoriin"
+msgstr "Mitään valituista %d kohteesta ei voida siirtää roskakoriin"
 
 #: ../src/file-manager/fm-directory-view.c:3326
 msgid ""
@@ -2940,9 +2927,9 @@ msgstr ""
 "Joitakin kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
 
 #: ../src/file-manager/fm-directory-view.c:3327
-#, fuzzy, c-format
+#, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
-msgstr "Tiedostoa \"%s\" ei voi siirtää roskakoriin."
+msgstr "%d valituista kohteista ei voida siirtää roskakoriin"
 
 #: ../src/file-manager/fm-directory-view.c:3333
 msgid "Delete Immediately?"
@@ -3108,33 +3095,31 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5451
 #: ../src/file-manager/fm-tree-view.c:900
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
-msgstr "\"%s\" siirtyy jos annat \"liitä tiedostoja\"-komennon"
+msgstr "\"%s\" siirtyy jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5455
 #: ../src/file-manager/fm-tree-view.c:904
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
-msgstr "\"%s\" kopioituu, jos annat \"liitä tiedostoja\"-komennon"
+msgstr "\"%s\" kopioituu, jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5462
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
-msgstr[0] "%d valittu kohde siirtyy, jos annat \"liitä tiedostoja\"-komennon"
-msgstr[1] ""
-"%d valittua kohdetta siirtyvät, jos annat \"liitä tiedostoja\"-komennon"
+msgstr[0] "%d valittu kohde siirtyy, jos annat \"liitä\"-komennon"
+msgstr[1] "%d valittua kohdetta siirtyvät, jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5469
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
-msgstr[0] "%d valittu kohde kopioituu, jos annat \"liitä tiedostoja\"-komennon"
-msgstr[1] ""
-"%d valittua kohdetta kopioituvat, jos annat \"liitä tiedostoja\"-komennon"
+msgstr[0] "%d valittu kohde kopioituu, jos annat \"liitä\"-komennon"
+msgstr[1] "%d valittua kohdetta kopioituvat, jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5563
 #: ../src/file-manager/fm-tree-view.c:981
@@ -3196,9 +3181,8 @@ msgstr "Katsele tai muokkaa jokaisen valitun kohteen ominaisuuksia"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6113
-#, fuzzy
 msgid "View or modify the properties of the open folder"
-msgstr "Katsele tai muokkaa jokaisen valitun kohteen ominaisuuksia"
+msgstr "Katsele tai muokkaa avatun kansion ominaisuuksia"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6116
@@ -3276,44 +3260,38 @@ msgstr "Näytä kansio, jossa on tämän valikon skriptit"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6159
-#, fuzzy
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr ""
-"Valmistele valittujen tiedostojen siirtoa \"liitä tiedostot\"-komennolla"
+msgstr "Valmistele valittujen tiedostojen siirtoa \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6163
-#, fuzzy
 msgid "Prepare the selected files to be copied with a Paste command"
-msgstr ""
-"Valmistele valittujen tiedostojen kopiointia \"liitä tiedostot\"-komennolla"
+msgstr "Valmistele valittujen tiedostojen kopiointia \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6167
-#, fuzzy
 msgid "Move or copy files previously selected by a Cut or Copy command"
-msgstr "Siirrä tai kopioi viimeksi leikatut tai kopioidut tiedostot"
+msgstr "Siirrä tai kopioi viimeksi \"leikkaa\"- tai " "\"kopioi\"-komennolla "
+"valitut tiedostot"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6172
 #: ../src/file-manager/fm-tree-view.c:1163
-#, fuzzy
 msgid "_Paste Into Folder"
 msgstr "L_iitä tiedostoja kansioon"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6173
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr ""
-"Siirrä tai kopioi viimeksi leikatut tai kopioidut tiedostot valittuun "
-"kansioon"
+"Siirrä tai kopioi viimeksi \"leikkaa\"- tai \"kopioi\"-komennolla valitut "
+"tiedostot valittuun kansioon"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6177
@@ -3344,11 +3322,10 @@ msgstr "Monista valitut kohteet"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6188
 #: ../src/file-manager/fm-directory-view.c:6800
-#, fuzzy
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "T_ee linkki"
-msgstr[1] "T_ee linkki"
+msgstr[1] "T_ee linkit"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6189
@@ -3451,37 +3428,30 @@ msgstr "Avaa tiedosto ja sulje ikkuna"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6235
-#, fuzzy
 msgid "Open this folder in a navigation window"
-msgstr "Avaa jokainen valittu kohde ikkunassa"
+msgstr "Avaa tämä kansio selausikkunassa"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6240
-#, fuzzy
 msgid "Prepare this folder to be moved with a Paste command"
-msgstr ""
-"Valmistele valittujen tiedostojen siirtoa \"liitä tiedostot\"-komennolla"
+msgstr "Valmistele tämän kansion siirtoa \"liitä\"-komennolla"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6244
-#, fuzzy
 msgid "Prepare this folder to be copied with a Paste command"
-msgstr ""
-"Valmistele valittujen tiedostojen kopiointia \"liitä tiedostot\"-komennolla"
+msgstr "Valmistele tämän kansion kopiointia \"liitä\"-komennolla"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6249
-#, fuzzy
 msgid "Move this folder to the Trash"
-msgstr "Siirretään tiedostoja roskakoriin"
+msgstr "Siirretään tämä kansio roskakoriin"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6253
-#, fuzzy
 msgid "Delete this folder, without moving to the Trash"
-msgstr "Poista jokainen valittu kohde siirtämättä roskakoriin"
+msgstr "Poista tämä kansio siirtämättä roskakoriin"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6259
@@ -3490,15 +3460,14 @@ msgstr "Näytä _piilotiedostot"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6260
-#, fuzzy
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Näyttää tai piilottaa piilotiedostot nykyisessä ikkunassa"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6309
-#, fuzzy, c-format
+#, c-format
 msgid "Run or manage scripts from %s"
-msgstr "Aja tai muokkaa kansion ~/.gnome2/nautilus-scripts skriptejä"
+msgstr "Aja tai muokkaa kansion %s skriptejä"
 
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/file-manager/fm-directory-view.c:6311
@@ -3509,17 +3478,15 @@ msgstr "Sk_riptit"
 #: ../src/file-manager/fm-directory-view.c:6581
 #: ../src/file-manager/fm-directory-view.c:6736
 #: ../src/file-manager/fm-tree-view.c:1116
-#, fuzzy
 msgid "Open in New Window"
 msgstr "Avaa uudessa ikkunassa"
 
 #: ../src/file-manager/fm-directory-view.c:6583
 #: ../src/file-manager/fm-directory-view.c:6744
-#, fuzzy
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Selaa kansiota"
-msgstr[1] "_Selaa kansiota"
+msgstr[1] "_Selaa kansioita"
 
 #: ../src/file-manager/fm-directory-view.c:6600
 #: ../src/file-manager/fm-directory-view.c:6764
@@ -3527,14 +3494,12 @@ msgid "_Delete from Trash"
 msgstr "Poista _roskakorista"
 
 #: ../src/file-manager/fm-directory-view.c:6601
-#, fuzzy
 msgid "Delete the open folder permanently"
-msgstr "Poista kaikki valitut kohteet pysyvästi"
+msgstr "Poistetaanko avoin kansio pysyvästi?"
 
 #: ../src/file-manager/fm-directory-view.c:6605
-#, fuzzy
 msgid "Move the open folder to the Trash"
-msgstr "Siirretään tiedostoja roskakoriin"
+msgstr "Siirrä valittu kansio roskakoriin"
 
 #: ../src/file-manager/fm-directory-view.c:6716
 #, c-format
@@ -3542,10 +3507,10 @@ msgid "_Open with \"%s\""
 msgstr "_Avaa ohjelmalla \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:6738
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
-msgstr[0] "Avaa uudessa ikkunassa"
+msgstr[0] "Avaa %d uudessa ikkunassa"
 msgstr[1] "Avaa %d uudessa ikkunassa"
 
 #: ../src/file-manager/fm-directory-view.c:6765
@@ -3959,19 +3924,16 @@ msgid "View as _Icons"
 msgstr "Näytä _kuvakkeina"
 
 #: ../src/file-manager/fm-icon-view.c:2724
-#, fuzzy
 msgid "The icon view encountered an error."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Kuvakenäkymässä tapahtui virhe."
 
 #: ../src/file-manager/fm-icon-view.c:2725
-#, fuzzy
 msgid "The icon view encountered an error while starting up."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Kuvakenäkymän käynnistyksessä tapahtui virhe."
 
 #: ../src/file-manager/fm-icon-view.c:2726
-#, fuzzy
 msgid "Display this location with the icon view."
-msgstr "Näytä tämä sijainti katselimella \"%s\""
+msgstr "Näytä tämä sijainti kuvakenäkymässä."
 
 #: ../src/file-manager/fm-list-model.c:363
 #: ../src/file-manager/fm-tree-model.c:1212
@@ -4015,19 +3977,16 @@ msgid "View as _List"
 msgstr "Näytä _luettelona"
 
 #: ../src/file-manager/fm-list-view.c:2707
-#, fuzzy
 msgid "The list view encountered an error."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Listanäkymässä tapahtui virhe."
 
 #: ../src/file-manager/fm-list-view.c:2708
-#, fuzzy
 msgid "The list view encountered an error while starting up."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Listanäkymää käynnistettäessä tapahtui virhe."
 
 #: ../src/file-manager/fm-list-view.c:2709
-#, fuzzy
 msgid "Display this location with the list view."
-msgstr "Näytä tämä sijainti katselimella \"%s\""
+msgstr "Näytä tämä sijainti listanäkymässä."
 
 #: ../src/file-manager/fm-properties-window.c:512
 msgid "You can't assign more than one custom icon at a time!"
@@ -4129,11 +4088,10 @@ msgstr "Perustiedot"
 
 #. Name label
 #: ../src/file-manager/fm-properties-window.c:2353
-#, fuzzy
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nimi:"
-msgstr[1] "_Nimi:"
+msgstr[1] "_Nimet:"
 
 #: ../src/file-manager/fm-properties-window.c:2372
 msgid "Type:"
@@ -4322,7 +4280,6 @@ msgstr "Siirrä roskakoriin"
 
 #: ../src/file-manager/fm-tree-view.c:1245
 #: ../src/nautilus-places-sidebar.c:170
-#, fuzzy
 msgid "File System"
 msgstr "Tiedostojärjestelmä"
 
@@ -4335,9 +4292,8 @@ msgid "Tree"
 msgstr "Puu"
 
 #: ../src/file-manager/fm-tree-view.c:1494
-#, fuzzy
 msgid "Show Tree"
-msgstr "Näytä %s"
+msgstr "Näytä puu"
 
 #: ../src/nautilus-application.c:257
 msgid "Couldn't Create Required Folder"
@@ -4571,9 +4527,8 @@ msgid "_User Name:"
 msgstr "_Käyttäjätunnus:"
 
 #: ../src/nautilus-connect-server-dialog.c:570
-#, fuzzy
 msgid "_Domain Name:"
-msgstr "_Nimi:"
+msgstr "_Aluenimi:"
 
 #: ../src/nautilus-connect-server-dialog.c:594
 msgid "_Name to use for connection:"
@@ -4718,9 +4673,8 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "Pudotettu tiedosto ei vaikuta olevan kelvollinen kuvatiedosto."
 
 #: ../src/nautilus-emblem-sidebar.c:1051
-#, fuzzy
 msgid "Show Emblems"
-msgstr "Tunnusmerkit"
+msgstr "Näytä tunnusmerkit"
 
 #: ../src/nautilus-file-management-properties.c:307
 msgid "None"
@@ -5003,9 +4957,8 @@ msgid "History"
 msgstr "Historiikki"
 
 #: ../src/nautilus-history-sidebar.c:284
-#, fuzzy
 msgid "Show History"
-msgstr "Historiikki"
+msgstr "Näytä historiikki"
 
 #: ../src/nautilus-image-properties-page.c:219
 msgid "Camera Brand"
@@ -5056,25 +5009,23 @@ msgid "Software"
 msgstr "Ohjelmisto"
 
 #: ../src/nautilus-image-properties-page.c:249
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr ""
-"<b>Kuvan tyyppi:</b> %s (%s)\n"
-"<b>Koko:</b> %d×%d kuvapistettä\n"
+msgstr "<b>Kuvan tyyppi:</b> %s (%s)\n"
 
 #: ../src/nautilus-image-properties-page.c:251
 #, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Leveys:</b> %d pikseli\n"
+msgstr[1] "<b>Leveys:</b> %d pikseliä\n"
 
 #: ../src/nautilus-image-properties-page.c:255
 #, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Korkeus</b> %d pikseli\n"
+msgstr[1] "<b>Korkeus</b> %d pikseliä\n"
 
 #: ../src/nautilus-image-properties-page.c:270
 msgid "Failed to load image information"
@@ -5093,9 +5044,8 @@ msgid "Information"
 msgstr "Tietoja"
 
 #: ../src/nautilus-information-panel.c:184
-#, fuzzy
 msgid "Show Information"
-msgstr "Tietoja"
+msgstr "Näytä tietoja"
 
 #. add the reset background item, possibly disabled
 #: ../src/nautilus-information-panel.c:404
@@ -5249,9 +5199,8 @@ msgid "The location \"%s\" does not exist."
 msgstr "Sijainti \"%s\" ei ole olemassa."
 
 #: ../src/nautilus-navigation-window-menus.c:290
-#, fuzzy
 msgid "The history location doesn't exist."
-msgstr "Sijainti \"%s\" ei ole olemassa."
+msgstr "Historiikin sijaintia ei ole olemassa."
 
 #: ../src/nautilus-navigation-window-menus.c:292
 #: ../src/nautilus-window-bookmarks.c:99
@@ -5332,13 +5281,12 @@ msgstr "Näytä ikkuna, jossa voi tämän valikon kirjanmerkkejä voi muokata"
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:440
 msgid "_Main Toolbar"
-msgstr ""
+msgstr "_Työkalupalkki"
 
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:441
-#, fuzzy
 msgid "Change the visibility of this window's main toolbar"
-msgstr "Näytä tai piilota tämän ikkunan sijaintipalkki"
+msgstr "Näytä tai piilota tämän ikkunan työkalupalkki"
 
 #. is_active
 #. name, stock id
@@ -5382,9 +5330,8 @@ msgid "Go to the previous visited location"
 msgstr "Siirry edelliseen sijaintiin"
 
 #: ../src/nautilus-navigation-window-menus.c:483
-#, fuzzy
 msgid "Back history"
-msgstr "Tyhjennä historiikki"
+msgstr "Takaisin historiikissa"
 
 #: ../src/nautilus-navigation-window-menus.c:497
 msgid "_Forward"
@@ -5395,9 +5342,8 @@ msgid "Go to the next visited location"
 msgstr "Siirry seuraavaan sijaintiin"
 
 #: ../src/nautilus-navigation-window-menus.c:500
-#, fuzzy
 msgid "Forward history"
-msgstr "Tyhjennä historiikki"
+msgstr "Eteenpäin historiikissa"
 
 #: ../src/nautilus-navigation-window.c:779
 #, c-format
@@ -5409,24 +5355,20 @@ msgid "Notes"
 msgstr "Muistiinpanot"
 
 #: ../src/nautilus-notes-viewer.c:394
-#, fuzzy
 msgid "Show Notes"
-msgstr "Näytä %s"
+msgstr "Näytä muistiinpanot"
 
 #: ../src/nautilus-pathbar.c:1128 ../src/nautilus-places-sidebar.c:152
-#, fuzzy
 msgid "Home"
-msgstr "_Koti"
+msgstr "Koti"
 
 #: ../src/nautilus-places-sidebar.c:474
-#, fuzzy
 msgid "Places"
-msgstr "_Sijainnit"
+msgstr "Sijainnit"
 
 #: ../src/nautilus-places-sidebar.c:480
-#, fuzzy
 msgid "Show Places"
-msgstr "_Sijainnit"
+msgstr "Näytä sijainnit"
 
 #. set the title and standard close accelerator
 #: ../src/nautilus-property-browser.c:269
@@ -5545,7 +5487,6 @@ msgid "The color cannot be installed."
 msgstr "Väriä ei voi asentaa."
 
 #: ../src/nautilus-property-browser.c:1218
-#, fuzzy
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr "Uudelle värille pitää antaa nimi."
 
