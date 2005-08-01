@@ -4462,8 +4462,6 @@ activate_check_mime_types (FMDirectoryView *view,
 	char *guessed_mime_type;
 	char *mime_type;
 	gboolean ret;
-	GnomeVFSMimeApplication *default_app;
-	GnomeVFSMimeApplication *guessed_default_app;
 
 	if (!nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE)) {
 		return FALSE;
@@ -4474,18 +4472,12 @@ activate_check_mime_types (FMDirectoryView *view,
 	guessed_mime_type = nautilus_file_get_guessed_mime_type (file);
 	mime_type = nautilus_file_get_mime_type (file);
 
-	if (strcmp (guessed_mime_type, mime_type) != 0) {
-		default_app = gnome_vfs_mime_get_default_application
-			(mime_type);
-		guessed_default_app = gnome_vfs_mime_get_default_application
-			(guessed_mime_type);
-		if (default_app == NULL || guessed_default_app == NULL ||
-		    !gnome_vfs_mime_application_equal (default_app, guessed_default_app)) {
-			if (warn_on_mismatch) {
-				warn_mismatched_mime_types (view, file);
-			}
-			ret = FALSE;
+	if (gnome_vfs_mime_type_get_equivalence (mime_type, guessed_mime_type) == GNOME_VFS_MIME_UNRELATED) {
+		if (warn_on_mismatch) {
+			warn_mismatched_mime_types (view, file);
 		}
+
+		ret = FALSE;
 	}
 
 	g_free (guessed_mime_type);

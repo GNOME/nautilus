@@ -1,3 +1,9 @@
+2005-08-01  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c: (activate_check_mime_types):
+	Use actual/guessed MIME type relation instead of relying on their
+	default application information. Partially fixes #309862.
+
 2005-07-28  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file-operations-progress.c:
