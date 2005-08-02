@@ -400,10 +400,8 @@ format_name_for_display (NautilusCustomizationData *data, const char* name)
 {
 	char *formatted_str, *mapped_name;
 
-	/* don't display a name for the "reset" property, since its name is
-	   contained in its image and also to help distinguish it */  
 	if (!eel_strcmp(name, RESET_IMAGE_NAME)) {
-		return g_strdup(_("reset"));
+		return g_strdup (_("Reset"));
 	}
 
 	/* map file names to display names using the mappings defined in the hash table */

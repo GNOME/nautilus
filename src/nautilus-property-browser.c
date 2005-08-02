@@ -1788,7 +1788,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	
 	g_free (reset_image_file_name);
 
-	reset_image = labeled_image_new (NULL, reset_chit, RESET_IMAGE_NAME, PANGO_SCALE_MEDIUM);
+	reset_image = labeled_image_new ("Reset", reset_chit, RESET_IMAGE_NAME, PANGO_SCALE_MEDIUM);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
 	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,
