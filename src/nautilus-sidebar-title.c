@@ -77,6 +77,7 @@ static void		   update_more_info			   (NautilusSidebarTitle      *sidebar_title)
 static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
 static void                style_set                               (GtkWidget                 *widget,
 								    GtkStyle                  *previous_style);
+static guint		   get_best_icon_size 			   (NautilusSidebarTitle      *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -172,6 +173,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	gtk_widget_show (sidebar_title->details->notes);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 
+	sidebar_title->details->best_icon_size = get_best_icon_size (sidebar_title);
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
 
