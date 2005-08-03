@@ -112,6 +112,8 @@ static void side_panel_image_changed_callback        (NautilusSidebar          *
 static void navigation_bar_location_changed_callback (GtkWidget                *widget,
 						      const char               *uri,
 						      NautilusNavigationWindow *window);
+static void navigation_bar_cancel_callback           (GtkWidget                *widget,
+						      NautilusNavigationWindow *window);
 static void path_bar_location_changed_callback       (GtkWidget                *widget,
 						      const char               *uri,
 						      NautilusNavigationWindow *window);
@@ -196,6 +198,8 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	window->navigation_bar = nautilus_location_bar_new (window);
 	g_signal_connect_object (window->navigation_bar, "location_changed",
 				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
+	g_signal_connect_object (window->navigation_bar, "cancel",
+				 G_CALLBACK (navigation_bar_cancel_callback), window, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    window->navigation_bar,
@@ -313,11 +317,8 @@ path_bar_location_changed_callback (GtkWidget *widget,
 	}
 }
 
-
 static void
-navigation_bar_location_changed_callback (GtkWidget *widget,
-					  const char *uri,
-					  NautilusNavigationWindow *window)
+hide_temporary_bars (NautilusNavigationWindow *window)
 {
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
@@ -333,9 +334,22 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 		}
 		window->details->temporary_navigation_bar = FALSE;
 	}
+}
 
-	
+static void
+navigation_bar_location_changed_callback (GtkWidget *widget,
+					  const char *uri,
+					  NautilusNavigationWindow *window)
+{
+	hide_temporary_bars (window);
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+}
+
+static void
+navigation_bar_cancel_callback (GtkWidget *widget,
+				NautilusNavigationWindow *window)
+{
+	hide_temporary_bars (window);
 }
 
 static void

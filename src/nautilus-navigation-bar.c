@@ -30,11 +30,14 @@
 #include "nautilus-navigation-bar.h"
 
 #include <eel/eel-gtk-macros.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkbindings.h>
 #include <string.h>
 
 enum {
 	ACTIVATE,
+	CANCEL,
 	LOCATION_CHANGED,
 	LAST_SIGNAL
 };
@@ -52,6 +55,7 @@ static void
 nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 {
 	GtkObjectClass *object_class;
+	GtkBindingSet *binding_set;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	
@@ -61,6 +65,16 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    activate),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
+
+	signals[CANCEL] = g_signal_new
+		("cancel",
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
+		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
+				    cancel),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
@@ -76,6 +90,10 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 		 G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	klass->activate = NULL;
+	klass->cancel = NULL;
+
+	binding_set = gtk_binding_set_by_class (klass);
+	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
 
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);

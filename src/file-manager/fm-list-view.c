@@ -804,9 +804,34 @@ handle_typeahead (FMListView *view,
 		*flush_typeahead = TRUE;
 		return FALSE;
 	}
-	
+
+	/* don't handle '+', '*', '/' at all because they are used by the GTK+ tree
+	 * view code for expanding/collapsing rows. These characters are quite
+	 * unlikely to be in a filename, so this will not confuse users. The '-'
+	 * which is used for collapsing in the treeview is special-cased below. */
+	switch (event->keyval) {
+		case GDK_plus:
+		case GDK_asterisk:
+		case GDK_slash:
+		case GDK_KP_Add:
+		case GDK_KP_Multiply:
+		case GDK_KP_Divide:
+			return FALSE;
+
+		default:
+			break;
+	}
+
+
 	/* lazily allocate the typeahead state */
 	if (view->details->type_select_state == NULL) {
+
+		/* Special-case for '-', because this character is likely to be in a
+		 * filename. */
+		if ((event->keyval == GDK_minus) || (event->keyval == GDK_KP_Subtract)) {
+			return FALSE;
+		}
+
 		view->details->type_select_state = g_new0 (TypeSelectState, 1);
 	}
 

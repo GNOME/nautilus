@@ -1,3 +1,18 @@
+2005-08-03  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-list-view.c: (handle_typeahead): Be smarter
+	about GtkTreeView-bound expand/collapse characters. Thanks to Wouter
+	Bolsterlee <uws+gnome@xs4all.nl>. Fixes #312046.
+
+	* src/nautilus-location-bar.c: (real_cancel),
+	(nautilus_location_bar_class_init),
+	(nautilus_location_bar_set_location)
+	* src/nautilus-navigation-bar.c: (nautilus_navigation_bar_class_init):
+	* src/nautilus-navigation-bar.h:
+	* src/nautilus-navigation-window.c: (navigation_bar_cancel_callback),
+	(navigation_bar_location_changed_callback): Hide temporary bars when
+	pressing the escape key. Fixes #311652.
+
 2005-08-03  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init):

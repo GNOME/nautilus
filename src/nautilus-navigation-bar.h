@@ -49,6 +49,7 @@ typedef struct {
 	/* signals */
 	void         (* location_changed) (NautilusNavigationBar *bar,
 					   const char            *location);
+	void         (* cancel)           (NautilusNavigationBar *bar);
 
 	/* virtual methods */
 	void	     (* activate)	  (NautilusNavigationBar *bar);

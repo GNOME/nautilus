@@ -330,6 +330,15 @@ real_activate (NautilusNavigationBar *navigation_bar)
 }
 
 static void
+real_cancel (NautilusNavigationBar *navigation_bar)
+{
+	char *last_location;
+
+	last_location = NAUTILUS_LOCATION_BAR (navigation_bar)->details->last_location;
+	nautilus_navigation_bar_set_location (navigation_bar, last_location);
+}
+
+static void
 finalize (GObject *object)
 {
 	NautilusLocationBar *bar;
@@ -384,6 +393,7 @@ nautilus_location_bar_class_init (NautilusLocationBarClass *class)
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (class);
 
 	navigation_bar_class->activate = real_activate;
+	navigation_bar_class->cancel = real_cancel;
 	navigation_bar_class->get_location = nautilus_location_bar_get_location;
 	navigation_bar_class->set_location = nautilus_location_bar_set_location;
 }
@@ -503,8 +513,11 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	
 	/* remember the original location for later comparison */
 	
-	g_free (bar->details->last_location);
-	bar->details->last_location = g_strdup (location);
+	if (bar->details->last_location != location) {
+		g_free (bar->details->last_location);
+		bar->details->last_location = g_strdup (location);
+	}
+
 	nautilus_location_bar_update_label (bar);
 }
 
