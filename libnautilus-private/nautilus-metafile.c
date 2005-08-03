@@ -42,6 +42,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 #define METAFILE_XML_VERSION "1.0"
@@ -758,6 +759,17 @@ get_file_node (NautilusMetafile *metafile,
 	return NULL;
 }
 
+static void
+set_file_node_timestamp (xmlNode *node)
+{
+	char time_str[21];
+
+	/* 2^64 turns out to be 20 characters */
+	snprintf (time_str, 20, "%ld", time (NULL));
+	time_str [20] = '\0';
+	xmlSetProp (node, "timestamp", time_str);
+}
+
 static char *
 get_metadata_string_from_metafile (NautilusMetafile *metafile,
 				   const char *file_name,
@@ -817,8 +829,11 @@ set_metadata_string_in_metafile (NautilusMetafile *metafile,
 	/* Get or create the node. */
 	node = get_file_node (metafile, file_name, value != NULL);
 
-	/* Add or remove a property node. */
 	if (node != NULL) {
+		/* Set the timestamp */
+		set_file_node_timestamp (node);
+		
+		/* Add or remove a property node. */
 		property_node = xmlSetProp (node, key, value);
 		if (value == NULL) {
 			xmlRemoveProp (property_node);
@@ -878,6 +893,9 @@ set_metadata_list_in_metafile (NautilusMetafile *metafile,
 			xmlSetProp (child, list_subkey, p->data);
 			changed = TRUE;
 		}
+
+		/* Set the timestamp */
+		set_file_node_timestamp (node);
 	}
 
 	if (!changed) {
@@ -1418,6 +1436,7 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 			root = create_metafile_root (destination_metafile);
 			xmlAddChild (root, node);
 			xmlSetProp (node, "name", destination_file_name);
+			set_file_node_timestamp (node);
 			g_hash_table_insert (destination_metafile->details->node_hash,
 					     xmlMemStrdup (destination_file_name), node);
 		} else {

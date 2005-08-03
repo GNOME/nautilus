@@ -1,3 +1,12 @@
+2005-08-03  Joe Shaw  <joeshaw@novell.com>
+
+	* libnautilus-private/nautilus-metafile.c
+	(set_file_node_timestamp): Added, sets a timestamp property on a
+	file node so that metadata changes can be tracked per file, rather
+	than per directory.
+	(set_metadata_string_in_metafile, set_metadata_list_in_metafile,
+	copy_file_metadata): Set the timestamp on the node.
+
 2005-08-03  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-list-view.c: (handle_typeahead): Be smarter
