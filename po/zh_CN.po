@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-23 06:43+0000\n"
-"PO-Revision-Date: 2005-07-23 16:04+0800\n"
+"POT-Creation-Date: 2005-08-05 06:53+0000\n"
+"PO-Revision-Date: 2005-08-05 16:51+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -566,7 +566,8 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"如果设为 ture，Nautilus 浏览器将在位置工具栏中总是使用文本输入框，而不是使用路径栏。"
+"如果设为 ture，Nautilus 浏览器将在位置工具栏中总是使用文本输入框，而不是使用"
+"路径栏。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -982,7 +983,7 @@ msgstr "粘贴剪贴板中的文字"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6176
+#: ../src/file-manager/fm-directory-view.c:6168
 msgid "Select _All"
 msgstr "全选(_A)"
 
@@ -1012,7 +1013,7 @@ msgid "Use De_fault"
 msgstr "使用默认值(_F)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1395
+#: ../src/file-manager/fm-list-view.c:1420
 msgid "Name"
 msgstr "名称"
 
@@ -1093,8 +1094,8 @@ msgstr "MIME类型"
 msgid "The mime type of the file."
 msgstr "文件的 MIME 类型。"
 
-#: ../libnautilus-private/nautilus-customization-data.c:406
-msgid "reset"
+#: ../libnautilus-private/nautilus-customization-data.c:404
+msgid "Reset"
 msgstr "重置"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:442
@@ -1120,32 +1121,32 @@ msgid ""
 "popup menu of the volume."
 msgstr "如果您想要卸载卷，请使用该卷右键菜单中的“卸载”卷。"
 
-#: ../libnautilus-private/nautilus-dnd.c:637
+#: ../libnautilus-private/nautilus-dnd.c:640
 msgid "_Move here"
 msgstr "移动到此处(_M)"
 
-#: ../libnautilus-private/nautilus-dnd.c:642
+#: ../libnautilus-private/nautilus-dnd.c:645
 msgid "_Copy here"
 msgstr "复制到此处(_C)"
 
-#: ../libnautilus-private/nautilus-dnd.c:647
+#: ../libnautilus-private/nautilus-dnd.c:650
 msgid "_Link here"
 msgstr "在此处创建链接(_L)"
 
-#: ../libnautilus-private/nautilus-dnd.c:652
+#: ../libnautilus-private/nautilus-dnd.c:655
 msgid "Set as _Background"
 msgstr "设置为背景(_B)"
 
-#: ../libnautilus-private/nautilus-dnd.c:661
-#: ../libnautilus-private/nautilus-dnd.c:716
+#: ../libnautilus-private/nautilus-dnd.c:664
+#: ../libnautilus-private/nautilus-dnd.c:719
 msgid "Cancel"
 msgstr "取消"
 
-#: ../libnautilus-private/nautilus-dnd.c:702
+#: ../libnautilus-private/nautilus-dnd.c:705
 msgid "Set as background for _all folders"
 msgstr "设置为全部文件夹的背景(_A)"
 
-#: ../libnautilus-private/nautilus-dnd.c:707
+#: ../libnautilus-private/nautilus-dnd.c:710
 msgid "Set as background for _this folder"
 msgstr "设置为此文件夹的背景(_T)"
 
@@ -1486,7 +1487,7 @@ msgstr "全部替换(_A)"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1204
 #: ../libnautilus-private/nautilus-file.c:4721
-#: ../src/file-manager/fm-directory-view.c:8462
+#: ../src/file-manager/fm-directory-view.c:8454
 #, c-format
 msgid "link to %s"
 msgstr "到 %s 的链接"
@@ -2231,7 +2232,7 @@ msgid "Icon View"
 msgstr "图标视图"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1449
+#: ../src/file-manager/fm-list-view.c:1474
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "列表视图"
@@ -2596,22 +2597,22 @@ msgstr "背景"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6154
-#: ../src/file-manager/fm-directory-view.c:6826
+#: ../src/file-manager/fm-directory-view.c:6146
+#: ../src/file-manager/fm-directory-view.c:6818
 msgid "E_mpty Trash"
 msgstr "清空回收站(_M)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6126
+#: ../src/file-manager/fm-directory-view.c:6118
 msgid "Create L_auncher..."
 msgstr "创建启动器(_A)..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6127
+#: ../src/file-manager/fm-directory-view.c:6119
 msgid "Create a new launcher"
 msgstr "创建新启动器"
 
@@ -2634,7 +2635,7 @@ msgstr "清空回收站"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6155
+#: ../src/file-manager/fm-directory-view.c:6147
 msgid "Delete all items in the Trash"
 msgstr "删除回收站中的所有项目"
 
@@ -2900,31 +2901,31 @@ msgstr ""
 "此文件，请将文件重命名为正确的扩展名“%s”，然后按通常的方法打开该文件。当然，"
 "使用打开方式菜单可以选择用指定的应用程序打开文件。"
 
-#: ../src/file-manager/fm-directory-view.c:4830
+#: ../src/file-manager/fm-directory-view.c:4822
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "在任意选中的项目上运行“%s”"
 
-#: ../src/file-manager/fm-directory-view.c:5079
+#: ../src/file-manager/fm-directory-view.c:5071
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "根据模板“%s”创建文档"
 
-#: ../src/file-manager/fm-directory-view.c:5285
+#: ../src/file-manager/fm-directory-view.c:5277
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "该文件夹中所有的可执行文件都将显示在脚本菜单中。"
 
-#: ../src/file-manager/fm-directory-view.c:5287
+#: ../src/file-manager/fm-directory-view.c:5279
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "从该菜单中选择某脚本将会用任意选中项目作为输入来执行那个脚本。"
 
-#: ../src/file-manager/fm-directory-view.c:5289
+#: ../src/file-manager/fm-directory-view.c:5281
 msgid "About Scripts"
 msgstr "关于脚本"
 
-#: ../src/file-manager/fm-directory-view.c:5290
+#: ../src/file-manager/fm-directory-view.c:5282
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2962,480 +2963,480 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY：当前窗口的位置和大小"
 
-#: ../src/file-manager/fm-directory-view.c:5451
+#: ../src/file-manager/fm-directory-view.c:5443
 #: ../src/file-manager/fm-tree-view.c:900
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "如果您选择了粘贴命令，“%s”将被移动"
 
-#: ../src/file-manager/fm-directory-view.c:5455
+#: ../src/file-manager/fm-directory-view.c:5447
 #: ../src/file-manager/fm-tree-view.c:904
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "如果您选择了粘贴命令，“%s”将被复制"
 
-#: ../src/file-manager/fm-directory-view.c:5462
+#: ../src/file-manager/fm-directory-view.c:5454
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "如果您选择了粘贴命令，将移动选中的 %d 个项目"
 
-#: ../src/file-manager/fm-directory-view.c:5469
+#: ../src/file-manager/fm-directory-view.c:5461
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "如果您选择了粘贴命令，将复制选中的 %d 个项目"
 
-#: ../src/file-manager/fm-directory-view.c:5563
+#: ../src/file-manager/fm-directory-view.c:5555
 #: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "剪贴板中没有东西可以粘贴。"
 
-#: ../src/file-manager/fm-directory-view.c:5689
-#: ../src/file-manager/fm-directory-view.c:7315
+#: ../src/file-manager/fm-directory-view.c:5681
+#: ../src/file-manager/fm-directory-view.c:7307
 msgid "Mount Error"
 msgstr "挂载错误"
 
-#: ../src/file-manager/fm-directory-view.c:5746
+#: ../src/file-manager/fm-directory-view.c:5738
 #: ../src/file-manager/fm-tree-view.c:1066
 msgid "Unmount Error"
 msgstr "卸载错误"
 
-#: ../src/file-manager/fm-directory-view.c:5759
+#: ../src/file-manager/fm-directory-view.c:5751
 #: ../src/file-manager/fm-tree-view.c:1063
 msgid "Eject Error"
 msgstr "弹出错误"
 
-#: ../src/file-manager/fm-directory-view.c:5908
+#: ../src/file-manager/fm-directory-view.c:5900
 #, c-format
 msgid "Connect to Server %s"
 msgstr "连接到服务器 %s"
 
-#: ../src/file-manager/fm-directory-view.c:5913
+#: ../src/file-manager/fm-directory-view.c:5905
 msgid "_Connect"
 msgstr "连接(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:5927
+#: ../src/file-manager/fm-directory-view.c:5919
 msgid "Link _name:"
 msgstr "链接名称(_N)："
 
-#: ../src/file-manager/fm-directory-view.c:6100
+#: ../src/file-manager/fm-directory-view.c:6092
 msgid "Create _Document"
 msgstr "创建文档(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6101
+#: ../src/file-manager/fm-directory-view.c:6093
 msgid "Open Wit_h"
 msgstr "打开方式(_H)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6102
+#: ../src/file-manager/fm-directory-view.c:6094
 msgid "Choose a program with which to open the selected item"
 msgstr "选择用来打开选中项目的程序"
 
 #. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6096
 #: ../src/file-manager/fm-directory-view.c:6104
-#: ../src/file-manager/fm-directory-view.c:6112
 msgid "_Properties"
 msgstr "属性(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6105
+#: ../src/file-manager/fm-directory-view.c:6097
 msgid "View or modify the properties of each selected item"
 msgstr "查看或修改每个选中项目的属性"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6113
+#: ../src/file-manager/fm-directory-view.c:6105
 msgid "View or modify the properties of the open folder"
 msgstr "查看或修改打开的文件夹的属性"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6116
+#: ../src/file-manager/fm-directory-view.c:6108
 msgid "Create _Folder"
 msgstr "创建文件夹(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6117
+#: ../src/file-manager/fm-directory-view.c:6109
 msgid "Create a new empty folder inside this folder"
 msgstr "在该文件夹中创建新的空文件夹"
 
-#: ../src/file-manager/fm-directory-view.c:6119
+#: ../src/file-manager/fm-directory-view.c:6111
 msgid "No templates Installed"
 msgstr "没有安装模板"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6122
+#: ../src/file-manager/fm-directory-view.c:6114
 msgid "_Empty File"
 msgstr "空文件(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6123
+#: ../src/file-manager/fm-directory-view.c:6115
 msgid "Create a new empty file inside this folder"
 msgstr "在该文件夹中创建新的空文件"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6130
-#: ../src/file-manager/fm-directory-view.c:6727
+#: ../src/file-manager/fm-directory-view.c:6122
+#: ../src/file-manager/fm-directory-view.c:6719
 #: ../src/file-manager/fm-tree-view.c:1105
 msgid "_Open"
 msgstr "打开(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6131
+#: ../src/file-manager/fm-directory-view.c:6123
 msgid "Open the selected item in this window"
 msgstr "在本窗口中打开选中的项目"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6138
-#: ../src/file-manager/fm-directory-view.c:6234
+#: ../src/file-manager/fm-directory-view.c:6130
+#: ../src/file-manager/fm-directory-view.c:6226
 msgid "Open in Navigation Window"
 msgstr "在导航窗口中打开"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6139
+#: ../src/file-manager/fm-directory-view.c:6131
 msgid "Open each selected item in a navigation window"
 msgstr "在导航窗口中打开每个选中的项目"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6142
-#: ../src/file-manager/fm-directory-view.c:6146
+#: ../src/file-manager/fm-directory-view.c:6134
+#: ../src/file-manager/fm-directory-view.c:6138
 msgid "Open with Other _Application..."
 msgstr "使用其它程序打开(_A)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6143
-#: ../src/file-manager/fm-directory-view.c:6147
+#: ../src/file-manager/fm-directory-view.c:6135
+#: ../src/file-manager/fm-directory-view.c:6139
 msgid "Choose another application with which to open the selected item"
 msgstr "另选一个用来打开选中项目的程序"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6150
+#: ../src/file-manager/fm-directory-view.c:6142
 msgid "_Open Scripts Folder"
 msgstr "打开脚本文件夹(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6151
+#: ../src/file-manager/fm-directory-view.c:6143
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "显示包含出现在该菜单中的脚本的文件夹"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6159
+#: ../src/file-manager/fm-directory-view.c:6151
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "准备将选中的文件用粘贴命令移动"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6163
+#: ../src/file-manager/fm-directory-view.c:6155
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "准备将选中的文件用粘贴命令复制"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6167
+#: ../src/file-manager/fm-directory-view.c:6159
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "移动或复制由前面的剪切或复制命令所选中的文件"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6172
+#: ../src/file-manager/fm-directory-view.c:6164
 #: ../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
 msgstr "粘贴到文件夹(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6173
+#: ../src/file-manager/fm-directory-view.c:6165
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "将先前由剪切或复制命令所选中的文件移动或复制到选中文件夹中"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6177
+#: ../src/file-manager/fm-directory-view.c:6169
 msgid "Select all items in this window"
 msgstr "选择该窗口中的所有项目"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6180
+#: ../src/file-manager/fm-directory-view.c:6172
 msgid "Select _Pattern"
 msgstr "按模式选择(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6181
+#: ../src/file-manager/fm-directory-view.c:6173
 msgid "Select items in this window matching a given pattern"
 msgstr "按给定模式选择此窗口中的项目"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6184
+#: ../src/file-manager/fm-directory-view.c:6176
 msgid "D_uplicate"
 msgstr "就地复制(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6185
+#: ../src/file-manager/fm-directory-view.c:6177
 msgid "Duplicate each selected item"
 msgstr "复制每个选中的项"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6188
-#: ../src/file-manager/fm-directory-view.c:6800
+#: ../src/file-manager/fm-directory-view.c:6180
+#: ../src/file-manager/fm-directory-view.c:6792
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "创建链接(_K)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6189
+#: ../src/file-manager/fm-directory-view.c:6181
 msgid "Create a symbolic link for each selected item"
 msgstr "为每个选中的项目创建链接"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6192
+#: ../src/file-manager/fm-directory-view.c:6184
 msgid "_Rename..."
 msgstr "重命名(_R)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6193
+#: ../src/file-manager/fm-directory-view.c:6185
 msgid "Rename selected item"
 msgstr "重命名选中的项目"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6200
-#: ../src/file-manager/fm-directory-view.c:6248
-#: ../src/file-manager/fm-directory-view.c:6604
-#: ../src/file-manager/fm-directory-view.c:6768
-#: ../src/file-manager/fm-directory-view.c:7113
+#: ../src/file-manager/fm-directory-view.c:6192
+#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6596
+#: ../src/file-manager/fm-directory-view.c:6760
+#: ../src/file-manager/fm-directory-view.c:7105
 msgid "Mo_ve to Trash"
 msgstr "移动到回收站(_V)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6201
-#: ../src/file-manager/fm-directory-view.c:6769
+#: ../src/file-manager/fm-directory-view.c:6193
+#: ../src/file-manager/fm-directory-view.c:6761
 msgid "Move each selected item to the Trash"
 msgstr "把每个选中项目都移到回收站"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6204
-#: ../src/file-manager/fm-directory-view.c:6252
-#: ../src/file-manager/fm-directory-view.c:6787
+#: ../src/file-manager/fm-directory-view.c:6196
+#: ../src/file-manager/fm-directory-view.c:6244
+#: ../src/file-manager/fm-directory-view.c:6779
 msgid "_Delete"
 msgstr "删除(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6205
+#: ../src/file-manager/fm-directory-view.c:6197
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "删除每个选中的项目，而不移动到回收站"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6208
+#: ../src/file-manager/fm-directory-view.c:6200
 msgid "Reset View to _Defaults"
 msgstr "将视图重置为默认值(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6209
+#: ../src/file-manager/fm-directory-view.c:6201
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "重置排序和缩放级别以符合该视图的首选项"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6212
+#: ../src/file-manager/fm-directory-view.c:6204
 msgid "Connect To This Server"
 msgstr "连接到此服务器"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6213
+#: ../src/file-manager/fm-directory-view.c:6205
 msgid "Make a permanent connection to this server"
 msgstr "永久连接到此服务器"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6216
+#: ../src/file-manager/fm-directory-view.c:6208
 msgid "_Mount Volume"
 msgstr "挂载卷(_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6217
+#: ../src/file-manager/fm-directory-view.c:6209
 msgid "Mount the selected volume"
 msgstr "挂载选中的卷"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6220
+#: ../src/file-manager/fm-directory-view.c:6212
 #: ../src/file-manager/fm-tree-view.c:750
 msgid "_Unmount Volume"
 msgstr "卸载文件卷(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6221
+#: ../src/file-manager/fm-directory-view.c:6213
 msgid "Unmount the selected volume"
 msgstr "卸载选中的文件卷"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6224
+#: ../src/file-manager/fm-directory-view.c:6216
 msgid "_Eject"
 msgstr "弹出(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6225
+#: ../src/file-manager/fm-directory-view.c:6217
 msgid "Eject the selected volume"
 msgstr "弹出选中的卷"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6228
+#: ../src/file-manager/fm-directory-view.c:6220
 msgid "Open File and Close window"
 msgstr "打开文件并关闭窗口"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6235
+#: ../src/file-manager/fm-directory-view.c:6227
 msgid "Open this folder in a navigation window"
 msgstr "在导航窗口中打开此文件夹"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6232
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "准备将此文件夹用粘贴命令移动"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6244
+#: ../src/file-manager/fm-directory-view.c:6236
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "准备将此文件夹用粘贴命令复制"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6249
+#: ../src/file-manager/fm-directory-view.c:6241
 msgid "Move this folder to the Trash"
 msgstr "将此文件夹移动到回收站"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6253
+#: ../src/file-manager/fm-directory-view.c:6245
 msgid "Delete this folder, without moving to the Trash"
 msgstr "删除此文件夹，而不移动到回收站"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6259
+#: ../src/file-manager/fm-directory-view.c:6251
 msgid "Show _Hidden Files"
 msgstr "显示隐藏文件(_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6260
+#: ../src/file-manager/fm-directory-view.c:6252
 msgid "Toggle the display of hidden files in the current window"
 msgstr "切换当前窗口中是否显示隐藏文件"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6309
+#: ../src/file-manager/fm-directory-view.c:6301
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "在 %s 中运行或管理脚本"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6311
+#: ../src/file-manager/fm-directory-view.c:6303
 msgid "_Scripts"
 msgstr "脚本(_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6581
-#: ../src/file-manager/fm-directory-view.c:6736
+#: ../src/file-manager/fm-directory-view.c:6573
+#: ../src/file-manager/fm-directory-view.c:6728
 #: ../src/file-manager/fm-tree-view.c:1116
 msgid "Open in New Window"
 msgstr "在新窗口中打开"
 
-#: ../src/file-manager/fm-directory-view.c:6583
-#: ../src/file-manager/fm-directory-view.c:6744
+#: ../src/file-manager/fm-directory-view.c:6575
+#: ../src/file-manager/fm-directory-view.c:6736
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "浏览文件夹(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:6600
-#: ../src/file-manager/fm-directory-view.c:6764
+#: ../src/file-manager/fm-directory-view.c:6592
+#: ../src/file-manager/fm-directory-view.c:6756
 msgid "_Delete from Trash"
 msgstr "从回收站中删除(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:6601
+#: ../src/file-manager/fm-directory-view.c:6593
 msgid "Delete the open folder permanently"
 msgstr "永久删除打开的文件夹"
 
-#: ../src/file-manager/fm-directory-view.c:6605
+#: ../src/file-manager/fm-directory-view.c:6597
 msgid "Move the open folder to the Trash"
 msgstr "将打开的文件夹移动到回收站"
 
-#: ../src/file-manager/fm-directory-view.c:6716
+#: ../src/file-manager/fm-directory-view.c:6708
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "用“%s”打开(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:6738
+#: ../src/file-manager/fm-directory-view.c:6730
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "在 %d 个新窗口中打开"
 
-#: ../src/file-manager/fm-directory-view.c:6765
+#: ../src/file-manager/fm-directory-view.c:6757
 msgid "Delete all selected items permanently"
 msgstr "永久删除所有选中的项目"
 
-#: ../src/file-manager/fm-directory-view.c:7104
+#: ../src/file-manager/fm-directory-view.c:7096
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "链接已经损坏。您要将该链接移动到回收站中吗？"
 
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7098
 msgid "This link can't be used, because it has no target."
 msgstr "无法使用此链接，因为它没有目标。"
 
-#: ../src/file-manager/fm-directory-view.c:7108
+#: ../src/file-manager/fm-directory-view.c:7100
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "无法使用此链接，因为其目标“%s”不存在。"
 
-#: ../src/file-manager/fm-directory-view.c:7113
+#: ../src/file-manager/fm-directory-view.c:7105
 msgid "Broken Link"
 msgstr "错误链接"
 
-#: ../src/file-manager/fm-directory-view.c:7433
+#: ../src/file-manager/fm-directory-view.c:7425
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "打开“%s”。"
 
-#: ../src/file-manager/fm-directory-view.c:7440
+#: ../src/file-manager/fm-directory-view.c:7432
 msgid "Cancel Open?"
 msgstr "取消打开？"
 
-#: ../src/file-manager/fm-directory-view.c:8324
+#: ../src/file-manager/fm-directory-view.c:8316
 msgid "Download location?"
 msgstr "下载位置吗？"
 
-#: ../src/file-manager/fm-directory-view.c:8327
+#: ../src/file-manager/fm-directory-view.c:8319
 msgid "You can download it or make a link to it."
 msgstr "您可以下载该位置或者创建指向它的链接。"
 
-#: ../src/file-manager/fm-directory-view.c:8330
+#: ../src/file-manager/fm-directory-view.c:8322
 msgid "Make a _Link"
 msgstr "创建链接(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:8334
+#: ../src/file-manager/fm-directory-view.c:8326
 msgid "_Download"
 msgstr "下载(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8393
-#: ../src/file-manager/fm-directory-view.c:8446
-#: ../src/file-manager/fm-directory-view.c:8544
+#: ../src/file-manager/fm-directory-view.c:8385
+#: ../src/file-manager/fm-directory-view.c:8438
+#: ../src/file-manager/fm-directory-view.c:8536
 msgid "Drag and drop is not supported."
 msgstr "不支持拖放操作。"
 
-#: ../src/file-manager/fm-directory-view.c:8394
+#: ../src/file-manager/fm-directory-view.c:8386
 msgid "Drag and drop is only supported on local file systems."
 msgstr "拖放操作只能在本地文件系统中进行。"
 
-#: ../src/file-manager/fm-directory-view.c:8395
-#: ../src/file-manager/fm-directory-view.c:8448
-#: ../src/file-manager/fm-directory-view.c:8546
+#: ../src/file-manager/fm-directory-view.c:8387
+#: ../src/file-manager/fm-directory-view.c:8440
+#: ../src/file-manager/fm-directory-view.c:8538
 msgid "Drag and Drop Error"
 msgstr "拖放错误"
 
-#: ../src/file-manager/fm-directory-view.c:8447
-#: ../src/file-manager/fm-directory-view.c:8545
+#: ../src/file-manager/fm-directory-view.c:8439
+#: ../src/file-manager/fm-directory-view.c:8537
 msgid "An invalid drag type was used."
 msgstr "使用了无效的拖放类型。"
 
@@ -3788,46 +3789,46 @@ msgstr "(空)"
 msgid "Loading..."
 msgstr "正在载入..."
 
-#: ../src/file-manager/fm-list-view.c:1960
+#: ../src/file-manager/fm-list-view.c:1985
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s 可见列"
 
-#: ../src/file-manager/fm-list-view.c:1979
+#: ../src/file-manager/fm-list-view.c:2004
 msgid "Choose the order of information to appear in this folder."
 msgstr "为此文件夹中要显示的信息选择顺序。"
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2021
+#: ../src/file-manager/fm-list-view.c:2046
 msgid "Visible _Columns..."
 msgstr "可见列(_C)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2022
+#: ../src/file-manager/fm-list-view.c:2047
 msgid "Select the columns visible in this folder"
 msgstr "选择此文件夹中的可见列"
 
-#: ../src/file-manager/fm-list-view.c:2704
+#: ../src/file-manager/fm-list-view.c:2729
 msgid "List"
 msgstr "列表"
 
-#: ../src/file-manager/fm-list-view.c:2705
+#: ../src/file-manager/fm-list-view.c:2730
 msgid "View as List"
 msgstr "以列表视图查看"
 
-#: ../src/file-manager/fm-list-view.c:2706
+#: ../src/file-manager/fm-list-view.c:2731
 msgid "View as _List"
 msgstr "以列表视图查看(_L)"
 
-#: ../src/file-manager/fm-list-view.c:2707
+#: ../src/file-manager/fm-list-view.c:2732
 msgid "The list view encountered an error."
 msgstr "列表视图遇到了错误。"
 
-#: ../src/file-manager/fm-list-view.c:2708
+#: ../src/file-manager/fm-list-view.c:2733
 msgid "The list view encountered an error while starting up."
 msgstr "列表视图在启动时遇到错误。"
 
-#: ../src/file-manager/fm-list-view.c:2709
+#: ../src/file-manager/fm-list-view.c:2734
 msgid "Display this location with the list view."
 msgstr "用列表视图显示该位置。"
 
@@ -4973,7 +4974,7 @@ msgid "File Manager"
 msgstr "文件管理器"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:324
+#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:330
 #: ../src/nautilus-window-menus.c:444 ../src/nautilus-window.c:149
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5067,7 +5068,7 @@ msgstr "位置(_L)..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:425
-#: ../src/nautilus-spatial-window.c:724
+#: ../src/nautilus-spatial-window.c:730
 msgid "Specify a location to open"
 msgstr "指定要打开的位置"
 
@@ -5081,24 +5082,24 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "清除“转到”菜单和“前进”或“后退”列表中的内容"
 
 #: ../src/nautilus-navigation-window-menus.c:430
-#: ../src/nautilus-spatial-window.c:732
+#: ../src/nautilus-spatial-window.c:738
 msgid "_Add Bookmark"
 msgstr "添加书签(_A)"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:431
-#: ../src/nautilus-spatial-window.c:733
+#: ../src/nautilus-spatial-window.c:739
 msgid "Add a bookmark for the current location to this menu"
 msgstr "在该菜单中添加一个当前位置的书签"
 
 #: ../src/nautilus-navigation-window-menus.c:433
-#: ../src/nautilus-spatial-window.c:735
+#: ../src/nautilus-spatial-window.c:741
 msgid "_Edit Bookmarks"
 msgstr "编辑书签(_E)"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:434
-#: ../src/nautilus-spatial-window.c:736
+#: ../src/nautilus-spatial-window.c:742
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "显示能够编辑该菜单中的书签的窗口"
 
@@ -5169,7 +5170,7 @@ msgstr "转到下一个访问过的位置"
 msgid "Forward history"
 msgstr "前进历史"
 
-#: ../src/nautilus-navigation-window.c:779
+#: ../src/nautilus-navigation-window.c:793
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - 文件浏览器"
@@ -5398,30 +5399,30 @@ msgstr "删除徽标(_R)..."
 msgid "Close the side pane"
 msgstr "关闭侧栏"
 
-#: ../src/nautilus-spatial-window.c:722
+#: ../src/nautilus-spatial-window.c:728
 msgid "_Places"
 msgstr "位置(_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:723
+#: ../src/nautilus-spatial-window.c:729
 msgid "Open _Location..."
 msgstr "打开位置(_L)..."
 
-#: ../src/nautilus-spatial-window.c:726
+#: ../src/nautilus-spatial-window.c:732
 msgid "Close P_arent Folders"
 msgstr "关闭父文件夹(_A)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:727
+#: ../src/nautilus-spatial-window.c:733
 msgid "Close this folder's parents"
 msgstr "关闭此文件夹的父文件夹"
 
-#: ../src/nautilus-spatial-window.c:729
+#: ../src/nautilus-spatial-window.c:735
 msgid "Clos_e All Folders"
 msgstr "关闭全部文件夹(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:730
+#: ../src/nautilus-spatial-window.c:736
 msgid "Close all folder windows"
 msgstr "关闭全部文件夹窗口"
 
