@@ -29,6 +29,7 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-window.h"
 #include "nautilus-navigation-window.h"
+#include "nautilus-spatial-window.h"
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
@@ -65,6 +66,8 @@ static int		     row_deleted_signal_id;
 static int                   row_activated_signal_id;
 static int                   key_pressed_signal_id;
 static int                   jump_button_signal_id;
+static NautilusApplication  *application;
+static gboolean              parent_is_browser_window;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -111,7 +114,6 @@ static void     on_window_destroy_event                     (GtkWidget          
 static void     repopulate                                  (void);
 static void     set_up_close_accelerator                    (GtkWidget            *window);
 static void	open_selected_bookmark 			    (gpointer   user_data, GdkScreen *screen);
-static NautilusWindow * get_bookmark_nautilus_navigation_window_new (GdkScreen *screen);
 
 /* We store a pointer to the bookmark in a column so when an item is moved
    with DnD we know which item it is. However we have to be careful to keep
@@ -259,6 +261,14 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 				  NULL);
 	if (!gui) {
 		return NULL;
+	}
+
+	application = NAUTILUS_WINDOW (undo_manager_source)->application;
+
+	if (NAUTILUS_IS_NAVIGATION_WINDOW (undo_manager_source)) {
+		parent_is_browser_window = TRUE;
+	} else {
+		parent_is_browser_window = FALSE;
 	}
 
 	set_up_close_accelerator (window);
@@ -535,60 +545,48 @@ on_name_field_changed (GtkEditable *editable,
 }
 
 static void
-go_to_selected_bookmark (NautilusWindow *window)
-{
-        NautilusBookmark *selected;
-        char *uri = NULL;
-
-        selected = get_selected_bookmark ();
-
-        if (selected) {
-                uri = nautilus_bookmark_get_uri (selected);
-                nautilus_window_go_to (window, uri);
-                g_free (uri);
-        }
-}
-
-static NautilusWindow *
-get_bookmark_nautilus_navigation_window_new (GdkScreen *screen)
-{
-	NautilusApplication *application;
-	NautilusWindow *window;
-
-	application = nautilus_application_new ();
-
-	window = nautilus_application_create_navigation_window (application, 
-								NULL,
-								screen);
-
-	return window;
-}
-
-static void
 open_selected_bookmark (gpointer user_data, GdkScreen *screen)
 {
+	NautilusBookmark *selected;
+	NautilusWindow *window;
+	char *uri = NULL;
+	
+	selected = get_selected_bookmark ();
 
-	if (GTK_IS_WIDGET (user_data) && NAUTILUS_IS_NAVIGATION_WINDOW (user_data)) {
-		go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
-	} else {
-		/* Independent bookmarks window. If parent NautilusWindow is destroyed, then
-		 * open the bookmark location in a new nautilus window
-		 */
-		NautilusBookmark *selected;
-		NautilusWindow *window;
-		char *uri = NULL;
+	if (!selected) {
+		return;
+	}
 
-		selected = get_selected_bookmark ();
+	uri = nautilus_bookmark_get_uri (selected);
 
-		if (selected) {
-			window = get_bookmark_nautilus_navigation_window_new (screen);
-			uri = nautilus_bookmark_get_uri (selected);
-			if (uri) {
-				nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
-				g_free (uri);
-			}
+	if (!uri) { 
+		return;
+	}
+
+	if (NAUTILUS_IS_NAVIGATION_WINDOW (user_data)) {
+		nautilus_window_go_to (NAUTILUS_WINDOW (user_data), uri);
+	} else if (NAUTILUS_IS_SPATIAL_WINDOW (user_data)) {
+		window = nautilus_application_present_spatial_window (application, 
+								      NULL,
+								      NULL,
+								      uri,
+								      screen);
+	} else { /* window that opened bookmarks window has been closed */
+		if (parent_is_browser_window || eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			window = nautilus_application_create_navigation_window (application, 
+										NULL,
+										screen);
+			nautilus_window_go_to (window, uri);
+		} else {
+			window = nautilus_application_present_spatial_window (application, 
+									      NULL,
+									      NULL,
+									      uri,
+									      screen);
 		}
 	}
+
+	g_free (uri);
 }
 
 static void
