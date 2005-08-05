@@ -105,6 +105,8 @@ enum {
 
 enum {
 	GO_UP,
+	RELOAD,
+	PROMPT_FOR_LOCATION,
 	LAST_SIGNAL
 };
 
@@ -1492,11 +1494,32 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      g_signal_accumulator_true_handled, NULL,
 			      eel_marshal_BOOLEAN__BOOLEAN,
 			      G_TYPE_BOOLEAN, 1, G_TYPE_BOOLEAN);
+	signals[RELOAD] =
+		g_signal_new ("reload",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (NautilusWindowClass, reload),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+	signals[PROMPT_FOR_LOCATION] =
+		g_signal_new ("prompt-for-location",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (NautilusWindowClass, prompt_for_location),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 	
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, 0,
 				      "go_up", 1,
 				      G_TYPE_BOOLEAN, FALSE);
+	gtk_binding_entry_add_signal (binding_set, GDK_F5, 0,
+				      "reload", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_d, GDK_MOD1_MASK,
+				      "prompt-for-location", 0);
 
+	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
 }
