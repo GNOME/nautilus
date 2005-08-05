@@ -1505,7 +1505,6 @@ element_clicked_callback (GtkWidget *image_table,
 	GdkPixbuf *pixbuf;
 	int x_delta, y_delta;
 	const char *element_name;
-	int scroll_offset_x, scroll_offset_y;
 	GdkDragAction action;
 
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
@@ -1555,19 +1554,15 @@ element_clicked_callback (GtkWidget *image_table,
 		}
 		pixbuf = make_drag_image (property_browser, element_name);
 		property_browser->details->category = save_category;
-		x_delta = gdk_pixbuf_get_width (pixbuf) / 2;
-		y_delta = gdk_pixbuf_get_height (pixbuf) / 2;
 	} else {
 		pixbuf = make_color_drag_image (property_browser, element_name, TRUE);
-		gdk_window_get_position (GTK_VIEWPORT (image_table->parent)->bin_window,
-					 &scroll_offset_x,
-					 &scroll_offset_y);
-		x_delta = event->x - child->allocation.x - scroll_offset_x;
-		y_delta = event->y - child->allocation.y - scroll_offset_y;
 	}
 
         /* set the pixmap and mask for dragging */       
 	if (pixbuf != NULL) {
+		x_delta = gdk_pixbuf_get_width (pixbuf) / 2;
+		y_delta = gdk_pixbuf_get_height (pixbuf) / 2;
+
 		gtk_drag_set_icon_pixbuf
 			(context,
 			 pixbuf,
