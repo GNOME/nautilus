@@ -174,6 +174,8 @@ static void     nautilus_property_browser_hide_callback         (GtkWidget      
 								 gpointer                       user_data);
 static void     nautilus_property_browser_drag_end              (GtkWidget                     *widget,
 								 GdkDragContext                *context);
+static void     nautilus_property_browser_drag_begin            (GtkWidget                     *widget,
+								 GdkDragContext                *context);
 static void     nautilus_property_browser_drag_data_get         (GtkWidget                     *widget,
 								 GdkDragContext                *context,
 								 GtkSelectionData              *selection_data,
@@ -190,6 +192,12 @@ static void     element_clicked_callback                        (GtkWidget      
 								 GtkWidget                     *child,
 								 const EelImageTableEvent *event,
 								 gpointer                       callback_data);
+
+static GdkPixbuf * make_drag_image                              (NautilusPropertyBrowser       *property_browser,
+								 const char                    *file_name);
+static GdkPixbuf * make_color_drag_image                        (NautilusPropertyBrowser       *property_browser,
+								 const char                    *color_spec,
+								 gboolean                       trim_edges);
 
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
@@ -232,6 +240,7 @@ nautilus_property_browser_class_init (GtkObjectClass *object_klass)
 	klass = NAUTILUS_PROPERTY_BROWSER_CLASS (object_klass);
 
 	object_klass->destroy = nautilus_property_browser_destroy;
+	widget_class->drag_begin = nautilus_property_browser_drag_begin;
 	widget_class->drag_data_get  = nautilus_property_browser_drag_data_get;
 	widget_class->drag_end  = nautilus_property_browser_drag_end;
 }
@@ -560,6 +569,53 @@ nautilus_property_browser_set_drag_type (NautilusPropertyBrowser *property_brows
 	g_free (property_browser->details->drag_type);
 	property_browser->details->drag_type = g_strdup (new_drag_type);
 }
+
+static void
+nautilus_property_browser_drag_begin (GtkWidget *widget,
+				      GdkDragContext *context)
+{
+	NautilusPropertyBrowser *property_browser;
+	GtkWidget *child;
+	GdkPixbuf *pixbuf;
+	int x_delta, y_delta;
+	char *element_name;
+
+	property_browser = NAUTILUS_PROPERTY_BROWSER (widget);
+
+	child = g_object_steal_data (G_OBJECT (property_browser), "dragged-image");
+	g_return_if_fail (child != NULL);
+
+	element_name = g_object_get_data (G_OBJECT (child), "property-name");
+	g_return_if_fail (child != NULL);
+
+	/* compute the offsets for dragging */
+	if (strcmp (drag_types[0].target, "application/x-color") != 0) {
+		/* it's not a color, so, for now, it must be an image */
+		/* fiddle with the category to handle the "reset" case properly */
+		char * save_category = property_browser->details->category;
+		if (eel_strcmp (property_browser->details->category, "colors") == 0) {
+			property_browser->details->category = "patterns";
+		}
+		pixbuf = make_drag_image (property_browser, element_name);
+		property_browser->details->category = save_category;
+	} else {
+		pixbuf = make_color_drag_image (property_browser, element_name, TRUE);
+	}
+
+        /* set the pixmap and mask for dragging */       
+	if (pixbuf != NULL) {
+		x_delta = gdk_pixbuf_get_width (pixbuf) / 2;
+		y_delta = gdk_pixbuf_get_height (pixbuf) / 2;
+
+		gtk_drag_set_icon_pixbuf
+			(context,
+			 pixbuf,
+			 x_delta, y_delta);
+		g_object_unref (pixbuf);
+	}
+
+}
+
 
 /* drag and drop data get handler */
 
@@ -1502,8 +1558,6 @@ element_clicked_callback (GtkWidget *image_table,
 	NautilusPropertyBrowser *property_browser;
 	GtkTargetList *target_list;	
 	GdkDragContext *context;
-	GdkPixbuf *pixbuf;
-	int x_delta, y_delta;
 	const char *element_name;
 	GdkDragAction action;
 
@@ -1536,6 +1590,8 @@ element_clicked_callback (GtkWidget *image_table,
 	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
 	action = event->button == 3 ? GDK_ACTION_ASK : GDK_ACTION_MOVE | GDK_ACTION_COPY;
+
+	g_object_set_data (G_OBJECT (property_browser), "dragged-image", child);
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
 				  target_list,
@@ -1543,33 +1599,7 @@ element_clicked_callback (GtkWidget *image_table,
 				  event->button,
 				  event->event);
 	gtk_target_list_unref (target_list);
-	
-	/* compute the offsets for dragging */
-	if (strcmp (drag_types[0].target, "application/x-color")) {
-		/* it's not a color, so, for now, it must be an image */
-		/* fiddle with the category to handle the "reset" case properly */
-		char * save_category = property_browser->details->category;
-		if (eel_strcmp (property_browser->details->category, "colors") == 0) {
-			property_browser->details->category = "patterns";
-		}
-		pixbuf = make_drag_image (property_browser, element_name);
-		property_browser->details->category = save_category;
-	} else {
-		pixbuf = make_color_drag_image (property_browser, element_name, TRUE);
-	}
 
-        /* set the pixmap and mask for dragging */       
-	if (pixbuf != NULL) {
-		x_delta = gdk_pixbuf_get_width (pixbuf) / 2;
-		y_delta = gdk_pixbuf_get_height (pixbuf) / 2;
-
-		gtk_drag_set_icon_pixbuf
-			(context,
-			 pixbuf,
-			 x_delta, y_delta);
-		g_object_unref (pixbuf);
-	}
-	
 	/* optionally (if the shift key is down) hide the property browser - it will later be destroyed when the drag ends */	
 	property_browser->details->keep_around = (event->state & GDK_SHIFT_MASK) == 0;
 	if (! property_browser->details->keep_around) {

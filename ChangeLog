@@ -1,5 +1,14 @@
 2005-08-08  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_class_init),
+	(nautilus_property_browser_drag_begin), (element_clicked_callback):
+	Fix emblem drag icon in "Emblems & Background" dialog. (#311381)
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-08-08  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-operations.c
 	(nautilus_file_operations_copy_move):
 	Allow moving files within the burn location. Fixes #312085.
