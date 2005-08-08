@@ -1793,6 +1793,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean target_is_trash;
 	gboolean duplicate;
 	gboolean target_is_mapping;
+	gboolean have_nonmapping_source;
 	gboolean have_nonlocal_source;
 	
 	IconPositionIterator *icon_position_iterator;
@@ -1826,6 +1827,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = NULL;
 	target_uri_list = NULL;
 	have_nonlocal_source = FALSE;
+	have_nonmapping_source = FALSE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1845,6 +1847,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		
 		if (strcmp (source_uri->method_string, "file") != 0) {
 			have_nonlocal_source = TRUE;
+		}
+
+		if (strcmp (source_uri->method_string, "burn") != 0) {
+			have_nonmapping_source = TRUE;
 		}
 			
 		/* Note: this could be null if we're e.g. copying the top level file of a web site */
@@ -1911,10 +1917,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = g_list_reverse (source_uri_list);
 	target_uri_list = g_list_reverse (target_uri_list);
 
-	if (target_is_mapping && !have_nonlocal_source && (copy_action == GDK_ACTION_COPY || copy_action == GDK_ACTION_MOVE)) {
+	if (target_is_mapping && have_nonmapping_source && !have_nonlocal_source && (copy_action == GDK_ACTION_COPY || copy_action == GDK_ACTION_MOVE)) {
 		copy_action = GDK_ACTION_LINK;
 	}
-	if (copy_action == GDK_ACTION_MOVE && !target_is_mapping) {
+	if (copy_action == GDK_ACTION_MOVE && (!target_is_mapping || !have_nonmapping_source)) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	} else if (copy_action == GDK_ACTION_LINK) {
 		move_options |= GNOME_VFS_XFER_LINK_ITEMS;
