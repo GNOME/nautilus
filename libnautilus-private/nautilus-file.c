@@ -810,6 +810,22 @@ nautilus_file_can_execute (NautilusFile *file)
 }
 
 static gboolean
+file_is_desktop (NautilusFile *file)
+{
+	GnomeVFSURI *dir_vfs_uri;
+
+	dir_vfs_uri = file->details->directory->details->vfs_uri;
+
+	if (dir_vfs_uri == NULL ||
+	    strcmp (dir_vfs_uri->method_string, "file") != 0) {
+		return FALSE;
+	}
+
+	return nautilus_is_desktop_directory_file_escaped (dir_vfs_uri->text,
+							   file->details->relative_uri);
+}
+
+static gboolean
 is_desktop_file (NautilusFile *file)
 {
 	return nautilus_file_is_mime_type (file, "application/x-desktop");
@@ -859,7 +875,7 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
-	if (is_desktop_file (file) && !can_rename_desktop_file (file)) {
+	if ((is_desktop_file (file) && !can_rename_desktop_file (file)) || file_is_desktop (file)) {
 		return FALSE;
 	}
 	
@@ -1876,22 +1892,6 @@ file_has_note (NautilusFile *file)
 	g_free (note);
 
 	return res;
-}
-
-static gboolean
-file_is_desktop (NautilusFile *file)
-{
-	GnomeVFSURI *dir_vfs_uri;
-
-	dir_vfs_uri = file->details->directory->details->vfs_uri;
-
-	if (dir_vfs_uri == NULL ||
-	    strcmp (dir_vfs_uri->method_string, "file") != 0) {
-		return FALSE;
-	}
-
-	return nautilus_is_desktop_directory_file_escaped (dir_vfs_uri->text,
-							   file->details->relative_uri);
 }
 
 static GList *
