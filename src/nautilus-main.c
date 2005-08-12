@@ -44,6 +44,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkiconfactory.h>
 #include <gtk/gtksignal.h>
+#include <gdk/gdk.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-ui-init.h>
@@ -324,6 +325,8 @@ main (int argc, char *argv[])
 
 	g_set_application_name (_("File Manager"));
 	
+	g_thread_init (NULL);
+	gdk_threads_init ();
 	program = gnome_program_init ("nautilus", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      GNOME_PROGRAM_STANDARD_PROPERTIES,
