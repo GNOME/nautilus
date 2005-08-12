@@ -600,7 +600,7 @@ on_jump_button_clicked (GtkButton *button,
 }
 
 static void
-bookmarks_delete_bookmark ()
+bookmarks_delete_bookmark (void)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;

@@ -1736,8 +1736,8 @@ fm_tree_model_iter_get_file (FMTreeModel *model, GtkTreeIter *iter)
 {
 	TreeNode *node;
 
-	g_return_val_if_fail (FM_IS_TREE_MODEL (model), 0);
-	g_return_val_if_fail (iter_is_valid (FM_TREE_MODEL (model), iter), 0);
+	g_return_val_if_fail (FM_IS_TREE_MODEL (model), NULL);
+	g_return_val_if_fail (iter_is_valid (FM_TREE_MODEL (model), iter), NULL);
 
 	node = iter->user_data;
 	return node == NULL ? NULL : nautilus_file_ref (node->file);

@@ -1223,7 +1223,7 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
 static GtkWidget * 
 fm_icon_view_get_background_widget (FMDirectoryView *view) 
 {
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
 
 	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
 }

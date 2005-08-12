@@ -264,8 +264,8 @@ nautilus_metafile_get (const char *directory_uri)
  * We may want to consider limiting writes as well.
  */
 
-int num_reads_in_progress;
-GList *pending_reads;
+static int num_reads_in_progress;
+static GList *pending_reads;
 
 #if 0
 #define DEBUG_METADATA_IO

@@ -1,3 +1,36 @@
+2005-08-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	Lots of cleanups. Closes bug #313094 and bug #149714
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_file_background_write_desktop_default_settings):
+	ANSIfication
+	* libnautilus-private/nautilus-file.c: Mark some variables
+	static.
+	* libnautilus-private/nautilus-icon-container.c: 
+	(nautilus_icon_container_get_selection): Return NULL not
+	FALSE.
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_thumbnail_factory): ANSIfication
+	* libnautilus-private/nautilus-metafile.c: Static variables
+	* libnautilus-private/nautilus-program-choosing.c:
+	(slowly_and_stupidly_obtain_timestamp): Sparse fix
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_background_widget): FALSE vs NULL
+	* src/file-manager/fm-list-view.c: (filename_cell_data_func):
+	Plug a leak. Bug #313094.
+	* src/file-manager/fm-tree-model.c: (fm_tree_model_iter_get_file):
+	NULL vs 0.
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_get_file_path),
+	(nautilus_bookmark_list_load_file): ANSIfication
+	* src/nautilus-bookmarks-window.c: (bookmarks_delete_bookmark):
+	ANSIfication
+	* src/nautilus-main.c: (slowly_and_stupidly_obtain_timestamp):
+	NULL vs 0.
+	* src/nautilus-self-check-functions.c: (nautilus_run_self_checks):
+	ANSIfication
+
 2005-08-09  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

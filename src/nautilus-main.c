@@ -216,7 +216,7 @@ slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
 				       0,
 				       CopyFromParent,
 				       CopyFromParent,
-				       CopyFromParent,
+				       (Visual *)CopyFromParent,
 				       CWOverrideRedirect | CWEventMask,
 				       &attrs);
 		

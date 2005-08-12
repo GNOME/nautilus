@@ -248,7 +248,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 }
 
 static void
-nautilus_file_background_write_desktop_default_settings ()
+nautilus_file_background_write_desktop_default_settings (void)
 {
 	/* We just unset all the gconf keys so they go back to
 	 * defaults

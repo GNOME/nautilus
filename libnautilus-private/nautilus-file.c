@@ -2918,7 +2918,7 @@ nautilus_file_get_where_string (NautilusFile *file)
 		 get_where_string, (file));
 }
 
-const char *TODAY_TIME_FORMATS [] = {
+static const char *TODAY_TIME_FORMATS [] = {
 	/* Today, use special word.
 	 * strftime patterns preceeded with the widest
 	 * possible resulting string for that pattern.
@@ -2949,7 +2949,7 @@ const char *TODAY_TIME_FORMATS [] = {
 	NULL
 };
 
-const char *YESTERDAY_TIME_FORMATS [] = {
+static const char *YESTERDAY_TIME_FORMATS [] = {
 	/* Yesterday, use special word.
 	 * Note to localizers: Same issues as "today" string.
 	 */
@@ -2968,7 +2968,7 @@ const char *YESTERDAY_TIME_FORMATS [] = {
 	NULL
 };
 
-const char *CURRENT_WEEK_TIME_FORMATS [] = {
+static const char *CURRENT_WEEK_TIME_FORMATS [] = {
 	/* Current week, include day of week.
 	 * Note to localizers: Same issues as "today" string.
 	 * The width measurement templates correspond to

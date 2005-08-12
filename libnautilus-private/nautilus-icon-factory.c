@@ -270,7 +270,7 @@ nautilus_icon_factory_get_icon_theme (void)
 }
 
 GnomeThumbnailFactory *
-nautilus_icon_factory_get_thumbnail_factory ()
+nautilus_icon_factory_get_thumbnail_factory (void)
 {
 	NautilusIconFactory *factory;
 

@@ -1293,6 +1293,7 @@ filename_cell_data_func (GtkTreeViewColumn *column,
 		      "text", text,
 		      "underline", underline,
 		      NULL);
+	g_free (text);
 }
 
 static void

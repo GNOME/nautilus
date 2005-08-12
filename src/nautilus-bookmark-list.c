@@ -123,7 +123,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
 }
 
 static char *
-nautilus_bookmark_list_get_file_path ()
+nautilus_bookmark_list_get_file_path (void)
 {
 	char *file_path;
 	file_path = g_build_filename (g_get_home_dir (),
@@ -449,6 +449,7 @@ static void
 nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
 	char *filename, *contents;
+	GError **error = NULL;
 
 	filename = nautilus_bookmark_list_get_file_path ();
 
@@ -462,7 +463,6 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	}
 
 	/* Read new list from file */
-	GError **error = NULL;
 	if (g_file_get_contents (filename, &contents, NULL, error)) {
         	char **lines;
       		int i;

@@ -5402,7 +5402,7 @@ nautilus_icon_container_get_selection (NautilusIconContainer *container)
 {
 	GList *list, *p;
 
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
 
 	list = NULL;
 	for (p = container->details->icons; p != NULL; p = p->next) {
