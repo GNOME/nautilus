@@ -1,3 +1,9 @@
+2005-08-12  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-properties-window.c: (create_image_widget),
+	(create_basic_page): Don't make icon drop target for images if
+	should_show_custom_icon_buttons is FALSE. Fixes #312967.
+
 2005-08-12  Raffaele Sandrini  <rasa@gmx.ch>
 
 	* src/nautilus-main.c:

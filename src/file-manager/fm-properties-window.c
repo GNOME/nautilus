@@ -538,7 +538,8 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 }
 
 static GtkWidget *
-create_image_widget (FMPropertiesWindow *window)
+create_image_widget (FMPropertiesWindow *window,
+		     gboolean is_drag_dest)
 {
  	GtkWidget *image;
 	GdkPixbuf *pixbuf;
@@ -548,14 +549,16 @@ create_image_widget (FMPropertiesWindow *window)
 	image = gtk_image_new ();
 	window->details->icon_image = image;
 
-	/* prepare the image to receive dropped objects to assign custom images */
-	gtk_drag_dest_set (GTK_WIDGET (image),
-			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   target_table, G_N_ELEMENTS (target_table),
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	if (is_drag_dest) {
+		/* prepare the image to receive dropped objects to assign custom images */
+		gtk_drag_dest_set (GTK_WIDGET (image),
+				   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
+				   target_table, G_N_ELEMENTS (target_table),
+				   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
-	g_signal_connect (image, "drag_data_received",
-			  G_CALLBACK (fm_properties_window_drag_data_received), NULL);
+		g_signal_connect (image, "drag_data_received",
+				  G_CALLBACK (fm_properties_window_drag_data_received), NULL);
+	}
 
 	gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
 
@@ -2340,7 +2343,8 @@ create_basic_page (FMPropertiesWindow *window)
 			  0, 0,
 			  0, 0);
 
-	icon_pixmap_widget = create_image_widget (window);
+	icon_pixmap_widget = create_image_widget (
+		window, should_show_custom_icon_buttons (window));
 	gtk_widget_show (icon_pixmap_widget);
 	
 	icon_aligner = gtk_alignment_new (1, 0.5, 0, 0);
