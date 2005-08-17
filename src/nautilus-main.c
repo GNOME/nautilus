@@ -325,8 +325,6 @@ main (int argc, char *argv[])
 
 	g_set_application_name (_("File Manager"));
 	
-	g_thread_init (NULL);
-	gdk_threads_init ();
 	program = gnome_program_init ("nautilus", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      GNOME_PROGRAM_STANDARD_PROPERTIES,
