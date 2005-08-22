@@ -31,6 +31,29 @@
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <string.h>
 
+static GList*
+filter_nautilus_handler (GList *apps)
+{
+	GList *l, *next;
+	GnomeVFSMimeApplication *application;
+
+	l = apps;
+	while (l != NULL) {
+		application = (GnomeVFSMimeApplication *) l->data;
+		next = l->next;
+
+		if (strcmp (gnome_vfs_mime_application_get_desktop_id (application),
+			   "nautilus-folder-handler.desktop") == 0) {
+			gnome_vfs_mime_application_free (application);
+			apps = g_list_delete_link (apps, l); 
+		}
+
+		l = next;
+	}
+
+	return apps;
+}
+
 static gboolean
 nautilus_mime_actions_check_if_minimum_attributes_ready (NautilusFile *file)
 {
@@ -138,7 +161,7 @@ get_open_with_mime_applications (NautilusFile *file)
 	g_free (uri);
 	g_free (guessed_mime_type);
 	
-	return result;
+	return g_list_reverse (result);
 }
 
 /* Get a list of applications for the Open With menu.  This is 
@@ -156,20 +179,22 @@ nautilus_mime_get_open_with_applications_for_file (NautilusFile *file)
 
 	result = get_open_with_mime_applications (file);
 
-	return g_list_reverse (result);
+	return filter_nautilus_handler (result);
 }
 
 GList *
 nautilus_mime_get_applications_for_file (NautilusFile *file)
 {
 	char *mime_type;
+	GList *result;
 
 	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
 		return NULL;
 	}
 	mime_type = nautilus_file_get_mime_type (file);
+	result = gnome_vfs_mime_get_all_applications (mime_type);
 
-	return gnome_vfs_mime_get_all_applications (mime_type);
+	return filter_nautilus_handler (result);
 }
 
 gboolean
@@ -183,6 +208,7 @@ nautilus_mime_has_any_applications_for_file (NautilusFile *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	apps = gnome_vfs_mime_get_all_applications_for_uri (uri, mime_type);
+	apps = filter_nautilus_handler (apps);
 		
 	if (apps) {
 		result = TRUE;
