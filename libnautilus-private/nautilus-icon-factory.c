@@ -1340,7 +1340,6 @@ get_icon_from_cache (const char *icon,
 		
 		if (cached_icon == NULL) {
 			cached_icon = factory->fallback_icon;
-			cache_icon_ref (cached_icon);
 		}
 		
 		/* Create the key and icon for the hash table. */
