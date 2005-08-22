@@ -3228,6 +3228,41 @@ special_link_in_selection (FMDirectoryView *view)
 	return saw_link;
 }
 
+/* desktop_or_home_dir_in_selection
+ * 
+ * Return TRUE if either the desktop or the home directory is in the selection.
+ */
+ 
+static gboolean
+desktop_or_home_dir_in_selection (FMDirectoryView *view)
+{
+	gboolean saw_desktop_or_home_dir;
+	GList *selection, *node;
+	NautilusFile *file;
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	saw_desktop_or_home_dir = FALSE;
+
+	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+	for (node = selection; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (node->data);
+
+		saw_desktop_or_home_dir =
+			nautilus_file_is_home (file)
+			|| nautilus_file_is_desktop_directory (file);
+		
+		if (saw_desktop_or_home_dir) {
+			break;
+		}
+	}
+	
+	nautilus_file_list_free (selection);
+	
+	return saw_desktop_or_home_dir;
+}
+
 static gboolean
 can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 {
@@ -6564,7 +6599,11 @@ static void
 real_update_location_menu (FMDirectoryView *view)
 {
 	GtkAction *action;
+	NautilusFile *file;
+	gboolean is_special_link;
+	gboolean is_desktop_or_home_dir;
 	gboolean is_read_only;
+	gboolean can_delete_file;
 	gboolean show_separate_delete_command;
 	char *label;
 	char *tip;
@@ -6581,14 +6620,22 @@ real_update_location_menu (FMDirectoryView *view)
 		      "label", label,
 		      NULL);
 
+	file = view->details->directory_as_file;
+	is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
+	is_desktop_or_home_dir = nautilus_file_is_home (file)
+		|| nautilus_file_is_desktop_directory (file);
 	is_read_only = fm_directory_view_is_read_only (view);
+
+	can_delete_file = !is_read_only
+		&& !is_special_link
+		&& !is_desktop_or_home_dir;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_CUT);
-	gtk_action_set_sensitive (action, !is_read_only);
+	gtk_action_set_sensitive (action, can_delete_file);
 
-	if (view->details->directory_as_file != NULL &&
-	    nautilus_file_is_in_trash (view->details->directory_as_file)) {
+	if (file != NULL &&
+	    nautilus_file_is_in_trash (file)) {
 		label = _("_Delete from Trash");
 		tip = _("Delete the open folder permanently");
 		show_separate_delete_command = FALSE;
@@ -6604,13 +6651,13 @@ real_update_location_menu (FMDirectoryView *view)
 		      "label", label,
 		      "tooltip", tip,
 		      NULL);
-	gtk_action_set_sensitive (action, !is_read_only);
+	gtk_action_set_sensitive (action, can_delete_file);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_DELETE);
 	gtk_action_set_visible (action, show_separate_delete_command);
 	if (show_separate_delete_command) {
-		gtk_action_set_sensitive (action, !is_read_only);
+		gtk_action_set_sensitive (action, can_delete_file);
 	}
 
 	/* we silently assume that fm_directory_view_supports_properties always returns the same value.
@@ -6640,6 +6687,7 @@ real_update_menus (FMDirectoryView *view)
 	const char *tip, *label;
 	char *label_with_underscore;
 	gboolean selection_contains_special_link;
+	gboolean selection_contains_desktop_or_home_dir;
 	gboolean is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
@@ -6657,12 +6705,14 @@ real_update_menus (FMDirectoryView *view)
 	selection_count = g_list_length (selection);
 
 	selection_contains_special_link = special_link_in_selection (view);
+	selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (view);
 	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_create_files = fm_directory_view_supports_creating_files (view);
 	can_delete_files = !is_read_only
 		&& selection_count != 0
-		&& !selection_contains_special_link;
+		&& !selection_contains_special_link
+		&& !selection_contains_desktop_or_home_dir;
 	can_copy_files = selection_count != 0
 		&& !selection_contains_special_link;	
 

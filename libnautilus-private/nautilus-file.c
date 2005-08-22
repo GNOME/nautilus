@@ -809,8 +809,17 @@ nautilus_file_can_execute (NautilusFile *file)
 		 GNOME_VFS_PERM_OTHER_EXEC);
 }
 
-static gboolean
-file_is_desktop (NautilusFile *file)
+/**
+ * nautilus_file_is_desktop_directory:
+ * 
+ * Check whether this file is the desktop directory.
+ * 
+ * @file: The file to check.
+ * 
+ * Return value: TRUE if this is the physical desktop directory.
+ */
+gboolean
+nautilus_file_is_desktop_directory (NautilusFile *file)
 {
 	GnomeVFSURI *dir_vfs_uri;
 
@@ -875,7 +884,9 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
-	if ((is_desktop_file (file) && !can_rename_desktop_file (file)) || file_is_desktop (file)) {
+	if ((is_desktop_file (file) && !can_rename_desktop_file (file)) ||
+	     nautilus_file_is_desktop_directory (file) ||
+	     nautilus_file_is_home (file)) {
 		return FALSE;
 	}
 	
@@ -1906,7 +1917,7 @@ prepend_automatic_emblem_names (NautilusFile *file,
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
 #endif
-	if (file_is_desktop (file)) {
+	if (nautilus_file_is_desktop_directory (file)) {
 		names = g_list_prepend 
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_DESKTOP));
 	}

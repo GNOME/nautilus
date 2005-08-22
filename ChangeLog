@@ -1,5 +1,19 @@
 2005-08-22  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_is_desktop_directory), (nautilus_file_can_rename),
+	(prepend_automatic_emblem_names):
+	* libnautilus-private/nautilus-file.h:
+	* src/file-manager/fm-directory-view.c:
+	(desktop_or_home_dir_in_selection), (real_update_location_menu),
+	(real_update_menus):
+	Don't allow trashing or deleting the home or desktop folder within
+	a selection or via the location button context menu. Fixes #310414.
+
+	Based on a patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-08-22  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-mime-actions.c:
 	(filter_nautilus_handler), (get_open_with_mime_applications),
 	(nautilus_mime_get_open_with_applications_for_file),
