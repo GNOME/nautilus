@@ -1,5 +1,15 @@
 2005-08-23  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(get_drop_action), (receive_dropped_keyword),
+	(drag_data_received_callback):
+	Enable emblem dropping to the list view and allow text
+	drags on the list background. Fixes #313408.
+
+	Based on a patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-08-23  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-icon-factory.c:
 	(get_icon_from_cache):
 	Don't ref cached_icon twice. Fixes #307288.

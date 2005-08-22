@@ -82,7 +82,7 @@ static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	/* FIXME: Should handle emblems once the list view supports them */
+	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
 
@@ -387,13 +387,13 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 		return context->suggested_action;
 
 	case NAUTILUS_ICON_DND_TEXT:
-		drop_target = get_drop_target (dest, path);
+		return GDK_ACTION_COPY;
 
-		if (!drop_target) {
+	case NAUTILUS_ICON_DND_KEYWORD:
+
+		if (!path) {
 			return 0;
 		}
-
-		g_free (drop_target);
 
 		return GDK_ACTION_COPY;
 	}
@@ -626,6 +626,42 @@ receive_dropped_url (NautilusTreeViewDragDest *dest,
 		       x, y);
 }
 
+static void
+receive_dropped_keyword (NautilusTreeViewDragDest *dest,
+			 GdkDragContext *context,
+			 int x, int y)
+{
+	char *drop_target_uri;
+	GtkTreePath *path, *drop_path;
+	NautilusFile *drop_target_file;
+
+	gtk_tree_view_get_dest_row_at_pos (dest->details->tree_view, x, y, 
+					   &path, NULL);
+
+	drop_path = get_drop_path (dest, path);
+
+	drop_target_uri = get_drop_target (dest, drop_path);
+
+	drop_target_file = nautilus_file_get (drop_target_uri);
+
+	if (drop_target_file != NULL) {
+		nautilus_drag_file_receive_dropped_keyword (drop_target_file,
+							    (char *) dest->details->drag_data->data);
+		nautilus_file_unref (drop_target_file);
+	}
+
+
+	if (path) {
+		gtk_tree_path_free (path);
+	}
+
+	if (drop_path) {
+		gtk_tree_path_free (drop_path);
+	}
+
+	g_free (drop_target_uri);
+}
+
 static gboolean
 drag_data_received_callback (GtkWidget *widget,
 			     GdkDragContext *context,
@@ -669,6 +705,10 @@ drag_data_received_callback (GtkWidget *widget,
 			break;
 		case NAUTILUS_ICON_DND_TEXT:
 			receive_dropped_text (dest, context, x, y);
+			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:
+			receive_dropped_keyword (dest, context, x, y);
 			success = TRUE;
 			break;
 		}
