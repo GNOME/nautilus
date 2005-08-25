@@ -1,3 +1,11 @@
+2005-08-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-operations.[ch]:
+	* src/file-manager/fm-directory-view.c:
+	Remove usage of GNOME_VFS_XFER_REMOVESOURCE in
+	nautilus_file_operations_new_file_from_template, instead
+	manually removing source when needed. This fixes #309592.
+
 2005-08-23  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

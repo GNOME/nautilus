@@ -3773,7 +3773,6 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 							 parent_uri,
 							 NULL,
 							 source_uri,
-							 FALSE,
 							 new_folder_done, data);
 
 	g_free (parent_uri);

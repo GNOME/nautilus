@@ -61,7 +61,6 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 						      const char              *parent_dir,
 						      const char              *target_filename,
 						      const char              *template_uri,
-						      gboolean                 move_template,
 						      NautilusNewFileCallback  done_callback,
 						      gpointer                 data);
 

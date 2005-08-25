@@ -38,6 +38,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 
+#include <glib/gstdio.h>
 #include <gnome.h>
 #include <gdk/gdkdnd.h>
 #include <gtk/gtklabel.h>
@@ -2386,7 +2387,6 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 						 const char *parent_dir,
 						 const char *target_filename,
 						 const char *template_uri,
-						 gboolean move_template,
 						 NautilusNewFileCallback done_callback,
 						 gpointer data)
 {
@@ -2435,9 +2435,6 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	sync_transfer_info->debuting_uris = state->debuting_uris;
 
 	options = GNOME_VFS_XFER_USE_UNIQUE_NAMES;
-	if (move_template) {
-		options |= GNOME_VFS_XFER_REMOVESOURCE;
-	}
 
 	gnome_vfs_async_xfer (&state->handle, source_uri_list, target_uri_list,
 	      		      options,
@@ -2452,6 +2449,30 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	gnome_vfs_uri_unref (parent_uri);
 }
 
+struct NewFileData {
+	char *tmp_file;
+	NautilusNewFileCallback done_callback;
+	gpointer callback_data;
+};
+
+static void
+new_file_from_temp_callback (const char *new_file_uri,
+			     gpointer    callback_data)
+{
+	struct NewFileData *data = callback_data;
+
+	/* Remove the template file
+	 * Gnome-vfs can do this, but it caused problem, see bug #309592
+	 */
+	g_remove (data->tmp_file);
+	g_free (data->tmp_file);
+	
+	(data->done_callback) (new_file_uri, data->callback_data);
+
+	g_free (data);
+}
+
+
 void 
 nautilus_file_operations_new_file (GtkWidget *parent_view, 
 				   const char *parent_dir,
@@ -2459,6 +2480,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 				   NautilusNewFileCallback done_callback,
 				   gpointer data)
 {
+	struct NewFileData *new_data;
 	char source_file_str[] = "/tmp/nautilus-sourceXXXXXX";
 	char *source_file_uri;
 	FILE *source_file;
@@ -2484,13 +2506,17 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 
 	source_file_uri = gnome_vfs_get_uri_from_local_path (source_file_str);
 
+	new_data = g_new (struct NewFileData, 1);
+	new_data->tmp_file = g_strdup (source_file_str);
+	new_data->done_callback = done_callback;
+	new_data->callback_data = data;
+	
 	nautilus_file_operations_new_file_from_template (parent_view, 
 							 parent_dir,
 							 target_filename,
 							 source_file_uri,
-							 TRUE,
-							 done_callback,
-							 data);
+							 new_file_from_temp_callback,
+							 new_data);
 
 	g_free (source_file_uri);
 	g_free (target_filename);
