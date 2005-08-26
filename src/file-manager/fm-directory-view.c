@@ -4689,21 +4689,37 @@ get_file_paths_or_uris_as_newline_delimited_string (GList *selection, gboolean g
 	char *path;
 	char *uri;
 	char *result;
+	NautilusDesktopLink *link;
 	GString *expanding_string;
 	GList *node;
 
 	expanding_string = g_string_new ("");
 	for (node = selection; node != NULL; node = node->next) {
-		uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+		uri = NULL;
+		if (NAUTILUS_IS_DESKTOP_ICON_FILE (node->data)) {
+			link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (node->data));
+			if (link != NULL) {
+				uri = nautilus_desktop_link_get_activation_uri (link);
+				g_object_unref (G_OBJECT (link));
+			}
+		} else {
+			uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+		}
+		if (uri == NULL) {
+			continue;
+		}
 
 		if (get_paths) {
 			path = gnome_vfs_get_local_path_from_uri (uri);
-			g_string_append (expanding_string, path);
-			g_free (path);
+			if (path != NULL) {
+				g_string_append (expanding_string, path);
+				g_free (path);
+				g_string_append (expanding_string, "\n");
+			}
 		} else {
 			g_string_append (expanding_string, uri);
+			g_string_append (expanding_string, "\n");
 		}
-		g_string_append (expanding_string, "\n");
 		g_free (uri);
 	}
 
@@ -4742,7 +4758,9 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	 * nautilus_directory_is_local returns FALSE for nfs.
 	 */
 	directory_uri = nautilus_directory_get_uri (view->details->model);
-	if (eel_str_has_prefix (directory_uri, "file:")) {
+	if (eel_str_has_prefix (directory_uri, "file:") ||
+	    eel_uri_is_desktop (directory_uri) ||
+	    eel_uri_is_trash (directory_uri)) {
 		file_paths = get_file_paths_as_newline_delimited_string (selected_files);
 	} else {
 		file_paths = g_strdup ("");
@@ -4757,6 +4775,10 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	g_free (uris);
 
 	uri = nautilus_directory_get_uri (view->details->model);
+	if (eel_uri_is_desktop (uri)) {
+		g_free (uri);
+		uri = nautilus_get_desktop_directory_uri ();
+	}
 	eel_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
