@@ -978,6 +978,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	double line_width;
 	gboolean gridded_layout;
 	double grid_width;
+	double max_text_width, max_icon_width;
 	int icon_width;
 	int i;
 
@@ -998,17 +999,23 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			 - container->details->top_margin
 			 - container->details->bottom_margin) / EEL_CANVAS (container)->pixels_per_unit;
 
+	max_icon_width = max_text_width = 0.0;
+
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-		grid_width = 0.0;
 		/* Would it be worth caching these bounds for the next loop? */
 		for (p = icons; p != NULL; p = p->next) {
 			icon = p->data;
-			
-			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
-						    &bounds.x0, &bounds.y0,
-						    &bounds.x1, &bounds.y1);
-			grid_width = MAX (grid_width, ceil (bounds.x1 - bounds.x0) + ICON_PAD_LEFT + ICON_PAD_RIGHT);
+
+			icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+			max_icon_width = MAX (max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
+
+			text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+			max_text_width = MAX (max_text_width, ceil (text_bounds.x1 - text_bounds.x0 < 0
+								    ? MAX_TEXT_WIDTH_BESIDE
+								    : text_bounds.x1 - text_bounds.x0));
 		}
+
+		grid_width = max_icon_width + max_text_width + ICON_PAD_LEFT + ICON_PAD_RIGHT;
 	} else {
 		grid_width = STANDARD_ICON_GRID_WIDTH;
 	}
@@ -1093,7 +1100,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 
 		if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 			if (gridded_layout) {
-				position->x_offset = icon_width - ((icon_bounds.x1 - icon_bounds.x0) + MAX_TEXT_WIDTH_BESIDE);
+				position->x_offset = max_icon_width + ICON_PAD_LEFT + ICON_PAD_RIGHT - (icon_bounds.x1 - icon_bounds.x0);
 			} else {
 				position->x_offset = icon_width - ((icon_bounds.x1 - icon_bounds.x0) + (text_bounds.x1 - text_bounds.x0));
 			}
