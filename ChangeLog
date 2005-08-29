@@ -1,3 +1,10 @@
+2005-08-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_first_visible_icon):
+	Handle non-sorted-by-y icon containers (manual mode).
+	#157415. Patch from Christian Neumair <chris@gnome-de.org>
+
 2005-08-25  William Jon McCann  <mccann@jhu.edu>
 
 	* src/file-manager/fm-icon-view.c (should_preview_sound):

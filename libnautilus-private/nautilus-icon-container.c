@@ -4642,10 +4642,11 @@ NautilusIconData *
 nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container)
 {
 	GList *l;
-	NautilusIcon *icon;
+	NautilusIcon *icon, *best_icon;
 	GtkAdjustment *vadj;
 	double x, y;
 	double x1, y1, x2, y2;
+	double best_y1;
 
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
@@ -4654,6 +4655,8 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 			&x, &y);
 
 	l = container->details->icons;
+	best_icon = NULL;
+	best_y1 = 0;
 	while (l != NULL) {
 		icon = l->data;
 
@@ -4661,13 +4664,22 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
 						    &x1, &y1, &x2, &y2);
 			if (y2 > y) {
-				return icon->data;
+				if (best_icon != NULL) {
+					if (best_y1 > y1) {
+						best_icon = icon;
+						best_y1 = y1;
+					}
+				} else {
+					best_icon = icon;
+					best_y1 = y1;
+				}
 			}
 		}
 		
 		l = l->next;
 	}
-	return NULL;
+
+	return best_icon ? best_icon->data : NULL;
 }
 
 /* puts the icon at the top of the screen */
