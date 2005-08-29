@@ -1,5 +1,13 @@
 2005-08-29  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_container_get_drop_action):
+	Handle background color/image drops even on
+	icons. (#47536)
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-08-29  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(filtering_changed_callback):
 	Fix handling of global show-hidden-file prefs change.

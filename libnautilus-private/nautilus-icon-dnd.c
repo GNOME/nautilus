@@ -1128,20 +1128,14 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 			*action = context->suggested_action;
 		}
 		break;
-	
-	/* handle colors and backgrounds by setting the action if we're over the background */		
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:
-	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
-		if (icon == NULL) {
-			*action = context->suggested_action;
-		}	
-		break;
-	
+
 	case NAUTILUS_ICON_DND_URL:
 		*action = nautilus_drag_default_drop_action_for_url (context);
 		break;
-		
+
+	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:
+	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = context->suggested_action;
