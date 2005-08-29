@@ -1,3 +1,13 @@
+2005-08-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(get_special_icon_for_file),
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_is_icon_ready_for_file):
+	Handle some more special location icons, and don't require
+	attributes for special location icons. (#312095, #312134)
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
 2005-08-26  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c:

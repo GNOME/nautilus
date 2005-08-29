@@ -800,11 +800,47 @@ should_show_thumbnail (NautilusFile *file, const char *mime_type)
 	return FALSE;
 }
 
+static char *
+get_special_icon_for_file (NautilusFile *file)
+{
+	char *uri, *ret;
+
+	if (file == NULL) {
+		return NULL;
+	}
+
+	if (nautilus_file_is_home (file)) {
+		return ICON_NAME_HOME;
+	}
+
+	ret = NULL;
+	uri = nautilus_file_get_uri (file);
+
+	if (strcmp (uri, "burn:///") == 0) {
+		ret = "gnome-dev-cdrom";
+	} else if (strcmp (uri, "computer:///") == 0) {
+		ret = "gnome-fs-client";
+	} else if ((strcmp (uri, "network:///") == 0)
+		   || (strcmp (uri, "smb:///") == 0)) {
+		ret = "gnome-fs-network";
+	} else if (strcmp (uri, EEL_TRASH_URI) == 0) {
+		if (nautilus_trash_monitor_is_empty ()) {
+			ret = ICON_NAME_TRASH_EMPTY;
+		} else {
+			ret = ICON_NAME_TRASH_FULL;
+		}
+	}
+
+	g_free (uri);
+
+	return ret;
+}
+
 /* key routine to get the icon for a file */
 char *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_text)
 {
- 	char *custom_uri, *file_uri, *icon_name, *mime_type, *custom_icon;
+ 	char *custom_uri, *file_uri, *icon_name, *mime_type, *custom_icon, *special_icon;
 	NautilusIconFactory *factory;
 	GnomeIconLookupResultFlags lookup_result;
 	GnomeVFSFileInfo *file_info;
@@ -827,28 +863,13 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 	}
  	g_free (custom_uri);
 
+	special_icon = get_special_icon_for_file (file);
+	if (special_icon != NULL) {
+		return g_strdup (special_icon);
+	}
+
 	file_uri = nautilus_file_get_uri (file);
 
-	if (strcmp (file_uri, "burn:///") == 0) {
-		g_free (file_uri);
-		return  g_strdup ("gnome-dev-cdrom");
-	}
-	if (strcmp (file_uri, "computer:///") == 0) {
-		g_free (file_uri);
-		return  g_strdup ("gnome-fs-client");
-	}
-	
-	if (strcmp (file_uri, EEL_TRASH_URI) == 0) {
-		g_free (file_uri);
-		return  g_strdup (nautilus_trash_monitor_is_empty ()
-				  ? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_FULL);
-	}
-
-	if (nautilus_file_is_home (file)) {
-		g_free (file_uri);
-		return g_strdup (ICON_NAME_HOME);
-	}
-		
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
@@ -924,7 +945,8 @@ nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 	gboolean result;
 
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	result = nautilus_file_check_if_ready (file, attributes);
+	result = nautilus_file_check_if_ready (file, attributes) ||
+		 (get_special_icon_for_file (file) != NULL);
 
 	return result;
 }
