@@ -1870,10 +1870,19 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 static gboolean
 should_preview_sound (NautilusFile *file)
 {
+	char *uri;
+
 	/* Check gnome config sound preference */
 	if (!gnome_esd_enabled_auto_value) {
 		return FALSE;
 	}
+
+	uri = nautilus_file_get_uri (file);
+	if (uri && eel_istr_has_prefix (uri, "burn:")) {
+		g_free (uri);
+		return FALSE;
+	}
+	g_free (uri);
 
 	/* Check user performance preference */	
 	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
