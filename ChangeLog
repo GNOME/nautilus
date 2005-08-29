@@ -1,5 +1,12 @@
 2005-08-29  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-factory.c:
+	(get_icon_from_cache):
+	Revert memleak patch from 2005-08-23, since it was
+	wrong and causes crashes.
+
+2005-08-29  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-dnd.c:
 	(nautilus_icon_container_get_drop_action):
 	Handle background color/image drops even on
