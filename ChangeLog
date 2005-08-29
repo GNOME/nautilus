@@ -1,5 +1,13 @@
 2005-08-29  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(filtering_changed_callback):
+	Fix handling of global show-hidden-file prefs change.
+	(#306821)
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-08-29  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_get_first_visible_icon):
 	Handle non-sorted-by-y icon containers (manual mode).

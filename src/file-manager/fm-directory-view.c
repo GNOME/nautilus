@@ -8147,11 +8147,13 @@ filtering_changed_callback (gpointer callback_data)
 	    && mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
 		directory_view->details->show_hidden_files = new_show_hidden;
 		directory_view->details->show_backup_files = new_show_hidden;
-		
+
 		action = gtk_action_group_get_action (directory_view->details->dir_action_group,
 						      FM_ACTION_SHOW_HIDDEN_FILES);
+		g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, directory_view);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 					      directory_view->details->show_hidden_files);
+		g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, directory_view);
 
 		/* Reload the current uri so that the filtering changes take place. */
 		if (directory_view->details->model != NULL) {
