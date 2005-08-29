@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-16 23:23+0900\n"
-"PO-Revision-Date: 2005-08-16 23:38+0900\n"
+"POT-Creation-Date: 2005-08-30 01:08+0900\n"
+"PO-Revision-Date: 2005-08-30 01:09+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at gmail dot com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -999,7 +999,7 @@ msgstr "클립보드에 저장된 글자를 붙여 넣습니다"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6168
+#: ../src/file-manager/fm-directory-view.c:6224
 msgid "Select _All"
 msgstr "모두 선택(_A)"
 
@@ -1232,8 +1232,8 @@ msgstr "(%d:%02d:%d 남음)"
 msgid "(%d:%02d Remaining)"
 msgstr "(%d:%02d 남음)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:361
-#: ../libnautilus-private/nautilus-file-operations.c:386
+#: ../libnautilus-private/nautilus-file-operations.c:362
+#: ../libnautilus-private/nautilus-file-operations.c:387
 #: ../libnautilus-private/nautilus-file-utilities.c:70
 #: ../src/nautilus-connect-server-dialog.c:287
 #, c-format
@@ -1241,33 +1241,33 @@ msgid "%s on %s"
 msgstr "%s (%s 컴퓨터)"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:370
+#: ../libnautilus-private/nautilus-file-operations.c:371
 msgid "From:"
 msgstr "어디에서:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:393
+#: ../libnautilus-private/nautilus-file-operations.c:394
 msgid "To:"
 msgstr "어디로:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:579
-#: ../libnautilus-private/nautilus-file-operations.c:627
-#: ../libnautilus-private/nautilus-file-operations.c:632
-#: ../libnautilus-private/nautilus-file-operations.c:642
+#: ../libnautilus-private/nautilus-file-operations.c:580
+#: ../libnautilus-private/nautilus-file-operations.c:628
+#: ../libnautilus-private/nautilus-file-operations.c:633
+#: ../libnautilus-private/nautilus-file-operations.c:643
 msgid "Error while moving."
 msgstr "옮기는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:580
+#: ../libnautilus-private/nautilus-file-operations.c:581
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:590
-#: ../libnautilus-private/nautilus-file-operations.c:596
+#: ../libnautilus-private/nautilus-file-operations.c:591
+#: ../libnautilus-private/nautilus-file-operations.c:597
 msgid "Error while deleting."
 msgstr "지우는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:591
+#: ../libnautilus-private/nautilus-file-operations.c:592
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
@@ -1276,12 +1276,12 @@ msgstr ""
 "상위 폴더를 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 옮"
 "길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:597
+#: ../libnautilus-private/nautilus-file-operations.c:598
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:628
+#: ../libnautilus-private/nautilus-file-operations.c:629
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1290,7 +1290,7 @@ msgstr ""
 "상위 폴더나 그 자신을 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s"
 "\"을(를) 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:633
+#: ../libnautilus-private/nautilus-file-operations.c:634
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
@@ -1299,7 +1299,7 @@ msgstr ""
 "옮길 곳에 파일이나 파일의 상위 폴더에 포함되지 않기 때문에 \"%s\"을(를)옮길 "
 "수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:643
+#: ../libnautilus-private/nautilus-file-operations.c:644
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1308,148 +1308,148 @@ msgstr ""
 "상위 폴더를 수정할 수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 휴지"
 "통으로 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:665
+#: ../libnautilus-private/nautilus-file-operations.c:666
 msgid "Error while copying."
 msgstr "복사중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:666
+#: ../libnautilus-private/nautilus-file-operations.c:667
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
 "읽을 수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 복사할 수 없습니"
 "다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:686
-#: ../libnautilus-private/nautilus-file-operations.c:707
-#: ../libnautilus-private/nautilus-file-operations.c:711
+#: ../libnautilus-private/nautilus-file-operations.c:687
+#: ../libnautilus-private/nautilus-file-operations.c:708
+#: ../libnautilus-private/nautilus-file-operations.c:712
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "\"%s\"(으)로 복사중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:687
-#: ../libnautilus-private/nautilus-file-operations.c:692
-#: ../libnautilus-private/nautilus-file-operations.c:696
+#: ../libnautilus-private/nautilus-file-operations.c:688
+#: ../libnautilus-private/nautilus-file-operations.c:693
+#: ../libnautilus-private/nautilus-file-operations.c:697
 msgid "There is not enough space on the destination."
 msgstr "목표에 남은 공간이 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:691
+#: ../libnautilus-private/nautilus-file-operations.c:692
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "\"%s\"(으)로 옮기는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:695
+#: ../libnautilus-private/nautilus-file-operations.c:696
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "\"%s\"에 바로 가기를 만드는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:708
-#: ../libnautilus-private/nautilus-file-operations.c:719
-#: ../libnautilus-private/nautilus-file-operations.c:730
+#: ../libnautilus-private/nautilus-file-operations.c:709
+#: ../libnautilus-private/nautilus-file-operations.c:720
+#: ../libnautilus-private/nautilus-file-operations.c:731
 msgid "You do not have permissions to write to this folder."
 msgstr "목표에 쓸 수 있는 허가권을 가지고 있지 않습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:712
-#: ../libnautilus-private/nautilus-file-operations.c:723
-#: ../libnautilus-private/nautilus-file-operations.c:734
+#: ../libnautilus-private/nautilus-file-operations.c:713
+#: ../libnautilus-private/nautilus-file-operations.c:724
+#: ../libnautilus-private/nautilus-file-operations.c:735
 msgid "The destination disk is read-only."
 msgstr "목표디스크는 읽기전용 입니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:718
-#: ../libnautilus-private/nautilus-file-operations.c:722
+#: ../libnautilus-private/nautilus-file-operations.c:719
+#: ../libnautilus-private/nautilus-file-operations.c:723
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "\"%s\"(으)로 항목을 옮기는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:729
-#: ../libnautilus-private/nautilus-file-operations.c:733
+#: ../libnautilus-private/nautilus-file-operations.c:730
+#: ../libnautilus-private/nautilus-file-operations.c:734
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "\"%s\"에 바로 가기를 만드는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:761
+#: ../libnautilus-private/nautilus-file-operations.c:762
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "\"%2$s\"(으)로 복사중 \"%1$s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:762
-#: ../libnautilus-private/nautilus-file-operations.c:766
-#: ../libnautilus-private/nautilus-file-operations.c:770
-#: ../libnautilus-private/nautilus-file-operations.c:776
-#: ../libnautilus-private/nautilus-file-operations.c:791
-#: ../libnautilus-private/nautilus-file-operations.c:795
-#: ../libnautilus-private/nautilus-file-operations.c:799
-#: ../libnautilus-private/nautilus-file-operations.c:805
+#: ../libnautilus-private/nautilus-file-operations.c:763
+#: ../libnautilus-private/nautilus-file-operations.c:767
+#: ../libnautilus-private/nautilus-file-operations.c:771
+#: ../libnautilus-private/nautilus-file-operations.c:777
+#: ../libnautilus-private/nautilus-file-operations.c:792
+#: ../libnautilus-private/nautilus-file-operations.c:796
+#: ../libnautilus-private/nautilus-file-operations.c:800
+#: ../libnautilus-private/nautilus-file-operations.c:806
 msgid "Would you like to continue?"
 msgstr "계속 진행 하겠습니까?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:765
+#: ../libnautilus-private/nautilus-file-operations.c:766
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "\"%2$s\"(으)로 옮기는 중 \"%1$s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:769
+#: ../libnautilus-private/nautilus-file-operations.c:770
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "\"%2$s\"에 바로 가기를 만드는 중 \"%1$s\"오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:775
+#: ../libnautilus-private/nautilus-file-operations.c:776
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "\"%2$s\"(을)를 지우는 중 \"%1$s\"오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:790
+#: ../libnautilus-private/nautilus-file-operations.c:791
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "복사중 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:794
+#: ../libnautilus-private/nautilus-file-operations.c:795
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "옮기는 중 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:798
+#: ../libnautilus-private/nautilus-file-operations.c:799
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "바로 가기를 만드는 중 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:804
+#: ../libnautilus-private/nautilus-file-operations.c:805
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "지우는 중 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:930
+#: ../libnautilus-private/nautilus-file-operations.c:931
 msgid "Error While Copying"
 msgstr "복사중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:933
+#: ../libnautilus-private/nautilus-file-operations.c:934
 msgid "Error While Moving"
 msgstr "옮기는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:936
+#: ../libnautilus-private/nautilus-file-operations.c:937
 msgid "Error While Linking"
 msgstr "바로 가기를 만드는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:941
+#: ../libnautilus-private/nautilus-file-operations.c:942
 msgid "Error While Deleting"
 msgstr "지우는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:960
-#: ../libnautilus-private/nautilus-file-operations.c:978
+#: ../libnautilus-private/nautilus-file-operations.c:961
+#: ../libnautilus-private/nautilus-file-operations.c:979
 msgid "_Retry"
 msgstr "다시 시도(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:978
-#: ../libnautilus-private/nautilus-file-operations.c:1127
-#: ../libnautilus-private/nautilus-file-operations.c:1146
+#: ../libnautilus-private/nautilus-file-operations.c:979
+#: ../libnautilus-private/nautilus-file-operations.c:1128
+#: ../libnautilus-private/nautilus-file-operations.c:1147
 msgid "_Skip"
 msgstr "건너 뛰기(_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1068
+#: ../libnautilus-private/nautilus-file-operations.c:1069
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "\"%s\"(을)를 새로운 위치로 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1071
+#: ../libnautilus-private/nautilus-file-operations.c:1072
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1457,12 +1457,12 @@ msgstr ""
 "그 이름은 이미 지우거나 바꿀 수 없는 특수한 항목이 쓰이고 있습니다.항목을 옮"
 "기고 싶다면 이름을 바꾸고 다시 하여 보십시오."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1075
+#: ../libnautilus-private/nautilus-file-operations.c:1076
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "\"%s\"을(를) 새로운 위치로 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1078
+#: ../libnautilus-private/nautilus-file-operations.c:1079
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1470,42 +1470,42 @@ msgstr ""
 "그 이름은 이미 지우거나 바꿀 수 없는 특수한 항목이 쓰이고 있습니다.항목을 복"
 "사하고 싶다면 이름을 바꾸고 다시 시도하십시오."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1084
+#: ../libnautilus-private/nautilus-file-operations.c:1085
 msgid "Unable to Replace File"
 msgstr "파일을 바꿀 수 없음"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1100
+#: ../libnautilus-private/nautilus-file-operations.c:1101
 #, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "\"%s\" 폴더가 이미 있습니다. 바꾸시겠습니까?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1103
+#: ../libnautilus-private/nautilus-file-operations.c:1104
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "\"%s\" 파일이 이미 있습니다. 바꾸시겠습니까?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1111
+#: ../libnautilus-private/nautilus-file-operations.c:1112
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
 msgstr ""
 "현재 폴더를 바꾸면, 복사하려는 파일과 겹치는 파일을 전부 덮어 쓰게 됩니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1113
+#: ../libnautilus-private/nautilus-file-operations.c:1114
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "현재 파일을 바꾼다면, 파일 내용을 전부 덮어 쓰게 됩니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1126
-#: ../libnautilus-private/nautilus-file-operations.c:1145
+#: ../libnautilus-private/nautilus-file-operations.c:1127
+#: ../libnautilus-private/nautilus-file-operations.c:1146
 msgid "Conflict While Copying"
 msgstr "복사 하는 중 충돌"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1127
-#: ../libnautilus-private/nautilus-file-operations.c:1146
+#: ../libnautilus-private/nautilus-file-operations.c:1128
+#: ../libnautilus-private/nautilus-file-operations.c:1147
 msgid "_Replace"
 msgstr "바꾸기(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1146
+#: ../libnautilus-private/nautilus-file-operations.c:1147
 msgid "Replace _All"
 msgstr "모두 바꾸기(_A)"
 
@@ -1514,15 +1514,15 @@ msgstr "모두 바꾸기(_A)"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1204
-#: ../libnautilus-private/nautilus-file.c:4721
-#: ../src/file-manager/fm-directory-view.c:8454
+#: ../libnautilus-private/nautilus-file-operations.c:1205
+#: ../libnautilus-private/nautilus-file.c:4732
+#: ../src/file-manager/fm-directory-view.c:8527
 #, c-format
 msgid "link to %s"
 msgstr "%s에 바로 가기"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1208
+#: ../libnautilus-private/nautilus-file-operations.c:1209
 #, c-format
 msgid "another link to %s"
 msgstr "%s에 또다른 바로 가기"
@@ -1531,25 +1531,25 @@ msgstr "%s에 또다른 바로 가기"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1224
+#: ../libnautilus-private/nautilus-file-operations.c:1225
 #, c-format
 msgid "%dst link to %s"
 msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1228
+#: ../libnautilus-private/nautilus-file-operations.c:1229
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1232
+#: ../libnautilus-private/nautilus-file-operations.c:1233
 #, c-format
 msgid "%drd link to %s"
 msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1236
+#: ../libnautilus-private/nautilus-file-operations.c:1237
 #, c-format
 msgid "%dth link to %s"
 msgstr "%2$s에 %1$d번째 바로 가기"
@@ -1559,12 +1559,12 @@ msgstr "%2$s에 %1$d번째 바로 가기"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1257
+#: ../libnautilus-private/nautilus-file-operations.c:1258
 msgid " (copy)"
 msgstr " (사본)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1259
+#: ../libnautilus-private/nautilus-file-operations.c:1260
 msgid " (another copy)"
 msgstr " (또 다른 사본)"
 
@@ -1572,36 +1572,36 @@ msgstr " (또 다른 사본)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1262
-#: ../libnautilus-private/nautilus-file-operations.c:1264
-#: ../libnautilus-private/nautilus-file-operations.c:1266
-#: ../libnautilus-private/nautilus-file-operations.c:1276
+#: ../libnautilus-private/nautilus-file-operations.c:1263
+#: ../libnautilus-private/nautilus-file-operations.c:1265
+#: ../libnautilus-private/nautilus-file-operations.c:1267
+#: ../libnautilus-private/nautilus-file-operations.c:1277
 msgid "th copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1269
+#: ../libnautilus-private/nautilus-file-operations.c:1270
 msgid "st copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1271
+#: ../libnautilus-private/nautilus-file-operations.c:1272
 msgid "nd copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1273
+#: ../libnautilus-private/nautilus-file-operations.c:1274
 msgid "rd copy)"
 msgstr "번째 사본)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1290
+#: ../libnautilus-private/nautilus-file-operations.c:1291
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (사본)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1292
+#: ../libnautilus-private/nautilus-file-operations.c:1293
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (또 다른 사본)%s"
@@ -1610,274 +1610,274 @@ msgstr "%s (또 다른 사본)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1295
-#: ../libnautilus-private/nautilus-file-operations.c:1297
-#: ../libnautilus-private/nautilus-file-operations.c:1299
-#: ../libnautilus-private/nautilus-file-operations.c:1308
+#: ../libnautilus-private/nautilus-file-operations.c:1296
+#: ../libnautilus-private/nautilus-file-operations.c:1298
+#: ../libnautilus-private/nautilus-file-operations.c:1300
+#: ../libnautilus-private/nautilus-file-operations.c:1309
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1302
+#: ../libnautilus-private/nautilus-file-operations.c:1303
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1304
+#: ../libnautilus-private/nautilus-file-operations.c:1305
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1306
+#: ../libnautilus-private/nautilus-file-operations.c:1307
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1406
+#: ../libnautilus-private/nautilus-file-operations.c:1407
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1414
+#: ../libnautilus-private/nautilus-file-operations.c:1415
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1610
-#: ../libnautilus-private/nautilus-file-operations.c:2210
-#: ../libnautilus-private/nautilus-file-operations.c:2377
+#: ../libnautilus-private/nautilus-file-operations.c:1611
+#: ../libnautilus-private/nautilus-file-operations.c:2211
+#: ../libnautilus-private/nautilus-file-operations.c:2378
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "모르는 GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:1947
+#: ../libnautilus-private/nautilus-file-operations.c:1948
 msgid "Moving files to the Trash"
 msgstr "파일을 휴지통으로 보내는 중"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:1949
+#: ../libnautilus-private/nautilus-file-operations.c:1950
 msgid "Throwing out file:"
 msgstr "파일 버리는 중:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:1951
-#: ../libnautilus-private/nautilus-file-operations.c:1962
+#: ../libnautilus-private/nautilus-file-operations.c:1952
+#: ../libnautilus-private/nautilus-file-operations.c:1963
 msgid "Moving"
 msgstr "옮길 중"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1952
+#: ../libnautilus-private/nautilus-file-operations.c:1953
 msgid "Preparing to Move to Trash..."
 msgstr "휴지통으로 버릴 준비 중..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:1958
+#: ../libnautilus-private/nautilus-file-operations.c:1959
 msgid "Moving files"
 msgstr "파일 옮기는 중"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:1960
+#: ../libnautilus-private/nautilus-file-operations.c:1961
 msgid "Moving file:"
 msgstr "파일 옮기는 중:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1963
+#: ../libnautilus-private/nautilus-file-operations.c:1964
 msgid "Preparing To Move..."
 msgstr "옮길 준비 중..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1964
+#: ../libnautilus-private/nautilus-file-operations.c:1965
 msgid "Finishing Move..."
 msgstr "옮김 완료..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:1972
+#: ../libnautilus-private/nautilus-file-operations.c:1973
 msgid "Creating links to files"
 msgstr "파일 바로 가기 만드는 중"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:1974
+#: ../libnautilus-private/nautilus-file-operations.c:1975
 msgid "Linking file:"
 msgstr "바로 가기 만드는 중:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:1976
+#: ../libnautilus-private/nautilus-file-operations.c:1977
 msgid "Linking"
 msgstr "바로 가기 만드는 중"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1977
+#: ../libnautilus-private/nautilus-file-operations.c:1978
 msgid "Preparing to Create Links..."
 msgstr "바로 가기를 만들 준비 중..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1978
+#: ../libnautilus-private/nautilus-file-operations.c:1979
 msgid "Finishing Creating Links..."
 msgstr "바로 가기 만들기 완료..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:1984
+#: ../libnautilus-private/nautilus-file-operations.c:1985
 msgid "Copying files"
 msgstr "파일 복사 중"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:1986
+#: ../libnautilus-private/nautilus-file-operations.c:1987
 msgid "Copying file:"
 msgstr "파일 복사 중:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:1988
+#: ../libnautilus-private/nautilus-file-operations.c:1989
 msgid "Copying"
 msgstr "복사 중"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1989
+#: ../libnautilus-private/nautilus-file-operations.c:1990
 msgid "Preparing To Copy..."
 msgstr "복사 준비 중..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2007
+#: ../libnautilus-private/nautilus-file-operations.c:2008
 msgid "You cannot copy items into the trash."
 msgstr "선택한 항목을 휴지통으로 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2008
+#: ../libnautilus-private/nautilus-file-operations.c:2009
 msgid "You cannot create links inside the trash."
 msgstr "휴지통 안에 바로가기를 만들 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2009
+#: ../libnautilus-private/nautilus-file-operations.c:2010
 msgid "Files and folders can only be moved into the trash."
 msgstr "파일과 폴더만 휴지통으로 버릴 수 있습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2033
+#: ../libnautilus-private/nautilus-file-operations.c:2034
 msgid "You cannot move this trash folder."
 msgstr "이 휴지통 폴더를 옮길 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2034
+#: ../libnautilus-private/nautilus-file-operations.c:2035
 msgid "You cannot copy this trash folder."
 msgstr "이 휴지통 폴더를 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2035
+#: ../libnautilus-private/nautilus-file-operations.c:2036
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "휴지통 폴더는 휴지통으로 버리는 항목을 저장하는데 쓰입니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2037
+#: ../libnautilus-private/nautilus-file-operations.c:2038
 msgid "Can't Change Trash Location"
 msgstr "휴지통의 위치를 바꿀 수 없습니다"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2038
+#: ../libnautilus-private/nautilus-file-operations.c:2039
 msgid "Can't Copy Trash"
 msgstr "휴지통을 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2062
+#: ../libnautilus-private/nautilus-file-operations.c:2063
 msgid "You cannot move a folder into itself."
 msgstr "폴더를 그 자신에게 옮길수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2063
+#: ../libnautilus-private/nautilus-file-operations.c:2064
 msgid "You cannot copy a folder into itself."
 msgstr "폴더를 그 자신에게 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2065
 msgid "The destination folder is inside the source folder."
 msgstr "목표 폴더가 원본 폴더 안에 있습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2067
 msgid "Can't Move Into Self"
 msgstr "자신으로 옮길 수 없습니다"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2067
+#: ../libnautilus-private/nautilus-file-operations.c:2068
 msgid "Can't Copy Into Self"
 msgstr "자신으로 복사할 수 없습니다"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2080
+#: ../libnautilus-private/nautilus-file-operations.c:2081
 msgid "You cannot copy a file over itself."
 msgstr "파일을 그 자신에게 복사할 수 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2081
+#: ../libnautilus-private/nautilus-file-operations.c:2082
 msgid "The destination and source are the same file."
 msgstr "원본과 목표가 같은 파일입니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2082
+#: ../libnautilus-private/nautilus-file-operations.c:2083
 msgid "Can't Copy Over Self"
 msgstr "자신으로 복사할 수 없습니다"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2134
-#: ../libnautilus-private/nautilus-file-operations.c:2273
+#: ../libnautilus-private/nautilus-file-operations.c:2135
+#: ../libnautilus-private/nautilus-file-operations.c:2274
 msgid "You do not have permissions to write to the destination."
 msgstr "목표에 쓰기 허가권을 가지고 있지 않습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2136
-#: ../libnautilus-private/nautilus-file-operations.c:2275
+#: ../libnautilus-private/nautilus-file-operations.c:2137
+#: ../libnautilus-private/nautilus-file-operations.c:2276
 msgid "There is no space on the destination."
 msgstr "목표에 남은 공간이 없습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2139
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "새 폴더를 만드는데 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2143
+#: ../libnautilus-private/nautilus-file-operations.c:2144
 msgid "Error creating new folder."
 msgstr "새 폴더를 만드는중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2143
+#: ../libnautilus-private/nautilus-file-operations.c:2144
 msgid "Error Creating New Folder"
 msgstr "새 폴더를 만드는중 오류."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2238
+#: ../libnautilus-private/nautilus-file-operations.c:2239
 msgid "untitled folder"
 msgstr "이름없는 폴더"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2277
+#: ../libnautilus-private/nautilus-file-operations.c:2278
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "새 문서를 만드는데 \"%s\" 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2282
+#: ../libnautilus-private/nautilus-file-operations.c:2283
 msgid "Error creating new document."
 msgstr "새 문서를 만드는 중 오류."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2282
+#: ../libnautilus-private/nautilus-file-operations.c:2283
 msgid "Error Creating New Document"
 msgstr "새 문서를 만드는 중 오류"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2483
+#: ../libnautilus-private/nautilus-file-operations.c:2505
 msgid "new file"
 msgstr "새 파일"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2544
+#: ../libnautilus-private/nautilus-file-operations.c:2570
 msgid "Deleting files"
 msgstr "파일 지우는중"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2546
-#: ../libnautilus-private/nautilus-file-operations.c:2581
+#: ../libnautilus-private/nautilus-file-operations.c:2572
+#: ../libnautilus-private/nautilus-file-operations.c:2607
 msgid "Files deleted:"
 msgstr "파일 지워짐:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2548
-#: ../libnautilus-private/nautilus-file-operations.c:2583
+#: ../libnautilus-private/nautilus-file-operations.c:2574
+#: ../libnautilus-private/nautilus-file-operations.c:2609
 msgid "Deleting"
 msgstr "지우는중"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2549
+#: ../libnautilus-private/nautilus-file-operations.c:2575
 msgid "Preparing to Delete files..."
 msgstr "파일을 지울 준비중..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2579
+#: ../libnautilus-private/nautilus-file-operations.c:2605
 msgid "Emptying the Trash"
 msgstr "휴지통 비우는중"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2584
+#: ../libnautilus-private/nautilus-file-operations.c:2610
 msgid "Preparing to Empty the Trash..."
 msgstr "휴지통 비우기 준비중..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2620
+#: ../libnautilus-private/nautilus-file-operations.c:2646
 msgid "Empty all of the items from the trash?"
 msgstr "휴지통에서 모든 항목을 완전히 비우시겠습니까?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2623
+#: ../libnautilus-private/nautilus-file-operations.c:2649
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1885,7 +1885,7 @@ msgstr ""
 "휴지통을 비우면 안에 있는 모든 항목을 완전히 지우게 됩니다. 그렇지 않고 일부"
 "분만 지울 수도 있습니다."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2645
+#: ../libnautilus-private/nautilus-file-operations.c:2671
 msgid "_Empty Trash"
 msgstr "휴지통 비우기(_E)"
 
@@ -1935,65 +1935,65 @@ msgstr "서비스"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2937
+#: ../libnautilus-private/nautilus-file.c:2948
 msgid "today at 00:00:00 PM"
 msgstr "오늘 오후 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2938
+#: ../libnautilus-private/nautilus-file.c:2949
 #: ../src/nautilus-file-management-properties.c:493
 msgid "today at %-I:%M:%S %p"
 msgstr "오늘 %p %l:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2940
+#: ../libnautilus-private/nautilus-file.c:2951
 msgid "today at 00:00 PM"
 msgstr "오늘 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2941
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "today at %-I:%M %p"
 msgstr "오늘 %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2943
+#: ../libnautilus-private/nautilus-file.c:2954
 msgid "today, 00:00 PM"
 msgstr "오늘, 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2944
+#: ../libnautilus-private/nautilus-file.c:2955
 msgid "today, %-I:%M %p"
 msgstr "오늘, 오후 %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2946
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2957
+#: ../libnautilus-private/nautilus-file.c:2958
 msgid "today"
 msgstr "오늘"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2956
+#: ../libnautilus-private/nautilus-file.c:2967
 msgid "yesterday at 00:00:00 PM"
 msgstr "어제 오후 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2957
+#: ../libnautilus-private/nautilus-file.c:2968
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "어제 %p %l:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2959
+#: ../libnautilus-private/nautilus-file.c:2970
 msgid "yesterday at 00:00 PM"
 msgstr "어제 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2960
+#: ../libnautilus-private/nautilus-file.c:2971
 msgid "yesterday at %-I:%M %p"
 msgstr "어제 %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2962
+#: ../libnautilus-private/nautilus-file.c:2973
 msgid "yesterday, 00:00 PM"
 msgstr "어제, 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2963
+#: ../libnautilus-private/nautilus-file.c:2974
 msgid "yesterday, %-I:%M %p"
 msgstr "어제, %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2965
-#: ../libnautilus-private/nautilus-file.c:2966
+#: ../libnautilus-private/nautilus-file.c:2976
+#: ../libnautilus-private/nautilus-file.c:2977
 msgid "yesterday"
 msgstr "어제"
 
@@ -2002,113 +2002,113 @@ msgstr "어제"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2977
+#: ../libnautilus-private/nautilus-file.c:2988
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000년 9월 00일 수요일 오후 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2978
+#: ../libnautilus-private/nautilus-file.c:2989
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y년 %b %e일 %A %p %l:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2980
+#: ../libnautilus-private/nautilus-file.c:2991
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000년 10월 00일 (월) 오후 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2981
+#: ../libnautilus-private/nautilus-file.c:2992
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y년 %b %e일 (%a)  %p %l:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2983
+#: ../libnautilus-private/nautilus-file.c:2994
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000년 10월 00일 (월) 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2984
+#: ../libnautilus-private/nautilus-file.c:2995
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y년 %b %e일 (%a)  %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2986
+#: ../libnautilus-private/nautilus-file.c:2997
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000 10 00 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2987
+#: ../libnautilus-private/nautilus-file.c:2998
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y년 %b %e일 %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2989
+#: ../libnautilus-private/nautilus-file.c:3000
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000 10 00, 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2990
+#: ../libnautilus-private/nautilus-file.c:3001
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y년 %b %e일, %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2992
+#: ../libnautilus-private/nautilus-file.c:3003
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 오후 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2993
+#: ../libnautilus-private/nautilus-file.c:3004
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%d, %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2995
+#: ../libnautilus-private/nautilus-file.c:3006
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:2996
+#: ../libnautilus-private/nautilus-file.c:3007
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: ../libnautilus-private/nautilus-file.c:4287
+#: ../libnautilus-private/nautilus-file.c:4298
 #: ../src/file-manager/fm-directory-view.c:1933
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "항목 %u개"
 
-#: ../libnautilus-private/nautilus-file.c:4288
+#: ../libnautilus-private/nautilus-file.c:4299
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "폴더 %u개"
 
-#: ../libnautilus-private/nautilus-file.c:4289
+#: ../libnautilus-private/nautilus-file.c:4300
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
 msgstr[0] "파일 %u개"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4614
-#: ../libnautilus-private/nautilus-file.c:4630
+#: ../libnautilus-private/nautilus-file.c:4625
+#: ../libnautilus-private/nautilus-file.c:4641
 msgid "? items"
 msgstr "? 항목"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4620
+#: ../libnautilus-private/nautilus-file.c:4631
 msgid "? bytes"
 msgstr "? 바이트"
 
-#: ../libnautilus-private/nautilus-file.c:4635
+#: ../libnautilus-private/nautilus-file.c:4646
 msgid "unknown type"
 msgstr "알 수 없는 형식"
 
-#: ../libnautilus-private/nautilus-file.c:4638
+#: ../libnautilus-private/nautilus-file.c:4649
 msgid "unknown MIME type"
 msgstr "알 수 없는 MIME 형식"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4644
+#: ../libnautilus-private/nautilus-file.c:4655
 #: ../src/file-manager/fm-properties-window.c:1306
 msgid "unknown"
 msgstr "알 수 없음"
 
-#: ../libnautilus-private/nautilus-file.c:4677
+#: ../libnautilus-private/nautilus-file.c:4688
 msgid "program"
 msgstr "프로그램"
 
-#: ../libnautilus-private/nautilus-file.c:4695
+#: ../libnautilus-private/nautilus-file.c:4706
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2117,7 +2117,7 @@ msgstr ""
 "\"x-directory/normal\"에 대한 설명도 찾을 수 없습니다. 이것은 gnome-vfs.keys "
 "파일이 잘못된 위치에 있거나 다른 이유로 찾을 수 없다는것을 의미합니다."
 
-#: ../libnautilus-private/nautilus-file.c:4699
+#: ../libnautilus-private/nautilus-file.c:4710
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2126,15 +2126,15 @@ msgstr ""
 "mime 형식 \"%s\"(파일은 \"%s\")에 대한 설명을 찾을 수 없습니다, gnome-vfs 메"
 "일링 리스트로 알려주십시오."
 
-#: ../libnautilus-private/nautilus-file.c:4715
+#: ../libnautilus-private/nautilus-file.c:4726
 msgid "link"
 msgstr "바로 가기"
 
-#: ../libnautilus-private/nautilus-file.c:4735
+#: ../libnautilus-private/nautilus-file.c:4746
 msgid "link (broken)"
 msgstr "바로 가기 (깨어짐)"
 
-#: ../libnautilus-private/nautilus-file.c:6163
+#: ../libnautilus-private/nautilus-file.c:6174
 #: ../libnautilus-private/nautilus-global-preferences.c:518
 #: ../libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2346,17 +2346,17 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "%s의 폴더"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2112
+#: ../libnautilus-private/nautilus-icon-container.c:2119
 msgid "The selection rectangle"
 msgstr "선택한 영역"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4316
+#: ../libnautilus-private/nautilus-icon-container.c:4323
 msgid "Normal Alpha"
-msgstr ""
+msgstr "보통 투명도"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4317
+#: ../libnautilus-private/nautilus-icon-container.c:4324
 msgid "Opacity of the normal icons if frame_text is set"
-msgstr ""
+msgstr "frame_text가 설정되어 있으면 보통 아이콘의 투명도"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:790
 msgid "Switch to Manual Layout?"
@@ -2636,22 +2636,22 @@ msgstr "바탕"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6146
-#: ../src/file-manager/fm-directory-view.c:6818
+#: ../src/file-manager/fm-directory-view.c:6202
+#: ../src/file-manager/fm-directory-view.c:6889
 msgid "E_mpty Trash"
 msgstr "휴지통 비우기(_M)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6118
+#: ../src/file-manager/fm-directory-view.c:6174
 msgid "Create L_auncher..."
 msgstr "실행 아이콘 만들기(_A)..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6119
+#: ../src/file-manager/fm-directory-view.c:6175
 msgid "Create a new launcher"
 msgstr "새 실행 아이콘을 만듭니다"
 
@@ -2674,7 +2674,7 @@ msgstr "휴지통 비우기"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6147
+#: ../src/file-manager/fm-directory-view.c:6203
 msgid "Delete all items in the Trash"
 msgstr "휴지통에 있는 모든 항목을 지웁니다"
 
@@ -2827,44 +2827,44 @@ msgstr "몇몇 파일들이 보여주지 않을 수 있습니다."
 msgid "Too Many Files"
 msgstr "파일이 너무 많음"
 
-#: ../src/file-manager/fm-directory-view.c:3318
+#: ../src/file-manager/fm-directory-view.c:3353
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "파일을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3319
+#: ../src/file-manager/fm-directory-view.c:3354
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "\"%s\" 파일을 휴지통으로 버릴 수 없습니다."
 
-#: ../src/file-manager/fm-directory-view.c:3323
+#: ../src/file-manager/fm-directory-view.c:3358
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3324
+#: ../src/file-manager/fm-directory-view.c:3359
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "%d개의 선택한 항목중 아무것도 휴지통에 버릴 수 없습니다"
 
-#: ../src/file-manager/fm-directory-view.c:3326
+#: ../src/file-manager/fm-directory-view.c:3361
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "몇몇 항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3327
+#: ../src/file-manager/fm-directory-view.c:3362
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d개의 선택한 항목을 휴지통으로 버릴 수 없습니다"
 
-#: ../src/file-manager/fm-directory-view.c:3333
+#: ../src/file-manager/fm-directory-view.c:3368
 msgid "Delete Immediately?"
 msgstr "바로 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3365
+#: ../src/file-manager/fm-directory-view.c:3400
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "휴지통에서 \"%s\"을(를) 완전히 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3369
+#: ../src/file-manager/fm-directory-view.c:3404
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2874,56 +2874,56 @@ msgid_plural ""
 "trash?"
 msgstr[0] "휴지통에서 선택한 항목 %d개를 완전히 지우시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3378
+#: ../src/file-manager/fm-directory-view.c:3413
 msgid "If you delete an item, it will be permanently lost."
 msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
 
-#: ../src/file-manager/fm-directory-view.c:3379
+#: ../src/file-manager/fm-directory-view.c:3414
 msgid "Delete From Trash?"
 msgstr "휴지통에서 지우겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:3917
+#: ../src/file-manager/fm-directory-view.c:3951
 #, c-format
 msgid "Open with \"%s\""
 msgstr "%s 프로그램으로 열기"
 
-#: ../src/file-manager/fm-directory-view.c:3918
+#: ../src/file-manager/fm-directory-view.c:3952
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "선택한 항목을 열기 위해 \"%s\"을(를) 씁니다"
 
-#: ../src/file-manager/fm-directory-view.c:4007
+#: ../src/file-manager/fm-directory-view.c:4041
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "\"%s\"(을)를 실행 하시겠습니까? 아니면 내용을 보시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:4009
+#: ../src/file-manager/fm-directory-view.c:4043
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\"(은)는 실행할 수 있는 텍스트 파일입니다."
 
-#: ../src/file-manager/fm-directory-view.c:4015
+#: ../src/file-manager/fm-directory-view.c:4049
 msgid "Run or Display?"
 msgstr "실행 또는 보기?"
 
-#: ../src/file-manager/fm-directory-view.c:4016
+#: ../src/file-manager/fm-directory-view.c:4050
 msgid "Run in _Terminal"
 msgstr "터미널에서 실행(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:4017
+#: ../src/file-manager/fm-directory-view.c:4051
 msgid "_Display"
 msgstr "표시(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:4020
+#: ../src/file-manager/fm-directory-view.c:4054
 msgid "_Run"
 msgstr "실행(_R)"
 
-#: ../src/file-manager/fm-directory-view.c:4406
+#: ../src/file-manager/fm-directory-view.c:4440
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s을(를) 열 수 없습니다"
 
-#: ../src/file-manager/fm-directory-view.c:4409
+#: ../src/file-manager/fm-directory-view.c:4443
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2944,21 +2944,21 @@ msgstr ""
 "고, 파일을 여십시오. 아니면, \"다른 프로그램으로 열기\" 메뉴에서 파일을 열 프"
 "로그램을 직접 지정하십시오."
 
-#: ../src/file-manager/fm-directory-view.c:4822
+#: ../src/file-manager/fm-directory-view.c:4878
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "선택한 항목에 대해 \"%s\" 실행"
 
-#: ../src/file-manager/fm-directory-view.c:5071
+#: ../src/file-manager/fm-directory-view.c:5127
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "\"%s\" 형식의 문서 틀을 이용하여 문서를 만듭니다."
 
-#: ../src/file-manager/fm-directory-view.c:5277
+#: ../src/file-manager/fm-directory-view.c:5333
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "이 폴더의 모든 실행 파일은 혼잣말 메뉴에 나타날 것입니다."
 
-#: ../src/file-manager/fm-directory-view.c:5279
+#: ../src/file-manager/fm-directory-view.c:5335
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2966,11 +2966,11 @@ msgstr ""
 " 메뉴에서 혼잣말을 선택하면 선택한 어떤 항목을 입력으로 하여 혼잣말을 실행할 "
 "것입니다."
 
-#: ../src/file-manager/fm-directory-view.c:5281
+#: ../src/file-manager/fm-directory-view.c:5337
 msgid "About Scripts"
 msgstr "혼잣말은"
 
-#: ../src/file-manager/fm-directory-view.c:5282
+#: ../src/file-manager/fm-directory-view.c:5338
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3010,183 +3010,183 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: 현재 창의 위치와 크기"
 
-#: ../src/file-manager/fm-directory-view.c:5443
+#: ../src/file-manager/fm-directory-view.c:5499
 #: ../src/file-manager/fm-tree-view.c:900
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\"은(는) 파일을 붙여 넣을 때 옮길 것입니다."
 
-#: ../src/file-manager/fm-directory-view.c:5447
+#: ../src/file-manager/fm-directory-view.c:5503
 #: ../src/file-manager/fm-tree-view.c:904
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\"은(는) 파일을 붙여 넣을 때 복사될 것입니다."
 
-#: ../src/file-manager/fm-directory-view.c:5454
+#: ../src/file-manager/fm-directory-view.c:5510
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "선택한 항목 %d개는 파일 붙여 넣을 때 옮겨집니다."
 
-#: ../src/file-manager/fm-directory-view.c:5461
+#: ../src/file-manager/fm-directory-view.c:5517
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "선택한 항목 %d개는 파일 붙여 넣을 때 복사됩니다."
 
-#: ../src/file-manager/fm-directory-view.c:5555
+#: ../src/file-manager/fm-directory-view.c:5611
 #: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "클립보드에서 붙여 넣을 것이 없습니다."
 
-#: ../src/file-manager/fm-directory-view.c:5681
-#: ../src/file-manager/fm-directory-view.c:7307
+#: ../src/file-manager/fm-directory-view.c:5737
+#: ../src/file-manager/fm-directory-view.c:7378
 msgid "Mount Error"
 msgstr "마운트 오류"
 
-#: ../src/file-manager/fm-directory-view.c:5738
+#: ../src/file-manager/fm-directory-view.c:5794
 #: ../src/file-manager/fm-tree-view.c:1066
 msgid "Unmount Error"
 msgstr "언마운트 오류"
 
-#: ../src/file-manager/fm-directory-view.c:5751
+#: ../src/file-manager/fm-directory-view.c:5807
 #: ../src/file-manager/fm-tree-view.c:1063
 msgid "Eject Error"
 msgstr "꺼내기 오류"
 
-#: ../src/file-manager/fm-directory-view.c:5900
+#: ../src/file-manager/fm-directory-view.c:5956
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s 서버에 연결"
 
-#: ../src/file-manager/fm-directory-view.c:5905
+#: ../src/file-manager/fm-directory-view.c:5961
 msgid "_Connect"
 msgstr "연결(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:5919
+#: ../src/file-manager/fm-directory-view.c:5975
 msgid "Link _name:"
 msgstr "바로 가기 이름(_N):"
 
-#: ../src/file-manager/fm-directory-view.c:6092
+#: ../src/file-manager/fm-directory-view.c:6148
 msgid "Create _Document"
 msgstr "문서 만들기(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6093
+#: ../src/file-manager/fm-directory-view.c:6149
 msgid "Open Wit_h"
 msgstr "다른 프로그램으로 열기(_H)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6094
+#: ../src/file-manager/fm-directory-view.c:6150
 msgid "Choose a program with which to open the selected item"
 msgstr "선택한 항목을 열 프로그램을 선택합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6096
-#: ../src/file-manager/fm-directory-view.c:6104
+#: ../src/file-manager/fm-directory-view.c:6152
+#: ../src/file-manager/fm-directory-view.c:6160
 msgid "_Properties"
 msgstr "등록 정보(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6097
+#: ../src/file-manager/fm-directory-view.c:6153
 msgid "View or modify the properties of each selected item"
 msgstr "각각 선택한 항목의 등록 정보를 보거나 고칩니다"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6105
+#: ../src/file-manager/fm-directory-view.c:6161
 msgid "View or modify the properties of the open folder"
 msgstr "열린 폴더의 등록 정보를 보거나 고칩니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6108
+#: ../src/file-manager/fm-directory-view.c:6164
 msgid "Create _Folder"
 msgstr "폴더 만들기(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6109
+#: ../src/file-manager/fm-directory-view.c:6165
 msgid "Create a new empty folder inside this folder"
 msgstr "이 폴더안에 새로운 빈 폴더를 만듭니다"
 
-#: ../src/file-manager/fm-directory-view.c:6111
+#: ../src/file-manager/fm-directory-view.c:6167
 msgid "No templates Installed"
 msgstr "문서 틀이 설치되지 않았습니다"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6114
+#: ../src/file-manager/fm-directory-view.c:6170
 msgid "_Empty File"
 msgstr "빈 파일(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6115
+#: ../src/file-manager/fm-directory-view.c:6171
 msgid "Create a new empty file inside this folder"
 msgstr "이 폴더안에 새로운 빈 파일을 만듭니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6122
-#: ../src/file-manager/fm-directory-view.c:6719
+#: ../src/file-manager/fm-directory-view.c:6178
+#: ../src/file-manager/fm-directory-view.c:6790
 #: ../src/file-manager/fm-tree-view.c:1105
 msgid "_Open"
 msgstr "열기(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6123
+#: ../src/file-manager/fm-directory-view.c:6179
 msgid "Open the selected item in this window"
 msgstr "선택한 항목을 이창에서 엽니다"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6130
-#: ../src/file-manager/fm-directory-view.c:6226
+#: ../src/file-manager/fm-directory-view.c:6186
+#: ../src/file-manager/fm-directory-view.c:6282
 msgid "Open in Navigation Window"
 msgstr "새 찾아보기 창에서 열기"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6131
+#: ../src/file-manager/fm-directory-view.c:6187
 msgid "Open each selected item in a navigation window"
 msgstr "각각 선택한 항목을 새 찾아보기 창에서 엽니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6134
-#: ../src/file-manager/fm-directory-view.c:6138
+#: ../src/file-manager/fm-directory-view.c:6190
+#: ../src/file-manager/fm-directory-view.c:6194
 msgid "Open with Other _Application..."
 msgstr "다른 프로그램으로 열기(_A)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6135
-#: ../src/file-manager/fm-directory-view.c:6139
+#: ../src/file-manager/fm-directory-view.c:6191
+#: ../src/file-manager/fm-directory-view.c:6195
 msgid "Choose another application with which to open the selected item"
 msgstr "선택한 항목을 열 다른 프로그램을 선택합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6142
+#: ../src/file-manager/fm-directory-view.c:6198
 msgid "_Open Scripts Folder"
 msgstr "혼잣말 폴더 열기(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6143
+#: ../src/file-manager/fm-directory-view.c:6199
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "이 메뉴에서 보이는 혼잣말을 포함하는 폴더 보기"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6151
+#: ../src/file-manager/fm-directory-view.c:6207
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "파일 붙여 넣기 명령으로 선택된 파일을 옮길 준비를 합니다"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6155
+#: ../src/file-manager/fm-directory-view.c:6211
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "파일 붙여 넣기 명령으로 선택된 파일을 복사할 준비를 합니다"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6159
+#: ../src/file-manager/fm-directory-view.c:6215
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "이전에 선택된 파일을 파일 잘라내기나 파일 복사 명령으로 옮기거나 복사합니다"
@@ -3194,13 +3194,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6164
+#: ../src/file-manager/fm-directory-view.c:6220
 #: ../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
 msgstr "폴더에 붙여 넣기(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6165
+#: ../src/file-manager/fm-directory-view.c:6221
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3208,284 +3208,284 @@ msgstr ""
 "이전에 파일 잘라내기나 파일 복사 명령으로 선택된 파일을 옮기거나 복사합니다"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6169
+#: ../src/file-manager/fm-directory-view.c:6225
 msgid "Select all items in this window"
 msgstr "이 창에 있는 모든 항목을 선택합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6172
+#: ../src/file-manager/fm-directory-view.c:6228
 msgid "Select _Pattern"
 msgstr "파일이름 형태 선택(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6173
+#: ../src/file-manager/fm-directory-view.c:6229
 msgid "Select items in this window matching a given pattern"
 msgstr "창에서 주어진 파일이름 형태에 맞는 항목을 선택합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6176
+#: ../src/file-manager/fm-directory-view.c:6232
 msgid "D_uplicate"
 msgstr "사본 만들기(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6177
+#: ../src/file-manager/fm-directory-view.c:6233
 msgid "Duplicate each selected item"
 msgstr "각각 선택한 항목을 하나 더 만듭니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6180
-#: ../src/file-manager/fm-directory-view.c:6792
+#: ../src/file-manager/fm-directory-view.c:6236
+#: ../src/file-manager/fm-directory-view.c:6863
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "바로 가기 만들기(_K)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6181
+#: ../src/file-manager/fm-directory-view.c:6237
 msgid "Create a symbolic link for each selected item"
 msgstr "각각 선택한 항목을 다른 파일로 연결합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6184
+#: ../src/file-manager/fm-directory-view.c:6240
 msgid "_Rename..."
 msgstr "이름 바꾸기(_R)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6185
+#: ../src/file-manager/fm-directory-view.c:6241
 msgid "Rename selected item"
 msgstr "선택된 항목의 이름을 바꿉니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6192
-#: ../src/file-manager/fm-directory-view.c:6240
-#: ../src/file-manager/fm-directory-view.c:6596
-#: ../src/file-manager/fm-directory-view.c:6760
-#: ../src/file-manager/fm-directory-view.c:7105
+#: ../src/file-manager/fm-directory-view.c:6248
+#: ../src/file-manager/fm-directory-view.c:6296
+#: ../src/file-manager/fm-directory-view.c:6664
+#: ../src/file-manager/fm-directory-view.c:6831
+#: ../src/file-manager/fm-directory-view.c:7176
 msgid "Mo_ve to Trash"
 msgstr "휴지통에 버리기(_V)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6193
-#: ../src/file-manager/fm-directory-view.c:6761
+#: ../src/file-manager/fm-directory-view.c:6249
+#: ../src/file-manager/fm-directory-view.c:6832
 msgid "Move each selected item to the Trash"
 msgstr "각각 선택한 항목을 휴지통에 버립니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6196
-#: ../src/file-manager/fm-directory-view.c:6244
-#: ../src/file-manager/fm-directory-view.c:6779
+#: ../src/file-manager/fm-directory-view.c:6252
+#: ../src/file-manager/fm-directory-view.c:6300
+#: ../src/file-manager/fm-directory-view.c:6850
 msgid "_Delete"
 msgstr "지우기(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6197
+#: ../src/file-manager/fm-directory-view.c:6253
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "선택한 항목을 휴지통으로 보내지 않고 지우기"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6200
+#: ../src/file-manager/fm-directory-view.c:6256
 msgid "Reset View to _Defaults"
 msgstr "기본값으로 되돌리기(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6201
+#: ../src/file-manager/fm-directory-view.c:6257
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "이 보기에서 정렬 순서와 확대 수준을 기본 설정으로 되돌립니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6204
+#: ../src/file-manager/fm-directory-view.c:6260
 msgid "Connect To This Server"
 msgstr "이 서버에 연결"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6205
+#: ../src/file-manager/fm-directory-view.c:6261
 msgid "Make a permanent connection to this server"
 msgstr "이 서버와 연결합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6208
+#: ../src/file-manager/fm-directory-view.c:6264
 msgid "_Mount Volume"
 msgstr "볼륨 마운트(_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6209
+#: ../src/file-manager/fm-directory-view.c:6265
 msgid "Mount the selected volume"
 msgstr "선택한 볼륨을 마운트합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6212
+#: ../src/file-manager/fm-directory-view.c:6268
 #: ../src/file-manager/fm-tree-view.c:750
 msgid "_Unmount Volume"
 msgstr "볼륨 마운트해제(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6213
+#: ../src/file-manager/fm-directory-view.c:6269
 msgid "Unmount the selected volume"
 msgstr "선택한 볼륨을 마운트 해제합니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6216
+#: ../src/file-manager/fm-directory-view.c:6272
 msgid "_Eject"
 msgstr "꺼내기(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6217
+#: ../src/file-manager/fm-directory-view.c:6273
 msgid "Eject the selected volume"
 msgstr "선택한 볼륨을 꺼냅니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6220
+#: ../src/file-manager/fm-directory-view.c:6276
 msgid "Open File and Close window"
 msgstr "파일을 열고 창을 닫습니다"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6227
+#: ../src/file-manager/fm-directory-view.c:6283
 msgid "Open this folder in a navigation window"
 msgstr "폴더를 찾아보기 창에서 엽니다"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6232
+#: ../src/file-manager/fm-directory-view.c:6288
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "파일 붙여 넣기 명령으로 선택된 파일을 옮길 준비를 합니다"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6236
+#: ../src/file-manager/fm-directory-view.c:6292
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "파일 붙여 넣기 명령으로 선택된 파일을 복사할 준비를 합니다"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6241
+#: ../src/file-manager/fm-directory-view.c:6297
 msgid "Move this folder to the Trash"
 msgstr "이 폴더를 휴지통에 버립니다"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6245
+#: ../src/file-manager/fm-directory-view.c:6301
 msgid "Delete this folder, without moving to the Trash"
 msgstr "이 폴더를 휴지통에 버리지 않고 지웁니다"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6251
+#: ../src/file-manager/fm-directory-view.c:6307
 msgid "Show _Hidden Files"
 msgstr "숨긴 파일 보기(_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6252
+#: ../src/file-manager/fm-directory-view.c:6308
 msgid "Toggle the display of hidden files in the current window"
 msgstr "현재 창의 숨긴 파일의 표시 여부를 토글합니다"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6301
+#: ../src/file-manager/fm-directory-view.c:6357
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s에서 혼잣말을 실행하거나 관리합니다"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6303
+#: ../src/file-manager/fm-directory-view.c:6359
 msgid "_Scripts"
 msgstr "혼잣말(_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6573
-#: ../src/file-manager/fm-directory-view.c:6728
+#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6799
 #: ../src/file-manager/fm-tree-view.c:1116
 msgid "Open in New Window"
 msgstr "새 창에서 열기"
 
-#: ../src/file-manager/fm-directory-view.c:6575
-#: ../src/file-manager/fm-directory-view.c:6736
+#: ../src/file-manager/fm-directory-view.c:6635
+#: ../src/file-manager/fm-directory-view.c:6807
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "폴더 찾아보기(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:6592
-#: ../src/file-manager/fm-directory-view.c:6756
+#: ../src/file-manager/fm-directory-view.c:6660
+#: ../src/file-manager/fm-directory-view.c:6827
 msgid "_Delete from Trash"
 msgstr "휴지통에서 지우기(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:6593
+#: ../src/file-manager/fm-directory-view.c:6661
 msgid "Delete the open folder permanently"
 msgstr "선택한 항목을 모두 지웁니다"
 
-#: ../src/file-manager/fm-directory-view.c:6597
+#: ../src/file-manager/fm-directory-view.c:6665
 msgid "Move the open folder to the Trash"
 msgstr "연 폴더를 휴지통에 버립니다"
 
-#: ../src/file-manager/fm-directory-view.c:6708
+#: ../src/file-manager/fm-directory-view.c:6779
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "%s 프로그램으로 열기(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:6730
+#: ../src/file-manager/fm-directory-view.c:6801
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "새 창 %d개에서 열기"
 
-#: ../src/file-manager/fm-directory-view.c:6757
+#: ../src/file-manager/fm-directory-view.c:6828
 msgid "Delete all selected items permanently"
 msgstr "선택한 항목을 모두 지웁니다"
 
-#: ../src/file-manager/fm-directory-view.c:7096
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "바로 가기가 가리키는 파일이 없습니다. 휴지통에 버리시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:7098
+#: ../src/file-manager/fm-directory-view.c:7169
 msgid "This link can't be used, because it has no target."
 msgstr "이 바로 가기는 가리키는 파일이 없기 때문에 쓸 수 없습니다."
 
-#: ../src/file-manager/fm-directory-view.c:7100
+#: ../src/file-manager/fm-directory-view.c:7171
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "이 바로 가기는 가리키는 파일 \"%s\"이(가) 없기 때문에 쓸 수 없습니다."
 
-#: ../src/file-manager/fm-directory-view.c:7105
+#: ../src/file-manager/fm-directory-view.c:7176
 msgid "Broken Link"
 msgstr "깨진 바로 가기"
 
-#: ../src/file-manager/fm-directory-view.c:7425
+#: ../src/file-manager/fm-directory-view.c:7496
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\"을(를) 여는 중."
 
-#: ../src/file-manager/fm-directory-view.c:7432
+#: ../src/file-manager/fm-directory-view.c:7503
 msgid "Cancel Open?"
 msgstr "열기를 취소하시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:8316
+#: ../src/file-manager/fm-directory-view.c:8389
 msgid "Download location?"
 msgstr "위치를 내려 받으시겠습니까?"
 
-#: ../src/file-manager/fm-directory-view.c:8319
+#: ../src/file-manager/fm-directory-view.c:8392
 msgid "You can download it or make a link to it."
 msgstr "내려 받거나 바로 가기를 만들 수 있습니다."
 
-#: ../src/file-manager/fm-directory-view.c:8322
+#: ../src/file-manager/fm-directory-view.c:8395
 msgid "Make a _Link"
 msgstr "바로 가기 만들기(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:8326
+#: ../src/file-manager/fm-directory-view.c:8399
 msgid "_Download"
 msgstr "내려 받기(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8385
-#: ../src/file-manager/fm-directory-view.c:8438
-#: ../src/file-manager/fm-directory-view.c:8536
+#: ../src/file-manager/fm-directory-view.c:8458
+#: ../src/file-manager/fm-directory-view.c:8511
+#: ../src/file-manager/fm-directory-view.c:8609
 msgid "Drag and drop is not supported."
 msgstr "끌어서 놓기는 지원되지 않습니다."
 
-#: ../src/file-manager/fm-directory-view.c:8386
+#: ../src/file-manager/fm-directory-view.c:8459
 msgid "Drag and drop is only supported on local file systems."
 msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
 
-#: ../src/file-manager/fm-directory-view.c:8387
-#: ../src/file-manager/fm-directory-view.c:8440
-#: ../src/file-manager/fm-directory-view.c:8538
+#: ../src/file-manager/fm-directory-view.c:8460
+#: ../src/file-manager/fm-directory-view.c:8513
+#: ../src/file-manager/fm-directory-view.c:8611
 msgid "Drag and Drop Error"
 msgstr "끌어서 놓기 오류"
 
-#: ../src/file-manager/fm-directory-view.c:8439
-#: ../src/file-manager/fm-directory-view.c:8537
+#: ../src/file-manager/fm-directory-view.c:8512
+#: ../src/file-manager/fm-directory-view.c:8610
 msgid "An invalid drag type was used."
 msgstr "잘못된 끌기형식이 쓰였습니다."
 
@@ -3802,32 +3802,32 @@ msgstr "꼬리표 순서(_E)"
 msgid "Restore Icon's Original Si_ze"
 msgstr "원래 크기의 아이콘으로 되돌리기(_Z)"
 
-#: ../src/file-manager/fm-icon-view.c:1947
+#: ../src/file-manager/fm-icon-view.c:1956
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\"을(를) 가르킴"
 
-#: ../src/file-manager/fm-icon-view.c:2721
+#: ../src/file-manager/fm-icon-view.c:2730
 msgid "Icons"
 msgstr "아이콘"
 
-#: ../src/file-manager/fm-icon-view.c:2722
+#: ../src/file-manager/fm-icon-view.c:2731
 msgid "View as Icons"
 msgstr "아이콘으로 보기"
 
-#: ../src/file-manager/fm-icon-view.c:2723
+#: ../src/file-manager/fm-icon-view.c:2732
 msgid "View as _Icons"
 msgstr "아이콘으로 보기(_I)"
 
-#: ../src/file-manager/fm-icon-view.c:2724
+#: ../src/file-manager/fm-icon-view.c:2733
 msgid "The icon view encountered an error."
 msgstr "아이콘 보기 오류가 발생하였습니다."
 
-#: ../src/file-manager/fm-icon-view.c:2725
+#: ../src/file-manager/fm-icon-view.c:2734
 msgid "The icon view encountered an error while starting up."
 msgstr "아이콘 보기가 시작할 때 오류가 발생하였습니다."
 
-#: ../src/file-manager/fm-icon-view.c:2726
+#: ../src/file-manager/fm-icon-view.c:2735
 msgid "Display this location with the icon view."
 msgstr "이 위치를 아이콘 보기로 보여줍니다."
 
@@ -5038,24 +5038,24 @@ msgid "File Manager"
 msgstr "파일 관리자"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:334 ../src/nautilus-spatial-window.c:330
+#: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:330
 #: ../src/nautilus-window-menus.c:444 ../src/nautilus-window.c:151
 msgid "Nautilus"
 msgstr "노틸러스"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:366 ../src/nautilus-main.c:375
-#: ../src/nautilus-main.c:380
+#: ../src/nautilus-main.c:364 ../src/nautilus-main.c:373
+#: ../src/nautilus-main.c:378
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "노틸러스: %s 옵션은 URI와 같이 사용할 수 없습니다.\n"
 
-#: ../src/nautilus-main.c:371
+#: ../src/nautilus-main.c:369
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "노틸러스: --check는 다른 옵션과 같이 사용할 수 없습니다.\n"
 
-#: ../src/nautilus-main.c:385
+#: ../src/nautilus-main.c:383
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "노틸러스: --geometry는 하나이상의  URI와 같이 사용할 수 없습니다.\n"
