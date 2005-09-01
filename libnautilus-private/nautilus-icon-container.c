@@ -4357,7 +4357,6 @@ static gboolean
 handle_focus_in_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
 	update_selected (NAUTILUS_ICON_CONTAINER (widget));
-	gtk_widget_queue_draw (widget);
 
 	return FALSE;
 }
@@ -4369,7 +4368,6 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
 	
 	update_selected (NAUTILUS_ICON_CONTAINER (widget));
-	gtk_widget_queue_draw (widget);
 
 	return FALSE;
 }
