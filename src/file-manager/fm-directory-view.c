@@ -4556,52 +4556,9 @@ add_extension_menu_items (FMDirectoryView *view,
 	}
 }
 
-static gboolean
-has_file_in_list (GList *list, NautilusFile *file)
-{
-	gboolean ret = FALSE;
-	char *mime;
-       
-	mime = nautilus_file_get_mime_type (file);
-	
-	for (; list; list = list->next) {
-		NautilusFile *tmp_file = list->data;
-		char *tmp_mime = nautilus_file_get_mime_type (tmp_file);
-
-		if (strcmp (tmp_mime, mime) == 0) {
-			ret = TRUE;
-			g_free (tmp_mime);
-			break;
-		}
-
-		g_free (tmp_mime);
-	}
-	
-	g_free (mime);
-	return ret;
-}
-
-static GList *
-get_unique_files (GList *selection)
-{
-	GList *result;
-
-	result = NULL;
-	for (; selection; selection = selection->next) {
-		if (!has_file_in_list (result,
-				       NAUTILUS_FILE (selection->data))) {
-			result = g_list_prepend (result, selection->data);
-		}
-	}	
-
-	return g_list_reverse (result);
-}
-
-
 static void
 reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 {
-	GList *unique_selection;
 	GList *items;
 	GList *l;
 	GtkUIManager *ui_manager;
@@ -4618,22 +4575,17 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 				      &view->details->extensions_menu_merge_id,
 				      &view->details->extensions_menu_action_group);
 
-	/* only query for the unique files */
-	unique_selection = get_unique_files (selection);
 	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
 					      selection);
-	
-	if (items) {
-		add_extension_menu_items (view, unique_selection, items);
-	
+	if (items != NULL) {
+		add_extension_menu_items (view, selection, items);
+
 		for (l = items; l != NULL; l = l->next) {
 			g_object_unref (l->data);
 		}
-		
+
 		g_list_free (items);
 	}
-
-	g_list_free (unique_selection);
 }
 
 static char *

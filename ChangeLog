@@ -1,3 +1,10 @@
+2005-09-06  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
+	(get_unique_files), (reset_extension_actions_menu): Always pass all
+	selected files to extension, instead of passing max. 1 per selected
+	MIME type. Fixes #314721.
+
 2005-09-05  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
