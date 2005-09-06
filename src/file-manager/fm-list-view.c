@@ -2697,6 +2697,8 @@ fm_list_view_init (FMListView *list_view)
 		 list_view, 0);
 	
 	list_view->details->type_select_state = NULL;
+	/* ensure that the zoom level is always set in begin_loading */
+	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
 }
 
 static NautilusView *

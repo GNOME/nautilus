@@ -1,3 +1,9 @@
+2005-09-06  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_init): Ensure that
+	the zoom level is initialized correctly in fm_list_view_begin_loading.
+	Fixes #314269.
+
 2005-09-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-async.c:
