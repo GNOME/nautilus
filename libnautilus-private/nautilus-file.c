@@ -471,10 +471,6 @@ finalize (GObject *object)
 		g_free (uri);
 	}
 	
-	if (file->details->monitor != NULL) {
-		nautilus_monitor_cancel (file->details->monitor);
-	}
-
 	nautilus_async_destroying_file (file);
 
 	remove_from_link_hash_table (file);

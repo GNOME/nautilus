@@ -65,8 +65,6 @@ struct NautilusFileDetails
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult get_info_error;
 
-	NautilusMonitor *monitor;
-	
 	guint directory_count;
 
 	guint deep_directory_count;

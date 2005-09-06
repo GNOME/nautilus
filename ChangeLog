@@ -1,3 +1,15 @@
+2005-09-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal),
+	(nautilus_directory_monitor_remove_internal):
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c: (finalize):
+	Only use directory monitors to avoid using lots and lots of
+	file monitors. This is an optimization in almost all cases, although
+	it does a bit more work when viewing a file properties dialog with the
+	containing folder window hidden. (#315041)
+
 2005-09-06  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
