@@ -1,3 +1,21 @@
+2005-09-08  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #171073:
+
+	* libnautilus-private/nautilus-trash-directory.c
+	(nautilus_trash_directory_instance_init): In addition to
+	connecting to "volume_pre_unmount" on the volume monitor, also
+	connect to "volume_unmounted".  This will let the trash clean up
+	its merged directory even if the unmount is not initiated from
+	Nautilus.
+	
+	* libnautilus-private/nautilus-merged-directory.c
+	(merged_remove_real_directory): When a real directory is removed
+	from the merged directory, emit notifications to that effect.
+	This lets the trash window remove the icons that used to
+	correspond to a volume that got unmounted.
+	(real_directory_notify_files_removed): New utility function.
+
 2005-09-06  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-list-view.c: (fm_list_view_init): Ensure that

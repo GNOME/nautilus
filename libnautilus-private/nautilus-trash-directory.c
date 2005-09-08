@@ -265,6 +265,14 @@ volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
 }
 
 static void
+volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
+			   GnomeVFSVolume *volume,
+			   NautilusTrashDirectory *trash)
+{
+	remove_volume (trash, volume);
+}
+
+static void
 nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 {
 	GnomeVFSVolumeMonitor *volume_monitor;
@@ -278,6 +286,8 @@ nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 				 G_CALLBACK (volume_mounted_callback), trash, 0);
 	g_signal_connect_object (volume_monitor, "volume_pre_unmount",
 				 G_CALLBACK (volume_unmount_started_callback), trash, 0);
+	g_signal_connect_object (volume_monitor, "volume_unmounted",
+				 G_CALLBACK (volume_unmounted_callback), trash, 0);
 }
 
 /* Finish initializing a new NautilusTrashDirectory. We have to do the
