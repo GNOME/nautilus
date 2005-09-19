@@ -204,7 +204,8 @@ GtkWidget *       nautilus_icon_container_new                           (void);
 /* adding, removing, and managing icons */
 void              nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean          nautilus_icon_container_add                           (NautilusIconContainer  *view,
-									 NautilusIconData       *data);
+									 NautilusIconData       *data,
+									 gboolean                has_lazy_position);
 void              nautilus_icon_container_layout_now                    (NautilusIconContainer *container);
 gboolean          nautilus_icon_container_remove                        (NautilusIconContainer  *view,
 									 NautilusIconData       *data);

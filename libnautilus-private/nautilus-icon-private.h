@@ -57,6 +57,7 @@ typedef struct {
 	/* Whether a monitor was set on this icon. */
 	eel_boolean_bit is_monitored : 1;
 
+	eel_boolean_bit has_lazy_position : 1;
 } NautilusIcon;
 
 

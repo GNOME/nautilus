@@ -71,6 +71,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -535,7 +536,8 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	}
 	
 	if (nautilus_icon_container_add (icon_container,
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
+					 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
 		nautilus_file_ref (file);
 	}
 }
@@ -2027,7 +2029,8 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 				fm_icon_view_remove_file (view, file);
 			} else {
 				if (nautilus_icon_container_add (icon_container,
-								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
+								 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
 					nautilus_file_ref (file);
 				}
 			}

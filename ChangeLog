@@ -1,3 +1,16 @@
+2005-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* libnautilus-private/nautilus-icon-private.h:
+	Add support for lazily positioned icons.
+	
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file),
+	(fm_icon_view_screen_changed):
+	Use lazily positioned icons for desktop icons. (#45953)
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
 2005-09-10  Erdal Ronahi  <erdal.ronahi@gmail.com>
 
         * confiure.in: Added "ku" (Kurdish) to ALL_LINGUAS
