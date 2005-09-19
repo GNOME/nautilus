@@ -111,7 +111,7 @@ main (int argc, char *argv[])
 
 	gtk_window_set_default_icon_name ("gnome-fs-directory");
 
-	dialog = nautilus_connect_server_dialog_new (NULL);
+	dialog = nautilus_connect_server_dialog_new (NULL, NULL);
 
 	open_dialogs = 1;
 	g_signal_connect (dialog, "destroy",

@@ -758,16 +758,35 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 }
 
 GtkWidget *
-nautilus_connect_server_dialog_new (NautilusWindow *window)
+nautilus_connect_server_dialog_new (NautilusWindow *window, const gchar *location)
 {
+	NautilusConnectServerDialog *conndlg;
 	GtkWidget *dialog;
+	GnomeVFSURI *uri;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG, NULL);
 
 	if (window) {
+		conndlg = NAUTILUS_CONNECT_SERVER_DIALOG (dialog);
+
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
-		NAUTILUS_CONNECT_SERVER_DIALOG (dialog)->details->application = window->application;
+		conndlg->details->application = window->application;
+
+		if (location) {
+			uri = gnome_vfs_uri_new (location);
+			g_return_val_if_fail (uri != NULL, dialog);
+
+			/* ... and if it's a remote URI, then load as the default */
+			if (!g_str_equal (gnome_vfs_uri_get_scheme (uri), "file") && 
+			    !gnome_vfs_uri_is_local (uri)) {
+
+				gtk_combo_box_set_active (GTK_COMBO_BOX (conndlg->details->type_combo), TYPE_URI);
+				gtk_entry_set_text (GTK_ENTRY (conndlg->details->uri_entry), location);
+			}
+;
+			gnome_vfs_uri_unref (uri);
+		}
 	}
 
 	return dialog;
