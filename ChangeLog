@@ -1,3 +1,15 @@
+2005-09-19  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move),:
+	Try to use the trash associated with a symlink's parent directory if
+	resolution fails because of broken symlink when moving symlink to
+	trash.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_self_check_file_operations):
+	Fix date self checks. Fixes #47364.
+
 2005-09-19  Alexander Larsson  <alexl@redhat.com>
 
 	* icons/Makefile.am:
