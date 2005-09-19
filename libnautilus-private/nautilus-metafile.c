@@ -1414,6 +1414,8 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 {
 	xmlNodePtr source_node, node, root;
 	GHashTable *hash, *changes;
+	char *source_file_uri;
+	char *destination_file_uri;
 
 	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
 	g_return_if_fail (source_file_name != NULL);
@@ -1457,9 +1459,12 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 		}
 	}
 
-	/* FIXME: Do we want to copy the thumbnail here like in the
-	 * rename and remove cases?
-	 */
+	/* Copy the thumbnail for the file, if any. */
+	source_file_uri = metafile_get_file_uri (source_metafile, source_file_name);
+	destination_file_uri = metafile_get_file_uri (destination_metafile, destination_file_name);
+	nautilus_update_thumbnail_file_copied (source_file_uri, destination_file_uri);
+	g_free (source_file_uri);
+	g_free (destination_file_uri);
 }
 
 static void

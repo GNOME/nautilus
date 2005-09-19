@@ -1,5 +1,15 @@
 2005-09-19  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-metafile.c: (copy_file_metadata):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_update_thumbnail_file_copied),
+	(nautilus_update_thumbnail_file_renamed),
+	(nautilus_remove_thumbnail_for_file):
+	* libnautilus-private/nautilus-thumbnails.h:
+	Copy thumbnails when copying file metadata. Fixes #45191.
+
+2005-09-19  Christian Neumair  <chris@gnome-de.org>
+
 	* src/file-manager/fm-list-view.c: (drag_begin_callback),
 	(motion_notify_callback):
 	Setup drag in the "drag-begin" handler.
