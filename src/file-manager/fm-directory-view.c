@@ -6277,11 +6277,12 @@ connect_proxy (FMDirectoryView *view,
 						   "gnome-fs-regular",
 						   NAUTILUS_ICON_SIZE_FOR_MENUS,
 						   0, NULL);
+		if (pixbuf != NULL) {
+			image = gtk_image_new_from_pixbuf (pixbuf);
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
 
-		image = gtk_image_new_from_pixbuf (pixbuf);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
-
-		gdk_pixbuf_unref (pixbuf);
+			gdk_pixbuf_unref (pixbuf);
+		}
 	}
 }
 

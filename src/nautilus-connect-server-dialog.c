@@ -212,14 +212,20 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			g_free (t);
 		}
 		if (dialog->details->domain_entry->parent != NULL) {
-	
 			free_domain = TRUE;
 
 			domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
 			
 			if (strlen (domain) != 0) {
-				g_free (user);
-				user = g_strconcat (domain , ";" , user, NULL);
+				t = user;
+
+				user = g_strconcat (domain , ";" , t, NULL);
+
+				if (free_user) {
+					g_free (t);
+				}
+
+				free_user = TRUE;
 			}
 		}
 

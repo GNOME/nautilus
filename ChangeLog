@@ -1,3 +1,30 @@
+2005-09-20  christian neumair  <chris@gnome-de.org>
+
+	* src/nautilus-connect-server-dialog.c: (connect_to_server):
+	Fix leak and crasher. Fixes #314730.
+
+	* src/file-manager/fm-directory-view.c: (connect_proxy):
+	Don't poke around with null pixbuf if icon theme lookup failed.
+
+	* libnautilus-private/nautilus-desktop-directory-file.c:
+	(desktop_directory_file_get_deep_counts):
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_deep_counts),
+	(nautilus_file_get_string_attribute_with_default:):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-trash-file.c:
+	(trash_file_get_deep_counts):
+	* src/file-manager/fm-properties-window.c:
+	(directory_contents_value_field_update),
+	(attach_directory_contents_value_field),
+	(update_visibility_of_item_count_fields),
+	(update_visibility_of_item_count_fields_wrapper),
+	(remember_directory_contents_widget),
+	(append_directory_contents_fields), (real_destroy):
+	Add force flag to nautilus_file_get_deep_counts, which forces
+	generation even if the "show deep count" preference is turned off.
+	pass TRUE in property window and FALSE everywhere else. Fixes #126068.
+
 2005-09-19  Nate Nielsen <nielsen@memberwebs.com>
 
 	* nautilus-connect-server-dialog-main.c: (main):
