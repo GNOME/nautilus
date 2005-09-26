@@ -467,7 +467,10 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	int width, height;
 	int item_offset_x, item_offset_y;
 	ArtIRect icon_rect;
+	ArtIRect emblem_rect;
 	GdkPixbuf *pixbuf;
+	GdkPixbuf *emblem_pixbuf;
+	EmblemLayout emblem_layout;
 	double item_x, item_y;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
@@ -496,14 +499,42 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 				 gdk_colormap_get_visual (colormap)->depth);
 	gdk_drawable_set_colormap (GDK_DRAWABLE (pixmap), colormap);
 
-	pixbuf = item->details->pixbuf;
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+				 TRUE,
+				 gdk_pixbuf_get_bits_per_sample (item->details->pixbuf),
+				 width, height);
+	gdk_pixbuf_fill (pixbuf, 0x00000000);
+
+	gdk_pixbuf_composite (item->details->pixbuf, pixbuf,
+			      item_offset_x, item_offset_y,
+			      gdk_pixbuf_get_width (item->details->pixbuf),
+			      gdk_pixbuf_get_height (item->details->pixbuf),
+			      item_offset_x, item_offset_y, 1.0, 1.0,
+			      GDK_INTERP_BILINEAR, 255);
+
+	icon_rect.x0 = item_offset_x;
+	icon_rect.y0 = item_offset_y;
+	icon_rect.x1 = item_offset_x + gdk_pixbuf_get_width (item->details->pixbuf);
+	icon_rect.y1 = item_offset_y + gdk_pixbuf_get_height (item->details->pixbuf);
+
+	emblem_layout_reset (&emblem_layout, item, icon_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		gdk_pixbuf_composite (emblem_pixbuf, pixbuf,
+				      emblem_rect.x0, emblem_rect.y0,
+				      gdk_pixbuf_get_width (emblem_pixbuf),
+				      gdk_pixbuf_get_height (emblem_pixbuf),
+				      emblem_rect.x0, emblem_rect.y0,
+				      1.0, 1.0,
+				      GDK_INTERP_BILINEAR, 255);
+	}
+
 	gc = gdk_gc_new (pixmap);
 	gdk_draw_rectangle (pixmap, GTK_WIDGET (canvas)->style->white_gc,
 			    TRUE,
 			    0, 0,
 			    width, height);
 	gdk_draw_pixbuf (pixmap, gc, pixbuf, 
-			 0, 0, item_offset_x, item_offset_y,
+			 0, 0, 0, 0,
 			 gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
 			 GDK_RGB_DITHER_NORMAL,
 			 0, 0);
@@ -520,20 +551,18 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	g_object_unref (gc);
 	  
 	gdk_pixbuf_render_threshold_alpha (pixbuf, *mask,
-					   0, 0, item_offset_x, item_offset_y,
+					   0, 0, 0, 0,
 					   gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
 					   128);
 	
 	draw_embedded_text (item, GDK_DRAWABLE (pixmap),
 			    item_offset_x, item_offset_y);
 
-	icon_rect.x0 = item_offset_x;
-	icon_rect.y0 = item_offset_y;
-	icon_rect.x1 = item_offset_x + gdk_pixbuf_get_width (pixbuf);
-	icon_rect.y1 = item_offset_y + gdk_pixbuf_get_height (pixbuf);
 	draw_label_text (item, GDK_DRAWABLE (pixmap), FALSE, icon_rect);
 	draw_label_text (item, GDK_DRAWABLE (*mask), TRUE, icon_rect);
-	
+
+	gdk_pixbuf_unref (pixbuf);
+
 	return pixmap;
 }
 

@@ -5696,28 +5696,23 @@ action_mount_volume_callback (GtkAction *action,
 			      gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	FMDirectoryView *view;
 
         view = FM_DIRECTORY_VIEW (data);
 	
 	selection = fm_directory_view_get_selection (view);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
 
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+		if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+			}
 		}
 	}
-
 	nautilus_file_list_free (selection);
 }
 
@@ -5766,7 +5761,7 @@ action_unmount_volume_callback (GtkAction *action,
 				gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	GnomeVFSVolume *volume;
 	FMDirectoryView *view;
@@ -5775,34 +5770,29 @@ action_unmount_volume_callback (GtkAction *action,
 	
 	selection = fm_directory_view_get_selection (view);
 
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL) {
-			gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
-		}
-	} else if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_has_volume (file)) {
+			volume = nautilus_file_get_volume (file);
+			if (volume != NULL) {
+				gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
+			}
+		} else if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+			}
 		}
 	}
-	
 	nautilus_file_list_free (selection);
 }
 
 static void
 action_eject_volume_callback (GtkAction *action,
-				gpointer data)
+			      gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	GnomeVFSVolume *volume;
 	FMDirectoryView *view;
@@ -5810,26 +5800,21 @@ action_eject_volume_callback (GtkAction *action,
         view = FM_DIRECTORY_VIEW (data);
 	
 	selection = fm_directory_view_get_selection (view);
-
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL) {
-			gnome_vfs_volume_eject (volume, volume_or_drive_ejected_callback, NULL);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		
+		if (nautilus_file_has_volume (file)) {
+			volume = nautilus_file_get_volume (file);
+			if (volume != NULL) {
+				gnome_vfs_volume_eject (volume, volume_or_drive_ejected_callback, NULL);
+			}
+		} else if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_eject (drive, volume_or_drive_ejected_callback, NULL);
+			}
 		}
-	} else if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_eject (drive, volume_or_drive_ejected_callback, NULL);
-		}
-	}
-	
+	}	
 	nautilus_file_list_free (selection);
 }
 
@@ -6459,55 +6444,86 @@ file_list_all_are_folders (GList *file_list)
 }
 
 static void
+file_should_show_foreach (NautilusFile *file,
+			  gboolean     *show_mount,
+			  gboolean     *show_unmount,
+			  gboolean     *show_eject,
+			  gboolean     *show_connect)
+{
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+	char *uri;
+
+	*show_mount = FALSE;
+	*show_unmount = FALSE;
+	*show_eject = FALSE;
+	*show_connect = FALSE;
+
+	if (nautilus_file_has_volume (file)) {
+		*show_unmount = TRUE;
+
+		volume = nautilus_file_get_volume (file);
+		*show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+	} else if (nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		*show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+		if (gnome_vfs_drive_is_mounted (drive)) {
+			*show_unmount = TRUE;
+		} else {
+			*show_mount = TRUE;
+		}
+	} else if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_activation_uri (file);
+		if (uri != NULL &&
+		    (eel_istr_has_prefix (uri, "ftp:") ||
+		     eel_istr_has_prefix (uri, "dav:") ||
+		     eel_istr_has_prefix (uri, "davs:"))) {
+			*show_connect = TRUE;
+		}
+		g_free (uri);
+	} else if (nautilus_file_is_mime_type (file,
+					       "x-directory/smb-share")) {
+		*show_connect = TRUE;
+	}
+}
+
+static void
 real_update_menus_volumes (FMDirectoryView *view,
 			   GList *selection,
 			   gint selection_count)
 {
+	GList *l;
 	NautilusFile *file;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
-	GnomeVFSVolume *volume;
-	GnomeVFSDrive *drive;
 	GtkAction *action;
-	char *uri;
 
-	show_mount = FALSE;
-	show_unmount = FALSE;
-	show_eject = FALSE;
-	show_connect = FALSE;
+	show_mount = (selection != NULL);
+	show_unmount = (selection != NULL);
+	show_eject = (selection != NULL);
+	show_connect = (selection != NULL && selection_count == 1);
 
-	if (selection_count == 1) {
-		file = NAUTILUS_FILE (selection->data);
+	for (l = selection; l != NULL && (show_mount || show_unmount
+					  || show_eject || show_connect);
+	     l = l->next) {
+		gboolean show_mount_one;
+		gboolean show_unmount_one;
+		gboolean show_eject_one;
+		gboolean show_connect_one;
 
-		if (nautilus_file_has_volume (file)) {
-			show_unmount = TRUE;
+		file = NAUTILUS_FILE (l->data);
+		file_should_show_foreach (file,
+					  &show_mount_one,
+					  &show_unmount_one,
+					  &show_eject_one,
+					  &show_connect_one);
 
-			volume = nautilus_file_get_volume (file);
-			show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
-		} else if (nautilus_file_has_drive (file)) {
-			drive = nautilus_file_get_drive (file);
-			show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
-			if (gnome_vfs_drive_is_mounted (drive)) {
-				show_unmount = TRUE;
-			} else {
-				show_mount = TRUE;
-			}
-		} else if (nautilus_file_is_nautilus_link (file)) {
-			uri = nautilus_file_get_activation_uri (file);
-			if (uri != NULL &&
-			    (eel_istr_has_prefix (uri, "ftp:") ||
-			     eel_istr_has_prefix (uri, "dav:") ||
-			     eel_istr_has_prefix (uri, "davs:"))) {
-				show_connect = TRUE;
-			}
-			g_free (uri);
-		} else if (nautilus_file_is_mime_type (file,
-						       "x-directory/smb-share")) {
-			show_connect = TRUE;
-		}
-										      
+		show_mount &= show_mount_one;
+		show_unmount &= show_unmount_one;
+		show_eject &= show_eject_one;
+		show_connect &= show_connect_one;
 	}
 
 	/* We don't want both eject and unmount, since eject

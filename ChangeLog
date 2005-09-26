@@ -1,3 +1,20 @@
+2005-09-26  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-desktop-directory.c:
+	(desktop_directory_changed_callback), (desktop_finalize),
+	(update_desktop_directory): Make changes to "desktop_is_home_dir"
+	GConf key instant apply. Fixes #116217.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_get_image): Add emblems to drag icon.
+	Partially fixes	#159643.
+
+	* src/file-manager/fm-directory-view.c:
+	(action_mount_volume_callback), (action_unmount_volume_callback),
+	(action_eject_volume_callback), (file_should_show_foreach),
+	(real_update_menus_volumes): Allow to mount/unmount/eject multiple
+	volumes at once. Fixes #156169.
+
 2005-09-20  christian neumair  <chris@gnome-de.org>
 
 	* src/nautilus-connect-server-dialog.c: (connect_to_server):
