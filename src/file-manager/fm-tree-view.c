@@ -487,11 +487,12 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 	NautilusFile *file_a, *file_b;
 	int result;
 
+	/* Dummy rows are always first */
 	if (a->user_data == NULL) {
 		return -1;
 	}
 	else if (b->user_data == NULL) {
-		return -1;
+		return 1;
 	}
 
 	/* don't sort root nodes */
