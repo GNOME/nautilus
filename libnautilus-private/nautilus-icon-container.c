@@ -96,7 +96,6 @@
 #define ICON_PAD_BOTTOM 4
 
 #define CONTAINER_PAD_LEFT 4
-#define CONTAINER_PAD_RIGHT 4
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
@@ -835,8 +834,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		x1 -= CONTAINER_PAD_LEFT;
 		y1 -= CONTAINER_PAD_TOP;
 	}
-	
-	x2 += CONTAINER_PAD_RIGHT;
+
 	y2 += CONTAINER_PAD_BOTTOM;
 
 	if (reset_scroll_region) {
@@ -1056,11 +1054,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		height_below = bounds.y1 - icon_bounds.y1;
 
 		/* If this icon doesn't fit, it's time to lay out the line that's queued up. */
-		
-		/* FIXME: why don't we want to guarantee a small white space to the right of
-		 * the last column just like we guarantee a small white space to the left of
-		 * the first column?
-		 */
 		if (line_start != p && line_width + icon_width > canvas_width ) {
 			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 				y += ICON_PAD_TOP;
@@ -1078,7 +1071,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 				y += max_height_below + ICON_PAD_BOTTOM;
 			}
 			
-			line_width = 0;
+			line_width = container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
 			line_start = p;
 			i = 0;
 			

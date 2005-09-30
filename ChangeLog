@@ -1,3 +1,11 @@
+2005-09-30  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region),
+	(lay_down_icons_horizontal):
+	Only wrap icons when the right margin touches the rightmost icon.
+	Fixes #313025.
+
 2005-09-30  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-tree-view.c: (compare_rows):
