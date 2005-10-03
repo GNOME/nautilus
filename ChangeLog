@@ -1,5 +1,13 @@
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(nautilus_directory_get_file_metadata):
+	On assert failure, return default metadata, not NULL.
+	Partial fix of #308977.
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window.c:
 	Verify arguments in public functions.
 	Patch from Christian Neumair.
