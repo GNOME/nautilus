@@ -28,6 +28,7 @@
 
 #include <glib-object.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
 
 G_BEGIN_DECLS
 
@@ -74,6 +75,11 @@ struct _NautilusFileInfoIface
 						   const char       *attribute_name,
 						   const char       *value);
 	void              (*invalidate_extension_info) (NautilusFileInfo *file);
+	
+	gboolean              (*has_volume)       (NautilusFileInfo *file);
+	gboolean              (*has_drive)        (NautilusFileInfo *file);
+	GnomeVFSVolume*       (*get_volume)       (NautilusFileInfo *file);
+	GnomeVFSDrive*        (*get_drive)        (NautilusFileInfo *file);
 };
 
 GList            *nautilus_file_info_list_copy            (GList            *files);
@@ -113,6 +119,12 @@ void              nautilus_file_info_add_string_attribute (NautilusFileInfo *fil
 
 /* Invalidating file info */
 void              nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file);
+
+/* Volumes and Drives */
+gboolean          nautilus_file_info_has_volume           (NautilusFileInfo *file);
+gboolean          nautilus_file_info_has_drive            (NautilusFileInfo *file);
+GnomeVFSVolume*   nautilus_file_info_get_volume           (NautilusFileInfo *file);
+GnomeVFSDrive*    nautilus_file_info_get_drive            (NautilusFileInfo *file);
 
 G_END_DECLS
 

@@ -6092,6 +6092,10 @@ nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
 	iface->get_string_attribute = nautilus_file_get_string_attribute;
 	iface->add_string_attribute = nautilus_file_add_string_attribute;
 	iface->invalidate_extension_info = nautilus_file_invalidate_extension_info;
+	iface->has_volume = nautilus_file_has_volume;
+	iface->has_drive = nautilus_file_has_drive;   
+	iface->get_volume = nautilus_file_get_volume;
+	iface->get_drive = nautilus_file_get_drive;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

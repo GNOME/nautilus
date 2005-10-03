@@ -1,5 +1,16 @@
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-extension/nautilus-file-info.c:
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-private/nautilus-file.c:
+	Add new functions for extensions:
+	nautilus_file_info_has_volume, nautilus_file_info_has_drive,
+	nautilus_file_info_get_volume, nautilus_file_info_get_drive
+
+	Patch from Trevor Davenport
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Bump version to 2.13.1. Further 2.12.x work is on
 	gnome-2-12 branch.
