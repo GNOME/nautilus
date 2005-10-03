@@ -1,5 +1,13 @@
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_new_file):
+	Correctly escape input strings for GMarkup. (#317736)
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-model.c:
 	(fm_list_model_sort_file_entries):
 	Correctly pass iter to gtk_tree_model_rows_reordered() (#315704)
