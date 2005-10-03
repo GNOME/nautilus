@@ -1,5 +1,12 @@
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_sort_file_entries):
+	Correctly pass iter to gtk_tree_model_rows_reordered() (#315704)
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory-metafile.c:
 	(nautilus_directory_get_file_metadata):
 	On assert failure, return default metadata, not NULL.

@@ -572,10 +572,12 @@ static void
 fm_list_model_sort_file_entries (FMListModel *model, GSequence *files, GtkTreePath *path)
 {
 	GSequencePtr *old_order;
+	GtkTreeIter iter;
 	int *new_order;
 	int length;
 	int i;
 	FileEntry *file_entry;
+	gboolean has_iter;
 
 	length = g_sequence_get_length (files);
 
@@ -611,8 +613,17 @@ fm_list_model_sort_file_entries (FMListModel *model, GSequence *files, GtkTreePa
 	/* Let the world know about our new order */
 
 	g_assert (new_order != NULL);
+
+	has_iter = FALSE;
+	if (gtk_tree_path_get_depth (path) != 0) {
+		gboolean get_iter_result;
+		has_iter = TRUE;
+		get_iter_result = gtk_tree_model_get_iter (GTK_TREE_MODEL (model), &iter, path);
+		g_assert (get_iter_result);
+	}
+
 	gtk_tree_model_rows_reordered (GTK_TREE_MODEL (model),
-				       path, NULL, new_order);
+				       path, has_iter ? &iter : NULL, new_order);
 
 	g_free (old_order);
 	g_free (new_order);
