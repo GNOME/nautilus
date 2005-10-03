@@ -1,5 +1,14 @@
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-private.h:
+	Don't crash if file removed during start of drag. (#158196)
+	Patch from Christian Neumair.
+
+	Remove remove_context_menu_timeout, which is not needed anymore.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/nautilus-directory-view-ui.xml:
 	Fix some spelling errors.
 	Patch from Lukasz Stelmach <stlman@poczta.fm>

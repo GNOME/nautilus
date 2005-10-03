@@ -3354,20 +3354,10 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 }
 
 static void
-remove_context_menu_timeout (NautilusIconContainer *container)
-{
-	if (container->details->context_menu_timeout_id != 0) {
-		g_source_remove (container->details->context_menu_timeout_id);
-		container->details->context_menu_timeout_id = 0;
-	}
-}
-
-static void
 clear_drag_state (NautilusIconContainer *container)
 {
 	container->details->drag_icon = NULL;
 	container->details->drag_state = DRAG_STATE_INITIAL;
-	remove_context_menu_timeout (container);
 }
 
 static gboolean
@@ -3585,8 +3575,6 @@ motion_notify_event (GtkWidget *widget,
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
-
-	remove_context_menu_timeout (container);
 
 	if (details->drag_button != 0) {
 		switch (details->drag_state) {
@@ -4789,6 +4777,9 @@ icon_destroy (NautilusIconContainer *container,
 
 	if (details->keyboard_icon_to_reveal == icon) {
 		unschedule_keyboard_icon_reveal (container);
+	}
+	if (details->drag_icon == icon) {
+		clear_drag_state (container);
 	}
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
