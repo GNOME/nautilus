@@ -200,6 +200,8 @@ nautilus_window_init (NautilusWindow *window)
 static void
 nautilus_window_ui_update (NautilusWindow *window)
 {
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
 	gtk_ui_manager_ensure_update (window->details->ui_manager);
 }
 
@@ -218,6 +220,8 @@ nautilus_window_clear_status (gpointer callback_data)
 void
 nautilus_window_set_status (NautilusWindow *window, const char *text)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (text != NULL && text[0] != '\0') {
 		gtk_statusbar_push (GTK_STATUSBAR (window->details->statusbar), 0, text);
 	} else {
@@ -228,6 +232,8 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 void
 nautilus_window_go_to (NautilusWindow *window, const char *uri)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	nautilus_window_open_location (window, uri, FALSE);
 }
 
@@ -235,6 +241,8 @@ nautilus_window_go_to (NautilusWindow *window, const char *uri)
 void
 nautilus_window_go_to_with_selection (NautilusWindow *window, const char *uri, GList *new_selection)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	nautilus_window_open_location_with_selection (window, uri, new_selection, FALSE);
 }
 
@@ -254,7 +262,9 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 	GnomeVFSURI *parent_uri;
 	GList *selection;
 	char *parent_uri_string;
-	
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (window->details->location == NULL) {
 		return;
 	}
@@ -297,6 +307,8 @@ real_set_allow_up (NautilusWindow *window,
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
 			 set_allow_up, (window, allow));
 }
@@ -356,6 +368,8 @@ nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
 
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	
 	g_assert (home_uri != NULL);
@@ -366,7 +380,7 @@ nautilus_window_go_home (NautilusWindow *window)
 void
 nautilus_window_prompt_for_location (NautilusWindow *window)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          prompt_for_location, (window));
@@ -383,6 +397,8 @@ nautilus_window_get_location (NautilusWindow *window)
 void
 nautilus_window_zoom_in (NautilusWindow *window)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (window->content_view != NULL) {
 		nautilus_view_bump_zoom_level (window->content_view, 1);
 	}
@@ -400,6 +416,8 @@ nautilus_window_zoom_to_level (NautilusWindow *window,
 void
 nautilus_window_zoom_out (NautilusWindow *window)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (window->content_view != NULL) {
 		nautilus_view_bump_zoom_level (window->content_view, -1);
 	}
@@ -408,6 +426,8 @@ nautilus_window_zoom_out (NautilusWindow *window)
 void
 nautilus_window_zoom_to_default (NautilusWindow *window)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (window->content_view != NULL) {
 		nautilus_view_restore_default_zoom_level (window->content_view);
 	}
@@ -490,6 +510,8 @@ nautilus_window_set_initial_window_geometry (NautilusWindow *window)
 void
 nautilus_window_constructed (NautilusWindow *window)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	nautilus_window_set_initial_window_geometry (window);
 	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));
 }
@@ -1006,7 +1028,9 @@ void
 nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 {
 	GtkWidget *dialog;
-	
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	dialog = gtk_message_dialog_new (GTK_WINDOW (window), 0, GTK_MESSAGE_ERROR,
 					 GTK_BUTTONS_OK, error_msg, NULL);
 	gtk_widget_show (dialog);
@@ -1055,7 +1079,7 @@ real_set_title (NautilusWindow *window,
 	g_free (window->details->title);
         window->details->title = g_strdup (title);
 
-        if (window->details->title [0] != '\0' && window->current_location_bookmark &&
+        if (eel_strlen (window->details->title) > 0 && window->current_location_bookmark &&
             nautilus_bookmark_set_name (window->current_location_bookmark, window->details->title)) {
                 /* Name of item in history list changed, tell listeners. */
                 nautilus_send_history_list_changed ();
@@ -1073,6 +1097,8 @@ static void
 nautilus_window_set_title (NautilusWindow *window, 
 			   const char *title)
 {
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	if (window->details->title != NULL
 	    && strcmp (title, window->details->title) == 0) {
 		return;
@@ -1094,6 +1120,8 @@ void
 nautilus_window_update_title (NautilusWindow *window)
 {
 	char *title;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	
 	title = nautilus_window_get_title (window);
 	nautilus_window_set_title (window, title);
@@ -1112,6 +1140,8 @@ void
 nautilus_window_update_icon (NautilusWindow *window)
 {
 	char *icon_name;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	icon_name = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
 						       get_icon_name, (window));
@@ -1165,7 +1195,7 @@ void
 nautilus_window_set_content_view_widget (NautilusWindow *window,
 					 NautilusView *frame)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          set_content_view_widget, (window, frame));
@@ -1193,6 +1223,8 @@ nautilus_window_show (GtkWidget *widget)
 GtkUIManager *
 nautilus_window_get_ui_manager (NautilusWindow *window)
 {
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
 	return window->details->ui_manager;
 }
 
@@ -1329,7 +1361,7 @@ real_add_current_location_to_history_list (NautilusWindow *window)
 void
 nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 {
-        g_assert (NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          add_current_location_to_history_list, (window));
@@ -1393,6 +1425,8 @@ nautilus_window_get_history (NautilusWindow *window)
 static NautilusWindowType
 nautilus_window_get_window_type (NautilusWindow *window)
 {
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NAUTILUS_WINDOW_SPATIAL);
+
 	return NAUTILUS_WINDOW_GET_CLASS (window)->window_type;
 }
 
