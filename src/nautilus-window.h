@@ -29,8 +29,8 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <bonobo/bonobo-window.h>
 #include <gtk/gtkuimanager.h>
+#include <gtk/gtkwindow.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-window-info.h>
@@ -143,4 +143,6 @@ void             nautilus_window_allow_burn_cd        (NautilusWindow    *window
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
+void		 nautilus_window_set_search_mode      (NautilusWindow    *window,
+                                                       gboolean           search_mode);
 #endif

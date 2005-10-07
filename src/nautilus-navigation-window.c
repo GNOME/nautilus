@@ -143,10 +143,18 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
 			  /* X direction */                   /* Y direction */
-			  0, 1,                               3, 4,
+			  0, 1,                               4, 5,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
+
+	window->details->content_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (window->details->content_vbox), 
+			    NAUTILUS_WINDOW (window)->details->search_bar, FALSE, FALSE, 0);
+	gtk_widget_show (window->details->content_vbox);
+	nautilus_horizontal_splitter_pack2 (
+		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
+		window->details->content_vbox);
 
 	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_initialize_menus (window);
@@ -860,9 +868,8 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 
 	connect_view (window, new_view);
 
-	nautilus_horizontal_splitter_pack2 (
-		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
-		GTK_WIDGET (new_view));
+	gtk_box_pack_start (GTK_BOX (window->details->content_vbox), 
+			    GTK_WIDGET (new_view), TRUE, TRUE, 0);
 
 	if (new_view != NULL && nautilus_view_supports_zooming (new_view)) {
 		gtk_widget_show (window->zoom_control);

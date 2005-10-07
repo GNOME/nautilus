@@ -3589,6 +3589,7 @@ motion_notify_event (GtkWidget *widget,
 	NautilusIconContainerDetails *details;
 	double world_x, world_y;
 	int canvas_x, canvas_y;
+	GdkDragAction actions;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
@@ -3621,13 +3622,16 @@ motion_notify_event (GtkWidget *widget,
 						  &canvas_x,
 						  &canvas_y);
 
+				actions = GDK_ACTION_COPY
+					| GDK_ACTION_LINK
+					| GDK_ACTION_ASK;
+
+				if (container->details->drag_allow_moves) {
+					actions |= GDK_ACTION_MOVE;
+				}
+
 				nautilus_icon_dnd_begin_drag (container,
-							      details->drag_state == DRAG_STATE_MOVE_OR_COPY
-							      ? (GDK_ACTION_MOVE 
-								 | GDK_ACTION_COPY 
-								 | GDK_ACTION_LINK
-								 | GDK_ACTION_ASK)
-							      : GDK_ACTION_ASK,
+							      actions,
 							      details->drag_button,
 							      event, 
 							      canvas_x,
@@ -5169,7 +5173,7 @@ finish_adding_icon (NautilusIconContainer *container,
 static void
 finish_adding_new_icons (NautilusIconContainer *container)
 {
-	GList *p, *new_icons, *no_position_icons, *semi_position_icons;
+	GList *p, *new_icons, *no_position_icons;
 	NautilusIcon *icon;
 	double bottom;
 
@@ -5178,60 +5182,15 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 	/* Position most icons (not unpositioned manual-layout icons). */
 	new_icons = g_list_reverse (new_icons);
-	no_position_icons = semi_position_icons = NULL;
+	no_position_icons = NULL;
 	for (p = new_icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (!assign_icon_position (container, icon)) {
 			no_position_icons = g_list_prepend (no_position_icons, icon);
-		} else if (!container->details->auto_layout &&
-			   icon->has_lazy_position) {
-			semi_position_icons = g_list_prepend (semi_position_icons, icon);
 		}
 		finish_adding_icon (container, icon);
 	}
 	g_list_free (new_icons);
-
-	if (semi_position_icons != NULL) {
-		PlacementGrid *grid;
-
-		g_assert (!container->details->auto_layout);
-
-		semi_position_icons = g_list_reverse (semi_position_icons);
-
-		grid = placement_grid_new (container, TRUE);
-
-		for (p = container->details->icons; p != NULL; p = p->next) {
-			icon = p->data;
-
-			if (icon_is_positioned (icon) && !icon->has_lazy_position) {
-				placement_grid_mark_icon (grid, icon);
-			}
-		}
-
-		for (p = semi_position_icons; p != NULL; p = p->next) {
-			NautilusIcon *icon;
-			int x, y;
-
-			icon = p->data;
-			x = icon->x;
-			y = icon->y;
-
-			find_empty_location (container, grid, 
-					     icon, x, y, &x, &y);
-
-			icon_set_position (icon, x, y);
-
-			placement_grid_mark_icon (grid, icon);
-
-			/* ensure that next time we run this code, the formerly semi-positioned
-			 * icons are treated as being positioned. */
-			icon->has_lazy_position = FALSE;
-		}
-
-		placement_grid_free (grid);
-
-		g_list_free (semi_position_icons);
-	}
 
 	/* Position the unpositioned manual layout icons. */
 	if (no_position_icons != NULL) {
@@ -5248,18 +5207,13 @@ finish_adding_new_icons (NautilusIconContainer *container)
  * nautilus_icon_container_add:
  * @container: A NautilusIconContainer
  * @data: Icon data.
- * @has_lazy_position: Whether the saved icon position should only be used
- * 		       if the previous icon position is free. If the position
- * 		       is occupied, another position near the last one will
- * 		       be used.
  * 
  * Add icon to represent @data to container.
  * Returns FALSE if there was already such an icon.
  **/
 gboolean
 nautilus_icon_container_add (NautilusIconContainer *container,
-			     NautilusIconData *data,
-			     gboolean has_lazy_position)
+			     NautilusIconData *data)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -5279,7 +5233,6 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->data = data;
 	icon->x = ICON_UNPOSITIONED_VALUE;
 	icon->y = ICON_UNPOSITIONED_VALUE;
-	icon->has_lazy_position = has_lazy_position;
 	icon->scale_x = 1.0;
 	icon->scale_y = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
@@ -6767,6 +6720,23 @@ nautilus_icon_container_get_icon_description (NautilusIconContainer *container,
 	} else {
 		return NULL;
 	}
+}
+
+gboolean
+nautilus_icon_container_get_allow_moves (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->drag_allow_moves;
+}
+
+void
+nautilus_icon_container_set_allow_moves	(NautilusIconContainer *container,
+					 gboolean               allow_moves)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->drag_allow_moves = allow_moves;
 }
 
 /* NautilusIconContainerAccessible */

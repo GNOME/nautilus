@@ -204,8 +204,7 @@ GtkWidget *       nautilus_icon_container_new                           (void);
 /* adding, removing, and managing icons */
 void              nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean          nautilus_icon_container_add                           (NautilusIconContainer  *view,
-									 NautilusIconData       *data,
-									 gboolean                has_lazy_position);
+									 NautilusIconData       *data);
 void              nautilus_icon_container_layout_now                    (NautilusIconContainer *container);
 gboolean          nautilus_icon_container_remove                        (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
@@ -286,5 +285,8 @@ void              nautilus_icon_container_set_use_drop_shadows          (Nautilu
 									 gboolean                use_drop_shadows);
 char*             nautilus_icon_container_get_icon_description          (NautilusIconContainer  *container,
                                                                          NautilusIconData       *data);
+gboolean          nautilus_icon_container_get_allow_moves               (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_allow_moves               (NautilusIconContainer  *container,
+									 gboolean                allow_moves);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

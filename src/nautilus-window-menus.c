@@ -39,6 +39,7 @@
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -64,6 +65,8 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-search-engine.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"
@@ -217,11 +220,9 @@ static void
 action_connect_to_server_callback (GtkAction *action, 
 				   gpointer user_data)
 {
-	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GtkWidget *dialog;
 	
-	dialog = nautilus_connect_server_dialog_new (window, nautilus_window_get_location (window));
-
+	dialog = nautilus_connect_server_dialog_new (NAUTILUS_WINDOW (user_data));
 	gtk_widget_show (dialog);
 }
 
@@ -271,6 +272,27 @@ action_go_to_computer_callback (GtkAction *action,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       COMPUTER_URI);
+}
+
+static void
+action_search (GtkAction *action,
+	       gpointer   user_data)
+{
+	char *uri;
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (window->details->search_mode) {
+		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
+		return;
+	}
+
+	uri = nautilus_search_directory_generate_new_uri ();
+
+	nautilus_window_go_to (window, uri);
+
+	g_free (uri);
 }
 
 static void
@@ -683,6 +705,10 @@ static const GtkActionEntry main_entries[] = {
     N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },
+  { "Search", "gtk-find",					/* name, stock id */
+    N_("_Search"), "<control>F",	/* label, accelerator */
+    N_("Search for files"),
+    G_CALLBACK (action_search) }
 };
 
 /**
@@ -727,6 +753,12 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	if (!have_burn_uri ()) {
 		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
+		gtk_action_set_visible (action, FALSE);
+	}
+
+	if (!nautilus_search_engine_enabled()) {
+		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
+		gtk_action_set_sensitive (action, FALSE);
 		gtk_action_set_visible (action, FALSE);
 	}
 

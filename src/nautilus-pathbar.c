@@ -24,6 +24,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkarrow.h>
@@ -50,7 +51,8 @@ typedef enum {
         ROOT_BUTTON,
         HOME_BUTTON,
         DESKTOP_BUTTON,
-	VOLUME_BUTTON
+	VOLUME_BUTTON,
+	SEARCH_BUTTON
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *)(x))
@@ -68,6 +70,7 @@ static gboolean desktop_is_home;
 #define DEFAULT_DESKTOP_ICON 	"gnome-fs-desktop"
 #define DEFAULT_HOME_ICON 	"gnome-fs-home"
 #define DEFAULT_FILESYSTEM_ICON	"gnome-dev-harddisk"
+#define DEFAULT_SEARCH_ICON	"stock_search"
 
 typedef struct _ButtonData ButtonData;
 
@@ -304,6 +307,10 @@ nautilus_path_bar_finalize (GObject *object)
 	if (path_bar->desktop_icon) {
 		g_object_unref (path_bar->desktop_icon);
 		path_bar->desktop_icon = NULL;
+	}
+	if (path_bar->search_icon) {
+		g_object_unref (path_bar->search_icon);
+		path_bar->search_icon = NULL;
 	}
 
         G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
@@ -1102,6 +1109,15 @@ get_button_image (NautilusPathBar *path_bar,
 			g_free (icon_name);
       			return path_bar->desktop_icon;
 
+                case SEARCH_BUTTON:
+                      	if (path_bar->search_icon == NULL) {
+				path_bar->search_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_SEARCH_ICON,
+												    NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
+												    TRUE, NULL);
+			}
+
+      			return path_bar->search_icon;
+
 	    	default:
                        return NULL;
         }
@@ -1293,7 +1309,10 @@ find_button_type (NautilusPathBar  *path_bar,
 	}
 	if (is_file_path_mounted_volume (path, button_data)) {
 		return VOLUME_BUTTON;
-	}	
+	}
+	if (eel_uri_is_search (path)) {
+		return SEARCH_BUTTON;
+	}
 
  	return NORMAL_BUTTON;
 }
@@ -1354,6 +1373,7 @@ make_directory_button (NautilusPathBar  *path_bar,
                 case HOME_BUTTON:
                 case DESKTOP_BUTTON:
 		case VOLUME_BUTTON:
+		case SEARCH_BUTTON:
                         button_data->image = gtk_image_new ();
                         button_data->label = gtk_label_new (NULL);
                         label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
@@ -1507,6 +1527,10 @@ get_display_name_for_folder (const char *file_path)
 	GnomeVFSURI *vfs_uri;
 	NautilusFile *file;
 	char *name;
+
+	if (eel_uri_is_search (file_path)) {
+		return g_strdup (_("Search"));
+	}
 
 	vfs_uri = gnome_vfs_uri_new (file_path);
  	if (vfs_uri == NULL) {

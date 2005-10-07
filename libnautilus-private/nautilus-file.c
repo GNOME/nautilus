@@ -40,6 +40,8 @@
 #include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-search-directory-file.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
@@ -72,12 +74,11 @@
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5*60)
 
+
 #undef NAUTILUS_FILE_DEBUG_REF
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-extern void eazel_dump_stack_trace	(const char    *print_prefix,
-					 int		num_levels);
-/* from libleakcheck.so */
+#include <valgrind/valgrind.h>
 #endif
 
 /* Files that start with these characters sort after files that don't. */
@@ -195,19 +196,26 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 			file = NULL;
 			g_assert_not_reached ();
 		}
+	} else if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+		if (self_owned) {
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
+		} else {
+			file = NULL;
+			g_assert_not_reached ();
+		}
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
-
-#ifdef NAUTILUS_FILE_DEBUG_REF
-	printf("%10p ref'd\n", file);
-	eazel_dump_stack_trace ("\t", 10);
-#endif
 
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
 
 	file->details->relative_uri = g_strdup (relative_uri);
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
+	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
+#endif
 
 	return file;
 }
@@ -307,15 +315,17 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 
 	file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 
-#ifdef NAUTILUS_FILE_DEBUG_REF
-	printf("%10p ref'd\n", file);
-	eazel_dump_stack_trace ("\t", 10);
-#endif
-
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
 
 	update_info_and_name (file, info, FALSE);
+
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
+	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
+#endif
+
 	return file;
 }
 
@@ -404,6 +414,13 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 				relative_uri_tmp++;
 			}
 			relative_uri = strdup (relative_uri_tmp);
+		} else if (eel_uri_is_search (uri)) {
+			/* Special case search files as well. */
+			relative_uri_tmp = uri + strlen (EEL_SEARCH_URI);
+			while (*relative_uri_tmp == '/') {
+				relative_uri_tmp++;
+			}
+			relative_uri = strdup (relative_uri_tmp);
 		}
 	}
 
@@ -471,6 +488,10 @@ finalize (GObject *object)
 		g_free (uri);
 	}
 	
+	if (file->details->monitor != NULL) {
+		nautilus_monitor_cancel (file->details->monitor);
+	}
+
 	nautilus_async_destroying_file (file);
 
 	remove_from_link_hash_table (file);
@@ -524,8 +545,8 @@ nautilus_file_ref (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	printf("%10p ref'd\n", file);
-	eazel_dump_stack_trace ("\t", 10);
+	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
+	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
 #endif
 
 	g_object_ref (file);
@@ -542,8 +563,8 @@ nautilus_file_unref (NautilusFile *file)
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	printf("%10p unref'd\n", file);
-	eazel_dump_stack_trace ("\t", 10);
+	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
+	VALGRIND_PRINTF_BACKTRACE("%10p unref'd", file);
 #endif
 
 	g_object_unref (file);
@@ -3285,9 +3306,6 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
  * @unreadable_directory_count: Number of directories encountered
  * that were unreadable.
  * @total_size: Total size of all files and directories visited.
- * @force: Whether the deep counts should even be collected if
- * nautilus_file_should_show_directory_item_count returns FALSE
- * for this file.
  * 
  * Returns: Status to indicate whether sizes are available.
  * 
@@ -3297,8 +3315,7 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 			       guint *directory_count,
 			       guint *file_count,
 			       guint *unreadable_directory_count,
-			       GnomeVFSFileSize *total_size,
-			       gboolean force)
+			       GnomeVFSFileSize *total_size)
 {
 	if (directory_count != NULL) {
 		*directory_count = 0;
@@ -3315,7 +3332,7 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
 
-	if (!force && !nautilus_file_should_show_directory_item_count (file)) {
+	if (!nautilus_file_should_show_directory_item_count (file)) {
 		/* Set field so an existing value isn't treated as up-to-date
 		 * when preference changes later.
 		 */
@@ -4361,7 +4378,7 @@ nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 	g_return_val_if_fail (nautilus_file_is_directory (file), NULL);
 
 	status = nautilus_file_get_deep_counts 
-		(file, &directory_count, &file_count, &unreadable_count, &total_size, FALSE);
+		(file, &directory_count, &file_count, &unreadable_count, &total_size);
 
 	/* Check whether any info is available. */
 	if (status == NAUTILUS_REQUEST_NOT_STARTED) {
@@ -4625,7 +4642,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		return g_strdup (count_unreadable ? _("? items") : "...");
 	}
 	if (strcmp (attribute_name, "deep_size") == 0) {
-		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
 			return g_strdup (_("? bytes"));
@@ -4635,7 +4652,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	if (strcmp (attribute_name, "deep_file_count") == 0
 	    || strcmp (attribute_name, "deep_directory_count") == 0
 	    || strcmp (attribute_name, "deep_total_count") == 0) {
-		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
 			return g_strdup (_("? items"));

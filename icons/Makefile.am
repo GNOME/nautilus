@@ -3,17 +3,23 @@ NULL=
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
+	Search.png \
 	audio.svg \
 	backgrounds.png \
 	chit_frame.png \
 	colors.png \
 	emblems.png \
-	erase.png \
 	knob.png \
+	nautilus-desktop.png \
 	nautilus-launch-icon.png \
+	nautilus-mini-logo.png \
+	nautilus-server-connect.png \
+	nautilus-file-management-properties.png \
 	note-indicator.png \
+	side_bar_image.png \
 	text-selection-frame.png \
 	thumbnail_frame.png \
+	erase.png \
 	$(NULL)
 
 EXTRA_DIST = $(icon_DATA)

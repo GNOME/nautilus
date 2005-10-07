@@ -99,6 +99,8 @@ nautilus_SOURCES = \
 	nautilus-places-sidebar.h		\
 	nautilus-property-browser.c     	\
 	nautilus-property-browser.h		\
+	nautilus-search-bar.c			\
+	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell.c			\

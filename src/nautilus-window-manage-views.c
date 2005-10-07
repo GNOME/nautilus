@@ -31,6 +31,7 @@
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-location-bar.h"
+#include "nautilus-search-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
@@ -59,6 +60,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
 
@@ -690,6 +692,7 @@ begin_location_change (NautilusWindow *window,
         NautilusFile *file;
 	gboolean force_reload;
         char *current_pos;
+	gboolean uri_is_search;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
@@ -704,6 +707,10 @@ begin_location_change (NautilusWindow *window,
         nautilus_window_allow_stop (window, TRUE);
         nautilus_window_set_status (window, " ");
 
+	uri_is_search = eel_uri_is_search (location);
+
+	nautilus_window_set_search_mode (window, uri_is_search);
+
 	g_assert (window->details->pending_location == NULL);
 	g_assert (window->details->pending_selection == NULL);
 	
@@ -716,6 +723,11 @@ begin_location_change (NautilusWindow *window,
         window->details->pending_scroll_to = g_strdup (scroll_pos);
         
         directory = nautilus_directory_get (location);
+
+	if (uri_is_search) {
+		nautilus_search_bar_set_query (NAUTILUS_SEARCH_BAR (window->details->search_bar),
+					       nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory)));
+	}
 
 	/* The code to force a reload is here because if we do it
 	 * after determining an initial view (in the components), then

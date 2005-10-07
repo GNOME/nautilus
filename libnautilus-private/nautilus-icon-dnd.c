@@ -844,8 +844,7 @@ handle_local_move (NautilusIconContainer *container,
 			g_free (screen_string);
 
 			nautilus_icon_container_add (container,
-					NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					FALSE);
+					NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 			
 			icon = nautilus_icon_container_get_icon_by_uri
 				(container, item->uri);

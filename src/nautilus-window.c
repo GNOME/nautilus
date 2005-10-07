@@ -40,6 +40,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-zoom-control.h"
+#include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-gdk-extensions.h>
@@ -77,6 +78,7 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -137,12 +139,36 @@ icons_changed_callback (GObject *factory, NautilusWindow *window)
 }
 
 static void
+search_bar_activate_cb (NautilusSearchBar *bar, NautilusWindow *window)
+{
+	NautilusDirectory *directory;
+	NautilusSearchDirectory *search_directory;
+	NautilusQuery *query;
+
+	directory = nautilus_directory_get_for_file (window->details->viewed_file);
+
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
+	query = nautilus_search_bar_get_query (bar);
+
+	nautilus_search_directory_set_query (search_directory, query);
+	if (query) {
+		g_object_unref (query);
+	}
+	nautilus_window_reload (window);
+
+	nautilus_directory_unref (directory);
+}
+
+static void
 nautilus_window_init (NautilusWindow *window)
 {
 	GtkWidget *table;
 	GtkWidget *menu;
 	GtkWidget *statusbar;
-      
+	GtkWidget *search_bar;
+
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
@@ -150,7 +176,7 @@ nautilus_window_init (NautilusWindow *window)
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
-	table = gtk_table_new (1, 5, FALSE);
+	table = gtk_table_new (1, 6, FALSE);
 	window->details->table = table;
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
@@ -161,7 +187,7 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_table_attach (GTK_TABLE (table),
 			  statusbar,
 			  /* X direction */                   /* Y direction */
-			  0, 1,                               4, 5,
+			  0, 1,                               5, 6,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
 	window->details->help_message_cid = gtk_statusbar_get_context_id
@@ -180,7 +206,11 @@ nautilus_window_init (NautilusWindow *window)
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
 
-	
+	search_bar = nautilus_search_bar_new ();
+	g_signal_connect (search_bar, "activate",
+			  G_CALLBACK (search_bar_activate_cb), window);
+	window->details->search_bar = search_bar;
+
 	/* Register IconFactory callback to update the window border icon
 	 * when the icon-theme is changed.
 	 */
@@ -610,6 +640,19 @@ nautilus_window_show_window (NautilusWindow *window)
 	if (window->details->viewed_file) {
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			nautilus_file_set_has_open_window (window->details->viewed_file, TRUE);
+
+			/*
+			 * This is a quick hack to make sure that the
+			 * search entry are focused for new spatial
+			 * search windows. Ideally, the focus handling
+			 * should be fixed. Currently,
+			 * NautilusIconContainer grabs focus in its
+			 * realize handler. This will do for spatial
+			 * windows for now.
+			 */
+			if (window->details->search_mode) {
+				nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
+			}
 		}
 	}
 }
@@ -1012,7 +1055,6 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-
 static char *
 real_get_title (NautilusWindow *window)
 {
@@ -1194,6 +1236,27 @@ GtkUIManager *
 nautilus_window_get_ui_manager (NautilusWindow *window)
 {
 	return window->details->ui_manager;
+}
+
+void
+nautilus_window_set_search_mode (NautilusWindow    *window,
+				 gboolean           search_mode)
+{
+	search_mode = search_mode != FALSE;
+
+	if (search_mode == window->details->search_mode) {
+		return;
+	}
+		
+	window->details->search_mode = search_mode;
+
+	if (search_mode) {
+		gtk_widget_show (window->details->search_bar);
+		nautilus_search_bar_clear_query (NAUTILUS_SEARCH_BAR (window->details->search_bar));
+		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
+	} else {
+		gtk_widget_hide (window->details->search_bar);
+	}
 }
 
 void

@@ -45,6 +45,7 @@ struct _NautilusPathBar
 	GdkPixbuf *root_icon;
 	GdkPixbuf *home_icon;
 	GdkPixbuf *desktop_icon;
+	GdkPixbuf *search_icon;
 
 	GList *button_list;
 	GList *first_scrolled_button;

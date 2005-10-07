@@ -406,34 +406,6 @@ get_drag_pixbuf (FMListView *view)
 	return ret;
 }
 
-static void
-drag_begin_callback (GtkWidget *widget,
-		     GdkDragContext *context,
-		     FMListView *view)
-{
-	GList *ref_list;
-	GdkPixbuf *pixbuf;
-
-	pixbuf = get_drag_pixbuf (view);
-	if (pixbuf) {
-		gtk_drag_set_icon_pixbuf (context,
-					  pixbuf,
-					  0, 0);
-		g_object_unref (pixbuf);
-	} else {
-		gtk_drag_set_icon_default (context);
-	}
-
-	stop_drag_check (view);
-	view->details->drag_started = TRUE;
-	
-	ref_list = get_filtered_selection_refs (GTK_TREE_VIEW (widget));
-	g_object_set_data_full (G_OBJECT (context),
-				"drag-info",
-				ref_list,
-				(GDestroyNotify)ref_list_free);
-}
-
 static gboolean
 motion_notify_callback (GtkWidget *widget,
 			GdkEventMotion *event,
@@ -442,6 +414,8 @@ motion_notify_callback (GtkWidget *widget,
 	FMListView *view;
 	GdkDragContext *context;
 	GdkCursor *cursor;
+	GList *ref_list;
+	GdkPixbuf *pixbuf;	
 	GtkTreePath *last_hover_path;
 	GtkTreeIter iter;
 	
@@ -502,6 +476,25 @@ motion_notify_callback (GtkWidget *widget,
 				 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
 				 view->details->drag_button,
 				 (GdkEvent*)event);
+
+			stop_drag_check (view);
+			view->details->drag_started = TRUE;
+			
+			ref_list = get_filtered_selection_refs (GTK_TREE_VIEW (widget));
+			g_object_set_data_full (G_OBJECT (context),
+						"drag-info",
+						ref_list,
+						(GDestroyNotify)ref_list_free);
+
+			pixbuf = get_drag_pixbuf (view);
+			if (pixbuf) {
+				gtk_drag_set_icon_pixbuf (context,
+							  pixbuf,
+							  0, 0);
+				g_object_unref (pixbuf);
+			} else {
+				gtk_drag_set_icon_default (context);
+			}
 		}		      
 		return TRUE;
 	}
@@ -1353,8 +1346,6 @@ create_and_set_up_tree_view (FMListView *view)
 				 "changed",
 				 G_CALLBACK (list_selection_changed_callback), view, 0);
 
-	g_signal_connect_object (view->details->tree_view, "drag_begin",
-				 G_CALLBACK (drag_begin_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "drag_data_get",
 				 G_CALLBACK (drag_data_get_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "motion_notify_event",
@@ -2706,8 +2697,6 @@ fm_list_view_init (FMListView *list_view)
 		 list_view, 0);
 	
 	list_view->details->type_select_state = NULL;
-	/* ensure that the zoom level is always set in begin_loading */
-	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
 }
 
 static NautilusView *

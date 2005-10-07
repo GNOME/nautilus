@@ -413,8 +413,7 @@ desktop_directory_file_get_deep_counts (NautilusFile *file,
 						directory_count,
 						file_count,
 						unreadable_directory_count,
-						total_size,
-						TRUE);
+						total_size);
 
 	if (file_count) {
 		*file_count += g_list_length (file->details->directory->details->file_list);

@@ -71,7 +71,6 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -536,8 +535,7 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	}
 	
 	if (nautilus_icon_container_add (icon_container,
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
 }
@@ -1055,6 +1053,9 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
+	nautilus_icon_container_set_allow_moves (NAUTILUS_ICON_CONTAINER (icon_container),
+						 fm_directory_view_get_allow_moves (view));
+
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 
@@ -1533,6 +1534,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
         int selection_count;
 	GtkAction *action;
         NautilusIconContainer *icon_container;
+	gboolean editable;
 
         icon_view = FM_ICON_VIEW (view);
 
@@ -1559,8 +1561,13 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	gtk_action_set_sensitive (action,
 				  icon_container != NULL
 				  && nautilus_icon_container_is_stretched (icon_container));
-	
+
 	nautilus_file_list_free (selection);
+
+	editable = fm_directory_view_is_editable (view);
+	action = gtk_action_group_get_action (icon_view->details->icon_action_group,
+					      FM_ACTION_MANUAL_LAYOUT);
+	gtk_action_set_sensitive (action, editable);
 }
 
 static void
@@ -2029,8 +2036,7 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 				fm_icon_view_remove_file (view, file);
 			} else {
 				if (nautilus_icon_container_add (icon_container,
-								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-								 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
+								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 					nautilus_file_ref (file);
 				}
 			}

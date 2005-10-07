@@ -178,28 +178,27 @@ thumbnail_thread_starter_cb (gpointer data)
 }
 
 void
-nautilus_update_thumbnail_file_copied (const char *source_file_uri,
-				       const char *destination_file_uri)
+nautilus_update_thumbnail_file_renamed (const char *old_file_uri, const char *new_file_uri)
 {
 	char *old_thumbnail_path;
 	GdkPixbuf *pixbuf;
 	GnomeVFSFileInfo *file_info;
 	GnomeThumbnailFactory *factory;
 	
-	old_thumbnail_path = gnome_thumbnail_path_for_uri (source_file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
+	old_thumbnail_path = gnome_thumbnail_path_for_uri (old_file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
 	if (old_thumbnail_path != NULL &&
 	    g_file_test (old_thumbnail_path, G_FILE_TEST_EXISTS)) {
 		file_info = gnome_vfs_file_info_new ();
-		if (gnome_vfs_get_file_info (destination_file_uri,
+		if (gnome_vfs_get_file_info (new_file_uri,
 					     file_info,
 					     GNOME_VFS_FILE_INFO_DEFAULT) == GNOME_VFS_OK) {
 			pixbuf = gdk_pixbuf_new_from_file (old_thumbnail_path, NULL);
 			
-			if (pixbuf && gnome_thumbnail_has_uri (pixbuf, source_file_uri)) {
+			if (pixbuf && gnome_thumbnail_has_uri (pixbuf, old_file_uri)) {
 				factory = nautilus_icon_factory_get_thumbnail_factory ();
 				gnome_thumbnail_factory_save_thumbnail (factory,
 									pixbuf,
-									destination_file_uri,
+									new_file_uri,
 									file_info->mtime);
 				g_object_unref (factory);
 			}
@@ -208,6 +207,7 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 				g_object_unref (pixbuf);
 			}
 			
+			unlink (old_thumbnail_path);
 		}
 		gnome_vfs_file_info_unref (file_info);
 	}
@@ -215,24 +215,16 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 	g_free (old_thumbnail_path);
 }
 
-void
-nautilus_update_thumbnail_file_renamed (const char *source_file_uri,
-					const char *destination_file_uri)
-{
-	nautilus_update_thumbnail_file_copied (source_file_uri, destination_file_uri);
-	nautilus_remove_thumbnail_for_file (source_file_uri);
-}
-
 void 
-nautilus_remove_thumbnail_for_file (const char *file_uri)
+nautilus_remove_thumbnail_for_file (const char *old_file_uri)
 {
-	char *thumbnail_path;
+	char *old_thumbnail_path;
 	
-	thumbnail_path = gnome_thumbnail_path_for_uri (file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
-	if (thumbnail_path != NULL) {
-		unlink (thumbnail_path);
+	old_thumbnail_path = gnome_thumbnail_path_for_uri (old_file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
+	if (old_thumbnail_path != NULL) {
+		unlink (old_thumbnail_path);
 	}
-	g_free (thumbnail_path);
+	g_free (old_thumbnail_path);
 }
 
 void

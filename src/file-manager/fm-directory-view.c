@@ -88,6 +88,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-link.h>
+#include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -253,6 +254,8 @@ struct FMDirectoryViewDetails
 	guint open_with_merge_id;
 
 	GList *subdirectory_list;
+
+	gboolean allow_moves;
 };
 
 typedef enum {
@@ -1983,6 +1986,12 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 	view->details->send_selection_change_to_shell = FALSE;
 }
 
+gboolean
+fm_directory_view_get_allow_moves (FMDirectoryView *view)
+{
+	return view->details->allow_moves;
+}
+
 static void
 fm_directory_view_load_location (NautilusView *nautilus_view,
 				 const char *location)
@@ -1991,6 +2000,12 @@ fm_directory_view_load_location (NautilusView *nautilus_view,
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (nautilus_view);
+
+	if (eel_uri_is_search (location)) {
+		directory_view->details->allow_moves = FALSE;
+	} else {
+		directory_view->details->allow_moves = TRUE;
+	}
 
 	directory = nautilus_directory_get (location);
 	load_directory (directory_view, directory);
@@ -2712,6 +2727,7 @@ done_loading_callback (NautilusDirectory *directory,
 static void
 load_error_callback (NautilusDirectory *directory,
 		     GnomeVFSResult load_error_code,
+		     const char *load_error_message,
 		     gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -2727,11 +2743,11 @@ load_error_callback (NautilusDirectory *directory,
 	 * occurred, so they can handle it in the UI.
 	 */
 	g_signal_emit (view,
-			 signals[LOAD_ERROR], 0, load_error_code);
+		       signals[LOAD_ERROR], 0, load_error_code, load_error_message);
 }
 
 static void
-real_load_error (FMDirectoryView *view, GnomeVFSResult result)
+real_load_error (FMDirectoryView *view, GnomeVFSResult result, const char *error_message)
 {
 	g_assert (result != GNOME_VFS_OK);
 
@@ -2744,7 +2760,7 @@ real_load_error (FMDirectoryView *view, GnomeVFSResult result)
 	if (!view->details->reported_load_error) {
 		fm_report_error_loading_directory 
 			(fm_directory_view_get_directory_as_file (view), 
-			 result,
+			 result, error_message,
 			 fm_directory_view_get_containing_window (view));
 	}
 	view->details->reported_load_error = TRUE;
@@ -4556,9 +4572,52 @@ add_extension_menu_items (FMDirectoryView *view,
 	}
 }
 
+static gboolean
+has_file_in_list (GList *list, NautilusFile *file)
+{
+	gboolean ret = FALSE;
+	char *mime;
+       
+	mime = nautilus_file_get_mime_type (file);
+	
+	for (; list; list = list->next) {
+		NautilusFile *tmp_file = list->data;
+		char *tmp_mime = nautilus_file_get_mime_type (tmp_file);
+
+		if (strcmp (tmp_mime, mime) == 0) {
+			ret = TRUE;
+			g_free (tmp_mime);
+			break;
+		}
+
+		g_free (tmp_mime);
+	}
+	
+	g_free (mime);
+	return ret;
+}
+
+static GList *
+get_unique_files (GList *selection)
+{
+	GList *result;
+
+	result = NULL;
+	for (; selection; selection = selection->next) {
+		if (!has_file_in_list (result,
+				       NAUTILUS_FILE (selection->data))) {
+			result = g_list_prepend (result, selection->data);
+		}
+	}	
+
+	return g_list_reverse (result);
+}
+
+
 static void
 reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 {
+	GList *unique_selection;
 	GList *items;
 	GList *l;
 	GtkUIManager *ui_manager;
@@ -4575,17 +4634,22 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 				      &view->details->extensions_menu_merge_id,
 				      &view->details->extensions_menu_action_group);
 
+	/* only query for the unique files */
+	unique_selection = get_unique_files (selection);
 	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
 					      selection);
-	if (items != NULL) {
-		add_extension_menu_items (view, selection, items);
-
+	
+	if (items) {
+		add_extension_menu_items (view, unique_selection, items);
+	
 		for (l = items; l != NULL; l = l->next) {
 			g_object_unref (l->data);
 		}
-
+		
 		g_list_free (items);
 	}
+
+	g_list_free (unique_selection);
 }
 
 static char *
@@ -6277,12 +6341,11 @@ connect_proxy (FMDirectoryView *view,
 						   "gnome-fs-regular",
 						   NAUTILUS_ICON_SIZE_FOR_MENUS,
 						   0, NULL);
-		if (pixbuf != NULL) {
-			image = gtk_image_new_from_pixbuf (pixbuf);
-			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
 
-			gdk_pixbuf_unref (pixbuf);
-		}
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
+
+		gdk_pixbuf_unref (pixbuf);
 	}
 }
 
@@ -7961,11 +8024,29 @@ fm_directory_view_is_empty (FMDirectoryView *view)
 		 is_empty, (view));
 }
 
+gboolean
+fm_directory_view_is_editable (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+
+	directory = fm_directory_view_get_model (view);
+
+	if (directory != NULL) {
+		return nautilus_directory_is_editable (directory);
+	}
+
+	return TRUE;
+}
+
 static gboolean
 real_is_read_only (FMDirectoryView *view)
 {
 	NautilusFile *file;
-
+	
+	if (!fm_directory_view_is_editable (view)) {
+		return TRUE;
+	}
+	
 	file = fm_directory_view_get_directory_as_file (view);
 	if (file != NULL) {
 		return !nautilus_file_can_write (file);
@@ -8020,7 +8101,7 @@ real_accepts_dragged_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return TRUE;
+	return !fm_directory_view_is_read_only (view);
 }
 
 gboolean
@@ -8796,8 +8877,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
-		              G_TYPE_NONE, 1, G_TYPE_INT);
+		              nautilus_marshal_VOID__INT_STRING,
+		              G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);
 	signals[REMOVE_FILE] =
 		g_signal_new ("remove_file",
 		              G_TYPE_FROM_CLASS (klass),

@@ -232,7 +232,12 @@ nautilus_metafile_get (const char *directory_uri)
 	char *canonical_uri;
 	
 	g_return_val_if_fail (directory_uri != NULL, NULL);
-	
+
+	/* We don't have metafiles for search uris */
+	if (eel_uri_is_search (directory_uri)) {
+		return NULL;
+	}
+
 	if (metafiles == NULL) {
 		metafiles = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, __FILE__ ": metafiles");
@@ -1414,8 +1419,6 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 {
 	xmlNodePtr source_node, node, root;
 	GHashTable *hash, *changes;
-	char *source_file_uri;
-	char *destination_file_uri;
 
 	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
 	g_return_if_fail (source_file_name != NULL);
@@ -1459,12 +1462,9 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 		}
 	}
 
-	/* Copy the thumbnail for the file, if any. */
-	source_file_uri = metafile_get_file_uri (source_metafile, source_file_name);
-	destination_file_uri = metafile_get_file_uri (destination_metafile, destination_file_name);
-	nautilus_update_thumbnail_file_copied (source_file_uri, destination_file_uri);
-	g_free (source_file_uri);
-	g_free (destination_file_uri);
+	/* FIXME: Do we want to copy the thumbnail here like in the
+	 * rename and remove cases?
+	 */
 }
 
 static void

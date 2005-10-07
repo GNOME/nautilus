@@ -118,7 +118,8 @@ struct FMDirectoryViewClass {
 	 * load failures like ACCESS_DENIED.
 	 */
 	void    (* load_error)           (FMDirectoryView *view,
-					  GnomeVFSResult result);
+					  GnomeVFSResult result,
+					  const char *error_message);
 
 	/* Function pointers that don't have corresponding signals */
 
@@ -374,6 +375,7 @@ NautilusDirectory  *fm_directory_view_get_model                        (FMDirect
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
+gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
@@ -411,5 +413,7 @@ void                fm_directory_view_add_subdirectory                (FMDirecto
 									NautilusDirectory*directory);
 void                fm_directory_view_remove_subdirectory             (FMDirectoryView  *view,
 									NautilusDirectory*directory);
+
+gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

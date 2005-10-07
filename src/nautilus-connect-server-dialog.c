@@ -212,20 +212,14 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			g_free (t);
 		}
 		if (dialog->details->domain_entry->parent != NULL) {
+	
 			free_domain = TRUE;
 
 			domain = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->domain_entry), 0, -1);
 			
 			if (strlen (domain) != 0) {
-				t = user;
-
-				user = g_strconcat (domain , ";" , t, NULL);
-
-				if (free_user) {
-					g_free (t);
-				}
-
-				free_user = TRUE;
+				g_free (user);
+				user = g_strconcat (domain , ";" , user, NULL);
 			}
 		}
 
@@ -764,35 +758,16 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 }
 
 GtkWidget *
-nautilus_connect_server_dialog_new (NautilusWindow *window, const gchar *location)
+nautilus_connect_server_dialog_new (NautilusWindow *window)
 {
-	NautilusConnectServerDialog *conndlg;
 	GtkWidget *dialog;
-	GnomeVFSURI *uri;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG, NULL);
 
 	if (window) {
-		conndlg = NAUTILUS_CONNECT_SERVER_DIALOG (dialog);
-
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
-		conndlg->details->application = window->application;
-
-		if (location) {
-			uri = gnome_vfs_uri_new (location);
-			g_return_val_if_fail (uri != NULL, dialog);
-
-			/* ... and if it's a remote URI, then load as the default */
-			if (!g_str_equal (gnome_vfs_uri_get_scheme (uri), "file") && 
-			    !gnome_vfs_uri_is_local (uri)) {
-
-				gtk_combo_box_set_active (GTK_COMBO_BOX (conndlg->details->type_combo), TYPE_URI);
-				gtk_entry_set_text (GTK_ENTRY (conndlg->details->uri_entry), location);
-			}
-;
-			gnome_vfs_uri_unref (uri);
-		}
+		NAUTILUS_CONNECT_SERVER_DIALOG (dialog)->details->application = window->application;
 	}
 
 	return dialog;

@@ -11,6 +11,7 @@ INCLUDES = 						\
 	-I$(top_srcdir)/cut-n-paste-code		\
 	$(CORE_CFLAGS)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(BEAGLE_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
@@ -28,6 +29,7 @@ libnautilus_private_la_LDFLAGS =	\
 	-no-undefined			\
 	$(dependency_static_libs)	\
 	$(CORE_LIBS)			\
+	$(BEAGLE_LIBS)			\
 	$(NULL)
 
 nautilus_metafile_server_idl_sources = \
@@ -151,10 +153,18 @@ libnautilus_private_la_SOURCES = \
 	nautilus-program-choosing.h \
 	nautilus-recent.c \
 	nautilus-recent.h \
+	nautilus-search-directory.c \
+	nautilus-search-directory.h \
+	nautilus-search-directory-file.c \
+	nautilus-search-directory-file.h \
+	nautilus-search-engine.c \
+	nautilus-search-engine.h \
 	nautilus-sidebar-provider.c \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \
 	nautilus-sidebar.h \
+	nautilus-query.c \
+	nautilus-query.h \
 	nautilus-thumbnails.c \
 	nautilus-thumbnails.h \
 	nautilus-trash-directory.c \
@@ -187,6 +197,12 @@ libnautilus_private_la_SOURCES = \
 	nautilus-window-info.c \
 	nautilus-window-info.h \
 	$(NULL)
+
+if HAVE_BEAGLE
+libnautilus_private_la_SOURCES += \
+	nautilus-search-engine-beagle.c
+	nautilus-search-engine-beagle.h
+endif
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 

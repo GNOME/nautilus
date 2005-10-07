@@ -19,8 +19,9 @@ m4_define(rsvg_minver,                 2.0.1)
 m4_define(xml_minver,                  2.4.7)
 m4_define(startup_notification_minver, 0.8)
 m4_define(exif_minver,                 0.5.12)
+m4_define(beagle_minver,               0.0.12)
 
-AC_INIT(nautilus, 2.12.1,
+AC_INIT(nautilus, 2.12.0,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus])
 
 dnl ===========================================================================
@@ -98,7 +99,7 @@ PKG_CHECK_MODULES(ALL, [
 ])
 dnl ==========================================================================
 
-ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko ku li lt lv mi mk ml mn ms nb ne nl nn no nso pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta te th tk tr uk vi wa xh yi zh_CN zh_TW zu"
+ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko li lt lv mi mk ml mn ms nb ne nl nn no nso pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta te th tk tr uk vi wa xh yi zh_CN zh_TW zu"
 
 GETTEXT_PACKAGE=nautilus
 AC_SUBST(GETTEXT_PACKAGE)
@@ -223,6 +224,20 @@ PKG_CHECK_MODULES(EXIF, libexif > exif_minver, [
       AC_SUBST(EXIF_CFLAGS)
       AC_SUBST(EXIF_LIBS)
 ])])
+
+
+dnl ==========================================================================
+
+dnl libbeagle checking
+
+AC_MSG_CHECKING(for libbeagle)
+
+PKG_CHECK_MODULES(BEAGLE, libbeagle-0.0 >= beagle_minver, [
+    AC_DEFINE(HAVE_BEAGLE, 1, [Define to enable beagle support])
+    AC_SUBST(BEAGLE_CFLAGS)
+    AC_SUBST(BEAGLE_LIBS)
+    AM_CONDITIONAL(HAVE_BEAGLE, true)
+], [])
 
 dnl ==========================================================================
 

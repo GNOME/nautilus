@@ -30,6 +30,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
 #include "nautilus-file.h"
+#include "nautilus-search-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -56,10 +57,21 @@ nautilus_compute_title_for_uri (const char *text_uri)
 	GnomeVFSURI *uri;
 	char *title, *displayname;
 	const char *hostname;
-
+	NautilusDirectory *directory;
+	NautilusQuery *query;
 	hostname = NULL;
 
 	if (text_uri) {
+		if (eel_uri_is_search (text_uri)) {
+			directory = nautilus_directory_get (text_uri);
+			
+			query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+			title = nautilus_query_to_readable_string (query);
+
+			nautilus_directory_unref (directory);
+
+			return title;
+		}
 		file = nautilus_file_get (text_uri);
 		uri = gnome_vfs_uri_new (text_uri);
 		if (uri && !gnome_vfs_uri_is_local (uri)) {

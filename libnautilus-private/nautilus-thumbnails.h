@@ -32,11 +32,9 @@
 void       nautilus_create_thumbnail                (NautilusFile *file);
 void       nautilus_thumbnail_frame_image           (GdkPixbuf **pixbuf);
 GdkPixbuf *nautilus_thumbnail_load_framed_image     (const char   *path);
-void       nautilus_update_thumbnail_file_copied    (const char   *source_file_uri,
-						     const char   *destination_file_uri);
-void       nautilus_update_thumbnail_file_renamed   (const char   *source_file_uri,
-						     const char   *destination_file_uri);
-void       nautilus_remove_thumbnail_for_file       (const char   *file_uri);
+void       nautilus_update_thumbnail_file_renamed   (const char   *old_file_uri,
+						     const char   *new_file_uri);
+void       nautilus_remove_thumbnail_for_file       (const char   *old_file_uri);
 
 /* Queue handling: */
 void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);

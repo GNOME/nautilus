@@ -46,8 +46,7 @@ struct _NautilusConnectServerDialogClass {
 };
 
 GType      nautilus_connect_server_dialog_get_type (void);
-GtkWidget* nautilus_connect_server_dialog_new      (NautilusWindow *window, 
-						    const gchar *uri);
+GtkWidget* nautilus_connect_server_dialog_new      (NautilusWindow *window);
 
 /* Private internal calls */
 

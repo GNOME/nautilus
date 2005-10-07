@@ -104,6 +104,9 @@ struct FMPropertiesWindowDetails {
 	guint update_directory_contents_timeout_id;
 	guint update_files_timeout_id;
 
+	GList *directory_contents_widgets;
+	int directory_contents_row;
+
 	GList *special_flags_widgets;
 	int first_special_flags_row;
 	int num_special_flags_rows;
@@ -1867,8 +1870,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 					 &directory_count,
 					 &file_count, 
 					 &file_unreadable,
-					 &file_size,
-					 TRUE);
+					 &file_size);
 			total_count += (file_count + directory_count);
 			total_size += file_size;
 			
@@ -1999,6 +2001,7 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 	/* Fill in the initial value. */
 	directory_contents_value_field_update (window);
  
+	       
 	for (l = window->details->target_files; l; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		nautilus_file_recompute_deep_counts (file);
@@ -2097,6 +2100,44 @@ update_visibility_of_table_rows (GtkTable *table,
 	}
 }				   
 
+static void
+update_visibility_of_item_count_fields (FMPropertiesWindow *window)
+{
+	gboolean should_show_count;
+	GList *l;
+	guint count = 0;
+	NautilusFile *file;
+               
+	for (l = window->details->target_files; l; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		count += nautilus_file_should_show_directory_item_count (file);
+	}
+	should_show_count = count;
+
+	update_visibility_of_table_rows
+		(window->details->basic_table,
+		 should_show_count,
+		 window->details->directory_contents_row,
+		 1,
+		 window->details->directory_contents_widgets);
+}
+
+static void
+update_visibility_of_item_count_fields_wrapper (gpointer callback_data)
+{
+	update_visibility_of_item_count_fields (FM_PROPERTIES_WINDOW (callback_data));
+}  
+
+static void
+remember_directory_contents_widget (FMPropertiesWindow *window, GtkWidget *widget)
+{
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (GTK_IS_WIDGET (widget));
+	
+	window->details->directory_contents_widgets = 
+		g_list_prepend (window->details->directory_contents_widgets, widget);
+}
+
 static guint
 append_directory_contents_fields (FMPropertiesWindow *window,
 				  GtkTable *table)
@@ -2113,6 +2154,17 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 	value_field = attach_directory_contents_value_field 
 		(window, table, last_row);
 
+	remember_directory_contents_widget (window, GTK_WIDGET (title_field));
+	remember_directory_contents_widget (window, GTK_WIDGET (value_field));
+	window->details->directory_contents_row = last_row;
+
+	update_visibility_of_item_count_fields (window);
+	eel_preferences_add_callback_while_alive 
+		(NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+		 update_visibility_of_item_count_fields_wrapper,
+		 window,
+		 G_OBJECT (window));
+	
 	return last_row;
 }
 
@@ -3694,6 +3746,9 @@ real_destroy (GtkObject *object)
 	window->details->changed_files = NULL;
  
 	window->details->name_field = NULL;
+	
+	g_list_free (window->details->directory_contents_widgets);
+	window->details->directory_contents_widgets = NULL;
 
 	g_list_free (window->details->special_flags_widgets);
 	window->details->special_flags_widgets = NULL;
