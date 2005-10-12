@@ -46,6 +46,7 @@ typedef struct {
 	GtkEventBoxClass parent_class;
 
 	void (* activate) (NautilusSearchBar *bar);
+	void (* cancel)   (NautilusSearchBar *bar);
 } NautilusSearchBarClass;
 
 GType      nautilus_search_bar_get_type     	(void);

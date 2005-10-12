@@ -39,7 +39,7 @@
 #include <string.h>
 
 static void nautilus_search_directory_file_init       (gpointer   object,
-						  gpointer   klass);
+						       gpointer   klass);
 static void nautilus_search_directory_file_class_init (gpointer   klass);
 
 EEL_CLASS_BOILERPLATE (NautilusSearchDirectoryFile,
@@ -47,8 +47,26 @@ EEL_CLASS_BOILERPLATE (NautilusSearchDirectoryFile,
 		       NAUTILUS_TYPE_FILE);
 
 struct NautilusSearchDirectoryFileDetails {
-	gint foo;
+	NautilusSearchDirectory *search_directory;
 };
+
+static void
+search_directory_file_monitor_add (NautilusFile *file,
+				   gconstpointer client,
+				   NautilusFileAttributes attributes)
+{
+	nautilus_directory_monitor_add_internal (file->details->directory,
+						 file, client, TRUE, TRUE,
+						 attributes, NULL, NULL);
+}
+
+static void
+search_directory_file_monitor_remove (NautilusFile *file,
+				      gconstpointer client)
+{
+	nautilus_directory_monitor_remove_internal (file->details->directory,
+						    file, client);
+}
 
 static void
 search_directory_file_call_when_ready (NautilusFile *file,
@@ -57,13 +75,10 @@ search_directory_file_call_when_ready (NautilusFile *file,
 				       gpointer callback_data)
 
 {
-#if 0
-	g_print ("call when ready: %d\n", file_attributes);
-
-#endif
-	/* We can just call this immediately */
-	/* FIXME: We can't do that for everything */
-	callback (file, callback_data);
+	nautilus_directory_call_when_ready_internal (file->details->directory,
+						     file, file_attributes,
+						     FALSE, NULL,
+						     callback, callback_data);
 }
  
 static void
@@ -79,8 +94,9 @@ static gboolean
 search_directory_file_check_if_ready (NautilusFile *file,
 				      NautilusFileAttributes attributes)
 {
-	/* FIXME: Attributes */
-	return TRUE;
+	return nautilus_directory_check_if_ready_internal
+		(file->details->directory,
+		 file, attributes);
 }
 
 static GnomeVFSFileType
@@ -94,8 +110,20 @@ search_directory_file_get_item_count (NautilusFile *file,
 				      guint *count,
 				      gboolean *count_unreadable)
 {
-	/* FIXME: It would be nice to have an item count for the sidebar */
-	return FALSE;
+	NautilusSearchDirectory *search_dir;
+	GList *file_list;
+
+	if (count) {
+		search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
+
+		file_list = nautilus_directory_get_file_list (file->details->directory);
+
+		*count = g_list_length (file_list);
+
+		nautilus_file_list_free (file_list);
+	}
+
+	return TRUE;
 }
     
 static void
@@ -115,21 +143,11 @@ nautilus_search_directory_file_class_init (gpointer klass)
 	object_class = G_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
 
+	file_class->monitor_add = search_directory_file_monitor_add;
+	file_class->monitor_remove = search_directory_file_monitor_remove;
 	file_class->call_when_ready = search_directory_file_call_when_ready;
 	file_class->cancel_call_when_ready = search_directory_file_cancel_call_when_ready;
 	file_class->get_file_type = search_directory_file_get_file_type;
 	file_class->check_if_ready = search_directory_file_check_if_ready;
 	file_class->get_item_count = search_directory_file_get_item_count;
-
-#if 0	
-	object_class->finalize = search_finalize;
-
-	file_class->monitor_add = search_directory_file_monitor_add;
-	file_class->monitor_remove = search_directory_file_monitor_remove;
-	file_class->call_when_ready = search_directory_file_call_when_ready;
-	file_class->check_if_ready = search_directory_file_check_if_ready;
-	file_class->get_deep_counts = search_directory_file_get_deep_counts;
-	file_class->get_date = search_directory_file_get_date;
-	file_class->get_where_string = search_directory_file_get_where_string;
-#endif
 }

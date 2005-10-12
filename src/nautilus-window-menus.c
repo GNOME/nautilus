@@ -278,21 +278,11 @@ static void
 action_search (GtkAction *action,
 	       gpointer   user_data)
 {
-	char *uri;
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
 
-	if (window->details->search_mode) {
-		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
-		return;
-	}
-
-	uri = nautilus_search_directory_generate_new_uri ();
-
-	nautilus_window_go_to (window, uri);
-
-	g_free (uri);
+	nautilus_window_set_search_mode (window, TRUE);
 }
 
 static void

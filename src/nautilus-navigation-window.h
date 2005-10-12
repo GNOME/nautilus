@@ -97,6 +97,8 @@ void     nautilus_navigation_window_hide_path_bar        (NautilusNavigationWind
 void     nautilus_navigation_window_show_path_bar        (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_path_bar_showing 	 (NautilusNavigationWindow *window);
 
+gboolean nautilus_navigation_window_search_bar_showing 	 (NautilusNavigationWindow *window);
+
 gboolean nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow *window);

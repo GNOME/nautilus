@@ -829,6 +829,9 @@ get_special_icon_for_file (NautilusFile *file)
 		} else {
 			ret = ICON_NAME_TRASH_FULL;
 		}
+	} else if (eel_uri_is_search (uri)) {
+		/* FIXME: We really need a better icon than this */
+		ret = "gnome-searchtool";
 	}
 
 	g_free (uri);

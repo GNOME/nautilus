@@ -141,9 +141,14 @@ icons_changed_callback (GObject *factory, NautilusWindow *window)
 static void
 search_bar_activate_cb (NautilusSearchBar *bar, NautilusWindow *window)
 {
+	char *uri;
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
+
+	uri = nautilus_search_directory_generate_new_uri ();
+	nautilus_window_go_to (window, uri);
+	g_free (uri);
 
 	directory = nautilus_directory_get_for_file (window->details->viewed_file);
 
@@ -409,6 +414,18 @@ nautilus_window_get_location (NautilusWindow *window)
 
 	return g_strdup (window->details->location);
 }
+
+void
+nautilus_window_set_search_mode (NautilusWindow *window, gboolean is_search)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	window->details->search_mode = is_search;
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 set_search_mode, (window, is_search));
+}
+
 
 void
 nautilus_window_zoom_in (NautilusWindow *window)
@@ -1236,27 +1253,6 @@ GtkUIManager *
 nautilus_window_get_ui_manager (NautilusWindow *window)
 {
 	return window->details->ui_manager;
-}
-
-void
-nautilus_window_set_search_mode (NautilusWindow    *window,
-				 gboolean           search_mode)
-{
-	search_mode = search_mode != FALSE;
-
-	if (search_mode == window->details->search_mode) {
-		return;
-	}
-		
-	window->details->search_mode = search_mode;
-
-	if (search_mode) {
-		gtk_widget_show (window->details->search_bar);
-		nautilus_search_bar_clear_query (NAUTILUS_SEARCH_BAR (window->details->search_bar));
-		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
-	} else {
-		gtk_widget_hide (window->details->search_bar);
-	}
 }
 
 void

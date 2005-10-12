@@ -33,6 +33,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
 #include <string.h>
+#include <sys/time.h>
 
 struct NautilusSearchDirectoryDetails {
 	NautilusQuery *query;
@@ -466,9 +467,13 @@ search_engine_hits_added (NautilusSearchEngine *engine, GList *hits,
 		file_list = g_list_prepend (file_list, file);
 	}
 	
+	search->details->files = g_list_concat (search->details->files, file_list);
+
 	nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (search), file_list);
 
-	search->details->files = g_list_concat (search->details->files, file_list);
+	file = nautilus_directory_get_corresponding_file (NAUTILUS_DIRECTORY (search));
+	nautilus_file_emit_changed (file);
+	nautilus_file_unref (file);
 }
 
 static void
@@ -505,6 +510,10 @@ search_engine_hits_subtracted (NautilusSearchEngine *engine, GList *hits,
 	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (search), file_list);
 
 	nautilus_file_list_free (file_list);
+
+	file = nautilus_directory_get_corresponding_file (NAUTILUS_DIRECTORY (search));
+	nautilus_file_emit_changed (file);
+	nautilus_file_unref (file);
 }
 
 static void
@@ -711,15 +720,16 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
 	directory_class->is_editable = search_is_editable;
 }
 
-static int counter;
-     
 char *
 nautilus_search_directory_generate_new_uri (void)
 {
+	static int counter = 0;
+	struct timeval tv;
 	char *uri;
 
-	uri = g_strdup_printf (EEL_SEARCH_URI"///%d/", counter);
-	counter ++;
+	gettimeofday (&tv, NULL);
+
+	uri = g_strdup_printf (EEL_SEARCH_URI"///%ld-%ld-%d/", tv.tv_sec, tv.tv_usec, counter++);
 
 	return uri;
 }
@@ -744,3 +754,31 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 	return search->details->query;
 }
 
+#if 0
+static void nautilus_search_directory_save_search (NautilusSearchDirectory *search);
+
+static void
+nautilus_search_directory_save_search (NautilusSearchDirectory *search)
+{
+	char *user_dir, *search_file;
+	char *search_uri;
+	char *xml;
+	
+
+	user_dir = nautilus_get_user_directory ();
+	search_file = g_build_path ("/", user_dir, "searches.xml", NULL);
+	g_free (user_dir);
+
+	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
+
+	xml = g_strdup_printf ("<query id=\"%s\">\n"
+			       "   <text>%s</text>\n"
+			       "</query>",
+			       search_uri,
+			       nautilus_query_get_text (search->details->query));
+
+	g_free (search_uri);
+
+	g_file_set_contents (search_file, xml, strlen (xml), NULL);
+}
+#endif

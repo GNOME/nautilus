@@ -107,6 +107,7 @@ struct _NautilusNavigationWindowDetails {
         /* Location bar */
         gboolean temporary_navigation_bar;
         gboolean temporary_location_bar;
+        gboolean temporary_search_bar;
 
         /* Side Pane */
         int side_pane_width;

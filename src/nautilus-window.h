@@ -77,6 +77,7 @@ typedef struct {
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window);
+        void   (* set_search_mode) (NautilusWindow *window, gboolean is_search);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
@@ -127,6 +128,8 @@ void             nautilus_window_go_home              (NautilusWindow    *window
 void             nautilus_window_go_up                (NautilusWindow    *window,
                                                        gboolean           close_behind);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window);
+void		 nautilus_window_set_search_mode      (NautilusWindow    *window,
+                                                       gboolean           is_search);
 void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_update_title         (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
@@ -143,6 +146,4 @@ void             nautilus_window_allow_burn_cd        (NautilusWindow    *window
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 
-void		 nautilus_window_set_search_mode      (NautilusWindow    *window,
-                                                       gboolean           search_mode);
 #endif

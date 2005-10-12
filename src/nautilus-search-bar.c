@@ -26,7 +26,9 @@
 
 #include <glib/gi18n.h>
 #include <eel/eel-gtk-macros.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkalignment.h>
+#include <gtk/gtkbindings.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkframe.h>
@@ -35,11 +37,13 @@
 
 struct NautilusSearchBarDetails {
 	GtkWidget *entry;
-	GtkWidget *search_button;
+	gboolean change_frozen;
+	guint typing_timeout_id;
 };
 
 enum {
 	ACTIVATE,
+	CANCEL,
 	LAST_SIGNAL
 }; 
 
@@ -68,6 +72,7 @@ static void
 nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 {
 	GObjectClass *gobject_class;
+	GtkBindingSet *binding_set;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
@@ -80,6 +85,18 @@ nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+
+	signals[CANCEL] =
+		g_signal_new ("cancel",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
+		              G_STRUCT_OFFSET (NautilusSearchBarClass, cancel),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
+
+	binding_set = gtk_binding_set_by_class (class);
+	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
 }
 
 static gboolean
@@ -93,24 +110,51 @@ query_is_valid (NautilusSearchBar *bar)
 }
 
 static void
-button_clicked_cb (GtkWidget *entry, NautilusSearchBar *bar)
+entry_activate_cb (GtkWidget *entry, NautilusSearchBar *bar)
 {
+	if (bar->details->typing_timeout_id) {
+		g_source_remove (bar->details->typing_timeout_id);
+		bar->details->typing_timeout_id = 0;
+	}
+
 	if (query_is_valid (bar)) {
 		g_signal_emit (bar, signals[ACTIVATE], 0);
 	}
 }
 
-static void
-entry_activate_cb (GtkWidget *entry, NautilusSearchBar *bar)
+static gboolean
+typing_timeout_cb (gpointer user_data)
 {
-	gtk_widget_activate (bar->details->search_button);
+	NautilusSearchBar *bar;
+
+	bar = NAUTILUS_SEARCH_BAR (user_data);
+
+	if (query_is_valid (bar)) {
+		g_signal_emit (bar, signals[ACTIVATE], 0);
+	}
+
+	bar->details->typing_timeout_id = 0;
+
+	return FALSE;
 }
+
+#define TYPING_TIMEOUT 750
 
 static void
 entry_changed_cb (GtkWidget *entry, NautilusSearchBar *bar)
 {
-	gtk_widget_set_sensitive (bar->details->search_button,
-				  query_is_valid (bar));
+	if (bar->details->change_frozen) {
+		return;
+	}
+
+	if (bar->details->typing_timeout_id) {
+		g_source_remove (bar->details->typing_timeout_id);
+	}
+
+	bar->details->typing_timeout_id =
+		g_timeout_add (TYPING_TIMEOUT,
+			       typing_timeout_cb,
+			       bar);
 }
 
 static void
@@ -118,7 +162,6 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 {
 	GtkWidget *alignment;
 	GtkWidget *hbox;
-	GtkWidget *image;
 	GtkWidget *label, *frame, *event_box;
 
 	bar->details = g_new0 (NautilusSearchBarDetails, 1);
@@ -171,17 +214,6 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 	bar->details->entry = gtk_entry_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), bar->details->entry, TRUE, TRUE, 0);
 
-	image = gtk_image_new_from_icon_name ("stock_search", GTK_ICON_SIZE_MENU);
-	gtk_widget_show (image);
-	bar->details->search_button = gtk_button_new_with_label (_("Find Now"));
-	g_signal_connect (bar->details->search_button, "clicked",
-			  G_CALLBACK (button_clicked_cb), bar);
-	gtk_button_set_image (GTK_BUTTON (bar->details->search_button), image);
-	gtk_widget_set_sensitive (bar->details->search_button, FALSE);
-
-	gtk_widget_show (bar->details->search_button);
-	gtk_box_pack_start (GTK_BOX (hbox), bar->details->search_button, FALSE, FALSE, 0);
-	
 	g_signal_connect (bar->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), bar);
 	g_signal_connect (bar->details->entry, "changed",
@@ -218,7 +250,9 @@ nautilus_search_bar_get_query (NautilusSearchBar *bar)
 void
 nautilus_search_bar_clear_query (NautilusSearchBar *bar)
 {
+	bar->details->change_frozen = TRUE;
 	gtk_entry_set_text (GTK_ENTRY (bar->details->entry), "");
+	bar->details->change_frozen = FALSE;
 }
 
 GtkWidget *
@@ -245,6 +279,8 @@ nautilus_search_bar_set_query (NautilusSearchBar *bar, NautilusQuery *query)
 	if (!text) {
 		text = "";
 	}
-	
+
+	bar->details->change_frozen = TRUE;
 	gtk_entry_set_text (GTK_ENTRY (bar->details->entry), text);
+	bar->details->change_frozen = FALSE;
 }

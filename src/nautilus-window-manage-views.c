@@ -693,6 +693,7 @@ begin_location_change (NautilusWindow *window,
 	gboolean force_reload;
         char *current_pos;
 	gboolean uri_is_search;
+	NautilusQuery *query;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
@@ -708,7 +709,6 @@ begin_location_change (NautilusWindow *window,
         nautilus_window_set_status (window, " ");
 
 	uri_is_search = eel_uri_is_search (location);
-
 	nautilus_window_set_search_mode (window, uri_is_search);
 
 	g_assert (window->details->pending_location == NULL);
@@ -725,8 +725,12 @@ begin_location_change (NautilusWindow *window,
         directory = nautilus_directory_get (location);
 
 	if (uri_is_search) {
-		nautilus_search_bar_set_query (NAUTILUS_SEARCH_BAR (window->details->search_bar),
-					       nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory)));
+		query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+
+		if (query != NULL) {
+			nautilus_search_bar_set_query (NAUTILUS_SEARCH_BAR (window->details->search_bar),
+						       query);
+		}
 	}
 
 	/* The code to force a reload is here because if we do it
