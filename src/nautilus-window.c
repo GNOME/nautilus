@@ -139,40 +139,11 @@ icons_changed_callback (GObject *factory, NautilusWindow *window)
 }
 
 static void
-search_bar_activate_cb (NautilusSearchBar *bar, NautilusWindow *window)
-{
-	char *uri;
-	NautilusDirectory *directory;
-	NautilusSearchDirectory *search_directory;
-	NautilusQuery *query;
-
-	uri = nautilus_search_directory_generate_new_uri ();
-	nautilus_window_go_to (window, uri);
-	g_free (uri);
-
-	directory = nautilus_directory_get_for_file (window->details->viewed_file);
-
-	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-
-	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
-	query = nautilus_search_bar_get_query (bar);
-
-	nautilus_search_directory_set_query (search_directory, query);
-	if (query) {
-		g_object_unref (query);
-	}
-	nautilus_window_reload (window);
-
-	nautilus_directory_unref (directory);
-}
-
-static void
 nautilus_window_init (NautilusWindow *window)
 {
 	GtkWidget *table;
 	GtkWidget *menu;
 	GtkWidget *statusbar;
-	GtkWidget *search_bar;
 
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
@@ -210,11 +181,6 @@ nautilus_window_init (NautilusWindow *window)
 			  0, 1,                               0, 1,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
-
-	search_bar = nautilus_search_bar_new ();
-	g_signal_connect (search_bar, "activate",
-			  G_CALLBACK (search_bar_activate_cb), window);
-	window->details->search_bar = search_bar;
 
 	/* Register IconFactory callback to update the window border icon
 	 * when the icon-theme is changed.
@@ -416,14 +382,14 @@ nautilus_window_get_location (NautilusWindow *window)
 }
 
 void
-nautilus_window_set_search_mode (NautilusWindow *window, gboolean is_search)
+nautilus_window_set_search_mode (NautilusWindow *window, gboolean search_mode)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	window->details->search_mode = is_search;
+	window->details->search_mode = search_mode;
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 set_search_mode, (window, is_search));
+			 set_search_mode, (window, search_mode));
 }
 
 
@@ -657,19 +623,6 @@ nautilus_window_show_window (NautilusWindow *window)
 	if (window->details->viewed_file) {
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			nautilus_file_set_has_open_window (window->details->viewed_file, TRUE);
-
-			/*
-			 * This is a quick hack to make sure that the
-			 * search entry are focused for new spatial
-			 * search windows. Ideally, the focus handling
-			 * should be fixed. Currently,
-			 * NautilusIconContainer grabs focus in its
-			 * realize handler. This will do for spatial
-			 * windows for now.
-			 */
-			if (window->details->search_mode) {
-				nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
-			}
 		}
 	}
 }

@@ -692,8 +692,6 @@ begin_location_change (NautilusWindow *window,
         NautilusFile *file;
 	gboolean force_reload;
         char *current_pos;
-	gboolean uri_is_search;
-	NautilusQuery *query;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
@@ -708,9 +706,6 @@ begin_location_change (NautilusWindow *window,
         nautilus_window_allow_stop (window, TRUE);
         nautilus_window_set_status (window, " ");
 
-	uri_is_search = eel_uri_is_search (location);
-	nautilus_window_set_search_mode (window, uri_is_search);
-
 	g_assert (window->details->pending_location == NULL);
 	g_assert (window->details->pending_selection == NULL);
 	
@@ -723,15 +718,6 @@ begin_location_change (NautilusWindow *window,
         window->details->pending_scroll_to = g_strdup (scroll_pos);
         
         directory = nautilus_directory_get (location);
-
-	if (uri_is_search) {
-		query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-
-		if (query != NULL) {
-			nautilus_search_bar_set_query (NAUTILUS_SEARCH_BAR (window->details->search_bar),
-						       query);
-		}
-	}
 
 	/* The code to force a reload is here because if we do it
 	 * after determining an initial view (in the components), then
@@ -1147,6 +1133,9 @@ update_for_new_location (NautilusWindow *window)
 {
         char *new_location;
         NautilusFile *file;
+	gboolean uri_is_search;
+	NautilusDirectory *directory;
+	NautilusQuery *query;
         
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
@@ -1184,6 +1173,9 @@ update_for_new_location (NautilusWindow *window)
 	/* Load menus from nautilus extensions for this location */
 	nautilus_window_load_extension_menus (window);
 
+	uri_is_search = eel_uri_is_search (window->details->location);
+	nautilus_window_set_search_mode (window, uri_is_search);
+
 #if !NEW_UI_COMPLETE
         if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
                 /* Check if the back and forward buttons need enabling or disabling. */
@@ -1196,6 +1188,17 @@ update_for_new_location (NautilusWindow *window)
 		nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar),
 					    window->details->location);
 		nautilus_navigation_window_load_extension_toolbar_items (NAUTILUS_NAVIGATION_WINDOW (window));
+
+		if (eel_uri_is_search (window->details->location)) {
+			directory = nautilus_directory_get (window->details->location);
+
+			query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+
+			if (query != NULL) {
+				nautilus_search_bar_set_query (NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->search_bar),
+							       query);
+			}
+		}
         }
         
 	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {

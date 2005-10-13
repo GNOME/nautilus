@@ -94,10 +94,7 @@ struct NautilusWindowDetails
         guint location_change_at_idle_id;
 
         NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
-
-        /* Search */
         gboolean search_mode;
-        GtkWidget *search_bar;
 };
 
 struct _NautilusNavigationWindowDetails {
@@ -129,8 +126,6 @@ struct _NautilusNavigationWindowDetails {
 	/* Throbber */
         gboolean    throbber_active;
         GtkWidget  *throbber;
-
-        GtkWidget *content_vbox;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

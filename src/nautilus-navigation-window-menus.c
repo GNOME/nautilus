@@ -60,6 +60,7 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-search-engine.h>
 
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
 
@@ -231,6 +232,13 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_status_bar_showing (window));
+
+	if (!nautilus_search_engine_enabled ()) {
+		action = gtk_action_group_get_action (window->details->navigation_action_group,
+						      NAUTILUS_ACTION_SEARCH);
+		gtk_action_set_sensitive (action, FALSE);
+		gtk_action_set_visible (action, FALSE);
+	}
 }
 
 static void
@@ -412,6 +420,17 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window);
 }			   
 
+static void
+action_search_callback (GtkAction *action,
+			gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	nautilus_window_set_search_mode (window, TRUE);
+}
+
 static const GtkActionEntry navigation_entries[] = {
   { "Go", NULL, N_("_Go") },               /* name, stock id, label */
   { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
@@ -433,6 +452,10 @@ static const GtkActionEntry navigation_entries[] = {
   { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
     "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
     G_CALLBACK (action_edit_bookmarks_callback) },
+  { "Search", "gtk-find", N_("_Search"), /* name, stock id, label */
+    "<control>F", N_("Search for files"),
+    G_CALLBACK (action_search_callback) },
+		     
 };
 
 static const GtkToggleActionEntry navigation_toggle_entries[] = {

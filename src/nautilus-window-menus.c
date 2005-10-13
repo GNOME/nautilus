@@ -275,17 +275,6 @@ action_go_to_computer_callback (GtkAction *action,
 }
 
 static void
-action_search (GtkAction *action,
-	       gpointer   user_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	nautilus_window_set_search_mode (window, TRUE);
-}
-
-static void
 action_go_to_templates_callback (GtkAction *action,
 				 gpointer user_data) 
 {
@@ -695,10 +684,6 @@ static const GtkActionEntry main_entries[] = {
     N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },
-  { "Search", "gtk-find",					/* name, stock id */
-    N_("_Search"), "<control>F",	/* label, accelerator */
-    N_("Search for files"),
-    G_CALLBACK (action_search) }
 };
 
 /**
@@ -743,12 +728,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	if (!have_burn_uri ()) {
 		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
-		gtk_action_set_visible (action, FALSE);
-	}
-
-	if (!nautilus_search_engine_enabled()) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
-		gtk_action_set_sensitive (action, FALSE);
 		gtk_action_set_visible (action, FALSE);
 	}
 

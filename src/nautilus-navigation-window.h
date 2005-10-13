@@ -60,6 +60,7 @@ struct _NautilusNavigationWindow {
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
+        GtkWidget *search_bar;
        
         /* Back/Forward chain, and history list. 
          * The data in these lists are NautilusBookmark pointers. 

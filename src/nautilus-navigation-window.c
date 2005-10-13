@@ -49,6 +49,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -80,6 +81,7 @@
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -121,6 +123,8 @@ static void navigation_bar_location_changed_callback (GtkWidget                *
 						      NautilusNavigationWindow *window);
 static void navigation_bar_cancel_callback           (GtkWidget                *widget,
 						      NautilusNavigationWindow *window);
+static void search_bar_activate_callback             (NautilusSearchBar        *bar,
+						      NautilusWindow           *window);
 static void search_bar_cancel_callback               (GtkWidget                *widget,
 						      NautilusNavigationWindow *window);
 static void path_bar_location_changed_callback       (GtkWidget                *widget,
@@ -216,12 +220,14 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 			    window->navigation_bar,
 			    TRUE, TRUE, 0);
 
-	g_signal_connect_object (NAUTILUS_WINDOW (window)->details->search_bar,
-				 "cancel",
+	window->search_bar = nautilus_search_bar_new ();
+	g_signal_connect_object (window->search_bar, "activate",
+				 G_CALLBACK (search_bar_activate_callback), window, 0);
+	g_signal_connect_object (window->search_bar, "cancel",
 				 G_CALLBACK (search_bar_cancel_callback), window, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox),
-			    NAUTILUS_WINDOW (window)->details->search_bar,
+			    window->search_bar,
 			    TRUE, TRUE, 0);
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set.
@@ -364,7 +370,6 @@ hide_temporary_bars (NautilusNavigationWindow *window)
 			nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_NAVIGATION);
 		}
 		window->details->temporary_search_bar = FALSE;
-		nautilus_window_set_search_mode (NAUTILUS_WINDOW (window), FALSE);
 	}
 }
 
@@ -382,6 +387,35 @@ navigation_bar_cancel_callback (GtkWidget *widget,
 				NautilusNavigationWindow *window)
 {
 	hide_temporary_bars (window);
+}
+
+static void
+search_bar_activate_callback (NautilusSearchBar *bar,
+			      NautilusWindow *window)
+{
+	char *uri;
+	NautilusDirectory *directory;
+	NautilusSearchDirectory *search_directory;
+	NautilusQuery *query;
+
+	uri = nautilus_search_directory_generate_new_uri ();
+	nautilus_window_go_to (window, uri);
+	g_free (uri);
+
+	directory = nautilus_directory_get_for_file (window->details->viewed_file);
+
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
+	query = nautilus_search_bar_get_query (bar);
+
+	nautilus_search_directory_set_query (search_directory, query);
+	if (query) {
+		g_object_unref (query);
+	}
+	nautilus_window_reload (window);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -955,26 +989,28 @@ real_prompt_for_location (NautilusWindow *window)
 }
 
 static void
-real_set_search_mode (NautilusWindow *window, gboolean is_search)
+real_set_search_mode (NautilusWindow *window, gboolean search_mode)
 {
 	NautilusNavigationWindow *nav_window;
 
 	nav_window = NAUTILUS_NAVIGATION_WINDOW (window);
 
-	if (is_search) {
-		nautilus_navigation_window_show_location_bar_temporarily (NAUTILUS_NAVIGATION_WINDOW (window));
-
-		if (nautilus_navigation_window_search_bar_showing (nav_window)) {
-			nav_window->details->temporary_search_bar = FALSE;
-		} else {
-			nav_window->details->temporary_search_bar = TRUE;
-		}
-
-		nautilus_navigation_window_set_bar_mode (nav_window, NAUTILUS_BAR_SEARCH);
-		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
-	} else {
-		hide_temporary_bars (NAUTILUS_NAVIGATION_WINDOW (window));
+	if (!search_mode) {
+		nav_window->details->temporary_search_bar = TRUE;
+		hide_temporary_bars (nav_window);
+		return;
 	}
+
+	nautilus_navigation_window_show_location_bar_temporarily (nav_window);
+	
+	if (nautilus_navigation_window_search_bar_showing (nav_window)) {
+		nav_window->details->temporary_search_bar = FALSE;
+	} else {
+		nav_window->details->temporary_search_bar = TRUE;
+	}
+
+	nautilus_navigation_window_set_bar_mode (nav_window, NAUTILUS_BAR_SEARCH);
+	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (nav_window->search_bar));
 }
 
 void
@@ -1086,8 +1122,8 @@ nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *windo
 gboolean
 nautilus_navigation_window_search_bar_showing (NautilusNavigationWindow *window)
 {
-	if (NAUTILUS_WINDOW (window)->details->search_bar != NULL) {
-		return GTK_WIDGET_VISIBLE (NAUTILUS_WINDOW (window)->details->search_bar);
+	if (window->search_bar != NULL) {
+		return GTK_WIDGET_VISIBLE (window->search_bar);
 	}
 	/* If we're not visible yet we haven't changed visibility, so its TRUE */
 	return TRUE;
@@ -1102,17 +1138,17 @@ nautilus_navigation_window_set_bar_mode (NautilusNavigationWindow *window,
 	case NAUTILUS_BAR_PATH:
 		gtk_widget_show (window->path_bar);
 		gtk_widget_hide (window->navigation_bar);
-		gtk_widget_hide (NAUTILUS_WINDOW (window)->details->search_bar);
+		gtk_widget_hide (window->search_bar);
 		break;
 
 	case NAUTILUS_BAR_NAVIGATION:
 		gtk_widget_show (window->navigation_bar);
 		gtk_widget_hide (window->path_bar);
-		gtk_widget_hide (NAUTILUS_WINDOW (window)->details->search_bar);
+		gtk_widget_hide (window->search_bar);
 		break;
 
 	case NAUTILUS_BAR_SEARCH:
-		gtk_widget_show (NAUTILUS_WINDOW (window)->details->search_bar);
+		gtk_widget_show (window->search_bar);
 		gtk_widget_hide (window->path_bar);
 		gtk_widget_hide (window->navigation_bar);
 		break;
