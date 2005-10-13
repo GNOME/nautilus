@@ -31,10 +31,12 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-types.h>
@@ -513,6 +515,21 @@ nautilus_bookmark_list_new (void)
 	return list;
 }
 
+static void
+save_search_for_uri (const char *uri)
+{
+	NautilusDirectory *directory;
+	NautilusSearchDirectory *search;
+
+	directory = nautilus_directory_get (uri);
+
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	search = NAUTILUS_SEARCH_DIRECTORY (directory);
+
+	nautilus_search_directory_save_search (search);
+}
+
 /**
  * nautilus_bookmark_list_save_file:
  * 
@@ -543,19 +560,20 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
       		GList *l;
 
 	      	for (l = bookmarks->list; l; l = l->next) {
+			char *uri;
 			char *bookmark_string;
 			bookmark = NAUTILUS_BOOKMARK (l->data);
+
+			uri = nautilus_bookmark_get_uri (bookmark);
 			
 			/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
 			if (nautilus_bookmark_get_has_custom_name (bookmark)) {
 				char *label, *uri;
 				label = nautilus_bookmark_get_name (bookmark);
-				uri = nautilus_bookmark_get_uri (bookmark);
 				bookmark_string = g_strconcat (uri, " ", label, NULL);
-				g_free (uri);
 				g_free (label); 
 			} else {
-				bookmark_string = nautilus_bookmark_get_uri (bookmark);
+				bookmark_string = g_strdup (uri);
 			}
 			if (fputs (bookmark_string, file) == EOF || fputs ("\n", file) == EOF) {
 	    			saved_errno = errno;
@@ -564,6 +582,15 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 	    			goto io_error;
 			}	
 			g_free (bookmark_string);
+
+			/*
+			 * Rather gross hack to save out searches at the same
+			 * time as the bookmarks.
+			 */
+			if (eel_uri_is_search (uri))
+				save_search_for_uri (uri);
+
+			g_free (uri);
 		}
 
 		if (fclose (file) == EOF) {

@@ -249,6 +249,22 @@ nautilus_get_templates_directory_uri (void)
 	return uri;
 }
 
+char *
+nautilus_get_searches_directory (void)
+{
+	char *user_dir;
+	char *searches_dir;
+
+	user_dir = nautilus_get_user_directory ();
+	searches_dir = g_build_filename (user_dir, "searches", NULL);
+	g_free (user_dir);
+	
+	if (!g_file_test (searches_dir, G_FILE_TEST_EXISTS))
+		mkdir (searches_dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+
+	return searches_dir;
+}
+
 /* These need to be reset to NULL when desktop_is_home_dir changes */
 static char *escaped_desktop_dir = NULL;
 static char *escaped_desktop_dir_dirname = NULL;

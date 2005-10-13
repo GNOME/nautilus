@@ -730,6 +730,7 @@ nautilus_search_directory_generate_new_uri (void)
 	gettimeofday (&tv, NULL);
 
 	uri = g_strdup_printf (EEL_SEARCH_URI"///%ld-%ld-%d/", tv.tv_sec, tv.tv_usec, counter++);
+	printf ("generated uri: %s\n", uri);
 
 	return uri;
 }
@@ -754,31 +755,139 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 	return search->details->query;
 }
 
-#if 0
-static void nautilus_search_directory_save_search (NautilusSearchDirectory *search);
+/* Move past the "x-nautilus-search:///" portion of the URI */
+#define SEARCH_URI_OFFSET 21
 
-static void
+void
 nautilus_search_directory_save_search (NautilusSearchDirectory *search)
 {
-	char *user_dir, *search_file;
 	char *search_uri;
+	char *search_dir, *search_file;
 	char *xml;
-	
+	GError *err = NULL;
 
-	user_dir = nautilus_get_user_directory ();
-	search_file = g_build_path ("/", user_dir, "searches.xml", NULL);
-	g_free (user_dir);
+	if (search->details->query == NULL)
+		return;
 
 	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
 
-	xml = g_strdup_printf ("<query id=\"%s\">\n"
+	search_dir = nautilus_get_searches_directory ();
+	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
+	g_free (search_dir);
+
+	xml = g_strdup_printf ("<query uri=\"%s\">\n"
 			       "   <text>%s</text>\n"
-			       "</query>",
+			       "</query>\n",
 			       search_uri,
 			       nautilus_query_get_text (search->details->query));
 
 	g_free (search_uri);
 
-	g_file_set_contents (search_file, xml, strlen (xml), NULL);
+	g_file_set_contents (search_file, xml, strlen (xml), &err);
 }
-#endif
+
+typedef struct {
+	NautilusSearchDirectory *search;
+	gboolean in_text;
+} ParserInfo;
+
+static void
+start_element_cb (GMarkupParseContext *ctx,
+		  const char *element_name,
+		  const char **attribute_names,
+		  const char **attribute_values,
+		  gpointer user_data,
+		  GError **err)
+{
+	ParserInfo *info;
+
+	info = (ParserInfo *) user_data;
+
+	if (strcmp (element_name, "text") == 0)
+		info->in_text = TRUE;
+}
+
+static void
+end_element_cb (GMarkupParseContext *ctx,
+		const char *element_name,
+		gpointer user_data,
+		GError **err)
+{
+	ParserInfo *info;
+
+	info = (ParserInfo *) user_data;
+
+	if (strcmp (element_name, "text") == 0)
+		info->in_text = FALSE;
+}
+
+static void
+text_cb (GMarkupParseContext *ctx,
+	 const char *text,
+	 gsize text_len,
+	 gpointer user_data,
+	 GError **err)
+{
+	ParserInfo *info;
+	char *t;
+	NautilusQuery *query;
+
+	info = (ParserInfo *) user_data;
+
+	if (!info->in_text) {
+		return;
+	}
+
+	t = g_strndup (text, text_len);
+	
+	query = nautilus_query_new ();
+	nautilus_query_set_text (query, t);
+	g_free (t);
+
+	nautilus_search_directory_set_query (info->search, query);
+	g_object_unref (query);
+}
+
+static void
+error_cb (GMarkupParseContext *ctx,
+	  GError *err,
+	  gpointer user_data)
+{
+}
+
+static GMarkupParser parser = {
+	start_element_cb,
+	end_element_cb,
+	text_cb,
+	NULL,
+	error_cb
+};
+
+void
+nautilus_search_directory_load_search (NautilusSearchDirectory *search)
+{
+	char *search_uri;
+	char *search_dir, *search_file;
+	ParserInfo info;
+	GMarkupParseContext *ctx;
+	char *xml;
+	gsize xml_len;
+
+	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
+
+	search_dir = nautilus_get_searches_directory ();
+	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
+	g_free (search_dir);
+
+	if (!g_file_test (search_file, G_FILE_TEST_EXISTS)) {
+		return;
+	}
+
+	info.search = search;
+	info.in_text = FALSE;
+
+	ctx = g_markup_parse_context_new (&parser, 0, &info, NULL);
+	g_file_get_contents (search_file, &xml, &xml_len, NULL);
+
+	g_markup_parse_context_parse (ctx, xml, xml_len, NULL);
+}

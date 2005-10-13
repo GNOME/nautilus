@@ -527,6 +527,9 @@ nautilus_directory_new (const char *uri)
 
 	set_directory_uri (directory, uri);
 
+	if (eel_uri_is_search (uri))
+		nautilus_search_directory_load_search (NAUTILUS_SEARCH_DIRECTORY (directory));
+
 	return directory;
 }
 

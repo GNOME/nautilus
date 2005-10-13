@@ -49,6 +49,8 @@ char *   nautilus_get_templates_directory            (void);
 char *   nautilus_get_templates_directory_uri        (void);
 void     nautilus_create_templates_directory         (void);
 
+char *   nautilus_get_searches_directory             (void);
+
 char *	 nautilus_compute_title_for_uri		     (const char *text_uri);
 
 /* This function returns something that needs to be freed with g_free,
