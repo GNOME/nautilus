@@ -112,7 +112,7 @@ add_place (GtkListStore *store, PlaceType place_type,
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter;
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE, NULL);
+	pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (icon, NULL, GTK_ICON_SIZE_MENU, NULL);
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter,
 			    PLACES_SIDEBAR_COLUMN_ICON, pixbuf,

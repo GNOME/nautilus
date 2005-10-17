@@ -1,3 +1,22 @@
+2005-10-17  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-bookmark.c:
+	* libnautilus-private/nautilus-bookmark.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-icon-factory.h:
+	* libnautilus-private/nautilus-ui-utilities.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-history-sidebar.c:
+	* src/nautilus-places-sidebar.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	* src/file-manager/fm-directory-view.c:
+	Kill NAUTILUS_ICON_SIZE_FOR_MENUS, make icon factory support GTK+
+	stock icon size, use this size in the sidebar, and in menus.
+	Fixes #167107 and others.
+
 2005-10-17  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c (fm_directory_view_class_init):

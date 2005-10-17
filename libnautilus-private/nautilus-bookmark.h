@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_BOOKMARK_H
 #define NAUTILUS_BOOKMARK_H
 
+#include <gtk/gtkenums.h>
 #include <gtk/gtkwidget.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
@@ -95,8 +96,7 @@ char *                nautilus_bookmark_get_scroll_pos         (NautilusBookmark
 
 /* Helper functions for displaying bookmarks */
 GdkPixbuf *           nautilus_bookmark_get_pixbuf             (NautilusBookmark      *bookmark,
-								guint                  icon_size,
-								gboolean               optimize_for_anti_aliasing);
+								GtkIconSize            icon_size);
 GtkWidget *           nautilus_bookmark_menu_item_new          (NautilusBookmark      *bookmark);
 
 #endif /* NAUTILUS_BOOKMARK_H */

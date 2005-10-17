@@ -217,8 +217,7 @@ nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
 
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
-			      guint icon_size,
-			      gboolean optimize_for_anti_aliasing)
+			      GtkIconSize icon_size)
 {
 	GdkPixbuf *result;
 	char *icon;
@@ -230,7 +229,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 		return NULL;
 	}
 
-	result = nautilus_icon_factory_get_pixbuf_for_icon_force_size
+	result = nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size
 		(icon, NULL,
 		 icon_size, NULL, NULL,
 		 TRUE, NULL);
@@ -501,7 +500,7 @@ create_image_widget_for_bookmark (NautilusBookmark *bookmark)
 	GdkPixbuf *pixbuf;
 	GtkWidget *widget;
 
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 	if (pixbuf == NULL) {
 		return NULL;
 	}

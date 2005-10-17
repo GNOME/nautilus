@@ -50,6 +50,7 @@
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkaboutdialog.h>
+#include <gtk/gtkenums.h>
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -168,7 +169,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	g_free (truncated_name);
 
 	/* Create menu item with pixbuf */
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 
 	action_name = g_strdup_printf ("bookmark_%s_%d", parent_id, index_in_parent);
 

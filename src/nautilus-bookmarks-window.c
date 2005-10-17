@@ -36,6 +36,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <gtk/gtkenums.h>
 #include <gtk/gtkhbbox.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-help.h>
@@ -933,9 +934,7 @@ repopulate (void)
 
 		bookmark = nautilus_bookmark_list_item_at (bookmarks, index);
 		bookmark_name = nautilus_bookmark_get_name (bookmark);
-		bookmark_pixbuf = nautilus_bookmark_get_pixbuf (bookmark,
-								NAUTILUS_ICON_SIZE_SMALLER,
-								TRUE);
+		bookmark_pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 		
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter, 

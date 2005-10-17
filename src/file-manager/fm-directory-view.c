@@ -61,6 +61,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktoggleaction.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkenums.h>
 #include <gtk/gtkbindings.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -4371,11 +4372,8 @@ add_extension_action_for_files (FMDirectoryView *view,
 	/* TODO: This should really use themed icons, but that
 	   doesn't work here yet */
 	if (icon != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
-			(icon,
-			 NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE,
-			 NULL);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
+			(icon, NULL, GTK_ICON_SIZE_MENU, NULL);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "menu-icon",
 						pixbuf,
@@ -4839,8 +4837,8 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 
 	action_name = escape_action_name (uri, "script_");
 	escaped_label = eel_str_double_underscores (name);
@@ -4913,8 +4911,8 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
 	uri = nautilus_file_get_uri (file);
 	name = nautilus_file_get_display_name (file);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf);
 	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf);
 	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf);
@@ -5093,8 +5091,8 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 		*dot = 0;
 	}
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 
 	action_name = escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);
@@ -6267,10 +6265,8 @@ connect_proxy (FMDirectoryView *view,
 
 	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_FILE) == 0 &&
 	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
-		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-						   "gnome-fs-regular",
-						   NAUTILUS_ICON_SIZE_FOR_MENUS,
-						   0, NULL);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
+			("gnome-fs-regular", NULL, GTK_ICON_SIZE_MENU, NULL);
 		if (pixbuf != NULL) {
 			image = gtk_image_new_from_pixbuf (pixbuf);
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);

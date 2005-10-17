@@ -600,7 +600,7 @@ location_button_drag_begin_callback (GtkWidget             *widget,
 	GdkPixbuf *pixbuf;
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (NAUTILUS_WINDOW (window)->details->viewed_file,
-							    "open", get_dnd_icon_size (window));
+							    "open", get_dnd_icon_size (window), FALSE);
 
 	gtk_drag_set_icon_pixbuf (context, pixbuf, 0, 0);
 

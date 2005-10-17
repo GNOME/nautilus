@@ -26,6 +26,7 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-icon-factory.h"
 
+#include <gtk/gtkenums.h>
 #include <eel/eel-debug.h>
 
 void
@@ -135,10 +136,10 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 	/* TODO: This should really use themed icons, but that
 	   doesn't work here yet */
 	if (icon != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
 			(icon,
 			 NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE,
+			 GTK_ICON_SIZE_MENU,
 			 NULL);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "menu-icon",

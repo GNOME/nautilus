@@ -296,8 +296,8 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 				modifier = "visiting";
 			}
 			
-			icon = nautilus_icon_factory_get_pixbuf_for_file_force_size (file, modifier, icon_size);
-
+			icon = nautilus_icon_factory_get_pixbuf_for_file (file, modifier, icon_size, TRUE);
+  
 			g_value_set_object (value, icon);
 			g_object_unref (icon);
 		}
@@ -326,9 +326,9 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			if (emblem_icons != NULL) {
 				zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
 				icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
-				icon = nautilus_icon_factory_get_pixbuf_for_icon_force_size (
+				icon = nautilus_icon_factory_get_pixbuf_for_icon (
 					emblem_icons->data, NULL, icon_size,
-					NULL, NULL, FALSE, NULL);
+					NULL, NULL, TRUE, FALSE, NULL);
 				eel_g_list_free_deep (emblem_icons);
 		
 				g_value_set_object (value, icon);

@@ -410,7 +410,7 @@ get_pixbuf_for_properties_window (FMPropertiesWindow *window)
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, NULL,
 							    NAUTILUS_ICON_SIZE_STANDARD,
 							    NULL, NULL,
-							    TRUE, NULL);
+							    FALSE, TRUE, NULL);
 
 	g_free (icon);
 
