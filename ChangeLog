@@ -1,5 +1,11 @@
 2005-10-18  Christian Neumair  <chris@gnome-de.org>
 
+	* src/nautilus-places-sidebar.c: (update_places):
+	* src/nautilus-window-bookmarks.c: (update_bookmarks):
+	Skip nonexistant bookmarks in menus/sidebar. Fixes #312507.
+
+2005-10-18  Christian Neumair  <chris@gnome-de.org>
+
 	* libnautilus-private/nautilus-metafile.c: Make metadata
 	copying/moving asynchronous.
 

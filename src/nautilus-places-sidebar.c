@@ -213,6 +213,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 	for (index = 0; index < bookmark_count; ++index) {
 		bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
 
+		if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+			continue;
+		}
+
 		name = nautilus_bookmark_get_name (bookmark);
 		icon = nautilus_bookmark_get_icon (bookmark);
 		mount_uri = nautilus_bookmark_get_uri (bookmark);

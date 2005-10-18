@@ -202,6 +202,7 @@ static void
 update_bookmarks (NautilusWindow *window)
 {
         NautilusBookmarkList *bookmarks;
+	NautilusBookmark *bookmark;
 	guint bookmark_count;
 	guint index;
 	GtkUIManager *ui_manager;
@@ -225,9 +226,15 @@ update_bookmarks (NautilusWindow *window)
 	/* append new set of bookmarks */
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 	for (index = 0; index < bookmark_count; ++index) {
+		bookmark = nautilus_bookmark_list_item_at (bookmarks, index);
+
+		if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+			continue;
+		}
+
 		nautilus_menus_append_bookmark_to_menu
-			(NAUTILUS_WINDOW (window), 
-			 nautilus_bookmark_list_item_at (bookmarks, index),
+			(NAUTILUS_WINDOW (window),
+			 bookmark,
 			 NAUTILUS_WINDOW_GET_CLASS (window)->bookmarks_placeholder,
 			 "dynamic",
 			 index,
