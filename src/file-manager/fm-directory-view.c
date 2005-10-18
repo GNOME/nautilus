@@ -348,6 +348,7 @@ static void     activate_activation_uri_ready_callback         (NautilusFile    
 								gpointer              callback_data);
 static gboolean can_show_default_app                           (FMDirectoryView *view,
 								NautilusFile *file);
+static gboolean can_delete_uri_without_confirm                 (const char           *uri);
 
 static gboolean activate_check_mime_types                      (FMDirectoryView *view,
 								NautilusFile *file,
@@ -833,6 +834,22 @@ action_trash_callback (GtkAction *action,
 }
 
 static gboolean
+can_delete_uris_without_confirm (GList *uris)
+{
+	g_assert (uris != NULL);
+
+	while (uris != NULL) {
+		if (!can_delete_uri_without_confirm (uris->data)) {
+			return FALSE;
+		}
+
+		uris = uris->next;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 confirm_delete_directly (FMDirectoryView *view, 
 			 GList *uris)
 {
@@ -851,6 +868,10 @@ confirm_delete_directly (FMDirectoryView *view,
 
 	uri_count = g_list_length (uris);
 	g_assert (uri_count > 0);
+
+	if (can_delete_uris_without_confirm (uris)) {
+		return TRUE;
+	}
 
 	if (uri_count == 1) {
 		file_name = file_name_from_uri ((char *) uris->data);
