@@ -1,5 +1,13 @@
 2005-10-18  Christian Neumair  <chris@gnome-de.org>
 
+	* src/file-manager/fm-directory-view.c:
+	(can_delete_uri_without_confirm),
+	(confirm_delete_directly):
+	Don't request confirmation for deletion of "burn:" URIs. Fixes
+	#302607.
+
+2005-10-18  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-places-sidebar.c: (update_places):
 	* src/nautilus-window-bookmarks.c: (update_bookmarks):
 	Skip nonexistant bookmarks in menus/sidebar. Fixes #312507.
