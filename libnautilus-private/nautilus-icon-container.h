@@ -194,6 +194,7 @@ typedef struct {
         void         (* icon_removed)             (NautilusIconContainer *container,
                                                    NautilusIconData *data);
         void         (* cleared)                  (NautilusIconContainer *container);
+	gboolean     (* start_interactive_search) (NautilusIconContainer *container);
 } NautilusIconContainerClass;
 
 /* GtkObject */

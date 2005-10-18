@@ -133,6 +133,9 @@
 #define SNAP_CEIL_HORIZONTAL(x) SNAP_HORIZONTAL (ceil, x)
 #define SNAP_CEIL_VERTICAL(y) SNAP_VERTICAL (ceil, y)
 
+/* Copied from NautilusIconContainer */
+#define NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT 5000
+
 enum {
 	ACTION_ACTIVATE,
 	ACTION_MENU,
@@ -237,6 +240,7 @@ enum {
 	ICON_ADDED,
 	ICON_REMOVED,
 	CLEARED,
+	START_INTERACTIVE_SEARCH,
 	LAST_SIGNAL
 };
 
@@ -2862,95 +2866,6 @@ typedef struct {
 	int last_match_length;
 } BestNameMatch;
 
-static gboolean
-match_best_name (NautilusIconContainer *container,
-		 NautilusIcon *start_icon,
-		 NautilusIcon *best_so_far,
-		 NautilusIcon *candidate,
-		 void *data)
-{
-	BestNameMatch *match_state;
-	const char *name;
-	int match_length;
-	gunichar unichar;
-
-	match_state = (BestNameMatch *) data;
-
-	name = nautilus_icon_canvas_item_get_editable_text (candidate->item);
-
-	/* This can happen if a key event is handled really early while loading
-	 * the icon container, before the items have all been updated once.
-	 */
-	if (name == NULL) {
-		return FALSE;
-	}
-
-	for (match_length = 0; ; match_length++) {
-		if (*name == 0 ||
-		    match_state->name[match_length] == 0) {
-			break;
-		}
-
-		unichar = g_utf8_get_char (name);
-		if (g_unichar_tolower (unichar) != match_state->name[match_length]) {
-			break;
-		}
-		name = g_utf8_next_char (name);
-	}
-
-	if (match_length > match_state->last_match_length) {
-		/* This is the longest pattern match sofar, remember the
-		 * length and return with a candidate.
-		 */
-		match_state->last_match_length = match_length;
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-select_matching_name (NautilusIconContainer *container,
-		      const char *match_name)
-{
-	int i;
-	NautilusIcon *icon;
-	BestNameMatch match_state;
-
-	match_state.name = g_new (gunichar, g_utf8_strlen (match_name, -1) + 1);
-	match_state.last_match_length = 0;
-
-	i = 0;
-	while (*match_name != 0) {
-		match_state.name[i++] = g_unichar_tolower (g_utf8_get_char (match_name));
-		match_name = g_utf8_next_char (match_name);
-	}
-	match_state.name[i++] = 0;
-	
-	icon = find_best_icon (container,
-			       NULL,
-			       match_best_name,
-			       &match_state);
-	if (icon == NULL) {
-		g_free (match_state.name);
-		return FALSE;
-	}
-
-	/* Select icons and get rid of the special keyboard focus. */
-	clear_keyboard_focus (container);
-	clear_keyboard_rubberband_start (container);
-	container->details->range_selection_base_icon = icon;
-	if (select_one_unselect_others (container, icon)) {
-		g_signal_emit (container,
-				 signals[SELECTION_CHANGED], 0);
-	}
-	schedule_keyboard_icon_reveal (container, icon);
-
-	g_free (match_state.name);
-
-	return TRUE;
-}
-
 #ifndef TAB_NAVIGATION_DISABLED
 static void
 select_previous_or_next_icon (NautilusIconContainer *container, 
@@ -3025,8 +2940,18 @@ destroy (GtkObject *object)
 		container->details->align_idle_id = 0;
 	}
 
-       
-	nautilus_icon_container_flush_typeselect_state (container);
+
+	/* destroy interactive search dialog */
+	if (container->details->search_window) {
+		gtk_widget_destroy (container->details->search_window);
+		container->details->search_window = NULL;
+		container->details->search_entry = NULL;
+		if (container->details->typeselect_flush_timeout) {
+			g_source_remove (container->details->typeselect_flush_timeout);
+			container->details->typeselect_flush_timeout = 0;
+		}
+	}
+
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
@@ -3153,6 +3078,11 @@ unrealize (GtkWidget *widget)
 
 	nautilus_icon_dnd_fini (container);
 
+	if (container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout = 0;
+	}
+
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
@@ -3199,9 +3129,6 @@ button_press_event (GtkWidget *widget,
 
 	/* Forget about where we began with the arrow keys now that we're mousing. */
 	container->details->arrow_key_axis = AXIS_NONE;
-	
-	/* Forget the typeahead state. */
-	nautilus_icon_container_flush_typeselect_state (container);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	clicked_on_icon = GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
@@ -3628,135 +3555,532 @@ motion_notify_event (GtkWidget *widget,
 	return GTK_WIDGET_CLASS (parent_class)->motion_notify_event (widget, event);
 }
 
-void
-nautilus_icon_container_flush_typeselect_state (NautilusIconContainer *container)
+static void
+nautilus_icon_container_search_position_func (NautilusIconContainer *container,
+					      GtkWidget *search_dialog)
 {
-	if (container->details->type_select_state == NULL) {
-		return;
+	gint x, y;
+	gint cont_x, cont_y;
+	gint cont_width, cont_height;
+	GdkWindow *cont_window;
+	GdkScreen *screen;
+	GtkRequisition requisition;
+	gint monitor_num;
+	GdkRectangle monitor;
+
+
+	cont_window = GTK_WIDGET (container)->window;
+	screen = gdk_drawable_get_screen (cont_window);
+
+	monitor_num = gdk_screen_get_monitor_at_window (screen, cont_window);
+	gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+
+	gtk_widget_realize (search_dialog);
+
+	gdk_window_get_origin (cont_window, &cont_x, &cont_y);
+	gdk_drawable_get_size (cont_window, &cont_width, &cont_height);
+	gtk_widget_size_request (search_dialog, &requisition);
+
+	if (cont_x + cont_width - requisition.width > gdk_screen_get_width (screen)) {
+		x = gdk_screen_get_width (screen) - requisition.width;
+	} else if (cont_x + cont_width - requisition.width < 0) {
+		x = 0;
+	} else {
+		x = cont_x + cont_width - requisition.width;
 	}
-	
-	g_free (container->details->type_select_state->type_select_pattern);
-	g_free (container->details->type_select_state);
-	container->details->type_select_state = NULL;
-}
 
-static void
-dave_read_cb (GnomeVFSResult result,
-	      GnomeVFSFileSize file_size,
-	      char *file_contents,
-	      gpointer user_data)
-{
-	GtkWidget *dialog;
-	GtkWidget *hbox;
-	GtkWidget *image;
-	GtkWidget *label;
-	GdkPixbuf *pixbuf;
-	GdkPixbufLoader *loader;
+	if (cont_y + cont_height > gdk_screen_get_height (screen)) {
+		y = gdk_screen_get_height (screen) - requisition.height;
+	} else if (cont_y + cont_height < 0) { /* isn't really possible ... */
+		y = 0;
+	} else {
+		y = cont_y + cont_height;
+	}
 
-	g_return_if_fail (result == GNOME_VFS_OK);
-
-	loader = gdk_pixbuf_loader_new ();
-	gdk_pixbuf_loader_write (loader, file_contents, file_size, NULL);
-	pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
-
-
-	g_return_if_fail (pixbuf != NULL);
-
-	dialog = gtk_dialog_new_with_buttons ("Hello", NULL, 0,
-					      "_Call Now!",
-					      GTK_RESPONSE_OK, NULL);
-
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-
-	image = gtk_image_new_from_pixbuf (pixbuf);
-	g_object_unref (G_OBJECT (pixbuf));
-
-	label = g_object_new (GTK_TYPE_LABEL, "label",
-			      "<span size=\"larger\"><b>My name is Dave Camp."
-			      "  I am very lonely.  "
-			      "<i>Please</i> call me at (617) 216-5250."
-			      "  Thank you.</b></span>",
-			      "use_markup", TRUE, "wrap", TRUE, NULL);
-
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show_all (hbox);
-	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    hbox, TRUE, TRUE, 0);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-	gdk_pixbuf_loader_close (loader, NULL);
-}
-
-static void
-begin_dave_bashing (void)
-{
-	eel_read_entire_file_async ("http://art.gnome.org/images/icons/gnome-people/Dave.png", 10, dave_read_cb, NULL);
+	gtk_window_move (GTK_WINDOW (search_dialog), x, y);
 }
 
 static gboolean
-handle_typeahead (NautilusIconContainer *container,
-		  GdkEventKey *event,
-		  gboolean *flush_typeahead)
+nautilus_icon_container_real_search_enable_popdown (gpointer data)
 {
-	char *new_pattern;
-	gint64 now;
-	gint64 time_delta;
-	guint32 unichar;
-	char unichar_utf8[7];
-	int i;
+	NautilusIconContainer *container = (NautilusIconContainer *)data;
 
-	unichar = gdk_keyval_to_unicode (event->keyval);
-	i = g_unichar_to_utf8 (unichar, unichar_utf8);
-	unichar_utf8[i] = 0;
+	container->details->disable_popdown = FALSE;
 	
-	*flush_typeahead = FALSE;
+	g_object_unref (container);
+
+	return FALSE;
+}
+
+static void
+nautilus_icon_container_search_enable_popdown (GtkWidget *widget,
+					       gpointer   data)
+{
+	NautilusIconContainer *container = (NautilusIconContainer *) data;
 	
-	if (*event->string == 0) {
-		/* can be an empty string if the modifier was held down, etc. */
-		return FALSE;
-	}
+	g_object_ref (container);
+	g_timeout_add (200, nautilus_icon_container_real_search_enable_popdown, data);
+}
+
+static void
+nautilus_icon_container_search_disable_popdown (GtkEntry *entry,
+						GtkMenu  *menu,
+						gpointer  data)
+{
+	NautilusIconContainer *container = (NautilusIconContainer *) data;
+
+	container->details->disable_popdown = TRUE;
+	g_signal_connect (menu, "hide",
+			  G_CALLBACK (nautilus_icon_container_search_enable_popdown),
+			  data);
+}
+
+/* Cut and paste from gtkwindow.c */
+static void
+send_focus_change (GtkWidget *widget, gboolean in)
+{
+	GdkEvent *fevent;
 	
-	if (!g_unichar_isprint (unichar)) {
-		*flush_typeahead = TRUE;
-		return FALSE;
-	}
+	fevent = gdk_event_new (GDK_FOCUS_CHANGE);
 
-	/* lazily allocate the typeahead state */
-	if (container->details->type_select_state == NULL) {
-		container->details->type_select_state = g_new0 (TypeSelectState, 1);
-	}
+	g_object_ref (widget);
 
-	/* find out how long since last character was typed */
-	now = eel_get_system_time ();
-	time_delta = now - container->details->type_select_state->last_typeselect_time;
-	if (time_delta < 0 || time_delta > NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY) {
-		/* the typeselect state is too old, start with a fresh one */
-		g_free (container->details->type_select_state->type_select_pattern);
-		container->details->type_select_state->type_select_pattern = NULL;
-	}
-
-	if (container->details->type_select_state->type_select_pattern != NULL) {
-		new_pattern = g_strconcat
-			(container->details->type_select_state->type_select_pattern,
-			 unichar_utf8, NULL);
-		g_free (container->details->type_select_state->type_select_pattern);
+	if (in) {
+		GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
 	} else {
-		new_pattern = g_strdup (unichar_utf8);
+		GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
 	}
 
-	container->details->type_select_state->type_select_pattern = new_pattern;
-	container->details->type_select_state->last_typeselect_time = now;
+	fevent->focus_change.type = GDK_FOCUS_CHANGE;
+	fevent->focus_change.window = g_object_ref (widget->window);
+	fevent->focus_change.in = in;
 
-	if (!select_matching_name (container, new_pattern) &&
-	    !g_ascii_strcasecmp (new_pattern, "captain") &&
-	    nautilus_icon_container_get_is_desktop (container)) {
-		begin_dave_bashing();
+	gtk_widget_event (widget, fevent);
+
+	g_object_notify (G_OBJECT (widget), "has-focus");
+
+	g_object_unref (widget);
+	gdk_event_free (fevent);
+}
+
+static void
+nautilus_icon_container_search_dialog_hide (GtkWidget *search_dialog,
+					    NautilusIconContainer *container)
+{
+	if (container->details->disable_popdown) {
+		return;
+	}
+
+	if (container->details->search_entry_changed_id) {
+		g_signal_handler_disconnect (container->details->search_entry,
+					     container->details->search_entry_changed_id);
+		container->details->search_entry_changed_id = 0;
+	}
+	if (container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout = 0;
+	}
+
+	/* send focus-in event */
+	send_focus_change (GTK_WIDGET (container->details->search_entry), FALSE);
+	gtk_widget_hide (search_dialog);
+	gtk_entry_set_text (GTK_ENTRY (container->details->search_entry), "");
+}
+
+static gboolean
+nautilus_icon_container_search_entry_flush_timeout (NautilusIconContainer *container)
+{
+	nautilus_icon_container_search_dialog_hide (container->details->search_window, container);
+
+	return TRUE;
+}
+
+/* Because we're visible but offscreen, we just set a flag in the preedit
+ * callback.
+ */
+static void
+nautilus_icon_container_search_preedit_changed (GtkIMContext *im_context,
+						NautilusIconContainer *container)
+{
+	container->details->imcontext_changed = 1;
+	if (container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout =
+			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
+				container);
+	}
+}
+
+static void
+nautilus_icon_container_search_activate (GtkEntry *entry,
+					 NautilusIconContainer *container)
+{
+	nautilus_icon_container_search_dialog_hide (container->details->search_window,
+						    container);
+
+	activate_selected_items (container);
+}
+
+static gboolean
+nautilus_icon_container_search_delete_event (GtkWidget *widget,
+					     GdkEventAny *event,
+					     NautilusIconContainer *container)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+
+	nautilus_icon_container_search_dialog_hide (widget, container);
+
+	return TRUE;
+}
+
+static gboolean
+nautilus_icon_container_search_button_press_event (GtkWidget *widget,
+						   GdkEventButton *event,
+						   NautilusIconContainer *container)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+
+	nautilus_icon_container_search_dialog_hide (widget, container);
+
+	if (event->window == GTK_LAYOUT (container)->bin_window) {
+		button_press_event (GTK_WIDGET (container), event);
 	}
 
 	return TRUE;
+}
+
+static gboolean
+nautilus_icon_container_search_iter (NautilusIconContainer *container,
+				     const char *key, gint n)
+{
+	GList *p;
+	NautilusIcon *icon;
+	const char *name;
+	int count;
+	char *normalized_key, *case_normalized_key;
+	char *normalized_name, *case_normalized_name;
+	
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (n >= 1, FALSE);
+	
+	normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
+	if (!normalized_key) {
+		return FALSE;
+	}
+	case_normalized_key = g_utf8_casefold (normalized_key, -1);
+	g_free (normalized_key);
+	if (!case_normalized_key) {
+		return FALSE;
+	}
+	
+	icon = NULL;
+	count = 0;
+	for (p = container->details->icons; p != NULL && count != n; p = p->next) {
+		icon = p->data;
+		name = nautilus_icon_canvas_item_get_editable_text (icon->item);
+		
+		/* This can happen if a key event is handled really early while
+		 * loading the icon container, before the items have all been
+		 * updated once.
+		 */
+		if (!name) {
+			continue;
+		}
+			
+		normalized_name = g_utf8_normalize (name, -1, G_NORMALIZE_ALL);
+		if (!normalized_name) {
+			continue;
+		}
+		case_normalized_name = g_utf8_casefold (normalized_name, -1);
+		g_free (normalized_name);
+		if (!case_normalized_name) {
+			continue;
+		}
+		
+		if (strncmp (case_normalized_key, case_normalized_name,
+			     strlen (case_normalized_key)) == 0) {
+			count++;
+		}
+
+		g_free (case_normalized_name);
+	}
+
+	g_free (case_normalized_key);
+
+	if (count == n) {
+		if (select_one_unselect_others (container, icon)) {
+			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+		}
+		schedule_keyboard_icon_reveal (container, icon);
+		
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static void
+nautilus_icon_container_search_move (GtkWidget *window,
+				     NautilusIconContainer *container,
+				     gboolean up)
+{
+	gboolean ret;
+	gint len;
+	gint count = 0;
+	const gchar *text;
+
+	text = gtk_entry_get_text (GTK_ENTRY (container->details->search_entry));
+
+	g_return_if_fail (text != NULL);
+
+	if (container->details->selected_iter == 0) {
+		return;
+	}
+	
+	if (up && container->details->selected_iter == 1) {
+		return;
+	}
+
+	len = strlen (text);
+
+	if (len < 1) {
+		return;
+	}
+
+	/* search */
+	unselect_all (container);
+
+	ret = nautilus_icon_container_search_iter (container, text,
+		up?((container->details->selected_iter) - 1):((container->details->selected_iter + 1)));
+
+	if (ret) {
+		/* found */
+		container->details->selected_iter += up?(-1):(1);
+	} else {
+		/* return to old iter */
+		count = 0;
+		nautilus_icon_container_search_iter (container, text,
+					container->details->selected_iter);
+	}
+}
+
+static gboolean
+nautilus_icon_container_search_scroll_event (GtkWidget *widget,
+					     GdkEventScroll *event,
+					     NautilusIconContainer *container)
+{
+	gboolean retval = FALSE;
+
+	if (event->direction == GDK_SCROLL_UP) {
+		nautilus_icon_container_search_move (widget, container, TRUE);
+		retval = TRUE;
+	} else if (event->direction == GDK_SCROLL_DOWN) {
+		nautilus_icon_container_search_move (widget, container, FALSE);
+		retval = TRUE;
+	}
+
+	return retval;
+}
+
+static gboolean
+nautilus_icon_container_search_key_press_event (GtkWidget *widget,
+						GdkEventKey *event,
+						NautilusIconContainer *container)
+{
+	gboolean retval = FALSE;
+
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	/* close window and cancel the search */
+	if (event->keyval == GDK_Escape || event->keyval == GDK_Tab) {
+		nautilus_icon_container_search_dialog_hide (widget, container);
+		return TRUE;
+	}
+
+	/* select previous matching iter */
+	if (event->keyval == GDK_Up || event->keyval == GDK_KP_Up) {
+		nautilus_icon_container_search_move (widget, container, TRUE);
+		retval = TRUE;
+	}
+
+	/* select next matching iter */
+	if (event->keyval == GDK_Down || event->keyval == GDK_KP_Down) {
+		nautilus_icon_container_search_move (widget, container, FALSE);
+		retval = TRUE;
+	}
+
+	if ((event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK
+	    && (event->keyval == GDK_g || event->keyval == GDK_G)) {
+		nautilus_icon_container_search_move (widget, container, FALSE);
+		retval = TRUE;
+	}
+
+	/* renew the flush timeout */
+	if (retval && container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout =
+			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
+				container);
+	}
+
+	return retval;
+}
+
+static void
+nautilus_icon_container_search_init (GtkWidget   *entry,
+				     NautilusIconContainer *container)
+{
+	gint ret;
+	gint len;
+	const gchar *text;
+
+	g_return_if_fail (GTK_IS_ENTRY (entry));
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+	len = strlen (text);
+
+	/* search */
+	unselect_all (container);
+	if (container->details->typeselect_flush_timeout)
+	{
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout =
+			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
+				container);
+	}
+
+	if (len < 1) {
+		return;
+	}
+
+	ret = nautilus_icon_container_search_iter (container, text, 1);
+
+	if (ret) {
+		container->details->selected_iter = 1;
+	}
+}
+
+static void
+nautilus_icon_container_ensure_interactive_directory (NautilusIconContainer *container)
+{
+	GtkWidget *frame, *vbox, *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
+
+	if (container->details->search_window != NULL) {
+		return;
+	}
+
+	container->details->search_window = gtk_window_new (GTK_WINDOW_POPUP);
+
+	gtk_window_set_modal (GTK_WINDOW (container->details->search_window), TRUE);
+	g_signal_connect (container->details->search_window, "delete_event",
+			  G_CALLBACK (nautilus_icon_container_search_delete_event),
+			  container);
+	g_signal_connect (container->details->search_window, "key_press_event",
+			  G_CALLBACK (nautilus_icon_container_search_key_press_event),
+			  container);
+	g_signal_connect (container->details->search_window, "button_press_event",
+			  G_CALLBACK (nautilus_icon_container_search_button_press_event),
+			  container);
+	g_signal_connect (container->details->search_window, "scroll_event",
+			  G_CALLBACK (nautilus_icon_container_search_scroll_event),
+			  container);
+
+	frame = gtk_frame_new (NULL);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
+	gtk_widget_show (frame);
+	gtk_container_add (GTK_CONTAINER (container->details->search_window), frame);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (frame), vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
+
+	/* add entry */
+	container->details->search_entry = gtk_entry_new ();
+	gtk_widget_show (container->details->search_entry);
+	g_signal_connect (container->details->search_entry, "populate_popup",
+			  G_CALLBACK (nautilus_icon_container_search_disable_popdown),
+			  container);
+	g_signal_connect (container->details->search_entry, "activate",
+			  G_CALLBACK (nautilus_icon_container_search_activate),
+			  container);
+	g_signal_connect (GTK_ENTRY (container->details->search_entry)->im_context,
+			  "preedit-changed",
+			  G_CALLBACK (nautilus_icon_container_search_preedit_changed),
+			  container);
+	gtk_container_add (GTK_CONTAINER (vbox), container->details->search_entry);
+
+	gtk_widget_realize (container->details->search_entry);
+}
+
+/* Pops up the interactive search entry.  If keybinding is TRUE then the user
+ * started this by typing the start_interactive_search keybinding.  Otherwise, it came from 
+ */
+static gboolean
+nautilus_icon_container_real_start_interactive_search (NautilusIconContainer *container,
+						       gboolean keybinding)
+{
+	/* We only start interactive search if we have focus.  If one of our
+	 * children have focus, we don't want to start the search.
+	 */
+	GtkWidgetClass *entry_parent_class;
+
+	if (container->details->search_window != NULL &&
+	    GTK_WIDGET_VISIBLE (container->details->search_window)) {
+		return TRUE;
+	}
+
+	if (!GTK_WIDGET_HAS_FOCUS (container)) {
+		return FALSE;
+	}
+
+	nautilus_icon_container_ensure_interactive_directory (container);
+
+	if (keybinding) {
+		gtk_entry_set_text (GTK_ENTRY (container->details->search_entry), "");
+	}
+
+	/* done, show it */
+	nautilus_icon_container_search_position_func (container, container->details->search_window);
+	gtk_widget_show (container->details->search_window);
+	if (container->details->search_entry_changed_id == 0) {
+		container->details->search_entry_changed_id =
+			g_signal_connect (container->details->search_entry, "changed",
+				G_CALLBACK (nautilus_icon_container_search_init),
+				container);
+	}
+
+	container->details->typeselect_flush_timeout =
+		g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+			(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
+			container);
+
+	/* Grab focus will select all the text.  We don't want that to happen, so we
+	* call the parent instance and bypass the selection change.  This is probably
+	* really non-kosher. */
+	entry_parent_class = g_type_class_peek_parent (GTK_ENTRY_GET_CLASS (container->details->search_entry));
+	(entry_parent_class->grab_focus) (container->details->search_entry);
+
+	/* send focus-in event */
+	send_focus_change (container->details->search_entry, TRUE);
+
+	/* search first matching iter */
+	nautilus_icon_container_search_init (container->details->search_entry, container);
+
+	return TRUE;
+}
+
+static gboolean
+nautilus_icon_container_start_interactive_search (NautilusIconContainer *container)
+{
+	return nautilus_icon_container_real_start_interactive_search (container, TRUE);
 }
 
 static gboolean
@@ -3777,11 +4101,9 @@ key_press_event (GtkWidget *widget,
 {
 	NautilusIconContainer *container;
 	gboolean handled;
-	gboolean flush_typeahead;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	handled = FALSE;
-	flush_typeahead = TRUE;
 
 	if (is_renaming (container) || is_renaming_pending (container)) {
 		switch (event->keyval) {
@@ -3872,22 +4194,68 @@ key_press_event (GtkWidget *widget,
 			}
 			break;
 		default:
-			/* Don't use Control or Alt keys for type-selecting, because they
-			 * might be used for menus.
-			 */
-			handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
-				handle_typeahead (container, event, &flush_typeahead);
 			break;
 		}
 	}
 
-	if (flush_typeahead) {
-		/* any non-ascii key will force the typeahead state to be forgotten */
-		nautilus_icon_container_flush_typeselect_state (container);
-	}
-
 	if (!handled) {
 		handled = GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
+	}
+	
+	/* We pass the event to the search_entry.  If its text changes, then we
+	 * start the typeahead find capabilities.
+	 * Copied from NautilusIconContainer */
+	if (!handled) {
+		GdkEvent *new_event;
+		char *old_text;
+		const char *new_text;
+		gboolean retval;
+		GdkScreen *screen;
+		gboolean text_modified;
+		gulong popup_menu_id;
+
+		nautilus_icon_container_ensure_interactive_directory (container);
+
+		/* Make a copy of the current text */
+		old_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (container->details->search_entry)));
+		new_event = gdk_event_copy ((GdkEvent *) event);
+		((GdkEventKey *) new_event)->window = container->details->search_entry->window;
+		gtk_widget_realize (container->details->search_window);
+
+		popup_menu_id = g_signal_connect (container->details->search_entry, 
+						  "popup_menu", G_CALLBACK (gtk_true), NULL);
+
+		/* Move the entry off screen */
+		screen = gtk_widget_get_screen (GTK_WIDGET (container));
+		gtk_window_move (GTK_WINDOW (container->details->search_window),
+		gdk_screen_get_width (screen) + 1,
+		gdk_screen_get_height (screen) + 1);
+		gtk_widget_show (container->details->search_window);
+
+		/* Send the event to the window.  If the preedit_changed signal is emitted
+		 * during this event, we will set priv->imcontext_changed  */
+		container->details->imcontext_changed = FALSE;
+		retval = gtk_widget_event (container->details->search_entry, new_event);
+		gtk_widget_hide (container->details->search_window);
+
+		g_signal_handler_disconnect (container->details->search_entry, 
+					     popup_menu_id);
+
+		/* We check to make sure that the entry tried to handle the text, and that
+		 * the text has changed. */
+		new_text = gtk_entry_get_text (GTK_ENTRY (container->details->search_entry));
+		text_modified = strcmp (old_text, new_text) != 0;
+		g_free (old_text);
+		if (container->details->imcontext_changed ||    /* we're in a preedit */
+		    (retval && text_modified)) {                /* ...or the text was modified */
+			if (nautilus_icon_container_real_start_interactive_search (container, FALSE)) {
+				gtk_widget_grab_focus (GTK_WIDGET (container));
+				return TRUE;
+			} else {
+				gtk_entry_set_text (GTK_ENTRY (container->details->search_entry), "");
+				return FALSE;
+			}
+		}
 	}
 
 	return handled;
@@ -3953,7 +4321,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 {
 	GtkWidgetClass *widget_class;
 	EelCanvasClass *canvas_class;
-	
+	GtkBindingSet *binding_set;
+
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_OBJECT_CLASS (class)->destroy = destroy;
 
@@ -4252,6 +4621,16 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
+	signals[START_INTERACTIVE_SEARCH]
+		= g_signal_new ("start_interactive_search",
+				G_TYPE_FROM_CLASS (class),
+				G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+				G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 start_interactive_search),
+				NULL, NULL,
+				nautilus_marshal_BOOLEAN__VOID,
+				G_TYPE_BOOLEAN, 0);
+
 	/* GtkWidget class.  */
 
 	widget_class = GTK_WIDGET_CLASS (class);
@@ -4270,6 +4649,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	canvas_class = EEL_CANVAS_CLASS (class);
 	canvas_class->draw_background = draw_canvas_background;
+
+	class->start_interactive_search = nautilus_icon_container_start_interactive_search;
 	
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("frame_text",
@@ -4318,6 +4699,11 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     "Color used for information text against a light background",
 								     GDK_TYPE_COLOR,
 								     G_PARAM_READABLE));
+
+	binding_set = gtk_binding_set_by_class (class);
+
+	gtk_binding_entry_add_signal (binding_set, GDK_f, GDK_CONTROL_MASK, "start_interactive_search", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_F, GDK_CONTROL_MASK, "start_interactive_search", 0);
 }
 
 static void

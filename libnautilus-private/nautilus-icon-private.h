@@ -97,11 +97,6 @@ typedef enum {
 	AXIS_VERTICAL
 } Axis;
 
-typedef struct {
-	char *type_select_pattern;
-	guint64 last_typeselect_time;
-} TypeSelectState;
-
 enum {
 	LABEL_COLOR,
 	LABEL_COLOR_HIGHLIGHT,
@@ -171,9 +166,6 @@ struct NautilusIconContainerDetails {
 	GtkWidget *rename_widget;	/* Editable text item */
 	char *original_text;			/* Copy of editable text for later compare */
 
-	/* typeahead selection state */
-	TypeSelectState *type_select_state;
-	
 	/* Idle ID. */
 	guint idle_id;
 
@@ -257,6 +249,15 @@ struct NautilusIconContainerDetails {
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;
 	GQueue* a11y_item_action_queue;
+
+	/* interactive search */
+	gboolean disable_popdown;
+	gboolean imcontext_changed;
+	int selected_iter;
+	GtkWidget *search_window;
+	GtkWidget *search_entry;
+	guint search_entry_changed_id;
+	guint typeselect_flush_timeout;
 };
 
 /* Private functions shared by mutiple files. */
@@ -279,7 +280,6 @@ char *        nautilus_icon_container_get_icon_drop_target_uri    (NautilusIconC
 								   NautilusIcon          *icon);
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
-void          nautilus_icon_container_flush_typeselect_state      (NautilusIconContainer *container);
 gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconContainer *container);
 gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconContainer *view,
 								   NautilusIcon          *icon,

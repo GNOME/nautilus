@@ -1,9 +1,45 @@
 2005-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c: 
+	Use gtktreeview typeahead. Patch by Christian Neumair.
+	
+2005-10-18  Jürg Billeter  <j@bitron.ch>
+
+	* libnautilus-private/nautilus-icon-container.c: (destroy),
+	(unrealize), (button_press_event),
+	(nautilus_icon_container_search_position_func),
+	(nautilus_icon_container_real_search_enable_popdown),
+	(nautilus_icon_container_search_enable_popdown),
+	(nautilus_icon_container_search_disable_popdown),
+	(send_focus_change), (nautilus_icon_container_search_dialog_hide),
+	(nautilus_icon_container_search_entry_flush_timeout),
+	(nautilus_icon_container_search_preedit_changed),
+	(nautilus_icon_container_search_activate),
+	(nautilus_icon_container_search_delete_event),
+	(nautilus_icon_container_search_button_press_event),
+	(nautilus_icon_container_search_iter),
+	(nautilus_icon_container_search_move),
+	(nautilus_icon_container_search_scroll_event),
+	(nautilus_icon_container_search_key_press_event),
+	(nautilus_icon_container_search_init),
+	(nautilus_icon_container_ensure_interactive_directory),
+	(nautilus_icon_container_real_start_interactive_search),
+	(nautilus_icon_container_start_interactive_search),
+	(key_press_event), (nautilus_icon_container_class_init):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-marshal.list:
+	
+	Replace NautilusIconContainer typeahead implementation by a port of
+	GtkTreeView's interactive search.
+
+2005-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-extension/Makefile.am:
 	* libnautilus-private/Makefile.am:
 	Build fixes for cygwin.
-
+	Patch from Yaakov S (Cygwin Port)
+	
 2005-10-17  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-bookmark.c:
