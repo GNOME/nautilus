@@ -76,7 +76,7 @@ typedef struct {
                                         gboolean active);
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
-        void   (* prompt_for_location) (NautilusWindow *window);
+        void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
@@ -126,7 +126,8 @@ void             nautilus_window_go_to_with_selection (NautilusWindow    *window
 void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_go_up                (NautilusWindow    *window,
                                                        gboolean           close_behind);
-void             nautilus_window_prompt_for_location  (NautilusWindow    *window);
+void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
+                                                       const char        *initial);
 void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_update_title         (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,

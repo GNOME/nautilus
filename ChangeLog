@@ -1,5 +1,19 @@
 2005-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c: (key_press_event):
+	Don't send slash to typeahead
+	
+	* src/nautilus-location-dialog.[ch]:
+	Add nautilus_location_dialog_set_location.
+	
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window.[ch]:
+	Open location dialog/entry when you press '/'.
+	
+2005-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c: 
 	Use gtktreeview typeahead. Patch by Christian Neumair.
 	

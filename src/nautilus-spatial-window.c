@@ -305,11 +305,17 @@ action_close_all_folders_callback (GtkAction *action,
 }
 
 static void
-real_prompt_for_location (NautilusWindow *window)
+real_prompt_for_location (NautilusWindow *window,
+			  const char     *initial)
 {
 	GtkWidget *dialog;
 	
 	dialog = nautilus_location_dialog_new (window);
+	if (initial != NULL) {
+		nautilus_location_dialog_set_location (NAUTILUS_LOCATION_DIALOG (dialog),
+						       initial);
+	}
+		
 	gtk_widget_show (dialog);
 }
 
@@ -707,8 +713,8 @@ action_go_to_location_callback (GtkAction *action,
 
 	window = NAUTILUS_WINDOW (user_data);
 
-	nautilus_window_prompt_for_location (window);
-}			   
+	nautilus_window_prompt_for_location (window, NULL);
+}
 
 static void
 action_add_bookmark_callback (GtkAction *action,
