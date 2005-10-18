@@ -3,6 +3,7 @@
 /* nautilus-metafile.c - server side of Nautilus::Metafile
  *
  * Copyright (C) 2001 Eazel, Inc.
+ * Copyright (C) 2001-2005 Free Software Foundation, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -49,6 +50,16 @@
 #define METAFILE_PERMISSIONS 0600
 #define METAFILES_DIRECTORY_NAME "metafiles"
 
+/* TODO asynchronous copying/moving of metadata
+ *
+ * - potential metadata loss when a deletion is scheduled, and new metadata is copied to
+ *   this location before the old deletion is consumed
+ *
+ * - if metafile read fails, and a file from that metafile is scheduled for a copy/move operation,
+ *   its associated operations are not removed from pending_copies
+ *
+ * */
+
 static char    *get_file_metadata                  (NautilusMetafile *metafile,
 						    const char       *file_name,
 						    const char       *key,
@@ -74,7 +85,13 @@ static void     copy_file_metadata                 (NautilusMetafile *source_met
 						    const char       *source_file_name,
 						    NautilusMetafile *destination_metafile,
 						    const char       *destination_file_name);
+static void     real_copy_file_metadata            (NautilusMetafile *source_metafile,
+						    const char       *source_file_name,
+						    NautilusMetafile *destination_metafile,
+						    const char       *destination_file_name);
 static void     remove_file_metadata               (NautilusMetafile *metafile,
+						    const char       *file_name);
+static void     real_remove_file_metadata          (NautilusMetafile *metafile,
 						    const char       *file_name);
 static void     call_metafile_changed_for_one_file (NautilusMetafile *metafile,
 						    const CORBA_char *file_name);
@@ -257,6 +274,206 @@ nautilus_metafile_get (const char *directory_uri)
 	g_free (canonical_uri);
 
 	return metafile;
+}
+
+static GList *pending_copies;
+
+typedef struct {
+	NautilusMetafile *source_metafile;
+	char             *source_file_name;
+	NautilusMetafile *destination_metafile;
+	char             *destination_file_name;
+} NautilusMetadataCopy;
+
+static gboolean
+nautilus_metadata_copy_equal (const NautilusMetadataCopy *a,
+			      const NautilusMetadataCopy *b)
+{
+	return (b->source_metafile == a->source_metafile)
+	       && (b->destination_metafile == a->destination_metafile)
+	       && (strcmp (a->source_file_name, b->source_file_name) == 0)
+	       && (strcmp (a->destination_file_name, b->destination_file_name) == 0);
+}
+
+static NautilusMetadataCopy *
+nautilus_metadata_get_scheduled_copy (NautilusMetafile *source_metafile,
+				      const char       *source_file_name,
+				      NautilusMetafile *destination_metafile,
+				      const char       *destination_file_name)
+{
+	NautilusMetadataCopy key, *copy;
+	GList *l;
+
+	key.source_metafile = source_metafile;
+	key.source_file_name = (char *) source_file_name;
+	key.destination_metafile = destination_metafile;
+	key.destination_file_name = (char *) destination_file_name;
+
+	for (l = pending_copies; l != NULL; l = l->next) {
+		copy = l->data;
+
+		if (nautilus_metadata_copy_equal (l->data, &key)) {
+			return copy;
+		}
+	}
+
+	return NULL;
+}
+
+static gboolean
+nautilus_metadata_has_scheduled_copy (NautilusMetafile *source_metafile,
+				      const char       *source_file_name)
+{
+	NautilusMetadataCopy *copy;
+	GList *l;
+
+	for (l = pending_copies; l != NULL; l = l->next) {
+		copy = l->data;
+
+		if ((copy->source_metafile == source_metafile)
+		    && (strcmp (copy->source_file_name, source_file_name) == 0)) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static void
+nautilus_metadata_schedule_copy (NautilusMetafile *source_metafile,
+				 const char       *source_file_name,
+				 NautilusMetafile *destination_metafile,
+				 const char       *destination_file_name)
+{
+	NautilusMetadataCopy *copy;
+
+	g_assert (!source_metafile->details->is_read || !destination_metafile->details->is_read);
+
+	copy = nautilus_metadata_get_scheduled_copy (source_metafile,
+						     source_file_name,
+						     destination_metafile,
+						     destination_file_name);
+	if (copy == NULL) {
+		copy = g_malloc (sizeof (NautilusMetadataCopy));
+		copy->source_metafile = bonobo_object_ref (source_metafile);
+		copy->source_file_name = g_strdup (source_file_name);
+		copy->destination_metafile = bonobo_object_ref (destination_metafile);
+		copy->destination_file_name = g_strdup (destination_file_name);
+
+		pending_copies = g_list_prepend (pending_copies, copy);
+
+		metafile_read_start (source_metafile);
+		metafile_read_start (destination_metafile);
+	}
+}
+
+static void
+nautilus_metadata_process_ready_copies (void)
+{
+	NautilusMetadataCopy *copy;
+	GList *l, *next;
+
+	l = pending_copies;
+	while (l != NULL) {
+		copy = l->data;
+
+		next = l->next;
+
+		if (copy->source_metafile->details->is_read
+		    && copy->destination_metafile->details->is_read) {
+			real_copy_file_metadata (copy->source_metafile, copy->source_file_name,
+						 copy->destination_metafile, copy->destination_file_name);
+
+			bonobo_object_unref (copy->source_metafile);
+			g_free (copy->source_file_name);
+			bonobo_object_unref (copy->destination_metafile);
+			g_free (copy->destination_file_name);
+			g_free (copy);
+
+			pending_copies = g_list_delete_link (pending_copies, l);
+		}
+
+		l = next;
+	}
+}
+
+static GList *pending_removals;
+
+typedef struct {
+	NautilusMetafile *metafile;
+	char             *file_name;
+} NautilusMetadataRemoval;
+
+static gboolean
+nautilus_metadata_removal_equal (const NautilusMetadataRemoval *a,
+				 const NautilusMetadataRemoval *b)
+{
+	return ((b->metafile == a->metafile)
+		&& (strcmp (a->file_name, b->file_name) == 0));
+}
+
+static NautilusMetadataRemoval *
+nautilus_metadata_get_scheduled_removal (NautilusMetafile *metafile,
+					 const char       *file_name)
+{
+	NautilusMetadataRemoval key, *removal;
+	GList *l;
+
+	key.metafile = metafile;
+	key.file_name = (char *) file_name;
+
+	for (l = pending_removals; l != NULL; l = l->next) {
+		removal = l->data;
+
+		if (nautilus_metadata_removal_equal (l->data, &key)) {
+			return removal;
+		}
+	}
+
+	return NULL;
+}
+
+static void
+nautilus_metadata_schedule_removal (NautilusMetafile *metafile,
+				    const char       *file_name)
+{
+	NautilusMetadataRemoval *removal;
+
+	g_assert (nautilus_metadata_has_scheduled_copy (metafile, file_name));
+
+	removal = nautilus_metadata_get_scheduled_removal (metafile, file_name);
+	if (removal == NULL) {
+		removal = g_malloc (sizeof (NautilusMetadataRemoval));
+		removal->metafile = bonobo_object_ref (metafile);
+		removal->file_name = g_strdup (file_name);
+
+		pending_removals = g_list_prepend (pending_removals, removal);
+	}
+}
+
+static void
+nautilus_metadata_process_ready_removals (void)
+{
+	NautilusMetadataRemoval *removal;
+	GList *l, *next;
+
+	l = pending_removals;
+	while (l != NULL) {
+		removal = l->data;
+
+		next = l->next;
+
+		if (!nautilus_metadata_has_scheduled_copy (removal->metafile, removal->file_name)) {
+			real_remove_file_metadata (removal->metafile, removal->file_name);
+
+			pending_removals = g_list_delete_link (pending_removals, l);
+
+			bonobo_object_unref (removal->metafile);
+			g_free (removal->file_name);
+		}
+
+		l = next;
+	}
 }
 
 /* FIXME
@@ -1407,46 +1624,27 @@ nautilus_metafile_apply_pending_changes (NautilusMetafile *metafile)
 }
 
 static void
-copy_file_metadata (NautilusMetafile *source_metafile,
-		    const char *source_file_name,
-		    NautilusMetafile *destination_metafile,
-		    const char *destination_file_name)
+real_copy_file_metadata (NautilusMetafile *source_metafile,
+			 const char *source_file_name,
+			 NautilusMetafile *destination_metafile,
+			 const char *destination_file_name)
 {
 	xmlNodePtr source_node, node, root;
 	GHashTable *hash, *changes;
-	char *source_file_uri;
-	char *destination_file_uri;
 
-	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
-	g_return_if_fail (source_file_name != NULL);
-	g_return_if_fail (NAUTILUS_IS_METAFILE (destination_metafile));
-	g_return_if_fail (destination_file_name != NULL);
-
-	/* FIXME bugzilla.gnome.org 43343: This does not properly
-	 * handle the case where we don't have the source metadata yet
-	 * since it's not read in.
-	 */
-
-	remove_file_metadata
-		(destination_metafile, destination_file_name);
+	real_remove_file_metadata (destination_metafile, destination_file_name);
 	g_assert (get_file_node (destination_metafile, destination_file_name, FALSE) == NULL);
 
 	source_node = get_file_node (source_metafile, source_file_name, FALSE);
 	if (source_node != NULL) {
-		if (destination_metafile->details->is_read) {
-			node = xmlCopyNode (source_node, TRUE);
-			root = create_metafile_root (destination_metafile);
-			xmlAddChild (root, node);
-			xmlSetProp (node, "name", destination_file_name);
-			set_file_node_timestamp (node);
-			g_hash_table_insert (destination_metafile->details->node_hash,
-					     xmlMemStrdup (destination_file_name), node);
-		} else {
-			/* FIXME bugzilla.gnome.org 46526: Copying data into a destination
-			 * where the metafile was not yet read is not implemented.
-			 */
-			g_warning ("not copying metadata");
-		}
+		node = xmlCopyNode (source_node, TRUE);
+		root = create_metafile_root (destination_metafile);
+		xmlAddChild (root, node);
+		xmlSetProp (node, "name", destination_file_name);
+		set_file_node_timestamp (node);
+		g_hash_table_insert (destination_metafile->details->node_hash,
+				     xmlMemStrdup (destination_file_name), node);
+		directory_request_write_metafile (destination_metafile);
 	}
 
 	hash = source_metafile->details->changes;
@@ -1458,6 +1656,34 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 					    changes);
 		}
 	}
+}
+
+static void
+copy_file_metadata (NautilusMetafile *source_metafile,
+		    const char *source_file_name,
+		    NautilusMetafile *destination_metafile,
+		    const char *destination_file_name)
+{
+	char *source_file_uri;
+	char *destination_file_uri;
+
+	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
+	g_return_if_fail (source_file_name != NULL);
+	g_return_if_fail (NAUTILUS_IS_METAFILE (destination_metafile));
+	g_return_if_fail (destination_file_name != NULL);
+
+	if (source_metafile->details->is_read
+	    && destination_metafile->details->is_read) {
+		real_copy_file_metadata (source_metafile,
+					 source_file_name,
+					 destination_metafile,
+					 destination_file_name);
+	} else {
+		nautilus_metadata_schedule_copy (source_metafile,
+						source_file_name,
+						destination_metafile,
+						destination_file_name);
+        }
 
 	/* Copy the thumbnail for the file, if any. */
 	source_file_uri = metafile_get_file_uri (source_metafile, source_file_name);
@@ -1468,14 +1694,13 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 }
 
 static void
-remove_file_metadata (NautilusMetafile *metafile,
-		      const char *file_name)
+real_remove_file_metadata (NautilusMetafile *metafile,
+			   const char *file_name)
 {
 	gboolean found;
 	gpointer key, value;
 	xmlNode *file_node;
 	GHashTable *hash;
-	char *file_uri;
 
 	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 	g_return_if_fail (file_name != NULL);
@@ -1511,6 +1736,22 @@ remove_file_metadata (NautilusMetafile *metafile,
 				destroy_metadata_changes_hash_table (value);
 			}
 		}
+	}
+}
+
+static void
+remove_file_metadata (NautilusMetafile *metafile,
+		      const char *file_name)
+{
+	char *file_uri;
+
+	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
+	g_return_if_fail (file_name != NULL);
+
+	if (nautilus_metadata_has_scheduled_copy (metafile, file_name)) {
+		nautilus_metadata_schedule_removal (metafile, file_name);
+	} else {
+		real_remove_file_metadata (metafile, file_name);
 	}
 
 	/* Delete the thumbnails for the file, if any. */
@@ -1588,6 +1829,9 @@ static void
 metafile_read_done (NautilusMetafile *metafile)
 {
 	metafile_read_mark_done (metafile);
+
+	nautilus_metadata_process_ready_copies ();
+	nautilus_metadata_process_ready_removals ();
 }
 
 static void
