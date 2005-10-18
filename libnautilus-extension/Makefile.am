@@ -12,9 +12,10 @@ INCLUDES=\
 
 libnautilus_extension_la_LDFLAGS=\
 	-version-info 1:0:0 \
-	$(LIBNAUTILUS_EXTENSION_LIBS) \
 	-no-undefined \
 	$(NULL)
+
+libnautilus_extension_la_LIBADD = $(LIBNAUTILUS_EXTENSION_LIBS)
 
 libnautilus_extension_includedir=$(includedir)/nautilus/libnautilus-extension
 

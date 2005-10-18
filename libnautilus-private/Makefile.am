@@ -26,9 +26,12 @@ dependency_static_libs = \
 libnautilus_private_la_LDFLAGS =	\
 	-version-info 2:0:0		\
 	-no-undefined			\
-	$(dependency_static_libs)	\
-	$(CORE_LIBS)			\
 	$(NULL)
+
+libnautilus_private_la_LIBADD =		\
+	$(dependency_static_libs)	\
+	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
+	$(CORE_LIBS)
 
 nautilus_metafile_server_idl_sources = \
 	nautilus-metafile-server-stubs.c \
