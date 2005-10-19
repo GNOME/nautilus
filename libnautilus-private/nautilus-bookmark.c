@@ -352,7 +352,8 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	should_emit_contents_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
-	if (!gnome_vfs_uris_match (bookmark->details->uri, file_uri)) {
+	if (!gnome_vfs_uris_match (bookmark->details->uri, file_uri) &&
+	    !nautilus_file_is_in_trash (file)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
 		should_emit_contents_changed_signal = TRUE;
@@ -360,8 +361,9 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 		g_free (file_uri);
 	}
 
-	if (nautilus_file_is_gone (file)) {
-		/* The file we were monitoring has been deleted,
+	if (nautilus_file_is_gone (file) ||
+	    nautilus_file_is_in_trash (file)) {
+		/* The file we were monitoring has been trashed, deleted,
 		 * or moved in a way that we didn't notice. Make 
 		 * a spanking new NautilusFile object for this 
 		 * location so if a new file appears in this place 
