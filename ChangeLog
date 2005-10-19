@@ -1,3 +1,10 @@
+2005-10-19  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-spatial-window.c:
+	(got_file_info_for_location_menu_callback):
+	Use custom image for location button if available. Partially fixes
+	#311394 and plugs a leak.
+
 2005-10-19  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file):
