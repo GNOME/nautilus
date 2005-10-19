@@ -2,9 +2,6 @@ include $(top_srcdir)/Makefile.shared
 
 noinst_LTLIBRARIES=libnautilus-private.la
 
-libnautilus_private_la_LIBADD = \
-	../libnautilus-extension/libnautilus-extension.la
-
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
