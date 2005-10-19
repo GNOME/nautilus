@@ -1667,7 +1667,8 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), 
 					  file_list, 
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
+					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND |
+					  NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
 static void

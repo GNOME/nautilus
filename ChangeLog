@@ -1,5 +1,16 @@
 2005-10-19  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-window-info.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_open_location_full):
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_activate_alternate_callback):
+	* src/file-manager/fm-list-view.c:
+	(activate_selected_items_alternate):
+	Open a new navigational window on alternative item activation.
+
+2005-10-19  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-spatial-window.c:
 	(got_file_info_for_location_menu_callback):
 	Use custom image for location button if available. Partially fixes

@@ -458,6 +458,11 @@ nautilus_window_open_location_full (NautilusWindow *window,
 				} else {
 					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
 				}
+			} else if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
+				target_window = nautilus_application_create_navigation_window 
+					(window->application,
+					 NULL,
+					 gtk_window_get_screen (GTK_WINDOW (window)));
 			}
 		} else if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
                         if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
@@ -473,7 +478,12 @@ nautilus_window_open_location_full (NautilusWindow *window,
                                 NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
                                 target_window = window;
                         }
-                } else {
+		} else if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) {
+			target_window = nautilus_application_create_navigation_window 
+				(window->application,
+				 NULL,
+				 gtk_window_get_screen (GTK_WINDOW (window)));
+		} else {
                         target_window = window;
                 }       
                 break;

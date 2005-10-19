@@ -47,7 +47,10 @@ typedef enum {
 } NautilusWindowOpenMode;
 
 typedef enum {
-	NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1<<0
+	/* used in spatial mode */
+	NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1<<0,
+	/* used in navigation mode */
+	NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1<<1
 } NautilusWindowOpenFlags;
 
 typedef	enum {
