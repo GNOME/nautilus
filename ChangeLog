@@ -1,5 +1,16 @@
 2005-10-20  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_show_file):
+	* src/nautilus-window-manage-views.c:
+	(display_view_selection_failure):
+	* src/file-manager/fm-directory-view.c:
+	(activate_callback),
+	(activate_activation_uri_ready_callback):
+	Don't bail if an authentication request was cancelled.
+
+2005-10-20  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-sidebar-title.c:
 	(update_more_info):
 	* libnautilus-private/nautilus-file.c:

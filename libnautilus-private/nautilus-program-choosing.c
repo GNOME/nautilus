@@ -628,6 +628,8 @@ void nautilus_launch_show_file (NautilusFile *file,
 			detail_message = g_strdup 
 				(_("Please check the spelling and try again."));
 			break;
+		case GNOME_VFS_ERROR_CANCELLED:
+			break;
 		case GNOME_VFS_OK:
 		default:
 #if NEW_MIME_COMPLETE

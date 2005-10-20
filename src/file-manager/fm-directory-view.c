@@ -7265,7 +7265,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	if (!activate_check_mime_types (view, file, TRUE)) {
+	if (!activate_check_mime_types (view, file, TRUE)
+	    || nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
 		nautilus_file_unref (file);
 		g_free (parameters);
 		
@@ -7396,6 +7397,13 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		stop_activate (parameters);
 		report_broken_symbolic_link (parameters->view, file);
+		nautilus_file_unref (parameters->file);
+		g_free (parameters);
+		return;
+	}
+
+	if (nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
+		stop_activate (parameters);
 		nautilus_file_unref (parameters->file);
 		g_free (parameters);
 		return;
