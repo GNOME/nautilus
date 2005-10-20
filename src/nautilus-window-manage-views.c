@@ -1436,7 +1436,11 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		detail_message = g_strdup
 			(_("Check that an SMB server is running in the local network."));
 		break;
-		
+
+	case GNOME_VFS_ERROR_CANCELLED:
+		g_free (uri_for_display);
+		return;
+
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
 	default:
 		error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
