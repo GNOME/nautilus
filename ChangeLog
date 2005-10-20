@@ -1,3 +1,13 @@
+2005-10-20  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-sidebar-title.c:
+	(update_more_info):
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-file.h:
+	(nautilus_file_should_show_type):
+	Don't display file type in sidebar for computer, network and smb
+	toplevel URIs. Fixes #168561.
+
 2005-10-19  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-mime-actions.c:

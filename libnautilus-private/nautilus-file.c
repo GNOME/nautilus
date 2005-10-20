@@ -3208,6 +3208,23 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 }
 
 gboolean
+nautilus_file_should_show_type (NautilusFile *file)
+{
+	char *uri;
+	gboolean ret;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	uri = nautilus_file_get_uri (file);
+	ret = ((strcmp (uri, "computer:///") != 0) &&
+	       (strcmp (uri, "network:///") != 0) &&
+	       (strcmp (uri, "smb:///") != 0));
+	g_free (uri);
+
+	return ret;
+}
+
+gboolean
 nautilus_file_should_get_top_left_text (NautilusFile *file)
 {
 	static gboolean show_text_in_icons_callback_added = FALSE;

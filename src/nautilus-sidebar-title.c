@@ -450,7 +450,12 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		g_free (component_info);
 	} else {
 		info_string = g_string_new (NULL);
-		type_string = nautilus_file_get_string_attribute (file, "type");
+
+		type_string = NULL;
+		if (file != NULL && nautilus_file_should_show_type (file)) {
+			type_string = nautilus_file_get_string_attribute (file, "type");
+		}
+
 		if (type_string != NULL) {
 			append_and_eat (info_string, NULL, type_string);
 			append_and_eat (info_string, ", ",
