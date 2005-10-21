@@ -57,6 +57,7 @@
 #define FM_ACTION_MOUNT_VOLUME "Mount Volume"
 #define FM_ACTION_UNMOUNT_VOLUME "Unmount Volume"
 #define FM_ACTION_EJECT_VOLUME "Eject Volume"
+#define FM_ACTION_FORMAT_VOLUME "Format Volume"
 #define FM_ACTION_SCRIPTS "Scripts"
 #define FM_ACTION_NEW_DOCUMENTS "New Documents"
 #define FM_ACTION_NEW_EMPTY_FILE "New Empty File"

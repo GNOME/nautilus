@@ -379,6 +379,8 @@ static void action_mount_volume_callback           (GtkAction *action,
 						    gpointer   data);
 static void action_unmount_volume_callback         (GtkAction *action,
 						    gpointer   data);
+static void action_format_volume_callback          (GtkAction *action,
+						    gpointer   data);
 
 /* location popup-related actions */
 
@@ -5815,6 +5817,31 @@ action_unmount_volume_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
+static void 
+action_format_volume_callback (GtkAction *action,
+			       gpointer   data)
+{
+	NautilusFile *file;
+	GList *selection, *l;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY) {
+				g_spawn_command_line_async ("gfloppy", NULL);
+			}
+		}
+	}	
+	nautilus_file_list_free (selection);
+}
+
 static void
 action_eject_volume_callback (GtkAction *action,
 			      gpointer data)
@@ -6237,6 +6264,10 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("_Eject"), NULL,                /* label, accelerator */
     N_("Eject the selected volume"),                   /* tooltip */ 
     G_CALLBACK (action_eject_volume_callback) },
+  { "Format Volume", NULL,                  /* name, stock id */
+    N_("_Format"), NULL,                /* label, accelerator */
+    N_("Format the selected volume"),                   /* tooltip */ 
+    G_CALLBACK (action_format_volume_callback) },
   { "OpenCloseParent", NULL,                  /* name, stock id */
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
@@ -6474,7 +6505,8 @@ file_should_show_foreach (NautilusFile *file,
 			  gboolean     *show_mount,
 			  gboolean     *show_unmount,
 			  gboolean     *show_eject,
-			  gboolean     *show_connect)
+			  gboolean     *show_connect,
+                          gboolean     *show_format)
 {
 	GnomeVFSVolume *volume;
 	GnomeVFSDrive *drive;
@@ -6484,6 +6516,7 @@ file_should_show_foreach (NautilusFile *file,
 	*show_unmount = FALSE;
 	*show_eject = FALSE;
 	*show_connect = FALSE;
+	*show_format = FALSE;
 
 	if (nautilus_file_has_volume (file)) {
 		*show_unmount = TRUE;
@@ -6497,6 +6530,10 @@ file_should_show_foreach (NautilusFile *file,
 			*show_unmount = TRUE;
 		} else {
 			*show_mount = TRUE;
+		}
+
+                if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY) {
+			*show_format = TRUE;
 		}
 	} else if (nautilus_file_is_nautilus_link (file)) {
 		uri = nautilus_file_get_activation_uri (file);
@@ -6524,32 +6561,38 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
+	gboolean show_format;
 	GtkAction *action;
 
 	show_mount = (selection != NULL);
 	show_unmount = (selection != NULL);
 	show_eject = (selection != NULL);
 	show_connect = (selection != NULL && selection_count == 1);
+	show_format = (selection != NULL && selection_count == 1);
 
 	for (l = selection; l != NULL && (show_mount || show_unmount
-					  || show_eject || show_connect);
+					  || show_eject || show_connect
+                                          || show_format);
 	     l = l->next) {
 		gboolean show_mount_one;
 		gboolean show_unmount_one;
 		gboolean show_eject_one;
 		gboolean show_connect_one;
+		gboolean show_format_one;
 
 		file = NAUTILUS_FILE (l->data);
 		file_should_show_foreach (file,
 					  &show_mount_one,
 					  &show_unmount_one,
 					  &show_eject_one,
-					  &show_connect_one);
+					  &show_connect_one,
+                                          &show_format_one);
 
 		show_mount &= show_mount_one;
 		show_unmount &= show_unmount_one;
 		show_eject &= show_eject_one;
 		show_connect &= show_connect_one;
+		show_format &= show_format_one;
 	}
 
 	/* We don't want both eject and unmount, since eject
@@ -6573,6 +6616,10 @@ real_update_menus_volumes (FMDirectoryView *view,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
+	
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_FORMAT_VOLUME);
+	gtk_action_set_visible (action, show_format);
 }
 
 static void
