@@ -6532,7 +6532,8 @@ file_should_show_foreach (NautilusFile *file,
 			*show_mount = TRUE;
 		}
 
-                if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY) {
+                if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
+		    g_find_program_in_path ("gfloppy")) {
 			*show_format = TRUE;
 		}
 	} else if (nautilus_file_is_nautilus_link (file)) {
