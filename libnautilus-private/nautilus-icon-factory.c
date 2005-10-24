@@ -1648,9 +1648,7 @@ nautilus_self_check_icon_factory (void)
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (0), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (1), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (11), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (12), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (19), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (20), 24);
+	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (12), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (23), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (24), 36);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (35), 36);
@@ -1669,9 +1667,7 @@ nautilus_self_check_icon_factory (void)
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (1), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (11), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (12), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (20), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (21), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (24), 20);
+	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (24), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (25), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (36), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (37), 36);
