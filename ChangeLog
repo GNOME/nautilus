@@ -1,5 +1,10 @@
 2005-10-26  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations.c:
+	Include locale.h to fix build. Patch from Nelson Benítez.
+
+2005-10-26  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window-menus.c: (action_connect_to_server_callback):
 	Fix leak. Patch from Kjartan Maraas. (#319333)
 
