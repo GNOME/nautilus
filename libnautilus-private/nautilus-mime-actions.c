@@ -150,7 +150,7 @@ get_open_with_mime_applications (NautilusFile *file)
 	uri = nautilus_file_get_uri (file);
 
 	result = gnome_vfs_mime_get_all_applications_for_uri (uri, mime_type);
-	g_list_sort (result, (GCompareFunc) application_compare_by_name);
+	result = g_list_sort (result, (GCompareFunc) application_compare_by_name);
 
 	if (strcmp (guessed_mime_type, mime_type) != 0) {
 		GList *result_2;
@@ -203,7 +203,7 @@ nautilus_mime_get_applications_for_file (NautilusFile *file)
 	}
 	mime_type = nautilus_file_get_mime_type (file);
 	result = gnome_vfs_mime_get_all_applications (mime_type);
-	g_list_sort (result, (GCompareFunc) application_compare_by_name);
+	result = g_list_sort (result, (GCompareFunc) application_compare_by_name);
 
 	return filter_nautilus_handler (result);
 }

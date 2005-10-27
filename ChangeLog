@@ -1,3 +1,18 @@
+2005-10-27  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	Include locale.h to fix build. Patch from Nelson Benítez.
+
+2005-10-27  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window-menus.c: (action_connect_to_server_callback):
+	Fix leak. Patch from Kjartan Maraas. (#319333)
+
+2005-10-27  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-mime-actions.c (get_open_with_mime_applications):
+	Correctly sort the mime lists.
+
 2005-10-20  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-program-choosing.c:
