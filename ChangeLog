@@ -1,3 +1,17 @@
+2005-10-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c (draw_stretch_handles:
+	(hit_test_stretch_handle): Improve drawing of the outline for icon stretching,
+	make the knob image themable as stock-nautilus-knob.
+
+	* libnautilus-private/nautilus-icon-container.c: Implement icon stretching
+	via keyboard, with <Control>+, <Control>- and <Control>0.
+
+	* src/nautilus-window-manage-views.c (zoom_level_changed_callback): Make the
+	ZOOM_NORMAL action insensitive when zooming is not supported, so that it 
+	does not eat <Control>0.
+
 2005-10-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c:

@@ -3294,6 +3294,8 @@ start_stretching (NautilusIconContainer *container)
 	NautilusIcon *icon;
 	ArtPoint world_point;
 	GtkWidget *toplevel;
+	GtkCornerType corner;
+	GdkCursor *cursor;
 
 	details = container->details;
 	icon = details->stretch_icon;
@@ -3301,11 +3303,27 @@ start_stretching (NautilusIconContainer *container)
 	/* Check if we hit the stretch handles. */
 	world_point.x = details->drag_x;
 	world_point.y = details->drag_y;
-	if (!nautilus_icon_canvas_item_hit_test_stretch_handles
-	    (icon->item, world_point)) {
+	if (!nautilus_icon_canvas_item_hit_test_stretch_handles (icon->item, world_point, &corner)) {
 		return FALSE;
 	}
 
+	switch (corner) {
+	case GTK_CORNER_TOP_LEFT:
+		cursor = gdk_cursor_new (GDK_TOP_LEFT_CORNER);
+		break;
+	case GTK_CORNER_BOTTOM_LEFT:
+		cursor = gdk_cursor_new (GDK_BOTTOM_LEFT_CORNER);
+		break;
+	case GTK_CORNER_TOP_RIGHT:
+		cursor = gdk_cursor_new (GDK_TOP_RIGHT_CORNER);
+		break;
+	case GTK_CORNER_BOTTOM_RIGHT:
+		cursor = gdk_cursor_new (GDK_BOTTOM_RIGHT_CORNER);
+		break;
+	default: 
+		cursor = NULL;
+		break;
+	}
 	/* Set up the dragging. */
 	details->drag_state = DRAG_STATE_STRETCH;
 	eel_canvas_w2c (EEL_CANVAS (container),
@@ -3323,8 +3341,10 @@ start_stretching (NautilusIconContainer *container)
 	eel_canvas_item_grab (EEL_CANVAS_ITEM (icon->item),
 				(GDK_POINTER_MOTION_MASK
 				 | GDK_BUTTON_RELEASE_MASK),
-				NULL,
+				cursor,
 				GDK_CURRENT_TIME);
+	if (cursor)
+		gdk_cursor_unref (cursor);
 
 	/* Ensure the window itself is focused.. */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
@@ -3385,6 +3405,43 @@ continue_stretching (NautilusIconContainer *container,
 	}
 }
 
+static gboolean
+keyboard_stretching (NautilusIconContainer *container,
+		     GdkEventKey           *event)
+{
+	NautilusIcon *icon;
+	guint size;
+
+	icon = container->details->stretch_icon;
+
+	if (icon == NULL || !icon->is_selected) {
+		return FALSE;
+	}
+
+	icon_get_size (container, icon, &size);
+
+	switch (event->keyval) {
+	case GDK_equal:
+	case GDK_plus:
+	case GDK_KP_Add:
+		icon_set_size (container, icon, size + 5, FALSE, FALSE);
+		break;
+	case GDK_minus:
+	case GDK_KP_Subtract:
+		icon_set_size (container, icon, size - 5, FALSE, FALSE);
+		break;
+	case GDK_0:
+	case GDK_KP_0:
+		nautilus_icon_container_move_icon (container, icon,
+						   icon->x, icon->y,
+						   1.0, 1.0,
+						   FALSE, TRUE, TRUE);
+		break;
+	}
+	
+	return TRUE;
+}
+
 static void
 ungrab_stretch_icon (NautilusIconContainer *container)
 {
@@ -3416,7 +3473,7 @@ end_stretching (NautilusIconContainer *container,
 	redo_layout (container);
 }
 
-static void
+static gboolean
 undo_stretching (NautilusIconContainer *container)
 {
 	NautilusIcon *stretched_icon;
@@ -3424,7 +3481,7 @@ undo_stretching (NautilusIconContainer *container)
 	stretched_icon = container->details->stretch_icon;
 
 	if (stretched_icon == NULL) {
-		return;
+		return FALSE;
 	}
 
 	if (container->details->drag_state == DRAG_STATE_STRETCH) {
@@ -3446,6 +3503,8 @@ undo_stretching (NautilusIconContainer *container)
 	container->details->stretch_icon = NULL;				
 	emit_stretch_ended (container, stretched_icon);
 	redo_layout (container);
+
+	return TRUE;
 }
 
 static gboolean
@@ -4179,9 +4238,19 @@ key_press_event (GtkWidget *widget,
 			
 			handled = TRUE;
 			break;
-		case GDK_Escape:
-			undo_stretching (container);
-			handled = TRUE;
+ 		case GDK_Escape:
+			handled = undo_stretching (container);
+			break;
+ 		case GDK_plus:
+ 		case GDK_minus:
+ 		case GDK_equal:
+ 		case GDK_KP_Add:
+ 		case GDK_KP_Subtract:
+ 		case GDK_0:
+ 		case GDK_KP_0:
+			if (event->state & GDK_CONTROL_MASK) {
+				handled = keyboard_stretching (container, event);
+			}
 			break;
 		case GDK_F10:
 			/* handle Ctrl+F10 because we want to display the

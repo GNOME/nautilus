@@ -1546,10 +1546,7 @@ zoom_level_changed_callback (NautilusView *view,
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_ZOOM_NORMAL);
 	gtk_action_set_visible (action, supports_zooming);
-	gtk_action_set_sensitive (action,
-				  TRUE);
-       
-	/* FIXME bugzilla.gnome.org 43442: Desensitize "Zoom Normal"? */
+	gtk_action_set_sensitive (action, supports_zooming);
 }
 
 static void

@@ -44,6 +44,7 @@
 #include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
+#include <gdk/gdk.h>
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
@@ -209,7 +210,8 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      GdkGC                         *gc);
 
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
-						      ArtIRect                       canvas_rect);
+						      ArtIRect                       canvas_rect,
+						      GtkCornerType *corner);
 static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
 						      GdkPixbuf                     *corner_pixbuf,
 						      int                            corner_size);
@@ -1152,12 +1154,30 @@ draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	draw_or_measure_label_text (item, drawable, create_mask, icon_rect);
 }
 
+static GdkPixbuf *
+get_knob_pixbuf (void)
+{
+	GdkPixbuf *knob_pixbuf;
+	char *knob_filename;
+
+	knob_pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+						"stock-nautilus-knob",
+						8, 0, NULL);
+	if (!knob_pixbuf) {
+		knob_filename = nautilus_pixmap_file ("knob.png");
+		knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
+		g_free (knob_filename);
+	}
+
+	return knob_pixbuf;
+}
+
 static void
 draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		      const ArtIRect *rect)
 {
+	GtkWidget *widget;
 	GdkGC *gc;
-	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
 	GdkBitmap *stipple;
 	int knob_width, knob_height;
@@ -1166,17 +1186,26 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		return;
 	}
 
-	gc = gdk_gc_new (drawable);
+	widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
 
-	knob_filename = nautilus_pixmap_file ("knob.png");
-	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
+	gc = gdk_gc_new (drawable);
+	knob_pixbuf = get_knob_pixbuf ();
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 
 	stipple = eel_stipple_bitmap_for_screen (
 			gdk_drawable_get_screen (GDK_DRAWABLE (drawable)));
 	
-	/* first draw the box */		
+	/* first draw the box */
+	gdk_gc_set_rgb_fg_color (gc, &widget->style->white);
+	gdk_draw_rectangle
+		(drawable, gc, FALSE,
+			    rect->x0,
+			    rect->y0,
+			    rect->x1 - rect->x0 - 1,
+			    rect->y1 - rect->y0 - 1);
+
+	gdk_gc_set_rgb_fg_color (gc, &widget->style->black);
 	gdk_gc_set_stipple (gc, stipple);
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle
@@ -1192,8 +1221,6 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y1 - knob_height);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y1 - knob_height);
-	
-	g_free (knob_filename);
 	g_object_unref (knob_pixbuf);	
 
 	g_object_unref (gc);
@@ -1828,7 +1855,7 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 	}
 
 	/* Check for hits in the stretch handles. */
-	if (hit_test_stretch_handle (icon_item, canvas_rect)) {
+	if (hit_test_stretch_handle (icon_item, canvas_rect, NULL)) {
 		return TRUE;
 	}
 	
@@ -2055,12 +2082,13 @@ nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem *item
 /* Check if one of the stretch handles was hit. */
 static gboolean
 hit_test_stretch_handle (NautilusIconCanvasItem *item,
-			 ArtIRect probe_canvas_rect)
+			 ArtIRect probe_canvas_rect,
+			 GtkCornerType *corner)
 {
 	ArtIRect icon_rect;
-	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
 	int knob_width, knob_height;
+	int hit_corner;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 
@@ -2074,25 +2102,36 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 	if (!eel_art_irect_hits_irect (probe_canvas_rect, icon_rect)) {
 		return FALSE;
 	}
-
-	knob_filename = nautilus_pixmap_file ("knob.png");
-	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
+	
+	knob_pixbuf = get_knob_pixbuf ();
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
+	g_object_unref (knob_pixbuf);
 
-	g_free (knob_filename);
-	g_object_unref (knob_pixbuf);	
-	
 	/* Check for hits in the stretch handles. */
-	return (probe_canvas_rect.x0 < icon_rect.x0 + knob_width
-     		|| probe_canvas_rect.x1 >= icon_rect.x1 - knob_width)
-		&& (probe_canvas_rect.y0 < icon_rect.y0 + knob_height
-		    || probe_canvas_rect.y1 >= icon_rect.y1 - knob_height);
+	hit_corner = -1;
+	if (probe_canvas_rect.x0 < icon_rect.x0 + knob_width) {
+		if (probe_canvas_rect.y0 < icon_rect.y0 + knob_height)
+			hit_corner = GTK_CORNER_TOP_LEFT;
+		else if (probe_canvas_rect.y1 >= icon_rect.y1 - knob_height)
+			hit_corner = GTK_CORNER_BOTTOM_LEFT;
+	}
+	else if (probe_canvas_rect.x1 >= icon_rect.x1 - knob_width) {
+		if (probe_canvas_rect.y0 < icon_rect.y0 + knob_height)
+			hit_corner = GTK_CORNER_TOP_RIGHT;
+		else if (probe_canvas_rect.y1 >= icon_rect.y1 - knob_height)
+			hit_corner = GTK_CORNER_BOTTOM_RIGHT;
+	}
+	if (corner)
+		*corner = hit_corner;
+
+	return hit_corner != -1;
 }
 
 gboolean
 nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
-						    ArtPoint world_point)
+						    ArtPoint world_point,
+						    GtkCornerType *corner)
 {
 	ArtIRect canvas_rect;
 
@@ -2105,7 +2144,7 @@ nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item
 			  &canvas_rect.y0);
 	canvas_rect.x1 = canvas_rect.x0 + 1;
 	canvas_rect.y1 = canvas_rect.y0 + 1;
-	return hit_test_stretch_handle (item, canvas_rect);
+	return hit_test_stretch_handle (item, canvas_rect, corner);
 }
 
 /* nautilus_icon_canvas_item_hit_test_rectangle
