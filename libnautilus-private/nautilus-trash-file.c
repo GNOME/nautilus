@@ -624,7 +624,8 @@ trash_file_get_deep_counts (NautilusFile *file,
 			 &one_directory_count,
 			 &one_file_count,
 			 &one_unreadable_directory_count,
-			 &one_total_size);
+			 &one_total_size,
+			 TRUE);
 		
 		if (one_status < status) {
 			status = one_status;

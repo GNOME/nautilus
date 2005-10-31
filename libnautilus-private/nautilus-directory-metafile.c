@@ -198,9 +198,9 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	CORBA_char       *corba_value;
 	Nautilus_Metafile metafile;
 
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
-	g_return_val_if_fail (!eel_str_is_empty (key), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), g_strdup (default_metadata));
+	g_return_val_if_fail (!eel_str_is_empty (file_name), g_strdup (default_metadata));
+	g_return_val_if_fail (!eel_str_is_empty (key), g_strdup (default_metadata));
 	
 	/* We can't pass NULL as a CORBA_string - pass "" instead. */
 	non_null_default = default_metadata != NULL ? default_metadata : "";

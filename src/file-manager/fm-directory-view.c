@@ -4512,7 +4512,9 @@ activate_check_mime_types (FMDirectoryView *view,
 	char *guessed_mime_type;
 	char *mime_type;
 	gboolean ret;
-
+	GnomeVFSMimeApplication *default_app;
+	GnomeVFSMimeApplication *guessed_default_app;
+	
 	if (!nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE)) {
 		return FALSE;
 	}
@@ -4523,11 +4525,18 @@ activate_check_mime_types (FMDirectoryView *view,
 	mime_type = nautilus_file_get_mime_type (file);
 
 	if (gnome_vfs_mime_type_get_equivalence (mime_type, guessed_mime_type) == GNOME_VFS_MIME_UNRELATED) {
-		if (warn_on_mismatch) {
-			warn_mismatched_mime_types (view, file);
+		default_app = gnome_vfs_mime_get_default_application
+			(mime_type);
+		guessed_default_app = gnome_vfs_mime_get_default_application
+			(guessed_mime_type);
+		if (default_app != NULL &&
+		    guessed_default_app != NULL &&
+		    !gnome_vfs_mime_application_equal (default_app, guessed_default_app)) {
+			if (warn_on_mismatch) {
+				warn_mismatched_mime_types (view, file);
+			}
+			ret = FALSE;
 		}
-
-		ret = FALSE;
 	}
 
 	g_free (guessed_mime_type);
@@ -4572,52 +4581,9 @@ add_extension_menu_items (FMDirectoryView *view,
 	}
 }
 
-static gboolean
-has_file_in_list (GList *list, NautilusFile *file)
-{
-	gboolean ret = FALSE;
-	char *mime;
-       
-	mime = nautilus_file_get_mime_type (file);
-	
-	for (; list; list = list->next) {
-		NautilusFile *tmp_file = list->data;
-		char *tmp_mime = nautilus_file_get_mime_type (tmp_file);
-
-		if (strcmp (tmp_mime, mime) == 0) {
-			ret = TRUE;
-			g_free (tmp_mime);
-			break;
-		}
-
-		g_free (tmp_mime);
-	}
-	
-	g_free (mime);
-	return ret;
-}
-
-static GList *
-get_unique_files (GList *selection)
-{
-	GList *result;
-
-	result = NULL;
-	for (; selection; selection = selection->next) {
-		if (!has_file_in_list (result,
-				       NAUTILUS_FILE (selection->data))) {
-			result = g_list_prepend (result, selection->data);
-		}
-	}	
-
-	return g_list_reverse (result);
-}
-
-
 static void
 reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 {
-	GList *unique_selection;
 	GList *items;
 	GList *l;
 	GtkUIManager *ui_manager;
@@ -4634,22 +4600,17 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 				      &view->details->extensions_menu_merge_id,
 				      &view->details->extensions_menu_action_group);
 
-	/* only query for the unique files */
-	unique_selection = get_unique_files (selection);
 	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
 					      selection);
-	
-	if (items) {
-		add_extension_menu_items (view, unique_selection, items);
-	
+	if (items != NULL) {
+		add_extension_menu_items (view, selection, items);
+
 		for (l = items; l != NULL; l = l->next) {
 			g_object_unref (l->data);
 		}
-		
+
 		g_list_free (items);
 	}
-
-	g_list_free (unique_selection);
 }
 
 static char *
@@ -5760,28 +5721,23 @@ action_mount_volume_callback (GtkAction *action,
 			      gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	FMDirectoryView *view;
 
         view = FM_DIRECTORY_VIEW (data);
 	
 	selection = fm_directory_view_get_selection (view);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
 
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+		if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+			}
 		}
 	}
-
 	nautilus_file_list_free (selection);
 }
 
@@ -5830,7 +5786,7 @@ action_unmount_volume_callback (GtkAction *action,
 				gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	GnomeVFSVolume *volume;
 	FMDirectoryView *view;
@@ -5839,34 +5795,29 @@ action_unmount_volume_callback (GtkAction *action,
 	
 	selection = fm_directory_view_get_selection (view);
 
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL) {
-			gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
-		}
-	} else if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_has_volume (file)) {
+			volume = nautilus_file_get_volume (file);
+			if (volume != NULL) {
+				gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
+			}
+		} else if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+			}
 		}
 	}
-	
 	nautilus_file_list_free (selection);
 }
 
 static void
 action_eject_volume_callback (GtkAction *action,
-				gpointer data)
+			      gpointer data)
 {
 	NautilusFile *file;
-	GList *selection;
+	GList *selection, *l;
 	GnomeVFSDrive *drive;
 	GnomeVFSVolume *volume;
 	FMDirectoryView *view;
@@ -5874,26 +5825,21 @@ action_eject_volume_callback (GtkAction *action,
         view = FM_DIRECTORY_VIEW (data);
 	
 	selection = fm_directory_view_get_selection (view);
-
-	if (!eel_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-
-	file = NAUTILUS_FILE (selection->data);
-	
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL) {
-			gnome_vfs_volume_eject (volume, volume_or_drive_ejected_callback, NULL);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		
+		if (nautilus_file_has_volume (file)) {
+			volume = nautilus_file_get_volume (file);
+			if (volume != NULL) {
+				gnome_vfs_volume_eject (volume, volume_or_drive_ejected_callback, NULL);
+			}
+		} else if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL) {
+				gnome_vfs_drive_eject (drive, volume_or_drive_ejected_callback, NULL);
+			}
 		}
-	} else if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			gnome_vfs_drive_eject (drive, volume_or_drive_ejected_callback, NULL);
-		}
-	}
-	
+	}	
 	nautilus_file_list_free (selection);
 }
 
@@ -6341,11 +6287,12 @@ connect_proxy (FMDirectoryView *view,
 						   "gnome-fs-regular",
 						   NAUTILUS_ICON_SIZE_FOR_MENUS,
 						   0, NULL);
+		if (pixbuf != NULL) {
+			image = gtk_image_new_from_pixbuf (pixbuf);
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
 
-		image = gtk_image_new_from_pixbuf (pixbuf);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
-
-		gdk_pixbuf_unref (pixbuf);
+			gdk_pixbuf_unref (pixbuf);
+		}
 	}
 }
 
@@ -6522,55 +6469,86 @@ file_list_all_are_folders (GList *file_list)
 }
 
 static void
+file_should_show_foreach (NautilusFile *file,
+			  gboolean     *show_mount,
+			  gboolean     *show_unmount,
+			  gboolean     *show_eject,
+			  gboolean     *show_connect)
+{
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+	char *uri;
+
+	*show_mount = FALSE;
+	*show_unmount = FALSE;
+	*show_eject = FALSE;
+	*show_connect = FALSE;
+
+	if (nautilus_file_has_volume (file)) {
+		*show_unmount = TRUE;
+
+		volume = nautilus_file_get_volume (file);
+		*show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+	} else if (nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		*show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+		if (gnome_vfs_drive_is_mounted (drive)) {
+			*show_unmount = TRUE;
+		} else {
+			*show_mount = TRUE;
+		}
+	} else if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_activation_uri (file);
+		if (uri != NULL &&
+		    (eel_istr_has_prefix (uri, "ftp:") ||
+		     eel_istr_has_prefix (uri, "dav:") ||
+		     eel_istr_has_prefix (uri, "davs:"))) {
+			*show_connect = TRUE;
+		}
+		g_free (uri);
+	} else if (nautilus_file_is_mime_type (file,
+					       "x-directory/smb-share")) {
+		*show_connect = TRUE;
+	}
+}
+
+static void
 real_update_menus_volumes (FMDirectoryView *view,
 			   GList *selection,
 			   gint selection_count)
 {
+	GList *l;
 	NautilusFile *file;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
-	GnomeVFSVolume *volume;
-	GnomeVFSDrive *drive;
 	GtkAction *action;
-	char *uri;
 
-	show_mount = FALSE;
-	show_unmount = FALSE;
-	show_eject = FALSE;
-	show_connect = FALSE;
+	show_mount = (selection != NULL);
+	show_unmount = (selection != NULL);
+	show_eject = (selection != NULL);
+	show_connect = (selection != NULL && selection_count == 1);
 
-	if (selection_count == 1) {
-		file = NAUTILUS_FILE (selection->data);
+	for (l = selection; l != NULL && (show_mount || show_unmount
+					  || show_eject || show_connect);
+	     l = l->next) {
+		gboolean show_mount_one;
+		gboolean show_unmount_one;
+		gboolean show_eject_one;
+		gboolean show_connect_one;
 
-		if (nautilus_file_has_volume (file)) {
-			show_unmount = TRUE;
+		file = NAUTILUS_FILE (l->data);
+		file_should_show_foreach (file,
+					  &show_mount_one,
+					  &show_unmount_one,
+					  &show_eject_one,
+					  &show_connect_one);
 
-			volume = nautilus_file_get_volume (file);
-			show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
-		} else if (nautilus_file_has_drive (file)) {
-			drive = nautilus_file_get_drive (file);
-			show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
-			if (gnome_vfs_drive_is_mounted (drive)) {
-				show_unmount = TRUE;
-			} else {
-				show_mount = TRUE;
-			}
-		} else if (nautilus_file_is_nautilus_link (file)) {
-			uri = nautilus_file_get_activation_uri (file);
-			if (uri != NULL &&
-			    (eel_istr_has_prefix (uri, "ftp:") ||
-			     eel_istr_has_prefix (uri, "dav:") ||
-			     eel_istr_has_prefix (uri, "davs:"))) {
-				show_connect = TRUE;
-			}
-			g_free (uri);
-		} else if (nautilus_file_is_mime_type (file,
-						       "x-directory/smb-share")) {
-			show_connect = TRUE;
-		}
-										      
+		show_mount &= show_mount_one;
+		show_unmount &= show_unmount_one;
+		show_eject &= show_eject_one;
+		show_connect &= show_connect_one;
 	}
 
 	/* We don't want both eject and unmount, since eject

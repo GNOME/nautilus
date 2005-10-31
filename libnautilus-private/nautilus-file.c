@@ -488,10 +488,6 @@ finalize (GObject *object)
 		g_free (uri);
 	}
 	
-	if (file->details->monitor != NULL) {
-		nautilus_monitor_cancel (file->details->monitor);
-	}
-
 	nautilus_async_destroying_file (file);
 
 	remove_from_link_hash_table (file);
@@ -3306,6 +3302,9 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
  * @unreadable_directory_count: Number of directories encountered
  * that were unreadable.
  * @total_size: Total size of all files and directories visited.
+ * @force: Whether the deep counts should even be collected if
+ * nautilus_file_should_show_directory_item_count returns FALSE
+ * for this file.
  * 
  * Returns: Status to indicate whether sizes are available.
  * 
@@ -3315,7 +3314,8 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 			       guint *directory_count,
 			       guint *file_count,
 			       guint *unreadable_directory_count,
-			       GnomeVFSFileSize *total_size)
+			       GnomeVFSFileSize *total_size,
+			       gboolean force)
 {
 	if (directory_count != NULL) {
 		*directory_count = 0;
@@ -3332,7 +3332,7 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
 
-	if (!nautilus_file_should_show_directory_item_count (file)) {
+	if (!force && !nautilus_file_should_show_directory_item_count (file)) {
 		/* Set field so an existing value isn't treated as up-to-date
 		 * when preference changes later.
 		 */
@@ -4378,7 +4378,7 @@ nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 	g_return_val_if_fail (nautilus_file_is_directory (file), NULL);
 
 	status = nautilus_file_get_deep_counts 
-		(file, &directory_count, &file_count, &unreadable_count, &total_size);
+		(file, &directory_count, &file_count, &unreadable_count, &total_size, FALSE);
 
 	/* Check whether any info is available. */
 	if (status == NAUTILUS_REQUEST_NOT_STARTED) {
@@ -4642,7 +4642,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		return g_strdup (count_unreadable ? _("? items") : "...");
 	}
 	if (strcmp (attribute_name, "deep_size") == 0) {
-		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
 			return g_strdup (_("? bytes"));
@@ -4652,7 +4652,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	if (strcmp (attribute_name, "deep_file_count") == 0
 	    || strcmp (attribute_name, "deep_directory_count") == 0
 	    || strcmp (attribute_name, "deep_total_count") == 0) {
-		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
 			return g_strdup (_("? items"));

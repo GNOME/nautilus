@@ -505,7 +505,7 @@ nautilus_file_operations_progress_new (const char *title,
 	/* ensure that minimize button is shown and the window appears in the tasklist */
 	gtk_window_set_type_hint (GTK_WINDOW (widget), GDK_WINDOW_TYPE_HINT_NORMAL);
 
-	primary_text = g_strconcat ("<big><b>", title, "</b></big>", NULL);
+	primary_text = g_markup_printf_escaped ("<big><b>%s</b></big>", title);
 	gtk_label_set_markup(GTK_LABEL (progress->details->primary_text_label),
 			primary_text);
 	g_free (primary_text);
@@ -575,13 +575,12 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 		/* we haven't set up the file count yet, do not update the progress
 		 * count until we do
 		 */
-		operation_markup = g_strconcat ("<i>", progress_verb, "</i>", NULL);
+		operation_markup = g_markup_printf_escaped ("<i>%s</i>", progress_verb);
 		gtk_label_set_markup (GTK_LABEL (progress->details->operation_name_label),
 				    operation_markup);
 		g_free (operation_markup);
 
-		item_markup = g_strconcat ("<i>\"", item_name, "\"</i>", NULL);
-
+		item_markup = g_markup_printf_escaped ("<i>%s</i>", item_name);
 		gtk_label_set_markup (GTK_LABEL (progress->details->item_name), item_markup);
 		g_free (item_markup);
 

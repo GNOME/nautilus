@@ -479,35 +479,6 @@ find_monitor (NautilusDirectory *directory,
 				   monitor_key_compare);
 }
 
-static int
-monitor_file_compare (gconstpointer a,
-		      gconstpointer data)
-{
-	const Monitor *monitor;
-	NautilusFile *file;
-
-	monitor = a;
-	file = (NautilusFile *) data;
-	
-	if (monitor->file < file) {
-		return -1;
-	}
-	if (monitor->file > file) {
-		return +1;
-	}
-	
-	return 0;
-}
-
-static gboolean
-find_any_monitor (NautilusDirectory *directory,
-		  NautilusFile *file)
-{
-	return g_list_find_custom (directory->details->monitor_list,
-				   file,
-				   monitor_file_compare) != NULL;
-}
-
 static void
 remove_monitor_link (NautilusDirectory *directory,
 		     GList *link)
@@ -623,7 +594,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 {
 	Monitor *monitor;
 	GList *file_list;
-	char *file_uri;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -649,16 +619,12 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	}
 	
 	/* Start the "real" monitoring (FAM or whatever). */
-	if (file == NULL) {
-		if (directory->details->monitor == NULL) {
-			directory->details->monitor = nautilus_monitor_directory (directory->details->uri);
-		}
-	} else {
-		if (file->details->monitor == NULL) {
-			file_uri = nautilus_file_get_uri (file);
-			file->details->monitor = nautilus_monitor_file (file_uri);
-			g_free (file_uri);
-		}
+	/* We always monitor the whole directory since in practice
+	 * nautilus almost always shows the whole directory anyway, and
+	 * it allows us to avoid one file monitor per file in a directory.
+	 */
+	if (directory->details->monitor == NULL) {
+		directory->details->monitor = nautilus_monitor_directory (directory->details->uri);
 	}
 	
 	/* We could just call update_metadata_monitors here, but we can be smarter
@@ -1129,18 +1095,10 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 
 	remove_monitor (directory, file, client);
 
-	if (file == NULL) {
-		if (directory->details->monitor != NULL
-		    && !find_any_monitor (directory, NULL)) {
-			nautilus_monitor_cancel (directory->details->monitor);
-			directory->details->monitor = NULL;
-		}
-	} else {
-		if (file->details->monitor != NULL
-		    && !find_any_monitor (directory, file)) {
-			nautilus_monitor_cancel (file->details->monitor);
-			file->details->monitor = NULL;
-		}
+	if (directory->details->monitor != NULL
+	    && directory->details->monitor_list == NULL) {
+		nautilus_monitor_cancel (directory->details->monitor);
+		directory->details->monitor = NULL;
 	}
 
 	update_metadata_monitors (directory);

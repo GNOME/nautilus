@@ -1859,8 +1859,15 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		target_uri = NULL;
 		if (target_dir != NULL) {
 			if (target_is_trash) {
-				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-							  &target_dir_uri, FALSE, FALSE, 0777);			
+				result = gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+								   &target_dir_uri, FALSE, FALSE, 0777);
+				if (result == GNOME_VFS_ERROR_NOT_FOUND && source_dir_uri != NULL) {
+					/* source_uri may be a broken symlink */
+					result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+									   &target_dir_uri, FALSE, FALSE, 0777);
+				}
+
+				result = GNOME_VFS_OK;
 			}
 			if (target_dir_uri != NULL) {
 				target_uri = append_basename (target_dir_uri, source_uri);
@@ -2712,6 +2719,8 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 void
 nautilus_self_check_file_operations (void)
 {
+	setlocale (LC_MESSAGES, "C");
+
 	/* test the next duplicate name generator */
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1), " (another copy)");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo", 1), "foo (copy)");
@@ -2754,6 +2763,8 @@ nautilus_self_check_file_operations (void)
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy).txt", 1), "foo (123rd copy).txt");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy)", 1), "foo (124th copy)");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy).txt", 1), "foo (124th copy).txt");
+
+	setlocale (LC_MESSAGES, "");
 }
 
 #endif

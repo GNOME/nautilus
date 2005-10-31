@@ -1,3 +1,235 @@
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.12.1
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_new_file):
+	Correctly escape input strings for GMarkup. (#317736)
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_sort_file_entries):
+	Correctly pass iter to gtk_tree_model_rows_reordered() (#315704)
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(nautilus_directory_get_file_metadata):
+	On assert failure, return default metadata, not NULL.
+	Partial fix of #308977.
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window.c:
+	Verify arguments in public functions.
+	Patch from Christian Neumair.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-private.h:
+	Don't crash if file removed during start of drag. (#158196)
+	Patch from Christian Neumair.
+
+	Remove remove_context_menu_timeout, which is not needed anymore.
+
+2005-10-03  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Fix some spelling errors.
+	Patch from Lukasz Stelmach <stlman@poczta.fm>
+
+2005-09-30  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region),
+	(lay_down_icons_horizontal):
+	Only wrap icons when the right margin touches the rightmost icon.
+	Fixes #313025.
+
+2005-09-30  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-view.c: (compare_rows):
+	Correct sort order for dummy row.
+	Possible fix for #123051
+
+2005-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(activate_check_mime_types):
+	Never warn if the files would be launched in the same app.
+	Partially reverts checkin from 2005-08-01.
+
+2005-09-26  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-desktop-directory.c:
+	(desktop_directory_changed_callback), (desktop_finalize),
+	(update_desktop_directory): Make changes to "desktop_is_home_dir"
+	GConf key instant apply. Fixes #116217.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_get_image): Add emblems to drag icon.
+	Partially fixes	#159643.
+
+	* src/file-manager/fm-directory-view.c:
+	(action_mount_volume_callback), (action_unmount_volume_callback),
+	(action_eject_volume_callback), (file_should_show_foreach),
+	(real_update_menus_volumes): Allow to mount/unmount/eject multiple
+	volumes at once. Fixes #156169.
+
+2005-09-20  christian neumair  <chris@gnome-de.org>
+
+	* src/nautilus-connect-server-dialog.c: (connect_to_server):
+	Fix leak and crasher. Fixes #314730.
+
+	* src/file-manager/fm-directory-view.c: (connect_proxy):
+	Don't poke around with null pixbuf if icon theme lookup failed.
+
+	* libnautilus-private/nautilus-desktop-directory-file.c:
+	(desktop_directory_file_get_deep_counts):
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_deep_counts),
+	(nautilus_file_get_string_attribute_with_default:):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-trash-file.c:
+	(trash_file_get_deep_counts):
+	* src/file-manager/fm-properties-window.c:
+	(directory_contents_value_field_update),
+	(attach_directory_contents_value_field),
+	(update_visibility_of_item_count_fields),
+	(update_visibility_of_item_count_fields_wrapper),
+	(remember_directory_contents_widget),
+	(append_directory_contents_fields), (real_destroy):
+	Add force flag to nautilus_file_get_deep_counts, which forces
+	generation even if the "show deep count" preference is turned off.
+	pass TRUE in property window and FALSE everywhere else. Fixes #126068.
+
+2005-09-19  Nate Nielsen <nielsen@memberwebs.com>
+
+	* nautilus-connect-server-dialog-main.c: (main):
+	* nautilus-connect-server-dialog.h:
+	* nautilus-connect-server-dialog.c:
+	(nautilus_connect_server_dialog_new):
+	* nautilus-window-menus.c:
+	(action_connect_to_server_callback): 
+	Autofill "Connect to server" dialog where possible.
+	Fixes #314745
+
+2005-09-19  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move),:
+	Try to use the trash associated with a symlink's parent directory if
+	resolution fails because of broken symlink when moving symlink to
+	trash.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_self_check_file_operations):
+	Fix date self checks. Fixes #47364.
+
+2005-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* icons/Makefile.am:
+	* icons/Search.png:
+	* icons/nautilus-desktop.png:
+	* icons/nautilus-file-management-properties.png:
+	* icons/nautilus-mini-logo.png:
+	* icons/nautilus-server-connect.png:
+	* icons/side_bar_image.png:
+	Remove unused icons (#315990)
+	Patch from Jaap A. Haitsma
+	
+2005-09-19  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-metafile.c: (copy_file_metadata):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_update_thumbnail_file_copied),
+	(nautilus_update_thumbnail_file_renamed),
+	(nautilus_remove_thumbnail_for_file):
+	* libnautilus-private/nautilus-thumbnails.h:
+	Copy thumbnails when copying file metadata. Fixes #45191.
+
+2005-09-19  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-list-view.c: (drag_begin_callback),
+	(motion_notify_callback):
+	Setup drag in the "drag-begin" handler.
+
+2005-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* libnautilus-private/nautilus-icon-private.h:
+	Add support for lazily positioned icons.
+	
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file),
+	(fm_icon_view_screen_changed):
+	Use lazily positioned icons for desktop icons. (#45953)
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2005-09-10  Erdal Ronahi  <erdal.ronahi@gmail.com>
+
+        * confiure.in: Added "ku" (Kurdish) to ALL_LINGUAS
+
+2005-09-08  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #171073:
+
+	* libnautilus-private/nautilus-trash-directory.c
+	(nautilus_trash_directory_instance_init): In addition to
+	connecting to "volume_pre_unmount" on the volume monitor, also
+	connect to "volume_unmounted".  This will let the trash clean up
+	its merged directory even if the unmount is not initiated from
+	Nautilus.
+	
+	* libnautilus-private/nautilus-merged-directory.c
+	(merged_remove_real_directory): When a real directory is removed
+	from the merged directory, emit notifications to that effect.
+	This lets the trash window remove the icons that used to
+	correspond to a volume that got unmounted.
+	(real_directory_notify_files_removed): New utility function.
+
+2005-09-06  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_init): Ensure that
+	the zoom level is initialized correctly in fm_list_view_begin_loading.
+	Fixes #314269.
+
+2005-09-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal),
+	(nautilus_directory_monitor_remove_internal):
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c: (finalize):
+	Only use directory monitors to avoid using lots and lots of
+	file monitors. This is an optimization in almost all cases, although
+	it does a bit more work when viewing a file properties dialog with the
+	containing folder window hidden. (#315041)
+
+2005-09-06  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
+	(get_unique_files), (reset_extension_actions_menu): Always pass all
+	selected files to extension, instead of passing max. 1 per selected
+	MIME type. Fixes #314721.
+
+2005-09-05  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump.
+
+=== nautilus 2.12.0 ===
+
 2005-09-05  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

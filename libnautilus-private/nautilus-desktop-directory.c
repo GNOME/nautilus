@@ -31,8 +31,10 @@
 #include "nautilus-file.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
 
@@ -63,6 +65,7 @@ typedef struct {
 	NautilusFileAttributes monitor_attributes;
 } MergedMonitor;
 
+static void desktop_directory_changed_callback (gpointer data);
 
 GNOME_CLASS_BOILERPLATE (NautilusDesktopDirectory, nautilus_desktop_directory,
 			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
@@ -424,6 +427,10 @@ desktop_finalize (GObject *object)
 	g_hash_table_destroy (desktop->details->callbacks);
 	g_hash_table_destroy (desktop->details->monitors);
 	g_free (desktop->details);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					 desktop_directory_changed_callback,
+					 desktop);
 	
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -452,21 +459,52 @@ forward_files_changed_cover (NautilusDirectory *real_directory,
 	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (callback_data), files);
 }
 
-
 static void
-nautilus_desktop_directory_instance_init (NautilusDesktopDirectory *desktop)
+update_desktop_directory (NautilusDesktopDirectory *desktop)
 {
 	char *desktop_path;
 	char *desktop_uri;
 	NautilusDirectory *real_directory;
-	
-	desktop->details = g_new0 (NautilusDesktopDirectoryDetails, 1);
+
+	real_directory = desktop->details->real_directory;
+	if (real_directory != NULL) {
+		g_hash_table_foreach_remove (desktop->details->callbacks, (GHRFunc) gtk_true, NULL);
+		g_hash_table_foreach_remove (desktop->details->monitors, (GHRFunc) gtk_true, NULL);
+
+		g_signal_handlers_disconnect_by_func (real_directory, done_loading_callback, desktop);
+		g_signal_handlers_disconnect_by_func (real_directory, forward_files_added_cover, desktop);
+		g_signal_handlers_disconnect_by_func (real_directory, forward_files_changed_cover, desktop);
+
+		nautilus_directory_unref (real_directory);
+	}
 
 	desktop_path = nautilus_get_desktop_directory ();
 	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
-	desktop->details->real_directory = nautilus_directory_get (desktop_uri);
+	real_directory = nautilus_directory_get (desktop_uri);
 	g_free (desktop_uri);
 	g_free (desktop_path);
+
+	g_signal_connect_object (real_directory, "done_loading",
+				 G_CALLBACK (done_loading_callback), desktop, 0);
+	g_signal_connect_object (real_directory, "files_added",
+				 G_CALLBACK (forward_files_added_cover), desktop, 0);
+	g_signal_connect_object (real_directory, "files_changed",
+				 G_CALLBACK (forward_files_changed_cover), desktop, 0);
+
+	desktop->details->real_directory = real_directory;
+}
+
+static void
+desktop_directory_changed_callback (gpointer data)
+{
+	update_desktop_directory (NAUTILUS_DESKTOP_DIRECTORY (data));
+	nautilus_directory_force_reload (NAUTILUS_DIRECTORY (data));
+}
+
+static void
+nautilus_desktop_directory_instance_init (NautilusDesktopDirectory *desktop)
+{
+	desktop->details = g_new0 (NautilusDesktopDirectoryDetails, 1);
 
 	desktop->details->callbacks = g_hash_table_new_full
 		(merged_callback_hash, merged_callback_equal,
@@ -474,16 +512,11 @@ nautilus_desktop_directory_instance_init (NautilusDesktopDirectory *desktop)
 	desktop->details->monitors = g_hash_table_new_full (NULL, NULL,
 							    NULL, (GDestroyNotify)merged_monitor_destroy);
 
-	real_directory = desktop->details->real_directory;
-	
-	g_signal_connect_object (real_directory, "done_loading",
-				 G_CALLBACK (done_loading_callback), desktop, 0);
+	update_desktop_directory (NAUTILUS_DESKTOP_DIRECTORY (desktop));
 
-	g_signal_connect_object (real_directory, "files_added",
-				 G_CALLBACK (forward_files_added_cover), desktop, 0);
-	g_signal_connect_object (real_directory, "files_changed",
-				 G_CALLBACK (forward_files_changed_cover), desktop, 0);
-
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+				      desktop_directory_changed_callback,
+				      desktop);
 }
 
 static void

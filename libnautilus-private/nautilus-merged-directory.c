@@ -27,6 +27,7 @@
 #include "nautilus-merged-directory.h"
 
 #include "nautilus-directory-private.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtksignal.h>
@@ -540,12 +541,40 @@ monitor_remove_directory (gpointer key,
 }
 
 static void
+real_directory_notify_files_removed (NautilusDirectory *real_directory)
+{
+	GList *files, *l;
+
+	files = nautilus_directory_get_file_list (real_directory);
+
+	for (l = files; l; l = l->next) {
+		NautilusFile *file;
+		char *uri;
+
+		file = NAUTILUS_FILE (l->data);
+		uri = nautilus_file_get_uri (file);
+		nautilus_file_unref (file);
+
+		l->data = uri;
+	}
+
+	if (files) {
+		nautilus_directory_notify_files_removed (files);
+	}
+
+	eel_g_list_free_deep (files);
+}
+
+static void
 merged_remove_real_directory (NautilusMergedDirectory *merged,
 			      NautilusDirectory *real_directory)
 {
 	g_return_if_fail (NAUTILUS_IS_MERGED_DIRECTORY (merged));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
 	g_return_if_fail (g_list_find (merged->details->directories, real_directory) != NULL);
+
+	/* Since the real directory will be going away, act as if files were removed */
+	real_directory_notify_files_removed (real_directory);
 
 	/* Remove this directory from callbacks and monitors. */
 	eel_g_hash_table_safe_for_each (merged->details->callbacks,

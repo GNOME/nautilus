@@ -220,9 +220,11 @@ static void
 action_connect_to_server_callback (GtkAction *action, 
 				   gpointer user_data)
 {
+	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GtkWidget *dialog;
 	
-	dialog = nautilus_connect_server_dialog_new (NAUTILUS_WINDOW (user_data));
+	dialog = nautilus_connect_server_dialog_new (window, nautilus_window_get_location (window));
+
 	gtk_widget_show (dialog);
 }
 

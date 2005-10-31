@@ -96,7 +96,6 @@
 #define ICON_PAD_BOTTOM 4
 
 #define CONTAINER_PAD_LEFT 4
-#define CONTAINER_PAD_RIGHT 4
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
@@ -835,8 +834,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		x1 -= CONTAINER_PAD_LEFT;
 		y1 -= CONTAINER_PAD_TOP;
 	}
-	
-	x2 += CONTAINER_PAD_RIGHT;
+
 	y2 += CONTAINER_PAD_BOTTOM;
 
 	if (reset_scroll_region) {
@@ -1056,11 +1054,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		height_below = bounds.y1 - icon_bounds.y1;
 
 		/* If this icon doesn't fit, it's time to lay out the line that's queued up. */
-		
-		/* FIXME: why don't we want to guarantee a small white space to the right of
-		 * the last column just like we guarantee a small white space to the left of
-		 * the first column?
-		 */
 		if (line_start != p && line_width + icon_width > canvas_width ) {
 			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 				y += ICON_PAD_TOP;
@@ -1078,7 +1071,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 				y += max_height_below + ICON_PAD_BOTTOM;
 			}
 			
-			line_width = 0;
+			line_width = container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
 			line_start = p;
 			i = 0;
 			
@@ -3361,20 +3354,10 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 }
 
 static void
-remove_context_menu_timeout (NautilusIconContainer *container)
-{
-	if (container->details->context_menu_timeout_id != 0) {
-		g_source_remove (container->details->context_menu_timeout_id);
-		container->details->context_menu_timeout_id = 0;
-	}
-}
-
-static void
 clear_drag_state (NautilusIconContainer *container)
 {
 	container->details->drag_icon = NULL;
 	container->details->drag_state = DRAG_STATE_INITIAL;
-	remove_context_menu_timeout (container);
 }
 
 static gboolean
@@ -3593,8 +3576,6 @@ motion_notify_event (GtkWidget *widget,
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
-
-	remove_context_menu_timeout (container);
 
 	if (details->drag_button != 0) {
 		switch (details->drag_state) {
@@ -4801,6 +4782,9 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->keyboard_icon_to_reveal == icon) {
 		unschedule_keyboard_icon_reveal (container);
 	}
+	if (details->drag_icon == icon) {
+		clear_drag_state (container);
+	}
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
 	}
@@ -5173,7 +5157,7 @@ finish_adding_icon (NautilusIconContainer *container,
 static void
 finish_adding_new_icons (NautilusIconContainer *container)
 {
-	GList *p, *new_icons, *no_position_icons;
+	GList *p, *new_icons, *no_position_icons, *semi_position_icons;
 	NautilusIcon *icon;
 	double bottom;
 
@@ -5182,15 +5166,60 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 	/* Position most icons (not unpositioned manual-layout icons). */
 	new_icons = g_list_reverse (new_icons);
-	no_position_icons = NULL;
+	no_position_icons = semi_position_icons = NULL;
 	for (p = new_icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (!assign_icon_position (container, icon)) {
 			no_position_icons = g_list_prepend (no_position_icons, icon);
+		} else if (!container->details->auto_layout &&
+			   icon->has_lazy_position) {
+			semi_position_icons = g_list_prepend (semi_position_icons, icon);
 		}
 		finish_adding_icon (container, icon);
 	}
 	g_list_free (new_icons);
+
+	if (semi_position_icons != NULL) {
+		PlacementGrid *grid;
+
+		g_assert (!container->details->auto_layout);
+
+		semi_position_icons = g_list_reverse (semi_position_icons);
+
+		grid = placement_grid_new (container, TRUE);
+
+		for (p = container->details->icons; p != NULL; p = p->next) {
+			icon = p->data;
+
+			if (icon_is_positioned (icon) && !icon->has_lazy_position) {
+				placement_grid_mark_icon (grid, icon);
+			}
+		}
+
+		for (p = semi_position_icons; p != NULL; p = p->next) {
+			NautilusIcon *icon;
+			int x, y;
+
+			icon = p->data;
+			x = icon->x;
+			y = icon->y;
+
+			find_empty_location (container, grid, 
+					     icon, x, y, &x, &y);
+
+			icon_set_position (icon, x, y);
+
+			placement_grid_mark_icon (grid, icon);
+
+			/* ensure that next time we run this code, the formerly semi-positioned
+			 * icons are treated as being positioned. */
+			icon->has_lazy_position = FALSE;
+		}
+
+		placement_grid_free (grid);
+
+		g_list_free (semi_position_icons);
+	}
 
 	/* Position the unpositioned manual layout icons. */
 	if (no_position_icons != NULL) {
@@ -5207,13 +5236,18 @@ finish_adding_new_icons (NautilusIconContainer *container)
  * nautilus_icon_container_add:
  * @container: A NautilusIconContainer
  * @data: Icon data.
+ * @has_lazy_position: Whether the saved icon position should only be used
+ * 		       if the previous icon position is free. If the position
+ * 		       is occupied, another position near the last one will
+ * 		       be used.
  * 
  * Add icon to represent @data to container.
  * Returns FALSE if there was already such an icon.
  **/
 gboolean
 nautilus_icon_container_add (NautilusIconContainer *container,
-			     NautilusIconData *data)
+			     NautilusIconData *data,
+			     gboolean has_lazy_position)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -5233,6 +5267,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->data = data;
 	icon->x = ICON_UNPOSITIONED_VALUE;
 	icon->y = ICON_UNPOSITIONED_VALUE;
+	icon->has_lazy_position = has_lazy_position;
 	icon->scale_x = 1.0;
 	icon->scale_y = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
