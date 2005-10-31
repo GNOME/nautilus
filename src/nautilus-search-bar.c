@@ -162,54 +162,26 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 {
 	GtkWidget *alignment;
 	GtkWidget *hbox;
-	GtkWidget *label, *frame, *event_box;
+	GtkWidget *label;
 
 	bar->details = g_new0 (NautilusSearchBarDetails, 1);
-
-	gtk_widget_modify_bg (GTK_WIDGET (bar),
-			      GTK_STATE_NORMAL, 
-			      &GTK_WIDGET (bar)->style->bg[GTK_STATE_SELECTED]);
 
 	alignment = gtk_alignment_new (0.5, 0.5,
 				       1.0, 1.0);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-				   6, 6, 6, 6);
+				   0, 0, 6, 6);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (bar), alignment);
 
 	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
-
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
-	label = gtk_label_new ("Search");
-	gtk_widget_modify_fg (GTK_WIDGET (label),
-			      GTK_STATE_NORMAL,
-			      &GTK_WIDGET (label)->style->fg[GTK_STATE_SELECTED]);
+	label = gtk_label_new ("");
+	gtk_label_set_markup (GTK_LABEL (label), "<b>Search:</b>");
 	gtk_widget_show (label);
 
-	frame = gtk_frame_new (NULL);
-	gtk_widget_modify_bg (GTK_WIDGET (frame),
-			      GTK_STATE_NORMAL,
-			      &GTK_WIDGET (frame)->style->bg[GTK_STATE_SELECTED]);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
-	gtk_widget_show (frame);
-	alignment = gtk_alignment_new (0.5, 0.5,
-				       1.0, 1.0);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-				   2, 2, 2, 2);
-	gtk_widget_show (alignment);
-
-	event_box = gtk_event_box_new ();
-	gtk_widget_modify_bg (GTK_WIDGET (event_box),
-			      GTK_STATE_NORMAL,
-			      &GTK_WIDGET (event_box)->style->bg[GTK_STATE_SELECTED]);
-	gtk_widget_show (event_box);
-	gtk_container_add (GTK_CONTAINER (frame), event_box);
-
-	gtk_container_add (GTK_CONTAINER (event_box), alignment);
-	gtk_container_add (GTK_CONTAINER (alignment), label);
-	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	bar->details->entry = gtk_entry_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), bar->details->entry, TRUE, TRUE, 0);
