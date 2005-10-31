@@ -28,6 +28,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkvbox.h>
@@ -45,11 +46,13 @@
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
+#include "nautilus-window.h"
 
 #define NAUTILUS_PLACES_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
 #define NAUTILUS_IS_PLACES_SIDEBAR(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
@@ -86,6 +89,7 @@ enum {
 };
 
 typedef enum {
+	PLACES_SEARCH,
 	PLACES_BUILT_IN,
 	PLACES_MOUNTED_VOLUME,
 	PLACES_BOOKMARK,
@@ -141,6 +145,16 @@ update_places (NautilusPlacesSidebar *sidebar)
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 	gtk_list_store_clear (sidebar->store);
 	location = nautilus_window_info_get_current_location (sidebar->window);
+
+	/* add search item */
+	last_iter = add_place (sidebar->store, PLACES_SEARCH,
+			       _("Search"), "gnome-searchtool", NULL);
+	/* add separator */
+
+	gtk_list_store_append (sidebar->store, &iter);
+	gtk_list_store_set (sidebar->store, &iter,
+			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, PLACES_SEPARATOR,
+			    -1);
 
 	/* add built in bookmarks */
 
@@ -272,12 +286,21 @@ row_activated_callback (GtkTreeView *tree_view,
 	NautilusPlacesSidebar *sidebar;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+	PlaceType place_type;
 	char *uri;
 	
 	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 	model = gtk_tree_view_get_model (tree_view);
 	
 	if (!gtk_tree_model_get_iter (model, &iter, path)) {
+		return;
+	}
+
+	gtk_tree_model_get
+		(model, &iter, PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type, -1);
+
+	if (place_type == PLACES_SEARCH) {
+		nautilus_window_set_search_mode (sidebar->window, TRUE);
 		return;
 	}
 

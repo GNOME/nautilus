@@ -568,7 +568,7 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 			
 			/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
 			if (nautilus_bookmark_get_has_custom_name (bookmark)) {
-				char *label, *uri;
+				char *label;
 				label = nautilus_bookmark_get_name (bookmark);
 				bookmark_string = g_strconcat (uri, " ", label, NULL);
 				g_free (label); 
