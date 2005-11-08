@@ -1236,6 +1236,10 @@ create_tree (FMTreeView *view)
 	view->details->tree_widget = GTK_TREE_VIEW
 		(gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
 	g_object_unref (view->details->sort_model);
+
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
+						 compare_rows, view, NULL);
+
 	g_signal_connect_object
 		(view->details->child_model, "row_loaded",
 		 G_CALLBACK (row_loaded_callback),
@@ -1262,9 +1266,6 @@ create_tree (FMTreeView *view)
 				 G_CALLBACK (volume_unmounted_callback), view, 0);
 	
 	g_object_unref (view->details->child_model);
-
-	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
-						 compare_rows, view, NULL);
 
 	gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);
 

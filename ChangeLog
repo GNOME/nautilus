@@ -1,3 +1,11 @@
+2005-11-08  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-tree-view.c: (create_tree):
+	Connect the compare function before root nodes are added.
+	Prevents the internal sort model of GtkTree from going
+	out of sync with the tree view after a root node resort.
+	Fixes #158506.
+
 2005-10-28  Matthias Clasen  <mclasen@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.h:
