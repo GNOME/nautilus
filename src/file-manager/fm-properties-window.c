@@ -61,6 +61,7 @@
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-help.h>
+#include <libgnomeui/gnome-thumbnail.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
@@ -79,6 +80,8 @@
 #include <libnautilus-private/nautilus-undo.h>
 #include <string.h>
 
+#define PREVIEW_IMAGE_WIDTH 96
+
 static GHashTable *windows;
 static GHashTable *pending_lists;
 
@@ -87,13 +90,13 @@ struct FMPropertiesWindowDetails {
 	GList *target_files;
 	
 	GtkNotebook *notebook;
-	GtkWidget *remove_image_button;
-	GtkWidget *icon_selector_window;
 	
 	GtkTable *basic_table;
 	GtkTable *permissions_table;
 
+	GtkWidget *icon_button;
 	GtkWidget *icon_image;
+	GtkWidget *icon_chooser;
 
 	GtkWidget *name_label;
 	GtkWidget *name_field;
@@ -192,9 +195,7 @@ static void parent_widget_destroyed_callback      (GtkWidget          *widget,
 						   gpointer            callback_data);
 static void select_image_button_callback          (GtkWidget          *widget,
 						   FMPropertiesWindow *properties_window);
-static void set_icon_callback                     (const char         *icon_path,
-						   FMPropertiesWindow *properties_window);
-static void remove_image_button_callback          (GtkWidget          *widget,
+static void set_icon                              (const char         *icon_path,
 						   FMPropertiesWindow *properties_window);
 static void remove_pending                        (StartupData        *data,
 						   gboolean            cancel_call_when_ready,
@@ -475,8 +476,6 @@ reset_icon (FMPropertiesWindow *properties_window)
 					    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 					    NULL, NULL);
 	}
-	
-	gtk_widget_set_sensitive (properties_window->details->remove_image_button, FALSE);
 }
 
 
@@ -487,6 +486,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 					 guint info, guint time)
 {
 	char **uris;
+	char *path;
 	gboolean exactly_one;
 	GtkImage *image;
  	GtkWindow *window; 
@@ -512,8 +512,9 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
-			set_icon_callback (gnome_vfs_get_local_path_from_uri (uris[0]), 
-					   FM_PROPERTIES_WINDOW (window));
+			path = gnome_vfs_get_local_path_from_uri (uris[0]);
+			set_icon (path,  FM_PROPERTIES_WINDOW (window));
+			g_free (path);
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog
@@ -536,17 +537,23 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 static GtkWidget *
 create_image_widget (FMPropertiesWindow *window,
-		     gboolean is_drag_dest)
+		     gboolean is_customizable)
 {
- 	GtkWidget *image;
+ 	GtkWidget *button;
+	GtkWidget *image;
 	GdkPixbuf *pixbuf;
 	
 	pixbuf = get_pixbuf_for_properties_window (window);
 	
-	image = gtk_image_new ();
-	window->details->icon_image = image;
 
-	if (is_drag_dest) {
+	image = gtk_image_new ();
+	gtk_widget_show (image);
+
+	button = NULL;
+	if (is_customizable) {
+		button = gtk_button_new ();
+		gtk_container_add (GTK_CONTAINER (button), image);
+
 		/* prepare the image to receive dropped objects to assign custom images */
 		gtk_drag_dest_set (GTK_WIDGET (image),
 				   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -555,6 +562,8 @@ create_image_widget (FMPropertiesWindow *window,
 
 		g_signal_connect (image, "drag_data_received",
 				  G_CALLBACK (fm_properties_window_drag_data_received), NULL);
+		g_signal_connect (button, "clicked",
+				  G_CALLBACK (select_image_button_callback), window);
 	}
 
 	gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
@@ -569,7 +578,10 @@ create_image_widget (FMPropertiesWindow *window,
 				 G_CALLBACK (update_properties_window_icon),
 				 image, G_CONNECT_SWAPPED);
 
-	return image;
+	window->details->icon_image = image;
+	window->details->icon_button = button;
+
+	return button != NULL ? button : image;
 }
 
 static void
@@ -2294,12 +2306,14 @@ create_basic_page (FMPropertiesWindow *window)
 	icon_pixmap_widget = create_image_widget (
 		window, should_show_custom_icon_buttons (window));
 	gtk_widget_show (icon_pixmap_widget);
-	
+
 	icon_aligner = gtk_alignment_new (1, 0.5, 0, 0);
 	gtk_widget_show (icon_aligner);
 	
 	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_aligner, TRUE, TRUE, 0);
+
+	window->details->icon_chooser = NULL;
 
 	/* Name label */
 	name_label = gtk_label_new_with_mnemonic (ngettext ("_Name:", "_Names:",
@@ -2381,47 +2395,6 @@ create_basic_page (FMPropertiesWindow *window)
 					 "date_accessed",
 					 _("--"),
 					 FALSE);
-	}
-
-	if (should_show_custom_icon_buttons (window)) {
-		GtkWidget *button_box;
-		GtkWidget *temp_button;
-		GList *l;
-		
-		/* add command buttons for setting and clearing custom icons */
-		button_box = gtk_hbox_new (FALSE, 0);
-		gtk_widget_show (button_box);
-		gtk_box_pack_end (GTK_BOX(container), button_box, FALSE, FALSE, 4);  
-		
-	 	temp_button = gtk_button_new_with_mnemonic (_("_Select Custom Icon..."));
-		gtk_widget_show (temp_button);
-		gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
-
-		g_signal_connect_object (temp_button, "clicked", G_CALLBACK (select_image_button_callback), window, 0);
-	 	
-	 	temp_button = gtk_button_new_with_mnemonic (_("_Remove Custom Icon"));
-		gtk_widget_show (temp_button);
-		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
-
-	 	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (remove_image_button_callback), window, 0);
-
-		window->details->remove_image_button = temp_button;
-		
-		/* de-sensitize the remove button if there isn't a custom image */
-		
-		gtk_widget_set_sensitive (temp_button, FALSE);
-		for (l = window->details->original_files; l != NULL; l = l->next) {
-			char *image_uri = nautilus_file_get_metadata 
-				(NAUTILUS_FILE (l->data), 
-				 NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-			if (image_uri) {
-				gtk_widget_set_sensitive (temp_button, TRUE);
-			}
-			
-			g_free (image_uri);
-		}
-
-		window->details->icon_selector_window = NULL;
 	}
 }
 
@@ -3747,7 +3720,7 @@ real_finalize (GObject *object)
 
 /* icon selection callback to set the image of the file object to the selected file */
 static void
-set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
+set_icon (const char* icon_path, FMPropertiesWindow *properties_window)
 {
 	NautilusFile *file;
 	char *icon_uri;
@@ -3789,45 +3762,125 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 
 		}
 		g_free (icon_uri);	
-		
-		/* re-enable the property window's clear image button */ 
-		gtk_widget_set_sensitive (properties_window->details->remove_image_button, TRUE);
 	}
 }
 
-/* handle the "select icon" button */
 static void
-select_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_window)
+update_preview_callback (GtkFileChooser *icon_chooser,
+			 FMPropertiesWindow *window)
 {
-	GtkWidget *dialog;
+	GtkWidget *preview_widget;
+	GdkPixbuf *pixbuf, *scaled_pixbuf;
+	char *filename;
+	double scale;
 
-	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
+	pixbuf = NULL;
 
-	dialog = properties_window->details->icon_selector_window;
+	filename = gtk_file_chooser_get_filename (icon_chooser);
+	if (filename != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+	}
 
-	if (dialog) {
-		gtk_window_present (GTK_WINDOW (dialog));
+	if (pixbuf != NULL) {
+		preview_widget = gtk_file_chooser_get_preview_widget (icon_chooser);
+		gtk_file_chooser_set_preview_widget_active (icon_chooser, TRUE);
+
+		if (gdk_pixbuf_get_width (pixbuf) > PREVIEW_IMAGE_WIDTH) {
+			scale = (double)gdk_pixbuf_get_height (pixbuf) /
+				gdk_pixbuf_get_width (pixbuf);
+
+			scaled_pixbuf = gnome_thumbnail_scale_down_pixbuf
+				(pixbuf,
+				 PREVIEW_IMAGE_WIDTH,
+				 scale * PREVIEW_IMAGE_WIDTH);
+			g_object_unref (pixbuf);
+			pixbuf = scaled_pixbuf;
+		}
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (preview_widget), pixbuf);
 	} else {
-		dialog = eel_gnome_icon_selector_new (_("Select an icon"),
-						      NULL,
-					 	      GTK_WINDOW (properties_window),
-						      (EelIconSelectionFunction) set_icon_callback,
-						      properties_window);
-		
+		gtk_file_chooser_set_preview_widget_active (icon_chooser, FALSE);
+	}
+
+	g_free (filename);
+
+	if (pixbuf != NULL) {
+		g_object_unref (pixbuf);
+	}
+}
+
+static void
+select_image_button_callback (GtkWidget *widget,
+			      FMPropertiesWindow *window)
+{
+	GtkWidget *dialog, *preview;
+	GtkFileFilter *filter;
+	GList *l;
+	NautilusFile *file;
+	char *image_path;
+	gboolean revert_is_sensitive;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	dialog = window->details->icon_chooser;
+
+	if (dialog == NULL) {
+		dialog = gtk_file_chooser_dialog_new (_("Select Custom Icon"), GTK_WINDOW (window),
+						      GTK_FILE_CHOOSER_ACTION_OPEN,
+						      _("_Revert"), GTK_RESPONSE_NO,
+						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+						      NULL);
+		gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (dialog), "/usr/share/pixmaps", NULL);
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 
-		properties_window->details->icon_selector_window = dialog;
+		filter = gtk_file_filter_new ();
+		gtk_file_filter_add_pixbuf_formats (filter);
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
 
-		eel_add_weak_pointer (&properties_window->details->icon_selector_window);
+		preview = gtk_image_new ();
+		gtk_widget_set_size_request (preview, PREVIEW_IMAGE_WIDTH, -1);
+		gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (dialog), preview);
+		gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (dialog), FALSE);
+
+		g_signal_connect (dialog, "update-preview",
+				  G_CALLBACK (update_preview_callback), window);
+
+		window->details->icon_chooser = dialog;
+
+		g_object_add_weak_pointer (G_OBJECT (dialog),
+					   (gpointer *) &window->details->icon_chooser);
 	}
-}
 
-static void
-remove_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_window)
-{
-	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
+	revert_is_sensitive = FALSE;
+	for (l = window->details->original_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+		revert_is_sensitive = (image_path != NULL);
+		g_free (image_path);
 
-	reset_icon (properties_window);
+		if (revert_is_sensitive) {
+			break;
+		}
+	}
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NO, revert_is_sensitive);
+
+	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	case GTK_RESPONSE_NO:
+		reset_icon (window);
+		break;
+
+	case GTK_RESPONSE_OK:
+		image_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		set_icon (image_path, window);
+		g_free (image_path);
+		break;
+
+	default:
+		break;
+	}
+
+	gtk_widget_hide (dialog);
 }
 
 static void
