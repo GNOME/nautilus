@@ -246,6 +246,13 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_zooming)		(FMDirectoryView *view);
 
+	/* using_manual_layout is a function pointer that subclasses may
+	 * override to control whether or not items can be freely positioned
+	 * on the user-visible area.
+	 * Note that this value is not guaranteed to be constant within the
+	 * view's lifecycle. */
+	gboolean (* using_manual_layout)     (FMDirectoryView *view);
+
 	/* is_read_only is a function pointer that subclasses may
 	 * override to control whether or not the user is allowed to
 	 * change the contents of the currently viewed directory. The
@@ -338,6 +345,7 @@ gboolean            fm_directory_view_supports_creating_files          (FMDirect
 gboolean            fm_directory_view_accepts_dragged_files            (FMDirectoryView  *view);
 gboolean            fm_directory_view_supports_properties              (FMDirectoryView  *view);
 gboolean            fm_directory_view_supports_zooming                 (FMDirectoryView  *view);
+gboolean            fm_directory_view_using_manual_layout              (FMDirectoryView  *view);
 void                fm_directory_view_move_copy_items                  (const GList      *item_uris,
 									GArray           *relative_item_points,
 									const char       *target_uri,

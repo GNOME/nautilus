@@ -254,6 +254,8 @@ struct FMDirectoryViewDetails
 	guint open_with_merge_id;
 
 	GList *subdirectory_list;
+
+	GdkPoint context_menu_position;
 };
 
 typedef enum {
@@ -3714,11 +3716,41 @@ new_folder_data_new (FMDirectoryView *directory_view)
 	return data;
 }
 
+static GdkPoint *
+context_menu_to_file_operation_position (FMDirectoryView *directory_view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (directory_view), NULL);
+
+	if (fm_directory_view_using_manual_layout (directory_view)
+	    && directory_view->details->context_menu_position.x >= 0
+	    && directory_view->details->context_menu_position.y >= 0) {
+		return &directory_view->details->context_menu_position;
+	} else {
+		return NULL;
+	}
+}
+
+static void
+update_context_menu_position_from_event (FMDirectoryView *view,
+					 GdkEventButton  *event)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (event != NULL) {
+		view->details->context_menu_position.x = event->x;
+		view->details->context_menu_position.y = event->y;
+	} else {
+		view->details->context_menu_position.x = -1;
+		view->details->context_menu_position.y = -1;
+	}
+}
+
 void
 fm_directory_view_new_folder (FMDirectoryView *directory_view)
 {
 	char *parent_uri;
 	NewFolderData *data;
+	GdkPoint *pos;
 
 	data = new_folder_data_new (directory_view);
 
@@ -3729,9 +3761,11 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 			       (GClosureNotify)NULL,
 			       G_CONNECT_AFTER);
 
+	pos = context_menu_to_file_operation_position (directory_view);
+
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
-					     parent_uri,
+					     pos, parent_uri,
 					     new_folder_done, data);
 
 	g_free (parent_uri);
@@ -3758,15 +3792,17 @@ static void
 fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
 						  const char *initial_contents)
 {
+	GdkPoint *pos;
 	NewFolderData *data;
 	char *parent_uri;
 
 	data = setup_new_folder_data (directory_view);
 
-	parent_uri = fm_directory_view_get_backing_uri (directory_view);
+	pos = context_menu_to_file_operation_position (directory_view);
 
+	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
-					   parent_uri,
+					   pos, parent_uri,
 					   initial_contents,
 					   new_folder_done, data);
 
@@ -3777,6 +3813,7 @@ void
 fm_directory_view_new_file (FMDirectoryView *directory_view,
 			    NautilusFile *source)
 {
+	GdkPoint *pos;
 	NewFolderData *data;
 	char *parent_uri;
 	char *source_uri;
@@ -3788,12 +3825,15 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 
 	g_return_if_fail (nautilus_file_is_local (source));
 
+	pos = context_menu_to_file_operation_position (directory_view);
+
 	data = setup_new_folder_data (directory_view);
 
 	source_uri = nautilus_file_get_uri (source);
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 
 	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
+							 pos,
 							 parent_uri,
 							 NULL,
 							 source_uri,
@@ -6329,6 +6369,44 @@ connect_proxy (FMDirectoryView *view,
 }
 
 static void
+pre_activate (FMDirectoryView *view,
+	      GtkAction *action,
+	      GtkActionGroup *action_group)
+{
+	GdkEvent *event;
+	GtkWidget *proxy, *shell;
+	gboolean unset_pos;
+
+	/* check whether action was activated through a popup menu.
+	 * If not, unset the last stored context menu popup position */
+	unset_pos = TRUE;
+
+	event = gtk_get_current_event ();
+	proxy = gtk_get_event_widget (event);
+
+	if (proxy != NULL && GTK_IS_MENU_ITEM (proxy)) {
+		shell = proxy->parent;
+
+		unset_pos = FALSE;
+
+		do {
+			if (!GTK_IS_MENU (shell)) {
+				/* popup menus are GtkMenu-only menu shell hierarchies */
+				unset_pos = TRUE;
+				break;
+			}
+
+			shell = GTK_MENU_SHELL (shell)->parent_menu_shell;
+		} while (GTK_IS_MENU_SHELL (shell)
+			 && GTK_MENU_SHELL (shell)->parent_menu_shell != NULL);
+	}
+
+	if (unset_pos) {
+		update_context_menu_position_from_event (view, NULL);
+	}
+}
+
+static void
 real_merge_menus (FMDirectoryView *view)
 {
 	GtkActionGroup *action_group;
@@ -6361,6 +6439,9 @@ real_merge_menus (FMDirectoryView *view)
 
 	g_signal_connect_object (action_group, "connect-proxy",
 				 G_CALLBACK (connect_proxy), G_OBJECT (view),
+				 G_CONNECT_SWAPPED);
+	g_signal_connect_object (action_group, "pre-activate",
+				 G_CALLBACK (pre_activate), G_OBJECT (view),
 				 G_CONNECT_SWAPPED);
 
 	/* Insert action group at end so clipboard action group ends up before it */
@@ -6995,6 +7076,8 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
 	 */
 	update_menus_if_pending (view);
 
+	update_context_menu_position_from_event (view, event);
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -7022,6 +7105,8 @@ fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
 	 */
 	update_menus_if_pending (view);
 
+	update_context_menu_position_from_event (view, event);
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -7045,6 +7130,8 @@ fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view,
 
 	/* always update the menu before showing it. Shouldn't be too expensive. */
 	real_update_location_menu (view);
+
+	update_context_menu_position_from_event (view, event);
 
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION),
@@ -8157,6 +8244,24 @@ real_supports_zooming (FMDirectoryView *view)
 	return TRUE;
 }
 
+gboolean
+fm_directory_view_using_manual_layout (FMDirectoryView  *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 using_manual_layout, (view));
+}
+
+static gboolean
+real_using_manual_layout (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return FALSE;
+}
+
 /**
  * fm_directory_view_update_menus:
  * 
@@ -8918,6 +9023,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->supports_creating_files = real_supports_creating_files;
 	klass->supports_properties = real_supports_properties;
 	klass->supports_zooming = real_supports_zooming;
+	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;
         klass->update_menus = real_update_menus;
 

@@ -44,6 +44,7 @@
 #include <gdk/gdkdnd.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkwidget.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -58,7 +59,11 @@
 #include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
 
-typedef enum {
+typedef enum   TransferKind         TransferKind;
+typedef struct TransferInfo         TransferInfo;
+typedef struct IconPositionIterator IconPositionIterator;
+
+enum TransferKind {
 	TRANSFER_MOVE,
 	TRANSFER_COPY,
 	TRANSFER_DUPLICATE,
@@ -66,10 +71,10 @@ typedef enum {
 	TRANSFER_EMPTY_TRASH,
 	TRANSFER_DELETE,
 	TRANSFER_LINK
-} TransferKind;
+};
 
 /* Copy engine callback state */
-typedef struct {
+struct TransferInfo {
 	GnomeVFSAsyncHandle *handle;
 	NautilusFileOperationsProgress *progress_dialog;
 	const char *operation_title;	/* "Copying files" */
@@ -85,7 +90,8 @@ typedef struct {
 	gpointer done_callback_data;
 	GHashTable *debuting_uris;
 	gboolean cancelled;	
-} TransferInfo;
+	IconPositionIterator *iterator;
+};
 
 static TransferInfo *
 transfer_info_new (GtkWidget *parent_view)
@@ -120,17 +126,20 @@ transfer_info_destroy (TransferInfo *transfer_info)
  * top level items during a copy, drag, new folder creation and
  * link creation
  */
-typedef struct {
+struct IconPositionIterator {
 	GdkPoint *icon_positions;
 	int last_icon_position_index;
 	GList *uris;
 	const GList *last_uri;
 	int screen;
-} IconPositionIterator;
+	gboolean is_source_iterator;
+};
 
 static IconPositionIterator *
-icon_position_iterator_new (GArray *icon_positions, const GList *uris,
-			    int screen)
+icon_position_iterator_new (GArray *icon_positions,
+			    const GList *uris,
+			    int screen,
+			    gboolean is_source_iterator)
 {
 	IconPositionIterator *result;
 	guint index;
@@ -148,8 +157,36 @@ icon_position_iterator_new (GArray *icon_positions, const GList *uris,
 	result->uris = eel_g_str_list_copy ((GList *)uris);
 	result->last_uri = result->uris;
 	result->screen = screen;
+	result->is_source_iterator = is_source_iterator;
 
 	return result;
+}
+
+static IconPositionIterator *
+icon_position_iterator_new_single (GdkPoint *icon_position,
+				   const char *uri,
+				   int screen,
+				   gboolean is_source_iterator)
+{
+	IconPositionIterator *iterator;
+	GArray *icon_positions;
+	GList *uris;
+
+	if (icon_position == NULL || uri == NULL) {
+		return NULL;
+	}
+
+	icon_positions = g_array_sized_new (FALSE, FALSE, sizeof (GdkPoint), 1);
+	g_array_insert_val (icon_positions, 0, *icon_position);
+
+	uris = g_list_append (NULL, (char *) uri);
+
+	iterator = icon_position_iterator_new (icon_positions, uris, screen, is_source_iterator);
+
+	g_list_free (uris);
+	g_array_free (icon_positions, TRUE);
+
+	return iterator;
 }
 
 static void
@@ -166,13 +203,22 @@ icon_position_iterator_free (IconPositionIterator *position_iterator)
 
 static gboolean
 icon_position_iterator_get_next (IconPositionIterator *position_iterator,
-				 const char *next_uri,
+				 const char *next_source_uri,
+				 const char *next_target_uri,
 				 GdkPoint *point)
 {
+	const char *next_uri;
+
 	if (position_iterator == NULL) {
 		return FALSE;
 	}
-		
+
+	if (position_iterator->is_source_iterator) {
+		next_uri = next_source_uri;
+	} else {
+		next_uri = next_target_uri;
+	}
+
 	for (;;) {
 		if (position_iterator->last_uri == NULL) {
 			/* we are done, no more points left */
@@ -204,6 +250,42 @@ icon_position_iterator_get_next (IconPositionIterator *position_iterator,
 	position_iterator->last_icon_position_index++; 
 
 	return TRUE;
+}
+
+static void
+icon_position_iterator_update_uri (IconPositionIterator *position_iterator,
+				   const char *old_uri,
+				   const char *new_uri_fragment)
+{
+	GnomeVFSURI *uri, *parent_uri;
+	GList *l;
+
+	if (position_iterator == NULL) {
+		return;
+	}
+
+	l = g_list_find_custom (position_iterator->uris,
+			        old_uri,
+				(GCompareFunc) strcmp);
+	if (l == NULL) {
+		return;
+	}
+
+	uri = gnome_vfs_uri_new (old_uri);
+	parent_uri = gnome_vfs_uri_get_parent (uri);
+	gnome_vfs_uri_unref (uri);
+
+	if (parent_uri == NULL) {
+		return;
+	}
+	
+	uri = gnome_vfs_uri_append_path (parent_uri, new_uri_fragment);
+
+	g_free (l->data);
+	l->data = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+
+	gnome_vfs_uri_unref (uri);
+	gnome_vfs_uri_unref (parent_uri);
 }
 
 static char *
@@ -1624,7 +1706,7 @@ apply_one_position (IconPositionIterator *position_iterator,
 {
 	GdkPoint point;
 
-	if (icon_position_iterator_get_next (position_iterator, source_name, &point)) {
+	if (icon_position_iterator_get_next (position_iterator, source_name, target_name, &point)) {
 		nautilus_file_changes_queue_schedule_position_set (target_name, point, position_iterator->screen);
 	} else {
 		nautilus_file_changes_queue_schedule_position_remove (target_name);
@@ -1669,10 +1751,12 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 					nautilus_file_changes_queue_schedule_metadata_copy 
 						(progress_info->source_name, progress_info->target_name);
 
-					apply_one_position (position_iterator,
-							    progress_info->source_name,
-							    progress_info->target_name);
 				}
+
+				apply_one_position (position_iterator,
+						    progress_info->source_name,
+						    progress_info->target_name);
+
 				if (debuting_uris != NULL) {
 					g_hash_table_replace (debuting_uris,
 							      g_strdup (progress_info->target_name),
@@ -1700,12 +1784,12 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				if (really_moved) {
 					nautilus_file_changes_queue_schedule_metadata_move 
 						(progress_info->source_name, progress_info->target_name);
-					
-					apply_one_position (position_iterator,
-							    progress_info->source_name,
-							    progress_info->target_name);
 				}
-				
+
+				apply_one_position (position_iterator,
+						    progress_info->source_name,
+						    progress_info->target_name);
+
 				if (debuting_uris != NULL) {
 					g_hash_table_replace (debuting_uris,
 							      g_strdup (progress_info->target_name),
@@ -1946,7 +2030,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		 * here at all.
 		 */
 		icon_position_iterator = icon_position_iterator_new
-			(relative_item_points, item_uris, screen_num);
+			(relative_item_points, item_uris, screen_num, TRUE);
 	} else {
 		icon_position_iterator = NULL;
 	}
@@ -2109,6 +2193,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	sync_transfer_info->iterator = icon_position_iterator;
 	sync_transfer_info->debuting_uris = transfer_info->debuting_uris;
 
+	transfer_info->iterator = sync_transfer_info->iterator;
+
 	if (result == GNOME_VFS_OK) {
 		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
@@ -2131,6 +2217,7 @@ typedef struct {
 	NautilusNewFolderCallback done_callback;
 	gpointer data;
 	GtkWidget *parent_view;
+	IconPositionIterator *iterator;
 } NewFolderTransferState;
 
 static int
@@ -2210,6 +2297,12 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 					 progress_info->duplicate_count);
 			}
 			g_free (temp_string);
+
+			icon_position_iterator_update_uri
+				(state->iterator,
+				 progress_info->target_name,
+				 progress_info->duplicate_name);
+
 			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 	
 		case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
@@ -2227,20 +2320,16 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 
 void 
 nautilus_file_operations_new_folder (GtkWidget *parent_view, 
+				     GdkPoint *target_point,
 				     const char *parent_dir,
 				     NautilusNewFolderCallback done_callback,
 				     gpointer data)
 {
 	GList *target_uri_list;
 	GnomeVFSURI *uri, *parent_uri;
-	char *dirname;
+	char *text_uri, *dirname;
 	NewFolderTransferState *state;
-
-	state = g_new (NewFolderTransferState, 1);
-	state->done_callback = done_callback;
-	state->data = data;
-	state->parent_view = parent_view;
-	eel_add_weak_pointer (&state->parent_view);
+	SyncTransferInfo *sync_transfer_info;
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
@@ -2250,14 +2339,32 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	uri = gnome_vfs_uri_append_file_name (parent_uri, dirname);
 	g_free (dirname);
 	target_uri_list = g_list_prepend (NULL, uri);
-	
+
+	text_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+
+	sync_transfer_info = g_new (SyncTransferInfo, 1);
+	sync_transfer_info->iterator = icon_position_iterator_new_single
+		(target_point, text_uri,
+		 gdk_screen_get_number (gtk_widget_get_screen (parent_view)),
+		 FALSE);
+	sync_transfer_info->debuting_uris = NULL;
+
+	g_free (text_uri);
+
+	state = g_new (NewFolderTransferState, 1);
+	state->done_callback = done_callback;
+	state->data = data;
+	state->parent_view = parent_view;
+	state->iterator = sync_transfer_info->iterator;
+	eel_add_weak_pointer (&state->parent_view);
+
 	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 			      GNOME_VFS_PRIORITY_DEFAULT,
 	      		      new_folder_transfer_callback, state,
-	      		      sync_transfer_callback, NULL);
+	      		      sync_transfer_callback, sync_transfer_info);
 
 	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
@@ -2269,6 +2376,7 @@ typedef struct {
 	gpointer data;
 	GtkWidget *parent_view;
 	GHashTable *debuting_uris;
+	IconPositionIterator *iterator;
 } NewFileTransferState;
 
 
@@ -2377,6 +2485,7 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 				g_strfreev (temp_strings);
 			}
 			g_free (temp_string);
+
 			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 	
 		case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
@@ -2394,6 +2503,7 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 
 void 
 nautilus_file_operations_new_file_from_template (GtkWidget *parent_view, 
+						 GdkPoint *target_point,
 						 const char *parent_dir,
 						 const char *target_filename,
 						 const char *template_uri,
@@ -2411,18 +2521,12 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	g_assert (parent_dir != NULL);
 	g_assert (template_uri != NULL);
 
-	state = g_new (NewFileTransferState, 1);
-	state->done_callback = done_callback;
-	state->data = data;
-	state->parent_view = parent_view;
-
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
 
 	source_uri = gnome_vfs_uri_new (template_uri);
 	if (source_uri == NULL) {
 		(*done_callback) (NULL, data);
-		g_free (state);
 		return;
 	}
 
@@ -2434,15 +2538,23 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 		g_free (tmp);
 	}
 
-	state->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	sync_transfer_info = g_new (SyncTransferInfo, 1);
+	sync_transfer_info->iterator = icon_position_iterator_new_single
+		(target_point, template_uri,
+		 gdk_screen_get_number (gtk_widget_get_screen (parent_view)),
+		 TRUE);
+	sync_transfer_info->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	state = g_new (NewFileTransferState, 1);
+	state->done_callback = done_callback;
+	state->data = data;
+	state->parent_view = parent_view;
+	state->iterator = sync_transfer_info->iterator;
+	state->debuting_uris = sync_transfer_info->debuting_uris;
 	eel_add_weak_pointer (&state->parent_view);
 
 	target_uri_list = g_list_prepend (NULL, target_uri);
 	source_uri_list = g_list_prepend (NULL, source_uri);
-
-	sync_transfer_info = g_new (SyncTransferInfo, 1);
-	sync_transfer_info->iterator = NULL;
-	sync_transfer_info->debuting_uris = state->debuting_uris;
 
 	options = GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 
@@ -2485,6 +2597,7 @@ new_file_from_temp_callback (const char *new_file_uri,
 
 void 
 nautilus_file_operations_new_file (GtkWidget *parent_view, 
+				   GdkPoint *target_point,
 				   const char *parent_dir,
 				   const char *initial_contents,
 				   NautilusNewFileCallback done_callback,
@@ -2522,6 +2635,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	new_data->callback_data = data;
 	
 	nautilus_file_operations_new_file_from_template (parent_view, 
+							 target_point,
 							 parent_dir,
 							 target_filename,
 							 source_file_uri,

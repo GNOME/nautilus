@@ -833,6 +833,7 @@ fm_tree_view_create_folder_cb (GtkWidget *menu_item,
 
 	parent_uri = nautilus_file_get_uri (view->details->popup_file);
 	nautilus_file_operations_new_folder (GTK_WIDGET (view->details->tree_widget),
+					     NULL,
 					     parent_uri,
 					     new_folder_done, view->details->tree_widget);
 

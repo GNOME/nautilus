@@ -2305,6 +2305,14 @@ fm_list_view_sort_files (FMDirectoryView *view, GList **files)
 	fm_list_model_sort_files (list_view->details->model, files);
 }
 
+static gboolean
+fm_list_view_using_manual_layout (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+
+	return FALSE;
+}
+
 static void
 fm_list_view_dispose (GObject *object)
 {
@@ -2483,6 +2491,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
+	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
