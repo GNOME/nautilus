@@ -666,7 +666,7 @@ static const GtkActionEntry main_entries[] = {
     N_("Connect to _Server..."), NULL,           /* label, accelerator */
     N_("Set up a connection to a network server"),                                      /* tooltip */ 
     G_CALLBACK (action_connect_to_server_callback) },
-  { "Home", GTK_STOCK_HOME,                        /* name, stock id */
+  { "Home", "gnome-fs-home",                        /* name, stock id */
     N_("_Home"), "<alt>Home",           /* label, accelerator */
     N_("Go to the home folder"),                                  /* tooltip */ 
     G_CALLBACK (action_home_callback) },

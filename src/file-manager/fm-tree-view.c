@@ -1246,7 +1246,7 @@ create_tree (FMTreeView *view)
 		 G_CALLBACK (row_loaded_callback),
 		 view, G_CONNECT_AFTER);
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-home", NULL);
+	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-fs-home", NULL);
 	g_free (home_uri);
 	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), "gnome-fs-directory", NULL);
 #ifdef NOT_YET_USABLE
