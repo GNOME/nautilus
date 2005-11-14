@@ -1145,20 +1145,22 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_QUESTION, text, 
 			 secondary_text, 
 			 _("Conflict While Copying"),
-			 _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
+			 _("S_kip All"), _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
 		g_free (text);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 
 		switch (result) {
 		case 0:
-			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL;
 		case 1:
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
+		case 2:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		default:
 			g_assert_not_reached ();
 			/* fall through */
-		case 2:
+		case 3:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
 		}
 	}
