@@ -1942,7 +1942,9 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 		total_rect = details->bounds_cache;
 	} else {	
 		measure_label_text (icon_item);
-		
+
+		pixels_per_unit = item->canvas->pixels_per_unit;
+
 		/* Compute icon rectangle. */
 		icon_rect.x0 = 0;
 		icon_rect.y0 = 0;
@@ -1950,7 +1952,6 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 			icon_rect.x1 = icon_rect.x0;
 			icon_rect.y1 = icon_rect.y0;
 		} else {
-			pixels_per_unit = item->canvas->pixels_per_unit;
 			icon_rect.x1 = icon_rect.x0 + gdk_pixbuf_get_width (details->pixbuf) / pixels_per_unit;
 			icon_rect.y1 = icon_rect.y0 + gdk_pixbuf_get_height (details->pixbuf) / pixels_per_unit;
 		}
@@ -1962,6 +1963,11 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 		art_irect_union (&total_rect, &icon_rect, &text_rect);
 		emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
 		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+			emblem_rect.x0 = floor (emblem_rect.x0 / pixels_per_unit);
+			emblem_rect.y0 = floor (emblem_rect.y0 / pixels_per_unit);
+			emblem_rect.x1 = ceil (emblem_rect.x1 / pixels_per_unit);
+			emblem_rect.y1 = ceil (emblem_rect.y1 / pixels_per_unit);
+
 			art_irect_union (&total_rect, &total_rect, &emblem_rect);
 		}
 
