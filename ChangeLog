@@ -1,3 +1,14 @@
+2005-11-07  Federico Mena Quintero  <federico@ximian.com>
+
+       Fix the volumes part of bug #45953:
+
+       * libnautilus-private/nautilus-icon-container.c
+       (finish_adding_new_icons): First, call assign_icon_position().
+       Then, don't ignore the fact that the icon may have a lazy
+       position; check the icon->has_lazy_position flag even after
+       retrieving its stored position.  If the flag is turned on, defer
+       the icon to the semi_position_icons list.
+	
 2005-11-14  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c: (draw_frame):

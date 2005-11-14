@@ -5629,8 +5629,9 @@ finish_adding_new_icons (NautilusIconContainer *container)
 		icon = p->data;
 		if (!assign_icon_position (container, icon)) {
 			no_position_icons = g_list_prepend (no_position_icons, icon);
-		} else if (!container->details->auto_layout &&
-			   icon->has_lazy_position) {
+		}
+
+		if (!container->details->auto_layout && icon->has_lazy_position) {
 			semi_position_icons = g_list_prepend (semi_position_icons, icon);
 		}
 		finish_adding_icon (container, icon);
