@@ -898,9 +898,11 @@ draw_frame (NautilusIconCanvasItem *item,
 		eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
 							  eel_gdk_pixbuf_whole_pixbuf,
 							  0xffffffff);
-		clear_rounded_corners (selection_pixbuf,
-				       container->details->highlight_frame,
-				       5);
+		if (container->details->highlight_frame != NULL) {
+			clear_rounded_corners (selection_pixbuf,
+					       container->details->highlight_frame,
+					       5);
+		}
 		multiply_pixbuf_rgba (selection_pixbuf,
 				      color);
 		if (create_mask) {
