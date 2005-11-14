@@ -279,7 +279,7 @@ icon_position_iterator_update_uri (IconPositionIterator *position_iterator,
 		return;
 	}
 	
-	uri = gnome_vfs_uri_append_path (parent_uri, new_uri_fragment);
+	uri = gnome_vfs_uri_append_string (parent_uri, new_uri_fragment);
 
 	g_free (l->data);
 	l->data = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
