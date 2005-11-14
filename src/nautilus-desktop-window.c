@@ -218,7 +218,7 @@ realize (GtkWidget *widget)
 
 	/* Make sure we get keyboard events */
 	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
-			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
+			      | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 			      
 	/* Do the work of realizing. */
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
