@@ -189,6 +189,7 @@ nautilus_file_management_properties_size_group_create (GladeXML *xml_dialog,
 					   glade_xml_get_widget (xml_dialog, item_name));
 		g_free (item_name);
 	}
+	g_object_unref (G_OBJECT (size_group));
 }
 
 static void
