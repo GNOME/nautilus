@@ -1,3 +1,10 @@
+2005-11-18  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_size_group_create):
+	Don't leak size_group reference.
+	Patch from Jaap Haitsma <jaap@haitsma.org>
+
 2005-11-08  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-tree-view.c: (create_tree):
