@@ -6125,7 +6125,9 @@ action_location_delete_callback (GtkAction *action,
 	file_uri = nautilus_file_get_uri (file);
 
 	files = g_list_append (NULL, file_uri);
-	nautilus_file_operations_delete (files, GTK_WIDGET (view));
+	if (confirm_delete_directly (view, files)) {
+		nautilus_file_operations_delete (files, GTK_WIDGET (view));
+	}
 
 	g_free (file_uri);
 	g_list_free (files);
