@@ -1,3 +1,8 @@
+2005-11-22  Emmanuele Bassi  <ebassi@cvs.gnome.org>
+
+	* libnautilus-private/nautilus-module.c (nautilus_module_load): Use
+	G_MODULE_BIND_LAZY when dlopening a module.
+
 2005-11-19  Christian Neumair  <chris@gnome-de.org>
 
 	* src/file-manager/fm-directory-view.c:
