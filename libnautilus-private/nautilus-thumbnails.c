@@ -275,7 +275,9 @@ nautilus_thumbnail_load_framed_image (const char *path)
 	if (pixbuf == NULL) {
 		return NULL;
 	}
-        nautilus_thumbnail_frame_image(&pixbuf);	
+	if (!gdk_pixbuf_get_has_alpha (pixbuf)) {
+		nautilus_thumbnail_frame_image (&pixbuf);
+	}
         return pixbuf;
 }
 
