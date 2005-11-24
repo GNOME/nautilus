@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-14 22:32+0100\n"
-"PO-Revision-Date: 2005-11-14 22:33+0100\n"
+"POT-Creation-Date: 2005-11-24 23:42+0100\n"
+"PO-Revision-Date: 2005-11-24 23:43+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -942,7 +942,7 @@ msgstr "Vloží text uložený v schránke"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6256
+#: ../src/file-manager/fm-directory-view.c:6262
 msgid "Select _All"
 msgstr "Vybrať všetk_o"
 
@@ -1467,7 +1467,7 @@ msgstr "Nahradiť _všetky"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1290
 #: ../libnautilus-private/nautilus-file.c:4749
-#: ../src/file-manager/fm-directory-view.c:8683
+#: ../src/file-manager/fm-directory-view.c:8811
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
@@ -1891,7 +1891,7 @@ msgid "today at 00:00:00 PM"
 msgstr "dnes o 0:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:2945
-#: ../src/nautilus-file-management-properties.c:493
+#: ../src/nautilus-file-management-properties.c:494
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes o %-I:%M:%S %p"
 
@@ -2010,7 +2010,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: ../libnautilus-private/nautilus-file.c:4315
-#: ../src/file-manager/fm-directory-view.c:1959
+#: ../src/file-manager/fm-directory-view.c:1962
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2092,7 +2092,7 @@ msgstr "odkaz"
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
-#: ../libnautilus-private/nautilus-file.c:6195
+#: ../libnautilus-private/nautilus-file.c:6262
 #: ../libnautilus-private/nautilus-global-preferences.c:518
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2600,22 +2600,22 @@ msgstr "Pozadie"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6234
-#: ../src/file-manager/fm-directory-view.c:7013
+#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:7019
 msgid "E_mpty Trash"
 msgstr "V_yprázdniť kôš"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6206
+#: ../src/file-manager/fm-directory-view.c:6212
 msgid "Create L_auncher..."
 msgstr "Vytvoriť _spúšťač..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6207
+#: ../src/file-manager/fm-directory-view.c:6213
 msgid "Create a new launcher"
 msgstr "Vytvoriť nový spúšťač"
 
@@ -2638,7 +2638,7 @@ msgstr "Vyprázdniť kôš"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6235
+#: ../src/file-manager/fm-directory-view.c:6241
 msgid "Delete all items in the Trash"
 msgstr "Odstrániť všetky položky v koši"
 
@@ -2703,28 +2703,24 @@ msgstr[0] "Ste si istý, že chcete úplne odstrániť %d vybraných položiek?"
 msgstr[1] "Ste si istý, že chcete úplne odstrániť %d vybranú položku?"
 msgstr[2] "Ste si istý, že chcete úplne odstrániť %d vybrané položky?"
 
-#: ../src/file-manager/fm-directory-view.c:895
+#: ../src/file-manager/fm-directory-view.c:898
 msgid "If you delete an item, it is permanently lost."
 msgstr "Ak odstránite položku, bude úplne stratená."
 
-#: ../src/file-manager/fm-directory-view.c:896
-msgid "Delete?"
-msgstr "Odstrániť?"
-
-#: ../src/file-manager/fm-directory-view.c:1048
+#: ../src/file-manager/fm-directory-view.c:1051
 msgid "Select Pattern"
 msgstr "Vyberte vzorku"
 
-#: ../src/file-manager/fm-directory-view.c:1064
+#: ../src/file-manager/fm-directory-view.c:1067
 msgid "_Pattern:"
 msgstr "_Vzorka:"
 
-#: ../src/file-manager/fm-directory-view.c:1891
+#: ../src/file-manager/fm-directory-view.c:1894
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" vybraných"
 
-#: ../src/file-manager/fm-directory-view.c:1893
+#: ../src/file-manager/fm-directory-view.c:1896
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -2732,7 +2728,7 @@ msgstr[0] "vybraných %d priečinkov"
 msgstr[1] "vybraný %d priečinok"
 msgstr[2] "vybrané %d priečinky"
 
-#: ../src/file-manager/fm-directory-view.c:1903
+#: ../src/file-manager/fm-directory-view.c:1906
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2741,7 +2737,7 @@ msgstr[1] " (obsahuje %d položku)"
 msgstr[2] " (obsahuje %d položky)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:1914
+#: ../src/file-manager/fm-directory-view.c:1917
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -2749,12 +2745,12 @@ msgstr[0] " (obsahujúci celkom %d položiek)"
 msgstr[1] " (obsahujúci celkom %d položku)"
 msgstr[2] " (obsahujúci celkom %d položky)"
 
-#: ../src/file-manager/fm-directory-view.c:1930
+#: ../src/file-manager/fm-directory-view.c:1933
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" vybraných (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1934
+#: ../src/file-manager/fm-directory-view.c:1937
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2763,7 +2759,7 @@ msgstr[1] "%d vybraná položka (%s)"
 msgstr[2] "%d vybrané položky (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:1942
+#: ../src/file-manager/fm-directory-view.c:1945
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -2771,7 +2767,7 @@ msgstr[0] "%d iných vybraných položiek (%s)"
 msgstr[1] "%d iná vybraná položka (%s)"
 msgstr[2] "%d iné vybrané položky (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1963
+#: ../src/file-manager/fm-directory-view.c:1966
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Voľné miesto: %s"
@@ -2783,7 +2779,7 @@ msgstr "%s, Voľné miesto: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:1988
+#: ../src/file-manager/fm-directory-view.c:1991
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2792,58 +2788,58 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2058
+#: ../src/file-manager/fm-directory-view.c:2061
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Priečinok \"%s\" obsahuje viac súborov, než dokáže Nautilus spracovať."
 
-#: ../src/file-manager/fm-directory-view.c:2064
+#: ../src/file-manager/fm-directory-view.c:2067
 msgid "Some files will not be displayed."
 msgstr "Niektoré súbory nie je možné zobraziť."
 
-#: ../src/file-manager/fm-directory-view.c:2065
+#: ../src/file-manager/fm-directory-view.c:2068
 msgid "Too Many Files"
 msgstr "Príliš veľa súborov"
 
-#: ../src/file-manager/fm-directory-view.c:3379
+#: ../src/file-manager/fm-directory-view.c:3382
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Nie je možné presunúť súbor do koša. Chcete ho odstrániť úplne?"
 
-#: ../src/file-manager/fm-directory-view.c:3380
+#: ../src/file-manager/fm-directory-view.c:3383
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Súbor \"%s\" nie je možné presunúť do koša."
 
-#: ../src/file-manager/fm-directory-view.c:3384
+#: ../src/file-manager/fm-directory-view.c:3387
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Nie je možné presunúť položky do koša. Chcete ich odstrániť úplne?"
 
-#: ../src/file-manager/fm-directory-view.c:3385
+#: ../src/file-manager/fm-directory-view.c:3388
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "Žiadna z %d zvolených položiek niemôže byť presunutá do koša"
 
-#: ../src/file-manager/fm-directory-view.c:3387
+#: ../src/file-manager/fm-directory-view.c:3390
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Nie je možné niektoré položky presunúť do koša. Chcete ich odstrániť úplne?"
 
-#: ../src/file-manager/fm-directory-view.c:3388
+#: ../src/file-manager/fm-directory-view.c:3391
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d zo zvolených položiek nie je možné presunúť do koša."
 
-#: ../src/file-manager/fm-directory-view.c:3394
+#: ../src/file-manager/fm-directory-view.c:3397
 msgid "Delete Immediately?"
 msgstr "Odstrániť okamžite?"
 
-#: ../src/file-manager/fm-directory-view.c:3426
+#: ../src/file-manager/fm-directory-view.c:3429
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Naozaj chcete úplne odstrániť \"%s\" z koša?"
 
-#: ../src/file-manager/fm-directory-view.c:3430
+#: ../src/file-manager/fm-directory-view.c:3433
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2855,56 +2851,56 @@ msgstr[0] "Naozaj chcete úplne odstrániť %d vybraných položiek z koša?"
 msgstr[1] "Naozaj chcete úplne odstrániť %d vybranú položku z koša?"
 msgstr[2] "Naozaj chcete úplne odstrániť %d vybrané položky z koša?"
 
-#: ../src/file-manager/fm-directory-view.c:3439
+#: ../src/file-manager/fm-directory-view.c:3442
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ak odstránite položku, bude úplne stratená."
 
-#: ../src/file-manager/fm-directory-view.c:3440
+#: ../src/file-manager/fm-directory-view.c:3443
 msgid "Delete From Trash?"
 msgstr "Odstrániť z koša?"
 
-#: ../src/file-manager/fm-directory-view.c:4015
+#: ../src/file-manager/fm-directory-view.c:4018
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Otvoriť s \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4016
+#: ../src/file-manager/fm-directory-view.c:4019
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Použiť \"%s\" pre otvorenie vybranej položky"
 
-#: ../src/file-manager/fm-directory-view.c:4105
+#: ../src/file-manager/fm-directory-view.c:4108
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Chcete \"%s\" spustiť, alebo zobraziť jeho obsah?"
 
-#: ../src/file-manager/fm-directory-view.c:4107
+#: ../src/file-manager/fm-directory-view.c:4110
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" je spustiteľný textový súbor."
 
-#: ../src/file-manager/fm-directory-view.c:4113
+#: ../src/file-manager/fm-directory-view.c:4116
 msgid "Run or Display?"
 msgstr "Spustiť alebo zobraziť?"
 
-#: ../src/file-manager/fm-directory-view.c:4114
+#: ../src/file-manager/fm-directory-view.c:4117
 msgid "Run in _Terminal"
 msgstr "Spustiť v _termináli"
 
-#: ../src/file-manager/fm-directory-view.c:4115
+#: ../src/file-manager/fm-directory-view.c:4118
 msgid "_Display"
 msgstr "_Zobraziť"
 
-#: ../src/file-manager/fm-directory-view.c:4118
+#: ../src/file-manager/fm-directory-view.c:4121
 msgid "_Run"
 msgstr "_Spustiť"
 
-#: ../src/file-manager/fm-directory-view.c:4501
+#: ../src/file-manager/fm-directory-view.c:4505
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nie je možné otvoriť %s"
 
-#: ../src/file-manager/fm-directory-view.c:4504
+#: ../src/file-manager/fm-directory-view.c:4508
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2925,32 +2921,32 @@ msgstr ""
 "tak, aby mal správnu príponu a potom ho normálne otvorte. Alebo môžete "
 "použiť menu \"Otvoriť s\" a vybrať konkrétnu aplikáciu pre súbor. "
 
-#: ../src/file-manager/fm-directory-view.c:4900
+#: ../src/file-manager/fm-directory-view.c:4904
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Spustiť \"%s\" na všetky vybrané položky"
 
-#: ../src/file-manager/fm-directory-view.c:5149
+#: ../src/file-manager/fm-directory-view.c:5153
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Vytvoriť dokument zo šablóny \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5355
+#: ../src/file-manager/fm-directory-view.c:5359
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Všetky spustiteľné súbory v tomto priečinku sa objavia v menu Skripty. "
 
-#: ../src/file-manager/fm-directory-view.c:5357
+#: ../src/file-manager/fm-directory-view.c:5361
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "Vybraním skriptu z menu ho spustí s vybranými položkami ako vstupom."
 
-#: ../src/file-manager/fm-directory-view.c:5359
+#: ../src/file-manager/fm-directory-view.c:5363
 msgid "About Scripts"
 msgstr "O skriptoch"
 
-#: ../src/file-manager/fm-directory-view.c:5360
+#: ../src/file-manager/fm-directory-view.c:5364
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2990,19 +2986,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pozícia a veľkosť aktuálneho okna"
 
-#: ../src/file-manager/fm-directory-view.c:5521
+#: ../src/file-manager/fm-directory-view.c:5525
 #: ../src/file-manager/fm-tree-view.c:902
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" bude presunutý, ak použijete príkaz Vložiť"
 
-#: ../src/file-manager/fm-directory-view.c:5525
+#: ../src/file-manager/fm-directory-view.c:5529
 #: ../src/file-manager/fm-tree-view.c:906
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" bude skopírovaný, ak použijete príkaz Vložiť"
 
-#: ../src/file-manager/fm-directory-view.c:5532
+#: ../src/file-manager/fm-directory-view.c:5536
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3012,7 +3008,7 @@ msgstr[0] ""
 msgstr[1] "%d vybraná položka bude presunutá, ak si vyberiete príkaz Vložiť"
 msgstr[2] "%d vybrané položky budú presunuté, ak si vyberiete príkaz Vložiť"
 
-#: ../src/file-manager/fm-directory-view.c:5539
+#: ../src/file-manager/fm-directory-view.c:5543
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3022,157 +3018,157 @@ msgstr[0] ""
 msgstr[1] "%d vybraná položka bude skopírovaná, ak si vyberiete príkaz Vložiť"
 msgstr[2] "%d vybrané položky budú skopírované, ak si vyberiete príkaz Vložiť"
 
-#: ../src/file-manager/fm-directory-view.c:5633
+#: ../src/file-manager/fm-directory-view.c:5637
 #: ../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "V schránke nie je nič na vloženie."
 
-#: ../src/file-manager/fm-directory-view.c:5759
-#: ../src/file-manager/fm-directory-view.c:7509
+#: ../src/file-manager/fm-directory-view.c:5763
+#: ../src/file-manager/fm-directory-view.c:7598
 msgid "Mount Error"
 msgstr "Chyba pripojenia"
 
-#: ../src/file-manager/fm-directory-view.c:5811
+#: ../src/file-manager/fm-directory-view.c:5815
 #: ../src/file-manager/fm-tree-view.c:1068
 msgid "Unmount Error"
 msgstr "Chyba odpojenia"
 
-#: ../src/file-manager/fm-directory-view.c:5824
+#: ../src/file-manager/fm-directory-view.c:5828
 #: ../src/file-manager/fm-tree-view.c:1065
 msgid "Eject Error"
 msgstr "Chyba vysunutia"
 
-#: ../src/file-manager/fm-directory-view.c:5988
+#: ../src/file-manager/fm-directory-view.c:5992
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Pripojiť k serveru %s"
 
-#: ../src/file-manager/fm-directory-view.c:5993
+#: ../src/file-manager/fm-directory-view.c:5997
 msgid "_Connect"
 msgstr "_Pripojiť"
 
-#: ../src/file-manager/fm-directory-view.c:6007
+#: ../src/file-manager/fm-directory-view.c:6011
 msgid "Link _name:"
 msgstr "_Meno odkazu:"
 
-#: ../src/file-manager/fm-directory-view.c:6180
+#: ../src/file-manager/fm-directory-view.c:6186
 msgid "Create _Document"
 msgstr "Vytvoriť _dokument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6181
+#: ../src/file-manager/fm-directory-view.c:6187
 msgid "Open Wit_h"
 msgstr "Otvoriť _pomocou"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6182
+#: ../src/file-manager/fm-directory-view.c:6188
 msgid "Choose a program with which to open the selected item"
 msgstr "Vyberte program, ktorým chcete otvoriť vybranú položku"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6184
-#: ../src/file-manager/fm-directory-view.c:6192
+#: ../src/file-manager/fm-directory-view.c:6190
+#: ../src/file-manager/fm-directory-view.c:6198
 msgid "_Properties"
 msgstr "_Vlastnosti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6185
+#: ../src/file-manager/fm-directory-view.c:6191
 msgid "View or modify the properties of each selected item"
 msgstr "Zobrazí alebo upraví vlastnosti každej vybranej položky"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6193
+#: ../src/file-manager/fm-directory-view.c:6199
 msgid "View or modify the properties of the open folder"
 msgstr "Zobraziť alebo upraviť vlastnosti otvoreného priečinka"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6196
+#: ../src/file-manager/fm-directory-view.c:6202
 msgid "Create _Folder"
 msgstr "Vytvoriť _priečinok"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6197
+#: ../src/file-manager/fm-directory-view.c:6203
 msgid "Create a new empty folder inside this folder"
 msgstr "Vytvorí nový prázdny priečinok v tomto priečinku"
 
-#: ../src/file-manager/fm-directory-view.c:6199
+#: ../src/file-manager/fm-directory-view.c:6205
 msgid "No templates Installed"
 msgstr "Nainštalované žiadne šablóny"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6202
+#: ../src/file-manager/fm-directory-view.c:6208
 msgid "_Empty File"
 msgstr "_Prázdny súbor"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6203
+#: ../src/file-manager/fm-directory-view.c:6209
 msgid "Create a new empty file inside this folder"
 msgstr "Vytvorí nový prázdny súbor v tomto priečinku"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6210
-#: ../src/file-manager/fm-directory-view.c:6914
+#: ../src/file-manager/fm-directory-view.c:6216
+#: ../src/file-manager/fm-directory-view.c:6920
 #: ../src/file-manager/fm-tree-view.c:1107
 msgid "_Open"
 msgstr "_Otvoriť"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6211
+#: ../src/file-manager/fm-directory-view.c:6217
 msgid "Open the selected item in this window"
 msgstr "Otvorí vybranú položku v tomto okne"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6218
-#: ../src/file-manager/fm-directory-view.c:6318
+#: ../src/file-manager/fm-directory-view.c:6224
+#: ../src/file-manager/fm-directory-view.c:6324
 msgid "Open in Navigation Window"
 msgstr "Otvoriť v navigačnom okne"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6219
+#: ../src/file-manager/fm-directory-view.c:6225
 msgid "Open each selected item in a navigation window"
 msgstr "Otvorí každú vybranú položku v navigačnom okne"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6222
-#: ../src/file-manager/fm-directory-view.c:6226
+#: ../src/file-manager/fm-directory-view.c:6228
+#: ../src/file-manager/fm-directory-view.c:6232
 msgid "Open with Other _Application..."
 msgstr "Otvoriť inou _aplikáciou..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6223
-#: ../src/file-manager/fm-directory-view.c:6227
+#: ../src/file-manager/fm-directory-view.c:6229
+#: ../src/file-manager/fm-directory-view.c:6233
 msgid "Choose another application with which to open the selected item"
 msgstr "Vyberte iný program, ktorým chcete otvoriť vybranú položku"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6230
+#: ../src/file-manager/fm-directory-view.c:6236
 msgid "_Open Scripts Folder"
 msgstr "_Otvoriť priečinok skriptov"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6231
+#: ../src/file-manager/fm-directory-view.c:6237
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Ukáže priečinok obsahujúci skripty, ktoré sú v tomto menu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6239
+#: ../src/file-manager/fm-directory-view.c:6245
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Pripraviť vybrané súbory pre presun príkazom Vložiť"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6243
+#: ../src/file-manager/fm-directory-view.c:6249
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Pripraviť vybrané súbory pre kopírovanie príkazom Vložiť"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6247
+#: ../src/file-manager/fm-directory-view.c:6253
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Presunúť alebo skopírovať súbory vybrané predcházajúcim príkazom Vystrihnúť "
@@ -3181,13 +3177,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6252
+#: ../src/file-manager/fm-directory-view.c:6258
 #: ../src/file-manager/fm-tree-view.c:1165
 msgid "_Paste Into Folder"
 msgstr "V_ložiť do priečinka"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6253
+#: ../src/file-manager/fm-directory-view.c:6259
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3196,33 +3192,33 @@ msgstr ""
 "alebo Kopírovať do vybraného priečinku"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6257
+#: ../src/file-manager/fm-directory-view.c:6263
 msgid "Select all items in this window"
 msgstr "Vybraž všetky položky v tomto okne"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6260
+#: ../src/file-manager/fm-directory-view.c:6266
 msgid "Select _Pattern"
 msgstr "Vybrať podľa _vzorky"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6261
+#: ../src/file-manager/fm-directory-view.c:6267
 msgid "Select items in this window matching a given pattern"
 msgstr "Vyberie všetky položky v tomto okne podľa vzorky"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6264
+#: ../src/file-manager/fm-directory-view.c:6270
 msgid "D_uplicate"
 msgstr "_Duplikovať"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6265
+#: ../src/file-manager/fm-directory-view.c:6271
 msgid "Duplicate each selected item"
 msgstr "Vytvorí kópiu každej vybranej položky"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6268
-#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:6274
+#: ../src/file-manager/fm-directory-view.c:6993
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "_Vytvoriť odkazy"
@@ -3230,196 +3226,196 @@ msgstr[1] "_Vytvoriť odkaz"
 msgstr[2] "_Vytvoriť odkazy"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6269
+#: ../src/file-manager/fm-directory-view.c:6275
 msgid "Create a symbolic link for each selected item"
 msgstr "Vytvorí symbolický odkaz pre každú vybranú položku"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6272
+#: ../src/file-manager/fm-directory-view.c:6278
 msgid "_Rename..."
 msgstr "_Premenovať..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6273
+#: ../src/file-manager/fm-directory-view.c:6279
 msgid "Rename selected item"
 msgstr "Premenovať vybranú položku"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6280
-#: ../src/file-manager/fm-directory-view.c:6332
-#: ../src/file-manager/fm-directory-view.c:6788
-#: ../src/file-manager/fm-directory-view.c:6955
-#: ../src/file-manager/fm-directory-view.c:7306
+#: ../src/file-manager/fm-directory-view.c:6286
+#: ../src/file-manager/fm-directory-view.c:6338
+#: ../src/file-manager/fm-directory-view.c:6794
+#: ../src/file-manager/fm-directory-view.c:6961
+#: ../src/file-manager/fm-directory-view.c:7312
 msgid "Mo_ve to Trash"
 msgstr "Presunúť do _koša"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6281
-#: ../src/file-manager/fm-directory-view.c:6956
+#: ../src/file-manager/fm-directory-view.c:6287
+#: ../src/file-manager/fm-directory-view.c:6962
 msgid "Move each selected item to the Trash"
 msgstr "Presunie každú vybranú položku do koša"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6284
-#: ../src/file-manager/fm-directory-view.c:6336
-#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:6290
+#: ../src/file-manager/fm-directory-view.c:6342
+#: ../src/file-manager/fm-directory-view.c:6980
 msgid "_Delete"
 msgstr "_Odstrániť"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6285
+#: ../src/file-manager/fm-directory-view.c:6291
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Odstráni každú vybranú položku bez presunu do koša"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6288
+#: ../src/file-manager/fm-directory-view.c:6294
 msgid "Reset View to _Defaults"
 msgstr "Š_tandard pohľadu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6289
+#: ../src/file-manager/fm-directory-view.c:6295
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohľadu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6292
+#: ../src/file-manager/fm-directory-view.c:6298
 msgid "Connect To This Server"
 msgstr "Pripojiť k tomuto serveru"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6293
+#: ../src/file-manager/fm-directory-view.c:6299
 msgid "Make a permanent connection to this server"
 msgstr "Vytvoriť trvalé spojenie so serverom"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6296
+#: ../src/file-manager/fm-directory-view.c:6302
 msgid "_Mount Volume"
 msgstr "_Pripojiť disk"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6297
+#: ../src/file-manager/fm-directory-view.c:6303
 msgid "Mount the selected volume"
 msgstr "Pripojiť vybraný disk"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6300
+#: ../src/file-manager/fm-directory-view.c:6306
 #: ../src/file-manager/fm-tree-view.c:751
 msgid "_Unmount Volume"
 msgstr "_Odpojiť disk"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6301
+#: ../src/file-manager/fm-directory-view.c:6307
 msgid "Unmount the selected volume"
 msgstr "Odpojiť vybraný disk"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6304
+#: ../src/file-manager/fm-directory-view.c:6310
 msgid "_Eject"
 msgstr "Vy_sunúť"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6305
+#: ../src/file-manager/fm-directory-view.c:6311
 msgid "Eject the selected volume"
 msgstr "Vysunúť vybraný disk"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6308
+#: ../src/file-manager/fm-directory-view.c:6314
 msgid "_Format"
 msgstr "_Formátovať"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6309
+#: ../src/file-manager/fm-directory-view.c:6315
 msgid "Format the selected volume"
 msgstr "Formátovať vybraný zväzok"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6312
+#: ../src/file-manager/fm-directory-view.c:6318
 msgid "Open File and Close window"
 msgstr "Otvoriť súbor a zatvoriť okno"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6319
+#: ../src/file-manager/fm-directory-view.c:6325
 msgid "Open this folder in a navigation window"
 msgstr "Otvorí tento priečinok v navigačnom okne"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6324
+#: ../src/file-manager/fm-directory-view.c:6330
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Pripraviť tento priečinok na presun príkazom Vložiť"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6328
+#: ../src/file-manager/fm-directory-view.c:6334
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Pripraviť tento priečinok na kopírovanie príkazom Vložiť"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6333
+#: ../src/file-manager/fm-directory-view.c:6339
 msgid "Move this folder to the Trash"
 msgstr "Presunúť tento priečinok do koša"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6337
+#: ../src/file-manager/fm-directory-view.c:6343
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Odstrániť tento priečinok bez presunu do koša"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6343
+#: ../src/file-manager/fm-directory-view.c:6349
 msgid "Show _Hidden Files"
 msgstr "Zobraziť _skryté súbory"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6344
+#: ../src/file-manager/fm-directory-view.c:6350
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Prepnúť zobrazovanie skrytých súborov v aktuálnom okne"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6430
+#: ../src/file-manager/fm-directory-view.c:6436
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Spustiť alebo spravovať skripty z %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6432
+#: ../src/file-manager/fm-directory-view.c:6438
 msgid "_Scripts"
 msgstr "_Skripty"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6757
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6763
+#: ../src/file-manager/fm-directory-view.c:6929
 #: ../src/file-manager/fm-tree-view.c:1118
 msgid "Open in New Window"
 msgstr "Otvoriť v novom okne"
 
-#: ../src/file-manager/fm-directory-view.c:6759
-#: ../src/file-manager/fm-directory-view.c:6931
+#: ../src/file-manager/fm-directory-view.c:6765
+#: ../src/file-manager/fm-directory-view.c:6937
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Prehliadať priečinky"
 msgstr[1] "_Prehliadať priečinok"
 msgstr[2] "_Prehliadať priečinky"
 
-#: ../src/file-manager/fm-directory-view.c:6784
-#: ../src/file-manager/fm-directory-view.c:6951
+#: ../src/file-manager/fm-directory-view.c:6790
+#: ../src/file-manager/fm-directory-view.c:6957
 msgid "_Delete from Trash"
 msgstr "_Odstrániť z koša"
 
-#: ../src/file-manager/fm-directory-view.c:6785
+#: ../src/file-manager/fm-directory-view.c:6791
 msgid "Delete the open folder permanently"
 msgstr "Trvale odstrániť otvorený priečinok"
 
-#: ../src/file-manager/fm-directory-view.c:6789
+#: ../src/file-manager/fm-directory-view.c:6795
 msgid "Move the open folder to the Trash"
 msgstr "Presunúť otvorený priečinok do koša"
 
-#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-directory-view.c:6909
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Otvoriť s \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:6931
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
@@ -3427,70 +3423,78 @@ msgstr[0] "Otvoriť v %d nových oknách"
 msgstr[1] "Otvoriť v %d novom okne"
 msgstr[2] "Otvoriť v %d nových oknách"
 
-#: ../src/file-manager/fm-directory-view.c:6952
+#: ../src/file-manager/fm-directory-view.c:6958
 msgid "Delete all selected items permanently"
 msgstr "Odstrániť úplne všetky vybrané položky"
 
-#: ../src/file-manager/fm-directory-view.c:7297
+#: ../src/file-manager/fm-directory-view.c:7303
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Tento odkaz je poškodený. Chcete ho hodiť do koša?"
 
-#: ../src/file-manager/fm-directory-view.c:7299
+#: ../src/file-manager/fm-directory-view.c:7305
 msgid "This link can't be used, because it has no target."
 msgstr "Tento odkaz nie je možné použiť, pretože nemá cieľ."
 
-#: ../src/file-manager/fm-directory-view.c:7301
+#: ../src/file-manager/fm-directory-view.c:7307
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Tento odkaz nie je možné použiť, pretože jeho cieľ \"%s\" neexistuje."
 
-#: ../src/file-manager/fm-directory-view.c:7306
+#: ../src/file-manager/fm-directory-view.c:7312
 msgid "Broken Link"
 msgstr "Neplatný odkaz"
 
-#: ../src/file-manager/fm-directory-view.c:7634
+#: ../src/file-manager/fm-directory-view.c:7802
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otváram \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:7641
+#: ../src/file-manager/fm-directory-view.c:7805
+#, c-format
+msgid "Opening %d item."
+msgid_plural "Opening %d items."
+msgstr[0] "Otváram %d položiek."
+msgstr[1] "Otváram %d položku."
+msgstr[2] "Otváram %d položky."
+
+#: ../src/file-manager/fm-directory-view.c:7815
 msgid "Cancel Open?"
 msgstr "Zrušiť otvorenie?"
 
-#: ../src/file-manager/fm-directory-view.c:8545
+#: ../src/file-manager/fm-directory-view.c:8673
 msgid "Download location?"
 msgstr "Stiahnuť miesto?"
 
-#: ../src/file-manager/fm-directory-view.c:8548
+#: ../src/file-manager/fm-directory-view.c:8676
 msgid "You can download it or make a link to it."
 msgstr "Môžete ho stiahnuť, alebo vytvoriť naňho odkaz."
 
-#: ../src/file-manager/fm-directory-view.c:8551
+#: ../src/file-manager/fm-directory-view.c:8679
 msgid "Make a _Link"
 msgstr "Vytvoriť _odkaz"
 
-#: ../src/file-manager/fm-directory-view.c:8555
+#: ../src/file-manager/fm-directory-view.c:8683
 msgid "_Download"
 msgstr "_Stiahnuť"
 
-#: ../src/file-manager/fm-directory-view.c:8614
-#: ../src/file-manager/fm-directory-view.c:8667
-#: ../src/file-manager/fm-directory-view.c:8765
+#: ../src/file-manager/fm-directory-view.c:8742
+#: ../src/file-manager/fm-directory-view.c:8795
+#: ../src/file-manager/fm-directory-view.c:8893
 msgid "Drag and drop is not supported."
 msgstr "\"Ťahaj a pusť\" nie je podporované."
 
-#: ../src/file-manager/fm-directory-view.c:8615
+#: ../src/file-manager/fm-directory-view.c:8743
 msgid "Drag and drop is only supported on local file systems."
 msgstr "\"Ťahaj a pusť\" je podporované iba na lokálnych systémoch súborov."
 
-#: ../src/file-manager/fm-directory-view.c:8616
-#: ../src/file-manager/fm-directory-view.c:8669
-#: ../src/file-manager/fm-directory-view.c:8767
+#: ../src/file-manager/fm-directory-view.c:8744
+#: ../src/file-manager/fm-directory-view.c:8797
+#: ../src/file-manager/fm-directory-view.c:8895
 msgid "Drag and Drop Error"
 msgstr "Chyba \"ťahaj a pusť\""
 
-#: ../src/file-manager/fm-directory-view.c:8668
-#: ../src/file-manager/fm-directory-view.c:8766
+#: ../src/file-manager/fm-directory-view.c:8796
+#: ../src/file-manager/fm-directory-view.c:8894
 msgid "An invalid drag type was used."
 msgstr "Použitý neplatný typ ťahania."
 
@@ -4359,7 +4363,7 @@ msgstr ""
 "Nautilus by mohlo pomôcť problém vyriešiť."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:229
+#: ../src/nautilus-file-management-properties.c:230
 #: ../src/nautilus-property-browser.c:1525 ../src/nautilus-window-menus.c:512
 #, c-format
 msgid ""
@@ -4586,7 +4590,7 @@ msgstr "Súbor ťahaný myšou asi nie je platný obrázok."
 msgid "Show Emblems"
 msgstr "Zobraziť emblémy"
 
-#: ../src/nautilus-file-management-properties.c:307
+#: ../src/nautilus-file-management-properties.c:308
 msgid "None"
 msgstr "Žiadne"
 
