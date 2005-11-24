@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-19 11:33+0100\n"
-"PO-Revision-Date: 2005-11-19 11:34+0100\n"
+"POT-Creation-Date: 2005-11-24 16:32+0100\n"
+"PO-Revision-Date: 2005-11-24 16:33+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
@@ -1487,7 +1487,7 @@ msgstr "Sobrescribir _todos"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1290
 #: ../libnautilus-private/nautilus-file.c:4749
-#: ../src/file-manager/fm-directory-view.c:8683
+#: ../src/file-manager/fm-directory-view.c:8805
 #, c-format
 msgid "link to %s"
 msgstr "ligazón a %s"
@@ -2030,7 +2030,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: ../libnautilus-private/nautilus-file.c:4315
-#: ../src/file-manager/fm-directory-view.c:1959
+#: ../src/file-manager/fm-directory-view.c:1956
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2109,7 +2109,7 @@ msgstr "ligazón"
 msgid "link (broken)"
 msgstr "ligazón (estragada)"
 
-#: ../libnautilus-private/nautilus-file.c:6195
+#: ../libnautilus-private/nautilus-file.c:6262
 #: ../libnautilus-private/nautilus-global-preferences.c:518
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2729,27 +2729,27 @@ msgstr "Se borra un elemento, perderáse permanentemente."
 msgid "Delete?"
 msgstr "Borrar?"
 
-#: ../src/file-manager/fm-directory-view.c:1048
+#: ../src/file-manager/fm-directory-view.c:1045
 msgid "Select Pattern"
 msgstr "Patrón de selección"
 
-#: ../src/file-manager/fm-directory-view.c:1064
+#: ../src/file-manager/fm-directory-view.c:1061
 msgid "_Pattern:"
 msgstr "_Patrón:"
 
-#: ../src/file-manager/fm-directory-view.c:1891
+#: ../src/file-manager/fm-directory-view.c:1888
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:1893
+#: ../src/file-manager/fm-directory-view.c:1890
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d cartafol seleccionado"
 msgstr[1] "%d cartafoles seleccionados"
 
-#: ../src/file-manager/fm-directory-view.c:1903
+#: ../src/file-manager/fm-directory-view.c:1900
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2757,19 +2757,19 @@ msgstr[0] " (contendo %d elemento)"
 msgstr[1] " (contendo %d elementos)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:1914
+#: ../src/file-manager/fm-directory-view.c:1911
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (contendo un total de %d elemento)"
 msgstr[1] " (contendo un total de %d elementos)"
 
-#: ../src/file-manager/fm-directory-view.c:1930
+#: ../src/file-manager/fm-directory-view.c:1927
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seleccionado (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1934
+#: ../src/file-manager/fm-directory-view.c:1931
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2777,14 +2777,14 @@ msgstr[0] "%d elemento seleccionado (%s)"
 msgstr[1] "%d elementos seleccionados (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:1942
+#: ../src/file-manager/fm-directory-view.c:1939
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d outro elemento seleccionado (%s)"
 msgstr[1] "%d outros elementos seleccionados (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1963
+#: ../src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Espazo libre: %s"
@@ -2796,7 +2796,7 @@ msgstr "%s, Espazo libre: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:1988
+#: ../src/file-manager/fm-directory-view.c:1985
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2805,56 +2805,56 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2058
+#: ../src/file-manager/fm-directory-view.c:2055
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "O cartafol \"%s\" contén máis ficheiros dos que pode manexar o Nautilus."
 
-#: ../src/file-manager/fm-directory-view.c:2064
+#: ../src/file-manager/fm-directory-view.c:2061
 msgid "Some files will not be displayed."
 msgstr "Algúns ficheiros non serán mostrados."
 
-#: ../src/file-manager/fm-directory-view.c:2065
+#: ../src/file-manager/fm-directory-view.c:2062
 msgid "Too Many Files"
 msgstr "Demasiados ficheiros"
 
-#: ../src/file-manager/fm-directory-view.c:3379
+#: ../src/file-manager/fm-directory-view.c:3376
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Non é posible mover o ficheiro ao lixo. ¿Quere borralo inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3380
+#: ../src/file-manager/fm-directory-view.c:3377
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "O ficheiro \"%s\" non se pode mover ao lixo."
 
-#: ../src/file-manager/fm-directory-view.c:3384
+#: ../src/file-manager/fm-directory-view.c:3381
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Non é posible mover os elementos ó lixo. ¿Quere borralos inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3385
+#: ../src/file-manager/fm-directory-view.c:3382
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "Ningún dos %d elementos seleccionados pode moverse ao Lixo"
 
-#: ../src/file-manager/fm-directory-view.c:3387
+#: ../src/file-manager/fm-directory-view.c:3384
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Non é posible mover algúns elementos ó lixo. ¿Quere borralos inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3388
+#: ../src/file-manager/fm-directory-view.c:3385
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d dos elementos seleccionados non poden moverse ao Lixo"
 
-#: ../src/file-manager/fm-directory-view.c:3394
+#: ../src/file-manager/fm-directory-view.c:3391
 msgid "Delete Immediately?"
 msgstr "¿Borrar inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3426
+#: ../src/file-manager/fm-directory-view.c:3423
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "¿Está seguro de que quere borrar \"%s\" permanentemente do lixo?"
 
-#: ../src/file-manager/fm-directory-view.c:3430
+#: ../src/file-manager/fm-directory-view.c:3427
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2869,56 +2869,56 @@ msgstr[1] ""
 "¿Está seguro de que quere eliminar permanentemente do lixo os %d elementos "
 "seleccionados?"
 
-#: ../src/file-manager/fm-directory-view.c:3439
+#: ../src/file-manager/fm-directory-view.c:3436
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Se borra un elemento, perderáse permanentemente."
 
-#: ../src/file-manager/fm-directory-view.c:3440
+#: ../src/file-manager/fm-directory-view.c:3437
 msgid "Delete From Trash?"
 msgstr "Borrar do lixo?"
 
-#: ../src/file-manager/fm-directory-view.c:4015
+#: ../src/file-manager/fm-directory-view.c:4012
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Abrir con \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4016
+#: ../src/file-manager/fm-directory-view.c:4013
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Usar \"%s\" para abrir o elemento seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:4105
+#: ../src/file-manager/fm-directory-view.c:4102
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Quere executar \"%s\", ou visualizar os seus contidos?"
 
-#: ../src/file-manager/fm-directory-view.c:4107
+#: ../src/file-manager/fm-directory-view.c:4104
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" é un ficheiro de texto executable."
 
-#: ../src/file-manager/fm-directory-view.c:4113
+#: ../src/file-manager/fm-directory-view.c:4110
 msgid "Run or Display?"
 msgstr "Executar ou visualizar?"
 
-#: ../src/file-manager/fm-directory-view.c:4114
+#: ../src/file-manager/fm-directory-view.c:4111
 msgid "Run in _Terminal"
 msgstr "Executar nun _terminal"
 
-#: ../src/file-manager/fm-directory-view.c:4115
+#: ../src/file-manager/fm-directory-view.c:4112
 msgid "_Display"
 msgstr "_Visualizar"
 
-#: ../src/file-manager/fm-directory-view.c:4118
+#: ../src/file-manager/fm-directory-view.c:4115
 msgid "_Run"
 msgstr "_Executar"
 
-#: ../src/file-manager/fm-directory-view.c:4501
+#: ../src/file-manager/fm-directory-view.c:4499
 #, c-format
 msgid "Cannot open %s"
 msgstr "Non se pode abrir %s"
 
-#: ../src/file-manager/fm-directory-view.c:4504
+#: ../src/file-manager/fm-directory-view.c:4502
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2940,21 +2940,21 @@ msgstr ""
 "opción Abrir Con do menú para seleccionar unha aplicación específica para o "
 "ficheiro."
 
-#: ../src/file-manager/fm-directory-view.c:4900
+#: ../src/file-manager/fm-directory-view.c:4898
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Executar \"%s\" sobre os elementos seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:5149
+#: ../src/file-manager/fm-directory-view.c:5147
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Crear un documento a partir do modelo \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5355
+#: ../src/file-manager/fm-directory-view.c:5353
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Todos os ficheiros executables deste cartafol aparecerán no menú de Scripts."
 
-#: ../src/file-manager/fm-directory-view.c:5357
+#: ../src/file-manager/fm-directory-view.c:5355
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2962,11 +2962,11 @@ msgstr ""
 "Seleccionando un script desde o menú executará ese script usando calquer "
 "elemento seleccionado como argumento de entrada."
 
-#: ../src/file-manager/fm-directory-view.c:5359
+#: ../src/file-manager/fm-directory-view.c:5357
 msgid "About Scripts"
 msgstr "Acerca dos scripts"
 
-#: ../src/file-manager/fm-directory-view.c:5360
+#: ../src/file-manager/fm-directory-view.c:5358
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3008,62 +3008,62 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posición e tamaño da fiestra actual"
 
-#: ../src/file-manager/fm-directory-view.c:5521
+#: ../src/file-manager/fm-directory-view.c:5519
 #: ../src/file-manager/fm-tree-view.c:902
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" será movido se selecciona o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5525
+#: ../src/file-manager/fm-directory-view.c:5523
 #: ../src/file-manager/fm-tree-view.c:906
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" será copiado se selecciona o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5532
+#: ../src/file-manager/fm-directory-view.c:5530
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "O %d elemento seleccionado será movido cando seleccione o comando de Pegar"
 msgstr[1] "Os %d elementos seleccionados serán movidos cando seleccione o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5539
+#: ../src/file-manager/fm-directory-view.c:5537
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "O %d elemento seleccionado será copiado cando seleccione o comando de Pegar"
 msgstr[1] "Os %d elementos seleccionados serán copiados cando seleccione o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5633
+#: ../src/file-manager/fm-directory-view.c:5631
 #: ../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "Non hai nada no portarretallos para pegar."
 
-#: ../src/file-manager/fm-directory-view.c:5759
-#: ../src/file-manager/fm-directory-view.c:7509
+#: ../src/file-manager/fm-directory-view.c:5757
+#: ../src/file-manager/fm-directory-view.c:7592
 msgid "Mount Error"
 msgstr "Erro ao montar"
 
-#: ../src/file-manager/fm-directory-view.c:5811
+#: ../src/file-manager/fm-directory-view.c:5809
 #: ../src/file-manager/fm-tree-view.c:1068
 msgid "Unmount Error"
 msgstr "Erro ao desmontar"
 
-#: ../src/file-manager/fm-directory-view.c:5824
+#: ../src/file-manager/fm-directory-view.c:5822
 #: ../src/file-manager/fm-tree-view.c:1065
 msgid "Eject Error"
 msgstr "Erro ao expulsar"
 
-#: ../src/file-manager/fm-directory-view.c:5988
+#: ../src/file-manager/fm-directory-view.c:5986
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Conectar ao servidor %s"
 
-#: ../src/file-manager/fm-directory-view.c:5993
+#: ../src/file-manager/fm-directory-view.c:5991
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: ../src/file-manager/fm-directory-view.c:6007
+#: ../src/file-manager/fm-directory-view.c:6005
 msgid "Link _name:"
 msgstr "_Nome da ligazón:"
 
@@ -3458,49 +3458,56 @@ msgstr "Non se pode usar esta ligazón, porque o destino \"%s\" non existe."
 msgid "Broken Link"
 msgstr "Ligazón errónea"
 
-#: ../src/file-manager/fm-directory-view.c:7634
+#: ../src/file-manager/fm-directory-view.c:7796
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Abrindo \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:7641
+#: ../src/file-manager/fm-directory-view.c:7799
+#, c-format
+msgid "Opening %d item."
+msgid_plural "Opening %d items."
+msgstr[0] "Abrindo %d elemento."
+msgstr[1] "Abrindo %d elementos."
+
+#: ../src/file-manager/fm-directory-view.c:7809
 msgid "Cancel Open?"
 msgstr "¿Cancelar a apertura?"
 
-#: ../src/file-manager/fm-directory-view.c:8545
+#: ../src/file-manager/fm-directory-view.c:8667
 msgid "Download location?"
 msgstr "Descarregar localización?"
 
-#: ../src/file-manager/fm-directory-view.c:8548
+#: ../src/file-manager/fm-directory-view.c:8670
 msgid "You can download it or make a link to it."
 msgstr "Pode descarregalo do ligamento."
 
-#: ../src/file-manager/fm-directory-view.c:8551
+#: ../src/file-manager/fm-directory-view.c:8673
 msgid "Make a _Link"
 msgstr "Crear un _ligazón"
 
-#: ../src/file-manager/fm-directory-view.c:8555
+#: ../src/file-manager/fm-directory-view.c:8677
 msgid "_Download"
 msgstr "_Descarregar"
 
-#: ../src/file-manager/fm-directory-view.c:8614
-#: ../src/file-manager/fm-directory-view.c:8667
-#: ../src/file-manager/fm-directory-view.c:8765
+#: ../src/file-manager/fm-directory-view.c:8736
+#: ../src/file-manager/fm-directory-view.c:8789
+#: ../src/file-manager/fm-directory-view.c:8887
 msgid "Drag and drop is not supported."
 msgstr "Arrastrar e soltar non está soportado."
 
-#: ../src/file-manager/fm-directory-view.c:8615
+#: ../src/file-manager/fm-directory-view.c:8737
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Arrastrar e soltar só está soportado en sistemas de ficheiros locais."
 
-#: ../src/file-manager/fm-directory-view.c:8616
-#: ../src/file-manager/fm-directory-view.c:8669
-#: ../src/file-manager/fm-directory-view.c:8767
+#: ../src/file-manager/fm-directory-view.c:8738
+#: ../src/file-manager/fm-directory-view.c:8791
+#: ../src/file-manager/fm-directory-view.c:8889
 msgid "Drag and Drop Error"
 msgstr "Erro de arrastrar e soltar"
 
-#: ../src/file-manager/fm-directory-view.c:8668
-#: ../src/file-manager/fm-directory-view.c:8766
+#: ../src/file-manager/fm-directory-view.c:8790
+#: ../src/file-manager/fm-directory-view.c:8888
 msgid "An invalid drag type was used."
 msgstr "Utilizouse un tipo de arrastre inválido."
 
