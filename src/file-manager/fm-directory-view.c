@@ -890,11 +890,17 @@ confirm_delete_directly (FMDirectoryView *view,
 						   "the %d selected items?", uri_count), uri_count);
 	}
 
-	dialog = eel_show_yes_no_dialog
-		(prompt,
-		 _("If you delete an item, it is permanently lost."), 
-		 _("Delete?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
-		 fm_directory_view_get_containing_window (view));
+	dialog = GTK_DIALOG (eel_alert_dialog_new (fm_directory_view_get_containing_window (view),
+		                                   0,
+		                                   GTK_MESSAGE_WARNING,
+		                                   GTK_BUTTONS_NONE,
+		                                   prompt,
+		                                   _("If you delete an item, it is permanently lost."),
+		                                   ""));
+							
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (dialog, GTK_STOCK_DELETE, GTK_RESPONSE_YES);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
 	g_free (prompt);
 
