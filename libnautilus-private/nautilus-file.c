@@ -5831,6 +5831,8 @@ nautilus_file_list_sort_by_display_name (GList *list)
 	return g_list_sort (list, compare_by_display_name_cover);
 }
 
+static GList *ready_data_list = NULL;
+
 typedef struct 
 {
 	GList *file_list;
@@ -5840,11 +5842,44 @@ typedef struct
 } FileListReadyData;
 
 static void
+file_list_ready_data_free (FileListReadyData *data)
+{
+	GList *l;
+
+	l = g_list_find (ready_data_list, data);
+	if (l != NULL) {
+		ready_data_list = g_list_delete_link (ready_data_list, l);
+
+		nautilus_file_list_free (data->file_list);
+		g_list_free (data->remaining_files);
+		g_free (data);
+	}
+}
+
+static FileListReadyData *
+file_list_ready_data_new (GList *file_list,
+			  NautilusFileListCallback callback,
+			  gpointer callback_data)
+{
+	FileListReadyData *data;
+
+	data = g_new0 (FileListReadyData, 1);
+	data->file_list = nautilus_file_list_copy (file_list);
+	data->remaining_files = g_list_copy (file_list);
+	data->callback = callback;
+	data->callback_data = callback_data;
+
+	ready_data_list = g_list_prepend (ready_data_list, data);
+
+	return data;
+}
+
+static void
 file_list_file_ready_callback (NautilusFile *file,
 			       gpointer user_data)
 {
 	FileListReadyData *data;
-	
+
 	data = user_data;
 	data->remaining_files = g_list_remove (data->remaining_files, file);
 	
@@ -5852,34 +5887,66 @@ file_list_file_ready_callback (NautilusFile *file,
 		if (data->callback) {
 			(*data->callback) (data->file_list, data->callback_data);
 		}
-		
-		nautilus_file_list_free (data->file_list);
-		g_free (data);
+
+		file_list_ready_data_free (data);
 	}
 }
 
-void
+void 
 nautilus_file_list_call_when_ready (GList *file_list,
 				    NautilusFileAttributes attributes,
+				    NautilusFileListHandle **handle,
 				    NautilusFileListCallback callback,
 				    gpointer callback_data)
 {
 	GList *l;
 	FileListReadyData *data;
+	NautilusFile *file;
 	
 	g_return_if_fail (file_list != NULL);
 
-	data = g_new0 (FileListReadyData, 1);
-	data->file_list = nautilus_file_list_copy (file_list);
-	data->remaining_files = g_list_copy (file_list);
-	data->callback = callback;
-	data->callback_data = callback_data;
-	
-	for (l = file_list; l != NULL; l = l->next) {
-		nautilus_file_call_when_ready (NAUTILUS_FILE (l->data),
+	data = file_list_ready_data_new
+		(file_list, callback, callback_data);
+
+	if (handle) {
+		*handle = (NautilusFileListHandle *) data;
+	}
+
+
+	l = file_list;
+	while (l != NULL) {
+		file = NAUTILUS_FILE (l->data);
+		/* Need to do this here, as the list can be modified by this call */
+		l = l->next; 
+		nautilus_file_call_when_ready (file,
 					       attributes,
 					       file_list_file_ready_callback,
 					       data);
+	}
+}
+
+void
+nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
+{
+	GList *l;
+	NautilusFile *file;
+	FileListReadyData *data;
+
+	g_return_if_fail (handle != NULL);
+
+	data = (FileListReadyData *) handle;
+
+	l = g_list_find (ready_data_list, data);
+	if (l != NULL) {
+		for (l = data->remaining_files; l != NULL; l = l->next) {
+			file = NAUTILUS_FILE (l->data);
+
+			EEL_CALL_METHOD
+				(NAUTILUS_FILE_CLASS, file,
+				 cancel_call_when_ready, (file, file_list_file_ready_callback, data));
+		}
+
+		file_list_ready_data_free (data);
 	}
 }
 

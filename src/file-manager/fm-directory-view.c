@@ -271,12 +271,12 @@ typedef enum {
 
 typedef struct {
 	FMDirectoryView *view;
-	NautilusFile *file;
+	GList *files;
+	NautilusFileListHandle *files_handle;
 	NautilusWindowOpenMode mode;
 	NautilusWindowOpenFlags flags;
-	NautilusFileCallback callback;
-	gboolean mounted;
-	gboolean mounting;
+	gboolean mount_success;
+	unsigned int pending_mounts;
 	gboolean cancelled;
 } ActivateParameters;
 
@@ -347,7 +347,7 @@ static void     fm_directory_view_select_file                  (FMDirectoryView 
 static void     monitor_file_for_open_with                     (FMDirectoryView      *view,
 								NautilusFile         *file);
 static void     create_scripts_directory                       (void);
-static void     activate_activation_uri_ready_callback         (NautilusFile         *file,
+static void     activate_activation_uris_ready_callback        (GList                *files,
 								gpointer              callback_data);
 static gboolean can_show_default_app                           (FMDirectoryView *view,
 								NautilusFile *file);
@@ -4405,6 +4405,7 @@ extension_action_callback (GtkAction *action,
 	nautilus_file_list_call_when_ready
 		(data->selection,
 		 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
+		 NULL,
 		 extension_action_slow_mime_types_ready_callback,
 		 callback_data);
 }
@@ -7342,13 +7343,9 @@ cancel_activate (gpointer callback_data)
 
 	parameters->cancelled = TRUE;
 	
-	if (!parameters->mounting) {
-		nautilus_file_cancel_call_when_ready (parameters->file, 
-						      parameters->callback, 
-						      parameters);
-		
-		nautilus_file_unref (parameters->file);
-		
+	if (parameters->pending_mounts == 0) {
+		nautilus_file_list_cancel_call_when_ready (parameters->files_handle);
+		nautilus_file_list_free (parameters->files);
 		g_free (parameters);
 	}
 }
@@ -7386,11 +7383,20 @@ stop_activate (ActivateParameters *parameters)
 }
 
 static void
-activate_callback (NautilusFile *file, gpointer callback_data)
+activate_callback (GList *files, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *orig_uri, *uri, *file_uri;
+	NautilusFile *file;
+	GList *launch_desktop_files;
+	GList *launch_from_command_files;
+	GList *launch_files;
+	GList *launch_in_terminal_files;
+	GList *open_in_app_files;
+	GList *open_in_view_files;
+	GList *l;
+	int count;
+	char *uri;
 	char *executable_path, *quoted_path, *name;
 	char *old_working_dir;
 	ActivationAction action;
@@ -7402,64 +7408,150 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	if (!activate_check_mime_types (view, file, TRUE)
-	    || nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
-		nautilus_file_unref (file);
-		g_free (parameters);
-		
-		return;
-	}
-
-	orig_uri = uri = nautilus_file_get_activation_uri (file);
-
-	action = get_activation_action (file);
-
 	screen = gtk_widget_get_screen (GTK_WIDGET (view));
 
-	if (action == ACTIVATION_ACTION_ASK) {
-		/* Special case for executable text files, since it might be
-		 * dangerous & unexpected to launch these.
-		 */
-		action = get_executable_text_file_action (view, file);
-	}
-	
-	switch (action) {
-	case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE :
-		file_uri = nautilus_file_get_uri (file);
-		nautilus_launch_desktop_file (
-				screen, file_uri, NULL,
-				fm_directory_view_get_containing_window (view));
-		g_free (file_uri);		 
-		break;
-	case ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND :
-		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
-		break;
-	case ACTIVATION_ACTION_LAUNCH :
-	case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL :
-		old_working_dir = change_to_view_directory (view);
+	launch_desktop_files = NULL;
+	launch_from_command_files = NULL;
+	launch_files = NULL;
+	launch_in_terminal_files = NULL;
+	open_in_app_files = NULL;
+	open_in_view_files = NULL;
 
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (!activate_check_mime_types (view, file, TRUE) ||
+		    nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
+			continue;
+		}
+
+		action = get_activation_action (file);
+		if (action == ACTIVATION_ACTION_ASK) {
+			/* Special case for executable text files, since it might be
+			 * dangerous & unexpected to launch these.
+			 */
+			action = get_executable_text_file_action (view, file);
+		}
+
+		switch (action) {
+		case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE :
+			launch_desktop_files = g_list_prepend (launch_desktop_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND :
+			launch_from_command_files = g_list_prepend (launch_from_command_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH :
+			launch_files = g_list_prepend (launch_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL :
+			launch_in_terminal_files = g_list_prepend (launch_in_terminal_files, file);
+			break;
+		case ACTIVATION_ACTION_OPEN_IN_VIEW :
+			open_in_view_files = g_list_prepend (open_in_view_files, file);
+			break;
+		case ACTIVATION_ACTION_OPEN_IN_APPLICATION :
+			open_in_app_files = g_list_prepend (open_in_app_files, file);
+			break;
+		case ACTIVATION_ACTION_DO_NOTHING :
+			break;
+		case ACTIVATION_ACTION_ASK :
+			g_assert_not_reached ();
+			break;
+		}
+	}
+
+
+	launch_desktop_files = g_list_reverse (launch_desktop_files);
+	for (l = launch_desktop_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_uri (file);
+		nautilus_launch_desktop_file (
+				screen, uri, NULL,
+				fm_directory_view_get_containing_window (view));
+		g_free (uri);
+	}
+
+	launch_from_command_files = g_list_reverse (launch_from_command_files);
+	for (l = launch_from_command_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
+		nautilus_launch_application_from_command (
+				screen, NULL, uri + strlen (NAUTILUS_COMMAND_SPECIFIER),
+				NULL, FALSE);
+		g_free (uri);
+	}
+
+	old_working_dir = NULL;
+	if (launch_files != NULL || launch_in_terminal_files != NULL) {
+		old_working_dir = change_to_view_directory (view);
+	}
+
+	launch_files = g_list_reverse (launch_files);
+	for (l = launch_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
-		nautilus_launch_application_from_command 
-			(screen, name, quoted_path, NULL,
-			 (action == ACTIVATION_ACTION_LAUNCH_IN_TERMINAL) /* use terminal */ );
+		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, FALSE);
 		g_free (name);
 		g_free (quoted_path);
+		g_free (executable_path);
+		g_free (uri);
+			
+	}
 
+	launch_in_terminal_files = g_list_reverse (launch_in_terminal_files);
+	for (l = launch_in_terminal_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
+		executable_path = gnome_vfs_get_local_path_from_uri (uri);
+		quoted_path = g_shell_quote (executable_path);
+		name = nautilus_file_get_name (file);
+		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, TRUE);
+		g_free (name);
+		g_free (quoted_path);
+		g_free (executable_path);
+		g_free (uri);
+	}
+
+	if (old_working_dir != NULL) {
 		chdir (old_working_dir);
 		g_free (old_working_dir);
-		g_free (executable_path);
-		
-		break;
-	case ACTIVATION_ACTION_OPEN_IN_VIEW :
-		open_location (view, uri, parameters->mode, parameters->flags);
-		break;
-	case ACTIVATION_ACTION_OPEN_IN_APPLICATION :
+	}
+
+	open_in_view_files = g_list_reverse (open_in_view_files);
+	count = g_list_length (open_in_view_files);
+	if (fm_directory_view_confirm_multiple_windows (view, count)) {
+		NautilusWindowOpenFlags flags;
+
+		flags = parameters->flags;
+		if (count > 1) {
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
+
+		for (l = open_in_view_files; l != NULL; l = l->next) {
+			/* The ui should ask for navigation or object windows
+			 * depending on what the current one is */
+			file = NAUTILUS_FILE (l->data);
+
+			uri = nautilus_file_get_activation_uri (file);
+			open_location (view, uri, parameters->mode, flags);
+			g_free (uri);
+		}
+	}
+
+	open_in_app_files = g_list_reverse (open_in_app_files);
+	for (l = open_in_app_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
 		nautilus_launch_show_file
 			(file, fm_directory_view_get_containing_window (view));
-		
+
 		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
 			if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_SPATIAL) {
 				nautilus_window_info_close (view->details->window);
@@ -7469,21 +7561,20 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		/* We should not add trash and directory uris.*/
 		if ((!nautilus_file_is_in_trash (file)) && 
 		    (!nautilus_file_is_directory (file))) {
-			file_uri = nautilus_file_get_uri (file);
-			egg_recent_model_add (nautilus_recent_get_model (), file_uri);
-			g_free (file_uri);
+			uri = nautilus_file_get_uri (file);
+			egg_recent_model_add (nautilus_recent_get_model (), uri);
+			g_free (uri);
 		}
-		break;
-	case ACTIVATION_ACTION_DO_NOTHING :
-		break;
-	case ACTIVATION_ACTION_ASK :
-		g_assert_not_reached ();
-		break;
 	}
 
-	nautilus_file_unref (file);
+	g_list_free (launch_desktop_files);
+	g_list_free (launch_from_command_files);
+	g_list_free (launch_files);
+	g_list_free (launch_in_terminal_files);
+	g_list_free (open_in_view_files);
+	g_list_free (open_in_app_files);
 
-	g_free (orig_uri);
+	nautilus_file_list_free (parameters->files);
 	g_free (parameters);
 }
 
@@ -7497,79 +7588,119 @@ activation_drive_mounted_callback (gboolean succeeded,
 
 	parameters = callback_data;
 
-	parameters->mounted = TRUE;
-	parameters->mounting = FALSE;
-	
-	if (succeeded && !parameters->cancelled) {
-		activate_activation_uri_ready_callback (parameters->file,
-							parameters);
-	} else {
-		if (!parameters->cancelled) {
-			stop_activate (parameters);
+	parameters->mount_success &= succeeded;
 
-			eel_show_error_dialog_with_details (error, NULL,
-							    _("Mount Error"),
-			                                    detailed_error, 
-							    NULL);
-		}
-		
-		nautilus_file_unref (parameters->file);
-		
-		g_free (parameters);
+	if (!succeeded && !parameters->cancelled) {
+		eel_show_error_dialog_with_details (error, NULL,
+						    _("Mount Error"),
+						    detailed_error, 
+						    NULL);
 	}
+
+	if (--parameters->pending_mounts > 0) {
+		/* wait for other mounts to finish... */
+		return;
+	}
+
+	if (parameters->cancelled || !parameters->mount_success) {
+		stop_activate (parameters);
+
+		nautilus_file_list_free (parameters->files);
+		g_free (parameters);
+		return;
+	}
+
+	/* all drives were mounted successfully */
+	activate_activation_uris_ready_callback (parameters->files,
+						 parameters);
 }
 
+static void
+mount_foreach (gpointer drive,
+	       gpointer callback_data)
+{
+	gnome_vfs_drive_mount (drive, activation_drive_mounted_callback, callback_data);
+}
 
 static void
-activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_data)
+activate_activation_uris_ready_callback (GList *files_ignore,
+					 gpointer callback_data)
 {
 	ActivateParameters *parameters;
+	GList *not_yet_mounted;
+	GList *l, *next;
+	NautilusFile *file;
 	NautilusFile *actual_file;
 	NautilusFileAttributes attributes;
 	GnomeVFSDrive *drive;
 	char *uri;
 	
 	parameters = callback_data;
+	not_yet_mounted = NULL;
 
-	if (nautilus_file_is_broken_symbolic_link (file)) {
-		stop_activate (parameters);
-		report_broken_symbolic_link (parameters->view, file);
-		nautilus_file_unref (parameters->file);
-		g_free (parameters);
-		return;
-	}
+	for (l = parameters->files; l != NULL; l = next) {
+		file = NAUTILUS_FILE (l->data);
+		next = l->next;
 
-	if (nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
-		stop_activate (parameters);
-		nautilus_file_unref (parameters->file);
-		g_free (parameters);
-		return;
-	}
+		if (nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
+			nautilus_file_unref (file);
+			parameters->files = g_list_delete_link (parameters->files, l);
+			continue;
+		}
 
-	if (!parameters->mounted && nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL &&
-		    !gnome_vfs_drive_is_mounted (drive)) {
-			parameters->mounting = TRUE;
-			gnome_vfs_drive_mount (drive, activation_drive_mounted_callback, callback_data);
-			return;
+		if (nautilus_file_is_broken_symbolic_link (file)) {
+			nautilus_file_unref (file);
+			parameters->files = g_list_delete_link (parameters->files, l);
+			report_broken_symbolic_link (parameters->view, file);
+			continue;
+		}
+
+		if (!parameters->mount_success && nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL &&
+			    !gnome_vfs_drive_is_mounted (drive)) {
+				not_yet_mounted = g_list_prepend (not_yet_mounted, drive);
+				parameters->pending_mounts++;
+			}
 		}
 	}
-	
-	/* We want the file for the activation URI since we care
-	 * about the attributes for that, not for the original file.
-	 */
-	actual_file = NULL;
-	uri = nautilus_file_get_activation_uri (file);
-	if (!(eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
-	      eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
-		actual_file = nautilus_file_get (uri);
-		nautilus_file_unref (file);
+
+	if (parameters->files == NULL) {
+		g_assert (not_yet_mounted == NULL);
+
+		stop_activate (parameters);
+		g_free (parameters);
+		return;
 	}
-	g_free (uri);
-	
-	if (actual_file == NULL) {
-		actual_file = file;
+
+	if (not_yet_mounted != NULL) {
+		not_yet_mounted = g_list_reverse (not_yet_mounted);
+		g_list_foreach (not_yet_mounted, mount_foreach, callback_data);
+		g_list_free (not_yet_mounted);
+
+		/* activation_drive_mounted_callback will reveal whether all mounts were successful */
+		parameters->mount_success = TRUE;
+		return;
+	}
+
+	for (l = parameters->files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		/* We want the file for the activation URI since we care
+		 * about the attributes for that, not for the original file.
+		 */
+		actual_file = NULL;
+		uri = nautilus_file_get_activation_uri (file);
+		if (!(eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
+		      eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
+			actual_file = nautilus_file_get (uri);
+		}
+		g_free (uri);
+		
+		if (actual_file != NULL) {
+			nautilus_file_unref (file);
+			l->data = actual_file;
+		}
 	}
 	
 	/* get the parameters for the actual file */	
@@ -7578,13 +7709,11 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 		NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
 
-	parameters->file = actual_file;
-	parameters->callback = activate_callback;
-
-	nautilus_file_call_when_ready
-		(actual_file, attributes, activate_callback, parameters);
+	nautilus_file_list_call_when_ready
+		(parameters->files, attributes,
+		 &parameters->files_handle,
+		 activate_callback, parameters);
 }
-
 
 /**
  * fm_directory_view_activate_file:
@@ -7602,53 +7731,14 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 NautilusWindowOpenMode mode,
 				 NautilusWindowOpenFlags flags)
 {
-	ActivateParameters *parameters;
-	NautilusFileAttributes attributes;
-	char *file_name;
-	char *timed_wait_prompt;
+	GList *files;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	/* link target info might be stale, re-read it */
-	if (nautilus_file_is_symbolic_link (file)) {
-		nautilus_file_invalidate_attributes 
-			(file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	}
-
-	nautilus_file_ref (file);
-
-	/* Might have to read some of the file to activate it. */
-	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
-		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
-
-	parameters = g_new (ActivateParameters, 1);
-	parameters->view = view;
-	parameters->file = file;
-	parameters->mode = mode;
-	parameters->flags = flags;
-	parameters->callback = activate_activation_uri_ready_callback;
-	parameters->mounted = FALSE;
-	parameters->mounting = FALSE;
-	parameters->cancelled = FALSE;
-
-	file_name = nautilus_file_get_display_name (file);
-	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
-	g_free (file_name);
-	
-	eel_timed_wait_start_with_duration
-		(DELAY_UNTIL_CANCEL_MSECS,
-		 cancel_activate_callback,
-		 parameters,
-		 _("Cancel Open?"),
-		 timed_wait_prompt,
-		 fm_directory_view_get_containing_window (view));
-	g_free (timed_wait_prompt);
-
-	g_object_weak_ref (G_OBJECT (view), activate_weak_notify, parameters);
-
-	nautilus_file_call_when_ready
-		(file, attributes, activate_activation_uri_ready_callback, parameters);
+	files = g_list_prepend (NULL, file);
+	fm_directory_view_activate_files (view, files, mode, flags);
+	g_list_free (files);
 }
 
 
@@ -7667,36 +7757,69 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 				  NautilusWindowOpenMode mode,
 				  NautilusWindowOpenFlags flags)
 {
-	GList *node;
+
+	GList *l;
+	ActivateParameters *parameters;
+	NautilusFile *file;
+	NautilusFileAttributes attributes;
+	char *file_name;
+	char *timed_wait_prompt;
 	int file_count;
-	gboolean use_new_window;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (files != NULL);
 
-	/* If there's a single file to activate, check user's preference whether
-	 * to open it in this window or a new window. If there is more than one
-	 * file to activate, open each one in a new window. Don't try to choose
-	 * one special one to replace the current window's contents; we tried this
-	 * but it proved mysterious in practice.
-	 */
 	file_count = g_list_length (files);
-	use_new_window = file_count > 1;
 
-	if (use_new_window && mode == NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE) {
-#if !NEW_UI_COMPLETE
-		/* Match the current window type */
-		mode = NAUTILUS_WINDOW_OPEN_IN_SPATIAL;
-#endif
-	}
-	
-	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
-		for (node = files; node != NULL; node = node->next) {  	
-			/* The ui should ask for navigation or object windows
-			 * depending on what the current one is */
-			fm_directory_view_activate_file
-				(view, node->data, mode, flags);
+	/* link target info might be stale, re-read it */
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (nautilus_file_is_symbolic_link (file)) {
+			nautilus_file_invalidate_attributes 
+				(file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 		}
 	}
+
+	/* Might have to read some of the file to activate it. */
+	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
+
+	parameters = g_new (ActivateParameters, 1);
+	parameters->view = view;
+	parameters->files = nautilus_file_list_copy (files);
+	parameters->mode = mode;
+	parameters->flags = flags;
+	parameters->mount_success = FALSE;
+	parameters->pending_mounts = 0;
+	parameters->cancelled = FALSE;
+
+	if (file_count == 1) {
+		file_name = nautilus_file_get_display_name (files->data);
+		timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
+		g_free (file_name);
+	} else {
+		timed_wait_prompt = g_strdup_printf (ngettext ("Opening %d item.",
+							       "Opening %d items.",
+							       file_count),
+						     file_count);
+	}
+	
+	eel_timed_wait_start_with_duration
+		(DELAY_UNTIL_CANCEL_MSECS,
+		 cancel_activate_callback,
+		 parameters,
+		 _("Cancel Open?"),
+		 timed_wait_prompt,
+		 fm_directory_view_get_containing_window (view));
+	g_free (timed_wait_prompt);
+
+	g_object_weak_ref (G_OBJECT (view), activate_weak_notify, parameters);
+
+	nautilus_file_list_call_when_ready
+		(parameters->files, attributes,
+		 &parameters->files_handle,
+		 activate_activation_uris_ready_callback, parameters);
 }
 
 static void

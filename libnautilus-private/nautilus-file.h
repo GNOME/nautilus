@@ -89,6 +89,8 @@ typedef char * (*NautilusTruncateCallback)    (const char    *string,
 					       int	      width,
 					       void	     *context);
 
+typedef void NautilusFileListHandle;
+
 /* GObject requirements. */
 GType                   nautilus_file_get_type                          (void);
 
@@ -341,8 +343,10 @@ GList *                 nautilus_file_list_copy                         (GList  
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
 void                    nautilus_file_list_call_when_ready              (GList                          *file_list,
 									 NautilusFileAttributes          attributes,
+									 NautilusFileListHandle        **handle,
 									 NautilusFileListCallback        callback,
 									 gpointer                        callback_data);
+void                    nautilus_file_list_cancel_call_when_ready       (NautilusFileListHandle         *handle);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);
