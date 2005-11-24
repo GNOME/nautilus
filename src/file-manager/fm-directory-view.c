@@ -936,9 +936,6 @@ static void
 action_delete_callback (GtkAction *action,
 			gpointer callback_data)
 {
-	if (!show_delete_command_auto_value) {
-		return;
-	}
         delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
 }
 
@@ -6976,8 +6973,8 @@ real_update_menus (FMDirectoryView *view)
 		g_object_set (action,
 			      "label", _("_Delete"),
 			      NULL);
-		gtk_action_set_sensitive (action, can_delete_files);
 	}
+	gtk_action_set_sensitive (action, can_delete_files);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DUPLICATE);
