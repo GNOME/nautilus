@@ -54,14 +54,17 @@ finalize (GObject *object)
 	
 	if (beagle->details->current_query) {
 		g_object_unref (beagle->details->current_query);
+		beagle->details->current_query = NULL;
 	}
 
 	if (beagle->details->query) {
 		g_object_unref (beagle->details->query);
+		beagle->details->query = NULL;
 	}
 
 	if (beagle->details->client) {
 		g_object_unref (beagle->details->client);
+		beagle->details->client = NULL;
 	}
 
 	g_free (beagle->details);

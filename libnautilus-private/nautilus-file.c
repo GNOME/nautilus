@@ -76,9 +76,13 @@
 
 
 #undef NAUTILUS_FILE_DEBUG_REF
+#undef NAUTILUS_FILE_DEBUG_REF_VALGRIND
 
-#ifdef NAUTILUS_FILE_DEBUG_REF
+#ifdef NAUTILUS_FILE_DEBUG_REF_VALGRIND
 #include <valgrind/valgrind.h>
+#define DEBUG_REF_PRINTF VALGRIND_PRINTF_BACKTRACE
+#else
+#define DEBUG_REF_PRINTF printf
 #endif
 
 /* Files that start with these characters sort after files that don't. */
@@ -213,8 +217,7 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	file->details->relative_uri = g_strdup (relative_uri);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
-	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
+	DEBUG_REF_PRINTF("%10p ref'd", file);
 #endif
 
 	return file;
@@ -322,8 +325,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
-	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
+	DEBUG_REF_PRINTF("%10p ref'd", file);
 #endif
 
 	return file;
@@ -407,21 +409,22 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
 			relative_uri = gnome_vfs_escape_string (file_name);
 			g_free (file_name);
-		} else if (eel_uri_is_desktop (uri)) {
-			/* Special case desktop files here. They have no vfs_uri */
-			relative_uri_tmp = uri + strlen (EEL_DESKTOP_URI);
+		} else if (eel_uri_is_desktop (uri) ||
+			   eel_uri_is_search (uri)) {
+			/* Special case virtual methods like desktop and search
+			   files here. They have no vfs_uri. */
+			relative_uri_tmp = uri;
+			/* Skip "method:" */
+			while (*relative_uri_tmp != 0 && *relative_uri_tmp != ':') {
+				relative_uri_tmp++;
+			}
+			relative_uri_tmp++;
+			/* Skip initial slashes */
 			while (*relative_uri_tmp == '/') {
 				relative_uri_tmp++;
 			}
 			relative_uri = strdup (relative_uri_tmp);
-		} else if (eel_uri_is_search (uri)) {
-			/* Special case search files as well. */
-			relative_uri_tmp = uri + strlen (EEL_SEARCH_URI);
-			while (*relative_uri_tmp == '/') {
-				relative_uri_tmp++;
-			}
-			relative_uri = strdup (relative_uri_tmp);
-		}
+		} 
 	}
 
 	/* Check to see if it's a file that's already known. */
@@ -541,8 +544,7 @@ nautilus_file_ref (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
-	VALGRIND_PRINTF_BACKTRACE("%10p ref'd", file);
+	DEBUG_REF_PRINTF("%10p ref'd", file);
 #endif
 
 	g_object_ref (file);
@@ -559,8 +561,7 @@ nautilus_file_unref (NautilusFile *file)
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
-	if (strcmp (nautilus_file_get_uri (file), "file:///home/andersca/src/gnome/gtk%2B/gtk/gtkbutton.c") == 0)
-	VALGRIND_PRINTF_BACKTRACE("%10p unref'd", file);
+	DEBUG_REF_PRINTF("%10p unref'd", file);
 #endif
 
 	g_object_unref (file);

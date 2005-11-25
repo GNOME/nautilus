@@ -2941,9 +2941,11 @@ create_permissions_page (FMPropertiesWindow *window)
 
 	file_list = window->details->original_files;
 
-	window->details->initial_permissions = get_initial_permissions (window->details->target_files);
+	window->details->initial_permissions = NULL;
 	
 	if (all_can_get_permissions (file_list)) {
+		window->details->initial_permissions = get_initial_permissions (window->details->target_files);
+		
 		if (!all_can_set_permissions (file_list)) {
 			add_prompt_and_separator (
 				GTK_VBOX (vbox), 
@@ -3306,6 +3308,11 @@ create_open_with_page (FMPropertiesWindow *window)
 	char *mime_type;
 	
 	uri = nautilus_file_get_uri (get_target_file (window));
+
+	if (uri == NULL) {
+		return;
+	}
+	
 	mime_type = nautilus_file_get_mime_type (get_target_file (window));
 	
 	vbox = eel_mime_application_chooser_new (uri, mime_type);

@@ -39,7 +39,8 @@ struct NautilusSearchDirectoryDetails {
 	NautilusQuery *query;
 
 	NautilusSearchEngine *engine;
-	
+
+	gboolean search_running;
 	gboolean search_finished;
 
 	GList *files;
@@ -73,13 +74,12 @@ typedef struct {
 GNOME_CLASS_BOILERPLATE (NautilusSearchDirectory, nautilus_search_directory,
 			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
 
-
 static void search_engine_hits_added (NautilusSearchEngine *engine, GList *hits, NautilusSearchDirectory *search);
 static void search_engine_hits_subtracted (NautilusSearchEngine *engine, GList *hits, NautilusSearchDirectory *search);
 static void search_engine_finished (NautilusSearchEngine *engine, NautilusSearchDirectory *search);
 static void search_engine_error (NautilusSearchEngine *engine, const char *error, NautilusSearchDirectory *search);
 static void search_callback_file_ready_callback (NautilusFile *file, gpointer data);
-
+static void file_changed (NautilusFile *file, NautilusSearchDirectory *search);
 
 static void
 ensure_search_engine (NautilusSearchDirectory *search)
@@ -104,6 +104,25 @@ ensure_search_engine (NautilusSearchDirectory *search)
 static void
 reset_file_list (NautilusSearchDirectory *search)
 {
+	GList *list, *monitor_list;
+	NautilusFile *file;
+	SearchMonitor *monitor;
+
+	/* Remove file connections */
+	for (list = search->details->files; list != NULL; list = list->next) {
+		file = list->data;
+
+		/* Disconnect change handler */
+		g_signal_handlers_disconnect_by_func (file, file_changed, search);
+
+		/* Remove monitors */
+		for (monitor_list = search->details->monitor_list; monitor_list; 
+		     monitor_list = monitor_list->next) {
+			monitor = monitor_list->data;
+			nautilus_file_monitor_remove (file, monitor);
+		}
+	}
+	
 	nautilus_file_list_free (search->details->files);
 	search->details->files = NULL;
 }
@@ -113,8 +132,11 @@ start_or_stop_search_engine (NautilusSearchDirectory *search, gboolean adding)
 {
 	if (adding && (search->details->monitor_list ||
 	    search->details->pending_callback_list) &&
-	    search->details->query) {
+	    search->details->query &&
+	    !search->details->search_running) {
 		/* We need to start the search engine */
+		search->details->search_running = TRUE;
+		search->details->search_finished = FALSE;
 		ensure_search_engine (search);
 		nautilus_search_engine_set_query (search->details->engine, search->details->query);
 
@@ -123,7 +145,9 @@ start_or_stop_search_engine (NautilusSearchDirectory *search, gboolean adding)
 		nautilus_search_engine_start (search->details->engine);
 	} else if (!adding && !search->details->monitor_list &&
 		   !search->details->pending_callback_list &&
-		   search->details->engine) {
+		   search->details->engine &&
+		   search->details->search_running) {
+		search->details->search_running = FALSE;
 		nautilus_search_engine_stop (search->details->engine);
 
 		reset_file_list (search);
@@ -139,10 +163,7 @@ file_changed (NautilusFile *file, NautilusSearchDirectory *search)
 	list.data = file;
 	list.next = NULL;
 
-	if (!g_object_get_data (G_OBJECT (file), "has-tag") || TRUE)
-		nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (search), &list);
-
-	g_object_set_data (G_OBJECT (file), "has-tag", GINT_TO_POINTER (1));
+	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (search), &list);
 }
 
 static void
@@ -194,7 +215,6 @@ search_monitor_remove_file_monitors (SearchMonitor *monitor, NautilusSearchDirec
 
 		nautilus_file_monitor_remove (file, monitor);
 	}
-
 }
 
 static void
@@ -367,7 +387,10 @@ search_call_when_ready (NautilusDirectory *directory,
 	search = NAUTILUS_SEARCH_DIRECTORY (directory);
 
 	search_callback = search_callback_find (search, callback, callback_data);
-
+	if (search_callback == NULL) {
+		search_callback = search_callback_find_pending (search, callback, callback_data);
+	}
+	
 	if (search_callback) {
 		g_warning ("tried to add a new callback while an old one was pending");
 		return;
@@ -380,7 +403,7 @@ search_call_when_ready (NautilusDirectory *directory,
 	search_callback->wait_for_attributes = file_attributes;
 	search_callback->wait_for_file_list = wait_for_file_list;
 
-	if (wait_for_file_list) {
+	if (wait_for_file_list && !search->details->search_finished) {
 		/* Add it to the pending callback list, which will be
 		 * processed when the directory has finished loading
 		 */
@@ -526,21 +549,6 @@ search_callback_add_pending_file_callbacks (SearchCallback *callback)
 }
 
 static void
-search_remove_file_connections (NautilusSearchDirectory *search)
-{
-	GList *list;
-	NautilusFile *file;
-
-	/* Remove file connections */
-	for (list = search->details->files; list != NULL; list = list->next) {
-		file = list->data;
-
-		g_signal_handlers_disconnect_by_func (file, file_changed, search);
-	}
-
-}
-
-static void
 search_engine_error (NautilusSearchEngine *engine, const char *error_message, NautilusSearchDirectory *search)
 {
 	nautilus_directory_emit_load_error (NAUTILUS_DIRECTORY (search),
@@ -582,17 +590,13 @@ search_force_reload (NautilusDirectory *directory)
 	}
 
 	/* Remove file monitors */
-	g_list_foreach (search->details->monitor_list,
-			(GFunc)search_monitor_remove_file_monitors, search);
-
-	/* Remove file connections */
-	search_remove_file_connections (search);
-
 	reset_file_list (search);
-
-	nautilus_search_engine_stop (search->details->engine);
-	nautilus_search_engine_set_query (search->details->engine, search->details->query);
-	nautilus_search_engine_start (search->details->engine);
+	
+	if (search->details->search_running) {
+		nautilus_search_engine_stop (search->details->engine);
+		nautilus_search_engine_set_query (search->details->engine, search->details->query);
+		nautilus_search_engine_start (search->details->engine);
+	}
 }
 
 static gboolean
@@ -653,7 +657,6 @@ search_dispose (GObject *object)
 		search->details->monitor_list = NULL;
 	}
 
-	search_remove_file_connections (search);
 	reset_file_list (search);
 	
 	if (search->details->callback_list) {
@@ -672,10 +675,19 @@ search_dispose (GObject *object)
 	}
 
 	if (search->details->query) {
-		g_free (search->details->query);
+		g_object_unref (search->details->query);
 		search->details->query = NULL;
 	}
 
+	if (search->details->engine) {
+		if (search->details->search_running) {
+			nautilus_search_engine_stop (search->details->engine);
+		}
+		
+		g_object_unref (search->details->engine);
+		search->details->engine = NULL;
+	}
+	
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 

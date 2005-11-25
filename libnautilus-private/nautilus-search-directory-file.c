@@ -55,17 +55,15 @@ search_directory_file_monitor_add (NautilusFile *file,
 				   gconstpointer client,
 				   NautilusFileAttributes attributes)
 {
-	nautilus_directory_monitor_add_internal (file->details->directory,
-						 file, client, TRUE, TRUE,
-						 attributes, NULL, NULL);
+	/* No need for monitoring, we always emit changed when files
+	   are added/removed, and no other metadata changes */
 }
 
 static void
 search_directory_file_monitor_remove (NautilusFile *file,
 				      gconstpointer client)
 {
-	nautilus_directory_monitor_remove_internal (file->details->directory,
-						    file, client);
+	/* Do nothing here, we don't have any monitors */
 }
 
 static void
@@ -75,10 +73,8 @@ search_directory_file_call_when_ready (NautilusFile *file,
 				       gpointer callback_data)
 
 {
-	nautilus_directory_call_when_ready_internal (file->details->directory,
-						     file, file_attributes,
-						     FALSE, NULL,
-						     callback, callback_data);
+	/* All data for directory-as-file is always uptodate */
+	(* callback) (file, callback_data);
 }
  
 static void
@@ -94,9 +90,7 @@ static gboolean
 search_directory_file_check_if_ready (NautilusFile *file,
 				      NautilusFileAttributes attributes)
 {
-	return nautilus_directory_check_if_ready_internal
-		(file->details->directory,
-		 file, attributes);
+	return TRUE;
 }
 
 static GnomeVFSFileType
@@ -125,13 +119,103 @@ search_directory_file_get_item_count (NautilusFile *file,
 
 	return TRUE;
 }
+
+static NautilusRequestStatus
+search_directory_file_get_deep_counts (NautilusFile *file,
+				       guint *directory_count,
+				       guint *file_count,
+				       guint *unreadable_directory_count,
+				       GnomeVFSFileSize *total_size)
+{
+	NautilusSearchDirectory *search_dir;
+	NautilusFile *dir_file;
+	GList *file_list, *l;
+	guint dirs, files;
+	GnomeVFSFileType type;
+
+	search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
+	
+	file_list = nautilus_directory_get_file_list (file->details->directory);
+
+	dirs = files = 0;
+	for (l = file_list; l != NULL; l = l->next) {
+		dir_file = NAUTILUS_FILE (l->data);
+		type = nautilus_file_get_file_type (dir_file);
+		if (type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+			dirs++;
+		} else {
+			files++;
+		}
+	}
+
+	if (directory_count != NULL) {
+		*directory_count = dirs;
+	}
+	if (file_count != NULL) {
+		*file_count = files;
+	}
+	if (unreadable_directory_count != NULL) {
+		*unreadable_directory_count = 0;
+	}
+	if (total_size != NULL) {
+		/* FIXME: Maybe we want to calculate this? */
+		*total_size = 0;
+	}
+	
+	nautilus_file_list_free (file_list);
+	
+	return NAUTILUS_REQUEST_DONE;
+}
+
+static char *
+search_directory_file_get_where_string (NautilusFile *file)
+{
+	return g_strdup (_("Search"));
+}
     
 static void
 nautilus_search_directory_file_init (gpointer object, gpointer klass)
 {
 	NautilusSearchDirectoryFile *search_file;
+	NautilusFile *file;
+	GnomeVFSFileInfo *file_info;
 
 	search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (object);
+	file = NAUTILUS_FILE(object);
+
+	file_info = file->details->info = gnome_vfs_file_info_new ();
+
+	file_info->name = g_strdup (_("Search"));
+	file_info->mime_type = g_strdup ("x-directory/normal");
+	file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
+	file_info->flags = GNOME_VFS_FILE_FLAGS_NONE;
+	file_info->link_count = 1;
+	file_info->size = 0;
+	file_info->permissions =
+		GNOME_VFS_PERM_OTHER_WRITE |
+		GNOME_VFS_PERM_GROUP_WRITE |
+		GNOME_VFS_PERM_USER_READ |
+		GNOME_VFS_PERM_OTHER_READ |
+		GNOME_VFS_PERM_GROUP_READ;
+	
+	file_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_TYPE |
+		GNOME_VFS_FILE_INFO_FIELDS_FLAGS |
+		GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE |
+		GNOME_VFS_FILE_INFO_FIELDS_SIZE |
+		GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS |
+		GNOME_VFS_FILE_INFO_FIELDS_LINK_COUNT;
+
+	file->details->file_info_is_up_to_date = TRUE;
+
+	file->details->display_name = g_strdup (_("Search"));
+	file->details->custom_icon = NULL;
+	file->details->activation_uri = NULL;
+	file->details->got_link_info = TRUE;
+	file->details->link_info_is_up_to_date = TRUE;
+
+	file->details->directory_count = 0;
+	file->details->got_directory_count = TRUE;
+	file->details->directory_count_is_up_to_date = TRUE;
 }
 
 static void
@@ -150,4 +234,6 @@ nautilus_search_directory_file_class_init (gpointer klass)
 	file_class->get_file_type = search_directory_file_get_file_type;
 	file_class->check_if_ready = search_directory_file_check_if_ready;
 	file_class->get_item_count = search_directory_file_get_item_count;
+	file_class->get_deep_counts = search_directory_file_get_deep_counts;
+	file_class->get_where_string = search_directory_file_get_where_string;
 }
