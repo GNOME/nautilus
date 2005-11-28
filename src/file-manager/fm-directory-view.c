@@ -101,6 +101,17 @@
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
 
+/* Minimum starting update inverval */
+#define UPDATE_INTERVAL_MIN 100
+/* Maximum update interval */
+#define UPDATE_INTERVAL_MAX 2000
+/* Amount of miliseconds the update interval is increased */
+#define UPDATE_INTERVAL_INC 250
+/* Interval at which the update interval is increased */
+#define UPDATE_INTERVAL_TIMEOUT_INTERVAL 250
+/* Milliseconds that have to pass without a change to reset the update interval */
+#define UPDATE_INTERVAL_RESET 1000
+
 #define SILENT_WINDOW_OPEN_LIMIT 5
 
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
@@ -193,7 +204,11 @@ struct FMDirectoryViewDetails
 	guint update_menus_timeout_id;
 	guint update_status_idle_id;
 	
-	guint display_pending_idle_id;
+	guint display_pending_source_id;
+	guint changes_timeout_id;
+
+	guint update_interval;
+ 	guint64 last_queued;
 	
 	guint files_added_handler_id;
 	guint files_changed_handler_id;
@@ -329,8 +344,8 @@ static void     schedule_update_menus_callback                 (gpointer        
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
 static void     schedule_update_status                          (FMDirectoryView      *view);
 static void     remove_update_status_idle_callback             (FMDirectoryView *view); 
+static void     reset_update_interval                          (FMDirectoryView      *view);
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
-static void     unschedule_idle_display_of_pending_files       (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
 static void     filtering_changed_callback                     (gpointer              callback_data);
@@ -2096,6 +2111,7 @@ done_loading (FMDirectoryView *view)
 		schedule_update_menus (view);
 		schedule_update_status (view);
 		check_for_directory_hard_limit (view);
+		reset_update_interval (view);
 
 		uris_selected = view->details->pending_uris_selected;
 		if (uris_selected != NULL) {
@@ -2609,7 +2625,7 @@ update_menus_timeout_callback (gpointer data)
 }
 
 static gboolean
-display_pending_idle_callback (gpointer data)
+display_pending_callback (gpointer data)
 {
 	FMDirectoryView *view;
 
@@ -2617,9 +2633,9 @@ display_pending_idle_callback (gpointer data)
 
 	g_object_ref (G_OBJECT (view));
 
-	display_pending_files (view);
+	view->details->display_pending_source_id = 0;
 
-	view->details->display_pending_idle_id = 0;
+	display_pending_files (view);
 
 	g_object_unref (G_OBJECT (view));
 
@@ -2629,33 +2645,37 @@ display_pending_idle_callback (gpointer data)
 static void
 schedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
-	/* No need to schedule an idle if there's already one pending. */
-	if (view->details->display_pending_idle_id != 0) {
-		return;
-	}
+	/* Get rid of a pending source as it might be a timeout */
+	unschedule_display_of_pending_files (view);
 
 	/* We want higher priority than the idle that handles the relayout
 	   to avoid a resort on each add. But we still want to allow repaints
 	   and other hight prio events while we have pending files to show. */
-	view->details->display_pending_idle_id =
+	view->details->display_pending_source_id =
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 20,
-				 display_pending_idle_callback, view, NULL);
+				 display_pending_callback, view, NULL);
 }
 
 static void
-unschedule_idle_display_of_pending_files (FMDirectoryView *view)
+schedule_timeout_display_of_pending_files (FMDirectoryView *view, guint interval)
 {
-	/* Get rid of idle if it's active. */
-	if (view->details->display_pending_idle_id != 0) {
-		g_source_remove (view->details->display_pending_idle_id);
-		view->details->display_pending_idle_id = 0;
+ 	/* No need to schedule an update if there's already one pending. */
+	if (view->details->display_pending_source_id != 0) {
+ 		return;
 	}
+ 
+	view->details->display_pending_source_id =
+		g_timeout_add (interval, display_pending_callback, view);
 }
 
 static void
 unschedule_display_of_pending_files (FMDirectoryView *view)
 {
-	unschedule_idle_display_of_pending_files (view);
+	/* Get rid of source if it's active. */
+	if (view->details->display_pending_source_id != 0) {
+		g_source_remove (view->details->display_pending_source_id);
+		view->details->display_pending_source_id = 0;
+	}
 }
 
 static void
@@ -2687,8 +2707,77 @@ queue_pending_files (FMDirectoryView *view,
 				       *pending_list);
 
 	if (! view->details->loading || nautilus_directory_are_all_files_seen (view->details->model)) {
+		schedule_timeout_display_of_pending_files (view, view->details->update_interval);
+	}
+}
+
+static void
+remove_changes_timeout_callback (FMDirectoryView *view) 
+{
+	if (view->details->changes_timeout_id != 0) {
+		g_source_remove (view->details->changes_timeout_id);
+		view->details->changes_timeout_id = 0;
+	}
+}
+
+static void
+reset_update_interval (FMDirectoryView *view)
+{
+	view->details->update_interval = UPDATE_INTERVAL_MIN;
+	remove_changes_timeout_callback (view);
+	/* Reschedule a pending timeout to idle */
+	if (view->details->display_pending_source_id != 0) {
 		schedule_idle_display_of_pending_files (view);
 	}
+}
+
+static gboolean
+changes_timeout_callback (gpointer data)
+{
+	gint64 now;
+	gint64 time_delta;
+	gboolean ret;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	g_object_ref (G_OBJECT (view));
+
+	now = eel_get_system_time();
+	time_delta = now - view->details->last_queued;
+
+	if (time_delta < UPDATE_INTERVAL_RESET*1000) {
+		if (view->details->update_interval < UPDATE_INTERVAL_MAX &&
+			!view->details->loading) {
+			/* Increase */
+			view->details->update_interval += UPDATE_INTERVAL_INC;
+		}
+		ret = TRUE;
+	} else {
+		/* Reset */
+		reset_update_interval (view);
+		ret = FALSE;
+	}
+
+	g_object_unref (G_OBJECT (view));
+
+	return ret;
+}
+
+static void
+schedule_changes (FMDirectoryView *view)
+{
+	/* Remember when the change was queued */
+	view->details->last_queued = eel_get_system_time();
+
+	/* No need to schedule if there are already changes pending or during loading */
+	if (view->details->changes_timeout_id != 0 ||
+		view->details->loading) {
+		return;
+	}
+
+	view->details->changes_timeout_id = 
+		g_timeout_add (UPDATE_INTERVAL_TIMEOUT_INTERVAL, changes_timeout_callback, view);
 }
 
 static void
@@ -2699,6 +2788,9 @@ files_added_callback (NautilusDirectory *directory,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	schedule_changes (view);
+
 	queue_pending_files (view, files, &view->details->new_added_files);
 
 	/* The number of items could have changed */
@@ -2713,6 +2805,9 @@ files_changed_callback (NautilusDirectory *directory,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	schedule_changes (view);
+
 	queue_pending_files (view, files, &view->details->new_changed_files);
 	
 	/* The free space or the number of items could have changed */
@@ -2734,7 +2829,12 @@ done_loading_callback (NautilusDirectory *directory,
 	
 	process_new_files (view);
 	if (g_hash_table_size (view->details->non_ready_files) == 0) {
-		schedule_idle_display_of_pending_files (view);
+		/* Unschedule a pending update and schedule a new one with the minimal
+		 * update interval. This gives the view a short chance at gathering the
+		 * (cached) deep counts.
+		 */
+		unschedule_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
 	}
 }
 
@@ -7156,9 +7256,10 @@ schedule_update_menus (FMDirectoryView *view)
 
 	view->details->menu_states_untrustworthy = TRUE;
 
+	/* Schedule a menu update with the current update interval */
 	if (view->details->update_menus_timeout_id == 0) {
 		view->details->update_menus_timeout_id
-			= g_timeout_add (300, update_menus_timeout_callback, view);
+			= g_timeout_add (view->details->update_interval, update_menus_timeout_callback, view);
 	}
 }
 
@@ -7830,6 +7931,8 @@ file_changed_callback (NautilusFile *file, gpointer callback_data)
 {
 	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
 
+	schedule_changes (view);
+
 	schedule_update_menus (view);
 	schedule_update_status (view);
 
@@ -7936,7 +8039,12 @@ finish_loading (FMDirectoryView *view)
 	nautilus_window_info_show_window  (view->details->window);
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
-		schedule_idle_display_of_pending_files (view);		
+		/* Unschedule a pending update and schedule a new one with the minimal
+		 * update interval. This gives the view a short chance at gathering the
+		 * (cached) deep counts.
+		 */
+		unschedule_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
 	}
 	
 	/* Start loading. */
@@ -8234,6 +8342,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	unschedule_display_of_pending_files (view);
+	reset_update_interval (view);
 
 	/* Free extra undisplayed files */
 	nautilus_file_list_free (view->details->new_added_files);

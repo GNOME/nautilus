@@ -1,3 +1,22 @@
+2005-11-28  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c: (done_loading),
+	(display_pending_callback),
+	(schedule_idle_display_of_pending_files),
+	(schedule_timeout_display_of_pending_files),
+	(unschedule_display_of_pending_files), (queue_pending_files),
+	(remove_changes_timeout_callback), (reset_update_interval),
+	(changes_timeout_callback), (schedule_changes),
+	(files_added_callback), (files_changed_callback),
+	(done_loading_callback), (schedule_update_menus),
+	(file_changed_callback), (finish_loading),
+	(fm_directory_view_stop):
+	Schedule the frequency of updates to the view in relation to the
+	activity in a viewed directory instead of simply scheduling everything
+	as idle. Prevents high CPU load from constant updates in busy
+	directories and allows more efficient use of the cached info for
+	the initial display. 
+
 2005-11-24  Dennis Cranston  <dennis_cranston@yahoo.com>
 
 	* src/file-manager/fm-directory-view.c: (confirm_delete_directly):
