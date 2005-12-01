@@ -50,9 +50,10 @@ gboolean       nautilus_query_enabled  (void);
 
 NautilusQuery* nautilus_query_new      (void);
 
-G_CONST_RETURN char *nautilus_query_get_text (NautilusQuery *query);
-void nautilus_query_set_text (NautilusQuery *query, const char *text);
-
-char *nautilus_query_to_readable_string (NautilusQuery *query);
+G_CONST_RETURN char *nautilus_query_get_text     (NautilusQuery *query);
+void           nautilus_query_set_text           (NautilusQuery *query, const char *text);
+char *         nautilus_query_to_readable_string (NautilusQuery *query);
+NautilusQuery *nautilus_query_load               (char *file);
+gboolean       nautilus_query_save               (NautilusQuery *query, char *file);
 
 #endif /* NAUTILUS_QUERY_H */

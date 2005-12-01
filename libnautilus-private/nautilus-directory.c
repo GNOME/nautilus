@@ -513,6 +513,7 @@ static NautilusDirectory *
 nautilus_directory_new (const char *uri)
 {
 	NautilusDirectory *directory;
+	NautilusQuery *query;
 	char *file;
 
 	g_assert (uri != NULL);
@@ -535,7 +536,12 @@ nautilus_directory_new (const char *uri)
 	if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
 		file = gnome_vfs_get_local_path_from_uri (uri);
 		if (file != NULL) {
-			nautilus_search_directory_load_file (NAUTILUS_SEARCH_DIRECTORY (directory), file);
+			query = nautilus_query_load (file);
+			if (query != NULL) {
+				nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
+								     query);
+				g_object_unref (query);
+			}
 			g_free (file);
 		}
 	}
