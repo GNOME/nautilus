@@ -1,3 +1,14 @@
+2005-12-01  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #317962:
+
+	* src/nautilus-pathbar.c (get_dir_name): Don't special-case the
+	name for $HOME; just let it be the actual display name of the
+	folder on disk.
+
+	* src/nautilus-places-sidebar.c (update_places): Likewise, to make
+	this consistent.
+
 2005-11-28  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c: (done_loading),

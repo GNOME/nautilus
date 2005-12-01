@@ -147,9 +147,13 @@ update_places (NautilusPlacesSidebar *sidebar)
 	desktop_path = nautilus_get_desktop_directory ();
 
 	if (strcmp (g_get_home_dir(), desktop_path) != 0) {
+		char *display_name;
+
 		mount_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		display_name = g_filename_display_basename (g_get_home_dir ());
 		last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-				       _("Home"), "gnome-fs-home", mount_uri);
+				       display_name, "gnome-fs-home", mount_uri);
+		g_free (display_name);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}	
