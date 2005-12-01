@@ -346,6 +346,17 @@ fi
 
 AM_GCONF_SOURCE_2
 
+dnl ==========================================================================
+
+AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
+
+AC_ARG_ENABLE(update-mimedb,
+   AC_HELP_STRING([--disable-update-mimedb],
+                   [disable the update-mime-database after install [default=no]]),,
+    enable_update_mimedb=yes)
+AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
+
+	
 AC_CONFIG_FILES([
 Makefile
 cut-n-paste-code/Makefile

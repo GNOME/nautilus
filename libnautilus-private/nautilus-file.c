@@ -46,6 +46,7 @@
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
+#include "nautilus-saved-search-file.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -316,7 +317,12 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	if (info->mime_type &&
+	    strcmp (info->mime_type, NAUTILUS_SAVED_SEARCH_MIMETYPE) == 0) {
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SAVED_SEARCH_FILE, NULL));
+	} else {
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	}
 
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
@@ -546,9 +552,8 @@ nautilus_file_ref (NautilusFile *file)
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	DEBUG_REF_PRINTF("%10p ref'd", file);
 #endif
-
-	g_object_ref (file);
-	return file;
+	
+	return g_object_ref (file);
 }
 
 void
@@ -563,7 +568,7 @@ nautilus_file_unref (NautilusFile *file)
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	DEBUG_REF_PRINTF("%10p unref'd", file);
 #endif
-
+	
 	g_object_unref (file);
 }
 

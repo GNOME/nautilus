@@ -151,7 +151,6 @@ struct NautilusFileDetails
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
 							    GnomeVFSFileInfo       *info);
-NautilusFile *nautilus_file_get_existing                   (const char             *uri);
 void          nautilus_file_emit_changed                   (NautilusFile           *file);
 void          nautilus_file_mark_gone                      (NautilusFile           *file);
 gboolean      nautilus_file_info_missing                   (NautilusFile           *file,

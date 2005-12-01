@@ -28,6 +28,7 @@
 #include "nautilus-desktop-icon-file.h"
 
 #include "nautilus-dnd.h"
+#include "nautilus-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 
@@ -35,14 +36,20 @@ gboolean
 nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 			       const char *item_uri)
 {
+	NautilusDirectory *directory;
+	gboolean res;
+	
 	if (nautilus_file_matches_uri (drop_target_item, item_uri)) {
 		/* can't accept itself */
 		return FALSE;
 	}
 	
 	if (nautilus_file_is_directory (drop_target_item)) {
-		/* target is a directory, accept anything */
-		return TRUE;
+		/* target is a directory, accept if editable */
+		directory = nautilus_directory_get_for_file (drop_target_item);
+		res = nautilus_directory_is_editable (directory);
+		nautilus_directory_unref (directory);
+		return res;
 	}
 	
 	if (NAUTILUS_IS_DESKTOP_ICON_FILE (drop_target_item)) {

@@ -103,15 +103,12 @@ monitor_notify_cb (GnomeVFSMonitorHandle    *handle,
 {
 	switch (event_type) {
 	case GNOME_VFS_MONITOR_EVENT_CHANGED:
-		printf ("queuing change: %s\n", info_uri);
 		nautilus_file_changes_queue_file_changed (info_uri);
 		break;
 	case GNOME_VFS_MONITOR_EVENT_DELETED:
-		printf ("queuing delete: %s\n", info_uri);
 		nautilus_file_changes_queue_file_removed (info_uri);
 		break;
 	case GNOME_VFS_MONITOR_EVENT_CREATED:
-		printf ("queuing create: %s\n", info_uri);
 		nautilus_file_changes_queue_file_added (info_uri);
 		break;
 

@@ -280,6 +280,11 @@ typedef struct {
 	gboolean cancelled;
 } ActivateParameters;
 
+typedef struct {
+	NautilusFile *file;
+	NautilusDirectory *directory;
+} FileAndDirectory;
+
 enum {
 	GNOME_COPIED_FILES,
 	UTF8_STRING
@@ -430,6 +435,79 @@ typedef struct {
 	NautilusFile *file;
 	FMDirectoryView *directory_view;
 } CreateTemplateParameters;
+
+
+
+static GList *
+file_and_directory_list_to_files (GList *fad_list)
+{
+	GList *res, *l;
+	FileAndDirectory *fad;
+
+	res = NULL;
+	for (l = fad_list; l != NULL; l = l->next) {
+		fad = l->data;
+		res = g_list_prepend (res, nautilus_file_ref (fad->file));
+	}
+	return g_list_reverse (res);
+}
+
+
+static GList *
+file_and_directory_list_from_files (NautilusDirectory *directory, GList *files)
+{
+	GList *res, *l;
+	FileAndDirectory *fad;
+
+	res = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		fad = g_new0 (FileAndDirectory, 1);
+		fad->directory = nautilus_directory_ref (directory);
+		fad->file = nautilus_file_ref (l->data);
+		res = g_list_prepend (res, fad);
+	}
+	return g_list_reverse (res);
+}
+
+static void
+file_and_directory_free (FileAndDirectory *fad)
+{
+	nautilus_directory_unref (fad->directory);
+	nautilus_file_unref (fad->file);
+	g_free (fad);
+}
+
+
+static void
+file_and_directory_list_free (GList *list)
+{
+	GList *l;
+
+	for (l = list; l != NULL; l = l->next) {
+		file_and_directory_free (l->data);
+	}
+}
+
+static gboolean
+file_and_directory_equal (gconstpointer  v1,
+			  gconstpointer  v2)
+{
+	const FileAndDirectory *fad1, *fad2;
+	fad1 = v1;
+	fad2 = v2;
+
+	return (fad1->file == fad2->file &&
+		fad1->directory == fad2->directory);
+}
+
+static guint
+file_and_directory_hash  (gconstpointer  v)
+{
+	const FileAndDirectory *fad;
+
+	fad = v;
+	return GPOINTER_TO_UINT (fad->file) ^ GPOINTER_TO_UINT (fad->directory);
+}
 
 
 static ApplicationLaunchParameters *
@@ -1626,7 +1704,11 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
 
-	view->details->non_ready_files = g_hash_table_new (NULL, NULL);
+	view->details->non_ready_files =
+		g_hash_table_new_full (file_and_directory_hash,
+				       file_and_directory_equal,
+				       (GDestroyNotify)file_and_directory_free,
+				       NULL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
 					GTK_POLICY_AUTOMATIC,
@@ -2127,6 +2209,7 @@ debuting_uri_data_free (DebutingUriData *data)
 static void
 debuting_uri_add_file_callback (FMDirectoryView *view,
 				NautilusFile *new_file,
+				NautilusDirectory *directory,
 				DebutingUriData *data)
 {
 	char *uri;
@@ -2134,7 +2217,7 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 	uri = nautilus_file_get_uri (new_file);
 
 	if (g_hash_table_remove (data->debuting_uris, uri)) {
-		g_object_ref (new_file);
+		nautilus_file_ref (new_file);
 		data->added_files = g_list_prepend (data->added_files, new_file);
 
 		if (g_hash_table_size (data->debuting_uris) == 0) {
@@ -2165,7 +2248,7 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 }
 
 static void
-pre_copy_move_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, CopyMoveDoneData *data)
+pre_copy_move_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, NautilusDirectory *directory, CopyMoveDoneData *data)
 {
 	g_object_ref (new_file);
 	data->added_files = g_list_prepend (data->added_files, new_file);
@@ -2301,35 +2384,52 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 }
 
 static gboolean
-real_file_still_belongs (FMDirectoryView *view, NautilusFile *file)
+real_file_still_belongs (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
-	GList *node;
-	
-	if (nautilus_directory_contains_file (view->details->model, file)) {
-		return TRUE;
-	}
-
-	for (node = view->details->subdirectory_list; node != NULL; node = node->next) {
-		if (nautilus_directory_contains_file (NAUTILUS_DIRECTORY (node->data),
-						      file)) {
-			return TRUE;
-		}
+	if (view->details->model != directory &&
+	    g_list_find (view->details->subdirectory_list, directory) == NULL) {
+		return FALSE;
 	}
 	
-	return FALSE;
+	return nautilus_directory_contains_file (directory, file);
 }
 
 static gboolean
-still_should_show_file (FMDirectoryView *view, NautilusFile *file)
+still_should_show_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	return fm_directory_view_should_show_file (view, file)
-		&& EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, file_still_belongs, (view, file));
+		&& EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, file_still_belongs, (view, file, directory));
 }
 
 static gboolean
 ready_to_load (NautilusFile *file)
 {
 	return nautilus_icon_factory_is_icon_ready_for_file (file);
+}
+
+static int
+compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
+{
+	const FileAndDirectory *fad1, *fad2;
+	FMDirectoryView *view;
+	
+	view = callback_data;
+	fad1 = a; fad2 = b;
+
+	if (fad1->directory < fad2->directory) {
+		return -1;
+	} else if (fad1->directory > fad2->directory) {
+		return 1;
+	} else {
+		return EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, compare_files,
+					  (view, fad1->file, fad2->file));
+	}
+}
+static void
+sort_files (FMDirectoryView *view, GList **list)
+{
+	*list = g_list_sort_with_data (*list, compare_files_cover, view);
+	
 }
 
 /* Go through all the new added and changed files.
@@ -2342,8 +2442,8 @@ process_new_files (FMDirectoryView *view)
 {
 	GList *new_added_files, *new_changed_files, *old_added_files, *old_changed_files;
 	GHashTable *non_ready_files;
-	GList *node;
-	NautilusFile *file;
+	GList *node, *next;
+	FileAndDirectory *pending;
 	gboolean in_non_ready;
 
 	new_added_files = view->details->new_added_files;
@@ -2359,56 +2459,54 @@ process_new_files (FMDirectoryView *view)
 	/* Newly added files go into the old_added_files list if they're
 	 * ready, and into the hash table if they're not.
 	 */
-	for (node = new_added_files; node != NULL; node = node->next) {
-		file = NAUTILUS_FILE (node->data);
-		in_non_ready = g_hash_table_lookup (non_ready_files, file) != NULL;
-		if (fm_directory_view_should_show_file (view, file)) {
-			if (ready_to_load (file)) {
+	for (node = new_added_files; node != NULL; node = next) {
+		next = node->next;
+		pending = (FileAndDirectory *)node->data;
+		in_non_ready = g_hash_table_lookup (non_ready_files, pending) != NULL;
+		if (fm_directory_view_should_show_file (view, pending->file)) {
+			if (ready_to_load (pending->file)) {
 				if (in_non_ready) {
-					g_hash_table_remove (non_ready_files, file);
-					nautilus_file_unref (file);
+					g_hash_table_remove (non_ready_files, pending);
 				}
-				nautilus_file_ref (file);
-				old_added_files = g_list_prepend (old_added_files, file);
+				new_added_files = g_list_delete_link (new_added_files, node);
+				old_added_files = g_list_prepend (old_added_files, pending);
 			} else {
 				if (!in_non_ready) {
-					nautilus_file_ref (file);
-					g_hash_table_insert (non_ready_files, file, file);
+					new_added_files = g_list_delete_link (new_added_files, node);
+					g_hash_table_insert (non_ready_files, pending, pending);
 				}
 			}
 		}
 	}
-	nautilus_file_list_free (new_added_files);
+	file_and_directory_list_free (new_added_files);
 
 	/* Newly changed files go into the old_added_files list if they're ready
 	 * and were seen non-ready in the past, into the old_changed_files list
 	 * if they are read and were not seen non-ready in the past, and into
 	 * the hash table if they're not ready.
 	 */
-	for (node = new_changed_files; node != NULL; node = node->next) {
-		file = NAUTILUS_FILE (node->data);
-		if (!still_should_show_file (view, file) || ready_to_load (file)) {
-			if (g_hash_table_lookup (non_ready_files, file) != NULL) {
-				g_hash_table_remove (non_ready_files, file);
-				nautilus_file_unref (file);
-				if (still_should_show_file (view, file)) {
-					nautilus_file_ref (file);
-					old_added_files = g_list_prepend (old_added_files, file);
+	for (node = new_changed_files; node != NULL; node = next) {
+		next = node->next;
+		pending = (FileAndDirectory *)node->data;
+		if (!still_should_show_file (view, pending->file, pending->directory) || ready_to_load (pending->file)) {
+			if (g_hash_table_lookup (non_ready_files, pending) != NULL) {
+				g_hash_table_remove (non_ready_files, pending);
+				if (still_should_show_file (view, pending->file, pending->directory)) {
+					new_changed_files = g_list_delete_link (new_changed_files, node);
+					old_added_files = g_list_prepend (old_added_files, pending);
 				}
-			} else if (fm_directory_view_should_show_file(view, file)) {
-				nautilus_file_ref (file);
-				old_changed_files = g_list_prepend 
-					(old_changed_files, file);
+			} else if (fm_directory_view_should_show_file (view, pending->file)) {
+				new_changed_files = g_list_delete_link (new_changed_files, node);
+				old_changed_files = g_list_prepend (old_changed_files, pending);
 			}
 		}
 	}
-	nautilus_file_list_free (new_changed_files);
+	file_and_directory_list_free (new_changed_files);
 
 	/* If any files were added to old_added_files, then resort it. */
 	if (old_added_files != view->details->old_added_files) {
 		view->details->old_added_files = old_added_files;
-		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
-				   (view, &view->details->old_added_files));
+		sort_files (view, &view->details->old_added_files);
 	}
 
 	/* Resort old_changed_files too, since file attributes
@@ -2416,8 +2514,7 @@ process_new_files (FMDirectoryView *view)
 	 */
 	if (old_changed_files != view->details->old_changed_files) {
 		view->details->old_changed_files = old_changed_files;
-		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
-				   (view, &view->details->old_changed_files));
+		sort_files (view, &view->details->old_changed_files);
 	}
 
 }
@@ -2426,8 +2523,8 @@ static void
 process_old_files (FMDirectoryView *view)
 {
 	GList *files_added, *files_changed, *node;
-	NautilusFile *file;
-	GList *selection;
+	FileAndDirectory *pending;
+	GList *selection, *files;
 	gboolean send_selection_change;
 
 	files_added = view->details->old_added_files;
@@ -2439,37 +2536,34 @@ process_old_files (FMDirectoryView *view)
 		g_signal_emit (view, signals[BEGIN_FILE_CHANGES], 0);
 
 		for (node = files_added; node != NULL; node = node->next) {
-			file = NAUTILUS_FILE (node->data);
+			pending = node->data;
 			g_signal_emit (view,
-				       signals[ADD_FILE], 0, file);
+				       signals[ADD_FILE], 0, pending->file, pending->directory);
 		}
 
 		for (node = files_changed; node != NULL; node = node->next) {
-			file = NAUTILUS_FILE (node->data);
-			
+			pending = node->data;
 			g_signal_emit (view,
-				       signals[still_should_show_file (view, file)
+				       signals[still_should_show_file (view, pending->file, pending->directory)
 					       ? FILE_CHANGED : REMOVE_FILE], 0,
-				       file);
+				       pending->file, pending->directory);
 		}
 
 		g_signal_emit (view, signals[END_FILE_CHANGES], 0);
 
 		if (files_changed != NULL) {
 			selection = fm_directory_view_get_selection (view);
+			files = file_and_directory_list_to_files (files_changed);
 			send_selection_change = eel_g_lists_sort_and_check_for_intersection
-				(&files_changed, &selection);
+				(&files, &selection);
+			nautilus_file_list_free (files);
 			nautilus_file_list_free (selection);
 		}
-
-		nautilus_file_list_free (view->details->old_added_files);
+		
+		file_and_directory_list_free (view->details->old_added_files);
 		view->details->old_added_files = NULL;
 
-		/* We free files_changed here instead of view->details->old_changed_files 
-		 * because the call to eel_g_lists_sort_and_check_for_intersection might
-		 * change the first element, and so we might lose files to free.
-		 */
-		nautilus_file_list_free (files_changed);
+		file_and_directory_list_free (view->details->old_changed_files);
 		view->details->old_changed_files = NULL;
 	}
 
@@ -2646,6 +2740,7 @@ unschedule_display_of_pending_files (FMDirectoryView *view)
 
 static void
 queue_pending_files (FMDirectoryView *view,
+		     NautilusDirectory *directory,
 		     GList *files,
 		     GList **pending_list)
 {
@@ -2669,10 +2764,12 @@ queue_pending_files (FMDirectoryView *view,
 		}
 	}
 
-	*pending_list = g_list_concat (nautilus_file_list_copy (files),
+	
+
+	*pending_list = g_list_concat (file_and_directory_list_from_files (directory, files),
 				       *pending_list);
 
-	if (! view->details->loading || nautilus_directory_are_all_files_seen (view->details->model)) {
+	if (! view->details->loading || nautilus_directory_are_all_files_seen (directory)) {
 		schedule_idle_display_of_pending_files (view);
 	}
 }
@@ -2685,7 +2782,7 @@ files_added_callback (NautilusDirectory *directory,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	queue_pending_files (view, files, &view->details->new_added_files);
+	queue_pending_files (view, directory, files, &view->details->new_added_files);
 
 	/* The number of items could have changed */
 	schedule_update_status (view);
@@ -2697,9 +2794,9 @@ files_changed_callback (NautilusDirectory *directory,
 			gpointer callback_data)
 {
 	FMDirectoryView *view;
-
+	
 	view = FM_DIRECTORY_VIEW (callback_data);
-	queue_pending_files (view, files, &view->details->new_changed_files);
+	queue_pending_files (view, directory, files, &view->details->new_changed_files);
 	
 	/* The free space or the number of items could have changed */
 	schedule_update_status (view);
@@ -2766,24 +2863,6 @@ real_load_error (FMDirectoryView *view, GnomeVFSResult result, const char *error
 	view->details->reported_load_error = TRUE;
 }
 
-/**
- * fm_directory_queue_notice_file_change
- * 
- * Called by a subclass to put a file into the queue of files to update.
- * This is only necessary when the subclass is monitoring files other than
- * the ones in the directory for this location.
- */
-void
-fm_directory_view_queue_file_change (FMDirectoryView *view, NautilusFile *file)
-{
-	GList singleton_list;
-
-	singleton_list.data = file;
-	singleton_list.next = NULL;
-	singleton_list.prev = NULL;
-	queue_pending_files (view, &singleton_list, &view->details->new_changed_files);
-}
-
 void
 fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 				    NautilusDirectory*directory)
@@ -2800,7 +2879,7 @@ fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
 		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
-	
+
 	nautilus_directory_file_monitor_add (directory,
 					     &view->details->model,
 					     view->details->show_hidden_files,
@@ -2821,7 +2900,7 @@ fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 
 void
 fm_directory_view_remove_subdirectory (FMDirectoryView  *view,
-					NautilusDirectory*directory)
+				       NautilusDirectory*directory)
 {
 	g_assert (g_list_find (view->details->subdirectory_list, directory));
 	
@@ -3625,7 +3704,8 @@ typedef struct {
 
 
 static void
-track_newly_added_uris (FMDirectoryView *view, NautilusFile *new_file, gpointer user_data)
+track_newly_added_uris (FMDirectoryView *view, NautilusFile *new_file,
+			NautilusDirectory *directory, gpointer user_data)
 {
 	NewFolderData *data;
 
@@ -3644,7 +3724,7 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 	NewFolderData *data;
 
 	data = (NewFolderData *)user_data;
-	
+
 	directory_view = data->directory_view;
 
 	if (directory_view == NULL) {
@@ -3684,6 +3764,7 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 				       (GClosureNotify)g_free,
 				       G_CONNECT_AFTER);
 	}
+	nautilus_file_unref (file);
 
  fail:
 	g_hash_table_destroy (data->added_uris);
@@ -8696,10 +8777,6 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 }
 
 
-static void
-real_sort_files (FMDirectoryView *view, GList **files)
-{
-}
 
 static GArray *
 real_get_selected_icon_locations (FMDirectoryView *view)
@@ -8791,8 +8868,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
 		              G_TYPE_FROM_CLASS (klass),
@@ -8847,8 +8924,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
 		              G_TYPE_FROM_CLASS (klass),
@@ -8863,8 +8940,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		              nautilus_marshal_VOID__OBJECT_OBJECT,
+		              G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;
 	klass->file_limit_reached = real_file_limit_reached;
@@ -8873,7 +8950,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->get_selected_icon_locations = real_get_selected_icon_locations;
 	klass->is_read_only = real_is_read_only;
 	klass->load_error = real_load_error;
-	klass->sort_files = real_sort_files;
 	klass->can_rename_file = can_rename_file;
 	klass->start_renaming_file = start_renaming_file;
 	klass->supports_creating_files = real_supports_creating_files;

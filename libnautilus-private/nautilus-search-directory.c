@@ -876,20 +876,12 @@ static GMarkupParser parser = {
 };
 
 void
-nautilus_search_directory_load_search (NautilusSearchDirectory *search)
+nautilus_search_directory_load_file (NautilusSearchDirectory *search, const char *search_file)
 {
-	char *search_uri;
-	char *search_dir, *search_file;
 	ParserInfo info;
 	GMarkupParseContext *ctx;
 	char *xml;
 	gsize xml_len;
-
-	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
-
-	search_dir = nautilus_get_searches_directory ();
-	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
-	g_free (search_dir);
 
 	if (!g_file_test (search_file, G_FILE_TEST_EXISTS)) {
 		return;
@@ -902,4 +894,19 @@ nautilus_search_directory_load_search (NautilusSearchDirectory *search)
 	g_file_get_contents (search_file, &xml, &xml_len, NULL);
 
 	g_markup_parse_context_parse (ctx, xml, xml_len, NULL);
+}
+
+void
+nautilus_search_directory_load_search (NautilusSearchDirectory *search)
+{
+	char *search_uri;
+	char *search_dir, *search_file;
+
+	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
+
+	search_dir = nautilus_get_searches_directory ();
+	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
+	g_free (search_dir);
+
+	nautilus_search_directory_load_file (search, search_file);
 }

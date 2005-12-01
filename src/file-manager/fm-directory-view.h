@@ -76,16 +76,19 @@ struct FMDirectoryViewClass {
 	 * It must be replaced by each subclass.
 	 */
 	void    (* add_file) 		 (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 	void    (* remove_file)		 (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 
 	/* The 'file_changed' signal is emitted to signal a change in a file,
 	 * including the file being removed.
 	 * It must be replaced by each subclass.
 	 */
 	void 	(* file_changed)         (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 
 	/* The 'end_file_changes' signal is emitted after a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
@@ -214,8 +217,9 @@ struct FMDirectoryViewClass {
 	 * to provide a sorting order to determine which files should be
 	 * presented when only a partial list is provided.
 	 */
-	void     (* sort_files)                 (FMDirectoryView *view,
-						 GList          **files);
+	int     (* compare_files)              (FMDirectoryView *view,
+						NautilusFile    *a,
+						NautilusFile    *b);
 
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
@@ -284,7 +288,8 @@ struct FMDirectoryViewClass {
 						 gboolean select_all);
 
 	gboolean (* file_still_belongs)		(FMDirectoryView *view,
-						 NautilusFile	 *file);
+						 NautilusFile	 *file,
+						 NautilusDirectory *directory);
 
 	/* Preference change callbacks, overriden by icon and list views. 
 	 * Icon and list views respond by synchronizing to the new preference

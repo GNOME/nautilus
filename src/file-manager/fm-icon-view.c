@@ -508,8 +508,10 @@ should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
+fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
+	g_assert (directory == fm_directory_view_get_model (view));
+	
 	if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
 					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_unref (file);
@@ -517,10 +519,12 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
+fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	FMIconView *icon_view;
 	NautilusIconContainer *icon_container;
+
+	g_assert (directory == fm_directory_view_get_model (view));
 	
 	icon_view = FM_ICON_VIEW (view);
 	icon_container = get_icon_container (icon_view);
@@ -549,10 +553,12 @@ fm_icon_view_flush_added_files (FMDirectoryView *view)
 }
 
 static void
-fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
+fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	FMIconView *icon_view;
 
+	g_assert (directory == fm_directory_view_get_model (view));
+	
 	g_return_if_fail (view != NULL);
 	icon_view = FM_ICON_VIEW (view);
 
@@ -564,7 +570,7 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	}
 	
 	if (!should_show_file_on_screen (view, file)) {
-		fm_icon_view_remove_file (view, file);
+		fm_icon_view_remove_file (view, file, directory);
 	} else {
 
 		nautilus_icon_container_request_update
@@ -2004,6 +2010,15 @@ fm_icon_view_compare_files (FMIconView   *icon_view,
 		 icon_view->details->sort_reversed);
 }
 
+static int
+compare_files (FMDirectoryView   *icon_view,
+	       NautilusFile *a,
+	       NautilusFile *b)
+{
+	return fm_icon_view_compare_files ((FMIconView *)icon_view, a, b);
+}
+
+
 void
 fm_icon_view_filter_by_screen (FMIconView *icon_view,
 			       gboolean filter)
@@ -2019,6 +2034,7 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 	FMDirectoryView *view;
 	GList *files, *l;
 	NautilusFile *file;
+	NautilusDirectory *directory;
 	NautilusIconContainer *icon_container;
 
 	if (GTK_WIDGET_CLASS (fm_icon_view_parent_class)->screen_changed) {
@@ -2028,14 +2044,15 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 	view = FM_DIRECTORY_VIEW (widget);
 	if (FM_ICON_VIEW (view)->details->filter_by_screen) {
 		icon_container = get_icon_container (FM_ICON_VIEW (view));
-		
-		files = nautilus_directory_get_file_list (fm_directory_view_get_model (view));
+
+		directory = fm_directory_view_get_model (view);
+		files = nautilus_directory_get_file_list (directory);
 
 		for (l = files; l != NULL; l = l->next) {
 			file = l->data;
 			
 			if (!should_show_file_on_screen (view, file)) {
-				fm_icon_view_remove_file (view, file);
+				fm_icon_view_remove_file (view, file, directory);
 			} else {
 				if (nautilus_icon_container_add (icon_container,
 								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
@@ -2048,27 +2065,6 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 		nautilus_file_list_unref (files);
 		g_list_free (files);
 	}
-}
-
-
-static int
-compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
-{
-	return fm_icon_view_compare_files (callback_data,
-					   NAUTILUS_FILE (a),
-					   NAUTILUS_FILE (b));
-}
-
-static void
-fm_icon_view_sort_files (FMDirectoryView *view, GList **files)
-{
-	FMIconView *icon_view;
-
-	icon_view = FM_ICON_VIEW (view);
-	if (!fm_icon_view_using_auto_layout (icon_view)) {
-		return;
-	}
-	*files = g_list_sort_with_data (*files, compare_files_cover, icon_view);
 }
 
 static void
@@ -2568,7 +2564,9 @@ icon_view_scroll_to_file (NautilusView *view,
 	icon_view = FM_ICON_VIEW (view);
 	
 	if (uri != NULL) {
-		file = nautilus_file_get (uri);
+		/* Only if existing, since we don't want to add the file to
+		   the directory if it has been removed since then */
+		file = nautilus_file_get_existing (uri);
 		if (file != NULL) {
 			nautilus_icon_container_scroll_to_icon (get_icon_container (icon_view),
 								NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
@@ -2613,7 +2611,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
-	fm_directory_view_class->sort_files = fm_icon_view_sort_files;
+	fm_directory_view_class->compare_files = compare_files;
 	fm_directory_view_class->zoom_to_level = fm_icon_view_zoom_to_level;
 	fm_directory_view_class->get_zoom_level = fm_icon_view_get_zoom_level;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;

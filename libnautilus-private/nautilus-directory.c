@@ -147,16 +147,17 @@ nautilus_directory_init (gpointer object, gpointer klass)
 	directory->details->hidden_file_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
-void
+NautilusDirectory *
 nautilus_directory_ref (NautilusDirectory *directory)
 {
 	if (directory == NULL) {
-		return;
+		return directory;
 	}
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	g_object_ref (directory);
+	return directory;
 }
 
 void
@@ -512,6 +513,7 @@ static NautilusDirectory *
 nautilus_directory_new (const char *uri)
 {
 	NautilusDirectory *directory;
+	char *file;
 
 	g_assert (uri != NULL);
 
@@ -519,8 +521,9 @@ nautilus_directory_new (const char *uri)
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else if (eel_uri_is_desktop (uri)) {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY, NULL));
-	} else if (eel_uri_is_search (uri)) {
-		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY, NULL));		
+	} else if (eel_uri_is_search (uri) ||
+		   g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY, NULL));
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
@@ -529,6 +532,13 @@ nautilus_directory_new (const char *uri)
 
 	if (eel_uri_is_search (uri))
 		nautilus_search_directory_load_search (NAUTILUS_SEARCH_DIRECTORY (directory));
+	if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+		file = gnome_vfs_get_local_path_from_uri (uri);
+		if (file != NULL) {
+			nautilus_search_directory_load_file (NAUTILUS_SEARCH_DIRECTORY (directory), file);
+			g_free (file);
+		}
+	}
 
 	return directory;
 }
@@ -1003,7 +1013,6 @@ nautilus_directory_notify_files_added (GList *uris)
 		}
 		nautilus_directory_unref (directory);
 	}
-
 
 	/* Now get file info for the new files. This creates NautilusFile
 	 * objects for the new files, and sends out a files_added signal. 

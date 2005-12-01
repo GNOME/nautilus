@@ -1,3 +1,68 @@
+2005-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Check for update-mime-database
+	
+	* data/.cvsignore:
+	* data/Makefile.am:
+	* data/nautilus.xml.in:
+	Add mime database entries for saved searches.
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-saved-search-file.[ch]:
+	Special file type for saved search files to pretend that
+	they are directories.
+	
+	* libnautilus-private/nautilus-directory.[ch]:
+	Make nautilus_directory_ref return its arg.
+	Create NautilusSearchDirectory for saved searches.
+	
+	* libnautilus-private/nautilus-file-dnd.c:
+	Non-editable directories do not accept drops.
+	
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.h:
+	Move nautilus_file_get_existing to public header.
+	
+	* libnautilus-private/nautilus-file.c:
+	Create saved search files at right time
+	
+	* libnautilus-private/nautilus-marshal.list:
+	Add new marshallers
+	
+	* libnautilus-private/nautilus-monitor.c:
+	Remove some spew
+	
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	Split out search file loading to a separate function.
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Handle several layers of cannot accept drop.
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	Make files be related to the directory they are in, since
+	a file can be in a tree multiple times, with searches.
+	Sorting us now done in base class, and inheriting classes just
+	add a compare function.
+	Fix file leak in new_folder_done.
+	
+	* src/file-manager/fm-icon-view.c:
+	Update to new base class API.
+	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
+	
+	* src/file-manager/fm-list-model.[ch]:
+	Rearrange data so that we can have one file in multiple dirs.
+	Still problems with the same directory in multiple dirs.
+	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
+	Fix leak in each_path_get_data_binder
+	
+	* src/file-manager/fm-list-view.c:
+	Update to new APIs (base class and model).
+	Fix leak in fm_list_view_get_selection_foreach_func.
+	
+
+--- nautilus-search2 branch ---
+    
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:

@@ -95,6 +95,9 @@ GType                   nautilus_file_get_type                          (void);
 /* Getting at a single file. */
 NautilusFile *          nautilus_file_get                               (const char                     *uri);
 
+/* Get a file only if the nautilus version already exists */
+NautilusFile *          nautilus_file_get_existing                      (const char                     *uri);
+
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
  * 1) You don't have to cast to GtkObject *, so using these is type safe.
  * 2) You are allowed to call these with NULL,

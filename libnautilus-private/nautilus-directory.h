@@ -159,7 +159,7 @@ NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile    
  * 1) You don't have to cast to GtkObject *, so using these is type safe.
  * 2) You are allowed to call these with NULL,
  */
-void               nautilus_directory_ref                      (NautilusDirectory         *directory);
+NautilusDirectory *nautilus_directory_ref                      (NautilusDirectory         *directory);
 void               nautilus_directory_unref                    (NautilusDirectory         *directory);
 
 /* Access to a URI. */
