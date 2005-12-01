@@ -37,6 +37,7 @@
 
 struct NautilusSearchDirectoryDetails {
 	NautilusQuery *query;
+	char *saved_search_uri;
 
 	NautilusSearchEngine *engine;
 
@@ -742,7 +743,6 @@ nautilus_search_directory_generate_new_uri (void)
 	gettimeofday (&tv, NULL);
 
 	uri = g_strdup_printf (EEL_SEARCH_URI"///%ld-%ld-%d/", tv.tv_sec, tv.tv_usec, counter++);
-	printf ("generated uri: %s\n", uri);
 
 	return uri;
 }
@@ -767,43 +767,28 @@ nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 	return search->details->query;
 }
 
-/* Move past the "x-nautilus-search:///" portion of the URI */
-#define SEARCH_URI_OFFSET 21
-
-void
-nautilus_search_directory_save_search (NautilusSearchDirectory *search)
+NautilusSearchDirectory *
+nautilus_search_directory_new_from_saved_search (const char *uri)
 {
-	char *search_uri;
-	char *search_dir, *search_file;
-
-	if (search->details->query == NULL)
-		return;
-
-	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
-
-	search_dir = nautilus_get_searches_directory ();
-	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
-	g_free (search_dir);
-
-	nautilus_query_save (search->details->query, search_file);
-}
-
-void
-nautilus_search_directory_load_search (NautilusSearchDirectory *search)
-{
-	char *search_uri;
-	char *search_dir, *search_file;
+	NautilusSearchDirectory *directory;
 	NautilusQuery *query;
+	char *file;
 	
-	search_uri = nautilus_directory_get_uri (NAUTILUS_DIRECTORY (search));
+	directory = NAUTILUS_SEARCH_DIRECTORY (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY, NULL));
 
-	search_dir = nautilus_get_searches_directory ();
-	search_file = g_build_path ("/", search_dir, search_uri + SEARCH_URI_OFFSET, NULL);
-	g_free (search_dir);
-
-	query = nautilus_query_load (search_file);
-	if (query != NULL) {
-		nautilus_search_directory_set_query (search, query);
-		g_object_unref (query);
+	directory->details->saved_search_uri = g_strdup (uri);
+	
+	file = gnome_vfs_get_local_path_from_uri (uri);
+	if (file != NULL) {
+		query = nautilus_query_load (file);
+		if (query != NULL) {
+			nautilus_search_directory_set_query (directory, query);
+			g_object_unref (query);
+		}
+		g_free (file);
+	} else {
+		g_warning ("Non-local saved searches not supported");
 	}
+
+	return directory;
 }

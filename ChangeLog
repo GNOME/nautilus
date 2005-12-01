@@ -1,6 +1,14 @@
 2005-12-01  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	* src/nautilus-bookmark-list.c:
+	Further refactor the query loading, and remove all traces
+	of the old load/save mechanism.
+
+2005-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c:
 	* libnautilus-private/nautilus-query.[ch]:
 	* libnautilus-private/nautilus-search-directory.[ch]:
 	Refactor query loading into NautilusQuery object.

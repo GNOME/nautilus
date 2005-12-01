@@ -61,7 +61,7 @@ NautilusQuery *nautilus_search_directory_get_query (NautilusSearchDirectory *sea
 void           nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 						    NautilusQuery           *query);
 
-void nautilus_search_directory_save_search (NautilusSearchDirectory *search);
-void nautilus_search_directory_load_search (NautilusSearchDirectory *search);
+NautilusSearchDirectory *nautilus_search_directory_new_from_saved_search (const char *uri);
+
 
 #endif /* NAUTILUS_SEARCH_DIRECTORY_H */

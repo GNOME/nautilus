@@ -513,8 +513,6 @@ static NautilusDirectory *
 nautilus_directory_new (const char *uri)
 {
 	NautilusDirectory *directory;
-	NautilusQuery *query;
-	char *file;
 
 	g_assert (uri != NULL);
 
@@ -522,29 +520,15 @@ nautilus_directory_new (const char *uri)
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else if (eel_uri_is_desktop (uri)) {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY, NULL));
-	} else if (eel_uri_is_search (uri) ||
-		   g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+	} else if (eel_uri_is_search (uri)) {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY, NULL));
+	} else if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+		directory = NAUTILUS_DIRECTORY (nautilus_search_directory_new_from_saved_search (uri));
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
 
 	set_directory_uri (directory, uri);
-
-	if (eel_uri_is_search (uri))
-		nautilus_search_directory_load_search (NAUTILUS_SEARCH_DIRECTORY (directory));
-	if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
-		file = gnome_vfs_get_local_path_from_uri (uri);
-		if (file != NULL) {
-			query = nautilus_query_load (file);
-			if (query != NULL) {
-				nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
-								     query);
-				g_object_unref (query);
-			}
-			g_free (file);
-		}
-	}
 
 	return directory;
 }
