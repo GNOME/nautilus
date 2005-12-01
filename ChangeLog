@@ -1,5 +1,18 @@
 2005-12-01  Federico Mena Quintero  <federico@ximian.com>
 
+	Fixes bug #318140:
+
+	* libnautilus-private/nautilus-link-desktop-file.c
+	(nautilus_link_desktop_file_get_link_icon_from_desktop): If the
+	.desktop file doesn't have an Icon property, fall back to some
+	reasonable icons depending on the type of the .desktop file.
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file): Clarify what we mean by
+	custom icons vs. special icons.
+
+2005-12-01  Federico Mena Quintero  <federico@ximian.com>
+
 	Fixes bug #317962:
 
 	* src/nautilus-pathbar.c (get_dir_name): Don't special-case the

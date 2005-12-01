@@ -867,13 +867,14 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 	
 	custom_icon = NULL;
  
- 	/* if there is a custom image in the metadata or link info, use that. */
+	/* Custom icon set by user, taken from metadata */
  	custom_uri = nautilus_file_get_custom_icon (file);
 	if (custom_uri) {
 		custom_icon = image_uri_to_name_or_uri (custom_uri);
 	}
  	g_free (custom_uri);
 
+	/* Icon for "special files" (burn, computer, network, smb, trash) */
 	special_icon = get_special_icon_for_file (file);
 	if (special_icon != NULL) {
 		return g_strdup (special_icon);

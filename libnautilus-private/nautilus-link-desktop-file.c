@@ -260,6 +260,7 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop
 {
 	char *icon_uri;
 	const char *icon;
+	GnomeDesktopItemType desktop_type;
 
 	icon_uri = g_strdup (gnome_desktop_item_get_string (desktop_file, "X-Nautilus-Icon"));
 	if (icon_uri != NULL) {
@@ -267,7 +268,34 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop
 	}
 
 	icon = gnome_desktop_item_get_string (desktop_file, GNOME_DESKTOP_ITEM_ICON);
-	return g_strdup (icon);
+	if (icon != NULL) {
+		return g_strdup (icon);
+	}
+
+	desktop_type = gnome_desktop_item_get_entry_type (desktop_file);
+	switch (desktop_type) {
+	case GNOME_DESKTOP_ITEM_TYPE_APPLICATION:
+		return g_strdup ("gnome-fs-executable");
+
+	case GNOME_DESKTOP_ITEM_TYPE_LINK:
+		return g_strdup ("gnome-dev-symlink");
+
+	case GNOME_DESKTOP_ITEM_TYPE_FSDEVICE:
+		return g_strdup ("gnome-dev-harddisk");
+
+	case GNOME_DESKTOP_ITEM_TYPE_DIRECTORY:
+		return g_strdup ("gnome-fs-directory");
+
+	case GNOME_DESKTOP_ITEM_TYPE_SERVICE:
+	case GNOME_DESKTOP_ITEM_TYPE_SERVICE_TYPE:
+		return g_strdup ("gnome-fs-web");
+
+	default:
+		return g_strdup ("gnome-fs-regular");
+	}
+
+	g_assert_not_reached ();
+	return NULL;
 }
 
 char *
