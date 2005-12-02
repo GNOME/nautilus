@@ -77,6 +77,7 @@
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
@@ -1172,6 +1173,21 @@ action_show_hidden_files_callback (GtkAction *action,
 		load_directory (directory_view, directory_view->details->model);
 	}
 }
+
+static void
+action_save_search_callback (GtkAction *action,
+			     gpointer callback_data)
+{                
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+}
+
+static void
+action_save_search_as_callback (GtkAction *action,
+				gpointer callback_data)
+{                
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+}
+
 
 static void
 action_empty_trash_callback (GtkAction *action,
@@ -6319,6 +6335,14 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_open_close_parent_callback) },
+  { "Save Search", NULL,                     /* name, stock id */
+    N_("Sa_ve Search"), NULL,                /* label, accelerator */
+    N_("Save the edited search"),            /* tooltip */ 
+    G_CALLBACK (action_save_search_callback) },
+  { "Save Search As...", NULL,                  /* name, stock id */
+    N_("Sa_ve Search As"), NULL,             /* label, accelerator */
+    N_("Save the current search as a file"), /* tooltip */ 
+    G_CALLBACK (action_save_search_as_callback) },
 
   /* Location-specific actions */
   { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,                  /* name, stock id */
@@ -6794,6 +6818,9 @@ real_update_menus (FMDirectoryView *view)
 	gboolean vfolder_directory;
 	gboolean show_open_alternate;
 	gboolean can_open;
+	gboolean show_save_search;
+	gboolean save_search_sensitive;
+	gboolean show_save_search_as;
 	ActivationAction activation_action;
 	GtkAction *action;
 
@@ -6965,6 +6992,30 @@ real_update_menus (FMDirectoryView *view)
 		      NULL);
 	gtk_action_set_sensitive (action, !nautilus_trash_monitor_is_empty ());
 	gtk_action_set_visible (action, should_show_empty_trash (view));
+
+	show_save_search = FALSE;
+	save_search_sensitive = FALSE;
+	show_save_search_as = FALSE;
+	if (view->details->model &&
+	    NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model)) {
+		NautilusSearchDirectory *search;
+
+		search = NAUTILUS_SEARCH_DIRECTORY (view->details->model);
+		if (nautilus_search_directory_is_saved_search (search)) {
+			show_save_search = TRUE;
+			save_search_sensitive = nautilus_search_directory_is_modified (search);
+		} else {
+			show_save_search_as = TRUE;
+		}
+	} 
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SAVE_SEARCH);
+	gtk_action_set_visible (action, show_save_search);
+	gtk_action_set_sensitive (action, save_search_sensitive);
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SAVE_SEARCH_AS);
+	gtk_action_set_visible (action, show_save_search_as);
+
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_SELECT_ALL);

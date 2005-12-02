@@ -57,11 +57,17 @@ GType   nautilus_search_directory_get_type             (void);
 
 char   *nautilus_search_directory_generate_new_uri     (void);
 
-NautilusQuery *nautilus_search_directory_get_query (NautilusSearchDirectory *search);
-void           nautilus_search_directory_set_query (NautilusSearchDirectory *search,
-						    NautilusQuery           *query);
-
 NautilusSearchDirectory *nautilus_search_directory_new_from_saved_search (const char *uri);
+
+gboolean       nautilus_search_directory_is_saved_search (NautilusSearchDirectory *search);
+gboolean       nautilus_search_directory_is_modified     (NautilusSearchDirectory *search);
+void           nautilus_search_directory_save_search     (NautilusSearchDirectory *search);
+void           nautilus_search_directory_save_to_file    (NautilusSearchDirectory *search,
+							  const char              *save_file_uri);
+
+NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *search);
+void           nautilus_search_directory_set_query       (NautilusSearchDirectory *search,
+							  NautilusQuery           *query);
 
 
 #endif /* NAUTILUS_SEARCH_DIRECTORY_H */

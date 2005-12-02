@@ -36,6 +36,8 @@
 #define FM_ACTION_SELF_PROPERTIES "SelfProperties"
 #define FM_ACTION_NO_TEMPLATES "No Templates"
 #define FM_ACTION_EMPTY_TRASH "Empty Trash"
+#define FM_ACTION_SAVE_SEARCH "Save Search"
+#define FM_ACTION_SAVE_SEARCH_AS "Save Search As"
 #define FM_ACTION_CUT "Cut"
 #define FM_ACTION_LOCATION_CUT "LocationCut"
 #define FM_ACTION_COPY "Copy"
