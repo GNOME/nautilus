@@ -6339,8 +6339,8 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Sa_ve Search"), NULL,                /* label, accelerator */
     N_("Save the edited search"),            /* tooltip */ 
     G_CALLBACK (action_save_search_callback) },
-  { "Save Search As...", NULL,                  /* name, stock id */
-    N_("Sa_ve Search As"), NULL,             /* label, accelerator */
+  { "Save Search As", NULL,                  /* name, stock id */
+    N_("Sa_ve Search As..."), NULL,             /* label, accelerator */
     N_("Save the current search as a file"), /* tooltip */ 
     G_CALLBACK (action_save_search_as_callback) },
 
