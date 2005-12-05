@@ -28,11 +28,7 @@
 #include <eel/eel-gtk-macros.h>
 
 struct NautilusSearchEngineDetails {
-	char *text;
-	guint id;
-	gboolean emitted;
-	
-	int i;
+	int none;
 };
 
 enum {
@@ -61,7 +57,6 @@ finalize (GObject *object)
 
 	engine = NAUTILUS_SEARCH_ENGINE (object);
 	
-	g_free (engine->details->text);
 	g_free (engine->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));

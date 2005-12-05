@@ -1,3 +1,49 @@
+2005-12-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_compute_title_for_uri):
+	Handle NULL query in search.
+	
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-search-directory.h:
+	Move saved search uri/mimetype define to
+	nautilus-file-utilities.h.
+	
+	* libnautilus-private/nautilus-search-directory.c:
+	Ref query in get
+	
+	* libnautilus-private/nautilus-search-engine.c:
+	Remove unused stuff.
+	
+	* src/Makefile.am:
+	* src/nautilus-query-editor.[ch]:
+	Add new files implementing NautilusQueryEditor
+	
+	* src/nautilus-places-sidebar.c:
+	Remove search from places sidebar.
+	
+	* src/nautilus-search-bar.[ch]:
+	Only handle text queries.
+
+	* src/nautilus-window.[ch]:
+	* src/nautilus-window-private.h:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-window-manage-views.c:
+	extra location widgets support and some search mode changes
+
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-spatial-window.c:
+	Implement new search ui using extra location widgets
+	
+	* src/file-manager/fm-directory-view.c:
+	Implement save search and save search as.
+	Fix free bugs in fm_directory_view_stop.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_supports_uri):
+	* src/file-manager/fm-list-view.c: (fm_list_view_supports_uri):
+	Also handle saved search mimetypes.
+	
+
 2005-12-02  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-search-directory.[ch]:

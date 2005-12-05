@@ -27,6 +27,9 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 
+#define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
+#define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
+
 /* Recognizing special file names. */
 gboolean nautilus_file_name_matches_hidden_pattern   (const char *name_or_relative_uri);
 gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relative_uri);

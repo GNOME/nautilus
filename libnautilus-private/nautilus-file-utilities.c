@@ -66,9 +66,14 @@ nautilus_compute_title_for_uri (const char *text_uri)
 			directory = nautilus_directory_get (text_uri);
 			
 			query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-			title = nautilus_query_to_readable_string (query);
-
 			nautilus_directory_unref (directory);
+			
+			if (query != NULL) {
+				title = nautilus_query_to_readable_string (query);
+				g_object_unref (query);
+			} else {
+				title = g_strdup (_("Search"));
+			}
 
 			return title;
 		}

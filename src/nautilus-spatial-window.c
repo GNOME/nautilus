@@ -38,6 +38,7 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
+#include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
@@ -100,8 +101,9 @@ struct _NautilusSpatialWindowDetails {
 	GtkWidget *location_button;
 	GtkWidget *location_label;
 	GtkWidget *location_icon;
-	GtkWidget *search_bar;
 
+	GtkWidget *query_editor;
+	
 	GnomeVFSURI *location;
 };
 
@@ -293,8 +295,9 @@ nautilus_spatial_window_show (GtkWidget *widget)
 	
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 
-	if (NAUTILUS_WINDOW (window)->details->search_mode) {
-		nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->details->search_bar));
+	if (NAUTILUS_WINDOW (window)->details->search_mode &&
+	    window->details->query_editor != NULL) {
+		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (window->details->query_editor));
 	}
 }
 
@@ -322,18 +325,51 @@ real_prompt_for_location (NautilusWindow *window)
 }
 
 static void
-real_set_search_mode (NautilusWindow *window, gboolean search_mode)
+query_editor_activate_callback (NautilusSearchBar *bar,
+				NautilusQuery *query,
+				NautilusWindow *window)
+{
+	NautilusDirectory *directory;
+
+	directory = nautilus_directory_get_for_file (window->details->viewed_file);
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
+					     query);
+	nautilus_window_reload (window);
+
+	nautilus_directory_unref (directory);
+}
+
+static void
+real_set_search_mode (NautilusWindow *window, gboolean search_mode,
+		      NautilusSearchDirectory *search_directory)
 {
 	NautilusSpatialWindow *spatial_window;
+	GtkWidget *query_editor;
+	NautilusQuery *query;
 
 	spatial_window = NAUTILUS_SPATIAL_WINDOW (window);
 
+	spatial_window->details->query_editor = NULL;
+	
 	if (search_mode) {
-		gtk_widget_show (spatial_window->details->search_bar);
-	} else {
-		gtk_widget_hide (spatial_window->details->search_bar);
-	}
-	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (spatial_window->details->search_bar));
+		query_editor = nautilus_query_editor_new (nautilus_search_directory_is_saved_search (search_directory));
+		spatial_window->details->query_editor = query_editor;
+		
+		nautilus_window_add_extra_location_widget (window, query_editor);
+		gtk_widget_show (query_editor);
+		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (query_editor));
+		g_signal_connect_object (query_editor, "activate",
+					 G_CALLBACK (query_editor_activate_callback), window, 0);
+		
+		query = nautilus_search_directory_get_query (search_directory);
+		if (query != NULL) {
+			nautilus_query_editor_set_query (NAUTILUS_QUERY_EDITOR (query_editor),
+							 query);
+			g_object_unref (query);
+		}
+	} 
 }
 
 static char *
@@ -598,30 +634,6 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
  	gtk_object_sink (GTK_OBJECT (popup));
 }
 
-static void
-search_bar_activate_callback (NautilusSearchBar *bar,
-			      NautilusWindow *window)
-{
-	NautilusDirectory *directory;
-	NautilusSearchDirectory *search_directory;
-	NautilusQuery *query;
-
-	directory = nautilus_directory_get_for_file (window->details->viewed_file);
-
-	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-
-	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
-	query = nautilus_search_bar_get_query (bar);
-
-	nautilus_search_directory_set_query (search_directory, query);
-	if (query) {
-		g_object_unref (query);
-	}
-	nautilus_window_reload (window);
-
-	nautilus_directory_unref (directory);
-}
-
 static int
 get_dnd_icon_size (NautilusSpatialWindow *window)
 {
@@ -776,22 +788,9 @@ action_search_callback (GtkAction *action,
 			gpointer user_data)
 {
 	NautilusWindow *window;
-	NautilusSearchBar *bar;
-	NautilusQuery *query;
 	char *uri;
 
 	window = NAUTILUS_WINDOW (user_data);
-
-	if (window->details->search_mode) {
-		bar = NAUTILUS_SEARCH_BAR (NAUTILUS_SPATIAL_WINDOW (window)->details->search_bar);
-
-		query = nautilus_search_bar_get_query (bar);
-
-		if (query == NULL) {
-			nautilus_search_bar_grab_focus (bar);
-			return;
-		}
-	}
 
 	uri = nautilus_search_directory_generate_new_uri ();
 	nautilus_window_go_to (window, uri);
@@ -825,7 +824,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 {
 	GtkRcStyle *rc_style;
 	GtkWidget *arrow;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *vbox, *eventbox, *extras_vbox;
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	GtkTargetList *targets;
@@ -835,24 +834,28 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
-	window->details->content_box = 
-		gtk_vbox_new (FALSE, 0);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
-			  window->details->content_box,
+			  vbox,
 			  /* X direction */                   /* Y direction */
 			  0, 1,                               1, 4,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
 			  0,                                  0);
+	gtk_widget_show (vbox);
+
+	eventbox = gtk_event_box_new ();
+	gtk_widget_set_name (eventbox, "nautilus-extra-view-widget");
+	gtk_box_pack_start (GTK_BOX (vbox), eventbox, FALSE, FALSE, 0);
+	gtk_widget_show (eventbox);
+	
+	extras_vbox = gtk_vbox_new (FALSE, 0);
+	NAUTILUS_WINDOW (window)->details->extra_location_widgets = extras_vbox;
+	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
+
+	window->details->content_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), window->details->content_box, TRUE, TRUE, 0);
 	gtk_widget_show (window->details->content_box);
-
-	window->details->search_bar = nautilus_search_bar_new ();
-	g_signal_connect (window->details->search_bar,
-			  "activate",
-			  G_CALLBACK (search_bar_activate_callback),
-			  window);
-	gtk_box_pack_start (GTK_BOX (window->details->content_box), 
-			    window->details->search_bar, FALSE, FALSE, 0);
-
+	
 	window->details->location_button = gtk_button_new ();
 	g_signal_connect (window->details->location_button,
 			  "button-press-event",

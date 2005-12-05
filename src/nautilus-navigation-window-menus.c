@@ -424,11 +424,11 @@ static void
 action_search_callback (GtkAction *action,
 			gpointer user_data)
 {
-	NautilusWindow *window;
+	NautilusNavigationWindow *window;
 
-	window = NAUTILUS_WINDOW (user_data);
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
-	nautilus_window_set_search_mode (window, TRUE);
+	nautilus_navigation_window_show_search (window);
 }
 
 static const GtkActionEntry navigation_entries[] = {

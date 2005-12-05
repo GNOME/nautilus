@@ -117,5 +117,6 @@ gboolean nautilus_navigation_window_status_bar_showing   (NautilusNavigationWind
 void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWindow *window,
                                                           gboolean                  back,
                                                           guint                     distance);
+void     nautilus_navigation_window_show_search          (NautilusNavigationWindow *window);
 
 #endif

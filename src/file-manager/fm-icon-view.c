@@ -2728,7 +2728,13 @@ fm_icon_view_supports_uri (const char *uri,
 	if (file_type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 		return TRUE;
 	}
+	if (strcmp (mime_type, NAUTILUS_SAVED_SEARCH_MIMETYPE) == 0){
+		return TRUE;
+	}
 	if (g_str_has_prefix (uri, "trash:")) {
+		return TRUE;
+	}
+	if (g_str_has_prefix (uri, EEL_SEARCH_URI)) {
 		return TRUE;
 	}
 

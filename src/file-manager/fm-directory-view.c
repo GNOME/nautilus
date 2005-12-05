@@ -57,7 +57,9 @@
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktable.h>
 #include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkfilechooserbutton.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktoggleaction.h>
 #include <gtk/gtkentry.h>
@@ -82,6 +84,7 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -1178,14 +1181,123 @@ static void
 action_save_search_callback (GtkAction *action,
 			     gpointer callback_data)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	NautilusSearchDirectory *search;
+	FMDirectoryView	*directory_view;
+	
+        directory_view = FM_DIRECTORY_VIEW (callback_data);
+
+	if (directory_view->details->model &&
+	    NAUTILUS_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
+		search = NAUTILUS_SEARCH_DIRECTORY (directory_view->details->model);
+		nautilus_search_directory_save_search (search);
+
+		/* Save search is disabled */
+		schedule_update_menus (directory_view);
+	}
 }
+
+static void
+query_name_entry_changed_cb  (GtkWidget *entry, GtkWidget *button)
+{
+	const char *text;
+	gboolean sensitive;
+	
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	sensitive = (text != NULL) && (*text != 0);
+
+	gtk_widget_set_sensitive (button, sensitive);
+}
+
 
 static void
 action_save_search_as_callback (GtkAction *action,
 				gpointer callback_data)
-{                
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+{
+	FMDirectoryView	*directory_view;
+	NautilusSearchDirectory *search;
+	NautilusQuery *query;
+	GtkWidget *dialog, *table, *label, *entry, *chooser, *save_button;
+	const char *entry_text;
+	char *filename, *filename_utf8, *dirname, *path, *uri;
+	
+        directory_view = FM_DIRECTORY_VIEW (callback_data);
+
+	if (directory_view->details->model &&
+	    NAUTILUS_IS_SEARCH_DIRECTORY (directory_view->details->model)) {
+		search = NAUTILUS_SEARCH_DIRECTORY (directory_view->details->model);
+
+		query = nautilus_search_directory_get_query (search);
+		
+		dialog = gtk_dialog_new_with_buttons (_("Save search"),
+						      fm_directory_view_get_containing_window (directory_view),
+						      GTK_DIALOG_NO_SEPARATOR,
+						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						      NULL);
+		save_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
+						     GTK_STOCK_SAVE, GTK_RESPONSE_OK);
+
+		table = gtk_table_new (2, 2, FALSE);
+		gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), table);
+		gtk_widget_show (table);
+		
+		label = gtk_label_new (_("Query name:"));
+		gtk_table_attach_defaults  (GTK_TABLE (table), label,
+					    0, 1, 0, 1);
+		gtk_widget_show (label);
+		entry = gtk_entry_new ();
+		gtk_table_attach_defaults  (GTK_TABLE (table), entry,
+					    1, 2, 0, 1);
+		
+		gtk_widget_set_sensitive (save_button, FALSE);
+		g_signal_connect (entry, "changed",
+				  G_CALLBACK (query_name_entry_changed_cb), save_button);
+		
+		gtk_widget_show (entry);
+		label = gtk_label_new (_("Folder:"));
+		gtk_table_attach_defaults  (GTK_TABLE (table), label,
+					    0, 1, 1, 2);
+		gtk_widget_show (label);
+
+		chooser = gtk_file_chooser_button_new (_("Select folder to save search in"),
+						      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+		gtk_table_attach_defaults  (GTK_TABLE (table), chooser,
+					    1, 2, 1, 2);
+		gtk_widget_show (chooser);
+
+		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
+
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
+						     g_get_home_dir ());
+		
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			entry_text = gtk_entry_get_text (GTK_ENTRY (entry));
+			if (g_str_has_suffix (entry_text, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+				filename_utf8 = g_strdup (entry_text);
+			} else {
+				filename_utf8 = g_strconcat (entry_text, NAUTILUS_SAVED_SEARCH_EXTENSION, NULL);
+			}
+
+			filename = g_filename_from_utf8 (filename_utf8, -1, NULL, NULL, NULL);
+			g_free (filename_utf8);
+
+			dirname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+			
+			path = g_build_filename (dirname, filename, NULL);
+			g_free (filename);
+			g_free (dirname);
+
+			uri = gnome_vfs_get_uri_from_local_path (path);
+			g_free (path);
+			
+			nautilus_search_directory_save_to_file (search, uri);
+			nautilus_file_changes_queue_file_added (uri);
+			nautilus_file_changes_consume_changes (TRUE);
+			g_free (uri);
+		}
+		
+		gtk_widget_destroy (dialog);
+	}
 }
 
 
@@ -8075,9 +8187,8 @@ fm_directory_view_reveal_selection (FMDirectoryView *view)
 }
 
 static gboolean
-unref_key_and_remove (gpointer key, gpointer value, gpointer callback_data)
+remove_all (gpointer key, gpointer value, gpointer callback_data)
 {
-	nautilus_file_unref (key);
 	return TRUE;
 }
 
@@ -8096,14 +8207,14 @@ fm_directory_view_stop (FMDirectoryView *view)
 	unschedule_display_of_pending_files (view);
 
 	/* Free extra undisplayed files */
-	nautilus_file_list_free (view->details->new_added_files);
+	file_and_directory_list_free (view->details->new_added_files);
 	view->details->new_added_files = NULL;
-	nautilus_file_list_free (view->details->new_changed_files);
+	file_and_directory_list_free (view->details->new_changed_files);
 	view->details->new_changed_files = NULL;
-	g_hash_table_foreach_remove (view->details->non_ready_files, unref_key_and_remove, NULL);
-	nautilus_file_list_free (view->details->old_added_files);
+	g_hash_table_foreach_remove (view->details->non_ready_files, remove_all, NULL);
+	file_and_directory_list_free (view->details->old_added_files);
 	view->details->old_added_files = NULL;
-	nautilus_file_list_free (view->details->old_changed_files);
+	file_and_directory_list_free (view->details->old_changed_files);
 	view->details->old_changed_files = NULL;
 	eel_g_list_free_deep (view->details->pending_uris_selected);
 	view->details->pending_uris_selected = NULL;

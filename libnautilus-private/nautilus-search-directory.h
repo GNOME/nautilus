@@ -39,9 +39,6 @@
 #define NAUTILUS_IS_SEARCH_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_DIRECTORY))
 
-#define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
-#define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
-
 typedef struct NautilusSearchDirectoryDetails NautilusSearchDirectoryDetails;
 
 typedef struct {
@@ -68,6 +65,5 @@ void           nautilus_search_directory_save_to_file    (NautilusSearchDirector
 NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *search);
 void           nautilus_search_directory_set_query       (NautilusSearchDirectory *search,
 							  NautilusQuery           *query);
-
 
 #endif /* NAUTILUS_SEARCH_DIRECTORY_H */

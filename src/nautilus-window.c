@@ -90,6 +90,8 @@
 
 #define MAX_HISTORY_ITEMS 50
 
+#define EXTRA_VIEW_WIDGETS_BACKGROUND "#a7c6e1"
+
 /* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDE_PANE_MINIMUM_WIDTH 1
 #define SIDE_PANE_MINIMUM_HEIGHT 400
@@ -396,14 +398,16 @@ nautilus_window_get_location (NautilusWindow *window)
 }
 
 void
-nautilus_window_set_search_mode (NautilusWindow *window, gboolean search_mode)
+nautilus_window_set_search_mode (NautilusWindow *window,
+				 gboolean search_mode,
+				 NautilusSearchDirectory *search_directory)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	window->details->search_mode = search_mode;
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 set_search_mode, (window, search_mode));
+			 set_search_mode, (window, search_mode, search_directory));
 }
 
 
@@ -1568,4 +1572,14 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
+
+	/* Allow to set the colors of the extra view widgets */
+	gtk_rc_parse_string ("\n"
+			     "   style \"nautilus-extra-view-widgets-style-internal\"\n"
+			     "   {\n"
+			     "      bg[NORMAL] = \"" EXTRA_VIEW_WIDGETS_BACKGROUND "\"\n"
+			     "   }\n"
+			     "\n"
+			     "    widget \"*.nautilus-extra-view-widget\" style:rc \"nautilus-extra-view-widgets-style-internal\" \n"
+			     "\n");
 }

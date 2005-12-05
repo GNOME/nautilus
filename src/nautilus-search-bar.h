@@ -52,10 +52,10 @@ typedef struct {
 GType      nautilus_search_bar_get_type     	(void);
 GtkWidget* nautilus_search_bar_new          	(void);
 
-void	   nautilus_search_bar_grab_focus (NautilusSearchBar *bar);
-void       nautilus_search_bar_clear_query (NautilusSearchBar *bar);
-
-NautilusQuery *nautilus_search_bar_get_query (NautilusSearchBar *bar);
-void           nautilus_search_bar_set_query (NautilusSearchBar *bar, NautilusQuery *query);
+GtkWidget *    nautilus_search_bar_borrow_entry  (NautilusSearchBar *bar);
+void           nautilus_search_bar_return_entry  (NautilusSearchBar *bar);
+void           nautilus_search_bar_grab_focus    (NautilusSearchBar *bar);
+NautilusQuery *nautilus_search_bar_get_query     (NautilusSearchBar *bar);
+void           nautilus_search_bar_clear         (NautilusSearchBar *bar);
 
 #endif /* NAUTILUS_SEARCH_BAR_H */

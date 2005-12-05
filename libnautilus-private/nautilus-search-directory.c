@@ -758,7 +758,10 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 	if (search->details->query != query) {
 		search->details->modified = TRUE;
 	}
-	g_object_ref (query);
+	
+	if (query) {
+		g_object_ref (query);
+	}
 
 	if (search->details->query) {
 		g_object_unref (search->details->query);
@@ -770,7 +773,11 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 NautilusQuery *
 nautilus_search_directory_get_query (NautilusSearchDirectory *search)
 {
-	return search->details->query;
+	if (search->details->query != NULL) {
+		return g_object_ref (search->details->query);
+	}
+					   
+	return NULL;
 }
 
 NautilusSearchDirectory *

@@ -37,14 +37,13 @@
 
 struct NautilusSearchBarDetails {
 	GtkWidget *entry;
-	gboolean change_frozen;
-	guint typing_timeout_id;
+	gboolean entry_borrowed;
 };
 
 enum {
-	ACTIVATE,
-	CANCEL,
-	LAST_SIGNAL
+       ACTIVATE,
+       CANCEL,
+       LAST_SIGNAL
 }; 
 
 static guint signals[LAST_SIGNAL];
@@ -56,6 +55,7 @@ EEL_CLASS_BOILERPLATE (NautilusSearchBar,
 		       nautilus_search_bar,
 		       GTK_TYPE_EVENT_BOX)
 
+	
 static void
 finalize (GObject *object)
 {
@@ -79,83 +79,44 @@ nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 
 	signals[ACTIVATE] =
 		g_signal_new ("activate",
-		              G_TYPE_FROM_CLASS (class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusSearchBarClass, activate),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
-
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (NautilusSearchBarClass, activate),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+	
 	signals[CANCEL] =
 		g_signal_new ("cancel",
-		              G_TYPE_FROM_CLASS (class),
-		              G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
-		              G_STRUCT_OFFSET (NautilusSearchBarClass, cancel),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
+			      G_STRUCT_OFFSET (NautilusSearchBarClass, cancel),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
 }
 
 static gboolean
-query_is_valid (NautilusSearchBar *bar)
+entry_has_text (NautilusSearchBar *bar)
 {
-	const char *text;
+       const char *text;
 
-	text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
+       text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 
-	return text != NULL && text[0] != '\0';
+       return text != NULL && text[0] != '\0';
 }
 
 static void
 entry_activate_cb (GtkWidget *entry, NautilusSearchBar *bar)
 {
-	if (bar->details->typing_timeout_id) {
-		g_source_remove (bar->details->typing_timeout_id);
-		bar->details->typing_timeout_id = 0;
-	}
-
-	if (query_is_valid (bar)) {
-		g_signal_emit (bar, signals[ACTIVATE], 0);
-	}
+       if (entry_has_text (bar) && !bar->details->entry_borrowed) {
+               g_signal_emit (bar, signals[ACTIVATE], 0);
+       }
 }
 
-static gboolean
-typing_timeout_cb (gpointer user_data)
-{
-	NautilusSearchBar *bar;
-
-	bar = NAUTILUS_SEARCH_BAR (user_data);
-
-	if (query_is_valid (bar)) {
-		g_signal_emit (bar, signals[ACTIVATE], 0);
-	}
-
-	bar->details->typing_timeout_id = 0;
-
-	return FALSE;
-}
-
-#define TYPING_TIMEOUT 750
-
-static void
-entry_changed_cb (GtkWidget *entry, NautilusSearchBar *bar)
-{
-	if (bar->details->change_frozen) {
-		return;
-	}
-
-	if (bar->details->typing_timeout_id) {
-		g_source_remove (bar->details->typing_timeout_id);
-	}
-
-	bar->details->typing_timeout_id =
-		g_timeout_add (TYPING_TIMEOUT,
-			       typing_timeout_cb,
-			       bar);
-}
 
 static void
 nautilus_search_bar_init (NautilusSearchBar *bar)
@@ -178,7 +139,7 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
 	label = gtk_label_new ("");
-	gtk_label_set_markup (GTK_LABEL (label), "<b>Search:</b>");
+	gtk_label_set_markup (GTK_LABEL (label), _("<b>Search:</b>"));
 	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -188,16 +149,41 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 
 	g_signal_connect (bar->details->entry, "activate",
 			  G_CALLBACK (entry_activate_cb), bar);
-	g_signal_connect (bar->details->entry, "changed",
-			  G_CALLBACK (entry_changed_cb), bar);
 
 	gtk_widget_show (bar->details->entry);
 }
 
-void
-nautilus_search_bar_grab_focus (NautilusSearchBar *bar)
+GtkWidget *
+nautilus_search_bar_borrow_entry (NautilusSearchBar *bar)
 {
-	gtk_widget_grab_focus (bar->details->entry);
+	GtkBindingSet *binding_set;
+	
+	bar->details->entry_borrowed = TRUE;
+
+	binding_set = gtk_binding_set_by_class (G_OBJECT_GET_CLASS (bar));
+	gtk_binding_entry_clear	(binding_set, GDK_Escape, 0);
+	return bar->details->entry;
+}
+
+void
+nautilus_search_bar_return_entry (NautilusSearchBar *bar)
+{
+	GtkBindingSet *binding_set;
+	
+	bar->details->entry_borrowed = FALSE;
+	
+	binding_set = gtk_binding_set_by_class (G_OBJECT_GET_CLASS (bar));
+	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0, "cancel", 0);
+}
+
+GtkWidget *
+nautilus_search_bar_new (void)
+{
+	GtkWidget *bar;
+
+	bar = g_object_new (NAUTILUS_TYPE_SEARCH_BAR, NULL);
+
+	return bar;
 }
 
 NautilusQuery *
@@ -220,39 +206,13 @@ nautilus_search_bar_get_query (NautilusSearchBar *bar)
 }
 
 void
-nautilus_search_bar_clear_query (NautilusSearchBar *bar)
+nautilus_search_bar_grab_focus (NautilusSearchBar *bar)
 {
-	bar->details->change_frozen = TRUE;
-	gtk_entry_set_text (GTK_ENTRY (bar->details->entry), "");
-	bar->details->change_frozen = FALSE;
-}
-
-GtkWidget *
-nautilus_search_bar_new (void)
-{
-	GtkWidget *bar;
-
-	bar = g_object_new (NAUTILUS_TYPE_SEARCH_BAR, NULL);
-
-	return bar;
+	gtk_widget_grab_focus (bar->details->entry);
 }
 
 void
-nautilus_search_bar_set_query (NautilusSearchBar *bar, NautilusQuery *query)
+nautilus_search_bar_clear (NautilusSearchBar *bar)
 {
-	const char *text;
-
-	if (!query) {
-		nautilus_search_bar_clear_query (bar);
-		return;
-	}
-
-	text = nautilus_query_get_text (query);
-	if (!text) {
-		text = "";
-	}
-
-	bar->details->change_frozen = TRUE;
-	gtk_entry_set_text (GTK_ENTRY (bar->details->entry), text);
-	bar->details->change_frozen = FALSE;
+	gtk_entry_set_text (GTK_ENTRY (bar->details->entry), "");
 }

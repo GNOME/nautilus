@@ -38,6 +38,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-pathbar.h"
+#include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
@@ -123,10 +124,6 @@ static void navigation_bar_location_changed_callback (GtkWidget                *
 						      NautilusNavigationWindow *window);
 static void navigation_bar_cancel_callback           (GtkWidget                *widget,
 						      NautilusNavigationWindow *window);
-static void search_bar_activate_callback             (NautilusSearchBar        *bar,
-						      NautilusWindow           *window);
-static void search_bar_cancel_callback               (GtkWidget                *widget,
-						      NautilusNavigationWindow *window);
 static void path_bar_location_changed_callback       (GtkWidget                *widget,
 						      const char               *uri,
 						      NautilusNavigationWindow *window);
@@ -134,6 +131,12 @@ static void always_use_location_entry_changed        (gpointer                  
 
 static void nautilus_navigation_window_set_bar_mode  (NautilusNavigationWindow *window, 
 						      NautilusBarMode           mode);
+static void search_bar_activate_callback             (NautilusSearchBar        *bar,
+						      NautilusWindow           *window);
+static void search_bar_cancel_callback               (GtkWidget                *widget,
+						      NautilusNavigationWindow *window);
+
+static void nautilus_navigation_window_show_location_bar_temporarily (NautilusNavigationWindow *window);
 
 GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
 			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
@@ -146,7 +149,7 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	GtkWidget *location_bar;
 	GtkWidget *view_as_menu_vbox;
 	GtkToolItem *item;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *vbox, *eventbox, *extras_vbox;
 	
 	window->details = g_new0 (NautilusNavigationWindowDetails, 1);
 
@@ -163,6 +166,25 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 			  0,                                  0);
 	gtk_widget_show (window->details->content_paned);
 
+	vbox = gtk_vbox_new (FALSE, 0);
+	nautilus_horizontal_splitter_pack2 (
+		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
+		vbox);
+	gtk_widget_show (vbox);
+
+	eventbox = gtk_event_box_new ();
+	gtk_widget_set_name (eventbox, "nautilus-extra-view-widget");
+	gtk_box_pack_start (GTK_BOX (vbox), eventbox, FALSE, FALSE, 0);
+	gtk_widget_show (eventbox);
+	
+	extras_vbox = gtk_vbox_new (FALSE, 0);
+	NAUTILUS_WINDOW (window)->details->extra_location_widgets = extras_vbox;
+	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
+
+	window->details->content_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), window->details->content_box, TRUE, TRUE, 0);
+	gtk_widget_show (window->details->content_box);
+	
 	nautilus_navigation_window_initialize_actions (window);
 	nautilus_navigation_window_initialize_menus (window);
 	
@@ -225,7 +247,6 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 				 G_CALLBACK (search_bar_activate_callback), window, 0);
 	g_signal_connect_object (window->search_bar, "cancel",
 				 G_CALLBACK (search_bar_cancel_callback), window, 0);
-
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    window->search_bar,
 			    TRUE, TRUE, 0);
@@ -385,42 +406,6 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 static void
 navigation_bar_cancel_callback (GtkWidget *widget,
 				NautilusNavigationWindow *window)
-{
-	hide_temporary_bars (window);
-}
-
-static void
-search_bar_activate_callback (NautilusSearchBar *bar,
-			      NautilusWindow *window)
-{
-	char *uri;
-	NautilusDirectory *directory;
-	NautilusSearchDirectory *search_directory;
-	NautilusQuery *query;
-
-	uri = nautilus_search_directory_generate_new_uri ();
-	nautilus_window_go_to (window, uri);
-	g_free (uri);
-
-	directory = nautilus_directory_get_for_file (window->details->viewed_file);
-
-	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-
-	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
-	query = nautilus_search_bar_get_query (bar);
-
-	nautilus_search_directory_set_query (search_directory, query);
-	if (query) {
-		g_object_unref (query);
-	}
-	nautilus_window_reload (window);
-
-	nautilus_directory_unref (directory);
-}
-
-static void
-search_bar_cancel_callback (GtkWidget *widget,
-			    NautilusNavigationWindow *window)
 {
 	hide_temporary_bars (window);
 }
@@ -933,9 +918,8 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 
 	connect_view (window, new_view);
 
-	nautilus_horizontal_splitter_pack2 (
-		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
-		GTK_WIDGET (new_view));
+	gtk_container_add (GTK_CONTAINER (window->details->content_box),
+			   GTK_WIDGET (new_view));
 
 	if (new_view != NULL && nautilus_view_supports_zooming (new_view)) {
 		gtk_widget_show (window->zoom_control);
@@ -989,9 +973,77 @@ real_prompt_for_location (NautilusWindow *window)
 }
 
 static void
-real_set_search_mode (NautilusWindow *window, gboolean search_mode)
+search_bar_activate_callback (NautilusSearchBar *bar,
+			      NautilusWindow *window)
+{
+	char *uri;
+	NautilusDirectory *directory;
+	NautilusSearchDirectory *search_directory;
+	NautilusQuery *query;
+
+	uri = nautilus_search_directory_generate_new_uri ();
+	directory = nautilus_directory_get (uri);
+	
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	search_directory = NAUTILUS_SEARCH_DIRECTORY (directory);
+
+	query = nautilus_search_bar_get_query (NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->search_bar));
+	if (query != NULL) {
+		nautilus_search_directory_set_query (search_directory, query);
+		g_object_unref (query);
+	}
+	
+	nautilus_window_go_to (window, uri);
+	
+	nautilus_directory_unref (directory);
+	g_free (uri);
+}
+
+static void
+search_bar_cancel_callback (GtkWidget *widget,
+			    NautilusNavigationWindow *window)
+{
+	hide_temporary_bars (window);
+}
+
+void 
+nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
+{
+	if (!nautilus_navigation_window_search_bar_showing (window)) {
+		nautilus_navigation_window_show_location_bar_temporarily (window);
+		nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_SEARCH);
+		window->details->temporary_search_bar = TRUE;
+		nautilus_search_bar_clear (NAUTILUS_SEARCH_BAR (window->search_bar));
+	}
+	
+	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (window->search_bar));
+}
+
+static void
+query_editor_activate_callback (NautilusSearchBar *bar,
+				NautilusQuery *query,
+				NautilusWindow *window)
+{
+	NautilusDirectory *directory;
+
+	directory = nautilus_directory_get_for_file (window->details->viewed_file);
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
+					     query);
+	nautilus_window_reload (window);
+
+	nautilus_directory_unref (directory);
+}
+
+static void
+real_set_search_mode (NautilusWindow *window, gboolean search_mode,
+		      NautilusSearchDirectory *search_directory)
 {
 	NautilusNavigationWindow *nav_window;
+	GtkWidget *query_editor;
+	NautilusQuery *query;
 
 	nav_window = NAUTILUS_NAVIGATION_WINDOW (window);
 
@@ -1001,16 +1053,29 @@ real_set_search_mode (NautilusWindow *window, gboolean search_mode)
 		return;
 	}
 
-	nautilus_navigation_window_show_location_bar_temporarily (nav_window);
-	
-	if (nautilus_navigation_window_search_bar_showing (nav_window)) {
-		nav_window->details->temporary_search_bar = FALSE;
+	if (nautilus_search_directory_is_saved_search (search_directory)) {
+		query_editor = nautilus_query_editor_new (TRUE);
 	} else {
-		nav_window->details->temporary_search_bar = TRUE;
+		nautilus_navigation_window_show_location_bar_temporarily (nav_window);
+		nautilus_navigation_window_set_bar_mode (nav_window, NAUTILUS_BAR_SEARCH);
+		nav_window->details->temporary_search_bar = FALSE;
+
+		query_editor = nautilus_query_editor_new_with_bar (FALSE, NAUTILUS_SEARCH_BAR (nav_window->search_bar));
 	}
 
-	nautilus_navigation_window_set_bar_mode (nav_window, NAUTILUS_BAR_SEARCH);
-	nautilus_search_bar_grab_focus (NAUTILUS_SEARCH_BAR (nav_window->search_bar));
+	g_signal_connect_object (query_editor, "activate",
+				 G_CALLBACK (query_editor_activate_callback), window, 0);
+	
+	query = nautilus_search_directory_get_query (search_directory);
+	if (query != NULL) {
+		nautilus_query_editor_set_query (NAUTILUS_QUERY_EDITOR (query_editor),
+						 query);
+		g_object_unref (query);
+	}
+	
+	nautilus_window_add_extra_location_widget (window, query_editor);
+	gtk_widget_show (query_editor);
+	nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (query_editor));
 }
 
 void

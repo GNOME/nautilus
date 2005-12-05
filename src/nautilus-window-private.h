@@ -52,6 +52,8 @@ struct NautilusWindowDetails
         GtkWidget *table;
         GtkWidget *statusbar;
         GtkWidget *menubar;
+
+        GtkWidget *extra_location_widgets;
         
         GtkUIManager *ui_manager;
         GtkActionGroup *main_action_group; /* owned by ui_manager */
@@ -99,6 +101,7 @@ struct NautilusWindowDetails
 
 struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
+        GtkWidget *content_box;
         GtkActionGroup *navigation_action_group; /* owned by ui_manager */
         
         /* Location bar */
