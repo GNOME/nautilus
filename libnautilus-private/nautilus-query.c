@@ -25,10 +25,14 @@
 #include <string.h>
 
 #include "nautilus-query.h"
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 
 struct NautilusQueryDetails {
 	char *text;
+	char *location_uri;
+	GList *mime_types;
 };
 
 static void  nautilus_query_class_init       (NautilusQueryClass *class);
@@ -77,10 +81,10 @@ nautilus_query_new (void)
 }
 
 
-G_CONST_RETURN char *
+char *
 nautilus_query_get_text (NautilusQuery *query)
 {
-	return query->details->text;
+	return g_strdup (query->details->text);
 }
 
 void 
@@ -88,6 +92,39 @@ nautilus_query_set_text (NautilusQuery *query, const char *text)
 {
 	g_free (query->details->text);
 	query->details->text = g_strdup (text);
+}
+
+char *
+nautilus_query_get_location (NautilusQuery *query)
+{
+	return g_strdup (query->details->location_uri);
+}
+	
+void
+nautilus_query_set_location (NautilusQuery *query, const char *uri)
+{
+	g_free (query->details->location_uri);
+	query->details->location_uri = g_strdup (uri);
+}
+
+GList *
+nautilus_query_get_mime_types (NautilusQuery *query)
+{
+	return eel_g_str_list_copy (query->details->mime_types);
+}
+
+void
+nautilus_query_set_mime_types (NautilusQuery *query, GList *mime_types)
+{
+	eel_g_list_free_deep (query->details->mime_types);
+	query->details->mime_types = eel_g_str_list_copy (mime_types);
+}
+
+void
+nautilus_query_add_mime_type (NautilusQuery *query, const char *mime_type)
+{
+	query->details->mime_types = g_list_prepend (query->details->mime_types,
+						     g_strdup (mime_type));
 }
 
 char *
@@ -177,11 +214,30 @@ static GMarkupParser parser = {
 };
 
 
-NautilusQuery *
-nautilus_query_load (char *file)
+static NautilusQuery *
+nautilus_query_parse_xml (char *xml, gsize xml_len)
 {
 	ParserInfo info;
 	GMarkupParseContext *ctx;
+
+	if (xml_len == -1) {
+		xml_len = strlen (xml);
+	}
+	
+	info.query = NULL;
+	info.in_text = FALSE;
+
+	ctx = g_markup_parse_context_new (&parser, 0, &info, NULL);
+	g_markup_parse_context_parse (ctx, xml, xml_len, NULL);
+
+	return info.query;
+}
+
+
+NautilusQuery *
+nautilus_query_load (char *file)
+{
+	NautilusQuery *query;
 	char *xml;
 	gsize xml_len;
 	
@@ -190,18 +246,73 @@ nautilus_query_load (char *file)
 	}
 	
 
-	info.query = NULL;
-	info.in_text = FALSE;
-
-	ctx = g_markup_parse_context_new (&parser, 0, &info, NULL);
-	
 	g_file_get_contents (file, &xml, &xml_len, NULL);
-	g_markup_parse_context_parse (ctx, xml, xml_len, NULL);
+	query = nautilus_query_parse_xml (xml, xml_len);
 	g_free (xml);
 
-	return info.query;
+	return query;
 }
 
+static char *
+encode_home_uri (const char *uri)
+{
+	char *home_uri;
+	const char *encoded_uri;
+	
+	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	
+	if (g_str_has_prefix (uri, home_uri)) {
+		encoded_uri = uri + strlen (home_uri);
+		if (*encoded_uri == '/') {
+			encoded_uri++;
+		}
+	} else {
+		encoded_uri = uri;
+	}
+	
+	g_free (home_uri);
+	
+	return g_markup_escape_text (encoded_uri, -1);
+}
+
+static char *
+nautilus_query_to_xml (NautilusQuery *query)
+{
+	GString *xml;
+	char *text;
+	char *uri;
+	char *mimetype;
+	GList *l;
+
+	xml = g_string_new ("");
+	g_string_append (xml,
+			 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			 "<query version=\"1.0\">\n");
+
+	text = g_markup_escape_text (query->details->text, -1);
+	g_string_append_printf (xml, "   <text>%s</text>\n", text);
+	g_free (text);
+
+	if (query->details->location_uri) {
+		uri = encode_home_uri (query->details->location_uri);
+		g_string_append_printf (xml, "   <location>%s</location>\n", uri);
+		g_free (uri);
+	}
+
+	if (query->details->mime_types) {
+		g_string_append (xml, "   <mimetypes>\n");
+		for (l = query->details->mime_types; l != NULL; l = l->next) {
+			mimetype = g_markup_escape_text (l->data, -1);
+			g_string_append_printf (xml, "      <mimetype>%s</mimetype>\n", mimetype);
+			g_free (mimetype);
+		}
+		g_string_append (xml, "   </mimetypes>\n");
+	}
+	
+	g_string_append (xml, "</query>\n");
+
+	return g_string_free (xml, FALSE);
+}
 
 gboolean
 nautilus_query_save (NautilusQuery *query, char *file)
@@ -212,10 +323,7 @@ nautilus_query_save (NautilusQuery *query, char *file)
 
 
 	res = TRUE;
-	xml = g_strdup_printf ("<query>\n"
-			       "   <text>%s</text>\n"
-			       "</query>\n",
-			       nautilus_query_get_text (query));
+	xml = nautilus_query_to_xml (query);
 	g_file_set_contents (file, xml, strlen (xml), &err);
 	g_free (xml);
 	
