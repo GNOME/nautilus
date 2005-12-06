@@ -204,11 +204,13 @@ nautilus_search_engine_beagle_set_query (NautilusSearchEngine *engine, NautilusQ
 	NautilusSearchEngineBeagle *beagle;
 
 	beagle = NAUTILUS_SEARCH_ENGINE_BEAGLE (engine);
-	
-	g_object_ref (query);
+
+	if (query) {
+		g_object_ref (query);
+	}
 
 	if (beagle->details->query) {
-		g_object_unref (query);
+		g_object_unref (beagle->details->query);
 	}
 
 	beagle->details->query = query;
