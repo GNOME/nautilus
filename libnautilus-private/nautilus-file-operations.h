@@ -41,7 +41,7 @@ typedef void (* NautilusNewFileCallback)   (const char *new_file_uri,
 /* FIXME: int copy_action should be an enum */
 
 void nautilus_file_operations_copy_move   (const GList               *item_uris,
-					   GArray                    *target_item_points,
+					   GArray                    *relative_item_points,
 					   const char                *target_dir_uri,
 					   GdkDragAction              copy_action,
 					   GtkWidget                 *parent_view,
@@ -49,15 +49,18 @@ void nautilus_file_operations_copy_move   (const GList               *item_uris,
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
+					   GdkPoint                  *target_point,
 					   const char                *parent_dir_uri,
 					   NautilusNewFolderCallback  done_callback,
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
+					   GdkPoint                  *target_point,
 					   const char                *parent_dir,
 					   const char                *initial_contents,
 					   NautilusNewFileCallback    done_callback,
 					   gpointer                   data);
 void nautilus_file_operations_new_file_from_template (GtkWidget               *parent_view,
+					   	      GdkPoint                *target_point,
 						      const char              *parent_dir,
 						      const char              *target_filename,
 						      const char              *template_uri,

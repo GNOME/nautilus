@@ -966,10 +966,15 @@ nautilus_navigation_window_show_navigation_bar_temporarily (NautilusNavigationWi
 }
 
 static void
-real_prompt_for_location (NautilusWindow *window)
+real_prompt_for_location (NautilusWindow *window, const char *initial)
 {
 	nautilus_navigation_window_show_location_bar_temporarily (NAUTILUS_NAVIGATION_WINDOW (window));
 	nautilus_navigation_window_show_navigation_bar_temporarily (NAUTILUS_NAVIGATION_WINDOW (window));
+	
+	if (initial) {
+		nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
+						      initial);
+	}
 }
 
 static void

@@ -35,6 +35,7 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <gtk/gtkenums.h>
 #include <string.h>
 
 enum {
@@ -244,12 +245,12 @@ tree_node_get_pixbuf_from_factory (TreeNode *node,
 				   const char *modifier)
 {
 	if (node->parent == NULL) {
-		return nautilus_icon_factory_get_pixbuf_from_name
+		return nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
 			(node->icon_name, NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE, NULL);
+			 GTK_ICON_SIZE_MENU, NULL);
 	}
-	return nautilus_icon_factory_get_pixbuf_for_file_force_size
-		(node->file, modifier, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	return nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(node->file, modifier, GTK_ICON_SIZE_MENU);
 }
 
 static gboolean
@@ -302,9 +303,9 @@ tree_node_get_emblem_pixbuf_from_factory (TreeNode *node)
 	eel_string_list_free (emblems_to_ignore);
 
 	if (emblem_icons != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size
 			(emblem_icons->data, NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 GTK_ICON_SIZE_MENU,
 			 NULL, NULL, FALSE, NULL);
 	} else {
 		pixbuf = NULL;

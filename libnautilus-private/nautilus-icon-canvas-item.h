@@ -84,7 +84,8 @@ void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanv
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem       *item,
 								ArtIRect                      canvas_rect);
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem       *item,
-								ArtPoint                      world_point);
+								ArtPoint                      world_point,
+								GtkCornerType *corner);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
 ArtDRect    nautilus_icon_canvas_item_get_text_rectangle       (const NautilusIconCanvasItem *item);

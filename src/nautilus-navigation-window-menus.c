@@ -417,7 +417,7 @@ action_go_to_location_callback (GtkAction *action,
 
 	window = NAUTILUS_WINDOW (user_data);
 
-	nautilus_window_prompt_for_location (window);
+	nautilus_window_prompt_for_location (window, NULL);
 }			   
 
 static void

@@ -381,12 +381,13 @@ nautilus_window_go_home (NautilusWindow *window)
 }
 
 void
-nautilus_window_prompt_for_location (NautilusWindow *window)
+nautilus_window_prompt_for_location (NautilusWindow *window,
+				     const char     *initial)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-                         prompt_for_location, (window));
+                         prompt_for_location, (window, initial));
 }
 
 char *
@@ -1558,8 +1559,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusWindowClass, prompt_for_location),
 			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE, 1, G_TYPE_STRING);
 	
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, 0,
@@ -1567,8 +1568,9 @@ nautilus_window_class_init (NautilusWindowClass *class)
 				      G_TYPE_BOOLEAN, FALSE);
 	gtk_binding_entry_add_signal (binding_set, GDK_F5, 0,
 				      "reload", 0);
-	gtk_binding_entry_add_signal (binding_set, GDK_d, GDK_MOD1_MASK,
-				      "prompt-for-location", 0);
+	gtk_binding_entry_add_signal (binding_set, GDK_slash, 0,
+				      "prompt-for-location", 1,
+				      G_TYPE_STRING, "/");
 
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;

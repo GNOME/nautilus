@@ -70,14 +70,6 @@
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
-/* Included for the typeselect flush delay */
-#include <libnautilus-private/nautilus-icon-container.h>
-
-typedef struct {
-	char *type_select_pattern;
-	guint64 last_typeselect_time;
-} TypeSelectState;
-
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
 	FMListModel *model;
@@ -112,9 +104,6 @@ struct FMListViewDetails {
 	gboolean ignore_button_release;
 
 	gboolean row_selected_on_button_down;
-
-	/* typeahead selection state */
-	TypeSelectState *type_select_state;
 
 	gboolean menus_ready;
 	
@@ -235,7 +224,8 @@ activate_selected_items_alternate (FMListView *view,
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
+					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND |
+					  NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 	nautilus_file_list_free (file_list);
 
 }
@@ -734,141 +724,6 @@ button_release_callback (GtkWidget *widget,
 }
 
 static gboolean
-select_matching_name (FMListView *view,
-		      const char *match_name)
-{
-	GtkTreeIter iter;
-	GtkTreePath *path;
-	gboolean match_found;
-	GValue value = { 0 };
-	const gchar *file_name;
-	int match_name_len, file_name_len;
-	
-	match_found = FALSE;
-	
-	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (view->details->model), &iter)) {
-		return FALSE;
-	}
-
-	match_name_len = strlen (match_name);
-	do {
-		gtk_tree_model_get_value (GTK_TREE_MODEL (view->details->model), &iter, view->details->file_name_column_num, &value);
-		file_name = g_value_get_string (&value);
-		file_name_len = strlen (file_name);
-		match_found = file_name_len >= match_name_len &&
-			g_ascii_strncasecmp (match_name, file_name, MIN (match_name_len, file_name_len)) == 0;
-		g_value_unset (&value);
-
-		if (match_found) {
-			path = gtk_tree_model_get_path (GTK_TREE_MODEL (view->details->model), &iter);
-			gtk_tree_view_set_cursor (view->details->tree_view, path, NULL, FALSE);
-			gtk_tree_view_scroll_to_cell (view->details->tree_view, path, NULL, FALSE, 0, 0);
-			gtk_tree_path_free (path);
-			
-			return TRUE;
-		}
-	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (view->details->model), &iter));
-	
-	return FALSE;
-}
-
-static void
-fm_list_view_flush_typeselect_state (FMListView *view)
-{
-	if (view->details->type_select_state == NULL) {
-		return;
-	}
-	
-	g_free (view->details->type_select_state->type_select_pattern);
-	g_free (view->details->type_select_state);
-	view->details->type_select_state = NULL;
-}
-
-static gboolean
-handle_typeahead (FMListView *view,
-		  GdkEventKey *event,
-		  gboolean *flush_typeahead)
-{
-	char *new_pattern;
-	gint64 now;
-	gint64 time_delta;
-	guint32 unichar;
-	char unichar_utf8[7];
-	int i;
-
-	unichar = gdk_keyval_to_unicode (event->keyval);
-	i = g_unichar_to_utf8 (unichar, unichar_utf8);
-	unichar_utf8[i] = 0;
-	
-	*flush_typeahead = FALSE;
-
-	if (*event->string == 0) {
-		/* can be an empty string if the modifier was held down, etc. */
-		return FALSE;
-	}
-	
-	if (!g_unichar_isprint (unichar)) {
-		*flush_typeahead = TRUE;
-		return FALSE;
-	}
-
-	/* don't handle '+', '*', '/' at all because they are used by the GTK+ tree
-	 * view code for expanding/collapsing rows. These characters are quite
-	 * unlikely to be in a filename, so this will not confuse users. The '-'
-	 * which is used for collapsing in the treeview is special-cased below. */
-	switch (event->keyval) {
-		case GDK_plus:
-		case GDK_asterisk:
-		case GDK_slash:
-		case GDK_KP_Add:
-		case GDK_KP_Multiply:
-		case GDK_KP_Divide:
-			return FALSE;
-
-		default:
-			break;
-	}
-
-
-	/* lazily allocate the typeahead state */
-	if (view->details->type_select_state == NULL) {
-
-		/* Special-case for '-', because this character is likely to be in a
-		 * filename. */
-		if ((event->keyval == GDK_minus) || (event->keyval == GDK_KP_Subtract)) {
-			return FALSE;
-		}
-
-		view->details->type_select_state = g_new0 (TypeSelectState, 1);
-	}
-
-	/* find out how long since last character was typed */
-	now = eel_get_system_time ();
-	time_delta = now - view->details->type_select_state->last_typeselect_time;
-	if (time_delta < 0 || time_delta > NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY) {
-		/* the typeselect state is too old, start with a fresh one */
-		g_free (view->details->type_select_state->type_select_pattern);
-		view->details->type_select_state->type_select_pattern = NULL;
-	}
-
-	if (view->details->type_select_state->type_select_pattern != NULL) {
-		new_pattern = g_strconcat
-			(view->details->type_select_state->type_select_pattern,
-			 unichar_utf8, NULL);
-		g_free (view->details->type_select_state->type_select_pattern);
-	} else {
-		new_pattern = g_strdup (unichar_utf8);
-	}
-
-	view->details->type_select_state->type_select_pattern = new_pattern;
-	view->details->type_select_state->last_typeselect_time = now;
-
-	select_matching_name (view, new_pattern);
-
-	return TRUE;
-}
-
-static gboolean
 popup_menu_callback (GtkWidget *widget, gpointer callback_data)
 {
  	FMListView *view;
@@ -1010,12 +865,10 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	FMDirectoryView *view;
 	GdkEventButton button_event = { 0 };
 	gboolean handled;
-	gboolean flush_typeahead;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	handled = FALSE;
-	flush_typeahead = TRUE;
-	
+
 	switch (event->keyval) {
 	case GDK_F10:
 		if (event->state & GDK_CONTROL_MASK) {
@@ -1049,16 +902,7 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		break;
 
 	default:
-		/* Don't use Control or Alt keys for type-selecting, because they
-		 * might be used for menus.
-		 */
-		handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
-			handle_typeahead (FM_LIST_VIEW (view), event, &flush_typeahead);
-		break;
-	}
-	if (flush_typeahead) {
-		/* any non-ascii key will force the typeahead state to be forgotten */
-		fm_list_view_flush_typeselect_state (FM_LIST_VIEW (view));
+		handled = FALSE;
 	}
 
 	return handled;
@@ -1322,6 +1166,7 @@ create_and_set_up_tree_view (FMListView *view)
 							g_str_equal,
 							(GDestroyNotify)g_free,
 							NULL);
+	gtk_tree_view_set_enable_search (view->details->tree_view, TRUE);
 
 	/* Don't handle backspace key. It's used to open the parent folder. */
 	binding_set = gtk_binding_set_by_class (GTK_WIDGET_GET_CLASS (view->details->tree_view));
@@ -1427,7 +1272,9 @@ create_and_set_up_tree_view (FMListView *view)
 			g_hash_table_insert (view->details->columns,
 					     g_strdup ("name"), 
 					     view->details->file_name_column);
-			
+
+			gtk_tree_view_set_search_column (view->details->tree_view, column_num);
+
 			gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, column_num);
 			gtk_tree_view_column_set_title (view->details->file_name_column, _("Name"));
 			gtk_tree_view_column_set_resizable (view->details->file_name_column, TRUE);
@@ -2318,9 +2165,9 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 
 	
 	gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
-				      path,
+				      NULL,
 				      list_view->details->file_name_column,
-				      FALSE, 0.0, 0.0);
+				      TRUE, 0.0, 0.0);
 	gtk_tree_view_set_cursor (list_view->details->tree_view,
 				  path,
 				  list_view->details->file_name_column,
@@ -2460,6 +2307,14 @@ fm_list_view_compare_files (FMDirectoryView *view, NautilusFile *file1, Nautilus
 	return fm_list_model_compare_func (list_view->details->model, file1, file2);
 }
 
+static gboolean
+fm_list_view_using_manual_layout (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+
+	return FALSE;
+}
+
 static void
 fm_list_view_dispose (GObject *object)
 {
@@ -2510,8 +2365,6 @@ fm_list_view_finalize (GObject *object)
 
 	gtk_target_list_unref (list_view->details->source_target_list);
 	
-	fm_list_view_flush_typeselect_state (list_view);
-
 	g_list_free (list_view->details->cells);
 	g_hash_table_destroy (list_view->details->columns);
 
@@ -2644,6 +2497,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
+	fm_directory_view_class->using_manual_layout = fm_list_view_using_manual_layout;
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
@@ -2711,7 +2565,6 @@ fm_list_view_init (FMListView *list_view)
 		 G_CALLBACK (icons_changed_callback),
 		 list_view, 0);
 	
-	list_view->details->type_select_state = NULL;
 	/* ensure that the zoom level is always set in begin_loading */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
 }

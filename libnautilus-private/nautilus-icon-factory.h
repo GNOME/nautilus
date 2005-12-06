@@ -77,12 +77,6 @@ typedef enum {
 /* Maximum size of an icon that the icon factory will ever produce */
 #define NAUTILUS_ICON_MAXIMUM_SIZE     320
 
-/* Icon size to use for menus. NAUTILUS_ICON_SIZE_SMALLEST
- * is a little too small and NAUTILUS_ICON_SIZE_SMALLER is
- * a little too big.
- */
-#define NAUTILUS_ICON_SIZE_FOR_MENUS	20
-
 /* here's a structure to hold the emblem attach points */
 
 #define MAX_ATTACH_POINTS 12
@@ -133,25 +127,29 @@ GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_icon            (const char     
 								 guint                        nominal_size,
 								 NautilusEmblemAttachPoints  *attach_points,
 								 GdkRectangle                *embedded_text_rect,
+								 gboolean                     force_size,
 								 gboolean                     wants_default,
 								 char                       **display_name);
-GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_icon_force_size (const char                  *icon,
-								 const char                  *modifier,
-								 guint                        nominal_size,
-								 NautilusEmblemAttachPoints  *attach_points,
-								 GdkRectangle                *embedded_text_rect,
-								 gboolean                     wants_default,
-								 char                       **display_name);
+GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size (const char                  *icon,
+								      const char                  *modifier,
+								      GtkIconSize                  stock_size,
+								      NautilusEmblemAttachPoints  *attach_points,
+								      GdkRectangle                *embedded_text_rect,
+								      gboolean                     wants_default,
+								      char                       **display_name);
+
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.
  */
 GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_file            (NautilusFile *file,
 								 const char   *modifer,
-								 guint         size_in_pixels);
-GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_file_force_size (NautilusFile *file,
-								 const char   *modifier,
-								 guint         size_in_pixels);
+								 guint         size_in_pixels,
+								 gboolean      force_size);
+GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_file_with_stock_size (NautilusFile *file,
+								      const char   *modifier,
+								      GtkIconSize   stock_size);
+
 
 /* Convenience routine for getting a pixbuf from an icon name
  */
@@ -160,6 +158,10 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const 
 									  guint                        size_in_pixels,
 									  gboolean                     force_size,
 									  char                       **display_name);
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (const char          *icon_name,
+										  const char          *modifer,
+										  GtkIconSize          stock_size,
+										  char               **display_name);
 
 GtkIconTheme *         nautilus_icon_factory_get_icon_theme        (void);
 GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory (void);

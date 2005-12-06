@@ -48,6 +48,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksettings.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkiconfactory.h>
 #include <gtk/gtkicontheme.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -839,6 +840,16 @@ get_special_icon_for_file (NautilusFile *file)
 	return ret;
 }
 
+static gint
+gtk_icon_size_to_nominal_size (GtkIconSize icon_size)
+{
+	gint ret;
+
+	g_assert (gtk_icon_size_lookup (icon_size, &ret, NULL));
+
+	return ret;
+}
+
 /* key routine to get the icon for a file */
 char *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_text)
@@ -859,13 +870,14 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 	
 	custom_icon = NULL;
  
- 	/* if there is a custom image in the metadata or link info, use that. */
+	/* Custom icon set by user, taken from metadata */
  	custom_uri = nautilus_file_get_custom_icon (file);
 	if (custom_uri) {
 		custom_icon = image_uri_to_name_or_uri (custom_uri);
 	}
  	g_free (custom_uri);
 
+	/* Icon for "special files" (burn, computer, network, smb, trash) */
 	special_icon = get_special_icon_for_file (file);
 	if (special_icon != NULL) {
 		return g_strdup (special_icon);
@@ -1007,9 +1019,6 @@ nautilus_icon_factory_get_larger_icon_size (guint size)
 	if (size < NAUTILUS_ICON_SIZE_SMALLEST) {
 		return NAUTILUS_ICON_SIZE_SMALLEST;
 	}
-	if (size < NAUTILUS_ICON_SIZE_FOR_MENUS) {
-		return NAUTILUS_ICON_SIZE_FOR_MENUS;
-	}
 	if (size < NAUTILUS_ICON_SIZE_SMALLER) {
 		return NAUTILUS_ICON_SIZE_SMALLER;
 	}
@@ -1048,9 +1057,6 @@ nautilus_icon_factory_get_smaller_icon_size (guint size)
 	}
 	if (size > NAUTILUS_ICON_SIZE_SMALLER) {
 		return NAUTILUS_ICON_SIZE_SMALLER;
-	}
-	if (size > NAUTILUS_ICON_SIZE_FOR_MENUS) {
-		return NAUTILUS_ICON_SIZE_FOR_MENUS;
 	}
 	return NAUTILUS_ICON_SIZE_SMALLEST;
 }
@@ -1390,15 +1396,15 @@ get_icon_from_cache (const char *icon,
         return cached_icon;
 }
 
-static GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_icon_internal (const char                  *icon,
-						    const char                  *modifier,
-						    guint                        nominal_size,
-						    gboolean                     force_size,
-						    NautilusEmblemAttachPoints  *attach_points,
-						    GdkRectangle                *embedded_text_rect,
-						    gboolean                     wants_default,
-						    char                       **display_name)
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
+					   const char                  *modifier,
+					   guint                        nominal_size,
+					   NautilusEmblemAttachPoints  *attach_points,
+					   GdkRectangle                *embedded_text_rect,
+					   gboolean                     force_size,
+					   gboolean                     wants_default,
+					   char                       **display_name)
 {
 	NautilusIconFactory *factory;
 	CacheIcon *cached_icon;
@@ -1451,34 +1457,22 @@ nautilus_icon_factory_get_pixbuf_for_icon_internal (const char                  
 	return pixbuf;
 }
 
-GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
-					   const char                  *modifier,
-					   guint                        nominal_size,
-					   NautilusEmblemAttachPoints  *attach_points,
-					   GdkRectangle                *embedded_text_rect,
-					   gboolean                     wants_default,
-					   char                       **display_name)
-{
-	return nautilus_icon_factory_get_pixbuf_for_icon_internal (icon, modifier, nominal_size, FALSE,
-								   attach_points, embedded_text_rect,
-								   wants_default, display_name);
-}
 
 GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_icon_force_size (const char                  *icon,
-						      const char                  *modifier,
-						      guint                        nominal_size,
-						      NautilusEmblemAttachPoints  *attach_points,
-						      GdkRectangle                *embedded_text_rect,
-						      gboolean                     wants_default,
-						      char                       **display_name)
+nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size (const char                  *icon,
+							   const char                  *modifier,
+							   GtkIconSize                  stock_size,
+							   NautilusEmblemAttachPoints  *attach_points,
+							   GdkRectangle                *embedded_text_rect,
+							   gboolean                     wants_default,
+							   char                       **display_name)
 {
-	return nautilus_icon_factory_get_pixbuf_for_icon_internal (icon, modifier, nominal_size, TRUE,
-								   attach_points, embedded_text_rect,
-								   wants_default, display_name);
+	return nautilus_icon_factory_get_pixbuf_for_icon (icon, modifier,
+							  gtk_icon_size_to_nominal_size (stock_size),
+							  attach_points, embedded_text_rect,
+							  TRUE /* force_size*/, wants_default,
+							  display_name);
 }
-
 
 static guint
 cache_key_hash (gconstpointer p)
@@ -1551,11 +1545,11 @@ nautilus_get_relative_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file
  * and nautilus_icon_factory_get_pixbuf_for_icon.
  */
-static GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_file_internal (NautilusFile *file,
-						    const char *modifier,
-						    guint size_in_pixels,
-						    gboolean force_size)
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
+					   const char *modifier,
+					   guint size_in_pixels,
+					   gboolean force_size)
 {
 	char *icon;
 	GdkPixbuf *pixbuf;
@@ -1567,11 +1561,11 @@ nautilus_icon_factory_get_pixbuf_for_file_internal (NautilusFile *file,
 		return NULL;
 	}
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon_internal (icon, modifier,
-								     size_in_pixels,
-								     force_size,
-								     NULL, NULL,
-								     TRUE, NULL);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, modifier,
+							    size_in_pixels,
+							    NULL, NULL,
+							    force_size,
+							    TRUE, NULL);
 	
 	g_free (icon);
 
@@ -1579,25 +1573,14 @@ nautilus_icon_factory_get_pixbuf_for_file_internal (NautilusFile *file,
 }
 
 GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
-					   const char *modifier,
-					   guint size_in_pixels)
+nautilus_icon_factory_get_pixbuf_for_file_with_stock_size (NautilusFile *file,
+							   const char   *modifier,
+							   GtkIconSize   stock_size)
 {
-	return nautilus_icon_factory_get_pixbuf_for_file_internal (file,
-								   modifier,
-								   size_in_pixels,
-								   FALSE);
-}
+	return nautilus_icon_factory_get_pixbuf_for_file (file, modifier,
+							  gtk_icon_size_to_nominal_size (stock_size),
+							  TRUE); /* force_size */
 
-GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_file_force_size (NautilusFile *file,
-						      const char *modifier,
-						      guint size_in_pixels)
-{
-	return nautilus_icon_factory_get_pixbuf_for_file_internal (file,
-								   modifier,
-								   size_in_pixels,
-								   TRUE);
 }
 
 /* Convenience routine for getting a pixbuf from an icon name. */
@@ -1608,12 +1591,25 @@ nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 					    gboolean force_size,
 					    char **display_name)
 {
-	return nautilus_icon_factory_get_pixbuf_for_icon_internal (icon_name, modifier,
-								   size_in_pixels, force_size,
-								   NULL, NULL,
-								   TRUE, display_name);
+	return nautilus_icon_factory_get_pixbuf_for_icon (icon_name, modifier,
+							  size_in_pixels,
+							  NULL, NULL,
+							  force_size, TRUE,
+							  display_name);
 }
-									  
+
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (const char *icon_name,
+							    const char *modifier,
+							    GtkIconSize stock_size,
+							    char **display_name)
+{
+	return nautilus_icon_factory_get_pixbuf_from_name (icon_name, modifier,
+							   gtk_icon_size_to_nominal_size (stock_size),
+							   TRUE, display_name);
+}
+
+
 GdkPixbuf *
 nautilus_icon_factory_get_thumbnail_frame (void)
 {
@@ -1656,9 +1652,7 @@ nautilus_self_check_icon_factory (void)
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (0), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (1), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (11), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (12), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (19), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (20), 24);
+	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (12), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (23), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (24), 36);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_larger_icon_size (35), 36);
@@ -1677,9 +1671,7 @@ nautilus_self_check_icon_factory (void)
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (1), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (11), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (12), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (20), 12);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (21), 20);
-	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (24), 20);
+	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (24), 12);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (25), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (36), 24);
 	EEL_CHECK_INTEGER_RESULT (nautilus_icon_factory_get_smaller_icon_size (37), 36);

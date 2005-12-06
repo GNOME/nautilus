@@ -33,6 +33,7 @@
 #include <eel/eel-preferences.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkenums.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtktreeselection.h>
@@ -101,7 +102,7 @@ update_history (NautilusHistorySidebar *sidebar)
 	for (l = history; l != NULL; l = l->next) {
 		bookmark = nautilus_bookmark_copy (l->data);
 
-		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 		name = nautilus_bookmark_get_name (bookmark);
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,

@@ -833,6 +833,7 @@ fm_tree_view_create_folder_cb (GtkWidget *menu_item,
 
 	parent_uri = nautilus_file_get_uri (view->details->popup_file);
 	nautilus_file_operations_new_folder (GTK_WIDGET (view->details->tree_widget),
+					     NULL,
 					     parent_uri,
 					     new_folder_done, view->details->tree_widget);
 
@@ -1236,12 +1237,16 @@ create_tree (FMTreeView *view)
 	view->details->tree_widget = GTK_TREE_VIEW
 		(gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
 	g_object_unref (view->details->sort_model);
+
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
+						 compare_rows, view, NULL);
+
 	g_signal_connect_object
 		(view->details->child_model, "row_loaded",
 		 G_CALLBACK (row_loaded_callback),
 		 view, G_CONNECT_AFTER);
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-home", NULL);
+	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-fs-home", NULL);
 	g_free (home_uri);
 	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), "gnome-fs-directory", NULL);
 #ifdef NOT_YET_USABLE
@@ -1262,9 +1267,6 @@ create_tree (FMTreeView *view)
 				 G_CALLBACK (volume_unmounted_callback), view, 0);
 	
 	g_object_unref (view->details->child_model);
-
-	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
-						 compare_rows, view, NULL);
 
 	gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);
 

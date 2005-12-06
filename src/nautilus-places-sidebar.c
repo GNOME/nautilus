@@ -112,7 +112,7 @@ add_place (GtkListStore *store, PlaceType place_type,
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter;
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE, NULL);
+	pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (icon, NULL, GTK_ICON_SIZE_MENU, NULL);
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter,
 			    PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
@@ -147,9 +147,13 @@ update_places (NautilusPlacesSidebar *sidebar)
 	desktop_path = nautilus_get_desktop_directory ();
 
 	if (strcmp (g_get_home_dir(), desktop_path) != 0) {
+		char *display_name;
+
 		mount_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		display_name = g_filename_display_basename (g_get_home_dir ());
 		last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-				       _("Home"), "gnome-fs-home", mount_uri);
+				       display_name, "gnome-fs-home", mount_uri);
+		g_free (display_name);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}	
@@ -212,6 +216,10 @@ update_places (NautilusPlacesSidebar *sidebar)
 	bookmark_count = nautilus_bookmark_list_length (sidebar->bookmarks);
 	for (index = 0; index < bookmark_count; ++index) {
 		bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
+
+		if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+			continue;
+		}
 
 		name = nautilus_bookmark_get_name (bookmark);
 		icon = nautilus_bookmark_get_icon (bookmark);

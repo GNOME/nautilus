@@ -201,7 +201,7 @@ nautilus_location_dialog_new (NautilusWindow *window)
 
 	location = nautilus_window_get_location (window);
 	if (location != NULL) {
-		if(NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 			formatted_location = nautilus_get_desktop_directory ();
 		} else {
 			formatted_location = eel_format_uri_for_display (location);
@@ -212,6 +212,17 @@ nautilus_location_dialog_new (NautilusWindow *window)
 		g_free (formatted_location);
 		g_free (location);
 	}
+	
+	gtk_widget_grab_focus (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry);
 
 	return dialog;
+}
+
+void
+nautilus_location_dialog_set_location (NautilusLocationDialog *dialog,
+				       const char *location)
+{
+	nautilus_entry_set_text (NAUTILUS_ENTRY (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), location);
+	gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, 0);
+	gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
 }

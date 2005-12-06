@@ -51,6 +51,7 @@
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkaboutdialog.h>
+#include <gtk/gtkenums.h>
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -171,7 +172,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	g_free (truncated_name);
 
 	/* Create menu item with pixbuf */
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 
 	action_name = g_strdup_printf ("bookmark_%s_%d", parent_id, index_in_parent);
 
@@ -222,8 +223,10 @@ action_connect_to_server_callback (GtkAction *action,
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GtkWidget *dialog;
-	
-	dialog = nautilus_connect_server_dialog_new (window, nautilus_window_get_location (window));
+	char *location;
+	location = nautilus_window_get_location (window);
+	dialog = nautilus_connect_server_dialog_new (window, location);
+	g_free (location);
 
 	gtk_widget_show (dialog);
 }
@@ -666,7 +669,7 @@ static const GtkActionEntry main_entries[] = {
     N_("Connect to _Server..."), NULL,           /* label, accelerator */
     N_("Set up a connection to a network server"),                                      /* tooltip */ 
     G_CALLBACK (action_connect_to_server_callback) },
-  { "Home", GTK_STOCK_HOME,                        /* name, stock id */
+  { "Home", "gnome-fs-home",                        /* name, stock id */
     N_("_Home"), "<alt>Home",           /* label, accelerator */
     N_("Go to the home folder"),                                  /* tooltip */ 
     G_CALLBACK (action_home_callback) },

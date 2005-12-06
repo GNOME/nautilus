@@ -462,6 +462,11 @@ nautilus_window_open_location_full (NautilusWindow *window,
 				} else {
 					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
 				}
+			} else if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0) {
+				target_window = nautilus_application_create_navigation_window 
+					(window->application,
+					 NULL,
+					 gtk_window_get_screen (GTK_WINDOW (window)));
 			}
 		} else if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
                         if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
@@ -477,7 +482,12 @@ nautilus_window_open_location_full (NautilusWindow *window,
                                 NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
                                 target_window = window;
                         }
-                } else {
+		} else if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) {
+			target_window = nautilus_application_create_navigation_window 
+				(window->application,
+				 NULL,
+				 gtk_window_get_screen (GTK_WINDOW (window)));
+		} else {
                         target_window = window;
                 }       
                 break;
@@ -1458,7 +1468,11 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		detail_message = g_strdup
 			(_("Check that an SMB server is running in the local network."));
 		break;
-		
+
+	case GNOME_VFS_ERROR_CANCELLED:
+		g_free (uri_for_display);
+		return;
+
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
 	default:
 		error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
@@ -1554,10 +1568,7 @@ zoom_level_changed_callback (NautilusView *view,
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_ZOOM_NORMAL);
 	gtk_action_set_visible (action, supports_zooming);
-	gtk_action_set_sensitive (action,
-				  TRUE);
-       
-	/* FIXME bugzilla.gnome.org 43442: Desensitize "Zoom Normal"? */
+	gtk_action_set_sensitive (action, supports_zooming);
 }
 
 static void

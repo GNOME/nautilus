@@ -125,9 +125,17 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
 }
 
 static int
-application_equal (GnomeVFSMimeApplication *app_a, GnomeVFSMimeApplication *app_b)
+application_compare_by_name (const GnomeVFSMimeApplication *app_a,
+			     const GnomeVFSMimeApplication *app_b)
 {
-	return gnome_vfs_mime_application_equal (app_a, app_b) ? 0 : 1;
+	return g_utf8_collate (app_a->name, app_b->name);
+}
+
+static int
+application_compare_by_id (const GnomeVFSMimeApplication *app_a,
+			   const GnomeVFSMimeApplication *app_b)
+{
+	return strcmp (app_a->id, app_b->id);
 }
 
 static GList *
@@ -142,6 +150,7 @@ get_open_with_mime_applications (NautilusFile *file)
 	uri = nautilus_file_get_uri (file);
 
 	result = gnome_vfs_mime_get_all_applications_for_uri (uri, mime_type);
+	result = g_list_sort (result, (GCompareFunc) application_compare_by_name);
 
 	if (strcmp (guessed_mime_type, mime_type) != 0) {
 		GList *result_2;
@@ -150,8 +159,9 @@ get_open_with_mime_applications (NautilusFile *file)
 		result_2 = gnome_vfs_mime_get_all_applications (guessed_mime_type);
 		for (l = result_2; l != NULL; l = l->next) {
 			if (!g_list_find_custom (result, l->data,
-						 (GCompareFunc) application_equal)) {
-				result = g_list_prepend (result, l->data);
+						 (GCompareFunc) application_compare_by_id)) {
+				result = g_list_insert_sorted (result, l->data,
+							       (GCompareFunc) application_compare_by_name);
 			}
 		}
 		g_list_free (result_2);
@@ -161,7 +171,7 @@ get_open_with_mime_applications (NautilusFile *file)
 	g_free (uri);
 	g_free (guessed_mime_type);
 	
-	return g_list_reverse (result);
+	return result;
 }
 
 /* Get a list of applications for the Open With menu.  This is 
@@ -193,6 +203,7 @@ nautilus_mime_get_applications_for_file (NautilusFile *file)
 	}
 	mime_type = nautilus_file_get_mime_type (file);
 	result = gnome_vfs_mime_get_all_applications (mime_type);
+	result = g_list_sort (result, (GCompareFunc) application_compare_by_name);
 
 	return filter_nautilus_handler (result);
 }

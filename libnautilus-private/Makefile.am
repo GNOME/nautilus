@@ -1,9 +1,6 @@
 include $(top_srcdir)/Makefile.shared
 
-lib_LTLIBRARIES=libnautilus-private.la
-
-libnautilus_private_la_LIBADD = \
-	../libnautilus-extension/libnautilus-extension.la
+noinst_LTLIBRARIES=libnautilus-private.la
 
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
@@ -27,9 +24,13 @@ dependency_static_libs = \
 libnautilus_private_la_LDFLAGS =	\
 	-version-info 2:0:0		\
 	-no-undefined			\
+	$(NULL)
+
+libnautilus_private_la_LIBADD =		\
 	$(dependency_static_libs)	\
-	$(CORE_LIBS)			\
 	$(BEAGLE_LIBS)			\
+	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
+	$(CORE_LIBS)			\
 	$(NULL)
 
 nautilus_metafile_server_idl_sources = \

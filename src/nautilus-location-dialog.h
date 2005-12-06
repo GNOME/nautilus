@@ -45,7 +45,9 @@ struct _NautilusLocationDialogClass {
 	GtkDialogClass parent_class;
 };
 
-GType      nautilus_location_dialog_get_type (void);
-GtkWidget* nautilus_location_dialog_new      (NautilusWindow *window);
+GType      nautilus_location_dialog_get_type     (void);
+GtkWidget* nautilus_location_dialog_new          (NautilusWindow         *window);
+void       nautilus_location_dialog_set_location (NautilusLocationDialog *dialog,
+						  const char             *location);
 
 #endif /* NAUTILUS_LOCATION_DIALOG_H */

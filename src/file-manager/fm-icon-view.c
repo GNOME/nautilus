@@ -1658,6 +1658,14 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 		(get_icon_container (FM_ICON_VIEW (view)), selection);
 }
 
+static gboolean
+fm_icon_view_using_manual_layout (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return !fm_icon_view_using_auto_layout (FM_ICON_VIEW (view));
+}
+
 static void
 icon_container_activate_callback (NautilusIconContainer *container,
 				  GList *file_list,
@@ -1682,7 +1690,8 @@ icon_container_activate_alternate_callback (NautilusIconContainer *container,
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), 
 					  file_list, 
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
+					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND |
+					  NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
 static void
@@ -2623,6 +2632,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
         fm_directory_view_class->start_renaming_file = fm_icon_view_start_renaming_file;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
+	fm_directory_view_class->using_manual_layout = fm_icon_view_using_manual_layout;
 
 	klass->clean_up = fm_icon_view_real_clean_up;
 	klass->supports_auto_layout = real_supports_auto_layout;

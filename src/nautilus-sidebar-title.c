@@ -322,7 +322,8 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
-								    sidebar_title->details->best_icon_size);
+								    sidebar_title->details->best_icon_size,
+								    FALSE);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
@@ -449,7 +450,12 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		g_free (component_info);
 	} else {
 		info_string = g_string_new (NULL);
-		type_string = nautilus_file_get_string_attribute (file, "type");
+
+		type_string = NULL;
+		if (file != NULL && nautilus_file_should_show_type (file)) {
+			type_string = nautilus_file_get_string_attribute (file, "type");
+		}
+
 		if (type_string != NULL) {
 			append_and_eat (info_string, NULL, type_string);
 			append_and_eat (info_string, ", ",
@@ -511,7 +517,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			(p->data, NULL,
 			 NAUTILUS_ICON_SIZE_STANDARD,
 			 NULL, NULL,
-			 FALSE, NULL);
+			 FALSE, FALSE, NULL);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			g_object_unref (pixbuf);

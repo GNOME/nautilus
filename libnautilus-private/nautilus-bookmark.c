@@ -217,8 +217,7 @@ nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
 
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
-			      guint icon_size,
-			      gboolean optimize_for_anti_aliasing)
+			      GtkIconSize icon_size)
 {
 	GdkPixbuf *result;
 	char *icon;
@@ -230,7 +229,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 		return NULL;
 	}
 
-	result = nautilus_icon_factory_get_pixbuf_for_icon_force_size
+	result = nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size
 		(icon, NULL,
 		 icon_size, NULL, NULL,
 		 TRUE, NULL);
@@ -353,7 +352,8 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	should_emit_contents_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
-	if (!gnome_vfs_uris_match (bookmark->details->uri, file_uri)) {
+	if (!gnome_vfs_uris_match (bookmark->details->uri, file_uri) &&
+	    !nautilus_file_is_in_trash (file)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
 		should_emit_contents_changed_signal = TRUE;
@@ -361,8 +361,9 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 		g_free (file_uri);
 	}
 
-	if (nautilus_file_is_gone (file)) {
-		/* The file we were monitoring has been deleted,
+	if (nautilus_file_is_gone (file) ||
+	    nautilus_file_is_in_trash (file)) {
+		/* The file we were monitoring has been trashed, deleted,
 		 * or moved in a way that we didn't notice. Make 
 		 * a spanking new NautilusFile object for this 
 		 * location so if a new file appears in this place 
@@ -501,7 +502,7 @@ create_image_widget_for_bookmark (NautilusBookmark *bookmark)
 	GdkPixbuf *pixbuf;
 	GtkWidget *widget;
 
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 	if (pixbuf == NULL) {
 		return NULL;
 	}

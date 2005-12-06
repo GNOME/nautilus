@@ -63,6 +63,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktoggleaction.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkenums.h>
 #include <gtk/gtkbindings.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -104,6 +105,17 @@
 
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
+
+/* Minimum starting update inverval */
+#define UPDATE_INTERVAL_MIN 100
+/* Maximum update interval */
+#define UPDATE_INTERVAL_MAX 2000
+/* Amount of miliseconds the update interval is increased */
+#define UPDATE_INTERVAL_INC 250
+/* Interval at which the update interval is increased */
+#define UPDATE_INTERVAL_TIMEOUT_INTERVAL 250
+/* Milliseconds that have to pass without a change to reset the update interval */
+#define UPDATE_INTERVAL_RESET 1000
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 
@@ -197,7 +209,11 @@ struct FMDirectoryViewDetails
 	guint update_menus_timeout_id;
 	guint update_status_idle_id;
 	
-	guint display_pending_idle_id;
+	guint display_pending_source_id;
+	guint changes_timeout_id;
+
+	guint update_interval;
+ 	guint64 last_queued;
 	
 	guint files_added_handler_id;
 	guint files_changed_handler_id;
@@ -260,6 +276,8 @@ struct FMDirectoryViewDetails
 	GList *subdirectory_list;
 
 	gboolean allow_moves;
+
+	GdkPoint context_menu_position;
 };
 
 typedef enum {
@@ -275,12 +293,12 @@ typedef enum {
 
 typedef struct {
 	FMDirectoryView *view;
-	NautilusFile *file;
+	GList *files;
+	NautilusFileListHandle *files_handle;
 	NautilusWindowOpenMode mode;
 	NautilusWindowOpenFlags flags;
-	NautilusFileCallback callback;
-	gboolean mounted;
-	gboolean mounting;
+	gboolean mount_success;
+	unsigned int pending_mounts;
 	gboolean cancelled;
 } ActivateParameters;
 
@@ -338,8 +356,8 @@ static void     schedule_update_menus_callback                 (gpointer        
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
 static void     schedule_update_status                          (FMDirectoryView      *view);
 static void     remove_update_status_idle_callback             (FMDirectoryView *view); 
+static void     reset_update_interval                          (FMDirectoryView      *view);
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
-static void     unschedule_idle_display_of_pending_files       (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
 static void     filtering_changed_callback                     (gpointer              callback_data);
@@ -356,10 +374,11 @@ static void     fm_directory_view_select_file                  (FMDirectoryView 
 static void     monitor_file_for_open_with                     (FMDirectoryView      *view,
 								NautilusFile         *file);
 static void     create_scripts_directory                       (void);
-static void     activate_activation_uri_ready_callback         (NautilusFile         *file,
+static void     activate_activation_uris_ready_callback        (GList                *files,
 								gpointer              callback_data);
 static gboolean can_show_default_app                           (FMDirectoryView *view,
 								NautilusFile *file);
+static gboolean can_delete_uri_without_confirm                 (const char           *uri);
 
 static gboolean activate_check_mime_types                      (FMDirectoryView *view,
 								NautilusFile *file,
@@ -388,6 +407,8 @@ static void action_connect_to_server_link_callback (GtkAction *action,
 static void action_mount_volume_callback           (GtkAction *action,
 						    gpointer   data);
 static void action_unmount_volume_callback         (GtkAction *action,
+						    gpointer   data);
+static void action_format_volume_callback          (GtkAction *action,
 						    gpointer   data);
 
 /* location popup-related actions */
@@ -918,6 +939,22 @@ action_trash_callback (GtkAction *action,
 }
 
 static gboolean
+can_delete_uris_without_confirm (GList *uris)
+{
+	g_assert (uris != NULL);
+
+	while (uris != NULL) {
+		if (!can_delete_uri_without_confirm (uris->data)) {
+			return FALSE;
+		}
+
+		uris = uris->next;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 confirm_delete_directly (FMDirectoryView *view, 
 			 GList *uris)
 {
@@ -937,6 +974,10 @@ confirm_delete_directly (FMDirectoryView *view,
 	uri_count = g_list_length (uris);
 	g_assert (uri_count > 0);
 
+	if (can_delete_uris_without_confirm (uris)) {
+		return TRUE;
+	}
+
 	if (uri_count == 1) {
 		file_name = file_name_from_uri ((char *) uris->data);
 		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\"?"), 
@@ -949,11 +990,17 @@ confirm_delete_directly (FMDirectoryView *view,
 						   "the %d selected items?", uri_count), uri_count);
 	}
 
-	dialog = eel_show_yes_no_dialog
-		(prompt,
-		 _("If you delete an item, it is permanently lost."), 
-		 _("Delete?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
-		 fm_directory_view_get_containing_window (view));
+	dialog = GTK_DIALOG (eel_alert_dialog_new (fm_directory_view_get_containing_window (view),
+		                                   0,
+		                                   GTK_MESSAGE_WARNING,
+		                                   GTK_BUTTONS_NONE,
+		                                   prompt,
+		                                   _("If you delete an item, it is permanently lost."),
+		                                   ""));
+							
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (dialog, GTK_STOCK_DELETE, GTK_RESPONSE_YES);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
 	g_free (prompt);
 
@@ -995,9 +1042,6 @@ static void
 action_delete_callback (GtkAction *action,
 			gpointer callback_data)
 {
-	if (!show_delete_command_auto_value) {
-		return;
-	}
         delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
 }
 
@@ -2292,6 +2336,7 @@ done_loading (FMDirectoryView *view)
 		schedule_update_menus (view);
 		schedule_update_status (view);
 		check_for_directory_hard_limit (view);
+		reset_update_interval (view);
 
 		uris_selected = view->details->pending_uris_selected;
 		if (uris_selected != NULL) {
@@ -2817,7 +2862,7 @@ update_menus_timeout_callback (gpointer data)
 }
 
 static gboolean
-display_pending_idle_callback (gpointer data)
+display_pending_callback (gpointer data)
 {
 	FMDirectoryView *view;
 
@@ -2825,9 +2870,9 @@ display_pending_idle_callback (gpointer data)
 
 	g_object_ref (G_OBJECT (view));
 
-	display_pending_files (view);
+	view->details->display_pending_source_id = 0;
 
-	view->details->display_pending_idle_id = 0;
+	display_pending_files (view);
 
 	g_object_unref (G_OBJECT (view));
 
@@ -2837,33 +2882,37 @@ display_pending_idle_callback (gpointer data)
 static void
 schedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
-	/* No need to schedule an idle if there's already one pending. */
-	if (view->details->display_pending_idle_id != 0) {
-		return;
-	}
+	/* Get rid of a pending source as it might be a timeout */
+	unschedule_display_of_pending_files (view);
 
 	/* We want higher priority than the idle that handles the relayout
 	   to avoid a resort on each add. But we still want to allow repaints
 	   and other hight prio events while we have pending files to show. */
-	view->details->display_pending_idle_id =
+	view->details->display_pending_source_id =
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 20,
-				 display_pending_idle_callback, view, NULL);
+				 display_pending_callback, view, NULL);
 }
 
 static void
-unschedule_idle_display_of_pending_files (FMDirectoryView *view)
+schedule_timeout_display_of_pending_files (FMDirectoryView *view, guint interval)
 {
-	/* Get rid of idle if it's active. */
-	if (view->details->display_pending_idle_id != 0) {
-		g_source_remove (view->details->display_pending_idle_id);
-		view->details->display_pending_idle_id = 0;
+ 	/* No need to schedule an update if there's already one pending. */
+	if (view->details->display_pending_source_id != 0) {
+ 		return;
 	}
+ 
+	view->details->display_pending_source_id =
+		g_timeout_add (interval, display_pending_callback, view);
 }
 
 static void
 unschedule_display_of_pending_files (FMDirectoryView *view)
 {
-	unschedule_idle_display_of_pending_files (view);
+	/* Get rid of source if it's active. */
+	if (view->details->display_pending_source_id != 0) {
+		g_source_remove (view->details->display_pending_source_id);
+		view->details->display_pending_source_id = 0;
+	}
 }
 
 static void
@@ -2898,8 +2947,77 @@ queue_pending_files (FMDirectoryView *view,
 				       *pending_list);
 
 	if (! view->details->loading || nautilus_directory_are_all_files_seen (directory)) {
+		schedule_timeout_display_of_pending_files (view, view->details->update_interval);
+	}
+}
+
+static void
+remove_changes_timeout_callback (FMDirectoryView *view) 
+{
+	if (view->details->changes_timeout_id != 0) {
+		g_source_remove (view->details->changes_timeout_id);
+		view->details->changes_timeout_id = 0;
+	}
+}
+
+static void
+reset_update_interval (FMDirectoryView *view)
+{
+	view->details->update_interval = UPDATE_INTERVAL_MIN;
+	remove_changes_timeout_callback (view);
+	/* Reschedule a pending timeout to idle */
+	if (view->details->display_pending_source_id != 0) {
 		schedule_idle_display_of_pending_files (view);
 	}
+}
+
+static gboolean
+changes_timeout_callback (gpointer data)
+{
+	gint64 now;
+	gint64 time_delta;
+	gboolean ret;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	g_object_ref (G_OBJECT (view));
+
+	now = eel_get_system_time();
+	time_delta = now - view->details->last_queued;
+
+	if (time_delta < UPDATE_INTERVAL_RESET*1000) {
+		if (view->details->update_interval < UPDATE_INTERVAL_MAX &&
+			!view->details->loading) {
+			/* Increase */
+			view->details->update_interval += UPDATE_INTERVAL_INC;
+		}
+		ret = TRUE;
+	} else {
+		/* Reset */
+		reset_update_interval (view);
+		ret = FALSE;
+	}
+
+	g_object_unref (G_OBJECT (view));
+
+	return ret;
+}
+
+static void
+schedule_changes (FMDirectoryView *view)
+{
+	/* Remember when the change was queued */
+	view->details->last_queued = eel_get_system_time();
+
+	/* No need to schedule if there are already changes pending or during loading */
+	if (view->details->changes_timeout_id != 0 ||
+		view->details->loading) {
+		return;
+	}
+
+	view->details->changes_timeout_id = 
+		g_timeout_add (UPDATE_INTERVAL_TIMEOUT_INTERVAL, changes_timeout_callback, view);
 }
 
 static void
@@ -2910,6 +3028,9 @@ files_added_callback (NautilusDirectory *directory,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	schedule_changes (view);
+
 	queue_pending_files (view, directory, files, &view->details->new_added_files);
 
 	/* The number of items could have changed */
@@ -2924,6 +3045,9 @@ files_changed_callback (NautilusDirectory *directory,
 	FMDirectoryView *view;
 	
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	schedule_changes (view);
+
 	queue_pending_files (view, directory, files, &view->details->new_changed_files);
 	
 	/* The free space or the number of items could have changed */
@@ -2945,7 +3069,12 @@ done_loading_callback (NautilusDirectory *directory,
 	
 	process_new_files (view);
 	if (g_hash_table_size (view->details->non_ready_files) == 0) {
-		schedule_idle_display_of_pending_files (view);
+		/* Unschedule a pending update and schedule a new one with the minimal
+		 * update interval. This gives the view a short chance at gathering the
+		 * (cached) deep counts.
+		 */
+		unschedule_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
 	}
 }
 
@@ -3915,11 +4044,41 @@ new_folder_data_new (FMDirectoryView *directory_view)
 	return data;
 }
 
+static GdkPoint *
+context_menu_to_file_operation_position (FMDirectoryView *directory_view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (directory_view), NULL);
+
+	if (fm_directory_view_using_manual_layout (directory_view)
+	    && directory_view->details->context_menu_position.x >= 0
+	    && directory_view->details->context_menu_position.y >= 0) {
+		return &directory_view->details->context_menu_position;
+	} else {
+		return NULL;
+	}
+}
+
+static void
+update_context_menu_position_from_event (FMDirectoryView *view,
+					 GdkEventButton  *event)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (event != NULL) {
+		view->details->context_menu_position.x = event->x;
+		view->details->context_menu_position.y = event->y;
+	} else {
+		view->details->context_menu_position.x = -1;
+		view->details->context_menu_position.y = -1;
+	}
+}
+
 void
 fm_directory_view_new_folder (FMDirectoryView *directory_view)
 {
 	char *parent_uri;
 	NewFolderData *data;
+	GdkPoint *pos;
 
 	data = new_folder_data_new (directory_view);
 
@@ -3930,9 +4089,11 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 			       (GClosureNotify)NULL,
 			       G_CONNECT_AFTER);
 
+	pos = context_menu_to_file_operation_position (directory_view);
+
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view),
-					     parent_uri,
+					     pos, parent_uri,
 					     new_folder_done, data);
 
 	g_free (parent_uri);
@@ -3959,15 +4120,17 @@ static void
 fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
 						  const char *initial_contents)
 {
+	GdkPoint *pos;
 	NewFolderData *data;
 	char *parent_uri;
 
 	data = setup_new_folder_data (directory_view);
 
-	parent_uri = fm_directory_view_get_backing_uri (directory_view);
+	pos = context_menu_to_file_operation_position (directory_view);
 
+	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
-					   parent_uri,
+					   pos, parent_uri,
 					   initial_contents,
 					   new_folder_done, data);
 
@@ -3978,6 +4141,7 @@ void
 fm_directory_view_new_file (FMDirectoryView *directory_view,
 			    NautilusFile *source)
 {
+	GdkPoint *pos;
 	NewFolderData *data;
 	char *parent_uri;
 	char *source_uri;
@@ -3989,12 +4153,15 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 
 	g_return_if_fail (nautilus_file_is_local (source));
 
+	pos = context_menu_to_file_operation_position (directory_view);
+
 	data = setup_new_folder_data (directory_view);
 
 	source_uri = nautilus_file_get_uri (source);
 	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 
 	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
+							 pos,
 							 parent_uri,
 							 NULL,
 							 source_uri,
@@ -4566,6 +4733,7 @@ extension_action_callback (GtkAction *action,
 	nautilus_file_list_call_when_ready
 		(data->selection,
 		 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
+		 NULL,
 		 extension_action_slow_mime_types_ready_callback,
 		 callback_data);
 }
@@ -4596,11 +4764,8 @@ add_extension_action_for_files (FMDirectoryView *view,
 	/* TODO: This should really use themed icons, but that
 	   doesn't work here yet */
 	if (icon != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
-			(icon,
-			 NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE,
-			 NULL);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
+			(icon, NULL, GTK_ICON_SIZE_MENU, NULL);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "menu-icon",
 						pixbuf,
@@ -5064,8 +5229,8 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 
 	action_name = escape_action_name (uri, "script_");
 	escaped_label = eel_str_double_underscores (name);
@@ -5138,8 +5303,8 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	ui_manager = nautilus_window_info_get_ui_manager (directory_view->details->window);
 	uri = nautilus_file_get_uri (file);
 	name = nautilus_file_get_display_name (file);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf);
 	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf);
 	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf);
@@ -5318,8 +5483,8 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 		*dot = 0;
 	}
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
+		(file, NULL, GTK_ICON_SIZE_MENU);
 
 	action_name = escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);
@@ -6021,6 +6186,31 @@ action_unmount_volume_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
+static void 
+action_format_volume_callback (GtkAction *action,
+			       gpointer   data)
+{
+	NautilusFile *file;
+	GList *selection, *l;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+	for (l = selection; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY) {
+				g_spawn_command_line_async ("gfloppy", NULL);
+			}
+		}
+	}	
+	nautilus_file_list_free (selection);
+}
+
 static void
 action_eject_volume_callback (GtkAction *action,
 			      gpointer data)
@@ -6264,7 +6454,9 @@ action_location_delete_callback (GtkAction *action,
 	file_uri = nautilus_file_get_uri (file);
 
 	files = g_list_append (NULL, file_uri);
-	nautilus_file_operations_delete (files, GTK_WIDGET (view));
+	if (confirm_delete_directly (view, files)) {
+		nautilus_file_operations_delete (files, GTK_WIDGET (view));
+	}
 
 	g_free (file_uri);
 	g_list_free (files);
@@ -6443,6 +6635,10 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("_Eject"), NULL,                /* label, accelerator */
     N_("Eject the selected volume"),                   /* tooltip */ 
     G_CALLBACK (action_eject_volume_callback) },
+  { "Format Volume", NULL,                  /* name, stock id */
+    N_("_Format"), NULL,                /* label, accelerator */
+    N_("Format the selected volume"),                   /* tooltip */ 
+    G_CALLBACK (action_format_volume_callback) },
   { "OpenCloseParent", NULL,                  /* name, stock id */
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
@@ -6500,16 +6696,52 @@ connect_proxy (FMDirectoryView *view,
 
 	if (strcmp (gtk_action_get_name (action), FM_ACTION_NEW_EMPTY_FILE) == 0 &&
 	    GTK_IS_IMAGE_MENU_ITEM (proxy)) {
-		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-						   "gnome-fs-regular",
-						   NAUTILUS_ICON_SIZE_FOR_MENUS,
-						   0, NULL);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
+			("gnome-fs-regular", NULL, GTK_ICON_SIZE_MENU, NULL);
 		if (pixbuf != NULL) {
 			image = gtk_image_new_from_pixbuf (pixbuf);
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (proxy), image);
 
 			gdk_pixbuf_unref (pixbuf);
 		}
+	}
+}
+
+static void
+pre_activate (FMDirectoryView *view,
+	      GtkAction *action,
+	      GtkActionGroup *action_group)
+{
+	GdkEvent *event;
+	GtkWidget *proxy, *shell;
+	gboolean unset_pos;
+
+	/* check whether action was activated through a popup menu.
+	 * If not, unset the last stored context menu popup position */
+	unset_pos = TRUE;
+
+	event = gtk_get_current_event ();
+	proxy = gtk_get_event_widget (event);
+
+	if (proxy != NULL && GTK_IS_MENU_ITEM (proxy)) {
+		shell = proxy->parent;
+
+		unset_pos = FALSE;
+
+		do {
+			if (!GTK_IS_MENU (shell)) {
+				/* popup menus are GtkMenu-only menu shell hierarchies */
+				unset_pos = TRUE;
+				break;
+			}
+
+			shell = GTK_MENU_SHELL (shell)->parent_menu_shell;
+		} while (GTK_IS_MENU_SHELL (shell)
+			 && GTK_MENU_SHELL (shell)->parent_menu_shell != NULL);
+	}
+
+	if (unset_pos) {
+		update_context_menu_position_from_event (view, NULL);
 	}
 }
 
@@ -6546,6 +6778,9 @@ real_merge_menus (FMDirectoryView *view)
 
 	g_signal_connect_object (action_group, "connect-proxy",
 				 G_CALLBACK (connect_proxy), G_OBJECT (view),
+				 G_CONNECT_SWAPPED);
+	g_signal_connect_object (action_group, "pre-activate",
+				 G_CALLBACK (pre_activate), G_OBJECT (view),
 				 G_CONNECT_SWAPPED);
 
 	/* Insert action group at end so clipboard action group ends up before it */
@@ -6690,7 +6925,8 @@ file_should_show_foreach (NautilusFile *file,
 			  gboolean     *show_mount,
 			  gboolean     *show_unmount,
 			  gboolean     *show_eject,
-			  gboolean     *show_connect)
+			  gboolean     *show_connect,
+                          gboolean     *show_format)
 {
 	GnomeVFSVolume *volume;
 	GnomeVFSDrive *drive;
@@ -6700,6 +6936,7 @@ file_should_show_foreach (NautilusFile *file,
 	*show_unmount = FALSE;
 	*show_eject = FALSE;
 	*show_connect = FALSE;
+	*show_format = FALSE;
 
 	if (nautilus_file_has_volume (file)) {
 		*show_unmount = TRUE;
@@ -6713,6 +6950,11 @@ file_should_show_foreach (NautilusFile *file,
 			*show_unmount = TRUE;
 		} else {
 			*show_mount = TRUE;
+		}
+
+                if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
+		    g_find_program_in_path ("gfloppy")) {
+			*show_format = TRUE;
 		}
 	} else if (nautilus_file_is_nautilus_link (file)) {
 		uri = nautilus_file_get_activation_uri (file);
@@ -6740,32 +6982,38 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_connect;
+	gboolean show_format;
 	GtkAction *action;
 
 	show_mount = (selection != NULL);
 	show_unmount = (selection != NULL);
 	show_eject = (selection != NULL);
 	show_connect = (selection != NULL && selection_count == 1);
+	show_format = (selection != NULL && selection_count == 1);
 
 	for (l = selection; l != NULL && (show_mount || show_unmount
-					  || show_eject || show_connect);
+					  || show_eject || show_connect
+                                          || show_format);
 	     l = l->next) {
 		gboolean show_mount_one;
 		gboolean show_unmount_one;
 		gboolean show_eject_one;
 		gboolean show_connect_one;
+		gboolean show_format_one;
 
 		file = NAUTILUS_FILE (l->data);
 		file_should_show_foreach (file,
 					  &show_mount_one,
 					  &show_unmount_one,
 					  &show_eject_one,
-					  &show_connect_one);
+					  &show_connect_one,
+                                          &show_format_one);
 
 		show_mount &= show_mount_one;
 		show_unmount &= show_unmount_one;
 		show_eject &= show_eject_one;
 		show_connect &= show_connect_one;
+		show_format &= show_format_one;
 	}
 
 	/* We don't want both eject and unmount, since eject
@@ -6789,6 +7037,10 @@ real_update_menus_volumes (FMDirectoryView *view,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_EJECT_VOLUME);
 	gtk_action_set_visible (action, show_eject);
+	
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_FORMAT_VOLUME);
+	gtk_action_set_visible (action, show_format);
 }
 
 static void
@@ -7063,8 +7315,8 @@ real_update_menus (FMDirectoryView *view)
 		g_object_set (action,
 			      "label", _("_Delete"),
 			      NULL);
-		gtk_action_set_sensitive (action, can_delete_files);
 	}
+	gtk_action_set_sensitive (action, can_delete_files);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DUPLICATE);
@@ -7190,6 +7442,8 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
 	 */
 	update_menus_if_pending (view);
 
+	update_context_menu_position_from_event (view, event);
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -7217,6 +7471,8 @@ fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
 	 */
 	update_menus_if_pending (view);
 
+	update_context_menu_position_from_event (view, event);
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -7241,6 +7497,8 @@ fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view,
 	/* always update the menu before showing it. Shouldn't be too expensive. */
 	real_update_location_menu (view);
 
+	update_context_menu_position_from_event (view, event);
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -7258,9 +7516,10 @@ schedule_update_menus (FMDirectoryView *view)
 
 	view->details->menu_states_untrustworthy = TRUE;
 
+	/* Schedule a menu update with the current update interval */
 	if (view->details->update_menus_timeout_id == 0) {
 		view->details->update_menus_timeout_id
-			= g_timeout_add (300, update_menus_timeout_callback, view);
+			= g_timeout_add (view->details->update_interval, update_menus_timeout_callback, view);
 	}
 }
 
@@ -7448,13 +7707,9 @@ cancel_activate (gpointer callback_data)
 
 	parameters->cancelled = TRUE;
 	
-	if (!parameters->mounting) {
-		nautilus_file_cancel_call_when_ready (parameters->file, 
-						      parameters->callback, 
-						      parameters);
-		
-		nautilus_file_unref (parameters->file);
-		
+	if (parameters->pending_mounts == 0) {
+		nautilus_file_list_cancel_call_when_ready (parameters->files_handle);
+		nautilus_file_list_free (parameters->files);
 		g_free (parameters);
 	}
 }
@@ -7492,11 +7747,20 @@ stop_activate (ActivateParameters *parameters)
 }
 
 static void
-activate_callback (NautilusFile *file, gpointer callback_data)
+activate_callback (GList *files, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *orig_uri, *uri, *file_uri;
+	NautilusFile *file;
+	GList *launch_desktop_files;
+	GList *launch_from_command_files;
+	GList *launch_files;
+	GList *launch_in_terminal_files;
+	GList *open_in_app_files;
+	GList *open_in_view_files;
+	GList *l;
+	int count;
+	char *uri;
 	char *executable_path, *quoted_path, *name;
 	char *old_working_dir;
 	ActivationAction action;
@@ -7508,63 +7772,150 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	if (!activate_check_mime_types (view, file, TRUE)) {
-		nautilus_file_unref (file);
-		g_free (parameters);
-		
-		return;
-	}
-
-	orig_uri = uri = nautilus_file_get_activation_uri (file);
-
-	action = get_activation_action (file);
-
 	screen = gtk_widget_get_screen (GTK_WIDGET (view));
 
-	if (action == ACTIVATION_ACTION_ASK) {
-		/* Special case for executable text files, since it might be
-		 * dangerous & unexpected to launch these.
-		 */
-		action = get_executable_text_file_action (view, file);
-	}
-	
-	switch (action) {
-	case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE :
-		file_uri = nautilus_file_get_uri (file);
-		nautilus_launch_desktop_file (
-				screen, file_uri, NULL,
-				fm_directory_view_get_containing_window (view));
-		g_free (file_uri);		 
-		break;
-	case ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND :
-		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
-		break;
-	case ACTIVATION_ACTION_LAUNCH :
-	case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL :
-		old_working_dir = change_to_view_directory (view);
+	launch_desktop_files = NULL;
+	launch_from_command_files = NULL;
+	launch_files = NULL;
+	launch_in_terminal_files = NULL;
+	open_in_app_files = NULL;
+	open_in_view_files = NULL;
 
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (!activate_check_mime_types (view, file, TRUE) ||
+		    nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
+			continue;
+		}
+
+		action = get_activation_action (file);
+		if (action == ACTIVATION_ACTION_ASK) {
+			/* Special case for executable text files, since it might be
+			 * dangerous & unexpected to launch these.
+			 */
+			action = get_executable_text_file_action (view, file);
+		}
+
+		switch (action) {
+		case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE :
+			launch_desktop_files = g_list_prepend (launch_desktop_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND :
+			launch_from_command_files = g_list_prepend (launch_from_command_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH :
+			launch_files = g_list_prepend (launch_files, file);
+			break;
+		case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL :
+			launch_in_terminal_files = g_list_prepend (launch_in_terminal_files, file);
+			break;
+		case ACTIVATION_ACTION_OPEN_IN_VIEW :
+			open_in_view_files = g_list_prepend (open_in_view_files, file);
+			break;
+		case ACTIVATION_ACTION_OPEN_IN_APPLICATION :
+			open_in_app_files = g_list_prepend (open_in_app_files, file);
+			break;
+		case ACTIVATION_ACTION_DO_NOTHING :
+			break;
+		case ACTIVATION_ACTION_ASK :
+			g_assert_not_reached ();
+			break;
+		}
+	}
+
+
+	launch_desktop_files = g_list_reverse (launch_desktop_files);
+	for (l = launch_desktop_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_uri (file);
+		nautilus_launch_desktop_file (
+				screen, uri, NULL,
+				fm_directory_view_get_containing_window (view));
+		g_free (uri);
+	}
+
+	launch_from_command_files = g_list_reverse (launch_from_command_files);
+	for (l = launch_from_command_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
+		nautilus_launch_application_from_command (
+				screen, NULL, uri + strlen (NAUTILUS_COMMAND_SPECIFIER),
+				NULL, FALSE);
+		g_free (uri);
+	}
+
+	old_working_dir = NULL;
+	if (launch_files != NULL || launch_in_terminal_files != NULL) {
+		old_working_dir = change_to_view_directory (view);
+	}
+
+	launch_files = g_list_reverse (launch_files);
+	for (l = launch_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
-		nautilus_launch_application_from_command 
-			(screen, name, quoted_path, NULL,
-			 (action == ACTIVATION_ACTION_LAUNCH_IN_TERMINAL) /* use terminal */ );
+		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, FALSE);
 		g_free (name);
 		g_free (quoted_path);
+		g_free (executable_path);
+		g_free (uri);
+			
+	}
 
+	launch_in_terminal_files = g_list_reverse (launch_in_terminal_files);
+	for (l = launch_in_terminal_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = nautilus_file_get_activation_uri (file);
+		executable_path = gnome_vfs_get_local_path_from_uri (uri);
+		quoted_path = g_shell_quote (executable_path);
+		name = nautilus_file_get_name (file);
+		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, TRUE);
+		g_free (name);
+		g_free (quoted_path);
+		g_free (executable_path);
+		g_free (uri);
+	}
+
+	if (old_working_dir != NULL) {
 		chdir (old_working_dir);
 		g_free (old_working_dir);
-		g_free (executable_path);
-		
-		break;
-	case ACTIVATION_ACTION_OPEN_IN_VIEW :
-		open_location (view, uri, parameters->mode, parameters->flags);
-		break;
-	case ACTIVATION_ACTION_OPEN_IN_APPLICATION :
+	}
+
+	open_in_view_files = g_list_reverse (open_in_view_files);
+	count = g_list_length (open_in_view_files);
+	if (fm_directory_view_confirm_multiple_windows (view, count)) {
+		NautilusWindowOpenFlags flags;
+
+		flags = parameters->flags;
+		if (count > 1) {
+			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
+
+		for (l = open_in_view_files; l != NULL; l = l->next) {
+			/* The ui should ask for navigation or object windows
+			 * depending on what the current one is */
+			file = NAUTILUS_FILE (l->data);
+
+			uri = nautilus_file_get_activation_uri (file);
+			open_location (view, uri, parameters->mode, flags);
+			g_free (uri);
+		}
+	}
+
+	open_in_app_files = g_list_reverse (open_in_app_files);
+	for (l = open_in_app_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
 		nautilus_launch_show_file
 			(file, fm_directory_view_get_containing_window (view));
-		
+
 		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
 			if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_SPATIAL) {
 				nautilus_window_info_close (view->details->window);
@@ -7574,21 +7925,20 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		/* We should not add trash and directory uris.*/
 		if ((!nautilus_file_is_in_trash (file)) && 
 		    (!nautilus_file_is_directory (file))) {
-			file_uri = nautilus_file_get_uri (file);
-			egg_recent_model_add (nautilus_recent_get_model (), file_uri);
-			g_free (file_uri);
+			uri = nautilus_file_get_uri (file);
+			egg_recent_model_add (nautilus_recent_get_model (), uri);
+			g_free (uri);
 		}
-		break;
-	case ACTIVATION_ACTION_DO_NOTHING :
-		break;
-	case ACTIVATION_ACTION_ASK :
-		g_assert_not_reached ();
-		break;
 	}
 
-	nautilus_file_unref (file);
+	g_list_free (launch_desktop_files);
+	g_list_free (launch_from_command_files);
+	g_list_free (launch_files);
+	g_list_free (launch_in_terminal_files);
+	g_list_free (open_in_view_files);
+	g_list_free (open_in_app_files);
 
-	g_free (orig_uri);
+	nautilus_file_list_free (parameters->files);
 	g_free (parameters);
 }
 
@@ -7602,72 +7952,119 @@ activation_drive_mounted_callback (gboolean succeeded,
 
 	parameters = callback_data;
 
-	parameters->mounted = TRUE;
-	parameters->mounting = FALSE;
-	
-	if (succeeded && !parameters->cancelled) {
-		activate_activation_uri_ready_callback (parameters->file,
-							parameters);
-	} else {
-		if (!parameters->cancelled) {
-			stop_activate (parameters);
+	parameters->mount_success &= succeeded;
 
-			eel_show_error_dialog_with_details (error, NULL,
-							    _("Mount Error"),
-			                                    detailed_error, 
-							    NULL);
-		}
-		
-		nautilus_file_unref (parameters->file);
-		
-		g_free (parameters);
+	if (!succeeded && !parameters->cancelled) {
+		eel_show_error_dialog_with_details (error, NULL,
+						    _("Mount Error"),
+						    detailed_error, 
+						    NULL);
 	}
+
+	if (--parameters->pending_mounts > 0) {
+		/* wait for other mounts to finish... */
+		return;
+	}
+
+	if (parameters->cancelled || !parameters->mount_success) {
+		stop_activate (parameters);
+
+		nautilus_file_list_free (parameters->files);
+		g_free (parameters);
+		return;
+	}
+
+	/* all drives were mounted successfully */
+	activate_activation_uris_ready_callback (parameters->files,
+						 parameters);
 }
 
+static void
+mount_foreach (gpointer drive,
+	       gpointer callback_data)
+{
+	gnome_vfs_drive_mount (drive, activation_drive_mounted_callback, callback_data);
+}
 
 static void
-activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_data)
+activate_activation_uris_ready_callback (GList *files_ignore,
+					 gpointer callback_data)
 {
 	ActivateParameters *parameters;
+	GList *not_yet_mounted;
+	GList *l, *next;
+	NautilusFile *file;
 	NautilusFile *actual_file;
 	NautilusFileAttributes attributes;
 	GnomeVFSDrive *drive;
 	char *uri;
 	
 	parameters = callback_data;
+	not_yet_mounted = NULL;
 
-	if (nautilus_file_is_broken_symbolic_link (file)) {
+	for (l = parameters->files; l != NULL; l = next) {
+		file = NAUTILUS_FILE (l->data);
+		next = l->next;
+
+		if (nautilus_file_get_file_info_result (file) == GNOME_VFS_ERROR_CANCELLED) {
+			nautilus_file_unref (file);
+			parameters->files = g_list_delete_link (parameters->files, l);
+			continue;
+		}
+
+		if (nautilus_file_is_broken_symbolic_link (file)) {
+			nautilus_file_unref (file);
+			parameters->files = g_list_delete_link (parameters->files, l);
+			report_broken_symbolic_link (parameters->view, file);
+			continue;
+		}
+
+		if (!parameters->mount_success && nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			if (drive != NULL &&
+			    !gnome_vfs_drive_is_mounted (drive)) {
+				not_yet_mounted = g_list_prepend (not_yet_mounted, drive);
+				parameters->pending_mounts++;
+			}
+		}
+	}
+
+	if (parameters->files == NULL) {
+		g_assert (not_yet_mounted == NULL);
+
 		stop_activate (parameters);
-		report_broken_symbolic_link (parameters->view, file);
-		nautilus_file_unref (parameters->file);
 		g_free (parameters);
 		return;
 	}
 
-	if (!parameters->mounted && nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL &&
-		    !gnome_vfs_drive_is_mounted (drive)) {
-			parameters->mounting = TRUE;
-			gnome_vfs_drive_mount (drive, activation_drive_mounted_callback, callback_data);
-			return;
+	if (not_yet_mounted != NULL) {
+		not_yet_mounted = g_list_reverse (not_yet_mounted);
+		g_list_foreach (not_yet_mounted, mount_foreach, callback_data);
+		g_list_free (not_yet_mounted);
+
+		/* activation_drive_mounted_callback will reveal whether all mounts were successful */
+		parameters->mount_success = TRUE;
+		return;
+	}
+
+	for (l = parameters->files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		/* We want the file for the activation URI since we care
+		 * about the attributes for that, not for the original file.
+		 */
+		actual_file = NULL;
+		uri = nautilus_file_get_activation_uri (file);
+		if (!(eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
+		      eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
+			actual_file = nautilus_file_get (uri);
 		}
-	}
-	
-	/* We want the file for the activation URI since we care
-	 * about the attributes for that, not for the original file.
-	 */
-	actual_file = NULL;
-	uri = nautilus_file_get_activation_uri (file);
-	if (!(eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
-	      eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
-		actual_file = nautilus_file_get (uri);
-		nautilus_file_unref (file);
-	}
-	g_free (uri);
-	
-	if (actual_file == NULL) {
-		actual_file = file;
+		g_free (uri);
+		
+		if (actual_file != NULL) {
+			nautilus_file_unref (file);
+			l->data = actual_file;
+		}
 	}
 	
 	/* get the parameters for the actual file */	
@@ -7676,13 +8073,11 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 		NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
 
-	parameters->file = actual_file;
-	parameters->callback = activate_callback;
-
-	nautilus_file_call_when_ready
-		(actual_file, attributes, activate_callback, parameters);
+	nautilus_file_list_call_when_ready
+		(parameters->files, attributes,
+		 &parameters->files_handle,
+		 activate_callback, parameters);
 }
-
 
 /**
  * fm_directory_view_activate_file:
@@ -7700,53 +8095,14 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 NautilusWindowOpenMode mode,
 				 NautilusWindowOpenFlags flags)
 {
-	ActivateParameters *parameters;
-	NautilusFileAttributes attributes;
-	char *file_name;
-	char *timed_wait_prompt;
+	GList *files;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	/* link target info might be stale, re-read it */
-	if (nautilus_file_is_symbolic_link (file)) {
-		nautilus_file_invalidate_attributes 
-			(file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	}
-
-	nautilus_file_ref (file);
-
-	/* Might have to read some of the file to activate it. */
-	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
-		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
-
-	parameters = g_new (ActivateParameters, 1);
-	parameters->view = view;
-	parameters->file = file;
-	parameters->mode = mode;
-	parameters->flags = flags;
-	parameters->callback = activate_activation_uri_ready_callback;
-	parameters->mounted = FALSE;
-	parameters->mounting = FALSE;
-	parameters->cancelled = FALSE;
-
-	file_name = nautilus_file_get_display_name (file);
-	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
-	g_free (file_name);
-	
-	eel_timed_wait_start_with_duration
-		(DELAY_UNTIL_CANCEL_MSECS,
-		 cancel_activate_callback,
-		 parameters,
-		 _("Cancel Open?"),
-		 timed_wait_prompt,
-		 fm_directory_view_get_containing_window (view));
-	g_free (timed_wait_prompt);
-
-	g_object_weak_ref (G_OBJECT (view), activate_weak_notify, parameters);
-
-	nautilus_file_call_when_ready
-		(file, attributes, activate_activation_uri_ready_callback, parameters);
+	files = g_list_prepend (NULL, file);
+	fm_directory_view_activate_files (view, files, mode, flags);
+	g_list_free (files);
 }
 
 
@@ -7765,42 +8121,77 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 				  NautilusWindowOpenMode mode,
 				  NautilusWindowOpenFlags flags)
 {
-	GList *node;
+
+	GList *l;
+	ActivateParameters *parameters;
+	NautilusFile *file;
+	NautilusFileAttributes attributes;
+	char *file_name;
+	char *timed_wait_prompt;
 	int file_count;
-	gboolean use_new_window;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (files != NULL);
 
-	/* If there's a single file to activate, check user's preference whether
-	 * to open it in this window or a new window. If there is more than one
-	 * file to activate, open each one in a new window. Don't try to choose
-	 * one special one to replace the current window's contents; we tried this
-	 * but it proved mysterious in practice.
-	 */
 	file_count = g_list_length (files);
-	use_new_window = file_count > 1;
 
-	if (use_new_window && mode == NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE) {
-#if !NEW_UI_COMPLETE
-		/* Match the current window type */
-		mode = NAUTILUS_WINDOW_OPEN_IN_SPATIAL;
-#endif
-	}
-	
-	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
-		for (node = files; node != NULL; node = node->next) {  	
-			/* The ui should ask for navigation or object windows
-			 * depending on what the current one is */
-			fm_directory_view_activate_file
-				(view, node->data, mode, flags);
+	/* link target info might be stale, re-read it */
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		if (nautilus_file_is_symbolic_link (file)) {
+			nautilus_file_invalidate_attributes 
+				(file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 		}
 	}
+
+	/* Might have to read some of the file to activate it. */
+	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
+
+	parameters = g_new (ActivateParameters, 1);
+	parameters->view = view;
+	parameters->files = nautilus_file_list_copy (files);
+	parameters->mode = mode;
+	parameters->flags = flags;
+	parameters->mount_success = FALSE;
+	parameters->pending_mounts = 0;
+	parameters->cancelled = FALSE;
+
+	if (file_count == 1) {
+		file_name = nautilus_file_get_display_name (files->data);
+		timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
+		g_free (file_name);
+	} else {
+		timed_wait_prompt = g_strdup_printf (ngettext ("Opening %d item.",
+							       "Opening %d items.",
+							       file_count),
+						     file_count);
+	}
+	
+	eel_timed_wait_start_with_duration
+		(DELAY_UNTIL_CANCEL_MSECS,
+		 cancel_activate_callback,
+		 parameters,
+		 _("Cancel Open?"),
+		 timed_wait_prompt,
+		 fm_directory_view_get_containing_window (view));
+	g_free (timed_wait_prompt);
+
+	g_object_weak_ref (G_OBJECT (view), activate_weak_notify, parameters);
+
+	nautilus_file_list_call_when_ready
+		(parameters->files, attributes,
+		 &parameters->files_handle,
+		 activate_activation_uris_ready_callback, parameters);
 }
 
 static void
 file_changed_callback (NautilusFile *file, gpointer callback_data)
 {
 	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
+
+	schedule_changes (view);
 
 	schedule_update_menus (view);
 	schedule_update_status (view);
@@ -7908,7 +8299,12 @@ finish_loading (FMDirectoryView *view)
 	nautilus_window_info_show_window  (view->details->window);
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
-		schedule_idle_display_of_pending_files (view);		
+		/* Unschedule a pending update and schedule a new one with the minimal
+		 * update interval. This gives the view a short chance at gathering the
+		 * (cached) deep counts.
+		 */
+		unschedule_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
 	}
 	
 	/* Start loading. */
@@ -8205,6 +8601,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	unschedule_display_of_pending_files (view);
+	reset_update_interval (view);
 
 	/* Free extra undisplayed files */
 	file_and_directory_list_free (view->details->new_added_files);
@@ -8359,6 +8756,24 @@ real_supports_zooming (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return TRUE;
+}
+
+gboolean
+fm_directory_view_using_manual_layout (FMDirectoryView  *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 using_manual_layout, (view));
+}
+
+static gboolean
+real_using_manual_layout (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return FALSE;
 }
 
 /**
@@ -9117,6 +9532,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->supports_creating_files = real_supports_creating_files;
 	klass->supports_properties = real_supports_properties;
 	klass->supports_zooming = real_supports_zooming;
+	klass->using_manual_layout = real_using_manual_layout;
         klass->merge_menus = real_merge_menus;
         klass->update_menus = real_update_menus;
 
@@ -9169,8 +9585,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 			      G_TYPE_BOOLEAN, 0);
 	
 	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_CONTROL_MASK,
-				      "trash", 0);
 	gtk_binding_entry_add_signal (binding_set, GDK_Delete, 0,
 				      "trash", 0);
 	gtk_binding_entry_add_signal (binding_set, GDK_KP_Delete, 0,

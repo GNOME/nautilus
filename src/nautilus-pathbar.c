@@ -1124,18 +1124,10 @@ button_data_free (ButtonData *button_data)
 static const char *
 get_dir_name (ButtonData *button_data)
 {
-        if (button_data->type == HOME_BUTTON) {
-		if (!desktop_is_home) {
-                	return _("Home");
-		} else {
-			return _("Desktop");
-		}
+        if (button_data->type == DESKTOP_BUTTON || (button_data->type == HOME_BUTTON && desktop_is_home)) {
+		return _("Desktop");
 	} else {
-        	if (button_data->type == DESKTOP_BUTTON) {
-                	return _("Desktop");
-		} else {
-	                return button_data->dir_name;
-		}
+		return button_data->dir_name;
 	}
 }
 

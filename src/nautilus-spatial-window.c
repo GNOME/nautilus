@@ -316,11 +316,17 @@ action_close_all_folders_callback (GtkAction *action,
 }
 
 static void
-real_prompt_for_location (NautilusWindow *window)
+real_prompt_for_location (NautilusWindow *window,
+			  const char     *initial)
 {
 	GtkWidget *dialog;
 	
 	dialog = nautilus_location_dialog_new (window);
+	if (initial != NULL) {
+		nautilus_location_dialog_set_location (NAUTILUS_LOCATION_DIALOG (dialog),
+						       initial);
+	}
+		
 	gtk_widget_show (dialog);
 }
 
@@ -501,13 +507,22 @@ got_file_info_for_location_menu_callback (NautilusFile *file,
 {	
 	GtkWidget *icon;
 	GtkWidget *menu_item = callback_data;
+	GdkPixbuf *pixbuf;
 	char *icon_name;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
+	pixbuf = NULL;
+
 	icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);
-	if (icon_name) {
-		icon = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+	if (icon_name != NULL) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (icon_name, NULL, GTK_ICON_SIZE_MENU, NULL);
+		g_free (icon_name);
+	}
+
+	if (pixbuf != NULL) {
+		icon = gtk_image_new_from_pixbuf (pixbuf);
+		gdk_pixbuf_unref (pixbuf);
 	} else {
 		icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 	}
@@ -659,7 +674,7 @@ location_button_drag_begin_callback (GtkWidget             *widget,
 	GdkPixbuf *pixbuf;
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (NAUTILUS_WINDOW (window)->details->viewed_file,
-							    "open", get_dnd_icon_size (window));
+							    "open", get_dnd_icon_size (window), FALSE);
 
 	gtk_drag_set_icon_pixbuf (context, pixbuf, 0, 0);
 
@@ -733,12 +748,19 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 		vfs_result_code = nautilus_file_get_file_info_result (file);
 		if (vfs_result_code == GNOME_VFS_OK) {
 			char *icon_name;
+			GdkPixbuf *pixbuf;
+
+			pixbuf = NULL;
 
 			icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);		
-			if (icon_name) {
-				gtk_image_set_from_icon_name (GTK_IMAGE (window->details->location_icon), 
-							      icon_name, GTK_ICON_SIZE_MENU);
+			if (icon_name != NULL) {
+				pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (icon_name, NULL, GTK_ICON_SIZE_MENU, NULL);
 				g_free (icon_name);
+			}
+
+			if (pixbuf != NULL) {
+				gtk_image_set_from_pixbuf (GTK_IMAGE (window->details->location_icon),  pixbuf);
+				gdk_pixbuf_unref (pixbuf);
 			} else {
 				gtk_image_set_from_stock (GTK_IMAGE (window->details->location_icon),
 							  GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
@@ -766,8 +788,8 @@ action_go_to_location_callback (GtkAction *action,
 
 	window = NAUTILUS_WINDOW (user_data);
 
-	nautilus_window_prompt_for_location (window);
-}			   
+	nautilus_window_prompt_for_location (window, NULL);
+}
 
 static void
 action_add_bookmark_callback (GtkAction *action,
