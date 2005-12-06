@@ -1,5 +1,11 @@
 2005-12-06  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-history-sidebar.c: (update_history),
+	(nautilus_history_sidebar_init):
+	Fix leaks of bookmarks and model.
+
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-search-engine-beagle.c:
 	(nautilus_search_engine_beagle_set_query):
 	Unref the right query.
