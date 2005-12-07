@@ -1,3 +1,17 @@
+2005-12-07  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Mime API needs gnome-vfs-module. Unfortunate...
+	
+	* libnautilus-private/nautilus-query.c:
+	Parse queries fully
+	
+	* libnautilus-private/nautilus-search-engine-beagle.c:
+	Look at mime types and location.
+	
+	* src/nautilus-query-editor.c:
+	Add mime type and location to query editor
+
 2005-12-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-query.[ch]:

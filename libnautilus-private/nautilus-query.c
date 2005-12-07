@@ -123,8 +123,8 @@ nautilus_query_set_mime_types (NautilusQuery *query, GList *mime_types)
 void
 nautilus_query_add_mime_type (NautilusQuery *query, const char *mime_type)
 {
-	query->details->mime_types = g_list_prepend (query->details->mime_types,
-						     g_strdup (mime_type));
+	query->details->mime_types = g_list_append (query->details->mime_types,
+						    g_strdup (mime_type));
 }
 
 char *
@@ -137,9 +137,54 @@ nautilus_query_to_readable_string (NautilusQuery *query)
 	return g_strdup_printf ("Search for \"%s\"", query->details->text);
 }
 
+static char *
+encode_home_uri (const char *uri)
+{
+	char *home_uri;
+	const char *encoded_uri;
+	
+	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	
+	if (g_str_has_prefix (uri, home_uri)) {
+		encoded_uri = uri + strlen (home_uri);
+		if (*encoded_uri == '/') {
+			encoded_uri++;
+		}
+	} else {
+		encoded_uri = uri;
+	}
+	
+	g_free (home_uri);
+	
+	return g_markup_escape_text (encoded_uri, -1);
+}
+
+static char *
+decode_home_uri (const char *uri)
+{
+	char *home_uri;
+	char *decoded_uri;
+
+	if (g_str_has_prefix (uri, "file:")) {
+		decoded_uri = g_strdup (uri);
+	} else {
+		home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+
+		decoded_uri = g_strconcat (home_uri, "/", uri, NULL);
+		
+		g_free (home_uri);
+	}
+		
+	return decoded_uri;
+}
+
+
 typedef struct {
 	NautilusQuery *query;
 	gboolean in_text;
+	gboolean in_location;
+	gboolean in_mimetypes;
+	gboolean in_mimetype;
 } ParserInfo;
 
 static void
@@ -156,6 +201,12 @@ start_element_cb (GMarkupParseContext *ctx,
 
 	if (strcmp (element_name, "text") == 0)
 		info->in_text = TRUE;
+	else if (strcmp (element_name, "location") == 0)
+		info->in_location = TRUE;
+	else if (strcmp (element_name, "mimetypes") == 0)
+		info->in_mimetypes = TRUE;
+	else if (strcmp (element_name, "mimetype") == 0)
+		info->in_mimetype = TRUE;
 }
 
 static void
@@ -170,6 +221,12 @@ end_element_cb (GMarkupParseContext *ctx,
 
 	if (strcmp (element_name, "text") == 0)
 		info->in_text = FALSE;
+	else if (strcmp (element_name, "location") == 0)
+		info->in_location = FALSE;
+	else if (strcmp (element_name, "mimetypes") == 0)
+		info->in_mimetypes = FALSE;
+	else if (strcmp (element_name, "mimetype") == 0)
+		info->in_mimetype = FALSE;
 }
 
 static void
@@ -180,22 +237,24 @@ text_cb (GMarkupParseContext *ctx,
 	 GError **err)
 {
 	ParserInfo *info;
-	char *t;
-	NautilusQuery *query;
+	char *t, *uri;
 
 	info = (ParserInfo *) user_data;
 
-	if (!info->in_text) {
-		return;
-	}
-
 	t = g_strndup (text, text_len);
 	
-	query = nautilus_query_new ();
-	nautilus_query_set_text (query, t);
+	if (info->in_text) {
+		nautilus_query_set_text (info->query, t);
+	} else if (info->in_location) {
+		uri = decode_home_uri (t);
+		nautilus_query_set_location (info->query, uri);
+		g_free (uri);
+	} else if (info->in_mimetypes && info->in_mimetype) {
+		nautilus_query_add_mime_type (info->query, t);
+	}
+	
 	g_free (t);
 
-	info->query = query;
 }
 
 static void
@@ -217,14 +276,14 @@ static GMarkupParser parser = {
 static NautilusQuery *
 nautilus_query_parse_xml (char *xml, gsize xml_len)
 {
-	ParserInfo info;
+	ParserInfo info = { NULL };
 	GMarkupParseContext *ctx;
 
 	if (xml_len == -1) {
 		xml_len = strlen (xml);
 	}
 	
-	info.query = NULL;
+	info.query = nautilus_query_new ();
 	info.in_text = FALSE;
 
 	ctx = g_markup_parse_context_new (&parser, 0, &info, NULL);
@@ -251,28 +310,6 @@ nautilus_query_load (char *file)
 	g_free (xml);
 
 	return query;
-}
-
-static char *
-encode_home_uri (const char *uri)
-{
-	char *home_uri;
-	const char *encoded_uri;
-	
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	
-	if (g_str_has_prefix (uri, home_uri)) {
-		encoded_uri = uri + strlen (home_uri);
-		if (*encoded_uri == '/') {
-			encoded_uri++;
-		}
-	} else {
-		encoded_uri = uri;
-	}
-	
-	g_free (home_uri);
-	
-	return g_markup_escape_text (encoded_uri, -1);
 }
 
 static char *

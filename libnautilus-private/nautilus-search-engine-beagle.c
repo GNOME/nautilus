@@ -26,12 +26,14 @@
 #include <beagle/beagle.h>
 
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 
 struct NautilusSearchEngineBeagleDetails {
 	BeagleClient *client;
 	NautilusQuery *query;
 
 	BeagleQuery *current_query;
+	char *current_query_uri_prefix;
 	gboolean query_finished;
 };
 
@@ -55,6 +57,8 @@ finalize (GObject *object)
 	if (beagle->details->current_query) {
 		g_object_unref (beagle->details->current_query);
 		beagle->details->current_query = NULL;
+		g_free (beagle->details->current_query_uri_prefix);
+		beagle->details->current_query_uri_prefix = NULL;
 	}
 
 	if (beagle->details->query) {
@@ -79,6 +83,7 @@ beagle_hits_added (BeagleQuery *query,
 {
 	GSList *hits, *list;
 	GList *hit_uris;
+	const char *uri;
 
 	hit_uris = NULL;
 
@@ -87,7 +92,14 @@ beagle_hits_added (BeagleQuery *query,
 	for (list = hits; list != NULL; list = list->next) {
 		BeagleHit *hit = BEAGLE_HIT (list->data);
 
-		hit_uris = g_list_prepend (hit_uris, (char *)beagle_hit_get_uri (hit));
+		uri = beagle_hit_get_uri (hit);
+
+		if (engine->details->current_query_uri_prefix &&
+		    !g_str_has_prefix (uri, engine->details->current_query_uri_prefix)) {
+			continue;
+		}
+		
+		hit_uris = g_list_prepend (hit_uris, (char *)uri);
 	}
 
 	nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (engine), hit_uris);
@@ -142,6 +154,9 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 {
 	NautilusSearchEngineBeagle *beagle;
 	GError *error;
+	GList *mimetypes, *l;
+	char *text, **words, *mimetype;
+	int i;
 
 	error = NULL;
 	beagle = NAUTILUS_SEARCH_ENGINE_BEAGLE (engine);
@@ -171,13 +186,31 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 	g_signal_connect (beagle->details->current_query,
 			  "error", G_CALLBACK (beagle_error), engine);
 
-	beagle_query_add_text (beagle->details->current_query,
-			       nautilus_query_get_text (beagle->details->query));
 	/* We only want files */
 	beagle_query_add_hit_type (beagle->details->current_query,
 				   "File");
 	beagle_query_set_max_hits (beagle->details->current_query,
 				   1000);
+	
+	text = nautilus_query_get_text (beagle->details->query);
+	words = g_strsplit (text, " \n\t", -1);
+	for (i = 0; words[i] != NULL; i++) {
+		beagle_query_add_text (beagle->details->current_query,
+				       words[i]);
+	}
+	g_free (text);
+	g_strdupv (words);	
+
+	mimetypes = nautilus_query_get_mime_types (beagle->details->query);
+	for (l = mimetypes; l != NULL; l = l->next) {
+		mimetype = l->data;
+		beagle_query_add_mime_type (beagle->details->current_query,
+					    mimetype);
+	}
+	eel_g_list_free_deep (mimetypes);
+
+	beagle->details->current_query_uri_prefix = nautilus_query_get_location (beagle->details->query);
+	
 	if (!beagle_client_send_request_async (beagle->details->client,
 					       BEAGLE_REQUEST (beagle->details->current_query), &error)) {
 		nautilus_search_engine_error (engine, error->message);
@@ -195,6 +228,8 @@ nautilus_search_engine_beagle_stop (NautilusSearchEngine *engine)
 	if (beagle->details->current_query) {
 		g_object_unref (beagle->details->current_query);
 		beagle->details->current_query = NULL;
+		g_free (beagle->details->current_query_uri_prefix);
+		beagle->details->current_query_uri_prefix = NULL;
 	}
 }
 

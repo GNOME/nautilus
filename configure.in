@@ -86,6 +86,7 @@ PKG_CHECK_MODULES(ALL, [
 	glib-2.0		>= glib_minver
 	gnome-desktop-2.0	>= gnome_desktop_minver
 	gnome-vfs-2.0		>= gnome_vfs_minver
+	gnome-vfs-module-2.0	>= gnome_vfs_minver
 	ORBit-2.0		>= orbit_minver
 	pango			>= pango_minver
 	gtk+-2.0		>= gtk_minver
@@ -308,7 +309,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $LIBJPEG $x_libs"
