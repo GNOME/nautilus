@@ -939,7 +939,7 @@ setup_external_entry (NautilusQueryEditor *editor, GtkWidget *entry)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (editor->details->visible_vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new ("search...");
+	label = gtk_label_new (_("Search results"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	
