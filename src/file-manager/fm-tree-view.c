@@ -1061,11 +1061,9 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 	eject = GPOINTER_TO_INT (data);
 	if (!succeeded) {
 		if (eject) {
-			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Eject Error"), detailed_error, NULL);
+			eel_show_error_dialog_with_details (error, NULL, detailed_error, NULL);
 		} else {
-			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Unmount Error"), detailed_error, NULL);
+			eel_show_error_dialog_with_details (error, NULL, detailed_error, NULL);
 		}
 	}
 }

@@ -557,7 +557,6 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 {
 	GtkDialog *dialog;
 	char *prompt;
-	char *title;
 	char *detail;
 	int response;
 
@@ -565,15 +564,13 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 		return TRUE;
 	}
 
-	title = g_strdup_printf (ngettext("Open %d Window?", "Open %d Windows?", count), count);
 	prompt = _("Are you sure you want to open all files?");
 	detail = g_strdup_printf (ngettext("This will open %d separate window.",
 					   "This will open %d separate windows.", count), count);
-	dialog = eel_show_yes_no_dialog (prompt, detail, title, 
+	dialog = eel_show_yes_no_dialog (prompt, detail, 
 					 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 	g_free (detail);
-	g_free (title);
 
 	response = gtk_dialog_run (dialog);
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -910,8 +907,7 @@ confirm_delete_directly (FMDirectoryView *view,
 		                                   GTK_MESSAGE_WARNING,
 		                                   GTK_BUTTONS_NONE,
 		                                   prompt,
-		                                   _("If you delete an item, it is permanently lost."),
-		                                   ""));
+		                                   _("If you delete an item, it is permanently lost.")));
 							
 	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (dialog, GTK_STOCK_DELETE, GTK_RESPONSE_YES);
@@ -2080,7 +2076,6 @@ real_file_limit_reached (FMDirectoryView *view)
 
 	dialog = eel_show_warning_dialog (message,
 					  _("Some files will not be displayed."),
-					  _("Too Many Files"),
 					  fm_directory_view_get_containing_window (view));
 	g_free (message);
 }
@@ -3494,7 +3489,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 detail, _("Delete Immediately?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
+		 detail, GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 	
 	g_free (detail);
@@ -3540,7 +3535,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 
 	dialog = eel_show_yes_no_dialog (
 		prompt, _("If you delete an item, it will be permanently lost."), 
-		_("Delete From Trash?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
+		GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
@@ -4213,7 +4208,6 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 	dialog = eel_create_question_dialog (prompt,
 					     detail,
-					     _("Run or Display?"),
 					     _("Run in _Terminal"), RESPONSE_RUN_IN_TERMINAL,
      					     _("_Display"), RESPONSE_DISPLAY,
 					     fm_directory_view_get_containing_window (view));
@@ -4626,8 +4620,7 @@ warn_mismatched_mime_types (FMDirectoryView *view,
 				       GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_NONE,
 				       primary,
-				       secondary,
-				       primary);
+				       secondary);
 
 	g_free (primary);
 	g_free (secondary);
@@ -5460,7 +5453,6 @@ action_open_scripts_folder_callback (GtkAction *action,
 		   "Scripts menu."),
 		 _("Choosing a script from the menu will run "
 		   "that script with any selected items as input."), 
-		 _("About Scripts"),
 		 _("All executable files in this folder will appear in the "
 		   "Scripts menu. Choosing a script from the menu will run "
 		   "that script.\n\n"
@@ -5860,7 +5852,7 @@ drive_mounted_callback (gboolean succeeded,
 {
 	if (!succeeded) {
 		eel_show_error_dialog_with_details (error, NULL,
-						    _("Mount Error"), detailed_error, NULL);
+						    detailed_error, NULL);
 	}
 }
 
@@ -5912,7 +5904,7 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 {
 	if (!succeeded) {
 		eel_show_error_dialog_with_details (error, NULL, 
-		                                    _("Unmount Error"), detailed_error, NULL);
+		                                    detailed_error, NULL);
 	}
 }
 
@@ -5925,7 +5917,7 @@ volume_or_drive_ejected_callback (gboolean succeeded,
 {
 	if (!succeeded) {
 		eel_show_error_dialog_with_details (error, NULL, 
-		                                    _("Eject Error"), detailed_error, NULL);
+		                                    detailed_error, NULL);
 	}
 }
 
@@ -7409,8 +7401,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 					    "\"%s\" doesn't exist."), target_path);
 	}
 
-	dialog = eel_show_yes_no_dialog (prompt,
-					 detail, _("Broken Link"), _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
+	dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_YES);
@@ -7696,7 +7687,6 @@ activation_drive_mounted_callback (gboolean succeeded,
 
 	if (!succeeded && !parameters->cancelled) {
 		eel_show_error_dialog_with_details (error, NULL,
-						    _("Mount Error"),
 						    detailed_error, 
 						    NULL);
 	}
@@ -7913,7 +7903,6 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 		(DELAY_UNTIL_CANCEL_MSECS,
 		 cancel_activate_callback,
 		 parameters,
-		 _("Cancel Open?"),
 		 timed_wait_prompt,
 		 fm_directory_view_get_containing_window (view));
 	g_free (timed_wait_prompt);
@@ -8850,7 +8839,6 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("Drag and drop is only supported on local file systems."),
-					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (view));
 		g_free (container_uri);
 		return;
@@ -8903,7 +8891,6 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 	    (action != GDK_ACTION_LINK)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("An invalid drag type was used."),
-					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (view));
 		g_free (container_uri);
 		return;
@@ -9001,7 +8988,6 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 	    (action != GDK_ACTION_LINK)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("An invalid drag type was used."),
-					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (view));
 		g_free (container_uri);
 		return;

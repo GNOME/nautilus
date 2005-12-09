@@ -240,7 +240,6 @@ nautilus_emblem_sidebar_delete_cb (GtkWidget *menu_item,
 	} else {
 		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'."), emblem_sidebar->details->popup_emblem_display_name);
 		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
-				       _("Couldn't Remove Emblem"),
 				       NULL);
 		g_free (error);
 	}
@@ -275,7 +274,6 @@ rename_dialog_response_cb (GtkWidget *dialog, int response,
 	} else {
 		error = g_strdup_printf (_("Couldn't rename emblem with name '%s'."), name);
 		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
-				       _("Couldn't Rename Emblem"),
 				       NULL);
 		g_free (error);
 	}
@@ -776,9 +774,9 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		nautilus_icon_dnd_uri_list_free_strings (uris);
 
 		if (had_failure && emblems != NULL) {
-			eel_show_error_dialog (_("Some of the files could not be added as emblems."), _("The emblems do not appear to be valid images."), _("Couldn't Add Emblems"), NULL);
+			eel_show_error_dialog (_("Some of the files could not be added as emblems."), _("The emblems do not appear to be valid images."), NULL);
 		} else if (had_failure && emblems == NULL) {
-			eel_show_error_dialog (_("None of the files could be added as emblems."), _("The emblems do not appear to be valid images."), _("Couldn't Add Emblems"), NULL);
+			eel_show_error_dialog (_("None of the files could be added as emblems."), _("The emblems do not appear to be valid images."), NULL);
 
 		}
  
@@ -799,7 +797,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		uri = g_strndup (data->data, data->length);
 
 		if (!eel_is_valid_uri (uri)) {
-			eel_show_error_dialog (_("The emblem cannot be added."), _("The dragged text was not a valid file location."), _("Couldn't Add Emblem"), NULL);
+			eel_show_error_dialog (_("The emblem cannot be added."), _("The dragged text was not a valid file location."), NULL);
 			break;
 		}
 
@@ -824,8 +822,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 			} else {
 				error = g_strdup (_("The dragged file does not appear to be a valid image."));
 			}
-			eel_show_error_dialog (_("The emblem cannot be added."), error, _("Couldn't Add Emblem"),
-					       NULL);
+			eel_show_error_dialog (_("The emblem cannot be added."), error, NULL);
 			g_free (error);
 			g_free (uri_utf8);
 		}
@@ -874,8 +871,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 			g_warning ("Tried to load '%s', but failed.\n",
 				   uri);
 			error = g_strdup_printf (_("The file '%s' does not appear to be a valid image."), uri);
-			eel_show_error_dialog (_("The emblem cannot be added."), error, _("Couldn't Add Emblem"),
-					       NULL);
+			eel_show_error_dialog (_("The emblem cannot be added."), error, NULL);
 			g_free (error);
 		}
 		break;

@@ -607,7 +607,6 @@ report_current_content_view_failure_to_user (NautilusWindow *window,
 	message = nautilus_window_get_view_startup_error_label (window);
 	eel_show_error_dialog (message,
 			       _("You can choose another view or go to a different location."),
-			       _("View Failed"),
 			       GTK_WINDOW (window));
 	g_free (message);
 }
@@ -621,7 +620,6 @@ report_nascent_content_view_failure_to_user (NautilusWindow *window,
 	message = nautilus_window_get_view_error_label (window);
 	eel_show_error_dialog (message,
 			       _("The location cannot be displayed with this viewer."),
-			       _("View Failed"),
 			       GTK_WINDOW (window));
 	g_free (message);
 }
@@ -1342,7 +1340,6 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 	char *error_message;
 	char *detail_message;
 	char *scheme_string;
-	char *dialog_title;
 	const char *host_name;
 	GtkDialog *dialog;
 	GnomeVFSURI *vfs_uri;
@@ -1358,9 +1355,7 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 	uri_for_display = eel_str_middle_truncate
 		(full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
 	g_free (full_uri_for_display);
-	
-	dialog_title = NULL;
-        
+	        
 	switch (result_code) {
 	case GNOME_VFS_OK:
 		if (nautilus_file_is_directory (file)) {
@@ -1458,13 +1453,8 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		detail_message = g_strdup (_("Please select another viewer and try again."));
 	}
 	
-	if (dialog_title == NULL) {
-		dialog_title = g_strdup (_("Can't Display Location"));
-	}
-
-	dialog = eel_show_error_dialog (error_message, detail_message, dialog_title, NULL);
+	dialog = eel_show_error_dialog (error_message, detail_message, NULL);
 	
-	g_free (dialog_title);
 	g_free (uri_for_display);
 	g_free (error_message);
 	g_free (detail_message);

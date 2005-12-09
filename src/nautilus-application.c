@@ -227,7 +227,6 @@ check_required_directories (NautilusApplication *application)
 	char *directories_as_string;
 	char *error_string;
 	char *detail_string;
-	char *dialog_title;
 	GtkDialog *dialog;
 	int failed_count;
 	
@@ -254,20 +253,18 @@ check_required_directories (NautilusApplication *application)
 		directories_as_string = eel_string_list_as_string (directories, ", ", EEL_STRING_LIST_ALL_STRINGS);
 
 		if (failed_count == 1) {
-			dialog_title = _("Couldn't Create Required Folder");
 			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\"."),
 							directories_as_string);
 			detail_string = _("Before running Nautilus, please create the following folder, or "
 					  "set permissions such that Nautilus can create it.");
 		} else {
-			dialog_title = _("Couldn't Create Required Folders");
 			error_string = g_strdup_printf (_("Nautilus could not create the following required folders: "
 							  "%s."), directories_as_string);
   			detail_string = _("Before running Nautilus, please create these folders, or "
 					  "set permissions such that Nautilus can create them.");
 		}
 		
-		dialog = eel_show_error_dialog (error_string, detail_string, dialog_title, NULL);
+		dialog = eel_show_error_dialog (error_string, detail_string, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
@@ -350,7 +347,6 @@ migrate_old_nautilus_files (void)
 		eel_show_info_dialog (_("A link called \"Link To Old Desktop\" has been created on the desktop."),
 				      _("The location of the desktop directory has changed in GNOME 2.4. "
 					"You can open the link and move over the files you want, then delete the link."),
-				      _("Migrated Old Desktop"),
 				      NULL);
 	}
 	g_free (old_desktop_dir);
@@ -579,7 +575,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = eel_show_error_dialog_with_details (message, NULL, NULL, detailed_message, NULL);
+			dialog = eel_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;

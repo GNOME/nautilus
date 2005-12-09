@@ -959,7 +959,7 @@ remove_pattern(NautilusPropertyBrowser *property_browser, const char* pattern_na
 	if (gnome_vfs_unlink (pattern_uri) != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but pattern %s couldn't be deleted."), pattern_name);
 		char *detail = _("Check that you have permission to delete the pattern.");
-		eel_show_error_dialog (message, detail, _("Couldn't Delete Pattern"), GTK_WINDOW (property_browser));
+		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	
@@ -989,7 +989,7 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but emblem %s couldn't be deleted."), emblem_name);
 		char *detail = _("Check that you have permission to delete the emblem.");
-		eel_show_error_dialog (message, detail, _("Couldn't Delete Emblem"), GTK_WINDOW (property_browser));
+		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	else {
@@ -1154,7 +1154,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 			message = g_strdup (_("Sorry, but you did not supply a valid file name."));
 			detail = _("Please try again.");
 		}
-		eel_show_error_dialog (message, detail, _("Couldn't Install Pattern"), GTK_WINDOW (property_browser));
+		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
 		g_free (message);
 		return;
 	}
@@ -1167,7 +1167,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	if (basename && eel_strcmp (basename, RESET_IMAGE_NAME) == 0) {
 		eel_show_error_dialog (_("Sorry, but you can't replace the reset image."), 
 		                       _("Reset is a special image that cannot be deleted."), 
-		                       _("Not an Image"), NULL);
+		                       NULL);
 		g_free (path_uri);
 		g_free (basename);
 		return;
@@ -1199,7 +1199,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	result = eel_copy_uri_simple (path_name, destination_name);		
 	if (result != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
-		eel_show_error_dialog (message, NULL, _("Couldn't Install Pattern"), GTK_WINDOW (property_browser));
+		eel_show_error_dialog (message, NULL, GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 		
@@ -1272,7 +1272,7 @@ add_color_to_file (NautilusPropertyBrowser *property_browser, const char *color_
 		} else {
 			eel_show_error_dialog (_("The color cannot be installed."),
 					       _("Sorry, but you must specify an unused color name for the new color."), 
-			                       _("Couldn't Install Color"), GTK_WINDOW (property_browser));
+			                       GTK_WINDOW (property_browser));
 		}
 	}
 	
@@ -1303,7 +1303,7 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 		if (strlen (stripped_color_name) == 0) {
 			eel_show_error_dialog (_("The color cannot be installed."),
 					       _("Sorry, but you must specify a non-blank name for the new color."), 
-			                       _("Couldn't Install Color"), GTK_WINDOW (property_browser));
+			                       GTK_WINDOW (property_browser));
 		
 		} else {
 			add_color_to_file (property_browser, color_spec, stripped_color_name);
@@ -1393,7 +1393,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 				} else {
 					char *message = g_strdup_printf
 						(_("Sorry, but \"%s\" is not a usable image file."), emblem_path);
-					eel_show_error_dialog (_("The file is not an image."), message, _("Not an Image"), GTK_WINDOW (property_browser));
+					eel_show_error_dialog (_("The file is not an image."), message, GTK_WINDOW (property_browser));
 					g_free (message);
 					g_free (emblem_path);
 					return;
@@ -1409,7 +1409,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		if (pixbuf == NULL) {
 			char *message = g_strdup_printf
 				(_("Sorry, but \"%s\" is not a usable image file."), property_browser->details->image_path);
-			eel_show_error_dialog (_("The file is not an image."), message, _("Not an Image"), GTK_WINDOW (property_browser));
+			eel_show_error_dialog (_("The file is not an image."), message, GTK_WINDOW (property_browser));
 			g_free (message);
 		}
 		

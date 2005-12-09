@@ -553,7 +553,6 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 			eel_show_error_dialog (
 				_("You can't assign more than one custom icon at a time."),
 				_("Please drag just one image to set a custom icon."), 
-				_("More Than One Image"),
 				window);
 			break;
 		}
@@ -574,14 +573,12 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 				eel_show_error_dialog (
 					_("The file that you dropped is not local."),
 					_("You can only use local images as custom icons."), 
-					_("Local Images Only"),
 					window);
 			
 			} else {
 				eel_show_error_dialog (
 					_("The file that you dropped is not an image."),
 					_("You can only use images as custom icons."),
-					_("Images Only"),
 					window);
 			}
 		}	
@@ -991,7 +988,6 @@ burn_cd_callback (GtkWidget *button, gpointer data)
 			    NULL,
 			    &error)) {
 		eel_show_error_dialog (_("Unable to launch the cd burner application."), error->message,
-				       _("Can't Launch CD Burner"),
 				       GTK_WINDOW (gtk_widget_get_toplevel (button)));
 		g_error_free (error);
 	}

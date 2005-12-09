@@ -508,7 +508,6 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		eel_show_error_dialog
 			(_("You can't assign more than one custom icon at a time!"),
 			 _("Please drag just one image to set a custom icon."), 
-			 _("More Than One Image"),
 			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
@@ -520,14 +519,12 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 				eel_show_error_dialog
 					(_("The file that you dropped is not local."),
 					 _("You can only use local images as custom icons."), 
-					 _("Local Images Only"),
 					 window);
 				
 			} else {
 				eel_show_error_dialog
 					(_("The file that you dropped is not an image."),
 					 _("You can only use local images as custom icons."),
-					 _("Images Only"),
 					 window);
 			}
 		}		
@@ -1544,7 +1541,6 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_group_change_callback,
 		 pair->file,
 		 _("Cancel Group Change?"),
-		 _("Changing group."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
@@ -1706,7 +1702,6 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_owner_change_callback,
 		 pair->file,
 		 _("Cancel Owner Change?"),
-		 _("Changing owner."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
@@ -3231,7 +3226,7 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 &error);
 
 	if (error) {
-		eel_show_error_dialog (_("There was an error displaying help."), error->message, _("Couldn't Show Help"),
+		eel_show_error_dialog (_("There was an error displaying help."), error->message,
 				       GTK_WINDOW (property_window));
 		g_error_free (error);
 	}
@@ -3626,7 +3621,6 @@ fm_properties_window_present (GList *original_files,
 	eel_timed_wait_start
 		(cancel_create_properties_window_callback,
 		 startup_data,
-		 _("Cancel Showing Properties Window?"),
 		 _("Creating Properties window."),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 

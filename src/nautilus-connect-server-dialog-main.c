@@ -69,7 +69,6 @@ show_uri (const char *uri,
 
 		error_dialog = eel_show_error_dialog (error_message,
 						      error->message,
-						      _("Can't Display Location"),
 						      NULL);
 
 		open_dialogs++;

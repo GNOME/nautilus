@@ -1,5 +1,30 @@
 2005-12-09  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-error-reporting.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-tree-view.c:
+	* src/nautilus-application.c:
+	* src/nautilus-connect-server-dialog-main.c:
+	* src/nautilus-connect-server-dialog.c:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-window-bookmarks.c:
+	* src/nautilus-window-manage-views.c:
+	Remove title from alerts. (#323134)
+
+	Patch from jaap@haitsma.org
+	
+	* libnautilus-private/nautilus-file-queue.c (nautilus_file_queue_enqueue):
+	Fix warning from ignoring g_list_append return value
+
+2005-12-09  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-navigation-window.[ch]:
 	Use combo box instead of option menu (#322567)
 

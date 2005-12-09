@@ -63,7 +63,7 @@ nautilus_file_queue_enqueue (NautilusFileQueue *queue,
 		queue->head = g_list_append (NULL, file);
 		queue->tail = queue->head;
 	} else {
-		g_list_append (queue->tail, file);
+		queue->tail = g_list_append (queue->tail, file);
 		queue->tail = queue->tail->next;
 	}
 

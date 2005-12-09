@@ -68,8 +68,7 @@ fm_report_error_loading_directory (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
 	}
 
-	eel_show_error_dialog (_("The folder contents could not be displayed."), message, 
-	                       _("Error Displaying Folder"), parent_window);
+	eel_show_error_dialog (_("The folder contents could not be displayed."), message, parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -141,8 +140,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 	g_free (original_name_truncated);
 	g_free (new_name_truncated);
 
-	eel_show_error_dialog (_("The item could not be renamed."), message, 
-	                       _("Renaming Error"), parent_window);
+	eel_show_error_dialog (_("The item could not be renamed."), message, parent_window);
 	g_free (message);
 }
 
@@ -178,7 +176,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	eel_show_error_dialog (_("The group could not be changed."), message , _("Error Setting Group"), parent_window);
+	eel_show_error_dialog (_("The group could not be changed."), message, parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -210,7 +208,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
 	}
 
-	eel_show_error_dialog (_("The owner could not be changed."), message, _("Error Setting Owner"), parent_window);
+	eel_show_error_dialog (_("The owner could not be changed."), message, parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -242,8 +240,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
 	}
 
-	eel_show_error_dialog (_("The permissions could not be changed."), message,
-	                       _("Error Setting Permissions"), parent_window);
+	eel_show_error_dialog (_("The permissions could not be changed."), message, parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -313,9 +310,8 @@ fm_rename_file (NautilusFile *file,
 					old_name,
 					new_name);
 	g_free (old_name);
-	eel_timed_wait_start (cancel_rename_callback, file,
-				   _("Cancel Rename?"), wait_message,
-				   NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
+	eel_timed_wait_start (cancel_rename_callback, file, wait_message, 
+			      NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
 	g_free (wait_message);
 
 	/* Start the rename. */
