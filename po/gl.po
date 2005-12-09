@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-24 16:32+0100\n"
-"PO-Revision-Date: 2005-11-24 16:33+0100\n"
+"POT-Creation-Date: 2005-12-09 13:21+0100\n"
+"PO-Revision-Date: 2005-12-09 13:22+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
@@ -965,7 +965,7 @@ msgstr "Pegar o texto almacenado no portarretallos"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6256
+#: ../src/file-manager/fm-directory-view.c:6362
 msgid "Select _All"
 msgstr "Seleccionar todo"
 
@@ -1487,7 +1487,7 @@ msgstr "Sobrescribir _todos"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1290
 #: ../libnautilus-private/nautilus-file.c:4749
-#: ../src/file-manager/fm-directory-view.c:8805
+#: ../src/file-manager/fm-directory-view.c:8920
 #, c-format
 msgid "link to %s"
 msgstr "ligazón a %s"
@@ -1911,7 +1911,7 @@ msgid "today at 00:00:00 PM"
 msgstr "hoxe ás 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:2945
-#: ../src/nautilus-file-management-properties.c:494
+#: ../src/nautilus-file-management-properties.c:459
 msgid "today at %-I:%M:%S %p"
 msgstr "hoxe ás %-H:%M:%S"
 
@@ -2030,7 +2030,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: ../libnautilus-private/nautilus-file.c:4315
-#: ../src/file-manager/fm-directory-view.c:1956
+#: ../src/file-manager/fm-directory-view.c:1977
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2128,43 +2128,36 @@ msgid "_Never"
 msgstr "_Nunca"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:78
-#: ../src/nautilus-file-management-properties.glade.h:14
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:80
-#: ../src/nautilus-file-management-properties.glade.h:20
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:82
-#: ../src/nautilus-file-management-properties.glade.h:23
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:84
-#: ../src/nautilus-file-management-properties.glade.h:8
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:86
-#: ../src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:88
-#: ../src/nautilus-file-management-properties.glade.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:90
-#: ../src/nautilus-file-management-properties.glade.h:17
 #, no-c-format
 msgid "400%"
 msgstr "400%"
@@ -2178,27 +2171,22 @@ msgid "500 K"
 msgstr "500 K"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:97
-#: ../src/nautilus-file-management-properties.glade.h:3
 msgid "1 MB"
 msgstr "1 MB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:98
-#: ../src/nautilus-file-management-properties.glade.h:15
 msgid "3 MB"
 msgstr "3 MB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:99
-#: ../src/nautilus-file-management-properties.glade.h:18
 msgid "5 MB"
 msgstr "5 MB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:100
-#: ../src/nautilus-file-management-properties.glade.h:4
 msgid "10 MB"
 msgstr "10 MB"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:101
-#: ../src/nautilus-file-management-properties.glade.h:6
 msgid "100 MB"
 msgstr "100 MB"
 
@@ -2219,7 +2207,7 @@ msgid "Display _files when they are clicked"
 msgstr "Visualizar os _ficheiros ao premelos"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Ask each time"
 msgstr "_Preguntar cada vez"
 
@@ -2233,13 +2221,11 @@ msgstr "Buscar ficheiros polo seu nome e as súas propiedades"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
 #: ../src/file-manager/fm-icon-container.c:500
-#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Icon View"
 msgstr "Vista de iconas"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
 #: ../src/file-manager/fm-list-view.c:1331
-#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "Vista de lista"
 
@@ -2248,27 +2234,22 @@ msgid "Manually"
 msgstr "Manualmente"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:154
-#: ../src/nautilus-file-management-properties.glade.h:44
 msgid "By Name"
 msgstr "Polo nome"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:155
-#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "By Size"
 msgstr "Polo tamaño"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:156
-#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "By Type"
 msgstr "Polo tipo"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:157
-#: ../src/nautilus-file-management-properties.glade.h:43
 msgid "By Modification Date"
 msgstr "Pola data de modificación"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:158
-#: ../src/nautilus-file-management-properties.glade.h:42
 msgid "By Emblems"
 msgstr "Polos emblemas"
 
@@ -2617,22 +2598,22 @@ msgstr "Fondo"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6234
-#: ../src/file-manager/fm-directory-view.c:7013
+#: ../src/file-manager/fm-directory-view.c:6340
+#: ../src/file-manager/fm-directory-view.c:7119
 msgid "E_mpty Trash"
 msgstr "_Baleirar o lixo"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6206
+#: ../src/file-manager/fm-directory-view.c:6312
 msgid "Create L_auncher..."
 msgstr "Crear _lanzador..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6207
+#: ../src/file-manager/fm-directory-view.c:6313
 msgid "Create a new launcher"
 msgstr "Crear un novo lanzador"
 
@@ -2656,13 +2637,13 @@ msgstr "Baleirar o lixo"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6235
+#: ../src/file-manager/fm-directory-view.c:6341
 msgid "Delete all items in the Trash"
 msgstr "Borrar todos os elementos do lixo"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
-#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1130
-#: ../src/nautilus-pathbar.c:1134 ../src/nautilus-places-sidebar.c:161
+#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
+#: ../src/nautilus-places-sidebar.c:165
 msgid "Desktop"
 msgstr "Escritorio"
 
@@ -2686,18 +2667,18 @@ msgstr "A vista de escritorio atopou un erro mentras se iniciaba."
 msgid "Display this location with the desktop view."
 msgstr "Visualizar esta localización coa vista de escritorio"
 
-#: ../src/file-manager/fm-directory-view.c:553
+#: ../src/file-manager/fm-directory-view.c:568
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "Abrir %d fiestra?"
 msgstr[1] "Abrir %d fiestras?"
 
-#: ../src/file-manager/fm-directory-view.c:554
+#: ../src/file-manager/fm-directory-view.c:569
 msgid "Are you sure you want to open all files?"
 msgstr "Está seguro de querer abrir todos os ficheiros?"
 
-#: ../src/file-manager/fm-directory-view.c:555
+#: ../src/file-manager/fm-directory-view.c:570
 #: ../src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
@@ -2705,12 +2686,12 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Isto vai abrir %d fiestra separada."
 msgstr[1] "Isto vai abrir %d fiestras separadas."
 
-#: ../src/file-manager/fm-directory-view.c:883
+#: ../src/file-manager/fm-directory-view.c:898
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "¿Está seguro de que quere borrar permanentemente \"%s\"?"
 
-#: ../src/file-manager/fm-directory-view.c:887
+#: ../src/file-manager/fm-directory-view.c:902
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
@@ -2721,35 +2702,31 @@ msgstr[1] ""
 "¿Está seguro de que quere eliminar permanentemente os %d elementos "
 "seleccionados?"
 
-#: ../src/file-manager/fm-directory-view.c:895
+#: ../src/file-manager/fm-directory-view.c:913
 msgid "If you delete an item, it is permanently lost."
 msgstr "Se borra un elemento, perderáse permanentemente."
 
-#: ../src/file-manager/fm-directory-view.c:896
-msgid "Delete?"
-msgstr "Borrar?"
-
-#: ../src/file-manager/fm-directory-view.c:1045
+#: ../src/file-manager/fm-directory-view.c:1066
 msgid "Select Pattern"
 msgstr "Patrón de selección"
 
-#: ../src/file-manager/fm-directory-view.c:1061
+#: ../src/file-manager/fm-directory-view.c:1082
 msgid "_Pattern:"
 msgstr "_Patrón:"
 
-#: ../src/file-manager/fm-directory-view.c:1888
+#: ../src/file-manager/fm-directory-view.c:1909
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:1890
+#: ../src/file-manager/fm-directory-view.c:1911
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d cartafol seleccionado"
 msgstr[1] "%d cartafoles seleccionados"
 
-#: ../src/file-manager/fm-directory-view.c:1900
+#: ../src/file-manager/fm-directory-view.c:1921
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2757,19 +2734,19 @@ msgstr[0] " (contendo %d elemento)"
 msgstr[1] " (contendo %d elementos)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:1911
+#: ../src/file-manager/fm-directory-view.c:1932
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (contendo un total de %d elemento)"
 msgstr[1] " (contendo un total de %d elementos)"
 
-#: ../src/file-manager/fm-directory-view.c:1927
+#: ../src/file-manager/fm-directory-view.c:1948
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seleccionado (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1931
+#: ../src/file-manager/fm-directory-view.c:1952
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2777,14 +2754,14 @@ msgstr[0] "%d elemento seleccionado (%s)"
 msgstr[1] "%d elementos seleccionados (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:1939
+#: ../src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d outro elemento seleccionado (%s)"
 msgstr[1] "%d outros elementos seleccionados (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1960
+#: ../src/file-manager/fm-directory-view.c:1981
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Espazo libre: %s"
@@ -2796,7 +2773,7 @@ msgstr "%s, Espazo libre: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:1985
+#: ../src/file-manager/fm-directory-view.c:2006
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2805,56 +2782,56 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2055
+#: ../src/file-manager/fm-directory-view.c:2076
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "O cartafol \"%s\" contén máis ficheiros dos que pode manexar o Nautilus."
 
-#: ../src/file-manager/fm-directory-view.c:2061
+#: ../src/file-manager/fm-directory-view.c:2082
 msgid "Some files will not be displayed."
 msgstr "Algúns ficheiros non serán mostrados."
 
-#: ../src/file-manager/fm-directory-view.c:2062
+#: ../src/file-manager/fm-directory-view.c:2083
 msgid "Too Many Files"
 msgstr "Demasiados ficheiros"
 
-#: ../src/file-manager/fm-directory-view.c:3376
+#: ../src/file-manager/fm-directory-view.c:3482
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Non é posible mover o ficheiro ao lixo. ¿Quere borralo inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3377
+#: ../src/file-manager/fm-directory-view.c:3483
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "O ficheiro \"%s\" non se pode mover ao lixo."
 
-#: ../src/file-manager/fm-directory-view.c:3381
+#: ../src/file-manager/fm-directory-view.c:3487
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Non é posible mover os elementos ó lixo. ¿Quere borralos inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3382
+#: ../src/file-manager/fm-directory-view.c:3488
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "Ningún dos %d elementos seleccionados pode moverse ao Lixo"
 
-#: ../src/file-manager/fm-directory-view.c:3384
+#: ../src/file-manager/fm-directory-view.c:3490
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Non é posible mover algúns elementos ó lixo. ¿Quere borralos inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3385
+#: ../src/file-manager/fm-directory-view.c:3491
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d dos elementos seleccionados non poden moverse ao Lixo"
 
-#: ../src/file-manager/fm-directory-view.c:3391
+#: ../src/file-manager/fm-directory-view.c:3497
 msgid "Delete Immediately?"
 msgstr "¿Borrar inmediatamente?"
 
-#: ../src/file-manager/fm-directory-view.c:3423
+#: ../src/file-manager/fm-directory-view.c:3529
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "¿Está seguro de que quere borrar \"%s\" permanentemente do lixo?"
 
-#: ../src/file-manager/fm-directory-view.c:3427
+#: ../src/file-manager/fm-directory-view.c:3533
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2869,56 +2846,56 @@ msgstr[1] ""
 "¿Está seguro de que quere eliminar permanentemente do lixo os %d elementos "
 "seleccionados?"
 
-#: ../src/file-manager/fm-directory-view.c:3436
+#: ../src/file-manager/fm-directory-view.c:3542
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Se borra un elemento, perderáse permanentemente."
 
-#: ../src/file-manager/fm-directory-view.c:3437
+#: ../src/file-manager/fm-directory-view.c:3543
 msgid "Delete From Trash?"
 msgstr "Borrar do lixo?"
 
-#: ../src/file-manager/fm-directory-view.c:4012
+#: ../src/file-manager/fm-directory-view.c:4118
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Abrir con \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4013
+#: ../src/file-manager/fm-directory-view.c:4119
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Usar \"%s\" para abrir o elemento seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:4102
+#: ../src/file-manager/fm-directory-view.c:4208
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Quere executar \"%s\", ou visualizar os seus contidos?"
 
-#: ../src/file-manager/fm-directory-view.c:4104
+#: ../src/file-manager/fm-directory-view.c:4210
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" é un ficheiro de texto executable."
 
-#: ../src/file-manager/fm-directory-view.c:4110
+#: ../src/file-manager/fm-directory-view.c:4216
 msgid "Run or Display?"
 msgstr "Executar ou visualizar?"
 
-#: ../src/file-manager/fm-directory-view.c:4111
+#: ../src/file-manager/fm-directory-view.c:4217
 msgid "Run in _Terminal"
 msgstr "Executar nun _terminal"
 
-#: ../src/file-manager/fm-directory-view.c:4112
+#: ../src/file-manager/fm-directory-view.c:4218
 msgid "_Display"
 msgstr "_Visualizar"
 
-#: ../src/file-manager/fm-directory-view.c:4115
+#: ../src/file-manager/fm-directory-view.c:4221
 msgid "_Run"
 msgstr "_Executar"
 
-#: ../src/file-manager/fm-directory-view.c:4499
+#: ../src/file-manager/fm-directory-view.c:4605
 #, c-format
 msgid "Cannot open %s"
 msgstr "Non se pode abrir %s"
 
-#: ../src/file-manager/fm-directory-view.c:4502
+#: ../src/file-manager/fm-directory-view.c:4608
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2940,21 +2917,21 @@ msgstr ""
 "opción Abrir Con do menú para seleccionar unha aplicación específica para o "
 "ficheiro."
 
-#: ../src/file-manager/fm-directory-view.c:4898
+#: ../src/file-manager/fm-directory-view.c:5004
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Executar \"%s\" sobre os elementos seleccionado"
 
-#: ../src/file-manager/fm-directory-view.c:5147
+#: ../src/file-manager/fm-directory-view.c:5253
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Crear un documento a partir do modelo \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5353
+#: ../src/file-manager/fm-directory-view.c:5459
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Todos os ficheiros executables deste cartafol aparecerán no menú de Scripts."
 
-#: ../src/file-manager/fm-directory-view.c:5355
+#: ../src/file-manager/fm-directory-view.c:5461
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2962,11 +2939,11 @@ msgstr ""
 "Seleccionando un script desde o menú executará ese script usando calquer "
 "elemento seleccionado como argumento de entrada."
 
-#: ../src/file-manager/fm-directory-view.c:5357
+#: ../src/file-manager/fm-directory-view.c:5463
 msgid "About Scripts"
 msgstr "Acerca dos scripts"
 
-#: ../src/file-manager/fm-directory-view.c:5358
+#: ../src/file-manager/fm-directory-view.c:5464
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3008,183 +2985,183 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posición e tamaño da fiestra actual"
 
-#: ../src/file-manager/fm-directory-view.c:5519
+#: ../src/file-manager/fm-directory-view.c:5625
 #: ../src/file-manager/fm-tree-view.c:902
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" será movido se selecciona o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5523
+#: ../src/file-manager/fm-directory-view.c:5629
 #: ../src/file-manager/fm-tree-view.c:906
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" será copiado se selecciona o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5530
+#: ../src/file-manager/fm-directory-view.c:5636
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "O %d elemento seleccionado será movido cando seleccione o comando de Pegar"
 msgstr[1] "Os %d elementos seleccionados serán movidos cando seleccione o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5537
+#: ../src/file-manager/fm-directory-view.c:5643
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "O %d elemento seleccionado será copiado cando seleccione o comando de Pegar"
 msgstr[1] "Os %d elementos seleccionados serán copiados cando seleccione o comando Pegar"
 
-#: ../src/file-manager/fm-directory-view.c:5631
+#: ../src/file-manager/fm-directory-view.c:5737
 #: ../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "Non hai nada no portarretallos para pegar."
 
-#: ../src/file-manager/fm-directory-view.c:5757
-#: ../src/file-manager/fm-directory-view.c:7592
+#: ../src/file-manager/fm-directory-view.c:5863
+#: ../src/file-manager/fm-directory-view.c:7699
 msgid "Mount Error"
 msgstr "Erro ao montar"
 
-#: ../src/file-manager/fm-directory-view.c:5809
+#: ../src/file-manager/fm-directory-view.c:5915
 #: ../src/file-manager/fm-tree-view.c:1068
 msgid "Unmount Error"
 msgstr "Erro ao desmontar"
 
-#: ../src/file-manager/fm-directory-view.c:5822
+#: ../src/file-manager/fm-directory-view.c:5928
 #: ../src/file-manager/fm-tree-view.c:1065
 msgid "Eject Error"
 msgstr "Erro ao expulsar"
 
-#: ../src/file-manager/fm-directory-view.c:5986
+#: ../src/file-manager/fm-directory-view.c:6092
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Conectar ao servidor %s"
 
-#: ../src/file-manager/fm-directory-view.c:5991
+#: ../src/file-manager/fm-directory-view.c:6097
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: ../src/file-manager/fm-directory-view.c:6005
+#: ../src/file-manager/fm-directory-view.c:6111
 msgid "Link _name:"
 msgstr "_Nome da ligazón:"
 
-#: ../src/file-manager/fm-directory-view.c:6180
+#: ../src/file-manager/fm-directory-view.c:6286
 msgid "Create _Document"
 msgstr "Crear _documento"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6181
+#: ../src/file-manager/fm-directory-view.c:6287
 msgid "Open Wit_h"
 msgstr "Abrir _con"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6182
+#: ../src/file-manager/fm-directory-view.c:6288
 msgid "Choose a program with which to open the selected item"
 msgstr "Escolla un programa para abrir o elemento seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6184
-#: ../src/file-manager/fm-directory-view.c:6192
+#: ../src/file-manager/fm-directory-view.c:6290
+#: ../src/file-manager/fm-directory-view.c:6298
 msgid "_Properties"
 msgstr "_Propiedades"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6185
+#: ../src/file-manager/fm-directory-view.c:6291
 msgid "View or modify the properties of each selected item"
 msgstr "Ver ou modificar as propiedades dos elementos seleccionados"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6193
+#: ../src/file-manager/fm-directory-view.c:6299
 msgid "View or modify the properties of the open folder"
 msgstr "Ver ou modificar as propiedades do cartafol aberto"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6196
+#: ../src/file-manager/fm-directory-view.c:6302
 msgid "Create _Folder"
 msgstr "Crear _cartafol"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6197
+#: ../src/file-manager/fm-directory-view.c:6303
 msgid "Create a new empty folder inside this folder"
 msgstr "Crear un novo cartafol baleiro dentro deste cartafol"
 
-#: ../src/file-manager/fm-directory-view.c:6199
+#: ../src/file-manager/fm-directory-view.c:6305
 msgid "No templates Installed"
 msgstr "Non hai modelos instalados"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6202
+#: ../src/file-manager/fm-directory-view.c:6308
 msgid "_Empty File"
 msgstr "Ficheiro _baleiro"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6203
+#: ../src/file-manager/fm-directory-view.c:6309
 msgid "Create a new empty file inside this folder"
 msgstr "Crear un novo ficheiro baleiro dentro deste cartafol"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6210
-#: ../src/file-manager/fm-directory-view.c:6914
+#: ../src/file-manager/fm-directory-view.c:6316
+#: ../src/file-manager/fm-directory-view.c:7020
 #: ../src/file-manager/fm-tree-view.c:1107
 msgid "_Open"
 msgstr "_Abrir"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6211
+#: ../src/file-manager/fm-directory-view.c:6317
 msgid "Open the selected item in this window"
 msgstr "Abrir o elemento seleccionado nesta fiestra"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6218
-#: ../src/file-manager/fm-directory-view.c:6318
+#: ../src/file-manager/fm-directory-view.c:6324
+#: ../src/file-manager/fm-directory-view.c:6424
 msgid "Open in Navigation Window"
 msgstr "Abrir en fiestra de navegación"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6219
+#: ../src/file-manager/fm-directory-view.c:6325
 msgid "Open each selected item in a navigation window"
 msgstr "Abrir cada elemento seleccionado nunha fiestra de navegación"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6222
-#: ../src/file-manager/fm-directory-view.c:6226
+#: ../src/file-manager/fm-directory-view.c:6328
+#: ../src/file-manager/fm-directory-view.c:6332
 msgid "Open with Other _Application..."
 msgstr "Abrir con outra _aplicación..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6223
-#: ../src/file-manager/fm-directory-view.c:6227
+#: ../src/file-manager/fm-directory-view.c:6329
+#: ../src/file-manager/fm-directory-view.c:6333
 msgid "Choose another application with which to open the selected item"
 msgstr "Escolla outra aplicación para abrir o elemento seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6230
+#: ../src/file-manager/fm-directory-view.c:6336
 msgid "_Open Scripts Folder"
 msgstr "_Abrir o cartafol de scripts"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6231
+#: ../src/file-manager/fm-directory-view.c:6337
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Mostrar o cartafol que contén os scripts que aparecen neste menú"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6239
+#: ../src/file-manager/fm-directory-view.c:6345
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Preparar os ficheiros seleccionados para seren movidos cun comando de pegar"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6243
+#: ../src/file-manager/fm-directory-view.c:6349
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Preparar os ficheiros seleccionados para seren copiados cun comando de pegar"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6247
+#: ../src/file-manager/fm-directory-view.c:6353
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Mover ou copiar os ficheiros seleccionados previamente por un comando de "
@@ -3193,13 +3170,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6252
+#: ../src/file-manager/fm-directory-view.c:6358
 #: ../src/file-manager/fm-tree-view.c:1165
 msgid "_Paste Into Folder"
 msgstr "_Pegar no cartafol"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6253
+#: ../src/file-manager/fm-directory-view.c:6359
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3208,306 +3185,306 @@ msgstr ""
 "Cortar ou Copiar dentro do cartafol seleccionado"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6257
+#: ../src/file-manager/fm-directory-view.c:6363
 msgid "Select all items in this window"
 msgstr "Seleccionar tódolos elementos desta fiestra"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6260
+#: ../src/file-manager/fm-directory-view.c:6366
 msgid "Select _Pattern"
 msgstr "Seleccionar _patrón"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6261
+#: ../src/file-manager/fm-directory-view.c:6367
 msgid "Select items in this window matching a given pattern"
 msgstr "Selecciona os elementos nesta fiestra que coincidan cun patrón dado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6264
+#: ../src/file-manager/fm-directory-view.c:6370
 msgid "D_uplicate"
 msgstr "_Duplicar"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6265
+#: ../src/file-manager/fm-directory-view.c:6371
 msgid "Duplicate each selected item"
 msgstr "Duplicar cada elemento seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6268
-#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:6374
+#: ../src/file-manager/fm-directory-view.c:7093
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Crear _ligazón"
 msgstr[1] "Crear _ligazóns"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6269
+#: ../src/file-manager/fm-directory-view.c:6375
 msgid "Create a symbolic link for each selected item"
 msgstr "Crear unha ligazón simbólica para cada elemento seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6272
+#: ../src/file-manager/fm-directory-view.c:6378
 msgid "_Rename..."
 msgstr "_Renomear..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6273
+#: ../src/file-manager/fm-directory-view.c:6379
 msgid "Rename selected item"
 msgstr "Renomear o elemento seleccionada"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6280
-#: ../src/file-manager/fm-directory-view.c:6332
-#: ../src/file-manager/fm-directory-view.c:6788
-#: ../src/file-manager/fm-directory-view.c:6955
-#: ../src/file-manager/fm-directory-view.c:7306
+#: ../src/file-manager/fm-directory-view.c:6386
+#: ../src/file-manager/fm-directory-view.c:6438
+#: ../src/file-manager/fm-directory-view.c:6894
+#: ../src/file-manager/fm-directory-view.c:7061
+#: ../src/file-manager/fm-directory-view.c:7413
 msgid "Mo_ve to Trash"
 msgstr "_Mover ao lixo"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6281
-#: ../src/file-manager/fm-directory-view.c:6956
+#: ../src/file-manager/fm-directory-view.c:6387
+#: ../src/file-manager/fm-directory-view.c:7062
 msgid "Move each selected item to the Trash"
 msgstr "Mover todos os elementos seleccionados ao lixo"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6284
-#: ../src/file-manager/fm-directory-view.c:6336
-#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:6390
+#: ../src/file-manager/fm-directory-view.c:6442
+#: ../src/file-manager/fm-directory-view.c:7080
 msgid "_Delete"
 msgstr "_Borrar"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6285
+#: ../src/file-manager/fm-directory-view.c:6391
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Borrar todos os elementos seleccionados, sen movelos ao lixo"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6288
+#: ../src/file-manager/fm-directory-view.c:6394
 msgid "Reset View to _Defaults"
 msgstr "Reiniciar a vista ás _predefinicións"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6289
+#: ../src/file-manager/fm-directory-view.c:6395
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Restablecer a orde de colocación e o nivel de ampliación para axustarse ás "
 "preferencias desta vista"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6292
+#: ../src/file-manager/fm-directory-view.c:6398
 msgid "Connect To This Server"
 msgstr "Conectar a este servidor"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6293
+#: ../src/file-manager/fm-directory-view.c:6399
 msgid "Make a permanent connection to this server"
 msgstr "Crear unha conexión permanente a este servidor"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6296
+#: ../src/file-manager/fm-directory-view.c:6402
 msgid "_Mount Volume"
 msgstr "_Montar volume"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6297
+#: ../src/file-manager/fm-directory-view.c:6403
 msgid "Mount the selected volume"
 msgstr "Montar o volume seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6300
+#: ../src/file-manager/fm-directory-view.c:6406
 #: ../src/file-manager/fm-tree-view.c:751
 msgid "_Unmount Volume"
 msgstr "_Desmontar volume"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6301
+#: ../src/file-manager/fm-directory-view.c:6407
 msgid "Unmount the selected volume"
 msgstr "Desmontar o volume seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6304
+#: ../src/file-manager/fm-directory-view.c:6410
 msgid "_Eject"
 msgstr "E_xpulsar"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6305
+#: ../src/file-manager/fm-directory-view.c:6411
 msgid "Eject the selected volume"
 msgstr "Expulsa o volume seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6308
+#: ../src/file-manager/fm-directory-view.c:6414
 msgid "_Format"
 msgstr "_Formato"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6309
+#: ../src/file-manager/fm-directory-view.c:6415
 msgid "Format the selected volume"
 msgstr "Formatar o volume seleccionado"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6312
+#: ../src/file-manager/fm-directory-view.c:6418
 msgid "Open File and Close window"
 msgstr "Abrir ficheiro e pechar fiestra"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6319
+#: ../src/file-manager/fm-directory-view.c:6425
 msgid "Open this folder in a navigation window"
 msgstr "Abrir este cartafol nunha fiestra de navegación"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6324
+#: ../src/file-manager/fm-directory-view.c:6430
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Preparar este cartafol para ser movido cun comando de pegar"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6328
+#: ../src/file-manager/fm-directory-view.c:6434
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Preparar este cartafol para ser copiado cun comando de pegar"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6333
+#: ../src/file-manager/fm-directory-view.c:6439
 msgid "Move this folder to the Trash"
 msgstr "Mover este cartafol ao Lixo"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6337
+#: ../src/file-manager/fm-directory-view.c:6443
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Borrar este cartafol, sen movelo ao lixo"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6343
+#: ../src/file-manager/fm-directory-view.c:6449
 msgid "Show _Hidden Files"
 msgstr "Amosar os ficheiros _agochados"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6344
+#: ../src/file-manager/fm-directory-view.c:6450
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Indica se deben mostrarse ou non os ficheiros ocultos na fiestra actual"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6430
+#: ../src/file-manager/fm-directory-view.c:6536
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Executar ou xestionar os scripts de %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6432
+#: ../src/file-manager/fm-directory-view.c:6538
 msgid "_Scripts"
 msgstr "_Scripts"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6757
-#: ../src/file-manager/fm-directory-view.c:6923
+#: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/file-manager/fm-directory-view.c:7029
 #: ../src/file-manager/fm-tree-view.c:1118
 msgid "Open in New Window"
 msgstr "Abrir nunha nova fiestra"
 
-#: ../src/file-manager/fm-directory-view.c:6759
-#: ../src/file-manager/fm-directory-view.c:6931
+#: ../src/file-manager/fm-directory-view.c:6865
+#: ../src/file-manager/fm-directory-view.c:7037
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Examinar cartafol"
 msgstr[1] "_Examinar cartafoles"
 
-#: ../src/file-manager/fm-directory-view.c:6784
-#: ../src/file-manager/fm-directory-view.c:6951
+#: ../src/file-manager/fm-directory-view.c:6890
+#: ../src/file-manager/fm-directory-view.c:7057
 msgid "_Delete from Trash"
 msgstr "_Borrar do lixo"
 
-#: ../src/file-manager/fm-directory-view.c:6785
+#: ../src/file-manager/fm-directory-view.c:6891
 msgid "Delete the open folder permanently"
 msgstr "Borrar permanentemente o cartafol aberto"
 
-#: ../src/file-manager/fm-directory-view.c:6789
+#: ../src/file-manager/fm-directory-view.c:6895
 msgid "Move the open folder to the Trash"
 msgstr "Mover o cartafol aberto ao Lixo"
 
-#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-directory-view.c:7009
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Abrir con \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:7031
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Abrir nunha nova fiestra"
 msgstr[1] "Abrir en %d novas fiestras"
 
-#: ../src/file-manager/fm-directory-view.c:6952
+#: ../src/file-manager/fm-directory-view.c:7058
 msgid "Delete all selected items permanently"
 msgstr "Borrar permanentemente todos os elementos seleccionados"
 
-#: ../src/file-manager/fm-directory-view.c:7297
+#: ../src/file-manager/fm-directory-view.c:7404
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "A ligazón é incorrecta, quere movela ao lixo?"
 
-#: ../src/file-manager/fm-directory-view.c:7299
+#: ../src/file-manager/fm-directory-view.c:7406
 msgid "This link can't be used, because it has no target."
 msgstr "Non se pode usar esta ligazón, porque non ten destino."
 
-#: ../src/file-manager/fm-directory-view.c:7301
+#: ../src/file-manager/fm-directory-view.c:7408
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Non se pode usar esta ligazón, porque o destino \"%s\" non existe."
 
-#: ../src/file-manager/fm-directory-view.c:7306
+#: ../src/file-manager/fm-directory-view.c:7413
 msgid "Broken Link"
 msgstr "Ligazón errónea"
 
-#: ../src/file-manager/fm-directory-view.c:7796
+#: ../src/file-manager/fm-directory-view.c:7903
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Abrindo \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:7799
+#: ../src/file-manager/fm-directory-view.c:7906
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Abrindo %d elemento."
 msgstr[1] "Abrindo %d elementos."
 
-#: ../src/file-manager/fm-directory-view.c:7809
+#: ../src/file-manager/fm-directory-view.c:7916
 msgid "Cancel Open?"
 msgstr "¿Cancelar a apertura?"
 
-#: ../src/file-manager/fm-directory-view.c:8667
+#: ../src/file-manager/fm-directory-view.c:8782
 msgid "Download location?"
 msgstr "Descarregar localización?"
 
-#: ../src/file-manager/fm-directory-view.c:8670
+#: ../src/file-manager/fm-directory-view.c:8785
 msgid "You can download it or make a link to it."
 msgstr "Pode descarregalo do ligamento."
 
-#: ../src/file-manager/fm-directory-view.c:8673
+#: ../src/file-manager/fm-directory-view.c:8788
 msgid "Make a _Link"
 msgstr "Crear un _ligazón"
 
-#: ../src/file-manager/fm-directory-view.c:8677
+#: ../src/file-manager/fm-directory-view.c:8792
 msgid "_Download"
 msgstr "_Descarregar"
 
-#: ../src/file-manager/fm-directory-view.c:8736
-#: ../src/file-manager/fm-directory-view.c:8789
-#: ../src/file-manager/fm-directory-view.c:8887
+#: ../src/file-manager/fm-directory-view.c:8851
+#: ../src/file-manager/fm-directory-view.c:8904
+#: ../src/file-manager/fm-directory-view.c:9002
 msgid "Drag and drop is not supported."
 msgstr "Arrastrar e soltar non está soportado."
 
-#: ../src/file-manager/fm-directory-view.c:8737
+#: ../src/file-manager/fm-directory-view.c:8852
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Arrastrar e soltar só está soportado en sistemas de ficheiros locais."
 
-#: ../src/file-manager/fm-directory-view.c:8738
-#: ../src/file-manager/fm-directory-view.c:8791
-#: ../src/file-manager/fm-directory-view.c:8889
+#: ../src/file-manager/fm-directory-view.c:8853
+#: ../src/file-manager/fm-directory-view.c:8906
+#: ../src/file-manager/fm-directory-view.c:9004
 msgid "Drag and Drop Error"
 msgstr "Erro de arrastrar e soltar"
 
-#: ../src/file-manager/fm-directory-view.c:8790
-#: ../src/file-manager/fm-directory-view.c:8888
+#: ../src/file-manager/fm-directory-view.c:8905
+#: ../src/file-manager/fm-directory-view.c:9003
 msgid "An invalid drag type was used."
 msgstr "Utilizouse un tipo de arrastre inválido."
 
@@ -4189,7 +4166,7 @@ msgid "Move to Trash"
 msgstr "Mover ao lixo"
 
 #: ../src/file-manager/fm-tree-view.c:1251
-#: ../src/nautilus-places-sidebar.c:170
+#: ../src/nautilus-places-sidebar.c:174
 msgid "File System"
 msgstr "Sistema de ficheiros"
 
@@ -4361,7 +4338,7 @@ msgstr ""
 "e reinicia o Nautilus, podería arranxar o problema."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:230
+#: ../src/nautilus-file-management-properties.c:215
 #: ../src/nautilus-property-browser.c:1525 ../src/nautilus-window-menus.c:512
 #, c-format
 msgid ""
@@ -4588,7 +4565,7 @@ msgstr "O ficheiro soltado non semella ser unha imaxe válida."
 msgid "Show Emblems"
 msgstr "Amosar emblemas"
 
-#: ../src/nautilus-file-management-properties.c:308
+#: ../src/nautilus-file-management-properties.c:292
 msgid "None"
 msgstr "Ningún"
 
@@ -4597,90 +4574,137 @@ msgid "    "
 msgstr "    "
 
 #: ../src/nautilus-file-management-properties.glade.h:2
-msgid "1 GB"
-msgstr "1 GB"
+msgid ""
+"100 KB\n"
+"500 KB\n"
+"1 MB\n"
+"3 MB\n"
+"5 MB\n"
+"10 MB\n"
+"100 MB\n"
+"1 GB"
+msgstr ""
+"100 KB\n"
+"500 KB\n"
+"1 MB\n"
+"3 MB\n"
+"5 MB\n"
+"10 MB\n"
+"100 MB\n"
+"1 GB"
 
-#: ../src/nautilus-file-management-properties.glade.h:5
-msgid "100 KB"
-msgstr "100 KB"
+#: ../src/nautilus-file-management-properties.glade.h:11
+#, no-c-format
+msgid ""
+"25%\n"
+"50%\n"
+"75%\n"
+"100%\n"
+"150%\n"
+"200%\n"
+"400%"
+msgstr ""
+"25%\n"
+"50%\n"
+"75%\n"
+"100%\n"
+"150%\n"
+"200%\n"
+"400%"
 
-#: ../src/nautilus-file-management-properties.glade.h:21
-msgid "500 KB"
-msgstr "500 KB"
-
-#: ../src/nautilus-file-management-properties.glade.h:24
+#: ../src/nautilus-file-management-properties.glade.h:18
 msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">Comportamento</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:25
+#: ../src/nautilus-file-management-properties.glade.h:19
 msgid "<span weight=\"bold\">Date</span>"
 msgstr "<span weight=\"bold\">Data</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:26
+#: ../src/nautilus-file-management-properties.glade.h:20
 msgid "<span weight=\"bold\">Default View</span>"
 msgstr "<span weight=\"bold\">Vista predeterminada</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:27
+#: ../src/nautilus-file-management-properties.glade.h:21
 msgid "<span weight=\"bold\">Executable Text Files</span>"
 msgstr "<span weight=\"bold\">Ficheiros de texto executables</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:28
+#: ../src/nautilus-file-management-properties.glade.h:22
 msgid "<span weight=\"bold\">Folders</span>"
 msgstr "<span weight=\"bold\">Cartafoles</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:29
+#: ../src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Icon Captions</span>"
 msgstr "<span weight=\"bold\">Texto das iconas</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:30
+#: ../src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">Predefinicións da vista de iconas</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:31
+#: ../src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">List Columns</span>"
 msgstr "<span weight=\"bold\">Columnas da lista</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:32
+#: ../src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">List View Defaults</span>"
 msgstr "<span weight=\"bold\">Predefinicións da vista de lista</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:33
+#: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Other Previewable Files</span>"
 msgstr "<span weight=\"bold\">Outros ficheiros previsualizables</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:34
+#: ../src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Sound Files</span>"
 msgstr "<span weight=\"bold\">Ficheiros de son</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:35
+#: ../src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Text Files</span>"
 msgstr "<span weight=\"bold\">Ficheiros de texto</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:36
+#: ../src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">Trash</span>"
 msgstr "<span weight=\"bold\">Lixo</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">Predefinicións da vista de árbore</span>"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
-msgid "Always"
-msgstr "Sempre"
+#: ../src/nautilus-file-management-properties.glade.h:32
+msgid ""
+"Always\n"
+"Local Files Only\n"
+"Never"
+msgstr ""
+"Sempre\n"
+"Só ficheiros locais\n"
+"Nunca"
 
-#: ../src/nautilus-file-management-properties.glade.h:39
+#: ../src/nautilus-file-management-properties.glade.h:35
 msgid "Always open in _browser windows"
 msgstr "Sempre abrir en fiestras de _navegación"
 
-#: ../src/nautilus-file-management-properties.glade.h:40
+#: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Preguntar antes de _baleirar o lixo ou borrar ficheiros"
 
-#: ../src/nautilus-file-management-properties.glade.h:41
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:38
+msgid ""
+"By Name\n"
+"By Size\n"
+"By Type\n"
+"By Modification Date\n"
+"By Emblems"
+msgstr ""
+"Por nome\n"
+"Por tamaño\n"
+"Por tipo\n"
+"Por data de modificación\n"
+"Por emblemas"
+
+#: ../src/nautilus-file-management-properties.glade.h:43
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4688,169 +4712,117 @@ msgstr ""
 "Escolla a orde da información que aparece baixo os nomes das iconas. Aparece "
 "máis información a medida que se vai achegando."
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid "Choose the order of information to appear in the list view."
 msgstr "Escolla a orde da información que aparece na vista da lista."
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
 msgstr "_Número de elementos:"
 
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
 msgstr "Nivel de _zoom por omisión:"
 
-#: ../src/nautilus-file-management-properties.glade.h:51
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Display"
 msgstr "Mostrar"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "File Management Preferences"
 msgstr "Preferencias de xestión de ficheiros"
 
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_Incluír un comando de borrado que ignore o lixo"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:50
+msgid ""
+"Icon View\n"
+"List View"
+msgstr ""
+"Vista de iconas\n"
+"Vista de lista"
+
+#: ../src/nautilus-file-management-properties.glade.h:52
 msgid "List Columns"
 msgstr "Columnas de lista"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
-msgid "Local Files Only"
-msgstr "Só ficheiros locais"
-
-#: ../src/nautilus-file-management-properties.glade.h:58
-msgid "MIME type"
-msgstr "Tipo MIME"
-
-#: ../src/nautilus-file-management-properties.glade.h:59
-msgid "Never"
-msgstr "Nunca"
-
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview _sound files:"
 msgstr "_Previsualizar os ficheiros de son:"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Show _only folders"
 msgstr "Mostrar _só cartafoles"
 
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _thumbnails:"
 msgstr "Mostrar _reducións:"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show hidden and _backup files"
 msgstr "Amosar os ficheiros _agochados e de copia de seguranza"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show te_xt in icons:"
 msgstr "Mostrar te_xto nas iconas:"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Sort _folders before files"
 msgstr "Mostrar os _cartafoles antes dos ficheiros"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "View _new folders using:"
 msgstr "Ver _novos cartafoles usando:"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Views"
 msgstr "Vistas"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "_Arrange items:"
 msgstr "_Arranxar elementos:"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Default zoom level:"
 msgstr "Nivel de ampliación pre_determinado:"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Double click to activate items"
 msgstr "Clic _dobre para activar elementos"
 
-#: ../src/nautilus-file-management-properties.glade.h:73
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Format:"
 msgstr "_Formato:"
 
-#: ../src/nautilus-file-management-properties.glade.h:74
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Only for files smaller than:"
 msgstr "_Só para ficheiros máis pequenos que:"
 
-#: ../src/nautilus-file-management-properties.glade.h:75
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Run executable text files when they are clicked"
 msgstr "_Executar os ficheiros de texto executables ao premelos"
 
-#: ../src/nautilus-file-management-properties.glade.h:76
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Single click to activate items"
 msgstr "Clic _simple para activar os elementos"
 
-#: ../src/nautilus-file-management-properties.glade.h:77
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Text beside icons"
 msgstr "_Texto ao carón das iconas"
 
-#: ../src/nautilus-file-management-properties.glade.h:78
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Use compact layout"
 msgstr "_Usar disposición compacta"
 
-#: ../src/nautilus-file-management-properties.glade.h:79
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_View executable text files when they are clicked"
 msgstr "_Visualizar os ficheiros de texto executables ao premelos"
-
-#: ../src/nautilus-file-management-properties.glade.h:80
-msgid "date accessed"
-msgstr "data de acceso"
-
-#: ../src/nautilus-file-management-properties.glade.h:81
-msgid "date modified"
-msgstr "data de modificación"
-
-#: ../src/nautilus-file-management-properties.glade.h:82
-msgid "group"
-msgstr "grupo"
-
-#: ../src/nautilus-file-management-properties.glade.h:83
-msgid "informal"
-msgstr "informal"
-
-#: ../src/nautilus-file-management-properties.glade.h:84
-msgid "iso"
-msgstr "iso"
-
-#: ../src/nautilus-file-management-properties.glade.h:85
-msgid "locale"
-msgstr "locale"
-
-#: ../src/nautilus-file-management-properties.glade.h:86
-msgid "none"
-msgstr "ningún"
-
-#: ../src/nautilus-file-management-properties.glade.h:87
-msgid "octal permissions"
-msgstr "permisos en octal"
-
-#: ../src/nautilus-file-management-properties.glade.h:88
-msgid "owner"
-msgstr "dono"
-
-#: ../src/nautilus-file-management-properties.glade.h:89
-msgid "permissions"
-msgstr "permisos"
-
-#: ../src/nautilus-file-management-properties.glade.h:90
-msgid "size"
-msgstr "tamaño"
-
-#: ../src/nautilus-file-management-properties.glade.h:91
-msgid "type"
-msgstr "tipo"
 
 #: ../src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5257,7 +5229,7 @@ msgstr "Ir á seguinte localización visitada"
 msgid "Forward history"
 msgstr "Adiantar historia"
 
-#: ../src/nautilus-navigation-window.c:793
+#: ../src/nautilus-navigation-window.c:776
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Examinador de ficheiros"
@@ -5270,15 +5242,11 @@ msgstr "Notas"
 msgid "Show Notes"
 msgstr "Amosar notas"
 
-#: ../src/nautilus-pathbar.c:1128 ../src/nautilus-places-sidebar.c:152
-msgid "Home"
-msgstr "Inicio"
-
-#: ../src/nautilus-places-sidebar.c:478
+#: ../src/nautilus-places-sidebar.c:482
 msgid "Places"
 msgstr "Sitios"
 
-#: ../src/nautilus-places-sidebar.c:484
+#: ../src/nautilus-places-sidebar.c:488
 msgid "Show Places"
 msgstr "Amosar sitios"
 
