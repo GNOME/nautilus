@@ -57,7 +57,7 @@ struct _NautilusNavigationWindow {
         
         /** UI stuff **/
         NautilusSidePane *sidebar;
-        GtkWidget *view_as_option_menu;
+        GtkWidget *view_as_combo_box;
         GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
        

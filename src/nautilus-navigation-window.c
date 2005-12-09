@@ -53,10 +53,12 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkcombobox.h>
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtkliststore.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
@@ -218,9 +220,9 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
 			    item, -1);
 	
-	window->view_as_option_menu = gtk_option_menu_new ();
-	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_option_menu, TRUE, FALSE, 0);
-	gtk_widget_show (window->view_as_option_menu);
+	window->view_as_combo_box = gtk_combo_box_new_text ();
+	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_combo_box, TRUE, FALSE, 0);
+	gtk_widget_show (window->view_as_combo_box);
 
 	/* Allocate the zoom control and place on the right next to the menu.
 	 * It gets shown later, if the view-frame contains something zoomable.
@@ -518,7 +520,7 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	g_list_foreach (window->sidebar_panels, (GFunc)g_object_unref, NULL);
 	window->sidebar_panels = NULL;
 
-	window->view_as_option_menu = NULL;
+	window->view_as_combo_box = NULL;
 	window->navigation_bar = NULL;
 	window->path_bar = NULL;
 	window->zoom_control = NULL;
@@ -688,88 +690,69 @@ activate_extra_viewer (NautilusWindow *window)
 }
 
 static void
-view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        int viewer_index;
-        
-        g_assert (GTK_IS_MENU_ITEM (widget));
-        g_assert (NAUTILUS_IS_WINDOW (data));
+view_as_menu_switch_views_callback (GtkComboBox *combo_box, NautilusWindow *window)
+{         
+	int active;
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-        window = NAUTILUS_WINDOW (data);
-
-        if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "extra viewer")) == TRUE) {
-        	activate_extra_viewer (window);
-        } else {
-		viewer_index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "viewer index"));
-		activate_nth_short_list_item (window, viewer_index);
-        }
-}
-
-static GtkWidget *
-create_view_as_menu_item (NautilusWindow *window, 
-			  const char *identifier,
-			  guint index)
-{
-	GtkWidget *menu_item;
-	const NautilusViewInfo *info;
-
-	info = nautilus_view_factory_lookup (identifier);
-
-	menu_item = gtk_menu_item_new_with_mnemonic (_(info->view_as_label));
-
-	g_signal_connect_object (menu_item, "activate",
-				 G_CALLBACK (view_as_menu_switch_views_callback),
-				 window, 0);
-
-	g_object_set_data (G_OBJECT (menu_item), "viewer index", GINT_TO_POINTER (index));
-
-	gtk_widget_show (menu_item);
-
-	return menu_item;
+	active = gtk_combo_box_get_active (combo_box);
+	
+	if (active < GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_box), "num viewers"))  ) {
+		activate_nth_short_list_item (window, active);
+	} else {
+		activate_extra_viewer (window);
+	}
 }
 
 static void
 load_view_as_menu (NautilusWindow *window)
 {
-	GtkWidget *new_menu;
-	GtkWidget *menu_item;
 	GList *node;
 	int index;
 	int selected_index = -1;
-
-        new_menu = gtk_menu_new ();
+	GtkTreeModel *model;
+	GtkListStore *store;
+	const NautilusViewInfo *info;
+	GtkComboBox* combo_box;
 	
+    	combo_box = GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box);
+	/* Clear the contents of ComboBox in a wacky way because there
+	 * is no function to clear all items and also no function to obtain
+	 * the number of items in a combobox.
+	 */
+	model = gtk_combo_box_get_model (combo_box);
+	g_return_if_fail (GTK_IS_LIST_STORE (model));
+	store = GTK_LIST_STORE (model);
+	gtk_list_store_clear (store);
+
         /* Add a menu item for each view in the preferred list for this location. */
         for (node = window->details->short_list_viewers, index = 0; 
              node != NULL; 
              node = node->next, ++index) {
-                menu_item = create_view_as_menu_item (window, node->data, index);
-                gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
+		info = nautilus_view_factory_lookup (node->data);
+		gtk_combo_box_append_text (combo_box, _(info->view_as_label));
 
 		if (nautilus_window_content_view_matches_iid (NAUTILUS_WINDOW (window), (char *)node->data)) {
 			selected_index = index;
 		}
         }
-
+	g_object_set_data (G_OBJECT (combo_box), "num viewers", GINT_TO_POINTER (index));
 	if (selected_index == -1) {
 		const char *id;
 		/* We're using an extra viewer, add a menu item for it */
 
 		id = nautilus_window_get_content_view_id (window);
-                menu_item = create_view_as_menu_item (window, id, index);
-		
-                gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
+		info = nautilus_view_factory_lookup (id);
+		gtk_combo_box_append_text (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box),
+					   _(info->view_as_label));
 		selected_index = index;
 	}
 
-        /* We create and attach a new menu here because adding/removing
-         * items from existing menu screws up the size of the option menu.
-         */
-        gtk_option_menu_set_menu (GTK_OPTION_MENU (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_option_menu),
-                                  new_menu);
+	g_signal_connect (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box), 
+			  "changed", G_CALLBACK (view_as_menu_switch_views_callback), window);
 
-	gtk_option_menu_set_history (GTK_OPTION_MENU (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_option_menu), selected_index);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box), selected_index);
 }
 
 static void
