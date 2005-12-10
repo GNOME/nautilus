@@ -4435,6 +4435,7 @@ typedef struct
 	NautilusMenuItem *item;
 	FMDirectoryView *view;
 	GList *selection;
+	GtkAction *action;
 } ExtensionActionCallbackData;
 
 
@@ -4489,6 +4490,8 @@ extension_action_slow_mime_types_ready_callback (GList *selection,
 	if (is_valid) {
 		nautilus_menu_item_activate (data->item);
 	}
+
+	g_object_unref (data->action);
 }
 
 static void
@@ -4498,6 +4501,8 @@ extension_action_callback (GtkAction *action,
 	ExtensionActionCallbackData *data;
 
 	data = callback_data;
+
+	g_object_ref (action);
 
 	nautilus_file_list_call_when_ready
 		(data->selection,
@@ -4549,6 +4554,7 @@ add_extension_action_for_files (FMDirectoryView *view,
 	data->item = g_object_ref (item);
 	data->view = view;
 	data->selection = nautilus_file_list_copy (files);
+	data->action = action;
 
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (extension_action_callback),
