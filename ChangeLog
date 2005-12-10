@@ -1,3 +1,12 @@
+2005-12-10  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(extension_action_slow_mime_types_ready_callback),
+	(extension_action_callback), (add_extension_action_for_files):
+	Keep the original action refed till its activation callback is
+	done. Prevents the callback data from being freed prematurely.
+	Fixes #320230.
+
 2005-11-28  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
