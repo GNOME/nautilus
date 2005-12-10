@@ -810,6 +810,21 @@ most cases, this should be left alone. -->Sans 10</default>
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/desktop/network_visible</key>
+      <applyto>/apps/nautilus/desktop/network_visible</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+      	<short>Network Servers icon visible on the desktop</short>
+	<long>
+	  If this is set to true, an icon linking to the Network Servers view
+	  will be put on the desktop.
+	</long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/desktop/computer_icon_name</key>
       <applyto>/apps/nautilus/desktop/computer_icon_name</applyto>
       <owner>nautilus</owner>

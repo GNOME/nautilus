@@ -1,3 +1,47 @@
+2005-12-09  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #322957:
+
+	Add a "Network Servers" icon on the desktop, which takes you to network:///
+
+	* libnautilus-private/nautilus-global-preferences.h
+	(NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE): New preference
+	name.  This determines whether we show the "Network Servers" icon.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas.in: Add a
+	schema for /apps/nautilus/desktop/network_visible; the default is true.
+
+	* libnautilus-private/nautilus-desktop-link.h
+	(NautilusDesktopLinkType): Add a NAUTILUS_DESKTOP_LINK_NETWORK type.
+
+	* libnautilus-private/nautilus-desktop-link.c
+	(nautilus_desktop_link_new): Support NAUTILUS_DESKTOP_LINK_NETWORK.
+
+	* libnautilus-private/nautilus-desktop-link-monitor.c
+	(NautilusDesktopLinkMonitorDetails): Added a network_link field.
+	(nautilus_desktop_link_monitor_delete_link): Don't delete
+	NAUTILUS_DESKTOP_LINK_NETWORK links.
+	(update_link_visibility): New helper function.
+	(desktop_home_visible_changed): Use update_link_visibility(), to
+	avoid duplicated code.
+	(desktop_computer_visible_changed): Likewise.
+	(desktop_trash_visible_changed): Likewise.
+	(desktop_network_visible_changed): New function.
+	(create_link_and_add_preference): New helper function.
+	(nautilus_desktop_link_monitor_init): Use
+	create_link_and_add_preference() to avoid duplicated code.  Also,
+	create the network_link.
+	(desktop_link_monitor_finalize): Unref the network_link.
+	(remove_link_and_preference): New helper function.
+	(desktop_link_monitor_finalize): Use remove_link_and_preference()
+	to avoid duplicated code.  Also, free the network_link.
+
+	* src/file-manager/fm-icon-container.c (SortCategory): Add a
+	SORT_NETWORK_LINK category right before SORT_MOUNT_LINK, so that
+	the "Network Servers" icon appears before mounts.
+	(get_sort_category): Use SORT_NETWORK_LINK as the category for
+	NAUTILUS_DESKTOP_LINK_NETWORK.
+
 2005-12-09  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-emblem-utils.c:
