@@ -25,6 +25,7 @@
 #include "nautilus-query-editor.h"
 
 #include <string.h>
+#include <libnautilus-private/nautilus-marshal.h>
 #include <glib/gi18n.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
@@ -74,6 +75,7 @@ typedef struct {
 } NautilusQueryEditorRowOps;
 
 struct NautilusQueryEditorDetails {
+	gboolean is_indexed;
 	GtkWidget *entry;
 	gboolean change_frozen;
 	guint typing_timeout_id;
@@ -87,7 +89,7 @@ struct NautilusQueryEditorDetails {
 };
 
 enum {
-	ACTIVATE,
+	CHANGED,
 	CANCEL,
 	LAST_SIGNAL
 }; 
@@ -99,6 +101,8 @@ static void  nautilus_query_editor_init             (NautilusQueryEditor      *e
 
 static void entry_activate_cb (GtkWidget *entry, NautilusQueryEditor *editor);
 static void entry_changed_cb  (GtkWidget *entry, NautilusQueryEditor *editor);
+static void nautilus_query_editor_changed_force (NautilusQueryEditor *editor,
+						 gboolean             force);
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 static NautilusQueryEditorRow * nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 							       NautilusQueryEditorRowType type);
@@ -182,14 +186,14 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 	gobject_class->finalize = nautilus_query_editor_finalize;
         gobject_class->dispose = nautilus_query_editor_dispose;
 
-	signals[ACTIVATE] =
-		g_signal_new ("activate",
+	signals[CHANGED] =
+		g_signal_new ("changed",
 		              G_TYPE_FROM_CLASS (class),
 		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusQueryEditorClass, activate),
+		              G_STRUCT_OFFSET (NautilusQueryEditorClass, changed),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE, 1, NAUTILUS_TYPE_QUERY);
+		              nautilus_marshal_VOID__OBJECT_BOOLEAN,
+		              G_TYPE_NONE, 2, NAUTILUS_TYPE_QUERY, G_TYPE_BOOLEAN);
 
 	signals[CANCEL] =
 		g_signal_new ("cancel",
@@ -212,7 +216,7 @@ entry_activate_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 		editor->details->typing_timeout_id = 0;
 	}
 
-	nautilus_query_editor_changed (editor);
+	nautilus_query_editor_changed_force (editor, TRUE);
 }
 
 static gboolean
@@ -825,7 +829,7 @@ nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 	create_type_widgets (row);
 	
 	button = gtk_button_new ();
-	image = gtk_image_new_from_stock (GTK_STOCK_CLOSE,
+	image = gtk_image_new_from_stock (GTK_STOCK_REMOVE,
 					  GTK_ICON_SIZE_SMALL_TOOLBAR);
 	gtk_container_add (GTK_CONTAINER (button), image);
 	gtk_widget_show (image);
@@ -838,6 +842,12 @@ nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	return row;
+}
+
+static void
+go_search_cb (GtkButton *clicked_button, NautilusQueryEditor *editor)
+{
+	nautilus_query_editor_changed_force (editor, TRUE);
 }
 
 static void
@@ -871,7 +881,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	gtk_widget_show (hbox);
 	
 	label = gtk_label_new ("");
-	gtk_label_set_markup (GTK_LABEL (label), _("<b>Saved Search</b>"));
+	gtk_label_set_markup (GTK_LABEL (label), _("<b>Search Folder</b>"));
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
@@ -883,8 +893,17 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 			  G_CALLBACK (edit_clicked), editor);
 }
 
+void
+nautilus_query_editor_set_default_query (NautilusQueryEditor *editor)
+{
+	if (!editor->details->is_indexed) {
+		nautilus_query_editor_add_row (editor, NAUTILUS_QUERY_EDITOR_ROW_LOCATION);
+		nautilus_query_editor_changed (editor);
+	}
+}
+
 static void
-finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox)
+finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go)
 {
 	GtkWidget *button, *image;
 
@@ -900,6 +919,20 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox)
 			  G_CALLBACK (add_new_row_cb), editor);
 	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+
+	if (!editor->details->is_indexed) {
+		if (use_go) {
+			button = gtk_button_new_with_label (_("Go"));
+		} else {
+			button = gtk_button_new_with_label (_("Reload"));
+		}
+		gtk_widget_show (button);
+		
+		g_signal_connect (button, "clicked",
+				  G_CALLBACK (go_search_cb), editor);
+		
+		gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	}
 }
 
 static void
@@ -913,11 +946,12 @@ setup_internal_entry (NautilusQueryEditor *editor)
 	gtk_box_pack_start (GTK_BOX (editor->details->visible_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("");
-	gtk_label_set_markup (GTK_LABEL (label), _("<b>Search for:</b>"));
+	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), _("<b>_Search for:</b>"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	editor->details->entry = gtk_entry_new ();
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), editor->details->entry);
 	gtk_box_pack_start (GTK_BOX (hbox), editor->details->entry, TRUE, TRUE, 0);
 
 	g_signal_connect (editor->details->entry, "activate",
@@ -926,7 +960,7 @@ setup_internal_entry (NautilusQueryEditor *editor)
 			  G_CALLBACK (entry_changed_cb), editor);
 	gtk_widget_show (editor->details->entry);
 
-	finish_first_line (editor, hbox);
+	finish_first_line (editor, hbox, TRUE);
 }
 
 static void
@@ -949,7 +983,7 @@ setup_external_entry (NautilusQueryEditor *editor, GtkWidget *entry)
 	g_signal_connect (editor->details->entry, "changed",
 			  G_CALLBACK (entry_changed_cb), editor);
 
-	finish_first_line (editor, hbox);
+	finish_first_line (editor, hbox, FALSE);
 
 }
 
@@ -977,23 +1011,28 @@ query_is_valid (NautilusQueryEditor *editor)
 	return text != NULL && text[0] != '\0';
 }
 
-
 static void
-nautilus_query_editor_changed (NautilusQueryEditor *editor)
+nautilus_query_editor_changed_force (NautilusQueryEditor *editor, gboolean force_reload)
 {
 	NautilusQuery *query;
 
 	if (editor->details->change_frozen) {
 		return;
 	}
-
+	
 	if (query_is_valid (editor)) {
 		query = nautilus_query_editor_get_query (editor);
-		g_signal_emit (editor, signals[ACTIVATE], 0, query);
+		g_signal_emit (editor, signals[CHANGED], 0,
+			       query, editor->details->is_indexed || force_reload);
 		g_object_unref (query);
 	}
 }
 
+static void
+nautilus_query_editor_changed (NautilusQueryEditor *editor)
+{
+	nautilus_query_editor_changed_force (editor, FALSE);
+}
 
 void
 nautilus_query_editor_grab_focus (NautilusQueryEditor *editor)
@@ -1037,11 +1076,13 @@ nautilus_query_editor_clear_query (NautilusQueryEditor *editor)
 }
 
 GtkWidget *
-nautilus_query_editor_new (gboolean start_hidden)
+nautilus_query_editor_new (gboolean start_hidden, gboolean is_indexed)
 {
 	GtkWidget *editor;
 
 	editor = g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL);
+
+	NAUTILUS_QUERY_EDITOR (editor)->details->is_indexed = is_indexed;
 
 	nautilus_query_editor_set_visible (NAUTILUS_QUERY_EDITOR (editor),
 					   !start_hidden);
@@ -1053,12 +1094,14 @@ nautilus_query_editor_new (gboolean start_hidden)
 
 GtkWidget*
 nautilus_query_editor_new_with_bar (gboolean start_hidden,
+				    gboolean is_indexed,
 				    NautilusSearchBar *bar)
 {
 	GtkWidget *entry;
 	NautilusQueryEditor *editor;
 
 	editor = NAUTILUS_QUERY_EDITOR (g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL));
+	editor->details->is_indexed = is_indexed;
 
 	nautilus_query_editor_set_visible (editor, !start_hidden);
 

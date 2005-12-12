@@ -155,24 +155,13 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 	NautilusSearchEngineBeagle *beagle;
 	GError *error;
 	GList *mimetypes, *l;
-	char *text, **words, *mimetype;
-	int i;
+	char *text, *mimetype;
 
 	error = NULL;
 	beagle = NAUTILUS_SEARCH_ENGINE_BEAGLE (engine);
 
 	if (beagle->details->current_query) {
 		return;
-	}
-
-	if (beagle->details->client == NULL) {
-		beagle->details->client = beagle_client_new (NULL);
-
-		if (beagle->details->client == NULL) {
-			nautilus_search_engine_error (engine,
-						      "Unable to connect to search service.");
-			return;
-		}
 	}
 
 	beagle->details->query_finished = FALSE;
@@ -193,13 +182,8 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 				   1000);
 	
 	text = nautilus_query_get_text (beagle->details->query);
-	words = g_strsplit (text, " \n\t", -1);
-	for (i = 0; words[i] != NULL; i++) {
-		beagle_query_add_text (beagle->details->current_query,
-				       words[i]);
-	}
-	g_free (text);
-	g_strdupv (words);	
+	beagle_query_add_text (beagle->details->current_query,
+			       text);
 
 	mimetypes = nautilus_query_get_mime_types (beagle->details->query);
 	for (l = mimetypes; l != NULL; l = l->next) {
@@ -207,7 +191,6 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 		beagle_query_add_mime_type (beagle->details->current_query,
 					    mimetype);
 	}
-	eel_g_list_free_deep (mimetypes);
 
 	beagle->details->current_query_uri_prefix = nautilus_query_get_location (beagle->details->query);
 	
@@ -216,6 +199,10 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 		nautilus_search_engine_error (engine, error->message);
 		g_error_free (error);
 	}
+
+	/* These must live during the lifetime of the query */
+	g_free (text);
+	eel_g_list_free_deep (mimetypes);
 }
 
 static void
@@ -231,6 +218,12 @@ nautilus_search_engine_beagle_stop (NautilusSearchEngine *engine)
 		g_free (beagle->details->current_query_uri_prefix);
 		beagle->details->current_query_uri_prefix = NULL;
 	}
+}
+
+static gboolean
+nautilus_search_engine_beagle_is_indexed (NautilusSearchEngine *engine)
+{
+	return TRUE;
 }
 
 static void
@@ -266,6 +259,7 @@ nautilus_search_engine_beagle_class_init (NautilusSearchEngineBeagleClass *class
 	engine_class->set_query = nautilus_search_engine_beagle_set_query;
 	engine_class->start = nautilus_search_engine_beagle_start;
 	engine_class->stop = nautilus_search_engine_beagle_stop;
+	engine_class->is_indexed = nautilus_search_engine_beagle_is_indexed;
 }
 
 static void
@@ -275,12 +269,21 @@ nautilus_search_engine_beagle_init (NautilusSearchEngineBeagle *engine)
 }
 
 
-NautilusSearchEngineBeagle *
+NautilusSearchEngine *
 nautilus_search_engine_beagle_new (void)
 {
 	NautilusSearchEngineBeagle *engine;
+	BeagleClient *client;
 
+	client = beagle_client_new (NULL);
+
+	if (client == NULL) {
+		return NULL;
+	}
+	
 	engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_BEAGLE, NULL);
+	
+	engine->details->client = client;
 
-	return engine;
+	return NAUTILUS_SEARCH_ENGINE (engine);
 }

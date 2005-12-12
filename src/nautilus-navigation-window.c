@@ -981,7 +981,7 @@ static void
 search_bar_activate_callback (NautilusSearchBar *bar,
 			      NautilusWindow *window)
 {
-	char *uri;
+	char *uri, *home_uri;
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
@@ -995,6 +995,11 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 
 	query = nautilus_search_bar_get_query (NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->search_bar));
 	if (query != NULL) {
+		if (!nautilus_search_directory_is_indexed (search_directory)) {
+			home_uri = nautilus_get_home_directory_uri ();
+			nautilus_query_set_location (query, home_uri);
+			g_free (home_uri);
+		}
 		nautilus_search_directory_set_query (search_directory, query);
 		g_object_unref (query);
 	}
@@ -1026,9 +1031,10 @@ nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
 }
 
 static void
-query_editor_activate_callback (NautilusSearchBar *bar,
-				NautilusQuery *query,
-				NautilusWindow *window)
+query_editor_changed_callback (NautilusSearchBar *bar,
+			       NautilusQuery *query,
+			       gboolean reload,
+			       NautilusWindow *window)
 {
 	NautilusDirectory *directory;
 
@@ -1037,7 +1043,9 @@ query_editor_activate_callback (NautilusSearchBar *bar,
 
 	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
 					     query);
-	nautilus_window_reload (window);
+	if (reload) {
+		nautilus_window_reload (window);
+	}
 
 	nautilus_directory_unref (directory);
 }
@@ -1059,23 +1067,28 @@ real_set_search_mode (NautilusWindow *window, gboolean search_mode,
 	}
 
 	if (nautilus_search_directory_is_saved_search (search_directory)) {
-		query_editor = nautilus_query_editor_new (TRUE);
+		query_editor = nautilus_query_editor_new (TRUE,
+							  nautilus_search_directory_is_indexed (search_directory));
 	} else {
 		nautilus_navigation_window_show_location_bar_temporarily (nav_window);
 		nautilus_navigation_window_set_bar_mode (nav_window, NAUTILUS_BAR_SEARCH);
 		nav_window->details->temporary_search_bar = FALSE;
 
-		query_editor = nautilus_query_editor_new_with_bar (FALSE, NAUTILUS_SEARCH_BAR (nav_window->search_bar));
+		query_editor = nautilus_query_editor_new_with_bar (FALSE,
+								   nautilus_search_directory_is_indexed (search_directory),
+								   NAUTILUS_SEARCH_BAR (nav_window->search_bar));
 	}
 
-	g_signal_connect_object (query_editor, "activate",
-				 G_CALLBACK (query_editor_activate_callback), window, 0);
+	g_signal_connect_object (query_editor, "changed",
+				 G_CALLBACK (query_editor_changed_callback), window, 0);
 	
 	query = nautilus_search_directory_get_query (search_directory);
 	if (query != NULL) {
 		nautilus_query_editor_set_query (NAUTILUS_QUERY_EDITOR (query_editor),
 						 query);
 		g_object_unref (query);
+	}else {
+		nautilus_query_editor_set_default_query (NAUTILUS_QUERY_EDITOR (query_editor));
 	}
 	
 	nautilus_window_add_extra_location_widget (window, query_editor);

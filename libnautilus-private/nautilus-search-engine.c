@@ -24,6 +24,7 @@
 #include <config.h>
 #include "nautilus-search-engine.h"
 #include "nautilus-search-engine-beagle.h"
+#include "nautilus-search-engine-simple.h"
 
 #include <eel/eel-gtk-macros.h>
 
@@ -119,22 +120,19 @@ nautilus_search_engine_init (NautilusSearchEngine *engine)
 	engine->details = g_new0 (NautilusSearchEngineDetails, 1);
 }
 
-gboolean
-nautilus_search_engine_enabled (void)
-{
-#ifdef HAVE_BEAGLE
-	return TRUE;
-#endif
-	return FALSE;
-}
-
 NautilusSearchEngine *
 nautilus_search_engine_new (void)
 {
+	NautilusSearchEngine *engine;
+	
 #ifdef HAVE_BEAGLE
-	return g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_BEAGLE,  NULL);
+	engine = nautilus_search_engine_beagle_new ();
+	if (engine) {
+		return engine;
+	}
 #endif
-	return NULL;
+	engine = nautilus_search_engine_simple_new ();
+	return engine;
 }
 
 void
@@ -163,6 +161,15 @@ nautilus_search_engine_stop (NautilusSearchEngine *engine)
 	g_return_if_fail (NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->stop != NULL);
 
 	NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->stop (engine);
+}
+
+gboolean
+nautilus_search_engine_is_indexed (NautilusSearchEngine *engine)
+{
+	g_return_val_if_fail (NAUTILUS_IS_SEARCH_ENGINE (engine), FALSE);
+	g_return_val_if_fail (NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->is_indexed != NULL, FALSE);
+
+	return NAUTILUS_SEARCH_ENGINE_GET_CLASS (engine)->is_indexed (engine);
 }
 
 void	       

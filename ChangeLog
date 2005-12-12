@@ -1,3 +1,48 @@
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-search-engine-simple.[ch]:
+	Add new NautilusSearchEngineSimple backend.
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	Add nautilus_get_home_directory_uri.
+	
+	* libnautilus-private/nautilus-marshal.list:
+	Add VOID:OBJECT,BOOLEAN, sort
+	
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	Add nautilus_search_directory_is_indexed.
+	Make sure saved searches are never returned as search hits.
+	
+	* libnautilus-private/nautilus-search-engine-beagle.[ch]:
+	Make _new fail if we can't contact beagle daemon.
+	Set text on query as one string (it can have keywords in it)
+	Move freeing of query data to after query is done.
+	Add _is_indexed
+	
+	* libnautilus-private/nautilus-search-engine.[ch]:
+	Add nautilus_search_engine_is_indexed
+	Remove nautilus_search_engine_enabled
+	Use beagle if availible, otherwise simple backend.
+	
+	* src/nautilus-navigation-window-menus.c:
+	Remove search disabled code
+
+	* src/nautilus-query-editor.[ch]:
+	Rename activate to changed and add reload argument
+	Add go/reload button for non-indexed searches
+	Add mnemonic for entry
+	Change saved search string to "Search Folder"
+	
+	* src/nautilus-navigation-window.c:
+	Update for query editor changes
+	For indexed search engines, default to search in homedir
+	
+	* src/nautilus-spatial-window.c:
+	Update for query editor changes
+	For indexed search engines, default to search in homedir
+	Remove search disabled code
+
 2005-12-07  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-query-editor.c (setup_external_entry):

@@ -162,6 +162,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-search-directory-file.h \
 	nautilus-search-engine.c \
 	nautilus-search-engine.h \
+	nautilus-search-engine-simple.c \
+	nautilus-search-engine-simple.h \
 	nautilus-sidebar-provider.c \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \

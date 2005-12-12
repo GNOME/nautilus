@@ -44,14 +44,19 @@ typedef struct NautilusQueryEditor {
 typedef struct {
 	GtkVBoxClass parent_class;
 
-	void (* activate) (NautilusQueryEditor *editor, NautilusQuery *query);
+	void (* changed) (NautilusQueryEditor  *editor,
+			  NautilusQuery        *query,
+			  gboolean              reload);
 	void (* cancel)   (NautilusQueryEditor *editor);
 } NautilusQueryEditorClass;
 
-GType      nautilus_query_editor_get_type     	(void);
-GtkWidget* nautilus_query_editor_new          	(gboolean start_hidden);
-GtkWidget* nautilus_query_editor_new_with_bar   (gboolean start_hidden,
-						 NautilusSearchBar *bar);
+GType      nautilus_query_editor_get_type     	   (void);
+GtkWidget* nautilus_query_editor_new          	   (gboolean start_hidden,
+						    gboolean is_indexed);
+GtkWidget* nautilus_query_editor_new_with_bar      (gboolean start_hidden,
+						    gboolean is_indexed,
+						    NautilusSearchBar *bar);
+void       nautilus_query_editor_set_default_query (NautilusQueryEditor *editor);
 
 void	   nautilus_query_editor_grab_focus (NautilusQueryEditor *editor);
 void       nautilus_query_editor_clear_query (NautilusQueryEditor *editor);

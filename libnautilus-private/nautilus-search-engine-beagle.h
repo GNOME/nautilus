@@ -46,6 +46,6 @@ typedef struct {
 
 GType          nautilus_search_engine_beagle_get_type  (void);
 
-NautilusSearchEngineBeagle* nautilus_search_engine_beagle_new       (void);
+NautilusSearchEngine* nautilus_search_engine_beagle_new       (void);
 
 #endif /* NAUTILUS_SEARCH_ENGINE_BEAGLE_H */

@@ -331,9 +331,10 @@ real_prompt_for_location (NautilusWindow *window,
 }
 
 static void
-query_editor_activate_callback (NautilusSearchBar *bar,
-				NautilusQuery *query,
-				NautilusWindow *window)
+query_editor_changed_callback (NautilusSearchBar *bar,
+			       NautilusQuery *query,
+			       gboolean reload,
+			       NautilusWindow *window)
 {
 	NautilusDirectory *directory;
 
@@ -342,7 +343,9 @@ query_editor_activate_callback (NautilusSearchBar *bar,
 
 	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
 					     query);
-	nautilus_window_reload (window);
+	if (reload) {
+		nautilus_window_reload (window);
+	}
 
 	nautilus_directory_unref (directory);
 }
@@ -360,20 +363,23 @@ real_set_search_mode (NautilusWindow *window, gboolean search_mode,
 	spatial_window->details->query_editor = NULL;
 	
 	if (search_mode) {
-		query_editor = nautilus_query_editor_new (nautilus_search_directory_is_saved_search (search_directory));
+		query_editor = nautilus_query_editor_new (nautilus_search_directory_is_saved_search (search_directory),
+							  nautilus_search_directory_is_indexed (search_directory));
 		spatial_window->details->query_editor = query_editor;
 		
 		nautilus_window_add_extra_location_widget (window, query_editor);
 		gtk_widget_show (query_editor);
 		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (query_editor));
-		g_signal_connect_object (query_editor, "activate",
-					 G_CALLBACK (query_editor_activate_callback), window, 0);
+		g_signal_connect_object (query_editor, "changed",
+					 G_CALLBACK (query_editor_changed_callback), window, 0);
 		
 		query = nautilus_search_directory_get_query (search_directory);
 		if (query != NULL) {
 			nautilus_query_editor_set_query (NAUTILUS_QUERY_EDITOR (query_editor),
 							 query);
 			g_object_unref (query);
+		} else {
+			nautilus_query_editor_set_default_query (NAUTILUS_QUERY_EDITOR (query_editor));
 		}
 	} 
 }
@@ -851,7 +857,6 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	GtkUIManager *ui_manager;
 	GtkTargetList *targets;
 	const char *ui;
-	GtkAction *action;
 	
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
@@ -950,12 +955,6 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	
 	ui = nautilus_ui_string_get ("nautilus-spatial-window-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-
-	if (!nautilus_search_engine_enabled ()) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
-		gtk_action_set_sensitive (action, FALSE);
-		gtk_action_set_visible (action, FALSE);
-	}
 }
 
 static void

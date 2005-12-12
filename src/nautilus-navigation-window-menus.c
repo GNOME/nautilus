@@ -232,13 +232,6 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_status_bar_showing (window));
-
-	if (!nautilus_search_engine_enabled ()) {
-		action = gtk_action_group_get_action (window->details->navigation_action_group,
-						      NAUTILUS_ACTION_SEARCH);
-		gtk_action_set_sensitive (action, FALSE);
-		gtk_action_set_visible (action, FALSE);
-	}
 }
 
 static void

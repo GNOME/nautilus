@@ -225,6 +225,13 @@ nautilus_get_desktop_directory_uri_no_create (void)
 }
 
 char *
+nautilus_get_home_directory_uri (void)
+{
+	return  gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+}
+
+
+char *
 nautilus_get_templates_directory (void)
 {
 	return  g_build_filename (g_get_home_dir(),

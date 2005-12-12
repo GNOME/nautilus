@@ -58,6 +58,7 @@ NautilusSearchDirectory *nautilus_search_directory_new_from_saved_search (const 
 
 gboolean       nautilus_search_directory_is_saved_search (NautilusSearchDirectory *search);
 gboolean       nautilus_search_directory_is_modified     (NautilusSearchDirectory *search);
+gboolean       nautilus_search_directory_is_indexed      (NautilusSearchDirectory *search);
 void           nautilus_search_directory_save_search     (NautilusSearchDirectory *search);
 void           nautilus_search_directory_save_to_file    (NautilusSearchDirectory *search,
 							  const char              *save_file_uri);

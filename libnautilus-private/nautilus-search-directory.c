@@ -478,6 +478,12 @@ search_engine_hits_added (NautilusSearchEngine *engine, GList *hits,
 
 	for (hit_list = hits; hit_list != NULL; hit_list = hit_list->next) {
 		uri = hit_list->data;
+
+		if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+			/* Never return saved searches themselves as hits */
+			continue;
+		}
+		
 		file = nautilus_file_get (uri);
 		
 		for (monitor_list = search->details->monitor_list; monitor_list; monitor_list = monitor_list->next) {
@@ -818,6 +824,14 @@ nautilus_search_directory_is_modified (NautilusSearchDirectory *search)
 {
 	return search->details->modified;
 }
+
+gboolean
+nautilus_search_directory_is_indexed (NautilusSearchDirectory *search)
+{
+	ensure_search_engine (search);
+	return nautilus_search_engine_is_indexed (search->details->engine);
+}
+
 
 void
 nautilus_search_directory_save_to_file (NautilusSearchDirectory *search,
