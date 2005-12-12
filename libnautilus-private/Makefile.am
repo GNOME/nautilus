@@ -203,10 +203,12 @@ libnautilus_private_la_SOURCES = \
 	nautilus-window-info.h \
 	$(NULL)
 
-if HAVE_BEAGLE
-libnautilus_private_la_SOURCES += \
-	nautilus-search-engine-beagle.c
+BEAGLE_SOURCES = \
+	nautilus-search-engine-beagle.c \
 	nautilus-search-engine-beagle.h
+
+if HAVE_BEAGLE
+libnautilus_private_la_SOURCES += $(BEAGLE_SOURCES)
 endif
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
@@ -244,6 +246,7 @@ EXTRA_DIST = 				\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
 	$(schema_in_files)              \
+	$(BEAGLE_SOURCES)		\
 	$(NULL)
 
 CLEANFILES = \
