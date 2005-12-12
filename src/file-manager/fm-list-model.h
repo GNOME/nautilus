@@ -76,15 +76,24 @@ typedef struct {
 
 GType    fm_list_model_get_type                          (void);
 gboolean fm_list_model_add_file                          (FMListModel          *model,
-							  NautilusFile         *file);
+							  NautilusFile         *file,
+							  NautilusDirectory    *directory);
 void     fm_list_model_file_changed                      (FMListModel          *model,
-							  NautilusFile         *file);
+							  NautilusFile         *file,
+							  NautilusDirectory    *directory);
 gboolean fm_list_model_is_empty                          (FMListModel          *model);
 guint    fm_list_model_get_length                        (FMListModel          *model);
 void     fm_list_model_remove_file                       (FMListModel          *model,
-							  NautilusFile         *file);
+							  NautilusFile         *file,
+							  NautilusDirectory    *directory);
 void     fm_list_model_clear                             (FMListModel          *model);
 gboolean fm_list_model_get_tree_iter_from_file           (FMListModel          *model,
+							  NautilusFile         *file,
+							  NautilusDirectory    *directory,
+							  GtkTreeIter          *iter);
+GList *  fm_list_model_get_all_iters_for_file            (FMListModel          *model,
+							  NautilusFile         *file);
+gboolean fm_list_model_get_first_iter_for_file           (FMListModel          *model,
 							  NautilusFile         *file,
 							  GtkTreeIter          *iter);
 void     fm_list_model_set_should_sort_directories_first (FMListModel          *model,
@@ -95,7 +104,7 @@ int      fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
 							  const char           *attribute);
 char    *fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
 							  int sort_column_id);
-void     fm_list_model_sort_files (FMListModel *model,
+void     fm_list_model_sort_files                        (FMListModel *model,
 							  GList **files);
 
 NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
@@ -114,6 +123,9 @@ void              fm_list_model_set_drag_view (FMListModel *model,
 
 void              fm_list_model_get_drag_types (const GtkTargetEntry **entries,
 						int *num_entries);
+int               fm_list_model_compare_func (FMListModel *model,
+					      NautilusFile *file1,
+					      NautilusFile *file2);
 
 
 int               fm_list_model_add_column (FMListModel *model,
@@ -122,6 +134,6 @@ int               fm_list_model_get_column_number (FMListModel *model,
 						   const char *column_name);
 						   
 void              fm_list_model_subdirectory_done_loading (FMListModel       *model,
-							    NautilusDirectory *directory);
+							   NautilusDirectory *directory);
 						   
 #endif /* FM_LIST_MODEL_H */

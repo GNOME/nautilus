@@ -310,21 +310,23 @@ get_drop_path (NautilusTreeViewDragDest *dest,
 		return NULL;
 	}
 
-	file = file_for_path (dest, path);
-	
-	ret = NULL;
+	ret = gtk_tree_path_copy (path);
+	file = file_for_path (dest, ret);
 
-	if (!file || !nautilus_drag_can_accept_items (file, dest->details->drag_list)){
+	/* Go up the tree until we find a file that can accept a drop */
+	while (file == NULL /* dummy row */ ||
+	       !nautilus_drag_can_accept_items (file, dest->details->drag_list)) {
 		if (gtk_tree_path_get_depth (path) == 1) {
+			gtk_tree_path_free (ret);
 			ret = NULL;
+			break;
 		} else {
-			ret = gtk_tree_path_copy (path);
 			gtk_tree_path_up (ret);
+			
+			nautilus_file_unref (file);
+			file = file_for_path (dest, ret);
 		}
-	} else {
-		ret = gtk_tree_path_copy (path);
 	}
-
 	nautilus_file_unref (file);
 	
 	return ret;

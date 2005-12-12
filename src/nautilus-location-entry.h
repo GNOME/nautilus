@@ -50,5 +50,7 @@ typedef struct {
 
 GType      nautilus_location_entry_get_type     	(void);
 GtkWidget* nautilus_location_entry_new          	(void);
+void       nautilus_location_entry_set_special_text     (NautilusLocationEntry *entry,
+							 const char            *special_text);
 
 #endif /* NAUTILUS_LOCATION_ENTRY_H */

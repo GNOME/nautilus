@@ -30,6 +30,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
 #include "nautilus-file.h"
+#include "nautilus-search-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -56,10 +57,26 @@ nautilus_compute_title_for_uri (const char *text_uri)
 	GnomeVFSURI *uri;
 	char *title, *displayname;
 	const char *hostname;
-
+	NautilusDirectory *directory;
+	NautilusQuery *query;
 	hostname = NULL;
 
 	if (text_uri) {
+		if (eel_uri_is_search (text_uri)) {
+			directory = nautilus_directory_get (text_uri);
+			
+			query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+			nautilus_directory_unref (directory);
+			
+			if (query != NULL) {
+				title = nautilus_query_to_readable_string (query);
+				g_object_unref (query);
+			} else {
+				title = g_strdup (_("Search"));
+			}
+
+			return title;
+		}
 		file = nautilus_file_get (text_uri);
 		uri = gnome_vfs_uri_new (text_uri);
 		if (uri && !gnome_vfs_uri_is_local (uri)) {
@@ -208,6 +225,13 @@ nautilus_get_desktop_directory_uri_no_create (void)
 }
 
 char *
+nautilus_get_home_directory_uri (void)
+{
+	return  gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+}
+
+
+char *
 nautilus_get_templates_directory (void)
 {
 	return  g_build_filename (g_get_home_dir(),
@@ -235,6 +259,22 @@ nautilus_get_templates_directory_uri (void)
 	uri = gnome_vfs_get_uri_from_local_path (directory);
 	g_free (directory);
 	return uri;
+}
+
+char *
+nautilus_get_searches_directory (void)
+{
+	char *user_dir;
+	char *searches_dir;
+
+	user_dir = nautilus_get_user_directory ();
+	searches_dir = g_build_filename (user_dir, "searches", NULL);
+	g_free (user_dir);
+	
+	if (!g_file_test (searches_dir, G_FILE_TEST_EXISTS))
+		mkdir (searches_dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+
+	return searches_dir;
 }
 
 /* These need to be reset to NULL when desktop_is_home_dir changes */

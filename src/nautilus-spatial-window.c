@@ -38,6 +38,8 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
+#include "nautilus-query-editor.h"
+#include "nautilus-search-bar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
@@ -77,6 +79,8 @@
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
+#include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-search-engine.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -98,6 +102,8 @@ struct _NautilusSpatialWindowDetails {
 	GtkWidget *location_label;
 	GtkWidget *location_icon;
 
+	GtkWidget *query_editor;
+	
 	GnomeVFSURI *location;
 };
 
@@ -288,6 +294,11 @@ nautilus_spatial_window_show (GtkWidget *widget)
 	window = NAUTILUS_SPATIAL_WINDOW (widget);
 	
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
+
+	if (NAUTILUS_WINDOW (window)->details->search_mode &&
+	    window->details->query_editor != NULL) {
+		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (window->details->query_editor));
+	}
 }
 
 static void
@@ -317,6 +328,60 @@ real_prompt_for_location (NautilusWindow *window,
 	}
 		
 	gtk_widget_show (dialog);
+}
+
+static void
+query_editor_changed_callback (NautilusSearchBar *bar,
+			       NautilusQuery *query,
+			       gboolean reload,
+			       NautilusWindow *window)
+{
+	NautilusDirectory *directory;
+
+	directory = nautilus_directory_get_for_file (window->details->viewed_file);
+	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
+
+	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory),
+					     query);
+	if (reload) {
+		nautilus_window_reload (window);
+	}
+
+	nautilus_directory_unref (directory);
+}
+
+static void
+real_set_search_mode (NautilusWindow *window, gboolean search_mode,
+		      NautilusSearchDirectory *search_directory)
+{
+	NautilusSpatialWindow *spatial_window;
+	GtkWidget *query_editor;
+	NautilusQuery *query;
+
+	spatial_window = NAUTILUS_SPATIAL_WINDOW (window);
+
+	spatial_window->details->query_editor = NULL;
+	
+	if (search_mode) {
+		query_editor = nautilus_query_editor_new (nautilus_search_directory_is_saved_search (search_directory),
+							  nautilus_search_directory_is_indexed (search_directory));
+		spatial_window->details->query_editor = query_editor;
+		
+		nautilus_window_add_extra_location_widget (window, query_editor);
+		gtk_widget_show (query_editor);
+		nautilus_query_editor_grab_focus (NAUTILUS_QUERY_EDITOR (query_editor));
+		g_signal_connect_object (query_editor, "changed",
+					 G_CALLBACK (query_editor_changed_callback), window, 0);
+		
+		query = nautilus_search_directory_get_query (search_directory);
+		if (query != NULL) {
+			nautilus_query_editor_set_query (NAUTILUS_QUERY_EDITOR (query_editor),
+							 query);
+			g_object_unref (query);
+		} else {
+			nautilus_query_editor_set_default_query (NAUTILUS_QUERY_EDITOR (query_editor));
+		}
+	} 
 }
 
 static char *
@@ -746,6 +811,20 @@ action_edit_bookmarks_callback (GtkAction *action,
         nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
 
+static void
+action_search_callback (GtkAction *action,
+			gpointer user_data)
+{
+	NautilusWindow *window;
+	char *uri;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	uri = nautilus_search_directory_generate_new_uri ();
+	nautilus_window_go_to (window, uri);
+	g_free (uri);
+}
+
 static const GtkActionEntry spatial_entries[] = {
   { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },               /* name, stock id, label */
   { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."), /* name, stock id, label */
@@ -763,6 +842,9 @@ static const GtkActionEntry spatial_entries[] = {
   { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
     "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
     G_CALLBACK (action_edit_bookmarks_callback) },
+  { "Search", "gtk-find", N_("_Search"), /* name, stock id, label */
+    "<control>F", N_("Search for files"),
+    G_CALLBACK (action_search_callback) },
 };
 
 static void
@@ -770,7 +852,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 {
 	GtkRcStyle *rc_style;
 	GtkWidget *arrow;
-	GtkWidget *hbox;
+	GtkWidget *hbox, *vbox, *eventbox, *extras_vbox;
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	GtkTargetList *targets;
@@ -779,16 +861,28 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
-	window->details->content_box = 
-		gtk_hbox_new (FALSE, 0);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
-			  window->details->content_box,
+			  vbox,
 			  /* X direction */                   /* Y direction */
 			  0, 1,                               1, 4,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_EXPAND | GTK_FILL | GTK_SHRINK,
 			  0,                                  0);
-	gtk_widget_show (window->details->content_box);
+	gtk_widget_show (vbox);
 
+	eventbox = gtk_event_box_new ();
+	gtk_widget_set_name (eventbox, "nautilus-extra-view-widget");
+	gtk_box_pack_start (GTK_BOX (vbox), eventbox, FALSE, FALSE, 0);
+	gtk_widget_show (eventbox);
+	
+	extras_vbox = gtk_vbox_new (FALSE, 0);
+	NAUTILUS_WINDOW (window)->details->extra_location_widgets = extras_vbox;
+	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
+
+	window->details->content_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), window->details->content_box, TRUE, TRUE, 0);
+	gtk_widget_show (window->details->content_box);
+	
 	window->details->location_button = gtk_button_new ();
 	g_signal_connect (window->details->location_button,
 			  "button-press-event",
@@ -861,8 +955,6 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	
 	ui = nautilus_ui_string_get ("nautilus-spatial-window-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
-	
-	return;
 }
 
 static void
@@ -881,6 +973,8 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
 		real_prompt_for_location;
+	NAUTILUS_WINDOW_CLASS (class)->set_search_mode = 
+		real_set_search_mode;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon_name =
 		real_get_icon_name;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = 

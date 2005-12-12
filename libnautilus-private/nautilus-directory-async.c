@@ -1002,7 +1002,7 @@ directory_load_done (NautilusDirectory *directory,
 		}
 
 		nautilus_directory_emit_load_error (directory,
-						    result);
+						    result, NULL);
 	}
 
 	/* Call the idle function right away. */

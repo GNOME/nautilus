@@ -60,6 +60,10 @@ struct NautilusLocationEntryDetails {
 	GList *file_info_list;
 	
 	guint idle_id;
+
+	gboolean has_special_text;
+	gboolean setting_special_text;
+	gchar *special_text;
 };
 
 static void  nautilus_location_entry_class_init       (NautilusLocationEntryClass *class);
@@ -431,6 +435,7 @@ finalize (GObject *object)
 
 	entry = NAUTILUS_LOCATION_ENTRY (object);
 
+	g_free (entry->details->special_text);
 	g_free (entry->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -461,10 +466,41 @@ destroy (GtkObject *object)
 }
 
 static void
+nautilus_location_entry_text_changed (NautilusLocationEntry *entry,
+				      GParamSpec            *pspec)
+{
+	if (entry->details->setting_special_text) {
+		return;
+	}
+
+	entry->details->has_special_text = FALSE;
+}
+
+static gboolean
+nautilus_location_entry_focus_in (GtkWidget     *widget,
+				  GdkEventFocus *event)
+{
+	NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (widget);
+
+	if (entry->details->has_special_text) {
+		entry->details->setting_special_text = TRUE;
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		entry->details->setting_special_text = FALSE;
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE (GTK_WIDGET_CLASS, focus_in_event, (widget, event));
+}
+
+static void
 nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
+	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
+
+	widget_class = GTK_WIDGET_CLASS (class);
+
+	widget_class->focus_in_event = nautilus_location_entry_focus_in;
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = finalize;
@@ -483,6 +519,9 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 	g_signal_connect (entry, "event_after",
 		          G_CALLBACK (editable_event_after_callback), entry);
 
+	g_signal_connect (entry, "notify::text",
+			  G_CALLBACK (nautilus_location_entry_text_changed), NULL);
+
 }
 
 GtkWidget *
@@ -494,3 +533,18 @@ nautilus_location_entry_new (void)
 
 	return entry;
 }
+
+void
+nautilus_location_entry_set_special_text (NautilusLocationEntry *entry,
+					  const char            *special_text)
+{
+	entry->details->has_special_text = TRUE;
+	
+	g_free (entry->details->special_text);
+	entry->details->special_text = g_strdup (special_text);
+
+	entry->details->setting_special_text = TRUE;
+	gtk_entry_set_text (GTK_ENTRY (entry), special_text);
+	entry->details->setting_special_text = FALSE;
+}
+

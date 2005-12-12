@@ -42,5 +42,6 @@
 #define NAUTILUS_ACTION_ZOOM_OUT "Zoom Out"
 #define NAUTILUS_ACTION_ZOOM_NORMAL "Zoom Normal"
 #define NAUTILUS_ACTION_CLOSE "Close"
+#define NAUTILUS_ACTION_SEARCH "Search"
 
 #endif /* NAUTILUS_ACTIONS_H */

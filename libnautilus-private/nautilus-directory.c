@@ -30,8 +30,10 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-search-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-marshal.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
 #include "nautilus-desktop-directory.h"
@@ -71,6 +73,7 @@ static void               nautilus_directory_class_init (NautilusDirectoryClass 
 static NautilusDirectory *nautilus_directory_new              (const char             *uri);
 static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
 static GList *            real_get_file_list                  (NautilusDirectory      *directory);
+static gboolean		  real_is_editable                    (NautilusDirectory      *directory);
 static void               set_directory_uri                   (NautilusDirectory      *directory,
 							       const char             *new_uri);
 
@@ -117,11 +120,12 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
-		              G_TYPE_NONE, 1, G_TYPE_INT);
+		              nautilus_marshal_VOID__INT_STRING,
+		              G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 	klass->get_file_list = real_get_file_list;
+	klass->is_editable = real_is_editable;
 
 	g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
 }
@@ -143,16 +147,17 @@ nautilus_directory_init (gpointer object, gpointer klass)
 	directory->details->hidden_file_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
-void
+NautilusDirectory *
 nautilus_directory_ref (NautilusDirectory *directory)
 {
 	if (directory == NULL) {
-		return;
+		return directory;
 	}
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	g_object_ref (directory);
+	return directory;
 }
 
 void
@@ -515,6 +520,10 @@ nautilus_directory_new (const char *uri)
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else if (eel_uri_is_desktop (uri)) {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY, NULL));
+	} else if (eel_uri_is_search (uri)) {
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY, NULL));
+	} else if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+		directory = NAUTILUS_DIRECTORY (nautilus_search_directory_new_from_saved_search (uri));
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
@@ -764,11 +773,12 @@ nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 
 void
 nautilus_directory_emit_load_error (NautilusDirectory *directory,
-				    GnomeVFSResult error_result)
+				    GnomeVFSResult error_result,
+				    const char *error_message)
 {
 	g_signal_emit (directory,
 			 signals[LOAD_ERROR], 0,
-			 error_result);
+			 error_result, error_message);
 }
 
 
@@ -993,7 +1003,6 @@ nautilus_directory_notify_files_added (GList *uris)
 		}
 		nautilus_directory_unref (directory);
 	}
-
 
 	/* Now get file info for the new files. This creates NautilusFile
 	 * objects for the new files, and sends out a files_added signal. 
@@ -1650,6 +1659,20 @@ real_get_file_list (NautilusDirectory *directory)
 
 	nautilus_file_list_ref (non_tentative_files);
 	return non_tentative_files;
+}
+
+static gboolean
+real_is_editable (NautilusDirectory *directory)
+{
+	return TRUE;
+}
+
+gboolean
+nautilus_directory_is_editable (NautilusDirectory *directory)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_DIRECTORY_CLASS, directory, 
+		 is_editable, (directory));
 }
 
 GList *

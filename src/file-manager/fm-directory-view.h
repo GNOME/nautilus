@@ -76,16 +76,19 @@ struct FMDirectoryViewClass {
 	 * It must be replaced by each subclass.
 	 */
 	void    (* add_file) 		 (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 	void    (* remove_file)		 (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 
 	/* The 'file_changed' signal is emitted to signal a change in a file,
 	 * including the file being removed.
 	 * It must be replaced by each subclass.
 	 */
 	void 	(* file_changed)         (FMDirectoryView *view, 
-					  NautilusFile *file);
+					  NautilusFile *file,
+					  NautilusDirectory *directory);
 
 	/* The 'end_file_changes' signal is emitted after a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
@@ -118,7 +121,8 @@ struct FMDirectoryViewClass {
 	 * load failures like ACCESS_DENIED.
 	 */
 	void    (* load_error)           (FMDirectoryView *view,
-					  GnomeVFSResult result);
+					  GnomeVFSResult result,
+					  const char *error_message);
 
 	/* Function pointers that don't have corresponding signals */
 
@@ -213,8 +217,9 @@ struct FMDirectoryViewClass {
 	 * to provide a sorting order to determine which files should be
 	 * presented when only a partial list is provided.
 	 */
-	void     (* sort_files)                 (FMDirectoryView *view,
-						 GList          **files);
+	int     (* compare_files)              (FMDirectoryView *view,
+						NautilusFile    *a,
+						NautilusFile    *b);
 
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
@@ -290,7 +295,8 @@ struct FMDirectoryViewClass {
 						 gboolean select_all);
 
 	gboolean (* file_still_belongs)		(FMDirectoryView *view,
-						 NautilusFile	 *file);
+						 NautilusFile	 *file,
+						 NautilusDirectory *directory);
 
 	/* Preference change callbacks, overriden by icon and list views. 
 	 * Icon and list views respond by synchronizing to the new preference
@@ -382,6 +388,7 @@ NautilusDirectory  *fm_directory_view_get_model                        (FMDirect
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
+gboolean            fm_directory_view_get_allow_moves                  (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
@@ -419,5 +426,7 @@ void                fm_directory_view_add_subdirectory                (FMDirecto
 									NautilusDirectory*directory);
 void                fm_directory_view_remove_subdirectory             (FMDirectoryView  *view,
 									NautilusDirectory*directory);
+
+gboolean            fm_directory_view_is_editable                     (FMDirectoryView *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

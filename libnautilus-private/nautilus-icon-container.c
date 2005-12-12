@@ -3558,6 +3558,7 @@ motion_notify_event (GtkWidget *widget,
 	NautilusIconContainerDetails *details;
 	double world_x, world_y;
 	int canvas_x, canvas_y;
+	GdkDragAction actions;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
@@ -3588,13 +3589,16 @@ motion_notify_event (GtkWidget *widget,
 						  &canvas_x,
 						  &canvas_y);
 
+				actions = GDK_ACTION_COPY
+					| GDK_ACTION_LINK
+					| GDK_ACTION_ASK;
+
+				if (container->details->drag_allow_moves) {
+					actions |= GDK_ACTION_MOVE;
+				}
+
 				nautilus_icon_dnd_begin_drag (container,
-							      details->drag_state == DRAG_STATE_MOVE_OR_COPY
-							      ? (GDK_ACTION_MOVE 
-								 | GDK_ACTION_COPY 
-								 | GDK_ACTION_LINK
-								 | GDK_ACTION_ASK)
-							      : GDK_ACTION_ASK,
+							      actions,
 							      details->drag_button,
 							      event, 
 							      canvas_x,
@@ -7214,6 +7218,23 @@ nautilus_icon_container_get_icon_description (NautilusIconContainer *container,
 	} else {
 		return NULL;
 	}
+}
+
+gboolean
+nautilus_icon_container_get_allow_moves (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->drag_allow_moves;
+}
+
+void
+nautilus_icon_container_set_allow_moves	(NautilusIconContainer *container,
+					 gboolean               allow_moves)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->drag_allow_moves = allow_moves;
 }
 
 /* NautilusIconContainerAccessible */

@@ -29,11 +29,12 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <bonobo/bonobo-window.h>
 #include <gtk/gtkuimanager.h>
+#include <gtk/gtkwindow.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-window-info.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include "nautilus-application.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
@@ -77,6 +78,7 @@ typedef struct {
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
+        void   (* set_search_mode) (NautilusWindow *window, gboolean search_enabled, NautilusSearchDirectory *search_directory);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
@@ -128,6 +130,9 @@ void             nautilus_window_go_up                (NautilusWindow    *window
                                                        gboolean           close_behind);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window,
                                                        const char        *initial);
+void		 nautilus_window_set_search_mode      (NautilusWindow    *window,
+                                                       gboolean           search_mode,
+                                                       NautilusSearchDirectory *search_directory);
 void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_update_title         (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
@@ -143,5 +148,7 @@ void             nautilus_window_allow_stop           (NautilusWindow    *window
 void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
                                                        gboolean           allow);
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
+void             nautilus_window_add_extra_location_widget (NautilusWindow  *window,
+                                                            GtkWidget       *widget);
 
 #endif

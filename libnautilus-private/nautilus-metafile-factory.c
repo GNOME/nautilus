@@ -54,6 +54,10 @@ corba_open (PortableServer_Servant servant,
 
 	metafile = nautilus_metafile_get (directory);
 
+	if (!metafile) {
+		return CORBA_OBJECT_NIL;
+	}
+
 	return CORBA_Object_duplicate (BONOBO_OBJREF (metafile), ev);
 }
 

@@ -158,8 +158,6 @@ get_metafile (NautilusDirectory *directory)
 		g_free (uri);
 	}
 
-	g_assert (directory->details->metafile_corba_object != CORBA_OBJECT_NIL);
-	
 	return directory->details->metafile_corba_object;	
 }
 
@@ -168,12 +166,19 @@ nautilus_directory_is_metadata_read (NautilusDirectory *directory)
 {
 	CORBA_Environment ev;
 	gboolean result;
+	Nautilus_Metafile metafile;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
 	CORBA_exception_init (&ev);
 
-	result = Nautilus_Metafile_is_read (get_metafile (directory), &ev);
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return TRUE;
+	}
+		
+	result = Nautilus_Metafile_is_read (metafile, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -191,6 +196,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	char             *result;
 	const char       *non_null_default;
 	CORBA_char       *corba_value;
+	Nautilus_Metafile metafile;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), g_strdup (default_metadata));
 	g_return_val_if_fail (!eel_str_is_empty (file_name), g_strdup (default_metadata));
@@ -201,7 +207,13 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	CORBA_exception_init (&ev);
 
-	corba_value = Nautilus_Metafile_get (get_metafile (directory), file_name, key, non_null_default, &ev);
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return g_strdup (default_metadata);
+	}
+
+	corba_value = Nautilus_Metafile_get (metafile, file_name, key, non_null_default, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("Failed to get file metadata.");
@@ -235,16 +247,23 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 	GList                 *result;
 	Nautilus_MetadataList *corba_value;
 	CORBA_unsigned_long    buf_pos;
+	Nautilus_Metafile      metafile;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
 	g_return_val_if_fail (!eel_str_is_empty (list_key), NULL);
 	g_return_val_if_fail (!eel_str_is_empty (list_subkey), NULL);
 	
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return NULL;
+	}
+
 	CORBA_exception_init (&ev);
-
-	corba_value = Nautilus_Metafile_get_list (get_metafile (directory), file_name, list_key, list_subkey, &ev);
-
+	
+	corba_value = Nautilus_Metafile_get_list (metafile, file_name, list_key, list_subkey, &ev);
+	
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 
@@ -266,10 +285,17 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 				      const char *metadata)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (!eel_str_is_empty (file_name));
 	g_return_if_fail (!eel_str_is_empty (key));
+	
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
 	
 	/* We can't pass NULL as a CORBA_string - pass "" instead.
 	 */
@@ -282,7 +308,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_set (get_metafile (directory), file_name, key, default_metadata, metadata, &ev);
+	Nautilus_Metafile_set (metafile, file_name, key, default_metadata, metadata, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -296,7 +322,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 					   GList *list)
 {
 	CORBA_Environment ev;
-	
+	Nautilus_Metafile metafile;
 	Nautilus_MetadataList *corba_list;
 	int	len;
 	int	buf_pos;
@@ -306,7 +332,13 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 	g_return_if_fail (!eel_str_is_empty (file_name));
 	g_return_if_fail (!eel_str_is_empty (list_key));
 	g_return_if_fail (!eel_str_is_empty (list_subkey));
-	
+
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	len = g_list_length (list);
 	
 	corba_list = Nautilus_MetadataList__alloc ();
@@ -329,7 +361,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_set_list (get_metafile (directory), file_name, list_key, list_subkey, corba_list, &ev);
+	Nautilus_Metafile_set_list (metafile, file_name, list_key, list_subkey, corba_list, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -438,17 +470,24 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 {
 	CORBA_Environment ev;
 	char *destination_uri;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (source_directory));
 	g_return_if_fail (source_file_name != NULL);
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (destination_directory));
 	g_return_if_fail (destination_file_name != NULL);
-	
+
+	metafile = get_metafile (source_directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	destination_uri = nautilus_directory_get_uri (destination_directory);
 
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_copy (get_metafile (source_directory), source_file_name,
+	Nautilus_Metafile_copy (metafile, source_file_name,
 				destination_uri, destination_file_name, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
@@ -462,13 +501,20 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 					 const char *file_name)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (file_name != NULL);
-	
+
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_remove (get_metafile (directory), file_name, &ev);
+	Nautilus_Metafile_remove (metafile, file_name, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -480,14 +526,21 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 					 const char *new_file_name)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (old_file_name != NULL);
 	g_return_if_fail (new_file_name != NULL);
-	
+
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_rename (get_metafile (directory), old_file_name, new_file_name, &ev);
+	Nautilus_Metafile_rename (metafile, old_file_name, new_file_name, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -498,13 +551,20 @@ nautilus_directory_rename_directory_metadata (NautilusDirectory *directory,
 					      const char *new_directory_uri)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (new_directory_uri != NULL);
-	
+
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	CORBA_exception_init (&ev);
 
-	Nautilus_Metafile_rename_directory (get_metafile (directory), new_directory_uri, &ev);
+	Nautilus_Metafile_rename_directory (metafile, new_directory_uri, &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
@@ -514,6 +574,7 @@ void
 nautilus_directory_register_metadata_monitor (NautilusDirectory *directory)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -522,12 +583,18 @@ nautilus_directory_register_metadata_monitor (NautilusDirectory *directory)
 		return;
 	}
 	
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	directory->details->metafile_monitor = nautilus_metafile_monitor_new (directory);
 
 	CORBA_exception_init (&ev);
 
 	Nautilus_Metafile_register_monitor
-		(get_metafile (directory),
+		(metafile,
 		 BONOBO_OBJREF (directory->details->metafile_monitor),
 		 &ev);
 
@@ -539,14 +606,21 @@ void
 nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory)
 {
 	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));	
 	g_return_if_fail (NAUTILUS_IS_METAFILE_MONITOR (directory->details->metafile_monitor));
 
+	metafile = get_metafile (directory);
+
+	if (metafile == CORBA_OBJECT_NIL) {
+		return;
+	}
+
 	CORBA_exception_init (&ev);
 
 	Nautilus_Metafile_unregister_monitor
-		(get_metafile (directory),
+		(metafile,
 		 BONOBO_OBJREF (directory->details->metafile_monitor),
 		 &ev);
 

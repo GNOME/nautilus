@@ -192,7 +192,8 @@ void               nautilus_directory_emit_change_signals             (NautilusD
 void               emit_change_signals_for_all_files		      (NautilusDirectory	 *directory);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
-								       GnomeVFSResult             error_result);
+								       GnomeVFSResult             error_result,
+								       const char                *error_message);
 NautilusDirectory *nautilus_directory_get_internal                    (const char                *uri,
 								       gboolean                   create);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);

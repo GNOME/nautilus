@@ -100,7 +100,9 @@ typedef struct
 	 */
 	void     (* done_loading)        (NautilusDirectory         *directory);
 
-	void     (* load_error)          (NautilusDirectory         *directory);
+	void     (* load_error)          (NautilusDirectory         *directory,
+					  GnomeVFSResult             error_result,
+					  const char                *error_message);
 
 	/*** Virtual functions for subclasses to override. ***/
 	gboolean (* contains_file)       (NautilusDirectory         *directory,
@@ -134,6 +136,12 @@ typedef struct
 	 * the list of standard icons (Computer, Home, Trash) on the desktop.
 	 */
 	GList *	 (* get_file_list)	 (NautilusDirectory *directory);
+
+	/* Should return FALSE if the directory is read-only and doesn't
+	 * allow setting of metadata.
+	 * An example of this is the search directory.
+	 */
+	gboolean (* is_editable)         (NautilusDirectory *directory);
 } NautilusDirectoryClass;
 
 /* Basic GObject requirements. */
@@ -151,7 +159,7 @@ NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile    
  * 1) You don't have to cast to GtkObject *, so using these is type safe.
  * 2) You are allowed to call these with NULL,
  */
-void               nautilus_directory_ref                      (NautilusDirectory         *directory);
+NautilusDirectory *nautilus_directory_ref                      (NautilusDirectory         *directory);
 void               nautilus_directory_unref                    (NautilusDirectory         *directory);
 
 /* Access to a URI. */
@@ -226,6 +234,8 @@ GList *            nautilus_directory_list_sort_by_uri         (GList           
 
 /* Fast way to check if a directory is the desktop directory */
 gboolean           nautilus_directory_is_desktop_directory     (NautilusDirectory         *directory);
+
+gboolean           nautilus_directory_is_editable              (NautilusDirectory         *directory);
 
 
 #endif /* NAUTILUS_DIRECTORY_H */

@@ -14,9 +14,15 @@ LDADD =\
 
 noinst_PROGRAMS =\
 	test-nautilus-wrap-table \
+	test-nautilus-search-engine \
+	test-nautilus-directory-async \
 	$(NULL)
 
 test_nautilus_wrap_table_SOURCES = test-nautilus-wrap-table.c test.c
+
+test_nautilus_search_engine_SOURCES = test-nautilus-search-engine.c 
+
+test_nautilus_directory_async_SOURCES = test-nautilus-directory-async.c
 
 EXTRA_DIST = \
 	test.h \

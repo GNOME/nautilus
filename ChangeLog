@@ -1,3 +1,242 @@
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	Merge in changes from NAUTILUS_SEARCH2_MERGE_ANCHOR1 to
+	NAUTILUS_SEARCH2_MERGE_ANCHOR2 (on HEAD).
+	(This is NAUTILUS_SEARCH2_MERGE_POINT2)
+
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_new_from_relative_uri):
+	Another case where we need to create a saved search file.
+
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Make it possible to build without beagle.
+
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-search-engine-simple.[ch]:
+	Add new NautilusSearchEngineSimple backend.
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	Add nautilus_get_home_directory_uri.
+	
+	* libnautilus-private/nautilus-marshal.list:
+	Add VOID:OBJECT,BOOLEAN, sort
+	
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	Add nautilus_search_directory_is_indexed.
+	Make sure saved searches are never returned as search hits.
+	
+	* libnautilus-private/nautilus-search-engine-beagle.[ch]:
+	Make _new fail if we can't contact beagle daemon.
+	Set text on query as one string (it can have keywords in it)
+	Move freeing of query data to after query is done.
+	Add _is_indexed
+	
+	* libnautilus-private/nautilus-search-engine.[ch]:
+	Add nautilus_search_engine_is_indexed
+	Remove nautilus_search_engine_enabled
+	Use beagle if availible, otherwise simple backend.
+	
+	* src/nautilus-navigation-window-menus.c:
+	Remove search disabled code
+
+	* src/nautilus-query-editor.[ch]:
+	Rename activate to changed and add reload argument
+	Add go/reload button for non-indexed searches
+	Add mnemonic for entry
+	Change saved search string to "Search Folder"
+	
+	* src/nautilus-navigation-window.c:
+	Update for query editor changes
+	For indexed search engines, default to search in homedir
+	
+	* src/nautilus-spatial-window.c:
+	Update for query editor changes
+	For indexed search engines, default to search in homedir
+	Remove search disabled code
+
+2005-12-07  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-query-editor.c (setup_external_entry):
+	Make ugly string slightly better.
+
+2005-12-07  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Mime API needs gnome-vfs-module. Unfortunate...
+	
+	* libnautilus-private/nautilus-query.c:
+	Parse queries fully
+	
+	* libnautilus-private/nautilus-search-engine-beagle.c:
+	Look at mime types and location.
+	
+	* src/nautilus-query-editor.c:
+	Add mime type and location to query editor
+
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-query.[ch]:
+	Add new fields to NautilusQuery
+
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	Merge in changes from NAUTILUS_2_12_1 to
+	NAUTILUS_SEARCH2_MERGE_ANCHOR1 (on HEAD).
+	(This is NAUTILUS_SEARCH2_MERGE_POINT1)
+
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-history-sidebar.c: (update_history),
+	(nautilus_history_sidebar_init):
+	Fix leaks of bookmarks and model.
+
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-search-engine-beagle.c:
+	(nautilus_search_engine_beagle_set_query):
+	Unref the right query.
+
+2005-12-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_compute_title_for_uri):
+	Handle NULL query in search.
+	
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-search-directory.h:
+	Move saved search uri/mimetype define to
+	nautilus-file-utilities.h.
+	
+	* libnautilus-private/nautilus-search-directory.c:
+	Ref query in get
+	
+	* libnautilus-private/nautilus-search-engine.c:
+	Remove unused stuff.
+	
+	* src/Makefile.am:
+	* src/nautilus-query-editor.[ch]:
+	Add new files implementing NautilusQueryEditor
+	
+	* src/nautilus-places-sidebar.c:
+	Remove search from places sidebar.
+	
+	* src/nautilus-search-bar.[ch]:
+	Only handle text queries.
+
+	* src/nautilus-window.[ch]:
+	* src/nautilus-window-private.h:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-window-manage-views.c:
+	extra location widgets support and some search mode changes
+
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-spatial-window.c:
+	Implement new search ui using extra location widgets
+	
+	* src/file-manager/fm-directory-view.c:
+	Implement save search and save search as.
+	Fix free bugs in fm_directory_view_stop.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_supports_uri):
+	* src/file-manager/fm-list-view.c: (fm_list_view_supports_uri):
+	Also handle saved search mimetypes.
+	
+
+2005-12-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	More functions to save queres.
+	
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Initial stubs for save search menu items.
+
+2005-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	* src/nautilus-bookmark-list.c:
+	Further refactor the query loading, and remove all traces
+	of the old load/save mechanism.
+
+2005-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-query.[ch]:
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	Refactor query loading into NautilusQuery object.
+
+2005-12-01  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Check for update-mime-database
+	
+	* data/.cvsignore:
+	* data/Makefile.am:
+	* data/nautilus.xml.in:
+	Add mime database entries for saved searches.
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-saved-search-file.[ch]:
+	Special file type for saved search files to pretend that
+	they are directories.
+	
+	* libnautilus-private/nautilus-directory.[ch]:
+	Make nautilus_directory_ref return its arg.
+	Create NautilusSearchDirectory for saved searches.
+	
+	* libnautilus-private/nautilus-file-dnd.c:
+	Non-editable directories do not accept drops.
+	
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.h:
+	Move nautilus_file_get_existing to public header.
+	
+	* libnautilus-private/nautilus-file.c:
+	Create saved search files at right time
+	
+	* libnautilus-private/nautilus-marshal.list:
+	Add new marshallers
+	
+	* libnautilus-private/nautilus-monitor.c:
+	Remove some spew
+	
+	* libnautilus-private/nautilus-search-directory.[ch]:
+	Split out search file loading to a separate function.
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Handle several layers of cannot accept drop.
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	Make files be related to the directory they are in, since
+	a file can be in a tree multiple times, with searches.
+	Sorting us now done in base class, and inheriting classes just
+	add a compare function.
+	Fix file leak in new_folder_done.
+	
+	* src/file-manager/fm-icon-view.c:
+	Update to new base class API.
+	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
+	
+	* src/file-manager/fm-list-model.[ch]:
+	Rearrange data so that we can have one file in multiple dirs.
+	Still problems with the same directory in multiple dirs.
+	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
+	Fix leak in each_path_get_data_binder
+	
+	* src/file-manager/fm-list-view.c:
+	Update to new APIs (base class and model).
+	Fix leak in fm_list_view_get_selection_foreach_func.
+	
+
+--- nautilus-search2 branch ---
+    
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c:

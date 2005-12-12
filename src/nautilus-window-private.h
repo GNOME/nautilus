@@ -52,6 +52,8 @@ struct NautilusWindowDetails
         GtkWidget *table;
         GtkWidget *statusbar;
         GtkWidget *menubar;
+
+        GtkWidget *extra_location_widgets;
         
         GtkUIManager *ui_manager;
         GtkActionGroup *main_action_group; /* owned by ui_manager */
@@ -94,15 +96,18 @@ struct NautilusWindowDetails
         guint location_change_at_idle_id;
 
         NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
+        gboolean search_mode;
 };
 
 struct _NautilusNavigationWindowDetails {
         GtkWidget *content_paned;
+        GtkWidget *content_box;
         GtkActionGroup *navigation_action_group; /* owned by ui_manager */
         
         /* Location bar */
         gboolean temporary_navigation_bar;
         gboolean temporary_location_bar;
+        gboolean temporary_search_bar;
 
         /* Side Pane */
         int side_pane_width;

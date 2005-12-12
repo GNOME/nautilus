@@ -39,6 +39,7 @@
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
+#include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -65,6 +66,8 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-search-engine.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"

@@ -287,5 +287,8 @@ void              nautilus_icon_container_set_use_drop_shadows          (Nautilu
 									 gboolean                use_drop_shadows);
 char*             nautilus_icon_container_get_icon_description          (NautilusIconContainer  *container,
                                                                          NautilusIconData       *data);
+gboolean          nautilus_icon_container_get_allow_moves               (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_allow_moves               (NautilusIconContainer  *container,
+									 gboolean                allow_moves);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

@@ -767,6 +767,7 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 
 struct UnloadDelayData {
 	NautilusFile *file;
+	NautilusDirectory *directory;
 	FMListView *view;
 };
 
@@ -782,6 +783,7 @@ unload_file_timeout (gpointer data)
 		model = unload_data->view->details->model;
 		if (fm_list_model_get_tree_iter_from_file (model,
 							   unload_data->file,
+							   unload_data->directory,
 							   &iter)) {
 			path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 			if (!gtk_tree_view_row_expanded (unload_data->view->details->tree_view,
@@ -794,8 +796,10 @@ unload_file_timeout (gpointer data)
 
 	eel_remove_weak_pointer (&unload_data->view);
 	
-	
-	g_object_unref (unload_data->file);
+	if (unload_data->directory) {
+		nautilus_directory_unref (unload_data->directory);
+	}
+	nautilus_file_unref (unload_data->file);
 	g_free (unload_data);
 	return FALSE;
 }
@@ -805,18 +809,29 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 {
  	FMListView *view;
  	NautilusFile *file;
+	NautilusDirectory *directory;
+	GtkTreeIter parent;
 	struct UnloadDelayData *unload_data;
+	GtkTreeModel *model;
 	
 	view = FM_LIST_VIEW (callback_data);
+	model = GTK_TREE_MODEL (view->details->model);
 		
-	gtk_tree_model_get (GTK_TREE_MODEL (view->details->model), 
-			    iter, 
+	gtk_tree_model_get (model, iter, 
 			    FM_LIST_MODEL_FILE_COLUMN, &file,
 			    -1);
+
+	directory = NULL;
+	if (gtk_tree_model_iter_parent (model, &parent, iter)) {
+		gtk_tree_model_get (model, &parent, 
+				    FM_LIST_MODEL_SUBDIRECTORY_COLUMN, &directory,
+				    -1);
+	}
 	
 	unload_data = g_new (struct UnloadDelayData, 1);
 	unload_data->view = view;
 	unload_data->file = file;
+	unload_data->directory = directory;
 
 	eel_add_weak_pointer (&unload_data->view);
 	
@@ -994,23 +1009,10 @@ get_file_for_path_callback (NautilusTreeViewDragDest *dest,
 			    gpointer user_data)
 {
 	FMListView *view;
-	GtkTreeIter iter;
-	NautilusFile *file;
 	
 	view = FM_LIST_VIEW (user_data);
 
-	file = NULL;
-
-	if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
-				     &iter, path)) {
-		gtk_tree_model_get (GTK_TREE_MODEL (view->details->model),
-				    &iter,
-				    FM_LIST_MODEL_FILE_COLUMN,
-				    &file,
-				    -1);
-	}
-
-	return file;
+	return fm_list_model_file_for_path (view->details->model, path);
 }
 
 /* Handles an URL received from Mozilla */
@@ -1332,12 +1334,12 @@ create_and_set_up_tree_view (FMListView *view)
 }
 
 static void
-fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
+fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	FMListModel *model;
-	
+
 	model = FM_LIST_VIEW (view)->details->model;
-	fm_list_model_add_file (model, file);
+	fm_list_model_add_file (model, file, directory);
 }
 
 static GList *
@@ -1508,9 +1510,9 @@ fm_list_view_clear (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
+fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
-	fm_list_model_file_changed (FM_LIST_VIEW (view)->details->model, file);
+	fm_list_model_file_changed (FM_LIST_VIEW (view)->details->model, file, directory);
 }
 
 static GtkWidget *
@@ -1532,7 +1534,6 @@ fm_list_view_get_selection_foreach_func (GtkTreeModel *model, GtkTreePath *path,
 			    -1);
 
 	if (file != NULL) {
-		nautilus_file_ref (file);
 		(* list) = g_list_prepend ((* list), file);
 	}
 }
@@ -1631,7 +1632,7 @@ fm_list_view_end_file_changes (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
+fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
 	GtkTreePath *path;
 	GtkTreePath *file_path;
@@ -1641,13 +1642,13 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 	FMListView *list_view;
 	GtkTreeModel* tree_model; 
 	GtkTreeSelection *selection;
-	
+
 	path = NULL;
 	row_reference = NULL;
 	list_view = FM_LIST_VIEW (view);
 	tree_model = GTK_TREE_MODEL(list_view->details->model);
 	
-	if(fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+	if (fm_list_model_get_tree_iter_from_file (list_view->details->model, file, directory, &iter)) {
 	   selection = gtk_tree_view_get_selection (list_view->details->tree_view);
 	   file_path = gtk_tree_model_get_path (tree_model, &iter);
 
@@ -1672,7 +1673,7 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
        
 	   gtk_tree_path_free (file_path);
 		
-	   fm_list_model_remove_file (list_view->details->model, file);
+	   fm_list_model_remove_file (list_view->details->model, file, directory);
 
 	   if (gtk_tree_row_reference_valid (row_reference)) {
 	      if (list_view->details->new_selection_path) {
@@ -1681,7 +1682,7 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 	      list_view->details->new_selection_path = gtk_tree_row_reference_get_path (row_reference);
 	   }
 	  
-	   if(row_reference) {
+	   if (row_reference) {
 	      gtk_tree_row_reference_free (row_reference);
 	   }
 	}   
@@ -1695,7 +1696,7 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 	FMListView *list_view;
 	GtkTreeSelection *tree_selection;
 	GList *node;
-	GtkTreeIter iter;
+	GList *iters, *l;
 	NautilusFile *file;
 	
 	list_view = FM_LIST_VIEW (view);
@@ -1706,9 +1707,13 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 	gtk_tree_selection_unselect_all (tree_selection);
 	for (node = selection; node != NULL; node = node->next) {
 		file = node->data;
-		if (fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
-			gtk_tree_selection_select_iter (tree_selection, &iter);
+		iters = fm_list_model_get_all_iters_for_file (list_view->details->model, file);
+
+		for (l = iters; l != NULL; l = l->next) {
+			gtk_tree_selection_select_iter (tree_selection,
+							(GtkTreeIter *)l->data);
 		}
+		eel_g_list_free_deep (iters);
 	}
 
 	g_signal_handlers_unblock_by_func (tree_selection, list_selection_changed_callback, view);
@@ -1739,15 +1744,13 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
 		
 		list_view = FM_LIST_VIEW (view);
 		file = selection->data;
-		if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
-			return;
+		if (fm_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+
+			gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
+			
+			gtk_tree_path_free (path);
 		}
-		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
-
-		gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
-
-		gtk_tree_path_free (path);
-		path = NULL;
 	}
 
         nautilus_file_list_free (selection);
@@ -2146,7 +2149,7 @@ fm_list_view_start_renaming_file (FMDirectoryView *view,
 		return;
 	}
 
-	if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+	if (!fm_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
 		return;
 	}
 
@@ -2295,14 +2298,13 @@ fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 							 fm_directory_view_should_sort_directories_first (view));
 }
 
-static void
-fm_list_view_sort_files (FMDirectoryView *view, GList **files)
+static int
+fm_list_view_compare_files (FMDirectoryView *view, NautilusFile *file1, NautilusFile *file2)
 {
 	FMListView *list_view;
 
 	list_view = FM_LIST_VIEW (view);
-
-	fm_list_model_sort_files (list_view->details->model, files);
+	return fm_list_model_compare_func (list_view->details->model, file1, file2);
 }
 
 static gboolean
@@ -2426,7 +2428,7 @@ fm_list_view_scroll_to_file (FMListView *view,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 	
-	if (!fm_list_model_get_tree_iter_from_file (view->details->model, file, &iter)) {
+	if (!fm_list_model_get_first_iter_for_file (view->details->model, file, &iter)) {
 		return;
 	}
 		
@@ -2446,9 +2448,13 @@ list_view_scroll_to_file (NautilusView *view,
 	NautilusFile *file;
 
 	if (uri != NULL) {
-		file = nautilus_file_get (uri);
-		fm_list_view_scroll_to_file (FM_LIST_VIEW (view), file);
-		nautilus_file_unref (file);
+		/* Only if existing, since we don't want to add the file to
+		   the directory if it has been removed since then */
+		file = nautilus_file_get_existing (uri);
+		if (file != NULL) {
+			fm_list_view_scroll_to_file (FM_LIST_VIEW (view), file);
+			nautilus_file_unref (file);
+		}
 	}
 }
 
@@ -2484,7 +2490,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
-	fm_directory_view_class->sort_files = fm_list_view_sort_files;
+	fm_directory_view_class->compare_files = fm_list_view_compare_files;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
 	fm_directory_view_class->get_zoom_level = fm_list_view_get_zoom_level;
@@ -2582,7 +2588,13 @@ fm_list_view_supports_uri (const char *uri,
 	if (file_type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 		return TRUE;
 	}
+	if (strcmp (mime_type, NAUTILUS_SAVED_SEARCH_MIMETYPE) == 0){
+		return TRUE;
+	}
 	if (g_str_has_prefix (uri, "trash:")) {
+		return TRUE;
+	}
+	if (g_str_has_prefix (uri, EEL_SEARCH_URI)) {
 		return TRUE;
 	}
 

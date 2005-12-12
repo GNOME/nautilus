@@ -155,6 +155,7 @@ struct NautilusIconContainerDetails {
 	DragState drag_state;
 	gboolean drag_started;
 	StretchState stretch_start;
+	gboolean drag_allow_moves;
 
 	gboolean icon_selected_on_button_down;
 	NautilusIcon *double_click_icon[2]; /* Both clicks in a double click need to be on the same icon */

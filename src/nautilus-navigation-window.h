@@ -60,6 +60,7 @@ struct _NautilusNavigationWindow {
         GtkWidget *view_as_combo_box;
         GtkWidget *navigation_bar;
 	GtkWidget *path_bar;
+        GtkWidget *search_bar;
        
         /* Back/Forward chain, and history list. 
          * The data in these lists are NautilusBookmark pointers. 
@@ -97,6 +98,8 @@ void     nautilus_navigation_window_hide_path_bar        (NautilusNavigationWind
 void     nautilus_navigation_window_show_path_bar        (NautilusNavigationWindow *window);
 gboolean nautilus_navigation_window_path_bar_showing 	 (NautilusNavigationWindow *window);
 
+gboolean nautilus_navigation_window_search_bar_showing 	 (NautilusNavigationWindow *window);
+
 gboolean nautilus_navigation_window_location_bar_showing (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_hide_toolbar         (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_show_toolbar         (NautilusNavigationWindow *window);
@@ -114,5 +117,6 @@ gboolean nautilus_navigation_window_status_bar_showing   (NautilusNavigationWind
 void     nautilus_navigation_window_back_or_forward      (NautilusNavigationWindow *window,
                                                           gboolean                  back,
                                                           guint                     distance);
+void     nautilus_navigation_window_show_search          (NautilusNavigationWindow *window);
 
 #endif

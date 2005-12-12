@@ -40,6 +40,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-zoom-control.h"
+#include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-gdk-extensions.h>
@@ -77,6 +78,7 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -87,6 +89,8 @@
 #include "nautilus-desktop-window.h"
 
 #define MAX_HISTORY_ITEMS 50
+
+#define EXTRA_VIEW_WIDGETS_BACKGROUND "#a7c6e1"
 
 /* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDE_PANE_MINIMUM_WIDTH 1
@@ -142,7 +146,7 @@ nautilus_window_init (NautilusWindow *window)
 	GtkWidget *table;
 	GtkWidget *menu;
 	GtkWidget *statusbar;
-      
+
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
@@ -150,7 +154,7 @@ nautilus_window_init (NautilusWindow *window)
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
-	table = gtk_table_new (1, 5, FALSE);
+	table = gtk_table_new (1, 6, FALSE);
 	window->details->table = table;
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
@@ -161,7 +165,7 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_table_attach (GTK_TABLE (table),
 			  statusbar,
 			  /* X direction */                   /* Y direction */
-			  0, 1,                               4, 5,
+			  0, 1,                               5, 6,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
 	window->details->help_message_cid = gtk_statusbar_get_context_id
@@ -180,7 +184,6 @@ nautilus_window_init (NautilusWindow *window)
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
 
-	
 	/* Register IconFactory callback to update the window border icon
 	 * when the icon-theme is changed.
 	 */
@@ -394,6 +397,20 @@ nautilus_window_get_location (NautilusWindow *window)
 
 	return g_strdup (window->details->location);
 }
+
+void
+nautilus_window_set_search_mode (NautilusWindow *window,
+				 gboolean search_mode,
+				 NautilusSearchDirectory *search_directory)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	window->details->search_mode = search_mode;
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 set_search_mode, (window, search_mode, search_directory));
+}
+
 
 void
 nautilus_window_zoom_in (NautilusWindow *window)
@@ -1037,7 +1054,6 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-
 static char *
 real_get_title (NautilusWindow *window)
 {
@@ -1558,4 +1574,14 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
 	class->reload = nautilus_window_reload;
 	class->go_up = nautilus_window_go_up_signal;
+
+	/* Allow to set the colors of the extra view widgets */
+	gtk_rc_parse_string ("\n"
+			     "   style \"nautilus-extra-view-widgets-style-internal\"\n"
+			     "   {\n"
+			     "      bg[NORMAL] = \"" EXTRA_VIEW_WIDGETS_BACKGROUND "\"\n"
+			     "   }\n"
+			     "\n"
+			     "    widget \"*.nautilus-extra-view-widget\" style:rc \"nautilus-extra-view-widgets-style-internal\" \n"
+			     "\n");
 }

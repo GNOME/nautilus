@@ -60,6 +60,7 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-search-engine.h>
 
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
 
@@ -410,6 +411,17 @@ action_go_to_location_callback (GtkAction *action,
 	nautilus_window_prompt_for_location (window, NULL);
 }			   
 
+static void
+action_search_callback (GtkAction *action,
+			gpointer user_data)
+{
+	NautilusNavigationWindow *window;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
+
+	nautilus_navigation_window_show_search (window);
+}
+
 static const GtkActionEntry navigation_entries[] = {
   { "Go", NULL, N_("_Go") },               /* name, stock id, label */
   { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
@@ -431,6 +443,10 @@ static const GtkActionEntry navigation_entries[] = {
   { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
     "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
     G_CALLBACK (action_edit_bookmarks_callback) },
+  { "Search", "gtk-find", N_("_Search"), /* name, stock id, label */
+    "<control>F", N_("Search for files"),
+    G_CALLBACK (action_search_callback) },
+		     
 };
 
 static const GtkToggleActionEntry navigation_toggle_entries[] = {

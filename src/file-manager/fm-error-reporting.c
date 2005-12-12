@@ -41,31 +41,36 @@ static void cancel_rename (NautilusFile *file);
 void
 fm_report_error_loading_directory (NautilusFile *file,
 			           GnomeVFSResult error,
+				   const char *error_message,
 			           GtkWindow *parent_window)
 {
 	char *file_name;
 	char *message;
 
-	if (error == GNOME_VFS_OK) {
+	if (error_message == NULL && error == GNOME_VFS_OK) {
 		return;
 	}
 
 	file_name = nautilus_file_get_display_name (file);
 
-	switch (error) {
-	case GNOME_VFS_ERROR_ACCESS_DENIED:
-		message = g_strdup_printf (_("You do not have the permissions necessary to view the contents of \"%s\"."),
-					   file_name);
-		break;
-	case GNOME_VFS_ERROR_NOT_FOUND:
-		message = g_strdup_printf (_("\"%s\" couldn't be found. Perhaps it has recently been deleted."),
-					   file_name);
-		break;
-	default:
-		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory", 
-			   error, gnome_vfs_result_to_string (error));
-		message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
+	if (!error_message) {
+		switch (error) {
+		case GNOME_VFS_ERROR_ACCESS_DENIED:
+			message = g_strdup_printf (_("You do not have the permissions necessary to view the contents of \"%s\"."),
+						   file_name);
+			break;
+		case GNOME_VFS_ERROR_NOT_FOUND:
+			message = g_strdup_printf (_("\"%s\" couldn't be found. Perhaps it has recently been deleted."),
+						   file_name);
+			break;
+		default:
+			/* We should invent decent error messages for every case we actually experience. */
+			g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory", 
+				   error, gnome_vfs_result_to_string (error));
+			message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
+		}
+	} else {
+		message = g_strdup (error_message);
 	}
 
 	eel_show_error_dialog (_("The folder contents could not be displayed."), message, parent_window);

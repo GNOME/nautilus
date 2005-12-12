@@ -249,7 +249,12 @@ nautilus_metafile_get (const char *directory_uri)
 	char *canonical_uri;
 	
 	g_return_val_if_fail (directory_uri != NULL, NULL);
-	
+
+	/* We don't have metafiles for search uris */
+	if (eel_uri_is_search (directory_uri)) {
+		return NULL;
+	}
+
 	if (metafiles == NULL) {
 		metafiles = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, __FILE__ ": metafiles");

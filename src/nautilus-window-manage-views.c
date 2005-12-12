@@ -31,6 +31,7 @@
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
 #include "nautilus-location-bar.h"
+#include "nautilus-search-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
@@ -59,6 +60,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
+#include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
 
@@ -104,6 +106,8 @@ static void location_has_really_changed               (NautilusWindow           
 static void update_for_new_location                   (NautilusWindow             *window);
 static void zoom_parameters_changed_callback          (NautilusView               *view,
 						       NautilusWindow             *window);
+static void update_extra_location_widgets_visibility  (NautilusWindow             *window);
+static void remove_extra_location_widgets             (NautilusWindow             *window);
 
 void
 nautilus_window_report_selection_changed (NautilusWindowInfo *window)
@@ -1139,6 +1143,8 @@ update_for_new_location (NautilusWindow *window)
 {
         char *new_location;
         NautilusFile *file;
+	NautilusDirectory *directory;
+	gboolean location_really_changed;
         
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
@@ -1147,6 +1153,8 @@ update_for_new_location (NautilusWindow *window)
 
         update_history (window, window->details->location_change_type, new_location);
                 
+	location_really_changed = eel_strcmp (window->details->location, new_location) != 0;
+		
         /* Set the new location. */
         g_free (window->details->location);
         window->details->location = new_location;
@@ -1175,6 +1183,20 @@ update_for_new_location (NautilusWindow *window)
 	
 	/* Load menus from nautilus extensions for this location */
 	nautilus_window_load_extension_menus (window);
+
+	if (location_really_changed) {
+		remove_extra_location_widgets (window);
+		
+		directory = nautilus_directory_get (window->details->location);
+		if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+			nautilus_window_set_search_mode (window, TRUE, NAUTILUS_SEARCH_DIRECTORY (directory));
+		} else {
+			nautilus_window_set_search_mode (window, FALSE, NULL);
+		}
+		nautilus_directory_unref (directory);
+
+		update_extra_location_widgets_visibility (window);
+	}
 
 #if !NEW_UI_COMPLETE
         if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
@@ -1700,4 +1722,45 @@ nautilus_window_reload (NautilusWindow *window)
         g_free (current_pos);
 	g_free (location);
 	eel_g_list_free_deep (selection);
+}
+
+static void
+remove_all (GtkWidget *widget,
+	    gpointer data)
+{
+	GtkContainer *container;
+	container = GTK_CONTAINER (data);
+
+	gtk_container_remove (container, widget);
+}
+
+static void
+remove_extra_location_widgets (NautilusWindow *window)
+{
+	gtk_container_foreach (GTK_CONTAINER (window->details->extra_location_widgets),
+			       remove_all,
+			       window->details->extra_location_widgets);
+}
+
+void
+nautilus_window_add_extra_location_widget (NautilusWindow *window,
+					   GtkWidget *widget)
+{
+	gtk_box_pack_start (GTK_BOX (window->details->extra_location_widgets),
+			    widget, TRUE, TRUE, 0);
+}
+
+static void
+update_extra_location_widgets_visibility (NautilusWindow *window)
+{
+	GList *children;
+	
+	children = gtk_container_get_children (GTK_CONTAINER (window->details->extra_location_widgets));
+	
+	if (children != NULL) {
+		gtk_widget_show (window->details->extra_location_widgets);
+	} else {
+		gtk_widget_show (window->details->extra_location_widgets);
+	}
+	g_list_free (children);
 }

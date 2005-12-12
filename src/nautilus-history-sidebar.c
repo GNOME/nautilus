@@ -110,6 +110,7 @@ update_history (NautilusHistorySidebar *sidebar)
 				    HISTORY_SIDEBAR_COLUMN_NAME, name,
 				    HISTORY_SIDEBAR_COLUMN_BOOKMARK, bookmark,
 				    -1);
+		g_object_unref (bookmark);
 
 		if (pixbuf != NULL) {
 			g_object_unref (pixbuf);
@@ -219,6 +220,7 @@ nautilus_history_sidebar_init (NautilusHistorySidebar *sidebar)
 				    NAUTILUS_TYPE_BOOKMARK);
 
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (store));
+	g_object_unref (store);
 	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
 					GTK_POLICY_AUTOMATIC,

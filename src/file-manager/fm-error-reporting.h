@@ -32,6 +32,7 @@
 
 void fm_report_error_loading_directory	 (NautilusFile   *file,
 					  GnomeVFSResult  error_code,
+					  const char     *error_message,
 					  GtkWindow	 *parent_window);
 void fm_report_error_renaming_file       (NautilusFile   *file,
 					  const char     *new_name,

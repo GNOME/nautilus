@@ -497,12 +497,17 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal. */
-	
-	formatted_location = eel_format_uri_for_display (location);
-	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
-				 formatted_location);
-	set_position_and_selection_to_end (GTK_EDITABLE (bar->details->entry));
-	g_free (formatted_location);
+
+	if (eel_uri_is_search (location)) {
+		nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (bar->details->entry),
+							  "");
+	} else {
+		formatted_location = eel_format_uri_for_display (location);
+		nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
+					 formatted_location);
+		set_position_and_selection_to_end (GTK_EDITABLE (bar->details->entry));
+		g_free (formatted_location);
+	}
 
 	/* free up the cached file info from the previous location */
 	g_free (bar->details->current_directory);

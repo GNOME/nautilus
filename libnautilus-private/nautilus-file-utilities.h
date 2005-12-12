@@ -27,6 +27,9 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 
+#define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
+#define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
+
 /* Recognizing special file names. */
 gboolean nautilus_file_name_matches_hidden_pattern   (const char *name_or_relative_uri);
 gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relative_uri);
@@ -37,6 +40,7 @@ gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relati
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_desktop_directory              (void);
 char *   nautilus_get_desktop_directory_uri          (void);
+char *   nautilus_get_home_directory_uri             (void);
 gboolean nautilus_is_desktop_directory_file_escaped  (char *escaped_dirname,
 						      char *escaped_filename);
 gboolean nautilus_is_desktop_directory_escaped       (char *escaped_dir);
@@ -48,6 +52,8 @@ char *   nautilus_get_pixmap_directory               (void);
 char *   nautilus_get_templates_directory            (void);
 char *   nautilus_get_templates_directory_uri        (void);
 void     nautilus_create_templates_directory         (void);
+
+char *   nautilus_get_searches_directory             (void);
 
 char *	 nautilus_compute_title_for_uri		     (const char *text_uri);
 
