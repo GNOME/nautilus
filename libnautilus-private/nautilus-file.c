@@ -208,6 +208,8 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 			file = NULL;
 			g_assert_not_reached ();
 		}
+	} else if (g_str_has_suffix (relative_uri, NAUTILUS_SAVED_SEARCH_EXTENSION)) {
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SAVED_SEARCH_FILE, NULL));
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
