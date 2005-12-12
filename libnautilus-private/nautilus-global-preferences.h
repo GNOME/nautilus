@@ -182,6 +182,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "desktop/trash_icon_visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "desktop/trash_icon_name"
 #define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "desktop/volumes_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE       "desktop/network_visible"
 
 void nautilus_global_preferences_init                      (void);
 char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);

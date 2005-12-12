@@ -33,8 +33,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtknotebook.h>
-#include <gtk/gtkicontheme.h>
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkcombobox.h>
 #include <gtk/gtksizegroup.h>
 
 #include <libgnome/gnome-help.h>
@@ -45,6 +44,7 @@
 #include <eel/eel-gconf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences-glade.h>
+#include <eel/eel-string-list.h>
 
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
@@ -52,15 +52,15 @@
 #include <libnautilus-private/nautilus-module.h>
 
 /* string enum preferences */
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "iconview_zoom_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "listview_zoom_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET "date_format_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET "preview_text_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET "preview_image_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET "preview_sound_optionmenu"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET "preview_folder_optionmenu"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "icon_view_zoom_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "list_view_zoom_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET "date_format_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET "preview_text_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET "preview_image_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET "preview_sound_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET "preview_folder_combobox"
 
 /* bool preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET "sort_folders_first_checkbutton"
@@ -74,7 +74,7 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET "treeview_folders_checkbutton"
 
 /* int enums */
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_optionmenu"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_combobox"
 
 static const char * const default_view_values[] = {
 	"icon_view",
@@ -155,9 +155,9 @@ static const int thumbnail_limit_values[] = {
 };
 
 static const char * const icon_captions_components[] = {
-	"captions_0_optionmenu",
-	"captions_1_optionmenu",
-	"captions_2_optionmenu",
+	"captions_0_combobox",
+	"captions_1_combobox",
+	"captions_2_combobox",
 	NULL
 };
 
@@ -190,21 +190,6 @@ nautilus_file_management_properties_size_group_create (GladeXML *xml_dialog,
 		g_free (item_name);
 	}
 	g_object_unref (G_OBJECT (size_group));
-}
-
-static void
-nautilus_file_management_properties_dialog_set_icons (GtkWindow *window)
-{
-	GtkIconTheme *icon_theme;
-	GdkPixbuf *icon;
-	
-	icon_theme =  gtk_icon_theme_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (window)));
-	icon = gtk_icon_theme_load_icon (icon_theme, "file-manager", 48, 0, NULL);
-	
-	if (icon != NULL) {
-		gtk_window_set_icon (window, icon);
-		g_object_unref (icon);
-	}
 }
 
 static void
@@ -295,20 +280,17 @@ columns_changed_callback (NautilusColumnChooser *chooser,
 	eel_g_list_free_deep (column_order);
 }
 
-static GtkWidget *
-create_icon_caption_menu (GladeXML *xml_dialog,
-			  GList *columns)
+static void
+create_icon_caption_combo_box_items (GtkComboBox *combo_box,
+			             GList *columns)
 {
-	GtkWidget *menu;
 	GList *l;
-	GtkWidget *menu_item;
-	
-	menu = gtk_menu_new ();
+	EelStringList *column_names;
 
-	menu_item = gtk_menu_item_new_with_label (_("None"));
-	gtk_widget_show (menu_item);
-	g_object_set_data (G_OBJECT (menu_item), "column_name", "none");
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	column_names = eel_string_list_new (FALSE);
+	
+	gtk_combo_box_append_text (combo_box, _("None"));
+	eel_string_list_insert (column_names, "none");
 
 	for (l = columns; l != NULL; l = l->next) {
 		NautilusColumn *column;
@@ -328,24 +310,19 @@ create_icon_caption_menu (GladeXML *xml_dialog,
 			continue;
 		}
 		
-		menu_item = gtk_menu_item_new_with_label (label);
-		gtk_widget_show (menu_item);
-		g_object_set_data_full 
-			(G_OBJECT (menu_item), "column_name",
-			 g_strdup (name),
-			 (GDestroyNotify)g_free);
+		gtk_combo_box_append_text (combo_box, label);
+		eel_string_list_insert (column_names, name);
+
 		g_free (name);
 		g_free (label);
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	}
-	
-	gtk_widget_show (menu);
-	
-	return menu;
+	g_object_set_data_full (G_OBJECT (combo_box), "column_names",
+			        column_names,
+			        (GDestroyNotify) eel_string_list_free);
 }
 
 static void
-icon_captions_changed_callback (GtkOptionMenu *option_menu,
+icon_captions_changed_callback (GtkComboBox *combo_box,
 				gpointer user_data)
 {
 	GList *captions;
@@ -357,18 +334,19 @@ icon_captions_changed_callback (GtkOptionMenu *option_menu,
 	captions = NULL;
 
 	for (i = 0; icon_captions_components[i] != NULL; i++) {
-		GtkWidget *option_menu;
-		GtkWidget *menu;
-		GtkWidget *item;
+		GtkWidget *combo_box;
+		int active;
+		EelStringList *column_names;
 		char *name;
 		
-		option_menu = glade_xml_get_widget
-			(GLADE_XML (xml), icon_captions_components[i]);
-		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (option_menu));
-		item = gtk_menu_get_active (GTK_MENU (menu));
+		combo_box = glade_xml_get_widget
+			    (GLADE_XML (xml), icon_captions_components[i]);
+		active = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
 
-		name = g_object_get_data (G_OBJECT (item), "column_name");
-		captions = g_list_prepend (captions, g_strdup (name));
+		column_names = g_object_get_data (G_OBJECT (combo_box), "column_names");
+		
+		name = eel_string_list_nth (column_names, active);
+		captions = g_list_prepend (captions, name);
 	}
 	captions = g_list_reverse (captions);
 	eel_preferences_set_string_glist (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS, captions);
@@ -376,36 +354,33 @@ icon_captions_changed_callback (GtkOptionMenu *option_menu,
 }
 
 static void
-update_caption_option_menu (GladeXML *xml,
-			    const char *option_menu_name,
-			    const char *name)
+update_caption_combo_box (GladeXML *xml,
+			  const char *combo_box_name,
+			  const char *name)
 {
-	GtkWidget *option_menu;
-	GtkWidget *menu;
-	GList *l;
+	GtkWidget *combo_box;
 	int i;
+	EelStringList *column_names;
 	
-	option_menu = glade_xml_get_widget (xml, option_menu_name);
+	combo_box = glade_xml_get_widget (xml, combo_box_name);
 
 	g_signal_handlers_block_by_func
-		(option_menu,
+		(combo_box,
 		 G_CALLBACK (icon_captions_changed_callback),
 		 xml);
-	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (option_menu));
-	for (l = GTK_MENU_SHELL (menu)->children, i = 0; 
-	     l != NULL;
-	     l = l->next, i++) {
-		char *item_name;
-		item_name = g_object_get_data (G_OBJECT (l->data), 
-					       "column_name");
-		if (!strcmp (name, item_name)) {
-			gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), i);
+
+	column_names = g_object_get_data (G_OBJECT (combo_box), 
+					  "column_names");
+
+	for (i = 0; i < eel_string_list_get_length (column_names); i++) {
+		if (!strcmp (name, eel_string_list_peek_nth (column_names, i))) {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), i);
 			break;
 		}
 	}
 
 	g_signal_handlers_unblock_by_func
-		(option_menu,
+		(combo_box,
 		 G_CALLBACK (icon_captions_changed_callback),
 		 xml);
 }
@@ -423,9 +398,9 @@ update_icon_captions_from_gconf (GladeXML *xml)
 	for (l = captions, i = 0; 
 	     captions != NULL && icon_captions_components[i] != NULL;
 	      l = l->next, i++) {
-		update_caption_option_menu (xml, 
-					    icon_captions_components[i],
-					    (char *)l->data);
+		update_caption_combo_box (xml, 
+					  icon_captions_components[i],
+					  (char *)l->data);
 	}
 	eel_g_list_free_deep (captions);
 }
@@ -442,18 +417,15 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GladeXML *xm
 	columns = nautilus_get_all_columns ();
 	
 	for (i = 0; icon_captions_components[i] != NULL; i++) {
-		GtkWidget *menu;
-		GtkWidget *option_menu;
+		GtkWidget *combo_box;
 		
-		option_menu = glade_xml_get_widget (xml_dialog, 
+		combo_box = glade_xml_get_widget (xml_dialog, 
 						    icon_captions_components[i]);
 
-		menu = create_icon_caption_menu (xml_dialog, columns);
-		gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+		create_icon_caption_combo_box_items (GTK_COMBO_BOX (combo_box), columns);
+		gtk_widget_set_sensitive (combo_box, writable);
 
-		gtk_widget_set_sensitive (GTK_WIDGET (option_menu), writable);
-
-		g_signal_connect (option_menu, "changed", 
+		g_signal_connect (combo_box, "changed", 
 				  G_CALLBACK (icon_captions_changed_callback),
 				  xml_dialog);
 	}
@@ -466,38 +438,27 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GladeXML *xm
 static void
 create_date_format_menu (GladeXML *xml_dialog)
 {
-	GtkWidget *option_menu;
-	GtkWidget *menu;
-	GtkWidget *menu_item;
+	GtkWidget *combo_box;
 	gchar *date_string;
 	time_t now_raw;
 	struct tm* now;
-	option_menu = glade_xml_get_widget (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET);
-	menu = gtk_menu_new ();
+	combo_box = glade_xml_get_widget (xml_dialog,
+					  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET);
 
 	now_raw = time (NULL);
 	now = localtime (&now_raw);
 
 	date_string = eel_strdup_strftime ("%c", now);
-	menu_item = gtk_menu_item_new_with_label (date_string);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
 	g_free (date_string);
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	date_string = eel_strdup_strftime ("%Y-%m-%d %H:%M:%S", now);
-	menu_item = gtk_menu_item_new_with_label (date_string);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
 	g_free (date_string);
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	date_string = eel_strdup_strftime (_("today at %-I:%M:%S %p"), now);
-	menu_item = gtk_menu_item_new_with_label (date_string);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), date_string);
 	g_free (date_string);
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
 }
 
 static void
@@ -603,45 +564,45 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					    NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
-							       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-							       (const char **) default_view_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,						     
-							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-							       (const char **) zoom_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
-							       NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-							       (const char **) zoom_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
-							       NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-							       (const char **) sort_order_values);
-	eel_preferences_glade_connect_string_enum_option_menu_slave (xml_dialog,
-								     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
-								     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
-							       NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-							       (const char **) preview_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET,
-							       NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-							       (const char **) preview_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET,
-							       NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-							       (const char **) preview_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
-							       NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-							       (const char **) preview_values);
-	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
-							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
-							       NAUTILUS_PREFERENCES_DATE_FORMAT,
-							       (const char **) date_format_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
+							     NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+							     (const char **) default_view_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,						     
+							     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+							     (const char **) zoom_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
+							     NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+							     (const char **) zoom_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
+							     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+							     (const char **) sort_order_values);
+	eel_preferences_glade_connect_string_enum_combo_box_slave (xml_dialog,
+								   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET,
+								   NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET,
+							     NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+							     (const char **) preview_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET,
+							     NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+							     (const char **) preview_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET,
+							     NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+							     (const char **) preview_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
+							     NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+							     (const char **) preview_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
+							     NAUTILUS_PREFERENCES_DATE_FORMAT,
+							     (const char **) date_format_values);
 
 	eel_preferences_glade_connect_string_enum_radio_button (xml_dialog,
 								(const char **) click_behavior_components,
@@ -667,7 +628,7 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 			  G_CALLBACK (nautilus_file_management_properties_dialog_response_cb),
 			  xml_dialog);
 
-	nautilus_file_management_properties_dialog_set_icons (GTK_WINDOW (dialog));
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "file-manager");
 
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog), gtk_window_get_screen(window));

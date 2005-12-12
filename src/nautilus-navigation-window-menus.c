@@ -124,7 +124,6 @@ forget_history_if_confirmed (NautilusWindow *window)
 					   
 	dialog = eel_create_question_dialog (prompt,
 					     detail,
-					     _("Clear History"), 
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
 					     GTK_WINDOW (window));
@@ -290,7 +289,6 @@ show_bogus_history_window (NautilusWindow *window,
 
 	eel_show_warning_dialog (_("The history location doesn't exist."),
 				 detail,
-				 _("Bookmark for Nonexistent Location"),
 				 GTK_WINDOW (window));
 
 	g_free (uri);

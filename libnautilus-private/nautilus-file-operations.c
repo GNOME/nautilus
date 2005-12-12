@@ -914,7 +914,6 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	char *detail;
 	char *formatted_source_name;
 	char *formatted_target_name;
-	const char *dialog_title;
 	NautilusFileOperationsErrorKind error_kind;
 	NautilusFileOperationsErrorLocation error_location;
 	
@@ -1008,40 +1007,18 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				    progress_info->vfs_status,
 				    &text, &detail);
 
-		switch (transfer_info->kind) {
-		case TRANSFER_COPY:
-		case TRANSFER_DUPLICATE:
-			dialog_title = _("Error While Copying");
-			break;
-		case TRANSFER_MOVE:
-			dialog_title = _("Error While Moving");
-			break;
-		case TRANSFER_LINK:
-			dialog_title = _("Error While Linking");
-			break;
-		case TRANSFER_DELETE:
-		case TRANSFER_EMPTY_TRASH:
-		case TRANSFER_MOVE_TO_TRASH:
-			dialog_title = _("Error While Deleting");
-			break;
-		default:
-			dialog_title = NULL;
-			break;
-		}
-
 		if (error_location == ERROR_LOCATION_TARGET ||
 		    error_kind == ERROR_SOURCE_IN_TARGET) {
 			/* We can't continue, just tell the user. */
 			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
-				TRUE, GTK_MESSAGE_ERROR, text, detail, dialog_title, GTK_STOCK_OK, NULL);
+				TRUE, GTK_MESSAGE_ERROR, text, detail, GTK_STOCK_OK, NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
 		} else if (progress_info->files_total == 1) {
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, 
 				 GTK_MESSAGE_ERROR, text, 
-				 detail, dialog_title,
-				 GTK_STOCK_CANCEL, _("_Retry"), NULL);
+				 detail, GTK_STOCK_CANCEL, _("_Retry"), NULL);
 
 			switch (error_dialog_button_pressed) {
 			case 0:
@@ -1058,8 +1035,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, 
 				 GTK_MESSAGE_ERROR, text, 
-				 detail, dialog_title,
-				 _("_Skip"), GTK_STOCK_CANCEL, _("_Retry"), NULL);
+				 detail, _("_Skip"), GTK_STOCK_CANCEL, _("_Retry"), NULL);
 
 			switch (error_dialog_button_pressed) {
 			case 0:
@@ -2238,7 +2214,7 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 		error_string_to_free = (char *)error_string;
 	}
 	
-	eel_show_error_dialog (_("Error creating new folder."), error_string, _("Error Creating New Folder"),
+	eel_show_error_dialog (_("Error creating new folder."), error_string,
 				    GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
 	
 	g_free (error_string_to_free);
@@ -2398,7 +2374,7 @@ handle_new_file_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFil
 		error_string_to_free = (char *)error_string;
 	}
 	
-	eel_show_error_dialog (_("Error creating new document."), error_string, _("Error Creating New Document"),
+	eel_show_error_dialog (_("Error creating new document."), error_string,
 			       GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
 	
 	g_free (error_string_to_free);

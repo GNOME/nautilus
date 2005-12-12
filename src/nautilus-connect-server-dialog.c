@@ -139,10 +139,10 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		
 		if (vfs_uri == NULL) {
 			error_message = g_strdup_printf
-				(_("\"%s\" is not a valid location."),
+				(_("Can't Connect to Server. \"%s\" is not a valid location."),
 				 uri);
 			eel_show_error_dialog (error_message, _("Please check the spelling and try again."), 
-					       _("Can't Connect to Server"), GTK_WINDOW (dialog));
+					       GTK_WINDOW (dialog));
 			g_free (error_message);
 			return;
 		} else {
@@ -155,9 +155,9 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 		server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
 		if (strlen (server) == 0) {
-			eel_show_error_dialog (_("You must enter a name for the server."), 
+			eel_show_error_dialog (_("Can't Connect to Server. You must enter a name for the server."), 
 					       _("Please enter a name and try again."), 
-					       _("Can't Connect to Server"), GTK_WINDOW (dialog));
+					       GTK_WINDOW (dialog));
 			g_free (server);
 			return;
 		}

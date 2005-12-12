@@ -1,3 +1,9 @@
+2005-12-06  Alexander Larsson  <alexl@redhat.com>
+
+	Merge in changes from NAUTILUS_SEARCH2_MERGE_ANCHOR1 to
+	NAUTILUS_SEARCH2_MERGE_ANCHOR2 (on HEAD).
+	(This is NAUTILUS_SEARCH2_MERGE_POINT2)
+
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_new_from_relative_uri):
@@ -231,6 +237,130 @@
 
 --- nautilus-search2 branch ---
     
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(report_broken_symbolic_link):
+	Don't ask to move broken symlinks to trash in trash (#132751)
+
+	Patch from Christian Neumair
+
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-file.c:
+	Use GNOME_VFS_FILE_INFO_FIELDS_ACCESS to calculate
+	permissions.
+
+	Patch from Christian Neumair and Christian Kellner
+
+	* configure.in:
+	Require latest gnome-vfs for GNOME_VFS_FILE_INFO_FIELDS_IDS.
+	
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-properties-window.c:
+	Use GtkComboBox, not option menu. (#322567)
+
+	Patch by Jaap A. Haitsma
+
+2005-12-10  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(extension_action_slow_mime_types_ready_callback),
+	(extension_action_callback), (add_extension_action_for_files):
+	Keep the original action refed till its activation callback is
+	done. Prevents the callback data from being freed prematurely.
+	Fixes #320230.
+
+2005-12-09  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes bug #322957:
+
+	Add a "Network Servers" icon on the desktop, which takes you to network:///
+
+	* libnautilus-private/nautilus-global-preferences.h
+	(NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE): New preference
+	name.  This determines whether we show the "Network Servers" icon.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas.in: Add a
+	schema for /apps/nautilus/desktop/network_visible; the default is true.
+
+	* libnautilus-private/nautilus-desktop-link.h
+	(NautilusDesktopLinkType): Add a NAUTILUS_DESKTOP_LINK_NETWORK type.
+
+	* libnautilus-private/nautilus-desktop-link.c
+	(nautilus_desktop_link_new): Support NAUTILUS_DESKTOP_LINK_NETWORK.
+
+	* libnautilus-private/nautilus-desktop-link-monitor.c
+	(NautilusDesktopLinkMonitorDetails): Added a network_link field.
+	(nautilus_desktop_link_monitor_delete_link): Don't delete
+	NAUTILUS_DESKTOP_LINK_NETWORK links.
+	(update_link_visibility): New helper function.
+	(desktop_home_visible_changed): Use update_link_visibility(), to
+	avoid duplicated code.
+	(desktop_computer_visible_changed): Likewise.
+	(desktop_trash_visible_changed): Likewise.
+	(desktop_network_visible_changed): New function.
+	(create_link_and_add_preference): New helper function.
+	(nautilus_desktop_link_monitor_init): Use
+	create_link_and_add_preference() to avoid duplicated code.  Also,
+	create the network_link.
+	(desktop_link_monitor_finalize): Unref the network_link.
+	(remove_link_and_preference): New helper function.
+	(desktop_link_monitor_finalize): Use remove_link_and_preference()
+	to avoid duplicated code.  Also, free the network_link.
+
+	* src/file-manager/fm-icon-container.c (SortCategory): Add a
+	SORT_NETWORK_LINK category right before SORT_MOUNT_LINK, so that
+	the "Network Servers" icon appears before mounts.
+	(get_sort_category): Use SORT_NETWORK_LINK as the category for
+	NAUTILUS_DESKTOP_LINK_NETWORK.
+
+2005-12-09  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-error-reporting.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-tree-view.c:
+	* src/nautilus-application.c:
+	* src/nautilus-connect-server-dialog-main.c:
+	* src/nautilus-connect-server-dialog.c:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-window-bookmarks.c:
+	* src/nautilus-window-manage-views.c:
+	Remove title from alerts. (#323134)
+
+	Patch from jaap@haitsma.org
+	
+	* libnautilus-private/nautilus-file-queue.c (nautilus_file_queue_enqueue):
+	Fix warning from ignoring g_list_append return value
+
+2005-12-09  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window.[ch]:
+	Use combo box instead of option menu (#322567)
+
+	Patch from jaap@haitsma.org
+	
+2005-12-08  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-file-management-properties.glade:
+	Use the new combo box code (#322487)
+	
+	Patch from jaap@haitsma.org
+	
+	* configure.in:
+	Require new eel.
+
 2005-12-01  Federico Mena Quintero  <federico@ximian.com>
 
 	Fixes bug #318140:

@@ -1476,7 +1476,8 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 		(&handle,
 		 vfs_uri_list,
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS
+		  | GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS),
 		 GNOME_VFS_PRIORITY_DEFAULT,
 		 new_files_callback,
 		 directory);
@@ -1996,7 +1997,8 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		(&directory->details->directory_load_in_progress, /* handle */
 		 directory->details->uri,                         /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
-		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS
+		  | GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS),
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
 		 GNOME_VFS_PRIORITY_DEFAULT,
 		 directory_load_callback,                         /* callback */
@@ -2808,7 +2810,8 @@ file_info_start (NautilusDirectory *directory,
 	fake_list.next = NULL;
 
 	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS
+		| GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS;
 	if (need_slow_mime) {
 		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 	}

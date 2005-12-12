@@ -14,7 +14,7 @@
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
@@ -133,7 +133,7 @@
 			  <property name="spacing">6</property>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox11">
+			    <widget class="GtkHBox" id="hbox34">
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">12</property>
@@ -151,7 +151,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">default_view_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -165,31 +164,12 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="default_view_optionmenu">
+				<widget class="GtkComboBox" id="default_view_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu1">
-
-				      <child>
-					<widget class="GtkMenuItem" id="icon_view1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Icon View</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="list_view1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">List View</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">Icon View
+List View</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -206,7 +186,7 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox17">
+			    <widget class="GtkHBox" id="hbox11">
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">12</property>
@@ -224,7 +204,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">sort_order_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -238,55 +217,15 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="sort_order_optionmenu">
+				<widget class="GtkComboBox" id="sort_order_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu4">
-
-				      <child>
-					<widget class="GtkMenuItem" id="by_name2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">By Name</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="by_size2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">By Size</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="by_type2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">By Type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="by_modification_date2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">By Modification Date</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="by_emblems2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">By Emblems</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">By Name
+By Size
+By Type
+By Modification Date
+By Emblems</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -406,7 +345,7 @@
 			  <property name="spacing">6</property>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox13">
+			    <widget class="GtkHBox" id="hbox35">
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">12</property>
@@ -424,7 +363,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">iconview_zoom_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -438,71 +376,17 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="iconview_zoom_optionmenu">
+				<widget class="GtkComboBox" id="icon_view_zoom_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu3">
-
-				      <child>
-					<widget class="GtkMenuItem" id="25%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">25%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="50%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">50%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="75%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">75%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="100%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">100%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="150%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">150%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="200%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">200%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="400%1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">400%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">25%
+50%
+75%
+100%
+150%
+200%
+400%</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -622,7 +506,7 @@
 			  <property name="spacing">6</property>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox18">
+			    <widget class="GtkHBox" id="hbox36">
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">12</property>
@@ -640,7 +524,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">listview_zoom_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -654,71 +537,17 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="listview_zoom_optionmenu">
+				<widget class="GtkComboBox" id="list_view_zoom_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu5">
-
-				      <child>
-					<widget class="GtkMenuItem" id="25%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">25%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="50%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">50%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="75%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">75%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="100%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">100%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="150%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">150%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="200%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">200%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="400%2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">400%</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">25%
+50%
+75%
+100%
+150%
+200%
+400%</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1362,95 +1191,11 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="captions_0_optionmenu">
+				<widget class="GtkComboBox" id="captions_0_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu14">
-
-				      <child>
-					<widget class="GtkMenuItem" id="size3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">size</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="type3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="date_modified3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date modified</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="date_accessed3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date accessed</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="owner3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">owner</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="group3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">group</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="permissions3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="octal_permissions3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">octal permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="mime_type3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">MIME type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="none3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">none</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes"></property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1485,7 +1230,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">captions_1_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -1499,95 +1243,11 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="captions_1_optionmenu">
+				<widget class="GtkComboBox" id="captions_1_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu15">
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem7">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">size</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem8">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem9">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date modified</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem10">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date accessed</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem11">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">owner</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem12">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">group</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem13">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem14">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">octal permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem15">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">MIME type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem16">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">none</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes"></property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1635,95 +1295,11 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="captions_2_optionmenu">
+				<widget class="GtkComboBox" id="captions_2_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu16">
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem17">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">size</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem18">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem19">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date modified</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem20">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">date accessed</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem21">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">owner</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem22">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">group</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem23">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem24">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">octal permissions</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem25">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">MIME type</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="menuitem26">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">none</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes"></property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -1817,7 +1393,6 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
-			      <property name="mnemonic_widget">date_format_optionmenu</property>
 			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 			      <property name="width_chars">-1</property>
 			      <property name="single_line_mode">False</property>
@@ -1831,39 +1406,11 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkOptionMenu" id="date_format_optionmenu">
+			    <widget class="GtkComboBox" id="date_format_combobox">
 			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="history">0</property>
-
-			      <child>
-				<widget class="GtkMenu" id="menu17">
-
-				  <child>
-				    <widget class="GtkMenuItem" id="locale1">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">locale</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-
-				  <child>
-				    <widget class="GtkMenuItem" id="iso1">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">iso</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-
-				  <child>
-				    <widget class="GtkMenuItem" id="informal1">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">informal</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-				</widget>
-			      </child>
+			      <property name="items" translatable="yes"></property>
+			      <property name="add_tearoffs">False</property>
+			      <property name="focus_on_click">True</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -2146,7 +1693,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">preview_text_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -2160,39 +1706,13 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="preview_text_optionmenu">
+				<widget class="GtkComboBox" id="preview_text_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu9">
-
-				      <child>
-					<widget class="GtkMenuItem" id="always1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Always</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="local_files_only1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Local Files Only</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="never1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Never</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">Always
+Local Files Only
+Never</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -2292,7 +1812,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">preview_image_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -2306,39 +1825,13 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="preview_image_optionmenu">
+				<widget class="GtkComboBox" id="preview_image_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu10">
-
-				      <child>
-					<widget class="GtkMenuItem" id="always2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Always</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="local_files_only2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Local Files Only</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="never2">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Never</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">Always
+Local Files Only
+Never</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -2373,7 +1866,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">preview_image_size_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -2387,79 +1879,18 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="preview_image_size_optionmenu">
+				<widget class="GtkComboBox" id="preview_image_size_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu11">
-
-				      <child>
-					<widget class="GtkMenuItem" id="100_k1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">100 KB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="500_k1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">500 KB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="1_mb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">1 MB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="3_mb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">3 MB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="5_mb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">5 MB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="10_mb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">10 MB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="100_mb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">100 MB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="1_gb1">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">1 GB</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">100 KB
+500 KB
+1 MB
+3 MB
+5 MB
+10 MB
+100 MB
+1 GB</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -2559,7 +1990,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">preview_sound_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -2573,39 +2003,13 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="preview_sound_optionmenu">
+				<widget class="GtkComboBox" id="preview_sound_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu12">
-
-				      <child>
-					<widget class="GtkMenuItem" id="always3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Always</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="local_files_only3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Local Files Only</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="never3">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Never</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">Always
+Local Files Only
+Never</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -2705,7 +2109,6 @@
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="mnemonic_widget">preview_folder_optionmenu</property>
 				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
 				  <property name="width_chars">-1</property>
 				  <property name="single_line_mode">False</property>
@@ -2719,39 +2122,13 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkOptionMenu" id="preview_folder_optionmenu">
+				<widget class="GtkComboBox" id="preview_folder_combobox">
 				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="history">0</property>
-
-				  <child>
-				    <widget class="GtkMenu" id="menu13">
-
-				      <child>
-					<widget class="GtkMenuItem" id="always4">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Always</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="local_files_only4">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Local Files Only</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-
-				      <child>
-					<widget class="GtkMenuItem" id="never4">
-					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Never</property>
-					  <property name="use_underline">True</property>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
+				  <property name="items" translatable="yes">Always
+Local Files Only
+Never</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>

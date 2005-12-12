@@ -643,7 +643,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 	}
 
 	if (error_message != NULL) {
-		eel_show_error_dialog (error_message, detail_message, _("Can't Display Location"), parent_window);
+		eel_show_error_dialog (error_message, detail_message, parent_window);
 		
 		g_free (error_message);
 		g_free (detail_message);
@@ -877,7 +877,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 			(_("Sorry, but you can't execute commands from "
 			   "a remote site."), 
 			 _("This is disabled due to security considerations."),
-			 _("Can't Execute Remote Links"),
 			 parent_window);
 			 
 		return;
@@ -891,7 +890,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		eel_show_error_dialog
 			(_("There was an error launching the application."),
 			 message,
-			 _("Error Launching Application"),
 			 parent_window);			
 			 
 		g_error_free (error);
@@ -922,7 +920,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 				(_("This drop target only supports local files."),
 				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again."),
-				 _("Drop Target Only Supports Local Files"),
 				 parent_window);
 			
 			gnome_desktop_item_unref (ditem);
@@ -934,7 +931,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 				(_("This drop target only supports local files."),
 				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again. The local files you dropped have already been opened."),
-				 _("Drop Target Only Supports Local Files"),
 				 parent_window);
 		}		
 	}
@@ -962,7 +958,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		eel_show_error_dialog
 			(_("There was an error launching the application."),
 			 message,
-			 _("Error Launching Application"),
 			 parent_window);			
 			 
 		g_error_free (error);

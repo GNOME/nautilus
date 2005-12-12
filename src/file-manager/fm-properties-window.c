@@ -51,12 +51,14 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtknotebook.h>
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkcombobox.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtkliststore.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
@@ -215,34 +217,6 @@ static GtkLabel *attach_ellipsizing_value_label   (GtkTable *table,
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
 			 GtkWindow, GTK_TYPE_WINDOW);
-
-typedef struct {
-	NautilusFile *file;
-	char *name;
-} FileNamePair;
-
-static FileNamePair *
-file_name_pair_new (NautilusFile *file, const char *name)
-{
-	FileNamePair *new_pair;
-
-	new_pair = g_new0 (FileNamePair, 1);
-	new_pair->file = file;
-	new_pair->name = g_strdup (name);
-
-	nautilus_file_ref (file);
-
-	return new_pair;
-}
-
-static void
-file_name_pair_free (FileNamePair *pair)
-{
-	nautilus_file_unref (pair->file);
-	g_free (pair->name);
-	
-	g_free (pair);
-}
 
 static gboolean
 is_multi_file_window (FMPropertiesWindow *window)
@@ -508,7 +482,6 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		eel_show_error_dialog
 			(_("You can't assign more than one custom icon at a time!"),
 			 _("Please drag just one image to set a custom icon."), 
-			 _("More Than One Image"),
 			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
@@ -520,14 +493,12 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 				eel_show_error_dialog
 					(_("The file that you dropped is not local."),
 					 _("You can only use local images as custom icons."), 
-					 _("Local Images Only"),
 					 window);
 				
 			} else {
 				eel_show_error_dialog
 					(_("The file that you dropped is not an image."),
 					 _("You can only use local images as custom icons."),
-					 _("Images Only"),
 					 window);
 			}
 		}		
@@ -1534,71 +1505,66 @@ cancel_group_change_callback (gpointer callback_data)
 }
 
 static void
-activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
+changed_group_callback (GtkComboBox *combo_box, NautilusFile *file)
 {
-	g_assert (pair != NULL);
+	char *group;
+	char *cur_group;
 
-	/* Try to change file group. If this fails, complain to user. */
-	nautilus_file_ref (pair->file);
-	eel_timed_wait_start
-		(cancel_group_change_callback,
-		 pair->file,
-		 _("Cancel Group Change?"),
-		 _("Changing group."),
-		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
-	nautilus_file_set_group
-		(pair->file, pair->name,
-		 group_change_callback, NULL);
-}
+	group = gtk_combo_box_get_active_text (combo_box);
+	cur_group = nautilus_file_get_group_name (file);
 
-static GtkWidget *
-create_group_menu_item (NautilusFile *file, const char *group_name)
-{
-	GtkWidget *menu_item;
+	if (strcmp (group, cur_group) != 0) {
+		/* Try to change file group. If this fails, complain to user. */
+		nautilus_file_ref (file);
+		eel_timed_wait_start
+			(cancel_group_change_callback,
+			 file,
+			 _("Cancel Group Change?"),
+			 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (group_name != NULL);
-
-	menu_item = gtk_menu_item_new_with_label (group_name);
-	gtk_widget_show (menu_item);
-
-	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
-						 "activate",
-						 G_CALLBACK (activate_group_callback),
-						 file_name_pair_new (file, group_name),
-						 (GDestroyNotify)file_name_pair_free);
-
-	return menu_item;
+		nautilus_file_set_group
+			(file,  group,
+			 group_change_callback, NULL);
+	}
+	g_free (group);
+	g_free (cur_group);
 }
 
 static void
-synch_groups_menu (GtkOptionMenu *option_menu, NautilusFile *file)
+synch_groups_combo_box (GtkComboBox *combo_box, NautilusFile *file)
 {
 	GList *groups;
 	GList *node;
-	GtkWidget *new_menu;
-	GtkWidget *menu_item;
+	GtkTreeModel *model;
+	GtkListStore *store;
 	const char *group_name;
 	char *current_group_name;
 	int group_index;
 	int current_group_index;
 
-	g_assert (GTK_IS_OPTION_MENU (option_menu));
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	current_group_name = nautilus_file_get_string_attribute (file, "group");
+	/* Clear the contents of ComboBox in a wacky way because there
+	 * is no function to clear all items and also no function to obtain
+	 * the number of items in a combobox.
+	 */
+	model = gtk_combo_box_get_model (combo_box);
+	g_return_if_fail (GTK_IS_LIST_STORE (model));
+	store = GTK_LIST_STORE (model);
+	gtk_list_store_clear (store);
+
+	current_group_name = nautilus_file_get_group_name (file);
 	current_group_index = -1;
 
 	groups = nautilus_file_get_settable_group_names (file);
-	new_menu = gtk_menu_new ();
 
 	for (node = groups, group_index = 0; node != NULL; node = node->next, ++group_index) {
 		group_name = (const char *)node->data;
 		if (strcmp (group_name, current_group_name) == 0) {
 			current_group_index = group_index;
 		}
-		menu_item = create_group_menu_item (file, group_name);
-		gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
+		gtk_combo_box_append_text (combo_box, group_name);
 	}
 
 	/* If current group wasn't in list, we prepend it (with a separator). 
@@ -1607,68 +1573,94 @@ synch_groups_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 	 */
 	if (current_group_index < 0 && current_group_name != NULL) {
 		if (groups != NULL) {
-			menu_item = gtk_menu_item_new ();
-			gtk_widget_show (menu_item);
-			gtk_menu_shell_prepend (GTK_MENU_SHELL (new_menu), menu_item);
+			/* add separator */
+			gtk_combo_box_prepend_text (combo_box, "-");
 		}
-		menu_item = create_group_menu_item (file, current_group_name);
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (new_menu), menu_item);
+
+		gtk_combo_box_prepend_text (combo_box, current_group_name);
 		current_group_index = 0;
 	}
-
-        /* We create and attach a new menu here because adding/removing
-         * items from existing menu screws up the size of the option menu.
-         */
-        gtk_option_menu_set_menu (option_menu, new_menu);
-
-	gtk_option_menu_set_history (option_menu, current_group_index);
+	gtk_combo_box_set_active (combo_box, current_group_index);
 
 	g_free (current_group_name);
 	eel_g_list_free_deep (groups);
 }
 
-static GtkOptionMenu *
-attach_option_menu (GtkTable *table,
+static gboolean
+combo_box_row_separator_func (GtkTreeModel *model,
+			      GtkTreeIter  *iter,
+			      gpointer      data)
+{
+  	gchar *text;
+	gboolean ret;
+
+  	gtk_tree_model_get (model, iter, 0, &text, -1);
+
+	if (text == NULL) {
+		return FALSE;
+	}
+
+  	if (strcmp (text, "-") == 0) {
+    		ret = TRUE;
+	} else {
+		ret = FALSE;
+	}
+	
+  	g_free (text);
+  	return ret;
+}
+
+static GtkComboBox *
+attach_combo_box (GtkTable *table,
 		    int row)
 {
-	GtkWidget *option_menu;
+	GtkWidget *combo_box;
 	GtkWidget *aligner;
 
-	option_menu = gtk_option_menu_new ();
-	gtk_widget_show (option_menu);
+	combo_box = gtk_combo_box_new_text ();
+	gtk_widget_show (combo_box);
 
-	/* Put option menu in alignment to make it left-justified
+  	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
+					      combo_box_row_separator_func,
+					      NULL,
+					      NULL);
+
+	/* Put combo box in alignment to make it left-justified
 	 * but minimally sized.
 	 */	
 	aligner = gtk_alignment_new (0, 0.5, 0, 0);
 	gtk_widget_show (aligner);
 
-	gtk_container_add (GTK_CONTAINER (aligner), option_menu);
+	gtk_container_add (GTK_CONTAINER (aligner), combo_box);
 	gtk_table_attach (table, aligner,
 			  VALUE_COLUMN, VALUE_COLUMN + 1,
 			  row, row + 1,
 			  GTK_FILL, 0,
 			  0, 0);
 
-	return GTK_OPTION_MENU (option_menu);
+	return GTK_COMBO_BOX (combo_box);
 }		    	
 
-static GtkOptionMenu*
-attach_group_menu (GtkTable *table,
-		   int row,
-		   NautilusFile *file)
+static GtkComboBox*
+attach_group_combo_box (GtkTable *table,
+		        int row,
+		        NautilusFile *file)
 {
-	GtkOptionMenu *option_menu;
+	GtkComboBox *combo_box;
 
-	option_menu = attach_option_menu (table, row);
+	combo_box = attach_combo_box (table, row);
 
-	synch_groups_menu (option_menu, file);
+	synch_groups_combo_box (combo_box, file);
 
 	/* Connect to signal to update menu when file changes. */
 	g_signal_connect_object (file, "changed",
-				 G_CALLBACK (synch_groups_menu),
-				 option_menu, G_CONNECT_SWAPPED);	
-	return option_menu;
+				 G_CALLBACK (synch_groups_combo_box),
+				 combo_box, G_CONNECT_SWAPPED);
+	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (combo_box), "changed",
+						 G_CALLBACK (changed_group_callback),
+						 nautilus_file_ref (file),
+						 (GDestroyNotify)nautilus_file_unref);
+	return combo_box;
 }	
 
 static void
@@ -1693,85 +1685,88 @@ cancel_owner_change_callback (gpointer callback_data)
 }
 
 static void
-activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
+changed_owner_callback (GtkComboBox *combo_box, NautilusFile* file)
 {
-	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (pair != NULL);
-	g_assert (NAUTILUS_IS_FILE (pair->file));
-	g_assert (pair->name != NULL);
-
-	/* Try to change file owner. If this fails, complain to user. */
-	nautilus_file_ref (pair->file);
-	eel_timed_wait_start
-		(cancel_owner_change_callback,
-		 pair->file,
-		 _("Cancel Owner Change?"),
-		 _("Changing owner."),
-		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
-	nautilus_file_set_owner
-		(pair->file, pair->name,
-		 owner_change_callback, NULL);
-}
-
-static GtkWidget *
-create_owner_menu_item (NautilusFile *file, const char *user_name)
-{
-	GtkWidget *menu_item;
+	char *owner_text;
 	char **name_array;
-	char *label_text;
+	char *new_owner;
+	char *cur_owner;
 
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (user_name != NULL);
 
-	name_array = g_strsplit (user_name, "\n", 2);
-	if (name_array[1] != NULL) {
-		label_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
-	} else {
-		label_text = g_strdup (name_array[0]);
+	owner_text = gtk_combo_box_get_active_text (combo_box);
+	name_array = g_strsplit (owner_text, " - ", 2);
+	new_owner = name_array[0];
+	g_free (owner_text);
+	cur_owner = nautilus_file_get_owner_name (file);
+
+	if (strcmp (new_owner, cur_owner) != 0) {
+		/* Try to change file owner. If this fails, complain to user. */
+		nautilus_file_ref (file);
+		eel_timed_wait_start
+			(cancel_owner_change_callback,
+			 file,
+			 _("Cancel Owner Change?"),
+			 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
+
+		nautilus_file_set_owner
+			(file, name_array[0],
+			 owner_change_callback, NULL);
 	}
-
-	menu_item = gtk_menu_item_new_with_label (label_text);
-	g_free (label_text);
-
-	gtk_widget_show (menu_item);
-
-	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
-						 "activate",
-						 G_CALLBACK (activate_owner_callback),
-						 file_name_pair_new (file, name_array[0]),
-						 (GDestroyNotify)file_name_pair_free);
 	g_strfreev (name_array);
-	return menu_item;
+	g_free (cur_owner);
 }
+
 
 static void
-synch_user_menu (GtkOptionMenu *option_menu, NautilusFile *file)
+synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
 {
 	GList *users;
 	GList *node;
-	GtkWidget *new_menu;
-	GtkWidget *menu_item;
+	GtkTreeModel *model;
+	GtkListStore *store;
 	const char *user_name;
 	char *owner_name;
 	int user_index;
 	int owner_index;
+	char **name_array;
+	char *combo_text;
 
-	g_assert (GTK_IS_OPTION_MENU (option_menu));
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	/* Clear the contents of ComboBox in a wacky way because there
+	 * is no function to clear all items and also no function to obtain
+	 * the number of items in a combobox.
+	 */
+	model = gtk_combo_box_get_model (combo_box);
+	g_return_if_fail (GTK_IS_LIST_STORE (model));
+	store = GTK_LIST_STORE (model);
+	gtk_list_store_clear (store);
 
 	owner_name = nautilus_file_get_string_attribute (file, "owner");
 	owner_index = -1;
 
 	users = nautilus_get_user_names ();
-	new_menu = gtk_menu_new ();
 
 	for (node = users, user_index = 0; node != NULL; node = node->next, ++user_index) {
 		user_name = (const char *)node->data;
-		if (strcmp (user_name, owner_name) == 0) {
+
+		name_array = g_strsplit (user_name, "\n", 2);
+		if (name_array[1] != NULL) {
+			combo_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
+		} else {
+			combo_text = g_strdup (name_array[0]);
+		}
+
+		if (strcmp (combo_text, owner_name) == 0) {
 			owner_index = user_index;
 		}
-		menu_item = create_owner_menu_item (file, user_name);
-		gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
+		gtk_combo_box_append_text (combo_box, combo_text);
+
+		g_strfreev (name_array);
+		g_free (combo_text);
 	}
 
 	/* If owner wasn't in list, we prepend it (with a separator). 
@@ -1779,43 +1774,42 @@ synch_user_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 	 * identifier in the passwords file.
 	 */
 	if (owner_index < 0 && owner_name != NULL) {
-		if (users != NULL) {
-			menu_item = gtk_menu_item_new ();
-			gtk_widget_show (menu_item);
-			gtk_menu_shell_prepend (GTK_MENU_SHELL (new_menu), menu_item);
-		}
-		menu_item = create_owner_menu_item (file, owner_name);
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (new_menu), menu_item);
+		/* add separator */
+		gtk_combo_box_prepend_text (combo_box, "-");
+
+		gtk_combo_box_prepend_text (combo_box, owner_name);
 		owner_index = 0;
 	}
 
-        /* We create and attach a new menu here because adding/removing
-         * items from existing menu screws up the size of the option menu.
-         */
-        gtk_option_menu_set_menu (option_menu, new_menu);
-
-	gtk_option_menu_set_history (option_menu, owner_index);
+	gtk_combo_box_set_active (combo_box, owner_index);
 
 	g_free (owner_name);
 	eel_g_list_free_deep (users);
 }	
 
-static GtkOptionMenu*
-attach_owner_menu (GtkTable *table,
-		   int row,
-		   NautilusFile *file)
+static GtkComboBox*
+attach_owner_combo_box (GtkTable *table,
+		        int row,
+		        NautilusFile *file)
 {
-	GtkOptionMenu *option_menu;
+	GtkComboBox *combo_box;
 
-	option_menu = attach_option_menu (table, row);
+	combo_box = attach_combo_box (table, row);
 
-	synch_user_menu (option_menu, file);
+	synch_user_menu (combo_box, file);
 
 	/* Connect to signal to update menu when file changes. */
 	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_user_menu),
-				 option_menu, G_CONNECT_SWAPPED);	
-	return option_menu;
+				 combo_box, G_CONNECT_SWAPPED);	
+
+	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (combo_box),
+						 "changed",
+						 G_CALLBACK (changed_owner_callback),
+						 nautilus_file_ref (file),
+						 (GDestroyNotify)nautilus_file_unref);
+
+	return combo_box;
 }
 
 static guint
@@ -2905,8 +2899,8 @@ create_permissions_page (FMPropertiesWindow *window)
 	GtkLabel *owner_perm_label;
 	GtkLabel *group_perm_label;
 	GtkLabel *other_perm_label;
-	GtkOptionMenu *group_menu;
-	GtkOptionMenu *owner_menu;
+	GtkComboBox *group_combo_box;
+	GtkComboBox *owner_combo_box;
 	GList *file_list;
 
 	vbox = create_page_with_vbox (window->details->notebook,
@@ -2937,10 +2931,10 @@ create_permissions_page (FMPropertiesWindow *window)
 
 		if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
 			owner_label = attach_title_field (page_table, last_row, _("File _owner:"));
-			/* Option menu in this case. */
-			owner_menu = attach_owner_menu (page_table, last_row, get_target_file (window));
+			/* Combo box in this case. */
+			owner_combo_box = attach_owner_combo_box (page_table, last_row, get_target_file (window));
 			gtk_label_set_mnemonic_widget (owner_label,
-						       GTK_WIDGET (owner_menu));
+						       GTK_WIDGET (owner_combo_box));
 		} else {
 			attach_title_field (page_table, last_row, _("File owner:"));
 			/* Static text in this case. */
@@ -2955,11 +2949,11 @@ create_permissions_page (FMPropertiesWindow *window)
 			last_row = append_title_field (page_table,
 						       _("_File group:"),
 						       &group_label);
-			/* Option menu in this case. */
-			group_menu = attach_group_menu (page_table, last_row,
-							get_target_file (window));
+			/* Combo box in this case. */
+			group_combo_box = attach_group_combo_box (page_table, last_row,
+								 get_target_file (window));
 			gtk_label_set_mnemonic_widget (group_label,
-						       GTK_WIDGET (group_menu));
+						       GTK_WIDGET (group_combo_box));
 		} else {
 			last_row = append_title_field (page_table,
 						       _("File group:"),
@@ -3233,7 +3227,7 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 &error);
 
 	if (error) {
-		eel_show_error_dialog (_("There was an error displaying help."), error->message, _("Couldn't Show Help"),
+		eel_show_error_dialog (_("There was an error displaying help."), error->message,
 				       GTK_WINDOW (property_window));
 		g_error_free (error);
 	}
@@ -3317,6 +3311,8 @@ create_properties_window (StartupData *startup_data)
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
 	gtk_window_set_screen (GTK_WINDOW (window),
 			       gtk_widget_get_screen (startup_data->parent_widget));
+
+	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	/* Set initial window title */
 	update_properties_window_title (window);
@@ -3633,7 +3629,6 @@ fm_properties_window_present (GList *original_files,
 	eel_timed_wait_start
 		(cancel_create_properties_window_callback,
 		 startup_data,
-		 _("Cancel Showing Properties Window?"),
 		 _("Creating Properties window."),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 

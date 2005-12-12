@@ -97,7 +97,7 @@ show_bogus_bookmark_window (NautilusWindow *window,
 	
 	dialog = eel_show_yes_no_dialog (prompt, detail,
 					 _("Bookmark for Nonexistent Location"),
-					 _("Remove"), GTK_STOCK_CANCEL,
+					 GTK_STOCK_CANCEL,
 					 GTK_WINDOW (window));
 	
 	eel_gtk_signal_connect_free_data

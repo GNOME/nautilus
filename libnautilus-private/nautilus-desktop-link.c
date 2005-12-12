@@ -174,6 +174,14 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 			g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 						 G_CALLBACK (trash_state_changed_callback), link, 0);	
 		break;
+
+	case NAUTILUS_DESKTOP_LINK_NETWORK:
+		link->details->filename = g_strdup ("network");
+		link->details->display_name = _("Network Servers");
+		link->details->activation_uri = g_strdup ("network:///");
+		link->details->icon = g_strdup ("gnome-fs-network");
+		break;
+
 	default:
 	case NAUTILUS_DESKTOP_LINK_VOLUME:
 		g_assert_not_reached();
@@ -379,7 +387,7 @@ desktop_link_finalize (GObject *object)
 						 trash_name_changed,
 						 link);
 	}
-	
+
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_VOLUME) {
 		gnome_vfs_volume_unref (link->details->volume);
 	}
