@@ -612,48 +612,6 @@ nautilus_file_get_parent (NautilusFile *file)
 	return nautilus_directory_get_corresponding_file (file->details->directory);
 }
 
-struct NautilusUserInfo {
-	uid_t user_id;
-	
-	gboolean has_primary_group;
-	gid_t primary_group;
-	
-	int num_supplementary_groups;
-	gid_t supplementary_groups[NGROUPS_MAX];
-};
-
-/* Returns a pointer to the cached info, does not need freeing */
-static struct NautilusUserInfo *
-nautilus_file_get_user_info (void)
-{
-	static struct timeval cached_time;
-	static struct NautilusUserInfo info;
-	static gboolean has_cached_info = FALSE;
-	struct passwd *password_info;
-	struct timeval now;
-
-	gettimeofday (&now, NULL);
-	
-	if (!has_cached_info ||
-	    ((now.tv_sec - cached_time.tv_sec) > GETPWUID_CACHE_TIME)) {
-		cached_time = now;
-		has_cached_info = TRUE;
-
-		info.user_id = geteuid ();
-		
-		info.has_primary_group = FALSE;
-		/* No need to free result of getpwuid. */
-		password_info = getpwuid (info.user_id);
-		if (password_info) {
-			info.has_primary_group = TRUE;
-			info.primary_group = password_info->pw_gid;
-		}
-		info.num_supplementary_groups = getgroups (NGROUPS_MAX, info.supplementary_groups);
-	}
-
-	return &info;
-}
-
 /**
  * nautilus_file_denies_access_permission:
  * 
@@ -662,9 +620,9 @@ nautilus_file_get_user_info (void)
  * returns FALSE if permissions cannot be determined.
  * 
  * @file: The file to check.
- * @owner_permission: The USER version of the permission (e.g. GNOME_VFS_PERM_USER_READ).
- * @group_permission: The GROUP version of the permission (e.g. GNOME_VFS_PERM_GROUP_READ).
- * @other_permission: The OTHER version of the permission (e.g. GNOME_VFS_PERM_OTHER_READ).
+ * @permissions: The permissions to check. Must be either
+ * GNOME_VFS_PERM_ACCESS_READABLE, GNOME_VFS_PERM_ACCESS_WRITABLE,
+ * GNOME_VFS_PERM_ACCESS_EXECUTABLE
  * 
  * Return value: TRUE if the current user definitely does not have
  * the specified permission. FALSE if the current user does have
@@ -672,15 +630,13 @@ nautilus_file_get_user_info (void)
  */
 static gboolean
 nautilus_file_denies_access_permission (NautilusFile *file, 
-				        GnomeVFSFilePermissions owner_permission,
-				        GnomeVFSFilePermissions group_permission,
-				        GnomeVFSFilePermissions other_permission)
+				        GnomeVFSFilePermissions permissions)
 {
-	struct NautilusUserInfo *user_info;
-	int i;
-
 	g_assert (NAUTILUS_IS_FILE (file));
-
+	g_assert (permissions & (GNOME_VFS_PERM_ACCESS_READABLE |
+				 GNOME_VFS_PERM_ACCESS_WRITABLE |
+				 GNOME_VFS_PERM_ACCESS_EXECUTABLE));
+	
 	/* Once the file is gone, you are denied permission to do anything. */
 	if (nautilus_file_is_gone (file)) {
 		return TRUE;
@@ -692,45 +648,8 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	if (!nautilus_file_can_get_permissions (file)) {
 		return FALSE;
 	}
-
-	/* This is called often. Cache the user information for five minutes */
-
-	user_info = nautilus_file_get_user_info ();
-
-	/* Check the user. */
 	
-	/* Root is not forbidden to do anything. */
-	if (user_info->user_id == 0) {
-		return FALSE;
-	}
-
-	/* File owner's access is governed by the owner bits. */
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the uid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
-	if (user_info->user_id == (uid_t) file->details->info->uid) {
-		return (file->details->info->permissions & owner_permission) == 0;
-	}
-
-
-	/* Group member's access is governed by the group bits. */
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the gid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
-	if (user_info->has_primary_group
-	    && user_info->primary_group == (gid_t) file->details->info->gid) {
-		return (file->details->info->permissions & group_permission) == 0;
-	}
-	/* Check supplementary groups */
-	for (i = 0; i < user_info->num_supplementary_groups; i++) {
-		if ((gid_t) file->details->info->gid == user_info->supplementary_groups[i]) {
-			return (file->details->info->permissions & group_permission) == 0;
-		}
-	}
-	/* Other users' access is governed by the other bits. */
-	return (file->details->info->permissions & other_permission) == 0;
+	return (file->details->info->permissions & permissions) != permissions;
 }
 
 /**
@@ -751,10 +670,7 @@ nautilus_file_can_read (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return !nautilus_file_denies_access_permission
-		(file,
-		 GNOME_VFS_PERM_USER_READ,
-		 GNOME_VFS_PERM_GROUP_READ,
-		 GNOME_VFS_PERM_OTHER_READ);
+		(file, GNOME_VFS_PERM_ACCESS_READABLE);
 }
 
 /**
@@ -775,10 +691,7 @@ nautilus_file_can_write (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return !nautilus_file_denies_access_permission
-		(file, 
-		 GNOME_VFS_PERM_USER_WRITE,
-		 GNOME_VFS_PERM_GROUP_WRITE,
-		 GNOME_VFS_PERM_OTHER_WRITE);
+		(file, GNOME_VFS_PERM_ACCESS_WRITABLE);
 }
 
 /**
@@ -799,10 +712,7 @@ nautilus_file_can_execute (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return !nautilus_file_denies_access_permission
-		(file, 
-		 GNOME_VFS_PERM_USER_EXEC,
-		 GNOME_VFS_PERM_GROUP_EXEC,
-		 GNOME_VFS_PERM_OTHER_EXEC);
+		(file, GNOME_VFS_PERM_ACCESS_EXECUTABLE);
 }
 
 /**
@@ -3425,7 +3335,7 @@ nautilus_file_get_size (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
-	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ACCESS);
 }
 
 /**
@@ -3540,7 +3450,8 @@ nautilus_file_set_permissions (NautilusFile *file,
 	op->use_slow_mime = file->details->got_slow_mime_type;
 
 	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS
+		| GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS;
 	if (op->use_slow_mime) {
 		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 	}
@@ -3725,11 +3636,7 @@ gboolean
 nautilus_file_can_get_owner (NautilusFile *file)
 {
 	/* Before we have info on a file, the owner is unknown. */
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the uid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
-	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_IDS);
 }
 
 /**
@@ -3948,11 +3855,7 @@ gboolean
 nautilus_file_can_get_group (NautilusFile *file)
 {
 	/* Before we have info on a file, the group is unknown. */
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the gid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
-	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_IDS);
 }
 
 /**
@@ -3972,14 +3875,10 @@ nautilus_file_get_group_name (NautilusFile *file)
 	struct group *group_info;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_IDS)) {
 		return NULL;
 	}
 
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the gid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
 	/* No need to free result of getgrgid */
 	group_info = getgrgid ((gid_t) file->details->info->gid);
 
@@ -4279,11 +4178,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	char *user_name;
 
 	/* Before we have info on a file, the owner is unknown. */
-	/* FIXME bugzilla.gnome.org 40644: 
-	 * Can we trust the uid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
-	 */
-	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_IDS)) {
 		return NULL;
 	}
 
@@ -5226,10 +5121,8 @@ nautilus_file_is_executable (NautilusFile *file)
 		return FALSE;
 	}
 
-	return (file->details->info->permissions
-		& (GNOME_VFS_PERM_USER_EXEC
-		   | GNOME_VFS_PERM_GROUP_EXEC
-		   | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
+	return ((file->details->info->permissions
+		 & GNOME_VFS_PERM_ACCESS_EXECUTABLE) != 0);
 }
 
 /**

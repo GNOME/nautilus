@@ -1,5 +1,18 @@
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-file.c:
+	Use GNOME_VFS_FILE_INFO_FIELDS_ACCESS to calculate
+	permissions.
+
+	Patch from Christian Neumair and Christian Kellner
+
+	* configure.in:
+	Require latest gnome-vfs for GNOME_VFS_FILE_INFO_FIELDS_IDS.
+	
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-properties-window.c:
 	Use GtkComboBox, not option menu. (#322567)
 
