@@ -1,5 +1,13 @@
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(report_broken_symbolic_link):
+	Don't ask to move broken symlinks to trash in trash (#132751)
+
+	Patch from Christian Neumair
+
+2005-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-desktop-icon-file.c:
 	* libnautilus-private/nautilus-directory-async.c:
 	* libnautilus-private/nautilus-file.c:

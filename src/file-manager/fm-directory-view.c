@@ -7390,6 +7390,7 @@ static void
 report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 {
 	char *target_path;
+	char *display_name;
 	char *prompt;
 	char *detail;
 	GtkDialog *dialog;
@@ -7398,13 +7399,26 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	
 	g_assert (nautilus_file_is_broken_symbolic_link (file));
 
+	display_name = nautilus_file_get_display_name (file);
+	if (nautilus_file_is_in_trash (file)) {
+		prompt = g_strdup_printf (_("The Link \"%s\" is Broken."), display_name);
+	} else {
+		prompt = g_strdup_printf (_("The Link \"%s\" is Broken. Move it to Trash?"), display_name);
+	}
+	g_free (display_name);
+
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
-	prompt = _("The link is broken, do you want to move it to the Trash?");
 	if (target_path == NULL) {
 		detail = g_strdup (_("This link can't be used, because it has no target."));
 	} else {
 		detail = g_strdup_printf (_("This link can't be used, because its target "
 					    "\"%s\" doesn't exist."), target_path);
+	}
+	
+	if (nautilus_file_is_in_trash (file)) {
+		eel_run_simple_dialog (GTK_WIDGET (view), FALSE, GTK_MESSAGE_WARNING,
+				       prompt, detail, "", GTK_STOCK_CANCEL, NULL);
+		goto out;
 	}
 
 	dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
@@ -7431,6 +7445,8 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	        trash_or_delete_files (view, &file_as_list);					 
 	}
 
+out:
+	g_free (prompt);
 	g_free (target_path);
 	g_free (detail);
 }
