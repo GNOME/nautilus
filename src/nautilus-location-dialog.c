@@ -153,6 +153,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 	
 	dialog->details->entry = nautilus_location_entry_new ();
+        gtk_entry_set_width_chars (GTK_ENTRY (dialog->details->entry), 30);
 	g_signal_connect (dialog->details->entry,
 			  "activate", 
 			  G_CALLBACK (entry_activate_callback),
