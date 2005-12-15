@@ -1,5 +1,17 @@
 2005-12-15  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.c:
+	Disable network icon on desktop by default.
+	
+	* src/nautilus-main.c:
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-window-menus.c:
+	Add network to go/places menu.
+
+2005-12-15  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-location-dialog.c: (nautilus_location_dialog_init):
 	Make entry 30 chars to match file selector dialog.
 	Patch from Ray Strode

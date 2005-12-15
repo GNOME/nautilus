@@ -137,7 +137,7 @@ register_icons (void)
 	GtkIconSource *source;
 	GtkIconSet *set;
 	GtkIconFactory *factory;
-	const char *icons_to_register[] = {"gnome-fs-client", "gnome-fs-home", "gnome-fs-trash-empty", "gnome-dev-cdrom", "stock_new-template"};
+	const char *icons_to_register[] = {"gnome-fs-client", "gnome-fs-network", "gnome-fs-home", "gnome-fs-trash-empty", "gnome-dev-cdrom", "stock_new-template"};
 	struct { int pixel; int gtk; } sizes[] = {
 		{16, GTK_ICON_SIZE_MENU},
 		{18, GTK_ICON_SIZE_SMALL_TOOLBAR},

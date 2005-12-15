@@ -489,6 +489,16 @@ static const PreferenceDefault preference_defaults[] = {
 	  default_trash_link_name, g_free,
 	},
 	
+	{ NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+
+	{ NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (FALSE)
+	},
+	
 	{ NULL }
 };
 

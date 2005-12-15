@@ -72,7 +72,8 @@
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"
 
-#define COMPUTER_URI          "computer:"
+#define NETWORK_URI          "network:"
+#define COMPUTER_URI         "computer:"
 #define BURN_CD_URI          "burn:"
 
 /* Struct that stores all the info necessary to activate a bookmark. */
@@ -277,6 +278,14 @@ action_go_to_computer_callback (GtkAction *action,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       COMPUTER_URI);
+}
+
+static void
+action_go_to_network_callback (GtkAction *action, 
+				gpointer user_data) 
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       NETWORK_URI);
 }
 
 static void
@@ -677,6 +686,10 @@ static const GtkActionEntry main_entries[] = {
     N_("_Computer"), NULL,           /* label, accelerator */
     N_("Go to the computer location"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_computer_callback) },
+  { "Go to Network", "gnome-fs-network",                        /* name, stock id */
+    N_("_Network"), NULL,           /* label, accelerator */
+    N_("Go to the network location"),                                  /* tooltip */ 
+    G_CALLBACK (action_go_to_network_callback) },
   { "Go to Templates", "stock_new-template",                        /* name, stock id */
     N_("T_emplates"), NULL,           /* label, accelerator */
     N_("Go to the templates folder"),                                  /* tooltip */ 
