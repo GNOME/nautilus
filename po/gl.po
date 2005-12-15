@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-13 20:36+0100\n"
-"PO-Revision-Date: 2005-12-13 20:38+0100\n"
+"POT-Creation-Date: 2005-12-16 00:08+0100\n"
+"PO-Revision-Date: 2005-12-16 00:08+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
@@ -1847,7 +1847,7 @@ msgid "Search"
 msgstr "Procurar"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:520
-#: ../libnautilus-private/nautilus-global-preferences.c:512
+#: ../libnautilus-private/nautilus-global-preferences.c:522
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Computador"
@@ -2096,7 +2096,7 @@ msgid "link (broken)"
 msgstr "ligazón (estragada)"
 
 #: ../libnautilus-private/nautilus-file.c:6180
-#: ../libnautilus-private/nautilus-global-preferences.c:518
+#: ../libnautilus-private/nautilus-global-preferences.c:528
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
 msgstr "Lixo"
@@ -2283,7 +2283,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:506
+#: ../libnautilus-private/nautilus-global-preferences.c:516
 #, c-format
 msgid "%s's Home"
 msgstr "Persoal de %s"
@@ -4223,7 +4223,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:215
-#: ../src/nautilus-property-browser.c:1525 ../src/nautilus-window-menus.c:515
+#: ../src/nautilus-property-browser.c:1525 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4895,7 +4895,7 @@ msgstr "Xestor de ficheiros"
 
 #. Set initial window title
 #: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:401
-#: ../src/nautilus-window-menus.c:452 ../src/nautilus-window.c:155
+#: ../src/nautilus-window-menus.c:461 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5395,11 +5395,11 @@ msgstr "Nautilus non pode amosar \"%s\"."
 msgid "Please select another viewer and try again."
 msgstr "Seleccione outro visualizador e probe de novo"
 
-#: ../src/nautilus-window-menus.c:181
+#: ../src/nautilus-window-menus.c:182
 msgid "Go to the location specified by this bookmark"
 msgstr "Ir para o lugar indicado por este marcador"
 
-#: ../src/nautilus-window-menus.c:417
+#: ../src/nautilus-window-menus.c:426
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify \n"
 "it under the terms of the GNU General Public License as published by \n"
@@ -5411,7 +5411,7 @@ msgstr ""
 "o publica a Free Software Foundation; tanto na versión 2 da \n"
 "Licencia como (a súa elección) calquer versión posterior."
 
-#: ../src/nautilus-window-menus.c:421
+#: ../src/nautilus-window-menus.c:430
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, \n"
 "but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
@@ -5424,7 +5424,7 @@ msgstr ""
 "UN PROPÓSITO PARTICULAR. Vexa a Licencia Pública\n"
 "Xeral de GNU para máis detalles."
 
-#: ../src/nautilus-window-menus.c:425
+#: ../src/nautilus-window-menus.c:434
 msgid ""
 "You should have received a copy of the GNU General Public License \n"
 "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
@@ -5434,7 +5434,7 @@ msgstr ""
 "xunto con Nautilus; se non, escriba á Free Software Foundation, Inc., \n"
 "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 
-#: ../src/nautilus-window-menus.c:454
+#: ../src/nautilus-window-menus.c:463
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5442,11 +5442,11 @@ msgstr ""
 "Nautilus é unha shell gráfica para GNOME que fai máis doado xestionar os "
 "ficheiros e o resto do sistema."
 
-#: ../src/nautilus-window-menus.c:458
+#: ../src/nautilus-window-menus.c:467
 msgid "Copyright © 1999-2005 The Nautilus authors"
 msgstr "Copyright © 1999-2005 Os autores de Nautilus"
 
-#: ../src/nautilus-window-menus.c:463
+#: ../src/nautilus-window-menus.c:472
 msgid "translator-credits"
 msgstr ""
 "Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
@@ -5455,41 +5455,41 @@ msgstr ""
 "Jesús Bravo Álvarez <suso@trasno.net>\n"
 "Proxecto Trasno - http://www.trasno.net"
 
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:612
 msgid "_File"
 msgstr "_Ficheiro"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:604
+#: ../src/nautilus-window-menus.c:613
 msgid "_Edit"
 msgstr "_Editar"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:605
+#: ../src/nautilus-window-menus.c:614
 msgid "_View"
 msgstr "_Vista"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:606
+#: ../src/nautilus-window-menus.c:615
 msgid "_Help"
 msgstr "A_xuda"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:608
+#: ../src/nautilus-window-menus.c:617
 msgid "_Close"
 msgstr "_Pechar"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:609
+#: ../src/nautilus-window-menus.c:618
 msgid "Close this folder"
 msgstr "Pechar este cartafol"
 
-#: ../src/nautilus-window-menus.c:612
+#: ../src/nautilus-window-menus.c:621
 msgid "_Backgrounds and Emblems..."
 msgstr "_Fondos e emblemas..."
 
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:622
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -5497,153 +5497,163 @@ msgstr ""
 "Amosar os patróns, cores e emblemas que se poden usar para personalizar a "
 "aparencia"
 
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:625
 msgid "Prefere_nces"
 msgstr "_Preferencias"
 
-#: ../src/nautilus-window-menus.c:617
+#: ../src/nautilus-window-menus.c:626
 msgid "Edit Nautilus preferences"
 msgstr "Editar as preferencias do Nautilus"
 
-#: ../src/nautilus-window-menus.c:619
+#: ../src/nautilus-window-menus.c:628
 msgid "_Undo"
 msgstr "_Desfacer"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:629
 msgid "Undo the last text change"
 msgstr "Desfacer o último cambio no texto"
 
-#: ../src/nautilus-window-menus.c:622
+#: ../src/nautilus-window-menus.c:631
 msgid "Open _Parent"
 msgstr "Abrir _superior"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:632
 msgid "Open the parent folder"
 msgstr "Abrir o cartafol superior"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:629
+#: ../src/nautilus-window-menus.c:638
 msgid "_Stop"
 msgstr "_Parar"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:633
+#: ../src/nautilus-window-menus.c:642
 msgid "_Reload"
 msgstr "_Recargar"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:637
+#: ../src/nautilus-window-menus.c:646
 msgid "_Contents"
 msgstr "_Contidos"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:638
+#: ../src/nautilus-window-menus.c:647
 msgid "Display Nautilus help"
 msgstr "Mostrar a axuda do Nautilus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:641
+#: ../src/nautilus-window-menus.c:650
 msgid "_About"
 msgstr "_Acerca"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:642
+#: ../src/nautilus-window-menus.c:651
 msgid "Display credits for the creators of Nautilus"
 msgstr "Amosar os créditos dos creadores do Nautilus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:645
+#: ../src/nautilus-window-menus.c:654
 msgid "Zoom _In"
 msgstr "A_chegar"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:646 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:655 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Amosar os contidos con máis detalle"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:657
+#: ../src/nautilus-window-menus.c:666
 msgid "Zoom _Out"
 msgstr "A_fastar"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:658 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:667 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Amosar os contidos con menos detalle"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:665
+#: ../src/nautilus-window-menus.c:674
 msgid "Normal Si_ze"
 msgstr "Tamaño _normal"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:666
+#: ../src/nautilus-window-menus.c:675
 msgid "Show the contents at the normal size"
 msgstr "Amosar os contidos co tamaño normal"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:669
+#: ../src/nautilus-window-menus.c:678
 msgid "Connect to _Server..."
 msgstr "Conectar a un _servidor..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:670
+#: ../src/nautilus-window-menus.c:679
 msgid "Set up a connection to a network server"
 msgstr "Configurar unha conexión cun servidor de rede"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:673
+#: ../src/nautilus-window-menus.c:682
 msgid "_Home"
 msgstr "_Inicio"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:674
+#: ../src/nautilus-window-menus.c:683
 msgid "Go to the home folder"
 msgstr "Ir ao cartafol de inicio"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:677
+#: ../src/nautilus-window-menus.c:686
 msgid "_Computer"
 msgstr "_Computador"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:678
+#: ../src/nautilus-window-menus.c:687
 msgid "Go to the computer location"
 msgstr "Ir á localización do computador"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:681
+#: ../src/nautilus-window-menus.c:690
+msgid "_Network"
+msgstr "_Rede"
+
+#. label, accelerator
+#: ../src/nautilus-window-menus.c:691
+msgid "Go to the network location"
+msgstr "Ir á localización da rede"
+
+#. name, stock id
+#: ../src/nautilus-window-menus.c:694
 msgid "T_emplates"
 msgstr "Mod_elos"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:682
+#: ../src/nautilus-window-menus.c:695
 msgid "Go to the templates folder"
 msgstr "Ir ao cartafol de modelos"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:685
+#: ../src/nautilus-window-menus.c:698
 msgid "_Trash"
 msgstr "_Lixo"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:686
+#: ../src/nautilus-window-menus.c:699
 msgid "Go to the trash folder"
 msgstr "Ir ao cartafol do lixo"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:689
+#: ../src/nautilus-window-menus.c:702
 msgid "CD/_DVD Creator"
 msgstr "Creador de CD/_DVD"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:690
+#: ../src/nautilus-window-menus.c:703
 msgid "Go to the CD/DVD Creator"
 msgstr "Ir ao creador de CD/DVD"
 
-#: ../src/nautilus-window-menus.c:716
+#: ../src/nautilus-window-menus.c:729
 msgid "_Up"
 msgstr "A_rriba"
 
