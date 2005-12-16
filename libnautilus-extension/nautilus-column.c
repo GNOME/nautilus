@@ -44,6 +44,8 @@ struct _NautilusColumnDetails {
 	float xalign;
 };
 
+static GObjectClass *parent_class = NULL;
+
 NautilusColumn *
 nautilus_column_new (const char *name,
 		     const char *attribute,
@@ -153,6 +155,8 @@ nautilus_column_finalize (GObject *object)
 	g_free (column->details->description);
 
 	g_free (column->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -165,6 +169,8 @@ nautilus_column_instance_init (NautilusColumn *column)
 static void
 nautilus_column_class_init (NautilusColumnClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+	
 	G_OBJECT_CLASS (class)->finalize = nautilus_column_finalize;
 	G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;

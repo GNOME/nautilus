@@ -35,12 +35,13 @@ enum {
 	LAST_PROP
 };
 
-
 struct _NautilusPropertyPageDetails {
 	char *name;
 	GtkWidget *label;
 	GtkWidget *page;	
 };
+
+static GObjectClass *parent_class = NULL;
 
 NautilusPropertyPage *
 nautilus_property_page_new (const char *name,
@@ -154,6 +155,8 @@ nautilus_property_page_finalize (GObject *object)
 	g_free (page->details->name);
 
 	g_free (page->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -165,6 +168,8 @@ nautilus_property_page_instance_init (NautilusPropertyPage *page)
 static void
 nautilus_property_page_class_init (NautilusPropertyPageClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+	
 	G_OBJECT_CLASS (class)->finalize = nautilus_property_page_finalize;
 	G_OBJECT_CLASS (class)->dispose = nautilus_property_page_dispose;
 	G_OBJECT_CLASS (class)->get_property = nautilus_property_page_get_property;

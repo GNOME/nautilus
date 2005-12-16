@@ -53,6 +53,8 @@ struct _NautilusMenuItemDetails {
 
 static guint signals[LAST_SIGNAL];
 
+static GObjectClass *parent_class = NULL;
+
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
 			const char *label,
@@ -165,7 +167,7 @@ static void
 nautilus_menu_item_finalize (GObject *object)
 {
 	NautilusMenuItem *item;
-	
+
 	item = NAUTILUS_MENU_ITEM (object);
 
 	g_free (item->details->name);
@@ -174,6 +176,8 @@ nautilus_menu_item_finalize (GObject *object)
 	g_free (item->details->icon);
 
 	g_free (item->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -186,6 +190,8 @@ nautilus_menu_item_instance_init (NautilusMenuItem *item)
 static void
 nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+	
 	G_OBJECT_CLASS (class)->finalize = nautilus_menu_item_finalize;
 	G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;

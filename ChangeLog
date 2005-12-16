@@ -1,5 +1,12 @@
 2005-12-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-extension/nautilus-column.c:
+	* libnautilus-extension/nautilus-menu-item.c:
+	* libnautilus-extension/nautilus-property-page.c:
+	Chain up in finalize handler, to fix leaks.
+
+2005-12-16  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (reveal_newly_added_folder):
 	Correct arguments for add_file, makes rename on new folder/file work
 	again.
