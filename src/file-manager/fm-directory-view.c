@@ -3939,7 +3939,7 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 }
 
 static void
-reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, const char *target_uri)
+reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, NautilusDirectory *directory, const char *target_uri)
 {
 	if (nautilus_file_matches_uri (new_file, target_uri)) {
 		g_signal_handlers_disconnect_by_func (view,
