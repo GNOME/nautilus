@@ -1632,9 +1632,12 @@ get_size (NautilusFile *file,
 }
 
 static Knowledge
-get_modification_time (NautilusFile *file,
-		       time_t *modification_time)
+get_time (NautilusFile *file,
+	  time_t *time,
+	  NautilusDateType type)
 {
+	GnomeVFSFileInfoFields field;
+
 	/* If we tried and failed, then treat it like there is no size
 	 * to know.
 	 */
@@ -1649,16 +1652,28 @@ get_modification_time (NautilusFile *file,
 		return UNKNOWN;
 	}
 
+	switch (type) {
+	case NAUTILUS_DATE_TYPE_MODIFIED:
+		field = GNOME_VFS_FILE_INFO_FIELDS_MTIME;
+		*time = file->details->info->mtime;
+		break;
+	case NAUTILUS_DATE_TYPE_ACCESSED:
+		field = GNOME_VFS_FILE_INFO_FIELDS_ATIME;
+		*time = file->details->info->atime;
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+
 	/* If we got info with no modification time in it, it means
 	 * there is no such thing as a modification time as far as
 	 * gnome-vfs is concerned, so "unknowable".
 	 */
-	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MTIME) == 0) {
+	if ((file->details->info->valid_fields & field) == 0) {
 		return UNKNOWABLE;
 	}
-
-	/* We have a modification time. */
-	*modification_time = file->details->info->mtime;
+	
 	return KNOWN;
 }
 
@@ -1995,7 +2010,7 @@ compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 }
 
 static int
-compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_time (NautilusFile *file_1, NautilusFile *file_2, NautilusDateType type)
 {
 	/* Sort order:
 	 *   Files with unknown times.
@@ -2007,8 +2022,8 @@ compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
 	Knowledge time_known_1, time_known_2;
 	time_t time_1, time_2;
 
-	time_known_1 = get_modification_time (file_1, &time_1);
-	time_known_2 = get_modification_time (file_2, &time_2);
+	time_known_1 = get_time (file_1, &time_1, type);
+	time_known_2 = get_time (file_2, &time_2, type);
 
 	if (time_known_1 > time_known_2) {
 		return -1;
@@ -2166,7 +2181,13 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 			}
 			break;
 		case NAUTILUS_FILE_SORT_BY_MTIME:
-			result = compare_by_modification_time (file_1, file_2);
+			result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_MODIFIED);
+			if (result == 0) {
+				result = compare_by_full_path (file_1, file_2);
+			}
+			break;
+		case NAUTILUS_FILE_SORT_BY_ATIME:
+			result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_ACCESSED);
 			if (result == 0) {
 				result = compare_by_full_path (file_1, file_2);
 			}
@@ -2227,6 +2248,11 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 	} else if (!strcmp (attribute, "modification_date") || !strcmp (attribute, "date_modified")) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_MTIME,
+						       directories_first,
+						       reversed);
+        } else if (!strcmp (attribute, "accessed_date") || !strcmp (attribute, "date_accessed")) {
+		return nautilus_file_compare_for_sort (file_1, file_2,
+						       NAUTILUS_FILE_SORT_BY_ATIME,
 						       directories_first,
 						       reversed);
 	} else if (!strcmp (attribute, "emblems")) {

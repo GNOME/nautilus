@@ -1,5 +1,17 @@
 2005-12-16  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-file.c: (get_time),
+	(compare_by_time), (nautilus_file_compare_for_sort),
+	(nautilus_file_compare_for_sort_by_attribute):
+	Support comparison by accessed time. Fixes #321671.
+
+	* libnautilus-private/nautilus-file.h:
+	Add atime sort type.
+
+	Based on a patch from bluefuture@email.it
+
+2005-12-16  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-properties-window.c:
 	(select_image_button_callback):
 	Use GTK_STOCK_REVERT_TO_SAVED item for icon
