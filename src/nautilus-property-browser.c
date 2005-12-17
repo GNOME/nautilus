@@ -1023,24 +1023,35 @@ nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_brow
 static GtkWidget*
 nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 {
+	GtkWidget *hbox;
 	GtkWidget *widget;
 	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
-	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem:"),
+	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem"),
 					      GTK_WINDOW (property_browser), 0,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
 
 	/* install the table in the dialog */	
-	gtk_widget_show (table);	
+	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 12);	
+	gtk_widget_show (table);
+
+	gtk_window_set_resizable (GTK_WINDOW (dialog), TRUE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, 0);
 	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the keyword label and field */	
 	
 	widget = gtk_label_new_with_mnemonic(_("_Keyword:"));
+	gtk_misc_set_alignment (GTK_MISC (widget), 0, 0.5);
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	
@@ -1059,10 +1070,14 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	
 	/* set up a gnome icon entry to pick the image file */
 	widget = gtk_label_new_with_mnemonic (_("_Image:"));
+	gtk_misc_set_alignment (GTK_MISC (widget), 0, 0.5);
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 
-	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an image file for the new emblem:"));
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+
+	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an Image File for the New Emblem"));
 	gnome_icon_entry_set_pixmap_subdir (GNOME_ICON_ENTRY(property_browser->details->file_entry),
 						DATADIR "/pixmaps");
 	gnome_icon_entry_set_filename (GNOME_ICON_ENTRY(property_browser->details->file_entry),
@@ -1071,7 +1086,8 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 				       GTK_WIDGET (property_browser->details->file_entry));
 
 	gtk_widget_show(property_browser->details->file_entry);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (property_browser->details->file_entry), FALSE, FALSE, 0);
 	
 	gnome_icon_entry_set_filename (GNOME_ICON_ENTRY (property_browser->details->file_entry), property_browser->details->image_path);	
 	return dialog;
@@ -1218,7 +1234,7 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 		gtk_window_present (GTK_WINDOW (property_browser->details->patterns_dialog));
 	} else {
 		property_browser->details->patterns_dialog = 
-			eel_gnome_icon_selector_new (_("Select an image file to add as a pattern"),
+			eel_gnome_icon_selector_new (_("Select an Image File to Add as a Pattern"),
 				DATADIR "/nautilus/patterns/",
 				GTK_WINDOW (property_browser),
 				(EelIconSelectionFunction) add_pattern_to_browser,
@@ -1355,7 +1371,7 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 	} else {
 		GtkColorSelectionDialog *color_dialog;
 
-		property_browser->details->colors_dialog = gtk_color_selection_dialog_new (_("Select a color to add"));
+		property_browser->details->colors_dialog = gtk_color_selection_dialog_new (_("Select a Color to Add"));
 		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog);
 		
 		eel_add_weak_pointer (&property_browser->details->colors_dialog);
