@@ -637,17 +637,17 @@ nautilus_drag_drop_action_ask (GtkWidget *widget,
 	menu = gtk_menu_new ();
 	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 	
-	append_drop_action_menu_item (menu, _("_Move here"),
+	append_drop_action_menu_item (menu, _("_Move Here"),
 				      GDK_ACTION_MOVE,
 				      (actions & GDK_ACTION_MOVE) != 0,
 				      &damd);
 
-	append_drop_action_menu_item (menu, _("_Copy here"),
+	append_drop_action_menu_item (menu, _("_Copy Here"),
 				      GDK_ACTION_COPY,
 				      (actions & GDK_ACTION_COPY) != 0,
 				      &damd);
 	
-	append_drop_action_menu_item (menu, _("_Link here"),
+	append_drop_action_menu_item (menu, _("_Link Here"),
 				      GDK_ACTION_LINK,
 				      (actions & GDK_ACTION_LINK) != 0,
 				      &damd);
