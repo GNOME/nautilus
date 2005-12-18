@@ -1140,8 +1140,10 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 					   "to copy the item, rename it and try again.");
 		}
 		
-		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_ERROR, primary_text, secondary_text,
-				       _("Unable to Replace File"), GTK_STOCK_OK, NULL, NULL);
+		eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
+				       TRUE, GTK_MESSAGE_ERROR,
+				       primary_text, secondary_text,
+				       GTK_STOCK_OK, NULL);
 
 		g_free (primary_text);
 		g_free (formatted_name);
@@ -1183,7 +1185,6 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			 GTK_MESSAGE_QUESTION, 
 			 text, 
 			 secondary_text, 
-			 _("Conflict While Copying"),
 			 _("_Skip"), _("_Replace"), NULL);
 		g_free (text);	 
 
@@ -1202,7 +1203,6 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		result = eel_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_QUESTION, text, 
 			 secondary_text, 
-			 _("Conflict While Copying"),
 			 _("S_kip All"), _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
 		g_free (text);
 
@@ -2078,7 +2078,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				 ? _("You cannot copy items into the trash.")
 				 : _("You cannot create links inside the trash."),
 				 _("Files and folders can only be moved into the trash."), 
-				 NULL,
 				 GTK_STOCK_OK, NULL);
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
@@ -2104,9 +2103,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 						 ? _("You cannot move this trash folder.")
 						 : _("You cannot copy this trash folder."),
 					 _("A trash folder is used for storing items moved to the trash."),
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
-						 ? _("Can't Change Trash Location")
-						 : _("Can't Copy Trash"),
 					 GTK_STOCK_OK, NULL, NULL);
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
@@ -2133,10 +2129,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ? _("You cannot move a folder into itself.")
 					 : _("You cannot copy a folder into itself."), 
 					 _("The destination folder is inside the source folder."), 
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					 ? _("Can't Move Into Self")
-					 : _("Can't Copy Into Self"),
-					 GTK_STOCK_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2150,7 +2143,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 GTK_MESSAGE_ERROR,
 					 _("You cannot copy a file over itself."),
 					 _("The destination and source are the same file."), 
-					 _("Can't Copy Over Self"), 
 					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;

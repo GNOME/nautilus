@@ -147,7 +147,6 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 		
 		message_dialog = eel_show_yes_no_dialog (prompt, 
 		                                         message,
-							 _("Can't Open Location"), 
 							 GTK_STOCK_OK,
 							 GTK_STOCK_CANCEL,
 							 parent_window);
@@ -180,7 +179,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				    "it.");
 		}
 				
-		eel_show_info_dialog (prompt, message, _("Can't Open Location"), parent_window);
+		eel_show_info_dialog (prompt, message, parent_window);
 		g_free (prompt);
 	}	
 

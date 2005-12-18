@@ -124,7 +124,7 @@ volume_delete_dialog (GtkWidget *parent_view,
 				 dialog_str,
 				 _("If you want to eject the volume, please use \"Eject\" in the "
 				   "popup menu of the volume."),
-				 NULL, GTK_STOCK_OK, NULL);
+				 GTK_STOCK_OK, NULL);
 		} else {
 			eel_run_simple_dialog
 				(parent_view, 
@@ -133,7 +133,7 @@ volume_delete_dialog (GtkWidget *parent_view,
 				 dialog_str,
 				 _("If you want to unmount the volume, please use \"Unmount Volume\" in the "
 				   "popup menu of the volume."),
-				 NULL, GTK_STOCK_OK, NULL);
+				 GTK_STOCK_OK, NULL);
 		}
 
 		gnome_vfs_volume_unref (volume);

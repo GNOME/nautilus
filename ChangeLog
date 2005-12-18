@@ -1,3 +1,21 @@
+2005-12-18  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(volume_delete_dialog):
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_overwrite), (nautilus_file_operations_copy_move):
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(application_cannot_open_location):
+	* src/file-manager/fm-directory-view.c:
+	(report_broken_symbolic_link):
+	* src/nautilus-location-bar.c: (drag_data_received_callback):
+	Adapt callers to eel dialog API changes. Fixes #324262.
+
+	Patch from Christian Neumair <chris@gnome-de.org>
+	and Claudio Saavedra <csaavedra@alumnos.utalca.cl>
+
 2005-12-16  Dennis Cranston  <dennis_cranston@yahoo.com>
  
  	* libnautilus-private/nautilus-dnd.c:

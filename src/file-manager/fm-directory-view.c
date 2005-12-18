@@ -7677,7 +7677,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	
 	if (nautilus_file_is_in_trash (file)) {
 		eel_run_simple_dialog (GTK_WIDGET (view), FALSE, GTK_MESSAGE_WARNING,
-				       prompt, detail, "", GTK_STOCK_CANCEL, NULL);
+				       prompt, detail, GTK_STOCK_CANCEL, NULL);
 		goto out;
 	}
 

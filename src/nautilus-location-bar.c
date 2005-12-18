@@ -167,7 +167,6 @@ drag_data_received_callback (GtkWidget *widget,
 			 GTK_MESSAGE_QUESTION,
 			 prompt,
 			 detail,
-			 _("View in Multiple Windows?"),
 			 GTK_STOCK_CANCEL, GTK_STOCK_OK,
 			 NULL) != 0 /* GNOME_OK */;
 
