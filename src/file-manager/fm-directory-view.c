@@ -1269,40 +1269,45 @@ action_save_search_as_callback (GtkAction *action,
 
 		query = nautilus_search_directory_get_query (search);
 		
-		dialog = gtk_dialog_new_with_buttons (_("Save search"),
+		dialog = gtk_dialog_new_with_buttons (_("Save Search"),
 						      fm_directory_view_get_containing_window (directory_view),
 						      GTK_DIALOG_NO_SEPARATOR,
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      NULL);
 		save_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
 						     GTK_STOCK_SAVE, GTK_RESPONSE_OK);
+		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
 		table = gtk_table_new (2, 2, FALSE);
+		gtk_container_set_border_width (GTK_CONTAINER (table), 5);
+		gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+		gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 		gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), table);
 		gtk_widget_show (table);
 		
-		label = gtk_label_new (_("Query name:"));
-		gtk_table_attach_defaults  (GTK_TABLE (table), label,
-					    0, 1, 0, 1);
+		label = gtk_label_new_with_mnemonic (_("_Query name:"));
+		gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
+		gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 		gtk_widget_show (label);
 		entry = gtk_entry_new ();
-		gtk_table_attach_defaults  (GTK_TABLE (table), entry,
-					    1, 2, 0, 1);
+		gtk_table_attach (GTK_TABLE (table), entry, 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 		
 		gtk_widget_set_sensitive (save_button, FALSE);
 		g_signal_connect (entry, "changed",
 				  G_CALLBACK (query_name_entry_changed_cb), save_button);
 		
 		gtk_widget_show (entry);
-		label = gtk_label_new (_("Folder:"));
-		gtk_table_attach_defaults  (GTK_TABLE (table), label,
-					    0, 1, 1, 2);
+		label = gtk_label_new_with_mnemonic (_("_Folder:"));
+		gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
+		gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
 		gtk_widget_show (label);
 
-		chooser = gtk_file_chooser_button_new (_("Select folder to save search in"),
+		chooser = gtk_file_chooser_button_new (_("Select Folder to Save Search In"),
 						      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
-		gtk_table_attach_defaults  (GTK_TABLE (table), chooser,
-					    1, 2, 1, 2);
+		gtk_table_attach (GTK_TABLE (table), chooser, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, 0, 0, 0);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), chooser);
 		gtk_widget_show (chooser);
 
 		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
