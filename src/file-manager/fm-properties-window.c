@@ -460,7 +460,6 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 					 guint info, guint time)
 {
 	char **uris;
-	char *path;
 	gboolean exactly_one;
 	GtkImage *image;
  	GtkWindow *window; 
@@ -485,9 +484,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
-			path = gnome_vfs_get_local_path_from_uri (uris[0]);
-			set_icon (path,  FM_PROPERTIES_WINDOW (window));
-			g_free (path);
+			set_icon (uris[0], FM_PROPERTIES_WINDOW (window));
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog
@@ -3720,26 +3717,64 @@ real_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+/* converts
+ *  file://foo/foobar/foofoo/bar
+ * to
+ *  foofoo/bar
+ * if
+ *  file://foo/foobar
+ * is the parent
+ *
+ * It does not resolve any symlinks.
+ * */
+static char *
+make_relative_uri_from_full (const char *uri,
+			     const char *base_uri)
+{
+	g_assert (uri != NULL);
+	g_assert (base_uri != NULL);
+
+	if (g_str_has_prefix (uri, base_uri)) {
+		uri += strlen (base_uri);
+		if (*uri != '/') {
+			return NULL;
+		}
+
+		while (*uri == '/') {
+			uri++;
+		}
+
+		if (*uri != '\0') {
+			return g_strdup (uri);
+		}
+	}
+
+	return NULL;
+}
+
 /* icon selection callback to set the image of the file object to the selected file */
 static void
-set_icon (const char* icon_path, FMPropertiesWindow *properties_window)
+set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 {
 	NautilusFile *file;
-	char *icon_uri;
 	GnomeDesktopItem *ditem;
 	char *file_uri;
-	
-	g_return_if_fail (properties_window != NULL);
-	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
+	char *icon_path;
+	char *real_icon_uri;
 
+	g_assert (icon_uri != NULL);
+	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
+
+	icon_path = gnome_vfs_get_local_path_from_uri (icon_uri);
+	/* we don't allow remote URIs */
 	if (icon_path != NULL) {
 		GList *l;
-		
-		icon_uri = gnome_vfs_get_uri_from_local_path (icon_path);
+
 		for (l = properties_window->details->original_files; l != NULL; l = l->next) {
 			file = NAUTILUS_FILE (l->data);
+
 			file_uri = nautilus_file_get_uri (file);
-			
+
 			if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
 				ditem = gnome_desktop_item_new_from_uri (file_uri,
 									 0,
@@ -3755,15 +3790,21 @@ set_icon (const char* icon_path, FMPropertiesWindow *properties_window)
 									     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
 				}
 			} else {
+				real_icon_uri = make_relative_uri_from_full (icon_uri, file_uri);
+				if (real_icon_uri == NULL) {
+					real_icon_uri = g_strdup (icon_uri);
+				}
 			
-				nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, icon_uri);
+				nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
 				nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
+
+				g_free (real_icon_uri);
 			}
 
 			g_free (file_uri);
-
 		}
-		g_free (icon_uri);	
+
+		g_free (icon_path);
 	}
 }
 
@@ -3820,6 +3861,7 @@ select_image_button_callback (GtkWidget *widget,
 	GList *l;
 	NautilusFile *file;
 	char *image_path;
+	char *uri;
 	gboolean revert_is_sensitive;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
@@ -3844,6 +3886,7 @@ select_image_button_callback (GtkWidget *widget,
 		gtk_widget_set_size_request (preview, PREVIEW_IMAGE_WIDTH, -1);
 		gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (dialog), preview);
 		gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (dialog), FALSE);
+		gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (dialog), FALSE);
 
 		g_signal_connect (dialog, "update-preview",
 				  G_CALLBACK (update_preview_callback), window);
@@ -3852,6 +3895,23 @@ select_image_button_callback (GtkWidget *widget,
 
 		g_object_add_weak_pointer (G_OBJECT (dialog),
 					   (gpointer *) &window->details->icon_chooser);
+	}
+
+	/* it's likely that the user wants to pick an icon that is inside a local directory */
+	if (g_list_length (window->details->original_files) == 1) {
+		file = NAUTILUS_FILE (window->details->original_files->data);
+
+		if (nautilus_file_is_directory (file)) {
+			uri = nautilus_file_get_uri (file);
+
+			image_path = gnome_vfs_get_local_path_from_uri (uri);
+			if (image_path != NULL) {
+				gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), image_path);
+				g_free (image_path);
+			}
+
+			g_free (uri);
+		}
 	}
 
 	revert_is_sensitive = FALSE;
@@ -3873,9 +3933,9 @@ select_image_button_callback (GtkWidget *widget,
 		break;
 
 	case GTK_RESPONSE_OK:
-		image_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		set_icon (image_path, window);
-		g_free (image_path);
+		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
+		set_icon (uri, window);
+		g_free (uri);
 		break;
 
 	default:

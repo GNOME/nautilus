@@ -1,3 +1,14 @@
+2005-12-20  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_custom_icon):
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_drag_data_received),
+	(make_relative_uri_from_full), (set_icon),
+	(select_image_button_callback):
+	Set icons for directories relative to the directory location to make
+	it follow location changes.
+
 2005-12-20  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-query-editor.c:
@@ -424,6 +435,7 @@
 
 	Patch by Jaap A. Haitsma
 
+>>>>>>> 1.6730
 2005-12-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:

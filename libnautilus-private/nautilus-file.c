@@ -2792,19 +2792,35 @@ char *
 nautilus_file_get_custom_icon (NautilusFile *file)
 {
 	char *uri;
+	char *dir_uri;
+	char *custom_icon;
+	char *tmp;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-	
-	uri = NULL;
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	/* Metadata takes precedence */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+	if (uri != NULL && nautilus_file_is_directory (file)) {
+		/* The relative concatenation code will truncate
+		 * the URI basename without a trailing "/".
+		 * */
+		tmp = nautilus_file_get_uri (file);
+		dir_uri = g_strconcat (tmp, "/", NULL);
+		g_free (tmp);
 
-	if (uri == NULL && file->details->got_link_info) {
-		uri = g_strdup (file->details->custom_icon);
+		custom_icon = gnome_vfs_uri_make_full_from_relative (dir_uri, uri);
+
+		g_free (dir_uri);
+		g_free (uri);
+	} else {
+		custom_icon = uri;
 	}
-
-	return uri;
+ 
+	if (custom_icon == NULL && file->details->got_link_info) {
+		custom_icon = g_strdup (file->details->custom_icon);
+ 	}
+ 
+	return custom_icon;
 }
 
 
