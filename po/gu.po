@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-18 23:07+0100\n"
-"PO-Revision-Date: 2005-12-19 09:54+0530\n"
+"POT-Creation-Date: 2005-12-19 23:00+0100\n"
+"PO-Revision-Date: 2005-12-20 11:43+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -292,6 +293,10 @@ msgstr "સાંકેતિક ચિહ્નો (_E)"
 #: ../data/browser.xml.h:69
 msgid "_Patterns"
 msgstr "ભાતો (_P)"
+
+#: ../data/nautilus.xml.in.h:1
+msgid "Saved search"
+msgstr "સંગ્રહાયેલ શોધ"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -940,7 +945,7 @@ msgstr "ક્લીપબોર્ડ પર સંગ્રહિત લખા
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6585
+#: ../src/file-manager/fm-directory-view.c:6590
 msgid "Select _All"
 msgstr "બધુ પસંદ કરો (_A)"
 
@@ -1430,7 +1435,7 @@ msgstr "બધુ બદલો (_A)"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1266
 #: ../libnautilus-private/nautilus-file.c:4695
-#: ../src/file-manager/fm-directory-view.c:9206
+#: ../src/file-manager/fm-directory-view.c:9211
 #, c-format
 msgid "link to %s"
 msgstr "%s સાથે જોડાણ કરો"
@@ -1776,6 +1781,9 @@ msgid "_Empty Trash"
 msgstr "કચરાપેટી ખાલી કરો (_E)"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:75
+#: ../libnautilus-private/nautilus-search-directory-file.c:173
+#: ../libnautilus-private/nautilus-search-directory-file.c:188
+#: ../libnautilus-private/nautilus-search-directory-file.c:210
 msgid "Search"
 msgstr "શોધો"
 
@@ -1949,7 +1957,7 @@ msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
 #: ../libnautilus-private/nautilus-file.c:4261
-#: ../src/file-manager/fm-directory-view.c:2186
+#: ../src/file-manager/fm-directory-view.c:2191
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2399,6 +2407,7 @@ msgstr ""
 "છોડેલ સ્થાનીય ફાઇલ પહેલેથી ખૂલેલી છે."
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
+#: ../src/nautilus-query-editor.c:888
 msgid "Edit"
 msgstr "ફેરફાર કરો"
 
@@ -2478,22 +2487,22 @@ msgstr "પાશ્વ ભાગ"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6563
-#: ../src/file-manager/fm-directory-view.c:7353
+#: ../src/file-manager/fm-directory-view.c:6568
+#: ../src/file-manager/fm-directory-view.c:7358
 msgid "E_mpty Trash"
 msgstr "કચરાપેટી ખાલી કરો (_m)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6535
+#: ../src/file-manager/fm-directory-view.c:6540
 msgid "Create L_auncher..."
 msgstr "શરૂ કરનાર બનાવો (_a)..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6536
+#: ../src/file-manager/fm-directory-view.c:6541
 msgid "Create a new launcher"
 msgstr "નવુ શરૂ કરનાર બનાવો"
 
@@ -2515,7 +2524,7 @@ msgstr "કચરાપેટી ખાલી કરો"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6564
+#: ../src/file-manager/fm-directory-view.c:6569
 msgid "Delete all items in the Trash"
 msgstr "કચરાપેટીમાંની બધીજ વસ્તુઓ કાઢી નાખો"
 
@@ -2582,34 +2591,35 @@ msgid "_Pattern:"
 msgstr "ભાત (_P):"
 
 #: ../src/file-manager/fm-directory-view.c:1272
-msgid "Save search"
+msgid "Save Search"
 msgstr "શોધ સંગ્રહો"
 
-#: ../src/file-manager/fm-directory-view.c:1284
-msgid "Query name:"
-msgstr "પ્રશ્ન નામ:"
-
-#: ../src/file-manager/fm-directory-view.c:1297
-msgid "Folder:"
-msgstr "ફોલ્ડર:"
+#: ../src/file-manager/fm-directory-view.c:1289
+msgid "_Query name:"
+msgstr "પ્રશ્ન નામ (_Q):"
 
 #: ../src/file-manager/fm-directory-view.c:1302
-msgid "Select folder to save search in"
+#: ../src/nautilus-connect-server-dialog.c:535
+msgid "_Folder:"
+msgstr "ફોલ્ડર (_F):"
+
+#: ../src/file-manager/fm-directory-view.c:1307
+msgid "Select Folder to Save Search In"
 msgstr "શોધ સંગ્રહવા માટે ફોલ્ડર પસંદ કરો"
 
-#: ../src/file-manager/fm-directory-view.c:2118
+#: ../src/file-manager/fm-directory-view.c:2123
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" પસંદ થયેલ છે"
 
-#: ../src/file-manager/fm-directory-view.c:2120
+#: ../src/file-manager/fm-directory-view.c:2125
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d ફોલ્ડર પસંદ થયેલ છે"
 msgstr[1] "%d ફોલ્ડરો પસંદ થયેલ છે"
 
-#: ../src/file-manager/fm-directory-view.c:2130
+#: ../src/file-manager/fm-directory-view.c:2135
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2617,19 +2627,19 @@ msgstr[0] " (%d વસ્તુ ધરાવે છે)"
 msgstr[1] " (%d વસ્તુઓ ધરાવે છે)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2141
+#: ../src/file-manager/fm-directory-view.c:2146
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (કુલ %d વસ્તુ ધરાવે છે)"
 msgstr[1] " (કુલ %d વસ્તુઓ ધરાવે છે)"
 
-#: ../src/file-manager/fm-directory-view.c:2157
+#: ../src/file-manager/fm-directory-view.c:2162
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" પસંદ થયેલ છે (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2161
+#: ../src/file-manager/fm-directory-view.c:2166
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2637,14 +2647,14 @@ msgstr[0] "%d વસ્તુ પસંદ થયેલ છે (%s)"
 msgstr[1] "%d વસ્તુઓ પસંદ થયેલ છે (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2169
+#: ../src/file-manager/fm-directory-view.c:2174
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d અન્ય વસ્તુ પસંદ થયેલ છે (%s)"
 msgstr[1] "%d અન્ય વસ્તુઓ પસંદ થયેલ છે (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2190
+#: ../src/file-manager/fm-directory-view.c:2195
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ખાલી જગ્યા: %s"
@@ -2656,7 +2666,7 @@ msgstr "%s, ખાલી જગ્યા: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2215
+#: ../src/file-manager/fm-directory-view.c:2220
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2665,48 +2675,48 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2297
+#: ../src/file-manager/fm-directory-view.c:2302
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "ફોલ્ડર \"%s\" નૉટીલસ સાચવી શકે તેના કરતાં વધારે ફાઈલો ધરાવે છે."
 
-#: ../src/file-manager/fm-directory-view.c:2303
+#: ../src/file-manager/fm-directory-view.c:2308
 msgid "Some files will not be displayed."
 msgstr "અમુક ફાઈલો પ્રદર્શિત થઈ શકશે નહિ."
 
-#: ../src/file-manager/fm-directory-view.c:3700
+#: ../src/file-manager/fm-directory-view.c:3705
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "કચરાપેટીમાં મોકલી શકાતું નથી. શું તમે તેને કાઢી નાંખવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:3701
+#: ../src/file-manager/fm-directory-view.c:3706
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "ફાઈલ \"%s\" કચરાપેટીમાં ખસેડી શકાતી નથી."
 
-#: ../src/file-manager/fm-directory-view.c:3705
+#: ../src/file-manager/fm-directory-view.c:3710
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "વસ્તુઓ કચરાપેટીમાં મોકલી શકાતી નથી. શું તમે તેને તાત્કાલીક કાઢી નાંખવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:3706
+#: ../src/file-manager/fm-directory-view.c:3711
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "%d પસંદિત વસ્તુઓમાંની કોઈપણ કચરાપેટીમાં ખસેડી શકાઈ નહિં"
 
-#: ../src/file-manager/fm-directory-view.c:3708
+#: ../src/file-manager/fm-directory-view.c:3713
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "અમુક વસ્તુઓ કચરાપેટીમાં મોકલી શકાતી નથી. શું તમે તેને તાત્કાલીક કાઢી નાંખવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:3709
+#: ../src/file-manager/fm-directory-view.c:3714
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "પસંદ થયેલ વસ્તુઓમાંની %d કચારાપેટીમાં ખસેડી શકાતી નથી"
 
-#: ../src/file-manager/fm-directory-view.c:3747
+#: ../src/file-manager/fm-directory-view.c:3752
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "શું ખરેખર તમે કચરાપેટીમાંથી \"%s\" ને હંમેશ માટે કાઢી નાંખવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:3751
+#: ../src/file-manager/fm-directory-view.c:3756
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2717,48 +2727,48 @@ msgid_plural ""
 msgstr[0] "શું ચોક્કસ તમે કચરાપેટીમાંથી પસંદ કરેલ %d વસ્તુઓને હંમેશ માટે કાઢી નાંખવા માગો છો?"
 msgstr[1] "શું ચોક્કસ તમે કચરાપેટીમાંથી પસંદ કરેલ %d વસ્તુઓને હંમેશ માટે કાઢી નાંખવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:3760
+#: ../src/file-manager/fm-directory-view.c:3765
 msgid "If you delete an item, it will be permanently lost."
 msgstr "જો તમે કોઈ વસ્તુને કાઢી નાખો તો, તે કાયમ માટે ખોવાઈ જશે."
 
-#: ../src/file-manager/fm-directory-view.c:4338
+#: ../src/file-manager/fm-directory-view.c:4343
 #, c-format
 msgid "Open with \"%s\""
 msgstr "\"%s\" સાથે ખોલો"
 
-#: ../src/file-manager/fm-directory-view.c:4339
+#: ../src/file-manager/fm-directory-view.c:4344
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "પસંદ કરેલ વસ્તુને ખોલવા માટે \"%s\" વાપરો"
 
-#: ../src/file-manager/fm-directory-view.c:4428
+#: ../src/file-manager/fm-directory-view.c:4433
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "શું તમે \"%s\" ને ચલાવવા માંગો છો, અથવા તેના સમાવિષ્ટોને પ્રદર્શિત કરવા માગો છો?"
 
-#: ../src/file-manager/fm-directory-view.c:4430
+#: ../src/file-manager/fm-directory-view.c:4435
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" એ ચલાવી શકાય તેવી લખાણ ફાઈલ છે."
 
-#: ../src/file-manager/fm-directory-view.c:4436
+#: ../src/file-manager/fm-directory-view.c:4441
 msgid "Run in _Terminal"
 msgstr "ટર્મિનલમાં ચલાવો (_T)"
 
-#: ../src/file-manager/fm-directory-view.c:4437
+#: ../src/file-manager/fm-directory-view.c:4442
 msgid "_Display"
 msgstr "પ્રદર્શિત કરો (_D)"
 
-#: ../src/file-manager/fm-directory-view.c:4440
+#: ../src/file-manager/fm-directory-view.c:4445
 msgid "_Run"
 msgstr "ચલાવો (_R)"
 
-#: ../src/file-manager/fm-directory-view.c:4830
+#: ../src/file-manager/fm-directory-view.c:4835
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s ખોલી શકાતી નથી"
 
-#: ../src/file-manager/fm-directory-view.c:4833
+#: ../src/file-manager/fm-directory-view.c:4838
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2779,27 +2789,27 @@ msgstr ""
 "નામ બદલો, પછી આ ફાઈલને સામાન્ય રીતે ખોલો. વૈકલ્પિક રીતે, ફાઈલ માટે કોઈ ચોક્કસ "
 "કાર્યક્રમ પસંદ કરવા માટે ની સાથે ખોલો મેનુ વાપરો. "
 
-#: ../src/file-manager/fm-directory-view.c:5228
+#: ../src/file-manager/fm-directory-view.c:5233
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" ને કોઈ પણ પસંદ કરેલ વસ્તુ પર ચલાવો"
 
-#: ../src/file-manager/fm-directory-view.c:5477
+#: ../src/file-manager/fm-directory-view.c:5482
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "ટેમ્પલેટ \"%s\" માંથી દસ્તાવેજ બનાવો"
 
-#: ../src/file-manager/fm-directory-view.c:5683
+#: ../src/file-manager/fm-directory-view.c:5688
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "આ ફોલ્ડરમાંની બધી ચલાવી શકાય તેવી ફાઈલ લિપિ મેનુમાં દેખાશે."
 
-#: ../src/file-manager/fm-directory-view.c:5685
+#: ../src/file-manager/fm-directory-view.c:5690
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "મેનુમાંથી કોઇપણ લિપિ પસંદ કરતા તે લિપિને કોઈપણ પસંદ કરેલ ઇનપુટ વસ્તુ સાથે ચલાવી શકાય છે."
 
-#: ../src/file-manager/fm-directory-view.c:5687
+#: ../src/file-manager/fm-directory-view.c:5692
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2838,499 +2848,499 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY:ચાલુ વિન્ડોની જગ્યા અને સ્થાન"
 
-#: ../src/file-manager/fm-directory-view.c:5848
+#: ../src/file-manager/fm-directory-view.c:5853
 #: ../src/file-manager/fm-tree-view.c:902
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "જો તમે ચોંટાડો આદેશ પસંદ કરો તો \"%s\" ખસેડાઈ જશે"
 
-#: ../src/file-manager/fm-directory-view.c:5852
+#: ../src/file-manager/fm-directory-view.c:5857
 #: ../src/file-manager/fm-tree-view.c:906
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "જો તમે ચોંટાડો આદેશ પસંદ કરો તો \"%s\" ની નકલ થઈ જશે"
 
-#: ../src/file-manager/fm-directory-view.c:5859
+#: ../src/file-manager/fm-directory-view.c:5864
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "જો તમે ચોંટાડો આદેશ પસંદ કરો તો %d પસંદિત વસ્તુ ખસેડાઈ જશે"
 msgstr[1] "જો તમે ચોંટાડો આદેશ પસંદ કરો તો %d પસંદિત વસ્તુઓ ખસેડાઈ જશે"
 
-#: ../src/file-manager/fm-directory-view.c:5866
+#: ../src/file-manager/fm-directory-view.c:5871
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "જો તમે ચોંટાડો આદેશ પસંદ કરો તો %d પસંદિત વસ્તુની નકલ થશે"
 msgstr[1] "જો તમે ચોંટાડો આદેશ પસંદ કરો તો %d પસંદિત વસ્તુઓની નકલ થશે"
 
-#: ../src/file-manager/fm-directory-view.c:5960
+#: ../src/file-manager/fm-directory-view.c:5965
 #: ../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "ક્લિપબોર્ડ પર ચોંટાડવા માટે કશું જ નથી."
 
-#: ../src/file-manager/fm-directory-view.c:6315
+#: ../src/file-manager/fm-directory-view.c:6320
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s સર્વર સાથે સંપર્ક કરો"
 
-#: ../src/file-manager/fm-directory-view.c:6320
+#: ../src/file-manager/fm-directory-view.c:6325
 msgid "_Connect"
 msgstr "સંપર્ક કરો (_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6334
+#: ../src/file-manager/fm-directory-view.c:6339
 msgid "Link _name:"
 msgstr "કડીનુ નામ (_n):"
 
-#: ../src/file-manager/fm-directory-view.c:6509
+#: ../src/file-manager/fm-directory-view.c:6514
 msgid "Create _Document"
 msgstr "દસ્તાવેજ બનાવો (_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6510
+#: ../src/file-manager/fm-directory-view.c:6515
 msgid "Open Wit_h"
 msgstr "ની સાથે ખોલો (_h)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6511
+#: ../src/file-manager/fm-directory-view.c:6516
 msgid "Choose a program with which to open the selected item"
 msgstr "પસંદ કરેલ વસ્તુ સાથે ખુલે તેવો કાર્યક્રમ પસંદ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6513
-#: ../src/file-manager/fm-directory-view.c:6521
+#: ../src/file-manager/fm-directory-view.c:6518
+#: ../src/file-manager/fm-directory-view.c:6526
 msgid "_Properties"
 msgstr "ગુણધર્મો (_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6514
+#: ../src/file-manager/fm-directory-view.c:6519
 msgid "View or modify the properties of each selected item"
 msgstr "દરેક પસંદ કરેલ વસ્તુના ગુણધર્મો જુઓ અથવા સુધારો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6522
+#: ../src/file-manager/fm-directory-view.c:6527
 msgid "View or modify the properties of the open folder"
 msgstr "ખૂલેલા ફોલ્ડરના ગુણધર્મો જુઓ અથવા સુધારો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6525
+#: ../src/file-manager/fm-directory-view.c:6530
 msgid "Create _Folder"
 msgstr "ફોલ્ડર બનાવો (_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6526
+#: ../src/file-manager/fm-directory-view.c:6531
 msgid "Create a new empty folder inside this folder"
 msgstr "આ ફોલ્ડરની અંદર બીજુ નવુ ખાલી ફોલ્ડર બનાવો"
 
-#: ../src/file-manager/fm-directory-view.c:6528
+#: ../src/file-manager/fm-directory-view.c:6533
 msgid "No templates Installed"
 msgstr "કોઈ ટેમ્પલેટો સ્થાપિત થઈ નથી"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6531
+#: ../src/file-manager/fm-directory-view.c:6536
 msgid "_Empty File"
 msgstr "ખાલી ફાઈલ (_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6532
+#: ../src/file-manager/fm-directory-view.c:6537
 msgid "Create a new empty file inside this folder"
 msgstr "આ ફોલ્ડરની અંદર બીજુ નવી ખાલી ફાઈલ બનાવો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6539
-#: ../src/file-manager/fm-directory-view.c:7254
+#: ../src/file-manager/fm-directory-view.c:6544
+#: ../src/file-manager/fm-directory-view.c:7259
 #: ../src/file-manager/fm-tree-view.c:1105
 msgid "_Open"
 msgstr "ખોલો (_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6540
+#: ../src/file-manager/fm-directory-view.c:6545
 msgid "Open the selected item in this window"
 msgstr "પસંદ કરેલ વસ્તુને આ વિન્ડોમાં ખોલો"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6547
-#: ../src/file-manager/fm-directory-view.c:6655
+#: ../src/file-manager/fm-directory-view.c:6552
+#: ../src/file-manager/fm-directory-view.c:6660
 msgid "Open in Navigation Window"
 msgstr "શોધખોળ વિન્ડોમાં ખોલો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6548
+#: ../src/file-manager/fm-directory-view.c:6553
 msgid "Open each selected item in a navigation window"
 msgstr "પસંદ કરેલ દરેક વસ્તુને શોધખોળ વિન્ડોમાં ખોલો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6551
-#: ../src/file-manager/fm-directory-view.c:6555
+#: ../src/file-manager/fm-directory-view.c:6556
+#: ../src/file-manager/fm-directory-view.c:6560
 msgid "Open with Other _Application..."
 msgstr "અન્ય કાર્યક્રમ સાથે ખોલો (_A)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6552
-#: ../src/file-manager/fm-directory-view.c:6556
+#: ../src/file-manager/fm-directory-view.c:6557
+#: ../src/file-manager/fm-directory-view.c:6561
 msgid "Choose another application with which to open the selected item"
 msgstr "પસંદ કરેલ વસ્તુ સાથે ખુલે તેવો બીજો કાર્યક્રમ પસંદ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6559
+#: ../src/file-manager/fm-directory-view.c:6564
 msgid "_Open Scripts Folder"
 msgstr "લિપિ ફોલ્ડર ખોલો (_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6560
+#: ../src/file-manager/fm-directory-view.c:6565
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "આ મેનુમાં દેખાતી લિપિ ધરાવનાર ફોલ્ડર દર્શાવો"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6568
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "ચોંટાડો આદેશ સાથે પસંદિત ફાઈલોને ખસેડવા માટે તૈયાર કરો"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6572
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "ચોંટાડો આદેશ સાથે પસંદિત ફાઈલોને નકલ કરવા માટે તૈયાર કરો"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6576
+#: ../src/file-manager/fm-directory-view.c:6581
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "કાપો અથવા નકલ કરો આદેશ દ્વારા પહેલાં પસંદ થયેલ ફાઈલો ખસેડો અથવા નકલ કરો"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6581
+#: ../src/file-manager/fm-directory-view.c:6586
 #: ../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
 msgstr "ફોલ્ડરમાં ચોંટાડો (_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6582
+#: ../src/file-manager/fm-directory-view.c:6587
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "કાપો અથવા નકલ કરો આદેશ દ્વારા પસંદ થયેલ ફાઈલો પસંદિત ફોલ્ડરમાં ખસેડો અથવા નકલ કરો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6586
+#: ../src/file-manager/fm-directory-view.c:6591
 msgid "Select all items in this window"
 msgstr "આ વિન્ડોમાંની બધી વસ્તુઓ પસંદ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6589
+#: ../src/file-manager/fm-directory-view.c:6594
 msgid "Select _Pattern"
 msgstr "ભાત પસંદ કરો (_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6590
+#: ../src/file-manager/fm-directory-view.c:6595
 msgid "Select items in this window matching a given pattern"
 msgstr "આ વિન્ડોમાંની આપેલી ભાત સાથે બંધબેસતી બધી વસ્તુઓ પસંદ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6593
+#: ../src/file-manager/fm-directory-view.c:6598
 msgid "D_uplicate"
 msgstr "નકલી (_u)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6594
+#: ../src/file-manager/fm-directory-view.c:6599
 msgid "Duplicate each selected item"
 msgstr "પસંદ કરેલ દરેક વસ્તુની નકલ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6597
-#: ../src/file-manager/fm-directory-view.c:7327
+#: ../src/file-manager/fm-directory-view.c:6602
+#: ../src/file-manager/fm-directory-view.c:7332
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "કડી બનાવો (_k)"
 msgstr[1] "કડીઓ બનાવો (_k)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6598
+#: ../src/file-manager/fm-directory-view.c:6603
 msgid "Create a symbolic link for each selected item"
 msgstr "દરેક પસંદ કરેલ વસ્તુ માટે સાંકેતીક કડી બનાવો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6601
+#: ../src/file-manager/fm-directory-view.c:6606
 msgid "_Rename..."
 msgstr "ફરીથી નામ આપો (_R)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6602
+#: ../src/file-manager/fm-directory-view.c:6607
 msgid "Rename selected item"
 msgstr "પસંદ કરેલ વસ્તુને ફરીથી નામ આપો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6609
-#: ../src/file-manager/fm-directory-view.c:6669
-#: ../src/file-manager/fm-directory-view.c:7125
-#: ../src/file-manager/fm-directory-view.c:7295
-#: ../src/file-manager/fm-directory-view.c:7684
+#: ../src/file-manager/fm-directory-view.c:6614
+#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:7300
+#: ../src/file-manager/fm-directory-view.c:7689
 msgid "Mo_ve to Trash"
 msgstr "કચરાપેટીમાં મોકલો (_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6610
-#: ../src/file-manager/fm-directory-view.c:7296
+#: ../src/file-manager/fm-directory-view.c:6615
+#: ../src/file-manager/fm-directory-view.c:7301
 msgid "Move each selected item to the Trash"
 msgstr "પસંદ કરેલ દરેક વસ્તુ કચરાપેટીમાં મોકલો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6613
-#: ../src/file-manager/fm-directory-view.c:6673
-#: ../src/file-manager/fm-directory-view.c:7314
+#: ../src/file-manager/fm-directory-view.c:6618
+#: ../src/file-manager/fm-directory-view.c:6678
+#: ../src/file-manager/fm-directory-view.c:7319
 msgid "_Delete"
 msgstr "કાઢી નાખો (_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6614
+#: ../src/file-manager/fm-directory-view.c:6619
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "કચરાપેટીમાં લઇ જયા વગર પસંદ કરેલ દરેક વસ્તુ કાઢી નાખો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6617
+#: ../src/file-manager/fm-directory-view.c:6622
 msgid "Reset View to _Defaults"
 msgstr "દ્રશ્યને ફરીથી મૂળભુત માટે સુયોજિત કરો (_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6618
+#: ../src/file-manager/fm-directory-view.c:6623
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "આ દ્રશ્ય માટે પસંદગીઓ બંધબેસે તે માટે ક્રમાંકનો ક્રમ અને નાનુમોટુ કરવાના સ્તરને ફરીથી સુયોજિત "
 "કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6621
+#: ../src/file-manager/fm-directory-view.c:6626
 msgid "Connect To This Server"
 msgstr "આ સર્વર સાથે સંપર્ક કરો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6622
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid "Make a permanent connection to this server"
 msgstr "આ સર્વર સાથે કાયમી જોડાણ બનાવો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6625
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "_Mount Volume"
 msgstr "માઉન્ટ કદ (_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6626
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Mount the selected volume"
 msgstr "પસંદ કરેલા કદને માઉન્ટ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6629
+#: ../src/file-manager/fm-directory-view.c:6634
 #: ../src/file-manager/fm-tree-view.c:751
 msgid "_Unmount Volume"
 msgstr "કદ અનમાઉન્ટ કરો (_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6630
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Unmount the selected volume"
 msgstr "પસંદ કરેલા કદને અનમાઉન્ટ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6638
 msgid "_Eject"
 msgstr "બહાર કાઢો (_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6634
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Eject the selected volume"
 msgstr "પસંદ કરેલ વોલ્યુમને બહાર કાઢો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6637
+#: ../src/file-manager/fm-directory-view.c:6642
 msgid "_Format"
 msgstr "ફોર્મેટ (_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6638
+#: ../src/file-manager/fm-directory-view.c:6643
 msgid "Format the selected volume"
 msgstr "પસંદ કરેલ વોલ્યુમને ફોર્મેટ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6641
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "Open File and Close window"
 msgstr "ફાઈલ ખોલો અને વિન્ડ બંધ કરો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6645
+#: ../src/file-manager/fm-directory-view.c:6650
 msgid "Sa_ve Search"
 msgstr "શોધ સંગ્રહો (_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6646
+#: ../src/file-manager/fm-directory-view.c:6651
 msgid "Save the edited search"
 msgstr "ફેરફાર કરેલ શોધ સંગ્રહો"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6649
+#: ../src/file-manager/fm-directory-view.c:6654
 msgid "Sa_ve Search As..."
 msgstr "શોધને આ રીતે સંગ્રહો (_v)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6650
+#: ../src/file-manager/fm-directory-view.c:6655
 msgid "Save the current search as a file"
 msgstr "વર્તમાન શોધને ફાઈલ તરીકે સંગ્રહો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6656
+#: ../src/file-manager/fm-directory-view.c:6661
 msgid "Open this folder in a navigation window"
 msgstr "સંશોધન વિન્ડોમાં આ ફોલ્ડર ખોલો"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6661
+#: ../src/file-manager/fm-directory-view.c:6666
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "ચોંટાડો આદેશ સાથે આ ફોલ્ડરને ખસેડવા માટે તૈયાર કરો"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6665
+#: ../src/file-manager/fm-directory-view.c:6670
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "ચોંટાડો આદેશ સાથે આ ફોલ્ડરને નકલ કરવા માટે તૈયાર કરો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6670
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Move this folder to the Trash"
 msgstr "આ ફોલ્ડરને કચરાપેટીમાં ખસેડો"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "Delete this folder, without moving to the Trash"
 msgstr "આ ફોલ્ડર કાઢી નાંખો, કચરાપેટીમાં ખસેડ્યા વિના"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6680
+#: ../src/file-manager/fm-directory-view.c:6685
 msgid "Show _Hidden Files"
 msgstr "સંતાડેલી ફાઇલો દેખાડો (_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6681
+#: ../src/file-manager/fm-directory-view.c:6686
 msgid "Toggle the display of hidden files in the current window"
 msgstr "વર્તમાન વિન્ડોમાં છુપાયેલ ફાઈલોનું પ્રદર્શન બદલો"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6767
+#: ../src/file-manager/fm-directory-view.c:6772
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s માંથી સ્ક્રિપ્ટો ચલાવો અથવા તેની વ્યવસ્થા કરો"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6769
+#: ../src/file-manager/fm-directory-view.c:6774
 msgid "_Scripts"
 msgstr "સ્ક્રિપ્ટો (_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7094
-#: ../src/file-manager/fm-directory-view.c:7263
+#: ../src/file-manager/fm-directory-view.c:7099
+#: ../src/file-manager/fm-directory-view.c:7268
 #: ../src/file-manager/fm-tree-view.c:1116
 msgid "Open in New Window"
 msgstr "નવી વિન્ડોમાં ખોલો"
 
-#: ../src/file-manager/fm-directory-view.c:7096
-#: ../src/file-manager/fm-directory-view.c:7271
+#: ../src/file-manager/fm-directory-view.c:7101
+#: ../src/file-manager/fm-directory-view.c:7276
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "ફોલ્ડર શોધો (_B)"
 msgstr[1] "ફોલ્ડરો શોધો (_B)"
 
-#: ../src/file-manager/fm-directory-view.c:7121
-#: ../src/file-manager/fm-directory-view.c:7291
+#: ../src/file-manager/fm-directory-view.c:7126
+#: ../src/file-manager/fm-directory-view.c:7296
 msgid "_Delete from Trash"
 msgstr "કચરાપેટીમાંથી કાઢી નાખો (_D)"
 
-#: ../src/file-manager/fm-directory-view.c:7122
+#: ../src/file-manager/fm-directory-view.c:7127
 msgid "Delete the open folder permanently"
 msgstr "ખૂલેલું ફોલ્ડર કાયમ માટે કાઢી નાંખો"
 
-#: ../src/file-manager/fm-directory-view.c:7126
+#: ../src/file-manager/fm-directory-view.c:7131
 msgid "Move the open folder to the Trash"
 msgstr "ખૂલેલું ફોલ્ડર કચરાપેટીમાં ખસેડો"
 
-#: ../src/file-manager/fm-directory-view.c:7243
+#: ../src/file-manager/fm-directory-view.c:7248
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "\"%s\" સાથે ખોલો (_O)"
 
-#: ../src/file-manager/fm-directory-view.c:7265
+#: ../src/file-manager/fm-directory-view.c:7270
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "%d નવી વિન્ડોમાં ખોલો"
 msgstr[1] "%d નવી વિન્ડોમાં ખોલો"
 
-#: ../src/file-manager/fm-directory-view.c:7292
+#: ../src/file-manager/fm-directory-view.c:7297
 msgid "Delete all selected items permanently"
 msgstr "પસંદ કરેલ બધી જ વસ્તુ હંમેશ માટે કાઢી નાખો"
 
-#: ../src/file-manager/fm-directory-view.c:7664
+#: ../src/file-manager/fm-directory-view.c:7669
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "કડી \"%s\" ભાંગી ગયેલ છે."
 
-#: ../src/file-manager/fm-directory-view.c:7666
+#: ../src/file-manager/fm-directory-view.c:7671
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "કડી \"%s\" ભાંગી ગયેલ છે. શું તેને કચરાપેટીમાં ખસેડવી છે?"
 
-#: ../src/file-manager/fm-directory-view.c:7672
+#: ../src/file-manager/fm-directory-view.c:7677
 msgid "This link can't be used, because it has no target."
 msgstr "આ કડી વાપરી શકાતી નથી, કારણકે તેનો કોઇ લક્ષ્યાંક નથી."
 
-#: ../src/file-manager/fm-directory-view.c:7674
+#: ../src/file-manager/fm-directory-view.c:7679
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "આ કડી વાપરી શકાતી નથી, કારણકે તેનો લક્ષ્યાંક \"%s\" અસ્તિત્વ ધરાવતો નથી."
 
-#: ../src/file-manager/fm-directory-view.c:8175
+#: ../src/file-manager/fm-directory-view.c:8180
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" ખૂલી રહી છે."
 
-#: ../src/file-manager/fm-directory-view.c:8178
+#: ../src/file-manager/fm-directory-view.c:8183
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "%d વસ્તુ ખોલી રહ્યા છીએ."
 msgstr[1] "%d વસ્તુઓ ખોલી રહ્યા છીએ."
 
-#: ../src/file-manager/fm-directory-view.c:9070
+#: ../src/file-manager/fm-directory-view.c:9075
 msgid "Download location?"
 msgstr "જગ્યા ડાઉનલોડ કરવી છે?"
 
-#: ../src/file-manager/fm-directory-view.c:9073
+#: ../src/file-manager/fm-directory-view.c:9078
 msgid "You can download it or make a link to it."
 msgstr "તમે તેને ડાઉનલોડ કરી શકો છો અથવા તેની કડી બનાવી શકો છો."
 
-#: ../src/file-manager/fm-directory-view.c:9076
+#: ../src/file-manager/fm-directory-view.c:9081
 msgid "Make a _Link"
 msgstr "કડી બનાવો (_L)"
 
-#: ../src/file-manager/fm-directory-view.c:9080
+#: ../src/file-manager/fm-directory-view.c:9085
 msgid "_Download"
 msgstr "ડાઉનલોડ (_D)"
 
-#: ../src/file-manager/fm-directory-view.c:9139
-#: ../src/file-manager/fm-directory-view.c:9191
-#: ../src/file-manager/fm-directory-view.c:9288
+#: ../src/file-manager/fm-directory-view.c:9144
+#: ../src/file-manager/fm-directory-view.c:9196
+#: ../src/file-manager/fm-directory-view.c:9293
 msgid "Drag and drop is not supported."
 msgstr "ખેંચીને મૂકવુ એ આધાર આપતુ નથી."
 
-#: ../src/file-manager/fm-directory-view.c:9140
+#: ../src/file-manager/fm-directory-view.c:9145
 msgid "Drag and drop is only supported on local file systems."
 msgstr "ખેંચીને મૂકવુ એ ફક્ત સ્થાનિક ફાઇલ સિસ્ટમને આધાર આપે છે."
 
-#: ../src/file-manager/fm-directory-view.c:9192
-#: ../src/file-manager/fm-directory-view.c:9289
+#: ../src/file-manager/fm-directory-view.c:9197
+#: ../src/file-manager/fm-directory-view.c:9294
 msgid "An invalid drag type was used."
 msgstr "અયોગ્ય ખેંચવાનો પ્રકાર વાપર્યો હતો."
 
@@ -4177,10 +4187,6 @@ msgstr "વહેંચો (_S):"
 #: ../src/nautilus-connect-server-dialog.c:515
 msgid "_Port:"
 msgstr "પોર્ટ (_P):"
-
-#: ../src/nautilus-connect-server-dialog.c:535
-msgid "_Folder:"
-msgstr "ફોલ્ડર (_F):"
 
 #: ../src/nautilus-connect-server-dialog.c:555
 msgid "_User Name:"
@@ -5169,6 +5175,86 @@ msgstr "રંગ દૂર કરો (_R)..."
 #: ../src/nautilus-property-browser.c:2196
 msgid "_Remove an Emblem..."
 msgstr "સાંકેતિક-ચિહ્ન દૂર કરો (_R)..."
+
+#: ../src/nautilus-query-editor.c:126
+msgid "Location"
+msgstr "સ્થાન"
+
+#: ../src/nautilus-query-editor.c:132
+msgid "File Type"
+msgstr "ફાઈલ પ્રકાર"
+
+#: ../src/nautilus-query-editor.c:268
+msgid "Select folder search in"
+msgstr "શોધ કરવા માટે ફોલ્ડર પસંદ કરો"
+
+#: ../src/nautilus-query-editor.c:352
+msgid "Documents"
+msgstr "દસ્તાવેજો"
+
+#: ../src/nautilus-query-editor.c:370
+msgid "Music"
+msgstr "સંગીત"
+
+#: ../src/nautilus-query-editor.c:384
+msgid "Video"
+msgstr "વીડિયો"
+
+#: ../src/nautilus-query-editor.c:400
+msgid "Picture"
+msgstr "ચિત્ર"
+
+#: ../src/nautilus-query-editor.c:420
+msgid "Illustration"
+msgstr "સમજૂતી"
+
+#: ../src/nautilus-query-editor.c:434
+msgid "Spreadsheet"
+msgstr "સ્પ્રેડશીટ"
+
+#: ../src/nautilus-query-editor.c:450
+msgid "Presentation"
+msgstr "રજૂઆત"
+
+#: ../src/nautilus-query-editor.c:459
+msgid "Pdf / Postscript"
+msgstr "Pdf / પોસ્ટસ્ક્રિપ્ટ"
+
+#: ../src/nautilus-query-editor.c:467
+msgid "Text File"
+msgstr "લખાણ ફાઈલ"
+
+#: ../src/nautilus-query-editor.c:540
+msgid "Any"
+msgstr "કોઈ"
+
+#: ../src/nautilus-query-editor.c:556
+msgid "Other Type..."
+msgstr "અન્ય પ્રકાર..."
+
+#: ../src/nautilus-query-editor.c:884
+msgid "<b>Search Folder</b>"
+msgstr "<b>શોધ ફોલ્ડર</b>"
+
+#: ../src/nautilus-query-editor.c:925
+msgid "Go"
+msgstr "જાઓ"
+
+#: ../src/nautilus-query-editor.c:927
+msgid "Reload"
+msgstr "ફરીથી લાવો"
+
+#: ../src/nautilus-query-editor.c:949
+msgid "<b>_Search for:</b>"
+msgstr "<b>આના માટે શોધો (_S):</b>"
+
+#: ../src/nautilus-query-editor.c:976
+msgid "Search results"
+msgstr "શોધ પરિણામો"
+
+#: ../src/nautilus-search-bar.c:142
+msgid "<b>Search:</b>"
+msgstr "<b>શોધો:</b>"
 
 #: ../src/nautilus-side-pane.c:427
 msgid "Close the side pane"
