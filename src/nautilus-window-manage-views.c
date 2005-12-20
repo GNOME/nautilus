@@ -53,12 +53,14 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extension/nautilus-location-widget-provider.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-view-factory.h>
@@ -1137,6 +1139,28 @@ location_has_really_changed (NautilusWindow *window)
 	}
 }
 
+static void
+add_extension_extra_widgets (NautilusWindow *window, const char *uri)
+{
+	GList *providers, *l;
+	GtkWidget *widget;
+	
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER);
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusLocationWidgetProvider *provider;
+		
+		provider = NAUTILUS_LOCATION_WIDGET_PROVIDER (l->data);
+		widget = nautilus_location_widget_provider_get_widget (provider, uri, GTK_WIDGET (window));
+		if (widget != NULL) {
+			nautilus_window_add_extra_location_widget (window, widget);
+		}
+	}
+
+	nautilus_module_extension_list_free (providers);
+	
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 update_for_new_location (NautilusWindow *window)
@@ -1195,6 +1219,8 @@ update_for_new_location (NautilusWindow *window)
 		}
 		nautilus_directory_unref (directory);
 
+		add_extension_extra_widgets (window, window->details->location);
+		
 		update_extra_location_widgets_visibility (window);
 	}
 

@@ -1,5 +1,14 @@
 2005-12-20  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/nautilus-location-widget-provider.[ch]:
+	Add NautilusLocationWidgetProvider
+	
+	* src/nautilus-window-manage-views.c:
+	Use NautilusLocationWidgetProvider
+
+2005-12-20  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(action_save_search_as_callback):
 	Some better strings, not resizeable.

@@ -20,28 +20,30 @@ libnautilus_extension_la_LIBADD = $(LIBNAUTILUS_EXTENSION_LIBS)
 libnautilus_extension_includedir=$(includedir)/nautilus/libnautilus-extension
 
 libnautilus_extension_include_HEADERS=		\
-	nautilus-column.h                       \
 	nautilus-column-provider.h              \
+	nautilus-column.h                       \
 	nautilus-extension-types.h              \
 	nautilus-file-info.h                    \
+	nautilus-info-provider.h                \
+	nautilus-location-widget-provider.h     \
 	nautilus-menu-item.h                    \
 	nautilus-menu-provider.h                \
-	nautilus-property-page.h                \
 	nautilus-property-page-provider.h       \
-	nautilus-info-provider.h                \
+	nautilus-property-page.h                \
 	$(NULL)
 
 libnautilus_extension_la_SOURCES=			\
-	nautilus-column.c                               \
 	nautilus-column-provider.c                      \
+	nautilus-column.c                               \
 	nautilus-extension-i18n.h                       \
 	nautilus-extension-types.c                      \
 	nautilus-file-info.c                            \
+	nautilus-info-provider.c                        \
+	nautilus-location-widget-provider.c             \
 	nautilus-menu-item.c                            \
 	nautilus-menu-provider.c                        \
-	nautilus-property-page.c                        \
 	nautilus-property-page-provider.c               \
-	nautilus-info-provider.c                        \
+	nautilus-property-page.c                        \
 	$(NULL)
 
 pkgconfigdir=$(libdir)/pkgconfig
