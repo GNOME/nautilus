@@ -3,7 +3,7 @@
 # translation of nautilus.HEAD.pa.po to Punjabi
 # Translation of nautilus.pa.po to Punjabi
 # Amanpreet Singh Alam <amanliunx@netscapet.net>, 2004.
-# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004, 2005.
 # Amanpreet Singh Alam <amanpreetalam@yahoo.com>, 2005.
 # Amanpreet Singh Brar <amanpreetsinghalam@redhat.com>, 2005.
 #
@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-10 06:50+0100\n"
-"PO-Revision-Date: 2005-12-10 12:22+0530\n"
-"Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
+"POT-Creation-Date: 2005-12-20 06:59+0100\n"
+"PO-Revision-Date: 2005-12-20 12:56+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -131,7 +131,7 @@ msgstr "ਇਨਵੇ"
 
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:937
-#: ../src/nautilus-property-browser.c:1779
+#: ../src/nautilus-property-browser.c:1795
 msgid "Erase"
 msgstr "ਸਾਫ਼ ਕਰੋ"
 
@@ -299,6 +299,10 @@ msgstr "ਨਿਸ਼ਾਨ(_E)"
 msgid "_Patterns"
 msgstr "ਤਰਤੀਬ(_P)"
 
+#: ../data/nautilus.xml.in.h:1
+msgid "Saved search"
+msgstr "ਖੋਜ ਸੰਭਾਲੋ"
+
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
@@ -456,7 +460,7 @@ msgid ""
 msgstr ""
 "ਜਿਨਾਂ ਫੋਲਡਰ ਦਾ ਅਕਾਰ ਇਸ ਤੋ ਉੱਪਰ ਹੋਵੇਗਾ ਉਨਾਂ ਦੀ ਕਾਂਟ-ਛਾਂਟ ਕਰਕੇ ਇਸ ਦੇ ਨੇੜੇ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ। ਇਹ "
 "ਇਸ ਕਰਕੇ ਕਿ ਵੱਡੇ ਫੋਲਡਰਾਂ ਕਰਕੇ ਨਾਟੀਲਸ ਨੂੰ ਖਤਮ ਨਾ ਕਰਨਾ ਪਵੇ। ਇਕ ਰਿਣਤਾਮਿਕ ਮੁੱਲ ਕੋਈ ਸੀਮਾ ਤੈਅ "
-"ਨਹੀ ਕਰਦਾ। ਅਕਾਰ ਲਗਭਗ ਹੈ, ਕਿਉਕਿ ਫੋਲਡਰ ਅਕਾਰ ਮੁਤਾਬਕ ਵੇਖੇ ਜਾਦੇ ਹਨ।"
+"ਨਹੀ ਕਰਦਾ। ਅਕਾਰ ਲਗਭਗ ਹੈ, ਕਿਉਕਿ ਫੋਲਡਰ ਅਕਾਰ ਮੁਤਾਬਕ ਵੇਖੇ ਜਾਂਦੇ ਹਨ।"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Home icon visible on desktop"
@@ -554,7 +558,7 @@ msgid ""
 "files."
 msgstr ""
 "ਜੇਕਰ ਸਹੀ ਕਰ ਦਿੱਤਾ ਗਿਆ ਤਾਂ, ਬੈਕਅਪ ਫਾਇਲਾਂ (ਜਿਵੇ ਕਿ ਈਮਸ਼ਜ) ਵੇਖਾਈਆ ਜਾਣਗੀਆਂ। ਹੁਣ ਸਿਰਫ (~) "
-"ਫਾਇਲ਼ਾਂ ਹੀ ਬੈਕ ਅਪ ਫਾਇਲਾਂ ਮੰਨੀਆਂ ਜਾਦੀਆਂ ਹਨ।"
+"ਫਾਇਲ਼ਾਂ ਹੀ ਬੈਕ ਅਪ ਫਾਇਲਾਂ ਮੰਨੀਆਂ ਜਾਂਦੀਆਂਂ ਹਨ।"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -568,7 +572,9 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
-msgstr "ਜੇਕਰ ਸਹੀ ਕਰ ਦਿੱਤਾ ਗਿਆ ਤਾਂ, ਆਈਕਾਨ, ਜੋ ਕਿ ਨੈੱਟਵਰਕ ਸਰਵਰ ਝਲਕ ਨਾਲ ਸਬੰਧਤ ਹੈ, ਵੇਹੜੇ ਵਿੱਚ ਆ ਜਾਵੇਗਾ।"
+msgstr ""
+"ਜੇਕਰ ਸਹੀ ਕਰ ਦਿੱਤਾ ਗਿਆ ਤਾਂ, ਆਈਕਾਨ, ਜੋ ਕਿ ਨੈੱਟਵਰਕ ਸਰਵਰ ਝਲਕ ਨਾਲ ਸਬੰਧਤ ਹੈ, ਵੇਹੜੇ ਵਿੱਚ ਆ "
+"ਜਾਵੇਗਾ।"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -861,7 +867,7 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
-"ਜਦੋ ਇਕ ਫੋਲਡਰ ਖੋਲਿਆ ਜਾਦਾ ਹੈ ਤਾਂ ਇਹ ਦਰਸ਼ਕ ਹੀ ਵਰਤਿਆ ਜਾਵੇਗਾ, ਜਦੋ ਤਕ ਕਿ ਤੁਸੀ ਕੋਈ ਹੋਰ ਦਰਸ਼ਕ "
+"ਜਦੋ ਇਕ ਫੋਲਡਰ ਖੋਲਿਆ ਜਾਂਦਾ ਹੈ ਤਾਂ ਇਹ ਦਰਸ਼ਕ ਹੀ ਵਰਤਿਆ ਜਾਵੇਗਾ, ਜਦੋ ਤਕ ਕਿ ਤੁਸੀ ਕੋਈ ਹੋਰ ਦਰਸ਼ਕ "
 "ਨਹੀ ਚੁਣਦੇ ਹੋ। ਉਪਲਬਧ ਚੋਣ ਹੈ \"ਸੂਚੀ\" ਅਤੇ \"ਆਈਕਾਨ\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
@@ -928,7 +934,7 @@ msgstr "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕ੍ਰਮਬੱਧ ਕੀਤ
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6354
+#: ../src/file-manager/fm-directory-view.c:6590
 msgid "Select _All"
 msgstr "ਸਭ ਚੁਣੋ(_A)"
 
@@ -959,7 +965,7 @@ msgid "Use De_fault"
 msgstr "ਮੂਲ ਵਰਤੋਂ(_f)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1277
+#: ../src/file-manager/fm-list-view.c:1279
 msgid "Name"
 msgstr "ਨਾਂ"
 
@@ -1016,7 +1022,7 @@ msgid "The group of the file."
 msgstr "ਫਾਇਲ ਦਾ ਸਮੂਹ ਹੈ।"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:2908
+#: ../src/file-manager/fm-properties-window.c:2907
 msgid "Permissions"
 msgstr "ਅਧਿਕਾਰ"
 
@@ -1077,16 +1083,16 @@ msgid "Network Servers"
 msgstr "ਨੈੱਟਵਰਕ ਸਰਵਰ"
 
 #: ../libnautilus-private/nautilus-dnd.c:640
-msgid "_Move here"
-msgstr "ਇੱਥੇ ਭੇਜੋ(_M)"
+msgid "_Move Here"
+msgstr "ਏਥੇ ਭੇਜੋ(_M)"
 
 #: ../libnautilus-private/nautilus-dnd.c:645
-msgid "_Copy here"
-msgstr "ਨਕਲ ਇਥੇ ਕਰੋ(_C)"
+msgid "_Copy Here"
+msgstr "ਏਥੇ ਨਕਲ(_C)"
 
 #: ../libnautilus-private/nautilus-dnd.c:650
-msgid "_Link here"
-msgstr "ਇਥੇ ਸਬੰਧਿਤ ਕਰੋ(_L)"
+msgid "_Link Here"
+msgstr "ਏਥੇ ਸਬੰਧਿਤ(_L)"
 
 #: ../libnautilus-private/nautilus-dnd.c:655
 msgid "Set as _Background"
@@ -1158,7 +1164,7 @@ msgstr "(%d:%02d ਬਕਾਇਆ)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:445
 #: ../libnautilus-private/nautilus-file-operations.c:470
-#: ../libnautilus-private/nautilus-file-utilities.c:70
+#: ../libnautilus-private/nautilus-file-utilities.c:87
 #: ../src/nautilus-connect-server-dialog.c:293
 #, c-format
 msgid "%s on %s"
@@ -1341,7 +1347,7 @@ msgid "_Retry"
 msgstr "ਮੁੜ ਕੋਸ਼ਿਸ(_R)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1038
-#: ../libnautilus-private/nautilus-file-operations.c:1187
+#: ../libnautilus-private/nautilus-file-operations.c:1188
 #: ../libnautilus-private/nautilus-file-operations.c:1206
 msgid "_Skip"
 msgstr "ਛੱਡੋ(_S)"
@@ -1372,21 +1378,17 @@ msgstr ""
 "ਇਹ ਨਾਂ ਪਹਿਲਾਂ ਹੀ ਇਕ ਅਜਿਹੀ ਇਕਾਈ ਨੂੰ ਦਿੱਤਾ ਜਾ ਚੁੱਕਿਆ ਹੈ, ਜੋ ਨਾ ਤਾਂ ਹਟਾਈ ਜਾ ਸਕਦੀ ਹੈ ਤੇ ਨਾ "
 "ਹੀ ਬਦਲੀ ਜਾ ਸਕਦੀ ਹੈ,ਜੇ ਤੁਸੀ ਹਾਲੇ ਵੀ ਨਕਲ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ ਨਾਂ ਬਦਲ ਕੇ ਕੋਸ਼ਿਸ ਕਰੋ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1144
-msgid "Unable to Replace File"
-msgstr "ਫਾਇਲ ਤਬਦੀਲ ਕਰਨ ਵਿੱਚ ਆਯੋਗ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:1160
+#: ../libnautilus-private/nautilus-file-operations.c:1162
 #, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "ਫੋਲਡਰ \"%s\" ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ, ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਤਬਦੀਲ ਕਰਨਾ ਚਾਹੋਗੇ?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1163
+#: ../libnautilus-private/nautilus-file-operations.c:1165
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "ਫਾਇਲ \"%s\" ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ, ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਤਬਦੀਲ ਕਰਨਾ ਚਾਹੋਗੇ?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1171
+#: ../libnautilus-private/nautilus-file-operations.c:1173
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
@@ -1394,16 +1396,11 @@ msgstr ""
 "ਜੇਕਰ ਤੁਸੀਂ ਫੋਲਡਰ ਨੂੰ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਤਾਂ, ਕੋਈ ਫਾਇਲ, ਜਿਸ ਲਈ ਟਕਰਾ ਹੋਇਆ ਤਾਂ ਫਾਇਲ਼ ਨੂੰ ਉੱਪਰ ਲਿਖ "
 "ਦਿੱਤਾ ਜਾਵੇਗਾ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1173
+#: ../libnautilus-private/nautilus-file-operations.c:1175
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "ਜੇਕਰ ਮੌਜੂਦਾ ਫਾਇਲ ਨੂੰ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਤਾਂ ਸਾਰੇ ਹਿੱਸੇ ਖਤਮ ਹੋ ਜਾਣਗੇ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1186
-#: ../libnautilus-private/nautilus-file-operations.c:1205
-msgid "Conflict While Copying"
-msgstr "ਨਕਲ ਕਰਨ ਵੇਲੇ ਵਿਰੋਧ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:1187
+#: ../libnautilus-private/nautilus-file-operations.c:1188
 #: ../libnautilus-private/nautilus-file-operations.c:1206
 msgid "_Replace"
 msgstr "ਤਬਦੀਲ(_R)"
@@ -1422,8 +1419,8 @@ msgstr "ਸਭ ਤਬਦੀਲ(_A)"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1266
-#: ../libnautilus-private/nautilus-file.c:4749
-#: ../src/file-manager/fm-directory-view.c:8907
+#: ../libnautilus-private/nautilus-file.c:4695
+#: ../src/file-manager/fm-directory-view.c:9211
 #, c-format
 msgid "link to %s"
 msgstr "%s ਨਾਲ ਸਬੰਧ"
@@ -1555,8 +1552,8 @@ msgid " (%d"
 msgstr " (%d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1672
-#: ../libnautilus-private/nautilus-file-operations.c:2290
-#: ../libnautilus-private/nautilus-file-operations.c:2473
+#: ../libnautilus-private/nautilus-file-operations.c:2282
+#: ../libnautilus-private/nautilus-file-operations.c:2465
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "ਅਣਜਾਣੀ ਗਨੋਮ VFSXferProgress ਹਾਲਤ %d"
@@ -1653,130 +1650,110 @@ msgstr "ਤੁਸੀ ਰੱਦੀ ਵਿੱਚ ਸਬੰਧ ਨਹੀ ਬਣਾ 
 msgid "Files and folders can only be moved into the trash."
 msgstr "ਫਾਇਲਾਂ ਅਤੇ ਫੋਲਡਰਾਂ ਹੀ ਕੇਵਲ ਰੱਦੀ ਵਿੱਚ ਭੇਜੇ ਜਾ ਸਕਦੇ ਹਨ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2104
+#: ../libnautilus-private/nautilus-file-operations.c:2103
 msgid "You cannot move this trash folder."
 msgstr "ਇਸ ਰੱਦੀ ਫੋਲਡਰ ਨੂੰ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2105
+#: ../libnautilus-private/nautilus-file-operations.c:2104
 msgid "You cannot copy this trash folder."
 msgstr "ਰੱਦੀ ਦੀ ਨਕਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2106
+#: ../libnautilus-private/nautilus-file-operations.c:2105
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "ਰੱਦੀ ਦਾ ਫੋਲਡਰ, ਉਹ ਇਕਾਈਆਂ, ਜੋ ਰੱਦੀ ਵਿੱਚ ਭੇਜੀਆਂ ਗਈਆਂ ਹਨ, ਨੂੰ ਸੰਭਾਲਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2108
-msgid "Can't Change Trash Location"
-msgstr "ਰੱਦੀ ਦੀ ਥਾਂ ਨਹੀ ਬਦਲੀ ਕੀਤੀ ਜਾ ਸਕਦੀ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2109
-msgid "Can't Copy Trash"
-msgstr "ਰੱਦੀ ਦੀ ਨਕਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2133
+#: ../libnautilus-private/nautilus-file-operations.c:2129
 msgid "You cannot move a folder into itself."
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਇਸ ਨੂੰ ਖੁਦ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2134
+#: ../libnautilus-private/nautilus-file-operations.c:2130
 msgid "You cannot copy a folder into itself."
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਖੁਦ ਵਿੱਚ ਨਕਲ ਨਹੀ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2135
+#: ../libnautilus-private/nautilus-file-operations.c:2131
 msgid "The destination folder is inside the source folder."
 msgstr "ਨਿਯਤ ਫੋਲਡਰ ਵਿੱਚ ਸਰੋਤ ਫੋਲਡਰ ਵਿੱਚ ਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2137
-msgid "Can't Move Into Self"
-msgstr "ਖੁਦ ਵਿੱਚ ਭੇਜਿਆ ਨਹੀ ਸਕਦਾ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2138
-msgid "Can't Copy Into Self"
-msgstr "ਖੁਦ ਵਿੱਚ ਨਕਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦਾ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2151
+#: ../libnautilus-private/nautilus-file-operations.c:2144
 msgid "You cannot copy a file over itself."
 msgstr "ਤੁਸੀਂ ਫਾਇਲ ਉਪਰ ਉਸਨੂੰ ਹੀ ਨਕਲ ਨਹੀ ਕਰ ਸਕਦੇ ਹੋ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2152
+#: ../libnautilus-private/nautilus-file-operations.c:2145
 msgid "The destination and source are the same file."
 msgstr "ਸਰੋਤ ਅਤੇ ਟੀਚਾ ਉਹੀ ਫਾਇਲ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2153
-msgid "Can't Copy Over Self"
-msgstr "ਖੁਦ ਉੱਪਰ ਨਕਲ ਨਹੀ ਕਰ ਸਕਦੇ ਹੋ"
-
-#: ../libnautilus-private/nautilus-file-operations.c:2208
-#: ../libnautilus-private/nautilus-file-operations.c:2368
+#: ../libnautilus-private/nautilus-file-operations.c:2200
+#: ../libnautilus-private/nautilus-file-operations.c:2360
 msgid "You do not have permissions to write to the destination."
 msgstr "ਟਿਕਾਣੇ 'ਤੇ ਲਿਖਣ ਦਾ ਅਧਿਕਾਰ ਤੁਹਾਡੇ ਕੋਲ ਨਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2210
-#: ../libnautilus-private/nautilus-file-operations.c:2370
+#: ../libnautilus-private/nautilus-file-operations.c:2202
+#: ../libnautilus-private/nautilus-file-operations.c:2362
 msgid "There is no space on the destination."
 msgstr "ਟਿਕਾਣੇ 'ਤੇ ਕੋਈ ਖਾਲੀ ਥਾਂ ਨਹੀ ਬਚੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2212
+#: ../libnautilus-private/nautilus-file-operations.c:2204
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "ਨਵਾਂ ਫੋਲਡਰ ਬਣਾਉਣ ਵਿੱਚ ਗਲਤੀ \"%s\" ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2217
+#: ../libnautilus-private/nautilus-file-operations.c:2209
 msgid "Error creating new folder."
 msgstr "ਨਵਾਂ ਫੋਲਡਰ ਬਣਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੈ।"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2314
+#: ../libnautilus-private/nautilus-file-operations.c:2306
 msgid "untitled folder"
 msgstr "ਬੇਨਾਮ"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2372
+#: ../libnautilus-private/nautilus-file-operations.c:2364
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "ਨਵਾਂ ਦਸਤਾਵੇਜ ਬਣਾਉਣ ਵਿੱਚ ਗਲਤੀ \"%s\" ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2377
+#: ../libnautilus-private/nautilus-file-operations.c:2369
 msgid "Error creating new document."
 msgstr "ਨਵਾਂ ਦਸਤਾਵੇਜ ਬਣਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2604
+#: ../libnautilus-private/nautilus-file-operations.c:2596
 msgid "new file"
 msgstr "ਨਵੀਂ ਫਾਇਲ"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2670
+#: ../libnautilus-private/nautilus-file-operations.c:2662
 msgid "Deleting files"
 msgstr "ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2672
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2664
+#: ../libnautilus-private/nautilus-file-operations.c:2699
 msgid "Files deleted:"
 msgstr "ਹਟਾਈਆਂ ਫਾਇਲਾਂ:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2674
-#: ../libnautilus-private/nautilus-file-operations.c:2709
+#: ../libnautilus-private/nautilus-file-operations.c:2666
+#: ../libnautilus-private/nautilus-file-operations.c:2701
 msgid "Deleting"
 msgstr "ਖਤਮ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2675
+#: ../libnautilus-private/nautilus-file-operations.c:2667
 msgid "Preparing to Delete files..."
 msgstr "ਖਤਮ ਕਰਨ ਦੀ ਤਿਆਰੀ...."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2705
+#: ../libnautilus-private/nautilus-file-operations.c:2697
 msgid "Emptying the Trash"
 msgstr "ਰੱਦੀ ਨੂੰ ਖਾਲੀ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2702
 msgid "Preparing to Empty the Trash..."
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰਨ ਦੀ ਤਿਆਰੀ..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2746
+#: ../libnautilus-private/nautilus-file-operations.c:2738
 msgid "Empty all of the items from the trash?"
 msgstr "ਕੀ ਤੁਸੀ ਰੱਦੀ ਵਿੱਚੋ ਫਾਇਲ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2749
+#: ../libnautilus-private/nautilus-file-operations.c:2741
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1784,38 +1761,45 @@ msgstr ""
 "ਜੇਕਰ ਤੁਸੀ ਰੱਦੀ ਖਾਲੀ ਕਰ ਦਿੱਤੀ ਤਾਂ ਇਕਾਈਆਂ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਹੋ ਜਾਣੀਆਂ ਹਨ। ਯਾਦ ਰੱਖੋ ਕਿ ਤੁਸੀਂ ਇਹਨਾਂ "
 "ਨੂੰ ਅੱਡ ਅੱਡ ਵੀ ਹਟਾ ਸਕਦੇ ਹੋ।"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2771
+#: ../libnautilus-private/nautilus-file-operations.c:2763
 msgid "_Empty Trash"
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_E)"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:480
-#: ../libnautilus-private/nautilus-global-preferences.c:512
+#: ../libnautilus-private/nautilus-file-utilities.c:75
+#: ../libnautilus-private/nautilus-search-directory-file.c:173
+#: ../libnautilus-private/nautilus-search-directory-file.c:188
+#: ../libnautilus-private/nautilus-search-directory-file.c:210
+msgid "Search"
+msgstr "ਖੋਜ"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:520
+#: ../libnautilus-private/nautilus-global-preferences.c:522
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "ਕੰਪਿਊਟਰ"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:482
+#: ../libnautilus-private/nautilus-file-utilities.c:522
 msgid "Network"
 msgstr "ਨੈੱਟਵਰਕ"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:484
+#: ../libnautilus-private/nautilus-file-utilities.c:524
 msgid "Fonts"
 msgstr "ਫੋਂਟ"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:486
+#: ../libnautilus-private/nautilus-file-utilities.c:526
 msgid "Themes"
 msgstr "ਸਰੂਪ"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:488
+#: ../libnautilus-private/nautilus-file-utilities.c:528
 msgid "CD/DVD Creator"
 msgstr "CD/DVD ਨਿਰਮਾਤਾ"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:490
+#: ../libnautilus-private/nautilus-file-utilities.c:530
 msgid "Windows Network"
 msgstr "Windows ਨੈੱਟਵਰਕ"
 
 #. translators: this is the title of the "dns-sd:///" location
-#: ../libnautilus-private/nautilus-file-utilities.c:493
+#: ../libnautilus-private/nautilus-file-utilities.c:533
 msgid "Services in"
 msgstr "ਸੇਵਾਵਾਂ ਸ਼ਾਮਿਲ"
 
@@ -1834,65 +1818,65 @@ msgstr "ਸੇਵਾਵਾਂ ਸ਼ਾਮਿਲ"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2944
+#: ../libnautilus-private/nautilus-file.c:2905
 msgid "today at 00:00:00 PM"
 msgstr "ਅੱਜ ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2945
+#: ../libnautilus-private/nautilus-file.c:2906
 #: ../src/nautilus-file-management-properties.c:459
 msgid "today at %-I:%M:%S %p"
 msgstr "ਅੱਜ %-l:%M:%S %p ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2908
 msgid "today at 00:00 PM"
 msgstr "ਅੱਜ ਸੰਝ 00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2948
+#: ../libnautilus-private/nautilus-file.c:2909
 msgid "today at %-I:%M %p"
 msgstr "ਅੱਜ %-l :%M %p ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2950
+#: ../libnautilus-private/nautilus-file.c:2911
 msgid "today, 00:00 PM"
 msgstr "ਅੱਜ, ਸੰਝ 00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2951
+#: ../libnautilus-private/nautilus-file.c:2912
 msgid "today, %-I:%M %p"
 msgstr "ਅੱਜ, %-l:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2953
-#: ../libnautilus-private/nautilus-file.c:2954
+#: ../libnautilus-private/nautilus-file.c:2914
+#: ../libnautilus-private/nautilus-file.c:2915
 msgid "today"
 msgstr "ਅੱਜ"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2963
+#: ../libnautilus-private/nautilus-file.c:2924
 msgid "yesterday at 00:00:00 PM"
 msgstr "ਕੱਲ ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2964
+#: ../libnautilus-private/nautilus-file.c:2925
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ਕੱਲ, %-l:%M:%S%p ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2966
+#: ../libnautilus-private/nautilus-file.c:2927
 msgid "yesterday at 00:00 PM"
 msgstr "ਕੱਲ਼, ਸੰਝ 00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2967
+#: ../libnautilus-private/nautilus-file.c:2928
 msgid "yesterday at %-I:%M %p"
 msgstr "ਕੱਲ %-l:%M%p ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2969
+#: ../libnautilus-private/nautilus-file.c:2930
 msgid "yesterday, 00:00 PM"
 msgstr "ਕੱਲ, ਸੰਝ 00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2970
+#: ../libnautilus-private/nautilus-file.c:2931
 msgid "yesterday, %-I:%M %p"
 msgstr "ਕੱਲ, %l:%M%p"
 
-#: ../libnautilus-private/nautilus-file.c:2972
-#: ../libnautilus-private/nautilus-file.c:2973
+#: ../libnautilus-private/nautilus-file.c:2933
+#: ../libnautilus-private/nautilus-file.c:2934
 msgid "yesterday"
 msgstr "ਕੱਲ"
 
@@ -1901,78 +1885,78 @@ msgstr "ਕੱਲ"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2984
+#: ../libnautilus-private/nautilus-file.c:2945
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "ਬੁੱਧਵਾਰ, ਸਤੰਬਰ 00 0000 ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2985
+#: ../libnautilus-private/nautilus-file.c:2946
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A,%B%-d%Y ਨੂੰ %-l:%M%S%p "
 
-#: ../libnautilus-private/nautilus-file.c:2987
+#: ../libnautilus-private/nautilus-file.c:2948
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "ਸੋਮ, ਅਕਤੂ 00 0000 ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2988
+#: ../libnautilus-private/nautilus-file.c:2949
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a,%b%-d%Y ਤੇ %-l:%M%S%p"
 
-#: ../libnautilus-private/nautilus-file.c:2990
+#: ../libnautilus-private/nautilus-file.c:2951
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ਸੋਮ, ਅਕਤੂ 00 0000 ਸੰਝ 00:00 ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2991
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a,%b%-d%Y ਨੂੰ %-l:%M%p ਵਜੇ"
 
-#: ../libnautilus-private/nautilus-file.c:2993
+#: ../libnautilus-private/nautilus-file.c:2954
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ਅਕਤੂ 00 0000 ਵਜੇ 00:00 ਸੰਝ"
 
-#: ../libnautilus-private/nautilus-file.c:2994
+#: ../libnautilus-private/nautilus-file.c:2955
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y ਤੇ %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2996
+#: ../libnautilus-private/nautilus-file.c:2957
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "ਅਕਤੂ 00 0000, 00:00 ਸੰਝ"
 
-#: ../libnautilus-private/nautilus-file.c:2997
+#: ../libnautilus-private/nautilus-file.c:2958
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2999
+#: ../libnautilus-private/nautilus-file.c:2960
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 ਸੰਝ"
 
-#: ../libnautilus-private/nautilus-file.c:3000
+#: ../libnautilus-private/nautilus-file.c:2961
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3002
+#: ../libnautilus-private/nautilus-file.c:2963
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3003
+#: ../libnautilus-private/nautilus-file.c:2964
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4315
-#: ../src/file-manager/fm-directory-view.c:1973
+#: ../libnautilus-private/nautilus-file.c:4261
+#: ../src/file-manager/fm-directory-view.c:2191
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "%u ਇਕਾਈ"
 msgstr[1] "%u ਇਕਾਈਆਂ"
 
-#: ../libnautilus-private/nautilus-file.c:4316
+#: ../libnautilus-private/nautilus-file.c:4262
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u ਫੋਲਡਰ"
 msgstr[1] "%u ਫੋਲਡਰ"
 
-#: ../libnautilus-private/nautilus-file.c:4317
+#: ../libnautilus-private/nautilus-file.c:4263
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -1980,37 +1964,37 @@ msgstr[0] "%u ਫਾਇਲ"
 msgstr[1] "%u ਫਾਇਲਾਂ"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4642
-#: ../libnautilus-private/nautilus-file.c:4658
+#: ../libnautilus-private/nautilus-file.c:4588
+#: ../libnautilus-private/nautilus-file.c:4604
 msgid "? items"
 msgstr "? ਇਕਾਈਆਂ"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4648
+#: ../libnautilus-private/nautilus-file.c:4594
 msgid "? bytes"
 msgstr "? ਬਾਈਟ"
 
-#: ../libnautilus-private/nautilus-file.c:4663
+#: ../libnautilus-private/nautilus-file.c:4609
 msgid "unknown type"
 msgstr "ਅਣਜਾਣੀ ਕਿਸਮ"
 
-#: ../libnautilus-private/nautilus-file.c:4666
+#: ../libnautilus-private/nautilus-file.c:4612
 msgid "unknown MIME type"
 msgstr "ਅਣਜਾਣੀ MIME ਕਿਸਮ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4672
-#: ../src/file-manager/fm-properties-window.c:1312
+#: ../libnautilus-private/nautilus-file.c:4618
+#: ../src/file-manager/fm-properties-window.c:1286
 msgid "unknown"
 msgstr "ਅਣਜਾਣ"
 
-#: ../libnautilus-private/nautilus-file.c:4705
+#: ../libnautilus-private/nautilus-file.c:4651
 msgid "program"
 msgstr "ਕਾਰਜ"
 
-#: ../libnautilus-private/nautilus-file.c:4723
+#: ../libnautilus-private/nautilus-file.c:4669
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2019,7 +2003,7 @@ msgstr ""
 " \"x-directory/normal\" ਲਈ ਕੋਈ ਵੀ ਵਰਣਨ ਨਹੀ ਹੈ| ਇਸ ਦਾ ਕਾਰਨ ਇਹ ਹੋ ਸਕਦਾ ਹੈ ਕਿ gnome-"
 "vfs.keys ਫਾਇਲ ਜਾਂ ਤਾਂ ਗਲਤ ਥਾਂ ਤੇ ਹੈ, ਨਹੀ ਤਾਂ ਲੱਭੀ ਨਹੀ ਹੈ|"
 
-#: ../libnautilus-private/nautilus-file.c:4727
+#: ../libnautilus-private/nautilus-file.c:4673
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2028,16 +2012,16 @@ msgstr ""
 "MIME ਕਿਸਮ \"%s\" (ਫਾਇਲ \"%s\" ਹੈ) ਦਾ ਕੋਈ ਵਰਣਨ ਨਹੀ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ gnome-vfs "
 "mailing ਸੂਚੀ ਨੂੰ ਲਿਖੋ।"
 
-#: ../libnautilus-private/nautilus-file.c:4743
+#: ../libnautilus-private/nautilus-file.c:4689
 msgid "link"
 msgstr "ਸਬੰਧ"
 
-#: ../libnautilus-private/nautilus-file.c:4763
+#: ../libnautilus-private/nautilus-file.c:4709
 msgid "link (broken)"
 msgstr "ਸਬੰਧ (ਟੁੱਟਿਆ)"
 
-#: ../libnautilus-private/nautilus-file.c:6262
-#: ../libnautilus-private/nautilus-global-preferences.c:518
+#: ../libnautilus-private/nautilus-file.c:6206
+#: ../libnautilus-private/nautilus-global-preferences.c:528
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
 msgstr "ਰੱਦੀ"
@@ -2152,7 +2136,7 @@ msgid "Icon View"
 msgstr "ਆਈਕਾਨ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1331
+#: ../src/file-manager/fm-list-view.c:1333
 msgid "List View"
 msgstr "ਸੂਚੀ ਝਲਕ"
 
@@ -2224,7 +2208,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:506
+#: ../libnautilus-private/nautilus-global-preferences.c:516
 #, c-format
 msgid "%s's Home"
 msgstr "%s ਦਾ ਘਰ"
@@ -2233,21 +2217,17 @@ msgstr "%s ਦਾ ਘਰ"
 msgid "The selection rectangle"
 msgstr "ਚੋਣ ਆਇਤ"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4761
+#: ../libnautilus-private/nautilus-icon-container.c:4765
 msgid "Normal Alpha"
 msgstr "ਆਮ ਐਲਫ਼ਾ"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4762
+#: ../libnautilus-private/nautilus-icon-container.c:4766
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "ਜੇਕਰ ਫਰੇਮ-ਜਾਂਚ ਦਿੱਤਾ ਹੋਵੇ ਤਾਂ ਆਮ ਆਈਕਾਨ ਦੀ ਅਪਾਰਦਰਸ਼ਤਾ (_t)"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:790
 msgid "Switch to Manual Layout?"
 msgstr "ਕੀ ਦਸਤੀ ਢਾਂਚੇ ਨਾਲ ਤਬਦੀਲ ਕਰਨਾ ਹੈ?"
-
-#: ../libnautilus-private/nautilus-icon-dnd.c:791
-msgid "Switch"
-msgstr "ਤਬਦੀਲ"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:136
 msgid "Open Failed, would you like to choose another application?"
@@ -2271,39 +2251,34 @@ msgid ""
 "locations."
 msgstr "\"%s\" ਖੋਲ ਨਹੀ ਸਕਦੇ ਹੋ, ਕਿਉਕਿ \"%s\" ਥਾਂ ਤੇ ਫਾਇਲ ਲ਼ਈ ਅਧਿਕਾਰ ਨਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:150
-#: ../libnautilus-private/nautilus-program-choosing.c:183
-msgid "Can't Open Location"
-msgstr "ਟਿਕਾਣਾ ਖੋਲਿਆ ਨਹੀ ਜਾ ਸਕਦਾ"
-
-#: ../libnautilus-private/nautilus-program-choosing.c:169
+#: ../libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
 msgstr "\"%s\" ਖੋਲ ਨਹੀ ਸਕਦੇ ਹੋ \"%s\" ਕਿਉਂਕਿ \"%s\" \"%s\" ਥਾਂ ਤੇ ਫਾਇਲ ਲ਼ਈ ਅਧਿਕਾਰ ਨਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:172
+#: ../libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr "ਕੋਈ ਸਹਾਇਕ ਵੇਖਣ ਲਈ ਨਹੀ ਹੈ। ਜੇਕਰ ਆਪਣੀ ਮਸ਼ੀਨ ਤੇ ਨਕਲ ਬਣਾ ਲਵੋ ਤਾਂ ਸ਼ਾਇਦ ਖੋਲ ਸਕੋ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:176
+#: ../libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr "\"%s\" ਖੋਲ ਨਹੀ ਸਕਦੇ ਹੋ, ਕਿਉਕਿ \"%s\" ਥਾਂ ਤੇ ਫਾਇਲ ਲ਼ਈ ਅਧਿਕਾਰ ਨਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:178
+#: ../libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr "ਕੋਈ ਸਹਾਇਕ ਵੇਖਣ ਲਈ ਨਹੀ ਹੈ। ਜੇਕਰ ਆਪਣੀ ਮਸ਼ੀਨ ਤੇ ਨਕਲ ਬਣਾ ਲਵੋ ਤਾਂ ਸਾਇਦ ਖੋਲ ਸਕਦੇ ਹੋ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:492
-#: ../libnautilus-private/nautilus-program-choosing.c:725
+#: ../libnautilus-private/nautilus-program-choosing.c:491
+#: ../libnautilus-private/nautilus-program-choosing.c:724
 #, c-format
 msgid "Opening %s"
 msgstr "\"%s\" ਖੁੱਲ ਰਿਹਾ ਹੈ"
@@ -2313,91 +2288,91 @@ msgstr "\"%s\" ਖੁੱਲ ਰਿਹਾ ਹੈ"
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
 #. Shouldn't have gotten this error unless there's a : separator.
-#: ../libnautilus-private/nautilus-program-choosing.c:580
-#: ../libnautilus-private/nautilus-program-choosing.c:591
-#: ../libnautilus-private/nautilus-program-choosing.c:599
-#: ../libnautilus-private/nautilus-program-choosing.c:604
-#: ../src/nautilus-window-manage-views.c:1363
-#: ../src/nautilus-window-manage-views.c:1369
-#: ../src/nautilus-window-manage-views.c:1397
-#: ../src/nautilus-window-manage-views.c:1405
-#: ../src/nautilus-window-manage-views.c:1411
-#: ../src/nautilus-window-manage-views.c:1432
+#: ../libnautilus-private/nautilus-program-choosing.c:579
+#: ../libnautilus-private/nautilus-program-choosing.c:590
+#: ../libnautilus-private/nautilus-program-choosing.c:598
+#: ../libnautilus-private/nautilus-program-choosing.c:603
+#: ../src/nautilus-window-manage-views.c:1385
+#: ../src/nautilus-window-manage-views.c:1391
+#: ../src/nautilus-window-manage-views.c:1419
+#: ../src/nautilus-window-manage-views.c:1427
+#: ../src/nautilus-window-manage-views.c:1433
+#: ../src/nautilus-window-manage-views.c:1454
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr " \"%s\" ਵੇਖਿਆ ਨਹੀ ਸਕਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:593
-#: ../libnautilus-private/nautilus-program-choosing.c:891
-#: ../libnautilus-private/nautilus-program-choosing.c:959
+#: ../libnautilus-private/nautilus-program-choosing.c:592
+#: ../libnautilus-private/nautilus-program-choosing.c:890
+#: ../libnautilus-private/nautilus-program-choosing.c:958
 msgid "There was an error launching the application."
 msgstr "ਕਾਰਜ ਚਲਾਉਣ ਵਿੱਚ ਮੁਸ਼ਕਿਲ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1407
+#: ../libnautilus-private/nautilus-program-choosing.c:600
+#: ../src/nautilus-window-manage-views.c:1429
 msgid "The attempt to log in failed."
 msgstr "ਦਾਖਲੇ (ਲਾਗਿੰਨ) ਦੀ ਕੋਸ਼ਿਸ ਅਸਫਲ ਰਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:606
-#: ../src/nautilus-window-manage-views.c:1413
+#: ../libnautilus-private/nautilus-program-choosing.c:605
+#: ../src/nautilus-window-manage-views.c:1435
 msgid "Access was denied."
 msgstr "ਅਧਿਕਾਰ ਪਾਬੰਦੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1424
+#: ../libnautilus-private/nautilus-program-choosing.c:610
+#: ../src/nautilus-window-manage-views.c:1446
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" ਵਿਖਾਇਆ ਨਹੀ ਜਾ ਸਕਦਾ, ਕਿਉਕਿ \"%s\" ਮੇਜ਼ਬਾਨ ਨਹੀ ਲੱਭਿਆ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:614
-#: ../src/nautilus-window-manage-views.c:1427
+#: ../libnautilus-private/nautilus-program-choosing.c:613
+#: ../src/nautilus-window-manage-views.c:1449
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "ਜਾਂਚ ਕਰੋ ਕਿ ਸ਼ਬਦ-ਜੋੜ ਸਹੀ ਹੈ ਅਤੇ ਪਰਕਾਸੀ (Proxy) ਨਿਰਧਾਰਨ ਠੀਕ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:619
-#: ../src/nautilus-window-manage-views.c:1385
+#: ../libnautilus-private/nautilus-program-choosing.c:618
+#: ../src/nautilus-window-manage-views.c:1407
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "ਮੁਆਫੀ, ਪਰ ਸਥਿਤੀ \"%s\" ਜਾਇਜ ਨਹੀ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:622
-#: ../libnautilus-private/nautilus-program-choosing.c:629
+#: ../libnautilus-private/nautilus-program-choosing.c:621
+#: ../libnautilus-private/nautilus-program-choosing.c:628
 #: ../src/nautilus-connect-server-dialog.c:144
-#: ../src/nautilus-property-browser.c:1152
-#: ../src/nautilus-window-manage-views.c:1380
-#: ../src/nautilus-window-manage-views.c:1388
+#: ../src/nautilus-property-browser.c:1168
+#: ../src/nautilus-window-manage-views.c:1402
+#: ../src/nautilus-window-manage-views.c:1410
 msgid "Please check the spelling and try again."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਸ਼ਬਦ ਵੇਖੋ ਤੇ ਫਿਰ ਕੋਸ਼ਿਸ ਕਰੋ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:626
-#: ../src/nautilus-window-manage-views.c:1377
+#: ../libnautilus-private/nautilus-program-choosing.c:625
+#: ../src/nautilus-window-manage-views.c:1399
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "\"%s\" ਨਹੀ ਲੱਭਿਆ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:877
+#: ../libnautilus-private/nautilus-program-choosing.c:876
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr "ਮੁਆਫੀ, ਤੁਸੀਂ ਰਿਮੋਟ ਸਥਿਤੀ ਤੋਂ ਇਹ ਕਮਾਂਡ ਨਹੀ ਚਲਾ ਸਕਦੇ ਹੋ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:879
+#: ../libnautilus-private/nautilus-program-choosing.c:878
 msgid "This is disabled due to security considerations."
 msgstr "ਇਹ ਸੁਰੱਖਿਆ ਕਾਰਨਾਂ ਕਰਕੇ ਬੰਦ ਕੀਤਾ ਗਿਆ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:889
-#: ../libnautilus-private/nautilus-program-choosing.c:957
+#: ../libnautilus-private/nautilus-program-choosing.c:888
+#: ../libnautilus-private/nautilus-program-choosing.c:956
 msgid "Details: "
 msgstr "ਵੇਰਵਾ: "
 
-#: ../libnautilus-private/nautilus-program-choosing.c:920
-#: ../libnautilus-private/nautilus-program-choosing.c:931
+#: ../libnautilus-private/nautilus-program-choosing.c:919
+#: ../libnautilus-private/nautilus-program-choosing.c:930
 msgid "This drop target only supports local files."
 msgstr "ਸੁੱਟਣ ਦਾ ਨਿਸ਼ਾਨਾ ਕੇਵਲ ਸਥਾਨਕ ਫਾਇਲਾਂ ਲਈ ਹੈ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:921
+#: ../libnautilus-private/nautilus-program-choosing.c:920
 msgid "To open non-local files copy them to a local folder and then drop them again."
 msgstr "ਬਾਹਰੀ ਫਾਇਲਾਂ ਨੂੰ ਸਥਾਨਕ ਫੋਲਡਰ ਵਿੱਚ ਨਕਲ ਕਰੋ ਤੇ ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:932
+#: ../libnautilus-private/nautilus-program-choosing.c:931
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -2406,6 +2381,7 @@ msgstr ""
 "ਸਨ, ਪਹਿਲਾਂ ਹੀ ਖੋਲੀਆਂ ਜਾ ਚੁੱਕੀਆਂ ਹਨ।"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
+#: ../src/nautilus-query-editor.c:888
 msgid "Edit"
 msgstr "ਸੋਧ"
 
@@ -2485,22 +2461,22 @@ msgstr "ਪਿੱਠ-ਭੂਮੀ"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6332
-#: ../src/file-manager/fm-directory-view.c:7111
+#: ../src/file-manager/fm-directory-view.c:6568
+#: ../src/file-manager/fm-directory-view.c:7358
 msgid "E_mpty Trash"
 msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ(_m)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6304
+#: ../src/file-manager/fm-directory-view.c:6540
 msgid "Create L_auncher..."
 msgstr "ਸ਼ੁਰੂਆਤੀ ਬਣਾਓ(_a)..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6305
+#: ../src/file-manager/fm-directory-view.c:6541
 msgid "Create a new launcher"
 msgstr "ਨਵਾਂ ਸੁਰੂਆਤੀ ਬਣਾਉ"
 
@@ -2522,7 +2498,7 @@ msgstr "ਰੱਦੀ ਖਾਲੀ ਕਰੋ"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6333
+#: ../src/file-manager/fm-directory-view.c:6569
 msgid "Delete all items in the Trash"
 msgstr "ਰੱਦੀ ਦੀਆਂ ਸਾਰੀਆਂ ਇਕਾਈਂ ਖਤਮ ਕਰੋ"
 
@@ -2552,11 +2528,11 @@ msgstr "ਵੇਹੜੇ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਸਮੇਂ ਸਮ�
 msgid "Display this location with the desktop view."
 msgstr "ਵੇਹੜਾ ਝਲਕ 'ਚ ਇਹ ਟਿਕਾਣਾ ਵੇਖਾਓ।"
 
-#: ../src/file-manager/fm-directory-view.c:567
+#: ../src/file-manager/fm-directory-view.c:652
 msgid "Are you sure you want to open all files?"
 msgstr "ਕੀ ਤੁਸੀ ਸਾਰੀਆਂ ਫਾਇਲਾਂ ਖੋਲਣ ਲਈ ਤਿਆਰ ਹੋ?"
 
-#: ../src/file-manager/fm-directory-view.c:568
+#: ../src/file-manager/fm-directory-view.c:653
 #: ../src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
@@ -2564,43 +2540,60 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "ਇਹ ਵੱਖਰਾ %d ਝਰੋਖਾ ਖੋਲੇਗਾ।"
 msgstr[1] "ਇਹ ਵੱਖਰੇ %d ਝਰੋਖੇ ਖੋਲੇਗਾ।"
 
-#: ../src/file-manager/fm-directory-view.c:895
+#: ../src/file-manager/fm-directory-view.c:980
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "ਕੀ ਤੁਸੀਂ \"%s\" ਨੂੰ ਪੱਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?"
 
-#: ../src/file-manager/fm-directory-view.c:899
+#: ../src/file-manager/fm-directory-view.c:984
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "ਕੀ ਤੁਸੀਂ %d ਚੁਣੀ ਇਕਾਈ ਨੂੰ ਪੱਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?"
 msgstr[1] "ਕੀ ਤੁਸੀਂ %d ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਨੂੰ ਪੱਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?"
 
-#: ../src/file-manager/fm-directory-view.c:910
+#: ../src/file-manager/fm-directory-view.c:995
 msgid "If you delete an item, it is permanently lost."
 msgstr "ਜੇ ਇਕਾਈ ਹਟਾ ਦਿੱਤੀ ਤਾਂ ਇਹ ਪੱਕੇ ਤੌਰ ਤੇ ਹਟਾਈ ਜਾਵੇਗੀ।"
 
-#: ../src/file-manager/fm-directory-view.c:1062
+#: ../src/file-manager/fm-directory-view.c:1147
 msgid "Select Pattern"
 msgstr "ਤਰਤੀਬ ਚੁਣੋ"
 
-#: ../src/file-manager/fm-directory-view.c:1078
+#: ../src/file-manager/fm-directory-view.c:1163
 msgid "_Pattern:"
 msgstr "ਤਰਤੀਬ(_P):"
 
-#: ../src/file-manager/fm-directory-view.c:1905
+#: ../src/file-manager/fm-directory-view.c:1272
+msgid "Save Search"
+msgstr "ਖੋਜ ਸੰਭਾਲੋ"
+
+#: ../src/file-manager/fm-directory-view.c:1289
+msgid "_Query name:"
+msgstr "ਕਿਊਰੀ ਨਾਂ(_Q):"
+
+#: ../src/file-manager/fm-directory-view.c:1302
+#: ../src/nautilus-connect-server-dialog.c:535
+msgid "_Folder:"
+msgstr "ਫੋਲਡਰ(_F):"
+
+#: ../src/file-manager/fm-directory-view.c:1307
+msgid "Select Folder to Save Search In"
+msgstr "ਖੋਜ ਨੂੰ ਸੰਭਾਲਣ ਲਈ ਫੋਲਡਰ ਦੀ ਚੋਣ ਕਰੋ"
+
+#: ../src/file-manager/fm-directory-view.c:2123
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" ਚੁਣੇ"
 
-#: ../src/file-manager/fm-directory-view.c:1907
+#: ../src/file-manager/fm-directory-view.c:2125
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d ਫੋਲਡਰ ਚੁਣੇ"
 msgstr[1] "%d ਫੋਲਡਰ ਚੁਣੇ"
 
-#: ../src/file-manager/fm-directory-view.c:1917
+#: ../src/file-manager/fm-directory-view.c:2135
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2608,19 +2601,19 @@ msgstr[0] " (ਇਕਾਈ %d ਰੱਖਦਾ ਹੈ)"
 msgstr[1] " (ਇਕਾਈਆਂ %d ਰੱਖਦਾ ਹੈ)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:1928
+#: ../src/file-manager/fm-directory-view.c:2146
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (ਕੁੱਲ %d ਇਕਾਈ ਮੌਜੂਦ ਹੈ)"
 msgstr[1] " (ਕੁੱਲ %d ਇਕਾਈਆਂ ਮੌਜੂਦ ਹਨ)"
 
-#: ../src/file-manager/fm-directory-view.c:1944
+#: ../src/file-manager/fm-directory-view.c:2162
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr " \"%s\" ਚੁਣਿਆ (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:1948
+#: ../src/file-manager/fm-directory-view.c:2166
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2628,7 +2621,7 @@ msgstr[0] "%d ਇਕਾਈ ਚੁਣੀ (%s)"
 msgstr[1] "%d ਇਕਾਈਆਂ ਚੁਣੀਆਂ (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:1956
+#: ../src/file-manager/fm-directory-view.c:2174
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -2636,7 +2629,7 @@ msgstr[0] "%d ਹੋਰ ਚੁਣੀ ਇਕਾਈ (%s)"
 msgstr[1] "%d ਹੋਰ ਚੁਣੀਆਂ ਇਕਾਈਆਂ (%s)"
 
 #  Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:1977
+#: ../src/file-manager/fm-directory-view.c:2195
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
@@ -2648,7 +2641,7 @@ msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2002
+#: ../src/file-manager/fm-directory-view.c:2220
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2657,48 +2650,48 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2072
+#: ../src/file-manager/fm-directory-view.c:2302
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "ਫੋਲਡਰ \"%s\" ਇੰਨੀਆਂ ਰੱਖਦਾ ਹੈ, ਜਿੰਨੀਆਂ ਨਾਟੀਲਸ ਸੰਭਾਲ ਨਹੀ ਸਕਦਾ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:2078
+#: ../src/file-manager/fm-directory-view.c:2308
 msgid "Some files will not be displayed."
 msgstr "ਕੁਝ ਫਾਇਲਾਂ ਹੀ ਵੇਖਾਈਆ ਨਾ ਜਾ ਸਕਣਗੀਆਂ।"
 
-#: ../src/file-manager/fm-directory-view.c:3477
+#: ../src/file-manager/fm-directory-view.c:3705
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ, ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:3478
+#: ../src/file-manager/fm-directory-view.c:3706
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "ਫਾਇਲ਼ \"%s\" ਰੱਦੀ ਵਿੱਚ ਨਹੀ ਭੇਜੀ ਜਾ ਸਕਦੀ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:3482
+#: ../src/file-manager/fm-directory-view.c:3710
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "ਕੁਝ ਇਕਾਈਆਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ, ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:3483
+#: ../src/file-manager/fm-directory-view.c:3711
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "%d ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਵਿੱਚੋਂ ਕਿਸੇ ਨੂੰ ਵੀ ਰੱਦੀ 'ਚ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
-#: ../src/file-manager/fm-directory-view.c:3485
+#: ../src/file-manager/fm-directory-view.c:3713
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "ਕੁਝ ਇਕਾਈ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ, ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:3486
+#: ../src/file-manager/fm-directory-view.c:3714
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਦੀਆਂ %d ਇਕਾਈਆਂ ਨੂੰ ਰੱਦੀ 'ਚ ਭੇਜਿਆਂ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../src/file-manager/fm-directory-view.c:3524
+#: ../src/file-manager/fm-directory-view.c:3752
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "ਕੀ ਤੁਸੀਂ ਰੱਦੀ ਵਿੱਚੋ \"%s\" ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:3528
+#: ../src/file-manager/fm-directory-view.c:3756
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2709,48 +2702,48 @@ msgid_plural ""
 msgstr[0] "ਰੱਦੀ ਵਿੱਚੋ %d ਚੁਣੀ ਇਕਾਈ ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 msgstr[1] "ਰੱਦੀ ਵਿੱਚੋ %d ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:3537
+#: ../src/file-manager/fm-directory-view.c:3765
 msgid "If you delete an item, it will be permanently lost."
 msgstr "ਜੇਕਰ ਤੁਸੀ ਕੁਝ ਖਤਮ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਤਾਂ ਇਹ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਹੋ ਜਾਵੇਗਾ।"
 
-#: ../src/file-manager/fm-directory-view.c:4113
+#: ../src/file-manager/fm-directory-view.c:4343
 #, c-format
 msgid "Open with \"%s\""
 msgstr " \"%s\" ਨਾਲ ਖੋਲੋ"
 
-#: ../src/file-manager/fm-directory-view.c:4114
+#: ../src/file-manager/fm-directory-view.c:4344
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਨੂੰ ਖੋਲਣ ਲਈ \"%s\" ਵਰਤੋਂ"
 
-#: ../src/file-manager/fm-directory-view.c:4203
+#: ../src/file-manager/fm-directory-view.c:4433
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "ਕੀ ਤੁਸੀ \"%s\" ਚਲਾਉਣਾ ਚਾਹੋਗੇ ਜਾਂ ਵੇਖਣਾ ਚਾਹੋਗੇ?"
 
-#: ../src/file-manager/fm-directory-view.c:4205
+#: ../src/file-manager/fm-directory-view.c:4435
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" ਫਾਇਲ ਚੱਲਣਯੋਗ ਪਾਠ ਫਾਇਲ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:4211
+#: ../src/file-manager/fm-directory-view.c:4441
 msgid "Run in _Terminal"
 msgstr "ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:4212
+#: ../src/file-manager/fm-directory-view.c:4442
 msgid "_Display"
 msgstr "ਵਿਖਾਉ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:4215
+#: ../src/file-manager/fm-directory-view.c:4445
 msgid "_Run"
 msgstr "ਚਲਾਉ(_R)"
 
-#: ../src/file-manager/fm-directory-view.c:4599
+#: ../src/file-manager/fm-directory-view.c:4835
 #, c-format
 msgid "Cannot open %s"
 msgstr "ਖੋਲ ਨਹੀ ਸਕਦੇ %s"
 
-#: ../src/file-manager/fm-directory-view.c:4602
+#: ../src/file-manager/fm-directory-view.c:4838
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2770,27 +2763,27 @@ msgstr ""
 "ਫਾਇਲ ਖੋਲਣ ਲਈ ਫਾਇਲ ਦਾ ਨਾਂ, ਇਸ ਦੀ ਐਕਸਟੇਸ਼ਨ ਨੂੰ \"%s\" ਨਾਲ ਬਦਲ ਦਿਉ, ਫਿਰ ਫਾਇਲ ਨੂੰ ਸਧਾਰਨ "
 "ਤਰੀਕੇ ਨਾਲ ਖੋਲੋ। ਬਦਲਵਾਂ ਤਰੀਕਾ ਇਹ ਹੈ ਕਿ ਮੇਨੂ-ਸੂਚੀ ਵਿੱਚੋਂ ਕਾਰਜ, ਇਸ ਫਾਇਲ ਨੂੰ ਖੋਲਣ ਲਈ ਚੁਣੋ।"
 
-#: ../src/file-manager/fm-directory-view.c:4997
+#: ../src/file-manager/fm-directory-view.c:5233
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਨੂੰ ਚਲਾਉਣ ਲਈ \"%s\" ਵਰਤੋਂ"
 
-#: ../src/file-manager/fm-directory-view.c:5246
+#: ../src/file-manager/fm-directory-view.c:5482
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "ਨਮੂਨੇ \"%s\" ਤੋਂ ਦਸਤਾਵੇਜ਼ ਤਿਆਰ ਕਰੋ"
 
-#: ../src/file-manager/fm-directory-view.c:5452
+#: ../src/file-manager/fm-directory-view.c:5688
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਾਰੀਆਂ ਚਲਣਯੋਗ ਫਾਇਲ਼ਾਂ ਸਕ੍ਰਿਪਟ ਸੂਚੀ ਵਿੱਚ ਉਪਬਲੱਧ ਹਨ।"
 
-#: ../src/file-manager/fm-directory-view.c:5454
+#: ../src/file-manager/fm-directory-view.c:5690
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "ਸੂਚੀ ਵਿੱਚੋ ਚੁਣੀ ਕੋਈ ਸਕ੍ਰਿਪਟ ਕਿਸੇ ਵੀ ਚੁਣੀ ਫਾਇਲ ਨੂੰ ਇਨਪੁੱਟ ਲੈ ਕੇ ਚੱਲ ਸਕੇਗੀ।"
 
-#: ../src/file-manager/fm-directory-view.c:5456
+#: ../src/file-manager/fm-directory-view.c:5692
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2827,471 +2820,497 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ਮੌਜੂਦ ਝਰੋਖੇ ਲਈ ਸਥਾਨ ਅਤੇ ਅਕਾਰ"
 
-#: ../src/file-manager/fm-directory-view.c:5617
+#: ../src/file-manager/fm-directory-view.c:5853
 #: ../src/file-manager/fm-tree-view.c:902
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "ਜੇਕਰ ਚਿਪਕਾਉਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਭੇਜੀ ਜਾਵੇਗੀ"
 
-#: ../src/file-manager/fm-directory-view.c:5621
+#: ../src/file-manager/fm-directory-view.c:5857
 #: ../src/file-manager/fm-tree-view.c:906
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "ਜੇਕਰ ਚਿਪਕਾਉਣ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ \"%s\" ਨੂੰ ਨਕਲ ਕੀਤਾ ਜਾਵੇਗਾ"
 
-#: ../src/file-manager/fm-directory-view.c:5628
+#: ../src/file-manager/fm-directory-view.c:5864
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "ਜੇਕਰ ਚਿਪਕਾਉਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ %d ਫਾਇਲਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 msgstr[1] "ਜੇਕਰ ਚਿਪਕਾਉਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ %d ਫਾਇਲਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: ../src/file-manager/fm-directory-view.c:5635
+#: ../src/file-manager/fm-directory-view.c:5871
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "ਜੇਕਰ ਚਿਪਕਾਉਣ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ %d ਚੁਣੀ ਫਾਇਲ ਨਕਲ ਕੀਤੀ ਜਾਵੇਗੀ"
 msgstr[1] "ਜੇਕਰ ਚਿਪਕਾਉਣ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ %d ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਨਕਲ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: ../src/file-manager/fm-directory-view.c:5729
+#: ../src/file-manager/fm-directory-view.c:5965
 #: ../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕੁਝ ਨਹੀ, ਜੋ ਰੱਖਿਆ ਜਾ ਸਕੇ।"
 
-#: ../src/file-manager/fm-directory-view.c:6084
+#: ../src/file-manager/fm-directory-view.c:6320
 #, c-format
 msgid "Connect to Server %s"
 msgstr "%s ਸਰਵਰ ਨਾਲ ਜੁੜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:6089
+#: ../src/file-manager/fm-directory-view.c:6325
 msgid "_Connect"
 msgstr "ਕੁਨੈਕਸ਼ਨ(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6103
+#: ../src/file-manager/fm-directory-view.c:6339
 msgid "Link _name:"
 msgstr "ਸਬੰਧ ਨਾਂ(_n):"
 
-#: ../src/file-manager/fm-directory-view.c:6278
+#: ../src/file-manager/fm-directory-view.c:6514
 msgid "Create _Document"
 msgstr "ਦਸਤਾਵੇਜ ਬਣਾਉ(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6279
+#: ../src/file-manager/fm-directory-view.c:6515
 msgid "Open Wit_h"
 msgstr "ਇਸ ਨਾਲ ਖੋਲੋ(_h)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6280
+#: ../src/file-manager/fm-directory-view.c:6516
 msgid "Choose a program with which to open the selected item"
 msgstr "ਹੋਰ ਸਹਾਇਕ ਚੁਣੋ, ਜੋ ਚੁਣੀ ਇਕਾਈ ਨੂੰ ਖੋਲ ਸਕੇ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6282
-#: ../src/file-manager/fm-directory-view.c:6290
+#: ../src/file-manager/fm-directory-view.c:6518
+#: ../src/file-manager/fm-directory-view.c:6526
 msgid "_Properties"
 msgstr "ਵਿਸ਼ੇਸਤਾ(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6283
+#: ../src/file-manager/fm-directory-view.c:6519
 msgid "View or modify the properties of each selected item"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਇਕਾਈ ਦੀ ਵਿਸ਼ੇਸਤਾ ਵੇਖੋ ਜਾ ਸੋਧੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6291
+#: ../src/file-manager/fm-directory-view.c:6527
 msgid "View or modify the properties of the open folder"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਦੀ ਵਿਸ਼ੇਸਤਾ ਵੇਖਾਓ ਜਾਂ ਸੋਧੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6294
+#: ../src/file-manager/fm-directory-view.c:6530
 msgid "Create _Folder"
 msgstr "ਫੋਲਡਰ ਬਣਾਉ(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6295
+#: ../src/file-manager/fm-directory-view.c:6531
 msgid "Create a new empty folder inside this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਇਕ ਖਾਲੀ ਫੋਲਡਰ ਬਣਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:6297
+#: ../src/file-manager/fm-directory-view.c:6533
 msgid "No templates Installed"
 msgstr "ਕੋਈ ਇੰਸਟਾਲ ਨਮੂਨਾ ਨਹੀਂ ਹੈ"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6300
+#: ../src/file-manager/fm-directory-view.c:6536
 msgid "_Empty File"
 msgstr "ਖਾਲ਼ੀ ਫਾਇਲ(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6301
+#: ../src/file-manager/fm-directory-view.c:6537
 msgid "Create a new empty file inside this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਇਕ ਖਾਲੀ ਫਾਇਲ ਬਣਾਉ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6308
-#: ../src/file-manager/fm-directory-view.c:7012
+#: ../src/file-manager/fm-directory-view.c:6544
+#: ../src/file-manager/fm-directory-view.c:7259
 #: ../src/file-manager/fm-tree-view.c:1105
 msgid "_Open"
 msgstr "ਖੋਲੋ(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6309
+#: ../src/file-manager/fm-directory-view.c:6545
 msgid "Open the selected item in this window"
 msgstr "ਚੁਣੀ ਇਕਾਈ ਇਸ ਝਰੋਖੇ ਵਿੱਚ ਖੋਲੋ"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6316
-#: ../src/file-manager/fm-directory-view.c:6416
+#: ../src/file-manager/fm-directory-view.c:6552
+#: ../src/file-manager/fm-directory-view.c:6660
 msgid "Open in Navigation Window"
 msgstr "ਨਵਾਂ ਨੈਵੀਗੇਸ਼ਨ ਝਰੋਖਾ ਖੋਲੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6317
+#: ../src/file-manager/fm-directory-view.c:6553
 msgid "Open each selected item in a navigation window"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਇਕਾਈ ਨਵੇ ਨੈਵੀਗੇਸ਼ਨ ਝਰੋਖੇ ਵਿੱਚ ਖੋਲੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6320
-#: ../src/file-manager/fm-directory-view.c:6324
+#: ../src/file-manager/fm-directory-view.c:6556
+#: ../src/file-manager/fm-directory-view.c:6560
 msgid "Open with Other _Application..."
 msgstr "ਹੋਰ ਕਾਰਜ ਨਾਲ ਖੋਲੋ(_A)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6321
-#: ../src/file-manager/fm-directory-view.c:6325
+#: ../src/file-manager/fm-directory-view.c:6557
+#: ../src/file-manager/fm-directory-view.c:6561
 msgid "Choose another application with which to open the selected item"
 msgstr "ਹੋਰ ਕਾਰਜ ਚੁਣੋ, ਜਿਸ ਨਾਲ ਕਿ ਚੁਣੀ ਇਕਾਈ ਖੋਲੀ ਜਾ ਸਕੇ।"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6328
+#: ../src/file-manager/fm-directory-view.c:6564
 msgid "_Open Scripts Folder"
 msgstr "ਸਕ੍ਰਿਪਟ ਫੋਲਡਰ ਖੋਲੋ(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6329
+#: ../src/file-manager/fm-directory-view.c:6565
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "ਉਹ ਫੋਲਡਰ ਵੇਖਾਉ, ਜੋ ਉਹ ਸਕ੍ਰਿਪਟਾਂ ਰੱਖਦਾ ਹੈ, ਜੋ ਕਿ ਇਸ ਮੇਨੂ ਲਈ ਲੋੜੀਦੀਆਂ ਹਨ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6337
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਚਿਪਕਾਉ ਕਮਾਂਡ ਨਾਲ ਭੇਜਣ ਲਈ ਕਰਨ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6341
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਚਿਪਕਾਉ ਕਮਾਂਡ ਨਾਲ ਨਕਲ ਕਰਨ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6345
+#: ../src/file-manager/fm-directory-view.c:6581
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "ਭੇਜੋ ਜਾਂ ਨਕਲ ਕਰੋ, ਜੋ ਪਹਿਲਾਂ ਨਕਲ ਜਾਂ ਕੱਟ ਦੀ ਕਮਾਂਡ ਨਾਲ ਚੁਣੀਆਂ ਸਨ"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6350
+#: ../src/file-manager/fm-directory-view.c:6586
 #: ../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਚੇਪੋ(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6351
+#: ../src/file-manager/fm-directory-view.c:6587
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "ਪਹਿਲਾਂ ਕੱਟ ਜਾਂ ਨਕਲ ਕਮਾਂਡ ਨਾਲ ਭੇਜੀਆਂ ਜਾਂ ਨਕਲ ਕੀਤੀਆਂ ਫਾਇਲਾਂ ਚੁਣੇ ਫੋਲਡਰ ਅੰਦਰ ਭੇਜੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6355
+#: ../src/file-manager/fm-directory-view.c:6591
 msgid "Select all items in this window"
 msgstr "ਇਸ ਝਰੋਖੇ ਵਿਚਲੀਆਂ ਸਭ ਇਕਾਈਆਂ ਚੁਣੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6358
+#: ../src/file-manager/fm-directory-view.c:6594
 msgid "Select _Pattern"
 msgstr "ਤਰਤੀਬ ਚੁਣੋ(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6359
+#: ../src/file-manager/fm-directory-view.c:6595
 msgid "Select items in this window matching a given pattern"
 msgstr "ਇਸ ਝਰੋਖੇ ਵਿੱਚ ਇਕਾਈਆਂ ਚੁਣੋ, ਜੋ ਦਿੱਤੀ ਤਰਤੀਬ ਅਨੁਸਾਰ ਹੋਣ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6362
+#: ../src/file-manager/fm-directory-view.c:6598
 msgid "D_uplicate"
 msgstr "ਹੂਬਹੂ(_u)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6363
+#: ../src/file-manager/fm-directory-view.c:6599
 msgid "Duplicate each selected item"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਇਕਾਈ ਲਈ ਹੂਬਹੂ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6366
-#: ../src/file-manager/fm-directory-view.c:7085
+#: ../src/file-manager/fm-directory-view.c:6602
+#: ../src/file-manager/fm-directory-view.c:7332
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "ਸਬੰਧ ਬਣਾਓ"
 msgstr[1] "ਸਬੰਧ ਬਣਾਓ(_k)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6367
+#: ../src/file-manager/fm-directory-view.c:6603
 msgid "Create a symbolic link for each selected item"
 msgstr "ਹਰੇਕ ਇਕਾਈ ਲਈ ਚਿੰਨ੍ਹ ਸੰਬੰਧ ਬਣਾਉ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6370
+#: ../src/file-manager/fm-directory-view.c:6606
 msgid "_Rename..."
 msgstr "ਨਾਂ ਤਬਦੀਲ(_R)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6371
+#: ../src/file-manager/fm-directory-view.c:6607
 msgid "Rename selected item"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਦੇ ਨਾਂ ਬਦਲੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6378
-#: ../src/file-manager/fm-directory-view.c:6430
-#: ../src/file-manager/fm-directory-view.c:6886
-#: ../src/file-manager/fm-directory-view.c:7053
-#: ../src/file-manager/fm-directory-view.c:7404
+#: ../src/file-manager/fm-directory-view.c:6614
+#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:7130
+#: ../src/file-manager/fm-directory-view.c:7300
+#: ../src/file-manager/fm-directory-view.c:7689
 msgid "Mo_ve to Trash"
 msgstr "ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ(_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6379
-#: ../src/file-manager/fm-directory-view.c:7054
+#: ../src/file-manager/fm-directory-view.c:6615
+#: ../src/file-manager/fm-directory-view.c:7301
 msgid "Move each selected item to the Trash"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਇਕਾਈ ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6382
-#: ../src/file-manager/fm-directory-view.c:6434
-#: ../src/file-manager/fm-directory-view.c:7072
+#: ../src/file-manager/fm-directory-view.c:6618
+#: ../src/file-manager/fm-directory-view.c:6678
+#: ../src/file-manager/fm-directory-view.c:7319
 msgid "_Delete"
 msgstr "ਹਟਾਉ(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6383
+#: ../src/file-manager/fm-directory-view.c:6619
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਫਾਇਲ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜੇ ਬਿਨਾਂ ਹੀ ਖਤਮ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6386
+#: ../src/file-manager/fm-directory-view.c:6622
 msgid "Reset View to _Defaults"
 msgstr "ਦਰਿਸ਼ ਮੂਲ ਹੀ ਕਰੋ(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6387
+#: ../src/file-manager/fm-directory-view.c:6623
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "ਇਸ ਦਿੱਖ ਦੀ ਪਸੰਦ ਲਈ ਕ੍ਰਮ ਅਤੇ ਜੂਮ ਅਕਾਰ ਨਿਰਧਾਰਿਤ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6390
+#: ../src/file-manager/fm-directory-view.c:6626
 msgid "Connect To This Server"
 msgstr "ਇਸ ਸਰਵਰ ਨਾਲ ਜੁੜੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6391
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid "Make a permanent connection to this server"
 msgstr "ਇਸ ਸਰਵਰ ਨਾਲ ਸਥਾਈ ਕੁਨੈਕਸ਼ਨ ਬਣਾਓ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6394
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "_Mount Volume"
 msgstr "ਵਾਲੀਅਮ ਮਾਉਟ(_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6395
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Mount the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਮਾਊਟ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6398
+#: ../src/file-manager/fm-directory-view.c:6634
 #: ../src/file-manager/fm-tree-view.c:751
 msgid "_Unmount Volume"
 msgstr "ਵਾਲੀਅਮ ਅਨਮਾਉਟ(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6399
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Unmount the selected volume"
 msgstr "ਚੁਣੇ ਹਿੱਸੇ ਨੂੰ ਅਨਮਾਊਟ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6402
+#: ../src/file-manager/fm-directory-view.c:6638
 msgid "_Eject"
 msgstr "ਬਾਹਰ ਕੱਢੋ(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6403
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Eject the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਬਾਹਰ ਕੱਢੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6406
+#: ../src/file-manager/fm-directory-view.c:6642
 msgid "_Format"
 msgstr "ਫਾਰਮਿਟ(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6407
+#: ../src/file-manager/fm-directory-view.c:6643
 msgid "Format the selected volume"
 msgstr "ਚੁਣੇ ਵਾਲੀਅਮ ਨੂੰ ਫਾਰਮਿਟ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6410
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "Open File and Close window"
 msgstr "ਫਾਇਲ ਖੋਲੋ ਅਤੇ ਝਰੋਖਾ ਬੰਦ ਕਰੋ"
 
+#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6650
+msgid "Sa_ve Search"
+msgstr "ਖੋਜ ਸੰਭਾਲੋ(_v)"
+
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6417
+#: ../src/file-manager/fm-directory-view.c:6651
+msgid "Save the edited search"
+msgstr "ਸੋਧੀ ਖੋਜ ਸੰਭਾਲੋ"
+
+#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6654
+msgid "Sa_ve Search As..."
+msgstr "ਖੋਜ ਇੰਜ ਸੰਭਾਲੋ(_v)..."
+
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6655
+msgid "Save the current search as a file"
+msgstr "ਮੌਜੂਦਾ ਖੋਜ ਨੂੰ ਇੱਕ ਫਾਇਲ ਵਿੱਚ ਸੰਭਾਲੋ"
+
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6661
 msgid "Open this folder in a navigation window"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਇੱਕ ਏਧਰ-ਓਧਰ ਝਰੋਖੇ 'ਚ ਖੋਲੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6422
+#: ../src/file-manager/fm-directory-view.c:6666
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਚੇਪਣ ਕਮਾਂਡ ਨਾਲ ਭੇਜਣ ਲਈ ਤਿਆਰ ਕਰੋ"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6426
+#: ../src/file-manager/fm-directory-view.c:6670
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਚੇਪਣ ਕਮਾਂਡ ਨਾਲ ਨਕਲ ਕਰਨ ਲਈ ਤਿਆਰ ਕਰੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6431
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Move this folder to the Trash"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਰੱਦੀ 'ਚ ਭੇਜੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6435
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "Delete this folder, without moving to the Trash"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਹਟਾਓ, ਰੱਦੀ ਵਿੱਚ ਭੇਜੇ ਬਿਨਾਂ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6441
+#: ../src/file-manager/fm-directory-view.c:6685
 msgid "Show _Hidden Files"
 msgstr "ਲੁੱਕਵੀਆਂ ਫਾਇਲਾਂ ਵੇਖਾਓ(_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6442
+#: ../src/file-manager/fm-directory-view.c:6686
 msgid "Toggle the display of hidden files in the current window"
 msgstr "ਮੌਜੂਦਾ ਝਰੋਖੇ ਵਿੱਚ ਲੁਕਵੀਆਂ ਫਾਇਲਾਂ ਨੂੰ ਵੇਖਾਉਣਾ ਤਬਦੀਲ"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6528
+#: ../src/file-manager/fm-directory-view.c:6772
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s ਤੋਂ ਸਕਰਿਪਟਾਂ ਚਲਾਓ ਜਾਂ ਦੇਖਭਾਲ ਕਰੋ"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6530
+#: ../src/file-manager/fm-directory-view.c:6774
 msgid "_Scripts"
 msgstr "ਸਕ੍ਰਿਪਟ(_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6855
-#: ../src/file-manager/fm-directory-view.c:7021
+#: ../src/file-manager/fm-directory-view.c:7099
+#: ../src/file-manager/fm-directory-view.c:7268
 #: ../src/file-manager/fm-tree-view.c:1116
 msgid "Open in New Window"
 msgstr "ਨਵੇਂ ਝਰੋਖੇ 'ਚ ਖੋਲੋ"
 
-#: ../src/file-manager/fm-directory-view.c:6857
-#: ../src/file-manager/fm-directory-view.c:7029
+#: ../src/file-manager/fm-directory-view.c:7101
+#: ../src/file-manager/fm-directory-view.c:7276
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "ਫੋਲਡਰ ਝਲਕ(_B)"
 msgstr[1] "ਫੋਲਡਰ ਝਲਕ(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:6882
-#: ../src/file-manager/fm-directory-view.c:7049
+#: ../src/file-manager/fm-directory-view.c:7126
+#: ../src/file-manager/fm-directory-view.c:7296
 msgid "_Delete from Trash"
 msgstr "ਰੱਦੀ ਵਿੱਚੋ ਹਟਾਉ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:6883
+#: ../src/file-manager/fm-directory-view.c:7127
 msgid "Delete the open folder permanently"
 msgstr "ਖੁੱਲੇ ਫੋਲਡਰ ਨੂੰ ਹਮੇਸ਼ਾ ਲਈ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:6887
+#: ../src/file-manager/fm-directory-view.c:7131
 msgid "Move the open folder to the Trash"
 msgstr "ਖੁੱਲਾ ਫੋਲਡਰ ਰੱਦੀ 'ਚ ਭੇਜੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7001
+#: ../src/file-manager/fm-directory-view.c:7248
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "\"%s\" ਨਾਲ ਖੋਲੋ(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7270
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "%d ਨਵੇਂ ਝਰੋਖੇ ਵਿੱਚ ਖੋਲੋ"
 msgstr[1] "%d ਨਵੇਂ ਝਰੋਖਿਆਂ ਵਿੱਚ ਖੋਲੋ"
 
-#: ../src/file-manager/fm-directory-view.c:7050
+#: ../src/file-manager/fm-directory-view.c:7297
 msgid "Delete all selected items permanently"
-msgstr "ਸਭ ਇਕਾਈਆਂ ਪੱਕੇ ਤੌਰ ਤੇ ਹਟਾਉ"
+msgstr "ਸਭ ਇਕਾਈਆਂ ਪੱਕੇ ਤੌਰ ਉੱਤੇ ਹਟਾਓ"
 
-#: ../src/file-manager/fm-directory-view.c:7396
-msgid "The link is broken, do you want to move it to the Trash?"
-msgstr "ਸਬੰਧ ਟੁੱਟ ਚੁੱਕਾ ਹੈ, ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣਾ ਪਸੰਦ ਕਰੋਗੇ?"
+#: ../src/file-manager/fm-directory-view.c:7669
+#, c-format
+msgid "The Link \"%s\" is Broken."
+msgstr "ਸਬੰਧ \"%s\" ਟੁੱਟਿਆ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:7398
+#: ../src/file-manager/fm-directory-view.c:7671
+#, c-format
+msgid "The Link \"%s\" is Broken. Move it to Trash?"
+msgstr "ਸਬੰਧ \"%s\" ਟੁੱਟਿਆ ਹੋਇਆ ਹੈ। ਕੀ ਇਸ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣਾ ਹੈ?"
+
+#: ../src/file-manager/fm-directory-view.c:7677
 msgid "This link can't be used, because it has no target."
 msgstr "ਇਹ ਸਬੰਧ ਵਰਤੋਯੋਗ ਨਹੀ, ਕਿਉਕਿ ਨਿਸ਼ਾਨਾ ਹੀ ਨਹੀ ਰਿਹਾ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:7400
+#: ../src/file-manager/fm-directory-view.c:7679
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "ਇਹ ਸਬੰਧ ਵਰਤੋਯੋਗ ਨਹੀ, ਕਿਉਕਿ ਨਿਸ਼ਾਨਾ \"%s\" ਹੀ ਨਹੀ ਰਿਹਾ।"
 
-#: ../src/file-manager/fm-directory-view.c:7893
+#: ../src/file-manager/fm-directory-view.c:8180
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" ਖੁੱਲ ਰਿਹਾ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:7896
+#: ../src/file-manager/fm-directory-view.c:8183
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "%d ਇਕਾਈ ਖੁੱਲ ਰਹੀ ਹੈ"
 msgstr[1] "%d ਇਕਾਈਆਂ ਖੁੱਲ ਰਹੀਆਂ ਹੈ"
 
-#: ../src/file-manager/fm-directory-view.c:8771
+#: ../src/file-manager/fm-directory-view.c:9075
 msgid "Download location?"
 msgstr "ਕੀ ਟਿਕਾਣਾ ਡਾਊਨਲੋਡ ਕਰਨਾ ਹੈ?"
 
-#: ../src/file-manager/fm-directory-view.c:8774
+#: ../src/file-manager/fm-directory-view.c:9078
 msgid "You can download it or make a link to it."
 msgstr "ਤੁਸੀਂ ਇਸ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰ ਸਕਦੇ ਹੋ ਜਾਂ ਇਸ ਨਾਲ ਸਬੰਧ ਬਣਾ ਸਕਦੇ ਹੋ।"
 
-#: ../src/file-manager/fm-directory-view.c:8777
+#: ../src/file-manager/fm-directory-view.c:9081
 msgid "Make a _Link"
 msgstr "ਸਬੰਧ ਬਣਾਉ(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:8781
+#: ../src/file-manager/fm-directory-view.c:9085
 msgid "_Download"
 msgstr "ਡਾਊਨਲੋਡ(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:8840
-#: ../src/file-manager/fm-directory-view.c:8892
-#: ../src/file-manager/fm-directory-view.c:8989
+#: ../src/file-manager/fm-directory-view.c:9144
+#: ../src/file-manager/fm-directory-view.c:9196
+#: ../src/file-manager/fm-directory-view.c:9293
 msgid "Drag and drop is not supported."
 msgstr "ਚੁੱਕਣ ਸੁੱਟਣ ਕਾਰਵਾਈ ਸਹਾਇਕ ਨਹੀਂ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:8841
+#: ../src/file-manager/fm-directory-view.c:9145
 msgid "Drag and drop is only supported on local file systems."
 msgstr "ਚੁੱਕਣ ਸੁੱਟਣ ਕਾਰਵਾਈ ਕੇਵਲ ਸਥਾਨਕ ਫਾਇਲਾਂ ਲਈ ਹੈ।"
 
-#: ../src/file-manager/fm-directory-view.c:8893
-#: ../src/file-manager/fm-directory-view.c:8990
+#: ../src/file-manager/fm-directory-view.c:9197
+#: ../src/file-manager/fm-directory-view.c:9294
 msgid "An invalid drag type was used."
 msgstr "ਇਕ ਗਲਤ ਚੁੱਕਣ ਦੀ ਕਿਸਮ ਸੀ।"
 
@@ -3321,114 +3340,114 @@ msgstr "ਕਮਾਂਡ"
 msgid "Launcher"
 msgstr "ਸ਼ੁਰੂਆਤੀ"
 
-#: ../src/file-manager/fm-error-reporting.c:57
+#: ../src/file-manager/fm-error-reporting.c:59
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "\"%s\" ਦੇ ਹਿੱਸੇ ਵੇਖਣ ਲਈ ਜਰੂਰੀ ਅਧਿਕਾਰ ਨਹੀ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:61
+#: ../src/file-manager/fm-error-reporting.c:63
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
 msgstr "\"%s\" ਨਹੀ ਲੱਭਿਆ ਜਾ ਸਕਿਆ ਹੈ|"
 
-#: ../src/file-manager/fm-error-reporting.c:68
+#: ../src/file-manager/fm-error-reporting.c:70
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "ਮੁਆਫੀ, ਪਰ \"%s\" ਦੇ ਹਿੱਸੇ ਨਹੀ ਵੇਖੇ ਜਾ ਸਕਦੇ|"
 
-#: ../src/file-manager/fm-error-reporting.c:71
+#: ../src/file-manager/fm-error-reporting.c:76
 msgid "The folder contents could not be displayed."
 msgstr "ਫੋਲਡਰ ਦੇ ਹਿੱਸੇ ਨਹੀ ਵੇਖਾਏ ਜਾ ਸਕਦੇ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:102
+#: ../src/file-manager/fm-error-reporting.c:107
 #, c-format
 msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr "ਇਹ ਨਾਂ \"%s\" ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਨਾਂ ਚੁਣੋ|"
 
-#: ../src/file-manager/fm-error-reporting.c:107
+#: ../src/file-manager/fm-error-reporting.c:112
 #, c-format
 msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਕੋਈ \"%s\" ਨਹੀ, ਸਾਇਦ ਕਿਤੇ ਤਬਦੀਲੀ ਹੋਈ ਜਾਂ ਹਟਾ ਗਈ ?"
 
-#: ../src/file-manager/fm-error-reporting.c:112
+#: ../src/file-manager/fm-error-reporting.c:117
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
 msgstr "\"%s\" ਨਾਂ ਤਬਦੀਲੀ ਲਈ ਜਰੂਰੀ ਅਧਿਕਾਰ ਤੁਹਾਨੂੰ ਨਹੀ ਹਨ "
 
-#: ../src/file-manager/fm-error-reporting.c:117
+#: ../src/file-manager/fm-error-reporting.c:122
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr "\"%s\" ਨਾਂ ਜਾਇਜ ਨਹੀ ਕਿਉਕਿ ਇਸ ਵਿੱਚ \"/\" ਅੱਖਰ ਹੈ| ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਨਾਂ ਚੁਣੋ "
 
-#: ../src/file-manager/fm-error-reporting.c:121
+#: ../src/file-manager/fm-error-reporting.c:126
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
 msgstr "\"%s\" ਨਾਂ ਜਾਇਜ ਨਹੀ, ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਨਾਂ ਚੁਣੋ|"
 
-#: ../src/file-manager/fm-error-reporting.c:127
+#: ../src/file-manager/fm-error-reporting.c:132
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ਵਿੱਚ ਨਾਂ ਤਬਦੀਲੀ ਨਹੀ ਹੋ ਸਕਦੀ ਕਿਉਕਿ ਡਿਸਕ ਕੇਵਲ ਵੇਖਣਯੋਗ ਹੈ|"
 
-#: ../src/file-manager/fm-error-reporting.c:136
+#: ../src/file-manager/fm-error-reporting.c:141
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "ਮੁਆਫੀ, \"%s\" ਨੂੰ \"%s\" ਵਿੱਚ ਨਾਂ ਤਬਦੀਲੀ ਨਹੀ ਹੋ ਸਕਦੀ|"
 
-#: ../src/file-manager/fm-error-reporting.c:143
+#: ../src/file-manager/fm-error-reporting.c:148
 msgid "The item could not be renamed."
 msgstr "ਇਕਾਈਆਂ ਦੇ ਨਾਂ ਨਹੀ ਬਦਲੇ ਜਾ ਸਕਦੇ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:163
+#: ../src/file-manager/fm-error-reporting.c:168
 #, c-format
 msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr " \"%s\" ਦਾ ਗਰੁੱਪ ਬਦਲਣ ਲਈ ਤੁਹਾਡੇ ਕੋਲ ਲੋੜੀਦੇ ਅਧਿਕਾਰ ਨਹੀ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:167
+#: ../src/file-manager/fm-error-reporting.c:172
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ਦਾ ਗਰੁਪ ਤਬਦੀਲ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ, ਕਿਉਕਿ ਡਿਸਕ ਕੇਵਲ ਵੇਖਣ ਲਈ ਹੈ"
 
-#: ../src/file-manager/fm-error-reporting.c:175
+#: ../src/file-manager/fm-error-reporting.c:180
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "ਮੁਆਫੀ \"%s\" ਦਾ ਗਰੁਪ ਤਬਦੀਲ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ|"
 
-#: ../src/file-manager/fm-error-reporting.c:179
+#: ../src/file-manager/fm-error-reporting.c:184
 msgid "The group could not be changed."
 msgstr "ਸਮੂਹ ਬਦਲੇ ਨਹੀ ਜਾ ਸਕਦੇ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:201
+#: ../src/file-manager/fm-error-reporting.c:206
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ਦੀ ਮਾਲਕੀਅਤ ਤਬਦੀਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ, ਕਿਉਕਿ ਡਿਸਕ ਕੇਵਲ ਵੇਖਣ ਲਈ ਹੈ|"
 
-#: ../src/file-manager/fm-error-reporting.c:208
+#: ../src/file-manager/fm-error-reporting.c:213
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "ਮੁਆਫੀ, \"%s\" ਦੇ ਮਾਲਕ ਨਹੀ ਬਦਲੇ ਜਾ ਸਕਦੇ ਹਨ "
 
-#: ../src/file-manager/fm-error-reporting.c:211
+#: ../src/file-manager/fm-error-reporting.c:216
 msgid "The owner could not be changed."
 msgstr "ਮਾਲਕ ਬਦਲੇ ਨਹੀ ਜਾ ਸਕਦੇ ਹਨ| "
 
-#: ../src/file-manager/fm-error-reporting.c:233
+#: ../src/file-manager/fm-error-reporting.c:238
 #, c-format
 msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ਦੇ ਅਧਿਕਾਰ ਤਬਦੀਲ ਨਹੀ ਕੀਤੇ ਜਾ ਸਕਦੇ ਹੈ, ਕਿਉਕਿ ਡਿਸਕ ਕੇਵਲ ਵੇਖਣ ਲਈ ਹੈ|"
 
-#: ../src/file-manager/fm-error-reporting.c:240
+#: ../src/file-manager/fm-error-reporting.c:245
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "ਮੁਆਫੀ, %s ਦੇ ਅਧਿਕਾਰ ਨਹੀ ਬਦਲੇ ਜਾ ਸਕਦੇ|"
 
-#: ../src/file-manager/fm-error-reporting.c:243
+#: ../src/file-manager/fm-error-reporting.c:248
 msgid "The permissions could not be changed."
 msgstr "ਅਧਿਕਾਰ ਬਦਲੇ ਨਹੀ ਜਾ ਸਕਦੇ ਹਨ|"
 
-#: ../src/file-manager/fm-error-reporting.c:309
+#: ../src/file-manager/fm-error-reporting.c:314
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "\"%s\" ਨੂੰ \"%s\" ਨਾਲ ਨਾਂ ਬਦਲੋ"
@@ -3438,7 +3457,7 @@ msgid "by _Name"
 msgstr "ਨਾਂ ਨਾਲ"
 
 #: ../src/file-manager/fm-icon-view.c:136
-#: ../src/file-manager/fm-icon-view.c:1439
+#: ../src/file-manager/fm-icon-view.c:1448
 msgid "Keep icons sorted by name in rows"
 msgstr "ਆਈਕਾਨ ਨਾਂ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
@@ -3447,7 +3466,7 @@ msgid "by _Size"
 msgstr "ਅਕਾਰ ਨਾਲ"
 
 #: ../src/file-manager/fm-icon-view.c:143
-#: ../src/file-manager/fm-icon-view.c:1443
+#: ../src/file-manager/fm-icon-view.c:1452
 msgid "Keep icons sorted by size in rows"
 msgstr "ਆਈਕਾਨ ਅਕਾਰ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
@@ -3456,7 +3475,7 @@ msgid "by _Type"
 msgstr "ਕਿਸਮ ਨਾਲ"
 
 #: ../src/file-manager/fm-icon-view.c:150
-#: ../src/file-manager/fm-icon-view.c:1447
+#: ../src/file-manager/fm-icon-view.c:1456
 msgid "Keep icons sorted by type in rows"
 msgstr "ਆਈਕਾਨ ਕਿਸਮ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
@@ -3465,7 +3484,7 @@ msgid "by Modification _Date"
 msgstr "ਸੋਧਣ ਤਰੀਕ ਅਨੁਸਾਰ"
 
 #: ../src/file-manager/fm-icon-view.c:157
-#: ../src/file-manager/fm-icon-view.c:1451
+#: ../src/file-manager/fm-icon-view.c:1460
 msgid "Keep icons sorted by modification date in rows"
 msgstr "ਆਈਕਾਨ ਸੋਧੀ ਤਰੀਕ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
@@ -3474,241 +3493,241 @@ msgid "by _Emblems"
 msgstr "ਨਿਸ਼ਾਨ ਅਨੁਸਾਰ"
 
 #: ../src/file-manager/fm-icon-view.c:164
-#: ../src/file-manager/fm-icon-view.c:1455
+#: ../src/file-manager/fm-icon-view.c:1464
 msgid "Keep icons sorted by emblems in rows"
 msgstr "ਆਈਕਾਨ ਨਿਸ਼ਾਨ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
-#: ../src/file-manager/fm-icon-view.c:1399
+#: ../src/file-manager/fm-icon-view.c:1408
 msgid "Arran_ge Items"
 msgstr "ਸਜਾਈਆਂ ਚੀਜਾਂ"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1401
+#: ../src/file-manager/fm-icon-view.c:1410
 msgid "Str_etch Icon"
 msgstr "ਤਣਿਆ ਆਈਕਾਨ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1402
+#: ../src/file-manager/fm-icon-view.c:1411
 msgid "Make the selected icon stretchable"
 msgstr "ਚੁਣਿਆ ਆਈਕਾਨ ਤਣਿਆ ਬਣਾਉ"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1405
-#: ../src/file-manager/fm-icon-view.c:1556
+#: ../src/file-manager/fm-icon-view.c:1414
+#: ../src/file-manager/fm-icon-view.c:1566
 msgid "Restore Icons' Original Si_zes"
 msgstr "ਆਈਕਾਨ ਅਸਲੀ ਅਕਾਰ ਦੇ ਕਰੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1406
+#: ../src/file-manager/fm-icon-view.c:1415
 msgid "Restore each selected icon to its original size"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਇਕਾਈ ਆਪਣੇ ਮੂਲ ਅਕਾਰ ਅਨੁਸਾਰ ਕਰੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1409
+#: ../src/file-manager/fm-icon-view.c:1418
 msgid "Clean _Up by Name"
 msgstr "ਨਾਂ ਸਾਫ ਕਰੋ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1410
+#: ../src/file-manager/fm-icon-view.c:1419
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "ਆਈਕਾਨਾਂ ਨੂੰ ਝਰੋਖੇ ਵਿੱਚ ਮੁੜ-ਟਿਕਾਉ ਤਾਂ ਕਿ ਇਹ ਇੱਕ ਦੂਜੇ ਵਿੱਚ ਲੁੱਕ ਨਾ ਜਾਣ"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1416
+#: ../src/file-manager/fm-icon-view.c:1425
 msgid "Compact _Layout"
 msgstr "ਸੰਗਠਿਤ ਸੰਰਚਨਾ(_L)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1417
+#: ../src/file-manager/fm-icon-view.c:1426
 msgid "Toggle using a tighter layout scheme"
 msgstr "ਇਕ ਕੱਸਿਆ ਢਾਂਚਾ ਸਕੀਮ ਲਵੋ"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1421
+#: ../src/file-manager/fm-icon-view.c:1430
 msgid "Re_versed Order"
 msgstr "ਉਲਟ ਕ੍ਰਮ(_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1422
+#: ../src/file-manager/fm-icon-view.c:1431
 msgid "Display icons in the opposite order"
 msgstr "ਆਈਕਾਨ ਉਲਟ ਕ੍ਰਮ ਅਨੁਸਾਰ ਵੇਖਾਉ"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1426
+#: ../src/file-manager/fm-icon-view.c:1435
 msgid "_Keep Aligned"
 msgstr "ਇਕਸਾਰ ਰੱਖੋ(_K)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1427
+#: ../src/file-manager/fm-icon-view.c:1436
 msgid "Keep icons lined up on a grid"
 msgstr "ਆਈਕਾਨਾਂ ਨੂੰ ਗਰਿੱਡ ਅਨੁਸਾਰ ਕਤਾਰਬੱਧ ਕਰੋ"
 
-#: ../src/file-manager/fm-icon-view.c:1434
+#: ../src/file-manager/fm-icon-view.c:1443
 msgid "_Manually"
 msgstr "ਦਸਤੀ(_M)"
 
-#: ../src/file-manager/fm-icon-view.c:1435
+#: ../src/file-manager/fm-icon-view.c:1444
 msgid "Leave icons wherever they are dropped"
 msgstr "ਆਈਕਾਨ ਛੱਡੋ, ਜਿਥੇ ਰੱਖੇ ਗਏ ਹਨ"
 
-#: ../src/file-manager/fm-icon-view.c:1438
+#: ../src/file-manager/fm-icon-view.c:1447
 msgid "By _Name"
 msgstr "ਨਾਂ ਨਾਲ(_N)"
 
-#: ../src/file-manager/fm-icon-view.c:1442
+#: ../src/file-manager/fm-icon-view.c:1451
 msgid "By _Size"
 msgstr "ਅਕਾਰ ਨਾਲ(_S)"
 
-#: ../src/file-manager/fm-icon-view.c:1446
+#: ../src/file-manager/fm-icon-view.c:1455
 msgid "By _Type"
 msgstr "ਕਿਸਮ ਨਾਲ(_T)"
 
-#: ../src/file-manager/fm-icon-view.c:1450
+#: ../src/file-manager/fm-icon-view.c:1459
 msgid "By Modification _Date"
 msgstr "ਸੋਧ ਮਿਤੀ ਨਾਲ(_D)"
 
-#: ../src/file-manager/fm-icon-view.c:1454
+#: ../src/file-manager/fm-icon-view.c:1463
 msgid "By _Emblems"
 msgstr "ਨਿਸ਼ਾਨ ਨਾਲ(_E)"
 
-#: ../src/file-manager/fm-icon-view.c:1557
+#: ../src/file-manager/fm-icon-view.c:1567
 msgid "Restore Icon's Original Si_ze"
 msgstr "ਆਈਕਾਨ ਅਸਲੀ ਅਕਾਰ ਦੇ ਕਰੋ(_z)"
 
-#: ../src/file-manager/fm-icon-view.c:1967
+#: ../src/file-manager/fm-icon-view.c:1982
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" ਤੇ ਇਸ਼ਾਰਾ"
 
-#: ../src/file-manager/fm-icon-view.c:2743
+#: ../src/file-manager/fm-icon-view.c:2756
 msgid "Icons"
 msgstr "ਆਈਕਾਨ"
 
-#: ../src/file-manager/fm-icon-view.c:2744
+#: ../src/file-manager/fm-icon-view.c:2757
 msgid "View as Icons"
 msgstr "ਆਈਕਾਨ ਵਾਂਗ ਝਲਕ"
 
-#: ../src/file-manager/fm-icon-view.c:2745
+#: ../src/file-manager/fm-icon-view.c:2758
 msgid "View as _Icons"
 msgstr "ਆਈਕਾਨ ਵਾਂਗ ਝਲਕ(_I)"
 
-#: ../src/file-manager/fm-icon-view.c:2746
+#: ../src/file-manager/fm-icon-view.c:2759
 msgid "The icon view encountered an error."
 msgstr "ਆਈਕਾਨ ਝਲਕ ਵੇਖਾਉਣ ਦੌਰਾਨ ਇੱਕ ਗਲਤੀ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-icon-view.c:2747
+#: ../src/file-manager/fm-icon-view.c:2760
 msgid "The icon view encountered an error while starting up."
 msgstr "ਆਈਕਾਨ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਸਮੇਂ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-icon-view.c:2748
+#: ../src/file-manager/fm-icon-view.c:2761
 msgid "Display this location with the icon view."
 msgstr "ਆਈਕਾਨ ਝਲਕ 'ਚ ਇਹ ਟਿਕਾਣਾ ਵੇਖਾਓ।"
 
-#: ../src/file-manager/fm-list-model.c:363
+#: ../src/file-manager/fm-list-model.c:372
 #: ../src/file-manager/fm-tree-model.c:1213
 msgid "(Empty)"
 msgstr "(ਖਾਲੀ)"
 
-#: ../src/file-manager/fm-list-model.c:365
+#: ../src/file-manager/fm-list-model.c:374
 #: ../src/file-manager/fm-tree-model.c:1213
 msgid "Loading..."
 msgstr "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ ....."
 
-#: ../src/file-manager/fm-list-view.c:1842
+#: ../src/file-manager/fm-list-view.c:1845
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ਵੇਖਣਯੋਗ ਕਾਲਮ"
 
-#: ../src/file-manager/fm-list-view.c:1861
+#: ../src/file-manager/fm-list-view.c:1864
 msgid "Choose the order of information to appear in this folder."
 msgstr "ਕ੍ਰਮ ਨਿਰਧਾਰਿਤ ਕਰੋ, ਜਿਸ ਅਨੁਸਾਰ ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਜਾਣਕਾਰੀ ਉਪਲਬੱਧ ਹੋਵੇ।"
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1903
+#: ../src/file-manager/fm-list-view.c:1906
 msgid "Visible _Columns..."
 msgstr "ਵੇਖਣਯੋਗ ਕਾਲਮ(_C)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1904
+#: ../src/file-manager/fm-list-view.c:1907
 msgid "Select the columns visible in this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਉਪਲਬੱਧ ਕਾਲਮਾਂ ਦੀ ਚੋਣ ਕਰੋ"
 
-#: ../src/file-manager/fm-list-view.c:2594
+#: ../src/file-manager/fm-list-view.c:2606
 msgid "List"
 msgstr "ਸੂਚੀ"
 
-#: ../src/file-manager/fm-list-view.c:2595
+#: ../src/file-manager/fm-list-view.c:2607
 msgid "View as List"
 msgstr "ਸੂਚੀ ਵਾਂਗ ਝਲਕ"
 
-#: ../src/file-manager/fm-list-view.c:2596
+#: ../src/file-manager/fm-list-view.c:2608
 msgid "View as _List"
 msgstr "ਸੂਚੀ ਵਾਂਗ ਝਲਕ(_L)"
 
-#: ../src/file-manager/fm-list-view.c:2597
+#: ../src/file-manager/fm-list-view.c:2609
 msgid "The list view encountered an error."
 msgstr "ਸੂਚੀ ਝਲਕ ਲਈ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:2598
+#: ../src/file-manager/fm-list-view.c:2610
 msgid "The list view encountered an error while starting up."
 msgstr "ਸੂਚੀ ਝਲਕ ਸ਼ੁਰੂ ਕਰਨ ਦੌਰਾਨ ਇੱਕ ਸਮੱਸਿਆ ਆਈ ਹੈ।"
 
-#: ../src/file-manager/fm-list-view.c:2599
+#: ../src/file-manager/fm-list-view.c:2611
 msgid "Display this location with the list view."
 msgstr "ਸੂਚੀ ਝਲਕ ਵਿੱਚ ਇਹ ਟਿਕਾਣਾ ਵੇਖਾਓ।"
 
-#: ../src/file-manager/fm-properties-window.c:509
+#: ../src/file-manager/fm-properties-window.c:483
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "ਇੱਕ ਸਮੇਂ ਇੱਕ ਤੋ ਵੱਧ ਆਈਕਾਨ ਪਸੰਦ ਨਹੀ ਕਰ ਸਕਦੇ ਹੋ।"
 
-#: ../src/file-manager/fm-properties-window.c:510
+#: ../src/file-manager/fm-properties-window.c:484
 #: ../src/nautilus-information-panel.c:555
 msgid "Please drag just one image to set a custom icon."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਸਿਰਫ ਇੱਕ ਚਿੱਤਰ ਹੀ ਇੱਕ ਆਈਕਾਨ ਲਈ ਚੁਣੋ।"
 
-#: ../src/file-manager/fm-properties-window.c:520
+#: ../src/file-manager/fm-properties-window.c:494
 #: ../src/nautilus-information-panel.c:574
 msgid "The file that you dropped is not local."
 msgstr "ਫਾਇਲ, ਜੋ ਤੁਸੀਂ ਚੁਣੀ ਹੈ, ਇਕ ਸਥਾਨਕ ਫਾਇਲ ਨਹੀਂ ਹੈ।"
 
-#: ../src/file-manager/fm-properties-window.c:521
-#: ../src/file-manager/fm-properties-window.c:527
+#: ../src/file-manager/fm-properties-window.c:495
+#: ../src/file-manager/fm-properties-window.c:501
 #: ../src/nautilus-information-panel.c:575
 msgid "You can only use local images as custom icons."
 msgstr "ਸਿਰਫ ਸਥਾਨਕ ਚਿੱਤਰ ਹੀ ਪਸੰਦੀਦਾ ਆਈਕਾਨ ਲਈ ਵਰਤੇ ਜਾ ਸਕਦੇ ਹਨ।"
 
-#: ../src/file-manager/fm-properties-window.c:526
+#: ../src/file-manager/fm-properties-window.c:500
 #: ../src/nautilus-information-panel.c:580
 msgid "The file that you dropped is not an image."
 msgstr "ਫਾਇਲ, ਜੋ ਤੁਸੀ ਚੁਣੀ ਹੈ, ਇੱਕ ਚਿੱਤਰ ਫਾਇਲ ਨਹੀ ਹੈ।"
 
-#: ../src/file-manager/fm-properties-window.c:1021
+#: ../src/file-manager/fm-properties-window.c:995
 msgid "Properties"
 msgstr "ਵਿਸ਼ੇਸਤਾ"
 
-#: ../src/file-manager/fm-properties-window.c:1029
+#: ../src/file-manager/fm-properties-window.c:1003
 #, c-format
 msgid "%s Properties"
 msgstr "%s ਵਿਸ਼ੇਸਤਾ"
 
-#: ../src/file-manager/fm-properties-window.c:1543
+#: ../src/file-manager/fm-properties-window.c:1522
 msgid "Cancel Group Change?"
 msgstr "ਕੀ ਸਮੂਹ ਤਬਦੀਲ ਰੱਦ ਕਰਨੀ ਹੈ?"
 
-#: ../src/file-manager/fm-properties-window.c:1704
+#: ../src/file-manager/fm-properties-window.c:1710
 msgid "Cancel Owner Change?"
 msgstr "ਕੀ ਮਾਲਕੀਅਤ ਤਬਦੀਲੀ ਰੱਦ ਕਰਨੀ ਹੈ?"
 
-#: ../src/file-manager/fm-properties-window.c:1911
+#: ../src/file-manager/fm-properties-window.c:1910
 msgid "nothing"
 msgstr "ਕੁਝ ਨਹੀਂ"
 
-#: ../src/file-manager/fm-properties-window.c:1913
+#: ../src/file-manager/fm-properties-window.c:1912
 msgid "unreadable"
 msgstr "ਨਾ ਪੜਨਯੋਗ"
 
-#: ../src/file-manager/fm-properties-window.c:1923
+#: ../src/file-manager/fm-properties-window.c:1922
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -3716,7 +3735,7 @@ msgstr[0] "%d ਇਕਾਈ, ਅਕਾਰ %s"
 msgstr[1] "%d ਇਕਾਈਆਂ, ਕੁੱਲ %s"
 
 # # src/file-manager/fm-properties-window.c:1174
-#: ../src/file-manager/fm-properties-window.c:1932
+#: ../src/file-manager/fm-properties-window.c:1931
 msgid "(some contents unreadable)"
 msgstr "(ਕੁਝ ਸਾਂਰਸ਼ ਨਾ ਵੇਖਣਯੋਗ)"
 
@@ -3726,180 +3745,176 @@ msgstr "(ਕੁਝ ਸਾਂਰਸ਼ ਨਾ ਵੇਖਣਯੋਗ)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:1949
+#: ../src/file-manager/fm-properties-window.c:1948
 msgid "Contents:"
 msgstr "ਸੰਖੇਪ:"
 
-#: ../src/file-manager/fm-properties-window.c:2284
+#: ../src/file-manager/fm-properties-window.c:2283
 msgid "Basic"
 msgstr "ਮੂਲ"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2314
+#: ../src/file-manager/fm-properties-window.c:2313
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "ਨਾਂ(_N):"
 msgstr[1] "ਨਾਂ(_N):"
 
-#: ../src/file-manager/fm-properties-window.c:2333
+#: ../src/file-manager/fm-properties-window.c:2332
 msgid "Type:"
 msgstr "ਕਿਸਮ:"
 
-#: ../src/file-manager/fm-properties-window.c:2335
-#: ../src/file-manager/fm-properties-window.c:2345
-#: ../src/file-manager/fm-properties-window.c:2351
-#: ../src/file-manager/fm-properties-window.c:2358
-#: ../src/file-manager/fm-properties-window.c:2362
-#: ../src/file-manager/fm-properties-window.c:2370
-#: ../src/file-manager/fm-properties-window.c:2376
-#: ../src/file-manager/fm-properties-window.c:2385
-#: ../src/file-manager/fm-properties-window.c:2391
-#: ../src/file-manager/fm-properties-window.c:2943
-#: ../src/file-manager/fm-properties-window.c:2964
-#: ../src/file-manager/fm-properties-window.c:3055
-#: ../src/file-manager/fm-properties-window.c:3059
-#: ../src/file-manager/fm-properties-window.c:3063
+#: ../src/file-manager/fm-properties-window.c:2334
+#: ../src/file-manager/fm-properties-window.c:2344
+#: ../src/file-manager/fm-properties-window.c:2350
+#: ../src/file-manager/fm-properties-window.c:2357
+#: ../src/file-manager/fm-properties-window.c:2361
+#: ../src/file-manager/fm-properties-window.c:2369
+#: ../src/file-manager/fm-properties-window.c:2375
+#: ../src/file-manager/fm-properties-window.c:2384
+#: ../src/file-manager/fm-properties-window.c:2390
+#: ../src/file-manager/fm-properties-window.c:2944
+#: ../src/file-manager/fm-properties-window.c:2965
+#: ../src/file-manager/fm-properties-window.c:3056
+#: ../src/file-manager/fm-properties-window.c:3060
+#: ../src/file-manager/fm-properties-window.c:3064
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2343
+#: ../src/file-manager/fm-properties-window.c:2342
 msgid "Size:"
 msgstr "ਅਕਾਰ:"
 
-#: ../src/file-manager/fm-properties-window.c:2349
+#: ../src/file-manager/fm-properties-window.c:2348
 #: ../src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "ਟਿਕਾਣਾ:"
 
-#: ../src/file-manager/fm-properties-window.c:2356
+#: ../src/file-manager/fm-properties-window.c:2355
 msgid "Volume:"
 msgstr "ਵਾਲੀਅਮ :"
 
-#: ../src/file-manager/fm-properties-window.c:2360
+#: ../src/file-manager/fm-properties-window.c:2359
 msgid "Free space:"
 msgstr "ਖਾਲੀ ਥਾਂ:"
 
-#: ../src/file-manager/fm-properties-window.c:2368
+#: ../src/file-manager/fm-properties-window.c:2367
 msgid "Link target:"
 msgstr "ਸਬੰਧ ਨਿਸ਼ਾਨਾ:"
 
-#: ../src/file-manager/fm-properties-window.c:2374
+#: ../src/file-manager/fm-properties-window.c:2373
 msgid "MIME type:"
 msgstr "MIME ਕਿਸਮ:"
 
-#: ../src/file-manager/fm-properties-window.c:2383
+#: ../src/file-manager/fm-properties-window.c:2382
 msgid "Modified:"
 msgstr "ਸੋਧਿਆ:"
 
-#: ../src/file-manager/fm-properties-window.c:2389
+#: ../src/file-manager/fm-properties-window.c:2388
 msgid "Accessed:"
 msgstr "ਖੋਲਿਆ:"
 
-#: ../src/file-manager/fm-properties-window.c:2437
+#: ../src/file-manager/fm-properties-window.c:2436
 #: ../src/nautilus-emblem-sidebar.c:1041
 msgid "Emblems"
 msgstr "ਨਿਸ਼ਾਨ"
 
-#: ../src/file-manager/fm-properties-window.c:2722
+#: ../src/file-manager/fm-properties-window.c:2721
 msgid "_Read"
 msgstr "ਪੜ੍ਹੋ(_R)"
 
-#: ../src/file-manager/fm-properties-window.c:2724
+#: ../src/file-manager/fm-properties-window.c:2723
 msgid "_Write"
 msgstr "ਲਿਖੋ(_W)"
 
-#: ../src/file-manager/fm-properties-window.c:2726
+#: ../src/file-manager/fm-properties-window.c:2725
 msgid "E_xecute"
 msgstr "ਚਲਾਉ(_x)"
 
-#: ../src/file-manager/fm-properties-window.c:2809
+#: ../src/file-manager/fm-properties-window.c:2808
 msgid "Set _user ID"
 msgstr "ਉਪਭੋਗਤਾ ID ਨਿਰਧਾਰਨ(_u)"
 
-#: ../src/file-manager/fm-properties-window.c:2814
+#: ../src/file-manager/fm-properties-window.c:2813
 msgid "Special flags:"
 msgstr "ਖਾਸ ਨਿਸ਼ਾਨ:"
 
-#: ../src/file-manager/fm-properties-window.c:2817
+#: ../src/file-manager/fm-properties-window.c:2816
 msgid "Set gro_up ID"
 msgstr "ਸਮੂਹ ID ਨਿਰਧਾਰਨ(_u)ID"
 
-#: ../src/file-manager/fm-properties-window.c:2819
+#: ../src/file-manager/fm-properties-window.c:2818
 msgid "_Sticky"
 msgstr "ਚਿਪਕਾਉ(_S)"
 
-#: ../src/file-manager/fm-properties-window.c:2918
+#: ../src/file-manager/fm-properties-window.c:2919
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "ਤੁਸੀ ਮਾਲਕ ਨਹੀ ਹੋ, ਸੋ ਤੁਸੀਂ ਅਧਿਕਾਰ ਬਦਲ ਨਹੀ ਸਕਦੇ ਹੋ।"
 
-#: ../src/file-manager/fm-properties-window.c:2932
+#: ../src/file-manager/fm-properties-window.c:2933
 msgid "File _owner:"
 msgstr "ਫਾਇਲ ਮਾਲਕ(_o):"
 
-#: ../src/file-manager/fm-properties-window.c:2938
+#: ../src/file-manager/fm-properties-window.c:2939
 msgid "File owner:"
 msgstr "ਫਾਇਲ ਮਾਲਕ:"
 
-#: ../src/file-manager/fm-properties-window.c:2949
+#: ../src/file-manager/fm-properties-window.c:2950
 msgid "_File group:"
 msgstr "ਫਾਇਲ ਸਮੂਹ(_F):"
 
-#: ../src/file-manager/fm-properties-window.c:2958
+#: ../src/file-manager/fm-properties-window.c:2959
 msgid "File group:"
 msgstr "ਫਾਇਲ ਸਮੂਹ:"
 
-#: ../src/file-manager/fm-properties-window.c:2970
+#: ../src/file-manager/fm-properties-window.c:2971
 msgid "Owner:"
 msgstr "ਮਾਲਿਕ:"
 
-#: ../src/file-manager/fm-properties-window.c:2971
+#: ../src/file-manager/fm-properties-window.c:2972
 msgid "Group:"
 msgstr "ਸਮੂਹ:"
 
-#: ../src/file-manager/fm-properties-window.c:2972
+#: ../src/file-manager/fm-properties-window.c:2973
 msgid "Others:"
 msgstr "ਹੋਰ:"
 
-#: ../src/file-manager/fm-properties-window.c:3054
+#: ../src/file-manager/fm-properties-window.c:3055
 msgid "Text view:"
 msgstr "ਪਾਠ ਦਿੱਖ:"
 
-#: ../src/file-manager/fm-properties-window.c:3058
+#: ../src/file-manager/fm-properties-window.c:3059
 msgid "Number view:"
 msgstr "ਅੰਕ ਦਿੱਖ:"
 
-#: ../src/file-manager/fm-properties-window.c:3062
+#: ../src/file-manager/fm-properties-window.c:3063
 msgid "Last changed:"
 msgstr "ਆਖਰੀ ਤਬਦੀਲੀ:"
 
-#: ../src/file-manager/fm-properties-window.c:3068
+#: ../src/file-manager/fm-properties-window.c:3069
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr " \"%s\" ਦੇ ਅਧਿਕਾਰ ਗਿਣੇ ਨਾ ਜਾ ਸਕੇ।"
 
-#: ../src/file-manager/fm-properties-window.c:3071
+#: ../src/file-manager/fm-properties-window.c:3072
 msgid "The permissions of the selected file could not be determined."
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਦੇ ਅਧਿਕਾਰ ਪਤਾ ਨਹੀ ਕੀਤੇ ਜਾ ਸਕਦੇ ਹਨ।"
 
-#: ../src/file-manager/fm-properties-window.c:3229
+#: ../src/file-manager/fm-properties-window.c:3230
 msgid "There was an error displaying help."
 msgstr "ਸਹਾਇਤਾ ਖੋਲਣ ਵਿੱਚ ਗਲਤੀ ਸੀ।"
 
-#: ../src/file-manager/fm-properties-window.c:3286
+#: ../src/file-manager/fm-properties-window.c:3292
 msgid "Open With"
 msgstr "ਇਸ ਨਾਲ ਖੋਲੋ"
 
-#: ../src/file-manager/fm-properties-window.c:3624
+#: ../src/file-manager/fm-properties-window.c:3632
 msgid "Creating Properties window."
 msgstr "ਵਿਸ਼ੇਸਤਾ ਝਰੋਖਾ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ।"
 
-#: ../src/file-manager/fm-properties-window.c:3822
+#: ../src/file-manager/fm-properties-window.c:3830
 msgid "Select Custom Icon"
 msgstr "ਪਸੰਦੀਦਾ ਆਈਕਾਨ ਚੁਣੋ"
-
-#: ../src/file-manager/fm-properties-window.c:3824
-msgid "_Revert"
-msgstr "ਮੁੜ-ਪ੍ਰਾਪਤ(_R)"
 
 #: ../src/file-manager/fm-tree-view.c:751
 msgid "E_ject"
@@ -4072,7 +4087,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:215
-#: ../src/nautilus-property-browser.c:1525 ../src/nautilus-window-menus.c:512
+#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4138,10 +4153,6 @@ msgstr "ਸਾਂਝ(_S):"
 #: ../src/nautilus-connect-server-dialog.c:515
 msgid "_Port:"
 msgstr "ਪੋਰਟ(_P):"
-
-#: ../src/nautilus-connect-server-dialog.c:535
-msgid "_Folder:"
-msgstr "ਫੋਲਡਰ(_F):"
 
 #: ../src/nautilus-connect-server-dialog.c:555
 msgid "_User Name:"
@@ -4546,11 +4557,11 @@ msgstr ""
 "\n"
 "ਤੁਸੀ ਇਸ ਫਾਇਲ ਨੂੰ ਖੁਦ ਹਟਾ ਸਕਦੇ ਹੋ।\n"
 
-#: ../src/nautilus-history-sidebar.c:279
+#: ../src/nautilus-history-sidebar.c:281
 msgid "History"
 msgstr "ਅਤੀਤ"
 
-#: ../src/nautilus-history-sidebar.c:285
+#: ../src/nautilus-history-sidebar.c:287
 msgid "Show History"
 msgstr "ਅਤੀਤ ਵੇਖਾਓ"
 
@@ -4686,10 +4697,6 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "ਕੀ ਤੁਸੀਂ ਸਥਿਤੀ %d ਨੂੰ ਖੋਲਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 msgstr[1] "ਕੀ ਤੁਸੀਂ ਸਥਿਤੀਆਂ %d ਨੂੰ ਖੋਲਣੀਆਂ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../src/nautilus-location-bar.c:170
-msgid "View in Multiple Windows?"
-msgstr "ਬਹੁਤੇ ਝਰੋਖਿਆ ਵਿੱਚ ਵੇਖਣਾ ਹੈ?"
-
 #: ../src/nautilus-location-dialog.c:140
 msgid "Open Location"
 msgstr "ਟਿਕਾਣਾ ਖੋਲੋ"
@@ -4737,8 +4744,8 @@ msgid "File Manager"
 msgstr "ਫਾਇਲ ਪ੍ਰਬੰਧਕ"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:336
-#: ../src/nautilus-window-menus.c:449 ../src/nautilus-window.c:151
+#: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:401
+#: ../src/nautilus-window-menus.c:461 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "ਨਾਟੀਲਸ"
 
@@ -4764,169 +4771,180 @@ msgstr "ਨਾਟੀਲਸ: --geometry ਇੱਕ ਤੋ ਵਧੇਰੇ URI ਨ�
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: ../src/nautilus-navigation-window-menus.c:115
+#: ../src/nautilus-navigation-window-menus.c:116
 msgid "Are you sure you want to forget history?"
 msgstr "ਕੀ ਤੁਸੀ ਅਤੀਤ ਨੂੰ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?"
 
-#: ../src/nautilus-navigation-window-menus.c:116
+#: ../src/nautilus-navigation-window-menus.c:117
 msgid "If you do, you will be doomed to repeat it."
 msgstr "ਜੇ ਤੁਸੀ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਮੁੜ ਫੇਰ ਕਰੋ।"
 
-#: ../src/nautilus-navigation-window-menus.c:118
+#: ../src/nautilus-navigation-window-menus.c:119
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "ਕੀ ਤੁਸੀ ਪਿੱਛੇ ਗਈਆਂ ਥਾਵਾਂ ਦੀ ਸੂਚੀ ਖਤਮ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../src/nautilus-navigation-window-menus.c:120
+#: ../src/nautilus-navigation-window-menus.c:121
 msgid "If you clear the list of locations, they will be permanently deleted."
 msgstr "ਜੇਕਰ ਤੁਸੀਂ ਟਿਕਾਣਿਆਂ ਦੀ ਸੂਚੀ ਸਾਫ਼ ਕੀਤੀ ਤਾਂ ਉਹ ਹਮੇਸ਼ਾ ਲਈ ਹਟਾਏ ਜਾਣਗੇ।"
 
-#: ../src/nautilus-navigation-window-menus.c:287
+#: ../src/nautilus-navigation-window-menus.c:288
 #: ../src/nautilus-window-bookmarks.c:96
 #, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "ਟਿਕਾਣਾ \"%s\" ਮੌਜੂਦ ਨਹੀਂ ਹੈ।"
 
-#: ../src/nautilus-navigation-window-menus.c:289
+#: ../src/nautilus-navigation-window-menus.c:290
 msgid "The history location doesn't exist."
 msgstr "ਅਤੀਤ ਟਿਕਾਣਾ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।"
 
-#: ../src/nautilus-navigation-window-menus.c:414
+#: ../src/nautilus-navigation-window-menus.c:426
 msgid "_Go"
 msgstr "ਜਾਉ(_G)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:415
+#: ../src/nautilus-navigation-window-menus.c:427
 msgid "_Bookmarks"
 msgstr "ਬੁੱਕਮਾਰਕ(_B)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:416
+#: ../src/nautilus-navigation-window-menus.c:428
 msgid "Open New _Window"
 msgstr "ਨਵੇਂ ਝਰੋਖੇ ਵਿੱਚ ਖੋਲੋ(_W)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:417
+#: ../src/nautilus-navigation-window-menus.c:429
 msgid "Open another Nautilus window for the displayed location"
 msgstr "ਟਿਕਾਣਾ ਵੇਖਾਉਣ ਲ਼ਈ ਹੋਰ ਨਾਟੀਲਸ ਝਰੋਖਾ ਖੋਲੋ"
 
-#: ../src/nautilus-navigation-window-menus.c:419
+#: ../src/nautilus-navigation-window-menus.c:431
 msgid "Close _All Windows"
 msgstr "ਸਭ ਝਰੋਖੇ ਬੰਦ ਕਰੋ(_A)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:420
+#: ../src/nautilus-navigation-window-menus.c:432
 msgid "Close all Navigation windows"
 msgstr "ਸਭ ਨਵੇਗੇਸ਼ਨ ਝਰੋਖੇ ਬੰਦ ਕਰੋ"
 
-#: ../src/nautilus-navigation-window-menus.c:422
+#: ../src/nautilus-navigation-window-menus.c:434
 msgid "_Location..."
 msgstr "ਟਿਕਾਣਾ(_L)..."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:423
-#: ../src/nautilus-spatial-window.c:752
+#: ../src/nautilus-navigation-window-menus.c:435
+#: ../src/nautilus-spatial-window.c:831
 msgid "Specify a location to open"
 msgstr "ਖੋਲਣ ਲ਼ਈ ਟਿਕਾਣਾ ਦਿਓ"
 
-#: ../src/nautilus-navigation-window-menus.c:425
+#: ../src/nautilus-navigation-window-menus.c:437
 msgid "Clea_r History"
 msgstr "ਅਤੀਤ ਖਤਮ ਕਰੋ(_r)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:426
+#: ../src/nautilus-navigation-window-menus.c:438
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "ਜਾਉ ਸੂਚੀ ਅਤੇ ਪਿੱਛੇ/ਅੱਗੇ ਸੂਚੀ ਦੇ ਭਾਗ ਸਾਫ ਕਰੋ"
 
-#: ../src/nautilus-navigation-window-menus.c:428
-#: ../src/nautilus-spatial-window.c:760
+#: ../src/nautilus-navigation-window-menus.c:440
+#: ../src/nautilus-spatial-window.c:839
 msgid "_Add Bookmark"
 msgstr "ਬੁਂੱਕਮਾਪਕ ਜੋੜੋ(_A)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:429
-#: ../src/nautilus-spatial-window.c:761
+#: ../src/nautilus-navigation-window-menus.c:441
+#: ../src/nautilus-spatial-window.c:840
 msgid "Add a bookmark for the current location to this menu"
 msgstr "ਇਸ ਮੌਕੇ ਦੀ ਸਥਿਤੀ ਨੂੰ ਬੁੱਕਮਾਰਕ ਵਿੱਚ ਸੰਭਾਲੋ"
 
-#: ../src/nautilus-navigation-window-menus.c:431
-#: ../src/nautilus-spatial-window.c:763
+#: ../src/nautilus-navigation-window-menus.c:443
+#: ../src/nautilus-spatial-window.c:842
 msgid "_Edit Bookmarks"
 msgstr "ਬੁਂੱਕਮਾਰਕ ਸੋਧ(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:432
-#: ../src/nautilus-spatial-window.c:764
+#: ../src/nautilus-navigation-window-menus.c:444
+#: ../src/nautilus-spatial-window.c:843
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "ਝਰੋਖਾ ਵਿਖਾਓ, ਜੋ ਇਸ ਮੇਨੂ-ਸੂਚੀ ਦੇ ਬੁੱਕਮਾਰਕ ਨੂੰ ਸੋਧ ਸਕੇ"
 
+#: ../src/nautilus-navigation-window-menus.c:446
+#: ../src/nautilus-spatial-window.c:845
+msgid "_Search"
+msgstr "ਖੋਜ(_S)"
+
+#. name, stock id, label
+#: ../src/nautilus-navigation-window-menus.c:447
+#: ../src/nautilus-spatial-window.c:846
+msgid "Search for files"
+msgstr "ਫਾਇਲਾਂ ਲਈ ਖੋਜ"
+
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:438
+#: ../src/nautilus-navigation-window-menus.c:454
 msgid "_Main Toolbar"
 msgstr "ਮੁੱਖ ਸੰਦ-ਪੱਟੀ(_M)"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:439
+#: ../src/nautilus-navigation-window-menus.c:455
 msgid "Change the visibility of this window's main toolbar"
 msgstr "ਇਸ ਝਰੋਖੇ ਦੇ ਮੁੱਖ ਸੰਦ-ਪੱਟੀ ਦੀ ਦਿੱਖ ਤਬਦੀਲ"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:443
+#: ../src/nautilus-navigation-window-menus.c:459
 msgid "_Side Pane"
 msgstr "ਬਾਹੀ(_S)"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:444
+#: ../src/nautilus-navigation-window-menus.c:460
 msgid "Change the visibility of this window's sidebar"
 msgstr "ਇਸ ਝਰੋਖੇ ਦੀ ਬਾਹੀ ਵਿੱਚ ਤਬਦੀਲੀ ਕਰੋ"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:448
+#: ../src/nautilus-navigation-window-menus.c:464
 msgid "Location _Bar"
 msgstr "ਟਿਕਾਣਾ ਪੱਟੀ(_B)"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:449
+#: ../src/nautilus-navigation-window-menus.c:465
 msgid "Change the visibility of this window's location bar"
 msgstr "ਇਸ ਝਰੋਖੇ ਦੀ ਟਿਕਾਣਾ ਪੱਟੀ ਵਿੱਚ ਤਬਦੀਲੀ ਕਰੋ"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:453
+#: ../src/nautilus-navigation-window-menus.c:469
 msgid "St_atusbar"
 msgstr "ਸਥਿਤੀ-ਪੱਟੀ(_a)"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:454
+#: ../src/nautilus-navigation-window-menus.c:470
 msgid "Change the visibility of this window's statusbar"
 msgstr "ਇਸ ਝਰੋਖੇ ਦੀ ਸਥਿਤੀ-ਪੱਟੀ ਵਿੱਚ ਤਬਦੀਲੀ ਕਰੋ"
 
-#: ../src/nautilus-navigation-window-menus.c:478
+#: ../src/nautilus-navigation-window-menus.c:494
 msgid "_Back"
 msgstr "ਪਿੱਛੇ(_B)"
 
-#: ../src/nautilus-navigation-window-menus.c:480
+#: ../src/nautilus-navigation-window-menus.c:496
 msgid "Go to the previous visited location"
 msgstr "ਹੁਣ ਤੋ ਪਹਿਲੇ ਮੌਕੇ ਤੇ ਜਾਉ"
 
-#: ../src/nautilus-navigation-window-menus.c:481
+#: ../src/nautilus-navigation-window-menus.c:497
 msgid "Back history"
 msgstr "ਅਤੀਤ ਪਿੱਛੇ"
 
-#: ../src/nautilus-navigation-window-menus.c:495
+#: ../src/nautilus-navigation-window-menus.c:511
 msgid "_Forward"
 msgstr "ਅੱਗੇ(_F)"
 
-#: ../src/nautilus-navigation-window-menus.c:497
+#: ../src/nautilus-navigation-window-menus.c:513
 msgid "Go to the next visited location"
 msgstr "ਅਗਲੀ ਸਥਿਤੀ `ਚ ਜਿਥੇ ਜਾ ਚੁੱਕੇ ਹਾਂ"
 
-#: ../src/nautilus-navigation-window-menus.c:498
+#: ../src/nautilus-navigation-window-menus.c:514
 msgid "Forward history"
 msgstr "ਅਤੀਤ ਅੱਗੇ"
 
-#: ../src/nautilus-navigation-window.c:776
+#: ../src/nautilus-navigation-window.c:834
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - ਫਾਇਲ ਝਲਕਾਰਾ"
@@ -4978,179 +4996,259 @@ msgstr "ਮੁਆਫੀ, ਪਰ ਨਿਸ਼ਾਨ %s ਖਤਮ ਨਹੀ ਕੀਤ
 msgid "Check that you have permission to delete the emblem."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਜਾਂਚ ਲਵੋ ਕਿ ਨਿਸ਼ਾਨ ਨੂੰ ਖਤਮ ਕਰਨ ਦਾ ਤੁਹਾਨੂੰ ਅਧਿਕਾਰ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1030
-msgid "Create a New Emblem:"
-msgstr "ਨਵਾਂ ਨਿਸ਼ਾਨ ਬਣਾਉ:"
+#: ../src/nautilus-property-browser.c:1031
+msgid "Create a New Emblem"
+msgstr "ਇੱਕ ਨਵਾਂ ਨਿਸ਼ਾਨ ਬਣਾਓ"
 
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1043
+#: ../src/nautilus-property-browser.c:1053
 msgid "_Keyword:"
 msgstr "ਸ਼ਬਦ(_K):"
 
 #. set up a gnome icon entry to pick the image file
-#: ../src/nautilus-property-browser.c:1061
+#: ../src/nautilus-property-browser.c:1072
 msgid "_Image:"
 msgstr "ਚਿੱਤਰ(_I):"
 
-#: ../src/nautilus-property-browser.c:1065
-msgid "Select an image file for the new emblem:"
-msgstr "ਨਵੇਂ ਨਿਸ਼ਾਨ ਲਈ ਚਿੱਤਰ ਫਾਇਲ ਚੁਣੋ:"
+#: ../src/nautilus-property-browser.c:1080
+msgid "Select an Image File for the New Emblem"
+msgstr "ਨਵੇਂ ਨਿਸ਼ਾਨ ਲਈ ਇੱਕ ਚਿੱਤਰ ਫਾਇਲ ਚੁਣੋ"
 
-#: ../src/nautilus-property-browser.c:1089
+#: ../src/nautilus-property-browser.c:1105
 msgid "Create a New Color:"
 msgstr "ਨਵਾਂ ਰੰਗ ਬਣਾਉ:"
 
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1103
+#: ../src/nautilus-property-browser.c:1119
 msgid "Color _name:"
 msgstr "ਰੰਗ ਨਾਂ(_n):"
 
-#: ../src/nautilus-property-browser.c:1119
+#: ../src/nautilus-property-browser.c:1135
 msgid "Color _value:"
 msgstr "ਰੰਗ ਮੁੱਲ(_v):"
 
-#: ../src/nautilus-property-browser.c:1151
+#: ../src/nautilus-property-browser.c:1167
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "ਮੁਆਫੀ, ਪਰ ਫਾਇਲ ਨਾਂ \"%s\" ਜਾਇਜ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1154
+#: ../src/nautilus-property-browser.c:1170
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "ਮੁਆਫੀ, ਪਰ ਫਾਇਲ ਨਾਂ ਜਾਇਜ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1155
+#: ../src/nautilus-property-browser.c:1171
 msgid "Please try again."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ ਕਰੋ।"
 
-#: ../src/nautilus-property-browser.c:1168
+#: ../src/nautilus-property-browser.c:1184
 msgid "Sorry, but you can't replace the reset image."
 msgstr "ਮੁਆਫੀ, ਪਰ ਇਸ ਚਿੱਤਰ ਨੂੰ ਬਦਲ ਨਹੀ ਸਕਦੇ ਹੋ।"
 
-#: ../src/nautilus-property-browser.c:1169
+#: ../src/nautilus-property-browser.c:1185
 msgid "Reset is a special image that cannot be deleted."
 msgstr "ਰੀਸੈੱਟ ਇਕ ਖਾਸ ਚਿੱਤਰ ਹੈ ਜੋਕਿ ਹਟਾਇਆ ਨਹੀ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1201
+#: ../src/nautilus-property-browser.c:1217
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "ਮੁਆਫੀ, ਪਰ ਤਰਤੀਬ %s ਇੰਸਟਾਲ ਨਹੀ ਹੋ ਸਕਦੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1221
-msgid "Select an image file to add as a pattern"
-msgstr "ਇਕ ਚਿੱਤਰ ਤਰਤੀਬ ਲਈ ਚੁਣੋ"
+#: ../src/nautilus-property-browser.c:1237
+msgid "Select an Image File to Add as a Pattern"
+msgstr "ਇਕ ਪੈਟਰਨ ਦੇ ਤੌਰ ਉੱਤੇ ਜੋੜਨ ਲਈ ਇੱਕ ਚਿੱਤਰ ਫਾਇਲ ਚੁਣੋ"
 
-#: ../src/nautilus-property-browser.c:1273
-#: ../src/nautilus-property-browser.c:1304
+#: ../src/nautilus-property-browser.c:1289
+#: ../src/nautilus-property-browser.c:1320
 msgid "The color cannot be installed."
 msgstr "ਰੰਗ ਇੰਸਟਾਲ ਨਹੀ ਹੋ ਸਕਦਾ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1274
+#: ../src/nautilus-property-browser.c:1290
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr "ਅਫ਼ਸੋਸ, ਪਰ ਤੁਹਾਨੂੰ ਨਵੇਂ ਰੰਗ ਲਈ ਇੱਕ ਨਾ-ਵਰਤੇ ਰੰਗ ਨਾਂ ਦੀ ਹੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1305
+#: ../src/nautilus-property-browser.c:1321
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "ਮੁਆਫੀ, ਪਰ ਰੰਗ ਲਈ ਇਕ ਅੱਖਰ ਖਾਲੀ ਨਹੀ ਹੀ ਚਾਹੀਦਾ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1358
-msgid "Select a color to add"
-msgstr "ਸ਼ਾਮਿਲ ਕਰਨ ਲਈ ਰੰਗ ਚੁਣੋ"
+#: ../src/nautilus-property-browser.c:1374
+msgid "Select a Color to Add"
+msgstr "ਸ਼ਾਮਲ ਕਰਨ ਲਈ ਇੱਕ ਰੰਗ ਚੁਣੋ"
 
-#: ../src/nautilus-property-browser.c:1395
 #: ../src/nautilus-property-browser.c:1411
+#: ../src/nautilus-property-browser.c:1427
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "ਗੁਸਤਾਖੀ ਲਈ ਮੁਆਫੀ, \"%s\" ਚਿੱਤਰ ਫਾਇਲ ਵਰਤੋਂਯੋਗ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:1396
 #: ../src/nautilus-property-browser.c:1412
+#: ../src/nautilus-property-browser.c:1428
 msgid "The file is not an image."
 msgstr "ਫਾਇਲ਼ ਇਕ ਚਿੱਤਰ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-property-browser.c:2089
+#: ../src/nautilus-property-browser.c:2105
 msgid "Select a Category:"
 msgstr "ਇੱਕ ਵਰਗ ਚੁਣੋ:"
 
-#: ../src/nautilus-property-browser.c:2098
+#: ../src/nautilus-property-browser.c:2114
 msgid "C_ancel Remove"
 msgstr "ਹਟਾਉਣਾ ਰੱਦ(_a)"
 
-#: ../src/nautilus-property-browser.c:2104
+#: ../src/nautilus-property-browser.c:2120
 msgid "_Add a New Pattern..."
 msgstr "ਨਵੀਂ ਤਰਤੀਬ ਸ਼ਾਮਿਲ(_A)..."
 
-#: ../src/nautilus-property-browser.c:2107
+#: ../src/nautilus-property-browser.c:2123
 msgid "_Add a New Color..."
 msgstr "ਨਵਾਂ ਰੰਗ ਸ਼ਾਮਿਲ(_A)..."
 
-#: ../src/nautilus-property-browser.c:2110
+#: ../src/nautilus-property-browser.c:2126
 msgid "_Add a New Emblem..."
 msgstr "ਨਵਾਂ ਨਿਸ਼ਾਨ ਸ਼ਾਮਿਲ(_A)..."
 
-#: ../src/nautilus-property-browser.c:2133
+#: ../src/nautilus-property-browser.c:2149
 msgid "Click on a pattern to remove it"
 msgstr "ਤਰਤੀਬ ਤੇ ਕਲਿੱਕ ਕਰੋ, ਜੋ ਹਟਾਉਣੀ ਹੈ"
 
-#: ../src/nautilus-property-browser.c:2136
+#: ../src/nautilus-property-browser.c:2152
 msgid "Click on a color to remove it"
 msgstr "ਰੰਗ ਤੇ ਕਲਿੱਕ ਕਰੋ, ਜੋ ਹਟਾਉਣਾ ਹੈ"
 
-#: ../src/nautilus-property-browser.c:2139
+#: ../src/nautilus-property-browser.c:2155
 msgid "Click on an emblem to remove it"
 msgstr "ਨਿਸ਼ਾਨ ਤੇ ਕਲਿੱਕ ਕਰੋ, ਜੋ ਹਟਾਉਣਾ ਹੈ"
 
-#: ../src/nautilus-property-browser.c:2148
+#: ../src/nautilus-property-browser.c:2164
 msgid "Patterns:"
 msgstr "ਤਰਤੀਬ:"
 
-#: ../src/nautilus-property-browser.c:2151
+#: ../src/nautilus-property-browser.c:2167
 msgid "Colors:"
 msgstr "ਰੰਗ:"
 
-#: ../src/nautilus-property-browser.c:2154
+#: ../src/nautilus-property-browser.c:2170
 msgid "Emblems:"
 msgstr "ਨਿਸ਼ਾਨ:"
 
-#: ../src/nautilus-property-browser.c:2174
+#: ../src/nautilus-property-browser.c:2190
 msgid "_Remove a Pattern..."
 msgstr "ਤਰਤੀਬ ਹਟਾਉ(_R)..."
 
-#: ../src/nautilus-property-browser.c:2177
+#: ../src/nautilus-property-browser.c:2193
 msgid "_Remove a Color..."
 msgstr "ਰੰਗ ਹਟਾਉ(_R)..."
 
-#: ../src/nautilus-property-browser.c:2180
+#: ../src/nautilus-property-browser.c:2196
 msgid "_Remove an Emblem..."
 msgstr "ਨਿਸ਼ਾਨ ਹਟਾਉ(_R)..."
+
+#: ../src/nautilus-query-editor.c:126
+msgid "Location"
+msgstr "ਟਿਕਾਣਾ"
+
+#: ../src/nautilus-query-editor.c:132
+msgid "File Type"
+msgstr "ਫਾਇਲ ਕਿਸਮ"
+
+#: ../src/nautilus-query-editor.c:268
+msgid "Select folder search in"
+msgstr "ਫੋਲਡਰ ਖੋਜ ਵਿੱਚ ਚੁਣੋ"
+
+#: ../src/nautilus-query-editor.c:352
+msgid "Documents"
+msgstr "ਦਸਤਾਵੇਜ਼"
+
+#: ../src/nautilus-query-editor.c:370
+msgid "Music"
+msgstr "ਸੰਗੀਤ"
+
+#: ../src/nautilus-query-editor.c:384
+msgid "Video"
+msgstr "ਵੀਡਿਓ"
+
+#: ../src/nautilus-query-editor.c:400
+msgid "Picture"
+msgstr "ਤਸਵੀਰ"
+
+#: ../src/nautilus-query-editor.c:420
+msgid "Illustration"
+msgstr "ਚਿੱਤਰਕਾਰੀ"
+
+#: ../src/nautilus-query-editor.c:434
+msgid "Spreadsheet"
+msgstr "ਸਾਰਣੀਕਾਰ (ਸਪਰਿੱਡਸ਼ੀਟ)"
+
+#: ../src/nautilus-query-editor.c:450
+msgid "Presentation"
+msgstr "ਪੇਸ਼ਕਾਰੀ"
+
+#: ../src/nautilus-query-editor.c:459
+msgid "Pdf / Postscript"
+msgstr "Pdf / ਪੋਸਟ-ਸਕਰਿਪਟ"
+
+#: ../src/nautilus-query-editor.c:467
+msgid "Text File"
+msgstr "ਪਾਠ ਫਾਇਲ"
+
+#: ../src/nautilus-query-editor.c:540
+msgid "Any"
+msgstr "ਕਿਸੇ"
+
+#: ../src/nautilus-query-editor.c:556
+msgid "Other Type..."
+msgstr "ਹੋਰ ਕਿਸਮ..."
+
+#: ../src/nautilus-query-editor.c:884
+msgid "<b>Search Folder</b>"
+msgstr "<b>ਖੋਜ ਫੋਲਡਰ</b>"
+
+#: ../src/nautilus-query-editor.c:925
+msgid "Go"
+msgstr "ਜਾਓ"
+
+#: ../src/nautilus-query-editor.c:927
+msgid "Reload"
+msgstr "ਮੁੜ-ਲੋਡ"
+
+#: ../src/nautilus-query-editor.c:949
+msgid "<b>_Search for:</b>"
+msgstr "<b>ਖੋਜ(_S):</b>"
+
+#: ../src/nautilus-query-editor.c:976
+msgid "Search results"
+msgstr "ਖੋਜ ਨਤੀਜੇ"
+
+#: ../src/nautilus-search-bar.c:142
+msgid "<b>Search:</b>"
+msgstr "<b>ਖੋਜ:</b>"
 
 #: ../src/nautilus-side-pane.c:427
 msgid "Close the side pane"
 msgstr "ਬਾਹੀ ਬੰਦ ਕਰੋ"
 
-#: ../src/nautilus-spatial-window.c:750
+#: ../src/nautilus-spatial-window.c:829
 msgid "_Places"
 msgstr "ਥਾਂ(_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:751
+#: ../src/nautilus-spatial-window.c:830
 msgid "Open _Location..."
 msgstr "ਟਿਕਾਣਾ ਖੋਲੋ(_L)..."
 
-#: ../src/nautilus-spatial-window.c:754
+#: ../src/nautilus-spatial-window.c:833
 msgid "Close P_arent Folders"
 msgstr "ਮੂਲ ਫੋਲਡਰ ਬੰਦ ਕਰੋ(_a)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:755
+#: ../src/nautilus-spatial-window.c:834
 msgid "Close this folder's parents"
 msgstr "ਇਸ ਫੋਲਡਰ ਦੇ ਮੂਲ ਨੂੰ ਬੰਦ ਕਰੋ"
 
-#: ../src/nautilus-spatial-window.c:757
+#: ../src/nautilus-spatial-window.c:836
 msgid "Clos_e All Folders"
 msgstr "ਸਭ ਫੋਲਡਰ ਬੰਦ ਕਰੋ(_e)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:758
+#: ../src/nautilus-spatial-window.c:837
 msgid "Close all folder windows"
 msgstr "ਸਭ ਫੋਲਡਰ ਝਰੋਖੇ ਬੰਦ ਕਰੋ"
 
@@ -5172,40 +5270,40 @@ msgstr "ਕੀ ਤੁਸੀ ਆਪਣੀ ਸੂਚੀ `ਚੋ ਨਾ ਉਪਲ�
 msgid "Bookmark for Nonexistent Location"
 msgstr "ਬੁੱਕਮਾਰਕ ਲਈ ਗਲਤ ਥਾਂ ਹੈ"
 
-#: ../src/nautilus-window-manage-views.c:609
+#: ../src/nautilus-window-manage-views.c:613
 msgid "You can choose another view or go to a different location."
 msgstr "ਹੋਰ ਟਿਕਾਣਾ ਤੇ ਦੇਖੋ ਜਾਂ ਹੋਰ ਵੇਖਣ ਵਾਲਾ ਵਰਤੋਂ।"
 
-#: ../src/nautilus-window-manage-views.c:622
+#: ../src/nautilus-window-manage-views.c:626
 msgid "The location cannot be displayed with this viewer."
 msgstr "ਇਸ ਦਰਸ਼ਕ ਨਾਲ ਥਾਂ ਵੇਖਾਈ ਨਹੀ ਜਾ ਸਕਦੀ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1011
+#: ../src/nautilus-window-manage-views.c:1015
 msgid "Content View"
 msgstr "ਭਾਗ ਵੇਖੋ"
 
-#: ../src/nautilus-window-manage-views.c:1012
+#: ../src/nautilus-window-manage-views.c:1016
 msgid "View of the current folder"
 msgstr "ਮੌਜੂਦਾ ਫੋਲਡਰ ਦੀ ਦਿੱਖ"
 
-#: ../src/nautilus-window-manage-views.c:1366
+#: ../src/nautilus-window-manage-views.c:1388
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "ਫੋਲਡਰ ਦੇ ਭਾਗ ਵੇਖਣਾਉ ਵਾਲਾ ਨਾਟੀਲਸ ਕੋਲ ਇੰਸਟਾਲ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1372
+#: ../src/nautilus-window-manage-views.c:1394
 msgid "The location is not a folder."
 msgstr "ਟਿਕਾਣਾ ਫੋਲਡਰ ਨਹੀ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1399
+#: ../src/nautilus-window-manage-views.c:1421
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "ਨਾਟੀਲਸ %s ਨੂੰ ਹੈਂਡਲ ਨਹੀ ਕਰ ਸਕਦਾ: ਟਿਕਾਣਾ।"
 
-#: ../src/nautilus-window-manage-views.c:1434
+#: ../src/nautilus-window-manage-views.c:1456
 msgid "Check that your proxy settings are correct."
 msgstr "ਜਾਂਚ ਕਰੋ ਕਿ ਪਰਕਾਸੀ (Proxy) ਨਿਰਧਾਰਨ ਠੀਕ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1461
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5214,24 +5312,24 @@ msgstr ""
 "\"%s\" ਵਿਖਾਇਆ ਨਹੀ ਜਾ ਸਕਦਾ, ਕਿਉਕਿ ਨਾਟੀਲਸ SMB ਮਾਸਟਰ ਝਲਕਾਰੇ ਨਾਲ ਸੰਪਰਕ ਨਹੀ ਕਰ ਸਕਿਆ "
 "ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1442
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "Check that an SMB server is running in the local network."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਜਾਂਚ ਲਵੋ ਕਿ ਸਥਾਨਕ ਨੈਟਵਰਕ ਵਿੱਚ ਸਾਂਬਾ ਸਰਵਰ ਚਲ ਰਿਹਾ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1451
+#: ../src/nautilus-window-manage-views.c:1473
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "ਨਾਟੀਲਸ \"%s\" ਵਿਖਾ ਨਹੀ ਸਕਦਾ ਹੈ।"
 
-#: ../src/nautilus-window-manage-views.c:1453
+#: ../src/nautilus-window-manage-views.c:1475
 msgid "Please select another viewer and try again."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਦਰਸ਼ਕ ਚੁਣ ਕੇ ਫਿਰ ਕੋਸ਼ਿਸ ਕਰੋ।"
 
-#: ../src/nautilus-window-menus.c:178
+#: ../src/nautilus-window-menus.c:182
 msgid "Go to the location specified by this bookmark"
 msgstr "ਉਸ ਟਿਕਾਣੇ ਤੇ ਜਾਉ, ਜਿਥੇ ਇਹ ਬੁੱਕਮਾਰਕ ਦਰਸਾ ਰਿਹਾ ਹੈ।"
 
-#: ../src/nautilus-window-menus.c:414
+#: ../src/nautilus-window-menus.c:426
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify \n"
 "it under the terms of the GNU General Public License as published by \n"
@@ -5243,7 +5341,7 @@ msgstr ""
 "ਲਾਇਸੈਂਸ ਫਰੀ ਸਾਫਟਵੇਅਰ ਫਾਊਡੇਸ਼ਨ ਦੇ ਵਰਜਨ 2 ਜਾਂ ਨਵੇਂ ਅਨੁਸਾਰ\n"
 "ਹੋ ਸਕਦਾ ਹੈ।"
 
-#: ../src/nautilus-window-menus.c:418
+#: ../src/nautilus-window-menus.c:430
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, \n"
 "but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
@@ -5255,7 +5353,7 @@ msgstr ""
 "ਦਾ ਕੋਈ ਭਰੋਸਾ ਨਹੀਂ ਦਿੱਤਾ ਜਾਦਾ ਹੈ। ਵਧੇਰੇ ਜਾਣਕਾਰੀ ਲਈ ਗਨੂ ਜਨਰਲ ਪਬਲਿਕ ਲਾਇਸੈਂਸ\n"
 "ਨੂੰ ਵੇਖੋ।"
 
-#: ../src/nautilus-window-menus.c:422
+#: ../src/nautilus-window-menus.c:434
 msgid ""
 "You should have received a copy of the GNU General Public License \n"
 "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
@@ -5265,7 +5363,7 @@ msgstr ""
 "ਤਾਂ ਤੁਸੀਂ ਫਰੀ ਸਾਫਟਵੇਅਰ ਫਾਊਡੇਸ਼ਨ ਇੰਕਸ 59 ਟੈਂਪਲ ਪਲੇਸ, ਸੂਟ 330, ਬੋਸਟਨ,\n"
 "MA  02111-1307  USA ਤੋਂ ਲਿਖਤੀ ਰੂਪ ਵਿੱਚ ਪ੍ਰਾਪਤ ਕਰ ਸਕਦੇ ਹੋ।"
 
-#: ../src/nautilus-window-menus.c:451
+#: ../src/nautilus-window-menus.c:463
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5273,206 +5371,216 @@ msgstr ""
 "ਨਾਟੀਲਸ ਗਨੋਮ ਲਈ ਗਰਾਫਿਕਲ ਸੈੱਲ ਹੈ, ਜੋ ਫਾਇਲਾਂ ਅਤੇ ਬਾਕੀ ਸਿਸਟਮ ਨੂੰ ਸੌਖੀ ਤਰਾਂ ਸੰਭਾਲਣ ਵਿੱਚ ਸਹਾਇਕ "
 "ਹੈ।"
 
-#: ../src/nautilus-window-menus.c:455
+#: ../src/nautilus-window-menus.c:467
 msgid "Copyright © 1999-2005 The Nautilus authors"
 msgstr "Copyright © 1999-2005 ਨਾਟੀਲਸ ਲੇਖਕਾਂ ਕੋਲ ਸਭ ਹੱਕ ਰਾਖਵੇਂ ਹਨ"
 
 #  Translators should localize the following string
 #  * which will be displayed at the bottom of the about
 #  * box to give credit to the translator(s).
-#: ../src/nautilus-window-menus.c:460
+#: ../src/nautilus-window-menus.c:472
 msgid "translator-credits"
 msgstr ""
-"ਅਮਨਪ੍ਰੀਤ ਸਿੰਘ ਆਲਮ\n"
+"ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ (A Singh Alam)\n"
 "(aalam@redhat.com)"
 
-#: ../src/nautilus-window-menus.c:600
+#: ../src/nautilus-window-menus.c:612
 msgid "_File"
 msgstr "ਫਾਇਲ(_F)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:601
+#: ../src/nautilus-window-menus.c:613
 msgid "_Edit"
 msgstr "ਸੋਧ(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:602
+#: ../src/nautilus-window-menus.c:614
 msgid "_View"
 msgstr "ਵੇਖੋ(_V)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:615
 msgid "_Help"
 msgstr "ਸਹਾਇਤਾ(_H)"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:605
+#: ../src/nautilus-window-menus.c:617
 msgid "_Close"
 msgstr "ਬੰਦ ਕਰੋ(_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:606
+#: ../src/nautilus-window-menus.c:618
 msgid "Close this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਨੂੰ ਬੰਦ ਕਰੋ"
 
-#: ../src/nautilus-window-menus.c:609
+#: ../src/nautilus-window-menus.c:621
 msgid "_Backgrounds and Emblems..."
 msgstr "ਪਿੱਠਭੂਮੀ ਤੇ ਨਿਸ਼ਾਨ(_B)..."
 
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:622
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "ਪੈਟਰਨ, ਰੰਗ ਤੇ ਨਿਸ਼ਾਨ ਦਿਖਾਉ ਜੋ ਸਰੂਪ ਨੂੰ ਸੋਧਣ"
 
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:625
 msgid "Prefere_nces"
 msgstr "ਮੇਰੀ ਪਸੰਦ(_n)"
 
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:626
 msgid "Edit Nautilus preferences"
 msgstr "ਨਾਟੀਲਸ ਪਸੰਦ ਸੋਧ"
 
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:628
 msgid "_Undo"
 msgstr "ਵਾਪਸ(_U)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:617
+#: ../src/nautilus-window-menus.c:629
 msgid "Undo the last text change"
 msgstr "ਹੁਣੇ ਕੀਤੀ ਫੇਰਬਦਲ ਨੂੰ ਰੱਦ ਕਰੋ"
 
-#: ../src/nautilus-window-menus.c:619
+#: ../src/nautilus-window-menus.c:631
 msgid "Open _Parent"
 msgstr "ਮੂਲ ਖੋਲੋ(_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:632
 msgid "Open the parent folder"
 msgstr "ਮੂਲ ਫੋਲਡਰ ਖੋਲੋ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:626
+#: ../src/nautilus-window-menus.c:638
 msgid "_Stop"
 msgstr "ਰੋਕੋ(_S)"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:630
+#: ../src/nautilus-window-menus.c:642
 msgid "_Reload"
 msgstr "ਮੁੜ-ਲੋਡ(_R)"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:634
+#: ../src/nautilus-window-menus.c:646
 msgid "_Contents"
 msgstr "ਭਾਗ(_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:635
+#: ../src/nautilus-window-menus.c:647
 msgid "Display Nautilus help"
 msgstr "ਨਾਟੀਲਸ ਸਹਾਇਤਾ ਵੇਖਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:638
+#: ../src/nautilus-window-menus.c:650
 msgid "_About"
 msgstr "ਇਸ ਬਾਰੇ(_A)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:639
+#: ../src/nautilus-window-menus.c:651
 msgid "Display credits for the creators of Nautilus"
-msgstr "ਨਾਟੀਲਸ ਬਣਾਉਣ ਦਾ ਮਾਣ ਵੇਖਾਉ"
+msgstr "ਨਾਟੀਲਸ ਬਣਾਉਣ ਦਾ ਮਾਣ ਵੇਖਾਓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:642
+#: ../src/nautilus-window-menus.c:654
 msgid "Zoom _In"
 msgstr "ਅਕਾਰ ਵੱਡਾ(_I)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:643 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:655 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "ਸੰਖੇਪ ਦਾ ਹੋਰ ਵੇਰਵਾ ਦਿਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:654
+#: ../src/nautilus-window-menus.c:666
 msgid "Zoom _Out"
 msgstr "ਅਕਾਰ ਛੋਟਾ(_O)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:655 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:667 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "ਸੰਖੇਪ ਦਾ ਵੇਰਵਾ ਘੱਟ ਕਰੋ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:662
+#: ../src/nautilus-window-menus.c:674
 msgid "Normal Si_ze"
 msgstr "ਸਧਾਰਨ ਅਕਾਰ(_z)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:663
+#: ../src/nautilus-window-menus.c:675
 msgid "Show the contents at the normal size"
 msgstr "ਸੰਖੇਪ ਨੂੰ ਸਧਾਰਾਨ ਰੂਪ ਵਿੱਚ ਵਿਖਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:666
+#: ../src/nautilus-window-menus.c:678
 msgid "Connect to _Server..."
 msgstr "ਸਰਵਰ ਨਾਲ ਜੁੜੋ(_S)..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:667
+#: ../src/nautilus-window-menus.c:679
 msgid "Set up a connection to a network server"
 msgstr "ਨੈੱਟਵਰਕ ਸਰਵਰ ਨਾਲ ਸਥਾਈ ਕੁਨੈਕਸ਼ਨ ਬਣਾਓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:670
+#: ../src/nautilus-window-menus.c:682
 msgid "_Home"
 msgstr "ਘਰ(_H)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:671
+#: ../src/nautilus-window-menus.c:683
 msgid "Go to the home folder"
 msgstr "ਘਰ ਫੋਲਡਰ ਵਿੱਚ ਜਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:674
+#: ../src/nautilus-window-menus.c:686
 msgid "_Computer"
 msgstr "ਕੰਪਿਊਟਰ(_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:675
+#: ../src/nautilus-window-menus.c:687
 msgid "Go to the computer location"
 msgstr "ਕੰਪਿਊਟਰ ਤੇ ਜਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:678
+#: ../src/nautilus-window-menus.c:690
+msgid "_Network"
+msgstr "ਨੈੱਟਵਰਕ(_N)"
+
+#. label, accelerator
+#: ../src/nautilus-window-menus.c:691
+msgid "Go to the network location"
+msgstr "ਨੈੱਟਵਰਕ ਟਿਕਾਣੇ ਉੱਤੇ ਜਾਓ"
+
+#. name, stock id
+#: ../src/nautilus-window-menus.c:694
 msgid "T_emplates"
 msgstr "ਨਮੂਨਾ(_e)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:679
+#: ../src/nautilus-window-menus.c:695
 msgid "Go to the templates folder"
 msgstr "ਨਮੂਨੇ ਫੋਲਡਰ ਵਿੱਚ ਜਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:682
+#: ../src/nautilus-window-menus.c:698
 msgid "_Trash"
 msgstr "ਰੱਦੀ(_T)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:683
+#: ../src/nautilus-window-menus.c:699
 msgid "Go to the trash folder"
 msgstr "ਰੱਦੀ ਦੇ ਡੱਬੇ ਵਿੱਚ ਜਾਉ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:686
+#: ../src/nautilus-window-menus.c:702
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD ਨਿਰਮਾਤਾ"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:687
+#: ../src/nautilus-window-menus.c:703
 msgid "Go to the CD/DVD Creator"
 msgstr "CD/DVD ਨਿਰਮਾਤਾ ਖੋਲੋ"
 
-#: ../src/nautilus-window-menus.c:713
+#: ../src/nautilus-window-menus.c:729
 msgid "_Up"
 msgstr "ਉੱਪਰ(_U)"
 
