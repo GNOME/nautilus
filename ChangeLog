@@ -1,5 +1,11 @@
 2005-12-20  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-query-editor.c: (edit_clicked),
+	(nautilus_query_editor_grab_focus):
+	Don't focus invisible widget.
+
+2005-12-20  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-extension/Makefile.am:
 	* libnautilus-extension/nautilus-location-widget-provider.[ch]:
 	Add NautilusLocationWidgetProvider

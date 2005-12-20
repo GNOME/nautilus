@@ -263,6 +263,7 @@ static void
 edit_clicked (GtkButton *button, NautilusQueryEditor *editor)
 {
 	nautilus_query_editor_set_visible (editor, TRUE);
+	nautilus_query_editor_grab_focus (editor);
 }
 
 /* Location */
@@ -1060,7 +1061,9 @@ nautilus_query_editor_changed (NautilusQueryEditor *editor)
 void
 nautilus_query_editor_grab_focus (NautilusQueryEditor *editor)
 {
-	gtk_widget_grab_focus (editor->details->entry);
+	if (editor->details->is_visible) {
+		gtk_widget_grab_focus (editor->details->entry);
+	}
 }
 
 NautilusQuery *
