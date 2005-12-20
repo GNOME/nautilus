@@ -41,6 +41,7 @@
 #include "gtk/gtkliststore.h"
 #include <gtk/gtkfilechooserbutton.h>
 #include "gtk/gtkcelllayout.h"
+#include "gtk/gtktooltips.h"
 #include "gtk/gtkcellrenderertext.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
@@ -82,6 +83,7 @@ struct NautilusQueryEditorDetails {
 	gboolean is_visible;
 	GtkWidget *invisible_vbox;
 	GtkWidget *visible_vbox;
+	GtkTooltips *tooltips;
 
 	GList *rows;
 	
@@ -171,6 +173,11 @@ nautilus_query_editor_dispose (GObject *object)
 		
 		nautilus_search_bar_return_entry (editor->details->bar);
 		eel_remove_weak_pointer (&editor->details->bar);
+	}
+
+	if (editor->details->tooltips) {
+		g_object_unref (editor->details->tooltips);
+		editor->details->tooltips = NULL;
 	}
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
@@ -839,6 +846,9 @@ nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (remove_row_cb), row);
 
+	gtk_tooltips_set_tip (editor->details->tooltips, button,
+			      _("Remove this criterium from the search"), NULL);
+	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	return row;
@@ -865,10 +875,10 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	editor->details = g_new0 (NautilusQueryEditorDetails, 1);
 	editor->details->is_visible = TRUE;
 
-	editor->details->invisible_vbox = gtk_vbox_new (FALSE, 0);
+	editor->details->invisible_vbox = gtk_vbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (editor), editor->details->invisible_vbox,
 			    FALSE, FALSE, 0);
-	editor->details->visible_vbox = gtk_vbox_new (FALSE, 0);
+	editor->details->visible_vbox = gtk_vbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (editor), editor->details->visible_vbox,
 			    FALSE, FALSE, 0);
 	/* Only show visible vbox */
@@ -891,6 +901,13 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (edit_clicked), editor);
+
+	editor->details->tooltips = gtk_tooltips_new ();
+	g_object_ref (editor->details->tooltips);
+	gtk_object_sink (GTK_OBJECT (editor->details->tooltips));
+
+	gtk_tooltips_set_tip (editor->details->tooltips, button,
+			      _("Edit the saved search"), NULL);
 }
 
 void
@@ -920,6 +937,9 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
+	gtk_tooltips_set_tip (editor->details->tooltips, button,
+			      _("Add a new criterium to this search"), NULL);
+
 	if (!editor->details->is_indexed) {
 		if (use_go) {
 			button = gtk_button_new_with_label (_("Go"));
@@ -927,6 +947,9 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 			button = gtk_button_new_with_label (_("Reload"));
 		}
 		gtk_widget_show (button);
+		
+		gtk_tooltips_set_tip (editor->details->tooltips, button,
+				      _("Perform or update the search"), NULL);
 		
 		g_signal_connect (button, "clicked",
 				  G_CALLBACK (go_search_cb), editor);

@@ -1760,7 +1760,7 @@ update_extra_location_widgets_visibility (NautilusWindow *window)
 	if (children != NULL) {
 		gtk_widget_show (window->details->extra_location_widgets);
 	} else {
-		gtk_widget_show (window->details->extra_location_widgets);
+		gtk_widget_hide (window->details->extra_location_widgets);
 	}
 	g_list_free (children);
 }

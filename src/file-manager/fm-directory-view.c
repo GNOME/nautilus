@@ -1269,7 +1269,7 @@ action_save_search_as_callback (GtkAction *action,
 
 		query = nautilus_search_directory_get_query (search);
 		
-		dialog = gtk_dialog_new_with_buttons (_("Save Search"),
+		dialog = gtk_dialog_new_with_buttons (_("Save Search as"),
 						      fm_directory_view_get_containing_window (directory_view),
 						      GTK_DIALOG_NO_SEPARATOR,
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1278,6 +1278,7 @@ action_save_search_as_callback (GtkAction *action,
 						     GTK_STOCK_SAVE, GTK_RESPONSE_OK);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
 		table = gtk_table_new (2, 2, FALSE);
 		gtk_container_set_border_width (GTK_CONTAINER (table), 5);
@@ -1286,7 +1287,7 @@ action_save_search_as_callback (GtkAction *action,
 		gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox), table);
 		gtk_widget_show (table);
 		
-		label = gtk_label_new_with_mnemonic (_("_Query name:"));
+		label = gtk_label_new_with_mnemonic (_("Search _name:"));
 		gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
 		gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 		gtk_widget_show (label);

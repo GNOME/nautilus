@@ -875,7 +875,8 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_box_pack_start (GTK_BOX (vbox), eventbox, FALSE, FALSE, 0);
 	gtk_widget_show (eventbox);
 	
-	extras_vbox = gtk_vbox_new (FALSE, 0);
+	extras_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (extras_vbox), 6);
 	NAUTILUS_WINDOW (window)->details->extra_location_widgets = extras_vbox;
 	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
 

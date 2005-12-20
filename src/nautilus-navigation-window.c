@@ -155,10 +155,6 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	
 	window->details = g_new0 (NautilusNavigationWindowDetails, 1);
 
-	window->details->tooltips = gtk_tooltips_new ();
-	g_object_ref (G_OBJECT (window->details->tooltips));
-	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
-	
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
 			  window->details->content_paned,
@@ -180,6 +176,7 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	gtk_widget_show (eventbox);
 	
 	extras_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (extras_vbox), 6);
 	NAUTILUS_WINDOW (window)->details->extra_location_widgets = extras_vbox;
 	gtk_container_add (GTK_CONTAINER (eventbox), extras_vbox);
 
@@ -585,11 +582,6 @@ nautilus_navigation_window_destroy (GtkObject *object)
 
 	window->details->content_paned = NULL;
 	
-	if (window->details->tooltips) {
-		g_object_unref (G_OBJECT (window->details->tooltips));
-		window->details->tooltips = NULL;
-	}
-
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
