@@ -29,6 +29,7 @@
 #include <glib/gi18n.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-mime-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkbutton.h>
@@ -38,7 +39,10 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkcombobox.h>
+#include <gtk/gtkdialog.h>
 #include "gtk/gtkliststore.h"
+#include "gtk/gtktreeselection.h"
+#include "gtk/gtkscrolledwindow.h"
 #include <gtk/gtkfilechooserbutton.h>
 #include "gtk/gtkcelllayout.h"
 #include "gtk/gtktooltips.h"
@@ -347,7 +351,7 @@ type_separator_func (GtkTreeModel      *model,
 	
 	gtk_tree_model_get (model, iter, 0, &text, -1);
 
-	res = strcmp (text, "---") == 0;
+	res = text != NULL && strcmp (text, "---") == 0;
 	
 	g_free (text);
 	return res;
@@ -480,29 +484,6 @@ struct {
 };
 
 static void
-type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
-{
-	GtkTreeIter iter;
-	gboolean other;
-	GtkTreeModel *model;
-
-	if (!gtk_combo_box_get_active_iter  (GTK_COMBO_BOX (row->type_widget),
-					     &iter)) {
-		return;
-	}
-
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (row->type_widget));
-	gtk_tree_model_get (model, &iter, 3, &other, -1);
-
-	if (other) {
-		/* TODO: Ask for other mimetype and add it to list + select it */
-		/* But can't read list of mimetypes atm */
-	}
-	
-	nautilus_query_editor_changed (row->editor);
-}
-
-static void
 type_add_custom_type (NautilusQueryEditorRow *row,
 		      const char *mime_type,
 		      const char *description,
@@ -521,6 +502,112 @@ type_add_custom_type (NautilusQueryEditorRow *row,
 			    -1);
 }
 
+
+static void
+type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
+{
+	GtkTreeIter iter;
+	gboolean other;
+	GtkTreeModel *model;
+
+	if (!gtk_combo_box_get_active_iter  (GTK_COMBO_BOX (row->type_widget),
+					     &iter)) {
+		return;
+	}
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (row->type_widget));
+	gtk_tree_model_get (model, &iter, 3, &other, -1);
+
+	if (other) {
+		GList *mime_infos, *l;
+		GtkWidget *dialog;
+		GtkWidget *scrolled, *treeview;
+		GtkListStore *store;
+		GtkTreeViewColumn *column;
+		GtkCellRenderer *renderer;
+		GtkWidget *toplevel;
+		GtkTreeSelection *selection;
+
+		mime_infos = eel_mime_get_availible_mime_types ();
+
+		store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
+		for (l = mime_infos; l != NULL; l = l->next) {
+			GtkTreeIter iter;
+			EelMimeTypeInfo *info = l->data;
+
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter,
+					    0, info->description,
+					    1, info->mime_type,
+					    -1);
+			
+			eel_mime_type_info_free (info);
+		}
+		g_list_free (mime_infos);
+		
+
+		
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (combo_box));
+		dialog = gtk_dialog_new_with_buttons (_("Select type"),
+						      GTK_WINDOW (toplevel),
+						      GTK_DIALOG_NO_SEPARATOR,
+						      GTK_STOCK_OK, GTK_RESPONSE_OK,
+						      NULL);
+		gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
+			
+		scrolled = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+						GTK_POLICY_AUTOMATIC,
+						GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled),
+						     GTK_SHADOW_IN);
+		
+		gtk_widget_show (scrolled);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), scrolled, TRUE, TRUE, 6);
+
+		treeview = gtk_tree_view_new ();
+		gtk_tree_view_set_model (GTK_TREE_VIEW (treeview),
+					 GTK_TREE_MODEL (store));
+		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store), 0,
+						      GTK_SORT_ASCENDING);
+		
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+		gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
+
+
+		renderer = gtk_cell_renderer_text_new ();
+		column = gtk_tree_view_column_new_with_attributes ("Name",
+								   renderer,
+								   "text",
+								   0,
+								   NULL);
+		gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+		gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
+		
+		gtk_widget_show (treeview);
+		gtk_container_add (GTK_CONTAINER (scrolled), treeview);
+
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			char *mimetype, *description;
+
+			gtk_tree_selection_get_selected (selection, NULL, &iter);
+			gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
+					    0, &description,
+					    1, &mimetype,
+					    -1);
+
+			type_add_custom_type (row, mimetype, description, &iter);
+			gtk_combo_box_set_active_iter  (GTK_COMBO_BOX (row->type_widget),
+							&iter);
+		} else {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (row->type_widget), 0);
+		}
+
+		gtk_widget_destroy (dialog);
+	}
+	
+	nautilus_query_editor_changed (row->editor);
+}
 
 static GtkWidget *
 type_row_create_widgets (NautilusQueryEditorRow *row)
@@ -557,12 +644,10 @@ type_row_create_widgets (NautilusQueryEditorRow *row)
 				    -1);
 	}
 
-#if 0 /* Disable this for now, as there is no way to read list of mimetypes */
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, 0, "---",  -1);
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, 0, _("Other Type..."), 3, TRUE, -1);
-#endif
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	

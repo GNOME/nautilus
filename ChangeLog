@@ -1,5 +1,14 @@
 2005-12-20  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-query-editor.c:
+	Support filtering on arbitrary mime type.
+	Uses the new eel_mime_get_availible_mime_types
+	
+	* configure.in:
+	Require eel 2.13.4 for new mime list function
+
+2005-12-20  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-query-editor.c: (edit_clicked),
 	(nautilus_query_editor_grab_focus):
 	Don't focus invisible widget.
