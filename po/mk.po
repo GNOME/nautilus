@@ -1049,7 +1049,7 @@ msgstr "Големината на датотеката"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:58
 msgid "Type"
-msgstr "Вид"
+msgstr "Тип"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
@@ -1057,7 +1057,7 @@ msgstr "Типот на датотеката."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 msgid "Date Modified"
-msgstr "Дата на Модификација"
+msgstr "Датум на промена"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:66
 msgid "The date the file was modified."
@@ -1191,7 +1191,7 @@ msgstr "Извинете, но мора да внесете не-празен к
 #: ../libnautilus-private/nautilus-emblem-utils.c:203
 msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Извинете, но важните амблем зборови можат да содржат само букви, празни "
+"Извинете, но важните зборови за амблем можат да содржат само букви, празни "
 "места и бројки."
 
 #. this really should never happen, as a user has no idea
@@ -1209,11 +1209,11 @@ msgstr "Изберете друго име за амблемот."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:258
 msgid "Sorry, unable to save custom emblem."
-msgstr "Извинете,не сум во можност да го зачувам креираниот амблем. "
+msgstr "Извинете, не можам да го зачувам креираниот амблем. "
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:275
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Жалам,не можам да го зачувам името на креираниот amblem"
+msgstr "Жалам, не можам да го зачувам името на креираниот амблем"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:169
 #, c-format
@@ -2694,17 +2694,17 @@ msgstr "\"%s\" е означен"
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "%d одбрана папка"
-msgstr[1] "%d одбрани папка"
-msgstr[2] "%d одбрани папка"
+msgstr[0] "%d избрана папка"
+msgstr[1] "%d избрани папки"
+msgstr[2] "%d избрани папки"
 
 #: ../src/file-manager/fm-directory-view.c:2136
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
 msgstr[0] " (содржи %d предмет)"
-msgstr[1] " (содржи %d предмети)"
-msgstr[2] " (содржи %d предмети)"
+msgstr[1] " (содржат %d предмети)"
+msgstr[2] " (содржат %d предмети)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: ../src/file-manager/fm-directory-view.c:2147
@@ -3095,7 +3095,7 @@ msgstr "Покажи ја папката што ги содржи скрипти
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6574
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr "Припреми ги избраните датотеки да бидат ископирани со командата „Вметни“"
+msgstr "Припреми ги избраните датотеки да бидат преместени со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
@@ -3409,7 +3409,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:8181
 #, c-format
 msgid "Opening \"%s\"."
-msgstr "Се отвора \"%s\"."
+msgstr "Отворам \"%s\"."
 
 #: ../src/file-manager/fm-directory-view.c:8184
 #, c-format
@@ -3992,7 +3992,7 @@ msgstr "_Лепливо"
 
 #: ../src/file-manager/fm-properties-window.c:2919
 msgid "You are not the owner, so you can't change these permissions."
-msgstr "Ти не си сопственикот, и затоа неможеш да ги менуваш овие пермисии."
+msgstr "Вие не сте сопственикот, и затоа не можете да ги менувате овие пермисии."
 
 #: ../src/file-manager/fm-properties-window.c:2933
 msgid "File _owner:"
@@ -4066,7 +4066,7 @@ msgstr "И_звади"
 #. add the "create folder" menu item
 #: ../src/file-manager/fm-tree-view.c:1129
 msgid "Create Folder"
-msgstr "Креирај _папка"
+msgstr "Креирај папка"
 
 #: ../src/file-manager/fm-tree-view.c:1181
 msgid "Move to Trash"
@@ -4083,7 +4083,7 @@ msgstr "Соседна мрежа"
 
 #: ../src/file-manager/fm-tree-view.c:1489
 msgid "Tree"
-msgstr "Tree"
+msgstr "Дрво"
 
 #: ../src/file-manager/fm-tree-view.c:1495
 msgid "Show Tree"
@@ -4099,7 +4099,7 @@ msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Пред да го отворите Наутилус, креирајте ја следнава папка или подесете ги "
+"Пред да го отворите Наутилус, креирајте ја следнава папка или поставете ги "
 "пермисиите за да може Наутилус да ја креира."
 
 #: ../src/nautilus-application.c:261
@@ -4582,20 +4582,20 @@ msgstr ""
 "По големина\n"
 "По тип\n"
 "По датум на измена\n"
-"По емблеми"
+"По амблеми"
 
 #: ../src/nautilus-file-management-properties.glade.h:43
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Избери го редоследот на информацииите што треба да се појавуваат под имињата "
+"Изберете го редоследот на информацииите што треба да се појавуваат под имињата "
 "на иконите.\n"
 "Повеќе информации се појавуваат со зумирање поблиску."
 
 #: ../src/nautilus-file-management-properties.glade.h:44
 msgid "Choose the order of information to appear in the list view."
-msgstr "Избери го редоследот на информацииите што треба да се појавуваат во листата."
+msgstr "Изберете го редоследот на информацииите што треба да се појавуваат во листата."
 
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
@@ -4647,11 +4647,11 @@ msgstr "Покажи _мали сликички:"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show hidden and _backup files"
-msgstr "Покажи скриени и _бекап датотеки"
+msgstr "Покажи скриени и _резервни датотеки"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show te_xt in icons:"
-msgstr "Покажи го те_кст во икони"
+msgstr "Покажи те_кст во икони"
 
 #: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Sort _folders before files"
@@ -5025,7 +5025,7 @@ msgstr "_Уреди "
 #: ../src/nautilus-navigation-window-menus.c:444
 #: ../src/nautilus-spatial-window.c:843
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Прикажи прозорец што дозволува уредување на bookmarks во ова мени"
+msgstr "Прикажи прозорец што дозволува уредување на обележувачи во ова мени"
 
 #: ../src/nautilus-navigation-window-menus.c:446
 #: ../src/nautilus-spatial-window.c:845
@@ -5451,7 +5451,7 @@ msgstr "Обележувач за непостоечка локација"
 
 #: ../src/nautilus-window-manage-views.c:615
 msgid "You can choose another view or go to a different location."
-msgstr "Можеш да избереш друг поглед или да преминеш на друга локација."
+msgstr "Можете да изберете друг поглед или да преминете на друга локација."
 
 #: ../src/nautilus-window-manage-views.c:628
 msgid "The location cannot be displayed with this viewer."
@@ -5538,7 +5538,7 @@ msgid ""
 "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
 "Заедно со Наутилус треба да добиете и копија од општата и јавна\n"
-"ГНУ лиценца; доколку лиценцата ја неам пишете и на Фондацијата за\n"
+"ГНУ лиценца; доколку ја нема лиценцата пишете и на Фондацијата за\n"
 "слободен софтвер на следнава адреса: 59 Temple Place, Suite 330, Boston, MA  "
 "02111-1307  USA"
 
@@ -5603,11 +5603,11 @@ msgstr "_Позадини и амблеми..."
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr "Прикажи шари, бои, и амблеми што можат да се користат за костумизиран изглед"
+msgstr "Прикажи шари, бои, и амблеми што можат да се користат за сопствен изглед"
 
 #: ../src/nautilus-window-menus.c:625
 msgid "Prefere_nces"
-msgstr "Пара_метри"
+msgstr "Префе_ренци"
 
 #: ../src/nautilus-window-menus.c:626
 msgid "Edit Nautilus preferences"
@@ -5659,7 +5659,7 @@ msgstr "_За"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:651
 msgid "Display credits for the creators of Nautilus"
-msgstr "Прикажи кредити за создавачите на Наутилус"
+msgstr "Прикажи заслуги за создавачите на Наутилус"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:654
