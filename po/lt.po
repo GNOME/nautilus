@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-12-20 20:23+0200\n"
-"PO-Revision-Date: 2005-12-20 20:29+0200\n"
+"PO-Revision-Date: 2006-01-02 23:25+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
-msgstr "Vaiduoklis"
+msgstr "Šmėkla"
 
 #: ../data/browser.xml.h:2
 msgid "Azul"
@@ -34,7 +34,7 @@ msgstr "Juoda"
 
 #: ../data/browser.xml.h:4
 msgid "Blue Ridge"
-msgstr "Mėlynos juostelės"
+msgstr "Mėlyna ketera"
 
 #: ../data/browser.xml.h:5
 msgid "Blue Rough"
@@ -330,9 +330,9 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"Kriterijus, pagal kurį ieškomos bylos paieškos juostoje. Jei reikšmė "
-"„search_by_text“, bus ieškoma tik pagal bylos pavadinimą. Jei reikšmė "
-"„search_by_text_and_properties“, bus ieškoma pagal bylos pavadinimą ir jos "
+"Kriterijus, pagal kurį ieškomos rinkmenos paieškos juostoje. Jei reikšmė "
+"„search_by_text“, bus ieškoma tik pagal rinkmenos pavadinimą. Jei reikšmė "
+"„search_by_text_and_properties“, bus ieškoma pagal rinkmenos pavadinimą ir jos "
 "savybes."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
@@ -357,7 +357,7 @@ msgstr "Numatytoji fono spalva"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 msgid "Default Background Filename"
-msgstr "Numatytojo fono bylos pavadinimas"
+msgstr "Numatytojo fono rinkmenos pavadinimas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Color"
@@ -365,7 +365,7 @@ msgstr "Numatytojo šoninio skydelio fono spalva"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default Side Pane Background Filename"
-msgstr "Numatytojo šoninio skydelio fono bylos pavadinimas"
+msgstr "Numatytojo šoninio skydelio fono rinkmenos pavadinimas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
@@ -436,7 +436,7 @@ msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"Įprasto aplankų fono paveikslėlio bylos pavadinimas. Naudojamas tik jei "
+"Įprasto aplankų fono paveikslėlio rinkmenos pavadinimas. Naudojamas tik jei "
 "background_set reikšmė yra true."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
@@ -444,7 +444,7 @@ msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
-"Įprasto šoninių skydelių fono paveikslėlio bylos pavadinimas. Naudojamas tik "
+"Įprasto šoninių skydelių fono paveikslėlio rinkmenos pavadinimas. Naudojamas tik "
 "jei side_pane_background_set reikšmė yra true."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
@@ -469,7 +469,7 @@ msgid ""
 "Otherwise it will show both folders and files."
 msgstr ""
 "Jei reikšmė true, šoniniame skydelyje esančiame medyje bus rodomi tik "
-"aplankai. Kitu atveju rodomi tiek aplankai, tiek bylos."
+"aplankai. Kitu atveju rodomi tiek aplankai, tiek rinkmenos."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
@@ -502,7 +502,7 @@ msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
-"Jei reikšmė teigiama, bylos savybių dialoge bus leidžiama keisti kai kurias "
+"Jei reikšmė teigiama, rinkmenos savybių dialoge bus leidžiama keisti kai kurias "
 "rečiau naudojamas savybes."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
@@ -510,15 +510,15 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"Jei reikšmė teigiama, visi aplankai rodomi prieš bylas piktogramų ir sąrašo "
-"rodiniuose."
+"Jei reikšmė teigiama, visi aplankai rodomi prieš rinkmenas piktogramų ir "
+"sąrašo rodiniuose."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
-"Jei reikšmė teigiama, prieš perkeliant bylas į šiukšlinę bus prašoma "
+"Jei reikšmė teigiama, prieš perkeliant rinkmenas į šiukšlinę bus prašoma "
 "patvirtinimo."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
@@ -531,7 +531,7 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
-"Jei reikšmė teigiama, atsiras galimybė ištrinti bylas iš karto, neperkeliant "
+"Jei reikšmė teigiama, atsiras galimybė ištrinti rinkmenas iš karto, neperkeliant "
 "jų į šiukšlinę. Ši galimybė gali būti pavojinga, todėl naudokite atsargiai."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
@@ -558,17 +558,17 @@ msgid ""
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
-"Jei reikšmė teigiama, yra rodomos atsarginės bylos. Šiuo metu atsarginėmis "
-"laikomos tik bylos, kurių pavadinimas baigiasi tilde (~)."
+"Jei reikšmė teigiama, yra rodomos atsarginės rinkmenos. Šiuo metu atsarginėmis "
+"laikomos tik rinkmenos, kurių pavadinimas baigiasi tilde (~)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
-"Jei reikšmė teigiama, yra rodomos paslėptos bylos - tai bylos, kurių "
+"Jei reikšmė teigiama, yra rodomos paslėptos rinkmenos - tai rinkmenos, kurių "
 "pavadinimas prasideda tašku, arba yra įrašytos tame aplanke esančioje ."
-"hidden byloje."
+"hidden rinkmenoje."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -649,8 +649,8 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"Paveikslėliams, didesniems už šį dydį, nebus kuriami minivaizdai. Šios "
-"nuostatos tikslas yra išvengti didelių paveikslėlių minivaizdų kūrimo, nes "
+"Paveikslėliams, didesniems už šį dydį, nebus kuriamos miniatiūros. Šios "
+"nuostatos tikslas yra išvengti didelių paveikslėlių miniatiūrų kūrimo, nes "
 "gali ilgai užtrukti ir naudoti daug atminties."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
@@ -659,11 +659,11 @@ msgstr "Galimų užrašų šalia piktogramų sąrašas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum handled files in a folder"
-msgstr "Maksimalus apdorojamų bylų skaičius aplankuose"
+msgstr "Maksimalus apdorojamų rinkmenų skaičius aplankuose"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum image size for thumbnailing"
-msgstr "Maksimalus paveikslėlio dydis daryti minivaizdams"
+msgstr "Maksimalus paveikslėlio dydis miniatiūrų kūrimui"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid ""
@@ -694,7 +694,7 @@ msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
-"Galimos reikšmės yra „single“ - paleisti byloms vienu pelės spustelėjimu, "
+"Galimos reikšmės yra „single“ - paleisti rinkmenoms vienu pelės spustelėjimu, "
 "arba „double“ - dvigubu spustelėjimu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
@@ -747,9 +747,9 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
-"Kada groti garsus, užvedus pelės žymeklį ant bylos. Jei nustatyta „always“, "
-"garsai bus grojami visada, net jei byla yra nutolusiame serveryje. Jei "
-"nustatyta „local_only“ - grojamos tik vietinės bylos. Jei nustatyta „never“, "
+"Kada groti garsus, užvedus pelės žymeklį ant rinkmenos. Jei nustatyta „always“, "
+"garsai bus grojami visada, net jei rinkmena yra nutolusiame serveryje. Jei "
+"nustatyta „local_only“ - grojamos tik vietinės rinkmenos. Jei nustatyta „never“, "
 "garsai niekada negrojami."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
@@ -760,10 +760,10 @@ msgid ""
 "previews for local file systems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
-"Kada rodyti tekstinių bylų turinio iškarpą vietoj tekstinės bylos "
-"piktogramos. Jei nustatyta „always“, visada rodyti turinį, net jei byla yra "
+"Kada rodyti tekstinių rinkmenų turinio iškarpą vietoj tekstinės rinkmenos "
+"piktogramos. Jei nustatyta „always“, visada rodyti turinį, net jei rinkmena yra "
 "nutolusiame serveryje. Jei nustatyta „local_only“, tai rodyti tik vietinių "
-"bylų turinį. Jei nustatyta „never“, niekada neskaityti tekstinių bylų "
+"rinkmenų turinį. Jei nustatyta „never“, niekada neskaityti tekstinių rinkmenų "
 "turinio."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
@@ -774,10 +774,10 @@ msgid ""
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
 msgstr ""
-"Kada rodyti paveikslėlio mini vaizdą vietoje bylos piktogramos. Jei "
-"nustatyta „always“, visada rodyti mini vaizdą, net jei byla yra nutolusiame "
-"serveryje. Jei nustatyta „local_only“, tai rodyti tik vietinių bylų mini "
-"vaizdus. Jei nustatyta „never“, niekada nedaryti mini vaizdų, rodyti "
+"Kada rodyti paveikslėlio rinkmeną kaip miniatiūrą. Jei nustatyta „always“, "
+"visada rodyti miniatiūrą, net jei rinkmena yra nutolusiame serveryje. Jei "
+"nustatyta „local_only“, tai rodyti tik vietinių rinkmenų miniatiūras. Jei "
+"nustatyta „never“, niekada nedaryti paveikslėlių miniatiūrų, tiesiog naudoti "
 "paprastą piktogramą."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -821,7 +821,7 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
-"Bylų datų formatas. Galimos reikšmės yra „locale“, „iso“ ir „informal“."
+"Rinkmenų datų formatas. Galimos reikšmės yra „locale“, „iso“ ir „informal“."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "The side pane view to show in newly opened windows."
@@ -852,7 +852,7 @@ msgstr "Šiukšlinės piktograma matoma darbastalyje"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "Type of click used to launch/open files"
-msgstr "Bylų paleidimo/atvėrimo pele būdas"
+msgstr "Rinkmenų paleidimo/atvėrimo pele būdas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Use manual layout in new windows"
@@ -864,7 +864,8 @@ msgstr "Naudoti glaustesnį išdėstymą naujuose languose"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "What to do with executable text files when activated"
-msgstr "Ką daryti su vykdomosiomis tekstinėmis bylomis, kai jos aktyvuojamos"
+msgstr ""
+"Ką daryti su vykdomosiomis tekstinėmis rinkmenomis, kai jos aktyvuojamos"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid ""
@@ -873,9 +874,9 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"Ką daryti, kai bandoma atverti paleidžiamą tekstinę bylą. Galimos reikšmės "
+"Ką daryti, kai bandoma atverti paleidžiamą tekstinę rinkmeną. Galimos reikšmės "
 "yra „launch“ - paleisti jas kaip programas, „ask“ - paklausti ką daryti, ir "
-"„display“ - parodyti jas kaip tekstines bylas."
+"„display“ - parodyti jas kaip tekstines rinkmenas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid ""
@@ -893,11 +894,11 @@ msgstr "Kada rodyti elementų skaičių aplanke"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "When to show preview text in icons"
-msgstr "Kada rodyti tekstinės bylos turinį piktogramose"
+msgstr "Kada rodyti tekstinės rinkmenos turinį piktogramose"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "When to show thumbnails of image files"
-msgstr "Kada rodyti paveikslų minivaizdus"
+msgstr "Kada rodyti paveikslų miniatiūras"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether a custom default folder background has been set."
@@ -909,7 +910,7 @@ msgstr "Ar yra nustatytas įprastas šoninio skydelio fonas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr "Ar klausti patvirtinimo prieš perkeliant bylas į šiukšlinę"
+msgstr "Ar klausti patvirtinimo prieš perkeliant rinkmeną į šiukšlinę"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid "Whether to enable immediate deletion"
@@ -917,15 +918,15 @@ msgstr "Ar leisti tiesioginį ištrynimą"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr "Ar groti garsus, užvedus pele ant garso bylos"
+msgstr "Ar groti garsus, užvedus pele ant garso rinkmenos"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Whether to show backup files"
-msgstr "Ar rodyti atsargines bylas"
+msgstr "Ar rodyti atsargines rinkmenas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "Whether to show hidden files"
-msgstr "Ar rodyti paslėptas bylas"
+msgstr "Ar rodyti paslėptas rinkmenas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Width of the side pane"
@@ -987,7 +988,7 @@ msgstr "Pavadinimas"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
-msgstr "Bylos pavadinimas ir piktograma."
+msgstr "Rinkmenos pavadinimas ir piktograma."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:50
 msgid "Size"
@@ -995,7 +996,7 @@ msgstr "Dydis"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:51
 msgid "The size of the file."
-msgstr "Bylos dydis."
+msgstr "Rinkmenos dydis."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:58
 msgid "Type"
@@ -1003,7 +1004,7 @@ msgstr "Tipas"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
-msgstr "Bylos tipas."
+msgstr "Rinkmenos tipas."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 msgid "Date Modified"
@@ -1011,7 +1012,7 @@ msgstr "Keitimo data"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:66
 msgid "The date the file was modified."
-msgstr "Data, kada byla buvo pakeista."
+msgstr "Data, kada rinkmena buvo pakeista."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:73
 msgid "Date Accessed"
@@ -1019,7 +1020,7 @@ msgstr "Naudojimo data"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr "Data, kada byla buvo naudota."
+msgstr "Data, kada rinkmena buvo naudota."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:81
 msgid "Owner"
@@ -1027,7 +1028,7 @@ msgstr "Savininkas"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:82
 msgid "The owner of the file."
-msgstr "Bylos savininkas."
+msgstr "Rinkmenos savininkas."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:89
 msgid "Group"
@@ -1035,7 +1036,7 @@ msgstr "Grupė"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:90
 msgid "The group of the file."
-msgstr "Bylos grupė."
+msgstr "Rinkmenos grupė."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
 #: ../src/file-manager/fm-properties-window.c:2904
@@ -1044,7 +1045,7 @@ msgstr "Teisės"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:98
 msgid "The permissions of the file."
-msgstr "Bylos prieigos teisės."
+msgstr "Rinkmenos prieigos teisės."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:105
 msgid "Octal Permissions"
@@ -1052,7 +1053,7 @@ msgstr "Aštuntainės teisės"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
-msgstr "Bylos prieigos teisės aštuntainiu pavidalu."
+msgstr "Rinkmenos prieigos teisės aštuntainiu pavidalu."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:113
 msgid "MIME Type"
@@ -1060,7 +1061,7 @@ msgstr "MIME tipas"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:114
 msgid "The mime type of the file."
-msgstr "Bylos mime tipas."
+msgstr "Rinkmenos mime tipas."
 
 #: ../libnautilus-private/nautilus-customization-data.c:404
 msgid "Reset"
@@ -1411,19 +1412,19 @@ msgstr "Aplankas „%s“ jau egzistuoja. Ar norite jį pakeisti?"
 #: ../libnautilus-private/nautilus-file-operations.c:1165
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr "Byla „%s“ jau egzistuoja. Ar norite ją pakeisti?"
+msgstr "Rinkmena „%s“ jau egzistuoja. Ar norite ją pakeisti?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1173
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
 msgstr ""
-"Jeigu pakeisite esamą aplanką, visos bylos, kurios konfliktuoja su "
-"kopijuojamomis bylomis, bus perrašytos naujomis."
+"Jeigu pakeisite esamą aplanką, visos rinkmenos, kurios konfliktuoja su "
+"kopijuojamomis rinkmenomis, bus perrašytos naujomis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1175
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "Jeigu pakeisite esamą bylą, jos turinys bus perrašytas."
+msgstr "Jeigu pakeisite esamą rinkmeną, jos turinys bus perrašytas."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1188
 #: ../libnautilus-private/nautilus-file-operations.c:1206
@@ -1594,12 +1595,12 @@ msgstr "Nežinomas GnomeVFSXferProgressStatus %d"
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2018
 msgid "Moving files to the Trash"
-msgstr "Bylos perkeliamos į šiukšlinę"
+msgstr "Rinkmenos perkeliamos į šiukšlinę"
 
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2020
 msgid "Throwing out file:"
-msgstr "Išmetama byla:"
+msgstr "Išmetama rinkmena:"
 
 #. localizers: label prepended to the name of the current file moved
 #: ../libnautilus-private/nautilus-file-operations.c:2022
@@ -1614,12 +1615,12 @@ msgstr "Ruošiamasi perkėlimui į šiukšlinę..."
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2029
 msgid "Moving files"
-msgstr "Perkeliamos bylos"
+msgstr "Perkeliamos rinkmenos"
 
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2031
 msgid "Moving file:"
-msgstr "Perkeliama byla:"
+msgstr "Perkeliama rinkmena:"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2034
 msgid "Preparing To Move..."
@@ -1632,12 +1633,12 @@ msgstr "Baigiamas perkėlimas..."
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2043
 msgid "Creating links to files"
-msgstr "Kuriamos nuorodos į bylas"
+msgstr "Kuriamos nuorodos į rinkmenas"
 
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2045
 msgid "Linking file:"
-msgstr "Siejama byla:"
+msgstr "Siejama rinkmena:"
 
 #. localizers: label prepended to the name of the current file linked
 #: ../libnautilus-private/nautilus-file-operations.c:2047
@@ -1656,13 +1657,13 @@ msgstr "Baigiama kurti nuorodas..."
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2055
 msgid "Copying files"
-msgstr "Kopijuojamos bylos"
+msgstr "Kopijuojamos rinkmenos"
 
 #  localizers: progress dialog title
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2057
 msgid "Copying file:"
-msgstr "Kopijuojama byla:"
+msgstr "Kopijuojama rinkmena:"
 
 #. localizers: label prepended to the name of the current file copied
 #: ../libnautilus-private/nautilus-file-operations.c:2059
@@ -1671,7 +1672,7 @@ msgstr "Kopijuojama"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2060
 msgid "Preparing To Copy..."
-msgstr "Ruošiamasi kopijavimui ..."
+msgstr "Ruošiamasi kopijavimui..."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2078
 msgid "You cannot copy items into the trash."
@@ -1683,7 +1684,7 @@ msgstr "Šiukšlinėje negalima kurti nuorodų."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2080
 msgid "Files and folders can only be moved into the trash."
-msgstr "Bylos ir aplankai į šiukšlinę gali būti tik perkelti."
+msgstr "Rinkmenos ir aplankai į šiukšlinę gali būti tik perkelti."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2103
 msgid "You cannot move this trash folder."
@@ -1712,11 +1713,11 @@ msgstr "Paskirties aplankas yra šaltinio aplanko viduje."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2144
 msgid "You cannot copy a file over itself."
-msgstr "Negalima kopijuoti bylos į ją pačią."
+msgstr "Negalima kopijuoti rinkmenos į ją pačią."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2145
 msgid "The destination and source are the same file."
-msgstr "Paskirtis ir šaltinis yra ta pati byla."
+msgstr "Paskirtis ir šaltinis yra ta pati rinkmena."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2200
 #: ../libnautilus-private/nautilus-file-operations.c:2360
@@ -1753,19 +1754,19 @@ msgstr "Klaida kuriant naują dokumentą."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2596
 msgid "new file"
-msgstr "nauja byla"
+msgstr "nauja rinkmena"
 
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2662
 msgid "Deleting files"
-msgstr "Trinamos bylos"
+msgstr "Trinamos rinkmenos"
 
 #  localizers: label prepended to the progress count
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2664
 #: ../libnautilus-private/nautilus-file-operations.c:2699
 msgid "Files deleted:"
-msgstr "Ištrintos bylos:"
+msgstr "Ištrintos rinkmenos:"
 
 #  localizers: label prepended to the name of the current file deleted
 #. localizers: label prepended to the name of the current file deleted
@@ -1776,7 +1777,7 @@ msgstr "Trinama"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2667
 msgid "Preparing to Delete files..."
-msgstr "Ruošiamasi trinti bylas..."
+msgstr "Ruošiamasi trinti rinkmenas..."
 
 #  localizers: progress dialog title
 #. localizers: progress dialog title
@@ -2005,9 +2006,9 @@ msgstr[2] "%u aplankų"
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
-msgstr[0] "%u byla"
-msgstr[1] "%u bylos"
-msgstr[2] "%u bylų"
+msgstr[0] "%u rinkmena"
+msgstr[1] "%u rinkmenos"
+msgstr[2] "%u rinkmenų"
 
 #  This means no contents at all were readable
 #  This means no contents at all were readable
@@ -2049,7 +2050,7 @@ msgid ""
 "some other reason."
 msgstr ""
 "Nepavyko rasti netgi „x-directory/normal“ aprašymo. Greičiausiai dėl to, kad "
-"Jūsų gnome-vfs.keys byla yra netinkamoje vietoje arba nerandama dėl kitų "
+"Jūsų gnome-vfs.keys rinkmena yra netinkamoje vietoje arba nerandama dėl kitų "
 "priežasčių."
 
 #: ../libnautilus-private/nautilus-file.c:4689
@@ -2058,7 +2059,7 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
-"Nerastas aprašymas mime tipui „%s“ (byla yra „%s“), praneškite gnome-vfs "
+"Nerastas aprašymas mime tipui „%s“ (rinkmena yra „%s“), praneškite gnome-vfs "
 "konferencijai."
 
 #: ../libnautilus-private/nautilus-file.c:4705
@@ -2081,7 +2082,7 @@ msgstr "_Visada"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:71
 msgid "_Local File Only"
-msgstr "Tik _vietinėms bylos"
+msgstr "Tik _vietinėms rinkmenos"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:72
 msgid "_Never"
@@ -2160,11 +2161,11 @@ msgstr "Atverti elementus _dvigubu pelės spustelėjimu"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:119
 msgid "E_xecute files when they are clicked"
-msgstr "_Vykdyti bylas ant jų paspaudus"
+msgstr "_Vykdyti rinkmenas spragtelėjus ant jų"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:123
 msgid "Display _files when they are clicked"
-msgstr "_Rodyti bylas ant jų paspaudus"
+msgstr "_Rodyti rinkmenas spragtelėjus ant jų"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
 #: ../src/nautilus-file-management-properties.glade.h:63
@@ -2173,11 +2174,11 @@ msgstr "Pa_klausti kiekvieną kartą"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:135
 msgid "Search for files by file name only"
-msgstr "Ieškoti bylų tik pagal pavadinimą"
+msgstr "Ieškoti rinkmenų tik pagal pavadinimą"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:139
 msgid "Search for files by file name and file properties"
-msgstr "Ieškoti bylų pagal jų pavadinimus ir savybes"
+msgstr "Ieškoti rinkmenų pagal jų pavadinimus ir savybes"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
 #: ../src/file-manager/fm-icon-container.c:506
@@ -2294,7 +2295,8 @@ msgstr "Nepavyko atverti, ar norėtumėte pasirinkti kitą programą?"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
-msgstr "„%s“ negali atverti „%s“, nes „%s“ negali pasiekti bylų „%s“ vietose."
+msgstr ""
+"„%s“ negali atverti „%s“, nes „%s“ negali pasiekti rinkmenų „%s“ vietose."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:142
 msgid "Open Failed, would you like to choose another action?"
@@ -2306,23 +2308,24 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
-"Įprastas veiksmas negali atverti „%s“, nes jis negali pasiekti bylų „%s“ "
-"vietose."
+"Numatytasis veiksmas negali atverti „%s“, nes jis negali pasiekti rinkmenų "
+"„%s“ vietose."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
-msgstr "„%s“ negali atverti „%s“, nes „%s“ negali pasiekti bylų „%s“ vietose."
+msgstr ""
+"„%s“ negali atverti „%s“, nes „%s“ negali pasiekti rinkmenų „%s“ vietose."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"Nėra kitų programų šiai bylai peržiūrėti. Jei nukopijuotumėte šią bylą į "
-"savo kompiuterį, galbūt pavyktų ją atverti."
+"Nėra kitų programų šiai rinkmenai peržiūrėti. Jei nukopijuotumėte šią "
+"rinkmeną į savo kompiuterį, galbūt pavyktų ją atverti."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
@@ -2330,16 +2333,16 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr ""
-"Įprastas veiksmas negali atverti „%s“, nes jis negali pasiekti bylų „%s“ "
-"vietose."
+"Numatytuoju veiksmu negalima atverti „%s“, nes jis negali pasiekti rinkmenų "
+"„%s“ vietose."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"Nėra kitų veiksmų šiai bylai peržiūrėti. Jei nukopijuotumėte šią bylą į savo "
-"kompiuterį, galbūt pavyktų ją atverti."
+"Nėra kitų veiksmų šiai rinkmenai peržiūrėti. Jei nukopijuotumėte šią "
+"rinkmeną į savo kompiuterį, galbūt pavyktų ją atverti."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:491
 #: ../libnautilus-private/nautilus-program-choosing.c:724
@@ -2433,22 +2436,22 @@ msgstr "Detalės:"
 #: ../libnautilus-private/nautilus-program-choosing.c:919
 #: ../libnautilus-private/nautilus-program-choosing.c:930
 msgid "This drop target only supports local files."
-msgstr "Šis numetimo taikinys palaiko tik vietines bylas."
+msgstr "Šis numetimo taikinys palaiko tik vietines rinkmenas."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:920
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
-"Norėdami atverti nevietines bylas, nukopijuokite jas į vietinį aplanką, ir "
-"tempkite jas iš naujo."
+"Norėdami atverti nevietines rinkmenas, nukopijuokite jas į vietinį aplanką, "
+"ir tempkite jas iš naujo."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:931
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Norėdami atverti nevietines bylas, nukopijuokite jas į vietinį aplanką, ir "
-"tempkite jas iš naujo. Numestos vietinės bylos jau atvertos."
+"Norėdami atverti nevietines rinkmenas, nukopijuokite jas į vietinį aplanką, "
+"ir tempkite jas iš naujo. Numestos vietinės rinkmenos jau atvertos."
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../src/nautilus-query-editor.c:984
@@ -2477,11 +2480,11 @@ msgstr "Rodyti kompiuterio laikmenas"
 
 #: ../nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr "Keisti, kaip tvarkomos bylos"
+msgstr "Keisti, kaip tvarkomos rinkmenos"
 
 #: ../nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
-msgstr "Bylų tvarkymas"
+msgstr "Rinkmenų tvarkymas"
 
 #: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1247
 msgid "Home Folder"
@@ -2489,19 +2492,19 @@ msgstr "Namų aplankas"
 
 #: ../nautilus-home.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
-msgstr "Rodyti namų aplanką su Nautilus bylų tvarkykle "
+msgstr "Rodyti namų aplanką su Nautilus rinkmenų tvarkykle "
 
 #: ../nautilus.desktop.in.h:1
 msgid "Browse the file system with the file manager"
-msgstr "Naršyti bylų sistemą su bylų tvarkykle"
+msgstr "Naršyti rinkmenų sistemą su rinkmenų tvarkykle"
 
 #: ../nautilus.desktop.in.h:2
 msgid "File Browser"
-msgstr "Bylų naršyklė"
+msgstr "Rinkmenų naršyklė"
 
 #: ../src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr "Nautilus aplinkos ir bylų tvarkyklės gamykla"
+msgstr "Nautilus aplinkos ir rinkmenų tvarkyklės gamykla"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
@@ -2573,7 +2576,7 @@ msgstr "Išvalyti šiukšlinę"
 #: ../src/file-manager/fm-desktop-icon-view.c:708
 #: ../src/file-manager/fm-directory-view.c:6570
 msgid "Delete all items in the Trash"
-msgstr "Ištrinti visas bylas iš šiukšlinės"
+msgstr "Ištrinti visas rinkmenas iš šiukšlinės"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
@@ -2603,7 +2606,7 @@ msgstr "Rodyti šią vietą kaip darbastalį."
 
 #: ../src/file-manager/fm-directory-view.c:652
 msgid "Are you sure you want to open all files?"
-msgstr "Ar tikrai norite atverti visas bylas?"
+msgstr "Ar tikrai norite atverti visas rinkmenas?"
 
 #: ../src/file-manager/fm-directory-view.c:653
 #: ../src/nautilus-location-bar.c:158
@@ -2749,20 +2752,20 @@ msgstr "%s%s, %s"
 #: ../src/file-manager/fm-directory-view.c:2303
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr "Aplanke „%s“ yra daugiau bylų, negu Nautilus gali apdoroti."
+msgstr "Aplanke „%s“ yra daugiau rinkmenų negu Nautilus gali apdoroti."
 
 #: ../src/file-manager/fm-directory-view.c:2309
 msgid "Some files will not be displayed."
-msgstr "Kai kurios bylos nebus parodytos."
+msgstr "Kai kurios rinkmenos nebus parodytos."
 
 #: ../src/file-manager/fm-directory-view.c:3706
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Bylos nepavyko perkelti į šiukšlinę. Ar norite ją visiškai ištrinti?"
+msgstr "Rinkmenos nepavyko perkelti į šiukšlinę. Ar norite ją visiškai ištrinti?"
 
 #: ../src/file-manager/fm-directory-view.c:3707
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
-msgstr "Byla „%s“ negali būti perkelta į šiukšlinę."
+msgstr "Rinkmena „%s“ negali būti perkelta į šiukšlinę."
 
 #: ../src/file-manager/fm-directory-view.c:3711
 msgid "Cannot move items to trash, do you want to delete them immediately?"
@@ -2828,7 +2831,7 @@ msgstr "Ar norite paleisti „%s“, ar peržiūrėti jos turinį?"
 #: ../src/file-manager/fm-directory-view.c:4436
 #, c-format
 msgid "\"%s\" is an executable text file."
-msgstr "„%s“ yra vykdomoji tekstinė byla."
+msgstr "„%s“ yra vykdomoji tekstinė rinkmena."
 
 #: ../src/file-manager/fm-directory-view.c:4442
 msgid "Run in _Terminal"
@@ -2859,14 +2862,14 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
-"Bylos pavadinimas, „%s“, rodo, kad ši byla yra „%s“ tipo. Tačiau bylos "
-"turinys yra „%s“ tipo. Jei atversite šią bylą, ji gali sukelti grėsmę jūsų "
-"sistemos saugumui.\n"
+"Rinkmenos pavadinimas, „%s“, rodo, kad ši rinkmena yra „%s“ tipo. Tačiau "
+"rinkmenos turinys yra „%s“ tipo. Jei atversite šią rinkmeną, ji gali sukelti "
+"grėsmę jūsų sistemos saugumui.\n"
 "\n"
-"Neatverkite bylos, nebent ją sukūrėte Jūs patys, arba gavote iš patikimo "
-"šaltinio. Norėdami atverti bylą, pervadindami ją pakeiskite jos plėtinį į "
-"teisingą tipui „%s“, ir galėsite atverti bylą normaliai. Arba, naudokite "
-"„Atverti su“ meniu, ir pasirinkite norimą programą bylai atverti."
+"Neatverkite rinkmenos, nebent ją sukūrėte Jūs patys, arba gavote iš patikimo "
+"šaltinio. Norėdami atverti rinkmeną, pervadindami ją pakeiskite jos plėtinį į "
+"teisingą tipui „%s“, ir galėsite atverti rinkmeną normaliai. Arba, naudokite "
+"„Atverti su“ meniu, ir pasirinkite norimą programą rinkmenai atverti."
 
 #: ../src/file-manager/fm-directory-view.c:5234
 #, c-format
@@ -2880,7 +2883,7 @@ msgstr "Sukurti dokumentą iš šablono „%s“"
 
 #: ../src/file-manager/fm-directory-view.c:5689
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr "Visos vykdomosios bylos šiame aplanke pasirodys Skriptų meniu."
+msgstr "Visos vykdomosios rinkmenos šiame aplanke pasirodys Skriptų meniu."
 
 #: ../src/file-manager/fm-directory-view.c:5691
 msgid ""
@@ -2911,20 +2914,20 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Visos vykdomosios bylos šiame aplanke matysis skriptų meniu. Pasirinkus "
+"Visos vykdomosios rinkmenos šiame aplanke matysis skriptų meniu. Pasirinkus "
 "skriptą iš meniu, jis bus paleistas.\n"
 "\n"
-"Vykdant vietiniame aplanke, skriptams bus paduoti pasirinktų bylų "
-"pavadinimai. Vykdant nutolusiame aplanke (pvz. kataloge, rodančiame ftp "
-"turinį), skriptams nebus paduodami jokie parametrai.\n"
+"Vykdant vietiniame aplanke, skriptams bus paduoti pasirinktų rinkmenų "
+"pavadinimai. Vykdant nutolusiame aplanke (pvz. aplanke, rodančiame ftp "
+"turinį), skriptams nebus perduodami jokie parametrai.\n"
 "\n"
 "Visais atvejais, Nautilus nustatys toliau išvardintus aplinkos kintamuosius, "
 "kuriuos galima naudoti skriptuose:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: pasirinktų bylų keliai, atskirti "
-"naujomis eilutėmis (tik vietinėms byloms)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: pasirinktų rinkmenų keliai, atskirti "
+"naujomis eilutėmis (tik vietinėms rinkmenoms)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: pasirinktų bylų URI, atskirtų naujomis "
+"NAUTILUS_SCRIPT_SELECTED_URIS: pasirinktų rinkmenų URI, atskirtų naujomis "
 "eilutėmis, sąrašas\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: esamos vietos URI\n"
@@ -3033,12 +3036,12 @@ msgstr "Nesukurtas nei vienas šablonas"
 #. translators: this is used to indicate that a file doesn't contain anything
 #: ../src/file-manager/fm-directory-view.c:6537
 msgid "_Empty File"
-msgstr "_Tuščia byla"
+msgstr "_Tuščia rinkmena"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6538
 msgid "Create a new empty file inside this folder"
-msgstr "Šiame aplanke sukurti naują tuščią bylą"
+msgstr "Šiame aplanke sukurti naują tuščią rinkmeną"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6545
@@ -3091,20 +3094,20 @@ msgstr "Parodyti aplanką, kuriame yra šiame meniu esantys skriptai"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6574
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr "Pažymėtas bylas paruošti perkėlimui su komanda „Įdėti“"
+msgstr "Pažymėtas rinkmenas paruošti perkėlimui su komanda „Įdėti“"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6578
 msgid "Prepare the selected files to be copied with a Paste command"
-msgstr "Pažymėtas bylas paruošti kopijavimui su komanda „Įdėti“"
+msgstr "Pažymėtas rinkmenas paruošti kopijavimui su komanda „Įdėti“"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6582
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
-"Perkelti arba kopijuoti bylas, kurias išrinkote komandomis „Iškirpti“ar "
+"Perkelti arba kopijuoti rinkmenas, kurias išrinkote komandomis „Iškirpti“ ar "
 "„Kopijuoti“"
 
 #. We make accelerator "" instead of null here to not inherit the stock
@@ -3113,7 +3116,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6587
 #: ../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
-msgstr "Į_dėti bylas į aplanką"
+msgstr "Į_dėti į aplanką"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6588
@@ -3121,7 +3124,7 @@ msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr ""
-"Į pažymėtą aplanką perkelti arba nukopijuoti bylas, kurias išrinkote "
+"Į pažymėtą aplanką perkelti arba nukopijuoti rinkmenas, kurias išrinkote "
 "komandomis „Iškirpti“ ar „Kopijuoti“"
 
 #. label, accelerator
@@ -3186,7 +3189,7 @@ msgstr "Perke_lti į šiukšlinę"
 #: ../src/file-manager/fm-directory-view.c:6616
 #: ../src/file-manager/fm-directory-view.c:7302
 msgid "Move each selected item to the Trash"
-msgstr "Perkelti visas pažymėtas bylas į šiukšlinę"
+msgstr "Perkelti visas pažymėtas rinkmenas į šiukšlinę"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6619
@@ -3265,7 +3268,7 @@ msgstr "Formatuoti pasirinktą skirsnį"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6647
 msgid "Open File and Close window"
-msgstr "Atverti bylą ir užverti langą"
+msgstr "Atverti rinkmeną ir užverti langą"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6651
@@ -3285,7 +3288,7 @@ msgstr "Iš_saugoti paiešką kaip..."
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6656
 msgid "Save the current search as a file"
-msgstr "Išsaugoti šią paiešką kaip bylą"
+msgstr "Išsaugoti šią paiešką kaip rinkmeną"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6662
@@ -3317,12 +3320,12 @@ msgstr "Ištrinti šį aplanką, neperkeliant į šiukšlinę"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6686
 msgid "Show _Hidden Files"
-msgstr "Rod_yti paslėptas bylas"
+msgstr "Rod_yti paslėptas rinkmenas"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6687
 msgid "Toggle the display of hidden files in the current window"
-msgstr "Perjungia paslėptų bylų rodymą esamame lange"
+msgstr "Perjungti paslėptų rinkmenų rodymą esamame lange"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6773
@@ -3437,7 +3440,7 @@ msgstr "Tempimas ir numetimas nepalaikomas."
 
 #: ../src/file-manager/fm-directory-view.c:9146
 msgid "Drag and drop is only supported on local file systems."
-msgstr "Tempimas ir numetimas veikia tik vietinėse bylų sistemose."
+msgstr "Tempimas ir numetimas veikia tik vietinėse rinkmenų sistemose."
 
 #: ../src/file-manager/fm-directory-view.c:9198
 #: ../src/file-manager/fm-directory-view.c:9295
@@ -3832,7 +3835,7 @@ msgstr "Norėdami nustatyti kitą piktogramą tempkite tik vieną paveikslėlį.
 #: ../src/file-manager/fm-properties-window.c:491
 #: ../src/nautilus-information-panel.c:574
 msgid "The file that you dropped is not local."
-msgstr "Byla, kurią jūs atitempėte, nėra vietinė."
+msgstr "Rinkmena, kurią jūs atitempėte, nėra vietinė."
 
 #: ../src/file-manager/fm-properties-window.c:492
 #: ../src/file-manager/fm-properties-window.c:498
@@ -3845,7 +3848,7 @@ msgstr ""
 #: ../src/file-manager/fm-properties-window.c:497
 #: ../src/nautilus-information-panel.c:580
 msgid "The file that you dropped is not an image."
-msgstr "Byla, kurią atitempėte, nėra paveikslėlis."
+msgstr "Rinkmena, kurią atitempėte, nėra paveikslėlis."
 
 #: ../src/file-manager/fm-properties-window.c:992
 msgid "Properties"
@@ -3999,19 +4002,19 @@ msgstr "Jūs nesate savininkas, todėl negalite keisti šių teisių."
 
 #: ../src/file-manager/fm-properties-window.c:2930
 msgid "File _owner:"
-msgstr "Bylos _savininkas:"
+msgstr "Rinkmenos _savininkas:"
 
 #: ../src/file-manager/fm-properties-window.c:2936
 msgid "File owner:"
-msgstr "Bylos savininkas:"
+msgstr "Rinkmenos savininkas:"
 
 #: ../src/file-manager/fm-properties-window.c:2947
 msgid "_File group:"
-msgstr "_Bylos grupė:"
+msgstr "_Rinkmenos grupė:"
 
 #: ../src/file-manager/fm-properties-window.c:2956
 msgid "File group:"
-msgstr "Bylos grupė:"
+msgstr "Rinkmenos grupė:"
 
 #: ../src/file-manager/fm-properties-window.c:2968
 msgid "Owner:"
@@ -4044,7 +4047,7 @@ msgstr "Nepavyko nustatyti „%s“ teisių."
 
 #: ../src/file-manager/fm-properties-window.c:3069
 msgid "The permissions of the selected file could not be determined."
-msgstr "Nepavyko nustatyti pasirinktos bylos teisių."
+msgstr "Nepavyko nustatyti pasirinktos rinkmenos teisių."
 
 #: ../src/file-manager/fm-properties-window.c:3227
 msgid "There was an error displaying help."
@@ -4078,7 +4081,7 @@ msgstr "Perkelti į šiukšlinę"
 #: ../src/file-manager/fm-tree-view.c:1249
 #: ../src/nautilus-places-sidebar.c:174
 msgid "File System"
-msgstr "Bylų sistema"
+msgstr "Rinkmenų sistema"
 
 #: ../src/file-manager/fm-tree-view.c:1251
 msgid "Network Neighbourhood"
@@ -4134,7 +4137,7 @@ msgid ""
 "the link and move over the files you want, then delete the link."
 msgstr ""
 "GNOME 2.4 versijoje pasikeitė darbastalio aplanko vieta. Galite atverti "
-"nuorodą, perkelti norimas bylas ir po to ištrinti nuorodą."
+"nuorodą, perkelti pageidaujamas rinkmenas ir po to ištrinti nuorodą."
 
 #  Can't register myself due to trouble locating the
 #  * Nautilus_Shell.server file. This has happened when you
@@ -4191,10 +4194,10 @@ msgstr ""
 "terminale gali išspręsti problemą. Jei nepavyks, jūs galite pabandyti "
 "perleisti kompiuterį iš naujo arba iš naujo įdiegti Nautilus.\n"
 "\n"
-"Bonobo negali rasti Nautilus_shell.server bylos. Viena iš priežasčių gali "
+"Bonobo negali rasti Nautilus_shell.server rinkmenos. Viena iš priežasčių gali "
 "būti, kad aplinkos kintamajame LD_LIBRARY_PATH nėra bonobo-activation "
 "bibliotekos aplanko. Kita galima priežastis - blogas Nautilus įdiegimas, nes "
-"neįdiegta Nautilus_Shell.server byla.\n"
+"neįdiegta Nautilus_Shell.server rinkmena.\n"
 "\n"
 "Komandos „bonobo-slay“ įvykdymas nužudys visus Bonobo Activation bei GConf "
 "procesus, kurie gali būti reikalingi kitoms programoms.\n"
@@ -4224,8 +4227,8 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
-"Dabar neišeina paleisti Nautilus, dėl netikėtos klaidos iš Bonobo, bandant "
-"registruoti bylų tvarkyklės vaizdavimo serverį."
+"Dabar negalima paleisti Nautilus, dėl netikėtos klaidos iš Bonobo, bandant "
+"registruoti rinkmenų tvarkyklės vaizdavimo serverį."
 
 #: ../src/nautilus-application.c:562
 msgid ""
@@ -4422,7 +4425,7 @@ msgstr ""
 
 #: ../src/nautilus-emblem-sidebar.c:777
 msgid "Some of the files could not be added as emblems."
-msgstr "Kai kurių bylų nepavyko pridėti kaip emblemų."
+msgstr "Kai kurių rinkmenų pridėti kaip emblemų nepavyko."
 
 #: ../src/nautilus-emblem-sidebar.c:777 ../src/nautilus-emblem-sidebar.c:779
 msgid "The emblems do not appear to be valid images."
@@ -4430,7 +4433,7 @@ msgstr "Emblemos nėra tinkami paveikslėliai."
 
 #: ../src/nautilus-emblem-sidebar.c:779
 msgid "None of the files could be added as emblems."
-msgstr "Nei vienos bylos nepavyko pridėti kaip emblemos."
+msgstr "Nei vienos rinkmenos nepavyko pridėti kaip emblemos."
 
 #: ../src/nautilus-emblem-sidebar.c:800 ../src/nautilus-emblem-sidebar.c:825
 #: ../src/nautilus-emblem-sidebar.c:874
@@ -4439,16 +4442,16 @@ msgstr "Nepavyko pridėti emblemos."
 
 #: ../src/nautilus-emblem-sidebar.c:800
 msgid "The dragged text was not a valid file location."
-msgstr "Nutemptas tekstas nėra tinkama bylos vieta."
+msgstr "Nutemptas tekstas nėra tinkama rinkmenos vieta."
 
 #: ../src/nautilus-emblem-sidebar.c:820 ../src/nautilus-emblem-sidebar.c:873
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr "Byla „%s“ nėra tinkamas paveikslėlis."
+msgstr "Rinkmena „%s“ nėra tinkamas paveikslėlis."
 
 #: ../src/nautilus-emblem-sidebar.c:823
 msgid "The dragged file does not appear to be a valid image."
-msgstr "Nutempta byla nėra tinkamas paveikslėlis."
+msgstr "Nutempta rinkmena nėra tinkamas paveikslėlis."
 
 #: ../src/nautilus-emblem-sidebar.c:1047
 msgid "Show Emblems"
@@ -4511,11 +4514,11 @@ msgstr "<span weight=\"bold\">Data</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:20
 msgid "<span weight=\"bold\">Default View</span>"
-msgstr "<span weight=\"bold\">Įprastas rodinys</span>"
+msgstr "<span weight=\"bold\">Numatytasis rodinys</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:21
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "<span weight=\"bold\">Vykdomosios teksto bylos</span>"
+msgstr "<span weight=\"bold\">Vykdomosios teksto rinkmenos</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:22
 msgid "<span weight=\"bold\">Folders</span>"
@@ -4539,15 +4542,15 @@ msgstr "<span weight=\"bold\">Sąrašo rodinio nustatymai</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Other Previewable Files</span>"
-msgstr "<span weight=\"bold\">Kitos atvaizduojamos bylos</span>"
+msgstr "<span weight=\"bold\">Kitos atvaizduojamos rinkmenos</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr "<span weight=\"bold\">Garso bylos</span>"
+msgstr "<span weight=\"bold\">Garso rinkmenos</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr "<span weight=\"bold\">Teksto bylos</span>"
+msgstr "<span weight=\"bold\">Teksto rinkmenos</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">Trash</span>"
@@ -4564,7 +4567,7 @@ msgid ""
 "Never"
 msgstr ""
 "Visada\n"
-"Tik vietinių bylų\n"
+"Tik vietinių rinkmenų\n"
 "Niekada"
 
 #: ../src/nautilus-file-management-properties.glade.h:35
@@ -4573,7 +4576,7 @@ msgstr "Visada atverti _naršyklės languose"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Paklausti prieš išvalant šiukšlinę arba iš_trinant bylas"
+msgstr "Prieš išvalant šiukšlinę arba iš_trinant rinkmenas, paklausti"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Behavior"
@@ -4607,11 +4610,11 @@ msgstr "Pasirinkite sąrašo rodinyje pateikiamos informacijos tvarką."
 
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
-msgstr "Rodyti bylų ir aplankų _kiekį:"
+msgstr "Rodyti rinkmenų ir aplankų _kiekį:"
 
 #: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
-msgstr "Įprastas _mastelis:"
+msgstr "Numatytasis _mastelis:"
 
 #: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Display"
@@ -4619,7 +4622,7 @@ msgstr "Rodymas"
 
 #: ../src/nautilus-file-management-properties.glade.h:48
 msgid "File Management Preferences"
-msgstr "Bylų tvarkymo nustatymai"
+msgstr "Rinkmenų tvarkymo nustatymai"
 
 #: ../src/nautilus-file-management-properties.glade.h:49
 msgid "I_nclude a Delete command that bypasses Trash"
@@ -4643,7 +4646,7 @@ msgstr "Peržiūra"
 
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview _sound files:"
-msgstr "_Garso bylų grojimas kai pelė ant bylos:"
+msgstr "Peržiūrėti _garso rinkmenas:"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Show _only folders"
@@ -4651,11 +4654,11 @@ msgstr "Rodyti tik _aplankus"
 
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _thumbnails:"
-msgstr "Rodyti _minivaizdus:"
+msgstr "Rodyti _miniatiūras:"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show hidden and _backup files"
-msgstr "Rodyti pa_slėptas bei atsargines bylas"
+msgstr "Rodyti pa_slėptas bei atsargines rinkmenas"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show te_xt in icons:"
@@ -4663,7 +4666,7 @@ msgstr "Rodyti _tekstą piktogramose:"
 
 #: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Sort _folders before files"
-msgstr "Išrikiuoti aplankus pri_eš bylas"
+msgstr "Išrikiuoti aplankus pri_eš rinkmenas"
 
 #: ../src/nautilus-file-management-properties.glade.h:60
 msgid "View _new folders using:"
@@ -4679,11 +4682,11 @@ msgstr "_Rikiuoti elementus:"
 
 #: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Default zoom level:"
-msgstr "Įprastas maste_lis:"
+msgstr "Numatytasis maste_lis:"
 
 #: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Double click to activate items"
-msgstr "Atverti elementus _dvigubu pelės spragtelėjimu"
+msgstr "Atverti elementus _dviem pelės mygtuko spragtelėjimais"
 
 #: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Format:"
@@ -4691,15 +4694,15 @@ msgstr "_Formatas:"
 
 #: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Only for files smaller than:"
-msgstr "Tik _byloms mažesnėms nei:"
+msgstr "Tik _rinkmenoms mažesnėms nei:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Run executable text files when they are clicked"
-msgstr "Pa_leisti vykdomąsias teksto bylas jas spragtelėjus"
+msgstr "Pa_leisti vykdomąsias teksto rinkmenas jas spragtelėjus"
 
 #: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Single click to activate items"
-msgstr "Atverti elementus _viengubu pelės spragtelėjimu"
+msgstr "Atverti elementus _vienu pelės mygtuko spragtelėjimu"
 
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Text beside icons"
@@ -4711,7 +4714,7 @@ msgstr "Naudoti _glaustesnį išdėstymą"
 
 #: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_View executable text files when they are clicked"
-msgstr "Peržiū_rėti vykdomąsias teksto bylas jas spragtelėjus"
+msgstr "Peržiū_rėti vykdomąsias teksto rinkmenas jas spragtelėjus"
 
 #: ../src/nautilus-first-time-druid.c:40
 msgid ""
@@ -4720,10 +4723,10 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"Šios bylos egzistavimas reiškia, kad Nautilus konfigūravimo vadovas jau "
+"Šios rinkmenos egzistavimas reiškia, kad Nautilus konfigūravimo vadovas jau "
 "praeitas.\n"
 "\n"
-"Galite ištrinti šią bylą, jei norite paleisti vadovą iš naujo.\n"
+"Galite ištrinti šią rinkmeną, jei norite paleisti vadovą iš naujo.\n"
 
 #: ../src/nautilus-history-sidebar.c:281
 msgid "History"
@@ -4897,7 +4900,8 @@ msgstr "Sukurti langus tik nurodytiems URI."
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr "Nevaldyti darbalaukio (ignoruoti nustatymą, esantį nustatymų dialoge)."
+msgstr ""
+"Netvarkyti darbastalio (ignoruoti nustatymą, esantį nustatymų dialoge)."
 
 #: ../src/nautilus-main.c:278
 msgid "open a browser window."
@@ -4913,7 +4917,7 @@ msgstr "Paleisti Nautilus iš naujo."
 
 #: ../src/nautilus-main.c:326
 msgid "File Manager"
-msgstr "Bylų tvarkyklė"
+msgstr "Rinkmenų tvarkyklė"
 
 #. Set initial window title
 #: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:401
@@ -4989,12 +4993,12 @@ msgstr "Atverti kitą Nautilus langą šiai rodomai vietai"
 
 #: ../src/nautilus-navigation-window-menus.c:431
 msgid "Close _All Windows"
-msgstr "Uždaryti _visus langus"
+msgstr "Užverti _visus langus"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:432
 msgid "Close all Navigation windows"
-msgstr "Uždaryti visus navigacijos langus"
+msgstr "Užverti visus navigacijos langus"
 
 #: ../src/nautilus-navigation-window-menus.c:434
 msgid "_Location..."
@@ -5046,7 +5050,7 @@ msgstr "_Ieškoti"
 #: ../src/nautilus-navigation-window-menus.c:447
 #: ../src/nautilus-spatial-window.c:846
 msgid "Search for files"
-msgstr "Ieškoti bylų"
+msgstr "Ieškoti rinkmenų"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
@@ -5118,7 +5122,7 @@ msgstr "„Pirmyn“ istorija"
 #: ../src/nautilus-navigation-window.c:826
 #, c-format
 msgid "%s - File Browser"
-msgstr "%s - Bylų naršyklė"
+msgstr "%s - Rinkmenų naršyklė"
 
 #: ../src/nautilus-notes-viewer.c:388 ../src/nautilus-notes-viewer.c:498
 msgid "Notes"
@@ -5183,7 +5187,7 @@ msgstr "_Paveikslėlis:"
 
 #: ../src/nautilus-property-browser.c:1080
 msgid "Select an Image File for the New Emblem"
-msgstr "Pasirinkite paveikslėlio bylą naujai emblemai"
+msgstr "Pasirinkite paveikslėlio rinkmeną naujai emblemai"
 
 #: ../src/nautilus-property-browser.c:1105
 msgid "Create a New Color:"
@@ -5201,11 +5205,11 @@ msgstr "_Spalva (atspalvis):"
 #: ../src/nautilus-property-browser.c:1167
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr "„%s“ nėra tinkamas bylos pavadinimas."
+msgstr "„%s“ nėra tinkamas rinkmenos pavadinimas."
 
 #: ../src/nautilus-property-browser.c:1170
 msgid "Sorry, but you did not supply a valid file name."
-msgstr "Pateikėte netinkamą bylos pavadinimą."
+msgstr "Pateikėte netinkamą rinkmenos pavadinimą."
 
 #: ../src/nautilus-property-browser.c:1171
 msgid "Please try again."
@@ -5213,7 +5217,7 @@ msgstr "Bandykite iš naujo."
 
 #: ../src/nautilus-property-browser.c:1184
 msgid "Sorry, but you can't replace the reset image."
-msgstr "Negalima keisti atstatymo paveikslėlio."
+msgstr "Negalite pakeisti atstatymo paveikslėlio."
 
 #: ../src/nautilus-property-browser.c:1185
 msgid "Reset is a special image that cannot be deleted."
@@ -5226,7 +5230,7 @@ msgstr "Rašto %s įdiegti nepavyko."
 
 #: ../src/nautilus-property-browser.c:1237
 msgid "Select an Image File to Add as a Pattern"
-msgstr "Pasirinkite paveikslėlio bylą, kurią pridėsite kaip raštą"
+msgstr "Pasirinkite paveikslėlio rinkmeną pridėtiną kaip raštą"
 
 #: ../src/nautilus-property-browser.c:1289
 #: ../src/nautilus-property-browser.c:1320
@@ -5251,12 +5255,12 @@ msgstr "Pasirinkite pridėtiną spalvą"
 #: ../src/nautilus-property-browser.c:1427
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "„%s“ nėra tinkama paveikslėlio byla."
+msgstr "„%s“ nėra tinkama paveikslėlio rinkmena."
 
 #: ../src/nautilus-property-browser.c:1412
 #: ../src/nautilus-property-browser.c:1428
 msgid "The file is not an image."
-msgstr "Ši byla nėra paveikslėlis."
+msgstr "Ši rinkmena nėra paveikslėlis."
 
 #: ../src/nautilus-property-browser.c:2105
 msgid "Select a Category:"
@@ -5320,7 +5324,7 @@ msgstr "Vieta"
 
 #: ../src/nautilus-query-editor.c:138
 msgid "File Type"
-msgstr "Bylos tipas"
+msgstr "Rinkmenos tipas"
 
 #: ../src/nautilus-query-editor.c:280
 msgid "Select folder search in"
@@ -5360,7 +5364,7 @@ msgstr "Pdf / Postscript"
 
 #: ../src/nautilus-query-editor.c:479
 msgid "Text File"
-msgstr "Tekstinė byla"
+msgstr "Tekstinė rinkmena"
 
 #: ../src/nautilus-query-editor.c:551
 msgid "Select type"
@@ -5429,21 +5433,21 @@ msgstr "Atverti _vietą..."
 
 #: ../src/nautilus-spatial-window.c:833
 msgid "Close P_arent Folders"
-msgstr "Uždaryti aukšt_esnius aplankus"
+msgstr "Užverti aukšt_esnius aplankus"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:834
 msgid "Close this folder's parents"
-msgstr "Uždaryti šio aplanko tėvinius aplankus"
+msgstr "Užverti šio aplanko motininius aplankus"
 
 #: ../src/nautilus-spatial-window.c:836
 msgid "Clos_e All Folders"
-msgstr "Uždar_yti visus aplankus"
+msgstr "Už_verti visus aplankus"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:837
 msgid "Close all folder windows"
-msgstr "Uždaryti visus aplankų langus"
+msgstr "Užverti visus aplankų langus"
 
 #: ../src/nautilus-throbber.c:514
 msgid "throbber"
@@ -5564,8 +5568,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
-"Nautilus yra GNOME grafinis apvalkalas, skirtas patogiai tvarkyti bylas ir "
-"visą sistemą."
+"Nautilus yra GNOME grafinis apvalkalas, skirtas patogiai tvarkyti rinkmenas "
+"ir likusią Jūsų sistemą."
 
 #: ../src/nautilus-window-menus.c:467
 msgid "Copyright © 1999-2005 The Nautilus authors"
@@ -5575,8 +5579,8 @@ msgstr "Autorinės teisės priklauso Nautilus autoriams © 1999-2005"
 msgid "translator-credits"
 msgstr ""
 "Paskutinieji vertėjai:\n"
+"Žygimantas Beručka <zygis@gnome.org>,\n"
 "Justina Klingaitė <justina.klingaite@gmail.com>,\n"
-"Žygimantas Beručka <uid0@akl.lt>\n"
 "\n"
 "Ankstesnieji vertėjai:\n"
 "Mantas Kriaučiūnas <mantas@akl.lt>,\n"
@@ -5585,7 +5589,7 @@ msgstr ""
 
 #: ../src/nautilus-window-menus.c:612
 msgid "_File"
-msgstr "_Byla"
+msgstr "_Rinkmena"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:613
@@ -5595,23 +5599,23 @@ msgstr "_Keisti"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:614
 msgid "_View"
-msgstr "_Rodymas"
+msgstr "R_odymas"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:615
 msgid "_Help"
-msgstr "_Pagalba"
+msgstr "_Žinynas"
 
 #. name, stock id, label
 #. name, stock id
 #: ../src/nautilus-window-menus.c:617
 msgid "_Close"
-msgstr "_Uždaryti"
+msgstr "_Užverti"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:618
 msgid "Close this folder"
-msgstr "Uždaryti šį aplanką"
+msgstr "Užverti šį aplanką"
 
 #: ../src/nautilus-window-menus.c:621
 msgid "_Backgrounds and Emblems..."
@@ -5811,4 +5815,4 @@ msgstr "Nustatyti esamo vaizdo mastelį"
 
 #: ../src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Rodyti tinkle esančius serverius Nautilus bylų tvarkyklėje"
+msgstr "Rodyti tinkle esančius serverius Nautilus rinkmenų naršyklėje"
