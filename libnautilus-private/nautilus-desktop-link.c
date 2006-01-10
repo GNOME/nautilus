@@ -177,7 +177,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 
 	case NAUTILUS_DESKTOP_LINK_NETWORK:
 		link->details->filename = g_strdup ("network");
-		link->details->display_name = _("Network Servers");
+		link->details->display_name = g_strdup (_("Network Servers"));
 		link->details->activation_uri = g_strdup ("network:///");
 		link->details->icon = g_strdup ("gnome-fs-network");
 		break;

@@ -1,3 +1,9 @@
+2006-01-10  Jürg Billeter  <j@bitron.ch>
+
+	* libnautilus-private/nautilus-desktop-link.c:
+	(nautilus_desktop_link_new):
+	Don't try to free constant string. Fixes #326114.
+
 2005-12-20  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file.c:
