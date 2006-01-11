@@ -291,7 +291,7 @@ try_to_expand_path (gpointer callback_data)
 			pos = user_location_length;
 			gtk_editable_insert_text (editable,
 						  insert_text,
-						  g_utf8_strlen (insert_text, -1),
+						  strlen (insert_text),
 						  &pos);
 
 			pos = user_location_length;
