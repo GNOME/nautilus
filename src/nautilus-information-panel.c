@@ -852,13 +852,17 @@ command_button_callback (GtkWidget *button, char *id_str)
 {
 	NautilusInformationPanel *information_panel;
 	GnomeVFSMimeApplication *application;
+	GList files;
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 
 	application = gnome_vfs_mime_application_new_from_desktop_id (id_str);
 
 	if (application != NULL) {
-		nautilus_launch_application (application, information_panel->details->file,
+		files.next = NULL;
+		files.prev = NULL;
+		files.data = information_panel->details->file;
+		nautilus_launch_application (application, &files,
 					     nautilus_information_panel_get_window (information_panel));	
 
 		gnome_vfs_mime_application_free (application);

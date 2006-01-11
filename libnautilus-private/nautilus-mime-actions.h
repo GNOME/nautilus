@@ -36,6 +36,11 @@ GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file		(Nautil
 GList *                  nautilus_mime_get_open_with_applications_for_file	(NautilusFile *file);
 GList *			 nautilus_mime_get_applications_for_file		(NautilusFile *file);
 
+GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_files	(GList        *files);
+GList *                  nautilus_mime_get_open_with_applications_for_files	(GList        *files);
+GList *			 nautilus_mime_get_applications_for_files		(GList        *file);
+
 gboolean                 nautilus_mime_has_any_applications_for_file		(NautilusFile *file);
+gboolean                 nautilus_mime_has_any_applications_for_files		(GList        *files);
 
 #endif /* NAUTILUS_MIME_ACTIONS_H */

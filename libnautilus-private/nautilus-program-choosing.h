@@ -37,7 +37,7 @@ typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *app
 						   gpointer			  callback_data);
 
 void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
-						  NautilusFile                      *file,
+						  GList                             *files,
 						  GtkWindow                         *parent_window);
 void nautilus_launch_application_from_command    (GdkScreen                         *screen,
 						  const char                        *name,

@@ -233,3 +233,154 @@ nautilus_mime_has_any_applications_for_file (NautilusFile *file)
 
 	return result;
 }
+
+GnomeVFSMimeApplication *
+nautilus_mime_get_default_application_for_files (GList *files)
+{
+	GList *l;
+	NautilusFile *file;
+	GnomeVFSMimeApplication *app, *one_app;
+
+	g_assert (files != NULL);
+
+	app = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+
+		one_app = nautilus_mime_get_default_application_for_file (file);
+		if (one_app == NULL || (app != NULL && !gnome_vfs_mime_application_equal (app, one_app))) {
+			gnome_vfs_mime_application_free (app);
+			gnome_vfs_mime_application_free (one_app);
+			app = NULL;
+			break;
+		}
+
+		if (app == NULL) {
+			app = one_app;
+		} else {
+			gnome_vfs_mime_application_free (one_app);
+		}
+	}
+
+	return app;
+}
+
+/* returns an intersection of two mime application lists,
+ * and returns a new list, freeing a, b and all applications
+ * that are not in the intersection set.
+ * The lists are assumed to be pre-sorted by their IDs */
+static GList *
+intersect_application_lists (GList *a,
+			     GList *b)
+{
+	GList *l, *m;
+	GList *ret;
+	GnomeVFSMimeApplication *a_app, *b_app;
+	int cmp;
+
+	ret = NULL;
+
+	l = a;
+	m = b;
+
+	while (l != NULL && m != NULL) {
+		a_app = (GnomeVFSMimeApplication *) l->data;
+		b_app = (GnomeVFSMimeApplication *) m->data;
+
+		cmp = strcmp (a_app->id, b_app->id);
+		if (cmp > 0) {
+			gnome_vfs_mime_application_free (b_app);
+			m = m->next;
+		} else if (cmp < 0) {
+			gnome_vfs_mime_application_free (a_app);
+			l = l->next;
+		} else {
+			gnome_vfs_mime_application_free (b_app);
+			ret = g_list_prepend (ret, a_app);
+			l = l->next;
+			m = m->next;
+		}
+	}
+
+	g_list_foreach (l, (GFunc) gnome_vfs_mime_application_free, NULL);
+	g_list_foreach (m, (GFunc) gnome_vfs_mime_application_free, NULL);
+
+	g_list_free (a);
+	g_list_free (b);
+
+	return g_list_reverse (ret);
+}
+
+GList *
+nautilus_mime_get_open_with_applications_for_files (GList *files)
+{
+	GList *l;
+	NautilusFile *file;
+	GList *one_ret, *ret;
+
+	g_assert (files != NULL);
+
+	ret = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+
+		one_ret = nautilus_mime_get_open_with_applications_for_file (file);
+		if (ret != NULL) {
+			ret = intersect_application_lists (ret, one_ret);
+		} else {
+			ret = one_ret;
+		}
+
+		if (ret == NULL) {
+			break;
+		}
+	}
+
+	return ret;
+}
+
+GList *
+nautilus_mime_get_applications_for_files (GList *files)
+{
+	GList *l;
+	NautilusFile *file;
+	GList *one_ret, *ret;
+
+	g_assert (files != NULL);
+
+	ret = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+
+		one_ret = nautilus_mime_get_applications_for_file (file);
+		if (ret != NULL) {
+			ret = intersect_application_lists (ret, one_ret);
+		} else {
+			ret = one_ret;
+		}
+
+		if (ret == NULL) {
+			break;
+		}
+	}
+
+	return ret;
+}
+
+gboolean
+nautilus_mime_has_any_applications_for_files (GList *files)
+{
+	GList *l;
+	NautilusFile *file;
+
+	g_assert (files != NULL);
+
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		if (!nautilus_mime_has_any_applications_for_file (file)) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}

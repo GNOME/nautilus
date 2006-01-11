@@ -664,18 +664,19 @@ void nautilus_launch_show_file (NautilusFile *file,
  * parameter. Provide a parent window for error dialogs. 
  * 
  * @application: The application to be launched.
- * @file: The file whose location should be passed as a parameter to the application
+ * @files: The files whose locations should be passed as a parameter to the application.
  * @parent_window: A window to use as the parent for any error dialogs.
  */
 void
 nautilus_launch_application (GnomeVFSMimeApplication *application, 
-			     NautilusFile *file,
+			     GList *files,
 			     GtkWindow *parent_window)
 {
 	GdkScreen       *screen;
 	char		*uri;
 	char            *uri_scheme;
-	GList            uris;
+	GList           *uris, *l;
+	NautilusFile    *file;
 	char           **envp;
 	GnomeVFSResult   result;
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -683,19 +684,26 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	SnDisplay *sn_display;
 #endif
 
-	uri = NULL;
-	if (nautilus_file_is_nautilus_link (file)) {
-		uri = nautilus_file_get_activation_uri (file);
-	}
-	
-	if (uri == NULL) {
-		uri = nautilus_file_get_uri (file);
-	}
+	g_assert (files != NULL);
 
-	uris.next = NULL;
-	uris.prev = NULL;
-	uris.data = uri;
-	
+	uris = NULL;
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+
+		uri = NULL;
+
+		if (nautilus_file_is_nautilus_link (file)) {
+			uri = nautilus_file_get_activation_uri (file);
+		}
+		
+		if (uri == NULL) {
+			uri = nautilus_file_get_uri (file);
+		}
+
+		uris = g_list_prepend (uris, uri);
+	}
+	uris = g_list_reverse (uris);
+
 	screen = gtk_window_get_screen (parent_window);
 	envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
 	
@@ -709,27 +717,44 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	if (gnome_vfs_mime_application_supports_startup_notification (application))
 	{ 
 		char *name;
+		char *description;
 		char *icon;
+		int   files_count;
+
+		file = NAUTILUS_FILE (files->data);
 
 		sn_context = sn_launcher_context_new (sn_display,
 						      screen ? gdk_screen_get_number (screen) :
 						      DefaultScreen (gdk_display));
-		
-		name = nautilus_file_get_display_name (file);
-		if (name != NULL) {
-			char *description;
-			
-			sn_launcher_context_set_name (sn_context, name);
-			
-			description = g_strdup_printf (_("Opening %s"), name);
-			
-			sn_launcher_context_set_description (sn_context, description);
 
+		files_count = g_list_length (files);
+		if (files_count == 1) {
+			name = nautilus_file_get_display_name (file);
+			description = g_strdup_printf (_("Opening %s"), name);
+		} else {
+			name = NULL;
+			description = g_strdup_printf (ngettext ("Opening %d Item",
+								 "Opening %d Items",
+								 files_count),
+						       files_count);
+		}
+
+		if (name != NULL) {
+			sn_launcher_context_set_name (sn_context, name);
 			g_free (name);
+		}
+
+		if (description != NULL) {
+			sn_launcher_context_set_description (sn_context, description);
 			g_free (description);
 		}
 
 		icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+
+		if (icon == NULL) {
+			icon = g_strdup (gnome_vfs_mime_application_get_icon (application));
+		}
+
 		if (icon != NULL) {
 			sn_launcher_context_set_icon_name (sn_context, icon);
 			g_free (icon);
@@ -761,7 +786,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	}
 #endif /* HAVE_STARTUP_NOTIFICATION */
 	
-	result = gnome_vfs_mime_application_launch_with_env (application, &uris, envp);
+	result = gnome_vfs_mime_application_launch_with_env (application, uris, envp);
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 	if (sn_context != NULL) {
@@ -783,7 +808,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 		break;
 
 	case GNOME_VFS_ERROR_NOT_SUPPORTED:
-		uri_scheme = nautilus_file_get_uri_scheme (file);
+		uri_scheme = nautilus_file_get_uri_scheme (NAUTILUS_FILE (files->data));
 		application_cannot_open_location (application,
 						  file,
 						  uri_scheme,
@@ -800,8 +825,8 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 #endif
 		break;
 	}
-	
-	g_free (uri);
+
+	eel_g_list_free_deep (uris);
 	g_strfreev (envp);
 }
 
