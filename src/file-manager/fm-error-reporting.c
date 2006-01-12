@@ -36,7 +36,7 @@
 #define NEW_NAME_TAG "Nautilus: new name"
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50
 
-static void cancel_rename (NautilusFile *file);
+static void cancel_rename (NautilusFile *file, gboolean stop_timer);
 
 void
 fm_report_error_loading_directory (NautilusFile *file,
@@ -264,17 +264,17 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 	/* If rename failed, notify the user. */
 	fm_report_error_renaming_file (file, name, result, NULL);
 
-	cancel_rename (file);
+	cancel_rename (file, TRUE);
 }
 
 static void
 cancel_rename_callback (gpointer callback_data)
 {
-	cancel_rename (NAUTILUS_FILE (callback_data));
+	cancel_rename (NAUTILUS_FILE (callback_data), FALSE);
 }
 
 static void
-cancel_rename (NautilusFile *file)
+cancel_rename (NautilusFile *file, gboolean stop_timer)
 {
 	char *name;
 
@@ -285,7 +285,9 @@ cancel_rename (NautilusFile *file)
 
 	/* Cancel both the rename and the timed wait. */
 	nautilus_file_cancel (file, rename_callback, NULL);
-	eel_timed_wait_stop (cancel_rename_callback, file);
+	if (stop_timer) {
+		eel_timed_wait_stop (cancel_rename_callback, file);
+	}
 
 	/* Let go of file name. */
 	g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
@@ -301,7 +303,7 @@ fm_rename_file (NautilusFile *file,
 	g_return_if_fail (new_name != NULL);
 
 	/* Stop any earlier rename that's already in progress. */
-	cancel_rename (file);
+	cancel_rename (file, TRUE);
 
 	/* Attach the new name to the file. */
 	g_object_set_data_full (G_OBJECT (file),
