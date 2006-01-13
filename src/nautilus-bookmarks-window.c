@@ -779,6 +779,8 @@ update_bookmark_from_text (void)
 {
 	if (text_changed) {
 		NautilusBookmark *bookmark, *bookmark_in_list;
+		char *name;
+		GdkPixbuf *pixbuf;
 		guint selected_row;
 		GtkTreeIter iter;
 
@@ -810,13 +812,24 @@ update_bookmark_from_text (void)
 						 NULL, &iter);
 		g_signal_handler_block (bookmark_list_store,
 					row_changed_signal_id);
+
 		bookmark_in_list = nautilus_bookmark_list_item_at (bookmarks,
 								   selected_row);
+
+		name = nautilus_bookmark_get_name (bookmark_in_list);
+
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark_in_list, GTK_ICON_SIZE_MENU);
+
 		gtk_list_store_set (bookmark_list_store, &iter,
 				    BOOKMARK_LIST_COLUMN_BOOKMARK, bookmark_in_list,
+				    BOOKMARK_LIST_COLUMN_NAME, name,
+				    BOOKMARK_LIST_COLUMN_ICON, pixbuf,
 				    -1);
 		g_signal_handler_unblock (bookmark_list_store,
 					  row_changed_signal_id);
+
+		gdk_pixbuf_unref (pixbuf);
+		g_free (name);
 	}
 }
 
