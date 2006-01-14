@@ -416,6 +416,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 	char *to_path;
 	char *to_text;
 	char *progress_label_text;
+	const char *hostname;
 	const char *from_prefix;
 	const char *to_prefix;
 	GnomeVFSURI *uri;
@@ -432,6 +433,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 		uri = gnome_vfs_uri_new (from_uri);
 		item = gnome_vfs_uri_extract_short_name (uri);
 		from_path = gnome_vfs_uri_extract_dirname (uri);
+		hostname = NULL;
 
 		/* remove the last '/' */
 		length = strlen (from_path);
@@ -439,12 +441,15 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 			from_path [length - 1] = '\0';
 		}
 
-		if (g_str_has_prefix (from_uri, "file://")) {
-			from_text = from_path;
-		} else {
+		if (!gnome_vfs_uri_is_local (uri)) {
+			hostname = gnome_vfs_uri_get_host_name (uri);
+		}
+		if (hostname) {
 			from_text = g_strdup_printf (_("%s on %s"),
-				from_path, gnome_vfs_uri_get_host_name (uri));
+				from_path, hostname);
 			g_free (from_path);
+		} else {
+			from_text = from_path;
 		}
 		
 		gnome_vfs_uri_unref (uri);
@@ -457,6 +462,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 	if (to_uri != NULL) {
 		uri = gnome_vfs_uri_new (to_uri);
 		to_path = gnome_vfs_uri_extract_dirname (uri);
+		hostname = NULL;
 
 		/* remove the last '/' */
 		length = strlen (to_path);
@@ -464,12 +470,15 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 			to_path [length - 1] = '\0';
 		}
 
-		if (g_str_has_prefix (to_uri, "file://")) {
-			to_text = to_path;
-		} else {
+		if (!gnome_vfs_uri_is_local (uri)) {
+			hostname = gnome_vfs_uri_get_host_name (uri);
+		}
+		if (hostname) {
 			to_text = g_strdup_printf (_("%s on %s"),
-				to_path, gnome_vfs_uri_get_host_name (uri));
+				to_path, hostname);
 			g_free (to_path);
+		} else {
+			to_text = to_path;
 		}
 
 		gnome_vfs_uri_unref (uri);
