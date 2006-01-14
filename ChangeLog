@@ -1,5 +1,12 @@
 2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_file_background_read_desktop_settings),
+	(nautilus_file_background_write_desktop_settings):
+	Handle new background zooming mode. (#105231) 
+
+2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-desktop-icon-view.c:
 	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_finalize):
 	Remove the default_zoom pref callback in finalize, not destroy.

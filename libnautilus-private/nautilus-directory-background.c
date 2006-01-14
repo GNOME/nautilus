@@ -154,6 +154,9 @@ nautilus_file_background_read_desktop_settings (char **color,
         case WPTYPE_SCALED:
                 *placement = EEL_BACKGROUND_SCALED_ASPECT;
                 break;
+        case WPTYPE_ZOOM:
+                *placement = EEL_BACKGROUND_ZOOM;
+                break;
         }
 	
         end_color     = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (prefs->color2));
@@ -229,6 +232,9 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 				break;	
 			case EEL_BACKGROUND_SCALED_ASPECT:
 				wallpaper_align = WPTYPE_SCALED;
+				break;
+			case EEL_BACKGROUND_ZOOM:
+				wallpaper_align = WPTYPE_ZOOM;
 				break;
 			default:
 				g_assert_not_reached ();
