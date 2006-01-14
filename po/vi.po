@@ -1,24 +1,24 @@
 # Vietnamese Translation for Nautilus.
-# Copyright © 2001-2005 Gnome i18n Project for Vietnamese.
+# Copyright © 2001-2006 Gnome i18n Project for Vietnamese.
 # Hoang Ngoc Tu <hntu@gmx.de>, 2001-2002.
 # Joern v. Kattchee <kattchee@gmx.net>, 2001-2002.
 # Nguyen Thai Ngoc Duy <pclouds@vnlinux.org>, 2002,2004.
 # Trinh Minh Thanh <tmthanh@yahoo.com>, 2002-2003, 2005.
-# Clytie Siddall <clytie@riverland.net.au>, 2005.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2006.
 # 
 msgid ""
 ""
 msgstr "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-30 06:57+0100\n"
-"PO-Revision-Date: 2005-12-30 18:28+1030\n"
+"POT-Creation-Date: 2006-01-13 23:26+0100\n"
+"PO-Revision-Date: 2006-01-14 13:59+1030\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: LocFactoryEditor 1.5.1b\n"
+"X-Generator: LocFactoryEditor 1.6b23\n"
 
 #:../data/browser.xml.h:1
 msgid "Apparition"
@@ -567,7 +567,8 @@ msgstr "Nếu đặt là đúng, hiển thị các tập tin ẩn trong trình q
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
-msgstr "Nếu đặt là true (đúng) thì biểu tượng liên kết đến Máy phục vụ mạng sẽ được đặt lên màn hình nền."
+msgstr "Nếu đặt là true (đúng) thì biểu tượng liên kết đến Máy phục vụ mạng sẽ được "
+"đặt lên màn hình nền."
 
 #:../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -934,7 +935,7 @@ msgstr "Dán văn bản đẫ được giữ trên khay"
 
 #.name, stock id
 #:../libnautilus-private/nautilus-clipboard.c:453
-#:../src/file-manager/fm-directory-view.c:6591
+#:../src/file-manager/fm-directory-view.c:6616
 msgid "Select _All"
 msgstr "Chọn _Tất cả"
 
@@ -1122,7 +1123,8 @@ msgstr "Rất tiếc, bạn phải dùng từ khóa không rỗng cho hình tư�
 #:../libnautilus-private/nautilus-emblem-utils.c:203
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr "Rất tiếc, từ khóa cho hình tượng chỉ có thể bao gồm các chữ cái, khoảng trắng và con số."
+msgstr "Rất tiếc, từ khóa cho hình tượng chỉ có thể bao gồm các chữ cái, khoảng "
+"trắng và con số."
 
 #.this really should never happen, as a user has no idea
 #.* what a keyword is, and people should be passing a unique
@@ -1417,7 +1419,7 @@ msgstr "Thay thế _tất cả"
 #.
 #:../libnautilus-private/nautilus-file-operations.c:1266
 #:../libnautilus-private/nautilus-file.c:4711
-#:../src/file-manager/fm-directory-view.c:9212
+#:../src/file-manager/fm-directory-view.c:9370
 #,c-format
 msgid "link to %s"
 msgstr "liên kết tới « %s »"
@@ -1938,7 +1940,7 @@ msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
 #:../libnautilus-private/nautilus-file.c:4277
-#:../src/file-manager/fm-directory-view.c:2192
+#:../src/file-manager/fm-directory-view.c:2208
 #,c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2276,7 +2278,7 @@ msgstr "Không có hành động nào khác có thể dùng để xem tập tin 
 "chéptập tin này vào máy tính của bạn thì bạn có thể mở nó được."
 
 #:../libnautilus-private/nautilus-program-choosing.c:491
-#:../libnautilus-private/nautilus-program-choosing.c:724
+#:../libnautilus-private/nautilus-program-choosing.c:733
 #,c-format
 msgid "Opening %s"
 msgstr "Đang mở « %s »"
@@ -2300,8 +2302,8 @@ msgid "Couldn't display \"%s\"."
 msgstr "Không thể hiển thị « %s »."
 
 #:../libnautilus-private/nautilus-program-choosing.c:592
-#:../libnautilus-private/nautilus-program-choosing.c:890
-#:../libnautilus-private/nautilus-program-choosing.c:958
+#:../libnautilus-private/nautilus-program-choosing.c:915
+#:../libnautilus-private/nautilus-program-choosing.c:983
 msgid "There was an error launching the application."
 msgstr "Gặp lỗi khi khởi động ứng dụng."
 
@@ -2348,30 +2350,37 @@ msgstr "Hãy kiểm tra lại lỗi chính tả và thử lại một lần nữ
 msgid "Couldn't find \"%s\"."
 msgstr "Không thể tìm thấy « %s »."
 
-#:../libnautilus-private/nautilus-program-choosing.c:876
+#:../libnautilus-private/nautilus-program-choosing.c:736
+#,c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "Đang mở %d mục"
+
+#:../libnautilus-private/nautilus-program-choosing.c:901
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr "Rất tiếc, bạn không thể thực hiện các lệnh của một máy tính điều khiển từ xa."
 
-#:../libnautilus-private/nautilus-program-choosing.c:878
+#:../libnautilus-private/nautilus-program-choosing.c:903
 msgid "This is disabled due to security considerations."
 msgstr "Hành động này đã tắt, bởi các lý do bảo mật."
 
-#:../libnautilus-private/nautilus-program-choosing.c:888
-#:../libnautilus-private/nautilus-program-choosing.c:956
+#:../libnautilus-private/nautilus-program-choosing.c:913
+#:../libnautilus-private/nautilus-program-choosing.c:981
 msgid "Details: "
 msgstr "Chi tiết: "
 
-#:../libnautilus-private/nautilus-program-choosing.c:919
-#:../libnautilus-private/nautilus-program-choosing.c:930
+#:../libnautilus-private/nautilus-program-choosing.c:944
+#:../libnautilus-private/nautilus-program-choosing.c:955
 msgid "This drop target only supports local files."
 msgstr "Đích thả này chỉ hỗ trợ các tập tin cục bộ."
 
-#:../libnautilus-private/nautilus-program-choosing.c:920
+#:../libnautilus-private/nautilus-program-choosing.c:945
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
-msgstr "Để mở các tập tin không cục bộ, bạn hãy sao chép chúng vào một thư mục cục bộ rồi thả chúng xuống lại."
+msgstr "Để mở các tập tin không cục bộ, bạn hãy sao chép chúng vào một thư mục cục "
+"bộ rồi thả chúng xuống lại."
 
-#:../libnautilus-private/nautilus-program-choosing.c:931
+#:../libnautilus-private/nautilus-program-choosing.c:956
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -2460,22 +2469,22 @@ msgstr "Nền"
 
 #.name, stock id
 #:../src/file-manager/fm-desktop-icon-view.c:680
-#:../src/file-manager/fm-directory-view.c:6569
-#:../src/file-manager/fm-directory-view.c:7359
+#:../src/file-manager/fm-directory-view.c:6594
+#:../src/file-manager/fm-directory-view.c:7398
 msgid "E_mpty Trash"
 msgstr "Đổ _rác"
 
 #.label, accelerator
 #.name, stock id
 #:../src/file-manager/fm-desktop-icon-view.c:692
-#:../src/file-manager/fm-directory-view.c:6541
+#:../src/file-manager/fm-directory-view.c:6566
 msgid "Create L_auncher..."
 msgstr "Tạo _bộ khởi động..."
 
 #.tooltip
 #.label, accelerator
 #:../src/file-manager/fm-desktop-icon-view.c:694
-#:../src/file-manager/fm-directory-view.c:6542
+#:../src/file-manager/fm-directory-view.c:6567
 msgid "Create a new launcher"
 msgstr "Tạo bộ khởi động mới"
 
@@ -2498,7 +2507,7 @@ msgstr "Đổ Sọt rác"
 #.tooltip
 #.label, accelerator
 #:../src/file-manager/fm-desktop-icon-view.c:708
-#:../src/file-manager/fm-directory-view.c:6570
+#:../src/file-manager/fm-directory-view.c:6595
 msgid "Delete all items in the Trash"
 msgstr "Xóa bỏ tất cả các mục trong sọt rác"
 
@@ -2528,100 +2537,100 @@ msgstr "Khung xem mặt bàn gặp lỗi trong khi khởi động."
 msgid "Display this location with the desktop view."
 msgstr "Hiển thị địa điểm này với khung xem mặt bàn."
 
-#:../src/file-manager/fm-directory-view.c:652
+#:../src/file-manager/fm-directory-view.c:658
 msgid "Are you sure you want to open all files?"
 msgstr "Bạn có chắc là muốn mở mọi tập tin không?"
 
-#:../src/file-manager/fm-directory-view.c:653
+#:../src/file-manager/fm-directory-view.c:659
 #:../src/nautilus-location-bar.c:158
 #,c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Hành động này sẽ mở %d cửa sổ riêng."
 
-#:../src/file-manager/fm-directory-view.c:980
+#:../src/file-manager/fm-directory-view.c:996
 #,c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Bạn có chắc là muốn xoá bỏ « %s » vĩnh viễn?"
 
-#:../src/file-manager/fm-directory-view.c:984
+#:../src/file-manager/fm-directory-view.c:1000
 #,c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Bạn có chắc muốn xóa bỏ vĩnh viễn %d mục đã chọn không?"
 
-#:../src/file-manager/fm-directory-view.c:995
+#:../src/file-manager/fm-directory-view.c:1011
 msgid "If you delete an item, it is permanently lost."
 msgstr "Nếu bạn xóa bỏ một mục, nó sẽ bị mất vĩnh viễn."
 
-#:../src/file-manager/fm-directory-view.c:1147
+#:../src/file-manager/fm-directory-view.c:1163
 msgid "Select Pattern"
 msgstr "Chọn mẫu"
 
-#:../src/file-manager/fm-directory-view.c:1163
+#:../src/file-manager/fm-directory-view.c:1179
 msgid "_Pattern:"
 msgstr "_Mẫu:"
 
-#:../src/file-manager/fm-directory-view.c:1272
+#:../src/file-manager/fm-directory-view.c:1288
 msgid "Save Search as"
 msgstr "Lưu tìm kiếm dạng"
 
-#:../src/file-manager/fm-directory-view.c:1290
+#:../src/file-manager/fm-directory-view.c:1306
 msgid "Search _name:"
 msgstr "T_ên tìm kiếm:"
 
-#:../src/file-manager/fm-directory-view.c:1303
+#:../src/file-manager/fm-directory-view.c:1319
 #:../src/nautilus-connect-server-dialog.c:535
 msgid "_Folder:"
 msgstr "_thư mục:"
 
-#:../src/file-manager/fm-directory-view.c:1308
+#:../src/file-manager/fm-directory-view.c:1324
 msgid "Select Folder to Save Search In"
 msgstr "Chọn thư mục nơi cần lưu tìm kiếm"
 
-#:../src/file-manager/fm-directory-view.c:2124
+#:../src/file-manager/fm-directory-view.c:2140
 #,c-format
 msgid "\"%s\" selected"
 msgstr "« %s » được chọn"
 
-#:../src/file-manager/fm-directory-view.c:2126
+#:../src/file-manager/fm-directory-view.c:2142
 #,c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d thư mục đã chọn"
 
-#:../src/file-manager/fm-directory-view.c:2136
+#:../src/file-manager/fm-directory-view.c:2152
 #,c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
 msgstr[0] " (chứa %d mục)"
 
 #.translators: this is preceded with a string of form 'N folders' (N more than 1)
-#:../src/file-manager/fm-directory-view.c:2147
+#:../src/file-manager/fm-directory-view.c:2163
 #,c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (chứa tổng số %d mục)"
 
-#:../src/file-manager/fm-directory-view.c:2163
+#:../src/file-manager/fm-directory-view.c:2179
 #,c-format
 msgid "\"%s\" selected (%s)"
 msgstr "« %s » được chọn (%s)"
 
-#:../src/file-manager/fm-directory-view.c:2167
+#:../src/file-manager/fm-directory-view.c:2183
 #,c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
 msgstr[0] "%d mục đã chọn (%s)"
 
 #.Folders selected also, use "other" terminology
-#:../src/file-manager/fm-directory-view.c:2175
+#:../src/file-manager/fm-directory-view.c:2191
 #,c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d mục khác cũng đã chọn (%s)"
 
-#:../src/file-manager/fm-directory-view.c:2196
+#:../src/file-manager/fm-directory-view.c:2212
 #,c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Sức chứa còn rảnh: %s"
@@ -2634,7 +2643,7 @@ msgstr "%s, Sức chứa còn rảnh: %s"
 #.* message about the number of other items and the
 #.* total size of those items.
 #.
-#:../src/file-manager/fm-directory-view.c:2221
+#:../src/file-manager/fm-directory-view.c:2237
 #,c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2643,49 +2652,52 @@ msgstr "%s%s, %s"
 #.* to the way files are collected in batches. So you can't assume that
 #.* no more than the constant limit are displayed.
 #.
-#:../src/file-manager/fm-directory-view.c:2303
+#:../src/file-manager/fm-directory-view.c:2319
 #,c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Thư mục « %s » chứa nhiều tập tin hơn số mà Nautilus xử lý được. "
 
-#:../src/file-manager/fm-directory-view.c:2309
+#:../src/file-manager/fm-directory-view.c:2325
 msgid "Some files will not be displayed."
 msgstr "Vài tập tin sẽ không hiển thị."
 
-#:../src/file-manager/fm-directory-view.c:3706
+#:../src/file-manager/fm-directory-view.c:3722
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Không thể chuyển tập tin vào sọt rác, bạn có muốn xóa bỏ nó ngay lập tức không?"
+msgstr "Không thể chuyển tập tin vào sọt rác, bạn có muốn xóa bỏ nó ngay lập tức "
+"không?"
 
-#:../src/file-manager/fm-directory-view.c:3707
+#:../src/file-manager/fm-directory-view.c:3723
 #,c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Không thể cho tập tin \"%s\" vào Sọt rác."
 
-#:../src/file-manager/fm-directory-view.c:3711
+#:../src/file-manager/fm-directory-view.c:3727
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Không thể cho mục vào sọt rác được. Bạn có muốn xóa bỏ ngay lập tức không?"
 
-#:../src/file-manager/fm-directory-view.c:3712
+#:../src/file-manager/fm-directory-view.c:3728
 #,c-format
 msgid "None of the %d selected items can be moved to the Trash"
-msgstr "Không cỏ mục nào trong các %d mục được chọn có thể được di chuyển vào Sọt rác."
+msgstr "Không cỏ mục nào trong các %d mục được chọn có thể được di chuyển vào Sọt "
+"rác."
 
-#:../src/file-manager/fm-directory-view.c:3714
+#:../src/file-manager/fm-directory-view.c:3730
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "Không thể di chuyển một số mục vào sọt rác. Bạn có muốn xóa bỏ những mục này ngay lập tức không?"
+msgstr "Không thể di chuyển một số mục vào sọt rác. Bạn có muốn xóa bỏ những mục này "
+"ngay lập tức không?"
 
-#:../src/file-manager/fm-directory-view.c:3715
+#:../src/file-manager/fm-directory-view.c:3731
 #,c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d của những mục đã chọn không thể được di chuyển vào Sọt rác."
 
-#:../src/file-manager/fm-directory-view.c:3753
+#:../src/file-manager/fm-directory-view.c:3769
 #,c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Bạn có chắc chắn là bạn muốn xóa bỏ vĩnh viễn « %s » trong sọt rác không?"
 
-#:../src/file-manager/fm-directory-view.c:3757
+#:../src/file-manager/fm-directory-view.c:3773
 #,c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2694,48 +2706,49 @@ msgid_plural "Are you sure you want to permanently delete the %d selected items 
 "trash?"
 msgstr[0] "Bạn có chắc muốn xóa bỏ vĩnh viễn %d mục đã chọn ra Sọt rác không?"
 
-#:../src/file-manager/fm-directory-view.c:3766
+#:../src/file-manager/fm-directory-view.c:3782
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Nếu bạn xóa bỏ một mục, nó sẽ bị mất vĩnh viễn."
 
-#:../src/file-manager/fm-directory-view.c:4344
+#:../src/file-manager/fm-directory-view.c:4360
 #,c-format
 msgid "Open with \"%s\""
 msgstr "Mở bằng « %s »"
 
-#:../src/file-manager/fm-directory-view.c:4345
+#:../src/file-manager/fm-directory-view.c:4361
 #,c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "Dùng « %s » để mở mục đã chọn"
+msgid_plural "Use \"%s\" to open the selected items"
+msgstr[0] "Dùng « %s » để mở mục đã chọn"
 
-#:../src/file-manager/fm-directory-view.c:4434
+#:../src/file-manager/fm-directory-view.c:4453
 #,c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Bạn có muốn chạy « %s », hoặc hiển thị nội dung của nó không?"
 
-#:../src/file-manager/fm-directory-view.c:4436
+#:../src/file-manager/fm-directory-view.c:4455
 #,c-format
 msgid "\"%s\" is an executable text file."
 msgstr "« %s » là tập tin văn bản thực thi."
 
-#:../src/file-manager/fm-directory-view.c:4442
+#:../src/file-manager/fm-directory-view.c:4461
 msgid "Run in _Terminal"
 msgstr "Chạy trong _Thiết bị cuối"
 
-#:../src/file-manager/fm-directory-view.c:4443
+#:../src/file-manager/fm-directory-view.c:4462
 msgid "_Display"
 msgstr "_Hiển thị"
 
-#:../src/file-manager/fm-directory-view.c:4446
+#:../src/file-manager/fm-directory-view.c:4465
 msgid "_Run"
 msgstr "_Chạy"
 
-#:../src/file-manager/fm-directory-view.c:4836
+#:../src/file-manager/fm-directory-view.c:4861
 #,c-format
 msgid "Cannot open %s"
 msgstr "Không thể mở « %s »"
 
-#:../src/file-manager/fm-directory-view.c:4839
+#:../src/file-manager/fm-directory-view.c:4864
 #,c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2755,28 +2768,29 @@ msgstr "Tập tin « %s » chỉ ra rằng tập tin này thuộc loại « %s �
 "« %s », sau đó mở tập tin bình thường. Ngoài ra có thể dùng menu «Mở bằng» "
 "để chọn ứng dụng cụ thể để mở tập tin."
 
-#:../src/file-manager/fm-directory-view.c:5234
+#:../src/file-manager/fm-directory-view.c:5259
 #,c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Thực hiện « %s » trên các mục đã chọn"
 
-#:../src/file-manager/fm-directory-view.c:5483
+#:../src/file-manager/fm-directory-view.c:5508
 #,c-format
 msgid "Create Document from template \"%s\""
 msgstr "Tạo tài liệu theo mẫu « %s »"
 
-#:../src/file-manager/fm-directory-view.c:5689
+#:../src/file-manager/fm-directory-view.c:5714
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr "Tất cả các tập tin thực thi trong thư mục này sẽ xuất hiện trên trình đơn Tập lệnh."
+msgstr "Tất cả các tập tin thực thi trong thư mục này sẽ xuất hiện trên trình đơn "
+"Tập lệnh."
 
-#:../src/file-manager/fm-directory-view.c:5691
+#:../src/file-manager/fm-directory-view.c:5716
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "Chọn một tập lệnh trong trình đơn sẽ chạy tập lệnh đó với đầu vào của tập "
 "lệnh là những mục đã chọn."
 
-#:../src/file-manager/fm-directory-view.c:5693
+#:../src/file-manager/fm-directory-view.c:5718
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2816,179 +2830,180 @@ msgstr "Mọi tập tin có thể thực thi trong thư mục này sẽ xuất h
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: vị trí và kích cỡ cửa sổ hiện thời"
 
-#:../src/file-manager/fm-directory-view.c:5854
+#:../src/file-manager/fm-directory-view.c:5879
 #:../src/file-manager/fm-tree-view.c:902
 #,c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "« %s » sẽ được chuyển đi nếu bạn dùng lệnh «Dán»"
 
-#:../src/file-manager/fm-directory-view.c:5858
+#:../src/file-manager/fm-directory-view.c:5883
 #:../src/file-manager/fm-tree-view.c:906
 #,c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "« %s » sẽ được sao chép nếu bạn dùng lệnh «Dán»"
 
-#:../src/file-manager/fm-directory-view.c:5865
+#:../src/file-manager/fm-directory-view.c:5890
 #,c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "Sẽ di chuyển %d mục đã chọn, nếu bạn chọn lệnh «Dán»"
 
-#:../src/file-manager/fm-directory-view.c:5872
+#:../src/file-manager/fm-directory-view.c:5897
 #,c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "Sẽ sao chép %d mục đã chọn, nếu bạn chọn lệnh «Dán»"
 
-#:../src/file-manager/fm-directory-view.c:5966
+#:../src/file-manager/fm-directory-view.c:5991
 #:../src/file-manager/fm-tree-view.c:983
 msgid "There is nothing on the clipboard to paste."
 msgstr "Không có gì trong khay cần dán."
 
-#:../src/file-manager/fm-directory-view.c:6321
+#:../src/file-manager/fm-directory-view.c:6346
 #,c-format
 msgid "Connect to Server %s"
 msgstr "Kết nối đến máy phục vụ %s"
 
-#:../src/file-manager/fm-directory-view.c:6326
+#:../src/file-manager/fm-directory-view.c:6351
 msgid "_Connect"
 msgstr "_Kết nối"
 
-#:../src/file-manager/fm-directory-view.c:6340
+#:../src/file-manager/fm-directory-view.c:6365
 msgid "Link _name:"
 msgstr "Tên _liên kết:"
 
-#:../src/file-manager/fm-directory-view.c:6515
+#:../src/file-manager/fm-directory-view.c:6540
 msgid "Create _Document"
 msgstr "Tạo _Tài liệu"
 
 #.name, stock id, label
-#:../src/file-manager/fm-directory-view.c:6516
+#:../src/file-manager/fm-directory-view.c:6541
 msgid "Open Wit_h"
 msgstr "Mở _dùng"
 
 #.name, stock id, label
-#:../src/file-manager/fm-directory-view.c:6517
+#:../src/file-manager/fm-directory-view.c:6542
 msgid "Choose a program with which to open the selected item"
 msgstr "Chọn một chương trình để mở mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6519
-#:../src/file-manager/fm-directory-view.c:6527
+#:../src/file-manager/fm-directory-view.c:6544
+#:../src/file-manager/fm-directory-view.c:6552
 msgid "_Properties"
 msgstr "_Thuộc tính"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6520
+#:../src/file-manager/fm-directory-view.c:6545
 msgid "View or modify the properties of each selected item"
 msgstr "Xem hoặc sửa đổi các tính chất của mỗi mục được chọn"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6528
+#:../src/file-manager/fm-directory-view.c:6553
 msgid "View or modify the properties of the open folder"
 msgstr "Xem hoặc sửa đổi các thuộc tính của thư mục đang mở"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6531
+#:../src/file-manager/fm-directory-view.c:6556
 msgid "Create _Folder"
 msgstr "Tạo _thư mục"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6532
+#:../src/file-manager/fm-directory-view.c:6557
 msgid "Create a new empty folder inside this folder"
 msgstr "Tạo một thư mục rỗng bên trong thư mục này"
 
-#:../src/file-manager/fm-directory-view.c:6534
+#:../src/file-manager/fm-directory-view.c:6559
 msgid "No templates Installed"
 msgstr "Chưa cài mẫu"
 
 #.name, stock id, label
 #.name, stock id
 #.translators: this is used to indicate that a file doesn't contain anything
-#:../src/file-manager/fm-directory-view.c:6537
+#:../src/file-manager/fm-directory-view.c:6562
 msgid "_Empty File"
 msgstr "Tập tin _rỗng"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6538
+#:../src/file-manager/fm-directory-view.c:6563
 msgid "Create a new empty file inside this folder"
 msgstr "Tạo một tập tin rỗng bên trong thư mục này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6545
-#:../src/file-manager/fm-directory-view.c:7260
+#:../src/file-manager/fm-directory-view.c:6570
+#:../src/file-manager/fm-directory-view.c:7299
 #:../src/file-manager/fm-tree-view.c:1105
 msgid "_Open"
 msgstr "_Mở"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6546
+#:../src/file-manager/fm-directory-view.c:6571
 msgid "Open the selected item in this window"
 msgstr "Mở mục đã chọn trong cửa sổ này"
 
 #.name, stock id
 #.Location-specific actions
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6553
-#:../src/file-manager/fm-directory-view.c:6661
+#:../src/file-manager/fm-directory-view.c:6578
+#:../src/file-manager/fm-directory-view.c:6686
 msgid "Open in Navigation Window"
 msgstr "Mở trong cửa sổ duyệt"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6554
+#:../src/file-manager/fm-directory-view.c:6579
 msgid "Open each selected item in a navigation window"
 msgstr "Mở mỗi mục được chọn trong cửa sổ duyệt"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6557
-#:../src/file-manager/fm-directory-view.c:6561
+#:../src/file-manager/fm-directory-view.c:6582
+#:../src/file-manager/fm-directory-view.c:6586
 msgid "Open with Other _Application..."
 msgstr "Mở bằng Ứng dụng _khác..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6558
-#:../src/file-manager/fm-directory-view.c:6562
+#:../src/file-manager/fm-directory-view.c:6583
+#:../src/file-manager/fm-directory-view.c:6587
 msgid "Choose another application with which to open the selected item"
 msgstr "Chọn ứng dụng khác để mở mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6565
+#:../src/file-manager/fm-directory-view.c:6590
 msgid "_Open Scripts Folder"
 msgstr "_Mở thư mục Tập lệnh"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6566
+#:../src/file-manager/fm-directory-view.c:6591
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Trình diễn thư mục mà chứa các tập lệnh xuất hiện trong trình đơn này"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6574
+#:../src/file-manager/fm-directory-view.c:6599
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Chuẩn bị các tập tin được chọn để chuyển dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6578
+#:../src/file-manager/fm-directory-view.c:6603
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Chuẩn bị các tập tin được chọn để sao dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6582
+#:../src/file-manager/fm-directory-view.c:6607
 msgid "Move or copy files previously selected by a Cut or Copy command"
-msgstr "Chuyển hoặc sao chép các tập tin đã được chọn truớc đây bởi một lệnh như « Cắt » hay « Chép »"
+msgstr "Chuyển hoặc sao chép các tập tin đã được chọn truớc đây bởi một lệnh như « "
+"Cắt » hay « Chép »"
 
 #.We make accelerator "" instead of null here to not inherit the stock
 #.accelerator for paste
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6587
+#:../src/file-manager/fm-directory-view.c:6612
 #:../src/file-manager/fm-tree-view.c:1163
 msgid "_Paste Into Folder"
 msgstr "_Dán vào thư mục"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6588
+#:../src/file-manager/fm-directory-view.c:6613
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -2996,312 +3011,313 @@ msgstr "Di chuyển hoặc sao chép các tập tin, đã được chọn truớ
 "hoặc «Chép», vào thư mục được chọn"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6592
+#:../src/file-manager/fm-directory-view.c:6617
 msgid "Select all items in this window"
 msgstr "Chọn tất cả các mục trong cửa sổ này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6595
+#:../src/file-manager/fm-directory-view.c:6620
 msgid "Select _Pattern"
 msgstr "Chọn theo _mẫu"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6596
+#:../src/file-manager/fm-directory-view.c:6621
 msgid "Select items in this window matching a given pattern"
 msgstr "Chọn các mục trong cửa sổ khớp với mẫu được cho"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6599
+#:../src/file-manager/fm-directory-view.c:6624
 msgid "D_uplicate"
 msgstr "Tạo bản _sao"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6600
+#:../src/file-manager/fm-directory-view.c:6625
 msgid "Duplicate each selected item"
 msgstr "Tạo bản sao cho mỗi mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6603
-#:../src/file-manager/fm-directory-view.c:7333
+#:../src/file-manager/fm-directory-view.c:6628
+#:../src/file-manager/fm-directory-view.c:7372
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Tạo liên _kết"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6604
+#:../src/file-manager/fm-directory-view.c:6629
 msgid "Create a symbolic link for each selected item"
 msgstr "Tạo một liên kết biểu tượng cho mỗi mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6607
+#:../src/file-manager/fm-directory-view.c:6632
 msgid "_Rename..."
 msgstr "Đổi _tên..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6608
+#:../src/file-manager/fm-directory-view.c:6633
 msgid "Rename selected item"
 msgstr "Đổi tên mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6615
-#:../src/file-manager/fm-directory-view.c:6675
-#:../src/file-manager/fm-directory-view.c:7131
-#:../src/file-manager/fm-directory-view.c:7301
-#:../src/file-manager/fm-directory-view.c:7690
+#:../src/file-manager/fm-directory-view.c:6640
+#:../src/file-manager/fm-directory-view.c:6700
+#:../src/file-manager/fm-directory-view.c:7156
+#:../src/file-manager/fm-directory-view.c:7340
+#:../src/file-manager/fm-directory-view.c:7729
 msgid "Mo_ve to Trash"
 msgstr "_Cho vào Sọt rác"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6616
-#:../src/file-manager/fm-directory-view.c:7302
+#:../src/file-manager/fm-directory-view.c:6641
+#:../src/file-manager/fm-directory-view.c:7341
 msgid "Move each selected item to the Trash"
 msgstr "Bỏ các mục được chọn vào Sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6619
-#:../src/file-manager/fm-directory-view.c:6679
-#:../src/file-manager/fm-directory-view.c:7320
+#:../src/file-manager/fm-directory-view.c:6644
+#:../src/file-manager/fm-directory-view.c:6704
+#:../src/file-manager/fm-directory-view.c:7359
 msgid "_Delete"
 msgstr "_Xóa bỏ"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6620
+#:../src/file-manager/fm-directory-view.c:6645
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Xóa bỏ mỗi mục dã chọn mà không bỏ vào sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6623
+#:../src/file-manager/fm-directory-view.c:6648
 msgid "Reset View to _Defaults"
 msgstr "Đặt khung xem về _mặc định"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6624
+#:../src/file-manager/fm-directory-view.c:6649
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "Đặt lại sắp xếp theo thứ tự và lớp thu phóng về chỉnh lý trước cho cảnh xem này"
+msgstr "Đặt lại sắp xếp theo thứ tự và lớp thu phóng về chỉnh lý trước cho cảnh xem "
+"này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6627
+#:../src/file-manager/fm-directory-view.c:6652
 msgid "Connect To This Server"
 msgstr "Kết nối đến máy phục vụ này"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6628
+#:../src/file-manager/fm-directory-view.c:6653
 msgid "Make a permanent connection to this server"
 msgstr "Tạo kết nối bền vững cho máy phục vụ này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6631
+#:../src/file-manager/fm-directory-view.c:6656
 msgid "_Mount Volume"
 msgstr "_Gắn kết khối"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6632
+#:../src/file-manager/fm-directory-view.c:6657
 msgid "Mount the selected volume"
 msgstr "Gắn kết khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6635
+#:../src/file-manager/fm-directory-view.c:6660
 #:../src/file-manager/fm-tree-view.c:751
 msgid "_Unmount Volume"
 msgstr "_Bỏ gắn kết khối"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6636
+#:../src/file-manager/fm-directory-view.c:6661
 msgid "Unmount the selected volume"
 msgstr "Bỏ gắn kết khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6639
+#:../src/file-manager/fm-directory-view.c:6664
 msgid "_Eject"
 msgstr "Đẩy _ra"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6640
+#:../src/file-manager/fm-directory-view.c:6665
 msgid "Eject the selected volume"
 msgstr "Đẩy khối được chọn ra"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6643
+#:../src/file-manager/fm-directory-view.c:6668
 msgid "_Format"
 msgstr "Định _dạng"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6644
+#:../src/file-manager/fm-directory-view.c:6669
 msgid "Format the selected volume"
 msgstr "Định dạng khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6647
+#:../src/file-manager/fm-directory-view.c:6672
 msgid "Open File and Close window"
 msgstr "Mở tập tin và đóng cửa sổ"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6651
+#:../src/file-manager/fm-directory-view.c:6676
 msgid "Sa_ve Search"
 msgstr "_Lưu tìm kiếm"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6652
+#:../src/file-manager/fm-directory-view.c:6677
 msgid "Save the edited search"
 msgstr "Lưu việc tìm kiếm đã sửa đổi"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6655
+#:../src/file-manager/fm-directory-view.c:6680
 msgid "Sa_ve Search As..."
 msgstr "Lưu tìm kiếm _dạng..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6656
+#:../src/file-manager/fm-directory-view.c:6681
 msgid "Save the current search as a file"
 msgstr "Lưu việc tìm kiếm hiện thời dạng tập tin"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6662
+#:../src/file-manager/fm-directory-view.c:6687
 msgid "Open this folder in a navigation window"
 msgstr "Mở thư mục này trong cửa sổ duyệt"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6667
+#:../src/file-manager/fm-directory-view.c:6692
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Chuẩn bị thư mục này để được di chuyển dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6671
+#:../src/file-manager/fm-directory-view.c:6696
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Chuẩn bị thư mục này để được sao chép dùng lệnh «Dán»"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6676
+#:../src/file-manager/fm-directory-view.c:6701
 msgid "Move this folder to the Trash"
 msgstr "Di chuyển thư mục này vào Sọt rác"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6680
+#:../src/file-manager/fm-directory-view.c:6705
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Xóa bỏ thư mục này mà không bỏ vào sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6686
+#:../src/file-manager/fm-directory-view.c:6711
 msgid "Show _Hidden Files"
 msgstr "Hiện tập tin ẩ_n"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6687
+#:../src/file-manager/fm-directory-view.c:6712
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Bật tắt hiện tập tin ẩn trong cửa sổ hiện thời"
 
 #.Translators: %s is a directory
-#:../src/file-manager/fm-directory-view.c:6773
+#:../src/file-manager/fm-directory-view.c:6798
 #,c-format
 msgid "Run or manage scripts from %s"
 msgstr "Thực hiện hoặc quản lý các tập lệnh từ « %s »"
 
 #.Create a script action here specially because its tooltip is dynamic
-#:../src/file-manager/fm-directory-view.c:6775
+#:../src/file-manager/fm-directory-view.c:6800
 msgid "_Scripts"
 msgstr "Tập _lệnh"
 
 #.add the "open in new window" menu item
-#:../src/file-manager/fm-directory-view.c:7100
-#:../src/file-manager/fm-directory-view.c:7269
+#:../src/file-manager/fm-directory-view.c:7125
+#:../src/file-manager/fm-directory-view.c:7308
 #:../src/file-manager/fm-tree-view.c:1116
 msgid "Open in New Window"
 msgstr "Mở trong cửa sổ mới"
 
-#:../src/file-manager/fm-directory-view.c:7102
-#:../src/file-manager/fm-directory-view.c:7277
+#:../src/file-manager/fm-directory-view.c:7127
+#:../src/file-manager/fm-directory-view.c:7316
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Duyệt thư mục"
 
-#:../src/file-manager/fm-directory-view.c:7127
-#:../src/file-manager/fm-directory-view.c:7297
+#:../src/file-manager/fm-directory-view.c:7152
+#:../src/file-manager/fm-directory-view.c:7336
 msgid "_Delete from Trash"
 msgstr "_Xóa bỏ khỏi sọt rác"
 
-#:../src/file-manager/fm-directory-view.c:7128
+#:../src/file-manager/fm-directory-view.c:7153
 msgid "Delete the open folder permanently"
 msgstr "Xóa bỏ vĩnh viễn thư mục đang mở"
 
-#:../src/file-manager/fm-directory-view.c:7132
+#:../src/file-manager/fm-directory-view.c:7157
 msgid "Move the open folder to the Trash"
 msgstr "Di chuyển thư mục đang mở vào Sọt rác"
 
-#:../src/file-manager/fm-directory-view.c:7249
+#:../src/file-manager/fm-directory-view.c:7292
 #,c-format
 msgid "_Open with \"%s\""
 msgstr "_Mở bằng « %s »"
 
-#:../src/file-manager/fm-directory-view.c:7271
+#:../src/file-manager/fm-directory-view.c:7310
 #,c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Mở trong %d cửa sổ mới"
 
-#:../src/file-manager/fm-directory-view.c:7298
+#:../src/file-manager/fm-directory-view.c:7337
 msgid "Delete all selected items permanently"
 msgstr "Xóa bỏ vĩnh viễn mọi mục được chọn"
 
-#:../src/file-manager/fm-directory-view.c:7670
+#:../src/file-manager/fm-directory-view.c:7709
 #,c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Liên kết <%s> bị ngắt."
 
-#:../src/file-manager/fm-directory-view.c:7672
+#:../src/file-manager/fm-directory-view.c:7711
 #,c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Liên kết <%s> bị ngắt nên chuyển nó vào Sọt rác chứ?"
 
-#:../src/file-manager/fm-directory-view.c:7678
+#:../src/file-manager/fm-directory-view.c:7717
 msgid "This link can't be used, because it has no target."
 msgstr "Không thể dùng liên kết này vì nó không có đích đến."
 
-#:../src/file-manager/fm-directory-view.c:7680
+#:../src/file-manager/fm-directory-view.c:7719
 #,c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Không thể dùng liên kết này vì đích đến của nó là « %s » không tồn tại."
 
-#:../src/file-manager/fm-directory-view.c:8181
+#:../src/file-manager/fm-directory-view.c:8339
 #,c-format
 msgid "Opening \"%s\"."
 msgstr "Đang mở « %s »."
 
-#:../src/file-manager/fm-directory-view.c:8184
+#:../src/file-manager/fm-directory-view.c:8342
 #,c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Đang mở %d mục."
 
-#:../src/file-manager/fm-directory-view.c:9076
+#:../src/file-manager/fm-directory-view.c:9234
 msgid "Download location?"
 msgstr "Vị trí tải về?"
 
-#:../src/file-manager/fm-directory-view.c:9079
+#:../src/file-manager/fm-directory-view.c:9237
 msgid "You can download it or make a link to it."
 msgstr "Bạn có thể tải nó về hoặc tạo liên kết tới nó."
 
-#:../src/file-manager/fm-directory-view.c:9082
+#:../src/file-manager/fm-directory-view.c:9240
 msgid "Make a _Link"
 msgstr "Tạo _liên kết"
 
-#:../src/file-manager/fm-directory-view.c:9086
+#:../src/file-manager/fm-directory-view.c:9244
 msgid "_Download"
 msgstr "_Tải về"
 
-#:../src/file-manager/fm-directory-view.c:9145
-#:../src/file-manager/fm-directory-view.c:9197
-#:../src/file-manager/fm-directory-view.c:9294
+#:../src/file-manager/fm-directory-view.c:9303
+#:../src/file-manager/fm-directory-view.c:9355
+#:../src/file-manager/fm-directory-view.c:9452
 msgid "Drag and drop is not supported."
 msgstr "Không hỗ trợ «kéo và thả»."
 
-#:../src/file-manager/fm-directory-view.c:9146
+#:../src/file-manager/fm-directory-view.c:9304
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Chỉ hỗ trợ «kéo và thả» trên hệ thống tập tin cục bộ."
 
-#:../src/file-manager/fm-directory-view.c:9198
-#:../src/file-manager/fm-directory-view.c:9295
+#:../src/file-manager/fm-directory-view.c:9356
+#:../src/file-manager/fm-directory-view.c:9453
 msgid "An invalid drag type was used."
 msgstr "Đã dùng một dạng kéo không hợp lệ."
 
@@ -3361,7 +3377,8 @@ msgstr "Tên « %s » đã được dùng trong thư mục này. Hãy dùng mộ
 #,c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "Không có « %s » ở trong thư mục này. Có thể nó vừa bị chuyển hoặc xóa đi không?"
+msgstr "Không có « %s » ở trong thư mục này. Có thể nó vừa bị chuyển hoặc xóa đi "
+"không?"
 
 #:../src/file-manager/fm-error-reporting.c:117
 #,c-format
@@ -3443,7 +3460,7 @@ msgstr "Rất tiếc, không thể thay đổi quyền truy nhập của « %s �
 msgid "The permissions could not be changed."
 msgstr "Không thể thay đổi quyền truy cập."
 
-#:../src/file-manager/fm-error-reporting.c:314
+#:../src/file-manager/fm-error-reporting.c:316
 #,c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "Đang đổi tên « %s » thành « %s »."
@@ -3527,7 +3544,8 @@ msgstr "_Sắp gọn theo tên"
 #.label, accelerator
 #:../src/file-manager/fm-icon-view.c:1419
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Sắp xếp lại các biểu tượng để chúng vừa hơn vào cửa sổ và tránh sự chồng chéo lên nhau"
+msgstr "Sắp xếp lại các biểu tượng để chúng vừa hơn vào cửa sổ và tránh sự chồng "
+"chéo lên nhau"
 
 #.name, stock id
 #:../src/file-manager/fm-icon-view.c:1425
@@ -4289,8 +4307,8 @@ msgstr "Không"
 msgid "    "
 msgstr "    "
 
-#:../src/nautilus-file-management-properties.glade.h:2
 # Literal: don't translate / Nghĩa chữ: đừng dịch
+#:../src/nautilus-file-management-properties.glade.h:2
 msgid ""
 "100 KB\n"
 "500 KB\n"
@@ -4309,9 +4327,9 @@ msgstr "100 KB\n"
 "100 MB\n"
 "1 GB"
 
+# Literal: don't translate / Nghĩa chữ: đừng dịch
 #:../src/nautilus-file-management-properties.glade.h:11
 #,no-c-format
-# Literal: don't translate / Nghĩa chữ: đừng dịch
 msgid ""
 "25%\n"
 "50%\n"
@@ -4653,22 +4671,22 @@ msgstr "Bạn không thể gán nhiều biểu tượng riêng trong một thờ
 msgid "You can only use images as custom icons."
 msgstr "Bạn có thể dùng ảnh chỉ làm biểu tượng riêng mà thôi."
 
-#:../src/nautilus-information-panel.c:895
+#:../src/nautilus-information-panel.c:899
 #,c-format
 msgid "Open with %s"
 msgstr "Mở bằng %s"
 
-#:../src/nautilus-information-panel.c:990
+#:../src/nautilus-information-panel.c:994
 msgid "Unable to launch the cd burner application."
 msgstr "Không thể khởi chạy trình ghi đĩa CD."
 
 #.FIXME: We don't use spaces to pad labels!
-#:../src/nautilus-information-panel.c:1035
+#:../src/nautilus-information-panel.c:1039
 msgid "Empty _Trash"
 msgstr "Đổ _Rác"
 
 #.FIXME: We don't use spaces to pad labels!
-#:../src/nautilus-information-panel.c:1051
+#:../src/nautilus-information-panel.c:1055
 msgid "_Write contents to CD"
 msgstr "_Ghi nội dung vào đĩa CD"
 
