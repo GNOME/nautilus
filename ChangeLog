@@ -1,5 +1,12 @@
 2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_finalize):
+	Remove the default_zoom pref callback in finalize, not destroy.
+	Fixes #326063.
+
+2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(progress_dialog_set_to_from_item_text):
 	Handle hostnames in the progress dialog strings more robustly.

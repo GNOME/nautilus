@@ -271,10 +271,6 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 		icon_view->details->reload_desktop_timeout = 0;
 	}
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-					 default_zoom_level_changed,
-					 icon_view);
-	
 	ui_manager = fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (icon_view));
 	if (ui_manager != NULL) {
 		nautilus_ui_unmerge_ui (ui_manager,
@@ -291,6 +287,10 @@ fm_desktop_icon_view_finalize (GObject *object)
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
+	
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					 default_zoom_level_changed,
+					 icon_view);
 	
 	g_free (icon_view->details);
 
