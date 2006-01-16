@@ -1,3 +1,21 @@
+2006-01-16  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (add_place), (update_places),
+	(get_bookmark_index), (compute_drop_position),
+	(drag_motion_callback), (drag_leave_callback),
+	(bookmarks_drop_uris), (drag_data_received_callback),
+	(drag_drop_callback), (bookmarks_popup_menu_detach_cb),
+	(bookmarks_check_popup_sensitivity),
+	(bookmarks_selection_changed_cb), (rename_selected_bookmark),
+	(rename_shortcut_cb), (remove_selected_bookmarks),
+	(remove_shortcut_cb), (bookmarks_key_press_event_cb),
+	(bookmarks_build_popup_menu), (bookmarks_update_popup_menu),
+	(bookmarks_popup_menu), (bookmarks_popup_menu_cb),
+	(bookmarks_button_press_event_cb), (bookmarks_edited),
+	(bookmarks_editing_canceled), (nautilus_places_sidebar_init):
+	Merge parts of the d'n'd and popup menu code from the gtk filechooser
+	into the places sidebar.  
+
 2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-directory-background.c:

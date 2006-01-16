@@ -28,23 +28,29 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkliststore.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksizegroup.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtktreeselection.h>
+#include <gtk/gtkimagemenuitem.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-popup-menu.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-operations.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
@@ -62,6 +68,10 @@ typedef struct {
 	GtkListStore       *store;
 	NautilusWindowInfo *window;
 	NautilusBookmarkList *bookmarks;
+
+	GtkWidget *popup_menu;
+	GtkWidget *popup_menu_remove_item;
+	GtkWidget *popup_menu_rename_item;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -81,6 +91,7 @@ enum {
 	PLACES_SIDEBAR_COLUMN_URI,
 	PLACES_SIDEBAR_COLUMN_NAME,
 	PLACES_SIDEBAR_COLUMN_ICON,
+	PLACES_SIDEBAR_COLUMN_INDEX,
 	
 	PLACES_SIDEBAR_COLUMN_COUNT
 };
@@ -96,6 +107,11 @@ static void  nautilus_places_sidebar_iface_init        (NautilusSidebarIface    
 static void  sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
 static GType nautilus_places_sidebar_provider_get_type (void);
 
+/* Target types for dropping into the shortcuts list */
+static const GtkTargetEntry drop_targets [] = {
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST }
+};
+
 G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebar, nautilus_places_sidebar, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						nautilus_places_sidebar_iface_init));
@@ -107,7 +123,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebarProvider, nautilus_places_sidebar_
 
 static GtkTreeIter
 add_place (GtkListStore *store, PlaceType place_type,
-	   const char *name, const char *icon, const char *uri)
+	   const char *name, const char *icon, const char *uri, const int index)
 {
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter;
@@ -119,6 +135,7 @@ add_place (GtkListStore *store, PlaceType place_type,
 			    PLACES_SIDEBAR_COLUMN_NAME, name,
 			    PLACES_SIDEBAR_COLUMN_URI, uri,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
+			    PLACES_SIDEBAR_COLUMN_INDEX, index,
 			    -1);
 	if (pixbuf != NULL) {
 		g_object_unref (pixbuf);
@@ -152,7 +169,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 		display_name = g_filename_display_basename (g_get_home_dir ());
 		last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-				       display_name, "gnome-fs-home", mount_uri);
+				       display_name, "gnome-fs-home", mount_uri, 0);
 		g_free (display_name);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
@@ -162,7 +179,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 	mount_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
 	last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-			       _("Desktop"), "gnome-fs-desktop", mount_uri);
+			       _("Desktop"), "gnome-fs-desktop", mount_uri, 0);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
@@ -171,7 +188,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	
  	mount_uri = "file:///"; /* No need to strdup */
 	last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-			       _("File System"), "gnome-dev-harddisk", mount_uri);
+			       _("File System"), "gnome-dev-harddisk", mount_uri, 0);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
@@ -191,7 +208,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = gnome_vfs_volume_get_activation_uri (volume);
 		name = gnome_vfs_volume_get_display_name (volume);
 		last_iter = add_place (sidebar->store, PLACES_MOUNTED_VOLUME,
-				       name, icon, mount_uri);
+				       name, icon, mount_uri, 0);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
@@ -225,7 +242,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		icon = nautilus_bookmark_get_icon (bookmark);
 		mount_uri = nautilus_bookmark_get_uri (bookmark);
 		last_iter = add_place (sidebar->store, PLACES_BOOKMARK,
-				       name, icon, mount_uri);
+				       name, icon, mount_uri, index);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
@@ -369,6 +386,487 @@ loading_uri_callback (NautilusWindowInfo *window,
 }
 
 
+static unsigned int
+get_bookmark_index (GtkTreeView *tree_view)
+{
+	GtkTreeModel *model;
+	GtkTreePath *p;
+	GtkTreeIter iter;
+	PlaceType place_type;
+	int bookmark_index;
+
+	model = gtk_tree_view_get_model (tree_view);
+
+	bookmark_index = -1;
+
+	/* find separator */
+	p = gtk_tree_path_new_first ();
+	while (p != NULL) {
+		gtk_tree_model_get_iter (model, &iter, p);
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &place_type,
+				    -1);
+
+		if (place_type == PLACES_SEPARATOR) {
+			bookmark_index = *gtk_tree_path_get_indices (p) + 1;
+			break;
+		}
+
+		gtk_tree_path_next (p);
+	}
+	gtk_tree_path_free (p);
+
+	g_assert (bookmark_index >= 0);
+
+	return bookmark_index;
+}
+
+/* Computes the appropriate row and position for dropping */
+static void
+compute_drop_position (GtkTreeView *tree_view,
+				 int                      x,
+				 int                      y,
+				 GtkTreePath            **path,
+				 GtkTreeViewDropPosition *pos,
+				 NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeViewColumn *column;
+	int cell_y;
+	GdkRectangle cell;
+	int row;
+	int bookmarks_index;
+	int num_bookmarks;
+	
+	bookmarks_index = get_bookmark_index (tree_view);
+	
+	num_bookmarks = nautilus_bookmark_list_length (sidebar->bookmarks);
+	
+	if (!gtk_tree_view_get_path_at_pos (tree_view,
+				      x,
+				      y,
+				      path,
+				      &column,
+				      NULL,
+				      &cell_y)) {
+		row = bookmarks_index + num_bookmarks - 1;
+		*path = gtk_tree_path_new_from_indices (row, -1);
+		*pos = GTK_TREE_VIEW_DROP_AFTER;
+		return;
+	}
+	
+	row = *gtk_tree_path_get_indices (*path);
+	gtk_tree_view_get_background_area (tree_view, *path, column, &cell);
+	gtk_tree_path_free (*path);
+	
+	if (row < bookmarks_index) {
+		row = bookmarks_index;
+		*pos = GTK_TREE_VIEW_DROP_BEFORE;
+	}
+	else if (row > bookmarks_index + num_bookmarks - 1) {
+		row = bookmarks_index + num_bookmarks - 1;
+		*pos = GTK_TREE_VIEW_DROP_AFTER;
+	}
+	else {
+		if (cell_y < cell.height / 2) {
+			*pos = GTK_TREE_VIEW_DROP_BEFORE;
+		}
+		else {
+			*pos = GTK_TREE_VIEW_DROP_AFTER;
+		}
+	}
+	
+	*path = gtk_tree_path_new_from_indices (row, -1);
+}
+
+static gboolean
+drag_motion_callback (GtkTreeView *tree_view,
+		      GdkDragContext *context,
+		      int x,
+		      int y,
+		      unsigned int time,
+		      NautilusPlacesSidebar *sidebar)
+{
+	GtkTreePath *path;
+	GtkTreeViewDropPosition pos;
+	GdkDragAction action;
+	
+	if (context->suggested_action == GDK_ACTION_COPY || (context->actions & GDK_ACTION_COPY) != 0) {
+		action = GDK_ACTION_COPY;
+	}
+	else if (context->suggested_action == GDK_ACTION_MOVE || (context->actions & GDK_ACTION_MOVE) != 0) {
+		action = GDK_ACTION_MOVE;
+	}
+	else {
+		action = 0;
+		goto out;
+	}
+	
+	compute_drop_position (tree_view, x, y, &path, &pos, sidebar);
+	gtk_tree_view_set_drag_dest_row (tree_view, path, pos);
+	gtk_tree_path_free (path);
+ out:
+	g_signal_stop_emission_by_name (tree_view, "drag-motion");
+	
+	if (action != 0) {
+		gdk_drag_status (context, action, time);
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}
+
+static void
+drag_leave_callback (GtkTreeView *tree_view,
+		     GdkDragContext *context,
+		     unsigned int time,
+		     NautilusPlacesSidebar *sidebar)
+{
+	gtk_tree_view_set_drag_dest_row (tree_view, NULL, GTK_TREE_VIEW_DROP_BEFORE);
+	g_signal_stop_emission_by_name (tree_view, "drag-leave");
+}
+
+/* Parses a "text/uri-list" string and inserts its URIs as bookmarks */
+static void
+bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
+		     const char            *data,
+		     int                    position)
+{
+	GnomeVFSURI *vfs_uri;
+	NautilusBookmark *bookmark;
+	char *bookmark_name;
+	char **uris;
+	gint i;
+	
+	uris = g_uri_list_extract_uris (data);
+	
+	for (i = 0; uris[i]; i++) {
+		char *uri;
+		
+		uri = uris[i];
+
+		/* FIXME: Shouldn't be possible to add bookmarks to files */
+
+		vfs_uri = gnome_vfs_uri_new (uri);
+		bookmark_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+
+		bookmark = nautilus_bookmark_new (uri, bookmark_name);
+		
+		g_free (bookmark_name);
+		gnome_vfs_uri_unref (vfs_uri);
+		
+		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
+			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
+		}
+	}
+
+	g_strfreev (uris);
+}
+
+static void
+drag_data_received_callback (GtkWidget *widget,
+			     GdkDragContext *context,
+			     int x,
+			     int y,
+			     GtkSelectionData *selection_data,
+			     unsigned int info,
+			     unsigned int time,
+			     NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeView *tree_view;
+	GtkTreePath *tree_path;
+	GtkTreeViewDropPosition tree_pos;
+	int position;
+	int bookmarks_index;
+
+	tree_view = GTK_TREE_VIEW (widget);
+
+	/* Compute position */
+
+	bookmarks_index = get_bookmark_index (tree_view);
+
+	compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
+	position = *gtk_tree_path_get_indices (tree_path);
+	gtk_tree_path_free (tree_path);
+
+	if (tree_pos == GTK_TREE_VIEW_DROP_AFTER) {
+		position++;
+	}
+
+	g_assert (position >= bookmarks_index);
+	position -= bookmarks_index;
+
+	switch (info) {
+	case NAUTILUS_ICON_DND_URI_LIST:
+                bookmarks_drop_uris (sidebar, selection_data->data, position);
+		break;
+	default:
+		break;
+	}
+
+	g_signal_stop_emission_by_name (widget, "drag-data-received");
+
+}
+
+static gboolean
+drag_drop_callback (GtkTreeView *tree_view,
+                    GdkDragContext *context,
+                    int x,
+                    int y,
+                    unsigned int time,
+                    NautilusPlacesSidebar *sidebar)
+{
+	g_signal_stop_emission_by_name (tree_view, "drag-drop");
+	return TRUE;
+}
+
+/* Callback used when the file list's popup menu is detached */
+static void
+bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
+				GtkMenu   *menu)
+{
+	NautilusPlacesSidebar *sidebar;
+	
+	sidebar = NAUTILUS_PLACES_SIDEBAR (attach_widget);
+	g_assert (NAUTILUS_IS_PLACES_SIDEBAR (sidebar));
+	
+	sidebar->popup_menu = NULL;
+	sidebar->popup_menu_remove_item = NULL;
+	sidebar->popup_menu_rename_item = NULL;
+}
+
+static void
+bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
+{
+  GtkTreeIter iter;
+  PlaceType type; 
+  GtkTreeSelection *selection;
+
+  type = PLACES_BUILT_IN;
+
+  if (sidebar->popup_menu == NULL)
+    return;
+
+  selection = gtk_tree_view_get_selection (sidebar->tree_view);
+
+  if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+ 	  gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			      PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
+			      -1);
+  }
+
+  gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
+  gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
+}
+
+/* Callback used when the selection in the shortcuts tree changes */
+static void
+bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
+				NautilusPlacesSidebar *sidebar)
+{
+	bookmarks_check_popup_sensitivity (sidebar);
+}
+
+
+/* Rename the selected bookmark */
+static void
+rename_selected_bookmark (NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *cell;
+	GList *renderers;
+	GtkTreeSelection *selection;
+	
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
+	
+	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->store), &iter);
+		column = gtk_tree_view_get_column (GTK_TREE_VIEW (sidebar->tree_view), 0);
+		renderers = gtk_tree_view_column_get_cell_renderers (column);
+		cell = g_list_nth_data (renderers, 1);
+		g_list_free (renderers);
+		g_object_set (cell, "editable", TRUE, NULL);
+		gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (sidebar->tree_view),
+						path, column, cell, TRUE);
+		gtk_tree_path_free (path);
+	}
+}
+
+static void
+rename_shortcut_cb (GtkMenuItem           *item,
+		    NautilusPlacesSidebar *sidebar)
+{
+	rename_selected_bookmark (sidebar);
+}
+
+/* Removes the selected bookmarks */
+static void
+remove_selected_bookmarks (NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	int index;
+
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
+	
+	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		return;
+	}
+	
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_INDEX, &index,
+			    -1);
+
+	nautilus_bookmark_list_delete_item_at (sidebar->bookmarks, index);
+}
+
+static void
+remove_shortcut_cb (GtkMenuItem           *item,
+		    NautilusPlacesSidebar *sidebar)
+{
+	remove_selected_bookmarks (sidebar);
+}
+
+
+/* Handler for GtkWidget::key-press-event on the shortcuts list */
+static gboolean
+bookmarks_key_press_event_cb (GtkWidget             *widget,
+			      GdkEventKey           *event,
+			      NautilusPlacesSidebar *sidebar)
+{
+  guint modifiers;
+
+  modifiers = gtk_accelerator_get_default_mod_mask ();
+
+  if ((event->keyval == GDK_BackSpace
+      || event->keyval == GDK_Delete
+      || event->keyval == GDK_KP_Delete)
+      && (event->state & modifiers) == 0) {
+      remove_selected_bookmarks (sidebar);
+      return TRUE;
+  }
+
+  if ((event->keyval == GDK_F2)
+      && (event->state & modifiers) == 0) {
+      rename_selected_bookmark (sidebar);
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
+/* Constructs the popup menu for the file list if needed */
+static void
+bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
+{
+	GtkWidget *item;
+	
+	if (sidebar->popup_menu) {
+		return;
+	}
+	
+	sidebar->popup_menu = gtk_menu_new ();
+	gtk_menu_attach_to_widget (GTK_MENU (sidebar->popup_menu),
+			           GTK_WIDGET (sidebar),
+			           bookmarks_popup_menu_detach_cb);
+	
+	item = gtk_image_menu_item_new_with_label (_("Remove"));
+	sidebar->popup_menu_remove_item = item;
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
+				 gtk_image_new_from_stock (GTK_STOCK_REMOVE, GTK_ICON_SIZE_MENU));
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (remove_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+	
+	item = gtk_menu_item_new_with_label (_("Rename..."));
+	sidebar->popup_menu_rename_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (rename_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+	
+	bookmarks_check_popup_sensitivity (sidebar);
+}
+
+static void
+bookmarks_update_popup_menu (NautilusPlacesSidebar *sidebar)
+{
+	bookmarks_build_popup_menu (sidebar);  
+}
+
+static void
+bookmarks_popup_menu (NautilusPlacesSidebar *sidebar,
+		      GdkEventButton        *event)
+{
+	bookmarks_update_popup_menu (sidebar);
+	gnome_popup_menu_do_popup_modal (sidebar->popup_menu,
+				         NULL, NULL, event, NULL,
+				         GTK_WIDGET (sidebar->tree_view));
+}
+
+/* Callback used for the GtkWidget::popup-menu signal of the shortcuts list */
+static gboolean
+bookmarks_popup_menu_cb (GtkWidget *widget,
+			 NautilusPlacesSidebar *sidebar)
+{
+	bookmarks_popup_menu (sidebar, NULL);
+	return TRUE;
+}
+
+/* Callback used when a button is pressed on the shortcuts list.  
+ * We trap button 3 to bring up a popup menu.
+ */
+static gboolean
+bookmarks_button_press_event_cb (GtkWidget             *widget,
+				 GdkEventButton        *event,
+				 NautilusPlacesSidebar *sidebar)
+{
+	if (event->button != 3) {
+		return FALSE;
+	}
+	
+	bookmarks_popup_menu (sidebar, event);
+	return TRUE;
+}
+
+
+static void
+bookmarks_edited (GtkCellRenderer       *cell,
+		  gchar                 *path_string,
+		  gchar                 *new_text,
+		  NautilusPlacesSidebar *sidebar)
+{
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	NautilusBookmark *bookmark;
+	int index;
+
+	g_object_set (cell, "editable", FALSE, NULL);
+	
+	path = gtk_tree_path_new_from_string (path_string);
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (sidebar->store), &iter, path);
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+		            PLACES_SIDEBAR_COLUMN_INDEX, &index,
+		            -1);
+	gtk_tree_path_free (path);
+	bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
+
+	if (bookmark != NULL) {
+		nautilus_bookmark_set_name (bookmark, new_text);
+		nautilus_bookmark_set_has_custom_name (bookmark, TRUE);
+	}
+}
+
+static void
+bookmarks_editing_canceled (GtkCellRenderer       *cell,
+			    NautilusPlacesSidebar *sidebar)
+{
+	g_object_set (cell, "editable", FALSE, NULL);
+}
+
 static void
 nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 {
@@ -401,6 +899,11 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     "text", PLACES_SIDEBAR_COLUMN_NAME,
 					     NULL);
 
+	g_signal_connect (cell, "edited", 
+			  G_CALLBACK (bookmarks_edited), sidebar);
+	g_signal_connect (cell, "editing-canceled", 
+			  G_CALLBACK (bookmarks_editing_canceled), sidebar);
+
 	gtk_tree_view_set_row_separator_func (tree_view,
 					      shortcuts_row_separator_func,
 					      NULL,
@@ -413,10 +916,10 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     G_TYPE_INT, 
 					     G_TYPE_STRING,
 					     G_TYPE_STRING,
-					     GDK_TYPE_PIXBUF
+					     GDK_TYPE_PIXBUF,
+					     G_TYPE_INT
 					     );
 
-	
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (sidebar->store));
 	gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
 	gtk_widget_show (GTK_WIDGET (tree_view));
@@ -430,6 +933,27 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	g_signal_connect_object
 		(tree_view, "row_activated", 
 		 G_CALLBACK (row_activated_callback), sidebar, 0);
+
+	gtk_drag_dest_set (GTK_WIDGET (tree_view), GTK_DEST_DEFAULT_ALL,
+			   drop_targets, G_N_ELEMENTS (drop_targets),
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+
+	g_signal_connect (tree_view, "key-press-event",
+			  G_CALLBACK (bookmarks_key_press_event_cb), sidebar);
+	g_signal_connect (tree_view, "drag-motion",
+			  G_CALLBACK (drag_motion_callback), sidebar);
+	g_signal_connect (tree_view, "drag-leave",
+			  G_CALLBACK (drag_leave_callback), sidebar);
+	g_signal_connect (tree_view, "drag-data-received",
+			  G_CALLBACK (drag_data_received_callback), sidebar);
+	g_signal_connect (tree_view, "drag-drop",
+			  G_CALLBACK (drag_drop_callback), sidebar);
+	g_signal_connect (selection, "changed",
+			  G_CALLBACK (bookmarks_selection_changed_cb), sidebar);
+	g_signal_connect (tree_view, "popup-menu",
+			  G_CALLBACK (bookmarks_popup_menu_cb), sidebar);
+	g_signal_connect (tree_view, "button-press-event",
+			  G_CALLBACK (bookmarks_button_press_event_cb), sidebar);
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				      click_policy_changed_callback,
