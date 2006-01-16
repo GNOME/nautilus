@@ -6165,6 +6165,11 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 				    gpointer data)
 {
 	if (!succeeded) {
+		if (*error == 0 &&
+		    detailed_error != NULL && *detailed_error == 0) {
+			/* This means the unmount command displays its own errors */
+			return;
+		}
 		eel_show_error_dialog_with_details (error, NULL, 
 		                                    detailed_error, NULL);
 	}
@@ -6178,6 +6183,11 @@ volume_or_drive_ejected_callback (gboolean succeeded,
 				    gpointer data)
 {
 	if (!succeeded) {
+		if (*error == 0 &&
+		    detailed_error != NULL && *detailed_error == 0) {
+			/* This means the mount command displays its own errors */
+			return;
+		}
 		eel_show_error_dialog_with_details (error, NULL, 
 		                                    detailed_error, NULL);
 	}
