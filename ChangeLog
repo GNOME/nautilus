@@ -1,3 +1,9 @@
+2006-01-16  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-list-model.c: (fm_list_model_remove):
+	Don't try to remove dummy rows from the reverse maps. Fixes
+	critical warnings when reloading a list view with subdirectories.
+
 2006-01-16  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

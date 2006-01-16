@@ -1054,10 +1054,12 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 			
 	}
 
-	if (file_entry->parent != NULL) {
-		g_hash_table_remove (file_entry->parent->reverse_map, file_entry->file);
-	} else {
-		g_hash_table_remove (model->details->top_reverse_map, file_entry->file);
+	if (file_entry->file != NULL) { /* Don't try to remove dummy row */
+		if (file_entry->parent != NULL) {
+			g_hash_table_remove (file_entry->parent->reverse_map, file_entry->file);
+		} else {
+			g_hash_table_remove (model->details->top_reverse_map, file_entry->file);
+		}
 	}
 
 	parent_file_entry = file_entry->parent;
