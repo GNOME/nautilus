@@ -25,6 +25,7 @@
 #include "nautilus-search-engine.h"
 #include "nautilus-search-engine-beagle.h"
 #include "nautilus-search-engine-simple.h"
+#include "nautilus-search-engine-tracker.h"
 
 #include <eel/eel-gtk-macros.h>
 
@@ -125,6 +126,13 @@ nautilus_search_engine_new (void)
 {
 	NautilusSearchEngine *engine;
 	
+#ifdef HAVE_TRACKER
+	engine = nautilus_search_engine_tracker_new ();
+	if (engine) {
+		return engine;
+	}
+#endif
+
 #ifdef HAVE_BEAGLE
 	engine = nautilus_search_engine_beagle_new ();
 	if (engine) {

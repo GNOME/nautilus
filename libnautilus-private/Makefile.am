@@ -8,6 +8,7 @@ INCLUDES = 						\
 	-I$(top_srcdir)/cut-n-paste-code		\
 	$(CORE_CFLAGS)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(TRACKER_CFLAGS)				\
 	$(BEAGLE_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
@@ -29,6 +30,7 @@ libnautilus_private_la_LDFLAGS =	\
 libnautilus_private_la_LIBADD =		\
 	$(dependency_static_libs)	\
 	$(BEAGLE_LIBS)			\
+	$(TRACKER_LIBS)			\
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
 	$(CORE_LIBS)			\
 	$(NULL)
@@ -211,6 +213,14 @@ if HAVE_BEAGLE
 libnautilus_private_la_SOURCES += $(BEAGLE_SOURCES)
 endif
 
+TRACKER_SOURCES = \
+	nautilus-search-engine-tracker.c \
+	nautilus-search-engine-tracker.h
+
+if HAVE_TRACKER
+libnautilus_private_la_SOURCES += $(TRACKER_SOURCES)
+endif
+
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
@@ -247,6 +257,7 @@ EXTRA_DIST = 				\
 	nautilus-marshal.list		\
 	$(schema_in_files)              \
 	$(BEAGLE_SOURCES)		\
+	$(TRACKER_SOURCES)		\
 	$(NULL)
 
 CLEANFILES = \
