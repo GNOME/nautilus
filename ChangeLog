@@ -1,3 +1,13 @@
+2006-01-17  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_finalize):
+	Don't leak last_geometry.
+
+	* src/file-manager/fm-tree-view.c:
+	(show_iter_for_file):
+	Don't leak path.
+
 2006-01-16  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-list-model.c: (fm_list_model_remove):

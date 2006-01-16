@@ -214,7 +214,11 @@ nautilus_spatial_window_finalize (GObject *object)
 	if (window->details->location != NULL) {
 		gnome_vfs_uri_unref (window->details->location);
 	}
-	
+
+	if (window->details->last_geometry != NULL) {
+		g_free (window->details->last_geometry);
+	}
+
 	g_free (window->details);
 	window->details = NULL;
 

@@ -157,15 +157,13 @@ show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
 	/* check if file is visible in the same root as the currently selected folder is */
 	gtk_tree_view_get_cursor (view->details->tree_widget, &path, NULL);
 	if (path != NULL) {
-		if (gtk_tree_model_get_iter (model, &cur_iter, path)) {
-			if (fm_tree_model_file_get_iter (view->details->child_model,
-							       iter, file, &cur_iter)) {
-				gtk_tree_path_free (path);
-				return TRUE;
-			} else {
-				gtk_tree_path_free (path);
-			}
+		if (gtk_tree_model_get_iter (model, &cur_iter, path) &&
+		    fm_tree_model_file_get_iter (view->details->child_model, iter,
+						 file, &cur_iter)) {
+			gtk_tree_path_free (path);
+			return TRUE;
 		}
+		gtk_tree_path_free (path);
 	}
 	/* check if file is visible at all */
 	if (fm_tree_model_file_get_iter (view->details->child_model,
