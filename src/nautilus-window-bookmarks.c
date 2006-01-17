@@ -136,6 +136,7 @@ nautilus_bookmarks_exiting (void)
 {
 	if (bookmarks_window != NULL) {
 		nautilus_bookmarks_window_save_geometry (bookmarks_window);
+		gtk_widget_destroy (GTK_WIDGET (bookmarks_window));
 	}
 }
 

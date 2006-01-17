@@ -901,7 +901,8 @@ static void
 on_window_destroy_event (GtkWidget *widget,
 		      	 gpointer user_data)
 {
-	g_message ("destroying bookmarks window");
+	g_object_unref (bookmark_list_store);
+	g_object_unref (bookmark_empty_list_store);
 	g_source_remove_by_user_data (widget);
 }
 
