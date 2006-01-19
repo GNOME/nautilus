@@ -10,15 +10,15 @@ msgid ""
 ""
 msgstr "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-13 23:26+0100\n"
-"PO-Revision-Date: 2006-01-14 13:59+1030\n"
+"POT-Creation-Date: 2006-01-19 07:23+0100\n"
+"PO-Revision-Date: 2006-01-19 22:21+1030\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: LocFactoryEditor 1.6b23\n"
+"X-Generator: LocFactoryEditor 1.6b30\n"
 
 #:../data/browser.xml.h:1
 msgid "Apparition"
@@ -935,7 +935,7 @@ msgstr "Dán văn bản đẫ được giữ trên khay"
 
 #.name, stock id
 #:../libnautilus-private/nautilus-clipboard.c:453
-#:../src/file-manager/fm-directory-view.c:6616
+#:../src/file-manager/fm-directory-view.c:6626
 msgid "Select _All"
 msgstr "Chọn _Tất cả"
 
@@ -1162,8 +1162,8 @@ msgstr "(Còn lại %d:%02d:%d)"
 msgid "(%d:%02d Remaining)"
 msgstr "(Còn lại %d:%02d)"
 
-#:../libnautilus-private/nautilus-file-operations.c:445
-#:../libnautilus-private/nautilus-file-operations.c:470
+#:../libnautilus-private/nautilus-file-operations.c:448
+#:../libnautilus-private/nautilus-file-operations.c:477
 #:../libnautilus-private/nautilus-file-utilities.c:87
 #:../src/nautilus-connect-server-dialog.c:293
 #,c-format
@@ -1171,33 +1171,33 @@ msgid "%s on %s"
 msgstr "%s trên %s"
 
 #."From" dialog label, source path gets placed next to it in the dialog
-#:../libnautilus-private/nautilus-file-operations.c:454
+#:../libnautilus-private/nautilus-file-operations.c:459
 msgid "From:"
 msgstr "Từ:"
 
 #."To" dialog label, source path gets placed next to it in the dialog
-#:../libnautilus-private/nautilus-file-operations.c:477
+#:../libnautilus-private/nautilus-file-operations.c:486
 msgid "To:"
 msgstr "Đến:"
 
-#:../libnautilus-private/nautilus-file-operations.c:663
-#:../libnautilus-private/nautilus-file-operations.c:711
-#:../libnautilus-private/nautilus-file-operations.c:716
-#:../libnautilus-private/nautilus-file-operations.c:726
+#:../libnautilus-private/nautilus-file-operations.c:672
+#:../libnautilus-private/nautilus-file-operations.c:720
+#:../libnautilus-private/nautilus-file-operations.c:725
+#:../libnautilus-private/nautilus-file-operations.c:735
 msgid "Error while moving."
 msgstr "Gặp lỗi trong khi chuyển."
 
-#:../libnautilus-private/nautilus-file-operations.c:664
+#:../libnautilus-private/nautilus-file-operations.c:673
 #,c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "Không thể di chuyển « %s » vì nó ở một đĩa chỉ có thể đọc."
 
-#:../libnautilus-private/nautilus-file-operations.c:674
-#:../libnautilus-private/nautilus-file-operations.c:680
+#:../libnautilus-private/nautilus-file-operations.c:683
+#:../libnautilus-private/nautilus-file-operations.c:689
 msgid "Error while deleting."
 msgstr "Gặp lỗi trong khi xóa."
 
-#:../libnautilus-private/nautilus-file-operations.c:675
+#:../libnautilus-private/nautilus-file-operations.c:684
 #,c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
@@ -1205,12 +1205,12 @@ msgid ""
 msgstr "Không thể xoá bỏ « %s » vì bạn không có thẩm quyền để sửa đổi thư mục mẹ của "
 "nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:681
+#:../libnautilus-private/nautilus-file-operations.c:690
 #,c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "Không thể xoá bỏ « %s » vì nó ở một đĩa chỉ có thể đọc."
 
-#:../libnautilus-private/nautilus-file-operations.c:712
+#:../libnautilus-private/nautilus-file-operations.c:721
 #,c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1218,7 +1218,7 @@ msgid ""
 msgstr "Không thể di chuyển « %s » được vì bạn không có thẩm quyền để sửa đổi nó "
 "hoặc thư mục mẹ của nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:717
+#:../libnautilus-private/nautilus-file-operations.c:726
 #,c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
@@ -1226,7 +1226,7 @@ msgid ""
 msgstr "Không thể di chuyển « %s » được vì nó hoặc thư mục mẹ của nó được chứa trong "
 "đích đến."
 
-#:../libnautilus-private/nautilus-file-operations.c:727
+#:../libnautilus-private/nautilus-file-operations.c:736
 #,c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1234,130 +1234,130 @@ msgid ""
 msgstr "Không thể bỏ « %s » vào sọt rác được vì bạn không có thẩm quyền để sửa đổi "
 "nó hay thư mục mẹ của nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:749
+#:../libnautilus-private/nautilus-file-operations.c:758
 msgid "Error while copying."
 msgstr "Gặp lỗi trong khi sao chép."
 
-#:../libnautilus-private/nautilus-file-operations.c:750
+#:../libnautilus-private/nautilus-file-operations.c:759
 #,c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "Không thể sao chép « %s » được vì bạn không có quyền đọc nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:770
-#:../libnautilus-private/nautilus-file-operations.c:791
-#:../libnautilus-private/nautilus-file-operations.c:795
+#:../libnautilus-private/nautilus-file-operations.c:779
+#:../libnautilus-private/nautilus-file-operations.c:800
+#:../libnautilus-private/nautilus-file-operations.c:804
 #,c-format
 msgid "Error while copying to \"%s\"."
 msgstr "Gặp lỗi khi sao chép « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:771
-#:../libnautilus-private/nautilus-file-operations.c:776
 #:../libnautilus-private/nautilus-file-operations.c:780
+#:../libnautilus-private/nautilus-file-operations.c:785
+#:../libnautilus-private/nautilus-file-operations.c:789
 msgid "There is not enough space on the destination."
 msgstr "Không có đủ chỗ ở đích đến."
 
-#:../libnautilus-private/nautilus-file-operations.c:775
+#:../libnautilus-private/nautilus-file-operations.c:784
 #,c-format
 msgid "Error while moving to \"%s\"."
 msgstr "Gặp lỗi khi chuyển « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:779
+#:../libnautilus-private/nautilus-file-operations.c:788
 #,c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "Gặp lỗi khi tạo liên kết trong « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:792
-#:../libnautilus-private/nautilus-file-operations.c:803
-#:../libnautilus-private/nautilus-file-operations.c:814
+#:../libnautilus-private/nautilus-file-operations.c:801
+#:../libnautilus-private/nautilus-file-operations.c:812
+#:../libnautilus-private/nautilus-file-operations.c:823
 msgid "You do not have permissions to write to this folder."
 msgstr "Bạn không có quyền ghi lên thư mục này."
 
-#:../libnautilus-private/nautilus-file-operations.c:796
-#:../libnautilus-private/nautilus-file-operations.c:807
-#:../libnautilus-private/nautilus-file-operations.c:818
+#:../libnautilus-private/nautilus-file-operations.c:805
+#:../libnautilus-private/nautilus-file-operations.c:816
+#:../libnautilus-private/nautilus-file-operations.c:827
 msgid "The destination disk is read-only."
 msgstr "Đích đến là đĩa chỉ đọc."
 
-#:../libnautilus-private/nautilus-file-operations.c:802
-#:../libnautilus-private/nautilus-file-operations.c:806
+#:../libnautilus-private/nautilus-file-operations.c:811
+#:../libnautilus-private/nautilus-file-operations.c:815
 #,c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "Gặp lỗi khi chuyển mục tới « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:813
-#:../libnautilus-private/nautilus-file-operations.c:817
+#:../libnautilus-private/nautilus-file-operations.c:822
+#:../libnautilus-private/nautilus-file-operations.c:826
 #,c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "Gặp lỗi khi tạo liên kết trong « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:845
+#:../libnautilus-private/nautilus-file-operations.c:854
 #,c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "Gặp lỗi « %s » khi sao chép « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:846
-#:../libnautilus-private/nautilus-file-operations.c:850
-#:../libnautilus-private/nautilus-file-operations.c:854
-#:../libnautilus-private/nautilus-file-operations.c:860
-#:../libnautilus-private/nautilus-file-operations.c:875
-#:../libnautilus-private/nautilus-file-operations.c:879
-#:../libnautilus-private/nautilus-file-operations.c:883
-#:../libnautilus-private/nautilus-file-operations.c:889
+#:../libnautilus-private/nautilus-file-operations.c:855
+#:../libnautilus-private/nautilus-file-operations.c:859
+#:../libnautilus-private/nautilus-file-operations.c:863
+#:../libnautilus-private/nautilus-file-operations.c:869
+#:../libnautilus-private/nautilus-file-operations.c:884
+#:../libnautilus-private/nautilus-file-operations.c:888
+#:../libnautilus-private/nautilus-file-operations.c:892
+#:../libnautilus-private/nautilus-file-operations.c:898
 msgid "Would you like to continue?"
 msgstr "Bạn có muốn tiếp tục không?"
 
-#:../libnautilus-private/nautilus-file-operations.c:849
+#:../libnautilus-private/nautilus-file-operations.c:858
 #,c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "Gặp lỗi « %s » khi chuyển « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:853
+#:../libnautilus-private/nautilus-file-operations.c:862
 #,c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "Gặp lỗi « %s » khi tạo liên kết đến « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:859
+#:../libnautilus-private/nautilus-file-operations.c:868
 #,c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "Gặp lỗi « %s » khi xóa bỏ « %s »."
 
-#:../libnautilus-private/nautilus-file-operations.c:874
+#:../libnautilus-private/nautilus-file-operations.c:883
 #,c-format
 msgid "Error \"%s\" while copying."
 msgstr "Gặp lỗi « %s » trong khi sao chép."
 
-#:../libnautilus-private/nautilus-file-operations.c:878
+#:../libnautilus-private/nautilus-file-operations.c:887
 #,c-format
 msgid "Error \"%s\" while moving."
 msgstr "Gặp lỗi « %s » trong khi chuyển."
 
-#:../libnautilus-private/nautilus-file-operations.c:882
+#:../libnautilus-private/nautilus-file-operations.c:891
 #,c-format
 msgid "Error \"%s\" while linking."
 msgstr "Gặp lỗi « %s » trong khi liên kết."
 
-#:../libnautilus-private/nautilus-file-operations.c:888
+#:../libnautilus-private/nautilus-file-operations.c:897
 #,c-format
 msgid "Error \"%s\" while deleting."
 msgstr "Gặp lỗi « %s » trong khi xóa bỏ."
 
-#:../libnautilus-private/nautilus-file-operations.c:1021
-#:../libnautilus-private/nautilus-file-operations.c:1038
+#:../libnautilus-private/nautilus-file-operations.c:1030
+#:../libnautilus-private/nautilus-file-operations.c:1047
 msgid "_Retry"
 msgstr "Thử _lại"
 
-#:../libnautilus-private/nautilus-file-operations.c:1038
-#:../libnautilus-private/nautilus-file-operations.c:1188
-#:../libnautilus-private/nautilus-file-operations.c:1206
+#:../libnautilus-private/nautilus-file-operations.c:1047
+#:../libnautilus-private/nautilus-file-operations.c:1197
+#:../libnautilus-private/nautilus-file-operations.c:1215
 msgid "_Skip"
 msgstr "_Bỏ qua"
 
-#:../libnautilus-private/nautilus-file-operations.c:1128
+#:../libnautilus-private/nautilus-file-operations.c:1137
 #,c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "Không thể di chuyển « %s » đến vị trí mới."
 
-#:../libnautilus-private/nautilus-file-operations.c:1131
+#:../libnautilus-private/nautilus-file-operations.c:1140
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1365,12 +1365,12 @@ msgstr "Tên « %s » đã được dùng cho một mục đặc biệt mà mụ
 "thay thế được. Nếu bạn vẫn muốn chuyển thì hãy đổi tên nó và thử lại một lần "
 "nữa."
 
-#:../libnautilus-private/nautilus-file-operations.c:1135
+#:../libnautilus-private/nautilus-file-operations.c:1144
 #,c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "Không thể chép « %s » tới vị trí mới."
 
-#:../libnautilus-private/nautilus-file-operations.c:1138
+#:../libnautilus-private/nautilus-file-operations.c:1147
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1378,37 +1378,37 @@ msgstr "Tên « %s » đã được dùng cho một mục đặc biệt mà mụ
 "thay thế được. Nếu bạn vẫn muốn sao chép thì hãy đổi tên nó và thử lại một "
 "lần nữa."
 
-#:../libnautilus-private/nautilus-file-operations.c:1162
+#:../libnautilus-private/nautilus-file-operations.c:1171
 #,c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "Thư mục « %s » đã tồn tại. Bạn có muốn thay thế nó không?"
 
-#:../libnautilus-private/nautilus-file-operations.c:1165
+#:../libnautilus-private/nautilus-file-operations.c:1174
 #,c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "Tập tin « %s » đã tồn tại. Bạn có muốn thay thế nó không?"
 
-#:../libnautilus-private/nautilus-file-operations.c:1173
+#:../libnautilus-private/nautilus-file-operations.c:1182
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
 msgstr "Nếu bạn thay thế thư mục hiện có, bất kỳ tập tin nào trong đó xung đột với "
 "những tập tin được chép vào sẽ bị ghi đè."
 
-#:../libnautilus-private/nautilus-file-operations.c:1175
+#:../libnautilus-private/nautilus-file-operations.c:1184
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "Nếu bạn thay thế tập tin hiện có, nội dung của nó sẽ bị ghi đè."
 
-#:../libnautilus-private/nautilus-file-operations.c:1188
-#:../libnautilus-private/nautilus-file-operations.c:1206
+#:../libnautilus-private/nautilus-file-operations.c:1197
+#:../libnautilus-private/nautilus-file-operations.c:1215
 msgid "_Replace"
 msgstr "T_hay thế"
 
-#:../libnautilus-private/nautilus-file-operations.c:1206
+#:../libnautilus-private/nautilus-file-operations.c:1215
 msgid "S_kip All"
 msgstr "_Bỏ qua hết"
 
-#:../libnautilus-private/nautilus-file-operations.c:1206
+#:../libnautilus-private/nautilus-file-operations.c:1215
 msgid "Replace _All"
 msgstr "Thay thế _tất cả"
 
@@ -1417,15 +1417,15 @@ msgstr "Thay thế _tất cả"
 #.* (e.g. "folder", "plain text") to file type for symbolic link
 #.* to that kind of file (e.g. "link to folder").
 #.
-#:../libnautilus-private/nautilus-file-operations.c:1266
+#:../libnautilus-private/nautilus-file-operations.c:1275
 #:../libnautilus-private/nautilus-file.c:4711
-#:../src/file-manager/fm-directory-view.c:9370
+#:../src/file-manager/fm-directory-view.c:9380
 #,c-format
 msgid "link to %s"
 msgstr "liên kết tới « %s »"
 
 #.appended to new link file
-#:../libnautilus-private/nautilus-file-operations.c:1270
+#:../libnautilus-private/nautilus-file-operations.c:1279
 #,c-format
 msgid "another link to %s"
 msgstr "một liên kết khác tới « %s »"
@@ -1434,25 +1434,25 @@ msgstr "một liên kết khác tới « %s »"
 #.* if there's no way to do that nicely for a
 #.* particular language.
 #.
-#:../libnautilus-private/nautilus-file-operations.c:1286
+#:../libnautilus-private/nautilus-file-operations.c:1295
 #,c-format
 msgid "%dst link to %s"
 msgstr "liên kết thứ %d tới « %s »"
 
 #.appended to new link file
-#:../libnautilus-private/nautilus-file-operations.c:1290
+#:../libnautilus-private/nautilus-file-operations.c:1299
 #,c-format
 msgid "%dnd link to %s"
 msgstr "liên kết thứ %d tới « %s »"
 
 #.appended to new link file
-#:../libnautilus-private/nautilus-file-operations.c:1294
+#:../libnautilus-private/nautilus-file-operations.c:1303
 #,c-format
 msgid "%drd link to %s"
 msgstr "liên kết thứ %d tới « %s »"
 
 #.appended to new link file
-#:../libnautilus-private/nautilus-file-operations.c:1298
+#:../libnautilus-private/nautilus-file-operations.c:1307
 #,c-format
 msgid "%dth link to %s"
 msgstr "liên kết thứ %d tới « %s »"
@@ -1462,12 +1462,12 @@ msgstr "liên kết thứ %d tới « %s »"
 #.* make some or all of them match.
 #.
 #.localizers: tag used to detect the first copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1319
+#:../libnautilus-private/nautilus-file-operations.c:1328
 msgid " (copy)"
 msgstr " (bản sao)"
 
 #.localizers: tag used to detect the second copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1321
+#:../libnautilus-private/nautilus-file-operations.c:1330
 msgid " (another copy)"
 msgstr " (một bản sao khác)"
 
@@ -1475,36 +1475,36 @@ msgstr " (một bản sao khác)"
 #.localizers: tag used to detect the x12th copy of a file
 #.localizers: tag used to detect the x13th copy of a file
 #.localizers: tag used to detect the xxth copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1324
-#:../libnautilus-private/nautilus-file-operations.c:1326
-#:../libnautilus-private/nautilus-file-operations.c:1328
-#:../libnautilus-private/nautilus-file-operations.c:1338
+#:../libnautilus-private/nautilus-file-operations.c:1333
+#:../libnautilus-private/nautilus-file-operations.c:1335
+#:../libnautilus-private/nautilus-file-operations.c:1337
+#:../libnautilus-private/nautilus-file-operations.c:1347
 msgid "th copy)"
 msgstr " bản sao thứ )"
 
 #.localizers: tag used to detect the x1st copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1331
+#:../libnautilus-private/nautilus-file-operations.c:1340
 msgid "st copy)"
 msgstr " bản sao thứ )"
 
 #.localizers: tag used to detect the x2nd copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1333
+#:../libnautilus-private/nautilus-file-operations.c:1342
 msgid "nd copy)"
 msgstr " bản sao thứ )"
 
 #.localizers: tag used to detect the x3rd copy of a file
-#:../libnautilus-private/nautilus-file-operations.c:1335
+#:../libnautilus-private/nautilus-file-operations.c:1344
 msgid "rd copy)"
 msgstr " bản sao thứ )"
 
 #.localizers: appended to first file copy
-#:../libnautilus-private/nautilus-file-operations.c:1352
+#:../libnautilus-private/nautilus-file-operations.c:1361
 #,c-format
 msgid "%s (copy)%s"
 msgstr "%s (bản sao)%s"
 
 #.localizers: appended to second file copy
-#:../libnautilus-private/nautilus-file-operations.c:1354
+#:../libnautilus-private/nautilus-file-operations.c:1363
 #,c-format
 msgid "%s (another copy)%s"
 msgstr "%s (một bản sao khác)%s"
@@ -1513,253 +1513,253 @@ msgstr "%s (một bản sao khác)%s"
 #.localizers: appended to x12th file copy
 #.localizers: appended to x13th file copy
 #.localizers: appended to xxth file copy
-#:../libnautilus-private/nautilus-file-operations.c:1357
-#:../libnautilus-private/nautilus-file-operations.c:1359
-#:../libnautilus-private/nautilus-file-operations.c:1361
+#:../libnautilus-private/nautilus-file-operations.c:1366
+#:../libnautilus-private/nautilus-file-operations.c:1368
 #:../libnautilus-private/nautilus-file-operations.c:1370
+#:../libnautilus-private/nautilus-file-operations.c:1379
 #,c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (bản sao thứ %d)%s"
 
 #.localizers: appended to x1st file copy
-#:../libnautilus-private/nautilus-file-operations.c:1364
+#:../libnautilus-private/nautilus-file-operations.c:1373
 #,c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (bản sao thứ %d)%s"
 
 #.localizers: appended to x2nd file copy
-#:../libnautilus-private/nautilus-file-operations.c:1366
+#:../libnautilus-private/nautilus-file-operations.c:1375
 #,c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (bản sao thứ %d)%s"
 
 #.localizers: appended to x3rd file copy
-#:../libnautilus-private/nautilus-file-operations.c:1368
+#:../libnautilus-private/nautilus-file-operations.c:1377
 #,c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (bản sao thứ %d)%s"
 
 #.localizers: opening parentheses to match the "th copy)" string
-#:../libnautilus-private/nautilus-file-operations.c:1468
+#:../libnautilus-private/nautilus-file-operations.c:1477
 msgid " ("
 msgstr " ("
 
 #.localizers: opening parentheses of the "th copy)" string
-#:../libnautilus-private/nautilus-file-operations.c:1476
+#:../libnautilus-private/nautilus-file-operations.c:1485
 #,c-format
 msgid " (%d"
 msgstr " (%d"
 
-#:../libnautilus-private/nautilus-file-operations.c:1672
-#:../libnautilus-private/nautilus-file-operations.c:2282
-#:../libnautilus-private/nautilus-file-operations.c:2465
+#:../libnautilus-private/nautilus-file-operations.c:1681
+#:../libnautilus-private/nautilus-file-operations.c:2291
+#:../libnautilus-private/nautilus-file-operations.c:2474
 #,c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Không biết «GnomeVFSXferProgressStatus» %d"
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2018
+#:../libnautilus-private/nautilus-file-operations.c:2027
 msgid "Moving files to the Trash"
 msgstr "Đang cho tập tin vào sọt rác"
 
 #.localizers: label prepended to the progress count
-#:../libnautilus-private/nautilus-file-operations.c:2020
+#:../libnautilus-private/nautilus-file-operations.c:2029
 msgid "Throwing out file:"
 msgstr "Đang loại ra tập tin:"
 
 #.localizers: label prepended to the name of the current file moved
-#:../libnautilus-private/nautilus-file-operations.c:2022
-#:../libnautilus-private/nautilus-file-operations.c:2033
+#:../libnautilus-private/nautilus-file-operations.c:2031
+#:../libnautilus-private/nautilus-file-operations.c:2042
 msgid "Moving"
 msgstr "Đang chuyển"
 
-#:../libnautilus-private/nautilus-file-operations.c:2023
+#:../libnautilus-private/nautilus-file-operations.c:2032
 msgid "Preparing to Move to Trash..."
 msgstr "Đang chuẩn bị cho vào Sọt Rác..."
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2029
+#:../libnautilus-private/nautilus-file-operations.c:2038
 msgid "Moving files"
 msgstr "Đang di chuyển tập tin"
 
 #.localizers: label prepended to the progress count
-#:../libnautilus-private/nautilus-file-operations.c:2031
+#:../libnautilus-private/nautilus-file-operations.c:2040
 msgid "Moving file:"
 msgstr "Đang di chuyển tập tin:"
 
-#:../libnautilus-private/nautilus-file-operations.c:2034
+#:../libnautilus-private/nautilus-file-operations.c:2043
 msgid "Preparing To Move..."
 msgstr "Chuẩn bị di chuyển..."
 
-#:../libnautilus-private/nautilus-file-operations.c:2035
+#:../libnautilus-private/nautilus-file-operations.c:2044
 msgid "Finishing Move..."
 msgstr "Đang hoàn tất di chuyển..."
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2043
+#:../libnautilus-private/nautilus-file-operations.c:2052
 msgid "Creating links to files"
 msgstr "Đang tạo liên kết tới tập tin"
 
 #.localizers: label prepended to the progress count
-#:../libnautilus-private/nautilus-file-operations.c:2045
+#:../libnautilus-private/nautilus-file-operations.c:2054
 msgid "Linking file:"
 msgstr "Đang liên kết tập tin:"
 
 #.localizers: label prepended to the name of the current file linked
-#:../libnautilus-private/nautilus-file-operations.c:2047
+#:../libnautilus-private/nautilus-file-operations.c:2056
 msgid "Linking"
 msgstr "Đang liên kết"
 
-#:../libnautilus-private/nautilus-file-operations.c:2048
+#:../libnautilus-private/nautilus-file-operations.c:2057
 msgid "Preparing to Create Links..."
 msgstr "Chuẩn bị tạo liên kết..."
 
-#:../libnautilus-private/nautilus-file-operations.c:2049
+#:../libnautilus-private/nautilus-file-operations.c:2058
 msgid "Finishing Creating Links..."
 msgstr "Đang hoàn tất tạo liên kết..."
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2055
+#:../libnautilus-private/nautilus-file-operations.c:2064
 msgid "Copying files"
 msgstr "Đang sao chép tập tin"
 
 #.localizers: label prepended to the progress count
-#:../libnautilus-private/nautilus-file-operations.c:2057
+#:../libnautilus-private/nautilus-file-operations.c:2066
 msgid "Copying file:"
 msgstr "Đang sao chép tập tin:"
 
 #.localizers: label prepended to the name of the current file copied
-#:../libnautilus-private/nautilus-file-operations.c:2059
+#:../libnautilus-private/nautilus-file-operations.c:2068
 msgid "Copying"
 msgstr "Đang sao chép"
 
-#:../libnautilus-private/nautilus-file-operations.c:2060
+#:../libnautilus-private/nautilus-file-operations.c:2069
 msgid "Preparing To Copy..."
 msgstr "Chuẩn bị sao chép..."
 
-#:../libnautilus-private/nautilus-file-operations.c:2078
+#:../libnautilus-private/nautilus-file-operations.c:2087
 msgid "You cannot copy items into the trash."
 msgstr "Bạn không thể sao chép mục nào vào sọt rác."
 
-#:../libnautilus-private/nautilus-file-operations.c:2079
+#:../libnautilus-private/nautilus-file-operations.c:2088
 msgid "You cannot create links inside the trash."
 msgstr "Bạn không thể tạo liên kết trong sọt rác."
 
-#:../libnautilus-private/nautilus-file-operations.c:2080
+#:../libnautilus-private/nautilus-file-operations.c:2089
 msgid "Files and folders can only be moved into the trash."
 msgstr "Tập tin và thư mục chỉ có thể di chuyển vào Sọt rác."
 
-#:../libnautilus-private/nautilus-file-operations.c:2103
+#:../libnautilus-private/nautilus-file-operations.c:2112
 msgid "You cannot move this trash folder."
 msgstr "Bạn không thể di chuyển thư mục sọt rác này."
 
-#:../libnautilus-private/nautilus-file-operations.c:2104
+#:../libnautilus-private/nautilus-file-operations.c:2113
 msgid "You cannot copy this trash folder."
 msgstr "Bạn không thể sao chép thư mục sọt rác này."
 
-#:../libnautilus-private/nautilus-file-operations.c:2105
+#:../libnautilus-private/nautilus-file-operations.c:2114
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Thư mục Sọt rác được dùng để lưu các mục được bỏ vào Sọt rác."
 
-#:../libnautilus-private/nautilus-file-operations.c:2129
+#:../libnautilus-private/nautilus-file-operations.c:2138
 msgid "You cannot move a folder into itself."
 msgstr "Bạn không thể di chuyển một thư mục vào chính nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:2130
+#:../libnautilus-private/nautilus-file-operations.c:2139
 msgid "You cannot copy a folder into itself."
 msgstr "Bạn không thể sao chép một thư mục vào trong chính nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:2131
+#:../libnautilus-private/nautilus-file-operations.c:2140
 msgid "The destination folder is inside the source folder."
 msgstr "Thư mục đích nằm bên trong thư mục nguồn."
 
-#:../libnautilus-private/nautilus-file-operations.c:2144
+#:../libnautilus-private/nautilus-file-operations.c:2153
 msgid "You cannot copy a file over itself."
 msgstr "Bạn không thể sao tập tin lên chính nó."
 
-#:../libnautilus-private/nautilus-file-operations.c:2145
+#:../libnautilus-private/nautilus-file-operations.c:2154
 msgid "The destination and source are the same file."
 msgstr "Đích đến và nguồn là cùng một tập tin."
 
-#:../libnautilus-private/nautilus-file-operations.c:2200
-#:../libnautilus-private/nautilus-file-operations.c:2360
+#:../libnautilus-private/nautilus-file-operations.c:2209
+#:../libnautilus-private/nautilus-file-operations.c:2369
 msgid "You do not have permissions to write to the destination."
 msgstr "Bạn không có quyền ghi lên đích đến."
 
-#:../libnautilus-private/nautilus-file-operations.c:2202
-#:../libnautilus-private/nautilus-file-operations.c:2362
+#:../libnautilus-private/nautilus-file-operations.c:2211
+#:../libnautilus-private/nautilus-file-operations.c:2371
 msgid "There is no space on the destination."
 msgstr "Không còn chỗ ở đích đến."
 
-#:../libnautilus-private/nautilus-file-operations.c:2204
+#:../libnautilus-private/nautilus-file-operations.c:2213
 #,c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Gặp lỗi « %s » khi tạo thư mục mới."
 
-#:../libnautilus-private/nautilus-file-operations.c:2209
+#:../libnautilus-private/nautilus-file-operations.c:2218
 msgid "Error creating new folder."
 msgstr "Gặp lỗi khi tạo thư mục mới."
 
 #.localizers: the initial name of a new folder
-#:../libnautilus-private/nautilus-file-operations.c:2306
+#:../libnautilus-private/nautilus-file-operations.c:2315
 msgid "untitled folder"
 msgstr "thư mục không tên"
 
-#:../libnautilus-private/nautilus-file-operations.c:2364
+#:../libnautilus-private/nautilus-file-operations.c:2373
 #,c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Gặp lỗi « %s » khi tạo tài liệu mới."
 
-#:../libnautilus-private/nautilus-file-operations.c:2369
+#:../libnautilus-private/nautilus-file-operations.c:2378
 msgid "Error creating new document."
 msgstr "Gặp lỗi khi tạo tài liệu mới."
 
-#:../libnautilus-private/nautilus-file-operations.c:2596
+#:../libnautilus-private/nautilus-file-operations.c:2605
 msgid "new file"
 msgstr "tập tin mới"
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2662
+#:../libnautilus-private/nautilus-file-operations.c:2671
 msgid "Deleting files"
 msgstr "Đang xóa bỏ tập tin"
 
 #.localizers: label prepended to the progress count
-#:../libnautilus-private/nautilus-file-operations.c:2664
-#:../libnautilus-private/nautilus-file-operations.c:2699
+#:../libnautilus-private/nautilus-file-operations.c:2673
+#:../libnautilus-private/nautilus-file-operations.c:2708
 msgid "Files deleted:"
 msgstr "Tập tin đã xóa bỏ:"
 
 #.localizers: label prepended to the name of the current file deleted
-#:../libnautilus-private/nautilus-file-operations.c:2666
-#:../libnautilus-private/nautilus-file-operations.c:2701
+#:../libnautilus-private/nautilus-file-operations.c:2675
+#:../libnautilus-private/nautilus-file-operations.c:2710
 msgid "Deleting"
 msgstr "Đang xóa bỏ"
 
-#:../libnautilus-private/nautilus-file-operations.c:2667
+#:../libnautilus-private/nautilus-file-operations.c:2676
 msgid "Preparing to Delete files..."
 msgstr "Chuẩn bị xóa bỏ tập tin..."
 
 #.localizers: progress dialog title
-#:../libnautilus-private/nautilus-file-operations.c:2697
+#:../libnautilus-private/nautilus-file-operations.c:2706
 msgid "Emptying the Trash"
 msgstr "Đang đổ rác"
 
-#:../libnautilus-private/nautilus-file-operations.c:2702
+#:../libnautilus-private/nautilus-file-operations.c:2711
 msgid "Preparing to Empty the Trash..."
 msgstr "Đang chuẩn bị đổ rác..."
 
-#:../libnautilus-private/nautilus-file-operations.c:2738
+#:../libnautilus-private/nautilus-file-operations.c:2747
 msgid "Empty all of the items from the trash?"
 msgstr "Đổ toàn bộ mọi thứ trong sọt rác không chứ?"
 
-#:../libnautilus-private/nautilus-file-operations.c:2741
+#:../libnautilus-private/nautilus-file-operations.c:2750
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "Nếu bạn đổ rác, mọi thứ trong sọt rác sẽ bị xoá vĩnh viễn. Lưu ý rằng bạn có "
 "thể xóa bỏ từng tập tin một nếu muốn."
 
-#:../libnautilus-private/nautilus-file-operations.c:2763
+#:../libnautilus-private/nautilus-file-operations.c:2772
 msgid "_Empty Trash"
 msgstr "Đổ _rác"
 
@@ -2421,7 +2421,7 @@ msgstr "Thay đổi cách quản lý tập tin"
 msgid "File Management"
 msgstr "Quản lý tập tin"
 
-#:../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1247
+#:../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1245
 msgid "Home Folder"
 msgstr "Thư mục chính"
 
@@ -2469,22 +2469,22 @@ msgstr "Nền"
 
 #.name, stock id
 #:../src/file-manager/fm-desktop-icon-view.c:680
-#:../src/file-manager/fm-directory-view.c:6594
-#:../src/file-manager/fm-directory-view.c:7398
+#:../src/file-manager/fm-directory-view.c:6604
+#:../src/file-manager/fm-directory-view.c:7408
 msgid "E_mpty Trash"
 msgstr "Đổ _rác"
 
 #.label, accelerator
 #.name, stock id
 #:../src/file-manager/fm-desktop-icon-view.c:692
-#:../src/file-manager/fm-directory-view.c:6566
+#:../src/file-manager/fm-directory-view.c:6576
 msgid "Create L_auncher..."
 msgstr "Tạo _bộ khởi động..."
 
 #.tooltip
 #.label, accelerator
 #:../src/file-manager/fm-desktop-icon-view.c:694
-#:../src/file-manager/fm-directory-view.c:6567
+#:../src/file-manager/fm-directory-view.c:6577
 msgid "Create a new launcher"
 msgstr "Tạo bộ khởi động mới"
 
@@ -2507,13 +2507,13 @@ msgstr "Đổ Sọt rác"
 #.tooltip
 #.label, accelerator
 #:../src/file-manager/fm-desktop-icon-view.c:708
-#:../src/file-manager/fm-directory-view.c:6595
+#:../src/file-manager/fm-directory-view.c:6605
 msgid "Delete all items in the Trash"
 msgstr "Xóa bỏ tất cả các mục trong sọt rác"
 
 #:../src/file-manager/fm-desktop-icon-view.c:797
 #:../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#:../src/nautilus-places-sidebar.c:165
+#:../src/nautilus-places-sidebar.c:182
 msgid "Desktop"
 msgstr "Màn hình nền"
 
@@ -2831,13 +2831,13 @@ msgstr "Mọi tập tin có thể thực thi trong thư mục này sẽ xuất h
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: vị trí và kích cỡ cửa sổ hiện thời"
 
 #:../src/file-manager/fm-directory-view.c:5879
-#:../src/file-manager/fm-tree-view.c:902
+#:../src/file-manager/fm-tree-view.c:900
 #,c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "« %s » sẽ được chuyển đi nếu bạn dùng lệnh «Dán»"
 
 #:../src/file-manager/fm-directory-view.c:5883
-#:../src/file-manager/fm-tree-view.c:906
+#:../src/file-manager/fm-tree-view.c:904
 #,c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "« %s » sẽ được sao chép nếu bạn dùng lệnh «Dán»"
@@ -2855,141 +2855,141 @@ msgid_plural "The %d selected items will be copied if you select the Paste comma
 msgstr[0] "Sẽ sao chép %d mục đã chọn, nếu bạn chọn lệnh «Dán»"
 
 #:../src/file-manager/fm-directory-view.c:5991
-#:../src/file-manager/fm-tree-view.c:983
+#:../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "Không có gì trong khay cần dán."
 
-#:../src/file-manager/fm-directory-view.c:6346
+#:../src/file-manager/fm-directory-view.c:6356
 #,c-format
 msgid "Connect to Server %s"
 msgstr "Kết nối đến máy phục vụ %s"
 
-#:../src/file-manager/fm-directory-view.c:6351
+#:../src/file-manager/fm-directory-view.c:6361
 msgid "_Connect"
 msgstr "_Kết nối"
 
-#:../src/file-manager/fm-directory-view.c:6365
+#:../src/file-manager/fm-directory-view.c:6375
 msgid "Link _name:"
 msgstr "Tên _liên kết:"
 
-#:../src/file-manager/fm-directory-view.c:6540
+#:../src/file-manager/fm-directory-view.c:6550
 msgid "Create _Document"
 msgstr "Tạo _Tài liệu"
 
 #.name, stock id, label
-#:../src/file-manager/fm-directory-view.c:6541
+#:../src/file-manager/fm-directory-view.c:6551
 msgid "Open Wit_h"
 msgstr "Mở _dùng"
 
 #.name, stock id, label
-#:../src/file-manager/fm-directory-view.c:6542
+#:../src/file-manager/fm-directory-view.c:6552
 msgid "Choose a program with which to open the selected item"
 msgstr "Chọn một chương trình để mở mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6544
-#:../src/file-manager/fm-directory-view.c:6552
+#:../src/file-manager/fm-directory-view.c:6554
+#:../src/file-manager/fm-directory-view.c:6562
 msgid "_Properties"
 msgstr "_Thuộc tính"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6545
+#:../src/file-manager/fm-directory-view.c:6555
 msgid "View or modify the properties of each selected item"
 msgstr "Xem hoặc sửa đổi các tính chất của mỗi mục được chọn"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6553
+#:../src/file-manager/fm-directory-view.c:6563
 msgid "View or modify the properties of the open folder"
 msgstr "Xem hoặc sửa đổi các thuộc tính của thư mục đang mở"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6556
+#:../src/file-manager/fm-directory-view.c:6566
 msgid "Create _Folder"
 msgstr "Tạo _thư mục"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6557
+#:../src/file-manager/fm-directory-view.c:6567
 msgid "Create a new empty folder inside this folder"
 msgstr "Tạo một thư mục rỗng bên trong thư mục này"
 
-#:../src/file-manager/fm-directory-view.c:6559
+#:../src/file-manager/fm-directory-view.c:6569
 msgid "No templates Installed"
 msgstr "Chưa cài mẫu"
 
 #.name, stock id, label
 #.name, stock id
 #.translators: this is used to indicate that a file doesn't contain anything
-#:../src/file-manager/fm-directory-view.c:6562
+#:../src/file-manager/fm-directory-view.c:6572
 msgid "_Empty File"
 msgstr "Tập tin _rỗng"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6563
+#:../src/file-manager/fm-directory-view.c:6573
 msgid "Create a new empty file inside this folder"
 msgstr "Tạo một tập tin rỗng bên trong thư mục này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6570
-#:../src/file-manager/fm-directory-view.c:7299
-#:../src/file-manager/fm-tree-view.c:1105
+#:../src/file-manager/fm-directory-view.c:6580
+#:../src/file-manager/fm-directory-view.c:7309
+#:../src/file-manager/fm-tree-view.c:1103
 msgid "_Open"
 msgstr "_Mở"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6571
+#:../src/file-manager/fm-directory-view.c:6581
 msgid "Open the selected item in this window"
 msgstr "Mở mục đã chọn trong cửa sổ này"
 
 #.name, stock id
 #.Location-specific actions
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6578
-#:../src/file-manager/fm-directory-view.c:6686
+#:../src/file-manager/fm-directory-view.c:6588
+#:../src/file-manager/fm-directory-view.c:6696
 msgid "Open in Navigation Window"
 msgstr "Mở trong cửa sổ duyệt"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6579
+#:../src/file-manager/fm-directory-view.c:6589
 msgid "Open each selected item in a navigation window"
 msgstr "Mở mỗi mục được chọn trong cửa sổ duyệt"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6582
-#:../src/file-manager/fm-directory-view.c:6586
+#:../src/file-manager/fm-directory-view.c:6592
+#:../src/file-manager/fm-directory-view.c:6596
 msgid "Open with Other _Application..."
 msgstr "Mở bằng Ứng dụng _khác..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6583
-#:../src/file-manager/fm-directory-view.c:6587
+#:../src/file-manager/fm-directory-view.c:6593
+#:../src/file-manager/fm-directory-view.c:6597
 msgid "Choose another application with which to open the selected item"
 msgstr "Chọn ứng dụng khác để mở mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6590
+#:../src/file-manager/fm-directory-view.c:6600
 msgid "_Open Scripts Folder"
 msgstr "_Mở thư mục Tập lệnh"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6591
+#:../src/file-manager/fm-directory-view.c:6601
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Trình diễn thư mục mà chứa các tập lệnh xuất hiện trong trình đơn này"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6599
+#:../src/file-manager/fm-directory-view.c:6609
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Chuẩn bị các tập tin được chọn để chuyển dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6603
+#:../src/file-manager/fm-directory-view.c:6613
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Chuẩn bị các tập tin được chọn để sao dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6607
+#:../src/file-manager/fm-directory-view.c:6617
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "Chuyển hoặc sao chép các tập tin đã được chọn truớc đây bởi một lệnh như « "
 "Cắt » hay « Chép »"
@@ -2997,13 +2997,13 @@ msgstr "Chuyển hoặc sao chép các tập tin đã được chọn truớc đ
 #.We make accelerator "" instead of null here to not inherit the stock
 #.accelerator for paste
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6612
-#:../src/file-manager/fm-tree-view.c:1163
+#:../src/file-manager/fm-directory-view.c:6622
+#:../src/file-manager/fm-tree-view.c:1161
 msgid "_Paste Into Folder"
 msgstr "_Dán vào thư mục"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6613
+#:../src/file-manager/fm-directory-view.c:6623
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3011,313 +3011,313 @@ msgstr "Di chuyển hoặc sao chép các tập tin, đã được chọn truớ
 "hoặc «Chép», vào thư mục được chọn"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6617
+#:../src/file-manager/fm-directory-view.c:6627
 msgid "Select all items in this window"
 msgstr "Chọn tất cả các mục trong cửa sổ này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6620
+#:../src/file-manager/fm-directory-view.c:6630
 msgid "Select _Pattern"
 msgstr "Chọn theo _mẫu"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6621
+#:../src/file-manager/fm-directory-view.c:6631
 msgid "Select items in this window matching a given pattern"
 msgstr "Chọn các mục trong cửa sổ khớp với mẫu được cho"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6624
+#:../src/file-manager/fm-directory-view.c:6634
 msgid "D_uplicate"
 msgstr "Tạo bản _sao"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6625
+#:../src/file-manager/fm-directory-view.c:6635
 msgid "Duplicate each selected item"
 msgstr "Tạo bản sao cho mỗi mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6628
-#:../src/file-manager/fm-directory-view.c:7372
+#:../src/file-manager/fm-directory-view.c:6638
+#:../src/file-manager/fm-directory-view.c:7382
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Tạo liên _kết"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6629
+#:../src/file-manager/fm-directory-view.c:6639
 msgid "Create a symbolic link for each selected item"
 msgstr "Tạo một liên kết biểu tượng cho mỗi mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6632
+#:../src/file-manager/fm-directory-view.c:6642
 msgid "_Rename..."
 msgstr "Đổi _tên..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6633
+#:../src/file-manager/fm-directory-view.c:6643
 msgid "Rename selected item"
 msgstr "Đổi tên mục đã chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6640
-#:../src/file-manager/fm-directory-view.c:6700
-#:../src/file-manager/fm-directory-view.c:7156
-#:../src/file-manager/fm-directory-view.c:7340
-#:../src/file-manager/fm-directory-view.c:7729
+#:../src/file-manager/fm-directory-view.c:6650
+#:../src/file-manager/fm-directory-view.c:6710
+#:../src/file-manager/fm-directory-view.c:7166
+#:../src/file-manager/fm-directory-view.c:7350
+#:../src/file-manager/fm-directory-view.c:7739
 msgid "Mo_ve to Trash"
 msgstr "_Cho vào Sọt rác"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6641
-#:../src/file-manager/fm-directory-view.c:7341
+#:../src/file-manager/fm-directory-view.c:6651
+#:../src/file-manager/fm-directory-view.c:7351
 msgid "Move each selected item to the Trash"
 msgstr "Bỏ các mục được chọn vào Sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6644
-#:../src/file-manager/fm-directory-view.c:6704
-#:../src/file-manager/fm-directory-view.c:7359
+#:../src/file-manager/fm-directory-view.c:6654
+#:../src/file-manager/fm-directory-view.c:6714
+#:../src/file-manager/fm-directory-view.c:7369
 msgid "_Delete"
 msgstr "_Xóa bỏ"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6645
+#:../src/file-manager/fm-directory-view.c:6655
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Xóa bỏ mỗi mục dã chọn mà không bỏ vào sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6648
+#:../src/file-manager/fm-directory-view.c:6658
 msgid "Reset View to _Defaults"
 msgstr "Đặt khung xem về _mặc định"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6649
+#:../src/file-manager/fm-directory-view.c:6659
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Đặt lại sắp xếp theo thứ tự và lớp thu phóng về chỉnh lý trước cho cảnh xem "
 "này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6652
+#:../src/file-manager/fm-directory-view.c:6662
 msgid "Connect To This Server"
 msgstr "Kết nối đến máy phục vụ này"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6653
+#:../src/file-manager/fm-directory-view.c:6663
 msgid "Make a permanent connection to this server"
 msgstr "Tạo kết nối bền vững cho máy phục vụ này"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6656
+#:../src/file-manager/fm-directory-view.c:6666
 msgid "_Mount Volume"
 msgstr "_Gắn kết khối"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6657
+#:../src/file-manager/fm-directory-view.c:6667
 msgid "Mount the selected volume"
 msgstr "Gắn kết khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6660
-#:../src/file-manager/fm-tree-view.c:751
+#:../src/file-manager/fm-directory-view.c:6670
+#:../src/file-manager/fm-tree-view.c:749
 msgid "_Unmount Volume"
 msgstr "_Bỏ gắn kết khối"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6661
+#:../src/file-manager/fm-directory-view.c:6671
 msgid "Unmount the selected volume"
 msgstr "Bỏ gắn kết khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6664
+#:../src/file-manager/fm-directory-view.c:6674
 msgid "_Eject"
 msgstr "Đẩy _ra"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6665
+#:../src/file-manager/fm-directory-view.c:6675
 msgid "Eject the selected volume"
 msgstr "Đẩy khối được chọn ra"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6668
+#:../src/file-manager/fm-directory-view.c:6678
 msgid "_Format"
 msgstr "Định _dạng"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6669
+#:../src/file-manager/fm-directory-view.c:6679
 msgid "Format the selected volume"
 msgstr "Định dạng khối được chọn"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6672
+#:../src/file-manager/fm-directory-view.c:6682
 msgid "Open File and Close window"
 msgstr "Mở tập tin và đóng cửa sổ"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6676
+#:../src/file-manager/fm-directory-view.c:6686
 msgid "Sa_ve Search"
 msgstr "_Lưu tìm kiếm"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6677
+#:../src/file-manager/fm-directory-view.c:6687
 msgid "Save the edited search"
 msgstr "Lưu việc tìm kiếm đã sửa đổi"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6680
+#:../src/file-manager/fm-directory-view.c:6690
 msgid "Sa_ve Search As..."
 msgstr "Lưu tìm kiếm _dạng..."
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6681
+#:../src/file-manager/fm-directory-view.c:6691
 msgid "Save the current search as a file"
 msgstr "Lưu việc tìm kiếm hiện thời dạng tập tin"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6687
+#:../src/file-manager/fm-directory-view.c:6697
 msgid "Open this folder in a navigation window"
 msgstr "Mở thư mục này trong cửa sổ duyệt"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6692
+#:../src/file-manager/fm-directory-view.c:6702
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Chuẩn bị thư mục này để được di chuyển dùng lệnh «Dán»"
 
 #.name, stock id
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6696
+#:../src/file-manager/fm-directory-view.c:6706
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Chuẩn bị thư mục này để được sao chép dùng lệnh «Dán»"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6701
+#:../src/file-manager/fm-directory-view.c:6711
 msgid "Move this folder to the Trash"
 msgstr "Di chuyển thư mục này vào Sọt rác"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6705
+#:../src/file-manager/fm-directory-view.c:6715
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Xóa bỏ thư mục này mà không bỏ vào sọt rác"
 
 #.name, stock id
-#:../src/file-manager/fm-directory-view.c:6711
+#:../src/file-manager/fm-directory-view.c:6721
 msgid "Show _Hidden Files"
 msgstr "Hiện tập tin ẩ_n"
 
 #.label, accelerator
-#:../src/file-manager/fm-directory-view.c:6712
+#:../src/file-manager/fm-directory-view.c:6722
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Bật tắt hiện tập tin ẩn trong cửa sổ hiện thời"
 
 #.Translators: %s is a directory
-#:../src/file-manager/fm-directory-view.c:6798
+#:../src/file-manager/fm-directory-view.c:6808
 #,c-format
 msgid "Run or manage scripts from %s"
 msgstr "Thực hiện hoặc quản lý các tập lệnh từ « %s »"
 
 #.Create a script action here specially because its tooltip is dynamic
-#:../src/file-manager/fm-directory-view.c:6800
+#:../src/file-manager/fm-directory-view.c:6810
 msgid "_Scripts"
 msgstr "Tập _lệnh"
 
 #.add the "open in new window" menu item
-#:../src/file-manager/fm-directory-view.c:7125
-#:../src/file-manager/fm-directory-view.c:7308
-#:../src/file-manager/fm-tree-view.c:1116
+#:../src/file-manager/fm-directory-view.c:7135
+#:../src/file-manager/fm-directory-view.c:7318
+#:../src/file-manager/fm-tree-view.c:1114
 msgid "Open in New Window"
 msgstr "Mở trong cửa sổ mới"
 
-#:../src/file-manager/fm-directory-view.c:7127
-#:../src/file-manager/fm-directory-view.c:7316
+#:../src/file-manager/fm-directory-view.c:7137
+#:../src/file-manager/fm-directory-view.c:7326
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Duyệt thư mục"
 
-#:../src/file-manager/fm-directory-view.c:7152
-#:../src/file-manager/fm-directory-view.c:7336
+#:../src/file-manager/fm-directory-view.c:7162
+#:../src/file-manager/fm-directory-view.c:7346
 msgid "_Delete from Trash"
 msgstr "_Xóa bỏ khỏi sọt rác"
 
-#:../src/file-manager/fm-directory-view.c:7153
+#:../src/file-manager/fm-directory-view.c:7163
 msgid "Delete the open folder permanently"
 msgstr "Xóa bỏ vĩnh viễn thư mục đang mở"
 
-#:../src/file-manager/fm-directory-view.c:7157
+#:../src/file-manager/fm-directory-view.c:7167
 msgid "Move the open folder to the Trash"
 msgstr "Di chuyển thư mục đang mở vào Sọt rác"
 
-#:../src/file-manager/fm-directory-view.c:7292
+#:../src/file-manager/fm-directory-view.c:7302
 #,c-format
 msgid "_Open with \"%s\""
 msgstr "_Mở bằng « %s »"
 
-#:../src/file-manager/fm-directory-view.c:7310
+#:../src/file-manager/fm-directory-view.c:7320
 #,c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Mở trong %d cửa sổ mới"
 
-#:../src/file-manager/fm-directory-view.c:7337
+#:../src/file-manager/fm-directory-view.c:7347
 msgid "Delete all selected items permanently"
 msgstr "Xóa bỏ vĩnh viễn mọi mục được chọn"
 
-#:../src/file-manager/fm-directory-view.c:7709
+#:../src/file-manager/fm-directory-view.c:7719
 #,c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Liên kết <%s> bị ngắt."
 
-#:../src/file-manager/fm-directory-view.c:7711
+#:../src/file-manager/fm-directory-view.c:7721
 #,c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Liên kết <%s> bị ngắt nên chuyển nó vào Sọt rác chứ?"
 
-#:../src/file-manager/fm-directory-view.c:7717
+#:../src/file-manager/fm-directory-view.c:7727
 msgid "This link can't be used, because it has no target."
 msgstr "Không thể dùng liên kết này vì nó không có đích đến."
 
-#:../src/file-manager/fm-directory-view.c:7719
+#:../src/file-manager/fm-directory-view.c:7729
 #,c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Không thể dùng liên kết này vì đích đến của nó là « %s » không tồn tại."
 
-#:../src/file-manager/fm-directory-view.c:8339
+#:../src/file-manager/fm-directory-view.c:8349
 #,c-format
 msgid "Opening \"%s\"."
 msgstr "Đang mở « %s »."
 
-#:../src/file-manager/fm-directory-view.c:8342
+#:../src/file-manager/fm-directory-view.c:8352
 #,c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Đang mở %d mục."
 
-#:../src/file-manager/fm-directory-view.c:9234
+#:../src/file-manager/fm-directory-view.c:9244
 msgid "Download location?"
 msgstr "Vị trí tải về?"
 
-#:../src/file-manager/fm-directory-view.c:9237
+#:../src/file-manager/fm-directory-view.c:9247
 msgid "You can download it or make a link to it."
 msgstr "Bạn có thể tải nó về hoặc tạo liên kết tới nó."
 
-#:../src/file-manager/fm-directory-view.c:9240
+#:../src/file-manager/fm-directory-view.c:9250
 msgid "Make a _Link"
 msgstr "Tạo _liên kết"
 
-#:../src/file-manager/fm-directory-view.c:9244
+#:../src/file-manager/fm-directory-view.c:9254
 msgid "_Download"
 msgstr "_Tải về"
 
-#:../src/file-manager/fm-directory-view.c:9303
-#:../src/file-manager/fm-directory-view.c:9355
-#:../src/file-manager/fm-directory-view.c:9452
+#:../src/file-manager/fm-directory-view.c:9313
+#:../src/file-manager/fm-directory-view.c:9365
+#:../src/file-manager/fm-directory-view.c:9462
 msgid "Drag and drop is not supported."
 msgstr "Không hỗ trợ «kéo và thả»."
 
-#:../src/file-manager/fm-directory-view.c:9304
+#:../src/file-manager/fm-directory-view.c:9314
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Chỉ hỗ trợ «kéo và thả» trên hệ thống tập tin cục bộ."
 
-#:../src/file-manager/fm-directory-view.c:9356
-#:../src/file-manager/fm-directory-view.c:9453
+#:../src/file-manager/fm-directory-view.c:9366
+#:../src/file-manager/fm-directory-view.c:9463
 msgid "An invalid drag type was used."
 msgstr "Đã dùng một dạng kéo không hợp lệ."
 
@@ -3927,33 +3927,33 @@ msgstr "Đang tạo cửa sổ thuộc tính."
 msgid "Select Custom Icon"
 msgstr "Chọn biểu tượng riêng"
 
-#:../src/file-manager/fm-tree-view.c:751
+#:../src/file-manager/fm-tree-view.c:749
 msgid "E_ject"
 msgstr "Đẩy _ra"
 
 #.add the "create folder" menu item
-#:../src/file-manager/fm-tree-view.c:1129
+#:../src/file-manager/fm-tree-view.c:1127
 msgid "Create Folder"
 msgstr "Tạo thư mục"
 
-#:../src/file-manager/fm-tree-view.c:1181
+#:../src/file-manager/fm-tree-view.c:1179
 msgid "Move to Trash"
 msgstr "Cho vào Sọt rác"
 
-#:../src/file-manager/fm-tree-view.c:1249
-#:../src/nautilus-places-sidebar.c:174
+#:../src/file-manager/fm-tree-view.c:1247
+#:../src/nautilus-places-sidebar.c:191
 msgid "File System"
 msgstr "Hệ thống tập tin"
 
-#:../src/file-manager/fm-tree-view.c:1251
+#:../src/file-manager/fm-tree-view.c:1249
 msgid "Network Neighbourhood"
 msgstr "Hàng xóm mạng"
 
-#:../src/file-manager/fm-tree-view.c:1489
+#:../src/file-manager/fm-tree-view.c:1487
 msgid "Tree"
 msgstr "Cây"
 
-#:../src/file-manager/fm-tree-view.c:1495
+#:../src/file-manager/fm-tree-view.c:1493
 msgid "Show Tree"
 msgstr "Hiển thị cây"
 
@@ -4749,7 +4749,7 @@ msgstr "Bộ Quản lý Tập tin"
 
 # Name: don't translate / Tên: đừng dịch
 #.Set initial window title
-#:../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:401
+#:../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:405
 #:../src/nautilus-window-menus.c:461 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -4834,7 +4834,7 @@ msgstr "Đị_a chỉ..."
 
 #.name, stock id, label
 #:../src/nautilus-navigation-window-menus.c:435
-#:../src/nautilus-spatial-window.c:831
+#:../src/nautilus-spatial-window.c:835
 msgid "Specify a location to open"
 msgstr "Ghi rõ một địa chỉ cần mở"
 
@@ -4848,35 +4848,35 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Xóa nội dung trong thư mục Đi và danh sách «Lùi/Tới»"
 
 #:../src/nautilus-navigation-window-menus.c:440
-#:../src/nautilus-spatial-window.c:839
+#:../src/nautilus-spatial-window.c:843
 msgid "_Add Bookmark"
 msgstr "T_hêm Đánh dấu"
 
 #.name, stock id, label
 #:../src/nautilus-navigation-window-menus.c:441
-#:../src/nautilus-spatial-window.c:840
+#:../src/nautilus-spatial-window.c:844
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Thêm một Đánh dấu cho địa chỉ hiện thời vào trình đơn này"
 
 #:../src/nautilus-navigation-window-menus.c:443
-#:../src/nautilus-spatial-window.c:842
+#:../src/nautilus-spatial-window.c:846
 msgid "_Edit Bookmarks"
 msgstr "_Biên soạn Đánh dấu"
 
 #.name, stock id, label
 #:../src/nautilus-navigation-window-menus.c:444
-#:../src/nautilus-spatial-window.c:843
+#:../src/nautilus-spatial-window.c:847
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Hiển thị cửa sổ cho phép biên soạn Đánh dấu trong trình đơn này"
 
 #:../src/nautilus-navigation-window-menus.c:446
-#:../src/nautilus-spatial-window.c:845
+#:../src/nautilus-spatial-window.c:849
 msgid "_Search"
 msgstr "Tìm _kiếm"
 
 #.name, stock id, label
 #:../src/nautilus-navigation-window-menus.c:447
-#:../src/nautilus-spatial-window.c:846
+#:../src/nautilus-spatial-window.c:850
 msgid "Search for files"
 msgstr "Tìm kiếm tập tin"
 
@@ -4960,11 +4960,19 @@ msgstr "Chú thích"
 msgid "Show Notes"
 msgstr "Hiển thị chú thích"
 
-#:../src/nautilus-places-sidebar.c:482
+#:../src/nautilus-places-sidebar.c:775
+msgid "Remove"
+msgstr "Gỡ bỏ..."
+
+#:../src/nautilus-places-sidebar.c:784
+msgid "Rename..."
+msgstr "Đổi tên..."
+
+#:../src/nautilus-places-sidebar.c:1006
 msgid "Places"
 msgstr "Nơi"
 
-#:../src/nautilus-places-sidebar.c:488
+#:../src/nautilus-places-sidebar.c:1012
 msgid "Show Places"
 msgstr "Hiển thị nơi"
 
@@ -5248,30 +5256,30 @@ msgstr "<b>Tìm kiếm:</b>"
 msgid "Close the side pane"
 msgstr "Đóng Khung lề"
 
-#:../src/nautilus-spatial-window.c:829
+#:../src/nautilus-spatial-window.c:833
 msgid "_Places"
 msgstr "Đị_a điểm"
 
 #.name, stock id, label
-#:../src/nautilus-spatial-window.c:830
+#:../src/nautilus-spatial-window.c:834
 msgid "Open _Location..."
 msgstr "Mở Đị_a chỉ..."
 
-#:../src/nautilus-spatial-window.c:833
+#:../src/nautilus-spatial-window.c:837
 msgid "Close P_arent Folders"
 msgstr "Đóng thư mục _mẹ"
 
 #.name, stock id, label
-#:../src/nautilus-spatial-window.c:834
+#:../src/nautilus-spatial-window.c:838
 msgid "Close this folder's parents"
 msgstr "Đóng các thư mục mẹ của thư mục này"
 
-#:../src/nautilus-spatial-window.c:836
+#:../src/nautilus-spatial-window.c:840
 msgid "Clos_e All Folders"
 msgstr "Đóng mọ_i thư mục"
 
 #.name, stock id, label
-#:../src/nautilus-spatial-window.c:837
+#:../src/nautilus-spatial-window.c:841
 msgid "Close all folder windows"
 msgstr "Đóng mọi cửa sổ thư mục"
 
