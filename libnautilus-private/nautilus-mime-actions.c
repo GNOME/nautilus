@@ -204,6 +204,7 @@ nautilus_mime_get_applications_for_file (NautilusFile *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	result = gnome_vfs_mime_get_all_applications (mime_type);
 	result = g_list_sort (result, (GCompareFunc) application_compare_by_name);
+	g_free (mime_type);
 
 	return filter_nautilus_handler (result);
 }

@@ -1,3 +1,9 @@
+2006-01-20  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_applications_for_file):
+	Don't leak mime_type.
+
 2006-01-18  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-window-bookmarks.c: (nautilus_bookmarks_exiting):
