@@ -1,5 +1,11 @@
 2006-01-20  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-icon-factory.c: (scale_icon):
+	Never try to scale icons down to 0px. Fixes scaling for
+	images with extreme ratios.
+
+2006-01-20  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-mime-actions.c:
 	(nautilus_mime_get_applications_for_file):
 	Don't leak mime_type.

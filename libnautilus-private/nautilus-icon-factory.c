@@ -1127,7 +1127,10 @@ scale_icon (GdkPixbuf *pixbuf,
 	width = floor (width * *scale + 0.5);
 	height = floor (height * *scale + 0.5);
 	
-	return gdk_pixbuf_scale_simple (pixbuf, width, height, GDK_INTERP_BILINEAR);
+	return gdk_pixbuf_scale_simple (pixbuf,
+					width == 0 ? 1 : width,
+					height == 0 ? 1 : height,
+					GDK_INTERP_BILINEAR);
 }
 
 static GdkPixbuf *
