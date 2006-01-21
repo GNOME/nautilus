@@ -1,5 +1,11 @@
 2006-01-21  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Unref and destroy a new content view that has been created
+	but not yet been switched to. Fixes a rare crash.
+
+2006-01-21  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-bookmark-list.c: (get_default_bookmark_name):
 	Don't leak title.
 

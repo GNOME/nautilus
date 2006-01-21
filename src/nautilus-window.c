@@ -579,7 +579,8 @@ static void
 nautilus_window_destroy (GtkObject *object)
 {
 	NautilusWindow *window;
-	
+	GtkWidget *widget;
+
 	window = NAUTILUS_WINDOW (object);
 
 	cancel_view_as_callback (window);
@@ -589,6 +590,13 @@ nautilus_window_destroy (GtkObject *object)
 	if (window->content_view) {
 		g_object_unref (window->content_view);
 		window->content_view = NULL;
+	}
+
+	if (window->new_content_view) {
+		widget = nautilus_view_get_widget (window->new_content_view);
+		gtk_widget_destroy (widget);
+		g_object_unref (window->new_content_view);
+		window->new_content_view = NULL;
 	}
 
 	GTK_OBJECT_CLASS (nautilus_window_parent_class)->destroy (object);
