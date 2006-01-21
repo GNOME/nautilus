@@ -76,11 +76,13 @@ static void 	   bookmark_monitor_notify_cb 		(GnomeVFSMonitorHandle    *handle,
 static char *
 get_default_bookmark_name (const char *text_uri)
 {
-	char *title;
+	char *title, *title_truncated;
 
 	title = nautilus_compute_title_for_uri (text_uri);
-	title = eel_str_middle_truncate (title, MAX_BOOKMARK_LENGTH);	
-	return title;
+	title_truncated = eel_str_middle_truncate (title, MAX_BOOKMARK_LENGTH);	
+	g_free (title);
+
+	return title_truncated;
 
 }
 
