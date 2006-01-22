@@ -1,3 +1,10 @@
+2006-01-22  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(synch_groups_combo_box), (synch_user_menu):
+	Don't try to update the owner and group widgets if
+	the monitored file was removed. Fixes #325702.
+
 2006-01-21  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-window.c: (nautilus_window_destroy):

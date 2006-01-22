@@ -1542,6 +1542,10 @@ synch_groups_combo_box (GtkComboBox *combo_box, NautilusFile *file)
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
 
+	if (nautilus_file_is_gone (file)) {
+		return;
+	}
+
 	/* Clear the contents of ComboBox in a wacky way because there
 	 * is no function to clear all items and also no function to obtain
 	 * the number of items in a combobox.
@@ -1732,6 +1736,10 @@ synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
 
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (nautilus_file_is_gone (file)) {
+		return;
+	}
 
 	/* Clear the contents of ComboBox in a wacky way because there
 	 * is no function to clear all items and also no function to obtain
