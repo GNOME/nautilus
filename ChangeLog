@@ -1,5 +1,11 @@
 2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
 
+	* test/test-nautilus-directory-async.c: (main):
+	Fix C99-style variable initialization.
+	Patch from Jens Granseuer <jensgr@gmx.net>
+
+2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
 	(stop_cell_editing), (fm_list_view_clear), (fm_list_view_dispose):
 	Stop cell editing when disposing the view. Fixes #322821.

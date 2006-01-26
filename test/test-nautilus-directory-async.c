@@ -80,9 +80,9 @@ int
 main (int argc, char **argv)
 {
 	NautilusDirectory *directory;
+	NautilusQuery *query;
 	client1 = g_new0 (int, 1);
 	client2 = g_new0 (int, 1);
-	NautilusQuery *query;
 
 	gnome_vfs_init ();
 	gtk_init (&argc, &argv);
