@@ -1,5 +1,11 @@
 2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
+	(stop_cell_editing), (fm_list_view_clear), (fm_list_view_dispose):
+	Stop cell editing when disposing the view. Fixes #322821.
+
+2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(progress_dialog_set_to_from_item_text):
 	Use nautilus_get_uri_shortname_for_display to avoid

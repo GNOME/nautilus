@@ -952,7 +952,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	GtkTreePath *path;
 	NautilusFile *file;
 	GtkTreeIter iter;
-	
+
 	/* Don't allow a rename with an empty string. Revert to original 
 	 * without notifying the user.
 	 */
@@ -1486,25 +1486,31 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 }
 
 static void
+stop_cell_editing (FMListView *list_view)
+{
+	GtkTreeViewColumn *column;
+
+	/* Stop an ongoing rename to commit the name changes when the user
+	 * changes directories without exiting cell edit mode. It also prevents
+	 * the edited handler from being called on the cleared list model.
+	 */
+
+	column = list_view->details->file_name_column;
+	if (column != NULL && column->editable_widget != NULL &&
+		GTK_IS_CELL_EDITABLE (column->editable_widget)) {
+		gtk_cell_editable_editing_done (column->editable_widget);
+	}
+}
+
+static void
 fm_list_view_clear (FMDirectoryView *view)
 {
 	FMListView *list_view;
-	GtkTreeViewColumn *column;
 
 	list_view = FM_LIST_VIEW (view);
 
 	if (list_view->details->model != NULL) {
-		/* Stop an ongoing rename to commit the name changes when the user
-		 * changes directories without exiting cell edit mode. It also prevents
-		 * the edited handler from being called on the cleared list model.
-		 */
-
-		column = list_view->details->file_name_column;
-		if (column != NULL && column->editable_widget != NULL &&
-			GTK_IS_CELL_EDITABLE (column->editable_widget)) {
-			gtk_cell_editable_editing_done (column->editable_widget);
-		}
-
+		stop_cell_editing (list_view);
 		fm_list_model_clear (list_view->details->model);
 	}
 }
@@ -2324,6 +2330,7 @@ fm_list_view_dispose (GObject *object)
 	list_view = FM_LIST_VIEW (object);
 
 	if (list_view->details->model) {
+		stop_cell_editing (list_view);
 		g_object_unref (list_view->details->model);
 		list_view->details->model = NULL;
 	}
