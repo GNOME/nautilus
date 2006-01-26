@@ -57,6 +57,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
+#include "nautilus-file-utilities.h"
 
 typedef enum {
 	TRANSFER_MOVE,
@@ -348,7 +349,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 
 	if (from_uri != NULL) {
 		uri = gnome_vfs_uri_new (from_uri);
-		item = gnome_vfs_uri_extract_short_name (uri);
+		item = nautilus_get_uri_shortname_for_display (uri);
 		from_path = gnome_vfs_uri_extract_dirname (uri);
 
 		/* remove the last '/' */
