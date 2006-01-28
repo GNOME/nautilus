@@ -2345,7 +2345,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_directory_contents_fields (window, table);
 	} else {
 		append_title_value_pair (window, table, _("Size:"), 
-					 "size",
+					 "size_detail",
 					 _("--"),
 					 FALSE);
 	}

@@ -1,3 +1,13 @@
+2006-01-28  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_size_as_string_with_real_size),
+	(nautilus_file_get_string_attribute):
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	Show the detailed file size in addition to the formatted one
+	in the properties dialog. Fixes #62713.
+	Patch from Gautier Portet <kassoulet@gmail.com>
+
 2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:

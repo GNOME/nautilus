@@ -4315,6 +4315,50 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	return gnome_vfs_format_file_size_for_display (file->details->info->size);
 }
 
+/**
+ * nautilus_file_get_size_as_string_with_real_size:
+ * 
+ * Get a user-displayable string representing a file size. The caller
+ * is responsible for g_free-ing this string. The string is an item
+ * count for directories.
+ * This function adds the real size in the string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
+{
+	guint item_count;
+	gboolean count_unreadable;
+	char * formated;
+	char * formated_plus_real;
+
+	if (file == NULL) {
+		return NULL;
+	}
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	
+	if (nautilus_file_is_directory (file)) {
+		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
+			return NULL;
+		}
+		return format_item_count_for_display (item_count, TRUE, TRUE);
+	}
+	
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
+		return NULL;
+	}
+	
+	formated = gnome_vfs_format_file_size_for_display (file->details->info->size);
+	formated_plus_real = g_strdup_printf (_("%s (%lld bytes)"), formated, file->details->info->size);
+	g_free (formated);
+	return formated_plus_real;
+}
+
+
 static char *
 nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 						 gboolean report_size,
@@ -4489,6 +4533,9 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 	if (strcmp (attribute_name, "size") == 0) {
 		return nautilus_file_get_size_as_string (file);
+	}
+	if (strcmp (attribute_name, "size_detail") == 0) {
+		return nautilus_file_get_size_as_string_with_real_size (file);
 	}
 	if (strcmp (attribute_name, "deep_size") == 0) {
 		return nautilus_file_get_deep_size_as_string (file);
