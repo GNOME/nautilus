@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 15:21+0100\n"
+"POT-Creation-Date: 2006-01-28 07:31+0100\n"
 "PO-Revision-Date: 2006-01-14 17:10+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -587,8 +587,8 @@ msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
 msgstr ""
-"Ha be van kapcsolva, akkor a Hálózati helyekre hivatkozó ikon lesz elhelyezve a "
-"munkaasztalon."
+"Ha be van kapcsolva, akkor a Hálózati helyekre hivatkozó ikon lesz "
+"elhelyezve a munkaasztalon."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -982,7 +982,7 @@ msgstr "Szöveg beillesztése a vágólapról"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6616
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "Select _All"
 msgstr "_Mindent kijelöl"
 
@@ -1069,7 +1069,7 @@ msgid "The group of the file."
 msgstr "A fájl csoportja."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:2904
+#: ../src/file-manager/fm-properties-window.c:2912
 msgid "Permissions"
 msgstr "Jogosultságok"
 
@@ -1163,7 +1163,7 @@ msgstr "Beállítás háttérként _ehhez a mappához"
 #: ../libnautilus-private/nautilus-emblem-utils.c:257
 #: ../libnautilus-private/nautilus-emblem-utils.c:274
 msgid "The emblem cannot be installed."
-msgstr "A matricát nem lehet telepíteni."
+msgstr "A matrica nem telepíthető."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1188,11 +1188,11 @@ msgstr "Válasszon egy másik matricanevet."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:258
 msgid "Sorry, unable to save custom emblem."
-msgstr "Sajnos nem lehet menteni az egyéni matricát."
+msgstr "Sajnálom, az egyéni matrica nem menthető."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:275
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Sajnos nem lehet menteni az egyéni matrica nevét."
+msgstr "Sajnálom, az egyéni matrica neve nem menthető."
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:169
 #, c-format
@@ -1209,8 +1209,8 @@ msgstr "(%d.%02d.%d van hátra)"
 msgid "(%d:%02d Remaining)"
 msgstr "(%d.%02d van hátra)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:448
-#: ../libnautilus-private/nautilus-file-operations.c:477
+#: ../libnautilus-private/nautilus-file-operations.c:449
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #: ../libnautilus-private/nautilus-file-utilities.c:87
 #: ../src/nautilus-connect-server-dialog.c:293
 #, c-format
@@ -1218,45 +1218,45 @@ msgid "%s on %s"
 msgstr "%s ezen: %s"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:459
+#: ../libnautilus-private/nautilus-file-operations.c:460
 msgid "From:"
 msgstr "Forrás:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:486
+#: ../libnautilus-private/nautilus-file-operations.c:487
 msgid "To:"
 msgstr "Cél:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:672
-#: ../libnautilus-private/nautilus-file-operations.c:720
-#: ../libnautilus-private/nautilus-file-operations.c:725
-#: ../libnautilus-private/nautilus-file-operations.c:735
+#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:736
 msgid "Error while moving."
 msgstr "Hiba áthelyezéskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:674
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "\"%s\" nem helyezhető át, mert írásvédett lemezen van."
 
-#: ../libnautilus-private/nautilus-file-operations.c:683
-#: ../libnautilus-private/nautilus-file-operations.c:689
+#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:690
 msgid "Error while deleting."
 msgstr "Hiba törléskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:685
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr "\"%s\" nem törölhető, mert nincs joga a szülőkönyvtárát módosítani."
 
-#: ../libnautilus-private/nautilus-file-operations.c:690
+#: ../libnautilus-private/nautilus-file-operations.c:691
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "\"%s\" nem törölhető, mert írásvédett lemezen van."
 
-#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:722
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1265,14 +1265,14 @@ msgstr ""
 "\"%s\" nem helyezhető át, mert nincs joga módosítani a fájlt vagy a "
 "szülőkönyvtárát."
 
-#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:727
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr "\"%s\" nem helyezhető át, mert az vagy annak szülőkönyvtára a cél része."
 
-#: ../libnautilus-private/nautilus-file-operations.c:736
+#: ../libnautilus-private/nautilus-file-operations.c:737
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1281,163 +1281,162 @@ msgstr ""
 "\"%s\" nem helyezhető át a Kukába, mert nincs joga módosítani a fájlt vagy a "
 "szülőkönyvtárát."
 
-#: ../libnautilus-private/nautilus-file-operations.c:758
+#: ../libnautilus-private/nautilus-file-operations.c:759
 msgid "Error while copying."
 msgstr "Hiba másoláskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:759
+#: ../libnautilus-private/nautilus-file-operations.c:760
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "\"%s\" nem másolható, mert nincs rá olvasási joga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:779
-#: ../libnautilus-private/nautilus-file-operations.c:800
-#: ../libnautilus-private/nautilus-file-operations.c:804
+#: ../libnautilus-private/nautilus-file-operations.c:780
+#: ../libnautilus-private/nautilus-file-operations.c:801
+#: ../libnautilus-private/nautilus-file-operations.c:805
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "Hiba a(z) \"%s\" helyre másoláskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:780
-#: ../libnautilus-private/nautilus-file-operations.c:785
-#: ../libnautilus-private/nautilus-file-operations.c:789
+#: ../libnautilus-private/nautilus-file-operations.c:781
+#: ../libnautilus-private/nautilus-file-operations.c:786
+#: ../libnautilus-private/nautilus-file-operations.c:790
 msgid "There is not enough space on the destination."
 msgstr "A célfájl lemezén nincs elég hely."
 
-#: ../libnautilus-private/nautilus-file-operations.c:784
+#: ../libnautilus-private/nautilus-file-operations.c:785
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "Hiba a(z) \"%s\" helyre áthelyezéskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:788
+#: ../libnautilus-private/nautilus-file-operations.c:789
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "Hiba link létrehozásakor a(z) \"%s\" helyen."
 
-#: ../libnautilus-private/nautilus-file-operations.c:801
-#: ../libnautilus-private/nautilus-file-operations.c:812
-#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:802
+#: ../libnautilus-private/nautilus-file-operations.c:813
+#: ../libnautilus-private/nautilus-file-operations.c:824
 msgid "You do not have permissions to write to this folder."
 msgstr "Nincs joga írni ebbe a mappába."
 
-#: ../libnautilus-private/nautilus-file-operations.c:805
-#: ../libnautilus-private/nautilus-file-operations.c:816
-#: ../libnautilus-private/nautilus-file-operations.c:827
+#: ../libnautilus-private/nautilus-file-operations.c:806
+#: ../libnautilus-private/nautilus-file-operations.c:817
+#: ../libnautilus-private/nautilus-file-operations.c:828
 msgid "The destination disk is read-only."
 msgstr "A céllemez írásvédett."
 
-#: ../libnautilus-private/nautilus-file-operations.c:811
-#: ../libnautilus-private/nautilus-file-operations.c:815
+#: ../libnautilus-private/nautilus-file-operations.c:812
+#: ../libnautilus-private/nautilus-file-operations.c:816
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "Hiba a(z) \"%s\" helyre áthelyezéskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:822
-#: ../libnautilus-private/nautilus-file-operations.c:826
+#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:827
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "Hiba linkek létrehozásakor a(z) \"%s\" helyen."
 
-#: ../libnautilus-private/nautilus-file-operations.c:854
+#: ../libnautilus-private/nautilus-file-operations.c:855
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "\"%s\" hiba a(z) \"%s\" másolásakor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:855
-#: ../libnautilus-private/nautilus-file-operations.c:859
-#: ../libnautilus-private/nautilus-file-operations.c:863
-#: ../libnautilus-private/nautilus-file-operations.c:869
-#: ../libnautilus-private/nautilus-file-operations.c:884
-#: ../libnautilus-private/nautilus-file-operations.c:888
-#: ../libnautilus-private/nautilus-file-operations.c:892
-#: ../libnautilus-private/nautilus-file-operations.c:898
+#: ../libnautilus-private/nautilus-file-operations.c:856
+#: ../libnautilus-private/nautilus-file-operations.c:860
+#: ../libnautilus-private/nautilus-file-operations.c:864
+#: ../libnautilus-private/nautilus-file-operations.c:870
+#: ../libnautilus-private/nautilus-file-operations.c:885
+#: ../libnautilus-private/nautilus-file-operations.c:889
+#: ../libnautilus-private/nautilus-file-operations.c:893
+#: ../libnautilus-private/nautilus-file-operations.c:899
 msgid "Would you like to continue?"
 msgstr "Mégis folytatja?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:858
+#: ../libnautilus-private/nautilus-file-operations.c:859
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "\"%s\" hiba a(z) \"%s\" áthelyezésekor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:862
+#: ../libnautilus-private/nautilus-file-operations.c:863
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "\"%s\" hiba, a következő link létrehozásakor: \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:868
+#: ../libnautilus-private/nautilus-file-operations.c:869
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "\"%s\" hiba a(z) \"%s\" törlésekor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:883
+#: ../libnautilus-private/nautilus-file-operations.c:884
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "\"%s\" hiba másoláskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:887
+#: ../libnautilus-private/nautilus-file-operations.c:888
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "\"%s\" hiba áthelyezéskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:891
+#: ../libnautilus-private/nautilus-file-operations.c:892
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "\"%s\" hiba link létrehozásakor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:897
+#: ../libnautilus-private/nautilus-file-operations.c:898
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "\"%s\" hiba törléskor."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1030
-#: ../libnautilus-private/nautilus-file-operations.c:1047
+#: ../libnautilus-private/nautilus-file-operations.c:1031
+#: ../libnautilus-private/nautilus-file-operations.c:1048
 msgid "_Retry"
 msgstr "_Újra"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1047
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1048
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Skip"
 msgstr "_Kihagyás"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1137
+#: ../libnautilus-private/nautilus-file-operations.c:1138
 #, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "Nem lehet áthelyezni a(z) \"%s\"-t az új helyre."
+msgstr "A(z) \"%s\" nem helyezhető át az új helyre."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1140
+#: ../libnautilus-private/nautilus-file-operations.c:1141
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
 "A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani "
-"vagy átnevezni. Ha még mindig át akarja helyezni az elemet, először nevezze "
+"vagy lecserélni. Ha még mindig át akarja helyezni az elemet, akkor először nevezze "
 "át, és próbálja meg újra."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1144
+#: ../libnautilus-private/nautilus-file-operations.c:1145
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "Nem lehet átmásolni a(z) \"%s\"-t az új helyre."
+msgstr "A(z) \"%s\" nem másolható az új helyre."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1147
+#: ../libnautilus-private/nautilus-file-operations.c:1148
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani "
-"vagy átnevezni. Ha még mindig át akarja másolni az elemet, először nevezze "
-"át, és próbálja meg újra."
+"A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani vagy lecserélni. "
+"Ha még mindig át akarja másolni az elemet, akkor először nevezze át, és próbálja meg újra."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1171
+#: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "A(z) \"%s\" mappa már létezik. Lecseréli?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1174
+#: ../libnautilus-private/nautilus-file-operations.c:1175
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "A(z) \"%s\" fájl már létezik. Lecseréli?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1182
+#: ../libnautilus-private/nautilus-file-operations.c:1183
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
@@ -1445,20 +1444,20 @@ msgstr ""
 "Ha lecserél egy létező mappát, akkor az abban levő azon fájlok, amelyek "
 "ütköznek a másolandó fájlokkal, felül lesznek írva."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1184
+#: ../libnautilus-private/nautilus-file-operations.c:1185
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "Ha lecserél egy létező fájlt, akkor annak tartalma felülíródik."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Replace"
 msgstr "_Csere"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "S_kip All"
 msgstr "Öszes ki_hagyása"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "Replace _All"
 msgstr "_Mindet cseréli"
 
@@ -1467,15 +1466,15 @@ msgstr "_Mindet cseréli"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1275
+#: ../libnautilus-private/nautilus-file-operations.c:1276
 #: ../libnautilus-private/nautilus-file.c:4711
-#: ../src/file-manager/fm-directory-view.c:9370
+#: ../src/file-manager/fm-directory-view.c:9384
 #, c-format
 msgid "link to %s"
 msgstr "link erre: %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1279
+#: ../libnautilus-private/nautilus-file-operations.c:1280
 #, c-format
 msgid "another link to %s"
 msgstr "még egy link ehhez: %s"
@@ -1484,25 +1483,25 @@ msgstr "még egy link ehhez: %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1295
+#: ../libnautilus-private/nautilus-file-operations.c:1296
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. link ehhez: %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1299
+#: ../libnautilus-private/nautilus-file-operations.c:1300
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. link ehhez: %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1303
+#: ../libnautilus-private/nautilus-file-operations.c:1304
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. link ehhez: %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1307
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. link ehhez: %s"
@@ -1512,12 +1511,12 @@ msgstr "%d. link ehhez: %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1328
+#: ../libnautilus-private/nautilus-file-operations.c:1329
 msgid " (copy)"
 msgstr " (másolat)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1330
+#: ../libnautilus-private/nautilus-file-operations.c:1331
 msgid " (another copy)"
 msgstr " (még egy másolat)"
 
@@ -1525,36 +1524,36 @@ msgstr " (még egy másolat)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1333
-#: ../libnautilus-private/nautilus-file-operations.c:1335
-#: ../libnautilus-private/nautilus-file-operations.c:1337
-#: ../libnautilus-private/nautilus-file-operations.c:1347
+#: ../libnautilus-private/nautilus-file-operations.c:1334
+#: ../libnautilus-private/nautilus-file-operations.c:1336
+#: ../libnautilus-private/nautilus-file-operations.c:1338
+#: ../libnautilus-private/nautilus-file-operations.c:1348
 msgid "th copy)"
 msgstr ". másolat)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1340
+#: ../libnautilus-private/nautilus-file-operations.c:1341
 msgid "st copy)"
 msgstr ". másolat)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1342
+#: ../libnautilus-private/nautilus-file-operations.c:1343
 msgid "nd copy)"
 msgstr ". másolat)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1344
+#: ../libnautilus-private/nautilus-file-operations.c:1345
 msgid "rd copy)"
 msgstr ". másolat)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1361
+#: ../libnautilus-private/nautilus-file-operations.c:1362
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (másolat)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1363
+#: ../libnautilus-private/nautilus-file-operations.c:1364
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (még egy másolat)%s"
@@ -1563,248 +1562,248 @@ msgstr "%s (még egy másolat)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1366
-#: ../libnautilus-private/nautilus-file-operations.c:1368
-#: ../libnautilus-private/nautilus-file-operations.c:1370
-#: ../libnautilus-private/nautilus-file-operations.c:1379
+#: ../libnautilus-private/nautilus-file-operations.c:1367
+#: ../libnautilus-private/nautilus-file-operations.c:1369
+#: ../libnautilus-private/nautilus-file-operations.c:1371
+#: ../libnautilus-private/nautilus-file-operations.c:1380
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1373
+#: ../libnautilus-private/nautilus-file-operations.c:1374
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1375
+#: ../libnautilus-private/nautilus-file-operations.c:1376
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1377
+#: ../libnautilus-private/nautilus-file-operations.c:1378
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1477
+#: ../libnautilus-private/nautilus-file-operations.c:1478
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1485
+#: ../libnautilus-private/nautilus-file-operations.c:1486
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1681
-#: ../libnautilus-private/nautilus-file-operations.c:2291
-#: ../libnautilus-private/nautilus-file-operations.c:2474
+#: ../libnautilus-private/nautilus-file-operations.c:1682
+#: ../libnautilus-private/nautilus-file-operations.c:2292
+#: ../libnautilus-private/nautilus-file-operations.c:2475
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Ismeretlen GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2027
+#: ../libnautilus-private/nautilus-file-operations.c:2028
 msgid "Moving files to the Trash"
 msgstr "Fájlok áthelyezése a Kukába"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2029
+#: ../libnautilus-private/nautilus-file-operations.c:2030
 msgid "Throwing out file:"
 msgstr "A fájl kidobása:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2031
-#: ../libnautilus-private/nautilus-file-operations.c:2042
+#: ../libnautilus-private/nautilus-file-operations.c:2032
+#: ../libnautilus-private/nautilus-file-operations.c:2043
 msgid "Moving"
 msgstr "Áthelyezés"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2032
+#: ../libnautilus-private/nautilus-file-operations.c:2033
 msgid "Preparing to Move to Trash..."
 msgstr "Felkészülés áthelyezésre a Kukába..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2038
+#: ../libnautilus-private/nautilus-file-operations.c:2039
 msgid "Moving files"
 msgstr "Fájlok áthelyezése"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2040
+#: ../libnautilus-private/nautilus-file-operations.c:2041
 msgid "Moving file:"
 msgstr "Fájl áthelyezése:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2043
+#: ../libnautilus-private/nautilus-file-operations.c:2044
 msgid "Preparing To Move..."
 msgstr "Felkészülés áthelyezésre..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2044
+#: ../libnautilus-private/nautilus-file-operations.c:2045
 msgid "Finishing Move..."
 msgstr "Áthelyezés befejezése..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2052
+#: ../libnautilus-private/nautilus-file-operations.c:2053
 msgid "Creating links to files"
 msgstr "Linkek létrehozása"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2054
+#: ../libnautilus-private/nautilus-file-operations.c:2055
 msgid "Linking file:"
 msgstr "Fájl linkelése:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2056
+#: ../libnautilus-private/nautilus-file-operations.c:2057
 msgid "Linking"
 msgstr "Linkek létrehozása"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2057
+#: ../libnautilus-private/nautilus-file-operations.c:2058
 msgid "Preparing to Create Links..."
 msgstr "Linkek létrehozásának előkészítése..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2058
+#: ../libnautilus-private/nautilus-file-operations.c:2059
 msgid "Finishing Creating Links..."
 msgstr "Linkek létrehozásának befejezése..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2065
 msgid "Copying files"
 msgstr "Fájlok másolása"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2067
 msgid "Copying file:"
 msgstr "Fájl másolása:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2068
+#: ../libnautilus-private/nautilus-file-operations.c:2069
 msgid "Copying"
 msgstr "Másolás alatt"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2069
+#: ../libnautilus-private/nautilus-file-operations.c:2070
 msgid "Preparing To Copy..."
 msgstr "Felkészülés a másolásra..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2087
+#: ../libnautilus-private/nautilus-file-operations.c:2088
 msgid "You cannot copy items into the trash."
 msgstr "Nem másolhat elemeket a Kukába."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2088
+#: ../libnautilus-private/nautilus-file-operations.c:2089
 msgid "You cannot create links inside the trash."
 msgstr "Nem hozhat létre linkeket a Kukán belül."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2089
+#: ../libnautilus-private/nautilus-file-operations.c:2090
 msgid "Files and folders can only be moved into the trash."
 msgstr "Csak fájlokat és mappákat lehet áthelyezni a Kukába."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2112
+#: ../libnautilus-private/nautilus-file-operations.c:2113
 msgid "You cannot move this trash folder."
 msgstr "Nem helyezheti át ezt a Kuka mappát."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2113
+#: ../libnautilus-private/nautilus-file-operations.c:2114
 msgid "You cannot copy this trash folder."
 msgstr "Nem másolhatja ezt a Kuka mappát."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2114
+#: ../libnautilus-private/nautilus-file-operations.c:2115
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 "Egy Kuka mappa olyan elemeket tárolására használatos, amelyek át lettek "
 "helyezve a Kukába."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
-msgid "You cannot move a folder into itself."
-msgstr "Nem lehet egy mappát önmagába áthelyezni."
-
 #: ../libnautilus-private/nautilus-file-operations.c:2139
-msgid "You cannot copy a folder into itself."
-msgstr "Nem lehet egy mappát önmagára másolni."
+msgid "You cannot move a folder into itself."
+msgstr "Nem helyezhet át egy mappát önmagába."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2140
+msgid "You cannot copy a folder into itself."
+msgstr "Nem másolhat egy mappát önmagába."
+
+#: ../libnautilus-private/nautilus-file-operations.c:2141
 msgid "The destination folder is inside the source folder."
 msgstr "A célmappa a forrásmappán belül van."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2153
+#: ../libnautilus-private/nautilus-file-operations.c:2154
 msgid "You cannot copy a file over itself."
 msgstr "Nem másolhatja a fájlt saját magára."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2154
+#: ../libnautilus-private/nautilus-file-operations.c:2155
 msgid "The destination and source are the same file."
 msgstr "A cél és a forrás ugyanaz a fájl."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2209
-#: ../libnautilus-private/nautilus-file-operations.c:2369
+#: ../libnautilus-private/nautilus-file-operations.c:2210
+#: ../libnautilus-private/nautilus-file-operations.c:2370
 msgid "You do not have permissions to write to the destination."
 msgstr "Nincs joga írni a célterületre."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2211
-#: ../libnautilus-private/nautilus-file-operations.c:2371
+#: ../libnautilus-private/nautilus-file-operations.c:2212
+#: ../libnautilus-private/nautilus-file-operations.c:2372
 msgid "There is no space on the destination."
 msgstr "Nincs hely a célmeghajtón."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2213
+#: ../libnautilus-private/nautilus-file-operations.c:2214
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "\"%s\" hiba új mappa létrehozása közben."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2218
+#: ../libnautilus-private/nautilus-file-operations.c:2219
 msgid "Error creating new folder."
 msgstr "Hiba új mappa létrehozása közben."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2316
 msgid "untitled folder"
 msgstr "névtelen mappa"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2373
+#: ../libnautilus-private/nautilus-file-operations.c:2374
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "\"%s\" hiba új dokumentum létrehozása közben."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2379
 msgid "Error creating new document."
 msgstr "Hiba új dokumentum létrehozása közben."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2605
+#: ../libnautilus-private/nautilus-file-operations.c:2606
 msgid "new file"
 msgstr "új fájl"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2671
+#: ../libnautilus-private/nautilus-file-operations.c:2672
 msgid "Deleting files"
 msgstr "Fájlok törlése folyamatban"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2708
+#: ../libnautilus-private/nautilus-file-operations.c:2674
+#: ../libnautilus-private/nautilus-file-operations.c:2709
 msgid "Files deleted:"
 msgstr "Törölt fájlok:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2675
-#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2676
+#: ../libnautilus-private/nautilus-file-operations.c:2711
 msgid "Deleting"
 msgstr "Törlés folyamatban"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2676
+#: ../libnautilus-private/nautilus-file-operations.c:2677
 msgid "Preparing to Delete files..."
 msgstr "Felkészülés a fájlok törlésére..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2706
+#: ../libnautilus-private/nautilus-file-operations.c:2707
 msgid "Emptying the Trash"
 msgstr "Kuka ürítése folyamatban"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2711
+#: ../libnautilus-private/nautilus-file-operations.c:2712
 msgid "Preparing to Empty the Trash..."
 msgstr "Felkészülés a Kuka ürítésére..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2747
+#: ../libnautilus-private/nautilus-file-operations.c:2748
 msgid "Empty all of the items from the trash?"
 msgstr "Ki akarja üríteni az összes elemet a Kukából?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2750
+#: ../libnautilus-private/nautilus-file-operations.c:2751
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1812,7 +1811,7 @@ msgstr ""
 "Ha kiüríti a Kukát, az elemek véglegesen törlődni fognak. Ne feledje, hogy "
 "külön-külön is törölheti őket."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2772
+#: ../libnautilus-private/nautilus-file-operations.c:2773
 msgid "_Empty Trash"
 msgstr "K_uka ürítése"
 
@@ -2363,7 +2362,7 @@ msgstr "%s megnyitása"
 #: ../src/nautilus-window-manage-views.c:1480
 #, c-format
 msgid "Couldn't display \"%s\"."
-msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t."
+msgstr "A(z) \"%s\" nem jeleníthető meg."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:592
 #: ../libnautilus-private/nautilus-program-choosing.c:915
@@ -2385,12 +2384,12 @@ msgstr "Hozzáférés megtagadva."
 #: ../src/nautilus-window-manage-views.c:1472
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a(z) \"%s\" gép nem található."
+msgstr "A(z) \"%s\" nem jeleníthető meg, mivel a(z) \"%s\" gép nem található."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:613
 #: ../src/nautilus-window-manage-views.c:1475
 msgid "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Ellenőrizze, hogy nem gépelt-e el valamit és hogy jók-e a proxy beállításai."
+msgstr "Ellenőrizze, hogy nem gépelt-e el valamit és hogy helyesek-e a proxy beállításai."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:618
 #: ../src/nautilus-window-manage-views.c:1433
@@ -2485,7 +2484,7 @@ msgstr "A fájlok kezelési módjának megváltoztatása"
 msgid "File Management"
 msgstr "Fájlkezelés"
 
-#: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1247
+#: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1245
 msgid "Home Folder"
 msgstr "Saját mappa"
 
@@ -2535,22 +2534,22 @@ msgstr "Háttér"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6594
-#: ../src/file-manager/fm-directory-view.c:7398
+#: ../src/file-manager/fm-directory-view.c:6608
+#: ../src/file-manager/fm-directory-view.c:7412
 msgid "E_mpty Trash"
 msgstr "_Kuka ürítése"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6566
+#: ../src/file-manager/fm-directory-view.c:6580
 msgid "Create L_auncher..."
 msgstr "In_dítóikon létrehozása..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6567
+#: ../src/file-manager/fm-directory-view.c:6581
 msgid "Create a new launcher"
 msgstr "Új indítóikon létrehozása"
 
@@ -2574,13 +2573,13 @@ msgstr "Kuka ürítése"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6595
+#: ../src/file-manager/fm-directory-view.c:6609
 msgid "Delete all items in the Trash"
 msgstr "Minden elem törlése a Kukából"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:165
+#: ../src/nautilus-places-sidebar.c:182
 msgid "Desktop"
 msgstr "Munkaasztal"
 
@@ -2745,7 +2744,7 @@ msgstr "A(z) \"%s\" fájl nem helyezhető át a Kukába."
 
 #: ../src/file-manager/fm-directory-view.c:3727
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "Az elemeket nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
+msgstr "Az elemek nem helyezhetők át a Kukába, akarja ezeket most törölni?"
 
 #: ../src/file-manager/fm-directory-view.c:3728
 #, c-format
@@ -2754,7 +2753,7 @@ msgstr "A(z) %d kijelölt elem egyike sem helyezhető át a Kukába"
 
 #: ../src/file-manager/fm-directory-view.c:3730
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "Néhány elemet nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
+msgstr "Néhány elem nem helyezhető át a Kukába, akarja ezeket most törölni?"
 
 #: ../src/file-manager/fm-directory-view.c:3731
 #, c-format
@@ -2777,50 +2776,50 @@ msgid_plural ""
 msgstr[0] "Biztosan véglegesen törölni akarja a kijelölt %d elemet a Kukából?"
 msgstr[1] "Biztosan véglegesen törölni akarja a kijelölt %d elemet a Kukából?"
 
-#: ../src/file-manager/fm-directory-view.c:3782
+#: ../src/file-manager/fm-directory-view.c:3784
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ha töröl egy elemet, akkor az véglegesen el fog veszni."
 
-#: ../src/file-manager/fm-directory-view.c:4360
+#: ../src/file-manager/fm-directory-view.c:4364
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Megnyitás ezzel: \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4361
+#: ../src/file-manager/fm-directory-view.c:4365
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "\"%s\" használata a kijelölt elem megnyitásához"
 msgstr[1] "\"%s\" használata a kijelölt elemek megnyitásához"
 
-#: ../src/file-manager/fm-directory-view.c:4453
+#: ../src/file-manager/fm-directory-view.c:4457
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Futtatja a(z) \"%s\"-t, vagy megjeleníti a tartalmát?"
 
-#: ../src/file-manager/fm-directory-view.c:4455
+#: ../src/file-manager/fm-directory-view.c:4459
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "A(z) \"%s\" egy végrehajtható szöveges fájl."
 
-#: ../src/file-manager/fm-directory-view.c:4461
+#: ../src/file-manager/fm-directory-view.c:4465
 msgid "Run in _Terminal"
 msgstr "_Futtatás terminálban"
 
-#: ../src/file-manager/fm-directory-view.c:4462
+#: ../src/file-manager/fm-directory-view.c:4466
 msgid "_Display"
 msgstr "_Megjelenítés"
 
-#: ../src/file-manager/fm-directory-view.c:4465
+#: ../src/file-manager/fm-directory-view.c:4469
 msgid "_Run"
 msgstr "_Futtatás"
 
-#: ../src/file-manager/fm-directory-view.c:4861
+#: ../src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid "Cannot open %s"
-msgstr "Nem lehet megnyitni a(z) %s-t"
+msgstr "%s nem nyitható meg"
 
-#: ../src/file-manager/fm-directory-view.c:4864
+#: ../src/file-manager/fm-directory-view.c:4868
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2841,23 +2840,23 @@ msgstr ""
 "kiterjesztésűre. A fájl megnyitásához megfelelő alkalmazás kiválasztásához "
 "használhatja a \"Megnyitás ezzel\" menüpontot is."
 
-#: ../src/file-manager/fm-directory-view.c:5259
+#: ../src/file-manager/fm-directory-view.c:5263
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" futtatása minden kijelölt elemre"
 
-#: ../src/file-manager/fm-directory-view.c:5508
+#: ../src/file-manager/fm-directory-view.c:5512
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Dokumentum létrehozása a(z) \"%s\" sablonból"
 
-#: ../src/file-manager/fm-directory-view.c:5714
+#: ../src/file-manager/fm-directory-view.c:5718
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Minden ebben a mappában található végrehajtható fájl megjelenik a Programok "
 "menüben."
 
-#: ../src/file-manager/fm-directory-view.c:5716
+#: ../src/file-manager/fm-directory-view.c:5720
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2865,7 +2864,7 @@ msgstr ""
 "Ha kiválaszt egy parancsfájlt a menüből, lefuttathatja azt bármelyik "
 "kijelölt elemmel (a kijelölt elem lesz a parancsfájl bemenete)."
 
-#: ../src/file-manager/fm-directory-view.c:5718
+#: ../src/file-manager/fm-directory-view.c:5722
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2906,19 +2905,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: a jelenlegi ablak helyzete és mérete"
 
-#: ../src/file-manager/fm-directory-view.c:5879
-#: ../src/file-manager/fm-tree-view.c:902
+#: ../src/file-manager/fm-directory-view.c:5883
+#: ../src/file-manager/fm-tree-view.c:900
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" áthelyezésére akkor kerül sor, ha kiválasztja a Beillesztés parancsot"
 
-#: ../src/file-manager/fm-directory-view.c:5883
-#: ../src/file-manager/fm-tree-view.c:906
+#: ../src/file-manager/fm-directory-view.c:5887
+#: ../src/file-manager/fm-tree-view.c:904
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" másolására akkor kerül sor, ha kiválasztja a Beillesztés parancsot"
 
-#: ../src/file-manager/fm-directory-view.c:5890
+#: ../src/file-manager/fm-directory-view.c:5894
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
@@ -2929,7 +2928,7 @@ msgstr[1] ""
 "A(z) %d kijelölt elem akkor kerül áthelyezésre, ha kiválasztja a Beillesztés "
 "parancsot"
 
-#: ../src/file-manager/fm-directory-view.c:5897
+#: ../src/file-manager/fm-directory-view.c:5901
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
@@ -2940,142 +2939,142 @@ msgstr[1] ""
 "A(z) %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Beillesztés "
 "parancsot"
 
-#: ../src/file-manager/fm-directory-view.c:5991
-#: ../src/file-manager/fm-tree-view.c:983
+#: ../src/file-manager/fm-directory-view.c:5995
+#: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nincs semmi a vágólapon."
 
-#: ../src/file-manager/fm-directory-view.c:6346
+#: ../src/file-manager/fm-directory-view.c:6360
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Kapcsolódás a(z) %s kiszolgálóhoz"
 
-#: ../src/file-manager/fm-directory-view.c:6351
+#: ../src/file-manager/fm-directory-view.c:6365
 msgid "_Connect"
 msgstr "Kapcs_olódás"
 
-#: ../src/file-manager/fm-directory-view.c:6365
+#: ../src/file-manager/fm-directory-view.c:6379
 msgid "Link _name:"
 msgstr "Hivatkozás_név:"
 
-#: ../src/file-manager/fm-directory-view.c:6540
+#: ../src/file-manager/fm-directory-view.c:6554
 msgid "Create _Document"
 msgstr "_Dokumentum létrehozása"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6541
+#: ../src/file-manager/fm-directory-view.c:6555
 msgid "Open Wit_h"
 msgstr "Megnyitás e_zzel"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6542
+#: ../src/file-manager/fm-directory-view.c:6556
 msgid "Choose a program with which to open the selected item"
 msgstr "Válasszon egy programot, amivel megnyithatja a kijelölt elemet"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6544
-#: ../src/file-manager/fm-directory-view.c:6552
+#: ../src/file-manager/fm-directory-view.c:6558
+#: ../src/file-manager/fm-directory-view.c:6566
 msgid "_Properties"
 msgstr "T_ulajdonságok"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6545
+#: ../src/file-manager/fm-directory-view.c:6559
 msgid "View or modify the properties of each selected item"
 msgstr "Minden kijelölt elem tulajdonságainak megtekintése vagy módosítása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6553
+#: ../src/file-manager/fm-directory-view.c:6567
 msgid "View or modify the properties of the open folder"
 msgstr "A megnyitott mappa tulajdonságainak megtekintése vagy módosítása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6556
+#: ../src/file-manager/fm-directory-view.c:6570
 msgid "Create _Folder"
 msgstr "Mappa lét_rehozása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6557
+#: ../src/file-manager/fm-directory-view.c:6571
 msgid "Create a new empty folder inside this folder"
 msgstr "Új üres mappa létrehozása ebben a mappában"
 
-#: ../src/file-manager/fm-directory-view.c:6559
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "No templates Installed"
 msgstr "Nincsenek telepítve sablonok"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6562
+#: ../src/file-manager/fm-directory-view.c:6576
 msgid "_Empty File"
 msgstr "Ü_res fájl"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6563
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Create a new empty file inside this folder"
 msgstr "Új üres fájl létrehozása ebben a mappában"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6570
-#: ../src/file-manager/fm-directory-view.c:7299
-#: ../src/file-manager/fm-tree-view.c:1105
+#: ../src/file-manager/fm-directory-view.c:6584
+#: ../src/file-manager/fm-directory-view.c:7313
+#: ../src/file-manager/fm-tree-view.c:1103
 msgid "_Open"
 msgstr "_Megnyitás"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6571
+#: ../src/file-manager/fm-directory-view.c:6585
 msgid "Open the selected item in this window"
 msgstr "A kijelölt elem megnyitása ebben az ablakban"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6578
-#: ../src/file-manager/fm-directory-view.c:6686
+#: ../src/file-manager/fm-directory-view.c:6592
+#: ../src/file-manager/fm-directory-view.c:6700
 msgid "Open in Navigation Window"
 msgstr "Megnyitás navigációs ablakban"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6579
+#: ../src/file-manager/fm-directory-view.c:6593
 msgid "Open each selected item in a navigation window"
 msgstr "Minden kijelölt elem megnyitása egy navigációs ablakban"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6582
-#: ../src/file-manager/fm-directory-view.c:6586
+#: ../src/file-manager/fm-directory-view.c:6596
+#: ../src/file-manager/fm-directory-view.c:6600
 msgid "Open with Other _Application..."
 msgstr "Megnyitás egyéb _alkalmazással..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6583
-#: ../src/file-manager/fm-directory-view.c:6587
+#: ../src/file-manager/fm-directory-view.c:6597
+#: ../src/file-manager/fm-directory-view.c:6601
 msgid "Choose another application with which to open the selected item"
 msgstr "Válasszon egy másik alkalmazást, amivel megnyithatja a kiválasztott elemet"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6590
+#: ../src/file-manager/fm-directory-view.c:6604
 msgid "_Open Scripts Folder"
 msgstr "_Parancsfájlok mappa megnyitása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6591
+#: ../src/file-manager/fm-directory-view.c:6605
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Ebben a menüben szereplő parancsfájlok mappájának megnyitása"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6599
+#: ../src/file-manager/fm-directory-view.c:6613
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "A kijelölt fájlok előkészítése áthelyezésre egy \"Beillesztés\" paranccsal"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6603
+#: ../src/file-manager/fm-directory-view.c:6617
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "A kijelölt fájlok előkészítése másolásra a \"Beillesztés\" paranccsal"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6607
+#: ../src/file-manager/fm-directory-view.c:6621
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Egy Kivágás vagy Másolás parancs által kiválasztott fájlok áthelyezése vagy "
@@ -3084,13 +3083,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6612
-#: ../src/file-manager/fm-tree-view.c:1163
+#: ../src/file-manager/fm-directory-view.c:6626
+#: ../src/file-manager/fm-tree-view.c:1161
 msgid "_Paste Into Folder"
 msgstr "_Beillesztés a mappába"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6613
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3099,318 +3098,318 @@ msgstr ""
 "másolása a kijelölt mappába"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6617
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Select all items in this window"
 msgstr "Minden elem kijelölése ebben az ablakban"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6620
+#: ../src/file-manager/fm-directory-view.c:6634
 msgid "Select _Pattern"
 msgstr "Minta ki_választása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6621
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Select items in this window matching a given pattern"
 msgstr "Minden a megadott mintával egyező elem kijelölése ebben az ablakban"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6624
+#: ../src/file-manager/fm-directory-view.c:6638
 msgid "D_uplicate"
 msgstr "Kettő_zés"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6625
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Duplicate each selected item"
 msgstr "Minden kijelölt elem kettőzése"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6628
-#: ../src/file-manager/fm-directory-view.c:7372
+#: ../src/file-manager/fm-directory-view.c:6642
+#: ../src/file-manager/fm-directory-view.c:7386
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "_Link létrehozása"
 msgstr[1] "_Linkek létrehozása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6629
+#: ../src/file-manager/fm-directory-view.c:6643
 msgid "Create a symbolic link for each selected item"
 msgstr "Minden kijelölt elemre szimbolikus linket hoz létre"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6632
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "_Rename..."
 msgstr "Át_nevezés..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6647
 msgid "Rename selected item"
 msgstr "Kijelölt ikon átnevezése"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6640
-#: ../src/file-manager/fm-directory-view.c:6700
-#: ../src/file-manager/fm-directory-view.c:7156
-#: ../src/file-manager/fm-directory-view.c:7340
-#: ../src/file-manager/fm-directory-view.c:7729
+#: ../src/file-manager/fm-directory-view.c:6654
+#: ../src/file-manager/fm-directory-view.c:6714
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7354
+#: ../src/file-manager/fm-directory-view.c:7743
 msgid "Mo_ve to Trash"
 msgstr "Át_helyezés a Kukába"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6641
-#: ../src/file-manager/fm-directory-view.c:7341
+#: ../src/file-manager/fm-directory-view.c:6655
+#: ../src/file-manager/fm-directory-view.c:7355
 msgid "Move each selected item to the Trash"
 msgstr "Minden kijelölt elem áthelyezése a Kukába"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6644
-#: ../src/file-manager/fm-directory-view.c:6704
-#: ../src/file-manager/fm-directory-view.c:7359
+#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6718
+#: ../src/file-manager/fm-directory-view.c:7373
 msgid "_Delete"
 msgstr "_Törlés"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6645
+#: ../src/file-manager/fm-directory-view.c:6659
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Minden kijelölt elem törlése, Kukába való áthelyezés nélkül"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6648
+#: ../src/file-manager/fm-directory-view.c:6662
 msgid "Reset View to _Defaults"
 msgstr "Nézet visszaállítása az _alapértelmezettre"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6649
+#: ../src/file-manager/fm-directory-view.c:6663
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Rendezési sorrend és nagyítás tulajdonságainak visszaállítása a nézet "
 "alapértelmezett értékére"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6652
+#: ../src/file-manager/fm-directory-view.c:6666
 msgid "Connect To This Server"
 msgstr "Kapcsolódás ehhez a kiszolgálóhoz"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6653
+#: ../src/file-manager/fm-directory-view.c:6667
 msgid "Make a permanent connection to this server"
 msgstr "Állandó kapcsolat létrehozása a kiszolgálóval"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6656
+#: ../src/file-manager/fm-directory-view.c:6670
 msgid "_Mount Volume"
 msgstr "Kötet _csatlakoztatása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6657
+#: ../src/file-manager/fm-directory-view.c:6671
 msgid "Mount the selected volume"
 msgstr "A kijelölt kötet csatlakoztatása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6660
-#: ../src/file-manager/fm-tree-view.c:751
+#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-tree-view.c:749
 msgid "_Unmount Volume"
 msgstr "Kötet _leválasztása"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6661
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Unmount the selected volume"
 msgstr "A kijelölt kötet leválasztása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6664
+#: ../src/file-manager/fm-directory-view.c:6678
 msgid "_Eject"
 msgstr "_Kiadás"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6665
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "Eject the selected volume"
 msgstr "A kijelölt kötet kiadása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6668
+#: ../src/file-manager/fm-directory-view.c:6682
 msgid "_Format"
 msgstr "_Formázás"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6669
+#: ../src/file-manager/fm-directory-view.c:6683
 msgid "Format the selected volume"
 msgstr "A kijelölt kötet formázása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6672
+#: ../src/file-manager/fm-directory-view.c:6686
 msgid "Open File and Close window"
 msgstr "Fájl megnyitása és az ablak bezárása"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6676
+#: ../src/file-manager/fm-directory-view.c:6690
 msgid "Sa_ve Search"
 msgstr "K_eresés mentése"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6677
+#: ../src/file-manager/fm-directory-view.c:6691
 msgid "Save the edited search"
 msgstr "A szerkesztett keresés mentése"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6680
+#: ../src/file-manager/fm-directory-view.c:6694
 msgid "Sa_ve Search As..."
 msgstr "K_eresés mentése másként..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6681
+#: ../src/file-manager/fm-directory-view.c:6695
 msgid "Save the current search as a file"
 msgstr "Az aktuális keresés mentése fájlként"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6687
+#: ../src/file-manager/fm-directory-view.c:6701
 msgid "Open this folder in a navigation window"
 msgstr "Ezen mappa megnyitása egy navigációs ablakban"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6692
+#: ../src/file-manager/fm-directory-view.c:6706
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Ezen mappa előkészítése áthelyezésre a \"Beillesztés\" paranccsal"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6696
+#: ../src/file-manager/fm-directory-view.c:6710
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Ezen mappa előkészítése másolásra a \"Beillesztés\" paranccsal"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6701
+#: ../src/file-manager/fm-directory-view.c:6715
 msgid "Move this folder to the Trash"
 msgstr "Ezen mappa áthelyezése a Kukába"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6705
+#: ../src/file-manager/fm-directory-view.c:6719
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Ezen mappa törlése, Kukába való áthelyezés nélkül"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6711
+#: ../src/file-manager/fm-directory-view.c:6725
 msgid "Show _Hidden Files"
 msgstr "_Rejtett fájlok megjelenítése"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6712
+#: ../src/file-manager/fm-directory-view.c:6726
 msgid "Toggle the display of hidden files in the current window"
 msgstr "A rejtett fájlok megjelenítésének átváltása a jelenlegi ablakban"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6798
+#: ../src/file-manager/fm-directory-view.c:6812
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Parancsfájlok futtatása vagy kezelése a(z) %s könyvtárból"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6800
+#: ../src/file-manager/fm-directory-view.c:6814
 msgid "_Scripts"
 msgstr "_Parancsfájlok"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7125
-#: ../src/file-manager/fm-directory-view.c:7308
-#: ../src/file-manager/fm-tree-view.c:1116
+#: ../src/file-manager/fm-directory-view.c:7139
+#: ../src/file-manager/fm-directory-view.c:7322
+#: ../src/file-manager/fm-tree-view.c:1114
 msgid "Open in New Window"
 msgstr "Megnyitás új ablakban"
 
-#: ../src/file-manager/fm-directory-view.c:7127
-#: ../src/file-manager/fm-directory-view.c:7316
+#: ../src/file-manager/fm-directory-view.c:7141
+#: ../src/file-manager/fm-directory-view.c:7330
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "Mappa bön_gészése"
 msgstr[1] "Mappák bön_gészése"
 
-#: ../src/file-manager/fm-directory-view.c:7152
-#: ../src/file-manager/fm-directory-view.c:7336
+#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7350
 msgid "_Delete from Trash"
 msgstr "Törlés a _Kukából"
 
-#: ../src/file-manager/fm-directory-view.c:7153
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Delete the open folder permanently"
 msgstr "A megnyitott mappa végleges törlése"
 
-#: ../src/file-manager/fm-directory-view.c:7157
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Move the open folder to the Trash"
 msgstr "A megnyitott mappa áthelyezése a Kukába"
 
-#: ../src/file-manager/fm-directory-view.c:7292
+#: ../src/file-manager/fm-directory-view.c:7306
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Megnyitás ezzel: \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7310
+#: ../src/file-manager/fm-directory-view.c:7324
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Megnyitás %d új ablakban"
 msgstr[1] "Megnyitás %d új ablakban"
 
-#: ../src/file-manager/fm-directory-view.c:7337
+#: ../src/file-manager/fm-directory-view.c:7351
 msgid "Delete all selected items permanently"
 msgstr "Minden kijelölt elem végleges törlése"
 
-#: ../src/file-manager/fm-directory-view.c:7709
+#: ../src/file-manager/fm-directory-view.c:7723
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "A(z) \"%s\" link törött."
 
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7725
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "A(z) \"%s\" link törött. Áthelyezi a Kukába?"
 
-#: ../src/file-manager/fm-directory-view.c:7717
+#: ../src/file-manager/fm-directory-view.c:7731
 msgid "This link can't be used, because it has no target."
 msgstr "Ez a link nem használható, mert nem mutat semmire."
 
-#: ../src/file-manager/fm-directory-view.c:7719
+#: ../src/file-manager/fm-directory-view.c:7733
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Ez a link nem használható, mert nem létezik, amire mutat (\"%s\")."
 
-#: ../src/file-manager/fm-directory-view.c:8339
+#: ../src/file-manager/fm-directory-view.c:8353
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" megnyitása."
 
-#: ../src/file-manager/fm-directory-view.c:8342
+#: ../src/file-manager/fm-directory-view.c:8356
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "%d elem megnyitása"
 msgstr[1] "%d elem megnyitása"
 
-#: ../src/file-manager/fm-directory-view.c:9234
+#: ../src/file-manager/fm-directory-view.c:9248
 msgid "Download location?"
 msgstr "Letölti a helyet?"
 
-#: ../src/file-manager/fm-directory-view.c:9237
+#: ../src/file-manager/fm-directory-view.c:9251
 msgid "You can download it or make a link to it."
 msgstr "Letöltheti vagy létrehozhat egy rámutató linket."
 
-#: ../src/file-manager/fm-directory-view.c:9240
+#: ../src/file-manager/fm-directory-view.c:9254
 msgid "Make a _Link"
 msgstr "_Link létrehozása"
 
-#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-directory-view.c:9258
 msgid "_Download"
 msgstr "_Letöltés"
 
-#: ../src/file-manager/fm-directory-view.c:9303
-#: ../src/file-manager/fm-directory-view.c:9355
-#: ../src/file-manager/fm-directory-view.c:9452
+#: ../src/file-manager/fm-directory-view.c:9317
+#: ../src/file-manager/fm-directory-view.c:9369
+#: ../src/file-manager/fm-directory-view.c:9466
 msgid "Drag and drop is not supported."
 msgstr "A húzd és ejtsd nem támogatott."
 
-#: ../src/file-manager/fm-directory-view.c:9304
+#: ../src/file-manager/fm-directory-view.c:9318
 msgid "Drag and drop is only supported on local file systems."
 msgstr "A húzd és ejtsd csak helyi fájlrendszereken támogatott."
 
-#: ../src/file-manager/fm-directory-view.c:9356
-#: ../src/file-manager/fm-directory-view.c:9453
+#: ../src/file-manager/fm-directory-view.c:9370
+#: ../src/file-manager/fm-directory-view.c:9467
 msgid "An invalid drag type was used."
 msgstr "Érvénytelen elhúzott típus."
 
@@ -3453,11 +3452,11 @@ msgstr "A(z) \"%s\" nem található. Lehet, hogy nemrég törölték."
 #: ../src/file-manager/fm-error-reporting.c:70
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr "Sajnálom, nem lehet megjeleníteni a(z) \"%s\" teljes tartalmát."
+msgstr "Sajnálom, a(z) \"%s\" teljes tartalma nem jeleníthető meg."
 
 #: ../src/file-manager/fm-error-reporting.c:76
 msgid "The folder contents could not be displayed."
-msgstr "A mappa tartalmát nem lehet megjeleníteni."
+msgstr "A mappa tartalma nem jeleníthető meg."
 
 #: ../src/file-manager/fm-error-reporting.c:107
 #, c-format
@@ -3491,16 +3490,16 @@ msgstr "A(z) \"%s\" név nem érvényes. Használjon másik nevet."
 #: ../src/file-manager/fm-error-reporting.c:132
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr "A(z) \"%s\" nevét nem lehet megváltoztatni, mert mert írásvédett lemezen van"
+msgstr "A(z) \"%s\" neve nem változtatható meg, mert írásvédett lemezen van"
 
 #: ../src/file-manager/fm-error-reporting.c:141
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Sajnálom, nem lehet átnevezni \"%s\"-t erre: \"%s\"."
+msgstr "Sajnálom, \"%s\" nem nevezhető át erre: \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:148
 msgid "The item could not be renamed."
-msgstr "Nem lehet átnevezni az elemet."
+msgstr "Az elem nem nevezhető át."
 
 #: ../src/file-manager/fm-error-reporting.c:168
 #, c-format
@@ -3510,48 +3509,44 @@ msgstr "Nem jogosult a(z) \"%s\" csoportjának megváltoztatására."
 #: ../src/file-manager/fm-error-reporting.c:172
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr "A(z) \"%s\" csoportját nem lehet megváltoztatni, mert írásvédett lemezen van"
+msgstr "A(z) \"%s\" írásvédett lemezen van, ezért csoportja nem változtatható meg"
 
 #: ../src/file-manager/fm-error-reporting.c:180
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr "Sajnálom, nem lehet megváltoztatni a(z) \"%s\" csoportját."
+msgstr "Sajnálom, a(z) \"%s\" csoportja nem változtatható meg."
 
 #: ../src/file-manager/fm-error-reporting.c:184
 msgid "The group could not be changed."
-msgstr "Nem lehet megváltoztatni a csoportot."
+msgstr "A csoport nem változtatható meg."
 
 #: ../src/file-manager/fm-error-reporting.c:206
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-msgstr ""
-"A(z) \"%s\" tulajdonosát nem lehet megváltoztatni, mert írásvédett lemezen "
-"van"
+msgstr "A(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem változtatható meg"
 
 #: ../src/file-manager/fm-error-reporting.c:213
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Sajnálom, nem lehet megváltoztatni a(z) \"%s\" tulajdonosát."
+msgstr "Sajnálom, a(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem változtatható meg"
 
 #: ../src/file-manager/fm-error-reporting.c:216
 msgid "The owner could not be changed."
-msgstr "Nem lehet megváltoztatni a tulajdonost."
+msgstr "A tulajdonos nem változtatható meg."
 
 #: ../src/file-manager/fm-error-reporting.c:238
 #, c-format
 msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr ""
-"A(z) \"%s\" jogosultságait nem lehet megváltoztatni, mert írásvédett lemezen "
-"van"
+msgstr "A(z) \"%s\" írásvédett lemezen van, ezért jogosultságai nem változtathatók meg"
 
 #: ../src/file-manager/fm-error-reporting.c:245
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Sajnálom, nem lehet megváltoztatni a(z) \"%s\" jogosultságait."
+msgstr "Sajnálom, a(z) \"%s\" jogosultságai nem változtathatók meg."
 
 #: ../src/file-manager/fm-error-reporting.c:248
 msgid "The permissions could not be changed."
-msgstr "Nem lehet megváltoztatni a jogosultságokat."
+msgstr "A jogosultságok nem változtathatók meg."
 
 #: ../src/file-manager/fm-error-reporting.c:316
 #, c-format
@@ -3740,48 +3735,48 @@ msgstr "(Üres)"
 msgid "Loading..."
 msgstr "Betöltés..."
 
-#: ../src/file-manager/fm-list-view.c:1845
+#: ../src/file-manager/fm-list-view.c:1851
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s látható oszlop"
 
-#: ../src/file-manager/fm-list-view.c:1864
+#: ../src/file-manager/fm-list-view.c:1870
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 "Válassza ki, hogy milyen sorrendben jelenjenek meg az információk ebben a "
 "mappában."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1906
+#: ../src/file-manager/fm-list-view.c:1912
 msgid "Visible _Columns..."
 msgstr "Látható _oszlopok..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1907
+#: ../src/file-manager/fm-list-view.c:1913
 msgid "Select the columns visible in this folder"
 msgstr "Ebben a mappában látható oszlopok kiválasztása"
 
-#: ../src/file-manager/fm-list-view.c:2606
+#: ../src/file-manager/fm-list-view.c:2613
 msgid "List"
 msgstr "Lista"
 
-#: ../src/file-manager/fm-list-view.c:2607
+#: ../src/file-manager/fm-list-view.c:2614
 msgid "View as List"
 msgstr "Listanézet"
 
-#: ../src/file-manager/fm-list-view.c:2608
+#: ../src/file-manager/fm-list-view.c:2615
 msgid "View as _List"
 msgstr "_Listanézet"
 
-#: ../src/file-manager/fm-list-view.c:2609
+#: ../src/file-manager/fm-list-view.c:2616
 msgid "The list view encountered an error."
 msgstr "A listanézet hibát észlelt."
 
-#: ../src/file-manager/fm-list-view.c:2610
+#: ../src/file-manager/fm-list-view.c:2617
 msgid "The list view encountered an error while starting up."
 msgstr "A listanézet hibát észlelt induláskor."
 
-#: ../src/file-manager/fm-list-view.c:2611
+#: ../src/file-manager/fm-list-view.c:2618
 msgid "Display this location with the list view."
 msgstr "Ezen hely megjelenítése a listanézettel."
 
@@ -3823,26 +3818,26 @@ msgstr "%s tulajdonságai"
 msgid "Cancel Group Change?"
 msgstr "Mégsem változtatja meg a csoportot?"
 
-#: ../src/file-manager/fm-properties-window.c:1707
+#: ../src/file-manager/fm-properties-window.c:1711
 msgid "Cancel Owner Change?"
 msgstr "Mégsem változtatja meg a tulajdonost?"
 
-#: ../src/file-manager/fm-properties-window.c:1907
+#: ../src/file-manager/fm-properties-window.c:1915
 msgid "nothing"
 msgstr "semmi"
 
-#: ../src/file-manager/fm-properties-window.c:1909
+#: ../src/file-manager/fm-properties-window.c:1917
 msgid "unreadable"
 msgstr "olvashatatlan"
 
-#: ../src/file-manager/fm-properties-window.c:1919
+#: ../src/file-manager/fm-properties-window.c:1927
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d elem, mérete: %s"
 msgstr[1] "%d elem, méretük: %s"
 
-#: ../src/file-manager/fm-properties-window.c:1928
+#: ../src/file-manager/fm-properties-window.c:1936
 msgid "(some contents unreadable)"
 msgstr "(egyes részei olvashatatlanok)"
 
@@ -3852,204 +3847,204 @@ msgstr "(egyes részei olvashatatlanok)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:1945
+#: ../src/file-manager/fm-properties-window.c:1953
 msgid "Contents:"
 msgstr "Tartalom:"
 
-#: ../src/file-manager/fm-properties-window.c:2280
+#: ../src/file-manager/fm-properties-window.c:2288
 msgid "Basic"
 msgstr "Alap"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2310
+#: ../src/file-manager/fm-properties-window.c:2318
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Név:"
 msgstr[1] "_Nevek:"
 
-#: ../src/file-manager/fm-properties-window.c:2329
+#: ../src/file-manager/fm-properties-window.c:2337
 msgid "Type:"
 msgstr "Típus:"
 
-#: ../src/file-manager/fm-properties-window.c:2331
-#: ../src/file-manager/fm-properties-window.c:2341
-#: ../src/file-manager/fm-properties-window.c:2347
-#: ../src/file-manager/fm-properties-window.c:2354
-#: ../src/file-manager/fm-properties-window.c:2358
+#: ../src/file-manager/fm-properties-window.c:2339
+#: ../src/file-manager/fm-properties-window.c:2349
+#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2362
 #: ../src/file-manager/fm-properties-window.c:2366
-#: ../src/file-manager/fm-properties-window.c:2372
-#: ../src/file-manager/fm-properties-window.c:2381
-#: ../src/file-manager/fm-properties-window.c:2387
-#: ../src/file-manager/fm-properties-window.c:2941
-#: ../src/file-manager/fm-properties-window.c:2962
-#: ../src/file-manager/fm-properties-window.c:3053
-#: ../src/file-manager/fm-properties-window.c:3057
+#: ../src/file-manager/fm-properties-window.c:2374
+#: ../src/file-manager/fm-properties-window.c:2380
+#: ../src/file-manager/fm-properties-window.c:2389
+#: ../src/file-manager/fm-properties-window.c:2395
+#: ../src/file-manager/fm-properties-window.c:2949
+#: ../src/file-manager/fm-properties-window.c:2970
 #: ../src/file-manager/fm-properties-window.c:3061
+#: ../src/file-manager/fm-properties-window.c:3065
+#: ../src/file-manager/fm-properties-window.c:3069
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2339
+#: ../src/file-manager/fm-properties-window.c:2347
 msgid "Size:"
 msgstr "Méret:"
 
-#: ../src/file-manager/fm-properties-window.c:2345
+#: ../src/file-manager/fm-properties-window.c:2353
 #: ../src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Hely:"
 
-#: ../src/file-manager/fm-properties-window.c:2352
+#: ../src/file-manager/fm-properties-window.c:2360
 msgid "Volume:"
 msgstr "Kötet:"
 
-#: ../src/file-manager/fm-properties-window.c:2356
+#: ../src/file-manager/fm-properties-window.c:2364
 msgid "Free space:"
 msgstr "Szabad hely:"
 
-#: ../src/file-manager/fm-properties-window.c:2364
+#: ../src/file-manager/fm-properties-window.c:2372
 msgid "Link target:"
 msgstr "Link célja:"
 
-#: ../src/file-manager/fm-properties-window.c:2370
+#: ../src/file-manager/fm-properties-window.c:2378
 msgid "MIME type:"
 msgstr "MIME-típus:"
 
-#: ../src/file-manager/fm-properties-window.c:2379
+#: ../src/file-manager/fm-properties-window.c:2387
 msgid "Modified:"
 msgstr "Módosítva:"
 
-#: ../src/file-manager/fm-properties-window.c:2385
+#: ../src/file-manager/fm-properties-window.c:2393
 msgid "Accessed:"
 msgstr "Elérés:"
 
-#: ../src/file-manager/fm-properties-window.c:2433
+#: ../src/file-manager/fm-properties-window.c:2441
 #: ../src/nautilus-emblem-sidebar.c:1041
 msgid "Emblems"
 msgstr "Matricák"
 
-#: ../src/file-manager/fm-properties-window.c:2718
+#: ../src/file-manager/fm-properties-window.c:2726
 msgid "_Read"
 msgstr "_Olvasás"
 
-#: ../src/file-manager/fm-properties-window.c:2720
+#: ../src/file-manager/fm-properties-window.c:2728
 msgid "_Write"
 msgstr "Í_rás"
 
-#: ../src/file-manager/fm-properties-window.c:2722
+#: ../src/file-manager/fm-properties-window.c:2730
 msgid "E_xecute"
 msgstr "_Végrehajtás"
 
-#: ../src/file-manager/fm-properties-window.c:2805
+#: ../src/file-manager/fm-properties-window.c:2813
 msgid "Set _user ID"
 msgstr "F_elhasználói azonosító beállítása (setuid)"
 
-#: ../src/file-manager/fm-properties-window.c:2810
+#: ../src/file-manager/fm-properties-window.c:2818
 msgid "Special flags:"
 msgstr "Speciális kapcsolók:"
 
-#: ../src/file-manager/fm-properties-window.c:2813
+#: ../src/file-manager/fm-properties-window.c:2821
 msgid "Set gro_up ID"
 msgstr "_Csoport azonosító beállítása (setgid)"
 
-#: ../src/file-manager/fm-properties-window.c:2815
+#: ../src/file-manager/fm-properties-window.c:2823
 msgid "_Sticky"
 msgstr "_Ragadós"
 
-#: ../src/file-manager/fm-properties-window.c:2916
+#: ../src/file-manager/fm-properties-window.c:2924
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Nem módosíthatja a jogosultságokat, mivel nem ön a fájl tulajdonosa."
 
-#: ../src/file-manager/fm-properties-window.c:2930
+#: ../src/file-manager/fm-properties-window.c:2938
 msgid "File _owner:"
 msgstr "Fájl _tulajdonosa:"
 
-#: ../src/file-manager/fm-properties-window.c:2936
+#: ../src/file-manager/fm-properties-window.c:2944
 msgid "File owner:"
 msgstr "Fájl tulajdonosa:"
 
-#: ../src/file-manager/fm-properties-window.c:2947
+#: ../src/file-manager/fm-properties-window.c:2955
 msgid "_File group:"
 msgstr "_Fájl csoportja:"
 
-#: ../src/file-manager/fm-properties-window.c:2956
+#: ../src/file-manager/fm-properties-window.c:2964
 msgid "File group:"
 msgstr "Fájl csoportja:"
 
-#: ../src/file-manager/fm-properties-window.c:2968
+#: ../src/file-manager/fm-properties-window.c:2976
 msgid "Owner:"
 msgstr "Tulajdonos:"
 
-#: ../src/file-manager/fm-properties-window.c:2969
+#: ../src/file-manager/fm-properties-window.c:2977
 msgid "Group:"
 msgstr "Csoport:"
 
-#: ../src/file-manager/fm-properties-window.c:2970
+#: ../src/file-manager/fm-properties-window.c:2978
 msgid "Others:"
 msgstr "A többiek:"
 
-#: ../src/file-manager/fm-properties-window.c:3052
+#: ../src/file-manager/fm-properties-window.c:3060
 msgid "Text view:"
 msgstr "Szövegnézet:"
 
-#: ../src/file-manager/fm-properties-window.c:3056
+#: ../src/file-manager/fm-properties-window.c:3064
 msgid "Number view:"
 msgstr "Számnézet:"
 
-#: ../src/file-manager/fm-properties-window.c:3060
+#: ../src/file-manager/fm-properties-window.c:3068
 msgid "Last changed:"
 msgstr "Utolsó változtatás:"
 
-#: ../src/file-manager/fm-properties-window.c:3066
+#: ../src/file-manager/fm-properties-window.c:3074
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
-msgstr "Nem lehet megállapítani a(z) \"%s\" jogosultságait."
+msgstr "A(z) \"%s\" jogosultságai nem határozhatók meg."
 
-#: ../src/file-manager/fm-properties-window.c:3069
+#: ../src/file-manager/fm-properties-window.c:3077
 msgid "The permissions of the selected file could not be determined."
-msgstr "Nem lehet megállapítani a kijelölt fájl jogosultságait."
+msgstr "A kijelölt fájl jogosultságai nem határozhatók meg."
 
-#: ../src/file-manager/fm-properties-window.c:3227
+#: ../src/file-manager/fm-properties-window.c:3235
 msgid "There was an error displaying help."
 msgstr "Hiba történt a súgó megjelenítése közben."
 
-#: ../src/file-manager/fm-properties-window.c:3289
+#: ../src/file-manager/fm-properties-window.c:3297
 msgid "Open With"
 msgstr "Megnyitás ezzel"
 
-#: ../src/file-manager/fm-properties-window.c:3629
+#: ../src/file-manager/fm-properties-window.c:3637
 msgid "Creating Properties window."
 msgstr "Tulajdonságok ablak létrehozása."
 
-#: ../src/file-manager/fm-properties-window.c:3872
+#: ../src/file-manager/fm-properties-window.c:3880
 msgid "Select Custom Icon"
 msgstr "Válasszon egyéni ikont"
 
-#: ../src/file-manager/fm-tree-view.c:751
+#: ../src/file-manager/fm-tree-view.c:749
 msgid "E_ject"
 msgstr "_Kiadás"
 
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1129
+#: ../src/file-manager/fm-tree-view.c:1127
 msgid "Create Folder"
 msgstr "Mappa létrehozása"
 
-#: ../src/file-manager/fm-tree-view.c:1181
+#: ../src/file-manager/fm-tree-view.c:1179
 msgid "Move to Trash"
 msgstr "Áthelyezés a Kukába"
 
-#: ../src/file-manager/fm-tree-view.c:1249
-#: ../src/nautilus-places-sidebar.c:174
+#: ../src/file-manager/fm-tree-view.c:1247
+#: ../src/nautilus-places-sidebar.c:191
 msgid "File System"
 msgstr "Fájlrendszer"
 
-#: ../src/file-manager/fm-tree-view.c:1251
+#: ../src/file-manager/fm-tree-view.c:1249
 msgid "Network Neighbourhood"
 msgstr "Hálózatok"
 
-#: ../src/file-manager/fm-tree-view.c:1489
+#: ../src/file-manager/fm-tree-view.c:1487
 msgid "Tree"
 msgstr "Fa"
 
-#: ../src/file-manager/fm-tree-view.c:1495
+#: ../src/file-manager/fm-tree-view.c:1493
 msgid "Show Tree"
 msgstr "Fa megjelenítése"
 
@@ -4230,7 +4225,7 @@ msgstr "Könyvjelzők szerkesztése"
 #: ../src/nautilus-connect-server-dialog-main.c:67
 #, c-format
 msgid "Can't display location \"%s\""
-msgstr "Nem lehet megjeleníteni a(z) \"%s\" helyet"
+msgstr "A(z) \"%s\" hely nem jeleníthető meg"
 
 #: ../src/nautilus-connect-server-dialog.c:142
 #, c-format
@@ -4324,7 +4319,7 @@ msgstr "Kapcs_olódás"
 #: ../src/nautilus-emblem-sidebar.c:241
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Nem lehet törölni a(z) \"%s\" nevű matricát."
+msgstr "A(z) \"%s\" nevű matrica nem törölhető."
 
 #: ../src/nautilus-emblem-sidebar.c:242 ../src/nautilus-emblem-sidebar.c:276
 msgid ""
@@ -4337,7 +4332,7 @@ msgstr ""
 #: ../src/nautilus-emblem-sidebar.c:275
 #, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "Nem lehet átnevezni a(z) \"%s\" nevű matricát."
+msgstr "A(z) \"%s\" nevű matrica nem nevezhető át."
 
 #: ../src/nautilus-emblem-sidebar.c:295
 msgid "Rename Emblem"
@@ -4386,7 +4381,7 @@ msgstr "Egyik fájl sem adható hozzá matricaként."
 #: ../src/nautilus-emblem-sidebar.c:800 ../src/nautilus-emblem-sidebar.c:825
 #: ../src/nautilus-emblem-sidebar.c:874
 msgid "The emblem cannot be added."
-msgstr "A matricát nem lehet hozzáadni."
+msgstr "A matrica nem adható hozzá."
 
 #: ../src/nautilus-emblem-sidebar.c:800
 msgid "The dragged text was not a valid file location."
@@ -4791,7 +4786,7 @@ msgstr "Megnyitás ezzel: %s"
 
 #: ../src/nautilus-information-panel.c:994
 msgid "Unable to launch the cd burner application."
-msgstr "Nem lehet elindítani a CD-égető alkalmazást."
+msgstr "A CD-író alkalmazás nem indítható el."
 
 #. FIXME: We don't use spaces to pad labels!
 #: ../src/nautilus-information-panel.c:1039
@@ -4863,7 +4858,7 @@ msgid "File Manager"
 msgstr "Fájlkezelő"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:401
+#: ../src/nautilus-main.c:332 ../src/nautilus-spatial-window.c:405
 #: ../src/nautilus-window-menus.c:461 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -4950,7 +4945,7 @@ msgstr "He_ly..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:831
+#: ../src/nautilus-spatial-window.c:835
 msgid "Specify a location to open"
 msgstr "Adja meg a megnyitandó helyet"
 
@@ -4964,37 +4959,37 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Az Ugrás menü és a Vissza/Előre listák törlése"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:839
+#: ../src/nautilus-spatial-window.c:843
 msgid "_Add Bookmark"
 msgstr "_Könyvjelző hozzáadása"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:840
+#: ../src/nautilus-spatial-window.c:844
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Könyvjelző hozzáadása a jelenlegi helyhez, ebbe a menübe"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:842
+#: ../src/nautilus-spatial-window.c:846
 msgid "_Edit Bookmarks"
 msgstr "Köny_vjelzők szerkesztése"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:843
+#: ../src/nautilus-spatial-window.c:847
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 "Megjelenít egy ablakot, amelyből szerkesztheti az ehhez a menühöz tartozó "
 "könyvjelzőket"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:845
+#: ../src/nautilus-spatial-window.c:849
 msgid "_Search"
 msgstr "_Keresés"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:846
+#: ../src/nautilus-spatial-window.c:850
 msgid "Search for files"
 msgstr "Fájlok keresése"
 
@@ -5078,11 +5073,19 @@ msgstr "Feljegyzések"
 msgid "Show Notes"
 msgstr "Feljegyzések megjelenítése"
 
-#: ../src/nautilus-places-sidebar.c:482
+#: ../src/nautilus-places-sidebar.c:775
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: ../src/nautilus-places-sidebar.c:784
+msgid "Rename..."
+msgstr "Átnevezés"
+
+#: ../src/nautilus-places-sidebar.c:1006
 msgid "Places"
 msgstr "Helyek"
 
-#: ../src/nautilus-places-sidebar.c:488
+#: ../src/nautilus-places-sidebar.c:1012
 msgid "Show Places"
 msgstr "Helyek megjelenítése"
 
@@ -5102,7 +5105,7 @@ msgstr "Új hozzá_adása..."
 #: ../src/nautilus-property-browser.c:960
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr "Sajnálom, de nem lehet törölni a(z) %s mintát."
+msgstr "Sajnálom, de a(z) %s minta nem törölhető."
 
 #: ../src/nautilus-property-browser.c:961
 msgid "Check that you have permission to delete the pattern."
@@ -5111,7 +5114,7 @@ msgstr "Ellenőrizze a jogosultságait a minta törléséhez."
 #: ../src/nautilus-property-browser.c:990
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr "Sajnálom, de nem lehet törölni a(z) %s matricát."
+msgstr "Sajnálom, de a(z) %s matrica nem törölhető."
 
 #: ../src/nautilus-property-browser.c:991
 msgid "Check that you have permission to delete the emblem."
@@ -5167,12 +5170,12 @@ msgstr "Sajnálom, de nem cserélheti le a \"Reset\" képet."
 
 #: ../src/nautilus-property-browser.c:1185
 msgid "Reset is a special image that cannot be deleted."
-msgstr "A \"Reset\" egy speciális kép, amit nem lehet törölni."
+msgstr "A \"Reset\" egy speciális kép, ami nem törölhető."
 
 #: ../src/nautilus-property-browser.c:1217
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr "Sajnálom, de nem lehet telepíteni a(z) %s mintát."
+msgstr "Sajnálom, de a(z) %s minta nem telepíthető."
 
 #: ../src/nautilus-property-browser.c:1237
 msgid "Select an Image File to Add as a Pattern"
@@ -5181,7 +5184,7 @@ msgstr "Válasszon ki egy mintaként hozzáadandó képfájlt"
 #: ../src/nautilus-property-browser.c:1289
 #: ../src/nautilus-property-browser.c:1320
 msgid "The color cannot be installed."
-msgstr "Nem lehet telepíteni a színt."
+msgstr "A szín nem telepíthető."
 
 #: ../src/nautilus-property-browser.c:1290
 msgid "Sorry, but you must specify an unused color name for the new color."
@@ -5189,7 +5192,7 @@ msgstr "Sajnálom, de egy még nem használt nevet kell megadnia az új színnek
 
 #: ../src/nautilus-property-browser.c:1321
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr "Sajnálom, de a színnek nem lehet üres a neve."
+msgstr "Sajnálom, de a szín neve nem lehet üres."
 
 #: ../src/nautilus-property-browser.c:1374
 msgid "Select a Color to Add"
@@ -5366,30 +5369,30 @@ msgstr "<b>Keresés:</b>"
 msgid "Close the side pane"
 msgstr "Oldalsáv bezárása"
 
-#: ../src/nautilus-spatial-window.c:829
+#: ../src/nautilus-spatial-window.c:833
 msgid "_Places"
 msgstr "_Helyek"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:830
+#: ../src/nautilus-spatial-window.c:834
 msgid "Open _Location..."
 msgstr "He_ly megnyitása..."
 
-#: ../src/nautilus-spatial-window.c:833
+#: ../src/nautilus-spatial-window.c:837
 msgid "Close P_arent Folders"
 msgstr "Szülőkö_nyvtárak bezárása"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:834
+#: ../src/nautilus-spatial-window.c:838
 msgid "Close this folder's parents"
 msgstr "A mappa szülőkönyvtárainak bezárása"
 
-#: ../src/nautilus-spatial-window.c:836
+#: ../src/nautilus-spatial-window.c:840
 msgid "Clos_e All Folders"
 msgstr "Mind_en mappa bezárása"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:837
+#: ../src/nautilus-spatial-window.c:841
 msgid "Close all folder windows"
 msgstr "Minden mappaablak bezárása"
 
@@ -5417,7 +5420,7 @@ msgstr "Választhat másik nézetet vagy megnézhet egy másik helyet."
 
 #: ../src/nautilus-window-manage-views.c:628
 msgid "The location cannot be displayed with this viewer."
-msgstr "A helyet nem lehet megjeleníteni ezzel a nézőkével."
+msgstr "A hely nem jeleníthető meg ezzel a megjelenítővel."
 
 #: ../src/nautilus-window-manage-views.c:1017
 msgid "Content View"
@@ -5451,9 +5454,7 @@ msgstr "Ellenőrizze a proxy beállításait."
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
-msgstr ""
-"Nem lehet megjeleníteni a(z) \"%s\"-t, mert a Nautilus nem tud kapcsolatba "
-"lépni az SMB-mesterböngészővel."
+msgstr "A(z) \"%s\" nem jeleníthető meg, mert a Nautilus nem tud kapcsolatba lépni az SMB-mesterböngészővel."
 
 #: ../src/nautilus-window-manage-views.c:1490
 msgid "Check that an SMB server is running in the local network."
