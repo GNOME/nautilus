@@ -5649,7 +5649,9 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 		semi_position_icons = g_list_reverse (semi_position_icons);
 
-		grid = placement_grid_new (container, TRUE);
+		/* This is currently only used on the desktop.
+		 * Thus, we pass FALSE for tight, like lay_down_icons_tblr */
+		grid = placement_grid_new (container, FALSE);
 
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
