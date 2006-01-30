@@ -1,3 +1,13 @@
+2006-01-30  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (compute_drop_position),
+	(get_drag_data), (free_drag_data), (drag_motion_callback),
+	(drag_leave_callback), (uri_list_from_selection),
+	(drag_data_received_callback), (drag_drop_callback),
+	(nautilus_places_sidebar_init), (nautilus_places_sidebar_finalize):
+	Enable bookmarks as drop targets. Closes #43311.
+	Based on a patch from Christian Neumair <chris@gnome-de.org>.
+
 2006-01-29  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-icon-container.c:

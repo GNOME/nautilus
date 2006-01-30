@@ -69,6 +69,11 @@ typedef struct {
 	NautilusWindowInfo *window;
 	NautilusBookmarkList *bookmarks;
 
+	/* DnD */
+	GList     *drag_list;
+	gboolean  drag_data_received;
+	gboolean  drop_occured;
+
 	GtkWidget *popup_menu;
 	GtkWidget *popup_menu_remove_item;
 	GtkWidget *popup_menu_rename_item;
@@ -430,24 +435,19 @@ compute_drop_position (GtkTreeView *tree_view,
 				 GtkTreeViewDropPosition *pos,
 				 NautilusPlacesSidebar *sidebar)
 {
-	GtkTreeViewColumn *column;
-	int cell_y;
-	GdkRectangle cell;
-	int row;
 	int bookmarks_index;
 	int num_bookmarks;
+	int row;
 	
 	bookmarks_index = get_bookmark_index (tree_view);
 	
 	num_bookmarks = nautilus_bookmark_list_length (sidebar->bookmarks);
-	
-	if (!gtk_tree_view_get_path_at_pos (tree_view,
-				      x,
-				      y,
-				      path,
-				      &column,
-				      NULL,
-				      &cell_y)) {
+
+	if (!gtk_tree_view_get_dest_row_at_pos (tree_view,
+					   x,
+					   y,
+					   path,
+					   pos)) {
 		row = bookmarks_index + num_bookmarks - 1;
 		*path = gtk_tree_path_new_from_indices (row, -1);
 		*pos = GTK_TREE_VIEW_DROP_AFTER;
@@ -455,27 +455,45 @@ compute_drop_position (GtkTreeView *tree_view,
 	}
 	
 	row = *gtk_tree_path_get_indices (*path);
-	gtk_tree_view_get_background_area (tree_view, *path, column, &cell);
 	gtk_tree_path_free (*path);
 	
 	if (row < bookmarks_index) {
-		row = bookmarks_index;
-		*pos = GTK_TREE_VIEW_DROP_BEFORE;
+		/* Hardcoded shortcuts can only be dragged into */
+		*pos = GTK_TREE_VIEW_DROP_INTO_OR_BEFORE;
 	}
 	else if (row > bookmarks_index + num_bookmarks - 1) {
 		row = bookmarks_index + num_bookmarks - 1;
 		*pos = GTK_TREE_VIEW_DROP_AFTER;
 	}
-	else {
-		if (cell_y < cell.height / 2) {
-			*pos = GTK_TREE_VIEW_DROP_BEFORE;
-		}
-		else {
-			*pos = GTK_TREE_VIEW_DROP_AFTER;
-		}
-	}
-	
+
 	*path = gtk_tree_path_new_from_indices (row, -1);
+}
+
+
+static void
+get_drag_data (GtkTreeView *tree_view,
+	       GdkDragContext *context, 
+	       unsigned int time)
+{
+	GdkAtom target;
+	
+	target = gtk_drag_dest_find_target (GTK_WIDGET (tree_view), 
+					    context, 
+					    NULL);
+
+	gtk_drag_get_data (GTK_WIDGET (tree_view),
+			   context, target, time);
+}
+
+static void
+free_drag_data (NautilusPlacesSidebar *sidebar)
+{
+	sidebar->drag_data_received = FALSE;
+
+	if (sidebar->drag_list) {
+		nautilus_drag_destroy_selection_list (sidebar->drag_list);
+		sidebar->drag_list = NULL;
+	}
 }
 
 static gboolean
@@ -488,25 +506,38 @@ drag_motion_callback (GtkTreeView *tree_view,
 {
 	GtkTreePath *path;
 	GtkTreeViewDropPosition pos;
-	GdkDragAction action;
-	
-	if (context->suggested_action == GDK_ACTION_COPY || (context->actions & GDK_ACTION_COPY) != 0) {
+	int action;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	char *uri;
+
+	if (!sidebar->drag_data_received) {
+		get_drag_data (tree_view, context, time);
+	}
+
+	compute_drop_position (tree_view, x, y, &path, &pos, sidebar);
+
+	if (pos == GTK_TREE_VIEW_DROP_BEFORE ||
+	    pos == GTK_TREE_VIEW_DROP_AFTER ||
+	    sidebar->drag_list == NULL) {
 		action = GDK_ACTION_COPY;
 	}
-	else if (context->suggested_action == GDK_ACTION_MOVE || (context->actions & GDK_ACTION_MOVE) != 0) {
-		action = GDK_ACTION_MOVE;
-	}
 	else {
-		action = 0;
-		goto out;
+		model = gtk_tree_view_get_model (tree_view);
+		gtk_tree_model_get_iter (model, &iter, path);
+		gtk_tree_model_get (model, &iter,
+				    PLACES_SIDEBAR_COLUMN_URI, &uri,
+				    -1);
+		nautilus_drag_default_drop_action_for_icons (context, uri,
+							     sidebar->drag_list,
+							     &action);
+		g_free (uri);
 	}
-	
-	compute_drop_position (tree_view, x, y, &path, &pos, sidebar);
+
 	gtk_tree_view_set_drag_dest_row (tree_view, path, pos);
 	gtk_tree_path_free (path);
- out:
 	g_signal_stop_emission_by_name (tree_view, "drag-motion");
-	
+
 	if (action != 0) {
 		gdk_drag_status (context, action, time);
 		return TRUE;
@@ -522,6 +553,7 @@ drag_leave_callback (GtkTreeView *tree_view,
 		     unsigned int time,
 		     NautilusPlacesSidebar *sidebar)
 {
+	free_drag_data (sidebar);
 	gtk_tree_view_set_drag_dest_row (tree_view, NULL, GTK_TREE_VIEW_DROP_BEFORE);
 	g_signal_stop_emission_by_name (tree_view, "drag-leave");
 }
@@ -563,6 +595,22 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 	g_strfreev (uris);
 }
 
+static GList *
+uri_list_from_selection (GList *selection)
+{
+	NautilusDragSelectionItem *item;
+	GList *ret;
+	GList *l;
+	
+	ret = NULL;
+	for (l = selection; l != NULL; l = l->next) {
+		item = l->data;
+		ret = g_list_prepend (ret, item->uri);
+	}
+	
+	return g_list_reverse (ret);
+}
+
 static void
 drag_data_received_callback (GtkWidget *widget,
 			     GdkDragContext *context,
@@ -576,46 +624,112 @@ drag_data_received_callback (GtkWidget *widget,
 	GtkTreeView *tree_view;
 	GtkTreePath *tree_path;
 	GtkTreeViewDropPosition tree_pos;
-	int position;
-	int bookmarks_index;
+	GtkTreeIter iter;
+	int position, bookmarks_index;
+	GtkTreeModel *model;
+	char *drop_uri;
+	GList *selection_list, *uris;
+	gboolean success;
 
 	tree_view = GTK_TREE_VIEW (widget);
 
-	/* Compute position */
 
-	bookmarks_index = get_bookmark_index (tree_view);
-
-	compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
-	position = *gtk_tree_path_get_indices (tree_path);
-	gtk_tree_path_free (tree_path);
-
-	if (tree_pos == GTK_TREE_VIEW_DROP_AFTER) {
-		position++;
-	}
-
-	g_assert (position >= bookmarks_index);
-	position -= bookmarks_index;
-
-	switch (info) {
-	case NAUTILUS_ICON_DND_URI_LIST:
-                bookmarks_drop_uris (sidebar, selection_data->data, position);
-		break;
-	default:
-		break;
+	if (!sidebar->drag_data_received) {
+		if (selection_data->target != GDK_NONE) {
+			sidebar->drag_list = nautilus_drag_build_selection_list (selection_data);
+		} else {
+			sidebar->drag_list = NULL;
+		}
+		sidebar->drag_data_received = TRUE;
 	}
 
 	g_signal_stop_emission_by_name (widget, "drag-data-received");
+
+	if (!sidebar->drop_occured) {
+		return;
+	}
+
+	/* Compute position */
+	compute_drop_position (tree_view, x, y, &tree_path, &tree_pos, sidebar);
+
+	success = FALSE;
+
+	if (tree_pos == GTK_TREE_VIEW_DROP_BEFORE ||
+	    tree_pos == GTK_TREE_VIEW_DROP_AFTER) {
+		/* bookmark addition requested */
+		bookmarks_index = get_bookmark_index (tree_view);
+		position = *gtk_tree_path_get_indices (tree_path);
+	
+		if (tree_pos == GTK_TREE_VIEW_DROP_AFTER) {
+			position++;
+		}
+	
+		g_assert (position >= bookmarks_index);
+		position -= bookmarks_index;
+	
+		switch (info) {
+		case NAUTILUS_ICON_DND_URI_LIST:
+			bookmarks_drop_uris (sidebar, selection_data->data, position);
+			success = TRUE;
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+	} else {
+		/* file transfer requested */
+		if (context->action == GDK_ACTION_ASK) {
+			context->action =
+				nautilus_drag_drop_action_ask (GTK_WIDGET (tree_view),
+							       context->actions);
+		}
+
+		if (context->action > 0) {
+			model = gtk_tree_view_get_model (tree_view);
+
+			gtk_tree_model_get_iter (model, &iter, tree_path);
+			gtk_tree_model_get (model, &iter,
+					    PLACES_SIDEBAR_COLUMN_URI, &drop_uri,
+					    -1);
+
+			switch (info) {
+			case NAUTILUS_ICON_DND_URI_LIST:
+				selection_list = nautilus_drag_build_selection_list (selection_data);
+				uris = uri_list_from_selection (selection_list);
+				nautilus_file_operations_copy_move (uris, NULL, drop_uri,
+								    context->action, GTK_WIDGET (tree_view),
+								    NULL, NULL);
+				nautilus_drag_destroy_selection_list (selection_list);
+				g_list_free (uris);
+				success = TRUE;
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+
+			g_free (drop_uri);
+		}
+	}
+
+	sidebar->drop_occured = FALSE;
+	free_drag_data (sidebar);
+	gtk_drag_finish (context, success, FALSE, time);
+
+	gtk_tree_path_free (tree_path);
 
 }
 
 static gboolean
 drag_drop_callback (GtkTreeView *tree_view,
-                    GdkDragContext *context,
-                    int x,
-                    int y,
-                    unsigned int time,
-                    NautilusPlacesSidebar *sidebar)
+		    GdkDragContext *context,
+		    int x,
+		    int y,
+		    unsigned int time,
+		    NautilusPlacesSidebar *sidebar)
 {
+	sidebar->drop_occured = TRUE;
+	get_drag_data (tree_view, context, time);
 	g_signal_stop_emission_by_name (tree_view, "drag-drop");
 	return TRUE;
 }
@@ -934,9 +1048,9 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 		(tree_view, "row_activated", 
 		 G_CALLBACK (row_activated_callback), sidebar, 0);
 
-	gtk_drag_dest_set (GTK_WIDGET (tree_view), GTK_DEST_DEFAULT_ALL,
+	gtk_drag_dest_set (GTK_WIDGET (tree_view), 0,
 			   drop_targets, G_N_ELEMENTS (drop_targets),
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+			   GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 
 	g_signal_connect (tree_view, "key-press-event",
 			  G_CALLBACK (bookmarks_key_press_event_cb), sidebar);
@@ -975,6 +1089,8 @@ nautilus_places_sidebar_finalize (GObject *object)
 
 	g_free (sidebar->uri);
 	sidebar->uri = NULL;
+
+	free_drag_data (sidebar);
 
 	if (sidebar->store != NULL) {
 		g_object_unref (sidebar->store);
