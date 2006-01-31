@@ -1,3 +1,17 @@
+2006-01-31  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-view.h:
+	* libnautilus-private/nautilus-view.c: (nautilus_view_grab_focus):
+	Add new grab_focus method.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_grab_focus),
+	(fm_list_view_iface_init):
+	Implement grab_focus.
+
+	* src/nautilus-window.c: (nautilus_window_set_content_view_widget):
+	Use grab_focus to set the focus on the content view. Fixes #329087.
+	Patch from Nelson Benitez <gnel@cenobioracing.com>
+
 2006-01-30  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-places-sidebar.c: (compute_drop_position),

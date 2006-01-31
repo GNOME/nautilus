@@ -1224,6 +1224,8 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          set_content_view_widget, (window, frame));
+
+	nautilus_view_grab_focus (frame);
 }
 
 /**

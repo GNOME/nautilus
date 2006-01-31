@@ -251,6 +251,16 @@ nautilus_view_get_zoom_level (NautilusView *view)
 }
 
 void
+nautilus_view_grab_focus (NautilusView   *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+
+	if (NAUTILUS_VIEW_GET_IFACE (view)->grab_focus != NULL) {
+		(* NAUTILUS_VIEW_GET_IFACE (view)->grab_focus) (view);
+	}
+}
+
+void
 nautilus_view_pop_up_location_context_menu (NautilusView   *view,
 					    GdkEventButton *event)
 {

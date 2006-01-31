@@ -106,6 +106,8 @@ struct _NautilusViewIface
         gboolean       (* can_zoom_in)	 	  (NautilusView          *view);
         gboolean       (* can_zoom_out)	 	  (NautilusView          *view);
 
+        void           (* grab_focus)             (NautilusView          *view);
+
 	/* Request popup of context menu referring to the open location.
 	 * This is triggered in spatial windows by right-clicking the location button,
 	 * in navigational windows by right-clicking the "Location:" label in the
@@ -151,6 +153,7 @@ gboolean          nautilus_view_can_zoom_out               (NautilusView      *v
 NautilusZoomLevel nautilus_view_get_zoom_level             (NautilusView      *view);
 void              nautilus_view_pop_up_location_context_menu (NautilusView    *view,
 							      GdkEventButton  *event);
+void              nautilus_view_grab_focus                 (NautilusView      *view);
 
 G_END_DECLS
 
