@@ -1,17 +1,17 @@
 # translation of th.po to Thai
 # Thai nautilus translation.
-# Copyright (C) 2003, 2005 Free Software Foundation, Inc.
+# Copyright (C) 2003-2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
 # Paisa Seeluangsawat <paisa@users.sf.net>, 2003, 2004.
 # Supranee Thirawatthanasuk <supranee@opentle.org>, 2005.
-# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2005.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2005-2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-29 16:59+0700\n"
-"PO-Revision-Date: 2006-01-29 17:04+0700\n"
+"POT-Creation-Date: 2006-01-31 18:54+0700\n"
+"PO-Revision-Date: 2006-01-31 18:56+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <L10N@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -1802,7 +1802,7 @@ msgid "today at 00:00:00 PM"
 msgstr "วันนี้เวลา 00:00:00 น."
 
 #: libnautilus-private/nautilus-file.c:2922
-#: src/nautilus-file-management-properties.c:459
+#: src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "วันนี้เวลา %H:%M:%S น."
 
@@ -2104,7 +2104,7 @@ msgid "Display _files when they are clicked"
 msgstr "แ_สดงข้อมูลในแฟ้มเมื่อมีการคลิก"
 
 #: libnautilus-private/nautilus-global-preferences.c:127
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "ถ_ามทุกครั้ง"
 
@@ -2500,7 +2500,7 @@ msgstr "ลบรายการทั้งหมดในถังขยะ"
 
 #: src/file-manager/fm-desktop-icon-view.c:797
 #: src/nautilus-desktop-window.c:246 src/nautilus-pathbar.c:1127
-#: src/nautilus-places-sidebar.c:182
+#: src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "พื้นโต๊ะ"
 
@@ -3663,27 +3663,27 @@ msgstr "_คอลัมน์ที่แสดง..."
 msgid "Select the columns visible in this folder"
 msgstr "เลือกคอลัมน์ที่จะแสดงในโฟลเดอร์นี้"
 
-#: src/file-manager/fm-list-view.c:2613
+#: src/file-manager/fm-list-view.c:2620
 msgid "List"
 msgstr "รายการ"
 
-#: src/file-manager/fm-list-view.c:2614
+#: src/file-manager/fm-list-view.c:2621
 msgid "View as List"
 msgstr "มองเป็นรายการ"
 
-#: src/file-manager/fm-list-view.c:2615
+#: src/file-manager/fm-list-view.c:2622
 msgid "View as _List"
 msgstr "มองเป็น_รายการ"
 
-#: src/file-manager/fm-list-view.c:2616
+#: src/file-manager/fm-list-view.c:2623
 msgid "The list view encountered an error."
 msgstr "เกิดข้อผิดพลาดในมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2617
+#: src/file-manager/fm-list-view.c:2624
 msgid "The list view encountered an error while starting up."
 msgstr "เกิดข้อผิดพลาดขณะเริ่มต้นมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2618
+#: src/file-manager/fm-list-view.c:2625
 msgid "Display this location with the list view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองแบบรายการ"
 
@@ -3939,7 +3939,7 @@ msgid "Move to Trash"
 msgstr "ทิ้งลงถังขยะ"
 
 #: src/file-manager/fm-tree-view.c:1247
-#: src/nautilus-places-sidebar.c:191
+#: src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "ระบบแฟ้ม"
 
@@ -4093,7 +4093,7 @@ msgstr ""
 "Nautilus ใหม่ อาจช่วยแก้ปัญหาได้"
 
 #: src/nautilus-bookmarks-window.c:158
-#: src/nautilus-file-management-properties.c:215
+#: src/nautilus-file-management-properties.c:216
 #: src/nautilus-property-browser.c:1541 src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4295,7 +4295,7 @@ msgstr "แฟ้มที่ลากมาดูเหมือนจะไม
 msgid "Show Emblems"
 msgstr "แสดงตรา"
 
-#: src/nautilus-file-management-properties.c:292
+#: src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "ไม่เอาสักอย่าง"
 
@@ -4412,16 +4412,20 @@ msgstr ""
 msgid "Always open in _browser windows"
 msgstr "เปิดในหน้าต่างเ_บราว์เซอร์เท่านั้น"
 
-# "or deleting files." here means "not through trash"
 #: src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "ใช้ช่องป้อน_ข้อความในแถบตำแหน่งเสมอ"
+
+# "or deleting files." here means "not through trash"
+#: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "_ถามก่อนที่จะเทถังขยะหรือลบแฟ้มอย่างถาวร"
 
-#: src/nautilus-file-management-properties.glade.h:37
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "พฤติกรรม"
 
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -4435,37 +4439,37 @@ msgstr ""
 "ตามวันที่แก้ไข\n"
 "ตามตรา"
 
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr "เลือกลำดับข้อมูล ที่จะแสดงใต้ไอคอน ข้อมูลจะแสดงมากขึ้น เมื่อขยายเข้าไปใกล้มากขึ้น"
 
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr "เลือกลำดับข้อมูลที่จะแสดงในมุมมองแบบรายการ"
 
-#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "นั_บจำนวนรายการ:"
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "ข_นาดย่อขยายปริยาย:"
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "แสดง"
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "ค่าปรับแต่งการจัดการแฟ้ม"
 
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_แสดงคำสั่งลบถาวร (ลบโดยไม่ผ่านถังขยะ) ในเมนู"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -4473,83 +4477,83 @@ msgstr ""
 "มุมมองแบบไอคอน\n"
 "มุมมองแบบรายการ"
 
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "คอลัมน์รายการ"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "ตัวอย่าง"
 
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "แสดงตัวอย่างแฟ้มเ_สียง:"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "แ_สดงแต่โฟลเดอร์"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "แสดงรู_ปย่อ:"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "แ_สดงแฟ้มสำรองข้อมูลและแฟ้มที่ซ่อนไว้"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "แสดงตัวอย่าง_ข้อความในไอคอน:"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "เรียงโฟลเดอร์มา_ก่อนแฟ้ม"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "ดูโ_ฟลเดอร์ใหม่ด้วย:"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "มุมมอง"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "เ_รียงไอคอน:"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "_ขนาดย่อขยายปริยาย:"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "เปิด/ใช้ รายการด้วย_สองคลิก"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "_รูปแบบ:"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "เฉพาะแฟ้มที่เ_ล็กกว่า:"
 
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "เ_รียกใช้โปรแกรมในแฟ้มข้อความเมื่อถูกคลิก"
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "เปิด/ใช้ รายการด้วย_คลิกเดียว"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "เอา_ข้อความไว้ข้างไอคอน"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "ใช้การ_จัดวางแบบกระชับ"
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "เปิด_อ่านโปรแกรมในแฟ้มข้อความเมื่อถูกคลิก"
 
@@ -4910,7 +4914,7 @@ msgstr "แถบ_ตำแหน่ง"
 #. label, accelerator
 #: src/nautilus-navigation-window-menus.c:465
 msgid "Change the visibility of this window's location bar"
-msgstr "แสดง/ซ่อน แถบที่อยู่ของหน้าต่างนี้"
+msgstr "แสดง/ซ่อน แถบตำแหน่งของหน้าต่างนี้"
 
 #. is_active
 #. name, stock id
@@ -4960,19 +4964,19 @@ msgstr "หมายเหตุ"
 msgid "Show Notes"
 msgstr "แสดงหมายเหตุ"
 
-#: src/nautilus-places-sidebar.c:775
+#: src/nautilus-places-sidebar.c:889
 msgid "Remove"
 msgstr "ลบ"
 
-#: src/nautilus-places-sidebar.c:784
+#: src/nautilus-places-sidebar.c:898
 msgid "Rename..."
 msgstr "เปลี่ยนชื่อ..."
 
-#: src/nautilus-places-sidebar.c:1006
+#: src/nautilus-places-sidebar.c:1122
 msgid "Places"
 msgstr "ที่หลักๆ"
 
-#: src/nautilus-places-sidebar.c:1012
+#: src/nautilus-places-sidebar.c:1128
 msgid "Show Places"
 msgstr "แสดงที่หลักๆ"
 
