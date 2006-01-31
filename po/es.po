@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-29 14:19+0100\n"
-"PO-Revision-Date: 2006-01-29 14:20+0100\n"
+"POT-Creation-Date: 2006-01-31 13:52+0100\n"
+"PO-Revision-Date: 2006-01-31 13:52+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2065,7 +2065,7 @@ msgstr "hoy a las 00:00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1557
 #: ../libnautilus-private/nautilus-file.c:2922
-#: ../src/nautilus-file-management-properties.c:459
+#: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "hoy a las %-I:%M:%S %p"
 
@@ -2398,7 +2398,7 @@ msgid "Display _files when they are clicked"
 msgstr "Mostrar _archivos al pulsar en ellos"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "_Preguntar cada vez"
 
@@ -2858,7 +2858,7 @@ msgstr "Borra todos los elementos dentro de la papelera"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:182
+#: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "Escritorio"
 
@@ -4212,32 +4212,32 @@ msgstr "Seleccione las columnas visibles en esta carpeta"
 # libnautilus-private/nautilus-search-bar-criterion.c:71
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
-#: ../src/file-manager/fm-list-view.c:2613
+#: ../src/file-manager/fm-list-view.c:2620
 msgid "List"
 msgstr "lista"
 
 # libnautilus-private/nautilus-program-chooser.c:188
 # src/nautilus-window.c:606
-#: ../src/file-manager/fm-list-view.c:2614
+#: ../src/file-manager/fm-list-view.c:2621
 msgid "View as List"
 msgstr "Ver como lista"
 
 # libnautilus-private/nautilus-program-chooser.c:188
 # src/nautilus-window.c:606
-#: ../src/file-manager/fm-list-view.c:2615
+#: ../src/file-manager/fm-list-view.c:2622
 msgid "View as _List"
 msgstr "Ver como _lista"
 
-#: ../src/file-manager/fm-list-view.c:2616
+#: ../src/file-manager/fm-list-view.c:2623
 msgid "The list view encountered an error."
 msgstr "La vista de lista ha encontrado un error."
 
-#: ../src/file-manager/fm-list-view.c:2617
+#: ../src/file-manager/fm-list-view.c:2624
 msgid "The list view encountered an error while starting up."
 msgstr "La vista de lista ha encontrado un error mientras se iniciaba."
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: ../src/file-manager/fm-list-view.c:2618
+#: ../src/file-manager/fm-list-view.c:2625
 msgid "Display this location with the list view."
 msgstr "Mostrar este lugar con la vista de lista."
 
@@ -4548,7 +4548,7 @@ msgid "Move to Trash"
 msgstr "Mover a la papelera"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:191
+#: ../src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "Sistema de archivos"
 
@@ -4716,7 +4716,7 @@ msgstr ""
 "reiniciar Nautilus quizá ayude a arreglar el problema."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:215
+#: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4958,7 +4958,7 @@ msgid "Show Emblems"
 msgstr "Mostrar emblemas"
 
 # src/file-manager/fm-icon-text-window.c:85
-#: ../src/nautilus-file-management-properties.c:292
+#: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Ninguno"
 
@@ -5079,17 +5079,21 @@ msgstr ""
 msgid "Always open in _browser windows"
 msgstr "Siempre abrir en una ventana de _navegador"
 
-# src/file-manager/fm-directory-view.c:2669
 #: ../src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "Siempre usar la barra de lugar de _entrada de texto"
+
+# src/file-manager/fm-directory-view.c:2669
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Preguntar antes de _vaciar la papelera o borrar archivos"
 
 # libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "Comportamiento"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
+#: ../src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -5104,7 +5108,7 @@ msgstr ""
 "Por emblemas"
 
 # src/file-manager/fm-icon-text-window.c:267
-#: ../src/nautilus-file-management-properties.glade.h:43
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5113,37 +5117,37 @@ msgstr ""
 "los iconos. Aparecerá más información cuando aumente la ampliación."
 
 # src/file-manager/fm-icon-text-window.c:267
-#: ../src/nautilus-file-management-properties.glade.h:44
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr ""
 "Seleccione el orden en que la información aparecerá en la vista de lista."
 
 # src/file-manager/dfos-xfer.c:763
-#: ../src/nautilus-file-management-properties.glade.h:45
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "_Contar el número de elementos:"
 
-#: ../src/nautilus-file-management-properties.glade.h:46
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "_Nivel de ampliación predeterminado:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-global-preferences.c:149
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "Mostrar"
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "Preferencias de administración de archivos"
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_Incluir una orden «Borrar» que no utilice la papelera"
 
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -5151,89 +5155,89 @@ msgstr ""
 "Vista icono\n"
 "Vista lista"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "Columnas de la lista"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:1122
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "Vista previa"
 
-#: ../src/nautilus-file-management-properties.glade.h:54
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "_Escucha previa de archivos de sonido:"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "Sólo mostrar las _carpetas"
 
 # libnautilus-private/nautilus-global-preferences.c:256
-#: ../src/nautilus-file-management-properties.glade.h:56
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "Mostrar _miniaturas:"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "Mostrar los archivos ocultos y de _respaldo"
 
 # libnautilus-private/nautilus-global-preferences.c:249
-#: ../src/nautilus-file-management-properties.glade.h:58
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "Mostrar _texto en los iconos:"
 
-#: ../src/nautilus-file-management-properties.glade.h:59
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "Colocar las carpetas _antes que los archivos"
 
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "Ver las carpetas _nuevas usando:"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-global-preferences.c:222
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "Vistas"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "_Organizar los elementos:"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "Nivel de ampliación _predeterminado:"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "_Doble pulsación para activar los elementos"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "_Formato:"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "_Sólo para archivos menores de:"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "_Ejecutar los archivos de texto ejecutables al pulsar"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "_Una sola pulsación para activar los elementos"
 
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "_Texto al lado de los iconos"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "_Usar distribución compacta"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "_Ver los archivos de texto ejecutables al pulsar"
 
@@ -5700,21 +5704,21 @@ msgstr "Mostrar notas"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:588
-#: ../src/nautilus-places-sidebar.c:775
+#: ../src/nautilus-places-sidebar.c:889
 msgid "Remove"
 msgstr "Quitar"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-icon-view.c:328
-#: ../src/nautilus-places-sidebar.c:784
+#: ../src/nautilus-places-sidebar.c:898
 msgid "Rename..."
 msgstr "Renombrar…"
 
-#: ../src/nautilus-places-sidebar.c:1006
+#: ../src/nautilus-places-sidebar.c:1122
 msgid "Places"
 msgstr "Lugares"
 
-#: ../src/nautilus-places-sidebar.c:1012
+#: ../src/nautilus-places-sidebar.c:1128
 msgid "Show Places"
 msgstr "Mostrar lugares"
 
