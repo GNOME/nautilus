@@ -1,5 +1,14 @@
 2006-01-31  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade:
+	Add the option to always use the location bar to the
+	preferences dialog. Closes #328659.
+	Patch from Justin Fitzsimmons <jfitzsimmons@gmail.com>
+
+2006-01-31  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-view.h:
 	* libnautilus-private/nautilus-view.c: (nautilus_view_grab_focus):
 	Add new grab_focus method.
