@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-29 23:53+0100\n"
-"PO-Revision-Date: 2006-01-30 15:46+0530\n"
+"POT-Creation-Date: 2006-02-01 07:26+0100\n"
+"PO-Revision-Date: 2006-02-01 12:36+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1841,7 +1842,7 @@ msgid "today at 00:00:00 PM"
 msgstr "આજે 00:00:00 PM વાગે"
 
 #: ../libnautilus-private/nautilus-file.c:2922
-#: ../src/nautilus-file-management-properties.c:459
+#: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "આજે %-l:%M:%S %p વાગે"
 
@@ -2141,7 +2142,7 @@ msgid "Display _files when they are clicked"
 msgstr "તે ક્લિક થાય ત્યારે ફાઇલ પ્રદર્શિત કરો (_f)"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "દરેક વખતે પુછો (_A)"
 
@@ -2545,7 +2546,7 @@ msgstr "કચરાપેટીમાંની બધીજ વસ્તુઓ 
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:182
+#: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "ડૅસ્કટોપ"
 
@@ -3702,27 +3703,27 @@ msgstr "દ્રશ્યમાન સ્તંભો (_C)..."
 msgid "Select the columns visible in this folder"
 msgstr "આ ફોલ્ડરમાં દેખાતા સ્તંભો પસંદ કરો"
 
-#: ../src/file-manager/fm-list-view.c:2613
+#: ../src/file-manager/fm-list-view.c:2620
 msgid "List"
 msgstr "યાદી"
 
-#: ../src/file-manager/fm-list-view.c:2614
+#: ../src/file-manager/fm-list-view.c:2621
 msgid "View as List"
 msgstr "યાદી તરીકે જુઓ"
 
-#: ../src/file-manager/fm-list-view.c:2615
+#: ../src/file-manager/fm-list-view.c:2622
 msgid "View as _List"
 msgstr "યાદી તરીકે જુઓ (_L)"
 
-#: ../src/file-manager/fm-list-view.c:2616
+#: ../src/file-manager/fm-list-view.c:2623
 msgid "The list view encountered an error."
 msgstr "યાદી દેખાવમાં ભૂલ ઉદ્દભવી."
 
-#: ../src/file-manager/fm-list-view.c:2617
+#: ../src/file-manager/fm-list-view.c:2624
 msgid "The list view encountered an error while starting up."
 msgstr "યાદી દેખાવ શરૂ કરતી વખતે ભૂલ ઉદ્દભવી."
 
-#: ../src/file-manager/fm-list-view.c:2618
+#: ../src/file-manager/fm-list-view.c:2625
 msgid "Display this location with the list view."
 msgstr "યાદી દેખાવ સાથે આ સ્થાન દર્શાવો."
 
@@ -3979,7 +3980,7 @@ msgid "Move to Trash"
 msgstr "કચરાપેટીમાં મોકલો"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:191
+#: ../src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "ફાઇલ સિસ્ટમ"
 
@@ -4137,7 +4138,7 @@ msgstr ""
 "નક્કી કરવામાં મદદ કરશે."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:215
+#: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4343,7 +4344,7 @@ msgstr "ખેંચીને મુકાયેલી ફાઈલ યોગ્
 msgid "Show Emblems"
 msgstr "સાંકેતિક ચિહ્નો બતાવો"
 
-#: ../src/nautilus-file-management-properties.c:292
+#: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "કોઇ જ નહીં"
 
@@ -4461,14 +4462,18 @@ msgid "Always open in _browser windows"
 msgstr "હંમેશા બ્રાઉઝર વિન્ડોમાં ખોલો (_b)"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "હંમેશા લખાણ-પ્રવેશ સ્થાન પટ્ટી વાપરો (_t)"
+
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "કચરાપેટીને ખાલી કરતાં પહેલા અથવા ફાઇલો કાઢી નાખતા પહેલા પૂછો (_e)"
 
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "વર્તણુક"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
+#: ../src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -4482,7 +4487,7 @@ msgstr ""
 "સુધારાની તારીખ પ્રમાણે\n"
 "સાંકેતિક ચિહ્નો પ્રમાણે"
 
-#: ../src/nautilus-file-management-properties.glade.h:43
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4490,31 +4495,31 @@ msgstr ""
 "ચિહ્નના નામની નીચે દર્શાવતી જાણકારી માટેનો ક્રમ પસંદ કરો. મોટુ કરતા વધારે જાણકારી "
 "દેખાશે."
 
-#: ../src/nautilus-file-management-properties.glade.h:44
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr "ચિહ્નના નામની નીચે દર્શાવતી જાણકારી માટેનો ક્રમ પસંદ કરો."
 
-#: ../src/nautilus-file-management-properties.glade.h:45
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "વસ્તુઓની સંખ્યાની ગણતરી કરો (_n):"
 
-#: ../src/nautilus-file-management-properties.glade.h:46
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "નાનુમોટું કરવાનુ મૂળભુત સ્તર (_z):"
 
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "પ્રદર્શિત કરો"
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "ફાઈલ સંચાલનની પસંદગીઓ"
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "કચરાપેટીમાં ગયા વગર પસાર થઇ શકાય તે માટેનો કાઢી નાખવા માટેનો આદેશ ઉમેરો (_n)"
 
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -4522,83 +4527,83 @@ msgstr ""
 "ચિહ્નવાળો દેખાવ\n"
 "યાદીવાળો દેખાવ"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "સ્તંભોની યાદી"
 
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "પૂર્વદર્શન"
 
-#: ../src/nautilus-file-management-properties.glade.h:54
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "ધ્વની ફાઇલોનો પુર્વદર્શન કરાવો (_s):"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "ફક્ત ફોલ્ડર દર્શાવો (_o)"
 
-#: ../src/nautilus-file-management-properties.glade.h:56
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "મોટા ચિહ્નો દર્શાવો (_t):"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "સંતાડેલી અને બૅકઅપ ફાઇલો દેખાડો (_b)"
 
-#: ../src/nautilus-file-management-properties.glade.h:58
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "ચિહ્નોમાં લખાણ દર્શાવો (_x):"
 
-#: ../src/nautilus-file-management-properties.glade.h:59
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "ફાઈલોની પહેલા ફોલ્ડરને ક્રમમાં ગોઠવો (_f)"
 
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "ની મદદથી નવા ફોલ્ડરો જૂઓ (_n):"
 
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "દ્રશ્યો"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "વસ્તુઓને વ્યવસ્થિત કરો (_A):"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "નાનુમોટુ કરવાનું મૂળભુત સ્તર (_D):"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "વસ્તુઓને સક્રિય કરવા માટે બેવડું ક્લિક કરો (_D)"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "બંધારણ (_F):"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "ફક્ત આના કરતા નાની ફાઇલો માટે (_O):"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "જ્યરે ક્લિક થાય ત્યારે વાપરી શકાય તેવી લખાણની ફાઇલ ચલાવો (_R)"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "વસ્તુઓને સક્રિય કરવા માટે એક ક્લિક કરો (_S)"
 
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "ચિહ્નની પાછળનુ લખાણ (_T)"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "સંકોચિત દેખાવ વાપરો (_U)"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "જ્યારે તે ક્લિક થાય ત્યારે વાપરી શકાય તેવી લખાણની ફાઇલો દર્શાવો (_V)"
 
@@ -5009,19 +5014,19 @@ msgstr "નોંધો"
 msgid "Show Notes"
 msgstr "નોંધો બતાવો"
 
-#: ../src/nautilus-places-sidebar.c:775
+#: ../src/nautilus-places-sidebar.c:889
 msgid "Remove"
 msgstr "દૂર કરો"
 
-#: ../src/nautilus-places-sidebar.c:784
+#: ../src/nautilus-places-sidebar.c:898
 msgid "Rename..."
 msgstr "નામ બદલો..."
 
-#: ../src/nautilus-places-sidebar.c:1006
+#: ../src/nautilus-places-sidebar.c:1122
 msgid "Places"
 msgstr "જગ્યાઓ"
 
-#: ../src/nautilus-places-sidebar.c:1012
+#: ../src/nautilus-places-sidebar.c:1128
 msgid "Show Places"
 msgstr "જગ્યાઓ બતાવો"
 
