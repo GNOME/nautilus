@@ -1481,11 +1481,9 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 				icon = p->data;
 				
 				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-				icon_get_bounding_box (icon, 
-						       &x1, &y1, &x2, &y2);
 				
-				/* Start the icon in the first column */ 
-				x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X - ((x2 - x1) / 2);
+				/* Start the icon in the first column */
+				x = DESKTOP_PAD_HORIZONTAL + (SNAP_SIZE_X / 2) - ((icon_rect.x1 - icon_rect.x0) / 2);
 				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (icon_rect.y1 - icon_rect.y0);
 
 				find_empty_location (container,
