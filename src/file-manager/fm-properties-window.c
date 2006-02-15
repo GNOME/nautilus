@@ -2915,7 +2915,7 @@ create_permissions_page (FMPropertiesWindow *window)
 
 	window->details->initial_permissions = NULL;
 	
-	if (all_can_get_permissions (file_list)) {
+	if (all_can_get_permissions (file_list) && all_can_get_permissions (window->details->target_files)) {
 		window->details->initial_permissions = get_initial_permissions (window->details->target_files);
 		
 		if (!all_can_set_permissions (file_list)) {
@@ -3098,7 +3098,7 @@ append_extension_pages (FMPropertiesWindow *window)
 		provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
 		
 		pages = nautilus_property_page_provider_get_pages 
-			(provider, window->details->target_files);
+			(provider, window->details->original_files);
 		
 		for (l = pages; l != NULL; l = l->next) {
 			NautilusPropertyPage *page;

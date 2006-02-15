@@ -1,3 +1,12 @@
+2006-02-15  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-properties-window.c (append_extension_pages):
+	Pass the original files, not the target files to property
+	page providers. (#329426)
+	(create_permissions_page):
+	Make sure we can get permissions from target before showing
+	permissions page.
+
 2006-02-13  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
