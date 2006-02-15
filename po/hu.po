@@ -1,26 +1,27 @@
 # Hungarian translation of nautilus.
-# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
-#
 # Szabolcs Ban <shooby@gnome.hu>, 2000, 2001.
 # Emese Kovacs <emese@gnome.hu>, 2001, 2002.
 # Andras Timar <timar@gnome.hu>, 2001, 2002, 2003.
 # Gabor Sari <saga@gnome.hu>, 2003.
 # Laszlo Dvornik <dvornik@gnome.hu>, 2004.
 # Gabor Kelemen <kelemeng@gnome.hu>, 2004, 2005, 2006.
+# Mate ORY <orymate at gmail d0t com>, 2006.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-28 07:31+0100\n"
-"PO-Revision-Date: 2006-01-14 17:10+0100\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
-"Language-Team: Hungarian <gnome@gnome.hu>\n"
+"POT-Creation-Date: 2006-02-01 07:26+0100\n"
+"PO-Revision-Date: 2006-02-02 14:57+0100\n"
+"Last-Translator: Mate ORY <orymate at gmail d0t com>\n"
+"Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=1; plural=0;\n"
-"X-Generator: KBabel 1.11.1\n"
+"X-Generator: KBabel 1.10.2\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1410,8 +1411,8 @@ msgid ""
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
 "A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani "
-"vagy lecserélni. Ha még mindig át akarja helyezni az elemet, akkor először nevezze "
-"át, és próbálja meg újra."
+"vagy lecserélni. Ha még mindig át akarja helyezni az elemet, akkor először "
+"nevezze át, és próbálja meg újra."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1145
 #, c-format
@@ -1423,8 +1424,9 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani vagy lecserélni. "
-"Ha még mindig át akarja másolni az elemet, akkor először nevezze át, és próbálja meg újra."
+"A nevet már használja egy speciális elem, amelyet nem lehet eltávolítani "
+"vagy lecserélni. Ha még mindig át akarja másolni az elemet, akkor először "
+"nevezze át, és próbálja meg újra."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
@@ -1467,7 +1469,7 @@ msgstr "_Mindet cseréli"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1276
-#: ../libnautilus-private/nautilus-file.c:4711
+#: ../libnautilus-private/nautilus-file.c:4758
 #: ../src/file-manager/fm-directory-view.c:9384
 #, c-format
 msgid "link to %s"
@@ -1873,7 +1875,7 @@ msgid "today at 00:00:00 PM"
 msgstr "ma, 00.00.00"
 
 #: ../libnautilus-private/nautilus-file.c:2922
-#: ../src/nautilus-file-management-properties.c:459
+#: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "ma, %H.%M.%S"
 
@@ -2013,38 +2015,43 @@ msgid_plural "%u files"
 msgstr[0] "%u fájl"
 msgstr[1] "%u fájl"
 
+#: ../libnautilus-private/nautilus-file.c:4356
+#, c-format
+msgid "%s (%lld bytes)"
+msgstr "%s (%lld bájt)"
+
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4604
-#: ../libnautilus-private/nautilus-file.c:4620
+#: ../libnautilus-private/nautilus-file.c:4651
+#: ../libnautilus-private/nautilus-file.c:4667
 msgid "? items"
 msgstr "? elem"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4610
+#: ../libnautilus-private/nautilus-file.c:4657
 msgid "? bytes"
 msgstr "? bájt"
 
-#: ../libnautilus-private/nautilus-file.c:4625
+#: ../libnautilus-private/nautilus-file.c:4672
 msgid "unknown type"
 msgstr "ismeretlen típus"
 
-#: ../libnautilus-private/nautilus-file.c:4628
+#: ../libnautilus-private/nautilus-file.c:4675
 msgid "unknown MIME type"
 msgstr "ismeretlen MIME-típus"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4634
+#: ../libnautilus-private/nautilus-file.c:4681
 #: ../src/file-manager/fm-properties-window.c:1283
 msgid "unknown"
 msgstr "ismeretlen"
 
-#: ../libnautilus-private/nautilus-file.c:4667
+#: ../libnautilus-private/nautilus-file.c:4714
 msgid "program"
 msgstr "program"
 
-#: ../libnautilus-private/nautilus-file.c:4685
+#: ../libnautilus-private/nautilus-file.c:4732
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2054,7 +2061,7 @@ msgstr ""
 "jelenti, hogy az ön gnome-vfs.keys fájlja rossz helyen van, vagy valamiért a "
 "Nautilus nem találja meg."
 
-#: ../libnautilus-private/nautilus-file.c:4689
+#: ../libnautilus-private/nautilus-file.c:4736
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2063,15 +2070,15 @@ msgstr ""
 "Nincs leírás a következő MIME-típushoz: \"%s\" (a fájl: \"%s\"). Ezt "
 "mindenképpen jelentse a gnome-vfs levelezési listán."
 
-#: ../libnautilus-private/nautilus-file.c:4705
+#: ../libnautilus-private/nautilus-file.c:4752
 msgid "link"
 msgstr "link"
 
-#: ../libnautilus-private/nautilus-file.c:4725
+#: ../libnautilus-private/nautilus-file.c:4772
 msgid "link (broken)"
 msgstr "link (törött)"
 
-#: ../libnautilus-private/nautilus-file.c:6222
+#: ../libnautilus-private/nautilus-file.c:6269
 #: ../libnautilus-private/nautilus-global-preferences.c:528
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2169,7 +2176,7 @@ msgid "Display _files when they are clicked"
 msgstr "_Megjelenítés kattintáskor"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "_Kérdés minden alkalommal"
 
@@ -2389,7 +2396,9 @@ msgstr "A(z) \"%s\" nem jeleníthető meg, mivel a(z) \"%s\" gép nem találhat�
 #: ../libnautilus-private/nautilus-program-choosing.c:613
 #: ../src/nautilus-window-manage-views.c:1475
 msgid "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Ellenőrizze, hogy nem gépelt-e el valamit és hogy helyesek-e a proxy beállításai."
+msgstr ""
+"Ellenőrizze, hogy nem gépelt-e el valamit és hogy helyesek-e a proxy "
+"beállításai."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:618
 #: ../src/nautilus-window-manage-views.c:1433
@@ -2579,7 +2588,7 @@ msgstr "Minden elem törlése a Kukából"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:182
+#: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "Munkaasztal"
 
@@ -3528,7 +3537,9 @@ msgstr "A(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem változtat
 #: ../src/file-manager/fm-error-reporting.c:213
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Sajnálom, a(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem változtatható meg"
+msgstr ""
+"Sajnálom, a(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem "
+"változtatható meg"
 
 #: ../src/file-manager/fm-error-reporting.c:216
 msgid "The owner could not be changed."
@@ -3537,7 +3548,9 @@ msgstr "A tulajdonos nem változtatható meg."
 #: ../src/file-manager/fm-error-reporting.c:238
 #, c-format
 msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr "A(z) \"%s\" írásvédett lemezen van, ezért jogosultságai nem változtathatók meg"
+msgstr ""
+"A(z) \"%s\" írásvédett lemezen van, ezért jogosultságai nem változtathatók "
+"meg"
 
 #: ../src/file-manager/fm-error-reporting.c:245
 #, c-format
@@ -3756,27 +3769,27 @@ msgstr "Látható _oszlopok..."
 msgid "Select the columns visible in this folder"
 msgstr "Ebben a mappában látható oszlopok kiválasztása"
 
-#: ../src/file-manager/fm-list-view.c:2613
+#: ../src/file-manager/fm-list-view.c:2620
 msgid "List"
 msgstr "Lista"
 
-#: ../src/file-manager/fm-list-view.c:2614
+#: ../src/file-manager/fm-list-view.c:2621
 msgid "View as List"
 msgstr "Listanézet"
 
-#: ../src/file-manager/fm-list-view.c:2615
+#: ../src/file-manager/fm-list-view.c:2622
 msgid "View as _List"
 msgstr "_Listanézet"
 
-#: ../src/file-manager/fm-list-view.c:2616
+#: ../src/file-manager/fm-list-view.c:2623
 msgid "The list view encountered an error."
 msgstr "A listanézet hibát észlelt."
 
-#: ../src/file-manager/fm-list-view.c:2617
+#: ../src/file-manager/fm-list-view.c:2624
 msgid "The list view encountered an error while starting up."
 msgstr "A listanézet hibát észlelt induláskor."
 
-#: ../src/file-manager/fm-list-view.c:2618
+#: ../src/file-manager/fm-list-view.c:2625
 msgid "Display this location with the list view."
 msgstr "Ezen hely megjelenítése a listanézettel."
 
@@ -4032,7 +4045,7 @@ msgid "Move to Trash"
 msgstr "Áthelyezés a Kukába"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:191
+#: ../src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "Fájlrendszer"
 
@@ -4192,7 +4205,7 @@ msgstr ""
 "újraindítása segíthet."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:215
+#: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4234,7 +4247,9 @@ msgstr "Nem lehet a kiszolgálóhoz kapcsolódni. A(z) \"%s\" nem érvényes hel
 
 #: ../src/nautilus-connect-server-dialog.c:158
 msgid "Can't Connect to Server. You must enter a name for the server."
-msgstr "Nem lehet a kiszolgálóhoz kapcsolódni. Meg kell adnia egy nevet a kiszolgálónak."
+msgstr ""
+"Nem lehet a kiszolgálóhoz kapcsolódni. Meg kell adnia egy nevet a "
+"kiszolgálónak."
 
 #: ../src/nautilus-connect-server-dialog.c:159
 msgid "Please enter a name and try again."
@@ -4400,7 +4415,7 @@ msgstr "Az áthúzott fájl nem tűnik érvényes képnek."
 msgid "Show Emblems"
 msgstr "Matricák megjelenítése"
 
-#: ../src/nautilus-file-management-properties.c:292
+#: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Nincs"
 
@@ -4518,14 +4533,18 @@ msgid "Always open in _browser windows"
 msgstr "Megnyitás mindig a bön_gészőablakokban"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "Mindig a _szöveges címsávot használja"
+
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Kérdé_s a Kuka ürítése vagy fájlok törlése előtt"
 
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "Viselkedés"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
+#: ../src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -4539,7 +4558,7 @@ msgstr ""
 "Módosítás ideje szerint\n"
 "Matricák szerint"
 
-#: ../src/nautilus-file-management-properties.glade.h:43
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4547,31 +4566,31 @@ msgstr ""
 "Adja meg, hogy milyen sorrendben jelenjenek meg az adatok az ikon neve "
 "alatt. Egyre több adat jelenik meg, ahogyan kinagyítja a nézetet."
 
-#: ../src/nautilus-file-management-properties.glade.h:44
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr "Adja meg, hogy milyen sorrendben jelenjenek meg az adatok a listanézetben."
 
-#: ../src/nautilus-file-management-properties.glade.h:45
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "_Elemek számának megjelenítése:"
 
-#: ../src/nautilus-file-management-properties.glade.h:46
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "_Alapértelmezett nagyítás:"
 
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "Megjelenítés"
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "Fájlkezelő beállításai"
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_Törlés a Kuka megkerülésével"
 
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -4579,83 +4598,83 @@ msgstr ""
 "Ikonnézet\n"
 "Listanézet"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "Oszloplista"
 
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "Előnézet"
 
-#: ../src/nautilus-file-management-properties.glade.h:54
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "_Hangfájlok előnézete:"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "_Csak mappák megjelenítése"
 
-#: ../src/nautilus-file-management-properties.glade.h:56
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "Bélye_gképek megjelenítése:"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "Rejtett _fájlok és biztonsági másolatok megjelenítése"
 
-#: ../src/nautilus-file-management-properties.glade.h:58
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "S_zöveg megjelenítése az ikonokban:"
 
-#: ../src/nautilus-file-management-properties.glade.h:59
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "_Mappák mindig a fájlok előtt"
 
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "Új mappák me_gjelenítése:"
 
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "Nézetek"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "Elemek _rendezése:"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "_Alapértelmezett nagyítás:"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "Ele_mek aktiválása dupla kattintással"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "_Formátum:"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "_Csak az ennél kisebb fájlokhoz:"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "_Végrehajtható szöveges fájlok futtatása kattintáskor"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "_Elemek aktiválása egy kattintással"
 
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "Szö_veg az ikon mellett"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "Szorosabb _elrendezés használata"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "Vég_rehajtható szöveges fájlok megtekintése kattintáskor"
 
@@ -5073,19 +5092,19 @@ msgstr "Feljegyzések"
 msgid "Show Notes"
 msgstr "Feljegyzések megjelenítése"
 
-#: ../src/nautilus-places-sidebar.c:775
+#: ../src/nautilus-places-sidebar.c:889
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: ../src/nautilus-places-sidebar.c:784
+#: ../src/nautilus-places-sidebar.c:898
 msgid "Rename..."
 msgstr "Átnevezés"
 
-#: ../src/nautilus-places-sidebar.c:1006
+#: ../src/nautilus-places-sidebar.c:1122
 msgid "Places"
 msgstr "Helyek"
 
-#: ../src/nautilus-places-sidebar.c:1012
+#: ../src/nautilus-places-sidebar.c:1128
 msgid "Show Places"
 msgstr "Helyek megjelenítése"
 
@@ -5454,7 +5473,9 @@ msgstr "Ellenőrizze a proxy beállításait."
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
-msgstr "A(z) \"%s\" nem jeleníthető meg, mert a Nautilus nem tud kapcsolatba lépni az SMB-mesterböngészővel."
+msgstr ""
+"A(z) \"%s\" nem jeleníthető meg, mert a Nautilus nem tud kapcsolatba lépni "
+"az SMB-mesterböngészővel."
 
 #: ../src/nautilus-window-manage-views.c:1490
 msgid "Check that an SMB server is running in the local network."
