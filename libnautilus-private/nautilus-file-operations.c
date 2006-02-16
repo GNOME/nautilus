@@ -1256,6 +1256,18 @@ get_link_name (char *name, int count)
 
 	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
 					     NULL, NULL, NULL);
+
+	if (!unescaped_name) {
+		/* Couldn't convert to utf8 - probably
+		 * G_BROKEN_FILENAMES not set when it should be.
+		 * Try converting from the locale */
+		unescaped_name = g_locale_to_utf8 (unescaped_tmp_name, -1, NULL, NULL, NULL);	
+
+		if (!unescaped_name) {
+			unescaped_name = eel_make_valid_utf8 (unescaped_tmp_name);
+		}
+	}
+
 	g_free (unescaped_tmp_name);
 
 	if (count < 1) {

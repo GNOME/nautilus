@@ -1,3 +1,9 @@
+2006-02-17  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file-operations.c: (get_link_name):
+	Fall back to locale encoding or force utf8 if the utf8 conversion
+	of the link target filename fails. (#331379)
+
 2006-02-15  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (append_extension_pages):
