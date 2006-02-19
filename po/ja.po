@@ -1,5 +1,5 @@
 # nautilus ja.po.
-# Copyright (C) 2000-2005 Free Software Foundation, Inc.
+# Copyright (C) 2000-2006 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-19 09:39+0900\n"
-"PO-Revision-Date: 2006-01-19 03:43+0900\n"
-"Last-Translator: Satoru SATOH <ss@gnome.gr.jp>\n"
+"POT-Creation-Date: 2006-02-19 12:53+0900\n"
+"PO-Revision-Date: 2006-02-19 12:52+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -298,7 +298,7 @@ msgstr "パターン(_P)"
 
 #: ../data/nautilus.xml.in.h:1
 msgid "Saved search"
-msgstr "保存されている検索結果"
+msgstr "検索結果の保存"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -959,7 +959,7 @@ msgstr "クリップボードに格納したテキストを貼り付けます"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6626
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "Select _All"
 msgstr "全て選択(_A)"
 
@@ -1046,7 +1046,7 @@ msgid "The group of the file."
 msgstr "ファイルが所属するグループ"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:2904
+#: ../src/file-manager/fm-properties-window.c:2912
 msgid "Permissions"
 msgstr "アクセス権"
 
@@ -1187,8 +1187,8 @@ msgstr "(残り %d:%02d:%d)"
 msgid "(%d:%02d Remaining)"
 msgstr "(残り %d:%02d)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:448
-#: ../libnautilus-private/nautilus-file-operations.c:477
+#: ../libnautilus-private/nautilus-file-operations.c:449
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #: ../libnautilus-private/nautilus-file-utilities.c:87
 #: ../src/nautilus-connect-server-dialog.c:293
 #, c-format
@@ -1196,45 +1196,45 @@ msgid "%s on %s"
 msgstr "%s / %s"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:459
+#: ../libnautilus-private/nautilus-file-operations.c:460
 msgid "From:"
 msgstr "元:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:486
+#: ../libnautilus-private/nautilus-file-operations.c:487
 msgid "To:"
 msgstr "先:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:672
-#: ../libnautilus-private/nautilus-file-operations.c:720
-#: ../libnautilus-private/nautilus-file-operations.c:725
-#: ../libnautilus-private/nautilus-file-operations.c:735
+#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:736
 msgid "Error while moving."
 msgstr "移動中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:674
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "\"%s\" は読み込み専用ディスクのため移動できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:683
-#: ../libnautilus-private/nautilus-file-operations.c:689
+#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:690
 msgid "Error while deleting."
 msgstr "削除中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:685
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr "親フォルダに対する変更権限がないので \"%s\" を削除できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:690
+#: ../libnautilus-private/nautilus-file-operations.c:691
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "\"%s\" は読み込み専用ディスクのため削除できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:722
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1242,14 +1242,14 @@ msgid ""
 msgstr ""
 "\"%s\" 自身またはその親フォルダに対する変更権限がないので移動できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:727
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr "移動先に \"%s\" 自身またはその親フォルダがあるので移動できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:736
+#: ../libnautilus-private/nautilus-file-operations.c:737
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1258,130 +1258,130 @@ msgstr ""
 "\"%s\" 自身またはその親フォルダに対する変更権限がないのでゴミ箱に移動できませ"
 "ん。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:758
+#: ../libnautilus-private/nautilus-file-operations.c:759
 msgid "Error while copying."
 msgstr "コピー中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:759
+#: ../libnautilus-private/nautilus-file-operations.c:760
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "\"%s\" 自身に対する読み込み権限がないためコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:779
-#: ../libnautilus-private/nautilus-file-operations.c:800
-#: ../libnautilus-private/nautilus-file-operations.c:804
+#: ../libnautilus-private/nautilus-file-operations.c:780
+#: ../libnautilus-private/nautilus-file-operations.c:801
+#: ../libnautilus-private/nautilus-file-operations.c:805
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "\"%s\" へコピー中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:780
-#: ../libnautilus-private/nautilus-file-operations.c:785
-#: ../libnautilus-private/nautilus-file-operations.c:789
+#: ../libnautilus-private/nautilus-file-operations.c:781
+#: ../libnautilus-private/nautilus-file-operations.c:786
+#: ../libnautilus-private/nautilus-file-operations.c:790
 msgid "There is not enough space on the destination."
 msgstr "移動先に十分な空き容量がありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:784
+#: ../libnautilus-private/nautilus-file-operations.c:785
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "\"%s\" へ移動中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:788
+#: ../libnautilus-private/nautilus-file-operations.c:789
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "\"%s\" のリンクを生成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:801
-#: ../libnautilus-private/nautilus-file-operations.c:812
-#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:802
+#: ../libnautilus-private/nautilus-file-operations.c:813
+#: ../libnautilus-private/nautilus-file-operations.c:824
 msgid "You do not have permissions to write to this folder."
 msgstr "このフォルダへの書き込み権限がありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:805
-#: ../libnautilus-private/nautilus-file-operations.c:816
-#: ../libnautilus-private/nautilus-file-operations.c:827
+#: ../libnautilus-private/nautilus-file-operations.c:806
+#: ../libnautilus-private/nautilus-file-operations.c:817
+#: ../libnautilus-private/nautilus-file-operations.c:828
 msgid "The destination disk is read-only."
 msgstr "コピー先のディスクは読み込み専用です。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:811
-#: ../libnautilus-private/nautilus-file-operations.c:815
+#: ../libnautilus-private/nautilus-file-operations.c:812
+#: ../libnautilus-private/nautilus-file-operations.c:816
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "アイテムを \"%s\" へ移動中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:822
-#: ../libnautilus-private/nautilus-file-operations.c:826
+#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:827
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "\"%s\" のリンクを生成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:854
+#: ../libnautilus-private/nautilus-file-operations.c:855
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "エラー \"%s\" が \"%s\" をコピー中に発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:855
-#: ../libnautilus-private/nautilus-file-operations.c:859
-#: ../libnautilus-private/nautilus-file-operations.c:863
-#: ../libnautilus-private/nautilus-file-operations.c:869
-#: ../libnautilus-private/nautilus-file-operations.c:884
-#: ../libnautilus-private/nautilus-file-operations.c:888
-#: ../libnautilus-private/nautilus-file-operations.c:892
-#: ../libnautilus-private/nautilus-file-operations.c:898
+#: ../libnautilus-private/nautilus-file-operations.c:856
+#: ../libnautilus-private/nautilus-file-operations.c:860
+#: ../libnautilus-private/nautilus-file-operations.c:864
+#: ../libnautilus-private/nautilus-file-operations.c:870
+#: ../libnautilus-private/nautilus-file-operations.c:885
+#: ../libnautilus-private/nautilus-file-operations.c:889
+#: ../libnautilus-private/nautilus-file-operations.c:893
+#: ../libnautilus-private/nautilus-file-operations.c:899
 msgid "Would you like to continue?"
 msgstr "続行してもよろしいですか？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:858
+#: ../libnautilus-private/nautilus-file-operations.c:859
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "エラー \"%s\" が \"%s\" を移動中に発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:862
+#: ../libnautilus-private/nautilus-file-operations.c:863
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "エラー \"%s\" が \"%s\" へのリンクの生成中に発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:868
+#: ../libnautilus-private/nautilus-file-operations.c:869
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "エラー \"%s\" が \"%s\" を削除中に発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:883
+#: ../libnautilus-private/nautilus-file-operations.c:884
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "コピー中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:887
+#: ../libnautilus-private/nautilus-file-operations.c:888
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "移動中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:891
+#: ../libnautilus-private/nautilus-file-operations.c:892
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "リンク中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:897
+#: ../libnautilus-private/nautilus-file-operations.c:898
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "削除中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1030
-#: ../libnautilus-private/nautilus-file-operations.c:1047
+#: ../libnautilus-private/nautilus-file-operations.c:1031
+#: ../libnautilus-private/nautilus-file-operations.c:1048
 msgid "_Retry"
 msgstr "再試行する(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1047
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1048
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Skip"
 msgstr "スキップする(_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1137
+#: ../libnautilus-private/nautilus-file-operations.c:1138
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "\"%s\" を新しい場所へ移動できませんでした。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1140
+#: ../libnautilus-private/nautilus-file-operations.c:1141
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1389,12 +1389,12 @@ msgstr ""
 "既にその名前は削除も置き換えもできない特別なアイテムが使用しています。どうし"
 "てもそのアイテムを移動する場合は、名前を変更してから再試行して下さい。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1144
+#: ../libnautilus-private/nautilus-file-operations.c:1145
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "\"%s\" を新しい場所へコピーできませんでした。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1147
+#: ../libnautilus-private/nautilus-file-operations.c:1148
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1402,17 +1402,17 @@ msgstr ""
 "既にその名前は削除も置き換えもできない特別なアイテムが使用しています。どうし"
 "てもそのアイテムをコピーする場合は、名前を変更してから再試行して下さい。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1171
+#: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "既にフォルダ \"%s\" は存在します。置き換えてもよろしいですか？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1174
+#: ../libnautilus-private/nautilus-file-operations.c:1175
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "既にファイル \"%s\" は存在します。置き換えてもよろしいですか？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1182
+#: ../libnautilus-private/nautilus-file-operations.c:1183
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
@@ -1420,20 +1420,20 @@ msgstr ""
 "既存のフォルダを置き換えると、そのフォルダ内のファイルが上書きコピーしたファ"
 "イルと衝突します。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1184
+#: ../libnautilus-private/nautilus-file-operations.c:1185
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "既存のファイルを置き換えると、その中身は上書きされます。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Replace"
 msgstr "置き換える(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "S_kip All"
 msgstr "全てスキップする(_K)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "Replace _All"
 msgstr "全て置き換える(_A)"
 
@@ -1442,15 +1442,15 @@ msgstr "全て置き換える(_A)"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1275
-#: ../libnautilus-private/nautilus-file.c:4711
-#: ../src/file-manager/fm-directory-view.c:9380
+#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file.c:4758
+#: ../src/file-manager/fm-directory-view.c:9384
 #, c-format
 msgid "link to %s"
 msgstr "%s へのリンク"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1279
+#: ../libnautilus-private/nautilus-file-operations.c:1292
 #, c-format
 msgid "another link to %s"
 msgstr "%s への別のリンク"
@@ -1459,25 +1459,25 @@ msgstr "%s への別のリンク"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1295
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d 番目の %s へのリンク"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1299
+#: ../libnautilus-private/nautilus-file-operations.c:1312
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d 番目の %s へのリンク"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1303
+#: ../libnautilus-private/nautilus-file-operations.c:1316
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d 番目の %s へのリンク"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1307
+#: ../libnautilus-private/nautilus-file-operations.c:1320
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d 番目の %s へのリンク"
@@ -1487,12 +1487,12 @@ msgstr "%d 番目の %s へのリンク"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1328
+#: ../libnautilus-private/nautilus-file-operations.c:1341
 msgid " (copy)"
 msgstr " (コピー)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1330
+#: ../libnautilus-private/nautilus-file-operations.c:1343
 msgid " (another copy)"
 msgstr " (別のコピー)"
 
@@ -1500,36 +1500,36 @@ msgstr " (別のコピー)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1333
-#: ../libnautilus-private/nautilus-file-operations.c:1335
-#: ../libnautilus-private/nautilus-file-operations.c:1337
-#: ../libnautilus-private/nautilus-file-operations.c:1347
+#: ../libnautilus-private/nautilus-file-operations.c:1346
+#: ../libnautilus-private/nautilus-file-operations.c:1348
+#: ../libnautilus-private/nautilus-file-operations.c:1350
+#: ../libnautilus-private/nautilus-file-operations.c:1360
 msgid "th copy)"
 msgstr "番目のコピー)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1340
+#: ../libnautilus-private/nautilus-file-operations.c:1353
 msgid "st copy)"
 msgstr "番目のコピー)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1342
+#: ../libnautilus-private/nautilus-file-operations.c:1355
 msgid "nd copy)"
 msgstr "番目のコピー)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1344
+#: ../libnautilus-private/nautilus-file-operations.c:1357
 msgid "rd copy)"
 msgstr "番目のコピー)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1361
+#: ../libnautilus-private/nautilus-file-operations.c:1374
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (コピー)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1363
+#: ../libnautilus-private/nautilus-file-operations.c:1376
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (別のコピー)%s"
@@ -1538,246 +1538,246 @@ msgstr "%s (別のコピー)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1366
-#: ../libnautilus-private/nautilus-file-operations.c:1368
-#: ../libnautilus-private/nautilus-file-operations.c:1370
 #: ../libnautilus-private/nautilus-file-operations.c:1379
+#: ../libnautilus-private/nautilus-file-operations.c:1381
+#: ../libnautilus-private/nautilus-file-operations.c:1383
+#: ../libnautilus-private/nautilus-file-operations.c:1392
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d 番目のコピー)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1373
+#: ../libnautilus-private/nautilus-file-operations.c:1386
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d 番目のコピー)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1375
+#: ../libnautilus-private/nautilus-file-operations.c:1388
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d 番目のコピー)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1377
+#: ../libnautilus-private/nautilus-file-operations.c:1390
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d 番目のコピー)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1477
+#: ../libnautilus-private/nautilus-file-operations.c:1490
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1485
+#: ../libnautilus-private/nautilus-file-operations.c:1498
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1681
-#: ../libnautilus-private/nautilus-file-operations.c:2291
-#: ../libnautilus-private/nautilus-file-operations.c:2474
+#: ../libnautilus-private/nautilus-file-operations.c:1694
+#: ../libnautilus-private/nautilus-file-operations.c:2304
+#: ../libnautilus-private/nautilus-file-operations.c:2487
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "不明な GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2027
+#: ../libnautilus-private/nautilus-file-operations.c:2040
 msgid "Moving files to the Trash"
 msgstr "ファイルをゴミ箱へ移動中"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2029
+#: ../libnautilus-private/nautilus-file-operations.c:2042
 msgid "Throwing out file:"
 msgstr "ファイルの削除中:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2031
-#: ../libnautilus-private/nautilus-file-operations.c:2042
+#: ../libnautilus-private/nautilus-file-operations.c:2044
+#: ../libnautilus-private/nautilus-file-operations.c:2055
 msgid "Moving"
 msgstr "移動中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2032
+#: ../libnautilus-private/nautilus-file-operations.c:2045
 msgid "Preparing to Move to Trash..."
 msgstr "ゴミ箱へ移動する準備中..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2038
+#: ../libnautilus-private/nautilus-file-operations.c:2051
 msgid "Moving files"
 msgstr "ファイルの移動中"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2040
+#: ../libnautilus-private/nautilus-file-operations.c:2053
 msgid "Moving file:"
 msgstr "ファイルの移動中:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2043
+#: ../libnautilus-private/nautilus-file-operations.c:2056
 msgid "Preparing To Move..."
 msgstr "移動の準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2044
+#: ../libnautilus-private/nautilus-file-operations.c:2057
 msgid "Finishing Move..."
 msgstr "移動完了..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2052
+#: ../libnautilus-private/nautilus-file-operations.c:2065
 msgid "Creating links to files"
 msgstr "ファイルへのリンクの作成中"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2054
+#: ../libnautilus-private/nautilus-file-operations.c:2067
 msgid "Linking file:"
 msgstr "リンク中:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2056
+#: ../libnautilus-private/nautilus-file-operations.c:2069
 msgid "Linking"
 msgstr "リンク中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2057
+#: ../libnautilus-private/nautilus-file-operations.c:2070
 msgid "Preparing to Create Links..."
 msgstr "リンク作成の準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2058
+#: ../libnautilus-private/nautilus-file-operations.c:2071
 msgid "Finishing Creating Links..."
 msgstr "リンクの作成が完了しました..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2077
 msgid "Copying files"
 msgstr "ファイルのコピー中"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2079
 msgid "Copying file:"
 msgstr "ファイルのコピー中:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2068
+#: ../libnautilus-private/nautilus-file-operations.c:2081
 msgid "Copying"
 msgstr "コピー中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2069
+#: ../libnautilus-private/nautilus-file-operations.c:2082
 msgid "Preparing To Copy..."
 msgstr "コピーの準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2087
+#: ../libnautilus-private/nautilus-file-operations.c:2100
 msgid "You cannot copy items into the trash."
 msgstr "アイテムをゴミ箱の中へコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2088
+#: ../libnautilus-private/nautilus-file-operations.c:2101
 msgid "You cannot create links inside the trash."
 msgstr "ゴミ箱の中にリンクを生成できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2089
+#: ../libnautilus-private/nautilus-file-operations.c:2102
 msgid "Files and folders can only be moved into the trash."
 msgstr "ファイルとフォルダのみゴミ箱に移動できます。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2112
+#: ../libnautilus-private/nautilus-file-operations.c:2125
 msgid "You cannot move this trash folder."
 msgstr "このゴミ箱は移動できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2113
+#: ../libnautilus-private/nautilus-file-operations.c:2126
 msgid "You cannot copy this trash folder."
 msgstr "このゴミ箱はコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2114
+#: ../libnautilus-private/nautilus-file-operations.c:2127
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "このフォルダはゴミ箱に移動するアイテムを格納するのに使用します。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2151
 msgid "You cannot move a folder into itself."
 msgstr "フォルダをそのフォルダの中に移動できません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2139
+#: ../libnautilus-private/nautilus-file-operations.c:2152
 msgid "You cannot copy a folder into itself."
 msgstr "フォルダをそのフォルダの中にコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2140
+#: ../libnautilus-private/nautilus-file-operations.c:2153
 msgid "The destination folder is inside the source folder."
 msgstr "転送先のフォルダは転送元の内部にあります。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2153
+#: ../libnautilus-private/nautilus-file-operations.c:2166
 msgid "You cannot copy a file over itself."
 msgstr "それ自身の中へフォルダをコピーできません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2154
+#: ../libnautilus-private/nautilus-file-operations.c:2167
 msgid "The destination and source are the same file."
 msgstr "移動/コピー元と先が同じファイルです。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2209
-#: ../libnautilus-private/nautilus-file-operations.c:2369
+#: ../libnautilus-private/nautilus-file-operations.c:2222
+#: ../libnautilus-private/nautilus-file-operations.c:2382
 msgid "You do not have permissions to write to the destination."
 msgstr "転送先への書き込み権限がありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2211
-#: ../libnautilus-private/nautilus-file-operations.c:2371
+#: ../libnautilus-private/nautilus-file-operations.c:2224
+#: ../libnautilus-private/nautilus-file-operations.c:2384
 msgid "There is no space on the destination."
 msgstr "転送先に十分な空きがありません。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2213
+#: ../libnautilus-private/nautilus-file-operations.c:2226
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "新しいフォルダの生成中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2218
+#: ../libnautilus-private/nautilus-file-operations.c:2231
 msgid "Error creating new folder."
 msgstr "新しいフォルダの生成中にエラーが発生しました。"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2328
 msgid "untitled folder"
 msgstr "未タイトルのフォルダ"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2373
+#: ../libnautilus-private/nautilus-file-operations.c:2386
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "新しいドキュメントの生成中にエラー \"%s\" が発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2391
 msgid "Error creating new document."
 msgstr "新しいドキュメントの生成中にエラーが発生しました。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2605
+#: ../libnautilus-private/nautilus-file-operations.c:2618
 msgid "new file"
 msgstr "新しいファイル"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2671
+#: ../libnautilus-private/nautilus-file-operations.c:2684
 msgid "Deleting files"
 msgstr "ファイルを削除中"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2708
+#: ../libnautilus-private/nautilus-file-operations.c:2686
+#: ../libnautilus-private/nautilus-file-operations.c:2721
 msgid "Files deleted:"
 msgstr "削除したファイル:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2675
-#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2688
+#: ../libnautilus-private/nautilus-file-operations.c:2723
 msgid "Deleting"
 msgstr "削除中"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2676
+#: ../libnautilus-private/nautilus-file-operations.c:2689
 msgid "Preparing to Delete files..."
 msgstr "ファイル削除の準備中..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2706
+#: ../libnautilus-private/nautilus-file-operations.c:2719
 msgid "Emptying the Trash"
 msgstr "ゴミ箱を空にしています"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2711
+#: ../libnautilus-private/nautilus-file-operations.c:2724
 msgid "Preparing to Empty the Trash..."
 msgstr "ゴミ箱を空にする準備中..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2747
+#: ../libnautilus-private/nautilus-file-operations.c:2760
 msgid "Empty all of the items from the trash?"
 msgstr "ゴミ箱から全てのアイテムを空にしてもよろしいですか？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2750
+#: ../libnautilus-private/nautilus-file-operations.c:2763
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1785,7 +1785,7 @@ msgstr ""
 "ゴミ箱を空にすると、アイテムは完全に削除されます。それらを一つ一つ削除するこ"
 "とも可能です。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2772
+#: ../libnautilus-private/nautilus-file-operations.c:2785
 msgid "_Empty Trash"
 msgstr "ゴミ箱を空にする(_E)"
 
@@ -1847,7 +1847,7 @@ msgid "today at 00:00:00 PM"
 msgstr "今日の 午後 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:2922
-#: ../src/nautilus-file-management-properties.c:459
+#: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "今日の %p %-I:%M"
 
@@ -1987,38 +1987,43 @@ msgid_plural "%u files"
 msgstr[0] "%u 個のファイル"
 msgstr[1] "%u 個のファイル"
 
+#: ../libnautilus-private/nautilus-file.c:4356
+#, c-format
+msgid "%s (%lld bytes)"
+msgstr "%s (%lld バイト)"
+
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4604
-#: ../libnautilus-private/nautilus-file.c:4620
+#: ../libnautilus-private/nautilus-file.c:4651
+#: ../libnautilus-private/nautilus-file.c:4667
 msgid "? items"
 msgstr "？個のアイテム"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4610
+#: ../libnautilus-private/nautilus-file.c:4657
 msgid "? bytes"
 msgstr "？バイト"
 
-#: ../libnautilus-private/nautilus-file.c:4625
+#: ../libnautilus-private/nautilus-file.c:4672
 msgid "unknown type"
 msgstr "不明な種類"
 
-#: ../libnautilus-private/nautilus-file.c:4628
+#: ../libnautilus-private/nautilus-file.c:4675
 msgid "unknown MIME type"
 msgstr "不明な MIME 型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4634
+#: ../libnautilus-private/nautilus-file.c:4681
 #: ../src/file-manager/fm-properties-window.c:1283
 msgid "unknown"
 msgstr "不明"
 
-#: ../libnautilus-private/nautilus-file.c:4667
+#: ../libnautilus-private/nautilus-file.c:4714
 msgid "program"
 msgstr "プログラム"
 
-#: ../libnautilus-private/nautilus-file.c:4685
+#: ../libnautilus-private/nautilus-file.c:4732
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2028,7 +2033,7 @@ msgstr ""
 "イルが間違った場所にあるか、あるいは何か他の理由で見つけられない可能性があり"
 "ます。"
 
-#: ../libnautilus-private/nautilus-file.c:4689
+#: ../libnautilus-private/nautilus-file.c:4736
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2037,15 +2042,15 @@ msgstr ""
 "MIME型 \"%s\" (ファイルは \"%s\") の説明が見つかりません。gnome-vfs メーリン"
 "グ・リストにお知らせ下さい。"
 
-#: ../libnautilus-private/nautilus-file.c:4705
+#: ../libnautilus-private/nautilus-file.c:4752
 msgid "link"
 msgstr "リンク"
 
-#: ../libnautilus-private/nautilus-file.c:4725
+#: ../libnautilus-private/nautilus-file.c:4772
 msgid "link (broken)"
 msgstr "リンク切れ"
 
-#: ../libnautilus-private/nautilus-file.c:6222
+#: ../libnautilus-private/nautilus-file.c:6269
 #: ../libnautilus-private/nautilus-global-preferences.c:528
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2143,7 +2148,7 @@ msgid "Display _files when they are clicked"
 msgstr "クリック時にファイルを表示する(_F)"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "毎回確認する(_A)"
 
@@ -2238,15 +2243,15 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "%s のホーム"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2116
+#: ../libnautilus-private/nautilus-icon-container.c:2114
 msgid "The selection rectangle"
 msgstr "選択範囲"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4765
+#: ../libnautilus-private/nautilus-icon-container.c:4763
 msgid "Normal Alpha"
 msgstr "標準アルファ"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4766
+#: ../libnautilus-private/nautilus-icon-container.c:4764
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "frame_text が TRUE ならば標準アイコンの透明度にします"
 
@@ -2391,8 +2396,8 @@ msgstr "\"%s\" を見つけられませんでした。"
 #, c-format
 msgid "Opening %d Item"
 msgid_plural "Opening %d Items"
-msgstr[0] "%d 個のアイテムを開いています"
-msgstr[1] "%d 個のアイテムを開いています"
+msgstr[0] "%d個のアイテムを開いています"
+msgstr[1] "%d個のアイテムを開いています"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:901
 msgid "Sorry, but you can't execute commands from a remote site."
@@ -2509,22 +2514,22 @@ msgstr "背景"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6604
-#: ../src/file-manager/fm-directory-view.c:7408
+#: ../src/file-manager/fm-directory-view.c:6608
+#: ../src/file-manager/fm-directory-view.c:7412
 msgid "E_mpty Trash"
 msgstr "ゴミ箱を空にする(_M)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6576
+#: ../src/file-manager/fm-directory-view.c:6580
 msgid "Create L_auncher..."
 msgstr "ランチャの生成(_A)..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6577
+#: ../src/file-manager/fm-directory-view.c:6581
 msgid "Create a new launcher"
 msgstr "新しいランチャを作成します"
 
@@ -2547,13 +2552,13 @@ msgstr "ゴミ箱を空にする"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6605
+#: ../src/file-manager/fm-directory-view.c:6609
 msgid "Delete all items in the Trash"
 msgstr "ゴミ箱にある全てのアイテムを削除します"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:182
+#: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "デスクトップ"
 
@@ -2616,7 +2621,7 @@ msgstr "パターン(_P):"
 
 #: ../src/file-manager/fm-directory-view.c:1288
 msgid "Save Search as"
-msgstr "検索結果を別名で保存"
+msgstr "検索結果の保存"
 
 #: ../src/file-manager/fm-directory-view.c:1306
 msgid "Search _name:"
@@ -2757,49 +2762,50 @@ msgstr[0] ""
 msgstr[1] ""
 "選択した %d 個のアイテムをゴミ箱から完全に削除してもよろしいですか？"
 
-#: ../src/file-manager/fm-directory-view.c:3782
+#: ../src/file-manager/fm-directory-view.c:3784
 msgid "If you delete an item, it will be permanently lost."
 msgstr "アイテムを削除すると、完全に失われます。"
 
-#: ../src/file-manager/fm-directory-view.c:4360
+#: ../src/file-manager/fm-directory-view.c:4364
 #, c-format
 msgid "Open with \"%s\""
 msgstr "\"%s\" で開く"
 
-#: ../src/file-manager/fm-directory-view.c:4361
+#: ../src/file-manager/fm-directory-view.c:4365
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "選択したアイテムを \"%s\" を使って開きます"
+msgstr[1] "選択した複数個のアイテムを \"%s\" を使って開きます"
 
-#: ../src/file-manager/fm-directory-view.c:4453
+#: ../src/file-manager/fm-directory-view.c:4457
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "\"%s\" を実行しますか？ それとも内容を表示しますか？"
 
-#: ../src/file-manager/fm-directory-view.c:4455
+#: ../src/file-manager/fm-directory-view.c:4459
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" は実行可能なテキストファイルです。"
 
-#: ../src/file-manager/fm-directory-view.c:4461
+#: ../src/file-manager/fm-directory-view.c:4465
 msgid "Run in _Terminal"
 msgstr "端末内で実行する(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:4462
+#: ../src/file-manager/fm-directory-view.c:4466
 msgid "_Display"
 msgstr "表示する(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:4465
+#: ../src/file-manager/fm-directory-view.c:4469
 msgid "_Run"
 msgstr "実行する(_R)"
 
-#: ../src/file-manager/fm-directory-view.c:4861
+#: ../src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s は開けません"
 
-#: ../src/file-manager/fm-directory-view.c:4864
+#: ../src/file-manager/fm-directory-view.c:4868
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2821,23 +2827,23 @@ msgstr ""
 "開いて下さい。もしくは、[アプリケーションから開く] メニューから特定のアプリで"
 "ファイルを開いて下さい。"
 
-#: ../src/file-manager/fm-directory-view.c:5259
+#: ../src/file-manager/fm-directory-view.c:5263
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "選択したアイテムを \"%s\" で実行します"
 
-#: ../src/file-manager/fm-directory-view.c:5508
+#: ../src/file-manager/fm-directory-view.c:5512
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "テンプレート \"%s\" からドキュメントを生成する"
 
-#: ../src/file-manager/fm-directory-view.c:5714
+#: ../src/file-manager/fm-directory-view.c:5718
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "このフォルダにある実行可能な全てのファイルが [スクリプト] メニューに表示され"
 "ます。"
 
-#: ../src/file-manager/fm-directory-view.c:5716
+#: ../src/file-manager/fm-directory-view.c:5720
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2845,7 +2851,7 @@ msgstr ""
 "メニューからスクリプトを選択すると、選択したアイテムを入力値としてスクリプト"
 "を実行します。"
 
-#: ../src/file-manager/fm-directory-view.c:5718
+#: ../src/file-manager/fm-directory-view.c:5722
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2887,19 +2893,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ウィンドウの現在位置とサイズ"
 
-#: ../src/file-manager/fm-directory-view.c:5879
+#: ../src/file-manager/fm-directory-view.c:5883
 #: ../src/file-manager/fm-tree-view.c:900
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" を移動します"
 
-#: ../src/file-manager/fm-directory-view.c:5883
+#: ../src/file-manager/fm-directory-view.c:5887
 #: ../src/file-manager/fm-tree-view.c:904
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" をコピーします"
 
-#: ../src/file-manager/fm-directory-view.c:5890
+#: ../src/file-manager/fm-directory-view.c:5894
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -2909,7 +2915,7 @@ msgstr[0] ""
 msgstr[1] ""
 "\"ファイルの貼り付け\" コマンドを選択すると %d 個 のファイルを移動します"
 
-#: ../src/file-manager/fm-directory-view.c:5897
+#: ../src/file-manager/fm-directory-view.c:5901
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -2919,144 +2925,144 @@ msgstr[0] ""
 msgstr[1] ""
 "\"ファイルの貼り付け\" コマンドを選択すると %d 個のファイルをコピーします"
 
-#: ../src/file-manager/fm-directory-view.c:5991
+#: ../src/file-manager/fm-directory-view.c:5995
 #: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "貼り付けるものがクリップボードにはありません。"
 
-#: ../src/file-manager/fm-directory-view.c:6356
+#: ../src/file-manager/fm-directory-view.c:6360
 #, c-format
 msgid "Connect to Server %s"
 msgstr "サーバ %s への接続"
 
-#: ../src/file-manager/fm-directory-view.c:6361
+#: ../src/file-manager/fm-directory-view.c:6365
 msgid "_Connect"
 msgstr "接続する(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6375
+#: ../src/file-manager/fm-directory-view.c:6379
 msgid "Link _name:"
 msgstr "リンクの名前(_N):"
 
-#: ../src/file-manager/fm-directory-view.c:6550
+#: ../src/file-manager/fm-directory-view.c:6554
 msgid "Create _Document"
 msgstr "ドキュメントの生成(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6551
+#: ../src/file-manager/fm-directory-view.c:6555
 msgid "Open Wit_h"
 msgstr "別のアプリで開く(_H)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6552
+#: ../src/file-manager/fm-directory-view.c:6556
 msgid "Choose a program with which to open the selected item"
 msgstr "選択したアイテムを開くプログラムを選びます"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6554
-#: ../src/file-manager/fm-directory-view.c:6562
+#: ../src/file-manager/fm-directory-view.c:6558
+#: ../src/file-manager/fm-directory-view.c:6566
 msgid "_Properties"
 msgstr "プロパティ(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6555
+#: ../src/file-manager/fm-directory-view.c:6559
 msgid "View or modify the properties of each selected item"
 msgstr "選択したアイテムのプロパティを表示または変更します"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6563
+#: ../src/file-manager/fm-directory-view.c:6567
 msgid "View or modify the properties of the open folder"
 msgstr "開いたフォルダのプロパティを表示または変更します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6566
+#: ../src/file-manager/fm-directory-view.c:6570
 msgid "Create _Folder"
 msgstr "フォルダの生成(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6567
+#: ../src/file-manager/fm-directory-view.c:6571
 msgid "Create a new empty folder inside this folder"
 msgstr "このフォルダの中に空のフォルダを新規に作成します"
 
-#: ../src/file-manager/fm-directory-view.c:6569
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "No templates Installed"
 msgstr "テンプレートがインストールされていません"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6572
+#: ../src/file-manager/fm-directory-view.c:6576
 msgid "_Empty File"
 msgstr "空のファイル(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6573
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Create a new empty file inside this folder"
 msgstr "このフォルダの中に空のファイルを新規に作成します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6580
-#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:6584
+#: ../src/file-manager/fm-directory-view.c:7313
 #: ../src/file-manager/fm-tree-view.c:1103
 msgid "_Open"
 msgstr "開く(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6581
+#: ../src/file-manager/fm-directory-view.c:6585
 msgid "Open the selected item in this window"
 msgstr "選択したアイテムをこのウィンドウの中に開きます"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6588
-#: ../src/file-manager/fm-directory-view.c:6696
+#: ../src/file-manager/fm-directory-view.c:6592
+#: ../src/file-manager/fm-directory-view.c:6700
 msgid "Open in Navigation Window"
 msgstr "新しいナビゲーション・ウィンドウで開く"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6589
+#: ../src/file-manager/fm-directory-view.c:6593
 msgid "Open each selected item in a navigation window"
 msgstr "選択したアイテムをナビゲーション・ウィンドウの中に開きます"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6592
 #: ../src/file-manager/fm-directory-view.c:6596
+#: ../src/file-manager/fm-directory-view.c:6600
 msgid "Open with Other _Application..."
 msgstr "別のアプリで開く(_A)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6593
 #: ../src/file-manager/fm-directory-view.c:6597
+#: ../src/file-manager/fm-directory-view.c:6601
 msgid "Choose another application with which to open the selected item"
 msgstr "選択したアイテムを開く別のアプリケーションを選びます"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6600
+#: ../src/file-manager/fm-directory-view.c:6604
 msgid "_Open Scripts Folder"
 msgstr "このフォルダを開く(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6601
+#: ../src/file-manager/fm-directory-view.c:6605
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "スクリプト・フォルダへ移動します"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6609
+#: ../src/file-manager/fm-directory-view.c:6613
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr ""
 "選択したファイルを \"ファイルの貼り付け\" コマンドで移動する準備を行います"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6613
+#: ../src/file-manager/fm-directory-view.c:6617
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr ""
 "選択したファイルを \"ファイルの貼り付け\" コマンドでコピーする準備を行います"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6617
+#: ../src/file-manager/fm-directory-view.c:6621
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "以前、ファイルの切り取りまたはコピーで指定したファイルを移動またはコピーしま"
@@ -3065,13 +3071,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6622
+#: ../src/file-manager/fm-directory-view.c:6626
 #: ../src/file-manager/fm-tree-view.c:1161
 msgid "_Paste Into Folder"
 msgstr "フォルダへ貼り付け(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6623
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3080,319 +3086,319 @@ msgstr ""
 "へ移動またはコピーします"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6627
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Select all items in this window"
 msgstr "このウィンドウの中にある全てのアイテムを選択します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6630
+#: ../src/file-manager/fm-directory-view.c:6634
 msgid "Select _Pattern"
 msgstr "パターンの選択(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6631
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "指定されたパターンに一致する、このウィンドウの中の全てのアイテムを選択します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6634
+#: ../src/file-manager/fm-directory-view.c:6638
 msgid "D_uplicate"
 msgstr "複製(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6635
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Duplicate each selected item"
 msgstr "選択したアイテムの複製を作成します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6638
-#: ../src/file-manager/fm-directory-view.c:7382
+#: ../src/file-manager/fm-directory-view.c:6642
+#: ../src/file-manager/fm-directory-view.c:7386
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "リンクの作成(_K)"
 msgstr[1] "リンクの作成(_K)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6639
+#: ../src/file-manager/fm-directory-view.c:6643
 msgid "Create a symbolic link for each selected item"
 msgstr "選択した各アイテムのシンボリック・リンクを作成します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6642
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "_Rename..."
 msgstr "名前の変更(_R)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6643
+#: ../src/file-manager/fm-directory-view.c:6647
 msgid "Rename selected item"
 msgstr "選択したアイテムの名前を変更します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6650
-#: ../src/file-manager/fm-directory-view.c:6710
-#: ../src/file-manager/fm-directory-view.c:7166
-#: ../src/file-manager/fm-directory-view.c:7350
-#: ../src/file-manager/fm-directory-view.c:7739
+#: ../src/file-manager/fm-directory-view.c:6654
+#: ../src/file-manager/fm-directory-view.c:6714
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7354
+#: ../src/file-manager/fm-directory-view.c:7743
 msgid "Mo_ve to Trash"
 msgstr "ゴミ箱へ移動する(_V)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6651
-#: ../src/file-manager/fm-directory-view.c:7351
+#: ../src/file-manager/fm-directory-view.c:6655
+#: ../src/file-manager/fm-directory-view.c:7355
 msgid "Move each selected item to the Trash"
 msgstr "選択したアイテムをゴミ箱へ移動します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6654
-#: ../src/file-manager/fm-directory-view.c:6714
-#: ../src/file-manager/fm-directory-view.c:7369
+#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6718
+#: ../src/file-manager/fm-directory-view.c:7373
 msgid "_Delete"
 msgstr "削除(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6655
+#: ../src/file-manager/fm-directory-view.c:6659
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "ゴミ箱へ移動せずに選択したアイテムを削除します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6662
 msgid "Reset View to _Defaults"
 msgstr "デフォルト表示にリセット(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6659
+#: ../src/file-manager/fm-directory-view.c:6663
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "並び替えとズーム・レベルをこのビューの設定にリセットします"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6662
+#: ../src/file-manager/fm-directory-view.c:6666
 msgid "Connect To This Server"
 msgstr "このサーバへの接続"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6663
+#: ../src/file-manager/fm-directory-view.c:6667
 msgid "Make a permanent connection to this server"
 msgstr "このサーバへ永続的に接続します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6666
+#: ../src/file-manager/fm-directory-view.c:6670
 msgid "_Mount Volume"
 msgstr "ボリュームのマウント(_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6667
+#: ../src/file-manager/fm-directory-view.c:6671
 msgid "Mount the selected volume"
 msgstr "選択したボリュームのマウント"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6670
+#: ../src/file-manager/fm-directory-view.c:6674
 #: ../src/file-manager/fm-tree-view.c:749
 msgid "_Unmount Volume"
 msgstr "アンマウント(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6671
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Unmount the selected volume"
 msgstr "選択したボリュームをアンマウントします"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:6678
 msgid "_Eject"
 msgstr "取り出し(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6675
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "Eject the selected volume"
 msgstr "選択したボリュームを取り出します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6678
+#: ../src/file-manager/fm-directory-view.c:6682
 msgid "_Format"
 msgstr "初期化(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6679
+#: ../src/file-manager/fm-directory-view.c:6683
 msgid "Format the selected volume"
 msgstr "選択したボリュームをフォーマットします"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6682
+#: ../src/file-manager/fm-directory-view.c:6686
 msgid "Open File and Close window"
 msgstr "ファイルを開いてウィンドウを閉じます"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6686
+#: ../src/file-manager/fm-directory-view.c:6690
 msgid "Sa_ve Search"
 msgstr "検索結果の保存(_V)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6687
+#: ../src/file-manager/fm-directory-view.c:6691
 msgid "Save the edited search"
 msgstr "編集した検索結果を保存します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6690
+#: ../src/file-manager/fm-directory-view.c:6694
 msgid "Sa_ve Search As..."
 msgstr "検索結果を別名で保存(_V)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6691
+#: ../src/file-manager/fm-directory-view.c:6695
 msgid "Save the current search as a file"
 msgstr "この検索結果に名前を付けて保存します"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6697
+#: ../src/file-manager/fm-directory-view.c:6701
 msgid "Open this folder in a navigation window"
 msgstr "このフォルダをナビゲーション・ウィンドウの中に開きます"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6702
+#: ../src/file-manager/fm-directory-view.c:6706
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "このフォルダを \"ファイルの貼り付け\" コマンドで移動する準備を行います"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6706
+#: ../src/file-manager/fm-directory-view.c:6710
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr ""
 "このフォルダを \"ファイルの貼り付け\" コマンドでコピーする準備を行います"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6711
+#: ../src/file-manager/fm-directory-view.c:6715
 msgid "Move this folder to the Trash"
 msgstr "このフォルダをゴミ箱へ移動します"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6715
+#: ../src/file-manager/fm-directory-view.c:6719
 msgid "Delete this folder, without moving to the Trash"
 msgstr "ゴミ箱へ移動せずに、このフォルダを削除します"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6721
+#: ../src/file-manager/fm-directory-view.c:6725
 msgid "Show _Hidden Files"
 msgstr "隠しファイルを表示する(_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6722
+#: ../src/file-manager/fm-directory-view.c:6726
 msgid "Toggle the display of hidden files in the current window"
 msgstr "このウィンドウにある隠しファイルの表示を切り替えます"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6808
+#: ../src/file-manager/fm-directory-view.c:6812
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%s にあるスクリプトの実行したり管理します"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6814
 msgid "_Scripts"
 msgstr "スクリプト(_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7135
-#: ../src/file-manager/fm-directory-view.c:7318
+#: ../src/file-manager/fm-directory-view.c:7139
+#: ../src/file-manager/fm-directory-view.c:7322
 #: ../src/file-manager/fm-tree-view.c:1114
 msgid "Open in New Window"
 msgstr "新しいウィンドウの中に開く"
 
-#: ../src/file-manager/fm-directory-view.c:7137
-#: ../src/file-manager/fm-directory-view.c:7326
+#: ../src/file-manager/fm-directory-view.c:7141
+#: ../src/file-manager/fm-directory-view.c:7330
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "フォルダの閲覧(_B)"
 msgstr[1] "フォルダの閲覧(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:7162
-#: ../src/file-manager/fm-directory-view.c:7346
+#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7350
 msgid "_Delete from Trash"
 msgstr "ゴミ箱を空にする(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Delete the open folder permanently"
 msgstr "開いたフォルダを完全に削除します"
 
-#: ../src/file-manager/fm-directory-view.c:7167
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Move the open folder to the Trash"
 msgstr "開いたフォルダをゴミ箱へ移動します"
 
-#: ../src/file-manager/fm-directory-view.c:7302
+#: ../src/file-manager/fm-directory-view.c:7306
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "\"%s\" で開く(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:7320
+#: ../src/file-manager/fm-directory-view.c:7324
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "%d 個の新しいウィンドウの中に開く"
 msgstr[1] "%d 個の新しいウィンドウの中に開く"
 
-#: ../src/file-manager/fm-directory-view.c:7347
+#: ../src/file-manager/fm-directory-view.c:7351
 msgid "Delete all selected items permanently"
 msgstr "選択した全てのアイテムを完全に削除します"
 
-#: ../src/file-manager/fm-directory-view.c:7719
+#: ../src/file-manager/fm-directory-view.c:7723
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "このリンク \"%s\" は無効です。"
 
-#: ../src/file-manager/fm-directory-view.c:7721
+#: ../src/file-manager/fm-directory-view.c:7725
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "このリンク \"%s\" は存在しません。ごみ箱に移動しますか？"
 
-#: ../src/file-manager/fm-directory-view.c:7727
+#: ../src/file-manager/fm-directory-view.c:7731
 msgid "This link can't be used, because it has no target."
 msgstr "このリンクはリンク先が存在しないので使用できません。"
 
-#: ../src/file-manager/fm-directory-view.c:7729
+#: ../src/file-manager/fm-directory-view.c:7733
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "このリンクはリンク先 \"%s\" が存在しないので使用できません。"
 
-#: ../src/file-manager/fm-directory-view.c:8349
+#: ../src/file-manager/fm-directory-view.c:8353
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" を開いています。"
 
-#: ../src/file-manager/fm-directory-view.c:8352
+#: ../src/file-manager/fm-directory-view.c:8356
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "%d 個のアイテムを開いています"
 msgstr[1] "%d 個のアイテムを開いています"
 
-#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-directory-view.c:9248
 msgid "Download location?"
 msgstr "場所をダウンロードしますか？"
 
-#: ../src/file-manager/fm-directory-view.c:9247
+#: ../src/file-manager/fm-directory-view.c:9251
 msgid "You can download it or make a link to it."
 msgstr "そのまま、あるいは、その場所のリンクをダウンロードできます。"
 
-#: ../src/file-manager/fm-directory-view.c:9250
+#: ../src/file-manager/fm-directory-view.c:9254
 msgid "Make a _Link"
 msgstr "リンクを作成する(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:9254
+#: ../src/file-manager/fm-directory-view.c:9258
 msgid "_Download"
 msgstr "ダウンロードする(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:9313
-#: ../src/file-manager/fm-directory-view.c:9365
-#: ../src/file-manager/fm-directory-view.c:9462
+#: ../src/file-manager/fm-directory-view.c:9317
+#: ../src/file-manager/fm-directory-view.c:9369
+#: ../src/file-manager/fm-directory-view.c:9466
 msgid "Drag and drop is not supported."
 msgstr "ドラッグ＆ドロップはサポートしていません。"
 
-#: ../src/file-manager/fm-directory-view.c:9314
+#: ../src/file-manager/fm-directory-view.c:9318
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "ドラッグ＆ドロップはローカルのファイル・システムでのみサポートしています。"
 
-#: ../src/file-manager/fm-directory-view.c:9366
-#: ../src/file-manager/fm-directory-view.c:9463
+#: ../src/file-manager/fm-directory-view.c:9370
+#: ../src/file-manager/fm-directory-view.c:9467
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
@@ -3725,46 +3731,46 @@ msgstr "(空)"
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: ../src/file-manager/fm-list-view.c:1845
+#: ../src/file-manager/fm-list-view.c:1851
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s 表示可能な項目"
 
-#: ../src/file-manager/fm-list-view.c:1864
+#: ../src/file-manager/fm-list-view.c:1870
 msgid "Choose the order of information to appear in this folder."
 msgstr "このフォルダで表示する情報の順番を選択して下さい。"
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1906
+#: ../src/file-manager/fm-list-view.c:1912
 msgid "Visible _Columns..."
 msgstr "表示可能な項目(_C)..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1907
+#: ../src/file-manager/fm-list-view.c:1913
 msgid "Select the columns visible in this folder"
 msgstr "このフォルダの中に表示できる項目を選択して下さい"
 
-#: ../src/file-manager/fm-list-view.c:2606
+#: ../src/file-manager/fm-list-view.c:2620
 msgid "List"
 msgstr "一覧"
 
-#: ../src/file-manager/fm-list-view.c:2607
+#: ../src/file-manager/fm-list-view.c:2621
 msgid "View as List"
 msgstr "一覧表示"
 
-#: ../src/file-manager/fm-list-view.c:2608
+#: ../src/file-manager/fm-list-view.c:2622
 msgid "View as _List"
 msgstr "一覧表示(_L)"
 
-#: ../src/file-manager/fm-list-view.c:2609
+#: ../src/file-manager/fm-list-view.c:2623
 msgid "The list view encountered an error."
 msgstr "一覧表示でエラーが発生しました。"
 
-#: ../src/file-manager/fm-list-view.c:2610
+#: ../src/file-manager/fm-list-view.c:2624
 msgid "The list view encountered an error while starting up."
 msgstr "起動する際に一覧表示でエラーが発生しました。"
 
-#: ../src/file-manager/fm-list-view.c:2611
+#: ../src/file-manager/fm-list-view.c:2625
 msgid "Display this location with the list view."
 msgstr "\"一覧表示\" でこの場所を表示します"
 
@@ -3806,26 +3812,26 @@ msgstr "%s のプロパティ"
 msgid "Cancel Group Change?"
 msgstr "グループの変更をキャンセルしますか？"
 
-#: ../src/file-manager/fm-properties-window.c:1707
+#: ../src/file-manager/fm-properties-window.c:1711
 msgid "Cancel Owner Change?"
 msgstr "所有者の変更をキャンセルしますか？"
 
-#: ../src/file-manager/fm-properties-window.c:1907
+#: ../src/file-manager/fm-properties-window.c:1915
 msgid "nothing"
 msgstr "何もしない"
 
-#: ../src/file-manager/fm-properties-window.c:1909
+#: ../src/file-manager/fm-properties-window.c:1917
 msgid "unreadable"
 msgstr "読み込み不可"
 
-#: ../src/file-manager/fm-properties-window.c:1919
+#: ../src/file-manager/fm-properties-window.c:1927
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d 個のアイテム, サイズ %s"
 msgstr[1] "%d 個のアイテム,サイズ %s"
 
-#: ../src/file-manager/fm-properties-window.c:1928
+#: ../src/file-manager/fm-properties-window.c:1936
 msgid "(some contents unreadable)"
 msgstr "(いくつかのファイルは読み込み不可です)"
 
@@ -3835,175 +3841,175 @@ msgstr "(いくつかのファイルは読み込み不可です)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:1945
+#: ../src/file-manager/fm-properties-window.c:1953
 msgid "Contents:"
 msgstr "内容:"
 
-#: ../src/file-manager/fm-properties-window.c:2280
+#: ../src/file-manager/fm-properties-window.c:2288
 msgid "Basic"
 msgstr "基本"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2310
+#: ../src/file-manager/fm-properties-window.c:2318
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "名前(_N):"
 msgstr[1] "名前(_N):"
 
-#: ../src/file-manager/fm-properties-window.c:2329
+#: ../src/file-manager/fm-properties-window.c:2337
 msgid "Type:"
 msgstr "種類:"
 
-#: ../src/file-manager/fm-properties-window.c:2331
-#: ../src/file-manager/fm-properties-window.c:2341
-#: ../src/file-manager/fm-properties-window.c:2347
-#: ../src/file-manager/fm-properties-window.c:2354
-#: ../src/file-manager/fm-properties-window.c:2358
+#: ../src/file-manager/fm-properties-window.c:2339
+#: ../src/file-manager/fm-properties-window.c:2349
+#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2362
 #: ../src/file-manager/fm-properties-window.c:2366
-#: ../src/file-manager/fm-properties-window.c:2372
-#: ../src/file-manager/fm-properties-window.c:2381
-#: ../src/file-manager/fm-properties-window.c:2387
-#: ../src/file-manager/fm-properties-window.c:2941
-#: ../src/file-manager/fm-properties-window.c:2962
-#: ../src/file-manager/fm-properties-window.c:3053
-#: ../src/file-manager/fm-properties-window.c:3057
+#: ../src/file-manager/fm-properties-window.c:2374
+#: ../src/file-manager/fm-properties-window.c:2380
+#: ../src/file-manager/fm-properties-window.c:2389
+#: ../src/file-manager/fm-properties-window.c:2395
+#: ../src/file-manager/fm-properties-window.c:2949
+#: ../src/file-manager/fm-properties-window.c:2970
 #: ../src/file-manager/fm-properties-window.c:3061
+#: ../src/file-manager/fm-properties-window.c:3065
+#: ../src/file-manager/fm-properties-window.c:3069
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2339
+#: ../src/file-manager/fm-properties-window.c:2347
 msgid "Size:"
 msgstr "サイズ:"
 
-#: ../src/file-manager/fm-properties-window.c:2345
+#: ../src/file-manager/fm-properties-window.c:2353
 #: ../src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "場所:"
 
-#: ../src/file-manager/fm-properties-window.c:2352
+#: ../src/file-manager/fm-properties-window.c:2360
 msgid "Volume:"
 msgstr "ボリューム:"
 
-#: ../src/file-manager/fm-properties-window.c:2356
+#: ../src/file-manager/fm-properties-window.c:2364
 msgid "Free space:"
 msgstr "空き容量:"
 
-#: ../src/file-manager/fm-properties-window.c:2364
+#: ../src/file-manager/fm-properties-window.c:2372
 msgid "Link target:"
 msgstr "リンク先:"
 
-#: ../src/file-manager/fm-properties-window.c:2370
+#: ../src/file-manager/fm-properties-window.c:2378
 msgid "MIME type:"
 msgstr "MIME 型:"
 
-#: ../src/file-manager/fm-properties-window.c:2379
+#: ../src/file-manager/fm-properties-window.c:2387
 msgid "Modified:"
 msgstr "修正日時:"
 
-#: ../src/file-manager/fm-properties-window.c:2385
+#: ../src/file-manager/fm-properties-window.c:2393
 msgid "Accessed:"
 msgstr "アクセス日時:"
 
-#: ../src/file-manager/fm-properties-window.c:2433
+#: ../src/file-manager/fm-properties-window.c:2441
 #: ../src/nautilus-emblem-sidebar.c:1041
 msgid "Emblems"
 msgstr "エンブレム"
 
-#: ../src/file-manager/fm-properties-window.c:2718
+#: ../src/file-manager/fm-properties-window.c:2726
 msgid "_Read"
 msgstr "読み込み(_R)"
 
-#: ../src/file-manager/fm-properties-window.c:2720
+#: ../src/file-manager/fm-properties-window.c:2728
 msgid "_Write"
 msgstr "書き込み(_W)"
 
-#: ../src/file-manager/fm-properties-window.c:2722
+#: ../src/file-manager/fm-properties-window.c:2730
 msgid "E_xecute"
 msgstr "実行(_X)"
 
-#: ../src/file-manager/fm-properties-window.c:2805
+#: ../src/file-manager/fm-properties-window.c:2813
 msgid "Set _user ID"
 msgstr "ユーザ ID をセットする(_U)"
 
-#: ../src/file-manager/fm-properties-window.c:2810
+#: ../src/file-manager/fm-properties-window.c:2818
 msgid "Special flags:"
 msgstr "特別なフラグ:"
 
-#: ../src/file-manager/fm-properties-window.c:2813
+#: ../src/file-manager/fm-properties-window.c:2821
 msgid "Set gro_up ID"
 msgstr "グループ ID をセットする(_U)"
 
-#: ../src/file-manager/fm-properties-window.c:2815
+#: ../src/file-manager/fm-properties-window.c:2823
 msgid "_Sticky"
 msgstr "Sitcky ビットを立てる(_S)"
 
-#: ../src/file-manager/fm-properties-window.c:2916
+#: ../src/file-manager/fm-properties-window.c:2924
 msgid "You are not the owner, so you can't change these permissions."
 msgstr ""
 "あなたは所有者ではありません。したがってこれらのアクセス権を変更できません。"
 
-#: ../src/file-manager/fm-properties-window.c:2930
+#: ../src/file-manager/fm-properties-window.c:2938
 msgid "File _owner:"
 msgstr "ファイルの所有者(_O):"
 
-#: ../src/file-manager/fm-properties-window.c:2936
+#: ../src/file-manager/fm-properties-window.c:2944
 msgid "File owner:"
 msgstr "ファイルの所有者:"
 
-#: ../src/file-manager/fm-properties-window.c:2947
+#: ../src/file-manager/fm-properties-window.c:2955
 msgid "_File group:"
 msgstr "ファイルのグループ(_F):"
 
-#: ../src/file-manager/fm-properties-window.c:2956
+#: ../src/file-manager/fm-properties-window.c:2964
 msgid "File group:"
 msgstr "ファイルのグループ:"
 
-#: ../src/file-manager/fm-properties-window.c:2968
+#: ../src/file-manager/fm-properties-window.c:2976
 msgid "Owner:"
 msgstr "所有者:"
 
-#: ../src/file-manager/fm-properties-window.c:2969
+#: ../src/file-manager/fm-properties-window.c:2977
 msgid "Group:"
 msgstr "グループ:"
 
-#: ../src/file-manager/fm-properties-window.c:2970
+#: ../src/file-manager/fm-properties-window.c:2978
 msgid "Others:"
 msgstr "その他:"
 
-#: ../src/file-manager/fm-properties-window.c:3052
+#: ../src/file-manager/fm-properties-window.c:3060
 msgid "Text view:"
 msgstr "文字形式:"
 
-#: ../src/file-manager/fm-properties-window.c:3056
+#: ../src/file-manager/fm-properties-window.c:3064
 msgid "Number view:"
 msgstr "数値形式:"
 
-#: ../src/file-manager/fm-properties-window.c:3060
+#: ../src/file-manager/fm-properties-window.c:3068
 msgid "Last changed:"
 msgstr "前回の変更:"
 
-#: ../src/file-manager/fm-properties-window.c:3066
+#: ../src/file-manager/fm-properties-window.c:3074
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" のアクセス権が確定できませんでした。"
 
-#: ../src/file-manager/fm-properties-window.c:3069
+#: ../src/file-manager/fm-properties-window.c:3077
 msgid "The permissions of the selected file could not be determined."
 msgstr "指定したファイルのアクセス権を決定できませんでした。"
 
-#: ../src/file-manager/fm-properties-window.c:3227
+#: ../src/file-manager/fm-properties-window.c:3235
 msgid "There was an error displaying help."
 msgstr "ヘルプを表示する際にエラーが発生しました。"
 
-#: ../src/file-manager/fm-properties-window.c:3289
+#: ../src/file-manager/fm-properties-window.c:3297
 msgid "Open With"
 msgstr "開き方"
 
-#: ../src/file-manager/fm-properties-window.c:3629
+#: ../src/file-manager/fm-properties-window.c:3637
 msgid "Creating Properties window."
 msgstr "プロパティ・ウィンドウの作成中です。"
 
-#: ../src/file-manager/fm-properties-window.c:3872
+#: ../src/file-manager/fm-properties-window.c:3880
 msgid "Select Custom Icon"
 msgstr "アイコンの選択"
 
@@ -4021,7 +4027,7 @@ msgid "Move to Trash"
 msgstr "ゴミ箱へ移動する"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:191
+#: ../src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "ファイルシステム"
 
@@ -4183,7 +4189,7 @@ msgstr ""
 "Nautilus を再起動することで問題が解決するかもしれません。"
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:215
+#: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4391,7 +4397,7 @@ msgstr "ドラッグしたファイルは正しい画像として表示されま
 msgid "Show Emblems"
 msgstr "エンブレムの表示"
 
-#: ../src/nautilus-file-management-properties.c:292
+#: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "なし"
 
@@ -4509,14 +4515,18 @@ msgid "Always open in _browser windows"
 msgstr "常にブラウザ・ウィンドウで開く(_B)"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "常にテキスト入力形式の場所バーにする(_T)"
+
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "ゴミ箱を空にする/ファイルを削除する前に確認する(_E)"
 
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "動作"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
+#: ../src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -4530,7 +4540,7 @@ msgstr ""
 "変更日時順\n"
 "エンブレム順"
 
-#: ../src/nautilus-file-management-properties.glade.h:43
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4539,31 +4549,31 @@ msgstr ""
 "情報の順序を選択して下さい。\n"
 "拡大するとより多くの情報が表示されます。"
 
-#: ../src/nautilus-file-management-properties.glade.h:44
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr "このフォルダで表示する情報の順番を選択して下さい。"
 
-#: ../src/nautilus-file-management-properties.glade.h:45
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "アイテム数のカウント(_N):"
 
-#: ../src/nautilus-file-management-properties.glade.h:46
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "デフォルトのズームレベル(_Z):"
 
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "表示"
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "ファイル管理の設定"
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "ゴミ箱を経由しないで削除する(_I)"
 
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -4571,83 +4581,83 @@ msgstr ""
 "アイコン表示\n"
 "一覧表示"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "一覧の項目"
 
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "プレビュー"
 
-#: ../src/nautilus-file-management-properties.glade.h:54
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "サウンド・ファイルの演奏(_S):"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "フォルダのみ表示する(_O)"
 
-#: ../src/nautilus-file-management-properties.glade.h:56
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "サムネイルの表示(_T):"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "隠しファイルとバックアップ・ファイルを表示する(_B)"
 
-#: ../src/nautilus-file-management-properties.glade.h:58
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "アイコン内のテキスト表示(_X):"
 
-#: ../src/nautilus-file-management-properties.glade.h:59
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "フォルダをファイルより前に配置する(_F)"
 
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "新しいフォルダの表示形式(_N):"
 
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "表示"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "アイテムの配置方式(_A):"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "デフォルトのズームレベル(_D):"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "ダブル・クリックでアイテムを起動する(_D)"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "書式(_F):"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "ファイルの最大サイズ(_O):"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "クリックしたら実行する(_R)"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "シングル・クリックでアイテムを起動する(_S)"
 
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "アイコンの横にラベルを配置する(_T)"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "コンパクトな配置にする(_U)"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "クリックしたら中身を表示する(_V)"
 
@@ -5058,19 +5068,19 @@ msgstr "メモ"
 msgid "Show Notes"
 msgstr "メモの表示"
 
-#: ../src/nautilus-places-sidebar.c:775
+#: ../src/nautilus-places-sidebar.c:889
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/nautilus-places-sidebar.c:784
+#: ../src/nautilus-places-sidebar.c:898
 msgid "Rename..."
 msgstr "名前の変更..."
 
-#: ../src/nautilus-places-sidebar.c:1006
+#: ../src/nautilus-places-sidebar.c:1122
 msgid "Places"
 msgstr "場所"
 
-#: ../src/nautilus-places-sidebar.c:1012
+#: ../src/nautilus-places-sidebar.c:1128
 msgid "Show Places"
 msgstr "場所の表示"
 
@@ -5256,7 +5266,7 @@ msgstr "場所"
 
 #: ../src/nautilus-query-editor.c:138
 msgid "File Type"
-msgstr "ファイルタイプ"
+msgstr "ファイルの種類"
 
 #: ../src/nautilus-query-editor.c:280
 msgid "Select folder search in"
@@ -5268,7 +5278,7 @@ msgstr "ドキュメント"
 
 #: ../src/nautilus-query-editor.c:382
 msgid "Music"
-msgstr "音楽"
+msgstr "楽曲"
 
 #: ../src/nautilus-query-editor.c:396
 msgid "Video"
@@ -5280,7 +5290,7 @@ msgstr "写真"
 
 #: ../src/nautilus-query-editor.c:432
 msgid "Illustration"
-msgstr "絵"
+msgstr "絵/イラスト"
 
 #: ../src/nautilus-query-editor.c:446
 msgid "Spreadsheet"
@@ -5292,15 +5302,15 @@ msgstr "プレゼンテーション"
 
 #: ../src/nautilus-query-editor.c:471
 msgid "Pdf / Postscript"
-msgstr "PDF / Postscript"
+msgstr "PDF/PostScript"
 
 #: ../src/nautilus-query-editor.c:479
 msgid "Text File"
-msgstr "テキストファイル"
+msgstr "通常のファイル"
 
 #: ../src/nautilus-query-editor.c:551
 msgid "Select type"
-msgstr "タイプの選択"
+msgstr "種類の選択"
 
 #: ../src/nautilus-query-editor.c:635
 msgid "Any"
@@ -5308,11 +5318,11 @@ msgstr "任意"
 
 #: ../src/nautilus-query-editor.c:650
 msgid "Other Type..."
-msgstr "他のタイプ..."
+msgstr "他の種類..."
 
 #: ../src/nautilus-query-editor.c:936
 msgid "Remove this criterium from the search"
-msgstr "この検索条件を削除"
+msgstr "この検索条件を削除する"
 
 #: ../src/nautilus-query-editor.c:980
 msgid "<b>Search Folder</b>"
@@ -5320,11 +5330,11 @@ msgstr "<b>検索フォルダ</b>"
 
 #: ../src/nautilus-query-editor.c:996
 msgid "Edit the saved search"
-msgstr "保存した検索結果を編集"
+msgstr "保存した検索結果を編集します"
 
 #: ../src/nautilus-query-editor.c:1027
 msgid "Add a new criterium to this search"
-msgstr "この検索に新しい条件を追加"
+msgstr "この検索に新しい条件を追加します"
 
 #: ../src/nautilus-query-editor.c:1031
 msgid "Go"
@@ -5336,11 +5346,11 @@ msgstr "再読込み"
 
 #: ../src/nautilus-query-editor.c:1038
 msgid "Perform or update the search"
-msgstr "検索を実行または更新"
+msgstr "検索を実行または更新します"
 
 #: ../src/nautilus-query-editor.c:1058
 msgid "<b>_Search for:</b>"
-msgstr "<b>検索対象(_S):</b>"
+msgstr "<b>検索(_S):</b>"
 
 #: ../src/nautilus-query-editor.c:1085
 msgid "Search results"
@@ -5352,7 +5362,7 @@ msgstr "<b>検索:</b>"
 
 #: ../src/nautilus-side-pane.c:427
 msgid "Close the side pane"
-msgstr "サイド・ペインを閉じる"
+msgstr "サイド・ペインを閉じます"
 
 #: ../src/nautilus-spatial-window.c:833
 msgid "_Places"
@@ -5502,6 +5512,7 @@ msgstr "Copyright © 1999-2005 Nautilus 開発チーム"
 #: ../src/nautilus-window-menus.c:472
 msgid "translator-credits"
 msgstr ""
+"佐藤 暁 <ss@gnome.gr.jp>\n"
 "相花毅 <aihana@gnome.gr.jp>\n"
 "KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>\n"
 "James Hashida <khashida@redhat.com>\n"
@@ -5738,36 +5749,3 @@ msgstr "現在のビューのズーム・レベルを設定します"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "Unable to Replace File"
-#~ msgstr "ファイルを置き換えることができません"
-
-#~ msgid "Conflict While Copying"
-#~ msgstr "コピー中に問題発生"
-
-#~ msgid "Can't Change Trash Location"
-#~ msgstr "ゴミ箱の場所を変更することはできません"
-
-#~ msgid "Can't Copy Trash"
-#~ msgstr "ゴミ箱はコピーできません"
-
-#~ msgid "Can't Move Into Self"
-#~ msgstr "自分の中に移動できません"
-
-#~ msgid "Can't Copy Into Self"
-#~ msgstr "自分の中にコピーできません"
-
-#~ msgid "Can't Copy Over Self"
-#~ msgstr "自分の上にコピーできません"
-
-#~ msgid "Switch"
-#~ msgstr "切替える"
-
-#~ msgid "Can't Open Location"
-#~ msgstr "場所を開けません"
-
-#~ msgid "Folder:"
-#~ msgstr "フォルダ:"
-
-#~ msgid "View in Multiple Windows?"
-#~ msgstr "複数のウィンドウで表示しますか？"
