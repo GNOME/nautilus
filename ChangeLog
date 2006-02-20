@@ -1,3 +1,17 @@
+2006-02-19  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(file_compare_by_mime_type), (file_compare_by_guessed_mime_type),
+	(file_compare_by_uri_scheme),
+	(nautilus_mime_get_default_application_for_files),
+	(nautilus_mime_get_open_with_applications_for_files),
+	(nautilus_mime_get_applications_for_files),
+	(nautilus_mime_has_any_applications_for_files):
+	Avoid redundant application lookups by sorting the files by mime type
+	and skipping the ones which have the same mime type / parent uri
+	combination as the previous one. Prevents nautilus from blocking for
+	seconds when selecting many files of similar type. 
+
 2006-02-17  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-file-operations.c: (get_link_name):

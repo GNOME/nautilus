@@ -125,6 +125,58 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
 }
 
 static int
+file_compare_by_mime_type (NautilusFile *file_a,
+			   NautilusFile *file_b)
+{
+	char *mime_type_a, *mime_type_b;
+	int ret;
+	
+	mime_type_a = nautilus_file_get_mime_type (file_a);
+	mime_type_b = nautilus_file_get_mime_type (file_b);
+	
+	ret = strcmp (mime_type_a, mime_type_b);
+	
+	g_free (mime_type_a);
+	g_free (mime_type_b);
+	
+	return ret;
+}
+
+static int
+file_compare_by_guessed_mime_type (NautilusFile *file_a,
+				   NautilusFile *file_b) {
+	char *guessed_mime_type_a, *guessed_mime_type_b;
+	int ret;
+
+	guessed_mime_type_a = nautilus_file_get_guessed_mime_type (file_a);
+	guessed_mime_type_b = nautilus_file_get_guessed_mime_type (file_b);
+
+	ret = strcmp (guessed_mime_type_a, guessed_mime_type_b);
+
+	g_free (guessed_mime_type_a);
+	g_free (guessed_mime_type_b);
+
+	return ret;
+}
+
+static int
+file_compare_by_parent_uri (NautilusFile *file_a,
+			    NautilusFile *file_b) {
+	char *parent_uri_a, *parent_uri_b;
+	int ret;
+
+	parent_uri_a = nautilus_file_get_parent_uri (file_a);
+	parent_uri_b = nautilus_file_get_parent_uri (file_b);
+
+	ret = strcmp (parent_uri_a, parent_uri_b);
+
+	g_free (parent_uri_a);
+	g_free (parent_uri_b);
+
+	return ret;
+}
+
+static int
 application_compare_by_name (const GnomeVFSMimeApplication *app_a,
 			     const GnomeVFSMimeApplication *app_b)
 {
@@ -238,15 +290,23 @@ nautilus_mime_has_any_applications_for_file (NautilusFile *file)
 GnomeVFSMimeApplication *
 nautilus_mime_get_default_application_for_files (GList *files)
 {
-	GList *l;
+	GList *l, *sorted_files;
 	NautilusFile *file;
 	GnomeVFSMimeApplication *app, *one_app;
 
 	g_assert (files != NULL);
 
+	sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
+
 	app = NULL;
-	for (l = files; l != NULL; l = l->next) {
+	for (l = sorted_files; l != NULL; l = l->next) {
 		file = l->data;
+
+		if (l->prev &&
+		    file_compare_by_mime_type (file, l->prev->data) == 0 &&
+		    file_compare_by_parent_uri (file, l->prev->data) == 0) {
+			continue;
+		}
 
 		one_app = nautilus_mime_get_default_application_for_file (file);
 		if (one_app == NULL || (app != NULL && !gnome_vfs_mime_application_equal (app, one_app))) {
@@ -262,6 +322,8 @@ nautilus_mime_get_default_application_for_files (GList *files)
 			gnome_vfs_mime_application_free (one_app);
 		}
 	}
+
+	g_list_free (sorted_files);
 
 	return app;
 }
@@ -315,15 +377,24 @@ intersect_application_lists (GList *a,
 GList *
 nautilus_mime_get_open_with_applications_for_files (GList *files)
 {
-	GList *l;
+	GList *l, *sorted_files;
 	NautilusFile *file;
 	GList *one_ret, *ret;
 
 	g_assert (files != NULL);
 
+	sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
+
 	ret = NULL;
-	for (l = files; l != NULL; l = l->next) {
+	for (l = sorted_files; l != NULL; l = l->next) {
 		file = l->data;
+
+		if (l->prev &&
+		    file_compare_by_mime_type (file, l->prev->data) == 0 &&
+		    file_compare_by_guessed_mime_type (file, l->prev->data) == 0 &&
+		    file_compare_by_parent_uri (file, l->prev->data) == 0) {
+			continue;
+		}
 
 		one_ret = nautilus_mime_get_open_with_applications_for_file (file);
 		if (ret != NULL) {
@@ -337,21 +408,30 @@ nautilus_mime_get_open_with_applications_for_files (GList *files)
 		}
 	}
 
+	g_list_free (sorted_files);
+
 	return ret;
 }
 
 GList *
 nautilus_mime_get_applications_for_files (GList *files)
 {
-	GList *l;
+	GList *l, *sorted_files;
 	NautilusFile *file;
 	GList *one_ret, *ret;
 
 	g_assert (files != NULL);
 
+	sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
+
 	ret = NULL;
-	for (l = files; l != NULL; l = l->next) {
+	for (l = sorted_files; l != NULL; l = l->next) {
 		file = l->data;
+
+		if (l->prev &&
+		    file_compare_by_mime_type (file, l->prev->data) == 0) {
+			continue;
+		}
 
 		one_ret = nautilus_mime_get_applications_for_file (file);
 		if (ret != NULL) {
@@ -365,23 +445,39 @@ nautilus_mime_get_applications_for_files (GList *files)
 		}
 	}
 
+	g_list_free (sorted_files);
+
 	return ret;
 }
 
 gboolean
 nautilus_mime_has_any_applications_for_files (GList *files)
 {
-	GList *l;
+	GList *l, *sorted_files;
 	NautilusFile *file;
+	gboolean ret;
 
 	g_assert (files != NULL);
 
-	for (l = files; l != NULL; l = l->next) {
+	sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
+
+	ret = TRUE;
+	for (l = sorted_files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
+
+		if (l->prev &&
+		    file_compare_by_mime_type (file, l->prev->data) == 0 &&
+		    file_compare_by_parent_uri (file, l->prev->data) == 0) {
+			continue;
+		}
+
 		if (!nautilus_mime_has_any_applications_for_file (file)) {
-			return FALSE;
+			ret = FALSE;
+			break;
 		}
 	}
 
-	return TRUE;
+	g_list_free (sorted_files);
+
+	return ret;
 }
