@@ -4351,9 +4351,11 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
 		return NULL;
 	}
-	
+
 	formated = gnome_vfs_format_file_size_for_display (file->details->info->size);
-	formated_plus_real = g_strdup_printf (_("%s (%lld bytes)"), formated, file->details->info->size);
+	/* FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here. */
+	formated_plus_real = g_strdup_printf (_("%s (%lld bytes)"), formated,
+					      (long long) file->details->info->size);
 	g_free (formated);
 	return formated_plus_real;
 }

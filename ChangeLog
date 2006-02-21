@@ -1,3 +1,10 @@
+2006-02-21  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_size_as_string_with_real_size):
+	Add a cast to fix build for platforms where GnomeVFSFileSize
+	is not defined as long long (e.g. AMD64). Fixes bug #331636. 
+
 2006-02-21  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-error-reporting.[ch]:
