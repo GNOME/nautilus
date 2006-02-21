@@ -36,7 +36,7 @@
 #define NEW_NAME_TAG "Nautilus: new name"
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50
 
-static void cancel_rename (NautilusFile *file, gboolean stop_timer);
+static void finish_rename (NautilusFile *file, gboolean stop_timer, GnomeVFSResult result);
 
 void
 fm_report_error_loading_directory (NautilusFile *file,
@@ -251,35 +251,49 @@ fm_report_error_setting_permissions (NautilusFile *file,
 	g_free (message);
 }		
 
+typedef struct _FMRenameData {
+	char *name;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+} FMRenameData;
+
+static void
+fm_rename_data_free (FMRenameData *data)
+{
+	g_free (data->name);
+	g_free (data);
+}
+
 static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
-	char *name;
+	FMRenameData *data;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (callback_data == NULL);
-	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-	g_assert (name != NULL);
+	
+	data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
+	g_assert (data != NULL);
 
 	/* If rename failed, notify the user. */
-	fm_report_error_renaming_file (file, name, result, NULL);
+	fm_report_error_renaming_file (file, data->name, result, NULL);
 
-	cancel_rename (file, TRUE);
+	finish_rename (file, TRUE, result);
 }
 
 static void
 cancel_rename_callback (gpointer callback_data)
 {
-	cancel_rename (NAUTILUS_FILE (callback_data), FALSE);
+	finish_rename (NAUTILUS_FILE (callback_data), FALSE, GNOME_VFS_ERROR_CANCELLED);
 }
 
 static void
-cancel_rename (NautilusFile *file, gboolean stop_timer)
+finish_rename (NautilusFile *file, gboolean stop_timer, GnomeVFSResult result)
 {
-	char *name;
+	FMRenameData *data;
 
-	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
-	if (name == NULL) {
+	data = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
+	if (data == NULL) {
 		return;
 	}
 
@@ -289,27 +303,38 @@ cancel_rename (NautilusFile *file, gboolean stop_timer)
 		eel_timed_wait_stop (cancel_rename_callback, file);
 	}
 
+	if (data->callback != NULL) {
+		data->callback (file, result, data->callback_data);
+	}
+	
 	/* Let go of file name. */
 	g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
 }
 
 void
 fm_rename_file (NautilusFile *file,
-		const char *new_name)
+		const char *new_name,
+		NautilusFileOperationCallback callback,
+		gpointer callback_data)
 {
 	char *old_name, *wait_message;
+	FMRenameData *data;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 
 	/* Stop any earlier rename that's already in progress. */
-	cancel_rename (file, TRUE);
+	finish_rename (file, TRUE, GNOME_VFS_ERROR_CANCELLED);
 
+	data = g_new0 (FMRenameData, 1);
+	data->name = g_strdup (new_name);
+	data->callback = callback;
+	data->callback_data = callback_data;
+	
 	/* Attach the new name to the file. */
 	g_object_set_data_full (G_OBJECT (file),
 				NEW_NAME_TAG,
-				g_strdup (new_name),
-				g_free);
+				data, (GDestroyNotify)fm_rename_data_free);
 
 	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_display_name (file);

@@ -111,6 +111,10 @@ struct FMListViewDetails {
 	GtkWidget *column_editor;
 
 	char *original_name;
+	
+	NautilusFile *renaming_file;
+	gboolean rename_done;
+	guint renaming_file_activate_timeout;
 };
 
 struct SelectionForeachData {
@@ -127,6 +131,9 @@ struct SelectionForeachData {
 
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2000 
+
+/* Wait for the rename to end when activating a file being renamed */
+#define WAIT_FOR_RENAME_ON_ACTIVATE 200
 
 static int                      click_policy_auto_value;
 static char *              	default_sort_order_auto_value;
@@ -145,7 +152,9 @@ static void   fm_list_view_scale_font_size                 (FMListView        *v
 static void   fm_list_view_scroll_to_file                  (FMListView        *view,
 							    NautilusFile      *file);
 static void   fm_list_view_iface_init                      (NautilusViewIface *iface);
-
+static void   fm_list_view_rename_callback                 (NautilusFile      *file,
+							    GnomeVFSResult     result,
+							    gpointer           callback_data);
 
 
 G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW, 
@@ -200,6 +209,23 @@ activate_selected_items (FMListView *view)
 	GList *file_list;
 	
 	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+	
+	if (view->details->renaming_file) {
+		/* We're currently renaming a file, wait until the rename is
+		   finished, or the activation uri will be wrong */
+		if (view->details->renaming_file_activate_timeout == 0) {
+			view->details->renaming_file_activate_timeout =
+				g_timeout_add (WAIT_FOR_RENAME_ON_ACTIVATE, (GSourceFunc) activate_selected_items, view);
+		}
+		return;
+	}
+	
+	if (view->details->renaming_file_activate_timeout != 0) {
+		g_source_remove (view->details->renaming_file_activate_timeout);
+		view->details->renaming_file_activate_timeout = 0;
+	}
+	
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
 					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
@@ -977,7 +1003,9 @@ cell_renderer_edited (GtkCellRendererText *cell,
 
 	/* Only rename if name actually changed */
 	if (strcmp (new_text, view->details->original_name) != 0) {
-		fm_rename_file (file, new_text);
+		view->details->renaming_file = nautilus_file_ref (file);
+		view->details->rename_done = FALSE;
+		fm_rename_file (file, new_text, fm_list_view_rename_callback, g_object_ref (view));
 		g_free (view->details->original_name);
 		view->details->original_name = g_strdup (new_text);
 	}
@@ -1516,9 +1544,58 @@ fm_list_view_clear (FMDirectoryView *view)
 }
 
 static void
+fm_list_view_rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	FMListView *view;
+	
+	view = FM_LIST_VIEW (callback_data);
+
+	if (view->details->renaming_file) {
+		view->details->rename_done = TRUE;
+		
+		if (result != GNOME_VFS_OK) {
+			/* If the rename failed (or was cancelled), kill renaming_file.
+			 * We won't get a change event for the rename, so otherwise
+			 * it would stay around forever.
+			 */
+			nautilus_file_unref (view->details->renaming_file);
+			view->details->renaming_file = NULL;
+		}
+	}
+	
+	g_object_unref (view);
+}
+
+
+static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
-	fm_list_model_file_changed (FM_LIST_VIEW (view)->details->model, file, directory);
+	FMListView *listview;
+	GtkTreeIter iter;
+	GtkTreePath *file_path;
+
+	listview = FM_LIST_VIEW (view);
+	
+	fm_list_model_file_changed (listview->details->model, file, directory);
+
+	if (listview->details->renaming_file != NULL &&
+	    file == listview->details->renaming_file &&
+	    listview->details->rename_done) {
+		/* This is (probably) the result of the rename operation, and
+		 * the tree-view changes above could have resorted the list, so
+		 * scroll to the new position
+		 */
+		if (fm_list_model_get_tree_iter_from_file (listview->details->model, file, directory, &iter)) {
+			file_path = gtk_tree_model_get_path (GTK_TREE_MODEL (listview->details->model), &iter);
+			gtk_tree_view_scroll_to_cell (listview->details->tree_view,
+						      file_path, NULL,
+						      FALSE, 0.0, 0.0);
+			gtk_tree_path_free (file_path);
+		}
+		
+		nautilus_file_unref (listview->details->renaming_file);
+		listview->details->renaming_file = NULL;
+	}
 }
 
 static GtkWidget *
@@ -2338,6 +2415,11 @@ fm_list_view_dispose (GObject *object)
 	if (list_view->details->drag_dest) {
 		g_object_unref (list_view->details->drag_dest);
 		list_view->details->drag_dest = NULL;
+	}
+
+	if (list_view->details->renaming_file_activate_timeout != 0) {
+		g_source_remove (list_view->details->renaming_file_activate_timeout);
+		list_view->details->renaming_file_activate_timeout = 0;
 	}
 
 	ui_manager = fm_directory_view_get_ui_manager (FM_DIRECTORY_VIEW (list_view));

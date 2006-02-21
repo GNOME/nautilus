@@ -2214,7 +2214,7 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	if (new_name[0] == '\0') {
 		return;
 	}
-	fm_rename_file (file, new_name);
+	fm_rename_file (file, new_name, NULL, NULL);
 }
 
 static char *

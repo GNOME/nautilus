@@ -50,6 +50,8 @@ void fm_report_error_setting_group       (NautilusFile   *file,
 
 /* FIXME bugzilla.gnome.org 42394: Should this file be renamed or should this function be moved? */
 void fm_rename_file                      (NautilusFile   *file,
-					  const char     *new_name);
+					  const char     *new_name,
+					  NautilusFileOperationCallback callback,
+					  gpointer callback_data);
 
 #endif /* FM_ERROR_REPORTING_H */

@@ -991,17 +991,63 @@ void
 fm_list_model_file_changed (FMListModel *model, NautilusFile *file,
 			    NautilusDirectory *directory)
 {
+	FileEntry *parent_file_entry;
 	GtkTreeIter iter;
-	GtkTreePath *path;
+	GtkTreePath *path, *parent_path;
 	GSequencePtr ptr;
+	int pos_before, pos_after, length, i, old;
+	int *new_order;
+	gboolean has_iter;
+	GSequence *files;
 
 	ptr = lookup_file (model, file, directory);
 	if (!ptr) {
 		return;
 	}
 
+	
+	pos_before = g_sequence_ptr_get_position (ptr);
+		
 	g_sequence_ptr_sort_changed (ptr, fm_list_model_file_entry_compare_func, model);
 
+	pos_after = g_sequence_ptr_get_position (ptr);
+
+	if (pos_before != pos_after) {
+		/* The file moved, we need to send rows_reordered */
+		
+		parent_file_entry = ((FileEntry *)g_sequence_ptr_get_data (ptr))->parent;
+
+		if (parent_file_entry == NULL) {
+			has_iter = FALSE;
+			parent_path = gtk_tree_path_new ();
+			files = model->details->files;
+		} else {
+			has_iter = TRUE;
+			fm_list_model_ptr_to_iter (model, parent_file_entry->ptr, &iter);
+			parent_path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+			files = parent_file_entry->files;
+		}
+
+		length = g_sequence_get_length (files);
+		new_order = g_new (int, length);
+		/* Note: new_order[newpos] = oldpos */
+		for (i = 0, old = 0; i < length; ++i) {
+			if (i == pos_after) {
+				new_order[i] = pos_before;
+			} else {
+				if (old == pos_before)
+					old++;
+				new_order[i] = old++;
+			}
+		}
+
+		gtk_tree_model_rows_reordered (GTK_TREE_MODEL (model),
+					       parent_path, has_iter ? &iter : NULL, new_order);
+
+		gtk_tree_path_free (parent_path);
+		g_free (new_order);
+	}
+	
 	fm_list_model_ptr_to_iter (model, ptr, &iter);
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 	gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);

@@ -1,3 +1,23 @@
+2006-02-21  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-error-reporting.[ch]:
+	Add callback to fm_rename_file.
+
+	* src/file-manager/fm-icon-view.c:
+	Pass NULL as above callback
+	
+	* src/file-manager/fm-list-view.c:
+	Don't activate file when renaming, delay until rename done.
+	After rename, scroll to renamed file if not visibile, because it
+	may have moved.
+
+	Above based on initial patch by Nelson Benítez <gnel@cenobioracing.com>
+	
+	* src/file-manager/fm-list-model.c:
+	On file change, if file was re-sorted emit rows_reordered.
+
+	This fixes bug #326581
+	
 2006-02-19  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-mime-actions.c:
