@@ -564,28 +564,30 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		     const char            *data,
 		     int                    position)
 {
-	GnomeVFSURI *vfs_uri;
 	NautilusBookmark *bookmark;
-	char *bookmark_name;
+	NautilusFile *file;
+	char *uri, *name, *name_truncated;
 	char **uris;
-	gint i;
+	int i;
 	
 	uris = g_uri_list_extract_uris (data);
 	
 	for (i = 0; uris[i]; i++) {
-		char *uri;
-		
 		uri = uris[i];
+		file = nautilus_file_get (uri);
+		uri = nautilus_file_get_drop_target_uri (file);
+		nautilus_file_unref (file);
 
 		/* FIXME: Shouldn't be possible to add bookmarks to files */
 
-		vfs_uri = gnome_vfs_uri_new (uri);
-		bookmark_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+		name = nautilus_compute_title_for_uri (uri);
+		name_truncated = eel_truncate_text_for_menu_item (name);	
+		g_free (name);
 
-		bookmark = nautilus_bookmark_new (uri, bookmark_name);
-		
-		g_free (bookmark_name);
-		gnome_vfs_uri_unref (vfs_uri);
+		bookmark = nautilus_bookmark_new_with_icon (uri, name_truncated,
+							    FALSE, "gnome-fs-directory");
+		g_free (uri);
+		g_free (name_truncated);
 		
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
 			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
