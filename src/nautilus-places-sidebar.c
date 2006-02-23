@@ -916,9 +916,10 @@ bookmarks_popup_menu (NautilusPlacesSidebar *sidebar,
 		      GdkEventButton        *event)
 {
 	bookmarks_update_popup_menu (sidebar);
-	gnome_popup_menu_do_popup_modal (sidebar->popup_menu,
-				         NULL, NULL, event, NULL,
-				         GTK_WIDGET (sidebar->tree_view));
+	eel_pop_up_context_menu (GTK_MENU(sidebar->popup_menu),
+			      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+			      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+			      event);
 }
 
 /* Callback used for the GtkWidget::popup-menu signal of the shortcuts list */
@@ -938,12 +939,10 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 				 GdkEventButton        *event,
 				 NautilusPlacesSidebar *sidebar)
 {
-	if (event->button != 3) {
-		return FALSE;
+	if (event->button == 3) {
+		bookmarks_popup_menu (sidebar, event);
 	}
-	
-	bookmarks_popup_menu (sidebar, event);
-	return TRUE;
+	return FALSE;
 }
 
 
