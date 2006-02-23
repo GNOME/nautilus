@@ -968,8 +968,8 @@ bookmarks_edited (GtkCellRenderer       *cell,
 	bookmark = nautilus_bookmark_list_item_at (sidebar->bookmarks, index);
 
 	if (bookmark != NULL) {
-		nautilus_bookmark_set_name (bookmark, new_text);
 		nautilus_bookmark_set_has_custom_name (bookmark, TRUE);
+		nautilus_bookmark_set_name (bookmark, new_text);
 	}
 }
 

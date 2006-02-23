@@ -1,5 +1,12 @@
 2006-02-23  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-places-sidebar.c: (bookmarks_edited):
+	Set the has_custom_name_flag before setting the name - which would
+	otherwise immediately commit the bookmarks to disk without the name.
+	Fixes #327744.
+
+2006-02-23  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-places-sidebar.c: (bookmarks_popup_menu):
 	(bookmarks_button_press_event_cb):
 	Open the popup menu non-modal and pass the button event on to the
