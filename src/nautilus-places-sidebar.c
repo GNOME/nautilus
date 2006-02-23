@@ -582,16 +582,18 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 
 		name = nautilus_compute_title_for_uri (uri);
 		name_truncated = eel_truncate_text_for_menu_item (name);	
-		g_free (name);
 
 		bookmark = nautilus_bookmark_new_with_icon (uri, name_truncated,
 							    FALSE, "gnome-fs-directory");
-		g_free (uri);
-		g_free (name_truncated);
 		
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
 			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
 		}
+
+		g_object_unref (bookmark);
+		g_free (name_truncated);
+		g_free (name);
+		g_free (uri);
 	}
 
 	g_strfreev (uris);

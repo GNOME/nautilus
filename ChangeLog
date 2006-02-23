@@ -1,6 +1,11 @@
 2006-02-23  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-places-sidebar.c: (bookmarks_drop_uris):
+	Don't leak bookmark.
+
+2006-02-23  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (bookmarks_drop_uris):
 	Resolve the dropped uris to their drop target, use the same naming
 	logic as the bookmark menu and use gnome-fs-directory icon when adding.
 	If something more fitting is available it will be updated anyway.
