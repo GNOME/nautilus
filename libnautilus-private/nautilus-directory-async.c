@@ -2216,7 +2216,7 @@ directory_count_start (NautilusDirectory *directory,
 	gnome_vfs_async_load_directory
 		(&directory->details->count_in_progress,
 		 uri,
-		 GNOME_VFS_FILE_INFO_DEFAULT,
+		 GNOME_VFS_FILE_INFO_NAME_ONLY,
 		 G_MAXINT,
 		 GNOME_VFS_PRIORITY_DEFAULT,
 		 directory_count_callback,

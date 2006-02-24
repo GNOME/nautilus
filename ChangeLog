@@ -1,3 +1,13 @@
+2006-02-24  Alexander Larsson  <alexl@redhat.com>
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	(directory_count_start):
+	Use new GNOME_VFS_FILE_INFO_NAME_ONLY flag when counting files.
+	This avoids lots of stats.
+	
+	* configure.in:
+	Require vfs 2.13.92 (cvs for now) for the above.
+
 2006-02-23  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-places-sidebar.c: (bookmarks_drop_uris):
