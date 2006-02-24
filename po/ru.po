@@ -1,5 +1,4 @@
 # Copyright (C) 2000-2004, 2005, 2006 Free Software Foundation, Inc.
-#
 # Valek Filippov <frob@df.ru>, 2000-2002.
 # Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2004.
 # Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002.
@@ -7,17 +6,17 @@
 # Leonid Kanter <leon@asplinux.ru>, 2003, 2004, 2005, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: ru\n"
+"Project-Id-Version: nautilus.HEAD.ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-25 15:08+0100\n"
-"PO-Revision-Date: 2006-02-02 17:40+0200\n"
+"POT-Creation-Date: 2006-02-24 07:16+0100\n"
+"PO-Revision-Date: 2006-02-24 12:46+0200\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"Language-Team:  <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: KBabel 1.11\n"
+"X-Generator: KBabel 1.11.1\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -798,11 +797,11 @@ msgid ""
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
 msgstr ""
-"Критерий отображения миниатюр. Если установлено \"always\", "
-"миниатюры будут отображаться всегда, даже если папка находится на удаленном "
-"сервере. Если установлено \"local_only\", миниатюры будут создаваться только "
-"для файлов на локальных файловых системах. Если установлено \"never\", "
-"вместо миниатюр всегда будет использоваться значок типа файла."
+"Критерий отображения миниатюр. Если установлено \"always\", миниатюры будут "
+"отображаться всегда, даже если папка находится на удаленном сервере. Если "
+"установлено \"local_only\", миниатюры будут создаваться только для файлов на "
+"локальных файловых системах. Если установлено \"never\", вместо миниатюр "
+"всегда будет использоваться значок типа файла."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
@@ -985,7 +984,7 @@ msgstr "Вставить текст, сохраненный в буфере об
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6626
+#: ../src/file-manager/fm-directory-view.c:6630
 msgid "Select _All"
 msgstr "Выделить вс_ё"
 
@@ -1015,7 +1014,7 @@ msgid "Use De_fault"
 msgstr "По _умолчанию"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1279
+#: ../src/file-manager/fm-list-view.c:1307
 msgid "Name"
 msgstr "Имя"
 
@@ -1214,8 +1213,8 @@ msgstr "(%d:%02d:%d остаётся)"
 msgid "(%d:%02d Remaining)"
 msgstr "(%d:%02d остаётся)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:448
-#: ../libnautilus-private/nautilus-file-operations.c:477
+#: ../libnautilus-private/nautilus-file-operations.c:449
+#: ../libnautilus-private/nautilus-file-operations.c:478
 #: ../libnautilus-private/nautilus-file-utilities.c:87
 #: ../src/nautilus-connect-server-dialog.c:293
 #, c-format
@@ -1223,35 +1222,35 @@ msgid "%s on %s"
 msgstr "%s в %s"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:459
+#: ../libnautilus-private/nautilus-file-operations.c:460
 msgid "From:"
 msgstr "Из:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:486
+#: ../libnautilus-private/nautilus-file-operations.c:487
 msgid "To:"
 msgstr "В:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:672
-#: ../libnautilus-private/nautilus-file-operations.c:720
-#: ../libnautilus-private/nautilus-file-operations.c:725
-#: ../libnautilus-private/nautilus-file-operations.c:735
+#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:736
 msgid "Error while moving."
 msgstr "Ошибка при перемещения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:673
+#: ../libnautilus-private/nautilus-file-operations.c:674
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
 "\"%s\" не может быть перемещен, потому что находится на диске, "
 "предназначенном только для чтения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:683
-#: ../libnautilus-private/nautilus-file-operations.c:689
+#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:690
 msgid "Error while deleting."
 msgstr "Ошибка при удаления."
 
-#: ../libnautilus-private/nautilus-file-operations.c:684
+#: ../libnautilus-private/nautilus-file-operations.c:685
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
@@ -1260,14 +1259,14 @@ msgstr ""
 "\"%s\" не может быть удален, потому что у вас недостаточно прав для "
 "изменения его родительской папки."
 
-#: ../libnautilus-private/nautilus-file-operations.c:690
+#: ../libnautilus-private/nautilus-file-operations.c:691
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
 "\"%s\" не может быть удален, потому что находится на диске, предназначенном "
 "только для чтения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:721
+#: ../libnautilus-private/nautilus-file-operations.c:722
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1276,7 +1275,7 @@ msgstr ""
 "\"%s\" не может быть перемещен, потому что у вас недостаточно прав для "
 "изменения элемента или его родительской папки."
 
-#: ../libnautilus-private/nautilus-file-operations.c:726
+#: ../libnautilus-private/nautilus-file-operations.c:727
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
@@ -1285,7 +1284,7 @@ msgstr ""
 "Невозможно переместить \"%s\", потому что он или его родительский каталог "
 "содержатся в месте назначения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:736
+#: ../libnautilus-private/nautilus-file-operations.c:737
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1294,132 +1293,132 @@ msgstr ""
 "Невозможно переместить \"%s\", потому что у вас недостаточно прав для "
 "изменения этого элемента или его родительской папки."
 
-#: ../libnautilus-private/nautilus-file-operations.c:758
+#: ../libnautilus-private/nautilus-file-operations.c:759
 msgid "Error while copying."
 msgstr "Ошибка при копирования."
 
-#: ../libnautilus-private/nautilus-file-operations.c:759
+#: ../libnautilus-private/nautilus-file-operations.c:760
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
 "\"%s\" не может быть скопирован, потому что у вас недостаточно прав для "
 "чтения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:779
-#: ../libnautilus-private/nautilus-file-operations.c:800
-#: ../libnautilus-private/nautilus-file-operations.c:804
+#: ../libnautilus-private/nautilus-file-operations.c:780
+#: ../libnautilus-private/nautilus-file-operations.c:801
+#: ../libnautilus-private/nautilus-file-operations.c:805
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "Ошибка копирования в \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:780
-#: ../libnautilus-private/nautilus-file-operations.c:785
-#: ../libnautilus-private/nautilus-file-operations.c:789
+#: ../libnautilus-private/nautilus-file-operations.c:781
+#: ../libnautilus-private/nautilus-file-operations.c:786
+#: ../libnautilus-private/nautilus-file-operations.c:790
 msgid "There is not enough space on the destination."
 msgstr "Недостаточно места на устройстве назначения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:784
+#: ../libnautilus-private/nautilus-file-operations.c:785
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "Ошибка копирования в \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:788
+#: ../libnautilus-private/nautilus-file-operations.c:789
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "Ошибка при создании ссылки в \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:801
-#: ../libnautilus-private/nautilus-file-operations.c:812
-#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:802
+#: ../libnautilus-private/nautilus-file-operations.c:813
+#: ../libnautilus-private/nautilus-file-operations.c:824
 msgid "You do not have permissions to write to this folder."
 msgstr "У вас недостаточно права записи в эту папку."
 
-#: ../libnautilus-private/nautilus-file-operations.c:805
-#: ../libnautilus-private/nautilus-file-operations.c:816
-#: ../libnautilus-private/nautilus-file-operations.c:827
+#: ../libnautilus-private/nautilus-file-operations.c:806
+#: ../libnautilus-private/nautilus-file-operations.c:817
+#: ../libnautilus-private/nautilus-file-operations.c:828
 msgid "The destination disk is read-only."
 msgstr "Диск назначения доступен только для чтения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:811
-#: ../libnautilus-private/nautilus-file-operations.c:815
+#: ../libnautilus-private/nautilus-file-operations.c:812
+#: ../libnautilus-private/nautilus-file-operations.c:816
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "Ошибка при перемещении элементов в \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:822
-#: ../libnautilus-private/nautilus-file-operations.c:826
+#: ../libnautilus-private/nautilus-file-operations.c:823
+#: ../libnautilus-private/nautilus-file-operations.c:827
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "Ошибка при создании ссылок в \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:854
+#: ../libnautilus-private/nautilus-file-operations.c:855
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "Ошибка \"%s\" при копировании \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:855
-#: ../libnautilus-private/nautilus-file-operations.c:859
-#: ../libnautilus-private/nautilus-file-operations.c:863
-#: ../libnautilus-private/nautilus-file-operations.c:869
-#: ../libnautilus-private/nautilus-file-operations.c:884
-#: ../libnautilus-private/nautilus-file-operations.c:888
-#: ../libnautilus-private/nautilus-file-operations.c:892
-#: ../libnautilus-private/nautilus-file-operations.c:898
+#: ../libnautilus-private/nautilus-file-operations.c:856
+#: ../libnautilus-private/nautilus-file-operations.c:860
+#: ../libnautilus-private/nautilus-file-operations.c:864
+#: ../libnautilus-private/nautilus-file-operations.c:870
+#: ../libnautilus-private/nautilus-file-operations.c:885
+#: ../libnautilus-private/nautilus-file-operations.c:889
+#: ../libnautilus-private/nautilus-file-operations.c:893
+#: ../libnautilus-private/nautilus-file-operations.c:899
 msgid "Would you like to continue?"
 msgstr "Продолжить?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:858
+#: ../libnautilus-private/nautilus-file-operations.c:859
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "Ошибка \"%s\" при перемещении \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:862
+#: ../libnautilus-private/nautilus-file-operations.c:863
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "Ошибка \"%s\" при создании ссылки на \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:868
+#: ../libnautilus-private/nautilus-file-operations.c:869
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "Ошибка \"%s\" при удалении \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:883
+#: ../libnautilus-private/nautilus-file-operations.c:884
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "Ошибка \"%s\" при копировании."
 
-#: ../libnautilus-private/nautilus-file-operations.c:887
+#: ../libnautilus-private/nautilus-file-operations.c:888
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "Ошибка \"%s\" при перемещении."
 
-#: ../libnautilus-private/nautilus-file-operations.c:891
+#: ../libnautilus-private/nautilus-file-operations.c:892
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "Ошибка \"%s\" при создании ссылки."
 
-#: ../libnautilus-private/nautilus-file-operations.c:897
+#: ../libnautilus-private/nautilus-file-operations.c:898
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "Ошибка \"%s\" при удалении."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1030
-#: ../libnautilus-private/nautilus-file-operations.c:1047
+#: ../libnautilus-private/nautilus-file-operations.c:1031
+#: ../libnautilus-private/nautilus-file-operations.c:1048
 msgid "_Retry"
 msgstr "Повто_рить"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1047
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1048
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Skip"
 msgstr "_Пропустить"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1137
+#: ../libnautilus-private/nautilus-file-operations.c:1138
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "Не удалось переместить \"%s\" на новое место."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1140
+#: ../libnautilus-private/nautilus-file-operations.c:1141
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1428,12 +1427,12 @@ msgstr ""
 "перемещен или заменен. Если вы все еще хотите переместить элемент, "
 "переименуйте его и попробуйте еще раз."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1144
+#: ../libnautilus-private/nautilus-file-operations.c:1145
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "Не удалось скопировать \"%s\" на новое место."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1147
+#: ../libnautilus-private/nautilus-file-operations.c:1148
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1442,17 +1441,17 @@ msgstr ""
 "или перемещен. Если вы все еще хотите скопировать элемент, переименуйте его "
 "и попробуйте еще раз."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1171
+#: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "Папка %s уже существует. Заменить этe папку?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1174
+#: ../libnautilus-private/nautilus-file-operations.c:1175
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "Файл %s уже существует. Заменить этот файл?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1182
+#: ../libnautilus-private/nautilus-file-operations.c:1183
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
@@ -1460,20 +1459,20 @@ msgstr ""
 "Если вы замените существующую папку, все файлы в ней, конфликтующие с "
 "копируемыми файлами будут перезаписаны."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1184
+#: ../libnautilus-private/nautilus-file-operations.c:1185
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "Если вы замените существующий файл, его содержимое будет перезаписано."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1197
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1198
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "_Replace"
 msgstr "_Заменить"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "S_kip All"
 msgstr "Пропу_стить всё"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1215
+#: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "Replace _All"
 msgstr "Заменить _всё"
 
@@ -1482,15 +1481,15 @@ msgstr "Заменить _всё"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1275
-#: ../libnautilus-private/nautilus-file.c:4711
-#: ../src/file-manager/fm-directory-view.c:9380
+#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file.c:4760
+#: ../src/file-manager/fm-directory-view.c:9384
 #, c-format
 msgid "link to %s"
 msgstr "ссылка на %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1279
+#: ../libnautilus-private/nautilus-file-operations.c:1292
 #, c-format
 msgid "another link to %s"
 msgstr "другая ссылка на %s"
@@ -1499,25 +1498,25 @@ msgstr "другая ссылка на %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1295
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d-я ссылка на %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1299
+#: ../libnautilus-private/nautilus-file-operations.c:1312
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d-я ссылка на %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1303
+#: ../libnautilus-private/nautilus-file-operations.c:1316
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d-я ссылка на %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1307
+#: ../libnautilus-private/nautilus-file-operations.c:1320
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d-я ссылка на %s"
@@ -1527,12 +1526,12 @@ msgstr "%d-я ссылка на %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1328
+#: ../libnautilus-private/nautilus-file-operations.c:1341
 msgid " (copy)"
 msgstr " (копия)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1330
+#: ../libnautilus-private/nautilus-file-operations.c:1343
 msgid " (another copy)"
 msgstr " (другая копия)"
 
@@ -1540,36 +1539,36 @@ msgstr " (другая копия)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1333
-#: ../libnautilus-private/nautilus-file-operations.c:1335
-#: ../libnautilus-private/nautilus-file-operations.c:1337
-#: ../libnautilus-private/nautilus-file-operations.c:1347
+#: ../libnautilus-private/nautilus-file-operations.c:1346
+#: ../libnautilus-private/nautilus-file-operations.c:1348
+#: ../libnautilus-private/nautilus-file-operations.c:1350
+#: ../libnautilus-private/nautilus-file-operations.c:1360
 msgid "th copy)"
 msgstr "-я копия)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1340
+#: ../libnautilus-private/nautilus-file-operations.c:1353
 msgid "st copy)"
 msgstr "-я копия)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1342
+#: ../libnautilus-private/nautilus-file-operations.c:1355
 msgid "nd copy)"
 msgstr "я копия)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1344
+#: ../libnautilus-private/nautilus-file-operations.c:1357
 msgid "rd copy)"
 msgstr "-я копия)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1361
+#: ../libnautilus-private/nautilus-file-operations.c:1374
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (копия)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1363
+#: ../libnautilus-private/nautilus-file-operations.c:1376
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (другая копия)%s"
@@ -1578,246 +1577,246 @@ msgstr "%s (другая копия)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1366
-#: ../libnautilus-private/nautilus-file-operations.c:1368
-#: ../libnautilus-private/nautilus-file-operations.c:1370
 #: ../libnautilus-private/nautilus-file-operations.c:1379
+#: ../libnautilus-private/nautilus-file-operations.c:1381
+#: ../libnautilus-private/nautilus-file-operations.c:1383
+#: ../libnautilus-private/nautilus-file-operations.c:1392
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d-я копия)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1373
+#: ../libnautilus-private/nautilus-file-operations.c:1386
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d-я копия)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1375
+#: ../libnautilus-private/nautilus-file-operations.c:1388
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d-я копия)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1377
+#: ../libnautilus-private/nautilus-file-operations.c:1390
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d-я копия)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1477
+#: ../libnautilus-private/nautilus-file-operations.c:1490
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1485
+#: ../libnautilus-private/nautilus-file-operations.c:1498
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1681
-#: ../libnautilus-private/nautilus-file-operations.c:2291
-#: ../libnautilus-private/nautilus-file-operations.c:2474
+#: ../libnautilus-private/nautilus-file-operations.c:1694
+#: ../libnautilus-private/nautilus-file-operations.c:2304
+#: ../libnautilus-private/nautilus-file-operations.c:2487
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Неизвестный GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2027
+#: ../libnautilus-private/nautilus-file-operations.c:2040
 msgid "Moving files to the Trash"
 msgstr "Перемещение файлов в корзину"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2029
+#: ../libnautilus-private/nautilus-file-operations.c:2042
 msgid "Throwing out file:"
 msgstr "Выбрасывается файл:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2031
-#: ../libnautilus-private/nautilus-file-operations.c:2042
+#: ../libnautilus-private/nautilus-file-operations.c:2044
+#: ../libnautilus-private/nautilus-file-operations.c:2055
 msgid "Moving"
 msgstr "Перемещается файл"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2032
+#: ../libnautilus-private/nautilus-file-operations.c:2045
 msgid "Preparing to Move to Trash..."
 msgstr "Идёт подготовка к перемещению в корзину..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2038
+#: ../libnautilus-private/nautilus-file-operations.c:2051
 msgid "Moving files"
 msgstr "Перемещение файлов"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2040
+#: ../libnautilus-private/nautilus-file-operations.c:2053
 msgid "Moving file:"
 msgstr "Перемещается файл:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2043
+#: ../libnautilus-private/nautilus-file-operations.c:2056
 msgid "Preparing To Move..."
 msgstr "Идёт подготовка к перемещению..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2044
+#: ../libnautilus-private/nautilus-file-operations.c:2057
 msgid "Finishing Move..."
 msgstr "Завершается перемещение..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2052
+#: ../libnautilus-private/nautilus-file-operations.c:2065
 msgid "Creating links to files"
 msgstr "Создание ссылок на файлы"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2054
+#: ../libnautilus-private/nautilus-file-operations.c:2067
 msgid "Linking file:"
 msgstr "Создаётся ссылка на файл:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2056
+#: ../libnautilus-private/nautilus-file-operations.c:2069
 msgid "Linking"
 msgstr "Создаётся ссылка на файл"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2057
+#: ../libnautilus-private/nautilus-file-operations.c:2070
 msgid "Preparing to Create Links..."
 msgstr "Идёт подготовка к созданию ссылок..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2058
+#: ../libnautilus-private/nautilus-file-operations.c:2071
 msgid "Finishing Creating Links..."
 msgstr "Завершается создание ссылок..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2077
 msgid "Copying files"
 msgstr "Копирование файлов"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2079
 msgid "Copying file:"
 msgstr "Копируется файл:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2068
+#: ../libnautilus-private/nautilus-file-operations.c:2081
 msgid "Copying"
 msgstr "Копируется файл"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2069
+#: ../libnautilus-private/nautilus-file-operations.c:2082
 msgid "Preparing To Copy..."
 msgstr "Идёт подготовка к копированию..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2087
+#: ../libnautilus-private/nautilus-file-operations.c:2100
 msgid "You cannot copy items into the trash."
 msgstr "Вы не можете копировать элементы в корзину."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2088
+#: ../libnautilus-private/nautilus-file-operations.c:2101
 msgid "You cannot create links inside the trash."
 msgstr "Вы не можете создавать ссылки внутрь корзины."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2089
+#: ../libnautilus-private/nautilus-file-operations.c:2102
 msgid "Files and folders can only be moved into the trash."
 msgstr "Файлы и папки могут быть только перемещены в корзину."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2112
+#: ../libnautilus-private/nautilus-file-operations.c:2125
 msgid "You cannot move this trash folder."
 msgstr "Вы не можете переместить эту корзину."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2113
+#: ../libnautilus-private/nautilus-file-operations.c:2126
 msgid "You cannot copy this trash folder."
 msgstr "Вы не можете cкопировать эту корзину."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2114
+#: ../libnautilus-private/nautilus-file-operations.c:2127
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Папка корзины используется для хранения элементов, перемещенных в корзину."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2151
 msgid "You cannot move a folder into itself."
 msgstr "Вы не можете переместить папку саму в себя."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2139
+#: ../libnautilus-private/nautilus-file-operations.c:2152
 msgid "You cannot copy a folder into itself."
 msgstr "Вы не можете скопировать папку саму в себя."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2140
+#: ../libnautilus-private/nautilus-file-operations.c:2153
 msgid "The destination folder is inside the source folder."
 msgstr "Папка назначения находится внутри папки источника."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2153
+#: ../libnautilus-private/nautilus-file-operations.c:2166
 msgid "You cannot copy a file over itself."
 msgstr "Вы не можете скопировать файл сам в себя."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2154
+#: ../libnautilus-private/nautilus-file-operations.c:2167
 msgid "The destination and source are the same file."
 msgstr "Источник и назначение являются одним и тем же файлом."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2209
-#: ../libnautilus-private/nautilus-file-operations.c:2369
+#: ../libnautilus-private/nautilus-file-operations.c:2222
+#: ../libnautilus-private/nautilus-file-operations.c:2382
 msgid "You do not have permissions to write to the destination."
 msgstr "У вас не достаточно прав на записи в место назначения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2211
-#: ../libnautilus-private/nautilus-file-operations.c:2371
+#: ../libnautilus-private/nautilus-file-operations.c:2224
+#: ../libnautilus-private/nautilus-file-operations.c:2384
 msgid "There is no space on the destination."
 msgstr "Недостаточно места на устройстве назначения."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2213
+#: ../libnautilus-private/nautilus-file-operations.c:2226
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Ошибка \"%s\" создания новой папки."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2218
+#: ../libnautilus-private/nautilus-file-operations.c:2231
 msgid "Error creating new folder."
 msgstr "Ошибка создания новой папки."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2328
 msgid "untitled folder"
 msgstr "неозаглавленная папка"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2373
+#: ../libnautilus-private/nautilus-file-operations.c:2386
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Ошибка \"%s\" при создании нового документа."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2391
 msgid "Error creating new document."
 msgstr "Ошибка при создании нового документа."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2605
+#: ../libnautilus-private/nautilus-file-operations.c:2618
 msgid "new file"
 msgstr "новый файл"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2671
+#: ../libnautilus-private/nautilus-file-operations.c:2684
 msgid "Deleting files"
 msgstr "Удаление файлов"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2673
-#: ../libnautilus-private/nautilus-file-operations.c:2708
+#: ../libnautilus-private/nautilus-file-operations.c:2686
+#: ../libnautilus-private/nautilus-file-operations.c:2721
 msgid "Files deleted:"
 msgstr "Файлов удалено:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2675
-#: ../libnautilus-private/nautilus-file-operations.c:2710
+#: ../libnautilus-private/nautilus-file-operations.c:2688
+#: ../libnautilus-private/nautilus-file-operations.c:2723
 msgid "Deleting"
 msgstr "Удаляется файл"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2676
+#: ../libnautilus-private/nautilus-file-operations.c:2689
 msgid "Preparing to Delete files..."
 msgstr "Идёт подготовка к удалению файлов..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2706
+#: ../libnautilus-private/nautilus-file-operations.c:2719
 msgid "Emptying the Trash"
 msgstr "Очистка корзины"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2711
+#: ../libnautilus-private/nautilus-file-operations.c:2724
 msgid "Preparing to Empty the Trash..."
 msgstr "Идёт подготовка к очистке корзины..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2747
+#: ../libnautilus-private/nautilus-file-operations.c:2760
 msgid "Empty all of the items from the trash?"
 msgstr "Очистить все элементы из корзины?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2750
+#: ../libnautilus-private/nautilus-file-operations.c:2763
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1825,7 +1824,7 @@ msgstr ""
 "Если вы очистите корзину, все элементы в ней будут удалены окончательно. "
 "Учтите, что вы можете также удалить их по одному."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2772
+#: ../libnautilus-private/nautilus-file-operations.c:2785
 msgid "_Empty Trash"
 msgstr "О_чистить корзину"
 
@@ -1887,7 +1886,7 @@ msgid "today at 00:00:00 PM"
 msgstr "сегодня в 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:2922
-#: ../src/nautilus-file-management-properties.c:459
+#: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "сегодня в %-H:%M:%S %p"
 
@@ -2030,38 +2029,44 @@ msgstr[0] "%u файл"
 msgstr[1] "%u файла"
 msgstr[2] "%u файлов"
 
+#. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
+#: ../libnautilus-private/nautilus-file.c:4357
+#, c-format
+msgid "%s (%lld bytes)"
+msgstr "%s (%lld байт)"
+
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4604
-#: ../libnautilus-private/nautilus-file.c:4620
+#: ../libnautilus-private/nautilus-file.c:4653
+#: ../libnautilus-private/nautilus-file.c:4669
 msgid "? items"
 msgstr "? элементов"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4610
+#: ../libnautilus-private/nautilus-file.c:4659
 msgid "? bytes"
 msgstr "? байт"
 
-#: ../libnautilus-private/nautilus-file.c:4625
+#: ../libnautilus-private/nautilus-file.c:4674
 msgid "unknown type"
 msgstr "неизвестный тип"
 
-#: ../libnautilus-private/nautilus-file.c:4628
+#: ../libnautilus-private/nautilus-file.c:4677
 msgid "unknown MIME type"
 msgstr "неизвестный тип MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4634
+#: ../libnautilus-private/nautilus-file.c:4683
 #: ../src/file-manager/fm-properties-window.c:1283
 msgid "unknown"
 msgstr "неизвестно"
 
-#: ../libnautilus-private/nautilus-file.c:4667
+#: ../libnautilus-private/nautilus-file.c:4716
 msgid "program"
 msgstr "программа"
 
-#: ../libnautilus-private/nautilus-file.c:4685
+#: ../libnautilus-private/nautilus-file.c:4734
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2071,7 +2076,7 @@ msgstr ""
 "gnome-vfs.keys находится не там где надо или не был найден по каким-то "
 "другим причинам."
 
-#: ../libnautilus-private/nautilus-file.c:4689
+#: ../libnautilus-private/nautilus-file.c:4738
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2080,15 +2085,15 @@ msgstr ""
 "Описание для типа MIME \"%s\" (файл \"%s\") не найдено. Сообщите пожалуйста "
 "в список рассылки gnome-vfs."
 
-#: ../libnautilus-private/nautilus-file.c:4705
+#: ../libnautilus-private/nautilus-file.c:4754
 msgid "link"
 msgstr "ссылка"
 
-#: ../libnautilus-private/nautilus-file.c:4725
+#: ../libnautilus-private/nautilus-file.c:4774
 msgid "link (broken)"
 msgstr "ссылка (испорченная)"
 
-#: ../libnautilus-private/nautilus-file.c:6222
+#: ../libnautilus-private/nautilus-file.c:6271
 #: ../libnautilus-private/nautilus-global-preferences.c:528
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2186,7 +2191,7 @@ msgid "Display _files when they are clicked"
 msgstr "показывать _файлы при щелчке на них"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:127
-#: ../src/nautilus-file-management-properties.glade.h:63
+#: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
 msgstr "каждый раз спр_ашивать"
 
@@ -2204,7 +2209,7 @@ msgid "Icon View"
 msgstr "просмотр в виде значков"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1333
+#: ../src/file-manager/fm-list-view.c:1361
 msgid "List View"
 msgstr "просмотр в виде списка"
 
@@ -2281,15 +2286,15 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "Домашняя папка пользователя %s"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2116
+#: ../libnautilus-private/nautilus-icon-container.c:2114
 msgid "The selection rectangle"
 msgstr "Область выделения"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4765
+#: ../libnautilus-private/nautilus-icon-container.c:4763
 msgid "Normal Alpha"
 msgstr "Обычная прозрачность"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4766
+#: ../libnautilus-private/nautilus-icon-container.c:4764
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "Непрозрачность обычных значков, если установлен параметр frame_text"
 
@@ -2552,22 +2557,22 @@ msgstr "Фон"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6604
-#: ../src/file-manager/fm-directory-view.c:7408
+#: ../src/file-manager/fm-directory-view.c:6608
+#: ../src/file-manager/fm-directory-view.c:7412
 msgid "E_mpty Trash"
 msgstr "О_чистить корзину"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6576
+#: ../src/file-manager/fm-directory-view.c:6580
 msgid "Create L_auncher..."
 msgstr "Создать кнопку _запуска..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6577
+#: ../src/file-manager/fm-directory-view.c:6581
 msgid "Create a new launcher"
 msgstr "Создать новый значок запуска"
 
@@ -2591,13 +2596,13 @@ msgstr "Очистить корзину"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6605
+#: ../src/file-manager/fm-directory-view.c:6609
 msgid "Delete all items in the Trash"
 msgstr "Удалить все элементы из корзины"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:182
+#: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
 msgstr "Рабочий стол"
 
@@ -2808,18 +2813,18 @@ msgstr[2] ""
 "Вы действительно хотите окончательно удалить %d выделенных элементов из "
 "корзины?"
 
-#: ../src/file-manager/fm-directory-view.c:3782
+#: ../src/file-manager/fm-directory-view.c:3784
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Если вы удалите элемент, он будет окончательно утрачен."
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: ../src/file-manager/fm-directory-view.c:4360
+#: ../src/file-manager/fm-directory-view.c:4364
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Открыть в программе \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4361
+#: ../src/file-manager/fm-directory-view.c:4365
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -2827,34 +2832,34 @@ msgstr[0] "Использовать приложение \"%s\" для откр�
 msgstr[1] "Использовать приложение \"%s\" для открытия выбранных элементов"
 msgstr[2] "Использовать приложение \"%s\" для открытия выбранных элементов"
 
-#: ../src/file-manager/fm-directory-view.c:4453
+#: ../src/file-manager/fm-directory-view.c:4457
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Хотите запустить файл \"%s\" или просмотреть его содержимое?"
 
-#: ../src/file-manager/fm-directory-view.c:4455
+#: ../src/file-manager/fm-directory-view.c:4459
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "Файл \"%s\" является исполняемым текстовым файлом."
 
-#: ../src/file-manager/fm-directory-view.c:4461
+#: ../src/file-manager/fm-directory-view.c:4465
 msgid "Run in _Terminal"
 msgstr "Запустить в _терминале"
 
-#: ../src/file-manager/fm-directory-view.c:4462
+#: ../src/file-manager/fm-directory-view.c:4466
 msgid "_Display"
 msgstr "По_казать"
 
-#: ../src/file-manager/fm-directory-view.c:4465
+#: ../src/file-manager/fm-directory-view.c:4469
 msgid "_Run"
 msgstr "За_пустить"
 
-#: ../src/file-manager/fm-directory-view.c:4861
+#: ../src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть файл \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4864
+#: ../src/file-manager/fm-directory-view.c:4868
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2876,21 +2881,21 @@ msgstr ""
 "путём. Или используйте пункт меню \"Открыть в программе\" для выбора "
 "приложения для этого файла. "
 
-#: ../src/file-manager/fm-directory-view.c:5259
+#: ../src/file-manager/fm-directory-view.c:5263
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Использовать приложение \"%s\" для выбранных элементов"
 
-#: ../src/file-manager/fm-directory-view.c:5508
+#: ../src/file-manager/fm-directory-view.c:5512
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Создать документ из шаблона \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5714
+#: ../src/file-manager/fm-directory-view.c:5718
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Все исполняемые файлы из этой папки будут показаны в меню \"Сценарии\"."
 
-#: ../src/file-manager/fm-directory-view.c:5716
+#: ../src/file-manager/fm-directory-view.c:5720
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2898,7 +2903,7 @@ msgstr ""
 "Выбор сценария из меню будет запускать этот сценарий с выбранными элементами "
 "в качестве ввода."
 
-#: ../src/file-manager/fm-directory-view.c:5718
+#: ../src/file-manager/fm-directory-view.c:5722
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2940,19 +2945,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: позиция и размер текущего окна"
 
-#: ../src/file-manager/fm-directory-view.c:5879
+#: ../src/file-manager/fm-directory-view.c:5883
 #: ../src/file-manager/fm-tree-view.c:900
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "Элемент \"%s\" будет перемещён, если вы выберете команду \"Вставить\""
 
-#: ../src/file-manager/fm-directory-view.c:5883
+#: ../src/file-manager/fm-directory-view.c:5887
 #: ../src/file-manager/fm-tree-view.c:904
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" будет скопирован, если вы выберете команду \"Вставить\""
 
-#: ../src/file-manager/fm-directory-view.c:5890
+#: ../src/file-manager/fm-directory-view.c:5894
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
@@ -2962,7 +2967,7 @@ msgstr[2] ""
 "%d выбранных элементов будет перемещено, если вы выберете команду \"Вставить"
 "\""
 
-#: ../src/file-manager/fm-directory-view.c:5897
+#: ../src/file-manager/fm-directory-view.c:5901
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
@@ -2974,142 +2979,142 @@ msgstr[2] ""
 "%d выбранных элементов будут скопированы, если вы выберете команду \"Вставить"
 "\""
 
-#: ../src/file-manager/fm-directory-view.c:5991
+#: ../src/file-manager/fm-directory-view.c:5995
 #: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
 msgstr "В буфере обмена нет ничего для вставки."
 
-#: ../src/file-manager/fm-directory-view.c:6356
+#: ../src/file-manager/fm-directory-view.c:6360
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Соединение с сервером \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:6361
+#: ../src/file-manager/fm-directory-view.c:6365
 msgid "_Connect"
 msgstr "_Соединиться"
 
-#: ../src/file-manager/fm-directory-view.c:6375
+#: ../src/file-manager/fm-directory-view.c:6379
 msgid "Link _name:"
 msgstr "_Имя ссылки:"
 
-#: ../src/file-manager/fm-directory-view.c:6550
+#: ../src/file-manager/fm-directory-view.c:6554
 msgid "Create _Document"
 msgstr "Создать _документ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6551
+#: ../src/file-manager/fm-directory-view.c:6555
 msgid "Open Wit_h"
 msgstr "Открыть в про_грамме"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6552
+#: ../src/file-manager/fm-directory-view.c:6556
 msgid "Choose a program with which to open the selected item"
 msgstr "Выбрать программу для открытия выбранного элемента"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6554
-#: ../src/file-manager/fm-directory-view.c:6562
+#: ../src/file-manager/fm-directory-view.c:6558
+#: ../src/file-manager/fm-directory-view.c:6566
 msgid "_Properties"
 msgstr "_Свойства"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6555
+#: ../src/file-manager/fm-directory-view.c:6559
 msgid "View or modify the properties of each selected item"
 msgstr "Просмотреть или изменить свойства каждого выделенного элемента"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6563
+#: ../src/file-manager/fm-directory-view.c:6567
 msgid "View or modify the properties of the open folder"
 msgstr "Просмотреть или изменить свойства открытой папки"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6566
+#: ../src/file-manager/fm-directory-view.c:6570
 msgid "Create _Folder"
 msgstr "Создать _папку"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6567
+#: ../src/file-manager/fm-directory-view.c:6571
 msgid "Create a new empty folder inside this folder"
 msgstr "Создать новую пустую папку в этой папке"
 
-#: ../src/file-manager/fm-directory-view.c:6569
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "No templates Installed"
 msgstr "Шаблоны не установлены"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6572
+#: ../src/file-manager/fm-directory-view.c:6576
 msgid "_Empty File"
 msgstr "_Пустой файл"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6573
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Create a new empty file inside this folder"
 msgstr "Создать новый пустой файл внутри этой папки"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6580
-#: ../src/file-manager/fm-directory-view.c:7309
+#: ../src/file-manager/fm-directory-view.c:6584
+#: ../src/file-manager/fm-directory-view.c:7313
 #: ../src/file-manager/fm-tree-view.c:1103
 msgid "_Open"
 msgstr "_Открыть"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6581
+#: ../src/file-manager/fm-directory-view.c:6585
 msgid "Open the selected item in this window"
 msgstr "Открыть выбранный элемент в этом окне"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6588
-#: ../src/file-manager/fm-directory-view.c:6696
+#: ../src/file-manager/fm-directory-view.c:6592
+#: ../src/file-manager/fm-directory-view.c:6700
 msgid "Open in Navigation Window"
 msgstr "Открыть окне обозревателя"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6589
+#: ../src/file-manager/fm-directory-view.c:6593
 msgid "Open each selected item in a navigation window"
 msgstr "Открыть каждый выделенный элемент в новом окне"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6592
 #: ../src/file-manager/fm-directory-view.c:6596
+#: ../src/file-manager/fm-directory-view.c:6600
 msgid "Open with Other _Application..."
 msgstr "Открыть в другой _программе..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6593
 #: ../src/file-manager/fm-directory-view.c:6597
+#: ../src/file-manager/fm-directory-view.c:6601
 msgid "Choose another application with which to open the selected item"
 msgstr "Выбрать другое приложение для открытия выбранного элемента"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6600
+#: ../src/file-manager/fm-directory-view.c:6604
 msgid "_Open Scripts Folder"
 msgstr "Открыть папку с_ценариев"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6601
+#: ../src/file-manager/fm-directory-view.c:6605
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Показать папку содержащую сценарии, которые показаны в этом меню"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6609
+#: ../src/file-manager/fm-directory-view.c:6613
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Подготовить выбранные файлы к перемещению с помощью команды \"Вставить\""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6613
+#: ../src/file-manager/fm-directory-view.c:6617
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Подготовить выбранные файлы к копированию с помощью команды \"Вставить\""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6617
+#: ../src/file-manager/fm-directory-view.c:6621
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Переместить или скопировать файлы, выбранные ранее командой \"Вырезать\" или "
@@ -3118,13 +3123,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6622
+#: ../src/file-manager/fm-directory-view.c:6626
 #: ../src/file-manager/fm-tree-view.c:1161
 msgid "_Paste Into Folder"
 msgstr "Вст_авить в папку"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6623
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3133,33 +3138,33 @@ msgstr ""
 "\"Копировать\", в выбранную папку"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6627
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Select all items in this window"
 msgstr "Выделить все элементы в этом окне"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6630
+#: ../src/file-manager/fm-directory-view.c:6634
 msgid "Select _Pattern"
 msgstr "Выделить по _шаблону"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6631
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Select items in this window matching a given pattern"
 msgstr "Выделить в этом окне все элементы, соответствующие приведенному шаблону"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6634
+#: ../src/file-manager/fm-directory-view.c:6638
 msgid "D_uplicate"
 msgstr "Прод_ублировать"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6635
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Duplicate each selected item"
 msgstr "Продублировать каждый выделенный элемент"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6638
-#: ../src/file-manager/fm-directory-view.c:7382
+#: ../src/file-manager/fm-directory-view.c:6642
+#: ../src/file-manager/fm-directory-view.c:7386
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Создать сс_ылку"
@@ -3167,219 +3172,219 @@ msgstr[1] "Создать сс_ылки"
 msgstr[2] "Создать сс_ылки"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6639
+#: ../src/file-manager/fm-directory-view.c:6643
 msgid "Create a symbolic link for each selected item"
 msgstr "Создать символическую ссылку для каждого выделенного элемента"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6642
+#: ../src/file-manager/fm-directory-view.c:6646
 msgid "_Rename..."
 msgstr "Переи_меновать..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6643
+#: ../src/file-manager/fm-directory-view.c:6647
 msgid "Rename selected item"
 msgstr "Переименовать выделенный элемент"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6650
-#: ../src/file-manager/fm-directory-view.c:6710
-#: ../src/file-manager/fm-directory-view.c:7166
-#: ../src/file-manager/fm-directory-view.c:7350
-#: ../src/file-manager/fm-directory-view.c:7739
-msgid "Mo_ve to Trash"
-msgstr "П_ереместить в корзину"
-
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6651
-#: ../src/file-manager/fm-directory-view.c:7351
-msgid "Move each selected item to the Trash"
-msgstr "Переместить каждый выделенный элемент в корзину"
-
-#. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6654
 #: ../src/file-manager/fm-directory-view.c:6714
-#: ../src/file-manager/fm-directory-view.c:7369
-msgid "_Delete"
+#: ../src/file-manager/fm-directory-view.c:7170
+#: ../src/file-manager/fm-directory-view.c:7354
+#: ../src/file-manager/fm-directory-view.c:7743
+msgid "Mo_ve to Trash"
 msgstr "_Удалить"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6655
+#: ../src/file-manager/fm-directory-view.c:7355
+msgid "Move each selected item to the Trash"
+msgstr "Переместить каждый выделенный элемент в корзину"
+
+#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6718
+#: ../src/file-manager/fm-directory-view.c:7373
+msgid "_Delete"
+msgstr "Удалить _безвозвратно"
+
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6659
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Удалить каждый выделенный элемент, не перемещая его в корзину"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6658
+#: ../src/file-manager/fm-directory-view.c:6662
 msgid "Reset View to _Defaults"
 msgstr "Сб_росить параметры просмотра"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6659
+#: ../src/file-manager/fm-directory-view.c:6663
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Обновить порядок сортировки и масштаб для соответствия параметрам этого "
 "режима просмотра"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6662
+#: ../src/file-manager/fm-directory-view.c:6666
 msgid "Connect To This Server"
 msgstr "Соединиться с этим сервером"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6663
+#: ../src/file-manager/fm-directory-view.c:6667
 msgid "Make a permanent connection to this server"
 msgstr "Создать постоянное соединение с этим сервером"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6666
+#: ../src/file-manager/fm-directory-view.c:6670
 msgid "_Mount Volume"
 msgstr "_Подсоединить том"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6667
+#: ../src/file-manager/fm-directory-view.c:6671
 msgid "Mount the selected volume"
 msgstr "Подключить выбранный том"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6670
+#: ../src/file-manager/fm-directory-view.c:6674
 #: ../src/file-manager/fm-tree-view.c:749
 msgid "_Unmount Volume"
 msgstr "О_тсоединить том"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6671
+#: ../src/file-manager/fm-directory-view.c:6675
 msgid "Unmount the selected volume"
 msgstr "Отсоединить выделенный том"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:6678
 msgid "_Eject"
 msgstr "_Извлечь"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6675
+#: ../src/file-manager/fm-directory-view.c:6679
 msgid "Eject the selected volume"
 msgstr "Извлечь выделенный том"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6678
+#: ../src/file-manager/fm-directory-view.c:6682
 msgid "_Format"
 msgstr "_Форматировать"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6679
+#: ../src/file-manager/fm-directory-view.c:6683
 msgid "Format the selected volume"
 msgstr "Форматировать выбранный том"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6682
+#: ../src/file-manager/fm-directory-view.c:6686
 msgid "Open File and Close window"
 msgstr "Открыть файл и закрыть окно"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6686
+#: ../src/file-manager/fm-directory-view.c:6690
 msgid "Sa_ve Search"
 msgstr "Со_хранить поиск"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6687
+#: ../src/file-manager/fm-directory-view.c:6691
 msgid "Save the edited search"
 msgstr "Сохранить измененный поиск"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6690
+#: ../src/file-manager/fm-directory-view.c:6694
 msgid "Sa_ve Search As..."
 msgstr "Со_хранить поиск как..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6691
+#: ../src/file-manager/fm-directory-view.c:6695
 msgid "Save the current search as a file"
 msgstr "Сохранить текущий поиск как файл"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6697
+#: ../src/file-manager/fm-directory-view.c:6701
 msgid "Open this folder in a navigation window"
 msgstr "Открыть эту папку в окне обозревателя файлов"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6702
+#: ../src/file-manager/fm-directory-view.c:6706
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Подготовить выбранные файлы к перемещению с помощью команды \"Вставить\""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6706
+#: ../src/file-manager/fm-directory-view.c:6710
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Подготовить выбранные файлы к копированию с помощью команды \"Вставить\""
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6711
+#: ../src/file-manager/fm-directory-view.c:6715
 msgid "Move this folder to the Trash"
 msgstr "Переместить эту папку в корзину"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6715
+#: ../src/file-manager/fm-directory-view.c:6719
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Удалить эту папку без перемещения в корзину"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6721
+#: ../src/file-manager/fm-directory-view.c:6725
 msgid "Show _Hidden Files"
 msgstr "Показывать скр_ытые файлы"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6722
+#: ../src/file-manager/fm-directory-view.c:6726
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Переключить отображение скрытых файлов в текущем окне"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6808
+#: ../src/file-manager/fm-directory-view.c:6812
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Запуск или управление сценариями из %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6814
 msgid "_Scripts"
 msgstr "С_ценарии"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7135
-#: ../src/file-manager/fm-directory-view.c:7318
+#: ../src/file-manager/fm-directory-view.c:7139
+#: ../src/file-manager/fm-directory-view.c:7322
 #: ../src/file-manager/fm-tree-view.c:1114
 msgid "Open in New Window"
 msgstr "Открыть в новом окне"
 
-#: ../src/file-manager/fm-directory-view.c:7137
-#: ../src/file-manager/fm-directory-view.c:7326
+#: ../src/file-manager/fm-directory-view.c:7141
+#: ../src/file-manager/fm-directory-view.c:7330
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Просмотреть папку"
 msgstr[1] "_Просмотреть папки"
 msgstr[2] "_Просмотреть папки"
 
-#: ../src/file-manager/fm-directory-view.c:7162
-#: ../src/file-manager/fm-directory-view.c:7346
+#: ../src/file-manager/fm-directory-view.c:7166
+#: ../src/file-manager/fm-directory-view.c:7350
 msgid "_Delete from Trash"
 msgstr "_Удалить из корзины"
 
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "Delete the open folder permanently"
 msgstr "Окончательно удалить открытую папку"
 
-#: ../src/file-manager/fm-directory-view.c:7167
+#: ../src/file-manager/fm-directory-view.c:7171
 msgid "Move the open folder to the Trash"
 msgstr "Переместить открытую папку в корзину"
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: ../src/file-manager/fm-directory-view.c:7302
+#: ../src/file-manager/fm-directory-view.c:7306
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Открыть  в программе \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7320
+#: ../src/file-manager/fm-directory-view.c:7324
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
@@ -3387,35 +3392,35 @@ msgstr[0] "Открыть в %d новом окне"
 msgstr[1] "Открыть в %d новых окнах"
 msgstr[2] "Открыть в %d новых окнах"
 
-#: ../src/file-manager/fm-directory-view.c:7347
+#: ../src/file-manager/fm-directory-view.c:7351
 msgid "Delete all selected items permanently"
 msgstr "Окончательно удалить все выделенные элементы"
 
-#: ../src/file-manager/fm-directory-view.c:7719
+#: ../src/file-manager/fm-directory-view.c:7723
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Неверная ссылка \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7721
+#: ../src/file-manager/fm-directory-view.c:7725
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Неверная ссылка \"%s\", переместить ее в корзину?"
 
-#: ../src/file-manager/fm-directory-view.c:7727
+#: ../src/file-manager/fm-directory-view.c:7731
 msgid "This link can't be used, because it has no target."
 msgstr "Эта ссылка не может быть использована, поскольку она не имеет цели."
 
-#: ../src/file-manager/fm-directory-view.c:7729
+#: ../src/file-manager/fm-directory-view.c:7733
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Эту ссылку нельзя использовать, поскольку ее цель \"%s\" не существует."
 
-#: ../src/file-manager/fm-directory-view.c:8349
+#: ../src/file-manager/fm-directory-view.c:8353
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Открывается \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8352
+#: ../src/file-manager/fm-directory-view.c:8356
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3423,34 +3428,34 @@ msgstr[0] "Открывается %d элемент"
 msgstr[1] "Открывается %d элемента"
 msgstr[2] "Открывается %d элементов"
 
-#: ../src/file-manager/fm-directory-view.c:9244
+#: ../src/file-manager/fm-directory-view.c:9248
 msgid "Download location?"
 msgstr "Закачать этот адрес?"
 
-#: ../src/file-manager/fm-directory-view.c:9247
+#: ../src/file-manager/fm-directory-view.c:9251
 msgid "You can download it or make a link to it."
 msgstr "Вы можете закачать его или создать ссылку на него."
 
-#: ../src/file-manager/fm-directory-view.c:9250
+#: ../src/file-manager/fm-directory-view.c:9254
 msgid "Make a _Link"
 msgstr "Создать сс_ылку"
 
-#: ../src/file-manager/fm-directory-view.c:9254
+#: ../src/file-manager/fm-directory-view.c:9258
 msgid "_Download"
 msgstr "_Закачать"
 
-#: ../src/file-manager/fm-directory-view.c:9313
-#: ../src/file-manager/fm-directory-view.c:9365
-#: ../src/file-manager/fm-directory-view.c:9462
+#: ../src/file-manager/fm-directory-view.c:9317
+#: ../src/file-manager/fm-directory-view.c:9369
+#: ../src/file-manager/fm-directory-view.c:9466
 msgid "Drag and drop is not supported."
 msgstr "Перетаскивание не поддерживается."
 
-#: ../src/file-manager/fm-directory-view.c:9314
+#: ../src/file-manager/fm-directory-view.c:9318
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Перетаскивание поддерживается только на локальных файловых системах."
 
-#: ../src/file-manager/fm-directory-view.c:9366
-#: ../src/file-manager/fm-directory-view.c:9463
+#: ../src/file-manager/fm-directory-view.c:9370
+#: ../src/file-manager/fm-directory-view.c:9467
 msgid "An invalid drag type was used."
 msgstr "Был использован недопустимый тип перетаскивания."
 
@@ -3599,7 +3604,7 @@ msgstr "Извините, невозможно изменить права дл�
 msgid "The permissions could not be changed."
 msgstr "Права не могут быть изменены."
 
-#: ../src/file-manager/fm-error-reporting.c:316
+#: ../src/file-manager/fm-error-reporting.c:341
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "Переименовывается элемент \"%s\" в \"%s\"."
@@ -3786,46 +3791,46 @@ msgstr "(Пусто)"
 msgid "Loading..."
 msgstr "Загружается..."
 
-#: ../src/file-manager/fm-list-view.c:1845
+#: ../src/file-manager/fm-list-view.c:1928
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s видимых столбцов"
 
-#: ../src/file-manager/fm-list-view.c:1864
+#: ../src/file-manager/fm-list-view.c:1947
 msgid "Choose the order of information to appear in this folder."
 msgstr "Выберите порядок, в котором информация будет отображаться в этой папке."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1906
+#: ../src/file-manager/fm-list-view.c:1989
 msgid "Visible _Columns..."
 msgstr "Изменить видимые _столбцы..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1907
+#: ../src/file-manager/fm-list-view.c:1990
 msgid "Select the columns visible in this folder"
 msgstr "Выберите столбцы, видимые в этой папке"
 
-#: ../src/file-manager/fm-list-view.c:2606
+#: ../src/file-manager/fm-list-view.c:2702
 msgid "List"
 msgstr "Список"
 
-#: ../src/file-manager/fm-list-view.c:2607
+#: ../src/file-manager/fm-list-view.c:2703
 msgid "View as List"
 msgstr "Режим просмотра: Список"
 
-#: ../src/file-manager/fm-list-view.c:2608
+#: ../src/file-manager/fm-list-view.c:2704
 msgid "View as _List"
 msgstr "Режим просмотра: _Список"
 
-#: ../src/file-manager/fm-list-view.c:2609
+#: ../src/file-manager/fm-list-view.c:2705
 msgid "The list view encountered an error."
 msgstr "Компонент просмотра в виде списка обнаружил оошибку."
 
-#: ../src/file-manager/fm-list-view.c:2610
+#: ../src/file-manager/fm-list-view.c:2706
 msgid "The list view encountered an error while starting up."
 msgstr "Компонент просмотра в виде списка обнаружил ошибку при запуске."
 
-#: ../src/file-manager/fm-list-view.c:2611
+#: ../src/file-manager/fm-list-view.c:2707
 msgid "Display this location with the list view."
 msgstr "Использовать просмотр в виде списка при отображении этого адресе."
 
@@ -4085,7 +4090,7 @@ msgid "Move to Trash"
 msgstr "Переместить в корзину"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:191
+#: ../src/nautilus-places-sidebar.c:196
 msgid "File System"
 msgstr "Файловая система"
 
@@ -4246,7 +4251,7 @@ msgstr ""
 "activation-server и перезапуск Nautilus может решить проблему."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:215
+#: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:524
 #, c-format
 msgid ""
@@ -4450,7 +4455,7 @@ msgstr "Перенесённые файлы не являются допусти
 msgid "Show Emblems"
 msgstr "Показывать эмблемы"
 
-#: ../src/nautilus-file-management-properties.c:292
+#: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Нет"
 
@@ -4568,14 +4573,18 @@ msgid "Always open in _browser windows"
 msgstr "Всегда открывать в окне _браузера"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
+msgid "Always use _text-entry location bar"
+msgstr "Всегда использовать строку адреса с вводом _текст"
+
+#: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Запрашивать подтверждение о_чистки корзины или удаление файлов"
 
-#: ../src/nautilus-file-management-properties.glade.h:37
+#: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "Поведение"
 
-#: ../src/nautilus-file-management-properties.glade.h:38
+#: ../src/nautilus-file-management-properties.glade.h:39
 msgid ""
 "By Name\n"
 "By Size\n"
@@ -4589,7 +4598,7 @@ msgstr ""
 "По дате изменения\n"
 "По эмблеме"
 
-#: ../src/nautilus-file-management-properties.glade.h:43
+#: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -4597,31 +4606,31 @@ msgstr ""
 "Выберите порядок, в котором информация будет возникать под именами значков. "
 "При увеличении масштаба будет появляться больше информации."
 
-#: ../src/nautilus-file-management-properties.glade.h:44
+#: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Choose the order of information to appear in the list view."
 msgstr "Выберите порядок, в котором информация будет возникать под именами значков."
 
-#: ../src/nautilus-file-management-properties.glade.h:45
+#: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Count _number of items:"
 msgstr "Показывать _число элементов в папках"
 
-#: ../src/nautilus-file-management-properties.glade.h:46
+#: ../src/nautilus-file-management-properties.glade.h:47
 msgid "Default _zoom level:"
 msgstr "Исх_одный масштаб:"
 
-#: ../src/nautilus-file-management-properties.glade.h:47
+#: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Display"
 msgstr "Отображение"
 
-#: ../src/nautilus-file-management-properties.glade.h:48
+#: ../src/nautilus-file-management-properties.glade.h:49
 msgid "File Management Preferences"
 msgstr "Настройки управления файлами"
 
-#: ../src/nautilus-file-management-properties.glade.h:49
+#: ../src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_Включать команду удаления, не использующую корзину"
 
-#: ../src/nautilus-file-management-properties.glade.h:50
+#: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
 "Icon View\n"
 "List View"
@@ -4629,83 +4638,83 @@ msgstr ""
 "Просмотр в виде значков\n"
 "Просмотр в виде списка"
 
-#: ../src/nautilus-file-management-properties.glade.h:52
+#: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
 msgstr "Список столбцов"
 
-#: ../src/nautilus-file-management-properties.glade.h:53
+#: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "Образец"
 
-#: ../src/nautilus-file-management-properties.glade.h:54
+#: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "Прослушивать зв_уковые файлы:"
 
-#: ../src/nautilus-file-management-properties.glade.h:55
+#: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "По_казывать только папки"
 
-#: ../src/nautilus-file-management-properties.glade.h:56
+#: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "Показывать _миниатюры:"
 
-#: ../src/nautilus-file-management-properties.glade.h:57
+#: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "Показывать скрытые и р_езервные файлы"
 
-#: ../src/nautilus-file-management-properties.glade.h:58
+#: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "Показывать текст в зн_ачках:"
 
-#: ../src/nautilus-file-management-properties.glade.h:59
+#: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "По_мещать папки перед файлами"
 
-#: ../src/nautilus-file-management-properties.glade.h:60
+#: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
 msgstr "П_росматривать новые папки, используя:"
 
-#: ../src/nautilus-file-management-properties.glade.h:61
+#: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
 msgstr "Вид"
 
-#: ../src/nautilus-file-management-properties.glade.h:62
+#: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
 msgstr "_Выстраивать элементы:"
 
-#: ../src/nautilus-file-management-properties.glade.h:64
+#: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
 msgstr "Ис_ходный масштаб:"
 
-#: ../src/nautilus-file-management-properties.glade.h:65
+#: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
 msgstr "_двойной щелчок активирует элементы"
 
-#: ../src/nautilus-file-management-properties.glade.h:66
+#: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
 msgstr "_Формат:"
 
-#: ../src/nautilus-file-management-properties.glade.h:67
+#: ../src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
 msgstr "То_лько для файлов, меньших чем:"
 
-#: ../src/nautilus-file-management-properties.glade.h:68
+#: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Run executable text files when they are clicked"
 msgstr "в_ыполнять файлы, когда на них щелкнут"
 
-#: ../src/nautilus-file-management-properties.glade.h:69
+#: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
 msgstr "од_инарный щелчок активирует элементы"
 
-#: ../src/nautilus-file-management-properties.glade.h:70
+#: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
 msgstr "_Текст рядом со значками"
 
-#: ../src/nautilus-file-management-properties.glade.h:71
+#: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Use compact layout"
 msgstr "Использовать плотное разме_щение"
 
-#: ../src/nautilus-file-management-properties.glade.h:72
+#: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_View executable text files when they are clicked"
 msgstr "п_росматривать файлы, когда на них щелкнут"
 
@@ -5128,19 +5137,19 @@ msgstr "Заметки"
 msgid "Show Notes"
 msgstr "Показать Заметки"
 
-#: ../src/nautilus-places-sidebar.c:775
+#: ../src/nautilus-places-sidebar.c:893
 msgid "Remove"
 msgstr "Убрать"
 
-#: ../src/nautilus-places-sidebar.c:784
+#: ../src/nautilus-places-sidebar.c:902
 msgid "Rename..."
 msgstr "Переи_меновать..."
 
-#: ../src/nautilus-places-sidebar.c:1006
+#: ../src/nautilus-places-sidebar.c:1125
 msgid "Places"
 msgstr "Места"
 
-#: ../src/nautilus-places-sidebar.c:1012
+#: ../src/nautilus-places-sidebar.c:1131
 msgid "Show Places"
 msgstr "Показать Места"
 
