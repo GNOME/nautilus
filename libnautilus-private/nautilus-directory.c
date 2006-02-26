@@ -1086,8 +1086,9 @@ nautilus_directory_notify_files_removed (GList *uris)
 			nautilus_file_mark_gone (file);
 			hash_table_list_prepend (changed_lists,
 						 file->details->directory,
-						 file);
+						 nautilus_file_ref (file));
 		}
+		nautilus_file_unref (file);
 	}
 
 	/* Now send out the changed signals. */
