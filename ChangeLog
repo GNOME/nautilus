@@ -1,3 +1,12 @@
+2006-02-26  Christian Neumair  <chris@gnome-de.org>
+
+	* src/nautilus-application.c: (nautilus_application_get_n_windows):
+	* src/nautilus-application.h:
+	* src/nautilus-window-manage-views.c:
+	(got_file_info_for_view_selection_callback):
+	Also consider desktop windows when deciding whether to fallback to
+	home or not. Fixes #331605.
+
 2006-02-25  Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>
 
 	* configure.in: Add "zh_HK" to ALL_LINGUAS.

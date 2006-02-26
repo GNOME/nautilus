@@ -72,6 +72,7 @@ void                 nautilus_application_startup           (NautilusApplication
 							     const char          *urls[]);
 GList *              nautilus_application_get_window_list           (void);
 GList *              nautilus_application_get_spatial_window_list    (void);
+unsigned int         nautilus_application_get_n_windows            (void);
 
 NautilusWindow *     nautilus_application_present_spatial_window     (NautilusApplication *application,
 								      NautilusWindow      *requesting_window,

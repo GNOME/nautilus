@@ -154,6 +154,12 @@ nautilus_application_get_spatial_window_list (void)
 	return nautilus_application_spatial_window_list;
 }
 
+unsigned int
+nautilus_application_get_n_windows (void)
+{
+	return g_list_length (nautilus_application_window_list) +
+	       g_list_length (nautilus_application_desktop_windows);
+}
 
 static void
 nautilus_application_instance_init (NautilusApplication *application)

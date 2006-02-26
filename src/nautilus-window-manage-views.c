@@ -668,14 +668,6 @@ another_navigation_window_already_showing (NautilusWindow *the_window)
 	return FALSE;
 }
 
-/* utility routine that returns true if there's one or fewer windows in the window list */
-static gboolean
-just_one_window (void)
-{
-	return !eel_g_list_more_than_one_item
-                (nautilus_application_get_window_list ());
-}
-
 
 /*
  * begin_location_change
@@ -925,7 +917,9 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 			 * happens when a new window cannot display its initial URI. 
 			 */
 			/* if this is the only window, we don't want to quit, so we redirect it to home */
-			if (just_one_window ()) {
+			if (nautilus_application_get_n_windows () <= 1) {
+				g_assert (nautilus_application_get_n_windows () == 1);
+
 				/* Make sure we re-use this window */
 				if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = TRUE;
