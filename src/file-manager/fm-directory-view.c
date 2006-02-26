@@ -2379,25 +2379,28 @@ done_loading (FMDirectoryView *view)
 			
 			selection = file_list_from_uri_list (uris_selected);
 			eel_g_list_free_deep (uris_selected);
-			
 
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;
-
-			/* HACK: We should be able to directly call reveal_selection here, but at
-			 * this point the GtkTreeView hasn't allocated the new nodes yet, and it
-			 * has a bug in the scroll calculation dealing with this special case. It
-			 * would always make the selection the top row, even if no scrolling would
-			 * be neccessary to reveal it. So we let it allocate before revealing.
-			 */
-			if (view->details->reveal_selection_idle_id != 0) {
-				g_source_remove (view->details->reveal_selection_idle_id);
-			}
-			view->details->reveal_selection_idle_id = 
-				g_idle_add (reveal_selection_idle_callback, view);
-			
 			nautilus_file_list_free (selection);
+
+			if (FM_IS_LIST_VIEW (view)) {
+				/* HACK: We should be able to directly call reveal_selection here,
+				 * but at this point the GtkTreeView hasn't allocated the new nodes
+				 * yet, and it has a bug in the scroll calculation dealing with this
+				 * special case. It would always make the selection the top row, even
+				 * if no scrolling would be neccessary to reveal it. So we let it
+				 * allocate before revealing.
+				 */
+				if (view->details->reveal_selection_idle_id != 0) {
+					g_source_remove (view->details->reveal_selection_idle_id);
+				}
+				view->details->reveal_selection_idle_id = 
+					g_idle_add (reveal_selection_idle_callback, view);
+			} else {
+				fm_directory_view_reveal_selection (view);
+			}
 		}
 		fm_directory_view_display_selection_info (view);
 	}
