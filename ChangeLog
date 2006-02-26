@@ -1,3 +1,13 @@
+2006-02-26  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (reveal_selection_idle_callback),
+	(done_loading):
+	Call reveal_selection in an idle callback to work around a bug in
+	GtkTreeView which produces buggy scroll states when the nodes have
+	not yet been allocated. It would make the selection always the top
+	row even when it should ignore alignment, among other oddities. 
+
 2006-02-26  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-application.c: (nautilus_application_get_n_windows):

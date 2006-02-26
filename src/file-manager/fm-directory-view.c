@@ -208,7 +208,8 @@ struct FMDirectoryViewDetails
 	guint display_selection_idle_id;
 	guint update_menus_timeout_id;
 	guint update_status_idle_id;
-	
+	guint reveal_selection_idle_id;
+
 	guint display_pending_source_id;
 	guint changes_timeout_id;
 
@@ -2022,6 +2023,11 @@ fm_directory_view_destroy (GtkObject *object)
 		view->details->display_selection_idle_id = 0;
 	}
 
+	if (view->details->reveal_selection_idle_id != 0) {
+		g_source_remove (view->details->reveal_selection_idle_id);
+		view->details->reveal_selection_idle_id = 0;
+	}
+
 	if (view->details->delayed_rename_file_id != 0) {
 		g_source_remove (view->details->delayed_rename_file_id);
 		view->details->delayed_rename_file_id = 0;
@@ -2335,6 +2341,18 @@ check_for_directory_hard_limit (FMDirectoryView *view)
 	}
 }
 
+static gboolean
+reveal_selection_idle_callback (gpointer data)
+{
+	FMDirectoryView *view;
+	
+	view = FM_DIRECTORY_VIEW (data);
+
+	view->details->reveal_selection_idle_id = 0;
+	fm_directory_view_reveal_selection (view);
+
+	return FALSE;
+}
 
 static void
 done_loading (FMDirectoryView *view)
@@ -2366,7 +2384,18 @@ done_loading (FMDirectoryView *view)
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;
-			fm_directory_view_reveal_selection (view);
+
+			/* HACK: We should be able to directly call reveal_selection here, but at
+			 * this point the GtkTreeView hasn't allocated the new nodes yet, and it
+			 * has a bug in the scroll calculation dealing with this special case. It
+			 * would always make the selection the top row, even if no scrolling would
+			 * be neccessary to reveal it. So we let it allocate before revealing.
+			 */
+			if (view->details->reveal_selection_idle_id != 0) {
+				g_source_remove (view->details->reveal_selection_idle_id);
+			}
+			view->details->reveal_selection_idle_id = 
+				g_idle_add (reveal_selection_idle_callback, view);
 			
 			nautilus_file_list_free (selection);
 		}
