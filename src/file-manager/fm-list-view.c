@@ -141,6 +141,7 @@ static gboolean			default_sort_reversed_auto_value;
 static NautilusZoomLevel        default_zoom_level_auto_value;
 static GList *                  default_visible_columns_auto_value;
 static GList *                  default_column_order_auto_value;
+static GdkCursor *              hand_cursor = NULL;
 
 static GList *fm_list_view_get_selection                   (FMDirectoryView   *view);
 static GList *fm_list_view_get_selection_for_file_transfer (FMDirectoryView   *view);
@@ -457,9 +458,6 @@ motion_notify_callback (GtkWidget *widget,
 {
 	FMListView *view;
 	GdkDragContext *context;
-	GdkCursor *cursor;
-	GtkTreePath *last_hover_path;
-	GtkTreeIter iter;
 	
 	view = FM_LIST_VIEW (callback_data);
 	
@@ -468,42 +466,25 @@ motion_notify_callback (GtkWidget *widget,
 	}
 
 	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
-		last_hover_path = view->details->hover_path;
+		GtkTreePath *old_hover_path;
 
+		old_hover_path = view->details->hover_path;
 		gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
 					       event->x, event->y,
 					       &view->details->hover_path,
 					       NULL, NULL, NULL);
 
-		if (view->details->hover_path != NULL) {
-			cursor = gdk_cursor_new (GDK_HAND2);
-		} else {
-			cursor = NULL;
-		}
-
-		gdk_window_set_cursor (widget->window, cursor);
-
-		/* only redraw if the hover row has changed */
-		if (!(last_hover_path == NULL && view->details->hover_path == NULL) &&
-		    (!(last_hover_path != NULL && view->details->hover_path != NULL) ||
-		     gtk_tree_path_compare (last_hover_path, view->details->hover_path))) {
-			if (last_hover_path) {
-				if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
-							     &iter, last_hover_path)) {
-					gtk_tree_model_row_changed (GTK_TREE_MODEL (view->details->model),
-								    last_hover_path, &iter);
-				}
-			}
-
-			if (view->details->hover_path) {
-				gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
-							 &iter, view->details->hover_path);
-				gtk_tree_model_row_changed (GTK_TREE_MODEL (view->details->model),
-							    view->details->hover_path, &iter);
+		if ((old_hover_path != NULL) != (view->details->hover_path != NULL)) {
+			if (view->details->hover_path != NULL) {
+				gdk_window_set_cursor (widget->window, hand_cursor);
+			} else {
+				gdk_window_set_cursor (widget->window, NULL);
 			}
 		}
 
-		gtk_tree_path_free (last_hover_path);
+		if (old_hover_path != NULL) {
+			gtk_tree_path_free (old_hover_path);
+		}
 	}
 
 	if (view->details->drag_button != 0) {
@@ -531,22 +512,40 @@ leave_notify_callback (GtkWidget *widget,
 		       gpointer callback_data)
 {
 	FMListView *view;
-	GtkTreeIter iter;
 
 	view = FM_LIST_VIEW (callback_data);
 
 	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE &&
 	    view->details->hover_path != NULL) {
-		if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
-					     &iter, view->details->hover_path)) {
-			gtk_tree_model_row_changed (GTK_TREE_MODEL (view->details->model),
-						    view->details->hover_path, &iter);
-		}
-
 		gtk_tree_path_free (view->details->hover_path);
 		view->details->hover_path = NULL;
+	}
 
-		return TRUE;
+	return FALSE;
+}
+
+static gboolean
+enter_notify_callback (GtkWidget *widget,
+		       GdkEventCrossing *event,
+		       gpointer callback_data)
+{
+	FMListView *view;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+		if (view->details->hover_path != NULL) {
+			gtk_tree_path_free (view->details->hover_path);
+		}
+
+		gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+					       event->x, event->y,
+					       &view->details->hover_path,
+					       NULL, NULL, NULL);
+
+		if (view->details->hover_path != NULL) {
+			gdk_window_set_cursor (widget->window, hand_cursor);
+		}
 	}
 
 	return FALSE;
@@ -1234,6 +1233,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (drag_data_get_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "motion_notify_event",
 				 G_CALLBACK (motion_notify_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "enter_notify_event",
+				 G_CALLBACK (enter_notify_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "leave_notify_event",
 				 G_CALLBACK (leave_notify_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_press_event",
@@ -2288,10 +2289,10 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
 	GtkTreeIter iter;
 	GtkTreeView *tree;
 
+	view = FM_LIST_VIEW (directory_view);
+
 	/* ensure that we unset the hand cursor and refresh underlined rows */
 	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
-		view = FM_LIST_VIEW (directory_view);
-		
 		if (view->details->hover_path != NULL) {
 			if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
 						     &iter, view->details->hover_path)) {
@@ -2313,7 +2314,15 @@ fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
 				gdk_display_flush (display);
 			}
 		}
-		
+
+		if (hand_cursor != NULL) {
+			gdk_cursor_unref (hand_cursor);
+			hand_cursor = NULL;
+		}
+	} else if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+		if (hand_cursor == NULL) {
+			hand_cursor = gdk_cursor_new(GDK_HAND2);
+		}
 	}
 }
 
@@ -2456,6 +2465,10 @@ fm_list_view_finalize (GObject *object)
 	
 	g_list_free (list_view->details->cells);
 	g_hash_table_destroy (list_view->details->columns);
+
+	if (list_view->details->hover_path != NULL) {
+		gtk_tree_path_free (list_view->details->hover_path);
+	}
 
 	g_free (list_view->details);
 
@@ -2663,6 +2676,8 @@ fm_list_view_init (FMListView *list_view)
 	
 	/* ensure that the zoom level is always set in begin_loading */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST - 1;
+
+	list_view->details->hover_path = NULL;
 }
 
 static NautilusView *

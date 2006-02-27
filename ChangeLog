@@ -1,3 +1,33 @@
+2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
+
+	Avoid heavy operations inside "motion_notify_event" handler: don't
+	call gtk_tree_model_row_changed (which causes updating the whole
+	view), don't create new mouse cursor, change cursor only when
+	necessary.
+	As a bonus we avoid leaking hand cursor in nautilus and X server.
+
+	* src/file-manager/fm-list-view.c:
+	(hand_cursor): new global variable for storing hand cursor used in
+	single click mode
+	(motion_notify_callback): don't call gtk_tree_model_row_changed on
+	the model when changing rows, it's very slow and unnecessary - GTK+
+	automatically invalidates parts of the view occupied by old and new
+	row; don't leak the hand cursor (GdkCursor), change mouse cursor
+	only when necessary (from GDK_HAND2 to default and the other way
+	round)
+	(leave_notify_callback): don't call gtk_tree_model_row_changed on
+	the current row in the model, GTK+ automatically redraws the current
+	row
+	(enter_notify_callback): in case single click mode is used, update
+	details->hover_path and set hand cursor if necessary
+	(create_and_set_up_tree_view): connect to enter_notify_event signal
+	in addition to leave_notify_event.
+	(fm_list_view_click_policy_changed): unref global hand_cursor and
+	set it to NULL when changing to double click mode, create new cursor
+	and assign it to hand_cursor when changing to single click one.
+	(fm_list_view_finalize): free details->hover_path if necessary
+	(fm_list_view_init): explicitly set details->hover_path to NULL
+
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-manage-views.c:
