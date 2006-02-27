@@ -1,3 +1,15 @@
+2006-02-27  Federico Mena Quintero  <federico@novell.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(finish_adding_new_icons): Do not place icons both in the
+	no_position_icons and semi_position_icons lists!
+	(snap_position): The final *x could be negative if (start_x + icon_width / 2)
+	is less than SNAP_SIZE_X, as SNAP_NEAREST_HORIZONTAL() would
+	return DESKTOP_PAD_HORIZONTAL.  Then, we would subtract icon_width / 2,
+	getting a negative number.  So, we initially test for this and
+	start that the first snap column.  The same reasoning applies to
+	*y and the baseline.
+
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-navigation-window.c:

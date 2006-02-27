@@ -1140,18 +1140,18 @@ snap_position (NautilusIconContainer *container,
 	int icon_height;
 	ArtDRect icon_position;
 	
-	if (*x < DESKTOP_PAD_HORIZONTAL) {
-		*x = DESKTOP_PAD_HORIZONTAL;
-	}
-
-	if (*y < DESKTOP_PAD_VERTICAL) {
-		*y = DESKTOP_PAD_VERTICAL;
-	}
-
 	icon_position = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	icon_width = icon_position.x1 - icon_position.x0;
 	icon_height = icon_position.y1 - icon_position.y0;
-	
+
+	if (*x + icon_width / 2 < DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X) {
+		*x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X - icon_width / 2;
+	}
+
+	if (*y + icon_height < DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y) {
+		*y = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - icon_height;
+	}
+
 	center_x = *x + icon_width / 2;
 	*x = SNAP_NEAREST_HORIZONTAL (center_x) - (icon_width / 2);
 
@@ -5629,13 +5629,14 @@ finish_adding_new_icons (NautilusIconContainer *container)
 	no_position_icons = semi_position_icons = NULL;
 	for (p = new_icons; p != NULL; p = p->next) {
 		icon = p->data;
-		if (!assign_icon_position (container, icon)) {
-			no_position_icons = g_list_prepend (no_position_icons, icon);
-		}
+                if (assign_icon_position (container, icon)) {
+                        if (!container->details->auto_layout && icon->has_lazy_position) {
+                                semi_position_icons = g_list_prepend (semi_position_icons, icon);
+                        }
+                } else {
+                        no_position_icons = g_list_prepend (no_position_icons, icon);
+                }
 
-		if (!container->details->auto_layout && icon->has_lazy_position) {
-			semi_position_icons = g_list_prepend (semi_position_icons, icon);
-		}
 		finish_adding_icon (container, icon);
 	}
 	g_list_free (new_icons);
