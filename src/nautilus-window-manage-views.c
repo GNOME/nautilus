@@ -757,7 +757,11 @@ begin_location_change (NautilusWindow *window,
         window->details->determine_view_file = nautilus_file_get (location);
 
 	g_assert (window->details->determine_view_file != NULL);
-	
+
+	/* if the currently viewed file is marked gone while loading the new location,
+	 * this ensures that the window isn't destroyed */
+        cancel_viewed_file_changed_callback (window);
+
 	nautilus_file_call_when_ready (window->details->determine_view_file,
 				       NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
 				       NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
@@ -849,6 +853,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	char *view_id;
 	char *mimetype;
 	NautilusWindow *window;
+	NautilusFile *viewed_file;
 	char *location;
 	char *home_uri;
 
@@ -947,6 +952,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		} else {
 			/* Clean up state of already-showing window */
 			end_location_change (window);
+
+			/* We disconnected this, so we need to re-connect it */
+			viewed_file = nautilus_file_get (window->details->location);
+			nautilus_file_monitor_add (viewed_file, &window->details->viewed_file, 0);
+			g_signal_connect_object (viewed_file, "changed",
+						 G_CALLBACK (viewed_file_changed_callback), window, 0);
+			nautilus_file_unref (viewed_file);
 			
 			/* Leave the location bar showing the bad location that the user
 			 * typed (or maybe achieved by dragging or something). Many times

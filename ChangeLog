@@ -1,7 +1,15 @@
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-window-manage-views.c:
+	Don't close window if old file changed when we're loading
+	a new one (#137027).
+	Based on patch from Christian Neumair.
+
+2006-02-27  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	Correctly handle *_margins as pixel values, not world-coords.
+	Based on patch from Christian Neumair.
 
 2006-02-27  Federico Mena Quintero  <federico@novell.com>
 
