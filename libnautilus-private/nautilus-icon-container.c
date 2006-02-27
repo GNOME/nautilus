@@ -804,14 +804,16 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		allocation = &GTK_WIDGET (container)->allocation;
 		eel_canvas_set_scroll_region
 			(EEL_CANVAS (container),
-			 (double) - container->details->left_margin,
-			 (double) - container->details->top_margin,
-			 (double) (allocation->width - 1) / pixels_per_unit
+			 (double) - container->details->left_margin / pixels_per_unit,
+			 (double) - container->details->top_margin / pixels_per_unit,
+			 ((double) (allocation->width - 1)
 			 - container->details->left_margin
-			 - container->details->right_margin,
-			 (double) (allocation->height - 1) / pixels_per_unit
+			 - container->details->right_margin)
+			 / pixels_per_unit,
+			 ((double) (allocation->height - 1)
 			 - container->details->top_margin
-			 - container->details->bottom_margin);
+			 - container->details->bottom_margin)
+			 / pixels_per_unit);
 		return;
 	}
 
@@ -999,7 +1001,8 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		/ EEL_CANVAS (container)->pixels_per_unit;
 	canvas_height = (GTK_WIDGET (container)->allocation.height
 			 - container->details->top_margin
-			 - container->details->bottom_margin) / EEL_CANVAS (container)->pixels_per_unit;
+			 - container->details->bottom_margin)
+		/ EEL_CANVAS (container)->pixels_per_unit;
 
 	max_icon_width = max_text_width = 0.0;
 
@@ -1192,14 +1195,14 @@ placement_grid_new (NautilusIconContainer *container, gboolean tight)
 	int i;
 
 	/* Get container dimensions */
-	width  = GTK_WIDGET (container)->allocation.width /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->left_margin
-		- container->details->right_margin;
-	height = GTK_WIDGET (container)->allocation.height /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->top_margin
-		- container->details->bottom_margin;
+	width  = (GTK_WIDGET (container)->allocation.width
+		  - container->details->left_margin
+		  - container->details->right_margin) /
+		EEL_CANVAS (container)->pixels_per_unit;
+	height = (GTK_WIDGET (container)->allocation.height
+		  - container->details->top_margin
+		  - container->details->bottom_margin) /
+		EEL_CANVAS (container)->pixels_per_unit;
 
 	num_columns = width / SNAP_SIZE_X;
 	num_rows = height / SNAP_SIZE_Y;
@@ -1328,14 +1331,14 @@ find_empty_location (NautilusIconContainer *container,
 	gboolean collision;
 
 	/* Get container dimensions */
-	canvas_width  = GTK_WIDGET (container)->allocation.width /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->left_margin
-		- container->details->right_margin;
-	canvas_height = GTK_WIDGET (container)->allocation.height /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->top_margin
-		- container->details->bottom_margin;
+	canvas_width  = (GTK_WIDGET (container)->allocation.width
+			 - container->details->left_margin
+			 - container->details->right_margin) /
+		EEL_CANVAS (container)->pixels_per_unit;
+	canvas_height = (GTK_WIDGET (container)->allocation.height
+			 - container->details->top_margin
+			 - container->details->bottom_margin) /
+		EEL_CANVAS (container)->pixels_per_unit;
 
 	icon_get_bounding_box (icon, 
 			       &icon_position.x0, &icon_position.y0, 
