@@ -25,6 +25,7 @@
 #   service -> tjeneste
 #   side bar -> sidepanel (alle andre 'bar' er linjer)
 #   trash -> papirkurven
+#   location bar -> adresselinje
 #   pathbar -> stivælger
 #
 # Husk at tilføje dig i credit-listen (msgid "translator-credits")
@@ -33,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-26 23:52+0100\n"
+"POT-Creation-Date: 2006-02-27 21:15+0100\n"
 "PO-Revision-Date: 2006-02-26 23:48+0100\n"
 "Last-Translator: Lasse Bang Mikkelsen <lbm@fatalerror.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -336,9 +337,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
-msgstr ""
-"Brug altid tekstindtastningsfelt i placeringsværktøjslinjen, i stedet for "
-"stivælgeren"
+msgstr "Brug altid adresselinjen, i stedet for stivælgeren"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
@@ -520,8 +519,8 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"Hvis sat til sand, vil Nautilus navigeringsvinduer altid bruge et "
-"tekstindtastningsfelt i placeringsværktøjslinjen, i stedet for stivælgeren."
+"Hvis sat til sand, vil Nautilus navigeringsvinduer altid bruge adresselinje, "
+"i stedet for stivælgeren."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -3307,7 +3306,7 @@ msgstr "G_em søgning"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6723
 msgid "Save the edited search"
-msgstr "Gem den ændrede sægning"
+msgstr "Gem den ændrede søgning"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6726
@@ -4318,7 +4317,7 @@ msgstr "Kan ikke forbinde til server. \"%s\" er ikke en gyldig placering."
 
 #: ../src/nautilus-connect-server-dialog.c:158
 msgid "Can't Connect to Server. You must enter a name for the server."
-msgstr "Kan ikke forbinde til server. Du skal indtaste et navn til serveren."
+msgstr "Kan ikke forbinde til server. Du skal indtaste et navn for serveren."
 
 #: ../src/nautilus-connect-server-dialog.c:159
 msgid "Please enter a name and try again."
@@ -4603,7 +4602,7 @@ msgstr "Åbn altid _navigeringsvinduer"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Always use _text-entry location bar"
-msgstr "Brug altid _tekstindtastnings-adresselinje"
+msgstr "Brug altid _adresselinje"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
@@ -5363,7 +5362,7 @@ msgstr "Filtype"
 
 #: ../src/nautilus-query-editor.c:280
 msgid "Select folder search in"
-msgstr "Væl mappesøgning i"
+msgstr "Vælg mappesøgning i"
 
 #: ../src/nautilus-query-editor.c:364
 msgid "Documents"
@@ -5429,10 +5428,9 @@ msgstr "Redigér den gemte søgning"
 msgid "Add a new criterium to this search"
 msgstr "Tilføj et nyt kriterie til denne søgning"
 
-# er et menunavn - gå er desværre misvisende, navigation benyttes også i Galeon
 #: ../src/nautilus-query-editor.c:1031
 msgid "Go"
-msgstr "Navigation"
+msgstr "Søg"
 
 #: ../src/nautilus-query-editor.c:1033
 msgid "Reload"
