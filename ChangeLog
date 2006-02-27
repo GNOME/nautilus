@@ -1,5 +1,12 @@
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-icon-view.c (fm_icon_view_add_file):
+	Use lazy positioning for volumes only, not all desktop file icons,
+	as this can cause icons to move around, and its mainly required
+	for removable volumes anyway.
+
+2006-02-27  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-navigation-window.c:
 	* src/nautilus-spatial-window.c:
 	* src/nautilus-window.[ch]:

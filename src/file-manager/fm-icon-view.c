@@ -539,9 +539,14 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirect
 		nautilus_icon_container_reset_scroll_region (icon_container);
 	}
 	
+	/* For volumes (i.e. cdrom icon) we use lazy positioning so that when
+	 * an old cdrom gets re-mounted in a place that now has another
+	 * icon we don't overlap that one. We don't do this in general though,
+	 * as it can cause icons moving around.
+	 */
 	if (nautilus_icon_container_add (icon_container,
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
+					 nautilus_file_has_volume (file))) {
 		nautilus_file_ref (file);
 	}
 }
