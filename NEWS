@@ -1,3 +1,15 @@
+Major changes in 2.13.92 are:
+* Better filename linebreaking at punctuation marks.
+* List view: If a rename moves the file in the view, scroll to the new position
+* Better handling of broken filename encoding for link targets
+* Some desktop icon positioning fixes
+* Browser mode: don't close window on up if current directory has been removed
+* Pass original files, not target files to property page providers.
+  This allows property page extensions to look at desktop files and symlinks.
+* Various small optimizations
+* Leak fixes
+* Build fixes
+
 Major changes in 2.13.91 are:
 * Fix a desktop icon positioning bug
 * Fix opening saved searches file from outside nautilus
