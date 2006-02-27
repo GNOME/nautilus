@@ -1,5 +1,35 @@
 2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
 
+	Don't add all possible columns to GtkTreeView when initializing
+	FMListView, only the ones we actually show. This way we avoid getting
+	unnecessary data from the model, e.g. quite heavy "owner" and "group"
+	columns with the default settings.
+
+	* src/file-manager/fm-list-view.c:
+	(apply_visible_columns_foreach, apply_visible_columns,
+	apply_column_order): removed
+	(apply_columns_settings): new function, updates a list of columns in
+	GtkTreeView given both a list of visible columns and their ordering,
+	replacement for apply_visible_columns and apply_column_order.
+	(create_and_set_up_tree_view): when creating details->columns hash
+	table, pass g_object_unref as value_destroy_func; before adding
+	columns to the hash call g_object_ref+gtk_object_sink on them, don't
+	add columns to the view, the appropriate columns will be added when
+	applying the configuration; in order to apply initial columns
+	settings, call apply_columns_settings (instead of
+	apply_visible_columns + apply_column_order).
+	(set_visible_columns_from_metadata_and_preferences,
+	set_column_order_from_metadata_and_preferences): removed
+	(set_columns_settings_from_metadata_and_preferences): new, replacement
+	for set_visible_columns_* and set_column_order_*.
+	(fm_list_view_begin_loading, column_chooser_changed_callback,
+	column_chooser_use_default_callback, fm_list_view_reset_to_defaults,
+	default_visible_columns_changed_callback,
+	default_column_order_changed_callback): use newly added
+	set_columns_settings_from_metadata_and_preferences.
+
+2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
+
 	Avoid heavy operations inside "motion_notify_event" handler: don't
 	call gtk_tree_model_row_changed (which causes updating the whole
 	view), don't create new mouse cursor, change cursor only when

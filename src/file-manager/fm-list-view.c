@@ -1086,57 +1086,57 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 }
 
 static void
-apply_visible_columns_foreach (gpointer key, gpointer value, gpointer user_data)
+apply_columns_settings (FMListView *list_view, GList *column_order, GList *visible_columns)
 {
-	gboolean visible;
-	
-	visible = (eel_g_str_list_index (user_data, key) != -1);
-	
-	gtk_tree_view_column_set_visible (GTK_TREE_VIEW_COLUMN (value), 
-					  visible);
-}
-
-static void
-apply_visible_columns (FMListView *list_view, GList *visible_columns)
-{
-	g_hash_table_foreach (list_view->details->columns, 
-			      apply_visible_columns_foreach,
-			      visible_columns);
-	
-}
-
-static void
-apply_column_order (FMListView *list_view, GList *column_order)
-{
-	GList *columns;	
-	GtkTreeViewColumn *last_view_column;
+	GList *all_columns;
+	GList *old_view_columns, *view_columns;
+	GtkTreeViewColumn *prev_view_column;
 	GList *l;
-	
-	columns = nautilus_get_all_columns ();
-	columns = nautilus_sort_columns (columns, column_order);
 
-	last_view_column = NULL;
-	for (l = columns; l != NULL; l = l->next) {
-		GtkTreeViewColumn *view_column;
+	/* prepare ordered list of view columns using column_order and visible_columns */
+	view_columns = NULL;
+	all_columns = nautilus_get_all_columns ();
+	all_columns = nautilus_sort_columns (all_columns, column_order);
+	for (l = all_columns; l != NULL; l = l->next) {
 		char *name;
 
 		g_object_get (G_OBJECT (l->data), "name", &name, NULL);
-		
-		view_column = g_hash_table_lookup (list_view->details->columns,
-						   name);
+		if (g_list_find_custom (visible_columns, name, (GCompareFunc) g_ascii_strcasecmp) != NULL) {
+			GtkTreeViewColumn *view_column;
 
+			view_column = g_hash_table_lookup (list_view->details->columns, name);
+			if (view_column != NULL) {
+				view_columns = g_list_append (view_columns, view_column);
+			}
+		}
 		g_free (name);
-		
-		if (view_column) {
-			gtk_tree_view_move_column_after 
-				(list_view->details->tree_view,
-				 view_column,
-				 last_view_column);
-			
-			last_view_column = view_column;
+	}
+	nautilus_column_list_free (all_columns);
+
+	/* remove columns that are not present in the configuration */
+	old_view_columns = gtk_tree_view_get_columns (list_view->details->tree_view);
+	for (l = old_view_columns; l != NULL; l = l->next) {
+		if (g_list_find (view_columns, l->data) == NULL) {
+			gtk_tree_view_remove_column (list_view->details->tree_view, l->data);
 		}
 	}
-	nautilus_column_list_free (columns);
+	g_list_free (old_view_columns);
+
+	/* append new columns from the configuration */
+	old_view_columns = gtk_tree_view_get_columns (list_view->details->tree_view);
+	for (l = view_columns; l != NULL; l = l->next) {
+		if (g_list_find (old_view_columns, l->data) == NULL) {
+			gtk_tree_view_append_column (list_view->details->tree_view, l->data);
+		}
+	}
+	g_list_free (old_view_columns);
+
+	/* place columns in the correct order */
+	prev_view_column = NULL;
+	for (l = view_columns; l != NULL; l = l->next) {
+		gtk_tree_view_move_column_after (list_view->details->tree_view, l->data, prev_view_column);
+		prev_view_column = l->data;
+	}
 }
 
 static void
@@ -1192,7 +1192,7 @@ create_and_set_up_tree_view (FMListView *view)
 	view->details->columns = g_hash_table_new_full (g_str_hash, 
 							g_str_equal,
 							(GDestroyNotify)g_free,
-							NULL);
+							(GDestroyNotify) g_object_unref);
 	gtk_tree_view_set_enable_search (view->details->tree_view, TRUE);
 
 	/* Don't handle backspace key. It's used to open the parent folder. */
@@ -1296,6 +1296,8 @@ create_and_set_up_tree_view (FMListView *view)
 			view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
+			g_object_ref (view->details->file_name_column);
+			gtk_object_sink (GTK_OBJECT (view->details->file_name_column));
 			view->details->file_name_column_num = column_num;
 			
 			g_hash_table_insert (view->details->columns,
@@ -1324,7 +1326,6 @@ create_and_set_up_tree_view (FMListView *view)
 			gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,
 								 (GtkTreeCellDataFunc) filename_cell_data_func,
 								 view, NULL);
-			gtk_tree_view_append_column (view->details->tree_view, view->details->file_name_column);
 		} else {		
 			cell = gtk_cell_renderer_text_new ();
 			g_object_set (cell, "xalign", xalign, NULL);
@@ -1334,6 +1335,8 @@ create_and_set_up_tree_view (FMListView *view)
 									   cell,
 									   "text", column_num,
 									   NULL);
+			g_object_ref (column);
+			gtk_object_sink (GTK_OBJECT (column));
 			gtk_tree_view_column_set_sort_column_id (column, column_num);
 			g_hash_table_insert (view->details->columns, 
 					     g_strdup (name), 
@@ -1341,7 +1344,6 @@ create_and_set_up_tree_view (FMListView *view)
 			
 			gtk_tree_view_column_set_resizable (column, TRUE);
 			gtk_tree_view_column_set_visible (column, TRUE);
-			gtk_tree_view_append_column (view->details->tree_view, column);
 		}
 		g_free (name);
 		g_free (label);
@@ -1351,8 +1353,7 @@ create_and_set_up_tree_view (FMListView *view)
 	/* Apply the default column order and visible columns, to get it
 	 * right most of the time. The metadata will be checked when a 
 	 * folder is loaded */
-	apply_visible_columns (view, default_visible_columns_auto_value);
-	apply_column_order (view, default_column_order_auto_value);
+	apply_columns_settings (view, default_column_order_auto_value, default_visible_columns_auto_value);
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
 	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
@@ -1391,16 +1392,6 @@ get_visible_columns (FMListView *list_view)
 	return visible_columns;
 }
 
-static void
-set_visible_columns_from_metadata_and_preferences (FMListView *list_view)
-{
-	GList *visible_columns;
-
-	visible_columns = get_visible_columns (list_view);
-	apply_visible_columns (list_view, visible_columns);
-	eel_g_list_free_deep (visible_columns);
-}
-
 static GList *
 get_column_order (FMListView *list_view)
 {
@@ -1422,13 +1413,18 @@ get_column_order (FMListView *list_view)
 }
 
 static void
-set_column_order_from_metadata_and_preferences (FMListView *list_view)
+set_columns_settings_from_metadata_and_preferences (FMListView *list_view)
 {
 	GList *column_order;
+	GList *visible_columns;
 
 	column_order = get_column_order (list_view);
-	apply_column_order (list_view, column_order);
+	visible_columns = get_visible_columns (list_view);
+
+	apply_columns_settings (list_view, column_order, visible_columns);
+
 	eel_g_list_free_deep (column_order);
+	eel_g_list_free_deep (visible_columns);
 }
 
 static void
@@ -1510,8 +1506,7 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 
 	set_sort_order_from_metadata_and_preferences (list_view);
 	set_zoom_level_from_metadata_and_preferences (list_view);
-	set_visible_columns_from_metadata_and_preferences (list_view);
-	set_column_order_from_metadata_and_preferences (list_view);
+	set_columns_settings_from_metadata_and_preferences (list_view);
 }
 
 static void
@@ -1868,8 +1863,7 @@ column_chooser_changed_callback (NautilusColumnChooser *chooser,
 	eel_g_list_free_deep (visible_columns);
 	eel_g_list_free_deep (column_order);
 
-	set_visible_columns_from_metadata_and_preferences (view);
-	set_column_order_from_metadata_and_preferences (view);
+	set_columns_settings_from_metadata_and_preferences (view);
 }
 
 static void
@@ -1908,8 +1902,7 @@ column_chooser_use_default_callback (NautilusColumnChooser *chooser,
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER, NAUTILUS_METADATA_SUBKEY_COLUMNS, NULL);
 	nautilus_file_set_metadata_list (file, NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS, NAUTILUS_METADATA_SUBKEY_COLUMNS, NULL);
 
-	set_visible_columns_from_metadata_and_preferences (FM_LIST_VIEW (view));
-	set_column_order_from_metadata_and_preferences (FM_LIST_VIEW (view));
+	set_columns_settings_from_metadata_and_preferences (FM_LIST_VIEW (view));
 	column_chooser_set_from_settings (chooser, view);
 }
 
@@ -2057,8 +2050,7 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 
 	fm_list_view_set_zoom_level (FM_LIST_VIEW (view), get_default_zoom_level (), FALSE);
-	set_visible_columns_from_metadata_and_preferences (FM_LIST_VIEW (view));
-	set_column_order_from_metadata_and_preferences (FM_LIST_VIEW (view));
+	set_columns_settings_from_metadata_and_preferences (FM_LIST_VIEW (view));
 }
 
 static void
@@ -2365,8 +2357,8 @@ default_visible_columns_changed_callback (gpointer callback_data)
 	FMListView *list_view;
 	
 	list_view = FM_LIST_VIEW (callback_data);
-	
-	set_visible_columns_from_metadata_and_preferences (list_view);
+
+	set_columns_settings_from_metadata_and_preferences (list_view);	
 }
 
 static void
@@ -2375,8 +2367,8 @@ default_column_order_changed_callback (gpointer callback_data)
 	FMListView *list_view;
 	
 	list_view = FM_LIST_VIEW (callback_data);
-	
-	set_column_order_from_metadata_and_preferences (list_view);
+
+	set_columns_settings_from_metadata_and_preferences (list_view);
 }
 
 static void
