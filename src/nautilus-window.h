@@ -67,7 +67,7 @@ typedef struct {
         void   (* add_current_location_to_history_list) (NautilusWindow *window);
 
         char * (* get_title) (NautilusWindow *window);
-        void   (* set_title) (NautilusWindow *window, const char *title);
+        gboolean (* set_title) (NautilusWindow *window, const char *title);
         char * (* get_icon_name) (NautilusWindow *window);
 
         void   (* load_view_as_menu) (NautilusWindow *window);

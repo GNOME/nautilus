@@ -810,21 +810,26 @@ real_load_view_as_menu (NautilusWindow *window)
 	load_view_as_menu (window);
 }
 
-static void
+static gboolean
 real_set_title (NautilusWindow *window, const char *title)
 {
 	char *full_title;
 	char *window_title;
-	
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 set_title, (window, title));
-	
-	full_title = g_strdup_printf (_("%s - File Browser"), title);
+	gboolean changed;
 
-	window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
-	gtk_window_set_title (GTK_WINDOW (window), window_title);
-	g_free (window_title);
-	g_free (full_title);
+	changed = EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(NAUTILUS_WINDOW_CLASS, set_title, (window, title));
+
+	if (changed) {
+		full_title = g_strdup_printf (_("%s - File Browser"), title);
+
+		window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
+		gtk_window_set_title (GTK_WINDOW (window), window_title);
+		g_free (window_title);
+		g_free (full_title);
+	}
+
+	return changed;
 }
 
 static char *

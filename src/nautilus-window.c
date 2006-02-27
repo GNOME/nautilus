@@ -1095,25 +1095,38 @@ nautilus_window_get_title (NautilusWindow *window)
 						  get_title, (window));
 }
 
-static void
+static gboolean
 real_set_title (NautilusWindow *window,
 		const char *title)
 {
+	gboolean changed;
 	char *copy;
 
-	g_free (window->details->title);
-        window->details->title = g_strdup (title);
+	changed = FALSE;
+
+	if (eel_strcmp (title, window->details->title) != 0) {
+		changed = TRUE;
+
+		g_free (window->details->title);
+		window->details->title = g_strdup (title);
+	}
 
         if (eel_strlen (window->details->title) > 0 && window->current_location_bookmark &&
             nautilus_bookmark_set_name (window->current_location_bookmark, window->details->title)) {
+		changed = TRUE;
+
                 /* Name of item in history list changed, tell listeners. */
                 nautilus_send_history_list_changed ();
         }
 
-	copy = g_strdup (window->details->title);
-	g_signal_emit_by_name (window, "title_changed",
-			       copy);
-	g_free (copy);
+	if (changed) {
+		copy = g_strdup (window->details->title);
+		g_signal_emit_by_name (window, "title_changed",
+				       copy);
+		g_free (copy);
+	}
+
+	return changed;
 }
 
 /* Sets window->details->title, and the actual GtkWindow title which
@@ -1123,11 +1136,6 @@ nautilus_window_set_title (NautilusWindow *window,
 			   const char *title)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	if (window->details->title != NULL
-	    && strcmp (title, window->details->title) == 0) {
-		return;
-	}
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          set_title, (window, title));

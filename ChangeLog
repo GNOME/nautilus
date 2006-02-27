@@ -1,3 +1,12 @@
+2006-02-27  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window.[ch]:
+	Don't shortcut the title change when the bookmark name changes.
+	Fixes #331383
+	Patch from Christian Neumair.
+
 2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
 
 	Get users' and groups' names via a cache to avoid calling

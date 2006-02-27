@@ -394,22 +394,25 @@ real_get_icon_name (NautilusWindow *window)
 	return nautilus_icon_factory_get_icon_for_file (window->details->viewed_file, FALSE);
 }
 
-static void
+static gboolean
 real_set_title (NautilusWindow *window, const char *title)
 {
+	gboolean changed;
 
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 set_title, (window, title));
-	
-	if (title[0] == '\0') {
+	changed = EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(NAUTILUS_WINDOW_CLASS, set_title, (window, title));
+
+	if (changed && title[0] == '\0') {
 		gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
-	} else {
+	} else if (changed) {
 		char *window_title;
 
 		window_title = eel_str_middle_truncate (title, MAX_TITLE_LENGTH);
 		gtk_window_set_title (GTK_WINDOW (window), window_title);
 		g_free (window_title);
 	}
+
+	return changed;
 }
 
 static void
