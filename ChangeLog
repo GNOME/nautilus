@@ -1,3 +1,10 @@
+2006-02-27  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c (create_label_layout):
+	Allow line-breaks after '-', '_', '.'
+	(although not when a short number follows '.')
+	Patch from Christian Neumair
+
 2006-02-27  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-places-sidebar.c: (can_accept_file_as_bookmark),

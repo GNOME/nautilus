@@ -1588,6 +1588,13 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, FALSE, icon_rect);
 }
 
+#define ZERO_WIDTH_SPACE "\xE2\x80\x8B"
+
+#define ZERO_OR_THREE_DIGITS(p) \
+	(!g_ascii_isdigit (*p) || \
+	 (g_ascii_isdigit (*(p+1)) && \
+	  g_ascii_isdigit (*(p+2))))
+
 static PangoLayout *
 create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
@@ -1597,6 +1604,9 @@ create_label_layout (NautilusIconCanvasItem *item,
 	PangoFontDescription *desc;
 	NautilusIconContainer *container;
 	EelCanvasItem *canvas_item;
+	GString *str;
+	char *zeroified_text;
+	const char *p;
 
 	canvas_item = EEL_CANVAS_ITEM (item);
 
@@ -1604,7 +1614,27 @@ create_label_layout (NautilusIconCanvasItem *item,
 	context = gtk_widget_get_pango_context (GTK_WIDGET (canvas_item->canvas));
 	layout = pango_layout_new (context);
 
-	pango_layout_set_text (layout, text, -1);
+	zeroified_text = NULL;
+
+	if (text != NULL) {
+		str = g_string_new (NULL);
+
+		for (p = text; *p != '\0'; p++) {
+			str = g_string_append_c (str, *p);
+
+			if (*p == '_' || *p == '-' || (*p == '.' && ZERO_OR_THREE_DIGITS (p+1))) {
+				/* Ensure that we allow to break after '_' or '.' characters,
+				 * if they are not likely to be part of a version information, to
+				 * not break wrapping of foobar-0.0.1.
+				 * Wrap before IPs and long numbers, though. */
+				str = g_string_append (str, ZERO_WIDTH_SPACE);
+			}
+		}
+
+		zeroified_text = g_string_free (str, FALSE);
+	}
+
+	pango_layout_set_text (layout, zeroified_text, -1);
 	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
 			
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
@@ -1627,6 +1657,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 	}
 	pango_layout_set_font_description (layout, desc);
 	pango_font_description_free (desc);
+	g_free (zeroified_text);
 	
 	return layout;
 }
