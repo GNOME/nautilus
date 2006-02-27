@@ -316,13 +316,13 @@ get_drop_path (NautilusTreeViewDragDest *dest,
 	/* Go up the tree until we find a file that can accept a drop */
 	while (file == NULL /* dummy row */ ||
 	       !nautilus_drag_can_accept_items (file, dest->details->drag_list)) {
-		if (gtk_tree_path_get_depth (path) == 1) {
+		if (gtk_tree_path_get_depth (ret) == 1) {
 			gtk_tree_path_free (ret);
 			ret = NULL;
 			break;
 		} else {
 			gtk_tree_path_up (ret);
-			
+
 			nautilus_file_unref (file);
 			file = file_for_path (dest, ret);
 		}

@@ -1,3 +1,11 @@
+2006-02-27  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(get_drop_path):
+	Test for the right path in the break condition. Fixes an infinite
+	loop when dragging an item over a non-folder child of an expanded 
+	node in the list view, deadlocking the desktop.
+
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
