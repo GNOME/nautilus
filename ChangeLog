@@ -1,5 +1,25 @@
 2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
 
+	Get users' and groups' names via a cache to avoid calling
+	getpwuid/getgrgid too often (i.e. many times during single redraw).
+
+	* libnautilus-private/Makefile.am: (libnautilus_private_la_SOURCES):
+	Added nautilus-users-groups-cache.[ch]
+	* libnautilus-private/nautilus-users-groups-cache.[ch]: New,
+	implementation of cache for getpwuid/getgrgid results.
+	* libnautilus-private/nautilus-file.c:
+	(get_user_name_from_id): removed
+	(get_real_name): accept "name + gecos" pair instead of "struct passwd".
+	(get_user_and_real_name_from_id): get user name and gecos using
+	nautilus_users_cache_* functions instead of using getpwuid directly.
+	(nautilus_get_user_names): adjusted to changed signature of get_real_name.
+	(nautilus_file_get_group_name): get group name using
+	nautilus_groups_cache_get_name instead of using getgrgid directly.
+	(nautilus_file_get_owner_as_string): get user name using
+	nautilus_users_cache_get_name.
+
+2006-02-26  Zbigniew Chyla  <mail@zbigniew.chyla.pl>
+
 	Don't add all possible columns to GtkTreeView when initializing
 	FMListView, only the ones we actually show. This way we avoid getting
 	unnecessary data from the model, e.g. quite heavy "owner" and "group"

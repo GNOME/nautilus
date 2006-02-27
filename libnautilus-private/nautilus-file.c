@@ -45,6 +45,7 @@
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
+#include "nautilus-users-groups-cache.h"
 #include "nautilus-vfs-file.h"
 #include "nautilus-saved-search-file.h"
 #include <eel/eel-debug.h>
@@ -3537,30 +3538,15 @@ nautilus_file_set_permissions (NautilusFile *file,
 }
 
 static char *
-get_user_name_from_id (uid_t uid)
-{
-	struct passwd *password_info;
-	
-	/* No need to free result of getpwuid */
-	password_info = getpwuid (uid);
-
-	if (password_info == NULL) {
-		return NULL;
-	}
-	
-	return g_strdup (password_info->pw_name);
-}
-
-static char *
-get_real_name (struct passwd *user)
+get_real_name (const char *name, const char *gecos)
 {
 	char *locale_string, *part_before_comma, *capitalized_login_name, *real_name;
 
-	if (user->pw_gecos == NULL) {
+	if (gecos == NULL) {
 		return NULL;
 	}
 
-	locale_string = eel_str_strip_substring_and_after (user->pw_gecos, ",");
+	locale_string = eel_str_strip_substring_and_after (gecos, ",");
 	if (!g_utf8_validate (locale_string, -1, NULL)) {
 		part_before_comma = g_locale_to_utf8 (locale_string, -1, NULL, NULL, NULL);
 		g_free (locale_string);
@@ -3568,10 +3554,10 @@ get_real_name (struct passwd *user)
 		part_before_comma = locale_string;
 	}
 
-	if (!g_utf8_validate (user->pw_name, -1, NULL)) {
-		locale_string = g_locale_to_utf8 (user->pw_name, -1, NULL, NULL, NULL);
+	if (!g_utf8_validate (name, -1, NULL)) {
+		locale_string = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
 	} else {
-		locale_string = g_strdup (user->pw_name);
+		locale_string = g_strdup (name);
 	}
 	
 	capitalized_login_name = eel_str_capitalize (locale_string);
@@ -3587,7 +3573,7 @@ get_real_name (struct passwd *user)
 
 
 	if (eel_str_is_empty (real_name)
-	    || eel_strcmp (user->pw_name, real_name) == 0
+	    || eel_strcmp (name, real_name) == 0
 	    || eel_strcmp (capitalized_login_name, real_name) == 0) {
 		g_free (real_name);
 		real_name = NULL;
@@ -3601,24 +3587,22 @@ get_real_name (struct passwd *user)
 static char *
 get_user_and_real_name_from_id (uid_t uid)
 {
+	char *name, *gecos;
 	char *real_name, *user_and_real_name;
-	struct passwd *password_info;
 	
-	/* No need to free result of getpwuid */
-	password_info = getpwuid (uid);
+	name = nautilus_users_cache_get_name (uid);
+	gecos = nautilus_users_cache_get_gecos (uid);
 
-	if (password_info == NULL) {
-		return NULL;
-	}
-
-	real_name = get_real_name (password_info);
+	real_name = get_real_name (name, gecos);
 	if (real_name != NULL) {
-		user_and_real_name = g_strdup_printf
-			("%s - %s", password_info->pw_name, real_name);
+		user_and_real_name = g_strdup_printf ("%s - %s", name, real_name);
 	} else {
-		user_and_real_name = g_strdup (password_info->pw_name);
+		user_and_real_name = g_strdup (name);
 	}
 	g_free (real_name);
+
+	g_free (name);
+	g_free (gecos);
 
 	return user_and_real_name;
 }
@@ -3893,7 +3877,7 @@ nautilus_get_user_names (void)
 	setpwent ();
 
 	while ((user = getpwent ()) != NULL) {
-		real_name = get_real_name (user);
+		real_name = get_real_name (user->pw_name, user->pw_gecos);
 		if (real_name != NULL) {
 			name = g_strconcat (user->pw_name, "\n", real_name, NULL);
 		} else {
@@ -3939,24 +3923,22 @@ nautilus_file_can_get_group (NautilusFile *file)
 char *
 nautilus_file_get_group_name (NautilusFile *file)
 {
-	struct group *group_info;
+	char *group_name;
 
 	/* Before we have info on a file, the owner is unknown. */
 	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_IDS)) {
 		return NULL;
 	}
 
-	/* No need to free result of getgrgid */
-	group_info = getgrgid ((gid_t) file->details->info->gid);
-
-	if (group_info != NULL) {
-		return g_strdup (group_info->gr_name);
+	group_name = nautilus_groups_cache_get_name ((gid_t) file->details->info->gid);
+	if (group_name == NULL) {
+		/* In the oddball case that the group name has been set to an id for which
+		 * there is no defined group, return the id in string form.
+		 */
+		group_name = g_strdup_printf ("%d", file->details->info->gid);
 	}
-	
-	/* In the oddball case that the group name has been set to an id for which
-	 * there is no defined group, return the id in string form.
-	 */
-	return g_strdup_printf ("%d", file->details->info->gid);
+
+	return group_name;
 }
 
 /**
@@ -4252,17 +4234,17 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	if (include_real_name) {
 		user_name = get_user_and_real_name_from_id (file->details->info->uid);
 	} else {
-		user_name = get_user_name_from_id (file->details->info->uid);
+		user_name = nautilus_users_cache_get_name (file->details->info->uid);
 	}
 
-	if (user_name != NULL) {
-		return user_name;
+	if (user_name == NULL) {
+		/* In the oddball case that the user name has been set to an id for which
+		 * there is no defined user, return the id in string form.
+		 */
+		user_name = g_strdup_printf ("%d", file->details->info->uid);
 	}
 
-	/* In the oddball case that the user name has been set to an id for which
-	 * there is no defined user, return the id in string form.
-	 */
-	return g_strdup_printf ("%d", file->details->info->uid);
+	return user_name;
 }
 
 static char *
