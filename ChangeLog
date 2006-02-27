@@ -1,3 +1,11 @@
+2006-02-27  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (can_accept_file_as_bookmark),
+	(can_accept_items_as_bookmarks), (drag_motion_callback),
+	(bookmarks_drop_uris), (build_selection_list),
+	(drag_data_received_callback):
+	Only allow creation of bookmarks for directories. Fixes #328074.
+
 2006-02-26  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-directory.c:

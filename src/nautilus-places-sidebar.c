@@ -497,6 +497,35 @@ free_drag_data (NautilusPlacesSidebar *sidebar)
 }
 
 static gboolean
+can_accept_file_as_bookmark (NautilusFile *file)
+{
+	return nautilus_file_is_directory (file);
+}
+
+static gboolean
+can_accept_items_as_bookmarks (const GList *items)
+{
+	int max;
+	char *uri;
+	NautilusFile *file;
+
+	/* Iterate through selection checking if item will get accepted as a bookmark.
+	 * If more than 100 items selected, return an over-optimistic result.
+	 */
+	for (max = 100; items != NULL && max >= 0; items = items->next, max--) {
+		uri = ((NautilusDragSelectionItem *)items->data)->uri;
+		file = nautilus_file_get (uri);
+		if (!can_accept_file_as_bookmark (file)) {
+			nautilus_file_unref (file);
+			return FALSE;
+		}
+		nautilus_file_unref (file);
+	}
+	
+	return TRUE;
+}
+
+static gboolean
 drag_motion_callback (GtkTreeView *tree_view,
 		      GdkDragContext *context,
 		      int x,
@@ -520,9 +549,12 @@ drag_motion_callback (GtkTreeView *tree_view,
 	if (pos == GTK_TREE_VIEW_DROP_BEFORE ||
 	    pos == GTK_TREE_VIEW_DROP_AFTER ||
 	    sidebar->drag_list == NULL) {
-		action = GDK_ACTION_COPY;
-	}
-	else {
+		if (can_accept_items_as_bookmarks (sidebar->drag_list)) {
+			action = GDK_ACTION_COPY;
+		} else {
+			action = 0;
+		}
+	} else {
 		model = gtk_tree_view_get_model (tree_view);
 		gtk_tree_model_get_iter (model, &iter, path);
 		gtk_tree_model_get (model, &iter,
@@ -538,13 +570,9 @@ drag_motion_callback (GtkTreeView *tree_view,
 	gtk_tree_path_free (path);
 	g_signal_stop_emission_by_name (tree_view, "drag-motion");
 
-	if (action != 0) {
-		gdk_drag_status (context, action, time);
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
+	gdk_drag_status (context, action, time);
+
+	return TRUE;
 }
 
 static void
@@ -575,10 +603,14 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 	for (i = 0; uris[i]; i++) {
 		uri = uris[i];
 		file = nautilus_file_get (uri);
+
+		if (!can_accept_file_as_bookmark (file)) {
+			nautilus_file_unref (file);
+			continue;
+		}
+
 		uri = nautilus_file_get_drop_target_uri (file);
 		nautilus_file_unref (file);
-
-		/* FIXME: Shouldn't be possible to add bookmarks to files */
 
 		name = nautilus_compute_title_for_uri (uri);
 		name_truncated = eel_truncate_text_for_menu_item (name);	
@@ -615,6 +647,31 @@ uri_list_from_selection (GList *selection)
 	return g_list_reverse (ret);
 }
 
+static GList*
+build_selection_list (const char *data)
+{
+	NautilusDragSelectionItem *item;
+	GList *result;
+	char **uris;
+	char *uri;
+	int i;
+
+	uris = g_uri_list_extract_uris (data);
+
+	result = NULL;
+	for (i = 0; uris[i]; i++) {
+		uri = uris[i];
+		item = nautilus_drag_selection_item_new ();
+		item->uri = g_strdup (uri);
+		item->got_icon_position = FALSE;
+		result = g_list_prepend (result, item);
+	}
+
+	g_strfreev (uris);
+
+	return g_list_reverse (result);
+}
+
 static void
 drag_data_received_callback (GtkWidget *widget,
 			     GdkDragContext *context,
@@ -640,7 +697,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 	if (!sidebar->drag_data_received) {
 		if (selection_data->target != GDK_NONE) {
-			sidebar->drag_list = nautilus_drag_build_selection_list (selection_data);
+			sidebar->drag_list = build_selection_list (selection_data->data);
 		} else {
 			sidebar->drag_list = NULL;
 		}
@@ -698,7 +755,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 			switch (info) {
 			case NAUTILUS_ICON_DND_URI_LIST:
-				selection_list = nautilus_drag_build_selection_list (selection_data);
+				selection_list = build_selection_list (selection_data->data);
 				uris = uri_list_from_selection (selection_list);
 				nautilus_file_operations_copy_move (uris, NULL, drop_uri,
 								    context->action, GTK_WIDGET (tree_view),
