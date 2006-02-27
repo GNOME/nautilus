@@ -95,10 +95,6 @@
  */
 #include "nautilus-desktop-window.h"
 
-/* FIXME bugzilla.gnome.org 41245: hardwired sizes */
-#define SIDE_PANE_MINIMUM_WIDTH 1
-#define SIDE_PANE_MINIMUM_HEIGHT 400
-
 #define MAX_TITLE_LENGTH 180
 
 #define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/MenuBar/Other Menus/Bookmarks/Bookmarks Placeholder"
@@ -115,7 +111,7 @@ enum {
 	ARG_APP
 };
 
-static int side_pane_width_auto_value = SIDE_PANE_MINIMUM_WIDTH;
+static int side_pane_width_auto_value = 0;
 
 static void add_sidebar_panels                       (NautilusNavigationWindow *window);
 static void load_view_as_menu                        (NautilusWindow           *window);
@@ -434,7 +430,7 @@ side_pane_size_allocate_callback (GtkWidget *widget,
 		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH)) {
 			eel_preferences_set_integer
 				(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 
-				 allocation->width);
+				 allocation->width <= 1 ? 0 : allocation->width);
 		}
 	}
 }
