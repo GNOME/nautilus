@@ -2234,6 +2234,32 @@ compare_icons_by_uri (NautilusIconContainer *container,
 }
 
 static int
+get_cmp_point_x (NautilusIconContainer *container,
+		 ArtDRect icon_rect)
+{
+	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL) {
+			return icon_rect.x0;
+		} else {
+			return icon_rect.x1;
+		}
+	} else {
+		return (icon_rect.x0 + icon_rect.x1) / 2;
+	}
+}
+
+static int
+get_cmp_point_y (NautilusIconContainer *container,
+		 ArtDRect icon_rect)
+{
+	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		return (icon_rect.y0 + icon_rect.y1)/2;
+	} else {
+		return icon_rect.y1;
+	}
+}
+
+static int
 compare_icons_horizontal_first (NautilusIconContainer *container,
 				NautilusIcon *icon_a,
 				NautilusIcon *icon_b)
@@ -2244,15 +2270,15 @@ compare_icons_horizontal_first (NautilusIconContainer *container,
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &ax,
 		 &ay);
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &bx,
 		 &by);
 	
@@ -2282,15 +2308,15 @@ compare_icons_vertical_first (NautilusIconContainer *container,
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &ax,
 		 &ay);
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &bx,
 		 &by);
 	
@@ -2510,8 +2536,8 @@ closest_in_90_degrees (NautilusIconContainer *container,
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (candidate->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &x,
 		 &y);
 
@@ -2678,8 +2704,8 @@ record_arrow_key_start (NautilusIconContainer *container,
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
-		 (world_rect.x0 + world_rect.x1) / 2,
-		 world_rect.y1,
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
 		 &container->details->arrow_key_start_x,
 		 &container->details->arrow_key_start_y);
 	
