@@ -1,3 +1,9 @@
+2006-02-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_should_show_directory_item_count):
+	Don't show directory count for smb shares, as that can cause
+	lots of network traffic and auth dialogs.
+
 2007-02-28  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-icon-container.c:

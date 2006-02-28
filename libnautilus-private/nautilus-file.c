@@ -3170,7 +3170,12 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 	static gboolean show_directory_item_count_callback_added = FALSE;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
+	
+	if (file->details->guessed_mime_type &&
+	    strcmp (file->details->guessed_mime_type, "x-directory/smb-share") == 0) {
+		return FALSE;
+	}
+	
 	/* Add the callback once for the life of our process */
 	if (!show_directory_item_count_callback_added) {
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
