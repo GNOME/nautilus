@@ -8114,14 +8114,6 @@ activate_callback (GList *files, gpointer callback_data)
 			(open_in_app_files, &unhandled_open_in_app_files);
 	}
 
-	if (open_in_app_parameters != NULL ||
-	    unhandled_open_in_app_files != NULL) {
-		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0 &&
-		     nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_SPATIAL) {
-			nautilus_window_info_close (view->details->window);
-		}
-	}
-
 	for (l = open_in_app_parameters; l != NULL; l = l->next) {
 		one_parameters = l->data;
 
@@ -8144,6 +8136,14 @@ activate_callback (GList *files, gpointer callback_data)
 			uri = nautilus_file_get_uri (file);
 			egg_recent_model_add (nautilus_recent_get_model (), uri);
 			g_free (uri);
+		}
+	}
+
+	if (open_in_app_parameters != NULL ||
+	    unhandled_open_in_app_files != NULL) {
+		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0 &&
+		     nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_SPATIAL) {
+			nautilus_window_info_close (view->details->window);
 		}
 	}
 

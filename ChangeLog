@@ -1,3 +1,9 @@
+2006-02-28  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	Close the window after the file activation, not before.
+	Fixes a crash when middle-clicking a file (#330491).
+
 2006-02-28  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_should_show_directory_item_count):
