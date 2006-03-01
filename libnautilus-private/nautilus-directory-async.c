@@ -437,6 +437,17 @@ file_info_cancel (NautilusDirectory *directory)
 	}
 }
 
+static void
+new_files_cancel (NautilusDirectory *directory)
+{
+	if (directory->details->get_file_infos_in_progress != NULL) {
+		g_list_foreach (directory->details->get_file_infos_in_progress,
+				(GFunc)gnome_vfs_async_cancel, NULL);
+		g_list_free (directory->details->get_file_infos_in_progress);
+		directory->details->get_file_infos_in_progress = NULL;
+	}
+}
+
 static int
 monitor_key_compare (gconstpointer a,
 		     gconstpointer data)
@@ -3282,6 +3293,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	file_list_cancel (directory);
 	link_info_cancel (directory);
 	mime_list_cancel (directory);
+	new_files_cancel (directory);
 	top_left_cancel (directory);
 	extension_info_cancel (directory);
 

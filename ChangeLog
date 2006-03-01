@@ -1,3 +1,10 @@
+2006-03-01  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(new_files_cancel), (nautilus_directory_cancel):
+	Cancel get_file_info calls for new files too. Fixes a crash
+	when leaving a directory with pending calls (#152977).
+
 2006-02-28  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c: (activate_callback):
