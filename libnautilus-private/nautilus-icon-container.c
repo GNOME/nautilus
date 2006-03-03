@@ -1015,9 +1015,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			max_icon_width = MAX (max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
 
 			text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
-			max_text_width = MAX (max_text_width, ceil (text_bounds.x1 - text_bounds.x0 < 0
-								    ? MAX_TEXT_WIDTH_BESIDE
-								    : text_bounds.x1 - text_bounds.x0));
+			max_text_width = MAX (max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
 		}
 
 		grid_width = max_icon_width + max_text_width + ICON_PAD_LEFT + ICON_PAD_RIGHT;

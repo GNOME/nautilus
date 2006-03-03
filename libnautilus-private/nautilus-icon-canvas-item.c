@@ -2043,7 +2043,7 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 }
 
 ArtDRect
-nautilus_icon_canvas_item_get_text_rectangle (const NautilusIconCanvasItem *item)
+nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item)
 {
 	/* FIXME */
 	ArtIRect icon_rectangle;
@@ -2063,6 +2063,7 @@ nautilus_icon_canvas_item_get_text_rectangle (const NautilusIconCanvasItem *item
 	icon_rectangle.x1 = icon_rectangle.x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf)) / pixels_per_unit;
 	icon_rectangle.y1 = icon_rectangle.y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf)) / pixels_per_unit;
 
+	measure_label_text (item);
 	text_rectangle = compute_text_rectangle (item, icon_rectangle, FALSE);
  
 	ret.x0 = text_rectangle.x0;

@@ -1,3 +1,14 @@
+2006-03-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.[ch]:
+	measure text in nautilus_icon_canvas_item_get_text_rectangle to avoid
+	icons jumping around
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	remove old workaround
+
+	Patch from Christian Neumair
+
 2006-03-02  Stanislav Brabec  <sbrabec@suse.cz>
 
 	* configure.in: Add "km" to ALL_LINGUAS.

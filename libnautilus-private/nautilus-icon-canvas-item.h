@@ -88,7 +88,7 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 								GtkCornerType *corner);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
-ArtDRect    nautilus_icon_canvas_item_get_text_rectangle       (const NautilusIconCanvasItem *item);
+ArtDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item,
 								double i2w_dx, double i2w_dy);
 
