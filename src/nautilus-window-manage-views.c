@@ -296,6 +296,7 @@ viewed_file_changed_callback (NautilusFile *file,
                               NautilusWindow *window)
 {
         char *new_location;
+	gboolean is_in_trash, was_in_trash;
 
         g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_WINDOW (window));
@@ -305,8 +306,12 @@ viewed_file_changed_callback (NautilusFile *file,
                 window->details->viewed_file_seen = TRUE;
         }
 
-	/* Close window if the file it's viewing has been deleted. */
-	if (nautilus_file_is_gone (file)) {
+	was_in_trash = window->details->viewed_file_in_trash;
+
+	window->details->viewed_file_in_trash = is_in_trash = nautilus_file_is_in_trash (file);
+
+	/* Close window if the file it's viewing has been deleted or moved to trash. */
+	if (nautilus_file_is_gone (file) || (is_in_trash && !was_in_trash)) {
                 /* Don't close the window in the case where the
                  * file was never seen in the first place.
                  */
@@ -1196,6 +1201,7 @@ update_for_new_location (NautilusWindow *window)
         file = nautilus_file_get (window->details->location);
         nautilus_window_set_viewed_file (window, file);
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
+        window->details->viewed_file_in_trash = nautilus_file_is_in_trash (file);
         nautilus_file_monitor_add (file, &window->details->viewed_file, 0);
         g_signal_connect_object (file, "changed",
                                  G_CALLBACK (viewed_file_changed_callback), window, 0);

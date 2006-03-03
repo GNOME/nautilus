@@ -72,6 +72,7 @@ struct NautilusWindowDetails
 	char *title;
 	NautilusFile *viewed_file;
         gboolean viewed_file_seen;
+	gboolean viewed_file_in_trash;
 	gboolean allow_stop;
 
         /* New location. */
