@@ -100,8 +100,7 @@ nautilus_mime_actions_check_if_open_with_attributes_ready (NautilusFile *file)
 NautilusFileAttributes 
 nautilus_mime_actions_get_full_file_attributes (void)
 {
-	return nautilus_mime_actions_get_minimum_file_attributes () |
-		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
+	return nautilus_mime_actions_get_minimum_file_attributes ();
 }
 
 GnomeVFSMimeApplication *

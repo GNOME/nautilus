@@ -1,5 +1,15 @@
 2006-03-05  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_actions_get_full_file_attributes):
+	Don't request the mime list for activation, context menu and
+	the view as menu anymore. It was once used for determining a
+	specialized component for directories, but we don't support that
+	anymore. Nowadays it just delays these operations and can cause
+	auth dialogs when opening the popup menu. 
+
+2006-03-05  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file.c:
 	(nautilus_file_recompute_deep_counts):
 	Add file to work queue of enclosing directory when recomputing
