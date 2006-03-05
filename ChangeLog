@@ -1,3 +1,12 @@
+2006-03-05  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_recompute_deep_counts):
+	Add file to work queue of enclosing directory when recomputing
+	deep count for the properties dialog. Fixes #169342.
+	 
+	Patch from Christian Neumair
+
 2006-03-03  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-manage-views.c:
