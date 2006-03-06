@@ -925,6 +925,23 @@ draw_frame (NautilusIconCanvasItem *item,
   #define PERFORMANCE_TEST_MEASURE_DISABLE
 */
 
+/* This gets the size of the layout from the position of the layout.
+ * This means that if the layout is right aligned we get the full width
+ * of the layout, not just the width of the text snippet on the right side
+ */
+static void
+layout_get_full_size (PangoLayout *layout,
+		      int         *width,
+		      int         *height)
+{
+	PangoRectangle logical_rect;
+	
+	pango_layout_get_extents (layout, NULL, &logical_rect);
+	*width = (logical_rect.x + logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
+	*height = (logical_rect.y + logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
+}
+
+
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    GdkDrawable *drawable,
@@ -1003,18 +1020,12 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (have_editable) {
 		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
-		
-		pango_layout_get_pixel_size (editable_layout, 
-					     &editable_width,
-					     &editable_height);
+		layout_get_full_size (editable_layout, &editable_width, &editable_height);
 	}
 
 	if (have_additional) {
 		additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
-
-		pango_layout_get_pixel_size (additional_layout, 
-					     &additional_width,
-					     &additional_height);
+		layout_get_full_size (additional_layout, &additional_width, &additional_height);
 	}
 
 	details->text_width = MAX (editable_width, additional_width);
@@ -1613,7 +1624,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 	container = NAUTILUS_ICON_CONTAINER (canvas_item->canvas);
 	context = gtk_widget_get_pango_context (GTK_WIDGET (canvas_item->canvas));
 	layout = pango_layout_new (context);
-
+	
 	zeroified_text = NULL;
 
 	if (text != NULL) {
@@ -1637,8 +1648,14 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_text (layout, zeroified_text, -1);
 	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
 			
+	pango_layout_set_auto_dir (layout, FALSE);
+	
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
+		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_LTR) {
+			pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
+		} else {
+			pango_layout_set_alignment (layout, PANGO_ALIGN_RIGHT);
+		}
 	} else {
 		pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 	}
