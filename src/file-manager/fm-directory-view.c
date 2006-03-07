@@ -6149,6 +6149,11 @@ drive_mounted_callback (gboolean succeeded,
 			gpointer data)
 {
 	if (!succeeded) {
+		if (*error == 0 &&
+		    detailed_error != NULL && *detailed_error == 0) {
+			/* This means the mount command displays its own errors */
+			return;
+		}
 		eel_show_error_dialog_with_details (error, NULL,
 						    detailed_error, NULL);
 	}
@@ -8175,9 +8180,14 @@ activation_drive_mounted_callback (gboolean succeeded,
 	parameters->mount_success &= succeeded;
 
 	if (!succeeded && !parameters->cancelled) {
-		eel_show_error_dialog_with_details (error, NULL,
-						    detailed_error, 
-						    NULL);
+		if (*error == 0 &&
+		    detailed_error != NULL && *detailed_error == 0) {
+			/* This means the mount command displays its own errors */
+		}  else {
+			eel_show_error_dialog_with_details (error, NULL,
+							    detailed_error, 
+							    NULL);
+		}
 	}
 
 	if (--parameters->pending_mounts > 0) {
