@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nautilus 2.13.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-11 17:41+0100\n"
-"PO-Revision-Date: 2006-02-11 11:32+0100\n"
+"PO-Revision-Date: 2006-03-08 16:50+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -313,12 +313,7 @@ msgid ""
 "are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
-msgstr ""
-"Una lista di didascalie sotto un'icona nella vista a icone e sul dekstop. Il "
-"numero di didascalie mostrate nella realtà dipende dal livello di "
-"ingrandimento. Valori possibili sono: \"size\", \"date_modified\", "
-"\"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", "
-"\"octal_permissions\" e \"mime_type\"."
+msgstr "Una lista di didascalie sotto un'icona nella vista a icone e sulla scrivania. Il numero di didascalie mostrate nella realtà dipende dal livello di ingrandimento. Valori possibili sono: \"size\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" e \"mime_type\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
@@ -565,9 +560,7 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Se impostata a vero, allora Nautilus usa la cartelle home dell'utente come "
-"desktop. Se non attivato, allora viene utilizzata ~/Desktop come desktop."
+msgstr "Se impostata a vero, allora Nautilus usa la cartelle home dell'utente come scrivania. Se non attivato, allora viene utilizzata ~/Desktop come scrivania."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -618,9 +611,7 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr ""
-"Se impostata a vero, è presente sulla scrivania un'icona che rimanda alla "
-"cartella home."
+msgstr "Se impostata a vero, è presente sulla scrivania un'icona che rimanda alla cartella home."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
@@ -713,11 +704,11 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Nautilus handles drawing the desktop"
-msgstr "Tracciamento del desktop gestito da Nautilus"
+msgstr "Tracciamento della scrivania gestito da Nautilus"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "Usare la cartella home dell'utente in Nautilus come desktop"
+msgstr "Usare la cartella home dell'utente in Nautilus come scrivania"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Network Servers icon visible on the desktop"
@@ -886,17 +877,13 @@ msgstr ""
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
-msgstr ""
-"Impostare questo nome se si vuole un nome personalizzato per l'icona sul "
-"desktop che rimanda alla home."
+msgstr "Impostare questo nome se si vuole un nome personalizzato per l'icona sulla scrivania che rimanda alla home."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr ""
-"Impostare questo nome se si vuole un nome personalizzato per l'icona sul "
-"desktop che rimanda al cestino"
+msgstr "Impostare questo nome se si vuole un nome personalizzato per l'icona sulla scrivania che rimanda al cestino"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Trash icon visible on desktop"
@@ -2601,15 +2588,13 @@ msgstr "Crea una nuova icona di avvio"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:699
 msgid "Change Desktop _Background"
-msgstr "I_mposta sfondo desktop"
+msgstr "I_mposta sfondo scrivania"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:701
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Mostra una finestra che permette d'impostare il colore o il motivo per lo "
-"sfondo del desktop"
+msgstr "Mostra una finestra che permette d'impostare il colore o il motivo per lo sfondo della scrivania"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:706
@@ -2627,7 +2612,7 @@ msgstr "Elimina tutti gli oggetti nel cestino"
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
 #: ../src/nautilus-places-sidebar.c:187
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Scrivania"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:798
 msgid "View as Desktop"
@@ -4162,23 +4147,18 @@ msgstr ""
 
 #: ../src/nautilus-application.c:331
 msgid "Link To Old Desktop"
-msgstr "Collegamento al vecchio desktop"
+msgstr "Collegamento vecchia scrivania"
 
 #: ../src/nautilus-application.c:347
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr ""
-"Un collegamento di nome «Collegamento al vecchio desktop» è stato creato sul "
-"desktop."
+msgstr "Un collegamento di nome «Collegamento vecchia scrivania» è stato creato sulla scrivania."
 
 # :new
 #: ../src/nautilus-application.c:348
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
-msgstr ""
-"La posizione della directory del desktop è stata cambiata in GNOME 2.4. È "
-"possibile aprire il collegamento per recuperare i file voluti, quindi "
-"eliminare tale collegamento."
+msgstr "La posizione della directory della scrivania è stata cambiata in GNOME 2.4. È possibile aprire il collegamento per recuperare i file voluti, quindi eliminare tale collegamento."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -4946,9 +4926,7 @@ msgstr "Crea solo le finestre per gli URI esplicitamente specificati."
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
-"Non gestisce il desktop (ignorando le preferenze nella finestra di dialogo "
-"delle impostazioni)."
+msgstr "Non gestisce la scrivania (ignorando le preferenze nella finestra di dialogo delle impostazioni)."
 
 #: ../src/nautilus-main.c:278
 msgid "open a browser window."
