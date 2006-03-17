@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-06 07:21+0100\n"
-"PO-Revision-Date: 2006-03-06 11:07+0200\n"
+"PO-Revision-Date: 2006-03-17 10:05+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -460,25 +460,25 @@ msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"Kui valik on aktiivne, näitab Nautilus kõrvalpaanis ainult katalooge. "
+"Kui valik on märgitud, näitab Nautilus kõrvalpaanis ainult katalooge. "
 "Vastasel juhul näitab Nautilus katalooge ja faile."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr "Kui valik on aktiivne, näidatakse uutel akendel asukohariba."
+msgstr "Kui valik on märgitud, näidatakse uutel akendel asukohariba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Kui valik on aktiivne, näidatakse uutel akendel kõrvalpaani."
+msgstr "Kui valik on märgitud, näidatakse uutel akendel kõrvalpaani."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr "Kui valik on aktiivne, näidatakse uutel akendel olekuriba."
+msgstr "Kui valik on märgitud, näidatakse uutel akendel olekuriba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr ""
+msgstr "Kui valik on märgitud, siis uutel akendel on tööriistarbia nähtaval."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
@@ -505,12 +505,12 @@ msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
-"Kui valik on aktiivne, küsib Nautilus kinnitust enne failide prügikasti "
+"Kui valik on märgitud, küsib Nautilus kinnitust enne failide prügikasti "
 "tõstmist."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr "Kui valik on aktiivne, näitab Nautilus töölaual ikoone."
+msgstr "Kui valik on märgitud, näitab Nautilus töölaual ikoone."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -518,7 +518,7 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
-"Kui valik on aktiivne, lubab Nautilus faile kohapeal kustutada ilma neid "
+"Kui valik on märgitud, lubab Nautilus faile kohapeal kustutada ilma neid "
 "prügikasti tõstmata. See omadus võib olla ohtlik ja seda tuleks kasutada "
 "ettevaatusega."
 
@@ -527,7 +527,7 @@ msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"Kui valik on aktiivne, kasutab Nautilus kasutaja kodukataloogi kui töölauda. "
+"Kui valik on märgitud, kasutab Nautilus kasutaja kodukataloogi kui töölauda. "
 "Kui valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
@@ -536,7 +536,7 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
-"Kui valik on aktiivne, näitab Nautilus kõiki aknaid sirvijana. Nii toimis "
+"Kui valik on märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis "
 "Nautilus enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
@@ -566,19 +566,19 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "Kui valik on aktiivne, viitab ikoon töölaualt asukohale 'Arvuti'. "
+msgstr "Kui valik on märgitud, viitab ikoon töölaualt asukohale 'Arvuti'. "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "Kui valik on aktiivne, viitab ikoon töölaualt kodukataloogile."
+msgstr "Kui valik on märgitud, viitab ikoon töölaualt kodukataloogile."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "Kui valik on aktiivne, viitab ikoon töölaualt prügikasti."
+msgstr "Kui valik on märgitud, viitab ikoon töölaualt prügikasti."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
@@ -592,7 +592,7 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
-"Kui valik on aktiivne, sorteeritakse failid uues aknas tagurpidi ehk kui "
+"Kui valik on märgitud, sorteeritakse failid uues aknas tagurpidi ehk kui "
 "failid on sorteeritud näiteks nime järgi, alustatakse tähest 'ü,' mitte 'a'."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
@@ -606,17 +606,17 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
-"Kui valik on aktiivne, paigutatakse ikoonid uues aknas tihedamasse rivisse. "
+"Kui valik on märgitud, paigutatakse ikoonid uues aknas tihedamasse rivisse. "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
-msgstr "Kui valik on aktiivne, näidatakse silte ikooni kõrval, mitte all."
+msgstr "Kui valik on märgitud, näidatakse silte ikooni kõrval, mitte all."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
-"Kui valik on aktiivne, paigutatakse ikoonid uutes akendes vaikimisi käsitsi."
+"Kui valik on märgitud, paigutatakse ikoonid uutes akendes vaikimisi käsitsi."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
@@ -1015,7 +1015,7 @@ msgstr "töölaual"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:115
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr ""
+msgstr "Sul pole võimalik kettaseadet \"%s\" prügikasti tõsta."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:125
 msgid ""
@@ -2462,14 +2462,14 @@ msgstr "_Tühjenda prügikast"
 #: ../src/file-manager/fm-desktop-icon-view.c:692
 #: ../src/file-manager/fm-directory-view.c:6612
 msgid "Create L_auncher..."
-msgstr "Loo _käivitaja..."
+msgstr "Loo kä_ivitaja..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
 #: ../src/file-manager/fm-directory-view.c:6613
 msgid "Create a new launcher"
-msgstr "Loo uus käivitaja"
+msgstr "Uue käivitaja loomine"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:699
@@ -2480,7 +2480,7 @@ msgstr "Vaheta töölaua _taust"
 #: ../src/file-manager/fm-desktop-icon-view.c:701
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
-msgstr "Näita akent, mis lubab valida töölaua tausta mustrit või värvi"
+msgstr "Töölaua tausta mustri või värvi valimise akna näitamine"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:706
@@ -2492,7 +2492,7 @@ msgstr "Tühjenda prügikast"
 #: ../src/file-manager/fm-desktop-icon-view.c:708
 #: ../src/file-manager/fm-directory-view.c:6641
 msgid "Delete all items in the Trash"
-msgstr "Kustuta prügikastist kõik asjad"
+msgstr "Prügikastist kõikide asjade kustutamine"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
@@ -2681,7 +2681,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:3763
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
-msgstr ""
+msgstr "%d valitud kirjet pole võimalik prügikasti tõsta"
 
 #: ../src/file-manager/fm-directory-view.c:3801
 #, c-format
@@ -3528,7 +3528,7 @@ msgstr "Taastab kõigi valitud ikoonide algsed suurused"
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1423
 msgid "Clean _Up by Name"
-msgstr "Järjestab _nime järgi"
+msgstr "Järjesta _nime järgi"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1424
@@ -5364,7 +5364,7 @@ msgid ""
 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
 "GNU General Public License for more details."
 msgstr ""
-"Seda programmi levitatakse lootuses, et see on kasulik, kuid ILMA \n"
+"Nautilust levitatakse lootuses, et see on kasulik, kuid ILMA \n"
 "IGASUGUSE GARANTIITA; isegi KESKMISE/TAVALISE KVALITEEDI GARANTIITA \n"
 "või SOBIVUSELE TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata \n"
 "GNU Üldist Avalikku Litsentsi."
