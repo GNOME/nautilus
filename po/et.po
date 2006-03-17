@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-06 07:21+0100\n"
-"PO-Revision-Date: 2006-03-17 10:05+0200\n"
+"PO-Revision-Date: 2006-03-17 11:27+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2090,7 +2090,7 @@ msgstr "Kuva failide _sisu, kui neile klõpsatakse"
 #: ../libnautilus-private/nautilus-global-preferences.c:127
 #: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Ask each time"
-msgstr "_Küsi iga kord"
+msgstr "_Küsitakse iga kord"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:135
 msgid "Search for files by file name only"
@@ -4379,7 +4379,7 @@ msgid ""
 "Never"
 msgstr ""
 "Alati\n"
-"Ainult kohalikud failid\n"
+"Ainult kohalikel failidel\n"
 "Mitte kunagi"
 
 #: ../src/nautilus-file-management-properties.glade.h:35
@@ -4388,11 +4388,11 @@ msgstr "Alati avatakse _sirvija aknas"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Always use _text-entry location bar"
-msgstr ""
+msgstr "Alati kasutatakse _tekstisisestamisega asukohariba"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "_Küsi kasutajalt luba prügikasti tühjendamisel ja failide kustutamisel"
+msgstr "Kasutajatelt _küsitakse luba prügikasti tühjendamisel ja failide kustutamisel"
 
 #: ../src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
@@ -4449,8 +4449,8 @@ msgid ""
 "Icon View\n"
 "List View"
 msgstr ""
-"Ikoonivaade\n"
-"Loendivaade"
+"Ikoonivaadet\n"
+"Loendivaadet"
 
 #: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
@@ -4486,7 +4486,7 @@ msgstr "_Kataloogide sortimine enne faile"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "View _new folders using:"
-msgstr "Näita _uusi katalooge kasutades:"
+msgstr "_Uusi kataloogide näitamine kasutades:"
 
 #: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Views"
@@ -4494,7 +4494,7 @@ msgstr "Vaated"
 
 #: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Arrange items:"
-msgstr "_Korrasta elemendid:"
+msgstr "Elementide _korrastamine:"
 
 #: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Default zoom level:"
@@ -4502,7 +4502,7 @@ msgstr "_Vaikimisi suurendus:"
 
 #: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Double click to activate items"
-msgstr "_Topeltklõps aktiveerib kirjed"
+msgstr "Kirjed aktiveeritakse _topeltklõpsuga"
 
 #: ../src/nautilus-file-management-properties.glade.h:67
 msgid "_Format:"
@@ -4518,7 +4518,7 @@ msgstr "_Käivitatavad tekstifailid käivitamine, kui neile klõpsatakse"
 
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Single click to activate items"
-msgstr "_Üks klõps aktiveerib kirjed"
+msgstr "Kirjed aktiveeritakse _ühe klõpsuga"
 
 #: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Text beside icons"
@@ -4836,7 +4836,7 @@ msgstr "_Lisa järjehoidja"
 #: ../src/nautilus-navigation-window-menus.c:441
 #: ../src/nautilus-spatial-window.c:847
 msgid "Add a bookmark for the current location to this menu"
-msgstr "Lisab siia menüüsse järjehoida praeguse asukoha kohta"
+msgstr "Siia menüüsse praeguse asukoha jaoks järjehoida lisamine"
 
 #: ../src/nautilus-navigation-window-menus.c:443
 #: ../src/nautilus-spatial-window.c:849
@@ -4847,7 +4847,7 @@ msgstr "_Redigeeri järjehoidjaid"
 #: ../src/nautilus-navigation-window-menus.c:444
 #: ../src/nautilus-spatial-window.c:850
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Kuvab akna, milles saab muuta selles menüüs olevaid järjehoidjaid"
+msgstr "Selles menüüs olevate järjehoidjate redigeerimise akna kuvamine"
 
 #: ../src/nautilus-navigation-window-menus.c:446
 #: ../src/nautilus-spatial-window.c:852
@@ -4858,17 +4858,17 @@ msgstr "_Otsing"
 #: ../src/nautilus-navigation-window-menus.c:447
 #: ../src/nautilus-spatial-window.c:853
 msgid "Search for files"
-msgstr "Otsi faile"
+msgstr "Failide otsimine"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
 msgid "_Main Toolbar"
-msgstr ""
+msgstr "_Peamine tööriistariba"
 
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:455
 msgid "Change the visibility of this window's main toolbar"
-msgstr "Muudab selle akna põhitööriba nähtavust"
+msgstr "Selle akna põhitööriba näitamine või peitmine"
 
 #. is_active
 #. name, stock id
@@ -4879,7 +4879,7 @@ msgstr "_Külgpaan"
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:460
 msgid "Change the visibility of this window's sidebar"
-msgstr "Muudab külgpaani nähtavust sellel aknal"
+msgstr "Selle akna külgpaani näitamine või peitmine"
 
 #. is_active
 #. name, stock id
@@ -4890,7 +4890,7 @@ msgstr "Asukoha_riba"
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:465
 msgid "Change the visibility of this window's location bar"
-msgstr "Muudab asukohariba nähtavust sellel aknal"
+msgstr "Selle akna asukohariba näitamine või peitmine"
 
 #. is_active
 #. name, stock id
@@ -4901,7 +4901,7 @@ msgstr "_Olekuriba"
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:470
 msgid "Change the visibility of this window's statusbar"
-msgstr "Muudab olekuriba nähtavust sellel aknal"
+msgstr "Selle akna olekuriba näitamine või peitmine"
 
 #: ../src/nautilus-navigation-window-menus.c:494
 msgid "_Back"
@@ -5400,7 +5400,7 @@ msgstr ""
 "Tõivo Leedjärv <toivo@linux.ee>, 2003. \n"
 "Allan Sims <allsi@eau.ee>, 2003.\n"
 "Priit Laes <amd@store20.com>, 2004-2006.\n"
-"Ivar Smolin <okul@linux.ee>, 2005.\n"
+"Ivar Smolin <okul@linux.ee>, 2005, 2006.\n"
 "Sven Sapelson <sven.sapelson@gmail.com>, 2005."
 
 #: ../src/nautilus-window-menus.c:612
