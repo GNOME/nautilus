@@ -40,7 +40,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-operations-progress-icons.h"
 

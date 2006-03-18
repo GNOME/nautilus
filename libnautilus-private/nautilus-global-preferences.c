@@ -34,7 +34,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>

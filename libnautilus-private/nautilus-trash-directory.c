@@ -32,7 +32,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>

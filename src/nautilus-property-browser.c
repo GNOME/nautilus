@@ -67,7 +67,7 @@
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-color-picker.h>

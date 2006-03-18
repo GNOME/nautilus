@@ -34,7 +34,7 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-emblem-utils.h"

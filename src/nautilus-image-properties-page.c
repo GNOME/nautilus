@@ -27,7 +27,7 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtklabel.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <eel/eel-gnome-extensions.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>

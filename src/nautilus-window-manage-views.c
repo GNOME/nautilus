@@ -47,7 +47,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gdk/gdkx.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>

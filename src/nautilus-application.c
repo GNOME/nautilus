@@ -65,7 +65,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>

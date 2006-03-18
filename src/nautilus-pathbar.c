@@ -32,7 +32,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-icon-factory.h>

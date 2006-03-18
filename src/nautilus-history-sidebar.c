@@ -38,7 +38,7 @@
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtktreeselection.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>

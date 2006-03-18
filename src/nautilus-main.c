@@ -45,7 +45,7 @@
 #include <gtk/gtkiconfactory.h>
 #include <gtk/gtksignal.h>
 #include <gdk/gdk.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>

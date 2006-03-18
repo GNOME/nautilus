@@ -44,7 +44,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>

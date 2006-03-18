@@ -57,7 +57,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenushell.h>
 #include <librsvg/rsvg.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
 #include <libgnomevfs/gnome-vfs-utils.h>

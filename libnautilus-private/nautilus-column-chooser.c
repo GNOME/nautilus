@@ -41,7 +41,7 @@
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 #include "nautilus-column-utilities.h"
 

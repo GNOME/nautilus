@@ -32,7 +32,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

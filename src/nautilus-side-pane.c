@@ -38,7 +38,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktooltips.h>
 #include <gtk/gtktogglebutton.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 typedef struct {
 	char *title;

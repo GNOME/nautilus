@@ -59,7 +59,7 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkuimanager.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>

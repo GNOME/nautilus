@@ -50,7 +50,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkiconfactory.h>
 #include <gtk/gtkicontheme.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-icon-lookup.h>

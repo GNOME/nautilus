@@ -28,6 +28,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <glib/gi18n.h>
 
 struct NautilusQueryDetails {
 	char *text;
@@ -131,10 +132,10 @@ char *
 nautilus_query_to_readable_string (NautilusQuery *query)
 {
 	if (!query || !query->details->text) {
-		return g_strdup ("Search");
+		return g_strdup (_("Search"));
 	}
 
-	return g_strdup_printf ("Search for \"%s\"", query->details->text);
+	return g_strdup_printf (_("Search for \"%s\""), query->details->text);
 }
 
 static char *

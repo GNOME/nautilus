@@ -38,7 +38,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>

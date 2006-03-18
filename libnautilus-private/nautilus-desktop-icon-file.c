@@ -35,7 +35,7 @@
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-desktop-directory.h"
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <string.h>
 

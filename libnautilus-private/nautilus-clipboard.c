@@ -31,7 +31,7 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-file-utilities.h"
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <gtk/gtkclipboard.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkinvisible.h>

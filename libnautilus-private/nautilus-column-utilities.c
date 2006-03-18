@@ -27,7 +27,7 @@
 
 #include <string.h>
 #include <eel/eel-glib-extensions.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 

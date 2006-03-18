@@ -26,7 +26,7 @@
 #include <math.h>
 #include "nautilus-icon-canvas-item.h"
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -50,7 +50,7 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
 #include <librsvg/rsvg.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <eel/eel-canvas-util.h>
 #include <atk/atkimage.h>
 #include <atk/atkcomponent.h>

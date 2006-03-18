@@ -49,7 +49,7 @@
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-help.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-about.h>
 #include <libgnomeui/gnome-uidefs.h>

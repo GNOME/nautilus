@@ -35,7 +35,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 struct NautilusEntryDetails {
 	gboolean user_edit;

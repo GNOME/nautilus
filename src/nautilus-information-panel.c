@@ -43,7 +43,7 @@
 #include <gtk/gtkpaned.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-types.h>

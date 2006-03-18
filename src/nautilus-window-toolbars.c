@@ -40,7 +40,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtktogglebutton.h>
 #include <gdk/gdkkeysyms.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-popup-menu.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-bookmark.h>

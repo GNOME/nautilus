@@ -37,7 +37,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkseparatormenuitem.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>

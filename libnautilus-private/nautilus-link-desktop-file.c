@@ -40,7 +40,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libxml/parser.h>

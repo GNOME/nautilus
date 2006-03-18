@@ -1,3 +1,19 @@
+2006-03-18  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/*.c:
+	* src/file-manager/*.c:
+	* src/*.c:
+	Use gi18n.h instead of deprecated gnome-i18n.h header.
+
+	* libnautilus-private/nautilus-query.c:
+	(nautilus_query_to_readable_string):
+	Mark string for translation.		
+
+	* po/POTFILES.in:
+	Add nautilus-query.c
+
+	Patch from Wouter Bolsterlee <uws+gnome@xs4all.nl>
+
 2006-03-17  Vladimer Sichinava  <alinux@siena.linux.it>
 
 	* configure.in: Added "ka" Georgian to 

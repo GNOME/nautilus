@@ -38,7 +38,7 @@
 #include <gtk/gtktextview.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

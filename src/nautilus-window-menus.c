@@ -53,7 +53,7 @@
 #include <gtk/gtkaboutdialog.h>
 #include <gtk/gtkenums.h>
 #include <libgnome/gnome-help.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-uidefs.h>

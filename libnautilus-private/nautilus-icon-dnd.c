@@ -50,7 +50,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>

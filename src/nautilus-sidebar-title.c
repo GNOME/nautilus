@@ -43,7 +43,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-private/nautilus-file-attributes.h>

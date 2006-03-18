@@ -56,7 +56,7 @@
 #include <eel/eel-string.h>
 #include <grp.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>

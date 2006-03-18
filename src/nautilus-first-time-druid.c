@@ -26,7 +26,7 @@
 #include <config.h>
 #include "nautilus-first-time-druid.h"
 
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>

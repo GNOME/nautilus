@@ -35,7 +35,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-util.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>

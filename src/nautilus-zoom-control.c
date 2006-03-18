@@ -31,7 +31,7 @@
 #include "nautilus-zoom-control.h"
 
 #include <atk/atkaction.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
