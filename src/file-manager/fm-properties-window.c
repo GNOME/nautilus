@@ -59,7 +59,7 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtkliststore.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-help.h>

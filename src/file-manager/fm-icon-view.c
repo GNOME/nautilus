@@ -47,7 +47,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkstock.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnome/gnome-macros.h>

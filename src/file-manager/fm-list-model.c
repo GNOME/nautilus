@@ -33,7 +33,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <gsequence/gsequence.h>

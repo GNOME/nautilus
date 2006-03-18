@@ -27,7 +27,7 @@
 #include "fm-error-reporting.h"
 
 #include <string.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string.h>

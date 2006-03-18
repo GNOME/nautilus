@@ -36,7 +36,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkfilechooserdialog.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extension/nautilus-extension-types.h>
 #include <libnautilus-extension/nautilus-file-info.h>

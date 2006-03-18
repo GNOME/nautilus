@@ -30,7 +30,7 @@
 #include "fm-tree-model.h"
 
 #include <eel/eel-glib-extensions.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
