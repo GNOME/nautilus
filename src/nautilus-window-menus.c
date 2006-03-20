@@ -744,12 +744,23 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	ui = nautilus_ui_string_get ("nautilus-shell-ui.xml");
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
-	if (!have_burn_uri ()) {
-		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
-		gtk_action_set_visible (action, FALSE);
-	}
-
 	nautilus_window_initialize_bookmarks_menu (window);
+}
+
+void
+nautilus_window_initialize_menus_constructed (NautilusWindow *window)
+{
+	GtkAction *action;
+
+	/* Don't call have_burn_uri() for the desktop window, as this is a very
+	 * expensive operation during login (around 1 second) ---
+	 * have_burn_uri() has to create a "burn:///" URI, which causes
+	 * gnome-vfs to link in libmapping.so from nautilus-cd-burner.
+	 */
+	if (nautilus_window_has_menubar_and_statusbar (window) && !have_burn_uri ()) {
+		action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
+ 		gtk_action_set_visible (action, FALSE);
+ 	}
 }
 
 static GList *

@@ -176,6 +176,7 @@ void               nautilus_window_set_status                            (Nautil
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
 void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
 void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
+void               nautilus_window_initialize_menus_constructed          (NautilusWindow    *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
                                                                           NautilusBookmark  *bookmark, 
                                                                           const char        *parent_path,

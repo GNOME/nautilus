@@ -150,5 +150,6 @@ void             nautilus_window_allow_burn_cd        (NautilusWindow    *window
 GtkUIManager *   nautilus_window_get_ui_manager       (NautilusWindow    *window);
 void             nautilus_window_add_extra_location_widget (NautilusWindow  *window,
                                                             GtkWidget       *widget);
+gboolean         nautilus_window_has_menubar_and_statusbar (NautilusWindow *window);
 
 #endif

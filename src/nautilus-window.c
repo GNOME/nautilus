@@ -159,7 +159,6 @@ nautilus_window_init (NautilusWindow *window)
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (window), table);
 
-
 	statusbar = gtk_statusbar_new ();
 	window->details->statusbar = statusbar;
 	gtk_table_attach (GTK_TABLE (table),
@@ -640,6 +639,25 @@ nautilus_window_finalize (GObject *object)
 	g_free (window->details);
 	
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
+}
+
+static GObject *
+nautilus_window_constructor (GType type,
+			     guint n_construct_properties,
+			     GObjectConstructParam *construct_params)
+{
+	GObject *object;
+	NautilusWindow *window;
+
+	object = (* G_OBJECT_CLASS (nautilus_window_parent_class)->constructor) (type,
+										 n_construct_properties,
+										 construct_params);
+
+	window = NAUTILUS_WINDOW (object);
+
+	nautilus_window_initialize_menus_constructed (window);
+
+	return object;
 }
 
 void
@@ -1532,8 +1550,9 @@ static void
 nautilus_window_class_init (NautilusWindowClass *class)
 {
 	GtkBindingSet *binding_set;
-	
+
 	G_OBJECT_CLASS (class)->finalize = nautilus_window_finalize;
+	G_OBJECT_CLASS (class)->constructor = nautilus_window_constructor;
 	G_OBJECT_CLASS (class)->get_property = nautilus_window_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
@@ -1602,4 +1621,20 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			     "\n"
 			     "    widget \"*.nautilus-extra-view-widget\" style:rc \"nautilus-extra-view-widgets-style-internal\" \n"
 			     "\n");
+}
+
+/**
+ * nautilus_window_has_menubar_and_statusbar:
+ * @window: A #NautilusWindow
+ * 
+ * Queries whether the window should have a menubar and statusbar, based on the
+ * window_type from its class structure.
+ * 
+ * Return value: TRUE if the window should have a menubar and statusbar; FALSE
+ * otherwise.
+ **/
+gboolean
+nautilus_window_has_menubar_and_statusbar (NautilusWindow *window)
+{
+	return (nautilus_window_get_window_type (window) != NAUTILUS_WINDOW_DESKTOP);
 }

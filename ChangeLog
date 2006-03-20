@@ -1,3 +1,31 @@
+2006-03-14  Federico Mena Quintero  <federico@novell.com>
+
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Don't set the visibility of the "burn CD" action here.
+	(nautilus_window_initialize_menus_constructed): New public
+	function.  Only disable NAUTILUS_ACTION_GO_TO_BURN_CD if we are in
+	a window which has a menubar.  This prevents calling
+	have_burn_uri() unnecessarily for the desktop window, as this is
+	an expensive operation during login (up to 1 second!).  The way
+	have_burn_uri() works is by creating a "burn:///" URI and seeing
+	if it is valid, but this makes gnome-vfs load libmapping.so from
+	nautilus-cd-burner; this takes a long time during login.
+
+	* src/nautilus-window-private.h: Added prototype for
+	nautilus_window_initialize_menus_constructed().
+
+	* src/nautilus-window.h: New prototype for
+	nautilus_window_has_menubar_and_statusbar().
+
+	* src/nautilus-window.c
+	(nautilus_window_has_menubar_and_statusbar): New function; returns
+	whether the window should have a menubar and statusbar.  This
+	depends on the window_type from the class structure.
+	(nautilus_window_constructor): Call
+	nautilus_window_initialize_menus_constructed().  We do it here so
+	that its own call to nautilus_window_has_menubar_and_statusbar()
+	will already have the right value for class->window_type.
+
 2006-03-19  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-main.c: (register_icons):
