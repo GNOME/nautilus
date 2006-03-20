@@ -132,62 +132,33 @@ static void
 register_icons (void)
 {
 	GtkIconTheme *icon_theme;
-	GtkIconInfo *info;
-	const char *icon;
 	GtkIconSource *source;
 	GtkIconSet *set;
 	GtkIconFactory *factory;
 	const char *icons_to_register[] = {"gnome-fs-client", "gnome-fs-network", "gnome-fs-home", "gnome-fs-trash-empty", "gnome-dev-cdrom", "stock_new-template"};
-	struct { int pixel; int gtk; } sizes[] = {
-		{16, GTK_ICON_SIZE_MENU},
-		{18, GTK_ICON_SIZE_SMALL_TOOLBAR},
-		{20, GTK_ICON_SIZE_BUTTON},
-		{24, GTK_ICON_SIZE_LARGE_TOOLBAR},
-		{32, GTK_ICON_SIZE_DND},
-		{48, GTK_ICON_SIZE_DIALOG},
-		{48, 0},
-	};
-	int i, j;
+	int i;
 
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
 
 	factory = gtk_icon_factory_new ();
 	gtk_icon_factory_add_default (factory);
+
+	source = gtk_icon_source_new ();
+
 	for (i = 0; i < G_N_ELEMENTS(icons_to_register); i++) {
-
 		set = gtk_icon_set_new ();
-		source = gtk_icon_source_new ();
 
-		for (j = 0; j < G_N_ELEMENTS(sizes); j++) {
-			info = gtk_icon_theme_lookup_icon (icon_theme, icons_to_register[i], sizes[j].pixel, 0);
-			
-			if (info != NULL &&
-			    (sizes[j].gtk == 0 ||
-			     gtk_icon_info_get_base_size (info) == sizes[j].pixel)) {
-				icon = gtk_icon_info_get_filename (info);
-				gtk_icon_source_set_filename (source, icon);
-				if (sizes[j].gtk == 0) {
-					gtk_icon_source_set_size (source, 0);
-					gtk_icon_source_set_size_wildcarded (source, TRUE);
-				} else {
-					gtk_icon_source_set_size (source, sizes[j].gtk);
-					gtk_icon_source_set_size_wildcarded (source, FALSE);
-				}
-				gtk_icon_set_add_source (set, source);
-			}
-			if (info != NULL) {
-				gtk_icon_info_free (info);
-			}
-		}
+		gtk_icon_source_set_icon_name (source, icons_to_register[i]);
+		gtk_icon_set_add_source (set, source);
 
-		gtk_icon_source_free (source);
 		gtk_icon_factory_add (factory, icons_to_register[i], set);
-		gtk_icon_set_unref (set);
 
+		gtk_icon_set_unref (set);
 	}
+
+	gtk_icon_source_free (source);
 	g_object_unref (factory);	
 	g_object_unref (icon_theme);
-	
 }
 
 /* Copied from libnautilus/nautilus-program-choosing.c; In this case,

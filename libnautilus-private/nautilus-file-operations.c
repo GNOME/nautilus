@@ -1875,12 +1875,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 	TransferInfo *transfer_info;
 	SyncTransferInfo *sync_transfer_info;
+	GnomeVFSVolume *volume;
 	GnomeVFSResult result;
 	gboolean target_is_trash;
 	gboolean duplicate;
 	gboolean target_is_mapping;
 	gboolean have_nonmapping_source;
 	gboolean have_nonlocal_source;
+	gboolean have_readonly_source;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1914,6 +1916,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	target_uri_list = NULL;
 	have_nonlocal_source = FALSE;
 	have_nonmapping_source = FALSE;
+	have_readonly_source = FALSE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1938,7 +1941,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (strcmp (source_uri->method_string, "burn") != 0) {
 			have_nonmapping_source = TRUE;
 		}
-			
+
+		volume = nautilus_get_enclosing_volume (source_uri);
+		if (volume != NULL && gnome_vfs_volume_is_read_only (volume)) {
+			have_readonly_source = TRUE;
+		}
+		gnome_vfs_volume_unref (volume);
+
 		/* Note: this could be null if we're e.g. copying the top level file of a web site */
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
@@ -1994,6 +2003,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		 * for target files.
 		 */
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+	}
+
+	if (have_readonly_source) {
+		move_options |= GNOME_VFS_XFER_TARGET_DEFAULT_PERMS;
 	}
 
 	/* List may be NULL if we filtered all items out */
