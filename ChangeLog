@@ -1,3 +1,9 @@
+2006-03-22  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-application.c: use g_strv_length instead of a 
+	private copy and gnome_vfs_make_uri_from_shell_arg instead of
+	the old eel_make_uri_from_shell_arg. Bug #334077.
+
 2006-03-22  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:

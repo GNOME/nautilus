@@ -58,8 +58,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkinvisible.h>
 #include <gtk/gtksignal.h>
@@ -283,15 +281,6 @@ check_required_directories (NautilusApplication *application)
 	return failed_count == 0;
 }
 
-static int
-nautilus_strv_length (const char * const *strv)
-{
-	const char * const *p;
-
-	for (p = strv; *p != NULL; p++) { }
-	return p - strv;
-}
-
 static Nautilus_URIList *
 nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 {
@@ -299,14 +288,14 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	Nautilus_URIList *uri_list;
 	char *translated_uri;
 
-	length = nautilus_strv_length (strv);
+	length = g_strv_length ((char **) strv);
 
 	uri_list = Nautilus_URIList__alloc ();
 	uri_list->_maximum = length;
 	uri_list->_length = length;
 	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
 	for (i = 0; i < length; i++) {
-		translated_uri = eel_make_uri_from_shell_arg (strv[i]);
+		translated_uri = gnome_vfs_make_uri_from_shell_arg (strv[i]);
 		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
 		g_free (translated_uri);
 		translated_uri = NULL;
