@@ -68,6 +68,7 @@
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
@@ -1127,14 +1128,15 @@ static void
 pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 {
 	FMDirectoryView *view;
+	NautilusDirectory *directory;
 	GtkWidget *entry;
+	GList *selection;
+	GError *error;
 
 	view = FM_DIRECTORY_VIEW (user_data);
-	
-	if (response == GTK_RESPONSE_OK) {
-		NautilusDirectory *directory;
-		GList *selection;
 
+	switch (response) {
+	case GTK_RESPONSE_OK :
 		entry = g_object_get_data (G_OBJECT (dialog), "entry");
 		directory = fm_directory_view_get_model (view);
 		selection = nautilus_directory_match_pattern (directory,
@@ -1146,9 +1148,27 @@ pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 
 			fm_directory_view_reveal_selection(view);
 		}
+		/* fall through */
+	case GTK_RESPONSE_NONE :
+	case GTK_RESPONSE_DELETE_EVENT :
+	case GTK_RESPONSE_CANCEL :
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+	case GTK_RESPONSE_HELP :
+		error = NULL;
+		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml",
+						      "nautilus-select-pattern",
+						      gtk_window_get_screen (GTK_WINDOW (dialog)),
+						      &error);
+		if (error) {
+			eel_show_error_dialog (_("There was an error displaying help."), error->message,
+					       GTK_WINDOW (dialog));
+			g_error_free (error);
+		}
+		break;
+	default :
+		g_assert_not_reached ();
 	}
-
-	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -1164,6 +1184,8 @@ select_pattern (FMDirectoryView *view)
 	dialog = gtk_dialog_new_with_buttons (_("Select Pattern"),
 			fm_directory_view_get_containing_window (view),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_STOCK_HELP,
+			GTK_RESPONSE_HELP,
 			GTK_STOCK_CANCEL,
 			GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OK,

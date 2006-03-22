@@ -26,9 +26,11 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
@@ -91,6 +93,8 @@ response_callback (NautilusLocationDialog *dialog,
 		   int response_id,
 		   gpointer data)
 {
+	GError *error;
+
 	switch (response_id) {
 	case RESPONSE_OPEN :
 		open_current_location (dialog);
@@ -100,6 +104,18 @@ response_callback (NautilusLocationDialog *dialog,
 	case GTK_RESPONSE_DELETE_EVENT :
 	case GTK_RESPONSE_CANCEL :
 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+	case GTK_RESPONSE_HELP :
+		error = NULL;
+		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml",
+						      "nautilus-open-location",
+						      gtk_window_get_screen (GTK_WINDOW (dialog)),
+						      &error);
+		if (error) {
+			eel_show_error_dialog (_("There was an error displaying help."), error->message,
+					       GTK_WINDOW (dialog));
+			g_error_free (error);
+		}
 		break;
 	default :
 		g_assert_not_reached ();
@@ -169,6 +185,9 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    box, TRUE, TRUE, 0);
 
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       GTK_STOCK_HELP,
+			       GTK_RESPONSE_HELP);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);

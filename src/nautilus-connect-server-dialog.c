@@ -28,6 +28,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <glib/gi18n.h>
@@ -330,6 +331,8 @@ response_callback (NautilusConnectServerDialog *dialog,
 		   int response_id,
 		   gpointer data)
 {
+	GError *error;
+
 	switch (response_id) {
 	case RESPONSE_BROWSE:
 		nautilus_connect_server_dialog_present_uri (dialog->details->application,
@@ -344,6 +347,18 @@ response_callback (NautilusConnectServerDialog *dialog,
 	case GTK_RESPONSE_DELETE_EVENT:
 	case GTK_RESPONSE_CANCEL:
 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+	case GTK_RESPONSE_HELP :
+		error = NULL;
+		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml",
+						      "nautilus-server-connect",
+						      gtk_window_get_screen (GTK_WINDOW (dialog)),
+						      &error);
+		if (error) {
+			eel_show_error_dialog (_("There was an error displaying help."), error->message,
+					       GTK_WINDOW (dialog));
+			g_error_free (error);
+		}
 		break;
 	default :
 		g_assert_not_reached ();
@@ -744,6 +759,9 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	
 	setup_for_type (dialog);
 	
+        gtk_dialog_add_button (GTK_DIALOG (dialog),
+                               GTK_STOCK_HELP,
+                               GTK_RESPONSE_HELP);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       _("Browse _Network"),
 			       RESPONSE_BROWSE);
