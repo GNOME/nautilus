@@ -1106,7 +1106,7 @@ path_represents_svg_image (const char *path)
 	 * and if they're doing that, they can behave themselves
 	 * and use a .svg extension.
 	 */
-	return path != NULL && (strstr (path, ".svg") != NULL || strstr (path, ".svgz") != NULL);
+	return path != NULL && (g_str_has_suffix (path, ".svg") || g_str_has_suffix (path, ".svgz"));
 }
 
 static GdkPixbuf *
