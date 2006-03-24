@@ -1,3 +1,21 @@
+2006-03-24  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-connect-server-dialog-main.c: (main):
+	Get the command line options and pass them on to the dialog.
+
+	* src/nautilus-connect-server-dialog.c: (connect_to_server),
+	(nautilus_connect_server_dialog_init), (setup_for_type):
+	Use new MethodInfo struct to construct the UI.
+	(display_server_uri): New function for initialising the UI based
+	on the broken down parts of the URI.
+	(nautilus_connect_server_dialog_new): Use display_server_uri.
+	(get_method_description): New helper function.
+	(port_insert_text): Accept more than one digit at a time.
+
+	Display broken down URIs in 'Connect to Server' properly. (#332848)
+
+	Patch from Nate Nielsen <nielsen@memberwebs.com>
+
 2006-03-22  Daniel Drake  <dsd@gentoo.org>
 
 	* libnautilus-private/nautilus-icon-factory.c: Only consider

@@ -76,16 +76,61 @@ enum {
 	RESPONSE_CONNECT
 };	
 
-/* Keep this order in sync with strings below */
-enum {
-	TYPE_SSH,
-	TYPE_ANON_FTP,
-	TYPE_FTP,
-	TYPE_SMB,
-	TYPE_DAV,
-	TYPE_DAVS,
-	TYPE_URI
+struct MethodInfo {
+	const char *method;
+	guint flags;
 };
+
+/* A collection of flags for MethodInfo.flags */
+enum {
+	DEFAULT_METHOD = 0x00000001,
+	
+	/* Widgets to display in setup_for_type */
+	SHOW_SHARE     = 0x00000010,
+	SHOW_PORT      = 0x00000020,
+	SHOW_USER      = 0x00000040,
+	SHOW_DOMAIN    = 0x00000080,
+	
+	IS_ANONYMOUS   = 0x00001000
+};
+
+/* Remember to fill in descriptions below */
+static struct MethodInfo methods[] = {
+	{ "ssh",  SHOW_PORT | SHOW_USER },
+	{ "ftp",  SHOW_PORT | SHOW_USER },
+	{ "ftp",  DEFAULT_METHOD | IS_ANONYMOUS | SHOW_PORT},
+	{ "smb",  SHOW_SHARE | SHOW_USER | SHOW_DOMAIN },
+	{ "dav",  SHOW_PORT | SHOW_USER },
+	{ "davs", SHOW_PORT | SHOW_USER },
+	{ NULL,   0 }, /* Custom URI method */
+};
+
+/* To get around non constant gettext strings */
+static const char*
+get_method_description (struct MethodInfo *meth)
+{
+	if (!meth->method) {
+		return _("Custom Location");
+	} else if (strcmp (meth->method, "ssh") == 0) {
+		return _("SSH");
+	} else if (strcmp (meth->method, "ftp") == 0) {
+		if (meth->flags & IS_ANONYMOUS) {
+			return _("Public FTP");
+		} else {
+			return _("FTP (with login)");
+		}
+	} else if (strcmp (meth->method, "smb") == 0) {
+		return _("Windows share");
+	} else if (strcmp (meth->method, "dav") == 0) {
+		return _("WebDAV (HTTP)");
+	} else if (strcmp (meth->method, "davs") == 0) {
+		return _("Secure WebDAV (HTTPS)");
+	
+	/* No descriptive text */
+	} else {
+		return meth->method;
+	}
+}
 
 static void
 nautilus_connect_server_dialog_finalize (GObject *object)
@@ -121,17 +166,21 @@ nautilus_connect_server_dialog_destroy (GtkObject *object)
 static void
 connect_to_server (NautilusConnectServerDialog *dialog)
 {
+	struct MethodInfo *meth;
 	char *uri;
 	char *user_uri;
 	GnomeVFSURI *vfs_uri;
 	char *error_message;
 	char *name;
 	char *icon;
-	int type;
+	int index;
 	
-	type = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	/* Get our method info */
+	index = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
+	meth = &(methods[index]);
 
-	if (type == TYPE_URI) {
+	if (meth->method == NULL) {
 		user_uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->uri_entry), 0, -1);
 		uri = gnome_vfs_make_uri_from_input (user_uri);
 		g_free (user_uri);
@@ -150,7 +199,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			gnome_vfs_uri_unref (vfs_uri);
 		}
 	} else {
-		char *method, *user, *port, *initial_path, *server, *folder ,*domain ;
+		char *user, *port, *initial_path, *server, *folder ,*domain ;
 		char *t, *join;
 		gboolean free_initial_path, free_user, free_domain, free_port;
 
@@ -163,7 +212,6 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 			return;
 		}
 		
-		method = "";
 		user = "";
 		port = "";
 		initial_path = "";
@@ -172,30 +220,17 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		free_user = FALSE;
 		free_domain = FALSE;
 		free_port = FALSE;
-		switch (type) {
-		case TYPE_SSH:
-			method = "sftp";
-			break;
-		case TYPE_ANON_FTP:
-			method = "ftp";
+		
+		/* FTP special case */
+		if (meth->flags & IS_ANONYMOUS) {
 			user = "anonymous";
-			break;
-		case TYPE_FTP:
-			method = "ftp";
-			break;
-		case TYPE_SMB:
-			method = "smb";
+		
+		/* SMB special case */
+		} else if (strcmp (meth->method, "smb") == 0) {
 			t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->share_entry), 0, -1);
 			initial_path = g_strconcat ("/", t, NULL);
 			free_initial_path = TRUE;
 			g_free (t);
-			break;
-		case TYPE_DAV:
-			method = "dav";
-			break;
-		case TYPE_DAVS:
-			method = "davs";
-			break;
 		}
 
 		if (dialog->details->port_entry->parent != NULL) {
@@ -246,7 +281,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		g_free (t);
 
 		uri = g_strdup_printf ("%s://%s%s%s%s%s%s",
-				       method,
+				       meth->method,
 				       user, (user[0] != 0) ? "@" : "",
 				       server,
 				       (port[0] != 0) ? ":" : "", port,
@@ -381,11 +416,14 @@ nautilus_connect_server_dialog_class_init (NautilusConnectServerDialogClass *cla
 static void
 setup_for_type (NautilusConnectServerDialog *dialog)
 {
-	int type, i;
-	gboolean show_share, show_port, show_user, show_domain;
+	struct MethodInfo *meth;
+	int index, i;
 	GtkWidget *label, *table;
 
-	type = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	/* Get our method info */
+	index = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
+	meth = &(methods[index]);
 
 	if (dialog->details->uri_entry->parent != NULL) {
 		gtk_container_remove (GTK_CONTAINER (dialog->details->table),
@@ -427,7 +465,7 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	i = 1;
 	table = dialog->details->table;
 	
-	if (type == TYPE_URI) {
+	if (meth->method == NULL) {
 		label = gtk_label_new_with_mnemonic (_("_Location (URI):"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -450,31 +488,6 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 		goto connection_name;
 	}
 	
-	switch (type) {
-	default:
-	case TYPE_SSH:
-	case TYPE_FTP:
-	case TYPE_DAV:
-	case TYPE_DAVS:
-		show_share = FALSE;
-		show_port = TRUE;
-		show_user = TRUE;
-		show_domain = FALSE;
-		break;
-	case TYPE_ANON_FTP:
-		show_share = FALSE;
-		show_port = TRUE;
-		show_user = FALSE;
-		show_domain = FALSE;
-		break;
-	case TYPE_SMB:
-		show_share = TRUE;
-		show_port = FALSE;
-		show_user = TRUE;
-		show_domain =TRUE;
-		break;
-	}
-
 	label = gtk_label_new_with_mnemonic (_("_Server:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
@@ -505,7 +518,7 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 
 	i++;
 	
-	if (show_share) {
+	if (meth->flags & SHOW_SHARE) {
 		label = gtk_label_new_with_mnemonic (_("_Share:"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -526,7 +539,7 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 		i++;
 	}
 
-	if (show_port) {
+	if (meth->flags & SHOW_PORT) {
 		label = gtk_label_new_with_mnemonic (_("_Port:"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -566,7 +579,7 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 
 	i++;
 
-	if (show_user) {
+	if (meth->flags & SHOW_USER) {
 		label = gtk_label_new_with_mnemonic (_("_User Name:"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -587,7 +600,7 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 		i++;
 	}
 
-	if (show_domain) {
+	if (meth->flags & SHOW_DOMAIN) {
 		label = gtk_label_new_with_mnemonic (_("_Domain Name:"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -634,12 +647,126 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 }
 
 static void
+display_server_uri (NautilusConnectServerDialog *dialog, GnomeVFSURI *uri)
+{
+	struct MethodInfo *meth = NULL;
+	const char *method;
+	int i, index = 0;
+	const char *folder;
+	const char *t;
+
+	/* Find an appropriate method */
+	method = gnome_vfs_uri_get_scheme (uri);
+	g_return_if_fail (method != NULL);
+	
+	for (i = 0; i < G_N_ELEMENTS (methods); i++) {
+		
+		/* The default is 'Custom URI' */
+		if (methods[i].method == NULL) {
+			meth = &(methods[i]);
+			index = i;
+			
+		} else if (strcmp (methods[i].method, method) == 0) {
+			
+			/* FTP Special case: If no user keep searching for public ftp */
+			if (strcmp (method, "ftp") == 0) {
+				t = gnome_vfs_uri_get_user_name (uri);
+				if ((!t || !t[0] || strcmp (t, "anonymous") == 0) && 
+				    (!(methods[i].flags & IS_ANONYMOUS))) {
+					continue;
+				}
+			}
+			
+			meth = &(methods[i]);
+			index = i;
+			break;
+		}
+	}
+	
+	g_assert (meth);
+	
+	gtk_combo_box_set_active (GTK_COMBO_BOX (dialog->details->type_combo), index);
+	setup_for_type (dialog);
+	
+	/* Custom URI */
+	if (meth->method == NULL) {
+		gchar *suri = gnome_vfs_uri_to_string (uri, 
+				GNOME_VFS_URI_HIDE_PASSWORD | GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER);
+		gtk_entry_set_text (GTK_ENTRY (dialog->details->uri_entry), suri);
+		g_free (suri);
+	
+	} else {
+		
+		folder = gnome_vfs_uri_get_path (uri);
+		if (!folder) {
+			folder = "";
+		} else if (folder[0] == '/') {
+			folder++;
+		}
+		
+		/* Server */
+		t = gnome_vfs_uri_get_host_name (uri);
+		gtk_entry_set_text (GTK_ENTRY (dialog->details->server_entry), 
+				    t ? t : "");
+		
+		/* Share */
+		if (meth->flags & SHOW_SHARE) {
+			t = strchr (folder, '/');
+			if (t) {
+				char *share = g_strndup (folder, t - folder);
+				gtk_entry_set_text (GTK_ENTRY (dialog->details->share_entry), share);
+				g_free (share);
+				folder = t + 1;
+			}
+			
+		}
+
+		/* Port */
+		if (meth->flags & SHOW_PORT) {
+			guint port = gnome_vfs_uri_get_host_port (uri);
+			if (port != 0) {
+				char *sport = g_strdup_printf ("%d", port);
+				gtk_entry_set_text (GTK_ENTRY (dialog->details->port_entry), sport);
+				g_free (sport);
+			}
+		}
+
+		/* Folder */
+		gtk_entry_set_text (GTK_ENTRY (dialog->details->folder_entry), folder);
+
+		/* User */
+		if (meth->flags & SHOW_USER) {
+			const char *user = gnome_vfs_uri_get_user_name (uri);
+			if (user) {
+				t = strchr (user, ';');
+				if (t) {
+					user = t + 1;
+				}
+				gtk_entry_set_text (GTK_ENTRY (dialog->details->user_entry), user);
+			}
+		}
+
+		/* Domain */
+		if (meth->flags & SHOW_DOMAIN) {
+			const char *user = gnome_vfs_uri_get_user_name (uri);
+			if (user) {
+				t = strchr (user, ';');
+				if (t) {
+					char *domain = g_strndup (user, t - user);
+					gtk_entry_set_text (GTK_ENTRY (dialog->details->domain_entry), domain);
+					g_free (domain);
+				}
+			}
+		}
+	}
+}
+
+static void
 combo_changed_callback (GtkComboBox *combo_box,
 			NautilusConnectServerDialog *dialog)
 {
 	setup_for_type (dialog);
 }
-
 
 static void
 port_insert_text (GtkEditable *editable,
@@ -647,17 +774,21 @@ port_insert_text (GtkEditable *editable,
 		  gint         new_text_length,
 		  gint        *position)
 {
+	int pos;
+
 	if (new_text_length < 0) {
 		new_text_length = strlen (new_text);
 	}
 
-	if (new_text_length != 1 ||
-	    !g_ascii_isdigit (new_text[0])) {
-		gdk_display_beep (gtk_widget_get_display (GTK_WIDGET (editable)));
-		g_signal_stop_emission_by_name (editable, "insert_text");
+	/* Only allow digits to be inserted as port number */
+	for (pos = 0; pos < new_text_length; pos++) {
+		if (!g_ascii_isdigit (new_text[pos])) {
+		    gdk_display_beep (gtk_widget_get_display (GTK_WIDGET (editable)));
+		    g_signal_stop_emission_by_name (editable, "insert_text");
+		    return;
+		}
 	}
 }
-
 
 static void
 nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
@@ -667,6 +798,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	GtkWidget *combo;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
+	int i;
 	
 	dialog->details = g_new0 (NautilusConnectServerDialogDetails, 1);
 
@@ -694,22 +826,14 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			    label, FALSE, FALSE, 0);
 
 	dialog->details->type_combo = combo = gtk_combo_box_new_text ();
-	/* Keep this in sync with enum */
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("SSH"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("Public FTP"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("FTP (with login)"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("Windows share"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("WebDAV (HTTP)"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("Secure WebDAV (HTTPS)"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo),
-				   _("Custom Location"));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), TYPE_ANON_FTP);
+	
+	for (i = 0; i < G_N_ELEMENTS (methods); i++) {
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), get_method_description (&(methods[i])));
+		if (methods[i].flags & DEFAULT_METHOD) {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (combo), i);
+		}
+	}
+
 	gtk_widget_show (combo);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), combo);
 	gtk_box_pack_start (GTK_BOX (hbox),
@@ -789,28 +913,24 @@ nautilus_connect_server_dialog_new (NautilusWindow *window, const gchar *locatio
 	GnomeVFSURI *uri;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_CONNECT_SERVER_DIALOG, NULL);
+	conndlg = NAUTILUS_CONNECT_SERVER_DIALOG (dialog);
 
 	if (window) {
-		conndlg = NAUTILUS_CONNECT_SERVER_DIALOG (dialog);
-
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
 		conndlg->details->application = window->application;
+	}
 
-		if (location) {
-			uri = gnome_vfs_uri_new (location);
-			g_return_val_if_fail (uri != NULL, dialog);
+	if (location) {
+		uri = gnome_vfs_uri_new (location);
+		g_return_val_if_fail (uri != NULL, dialog);
 
-			/* ... and if it's a remote URI, then load as the default */
-			if (!g_str_equal (gnome_vfs_uri_get_scheme (uri), "file") && 
-			    !gnome_vfs_uri_is_local (uri)) {
+		/* If it's a remote URI, then load as the default */
+		if (!g_str_equal (gnome_vfs_uri_get_scheme (uri), "file") && 
+		    !gnome_vfs_uri_is_local (uri))
+			display_server_uri (conndlg, uri);
 
-				gtk_combo_box_set_active (GTK_COMBO_BOX (conndlg->details->type_combo), TYPE_URI);
-				gtk_entry_set_text (GTK_ENTRY (conndlg->details->uri_entry), location);
-			}
-;
-			gnome_vfs_uri_unref (uri);
-		}
+		gnome_vfs_uri_unref (uri);
 	}
 
 	return dialog;
