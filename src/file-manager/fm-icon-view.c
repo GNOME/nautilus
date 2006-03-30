@@ -106,8 +106,6 @@ struct FMIconViewDetails
 
 	guint react_to_icon_change_idle_id;
 
-	gboolean loading;
-
 	const SortCriterion *sort;
 	gboolean sort_reversed;
 
@@ -518,6 +516,28 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDir
 	}
 }
 
+static gboolean
+file_has_lazy_position (FMDirectoryView *view,
+			NautilusFile *file)
+{
+	gboolean lazy_position;
+
+	/* For volumes (i.e. cdrom icon) we use lazy positioning so that when
+	 * an old cdrom gets re-mounted in a place that now has another
+	 * icon we don't overlap that one. We don't do this in general though,
+	 * as it can cause icons moving around.
+	 */
+	lazy_position = nautilus_file_has_volume (file);
+	if (lazy_position && fm_directory_view_get_loading (view)) {
+		/* if volumes are loaded during directory load, don't mark them
+		 * as lazy. This is wrong for files that were mounted during user
+		 * log-off, but it is right for files that were mounted during login. */
+		lazy_position = FALSE;
+	}
+
+	return lazy_position;
+}
+
 static void
 fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
@@ -535,18 +555,13 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirect
 	}
 
 	/* Reset scroll region for the first icon added when loading a directory. */
-	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
+	if (fm_directory_view_get_loading (view) && nautilus_icon_container_is_empty (icon_container)) {
 		nautilus_icon_container_reset_scroll_region (icon_container);
 	}
-	
-	/* For volumes (i.e. cdrom icon) we use lazy positioning so that when
-	 * an old cdrom gets re-mounted in a place that now has another
-	 * icon we don't overlap that one. We don't do this in general though,
-	 * as it can cause icons moving around.
-	 */
+
 	if (nautilus_icon_container_add (icon_container,
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					 nautilus_file_has_volume (file))) {
+					 file_has_lazy_position (view, file)))  {
 		nautilus_file_ref (file);
 	}
 }
@@ -2070,7 +2085,7 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 			} else {
 				if (nautilus_icon_container_add (icon_container,
 								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-								 NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
+								 file_has_lazy_position (view, file))) {
 					nautilus_file_ref (file);
 				}
 			}

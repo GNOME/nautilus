@@ -1,3 +1,15 @@
+2006-03-30  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_get_loading):
+	* src/file-manager/fm-directory-view.h:
+	Add fm_directory_view_get_loading().
+
+	* src/file-manager/fm-icon-view.c: (file_has_lazy_position),
+	(fm_icon_view_add_file), (fm_icon_view_screen_changed):
+	Use fm_directory_view_get_loading() to determine whether view is
+	loaded. If it is not yet loaded, don't position icons lazily.
+
 2006-03-24  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-connect-server-dialog-main.c: (main):

@@ -3299,6 +3299,21 @@ fm_directory_view_end_loading (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_get_loading:
+ * @view: an #FMDirectoryView.
+ *
+ * Return value: #gboolean inicating whether @view is currently loaded.
+ * 
+ **/
+gboolean
+fm_directory_view_get_loading (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return view->details->loading;
+}
+
+/**
  * fm_directory_view_bump_zoom_level:
  *
  * bump the current zoom level by invoking the relevant subclass through the slot

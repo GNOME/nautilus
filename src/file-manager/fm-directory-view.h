@@ -368,6 +368,8 @@ void                fm_directory_view_clear                            (FMDirect
 void                fm_directory_view_begin_loading                    (FMDirectoryView  *view);
 void                fm_directory_view_end_loading                      (FMDirectoryView  *view);
 
+gboolean            fm_directory_view_get_loading                      (FMDirectoryView  *view);
+
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
