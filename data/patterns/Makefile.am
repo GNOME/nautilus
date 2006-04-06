@@ -3,7 +3,6 @@ NULL=
 backdir = $(datadir)/nautilus/patterns
 
 back_DATA = \
-	.striated.png \
 	blue_gray_rough.png \
 	blue_ridge.png \
 	blue_type.png \
