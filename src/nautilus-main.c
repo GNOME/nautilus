@@ -426,7 +426,7 @@ main (int argc, char *argv[])
 	 */
 
 	if (g_getenv ("_NAUTILUS_RESTART") != NULL) {
-		eel_unsetenv ("_NAUTILUS_RESTART");
+		g_unsetenv ("_NAUTILUS_RESTART");
 		
 		/* Might eventually want to copy all the parameters
 		 * from argv into the new exec. For now, though, that

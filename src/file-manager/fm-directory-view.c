@@ -5221,11 +5221,11 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	}
 	g_free (directory_uri);
 	
-	eel_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
+	g_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_free (file_paths);
 
 	uris = get_file_uris_as_newline_delimited_string (selected_files);
-	eel_setenv ("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE);
+	g_setenv ("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE);
 	g_free (uris);
 
 	uri = nautilus_directory_get_uri (view->details->model);
@@ -5233,12 +5233,12 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 		g_free (uri);
 		uri = nautilus_get_desktop_directory_uri ();
 	}
-	eel_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
+	g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
 	geometry_string = eel_gtk_window_get_geometry_string 
 		(GTK_WINDOW (fm_directory_view_get_containing_window (view)));
-	eel_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
+	g_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_free (geometry_string);
 }
 
@@ -5246,10 +5246,10 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 static void
 unset_script_environment_variables (void)
 {
-	eel_unsetenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS");
-	eel_unsetenv ("NAUTILUS_SCRIPT_SELECTED_URIS");
-	eel_unsetenv ("NAUTILUS_SCRIPT_CURRENT_URI");
-	eel_unsetenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
+	g_unsetenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS");
+	g_unsetenv ("NAUTILUS_SCRIPT_SELECTED_URIS");
+	g_unsetenv ("NAUTILUS_SCRIPT_CURRENT_URI");
+	g_unsetenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
 }
 
 static void
