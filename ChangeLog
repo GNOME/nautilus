@@ -1,5 +1,16 @@
 2006-04-07  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-places-sidebar.c: (add_place), (update_places),
+	(mount_volume_callback), (row_activated_callback),
+	(bookmarks_popup_menu_detach_cb), (nautilus_places_sidebar_init):
+	Adapt the same policy for showing drives and volumes in the places
+	sidebar as in computer:/// and the gtk filechooser: Show unmounted
+	but user-visible drives and mount them on activation. (#321320)
+
+	Patch from Xavier Claessens <xclaesse@gmail.com>
+
+2006-04-07  Martin Wehner  <martin.wehner@gmail.com>
+
 	* data/patterns/.striated.png:
 	* data/patterns/Makefile.am:
 	Remove unused pattern file. (#337353)
