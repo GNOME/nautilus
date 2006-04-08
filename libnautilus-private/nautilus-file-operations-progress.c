@@ -151,9 +151,8 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 	char *remaining_time_string = NULL;
 
 	if (progress->details->bytes_total == 0) {
-		/* We haven't set up the file count yet, do not update
-		 * the progress bar until we do.
-		 */
+		/* We haven't set up the file count yet */
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), progress->details->progress_title);
 		return;
 	}
 
@@ -550,6 +549,8 @@ nautilus_file_operations_progress_set_operation_string (NautilusFileOperationsPr
 
 	g_free (progress->details->progress_title);
 	progress->details->progress_title = g_strdup (operation_string);
+
+	nautilus_file_operations_progress_update (progress);
 }
 
 void
