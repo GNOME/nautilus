@@ -1,5 +1,14 @@
 2006-04-10  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(get_data_on_first_target_we_support):
+	Determine drop target by iterating through drop container
+	target list instead of drag context DND list. (#337588)
+
+	Patch from Christian Neumair <chris@gnome-de.org>
+
+2006-04-10  Martin Wehner  <martin.wehner@gmail.com>
+
 	* po/LINGUAS: New file listing all supported languages.
 
 	* configure.in: Use po/LINGUAS instead of including all languages

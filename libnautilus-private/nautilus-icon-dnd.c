@@ -371,8 +371,8 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 static void
 get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
 {
-	GList *target;
 	GtkTargetList *list;
+	GdkAtom target;
 	
 	if (drop_types_list == NULL) {
 		drop_types_list = gtk_target_list_new (drop_types,
@@ -390,30 +390,28 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 	} else {
 		list = drop_types_list;
 	}
-	
-	for (target = context->targets; target != NULL; target = target->next) {
+
+	target = gtk_drag_dest_find_target (widget, context, list);
+	if (target != GDK_NONE) {
 		guint info;
-		GdkAtom target_atom = GDK_POINTER_TO_ATOM (target->data);
 		NautilusDragInfo *drag_info;
+		gboolean found;
 
 		drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
 
-		if (gtk_target_list_find (list, 
-					  target_atom,
-					  &info)) {
-			/* Don't get_data for rootwindow drops unless it's the actual drop */
-			if (info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP &&
-			    !drag_info->drop_occured) {
-				/* We can't call get_data here, because that would
-				   make the source execute the rootwin action */
-				drag_info->got_drop_data_type = TRUE;
-				drag_info->data_type = NAUTILUS_ICON_DND_ROOTWINDOW_DROP;
-			} else {
-				gtk_drag_get_data (GTK_WIDGET (widget), context,
-						   target_atom,
-						   time);
-			}
-			break;
+		found = gtk_target_list_find (list, target, &info);
+		g_assert (found);
+
+		/* Don't get_data for rootwindow drops unless it's the actual drop */
+		if (info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP &&
+		    !drag_info->drop_occured) {
+			/* We can't call get_data here, because that would
+			   make the source execute the rootwin action */
+			drag_info->got_drop_data_type = TRUE;
+			drag_info->data_type = NAUTILUS_ICON_DND_ROOTWINDOW_DROP;
+		} else {
+			gtk_drag_get_data (GTK_WIDGET (widget), context,
+					   target, time);
 		}
 	}
 }
