@@ -379,7 +379,7 @@ nautilus_side_pane_init (GtkObject *object)
 	gtk_widget_show (close_button);
 	
 	image = gtk_image_new_from_stock (GTK_STOCK_CLOSE, 
-					  GTK_ICON_SIZE_SMALL_TOOLBAR);
+					  GTK_ICON_SIZE_MENU);
 	gtk_widget_show (image);
 	
 	gtk_container_add (GTK_CONTAINER (close_button), image);
