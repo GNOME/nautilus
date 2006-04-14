@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-04-01 17:50+0300\n"
-"PO-Revision-Date: 2005-07-16 14:52+0300\n"
+"PO-Revision-Date: 2006-04-14 17:07+0300\n"
 "Last-Translator: Yair Hershkovitz <yairhr@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -293,7 +293,7 @@ msgstr "_דוגמאות"
 
 #: ../data/nautilus.xml.in.h:1
 msgid "Saved search"
-msgstr ""
+msgstr "חיפוש שמור"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -310,7 +310,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
-msgstr ""
+msgstr "השתמש תמיד בשורת המיקום, במקום בתיבת הנתיב"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
@@ -488,6 +488,8 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
+"אם מסומן, אזי חלונות דפדפן תמיד ישתמשו בשורת מיקום טקסטולית, במקום בתיבת "
+"הנתיב"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -559,11 +561,10 @@ msgstr ""
 "נקודה או שהם רשומים בקובץ .hidden של התיקייה."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
-msgstr "אם נקבע כאמת, אזי סמל המקשר לאשפה יושם על שולחן העבודה."
+msgstr "אם נקבע כאמת, אזי סמל המקשר לתצוגת שרתי רשת יופיע על שולחן העבודה."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -661,9 +662,8 @@ msgid "Nautilus uses the users home folder as the desktop"
 msgstr "נאוטילוס משתמש בתיקיית הבית של המשתמש כשולחן העבודה"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
-#, fuzzy
 msgid "Network Servers icon visible on the desktop"
-msgstr "סמל בית נראה על שולחן העבודה"
+msgstr "סמל שרתי רשת נראה על שולחן העבודה"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
@@ -1043,7 +1043,6 @@ msgid "The mime type of the file."
 msgstr "סוג MIME של הקובץ."
 
 #: ../libnautilus-private/nautilus-customization-data.c:404
-#, fuzzy
 msgid "Reset"
 msgstr "הפעל מחדש"
 
@@ -1402,7 +1401,7 @@ msgstr "ה_חלף"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "S_kip All"
-msgstr ""
+msgstr "_דלג על הכל"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1216
 msgid "Replace _All"
@@ -1963,7 +1962,7 @@ msgstr[1] "%u קבצים"
 #: ../libnautilus-private/nautilus-file.c:4345
 #, c-format
 msgid "%s (%lld bytes)"
-msgstr ""
+msgstr "%s·(%lld·bytes)"
 
 #. This means no contents at all were readable
 #: ../libnautilus-private/nautilus-file.c:4641
@@ -2368,10 +2367,8 @@ msgstr "לא ניתן למצוא את \"%s\"."
 #, c-format
 msgid "Opening %d Item"
 msgid_plural "Opening %d Items"
-msgstr[0] ""
-"פותח פריט %d"
-msgstr[1] ""
-"פותח %d פריטים"
+msgstr[0] "פותח פריט %d"
+msgstr[1] "פותח %d פריטים"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:901
 msgid "Sorry, but you can't execute commands from a remote site."
@@ -2405,9 +2402,9 @@ msgstr ""
 "הקבצים המקומיים שזרקת כבר נפתחו."
 
 #: ../libnautilus-private/nautilus-query.c:138
+#, c-format
 msgid "Search for \"%s\""
-msgstr ""
-"חפש את \"%s\""
+msgstr "חפש את \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../src/nautilus-query-editor.c:984
@@ -2567,7 +2564,7 @@ msgstr "אתה בטוח שברצונך לפתוח את כל הקבצים?"
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] "זה יפתח חלון נפרד אחד. אתה בטוח שברצונך לעשות זאת?"
+msgstr[0] "זה יפתח %d חלונות נפרדים. אתה בטוח שברצונך לעשות זאת?"
 msgstr[1] "זה יפתח %d חלונות נפרדים. אתה בטוח שברצונך לעשות זאת?"
 
 #: ../src/file-manager/fm-directory-view.c:998
@@ -2581,10 +2578,13 @@ msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] ""
-"אתה בטוח שברצונך למחוק לצמיתות את הפריט ה-%d שנבחר?"
+"אתה בטוח שברצונך למחוק לצמיתות את %d הפריטים שנבחרו?"
 msgstr[1] ""
 "אתה בטוח שברצונך למחוק לצמיתות את %d הפריטים שנבחרו?"
 
+# msgid "Are you sure you want to permanently delete the %d selected item?"
+# "Are you sure you want to permanently delete the %d selected items?"
+# msgstr "אתה בטוח שברצונך למחוק לצמיתות את הפריט ה-%d שנבחר?"
 #: ../src/file-manager/fm-directory-view.c:1013
 msgid "If you delete an item, it is permanently lost."
 msgstr "אם אתה מוחק פריט, הוא אבוד לנצח."
@@ -2619,7 +2619,7 @@ msgstr "_תיקייה:"
 
 #: ../src/file-manager/fm-directory-view.c:1347
 msgid "Select Folder to Save Search In"
-msgstr ""
+msgstr "בחר תיקייה בה לשמור את החיפוש"
 
 #: ../src/file-manager/fm-directory-view.c:2168
 #, c-format
@@ -2740,10 +2740,17 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr[0] ""
-"האם אתה בטוח שברצונך למחוק לצמיתות את הפריט ה-%d מהאשפה?"
+"האם למחוק לצמיתות את %d הפריטים הנבחרים מהאשפה?"
 msgstr[1] ""
-"האם אתה בטוח שברצונך למחוק לצמיתות את %d הפריטים מהאשפה?"
+"האם למחוק לצמיתות את %d הפריטים הנבחרים מהאשפה?"
 
+# #: ../src/file-manager/fm-directory-view.c:3827
+# msgid ""
+# "Are you sure you want to permanently delete the %d selected item from the "
+# "trash?"
+# "Are you sure you want to permanently delete the %d selected items from the "
+# "trash?"
+# msgstr "האם אתה בטוח שברצונך למחוק לצמיתות את הפריט ה-%d מהאשפה?"
 #: ../src/file-manager/fm-directory-view.c:3838
 msgid "If you delete an item, it will be permanently lost."
 msgstr "אם אתה מוחק פריט, הוא אבוד לנצח."
@@ -2757,10 +2764,8 @@ msgstr "פתיחה באמצעות \"%s\""
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
-msgstr[0] ""
-"השתמש ב \"%s\" כדי לפתוח את הפריט הנבחר"
-msgstr[1] ""
-"השתמש ב \"%s\" כדי לפתוח את הפריטים הנבחרים"
+msgstr[0] "השתמש ב \"%s\" כדי לפתוח את הפריט הנבחר"
+msgstr[1] "השתמש ב \"%s\" כדי לפתוח את הפריטים הנבחרים"
 
 #: ../src/file-manager/fm-directory-view.c:4511
 #, c-format
@@ -2881,21 +2886,24 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" יועתק אם תבחר בפקודת הדבק"
 
 #: ../src/file-manager/fm-directory-view.c:5948
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
-msgstr[0] "\"%s\" יועבר אם תבחר בפקודת הדבק"
-msgstr[1] "\"%s\" יועבר אם תבחר בפקודת הדבק"
+msgstr[0] ""
+"‏%d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
+msgstr[1] ""
+"‏%d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 
 #: ../src/file-manager/fm-directory-view.c:5955
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
-msgstr[0] "\"%s\" יועתק אם תבחר בפקודת הדבק"
-msgstr[1] "\"%s\" יועתק אם תבחר בפקודת הדבק"
-
+msgstr[0] ""
+"‏%d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
+msgstr[1] ""
+"‏%d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 #: ../src/file-manager/fm-directory-view.c:6049
 #: ../src/file-manager/fm-tree-view.c:981
 msgid "There is nothing on the clipboard to paste."
@@ -3184,9 +3192,8 @@ msgstr "_מבנה:"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6742
-#, fuzzy
 msgid "Format the selected volume"
-msgstr "חבר את הכרך הנבחר"
+msgstr "פרמט את הכרך הנבחר"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6745
@@ -3196,22 +3203,22 @@ msgstr "פתח קובץ וסגור חלון"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6749
 msgid "Sa_ve Search"
-msgstr ""
+msgstr "ש_מור חיפוש"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6750
 msgid "Save the edited search"
-msgstr ""
+msgstr "שמור את החיפוש שנערך"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6753
 msgid "Sa_ve Search As..."
-msgstr ""
+msgstr "שמ_ור חיפוש בשם..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6754
 msgid "Save the current search as a file"
-msgstr ""
+msgstr "שמור את החיפוש הנוכחי כקובץ"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6760
@@ -3307,12 +3314,12 @@ msgstr "מחק את כל הפריטים הנבחרים לצמיתות"
 #: ../src/file-manager/fm-directory-view.c:7782
 #, c-format
 msgid "The Link \"%s\" is Broken."
-msgstr ""
+msgstr "הקישור \"%s\" שבור."
 
 #: ../src/file-manager/fm-directory-view.c:7784
-#, fuzzy, c-format
+#, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
-msgstr "הקישור שבור. האם ברצונך לזרוק אותו לאשפה?"
+msgstr "הקישור \"%s\" שבור. האם ברצונך להעביר אותו לאשפה?"
 
 #: ../src/file-manager/fm-directory-view.c:7790
 msgid "This link can't be used, because it has no target."
@@ -3332,10 +3339,8 @@ msgstr "פותח \"%s\"."
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] ""
-"פותח פריט %d."
-msgstr[1] ""
-"פותח %d פריטים."
+msgstr[0] "פותח פריט %d."
+msgstr[1] "פותח %d פריטים."
 
 #: ../src/file-manager/fm-directory-view.c:9312
 msgid "Download location?"
@@ -3967,7 +3972,6 @@ msgid "Creating Properties window."
 msgstr "יוצר חלון מאפיינים."
 
 #: ../src/file-manager/fm-properties-window.c:3880
-
 msgid "Select Custom Icon"
 msgstr "בחר סמל מותאם אישית"
 
@@ -4205,14 +4209,13 @@ msgid "Secure WebDAV (HTTPS)"
 msgstr "WebDAV מאובטח (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:192
-#, fuzzy, c-format
+#, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
-msgstr "\"%s\" אינו מיקום תקני."
+msgstr "לא ניתן להתחבר לשרת. \"%s\" אינו מיקום תיקני"
 
 #: ../src/nautilus-connect-server-dialog.c:208
-#, fuzzy
 msgid "Can't Connect to Server. You must enter a name for the server."
-msgstr "אתה חייב להזין את שם השרת."
+msgstr "לא ניתן להתחבר לשרת. יש להזין שם עבור השרת."
 
 #: ../src/nautilus-connect-server-dialog.c:209
 msgid "Please enter a name and try again."
@@ -4363,6 +4366,14 @@ msgid ""
 "100 MB\n"
 "1 GB"
 msgstr ""
+"100·KB\n"
+"500·KB\n"
+"1·MB\n"
+"3·MB\n"
+"5·MB\n"
+"10·MB\n"
+"100·MB\n"
+"1·GB"
 
 #: ../src/nautilus-file-management-properties.glade.h:11
 #, no-c-format
@@ -4375,6 +4386,13 @@ msgid ""
 "200%\n"
 "400%"
 msgstr ""
+"25%\n"
+"50%\n"
+"75%\n"
+"100%\n"
+"150%\n"
+"200%\n"
+"400%"
 
 #: ../src/nautilus-file-management-properties.glade.h:18
 msgid "<span weight=\"bold\">Behavior</span>"
@@ -4433,12 +4451,14 @@ msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">ברירות המחדל של תצוגת עץ</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:32
-#, fuzzy
 msgid ""
 "Always\n"
 "Local Files Only\n"
 "Never"
-msgstr "קבצים מקומיים בלבד"
+msgstr ""
+"תמיד\n"
+"קבצים מקומיים בלבד\n"
+"לעולם לא"
 
 #: ../src/nautilus-file-management-properties.glade.h:35
 msgid "Always open in _browser windows"
@@ -4446,7 +4466,7 @@ msgstr "פתח תמיד בחלונות _דפדפן"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Always use _text-entry location bar"
-msgstr ""
+msgstr "השתמש תמיד בשורת מיקום _טקסטואלית"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
@@ -4464,6 +4484,11 @@ msgid ""
 "By Modification Date\n"
 "By Emblems"
 msgstr ""
+"לפי שם\n"
+"לפי גודל\n"
+"לפי סוג\n"
+"לפי תאריך שינוי\n"
+"לפי סמלים"
 
 #: ../src/nautilus-file-management-properties.glade.h:44
 msgid ""
@@ -4498,11 +4523,12 @@ msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_כלול פקודת מחיקה העוקפת את האשפה"
 
 #: ../src/nautilus-file-management-properties.glade.h:51
-#, fuzzy
 msgid ""
 "Icon View\n"
 "List View"
-msgstr "מציג סמלים"
+msgstr ""
+"תצוגת סמלים\n"
+"תצוגת רשימה"
 
 #: ../src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
@@ -4658,14 +4684,14 @@ msgid "<b>Image Type:</b> %s (%s)\n"
 msgstr "‏<b>סוג תמונה:</b> %s (%s)\n"
 
 #: ../src/nautilus-image-properties-page.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
 msgstr[0] "‏<b>רוחב:</b> %d פיקסלים\n"
 msgstr[1] "‏<b>רוחב:</b> %d פיקסלים\n"
 
 #: ../src/nautilus-image-properties-page.c:255
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
 msgstr[0] "‏<b>אורך:</b> %d פיקסלים\n"
@@ -4837,7 +4863,7 @@ msgstr "מיקום ההיסטוריה לא קיים."
 
 #: ../src/nautilus-navigation-window-menus.c:426
 msgid "_Go"
-msgstr "_מעבר"
+msgstr "_לך"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:427
@@ -4968,7 +4994,7 @@ msgstr "מעבר למקום הקודם שביקרת בו"
 
 #: ../src/nautilus-navigation-window-menus.c:497
 msgid "Back history"
-msgstr ""
+msgstr "היסטוריית אחורה"
 
 #: ../src/nautilus-navigation-window-menus.c:511
 msgid "_Forward"
@@ -4980,7 +5006,7 @@ msgstr "מעבר למקום הבא שביקרת בו"
 
 #: ../src/nautilus-navigation-window-menus.c:514
 msgid "Forward history"
-msgstr ""
+msgstr "היסטוריית קדימה"
 
 #: ../src/nautilus-navigation-window.c:824
 #, c-format
@@ -5057,7 +5083,6 @@ msgid "_Image:"
 msgstr "_תמונה:"
 
 #: ../src/nautilus-property-browser.c:1080
-#, fuzzy
 msgid "Select an Image File for the New Emblem"
 msgstr "בחר קובץ תמונה לסמל החדש:"
 
@@ -5101,9 +5126,8 @@ msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "מצטער, אך הדוגמה %s לא יכולה להיות מותקנת."
 
 #: ../src/nautilus-property-browser.c:1237
-#, fuzzy
 msgid "Select an Image File to Add as a Pattern"
-msgstr "בחר תמונה להוספה כדוגמה"
+msgstr "בחר קובץ תמונה להוספה כתבנית"
 
 #: ../src/nautilus-property-browser.c:1289
 #: ../src/nautilus-property-browser.c:1320
@@ -5194,13 +5218,12 @@ msgid "Location"
 msgstr "מיקום"
 
 #: ../src/nautilus-query-editor.c:138
-#, fuzzy
 msgid "File Type"
-msgstr "כתיבה כחולה"
+msgstr "סוג קובץ"
 
 #: ../src/nautilus-query-editor.c:280
 msgid "Select folder search in"
-msgstr ""
+msgstr "בחר תיקייה לחיפוש"
 
 #: ../src/nautilus-query-editor.c:364
 msgid "Documents"
@@ -5223,9 +5246,8 @@ msgid "Illustration"
 msgstr "הדמיה"
 
 #: ../src/nautilus-query-editor.c:446
-#, fuzzy
 msgid "Spreadsheet"
-msgstr "הפעל מחדש"
+msgstr "גיליון אלקטרוני"
 
 #: ../src/nautilus-query-editor.c:462
 msgid "Presentation"
@@ -5236,7 +5258,6 @@ msgid "Pdf / Postscript"
 msgstr "Pdf / Postscript"
 
 #: ../src/nautilus-query-editor.c:479
-#, fuzzy
 msgid "Text File"
 msgstr "קובץ טקסט"
 
@@ -5253,24 +5274,22 @@ msgid "Other Type..."
 msgstr "סוג אחר..."
 
 #: ../src/nautilus-query-editor.c:936
-#, fuzzy
 msgid "Remove this criterium from the search"
-msgstr "העבר את התיקייה לאשפה"
+msgstr "הסר קריטריון זה מהחיפוש"
 
 #: ../src/nautilus-query-editor.c:980
 msgid "<b>Search Folder</b>"
-msgstr ""
+msgstr "‏<b>תיקיית חיפוש</b>"
 
 #: ../src/nautilus-query-editor.c:996
 msgid "Edit the saved search"
-msgstr ""
+msgstr "ערוך את החיפוש שנשמר"
 
 #: ../src/nautilus-query-editor.c:1027
 msgid "Add a new criterium to this search"
-msgstr ""
+msgstr "הוסף קריטריון חדש לחיפוש זה"
 
 #: ../src/nautilus-query-editor.c:1031
-#, fuzzy
 msgid "Go"
 msgstr "_מעבר"
 
@@ -5280,11 +5299,11 @@ msgstr "רענן"
 
 #: ../src/nautilus-query-editor.c:1038
 msgid "Perform or update the search"
-msgstr ""
+msgstr "בצע או עדכן את החיפוש"
 
 #: ../src/nautilus-query-editor.c:1058
 msgid "<b>_Search for:</b>"
-msgstr ""
+msgstr "‏<b>_חפש עבור:</b>"
 
 #: ../src/nautilus-query-editor.c:1085
 msgid "Search results"
@@ -5611,7 +5630,6 @@ msgstr "לך למיקום המחשב"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:690
-#, fuzzy
 msgid "_Network"
 msgstr "_רשת"
 
