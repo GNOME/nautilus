@@ -808,7 +808,13 @@ static void
 action_add_bookmark_callback (GtkAction *action,
 			      gpointer user_data)
 {
-        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) { /* don't bookmark x-nautilus-desktop:/// */
+		nautilus_window_add_bookmark_for_current_location (window);
+	}
 }
 
 static void

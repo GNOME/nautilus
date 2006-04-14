@@ -1,3 +1,10 @@
+2006-04-14  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-spatial-window.c: (action_add_bookmark_callback):
+	Don't add location bookmark for desktop windows. Fixes #334860.
+
+	Patch from Christian Neumair <chris@gnome-de.org>
+
 2006-04-11  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:
@@ -165,9 +172,6 @@
 	http://mail.gnome.org/archives/nautilus-list/2006-March/msg00036.html
 
 	Also fixes #335158.
-
-	* src/nautilus-spatial-window.c: (action_add_bookmark_callback):
-	Don't add location bookmark for desktop windows. Fixes #334860.
 
 	* libnautilus-private/nautilus-file-operations.c:
 	(nautilus_file_operations_copy_move):
