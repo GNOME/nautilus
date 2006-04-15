@@ -1,3 +1,9 @@
+2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (remove_selected_bookmarks):
+	Don't delete the first bookmark if pressing del key on an
+	undeletable item. Fixes #338377.
+
 2006-04-14  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-spatial-window.c: (action_add_bookmark_callback):

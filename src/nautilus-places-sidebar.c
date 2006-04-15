@@ -961,6 +961,7 @@ remove_selected_bookmarks (NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
+	PlaceType type; 
 	int index;
 
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
@@ -969,6 +970,14 @@ remove_selected_bookmarks (NautilusPlacesSidebar *sidebar)
 		return;
 	}
 	
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
+			    -1);
+
+	if (type != PLACES_BOOKMARK) {
+		return;
+	}
+
 	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
 			    PLACES_SIDEBAR_COLUMN_INDEX, &index,
 			    -1);
