@@ -1,5 +1,10 @@
 2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
 
+	* po/LINGUAS:
+	Remove newlines to fix build with CVS intltool. (#338423) 
+
+2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-places-sidebar.c: (remove_selected_bookmarks):
 	Don't delete the first bookmark if pressing del key on an
 	undeletable item. Fixes #338377.
