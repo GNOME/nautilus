@@ -130,6 +130,7 @@ typedef struct {
 	gboolean metafile;
 	gboolean mime_list;
 	gboolean top_left_text;
+	gboolean large_top_left_text;
 	gboolean extension_info;
 	gboolean slow_mime_type;
 } Request;

@@ -129,6 +129,7 @@ typedef struct {
 						   NautilusIconData *data,
 						   GList **emblem_icons,
 						   char **embedded_text,
+						   gboolean need_large_embeddded_text,
 						   gboolean *embedded_text_needs_loading,
 						   gboolean *has_window_open);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
@@ -145,7 +146,8 @@ typedef struct {
 						   NautilusIconData *icon_b);
 	void         (* start_monitor_top_left)   (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   gconstpointer client);
+						   gconstpointer client,
+						   gboolean large_text);
 	void         (* stop_monitor_top_left)    (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gconstpointer client);

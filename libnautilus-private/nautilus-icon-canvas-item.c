@@ -103,10 +103,14 @@ struct NautilusIconCanvasItemDetails {
 	
 	guint bounds_cached : 1;
 	
+	guint is_visible : 1;
+
+	GdkRectangle embedded_text_rect;
+	char *embedded_text;
+
+	/* Cached PangoLayouts. Only used if the icon is visible */
 	PangoLayout *editable_text_layout;
 	PangoLayout *additional_text_layout;
-	
-	GdkRectangle embedded_text_rect;
 	PangoLayout *embedded_text_layout;
 
 	/* Cached rectangle in canvas coordinates */
@@ -244,7 +248,6 @@ static void
 nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 {
 	static gboolean setup_auto_enums = FALSE;
-	NautilusIconCanvasItemDetails *details;
 
 	if (!setup_auto_enums) {
 		eel_preferences_add_auto_enum
@@ -253,9 +256,7 @@ nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 		setup_auto_enums = TRUE;
 	}
 
-	details = g_new0 (NautilusIconCanvasItemDetails, 1);
-
-	icon_item->details = details;
+	icon_item->details = G_TYPE_INSTANCE_GET_PRIVATE ((icon_item), NAUTILUS_TYPE_ICON_CANVAS_ITEM, NautilusIconCanvasItemDetails);
 	nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 }
 
@@ -297,9 +298,8 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 		g_object_unref (details->embedded_text_layout);
 	}
 
+	g_free (details->embedded_text);
 	
-	g_free (details);
-
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
  
@@ -659,27 +659,18 @@ void
 nautilus_icon_canvas_item_set_embedded_text (NautilusIconCanvasItem       *item,
 					     const char                   *text)
 {
-	PangoContext *context;
-	PangoFontDescription *desc;
-	
-	if (item->details->embedded_text_layout == NULL && text != NULL) {
-		context = gtk_widget_get_pango_context (GTK_WIDGET (EEL_CANVAS_ITEM(item)->canvas));
-		item->details->embedded_text_layout = pango_layout_new (context);
-		
-		desc = pango_font_description_from_string ("monospace 6");
-		pango_layout_set_font_description (item->details->embedded_text_layout, desc);
-		pango_font_description_free (desc);
-	}
-	
+	g_free (item->details->embedded_text);
+	item->details->embedded_text = g_strdup (text);
+
 	if (item->details->embedded_text_layout != NULL) {
 		if (text != NULL) {
 			pango_layout_set_text (item->details->embedded_text_layout, text, -1);
 		} else {
 			pango_layout_set_text (item->details->embedded_text_layout, "", -1);
 		}
-			
-		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
 	}
+
+	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
 }
 
 
@@ -1167,6 +1158,32 @@ draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	draw_or_measure_label_text (item, drawable, create_mask, icon_rect);
 }
 
+void
+nautilus_icon_canvas_item_set_is_visible (NautilusIconCanvasItem       *item,
+					  gboolean                      visible)
+{
+	if (item->details->is_visible == visible)
+		return;
+	
+	item->details->is_visible = visible;
+
+	if (!visible) {
+		if (item->details->editable_text_layout) {
+			g_object_unref (item->details->editable_text_layout);
+			item->details->editable_text_layout = NULL;
+		}
+		if (item->details->additional_text_layout) {
+			g_object_unref (item->details->additional_text_layout);
+			item->details->additional_text_layout = NULL;
+		}
+		if (item->details->embedded_text_layout) {
+			g_object_unref (item->details->embedded_text_layout);
+			item->details->embedded_text_layout = NULL;
+		}
+	}
+}
+
+
 static GdkPixbuf *
 get_knob_pixbuf (void)
 {
@@ -1511,34 +1528,54 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 }
 
 static void
-draw_embedded_text (NautilusIconCanvasItem *icon_item,
+draw_embedded_text (NautilusIconCanvasItem *item,
 		    GdkDrawable *drawable,
 		    int x, int y)
 {
 	GdkGC *gc;
 	GdkRectangle clip_rect;
+	PangoLayout *layout;
+	PangoContext *context;
+	PangoFontDescription *desc;
 	
-	if (icon_item->details->embedded_text_layout == NULL ||
-	    icon_item->details->embedded_text_rect.width == 0 ||
-	    icon_item->details->embedded_text_rect.height == 0) {
+	if (item->details->embedded_text == NULL ||
+	    item->details->embedded_text_rect.width == 0 ||
+	    item->details->embedded_text_rect.height == 0) {
 		return;
 	}
 
+	if (item->details->embedded_text_layout != NULL) {
+		layout = g_object_ref (item->details->embedded_text_layout);
+	} else {
+		context = gtk_widget_get_pango_context (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas));
+		layout = pango_layout_new (context);
+		pango_layout_set_text (layout, item->details->embedded_text, -1);
+		
+		desc = pango_font_description_from_string ("monospace 6");
+		pango_layout_set_font_description (layout, desc);
+		pango_font_description_free (desc);
+
+		if (item->details->is_visible) {
+			item->details->embedded_text_layout = g_object_ref (layout);
+		}
+	}
+	
 	gc = gdk_gc_new (drawable);
 
-	clip_rect.x = x + icon_item->details->embedded_text_rect.x;
-	clip_rect.y = y + icon_item->details->embedded_text_rect.y;
-	clip_rect.width = icon_item->details->embedded_text_rect.width;
-	clip_rect.height = icon_item->details->embedded_text_rect.height;
+	clip_rect.x = x + item->details->embedded_text_rect.x;
+	clip_rect.y = y + item->details->embedded_text_rect.y;
+	clip_rect.width = item->details->embedded_text_rect.width;
+	clip_rect.height = item->details->embedded_text_rect.height;
 	
 	gdk_gc_set_clip_rectangle  (gc, &clip_rect);
 
 	gdk_draw_layout (drawable, gc,
-			 x + icon_item->details->embedded_text_rect.x,
-			 y + icon_item->details->embedded_text_rect.y,
-			 icon_item->details->embedded_text_layout);
+			 x + item->details->embedded_text_rect.x,
+			 y + item->details->embedded_text_rect.y,
+			layout);
 	
 	g_object_unref (gc);
+	g_object_unref (layout);
 }
 
 /* Draw the icon item for non-anti-aliased mode. */
@@ -1680,16 +1717,23 @@ create_label_layout (NautilusIconCanvasItem *item,
 }
 
 static PangoLayout *
-get_label_layout (PangoLayout **layout,
+get_label_layout (PangoLayout **layout_cache,
 		  NautilusIconCanvasItem *item,
 		  const char *text)
 {
-	if (*layout == NULL) {
-		*layout = create_label_layout (item, text);
+	PangoLayout *layout;
+
+	if (*layout_cache != NULL) {
+		return g_object_ref (*layout_cache);
+	}
+
+	layout = create_label_layout (item, text);
+
+	if (item->details->is_visible) {
+		*layout_cache = g_object_ref (layout);
 	}
 	
-	g_object_ref (*layout);
-	return *layout;
+	return layout;
 }
 
 static void
@@ -2735,7 +2779,7 @@ nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
 	gint editable_height;
 	gint offset = 0;
 	gint index;
-	PangoLayout *layout;
+	PangoLayout *layout, *editable_layout, *additional_layout;
 	PangoRectangle rect0;
 	char *icon_text;
 	gboolean have_editable;
@@ -2756,19 +2800,25 @@ nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
 	have_editable = item->details->editable_text != NULL &&
 			item->details->editable_text[0] != '\0';
 	have_additional = item->details->additional_text != NULL &&item->details->additional_text[0] != '\0';
+
+	editable_layout = NULL;
+	additional_layout = NULL;
 	if (have_editable) {
-		pango_layout_get_pixel_size (item->details->editable_text_layout, NULL, &editable_height);
+		editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+		pango_layout_get_pixel_size (editable_layout, NULL, &editable_height);
 		if (y >= editable_height &&
                     have_additional) {
-			layout = item->details->additional_text_layout;
+			additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+			layout = additional_layout;
 			icon_text = item->details->additional_text;
 			y -= editable_height + LABEL_LINE_SPACING;
 		} else {
-			layout = item->details->editable_text_layout;
+			layout = editable_layout;
 			icon_text = item->details->editable_text;
 		}
 	} else if (have_additional) {
-		layout = item->details->additional_text_layout;
+		additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+		layout = additional_layout;
 		icon_text = item->details->additional_text;
 	} else {
 		return 0;
@@ -2776,13 +2826,13 @@ nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
 
 	text_offset = 0;
 	if (have_editable) {
-		pango_layout_index_to_pos (item->details->editable_text_layout, 0, &rect0);
+		pango_layout_index_to_pos (editable_layout, 0, &rect0);
 		text_offset = PANGO_PIXELS (rect0.x);
 	}
 	if (have_additional) {
 		gint itmp;
 
-		pango_layout_index_to_pos (item->details->additional_text_layout, 0, &rect0);
+		pango_layout_index_to_pos (additional_layout, 0, &rect0);
 		itmp = PANGO_PIXELS (rect0.x);
 		if (itmp < text_offset) {
 			text_offset = itmp;
@@ -2805,9 +2855,18 @@ nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
 	} else {
 		offset = g_utf8_pointer_to_offset (icon_text, icon_text + index);
 	}
-	if (layout == item->details->additional_text_layout) {
+	if (layout == additional_layout) {
 		offset += g_utf8_strlen (item->details->editable_text, -1);	
 	}
+
+	if (editable_layout != NULL) {
+		g_object_unref (editable_layout);
+	}
+	
+	if (additional_layout != NULL) {
+		g_object_unref (additional_layout);
+	}
+	
 	return offset;
 }
 
@@ -2825,7 +2884,7 @@ nautilus_icon_canvas_item_accessible_get_character_extents (AtkText	   *text,
 	gint editable_height;
 	gchar *icon_text;
 	NautilusIconCanvasItem *item;
-	PangoLayout *layout;
+	PangoLayout *layout, *editable_layout, *additional_layout;
 	PangoRectangle rect;
 	PangoRectangle rect0;
 	gboolean have_editable;
@@ -2846,16 +2905,19 @@ nautilus_icon_canvas_item_accessible_get_character_extents (AtkText	   *text,
 		len = 0;
 	}
 
+	editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+	additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+	
 	if (offset < len) {
 		icon_text = item->details->editable_text;
-		layout = item->details->editable_text_layout;
+		layout = editable_layout;
 	} else {
 		offset -= len;
 		icon_text = item->details->additional_text;
-		layout = item->details->additional_text_layout;
+		layout = additional_layout;
 		pos_y += LABEL_LINE_SPACING;
 		if (have_editable) {
-			pango_layout_get_pixel_size (item->details->editable_text_layout, NULL, &editable_height);
+			pango_layout_get_pixel_size (editable_layout, NULL, &editable_height);
 			pos_y += editable_height;
 		}
 	}
@@ -2863,19 +2925,22 @@ nautilus_icon_canvas_item_accessible_get_character_extents (AtkText	   *text,
 	pango_layout_index_to_pos (layout, byte_offset, &rect);
 	text_offset = 0;
 	if (have_editable) {
-		pango_layout_index_to_pos (item->details->editable_text_layout, 0, &rect0);
+		pango_layout_index_to_pos (editable_layout, 0, &rect0);
 		text_offset = PANGO_PIXELS (rect0.x);
 	}
 	if (item->details->additional_text != NULL &&
 	    item->details->additional_text[0] != '\0') {
 		gint itmp;
 
-		pango_layout_index_to_pos (item->details->additional_text_layout, 0, &rect0);
+		pango_layout_index_to_pos (additional_layout, 0, &rect0);
 		itmp = PANGO_PIXELS (rect0.x);
 		if (itmp < text_offset) {
 			text_offset = itmp;
 		}
 	}
+
+	g_object_unref (editable_layout);
+	g_object_unref (additional_layout);
 
 	*x = pos_x + PANGO_PIXELS (rect.x) - text_offset;
 	*y = pos_y + PANGO_PIXELS (rect.y);
@@ -3064,6 +3129,8 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 
 	EEL_OBJECT_SET_FACTORY (NAUTILUS_TYPE_ICON_CANVAS_ITEM,
 				nautilus_icon_canvas_item_accessible);
+
+	g_type_class_add_private (class, sizeof (NautilusIconCanvasItemDetails));
 }
 
 GType

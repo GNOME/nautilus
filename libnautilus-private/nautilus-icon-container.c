@@ -121,6 +121,11 @@
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
 
+/* If icon size is bigger than this, request large embedded text.
+ * Its selected so that the non-large text should fit in "normal" icon sizes
+ */
+#define ICON_SIZE_FOR_LARGE_EMBEDDED_TEXT 55
+
 /* From nautilus-icon-canvas-item.c */
 #define MAX_TEXT_WIDTH_BESIDE 90
 
@@ -183,10 +188,11 @@ static void          nautilus_icon_container_stop_monitor_top_left  (NautilusIco
 								     gconstpointer          client);
 static void          nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 								     NautilusIconData      *data,
-								     gconstpointer          client);
+								     gconstpointer          client,
+								     gboolean               large_text);
 static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
 								     NautilusIconContainer *container);
-static void          nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container);
+static void          nautilus_icon_container_update_visible_icons   (NautilusIconContainer *container);
 static void          reveal_icon                                    (NautilusIconContainer *container,
 								     NautilusIcon *icon);
 
@@ -1640,7 +1646,7 @@ redo_layout_internal (NautilusIconContainer *container)
 
 	process_pending_icon_to_reveal (container);
 	process_pending_icon_to_rename (container);
-	nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (container);
+	nautilus_icon_container_update_visible_icons (container);
 }
 
 static gboolean
@@ -5358,6 +5364,7 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
 					 GList                **emblem_icons,
 					 char                 **embedded_text,
+					 gboolean               need_large_embeddded_text,
 					 gboolean              *embedded_text_needs_loading,
 					 gboolean              *has_open_window)
 {
@@ -5366,7 +5373,7 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
 
-	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading, has_open_window);
+	return klass->get_icon_images (container, data, emblem_icons, embedded_text, need_large_embeddded_text, embedded_text_needs_loading, has_open_window);
 }
 
 
@@ -5387,14 +5394,15 @@ nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
 static void
 nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 						NautilusIconData *data,
-						gconstpointer client)
+						gconstpointer client,
+						gboolean large_text)
 {
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_if_fail (klass->start_monitor_top_left != NULL);
 
-	klass->start_monitor_top_left (container, data, client);
+	klass->start_monitor_top_left (container, data, client, large_text);
 }
 
 static void
@@ -5424,7 +5432,7 @@ nautilus_icon_container_prioritize_thumbnailing (NautilusIconContainer *containe
 }
 
 static void
-nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container)
+nautilus_icon_container_update_visible_icons (NautilusIconContainer *container)
 {
 	GtkAdjustment *vadj;
 	double min_y, max_y;
@@ -5443,7 +5451,9 @@ nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconC
 	eel_canvas_c2w (EEL_CANVAS (container),
 			0, max_y, NULL, &max_y);
 	
-	/* Do the iteration in reverse to get the render-order from top to bottom */
+	/* Do the iteration in reverse to get the render-order from top to
+	 * bottom for the prioritized thumbnails.
+	 */
 	for (node = g_list_last (container->details->icons); node != NULL; node = node->prev) {
 		icon = node->data;
 
@@ -5460,10 +5470,12 @@ nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconC
 					     &x1,
 					     &y1);
 			if (y1 >= min_y && y0 <= max_y) {
+				nautilus_icon_canvas_item_set_is_visible (icon->item, TRUE);
 				nautilus_icon_container_prioritize_thumbnailing (container,
 										 icon);
+			} else {
+				nautilus_icon_canvas_item_set_is_visible (icon->item, FALSE);
 			}
-			
 		}
 	}
 }
@@ -5472,7 +5484,7 @@ static void
 handle_vadjustment_changed (GtkAdjustment *adjustment,
 			    NautilusIconContainer *container)
 {
-	nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (container);
+	nautilus_icon_container_update_visible_icons (container);
 }
 
 void 
@@ -5489,6 +5501,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	char *editable_text, *additional_text;
 	char *embedded_text;
 	GdkRectangle embedded_text_rect;
+	gboolean large_embedded_text;
 	gboolean embedded_text_needs_loading;
 	gboolean has_open_window;
 	char *modifier;
@@ -5498,15 +5511,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	}
 
 	details = container->details;
-
-	/* Get the icons. */
-	emblem_icon_names = NULL;
-	embedded_text = NULL;
-	icon_name = nautilus_icon_container_get_icon_images (
-		container, icon->data, 
-		&emblem_icon_names,
-		&embedded_text, &embedded_text_needs_loading,
-		&has_open_window);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
@@ -5518,6 +5522,16 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	icon_size = MAX (icon_size, min_image_size);
 	icon_size = MIN (icon_size, max_image_size);
 
+	/* Get the icons. */
+	emblem_icon_names = NULL;
+	embedded_text = NULL;
+	large_embedded_text = icon_size > ICON_SIZE_FOR_LARGE_EMBEDDED_TEXT;
+	icon_name = nautilus_icon_container_get_icon_images (
+		container, icon->data, 
+		&emblem_icon_names,
+		&embedded_text, large_embedded_text, &embedded_text_needs_loading,
+		&has_open_window);
+	
 	modifier = NULL;
 	if (has_open_window) {
 		modifier = "visiting";
@@ -5540,7 +5554,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	    embedded_text_rect.height > MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT &&
 	    embedded_text_needs_loading) {
 		icon->is_monitored = TRUE;
-		nautilus_icon_container_start_monitor_top_left (container, icon->data, icon);
+		nautilus_icon_container_start_monitor_top_left (container, icon->data, icon, large_embedded_text);
 	}
 	
 	emblem_pixbufs = NULL;

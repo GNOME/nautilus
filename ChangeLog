@@ -1,3 +1,30 @@
+2006-04-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-file.h:
+	Add  LARGE_TOP_LEFT_TEXT attribute and change the text size for
+	the normal top-left text to 10x5.
+	Add need_large argument to nautilus_file_peek_top_left_text and
+	nautilus_extract_top_left_text.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.[ch]
+	Make details an instance-private instead of allocating separately.
+	Add _set_is_visible() and only keep PangoLayouts cached for
+	visible icons.
+	
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* src/file-manager/fm-icon-container.c:
+	Monitor large embedded text for larger icons.
+	Call nautilus_icon_canvas_item_set_is_visible as needed.
+	
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Limit never-free recently used cache to 20 items.
+	Free other unused cache items after a 100 sec.
+
 2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
 
 	* po/LINGUAS:

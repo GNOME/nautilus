@@ -30,9 +30,13 @@
 #include <libnautilus-private/nautilus-monitor.h>
 #include <eel/eel-glib-extensions.h>
 
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
+#define NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
+#define NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
+#define NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_BYTES               10000
+
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 10
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               5
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -135,6 +139,7 @@ struct NautilusFileDetails
 	eel_boolean_bit mime_list_is_up_to_date       : 1;
 
 	eel_boolean_bit got_top_left_text             : 1;
+	eel_boolean_bit got_large_top_left_text       : 1;
 	eel_boolean_bit top_left_text_is_up_to_date   : 1;
 
 	eel_boolean_bit got_link_info                 : 1;
@@ -156,6 +161,7 @@ void          nautilus_file_mark_gone                      (NautilusFile        
 gboolean      nautilus_file_info_missing                   (NautilusFile           *file,
 							    GnomeVFSFileInfoFields  needed_mask);
 char *        nautilus_extract_top_left_text               (const char             *text,
+							    gboolean                large,
 							    int                     length);
 void          nautilus_file_set_directory                  (NautilusFile           *file,
 							    NautilusDirectory      *directory);

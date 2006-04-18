@@ -56,6 +56,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   GList                **emblem_icons,
 				   char                 **embedded_text,
+				   gboolean               need_large_embeddded_text,
 				   gboolean              *embedded_text_needs_loading,
 				   gboolean              *has_window_open)
 {
@@ -70,7 +71,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	g_return_val_if_fail (icon_view != NULL, NULL);
 
 	if (embedded_text) {
-		*embedded_text = nautilus_file_peek_top_left_text (file, embedded_text_needs_loading);
+		*embedded_text = nautilus_file_peek_top_left_text (file, need_large_embeddded_text, embedded_text_needs_loading);
 	}
 	
 	if (emblem_icons != NULL) {
@@ -110,15 +111,21 @@ fm_icon_container_get_icon_description (NautilusIconContainer *container,
 static void
 fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 					  NautilusIconData      *data,
-					  gconstpointer          client)
+					  gconstpointer          client,
+					  gboolean               large_text)
 {
 	NautilusFile *file;
-
+	NautilusFileAttributes attributes;
+		
 	file = (NautilusFile *) data;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	nautilus_file_monitor_add (file, client, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+	attributes = NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT;
+	if (large_text) {
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT;
+	}
+	nautilus_file_monitor_add (file, client, attributes);
 }
 
 static void

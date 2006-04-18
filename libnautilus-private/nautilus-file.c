@@ -5241,7 +5241,9 @@ nautilus_file_is_executable (NautilusFile *file)
  * 
  **/
 char *
-nautilus_file_peek_top_left_text (NautilusFile *file, gboolean *needs_loading)
+nautilus_file_peek_top_left_text (NautilusFile *file,
+				  gboolean  need_large_text,
+				  gboolean *needs_loading)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
@@ -5254,6 +5256,9 @@ nautilus_file_peek_top_left_text (NautilusFile *file, gboolean *needs_loading)
 	
 	if (needs_loading) {
 		*needs_loading = !file->details->top_left_text_is_up_to_date;
+		if (need_large_text) {
+			*needs_loading |= file->details->got_top_left_text != file->details->got_large_top_left_text;
+		}
 	}
 
 	/* Show " ..." in the file until we read the contents in. */
@@ -5281,7 +5286,7 @@ nautilus_file_peek_top_left_text (NautilusFile *file, gboolean *needs_loading)
 char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
-	return g_strdup (nautilus_file_peek_top_left_text (file, NULL));
+	return g_strdup (nautilus_file_peek_top_left_text (file, FALSE, NULL));
 }
 
 
@@ -5992,6 +5997,7 @@ try_to_make_utf8 (const char *text, int *length)
 /* Extract the top left part of the read-in text. */
 char *
 nautilus_extract_top_left_text (const char *text,
+				gboolean large,
 				int length)
 {
         GString* buffer;
@@ -6002,13 +6008,26 @@ nautilus_extract_top_left_text (const char *text,
 	char *text_copy;
 	const char *utf8_end;
 	gboolean validated;
+	int max_bytes, max_lines, max_cols;
+
+	if (large) {
+		max_bytes = NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_BYTES;
+		max_lines = NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_LINES;
+		max_cols = NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE;
+	} else {
+		max_bytes = NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES;
+		max_lines = NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES;
+		max_cols = NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE;
+	}
+			
+	
 
         text_copy = NULL;
         if (text != NULL) {
 		/* Might be a partial utf8 character at the end if we didn't read whole file */
 		validated = g_utf8_validate (text, length, &utf8_end);
 		if (!validated &&
-		    !(length >= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES &&
+		    !(length >= max_bytes &&
 		      text + length - utf8_end < 6)) {
 			text_copy = try_to_make_utf8 (text, &length);
 			text = text_copy;
@@ -6024,9 +6043,9 @@ nautilus_extract_top_left_text (const char *text,
 	buffer = g_string_new ("");
 	end = text + length; in = text;
 
-	for (line = 0; line < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES; line++) {
+	for (line = 0; line < max_lines; line++) {
 		/* Extract one line. */
-		for (i = 0; i < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE; ) {
+		for (i = 0; i < max_cols; ) {
 			if (*in == '\n') {
 				break;
 			}

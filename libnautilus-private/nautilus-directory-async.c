@@ -67,6 +67,7 @@
 #define MAX_ASYNC_JOBS 10
 
 struct TopLeftTextReadState {
+	gboolean large;
 	NautilusFile *file;
 	EelReadFileHandle *handle;
 };
@@ -531,6 +532,11 @@ nautilus_directory_set_up_request (Request *request,
 	
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT) {
 		request->top_left_text = TRUE;
+		request->file_info = TRUE;
+	}
+	
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT) {
+		request->large_top_left_text = TRUE;
 		request->file_info = TRUE;
 	}
 	
@@ -1616,6 +1622,21 @@ wants_top_left (const Request *request)
 }
 
 static gboolean
+lacks_large_top_left (NautilusFile *file)
+{
+	return file->details->file_info_is_up_to_date &&
+		(!file->details->top_left_text_is_up_to_date ||
+		 file->details->got_large_top_left_text != file->details->got_top_left_text)
+		&& nautilus_file_should_get_top_left_text (file);
+}
+
+static gboolean
+wants_large_top_left (const Request *request)
+{
+	return request->large_top_left_text;
+}
+
+static gboolean
 lacks_info (NautilusFile *file)
 {
 	return !file->details->file_info_is_up_to_date
@@ -1765,6 +1786,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->top_left_text) {
 		if (has_problem (directory, file, lacks_top_left)) {
+			return FALSE;
+		}
+	}
+	
+	if (request->large_top_left_text) {
+		if (has_problem (directory, file, lacks_large_top_left)) {
 			return FALSE;
 		}
 	}
@@ -2598,11 +2625,13 @@ top_left_read_callback (GnomeVFSResult result,
 	file_details->top_left_text_is_up_to_date = TRUE;
 	g_free (file_details->top_left_text);
 	if (result == GNOME_VFS_OK) {
-		file_details->top_left_text = nautilus_extract_top_left_text (file_contents, bytes_read);
+		file_details->top_left_text = nautilus_extract_top_left_text (file_contents, directory->details->top_left_read_state->large, bytes_read);
 		file_details->got_top_left_text = TRUE;
+		file_details->got_large_top_left_text = directory->details->top_left_read_state->large;
 	} else {
 		file_details->top_left_text = NULL;
 		file_details->got_top_left_text = FALSE;
+		file_details->got_large_top_left_text = FALSE;
 	}
 
 	g_free (file_contents);
@@ -2617,11 +2646,20 @@ top_left_read_more_callback (GnomeVFSFileSize bytes_read,
 			     const char *file_contents,
 			     gpointer callback_data)
 {
-	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
 
 	/* Stop reading when we have enough. */
-	return bytes_read < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES
-		&& count_lines (file_contents, bytes_read) <= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES;
+	if (directory->details->top_left_read_state->large) {
+		return bytes_read < NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_BYTES
+			&& count_lines (file_contents, bytes_read) <= NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_LINES;
+	} else {
+		return bytes_read < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES
+			&& count_lines (file_contents, bytes_read) <= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES;
+	}
+		
 }
 
 static void
@@ -2636,7 +2674,10 @@ top_left_stop (NautilusDirectory *directory)
 			g_assert (file->details->directory == directory);
 			if (is_needy (file,
 				      lacks_top_left,
-				      wants_top_left)) {
+				      wants_top_left) ||
+			    is_needy (file,
+				      lacks_large_top_left,
+				      wants_large_top_left)) {
 				return;
 			}
 		}
@@ -2651,15 +2692,25 @@ top_left_start (NautilusDirectory *directory,
 		NautilusFile *file)
 {
 	char *uri;
+	gboolean needs_large;
 
 	if (directory->details->top_left_read_state != NULL) {
 		return;
 	}
+	
+	needs_large = FALSE;
+
+	if (is_needy (file,
+		      lacks_large_top_left,
+		      wants_large_top_left)) {
+		needs_large = TRUE;
+	}
 
 	/* Figure out which file to read the top left for. */
-	if (!is_needy (file,
-		       lacks_top_left,
-		       wants_top_left)) {
+	if (!(needs_large ||
+	      is_needy (file,
+			lacks_top_left,
+			wants_top_left))) {
 		return;
 	}
 
@@ -2667,6 +2718,7 @@ top_left_start (NautilusDirectory *directory,
 		g_free (file->details->top_left_text);
 		file->details->top_left_text = NULL;
 		file->details->got_top_left_text = FALSE;
+		file->details->got_large_top_left_text = FALSE;
 		file->details->top_left_text_is_up_to_date = TRUE;
 
 		nautilus_directory_async_state_changed (directory);
@@ -2679,6 +2731,7 @@ top_left_start (NautilusDirectory *directory,
 
 	/* Start reading. */
 	directory->details->top_left_read_state = g_new0 (TopLeftTextReadState, 1);
+	directory->details->top_left_read_state->large = needs_large;
 	directory->details->top_left_read_state->file = file;
 	uri = nautilus_file_get_uri (file);
 	directory->details->top_left_read_state->handle = eel_read_file_async
@@ -3476,6 +3529,10 @@ file_needs_low_priority_work_done (NautilusDirectory *directory,
 	}
 
 	if (is_needy (file, lacks_top_left, wants_top_left)) {
+		return TRUE;
+	}
+
+	if (is_needy (file, lacks_large_top_left, wants_large_top_left)) {
 		return TRUE;
 	}
 

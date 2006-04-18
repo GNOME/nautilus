@@ -91,6 +91,8 @@ ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIc
 ArtDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item,
 								double i2w_dx, double i2w_dy);
+void        nautilus_icon_canvas_item_set_is_visible           (NautilusIconCanvasItem       *item,
+								gboolean                      visible);
 
 G_END_DECLS
 

@@ -79,12 +79,17 @@
  * cache if the caller keeps the pixbuf around (we only get rid of
  * items from the cache after the caller unref's them).
 */
-#define ICON_CACHE_COUNT                128
+#define ICON_CACHE_COUNT                20
 
 /* This is the number of milliseconds we wait before sweeping out
  * items from the cache.
  */
 #define ICON_CACHE_SWEEP_TIMEOUT        (10 * 1000)
+
+/* After a pixmap goes out of the recently used queue, and the pixbuf are not
+ * referenced outside the cache this is the number of sweeps an object lives.
+ */
+#define ICON_MAX_AGE        10
 
 /* This circular doubly-linked list structure is used to keep a list
  * of the most recently used items in the cache.
@@ -118,6 +123,7 @@ typedef struct {
 	time_t mtime; /* Only used for absolute filenames */
 
 	CircularList recently_used_node;
+	int age; /* zero:ed on access, incremented each sweep */
 } CacheIcon;
 
 /* The icon factory.
@@ -525,7 +531,7 @@ nautilus_icon_factory_possibly_free_cached_icon (gpointer key,
         CacheIcon *icon;
 	
 	icon = value;
-	
+
 	/* Don't free a cache entry that is in the recently used list. */
         if (icon->recently_used_node.next != NULL) {
                 return FALSE;
@@ -534,6 +540,12 @@ nautilus_icon_factory_possibly_free_cached_icon (gpointer key,
 	/* Don't free a cache entry if the pixbuf is still in use. */
 	if (G_OBJECT (icon->pixbuf)->ref_count > 1) {
 		return FALSE;
+	}
+
+	icon->age++;
+	
+	if (icon->age > ICON_MAX_AGE) {
+		return TRUE;
 	}
 
 	/* Free the item. */
@@ -1392,7 +1404,8 @@ get_icon_from_cache (const char *icon,
 
 	/* Since this item was used, keep it in the cache longer. */
 	mark_recently_used (&cached_icon->recently_used_node);
-
+	cached_icon->age = 0;
+	
 	/* Come back later and sweep the cache. */
 	nautilus_icon_factory_schedule_sweep (factory);
 	
