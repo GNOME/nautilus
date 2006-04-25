@@ -128,39 +128,6 @@ nautilus_main_event_loop_quit (void)
 	}
 }
 
-static void
-register_icons (void)
-{
-	GtkIconTheme *icon_theme;
-	GtkIconSource *source;
-	GtkIconSet *set;
-	GtkIconFactory *factory;
-	const char *icons_to_register[] = {"gnome-fs-client", "gnome-fs-network", "gnome-fs-home", "gnome-fs-trash-empty", "gnome-dev-cdrom", "stock_new-template"};
-	int i;
-
-	icon_theme = nautilus_icon_factory_get_icon_theme ();
-
-	factory = gtk_icon_factory_new ();
-	gtk_icon_factory_add_default (factory);
-
-	source = gtk_icon_source_new ();
-
-	for (i = 0; i < G_N_ELEMENTS(icons_to_register); i++) {
-		set = gtk_icon_set_new ();
-
-		gtk_icon_source_set_icon_name (source, icons_to_register[i]);
-		gtk_icon_set_add_source (set, source);
-
-		gtk_icon_factory_add (factory, icons_to_register[i], set);
-
-		gtk_icon_set_unref (set);
-	}
-
-	gtk_icon_source_free (source);
-	g_object_unref (factory);	
-	g_object_unref (icon_theme);
-}
-
 /* Copied from libnautilus/nautilus-program-choosing.c; In this case,
  * though, it's really needed because we have no real alternative when
  * no DESKTOP_STARTUP_ID (with its accompanying timestamp) is
@@ -311,8 +278,6 @@ main (int argc, char *argv[])
 		startup_id_copy = g_strdup_printf ("_TIME%lu",
 						   timestamp);
 	}
-
-	register_icons ();
 
         /* Set default icon for all nautilus windows */
 	gtk_window_set_default_icon_name ("gnome-fs-directory");

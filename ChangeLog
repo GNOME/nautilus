@@ -1,5 +1,14 @@
 2006-04-25  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-main.c:
+	Remove icon registration, as its no longer needed with gtk 2.9.
+	
+	* src/nautilus-window-menus.c:
+	(nautilus_menus_append_bookmark_to_menu):
+	Remove bogus TODO.
+
+2006-04-25  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Bump version to 2.15.1
 	2.14 development continues on gnome-2-14 branch.

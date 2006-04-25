@@ -182,12 +182,10 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 				 _("Go to the location specified by this bookmark"),
 				 NULL);
 	
-	/* TODO: This should really use themed icons and
-	   nautilus_bookmark_get_icon (bookmark), but that doesn't work yet*/
 	g_object_set_data_full (G_OBJECT (action), "menu-icon",
 				g_object_ref (pixbuf),
 				g_object_unref);
-	
+
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (activate_bookmark_in_menu_item),
 			       bookmark_holder, 
