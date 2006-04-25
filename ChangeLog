@@ -1,3 +1,11 @@
+2006-04-25  Christian Neumair  <chris@gnome-de.org>
+
+	* configure.in: 
+	Require gnome-vfs 2.14.2, gnome_vfs_volume_compare fixes.
+
+	* src/file-manager/fm-tree-view.c: (create_tree):
+	Use gnome_vfs_volume_compare to sort volumes from the volume monitor.
+
 2006-04-18  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-attributes.h:

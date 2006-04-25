@@ -1251,6 +1251,7 @@ create_tree (FMTreeView *view)
 	
 	volume_monitor = gnome_vfs_get_volume_monitor ();
 	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+	volumes = g_list_sort (volumes, (GCompareFunc) gnome_vfs_volume_compare);
 	for (l = volumes; l != NULL; l = l->next) {
 		add_root_for_volume (view, l->data);
 		gnome_vfs_volume_unref (l->data);
