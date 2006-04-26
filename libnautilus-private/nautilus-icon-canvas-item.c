@@ -80,6 +80,7 @@ struct NautilusIconCanvasItemDetails {
 	NautilusEmblemAttachPoints *attach_points;
 	
 	/* Size of the text at current font. */
+	int text_dx;
 	int text_width;
 	int text_height;
 	
@@ -715,20 +716,22 @@ compute_text_rectangle (const NautilusIconCanvasItem *item,
 {
 	ArtIRect text_rectangle;
 	double pixels_per_unit;
-	double text_width, text_height;
+	double text_width, text_height, text_dx;
 
 	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 	if (canvas_coords) {
 		text_width = item->details->text_width;
 		text_height = item->details->text_height;
+		text_dx = item->details->text_dx;
 	} else {
 		text_width = item->details->text_width / pixels_per_unit;
 		text_height = item->details->text_height / pixels_per_unit;
+		text_dx = item->details->text_dx / pixels_per_unit;
 	}
 	
 	if (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
                 text_rectangle.x0 = icon_rectangle.x1;
-                text_rectangle.x1 = text_rectangle.x0 + text_width;
+                text_rectangle.x1 = text_rectangle.x0 + text_dx + text_width;
                 text_rectangle.y0 = (icon_rectangle.y0 + icon_rectangle.y1) / 2- (int) text_height / 2;
                 text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
 	} else {
@@ -923,13 +926,17 @@ draw_frame (NautilusIconCanvasItem *item,
 static void
 layout_get_full_size (PangoLayout *layout,
 		      int         *width,
-		      int         *height)
+		      int         *height,
+		      int         *dx)
 {
 	PangoRectangle logical_rect;
+	int total_width;
 	
 	pango_layout_get_extents (layout, NULL, &logical_rect);
-	*width = (logical_rect.x + logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
-	*height = (logical_rect.y + logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
+	*width = (logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
+	total_width = (logical_rect.x + logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
+	*dx = total_width - *width;
+	*height = (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
 }
 
 
@@ -941,8 +948,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
-	guint editable_height, editable_width;
-	guint additional_height, additional_width;
+	guint editable_height, editable_width, editable_dx;
+	guint additional_height, additional_width, additional_dx;
 	EelCanvasItem *canvas_item;
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;
@@ -1000,8 +1007,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	editable_width = 0;
 	editable_height = 0;
+	editable_dx = 0;
 	additional_width = 0;
 	additional_height = 0;
+	additional_dx = 0;
 
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 
@@ -1011,15 +1020,21 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (have_editable) {
 		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
-		layout_get_full_size (editable_layout, &editable_width, &editable_height);
+		layout_get_full_size (editable_layout, &editable_width, &editable_height, &editable_dx);
 	}
 
 	if (have_additional) {
 		additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
-		layout_get_full_size (additional_layout, &additional_width, &additional_height);
+		layout_get_full_size (additional_layout, &additional_width, &additional_height, &additional_dx);
 	}
 
-	details->text_width = MAX (editable_width, additional_width);
+	if (editable_width > additional_width) {
+		details->text_width = editable_width;
+		details->text_dx = editable_dx;
+	} else {
+		details->text_width = additional_width;
+		details->text_dx = additional_dx;
+	}
 
 	if (have_additional) {
 		details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
