@@ -53,7 +53,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libxml/parser.h>
-#include <popt.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -191,46 +190,35 @@ main (int argc, char *argv[])
 	gboolean no_desktop;
 	const char *startup_id;
 	char *startup_id_copy;
-	char *geometry;
+	gchar *geometry;
+	const gchar **remaining;
 	gboolean perform_self_check;
-	poptContext popt_context;
-	const char **args;
+	GOptionContext *context;
 	NautilusApplication *application;
 	char **argv_copy;
 	GnomeProgram *program;
-	GValue context_as_value = { 0 };
-	int i;
-
-	struct poptOption options[] = {
+	
+	const GOptionEntry options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		{ "check", 'c', POPT_ARG_NONE, NULL, 0,
+		{ "check", 'c', 0, G_OPTION_ARG_NONE, &perform_self_check, 
 		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
-		{ "geometry", 'g', POPT_ARG_STRING, NULL, 0,
+		{ "geometry", 'g', 0, G_OPTION_ARG_STRING, &geometry,
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-		{ "no-default-window", 'n', POPT_ARG_NONE, NULL, 0,
+		{ "no-default-window", 'n', 0, G_OPTION_ARG_NONE, &no_default_window,
 		  N_("Only create windows for explicitly specified URIs."), NULL },
-		{ "no-desktop", '\0', POPT_ARG_NONE, NULL, 0,
+		{ "no-desktop", '\0', 0, G_OPTION_ARG_NONE, &no_desktop,
 		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
-		{ "browser", '\0', POPT_ARG_NONE, NULL, 0,
+		{ "browser", '\0', 0, G_OPTION_ARG_NONE, &browser_window, 
 		  N_("open a browser window."), NULL },
-		{ "quit", 'q', POPT_ARG_NONE, NULL, 0,
+		{ "quit", 'q', 0, G_OPTION_ARG_NONE, &kill_shell, 
 		  N_("Quit Nautilus."), NULL },
-		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, NULL, 0,
+		{ "restart", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &restart_shell,
 		  N_("Restart Nautilus."), NULL },
-		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
-	};
+		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
 
-	i = 0;
-#ifndef NAUTILUS_OMIT_SELF_CHECK
-	options[i++].arg = &perform_self_check;
-#endif
-	options[i++].arg = &geometry;
-	options[i++].arg = &no_default_window;
-	options[i++].arg = &no_desktop;
-	options[i++].arg = &browser_window;
-	options[i++].arg = &kill_shell;
-	options[i++].arg = &restart_shell;
+		{ NULL }
+	};
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
@@ -253,6 +241,7 @@ main (int argc, char *argv[])
 	gtk_window_set_auto_startup_notification (FALSE);
 
 	/* Get parameters. */
+	remaining = NULL;
 	geometry = NULL;
 	kill_shell = FALSE;
 	no_default_window = FALSE;
@@ -262,11 +251,14 @@ main (int argc, char *argv[])
 	browser_window = FALSE;
 
 	g_set_application_name (_("File Manager"));
-	
+	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
+
+	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
+
 	program = gnome_program_init ("nautilus", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      GNOME_PROGRAM_STANDARD_PROPERTIES,
-				      GNOME_PARAM_POPT_TABLE, options,
+				      GNOME_PARAM_GOPTION_CONTEXT, context,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
 
@@ -287,15 +279,8 @@ main (int argc, char *argv[])
 	bonobo_activation_set_activation_env_value ("DISPLAY",
 						    gdk_display_get_name (gdk_display_get_default()));
 	
-	g_object_get_property (G_OBJECT (program),
-			       GNOME_PARAM_POPT_CONTEXT,
-			       g_value_init (&context_as_value, G_TYPE_POINTER));
 
-	popt_context = g_value_get_pointer (&context_as_value);
-
-	/* Check for argument consistency. */
-	args = poptGetArgs (popt_context);
-	if (perform_self_check && args != NULL) {
+	if (perform_self_check && remaining != NULL) {
 		/* translators: %s is an option (e.g. --check) */
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
 			"--check");
@@ -305,17 +290,17 @@ main (int argc, char *argv[])
 		fprintf (stderr, _("nautilus: --check cannot be used with other options.\n"));
 		return EXIT_FAILURE;
 	}
-	if (kill_shell && args != NULL) {
+	if (kill_shell && remaining != NULL) {
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
 			"--quit");
 		return EXIT_FAILURE;
 	}
-	if (restart_shell && args != NULL) {
+	if (restart_shell && remaining != NULL) {
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
 			"--restart");
 		return EXIT_FAILURE;
 	}
-	if (geometry != NULL && args != NULL && args[0] != NULL && args[1] != NULL) {
+	if (geometry != NULL && remaining != NULL && remaining[0] != NULL && remaining[1] != NULL) {
 		fprintf (stderr, _("nautilus: --geometry cannot be used with more than one URI.\n"));
 		return EXIT_FAILURE;
 	}
@@ -364,7 +349,7 @@ main (int argc, char *argv[])
 			 browser_window,
 			 startup_id_copy,
 			 geometry,
-			 args);
+			 remaining);
 		g_free (startup_id_copy);
 
 		if (is_event_loop_needed ()) {
@@ -372,7 +357,6 @@ main (int argc, char *argv[])
 		}
 	}
 
-	poptFreeContext (popt_context);
 
 	gnome_vfs_shutdown ();
 
@@ -404,6 +388,9 @@ main (int argc, char *argv[])
 		
 		execvp (argv[0], argv_copy);
 	}
+
+	/* Shouldn't we do this? Keeping it commented for now
+	g_object_unref (G_OBJECT (program)); */
 
 	return EXIT_SUCCESS;
 }

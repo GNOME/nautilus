@@ -42,11 +42,6 @@
 #include "nautilus-window.h"
 #include "nautilus-connect-server-dialog.h"
 
-static const struct poptOption options[] = {
-	POPT_AUTOHELP
-	POPT_TABLEEND
-};
-
 static int open_dialogs;
 
 static void
@@ -101,17 +96,24 @@ main (int argc, char *argv[])
 {
 	GnomeProgram *program;
 	GtkWidget *dialog;
-	poptContext ctx;
-	GValue value = { 0, };
+	GOptionContext *context;
 	const char **args;
+	const GOptionEntry options[] = {
+		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, NULL,  N_("[URI]") },
+		{ NULL }
+	};
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
+	args = NULL;
+	context = g_option_context_new (_("\n\nAdd connect to server mount"));
+	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
+
 	program = gnome_program_init ("nautilus-connect-server", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
-				      GNOME_PARAM_POPT_TABLE, options,
+				      GNOME_PARAM_GOPTION_CONTEXT, context,
 				      NULL);
 
 	gnome_authentication_manager_init ();
@@ -120,16 +122,9 @@ main (int argc, char *argv[])
 
 	gtk_window_set_default_icon_name ("gnome-fs-directory");
 
-	/* Get the POPT context */
-	g_value_init (&value, G_TYPE_POINTER);
-	g_object_get_property (G_OBJECT (program), GNOME_PARAM_POPT_CONTEXT, &value);
-	ctx = g_value_get_pointer (&value);
-	g_value_unset (&value);
 
 	/* command line arguments, null terminated array */
-	args = poptGetArgs(ctx);
-
-	dialog = nautilus_connect_server_dialog_new (NULL, args ? *args : NULL);
+	dialog = nautilus_connect_server_dialog_new (NULL, args != NULL ? *args : NULL);
 
 	open_dialogs = 1;
 	g_signal_connect (dialog, "destroy",

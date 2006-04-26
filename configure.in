@@ -134,15 +134,6 @@ AC_SUBST(ENABLE_PROFILER)
 AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
 
 dnl ==========================================================================
-dnl Check for popt
-    
-AC_CHECK_LIB(popt, poptGetArg, POPT_LIBS=-lpopt,
-        [AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR([[
-*** Couldn't find popt. Please download and install from
-*** ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/ and try again.]]))])
-AC_SUBST(POPT_LIBS)
-	
-dnl ==========================================================================
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 

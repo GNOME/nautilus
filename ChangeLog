@@ -1,3 +1,13 @@
+2006-04-26  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Remove popt
+	
+	* src/nautilus-connect-server-dialog-main.c:
+	* src/nautilus-main.c:
+	Convert from popt to goption.
+	Based on patch from Philip Van Hoof
+
 2006-04-25  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-main.c:
