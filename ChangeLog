@@ -1,3 +1,13 @@
+2006-04-26  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_denies_access_permission),
+	(nautilus_file_can_get_permissions),
+	(nautilus_file_can_set_permissions):
+	If no ACCESS file info field is available, pretend to have full
+	access. If no PERMISSIONS field is available, pretend to have full
+	permission control.
+
 2006-04-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:

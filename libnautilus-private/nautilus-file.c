@@ -671,7 +671,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	/* File system does not provide permission bits.
 	 * Can't determine specific permissions, do not deny permission at all.
 	 */
-	if (!nautilus_file_can_get_permissions (file)) {
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ACCESS)) {
 		return FALSE;
 	}
 	
@@ -3409,7 +3409,7 @@ nautilus_file_get_size (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
-	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ACCESS);
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
 }
 
 /**
@@ -3429,29 +3429,27 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 {
 	uid_t user_id;
 
-	/* Not allowed to set the permissions if we can't
-	 * even read them. This can happen on non-UNIX file
-	 * systems.
-	 */
-	if (!nautilus_file_can_get_permissions (file)) {
+	if (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_IDS) {
+		/* Check the user. */
+		user_id = geteuid();
+
+		/* Owner is allowed to set permissions. */
+		if (user_id == (uid_t) file->details->info->uid) {
+			return TRUE;
+		}
+
+		/* Root is also allowed to set permissions. */
+		if (user_id == 0) {
+			return TRUE;
+		}
+
+		/* Nobody else is allowed. */
 		return FALSE;
 	}
 
-	/* Check the user. */
-	user_id = geteuid();
-
-	/* Owner is allowed to set permissions. */
-	if (user_id == (uid_t) file->details->info->uid) {
-		return TRUE;
-	}
-
-	/* Root is also allowed to set permissions. */
-	if (user_id == 0) {
-		return TRUE;
-	}
-
-	/* Nobody else is allowed. */
-	return FALSE;
+	/* pretend to have full chmod rights when no info is available, relevant when
+	 * the FS can't provide ownership info, for instance for FTP */
+	return TRUE;
 }
 
 GnomeVFSFilePermissions
