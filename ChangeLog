@@ -1,3 +1,21 @@
+2006-04-27  Christian Neumair  <chris@gnome-de.org>
+
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(file_get_volume_and_drive),
+	(action_self_mount_volume_callback),
+	(action_self_unmount_volume_callback),
+	(action_self_eject_volume_callback),
+	(action_self_format_volume_callback),
+	(file_get_volume_and_drive),
+	(file_should_show_self),
+	(real_update_menus_volumes):
+	* src/file-manager/fm-tree-view.c:
+	(create_popup_menu):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Allow to mount/unmout/eject/format a volume when displaying its
+	activation URI.
+
 2006-04-26  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file.c:

@@ -35,6 +35,11 @@
 			</menu>
 		</placeholder>
 		<placeholder name="File Items Placeholder">
+			<menuitem name="Self Mount Volume" action="Self Mount Volume"/>
+			<menuitem name="Self Unmount Volume" action="Self Unmount Volume"/>
+			<menuitem name="Self Eject Volume" action="Self Eject Volume"/>
+			<menuitem name="Self Format Volume" action="Self Format Volume"/>
+			<separator name="Properties Separator"/>
 			<menuitem name="Properties" action="Properties"/>
 		</placeholder>
 		<placeholder name="Global File Items Placeholder">
@@ -95,8 +100,14 @@
 			<menuitem name="Paste" action="Paste"/>
 		</placeholder>
 	</placeholder>
+
 	<separator name="Folder Items separator"/>
 	<placeholder name="Folder Items Placeholder">
+		<menuitem name="Self Mount Volume" action="Self Mount Volume"/>
+		<menuitem name="Self Unmount Volume" action="Self Unmount Volume"/>
+		<menuitem name="Self Eject Volume" action="Self Eject Volume"/>
+		<menuitem name="Self Format Volume" action="Self Format Volume"/>
+		<separator name="Properties separator"/>
 		<menuitem name="SelfProperties" action="SelfProperties"/>
 	</placeholder>
 
@@ -142,16 +153,16 @@
 	</placeholder>
 	<separator name="Extension actions separator"/>
 	<placeholder name="Extension Actions"/>
-        <separator name="Properties separator"/>
-        <menuitem name="Properties" action="Properties"/>
 	<separator name="Removable separator"/>
-        <placeholder name="Removable Media Placeholder">
-		<menuitem name="Mount Volume" action="Mount Volume"/>
-                <menuitem name="Unmount Volume" action="Unmount Volume"/>
-                <menuitem name="Eject Volume" action="Eject Volume"/>
-                <menuitem name="Format Volume" action="Format Volume"/>
+	<placeholder name="Removable Media Placeholder">
+		 <menuitem name="Mount Volume" action="Mount Volume"/>
+		 <menuitem name="Unmount Volume" action="Unmount Volume"/>
+		 <menuitem name="Eject Volume" action="Eject Volume"/>
+		 <menuitem name="Format Volume" action="Format Volume"/>
         </placeholder>
         <menuitem name="Connect To Server Link" action="Connect To Server Link"/>
+        <separator name="Properties Separator"/>
+        <menuitem name="Properties" action="Properties"/>
 </popup>
 <popup name="location">
 	<placeholder name="Open Placeholder">
@@ -168,6 +179,12 @@
 		<menuitem name="Delete" action="LocationDelete"/>
 	</placeholder>
 	<separator/>
+
+	<menuitem name="Self Mount Volume" action="Self Mount Volume"/>
+	<menuitem name="Self Unmount Volume" action="Self Unmount Volume"/>
+	<menuitem name="Self Eject Volume" action="Self Eject Volume"/>
+	<menuitem name="Self Format Volume" action="Self Format Volume"/>
+	<separator name="Properties Separator"/>
 	<menuitem name="Properties" action="SelfProperties"/>
 </popup>
 </ui>

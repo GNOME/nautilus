@@ -76,6 +76,7 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
@@ -387,6 +388,9 @@ static gboolean activate_check_mime_types                      (FMDirectoryView 
 								gboolean warn_on_mismatch);
 static GdkDragAction ask_link_action                           (FMDirectoryView      *view);
 
+static void file_get_volume_and_drive (NautilusFile    *file,
+				       GnomeVFSVolume **volume,
+				       GnomeVFSDrive  **drive);
 
 static void action_open_scripts_folder_callback    (GtkAction *action,
 						    gpointer   callback_data);
@@ -6360,6 +6364,111 @@ action_eject_volume_callback (GtkAction *action,
 }
 
 static void
+action_self_mount_volume_callback (GtkAction *action,
+				   gpointer data)
+{
+	NautilusFile *file;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	if (file == NULL) {
+		return;
+	}
+
+	file_get_volume_and_drive (file, NULL, &drive);
+
+	if (drive != NULL) {
+		gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+	}
+
+	gnome_vfs_drive_unref (drive);
+}
+
+static void
+action_self_unmount_volume_callback (GtkAction *action,
+				     gpointer data)
+{
+	NautilusFile *file;
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	if (file == NULL) {
+		return;
+	}
+
+	file_get_volume_and_drive (file, &volume, &drive);
+
+	if (volume != NULL) {
+		gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
+	} else if (drive != NULL) {
+		gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+	}
+
+	gnome_vfs_volume_unref (volume);
+	gnome_vfs_drive_unref (drive);
+}
+
+static void
+action_self_eject_volume_callback (GtkAction *action,
+				   gpointer data)
+{
+	NautilusFile *file;
+	GnomeVFSDrive *drive;
+	GnomeVFSVolume *volume;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	if (file == NULL) {
+		return;
+	}
+
+	file_get_volume_and_drive (file, &volume, &drive);
+
+	if (volume != NULL) {
+		gnome_vfs_volume_eject (volume, volume_or_drive_unmounted_callback, NULL);
+	} else if (drive != NULL) {
+		gnome_vfs_drive_eject (drive, volume_or_drive_unmounted_callback, NULL);
+	}
+
+	gnome_vfs_volume_unref (volume);
+	gnome_vfs_drive_unref (drive);
+}
+
+static void 
+action_self_format_volume_callback (GtkAction *action,
+				    gpointer   data)
+{
+	NautilusFile *file;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = fm_directory_view_get_directory_as_file (view);
+	if (file == NULL) {
+		return;
+	}
+
+	file_get_volume_and_drive (file, NULL, &drive);
+
+	if (drive != NULL && 
+	    gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY) {
+		g_spawn_command_line_async ("gfloppy", NULL);
+	}
+
+	gnome_vfs_drive_unref (drive);
+}
+
+static void
 connect_to_server_response_callback (GtkDialog *dialog,
 				     int response_id,
 				     gpointer data)
@@ -6756,6 +6865,22 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("_Format"), NULL,                /* label, accelerator */
     N_("Format the selected volume"),                   /* tooltip */ 
     G_CALLBACK (action_format_volume_callback) },
+  { "Self Mount Volume", NULL,                  /* name, stock id */
+    N_("_Mount Volume"), NULL,                /* label, accelerator */
+    N_("Mount the volume associated with the open folder"),                   /* tooltip */ 
+    G_CALLBACK (action_self_mount_volume_callback) },
+  { "Self Unmount Volume", NULL,                  /* name, stock id */
+    N_("_Unmount Volume"), NULL,                /* label, accelerator */
+    N_("Unmount the volume associated with the open folder"),                   /* tooltip */ 
+    G_CALLBACK (action_self_unmount_volume_callback) },
+  { "Self Eject Volume", NULL,                  /* name, stock id */
+    N_("_Eject"), NULL,                /* label, accelerator */
+    N_("Eject the volume associated with the open folder"),                   /* tooltip */ 
+    G_CALLBACK (action_self_eject_volume_callback) },
+  { "Self Format Volume", NULL,                  /* name, stock id */
+    N_("_Format"), NULL,                /* label, accelerator */
+    N_("Format the volume associated with the open folder"),                   /* tooltip */ 
+    G_CALLBACK (action_self_format_volume_callback) },
   { "OpenCloseParent", NULL,                  /* name, stock id */
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
@@ -7089,6 +7214,109 @@ file_should_show_foreach (NautilusFile *file,
 }
 
 static void
+file_get_volume_and_drive (NautilusFile    *file,
+			   GnomeVFSVolume **volume,
+			   GnomeVFSDrive  **drive)
+{
+	GnomeVFSVolume *one_volume;
+	GnomeVFSDrive *one_drive;
+	GList *l, *list;
+	char *uri, *one_uri;
+
+	g_assert (file != NULL);
+
+	uri = nautilus_file_get_uri (file);
+	g_assert (uri != NULL);
+
+	if (volume != NULL) {
+		*volume = NULL;
+
+		list = gnome_vfs_volume_monitor_get_mounted_volumes (gnome_vfs_get_volume_monitor ());
+
+		for (l = list; l != NULL && *volume == NULL; l = l->next) {
+			one_volume = l->data;
+
+			one_uri = gnome_vfs_volume_get_activation_uri (one_volume);
+			if (one_uri != NULL && (strcmp (uri, one_uri) == 0)) {
+				*volume = gnome_vfs_volume_ref (one_volume);
+			}
+
+			g_free (one_uri);
+		}
+
+		g_list_foreach (list, (GFunc) gnome_vfs_volume_unref, NULL);
+		g_list_free (list);
+	}
+
+	if (drive != NULL) {
+		*drive = NULL;
+
+		list = gnome_vfs_volume_monitor_get_connected_drives (gnome_vfs_get_volume_monitor ());
+
+		for (l = list; l != NULL; l = l->next) {
+			one_drive = l->data;
+
+			one_uri = gnome_vfs_drive_get_activation_uri (one_drive);
+			if (one_uri != NULL && (strcmp (uri, one_uri) == 0)) {
+				*drive = gnome_vfs_drive_ref (one_drive);
+				g_free (one_uri);
+				break;
+			}
+
+			g_free (one_uri);
+		}
+
+		g_list_foreach (list, (GFunc) gnome_vfs_drive_unref, NULL);
+		g_list_free (list);
+	}
+
+	g_free (uri);
+}
+
+static void
+file_should_show_self (NautilusFile *file,
+		       gboolean     *show_mount,
+		       gboolean     *show_unmount,
+		       gboolean     *show_eject,
+		       gboolean     *show_format)
+{
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+
+	*show_mount = FALSE;
+	*show_unmount = FALSE;
+	*show_eject = FALSE;
+	*show_format = FALSE;
+
+	if (file == NULL) {
+		return;
+	}
+
+	file_get_volume_and_drive (file, &volume, &drive);
+
+	if (volume != NULL) {
+		*show_unmount = TRUE;
+		*show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+	} else if (drive != NULL) {
+		*show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+		if (gnome_vfs_drive_is_mounted (drive)) {
+			*show_unmount = TRUE;
+		} else {
+			*show_mount = TRUE;
+		}
+
+                if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
+		    g_find_program_in_path ("gfloppy")) {
+			*show_format = TRUE;
+		}
+	}
+
+	gnome_vfs_volume_unref (volume);
+	gnome_vfs_drive_unref (drive);
+}
+
+
+static void
 real_update_menus_volumes (FMDirectoryView *view,
 			   GList *selection,
 			   gint selection_count)
@@ -7100,6 +7328,10 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_eject;
 	gboolean show_connect;
 	gboolean show_format;
+	gboolean show_self_mount;
+	gboolean show_self_unmount;
+	gboolean show_self_eject;
+	gboolean show_self_format;
 	GtkAction *action;
 
 	show_mount = (selection != NULL);
@@ -7158,6 +7390,31 @@ real_update_menus_volumes (FMDirectoryView *view,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_FORMAT_VOLUME);
 	gtk_action_set_visible (action, show_format);
+
+	show_self_mount = show_self_unmount = show_self_eject = show_self_format = FALSE;
+
+	file = fm_directory_view_get_directory_as_file (view);
+	file_should_show_self (file,
+			       &show_self_mount,
+			       &show_self_unmount,
+			       &show_self_eject,
+			       &show_self_format);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELF_MOUNT_VOLUME);
+	gtk_action_set_visible (action, show_self_mount);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELF_UNMOUNT_VOLUME);
+	gtk_action_set_visible (action, show_self_unmount);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELF_EJECT_VOLUME);
+	gtk_action_set_visible (action, show_self_eject);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELF_FORMAT_VOLUME);
+	gtk_action_set_visible (action, show_self_format);
 }
 
 static void

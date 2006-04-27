@@ -1189,22 +1189,7 @@ create_popup_menu (FMTreeView *view)
 	separator_item = gtk_separator_menu_item_new ();
 	gtk_widget_show (separator_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
-	
-	/* add the "properties" menu item */
-	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PROPERTIES, NULL);
-	g_signal_connect (menu_item, "activate",
-			  G_CALLBACK (fm_tree_view_properties_cb),
-			  view);
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
-	view->details->popup_properties = menu_item;
 
-	/* add the unmount separator menu item */
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
-	view->details->popup_unmount_separator = menu_item;
-	
 	/* add the "Unmount" menu item */
 	menu_item = gtk_image_menu_item_new_with_label ("eject label");
 	g_signal_connect (menu_item, "activate",
@@ -1213,6 +1198,21 @@ create_popup_menu (FMTreeView *view)
 	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_unmount = menu_item;
+
+	/* add the unmount separator menu item */
+	menu_item = gtk_separator_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	view->details->popup_unmount_separator = menu_item;
+
+	/* add the "properties" menu item */
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PROPERTIES, NULL);
+	g_signal_connect (menu_item, "activate",
+			  G_CALLBACK (fm_tree_view_properties_cb),
+			  view);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	view->details->popup_properties = menu_item;
 
 	view->details->popup = popup;
 }
