@@ -101,9 +101,6 @@ PKG_CHECK_MODULES(ALL, [
 ])
 dnl ==========================================================================
 
-ALL_LINGUAS="`grep -v '^#' "$srcdir/po/LINGUAS"`"
-AC_SUBST([CONFIG_STATUS_DEPENDENCIES],['$(top_srcdir)/po/LINGUAS'])
-
 GETTEXT_PACKAGE=nautilus
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
@@ -112,7 +109,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
 AM_GLIB_GNU_GETTEXT
 GLIB_DEFINE_LOCALEDIR(GNOMELOCALEDIR)
 
-AC_PROG_INTLTOOL
+IT_PROG_INTLTOOL([0.34.90])
 
 dnl ==========================================================================
 
