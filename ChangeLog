@@ -1,3 +1,12 @@
+2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-image-properties-page.c: (append_tag_value_pair),
+	(append_exifdata_string):
+	Prefer "Date Taken" and "Date Digitized" over "Date Modified" when
+	deciding which date to show from image metadata. (#331810)
+
+	Patch from Pat Suwalski <pat@suwalski.net>
+
 2006-04-28  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

@@ -191,7 +191,7 @@ exifdata_get_tag_value_utf8 (ExifData *data, ExifTag tag)
 	return utf8_value;
 }
 
-static void
+static gboolean
 append_tag_value_pair (GString *string, ExifData *data, ExifTag tag, gchar *description) 
 {
         char *utf_attribute;
@@ -203,13 +203,14 @@ append_tag_value_pair (GString *string, ExifData *data, ExifTag tag, gchar *desc
 	if ((utf_attribute == NULL) || (utf_value == NULL)) {
 		g_free (utf_attribute);
 		g_free (utf_value);
-   		return;
+   		return FALSE;
 	}
 
 	g_string_append_printf (string, "<b>%s:</b> %s\n", (description != NULL) ? description : utf_attribute, utf_value);
 
         g_free (utf_attribute);
         g_free (utf_value);
+	return TRUE;
 }
 
 static void
@@ -218,7 +219,16 @@ append_exifdata_string (ExifData *exifdata, GString *string)
 	if (exifdata->ifd[0] && exifdata->ifd[0]->count) {
                 append_tag_value_pair (string, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME, _("Date Taken"));
+
+                /* Choose which date to show in order of relevance */
+                if (!append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME_ORIGINAL, _("Date Taken")))
+                {
+                        if (!append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME_DIGITIZED, _("Date Digitized")))
+                        {
+                                append_tag_value_pair (string, exifdata, EXIF_TAG_DATE_TIME, _("Date Modified"));
+                        }
+                }
+
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
