@@ -1123,7 +1123,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		           TransferInfo *transfer_info)
 {
 	int result;
-	char *text, *primary_text, *secondary_text, *formatted_name;
+	char *text, *primary_text, *secondary_text, *formatted_name, *base_name;
+	GnomeVFSURI *file_uri, *parent_uri;
 	gboolean is_merge, target_is_dir;
 
 	nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);	
@@ -1164,26 +1165,43 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	}
 	
 	/* transfer conflict, prompt the user to replace or skip */
-	formatted_name = format_and_ellipsize_uri_for_dialog (
-		parent_for_error_dialog (transfer_info), progress_info->target_name);
+	file_uri = gnome_vfs_uri_new (progress_info->target_name);
+	base_name = gnome_vfs_uri_extract_short_path_name (file_uri);
+	formatted_name = gnome_vfs_unescape_string_for_display (base_name);
 
 	target_is_dir = is_directory (progress_info->target_name);
 	if (target_is_dir) {
-		text = g_strdup_printf (_("The folder \"%s\" already exists.  Would you like to replace it?"), 
+		text = g_strdup_printf (_("A folder named \"%s\" already exists.  Do you want to replace it?"), 
 					formatted_name);
 	} else {
-		text = g_strdup_printf (_("The file \"%s\" already exists.  Would you like to replace it?"), 
+		text = g_strdup_printf (_("A file named \"%s\" already exists.  Do you want to replace it?"), 
 					formatted_name);
 	}
+	g_free (base_name);
 	g_free (formatted_name);
 
+	if (gnome_vfs_uri_has_parent (file_uri)) {
+		parent_uri = gnome_vfs_uri_get_parent (file_uri);
+		base_name = gnome_vfs_uri_extract_short_path_name (parent_uri);
+		gnome_vfs_uri_unref (parent_uri);	
+	} else {
+		base_name = gnome_vfs_uri_extract_dirname (file_uri);
+	}
+	
+	formatted_name = gnome_vfs_unescape_string_for_display (base_name);
+	
 	is_merge =  target_is_dir && is_directory (progress_info->source_name);
 
 	if (is_merge) {
-		secondary_text = _("If you replace the existing folder, any files in it that conflict with the files being copied will be overwritten.");
+		secondary_text = g_strdup_printf (_("The folder already exists in \"%s\".  Replacing it will overwrite any files in the folder that conflict with the files being copied."), 
+		                                  formatted_name);
 	} else {
-		secondary_text = _("If you replace an existing file, its contents will be overwritten.");
+		secondary_text = g_strdup_printf (_("The file already exists in \"%s\".  Replacing it will overwrite its contents."), 
+		                                  formatted_name);
 	}
+	gnome_vfs_uri_unref (file_uri);
+	g_free (formatted_name);
+	g_free (base_name);
 	
 	if (progress_info->duplicate_count == 1) {
 		/* we are going to only get one duplicate alert, don't offer
@@ -1192,11 +1210,12 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		result = eel_run_simple_dialog 
 			(parent_for_error_dialog (transfer_info),
 			 TRUE,
-			 GTK_MESSAGE_QUESTION, 
+			 GTK_MESSAGE_WARNING, 
 			 text, 
 			 secondary_text, 
 			 _("_Skip"), _("_Replace"), NULL);
 		g_free (text);	 
+		g_free (secondary_text);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 					 
@@ -1211,10 +1230,11 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 	} else {
 		result = eel_run_simple_dialog
-			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_QUESTION, text, 
+			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_WARNING, text, 
 			 secondary_text, 
 			 _("S_kip All"), _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
 		g_free (text);
+		g_free (secondary_text);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 

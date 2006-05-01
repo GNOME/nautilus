@@ -1,5 +1,15 @@
 2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_overwrite):  Use the same phrasing and 
+	format as the GTK+ overwrite dialog.  Also, per the HIG
+	convert the dialog to a confirmation alert since the user's 
+	command may destroy data. (#325188)
+
+	Patch from Dennis Cranston <dennis_cranston@yahoo.com>
+
+2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-image-properties-page.c: (append_tag_value_pair),
 	(append_exifdata_string):
 	Prefer "Date Taken" and "Date Digitized" over "Date Modified" when
