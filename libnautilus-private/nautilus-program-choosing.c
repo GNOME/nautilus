@@ -165,14 +165,14 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 		g_free (message);
 	} else {
 		if (application != NULL) {
-			prompt = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+			prompt = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 						    "locations."), application->name, file_name, 
 						    application->name, uri_scheme);
 			message = _("No other applications are available to view this file.  "
 				    "If you copy this file onto your computer, you may be able to open "
 				    "it.");
 		} else {
-			prompt = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\"."
+			prompt = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
 						    "locations."), file_name, uri_scheme);
      			message = _("No other actions are available to view this file.  "
 				    "If you copy this file onto your computer, you may be able to open "

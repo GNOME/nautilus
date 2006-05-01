@@ -1,5 +1,13 @@
 2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-program-choosing.c:
+	(application_cannot_open_location):
+	Remove bogus period from strings. (#336909)
+
+	Patch from Javier F. Serrador <serrador@tecknolabs.com>
+
+2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(handle_transfer_overwrite):  Use the same phrasing and 
 	format as the GTK+ overwrite dialog.  Also, per the HIG
