@@ -277,7 +277,7 @@ location_row_create_widgets (NautilusQueryEditorRow *row)
 {
 	GtkWidget *chooser;
 	
-	chooser = gtk_file_chooser_button_new (_("Select folder search in"),
+	chooser = gtk_file_chooser_button_new (_("Select folder to search in"),
 					       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
