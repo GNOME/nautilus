@@ -378,7 +378,6 @@ static void
 action_about_nautilus_callback (GtkAction *action,
 				gpointer user_data)
 {
-	static GtkWidget *about = NULL;
 	const gchar *authors[] = {
 		"Alexander Larsson",
 		"Ali Abdin",
@@ -421,69 +420,57 @@ action_about_nautilus_callback (GtkAction *action,
 		NULL
 	};
 	const gchar *license[] = {
-		N_("Nautilus is free software; you can redistribute it and/or modify \n"
-		   "it under the terms of the GNU General Public License as published by \n"
-		   "the Free Software Foundation; either version 2 of the License, or \n"
+		N_("Nautilus is free software; you can redistribute it and/or modify "
+		   "it under the terms of the GNU General Public License as published by "
+		   "the Free Software Foundation; either version 2 of the License, or "
 		   "(at your option) any later version."),
-		N_("Nautilus is distributed in the hope that it will be useful, \n"
-		   "but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
-		   "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
+		N_("Nautilus is distributed in the hope that it will be useful, "
+		   "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+		   "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
 		   "GNU General Public License for more details."),
-		N_("You should have received a copy of the GNU General Public License \n"
-		   "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
+		N_("You should have received a copy of the GNU General Public License "
+		   "along with Nautilus; if not, write to the Free Software Foundation, Inc., "
 		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
 	};
 	gchar *license_trans;
-	char *logo_path;
-	GdkPixbuf *logo;
+	gchar *logo_path;
+	GdkPixbuf *logo = NULL;
 
-	if (about == NULL) {
- 
-		about = gtk_about_dialog_new ();
+	license_trans = g_strjoin ("\n\n", _(license[0]), _(license[1]),
+					     _(license[2]), NULL);
 
-		license_trans = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n",
-					     _(license[2]), "\n\n", NULL);
-
-		/* Translators should localize the following string
-		 * which will be displayed at the bottom of the about
-		 * box to give credit to the translator(s).
-		 */
-
-		logo_path = nautilus_pixmap_file ("nautilus-launch-icon.png");
-		logo = NULL;
-		if (logo_path != NULL) {
-			logo = gdk_pixbuf_new_from_file (logo_path, NULL);
-		}
-		
-		g_object_set (about,
-			      "name", _("Nautilus"),
-			      "version", VERSION,
-			      "comments", _("Nautilus is a graphical shell "
-					   "for GNOME that makes it "
-					   "easy to manage your files "
-					   "and the rest of your system."),
-			      "copyright", _("Copyright \xC2\xA9 1999-2005 "
-					     "The Nautilus authors"),
-			      "license", license_trans,
-			      "authors", authors,
-			      "documenters", documenters,
+	logo_path = nautilus_pixmap_file ("nautilus-launch-icon.png");
+	if (logo_path != NULL) {
+		logo = gdk_pixbuf_new_from_file (logo_path, NULL);
+	}
+	
+	gtk_show_about_dialog (GTK_WINDOW (user_data),
+			       "name", _("Nautilus"),
+			       "version", VERSION,
+			       "comments", _("Nautilus is a graphical shell "
+					     "for GNOME that makes it "
+					     "easy to manage your files "
+					     "and the rest of your system."),
+			       "copyright", _("Copyright \xC2\xA9 1999-2006 "
+					      "The Nautilus authors"),
+			       "license", license_trans,
+			       "wrap-license", TRUE,
+			       "authors", authors,
+			       "documenters", documenters,
+				/* Translators should localize the following string
+				 * which will be displayed at the bottom of the about
+				 * box to give credit to the translator(s).
+				 */
 			      "translator-credits", _("translator-credits"),
 			      "logo", logo,
 			      NULL);
-		
-		if (logo != NULL) {
-			g_object_unref (logo);
-		}		
 
-		g_free (license_trans);
-		g_free (logo_path);
-
-		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
-
-		eel_add_weak_pointer (&about);
+	if (logo != NULL) {
+		g_object_unref (logo);
 	}
-	
-	gtk_window_present (GTK_WINDOW (about));
+
+	g_free (license_trans);
+	g_free (logo_path);
 }
 
 static void

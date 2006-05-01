@@ -1,5 +1,13 @@
 2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window-menus.c: (action_about_nautilus_callback):
+	Adapt to new GtkAboutDialog behaviour and use wrap-license.
+	Makes the close button work again. Fixes #336520.
+	
+	Patch from Christian Persch <chpe@gnome.org> 
+
+2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-query-editor.c: (location_row_create_widgets):
 	Fix typo in the query filechooser window title. (#325284)
 
