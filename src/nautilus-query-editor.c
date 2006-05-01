@@ -933,7 +933,7 @@ nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 			  G_CALLBACK (remove_row_cb), row);
 
 	gtk_tooltips_set_tip (editor->details->tooltips, button,
-			      _("Remove this criterium from the search"), NULL);
+			      _("Remove this criterion from the search"), NULL);
 	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
@@ -1024,7 +1024,7 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	gtk_tooltips_set_tip (editor->details->tooltips, button,
-			      _("Add a new criterium to this search"), NULL);
+			      _("Add a new criterion to this search"), NULL);
 
 	if (!editor->details->is_indexed) {
 		if (use_go) {
