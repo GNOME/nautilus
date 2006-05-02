@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-27 23:11+0200\n"
-"PO-Revision-Date: 2006-04-28 09:30+0530\n"
+"POT-Creation-Date: 2006-05-01 23:15+0200\n"
+"PO-Revision-Date: 2006-05-02 08:18+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1007,6 +1008,7 @@ msgid "The type of the file."
 msgstr "ફાઈલનો પ્રકાર."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
+#: ../src/nautilus-image-properties-page.c:228
 msgid "Date Modified"
 msgstr "તારીખ સુધરાયેલ છે"
 
@@ -1367,17 +1369,17 @@ msgid "_Retry"
 msgstr "ફરીથી પ્રયત્ન કરો (_R)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1048
-#: ../libnautilus-private/nautilus-file-operations.c:1198
 #: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "_Skip"
 msgstr "છોડી દો (_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1138
+#: ../libnautilus-private/nautilus-file-operations.c:1139
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "\"%s\" ને નવી જગ્યાએ લઈ જઈ શકાઈ નહિ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1141
+#: ../libnautilus-private/nautilus-file-operations.c:1142
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1386,12 +1388,12 @@ msgstr ""
 "\n"
 "જો હજુ પણ તમે ખસેડવા માગતા હોય તો તેને બીજુ નામ આપી ફરીથી પ્રયત્ન કરો."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1145
+#: ../libnautilus-private/nautilus-file-operations.c:1146
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "\"%s\" ની નવી જગ્યાએ નકલ કરી શકાઈ નહિ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1148
+#: ../libnautilus-private/nautilus-file-operations.c:1149
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1400,38 +1402,38 @@ msgstr ""
 "\n"
 "જો હજુ પણ તમે નકલ કરવા માગતા હોય તો તેને બીજુ નામ આપી ફરીથી પ્રયત્ન કરો."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1172
+#: ../libnautilus-private/nautilus-file-operations.c:1174
 #, c-format
-msgid "The folder \"%s\" already exists.  Would you like to replace it?"
-msgstr "\"%s\" ફોલ્ડર પહેલેથી જ હાજર છે. શું તમે તેને બદલવા માગો છો?"
+msgid "A folder named \"%s\" already exists.  Do you want to replace it?"
+msgstr "\"%s\" નામવાળું ફોલ્ડર પહેલાથી જ હાજર છે.  શું તમે તેને બદલવા માંગો છો?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1175
+#: ../libnautilus-private/nautilus-file-operations.c:1177
 #, c-format
-msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr "\"%s\" ફાઈલ પહેલેથી જ હાજર છે. શું તમે તેને બદલવા માગો છો?"
+msgid "A file named \"%s\" already exists.  Do you want to replace it?"
+msgstr "\"%s\" નામવાળી ફાઈલ પહેલેથી જ હાજર છે.  શું તમે તેને બદલવા માગો છો?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1183
+#: ../libnautilus-private/nautilus-file-operations.c:1196
+#, c-format
 msgid ""
-"If you replace the existing folder, any files in it that conflict with the "
-"files being copied will be overwritten."
-msgstr ""
-"જો તમે વર્તમાન ફોલ્ડરની જગ્યા બદલો, તો તેમાંની કોઈક ફાઈલો કે જે નકલ થઈ રહેલા ફાઈલો "
-"સાથે તકરાર અનુભવે તો તેના પર ફરીથી લખાઈ જશે."
+"The folder already exists in \"%s\".  Replacing it will overwrite any files "
+"in the folder that conflict with the files being copied."
+msgstr "\"%s\" માં ફોલ્ડર પહેલાથી જ હાજર છે.  તેને બદલવાનું તે ફોલ્ડરમાંની બધી ફાઈલો પર ફરીથી લખશે કે જે નકલ થઈ રહેલ ફાઈલો સાથે તકરાઈ રહી હોય."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1185
-msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "જો તમે વર્તમાન ફાઈલને બદલો તો, તેના ભાગો પર ફરીથી લખાઈ જશે."
+#: ../libnautilus-private/nautilus-file-operations.c:1199
+#, c-format
+msgid "The file already exists in \"%s\".  Replacing it will overwrite its contents."
+msgstr "\"%s\" માં ફાઈલ પહેલાથી જ હાજર છે.  તેને બદલવાનું તેના સમાવિષ્ટો પર ફરીથી લખશે."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1198
 #: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "_Replace"
 msgstr "જગ્યા બદલો (_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "S_kip All"
 msgstr "બધું અવગણો (_k)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "Replace _All"
 msgstr "બધુ બદલો (_A)"
 
@@ -1440,7 +1442,7 @@ msgstr "બધુ બદલો (_A)"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 #: ../libnautilus-private/nautilus-file.c:4746
 #: ../src/file-manager/fm-directory-view.c:9720
 #, c-format
@@ -1448,7 +1450,7 @@ msgid "link to %s"
 msgstr "%s સાથે જોડાણ કરો"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1292
+#: ../libnautilus-private/nautilus-file-operations.c:1312
 #, c-format
 msgid "another link to %s"
 msgstr "%s માટે બીજી એક કડી"
@@ -1457,25 +1459,25 @@ msgstr "%s માટે બીજી એક કડી"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1308
+#: ../libnautilus-private/nautilus-file-operations.c:1328
 #, c-format
 msgid "%dst link to %s"
 msgstr "%dst ની %s સાથે કડી"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1312
+#: ../libnautilus-private/nautilus-file-operations.c:1332
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%dnd ની %s સાથે કડી"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1316
+#: ../libnautilus-private/nautilus-file-operations.c:1336
 #, c-format
 msgid "%drd link to %s"
 msgstr "%drd ની %s સાથે કડી"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1320
+#: ../libnautilus-private/nautilus-file-operations.c:1340
 #, c-format
 msgid "%dth link to %s"
 msgstr "%dth ની %s સાથે કડી"
@@ -1485,12 +1487,12 @@ msgstr "%dth ની %s સાથે કડી"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1341
+#: ../libnautilus-private/nautilus-file-operations.c:1361
 msgid " (copy)"
 msgstr " (નકલ કરો)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1343
+#: ../libnautilus-private/nautilus-file-operations.c:1363
 msgid " (another copy)"
 msgstr " (બીજી એક નકલ)"
 
@@ -1498,36 +1500,36 @@ msgstr " (બીજી એક નકલ)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1346
-#: ../libnautilus-private/nautilus-file-operations.c:1348
-#: ../libnautilus-private/nautilus-file-operations.c:1350
-#: ../libnautilus-private/nautilus-file-operations.c:1360
+#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1368
+#: ../libnautilus-private/nautilus-file-operations.c:1370
+#: ../libnautilus-private/nautilus-file-operations.c:1380
 msgid "th copy)"
 msgstr "મી નકલ)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1353
+#: ../libnautilus-private/nautilus-file-operations.c:1373
 msgid "st copy)"
 msgstr "મી નકલ)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1355
+#: ../libnautilus-private/nautilus-file-operations.c:1375
 msgid "nd copy)"
 msgstr "મી નકલ)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1357
+#: ../libnautilus-private/nautilus-file-operations.c:1377
 msgid "rd copy)"
 msgstr "મી નકલ)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1374
+#: ../libnautilus-private/nautilus-file-operations.c:1394
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (નકલ કરો)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1376
+#: ../libnautilus-private/nautilus-file-operations.c:1396
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (બીજી એક નકલ)%s"
@@ -1536,246 +1538,246 @@ msgstr "%s (બીજી એક નકલ)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1379
-#: ../libnautilus-private/nautilus-file-operations.c:1381
-#: ../libnautilus-private/nautilus-file-operations.c:1383
-#: ../libnautilus-private/nautilus-file-operations.c:1392
+#: ../libnautilus-private/nautilus-file-operations.c:1399
+#: ../libnautilus-private/nautilus-file-operations.c:1401
+#: ../libnautilus-private/nautilus-file-operations.c:1403
+#: ../libnautilus-private/nautilus-file-operations.c:1412
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%dમી નકલ)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1386
+#: ../libnautilus-private/nautilus-file-operations.c:1406
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%dમી નકલ)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1388
+#: ../libnautilus-private/nautilus-file-operations.c:1408
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%dમી નકલ)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1390
+#: ../libnautilus-private/nautilus-file-operations.c:1410
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%dમી નકલ)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1490
+#: ../libnautilus-private/nautilus-file-operations.c:1510
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1498
+#: ../libnautilus-private/nautilus-file-operations.c:1518
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1694
-#: ../libnautilus-private/nautilus-file-operations.c:2317
-#: ../libnautilus-private/nautilus-file-operations.c:2500
+#: ../libnautilus-private/nautilus-file-operations.c:1714
+#: ../libnautilus-private/nautilus-file-operations.c:2337
+#: ../libnautilus-private/nautilus-file-operations.c:2520
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "અજાણીતી GnomeVFSXfer પ્રગતિ સ્થિતિ %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2053
+#: ../libnautilus-private/nautilus-file-operations.c:2073
 msgid "Moving files to the Trash"
 msgstr "કચરાપેટીમાં ફાઇલ મોકલી રહ્યા છે"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2055
+#: ../libnautilus-private/nautilus-file-operations.c:2075
 msgid "Throwing out file:"
 msgstr "ફાઈલને બહાર ફેંકી રહ્યા છીએ:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2057
-#: ../libnautilus-private/nautilus-file-operations.c:2068
+#: ../libnautilus-private/nautilus-file-operations.c:2077
+#: ../libnautilus-private/nautilus-file-operations.c:2088
 msgid "Moving"
 msgstr "ખસેડી રહ્યુ છે"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2058
+#: ../libnautilus-private/nautilus-file-operations.c:2078
 msgid "Preparing to Move to Trash..."
 msgstr "કચરાપેટીમાં લઇ જવાની તૈયારી કરી રહ્યુ છે..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2084
 msgid "Moving files"
 msgstr "ફાઈલોની ખસેડી રહ્યા છે"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2086
 msgid "Moving file:"
 msgstr "ફાઈલ ખસેડી રહ્યા છીએ:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2069
+#: ../libnautilus-private/nautilus-file-operations.c:2089
 msgid "Preparing To Move..."
 msgstr "ખસેડવા માટેની તૈયારી કરી રહ્યુ છે..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2070
+#: ../libnautilus-private/nautilus-file-operations.c:2090
 msgid "Finishing Move..."
 msgstr "ખસેડવાનું કામ પૂરુ કરી રહ્યુ છે..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2078
+#: ../libnautilus-private/nautilus-file-operations.c:2098
 msgid "Creating links to files"
 msgstr "ફાઈલ માટેની કડી બનાવી રહ્યા છે"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2080
+#: ../libnautilus-private/nautilus-file-operations.c:2100
 msgid "Linking file:"
 msgstr "ફાઈલની કડી બનાવી રહ્યા છીએ:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2082
+#: ../libnautilus-private/nautilus-file-operations.c:2102
 msgid "Linking"
 msgstr "કડી બનાવી રહ્યા છે"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2083
+#: ../libnautilus-private/nautilus-file-operations.c:2103
 msgid "Preparing to Create Links..."
 msgstr "કડી બનાવવાની તૈયારી..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2084
+#: ../libnautilus-private/nautilus-file-operations.c:2104
 msgid "Finishing Creating Links..."
 msgstr "કડી બનાવવાનું કામ પુર્ણ થઇ રહ્યુ છે..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2090
+#: ../libnautilus-private/nautilus-file-operations.c:2110
 msgid "Copying files"
 msgstr "ફાઇલોની નકલ થઈ રહી છે"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2092
+#: ../libnautilus-private/nautilus-file-operations.c:2112
 msgid "Copying file:"
 msgstr "ફાઈલની નકલ બનાવી રહ્યા છીએ:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2094
+#: ../libnautilus-private/nautilus-file-operations.c:2114
 msgid "Copying"
 msgstr "નકલ થઈ રહી છે"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2095
+#: ../libnautilus-private/nautilus-file-operations.c:2115
 msgid "Preparing To Copy..."
 msgstr "નકલ કરવા માટેની તૈયારી કરી રહ્યુ છે..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2113
+#: ../libnautilus-private/nautilus-file-operations.c:2133
 msgid "You cannot copy items into the trash."
 msgstr "તમે વસ્તુઓની કચરાપેટીમાં નકલ કરી શકતા નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2114
+#: ../libnautilus-private/nautilus-file-operations.c:2134
 msgid "You cannot create links inside the trash."
 msgstr "તમે વસ્તુઓની કચરાપેટીમાં કડી બનાવી શકતા નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2115
+#: ../libnautilus-private/nautilus-file-operations.c:2135
 msgid "Files and folders can only be moved into the trash."
 msgstr "ફાઈલો અને ફોલ્ડરો માત્ર કચરાપેટીમાં જ ખસી શકે છે."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2158
 msgid "You cannot move this trash folder."
 msgstr "તમે કચરાપેટીના ફોલ્ડરની ખસેડી શકતા નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2139
+#: ../libnautilus-private/nautilus-file-operations.c:2159
 msgid "You cannot copy this trash folder."
 msgstr "તમે કચરાપેટીના ફોલ્ડરની નકલ કરી શકતા નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2140
+#: ../libnautilus-private/nautilus-file-operations.c:2160
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "કચરાપેટી ફોલ્ડર તેમાં મોકલાયેલ ફાઈલોને સંગ્રહવા માટે વપરાય છે."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2164
+#: ../libnautilus-private/nautilus-file-operations.c:2184
 msgid "You cannot move a folder into itself."
 msgstr "તમે ફોલ્ડરને તેની અંદર જ મોકલી શકો નહિ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2165
+#: ../libnautilus-private/nautilus-file-operations.c:2185
 msgid "You cannot copy a folder into itself."
 msgstr "તમે ફોલ્ડરની તેની અંદર જ નકલ કરી શકો નહિ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2166
+#: ../libnautilus-private/nautilus-file-operations.c:2186
 msgid "The destination folder is inside the source folder."
 msgstr "અંતિમ મુકામનું ફોલ્ડર સ્રોત ફોલ્ડરની અંદર જ છે."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2179
+#: ../libnautilus-private/nautilus-file-operations.c:2199
 msgid "You cannot copy a file over itself."
 msgstr "તમે ફાઈલની તેની ઉપર જ નકલ કરી શકો નહિ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2180
+#: ../libnautilus-private/nautilus-file-operations.c:2200
 msgid "The destination and source are the same file."
 msgstr "અંતિમ મુકામ અને સ્રોત ફોલ્ડર બંને એક જ ફાઈલ છે."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2235
-#: ../libnautilus-private/nautilus-file-operations.c:2395
+#: ../libnautilus-private/nautilus-file-operations.c:2255
+#: ../libnautilus-private/nautilus-file-operations.c:2415
 msgid "You do not have permissions to write to the destination."
 msgstr "અંતિમ મુકામમાં લખવા માટે તમારી પાસે પરવાનગી નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2237
-#: ../libnautilus-private/nautilus-file-operations.c:2397
+#: ../libnautilus-private/nautilus-file-operations.c:2257
+#: ../libnautilus-private/nautilus-file-operations.c:2417
 msgid "There is no space on the destination."
 msgstr "અંતિમ મુકામમાં પૂરતી જગ્યા નથી."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2239
+#: ../libnautilus-private/nautilus-file-operations.c:2259
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "નવું ફોલ્ડર બનાવતી વખતે \"%s\" ભૂલ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2244
+#: ../libnautilus-private/nautilus-file-operations.c:2264
 msgid "Error creating new folder."
 msgstr "નવું ફોલ્ડર બનાવતી વખતે ભૂલ."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2341
+#: ../libnautilus-private/nautilus-file-operations.c:2361
 msgid "untitled folder"
 msgstr "શીર્ષક વગરનું ફોલ્ડર"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2399
+#: ../libnautilus-private/nautilus-file-operations.c:2419
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "નવો દસ્તાવેજ બનાવતી વખતે \"%s\" ભૂલ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2404
+#: ../libnautilus-private/nautilus-file-operations.c:2424
 msgid "Error creating new document."
 msgstr "નવો દસ્તાવેજ બનાવતી વખતે ભૂલ."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2631
+#: ../libnautilus-private/nautilus-file-operations.c:2651
 msgid "new file"
 msgstr "નવી ફાઇલ"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2697
+#: ../libnautilus-private/nautilus-file-operations.c:2717
 msgid "Deleting files"
 msgstr "ફાઈલો કાઢી રહ્યા છે"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2699
-#: ../libnautilus-private/nautilus-file-operations.c:2734
+#: ../libnautilus-private/nautilus-file-operations.c:2719
+#: ../libnautilus-private/nautilus-file-operations.c:2754
 msgid "Files deleted:"
 msgstr "ફાઈલો નીકળી ગઈ:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2701
-#: ../libnautilus-private/nautilus-file-operations.c:2736
+#: ../libnautilus-private/nautilus-file-operations.c:2721
+#: ../libnautilus-private/nautilus-file-operations.c:2756
 msgid "Deleting"
 msgstr "કાઢી રહ્યા છે"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2702
+#: ../libnautilus-private/nautilus-file-operations.c:2722
 msgid "Preparing to Delete files..."
 msgstr "ફાઈલો કાઢવા માટેની તૈયારી કરી રહ્યા છે..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2752
 msgid "Emptying the Trash"
 msgstr "કચરાપેટી ખાલી થઇ રહી છે"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2737
+#: ../libnautilus-private/nautilus-file-operations.c:2757
 msgid "Preparing to Empty the Trash..."
 msgstr "કચરાપેટીને ખાલી કરવાની તૈયારી કરી રહ્યા છે..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2773
+#: ../libnautilus-private/nautilus-file-operations.c:2793
 msgid "Empty all of the items from the trash?"
 msgstr "કચરાપેટીમાંથી બધી વસ્તુઓ ખાલી કરી નાંખવી છે?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2776
+#: ../libnautilus-private/nautilus-file-operations.c:2796
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1783,7 +1785,7 @@ msgstr ""
 "જો તમે કચરાપેટી ખાલી કરવાનું પસંદ કરો, તો તેમાંની બધી વસ્તુઓ કાયમ માટે ખોવાઈ જશે. "
 "મહેરબાની કરીને નોંધ કરો કે તમે તેમને અલગ અલગ પણ કાઢી શકો છો."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2818
 msgid "_Empty Trash"
 msgstr "કચરાપેટી ખાલી કરો (_E)"
 
@@ -2263,6 +2265,7 @@ msgid "Open Failed, would you like to choose another application?"
 msgstr "ખોલવાનું નિષ્ફળ ગયું, શું તમે બીજો કાર્યક્રમ પસંદ કરવા માગો છો?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:137
+#: ../libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -2276,6 +2279,7 @@ msgid "Open Failed, would you like to choose another action?"
 msgstr "ખોલવાનું નિષ્ફળ ગયુ, શું તમે બીજી ક્રિયા પસંદ કરવા માગો છો?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:143
+#: ../libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -2284,15 +2288,6 @@ msgstr ""
 "મૂળભુત ક્રિયા \"%s\" ને ખોલી શકતુ નથી કારણકે એ \"%s\" સ્થાન પર આવેલી ફાઇલને પ્રાપ્ત કરી "
 "શકતુ નથી."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:168
-#, c-format
-msgid ""
-"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
-"locations."
-msgstr ""
-"\"%s\" એ \"%s\" ને ખોલી શકતુ નથી કારણકે \"%s\" એ \"%s\" સ્થાન પર આવેલી ફાઇલ ને "
-"પ્રાપ્ત કરી શકતુ નથી."
-
 #: ../libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
 "No other applications are available to view this file.  If you copy this "
@@ -2300,15 +2295,6 @@ msgid ""
 msgstr ""
 "આ ફાઇલને જોવા માટે બીજા કોઇ કાર્યક્રમો પ્રાપ્ત નથી. જો તમે આ ફાઇલની તમારા કોમ્પ્યુટરમાં "
 "નકલ કરો, તો કદાચ તે ખોલી શકો."
-
-#: ../libnautilus-private/nautilus-program-choosing.c:175
-#, c-format
-msgid ""
-"The default action can't open \"%s\" because it can't access files at \"%s\"."
-"locations."
-msgstr ""
-"મૂળભુત ક્રિયા એ \"%s\" ને ખોલી શકતુ નથી કારણકે એ \"%s\" સ્થાન પર આવેલી ફાઇલને પ્રાપ્ત "
-"કરી શકતુ નથી."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
@@ -4176,7 +4162,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:522
+#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:509
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4677,82 +4663,87 @@ msgstr "ઇતિહાસ"
 msgid "Show History"
 msgstr "ઇતિહાસ બતાવો"
 
-#: ../src/nautilus-image-properties-page.c:219
+#: ../src/nautilus-image-properties-page.c:220
 msgid "Camera Brand"
 msgstr "કેમેરા બ્રાન્ડ"
 
-#: ../src/nautilus-image-properties-page.c:220
+#: ../src/nautilus-image-properties-page.c:221
 msgid "Camera Model"
 msgstr "કેમેરા મોડેલ"
 
-#: ../src/nautilus-image-properties-page.c:221
+#. Choose which date to show in order of relevance
+#: ../src/nautilus-image-properties-page.c:224
 msgid "Date Taken"
 msgstr "તારીખ લીધી હતી"
 
-#: ../src/nautilus-image-properties-page.c:222
+#: ../src/nautilus-image-properties-page.c:226
+msgid "Date Digitized"
+msgstr "તારી ડિજીટાઈઝ થઈ ગઈ"
+
+#: ../src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
 msgstr "પ્રદર્શિત સમય"
 
-#: ../src/nautilus-image-properties-page.c:223
+#: ../src/nautilus-image-properties-page.c:233
 msgid "Exposure Program"
 msgstr "પ્રદર્શિત કાર્યક્રમ"
 
-#: ../src/nautilus-image-properties-page.c:224
+#: ../src/nautilus-image-properties-page.c:234
 msgid "Aperture Value"
 msgstr "શરુઆતની કિંમત"
 
-#: ../src/nautilus-image-properties-page.c:225
+#: ../src/nautilus-image-properties-page.c:235
 msgid "Metering Mode"
 msgstr "મીટરવાળી સ્થિતિ"
 
-#: ../src/nautilus-image-properties-page.c:226
+#: ../src/nautilus-image-properties-page.c:236
 msgid "Flash Fired"
 msgstr "ઝબકારો થયો"
 
-#: ../src/nautilus-image-properties-page.c:227
+#: ../src/nautilus-image-properties-page.c:237
 msgid "Focal Length"
 msgstr "કેન્દ્રલંબાઈ"
 
-#: ../src/nautilus-image-properties-page.c:228
+#: ../src/nautilus-image-properties-page.c:238
 msgid "Shutter Speed"
 msgstr "શટરની ઝડપ"
 
-#: ../src/nautilus-image-properties-page.c:229
+#: ../src/nautilus-image-properties-page.c:239
 msgid "ISO Speed Rating"
 msgstr "ISO ઝડપનું મુલ્યાંકન"
 
-#: ../src/nautilus-image-properties-page.c:230
+#: ../src/nautilus-image-properties-page.c:240
 msgid "Software"
 msgstr "સોફ્ટવેર"
 
-#: ../src/nautilus-image-properties-page.c:249
+#: ../src/nautilus-image-properties-page.c:259
 #, c-format
 msgid "<b>Image Type:</b> %s (%s)\n"
 msgstr "<b>ચિત્ર પ્રકાર:</b> %s (%s)\n"
 
-#: ../src/nautilus-image-properties-page.c:251
+#: ../src/nautilus-image-properties-page.c:261
 #, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
 msgstr[0] "<b>પહોળાઈ:</b> %d પિક્સેલ\n"
 msgstr[1] "<b>પહોળાઈ:</b> %d પિક્સેલો\n"
 
-#: ../src/nautilus-image-properties-page.c:255
+#: ../src/nautilus-image-properties-page.c:265
 #, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
 msgstr[0] "<b>ઊંચાઈ:</b> %d પિક્સેલ\n"
 msgstr[1] "<b>ઊંચાઈ:</b> %d પિક્સેલો\n"
 
-#: ../src/nautilus-image-properties-page.c:270
+#: ../src/nautilus-image-properties-page.c:280
 msgid "Failed to load image information"
 msgstr "ચિત્રની જાણકારી લાવવામાં નિષ્ફળ"
 
-#: ../src/nautilus-image-properties-page.c:420
+#: ../src/nautilus-image-properties-page.c:430
 msgid "loading..."
 msgstr "લાવી રહ્યા છે..."
 
-#: ../src/nautilus-image-properties-page.c:486
+#: ../src/nautilus-image-properties-page.c:496
 msgid "Image"
 msgstr "ચિત્ર"
 
@@ -4869,7 +4860,7 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:262 ../src/nautilus-spatial-window.c:406
-#: ../src/nautilus-window-menus.c:459 ../src/nautilus-window.c:155
+#: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "નોટિલસ"
 
@@ -5280,8 +5271,8 @@ msgid "File Type"
 msgstr "ફાઈલ પ્રકાર"
 
 #: ../src/nautilus-query-editor.c:280
-msgid "Select folder search in"
-msgstr "શોધ કરવા માટે ફોલ્ડર પસંદ કરો"
+msgid "Select folder to search in"
+msgstr "શોધવા માટે ફોલ્ડર પસંદ કરો"
 
 #: ../src/nautilus-query-editor.c:364
 msgid "Documents"
@@ -5332,8 +5323,8 @@ msgid "Other Type..."
 msgstr "અન્ય પ્રકાર..."
 
 #: ../src/nautilus-query-editor.c:936
-msgid "Remove this criterium from the search"
-msgstr "આ વિચારધારાને શોધમાંથી દૂર કરો"
+msgid "Remove this criterion from the search"
+msgstr "શોધ માટેની આ વિચારધારા બદલો"
 
 #: ../src/nautilus-query-editor.c:980
 msgid "<b>Search Folder</b>"
@@ -5344,7 +5335,7 @@ msgid "Edit the saved search"
 msgstr "સંગ્રહાયેલ શોધમાં ફેરફાર કરો"
 
 #: ../src/nautilus-query-editor.c:1027
-msgid "Add a new criterium to this search"
+msgid "Add a new criterion to this search"
 msgstr "આ શોધમાં નવી વિચારધારા ઉમેરો"
 
 #: ../src/nautilus-query-editor.c:1031
@@ -5477,41 +5468,41 @@ msgstr "મહેરબાની કરીને બીજુ દર્શક �
 msgid "Go to the location specified by this bookmark"
 msgstr "આ બુકમાર્કે સ્પષ્ટ કરેલ સ્થાન પર જાઓ"
 
-#: ../src/nautilus-window-menus.c:424
+#: ../src/nautilus-window-menus.c:423
 msgid ""
-"Nautilus is free software; you can redistribute it and/or modify \n"
-"it under the terms of the GNU General Public License as published by \n"
-"the Free Software Foundation; either version 2 of the License, or \n"
-"(at your option) any later version."
+"Nautilus is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
 msgstr ""
-"નોટિલસ એ મુક્ત સોફ્ટવેર છે; તમે એને પુનઃ વિતરિત કરી શકો છો અને/અથવા તેને \n"
-"Free Software Foundation દ્વારા પ્રકાશિત GNU General Public License \n"
-"ની શરતો હેઠળ સુધારી શકો છો; ક્યાં તો લાઈસન્સની આવૃત્તિ ૨, અથવા \n"
-"(તમારા અનુસાર) કોઈપણ જૂની આવૃત્તિ."
+"Nautilus is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
 
-#: ../src/nautilus-window-menus.c:428
+#: ../src/nautilus-window-menus.c:427
 msgid ""
-"Nautilus is distributed in the hope that it will be useful, \n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
-"GNU General Public License for more details."
+"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
 msgstr ""
-"નોટિલસ એ આશામાં વિતરિત કરાયેલ છે કે તે ઉપયોગી સાબિત થશે, \n"
-"પરંતુ કોઈપણ વોરંટી વિના; વ્યાપારીની કોઈપણ વોરંટી વિના અથવા \n"
-"ચોક્કસ હેતુના નહિં બંધબેસવા પર.  વધુ વિગતો માટે \n"
-"GNU General Public License જુઓ."
+"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
 
-#: ../src/nautilus-window-menus.c:432
+#: ../src/nautilus-window-menus.c:431
 msgid ""
-"You should have received a copy of the GNU General Public License \n"
-"along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
-"59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+"You should have received a copy of the GNU General Public License along with "
+"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
-"તમે નોટિલસ સાથે GNU General Public License ની નકલ મેળવેલી હોવી \n"
-"જોઈએ; જો નહિં મેળવી હોય, તો Free Software Foundation, Inc., \n"
-"59 Temple Place, Suite 330, Boston, MA  02111-1307  USA ને લખો"
+"You should have received a copy of the GNU General Public License along with "
+"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place, Suite 330, Boston, MA  02111-1307  USA"
 
-#: ../src/nautilus-window-menus.c:461
+#: ../src/nautilus-window-menus.c:450
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5519,211 +5510,215 @@ msgstr ""
 "જીનોમ માટે નોટિલસ એ એક ચિત્રાત્મક શેલ છે અને તે તમારી ફાઇલ અને બાકીની સિસ્ટમનું પણ "
 "સંચાલન કરવામાં મદદ કરશે."
 
-#: ../src/nautilus-window-menus.c:465
-msgid "Copyright © 1999-2005 The Nautilus authors"
-msgstr "Copyright © 1999-2005 The Nautilus authors"
+#: ../src/nautilus-window-menus.c:454
+msgid "Copyright © 1999-2006 The Nautilus authors"
+msgstr "Copyright © 1999-2006 The Nautilus authors"
 
-#: ../src/nautilus-window-menus.c:470
+#. Translators should localize the following string
+#. * which will be displayed at the bottom of the about
+#. * box to give credit to the translator(s).
+#.
+#: ../src/nautilus-window-menus.c:464
 msgid "translator-credits"
 msgstr "અંકિત પટેલ <ankit644@yahoo.com>"
 
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:597
 msgid "_File"
 msgstr "ફાઇલ (_F)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:611
+#: ../src/nautilus-window-menus.c:598
 msgid "_Edit"
 msgstr "ફેરફાર કરો (_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:612
+#: ../src/nautilus-window-menus.c:599
 msgid "_View"
 msgstr "દ્રશ્ય (_V)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:600
 msgid "_Help"
 msgstr "મદદ (_H)"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:615
+#: ../src/nautilus-window-menus.c:602
 msgid "_Close"
 msgstr "બંધ કરો (_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:603
 msgid "Close this folder"
 msgstr "આ ફોલ્ડર બંધ કરો"
 
-#: ../src/nautilus-window-menus.c:619
+#: ../src/nautilus-window-menus.c:606
 msgid "_Backgrounds and Emblems..."
 msgstr "પાશ્વ ભાગ અને સાંકેતિક-ચિહ્નો (_B)..."
 
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:607
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "વ્યવહારીક દેખાવ માટે ભાત, રંગો અને સાંકેતિક-ચિહ્નો પ્રદર્શિત કરો"
 
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:610
 msgid "Prefere_nces"
 msgstr "પસંદગીઓ (_n)"
 
-#: ../src/nautilus-window-menus.c:624
+#: ../src/nautilus-window-menus.c:611
 msgid "Edit Nautilus preferences"
 msgstr "નોટિલસ પસંદગીઓમાં ફેરફાર કરો"
 
-#: ../src/nautilus-window-menus.c:626
+#: ../src/nautilus-window-menus.c:613
 msgid "_Undo"
 msgstr "છેલ્લી ક્રિયા રદ કરો (_U)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:614
 msgid "Undo the last text change"
 msgstr "છેલ્લે લખાણમાં કરેલ બદલાવને રદ કરો"
 
-#: ../src/nautilus-window-menus.c:629
+#: ../src/nautilus-window-menus.c:616
 msgid "Open _Parent"
 msgstr "પિતૃ ખોલો (_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:630
+#: ../src/nautilus-window-menus.c:617
 msgid "Open the parent folder"
 msgstr "પિતૃ ફોલ્ડર ખોલો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:623
 msgid "_Stop"
 msgstr "અટકાવો (_S)"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:640
+#: ../src/nautilus-window-menus.c:627
 msgid "_Reload"
 msgstr "ફરીથી લાવો (_R)"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:644
+#: ../src/nautilus-window-menus.c:631
 msgid "_Contents"
 msgstr "સમાવિષ્ટ વસ્તુઓ (_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:645
+#: ../src/nautilus-window-menus.c:632
 msgid "Display Nautilus help"
 msgstr "નોટિલસ માટેની મદદ પ્રદર્શિત કરો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:648
+#: ../src/nautilus-window-menus.c:635
 msgid "_About"
 msgstr "ના વિશે (_A)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:649
+#: ../src/nautilus-window-menus.c:636
 msgid "Display credits for the creators of Nautilus"
 msgstr "નોટિલસ બનાવનારનો યશ પ્રદર્શિત કરો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:652
+#: ../src/nautilus-window-menus.c:639
 msgid "Zoom _In"
 msgstr "મોટુ કરો (_I)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:653 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:640 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "વધારે વિગત સાથે વિષયસૂચી દર્શાવો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:664
+#: ../src/nautilus-window-menus.c:651
 msgid "Zoom _Out"
 msgstr "નાનુ કરો (_O)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:665 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:652 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "ઓછી વિગત સાથે વિષયસૂચી દર્શાવો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:672
+#: ../src/nautilus-window-menus.c:659
 msgid "Normal Si_ze"
 msgstr "સામાન્ય માપ (_z)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:673
+#: ../src/nautilus-window-menus.c:660
 msgid "Show the contents at the normal size"
 msgstr "સામાન્ય માપમાં વિષયસૂચી દર્શાવો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:676
+#: ../src/nautilus-window-menus.c:663
 msgid "Connect to _Server..."
 msgstr "સર્વર સાથે સંપર્ક કરો (_S)..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:677
+#: ../src/nautilus-window-menus.c:664
 msgid "Set up a connection to a network server"
 msgstr "નેટવર્ક સર્વર પર જોડાણ સુયોજિત કરો"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:680
+#: ../src/nautilus-window-menus.c:667
 msgid "_Home"
 msgstr "ઘર (_H)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:681
+#: ../src/nautilus-window-menus.c:668
 msgid "Go to the home folder"
 msgstr "ઘર ફોલ્ડરમાં જાઓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:684
+#: ../src/nautilus-window-menus.c:671
 msgid "_Computer"
 msgstr "કૅમ્પ્યુટર (_C)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:685
+#: ../src/nautilus-window-menus.c:672
 msgid "Go to the computer location"
 msgstr "કમ્પ્યૂટર જગ્યા પર જાઓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:688
+#: ../src/nautilus-window-menus.c:675
 msgid "_Network"
 msgstr "નેટવર્ક (_N)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:689
+#: ../src/nautilus-window-menus.c:676
 msgid "Go to the network location"
 msgstr "નેટવર્ક સ્થાને જાઓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:692
+#: ../src/nautilus-window-menus.c:679
 msgid "T_emplates"
 msgstr "ટેમ્પ્લેટો (_e)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:693
+#: ../src/nautilus-window-menus.c:680
 msgid "Go to the templates folder"
 msgstr "ટેમ્પ્લેટો ફોલ્ડર પર જાઓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:696
+#: ../src/nautilus-window-menus.c:683
 msgid "_Trash"
 msgstr "કચરાપેટી (_T)"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:697
+#: ../src/nautilus-window-menus.c:684
 msgid "Go to the trash folder"
 msgstr "કચરાપેટીના ફોલ્ડરમાં જાઓ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:700
+#: ../src/nautilus-window-menus.c:687
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD બનાવનાર"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:701
+#: ../src/nautilus-window-menus.c:688
 msgid "Go to the CD/DVD Creator"
 msgstr "CD/DVD બનાવનારમાં જાઓ"
 
-#: ../src/nautilus-window-menus.c:727
+#: ../src/nautilus-window-menus.c:714
 msgid "_Up"
 msgstr "ઉપર (_U)"
 
