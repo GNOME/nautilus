@@ -78,6 +78,11 @@ typedef struct {
 	GtkWidget *popup_menu;
 	GtkWidget *popup_menu_remove_item;
 	GtkWidget *popup_menu_rename_item;
+	GtkWidget *popup_menu_separator_item;
+	GtkWidget *popup_menu_mount_item;
+	GtkWidget *popup_menu_unmount_item;
+	GtkWidget *popup_menu_eject_item;
+	GtkWidget *popup_menu_format_item;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -348,15 +353,15 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
 }
 
 static void
-mount_volume_callback (gboolean succeeded,
-		       char *error,
-		       char *detailed_error,
-		       gpointer user_data)
+volume_op_callback (gboolean succeeded,
+		    char *error,
+		    char *detailed_error,
+		    gpointer user_data)
 {
 	if (!succeeded) {
 		if (*error == 0 &&
 		    detailed_error != NULL && *detailed_error == 0) {
-			/* This means the mount command displays its own errors */
+			/* This means the command displays its own errors */
 			return;
 		}
 		eel_show_error_dialog_with_details (error, NULL,
@@ -396,7 +401,7 @@ row_activated_callback (GtkTreeView *tree_view,
 		gtk_tree_model_get 
 			(model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
 		if (drive != NULL) {
-			gnome_vfs_drive_mount (drive, mount_volume_callback, sidebar);
+			gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
 			gnome_vfs_drive_unref (drive);
 		}
 	}
@@ -887,30 +892,95 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu = NULL;
 	sidebar->popup_menu_remove_item = NULL;
 	sidebar->popup_menu_rename_item = NULL;
+	sidebar->popup_menu_separator_item = NULL;
+	sidebar->popup_menu_mount_item = NULL;
+	sidebar->popup_menu_unmount_item = NULL;
+	sidebar->popup_menu_eject_item = NULL;
+	sidebar->popup_menu_format_item = NULL;
+}
+
+static gboolean
+eject_for_type (GnomeVFSDeviceType type)
+{
+	switch (type) {
+	case GNOME_VFS_DEVICE_TYPE_CDROM:
+	case GNOME_VFS_DEVICE_TYPE_ZIP:
+	case GNOME_VFS_DEVICE_TYPE_JAZ:
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+static void
+set_visibility (GtkWidget *widget,
+		gboolean visible)
+{
+	if (visible) {
+		gtk_widget_show (widget);
+	} else {
+		gtk_widget_hide (widget);
+	}
 }
 
 static void
 bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 {
-  GtkTreeIter iter;
-  PlaceType type; 
-  GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	PlaceType type; 
+	GtkTreeSelection *selection;
+	GnomeVFSDrive *drive = NULL;
+	gboolean show_mount;
+	gboolean show_unmount;
+	gboolean show_eject;
+	gboolean show_format;
+	
+	type = PLACES_BUILT_IN;
 
-  type = PLACES_BUILT_IN;
+	if (sidebar->popup_menu == NULL) {
+		return;
+	}
 
-  if (sidebar->popup_menu == NULL)
-    return;
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 
-  selection = gtk_tree_view_get_selection (sidebar->tree_view);
+	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
+				    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+				    -1);
+	}
 
-  if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
- 	  gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
-			      PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
-			      -1);
-  }
+	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
+	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
+	
+	show_mount = FALSE;
+	show_unmount = FALSE;
+	show_eject = FALSE;
+	show_format = FALSE;
 
-  gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
-  gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
+	if (drive != NULL) {
+		show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+		show_unmount = gnome_vfs_drive_is_mounted (drive);
+		show_mount = ! show_unmount;
+		/* We don't want both eject and unmount, since eject
+		   unmounts too */
+		if (show_eject) {
+			show_unmount = FALSE;
+		}
+		if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
+		    !gnome_vfs_drive_is_mounted (drive) &&
+		    g_find_program_in_path ("gfloppy")) {
+			show_format = TRUE;
+		}
+		gnome_vfs_drive_unref (drive);
+	}
+	
+	set_visibility (sidebar->popup_menu_separator_item, 
+			show_mount || show_unmount || show_eject || show_format);
+	set_visibility (sidebar->popup_menu_mount_item, show_mount);
+	set_visibility (sidebar->popup_menu_unmount_item, show_unmount);
+	set_visibility (sidebar->popup_menu_eject_item, show_eject);
+	set_visibility (sidebar->popup_menu_format_item, show_format);
 }
 
 /* Callback used when the selection in the shortcuts tree changes */
@@ -992,6 +1062,74 @@ remove_shortcut_cb (GtkMenuItem           *item,
 	remove_selected_bookmarks (sidebar);
 }
 
+static GnomeVFSDrive*
+get_selected_drive (NautilusPlacesSidebar *sidebar)
+{
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	GnomeVFSDrive *drive;
+
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
+
+	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		return NULL;
+	}
+
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+			    -1);
+
+	return drive;
+}
+
+static void
+mount_shortcut_cb (GtkMenuItem           *item,
+		   NautilusPlacesSidebar *sidebar)
+{
+	GnomeVFSDrive *drive;
+
+	drive = get_selected_drive (sidebar);
+
+	if (drive != NULL) {
+		gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
+		gnome_vfs_drive_unref (drive);
+	}
+}
+
+static void
+unmount_shortcut_cb (GtkMenuItem           *item,
+		     NautilusPlacesSidebar *sidebar)
+{
+	GnomeVFSDrive *drive;
+
+	drive = get_selected_drive (sidebar);
+
+	if (drive != NULL) {
+		gnome_vfs_drive_unmount (drive, volume_op_callback, sidebar);
+		gnome_vfs_drive_unref (drive);
+	}
+}
+
+static void
+eject_shortcut_cb (GtkMenuItem           *item,
+		   NautilusPlacesSidebar *sidebar)
+{
+	GnomeVFSDrive *drive;
+
+	drive = get_selected_drive (sidebar);
+
+	if (drive != NULL) {
+		gnome_vfs_drive_eject (drive, volume_op_callback, sidebar);
+		gnome_vfs_drive_unref (drive);
+	}
+}
+
+static void
+format_shortcut_cb (GtkMenuItem           *item,
+		    NautilusPlacesSidebar *sidebar)
+{
+	g_spawn_command_line_async ("gfloppy", NULL);
+}
 
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
 static gboolean
@@ -1051,6 +1189,41 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 	
+	/* Mount/Unmount/Eject menu items */
+
+	item = gtk_separator_menu_item_new ();
+	sidebar->popup_menu_separator_item = item;
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Mount"));
+	sidebar->popup_menu_mount_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (mount_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Unmount"));
+	sidebar->popup_menu_unmount_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (unmount_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Eject"));
+	sidebar->popup_menu_eject_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (eject_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_mnemonic (_("_Format"));
+	sidebar->popup_menu_format_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (format_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
 	bookmarks_check_popup_sensitivity (sidebar);
 }
 
