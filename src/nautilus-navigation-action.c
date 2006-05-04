@@ -210,6 +210,17 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 }
 
 static void
+disconnect_proxy (GtkAction *action, GtkWidget *proxy)
+{
+	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
+		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (set_tooltip_callback), action);
+		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (show_menu_callback), action);
+	}
+
+	(* GTK_ACTION_CLASS (parent_class)->disconnect_proxy) (action, proxy);
+}
+
+static void
 nautilus_navigation_action_finalize (GObject *object)
 {
 	NautilusNavigationAction *action = NAUTILUS_NAVIGATION_ACTION (object);
@@ -282,6 +293,7 @@ nautilus_navigation_action_class_init (NautilusNavigationActionClass *class)
 
 	action_class->toolbar_item_type = GTK_TYPE_MENU_TOOL_BUTTON;
 	action_class->connect_proxy = connect_proxy;
+	action_class->disconnect_proxy = disconnect_proxy;
 
 	g_object_class_install_property (object_class,
                                          PROP_ARROW_TOOLTIP,
