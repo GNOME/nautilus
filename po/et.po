@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-28 06:53+0200\n"
-"PO-Revision-Date: 2006-04-28 16:19+0300\n"
+"POT-Creation-Date: 2006-05-04 16:04+0200\n"
+"PO-Revision-Date: 2006-05-04 20:03+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -491,6 +491,8 @@ msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
+"Kui märgitud, siis lubab Nautilus failieelistuste dialoogis redigeerida "
+"faili mõningaid esoteerilisi valikuid."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -545,6 +547,8 @@ msgid ""
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
+"Kui märgitud, siis kuvatakse ka varufaile (näiteks Emacs'i poolt looduid. "
+"Hetkel liigitatakse varufailide alla failid, mille nimi lõpeb \"~\" märgiga."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -960,6 +964,7 @@ msgid "The type of the file."
 msgstr "Faili tüüp"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
+#: ../src/nautilus-image-properties-page.c:228
 msgid "Date Modified"
 msgstr "Muutmisaeg"
 
@@ -1324,17 +1329,17 @@ msgid "_Retry"
 msgstr "_Korda"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1048
-#: ../libnautilus-private/nautilus-file-operations.c:1198
 #: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "_Skip"
 msgstr "_Jäta vahele"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1138
+#: ../libnautilus-private/nautilus-file-operations.c:1139
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "\"%s\" pole võimalik sihtkohta liigutada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1141
+#: ../libnautilus-private/nautilus-file-operations.c:1142
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1343,12 +1348,12 @@ msgstr ""
 "asendada. Kui siiski soovid kirjet liigutada, nimeta see ümber ja proovi "
 "uuesti."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1145
+#: ../libnautilus-private/nautilus-file-operations.c:1146
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "\"%s\" pole võimalik sihtkohta kopeerida."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1148
+#: ../libnautilus-private/nautilus-file-operations.c:1149
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1357,36 +1362,44 @@ msgstr ""
 "asendada. Kui siiski soovid seda kirjet kopeerida, nimeta see ümber ja "
 "proovi uuesti."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1172
+#: ../libnautilus-private/nautilus-file-operations.c:1174
 #, c-format
-msgid "The folder \"%s\" already exists.  Would you like to replace it?"
-msgstr "Kataloog \"%s\" on juba olemas.  Kas soovid seda asendada?"
+msgid "A folder named \"%s\" already exists.  Do you want to replace it?"
+msgstr "Kataloog nimega \"%s\" on juba olemas.  Kas soovid seda asendada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1175
+#: ../libnautilus-private/nautilus-file-operations.c:1177
 #, c-format
-msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr "Fail \"%s\" on juba olemas.  Kas soovid seda asendada?"
+msgid "A file named \"%s\" already exists.  Do you want to replace it?"
+msgstr "Fail nimega \"%s\" on juba olemas.  Kas soovid seda asendada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1183
+#: ../libnautilus-private/nautilus-file-operations.c:1196
+#, c-format
 msgid ""
-"If you replace the existing folder, any files in it that conflict with the "
-"files being copied will be overwritten."
-msgstr "Juba olemasoleva faili asendamisel kirjutatakse selle sisu üle."
+"The folder already exists in \"%s\".  Replacing it will overwrite any files "
+"in the folder that conflict with the files being copied."
+msgstr ""
+"Kataloog on juba \"%s\" all olemas.  Selle kataloogi asendamisega "
+"asendatakse ka kõik olemasolevad failid, mis on kopeeritavate failidega "
+"vastuolus."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1185
-msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "Juba olemasoleva faili asendamisel kirjutatakse selle sisu üle."
+#: ../libnautilus-private/nautilus-file-operations.c:1199
+#, c-format
+msgid ""
+"The file already exists in \"%s\".  Replacing it will overwrite its contents."
+msgstr ""
+"Fail on juba \"%s\" all olema.  Selle asendamisega kirjutatakse faili sisu "
+"üle."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1198
 #: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "_Replace"
 msgstr "_Asenda"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "S_kip All"
 msgstr "_Jäta kõik vahele"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1216
+#: ../libnautilus-private/nautilus-file-operations.c:1235
 msgid "Replace _All"
 msgstr "Asenda _kõik"
 
@@ -1395,7 +1408,7 @@ msgstr "Asenda _kõik"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1288
+#: ../libnautilus-private/nautilus-file-operations.c:1308
 #: ../libnautilus-private/nautilus-file.c:4746
 #: ../src/file-manager/fm-directory-view.c:9720
 #, c-format
@@ -1403,7 +1416,7 @@ msgid "link to %s"
 msgstr "viit failile %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1292
+#: ../libnautilus-private/nautilus-file-operations.c:1312
 #, c-format
 msgid "another link to %s"
 msgstr "lingi %s veelkord"
@@ -1412,25 +1425,25 @@ msgstr "lingi %s veelkord"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1308
+#: ../libnautilus-private/nautilus-file-operations.c:1328
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. %s link"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1312
+#: ../libnautilus-private/nautilus-file-operations.c:1332
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. %s link"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1316
+#: ../libnautilus-private/nautilus-file-operations.c:1336
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. %s link"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1320
+#: ../libnautilus-private/nautilus-file-operations.c:1340
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. %s link"
@@ -1440,12 +1453,12 @@ msgstr "%d. %s link"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1341
+#: ../libnautilus-private/nautilus-file-operations.c:1361
 msgid " (copy)"
 msgstr " (koopia)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1343
+#: ../libnautilus-private/nautilus-file-operations.c:1363
 msgid " (another copy)"
 msgstr " (veel üks koopia)"
 
@@ -1453,36 +1466,36 @@ msgstr " (veel üks koopia)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1346
-#: ../libnautilus-private/nautilus-file-operations.c:1348
-#: ../libnautilus-private/nautilus-file-operations.c:1350
-#: ../libnautilus-private/nautilus-file-operations.c:1360
+#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1368
+#: ../libnautilus-private/nautilus-file-operations.c:1370
+#: ../libnautilus-private/nautilus-file-operations.c:1380
 msgid "th copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1353
+#: ../libnautilus-private/nautilus-file-operations.c:1373
 msgid "st copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1355
+#: ../libnautilus-private/nautilus-file-operations.c:1375
 msgid "nd copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1357
+#: ../libnautilus-private/nautilus-file-operations.c:1377
 msgid "rd copy)"
 msgstr ". koopia)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1374
+#: ../libnautilus-private/nautilus-file-operations.c:1394
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (koopia)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1376
+#: ../libnautilus-private/nautilus-file-operations.c:1396
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (veel üks koopia)%s"
@@ -1491,246 +1504,246 @@ msgstr "%s (veel üks koopia)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1379
-#: ../libnautilus-private/nautilus-file-operations.c:1381
-#: ../libnautilus-private/nautilus-file-operations.c:1383
-#: ../libnautilus-private/nautilus-file-operations.c:1392
+#: ../libnautilus-private/nautilus-file-operations.c:1399
+#: ../libnautilus-private/nautilus-file-operations.c:1401
+#: ../libnautilus-private/nautilus-file-operations.c:1403
+#: ../libnautilus-private/nautilus-file-operations.c:1412
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1386
+#: ../libnautilus-private/nautilus-file-operations.c:1406
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1388
+#: ../libnautilus-private/nautilus-file-operations.c:1408
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1390
+#: ../libnautilus-private/nautilus-file-operations.c:1410
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1490
+#: ../libnautilus-private/nautilus-file-operations.c:1510
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1498
+#: ../libnautilus-private/nautilus-file-operations.c:1518
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1694
-#: ../libnautilus-private/nautilus-file-operations.c:2317
-#: ../libnautilus-private/nautilus-file-operations.c:2500
+#: ../libnautilus-private/nautilus-file-operations.c:1714
+#: ../libnautilus-private/nautilus-file-operations.c:2337
+#: ../libnautilus-private/nautilus-file-operations.c:2520
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Tundmatu GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2053
+#: ../libnautilus-private/nautilus-file-operations.c:2073
 msgid "Moving files to the Trash"
 msgstr "Failide liigutamine prügikasti"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2055
+#: ../libnautilus-private/nautilus-file-operations.c:2075
 msgid "Throwing out file:"
 msgstr "Faili äraviskamine:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2057
-#: ../libnautilus-private/nautilus-file-operations.c:2068
+#: ../libnautilus-private/nautilus-file-operations.c:2077
+#: ../libnautilus-private/nautilus-file-operations.c:2088
 msgid "Moving"
 msgstr "Liigutamine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2058
+#: ../libnautilus-private/nautilus-file-operations.c:2078
 msgid "Preparing to Move to Trash..."
 msgstr "Ettevalmistus failide prügikasti liigutamiseks..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2064
+#: ../libnautilus-private/nautilus-file-operations.c:2084
 msgid "Moving files"
 msgstr "Failide liigutamine"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2066
+#: ../libnautilus-private/nautilus-file-operations.c:2086
 msgid "Moving file:"
 msgstr "Faili liigutamine:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2069
+#: ../libnautilus-private/nautilus-file-operations.c:2089
 msgid "Preparing To Move..."
 msgstr "Ettevalmistus liigutamiseks..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2070
+#: ../libnautilus-private/nautilus-file-operations.c:2090
 msgid "Finishing Move..."
 msgstr "Liigutamise lõpetamine..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2078
+#: ../libnautilus-private/nautilus-file-operations.c:2098
 msgid "Creating links to files"
 msgstr "Failidele viitade loomine"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2080
+#: ../libnautilus-private/nautilus-file-operations.c:2100
 msgid "Linking file:"
 msgstr "Faili viitamine:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2082
+#: ../libnautilus-private/nautilus-file-operations.c:2102
 msgid "Linking"
 msgstr "Linkimisel:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2083
+#: ../libnautilus-private/nautilus-file-operations.c:2103
 msgid "Preparing to Create Links..."
 msgstr "Ettevalmistused viitade loomiseks..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2084
+#: ../libnautilus-private/nautilus-file-operations.c:2104
 msgid "Finishing Creating Links..."
 msgstr "Linkide loomise lõpetamine..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2090
+#: ../libnautilus-private/nautilus-file-operations.c:2110
 msgid "Copying files"
 msgstr "Failide kopeerimine"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2092
+#: ../libnautilus-private/nautilus-file-operations.c:2112
 msgid "Copying file:"
 msgstr "Faili kopeerimine:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2094
+#: ../libnautilus-private/nautilus-file-operations.c:2114
 msgid "Copying"
 msgstr "Kopeerimisel"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2095
+#: ../libnautilus-private/nautilus-file-operations.c:2115
 msgid "Preparing To Copy..."
 msgstr "Ettevalmistused kopeerimiseks..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2113
+#: ../libnautilus-private/nautilus-file-operations.c:2133
 msgid "You cannot copy items into the trash."
 msgstr "Prügikasti ei ole võimalik kirjeid kopeerida."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2114
+#: ../libnautilus-private/nautilus-file-operations.c:2134
 msgid "You cannot create links inside the trash."
 msgstr "Prügikastis ei ole võimalik viitasid tekitada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2115
+#: ../libnautilus-private/nautilus-file-operations.c:2135
 msgid "Files and folders can only be moved into the trash."
 msgstr "Faile ja katalooge saab liigutada ainult prügikasti"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2158
 msgid "You cannot move this trash folder."
 msgstr "Prügikasti pole võimalik liigutada"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2139
+#: ../libnautilus-private/nautilus-file-operations.c:2159
 msgid "You cannot copy this trash folder."
 msgstr "Prügikasti pole võimalik kopeerida."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2140
+#: ../libnautilus-private/nautilus-file-operations.c:2160
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Pügikastis hoitakse sinna pandud kirjeid."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2164
+#: ../libnautilus-private/nautilus-file-operations.c:2184
 msgid "You cannot move a folder into itself."
 msgstr "Kataloogi pole võimalik liigutada iseendasse."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2165
+#: ../libnautilus-private/nautilus-file-operations.c:2185
 msgid "You cannot copy a folder into itself."
 msgstr "Kataloogi pole võimalik kopeerida iseendasse. "
 
-#: ../libnautilus-private/nautilus-file-operations.c:2166
+#: ../libnautilus-private/nautilus-file-operations.c:2186
 msgid "The destination folder is inside the source folder."
 msgstr "Sihtkataloog asub lähtekataloogi sees."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2179
+#: ../libnautilus-private/nautilus-file-operations.c:2199
 msgid "You cannot copy a file over itself."
 msgstr "Faili pole võimalik iseenda peale kopeerida."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2180
+#: ../libnautilus-private/nautilus-file-operations.c:2200
 msgid "The destination and source are the same file."
 msgstr "Sihtkoht ja lähtekoht on sama fail."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2235
-#: ../libnautilus-private/nautilus-file-operations.c:2395
+#: ../libnautilus-private/nautilus-file-operations.c:2255
+#: ../libnautilus-private/nautilus-file-operations.c:2415
 msgid "You do not have permissions to write to the destination."
 msgstr "Sul ei ole õigust sihtkohta kirjutada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2237
-#: ../libnautilus-private/nautilus-file-operations.c:2397
+#: ../libnautilus-private/nautilus-file-operations.c:2257
+#: ../libnautilus-private/nautilus-file-operations.c:2417
 msgid "There is no space on the destination."
 msgstr "Sihtkohas ei ole vaba ruumi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2239
+#: ../libnautilus-private/nautilus-file-operations.c:2259
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Viga \"%s\" uue kataloogi loomisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2244
+#: ../libnautilus-private/nautilus-file-operations.c:2264
 msgid "Error creating new folder."
 msgstr "Viga uue kataloogi loomisel."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2341
+#: ../libnautilus-private/nautilus-file-operations.c:2361
 msgid "untitled folder"
 msgstr "nimeta kataloog"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2399
+#: ../libnautilus-private/nautilus-file-operations.c:2419
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Viga \"%s\" uue dokumendi loomisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2404
+#: ../libnautilus-private/nautilus-file-operations.c:2424
 msgid "Error creating new document."
 msgstr "Viga uue dokumendi loomisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2631
+#: ../libnautilus-private/nautilus-file-operations.c:2651
 msgid "new file"
 msgstr "uus fail"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2697
+#: ../libnautilus-private/nautilus-file-operations.c:2717
 msgid "Deleting files"
 msgstr "Failide kustutamine"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2699
-#: ../libnautilus-private/nautilus-file-operations.c:2734
+#: ../libnautilus-private/nautilus-file-operations.c:2719
+#: ../libnautilus-private/nautilus-file-operations.c:2754
 msgid "Files deleted:"
 msgstr "Faile kustutatud:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2701
-#: ../libnautilus-private/nautilus-file-operations.c:2736
+#: ../libnautilus-private/nautilus-file-operations.c:2721
+#: ../libnautilus-private/nautilus-file-operations.c:2756
 msgid "Deleting"
 msgstr "Kustutamine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2702
+#: ../libnautilus-private/nautilus-file-operations.c:2722
 msgid "Preparing to Delete files..."
 msgstr "Ettevalmistused failide kustutamiseks..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2732
+#: ../libnautilus-private/nautilus-file-operations.c:2752
 msgid "Emptying the Trash"
 msgstr "Prügikasti tühjendamine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2737
+#: ../libnautilus-private/nautilus-file-operations.c:2757
 msgid "Preparing to Empty the Trash..."
 msgstr "Ettevalmistused prügikasti tühjendamiseks..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2773
+#: ../libnautilus-private/nautilus-file-operations.c:2793
 msgid "Empty all of the items from the trash?"
 msgstr "Kas kustutada kõik kirjed prügikastist?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2776
+#: ../libnautilus-private/nautilus-file-operations.c:2796
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1738,7 +1751,7 @@ msgstr ""
 "Kui otsustad prügikasti tühjendada, kaob selle sisu lõplikult. Faile "
 "prügikastis saab kustutada ka ühekaupa."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2818
 msgid "_Empty Trash"
 msgstr "_Tühjenda prügikast"
 
@@ -2219,6 +2232,7 @@ msgid "Open Failed, would you like to choose another application?"
 msgstr "Tõrge avamisel, kas soovid valida mõnd teist rakendust?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:137
+#: ../libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -2232,21 +2246,13 @@ msgid "Open Failed, would you like to choose another action?"
 msgstr "Tõrge avamisel, kas soovid valida mõnd teist käsku?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:143
+#: ../libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
 "Vaikimisi käsk pole võimalik avada \"%s\", sest pole võimalik ligi failidele "
-"asukohaga \"%s\"."
-
-#: ../libnautilus-private/nautilus-program-choosing.c:168
-#, c-format
-msgid ""
-"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
-"locations."
-msgstr ""
-"\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
 "asukohaga \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:171
@@ -2257,13 +2263,6 @@ msgstr ""
 "\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
 "asukohas \"%s\". Selle faili jaoks ei ole ühtegi teist rakendust. Kui "
 "kopeerid faili oma arvutisse, võib selle avamine olla võimalik. "
-
-#: ../libnautilus-private/nautilus-program-choosing.c:175
-#, c-format
-msgid ""
-"The default action can't open \"%s\" because it can't access files at \"%s\"."
-"locations."
-msgstr ""
 
 #: ../libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
@@ -2516,7 +2515,7 @@ msgstr "Prügikastist kõikide asjade kustutamine"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:193
+#: ../src/nautilus-places-sidebar.c:198
 msgid "Desktop"
 msgstr "Töölaud"
 
@@ -3138,6 +3137,7 @@ msgstr "Katkesta ühendus valitud kettaseadmega"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6861
 #: ../src/file-manager/fm-directory-view.c:6877
+#: ../src/nautilus-places-sidebar.c:1213
 msgid "_Eject"
 msgstr "_Väljasta"
 
@@ -3149,6 +3149,7 @@ msgstr "Katkesta ühendus valitud kettaseadmega."
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6865
 #: ../src/file-manager/fm-directory-view.c:6881
+#: ../src/nautilus-places-sidebar.c:1220
 msgid "_Format"
 msgstr "_Vorming"
 
@@ -3978,7 +3979,7 @@ msgid "Move to Trash"
 msgstr "Tõsta prügikasti"
 
 #: ../src/file-manager/fm-tree-view.c:1247
-#: ../src/nautilus-places-sidebar.c:202
+#: ../src/nautilus-places-sidebar.c:207
 msgid "File System"
 msgstr "Failisüsteem"
 
@@ -4109,7 +4110,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:522
+#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:509
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4607,82 +4608,87 @@ msgstr "Ajalugu"
 msgid "Show History"
 msgstr "Näita ajalugu"
 
-#: ../src/nautilus-image-properties-page.c:219
+#: ../src/nautilus-image-properties-page.c:220
 msgid "Camera Brand"
 msgstr "Kaamera tootjafirma"
 
-#: ../src/nautilus-image-properties-page.c:220
+#: ../src/nautilus-image-properties-page.c:221
 msgid "Camera Model"
 msgstr "Kaamera mudel"
 
-#: ../src/nautilus-image-properties-page.c:221
+#. Choose which date to show in order of relevance
+#: ../src/nautilus-image-properties-page.c:224
 msgid "Date Taken"
 msgstr "Pildistamise kuupäev"
 
-#: ../src/nautilus-image-properties-page.c:222
+#: ../src/nautilus-image-properties-page.c:226
+msgid "Date Digitized"
+msgstr ""
+
+#: ../src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
 msgstr "Säriaeg"
 
-#: ../src/nautilus-image-properties-page.c:223
+#: ../src/nautilus-image-properties-page.c:233
 msgid "Exposure Program"
 msgstr "Säritusprogramm"
 
-#: ../src/nautilus-image-properties-page.c:224
+#: ../src/nautilus-image-properties-page.c:234
 msgid "Aperture Value"
 msgstr ""
 
-#: ../src/nautilus-image-properties-page.c:225
+#: ../src/nautilus-image-properties-page.c:235
 msgid "Metering Mode"
 msgstr "Mõõtmisviis"
 
-#: ../src/nautilus-image-properties-page.c:226
+#: ../src/nautilus-image-properties-page.c:236
 msgid "Flash Fired"
 msgstr "Välgu kasutamine"
 
-#: ../src/nautilus-image-properties-page.c:227
+#: ../src/nautilus-image-properties-page.c:237
 msgid "Focal Length"
 msgstr "Fookuskaugus"
 
-#: ../src/nautilus-image-properties-page.c:228
+#: ../src/nautilus-image-properties-page.c:238
 msgid "Shutter Speed"
 msgstr "Säriaeg"
 
-#: ../src/nautilus-image-properties-page.c:229
+#: ../src/nautilus-image-properties-page.c:239
 msgid "ISO Speed Rating"
 msgstr ""
 
-#: ../src/nautilus-image-properties-page.c:230
+#: ../src/nautilus-image-properties-page.c:240
 msgid "Software"
 msgstr "Tarkvara"
 
-#: ../src/nautilus-image-properties-page.c:249
+#: ../src/nautilus-image-properties-page.c:259
 #, c-format
 msgid "<b>Image Type:</b> %s (%s)\n"
 msgstr "<b>Pildi tüüp:</b> %s (%s)\n"
 
-#: ../src/nautilus-image-properties-page.c:251
+#: ../src/nautilus-image-properties-page.c:261
 #, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
 msgstr[0] "<b>Laius:</b> %d piksel\n"
 msgstr[1] "<b>Laius:</b> %d pikslit\n"
 
-#: ../src/nautilus-image-properties-page.c:255
+#: ../src/nautilus-image-properties-page.c:265
 #, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
 msgstr[0] "<b>Kõrgus:</b> %d piksel\n"
 msgstr[1] "<b>Kõrgus:</b> %d pikslit\n"
 
-#: ../src/nautilus-image-properties-page.c:270
+#: ../src/nautilus-image-properties-page.c:280
 msgid "Failed to load image information"
 msgstr "Tõrge pildi teabe laadimise"
 
-#: ../src/nautilus-image-properties-page.c:420
+#: ../src/nautilus-image-properties-page.c:430
 msgid "loading..."
 msgstr "laadimine..."
 
-#: ../src/nautilus-image-properties-page.c:486
+#: ../src/nautilus-image-properties-page.c:496
 msgid "Image"
 msgstr "Pilt"
 
@@ -4799,7 +4805,7 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:262 ../src/nautilus-spatial-window.c:406
-#: ../src/nautilus-window-menus.c:459 ../src/nautilus-window.c:155
+#: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5013,19 +5019,27 @@ msgstr "Märkmed"
 msgid "Show Notes"
 msgstr "Näita märkmeid"
 
-#: ../src/nautilus-places-sidebar.c:1038
+#: ../src/nautilus-places-sidebar.c:1176
 msgid "Remove"
 msgstr "Eemalda"
 
-#: ../src/nautilus-places-sidebar.c:1047
+#: ../src/nautilus-places-sidebar.c:1185
 msgid "Rename..."
 msgstr "Nimeta ümber..."
 
-#: ../src/nautilus-places-sidebar.c:1271
+#: ../src/nautilus-places-sidebar.c:1199
+msgid "_Mount"
+msgstr "Ü_henda"
+
+#: ../src/nautilus-places-sidebar.c:1206
+msgid "_Unmount"
+msgstr "_Ühenda lahti"
+
+#: ../src/nautilus-places-sidebar.c:1444
 msgid "Places"
 msgstr "Asukohad"
 
-#: ../src/nautilus-places-sidebar.c:1277
+#: ../src/nautilus-places-sidebar.c:1450
 msgid "Show Places"
 msgstr "Näita asukohti"
 
@@ -5215,8 +5229,8 @@ msgid "File Type"
 msgstr "Failitüüp"
 
 #: ../src/nautilus-query-editor.c:280
-msgid "Select folder search in"
-msgstr "Kataloogide valimine, millest otsida"
+msgid "Select folder to search in"
+msgstr "Kataloogi valimine, millest otsida"
 
 #: ../src/nautilus-query-editor.c:364
 msgid "Documents"
@@ -5267,8 +5281,8 @@ msgid "Other Type..."
 msgstr "Muu tüüp..."
 
 #: ../src/nautilus-query-editor.c:936
-msgid "Remove this criterium from the search"
-msgstr "Eemalda see kriteerium otsingust "
+msgid "Remove this criterion from the search"
+msgstr "Otsingukriteeriumi eemaldamine otsingust"
 
 #: ../src/nautilus-query-editor.c:980
 msgid "<b>Search Folder</b>"
@@ -5279,8 +5293,8 @@ msgid "Edit the saved search"
 msgstr "Redigeeri salvestatud otsingut"
 
 #: ../src/nautilus-query-editor.c:1027
-msgid "Add a new criterium to this search"
-msgstr "Lisa uus otsingukriteerium"
+msgid "Add a new criterion to this search"
+msgstr "Otsingule uue otsingukriteeriumi lisamine"
 
 #: ../src/nautilus-query-editor.c:1031
 msgid "Go"
@@ -5418,43 +5432,41 @@ msgstr "Palun vali teine rakendus ja proovi uuesti."
 msgid "Go to the location specified by this bookmark"
 msgstr "Liikumine järjehoidjaga määratud asukohta"
 
-#: ../src/nautilus-window-menus.c:424
+#: ../src/nautilus-window-menus.c:423
 msgid ""
-"Nautilus is free software; you can redistribute it and/or modify \n"
-"it under the terms of the GNU General Public License as published by \n"
-"the Free Software Foundation; either version 2 of the License, or \n"
-"(at your option) any later version."
+"Nautilus is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
 msgstr ""
-"Nautilus on vaba tarkvara. Te võite seda edasi levitada ja/või muuta \n"
-"vastavalt GNU Üldise Avaliku Litsentsi tingimustele, nagu need on Vaba \n"
-"Tarkvara Fondi poolt avaldatud; kas Litsentsi versioon number 2 või \n"
+"Nautilus on vaba tarkvara. Te võite seda edasi levitada ja/või muuta "
+"vastavalt GNU Üldise Avaliku Litsentsi tingimustele, nagu need on Vaba "
+"Tarkvara Fondi poolt avaldatud; kas Litsentsi versioon number 2 või "
 "(vastavalt Teie valikule) ükskõik milline hilisem versioon."
 
-#: ../src/nautilus-window-menus.c:428
+#: ../src/nautilus-window-menus.c:427
 msgid ""
-"Nautilus is distributed in the hope that it will be useful, \n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
-"GNU General Public License for more details."
+"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
 msgstr ""
-"Nautilust levitatakse lootuses, et see on kasulik, kuid ILMA \n"
-"IGASUGUSE GARANTIITA; isegi KESKMISE/TAVALISE KVALITEEDI GARANTIITA \n"
-"või SOBIVUSELE TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata \n"
+"Nautilust levitatakse lootuses, et see on kasulik, kuid ILMA "
+"IGASUGUSE GARANTIITA; isegi KESKMISE/TAVALISE KVALITEEDI GARANTIITA "
+"või SOBIVUSELE TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata "
 "GNU Üldist Avalikku Litsentsi."
 
-#: ../src/nautilus-window-menus.c:432
+#: ../src/nautilus-window-menus.c:431
 msgid ""
-"You should have received a copy of the GNU General Public License \n"
-"along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
-"59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+"You should have received a copy of the GNU General Public License along with "
+"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
 "Koos Nautilusega oleks sa pidanud saama ka koopia GNU Üldisest Avalikust "
-"Litsentsist\n"
-"; juhul kui sa seda ei saanud, siis kirjuta Free Software Foundation, "
-"Inc., \n"
-"59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
+"Litsentsist; juhul kui sa seda ei saanud, siis kirjuta Free Software "
+"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
 
-#: ../src/nautilus-window-menus.c:461
+#: ../src/nautilus-window-menus.c:450
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5462,11 +5474,15 @@ msgstr ""
 "Nautilus on GNOME graafiline kest, mis lihtsustab failihaldust ja üldse kogu "
 "süsteemi käsitlemist."
 
-#: ../src/nautilus-window-menus.c:465
-msgid "Copyright © 1999-2005 The Nautilus authors"
-msgstr "Autoriõigus © 1999-2005 Nautiluse autorid"
+#: ../src/nautilus-window-menus.c:454
+msgid "Copyright © 1999-2006 The Nautilus authors"
+msgstr "Autoriõigus © 1999-2006 Nautiluse autorid"
 
-#: ../src/nautilus-window-menus.c:470
+#. Translators should localize the following string
+#. * which will be displayed at the bottom of the about
+#. * box to give credit to the translator(s).
+#.
+#: ../src/nautilus-window-menus.c:464
 msgid "translator-credits"
 msgstr ""
 "Lauri Kasvandik <lauri.kasvandik@mail.ee>, 2002.\n"
@@ -5476,203 +5492,203 @@ msgstr ""
 "Ivar Smolin <okul@linux.ee>, 2005, 2006.\n"
 "Sven Sapelson <sven.sapelson@gmail.com>, 2005."
 
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:597
 msgid "_File"
 msgstr "_Fail"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:611
+#: ../src/nautilus-window-menus.c:598
 msgid "_Edit"
 msgstr "_Redaktor"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:612
+#: ../src/nautilus-window-menus.c:599
 msgid "_View"
 msgstr "_Vaade"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:600
 msgid "_Help"
 msgstr "_Abi"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:615
+#: ../src/nautilus-window-menus.c:602
 msgid "_Close"
 msgstr "_Sulge"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:603
 msgid "Close this folder"
 msgstr "Sulgeb selle kataloogi"
 
-#: ../src/nautilus-window-menus.c:619
+#: ../src/nautilus-window-menus.c:606
 msgid "_Backgrounds and Emblems..."
 msgstr "_Taustad ja embleemid..."
 
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:607
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "Kuvab mustrid, värvid ja embleemid, millega kohandada välimust."
 
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:610
 msgid "Prefere_nces"
 msgstr "_Eelistused"
 
-#: ../src/nautilus-window-menus.c:624
+#: ../src/nautilus-window-menus.c:611
 msgid "Edit Nautilus preferences"
 msgstr "Nautiluse eelistuste muutmine"
 
-#: ../src/nautilus-window-menus.c:626
+#: ../src/nautilus-window-menus.c:613
 msgid "_Undo"
 msgstr "_Tühista"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:614
 msgid "Undo the last text change"
 msgstr "Tühista viimane tekstimuutus"
 
-#: ../src/nautilus-window-menus.c:629
+#: ../src/nautilus-window-menus.c:616
 msgid "Open _Parent"
 msgstr "Ava ü_lemine"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:630
+#: ../src/nautilus-window-menus.c:617
 msgid "Open the parent folder"
 msgstr "Ülemise kataloogi avamine"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:623
 msgid "_Stop"
 msgstr "_Peata"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:640
+#: ../src/nautilus-window-menus.c:627
 msgid "_Reload"
 msgstr "_Laadi uuesti"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:644
+#: ../src/nautilus-window-menus.c:631
 msgid "_Contents"
 msgstr "_Sisukord"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:645
+#: ../src/nautilus-window-menus.c:632
 msgid "Display Nautilus help"
 msgstr "Kuvab Nautiluse abiteabe"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:648
+#: ../src/nautilus-window-menus.c:635
 msgid "_About"
 msgstr "Nautilusest _lähemalt"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:649
+#: ../src/nautilus-window-menus.c:636
 msgid "Display credits for the creators of Nautilus"
 msgstr "Kuvab teabe Nautiluse loojate ja tõlkijate kohta"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:652
+#: ../src/nautilus-window-menus.c:639
 msgid "Zoom _In"
 msgstr "_Suurenda"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:653 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:640 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Näitab sisu suurendatult"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:664
+#: ../src/nautilus-window-menus.c:651
 msgid "Zoom _Out"
 msgstr "_Vähenda"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:665 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:652 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Näitab sisu vähendatult"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:672
+#: ../src/nautilus-window-menus.c:659
 msgid "Normal Si_ze"
 msgstr "Harilik _suurus"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:673
+#: ../src/nautilus-window-menus.c:660
 msgid "Show the contents at the normal size"
 msgstr "Näitab sisu harilikus suuruses"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:676
+#: ../src/nautilus-window-menus.c:663
 msgid "Connect to _Server..."
 msgstr "Ühendu _serverisse..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:677
+#: ../src/nautilus-window-menus.c:664
 msgid "Set up a connection to a network server"
 msgstr "Seadistab ühenduse võrguserveriga"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:680
+#: ../src/nautilus-window-menus.c:667
 msgid "_Home"
 msgstr "_Kodukataloog"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:681
+#: ../src/nautilus-window-menus.c:668
 msgid "Go to the home folder"
 msgstr "Liikumine kodukataloogi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:684
+#: ../src/nautilus-window-menus.c:671
 msgid "_Computer"
 msgstr "_Arvuti"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:685
+#: ../src/nautilus-window-menus.c:672
 msgid "Go to the computer location"
 msgstr "Liigu arvuti asukohta"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:688
+#: ../src/nautilus-window-menus.c:675
 msgid "_Network"
 msgstr "_Võrk"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:689
+#: ../src/nautilus-window-menus.c:676
 msgid "Go to the network location"
 msgstr "Liigu võrgu asukohta"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:692
+#: ../src/nautilus-window-menus.c:679
 msgid "T_emplates"
 msgstr "_Mallid"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:693
+#: ../src/nautilus-window-menus.c:680
 msgid "Go to the templates folder"
 msgstr "Liikumine mallide kataloogi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:696
+#: ../src/nautilus-window-menus.c:683
 msgid "_Trash"
 msgstr "_Prügikast"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:697
+#: ../src/nautilus-window-menus.c:684
 msgid "Go to the trash folder"
 msgstr "Liikumine prügikataloogi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:700
+#: ../src/nautilus-window-menus.c:687
 msgid "CD/_DVD Creator"
 msgstr "_CD/DVD looja"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:701
+#: ../src/nautilus-window-menus.c:688
 msgid "Go to the CD/DVD Creator"
 msgstr "Liigu CD/DVD loojasse"
 
-#: ../src/nautilus-window-menus.c:727
+#: ../src/nautilus-window-menus.c:714
 msgid "_Up"
 msgstr "_Üles"
 
@@ -5703,6 +5719,16 @@ msgstr "Praeguse vaate suurendusastme seadmine"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vaata oma võrgu servereid Nautiluse failihalduris."
+
+#~ msgid "If you replace an existing file, its contents will be overwritten."
+#~ msgstr "Juba olemasoleva faili asendamisel kirjutatakse selle sisu üle."
+
+#~ msgid ""
+#~ "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+#~ "locations."
+#~ msgstr ""
+#~ "\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi "
+#~ "failidele asukohaga \"%s\"."
 
 #~ msgid "Couldn't Install Emblem"
 #~ msgstr "Embleemi pole võimalik paigaldada"
