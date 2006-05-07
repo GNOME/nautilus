@@ -528,7 +528,7 @@ type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
 		GtkWidget *toplevel;
 		GtkTreeSelection *selection;
 
-		mime_infos = eel_mime_get_availible_mime_types ();
+		mime_infos = eel_mime_get_available_mime_types ();
 
 		store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
 		for (l = mime_infos; l != NULL; l = l->next) {
