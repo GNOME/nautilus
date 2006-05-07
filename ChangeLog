@@ -1,5 +1,19 @@
 2006-05-07  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_drop_action_ask),
+	(nautilus_drag_drop_background_ask):
+	* src/file-manager/fm-tree-view.c: (create_popup_menu):
+	* src/nautilus-places-sidebar.c:
+	(bookmarks_build_popup_menu):
+	Use eel_gtk_menu_append_separator.
+
+	* src/nautilus-places-sidebar.c:
+	(bookmarks_check_popup_sensitivity):
+	Use eel_gtk_widget_set_shown.
+
+2006-05-07  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-query-editor.c: (type_combo_changed):
 	Fix typo in function name: s/availible/available/ (#326053)
 

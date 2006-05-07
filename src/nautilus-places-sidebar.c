@@ -913,17 +913,6 @@ eject_for_type (GnomeVFSDeviceType type)
 }
 
 static void
-set_visibility (GtkWidget *widget,
-		gboolean visible)
-{
-	if (visible) {
-		gtk_widget_show (widget);
-	} else {
-		gtk_widget_hide (widget);
-	}
-}
-
-static void
 bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
@@ -975,12 +964,12 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 		gnome_vfs_drive_unref (drive);
 	}
 	
-	set_visibility (sidebar->popup_menu_separator_item, 
+	eel_gtk_widget_set_shown (sidebar->popup_menu_separator_item, 
 			show_mount || show_unmount || show_eject || show_format);
-	set_visibility (sidebar->popup_menu_mount_item, show_mount);
-	set_visibility (sidebar->popup_menu_unmount_item, show_unmount);
-	set_visibility (sidebar->popup_menu_eject_item, show_eject);
-	set_visibility (sidebar->popup_menu_format_item, show_format);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_mount_item, show_mount);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_unmount_item, show_unmount);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_eject_item, show_eject);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_format_item, show_format);
 }
 
 /* Callback used when the selection in the shortcuts tree changes */
@@ -1191,10 +1180,8 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	
 	/* Mount/Unmount/Eject menu items */
 
-	item = gtk_separator_menu_item_new ();
-	sidebar->popup_menu_separator_item = item;
-	gtk_widget_show (item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+	sidebar->popup_menu_separator_item =
+		GTK_WIDGET (eel_gtk_menu_append_separator (GTK_MENU (sidebar->popup_menu)));
 
 	item = gtk_menu_item_new_with_mnemonic (_("_Mount"));
 	sidebar->popup_menu_mount_item = item;

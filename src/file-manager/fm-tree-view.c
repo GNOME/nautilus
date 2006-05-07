@@ -35,6 +35,7 @@
 #include "fm-tree-model.h"
 #include "fm-properties-window.h"
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
@@ -1092,7 +1093,7 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 static void
 create_popup_menu (FMTreeView *view)
 {
-	GtkWidget *popup, *menu_item, *menu_image, *separator_item;
+	GtkWidget *popup, *menu_item, *menu_image;
 	
 	popup = gtk_menu_new ();
 	
@@ -1119,10 +1120,8 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_open_in_new_window = menu_item;
 	
-	separator_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (separator_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
-	
+	eel_gtk_menu_append_separator (GTK_MENU (popup));
+
 	/* add the "create folder" menu item */
 	menu_item = gtk_image_menu_item_new_with_label (_("Create Folder"));
 	g_signal_connect (menu_item, "activate",
@@ -1132,9 +1131,7 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_create_folder = menu_item;
 	
-	separator_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (separator_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
+	eel_gtk_menu_append_separator (GTK_MENU (popup));
 	
 	/* add the "cut folder" menu item */
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_CUT, NULL);
@@ -1168,9 +1165,7 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_paste = menu_item;
 	
-	separator_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (separator_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
+	eel_gtk_menu_append_separator (GTK_MENU (popup));
 	
 	/* add the "move to trash" menu item */
 	menu_image = gtk_image_new_from_stock (GTK_STOCK_DELETE,
@@ -1186,9 +1181,7 @@ create_popup_menu (FMTreeView *view)
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_trash = menu_item;
 	
-	separator_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (separator_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), separator_item);
+	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
 	/* add the "Unmount" menu item */
 	menu_item = gtk_image_menu_item_new_with_label ("eject label");
@@ -1200,10 +1193,8 @@ create_popup_menu (FMTreeView *view)
 	view->details->popup_unmount = menu_item;
 
 	/* add the unmount separator menu item */
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
-	view->details->popup_unmount_separator = menu_item;
+	view->details->popup_unmount_separator =
+		GTK_WIDGET (eel_gtk_menu_append_separator (GTK_MENU (popup)));
 
 	/* add the "properties" menu item */
 	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PROPERTIES, NULL);

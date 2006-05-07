@@ -32,6 +32,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-link.h"
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkmain.h>
@@ -657,9 +658,7 @@ nautilus_drag_drop_action_ask (GtkWidget *widget,
 				      (actions & NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) != 0,
 				      &damd);
 
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
+	eel_gtk_menu_append_separator (GTK_MENU (menu));
 	
 	menu_item = gtk_menu_item_new_with_mnemonic (_("Cancel"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
@@ -712,9 +711,7 @@ nautilus_drag_drop_background_ask (GtkWidget *widget,
 				      (actions & NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND) != 0,
 				      &damd);
 
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
+	eel_gtk_menu_append_separator (GTK_MENU (menu));
 	
 	menu_item = gtk_menu_item_new_with_mnemonic (_("Cancel"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
