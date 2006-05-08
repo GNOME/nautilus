@@ -1,3 +1,16 @@
+2006-05-08  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (add_place), (update_places),
+	(check_visibility), (bookmarks_check_popup_sensitivity),
+	(get_selected_iter), (rename_selected_bookmark),
+	(remove_selected_bookmarks), (mount_shortcut_cb),
+	(unmount_shortcut_cb), (eject_shortcut_cb),
+	(nautilus_places_sidebar_init):
+	Add volume data to the list store and use it to show
+	an unmount command for network volumes. (#316184)
+
+	Patch from Xavier Claessens <xclaesse@gmail.com>
+
 2006-05-07  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-dnd.c:

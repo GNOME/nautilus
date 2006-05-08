@@ -101,6 +101,7 @@ enum {
 	PLACES_SIDEBAR_COLUMN_ROW_TYPE,
 	PLACES_SIDEBAR_COLUMN_URI,
 	PLACES_SIDEBAR_COLUMN_DRIVE,
+	PLACES_SIDEBAR_COLUMN_VOLUME,
 	PLACES_SIDEBAR_COLUMN_NAME,
 	PLACES_SIDEBAR_COLUMN_ICON,
 	PLACES_SIDEBAR_COLUMN_INDEX,
@@ -134,9 +135,14 @@ G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebarProvider, nautilus_places_sidebar_
 
 
 static GtkTreeIter
-add_place (GtkListStore *store, PlaceType place_type,
-	   const char *name, const char *icon, const char *uri,
-	   GnomeVFSDrive *drive, const int index)
+add_place (GtkListStore *store,
+	   PlaceType place_type,
+	   const char *name,
+	   const char *icon,
+	   const char *uri,
+	   GnomeVFSDrive *drive,
+	   GnomeVFSVolume *volume,
+	   const int index)
 {
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter;
@@ -148,6 +154,7 @@ add_place (GtkListStore *store, PlaceType place_type,
 			    PLACES_SIDEBAR_COLUMN_NAME, name,
 			    PLACES_SIDEBAR_COLUMN_URI, uri,
 			    PLACES_SIDEBAR_COLUMN_DRIVE, drive,
+			    PLACES_SIDEBAR_COLUMN_VOLUME, volume,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
 			    PLACES_SIDEBAR_COLUMN_INDEX, index,
 			    -1);
@@ -185,7 +192,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 		display_name = g_filename_display_basename (g_get_home_dir ());
 		last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-				       display_name, "gnome-fs-home", mount_uri, NULL, 0);
+				       display_name, "gnome-fs-home",
+				       mount_uri, NULL, NULL, 0);
 		g_free (display_name);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
@@ -195,7 +203,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 	mount_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
 	last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-			       _("Desktop"), "gnome-fs-desktop", mount_uri, NULL, 0);
+			       _("Desktop"), "gnome-fs-desktop",
+			       mount_uri, NULL, NULL, 0);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
@@ -204,7 +213,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 	
  	mount_uri = "file:///"; /* No need to strdup */
 	last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-			       _("File System"), "gnome-dev-harddisk", mount_uri, NULL, 0);
+			       _("File System"), "gnome-dev-harddisk",
+			       mount_uri, NULL, NULL, 0);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
@@ -234,7 +244,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 				mount_uri = gnome_vfs_volume_get_activation_uri (volume);
 				name = gnome_vfs_volume_get_display_name (volume);
 				last_iter = add_place (sidebar->store, PLACES_MOUNTED_VOLUME,
-						       name, icon, mount_uri, drive, 0);
+						       name, icon, mount_uri,
+						       drive, volume, 0);
 				if (strcmp (location, mount_uri) == 0) {
 					gtk_tree_selection_select_iter (selection, &last_iter);
 				}
@@ -251,7 +262,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 			icon = gnome_vfs_drive_get_icon (drive);
 			name = gnome_vfs_drive_get_display_name (drive);
 			last_iter = add_place (sidebar->store, PLACES_BUILT_IN,
-					       name, icon, NULL, drive, 0);
+					       name, icon, NULL,
+					       drive, NULL, 0);
 			g_free (icon);
 			g_free (name);
 		}		
@@ -275,7 +287,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 		mount_uri = gnome_vfs_volume_get_activation_uri (volume);
 		name = gnome_vfs_volume_get_display_name (volume);
 		last_iter = add_place (sidebar->store, PLACES_MOUNTED_VOLUME,
-				       name, icon, mount_uri, NULL, 0);
+				       name, icon, mount_uri,
+				       NULL, volume, 0);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
@@ -307,7 +320,8 @@ update_places (NautilusPlacesSidebar *sidebar)
 		icon = nautilus_bookmark_get_icon (bookmark);
 		mount_uri = nautilus_bookmark_get_uri (bookmark);
 		last_iter = add_place (sidebar->store, PLACES_BOOKMARK,
-				       name, icon, mount_uri, NULL, index);
+				       name, icon, mount_uri,
+				       NULL, NULL, index);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
@@ -913,12 +927,44 @@ eject_for_type (GnomeVFSDeviceType type)
 }
 
 static void
+check_visibility (GnomeVFSVolume *volume,
+		  GnomeVFSDrive  *drive,
+		  gboolean       *show_mount,
+		  gboolean       *show_unmount,
+		  gboolean       *show_eject,
+		  gboolean       *show_format)
+{
+	*show_mount = FALSE;
+	*show_unmount = FALSE;
+	*show_eject = FALSE;
+	*show_format = FALSE;
+
+	if (volume != NULL) {
+		*show_unmount = TRUE;
+		*show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+	} else if (drive != NULL) {
+		*show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+		if (gnome_vfs_drive_is_mounted (drive)) {
+			*show_unmount = TRUE;
+		} else {
+			*show_mount = TRUE;
+		}
+
+		if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
+		    g_find_program_in_path ("gfloppy")) {
+			*show_format = TRUE;
+		}
+	}
+}
+
+static void
 bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
 	PlaceType type; 
 	GtkTreeSelection *selection;
 	GnomeVFSDrive *drive = NULL;
+	GnomeVFSVolume *volume = NULL;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
@@ -936,33 +982,21 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 		gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
 				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
 				    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+ 				    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
 				    -1);
 	}
 
 	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
-	
-	show_mount = FALSE;
-	show_unmount = FALSE;
-	show_eject = FALSE;
-	show_format = FALSE;
 
-	if (drive != NULL) {
-		show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
-		show_unmount = gnome_vfs_drive_is_mounted (drive);
-		show_mount = ! show_unmount;
-		/* We don't want both eject and unmount, since eject
-		   unmounts too */
-		if (show_eject) {
-			show_unmount = FALSE;
-		}
-		if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
-		    !gnome_vfs_drive_is_mounted (drive) &&
-		    g_find_program_in_path ("gfloppy")) {
-			show_format = TRUE;
-		}
-		gnome_vfs_drive_unref (drive);
-	}
+ 	check_visibility (volume, drive,
+ 			  &show_mount, &show_unmount, &show_eject, &show_format);	
+
+	/* We don't want both eject and unmount, since eject
+ 	   unmounts too */
+ 	if (show_eject) {
+ 		show_unmount = FALSE;
+  	}
 	
 	eel_gtk_widget_set_shown (sidebar->popup_menu_separator_item, 
 			show_mount || show_unmount || show_eject || show_format);
@@ -980,6 +1014,14 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 	bookmarks_check_popup_sensitivity (sidebar);
 }
 
+static gboolean
+get_selected_iter (NautilusPlacesSidebar *sidebar,
+		   GtkTreeIter *iter)
+{
+	GtkTreeSelection *selection;
+	selection = gtk_tree_view_get_selection (sidebar->tree_view);
+	return gtk_tree_selection_get_selected (selection, NULL, iter);
+}
 
 /* Rename the selected bookmark */
 static void
@@ -990,11 +1032,8 @@ rename_selected_bookmark (NautilusPlacesSidebar *sidebar)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell;
 	GList *renderers;
-	GtkTreeSelection *selection;
 	
-	selection = gtk_tree_view_get_selection (sidebar->tree_view);
-	
-	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+	if (get_selected_iter (sidebar, &iter)) {
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (sidebar->store), &iter);
 		column = gtk_tree_view_get_column (GTK_TREE_VIEW (sidebar->tree_view), 0);
 		renderers = gtk_tree_view_column_get_cell_renderers (column);
@@ -1019,13 +1058,10 @@ static void
 remove_selected_bookmarks (NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
-	GtkTreeSelection *selection;
 	PlaceType type; 
 	int index;
 
-	selection = gtk_tree_view_get_selection (sidebar->tree_view);
-	
-	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+	if (!get_selected_iter (sidebar, &iter)) {
 		return;
 	}
 	
@@ -1051,33 +1087,20 @@ remove_shortcut_cb (GtkMenuItem           *item,
 	remove_selected_bookmarks (sidebar);
 }
 
-static GnomeVFSDrive*
-get_selected_drive (NautilusPlacesSidebar *sidebar)
+static void
+mount_shortcut_cb (GtkMenuItem           *item,
+		   NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
-	GtkTreeSelection *selection;
 	GnomeVFSDrive *drive;
 
-	selection = gtk_tree_view_get_selection (sidebar->tree_view);
-
-	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
-		return NULL;
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
 	}
 
 	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
 			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
 			    -1);
-
-	return drive;
-}
-
-static void
-mount_shortcut_cb (GtkMenuItem           *item,
-		   NautilusPlacesSidebar *sidebar)
-{
-	GnomeVFSDrive *drive;
-
-	drive = get_selected_drive (sidebar);
 
 	if (drive != NULL) {
 		gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
@@ -1089,28 +1112,52 @@ static void
 unmount_shortcut_cb (GtkMenuItem           *item,
 		     NautilusPlacesSidebar *sidebar)
 {
-	GnomeVFSDrive *drive;
+	GtkTreeIter iter;
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive  *drive;
 
-	drive = get_selected_drive (sidebar);
-
-	if (drive != NULL) {
-		gnome_vfs_drive_unmount (drive, volume_op_callback, sidebar);
-		gnome_vfs_drive_unref (drive);
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
 	}
+
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
+			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+			    -1);
+
+	if (volume != NULL) {
+		gnome_vfs_volume_unmount (volume, volume_op_callback, sidebar);
+	} else if (drive != NULL) {
+		gnome_vfs_drive_unmount (drive, volume_op_callback, sidebar);
+	}
+	gnome_vfs_volume_unref (volume);
+	gnome_vfs_drive_unref (drive);
 }
 
 static void
 eject_shortcut_cb (GtkMenuItem           *item,
 		   NautilusPlacesSidebar *sidebar)
 {
-	GnomeVFSDrive *drive;
+	GtkTreeIter iter;
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive  *drive;
 
-	drive = get_selected_drive (sidebar);
-
-	if (drive != NULL) {
-		gnome_vfs_drive_eject (drive, volume_op_callback, sidebar);
-		gnome_vfs_drive_unref (drive);
+	if (!get_selected_iter (sidebar, &iter)) {
+		return;
 	}
+
+	gtk_tree_model_get (GTK_TREE_MODEL (sidebar->store), &iter,
+			    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
+			    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
+			    -1);
+
+	if (volume != NULL) {
+		gnome_vfs_volume_eject (volume, volume_op_callback, sidebar);
+	} else if (drive != NULL) {
+		gnome_vfs_drive_eject (drive, volume_op_callback, sidebar);
+	}
+	gnome_vfs_volume_unref (volume);
+	gnome_vfs_drive_unref (drive);
 }
 
 static void
@@ -1338,6 +1385,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     G_TYPE_INT, 
 					     G_TYPE_STRING,
 					     GNOME_VFS_TYPE_DRIVE,
+					     GNOME_VFS_TYPE_VOLUME,
 					     G_TYPE_STRING,
 					     GDK_TYPE_PIXBUF,
 					     G_TYPE_INT
