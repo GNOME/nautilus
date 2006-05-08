@@ -1,3 +1,11 @@
+2006-05-09  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-window-manage-views.c:
+	(got_file_info_for_view_selection_callback):
+	Re-set viewed_file after a location change failed. Prevents
+	crashing over an assertion in viewed_file_changed_callback
+	on slow filesystems. Fixes #339965.
+
 2006-05-08  Federico Mena Quintero  <federico@novell.com>
 
 	Merged from HEAD:

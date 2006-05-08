@@ -960,6 +960,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 			/* We disconnected this, so we need to re-connect it */
 			viewed_file = nautilus_file_get (window->details->location);
+			nautilus_window_set_viewed_file (window, viewed_file);
 			nautilus_file_monitor_add (viewed_file, &window->details->viewed_file, 0);
 			g_signal_connect_object (viewed_file, "changed",
 						 G_CALLBACK (viewed_file_changed_callback), window, 0);
