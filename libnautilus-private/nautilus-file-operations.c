@@ -575,22 +575,17 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		/* fall through */
 	case GNOME_VFS_XFER_PHASE_COPYING:
 		if (transfer_info->progress_dialog != NULL) {
-			if (progress_info->bytes_copied == 0) {
-				progress_dialog_set_to_from_item_text
-					(transfer_info->progress_dialog,
-					 transfer_info->progress_verb,
-					 progress_info->source_name,
-					 progress_info->target_name,
-					 progress_info->file_index,
-					 progress_info->file_size);
-			} else {
-				nautilus_file_operations_progress_update_sizes
-					(transfer_info->progress_dialog,
-					 MIN (progress_info->bytes_copied, 
-					      progress_info->bytes_total),
-					 MIN (progress_info->total_bytes_copied,
-					      progress_info->bytes_total));
-			}
+			progress_dialog_set_to_from_item_text (transfer_info->progress_dialog,
+							       transfer_info->progress_verb,
+							       progress_info->source_name,
+							       progress_info->target_name,
+							       progress_info->file_index,
+							       progress_info->file_size);
+			nautilus_file_operations_progress_update_sizes (transfer_info->progress_dialog,
+									MIN (progress_info->bytes_copied, 
+									     progress_info->bytes_total),
+									MIN (progress_info->total_bytes_copied,
+									     progress_info->bytes_total));
 		}
 		return 1;
 

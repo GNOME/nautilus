@@ -1,3 +1,14 @@
+2006-05-08  Federico Mena Quintero  <federico@novell.com>
+
+	Merged from HEAD:
+
+	* libnautilus-private/nautilus-file-operations.c
+	(handle_transfer_ok): Don't special-case the first 0 bytes of the
+	file in the case of reporting actual copy/move progress.  It is
+	fine to update both the labels and the sizes every time.  Fixes
+	http://bugzilla.gnome.org/show_bug.cgi?id=341064
+	https://bugzilla.novell.com/show_bug.cgi?id=66073
+
 2006-05-04  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-navigation-action.c:
