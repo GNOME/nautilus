@@ -45,8 +45,7 @@ typedef struct {
 	double x, y;
 	
 	/* Scale factor (stretches icon). */
-	/* ALEX TODO: only allow once scale */
-	double scale_x, scale_y;
+	double scale;
 
 	/* Whether this item is selected. */
 	eel_boolean_bit is_selected : 1;
@@ -271,8 +270,7 @@ void          nautilus_icon_container_move_icon                   (NautilusIconC
 								   NautilusIcon          *icon,
 								   int                    x,
 								   int                    y,
-								   double                 scale_x,
-								   double                 scale_y,
+								   double                 scale,
 								   gboolean               raise,
 								   gboolean               snap,
 								   gboolean		  update_position);

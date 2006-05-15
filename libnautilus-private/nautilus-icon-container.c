@@ -361,12 +361,9 @@ icon_get_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
 	       guint *size)
 {
-	g_assert (fabs (icon->scale_x - icon->scale_y) <= 0.001);
-		
-	/* ALEX TODO: Bogus. Should only have one scale, not _x and _y */
 	if (size != NULL) {
 		*size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			       * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
+			       * icon->scale, NAUTILUS_ICON_SIZE_SMALLEST);
 	}
 }
 
@@ -395,7 +392,7 @@ icon_set_size (NautilusIconContainer *container,
 		(container->details->zoom_level);
 	nautilus_icon_container_move_icon (container, icon,
 					   icon->x, icon->y,
-					   scale, scale, FALSE,
+					   scale, FALSE,
 					   snap, update_position);
 }
 
@@ -448,7 +445,7 @@ icon_toggle_selected (NautilusIconContainer *container,
 			nautilus_icon_container_move_icon (container,
 							   icon,
 							   icon->x, icon->y,
-							   icon->scale_x, icon->scale_y,
+							   icon->scale,
 							   FALSE, TRUE, TRUE);
 		}
 		
@@ -1845,7 +1842,7 @@ void
 nautilus_icon_container_move_icon (NautilusIconContainer *container,
 				   NautilusIcon *icon,
 				   int x, int y,
-				   double scale_x, double scale_y,
+				   double scale,
 				   gboolean raise,
 				   gboolean snap,
 				   gboolean update_position)
@@ -1862,9 +1859,8 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		end_renaming_mode (container, TRUE);
 	}
 
-	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
-		icon->scale_x = scale_x;
-		icon->scale_y = scale_y;
+	if (scale != icon->scale) {
+		icon->scale = scale;
 		nautilus_icon_container_update_icon (container, icon);
 		if (update_position) {
 			redo_layout (container); 
@@ -1886,8 +1882,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	if (emit_signal) {
 		position.x = icon->x;
 		position.y = icon->y;
-		position.scale_x = scale_x;
-		position.scale_y = scale_y;
+		position.scale = scale;
 		g_signal_emit (container,
 				 signals[ICON_POSITION_CHANGED], 0,
 				 icon->data, &position);
@@ -3465,7 +3460,7 @@ keyboard_stretching (NautilusIconContainer *container,
 	case GDK_KP_0:
 		nautilus_icon_container_move_icon (container, icon,
 						   icon->x, icon->y,
-						   1.0, 1.0,
+						   1.0,
 						   FALSE, TRUE, TRUE);
 		break;
 	}
@@ -3494,8 +3489,7 @@ end_stretching (NautilusIconContainer *container,
 	icon = container->details->drag_icon;	
 	position.x = icon->x;
 	position.y = icon->y;
-	position.scale_x = icon->scale_x;
-	position.scale_y = icon->scale_y;
+	position.scale = icon->scale;
 	g_signal_emit (container,
 			 signals[ICON_POSITION_CHANGED], 0,
 			 icon->data, &position);
@@ -5560,7 +5554,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	emblem_pixbufs = NULL;
 	
 	icon_size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			   * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
+			   * icon->scale, NAUTILUS_ICON_SIZE_SMALLEST);
 	for (p = emblem_icon_names; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
@@ -5623,15 +5617,13 @@ assign_icon_position (NautilusIconContainer *container,
 
 	/* Get the stored position. */
 	have_stored_position = FALSE;
-	position.scale_x = 1.0;
-	position.scale_y = 1.0;
+	position.scale = 1.0;
 	g_signal_emit (container,
 			 signals[GET_STORED_ICON_POSITION], 0,
 			 icon->data,
 			 &position,
 			 &have_stored_position);
-	icon->scale_x = position.scale_x;
-	icon->scale_y = position.scale_y;
+	icon->scale = position.scale;
 	if (!container->details->auto_layout) {
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
@@ -5773,8 +5765,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->x = ICON_UNPOSITIONED_VALUE;
 	icon->y = ICON_UNPOSITIONED_VALUE;
 	icon->has_lazy_position = has_lazy_position;
-	icon->scale_x = 1.0;
-	icon->scale_y = 1.0;
+	icon->scale = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
 		(eel_canvas_item_new (EEL_CANVAS_GROUP (EEL_CANVAS (container)->root),
 				      nautilus_icon_canvas_item_get_type (),
@@ -6328,7 +6319,7 @@ nautilus_icon_container_is_stretched (NautilusIconContainer *container)
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
-		if (icon->is_selected && (icon->scale_x != 1.0 || icon->scale_y != 1.0)) {
+		if (icon->is_selected && icon->scale != 1.0) {
 			return TRUE;
 		}
 	}
@@ -6352,7 +6343,7 @@ nautilus_icon_container_unstretch (NautilusIconContainer *container)
 		if (icon->is_selected) {
 			nautilus_icon_container_move_icon (container, icon,
 							   icon->x, icon->y,
-							   1.0, 1.0,
+							   1.0,
 							   FALSE, TRUE, TRUE);
 		}
 	}
@@ -6592,8 +6583,7 @@ nautilus_icon_container_freeze_icon_positions (NautilusIconContainer *container)
 
 		position.x = icon->x;
 		position.y = icon->y;
-		position.scale_x = icon->scale_x;
-		position.scale_y = icon->scale_y;
+		position.scale = icon->scale;
 		g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
 				 icon->data, &position);
 	}

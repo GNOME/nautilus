@@ -287,20 +287,12 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	scale_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
 	scale_good = sscanf
-		(scale_string, " %lf %c",
-		 &position->scale_x, &c) == 1;
-	if (scale_good) {
-		position->scale_y = position->scale_x;
-	} else {
-		scale_good = sscanf
-			(scale_string, " %lf %lf %c",
-			 &position->scale_x,
-			 &position->scale_y, &c) == 2;
-		if (!scale_good) {
-			position->scale_x = 1.0;
-			position->scale_y = 1.0;
-		}
+		(scale_string, " %lf",
+		 &position->scale) == 1;
+	if (!scale_good) {
+		position->scale = 1.0;
 	}
+
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
@@ -2156,7 +2148,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 				FMIconView *icon_view)
 {
 	char *position_string;
-	char *scale_string, *scale_string_x, *scale_string_y;
+	char *scale_string;
 	char *locale;
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
@@ -2199,16 +2191,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 * %.2f is not a good format for the scale factor. We'd like it to
 	 * say "2" or "2x" instead of "2.00".
 	 */
-	scale_string_x = g_strdup_printf ("%.2f", position->scale_x);
-	scale_string_y = g_strdup_printf ("%.2f", position->scale_y);
-	if (strcmp (scale_string_x, scale_string_y) == 0) {
-		scale_string = scale_string_x;
-		g_free (scale_string_y);
-	} else {
-		scale_string = g_strconcat (scale_string_x, ",", scale_string_y, NULL);
-		g_free (scale_string_x);
-		g_free (scale_string_y);
-	}
+	scale_string = g_strdup_printf ("%.2f", position->scale);
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE,
 		 "1.00", scale_string);

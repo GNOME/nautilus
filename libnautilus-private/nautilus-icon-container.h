@@ -51,8 +51,7 @@ typedef void (* NautilusIconCallback) (NautilusIconData *icon_data,
 typedef struct {
 	int x;
 	int y;
-	double scale_x;
-	double scale_y;
+	double scale;
 } NautilusIconPosition;
 
 typedef enum {

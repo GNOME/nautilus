@@ -853,7 +853,7 @@ handle_local_move (NautilusIconContainer *container,
 			nautilus_icon_container_move_icon
 				(container, icon,
 				 world_x + item->icon_x, world_y + item->icon_y,
-				 icon->scale_x, icon->scale_y,
+				 icon->scale,
 				 TRUE, TRUE, TRUE);
 		}
 		moved_icons = g_list_prepend (moved_icons, icon);

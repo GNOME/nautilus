@@ -1,3 +1,23 @@
+2006-05-16  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-icon-container.c: (icon_get_size),
+	(icon_set_size), (icon_toggle_selected),
+	(nautilus_icon_container_move_icon), (keyboard_stretching),
+	(end_stretching), (nautilus_icon_container_update_icon),
+	(assign_icon_position), (nautilus_icon_container_add),
+	(nautilus_icon_container_is_stretched),
+	(nautilus_icon_container_unstretch),
+	(nautilus_icon_container_freeze_icon_positions):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
+	* libnautilus-private/nautilus-icon-private.h:
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback),
+	(icon_position_changed_callback):
+	Cleanup to merge the x any y icon scale factors into one variable.
+
+	Patch from Christian Neumair <chris@gnome-de.org>
+
 2006-05-15  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-places-sidebar.c: (update_places_cb),
