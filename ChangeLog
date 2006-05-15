@@ -1,3 +1,16 @@
+2006-05-15  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (update_places_cb),
+	(volume_unmounted_callback), (drive_disconnected_callback),
+	(drive_connected_callback),
+	(nautilus_places_sidebar_set_parent_window):
+	Update the places on drive-connected and drive-disconnected
+	signals too. Delay the update for the volume-unmounted signal
+	with an idle callback to work around gnome-vfs removing the
+	volume only after we received the signal.
+
+	Patch from Xavier Claessens <xclaesse@gmail.com>
+
 2006-05-09  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-window-manage-views.c:

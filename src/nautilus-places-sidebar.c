@@ -334,6 +334,13 @@ update_places (NautilusPlacesSidebar *sidebar)
 }
 
 static gboolean
+update_places_cb (gpointer data)
+{
+	update_places (NAUTILUS_PLACES_SIDEBAR (data));
+	return FALSE;
+}
+
+static gboolean
 shortcuts_row_separator_func (GtkTreeModel *model,
 			      GtkTreeIter  *iter,
 			      gpointer      data)
@@ -362,6 +369,26 @@ static void
 volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
 			   GnomeVFSVolume *volume,
 			   NautilusPlacesSidebar *sidebar)
+{
+	/* At this point the volume still appears to be mounted.
+	 * GnomeVFS will update its list after the signal finished
+	 * to emit, so we delay the update.
+	 */
+	g_idle_add (update_places_cb, sidebar);
+}
+
+static void
+drive_disconnected_callback (GnomeVFSVolumeMonitor *volume_monitor,
+			     GnomeVFSDrive         *drive,
+			     NautilusPlacesSidebar *sidebar)
+{
+	update_places (sidebar);
+}
+
+static void
+drive_connected_callback (GnomeVFSVolumeMonitor *volume_monitor,
+			  GnomeVFSDrive         *drive,
+			  NautilusPlacesSidebar *sidebar)
 {
 	update_places (sidebar);
 }
@@ -1533,6 +1560,10 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 				 G_CALLBACK (volume_mounted_callback), sidebar, 0);
 	g_signal_connect_object (volume_monitor, "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), sidebar, 0);
+	g_signal_connect_object (volume_monitor, "drive_disconnected",
+				 G_CALLBACK (drive_disconnected_callback), sidebar, 0);
+	g_signal_connect_object (volume_monitor, "drive_connected",
+				 G_CALLBACK (drive_connected_callback), sidebar, 0);
 
 	update_places (sidebar);
 }
