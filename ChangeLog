@@ -1,3 +1,11 @@
+2006-05-16  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c: 
+	* src/nautilus-places-sidebar.c:
+	Don't allow floppy formating if the floppy is mounted,
+	since gfloppy can't handle that. (#125819)
+	Patch from Xavier Claessens
+
 2006-05-16  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:
