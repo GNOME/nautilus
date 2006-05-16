@@ -63,6 +63,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
 	NautilusFile *file;
+	gboolean use_embedding;
 
 	file = (NautilusFile *) data;
 
@@ -70,8 +71,10 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	icon_view = get_icon_view (container);
 	g_return_val_if_fail (icon_view != NULL, NULL);
 
+	use_embedding = FALSE;
 	if (embedded_text) {
 		*embedded_text = nautilus_file_peek_top_left_text (file, need_large_embeddded_text, embedded_text_needs_loading);
+		use_embedding = *embedded_text != NULL;
 	}
 	
 	if (emblem_icons != NULL) {
@@ -84,7 +87,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 
 	*has_window_open = nautilus_file_has_open_window (file);
 	
-	return nautilus_icon_factory_get_icon_for_file (file, TRUE);
+	return nautilus_icon_factory_get_icon_for_file (file, use_embedding);
 }
 
 static char *

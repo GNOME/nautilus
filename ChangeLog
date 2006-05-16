@@ -1,5 +1,11 @@
 2006-05-16  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-icon-container.c (fm_icon_container_get_icon_images):
+	Only pass TRUE for embedding_text if we actually read a top-left text.
+	Based on patch from Rene Hausleitner (#335435)
+
+2006-05-16  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c: 
 	* src/nautilus-places-sidebar.c:
 	Don't allow floppy formating if the floppy is mounted,
