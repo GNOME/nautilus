@@ -51,6 +51,8 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
 #include "nautilus-desktop-icon-file.h"
@@ -1890,7 +1892,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 	TransferInfo *transfer_info;
 	SyncTransferInfo *sync_transfer_info;
-	GnomeVFSVolume *volume;
 	GnomeVFSResult result;
 	gboolean target_is_trash;
 	gboolean duplicate;
@@ -1957,11 +1958,29 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			have_nonmapping_source = TRUE;
 		}
 
-		volume = nautilus_get_enclosing_volume (source_uri);
-		if (volume != NULL && gnome_vfs_volume_is_read_only (volume)) {
-			have_readonly_source = TRUE;
+		if (!have_readonly_source) {
+			GnomeVFSVolume *volume;
+			char *text_uri, *path;
+
+			text_uri = gnome_vfs_uri_to_string (source_uri, GNOME_VFS_URI_HIDE_NONE);
+
+			path = gnome_vfs_get_local_path_from_uri (text_uri);
+
+			volume = NULL;
+			if (path != NULL) {
+				/* TODO should we resolve symlinks ourselves, or should
+				 * gnome_vfs_volume_monitor_get_volume_for_path use lstat? */
+				volume = gnome_vfs_volume_monitor_get_volume_for_path (gnome_vfs_get_volume_monitor (), path);
+			}
+
+			if (volume != NULL && gnome_vfs_volume_is_read_only (volume)) {
+				have_readonly_source = TRUE;
+			}
+
+			gnome_vfs_volume_unref (volume);
+			g_free (path);
+			g_free (text_uri);
 		}
-		gnome_vfs_volume_unref (volume);
 
 		/* Note: this could be null if we're e.g. copying the top level file of a web site */
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);

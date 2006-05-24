@@ -1,3 +1,14 @@
+2006-05-24  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_file_operations_copy_move):
+	Use gnome_vfs_volume_monitor_get_volume_for_path instead of
+	nautilus_file_get_enclosing_volume.
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-file-utilities.h:
+	Remove nautilus_get_enclosing_volume.
+
 2006-05-24  Paolo Borelli  <pborelli@katamail.com>
 
 	* src/nautilus-information-panel.c:

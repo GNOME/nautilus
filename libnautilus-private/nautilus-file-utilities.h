@@ -26,7 +26,6 @@
 #define NAUTILUS_FILE_UTILITIES_H
 
 #include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
 
 #define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
 #define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
@@ -88,7 +87,5 @@ GList *  nautilus_find_all_files_in_gnome_path       (char       *file);
 
 const char *nautilus_get_vfs_method_display_name (char *method);
 char *      nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri);
-
-GnomeVFSVolume *nautilus_get_enclosing_volume (GnomeVFSURI *uri);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

@@ -39,8 +39,6 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -583,64 +581,6 @@ nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
 	}
 
 	return name;
-}
-
-/* FIXME resolve basename symlinks before comparing URIs?
- * We may wrongly match a volume, or wrongly not match it.
- */
-GnomeVFSVolume *
-nautilus_get_enclosing_volume (GnomeVFSURI *uri)
-{
-	GnomeVFSVolume *volume, *one_volume;
-	GList *l, *list;
-	char *one_uri;
-	GnomeVFSURI *one_vfs_uri, *potential_vfs_uri;
-
-	g_assert (uri != NULL);
-
-	volume = NULL;
-	potential_vfs_uri = NULL;
-
-	list = gnome_vfs_volume_monitor_get_mounted_volumes (gnome_vfs_get_volume_monitor ());
-
-	for (l = list; l != NULL; l = l->next) {
-		one_volume = l->data;
-
-		one_uri = gnome_vfs_volume_get_activation_uri (one_volume);
-		if (one_uri == NULL) {
-			continue;
-		}
-
-		one_vfs_uri = gnome_vfs_uri_new (one_uri);
-		if (one_vfs_uri == NULL) {
-			g_free (one_uri);
-			continue;
-		}
-
-		if (gnome_vfs_uri_is_parent (one_vfs_uri, uri, TRUE) &&
-		    (potential_vfs_uri == NULL ||
-		     gnome_vfs_uri_is_parent (potential_vfs_uri, one_vfs_uri, TRUE))) {
-			if (potential_vfs_uri != NULL) {
-				gnome_vfs_uri_unref (potential_vfs_uri);
-				gnome_vfs_volume_unref (volume);
-			}
-
-			potential_vfs_uri = gnome_vfs_uri_ref (one_vfs_uri);
-			volume = gnome_vfs_volume_ref (one_volume);
-		}
-
-		gnome_vfs_uri_unref (one_vfs_uri);
-		g_free (one_uri);
-	}
-
-	if (potential_vfs_uri != NULL) {
-		gnome_vfs_uri_unref (potential_vfs_uri);
-	}
-
-	g_list_foreach (list, (GFunc) gnome_vfs_volume_unref, NULL);
-	g_list_free (list);
-
-	return volume;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
