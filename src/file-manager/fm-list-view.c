@@ -32,7 +32,6 @@
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <string.h>
-#include <eel/eel-cell-renderer-pixbuf-list.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
