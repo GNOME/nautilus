@@ -908,9 +908,12 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 
 		id_string = g_strdup (gnome_vfs_mime_application_get_desktop_id (application));
 
-		eel_gtk_signal_connect_free_data 
-			(GTK_OBJECT (temp_button), "clicked",
-			 G_CALLBACK (command_button_callback), id_string);
+		g_signal_connect_data (temp_button,
+				       "clicked",
+				       G_CALLBACK (command_button_callback),
+				       id_string,
+				       (GClosureNotify)g_free,
+				       0);
 
                 g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
 		
@@ -952,10 +955,14 @@ add_buttons_from_metadata (NautilusInformationPanel *information_panel, const ch
 					information_panel->details->has_buttons = TRUE;
 					command_string = g_strdup (temp_str + 1);
 					g_free (button_name);
-					
-					eel_gtk_signal_connect_free_data 
-						(GTK_OBJECT (temp_button), "clicked",
-						 G_CALLBACK (metadata_button_callback), command_string);
+
+					g_signal_connect_data (temp_button,
+							       "clicked",
+							       G_CALLBACK (metadata_button_callback),
+							       command_string,
+							       (GClosureNotify)g_free,
+							       0);
+
 		                	g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
 					
 					gtk_widget_show (temp_button);			

@@ -1657,10 +1657,11 @@ attach_group_combo_box (GtkTable *table,
 	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_groups_combo_box),
 				 combo_box, G_CONNECT_SWAPPED);
-	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (combo_box), "changed",
-						 G_CALLBACK (changed_group_callback),
-						 nautilus_file_ref (file),
-						 (GDestroyNotify)nautilus_file_unref);
+	g_signal_connect_data (combo_box, "changed",
+			       G_CALLBACK (changed_group_callback),
+			       nautilus_file_ref (file),
+			       (GClosureNotify)nautilus_file_unref, 0);
+
 	return combo_box;
 }	
 
@@ -1807,12 +1808,10 @@ attach_owner_combo_box (GtkTable *table,
 	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_user_menu),
 				 combo_box, G_CONNECT_SWAPPED);	
-
-	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (combo_box),
-						 "changed",
-						 G_CALLBACK (changed_owner_callback),
-						 nautilus_file_ref (file),
-						 (GDestroyNotify)nautilus_file_unref);
+	g_signal_connect_data (combo_box, "changed",
+			       G_CALLBACK (changed_owner_callback),
+			       nautilus_file_ref (file),
+			       (GClosureNotify)nautilus_file_unref, 0);
 
 	return combo_box;
 }

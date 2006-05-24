@@ -99,13 +99,14 @@ show_bogus_bookmark_window (NautilusWindow *window,
 					 _("Bookmark for Nonexistent Location"),
 					 GTK_STOCK_CANCEL,
 					 GTK_WINDOW (window));
-	
-	eel_gtk_signal_connect_free_data
-		(GTK_OBJECT (dialog),
-		 "response",
-		 G_CALLBACK (remove_bookmarks_for_uri_if_yes),
-		 g_strdup (uri));
-	
+
+	g_signal_connect_data (dialog,
+			       "response",
+			       G_CALLBACK (remove_bookmarks_for_uri_if_yes),
+			       g_strdup (uri),
+			       (GClosureNotify)g_free,
+			       0);
+
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 
 	g_free (uri);
