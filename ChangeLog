@@ -1,8 +1,12 @@
+2006-05-24  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_uri_scheme):
+	use gnome_vfs_get_uri_scheme instead of eel_uri_get_scheme.
+
 2006-05-17  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
 
 	* nautilus-folder-handler.desktop.in: Add internationalization
 	* po/POTFILES.in: Add the file.
-
 
 2006-05-16  Alexander Larsson  <alexl@redhat.com>
 

@@ -2861,7 +2861,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 		return NULL;
 	}
 
-	return eel_uri_get_scheme (file->details->directory->details->uri);
+	return gnome_vfs_get_uri_scheme (file->details->directory->details->uri);
 }
 
 gboolean
