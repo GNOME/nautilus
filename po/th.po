@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-18 16:10+0700\n"
-"PO-Revision-Date: 2006-03-18 16:12+0700\n"
+"POT-Creation-Date: 2006-05-25 22:28+0700\n"
+"PO-Revision-Date: 2006-05-25 23:11+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <L10N@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -923,7 +923,7 @@ msgstr "แปะข้อความจากคลิปบอร์ด"
 
 #. name, stock id
 #: libnautilus-private/nautilus-clipboard.c:453
-#: src/file-manager/fm-directory-view.c:6667
+#: src/file-manager/fm-directory-view.c:6813
 msgid "Select _All"
 msgstr "เลือกทั้ง_หมด"
 
@@ -953,7 +953,7 @@ msgid "Use De_fault"
 msgstr "ใช้ค่า_ปริยาย"
 
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1310
+#: src/file-manager/fm-list-view.c:1309
 msgid "Name"
 msgstr "ชื่อ"
 
@@ -978,6 +978,7 @@ msgid "The type of the file."
 msgstr "ประเภทของแฟ้ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:65
+#: src/nautilus-image-properties-page.c:228
 msgid "Date Modified"
 msgstr "วันที่ถูกแก้ไข"
 
@@ -1010,7 +1011,7 @@ msgid "The group of the file."
 msgstr "กลุ่มของแฟ้ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2912
+#: src/file-manager/fm-properties-window.c:2911
 msgid "Permissions"
 msgstr "สิทธิ์"
 
@@ -1066,32 +1067,32 @@ msgstr "ถ้าคุณต้องการเลิกเมานท์โ
 msgid "Network Servers"
 msgstr "เซิร์ฟเวอร์ในเครือข่าย"
 
-#: libnautilus-private/nautilus-dnd.c:640
+#: libnautilus-private/nautilus-dnd.c:641
 msgid "_Move Here"
 msgstr "_ย้ายมาที่นี่"
 
-#: libnautilus-private/nautilus-dnd.c:645
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "_Copy Here"
 msgstr "_คัดลอกมาที่นี่"
 
-#: libnautilus-private/nautilus-dnd.c:650
+#: libnautilus-private/nautilus-dnd.c:651
 msgid "_Link Here"
 msgstr "_ลิงก์มาที่นี่"
 
-#: libnautilus-private/nautilus-dnd.c:655
+#: libnautilus-private/nautilus-dnd.c:656
 msgid "Set as _Background"
 msgstr "_ตั้งเป็นพื้นหลัง"
 
-#: libnautilus-private/nautilus-dnd.c:664
-#: libnautilus-private/nautilus-dnd.c:719
+#: libnautilus-private/nautilus-dnd.c:663
+#: libnautilus-private/nautilus-dnd.c:716
 msgid "Cancel"
 msgstr "ยกเลิก"
 
-#: libnautilus-private/nautilus-dnd.c:705
+#: libnautilus-private/nautilus-dnd.c:704
 msgid "Set as background for _all folders"
 msgstr "ตั้งเป็นพื้นหลังสำหรับทุ_กโฟลเดอร์"
 
-#: libnautilus-private/nautilus-dnd.c:710
+#: libnautilus-private/nautilus-dnd.c:709
 msgid "Set as background for _this folder"
 msgstr "ตั้งเป็นพื้นหลังสำหรับโ_ฟลเดอร์นี้"
 
@@ -1132,83 +1133,83 @@ msgstr "บันทึกตราที่กำหนดไม่สำเร
 msgid "Sorry, unable to save custom emblem name."
 msgstr "บันทึกชื่อตราที่กำหนดไม่สำเร็จ"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:169
+#: libnautilus-private/nautilus-file-operations-progress.c:168
 #, c-format
 msgid "%s %ld of %ld %s"
 msgstr "%s %ld จาก %ld %s"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:448
+#: libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
 msgstr "(เหลือ %d:%02d:%d)"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:453
+#: libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
 msgid "(%d:%02d Remaining)"
 msgstr "(เหลือ %d:%02d)"
 
-#: libnautilus-private/nautilus-file-operations.c:449
-#: libnautilus-private/nautilus-file-operations.c:478
+#: libnautilus-private/nautilus-file-operations.c:451
+#: libnautilus-private/nautilus-file-operations.c:480
 #: libnautilus-private/nautilus-file-utilities.c:87
-#: src/nautilus-connect-server-dialog.c:293
+#: src/nautilus-connect-server-dialog.c:329
 #, c-format
 msgid "%s on %s"
 msgstr "%s บน %s"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:460
+#: libnautilus-private/nautilus-file-operations.c:462
 msgid "From:"
 msgstr "จาก:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:487
+#: libnautilus-private/nautilus-file-operations.c:489
 msgid "To:"
 msgstr "ไปยัง:"
 
-#: libnautilus-private/nautilus-file-operations.c:673
-#: libnautilus-private/nautilus-file-operations.c:721
-#: libnautilus-private/nautilus-file-operations.c:726
-#: libnautilus-private/nautilus-file-operations.c:736
+#: libnautilus-private/nautilus-file-operations.c:670
+#: libnautilus-private/nautilus-file-operations.c:718
+#: libnautilus-private/nautilus-file-operations.c:723
+#: libnautilus-private/nautilus-file-operations.c:733
 msgid "Error while moving."
 msgstr "เกิดข้อผิดพลาดขณะย้าย"
 
-#: libnautilus-private/nautilus-file-operations.c:674
+#: libnautilus-private/nautilus-file-operations.c:671
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "ย้าย \"%s\" ไม่ได้ เพราะมันอยู่บนดิสก์ที่อ่านได้เท่านั้น"
 
-#: libnautilus-private/nautilus-file-operations.c:684
-#: libnautilus-private/nautilus-file-operations.c:690
+#: libnautilus-private/nautilus-file-operations.c:681
+#: libnautilus-private/nautilus-file-operations.c:687
 msgid "Error while deleting."
 msgstr "เกิดข้อผิดพลาดขณะลบ"
 
-#: libnautilus-private/nautilus-file-operations.c:685
+#: libnautilus-private/nautilus-file-operations.c:682
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr "ลบ \"%s\" ไม่ได้เพราะคุณไม่มีสิทธิ์ที่จะแก้ไขโฟลเดอร์ที่มันอาศัยอยู่"
 
-#: libnautilus-private/nautilus-file-operations.c:691
+#: libnautilus-private/nautilus-file-operations.c:688
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "ลบ \"%s\" ไม่ได้เพราะมันอยู่บนดิสก์ที่อ่านได้เท่านั้น"
 
-#: libnautilus-private/nautilus-file-operations.c:722
+#: libnautilus-private/nautilus-file-operations.c:719
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr "ย้าย \"%s\" ไม่ได้เพราะคุณไม่มีสิทธิ์ที่จะแก้ไขแฟ้มนี้หรือโฟลเดอร์ที่มันอาศัยอยู่"
 
-#: libnautilus-private/nautilus-file-operations.c:727
+#: libnautilus-private/nautilus-file-operations.c:724
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr "ไม่สามารถย้าย \"%s\" ได้เพราะโฟลเดอร์ที่มันอาศัยอยู่ อยู่ในข้างในจุดหมาย"
 
-#: libnautilus-private/nautilus-file-operations.c:737
+#: libnautilus-private/nautilus-file-operations.c:734
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1216,130 +1217,130 @@ msgid ""
 msgstr ""
 "ย้าย \"%s\" ไปถังขยะไม่ได้เพราะคุณไม่มีสิทธิ์จะเปลี่ยน แฟ้ม/โฟลเดอร์ นี้หรือ โฟลเดอร์ที่มันอาศัยอยู่"
 
-#: libnautilus-private/nautilus-file-operations.c:759
+#: libnautilus-private/nautilus-file-operations.c:756
 msgid "Error while copying."
 msgstr "เกิดข้อผิดพลาดขณะคัดลอก"
 
-#: libnautilus-private/nautilus-file-operations.c:760
+#: libnautilus-private/nautilus-file-operations.c:757
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "คัดลอก \"%s\" ไม่ได้เพราะคุณไม่มีสิทธิ์อ่านมัน"
 
-#: libnautilus-private/nautilus-file-operations.c:780
-#: libnautilus-private/nautilus-file-operations.c:801
-#: libnautilus-private/nautilus-file-operations.c:805
+#: libnautilus-private/nautilus-file-operations.c:777
+#: libnautilus-private/nautilus-file-operations.c:798
+#: libnautilus-private/nautilus-file-operations.c:802
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะคัดลอกไป \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:781
-#: libnautilus-private/nautilus-file-operations.c:786
-#: libnautilus-private/nautilus-file-operations.c:790
+#: libnautilus-private/nautilus-file-operations.c:778
+#: libnautilus-private/nautilus-file-operations.c:783
+#: libnautilus-private/nautilus-file-operations.c:787
 msgid "There is not enough space on the destination."
 msgstr "จุดหมายมีที่ว่างไม่พอ"
 
-#: libnautilus-private/nautilus-file-operations.c:785
+#: libnautilus-private/nautilus-file-operations.c:782
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะย้ายไป \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:789
+#: libnautilus-private/nautilus-file-operations.c:786
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะสร้างลิงก์ใน \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:802
-#: libnautilus-private/nautilus-file-operations.c:813
-#: libnautilus-private/nautilus-file-operations.c:824
+#: libnautilus-private/nautilus-file-operations.c:799
+#: libnautilus-private/nautilus-file-operations.c:810
+#: libnautilus-private/nautilus-file-operations.c:821
 msgid "You do not have permissions to write to this folder."
 msgstr "คุณไม่มีสิทธิ์เขียนลงโฟลเดอร์นี้"
 
-#: libnautilus-private/nautilus-file-operations.c:806
-#: libnautilus-private/nautilus-file-operations.c:817
-#: libnautilus-private/nautilus-file-operations.c:828
+#: libnautilus-private/nautilus-file-operations.c:803
+#: libnautilus-private/nautilus-file-operations.c:814
+#: libnautilus-private/nautilus-file-operations.c:825
 msgid "The destination disk is read-only."
 msgstr "ดิสก์จุดหมายอ่านได้เท่านั้น (เขียนไม่ได้)"
 
-#: libnautilus-private/nautilus-file-operations.c:812
-#: libnautilus-private/nautilus-file-operations.c:816
+#: libnautilus-private/nautilus-file-operations.c:809
+#: libnautilus-private/nautilus-file-operations.c:813
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะย้ายไป \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:823
-#: libnautilus-private/nautilus-file-operations.c:827
+#: libnautilus-private/nautilus-file-operations.c:820
+#: libnautilus-private/nautilus-file-operations.c:824
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะสร้างลิงก์ใน \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:855
+#: libnautilus-private/nautilus-file-operations.c:852
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะคัดลอก \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:856
-#: libnautilus-private/nautilus-file-operations.c:860
-#: libnautilus-private/nautilus-file-operations.c:864
-#: libnautilus-private/nautilus-file-operations.c:870
-#: libnautilus-private/nautilus-file-operations.c:885
-#: libnautilus-private/nautilus-file-operations.c:889
-#: libnautilus-private/nautilus-file-operations.c:893
-#: libnautilus-private/nautilus-file-operations.c:899
+#: libnautilus-private/nautilus-file-operations.c:853
+#: libnautilus-private/nautilus-file-operations.c:857
+#: libnautilus-private/nautilus-file-operations.c:861
+#: libnautilus-private/nautilus-file-operations.c:867
+#: libnautilus-private/nautilus-file-operations.c:882
+#: libnautilus-private/nautilus-file-operations.c:886
+#: libnautilus-private/nautilus-file-operations.c:890
+#: libnautilus-private/nautilus-file-operations.c:896
 msgid "Would you like to continue?"
 msgstr "ต้องการดำเนินการต่อไปหรือไม่?"
 
-#: libnautilus-private/nautilus-file-operations.c:859
+#: libnautilus-private/nautilus-file-operations.c:856
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะย้าย \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:863
+#: libnautilus-private/nautilus-file-operations.c:860
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะสร้างลิงก์ไป \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:869
+#: libnautilus-private/nautilus-file-operations.c:866
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะลบ \"%s\""
 
-#: libnautilus-private/nautilus-file-operations.c:884
+#: libnautilus-private/nautilus-file-operations.c:881
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะคัดลอก"
 
-#: libnautilus-private/nautilus-file-operations.c:888
+#: libnautilus-private/nautilus-file-operations.c:885
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะย้าย"
 
-#: libnautilus-private/nautilus-file-operations.c:892
+#: libnautilus-private/nautilus-file-operations.c:889
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะสร้างลิงก์"
 
-#: libnautilus-private/nautilus-file-operations.c:898
+#: libnautilus-private/nautilus-file-operations.c:895
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะลบ"
 
-#: libnautilus-private/nautilus-file-operations.c:1031
-#: libnautilus-private/nautilus-file-operations.c:1048
+#: libnautilus-private/nautilus-file-operations.c:1028
+#: libnautilus-private/nautilus-file-operations.c:1045
 msgid "_Retry"
 msgstr "_ลองใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:1048
-#: libnautilus-private/nautilus-file-operations.c:1198
-#: libnautilus-private/nautilus-file-operations.c:1216
+#: libnautilus-private/nautilus-file-operations.c:1045
+#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1232
 msgid "_Skip"
 msgstr "_ข้าม"
 
-#: libnautilus-private/nautilus-file-operations.c:1138
+#: libnautilus-private/nautilus-file-operations.c:1136
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "ไม่สามารถ \"%s\" ย้ายไปตำแหน่งใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:1141
+#: libnautilus-private/nautilus-file-operations.c:1139
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1347,12 +1348,12 @@ msgstr ""
 "จุดหมายมีชื่อนี้อยู่แล้ว ซึ่งไม่สามารถลบหรือเขียนทับได้ ถ้ายังต้องการจะย้ายรายการนี้  "
 "โปรดเปลี่ยนชื่อแล้วลองใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:1145
+#: libnautilus-private/nautilus-file-operations.c:1143
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "ไม่สามารถย้าย \"%s\" ไปตำแหน่งใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:1148
+#: libnautilus-private/nautilus-file-operations.c:1146
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1360,36 +1361,41 @@ msgstr ""
 "จุดหมายมีแฟ้มหรือโฟลเดอร์ชื่อนี้อยู่แล้ว ซึ่งไม่สามารถลบหรือเขียนทับได้ "
 "ถ้ายังต้องการจะคัดลอกรายการนี้โปรดเปลี่ยนชื่อแล้วลองใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:1172
+#: libnautilus-private/nautilus-file-operations.c:1171
 #, c-format
-msgid "The folder \"%s\" already exists.  Would you like to replace it?"
-msgstr "มีโฟลเดอร์ชื่อ \"%s\" อยู่แล้ว คุณต้องการเขียนทับมันหรือไม่?"
+msgid "A folder named \"%s\" already exists.  Do you want to replace it?"
+msgstr "มีโฟลเดอร์ชื่อ \"%s\" อยู่แล้ว คุณต้องการเขียนทับหรือไม่?"
 
-#: libnautilus-private/nautilus-file-operations.c:1175
+#: libnautilus-private/nautilus-file-operations.c:1174
 #, c-format
-msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr "มีแฟ้มชื่อ \"%s\" อยู่แล้ว คุณต้องการเขียนทับมันหรือไม่?"
+msgid "A file named \"%s\" already exists.  Do you want to replace it?"
+msgstr "มีแฟ้มชื่อ \"%s\" อยู่แล้ว คุณต้องการเขียนทับหรือไม่?"
 
-#: libnautilus-private/nautilus-file-operations.c:1183
+#: libnautilus-private/nautilus-file-operations.c:1193
+#, c-format
 msgid ""
-"If you replace the existing folder, any files in it that conflict with the "
-"files being copied will be overwritten."
-msgstr "ถ้าคุณเขียนทับ แฟ้มที่ชื่อซ้ำกับแฟ้มที่กำลังคัดลอกมาจะถูกเขียนทับ"
+"The folder already exists in \"%s\".  Replacing it will overwrite any files "
+"in the folder that conflict with the files being copied."
+msgstr ""
+"มีโฟลเดอร์ดังกล่าวอยู่แล้วใน \"%s\" การเขียนทับ จะเขียนทับทุกแฟ้มที่ชื่อซ้ำกับแฟ้มที่กำลังคัดลอกมา"
 
-#: libnautilus-private/nautilus-file-operations.c:1185
-msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "ถ้าคุณเขียนทับ ข้อมูลในแฟ้มเก่าจะหายไป"
+#: libnautilus-private/nautilus-file-operations.c:1196
+#, c-format
+msgid ""
+"The file already exists in \"%s\".  Replacing it will overwrite its contents."
+msgstr ""
+"มีแฟ้มดังกล่าวอยู่แล้วใน \"%s\" การเขียนทับ จะเขียนทับเนื้อหาของแฟ้มดังกล่าว"
 
-#: libnautilus-private/nautilus-file-operations.c:1198
-#: libnautilus-private/nautilus-file-operations.c:1216
+#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1232
 msgid "_Replace"
 msgstr "เ_ขียนทับ"
 
-#: libnautilus-private/nautilus-file-operations.c:1216
+#: libnautilus-private/nautilus-file-operations.c:1232
 msgid "S_kip All"
 msgstr "ข้า_มทั้งหมด"
 
-#: libnautilus-private/nautilus-file-operations.c:1216
+#: libnautilus-private/nautilus-file-operations.c:1232
 msgid "Replace _All"
 msgstr "เขียนทับ_ทั้งหมด"
 
@@ -1398,15 +1404,15 @@ msgstr "เขียนทับ_ทั้งหมด"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: libnautilus-private/nautilus-file-operations.c:1288
-#: libnautilus-private/nautilus-file.c:4748
-#: src/file-manager/fm-directory-view.c:9426
+#: libnautilus-private/nautilus-file-operations.c:1305
+#: libnautilus-private/nautilus-file.c:4746
+#: src/file-manager/fm-directory-view.c:9722
 #, c-format
 msgid "link to %s"
 msgstr "เชื่อมโยงไปยัง %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1292
+#: libnautilus-private/nautilus-file-operations.c:1309
 #, c-format
 msgid "another link to %s"
 msgstr "จุดเชื่อมโยงอีกอันไปที่ %s"
@@ -1415,25 +1421,25 @@ msgstr "จุดเชื่อมโยงอีกอันไปที่ %s
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1308
+#: libnautilus-private/nautilus-file-operations.c:1325
 #, c-format
 msgid "%dst link to %s"
 msgstr "จุดเชื่อมโยงที่ %d ไปที่ %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1312
+#: libnautilus-private/nautilus-file-operations.c:1329
 #, c-format
 msgid "%dnd link to %s"
 msgstr "จุดเชื่อมโยงที่ %d ไปที่ %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1316
+#: libnautilus-private/nautilus-file-operations.c:1333
 #, c-format
 msgid "%drd link to %s"
 msgstr "จุดเชื่อมโยงที่ %d ไปที่ %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1320
+#: libnautilus-private/nautilus-file-operations.c:1337
 #, c-format
 msgid "%dth link to %s"
 msgstr "จุดเชื่อมโยงที่ %d ไปที่ %s"
@@ -1443,12 +1449,12 @@ msgstr "จุดเชื่อมโยงที่ %d ไปที่ %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1341
+#: libnautilus-private/nautilus-file-operations.c:1358
 msgid " (copy)"
 msgstr " (สำเนา)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1343
+#: libnautilus-private/nautilus-file-operations.c:1360
 msgid " (another copy)"
 msgstr " (สำเนาอื่น)"
 
@@ -1456,36 +1462,36 @@ msgstr " (สำเนาอื่น)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1346
-#: libnautilus-private/nautilus-file-operations.c:1348
-#: libnautilus-private/nautilus-file-operations.c:1350
-#: libnautilus-private/nautilus-file-operations.c:1360
+#: libnautilus-private/nautilus-file-operations.c:1363
+#: libnautilus-private/nautilus-file-operations.c:1365
+#: libnautilus-private/nautilus-file-operations.c:1367
+#: libnautilus-private/nautilus-file-operations.c:1377
 msgid "th copy)"
 msgstr ")"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1353
+#: libnautilus-private/nautilus-file-operations.c:1370
 msgid "st copy)"
 msgstr ")"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1355
+#: libnautilus-private/nautilus-file-operations.c:1372
 msgid "nd copy)"
 msgstr ")"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1357
+#: libnautilus-private/nautilus-file-operations.c:1374
 msgid "rd copy)"
 msgstr ")"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1374
+#: libnautilus-private/nautilus-file-operations.c:1391
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (สำเนา)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1376
+#: libnautilus-private/nautilus-file-operations.c:1393
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (สำเนาอื่น)%s"
@@ -1494,253 +1500,253 @@ msgstr "%s (สำเนาอื่น)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: libnautilus-private/nautilus-file-operations.c:1379
-#: libnautilus-private/nautilus-file-operations.c:1381
-#: libnautilus-private/nautilus-file-operations.c:1383
-#: libnautilus-private/nautilus-file-operations.c:1392
+#: libnautilus-private/nautilus-file-operations.c:1396
+#: libnautilus-private/nautilus-file-operations.c:1398
+#: libnautilus-private/nautilus-file-operations.c:1400
+#: libnautilus-private/nautilus-file-operations.c:1409
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (สำเนาที่ %d)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1386
+#: libnautilus-private/nautilus-file-operations.c:1403
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (สำเนาที่ %d)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1388
+#: libnautilus-private/nautilus-file-operations.c:1405
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (สำเนาที่ %d)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1390
+#: libnautilus-private/nautilus-file-operations.c:1407
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (สำเนาที่ %d)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1490
+#: libnautilus-private/nautilus-file-operations.c:1507
 msgid " ("
 msgstr " (สำเนาที่ "
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1498
+#: libnautilus-private/nautilus-file-operations.c:1515
 #, c-format
 msgid " (%d"
 msgstr " (สำเนาที่ %d"
 
-#: libnautilus-private/nautilus-file-operations.c:1694
-#: libnautilus-private/nautilus-file-operations.c:2304
-#: libnautilus-private/nautilus-file-operations.c:2487
+#: libnautilus-private/nautilus-file-operations.c:1711
+#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2534
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Unknown GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2040
+#: libnautilus-private/nautilus-file-operations.c:2087
 msgid "Moving files to the Trash"
 msgstr "กำลังย้ายแฟ้มไปถังขยะ"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2042
+#: libnautilus-private/nautilus-file-operations.c:2089
 msgid "Throwing out file:"
 msgstr "กำลังทิ้งแฟ้ม:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:2044
-#: libnautilus-private/nautilus-file-operations.c:2055
+#: libnautilus-private/nautilus-file-operations.c:2091
+#: libnautilus-private/nautilus-file-operations.c:2102
 msgid "Moving"
 msgstr "กำลังย้าย"
 
-#: libnautilus-private/nautilus-file-operations.c:2045
+#: libnautilus-private/nautilus-file-operations.c:2092
 msgid "Preparing to Move to Trash..."
 msgstr "กำลังเตรียมตัวย้ายไปลงถังขยะ..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2051
+#: libnautilus-private/nautilus-file-operations.c:2098
 msgid "Moving files"
 msgstr "กำลังย้ายแฟ้ม"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2053
+#: libnautilus-private/nautilus-file-operations.c:2100
 msgid "Moving file:"
 msgstr "กำลังย้ายแฟ้ม:"
 
-#: libnautilus-private/nautilus-file-operations.c:2056
+#: libnautilus-private/nautilus-file-operations.c:2103
 msgid "Preparing To Move..."
 msgstr "กำลังเตรียมการย้าย..."
 
 # Can't think of a better word :oP.
-#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2104
 msgid "Finishing Move..."
 msgstr "ย้ายจะเสร็จแล้ว..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2065
+#: libnautilus-private/nautilus-file-operations.c:2112
 msgid "Creating links to files"
 msgstr "กำลังสร้างจุดเชื่อมโยงไปที่แฟ้ม"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2067
+#: libnautilus-private/nautilus-file-operations.c:2114
 msgid "Linking file:"
 msgstr "กำลังเชื่อมโยงแฟ้ม:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:2069
+#: libnautilus-private/nautilus-file-operations.c:2116
 msgid "Linking"
 msgstr "กำลังเชื่อมโยง"
 
-#: libnautilus-private/nautilus-file-operations.c:2070
+#: libnautilus-private/nautilus-file-operations.c:2117
 msgid "Preparing to Create Links..."
 msgstr "เตรียมสร้างจุดเชื่อมโยง..."
 
-#: libnautilus-private/nautilus-file-operations.c:2071
+#: libnautilus-private/nautilus-file-operations.c:2118
 msgid "Finishing Creating Links..."
 msgstr "สร้างจุดเชื่อมโยงใกล้เสร็จแล้ว..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2077
+#: libnautilus-private/nautilus-file-operations.c:2124
 msgid "Copying files"
 msgstr "กำลังคัดลอกแฟ้ม"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2079
+#: libnautilus-private/nautilus-file-operations.c:2126
 msgid "Copying file:"
 msgstr "กำลังคัดลอกแฟ้ม:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:2081
+#: libnautilus-private/nautilus-file-operations.c:2128
 msgid "Copying"
 msgstr "กำลังคัดลอก"
 
-#: libnautilus-private/nautilus-file-operations.c:2082
+#: libnautilus-private/nautilus-file-operations.c:2129
 msgid "Preparing To Copy..."
 msgstr "กำลังเตรียมการคัดลอก..."
 
-#: libnautilus-private/nautilus-file-operations.c:2100
+#: libnautilus-private/nautilus-file-operations.c:2147
 msgid "You cannot copy items into the trash."
 msgstr "คุณไม่สามารถคัดลอกแฟ้มไปลงถังขยะ"
 
-#: libnautilus-private/nautilus-file-operations.c:2101
+#: libnautilus-private/nautilus-file-operations.c:2148
 msgid "You cannot create links inside the trash."
 msgstr "คุณไม่สามารถสร้างลิงก์ข้างในถังขยะ"
 
-#: libnautilus-private/nautilus-file-operations.c:2102
+#: libnautilus-private/nautilus-file-operations.c:2149
 msgid "Files and folders can only be moved into the trash."
 msgstr "แฟ้มหรือโฟลเดอร์ที่จะมาลงถังขยะ จะต้องใช้การย้ายเท่านั้น"
 
-#: libnautilus-private/nautilus-file-operations.c:2125
+#: libnautilus-private/nautilus-file-operations.c:2172
 msgid "You cannot move this trash folder."
 msgstr "คุณไม่สามารถลบโฟลเดอร์ถังขยะได้"
 
-#: libnautilus-private/nautilus-file-operations.c:2126
+#: libnautilus-private/nautilus-file-operations.c:2173
 msgid "You cannot copy this trash folder."
 msgstr "คุณไม่สามารถคัดลอกโฟลเดอร์ถังขยะได้"
 
-#: libnautilus-private/nautilus-file-operations.c:2127
+#: libnautilus-private/nautilus-file-operations.c:2174
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "โฟลเดอร์ถังขยะคอยเก็บรวบรวมสิ่งที่ถูกทิ้งลงถังขยะ"
 
-#: libnautilus-private/nautilus-file-operations.c:2151
+#: libnautilus-private/nautilus-file-operations.c:2198
 msgid "You cannot move a folder into itself."
 msgstr "ย้ายแฟ้มไปไว้ในตัวเองไม่ได้"
 
-#: libnautilus-private/nautilus-file-operations.c:2152
+#: libnautilus-private/nautilus-file-operations.c:2199
 msgid "You cannot copy a folder into itself."
 msgstr "คัดลอกแฟ้มไปไว้ในตัวเองไม่ได้"
 
-#: libnautilus-private/nautilus-file-operations.c:2153
+#: libnautilus-private/nautilus-file-operations.c:2200
 msgid "The destination folder is inside the source folder."
 msgstr "โฟลเดอร์ปลายทางอยู่ข้างในโฟลเดอร์ต้นทาง"
 
-#: libnautilus-private/nautilus-file-operations.c:2166
+#: libnautilus-private/nautilus-file-operations.c:2213
 msgid "You cannot copy a file over itself."
 msgstr "คัดลอกแฟ้มไปทับตัวเองไม่ได้"
 
-#: libnautilus-private/nautilus-file-operations.c:2167
+#: libnautilus-private/nautilus-file-operations.c:2214
 msgid "The destination and source are the same file."
 msgstr "แฟ้มต้นแบบและปลายทางเป็นแฟ้มเดียวกัน"
 
-#: libnautilus-private/nautilus-file-operations.c:2222
-#: libnautilus-private/nautilus-file-operations.c:2382
+#: libnautilus-private/nautilus-file-operations.c:2269
+#: libnautilus-private/nautilus-file-operations.c:2429
 msgid "You do not have permissions to write to the destination."
 msgstr "คุณไม่มีสิทธิ์จะเขียนบนจุดหมาย"
 
-#: libnautilus-private/nautilus-file-operations.c:2224
-#: libnautilus-private/nautilus-file-operations.c:2384
+#: libnautilus-private/nautilus-file-operations.c:2271
+#: libnautilus-private/nautilus-file-operations.c:2431
 msgid "There is no space on the destination."
 msgstr "จุดหมายไม่มีที่เหลือพอ"
 
-#: libnautilus-private/nautilus-file-operations.c:2226
+#: libnautilus-private/nautilus-file-operations.c:2273
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะสร้างโฟลเดอร์ใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:2231
+#: libnautilus-private/nautilus-file-operations.c:2278
 msgid "Error creating new folder."
 msgstr "เกิดข้อผิดพลาดขณะสร้างโฟลเดอร์ใหม่"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2375
 msgid "untitled folder"
 msgstr "โฟลเดอร์ที่ไม่มีชื่อ"
 
-#: libnautilus-private/nautilus-file-operations.c:2386
+#: libnautilus-private/nautilus-file-operations.c:2433
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "เกิดข้อผิดพลาด \"%s\" ขณะสร้างเอกสารใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:2391
+#: libnautilus-private/nautilus-file-operations.c:2438
 msgid "Error creating new document."
 msgstr "เกิดข้อผิดพลาดขณะสร้างเอกสารใหม่"
 
-#: libnautilus-private/nautilus-file-operations.c:2618
+#: libnautilus-private/nautilus-file-operations.c:2665
 msgid "new file"
 msgstr "แฟ้มใหม่"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2684
+#: libnautilus-private/nautilus-file-operations.c:2731
 msgid "Deleting files"
 msgstr "กำลังลบแฟ้ม"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2686
-#: libnautilus-private/nautilus-file-operations.c:2721
+#: libnautilus-private/nautilus-file-operations.c:2733
+#: libnautilus-private/nautilus-file-operations.c:2768
 msgid "Files deleted:"
 msgstr "จำนวนแฟ้มที่ลบไปแล้ว"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2688
-#: libnautilus-private/nautilus-file-operations.c:2723
+#: libnautilus-private/nautilus-file-operations.c:2735
+#: libnautilus-private/nautilus-file-operations.c:2770
 msgid "Deleting"
 msgstr "กำลังลบ"
 
-#: libnautilus-private/nautilus-file-operations.c:2689
+#: libnautilus-private/nautilus-file-operations.c:2736
 msgid "Preparing to Delete files..."
 msgstr "เตรียมการลบแฟ้ม..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2719
+#: libnautilus-private/nautilus-file-operations.c:2766
 msgid "Emptying the Trash"
 msgstr "กำลังเทขยะ"
 
-#: libnautilus-private/nautilus-file-operations.c:2724
+#: libnautilus-private/nautilus-file-operations.c:2771
 msgid "Preparing to Empty the Trash..."
 msgstr "เตรียมเทถังขยะ..."
 
-#: libnautilus-private/nautilus-file-operations.c:2760
+#: libnautilus-private/nautilus-file-operations.c:2807
 msgid "Empty all of the items from the trash?"
 msgstr "แน่ใจหรือไม่ว่าต้องการลบทุกอย่างในถังขยะอย่างถาวร?"
 
-#: libnautilus-private/nautilus-file-operations.c:2763
+#: libnautilus-private/nautilus-file-operations.c:2810
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "เทถังขยะแล้วข้อมูลจะถูกลบทิ้งโดยถาวร สังเกตว่าคุณสามารถลบแบบแยกส่วนได้ด้วย"
 
-#: libnautilus-private/nautilus-file-operations.c:2785
+#: libnautilus-private/nautilus-file-operations.c:2832
 msgid "_Empty Trash"
 msgstr "เ_ทขยะทิ้ง"
 
@@ -1923,22 +1929,22 @@ msgstr "00/00/0000"
 msgid "%m/%d/%y"
 msgstr "%d/%m/%Ey"
 
-#: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:2214
+#: libnautilus-private/nautilus-file.c:4263
+#: src/file-manager/fm-directory-view.c:2240
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "%u รายการ"
 msgstr[1] "%u รายการ"
 
-#: libnautilus-private/nautilus-file.c:4266
+#: libnautilus-private/nautilus-file.c:4264
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u โฟลเดอร์"
 msgstr[1] "%u โฟลเดอร์"
 
-#: libnautilus-private/nautilus-file.c:4267
+#: libnautilus-private/nautilus-file.c:4265
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -1946,43 +1952,43 @@ msgstr[0] "%u แฟ้ม"
 msgstr[1] "%u แฟ้ม"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
-#: libnautilus-private/nautilus-file.c:4345
+#: libnautilus-private/nautilus-file.c:4343
 #, c-format
 msgid "%s (%lld bytes)"
 msgstr "%s (%lld ไบต์)"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4641
-#: libnautilus-private/nautilus-file.c:4657
+#: libnautilus-private/nautilus-file.c:4639
+#: libnautilus-private/nautilus-file.c:4655
 msgid "? items"
 msgstr "? รายการ"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4647
+#: libnautilus-private/nautilus-file.c:4645
 msgid "? bytes"
 msgstr "? ไบต์"
 
-#: libnautilus-private/nautilus-file.c:4662
+#: libnautilus-private/nautilus-file.c:4660
 msgid "unknown type"
 msgstr "ชนิดที่ไม่รู้จัก"
 
-#: libnautilus-private/nautilus-file.c:4665
+#: libnautilus-private/nautilus-file.c:4663
 msgid "unknown MIME type"
 msgstr "ประเภท MIME ที่ไม่รู้จัก"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4671
+#: libnautilus-private/nautilus-file.c:4669
 #: src/file-manager/fm-properties-window.c:1283
 msgid "unknown"
 msgstr "ไม่รู้จัก"
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4702
 msgid "program"
 msgstr "โปรแกรม"
 
-#: libnautilus-private/nautilus-file.c:4722
+#: libnautilus-private/nautilus-file.c:4720
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -1991,7 +1997,7 @@ msgstr ""
 "หาข้อมูลคำบรรยายไม่พบแม้แต่ของ \"x-directory/normal\"  ซึ่งอาจหมายความว่า แฟ้ม gnome-"
 "vfs.keys ของคุณไปอยู่ผิดที่ หรือหาไม่พบด้วยสาเหตุบางประการ"
 
-#: libnautilus-private/nautilus-file.c:4726
+#: libnautilus-private/nautilus-file.c:4724
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2000,15 +2006,15 @@ msgstr ""
 "ไม่พบข้อมูลคำบรรยายสำหรับชนิด mime \"%s\" (แฟ้มคือ \"%s\") กรุณาแจ้งไปยังกลุ่มเมล gnome-"
 "vfs"
 
-#: libnautilus-private/nautilus-file.c:4742
+#: libnautilus-private/nautilus-file.c:4740
 msgid "link"
 msgstr "ลิงก์"
 
-#: libnautilus-private/nautilus-file.c:4762
+#: libnautilus-private/nautilus-file.c:4760
 msgid "link (broken)"
 msgstr "ลิงก์ (ขาด)"
 
-#: libnautilus-private/nautilus-file.c:6259
+#: libnautilus-private/nautilus-file.c:6276
 #: libnautilus-private/nautilus-global-preferences.c:528
 #: libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2119,12 +2125,12 @@ msgid "Search for files by file name and file properties"
 msgstr "หาแฟ้มตามชื่อแฟ้มและคุณลักษณะ"
 
 #: libnautilus-private/nautilus-global-preferences.c:146
-#: src/file-manager/fm-icon-container.c:506
+#: src/file-manager/fm-icon-container.c:516
 msgid "Icon View"
 msgstr "มุมมองแบบไอคอน"
 
 #: libnautilus-private/nautilus-global-preferences.c:147
-#: src/file-manager/fm-list-view.c:1363
+#: src/file-manager/fm-list-view.c:1362
 msgid "List View"
 msgstr "มุมมองแบบรายการ"
 
@@ -2201,7 +2207,7 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "บ้านของ %s"
 
-#: libnautilus-private/nautilus-icon-container.c:2115
+#: libnautilus-private/nautilus-icon-container.c:2116
 msgid "The selection rectangle"
 msgstr "สี่เหลี่ยมเลือก"
 
@@ -2213,7 +2219,7 @@ msgstr "อัลฟาปกติ"
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "ความทึบแสงของไอคอนปกติ ถ้ามีการกำหนดค่า frame_text ไว้"
 
-#: libnautilus-private/nautilus-icon-dnd.c:790
+#: libnautilus-private/nautilus-icon-dnd.c:788
 msgid "Switch to Manual Layout?"
 msgstr "เปลี่ยนไปใช้การจัดวางด้วยมือหรือไม่?"
 
@@ -2222,6 +2228,7 @@ msgid "Open Failed, would you like to choose another application?"
 msgstr "เปิดไม่สำเร็จ ต้องการจะเลือกโปรแกรมอื่นหรือไม่?"
 
 #: libnautilus-private/nautilus-program-choosing.c:137
+#: libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -2233,31 +2240,18 @@ msgid "Open Failed, would you like to choose another action?"
 msgstr "เปิดไม่สำเร็จ ต้องการจะเลือกปฏิบัติการอื่นหรือไม่?"
 
 #: libnautilus-private/nautilus-program-choosing.c:143
+#: libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr "การปฏิบัติการปริยายไม่สามารถเปิด \"%s\" เพราะมันไม่สามารถอ่านแฟ้มที่ \"%s\""
 
-#: libnautilus-private/nautilus-program-choosing.c:168
-#, c-format
-msgid ""
-"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
-"locations."
-msgstr "\"%s\" ไม่สามารถเปิด \"%s\" เพราะ \"%s\" ไม่สามารถเปิดแฟ้มที่ \"%s\""
-
 #: libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr "ไม่มีโปรแกรมอื่นที่อ่านแฟ้มนี้ได้ ถ้าคุณคัดลอกแฟ้มนี้มา ไว้บนเครื่องของคุณ คุณอาจจะเปิดมันได้"
-
-#: libnautilus-private/nautilus-program-choosing.c:175
-#, c-format
-msgid ""
-"The default action can't open \"%s\" because it can't access files at \"%s\"."
-"locations."
-msgstr "ปฏิบัติการที่ตั้งไว้เปิด \"%s\" ไม่สำเร็จเพราะมันไม่สามารถอ่านแฟ้มที่ \"%s\""
 
 #: libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
@@ -2279,12 +2273,12 @@ msgstr "กำลังเปิด %s"
 #: libnautilus-private/nautilus-program-choosing.c:590
 #: libnautilus-private/nautilus-program-choosing.c:598
 #: libnautilus-private/nautilus-program-choosing.c:603
-#: src/nautilus-window-manage-views.c:1423
-#: src/nautilus-window-manage-views.c:1429
-#: src/nautilus-window-manage-views.c:1457
-#: src/nautilus-window-manage-views.c:1465
-#: src/nautilus-window-manage-views.c:1471
-#: src/nautilus-window-manage-views.c:1492
+#: src/nautilus-window-manage-views.c:1424
+#: src/nautilus-window-manage-views.c:1430
+#: src/nautilus-window-manage-views.c:1458
+#: src/nautilus-window-manage-views.c:1466
+#: src/nautilus-window-manage-views.c:1472
+#: src/nautilus-window-manage-views.c:1493
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "ไม่สามารถแสดง \"%s\""
@@ -2296,44 +2290,44 @@ msgid "There was an error launching the application."
 msgstr "เกิดข้อผิดพลาดขณะเรียกใช้โปรแกรม"
 
 #: libnautilus-private/nautilus-program-choosing.c:600
-#: src/nautilus-window-manage-views.c:1467
+#: src/nautilus-window-manage-views.c:1468
 msgid "The attempt to log in failed."
 msgstr "ล็อกอินไม่สำเร็จ"
 
 #: libnautilus-private/nautilus-program-choosing.c:605
-#: src/nautilus-window-manage-views.c:1473
+#: src/nautilus-window-manage-views.c:1474
 msgid "Access was denied."
 msgstr "เข้าถึงไม่ได้"
 
 #: libnautilus-private/nautilus-program-choosing.c:610
-#: src/nautilus-window-manage-views.c:1484
+#: src/nautilus-window-manage-views.c:1485
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "ไม่สามารถแสดง \"%s\" เพราะไม่พบโฮสต์ \"%s\""
 
 #: libnautilus-private/nautilus-program-choosing.c:613
-#: src/nautilus-window-manage-views.c:1487
+#: src/nautilus-window-manage-views.c:1488
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "โปรดตรวจว่าตัวสะกดชื่อโฮสต์และค่าตั้งพร็อกซีถูกต้อง"
 
 #: libnautilus-private/nautilus-program-choosing.c:618
-#: src/nautilus-window-manage-views.c:1445
+#: src/nautilus-window-manage-views.c:1446
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" ไม่ใช่ตำแหน่งที่ถูกต้อง"
 
 #: libnautilus-private/nautilus-program-choosing.c:621
 #: libnautilus-private/nautilus-program-choosing.c:628
-#: src/nautilus-connect-server-dialog.c:144
+#: src/nautilus-connect-server-dialog.c:194
 #: src/nautilus-property-browser.c:1168
-#: src/nautilus-window-manage-views.c:1440
-#: src/nautilus-window-manage-views.c:1448
+#: src/nautilus-window-manage-views.c:1441
+#: src/nautilus-window-manage-views.c:1449
 msgid "Please check the spelling and try again."
 msgstr "โปรดตรวจตัวสะกดแล้วลองใหม่"
 
 #: libnautilus-private/nautilus-program-choosing.c:625
-#: src/nautilus-window-manage-views.c:1437
+#: src/nautilus-window-manage-views.c:1438
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "ไม่เจอ \"%s\""
@@ -2415,7 +2409,11 @@ msgstr "เลือกว่าจะจัดการแฟ้มอย่า
 msgid "File Management"
 msgstr "การจัดการแฟ้ม"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1245
+#: nautilus-folder-handler.desktop.in.h:1
+msgid "Open Folder"
+msgstr "เปิดโฟลเดอร์"
+
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1236
 msgid "Home Folder"
 msgstr "โฟลเดอร์บ้าน"
 
@@ -2463,22 +2461,22 @@ msgstr "พื้นหลัง"
 
 #. name, stock id
 #: src/file-manager/fm-desktop-icon-view.c:680
-#: src/file-manager/fm-directory-view.c:6645
-#: src/file-manager/fm-directory-view.c:7449
+#: src/file-manager/fm-directory-view.c:6791
+#: src/file-manager/fm-directory-view.c:7745
 msgid "E_mpty Trash"
 msgstr "เ_ทขยะ"
 
 #. label, accelerator
 #. name, stock id
 #: src/file-manager/fm-desktop-icon-view.c:692
-#: src/file-manager/fm-directory-view.c:6617
+#: src/file-manager/fm-directory-view.c:6763
 msgid "Create L_auncher..."
 msgstr "สร้าง_ตัวเรียกโปรแกรม..."
 
 #. tooltip
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:694
-#: src/file-manager/fm-directory-view.c:6618
+#: src/file-manager/fm-directory-view.c:6764
 msgid "Create a new launcher"
 msgstr "สร้างตัวเรียกโปรแกรมใหม่"
 
@@ -2501,13 +2499,13 @@ msgstr "เทขยะ"
 #. tooltip
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:708
-#: src/file-manager/fm-directory-view.c:6646
+#: src/file-manager/fm-directory-view.c:6792
 msgid "Delete all items in the Trash"
 msgstr "ลบรายการทั้งหมดในถังขยะ"
 
 #: src/file-manager/fm-desktop-icon-view.c:797
 #: src/nautilus-desktop-window.c:246 src/nautilus-pathbar.c:1127
-#: src/nautilus-places-sidebar.c:187
+#: src/nautilus-places-sidebar.c:206
 msgid "Desktop"
 msgstr "พื้นโต๊ะ"
 
@@ -2531,11 +2529,11 @@ msgstr "เกิดข้อผิดพลาดขณะเริ่มต้
 msgid "Display this location with the desktop view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองพื้นโต๊ะ"
 
-#: src/file-manager/fm-directory-view.c:659
+#: src/file-manager/fm-directory-view.c:664
 msgid "Are you sure you want to open all files?"
 msgstr "แน่ใจหรือไม่ว่าจะเปิดแฟ้มทุกแฟ้ม?"
 
-#: src/file-manager/fm-directory-view.c:660
+#: src/file-manager/fm-directory-view.c:665
 #: src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
@@ -2543,12 +2541,12 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "การเปิดนี้จะเปิดหน้าต่าง %d บาน"
 msgstr[1] "การเปิดนี้จะเปิดหน้าต่าง %d บาน"
 
-#: src/file-manager/fm-directory-view.c:997
+#: src/file-manager/fm-directory-view.c:1002
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "แน่ใจหรือไม่ว่าจะลบ \"%s\" อย่างถาวร?"
 
-#: src/file-manager/fm-directory-view.c:1001
+#: src/file-manager/fm-directory-view.c:1006
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -2556,48 +2554,55 @@ msgid_plural ""
 msgstr[0] "แน่ใจหรือไม่ว่าจะลบรายการที่เลือกทั้ง %d รายการอย่างถาวร?"
 msgstr[1] "แน่ใจหรือไม่ว่าจะลบรายการที่เลือกทั้ง %d รายการอย่างถาวร?"
 
-#: src/file-manager/fm-directory-view.c:1012
+#: src/file-manager/fm-directory-view.c:1017
 msgid "If you delete an item, it is permanently lost."
 msgstr "ถ้าคุณเลือกลบแล้ว ข้อมูลจะถูกลบทิ้งโดยถาวร"
 
-#: src/file-manager/fm-directory-view.c:1164
+#: src/file-manager/fm-directory-view.c:1168
+#: src/file-manager/fm-properties-window.c:3234
+#: src/nautilus-connect-server-dialog.c:393
+#: src/nautilus-location-dialog.c:115
+msgid "There was an error displaying help."
+msgstr "เกิดข้อผิดพลาดขณะแสดงวิธีใช้"
+
+#: src/file-manager/fm-directory-view.c:1188
 msgid "Select Pattern"
 msgstr "เลือกรูปแบบ"
 
-#: src/file-manager/fm-directory-view.c:1180
+#: src/file-manager/fm-directory-view.c:1206
 msgid "_Pattern:"
 msgstr "รูปแ_บบ:"
 
-#: src/file-manager/fm-directory-view.c:1289
+#: src/file-manager/fm-directory-view.c:1315
 msgid "Save Search as"
 msgstr "บันทึกการค้นหาเป็น"
 
-#: src/file-manager/fm-directory-view.c:1307
+#: src/file-manager/fm-directory-view.c:1333
 msgid "Search _name:"
 msgstr "_ชื่อรายการค้น:"
 
-#: src/file-manager/fm-directory-view.c:1320
-#: src/nautilus-connect-server-dialog.c:535
+#: src/file-manager/fm-directory-view.c:1346
+#: src/nautilus-connect-server-dialog.c:563
 msgid "_Folder:"
 msgstr "โฟ_ลเดอร์:"
 
-#: src/file-manager/fm-directory-view.c:1325
+#: src/file-manager/fm-directory-view.c:1351
 msgid "Select Folder to Save Search In"
 msgstr "เลือกโฟลเดอร์ที่จะเก็บบันทึกการค้นหา"
 
-#: src/file-manager/fm-directory-view.c:2146
+#: src/file-manager/fm-directory-view.c:2172
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" ถูกเลือก"
 
-#: src/file-manager/fm-directory-view.c:2148
+#: src/file-manager/fm-directory-view.c:2174
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d แฟ้มถูกเลือก"
 msgstr[1] "%d โฟลเดอร์ถูกเลือก"
 
-#: src/file-manager/fm-directory-view.c:2158
+#: src/file-manager/fm-directory-view.c:2184
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2605,19 +2610,19 @@ msgstr[0] " (ซึ่งบรรจุ %d รายการ)"
 msgstr[1] " (ซึ่งบรรจุ %d รายการ)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:2169
+#: src/file-manager/fm-directory-view.c:2195
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (ซึ่งบรรจุทั้งหมด %d รายการ)"
 msgstr[1] " (ซึ่งบรรจุทั้งหมด %d รายการ)"
 
-#: src/file-manager/fm-directory-view.c:2185
+#: src/file-manager/fm-directory-view.c:2211
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" ถูกเลือก (%s)"
 
-#: src/file-manager/fm-directory-view.c:2189
+#: src/file-manager/fm-directory-view.c:2215
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2625,14 +2630,14 @@ msgstr[0] "%d รายการ  (%s) ที่ถูกเลือก"
 msgstr[1] "%d รายการ  (%s) ที่ถูกเลือก"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:2197
+#: src/file-manager/fm-directory-view.c:2223
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d รายการอื่นๆ ถูกเลือก (%s)"
 msgstr[1] "%d รายการอื่นๆ ถูกเลือก (%s)"
 
-#: src/file-manager/fm-directory-view.c:2218
+#: src/file-manager/fm-directory-view.c:2244
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, เนื้อที่ว่าง: %s"
@@ -2644,7 +2649,7 @@ msgstr "%s, เนื้อที่ว่าง: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:2243
+#: src/file-manager/fm-directory-view.c:2269
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2653,49 +2658,49 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:2325
+#: src/file-manager/fm-directory-view.c:2351
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "โฟลเดอร์ \"%s\" มีแฟ้มมากเกินกว่าที่ Nautilus จะรองรับได้"
 
-#: src/file-manager/fm-directory-view.c:2331
+#: src/file-manager/fm-directory-view.c:2357
 msgid "Some files will not be displayed."
 msgstr "จะไม่แสดงบางแฟ้ม"
 
-#: src/file-manager/fm-directory-view.c:3754
+#: src/file-manager/fm-directory-view.c:3795
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "ย้ายแฟ้มไปลงถังขยะไม่ได้ จะลบทิ้งถาวรเลยหรือไม่?"
 
-#: src/file-manager/fm-directory-view.c:3755
+#: src/file-manager/fm-directory-view.c:3796
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "ย้าย \"%s\" ไปลงถังขยะไม่ได้"
 
-#: src/file-manager/fm-directory-view.c:3759
+#: src/file-manager/fm-directory-view.c:3800
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "ย้ายรายการเหล่านี้ไปลงถังขยะไม่ได้ จะลบทิ้งถาวรเลยหรือไม่?"
 
-#: src/file-manager/fm-directory-view.c:3760
+#: src/file-manager/fm-directory-view.c:3801
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "ไม่มีรายการใดใน %d รายการที่เลือก ที่สามารถย้ายไปลงถังขยะได้"
 
-#: src/file-manager/fm-directory-view.c:3762
+#: src/file-manager/fm-directory-view.c:3803
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "ย้ายบางรายการไปลงถังขยะไม่ได้ จะลบรายการเหล่านั้นทิ้งถาวรเลยหรือไม่?"
 
-#: src/file-manager/fm-directory-view.c:3763
+#: src/file-manager/fm-directory-view.c:3804
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "มี %d รายการในรายการที่เลือก ที่ไม่สามารถย้ายไปลงถังขยะได้"
 
-#: src/file-manager/fm-directory-view.c:3801
+#: src/file-manager/fm-directory-view.c:3842
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "แน่ใจหรือไม่ว่าจะเท \"%s\" ทิ้งอย่างถาวร?"
 
-#: src/file-manager/fm-directory-view.c:3805
+#: src/file-manager/fm-directory-view.c:3846
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2706,50 +2711,50 @@ msgid_plural ""
 msgstr[0] "แน่ใจหรือไม่ว่าจะเท %d รายการที่เลือก ทิ้งจากถังขยะ อย่างถาวร?"
 msgstr[1] "แน่ใจหรือไม่ว่าจะเท %d รายการที่เลือก ทิ้งจากถังขยะ อย่างถาวร?"
 
-#: src/file-manager/fm-directory-view.c:3816
+#: src/file-manager/fm-directory-view.c:3857
 msgid "If you delete an item, it will be permanently lost."
 msgstr "ถ้าคุณเลือกรายการลบ ข้อมูลจะถูกลบทิ้งอย่างถาวร"
 
-#: src/file-manager/fm-directory-view.c:4396
+#: src/file-manager/fm-directory-view.c:4437
 #, c-format
 msgid "Open with \"%s\""
 msgstr "เปิดด้วย \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4397
+#: src/file-manager/fm-directory-view.c:4438
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "ใช้ \"%s\" เปิดรายการที่เลือก"
 msgstr[1] "ใช้ \"%s\" เปิดรายการที่เลือก"
 
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4530
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "จะเรียกใช้ \"%s\" หรือแสดงข้อมูลในแฟ้ม?"
 
-#: src/file-manager/fm-directory-view.c:4491
+#: src/file-manager/fm-directory-view.c:4532
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" เป็นแฟ้มข้อความที่เรียกใช้เป็นโปรแกรมได้"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4538
 msgid "Run in _Terminal"
 msgstr "เรียกใช้ในเ_ทอร์มินัล"
 
-#: src/file-manager/fm-directory-view.c:4498
+#: src/file-manager/fm-directory-view.c:4539
 msgid "_Display"
 msgstr "แ_สดง"
 
-#: src/file-manager/fm-directory-view.c:4501
+#: src/file-manager/fm-directory-view.c:4542
 msgid "_Run"
 msgstr "เ_รียกใช้"
 
-#: src/file-manager/fm-directory-view.c:4897
+#: src/file-manager/fm-directory-view.c:4938
 #, c-format
 msgid "Cannot open %s"
 msgstr "ไม่สามารถเปิด %s"
 
-#: src/file-manager/fm-directory-view.c:4900
+#: src/file-manager/fm-directory-view.c:4941
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2768,27 +2773,27 @@ msgstr ""
 "ก็ทำได้โดยเปลี่ยนชื่อแฟ้มให้เป็นนามสกุลที่ถูกต้องสำหรับ \"%s\" แล้วจึงเปิดแฟ้มตามปกติ หรือมิฉะนั้น "
 "ก็ใช้เมนู \"เปิดด้วย\" เพื่อเลือกโปรแกรมเฉพาะสำหรับแฟ้มดังกล่าว"
 
-#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5336
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "เรียกใช้ \"%s\" บนแต่ละรายการที่เลือก"
 
-#: src/file-manager/fm-directory-view.c:5544
+#: src/file-manager/fm-directory-view.c:5585
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "สร้างเอกสารจากแม่แบบ \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5750
+#: src/file-manager/fm-directory-view.c:5791
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "ทุกแฟ้มในโฟลเดอร์นี้ ที่เรียกใช้เป็นโปรแกรมได้ จะถูกแสดงไว้ในเมนูสคริปต์"
 
-#: src/file-manager/fm-directory-view.c:5752
+#: src/file-manager/fm-directory-view.c:5793
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "เมื่อคุณเลือกสคริปต์จากเมนูนั้น สคริปต์ที่เลือกจะถูกเรียกใช้ โดยมีรายการที่เลือกไว้เป็นอินพุต"
 
-#: src/file-manager/fm-directory-view.c:5754
+#: src/file-manager/fm-directory-view.c:5795
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2827,19 +2832,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ตำแหน่งและขนาดของหน้าต่างปัจจุบัน"
 
-#: src/file-manager/fm-directory-view.c:5915
-#: src/file-manager/fm-tree-view.c:900
+#: src/file-manager/fm-directory-view.c:5956
+#: src/file-manager/fm-tree-view.c:901
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" จะถูกย้ายถ้าคุณเลือกคำสั่ง \"แปะ\""
 
-#: src/file-manager/fm-directory-view.c:5919
-#: src/file-manager/fm-tree-view.c:904
+#: src/file-manager/fm-directory-view.c:5960
+#: src/file-manager/fm-tree-view.c:905
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" จะถูกคัดลอกถ้าคุณเลือกคำสั่ง \"แปะ\""
 
-#: src/file-manager/fm-directory-view.c:5926
+#: src/file-manager/fm-directory-view.c:5967
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -2847,7 +2852,7 @@ msgid_plural ""
 msgstr[0] "%d รายการที่เลือกจะถูกย้ายถ้าคุณเลือกคำสั่ง \"แปะ\""
 msgstr[1] "%d รายการที่เลือกจะถูกย้ายถ้าคุณเลือกคำสั่ง \"แปะ\""
 
-#: src/file-manager/fm-directory-view.c:5933
+#: src/file-manager/fm-directory-view.c:5974
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -2855,89 +2860,89 @@ msgid_plural ""
 msgstr[0] "%d รายการที่เลือกจะถูกคัดลอกถ้าคุณเลือกคำสั่ง \"แปะ\""
 msgstr[1] "%d รายการที่เลือกจะถูกคัดลอกถ้าคุณเลือกคำสั่ง \"แปะ\""
 
-#: src/file-manager/fm-directory-view.c:6027
-#: src/file-manager/fm-tree-view.c:981
+#: src/file-manager/fm-directory-view.c:6068
+#: src/file-manager/fm-tree-view.c:982
 msgid "There is nothing on the clipboard to paste."
 msgstr "ไม่มีอะไรในคลิปบอร์ดจะแปะ"
 
-#: src/file-manager/fm-directory-view.c:6397
+#: src/file-manager/fm-directory-view.c:6543
 #, c-format
 msgid "Connect to Server %s"
 msgstr "เชื่อมต่อไปยังเซิร์ฟเวอร์ %s"
 
-#: src/file-manager/fm-directory-view.c:6402
+#: src/file-manager/fm-directory-view.c:6548
 msgid "_Connect"
 msgstr "เ_ชื่อมต่อ"
 
-#: src/file-manager/fm-directory-view.c:6416
+#: src/file-manager/fm-directory-view.c:6562
 msgid "Link _name:"
 msgstr "_ชื่อลิงก์:"
 
-#: src/file-manager/fm-directory-view.c:6591
+#: src/file-manager/fm-directory-view.c:6737
 msgid "Create _Document"
 msgstr "สร้างเ_อกสาร"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:6592
+#: src/file-manager/fm-directory-view.c:6738
 msgid "Open Wit_h"
 msgstr "เปิด_ด้วย"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:6593
+#: src/file-manager/fm-directory-view.c:6739
 msgid "Choose a program with which to open the selected item"
 msgstr "เลือกโปรแกรมที่จะใช้เปิดรายการที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6595
-#: src/file-manager/fm-directory-view.c:6603
+#: src/file-manager/fm-directory-view.c:6741
+#: src/file-manager/fm-directory-view.c:6749
 msgid "_Properties"
 msgstr "คุณ_สมบัติ"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6596
+#: src/file-manager/fm-directory-view.c:6742
 msgid "View or modify the properties of each selected item"
 msgstr "ดูหรือแก้ไขคุณสมบัติ ของแต่ละรายการที่เลือก"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6604
+#: src/file-manager/fm-directory-view.c:6750
 msgid "View or modify the properties of the open folder"
 msgstr "ดูหรือแก้ไขคุณสมบัติของโฟลเดอร์ที่เปิด"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6607
+#: src/file-manager/fm-directory-view.c:6753
 msgid "Create _Folder"
 msgstr "สร้างโฟ_ลเดอร์"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6608
+#: src/file-manager/fm-directory-view.c:6754
 msgid "Create a new empty folder inside this folder"
 msgstr "สร้างโฟลเดอร์เปล่าข้างในโฟลเดอร์นี้"
 
-#: src/file-manager/fm-directory-view.c:6610
+#: src/file-manager/fm-directory-view.c:6756
 msgid "No templates Installed"
 msgstr "ไม่มีแม่แบบติดตั้งอยู่"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: src/file-manager/fm-directory-view.c:6613
+#: src/file-manager/fm-directory-view.c:6759
 msgid "_Empty File"
 msgstr "แฟ้มเ_ปล่า"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6614
+#: src/file-manager/fm-directory-view.c:6760
 msgid "Create a new empty file inside this folder"
 msgstr "สร้างแฟ้มเปล่าข้างในโฟลเดอร์นี้"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6621
-#: src/file-manager/fm-directory-view.c:7350
-#: src/file-manager/fm-tree-view.c:1103
+#: src/file-manager/fm-directory-view.c:6767
+#: src/file-manager/fm-directory-view.c:7646
+#: src/file-manager/fm-tree-view.c:1104
 msgid "_Open"
 msgstr "_เปิด"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6622
+#: src/file-manager/fm-directory-view.c:6768
 msgid "Open the selected item in this window"
 msgstr "เปิดรายการที่เลือกในหน้าต่างนี้"
 
@@ -2945,384 +2950,410 @@ msgstr "เปิดรายการที่เลือกในหน้า
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6629
-#: src/file-manager/fm-directory-view.c:6737
+#: src/file-manager/fm-directory-view.c:6775
+#: src/file-manager/fm-directory-view.c:6899
 msgid "Open in Navigation Window"
 msgstr "เปิดในหน้าต่างแบบท่องดู"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6630
+#: src/file-manager/fm-directory-view.c:6776
 msgid "Open each selected item in a navigation window"
 msgstr "เปิดแต่ละรายการที่เลือก ในหน้าต่างแบบท่องดู"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6633
-#: src/file-manager/fm-directory-view.c:6637
+#: src/file-manager/fm-directory-view.c:6779
+#: src/file-manager/fm-directory-view.c:6783
 msgid "Open with Other _Application..."
 msgstr "เปิดด้วยโปรแกรม_อื่น..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6634
-#: src/file-manager/fm-directory-view.c:6638
+#: src/file-manager/fm-directory-view.c:6780
+#: src/file-manager/fm-directory-view.c:6784
 msgid "Choose another application with which to open the selected item"
 msgstr "เลือกใช้โปรแกรมอื่นเปิดรายการที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6641
+#: src/file-manager/fm-directory-view.c:6787
 msgid "_Open Scripts Folder"
 msgstr "_เปิดโฟลเดอร์สคริปต์"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6642
+#: src/file-manager/fm-directory-view.c:6788
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "เปิดโฟลเดอร์ที่บรรจุสคริปต์ที่แสดงในเมนูนี้"
 
 #. name, stock id
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6650
+#: src/file-manager/fm-directory-view.c:6796
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "เตรียมแฟ้มที่เลือก ไว้สำหรับย้ายด้วยคำสั่ง \"แปะ\""
 
 #. name, stock id
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6654
+#: src/file-manager/fm-directory-view.c:6800
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "เตรียมแฟ้มที่เลือก ไว้สำหรับคัดลอกด้วยคำสั่ง \"แปะ\""
 
 #. name, stock id
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6658
+#: src/file-manager/fm-directory-view.c:6804
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "ย้ายหรือคัดลอกแฟ้มที่ถูก \"ตัด\" หรือ \"คัดลอก\" ไว้ มาที่นี่"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6663
-#: src/file-manager/fm-tree-view.c:1161
+#: src/file-manager/fm-directory-view.c:6809
+#: src/file-manager/fm-tree-view.c:1158
 msgid "_Paste Into Folder"
 msgstr "_แปะลงในโฟลเดอร์"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6664
+#: src/file-manager/fm-directory-view.c:6810
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
 msgstr "ย้ายหรือคัดลอกแฟ้มที่ถูก \"ตัด\" หรือ \"คัดลอก\" ไว้ มาที่โฟลเดอร์ที่เลือก"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6668
+#: src/file-manager/fm-directory-view.c:6814
 msgid "Select all items in this window"
 msgstr "เลือกรายการทุกรายการในหน้าต่างนี้"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6671
+#: src/file-manager/fm-directory-view.c:6817
 msgid "Select _Pattern"
 msgstr "เ_ลือกแบบ"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6672
+#: src/file-manager/fm-directory-view.c:6818
 msgid "Select items in this window matching a given pattern"
 msgstr "เลือกรายการในหน้าต่างนี้ที่ตรงกับรูปแบบที่กำหนด"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6675
+#: src/file-manager/fm-directory-view.c:6821
 msgid "D_uplicate"
 msgstr "ทำ_สำเนา"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6676
+#: src/file-manager/fm-directory-view.c:6822
 msgid "Duplicate each selected item"
 msgstr "ทำสำเนาของแต่ละรายการที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6679
-#: src/file-manager/fm-directory-view.c:7423
+#: src/file-manager/fm-directory-view.c:6825
+#: src/file-manager/fm-directory-view.c:7719
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "ส_ร้างลิงก์"
 msgstr[1] "ส_ร้างลิงก์"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6680
+#: src/file-manager/fm-directory-view.c:6826
 msgid "Create a symbolic link for each selected item"
 msgstr "สร้างลิงก์สัญลักษณ์สำหรับแต่ละรายการที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6683
+#: src/file-manager/fm-directory-view.c:6829
 msgid "_Rename..."
 msgstr "เ_ปลี่ยนชื่อ..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6684
+#: src/file-manager/fm-directory-view.c:6830
 msgid "Rename selected item"
 msgstr "เปลี่ยนชื่อรายการที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6691
-#: src/file-manager/fm-directory-view.c:6751
-#: src/file-manager/fm-directory-view.c:7207
-#: src/file-manager/fm-directory-view.c:7391
-#: src/file-manager/fm-directory-view.c:7780
+#: src/file-manager/fm-directory-view.c:6837
+#: src/file-manager/fm-directory-view.c:6913
+#: src/file-manager/fm-directory-view.c:7503
+#: src/file-manager/fm-directory-view.c:7687
+#: src/file-manager/fm-directory-view.c:8076
 msgid "Mo_ve to Trash"
 msgstr "_ทิ้งลงถังขยะ"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6692
-#: src/file-manager/fm-directory-view.c:7392
+#: src/file-manager/fm-directory-view.c:6838
+#: src/file-manager/fm-directory-view.c:7688
 msgid "Move each selected item to the Trash"
 msgstr "ย้ายรายการที่เลือกไปไว้ในถังขยะ"
 
 # This is for "edit->delete" and right-click menu on files.
 # It means "delete no through trash" in both contexts.
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6695
-#: src/file-manager/fm-directory-view.c:6755
-#: src/file-manager/fm-directory-view.c:7410
+#: src/file-manager/fm-directory-view.c:6841
+#: src/file-manager/fm-directory-view.c:6917
+#: src/file-manager/fm-directory-view.c:7706
 msgid "_Delete"
 msgstr "_ลบถาวร"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6696
+#: src/file-manager/fm-directory-view.c:6842
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "ลบรายการที่เลือกโดยไม่ผ่านถังขยะ"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6699
+#: src/file-manager/fm-directory-view.c:6845
 msgid "Reset View to _Defaults"
 msgstr "ใช้มุมมอง_ปริยาย"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6700
+#: src/file-manager/fm-directory-view.c:6846
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "ใช้ค่าปริยายของมุมมองนี้ สำหรับการเรียงแฟ้มและขนาดย่อขยาย"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6703
+#: src/file-manager/fm-directory-view.c:6849
 msgid "Connect To This Server"
 msgstr "เชื่อมต่อไปเซิร์ฟเวอร์นี้"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6704
+#: src/file-manager/fm-directory-view.c:6850
 msgid "Make a permanent connection to this server"
 msgstr "ทำการเชื่อมต่อไปเซิร์ฟเวอร์นี่อย่างถาวร"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6707
+#: src/file-manager/fm-directory-view.c:6853
+#: src/file-manager/fm-directory-view.c:6869
 msgid "_Mount Volume"
 msgstr "เ_มานท์โวลุม"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6708
+#: src/file-manager/fm-directory-view.c:6854
 msgid "Mount the selected volume"
 msgstr "เมานท์โวลุมที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6711
-#: src/file-manager/fm-tree-view.c:749
+#: src/file-manager/fm-directory-view.c:6857
+#: src/file-manager/fm-directory-view.c:6873
+#: src/file-manager/fm-tree-view.c:750
 msgid "_Unmount Volume"
 msgstr "เ_ลิกเมานท์โวลุม"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6712
+#: src/file-manager/fm-directory-view.c:6858
 msgid "Unmount the selected volume"
 msgstr "เลิกเมานท์โวลุมที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6715
+#: src/file-manager/fm-directory-view.c:6861
+#: src/file-manager/fm-directory-view.c:6877
+#: src/nautilus-places-sidebar.c:1275
 msgid "_Eject"
 msgstr "_ดันแผ่นออก"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6716
+#: src/file-manager/fm-directory-view.c:6862
 msgid "Eject the selected volume"
 msgstr "ดันแผ่นที่เลือกออก"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6719
+#: src/file-manager/fm-directory-view.c:6865
+#: src/file-manager/fm-directory-view.c:6881
+#: src/nautilus-places-sidebar.c:1282
 msgid "_Format"
 msgstr "_ฟอร์แมต"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6720
+#: src/file-manager/fm-directory-view.c:6866
 msgid "Format the selected volume"
 msgstr "ฟอร์แมตโวลุมที่เลือก"
 
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:6870
+msgid "Mount the volume associated with the open folder"
+msgstr "เมานท์โวลุมที่เชื่อมโยงกับโฟลเดอร์ที่เปิด"
+
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:6874
+msgid "Unmount the volume associated with the open folder"
+msgstr "เลิกเมานท์โวลุมที่เชื่อมโยงกับโฟลเดอร์ที่เปิด"
+
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:6878
+msgid "Eject the volume associated with the open folder"
+msgstr "ดันโวลุมที่เชื่อมโยงกับโฟลเดอร์ที่เปิดออก"
+
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:6882
+msgid "Format the volume associated with the open folder"
+msgstr "ฟอร์แมตโวลุมที่เชื่อมโยงกับโฟลเดอร์ที่เปิด"
+
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6723
+#: src/file-manager/fm-directory-view.c:6885
 msgid "Open File and Close window"
 msgstr "เปิดแฟ้มและปิดหน้าต่าง"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6727
+#: src/file-manager/fm-directory-view.c:6889
 msgid "Sa_ve Search"
 msgstr "บัน_ทึกการค้นหา"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6728
+#: src/file-manager/fm-directory-view.c:6890
 msgid "Save the edited search"
 msgstr "บันทึกรายการค้นที่แก้ไข"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6731
+#: src/file-manager/fm-directory-view.c:6893
 msgid "Sa_ve Search As..."
 msgstr "บันทึกการค้นหาเ_ป็น..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6732
+#: src/file-manager/fm-directory-view.c:6894
 msgid "Save the current search as a file"
 msgstr "บันทึกรายการค้นปัจจุบันลงเป็นแฟ้ม"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6738
+#: src/file-manager/fm-directory-view.c:6900
 msgid "Open this folder in a navigation window"
 msgstr "เปิดโฟลเดอร์นี้ ในหน้าต่างแบบท่องดู"
 
 #. name, stock id
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6743
+#: src/file-manager/fm-directory-view.c:6905
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "เตรียมโฟลเดอร์นี้ ไว้สำหรับย้ายด้วยคำสั่ง \"แปะ\""
 
 #. name, stock id
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6747
+#: src/file-manager/fm-directory-view.c:6909
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "เตรียมโฟลเดอร์นี้ ไว้สำหรับคัดลอกด้วยคำสั่ง \"แปะ\""
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6752
+#: src/file-manager/fm-directory-view.c:6914
 msgid "Move this folder to the Trash"
 msgstr "ย้ายโฟลเดอร์นี้ไปลงถังขยะ"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6756
+#: src/file-manager/fm-directory-view.c:6918
 msgid "Delete this folder, without moving to the Trash"
 msgstr "ลบโฟลเดอร์นี้ทิ้ง โดยไม่ผ่านถังขยะ"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:6762
+#: src/file-manager/fm-directory-view.c:6924
 msgid "Show _Hidden Files"
 msgstr "แ_สดงแฟ้มที่ซ่อน"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:6763
+#: src/file-manager/fm-directory-view.c:6925
 msgid "Toggle the display of hidden files in the current window"
 msgstr "เปิด-ปิดการแสดงแฟ้มซ่อนในหน้าต่างปัจจุบัน"
 
 #. Translators: %s is a directory
-#: src/file-manager/fm-directory-view.c:6849
+#: src/file-manager/fm-directory-view.c:7011
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "เรียกหรือจัดการสคริปต์จาก %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: src/file-manager/fm-directory-view.c:6851
+#: src/file-manager/fm-directory-view.c:7013
 msgid "_Scripts"
 msgstr "_สคริปต์"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:7176
-#: src/file-manager/fm-directory-view.c:7359
-#: src/file-manager/fm-tree-view.c:1114
+#: src/file-manager/fm-directory-view.c:7472
+#: src/file-manager/fm-directory-view.c:7655
+#: src/file-manager/fm-tree-view.c:1115
 msgid "Open in New Window"
 msgstr "เปิดในหน้าต่างใหม่"
 
-#: src/file-manager/fm-directory-view.c:7178
-#: src/file-manager/fm-directory-view.c:7367
+#: src/file-manager/fm-directory-view.c:7474
+#: src/file-manager/fm-directory-view.c:7663
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "ท่อง_ดูโฟลเดอร์"
 msgstr[1] "ท่อง_ดูโฟลเดอร์"
 
-#: src/file-manager/fm-directory-view.c:7203
-#: src/file-manager/fm-directory-view.c:7387
+#: src/file-manager/fm-directory-view.c:7499
+#: src/file-manager/fm-directory-view.c:7683
 msgid "_Delete from Trash"
 msgstr "เ_ททิ้งจากถังขยะ"
 
-#: src/file-manager/fm-directory-view.c:7204
+#: src/file-manager/fm-directory-view.c:7500
 msgid "Delete the open folder permanently"
 msgstr "ลบโฟลเดอร์ที่เปิดทิ้งอย่างถาวร"
 
-#: src/file-manager/fm-directory-view.c:7208
+#: src/file-manager/fm-directory-view.c:7504
 msgid "Move the open folder to the Trash"
 msgstr "ย้ายโฟลเดอร์ที่เปิดไปลงถังขยะ"
 
-#: src/file-manager/fm-directory-view.c:7343
+#: src/file-manager/fm-directory-view.c:7639
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_เปิดด้วย \"%s\""
 
-#: src/file-manager/fm-directory-view.c:7361
+#: src/file-manager/fm-directory-view.c:7657
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "เปิดใน %d หน้าต่างใหม่"
 msgstr[1] "เปิดใน %d หน้าต่างใหม่"
 
-#: src/file-manager/fm-directory-view.c:7388
+#: src/file-manager/fm-directory-view.c:7684
 msgid "Delete all selected items permanently"
 msgstr "ลบรายการที่เลือกทั้งหมดอย่างถาวร"
 
-#: src/file-manager/fm-directory-view.c:7760
+#: src/file-manager/fm-directory-view.c:8056
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "ลิงก์ \"%s\" ขาด"
 
-#: src/file-manager/fm-directory-view.c:7762
+#: src/file-manager/fm-directory-view.c:8058
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "ลิงก์ \"%s\" ขาด จะทิ้งลิงก์นี้ลงถังขยะหรือไม่?"
 
-#: src/file-manager/fm-directory-view.c:7768
+#: src/file-manager/fm-directory-view.c:8064
 msgid "This link can't be used, because it has no target."
 msgstr "ลิงก์นี้ใช้ไม่ได้เพราะมันไม่ได้ชี้ไปที่ไหนเลย"
 
-#: src/file-manager/fm-directory-view.c:7770
+#: src/file-manager/fm-directory-view.c:8066
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "ลิงก์นี้ใช้ไม่ได้เพราะจุดหมาย (\"%s\") ไม่มีอยู่จริง"
 
-#: src/file-manager/fm-directory-view.c:8395
+#: src/file-manager/fm-directory-view.c:8691
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "กำลังเปิด \"%s\""
 
-#: src/file-manager/fm-directory-view.c:8398
+#: src/file-manager/fm-directory-view.c:8694
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "กำลังเปิด %d รายการ"
 msgstr[1] "กำลังเปิด %d รายการ"
 
-#: src/file-manager/fm-directory-view.c:9290
+#: src/file-manager/fm-directory-view.c:9586
 msgid "Download location?"
 msgstr "ดาวน์โหลดตำแหน่งนี้หรือไม่?"
 
-#: src/file-manager/fm-directory-view.c:9293
+#: src/file-manager/fm-directory-view.c:9589
 msgid "You can download it or make a link to it."
 msgstr "คุณไม่สามารถดาวน์โหลดหรือทำลิงก์ไปที่ตำแหน่งนั้นได้"
 
-#: src/file-manager/fm-directory-view.c:9296
+#: src/file-manager/fm-directory-view.c:9592
 msgid "Make a _Link"
 msgstr "ส_ร้างลิงก์"
 
-#: src/file-manager/fm-directory-view.c:9300
+#: src/file-manager/fm-directory-view.c:9596
 msgid "_Download"
 msgstr "_ดาวน์โหลด"
 
-#: src/file-manager/fm-directory-view.c:9359
-#: src/file-manager/fm-directory-view.c:9411
-#: src/file-manager/fm-directory-view.c:9508
+#: src/file-manager/fm-directory-view.c:9655
+#: src/file-manager/fm-directory-view.c:9707
+#: src/file-manager/fm-directory-view.c:9804
 msgid "Drag and drop is not supported."
 msgstr "ไม่รองรับการลากไปปล่อย"
 
-#: src/file-manager/fm-directory-view.c:9360
+#: src/file-manager/fm-directory-view.c:9656
 msgid "Drag and drop is only supported on local file systems."
 msgstr "รองรับการลากไปปล่อยเฉพาะระบบแฟ้มบนเครื่อง"
 
-#: src/file-manager/fm-directory-view.c:9412
-#: src/file-manager/fm-directory-view.c:9509
+#: src/file-manager/fm-directory-view.c:9708
+#: src/file-manager/fm-directory-view.c:9805
 msgid "An invalid drag type was used."
 msgstr "ใช้วิธีลากที่ไม่ถูกต้อง"
 
@@ -3469,175 +3500,175 @@ msgstr "ไม่สามารถเปลี่ยนสิทธิ์ผู
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "กำลังเปลี่ยนชื่อ \"%s\" ไปเป็น \"%s\""
 
-#: src/file-manager/fm-icon-view.c:135
+#: src/file-manager/fm-icon-view.c:133
 msgid "by _Name"
 msgstr "ตาม_ชื่อ"
 
-#: src/file-manager/fm-icon-view.c:136
-#: src/file-manager/fm-icon-view.c:1453
+#: src/file-manager/fm-icon-view.c:134
+#: src/file-manager/fm-icon-view.c:1460
 msgid "Keep icons sorted by name in rows"
 msgstr "เรียงไอคอนเป็นแถวตามชื่อ"
 
-#: src/file-manager/fm-icon-view.c:142
+#: src/file-manager/fm-icon-view.c:140
 msgid "by _Size"
 msgstr "ตาม_ขนาด"
 
-#: src/file-manager/fm-icon-view.c:143
-#: src/file-manager/fm-icon-view.c:1457
+#: src/file-manager/fm-icon-view.c:141
+#: src/file-manager/fm-icon-view.c:1464
 msgid "Keep icons sorted by size in rows"
 msgstr "เรียงไอคอนเป็นแถวตามขนาด"
 
-#: src/file-manager/fm-icon-view.c:149
+#: src/file-manager/fm-icon-view.c:147
 msgid "by _Type"
 msgstr "ตาม_ประเภท"
 
-#: src/file-manager/fm-icon-view.c:150
-#: src/file-manager/fm-icon-view.c:1461
+#: src/file-manager/fm-icon-view.c:148
+#: src/file-manager/fm-icon-view.c:1468
 msgid "Keep icons sorted by type in rows"
 msgstr "เรียงไอคอนเป็นแถวตามประเภท"
 
-#: src/file-manager/fm-icon-view.c:156
+#: src/file-manager/fm-icon-view.c:154
 msgid "by Modification _Date"
 msgstr "ตาม_วันที่แก้ไข"
 
-#: src/file-manager/fm-icon-view.c:157
-#: src/file-manager/fm-icon-view.c:1465
+#: src/file-manager/fm-icon-view.c:155
+#: src/file-manager/fm-icon-view.c:1472
 msgid "Keep icons sorted by modification date in rows"
 msgstr "เรียงไอคอนเป็นแถวตามวันที่ถูกแก้ไข"
 
-#: src/file-manager/fm-icon-view.c:163
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Emblems"
 msgstr "ตาม_ตรา"
 
-#: src/file-manager/fm-icon-view.c:164
-#: src/file-manager/fm-icon-view.c:1469
+#: src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:1476
 msgid "Keep icons sorted by emblems in rows"
 msgstr "เรียงไอคอนเป็นแถวตามตรา"
 
-#: src/file-manager/fm-icon-view.c:1413
+#: src/file-manager/fm-icon-view.c:1420
 msgid "Arran_ge Items"
 msgstr "_จัดเรียงรายการ"
 
 #. name, stock id, label
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1415
+#: src/file-manager/fm-icon-view.c:1422
 msgid "Str_etch Icon"
 msgstr "ปรับ_ขนาดไอคอน"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1416
+#: src/file-manager/fm-icon-view.c:1423
 msgid "Make the selected icon stretchable"
 msgstr "ย่อขยายขนาดของไอคอนที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1419
-#: src/file-manager/fm-icon-view.c:1571
+#: src/file-manager/fm-icon-view.c:1426
+#: src/file-manager/fm-icon-view.c:1578
 msgid "Restore Icons' Original Si_zes"
 msgstr "กลับไปใช้_ขนาดปกติของไอคอน"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1420
+#: src/file-manager/fm-icon-view.c:1427
 msgid "Restore each selected icon to its original size"
 msgstr "กลับไปใช้ขนาดปกติของไอคอนที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1423
+#: src/file-manager/fm-icon-view.c:1430
 msgid "Clean _Up by Name"
 msgstr "เ_รียงให้เรียบร้อยตามชื่อ"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1424
+#: src/file-manager/fm-icon-view.c:1431
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "เรียงไอคอนให้พอดีหน้าต่าง และไม่ให้ทับกัน"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1430
+#: src/file-manager/fm-icon-view.c:1437
 msgid "Compact _Layout"
 msgstr "_จัดวางอย่างกระชับ"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1431
+#: src/file-manager/fm-icon-view.c:1438
 msgid "Toggle using a tighter layout scheme"
 msgstr "ใช้/เลิก จัดวางไอคอนให้กระชับใกล้กัน"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1435
+#: src/file-manager/fm-icon-view.c:1442
 msgid "Re_versed Order"
 msgstr "เรียง_แบบย้อนกลับ"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1436
+#: src/file-manager/fm-icon-view.c:1443
 msgid "Display icons in the opposite order"
 msgstr "เรียงไอคอนย้อนกลับจากปกติ"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1440
+#: src/file-manager/fm-icon-view.c:1447
 msgid "_Keep Aligned"
 msgstr "_จัดให้ตรงแนว"
 
 #. label, accelerator
-#: src/file-manager/fm-icon-view.c:1441
+#: src/file-manager/fm-icon-view.c:1448
 msgid "Keep icons lined up on a grid"
 msgstr "เรียงไอคอนให้ตรงแนว"
 
-#: src/file-manager/fm-icon-view.c:1448
+#: src/file-manager/fm-icon-view.c:1455
 msgid "_Manually"
 msgstr "โดย_ปรับเลือกเอง"
 
-#: src/file-manager/fm-icon-view.c:1449
+#: src/file-manager/fm-icon-view.c:1456
 msgid "Leave icons wherever they are dropped"
 msgstr "ปล่อยไอคอนไว้ที่ที่นำไปวางไว้"
 
-#: src/file-manager/fm-icon-view.c:1452
+#: src/file-manager/fm-icon-view.c:1459
 msgid "By _Name"
 msgstr "ตาม_ชื่อ"
 
-#: src/file-manager/fm-icon-view.c:1456
+#: src/file-manager/fm-icon-view.c:1463
 msgid "By _Size"
 msgstr "ตาม_ขนาด"
 
-#: src/file-manager/fm-icon-view.c:1460
+#: src/file-manager/fm-icon-view.c:1467
 msgid "By _Type"
 msgstr "ตาม_ประเภท"
 
-#: src/file-manager/fm-icon-view.c:1464
+#: src/file-manager/fm-icon-view.c:1471
 msgid "By Modification _Date"
 msgstr "ตาม_วันที่แก้ไข"
 
-#: src/file-manager/fm-icon-view.c:1468
+#: src/file-manager/fm-icon-view.c:1475
 msgid "By _Emblems"
 msgstr "ตาม_ตรา"
 
-#: src/file-manager/fm-icon-view.c:1572
+#: src/file-manager/fm-icon-view.c:1579
 msgid "Restore Icon's Original Si_ze"
 msgstr "กลับไปใช้_ขนาดปกติของไอคอน"
 
-#: src/file-manager/fm-icon-view.c:1987
+#: src/file-manager/fm-icon-view.c:1994
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "กำลังชี้ไปที่ \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2761
+#: src/file-manager/fm-icon-view.c:2759
 msgid "Icons"
 msgstr "ไอคอน"
 
-#: src/file-manager/fm-icon-view.c:2762
+#: src/file-manager/fm-icon-view.c:2760
 msgid "View as Icons"
 msgstr "มองเป็นไอคอน"
 
-#: src/file-manager/fm-icon-view.c:2763
+#: src/file-manager/fm-icon-view.c:2761
 msgid "View as _Icons"
 msgstr "มองเป็น_ไอคอน"
 
-#: src/file-manager/fm-icon-view.c:2764
+#: src/file-manager/fm-icon-view.c:2762
 msgid "The icon view encountered an error."
 msgstr "เกิดข้อผิดพลาดในมุมมองไอคอน"
 
-#: src/file-manager/fm-icon-view.c:2765
+#: src/file-manager/fm-icon-view.c:2763
 msgid "The icon view encountered an error while starting up."
 msgstr "เกิดข้อผิดพลาดขณะเริ่มต้นมุมมองไอคอน"
 
-#: src/file-manager/fm-icon-view.c:2766
+#: src/file-manager/fm-icon-view.c:2764
 msgid "Display this location with the icon view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองไอคอน"
 
@@ -3651,46 +3682,46 @@ msgstr "(ว่าง)"
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
-#: src/file-manager/fm-list-view.c:1922
+#: src/file-manager/fm-list-view.c:1921
 #, c-format
 msgid "%s Visible Columns"
 msgstr "คอลัมน์ที่แสดงใน %s"
 
-#: src/file-manager/fm-list-view.c:1941
+#: src/file-manager/fm-list-view.c:1940
 msgid "Choose the order of information to appear in this folder."
 msgstr "เลือกลำดับข้อมูลที่จะแสดงในโฟลเดอร์นี้"
 
 #. name, stock id
-#: src/file-manager/fm-list-view.c:1983
+#: src/file-manager/fm-list-view.c:1982
 msgid "Visible _Columns..."
 msgstr "_คอลัมน์ที่แสดง..."
 
 #. label, accelerator
-#: src/file-manager/fm-list-view.c:1984
+#: src/file-manager/fm-list-view.c:1983
 msgid "Select the columns visible in this folder"
 msgstr "เลือกคอลัมน์ที่จะแสดงในโฟลเดอร์นี้"
 
-#: src/file-manager/fm-list-view.c:2709
+#: src/file-manager/fm-list-view.c:2708
 msgid "List"
 msgstr "รายการ"
 
-#: src/file-manager/fm-list-view.c:2710
+#: src/file-manager/fm-list-view.c:2709
 msgid "View as List"
 msgstr "มองเป็นรายการ"
 
-#: src/file-manager/fm-list-view.c:2711
+#: src/file-manager/fm-list-view.c:2710
 msgid "View as _List"
 msgstr "มองเป็น_รายการ"
 
-#: src/file-manager/fm-list-view.c:2712
+#: src/file-manager/fm-list-view.c:2711
 msgid "The list view encountered an error."
 msgstr "เกิดข้อผิดพลาดในมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2713
+#: src/file-manager/fm-list-view.c:2712
 msgid "The list view encountered an error while starting up."
 msgstr "เกิดข้อผิดพลาดขณะเริ่มต้นมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2714
+#: src/file-manager/fm-list-view.c:2713
 msgid "Display this location with the list view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองแบบรายการ"
 
@@ -3732,26 +3763,26 @@ msgstr "คุณสมบัติ %s"
 msgid "Cancel Group Change?"
 msgstr "ยกเลิกการเปลี่ยนกลุ่มหรือไม่?"
 
-#: src/file-manager/fm-properties-window.c:1711
+#: src/file-manager/fm-properties-window.c:1712
 msgid "Cancel Owner Change?"
 msgstr "ยกเลิกการเปลี่ยนเจ้าของหรือไม่?"
 
-#: src/file-manager/fm-properties-window.c:1915
+#: src/file-manager/fm-properties-window.c:1914
 msgid "nothing"
 msgstr "ไม่มีอะไร"
 
-#: src/file-manager/fm-properties-window.c:1917
+#: src/file-manager/fm-properties-window.c:1916
 msgid "unreadable"
 msgstr "ไม่สามารถอ่านได้"
 
-#: src/file-manager/fm-properties-window.c:1927
+#: src/file-manager/fm-properties-window.c:1926
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d รายการ ขนาดรวม %s"
 msgstr[1] "%d รายการ ขนาดรวม %s"
 
-#: src/file-manager/fm-properties-window.c:1936
+#: src/file-manager/fm-properties-window.c:1935
 msgid "(some contents unreadable)"
 msgstr "(ข้อมูลบางส่วนไม่สามารถอ่านไได้)"
 
@@ -3761,224 +3792,220 @@ msgstr "(ข้อมูลบางส่วนไม่สามารถอ�
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1953
+#: src/file-manager/fm-properties-window.c:1952
 msgid "Contents:"
 msgstr "เนื้อหา:"
 
-#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2287
 msgid "Basic"
 msgstr "พื้นฐาน"
 
 #. Name label
-#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2317
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_ชื่อ:"
 msgstr[1] "_ชื่อ:"
 
-#: src/file-manager/fm-properties-window.c:2337
+#: src/file-manager/fm-properties-window.c:2336
 msgid "Type:"
 msgstr "ประเภท:"
 
-#: src/file-manager/fm-properties-window.c:2339
-#: src/file-manager/fm-properties-window.c:2349
-#: src/file-manager/fm-properties-window.c:2355
-#: src/file-manager/fm-properties-window.c:2362
-#: src/file-manager/fm-properties-window.c:2366
-#: src/file-manager/fm-properties-window.c:2374
-#: src/file-manager/fm-properties-window.c:2380
-#: src/file-manager/fm-properties-window.c:2389
-#: src/file-manager/fm-properties-window.c:2395
-#: src/file-manager/fm-properties-window.c:2949
-#: src/file-manager/fm-properties-window.c:2970
-#: src/file-manager/fm-properties-window.c:3061
-#: src/file-manager/fm-properties-window.c:3065
-#: src/file-manager/fm-properties-window.c:3069
+#: src/file-manager/fm-properties-window.c:2338
+#: src/file-manager/fm-properties-window.c:2348
+#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2361
+#: src/file-manager/fm-properties-window.c:2365
+#: src/file-manager/fm-properties-window.c:2373
+#: src/file-manager/fm-properties-window.c:2379
+#: src/file-manager/fm-properties-window.c:2388
+#: src/file-manager/fm-properties-window.c:2394
+#: src/file-manager/fm-properties-window.c:2948
+#: src/file-manager/fm-properties-window.c:2969
+#: src/file-manager/fm-properties-window.c:3060
+#: src/file-manager/fm-properties-window.c:3064
+#: src/file-manager/fm-properties-window.c:3068
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2347
+#: src/file-manager/fm-properties-window.c:2346
 msgid "Size:"
 msgstr "ขนาด:"
 
-#: src/file-manager/fm-properties-window.c:2353
+#: src/file-manager/fm-properties-window.c:2352
 #: src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "ตำแหน่ง:"
 
-#: src/file-manager/fm-properties-window.c:2360
+#: src/file-manager/fm-properties-window.c:2359
 msgid "Volume:"
 msgstr "โวลุม:"
 
-#: src/file-manager/fm-properties-window.c:2364
+#: src/file-manager/fm-properties-window.c:2363
 msgid "Free space:"
 msgstr "เนื้อที่ว่าง:"
 
-#: src/file-manager/fm-properties-window.c:2372
+#: src/file-manager/fm-properties-window.c:2371
 msgid "Link target:"
 msgstr "จุดหมายลิงก์:"
 
-#: src/file-manager/fm-properties-window.c:2378
+#: src/file-manager/fm-properties-window.c:2377
 msgid "MIME type:"
 msgstr "ประเภท MIME:"
 
-#: src/file-manager/fm-properties-window.c:2387
+#: src/file-manager/fm-properties-window.c:2386
 msgid "Modified:"
 msgstr "แก้ไขเมื่อ:"
 
-#: src/file-manager/fm-properties-window.c:2393
+#: src/file-manager/fm-properties-window.c:2392
 msgid "Accessed:"
 msgstr "เข้าถึงเมื่อ:"
 
-#: src/file-manager/fm-properties-window.c:2441
+#: src/file-manager/fm-properties-window.c:2440
 #: src/nautilus-emblem-sidebar.c:1041
 msgid "Emblems"
 msgstr "ตรา"
 
-#: src/file-manager/fm-properties-window.c:2726
+#: src/file-manager/fm-properties-window.c:2725
 msgid "_Read"
 msgstr "_อ่าน"
 
-#: src/file-manager/fm-properties-window.c:2728
+#: src/file-manager/fm-properties-window.c:2727
 msgid "_Write"
 msgstr "เ_ขียน"
 
-#: src/file-manager/fm-properties-window.c:2730
+#: src/file-manager/fm-properties-window.c:2729
 msgid "E_xecute"
 msgstr "เ_รียกใช้"
 
-#: src/file-manager/fm-properties-window.c:2813
+#: src/file-manager/fm-properties-window.c:2812
 msgid "Set _user ID"
 msgstr "ตั้งหมายเลขผู้ใ_ช้"
 
-#: src/file-manager/fm-properties-window.c:2818
+#: src/file-manager/fm-properties-window.c:2817
 msgid "Special flags:"
 msgstr "ป้ายบอกสถานะพิเศษ:"
 
-#: src/file-manager/fm-properties-window.c:2821
+#: src/file-manager/fm-properties-window.c:2820
 msgid "Set gro_up ID"
 msgstr "ตั้งหมายเลขกลุ่_ม "
 
-#: src/file-manager/fm-properties-window.c:2823
+#: src/file-manager/fm-properties-window.c:2822
 msgid "_Sticky"
 msgstr "_Sticky"
 
-#: src/file-manager/fm-properties-window.c:2924
+#: src/file-manager/fm-properties-window.c:2923
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "คุณไม่ใช่เจ้าของแฟ้ม/โฟลเดอร์ คุณจึงเปลี่ยนสิทธิ์เหล่านี้ไม่ได้"
 
-#: src/file-manager/fm-properties-window.c:2938
+#: src/file-manager/fm-properties-window.c:2937
 msgid "File _owner:"
 msgstr "เ_จ้าของแฟ้ม:"
 
-#: src/file-manager/fm-properties-window.c:2944
+#: src/file-manager/fm-properties-window.c:2943
 msgid "File owner:"
 msgstr "เจ้าของแฟ้ม:"
 
-#: src/file-manager/fm-properties-window.c:2955
+#: src/file-manager/fm-properties-window.c:2954
 msgid "_File group:"
 msgstr "_กลุ่มแฟ้ม:"
 
-#: src/file-manager/fm-properties-window.c:2964
+#: src/file-manager/fm-properties-window.c:2963
 msgid "File group:"
 msgstr "กลุ่มแฟ้ม:"
 
-#: src/file-manager/fm-properties-window.c:2976
+#: src/file-manager/fm-properties-window.c:2975
 msgid "Owner:"
 msgstr "เจ้าของ:"
 
-#: src/file-manager/fm-properties-window.c:2977
+#: src/file-manager/fm-properties-window.c:2976
 msgid "Group:"
 msgstr "กลุ่ม:"
 
-#: src/file-manager/fm-properties-window.c:2978
+#: src/file-manager/fm-properties-window.c:2977
 msgid "Others:"
 msgstr "อื่นๆ:"
 
-#: src/file-manager/fm-properties-window.c:3060
+#: src/file-manager/fm-properties-window.c:3059
 msgid "Text view:"
 msgstr "ดูเป็นข้อความ:"
 
-#: src/file-manager/fm-properties-window.c:3064
+#: src/file-manager/fm-properties-window.c:3063
 msgid "Number view:"
 msgstr "ดูเป็นตัวเลข:"
 
-#: src/file-manager/fm-properties-window.c:3068
+#: src/file-manager/fm-properties-window.c:3067
 msgid "Last changed:"
 msgstr "เวลาที่แก้ไขล่าสุด:"
 
-#: src/file-manager/fm-properties-window.c:3074
+#: src/file-manager/fm-properties-window.c:3073
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "ไม่สามารถกำหนดสิทธิ์ของ \"%s\""
 
-#: src/file-manager/fm-properties-window.c:3077
+#: src/file-manager/fm-properties-window.c:3076
 msgid "The permissions of the selected file could not be determined."
 msgstr "ไม่สามารถกำหนดสิทธิ์ของแฟ้มที่เลือก"
 
-#: src/file-manager/fm-properties-window.c:3235
-msgid "There was an error displaying help."
-msgstr "เกิดข้อผิดพลาดขณะแสดงวิธีใช้"
-
-#: src/file-manager/fm-properties-window.c:3297
+#: src/file-manager/fm-properties-window.c:3296
 msgid "Open With"
 msgstr "เปิดด้วย"
 
-#: src/file-manager/fm-properties-window.c:3637
+#: src/file-manager/fm-properties-window.c:3636
 msgid "Creating Properties window."
 msgstr "กำลังสร้างหน้าต่างคุณสมบัติ"
 
-#: src/file-manager/fm-properties-window.c:3880
+#: src/file-manager/fm-properties-window.c:3879
 msgid "Select Custom Icon"
 msgstr "เลือกไอคอนกำหนดเอง"
 
-#: src/file-manager/fm-tree-view.c:749
+#: src/file-manager/fm-tree-view.c:750
 msgid "E_ject"
 msgstr "_ดันแผ่นออก"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:1127
+#: src/file-manager/fm-tree-view.c:1126
 msgid "Create Folder"
 msgstr "สร้างโฟลเดอร์"
 
-#: src/file-manager/fm-tree-view.c:1179
+#: src/file-manager/fm-tree-view.c:1174
 msgid "Move to Trash"
 msgstr "ทิ้งลงถังขยะ"
 
-#: src/file-manager/fm-tree-view.c:1247
-#: src/nautilus-places-sidebar.c:196
+#: src/file-manager/fm-tree-view.c:1238
+#: src/nautilus-places-sidebar.c:216
 msgid "File System"
 msgstr "ระบบแฟ้ม"
 
-#: src/file-manager/fm-tree-view.c:1249
+#: src/file-manager/fm-tree-view.c:1240
 msgid "Network Neighbourhood"
 msgstr "เพื่อนร่วมเครือข่าย"
 
-#: src/file-manager/fm-tree-view.c:1487
+#: src/file-manager/fm-tree-view.c:1479
 msgid "Tree"
 msgstr "ต้นไม้"
 
-#: src/file-manager/fm-tree-view.c:1493
+#: src/file-manager/fm-tree-view.c:1485
 msgid "Show Tree"
 msgstr "แสดงต้นไม้"
 
-#: src/nautilus-application.c:262
+#: src/nautilus-application.c:260
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus สร้างโฟลเดอร์ (%s) ที่ต้องการไม่สำเร็จ"
 
-#: src/nautilus-application.c:264
+#: src/nautilus-application.c:262
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr "ก่อนใช้ Nautilus โปรดสร้างโฟลเดอร์นี้ หรือตั้งสิทธิ์ให้ Nautilus สร้างโฟลเดอร์นี้ได้"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:265
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus สร้างโฟลเดอร์ที่ต้องการเหล่านี้ไม่สำเร็จ: %s"
 
-#: src/nautilus-application.c:269
+#: src/nautilus-application.c:267
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -3986,15 +4013,15 @@ msgstr ""
 "ก่อนจะใช้ Nautilus โปรดสร้างโฟลเดอร์เหล่านี้ หรือตั้งสิทธิ์ที่อนุญาตเช่นว่าให้ Nautilus "
 "สร้างโฟลเดอร์เหล่านี้ได้"
 
-#: src/nautilus-application.c:337
+#: src/nautilus-application.c:326
 msgid "Link To Old Desktop"
 msgstr "ลิงก์ไปพื้นโต๊ะเก่า"
 
-#: src/nautilus-application.c:353
+#: src/nautilus-application.c:342
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "ลิงก์ชื่อ \"ลิงก์ไปพื้นโต๊ะเก่า\" ได้สร้างใว้บนพื้นโต๊ะ"
 
-#: src/nautilus-application.c:354
+#: src/nautilus-application.c:343
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4012,7 +4039,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:513
+#: src/nautilus-application.c:502
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4022,7 +4049,7 @@ msgstr ""
 "ถ้าถ้ายังแก้ปัญหาไม่ได้ไปลองเริ่มระบบเครื่องใหม่ หรือติดตั้ง Nautilus ใหม่"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:519
+#: src/nautilus-application.c:508
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4066,12 +4093,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:549 src/nautilus-application.c:567
-#: src/nautilus-application.c:574
+#: src/nautilus-application.c:538 src/nautilus-application.c:556
+#: src/nautilus-application.c:563
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "ใช้ Nautilus ไม่ได้เนื่องจากข้อผิดพลาดที่ไม่คาดหมาย"
 
-#: src/nautilus-application.c:550
+#: src/nautilus-application.c:539
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4079,7 +4106,7 @@ msgstr ""
 "ไม่สามารถใช้งาน Nautilus ได้ในขณะนี้ เนื่องจากเกิดข้อผิดพลาดกับ bonobo "
 "ขณะพยายามจะลงทะเบียนเซิร์ฟเวอร์แสดงผลของโปรแกรมจัดการแฟ้ม"
 
-#: src/nautilus-application.c:568
+#: src/nautilus-application.c:557
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4089,7 +4116,7 @@ msgstr ""
 "ขณะพยายามจะค้นหาโรงงาน ลองฆ่าโพรเซส bonobo-activation-server แล้วเริ่ม Nautilus "
 "ใหม่ อาจช่วยแก้ปัญหาได้"
 
-#: src/nautilus-application.c:575
+#: src/nautilus-application.c:564
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4101,7 +4128,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:158
 #: src/nautilus-file-management-properties.c:216
-#: src/nautilus-property-browser.c:1541 src/nautilus-window-menus.c:524
+#: src/nautilus-property-browser.c:1541 src/nautilus-window-menus.c:509
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4135,92 +4162,106 @@ msgstr "แก้ไขที่คั่นหน้า"
 msgid "Can't display location \"%s\""
 msgstr "ไม่สามารถแสดงตำแหน่ง \"%s\""
 
-#: src/nautilus-connect-server-dialog.c:142
+#: src/nautilus-connect-server-dialog-main.c:102
+msgid "[URI]"
+msgstr "[URI]"
+
+#: src/nautilus-connect-server-dialog-main.c:111
+msgid ""
+"\n"
+"\n"
+"Add connect to server mount"
+msgstr ""
+"\n"
+"\n"
+"เพิ่มการเมานท์เชื่อมต่อไปยังเซิร์ฟเวอร์"
+
+#: src/nautilus-connect-server-dialog.c:113
+msgid "Custom Location"
+msgstr "ตำแหน่งกำหนดเอง"
+
+#: src/nautilus-connect-server-dialog.c:115
+msgid "SSH"
+msgstr "SSH"
+
+#: src/nautilus-connect-server-dialog.c:118
+msgid "Public FTP"
+msgstr "FTP สาธารณะ"
+
+#: src/nautilus-connect-server-dialog.c:120
+msgid "FTP (with login)"
+msgstr "FTP (ล็อกเข้าระบบ)"
+
+#: src/nautilus-connect-server-dialog.c:123
+msgid "Windows share"
+msgstr "Windows share"
+
+#: src/nautilus-connect-server-dialog.c:125
+msgid "WebDAV (HTTP)"
+msgstr "WebDAV (HTTP)"
+
+#: src/nautilus-connect-server-dialog.c:127
+msgid "Secure WebDAV (HTTPS)"
+msgstr "Secure WebDAV (HTTPS)"
+
+#: src/nautilus-connect-server-dialog.c:192
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
 msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ เนื่องจาก \"%s\" ไม่ใช่ตำแหน่งที่ถูกต้อง"
 
-#: src/nautilus-connect-server-dialog.c:158
+#: src/nautilus-connect-server-dialog.c:208
 msgid "Can't Connect to Server. You must enter a name for the server."
 msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ คุณต้องใส่ชื่อเซิร์ฟเวอร์ด้วย"
 
-#: src/nautilus-connect-server-dialog.c:159
+#: src/nautilus-connect-server-dialog.c:209
 msgid "Please enter a name and try again."
 msgstr "โปรดใส่ชื่อแล้วลองใหม่"
 
-#: src/nautilus-connect-server-dialog.c:416
+#: src/nautilus-connect-server-dialog.c:469
 msgid "_Location (URI):"
 msgstr "_ตำแหน่ง (URI):"
 
-#: src/nautilus-connect-server-dialog.c:463
+#: src/nautilus-connect-server-dialog.c:491
 msgid "_Server:"
 msgstr "เ_ซิร์ฟเวอร์:"
 
-#: src/nautilus-connect-server-dialog.c:482
+#: src/nautilus-connect-server-dialog.c:510
 msgid "Optional information:"
 msgstr "ข้อมูลไม่บังคับตอบ:"
 
-#: src/nautilus-connect-server-dialog.c:494
+#: src/nautilus-connect-server-dialog.c:522
 msgid "_Share:"
 msgstr "_แบ่งใช้:"
 
-#: src/nautilus-connect-server-dialog.c:515
+#: src/nautilus-connect-server-dialog.c:543
 msgid "_Port:"
 msgstr "_พอร์ต:"
 
-#: src/nautilus-connect-server-dialog.c:555
+#: src/nautilus-connect-server-dialog.c:583
 msgid "_User Name:"
 msgstr "ชื่อ_ผู้ใช้:"
 
-#: src/nautilus-connect-server-dialog.c:576
+#: src/nautilus-connect-server-dialog.c:604
 msgid "_Domain Name:"
 msgstr "ชื่อโ_ดเมน:"
 
-#: src/nautilus-connect-server-dialog.c:600
+#: src/nautilus-connect-server-dialog.c:628
 msgid "_Name to use for connection:"
 msgstr "ชื่อ_สำหรับการเชื่อมต่อ:"
 
-#: src/nautilus-connect-server-dialog.c:658
+#: src/nautilus-connect-server-dialog.c:805
 msgid "Connect to Server"
 msgstr "เชื่อมต่อไปเซิร์ฟเวอร์"
 
-#: src/nautilus-connect-server-dialog.c:675
+#: src/nautilus-connect-server-dialog.c:822
 msgid "Service _type:"
 msgstr "ชนิด_บริการ:"
 
-#: src/nautilus-connect-server-dialog.c:684
-msgid "SSH"
-msgstr "SSH"
-
-#: src/nautilus-connect-server-dialog.c:686
-msgid "Public FTP"
-msgstr "FTP สาธารณะ"
-
-#: src/nautilus-connect-server-dialog.c:688
-msgid "FTP (with login)"
-msgstr "FTP (ล็อกเข้าระบบ)"
-
-#: src/nautilus-connect-server-dialog.c:690
-msgid "Windows share"
-msgstr "Windows share"
-
-#: src/nautilus-connect-server-dialog.c:692
-msgid "WebDAV (HTTP)"
-msgstr "WebDAV (HTTP)"
-
-#: src/nautilus-connect-server-dialog.c:694
-msgid "Secure WebDAV (HTTPS)"
-msgstr "Secure WebDAV (HTTPS)"
-
-#: src/nautilus-connect-server-dialog.c:696
-msgid "Custom Location"
-msgstr "ตำแหน่งกำหนดเอง"
-
-#: src/nautilus-connect-server-dialog.c:748
+#: src/nautilus-connect-server-dialog.c:890
 msgid "Browse _Network"
 msgstr "เรียกดูเ_ครือข่าย"
 
-#: src/nautilus-connect-server-dialog.c:754
+#: src/nautilus-connect-server-dialog.c:896
 msgid "C_onnect"
 msgstr "เ_ชื่อมต่อ"
 
@@ -4583,82 +4624,87 @@ msgstr "ประวัติ"
 msgid "Show History"
 msgstr "แสดงประวัติ"
 
-#: src/nautilus-image-properties-page.c:219
+#: src/nautilus-image-properties-page.c:220
 msgid "Camera Brand"
 msgstr "ยี่ห้อกล้อง"
 
-#: src/nautilus-image-properties-page.c:220
+#: src/nautilus-image-properties-page.c:221
 msgid "Camera Model"
 msgstr "รุ่นกล้อง"
 
-#: src/nautilus-image-properties-page.c:221
+#. Choose which date to show in order of relevance
+#: src/nautilus-image-properties-page.c:224
 msgid "Date Taken"
 msgstr "วันที่ถ่าย"
 
-#: src/nautilus-image-properties-page.c:222
+#: src/nautilus-image-properties-page.c:226
+msgid "Date Digitized"
+msgstr "วันที่แปลงเป็นดิจิทัล"
+
+#: src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
 msgstr "ความเร็วชัตเตอร์"
 
-#: src/nautilus-image-properties-page.c:223
+#: src/nautilus-image-properties-page.c:233
 msgid "Exposure Program"
 msgstr "โปรแกรมการถ่ายภาพ"
 
-#: src/nautilus-image-properties-page.c:224
+#: src/nautilus-image-properties-page.c:234
 msgid "Aperture Value"
 msgstr "หน้ากล้อง"
 
-#: src/nautilus-image-properties-page.c:225
+#: src/nautilus-image-properties-page.c:235
 msgid "Metering Mode"
 msgstr "วิธีวัดแสง"
 
-#: src/nautilus-image-properties-page.c:226
+#: src/nautilus-image-properties-page.c:236
 msgid "Flash Fired"
 msgstr "ใช้แฟลช"
 
-#: src/nautilus-image-properties-page.c:227
+#: src/nautilus-image-properties-page.c:237
 msgid "Focal Length"
 msgstr "ระยะโฟกัส"
 
-#: src/nautilus-image-properties-page.c:228
+#: src/nautilus-image-properties-page.c:238
 msgid "Shutter Speed"
 msgstr "ความเร็วชัตเตอร์"
 
-#: src/nautilus-image-properties-page.c:229
+#: src/nautilus-image-properties-page.c:239
 msgid "ISO Speed Rating"
 msgstr "ความไวแสง (ISO)"
 
-#: src/nautilus-image-properties-page.c:230
+#: src/nautilus-image-properties-page.c:240
 msgid "Software"
 msgstr "ซอฟต์แวร์"
 
-#: src/nautilus-image-properties-page.c:249
+#: src/nautilus-image-properties-page.c:259
 #, c-format
 msgid "<b>Image Type:</b> %s (%s)\n"
 msgstr "<b>ชนิดรูป:</b> %s (%s)\n"
 
-#: src/nautilus-image-properties-page.c:251
+#: src/nautilus-image-properties-page.c:261
 #, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
 msgstr[0] "<b>ความกว้าง:</b> %d พิกเซล\n"
 msgstr[1] "<b>ความกว้าง:</b> %d พิกเซล\n"
 
-#: src/nautilus-image-properties-page.c:255
+#: src/nautilus-image-properties-page.c:265
 #, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
 msgstr[0] "<b>ความสูง:</b> %d พิกเซล\n"
 msgstr[1] "<b>ความสูง:</b> %d พิกเซล\n"
 
-#: src/nautilus-image-properties-page.c:270
+#: src/nautilus-image-properties-page.c:280
 msgid "Failed to load image information"
 msgstr "โหลดข้อมูลภาพไม่สำเร็จ"
 
-#: src/nautilus-image-properties-page.c:420
+#: src/nautilus-image-properties-page.c:430
 msgid "loading..."
 msgstr "กำลังโหลด..."
 
-#: src/nautilus-image-properties-page.c:486
+#: src/nautilus-image-properties-page.c:496
 msgid "Image"
 msgstr "ภาพ"
 
@@ -4688,17 +4734,17 @@ msgstr "ภาพเท่านั้นที่จะใช้แสดงเ
 msgid "Open with %s"
 msgstr "เปิดด้วย %s"
 
-#: src/nautilus-information-panel.c:994
+#: src/nautilus-information-panel.c:1001
 msgid "Unable to launch the cd burner application."
 msgstr "ไม่สามารถเรียกใช้โปรแกรมเขียนซีดี"
 
 #. FIXME: We don't use spaces to pad labels!
-#: src/nautilus-information-panel.c:1039
+#: src/nautilus-information-panel.c:1046
 msgid "Empty _Trash"
 msgstr "เ_ทถังขยะ"
 
 #. FIXME: We don't use spaces to pad labels!
-#: src/nautilus-information-panel.c:1055
+#: src/nautilus-information-panel.c:1062
 msgid "_Write contents to CD"
 msgstr "เ_ขียนข้อมูลลงซีดี"
 
@@ -4713,71 +4759,85 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "คุณต้องการดู %d ตำแหน่งนี้หรือไม่?"
 msgstr[1] "คุณต้องการดู %d ตำแหน่งนี้หรือไม่?"
 
-#: src/nautilus-location-dialog.c:140
+#: src/nautilus-location-dialog.c:156
 msgid "Open Location"
 msgstr "เปิดตำแหน่ง"
 
-#: src/nautilus-location-dialog.c:151
+#: src/nautilus-location-dialog.c:167
 msgid "_Location:"
 msgstr "_ตำแหน่ง:"
 
-#: src/nautilus-main.c:269
+#: src/nautilus-main.c:204
 msgid "Perform a quick set of self-check tests."
 msgstr "ลองตรวจสอบตัวเองอย่างคร่าวๆ"
 
-#: src/nautilus-main.c:272
+#: src/nautilus-main.c:207
 msgid "Create the initial window with the given geometry."
 msgstr "สร้างหน้าต่างเริ่มต้นที่ตำแหน่งและด้วยขนาดที่กำหนด"
 
-#: src/nautilus-main.c:272
+#: src/nautilus-main.c:207
 msgid "GEOMETRY"
 msgstr "ตำแหน่งและขนาด"
 
-#: src/nautilus-main.c:274
+#: src/nautilus-main.c:209
 msgid "Only create windows for explicitly specified URIs."
 msgstr "สร้างหน้าต่างเฉพาะสำหรับ URI ที่ให้โดยตรง"
 
-#: src/nautilus-main.c:276
+#: src/nautilus-main.c:211
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "อย่าจัดการพื้นโต๊ะ (ไม่ต้องสนใจค่าตั้งจากกรอบข้อความค่าตั้ง)"
 
-#: src/nautilus-main.c:278
+#: src/nautilus-main.c:213
 msgid "open a browser window."
 msgstr "เปิดหน้าต่างเบราว์เซอร์"
 
-#: src/nautilus-main.c:280
+#: src/nautilus-main.c:215
 msgid "Quit Nautilus."
 msgstr "ออกจาก Nautilus"
 
-#: src/nautilus-main.c:282
+#: src/nautilus-main.c:217
 msgid "Restart Nautilus."
 msgstr "เริ่มต้น Nautilus ใหม่"
 
-#: src/nautilus-main.c:326
+#: src/nautilus-main.c:218
+msgid "[URI...]"
+msgstr "[URI...]"
+
+#: src/nautilus-main.c:253
 msgid "File Manager"
 msgstr "โปรแกรมจัดการแฟ้ม"
 
+#: src/nautilus-main.c:254
+msgid ""
+"\n"
+"\n"
+"Browse the file system with the file manager"
+msgstr ""
+"\n"
+"\n"
+"เรียกดูระบบแฟ้มด้วยโปรแกรมจัดการแฟ้ม"
+
 #. Set initial window title
-#: src/nautilus-main.c:332 src/nautilus-spatial-window.c:406
-#: src/nautilus-window-menus.c:461 src/nautilus-window.c:155
+#: src/nautilus-main.c:262 src/nautilus-spatial-window.c:406
+#: src/nautilus-window-menus.c:448 src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:364 src/nautilus-main.c:373
-#: src/nautilus-main.c:378
+#: src/nautilus-main.c:285 src/nautilus-main.c:294
+#: src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: ใช้ %s กับ URI ไม่ได้\n"
 
-#: src/nautilus-main.c:369
+#: src/nautilus-main.c:290
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: ใช้ --check พร้อมกับตัวเลือกอื่นไม่ได้\n"
 
-#: src/nautilus-main.c:383
+#: src/nautilus-main.c:304
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: ไม่สามารถใช้ --geometry กับมากกว่าหนึ่ง URI\n"
@@ -4845,7 +4905,7 @@ msgstr "_ตำแหน่ง..."
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:435
-#: src/nautilus-spatial-window.c:838
+#: src/nautilus-spatial-window.c:844
 msgid "Specify a location to open"
 msgstr "ระบุตำแหน่งที่จะเปิด"
 
@@ -4859,35 +4919,35 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "ล้างเนื้อหาของเมนู \"ไป\" \"ถอยกลับ\" และ \"ถัดไป\""
 
 #: src/nautilus-navigation-window-menus.c:440
-#: src/nautilus-spatial-window.c:846
+#: src/nautilus-spatial-window.c:852
 msgid "_Add Bookmark"
 msgstr "เ_พิ่มที่คั่นหน้า"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:441
-#: src/nautilus-spatial-window.c:847
+#: src/nautilus-spatial-window.c:853
 msgid "Add a bookmark for the current location to this menu"
 msgstr "เพิ่มที่คั่นหน้าสำหรับที่อยู่ปัจจุบันลงในเมนูนี้"
 
 #: src/nautilus-navigation-window-menus.c:443
-#: src/nautilus-spatial-window.c:849
+#: src/nautilus-spatial-window.c:855
 msgid "_Edit Bookmarks"
 msgstr "แ_ก้ไขที่คั่นหน้า"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:444
-#: src/nautilus-spatial-window.c:850
+#: src/nautilus-spatial-window.c:856
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "แสดงหน้าต่างสำหรับแก้ไขที่คั่นหน้าที่อยู่ในเมนูนี้"
 
 #: src/nautilus-navigation-window-menus.c:446
-#: src/nautilus-spatial-window.c:852
+#: src/nautilus-spatial-window.c:858
 msgid "_Search"
 msgstr "_ค้นหา"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:447
-#: src/nautilus-spatial-window.c:853
+#: src/nautilus-spatial-window.c:859
 msgid "Search for files"
 msgstr "ค้นหาแฟ้ม"
 
@@ -4971,19 +5031,27 @@ msgstr "หมายเหตุ"
 msgid "Show Notes"
 msgstr "แสดงหมายเหตุ"
 
-#: src/nautilus-places-sidebar.c:950
+#: src/nautilus-places-sidebar.c:1240
 msgid "Remove"
 msgstr "ลบ"
 
-#: src/nautilus-places-sidebar.c:959
+#: src/nautilus-places-sidebar.c:1249
 msgid "Rename..."
 msgstr "เปลี่ยนชื่อ..."
 
-#: src/nautilus-places-sidebar.c:1182
+#: src/nautilus-places-sidebar.c:1261
+msgid "_Mount"
+msgstr "เ_มานท์"
+
+#: src/nautilus-places-sidebar.c:1268
+msgid "_Unmount"
+msgstr "เ_ลิกเมานท์"
+
+#: src/nautilus-places-sidebar.c:1507
 msgid "Places"
 msgstr "ที่หลักๆ"
 
-#: src/nautilus-places-sidebar.c:1188
+#: src/nautilus-places-sidebar.c:1513
 msgid "Show Places"
 msgstr "แสดงที่หลักๆ"
 
@@ -5172,8 +5240,8 @@ msgid "File Type"
 msgstr "ชนิดแฟ้ม"
 
 #: src/nautilus-query-editor.c:280
-msgid "Select folder search in"
-msgstr "เลือกโฟลเดอร์ที่จะเก็บบันทึกการค้นหา"
+msgid "Select folder to search in"
+msgstr "เลือกโฟลเดอร์ที่จะค้นหา"
 
 #: src/nautilus-query-editor.c:364
 msgid "Documents"
@@ -5224,7 +5292,7 @@ msgid "Other Type..."
 msgstr "ชนิดอื่น..."
 
 #: src/nautilus-query-editor.c:936
-msgid "Remove this criterium from the search"
+msgid "Remove this criterion from the search"
 msgstr "ลบเงื่อนไขนี้ออกจากการค้นหา"
 
 #: src/nautilus-query-editor.c:980
@@ -5236,7 +5304,7 @@ msgid "Edit the saved search"
 msgstr "แก้ไขการค้นหาที่บันทึกไว้"
 
 #: src/nautilus-query-editor.c:1027
-msgid "Add a new criterium to this search"
+msgid "Add a new criterion to this search"
 msgstr "เพิ่มเงื่อนไขใหม่ในการค้นหานี้"
 
 #: src/nautilus-query-editor.c:1031
@@ -5267,30 +5335,30 @@ msgstr "<b>ค้นหา:</b>"
 msgid "Close the side pane"
 msgstr "ปิดแถบข้าง"
 
-#: src/nautilus-spatial-window.c:836
+#: src/nautilus-spatial-window.c:842
 msgid "_Places"
 msgstr "_ที่หลักๆ"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:837
+#: src/nautilus-spatial-window.c:843
 msgid "Open _Location..."
 msgstr "เปิด_ตำแหน่ง..."
 
-#: src/nautilus-spatial-window.c:840
+#: src/nautilus-spatial-window.c:846
 msgid "Close P_arent Folders"
 msgstr "ปิดโ_ฟลเดอร์แม่"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:841
+#: src/nautilus-spatial-window.c:847
 msgid "Close this folder's parents"
 msgstr "ปิดโฟลเดอร์แม่ของโฟลเดอร์นี้ขึ้นไปทุกระดับ"
 
-#: src/nautilus-spatial-window.c:843
+#: src/nautilus-spatial-window.c:849
 msgid "Clos_e All Folders"
 msgstr "ปิด_ทุกโฟลเดอร์"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:844
+#: src/nautilus-spatial-window.c:850
 msgid "Close all folder windows"
 msgstr "ปิดหน้าต่างโฟลเดอร์ทุกบาน"
 
@@ -5321,48 +5389,48 @@ msgstr "คุณสามารถเลือกใช้มุมมองอ
 msgid "The location cannot be displayed with this viewer."
 msgstr "มุมมองนี้แสดงตำแหน่งนี้ไม่ได้"
 
-#: src/nautilus-window-manage-views.c:1028
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
 msgstr "มุมมองเนื้อหา"
 
-#: src/nautilus-window-manage-views.c:1029
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current folder"
 msgstr "มุมมองของโฟลเดอร์ปัจจุบัน"
 
-#: src/nautilus-window-manage-views.c:1426
+#: src/nautilus-window-manage-views.c:1427
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus ไม่ได้ติดตั้งโปรแกรมที่สามารถแสดงโฟลเดอร์นี้ไว้"
 
-#: src/nautilus-window-manage-views.c:1432
+#: src/nautilus-window-manage-views.c:1433
 msgid "The location is not a folder."
 msgstr "ตำแหน่งนั้นไม่ได้เป็นโฟลเดอร์"
 
-#: src/nautilus-window-manage-views.c:1459
+#: src/nautilus-window-manage-views.c:1460
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "ยังไม่รองรับการแสดงตำแหน่งชนิด %s:"
 
-#: src/nautilus-window-manage-views.c:1494
+#: src/nautilus-window-manage-views.c:1495
 msgid "Check that your proxy settings are correct."
 msgstr "โปรดตรวจดูว่าตั้งค่าพร็อกซีไว้ถูกต้อง"
 
-#: src/nautilus-window-manage-views.c:1499
+#: src/nautilus-window-manage-views.c:1500
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "ไม่สามารถแสดง \"%s\" เพราะ Nautilus ไม่สามารถติดต่อเบราว์เซอร์หลักของ SMB"
 
-#: src/nautilus-window-manage-views.c:1502
+#: src/nautilus-window-manage-views.c:1503
 msgid "Check that an SMB server is running in the local network."
 msgstr "ตรวจดูว่ามีเซิร์ฟเวอร์ SMB ทำงานอยู่ในเครือข่ายท้องถิ่น"
 
-#: src/nautilus-window-manage-views.c:1511
+#: src/nautilus-window-manage-views.c:1512
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ไม่สามารถแสดง \"%s\" ได้"
 
-#: src/nautilus-window-manage-views.c:1513
+#: src/nautilus-window-manage-views.c:1514
 msgid "Please select another viewer and try again."
 msgstr "โปรดเลือกโปรแกรมอื่นแล้วลองใหม่"
 
@@ -5370,50 +5438,54 @@ msgstr "โปรดเลือกโปรแกรมอื่นแล้ว
 msgid "Go to the location specified by this bookmark"
 msgstr "ไปที่ตำแหน่งที่ที่คั่นหน้านี้ชี้"
 
-#: src/nautilus-window-menus.c:426
+#: src/nautilus-window-menus.c:423
 msgid ""
-"Nautilus is free software; you can redistribute it and/or modify \n"
-"it under the terms of the GNU General Public License as published by \n"
-"the Free Software Foundation; either version 2 of the License, or \n"
-"(at your option) any later version."
+"Nautilus is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
 msgstr ""
-"Nautilus เป็นซอฟต์แวร์เสรี คุณสามารถแจกจ่ายต่อ และ/หรือ แก้ไขโปรแกรมได้\n"
-"ภายใต้เงื่อนไขของ GNU General Public License ที่เผยแพร่โดยมูลนิธิซอฟต์แวร์เสรี\n"
+"Nautilus เป็นซอฟต์แวร์เสรี คุณสามารถแจกจ่ายต่อ และ/หรือ แก้ไขโปรแกรมได้ "
+"ภายใต้เงื่อนไขของ GNU General Public License ที่เผยแพร่โดยมูลนิธิซอฟต์แวร์เสรี "
 "ไม่ว่าจะเป็นสัญญาอนุญาตรุ่นที่ 2 หรือรุ่นถัดมา (ตามแต่คุณจะเลือก)"
 
-#: src/nautilus-window-menus.c:430
+#: src/nautilus-window-menus.c:427
 msgid ""
-"Nautilus is distributed in the hope that it will be useful, \n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
-"GNU General Public License for more details."
+"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
 msgstr ""
-"Nautilus เผยแพร่ด้วยความหวังว่าโปรแกรมจะมีประโยชน์\n"
-"แต่ _ไม่มีการรับประกันใดๆ_ ไม่มีแม้การรับประกัน _อรรถประโยชน์เชิงพาณิชย์_\n"
-"หรือ _ความเหมาะสมสำหรับวัตถุประสงค์เฉพาะกิจใดๆ_ กรุณาอ่าน\n"
+"Nautilus เผยแพร่ด้วยความหวังว่าโปรแกรมจะมีประโยชน์ "
+"แต่ _ไม่มีการรับประกันใดๆ_ ไม่มีแม้การรับประกัน _อรรถประโยชน์เชิงพาณิชย์_ "
+"หรือ _ความเหมาะสมสำหรับวัตถุประสงค์เฉพาะกิจใดๆ_ กรุณาอ่าน "
 "GNU General Public License เพื่อดูรายละเอียดเพิ่มเติม"
 
-#: src/nautilus-window-menus.c:434
+#: src/nautilus-window-menus.c:431
 msgid ""
-"You should have received a copy of the GNU General Public License \n"
-"along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
-"59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+"You should have received a copy of the GNU General Public License along with "
+"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
-"คุณควรจะได้รับสำเนาของ GNU General Public License มาพร้อมกับ Nautilus\n"
-"ถ้าคุณไม่ได้รับ กรุณาติดต่อไปที่ Free Software Foundation, Inc., \n"
+"คุณควรจะได้รับสำเนาของ GNU General Public License มาพร้อมกับ Nautilus "
+"ถ้าคุณไม่ได้รับ กรุณาติดต่อไปที่ Free Software Foundation, Inc., "
 "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 
-#: src/nautilus-window-menus.c:463
+#: src/nautilus-window-menus.c:450
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr "Nautilus เป็นโปรแกรมใน GNOME ที่ช่วยคุณ จัดการแฟ้มบนเครื่อง"
 
-#: src/nautilus-window-menus.c:467
-msgid "Copyright © 1999-2005 The Nautilus authors"
-msgstr "Copyright © 1999-2005 The Nautilus authors"
+#: src/nautilus-window-menus.c:454
+msgid "Copyright © 1999-2006 The Nautilus authors"
+msgstr "สงวนลิขสิทธิ์ © 1999-2006 โดยผู้เขียน Nautilus"
 
-#: src/nautilus-window-menus.c:472
+#. Translators should localize the following string
+#. * which will be displayed at the bottom of the about
+#. * box to give credit to the translator(s).
+#.
+#: src/nautilus-window-menus.c:464
 msgid "translator-credits"
 msgstr ""
 "ไพศาข์ สีเหลืองสวัสดิ์\n"
@@ -5423,203 +5495,203 @@ msgstr ""
 "ถ้ามีเวลาโปรดมาช่วยกันแปล :-)\n"
 "http://gnome-th.sourceforge.net"
 
-#: src/nautilus-window-menus.c:612
+#: src/nautilus-window-menus.c:597
 msgid "_File"
 msgstr "แ_ฟ้ม"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:613
+#: src/nautilus-window-menus.c:598
 msgid "_Edit"
 msgstr "แ_ก้ไข"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:614
+#: src/nautilus-window-menus.c:599
 msgid "_View"
 msgstr "มุ_มมอง"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:615
+#: src/nautilus-window-menus.c:600
 msgid "_Help"
 msgstr "_วิธีใช้"
 
 #. name, stock id, label
 #. name, stock id
-#: src/nautilus-window-menus.c:617
+#: src/nautilus-window-menus.c:602
 msgid "_Close"
 msgstr "ปิ_ด"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:618
+#: src/nautilus-window-menus.c:603
 msgid "Close this folder"
 msgstr "ปิดโฟลเดอร์นี้"
 
-#: src/nautilus-window-menus.c:621
+#: src/nautilus-window-menus.c:606
 msgid "_Backgrounds and Emblems..."
 msgstr "_พื้นหลังและตรา..."
 
-#: src/nautilus-window-menus.c:622
+#: src/nautilus-window-menus.c:607
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "แสดงลวดลาย สี และตรา ที่ใช้ตกแต่ง Nautilus ได้"
 
-#: src/nautilus-window-menus.c:625
+#: src/nautilus-window-menus.c:610
 msgid "Prefere_nces"
 msgstr "_ปรับแต่ง"
 
-#: src/nautilus-window-menus.c:626
+#: src/nautilus-window-menus.c:611
 msgid "Edit Nautilus preferences"
 msgstr "ปรับแต่ง Nautilus"
 
-#: src/nautilus-window-menus.c:628
+#: src/nautilus-window-menus.c:613
 msgid "_Undo"
 msgstr "ยกเ_ลิกการแก้ไข"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:629
+#: src/nautilus-window-menus.c:614
 msgid "Undo the last text change"
 msgstr "ยกเลิกการแก้ไขข้อความครั้งล่าสุด"
 
-#: src/nautilus-window-menus.c:631
+#: src/nautilus-window-menus.c:616
 msgid "Open _Parent"
 msgstr "เปิดโฟ_ลเดอร์แม่"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:632
+#: src/nautilus-window-menus.c:617
 msgid "Open the parent folder"
 msgstr "เปิดโฟลเดอร์ที่โฟลเดอร์นี้อาศัยอยู่"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:623
 msgid "_Stop"
 msgstr "_หยุด"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:642
+#: src/nautilus-window-menus.c:627
 msgid "_Reload"
 msgstr "_อ่านใหม่"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:646
+#: src/nautilus-window-menus.c:631
 msgid "_Contents"
 msgstr "เ_นื้อหา"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:647
+#: src/nautilus-window-menus.c:632
 msgid "Display Nautilus help"
 msgstr "แสดงวิธีใช้ Nautilus"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:650
+#: src/nautilus-window-menus.c:635
 msgid "_About"
 msgstr "เ_กี่ยวกับ"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:651
+#: src/nautilus-window-menus.c:636
 msgid "Display credits for the creators of Nautilus"
 msgstr "แสดงรายชื่อผู้เขียน Nautilus"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:654
+#: src/nautilus-window-menus.c:639
 msgid "Zoom _In"
 msgstr "ขยายเ_ข้า"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:655 src/nautilus-zoom-control.c:96
+#: src/nautilus-window-menus.c:640 src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "แสดงเนื้อหาด้วยรายละเอียดมากขึ้น"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:666
+#: src/nautilus-window-menus.c:651
 msgid "Zoom _Out"
 msgstr "ขยาย_ออก"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:667 src/nautilus-zoom-control.c:97
+#: src/nautilus-window-menus.c:652 src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "แสดงเนื้อหาด้วยรายละเอียดน้อยลง"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:674
+#: src/nautilus-window-menus.c:659
 msgid "Normal Si_ze"
 msgstr "_ขนาดปกติ"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:675
+#: src/nautilus-window-menus.c:660
 msgid "Show the contents at the normal size"
 msgstr "แสดงเนื้อหาที่ขนาดปกติ"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:678
+#: src/nautilus-window-menus.c:663
 msgid "Connect to _Server..."
 msgstr "เชื่อมต่อไปเ_ซิร์ฟเวอร์..."
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:679
+#: src/nautilus-window-menus.c:664
 msgid "Set up a connection to a network server"
 msgstr "ตั้งค่าการเชื่อมต่อไปยังบริการเครือข่าย"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:682
+#: src/nautilus-window-menus.c:667
 msgid "_Home"
 msgstr "_บ้าน"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:683
+#: src/nautilus-window-menus.c:668
 msgid "Go to the home folder"
 msgstr "ไปโฟลเดอร์บ้าน"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:686
+#: src/nautilus-window-menus.c:671
 msgid "_Computer"
 msgstr "_คอมพิวเตอร์"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:687
+#: src/nautilus-window-menus.c:672
 msgid "Go to the computer location"
 msgstr "ไปตำแหน่งคอมพิวเตอร์"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:690
+#: src/nautilus-window-menus.c:675
 msgid "_Network"
 msgstr "เครือ_ข่าย"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:691
+#: src/nautilus-window-menus.c:676
 msgid "Go to the network location"
 msgstr "ไปตำแหน่งในเครือข่าย"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:694
+#: src/nautilus-window-menus.c:679
 msgid "T_emplates"
 msgstr "_แม่แบบ"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:695
+#: src/nautilus-window-menus.c:680
 msgid "Go to the templates folder"
 msgstr "ไปโฟลเดอร์แม่แบบ"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:698
+#: src/nautilus-window-menus.c:683
 msgid "_Trash"
 msgstr "_ถังขยะ"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:699
+#: src/nautilus-window-menus.c:684
 msgid "Go to the trash folder"
 msgstr "ไปโฟลเดอร์ถังขยะ"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:687
 msgid "CD/_DVD Creator"
 msgstr "โปรแกรมเขียนซีดี และ_ดีวีดี"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:703
+#: src/nautilus-window-menus.c:688
 msgid "Go to the CD/DVD Creator"
 msgstr "ไปที่โปรแกรมเขียนซีดีและดีวีดี"
 
-#: src/nautilus-window-menus.c:729
+#: src/nautilus-window-menus.c:714
 msgid "_Up"
 msgstr "ขึ้_น"
 
@@ -5650,6 +5722,19 @@ msgstr "ตั้งขนาดย่อขยายสำหรับมุม
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "ดูเซิร์ฟเวอร์เครือข่ายด้วยโปรแกรมจัดการแฟ้ม Nautilus"
+
+#~ msgid "If you replace an existing file, its contents will be overwritten."
+#~ msgstr "ถ้าคุณเขียนทับ ข้อมูลในแฟ้มเก่าจะหายไป"
+
+#~ msgid ""
+#~ "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+#~ "locations."
+#~ msgstr "\"%s\" ไม่สามารถเปิด \"%s\" เพราะ \"%s\" ไม่สามารถเปิดแฟ้มที่ \"%s\""
+
+#~ msgid ""
+#~ "The default action can't open \"%s\" because it can't access files at \"%s"
+#~ "\".locations."
+#~ msgstr "ปฏิบัติการที่ตั้งไว้เปิด \"%s\" ไม่สำเร็จเพราะมันไม่สามารถอ่านแฟ้มที่ \"%s\""
 
 #~ msgid "Unable to Replace File"
 #~ msgstr "ไม่สามารถเขียนทับแฟ้มได้"
