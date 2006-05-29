@@ -1090,7 +1090,7 @@ load_pixbuf_svg (const char *path,
 	if (base_size != 0) {
 		zoom = (double)size_in_pixels / base_size;
 
-		pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (path, zoom, zoom, NAUTILUS_ICON_MAXIMUM_SIZE, NAUTILUS_ICON_MAXIMUM_SIZE, NULL);
+		pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (path, zoom, zoom, size_in_pixels, size_in_pixels, NULL);
 	} else {
 		pixbuf = rsvg_pixbuf_from_file_at_max_size (path,
 							    size_in_pixels,
