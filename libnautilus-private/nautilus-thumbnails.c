@@ -30,6 +30,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-icon-factory.h"
+#include <math.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
@@ -263,22 +264,145 @@ nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 	*pixbuf=pixbuf_with_frame;
 }
 
-/* routine to load an image from the passed-in path, and then embed it in
- * a frame if necessary
- */
-GdkPixbuf *
-nautilus_thumbnail_load_framed_image (const char *path)
+typedef struct {
+	gboolean is_thumbnail;
+	guint base_size;
+	guint nominal_size;
+	gboolean force_nominal;
+	int original_height;
+	int original_width;
+	double *scale_x_out;
+	double *scale_y_out;
+} ThumbnailLoadArgs;
+
+static void
+thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
+				int width,
+				int height,
+				ThumbnailLoadArgs *args)
+{
+	int size = MAX (width, height);
+
+	args->original_width = width;
+	args->original_height = height;
+
+	if (args->force_nominal) {
+		args->base_size = size;                        
+	} else if (args->base_size == 0) {
+		if (args->is_thumbnail) {
+			args->base_size = 128 * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
+		} else {
+			if (size > args->nominal_size * NAUTILUS_ICON_SIZE_THUMBNAIL / NAUTILUS_ICON_SIZE_STANDARD) {
+				args->base_size = size * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
+			} else if (size > NAUTILUS_ICON_SIZE_STANDARD) {
+				args->base_size = args->nominal_size;
+			} else {
+				/* Don't scale up small icons */
+				args->base_size = NAUTILUS_ICON_SIZE_STANDARD;
+			}
+		}
+	}
+
+	if (args->base_size != args->nominal_size) {
+		double scale;
+
+		scale = (double) args->nominal_size / args->base_size;
+
+		if ((int) (width * scale) > NAUTILUS_ICON_MAXIMUM_SIZE ||
+		    (int) (height * scale) > NAUTILUS_ICON_MAXIMUM_SIZE) {
+			scale = MIN ((double) NAUTILUS_ICON_MAXIMUM_SIZE / width,
+				     (double) NAUTILUS_ICON_MAXIMUM_SIZE / height);
+		}
+
+		width = MAX (1, floor (width * scale + 0.5));
+		height = MAX (1, floor (height * scale + 0.5));
+
+		gdk_pixbuf_loader_set_size (loader, width, height);
+	}
+
+}
+
+static void
+thumbnail_loader_area_prepared (GdkPixbufLoader *loader,
+				ThumbnailLoadArgs *args)
 {
 	GdkPixbuf *pixbuf;
-	
-	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-	if (pixbuf == NULL) {
+
+	pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+
+	*args->scale_x_out = (double) gdk_pixbuf_get_width (pixbuf) / args->original_width;
+	*args->scale_y_out = (double) gdk_pixbuf_get_height (pixbuf) / args->original_height;
+}
+
+/* routine to load an image from the passed-in path
+ */
+GdkPixbuf *
+nautilus_thumbnail_load_image (const char *path,
+			       guint base_size,
+			       guint nominal_size,
+			       gboolean force_nominal,
+			       double *scale_x_out,
+			       double *scale_y_out)
+{
+	guchar *buffer;
+	GdkPixbufLoader *loader;
+	GdkPixbuf *pixbuf;
+	GError *error;
+	gsize buflen;
+	ThumbnailLoadArgs args;
+
+	error = NULL;
+
+	if (!g_file_get_contents (path, (gchar **) &buffer, &buflen, &error)) {
+		g_message ("Failed to load %s into memory: %s", path, error->message);
+
+		g_error_free (error);
+
 		return NULL;
 	}
-	if (!gdk_pixbuf_get_has_alpha (pixbuf)) {
-		nautilus_thumbnail_frame_image (&pixbuf);
+
+	loader = gdk_pixbuf_loader_new ();
+	g_signal_connect (loader, "size-prepared",
+			  G_CALLBACK (thumbnail_loader_size_prepared),
+			  &args);
+	g_signal_connect (loader, "area-prepared",
+			  G_CALLBACK (thumbnail_loader_area_prepared),
+			  &args);
+
+	args.is_thumbnail = strstr (path, "/.thumbnails/") != NULL;
+	args.base_size = base_size;
+	args.nominal_size = nominal_size;
+	args.force_nominal = force_nominal;
+	args.scale_x_out = scale_x_out;
+	args.scale_y_out = scale_y_out;
+
+	if (!gdk_pixbuf_loader_write (loader, buffer, buflen, &error)) {
+		g_message ("Failed to write %s to thumbnail pixbuf loader: %s", path, error->message);
+
+		gdk_pixbuf_loader_close (loader, NULL);
+		g_object_unref (G_OBJECT (loader));
+		g_error_free (error);
+		g_free (buffer);
+
+		return NULL;
 	}
-        return pixbuf;
+
+	if (!gdk_pixbuf_loader_close (loader, &error)) {
+		g_message ("Failed to close thumbnail pixbuf loader for %s: %s", path, error->message);
+
+		g_object_unref (G_OBJECT (loader));
+		g_error_free (error);
+		g_free (buffer);
+
+		return NULL;
+	}
+
+	pixbuf = g_object_ref (gdk_pixbuf_loader_get_pixbuf (loader));
+
+	g_object_unref (G_OBJECT (loader));
+	g_free (buffer);
+
+	return pixbuf;
 }
 
 void

@@ -31,7 +31,12 @@
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
 void       nautilus_thumbnail_frame_image           (GdkPixbuf **pixbuf);
-GdkPixbuf *nautilus_thumbnail_load_framed_image     (const char   *path);
+GdkPixbuf *nautilus_thumbnail_load_image            (const char *path,
+						     guint       base_size,
+						     guint       nominal_size,
+						     gboolean    force_nominal,
+						     double     *scale_x_out,
+						     double     *scale_y_out);
 void       nautilus_update_thumbnail_file_copied    (const char   *source_file_uri,
 						     const char   *destination_file_uri);
 void       nautilus_update_thumbnail_file_renamed   (const char   *source_file_uri,

@@ -1122,30 +1122,6 @@ path_represents_svg_image (const char *path)
 }
 
 static GdkPixbuf *
-scale_icon (GdkPixbuf *pixbuf,
-	    double *scale)
-{
-	guint width, height;
-
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-
-	if ((int) (width * *scale) > NAUTILUS_ICON_MAXIMUM_SIZE ||
-	    (int) (height * *scale) > NAUTILUS_ICON_MAXIMUM_SIZE) {
-		*scale = MIN ((double) NAUTILUS_ICON_MAXIMUM_SIZE / width,
-			      (double) NAUTILUS_ICON_MAXIMUM_SIZE / height);
-	}
-
-	width = floor (width * *scale + 0.5);
-	height = floor (height * *scale + 0.5);
-	
-	return gdk_pixbuf_scale_simple (pixbuf,
-					width == 0 ? 1 : width,
-					height == 0 ? 1 : height,
-					GDK_INTERP_BILINEAR);
-}
-
-static GdkPixbuf *
 load_icon_file (const char    *filename,
 		guint          base_size,
 		guint          nominal_size,
@@ -1153,11 +1129,10 @@ load_icon_file (const char    *filename,
 		double        *scale_x,
 		double        *scale_y)
 {
-	GdkPixbuf *pixbuf, *scaled_pixbuf;
-	int width, height, size;
-	double scale;
-	gboolean is_thumbnail;
-        gboolean add_frame = FALSE;
+	GdkPixbuf *pixbuf;
+	gboolean add_frame;
+
+	add_frame = FALSE;
 
 	*scale_x = 1.0;
 	*scale_y = 1.0;
@@ -1168,59 +1143,36 @@ load_icon_file (const char    *filename,
 					  force_nominal ? 0 : base_size,
 					  scale_x, scale_y);
 	} else {
-		is_thumbnail = strstr (filename, "/.thumbnails/")  != NULL;
+		int original_size;
+		gboolean is_thumbnail;
 
 		/* FIXME: Maybe we shouldn't have to load the file each time
 		 * Not sure if that is important */
-		if (is_thumbnail) {
-			pixbuf = nautilus_thumbnail_load_framed_image (filename);
-		} else {
-			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-		}
+		pixbuf = nautilus_thumbnail_load_image (filename,
+							base_size,
+							nominal_size,
+							force_nominal,
+							scale_x,
+							scale_y);
 
 		if (pixbuf == NULL) {
 			return NULL;
 		}
-		
-		if (force_nominal) {
-			width = gdk_pixbuf_get_width (pixbuf); 
-			height = gdk_pixbuf_get_height (pixbuf);
-			base_size = MAX (width, height);                        
-		} else if (base_size == 0) {
-			if (is_thumbnail) {
-				base_size = 128 * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
-			} else {
-				width = gdk_pixbuf_get_width (pixbuf); 
-				height = gdk_pixbuf_get_height (pixbuf);
-				size = MAX (width, height);
-                                if (size > NAUTILUS_ICON_SIZE_THUMBNAIL && !gdk_pixbuf_get_has_alpha(pixbuf)) {
-                                        add_frame=TRUE;
-                                }
-                                if (size >  nominal_size * NAUTILUS_ICON_SIZE_THUMBNAIL / NAUTILUS_ICON_SIZE_STANDARD) {
-                                        base_size = size * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
-                                }
-                                else if (size > NAUTILUS_ICON_SIZE_STANDARD) {
-					base_size = nominal_size;
-				} else {
-					/* Don't scale up small icons */
-					base_size = NAUTILUS_ICON_SIZE_STANDARD;
-				}
-			}
-		}
-		
-		if (base_size != nominal_size) {
-			scale = (double)nominal_size/base_size;
-			scaled_pixbuf = scale_icon (pixbuf, &scale);
-			*scale_x = scale;
-			*scale_y = scale;
-			g_object_unref (pixbuf);
-			pixbuf = scaled_pixbuf;
+
+		is_thumbnail = strstr (filename, "/.thumbnails/") != NULL;
+
+		original_size = ceil (MAX (gdk_pixbuf_get_width (pixbuf) / *scale_x, gdk_pixbuf_get_height (pixbuf) / *scale_y));
+
+		if ((is_thumbnail || (!force_nominal && base_size == 0 && original_size > NAUTILUS_ICON_SIZE_THUMBNAIL))
+		     && !gdk_pixbuf_get_has_alpha (pixbuf)) {
+			add_frame = TRUE;
 		}
 	}
 
-        if (add_frame){
-                nautilus_thumbnail_frame_image(&pixbuf);
-        }
+	if (add_frame) {
+		nautilus_thumbnail_frame_image(&pixbuf);
+	}
+
 	return pixbuf;
 }
 
