@@ -37,6 +37,7 @@ typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
 					    gpointer    callback_data);
 typedef void (* NautilusNewFileCallback)   (const char *new_file_uri,
 					    gpointer    callback_data);
+typedef void (* NautilusSetPermissionsCallback) (gpointer    callback_data);
 
 /* FIXME: int copy_action should be an enum */
 
@@ -70,5 +71,12 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 void nautilus_file_operations_delete      (const GList               *item_uris,
 					   GtkWidget                 *parent_view);
 
+void nautilus_file_set_permissions_recursive (const char                     *directory,
+					      GnomeVFSFilePermissions         file_permissions,
+					      GnomeVFSFilePermissions         file_mask,
+					      GnomeVFSFilePermissions         folder_permissions,
+					      GnomeVFSFilePermissions         folder_mask,
+					      NautilusSetPermissionsCallback  callback,
+					      gpointer                        callback_data);
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

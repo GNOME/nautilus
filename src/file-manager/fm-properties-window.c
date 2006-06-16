@@ -70,6 +70,7 @@
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -84,6 +85,8 @@
 
 #define PREVIEW_IMAGE_WIDTH 96
 
+#define ROW_PAD 6
+
 static GHashTable *windows;
 static GHashTable *pending_lists;
 
@@ -95,6 +98,7 @@ struct FMPropertiesWindowDetails {
 	
 	GtkTable *basic_table;
 	GtkTable *permissions_table;
+	gboolean advanced_permissions;
 
 	GtkWidget *icon_button;
 	GtkWidget *icon_image;
@@ -109,15 +113,14 @@ struct FMPropertiesWindowDetails {
 	guint update_directory_contents_timeout_id;
 	guint update_files_timeout_id;
 
-	GList *special_flags_widgets;
-	int first_special_flags_row;
-	int num_special_flags_rows;
-
 	GList *emblem_buttons;
 	GHashTable *initial_emblems;
+	
 
 	GList *permission_buttons;
+	GList *permission_combos;
 	GHashTable *initial_permissions;
+	gboolean has_recursive_apply;
 
 	GList *value_fields;
 
@@ -185,6 +188,8 @@ static void file_changed_callback                 (NautilusFile       *file,
 						   gpointer            user_data);
 static void permission_button_update              (FMPropertiesWindow *window,
 						   GtkToggleButton    *button);
+static void permission_combo_update               (FMPropertiesWindow *window,
+						   GtkComboBox        *combo);
 static void value_field_update                    (FMPropertiesWindow *window,
 						   GtkLabel           *field);
 static void properties_window_update              (FMPropertiesWindow *window,
@@ -347,7 +352,7 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
 
  	separator_line = gtk_hseparator_new ();
   	gtk_widget_show (separator_line);
-  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, GNOME_PAD_BIG);
+  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 2*ROW_PAD);
 }
 
 static GdkPixbuf *
@@ -1171,6 +1176,10 @@ properties_window_update (FMPropertiesWindow *window,
 			permission_button_update (window, GTK_TOGGLE_BUTTON (l->data));
 		}
 		
+		for (l = window->details->permission_combos; l != NULL; l = l->next) {
+			permission_combo_update (window, GTK_COMBO_BOX (l->data));
+		}
+		
 		for (l = window->details->value_fields; l != NULL; l = l->next) {
 			value_field_update (window, GTK_LABEL (l->data));
 		}
@@ -1824,26 +1833,9 @@ append_row (GtkTable *table)
 	new_row_count = table->nrows + 1;
 
 	gtk_table_resize (table, new_row_count, table->ncols);
-	gtk_table_set_row_spacing (table, new_row_count - 1, GNOME_PAD);
+	gtk_table_set_row_spacing (table, new_row_count - 1, ROW_PAD);
 
 	return new_row_count - 1;
-}
-
-static GtkWidget *
-append_separator (GtkTable *table)
-{
-	GtkWidget *separator;
-	guint last_row;
-
-	last_row = append_row (table);
-	separator = gtk_hseparator_new ();
-	gtk_widget_show (separator);
-	gtk_table_attach (table, separator,
-			  TITLE_COLUMN, COLUMN_COUNT,
-			  last_row, last_row+1,
-			  GTK_FILL, 0,
-			  0, 0);
-	return separator;				   
 }
 
 static void
@@ -2084,29 +2076,6 @@ append_title_and_ellipsizing_value (FMPropertiesWindow *window,
 	return last_row;
 }
 
-static void
-update_visibility_of_table_rows (GtkTable *table,
-		   	 	 gboolean should_show,
-		   		 int first_row, 
-		   		 int row_count,
-		   		 GList *widgets)
-{
-	GList *node;
-	int i;
-
-	for (node = widgets; node != NULL; node = node->next) {
-		if (should_show) {
-			gtk_widget_show (GTK_WIDGET (node->data));
-		} else {
-			gtk_widget_hide (GTK_WIDGET (node->data));
-		}
-	}
-
-	for (i= 0; i < row_count; ++i) {
-		gtk_table_set_row_spacing (table, first_row + i, should_show ? GNOME_PAD : 0);
-	}
-}				   
-
 static guint
 append_directory_contents_fields (FMPropertiesWindow *window,
 				  GtkTable *table)
@@ -2137,7 +2106,7 @@ create_page_with_vbox (GtkNotebook *notebook,
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
 
 	return vbox;
@@ -2146,8 +2115,8 @@ create_page_with_vbox (GtkNotebook *notebook,
 static void
 apply_standard_table_padding (GtkTable *table)
 {
-	gtk_table_set_row_spacings (table, GNOME_PAD);
-	gtk_table_set_col_spacings (table, GNOME_PAD);	
+	gtk_table_set_row_spacings (table, ROW_PAD);
+	gtk_table_set_col_spacings (table, 12);	
 }
 
 static GtkWidget *
@@ -2420,6 +2389,61 @@ get_initial_emblems (GList *files)
 	return ret;
 }
 
+static gboolean 
+files_has_directory (FMPropertiesWindow *window)
+{
+	GList *l;
+
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_is_directory (file)) {
+			return TRUE;
+		}
+		
+	}
+
+	return FALSE;
+}
+
+static gboolean 
+files_has_changable_permissions_directory (FMPropertiesWindow *window)
+{
+	GList *l;
+
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_is_directory (file) &&
+		    nautilus_file_can_get_permissions (file) &&
+		    nautilus_file_can_set_permissions (file)) {
+			return TRUE;
+		}
+		
+	}
+
+	return FALSE;
+}
+
+
+static gboolean 
+files_has_file (FMPropertiesWindow *window)
+{
+	GList *l;
+
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		file = NAUTILUS_FILE (l->data);
+		if (!nautilus_file_is_directory (file)) {
+			return TRUE;
+		}
+		
+	}
+
+	return FALSE;
+}
+
+
 static void
 create_emblems_page (FMPropertiesWindow *window)
 {
@@ -2432,7 +2456,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
 
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 12);
 	
 	gtk_widget_show (scroller);
 
@@ -2491,18 +2515,38 @@ create_emblems_page (FMPropertiesWindow *window)
 }
 
 static void
-permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+start_long_operation (FMPropertiesWindow *window)
 {
-	FMPropertiesWindow *window;
-	g_assert (callback_data != NULL);
+	if (window->details->long_operation_underway == 0) {
+		/* start long operation */
+		GdkCursor * cursor;
+		
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
+		gdk_cursor_unref (cursor);
+	}
+	window->details->long_operation_underway ++;
+}
 
-	window = FM_PROPERTIES_WINDOW (callback_data);
+static void
+end_long_operation (FMPropertiesWindow *window)
+{
 	if (GTK_WIDGET (window)->window != NULL &&
 	    window->details->long_operation_underway == 1) {
 		/* finished !! */
 		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
 	}
 	window->details->long_operation_underway--;
+}
+
+static void
+permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	FMPropertiesWindow *window;
+	g_assert (callback_data != NULL);
+
+	window = FM_PROPERTIES_WINDOW (callback_data);
+	end_long_operation (window);
 	
 	/* Report the error if it's an error. */
 	fm_report_error_setting_permissions (file, result, NULL);
@@ -2511,129 +2555,150 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 }
 
 static void
-get_initial_permission_state (FMPropertiesWindow *window,
-			      GnomeVFSFilePermissions mask,
-			      GList **on,
-			      GList **off)
+update_permissions (FMPropertiesWindow *window,
+		    GnomeVFSFilePermissions vfs_new_perm,
+		    GnomeVFSFilePermissions vfs_mask,
+		    gboolean is_folder,
+		    gboolean apply_to_both_folder_and_dir,
+		    gboolean use_original)
 {
 	GList *l;
 	
-	*on = NULL;
-	*off = NULL;
-	
 	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
 		GnomeVFSFilePermissions permissions;
+
+		file = NAUTILUS_FILE (l->data);
+
+		if (!nautilus_file_can_get_permissions (file)) {
+			continue;
+		}
+	
+		if (!apply_to_both_folder_and_dir &&
+		    ((nautilus_file_is_directory (file) && !is_folder) ||
+		     (!nautilus_file_is_directory (file) && is_folder))) {
+			continue;
+		}
+
+		permissions = nautilus_file_get_permissions (file);
+		if (use_original) {
+			gpointer ptr;
+			if (g_hash_table_lookup_extended (window->details->initial_permissions,
+							  file, NULL, &ptr)) {
+				permissions = (permissions & ~vfs_mask) | (GPOINTER_TO_INT (ptr) & vfs_mask);
+			}
+		} else {
+			permissions = (permissions & ~vfs_mask) | vfs_new_perm;
+		}
+
+		start_long_operation (window);
+		g_object_ref (window);
+		nautilus_file_set_permissions
+			(file, permissions,
+			 permission_change_callback,
+			 window);
+	}	
+}
+
+static gboolean
+initial_permission_state_consistent (FMPropertiesWindow *window,
+				     GnomeVFSFilePermissions mask,
+				     gboolean is_folder,
+				     gboolean both_folder_and_dir)
+{
+	GList *l;
+	gboolean first;
+	GnomeVFSFilePermissions first_permissions;
+
+	first = TRUE;
+	first_permissions = 0;
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		GnomeVFSFilePermissions permissions;
+
+		file = l->data;
+		
+		if (!both_folder_and_dir &&
+		    ((nautilus_file_is_directory (file) && !is_folder) ||
+		     (!nautilus_file_is_directory (file) && is_folder))) {
+			continue;
+		}
 		
 		permissions = GPOINTER_TO_INT (g_hash_table_lookup (window->details->initial_permissions,
-								    l->data));
-					       
-		if ((permissions & mask) != 0) {
-			*on = g_list_prepend (*on, l->data);
-		} else {
-			*off = g_list_prepend (*off, l->data);
+								    file));
+
+		if (first) {
+			if ((permissions & mask) != mask &&
+			    (permissions & mask) != 0) {
+				/* Not fully on or off -> inconsistent */
+				return FALSE;
+			}
+				
+			first_permissions = permissions;
+			first = FALSE;
+				
+		} else if ((permissions & mask) != first_permissions) {
+			/* Not same permissions as first -> inconsistent */
+			return FALSE;
 		}
 	}
+	return TRUE;
 }
 
 static void
 permission_button_toggled (GtkToggleButton *button, 
 			   FMPropertiesWindow *window)
 {
-	GList *l;
+	gboolean is_folder, is_special;
 	GnomeVFSFilePermissions permission_mask;
-	GList *files_on;
-	GList *files_off;
+	gboolean inconsistent;
+	gboolean on;
 	
 	permission_mask = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
 							      "permission"));
+	is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+							"is-folder"));
+	is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+							"is-special"));
 
-	files_on = NULL;
-	files_off = NULL;
 	if (gtk_toggle_button_get_active (button)
 	    && !gtk_toggle_button_get_inconsistent (button)) {
 		/* Go to the initial state unless the initial state was 
-		   consistent */
-		get_initial_permission_state (window, permission_mask,
-					      &files_on, &files_off);
-		
-		if (!(files_on && files_off)) {
-			g_list_free (files_on);
-			g_list_free (files_off);
-			files_on = g_list_copy (window->details->target_files);
-			files_off = NULL;
+		   consistent, or we support recursive apply */
+		inconsistent = TRUE;
+		on = TRUE;
+
+		if (!window->details->has_recursive_apply &&
+		    initial_permission_state_consistent (window, permission_mask, is_folder, is_special)) {
+			inconsistent = FALSE;
+			on = TRUE;
 		}
 	} else if (gtk_toggle_button_get_inconsistent (button)
 		   && !gtk_toggle_button_get_active (button)) {
-		files_on = g_list_copy (window->details->target_files);
-		files_off = NULL;
+		inconsistent = FALSE;
+		on = TRUE;
 	} else {
-		files_off = g_list_copy (window->details->target_files);
-		files_on = NULL;
+		inconsistent = FALSE;
+		on = FALSE;
 	}
 	
 	g_signal_handlers_block_by_func (G_OBJECT (button), 
 					 G_CALLBACK (permission_button_toggled),
 					 window);
-	
-	gtk_toggle_button_set_active (button, files_on != NULL);
-	gtk_toggle_button_set_inconsistent (button, files_on && files_off);
+
+	gtk_toggle_button_set_active (button, on);
+	gtk_toggle_button_set_inconsistent (button, inconsistent);
 
 	g_signal_handlers_unblock_by_func (G_OBJECT (button), 
 					   G_CALLBACK (permission_button_toggled),
 					   window);
 
-	if (window->details->long_operation_underway == 0) {
-		/* start long operation */
-		GdkCursor * cursor;
-	       
-		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
-		gdk_cursor_unref (cursor);
-	}
-	window->details->long_operation_underway += g_list_length (files_on);
-	window->details->long_operation_underway += g_list_length (files_off);
-
-	for (l = files_on; l != NULL; l = l->next) {
-		NautilusFile *file;
-		
-		file = NAUTILUS_FILE (l->data);
-
-		if (nautilus_file_can_set_permissions (file)) {
-			GnomeVFSFilePermissions permissions;
-
-			permissions = nautilus_file_get_permissions (file);
-			permissions |= permission_mask;
-			
-			g_object_ref (window);
-			nautilus_file_set_permissions
-				(file, permissions,
-				 permission_change_callback,
-				 window);
-		}
-		
-	}
-	
-	for (l = files_off; l != NULL; l = l->next) {
-		NautilusFile *file;
-		
-		file = NAUTILUS_FILE (l->data);
-
-		if (nautilus_file_can_set_permissions (file)) {
-			GnomeVFSFilePermissions permissions;
-
-			permissions = nautilus_file_get_permissions (file);
-			permissions &= ~permission_mask;
-
-			g_object_ref (window);
-			nautilus_file_set_permissions
-				(file, permissions,
-				 permission_change_callback,
-				 window);
-		}
-	}	
-
-	g_list_free (files_on);
-	g_list_free (files_off);
+	update_permissions (window,
+			    on?permission_mask:0,
+			    permission_mask,
+			    is_folder,
+			    is_special,
+			    inconsistent);
 }
 
 static void
@@ -2644,14 +2709,31 @@ permission_button_update (FMPropertiesWindow *window,
 	gboolean all_set;
 	gboolean all_unset;
 	gboolean all_cannot_set;
+	gboolean is_folder, is_special;
+	gboolean no_match;
+	gboolean sensitive;
 	GnomeVFSFilePermissions button_permission;
+
+	if (gtk_toggle_button_get_inconsistent (button) &&
+	    window->details->has_recursive_apply) {
+		/* Never change from an inconsistent state if we have dirs, even
+		 * if the current state is now consistent, because its a useful
+		 * state for recursive apply.
+		 */
+		return;
+	}
 	
 	button_permission = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
 								"permission"));
+	is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+							"is-folder"));
+	is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+							 "is-special"));
 	
 	all_set = TRUE;
 	all_unset = TRUE;
 	all_cannot_set = TRUE;
+	no_match = TRUE;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		NautilusFile *file;
 		GnomeVFSFilePermissions file_permissions;
@@ -2662,11 +2744,22 @@ permission_button_update (FMPropertiesWindow *window,
 			continue;
 		}
 
+		if (!is_special &&
+		    ((nautilus_file_is_directory (file) && !is_folder) ||
+		     (!nautilus_file_is_directory (file) && is_folder))) {
+			continue;
+		}
+
+		no_match = FALSE;
+		
 		file_permissions = nautilus_file_get_permissions (file);
 
-		if ((file_permissions & button_permission) != 0) {
+		if ((file_permissions & button_permission) == button_permission) {
 			all_unset = FALSE;
+		} else if ((file_permissions & button_permission) == 0) {
+			all_set = FALSE;
 		} else {
+			all_unset = FALSE;
 			all_set = FALSE;
 		}
 
@@ -2674,31 +2767,44 @@ permission_button_update (FMPropertiesWindow *window,
 			all_cannot_set = FALSE;
 		}
 	}
+
+	sensitive = !all_cannot_set;
+	if (!is_folder) {
+		/* Don't insitive files when we have recursive apply */
+		sensitive |= window->details->has_recursive_apply;
+	}
+
 	
 	g_signal_handlers_block_by_func (G_OBJECT (button), 
 					 G_CALLBACK (permission_button_toggled),
 					 window);
 
 	gtk_toggle_button_set_active (button, !all_unset);
-	gtk_toggle_button_set_inconsistent (button, !all_unset && !all_set);
-	gtk_widget_set_sensitive (GTK_WIDGET (button), !all_cannot_set);
+	/* if actually inconsistent, or default value for file buttons
+	   if no files are selected. (useful for recursive apply) */
+	gtk_toggle_button_set_inconsistent (button,
+					    (!all_unset && !all_set) ||
+					    (!is_folder && no_match));
+	gtk_widget_set_sensitive (GTK_WIDGET (button), sensitive);
 
 	g_signal_handlers_unblock_by_func (G_OBJECT (button), 
 					   G_CALLBACK (permission_button_toggled),
 					   window);
 }
 
-
 static void
 set_up_permissions_checkbox (FMPropertiesWindow *window,
 			     GtkWidget *check_button, 
-			     GnomeVFSFilePermissions permission)
+			     GnomeVFSFilePermissions permission,
+			     gboolean is_folder)
 {
 	/* Load up the check_button with data we'll need when updating its state. */
         g_object_set_data (G_OBJECT (check_button), "permission", 
 			   GINT_TO_POINTER (permission));
         g_object_set_data (G_OBJECT (check_button), "properties_window", 
 			   window);
+	g_object_set_data (G_OBJECT (check_button), "is-folder",
+			   GINT_TO_POINTER (is_folder));
 	
 	window->details->permission_buttons = 
 		g_list_prepend (window->details->permission_buttons,
@@ -2711,24 +2817,17 @@ set_up_permissions_checkbox (FMPropertiesWindow *window,
 }
 
 static void
-add_permissions_checkbox (FMPropertiesWindow *window,
-			  GtkTable *table, 
-			  int row, int column, 
-			  GnomeVFSFilePermissions permission_to_check,
-			  GtkLabel *label_for)
+add_permissions_checkbox_with_label (FMPropertiesWindow *window,
+				     GtkTable *table, 
+				     int row, int column,
+				     const char *label,
+				     GnomeVFSFilePermissions permission_to_check,
+				     GtkLabel *label_for,
+				     gboolean is_folder)
 {
 	GtkWidget *check_button;
-	gchar *label;
 	gboolean a11y_enabled;
-
-	if (column == PERMISSIONS_CHECKBOXES_READ_COLUMN) {
-		label = _("_Read");
-	} else if (column == PERMISSIONS_CHECKBOXES_WRITE_COLUMN) {
-		label = _("_Write");
-	} else {
-		label = _("E_xecute");
-	}
-
+	
 	check_button = gtk_check_button_new_with_mnemonic (label);
 	gtk_widget_show (check_button);
 	gtk_table_attach (table, check_button,
@@ -2739,14 +2838,412 @@ add_permissions_checkbox (FMPropertiesWindow *window,
 
 	set_up_permissions_checkbox (window, 
 				     check_button, 
-				     permission_to_check);
+				     permission_to_check,
+				     is_folder);
 
 	a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (check_button));
-	if (a11y_enabled) {
+	if (a11y_enabled && label_for != NULL) {
 		eel_accessibility_set_up_label_widget_relation (GTK_WIDGET (label_for),
 								check_button);
 	}
 }
+
+static void
+add_permissions_checkbox (FMPropertiesWindow *window,
+			  GtkTable *table, 
+			  int row, int column, 
+			  GnomeVFSFilePermissions permission_to_check,
+			  GtkLabel *label_for,
+			  gboolean is_folder)
+{
+	gchar *label;
+
+	if (column == PERMISSIONS_CHECKBOXES_READ_COLUMN) {
+		label = _("_Read");
+	} else if (column == PERMISSIONS_CHECKBOXES_WRITE_COLUMN) {
+		label = _("_Write");
+	} else {
+		label = _("E_xecute");
+	}
+
+	add_permissions_checkbox_with_label (window, table, 
+					     row, column,
+					     label,
+					     permission_to_check,
+					     label_for,
+					     is_folder);
+}
+
+typedef enum {
+	PERMISSION_READ  = (1<<0),
+	PERMISSION_WRITE = (1<<1),
+	PERMISSION_EXEC  = (1<<2)
+} PermissionValue;
+
+typedef enum {
+	PERMISSION_USER,
+	PERMISSION_GROUP,
+	PERMISSION_OTHER
+} PermissionType;
+
+static GnomeVFSFilePermissions vfs_perms[3][3] = {
+	{GNOME_VFS_PERM_USER_READ, GNOME_VFS_PERM_USER_WRITE, GNOME_VFS_PERM_USER_EXEC},
+	{GNOME_VFS_PERM_GROUP_READ, GNOME_VFS_PERM_GROUP_WRITE, GNOME_VFS_PERM_GROUP_EXEC},
+	{GNOME_VFS_PERM_OTHER_READ, GNOME_VFS_PERM_OTHER_WRITE, GNOME_VFS_PERM_OTHER_EXEC},
+};
+
+static GnomeVFSFilePermissions 
+permission_to_vfs (PermissionType type, PermissionValue perm)
+{
+	GnomeVFSFilePermissions vfs_perm;
+	g_assert (type >= 0 && type < 3);
+
+	vfs_perm = 0;
+	if (perm & PERMISSION_READ) {
+		vfs_perm |= vfs_perms[type][0];
+	}
+	if (perm & PERMISSION_WRITE) {
+		vfs_perm |= vfs_perms[type][1];
+	}
+	if (perm & PERMISSION_EXEC) {
+		vfs_perm |= vfs_perms[type][2];
+	}
+	
+	return vfs_perm;
+}
+
+
+static PermissionValue
+permission_from_vfs (PermissionType type, GnomeVFSFilePermissions vfs_perm)
+{
+	PermissionValue perm;
+	g_assert (type >= 0 && type < 3);
+
+	perm = 0;
+	if (vfs_perm & vfs_perms[type][0]) {
+		perm |= PERMISSION_READ;
+	}
+	if (vfs_perm & vfs_perms[type][1]) {
+		perm |= PERMISSION_WRITE;
+	}
+	if (vfs_perm & vfs_perms[type][2]) {
+		perm |= PERMISSION_EXEC;
+	}
+	
+	return perm;
+}
+
+static void
+permission_combo_changed (GtkWidget *combo, FMPropertiesWindow *window)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	gboolean is_folder, use_original;
+	PermissionType type;
+	int new_perm, mask;
+	GnomeVFSFilePermissions vfs_new_perm, vfs_mask;
+
+	is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
+	type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
+
+	if (is_folder) {
+		mask = PERMISSION_READ|PERMISSION_WRITE|PERMISSION_EXEC;
+	} else {
+		mask = PERMISSION_READ|PERMISSION_WRITE;
+	}
+
+	vfs_mask = permission_to_vfs (type, mask);
+	
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo),  &iter)) {
+		return;
+	}
+	gtk_tree_model_get (model, &iter, 1, &new_perm, 2, &use_original, -1);
+	vfs_new_perm = permission_to_vfs (type, new_perm);
+
+	update_permissions (window, vfs_new_perm, vfs_mask,
+			    is_folder, FALSE, use_original);
+}
+
+static void
+permission_combo_add_multiple_choice (GtkComboBox *combo, GtkTreeIter *iter)
+{
+	GtkTreeModel *model;
+	GtkListStore *store;
+	gboolean found;
+
+	model = gtk_combo_box_get_model (combo);
+	store = GTK_LIST_STORE (model);
+
+	found = FALSE;
+	gtk_tree_model_get_iter_first (model, iter);
+	do {
+		gboolean multi;
+		gtk_tree_model_get (model, iter, 2, &multi, -1);
+		
+		if (multi) {
+			found = TRUE;
+			break;
+		}
+	} while (gtk_tree_model_iter_next (model, iter));
+	
+	if (!found) {
+		gtk_list_store_append (store, iter);
+		gtk_list_store_set (store, iter, 0, "---", 1, 0, 2, TRUE, -1);
+	}
+}
+
+static void
+permission_combo_update (FMPropertiesWindow *window,
+			 GtkComboBox *combo)
+{
+	PermissionType type;
+	PermissionValue perm, all_dir_perm, all_file_perm, all_perm;
+	gboolean is_folder, no_files, no_dirs, all_file_same, all_dir_same, all_same;
+	gboolean all_dir_cannot_set, all_file_cannot_set, sensitive;
+	GtkTreeIter iter;
+	int mask;
+	GtkTreeModel *model;
+	GtkListStore *store;
+	GList *l;
+	gboolean is_multi;
+
+	model = gtk_combo_box_get_model (combo);
+	
+	is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
+	type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
+
+	is_multi = FALSE;
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo),  &iter)) {
+		gtk_tree_model_get (model, &iter, 2, &is_multi, -1);
+	}
+
+	if (is_multi && window->details->has_recursive_apply) {
+		/* Never change from an inconsistent state if we have dirs, even
+		 * if the current state is now consistent, because its a useful
+		 * state for recursive apply.
+		 */
+		return;
+	}
+	
+	no_files = TRUE;
+	no_dirs = TRUE;
+	all_dir_same = TRUE;
+	all_file_same = TRUE;
+	all_dir_perm = 0;
+	all_file_perm = 0;
+	all_dir_cannot_set = TRUE;
+	all_file_cannot_set = TRUE;
+	
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		GnomeVFSFilePermissions file_permissions;
+
+		file = NAUTILUS_FILE (l->data);
+
+		if (!nautilus_file_can_get_permissions (file)) {
+			continue;
+		}
+
+		if (nautilus_file_is_directory (file)) {
+			mask = PERMISSION_READ|PERMISSION_WRITE|PERMISSION_EXEC;
+		} else {
+			mask = PERMISSION_READ|PERMISSION_WRITE;
+		}
+		
+		file_permissions = nautilus_file_get_permissions (file);
+
+		perm = permission_from_vfs (type, file_permissions) & mask;
+
+		if (nautilus_file_is_directory (file)) {
+			if (no_dirs) {
+				all_dir_perm = perm;
+				no_dirs = FALSE;
+			} else if (perm != all_dir_perm) {
+				all_dir_same = FALSE;
+			}
+			
+			if (nautilus_file_can_set_permissions (file)) {
+				all_dir_cannot_set = FALSE;
+			}
+		} else {
+			if (no_files) {
+				all_file_perm = perm;
+				no_files = FALSE;
+			} else if (perm != all_file_perm) {
+				all_file_same = FALSE;
+			}
+			
+			if (nautilus_file_can_set_permissions (file)) {
+				all_file_cannot_set = FALSE;
+			}
+		}
+	}
+
+	if (is_folder) {
+		all_same = all_dir_same;
+		all_perm = all_dir_perm;
+	} else {
+		all_same = all_file_same && !no_files;
+		all_perm = all_file_perm;
+	}
+
+	store = GTK_LIST_STORE (model);
+	if (all_same) {
+		gboolean found;
+
+		found = FALSE;
+		gtk_tree_model_get_iter_first (model, &iter);
+		do {
+			int current_perm;
+			gtk_tree_model_get (model, &iter, 1, &current_perm, -1);
+
+			if (current_perm == all_perm) {
+				found = TRUE;
+				break;
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+
+		if (!found) {
+			GString *str;
+			str = g_string_new ("");
+			
+			if (!(all_perm & PERMISSION_READ)) {
+				g_string_append (str, _("no "));
+			}
+			if (is_folder) {
+				g_string_append (str, _("list"));
+			} else {
+				g_string_append (str, _("read"));
+			}
+			
+			g_string_append (str, ", ");
+			
+			if (!(all_perm & PERMISSION_WRITE)) {
+				g_string_append (str, _("no "));
+			}
+			if (is_folder) {
+				g_string_append (str, _("create/delete"));
+			} else {
+				g_string_append (str, _("write"));
+			}
+
+			if (is_folder) {
+				g_string_append (str, ", ");
+
+				if (!(all_perm & PERMISSION_EXEC)) {
+					g_string_append (str, _("no "));
+				}
+				g_string_append (str, _("access"));
+			}
+			
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter,
+					    0, str->str,
+					    1, all_perm, -1);
+			
+			g_string_free (str, TRUE);
+		}
+	} else {
+		permission_combo_add_multiple_choice (combo, &iter);
+	}
+
+	g_signal_handlers_block_by_func (G_OBJECT (combo), 
+					 G_CALLBACK (permission_combo_changed),
+					 window);
+	
+	gtk_combo_box_set_active_iter (combo, &iter);
+
+	/* Also enable if no files found (for recursive
+	   file changes when only selecting folders) */
+	if (is_folder) {
+		sensitive = !all_dir_cannot_set;
+	} else {
+		sensitive = !all_file_cannot_set ||
+			window->details->has_recursive_apply;
+	}
+	gtk_widget_set_sensitive (GTK_WIDGET (combo), sensitive);
+
+	g_signal_handlers_unblock_by_func (G_OBJECT (combo), 
+					   G_CALLBACK (permission_combo_changed),
+					   window);
+
+}
+
+static void
+add_permissions_combo_box (FMPropertiesWindow *window, GtkTable *table,
+			   PermissionType type, gboolean is_folder,
+			   gboolean short_label)
+{
+	GtkWidget *combo;
+	GtkListStore *store;
+	GtkCellRenderer *cell;
+	GtkTreeIter iter;
+	int row;
+
+	if (short_label) {
+		row = append_title_field (table, _("Access:"), NULL);
+	} else if (is_folder) {
+		row = append_title_field (table, _("Folder Access:"), NULL);
+	} else {
+		row = append_title_field (table, _("File Access:"), NULL);
+	}
+	
+	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
+
+	g_object_set_data (G_OBJECT (combo), "is-folder", GINT_TO_POINTER (is_folder));
+	g_object_set_data (G_OBJECT (combo), "permission-type", GINT_TO_POINTER (type));
+
+	if (is_folder) {
+		if (type != PERMISSION_USER) {
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter, 0, _("None"), 1, 0, -1);
+		}
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, _("List files only"), 1, PERMISSION_READ, -1);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, _("Access files"), 1, PERMISSION_READ|PERMISSION_EXEC, -1);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, _("Create and delete files"), 1, PERMISSION_READ|PERMISSION_EXEC|PERMISSION_WRITE, -1);
+	} else {
+		if (type != PERMISSION_USER) {
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter, 0, _("None"), 1, 0, -1);
+		}
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, _("Read-only"), 1, PERMISSION_READ, -1);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 0, _("Read and write"), 1, PERMISSION_READ|PERMISSION_WRITE, -1);
+	}
+	if (window->details->has_recursive_apply) {
+		permission_combo_add_multiple_choice (GTK_COMBO_BOX (combo), &iter);
+	}
+
+	g_object_unref (store);
+
+	window->details->permission_combos = 
+		g_list_prepend (window->details->permission_combos,
+				combo);
+
+	g_signal_connect (combo, "changed", G_CALLBACK (permission_combo_changed), window);
+	
+	cell = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combo), cell,
+					"text", 0,
+					NULL);
+	
+	gtk_widget_show (combo);
+	
+	gtk_table_attach (table, combo,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+}
+
 
 static GtkWidget *
 append_special_execution_checkbox (FMPropertiesWindow *window,
@@ -2770,67 +3267,26 @@ append_special_execution_checkbox (FMPropertiesWindow *window,
 
 	set_up_permissions_checkbox (window, 
 				     check_button, 
-				     permission_to_check);
-	++window->details->num_special_flags_rows;
+				     permission_to_check,
+				     FALSE);
+	g_object_set_data (G_OBJECT (check_button), "is-special",
+			   GINT_TO_POINTER (TRUE));
 
 	return check_button;
 }
 
 static void
-remember_special_flags_widget (FMPropertiesWindow *window, GtkWidget *widget)
-{
-	g_assert (FM_IS_PROPERTIES_WINDOW (window));
-	g_assert (GTK_IS_WIDGET (widget));
-	
-	window->details->special_flags_widgets = 
-		g_list_prepend (window->details->special_flags_widgets, widget);
-}
-
-static void
-update_visibility_of_special_flags_widgets (FMPropertiesWindow *window)
-{
-	update_visibility_of_table_rows 
-		(window->details->permissions_table,
-		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS),
-		 window->details->first_special_flags_row,
-		 window->details->num_special_flags_rows,
-		 window->details->special_flags_widgets);
-}
-
-static void
-update_visibility_of_special_flags_widgets_wrapper (gpointer callback_data)
-{
-	update_visibility_of_special_flags_widgets (FM_PROPERTIES_WINDOW (callback_data));
-}
-
-static void
 append_special_execution_flags (FMPropertiesWindow *window, GtkTable *table)
 {
-	
+	append_special_execution_checkbox 
+		(window, table, _("Set _user ID"), GNOME_VFS_PERM_SUID);
 
-	remember_special_flags_widget (window, append_special_execution_checkbox 
-		(window, table, _("Set _user ID"), GNOME_VFS_PERM_SUID));
+	attach_title_field (table, table->nrows - 1, _("Special flags:"));
 
-	window->details->first_special_flags_row = table->nrows - 1;
+	append_special_execution_checkbox (window, table, _("Set gro_up ID"), GNOME_VFS_PERM_SGID);
+	append_special_execution_checkbox (window, table, _("_Sticky"), GNOME_VFS_PERM_STICKY);
 
-	remember_special_flags_widget (window, GTK_WIDGET (attach_title_field 
-		(table, table->nrows - 1, _("Special flags:"))));
-
-	remember_special_flags_widget (window, append_special_execution_checkbox 
-		(window, table, _("Set gro_up ID"), GNOME_VFS_PERM_SGID));
-	remember_special_flags_widget (window, append_special_execution_checkbox 
-		(window, table, _("_Sticky"), GNOME_VFS_PERM_STICKY));
-
-	remember_special_flags_widget (window, append_separator (table));
-	++window->details->num_special_flags_rows;
-
-	update_visibility_of_special_flags_widgets (window);
-	eel_preferences_add_callback_while_alive 
-		(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-		 update_visibility_of_special_flags_widgets_wrapper,
-		 window,
-		 G_OBJECT (window));
-	
+	gtk_table_set_row_spacing (table, table->nrows - 1, 18);
 }
 
 static gboolean
@@ -2891,21 +3347,421 @@ get_initial_permissions (GList *file_list)
 }
 
 static void
-create_permissions_page (FMPropertiesWindow *window)
+create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 {
-	GtkWidget *vbox;
-	GtkTable *page_table, *check_button_table;
-	char *file_name, *prompt_text;
-	guint last_row;
-	guint checkbox_titles_row;
+	gboolean has_file, has_directory;
 	GtkLabel *group_label;
 	GtkLabel *owner_label;
+	GtkComboBox *group_combo_box;
+	GtkComboBox *owner_combo_box;
+	guint last_row;
+
+	last_row = 0;
+	
+	has_file = files_has_file (window);
+	has_directory = files_has_directory (window);
+
+	if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
+		owner_label = attach_title_field (page_table, last_row, _("_Owner:"));
+		/* Combo box in this case. */
+		owner_combo_box = attach_owner_combo_box (page_table, last_row, get_target_file (window));
+		gtk_label_set_mnemonic_widget (owner_label,
+					       GTK_WIDGET (owner_combo_box));
+	} else {
+		attach_title_field (page_table, last_row, _("Owner:"));
+		/* Static text in this case. */
+		attach_value_field (window, 
+				    page_table, last_row, VALUE_COLUMN,
+				    "owner",
+				    _("--"),
+				    FALSE); 
+	}
+	
+	if (has_directory) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_USER, TRUE, FALSE);
+	}
+	if (has_file || window->details->has_recursive_apply) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_USER, FALSE, !has_directory);
+	}
+
+	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	
+	if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window))) {
+		last_row = append_title_field (page_table,
+					       _("_Group:"),
+					       &group_label);
+		/* Combo box in this case. */
+		group_combo_box = attach_group_combo_box (page_table, last_row,
+							  get_target_file (window));
+		gtk_label_set_mnemonic_widget (group_label,
+					       GTK_WIDGET (group_combo_box));
+	} else {
+		last_row = append_title_field (page_table,
+					       _("Group:"),
+					       NULL);
+		/* Static text in this case. */
+		attach_value_field (window, page_table, last_row, 
+				    VALUE_COLUMN, 
+				    "group",
+				    _("--"),
+				    FALSE); 
+	}
+	
+	if (has_directory) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_GROUP, TRUE,
+					   FALSE);
+	}
+	if (has_file || window->details->has_recursive_apply) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_GROUP, FALSE,
+					   !has_directory);
+	}
+
+	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	
+	append_title_field (page_table,
+			    _("Others"),
+			    &group_label);
+	
+	if (has_directory) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_OTHER, TRUE,
+					   FALSE);
+	}
+	if (has_file || window->details->has_recursive_apply) {
+		add_permissions_combo_box (window, page_table,
+					   PERMISSION_OTHER, FALSE,
+					   !has_directory);
+	}
+
+	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	
+	last_row = append_title_field (page_table,
+				       _("Execute:"),
+				       NULL);
+	add_permissions_checkbox_with_label (window, page_table,
+					     last_row, 1,
+					     _("Allow _executing file as program"),
+					     GNOME_VFS_PERM_USER_EXEC|GNOME_VFS_PERM_GROUP_EXEC|GNOME_VFS_PERM_OTHER_EXEC,
+					     NULL, FALSE);
+	
+}
+
+static void
+create_permission_checkboxes (FMPropertiesWindow *window,
+			      GtkTable *page_table,
+			      gboolean is_folder)
+{
+	guint checkbox_titles_row;
 	GtkLabel *owner_perm_label;
 	GtkLabel *group_perm_label;
 	GtkLabel *other_perm_label;
+	GtkTable *check_button_table;
+	
+	checkbox_titles_row = append_title_field (page_table, _("Owner:"), &owner_perm_label);
+	append_title_field (page_table, _("Group:"), &group_perm_label);
+	append_title_field (page_table, _("Others:"), &other_perm_label);
+	
+	check_button_table = GTK_TABLE (gtk_table_new 
+					(PERMISSIONS_CHECKBOXES_ROW_COUNT, 
+					 PERMISSIONS_CHECKBOXES_COLUMN_COUNT, 
+					 FALSE));
+	apply_standard_table_padding (check_button_table);
+	gtk_widget_show (GTK_WIDGET (check_button_table));
+	gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
+			  VALUE_COLUMN, VALUE_COLUMN + 1, 
+			  checkbox_titles_row, checkbox_titles_row + PERMISSIONS_CHECKBOXES_ROW_COUNT,
+			  0, 0,
+			  0, 0);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+				  GNOME_VFS_PERM_USER_READ,
+				  owner_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+				  GNOME_VFS_PERM_USER_WRITE,
+				  owner_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+				  GNOME_VFS_PERM_USER_EXEC,
+				  owner_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+				  GNOME_VFS_PERM_GROUP_READ,
+				  group_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+				  GNOME_VFS_PERM_GROUP_WRITE,
+				  group_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+				  GNOME_VFS_PERM_GROUP_EXEC,
+				  group_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+				  GNOME_VFS_PERM_OTHER_READ,
+				  other_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+				  GNOME_VFS_PERM_OTHER_WRITE,
+				  other_perm_label,
+				  is_folder);
+	
+	add_permissions_checkbox (window,
+				  check_button_table, 
+				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+				  GNOME_VFS_PERM_OTHER_EXEC,
+				  other_perm_label,
+				  is_folder);
+}
+
+static void
+create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
+{
+	guint last_row;
+	GtkLabel *group_label;
+	GtkLabel *owner_label;
 	GtkComboBox *group_combo_box;
 	GtkComboBox *owner_combo_box;
+	gboolean has_directory, has_file;
+	
+	last_row = 0;
+	
+	if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
+		
+		owner_label  = attach_title_field (page_table, last_row, _("_Owner:"));
+		/* Combo box in this case. */
+		owner_combo_box = attach_owner_combo_box (page_table, last_row, get_target_file (window));
+		gtk_label_set_mnemonic_widget (owner_label,
+					       GTK_WIDGET (owner_combo_box));
+	} else {
+		attach_title_field (page_table, last_row, _("Owner:"));
+		/* Static text in this case. */
+		attach_value_field (window, 
+				    page_table, last_row, VALUE_COLUMN,
+				    "owner",
+				    _("--"),
+				    FALSE); 
+	}
+	
+	if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window))) {
+		last_row = append_title_field (page_table,
+					       _("_Group:"),
+					       &group_label);
+		/* Combo box in this case. */
+		group_combo_box = attach_group_combo_box (page_table, last_row,
+							  get_target_file (window));
+		gtk_label_set_mnemonic_widget (group_label,
+					       GTK_WIDGET (group_combo_box));
+	} else {
+		last_row = append_title_field (page_table,
+					       _("Group:"),
+					       NULL);
+		/* Static text in this case. */
+		attach_value_field (window, page_table, last_row, 
+				    VALUE_COLUMN, 
+				    "group",
+				    _("--"),
+				    FALSE); 
+	}
+
+	gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+
+	has_directory = files_has_directory (window);
+	has_file = files_has_file (window);
+
+	if (has_directory) {
+		if (has_file || window->details->has_recursive_apply) {
+			append_title_field (page_table,
+					    _("Folder Permissions:"),
+					    NULL);
+		}
+		create_permission_checkboxes (window, page_table, TRUE);
+		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+
+	}
+
+
+	if (has_file || window->details->has_recursive_apply) {
+		if (has_directory) {
+			append_title_field (page_table,
+					    _("File Permissions:"),
+					    NULL);
+		}
+		create_permission_checkboxes (window, page_table, FALSE);
+		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	}
+	
+	append_special_execution_flags (window, page_table);
+	
+	append_title_value_pair
+		(window, page_table, _("Text view:"), 
+		 "permissions", _("--"),
+		 FALSE);
+}
+
+static void
+set_recursive_permissions_done (gpointer callback_data)
+{
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (callback_data);
+	end_long_operation (window);
+
+	g_object_unref (window);
+}
+
+
+static void
+apply_recursive_clicked (GtkWidget *recursive_button,
+			 FMPropertiesWindow *window)
+{
+	GnomeVFSFilePermissions file_permission, file_permission_mask;
+	GnomeVFSFilePermissions dir_permission, dir_permission_mask;
+	GnomeVFSFilePermissions vfs_mask, vfs_new_perm, p;
+	GtkWidget *button, *combo;
+	gboolean active, is_folder, is_special, use_original;
+	GList *l;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	PermissionType type;
+	int new_perm, mask;
+	
+	file_permission = 0;
+	file_permission_mask = 0;
+	dir_permission = 0;
+	dir_permission_mask = 0;
+
+	/* Advanced mode and execute checkbox: */
+	for (l = window->details->permission_buttons; l != NULL; l = l->next) {
+		button = l->data;
+		
+		if (gtk_toggle_button_get_inconsistent (GTK_TOGGLE_BUTTON (button))) {
+			continue;
+		}
+		
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+		p = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+							"permission"));
+		is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+								"is-folder"));
+		is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+								 "is-special"));
+		
+		if (is_folder || is_special) {
+			dir_permission_mask |= p;
+			if (active) {
+				dir_permission |= p;
+			}
+		}
+		if (!is_folder || is_special) {
+			file_permission_mask |= p;
+			if (active) {
+				file_permission |= p;
+			}
+		}
+	}
+	/* Simple mode, minus exec checkbox */
+	for (l = window->details->permission_combos; l != NULL; l = l->next) {
+		combo = l->data;
+		
+		if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo),  &iter)) {
+			continue;
+		}
+		
+		type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
+		is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo),
+								"is-folder"));
+		
+		model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+		gtk_tree_model_get (model, &iter, 1, &new_perm, 2, &use_original, -1);
+		if (use_original) {
+			continue;
+		}
+		vfs_new_perm = permission_to_vfs (type, new_perm);
+		
+		if (is_folder) {
+			mask = PERMISSION_READ|PERMISSION_WRITE|PERMISSION_EXEC;
+		} else {
+			mask = PERMISSION_READ|PERMISSION_WRITE;
+		}
+		vfs_mask = permission_to_vfs (type, mask);
+		
+		if (is_folder) {
+			dir_permission_mask |= vfs_mask;
+			dir_permission |= vfs_new_perm;
+		} else {
+			file_permission_mask |= vfs_mask;
+			file_permission |= vfs_new_perm;
+		}
+	}
+
+	for (l = window->details->target_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		char *uri;
+
+		file = NAUTILUS_FILE (l->data);
+
+		if (nautilus_file_is_directory (file) &&
+		    nautilus_file_can_set_permissions (file)) {
+			uri = nautilus_file_get_uri (file);
+			start_long_operation (window);
+			g_object_ref (window);
+			nautilus_file_set_permissions_recursive (uri,
+								 file_permission,
+								 file_permission_mask,
+								 dir_permission,
+								 dir_permission_mask,
+								 set_recursive_permissions_done,
+								 window);
+			g_free (uri);
+		}
+	}
+}
+
+static void
+create_permissions_page (FMPropertiesWindow *window)
+{
+	GtkWidget *vbox, *button, *hbox;
+	GtkTable *page_table;
+	char *file_name, *prompt_text;
 	GList *file_list;
+	guint last_row;
 
 	vbox = create_page_with_vbox (window->details->notebook,
 				      _("Permissions"));
@@ -2916,6 +3772,7 @@ create_permissions_page (FMPropertiesWindow *window)
 	
 	if (all_can_get_permissions (file_list) && all_can_get_permissions (window->details->target_files)) {
 		window->details->initial_permissions = get_initial_permissions (window->details->target_files);
+		window->details->has_recursive_apply = files_has_changable_permissions_directory (window);
 		
 		if (!all_can_set_permissions (file_list)) {
 			add_prompt_and_separator (
@@ -2927,146 +3784,43 @@ create_permissions_page (FMPropertiesWindow *window)
 		window->details->permissions_table = page_table;
 
 		apply_standard_table_padding (page_table);
-		last_row = 0;
 		gtk_widget_show (GTK_WIDGET (page_table));
 		gtk_box_pack_start (GTK_BOX (vbox), 
 				    GTK_WIDGET (page_table), 
 				    TRUE, TRUE, 0);
 
-		if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
-			owner_label = attach_title_field (page_table, last_row, _("File _owner:"));
-			/* Combo box in this case. */
-			owner_combo_box = attach_owner_combo_box (page_table, last_row, get_target_file (window));
-			gtk_label_set_mnemonic_widget (owner_label,
-						       GTK_WIDGET (owner_combo_box));
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_ADVANCED_PERMISSIONS)) {
+			window->details->advanced_permissions = TRUE;
+			create_advanced_permissions (window, page_table);
 		} else {
-			attach_title_field (page_table, last_row, _("File owner:"));
-			/* Static text in this case. */
-			attach_value_field (window, 
-					    page_table, last_row, VALUE_COLUMN,
-					    "owner",
-					    _("--"),
-					    FALSE); 
+			window->details->advanced_permissions = FALSE;
+			create_simple_permissions (window, page_table);
 		}
-
-		if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window))) {
-			last_row = append_title_field (page_table,
-						       _("_File group:"),
-						       &group_label);
-			/* Combo box in this case. */
-			group_combo_box = attach_group_combo_box (page_table, last_row,
-								 get_target_file (window));
-			gtk_label_set_mnemonic_widget (group_label,
-						       GTK_WIDGET (group_combo_box));
-		} else {
-			last_row = append_title_field (page_table,
-						       _("File group:"),
-						       NULL);
-			/* Static text in this case. */
-			attach_value_field (window, page_table, last_row, 
-					    VALUE_COLUMN, 
-					    "group",
-					    _("--"),
-					    FALSE); 
-		}
-
-		append_separator (page_table);
 		
-		checkbox_titles_row = append_title_field (page_table, _("Owner:"), &owner_perm_label);
-		append_title_field (page_table, _("Group:"), &group_perm_label);
-		append_title_field (page_table, _("Others:"), &other_perm_label);
-		
-		check_button_table = GTK_TABLE (gtk_table_new 
-						   (PERMISSIONS_CHECKBOXES_ROW_COUNT, 
-						    PERMISSIONS_CHECKBOXES_COLUMN_COUNT, 
-						    FALSE));
-		apply_standard_table_padding (check_button_table);
-		gtk_widget_show (GTK_WIDGET (check_button_table));
-		gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
-				  VALUE_COLUMN, VALUE_COLUMN + 1, 
-				  checkbox_titles_row, checkbox_titles_row + PERMISSIONS_CHECKBOXES_ROW_COUNT,
-				  0, 0,
-				  0, 0);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
-					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_USER_READ,
-					  owner_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
-					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_USER_WRITE,
-					  owner_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
-					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_USER_EXEC,
-					  owner_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
-					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_GROUP_READ,
-					  group_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
-					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_WRITE,
-					  group_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
-					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_EXEC,
-					  group_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
-					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_OTHER_READ,
-					  other_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
-					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_WRITE,
-					  other_perm_label);
-
-		add_permissions_checkbox (window,
-					  check_button_table, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
-					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_EXEC,
-					  other_perm_label);
-
-		append_separator (page_table);
-
-		append_special_execution_flags (window, page_table);
-		
-		append_title_value_pair
-			(window, page_table, _("Text view:"), 
-			 "permissions", _("--"),
-			 FALSE);
-		append_title_value_pair 
-			(window, page_table, _("Number view:"), 
-			 "octal_permissions", _("--"),
-			 FALSE);
+		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
+	
 		append_title_value_pair
 			(window, page_table, _("Last changed:"), 
 			 "date_permissions", _("--"),
 			 FALSE);
+	
+		if (window->details->has_recursive_apply) {
+			last_row = append_row (page_table);
+			hbox = gtk_hbox_new (FALSE, 0);
+			gtk_widget_show (hbox);
+			gtk_table_attach (page_table, hbox,
+					  0, 2,
+					  last_row, last_row+1,
+					  GTK_FILL, 0,
+					  0, 0);
+		
+			button = gtk_button_new_with_mnemonic (_("Apply permissions to enclosed files"));
+			gtk_widget_show (button);
+			gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+			g_signal_connect (button, "clicked",
+					  G_CALLBACK (apply_recursive_clicked),
+					  window);
+		}
 	} else {
 		if (!is_multi_file_window (window)) {
 			file_name = nautilus_file_get_display_name (get_target_file (window));
@@ -3673,9 +4427,6 @@ real_destroy (GtkObject *object)
 	window->details->changed_files = NULL;
  
 	window->details->name_field = NULL;
-
-	g_list_free (window->details->special_flags_widgets);
-	window->details->special_flags_widgets = NULL;
 
 	g_list_free (window->details->emblem_buttons);
 	window->details->emblem_buttons = NULL;

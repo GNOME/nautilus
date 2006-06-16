@@ -2868,6 +2868,239 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	}
 }
 
+struct RecursivePermissionsInfo {
+	GnomeVFSAsyncHandle *handle;
+	GnomeVFSURI *current_dir;
+	GnomeVFSURI *current_file;
+	GList *files;
+	GList *directories;
+	GnomeVFSFilePermissions file_permissions;
+	GnomeVFSFilePermissions file_mask;
+	GnomeVFSFilePermissions dir_permissions;
+	GnomeVFSFilePermissions dir_mask;
+	NautilusSetPermissionsCallback callback;
+	gpointer callback_data;
+};
+
+struct FileInfo {
+	char *name;
+	GnomeVFSFilePermissions permissions;
+};
+
+struct DirInfo {
+	GnomeVFSURI *uri;
+	GnomeVFSFilePermissions permissions;
+};
+
+static void set_permissions_run (struct RecursivePermissionsInfo *info);
+
+static void
+set_permissions_set_file_info (GnomeVFSAsyncHandle *handle,
+			       GnomeVFSResult result,
+			       GnomeVFSFileInfo *old_file_info,
+			       gpointer callback_data)
+{
+	struct RecursivePermissionsInfo *info;
+	GnomeVFSFileInfo *vfs_info;
+	GnomeVFSURI *uri;
+	char *uri_str;
+	struct FileInfo *file_info;
+	
+	info = callback_data;
+
+	if (result == GNOME_VFS_OK && info->current_file != NULL) {
+		uri_str = gnome_vfs_uri_to_string (info->current_file, GNOME_VFS_URI_HIDE_NONE);
+		nautilus_file_changes_queue_file_changed (uri_str);
+		g_free (uri_str);
+	}
+
+	if (info->current_file) {
+		gnome_vfs_uri_unref (info->current_file);
+	}
+	if (info->files == NULL) {
+		/* No more files, process more dirs */
+		set_permissions_run (info);
+		return;
+	}
+
+	file_info = info->files->data;
+	info->files = g_list_delete_link (info->files, info->files);
+
+	uri = gnome_vfs_uri_append_file_name (info->current_dir,
+					      file_info->name);
+	info->current_file = uri;
+	
+	vfs_info = gnome_vfs_file_info_new ();
+	vfs_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS;
+	vfs_info->permissions = 
+			(file_info->permissions & ~info->file_mask) |
+			info->file_permissions;
+	
+	gnome_vfs_async_set_file_info (&info->handle, uri, vfs_info,
+				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
+				       GNOME_VFS_FILE_INFO_DEFAULT,
+				       GNOME_VFS_PRIORITY_DEFAULT,
+				       set_permissions_set_file_info,
+				       info);
+	
+	gnome_vfs_file_info_unref (vfs_info);
+	g_free (file_info->name);
+	g_free (file_info);
+	
+}
+
+static void
+set_permissions_got_files (GnomeVFSAsyncHandle *handle,
+			  GnomeVFSResult result,
+			  GList *list,
+			  guint entries_read,
+			  gpointer callback_data)
+{
+	struct RecursivePermissionsInfo *info;
+	GnomeVFSFileInfo *vfs_info;
+	GList *l;
+	
+	info = callback_data;
+
+	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
+		for (l = list; l != NULL; l = l->next) {
+			vfs_info = l->data;
+
+			if (strcmp (vfs_info->name, ".") == 0 ||
+			    strcmp (vfs_info->name, "..") == 0 ||
+			    !(vfs_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS)) {
+				continue;
+			}
+
+			if (vfs_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+				struct DirInfo *dir_info;
+
+				dir_info = g_new (struct DirInfo, 1);
+				dir_info->uri = gnome_vfs_uri_append_file_name (info->current_dir,
+										vfs_info->name);
+				dir_info->permissions = vfs_info->permissions;
+				info->directories = g_list_prepend (info->directories,
+								    dir_info);
+			} else {
+				struct FileInfo *file_info;
+				file_info = g_new (struct FileInfo, 1);
+				file_info->name = g_strdup (vfs_info->name);
+				file_info->permissions = vfs_info->permissions;
+				info->files = g_list_prepend (info->files, file_info);
+			}
+		}
+	}
+
+
+	if (result != GNOME_VFS_OK) {
+		/* Finished with this dir, work on the files */
+		info->current_file = NULL;
+		set_permissions_set_file_info (NULL, GNOME_VFS_OK, NULL, info);
+	}
+	
+}
+
+/* Also called for the toplevel dir */
+static void
+set_permissions_load_dir (GnomeVFSAsyncHandle *handle,
+			  GnomeVFSResult result,
+			  GnomeVFSFileInfo *file_info,
+			  gpointer callback_data)
+{
+	struct RecursivePermissionsInfo *info;
+	char *uri_str;
+
+	info = callback_data;
+	
+	if (result == GNOME_VFS_OK && handle != NULL) {
+		uri_str = gnome_vfs_uri_to_string (info->current_dir, GNOME_VFS_URI_HIDE_NONE);
+		nautilus_file_changes_queue_file_changed (uri_str);
+		g_free (uri_str);
+	}
+	
+	gnome_vfs_async_load_directory_uri (&info->handle,
+					    info->current_dir,
+					    GNOME_VFS_FILE_INFO_DEFAULT,
+					    50,
+					    GNOME_VFS_PRIORITY_DEFAULT,
+					    set_permissions_got_files,
+					    info);
+}
+
+static void
+set_permissions_run (struct RecursivePermissionsInfo *info)
+{
+	struct DirInfo *dir_info;
+	GnomeVFSFileInfo *vfs_info;
+	
+	gnome_vfs_uri_unref (info->current_dir);
+
+	if (info->directories == NULL) {
+		/* No more directories, finished! */
+		info->callback (info->callback_data);
+		/* All parts of info should be freed now */
+		g_free (info);
+		return;
+	}
+
+	dir_info = info->directories->data;
+	info->directories = g_list_delete_link (info->directories, info->directories);
+
+	info->current_dir = dir_info->uri;
+
+	vfs_info = gnome_vfs_file_info_new ();
+	vfs_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS;
+	vfs_info->permissions = 
+			(dir_info->permissions & ~info->dir_mask) |
+			info->dir_permissions;
+
+	gnome_vfs_async_set_file_info (&info->handle,
+				       info->current_dir,
+				       vfs_info,
+				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
+				       GNOME_VFS_FILE_INFO_DEFAULT,
+				       GNOME_VFS_PRIORITY_DEFAULT,
+				       set_permissions_load_dir,
+				       info);
+
+	gnome_vfs_file_info_unref (vfs_info);
+	g_free (dir_info);
+}
+	
+void
+nautilus_file_set_permissions_recursive (const char                     *directory,
+					 GnomeVFSFilePermissions         file_permissions,
+					 GnomeVFSFilePermissions         file_mask,
+					 GnomeVFSFilePermissions         dir_permissions,
+					 GnomeVFSFilePermissions         dir_mask,
+					 NautilusSetPermissionsCallback  callback,
+					 gpointer                        callback_data)
+{
+	struct RecursivePermissionsInfo *info;
+
+	info = g_new (struct RecursivePermissionsInfo, 1);
+
+	info->files = NULL;
+	info->directories = NULL;
+	info->file_permissions = file_permissions;
+	info->file_mask = file_mask;
+	info->dir_permissions = dir_permissions;
+	info->dir_mask = dir_mask;
+	info->callback = callback;
+	info->callback_data = callback_data;
+
+	info->current_dir = gnome_vfs_uri_new (directory);
+
+	if (info->current_dir == NULL) {
+		info->callback (info->callback_data);
+		g_free (info);
+		return;
+	}
+	
+	set_permissions_load_dir (NULL, GNOME_VFS_OK, NULL, info);
+}
+
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

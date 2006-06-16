@@ -259,20 +259,21 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/nautilus/preferences/show_special_flags</key>
-      <applyto>/apps/nautilus/preferences/show_special_flags</applyto>
+      <key>/schemas/apps/nautilus/preferences/show_advanced_permissions</key>
+      <applyto>/apps/nautilus/preferences/show_advanced_permissions</applyto>
       <owner>nautilus</owner>
       <type>bool</type>
-      <default>true</default>
+      <default>false</default>
       <locale name="C">
-         <short>Enable 'special' flags in file preferences dialog</short>
+         <short>Show advanced permissions in in the file property dialog</short>
 	 <long>
-	  If set to true, then Nautilus lets you edit some of the more
-	  esoteric options of a file in the file preferences dialog.
+	  If set to true, then Nautilus lets you edit and display file
+	  permissions in a more unix-like way, accessing some more
+	  esoteric options.
          </long>
       </locale>
     </schema>
-
+    
     <schema>
       <key>/schemas/apps/nautilus/preferences/sort_directories_first</key>
       <applyto>/apps/nautilus/preferences/sort_directories_first</applyto>
