@@ -3800,6 +3800,10 @@ create_permissions_page (FMPropertiesWindow *window)
 		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
 	
 		append_title_value_pair
+			(window, page_table, _("SELinux Context:"), 
+			 "selinux_context", _("--"),
+			 FALSE);
+		append_title_value_pair
 			(window, page_table, _("Last changed:"), 
 			 "date_permissions", _("--"),
 			 FALSE);

@@ -38,6 +38,12 @@
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               5
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
+#define NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS \
+	(GNOME_VFS_FILE_INFO_FOLLOW_LINKS | \
+	 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |	\
+	 GNOME_VFS_FILE_INFO_GET_SELINUX_CONTEXT | \
+	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
+
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
  */

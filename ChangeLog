@@ -1,5 +1,20 @@
 2006-06-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-column-utilities.c:
+	Add selinux context column
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.[ch]:
+	Get selinux context for all files.
+	Add nautilus_file_can_get_selinux_context and nautilus_file_get_selinux_context
+	Add selinux_context string attribute.
+	
+	* src/file-manager/fm-properties-window.c:
+	Display selinux context in permissions page.
+
+2006-06-16  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-global-preferences.[ch]:
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	Add show_advanced_permissions setting

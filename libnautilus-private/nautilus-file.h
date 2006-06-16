@@ -198,6 +198,8 @@ char *                  nautilus_file_get_group_name                    (Nautilu
 GList *                 nautilus_get_user_names                         (void);
 GList *                 nautilus_get_all_group_names                    (void);
 GList *                 nautilus_file_get_settable_group_names          (NautilusFile                   *file);
+gboolean                nautilus_file_can_get_selinux_context           (NautilusFile                   *file);
+char *                  nautilus_file_get_selinux_context               (NautilusFile                   *file);
 
 /* "Capabilities". */
 gboolean                nautilus_file_can_read                          (NautilusFile                   *file);

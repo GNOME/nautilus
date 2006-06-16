@@ -1206,8 +1206,7 @@ rename_guts (NautilusFile *file,
 	op->is_rename = TRUE;
 	op->use_slow_mime = file->details->got_slow_mime_type;
 
-	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	options = NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS;
 	if (op->use_slow_mime) {
 		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 	}
@@ -3521,9 +3520,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 	op = operation_new (file, callback, callback_data);
 	op->use_slow_mime = file->details->got_slow_mime_type;
 
-	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS
-		| GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS;
+	options = NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS;
 	if (op->use_slow_mime) {
 		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 	}
@@ -3539,6 +3536,46 @@ nautilus_file_set_permissions (NautilusFile *file,
 				       set_permissions_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (vfs_uri);
+}
+
+/**
+ * nautilus_file_can_get_selinux_context:
+ * 
+ * Check whether the selinux context for a file are determinable.
+ * This might not be the case for files on non-UNIX file systems,
+ * files without a context or systems that don't support selinux.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the permissions are valid.
+ */
+gboolean
+nautilus_file_can_get_selinux_context (NautilusFile *file)
+{
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SELINUX_CONTEXT);
+}
+
+
+/**
+ * nautilus_file_get_selinux_context:
+ * 
+ * Get a user-displayable string representing a file's selinux
+ * context
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+char *
+nautilus_file_get_selinux_context (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (!nautilus_file_can_get_selinux_context (file)) {
+		return NULL;
+	}
+
+	return g_strdup (file->details->info->selinux_context);
 }
 
 static char *
@@ -3771,8 +3808,7 @@ set_owner_and_group (NautilusFile *file,
 	op = operation_new (file, callback, callback_data);
 	op->use_slow_mime = file->details->got_slow_mime_type;
 
-	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	options = NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS;
 	if (op->use_slow_mime) {
 		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 	}
@@ -4495,7 +4531,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target", "volume", "free_space"
+ * "link_target", "volume", "free_space", "selinux_context"
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -4555,6 +4591,9 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 	if (strcmp (attribute_name, "permissions") == 0) {
 		return nautilus_file_get_permissions_as_string (file);
+	}
+	if (strcmp (attribute_name, "selinux_context") == 0) {
+		return nautilus_file_get_selinux_context (file);
 	}
 	if (strcmp (attribute_name, "octal_permissions") == 0) {
 		return nautilus_file_get_octal_permissions_as_string (file);
