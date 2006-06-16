@@ -1,5 +1,35 @@
 2006-06-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-extension/nautilus-menu-provider.[ch]:
+	Add items_updated signal
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-signaller.[ch]:
+	* src/nautilus-signaller.[ch]:
+	* src/Makefile.am:
+	Move NautilusSignaller to libnautilus-private.
+	Add popup_menu_changed signal.
+	
+	* src/nautilus-application.c:
+	Signal popup_menu_changed when a menu provider emits items_updated.
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/nautilus-window.c:
+	Handle popup_menu_changed.
+	
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-history-sidebar.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c:
+	Update includes.
+
+	Patch from RUAUDEL Frédéric <ruaudel@embl.fr>
+
+2006-06-16  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-column-utilities.c:
 	Add selinux context column
 	

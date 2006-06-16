@@ -30,7 +30,6 @@
 
 #include <config.h>
 #include "nautilus-emblem-sidebar.h"
-#include "nautilus-signaller.h"
 
 #include <stdio.h>
 #include <eel/eel-gtk-macros.h>
@@ -68,6 +67,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
+#include <libnautilus-private/nautilus-signaller.h>
 
 struct NautilusEmblemSidebarDetails {
 	NautilusWindowInfo *window;

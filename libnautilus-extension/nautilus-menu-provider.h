@@ -72,6 +72,9 @@ GList                  *nautilus_menu_provider_get_toolbar_items    (NautilusMen
 								     GtkWidget            *window,
 								     NautilusFileInfo     *current_folder);
 
+/* This function emit a signal to inform nautilus that its item list has changed. */
+void                    nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
+
 G_END_DECLS
 
 #endif

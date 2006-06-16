@@ -36,7 +36,6 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-main.h"
-#include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-zoom-control.h"
@@ -79,6 +78,7 @@
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -189,6 +189,10 @@ nautilus_window_init (NautilusWindow *window)
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
 				 G_CALLBACK (icons_changed_callback), window,
 				 0);
+
+	/* Register to menu provider extension signal managing menu updates */
+	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
+			 G_CALLBACK (nautilus_window_load_extension_menus), window, G_CONNECT_SWAPPED);
 
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 

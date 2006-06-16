@@ -170,6 +170,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \
 	nautilus-sidebar.h \
+	nautilus-signaller.h \
+	nautilus-signaller.c \
 	nautilus-query.c \
 	nautilus-query.h \
 	nautilus-thumbnails.c \

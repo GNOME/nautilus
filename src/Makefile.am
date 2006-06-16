@@ -111,8 +111,6 @@ nautilus_SOURCES = \
 	nautilus-side-pane.h			\
 	nautilus-sidebar-title.c		\
 	nautilus-sidebar-title.h		\
-	nautilus-signaller.c			\
-	nautilus-signaller.h			\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
 	nautilus-throbber.c			\

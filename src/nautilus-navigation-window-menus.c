@@ -36,7 +36,6 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
-#include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-bookmarks.h"
@@ -61,6 +60,7 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-search-engine.h>
+#include <libnautilus-private/nautilus-signaller.h>
 
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
 

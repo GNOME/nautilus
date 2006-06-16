@@ -32,7 +32,6 @@
 #include <math.h>
 #include "nautilus-property-browser.h"
 
-#include "nautilus-signaller.h"
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -84,6 +83,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-signaller.h>
 #include <atk/atkrelationset.h>
 
 /* property types */

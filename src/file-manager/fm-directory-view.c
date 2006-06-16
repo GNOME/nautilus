@@ -103,6 +103,7 @@
 #include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
+#include <libnautilus-private/nautilus-signaller.h>
 #include <unistd.h>
 
 /* Number of seconds until cancel dialog shows up */
@@ -1957,6 +1958,10 @@ fm_directory_view_init (FMDirectoryView *view)
 	/* React to clipboard changes */
 	g_signal_connect_object (nautilus_clipboard_monitor_get (), "clipboard_changed",
 				 G_CALLBACK (clipboard_changed_callback), view, 0);
+
+        /* Register to menu provider extension signal managing menu updates */
+        g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
+                         G_CALLBACK (fm_directory_view_update_menus), view, G_CONNECT_SWAPPED);
 	
 	gtk_widget_show (GTK_WIDGET (view));
 	

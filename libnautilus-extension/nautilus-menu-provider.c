@@ -31,6 +31,20 @@
 static void
 nautilus_menu_provider_base_init (gpointer g_class)
 {
+	static gboolean initialized = FALSE;
+
+	if (!initialized)
+	{
+		/* This signal should be emited each time the extension modify the list of menu items */
+		g_signal_new ("items_updated",
+			NAUTILUS_TYPE_MENU_PROVIDER,
+			G_SIGNAL_RUN_LAST,
+			0,
+			NULL, NULL,
+			g_cclosure_marshal_VOID__VOID,
+			G_TYPE_NONE, 0);
+		initialized = TRUE;
+	}
 }
 
 GType                   
@@ -107,4 +121,12 @@ nautilus_menu_provider_get_toolbar_items (NautilusMenuProvider *provider,
 	}
 }
 
+/* This function emit a signal to inform nautilus that its item list has changed */
+void
+nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider* provider)
+{
+	g_return_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider));
+
+	g_signal_emit_by_name (provider, "items_updated");
+}
 

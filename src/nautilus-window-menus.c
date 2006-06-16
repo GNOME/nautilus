@@ -34,7 +34,6 @@
 #include "nautilus-connect-server-dialog.h"
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
-#include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
@@ -68,6 +67,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
+#include <libnautilus-private/nautilus-signaller.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"

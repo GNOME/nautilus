@@ -81,6 +81,8 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
+#include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-extension/nautilus-menu-provider.h>
 #include <bonobo-activation/bonobo-activation.h>
 #ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
@@ -349,12 +351,44 @@ migrate_old_nautilus_files (void)
 }
 
 static void
+menu_provider_items_updated_handler (NautilusMenuProvider *provider, GtkWidget* parent_window, gpointer data)
+{
+
+	g_signal_emit_by_name (nautilus_signaller_get_current (),
+			       "popup_menu_changed");
+}
+
+static void
+menu_provider_init_callback (void)
+{
+        GList *items;
+        GList *providers;
+        GList *l;
+
+        providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+        items = NULL;
+
+        for (l = providers; l != NULL; l = l->next) {
+                NautilusMenuProvider *provider = NAUTILUS_MENU_PROVIDER (l->data);
+
+		g_signal_connect_after (G_OBJECT (provider), "items_updated",
+                           (GCallback)menu_provider_items_updated_handler,
+                           NULL);
+        }
+
+        nautilus_module_extension_list_free (providers);
+}
+
+static void
 finish_startup (NautilusApplication *application)
 {
 	/* initialize nautilus modules */
 	nautilus_module_init ();
 
 	nautilus_module_add_type (FM_TYPE_DITEM_PAGE);
+
+	/* attach menu-provider module callback */
+	menu_provider_init_callback ();
 	
 	/* initialize URI authentication manager */
 	gnome_authentication_manager_init ();

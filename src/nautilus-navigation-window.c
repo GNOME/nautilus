@@ -35,7 +35,6 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-main.h"
-#include "nautilus-signaller.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-query-editor.h"
@@ -85,6 +84,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
 

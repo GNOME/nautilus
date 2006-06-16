@@ -43,8 +43,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
+#include <libnautilus-private/nautilus-signaller.h>
 
-#include "nautilus-signaller.h"
 #include "nautilus-history-sidebar.h"
 
 #define NAUTILUS_HISTORY_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_HISTORY_SIDEBAR, NautilusHistorySidebarClass))

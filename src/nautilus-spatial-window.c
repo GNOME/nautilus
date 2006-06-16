@@ -40,7 +40,6 @@
 #include "nautilus-main.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-search-bar.h"
-#include "nautilus-signaller.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <eel/eel-debug.h>
@@ -81,6 +80,7 @@
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
+#include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
 
