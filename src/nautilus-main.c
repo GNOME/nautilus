@@ -190,6 +190,7 @@ main (int argc, char *argv[])
 	gboolean no_desktop;
 	const char *startup_id;
 	char *startup_id_copy;
+	char *session_to_load;
 	gchar *geometry;
 	const gchar **remaining;
 	gboolean perform_self_check;
@@ -216,6 +217,9 @@ main (int argc, char *argv[])
 		{ "restart", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &restart_shell,
 		  N_("Restart Nautilus."), NULL },
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
+		{ "load-session", 'l', 0, G_OPTION_ARG_STRING, &session_to_load,
+		  /* Translators: --no-default-window is a nautilus command line parameter, don't modify it. */
+		  N_("Load a saved session from the specified file. Implies \"--no-default-window\"."), N_("FILENAME") },
 
 		{ NULL }
 	};
@@ -243,6 +247,7 @@ main (int argc, char *argv[])
 	/* Get parameters. */
 	remaining = NULL;
 	geometry = NULL;
+	session_to_load = NULL;
 	kill_shell = FALSE;
 	no_default_window = FALSE;
 	no_desktop = FALSE;
@@ -261,6 +266,10 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_GOPTION_CONTEXT, context,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
+
+	if (session_to_load != NULL) {
+		no_default_window = TRUE;
+	}
 
 	/* Do this here so that gdk_display is initialized */
 	if (startup_id_copy == NULL) {
@@ -349,6 +358,7 @@ main (int argc, char *argv[])
 			 browser_window,
 			 startup_id_copy,
 			 geometry,
+			 session_to_load,
 			 remaining);
 		g_free (startup_id_copy);
 

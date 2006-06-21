@@ -1,3 +1,44 @@
+2006-06-21  Christian Neumair  <chris@gnome-de.org>
+
+	Add complete session management, remember maximization state and type
+	of open windows, save history on quit.
+
+	* libnautilus-private/nautilus-global-preferences.c
+	* libnautilus-private/nautilus-global-preferences.h:
+	Add NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED setting.
+
+	* libnautilus-private/nautilus-metadata.h:
+	Add NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED key.
+
+	* src/nautilus-application.c:
+	* src/nautilus-application.h:
+	Save session on session save request, add
+	nautilus_application_load_session(), move
+	initial navigational geometry handling to
+	nautilus_application_create_navigation_window,
+	maximize window if 
+	NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED
+	is set.
+
+	* src/nautilus-main.c:
+	Add "--load-session" parameter.
+
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-shell.c:
+	Add load_session CORBA method.
+
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-spatial-window.c:
+	Save maximized state when appropriate.
+
+	* src/nautilus-window-manage-views.c:
+	Load maximized state for spatial windows,
+	remove navigation window geometry handling.
+
+	* src/nautilus-window.c:
+	* src/nautilus-window-private.h:
+	Add nautilus_add_to_history_list_no_notify.
+
 2006-06-16  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-extension/nautilus-menu-provider.[ch]:

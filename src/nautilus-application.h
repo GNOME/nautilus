@@ -69,6 +69,7 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             browser_window,
 							     const char          *startup_id,
 							     const char          *default_geometry,
+							     const char          *session_to_load,
 							     const char          *urls[]);
 GList *              nautilus_application_get_window_list           (void);
 GList *              nautilus_application_get_spatial_window_list    (void);
@@ -95,5 +96,6 @@ void                 nautilus_application_close_parent_windows     (NautilusSpat
 void                 nautilus_application_close_all_spatial_windows  (void);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
-
+void                 nautilus_application_load_session      (NautilusApplication *application,
+							     const char *filename); 
 #endif /* NAUTILUS_APPLICATION_H */

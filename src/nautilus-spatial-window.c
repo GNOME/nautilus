@@ -192,6 +192,25 @@ nautilus_spatial_window_unrealize (GtkWidget *widget)
 	}
 }
 
+static gboolean
+nautilus_spatial_window_state_event (GtkWidget *widget,
+				     GdkEventWindowState *event)
+{
+	if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED &&
+	    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
+		nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
+						    NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED,
+						    FALSE,
+						    event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
+	}
+
+	if (GTK_WIDGET_CLASS (parent_class)->window_state_event != NULL) {
+		return GTK_WIDGET_CLASS (parent_class)->window_state_event (widget, event);
+	}
+
+	return FALSE;
+}
+
 static void
 nautilus_spatial_window_destroy (GtkObject *object)
 {
@@ -984,6 +1003,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 	GTK_WIDGET_CLASS (class)->show = nautilus_spatial_window_show;
 	GTK_WIDGET_CLASS (class)->configure_event = nautilus_spatial_window_configure_event;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_spatial_window_unrealize;
+	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_spatial_window_state_event;
 
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
 		real_prompt_for_location;

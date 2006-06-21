@@ -560,6 +560,22 @@ nautilus_navigation_window_unrealize (GtkWidget *widget)
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
+static gboolean
+nautilus_navigation_window_state_event (GtkWidget *widget,
+					GdkEventWindowState *event)
+{
+	if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED,
+					     event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
+	}
+
+	if (GTK_WIDGET_CLASS (parent_class)->window_state_event != NULL) {
+		return GTK_WIDGET_CLASS (parent_class)->window_state_event (widget, event);
+	}
+
+	return FALSE;
+}
+
 static void
 nautilus_navigation_window_destroy (GtkObject *object)
 {
@@ -1418,8 +1434,7 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	if (GTK_WIDGET(window)->window &&
-	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
+	if (GTK_WIDGET(window)->window) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 		
 		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY)) {
@@ -1428,6 +1443,12 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 				 geometry_string);
 		}
 		g_free (geometry_string);
+
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED)) {
+			eel_preferences_set_boolean
+				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED, 
+				 gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_MAXIMIZED);
+		}
 	}
 }
 
@@ -1462,6 +1483,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_navigation_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
+	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
 	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = real_set_content_view_widget;
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;

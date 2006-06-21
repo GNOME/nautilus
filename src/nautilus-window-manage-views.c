@@ -657,23 +657,6 @@ nautilus_window_content_view_matches_iid (NautilusWindow *window,
 }
 
 
-static gboolean
-another_navigation_window_already_showing (NautilusWindow *the_window)
-{
-	GList *list, *item;
-	
-	list = nautilus_application_get_window_list ();
-	for (item = list; item != NULL; item = item->next) {
-		if (item->data != the_window &&
-		    NAUTILUS_IS_NAVIGATION_WINDOW (item->data)) {
-			return TRUE;
-		}
-	}
-	
-	return FALSE;
-}
-
-
 /*
  * begin_location_change
  * 
@@ -783,6 +766,7 @@ setup_new_window (NautilusWindow *window, NautilusFile *file)
 	char *show_hidden_file_setting;
 	char *geometry_string;
 	char *scroll_string;
+	gboolean maximized;
 	
 	if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		/* load show hidden state */
@@ -801,6 +785,14 @@ setup_new_window (NautilusWindow *window, NautilusFile *file)
 		g_free (show_hidden_file_setting);
 		
 		/* load the saved window geometry */
+		maximized = nautilus_file_get_boolean_metadata
+			(file, NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED, FALSE);
+		if (maximized) {
+			gtk_window_maximize (GTK_WINDOW (window));
+		} else {
+			gtk_window_unmaximize (GTK_WINDOW (window));
+		}
+
 		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
                 if (geometry_string != NULL) {
@@ -829,25 +821,6 @@ setup_new_window (NautilusWindow *window, NautilusFile *file)
 			window->details->pending_scroll_to = scroll_string;
 		}
         }
-	
-        if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-		geometry_string = eel_preferences_get
-				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY);
-                if (geometry_string != NULL &&
-		    geometry_string[0] != 0) {
-			/* Ignore saved window position if a window with the same
-			 * location is already showing. That way the two windows
-			 * wont appear at the exact same location on the screen.
-			 */
-                        eel_gtk_window_set_initial_geometry_from_string 
-                                (GTK_WINDOW (window), 
-                                 geometry_string,
-                                 NAUTILUS_WINDOW_MIN_WIDTH, 
-                                 NAUTILUS_WINDOW_MIN_HEIGHT,
-				 another_navigation_window_already_showing (window));
-                }
-                g_free (geometry_string);
-	}
 }
 
 static void

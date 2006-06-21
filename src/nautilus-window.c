@@ -1356,7 +1356,7 @@ remove_from_history_list (NautilusBookmark *bookmark)
 	}
 }
 
-static void
+static gboolean
 add_to_history_list (NautilusBookmark *bookmark)
 {
 	/* Note that the history is shared amongst all windows so
@@ -1393,8 +1393,10 @@ add_to_history_list (NautilusBookmark *bookmark)
 			}
 		}
 
-		nautilus_send_history_list_changed ();
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 void
@@ -1407,12 +1409,30 @@ nautilus_remove_from_history_list_no_notify (const char *uri)
 	g_object_unref (bookmark);
 }
 
+gboolean
+nautilus_add_to_history_list_no_notify (const char *uri,
+					const char *name,
+					gboolean has_custom_name,
+					const char *icon)
+{
+	NautilusBookmark *bookmark;
+	gboolean ret;
+
+	bookmark = nautilus_bookmark_new_with_icon (uri, name, has_custom_name, icon);
+	ret = add_to_history_list (bookmark);
+	g_object_unref (bookmark);
+
+	return ret;
+}
+
 static void
 real_add_current_location_to_history_list (NautilusWindow *window)
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
                 
-        add_to_history_list (window->current_location_bookmark);
+	if (add_to_history_list (window->current_location_bookmark)) {
+		nautilus_send_history_list_changed ();
+	}
 }
 
 void

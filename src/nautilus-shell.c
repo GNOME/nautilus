@@ -72,6 +72,9 @@ static void     corba_open_default_window       (PortableServer_Servant  servant
 						 const CORBA_char       *geometry,
 						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
+static void     corba_load_session              (PortableServer_Servant  servant,
+						 const CORBA_char       *filename,
+						 CORBA_Environment      *ev);
 static void     corba_start_desktop             (PortableServer_Servant  servant,
 						 CORBA_Environment      *ev);
 static void     corba_stop_desktop              (PortableServer_Servant  servant,
@@ -93,6 +96,7 @@ nautilus_shell_class_init (NautilusShellClass *klass)
 
 	klass->epv.open_windows = corba_open_windows;
 	klass->epv.open_default_window = corba_open_default_window;
+	klass->epv.load_session = corba_load_session;
 	klass->epv.start_desktop = corba_start_desktop;
 	klass->epv.stop_desktop = corba_stop_desktop;
 	klass->epv.quit = corba_quit;
@@ -202,6 +206,20 @@ corba_open_default_window (PortableServer_Servant servant,
 		/* Open a window pointing at the default location. */
 		open_window (shell, NULL, startup_id, geometry, browser_window);
 	}
+}
+
+static void
+corba_load_session (PortableServer_Servant servant,
+		    const CORBA_char *filename,
+		    CORBA_Environment *ev)
+{
+	NautilusShell	      *shell;
+	NautilusApplication   *application;
+
+	shell	    = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+	application = NAUTILUS_APPLICATION (shell->details->application);
+	
+	nautilus_application_load_session (application, filename);
 }
 
 static void
