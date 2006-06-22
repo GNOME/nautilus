@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-19 12:42+0200\n"
-"PO-Revision-Date: 2006-06-19 13:03+0200\n"
+"POT-Creation-Date: 2006-06-22 10:39+0200\n"
+"PO-Revision-Date: 2006-06-22 10:42+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team:  <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -509,9 +509,9 @@ msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
 msgstr ""
-"Je-li nastaveno na true, umožňuje Nautilus zobrazení a úpravu "
-"oprávnění souborů unixovějším způsobem, včetně přístupu "
-"k některým esoteričtějším volbám."
+"Je-li nastaveno na true, umožňuje Nautilus zobrazení a úpravu oprávnění "
+"souborů unixovějším způsobem, včetně přístupu k některým esoteričtějším "
+"volbám."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -1829,7 +1829,7 @@ msgid "Search"
 msgstr "Hledat"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:520
-#: ../libnautilus-private/nautilus-global-preferences.c:522
+#: ../libnautilus-private/nautilus-global-preferences.c:526
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Počítač"
@@ -2087,7 +2087,7 @@ msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
 #: ../libnautilus-private/nautilus-file.c:6315
-#: ../libnautilus-private/nautilus-global-preferences.c:528
+#: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
 msgstr "Koš"
@@ -2274,7 +2274,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:516
+#: ../libnautilus-private/nautilus-global-preferences.c:520
 #, c-format
 msgid "%s's Home"
 msgstr "Domov %s"
@@ -2353,12 +2353,12 @@ msgstr "Otevírám %s"
 #: ../libnautilus-private/nautilus-program-choosing.c:590
 #: ../libnautilus-private/nautilus-program-choosing.c:598
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1424
-#: ../src/nautilus-window-manage-views.c:1430
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1397
+#: ../src/nautilus-window-manage-views.c:1403
+#: ../src/nautilus-window-manage-views.c:1431
+#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1445
 #: ../src/nautilus-window-manage-views.c:1466
-#: ../src/nautilus-window-manage-views.c:1472
-#: ../src/nautilus-window-manage-views.c:1493
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nemohu zobrazit \"%s\"."
@@ -2370,28 +2370,28 @@ msgid "There was an error launching the application."
 msgstr "Při spouštění aplikace došlo k chybě."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:600
-#: ../src/nautilus-window-manage-views.c:1468
+#: ../src/nautilus-window-manage-views.c:1441
 msgid "The attempt to log in failed."
 msgstr "Pokus přihlásit se selhal."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:605
-#: ../src/nautilus-window-manage-views.c:1474
+#: ../src/nautilus-window-manage-views.c:1447
 msgid "Access was denied."
 msgstr "Přístup byl odepřen."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:610
-#: ../src/nautilus-window-manage-views.c:1485
+#: ../src/nautilus-window-manage-views.c:1458
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Nemohu zobrazit \"%s\", protože nebyl nalezen počítač \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:613
-#: ../src/nautilus-window-manage-views.c:1488
+#: ../src/nautilus-window-manage-views.c:1461
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr " Zkontrolujte překlepy a vaše nastavení proxy."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:618
-#: ../src/nautilus-window-manage-views.c:1446
+#: ../src/nautilus-window-manage-views.c:1419
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" není platné umístění."
@@ -2400,13 +2400,13 @@ msgstr "\"%s\" není platné umístění."
 #: ../libnautilus-private/nautilus-program-choosing.c:628
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1168
-#: ../src/nautilus-window-manage-views.c:1441
-#: ../src/nautilus-window-manage-views.c:1449
+#: ../src/nautilus-window-manage-views.c:1414
+#: ../src/nautilus-window-manage-views.c:1422
 msgid "Please check the spelling and try again."
 msgstr "Zkontrolujte prosím překlepy a zkuste to znovu."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:625
-#: ../src/nautilus-window-manage-views.c:1438
+#: ../src/nautilus-window-manage-views.c:1411
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Nemohu najít \"%s\"."
@@ -4173,12 +4173,12 @@ msgstr "Strom"
 msgid "Show Tree"
 msgstr "Zobrazit strom"
 
-#: ../src/nautilus-application.c:262
+#: ../src/nautilus-application.c:267
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus nemůže vytvořit potřebnou složku \"%s\"."
 
-#: ../src/nautilus-application.c:264
+#: ../src/nautilus-application.c:269
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4186,12 +4186,12 @@ msgstr ""
 "Před spuštěním Nautilu prosím vytvořte tuto složku nebo nastavte oprávnění "
 "tak, aby ji Nautilus mohl vytvořit."
 
-#: ../src/nautilus-application.c:267
+#: ../src/nautilus-application.c:272
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus nemohl vytvořit následující vyžadované složky: %s"
 
-#: ../src/nautilus-application.c:269
+#: ../src/nautilus-application.c:274
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4199,15 +4199,15 @@ msgstr ""
 "Před spuštěním Nautilu prosím vytvořte tyto složky nebo nastavte oprávnění "
 "tak, aby je Nautilus mohl vytvořit."
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:333
 msgid "Link To Old Desktop"
 msgstr "Odkaz na starou plochu"
 
-#: ../src/nautilus-application.c:344
+#: ../src/nautilus-application.c:349
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "Na pracovní ploše byl vytvořen odkaz \"Odkaz na starou plochu\"."
 
-#: ../src/nautilus-application.c:345
+#: ../src/nautilus-application.c:350
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4225,7 +4225,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:536
+#: ../src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4236,7 +4236,7 @@ msgstr ""
 "znovu nainstalovat Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:542
+#: ../src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4283,12 +4283,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:572 ../src/nautilus-application.c:590
-#: ../src/nautilus-application.c:597
+#: ../src/nautilus-application.c:578 ../src/nautilus-application.c:596
+#: ../src/nautilus-application.c:603
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nyní nelze Nautilus použít kvůli neočekávané chybě."
 
-#: ../src/nautilus-application.c:573
+#: ../src/nautilus-application.c:579
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4296,7 +4296,7 @@ msgstr ""
 "Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu "
 "registrovat server pohledu správce souborů."
 
-#: ../src/nautilus-application.c:591
+#: ../src/nautilus-application.c:597
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4306,7 +4306,7 @@ msgstr ""
 "nalézt továrnu. Problém možná vyřešíte zabitím bonobo-activation-server a "
 "restartováním Nautilu."
 
-#: ../src/nautilus-application.c:598
+#: ../src/nautilus-application.c:604
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4962,49 +4962,60 @@ msgstr "Otevřít umístění"
 msgid "_Location:"
 msgstr "_Umístění:"
 
-#: ../src/nautilus-main.c:204
+#: ../src/nautilus-main.c:205
 msgid "Perform a quick set of self-check tests."
 msgstr "Provést rychlou sadu kontrol sebe sama."
 
-#: ../src/nautilus-main.c:207
+#: ../src/nautilus-main.c:208
 msgid "Create the initial window with the given geometry."
 msgstr "Vytvořit první okno se zadanou geometrií"
 
-#: ../src/nautilus-main.c:207
+#: ../src/nautilus-main.c:208
 msgid "GEOMETRY"
 msgstr "GEOMETRIE"
 
-#: ../src/nautilus-main.c:209
+#: ../src/nautilus-main.c:210
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Vytvořit jen okna pro výslovně zadaná URI."
 
-#: ../src/nautilus-main.c:211
+#: ../src/nautilus-main.c:212
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "Nespravovat pracovní plochy (ignorovat volbu v dialogu Nastavení)"
 
-#: ../src/nautilus-main.c:213
+#: ../src/nautilus-main.c:214
 msgid "open a browser window."
 msgstr "otevřít okno prohlížeče."
 
-#: ../src/nautilus-main.c:215
+#: ../src/nautilus-main.c:216
 msgid "Quit Nautilus."
 msgstr "Skončit Nautilus."
 
-#: ../src/nautilus-main.c:217
+#: ../src/nautilus-main.c:218
 msgid "Restart Nautilus."
 msgstr "Restartovat Nautilus."
 
-#: ../src/nautilus-main.c:218
+#: ../src/nautilus-main.c:219
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-main.c:253
+#. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
+#: ../src/nautilus-main.c:222
+msgid ""
+"Load a saved session from the specified file. Implies \"--no-default-window"
+"\"."
+msgstr "Načíst uložené sezení ze zadaného souboru. Implikuje \"--no-default-window\"."
+
+#: ../src/nautilus-main.c:222
+msgid "FILENAME"
+msgstr "JMÉNO SOUBORU"
+
+#: ../src/nautilus-main.c:258
 msgid "File Manager"
 msgstr "Správce souborů"
 
-#: ../src/nautilus-main.c:254
+#: ../src/nautilus-main.c:259
 msgid ""
 "\n"
 "\n"
@@ -5015,24 +5026,24 @@ msgstr ""
 "Procházet systém souborů správcem souborů"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:262 ../src/nautilus-spatial-window.c:406
+#: ../src/nautilus-main.c:267 ../src/nautilus-spatial-window.c:425
 #: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:285 ../src/nautilus-main.c:294
-#: ../src/nautilus-main.c:299
+#: ../src/nautilus-main.c:294 ../src/nautilus-main.c:303
+#: ../src/nautilus-main.c:308
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s nemůže být použito s URI.\n"
 
-#: ../src/nautilus-main.c:290
+#: ../src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nemůže být použito s jinými volbami.\n"
 
-#: ../src/nautilus-main.c:304
+#: ../src/nautilus-main.c:313
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nemůže být použito s více než jedním URI.\n"
@@ -5100,7 +5111,7 @@ msgstr "_Umístění..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:844
+#: ../src/nautilus-spatial-window.c:863
 msgid "Specify a location to open"
 msgstr "Určete umístění, které otevřít"
 
@@ -5114,35 +5125,35 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Vymazat obsah nabídky Přejít a seznamů Zpět/Vpřed"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:852
+#: ../src/nautilus-spatial-window.c:871
 msgid "_Add Bookmark"
 msgstr "_Přidat záložku"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:853
+#: ../src/nautilus-spatial-window.c:872
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Přidat záložku pro aktuální polohu do této nabídky"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:855
+#: ../src/nautilus-spatial-window.c:874
 msgid "_Edit Bookmarks"
 msgstr "_Upravit záložky"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:856
+#: ../src/nautilus-spatial-window.c:875
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Zobrazit okno, které umožňuje upravit záložky v této nabídce"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:858
+#: ../src/nautilus-spatial-window.c:877
 msgid "_Search"
 msgstr "_Hledat"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:859
+#: ../src/nautilus-spatial-window.c:878
 msgid "Search for files"
 msgstr "Hledat soubory"
 
@@ -5213,7 +5224,7 @@ msgstr "Přejít na následující navštívené umístění"
 msgid "Forward history"
 msgstr "Vpřed v historii"
 
-#: ../src/nautilus-navigation-window.c:824
+#: ../src/nautilus-navigation-window.c:840
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Prohlížeč souborů"
@@ -5530,30 +5541,30 @@ msgstr "<b>Hledat:</b>"
 msgid "Close the side pane"
 msgstr "Zavřít Postranní panel"
 
-#: ../src/nautilus-spatial-window.c:842
+#: ../src/nautilus-spatial-window.c:861
 msgid "_Places"
 msgstr "_Místa"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:843
+#: ../src/nautilus-spatial-window.c:862
 msgid "Open _Location..."
 msgstr "Otevřít _umístění..."
 
-#: ../src/nautilus-spatial-window.c:846
+#: ../src/nautilus-spatial-window.c:865
 msgid "Close P_arent Folders"
 msgstr "Zavřít na_dřazené složky"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:847
+#: ../src/nautilus-spatial-window.c:866
 msgid "Close this folder's parents"
 msgstr "Zavřít nadřazené složky k této složce"
 
-#: ../src/nautilus-spatial-window.c:849
+#: ../src/nautilus-spatial-window.c:868
 msgid "Clos_e All Folders"
 msgstr "Zavřít vš_echny složky"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:850
+#: ../src/nautilus-spatial-window.c:869
 msgid "Close all folder windows"
 msgstr "Zavřít všechna okna složek"
 
@@ -5583,32 +5594,32 @@ msgstr "Můžete zvolit jiný pohled nebo přejít na jiné umístění."
 msgid "The location cannot be displayed with this viewer."
 msgstr "Toto umístění nemůže být zobrazeno tímto prohlížečem."
 
-#: ../src/nautilus-window-manage-views.c:1029
+#: ../src/nautilus-window-manage-views.c:1002
 msgid "Content View"
 msgstr "Pohled obsahu"
 
-#: ../src/nautilus-window-manage-views.c:1030
+#: ../src/nautilus-window-manage-views.c:1003
 msgid "View of the current folder"
 msgstr "Pohled na aktuální složku"
 
-#: ../src/nautilus-window-manage-views.c:1427
+#: ../src/nautilus-window-manage-views.c:1400
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus nemá nainstalován žádný prohlížeč umožňující zobrazit tuto složku."
 
-#: ../src/nautilus-window-manage-views.c:1433
+#: ../src/nautilus-window-manage-views.c:1406
 msgid "The location is not a folder."
 msgstr "Umístění není složka."
 
-#: ../src/nautilus-window-manage-views.c:1460
+#: ../src/nautilus-window-manage-views.c:1433
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus neumí obsloužit umístění %s:."
 
-#: ../src/nautilus-window-manage-views.c:1495
+#: ../src/nautilus-window-manage-views.c:1468
 msgid "Check that your proxy settings are correct."
 msgstr "Zkontrolujte vaše nastavení proxy."
 
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1473
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5617,16 +5628,16 @@ msgstr ""
 "Nemohu zobrazit \"%s\", protože Nautilus nemůže kontaktovat hlavní "
 "vyhledávač SMB."
 
-#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1476
 msgid "Check that an SMB server is running in the local network."
 msgstr "Zkontrolujte, že na místní síti běží SMB server."
 
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1485
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus nemůže zobrazit \"%s\"."
 
-#: ../src/nautilus-window-manage-views.c:1514
+#: ../src/nautilus-window-manage-views.c:1487
 msgid "Please select another viewer and try again."
 msgstr "Vyberte prosím jiný prohlížeč a zkuste to znovu."
 
