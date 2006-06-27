@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 01:35+0400\n"
+"POT-Creation-Date: 2006-06-28 01:26+0400\n"
 "PO-Revision-Date: 2006-02-24 12:46+0200\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team:  <gnome-cyr@gnome.org>\n"
@@ -1788,7 +1788,7 @@ msgstr "Ошибка создания новой папки."
 #. localizers: the initial name of a new folder
 #: ../libnautilus-private/nautilus-file-operations.c:2375
 msgid "untitled folder"
-msgstr "неозаглавленная папка"
+msgstr "новая папка"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2433
 #, c-format
@@ -1858,7 +1858,7 @@ msgid "Search"
 msgstr "Поиск"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:520
-#: ../libnautilus-private/nautilus-global-preferences.c:522
+#: ../libnautilus-private/nautilus-global-preferences.c:526
 #: ../nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Компьютер"
@@ -2116,7 +2116,7 @@ msgid "link (broken)"
 msgstr "ссылка (испорченная)"
 
 #: ../libnautilus-private/nautilus-file.c:6315
-#: ../libnautilus-private/nautilus-global-preferences.c:528
+#: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
 msgstr "Корзина"
@@ -2303,7 +2303,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:516
+#: ../libnautilus-private/nautilus-global-preferences.c:520
 #, c-format
 msgid "%s's Home"
 msgstr "Домашняя папка пользователя %s"
@@ -2382,12 +2382,12 @@ msgstr "Открывается %s"
 #: ../libnautilus-private/nautilus-program-choosing.c:590
 #: ../libnautilus-private/nautilus-program-choosing.c:598
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1424
-#: ../src/nautilus-window-manage-views.c:1430
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1397
+#: ../src/nautilus-window-manage-views.c:1403
+#: ../src/nautilus-window-manage-views.c:1431
+#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1445
 #: ../src/nautilus-window-manage-views.c:1466
-#: ../src/nautilus-window-manage-views.c:1472
-#: ../src/nautilus-window-manage-views.c:1493
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Не удалось отобразить «%s»."
@@ -2399,29 +2399,29 @@ msgid "There was an error launching the application."
 msgstr "Произошла ошибка при запуске приложения."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:600
-#: ../src/nautilus-window-manage-views.c:1468
+#: ../src/nautilus-window-manage-views.c:1441
 msgid "The attempt to log in failed."
 msgstr "Попытка регистрации не удалась."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:605
-#: ../src/nautilus-window-manage-views.c:1474
+#: ../src/nautilus-window-manage-views.c:1447
 msgid "Access was denied."
 msgstr "Доступ запрещен."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:610
-#: ../src/nautilus-window-manage-views.c:1485
+#: ../src/nautilus-window-manage-views.c:1458
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Не удалось отобразить «%s», потому что узел «%s» не найден."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:613
-#: ../src/nautilus-window-manage-views.c:1488
+#: ../src/nautilus-window-manage-views.c:1461
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Убедитесь, что адрес введен без ошибок и параметры прокси верны."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:618
-#: ../src/nautilus-window-manage-views.c:1446
+#: ../src/nautilus-window-manage-views.c:1419
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "«%s» не является допустимым адресом."
@@ -2430,13 +2430,13 @@ msgstr "«%s» не является допустимым адресом."
 #: ../libnautilus-private/nautilus-program-choosing.c:628
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1168
-#: ../src/nautilus-window-manage-views.c:1441
-#: ../src/nautilus-window-manage-views.c:1449
+#: ../src/nautilus-window-manage-views.c:1414
+#: ../src/nautilus-window-manage-views.c:1422
 msgid "Please check the spelling and try again."
 msgstr "Проверьте правильность ввода и попробуйте еще раз."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:625
-#: ../src/nautilus-window-manage-views.c:1438
+#: ../src/nautilus-window-manage-views.c:1411
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Не удалось найти «%s»."
@@ -4268,12 +4268,12 @@ msgstr "Дерево"
 msgid "Show Tree"
 msgstr "Показать дерево"
 
-#: ../src/nautilus-application.c:262
+#: ../src/nautilus-application.c:267
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Программе Nautilus не удалось создать требуемую папку «%s»."
 
-#: ../src/nautilus-application.c:264
+#: ../src/nautilus-application.c:269
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4281,12 +4281,12 @@ msgstr ""
 "Перед запуском Nautilus необходимо создать эту папку или установить права "
 "так, чтобы Nautilus мог их создать."
 
-#: ../src/nautilus-application.c:267
+#: ../src/nautilus-application.c:272
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Программе Nautilus не удалось создать следующие необходимые папки: %s."
 
-#: ../src/nautilus-application.c:269
+#: ../src/nautilus-application.c:274
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4294,15 +4294,15 @@ msgstr ""
 "Перед запуском Nautilus необходимо создать эти папки или установить права "
 "так, чтобы Nautilus мог их создать."
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:333
 msgid "Link To Old Desktop"
 msgstr "Ссылка на старый рабочий стол"
 
-#: ../src/nautilus-application.c:344
+#: ../src/nautilus-application.c:349
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "На рабочем столе была создана ссылка \"Старый рабочий стол\"."
 
-#: ../src/nautilus-application.c:345
+#: ../src/nautilus-application.c:350
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4321,7 +4321,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:536
+#: ../src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4332,7 +4332,7 @@ msgstr ""
 "компьютер или переустановить Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:542
+#: ../src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4379,12 +4379,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:572 ../src/nautilus-application.c:590
-#: ../src/nautilus-application.c:597
+#: ../src/nautilus-application.c:578 ../src/nautilus-application.c:596
+#: ../src/nautilus-application.c:603
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus не может быть использован сейчас из-за неожиданной ошибки."
 
-#: ../src/nautilus-application.c:573
+#: ../src/nautilus-application.c:579
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4392,7 +4392,7 @@ msgstr ""
 "Nautilus не может быть использован сейчас из-за неожиданной ошибки в системе "
 "Bonobo при попытке зарегистрировать сервер просмотра файлового менеджера."
 
-#: ../src/nautilus-application.c:591
+#: ../src/nautilus-application.c:597
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4402,7 +4402,7 @@ msgstr ""
 "Bonobo при попытке обнаружить фабрику. Уничтожение процесса bonobo-"
 "activation-server и перезапуск Nautilus может решить проблему."
 
-#: ../src/nautilus-application.c:598
+#: ../src/nautilus-application.c:604
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5060,50 +5060,63 @@ msgstr "Открыть адрес"
 msgid "_Location:"
 msgstr "_Адрес:"
 
-#: ../src/nautilus-main.c:204
+#: ../src/nautilus-main.c:205
 msgid "Perform a quick set of self-check tests."
 msgstr "Выполнить быструю самопроверку."
 
-#: ../src/nautilus-main.c:207
+#: ../src/nautilus-main.c:208
 msgid "Create the initial window with the given geometry."
 msgstr "Создать первоначальное окно с заданной геометрией."
 
-#: ../src/nautilus-main.c:207
+#: ../src/nautilus-main.c:208
 msgid "GEOMETRY"
 msgstr "ГЕОМЕТРИЯ"
 
-#: ../src/nautilus-main.c:209
+#: ../src/nautilus-main.c:210
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Создавать окна только для точно определённых идентификаторов (URI)."
 
-#: ../src/nautilus-main.c:211
+#: ../src/nautilus-main.c:212
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr ""
 "Не управлять рабочим столом (игнорировать настройки в диалоге настроек)"
 
-#: ../src/nautilus-main.c:213
+#: ../src/nautilus-main.c:214
 msgid "open a browser window."
 msgstr "открыть окно обозревателя."
 
-#: ../src/nautilus-main.c:215
+#: ../src/nautilus-main.c:216
 msgid "Quit Nautilus."
 msgstr "Выйти из Nautilus."
 
-#: ../src/nautilus-main.c:217
+#: ../src/nautilus-main.c:218
 msgid "Restart Nautilus."
 msgstr "Перезапустить Nautilus."
 
-#: ../src/nautilus-main.c:218
+#: ../src/nautilus-main.c:219
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-main.c:253
+#. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
+#: ../src/nautilus-main.c:222
+msgid ""
+"Load a saved session from the specified file. Implies \"--no-default-window"
+"\"."
+msgstr ""
+"Загрузить сохранённую сессию из заданного файла. Автоматически устанавливает "
+"\"--no-default-window\"."
+
+#: ../src/nautilus-main.c:222
+msgid "FILENAME"
+msgstr "ИМЯФАЙЛА"
+
+#: ../src/nautilus-main.c:258
 msgid "File Manager"
 msgstr "Файловый менеджер"
 
-#: ../src/nautilus-main.c:254
+#: ../src/nautilus-main.c:259
 msgid ""
 "\n"
 "\n"
@@ -5114,28 +5127,28 @@ msgstr ""
 "Просмотр файловой системы в менеджере файлов"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:262 ../src/nautilus-spatial-window.c:406
+#: ../src/nautilus-main.c:267 ../src/nautilus-spatial-window.c:425
 #: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:285 ../src/nautilus-main.c:294
-#: ../src/nautilus-main.c:299
+#: ../src/nautilus-main.c:294 ../src/nautilus-main.c:303
+#: ../src/nautilus-main.c:308
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr ""
 "nautilus: параметр %s не может быть использован вместе с идентификаторами "
 "(URI).\n"
 
-#: ../src/nautilus-main.c:290
+#: ../src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 "nautilus: параметр --check не может быть использован вместе с другими "
 "параметрами.\n"
 
-#: ../src/nautilus-main.c:304
+#: ../src/nautilus-main.c:313
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
@@ -5205,7 +5218,7 @@ msgstr "_Адрес..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:844
+#: ../src/nautilus-spatial-window.c:863
 msgid "Specify a location to open"
 msgstr "Укажите адрес, который нужно открыть"
 
@@ -5219,35 +5232,35 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Очистить содержимое меню \"Переход\" и списков \"Вперед/Назад\""
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:852
+#: ../src/nautilus-spatial-window.c:871
 msgid "_Add Bookmark"
 msgstr "_Добавить закладку"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:853
+#: ../src/nautilus-spatial-window.c:872
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Добавить закладку для текущего адреса в это меню."
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:855
+#: ../src/nautilus-spatial-window.c:874
 msgid "_Edit Bookmarks"
 msgstr "_Изменить закладки..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:856
+#: ../src/nautilus-spatial-window.c:875
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Отобразить окно, в котором можно будет изменить закладки этого меню."
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:858
+#: ../src/nautilus-spatial-window.c:877
 msgid "_Search"
 msgstr "_Поиск"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:859
+#: ../src/nautilus-spatial-window.c:878
 msgid "Search for files"
 msgstr "Поиск файлов"
 
@@ -5318,7 +5331,7 @@ msgstr "Перейти к следующему посещенному адрес
 msgid "Forward history"
 msgstr "Вперед по истории"
 
-#: ../src/nautilus-navigation-window.c:824
+#: ../src/nautilus-navigation-window.c:840
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Обозреватель файлов"
@@ -5635,30 +5648,30 @@ msgstr "<b>Поиск: </b>"
 msgid "Close the side pane"
 msgstr "Закрыть боковую панель"
 
-#: ../src/nautilus-spatial-window.c:842
+#: ../src/nautilus-spatial-window.c:861
 msgid "_Places"
 msgstr "_Места"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:843
+#: ../src/nautilus-spatial-window.c:862
 msgid "Open _Location..."
 msgstr "Открыть _адрес..."
 
-#: ../src/nautilus-spatial-window.c:846
+#: ../src/nautilus-spatial-window.c:865
 msgid "Close P_arent Folders"
 msgstr "Закрыть р_одительские папки"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:847
+#: ../src/nautilus-spatial-window.c:866
 msgid "Close this folder's parents"
 msgstr "Закрыть родительские папки этой папки"
 
-#: ../src/nautilus-spatial-window.c:849
+#: ../src/nautilus-spatial-window.c:868
 msgid "Clos_e All Folders"
 msgstr "Закрыть _все папки"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:850
+#: ../src/nautilus-spatial-window.c:869
 msgid "Close all folder windows"
 msgstr "Закрыть все окна папок"
 
@@ -5689,32 +5702,32 @@ msgstr ""
 msgid "The location cannot be displayed with this viewer."
 msgstr "Адрес не может быть отображен этой программой просмотра."
 
-#: ../src/nautilus-window-manage-views.c:1029
+#: ../src/nautilus-window-manage-views.c:1002
 msgid "Content View"
 msgstr "Просмотр содержимого"
 
-#: ../src/nautilus-window-manage-views.c:1030
+#: ../src/nautilus-window-manage-views.c:1003
 msgid "View of the current folder"
 msgstr "Просмотр текущей папки"
 
-#: ../src/nautilus-window-manage-views.c:1427
+#: ../src/nautilus-window-manage-views.c:1400
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Нет программы просмотра для отображения этой папки."
 
-#: ../src/nautilus-window-manage-views.c:1433
+#: ../src/nautilus-window-manage-views.c:1406
 msgid "The location is not a folder."
 msgstr "Адрес не является папкой."
 
-#: ../src/nautilus-window-manage-views.c:1460
+#: ../src/nautilus-window-manage-views.c:1433
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus не может обрабатывать адреса %s."
 
-#: ../src/nautilus-window-manage-views.c:1495
+#: ../src/nautilus-window-manage-views.c:1468
 msgid "Check that your proxy settings are correct."
 msgstr "Убедитесь, что параметры прокси верны."
 
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1473
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5723,16 +5736,16 @@ msgstr ""
 "Не удалось показать «%s», потому что Nautilus не может связаться с мастер-"
 "браузером SMB."
 
-#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1476
 msgid "Check that an SMB server is running in the local network."
 msgstr "Убедитесь, что в локальной сети работает сервер SMB."
 
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1485
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus не может отобразить адрес «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1514
+#: ../src/nautilus-window-manage-views.c:1487
 msgid "Please select another viewer and try again."
 msgstr "Выберите другую программу просмотра и попробуйте еще раз."
 
