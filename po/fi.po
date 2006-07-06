@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-01 13:01+0200\n"
-"PO-Revision-Date: 2006-07-01 13:06+0200\n"
+"POT-Creation-Date: 2006-07-06 11:00+0300\n"
+"PO-Revision-Date: 2006-07-06 11:06+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -512,13 +512,12 @@ msgstr ""
 "syötekenttä sijainnin näyttämiseen polkupalkin sijasta."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
 msgstr ""
-"Jos tosi, Nautilus sallii joidenkin vaikeatajuisten asetusten muuttamisen "
-"tiedoston asetusikkunassa."
+"Jos tosi, Nautilus sallii joidenkin unix-tyylisten vaikeatajuisempien "
+"asetusten muuttamisen tiedoston asetusikkunassa."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -723,7 +722,7 @@ msgstr "Sans 10"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show advanced permissions in in the file property dialog"
-msgstr ""
+msgstr "Näytä oikeuksien lisäasetukset tiedoston ominaisuusikkunassa"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show folders first in windows"
@@ -1452,19 +1451,21 @@ msgid "A file named \"%s\" already exists.  Do you want to replace it?"
 msgstr "Tiedosto \"%s\" on jo olemassa. Haluatko korvata sen?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1193
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The folder already exists in \"%s\".  Replacing it will overwrite any files "
 "in the folder that conflict with the files being copied."
 msgstr ""
-"Kun olemassa oleva kansio korvataan, korvataan myös kaikki sen sisältämät "
-"tiedostot, jotka ovat ristiriidassa kopioitavien kanssa."
+"Kansio on jo olemassa kohdassa \"%s\". Sen korvaaminen kirjoittaa yli kaikki "
+"kansiossa jo olevat tiedostot, jotka ovat ristiriidassa kopioitavien kanssa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1196
 #, c-format
 msgid ""
 "The file already exists in \"%s\".  Replacing it will overwrite its contents."
 msgstr ""
+"Tiedosto on jo olemassa kohteessa \"%s\". Tiedoston korvaaminen tuhoaa vanhan "
+"sisällön."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1213
 #: ../libnautilus-private/nautilus-file-operations.c:1232
@@ -3273,23 +3274,22 @@ msgstr "Alusta valittu taltio"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6875
 msgid "Mount the volume associated with the open folder"
-msgstr ""
+msgstr "Liitä avoimeen kansioon liittyvä osio"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6879
 msgid "Unmount the volume associated with the open folder"
-msgstr ""
+msgstr "Irrota avoimeen kansioon liittyvä osio"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6883
-#, fuzzy
 msgid "Eject the volume associated with the open folder"
-msgstr "Valitse tässä kansiossa näkyvät sarakkeet"
+msgstr "Avaa kelkka avoimeen kansioon liittyvältä laitteelta"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6887
 msgid "Format the volume associated with the open folder"
-msgstr ""
+msgstr "Alusta avoimeen kansioon liittyvän osion tiedostojärjestelmä"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6890
@@ -4151,9 +4151,8 @@ msgid "Last changed:"
 msgstr "Viimeksi muuttunut:"
 
 #: ../src/file-manager/fm-properties-window.c:3821
-#, fuzzy
 msgid "Apply permissions to enclosed files"
-msgstr "Tiedoston oikeudet."
+msgstr "Toteuta oikeudet kaikille kansion ja alikansioiden tiedostoille"
 
 #: ../src/file-manager/fm-properties-window.c:3831
 #, c-format
@@ -4386,15 +4385,17 @@ msgstr "Sijaintia \"%s\" ei voi näyttää"
 
 #: ../src/nautilus-connect-server-dialog-main.c:102
 msgid "[URI]"
-msgstr ""
+msgstr "[URI]"
 
 #: ../src/nautilus-connect-server-dialog-main.c:111
-#, fuzzy
 msgid ""
 "\n"
 "\n"
 "Add connect to server mount"
-msgstr "Yhdistä palvelimeen %s"
+msgstr ""
+"\n"
+"\n"
+"Lisää \"yhdistä palvelimeen\"-liitoskohta"
 
 #: ../src/nautilus-connect-server-dialog.c:113
 msgid "Custom Location"
@@ -4859,9 +4860,8 @@ msgid "Date Taken"
 msgstr "Ottopäivä"
 
 #: ../src/nautilus-image-properties-page.c:226
-#, fuzzy
 msgid "Date Digitized"
-msgstr "Muokattu"
+msgstr "Digitoitu tieto"
 
 #: ../src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
@@ -5025,7 +5025,7 @@ msgstr "Käynnistä Nautilus uudelleen."
 
 #: ../src/nautilus-main.c:219
 msgid "[URI...]"
-msgstr ""
+msgstr "[URI...]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
 #: ../src/nautilus-main.c:222
@@ -5033,22 +5033,26 @@ msgid ""
 "Load a saved session from the specified file. Implies \"--no-default-window"
 "\"."
 msgstr ""
+"Lataa tallennettu istunto annetusta tiedostosta. Olettaa valitsimen "
+"\"--no-default-window\"."
 
 #: ../src/nautilus-main.c:222
 msgid "FILENAME"
-msgstr ""
+msgstr "TIEDOSTONIMI"
 
 #: ../src/nautilus-main.c:258
 msgid "File Manager"
 msgstr "Tiedostonhallinta"
 
 #: ../src/nautilus-main.c:259
-#, fuzzy
 msgid ""
 "\n"
 "\n"
 "Browse the file system with the file manager"
-msgstr "Selaa tiedostojärjestelmää tiedostonhallinnasta"
+msgstr ""
+"\n"
+"\n"
+"Selaa tiedostojärjestelmää tiedostonhallinnasta"
 
 #. Set initial window title
 #: ../src/nautilus-main.c:267 ../src/nautilus-spatial-window.c:425
@@ -5675,40 +5679,37 @@ msgid "Go to the location specified by this bookmark"
 msgstr "Siirry tämän kirjanmerkin osoittamaan sijaintiin"
 
 #: ../src/nautilus-window-menus.c:423
-#, fuzzy
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Nautilus on vapaaohjelma, ja sitä levitetään Free Software Foundationin\n"
-"julkaiseman GNU General Public License -lisenssin version 2 tai\n"
+"Nautilus on vapaa ohjelma, ja sitä levitetään Free Software Foundationin "
+"julkaiseman GNU General Public License -lisenssin version 2 tai "
 "valinnaisesti myöhemmän version alaisena."
 
 #: ../src/nautilus-window-menus.c:427
-#, fuzzy
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
-"Nautilusta levitetään toivoen, että se olisi hyödyllinen, mutta\n"
-"ILMAN MINKÄÄNLAISTA TAKUUTA, ei edes takuuta MYYNTIKELPOISUUDESTA \n"
-"tai SOPIVUUDESTA TIETTYYN KÄYTTÖÖN. Lisätietoja on \n"
+"Nautilusta levitetään toivoen, että se olisi hyödyllinen, mutta "
+"ILMAN MINKÄÄNLAISTA TAKUUTA, ei edes takuuta MYYNTIKELPOISUUDESTA "
+"tai SOPIVUUDESTA TIETTYYN KÄYTTÖÖN. Lisätietoja on "
 "GNU General Public Licence -lisenssissä."
 
 #: ../src/nautilus-window-menus.c:431
-#, fuzzy
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
 "Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
-"GNU General Public Licence -lisenssin kopion tulisi olla toimitettuna\n"
-"Nautiluksen mukana. Jos näin ei ole, kirjoita \n"
-"Free Software Foundationille, Inc., 59 Temple Place, Suite 330, \n"
+"GNU General Public Licence -lisenssin kopion tulisi olla toimitettuna "
+"Nautiluksen mukana. Jos näin ei ole, kirjoita "
+"Free Software Foundationille, Inc., 59 Temple Place, Suite 330, "
 "Boston MA 02111-1307 USA"
 
 #: ../src/nautilus-window-menus.c:450
