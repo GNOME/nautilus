@@ -683,7 +683,7 @@ static const GtkActionEntry main_entries[] = {
     N_("_Trash"), NULL,           /* label, accelerator */
     N_("Go to the trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },
-  { "Go to Burn CD", "gnome-dev-cdrom",                        /* name, stock id */
+  { "Go to Burn CD", "nautilus-cd-burner",                        /* name, stock id */
     N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },

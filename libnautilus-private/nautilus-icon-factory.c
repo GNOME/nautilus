@@ -830,7 +830,7 @@ get_special_icon_for_file (NautilusFile *file)
 	uri = nautilus_file_get_uri (file);
 
 	if (strcmp (uri, "burn:///") == 0) {
-		ret = "gnome-dev-cdrom";
+		ret = "nautilus-cd-burner";
 	} else if (strcmp (uri, "computer:///") == 0) {
 		ret = "gnome-fs-client";
 	} else if ((strcmp (uri, "network:///") == 0)
