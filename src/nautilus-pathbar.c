@@ -969,7 +969,7 @@ nautilus_path_bar_check_icon_theme (NautilusPathBar *path_bar)
 }
 
 /* Public functions and their helpers */
-static void
+void
 nautilus_path_bar_clear_buttons (NautilusPathBar *path_bar)
 {
         while (path_bar->button_list != NULL) {

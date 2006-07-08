@@ -82,8 +82,8 @@ char *   nautilus_ensure_unique_file_name            (const char *directory_uri,
 						      const char *base_name,
 			                              const char *extension);
 char *   nautilus_unique_temporary_file_name         (void);
-char *   nautilus_find_file_in_gnome_path            (char       *file);
-GList *  nautilus_find_all_files_in_gnome_path       (char       *file);
+
+char *   nautilus_find_existing_uri_in_hierarchy     (const char *uri);
 
 const char *nautilus_get_vfs_method_display_name (char *method);
 char *      nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri);

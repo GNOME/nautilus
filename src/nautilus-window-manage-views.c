@@ -330,12 +330,32 @@ viewed_file_changed_callback (NautilusFile *file,
                          * all other nautilus_window_close callers?
                          */
                         end_location_change (window);
-                        
-                        /* FIXME bugzilla.gnome.org 45038: Is closing
-                         * the window really the right thing to do for
-                         * all cases?
-                         */
-                        nautilus_window_close (window);
+
+			if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+				/* auto-show existing parent URI. */
+				char *uri, *go_to_uri;
+				NautilusFile *parent_file;
+
+				parent_file = nautilus_file_get_parent (file);
+				uri = nautilus_file_get_uri (parent_file);
+
+				go_to_uri = nautilus_find_existing_uri_in_hierarchy (uri);
+				if (go_to_uri != NULL) {
+					/* the path bar URI will be set to go_to_uri immediately
+					 * in begin_location_change, but we don't want the
+					 * inexistant children to show up anymore */
+					nautilus_path_bar_clear_buttons (NAUTILUS_PATH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->path_bar));
+					nautilus_window_go_to (NAUTILUS_WINDOW (window), go_to_uri);
+					g_free (go_to_uri);
+				} else {
+					nautilus_window_go_home (NAUTILUS_WINDOW (window));
+				}
+
+				g_free (uri);
+				nautilus_file_unref (parent_file);
+			} else {
+				nautilus_window_close (window);
+			}
                 }
 	} else {
                 new_location = nautilus_file_get_uri (file);

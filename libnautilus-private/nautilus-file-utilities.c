@@ -513,6 +513,30 @@ nautilus_unique_temporary_file_name (void)
 	return file_name;
 }
 
+char *
+nautilus_find_existing_uri_in_hierarchy (const char *uri)
+{
+	GnomeVFSURI *vfs_uri, *parent_vfs_uri;
+	char *ret = NULL;
+
+	g_assert (uri != NULL);
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+
+	while (vfs_uri != NULL) {
+		if (gnome_vfs_uri_exists (vfs_uri)) {
+			ret = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+			break;
+		}
+
+		parent_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);
+		vfs_uri = parent_vfs_uri;
+	}
+
+	return ret;
+}
+
 const char *
 nautilus_get_vfs_method_display_name (char *method)
 {

@@ -1,3 +1,18 @@
+2006-07-08  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-file-utilities.h:
+	Add nautilus_find_existing_uri_in_hierarchy.
+	Remove undefined in_gnome_path helper declarations.
+
+	* src/nautilus-pathbar.c:
+	* src/nautilus-pathbar.h:
+	Make nautilus_path_bar_clear_buttons public.
+
+	* src/nautilus-window-manage-views.c: (viewed_file_changed_callback):
+	If the displayed location was removed, and it has an existing parent,
+	navigate window to this parent. Fixes #336724.
+
 2006-07-06  William Jon McCann  <mccann@jhu.edu>
 
 	* libnautilus-private/nautilus-icon-factory.c:
