@@ -1,5 +1,14 @@
 2006-07-11  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Never add a file to both
+	the added_files and changed_files lists. Don't ref an existing
+	file without adding it to the changed_file list. (#336051)
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
+2006-07-11  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-dnd.[ch]:
 	Add functions nautilus_drag_can_accept_files and
 	nautilus_drag_can_accept_info.
