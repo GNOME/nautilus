@@ -1044,26 +1044,28 @@ get_file_for_path_callback (NautilusTreeViewDragDest *dest,
 /* Handles an URL received from Mozilla */
 static void
 list_view_handle_url (NautilusTreeViewDragDest *dest, const char *encoded_url,
-		      GdkDragAction action, int x, int y, FMListView *view)
+		      const char *target_uri, GdkDragAction action, int x, int y, FMListView *view)
 {
 	fm_directory_view_handle_url_drop (FM_DIRECTORY_VIEW (view),
-					   encoded_url, action, x, y);
+					   encoded_url, target_uri, action, x, y);
 }
 
 static void
 list_view_handle_uri_list (NautilusTreeViewDragDest *dest, const char *item_uris,
+			   const char *target_uri,
 			   GdkDragAction action, int x, int y, FMListView *view)
 {
 	fm_directory_view_handle_uri_list_drop (FM_DIRECTORY_VIEW (view),
-						item_uris, action, x, y);
+						item_uris, target_uri, action, x, y);
 }
 
 static void
 list_view_handle_text (NautilusTreeViewDragDest *dest, const char *text,
+		       const char *target_uri,
 		       GdkDragAction action, int x, int y, FMListView *view)
 {
 	fm_directory_view_handle_text_drop (FM_DIRECTORY_VIEW (view),
-					    text, action, x, y);
+					    text, target_uri, action, x, y);
 }
 
 static void

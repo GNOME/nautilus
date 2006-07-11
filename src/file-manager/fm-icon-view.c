@@ -2527,26 +2527,29 @@ create_icon_container (FMIconView *icon_view)
 /* Handles an URL received from Mozilla */
 static void
 icon_view_handle_url (NautilusIconContainer *container, const char *encoded_url,
+		      const char *target_uri,
 		      GdkDragAction action, int x, int y, FMIconView *view)
 {
 	fm_directory_view_handle_url_drop (FM_DIRECTORY_VIEW (view),
-					   encoded_url, action, x, y);
+					   encoded_url, target_uri, action, x, y);
 }
 
 static void
 icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
+			   const char *target_uri,
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
 	fm_directory_view_handle_uri_list_drop (FM_DIRECTORY_VIEW (view),
-						item_uris, action, x, y);
+						item_uris, target_uri, action, x, y);
 }
 
 static void
 icon_view_handle_text (NautilusIconContainer *container, const char *text,
+		       const char *target_uri,
 		       GdkDragAction action, int x, int y, FMIconView *view)
 {
 	fm_directory_view_handle_text_drop (FM_DIRECTORY_VIEW (view),
-					    text, action, x, y);
+					    text, target_uri, action, x, y);
 }
 
 static char *

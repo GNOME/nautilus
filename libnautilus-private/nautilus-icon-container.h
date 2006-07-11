@@ -93,24 +93,27 @@ typedef struct {
 	void         (* context_click_selection)  (NautilusIconContainer *container,
 						   GdkEventButton *event);
 	void	     (* move_copy_items)	  (NautilusIconContainer *container,
-						   GList *item_uris,
+						   const GList *item_uris,
 						   GdkPoint *relative_item_points,
 						   const char *target_uri,
 						   GdkDragAction action,
 						   int x,
 						   int y);
 	void	     (* handle_url)		  (NautilusIconContainer *container,
-						   char *url,
+						   const char *url,
+						   const char *target_uri,
 						   GdkDragAction action,
 						   int x,
 						   int y);
 	void	     (* handle_uri_list)    	  (NautilusIconContainer *container,
-						   char *uri_list,
+						   const char *uri_list,
+						   const char *target_uri,
 						   GdkDragAction action,
 						   int x,
 						   int y);
 	void	     (* handle_text)		  (NautilusIconContainer *container,
-						   char *text,
+						   const char *text,
+						   const char *target_uri,
 						   GdkDragAction action,
 						   int x,
 						   int y);

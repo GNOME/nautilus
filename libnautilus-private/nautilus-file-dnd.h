@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_FILE_DND_H
 #define NAUTILUS_FILE_DND_H
 
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_FILE_DND_ERASE_KEYWORD "erase"
@@ -33,6 +34,9 @@ gboolean nautilus_drag_can_accept_item              (NautilusFile *drop_target_i
 						     const char   *item_uri);
 gboolean nautilus_drag_can_accept_items             (NautilusFile *drop_target_item,
 						     const GList  *items);
+gboolean nautilus_drag_can_accept_info              (NautilusFile *drop_target_item,
+						     NautilusIconDndTargetType drag_type,
+						     const GList *items);
 void     nautilus_drag_file_receive_dropped_keyword (NautilusFile *file,
 						     const char   *keyword);
 

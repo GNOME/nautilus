@@ -1,3 +1,48 @@
+2006-07-11  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file-dnd.[ch]:
+	Add functions nautilus_drag_can_accept_files and
+	nautilus_drag_can_accept_info.
+
+	* libnautilus-private/nautilus-icon-dnd.c: (receive_dropped_url),
+	(receive_dropped_uri_list), (receive_dropped_text),
+	(drag_data_received_callback):
+	Accept the entire drag context as parameter and use
+	nautilus_icon_container_find_drop_target.
+
+	(nautilus_icon_container_find_drop_target):
+	(nautilus_icon_dnd_update_drop_target):
+	Use nautilus_drag_can_accept_info.
+
+	* libnautilus-private/nautilus-marshal.list:
+	Add new signature.
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Add function get_drop_target_uri_at_pos and use it in the drop
+	handlers to determine the target uris for actions.
+	Rename get_drop_target to get_drop_target_uri_for path.
+
+	(nautilus_tree_view_drag_dest_class_init):
+	Adapt to new drag handler signatures.
+
+	(set_widget_highlight):
+	Fix DND highlighting of an empty tree view.
+
+	(drag_motion_callback):
+	Ignore drags on the header.
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.[ch]:
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Add a target/parent uri parameter to the drop handler functions.
+
+	* src/file-manager/fm-directory-view.[ch]:
+	Add handling for the additional target parameter to support
+	drops of URIs, URLs and text to subfolders.
+
+	Patch from Christian Neumair  <chris@gnome-de.org>
+
 2006-07-08  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file-utilities.c:

@@ -32,19 +32,14 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 
-gboolean
-nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
-			       const char *item_uri)
+static gboolean
+nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
 {
 	NautilusDirectory *directory;
-	gboolean res;
-	
-	if (nautilus_file_matches_uri (drop_target_item, item_uri)) {
-		/* can't accept itself */
-		return FALSE;
-	}
-	
+
 	if (nautilus_file_is_directory (drop_target_item)) {
+		gboolean res;
+
 		/* target is a directory, accept if editable */
 		directory = nautilus_directory_get_for_file (drop_target_item);
 		res = nautilus_directory_is_editable (directory);
@@ -68,7 +63,19 @@ nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 	
 	return FALSE;
 }
-					       
+
+gboolean
+nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
+			       const char *item_uri)
+{
+	if (nautilus_file_matches_uri (drop_target_item, item_uri)) {
+		/* can't accept itself */
+		return FALSE;
+	}
+
+	return nautilus_drag_can_accept_files (drop_target_item);
+}
+				       
 gboolean
 nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 				const GList *items)
@@ -92,6 +99,39 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 	}
 	
 	return TRUE;
+}
+
+gboolean
+nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
+			       NautilusIconDndTargetType drag_type,
+			       const GList *items)
+{
+	switch (drag_type) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			return nautilus_drag_can_accept_items (drop_target_item, items);
+
+		case NAUTILUS_ICON_DND_URI_LIST:
+		case NAUTILUS_ICON_DND_URL:
+		case NAUTILUS_ICON_DND_TEXT:
+			return nautilus_drag_can_accept_files (drop_target_item);
+
+		case NAUTILUS_ICON_DND_KEYWORD:
+			return TRUE;
+
+		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
+			return FALSE;
+
+		/* TODO return TRUE for folders as soon as drop handling is implemented */
+		case NAUTILUS_ICON_DND_COLOR:
+		case NAUTILUS_ICON_DND_BGIMAGE:
+		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
+			return FALSE;
+
+		default:
+			g_assert_not_reached ();
+			return FALSE;
+	}
+	
 }
 
 void

@@ -404,21 +404,25 @@ gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
 void                fm_directory_view_new_file                         (FMDirectoryView  *view,
+									const char       *parent_uri,
 									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
 void                fm_directory_view_handle_url_drop                  (FMDirectoryView  *view,
 									const char       *encoded_url,
+									const char       *target_uri,
 									GdkDragAction     action,
 									int               x,
 									int               y);
 void                fm_directory_view_handle_uri_list_drop             (FMDirectoryView  *view,
 									const char       *item_uris,
+									const char       *target_uri,
 									GdkDragAction     action,
 									int               x,
 									int               y);
 void                fm_directory_view_handle_text_drop                 (FMDirectoryView  *view,
 									const char       *text,
+									const char       *target_uri,
 									GdkDragAction     action,
 									int               x,
 									int               y);

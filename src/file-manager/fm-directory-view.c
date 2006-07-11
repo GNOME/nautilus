@@ -1415,7 +1415,7 @@ action_new_empty_file_callback (GtkAction *action,
 {                
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fm_directory_view_new_file (FM_DIRECTORY_VIEW (callback_data), NULL);
+	fm_directory_view_new_file (FM_DIRECTORY_VIEW (callback_data), NULL, NULL);
 }
 
 static void
@@ -4217,36 +4217,45 @@ setup_new_folder_data (FMDirectoryView *directory_view)
 
 static void
 fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
+						  const char *parent_uri,
 						  const char *initial_contents)
 {
 	GdkPoint *pos;
 	NewFolderData *data;
-	char *parent_uri;
+
+	g_assert (parent_uri != NULL);
 
 	data = setup_new_folder_data (directory_view);
 
 	pos = context_menu_to_file_operation_position (directory_view);
 
-	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
 					   pos, parent_uri,
 					   initial_contents,
 					   new_folder_done, data);
-
-	g_free (parent_uri);
 }
 
 void
 fm_directory_view_new_file (FMDirectoryView *directory_view,
+			    const char *parent_uri,
 			    NautilusFile *source)
 {
 	GdkPoint *pos;
 	NewFolderData *data;
-	char *parent_uri;
 	char *source_uri;
+	char *container_uri;
+
+	container_uri = NULL;
+	if (parent_uri == NULL) {
+		container_uri = fm_directory_view_get_backing_uri (directory_view);
+		g_assert (container_uri != NULL);
+	}
 
 	if (source == NULL) {
-		fm_directory_view_new_file_with_initial_contents (directory_view, NULL);
+		fm_directory_view_new_file_with_initial_contents (directory_view,
+								  parent_uri != NULL ? parent_uri : container_uri,
+								  NULL);
+		g_free (container_uri);
 		return;
 	}
 
@@ -4257,17 +4266,16 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 	data = setup_new_folder_data (directory_view);
 
 	source_uri = nautilus_file_get_uri (source);
-	parent_uri = fm_directory_view_get_backing_uri (directory_view);
 
 	nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
 							 pos,
-							 parent_uri,
+							 parent_uri != NULL ? parent_uri : container_uri,
 							 NULL,
 							 source_uri,
 							 new_folder_done, data);
 
-	g_free (parent_uri);
 	g_free (source_uri);
+	g_free (container_uri);
 }
 
 /* handle the open command */
@@ -5567,7 +5575,7 @@ create_template_callback (GtkAction *action, gpointer callback_data)
 
 	parameters = callback_data;
 	
-	fm_directory_view_new_file (parameters->directory_view, parameters->file);
+	fm_directory_view_new_file (parameters->directory_view, NULL, parameters->file);
 }
 
 static void
@@ -9632,6 +9640,7 @@ ask_link_action (FMDirectoryView *view)
 void
 fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 				   const char       *encoded_url,
+				   const char       *target_uri,
 				   GdkDragAction     action,
 				   int               x,
 				   int               y)
@@ -9652,10 +9661,13 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 		return;
 	}
 
-	container_uri = fm_directory_view_get_backing_uri (view);
-	g_return_if_fail (container_uri != NULL);
+	container_uri = NULL;
+	if (target_uri == NULL) {
+		container_uri = fm_directory_view_get_backing_uri (view);
+		g_assert (container_uri != NULL);
+	}
 
-	if (eel_vfs_has_capability (container_uri,
+	if (eel_vfs_has_capability (target_uri != NULL ? target_uri : container_uri,
 				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is not supported."),
 					 _("Drag and drop is only supported on local file systems."),
@@ -9736,7 +9748,7 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 			screen = gtk_widget_get_screen (GTK_WIDGET (view));
 			screen_num = gdk_screen_get_number (screen);
 
-			nautilus_link_local_create (container_uri,
+			nautilus_link_local_create (target_uri != NULL ? target_uri : container_uri,
 						    link_name,
 						    link_display_name,
 						    "gnome-fs-bookmark",
@@ -9758,7 +9770,7 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 		uri_list = g_list_append (uri_list, url);
 
 		fm_directory_view_move_copy_items (uri_list, points,
-						   container_uri,
+						   target_uri != NULL ? target_uri : container_uri,
 						   action, x, y, view);
 
 		g_list_free (uri_list);
@@ -9773,6 +9785,7 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 void
 fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 					const char       *item_uris,
+					const char       *target_uri,
 					GdkDragAction     action,
 					int               x,
 					int               y)
@@ -9787,8 +9800,11 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 		return;
 	}
 
-	container_uri = fm_directory_view_get_backing_uri (view);
-	g_return_if_fail (container_uri != NULL);
+	container_uri = NULL;
+	if (target_uri == NULL) {
+		container_uri = fm_directory_view_get_backing_uri (view);
+		g_assert (container_uri != NULL);
+	}
 
 	if (action == GDK_ACTION_ASK) {
 		action = nautilus_drag_drop_action_ask
@@ -9847,7 +9863,7 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 	}
 
 	fm_directory_view_move_copy_items (real_uri_list, points,
-					   container_uri,
+					   target_uri != NULL ? target_uri : container_uri,
 					   action, x, y, view);
 
 	eel_g_list_free_deep (real_uri_list);
@@ -9861,6 +9877,7 @@ fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
 void
 fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 				    const char       *text,
+				    const char       *target_uri,
 				    GdkDragAction     action,
 				    int               x,
 				    int               y)
@@ -9873,11 +9890,14 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 
 	g_return_if_fail (action == GDK_ACTION_COPY);
 
-	container_uri = fm_directory_view_get_backing_uri (view);
-	g_return_if_fail (container_uri != NULL);
+	container_uri = NULL;
+	if (target_uri == NULL) {
+		container_uri = fm_directory_view_get_backing_uri (view);
+		g_assert (container_uri != NULL);
+	}
 
 	fm_directory_view_new_file_with_initial_contents (
-		view, text);
+		view, target_uri != NULL ? target_uri : container_uri, text);
 
 	g_free (container_uri);
 }

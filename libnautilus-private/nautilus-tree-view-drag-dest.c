@@ -205,8 +205,7 @@ set_widget_highlight (NautilusTreeViewDragDest *dest, gboolean highlight)
 			g_signal_connect_object (dest->details->tree_view,
 						 "expose_event",
 						 G_CALLBACK (highlight_expose),
-						 dest,
-						 G_CONNECT_AFTER);
+						 dest, 0);
 	}
 	gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
 }
@@ -306,7 +305,7 @@ get_drop_path (NautilusTreeViewDragDest *dest,
 	NautilusFile *file;
 	GtkTreePath *ret;
 	
-	if (!path) {
+	if (!path || !dest->details->have_drag_data) {
 		return NULL;
 	}
 
@@ -315,7 +314,9 @@ get_drop_path (NautilusTreeViewDragDest *dest,
 
 	/* Go up the tree until we find a file that can accept a drop */
 	while (file == NULL /* dummy row */ ||
-	       !nautilus_drag_can_accept_items (file, dest->details->drag_list)) {
+	       !nautilus_drag_can_accept_info (file,
+		       			       dest->details->drag_type,
+					       dest->details->drag_list)) {
 		if (gtk_tree_path_get_depth (ret) == 1) {
 			gtk_tree_path_free (ret);
 			ret = NULL;
@@ -333,8 +334,8 @@ get_drop_path (NautilusTreeViewDragDest *dest,
 }
 
 static char *
-get_drop_target (NautilusTreeViewDragDest *dest, 
-		 GtkTreePath *path)
+get_drop_target_uri_for_path (NautilusTreeViewDragDest *dest,
+			      GtkTreePath *path)
 {
 	NautilusFile *file;
 	char *target;
@@ -366,7 +367,7 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 
 	switch (dest->details->drag_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST :
-		drop_target = get_drop_target (dest, path);
+		drop_target = get_drop_target_uri_for_path (dest, path);
 		
 		if (!drop_target) {
 			return 0;
@@ -383,9 +384,27 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 		return action;
 		
 	case NAUTILUS_ICON_DND_URL:
-		return nautilus_drag_default_drop_action_for_url (context);
+		drop_target = get_drop_target_uri_for_path (dest, path);
+
+		if (drop_target == NULL) {
+			return 0;
+		}
+
+		action = nautilus_drag_default_drop_action_for_url (context);
+
+		g_free (drop_target);
+
+		return action;
 		
 	case NAUTILUS_ICON_DND_URI_LIST :
+		drop_target = get_drop_target_uri_for_path (dest, path);
+
+		if (drop_target == NULL) {
+			return 0;
+		}
+
+		g_free (drop_target);
+
 		return context->suggested_action;
 
 	case NAUTILUS_ICON_DND_TEXT:
@@ -417,6 +436,7 @@ drag_motion_callback (GtkWidget *widget,
 	GtkTreeModel *model;
 	GtkTreeIter drop_iter;
 	GtkTreeViewDropPosition pos;
+	GdkWindow *bin_window;
 	guint action;
 
 	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (data);
@@ -430,8 +450,17 @@ drag_motion_callback (GtkWidget *widget,
 	}
 	drop_path = get_drop_path (dest, path);
 	
-	action = get_drop_action (dest, context, drop_path);
-	
+	action = 0;
+	bin_window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
+	if (bin_window != NULL) {
+		int bin_x, bin_y;
+		gdk_window_get_position (bin_window, &bin_x, &bin_y);
+		if (bin_y <= y) {
+			/* ignore drags on the header */
+			action = get_drop_action (dest, context, drop_path);
+		}
+	}
+
 	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (widget), &old_drop_path,
 					 NULL);
 	
@@ -497,6 +526,32 @@ drag_leave_callback (GtkWidget *widget,
 	remove_expand_timeout (dest);
 }
 
+static char *
+get_drop_target_uri_at_pos (NautilusTreeViewDragDest *dest, int x, int y)
+{
+	char *drop_target;
+	GtkTreePath *path;
+	GtkTreePath *drop_path;
+	GtkTreeViewDropPosition pos;
+
+	gtk_tree_view_get_dest_row_at_pos (dest->details->tree_view, x, y, 
+					   &path, &pos);
+
+	drop_path = get_drop_path (dest, path);
+
+	drop_target = get_drop_target_uri_for_path (dest, drop_path);
+
+	if (path != NULL) {
+		gtk_tree_path_free (path);
+	}
+
+	if (drop_path != NULL) {
+		gtk_tree_path_free (drop_path);
+	}
+
+	return drop_target;
+}
+
 static void
 receive_uris (NautilusTreeViewDragDest *dest,
 	      GdkDragContext *context,
@@ -504,17 +559,10 @@ receive_uris (NautilusTreeViewDragDest *dest,
 	      int x, int y)
 {
 	char *drop_target;
-	GtkTreePath *path;
-	GtkTreePath *drop_path;
-	GtkTreeViewDropPosition pos;
 	GdkDragAction action;
 
-	gtk_tree_view_get_dest_row_at_pos (dest->details->tree_view, x, y, 
-					   &path, &pos);
-
-	drop_path = get_drop_path (dest, path);
-
-	drop_target = get_drop_target (dest, drop_path);
+	drop_target = get_drop_target_uri_at_pos (dest, x, y);
+	g_assert (drop_target != NULL);
 
 	if (context->action == GDK_ACTION_ASK) {
 		if (nautilus_drag_selection_includes_special_link (dest->details->drag_list)) {
@@ -538,14 +586,6 @@ receive_uris (NautilusTreeViewDragDest *dest,
 			       drop_target,
 			       context->action,
 			       x, y);
-	}
-
-	if (path) {
-		gtk_tree_path_free (path);
-	}
-
-	if (drop_path) {
-		gtk_tree_path_free (drop_path);
 	}
 
 	g_free (drop_target);
@@ -583,14 +623,22 @@ receive_dropped_uri_list (NautilusTreeViewDragDest *dest,
 			  GdkDragContext *context,
 			  int x, int y)
 {
+	char *drop_target;
+
 	if (!dest->details->drag_data) {
 		return;
 	}
 
+	drop_target = get_drop_target_uri_at_pos (dest, x, y);
+	g_assert (drop_target != NULL);
+
 	g_signal_emit (dest, signals[HANDLE_URI_LIST], 0,
 		       (char*)dest->details->drag_data->data,
+		       drop_target,
 		       context->action,
 		       x, y);
+
+	g_free (drop_target);
 }
 
 static void
@@ -598,18 +646,24 @@ receive_dropped_text (NautilusTreeViewDragDest *dest,
 		      GdkDragContext *context,
 		      int x, int y)
 {
+	char *drop_target;
 	char *text;
 
 	if (!dest->details->drag_data) {
 		return;
 	}
 
+	drop_target = get_drop_target_uri_at_pos (dest, x, y);
+	g_assert (drop_target != NULL);
+
 	text = gtk_selection_data_get_text (dest->details->drag_data);
 	g_signal_emit (dest, signals[HANDLE_TEXT], 0,
-		       (char *) text,
+		       (char *) text, drop_target,
 		       context->action,
 		       x, y);
+
 	g_free (text);
+	g_free (drop_target);
 }
 
 
@@ -618,14 +672,22 @@ receive_dropped_url (NautilusTreeViewDragDest *dest,
 		     GdkDragContext *context,
 		     int x, int y)
 {
+	char *drop_target;
+
 	if (!dest->details->drag_data) {
 		return;
 	}
 
+	drop_target = get_drop_target_uri_at_pos (dest, x, y);
+	g_assert (drop_target != NULL);
+
 	g_signal_emit (dest, signals[HANDLE_URL], 0,
 		       (char*)dest->details->drag_data->data,
+		       drop_target,
 		       context->action,
 		       x, y);
+
+	g_free (drop_target);
 }
 
 static void
@@ -634,15 +696,14 @@ receive_dropped_keyword (NautilusTreeViewDragDest *dest,
 			 int x, int y)
 {
 	char *drop_target_uri;
-	GtkTreePath *path, *drop_path;
 	NautilusFile *drop_target_file;
 
-	gtk_tree_view_get_dest_row_at_pos (dest->details->tree_view, x, y, 
-					   &path, NULL);
+	if (!dest->details->drag_data) {
+		return;
+	}
 
-	drop_path = get_drop_path (dest, path);
-
-	drop_target_uri = get_drop_target (dest, drop_path);
+	drop_target_uri = get_drop_target_uri_at_pos (dest, x, y);
+	g_assert (drop_target_uri != NULL);
 
 	drop_target_file = nautilus_file_get (drop_target_uri);
 
@@ -650,15 +711,6 @@ receive_dropped_keyword (NautilusTreeViewDragDest *dest,
 		nautilus_drag_file_receive_dropped_keyword (drop_target_file,
 							    (char *) dest->details->drag_data->data);
 		nautilus_file_unref (drop_target_file);
-	}
-
-
-	if (path) {
-		gtk_tree_path_free (path);
-	}
-
-	if (drop_path) {
-		gtk_tree_path_free (drop_path);
 	}
 
 	g_free (drop_target_uri);
@@ -854,8 +906,9 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_url),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
-			      G_TYPE_NONE, 4,
+			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      G_TYPE_NONE, 5,
+			      G_TYPE_STRING,
 			      G_TYPE_STRING,
 			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
@@ -867,8 +920,9 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_uri_list),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
-			      G_TYPE_NONE, 4,
+			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      G_TYPE_NONE, 5,
+			      G_TYPE_STRING,
 			      G_TYPE_STRING,
 			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
@@ -880,8 +934,9 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
 					       handle_text),
 			      NULL, NULL,
-			      nautilus_marshal_VOID__STRING_ENUM_INT_INT,
-			      G_TYPE_NONE, 4,
+			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
+			      G_TYPE_NONE, 5,
+			      G_TYPE_STRING,
 			      G_TYPE_STRING,
 			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
