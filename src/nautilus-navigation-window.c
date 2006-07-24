@@ -140,6 +140,45 @@ GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
 			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
 
 static void
+location_button_toggled_cb (GtkToggleButton *toggle,
+			    NautilusNavigationWindow *window)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active (toggle);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY, is_active);
+
+	if (is_active) {
+		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (window->navigation_bar));
+	}
+}
+
+static gboolean
+location_button_should_be_active (NautilusNavigationWindow *window)
+{
+	return eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
+}
+
+static GtkWidget *
+location_button_create (NautilusNavigationWindow *window)
+{
+	GtkWidget *image;
+	GtkWidget *button;
+
+	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (image);
+
+	button = g_object_new (GTK_TYPE_TOGGLE_BUTTON,
+			       "image", image,
+			       "active", location_button_should_be_active (window),
+			       NULL);
+
+	g_signal_connect (button, "toggled",
+			  G_CALLBACK (location_button_toggled_cb), window);
+	return button;
+}
+
+static void
 nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 {
 	GtkUIManager *ui_manager;
@@ -206,7 +245,7 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	location_bar = gtk_toolbar_new ();
 	window->details->location_bar = location_bar;
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
 
 	item = gtk_tool_item_new ();
@@ -216,6 +255,10 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	gtk_container_add (GTK_CONTAINER (item),  hbox);
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
 			    item, -1);
+
+	window->details->location_button = location_button_create (window);
+	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_button, FALSE, FALSE, 0);
+	gtk_widget_show (window->details->location_button);
 
 	window->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
  	gtk_widget_show (window->path_bar);
@@ -305,14 +348,25 @@ static void
 always_use_location_entry_changed (gpointer callback_data)
 {
 	NautilusNavigationWindow *window;
+	gboolean use_entry;
 
 	window = NAUTILUS_NAVIGATION_WINDOW (callback_data);
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
+	use_entry = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
+
+	if (use_entry) {
 		nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_NAVIGATION);
 	} else {
 		nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_PATH);
 	}
+
+	g_signal_handlers_block_by_func (window->details->location_button,
+					 G_CALLBACK (location_button_toggled_cb),
+					 window);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (window->details->location_button), use_entry);
+	g_signal_handlers_unblock_by_func (window->details->location_button,
+					   G_CALLBACK (location_button_toggled_cb),
+					   window);
 }
 
 static int

@@ -110,6 +110,8 @@ struct _NautilusNavigationWindowDetails {
         gboolean temporary_location_bar;
         gboolean temporary_search_bar;
 
+        GtkWidget *location_button;
+
         /* Side Pane */
         int side_pane_width;
         NautilusSidebar *current_side_panel;

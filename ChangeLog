@@ -1,5 +1,23 @@
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window-private.h (NautilusNavigationWindowDetails):
+	Add a location_button field.
+
+	* src/nautilus-navigation-window.c
+	(nautilus_navigation_window_instance_init): Create the
+	location_button.
+	(location_button_toggled_cb): New callback.  Changes the
+	preference for toggling between the path bar and the location bar.
+	(always_use_location_entry_changed): Toggle the button as
+	appropriate.
+
+	Add a button to the location bar to toggle betwen the path bar
+	and a location entry. (#347991)
+
+	Patch from Federico Mena Quintero  <federico@novell.com>
+
+2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-icon-factory.c:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-tree-view.c: (create_popup_menu):
