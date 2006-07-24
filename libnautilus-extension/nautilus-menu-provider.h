@@ -34,7 +34,7 @@
 #include <gtk/gtkwidget.h>
 #include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
-#include "nautilus-menu-item.h"
+#include "nautilus-menu.h"
 
 G_BEGIN_DECLS
 

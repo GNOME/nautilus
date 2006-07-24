@@ -23,7 +23,7 @@
  */
 
 #include <config.h>
-#include "nautilus-menu-item.h"
+#include "nautilus-menu.h"
 #include "nautilus-extension-i18n.h"
 
 enum {
@@ -39,6 +39,7 @@ enum {
 	PROP_ICON,
 	PROP_SENSITIVE,
 	PROP_PRIORITY,
+	PROP_MENU,
 	LAST_PROP
 };
 
@@ -47,6 +48,7 @@ struct _NautilusMenuItemDetails {
 	char *label;
 	char *tip;
 	char *icon;
+	NautilusMenu *menu;
 	gboolean sensitive;
 	gboolean priority;
 };
@@ -83,6 +85,12 @@ nautilus_menu_item_activate (NautilusMenuItem *item)
 	g_signal_emit (item, signals[ACTIVATE], 0);
 }
 
+void
+nautilus_menu_item_set_submenu (NautilusMenuItem *item, NautilusMenu *menu)
+{
+	g_object_set (item, "menu", menu, NULL);
+}
+
 static void
 nautilus_menu_item_get_property (GObject *object,
 				 guint param_id,
@@ -111,6 +119,9 @@ nautilus_menu_item_get_property (GObject *object,
 		break;
 	case PROP_PRIORITY :
 		g_value_set_boolean (value, item->details->priority);
+		break;
+	case PROP_MENU :
+		g_value_set_object (value, item->details->menu);
 		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -157,6 +168,13 @@ nautilus_menu_item_set_property (GObject *object,
 		item->details->priority = g_value_get_boolean (value);
 		g_object_notify (object, "priority");
 		break;
+	case PROP_MENU :
+		if (item->details->menu) {
+			g_object_unref (item->details->menu);
+		}
+		item->details->menu = g_object_ref (g_value_get_object (value));
+		g_object_notify (object, "menu");
+		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
@@ -174,6 +192,9 @@ nautilus_menu_item_finalize (GObject *object)
 	g_free (item->details->label);
 	g_free (item->details->tip);
 	g_free (item->details->icon);
+	if (item->details->menu) {
+		g_object_unref (item->details->menu);
+	}
 
 	g_free (item->details);
 
@@ -185,6 +206,7 @@ nautilus_menu_item_instance_init (NautilusMenuItem *item)
 {
 	item->details = g_new0 (NautilusMenuItemDetails, 1);
 	item->details->sensitive = TRUE;
+	item->details->menu = NULL;
 }
 
 static void
@@ -248,6 +270,13 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 							       "Priority",
 							       "Show priority text in toolbars",
 							       TRUE,
+							       G_PARAM_READWRITE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_MENU,
+					 g_param_spec_object ("menu",
+							       "Menu",
+							       "The menu belonging to this item. May be null.",
+							       NAUTILUS_TYPE_MENU,
 							       G_PARAM_READWRITE));
 }
 

@@ -22,6 +22,12 @@ m4_define(exif_minver,                 0.5.12)
 m4_define(beagle_minver,               0.0.12)
 m4_define(tracker_minver,              0.0.1)
 
+dnl 1. If the library code has changed at all since last release, then increment revision.
+dnl 2. If any interfaces have been added, then increment current and set revision to 0.
+dnl Interface break is not allowed.
+m4_define(nautilus_extension_current,  2)
+m4_define(nautilus_extension_revision, 0)
+
 AC_INIT(nautilus, 2.15.90,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus])
 
@@ -51,6 +57,9 @@ AC_SUBST(RSVG_REQUIRED, [rsvg_minver])
 AC_SUBST(XML_REQUIRED, [xml_minver])
 AC_SUBST(STARTUP_NOTIFICATION_REQUIRED, [startup_notification_minver])
 
+dnl We need to decrement current by one in the calculation of the age because
+dnl the library was started with version "1:0:0" instead of "0:0:0"
+AC_SUBST(NAUTILUS_EXTENSION_VERSION_INFO, [nautilus_extension_current]:[nautilus_extension_revision]:`expr [nautilus_extension_current] - 1`)
 
 AC_C_BIGENDIAN
 AC_C_CONST

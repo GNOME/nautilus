@@ -1,3 +1,27 @@
+2006-07-24  Martin Wehner  <martin.wehner@gmail.com>
+
+	* configure.in:
+	* libnautilus-extension/Makefile.am:
+	Add extension versioning infrastructure and add nautilus-menu.[ch].
+
+	* libnautilus-extension/nautilus-menu-item.[ch]:
+	Add and handle a 'menu' property and add a function
+	nautilus_menu_item_set_submenu.
+
+	* libnautilus-extension/nautilus-menu.[ch]:
+	New files implementing a submenu item.
+
+	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
+	(reset_extension_actions_menu):
+	Add extension menu items recursively.
+
+	* libnautilus-extension/nautilus-menu-provider.h:
+	Update include.
+
+	Extend extension API to support submenus. (#314579)
+
+	Patch from Raffaele Sandrini  <rasa@gmx.ch>
+
 2006-07-11  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

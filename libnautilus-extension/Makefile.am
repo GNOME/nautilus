@@ -11,7 +11,7 @@ INCLUDES=\
 	$(NULL)
 
 libnautilus_extension_la_LDFLAGS=\
-	-version-info 1:0:0 \
+	-version-info @NAUTILUS_EXTENSION_VERSION_INFO@ \
 	-no-undefined \
 	$(NULL)
 
@@ -30,6 +30,7 @@ libnautilus_extension_include_HEADERS=		\
 	nautilus-menu-provider.h                \
 	nautilus-property-page-provider.h       \
 	nautilus-property-page.h                \
+	nautilus-menu.h                         \
 	$(NULL)
 
 libnautilus_extension_la_SOURCES=			\
@@ -44,6 +45,7 @@ libnautilus_extension_la_SOURCES=			\
 	nautilus-menu-provider.c                        \
 	nautilus-property-page-provider.c               \
 	nautilus-property-page.c                        \
+	nautilus-menu.c                                 \
 	$(NULL)
 
 pkgconfigdir=$(libdir)/pkgconfig

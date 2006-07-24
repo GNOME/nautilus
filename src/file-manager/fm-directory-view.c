@@ -5042,7 +5042,8 @@ activate_check_mime_types (FMDirectoryView *view,
 static void
 add_extension_menu_items (FMDirectoryView *view,
 			  GList *files,
-			  GList *menu_items)
+			  GList *menu_items,
+			  const char *subdirectory)
 {
 	GtkUIManager *ui_manager;
 	GList *l;
@@ -5051,27 +5052,52 @@ add_extension_menu_items (FMDirectoryView *view,
 	
 	for (l = menu_items; l; l = l->next) {
 		NautilusMenuItem *item;
+		NautilusMenu *menu;
 		GtkAction *action;
+		char *path;
 		
 		item = NAUTILUS_MENU_ITEM (l->data);
 		
+		g_object_get (item, "menu", &menu, NULL);
+		
 		action = add_extension_action_for_files (view, item, files);
-
+		
+		path = g_build_path ("/", FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS, subdirectory, NULL);
 		gtk_ui_manager_add_ui (ui_manager,
 				       view->details->extensions_menu_merge_id,
-				       FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS,
+				       path,
 				       gtk_action_get_name (action),
 				       gtk_action_get_name (action),
-				       GTK_UI_MANAGER_MENUITEM,
+				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
 				       FALSE);
+		g_free (path);
 
+		path = g_build_path ("/", FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER, subdirectory, NULL);
 		gtk_ui_manager_add_ui (ui_manager,
 				       view->details->extensions_menu_merge_id,
-				       FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER,
+				       path,
 				       gtk_action_get_name (action),
 				       gtk_action_get_name (action),
-				       GTK_UI_MANAGER_MENUITEM,
+				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
 				       FALSE);
+		g_free (path);
+
+		/* recursively fill the menu */		       
+		if (menu != NULL) {
+			char *subdir;
+			GList *children;
+			
+			children = nautilus_menu_get_items (menu);
+			
+			subdir = g_build_path ("/", subdirectory, gtk_action_get_name (action), NULL);
+			add_extension_menu_items (view,
+						  files,
+						  children,
+						  subdir);
+
+			nautilus_menu_item_list_free (children);
+			g_free (subdir);
+		}			
 	}
 }
 
@@ -5097,7 +5123,7 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
 					      selection);
 	if (items != NULL) {
-		add_extension_menu_items (view, selection, items);
+		add_extension_menu_items (view, selection, items, "");
 
 		for (l = items; l != NULL; l = l->next) {
 			g_object_unref (l->data);
