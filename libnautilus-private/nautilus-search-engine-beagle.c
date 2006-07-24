@@ -274,6 +274,12 @@ nautilus_search_engine_beagle_new (void)
 {
 	NautilusSearchEngineBeagle *engine;
 	BeagleClient *client;
+	
+	if (!beagle_util_daemon_is_running ()) {
+		/* check whether daemon is running as beagle_client_new
+		 * doesn't fail when a stale socket file exists */
+		return NULL;
+	}
 
 	client = beagle_client_new (NULL);
 

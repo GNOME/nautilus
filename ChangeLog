@@ -1,5 +1,14 @@
 2006-07-24  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-search-engine-beagle.c:
+	(nautilus_search_engine_beagle_new): Check whether daemon is
+	running as beagle_client_new doesn't fail when a stale socket
+	file exists.
+
+	Patch from Jürg Billeter <j@bitron.ch>
+
+2006-07-24  Martin Wehner  <martin.wehner@gmail.com>
+
 	* configure.in:
 	* libnautilus-extension/Makefile.am:
 	Add extension versioning infrastructure and add nautilus-menu.[ch].
