@@ -679,7 +679,7 @@ static const GtkActionEntry main_entries[] = {
     N_("T_emplates"), NULL,           /* label, accelerator */
     N_("Go to the templates folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_templates_callback) },
-  { "Go to Trash", "gnome-fs-trash-empty",                        /* name, stock id */
+  { "Go to Trash", "user-trash",                        /* name, stock id */
     N_("_Trash"), NULL,           /* label, accelerator */
     N_("Go to the trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },

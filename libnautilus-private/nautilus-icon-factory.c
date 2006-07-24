@@ -68,9 +68,9 @@
 #define CACHE_SELF_CHECKS 0
 
 #define ICON_NAME_THUMBNAIL_LOADING     "gnome-fs-loading-icon"
-#define ICON_NAME_TRASH_EMPTY		"gnome-fs-trash-empty"
-#define ICON_NAME_TRASH_FULL		"gnome-fs-trash-full"
-#define ICON_NAME_HOME                  "gnome-fs-home"
+#define ICON_NAME_TRASH_EMPTY		"user-trash"
+#define ICON_NAME_TRASH_FULL		"user-trash-full"
+#define ICON_NAME_HOME                  "user-home"
 
 #define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"
 

@@ -1,5 +1,16 @@
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-icon-factory.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-tree-view.c: (create_popup_menu):
+	* src/nautilus-window-menus.c:
+	Use trash icons from the icon naming specification for trash
+	related operations. (#340321)
+
+	Patch from Rodney Dawes  <dobey@novell.com>
+
+2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-places-sidebar.c: (add_place), (update_places):
 	Take the sidebar as parameter and refilter it after adding.
 

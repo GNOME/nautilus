@@ -6872,7 +6872,7 @@ static const GtkActionEntry directory_view_entries[] = {
     "RenameSelectAll", "<shift>F2",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_rename_select_all_callback) },
-  { "Trash", GTK_STOCK_DELETE,                  /* name, stock id */
+  { "Trash", "user-trash",                  /* name, stock id */
     N_("Mo_ve to Trash"), "<control>T",                /* label, accelerator */
     N_("Move each selected item to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_trash_callback) },
@@ -6948,7 +6948,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Prepare this folder to be copied with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_copy_callback) },
 
-  { FM_ACTION_LOCATION_TRASH, GTK_STOCK_DELETE,                  /* name, stock id */
+  { FM_ACTION_LOCATION_TRASH, "user-trash",                  /* name, stock id */
     N_("Mo_ve to Trash"), "",                /* label, accelerator */
     N_("Move this folder to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_trash_callback) },
