@@ -1,3 +1,30 @@
+2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c: (add_place), (update_places):
+	Take the sidebar as parameter and refilter it after adding.
+
+	(reorder_bookmarks): Implement reordering of bookmarks.
+
+	(drag_data_delete_callback), (drag_data_received_callback),
+	(drag_motion_callback): Handle dragging of tree rows.
+
+	(nautilus_places_sidebar_init)
+	(_shortcuts_model_filter_class_init),
+	(_shortcuts_model_filter_init),
+	(shortcuts_model_filter_row_draggable),
+	(shortcuts_model_filter_drag_data_get),
+	(shortcuts_model_filter_drag_source_iface_init),
+	(shortcuts_model_filter_new):
+	Implement GtkTreeDragSource.
+
+	(get_selected_iter), (bookmarks_check_popup_sensitivity),
+	(loading_uri_callback): Use the filter model.
+
+	Enable reordering of bookmarks in the places sidebar via
+	Drag'n'Drop. (#319022)
+
+	Patch from Xavier Claessens <xclaesse@gmail.com>
+
 2006-07-24  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-search-engine-beagle.c:
