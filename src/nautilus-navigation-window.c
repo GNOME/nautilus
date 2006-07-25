@@ -173,6 +173,9 @@ location_button_create (NautilusNavigationWindow *window)
 			       "active", location_button_should_be_active (window),
 			       NULL);
 
+	gtk_tooltips_set_tip (window->details->tooltips, button,
+			      _("Toggle between button and text-based location bar"), NULL);
+
 	g_signal_connect (button, "toggled",
 			  G_CALLBACK (location_button_toggled_cb), window);
 	return button;
@@ -189,6 +192,10 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	GtkWidget *hbox, *vbox, *eventbox, *extras_vbox;
 	
 	window->details = g_new0 (NautilusNavigationWindowDetails, 1);
+
+	window->details->tooltips = gtk_tooltips_new ();
+	g_object_ref (window->details->tooltips);
+	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
 
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
@@ -647,6 +654,11 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	window->zoom_control = NULL;
 
 	window->details->content_paned = NULL;
+
+	if (window->details->tooltips) {
+		g_object_unref (window->details->tooltips);
+		window->details->tooltips = NULL;
+	}
 	
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }

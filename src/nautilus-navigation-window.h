@@ -72,6 +72,8 @@ struct _NautilusNavigationWindow {
         
         /* Widgets to keep track of (for state changes, etc) */      
         GtkWidget *zoom_control;
+
+	GtkTooltips *tooltips;
 };
 
 

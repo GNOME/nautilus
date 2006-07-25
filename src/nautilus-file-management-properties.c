@@ -550,9 +550,6 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
 					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
 	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_LOCATION_ENTRY_WIDGET,
-					    NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
-	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
 					    NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	eel_preferences_glade_connect_bool (xml_dialog,

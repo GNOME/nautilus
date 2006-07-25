@@ -1,5 +1,18 @@
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade:
+	Remove the "always use text-entry location bar" checkbox from the
+	preferences page.
+
+	* src/nautilus-navigation-window.[ch]: (location_button_create),
+	(nautilus_navigation_window_instance_init),
+	(nautilus_navigation_window_destroy):
+	Add a tooltip to the new location bar toggle button.
+
+2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-properties-window.c:
 	(permission_combo_update): Add a translator comment for
 	permission combo box labels. (#347764)
