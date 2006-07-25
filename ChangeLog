@@ -1,5 +1,12 @@
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-main.c: (main):
+	Unref GnomeProgram at the end. (#348429)
+
+	Patch from Christian Persch <chpe@gnome.org> 
+
+2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-file-management-properties.c:
 	(nautilus_file_management_properties_dialog_setup):
 	* src/nautilus-file-management-properties.glade:

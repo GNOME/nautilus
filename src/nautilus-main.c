@@ -399,8 +399,7 @@ main (int argc, char *argv[])
 		execvp (argv[0], argv_copy);
 	}
 
-	/* Shouldn't we do this? Keeping it commented for now
-	g_object_unref (G_OBJECT (program)); */
+	g_object_unref (G_OBJECT (program));
 
 	return EXIT_SUCCESS;
 }
