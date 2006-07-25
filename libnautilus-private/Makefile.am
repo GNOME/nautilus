@@ -29,6 +29,7 @@ libnautilus_private_la_LDFLAGS =	\
 
 libnautilus_private_la_LIBADD =		\
 	$(dependency_static_libs)	\
+	$(SELINUX_LIBS)			\
 	$(BEAGLE_LIBS)			\
 	$(TRACKER_LIBS)			\
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \

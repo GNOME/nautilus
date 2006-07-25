@@ -73,6 +73,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+#endif
+
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5*60)
 
@@ -3569,13 +3573,31 @@ nautilus_file_can_get_selinux_context (NautilusFile *file)
 char *
 nautilus_file_get_selinux_context (NautilusFile *file)
 {
+	char *translated;
+	char *raw;
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	if (!nautilus_file_can_get_selinux_context (file)) {
 		return NULL;
 	}
 
-	return g_strdup (file->details->info->selinux_context);
+	raw = file->details->info->selinux_context;
+
+#ifdef HAVE_SELINUX
+	if (selinux_raw_to_trans_context (raw, &translated) == 0) {
+		char *tmp;
+		tmp = g_strdup (translated);
+		freecon (translated);
+		translated = tmp;
+	}
+	else
+#endif
+	{
+		translated = g_strdup (raw);
+	}
+	
+	return translated;
 }
 
 static char *
