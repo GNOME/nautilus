@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-18 10:54+0300\n"
+"POT-Creation-Date: 2006-07-27 07:02+0300\n"
 "PO-Revision-Date: 2006-05-18 10:09+0300\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -829,7 +829,7 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
-"Формата на датите на файловете. Възможните стойности са „locale“, „iso“ и "
+"Форматът на датите на файловете. Възможните стойности са „locale“, „iso“ и "
 "„informal“."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
@@ -1036,7 +1036,7 @@ msgstr "Дата на достъп"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr "Датата, на която файлът е бил достъпван."
+msgstr "Датата, на която файлът е бил достъпен."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:81
 msgid "Owner"
@@ -1092,7 +1092,7 @@ msgstr "на раб. плот"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:115
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "Не може да преместите дискът „%s“ в кошчето."
+msgstr "Не може да преместите диска „%s“ в кошчето."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:125
 msgid ""
@@ -1428,7 +1428,7 @@ msgstr "Папката „%s“ вече съществува. Искате ли
 #: ../libnautilus-private/nautilus-file-operations.c:1170
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr "Файлът „%s“ вече съществува. Искате ли да го презапишете?"
+msgstr "Файлът „%s“ вече съществува. Искате ли да го замените?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1178
 msgid ""
@@ -1778,7 +1778,7 @@ msgstr "Изтрити файлове:"
 #: ../libnautilus-private/nautilus-file-operations.c:2696
 #: ../libnautilus-private/nautilus-file-operations.c:2731
 msgid "Deleting"
-msgstr "Изтиване"
+msgstr "Изтриване на"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2697
 msgid "Preparing to Delete files..."
@@ -2517,7 +2517,7 @@ msgstr "Файлов браузър"
 
 #: ../src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr "Фабрика на Nautilus за shell и файлов мениджър"
+msgstr "Фабрика за обвивката Nautilus и файлов мениджър"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
@@ -2529,14 +2529,14 @@ msgstr "Фабрика за мета-файлове на Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus shell"
-msgstr "Обвивка на Nautilus"
+msgstr "Обвивката Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:5
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
-"Операции на Nautilus със shell, които могат да бъдат извършени от команден "
+"Операции на обвивката Nautilus, които могат да бъдат извършени от команден "
 "ред"
 
 #: ../src/Nautilus_shell.server.in.h:6
@@ -3888,11 +3888,11 @@ msgstr "нечетимо"
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d обект, с размер %s"
-msgstr[1] "%d обектa, с общ размер %s"
+msgstr[1] "%d обекта, с общ размер %s"
 
 #: ../src/file-manager/fm-properties-window.c:1936
 msgid "(some contents unreadable)"
-msgstr "(някой съдържания са не-четими)"
+msgstr "(някои съдържания са нечетими)"
 
 #. Also set the title field here, with a trailing carriage return &
 #. * space if the value field has two lines. This is a hack to get the
@@ -3967,7 +3967,7 @@ msgstr "Променян:"
 
 #: ../src/file-manager/fm-properties-window.c:2393
 msgid "Accessed:"
-msgstr "Достъпван:"
+msgstr "Достъпен:"
 
 #: ../src/file-manager/fm-properties-window.c:2441
 #: ../src/nautilus-emblem-sidebar.c:1041
@@ -4236,8 +4236,8 @@ msgid ""
 "restarting Nautilus may help fix the problem."
 msgstr ""
 "Nautilus не може да бъде използван сега, поради неочаквана грешка от Bonobo "
-"при опит за откриване на обект на shell. Убиването на bonobo и рестартиране "
-"на Nautilus може да реши проблема."
+"при опит за откриване на обект на обвивката. Убиването на bonobo и "
+"рестартиране на Nautilus може да реши проблема."
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
@@ -4383,7 +4383,7 @@ msgstr "Емблемата „%s“ не може да бъде преимену
 
 #: ../src/nautilus-emblem-sidebar.c:295
 msgid "Rename Emblem"
-msgstr "Преименуване на eмблема"
+msgstr "Преименуване на емблема"
 
 #: ../src/nautilus-emblem-sidebar.c:314
 msgid "Enter a new name for the displayed emblem:"
@@ -4395,7 +4395,7 @@ msgstr "Преименуване"
 
 #: ../src/nautilus-emblem-sidebar.c:540
 msgid "Add Emblems..."
-msgstr "Добавяне на eмблеми..."
+msgstr "Добавяне на емблеми..."
 
 #: ../src/nautilus-emblem-sidebar.c:556
 msgid ""
@@ -5376,7 +5376,7 @@ msgstr "Друг вид..."
 
 #: ../src/nautilus-query-editor.c:936
 msgid "Remove this criterium from the search"
-msgstr "Преместване на този критерий от търсенето"
+msgstr "Премахване на този критерий от търсенето"
 
 #: ../src/nautilus-query-editor.c:980
 msgid "<b>Search Folder</b>"
@@ -5388,7 +5388,7 @@ msgstr "Редактиране на запазеното търсене"
 
 #: ../src/nautilus-query-editor.c:1027
 msgid "Add a new criterium to this search"
-msgstr "Добавяне на нов критерий за търсене"
+msgstr "Добавяне на нов критерий към търсенето"
 
 #: ../src/nautilus-query-editor.c:1031
 msgid "Go"
@@ -5492,7 +5492,7 @@ msgstr "Местоположението не е папка."
 #: ../src/nautilus-window-manage-views.c:1460
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr "Nautilus не може да управлява %s: локации."
+msgstr "Nautilus не може да обработва адреси %s:"
 
 #: ../src/nautilus-window-manage-views.c:1495
 msgid "Check that your proxy settings are correct."
