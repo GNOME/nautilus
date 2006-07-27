@@ -2526,12 +2526,12 @@ create_icon_container (FMIconView *icon_view)
 
 /* Handles an URL received from Mozilla */
 static void
-icon_view_handle_url (NautilusIconContainer *container, const char *encoded_url,
-		      const char *target_uri,
-		      GdkDragAction action, int x, int y, FMIconView *view)
+icon_view_handle_netscape_url (NautilusIconContainer *container, const char *encoded_url,
+			       const char *target_uri,
+			       GdkDragAction action, int x, int y, FMIconView *view)
 {
-	fm_directory_view_handle_url_drop (FM_DIRECTORY_VIEW (view),
-					   encoded_url, target_uri, action, x, y);
+	fm_directory_view_handle_netscape_url_drop (FM_DIRECTORY_VIEW (view),
+						    encoded_url, target_uri, action, x, y);
 }
 
 static void
@@ -2717,8 +2717,8 @@ fm_icon_view_init (FMIconView *icon_view)
 						  labels_beside_icons_changed_callback,
 						  icon_view, G_OBJECT (icon_view));
 
-	g_signal_connect_object (get_icon_container (icon_view), "handle_url",
-				 G_CALLBACK (icon_view_handle_url), icon_view, 0);
+	g_signal_connect_object (get_icon_container (icon_view), "handle_netscape_url",
+				 G_CALLBACK (icon_view_handle_netscape_url), icon_view, 0);
 	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
 				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
 	g_signal_connect_object (get_icon_container (icon_view), "handle_text",

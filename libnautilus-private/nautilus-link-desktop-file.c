@@ -87,6 +87,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 					 int                screen,
 					 gboolean           unique_filename)
 {
+	char *real_directory_uri;
 	char *uri, *contents, *escaped_name;
 	GnomeDesktopItem *desktop_item;
 	GList dummy_list;
@@ -97,14 +98,31 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	g_return_val_if_fail (display_name != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
+	if (eel_uri_is_trash (directory_uri) ||
+	    eel_uri_is_search (directory_uri)) {
+		return FALSE;
+	}
+
+	if (eel_uri_is_desktop (directory_uri)) {
+		real_directory_uri = nautilus_get_desktop_directory_uri ();
+	} else {
+		real_directory_uri = g_strdup (directory_uri);
+	}
+
 	if (unique_filename) {
-		uri = nautilus_ensure_unique_file_name (directory_uri,
+		uri = nautilus_ensure_unique_file_name (real_directory_uri,
 							base_name, ".desktop");
+		if (uri == NULL) {
+			g_free (real_directory_uri);
+			return FALSE;
+		}
 	} else {
 		escaped_name = gnome_vfs_escape_string (base_name);
-		uri = g_strdup_printf ("%s/%s.desktop", directory_uri, escaped_name);
+		uri = g_strdup_printf ("%s/%s.desktop", real_directory_uri, escaped_name);
 		g_free (escaped_name);
 	}
+
+	g_free (real_directory_uri);
 
 	contents = g_strdup_printf ("[Desktop Entry]\n"
 				    "Encoding=UTF-8\n"

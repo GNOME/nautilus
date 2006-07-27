@@ -32,7 +32,7 @@
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE  "x-special/gnome-icon-list"
 #define NAUTILUS_ICON_DND_URI_LIST_TYPE         "text/uri-list"
-#define NAUTILUS_ICON_DND_URL_TYPE	        "_NETSCAPE_URL"
+#define NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE	"_NETSCAPE_URL"
 #define NAUTILUS_ICON_DND_COLOR_TYPE            "application/x-color"
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE          "property/keyword"
@@ -51,7 +51,7 @@ typedef struct {
 typedef enum {
 	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
 	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_URL,
+	NAUTILUS_ICON_DND_NETSCAPE_URL,
 	NAUTILUS_ICON_DND_COLOR,
 	NAUTILUS_ICON_DND_BGIMAGE,
 	NAUTILUS_ICON_DND_KEYWORD,
@@ -120,7 +120,7 @@ void                        nautilus_drag_default_drop_action_for_icons (GdkDrag
 									 const char                           *target_uri,
 									 const GList                          *items,
 									 int                                  *action);
-GdkDragAction               nautilus_drag_default_drop_action_for_url   (GdkDragContext                       *context);
+GdkDragAction               nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext                       *context);
 gboolean                    nautilus_drag_drag_data_get                 (GtkWidget                            *widget,
 									 GdkDragContext                       *context,
 									 GtkSelectionData                     *selection_data,

@@ -63,7 +63,7 @@ enum {
 	GET_ROOT_URI,
 	GET_FILE_FOR_PATH,
 	MOVE_COPY_ITEMS,
-	HANDLE_URL,
+	HANDLE_NETSCAPE_URL,
 	HANDLE_URI_LIST,
 	HANDLE_TEXT,
 	LAST_SIGNAL
@@ -80,8 +80,9 @@ GNOME_CLASS_BOILERPLATE (NautilusTreeViewDragDest,
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	/* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
+	{ NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
@@ -383,14 +384,14 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 		
 		return action;
 		
-	case NAUTILUS_ICON_DND_URL:
+	case NAUTILUS_ICON_DND_NETSCAPE_URL:
 		drop_target = get_drop_target_uri_for_path (dest, path);
 
 		if (drop_target == NULL) {
 			return 0;
 		}
 
-		action = nautilus_drag_default_drop_action_for_url (context);
+		action = nautilus_drag_default_drop_action_for_netscape_url (context);
 
 		g_free (drop_target);
 
@@ -668,9 +669,9 @@ receive_dropped_text (NautilusTreeViewDragDest *dest,
 
 
 static void
-receive_dropped_url (NautilusTreeViewDragDest *dest,
-		     GdkDragContext *context,
-		     int x, int y)
+receive_dropped_netscape_url (NautilusTreeViewDragDest *dest,
+			      GdkDragContext *context,
+			      int x, int y)
 {
 	char *drop_target;
 
@@ -681,7 +682,7 @@ receive_dropped_url (NautilusTreeViewDragDest *dest,
 	drop_target = get_drop_target_uri_at_pos (dest, x, y);
 	g_assert (drop_target != NULL);
 
-	g_signal_emit (dest, signals[HANDLE_URL], 0,
+	g_signal_emit (dest, signals[HANDLE_NETSCAPE_URL], 0,
 		       (char*)dest->details->drag_data->data,
 		       drop_target,
 		       context->action,
@@ -749,8 +750,8 @@ drag_data_received_callback (GtkWidget *widget,
 			receive_dropped_icons (dest, context, x, y);
 			success = TRUE;
 			break;
-		case NAUTILUS_ICON_DND_URL :
-			receive_dropped_url (dest, context, x, y);
+		case NAUTILUS_ICON_DND_NETSCAPE_URL :
+			receive_dropped_netscape_url (dest, context, x, y);
 			success = TRUE;
 			break;
 		case NAUTILUS_ICON_DND_URI_LIST :
@@ -899,12 +900,12 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      GDK_TYPE_DRAG_ACTION,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
-	signals[HANDLE_URL] =
-		g_signal_new ("handle_url",
+	signals[HANDLE_NETSCAPE_URL] =
+		g_signal_new ("handle_netscape_url",
 			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass, 
-					       handle_url),
+					       handle_netscape_url),
 			      NULL, NULL,
 			      nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
 			      G_TYPE_NONE, 5,

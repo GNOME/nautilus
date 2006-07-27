@@ -444,17 +444,26 @@ nautilus_get_data_file_path (const char *partial_path)
 	return NULL;
 }
 
-static gboolean
+/**
+ * < 0  invalid URI
+ * == 0 no
+ * > 0  yes
+ **/
+static int
 test_uri_exists (const char *path)
 {
 	GnomeVFSURI *uri;
 	gboolean exists;
 
 	uri = gnome_vfs_uri_new (path);
-	exists = gnome_vfs_uri_exists (uri);
-	gnome_vfs_uri_unref (uri);
+	if (uri == NULL) {
+		return -1;
+	} else {
+		exists = gnome_vfs_uri_exists (uri);
+		gnome_vfs_uri_unref (uri);
 
-	return exists;
+		return exists ? 1 : 0;
+	}
 }
 
 char *
@@ -463,7 +472,7 @@ nautilus_ensure_unique_file_name (const char *directory_uri,
 				  const char *extension)
 {
 	char *path, *escaped_name;
-	gboolean exists;
+	int exists;
 	int copy;
 
 	escaped_name = gnome_vfs_escape_string (base_name);
@@ -475,7 +484,7 @@ nautilus_ensure_unique_file_name (const char *directory_uri,
 	exists = test_uri_exists (path);
 
 	copy = 1;
-	while (exists) {
+	while (exists > 0) {
 		g_free (path);
 		path = g_strdup_printf ("%s/%s-%d%s",
 					directory_uri,
@@ -489,6 +498,11 @@ nautilus_ensure_unique_file_name (const char *directory_uri,
 	}
 
 	g_free (escaped_name);
+
+	if (exists < 0) {
+		g_free (path);
+		path = NULL;
+	}
 
 	return path;
 }

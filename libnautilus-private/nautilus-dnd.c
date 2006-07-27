@@ -288,7 +288,7 @@ nautilus_drag_items_on_desktop (const GList *selection_list)
 }
 
 GdkDragAction
-nautilus_drag_default_drop_action_for_url (GdkDragContext *context)
+nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 {
 	/* Mozilla defaults to copy, but unless thats the
 	   only allowed thing (enforced by ctrl) we want to ASK */
@@ -423,23 +423,6 @@ add_one_gnome_icon (const char *uri, int x, int y, int w, int h,
 	g_free (s);
 }
 
-/* Encode a "_NETSCAPE_URL_" selection.
- * As far as I can tell, Netscape is expecting a single
- * URL to be returned.  I cannot discover a way to construct
- * a list to be returned that Netscape can understand.
- * GMC also fails to do this as well.
- */
-static void
-add_one_netscape_url (const char *url, int x, int y, int w, int h, gpointer data)
-{
-	GString *result;
-
-	result = (GString *) data;
-	if (result->len == 0) {
-		g_string_append (result, url);
-	}
-}
-
 /*
  * Cf. #48423
  */
@@ -549,12 +532,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 		result = g_string_new (NULL);
 		(* each_selected_item_iterator) (add_one_uri, container_context, result);
 		break;
-		
-	case NAUTILUS_ICON_DND_URL:
-		result = g_string_new (NULL);
-		(* each_selected_item_iterator) (add_one_netscape_url, container_context, result);
-		break;
-		
+
 	default:
 		return FALSE;
 	}

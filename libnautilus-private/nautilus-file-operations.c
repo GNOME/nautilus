@@ -2559,7 +2559,21 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	g_assert (template_uri != NULL);
 
 	/* pass in the target directory and the new folder name as a destination URI */
-	parent_uri = gnome_vfs_uri_new (parent_dir);
+	if (eel_uri_is_desktop (parent_dir)) {
+		tmp = nautilus_get_desktop_directory_uri ();
+		parent_uri = gnome_vfs_uri_new (tmp);
+		g_free (tmp);
+	} else if (eel_uri_is_trash (parent_dir) ||
+		   eel_uri_is_search (parent_dir)) {
+		parent_uri = NULL;
+	} else {
+		parent_uri = gnome_vfs_uri_new (parent_dir);
+	}
+
+	if (parent_uri == NULL) {
+		(*done_callback) (NULL, data);
+		return;
+	}
 
 	source_uri = gnome_vfs_uri_new (template_uri);
 	if (source_uri == NULL) {

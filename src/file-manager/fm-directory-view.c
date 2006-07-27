@@ -9664,12 +9664,12 @@ ask_link_action (FMDirectoryView *view)
 }
 
 void
-fm_directory_view_handle_url_drop (FMDirectoryView  *view,
-				   const char       *encoded_url,
-				   const char       *target_uri,
-				   GdkDragAction     action,
-				   int               x,
-				   int               y)
+fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
+					    const char       *encoded_url,
+					    const char       *target_uri,
+					    GdkDragAction     action,
+					    int               x,
+					    int               y)
 {
 	GdkPoint point;
 	GdkScreen *screen;

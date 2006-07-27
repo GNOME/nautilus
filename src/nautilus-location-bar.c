@@ -55,7 +55,6 @@
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
-#define NAUTILUS_DND_URL_TYPE		  "_NETSCAPE_URL"
 
 static const char untranslated_location_label[] = N_("Location:");
 static const char untranslated_go_to_label[] = N_("Go To:");
@@ -78,20 +77,17 @@ enum {
 	NAUTILUS_DND_MC_DESKTOP_ICON,
 	NAUTILUS_DND_URI_LIST,
 	NAUTILUS_DND_TEXT_PLAIN,
-	NAUTILUS_DND_URL,
 	NAUTILUS_DND_NTARGETS
 };
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_DND_URI_LIST_TYPE,   0, NAUTILUS_DND_URI_LIST },
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
-	{ NAUTILUS_DND_URL_TYPE,        0, NAUTILUS_DND_URL }
 };
 
 static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_DND_URI_LIST_TYPE,   0, NAUTILUS_DND_URI_LIST },
 	{ NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
-	{ NAUTILUS_DND_URL_TYPE,        0, NAUTILUS_DND_URL }
 };
 
 static char *nautilus_location_bar_get_location     (NautilusNavigationBar    *navigation_bar); 
@@ -217,7 +213,6 @@ drag_data_get_callback (GtkWidget *widget,
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
 	case NAUTILUS_DND_TEXT_PLAIN:
-	case NAUTILUS_DND_URL:
 		gtk_selection_data_set (selection_data,
 					selection_data->target,
 					8, (guchar *) entry_text,

@@ -1043,11 +1043,11 @@ get_file_for_path_callback (NautilusTreeViewDragDest *dest,
 
 /* Handles an URL received from Mozilla */
 static void
-list_view_handle_url (NautilusTreeViewDragDest *dest, const char *encoded_url,
-		      const char *target_uri, GdkDragAction action, int x, int y, FMListView *view)
+list_view_handle_netscape_url (NautilusTreeViewDragDest *dest, const char *encoded_url,
+			       const char *target_uri, GdkDragAction action, int x, int y, FMListView *view)
 {
-	fm_directory_view_handle_url_drop (FM_DIRECTORY_VIEW (view),
-					   encoded_url, target_uri, action, x, y);
+	fm_directory_view_handle_netscape_url_drop (FM_DIRECTORY_VIEW (view),
+						    encoded_url, target_uri, action, x, y);
 }
 
 static void
@@ -1217,8 +1217,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 "move_copy_items",
 				 G_CALLBACK (move_copy_items_callback),
 				 view, 0);
-	g_signal_connect_object (view->details->drag_dest, "handle_url",
-				 G_CALLBACK (list_view_handle_url), view, 0);
+	g_signal_connect_object (view->details->drag_dest, "handle_netscape_url",
+				 G_CALLBACK (list_view_handle_netscape_url), view, 0);
 	g_signal_connect_object (view->details->drag_dest, "handle_uri_list",
 				 G_CALLBACK (list_view_handle_uri_list), view, 0);
 	g_signal_connect_object (view->details->drag_dest, "handle_text",

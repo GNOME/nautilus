@@ -64,13 +64,13 @@
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 };
 
 static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	/* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
+	{ NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
@@ -622,7 +622,7 @@ receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, 
 
 /* handle dropped url */
 static void
-receive_dropped_url (NautilusIconContainer *container, const char *encoded_url, GdkDragContext *context, int x, int y)
+receive_dropped_netscape_url (NautilusIconContainer *container, const char *encoded_url, GdkDragContext *context, int x, int y)
 {
 	char *drop_target;
 
@@ -632,7 +632,7 @@ receive_dropped_url (NautilusIconContainer *container, const char *encoded_url, 
 
 	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL);
 
-	g_signal_emit_by_name (container, "handle_url",
+	g_signal_emit_by_name (container, "handle_netscape_url",
 			       encoded_url,
 			       drop_target,
 			       context->action,
@@ -1162,8 +1162,8 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		}
 		break;
 
-	case NAUTILUS_ICON_DND_URL:
-		*action = nautilus_drag_default_drop_action_for_url (context);
+	case NAUTILUS_ICON_DND_NETSCAPE_URL:
+		*action = nautilus_drag_default_drop_action_for_netscape_url (context);
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
@@ -1629,7 +1629,7 @@ drag_data_received_callback (GtkWidget *widget,
 		break;
 
 	/* Netscape keeps sending us the data, even though we accept the first drag */
-	case NAUTILUS_ICON_DND_URL:
+	case NAUTILUS_ICON_DND_NETSCAPE_URL:
 		if (drag_info->selection_data != NULL) {
 			gtk_selection_data_free (drag_info->selection_data);
 			drag_info->selection_data = gtk_selection_data_copy (data);
@@ -1670,8 +1670,8 @@ drag_data_received_callback (GtkWidget *widget,
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char *) data->data, x, y);
 			break;
-		case NAUTILUS_ICON_DND_URL:
-			receive_dropped_url
+		case NAUTILUS_ICON_DND_NETSCAPE_URL:
+			receive_dropped_netscape_url
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char *) data->data, context, x, y);
 			success = TRUE;

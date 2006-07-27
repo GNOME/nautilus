@@ -111,7 +111,7 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 			return nautilus_drag_can_accept_items (drop_target_item, items);
 
 		case NAUTILUS_ICON_DND_URI_LIST:
-		case NAUTILUS_ICON_DND_URL:
+		case NAUTILUS_ICON_DND_NETSCAPE_URL:
 		case NAUTILUS_ICON_DND_TEXT:
 			return nautilus_drag_can_accept_files (drop_target_item);
 

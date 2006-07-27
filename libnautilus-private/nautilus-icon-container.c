@@ -238,7 +238,7 @@ enum {
 	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
-	HANDLE_URL,
+	HANDLE_NETSCAPE_URL,
 	HANDLE_URI_LIST,
 	HANDLE_TEXT,
 	PREVIEW,
@@ -4589,12 +4589,12 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				GDK_TYPE_DRAG_ACTION,
 				G_TYPE_INT,
 				G_TYPE_INT);
-	signals[HANDLE_URL]
-		= g_signal_new ("handle_url",
+	signals[HANDLE_NETSCAPE_URL]
+		= g_signal_new ("handle_netscape_url",
 		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
-						     handle_url),
+						 handle_netscape_url),
 		                NULL, NULL,
 		                nautilus_marshal_VOID__STRING_STRING_ENUM_INT_INT,
 		                G_TYPE_NONE, 5,

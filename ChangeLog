@@ -1,3 +1,51 @@
+2006-07-25  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-dnd.c:
+	Rename nautilus_drag_default_drop_action_for_url to
+	nautilus_drag_default_drop_action_for_netscape_url.
+	Don't offer netscape URL drags.
+
+	* libnautilus-private/nautilus-dnd.h: Rename
+	NAUTILUS_ICON_DND_URL(_TYPE) to NAUTILUS_ICON_DND_NETSCAPE_URL(_TYPE)
+	and nautilus_drag_default_drop_action_for_url to
+	nautilus_drag_default_drop_action_for_netscape_url.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_new_file_from_template):
+	Filter out special URIs, handle gnome_vfs_uri_new() failure.
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(test_uri_exists), (nautilus_ensure_unique_file_name):
+	Handle gnome_vfs_uri_new() failure by returning NULL.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-container.h:
+	Rename HANDLE_URL signal to HANDLE_NETSCAPE_URL.
+
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-icon-dnd.h:
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	* libnautilus-private/nautilus-tree-view-drag-dest.h:
+	Don't offer netscape URL drags, prefer netscape URL drops over
+	"text/uri-list" drops. Also rename DND_URL symbols to DND_NETSCAPE_URL.
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	(nautilus_link_desktop_file_local_create):
+	Handle trash, desktop and search URIs, handle
+	NULL retval of nautilus_ensure_unique_file_name.
+
+	* src/nautilus-location-bar.c:
+	* src/nautilus-spatial-window.c:
+	* src/file-manager/fm-list-model.c:
+	Don't offer/handle netscape URL drags.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view:
+	Rename DND_URL symbols to DND_NETSCAPE_URL.
+
+	Should fix #347673.
+
 2006-07-25  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_selinux_context):
