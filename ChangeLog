@@ -1,8 +1,13 @@
+2006-08-01  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-icon-container.c (fm_icon_container_get_icon_images):
+	Only pass TRUE for embedding_text if we actually read a top-left text.
+	Based on patch from Rene Hausleitner (#335435)
+
 2006-05-17  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
 
 	* nautilus-folder-handler.desktop.in: Add i18n.
 	* po/POTFILES.in: Add new file.
-
 
 2006-05-09  Martin Wehner  <martin.wehner@gmail.com>
 
