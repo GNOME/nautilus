@@ -1,3 +1,9 @@
+2006-08-04  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Revert patch from #336051
+	as it breaks the file update machinery. Fixes #348097.
+
 2006-07-25  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-dnd.c:

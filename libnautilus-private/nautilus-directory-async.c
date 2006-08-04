@@ -862,12 +862,13 @@ dequeue_pending_idle_callback (gpointer callback_data)
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
 			}
+			nautilus_file_ref (file);			
 		} else {
 			/* new file, create a nautilus file object and add it to the list */
 			file = nautilus_file_new_from_info (directory, file_info);
 			nautilus_directory_add_file (directory, file);			
-			added_files = g_list_prepend (added_files, file);
 		}
+		added_files = g_list_prepend (added_files, file);
 	}
 
 	/* If we are done loading, then we assume that any unconfirmed
