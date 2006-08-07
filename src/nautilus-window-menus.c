@@ -482,6 +482,9 @@ action_about_nautilus_callback (GtkAction *action,
 
 		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
 
+		g_signal_connect (G_OBJECT (about), "response",
+				  G_CALLBACK (gtk_widget_destroy), NULL);
+
 		eel_add_weak_pointer (&about);
 	}
 	
