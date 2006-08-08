@@ -2297,6 +2297,45 @@ compare_icons_horizontal_first (NautilusIconContainer *container,
 }
 
 static int
+compare_icons_vertical_first_reverse_horizontal (NautilusIconContainer *container,
+						 NautilusIcon *icon_a,
+						 NautilusIcon *icon_b)
+{
+	ArtDRect world_rect;
+	int ax, ay, bx, by;
+
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
+		 &ax,
+		 &ay);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 get_cmp_point_x (container, world_rect),
+		 get_cmp_point_y (container, world_rect),
+		 &bx,
+		 &by);
+	
+	if (ay < by) {
+		return -1;
+	}
+	if (ay > by) {
+		return +1;
+	}
+	if (ax < bx) {
+		return +1;
+	}
+	if (ax > bx) {
+		return -1;
+	}
+	return compare_icons_by_uri (container, icon_a, icon_b);
+}
+
+
+static int
 compare_icons_vertical_first (NautilusIconContainer *container,
 			      NautilusIcon *icon_a,
 			      NautilusIcon *icon_b)
@@ -2494,25 +2533,25 @@ same_column_below_highest (NautilusIconContainer *container,
 			   NautilusIcon *candidate,
 			   void *data)
 {
-	/* Candidates not on the start column do not qualify. */
-	if (compare_with_start_column (container, candidate) != 0) {
+	EelCanvasItem *item;
+
+	item = EEL_CANVAS_ITEM (candidate->item);
+
+	/* Candidates above or on the start row do not qualify. */
+	if (container->details->arrow_key_start_y >= item->y1) {
 		return FALSE;
 	}
 
-	/* Candidates that are lower lose out. */
 	if (best_so_far != NULL) {
-		if (compare_icons_vertical_first (container,
-						  best_so_far,
-						  candidate) < 0) {
+		/* Candidates on the start column are preferred. */
+		if (compare_with_start_column (container, candidate) != 0 &&
+		    compare_with_start_column (container, best_so_far) == 0) {
 			return FALSE;
 		}
-	}
-
-	/* Candidate above the start do not qualify. */
-	if (compare_icons_vertical_first (container,
-					  candidate,
-					  start_icon) <= 0) {
-		return FALSE;
+		/* Candidates that are lower or to the left lose out. */
+		if (compare_icons_vertical_first_reverse_horizontal (container, best_so_far, candidate) <= 0) {
+			return FALSE;
+		}
 	}
 
 	return TRUE;
