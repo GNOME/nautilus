@@ -1916,6 +1916,12 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	if (target_dir != NULL) {
 		if (eel_uri_is_trash (target_dir)) {
 			target_is_trash = TRUE;
+		} else if (eel_uri_is_desktop (target_dir)) {
+			char *desktop_dir_uri;
+
+			desktop_dir_uri = nautilus_get_desktop_directory_uri ();
+			target_dir_uri = gnome_vfs_uri_new (desktop_dir_uri);
+			g_free (desktop_dir_uri);
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);
 		}
@@ -2368,10 +2374,20 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	NewFolderTransferState *state;
 	SyncTransferInfo *sync_transfer_info;
 
-	/* pass in the target directory and the new folder name as a destination URI */
-	parent_uri = gnome_vfs_uri_new (parent_dir);
-	/* localizers: the initial name of a new folder  */
+	g_assert (parent_dir != NULL);
 
+	/* pass in the target directory and the new folder name as a destination URI */
+	if (eel_uri_is_desktop (parent_dir)) {
+		char *desktop_dir_uri;
+
+		desktop_dir_uri = nautilus_get_desktop_directory_uri ();
+		parent_uri = gnome_vfs_uri_new (desktop_dir_uri);
+		g_free (desktop_dir_uri);
+	} else {
+		parent_uri = gnome_vfs_uri_new (parent_dir);
+	}
+
+	/* localizers: the initial name of a new folder  */
 	dirname = g_filename_from_utf8 (_("untitled folder"), -1, NULL, NULL, NULL);
 	uri = gnome_vfs_uri_append_file_name (parent_uri, dirname);
 	g_free (dirname);
