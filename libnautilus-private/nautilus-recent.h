@@ -3,9 +3,11 @@
 #ifndef __NAUTILUS_RECENT_H__
 #define __NAUTILUS_RECENT_H__
 
-#include <libegg/egg-recent-model.h>
+#include <gtk/gtkrecentmanager.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
-
-EggRecentModel    *nautilus_recent_get_model (void);
+void nautilus_recent_add_file (NautilusFile *file,
+			       GnomeVFSMimeApplication *application);
 
 #endif

@@ -768,8 +768,6 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 				      GList *files,
 				      FMDirectoryView *directory_view)
 {
-	char *uri;
-	GnomeVFSURI *vfs_uri;
 	NautilusFile *file;
 	GList *l;
 
@@ -784,17 +782,7 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	for (l = files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
-		uri = nautilus_file_get_uri (file);
-
-		/* Only add real gnome-vfs uris to recent. Not things like
-		   trash:// and x-nautilus-desktop:// */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		if (vfs_uri != NULL) {
-			egg_recent_model_add (nautilus_recent_get_model (), uri);
-			gnome_vfs_uri_unref (vfs_uri);
-		}
-
-		g_free (uri);
+		nautilus_recent_add_file (file, application);
 	}
 }				      
 
@@ -8473,9 +8461,7 @@ activate_callback (GList *files, gpointer callback_data)
 		/* We should not add trash and directory uris.*/
 		if ((!nautilus_file_is_in_trash (file)) && 
 		    (!nautilus_file_is_directory (file))) {
-			uri = nautilus_file_get_uri (file);
-			egg_recent_model_add (nautilus_recent_get_model (), uri);
-			g_free (uri);
+			nautilus_recent_add_file (file, NULL);
 		}
 	}
 

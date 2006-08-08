@@ -1,7 +1,23 @@
+2006-08-08  Vincent Untz  <vuntz@gnome.org>
+
+	Use GTK+ to handle recent documents.
+
+	* configure.in: require GTK+ 2.10
+	* cut-n-paste-code/libegg/Makefile.am:
+	* cut-n-paste-code/libegg/egg-recent-*: kill
+	* libnautilus-private/nautilus-recent.[ch]: (nautilus_recent_get_model):
+	renamed to nautilus_recent_get_manager()
+	(nautilus_recent_add_uri): new, to make it easier to use
+	gtk_recent_manager_add_full()
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_launch_application): use nautilus_recent_add_uri()
+	instead of old egg code
+	(activate_callback): ditto
+
 2006-08-08  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-async.c (read_dot_hidden_file):
-	Follow symlinks
+	Follow symlinks when reading .hidden files.
 
 2006-08-08  Alexander Larsson  <alexl@redhat.com>
 
