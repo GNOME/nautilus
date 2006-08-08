@@ -1932,7 +1932,7 @@ read_dot_hidden_file (NautilusDirectory *directory)
 	if (gnome_vfs_get_file_info_uri (
 		dot_hidden_vfs_uri,
 		file_info, 
-		GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
+		GNOME_VFS_FILE_INFO_FOLLOW_LINKS) != GNOME_VFS_OK) {
 		gnome_vfs_uri_unref (dot_hidden_vfs_uri);
 		gnome_vfs_file_info_unref (file_info);
 		return;
