@@ -437,14 +437,13 @@ background_changed_callback (EelBackground *background,
 	g_free (image);
 }
 
-static gboolean
+static void
 initialize_background_from_settings (NautilusFile *file,
 				     EelBackground *background)
 {
-        char *color, *old_color;
-        char *image, *old_image;
-	EelBackgroundImagePlacement placement, old_placement;
-        gboolean changed;
+        char *color;
+        char *image;
+	EelBackgroundImagePlacement placement;
 	
         g_assert (NAUTILUS_IS_FILE (file));
         g_assert (EEL_IS_BACKGROUND (background));
@@ -477,33 +476,14 @@ initialize_background_from_settings (NautilusFile *file,
                  G_CALLBACK (background_changed_callback),
                  file);
 
-
-        changed = FALSE;
-        
-        old_color = eel_background_get_color (background);
-        if (eel_strcmp (color, old_color) != 0) {
-                eel_background_set_color (background, color);
-                changed = TRUE;
+        eel_background_set_color (background, color);
+        if (eel_background_is_desktop(background)) {
+                eel_background_set_image_uri_sync (background, image);
         }
-        g_free (old_color);
-
-        old_image = eel_background_get_image_uri (background);
-        if (eel_strcmp (image, old_image) != 0) {
-                if (eel_background_is_desktop(background)) {
-                        eel_background_set_image_uri_sync (background, image);
-                }
-                else {
-                        eel_background_set_image_uri (background, image);
-                }
-                changed = TRUE;
+        else {
+                eel_background_set_image_uri (background, image);
         }
-        g_free (old_image);
-        
-        old_placement = eel_background_get_image_placement (background);
-        if (old_placement != placement) {
-                eel_background_set_image_placement (background, placement);
-                changed = TRUE;
-        }
+        eel_background_set_image_placement (background, placement);
 	
 	/* Unblock the handler. */
         g_signal_handlers_unblock_by_func
@@ -513,8 +493,6 @@ initialize_background_from_settings (NautilusFile *file,
 	
 	g_free (color);
 	g_free (image);
-
-        return changed;
 }
 
 /* handle the file changed signal */
@@ -522,8 +500,7 @@ static void
 saved_settings_changed_callback (NautilusFile *file,
                                  EelBackground *background)
 {
-        gboolean changed;
-	changed = initialize_background_from_settings (file, background);
+	initialize_background_from_settings (file, background);
 }
 
 /* handle the theme changing */
