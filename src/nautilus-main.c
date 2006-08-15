@@ -53,6 +53,9 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <libxml/parser.h>
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -223,6 +226,8 @@ main (int argc, char *argv[])
 
 		{ NULL }
 	};
+
+	setlocale (LC_ALL, "");
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();

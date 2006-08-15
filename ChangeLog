@@ -1,3 +1,9 @@
+2006-08-15  Federico Mena Quintero  <federico@novell.com>
+
+	* src/nautilus-main.c (main): Call setlocale() before we try to
+	obtain any translations.  Fixes bug #342147.  Patch by Stanislav
+	Brabec <sbrabec@suse.cz>.
+
 2006-08-15  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Fix intltool req.
