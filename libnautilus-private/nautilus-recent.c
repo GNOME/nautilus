@@ -63,7 +63,7 @@ nautilus_recent_add_file (NautilusFile *file,
 	if (application != NULL)
 		recent_data.app_exec = g_strdup (gnome_vfs_mime_application_get_exec (application));
 	else
-		recent_data.app_exec = DEFAULT_APP_EXEC;
+		recent_data.app_exec = g_strdup (DEFAULT_APP_EXEC);
 
 	recent_data.groups = NULL;
 	recent_data.is_private = FALSE;
