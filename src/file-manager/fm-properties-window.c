@@ -115,7 +115,13 @@ struct FMPropertiesWindowDetails {
 
 	GList *emblem_buttons;
 	GHashTable *initial_emblems;
-	
+
+	NautilusFile *group_change_file;
+	char         *group_change_group;
+	unsigned int  group_change_timeout;
+	NautilusFile *owner_change_file;
+	char         *owner_change_owner;
+	unsigned int  owner_change_timeout;
 
 	GList *permission_buttons;
 	GList *permission_combos;
@@ -183,6 +189,16 @@ static const GtkTargetEntry target_table[] = {
 #define STANDARD_EMBLEM_HEIGHT			52
 #define EMBLEM_LABEL_SPACING			2
 
+/*
+ * A timeout before changes through the user/group combo box will be applied.
+ * When quickly changing owner/groups (i.e. by keyboard or scroll wheel),
+ * this ensures that the GUI doesn't end up unresponsive.
+ *
+ * Both combos react on changes by scheduling a new change and unscheduling
+ * or cancelling old pending changes.
+ */
+#define CHOWN_CHGRP_TIMEOUT			300 /* milliseconds */
+
 static void directory_contents_value_field_update (FMPropertiesWindow *window);
 static void file_changed_callback                 (NautilusFile       *file,
 						   gpointer            user_data);
@@ -196,8 +212,8 @@ static void properties_window_update              (FMPropertiesWindow *window,
 						   GList              *files);
 static void is_directory_ready_callback           (NautilusFile       *file,
 						   gpointer            data);
-static void cancel_group_change_callback          (gpointer            callback_data);
-static void cancel_owner_change_callback          (gpointer            callback_data);
+static void cancel_group_change_callback          (FMPropertiesWindow *window);
+static void cancel_owner_change_callback          (FMPropertiesWindow *window);
 static void parent_widget_destroyed_callback      (GtkWidget          *widget,
 						   gpointer            callback_data);
 static void select_image_button_callback          (GtkWidget          *widget,
@@ -220,8 +236,8 @@ static GtkLabel *attach_ellipsizing_value_label   (GtkTable *table,
 						   int column,
 						   const char *initial_text);
 
-GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
-			 GtkWindow, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW);
+#define parent_class fm_properties_window_parent_class 
 
 static gboolean
 is_multi_file_window (FMPropertiesWindow *window)
@@ -1490,51 +1506,267 @@ attach_ellipsizing_value_field (FMPropertiesWindow *window,
 }
 
 static void
-group_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+group_change_callback (NautilusFile *file,
+		       GnomeVFSResult result,
+		       FMPropertiesWindow *window)
 {
-	g_assert (callback_data == NULL);
-	
+	char *group;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (window->details->group_change_file == file);
+
+	group = window->details->group_change_group;
+	g_assert (group != NULL);
+
 	/* Report the error if it's an error. */
-	eel_timed_wait_stop (cancel_group_change_callback, file);
-	fm_report_error_setting_group (file, result, NULL);
+	eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
+	fm_report_error_setting_group (file, result, GTK_WINDOW (window));
+
 	nautilus_file_unref (file);
+	g_free (group);
+
+	window->details->group_change_file = NULL;
+	window->details->group_change_group = NULL;
+	g_object_unref (G_OBJECT (window));
 }
 
 static void
-cancel_group_change_callback (gpointer callback_data)
+cancel_group_change_callback (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
+	char *group;
 
-	file = NAUTILUS_FILE (callback_data);
-	nautilus_file_cancel (file, group_change_callback, NULL);
+	file = window->details->group_change_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	group = window->details->group_change_group;
+	g_assert (group != NULL);
+
+	nautilus_file_cancel (file, (NautilusFileOperationCallback) group_change_callback, window);
+
+	g_free (group);
 	nautilus_file_unref (file);
+
+	window->details->group_change_file = NULL;
+	window->details->group_change_group = NULL;
+	g_object_unref (window);
+}
+
+static gboolean
+schedule_group_change_timeout (FMPropertiesWindow *window)
+{
+	NautilusFile *file;
+	char *group;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	file = window->details->group_change_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	group = window->details->group_change_group;
+	g_assert (group != NULL);
+
+	eel_timed_wait_start
+		((EelCancelCallback) cancel_group_change_callback,
+		 window,
+		 _("Cancel Group Change?"),
+		 GTK_WINDOW (window));
+
+	nautilus_file_set_group
+		(file,  group,
+		 (NautilusFileOperationCallback) group_change_callback, window);
+
+	window->details->group_change_timeout = 0;
+	return FALSE;
+}
+
+static void
+schedule_group_change (FMPropertiesWindow *window,
+		       NautilusFile       *file,
+		       const char         *group)
+{
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (window->details->group_change_group == NULL);
+	g_assert (window->details->group_change_file == NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	window->details->group_change_file = nautilus_file_ref (file);
+	window->details->group_change_group = g_strdup (group);
+	g_object_ref (G_OBJECT (window));
+	window->details->group_change_timeout =
+		g_timeout_add (CHOWN_CHGRP_TIMEOUT,
+			       (GSourceFunc) schedule_group_change_timeout,
+			       window);
+}
+
+static void
+unschedule_or_cancel_group_change (FMPropertiesWindow *window)
+{
+	NautilusFile *file;
+	char *group;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	file = window->details->group_change_file;
+	group = window->details->group_change_group;
+
+	g_assert ((file == NULL && group == NULL) ||
+		  (file != NULL && group != NULL));
+
+	if (file != NULL) {
+		g_assert (NAUTILUS_IS_FILE (file));
+
+		if (window->details->group_change_timeout == 0) {
+			nautilus_file_cancel (file,
+					      (NautilusFileOperationCallback) group_change_callback, window);
+			eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
+		}
+
+		nautilus_file_unref (file);
+		g_free (group);
+
+		window->details->group_change_file = NULL;
+		window->details->group_change_group = NULL;
+		g_object_unref (G_OBJECT (window));
+	}
+
+	if (window->details->group_change_timeout > 0) {
+		g_assert (file != NULL);
+		g_source_remove (window->details->group_change_timeout);
+		window->details->group_change_timeout = 0;
+	}
 }
 
 static void
 changed_group_callback (GtkComboBox *combo_box, NautilusFile *file)
 {
+	FMPropertiesWindow *window;
 	char *group;
 	char *cur_group;
+
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	group = gtk_combo_box_get_active_text (combo_box);
 	cur_group = nautilus_file_get_group_name (file);
 
 	if (strcmp (group, cur_group) != 0) {
 		/* Try to change file group. If this fails, complain to user. */
-		nautilus_file_ref (file);
-		eel_timed_wait_start
-			(cancel_group_change_callback,
-			 file,
-			 _("Cancel Group Change?"),
-			 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
+		window = FM_PROPERTIES_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (combo_box), GTK_TYPE_WINDOW));
 
-		nautilus_file_set_group
-			(file,  group,
-			 group_change_callback, NULL);
+		unschedule_or_cancel_group_change (window);
+		schedule_group_change (window, file, group);
 	}
 	g_free (group);
 	g_free (cur_group);
 }
+
+/* checks whether the given column at the first level
+ * of model has the specified entries in the given order. */
+static gboolean
+tree_model_entries_equal (GtkTreeModel *model,
+			  unsigned int  column,
+			  GList        *entries)
+{
+	GtkTreeIter iter;
+	gboolean empty_model;
+
+	g_assert (GTK_IS_TREE_MODEL (model));
+	g_assert (gtk_tree_model_get_column_type (model, column) == G_TYPE_STRING);
+
+	empty_model = !gtk_tree_model_get_iter_first (model, &iter);
+
+	if (!empty_model && entries != NULL) {
+		GList *l;
+
+		l = entries;
+
+		do {
+			char *val;
+
+			gtk_tree_model_get (model, &iter,
+					    column, &val,
+					    -1);
+			if ((val == NULL && l->data != NULL) ||
+			    (val != NULL && l->data == NULL) ||
+			    (val != NULL && strcmp (val, l->data))) {
+				g_free (val);
+				return FALSE;
+			}
+
+			g_free (val);
+			l = l->next;
+		} while (gtk_tree_model_iter_next (model, &iter));
+
+		return l == NULL;
+	} else {
+		return (empty_model && entries == NULL) ||
+		       (!empty_model && entries != NULL);
+	}
+}
+
+static char *
+combo_box_get_active_entry (GtkComboBox *combo_box,
+			    unsigned int column)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	char *val;
+
+	g_assert (GTK_IS_COMBO_BOX (combo_box));
+
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo_box), &iter)) {
+		model = gtk_combo_box_get_model (combo_box);
+		g_assert (GTK_IS_TREE_MODEL (model));
+
+		gtk_tree_model_get (model, &iter,
+				    column, &val,
+				    -1);
+		return val;
+	}
+
+	return NULL;
+}
+
+/* returns the index of the given entry in the the given column
+ * at the first level of model. Returns -1 if entry can't be found
+ * or entry is NULL.
+ * */
+static int
+tree_model_get_entry_index (GtkTreeModel *model,
+			    unsigned int  column,
+			    const char   *entry)
+{
+	GtkTreeIter iter;
+	int index;
+	gboolean empty_model;
+
+	g_assert (GTK_IS_TREE_MODEL (model));
+	g_assert (gtk_tree_model_get_column_type (model, column) == G_TYPE_STRING);
+
+	empty_model = !gtk_tree_model_get_iter_first (model, &iter);
+	if (!empty_model && entry != NULL) {
+		index = 0;
+
+		do {
+			char *val;
+
+			gtk_tree_model_get (model, &iter,
+					    column, &val,
+					    -1);
+			if (val != NULL && !strcmp (val, entry)) {
+				g_free (val);
+				return index;
+			}
+
+			g_free (val);
+			index++;
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+
+	return -1;
+}
+
 
 static void
 synch_groups_combo_box (GtkComboBox *combo_box, NautilusFile *file)
@@ -1555,27 +1787,27 @@ synch_groups_combo_box (GtkComboBox *combo_box, NautilusFile *file)
 		return;
 	}
 
-	/* Clear the contents of ComboBox in a wacky way because there
-	 * is no function to clear all items and also no function to obtain
-	 * the number of items in a combobox.
-	 */
-	model = gtk_combo_box_get_model (combo_box);
-	g_return_if_fail (GTK_IS_LIST_STORE (model));
-	store = GTK_LIST_STORE (model);
-	gtk_list_store_clear (store);
-
-	current_group_name = nautilus_file_get_group_name (file);
-	current_group_index = -1;
-
 	groups = nautilus_file_get_settable_group_names (file);
 
-	for (node = groups, group_index = 0; node != NULL; node = node->next, ++group_index) {
-		group_name = (const char *)node->data;
-		if (strcmp (group_name, current_group_name) == 0) {
-			current_group_index = group_index;
+	model = gtk_combo_box_get_model (combo_box);
+	store = GTK_LIST_STORE (model);
+	g_assert (GTK_IS_LIST_STORE (model));
+
+	if (!tree_model_entries_equal (model, 0, groups)) {
+		/* Clear the contents of ComboBox in a wacky way because there
+		 * is no function to clear all items and also no function to obtain
+		 * the number of items in a combobox.
+		 */
+		gtk_list_store_clear (store);
+
+		for (node = groups, group_index = 0; node != NULL; node = node->next, ++group_index) {
+			group_name = (const char *)node->data;
+			gtk_combo_box_append_text (combo_box, group_name);
 		}
-		gtk_combo_box_append_text (combo_box, group_name);
 	}
+
+	current_group_name = nautilus_file_get_group_name (file);
+	current_group_index = tree_model_get_entry_index (model, 0, current_group_name);
 
 	/* If current group wasn't in list, we prepend it (with a separator). 
 	 * This can happen if the current group is an id with no matching
@@ -1622,12 +1854,28 @@ combo_box_row_separator_func (GtkTreeModel *model,
 
 static GtkComboBox *
 attach_combo_box (GtkTable *table,
-		    int row)
+		  int row,
+		  gboolean two_columns)
 {
 	GtkWidget *combo_box;
 	GtkWidget *aligner;
 
-	combo_box = gtk_combo_box_new_text ();
+	if (!two_columns) {
+		combo_box = gtk_combo_box_new_text ();
+	} else {
+		GtkTreeModel *model;
+		GtkCellRenderer *renderer;
+
+		model = GTK_TREE_MODEL (gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING));
+		combo_box = gtk_combo_box_new_with_model (model);
+		g_object_unref (G_OBJECT (model));
+
+		renderer = gtk_cell_renderer_text_new ();
+		gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo_box), renderer, TRUE);
+		gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo_box), renderer,
+					       "text", 0);
+		
+	}
 	gtk_widget_show (combo_box);
 
   	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
@@ -1658,7 +1906,7 @@ attach_group_combo_box (GtkTable *table,
 {
 	GtkComboBox *combo_box;
 
-	combo_box = attach_combo_box (table, row);
+	combo_box = attach_combo_box (table, row, FALSE);
 
 	synch_groups_combo_box (combo_box, file);
 
@@ -1675,29 +1923,141 @@ attach_group_combo_box (GtkTable *table,
 }	
 
 static void
-owner_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+owner_change_callback (NautilusFile *file,
+		       GnomeVFSResult result,
+		       FMPropertiesWindow *window)
 {
-	g_assert (callback_data == NULL);
-	
+	char *owner;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (window->details->owner_change_file == file);
+
+	owner = window->details->owner_change_owner;
+	g_assert (owner != NULL);
+
 	/* Report the error if it's an error. */
-	eel_timed_wait_stop (cancel_owner_change_callback, file);
-	fm_report_error_setting_owner (file, result, NULL);
+	eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
+	fm_report_error_setting_owner (file, result, GTK_WINDOW (window));
+
 	nautilus_file_unref (file);
+	g_free (owner);
+
+	window->details->owner_change_file = NULL;
+	window->details->owner_change_owner = NULL;
+	g_object_unref (G_OBJECT (window));
 }
 
 static void
-cancel_owner_change_callback (gpointer callback_data)
+cancel_owner_change_callback (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
+	char *owner;
 
-	file = NAUTILUS_FILE (callback_data);
-	nautilus_file_cancel (file, owner_change_callback, NULL);
+	file = window->details->owner_change_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	owner = window->details->owner_change_owner;
+	g_assert (owner != NULL);
+
+	nautilus_file_cancel (file, (NautilusFileOperationCallback) owner_change_callback, window);
+
 	nautilus_file_unref (file);
+	g_free (owner);
+
+	window->details->owner_change_file = NULL;
+	window->details->owner_change_owner = NULL;
+	g_object_unref (window);
+}
+
+static gboolean
+schedule_owner_change_timeout (FMPropertiesWindow *window)
+{
+	NautilusFile *file;
+	char *owner;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	file = window->details->owner_change_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	owner = window->details->owner_change_owner;
+	g_assert (owner != NULL);
+
+	eel_timed_wait_start
+		((EelCancelCallback) cancel_owner_change_callback,
+		 window,
+		 _("Cancel Owner Change?"),
+		 GTK_WINDOW (window));
+
+	nautilus_file_set_owner
+		(file,  owner,
+		 (NautilusFileOperationCallback) owner_change_callback, window);
+
+	window->details->owner_change_timeout = 0;
+	return FALSE;
+}
+
+static void
+schedule_owner_change (FMPropertiesWindow *window,
+		       NautilusFile       *file,
+		       const char         *owner)
+{
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (window->details->owner_change_owner == NULL);
+	g_assert (window->details->owner_change_file == NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	window->details->owner_change_file = nautilus_file_ref (file);
+	window->details->owner_change_owner = g_strdup (owner);
+	g_object_ref (G_OBJECT (window));
+	window->details->owner_change_timeout =
+		g_timeout_add (CHOWN_CHGRP_TIMEOUT,
+			       (GSourceFunc) schedule_owner_change_timeout,
+			       window);
+}
+
+static void
+unschedule_or_cancel_owner_change (FMPropertiesWindow *window)
+{
+	NautilusFile *file;
+	char *owner;
+
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+
+	file = window->details->owner_change_file;
+	owner = window->details->owner_change_owner;
+
+	g_assert ((file == NULL && owner == NULL) ||
+		  (file != NULL && owner != NULL));
+
+	if (file != NULL) {
+		g_assert (NAUTILUS_IS_FILE (file));
+
+		if (window->details->owner_change_timeout == 0) {
+			nautilus_file_cancel (file,
+					      (NautilusFileOperationCallback) owner_change_callback, window);
+			eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
+		}
+
+		nautilus_file_unref (file);
+		g_free (owner);
+
+		window->details->owner_change_file = NULL;
+		window->details->owner_change_owner = NULL;
+		g_object_unref (G_OBJECT (window));
+	}
+
+	if (window->details->owner_change_timeout > 0) {
+		g_assert (file != NULL);
+		g_source_remove (window->details->owner_change_timeout);
+		window->details->owner_change_timeout = 0;
+	}
 }
 
 static void
 changed_owner_callback (GtkComboBox *combo_box, NautilusFile* file)
 {
+	FMPropertiesWindow *window;
 	char *owner_text;
 	char **name_array;
 	char *new_owner;
@@ -1706,7 +2066,7 @@ changed_owner_callback (GtkComboBox *combo_box, NautilusFile* file)
 	g_assert (GTK_IS_COMBO_BOX (combo_box));
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	owner_text = gtk_combo_box_get_active_text (combo_box);
+	owner_text = combo_box_get_active_entry (combo_box, 0);
 	name_array = g_strsplit (owner_text, " - ", 2);
 	new_owner = name_array[0];
 	g_free (owner_text);
@@ -1714,21 +2074,14 @@ changed_owner_callback (GtkComboBox *combo_box, NautilusFile* file)
 
 	if (strcmp (new_owner, cur_owner) != 0) {
 		/* Try to change file owner. If this fails, complain to user. */
-		nautilus_file_ref (file);
-		eel_timed_wait_start
-			(cancel_owner_change_callback,
-			 file,
-			 _("Cancel Owner Change?"),
-			 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
+		window = FM_PROPERTIES_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (combo_box), GTK_TYPE_WINDOW));
 
-		nautilus_file_set_owner
-			(file, name_array[0],
-			 owner_change_callback, NULL);
+		unschedule_or_cancel_owner_change (window);
+		schedule_owner_change (window, file, new_owner);
 	}
 	g_strfreev (name_array);
 	g_free (cur_owner);
 }
-
 
 static void
 synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
@@ -1737,7 +2090,8 @@ synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
 	GList *node;
 	GtkTreeModel *model;
 	GtkListStore *store;
-	const char *user_name;
+	GtkTreeIter iter;
+	char *user_name;
 	char *owner_name;
 	int user_index;
 	int owner_index;
@@ -1751,49 +2105,73 @@ synch_user_menu (GtkComboBox *combo_box, NautilusFile *file)
 		return;
 	}
 
-	/* Clear the contents of ComboBox in a wacky way because there
-	 * is no function to clear all items and also no function to obtain
-	 * the number of items in a combobox.
-	 */
-	model = gtk_combo_box_get_model (combo_box);
-	g_return_if_fail (GTK_IS_LIST_STORE (model));
-	store = GTK_LIST_STORE (model);
-	gtk_list_store_clear (store);
-
-	owner_name = nautilus_file_get_string_attribute (file, "owner");
-	owner_index = -1;
-
 	users = nautilus_get_user_names ();
 
-	for (node = users, user_index = 0; node != NULL; node = node->next, ++user_index) {
-		user_name = (const char *)node->data;
+	model = gtk_combo_box_get_model (combo_box);
+	store = GTK_LIST_STORE (model);
+	g_assert (GTK_IS_LIST_STORE (model));
 
-		name_array = g_strsplit (user_name, "\n", 2);
-		if (name_array[1] != NULL) {
-			combo_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
-		} else {
-			combo_text = g_strdup (name_array[0]);
+	if (!tree_model_entries_equal (model, 1, users)) {
+		/* Clear the contents of ComboBox in a wacky way because there
+		 * is no function to clear all items and also no function to obtain
+		 * the number of items in a combobox.
+		 */
+		gtk_list_store_clear (store);
+
+		for (node = users, user_index = 0; node != NULL; node = node->next, ++user_index) {
+			user_name = (char *)node->data;
+
+			name_array = g_strsplit (user_name, "\n", 2);
+			if (name_array[1] != NULL) {
+				combo_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
+			} else {
+				combo_text = g_strdup (name_array[0]);
+			}
+
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter,
+					    0, combo_text,
+					    1, user_name,
+					    -1);
+
+			g_strfreev (name_array);
+			g_free (combo_text);
 		}
-
-		if (strcmp (combo_text, owner_name) == 0) {
-			owner_index = user_index;
-		}
-		gtk_combo_box_append_text (combo_box, combo_text);
-
-		g_strfreev (name_array);
-		g_free (combo_text);
 	}
+
+	owner_name = nautilus_file_get_string_attribute (file, "owner");
+	owner_index = tree_model_get_entry_index (model, 0, owner_name);
 
 	/* If owner wasn't in list, we prepend it (with a separator). 
 	 * This can happen if the owner is an id with no matching
 	 * identifier in the passwords file.
 	 */
 	if (owner_index < 0 && owner_name != NULL) {
-		/* add separator */
-		gtk_combo_box_prepend_text (combo_box, "-");
+		if (users != NULL) {
+			/* add separator */
+			gtk_list_store_prepend (store, &iter);
+			gtk_list_store_set (store, &iter,
+					    0, "-",
+					    1, NULL,
+					    -1);
+		}
 
-		gtk_combo_box_prepend_text (combo_box, owner_name);
+		name_array = g_strsplit (owner_name, " - ", 2);
+		if (name_array[1] != NULL) {
+			user_name = g_strdup_printf ("%s\n%s", name_array[0], name_array[1]);
+		} else {
+			user_name = g_strdup (name_array[0]);
+		}
 		owner_index = 0;
+
+		gtk_list_store_prepend (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    0, owner_name,
+				    1, user_name,
+				    -1);
+
+		g_free (user_name);
+		g_strfreev (name_array);
 	}
 
 	gtk_combo_box_set_active (combo_box, owner_index);
@@ -1809,7 +2187,7 @@ attach_owner_combo_box (GtkTable *table,
 {
 	GtkComboBox *combo_box;
 
-	combo_box = attach_combo_box (table, row);
+	combo_box = attach_combo_box (table, row, TRUE);
 
 	synch_user_menu (combo_box, file);
 
@@ -4718,7 +5096,7 @@ fm_properties_window_class_init (FMPropertiesWindowClass *class)
 }
 
 static void
-fm_properties_window_instance_init (FMPropertiesWindow *window)
+fm_properties_window_init (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
 
