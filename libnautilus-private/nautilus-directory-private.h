@@ -45,6 +45,7 @@ struct NautilusDirectoryDetails
 	/* The location. */
 	char *uri;
 	GnomeVFSURI *vfs_uri;
+	int is_local_state;
 
 	/* The file objects. */
 	NautilusFile *as_file;

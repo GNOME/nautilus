@@ -1,3 +1,14 @@
+2006-08-23  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_is_local):
+	Cache return value from gnome_vfs_uri_is_local
+	
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-file-utilities.c:
+	Avoid using gnome_vfs_uri_is_local.
+
 2006-08-22  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

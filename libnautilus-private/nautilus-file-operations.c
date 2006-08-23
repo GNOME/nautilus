@@ -444,7 +444,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 			from_path [length - 1] = '\0';
 		}
 
-		if (!gnome_vfs_uri_is_local (uri)) {
+		if (strcmp (uri->method_string, "file") != 0) {
 			hostname = gnome_vfs_uri_get_host_name (uri);
 		}
 		if (hostname) {
@@ -473,7 +473,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 			to_path [length - 1] = '\0';
 		}
 
-		if (!gnome_vfs_uri_is_local (uri)) {
+		if (strcmp (uri->method_string, "file") != 0) {
 			hostname = gnome_vfs_uri_get_host_name (uri);
 		}
 		if (hostname) {

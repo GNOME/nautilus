@@ -541,7 +541,15 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	if (directory->details->vfs_uri == NULL) {
 		return TRUE;
 	}
-	return gnome_vfs_uri_is_local (directory->details->vfs_uri);
+	if (directory->details->is_local_state == 0) {
+		if (gnome_vfs_uri_is_local (directory->details->vfs_uri)) {
+			directory->details->is_local_state = 1;
+		} else {
+			directory->details->is_local_state = -1;
+		}
+	}
+	
+	return directory->details->is_local_state > 0;
 }
 
 gboolean
