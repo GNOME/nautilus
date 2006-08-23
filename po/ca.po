@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-22 14:37+0200\n"
-"PO-Revision-Date: 2006-08-18 20:33+0200\n"
+"POT-Creation-Date: 2006-08-23 21:20+0200\n"
+"PO-Revision-Date: 2006-08-23 21:42+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -1482,8 +1482,8 @@ msgid ""
 "The folder already exists in \"%s\".  Replacing it will overwrite any files "
 "in the folder that conflict with the files being copied."
 msgstr ""
-"El directori ja existeix a «%s».  Reemplaçant-lo sobreescriurà qualsevol "
-"fitxer del directori que entri amb conflicte amb els fitxers que s'estan "
+"El directori ja existeix a «%s». En reemplaçar-lo se sobreescriurà qualsevol "
+"fitxer de la carpeta que entri en conflicte amb els fitxers que s'estan "
 "copiant."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1196
@@ -1491,7 +1491,8 @@ msgstr ""
 msgid ""
 "The file already exists in \"%s\".  Replacing it will overwrite its contents."
 msgstr ""
-"El fitxer existeix a «%s». Reemplaçant-lo sobreescriurà el seu contingut."
+"El fitxer ja existeix a «%s». En reemplaçar-lo se'n sobreescriuran els "
+"continguts."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1213
 #: ../libnautilus-private/nautilus-file-operations.c:1232
@@ -1545,6 +1546,7 @@ msgstr "%dn enllaç a %s"
 msgid "%drd link to %s"
 msgstr "%der enllaç a %s"
 
+# Això no funcionarà per a "4rt", per exemple, sortirà 4è
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1337
 #, c-format
@@ -2683,12 +2685,13 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Esteu segur que voleu eliminar permanentment l'element «%s»?"
 
 #: ../src/file-manager/fm-directory-view.c:995
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Esteu segur que voleu eliminar permanentment l'element «%s»?"
-msgstr[1] "Esteu segur que voleu eliminar permanentment l'element «%s»?"
+msgstr[0] "Esteu segur que voleu eliminar permanentment l'element seleccionat?"
+msgstr[1] ""
+"Esteu segur que voleu eliminar permanentment els %d elements seleccionats?"
 
 #: ../src/file-manager/fm-directory-view.c:1006
 msgid "If you delete an item, it is permanently lost."
@@ -2842,15 +2845,19 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Esteu segur que voleu suprimir permanentment «%s» de la paperera?"
 
 #: ../src/file-manager/fm-directory-view.c:3839
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "Esteu segur que voleu suprimir permanentment «%s» de la paperera?"
-msgstr[1] "Esteu segur que voleu suprimir permanentment «%s» de la paperera?"
+msgstr[0] ""
+"Esteu segur que voleu suprimir permanentment l'element seleccionat de la "
+"paperera?"
+msgstr[1] ""
+"Esteu segur que voleu suprimir permanentment els %d elements seleccionats de "
+"la paperera?"
 
 #: ../src/file-manager/fm-directory-view.c:3850
 msgid "If you delete an item, it will be permanently lost."
@@ -2995,21 +3002,23 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "«%s» es copiarà si seleccioneu l'ordre Enganxa"
 
 #: ../src/file-manager/fm-directory-view.c:5994
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste command"
-msgstr[0] "«%s» es mourà si seleccioneu l'ordre Enganxa"
-msgstr[1] "«%s» es mourà si seleccioneu l'ordre Enganxa"
+msgstr[0] "Es mourà l'element seleccionat si seleccioneu l'ordre Enganxa"
+msgstr[1] ""
+"Es mouran els %d elements seleccionats si seleccioneu l'ordre Enganxa"
 
 # , c-format
 #: ../src/file-manager/fm-directory-view.c:6001
-#, fuzzy, c-format
+#, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste command"
-msgstr[0] "«%s» es copiarà si seleccioneu l'ordre Enganxa"
-msgstr[1] "«%s» es copiarà si seleccioneu l'ordre Enganxa"
+msgstr[0] "Es copiarà l'element seleccionat si seleccioneu l'ordre Enganxa"
+msgstr[1] ""
+"Es copiaran els %d elements seleccionats si seleccioneu l'ordre Enganxa"
 
 # És "per" i no pas "per a" en aquest cas (josep)
 #: ../src/file-manager/fm-directory-view.c:6095
@@ -5533,7 +5542,7 @@ msgstr "Seleccioneu una categoria:"
 
 #: ../src/nautilus-property-browser.c:2114
 msgid "C_ancel Remove"
-msgstr "C_ancel·la l'eliminació"
+msgstr "C_ancel·la la supressió"
 
 #: ../src/nautilus-property-browser.c:2120
 msgid "_Add a New Pattern..."
@@ -5549,15 +5558,15 @@ msgstr "_Afegeix un distintiu nou..."
 
 #: ../src/nautilus-property-browser.c:2149
 msgid "Click on a pattern to remove it"
-msgstr "Feu clic a un patró per a eliminar-lo"
+msgstr "Feu clic a un patró per a suprimir-lo"
 
 #: ../src/nautilus-property-browser.c:2152
 msgid "Click on a color to remove it"
-msgstr "Feu clic a un color per a eliminar-lo"
+msgstr "Feu clic a un color per a suprimir-lo"
 
 #: ../src/nautilus-property-browser.c:2155
 msgid "Click on an emblem to remove it"
-msgstr "Feu clic a un distintiu per a eliminar-lo"
+msgstr "Feu clic a un distintiu per a suprimir-lo"
 
 #: ../src/nautilus-property-browser.c:2164
 msgid "Patterns:"
@@ -5573,15 +5582,15 @@ msgstr "Distintius:"
 
 #: ../src/nautilus-property-browser.c:2190
 msgid "_Remove a Pattern..."
-msgstr "_Elimina un patró..."
+msgstr "Suprim_eix un patró..."
 
 #: ../src/nautilus-property-browser.c:2193
 msgid "_Remove a Color..."
-msgstr "_Elimina un color..."
+msgstr "Suprim_eix un color..."
 
 #: ../src/nautilus-property-browser.c:2196
 msgid "_Remove an Emblem..."
-msgstr "_Elimina un distintiu..."
+msgstr "Suprim_eix un distintiu..."
 
 #: ../src/nautilus-query-editor.c:132
 msgid "Location"
@@ -5729,8 +5738,8 @@ msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
 msgstr ""
-"Voleu suprimir de la vostra llista les adreces d'interès amb una ubicació "
-"inexistent?"
+"Voleu suprimir de la vostra llista aquelles adreces d'interès amb una "
+"ubicació inexistent?"
 
 #: ../src/nautilus-window-bookmarks.c:99
 msgid "Bookmark for Nonexistent Location"
