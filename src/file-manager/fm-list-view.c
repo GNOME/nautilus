@@ -864,6 +864,12 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 		       unload_data);
 }
 
+static void
+row_activated_callback (GtkTreeView *treeview, GtkTreePath *path, 
+			GtkTreeViewColumn *column, FMListView *view)
+{
+	activate_selected_items (view);
+}
 
 static void
 subdirectory_unloaded_callback (FMListModel *model,
@@ -1250,6 +1256,8 @@ create_and_set_up_tree_view (FMListView *view)
                                  G_CALLBACK (row_expanded_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "row_collapsed",
                                  G_CALLBACK (row_collapsed_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "row-activated",
+                                 G_CALLBACK (row_activated_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
