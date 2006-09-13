@@ -128,12 +128,12 @@ enum {
 };
 
 /* Target types for dragging from the shortcuts list */
-static const GtkTargetEntry shortcuts_source_targets[] = {
+static const GtkTargetEntry nautilus_shortcuts_source_targets[] = {
 	{ "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, GTK_TREE_MODEL_ROW }
 };
 
 /* Target types for dropping into the shortcuts list */
-static const GtkTargetEntry shortcuts_drop_targets [] = {
+static const GtkTargetEntry nautilus_shortcuts_drop_targets [] = {
 	{ "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, GTK_TREE_MODEL_ROW },
 	{ "text/uri-list", 0, TEXT_URI_LIST }
 };
@@ -143,27 +143,27 @@ typedef struct {
   GtkTreeModelFilter parent;
 
   NautilusPlacesSidebar *sidebar;
-} ShortcutsModelFilter;
+} NautilusShortcutsModelFilter;
 
 typedef struct {
   GtkTreeModelFilterClass parent_class;
-} ShortcutsModelFilterClass;
+} NautilusShortcutsModelFilterClass;
 
-#define SHORTCUTS_MODEL_FILTER_TYPE (_shortcuts_model_filter_get_type ())
-#define SHORTCUTS_MODEL_FILTER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SHORTCUTS_MODEL_FILTER_TYPE, ShortcutsModelFilter))
+#define NAUTILUS_SHORTCUTS_MODEL_FILTER_TYPE (_nautilus_shortcuts_model_filter_get_type ())
+#define NAUTILUS_SHORTCUTS_MODEL_FILTER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_SHORTCUTS_MODEL_FILTER_TYPE, NautilusShortcutsModelFilter))
 
-GType _shortcuts_model_filter_get_type (void);
-static void shortcuts_model_filter_drag_source_iface_init (GtkTreeDragSourceIface *iface);
+GType _nautilus_shortcuts_model_filter_get_type (void);
+static void nautilus_shortcuts_model_filter_drag_source_iface_init (GtkTreeDragSourceIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (ShortcutsModelFilter,
-			 _shortcuts_model_filter,
+G_DEFINE_TYPE_WITH_CODE (NautilusShortcutsModelFilter,
+			 _nautilus_shortcuts_model_filter,
 			 GTK_TYPE_TREE_MODEL_FILTER,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_DRAG_SOURCE,
-						shortcuts_model_filter_drag_source_iface_init));
+						nautilus_shortcuts_model_filter_drag_source_iface_init));
 
-static GtkTreeModel *shortcuts_model_filter_new (NautilusPlacesSidebar *sidebar,
-						 GtkTreeModel          *child_model,
-						 GtkTreePath           *root);
+static GtkTreeModel *nautilus_shortcuts_model_filter_new (NautilusPlacesSidebar *sidebar,
+							  GtkTreeModel          *child_model,
+							  GtkTreePath           *root);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusPlacesSidebar, nautilus_places_sidebar, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
@@ -383,9 +383,9 @@ update_places_cb (gpointer data)
 }
 
 static gboolean
-shortcuts_row_separator_func (GtkTreeModel *model,
-			      GtkTreeIter  *iter,
-			      gpointer      data)
+nautilus_shortcuts_row_separator_func (GtkTreeModel *model,
+				       GtkTreeIter  *iter,
+				       gpointer      data)
 {
 	PlaceType	 	type; 
 
@@ -1512,7 +1512,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 			  G_CALLBACK (bookmarks_editing_canceled), sidebar);
 
 	gtk_tree_view_set_row_separator_func (tree_view,
-					      shortcuts_row_separator_func,
+					      nautilus_shortcuts_row_separator_func,
 					      NULL,
 					      NULL);
 
@@ -1528,9 +1528,9 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     GDK_TYPE_PIXBUF,
 					     G_TYPE_INT
 					     );
-	sidebar->filter_model = shortcuts_model_filter_new (sidebar,
-							    GTK_TREE_MODEL (sidebar->store),
-							    NULL);
+	sidebar->filter_model = nautilus_shortcuts_model_filter_new (sidebar,
+								     GTK_TREE_MODEL (sidebar->store),
+								     NULL);
 
 	gtk_tree_view_set_model (tree_view, sidebar->filter_model);
 	gtk_container_add (GTK_CONTAINER (sidebar), GTK_WIDGET (tree_view));
@@ -1549,12 +1549,12 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 
 	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (tree_view),
 						GDK_BUTTON1_MASK,
-						shortcuts_source_targets,
-						G_N_ELEMENTS (shortcuts_source_targets),
+						nautilus_shortcuts_source_targets,
+						G_N_ELEMENTS (nautilus_shortcuts_source_targets),
 						GDK_ACTION_MOVE);
 	gtk_drag_dest_set (GTK_WIDGET (tree_view),
 			   0,
-			   shortcuts_drop_targets, G_N_ELEMENTS (shortcuts_drop_targets),
+			   nautilus_shortcuts_drop_targets, G_N_ELEMENTS (nautilus_shortcuts_drop_targets),
 			   GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 
 	g_signal_connect (tree_view, "key-press-event",
@@ -1731,27 +1731,27 @@ nautilus_places_sidebar_register (void)
 /* Drag and drop interfaces */
 
 static void
-_shortcuts_model_filter_class_init (ShortcutsModelFilterClass *class)
+_nautilus_shortcuts_model_filter_class_init (NautilusShortcutsModelFilterClass *class)
 {
 }
 
 static void
-_shortcuts_model_filter_init (ShortcutsModelFilter *model)
+_nautilus_shortcuts_model_filter_init (NautilusShortcutsModelFilter *model)
 {
 	model->sidebar = NULL;
 }
 
 /* GtkTreeDragSource::row_draggable implementation for the shortcuts filter model */
 static gboolean
-shortcuts_model_filter_row_draggable (GtkTreeDragSource *drag_source,
-				      GtkTreePath       *path)
+nautilus_shortcuts_model_filter_row_draggable (GtkTreeDragSource *drag_source,
+					       GtkTreePath       *path)
 {
-	ShortcutsModelFilter *model;
+	NautilusShortcutsModelFilter *model;
 	int pos;
 	int bookmarks_pos;
 	int num_bookmarks;
 
-	model = SHORTCUTS_MODEL_FILTER (drag_source);
+	model = NAUTILUS_SHORTCUTS_MODEL_FILTER (drag_source);
 
 	pos = *gtk_tree_path_get_indices (path);
 	bookmarks_pos = get_bookmark_index (model->sidebar->tree_view);
@@ -1762,13 +1762,13 @@ shortcuts_model_filter_row_draggable (GtkTreeDragSource *drag_source,
 
 /* GtkTreeDragSource::drag_data_get implementation for the shortcuts filter model */
 static gboolean
-shortcuts_model_filter_drag_data_get (GtkTreeDragSource *drag_source,
-				      GtkTreePath       *path,
-				      GtkSelectionData  *selection_data)
+nautilus_shortcuts_model_filter_drag_data_get (GtkTreeDragSource *drag_source,
+					       GtkTreePath       *path,
+					       GtkSelectionData  *selection_data)
 {
-	ShortcutsModelFilter *model;
+	NautilusShortcutsModelFilter *model;
 
-	model = SHORTCUTS_MODEL_FILTER (drag_source);
+	model = NAUTILUS_SHORTCUTS_MODEL_FILTER (drag_source);
 
 	/* FIXME */
 
@@ -1777,20 +1777,20 @@ shortcuts_model_filter_drag_data_get (GtkTreeDragSource *drag_source,
 
 /* Fill the GtkTreeDragSourceIface vtable */
 static void
-shortcuts_model_filter_drag_source_iface_init (GtkTreeDragSourceIface *iface)
+nautilus_shortcuts_model_filter_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 {
-	iface->row_draggable = shortcuts_model_filter_row_draggable;
-	iface->drag_data_get = shortcuts_model_filter_drag_data_get;
+	iface->row_draggable = nautilus_shortcuts_model_filter_row_draggable;
+	iface->drag_data_get = nautilus_shortcuts_model_filter_drag_data_get;
 }
 
 static GtkTreeModel *
-shortcuts_model_filter_new (NautilusPlacesSidebar *sidebar,
-			    GtkTreeModel          *child_model,
-			    GtkTreePath           *root)
+nautilus_shortcuts_model_filter_new (NautilusPlacesSidebar *sidebar,
+				     GtkTreeModel          *child_model,
+				     GtkTreePath           *root)
 {
-	ShortcutsModelFilter *model;
+	NautilusShortcutsModelFilter *model;
 
-	model = g_object_new (SHORTCUTS_MODEL_FILTER_TYPE,
+	model = g_object_new (NAUTILUS_SHORTCUTS_MODEL_FILTER_TYPE,
 			      "child-model", child_model,
 			      "virtual-root", root,
 			      NULL);

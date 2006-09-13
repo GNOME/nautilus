@@ -1,3 +1,11 @@
+2006-09-13  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-places-sidebar.c:
+	Don't use the same type name for the shortcut model filter as
+	GtkFileChooser to avoid name clashes. Fixes #355242.
+	
+	Patch from Stephen Cook <siti@orcon.net.nz>
+
 2006-09-04  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
