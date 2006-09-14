@@ -749,22 +749,34 @@ corba_rename_directory (PortableServer_Servant  servant,
 }
 
 static GList *
-find_monitor_node (GList *monitors, const Nautilus_MetafileMonitor monitor)
+find_monitor_node (GList *monitors,
+		   const Nautilus_MetafileMonitor monitor,
+		   CORBA_string *error)
 {
 	GList                    *node;
 	CORBA_Environment	  ev;
 	Nautilus_MetafileMonitor  cur_monitor;		
 
+	g_assert (error != NULL);
+	*error = NULL;
+
 	CORBA_exception_init (&ev);
 
 	for (node = monitors; node != NULL; node = node->next) {
 		cur_monitor = node->data;
-		if (CORBA_Object_is_equivalent (cur_monitor, monitor, &ev)) {
+		gboolean equivalent;
+
+		equivalent = CORBA_Object_is_equivalent (cur_monitor, monitor, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			node = NULL;
+			*error = CORBA_string_dup (CORBA_exception_id (&ev));
+			break;
+		}
+
+		if (equivalent) {
 			break;
 		}
 	}
-	
-	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 
 	CORBA_exception_free (&ev);
 	
@@ -777,10 +789,19 @@ corba_register_monitor (PortableServer_Servant          servant,
 			CORBA_Environment              *ev)
 {
 	NautilusMetafile          *metafile;
+	CORBA_string               error;
+	gboolean                   found;
 	
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
 
-	g_return_if_fail (find_monitor_node (metafile->details->monitors, monitor) == NULL);
+	found = find_monitor_node (metafile->details->monitors, monitor, &error) != NULL;
+	g_assert (!found || error != NULL);
+
+	if (error != NULL) {
+		g_debug ("CORBA exception when finding monitor node during monitor registration: %s", error);
+		CORBA_free (error);
+		return;
+	}
 
 	metafile->details->monitors = g_list_prepend (metafile->details->monitors,
 						      (gpointer) CORBA_Object_duplicate (monitor, ev));	
@@ -795,12 +816,18 @@ corba_unregister_monitor (PortableServer_Servant          servant,
 {
 	NautilusMetafile          *metafile;
 	GList                     *node;
+	CORBA_string               error;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
 	
-	node = find_monitor_node (metafile->details->monitors, monitor);
+	node = find_monitor_node (metafile->details->monitors, monitor, &error);
+	g_assert (node != NULL || error != NULL);
 
-	g_return_if_fail (node != NULL);
+	if (error != NULL) {
+		g_debug ("CORBA exception when finding monitor node during monitor unregistration: %s", error);
+		CORBA_free (error);
+		return;
+	}
 
 	metafile->details->monitors = g_list_remove_link (metafile->details->monitors, node);
 
@@ -820,7 +847,9 @@ nautilus_metafile_notify_metafile_ready (NautilusMetafile *metafile)
 	for (node = metafile->details->monitors; node != NULL; node = node->next) {
 		monitor = node->data;
 		Nautilus_MetafileMonitor_metafile_ready (monitor, &ev);
-		/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_debug ("CORBA exception when notifying about ready metafile: %s", CORBA_exception_id (&ev));
+		}
 	}
 	
 	CORBA_exception_free (&ev);
@@ -839,7 +868,9 @@ call_metafile_changed (NautilusMetafile *metafile,
 	for (node = metafile->details->monitors; node != NULL; node = node->next) {
 		monitor = node->data;
 		Nautilus_MetafileMonitor_metafile_changed (monitor, file_names, &ev);
-		/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_debug ("CORBA exception when notifying about changed metafile: %s", CORBA_exception_id (&ev));
+		}
 	}
 	
 	CORBA_exception_free (&ev);
