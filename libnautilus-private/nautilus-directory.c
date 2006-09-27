@@ -553,6 +553,25 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 }
 
 gboolean
+nautilus_directory_is_in_trash (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	
+	if (directory->details->uri == NULL) {
+		return FALSE;
+	}
+	if (directory->details->is_in_trash_state == 0) {
+		if (eel_uri_is_in_trash (directory->details->uri)) {
+			directory->details->is_in_trash_state = 1;
+		} else {
+			directory->details->is_in_trash_state = -1;
+		}
+	}
+	
+	return directory->details->is_in_trash_state > 0;
+}
+
+gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);

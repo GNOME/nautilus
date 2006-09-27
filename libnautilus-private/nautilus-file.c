@@ -5228,9 +5228,9 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_is_in_trash (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_assert (NAUTILUS_IS_FILE (file));
 
-	return eel_uri_is_in_trash (file->details->directory->details->uri);
+	return nautilus_directory_is_in_trash (file->details->directory);
 }
 
 GnomeVFSResult

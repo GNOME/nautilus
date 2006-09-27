@@ -1,3 +1,17 @@
+2006-09-27  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory-private.h:
+	Add is_in_trash_state to NautilusDirectoryDetails.
+	Also add nautilus_directory_is_in_trash which works
+	like nautilus_directory_is_local.
+
+	* libnautilus-private/nautilus-file.c:
+	Proxy nautilus_file_is_in_trash to
+	nautilus_directory_is_in_trash, similar to
+	nautilus_file_is_local.
+
 2006-09-14  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-metafile.c: Handle CORBA errors.

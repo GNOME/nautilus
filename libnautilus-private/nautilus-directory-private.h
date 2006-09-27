@@ -104,6 +104,8 @@ struct NautilusDirectoryDetails
 	GnomeVFSAsyncHandle *get_info_in_progress;
 	gboolean get_info_has_slow_mime_type;
 
+	int is_in_trash_state;
+
 	NautilusFile *slow_mime_type_file;
 	GnomeVFSAsyncHandle *slow_mime_type_in_progress;
 
