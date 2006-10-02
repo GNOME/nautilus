@@ -1039,7 +1039,7 @@ static void
 search_bar_activate_callback (NautilusSearchBar *bar,
 			      NautilusWindow *window)
 {
-	char *uri, *home_uri;
+	char *uri, *current_uri;
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
@@ -1054,9 +1054,9 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 	query = nautilus_search_bar_get_query (NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->search_bar));
 	if (query != NULL) {
 		if (!nautilus_search_directory_is_indexed (search_directory)) {
-			home_uri = nautilus_get_home_directory_uri ();
-			nautilus_query_set_location (query, home_uri);
-			g_free (home_uri);
+			current_uri = nautilus_window_get_location (window);
+			nautilus_query_set_location (query, current_uri);
+			g_free (current_uri);
 		}
 		nautilus_search_directory_set_query (search_directory, query);
 		g_object_unref (query);
