@@ -35,8 +35,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-25 15:45+0200\n"
-"PO-Revision-Date: 2006-08-25 15:49+0200\n"
+"POT-Creation-Date: 2006-10-08 14:52+0200\n"
+"PO-Revision-Date: 2006-10-08 15:26+0200\n"
 "Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1119,7 +1119,7 @@ msgid "The group of the file."
 msgstr "Die Dateigruppe."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4153
+#: ../src/file-manager/fm-properties-window.c:4148
 msgid "Permissions"
 msgstr "Zugriffsrechte"
 
@@ -2721,7 +2721,9 @@ msgstr[1] "Dies würde %d Einzelfenster öffnen."
 #: ../src/file-manager/fm-directory-view.c:991
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
-msgstr "Sind sie sicher, dass Sie »%s« dauerhaft löschen wollen?"
+msgstr ""
+"Soll das folgende Objekt dauerhaft gelöscht werden?\n"
+"»%s«"
 
 #: ../src/file-manager/fm-directory-view.c:995
 #, c-format
@@ -2738,7 +2740,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Sobald Sie ein Objekt löschen, geht es dauerhaft verloren."
 
 #: ../src/file-manager/fm-directory-view.c:1157
-#: ../src/file-manager/fm-properties-window.c:4378
+#: ../src/file-manager/fm-properties-window.c:4373
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -4068,13 +4070,13 @@ msgstr "Typ:"
 #: ../src/file-manager/fm-properties-window.c:2726
 #: ../src/file-manager/fm-properties-window.c:2735
 #: ../src/file-manager/fm-properties-window.c:2741
-#: ../src/file-manager/fm-properties-window.c:3762
-#: ../src/file-manager/fm-properties-window.c:3794
-#: ../src/file-manager/fm-properties-window.c:3964
-#: ../src/file-manager/fm-properties-window.c:3985
-#: ../src/file-manager/fm-properties-window.c:4020
-#: ../src/file-manager/fm-properties-window.c:4190
-#: ../src/file-manager/fm-properties-window.c:4194
+#: ../src/file-manager/fm-properties-window.c:3757
+#: ../src/file-manager/fm-properties-window.c:3789
+#: ../src/file-manager/fm-properties-window.c:3959
+#: ../src/file-manager/fm-properties-window.c:3980
+#: ../src/file-manager/fm-properties-window.c:4015
+#: ../src/file-manager/fm-properties-window.c:4185
+#: ../src/file-manager/fm-properties-window.c:4189
 msgid "--"
 msgstr "--"
 
@@ -4128,176 +4130,179 @@ msgstr "_Schreiben"
 msgid "E_xecute"
 msgstr "_Ausführen"
 
-#: ../src/file-manager/fm-properties-window.c:3499
-#: ../src/file-manager/fm-properties-window.c:3510
-#: ../src/file-manager/fm-properties-window.c:3522
+#. translators: this gets concatenated to "no read",
+#. * "no access", etc. (see following strings)
+#.
+#: ../src/file-manager/fm-properties-window.c:3494
+#: ../src/file-manager/fm-properties-window.c:3505
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "no "
 msgstr "nicht "
 
 # CHECK: Dateien anzeigen
-#: ../src/file-manager/fm-properties-window.c:3502
+#: ../src/file-manager/fm-properties-window.c:3497
 msgid "list"
 msgstr "auflisten"
 
-#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3499
 msgid "read"
 msgstr "lesen"
 
-#: ../src/file-manager/fm-properties-window.c:3513
+#: ../src/file-manager/fm-properties-window.c:3508
 msgid "create/delete"
 msgstr "erstellen/löschen"
 
-#: ../src/file-manager/fm-properties-window.c:3515
+#: ../src/file-manager/fm-properties-window.c:3510
 msgid "write"
 msgstr "schreiben"
 
 # CHECK: Dateien aufrufen, öffnen
-#: ../src/file-manager/fm-properties-window.c:3524
+#: ../src/file-manager/fm-properties-window.c:3519
 msgid "access"
 msgstr "zugreifen"
 
-#: ../src/file-manager/fm-properties-window.c:3572
+#: ../src/file-manager/fm-properties-window.c:3567
 msgid "Access:"
 msgstr "Zugegriff:"
 
-#: ../src/file-manager/fm-properties-window.c:3574
+#: ../src/file-manager/fm-properties-window.c:3569
 msgid "Folder Access:"
 msgstr "Ordnerzugriff:"
 
-#: ../src/file-manager/fm-properties-window.c:3576
+#: ../src/file-manager/fm-properties-window.c:3571
 msgid "File Access:"
 msgstr "Dateizugriff:"
 
 # Spaltenname
-#: ../src/file-manager/fm-properties-window.c:3588
-#: ../src/file-manager/fm-properties-window.c:3599
+#: ../src/file-manager/fm-properties-window.c:3583
+#: ../src/file-manager/fm-properties-window.c:3594
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Keiner"
 
-#: ../src/file-manager/fm-properties-window.c:3591
+#: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
 msgstr "Dateien nur auflisten"
 
-#: ../src/file-manager/fm-properties-window.c:3593
+#: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
 msgstr "Auf Dateien zugreifen"
 
-#: ../src/file-manager/fm-properties-window.c:3595
+#: ../src/file-manager/fm-properties-window.c:3590
 msgid "Create and delete files"
 msgstr "Dateien erstellen und löschen"
 
-#: ../src/file-manager/fm-properties-window.c:3602
+#: ../src/file-manager/fm-properties-window.c:3597
 msgid "Read-only"
 msgstr "Nur lesen"
 
-#: ../src/file-manager/fm-properties-window.c:3604
+#: ../src/file-manager/fm-properties-window.c:3599
 msgid "Read and write"
 msgstr "Lesen und schreiben"
 
-#: ../src/file-manager/fm-properties-window.c:3668
+#: ../src/file-manager/fm-properties-window.c:3663
 msgid "Set _user ID"
 msgstr "_Benutzerkennung festlegen"
 
-#: ../src/file-manager/fm-properties-window.c:3670
+#: ../src/file-manager/fm-properties-window.c:3665
 msgid "Special flags:"
 msgstr "Besondere Attribute:"
 
-#: ../src/file-manager/fm-properties-window.c:3672
+#: ../src/file-manager/fm-properties-window.c:3667
 msgid "Set gro_up ID"
 msgstr "_Gruppenkennung festlegen"
 
-#: ../src/file-manager/fm-properties-window.c:3673
+#: ../src/file-manager/fm-properties-window.c:3668
 msgid "_Sticky"
 msgstr "_Klebrig"
 
-#: ../src/file-manager/fm-properties-window.c:3751
-#: ../src/file-manager/fm-properties-window.c:3953
+#: ../src/file-manager/fm-properties-window.c:3746
+#: ../src/file-manager/fm-properties-window.c:3948
 msgid "_Owner:"
 msgstr "_Besitzer:"
 
-#: ../src/file-manager/fm-properties-window.c:3757
-#: ../src/file-manager/fm-properties-window.c:3850
-#: ../src/file-manager/fm-properties-window.c:3959
+#: ../src/file-manager/fm-properties-window.c:3752
+#: ../src/file-manager/fm-properties-window.c:3845
+#: ../src/file-manager/fm-properties-window.c:3954
 msgid "Owner:"
 msgstr "Besitzer:"
 
-#: ../src/file-manager/fm-properties-window.c:3779
-#: ../src/file-manager/fm-properties-window.c:3970
+#: ../src/file-manager/fm-properties-window.c:3774
+#: ../src/file-manager/fm-properties-window.c:3965
 msgid "_Group:"
 msgstr "_Gruppe:"
 
-#: ../src/file-manager/fm-properties-window.c:3788
-#: ../src/file-manager/fm-properties-window.c:3851
-#: ../src/file-manager/fm-properties-window.c:3979
+#: ../src/file-manager/fm-properties-window.c:3783
+#: ../src/file-manager/fm-properties-window.c:3846
+#: ../src/file-manager/fm-properties-window.c:3974
 msgid "Group:"
 msgstr "Gruppe:"
 
-#: ../src/file-manager/fm-properties-window.c:3812
+#: ../src/file-manager/fm-properties-window.c:3807
 msgid "Others"
 msgstr "Andere"
 
-#: ../src/file-manager/fm-properties-window.c:3829
+#: ../src/file-manager/fm-properties-window.c:3824
 msgid "Execute:"
 msgstr "Ausführen"
 
-#: ../src/file-manager/fm-properties-window.c:3833
+#: ../src/file-manager/fm-properties-window.c:3828
 msgid "Allow _executing file as program"
 msgstr "Datei als Programm aus_führen"
 
-#: ../src/file-manager/fm-properties-window.c:3852
+#: ../src/file-manager/fm-properties-window.c:3847
 msgid "Others:"
 msgstr "Andere:"
 
-#: ../src/file-manager/fm-properties-window.c:3997
+#: ../src/file-manager/fm-properties-window.c:3992
 msgid "Folder Permissions:"
 msgstr "Zugriffsrechte für Ordner:"
 
-#: ../src/file-manager/fm-properties-window.c:4009
+#: ../src/file-manager/fm-properties-window.c:4004
 msgid "File Permissions:"
 msgstr "Zugriffsrechte für Dateien:"
 
-#: ../src/file-manager/fm-properties-window.c:4019
+#: ../src/file-manager/fm-properties-window.c:4014
 msgid "Text view:"
 msgstr "Textansicht:"
 
-#: ../src/file-manager/fm-properties-window.c:4166
+#: ../src/file-manager/fm-properties-window.c:4161
 msgid "You are not the owner, so you can't change these permissions."
 msgstr ""
 "Sie sind nicht der Besitzer, daher können Sie die Zugriffsrechte nicht "
 "ändern."
 
-#: ../src/file-manager/fm-properties-window.c:4189
+#: ../src/file-manager/fm-properties-window.c:4184
 msgid "SELinux Context:"
 msgstr "SELinux-Kontext:"
 
-#: ../src/file-manager/fm-properties-window.c:4193
+#: ../src/file-manager/fm-properties-window.c:4188
 msgid "Last changed:"
 msgstr "Zuletzt geändert:"
 
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "Apply permissions to enclosed files"
 msgstr "Zugriffsrechte auf enthaltene Dateien übertragen."
 
-#: ../src/file-manager/fm-properties-window.c:4217
+#: ../src/file-manager/fm-properties-window.c:4212
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Die Zugriffsrechte auf »%s« konnten nicht ermittelt werden."
 
-#: ../src/file-manager/fm-properties-window.c:4220
+#: ../src/file-manager/fm-properties-window.c:4215
 msgid "The permissions of the selected file could not be determined."
 msgstr ""
 "Die Zugriffsrechte auf die gewählte Datei konnten nicht ermittelt werden."
 
-#: ../src/file-manager/fm-properties-window.c:4440
+#: ../src/file-manager/fm-properties-window.c:4435
 msgid "Open With"
 msgstr "Öffnen mit"
 
-#: ../src/file-manager/fm-properties-window.c:4780
+#: ../src/file-manager/fm-properties-window.c:4775
 msgid "Creating Properties window."
 msgstr "Eigenschaftsfenster wird erzeugt."
 
-#: ../src/file-manager/fm-properties-window.c:5020
+#: ../src/file-manager/fm-properties-window.c:5015
 msgid "Select Custom Icon"
 msgstr "Benutzerdefiniertes Symbol wählen"
 
