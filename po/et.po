@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-11 00:23+0200\n"
-"PO-Revision-Date: 2006-10-06 11:11+0300\n"
+"PO-Revision-Date: 2006-10-11 10:51+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -875,6 +875,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
+"Kui ei ole määratud teisiti, siis kausta külastamisel kasutatakse "
+"vaatamiseks seda vaadet. Võimalikud väärtused on \"list_view\" "
+"(nimekirjavaade) ja \"icon_view\" (ikoonivaade)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "When to show number of items in a folder"
@@ -987,8 +990,8 @@ msgid "The size of the file."
 msgstr "Faili suurus."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:58
-msgid "Type:"
-msgstr "Liik:"
+msgid "Type"
+msgstr "Liik"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
@@ -1001,7 +1004,7 @@ msgstr "Muutmisaeg"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:66
 msgid "The date the file was modified."
-msgstr "Faili viimatimuutmise kuupäev."
+msgstr "Faili viimase muutmise aeg."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:73
 msgid "Date Accessed"
@@ -1009,7 +1012,7 @@ msgstr "Viimase pöördumise aeg"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr "Faili viimatikasutatuse aeg."
+msgstr "Faili viimase kasutamise aeg."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:81
 msgid "Owner"
@@ -1042,7 +1045,7 @@ msgstr "Õigused kaheksandkujul"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
-msgstr "Failiõigused, kaheksandkujul."
+msgstr "Failiõigused kaheksandkujul."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:113
 msgid "MIME Type"
@@ -1110,7 +1113,7 @@ msgstr "L_ingi siia"
 
 #: ../libnautilus-private/nautilus-dnd.c:634
 msgid "Set as _Background"
-msgstr "Sea _taustapildiks"
+msgstr "Säti _taustapildiks"
 
 #: ../libnautilus-private/nautilus-dnd.c:641
 #: ../libnautilus-private/nautilus-dnd.c:694
@@ -1119,11 +1122,11 @@ msgstr "Loobu"
 
 #: ../libnautilus-private/nautilus-dnd.c:682
 msgid "Set as background for _all folders"
-msgstr "Sea taustapildiks _kõikidele kataloogidele"
+msgstr "Säti taustapildiks _kõikidele kataloogidele"
 
 #: ../libnautilus-private/nautilus-dnd.c:687
 msgid "Set as background for _this folder"
-msgstr "Sea taustapildiks _sellele kataloogile"
+msgstr "Säti taustapildiks _sellele kataloogile"
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:197
 #: ../libnautilus-private/nautilus-emblem-utils.c:202
@@ -2785,8 +2788,8 @@ msgstr "Ava programmiga \"%s\""
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
-msgstr[0] "Kasuta \"%s\" avamaks valitud kirjet"
-msgstr[1] "Kasuta \"%s\" avamaks valitud kirjeid"
+msgstr[0] "\"%s\" kasutamine valitud kirje avamiseks"
+msgstr[1] "\"%s\" kasutamine valitud kirjete avamiseks"
 
 #: ../src/file-manager/fm-directory-view.c:4531
 #, c-format
@@ -2813,7 +2816,7 @@ msgstr "_Käivita"
 #: ../src/file-manager/fm-directory-view.c:4939
 #, c-format
 msgid "Cannot open %s"
-msgstr "Ei suuda avada %s "
+msgstr "Faili %s pole võimalik avada"
 
 #: ../src/file-manager/fm-directory-view.c:4942
 #, c-format
@@ -2845,7 +2848,7 @@ msgstr "Käivita \"%s\" mõnel valitud kirjel"
 #: ../src/file-manager/fm-directory-view.c:5612
 #, c-format
 msgid "Create Document from template \"%s\""
-msgstr "Loo dokument mallist \"%s\""
+msgstr "Dokumendi loomine mallist \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:5818
 msgid "All executable files in this folder will appear in the Scripts menu."
@@ -2856,8 +2859,8 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Menüüst skripti valides käivitatakse see valitud kirjel kasutades "
-"sisendparameetrina valitud kirje nime."
+"Menüüst skripti valides käivitatakse see valitud kirjel, sisendparameetrina "
+"kasutatakse valitud kirje nime."
 
 #: ../src/file-manager/fm-directory-view.c:5822
 msgid ""
@@ -3048,13 +3051,13 @@ msgstr "_Ava skriptide kataloog"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6815
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr "Näita selles menüüd olevate skriptide kataloogi"
+msgstr "Selles menüüs olevate skriptide kataloogi avamine"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6823
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr "Valitud failid ettevalmistamine ümbertõstmiseks käsuga Aseta failid"
+msgstr "Valitud failide ettevalmistamine ümbertõstmiseks käsuga Aseta failid"
 
 #. name, stock id
 #. label, accelerator
@@ -5192,7 +5195,7 @@ msgstr "_Tagasi"
 
 #: ../src/nautilus-navigation-window-menus.c:496
 msgid "Go to the previous visited location"
-msgstr "Liikumine eelmisse külastatud kohta"
+msgstr "Eelmise külastatud koha avamine"
 
 #: ../src/nautilus-navigation-window-menus.c:497
 msgid "Back history"
@@ -5204,7 +5207,7 @@ msgstr "_Edasi"
 
 #: ../src/nautilus-navigation-window-menus.c:513
 msgid "Go to the next visited location"
-msgstr "Liikumine järgmisse külastatud kohta"
+msgstr "Järgmise külastatud koha avamine"
 
 #: ../src/nautilus-navigation-window-menus.c:514
 msgid "Forward history"
@@ -5638,7 +5641,7 @@ msgstr "Palun vali teine rakendus ja proovi uuesti."
 
 #: ../src/nautilus-window-menus.c:182
 msgid "Go to the location specified by this bookmark"
-msgstr "Liikumine järjehoidjaga määratud asukohta"
+msgstr "Järjehoidjaga määratud asukoha avamine"
 
 #: ../src/nautilus-window-menus.c:423
 msgid ""
@@ -5794,7 +5797,7 @@ msgstr "Nautilusest _lähemalt"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:636
 msgid "Display credits for the creators of Nautilus"
-msgstr "Kuvab teabe Nautiluse loojate ja tõlkijate kohta"
+msgstr "Teabe kuvamine Nautiluse autorite ja tõlkijate kohta"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:639
@@ -5804,7 +5807,7 @@ msgstr "_Suurenda"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:640 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
-msgstr "Näitab sisu suurendatult"
+msgstr "Sisu näitamine üksikasjalisemalt"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:651
@@ -5814,7 +5817,7 @@ msgstr "_Vähenda"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:652 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
-msgstr "Näitab sisu vähendatult"
+msgstr "Sisu näitamine vähem üksikasjaliselt"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:659
@@ -5824,7 +5827,7 @@ msgstr "Harilik _suurus"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:660
 msgid "Show the contents at the normal size"
-msgstr "Näitab sisu harilikus suuruses"
+msgstr "Sisu näitamine tavasuuruses"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:663
@@ -5834,7 +5837,7 @@ msgstr "Ühendu _serverisse..."
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:664
 msgid "Set up a connection to a network server"
-msgstr "Seadistab ühenduse võrguserveriga"
+msgstr "Ühenduse loomine võrguserverisse"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:667
@@ -5844,7 +5847,7 @@ msgstr "_Kodukataloog"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:668
 msgid "Go to the home folder"
-msgstr "Liikumine kodukataloogi"
+msgstr "Kodukataloogi avamine"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:671
@@ -5854,7 +5857,7 @@ msgstr "_Arvuti"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:672
 msgid "Go to the computer location"
-msgstr "Liikumine arvuti asukohale"
+msgstr "Arvuti asukoha avamine"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:675
@@ -5864,7 +5867,7 @@ msgstr "_Võrk"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:676
 msgid "Go to the network location"
-msgstr "Liikumine võrgu asukohta"
+msgstr "Võrgu asukoha avamine"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:679
@@ -5874,7 +5877,7 @@ msgstr "_Mallid"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:680
 msgid "Go to the templates folder"
-msgstr "Liikumine mallide kataloogi"
+msgstr "Mallikataloogi avamine"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:683
@@ -5884,7 +5887,7 @@ msgstr "_Prügikast"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:684
 msgid "Go to the trash folder"
-msgstr "Liikumine prügikataloogi"
+msgstr "Prügikasti avamine"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:687
@@ -5894,7 +5897,7 @@ msgstr "_CD/DVD looja"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:688
 msgid "Go to the CD/DVD Creator"
-msgstr "Liikumine CD/DVD-loojasse"
+msgstr "CD/DVD-looja avamine"
 
 #: ../src/nautilus-window-menus.c:714
 msgid "_Up"
@@ -5914,7 +5917,7 @@ msgstr "Vaikimisi suurendus"
 
 #: ../src/nautilus-zoom-control.c:98
 msgid "Show in the default detail level"
-msgstr "Vaikimisi detailsuse taseme näitamine"
+msgstr "Näitamine vaikimisi detailsusastmega"
 
 #: ../src/nautilus-zoom-control.c:801
 msgid "Zoom"
@@ -5926,4 +5929,4 @@ msgstr "Praeguse vaate suurendusastme seadmine"
 
 #: ../src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Vaata oma võrgu servereid Nautiluse failihalduris."
+msgstr "Võrguserverite vaatamine Nautiluse failihalduris"
