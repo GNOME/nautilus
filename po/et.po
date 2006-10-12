@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-11 00:23+0200\n"
-"PO-Revision-Date: 2006-10-11 10:51+0300\n"
+"PO-Revision-Date: 2006-10-12 00:41+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -347,7 +347,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
-msgstr "Praegune Nautiluse teema (maha kantud)"
+msgstr "Praegune Nautiluse teema (aegunud)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Custom Background Set"
@@ -355,7 +355,7 @@ msgstr "Kohandatud taust"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "Custom Side Pane Background Set"
-msgstr "Kõrvalpaani kohaldatud _taustapilt"
+msgstr "Külgpaani kohaldatud taustapilt"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Date Format"
@@ -379,15 +379,15 @@ msgstr "Külgpaani vaikimisi tausta failinimi"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
-msgstr "Vaikimisi veerujärjestus nimekirjavaates"
+msgstr "Nimekirjavaate vaikimisi veerujärjestus"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view."
-msgstr "Vaikimisi _suurendus:"
+msgstr "Nimekirjavaate vaikimisi suurendus."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
-msgstr "Vaikimisi kaustade vaatur"
+msgstr "Kaustade vaikimisi vaatur"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default icon zoom level"
@@ -395,15 +395,15 @@ msgstr "Ikoonide vaikimisi suurendusaste"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
-msgstr "Loendivaates vaikimisi nähtaval olevate veergude loend"
+msgstr "Loendivaates vaikimisi nähtaval olevate veergude loetelu"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default list of columns visible in the list view."
-msgstr "Vaikimisi nähtavate veergude loend nimekirjavaates."
+msgstr "Nimekirjavaate vaikimisi nähtavate veergude loetelu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
-msgstr "Nimekirjavaate vaikimisi _suurendus:"
+msgstr "Nimekirjavaate vaikimisi suurendus"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default sort order"
@@ -442,16 +442,16 @@ msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"Kataloogi vaikimisi tausta failinimi. Kasutatakse ainult siis, kui "
-"background_set väärtus on aktiivne."
+"Kataloogi vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
+"background_set on märgitud."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
-"Kõrvalpaneeli vaikimisi tausta failinimi. Kasutatakse ainult siis, kui "
-"side_pane_background_set väärtus on aktiivne."
+"Külgpaani vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
+"side_pane_background_set on märgitud."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid ""
@@ -460,35 +460,40 @@ msgid ""
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
+"Sellest väärtusest suurema mahuga kataloogid kärbitakse sellele suurusele "
+"lähedasele suurusele. Kärpimise eesmärk on vältida olukorda, kus Nautilus "
+"massiivsete kataloogide töötlemisele liiga palju aega ja ressurssi kulutab. "
+"Negatiivne väärtus tähendab, et piirangut pole. Väärtus on ligikaudne kuna "
+"katalooge loetakse tükkhaaval."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Home icon visible on desktop"
-msgstr "Kodukataloogiikoon on töölaual nähtav"
+msgstr "Kodukataloogi ikoon on töölaual nähtav"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"Kui valik on märgitud, näitab Nautilus kõrvalpaanis ainult katalooge. "
-"Vastasel juhul näitab Nautilus katalooge ja faile."
+"Kui märgitud, näitab Nautilus külgpaanis ainult katalooge. Vastasel juhul "
+"näitab Nautilus katalooge ja faile."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr "Kui valik on märgitud, näidatakse uutel akendel asukohariba."
+msgstr "Kui märgitud, siis uutel akendel näidatakse asukohariba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Kui valik on märgitud, näidatakse uutel akendel kõrvalpaani."
+msgstr "Kui märgitud, siis uutel akendel näidatakse külgpaani."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr "Kui valik on märgitud, näidatakse uutel akendel olekuriba."
+msgstr "Kui märgitud, siis uutel akendel näidatakse olekuriba."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Kui valik on märgitud, siis uutel akendel on tööriistarbia nähtaval."
+msgstr "Kui märgitud, siis uutel akendel on tööriistariba nähtaval."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
@@ -503,7 +508,7 @@ msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
 msgstr ""
-"Kui märgitud, siis lubab Nautilus failieelistuste dialoogis redigeerida "
+"Kui märgitud, siis Nautilus võimaldab failieelistuste dialoogis redigeerida "
 "faili pääsuõiguseid UNIX-i moodi, koos mõningate esoteeriliste valikutega."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
@@ -511,20 +516,19 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"Kui väärtus on aktiivne, näitab Nautilus katalooge ikooni- ja "
-"nimekirjavaates katalooge failidest eespool."
+"Kui märgitud, siis Nautilus näitab ikooni- ja nimekirjavaates katalooge "
+"failidest eespool."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
-"Kui valik on märgitud, küsib Nautilus kinnitust enne failide prügikasti "
-"tõstmist."
+"Kui märgitud, küsib Nautilus enne failide prügikasti tõstmist kinnitust."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr "Kui valik on märgitud, näitab Nautilus töölaual ikoone."
+msgstr "Kui märgitud, näitab Nautilus töölaual ikoone."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
@@ -532,7 +536,7 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
-"Kui valik on märgitud, lubab Nautilus faile kohapeal kustutada ilma neid "
+"Kui märgitud, lubab Nautilus faile kustutada ilma neid "
 "prügikasti tõstmata. See omadus võib olla ohtlik ja seda tuleks kasutada "
 "ettevaatusega."
 
@@ -541,7 +545,7 @@ msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"Kui valik on märgitud, kasutab Nautilus kasutaja kodukataloogi kui töölauda. "
+"Kui märgitud, kasutab Nautilus kasutaja kodukataloogi kui töölauda. "
 "Kui valik on aktiveerimata, kasutatakse töölauana kataloogi ~/Desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
@@ -550,8 +554,8 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
-"Kui valik on märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis "
-"Nautilus enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust"
+"Kui märgitud, näitab Nautilus kõiki aknaid sirvijana. Nii toimis "
+"Nautilus enne versiooni 2.6 ning osa kasutajaid eelistab seda võimalust."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -607,7 +611,7 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
-"Kui valik on märgitud, siis uutes akendes sorditakse failid pööratud "
+"Kui märgitud, siis uutes akendes sorditakse failid pööratud "
 "järjestuses. See tähendab, et kui failid on sorditud näiteks nime alusel, "
 "siis tavapärase \"a\"-st kuni \"ü\"-ni sortmise asemel sorditakse "
 "järjestuses \"ü\"-st kuni \"a\"-ni."
@@ -619,16 +623,16 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
-"Kui valik on märgitud, siis uutes akendes sorditakse failid pööratud "
+"Kui märgitud, siis uutes akendes sorditakse failid pööratud "
 "järjestuses. See tähendab, et kui failid on sorditud näiteks nime alusel, "
 "siis tavapärase \"a\"-st kuni \"ü\"-ni sortmise asemel sorditakse "
 "järjestuses \"ü\"-st kuni \"a\"-ni. Kui sorditakse suuruse alusel, siis "
-"kasvava järjestuse asemel sorditakse kahanevas järjestused."
+"kasvava järjestuse asemel sorditakse kahanevas järjestuses."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
-"Kui valik on märgitud, paigutatakse ikoonid uues aknas tihedamasse rivisse. "
+"Kui märgitud, paigutatakse ikoonid uutes aknendes tihedamasse rivisse."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
@@ -656,7 +660,7 @@ msgstr "Võimalike ikoonipealkirjade nimekiri"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Maximum handled files in a folder"
-msgstr "Suurim käitletavate failide arv kataloogi kohta"
+msgstr "Suurim käidetavate failide arv kataloogi kohta"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum image size for thumbnailing"
@@ -667,8 +671,8 @@ msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
-"Nautiluse teema, mida kasutada. See on alates Nautilus 2.2'st aegunud, palun "
-"kasuta selle asemel ikooniteemat."
+"Nautiluse teema, mida kasutada. See on alates Nautiluse versioonist 2.2 "
+"aegunud, palun kasuta selle asemel ikooniteemat."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Nautilus handles drawing the desktop"
@@ -684,7 +688,7 @@ msgstr "Võrguserverite ikoon on töölaual nähtav"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Only show folders in the tree sidebar"
-msgstr "Katalooge kuvatakse ainult külgpaani puus"
+msgstr "Külgpaani puuvaates kuvatakse ainult katalooge"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
@@ -700,7 +704,7 @@ msgstr "Sildid asetatakse ikoonide kõrvale"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Reverse sort order in new windows"
-msgstr "Elemendid järjestatakse uues aknas pööratud järjestuses"
+msgstr "Uutes akendes järjestatakse kirjed pööratud järjestuses"
 
 #. Translators: please note this can choose the size. e.g.
 #. "Sans 15". Please do not change "Sans", only change the size if you need to. In
@@ -727,7 +731,7 @@ msgstr "Ühendatud kettaseadmete näitamine töölaual"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Show side pane in new windows"
-msgstr "Uues aknas külgpaani näitamine"
+msgstr "Uutes akendes külgpaani näitamine"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Show status bar in new windows"
@@ -739,7 +743,7 @@ msgstr "Uutes akendes tööriistariba näitamine"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid "Side pane view"
-msgstr "Külgpaanvaade"
+msgstr "Külgpaanivaade"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -795,7 +799,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "The default width of the side pane in new windows."
-msgstr "Uutes akendes külgpaani vaikimisi laius."
+msgstr "Külgpaani vaikimisi laius uutes akendes."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "The font description used for the icons on the desktop."
@@ -806,12 +810,12 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
-"Failide kuupäevade vorming. Võimalikud väärtused on \"locale\", \"iso\", ja "
+"Failiaegade vorming. Võimalikud väärtused on \"locale\", \"iso\", ja "
 "\"informal\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "The side pane view to show in newly opened windows."
-msgstr "Külgpaanvaade uues aknas aknas"
+msgstr "Külgpaanivaate kasutamine uutes akendes."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid ""
@@ -834,7 +838,7 @@ msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
-"See nimi määratakse juhul, kui soovitakse töölaual oleva prügukastiikooni "
+"See nimi määratakse juhul, kui soovitakse töölaual oleva prügikastiikooni "
 "nime kohandada."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
@@ -847,15 +851,15 @@ msgstr "Hiireklõpsu liik, millega faile avatakse"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Use manual layout in new windows"
-msgstr "Kasuta uues aknas _käsitsi paigutust"
+msgstr "Käsitsipaigutuse kasutamine uutes akendes"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Use tighter layout in new windows"
-msgstr "Kasuta uutes akendes kompaktset paigutust"
+msgstr "Kompaktse paigutuse kasutamine uutes akendes"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "What to do with executable text files when activated"
-msgstr "_Mida teha käivitatavate tekstifailidega neile klõpsamise korral"
+msgstr "Mida tehakse käivitatavate tekstifailidega neile klõpsamisel"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid ""
@@ -864,7 +868,7 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"Mida tehakse käivitatavate tekstifailidega nende aktiveerimisel (üksiku või "
+"Mida tehakse käivitatavate tekstifailidega nende aktiveerimisel (üksiku- või "
 "topeltklõpsuga). Võimalikud väärtused on \"launch\" nende programmina "
 "käivitamiseks, \"ask\" küsimusedialoogi kuvamiseks ja \"display\" nende "
 "tekstifailina kuvamiseks."
@@ -881,15 +885,15 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "When to show number of items in a folder"
-msgstr "Millal näidata kataloogis olevate kirjete arvu"
+msgstr "Kas kataloogis olevate kirjete arvu näidatakse või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "When to show preview text in icons"
-msgstr "Millal näidata ikoonide eelvaadet"
+msgstr "Kas ikoonide eelvaadet näidatakse või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "When to show thumbnails of image files"
-msgstr "Millal näidata pildifailidel pisipilte"
+msgstr "Kas pildifailidel näidatakse pisipilte või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether a custom default folder background has been set."
@@ -901,23 +905,23 @@ msgstr "Kas külgpaani vaikimisi taust on seatud või mitte."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr "Kas küsida kinnitust kui faile tõstetakse prügikasti"
+msgstr "Kas failide prügikasti tõstmisel küsitakse kinnitust"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid "Whether to enable immediate deletion"
-msgstr "Kas lubada kohest kustutamist"
+msgstr "Kas kohene kustutamine on lubatud"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr "Kas lubada eelvaatehääli kui hiir liigub üle ikooni"
+msgstr "Kas kursori liikumisel üle ikooni on eelvaatehääled lubatud"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Whether to show backup files"
-msgstr "Kas näidata varundusfaile"
+msgstr "Kas varufaile näidatakse või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "Whether to show hidden files"
-msgstr "Kas näidata peidetud faile"
+msgstr "Kas peidetud faile näidatakse või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Width of the side pane"
@@ -1701,7 +1705,7 @@ msgstr "Kataloogi pole võimalik iseendasse ümber tõsta."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2205
 msgid "You cannot copy a folder into itself."
-msgstr "Kataloogi pole võimalik kopeerida iseendasse. "
+msgstr "Kataloogi pole võimalik iseendasse kopeerida."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2206
 msgid "The destination folder is inside the source folder."
@@ -2295,8 +2299,8 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
-"Vaikimisi käsk pole võimalik avada \"%s\", sest pole võimalik ligi failidele "
-"asukohaga \"%s\"."
+"Vaikimisi käsk ei saa \"%s\" avada, sest asukohas \"%s\" olevatele failidele "
+"pole võimalik ligi pääseda."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
@@ -2305,7 +2309,7 @@ msgid ""
 msgstr ""
 "\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
 "asukohas \"%s\". Selle faili jaoks ei ole ühtegi teist rakendust. Kui "
-"kopeerid faili oma arvutisse, võib selle avamine olla võimalik. "
+"kopeerid faili oma arvutisse, võib selle avamine olla võimalik."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:177
 msgid ""
@@ -2314,7 +2318,7 @@ msgid ""
 msgstr ""
 "\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
 "asukohas \"%s\". Selle faili jaoks ei ole ühtegi teist rakendust. Kui "
-"kopeerid faili oma arvutisse, võib selle avamine olla võimalik. "
+"kopeerid faili oma arvutisse, võib selle avamine olla võimalik."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:491
 #: ../libnautilus-private/nautilus-program-choosing.c:733
@@ -2403,12 +2407,12 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-program-choosing.c:903
 msgid "This is disabled due to security considerations."
-msgstr "See on turvakaalutlustel keelatud. "
+msgstr "See on turvakaalutlustel keelatud."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:913
 #: ../libnautilus-private/nautilus-program-choosing.c:981
 msgid "Details: "
-msgstr "Täpsemalt: "
+msgstr "Üksikasjad:"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:944
 #: ../libnautilus-private/nautilus-program-choosing.c:955
@@ -2426,7 +2430,7 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Arvutis mitteasuvate failide avamiseks kopeeri need kõigepealt arvutisse. "
+"Arvutis mitteasuvate failide avamiseks kopeeri need kõigepealt arvutisse."
 
 #: ../libnautilus-private/nautilus-query.c:138
 #, c-format
@@ -2738,7 +2742,7 @@ msgstr "Faili \"%s\" pole võimalik prügikasti tõsta."
 #: ../src/file-manager/fm-directory-view.c:3793
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
-"Elemente pole võimalik prügikasti tõsta. Kas soovid neid koheselt kustutada?"
+"Kirjeid pole võimalik prügikasti tõsta. Kas soovid neid koheselt kustutada?"
 
 #: ../src/file-manager/fm-directory-view.c:3794
 #, c-format
@@ -3589,7 +3593,7 @@ msgstr "_nime järgi"
 #: ../src/file-manager/fm-icon-view.c:134
 #: ../src/file-manager/fm-icon-view.c:1460
 msgid "Keep icons sorted by name in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud nime järgi"
+msgstr "Ikooniridade sortimine nime järgi"
 
 #: ../src/file-manager/fm-icon-view.c:140
 msgid "by _Size"
@@ -3598,7 +3602,7 @@ msgstr "_suuruse järgi"
 #: ../src/file-manager/fm-icon-view.c:141
 #: ../src/file-manager/fm-icon-view.c:1464
 msgid "Keep icons sorted by size in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud suuruse järgi"
+msgstr "Ikooniridade sortimine suuruse järgi"
 
 #: ../src/file-manager/fm-icon-view.c:147
 msgid "by _Type"
@@ -3607,7 +3611,7 @@ msgstr "_tüübi järgi"
 #: ../src/file-manager/fm-icon-view.c:148
 #: ../src/file-manager/fm-icon-view.c:1468
 msgid "Keep icons sorted by type in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud tüübi järgi"
+msgstr "Ikooniridade sortimine tüübi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:154
 msgid "by Modification _Date"
@@ -3616,7 +3620,7 @@ msgstr "_muutmisaja järgi"
 #: ../src/file-manager/fm-icon-view.c:155
 #: ../src/file-manager/fm-icon-view.c:1472
 msgid "Keep icons sorted by modification date in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud muutmisaja järgi"
+msgstr "Ikooniridade sortimine muutmisaja järgi"
 
 #: ../src/file-manager/fm-icon-view.c:161
 msgid "by _Emblems"
@@ -3625,7 +3629,7 @@ msgstr "_embleemi järgi"
 #: ../src/file-manager/fm-icon-view.c:162
 #: ../src/file-manager/fm-icon-view.c:1476
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Jäta ikoonid ridadesse järjestatud embleemi järgi"
+msgstr "Ikooniridade sortimine embleemi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:1420
 msgid "Arran_ge Items"
@@ -3640,18 +3644,18 @@ msgstr "_Venita ikooni"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1423
 msgid "Make the selected icon stretchable"
-msgstr "Muudab valitud ikooni venitatavaks"
+msgstr "Valitud ikooni muutmine venitatavaks"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1426
 #: ../src/file-manager/fm-icon-view.c:1578
 msgid "Restore Icons' Original Si_zes"
-msgstr "Taastab ikoonide _algsed suurused"
+msgstr "Taasta ikoonide _algsed suurused"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1427
 msgid "Restore each selected icon to its original size"
-msgstr "Taastab kõigi valitud ikoonide algsed suurused"
+msgstr "Kõigi valitud ikoonide algsete suuruste taastamine"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1430
@@ -3661,7 +3665,8 @@ msgstr "Järjesta _nime järgi"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1431
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Korrastab ikoonid aknas paremini ning hoiab ära kattuvuse"
+msgstr ""
+"Aknas olevate ikoonide paremini korrastamine ning kattuvuse ärahoidmine"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1437
@@ -3671,7 +3676,7 @@ msgstr "Kompaktne _paigutus"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1438
 msgid "Toggle using a tighter layout scheme"
-msgstr "Näitab kompaktset paigutust"
+msgstr "Kompaktset paigutuse sisse- ja väljalülitamine"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1442
@@ -3681,7 +3686,7 @@ msgstr "Vastupidine _järjestus"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1443
 msgid "Display icons in the opposite order"
-msgstr "Kuvab ikoonid vastupidises järjestuses"
+msgstr "Ikoonid kuvamine vastupidises järjestuses"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1447
@@ -3691,7 +3696,7 @@ msgstr "_Hoia reastatult"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1448
 msgid "Keep icons lined up on a grid"
-msgstr "Hoiab ikoonid ridadesse järjestatult"
+msgstr "Ikoonide hoidmine ridadesse järjestatuna"
 
 #: ../src/file-manager/fm-icon-view.c:1455
 msgid "_Manually"
@@ -3699,7 +3704,7 @@ msgstr "_Käsitsi"
 
 #: ../src/file-manager/fm-icon-view.c:1456
 msgid "Leave icons wherever they are dropped"
-msgstr "Jäta ikoonid sinna, kuhu nad lohistatakse"
+msgstr "Ikoonide jätmine sinna, kuhu nad lohistatakse"
 
 #: ../src/file-manager/fm-icon-view.c:1459
 msgid "By _Name"
@@ -3805,11 +3810,11 @@ msgstr "Loendivaate käivitamise käigus satuti veale."
 
 #: ../src/file-manager/fm-list-view.c:2715
 msgid "Display this location with the list view."
-msgstr "Selle asukoha kuvamine loendivaatena."
+msgstr "Selle asukoha kuvamine nimekirjavaatena."
 
 #: ../src/file-manager/fm-properties-window.c:487
 msgid "You can't assign more than one custom icon at a time!"
-msgstr "Rohkem kui üht "
+msgstr "Korraga pole võimalik määrata rohkem kui ühte kohandatud ikooni!"
 
 #: ../src/file-manager/fm-properties-window.c:488
 #: ../src/nautilus-information-panel.c:555
@@ -4636,7 +4641,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:35
 msgid "Always open in _browser windows"
-msgstr "Avatakse alati si_rvija aknas"
+msgstr "Avatakse alati si_rvija akendes"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
@@ -4743,7 +4748,7 @@ msgstr "Vaated"
 
 #: ../src/nautilus-file-management-properties.glade.h:62
 msgid "_Arrange items:"
-msgstr "Elemente _korrastatakse:"
+msgstr "Kirjed _korrastatakse:"
 
 #: ../src/nautilus-file-management-properties.glade.h:64
 msgid "_Default zoom level:"
@@ -4813,11 +4818,11 @@ msgstr "Kaamera mudel"
 #. Choose which date to show in order of relevance
 #: ../src/nautilus-image-properties-page.c:224
 msgid "Date Taken"
-msgstr "Pildistamise kuupäev"
+msgstr "Pildistamise aeg"
 
 #: ../src/nautilus-image-properties-page.c:226
 msgid "Date Digitized"
-msgstr "Digitaliseerimise kuupäev"
+msgstr "Digitaliseerimise aeg"
 
 #: ../src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
@@ -5102,7 +5107,7 @@ msgstr "_Asukohale..."
 #: ../src/nautilus-navigation-window-menus.c:435
 #: ../src/nautilus-spatial-window.c:862
 msgid "Specify a location to open"
-msgstr "Määra avamiseks asukoht"
+msgstr "Avatava asukoha määramine"
 
 #: ../src/nautilus-navigation-window-menus.c:437
 msgid "Clea_r History"
@@ -5111,7 +5116,7 @@ msgstr "Puhasta a_jalugu"
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:438
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Puhastab Liikumise menüü sisu ja Edasi/Tagasi loendid"
+msgstr "Liikumise menüü sisu ja Edasi/Tagasi loendite puhastamine"
 
 #: ../src/nautilus-navigation-window-menus.c:440
 #: ../src/nautilus-spatial-window.c:870
@@ -5560,7 +5565,7 @@ msgstr "_Sulge kõik kataloogid"
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:868
 msgid "Close all folder windows"
-msgstr "Sulgeb kõik kataloogiaknad"
+msgstr "Kõigi kataloogiakende sulgemine"
 
 #: ../src/nautilus-throbber.c:514
 msgid "throbber"
