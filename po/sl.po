@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-18 17:00+0200\n"
-"PO-Revision-Date: 2006-08-19 22:06+0100\n"
+"POT-Creation-Date: 2006-10-15 01:11+0200\n"
+"PO-Revision-Date: 2006-10-15 01:23+0100\n"
 "Last-Translator: Matic Žgur <mr.zgur@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -788,7 +788,7 @@ msgid "Use De_fault"
 msgstr "Uporabi _privzeto"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1311
+#: ../src/file-manager/fm-list-view.c:1319
 msgid "Name"
 msgstr "Ime"
 
@@ -846,7 +846,7 @@ msgid "The group of the file."
 msgstr "Skupina datoteke."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:3770
+#: ../src/file-manager/fm-properties-window.c:4148
 msgid "Permissions"
 msgstr "Dovoljenja"
 
@@ -1797,7 +1797,7 @@ msgstr "neznana vrsta MIME"
 #. * for which we have no more appropriate default.
 #.
 #: ../libnautilus-private/nautilus-file.c:4730
-#: ../src/file-manager/fm-properties-window.c:1292
+#: ../src/file-manager/fm-properties-window.c:1308
 msgid "unknown"
 msgstr "neznan"
 
@@ -1938,7 +1938,7 @@ msgid "Icon View"
 msgstr "Pogled ikon"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1364
+#: ../src/file-manager/fm-list-view.c:1372
 msgid "List View"
 msgstr "Pogled seznama"
 
@@ -2356,7 +2356,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Če zbrišete predmet, bo za vedno izgubljen."
 
 #: ../src/file-manager/fm-directory-view.c:1157
-#: ../src/file-manager/fm-properties-window.c:3995
+#: ../src/file-manager/fm-properties-window.c:4373
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -3467,100 +3467,100 @@ msgstr "(prazno)"
 msgid "Loading..."
 msgstr "Nalaganje ..."
 
-#: ../src/file-manager/fm-list-view.c:1923
+#: ../src/file-manager/fm-list-view.c:1931
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s vidni stolpci"
 
-#: ../src/file-manager/fm-list-view.c:1942
+#: ../src/file-manager/fm-list-view.c:1950
 msgid "Choose the order of information to appear in this folder."
 msgstr "Izberite vrstni red podatkov, ki naj se pojavijo v tej mapi."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1984
+#: ../src/file-manager/fm-list-view.c:1992
 msgid "Visible _Columns..."
 msgstr "Vidni _stolpci ..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1985
+#: ../src/file-manager/fm-list-view.c:1993
 msgid "Select the columns visible in this folder"
 msgstr "Izberite stolpce, ki naj bodo vidni v tej mapi"
 
-#: ../src/file-manager/fm-list-view.c:2710
+#: ../src/file-manager/fm-list-view.c:2718
 msgid "List"
 msgstr "Seznam"
 
-#: ../src/file-manager/fm-list-view.c:2711
+#: ../src/file-manager/fm-list-view.c:2719
 msgid "View as List"
 msgstr "Glej kot seznam"
 
-#: ../src/file-manager/fm-list-view.c:2712
+#: ../src/file-manager/fm-list-view.c:2720
 msgid "View as _List"
 msgstr "Glej kot _seznam"
 
-#: ../src/file-manager/fm-list-view.c:2713
+#: ../src/file-manager/fm-list-view.c:2721
 msgid "The list view encountered an error."
 msgstr "Pogled seznama je naletel na napako."
 
-#: ../src/file-manager/fm-list-view.c:2714
+#: ../src/file-manager/fm-list-view.c:2722
 msgid "The list view encountered an error while starting up."
 msgstr "Pogled seznama je naletel na napako ob zagonu."
 
-#: ../src/file-manager/fm-list-view.c:2715
+#: ../src/file-manager/fm-list-view.c:2723
 msgid "Display this location with the list view."
 msgstr "Prikaži to mesto s pogledom seznama."
 
-#: ../src/file-manager/fm-properties-window.c:487
+#: ../src/file-manager/fm-properties-window.c:503
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Naenkrat ne morete dodeliti več kot ene prikrojene ikone!"
 
-#: ../src/file-manager/fm-properties-window.c:488
+#: ../src/file-manager/fm-properties-window.c:504
 #: ../src/nautilus-information-panel.c:555
 msgid "Please drag just one image to set a custom icon."
 msgstr "Povlecite le eno sliko za nastavitev ikone po meri."
 
-#: ../src/file-manager/fm-properties-window.c:496
+#: ../src/file-manager/fm-properties-window.c:512
 #: ../src/nautilus-information-panel.c:574
 msgid "The file that you dropped is not local."
 msgstr "Datoteka, ki ste jo spustili, ni krajevna."
 
-#: ../src/file-manager/fm-properties-window.c:497
-#: ../src/file-manager/fm-properties-window.c:503
+#: ../src/file-manager/fm-properties-window.c:513
+#: ../src/file-manager/fm-properties-window.c:519
 #: ../src/nautilus-information-panel.c:575
 msgid "You can only use local images as custom icons."
 msgstr "Za prikrojene ikone lahko uporabljate le krajevne slike."
 
-#: ../src/file-manager/fm-properties-window.c:502
+#: ../src/file-manager/fm-properties-window.c:518
 #: ../src/nautilus-information-panel.c:580
 msgid "The file that you dropped is not an image."
 msgstr "Datoteka, ki ste jo spustili, ni krajevna slika."
 
-#: ../src/file-manager/fm-properties-window.c:997
+#: ../src/file-manager/fm-properties-window.c:1013
 msgid "Properties"
 msgstr "Lastnosti"
 
-#: ../src/file-manager/fm-properties-window.c:1005
+#: ../src/file-manager/fm-properties-window.c:1021
 #, c-format
 msgid "%s Properties"
 msgstr "Lastnosti %s"
 
-#: ../src/file-manager/fm-properties-window.c:1528
+#: ../src/file-manager/fm-properties-window.c:1572
 msgid "Cancel Group Change?"
 msgstr "Prekliči spremembo skupine?"
 
-#: ../src/file-manager/fm-properties-window.c:1721
+#: ../src/file-manager/fm-properties-window.c:1989
 msgid "Cancel Owner Change?"
 msgstr "Prekliči spremembo lastnika"
 
-#: ../src/file-manager/fm-properties-window.c:1906
+#: ../src/file-manager/fm-properties-window.c:2284
 msgid "nothing"
 msgstr "nič"
 
-#: ../src/file-manager/fm-properties-window.c:1908
+#: ../src/file-manager/fm-properties-window.c:2286
 msgid "unreadable"
 msgstr "neberljiva"
 
-#: ../src/file-manager/fm-properties-window.c:1918
+#: ../src/file-manager/fm-properties-window.c:2296
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -3569,7 +3569,7 @@ msgstr[1] "%d predmeta velikosti %s"
 msgstr[2] "%d predmeti velikosti %s"
 msgstr[3] "%d predmetov velikosti %s"
 
-#: ../src/file-manager/fm-properties-window.c:1927
+#: ../src/file-manager/fm-properties-window.c:2305
 msgid "(some contents unreadable)"
 msgstr "(nekaj vsebine ni berljive)"
 
@@ -3579,16 +3579,16 @@ msgstr "(nekaj vsebine ni berljive)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:1944
+#: ../src/file-manager/fm-properties-window.c:2322
 msgid "Contents:"
 msgstr "Vsebina:"
 
-#: ../src/file-manager/fm-properties-window.c:2256
+#: ../src/file-manager/fm-properties-window.c:2634
 msgid "Basic"
 msgstr "Osnovno"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2286
+#: ../src/file-manager/fm-properties-window.c:2664
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Ime:"
@@ -3596,246 +3596,246 @@ msgstr[1] "_Imeni:"
 msgstr[2] "_Imena:"
 msgstr[3] "_Imena:"
 
-#: ../src/file-manager/fm-properties-window.c:2305
+#: ../src/file-manager/fm-properties-window.c:2683
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: ../src/file-manager/fm-properties-window.c:2307
-#: ../src/file-manager/fm-properties-window.c:2317
-#: ../src/file-manager/fm-properties-window.c:2323
-#: ../src/file-manager/fm-properties-window.c:2330
-#: ../src/file-manager/fm-properties-window.c:2334
-#: ../src/file-manager/fm-properties-window.c:2342
-#: ../src/file-manager/fm-properties-window.c:2348
-#: ../src/file-manager/fm-properties-window.c:2357
-#: ../src/file-manager/fm-properties-window.c:2363
-#: ../src/file-manager/fm-properties-window.c:3379
-#: ../src/file-manager/fm-properties-window.c:3411
-#: ../src/file-manager/fm-properties-window.c:3581
-#: ../src/file-manager/fm-properties-window.c:3602
-#: ../src/file-manager/fm-properties-window.c:3637
-#: ../src/file-manager/fm-properties-window.c:3807
-#: ../src/file-manager/fm-properties-window.c:3811
+#: ../src/file-manager/fm-properties-window.c:2685
+#: ../src/file-manager/fm-properties-window.c:2695
+#: ../src/file-manager/fm-properties-window.c:2701
+#: ../src/file-manager/fm-properties-window.c:2708
+#: ../src/file-manager/fm-properties-window.c:2712
+#: ../src/file-manager/fm-properties-window.c:2720
+#: ../src/file-manager/fm-properties-window.c:2726
+#: ../src/file-manager/fm-properties-window.c:2735
+#: ../src/file-manager/fm-properties-window.c:2741
+#: ../src/file-manager/fm-properties-window.c:3757
+#: ../src/file-manager/fm-properties-window.c:3789
+#: ../src/file-manager/fm-properties-window.c:3959
+#: ../src/file-manager/fm-properties-window.c:3980
+#: ../src/file-manager/fm-properties-window.c:4015
+#: ../src/file-manager/fm-properties-window.c:4185
+#: ../src/file-manager/fm-properties-window.c:4189
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2315
+#: ../src/file-manager/fm-properties-window.c:2693
 msgid "Size:"
 msgstr "Velikost:"
 
-#: ../src/file-manager/fm-properties-window.c:2321
+#: ../src/file-manager/fm-properties-window.c:2699
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Lokacija:"
 
-#: ../src/file-manager/fm-properties-window.c:2328
+#: ../src/file-manager/fm-properties-window.c:2706
 msgid "Volume:"
 msgstr "Naprava:"
 
-#: ../src/file-manager/fm-properties-window.c:2332
+#: ../src/file-manager/fm-properties-window.c:2710
 msgid "Free space:"
 msgstr "Neporabljen prostor"
 
-#: ../src/file-manager/fm-properties-window.c:2340
+#: ../src/file-manager/fm-properties-window.c:2718
 msgid "Link target:"
 msgstr "Cilj povezave:"
 
-#: ../src/file-manager/fm-properties-window.c:2346
+#: ../src/file-manager/fm-properties-window.c:2724
 msgid "MIME type:"
 msgstr "Vrsta MIME:"
 
-#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2733
 msgid "Modified:"
 msgstr "Spremenjena:"
 
-#: ../src/file-manager/fm-properties-window.c:2361
+#: ../src/file-manager/fm-properties-window.c:2739
 msgid "Accessed:"
 msgstr "Dostopana:"
 
-#: ../src/file-manager/fm-properties-window.c:2464
+#: ../src/file-manager/fm-properties-window.c:2842
 #: ../src/nautilus-emblem-sidebar.c:1041
 msgid "Emblems"
 msgstr "Značke"
 
-#: ../src/file-manager/fm-properties-window.c:2862
+#: ../src/file-manager/fm-properties-window.c:3240
 msgid "_Read"
 msgstr "_Beriljiva"
 
-#: ../src/file-manager/fm-properties-window.c:2864
+#: ../src/file-manager/fm-properties-window.c:3242
 msgid "_Write"
 msgstr "_Pisljiva"
 
-#: ../src/file-manager/fm-properties-window.c:2866
+#: ../src/file-manager/fm-properties-window.c:3244
 msgid "E_xecute"
 msgstr "_Izvršljiva"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3116
-#: ../src/file-manager/fm-properties-window.c:3127
-#: ../src/file-manager/fm-properties-window.c:3139
+#: ../src/file-manager/fm-properties-window.c:3494
+#: ../src/file-manager/fm-properties-window.c:3505
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "no "
 msgstr "ne"
 
-#: ../src/file-manager/fm-properties-window.c:3119
+#: ../src/file-manager/fm-properties-window.c:3497
 msgid "list"
 msgstr "seznam"
 
-#: ../src/file-manager/fm-properties-window.c:3121
+#: ../src/file-manager/fm-properties-window.c:3499
 msgid "read"
 msgstr "branje"
 
-#: ../src/file-manager/fm-properties-window.c:3130
+#: ../src/file-manager/fm-properties-window.c:3508
 msgid "create/delete"
 msgstr "Ustvari/zbriši"
 
-#: ../src/file-manager/fm-properties-window.c:3132
+#: ../src/file-manager/fm-properties-window.c:3510
 msgid "write"
 msgstr "pisanje"
 
-#: ../src/file-manager/fm-properties-window.c:3141
+#: ../src/file-manager/fm-properties-window.c:3519
 msgid "access"
 msgstr "dostop"
 
-#: ../src/file-manager/fm-properties-window.c:3189
+#: ../src/file-manager/fm-properties-window.c:3567
 msgid "Access:"
 msgstr "Dostop:"
 
-#: ../src/file-manager/fm-properties-window.c:3191
+#: ../src/file-manager/fm-properties-window.c:3569
 msgid "Folder Access:"
 msgstr "Dostop do mape:"
 
-#: ../src/file-manager/fm-properties-window.c:3193
+#: ../src/file-manager/fm-properties-window.c:3571
 msgid "File Access:"
 msgstr "Dostop do datoteke:"
 
-#: ../src/file-manager/fm-properties-window.c:3205
-#: ../src/file-manager/fm-properties-window.c:3216
+#: ../src/file-manager/fm-properties-window.c:3583
+#: ../src/file-manager/fm-properties-window.c:3594
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Brez"
 
-#: ../src/file-manager/fm-properties-window.c:3208
+#: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
 msgstr "Naštej le datoteke"
 
-#: ../src/file-manager/fm-properties-window.c:3210
+#: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
 msgstr "Dostopi do datotek"
 
-#: ../src/file-manager/fm-properties-window.c:3212
+#: ../src/file-manager/fm-properties-window.c:3590
 msgid "Create and delete files"
 msgstr "Ustvari in zbriši datoteke"
 
-#: ../src/file-manager/fm-properties-window.c:3219
+#: ../src/file-manager/fm-properties-window.c:3597
 msgid "Read-only"
 msgstr "Samo za branje"
 
-#: ../src/file-manager/fm-properties-window.c:3221
+#: ../src/file-manager/fm-properties-window.c:3599
 msgid "Read and write"
 msgstr "Branje in pisanje"
 
-#: ../src/file-manager/fm-properties-window.c:3285
+#: ../src/file-manager/fm-properties-window.c:3663
 msgid "Set _user ID"
 msgstr "Nastavi ID _uporabnika"
 
-#: ../src/file-manager/fm-properties-window.c:3287
+#: ../src/file-manager/fm-properties-window.c:3665
 msgid "Special flags:"
 msgstr "Posebne zastavice:"
 
-#: ../src/file-manager/fm-properties-window.c:3289
+#: ../src/file-manager/fm-properties-window.c:3667
 msgid "Set gro_up ID"
 msgstr "Nastavi ID _skupine"
 
-#: ../src/file-manager/fm-properties-window.c:3290
+#: ../src/file-manager/fm-properties-window.c:3668
 msgid "_Sticky"
 msgstr "_Lepljiv"
 
-#: ../src/file-manager/fm-properties-window.c:3368
-#: ../src/file-manager/fm-properties-window.c:3570
+#: ../src/file-manager/fm-properties-window.c:3746
+#: ../src/file-manager/fm-properties-window.c:3948
 msgid "_Owner:"
 msgstr "_Lastnik:"
 
-#: ../src/file-manager/fm-properties-window.c:3374
-#: ../src/file-manager/fm-properties-window.c:3467
-#: ../src/file-manager/fm-properties-window.c:3576
+#: ../src/file-manager/fm-properties-window.c:3752
+#: ../src/file-manager/fm-properties-window.c:3845
+#: ../src/file-manager/fm-properties-window.c:3954
 msgid "Owner:"
 msgstr "Lastnik:"
 
-#: ../src/file-manager/fm-properties-window.c:3396
-#: ../src/file-manager/fm-properties-window.c:3587
+#: ../src/file-manager/fm-properties-window.c:3774
+#: ../src/file-manager/fm-properties-window.c:3965
 msgid "_Group:"
 msgstr "_Skupina:"
 
-#: ../src/file-manager/fm-properties-window.c:3405
-#: ../src/file-manager/fm-properties-window.c:3468
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3783
+#: ../src/file-manager/fm-properties-window.c:3846
+#: ../src/file-manager/fm-properties-window.c:3974
 msgid "Group:"
 msgstr "Skupina:"
 
-#: ../src/file-manager/fm-properties-window.c:3429
+#: ../src/file-manager/fm-properties-window.c:3807
 msgid "Others"
 msgstr "_Drugi"
 
-#: ../src/file-manager/fm-properties-window.c:3446
+#: ../src/file-manager/fm-properties-window.c:3824
 msgid "Execute:"
 msgstr "_Izvedi:"
 
-#: ../src/file-manager/fm-properties-window.c:3450
+#: ../src/file-manager/fm-properties-window.c:3828
 msgid "Allow _executing file as program"
-msgstr "Napaka pri izvajanju datotek_e kot programa"
+msgstr "Dovoli izvajanje datotek_e kot programa"
 
-#: ../src/file-manager/fm-properties-window.c:3469
+#: ../src/file-manager/fm-properties-window.c:3847
 msgid "Others:"
 msgstr "Drugo:"
 
-#: ../src/file-manager/fm-properties-window.c:3614
+#: ../src/file-manager/fm-properties-window.c:3992
 msgid "Folder Permissions:"
 msgstr "Dovoljenja mape:"
 
-#: ../src/file-manager/fm-properties-window.c:3626
+#: ../src/file-manager/fm-properties-window.c:4004
 msgid "File Permissions:"
 msgstr "Dovoljenja datoteke:"
 
-#: ../src/file-manager/fm-properties-window.c:3636
+#: ../src/file-manager/fm-properties-window.c:4014
 msgid "Text view:"
 msgstr "Pogled besedila:"
 
-#: ../src/file-manager/fm-properties-window.c:3783
+#: ../src/file-manager/fm-properties-window.c:4161
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Niste lastnik, zato ne morete spremeniti teh dovoljenj."
 
-#: ../src/file-manager/fm-properties-window.c:3806
+#: ../src/file-manager/fm-properties-window.c:4184
 msgid "SELinux Context:"
 msgstr "Kontekst SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:3810
+#: ../src/file-manager/fm-properties-window.c:4188
 msgid "Last changed:"
 msgstr "Nazadnje spremenjena:"
 
-#: ../src/file-manager/fm-properties-window.c:3824
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "Apply permissions to enclosed files"
 msgstr "Uporabi dovoljenja za priložene datoteke"
 
-#: ../src/file-manager/fm-properties-window.c:3834
+#: ../src/file-manager/fm-properties-window.c:4212
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Dovoljenja za \"%s\" niso bila ugotovljena."
 
-#: ../src/file-manager/fm-properties-window.c:3837
+#: ../src/file-manager/fm-properties-window.c:4215
 msgid "The permissions of the selected file could not be determined."
 msgstr "Dovoljenja za izbrano datoteko ne morejo biti ugotovljena."
 
-#: ../src/file-manager/fm-properties-window.c:4057
+#: ../src/file-manager/fm-properties-window.c:4435
 msgid "Open With"
 msgstr "Odpri z"
 
-#: ../src/file-manager/fm-properties-window.c:4397
+#: ../src/file-manager/fm-properties-window.c:4775
 msgid "Creating Properties window."
 msgstr "Ustvarjanje okna z lastnostmi."
 
-#: ../src/file-manager/fm-properties-window.c:4637
+#: ../src/file-manager/fm-properties-window.c:5015
 msgid "Select Custom Icon"
 msgstr "Izberi prikrojeno ikono"
 
