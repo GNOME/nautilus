@@ -266,7 +266,7 @@ modify_link_hash_table (NautilusFile *file,
 		return;
 	}
 
-	/* Creat the hash table first time through. */
+	/* Create the hash table first time through. */
 	if (symbolic_links == NULL) {
 		symbolic_links = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, "nautilus-file.c: symbolic_links");
@@ -6176,7 +6176,10 @@ nautilus_file_class_init (NautilusFileClass *class)
 static GnomeVFSFileInfo *
 nautilus_file_get_vfs_file_info (NautilusFile *file)
 {
-	return gnome_vfs_file_info_dup (file->details->info);
+	if (file->details->info) {
+		return gnome_vfs_file_info_dup (file->details->info);
+	}
+	return NULL;
 }
 
 static void

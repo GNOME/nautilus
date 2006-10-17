@@ -1,5 +1,11 @@
 2006-10-17  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c:
+	nautilus_file_get_vfs_file_info: handle NULL info
+	Fix typo.
+
+2006-10-17  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-program-choosing.c (nautilus_launch_show_file):
 	Don't cause critical if slow mimetype not loaded.
 	I was able to get that with a circular symlink.
