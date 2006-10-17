@@ -1,5 +1,14 @@
 2006-10-17  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory.c
+	(emit_change_signals_for_all_files):
+	Ref all files when emitting change signals. This is
+	an unverified possible fix for #343488, but it
+	can't possibly be bad to do this, so i'm
+	commiting it.
+
+2006-10-17  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c:
 	nautilus_file_get_vfs_file_info: handle NULL info
 	Fix typo.

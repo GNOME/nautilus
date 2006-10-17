@@ -262,9 +262,10 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 		files = g_list_prepend (files, directory->details->as_file);
 	}
 
+	nautilus_file_list_ref (files);
 	nautilus_directory_emit_change_signals (directory, files);
 
-	g_list_free (files);
+	nautilus_file_list_free (files);
 }
 
 static void
