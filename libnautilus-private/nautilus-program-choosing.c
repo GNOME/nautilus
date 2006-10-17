@@ -445,8 +445,6 @@ void nautilus_launch_show_file (NautilusFile *file,
 	startup_notify = FALSE;
 #endif
 
-	g_return_if_fail (!nautilus_file_needs_slow_mime_type (file));
-
 	uri = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
 		uri = nautilus_file_get_activation_uri (file);
