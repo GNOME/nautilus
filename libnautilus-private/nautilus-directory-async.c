@@ -883,9 +883,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 			if (file->details->unconfirmed) {
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
-
-				file->details->is_gone = TRUE;
-				nautilus_directory_remove_file (directory, file);
+				
+				nautilus_file_mark_gone (file);
 			}
 		}
 	}
@@ -2772,6 +2771,10 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	result = results->data;
 
 	if (result->result != GNOME_VFS_OK) {
+		if (result->result == GNOME_VFS_ERROR_NOT_FOUND) {
+			/* mark file as gone */
+			nautilus_file_mark_gone (get_info_file);
+		}
 		get_info_file->details->file_info_is_up_to_date = TRUE;
 		if (get_info_file->details->info != NULL) {
 			gnome_vfs_file_info_unref (get_info_file->details->info);
@@ -2779,14 +2782,6 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 		}
 		get_info_file->details->get_info_failed = TRUE;
 		get_info_file->details->get_info_error = result->result;
-		if (result->result == GNOME_VFS_ERROR_NOT_FOUND) {
-			/* mark file as gone */
-
-			get_info_file->details->is_gone = TRUE;
-			if (get_info_file != directory->details->as_file) {
-				nautilus_directory_remove_file (directory, get_info_file);
-			}
-		}
 	} else {
 		nautilus_file_update_info (get_info_file, result->file_info, has_slow_mime_type);
 	}

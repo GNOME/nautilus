@@ -1,5 +1,15 @@
 2006-10-17  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-async.c (get_info_callback,
+	dequeue_pending_idle_callback):
+	Call nautilus_file_mark_gone instead of directly setting is_gone, as
+	this allows us to clean up the symlink hash.
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_mark_gone):
+	Allow multiple mark_gone. Just ignore any but the first.
+
+2006-10-17  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory.c
 	(emit_change_signals_for_all_files):
 	Ref all files when emitting change signals. This is

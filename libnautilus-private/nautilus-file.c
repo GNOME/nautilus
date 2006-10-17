@@ -5354,7 +5354,8 @@ nautilus_file_mark_gone (NautilusFile *file)
 {
 	NautilusDirectory *directory;
 
-	g_return_if_fail (!file->details->is_gone);
+	if (file->details->is_gone)
+		return;
 
 	file->details->is_gone = TRUE;
 
