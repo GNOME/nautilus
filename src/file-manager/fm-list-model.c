@@ -1681,33 +1681,39 @@ change_dummy_row_callback (gpointer callback_data)
 	
 	struct ChangeDummyData *data;
 	data = callback_data;
+	model = data->model;
 
-	if (data->model != NULL) {
-		model = data->model;
-		
-		parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
-						  data->directory);
-		file_entry = g_sequence_get (parent_ptr);
-
-		file_entry->loaded = 1;
-		files = file_entry->files;
+	if (model == NULL || model->details->directory_reverse_map == NULL) {
+		goto out;
+	}
 	
-		if (g_sequence_get_length (files) == 1) {
-			dummy_ptr = g_sequence_get_iter_at_pos (file_entry->files, 0);
-			dummy_entry = g_sequence_get (dummy_ptr);
-			if (dummy_entry->file == NULL) {
-				/* was the dummy file */
-				
-				iter.stamp = model->details->stamp;
-				iter.user_data = dummy_ptr;
-				
-				path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-				gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
-				gtk_tree_path_free (path);
-			}
+	parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
+					  data->directory);
+	if (parent_ptr == NULL) {
+		goto out;
+	}
+	
+	file_entry = g_sequence_get (parent_ptr);
+	
+	file_entry->loaded = 1;
+	files = file_entry->files;
+	
+	if (g_sequence_get_length (files) == 1) {
+		dummy_ptr = g_sequence_get_iter_at_pos (file_entry->files, 0);
+		dummy_entry = g_sequence_get (dummy_ptr);
+		if (dummy_entry->file == NULL) {
+			/* was the dummy file */
+			
+			iter.stamp = model->details->stamp;
+			iter.user_data = dummy_ptr;
+			
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+			gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
+			gtk_tree_path_free (path);
 		}
 	}
 
+ out:
 	eel_remove_weak_pointer (&data->model);
 	nautilus_directory_unref (data->directory);
 	g_free (data);
