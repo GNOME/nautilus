@@ -121,6 +121,9 @@ struct NautilusFileDetails
 
 	eel_boolean_bit unconfirmed                   : 1;
 	eel_boolean_bit is_gone                       : 1;
+	/* Set when emitting files_added on the directory to make sure we
+	   add a file, and only once */
+	eel_boolean_bit is_added                      : 1;
 	/* Set by the NautilusDirectory while it's loading the file
 	 * list so the file knows not to do redundant I/O.
 	 */

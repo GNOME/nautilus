@@ -1665,7 +1665,11 @@ is_tentative (gpointer data, gpointer callback_data)
 	g_assert (callback_data == NULL);
 
 	file = NAUTILUS_FILE (data);
-	return file->details->info == NULL;
+	/* Avoid returning files with !is_added, because these
+	 * will later be sent with the files_added signal, and a
+	 * user doing get_file_list + files_added monitoring will
+	 * then see the file twice */
+	return file->details->info == NULL || !file->details->is_added;
 }
 
 GList *

@@ -1,3 +1,20 @@
+2006-10-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-private.h:
+	Add is_added flag to NautilusFile to make sure we always
+	send an added event to directory monitors.
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback):
+	Don't add the file to both added and changed list
+	If the file exist but hasn't been added yet, add it.
+	
+	* libnautilus-private/nautilus-directory.c: (is_tentative):
+	Don't return non-added files for get_file_list to avoid duplicating
+	files if you do a list and then track adds.
+
+	Partially fixes #336051.
+
 2006-10-17  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-async.c (get_info_callback,

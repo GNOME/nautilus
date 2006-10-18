@@ -855,20 +855,29 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		/* check if the file already exists */
 		file = nautilus_directory_find_file_by_name (directory, file_info->name);
 		if (file != NULL) {
-			/* file already exists, check if it changed */
+			/* file already exists in dir, check if we still need to
+			 *  emit file_added or if it changed */
 			set_file_unconfirmed (file, FALSE);
-			if (nautilus_file_update_info (file, file_info, FALSE)) {
+			if (!file->details->is_added) {
+				/* We consider this newly added even if its in the list.
+				 * This can happen if someone called nautilus_file_get()
+				 * on a file in the folder before the add signal was
+				 * emitted */
+				nautilus_file_ref (file);
+				file->details->is_added = TRUE;
+				added_files = g_list_prepend (added_files, file);
+			} else if (nautilus_file_update_info (file, file_info, FALSE)) {
 				/* File changed, notify about the change. */
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
 			}
-			nautilus_file_ref (file);			
 		} else {
 			/* new file, create a nautilus file object and add it to the list */
 			file = nautilus_file_new_from_info (directory, file_info);
 			nautilus_directory_add_file (directory, file);			
+			file->details->is_added = TRUE;
+			added_files = g_list_prepend (added_files, file);
 		}
-		added_files = g_list_prepend (added_files, file);
 	}
 
 	/* If we are done loading, then we assume that any unconfirmed
