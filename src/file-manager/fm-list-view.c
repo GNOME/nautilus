@@ -86,8 +86,6 @@ struct FMListViewDetails {
 
 	NautilusTreeViewDragDest *drag_dest;
 
-	GtkTargetList *source_target_list;
-
 	GtkTreePath *double_click_path[2]; /* Both clicks in a double click need to be on the same row */
 
 	GtkTreePath *new_selection_path;   /* Path of the new selection after removing a file */
@@ -141,6 +139,8 @@ static NautilusZoomLevel        default_zoom_level_auto_value;
 static GList *                  default_visible_columns_auto_value;
 static GList *                  default_column_order_auto_value;
 static GdkCursor *              hand_cursor = NULL;
+
+static GtkTargetList *          source_target_list = NULL;
 
 static GList *fm_list_view_get_selection                   (FMDirectoryView   *view);
 static GList *fm_list_view_get_selection_for_file_transfer (FMDirectoryView   *view);
@@ -487,6 +487,17 @@ motion_notify_callback (GtkWidget *widget,
 	}
 
 	if (view->details->drag_button != 0) {
+		if (!source_target_list) {
+			const GtkTargetEntry *drag_types;
+			int n_drag_types;
+
+			fm_list_model_get_drag_types (&drag_types,
+						      &n_drag_types);
+
+			source_target_list = gtk_target_list_new (drag_types,
+								  n_drag_types);
+		}
+
 		if (gtk_drag_check_threshold (widget,
 					      view->details->drag_x,
 					      view->details->drag_y,
@@ -494,7 +505,7 @@ motion_notify_callback (GtkWidget *widget,
 					      event->y)) {
 			context = gtk_drag_begin
 				(widget,
-				 view->details->source_target_list,
+				 source_target_list,
 				 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
 				 view->details->drag_button,
 				 (GdkEvent*)event);
@@ -1188,10 +1199,8 @@ create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	const GtkTargetEntry *drag_types;
 	GtkBindingSet *binding_set;
 	AtkObject *atk_obj;
-	int num_drag_types;	
 	GList *nautilus_columns;
 	GList *l;
 	
@@ -1206,8 +1215,6 @@ create_and_set_up_tree_view (FMListView *view)
 	binding_set = gtk_binding_set_by_class (GTK_WIDGET_GET_CLASS (view->details->tree_view));
 	gtk_binding_entry_clear (binding_set, GDK_BackSpace, 0);
 
-	fm_list_model_get_drag_types (&drag_types, &num_drag_types);
-	
 	view->details->drag_dest = 
 		nautilus_tree_view_drag_dest_new (view->details->tree_view);
 
@@ -1270,10 +1277,6 @@ create_and_set_up_tree_view (FMListView *view)
 	
 	g_signal_connect_object (view->details->model, "subdirectory_unloaded",
 				 G_CALLBACK (subdirectory_unloaded_callback), view, 0);
-
-	view->details->source_target_list = 
-		gtk_target_list_new (drag_types, num_drag_types);
-	
 
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
@@ -2461,8 +2464,6 @@ fm_list_view_finalize (GObject *object)
 	if (list_view->details->new_selection_path) {
 		gtk_tree_path_free (list_view->details->new_selection_path);
 	}
-
-	gtk_target_list_unref (list_view->details->source_target_list);
 	
 	g_list_free (list_view->details->cells);
 	g_hash_table_destroy (list_view->details->columns);

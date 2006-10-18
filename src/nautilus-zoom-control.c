@@ -210,8 +210,8 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	zoom_control->details->has_min_zoom_level = TRUE;
 	zoom_control->details->has_max_zoom_level = TRUE;
 
-	for (i = NAUTILUS_ZOOM_LEVEL_SMALLEST; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		zoom_control->details->preferred_zoom_levels = g_list_append (
+	for (i = NAUTILUS_ZOOM_LEVEL_LARGEST; i >= NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
+		zoom_control->details->preferred_zoom_levels = g_list_prepend (
 		          zoom_control->details->preferred_zoom_levels,
 			  GINT_TO_POINTER (i));
 	}

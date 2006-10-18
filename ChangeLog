@@ -1,5 +1,18 @@
 2006-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c:
+	Share target list for all instances (#357573)
+	
+	* src/nautilus-location-bar.c: (style_set_handler):
+	Don't leak layout (#352693)
+	
+	* src/nautilus-zoom-control.c:
+	Fix O(n^2) use of list (#357589)
+
+	All patches from paolo borelli.
+
+2006-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* src/Makefile.am:
 	* src/ephy-spinner.[ch]:
 	* src/nautilus-throbber.[ch]:

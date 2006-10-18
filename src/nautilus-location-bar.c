@@ -250,6 +250,8 @@ style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 	width += 2 * GTK_MISC (widget)->xpad;
 
 	gtk_widget_set_size_request (widget, width, -1);
+
+	g_object_unref (layout);
 }
 
 static gboolean
