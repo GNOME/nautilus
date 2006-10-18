@@ -1,5 +1,12 @@
 2006-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_search_scroll_event):
+	Renew typeahead timeout when you scroll between typeahead hits with the
+	mouse wheel. (#354042)
+	Patch from Nelson Benitez
+
+2006-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-model.c (change_dummy_row_callback):
 	The row might have disappeared if it was removed since the
 	timeout was scheduled. Protect against this. (#336051)

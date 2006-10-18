@@ -4007,6 +4007,15 @@ nautilus_icon_container_search_scroll_event (GtkWidget *widget,
 		retval = TRUE;
 	}
 
+	/* renew the flush timeout */
+	if (retval && container->details->typeselect_flush_timeout) {
+		g_source_remove (container->details->typeselect_flush_timeout);
+		container->details->typeselect_flush_timeout =
+			g_timeout_add (NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT,
+				(GSourceFunc) nautilus_icon_container_search_entry_flush_timeout,
+				container);
+	}
+
 	return retval;
 }
 
