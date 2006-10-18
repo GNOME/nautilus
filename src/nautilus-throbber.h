@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_THROBBER_H
 #define NAUTILUS_THROBBER_H
 
-#include <gtk/gtkeventbox.h>
+#include "ephy-spinner.h"
 
 G_BEGIN_DECLS
 
@@ -38,29 +38,14 @@ G_BEGIN_DECLS
 #define NAUTILUS_IS_THROBBER(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_THROBBER))
 #define NAUTILUS_IS_THROBBER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_THROBBER))
 
-typedef struct NautilusThrobber NautilusThrobber;
-typedef struct NautilusThrobberClass NautilusThrobberClass;
-typedef struct NautilusThrobberDetails NautilusThrobberDetails;
-
-struct NautilusThrobber {
-	GtkEventBox parent;
-	NautilusThrobberDetails *details;
-};
-
-struct NautilusThrobberClass {
-	GtkEventBoxClass parent_class;
-	
-	/* signals */
-	void (* location_changed) (NautilusThrobber *throbber,
-				   const char       *location);
-};
+typedef EphySpinner NautilusThrobber;
+typedef EphySpinnerClass NautilusThrobberClass;
 
 GType         nautilus_throbber_get_type       (void);
 GtkWidget    *nautilus_throbber_new            (void);
 void          nautilus_throbber_start          (NautilusThrobber *throbber);
 void          nautilus_throbber_stop           (NautilusThrobber *throbber);
-void          nautilus_throbber_set_small_mode (NautilusThrobber *throbber,
-						gboolean          new_mode);
+void          nautilus_throbber_set_size       (NautilusThrobber *throbber, GtkIconSize size);
 
 G_END_DECLS
 

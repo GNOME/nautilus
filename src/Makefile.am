@@ -52,6 +52,8 @@ nautilus_shell_interface_idl_sources =		\
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
+	ephy-spinner.h				\
+	ephy-spinner.c				\
 	nautilus-actions.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\

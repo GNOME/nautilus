@@ -1,5 +1,16 @@
 2006-10-18  Alexander Larsson  <alexl@redhat.com>
 
+	* src/Makefile.am:
+	* src/ephy-spinner.[ch]:
+	* src/nautilus-throbber.[ch]:
+	Import ephy spinner and use ad throbber.
+	This supports different icon sizes.
+	
+	* src/nautilus-window-toolbars.c:
+	Change throbber size when toolbar size changes.
+
+2006-10-18  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_search_scroll_event):
 	Renew typeahead timeout when you scroll between typeahead hits with the
 	mouse wheel. (#354042)

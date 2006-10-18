@@ -74,6 +74,27 @@ nautilus_navigation_window_set_throbber_active (NautilusNavigationWindow *window
 	}
 }
 
+static void
+toolbar_reconfigured_cb (GtkToolItem *item,
+			 NautilusThrobber *throbber)
+{
+	GtkToolbarStyle style;
+	GtkIconSize size;
+
+	style = gtk_tool_item_get_toolbar_style (item);
+
+	if (style == GTK_TOOLBAR_BOTH)
+	{
+		size = GTK_ICON_SIZE_DIALOG;
+	}
+	else
+	{
+		size = GTK_ICON_SIZE_LARGE_TOOLBAR;
+	}
+
+	nautilus_throbber_set_size (throbber, size);
+}
+
 void
 nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 {
@@ -89,10 +110,10 @@ nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 	gtk_tool_item_set_expand (item, TRUE);
 	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
 			    item, -1);
-	
+
 	throbber = nautilus_throbber_new ();
 	gtk_widget_show (GTK_WIDGET (throbber));
-	
+
 	item = gtk_tool_item_new ();
 	gtk_container_add (GTK_CONTAINER (item), throbber);
 	gtk_widget_show (GTK_WIDGET (item));
@@ -100,6 +121,9 @@ nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
 			    item, -1);
 	
+	g_signal_connect (item, "toolbar-reconfigured",
+			  G_CALLBACK (toolbar_reconfigured_cb), throbber);
+
 	window->details->throbber = throbber;
 }
 
