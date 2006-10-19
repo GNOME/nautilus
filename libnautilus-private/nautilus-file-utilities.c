@@ -414,6 +414,11 @@ nautilus_pixmap_file (const char *partial_path)
 	path = g_build_filename (DATADIR "/pixmaps/nautilus", partial_path, NULL);
 	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
+	} else {
+		char *tmp;
+		tmp = nautilus_get_pixmap_directory ();
+		g_debug ("Failed to locate \"%s\" in Nautilus pixmap path \"%s\". Incomplete installation?", partial_path, tmp);
+		g_free (tmp);
 	}
 	g_free (path);
 	return NULL;

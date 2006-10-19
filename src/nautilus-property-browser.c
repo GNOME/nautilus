@@ -266,7 +266,9 @@ nautilus_property_browser_init (GtkObject *object)
 		
 	/* load the chit frame */
 	temp_str = nautilus_pixmap_file ("chit_frame.png");
-	property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str, NULL);
+	if (temp_str != NULL) {
+		property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str, NULL);
+	}
 	g_free (temp_str);
 	
 	/* set the initial size of the property browser */
@@ -742,8 +744,12 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 
 	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
 		if (strcmp (file_name, "erase") == 0) {
+			pixbuf = NULL;
+
 			image_file_name = nautilus_pixmap_file (ERASE_OBJECT_NAME);
-			pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
+			if (image_file_name != NULL) {
+				pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
+			}
 			g_free (image_file_name);
 		} else {
 			icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
@@ -790,12 +796,14 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	
 	is_reset = eel_strcmp (file_name, RESET_IMAGE_NAME) == 0;
 	
-	if (strcmp (property_browser->details->category, "patterns") == 0) {
+	if (strcmp (property_browser->details->category, "patterns") == 0 &&
+	    property_browser->details->property_chit != NULL) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE, is_reset);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
-		g_object_unref (orig_pixbuf);
 	}
+
+	gdk_pixbuf_unref (orig_pixbuf);
 
 	return pixbuf;
 }
@@ -807,6 +815,7 @@ static GdkPixbuf*
 make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *color_spec, gboolean trim_edges)
 {
 	GdkPixbuf *color_square;
+	GdkPixbuf *ret;
 	int row, col, stride;
 	char *pixels, *row_pixels;
 	GdkColor color;
@@ -831,10 +840,19 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 			*row_pixels++ = 255;
 		}
 	}
-	
-	return nautilus_customization_make_pattern_chit (color_square, 
-							    property_browser->details->property_chit,
-							    trim_edges, FALSE);	
+
+	g_assert (color_square != NULL);
+
+	if (property_browser->details->property_chit != NULL) {
+		ret = nautilus_customization_make_pattern_chit (color_square, 
+								property_browser->details->property_chit,
+								trim_edges, FALSE);
+		gdk_pixbuf_unref (color_square);
+	} else {
+		ret = color_square;
+	}
+
+	return ret;
 }
 
 /* this callback handles button presses on the category widget. It maintains the active state */
@@ -1730,7 +1748,9 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 					
 			g_free (object_name);
 			g_free (object_label);
-			g_object_unref (object_pixbuf);
+			if (object_pixbuf != NULL) {
+				g_object_unref (object_pixbuf);
+			}
 		}
 		eel_g_list_free_deep (icons);
 		property_browser->details->has_local = FALSE;
@@ -1766,7 +1786,9 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			
 			g_free (object_name);
 			g_free (object_label);
-			g_object_unref (object_pixbuf);
+			if (object_pixbuf != NULL) {
+				g_object_unref (object_pixbuf);
+			}
 		}
 		
 		property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
@@ -1788,12 +1810,15 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 					      num_images - 1);
 		
 		gtk_widget_show (blank);
-		
+
+		object_pixbuf = NULL;
+
 		path = nautilus_pixmap_file (ERASE_OBJECT_NAME);
-		object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+		if (path != NULL) {
+			object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+		}
 		g_free (path);
 		property_image = labeled_image_new (_("Erase"), object_pixbuf, "erase", PANGO_SCALE_LARGE);
-		g_object_unref (object_pixbuf);
 		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
 		gtk_container_add (GTK_CONTAINER (image_table), property_image);
@@ -1801,6 +1826,10 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	
 		eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
 					      property_image, -1);
+
+		if (object_pixbuf != NULL) {
+			g_object_unref (object_pixbuf);
+		}
 	}
 
 	/*
@@ -1823,18 +1852,30 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	GtkWidget *reset_image;
 	GdkPixbuf *reset_pixbuf, *reset_chit;
 
+	reset_chit = NULL;
+
 	reset_image_file_name = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
 	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name, NULL);
-	reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE, TRUE);
+	if (reset_pixbuf != NULL && property_browser->details->property_chit != NULL) {
+		reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE, TRUE);
+	}
 	
 	g_free (reset_image_file_name);
 
-	reset_image = labeled_image_new ("Reset", reset_chit, RESET_IMAGE_NAME, PANGO_SCALE_MEDIUM);
+	reset_image = labeled_image_new ("Reset", reset_chit != NULL ? reset_chit : reset_pixbuf, RESET_IMAGE_NAME, PANGO_SCALE_MEDIUM);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
 	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,
 					   0);
 	gtk_widget_show (reset_image);
+
+	if (reset_pixbuf != NULL) {
+		g_object_unref (reset_pixbuf);
+	}
+
+	if (reset_chit != NULL) {
+		g_object_unref (reset_chit);
+	}
 }
 	
 /* generate properties from the children of the passed in node */
@@ -1935,9 +1976,11 @@ property_browser_category_button_new (const char *display_name,
 	g_return_val_if_fail (image != NULL, NULL);
 
 	file_name = nautilus_pixmap_file (image); 
-	g_return_val_if_fail (file_name != NULL, NULL);
-
-	button = eel_labeled_image_radio_button_new_from_file_name (display_name, file_name);
+	if (file_name != NULL) {
+		button = eel_labeled_image_radio_button_new_from_file_name (display_name, file_name);
+	} else {
+		button = eel_labeled_image_radio_button_new (display_name, NULL);
+	}
 
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
 

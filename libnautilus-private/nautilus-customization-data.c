@@ -130,16 +130,17 @@ nautilus_customization_data_new (const char *customization_name,
 		data->current_file_list = data->public_file_list;
 	}
 
+	data->pattern_frame = NULL;
+
 	/* load the frame if necessary */
 	if (strcmp (customization_name, "patterns") == 0) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);
+		if (temp_str != NULL) {
+			data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);
+		}
 		g_free (temp_str);
-	} else {
-		data->pattern_frame = NULL;
 	}
 
-	
 	data->private_data_was_displayed = FALSE;
 	data->data_is_for_a_menu = data_is_for_a_menu;
 	data->customization_name = g_strdup (customization_name);
@@ -223,15 +224,17 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
 
 	*emblem_name = g_strdup (current_file_info->name);
-	
-	if (strcmp (data->customization_name, "patterns") == 0) {
+
+	if (strcmp (data->customization_name, "patterns") == 0 &&
+	    data->pattern_frame != NULL) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE, is_reset_image);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
 							   data->maximum_icon_width, 
 							   data->maximum_icon_height);
-		g_object_unref (orig_pixbuf);
 	}
+
+	g_object_unref (orig_pixbuf);
 	
 	*pixbuf_out = pixbuf;
 	
@@ -360,8 +363,10 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 	GdkPixbuf *pixbuf, *temp_pixbuf;
 	int frame_width, frame_height;
 	int pattern_width, pattern_height;
-	
-	
+
+	g_assert (pattern_tile != NULL);
+	g_assert (frame != NULL);
+
 	frame_width = gdk_pixbuf_get_width (frame);
 	frame_height = gdk_pixbuf_get_height (frame);
 	pattern_width = gdk_pixbuf_get_width (pattern_tile);
@@ -385,8 +390,6 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 		g_object_unref (pixbuf);
 		pixbuf = temp_pixbuf;
 	}
-			      
-	g_object_unref (pattern_tile);
 
 	return pixbuf;
 }

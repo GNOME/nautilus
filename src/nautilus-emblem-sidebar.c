@@ -926,9 +926,12 @@ nautilus_emblem_sidebar_populate (NautilusEmblemSidebar *emblem_sidebar)
 	char *path;
 	GdkPixbuf *erase_pixbuf;
 
-	
+	erase_pixbuf = NULL;
+
 	path = nautilus_pixmap_file ("erase.png");
-	erase_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	if (path != NULL) {
+		erase_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	}
 	g_free (path);
 
 	if (erase_pixbuf != NULL) {
