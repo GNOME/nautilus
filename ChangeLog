@@ -1,5 +1,12 @@
 2006-10-19  Christian Neumair  <chris@gnome-de.org>
 
+	* src/file-manager/fm-directory-view.c:
+	(convert_file_list_to_string):
+	Don't append final newline for textual URIs.
+	Fixes #360441.
+
+2006-10-19  Christian Neumair  <chris@gnome-de.org>
+
 	* src/nautilus-main.c: (main):
 	Shut down eel before GnomeVFS.
 

@@ -5893,8 +5893,11 @@ convert_file_list_to_string (GList *files,
 			} else {
 				g_string_append (uris, uri);
 			}
-			g_string_append_c (uris, '\n');
-			
+
+			/* skip newline for last element */
+			if (node->next != NULL) {
+				g_string_append_c (uris, '\n');
+			}
 		} else {
 			g_string_append_c (uris, '\n');
 			g_string_append (uris, uri);
