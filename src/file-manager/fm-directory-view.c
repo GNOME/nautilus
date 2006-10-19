@@ -2062,8 +2062,6 @@ fm_directory_view_destroy (GtkObject *object)
 		view->details->directory_as_file = NULL;
 	}
 
-	fm_directory_view_ignore_hidden_file_preferences (view);
-
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -2074,10 +2072,15 @@ fm_directory_view_finalize (GObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					 filtering_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					 filtering_changed_callback, view);
+	if (!view->details->ignore_hidden_file_preferences) {
+		/* fm_directory_view_ignore_hidden_file_preferences is a one-way switch,
+		 * and may have removed these callbacks already.
+		 */
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						 filtering_changed_callback, view);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						 filtering_changed_callback, view);
+	}
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
