@@ -1,3 +1,10 @@
+2006-10-19  Federico Mena Quintero  <federico@novell.com>
+
+	* test/file-torture.py: New file with a little torture test.  It
+	does a bunch of file operations on a directory.  Nautilus
+	sometimes crashes when viewing that directory, so this should help
+	us find bugs.
+
 2006-10-19  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file.c:
