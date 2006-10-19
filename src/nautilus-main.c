@@ -372,6 +372,11 @@ main (int argc, char *argv[])
 		}
 	}
 
+	/* This has to be done before gnome_vfs_shutdown, because
+ 	 * it might call nautilus_file_get_uri() which might call
+ 	 * gnome_vfs_uri_append_string()
+ 	 */
+ 	eel_debug_shut_down ();
 
 	gnome_vfs_shutdown ();
 
@@ -381,8 +386,6 @@ main (int argc, char *argv[])
 	if (application != NULL) {
 		bonobo_object_unref (application);
 	}
-
-	eel_debug_shut_down ();
 
 	/* If told to restart, exec() myself again. This is used when
 	 * the program is told to restart with CORBA, for example when
