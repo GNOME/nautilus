@@ -73,6 +73,8 @@ path_is_on_readonly_volume (const char *path)
 	GnomeVFSVolume *volume;
 	gboolean res;
 
+	g_assert (path != NULL);
+
 	volume_monitor = gnome_vfs_get_volume_monitor ();
 	volume = gnome_vfs_volume_monitor_get_volume_for_path (volume_monitor, 
 							       path);

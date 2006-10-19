@@ -5115,9 +5115,13 @@ nautilus_file_get_volume_name (NautilusFile *file)
 	char *volume_name;
 	GnomeVFSVolume *volume;
 	file_uri = nautilus_file_get_uri (file);
-	
+
+	volume = NULL;
+
 	local_path = gnome_vfs_get_local_path_from_uri (file_uri);
-	volume = gnome_vfs_volume_monitor_get_volume_for_path (gnome_vfs_get_volume_monitor (), local_path);
+	if (local_path != NULL) {
+		volume = gnome_vfs_volume_monitor_get_volume_for_path (gnome_vfs_get_volume_monitor (), local_path);
+	}
 	
 	g_free (file_uri);
 	g_free (local_path);

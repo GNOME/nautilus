@@ -1,5 +1,16 @@
 2006-10-19  Christian Neumair  <chris@gnome-de.org>
 
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_volume_name):
+	Check for NULL path before calling
+	gnome_vfs_volume_monitor_get_volume_for_path().
+
+	* libnautilus-private/nautilus-monitor.c:
+	(path_is_on_readonly_volume):
+	Assert path.
+
+2006-10-19  Christian Neumair  <chris@gnome-de.org>
+
 	* src/file-manager/fm-directory-view.c:
 	(convert_file_list_to_string):
 	Don't append final newline for textual URIs.
