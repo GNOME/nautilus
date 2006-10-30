@@ -1,5 +1,19 @@
 2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-property-browser.c: (remove_color),
+	(nautilus_property_browser_remove_element),
+	(element_clicked_callback), (make_properties_from_xml_node):
+	Remove colors by really removing them from browser.xml,
+	not marking them deleted. That made it impossible to add
+	another color with the same name later on.
+	Also delete colors by their (unique) names and not their color
+	values. That made it possible to delete built-in colors.
+	Fixes #358893.
+	
+	Based on a patch from Emil Soleyman-Zomalan
+
+2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-properties-window.c:
 	(attach_value_field_internal), (attach_value_field),
 	(attach_ellipsizing_value_field), (append_title_value_pair),

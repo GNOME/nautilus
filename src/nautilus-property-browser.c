@@ -906,17 +906,15 @@ get_color_category (xmlDocPtr document)
 }
 
 /* routines to remove specific category types.  First, handle colors */
-/* having trouble removing nodes, so instead I'll mark it invisible - eventually this needs to be fixed */
 
 static void
-remove_color (NautilusPropertyBrowser *property_browser, const char* color_value)
+remove_color (NautilusPropertyBrowser *property_browser, const char* color_name)
 {
 	/* load the local xml file to remove the color */
 	xmlDocPtr document;
 	xmlNodePtr cur_node, color_node;
 	gboolean match;
-	char *color_content;
-	char *deleted_value;
+	char *name;
 
 	document = read_browser_xml (property_browser);
 	if (document == NULL) {
@@ -935,16 +933,14 @@ remove_color (NautilusPropertyBrowser *property_browser, const char* color_value
 				continue;
 			}
 
-			color_content = xmlNodeGetContent(color_node);
-			match = color_content != NULL
-				&& strcmp (color_content, color_value) == 0;
-			xmlFree (color_content);
+			name = xmlGetProp (color_node, "name");
+			match = name != NULL
+				&& strcmp (name, color_name) == 0;
+			xmlFree (name);
 
-			deleted_value = xmlGetProp (color_node, "deleted");
-			xmlFree (deleted_value);
-			
-			if (match && deleted_value == NULL) {
-				xmlSetProp(color_node, "deleted", "1");
+			if (match) {
+				xmlUnlinkNode (color_node);
+				xmlFreeNode (color_node);
 				write_browser_xml (property_browser, document);
 				break;
 			}
@@ -1019,15 +1015,22 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 /* handle removing the passed in element */
 
 static void
-nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_browser, const char* element_name)
+nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_browser, EelLabeledImage *child)
 {
+	const char *element_name;
+	char *color_name;
+
+	element_name = g_object_get_data (G_OBJECT (child), "property-name");
+
 	/* lookup category and get mode, then case out and handle the modes */
 	switch (property_browser->details->category_type) {
 	case NAUTILUS_PROPERTY_PATTERN:
 		remove_pattern (property_browser, element_name);
 		break;
 	case NAUTILUS_PROPERTY_COLOR:
-		remove_color (property_browser, element_name);
+		color_name = eel_labeled_image_get_text (child);
+		remove_color (property_browser, color_name);
+		g_free (color_name);
 		break;
 	case NAUTILUS_PROPERTY_EMBLEM:
 		remove_emblem (property_browser, element_name);
@@ -1606,9 +1609,9 @@ element_clicked_callback (GtkWidget *image_table,
 
 	/* handle remove mode by removing the element */
 	if (property_browser->details->remove_mode) {
-		nautilus_property_browser_remove_element(property_browser, element_name);
+		nautilus_property_browser_remove_element (property_browser, EEL_LABELED_IMAGE (child));
 		property_browser->details->remove_mode = FALSE;
-		nautilus_property_browser_update_contents(property_browser);
+		nautilus_property_browser_update_contents (property_browser);
 		gtk_widget_show (property_browser->details->help_label);
 		return;
 	}
@@ -1907,6 +1910,9 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			continue;
 		}
 
+		/* We used to mark colors that were removed with the "deleted" attribute.
+		 * To prevent these colors from suddenly showing up now, this legacy remains.
+		 */
 		deleted = xmlGetProp (child_node, "deleted");
 		local = xmlGetProp (child_node, "local");
 		
