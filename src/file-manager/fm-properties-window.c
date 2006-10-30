@@ -1439,7 +1439,7 @@ attach_ellipsizing_value_label (GtkTable *table,
 	return attach_label (table, row, column, initial_text, FALSE, FALSE, TRUE, TRUE, FALSE);
 }
 
-static void
+static GtkWidget*
 attach_value_field_internal (FMPropertiesWindow *window,
 			     GtkTable *table,
 			     int row,
@@ -1469,9 +1469,10 @@ attach_value_field_internal (FMPropertiesWindow *window,
 
 	window->details->value_fields = g_list_prepend (window->details->value_fields,
 							value_field);
+	return GTK_WIDGET(value_field);
 }			     
 
-static void
+static GtkWidget*
 attach_value_field (FMPropertiesWindow *window,
 		    GtkTable *table,
 		    int row,
@@ -1480,7 +1481,7 @@ attach_value_field (FMPropertiesWindow *window,
 		    const char *inconsistent_string,
 		    gboolean show_original)
 {
-	attach_value_field_internal (window, 
+	return attach_value_field_internal (window, 
 				     table, row, column, 
 				     file_attribute_name, 
 				     inconsistent_string,
@@ -1488,7 +1489,7 @@ attach_value_field (FMPropertiesWindow *window,
 				     FALSE);
 }
 
-static void
+static GtkWidget*
 attach_ellipsizing_value_field (FMPropertiesWindow *window,
 				GtkTable *table,
 		    	  	int row,
@@ -1497,7 +1498,7 @@ attach_ellipsizing_value_field (FMPropertiesWindow *window,
 				const char *inconsistent_string,
 				gboolean show_original)
 {
-	attach_value_field_internal (window,
+	return attach_value_field_internal (window,
 				     table, row, column, 
 				     file_attribute_name, 
 				     inconsistent_string, 
@@ -2425,13 +2426,15 @@ append_title_value_pair (FMPropertiesWindow *window,
 			 gboolean show_original)
 {
 	guint last_row;
+	GtkLabel *title_label;
+	GtkWidget *value;
 
-	last_row = append_title_field (table, title, NULL);
-	attach_value_field (window, table, last_row, VALUE_COLUMN, 
+	last_row = append_title_field (table, title, &title_label);
+	value = attach_value_field (window, table, last_row, VALUE_COLUMN, 
 			    file_attribute_name,
 			    inconsistent_state,
 			    show_original); 
-
+	gtk_label_set_mnemonic_widget (title_label, value);
 	return last_row;
 }
 
@@ -2443,13 +2446,16 @@ append_title_and_ellipsizing_value (FMPropertiesWindow *window,
 				    const char *inconsistent_state,
 				    gboolean show_original)
 {
+	GtkLabel *title_label;
+	GtkWidget *value;
 	guint last_row;
 
-	last_row = append_title_field (table, title, NULL);
-	attach_ellipsizing_value_field (window, table, last_row, VALUE_COLUMN, 
+	last_row = append_title_field (table, title, &title_label);
+	value = attach_ellipsizing_value_field (window, table, last_row, VALUE_COLUMN, 
 					file_attribute_name,
 					inconsistent_state,
 					show_original);
+	gtk_label_set_mnemonic_widget (title_label, value);
 
 	return last_row;
 }
@@ -2470,6 +2476,7 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 	value_field = attach_directory_contents_value_field 
 		(window, table, last_row);
 
+	gtk_label_set_mnemonic_widget(title_field, GTK_WIDGET(value_field));
 	return last_row;
 }
 
@@ -3558,17 +3565,18 @@ add_permissions_combo_box (FMPropertiesWindow *window, GtkTable *table,
 			   gboolean short_label)
 {
 	GtkWidget *combo;
+	GtkLabel *label;
 	GtkListStore *store;
 	GtkCellRenderer *cell;
 	GtkTreeIter iter;
 	int row;
 
 	if (short_label) {
-		row = append_title_field (table, _("Access:"), NULL);
+		row = append_title_field (table, _("Access:"), &label);
 	} else if (is_folder) {
-		row = append_title_field (table, _("Folder Access:"), NULL);
+		row = append_title_field (table, _("Folder Access:"), &label);
 	} else {
-		row = append_title_field (table, _("File Access:"), NULL);
+		row = append_title_field (table, _("File Access:"), &label);
 	}
 	
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
@@ -3616,6 +3624,7 @@ add_permissions_combo_box (FMPropertiesWindow *window, GtkTable *table,
 					"text", 0,
 					NULL);
 	
+	gtk_label_set_mnemonic_widget (label, combo);
 	gtk_widget_show (combo);
 	
 	gtk_table_attach (table, combo,
@@ -3733,6 +3742,8 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	gboolean has_file, has_directory;
 	GtkLabel *group_label;
 	GtkLabel *owner_label;
+	GtkLabel *execute_label;
+	GtkWidget *value;
 	GtkComboBox *group_combo_box;
 	GtkComboBox *owner_combo_box;
 	guint last_row;
@@ -3749,13 +3760,14 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		gtk_label_set_mnemonic_widget (owner_label,
 					       GTK_WIDGET (owner_combo_box));
 	} else {
-		attach_title_field (page_table, last_row, _("Owner:"));
+		owner_label = attach_title_field (page_table, last_row, _("Owner:"));
 		/* Static text in this case. */
-		attach_value_field (window, 
+		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
 				    _("--"),
 				    FALSE); 
+		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
 	
 	if (has_directory) {
@@ -3781,13 +3793,14 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	} else {
 		last_row = append_title_field (page_table,
 					       _("Group:"),
-					       NULL);
+					       &group_label);
 		/* Static text in this case. */
-		attach_value_field (window, page_table, last_row, 
+		value = attach_value_field (window, page_table, last_row, 
 				    VALUE_COLUMN, 
 				    "group",
 				    _("--"),
 				    FALSE); 
+		gtk_label_set_mnemonic_widget (group_label, value);
 	}
 	
 	if (has_directory) {
@@ -3822,12 +3835,12 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	
 	last_row = append_title_field (page_table,
 				       _("Execute:"),
-				       NULL);
+				       &execute_label);
 	add_permissions_checkbox_with_label (window, page_table,
 					     last_row, 1,
 					     _("Allow _executing file as program"),
 					     GNOME_VFS_PERM_USER_EXEC|GNOME_VFS_PERM_GROUP_EXEC|GNOME_VFS_PERM_OTHER_EXEC,
-					     NULL, FALSE);
+					     execute_label, FALSE);
 	
 }
 
@@ -3951,13 +3964,16 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		gtk_label_set_mnemonic_widget (owner_label,
 					       GTK_WIDGET (owner_combo_box));
 	} else {
-		attach_title_field (page_table, last_row, _("Owner:"));
+		GtkWidget *value;
+
+		owner_label = attach_title_field (page_table, last_row, _("Owner:"));
 		/* Static text in this case. */
-		attach_value_field (window, 
+		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
 				    _("--"),
 				    FALSE); 
+		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
 	
 	if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window))) {

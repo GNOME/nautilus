@@ -1,3 +1,16 @@
+2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(attach_value_field_internal), (attach_value_field),
+	(attach_ellipsizing_value_field), (append_title_value_pair),
+	(append_title_and_ellipsizing_value),
+	(append_directory_contents_fields), (add_permissions_combo_box),
+	(create_simple_permissions), (create_advanced_permissions):
+	Set up proper relationships between labels and widgets in the
+	properties dialog. Fixes #363116.
+
+	Patch from Padraig O'Briain  <padraig.obriain@sun.com>
+
 2006-10-19  Federico Mena Quintero  <federico@novell.com>
 
 	* test/file-torture.py: New file with a little torture test.  It
