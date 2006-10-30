@@ -1,5 +1,13 @@
 2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-extension/nautilus-menu.c: (nautilus_menu_get_items):
+	* libnautilus-private/nautilus-metafile.c: (find_monitor_node):
+	Fix C99-style variable initialization for gcc 2.95. (#348665)
+
+	Patch from Jens Granseuer <jensgr@gmx.net>
+
+2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-property-browser.c: (remove_color),
 	(nautilus_property_browser_remove_element),
 	(element_clicked_callback), (make_properties_from_xml_node):

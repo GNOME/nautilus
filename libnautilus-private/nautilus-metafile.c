@@ -763,8 +763,8 @@ find_monitor_node (GList *monitors,
 	CORBA_exception_init (&ev);
 
 	for (node = monitors; node != NULL; node = node->next) {
-		cur_monitor = node->data;
 		gboolean equivalent;
+		cur_monitor = node->data;
 
 		equivalent = CORBA_Object_is_equivalent (cur_monitor, monitor, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {

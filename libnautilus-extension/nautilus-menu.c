@@ -45,9 +45,11 @@ nautilus_menu_append_item (NautilusMenu *this, NautilusMenuItem *item)
 GList *
 nautilus_menu_get_items (NautilusMenu *this)
 {
+	GList *item_list;
+
 	g_return_val_if_fail (this != NULL, NULL);
 	
-	GList *item_list = g_list_copy (this->private->item_list);
+	item_list = g_list_copy (this->private->item_list);
 	g_list_foreach (item_list, (GFunc)g_object_ref, NULL);
 	
 	return item_list;
