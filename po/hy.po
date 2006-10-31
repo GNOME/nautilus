@@ -10,12 +10,12 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-10-28 17:26+0000\n"
-"PO-Revision-Date: 2005-09-06 17:20+0500\n"
-"Last-Translator: Norayr Chilingaryan\n"
+"PO-Revision-Date: 2006-10-28 18:17-0500\n"
+"Last-Translator: Սահակ Պետրոսյան <petrosyan@gmail.com>\n"
 "Language-Team:  <norik@freenet.am>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 16bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: KBabel 1.9.1\n"
 
@@ -436,8 +436,8 @@ msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"Նախնական պանակի հետին պլանի ֆայլի անուն։ Կիրառվում է միայն, երբ background_set–"
-"ը ճշգրիտ է"
+"Նախնական պանակի հետին պլանի ֆայլի անուն։ Կիրառվում է միայն, երբ "
+"background_set–ը ճշգրիտ է"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid ""
@@ -498,6 +498,7 @@ msgstr ""
 "համար միշտ օգտագործում է տեքստային մուտքագրումներ, հետագծի տողի փոխարեն։"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+#, fuzzy
 msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
@@ -524,8 +525,7 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr ""
-"Եթե ճշգրիտ է, ապա նաուտիլիուսը պատկերում է պատկերակները աշխատասեղանի "
-"վրա։"
+"Եթե ճշգրիտ է, ապա նաուտիլիուսը պատկերում է պատկերակները աշխատասեղանի վրա։"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -968,6 +968,7 @@ msgstr "Տեքստը տեղադրել տվյալների փոխանակությ�
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
 #: ../src/file-manager/fm-directory-view.c:6216
+#, fuzzy
 msgid "Select _All"
 msgstr "Ընտրել ամբողջը _All "
 
@@ -977,10 +978,12 @@ msgid "Select all the text in a text field"
 msgstr "ԸՆտրել տեքստի դաշտի ամբողջ տեքստը։"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:394
+#, fuzzy
 msgid "Move _Up"
 msgstr "Տեղափոխել վերև _Up"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:404
+#, fuzzy
 msgid "Move Dow_n"
 msgstr "Տեղափոխել ներքև Dow_n "
 
@@ -1111,14 +1114,17 @@ msgstr ""
 "ցանկից ընտերել \"Unmount Volume\"–ը՝ հատորն անջատել։ "
 
 #: ../libnautilus-private/nautilus-dnd.c:640
+#, fuzzy
 msgid "_Move here"
-msgstr "_Տեղափոխել այստեղ։"
+msgstr "_Տեղափոխել այստեղ"
 
 #: ../libnautilus-private/nautilus-dnd.c:645
+#, fuzzy
 msgid "_Copy here"
 msgstr "_Պատճենել այստեղ"
 
 #: ../libnautilus-private/nautilus-dnd.c:650
+#, fuzzy
 msgid "_Link here"
 msgstr "_Հղել այստեղ"
 
@@ -1447,22 +1453,23 @@ msgid "Unable to Replace File"
 msgstr "Չի հաջողվել ֆայլը փոխարինել։"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1102
-#, c-format
+#, fuzzy, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
 msgstr "\"%s\" պանակն արդեն գոյություն ունի։ Ցանկանու՞մ եք փոխարինել այն։"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1105
-#, c-format
+#, fuzzy, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "\"%s\" ֆայլը արդեն գույություւն ունի։ Ցանկանու՞մ եք փոխարինել այն։ "
 
 #: ../libnautilus-private/nautilus-file-operations.c:1113
+#, fuzzy
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
 msgstr ""
-"Եթե դուք փոխարինեք գոյություն ունեցող պանակը, այն ֆայլերը, որոնք կոնֆլիկտի "
-"մեջ են պատճենված ֆայլերի հետ պետք է կրկին գրվեն։"
+"Եթե դուք փոխարինեք գոյություն ունեցող ֆայլը, դրա պարունակությունը պետք է "
+"կրկին գրել։"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1115
 msgid "If you replace an existing file, its contents will be overwritten."
@@ -1865,7 +1872,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2679
 msgid "_Empty Trash"
-msgstr "_Empty Trash Թափոն զամբյուղը դատարկել"
+msgstr "_Աղբը դատարկել"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:480
 #: ../libnautilus-private/nautilus-global-preferences.c:512
@@ -2110,21 +2117,21 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file.c:4743
 msgid "link"
-msgstr "Հղում"
+msgstr "հղում"
 
 #: ../libnautilus-private/nautilus-file.c:4763
 msgid "link (broken)"
-msgstr "Հղում (կոտրված)"
+msgstr "հղում (կոտրված)"
 
 #: ../libnautilus-private/nautilus-file.c:6195
 #: ../libnautilus-private/nautilus-global-preferences.c:518
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
-msgstr "Թափոն զամբյուղ"
+msgstr "Աղբ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:70
 msgid "_Always"
-msgstr "_Always միշտ"
+msgstr "_Միշտ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:71
 msgid "_Local File Only"
@@ -2132,7 +2139,7 @@ msgstr "_Local File Only միայն տեղային ֆայլերը"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:72
 msgid "_Never"
-msgstr "_Never երբեք"
+msgstr "_Երբեք"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:78
 #: ../src/nautilus-file-management-properties.glade.h:14
@@ -2305,7 +2312,7 @@ msgstr "18"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:169
 msgid "20"
-msgstr ""
+msgstr "20"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:170
 msgid "22"
@@ -2326,7 +2333,7 @@ msgstr "24"
 #: ../libnautilus-private/nautilus-global-preferences.c:506
 #, c-format
 msgid "%s's Home"
-msgstr "%s–ի սեփական տուն։"
+msgstr "%s-ի տունը"
 
 #: ../libnautilus-private/nautilus-icon-container.c:2116
 msgid "The selection rectangle"
@@ -2374,8 +2381,9 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-program-choosing.c:150
 #: ../libnautilus-private/nautilus-program-choosing.c:183
+#, fuzzy
 msgid "Can't Open Location"
-msgstr ""
+msgstr "Բացել տեղակայությունը"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:169
 #, c-format
@@ -2899,7 +2907,7 @@ msgid "Open with \"%s\""
 msgstr "Բացել \"%s\"–ով"
 
 #: ../src/file-manager/fm-directory-view.c:3976
-#, c-format
+#, fuzzy, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Օգտագործել \"%s\" ընտրված տարրը բացելու համար"
 
@@ -2976,8 +2984,7 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Ցանկից ընտրելով սցենարները այդ սցենարը կգործարկվի որևէ այլ ընտրված տարրի "
-"հետ "
+"Ցանկից ընտրելով սցենարները այդ սցենարը կգործարկվի որևէ այլ ընտրված տարրի հետ "
 
 #: ../src/file-manager/fm-directory-view.c:5319
 msgid "About Scripts"
@@ -3067,9 +3074,8 @@ msgid "Link _name:"
 msgstr "Հղում _անուն:"
 
 #: ../src/file-manager/fm-directory-view.c:6140
-#, fuzzy
 msgid "Create _Document"
-msgstr "Նոր փաստաթուղթ կերտելիս սխալ է կատարվել։"
+msgstr "Ստեղծել _Փաստաթուղթ"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6141
@@ -3248,7 +3254,7 @@ msgstr "Կերտել սիմվոլիկ հղում յուրաքանչյուր ըն
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6232
 msgid "_Rename..."
-msgstr "—Վերանվանել"
+msgstr "_Վերանվանել..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6233
@@ -3445,6 +3451,7 @@ msgid "Delete all selected items permanently"
 msgstr "Բոլոր ընտրված տարրերը շարունակաբար հեռացնել"
 
 #: ../src/file-manager/fm-directory-view.c:7210
+#, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Հղումը կոտրված է, դուք ցանկանու՞մ եք տեղափոխել այն թափոն զամբյուղի մեջ"
 
@@ -3767,8 +3774,8 @@ msgstr "Դասավո_րել ըստ անվան"
 #: ../src/file-manager/fm-icon-view.c:1410
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
-"Պատկերակները վերադասավորել դրանք պատուհանների մեջ տեղավորելու և "
-"համընկնումից խուսափելու համար"
+"Պատկերակները վերադասավորել դրանք պատուհանների մեջ տեղավորելու և համընկնումից "
+"խուսափելու համար"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1416
@@ -4077,6 +4084,7 @@ msgid "Accessed:"
 msgstr "Մատչելի"
 
 #: ../src/file-manager/fm-properties-window.c:2396
+#, fuzzy
 msgid "_Select Custom Icon..."
 msgstr "_Ընտրել գործարկողի պատկերակ"
 
@@ -4422,6 +4430,7 @@ msgid "Can't Connect to Server"
 msgstr "Չի հաջողվել միանալ սերվերին"
 
 #: ../src/nautilus-connect-server-dialog.c:158
+#, fuzzy
 msgid "You must enter a name for the server."
 msgstr "Դուք պետք է մուտքագրեք սերվերի անունը"
 
@@ -4740,8 +4749,9 @@ msgid "List Columns"
 msgstr "Սյունակների ցանկ"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
+#, fuzzy
 msgid "Local Files Only"
-msgstr "Միայն տեղային ֆայլեր"
+msgstr "_Local File Only միայն տեղային ֆայլերը"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "MIME type"
@@ -5104,8 +5114,7 @@ msgstr "նաուտիլիուս. ––check չի կարող օգտագործվե
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
-"նաուտիլիուս. ––geometry չի կարող օգտագործվել ավելի քան մեկ URI–ների "
-"հետ\n"
+"նաուտիլիուս. ––geometry չի կարող օգտագործվել ավելի քան մեկ URI–ների հետ\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
@@ -5349,6 +5358,7 @@ msgid "Couldn't Delete Emblem"
 msgstr "Չի հաջողվել ոչնչացնել էմբլեմը"
 
 #: ../src/nautilus-property-browser.c:1030
+#, fuzzy
 msgid "Create a New Emblem:"
 msgstr "Կերտել նոր էմբլեմ"
 
@@ -5363,6 +5373,7 @@ msgid "_Image:"
 msgstr "_Պատկեր"
 
 #: ../src/nautilus-property-browser.c:1065
+#, fuzzy
 msgid "Select an image file for the new emblem:"
 msgstr "Նոր էմբեմի համար ընտրել պատկեր ֆայլ"
 
@@ -5417,6 +5428,7 @@ msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Ներողություն, %s նմուշը անհնար է տեղակայել"
 
 #: ../src/nautilus-property-browser.c:1221
+#, fuzzy
 msgid "Select an image file to add as a pattern"
 msgstr "Ընտրել պատկերի ֆայլ ավելացնելու համար նմուշին"
 
@@ -5442,6 +5454,7 @@ msgstr ""
 "Ներողություն, դուք պետք է մասնավորեցնեք ոչ–դատարկ անուն նոր գույնի համար"
 
 #: ../src/nautilus-property-browser.c:1358
+#, fuzzy
 msgid "Select a color to add"
 msgstr "Ընտրել գույնը ավելացնելու համար"
 
@@ -5630,6 +5643,7 @@ msgid "Go to the location specified by this bookmark"
 msgstr "Գնալ այս էջանշանի մասնավորեցրած տեղակայությունը"
 
 #: ../src/nautilus-window-menus.c:414
+#, fuzzy
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify \n"
 "it under the terms of the GNU General Public License as published by \n"
@@ -5644,6 +5658,7 @@ msgstr ""
 "ցանկացած այլ ավելի նոր տարբերակ  "
 
 #: ../src/nautilus-window-menus.c:418
+#, fuzzy
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, \n"
 "but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
@@ -5655,6 +5670,7 @@ msgstr ""
 "Մանրամասների համար տես GNU General Public License "
 
 #: ../src/nautilus-window-menus.c:422
+#, fuzzy
 msgid ""
 "You should have received a copy of the GNU General Public License \n"
 "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
@@ -5673,13 +5689,15 @@ msgstr ""
 "և ձեր մնացած համակարգի կառավարումը"
 
 #: ../src/nautilus-window-menus.c:455
+#, fuzzy
 msgid "Copyright © 1999-2005 The Nautilus authors"
-msgstr "Հեղինակային իրավունք © 1999-2005 Նաուտիլիուսի հեղինակներ "
+msgstr "Հեղինակային իրավունք © 1999-2006 Նաուտիլիուսի հեղինակներ "
 
 #: ../src/nautilus-window-menus.c:460
 msgid "translator-credits"
-msgstr "Ruzanna Khachatryan <ruzannak@hotmail.com>"
-"Norayr Chilingaryan <norik@freenet.am>"
+msgstr ""
+"Ruzanna Khachatryan <ruzannak@hotmail.com>Norayr Chilingaryan <norik@freenet."
+"am>"
 
 #: ../src/nautilus-window-menus.c:600
 msgid "_File"
@@ -5905,68 +5923,163 @@ msgstr "Ցանցի սերվեր"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Ցույց տալ ձեր ցանցի սերվերները նաուտիլիուսի ֆայլ մենեջերի մեջ"
 
-#~ msgid "Art"
-#~ msgstr "Արվեստ"
+msgid "Art"
+msgstr "Արվեստ"
 
-#~ msgid "Camera"
-#~ msgstr "Կամերա"
+msgid "Camera"
+msgstr "Կամերա"
 
-#~ msgid "Certified"
-#~ msgstr "Վավերացված կամ երաշխավորված"
+msgid "Certified"
+msgstr "Վավերացված կամ երաշխավորված"
 
-#~ msgid "Cool"
-#~ msgstr "Սառը"
+msgid "Cool"
+msgstr "Սառը"
 
-#~ msgid "Danger"
-#~ msgstr "Վտանգ"
+msgid "Danger"
+msgstr "Վտանգ"
 
-#~ msgid "Distinguished"
-#~ msgstr "Նշանավոր"
+msgid "Distinguished"
+msgstr "Նշանավոր"
 
-#~ msgid "Documents"
-#~ msgstr "Փաստաթղթեր"
+msgid "Documents"
+msgstr "Փաստաթղթեր"
 
-#~ msgid "Draft"
-#~ msgstr "Նախագիծ"
+msgid "Draft"
+msgstr "Նախագիծ"
 
-#~ msgid "Favorite"
-#~ msgstr "Նախընտրելի կամ սիրելի"
+msgid "Favorite"
+msgstr "Նախընտրելի կամ սիրելի"
 
-#~ msgid "Important"
-#~ msgstr "Կարևոր"
+msgid "Important"
+msgstr "Կարևոր"
 
-#~ msgid "Mail"
-#~ msgstr "Փոստ"
+msgid "Mail"
+msgstr "Փոստ"
 
-#~ msgid "Multimedia"
-#~ msgstr "Մուլտիմեդիա"
+msgid "Multimedia"
+msgstr "Մուլտիմեդիա"
 
-#~ msgid "New"
-#~ msgstr "Նոր"
+msgid "New"
+msgstr "Նոր"
 
-#~ msgid "OK"
-#~ msgstr "Օքեյ"
+msgid "OK"
+msgstr "Օքեյ"
 
-#~ msgid "Oh No"
-#~ msgstr "Օ ոչ"
+msgid "Oh No"
+msgstr "Օ ոչ"
 
-#~ msgid "Package"
-#~ msgstr "Փաթեթ"
+msgid "Package"
+msgstr "Փաթեթ"
 
-#~ msgid "Personal"
-#~ msgstr "Անհատական"
+msgid "Personal"
+msgstr "Անհատական"
 
-#~ msgid "Pictures"
-#~ msgstr "Նկարներ"
+#, fuzzy
+msgid "Pictures"
+msgstr "Նկար"
 
-#~ msgid "Sound"
-#~ msgstr "Հնչյուն"
+msgid "Sound"
+msgstr "Հնչյուն"
 
-#~ msgid "Special"
-#~ msgstr "Հատուկ"
+msgid "Special"
+msgstr "Հատուկ"
 
-#~ msgid "Urgent"
-#~ msgstr "Հրատապ"
+msgid "Urgent"
+msgstr "Հրատապ"
 
-#~ msgid "Web"
-#~ msgstr "Սարդոստայն"
+msgid "Web"
+msgstr "Սարդոստայն"
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+#, fuzzy
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+#, fuzzy
+
+
+#, fuzzy
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+#, fuzzy
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+
+#, fuzzy
+
+#, fuzzy
+
+#, fuzzy
+
+
+#, fuzzy
+
+#, fuzzy
+
+
+
+
+
+#, fuzzy
