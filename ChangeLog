@@ -1,3 +1,10 @@
+2006-10-31  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-icon-view.c (fm_icon_view_remove_file):
+	Remove assert that keep randomly failing to fix crash (#352592)
+	Replace it with some debug output that hopefully lets us
+	track down the cause.
+	
 2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-extension/nautilus-menu.c: (nautilus_menu_get_items):

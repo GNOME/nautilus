@@ -500,7 +500,26 @@ should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 static void
 fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
-	g_assert (directory == fm_directory_view_get_model (view));
+	/* This used to assert that 'directory == fm_directory_view_get_model (view)', but that
+	 * resulted in a lot of crash reports (bug #352592). I don't see how that trace happens.
+	 * It seems that somehow we get a files_changed event sent to the view from a directory
+	 * that isn't the model, but the code disables the monitor and signal callback handlers when
+	 * changing directories. Maybe we can get some more information when this happens.
+	 * Further discussion in bug #368178.
+	 */
+	if (directory != fm_directory_view_get_model (view)) {
+		char *file_uri, *dir_uri, *model_uri;
+		file_uri = nautilus_file_get_uri (file);
+		dir_uri = nautilus_directory_get_uri (directory);
+		model_uri = nautilus_directory_get_uri (fm_directory_view_get_model (view));
+		g_warning ("fm_icon_view_remove_file() - directory not icon view model, shouldn't happen.\n"
+			   "file: %p:%s, dir: %p:%s, model: %p:%s, view loading: %d\n"
+			   "If you see this, please add this info to http://bugzilla.gnome.org/show_bug.cgi?id=368178",
+			   file, file_uri, directory, dir_uri, fm_directory_view_get_model (view), model_uri, fm_directory_view_get_loading (view));
+		g_free (file_uri);
+		g_free (dir_uri);
+		g_free (model_uri);
+	}
 	
 	if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
 					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
