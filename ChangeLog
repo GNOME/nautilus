@@ -1,3 +1,11 @@
+2006-11-01  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-model.c:
+	Always emit the row-deleted signal before deleting the row
+	from the model. This is according to the GtkTreeModel::row-changed
+	docs and feedback from kris.
+	Hopefully this will fix bug #356672
+
 2006-10-31  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-icon-view.c (fm_icon_view_remove_file):

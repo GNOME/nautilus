@@ -86,7 +86,7 @@ struct TreeNode {
 
 	/* misc. flags */
 	guint done_loading : 1;
-	guint inserting_first_child : 1;
+	guint force_has_dummy : 1;
 	guint inserted : 1;
 };
 
@@ -398,7 +398,7 @@ tree_node_has_dummy_child (TreeNode *node)
 	return (node->directory != NULL
 		&& (!node->done_loading
 		    || node->first_child == NULL
-		    || node->inserting_first_child)) ||
+		    || node->force_has_dummy)) ||
 		/* Roots always have dummy nodes if directory isn't loaded yet */
 		(node->directory == NULL && node->parent == NULL);
 }
@@ -613,15 +613,14 @@ report_dummy_row_deleted (FMTreeModel *model, TreeNode *parent)
 	GtkTreeIter iter;
 	GtkTreePath *path;
 
-	abandon_dummy_row_ref_count (model, parent);
-	if (!parent->inserted) {
-		return;
+	if (parent->inserted) {
+		make_iter_for_node (parent, &iter, model->details->stamp);
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+		gtk_tree_path_append_index (path, 0);
+		gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+		gtk_tree_path_free (path);
 	}
-	make_iter_for_node (parent, &iter, model->details->stamp);
-	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-	gtk_tree_path_append_index (path, 0);
-	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
-	gtk_tree_path_free (path);
+	abandon_dummy_row_ref_count (model, parent);
 }
 
 static void
@@ -733,10 +732,11 @@ destroy_node (FMTreeModel *model, TreeNode *node)
 
 	path = get_node_path (model, node);
 
-	destroy_node_without_reporting (model, node);
-
+	/* Report row_deleted before actually deleting */
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
+	
+	destroy_node_without_reporting (model, node);
 
 	if (tree_node_has_dummy_child (parent)) {
 		if (!parent_had_dummy_child) {
@@ -812,7 +812,8 @@ insert_node (FMTreeModel *model, TreeNode *parent, TreeNode *node)
 
 	parent_empty = parent->first_child == NULL;
 	if (parent_empty) {
-		parent->inserting_first_child = TRUE;
+		/* Make sure the dummy lives as we insert the new row */
+		parent->force_has_dummy = TRUE;
 	}
 
 	tree_node_parent (node, parent);
@@ -821,9 +822,13 @@ insert_node (FMTreeModel *model, TreeNode *parent, TreeNode *node)
 	report_node_inserted (model, node);
 
 	if (parent_empty) {
-		parent->inserting_first_child = FALSE;
+		parent->force_has_dummy = FALSE;
 		if (!tree_node_has_dummy_child (parent)) {
+			/* Temporarily set this back so that row_deleted is
+			 * sent before actually removing the dummy child */
+			parent->force_has_dummy = TRUE;
 			report_dummy_row_deleted (model, parent);
+			parent->force_has_dummy = FALSE;
 		}
 	}
 }
@@ -842,11 +847,12 @@ reparent_node (FMTreeModel *model, TreeNode *node)
 
 	path = get_node_path (model, node);
 
-	abandon_node_ref_count (model, node);
-	tree_node_unparent (model, node);
-
+	/* Report row_deleted before actually deleting */
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
+	
+	abandon_node_ref_count (model, node);
+	tree_node_unparent (model, node);
 
 	insert_node (model, new_parent, node);
 }
@@ -910,7 +916,11 @@ update_node (FMTreeModel *model, TreeNode *node)
 		if (has_dummy_child) {
 			report_dummy_row_inserted (model, node);
 		} else {
+			/* Temporarily set this back so that row_deleted is
+			 * sent before actually removing the dummy child */
+			node->force_has_dummy = TRUE;
 			report_dummy_row_deleted (model, node);
+			node->force_has_dummy = FALSE;
 		}
 	}
 	if (had_directory != has_directory) {
@@ -982,7 +992,11 @@ set_done_loading (FMTreeModel *model, TreeNode *node, gboolean done_loading)
 		}
 	} else {
 		if (had_dummy) {
+			/* Temporarily set this back so that row_deleted is
+			 * sent before actually removing the dummy child */
+			node->force_has_dummy = TRUE;
 			report_dummy_row_deleted (model, node);
+			node->force_has_dummy = FALSE;
 		} else {
 			g_assert_not_reached ();
 		}
@@ -1609,6 +1623,10 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 		nautilus_file_monitor_remove (node->file, model);
 		path = get_node_path (model, node);
 
+		/* Report row_deleted before actually deleting */
+		gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+		gtk_tree_path_free (path);
+		
 		if (node->prev) {
 			node->prev->next = node->next;
 		}
@@ -1624,8 +1642,6 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 		destroy_node_without_reporting (model, node);
 		g_hash_table_destroy (root->file_to_node_map);
 		g_free (root);
-		gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
-		gtk_tree_path_free (path);
 	}
 }
 
