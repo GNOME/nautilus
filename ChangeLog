@@ -1,3 +1,10 @@
+2006-11-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-private.h: 
+	* libnautilus-private/nautilus-directory-async.c:
+	Call all call_when_ready callbacks from an idle handler.
+	This fixes problems with reentrancy, like bug #348161
+
 2006-11-01  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-tree-model.c:

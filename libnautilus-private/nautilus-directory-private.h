@@ -62,6 +62,7 @@ struct NautilusDirectoryDetails
 	 */
 	GList *call_when_ready_list;
 	GList *monitor_list;
+	guint call_ready_idle_id;
 
 	NautilusMonitor *monitor;
 	gulong 		 mime_db_monitor;

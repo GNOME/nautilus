@@ -85,6 +85,11 @@ typedef struct {
 	} callback;
 	gpointer callback_data;
 	Request request;
+	gboolean active; /* Set to FALSE when the callback is triggered and
+			  * scheduled to be called at idle, its still kept
+			  * in the list so we can kill it when the file
+			  * goes away.
+			  */
 } ReadyCallback;
 
 typedef struct {
@@ -143,6 +148,7 @@ static void     move_file_to_extension_queue    (NautilusDirectory *directory,
 						 NautilusFile      *file);
 static void     nautilus_directory_invalidate_file_attributes (NautilusDirectory      *directory,
 							       NautilusFileAttributes  file_attributes);
+static void     unschedule_call_ready_callbacks (NautilusDirectory *directory);
 
 
 void
@@ -1076,7 +1082,7 @@ is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 
 	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->request.metafile) {
+		if (callback->active && callback->request.metafile) {
 			return TRUE;
 		}
 	}
@@ -1197,6 +1203,7 @@ ready_callback_key_compare (gconstpointer a, gconstpointer b)
 
 	callback_a = a;
 	callback_b = b;
+
 	if (callback_a->file < callback_b->file) {
 		return -1;
 	}
@@ -1231,6 +1238,21 @@ ready_callback_key_compare (gconstpointer a, gconstpointer b)
 		return 1;
 	}
 	return 0;
+}
+
+static int
+ready_callback_key_compare_only_active (gconstpointer a, gconstpointer b)
+{
+	const ReadyCallback *callback_a;
+
+	callback_a = a;
+
+	/* Non active callbacks never match */
+	if (!callback_a->active) {
+		return -1;
+	}
+
+	return ready_callback_key_compare (a, b);
 }
 
 static void
@@ -1277,6 +1299,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	g_assert (file != NULL || directory_callback != NULL);
 	
 	/* Construct a callback object. */
+	callback.active = TRUE;
 	callback.file = file;
 	if (file == NULL) {
 		callback.callback.directory = directory_callback;
@@ -1296,7 +1319,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	/* Check if the callback is already there. */
 	if (g_list_find_custom (directory->details->call_when_ready_list,
 				&callback,
-				ready_callback_key_compare) != NULL) {
+				ready_callback_key_compare_only_active) != NULL) {
 		if (file_callback != NULL && directory_callback != NULL) {
 			g_warning ("tried to add a new callback while an old one was pending");
 		}
@@ -1385,17 +1408,19 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 	}
 	callback.callback_data = callback_data;
 
-	/* Remove queued callback from the list. */
-	node = g_list_find_custom (directory->details->call_when_ready_list,
-				&callback,
-				ready_callback_key_compare);
-	if (node != NULL) {
-		remove_callback_link (directory, node);
-		/* When we change the ready list we need to sync up metadata monitors. */
-		update_metadata_monitors (directory);
-		
-		nautilus_directory_async_state_changed (directory);
-	}
+	/* Remove all queued callback from the list (including non-active). */
+	do {
+		node = g_list_find_custom (directory->details->call_when_ready_list,
+					   &callback,
+					   ready_callback_key_compare);
+		if (node != NULL) {
+			remove_callback_link (directory, node);
+			/* When we change the ready list we need to sync up metadata monitors. */
+			update_metadata_monitors (directory);
+			
+			nautilus_directory_async_state_changed (directory);
+		}
+	} while (node != NULL);
 }
 
 static guint
@@ -1522,6 +1547,8 @@ nautilus_async_destroying_file (NautilusFile *file)
 	directory = file->details->directory;
 	changed = FALSE;
 
+	unschedule_call_ready_callbacks (directory);
+	
 	/* Check for callbacks. */
 	for (node = directory->details->call_when_ready_list; node != NULL; node = next) {
 		next = node->next;
@@ -1529,7 +1556,9 @@ nautilus_async_destroying_file (NautilusFile *file)
 
 		if (callback->file == file) {
 			/* Client should have cancelled callback. */
-			g_warning ("destroyed file has call_when_ready pending");
+			if (callback->active) {
+				g_warning ("destroyed file has call_when_ready pending");
+			}
 			remove_callback_link (directory, node);
 			changed = TRUE;
 		}
@@ -1824,40 +1853,92 @@ request_is_satisfied (NautilusDirectory *directory,
 }
 
 static gboolean
-call_ready_callbacks (NautilusDirectory *directory)
+call_ready_callbacks_at_idle (gpointer callback_data)
 {
-	gboolean called_any;
+	NautilusDirectory *directory;
 	GList *node, *next;
 	ReadyCallback *callback;
 
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	directory->details->call_ready_idle_id = 0;
+
 	callback = NULL;
-	called_any = FALSE;
 	while (1) {
-		/* Check if any callbacks are satisifed and call them if they are. */
+		/* Check if any callbacks are non-active and call them if they are. */
 		for (node = directory->details->call_when_ready_list;
 		     node != NULL; node = next) {
 			next = node->next;
 			callback = node->data;
-			if (request_is_satisfied (directory, callback->file, &callback->request)) {
+			if (!callback->active) {
+				/* Non-active, remove and call */
 				break;
 			}
 		}
 		if (node == NULL) {
-			if (called_any) {
-				/* When we change the ready list we need to sync up metadata monitors. */
-				update_metadata_monitors (directory);
-			}
-			return called_any;
+			break;
 		}
-		
+
 		/* Callbacks are one-shots, so remove it now. */
 		remove_callback_link_keep_data (directory, node);
 		
 		/* Call the callback. */
 		ready_callback_call (directory, callback);
 		g_free (callback);
-		called_any = TRUE;
 	}
+
+	
+	return FALSE;
+}
+
+static void
+schedule_call_ready_callbacks (NautilusDirectory *directory)
+{
+	if (directory->details->call_ready_idle_id == 0) {
+		directory->details->call_ready_idle_id
+			= g_idle_add (call_ready_callbacks_at_idle, directory);
+	}
+}
+
+static void
+unschedule_call_ready_callbacks (NautilusDirectory *directory)
+{
+	if (directory->details->call_ready_idle_id != 0) {
+		g_source_remove (directory->details->call_ready_idle_id);
+		directory->details->call_ready_idle_id = 0;
+	}
+}
+
+/* Marks all callbacks that are ready as non-active and
+ * calls them at idle time, unless they are removed
+ * before then */
+static gboolean
+call_ready_callbacks (NautilusDirectory *directory)
+{
+	gboolean found_any;
+	GList *node, *next;
+	ReadyCallback *callback;
+
+	found_any = FALSE;
+	
+	/* Check if any callbacks are satisifed and mark them for call them if they are. */
+	for (node = directory->details->call_when_ready_list;
+	     node != NULL; node = next) {
+		next = node->next;
+		callback = node->data;
+		if (callback->active &&
+		    request_is_satisfied (directory, callback->file, &callback->request)) {
+			callback->active = FALSE;
+			found_any = TRUE;
+		}
+	}
+	
+	if (found_any) {
+		/* When we change the ready list we need to sync up metadata monitors. */
+		update_metadata_monitors (directory);
+		schedule_call_ready_callbacks (directory);
+	}
+	
+	return found_any;
 }
 
 /* This checks if there's a request for monitoring the file list. */
@@ -1871,7 +1952,7 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 	for (node = directory->details->call_when_ready_list;
 	     node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->request.file_list) {
+		if (callback->active && callback->request.file_list) {
 			return TRUE;
 		}
 	}
@@ -2176,7 +2257,8 @@ is_needy (NautilusFile *file,
 	for (node = directory->details->call_when_ready_list;
 	     node != NULL; node = node->next) {
 		callback = node->data;
-		if ((* check_wanted) (&callback->request)) {
+		if (callback->active &&
+		    (* check_wanted) (&callback->request)) {
 			if (callback->file == file) {
 				return TRUE;
 			}
