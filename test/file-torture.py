@@ -259,7 +259,7 @@ def main ():
         op = operations [random_gen.randrange (len (operations))]
         op ()
         if sleep_enabled:
-            time.sleep (random_gen.random () / 10)
+            time.sleep (random_gen.random () / 100)
 
     return 0
 
