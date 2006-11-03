@@ -1,3 +1,28 @@
+2006-11-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	Always use the in-process metafile factory. We don't need it
+	oop, since nautilus is single process these days. This fixes
+	some strange races with bonobo-activation that caused #351713
+	
+	* src/nautilus-application.[ch]:
+	* src/nautilus-shell.h:
+	Change the way we use bonobo-activation to get the NautilusShell
+	so that we don't rely on bonobo-activation-server to spawn nautilus,
+	as this could lead to some strange duplicate processes.
+	We now directly try to register the app-wide shell object with
+	bonobo-activation manually and activate it with
+	Bonobo_ACTIVATION_FLAG_EXISTING_ONLY.
+	
+	* src/nautilus-shell.c:
+	Handle all corba calls from the NautilusShell in an idle handler.
+	This fixes some crashes where we reentered badly into e.g. quit
+	when calling gconf.
+	
+	* src/nautilus-main.c:
+	Since we now handle the initial open_window shell calls via an idle
+	we need to delay until idle time to know if we can quit or not.
+
 2006-11-02  Alexander Larsson  <alexl@redhat.com>
 
 	* test/file-torture.py (main):

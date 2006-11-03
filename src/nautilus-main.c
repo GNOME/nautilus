@@ -108,6 +108,15 @@ event_loop_unregister (GtkObject *object)
 	}
 }
 
+static gboolean
+initial_event_loop_needed (gpointer data)
+{
+	if (!is_event_loop_needed ()) {
+		eel_gtk_main_quit_all ();
+	}
+	return FALSE;
+}
+
 void
 nautilus_main_event_loop_register (GtkObject *object)
 {
@@ -367,9 +376,11 @@ main (int argc, char *argv[])
 			 remaining);
 		g_free (startup_id_copy);
 
-		if (is_event_loop_needed ()) {
-			gtk_main ();
-		}
+		/* The application startup does things in an idle, so
+		   we need to check whether the main loop is needed in an idle
+		*/
+		g_idle_add (initial_event_loop_needed, NULL);
+		gtk_main ();
 	}
 
 	/* This has to be done before gnome_vfs_shutdown, because

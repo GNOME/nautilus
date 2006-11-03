@@ -49,9 +49,13 @@ typedef struct NautilusWindow NautilusWindow;
 typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
 #endif
 
+typedef struct NautilusShell NautilusShell;
+
 typedef struct {
 	BonoboGenericFactory parent;
 	NautilusUndoManager *undo_manager;
+	NautilusShell *shell;
+	gboolean shell_registered;
 } NautilusApplication;
 
 typedef struct {

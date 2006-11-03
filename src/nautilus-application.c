@@ -172,6 +172,8 @@ nautilus_application_instance_init (NautilusApplication *application)
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 
+	application->shell = nautilus_shell_new (application);
+	
 	/* Watch for volume mounts so we can restore open windows
 	 * This used to be for showing new window on mount, but is not
 	 * used anymore */
@@ -225,6 +227,11 @@ nautilus_application_destroy (BonoboObject *object)
 	nautilus_bookmarks_exiting ();
 	
 	g_object_unref (application->undo_manager);
+
+	if (application->shell_registered) {
+		bonobo_activation_unregister_active_server (SHELL_IID, BONOBO_OBJREF (application->shell));
+	}
+	bonobo_object_unref (application->shell);
 
 	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
 }
@@ -517,12 +524,16 @@ nautilus_application_startup (NautilusApplication *application,
 	while (TRUE) {
 		/* Try to register the file manager view factory. */
 		result = nautilus_bonobo_activation_register_for_display
-			(FACTORY_IID, BONOBO_OBJREF (application));
+			(SHELL_IID, BONOBO_OBJREF (application->shell));
 
 		switch (result) {
 		case Bonobo_ACTIVATION_REG_SUCCESS:
 			/* We are registered and all is right with the world. */
+			application->shell_registered = TRUE;
 			finish_startup (application);
+			message = NULL;
+			detailed_message = NULL;
+			break;
 		case Bonobo_ACTIVATION_REG_ALREADY_ACTIVE:
 			/* Another copy of nautilus already is running and registered. */
 			message = NULL;
@@ -583,7 +594,7 @@ nautilus_application_startup (NautilusApplication *application,
 
 		/* Get the shell object. */
 		if (message == NULL) {
-			shell = bonobo_activation_activate_from_id (SHELL_IID, 0, NULL, NULL);
+			shell = bonobo_activation_activate_from_id (SHELL_IID, Bonobo_ACTIVATION_FLAG_EXISTING_ONLY, NULL, NULL);
 			if (!CORBA_Object_is_nil (shell, &ev)) {
 				break;
 			}
@@ -665,16 +676,6 @@ nautilus_application_startup (NautilusApplication *application,
 		
 		/* Add ourselves to the session */
 		init_session ();
-	}
-
-	/* We're done with the shell now, so let it go. */
-	/* HACK: Don't bother releasing the shell in the case where we
-	 * just told it to quit -- that just leads to hangs and does
-	 * no good. We could probably fix this in some fancier way if
-	 * we could figure out a better lifetime rule.
-	 */
-	if (!(kill_shell || restart_shell)) {
-		bonobo_object_release_unref (shell, NULL);
 	}
 
  out:

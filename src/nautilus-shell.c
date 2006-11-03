@@ -171,6 +171,44 @@ open_window (NautilusShell *shell, const char *uri, const char *startup_id,
 	}
 }
 
+typedef struct {
+	NautilusShell *shell;
+	char *startup_id;
+	char *geometry;
+	GList *uris;
+	gboolean browser_window;
+} OpenWindowData;
+
+static gboolean
+open_windows_at_idle (gpointer _data)
+{
+	OpenWindowData *data = _data;
+	char *uri;
+	GList *l;
+
+	if (data->uris == NULL) {
+		if (!restore_window_states (data->shell)) {
+			/* Open a window pointing at the default location. */
+			open_window (data->shell, NULL, data->startup_id,
+				     data->geometry, data->browser_window);
+		}
+	} else {
+		/* Open windows at each requested location. */
+		for (l = data->uris; l != NULL; l = l->next) {
+			uri = (char *)l->data;
+			open_window (data->shell, uri, data->startup_id,
+				     data->geometry, data->browser_window);
+			g_free (uri);
+		}
+	}
+
+	g_free (data->startup_id);
+	g_free (data->geometry);
+	g_list_free (data->uris);
+	g_free (data);
+	return FALSE;
+}
+
 static void
 corba_open_windows (PortableServer_Servant servant,
 		    const Nautilus_URIList *list,
@@ -179,16 +217,25 @@ corba_open_windows (PortableServer_Servant servant,
 		    CORBA_boolean browser_window,
 		    CORBA_Environment *ev)
 {
-	NautilusShell *shell;
+	OpenWindowData *data;
 	guint i;
 
-	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+	data = g_new0 (OpenWindowData, 1);
+	
+	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+	data->startup_id = g_strdup (startup_id);
+	data->geometry = g_strdup (geometry);
+	data->browser_window = browser_window;
 
-	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
 		g_assert (list->_buffer[i] != NULL);
-		open_window (shell, list->_buffer[i], startup_id, geometry, browser_window);
+		data->uris = g_list_prepend (data->uris,
+					     g_strdup (list->_buffer[i]));
 	}
+	data->uris = g_list_reverse (data->uris);
+
+	g_idle_add (open_windows_at_idle, data);
+	
 }
 
 static void
@@ -198,14 +245,35 @@ corba_open_default_window (PortableServer_Servant servant,
 			   CORBA_boolean browser_window,
 			   CORBA_Environment *ev)
 {
+	OpenWindowData *data;
+
+	data = g_new0 (OpenWindowData, 1);
+	
+	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+	data->startup_id = g_strdup (startup_id);
+	data->geometry = g_strdup (geometry);
+	data->browser_window = browser_window;
+
+	g_idle_add (open_windows_at_idle, data);
+}
+
+typedef struct {
 	NautilusShell *shell;
+	char *filename;
+} LoadSessionData;
 
-	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+static gboolean
+load_session_at_idle (gpointer _data)
+{
+	NautilusApplication *application;
+	LoadSessionData *data = _data;
 
-	if (!restore_window_states (shell)) {
-		/* Open a window pointing at the default location. */
-		open_window (shell, NULL, startup_id, geometry, browser_window);
-	}
+	application = NAUTILUS_APPLICATION (data->shell->details->application);
+	nautilus_application_load_session (application, data->filename);
+	
+	g_free (data->filename);
+	g_free (data);
+	return FALSE;
 }
 
 static void
@@ -213,40 +281,72 @@ corba_load_session (PortableServer_Servant servant,
 		    const CORBA_char *filename,
 		    CORBA_Environment *ev)
 {
-	NautilusShell	      *shell;
-	NautilusApplication   *application;
+	LoadSessionData *data;
 
-	shell	    = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
-	application = NAUTILUS_APPLICATION (shell->details->application);
-	
-	nautilus_application_load_session (application, filename);
+	data = g_new0 (LoadSessionData, 1);
+	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+	data->filename = g_strdup (filename);
+
+	g_idle_add (load_session_at_idle, data);
 }
+
+typedef struct {
+	NautilusShell *shell;
+} StartDesktopData;
+
+static gboolean
+start_desktop_at_idle (gpointer _data)
+{
+	StartDesktopData *data = _data;
+	NautilusApplication *application;
+
+	application = NAUTILUS_APPLICATION (data->shell->details->application);
+	nautilus_application_open_desktop (application);
+	
+	g_free (data);
+	return FALSE;
+}
+
 
 static void
 corba_start_desktop (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
-	NautilusShell	      *shell;
-	NautilusApplication   *application;
-
-	shell	    = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
-	application = NAUTILUS_APPLICATION (shell->details->application);
+	StartDesktopData  *data;
 	
-	nautilus_application_open_desktop (application);
+	data = g_new0 (StartDesktopData, 1);
+	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
+
+	g_idle_add (start_desktop_at_idle, data);
+}
+
+static gboolean
+stop_desktop_at_idle (gpointer data)
+{
+	nautilus_application_close_desktop ();
+	return FALSE;
 }
 
 static void
 corba_stop_desktop (PortableServer_Servant servant,
 		    CORBA_Environment *ev)
 {	
-	nautilus_application_close_desktop ();
+	g_idle_add (stop_desktop_at_idle, NULL);
 }
+
+static gboolean
+quit_at_idle (gpointer data)
+{
+	nautilus_main_event_loop_quit ();
+	return FALSE;
+}
+
 
 static void
 corba_quit (PortableServer_Servant servant,
 	    CORBA_Environment *ev)
 {
-	nautilus_main_event_loop_quit ();
+	g_idle_add (quit_at_idle, NULL);
 }
 
 /*
@@ -403,12 +503,19 @@ restore_window_states (NautilusShell *shell)
 	return result;
 }
 
-static void
-corba_restart (PortableServer_Servant servant,
-	       CORBA_Environment *ev)
+static gboolean
+restart_at_idle (gpointer data)
 {
 	save_window_states ();
 
 	nautilus_main_event_loop_quit ();
 	g_setenv ("_NAUTILUS_RESTART", "yes", 1);
+	return FALSE;
+}
+
+static void
+corba_restart (PortableServer_Servant servant,
+	       CORBA_Environment *ev)
+{
+	g_idle_add (restart_at_idle, NULL);
 }

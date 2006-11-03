@@ -39,10 +39,10 @@
 
 typedef struct NautilusShellDetails NautilusShellDetails;
 
-typedef struct {
+struct NautilusShell {
 	BonoboObject parent_slot;
 	NautilusShellDetails *details;
-} NautilusShell;
+};
 
 typedef struct {
 	BonoboObjectClass parent_slot;

@@ -36,7 +36,13 @@
 #include <stdio.h>
 
 static Nautilus_MetafileFactory factory = CORBA_OBJECT_NIL;
-static gboolean get_factory_from_oaf = TRUE;
+/* We disable the remote metafile factory, because there seems to be some
+ * sort of races with bonobo activation that sometimes leads to crashes
+ * like in bug #351713. This isn't really a problem anyway, since nautilus
+ * is only one process these days, and we still use bonobo activation to
+ * avoid starting multiple copies of it.
+ */ 
+static gboolean get_factory_from_oaf = FALSE;
 
 void
 nautilus_directory_use_self_contained_metafile_factory (void)
@@ -147,14 +153,7 @@ get_metafile (NautilusDirectory *directory)
 
 	if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
 		uri = nautilus_directory_get_uri (directory);
-
-		directory->details->metafile_corba_object = open_metafile (uri, !get_factory_from_oaf);
-		if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
-			g_assert (get_factory_from_oaf);
-			free_factory ();
-			directory->details->metafile_corba_object = open_metafile (uri, TRUE);
-		}
-
+		directory->details->metafile_corba_object = open_metafile (uri, FALSE);
 		g_free (uri);
 	}
 
