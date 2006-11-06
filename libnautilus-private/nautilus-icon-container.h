@@ -228,6 +228,8 @@ void              nautilus_icon_container_scroll_to_icon                (Nautilu
 									 NautilusIconData       *data);
 
 /* control the layout */
+void              nautilus_icon_container_set_is_reloading              (NautilusIconContainer  *container,
+									 gboolean                is_reloading);
 gboolean          nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_auto_layout               (NautilusIconContainer  *container,
 									 gboolean                auto_layout);

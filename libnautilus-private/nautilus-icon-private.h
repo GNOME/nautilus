@@ -253,6 +253,8 @@ struct NautilusIconContainerDetails {
 	guint a11y_item_action_idle_handler;
 	GQueue* a11y_item_action_queue;
 
+	eel_boolean_bit is_reloading : 1;
+
 	/* interactive search */
 	gboolean disable_popdown;
 	gboolean imcontext_changed;

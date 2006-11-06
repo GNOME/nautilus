@@ -1,3 +1,44 @@
+2006-11-06  Federico Mena Quintero  <federico@novell.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=330298
+
+	Fix the use of lazy positioning, and the saving of metadata for
+	lazily-positioned icons.  Fixes
+	https://bugzilla.novell.com/show_bug.cgi?id=155337 and
+	https://bugzilla.novell.com/show_bug.cgi?id=174766.
+
+	* src/file-manager/fm-icon-view.c (file_has_lazy_position): Only
+	desktop icon files (not "real" files) have lazy positions.  Don't
+	consider whether the directory is loading; this is not the right
+	place to check that.
+	(fm_icon_view_begin_loading): Tell the icon container that we
+	just started reloading.
+	(fm_icon_view_end_loading): Tell the icon container that we
+	finished loading.
+
+	* libnautilus-private/nautilus-icon-private.h
+	(NautilusIconContainerDetails): New flag "is_reloading".
+
+	* libnautilus-private/nautilus-icon-container.h: New prototype for
+	nautilus_icon_container_set_is_reloading().
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_set_is_reloading): New function; sets an
+	is_reloading flag in the icon container.
+	(icon_set_position): Clear icon->has_lazy_position, since the icon
+	will be well-positioned once this function exits.
+	(finish_adding_new_icons): Do not ignore already-placed lazy
+	position icons when filling the placement grid!  Save the value of
+	icon->has_lazy_position before calling assign_icon_position().
+	Since that function may call icon_set_position() (which will clear
+	the flag), we need to keep the original value of the flag.
+	(finish_adding_new_icons): Don't clear icon->has_lazy_position
+	here; let icon_set_position() do it.
+	(finish_adding_new_icons): Emit the icon_position_changed signal
+	so that the parent knows that we moved an icon under it.  This has
+	the effect of updating/preserving the position metadata for
+	has_lazy_position icons.
+
 2006-11-06  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

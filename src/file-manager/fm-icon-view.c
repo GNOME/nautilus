@@ -531,22 +531,12 @@ static gboolean
 file_has_lazy_position (FMDirectoryView *view,
 			NautilusFile *file)
 {
-	gboolean lazy_position;
-
 	/* For volumes (i.e. cdrom icon) we use lazy positioning so that when
 	 * an old cdrom gets re-mounted in a place that now has another
-	 * icon we don't overlap that one. We don't do this in general though,
-	 * as it can cause icons moving around.
+	 * icon we don't overlap that one.
 	 */
-	lazy_position = nautilus_file_has_volume (file);
-	if (lazy_position && fm_directory_view_get_loading (view)) {
-		/* if volumes are loaded during directory load, don't mark them
-		 * as lazy. This is wrong for files that were mounted during user
-		 * log-off, but it is right for files that were mounted during login. */
-		lazy_position = FALSE;
-	}
 
-	return lazy_position;
+	return NAUTILUS_IS_DESKTOP_ICON_FILE (file);
 }
 
 static void
@@ -1092,6 +1082,8 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
+	nautilus_icon_container_set_is_reloading (NAUTILUS_ICON_CONTAINER (icon_container), TRUE);
+
 	nautilus_icon_container_set_allow_moves (NAUTILUS_ICON_CONTAINER (icon_container),
 						 fm_directory_view_get_allow_moves (view));
 
@@ -1166,6 +1158,7 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	FMIconView *icon_view;
 
 	icon_view = FM_ICON_VIEW (view);
+	nautilus_icon_container_set_is_reloading (get_icon_container (icon_view), FALSE);
 }
 
 static NautilusZoomLevel
