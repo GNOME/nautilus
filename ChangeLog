@@ -1,5 +1,10 @@
 2006-11-06  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-icon-view.c (play_file):
+	Don't close handle and free buffer twice on error. (#321175)
+
+2006-11-06  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c (nautilus_file_new_from_relative_uri):
 	Don't crash on old desktop dir and search dir uris. (#349840)
 

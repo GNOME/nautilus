@@ -1829,8 +1829,6 @@ play_file (gpointer callback_data)
 					READ_CHUNK_SIZE,
 					&bytes_read);
 			if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-				g_free (buffer);
-				gnome_vfs_close (handle);
 				break;
 			}
 
