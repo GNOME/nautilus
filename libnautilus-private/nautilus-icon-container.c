@@ -2135,7 +2135,7 @@ start_rubberbanding (NautilusIconContainer *container,
 
 static void
 stop_rubberbanding (NautilusIconContainer *container,
-		    GdkEventButton *event)
+		    guint32 time)
 {
 	NautilusIconRubberbandInfo *band_info;
 
@@ -2148,10 +2148,9 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info->active = FALSE;
 
 	/* Destroy this canvas item; the parent will unref it. */
-	eel_canvas_item_ungrab (band_info->selection_rectangle, event->time);
+	eel_canvas_item_ungrab (band_info->selection_rectangle, time);
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
-
 
 	g_signal_emit (container,
 			 signals[BAND_SELECT_ENDED], 0);
@@ -3583,7 +3582,7 @@ button_release_event (GtkWidget *widget,
 	details = container->details;
 
 	if (event->button == RUBBERBAND_BUTTON && details->rubberband_info.active) {
-		stop_rubberbanding (container, event);
+		stop_rubberbanding (container, event->time);
 		return TRUE;
 	}
 	
@@ -4467,6 +4466,27 @@ get_accessible (GtkWidget *widget)
 	return eel_accessibility_set_atk_object_return (widget, accessible);
 }
 
+static void
+grab_notify_cb  (GtkWidget        *widget,
+		 gboolean          was_grabbed)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (widget);
+	
+	if (container->details->rubberband_info.active &&
+	    !was_grabbed) {
+		/* we got a (un)grab-notify during rubberband.
+		 * This happens when a new modal dialog shows
+		 * up (e.g. authentication or an error). Stop
+		 * the rubberbanding so that we can handle the
+		 * dialog. */
+		stop_rubberbanding (container,
+				    GDK_CURRENT_TIME);
+	}
+}
+
+
 /* Initialization.  */
 
 static void
@@ -4802,6 +4822,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->get_accessible = get_accessible;
 	widget_class->style_set = style_set;
 	widget_class->expose_event = expose_event;
+	widget_class->grab_notify = grab_notify_cb;
 
 	canvas_class = EEL_CANVAS_CLASS (class);
 	canvas_class->draw_background = draw_canvas_background;
