@@ -1,13 +1,15 @@
 [Desktop Entry]
 Encoding=UTF-8
-_Name=Open Folder
+_Name=Computer
+_Comment=View your computer storage
 TryExec=nautilus 
-Exec=nautilus --no-desktop %U
-NoDisplay=true
+Exec=nautilus --no-desktop computer:
+Icon=gnome-fs-client
 Terminal=false
 StartupNotify=true
 Type=Application
-MimeType=x-directory/gnome-default-handler;x-directory/normal;inode/directory;application/x-gnome-saved-search
+Categories=Application;Core;
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=nautilus
 X-GNOME-Bugzilla-Component=general
+X-GNOME-Bugzilla-Version=@VERSION@
