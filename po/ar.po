@@ -4,7 +4,6 @@
 # Copyright (C) 2004 THE nautilus.HEAD.ar'S COPYRIGHT HOLDER.
 #
 #
-#  <>, 2004.
 # Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002, 2004.
 # Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
 # Ayman Hourieh <aymanh@gmail.com>, 2004.
@@ -13,16 +12,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-30 00:54+0000\n"
-"PO-Revision-Date: 2006-10-27 19:43+0200\n"
+"POT-Creation-Date: 2006-11-06 12:55+0000\n"
+"PO-Revision-Date: 2006-11-03 00:47+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
-"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && "
-"n<=10 ? 2 : 3\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : "
+"3\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -130,7 +129,7 @@ msgstr "حسد"
 
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:940
-#: ../src/nautilus-property-browser.c:1821
+#: ../src/nautilus-property-browser.c:1824
 msgid "Erase"
 msgstr "فسخ"
 
@@ -1032,7 +1031,7 @@ msgid "The group of the file."
 msgstr "مجموعة الملف."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4148
+#: ../src/file-manager/fm-properties-window.c:4164
 msgid "Permissions"
 msgstr "التصاريح"
 
@@ -1323,7 +1322,7 @@ msgstr "خطأ \"%s\" أثناء نسخ \"%s\"."
 #: ../libnautilus-private/nautilus-file-operations.c:890
 #: ../libnautilus-private/nautilus-file-operations.c:896
 msgid "Would you like to continue?"
-msgstr "هل تريد المتابعة؟"
+msgstr "أترغب في المتابعة؟"
 
 #: ../libnautilus-private/nautilus-file-operations.c:856
 #, c-format
@@ -2369,7 +2368,7 @@ msgstr " \"%s\" ليس موقعا سليما."
 #: ../libnautilus-private/nautilus-program-choosing.c:619
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
-#: ../src/nautilus-property-browser.c:1186
+#: ../src/nautilus-property-browser.c:1189
 #: ../src/nautilus-window-manage-views.c:1434
 #: ../src/nautilus-window-manage-views.c:1442
 msgid "Please check the spelling and try again."
@@ -2614,7 +2613,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "سيضيع كل عنصر تحذفه نهائيا."
 
 #: ../src/file-manager/fm-directory-view.c:1157
-#: ../src/file-manager/fm-properties-window.c:4373
+#: ../src/file-manager/fm-properties-window.c:4389
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -3584,7 +3583,7 @@ msgid "by _Name"
 msgstr "حسب الإ_سم"
 
 #: ../src/file-manager/fm-icon-view.c:134
-#: ../src/file-manager/fm-icon-view.c:1460
+#: ../src/file-manager/fm-icon-view.c:1479
 msgid "Keep icons sorted by name in rows"
 msgstr "حافظ على اﻷيقونات مرتبة في صفوف بحسب الاسم"
 
@@ -3593,7 +3592,7 @@ msgid "by _Size"
 msgstr "حسب ال_حجم"
 
 #: ../src/file-manager/fm-icon-view.c:141
-#: ../src/file-manager/fm-icon-view.c:1464
+#: ../src/file-manager/fm-icon-view.c:1483
 msgid "Keep icons sorted by size in rows"
 msgstr "حافظ على اﻷيقونات مرتبة في صفوف بحسب الحجم"
 
@@ -3602,7 +3601,7 @@ msgid "by _Type"
 msgstr "حسب ال_نوع"
 
 #: ../src/file-manager/fm-icon-view.c:148
-#: ../src/file-manager/fm-icon-view.c:1468
+#: ../src/file-manager/fm-icon-view.c:1487
 msgid "Keep icons sorted by type in rows"
 msgstr "حافظ على اﻷيقونات مرتبة في صفوف بحسب النوع"
 
@@ -3611,7 +3610,7 @@ msgid "by Modification _Date"
 msgstr "حسب _تاريخ التعديل"
 
 #: ../src/file-manager/fm-icon-view.c:155
-#: ../src/file-manager/fm-icon-view.c:1472
+#: ../src/file-manager/fm-icon-view.c:1491
 msgid "Keep icons sorted by modification date in rows"
 msgstr "حافظ على اﻷيقونات مرتبة في صفوف بحسب تاريخ التعديل"
 
@@ -3620,144 +3619,144 @@ msgid "by _Emblems"
 msgstr "حسب ال_شعارات"
 
 #: ../src/file-manager/fm-icon-view.c:162
-#: ../src/file-manager/fm-icon-view.c:1476
+#: ../src/file-manager/fm-icon-view.c:1495
 msgid "Keep icons sorted by emblems in rows"
 msgstr "حافظ على اﻷيقونات مرتبة في صفوف بحسب الشعارات"
 
-#: ../src/file-manager/fm-icon-view.c:1420
+#: ../src/file-manager/fm-icon-view.c:1439
 msgid "Arran_ge Items"
 msgstr "رتّ_ب العناصر"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1422
+#: ../src/file-manager/fm-icon-view.c:1441
 msgid "Str_etch Icon"
 msgstr "_مدّد الأيقونة"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1423
+#: ../src/file-manager/fm-icon-view.c:1442
 msgid "Make the selected icon stretchable"
 msgstr "اجعل الأيقونة المنتقات قابلة للتمديد"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1426
-#: ../src/file-manager/fm-icon-view.c:1578
+#: ../src/file-manager/fm-icon-view.c:1445
+#: ../src/file-manager/fm-icon-view.c:1597
 msgid "Restore Icons' Original Si_zes"
 msgstr "استرجع الأ_حجام اﻷصليّة للأيقونات"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1427
+#: ../src/file-manager/fm-icon-view.c:1446
 msgid "Restore each selected icon to its original size"
 msgstr "استرجع الحجم اﻷصلي لكل أيقونة منتقاة"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1430
+#: ../src/file-manager/fm-icon-view.c:1449
 msgid "Clean _Up by Name"
 msgstr "نظّم بحسب الإسم"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1431
+#: ../src/file-manager/fm-icon-view.c:1450
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "عدل مواقع اﻷيقونات لتلائم النافذة و تمنع التداخل"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1437
+#: ../src/file-manager/fm-icon-view.c:1456
 msgid "Compact _Layout"
 msgstr "_نسق مُتَضَام"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1438
+#: ../src/file-manager/fm-icon-view.c:1457
 msgid "Toggle using a tighter layout scheme"
 msgstr "بدّل استخدام نسق أصغر"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1442
+#: ../src/file-manager/fm-icon-view.c:1461
 msgid "Re_versed Order"
 msgstr "ترتيب _معكوس"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1443
+#: ../src/file-manager/fm-icon-view.c:1462
 msgid "Display icons in the opposite order"
 msgstr "اعرض الأيقونات في الترتيب العكسي"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1447
+#: ../src/file-manager/fm-icon-view.c:1466
 msgid "_Keep Aligned"
 msgstr "_حافظ عليه مرصف"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1448
+#: ../src/file-manager/fm-icon-view.c:1467
 msgid "Keep icons lined up on a grid"
 msgstr "حافظ على الأيقونات مرصفة على شبكة"
 
-#: ../src/file-manager/fm-icon-view.c:1455
+#: ../src/file-manager/fm-icon-view.c:1474
 msgid "_Manually"
 msgstr "_يدويا"
 
-#: ../src/file-manager/fm-icon-view.c:1456
+#: ../src/file-manager/fm-icon-view.c:1475
 msgid "Leave icons wherever they are dropped"
 msgstr "اترك الأيقونات أينما ألقيت"
 
-#: ../src/file-manager/fm-icon-view.c:1459
+#: ../src/file-manager/fm-icon-view.c:1478
 msgid "By _Name"
 msgstr "حسب الإ_سم"
 
-#: ../src/file-manager/fm-icon-view.c:1463
+#: ../src/file-manager/fm-icon-view.c:1482
 msgid "By _Size"
 msgstr "حسب ال_حجم"
 
-#: ../src/file-manager/fm-icon-view.c:1467
+#: ../src/file-manager/fm-icon-view.c:1486
 msgid "By _Type"
 msgstr "حسب ال_نوع"
 
-#: ../src/file-manager/fm-icon-view.c:1471
+#: ../src/file-manager/fm-icon-view.c:1490
 msgid "By Modification _Date"
 msgstr "حسب _تاريخ التعديل"
 
-#: ../src/file-manager/fm-icon-view.c:1475
+#: ../src/file-manager/fm-icon-view.c:1494
 msgid "By _Emblems"
 msgstr "حسب ال_شعارات"
 
-#: ../src/file-manager/fm-icon-view.c:1579
+#: ../src/file-manager/fm-icon-view.c:1598
 msgid "Restore Icon's Original Si_ze"
 msgstr "استرجع ال_حجم اﻷصلي للأيقونة"
 
-#: ../src/file-manager/fm-icon-view.c:1994
+#: ../src/file-manager/fm-icon-view.c:2013
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "يشير إلى \"%s\""
 
-#: ../src/file-manager/fm-icon-view.c:2762
+#: ../src/file-manager/fm-icon-view.c:2781
 msgid "Icons"
 msgstr "أيقونات"
 
-#: ../src/file-manager/fm-icon-view.c:2763
+#: ../src/file-manager/fm-icon-view.c:2782
 msgid "View as Icons"
 msgstr "اعرض كأيقونات"
 
-#: ../src/file-manager/fm-icon-view.c:2764
+#: ../src/file-manager/fm-icon-view.c:2783
 msgid "View as _Icons"
 msgstr "اعرض كأ_يقونات"
 
-#: ../src/file-manager/fm-icon-view.c:2765
+#: ../src/file-manager/fm-icon-view.c:2784
 msgid "The icon view encountered an error."
 msgstr "تلقي مشهد الأيقونات خطأً."
 
-#: ../src/file-manager/fm-icon-view.c:2766
+#: ../src/file-manager/fm-icon-view.c:2785
 msgid "The icon view encountered an error while starting up."
 msgstr "واجه مشهد الأيقونات خطأ أثناء بدء التشغيل."
 
-#: ../src/file-manager/fm-icon-view.c:2767
+#: ../src/file-manager/fm-icon-view.c:2786
 msgid "Display this location with the icon view."
 msgstr "اعرض شريط الموقع هذا مع مشهد الأيقونات."
 
 #: ../src/file-manager/fm-list-model.c:371
-#: ../src/file-manager/fm-tree-model.c:1213
+#: ../src/file-manager/fm-tree-model.c:1227
 msgid "(Empty)"
 msgstr "(فارغ)"
 
 #: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1213
+#: ../src/file-manager/fm-tree-model.c:1227
 msgid "Loading..."
 msgstr "جاري التحميل..."
 
@@ -3838,23 +3837,23 @@ msgstr "خصائص"
 msgid "%s Properties"
 msgstr "خصائص %s"
 
-#: ../src/file-manager/fm-properties-window.c:1572
+#: ../src/file-manager/fm-properties-window.c:1573
 msgid "Cancel Group Change?"
 msgstr "إلغاء تغيير المجموعة؟"
 
-#: ../src/file-manager/fm-properties-window.c:1989
+#: ../src/file-manager/fm-properties-window.c:1990
 msgid "Cancel Owner Change?"
 msgstr "إلغاء تغيير المالك؟"
 
-#: ../src/file-manager/fm-properties-window.c:2284
+#: ../src/file-manager/fm-properties-window.c:2285
 msgid "nothing"
 msgstr "ﻻ شئ"
 
-#: ../src/file-manager/fm-properties-window.c:2286
+#: ../src/file-manager/fm-properties-window.c:2287
 msgid "unreadable"
 msgstr "غير مقروء"
 
-#: ../src/file-manager/fm-properties-window.c:2296
+#: ../src/file-manager/fm-properties-window.c:2297
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -3863,7 +3862,7 @@ msgstr[1] "عنصران %d، بحجم %s"
 msgstr[2] "%d عناصر، بحجم %s"
 msgstr[3] "%d عنصراً، بحجم %s"
 
-#: ../src/file-manager/fm-properties-window.c:2305
+#: ../src/file-manager/fm-properties-window.c:2306
 msgid "(some contents unreadable)"
 msgstr "(بعض المحتويات غير مقروءة)"
 
@@ -3873,16 +3872,16 @@ msgstr "(بعض المحتويات غير مقروءة)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2322
+#: ../src/file-manager/fm-properties-window.c:2323
 msgid "Contents:"
 msgstr "المحتويات:"
 
-#: ../src/file-manager/fm-properties-window.c:2634
+#: ../src/file-manager/fm-properties-window.c:2641
 msgid "Basic"
 msgstr "أساسي"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2664
+#: ../src/file-manager/fm-properties-window.c:2671
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "الإ_سم:"
@@ -3890,246 +3889,246 @@ msgstr[1] "الإ_سمين:"
 msgstr[2] "الأ_سماء:"
 msgstr[3] "الأ_سماء:"
 
-#: ../src/file-manager/fm-properties-window.c:2683
+#: ../src/file-manager/fm-properties-window.c:2690
 msgid "Type:"
 msgstr "النوع:"
 
-#: ../src/file-manager/fm-properties-window.c:2685
-#: ../src/file-manager/fm-properties-window.c:2695
-#: ../src/file-manager/fm-properties-window.c:2701
+#: ../src/file-manager/fm-properties-window.c:2692
+#: ../src/file-manager/fm-properties-window.c:2702
 #: ../src/file-manager/fm-properties-window.c:2708
-#: ../src/file-manager/fm-properties-window.c:2712
-#: ../src/file-manager/fm-properties-window.c:2720
-#: ../src/file-manager/fm-properties-window.c:2726
-#: ../src/file-manager/fm-properties-window.c:2735
-#: ../src/file-manager/fm-properties-window.c:2741
-#: ../src/file-manager/fm-properties-window.c:3757
-#: ../src/file-manager/fm-properties-window.c:3789
-#: ../src/file-manager/fm-properties-window.c:3959
-#: ../src/file-manager/fm-properties-window.c:3980
-#: ../src/file-manager/fm-properties-window.c:4015
-#: ../src/file-manager/fm-properties-window.c:4185
-#: ../src/file-manager/fm-properties-window.c:4189
+#: ../src/file-manager/fm-properties-window.c:2715
+#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2727
+#: ../src/file-manager/fm-properties-window.c:2733
+#: ../src/file-manager/fm-properties-window.c:2742
+#: ../src/file-manager/fm-properties-window.c:2748
+#: ../src/file-manager/fm-properties-window.c:3768
+#: ../src/file-manager/fm-properties-window.c:3801
+#: ../src/file-manager/fm-properties-window.c:3974
+#: ../src/file-manager/fm-properties-window.c:3996
+#: ../src/file-manager/fm-properties-window.c:4031
+#: ../src/file-manager/fm-properties-window.c:4201
+#: ../src/file-manager/fm-properties-window.c:4205
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2693
+#: ../src/file-manager/fm-properties-window.c:2700
 msgid "Size:"
 msgstr "المقاس:"
 
-#: ../src/file-manager/fm-properties-window.c:2699
+#: ../src/file-manager/fm-properties-window.c:2706
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "الموقع:"
 
-#: ../src/file-manager/fm-properties-window.c:2706
+#: ../src/file-manager/fm-properties-window.c:2713
 msgid "Volume:"
 msgstr "الحجم:"
 
-#: ../src/file-manager/fm-properties-window.c:2710
+#: ../src/file-manager/fm-properties-window.c:2717
 msgid "Free space:"
 msgstr "الفضاء المطلق:"
 
-#: ../src/file-manager/fm-properties-window.c:2718
+#: ../src/file-manager/fm-properties-window.c:2725
 msgid "Link target:"
 msgstr "مقصد الوصلة:"
 
-#: ../src/file-manager/fm-properties-window.c:2724
+#: ../src/file-manager/fm-properties-window.c:2731
 msgid "MIME type:"
 msgstr "نوع MIME:"
 
-#: ../src/file-manager/fm-properties-window.c:2733
+#: ../src/file-manager/fm-properties-window.c:2740
 msgid "Modified:"
 msgstr "عُدّل:"
 
-#: ../src/file-manager/fm-properties-window.c:2739
+#: ../src/file-manager/fm-properties-window.c:2746
 msgid "Accessed:"
 msgstr "نُفِذ إليه:"
 
-#: ../src/file-manager/fm-properties-window.c:2842
+#: ../src/file-manager/fm-properties-window.c:2849
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "شعارات"
 
-#: ../src/file-manager/fm-properties-window.c:3240
+#: ../src/file-manager/fm-properties-window.c:3247
 msgid "_Read"
 msgstr "_قراءة"
 
-#: ../src/file-manager/fm-properties-window.c:3242
+#: ../src/file-manager/fm-properties-window.c:3249
 msgid "_Write"
 msgstr "_كتابة"
 
-#: ../src/file-manager/fm-properties-window.c:3244
+#: ../src/file-manager/fm-properties-window.c:3251
 msgid "E_xecute"
 msgstr "_تنفيذ"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3494
-#: ../src/file-manager/fm-properties-window.c:3505
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3501
+#: ../src/file-manager/fm-properties-window.c:3512
+#: ../src/file-manager/fm-properties-window.c:3524
 msgid "no "
 msgstr "لا"
 
-#: ../src/file-manager/fm-properties-window.c:3497
+#: ../src/file-manager/fm-properties-window.c:3504
 msgid "list"
 msgstr "سرد"
 
-#: ../src/file-manager/fm-properties-window.c:3499
+#: ../src/file-manager/fm-properties-window.c:3506
 msgid "read"
 msgstr "قراءة"
 
-#: ../src/file-manager/fm-properties-window.c:3508
+#: ../src/file-manager/fm-properties-window.c:3515
 msgid "create/delete"
 msgstr "انشيء/احذف"
 
-#: ../src/file-manager/fm-properties-window.c:3510
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "write"
 msgstr "كتابة"
 
-#: ../src/file-manager/fm-properties-window.c:3519
+#: ../src/file-manager/fm-properties-window.c:3526
 msgid "access"
 msgstr "السماح بالنفاذ"
 
-#: ../src/file-manager/fm-properties-window.c:3567
+#: ../src/file-manager/fm-properties-window.c:3575
 msgid "Access:"
 msgstr "السماح بالنفاذ:"
 
-#: ../src/file-manager/fm-properties-window.c:3569
+#: ../src/file-manager/fm-properties-window.c:3577
 msgid "Folder Access:"
 msgstr "النفاذ للمجلد:"
 
-#: ../src/file-manager/fm-properties-window.c:3571
+#: ../src/file-manager/fm-properties-window.c:3579
 msgid "File Access:"
 msgstr "النفاذ للملف:"
 
-#: ../src/file-manager/fm-properties-window.c:3583
-#: ../src/file-manager/fm-properties-window.c:3594
+#: ../src/file-manager/fm-properties-window.c:3591
+#: ../src/file-manager/fm-properties-window.c:3602
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "لا شيء"
 
-#: ../src/file-manager/fm-properties-window.c:3586
+#: ../src/file-manager/fm-properties-window.c:3594
 msgid "List files only"
 msgstr "اسرد الملفات فقط"
 
-#: ../src/file-manager/fm-properties-window.c:3588
+#: ../src/file-manager/fm-properties-window.c:3596
 msgid "Access files"
 msgstr "انفُذ للملفات"
 
-#: ../src/file-manager/fm-properties-window.c:3590
+#: ../src/file-manager/fm-properties-window.c:3598
 msgid "Create and delete files"
 msgstr "انشيء واحذف الملفات"
 
-#: ../src/file-manager/fm-properties-window.c:3597
+#: ../src/file-manager/fm-properties-window.c:3605
 msgid "Read-only"
 msgstr "للقراءة فقط"
 
-#: ../src/file-manager/fm-properties-window.c:3599
+#: ../src/file-manager/fm-properties-window.c:3607
 msgid "Read and write"
 msgstr "قرائة وكتابة"
 
-#: ../src/file-manager/fm-properties-window.c:3663
+#: ../src/file-manager/fm-properties-window.c:3672
 msgid "Set _user ID"
 msgstr "اضبط رقم ID ال_مستخدم"
 
-#: ../src/file-manager/fm-properties-window.c:3665
+#: ../src/file-manager/fm-properties-window.c:3674
 msgid "Special flags:"
 msgstr "شارات خاصة:"
 
-#: ../src/file-manager/fm-properties-window.c:3667
+#: ../src/file-manager/fm-properties-window.c:3676
 msgid "Set gro_up ID"
 msgstr "اضبط ID ال_مجموعة"
 
-#: ../src/file-manager/fm-properties-window.c:3668
+#: ../src/file-manager/fm-properties-window.c:3677
 msgid "_Sticky"
 msgstr "_ملتصق"
 
-#: ../src/file-manager/fm-properties-window.c:3746
-#: ../src/file-manager/fm-properties-window.c:3948
+#: ../src/file-manager/fm-properties-window.c:3757
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "_Owner:"
 msgstr "ال_مالك:"
 
-#: ../src/file-manager/fm-properties-window.c:3752
-#: ../src/file-manager/fm-properties-window.c:3845
-#: ../src/file-manager/fm-properties-window.c:3954
+#: ../src/file-manager/fm-properties-window.c:3763
+#: ../src/file-manager/fm-properties-window.c:3858
+#: ../src/file-manager/fm-properties-window.c:3969
 msgid "Owner:"
 msgstr "المالك:"
 
-#: ../src/file-manager/fm-properties-window.c:3774
-#: ../src/file-manager/fm-properties-window.c:3965
+#: ../src/file-manager/fm-properties-window.c:3786
+#: ../src/file-manager/fm-properties-window.c:3981
 msgid "_Group:"
 msgstr "الم_جموعة:"
 
-#: ../src/file-manager/fm-properties-window.c:3783
-#: ../src/file-manager/fm-properties-window.c:3846
-#: ../src/file-manager/fm-properties-window.c:3974
+#: ../src/file-manager/fm-properties-window.c:3795
+#: ../src/file-manager/fm-properties-window.c:3859
+#: ../src/file-manager/fm-properties-window.c:3990
 msgid "Group:"
 msgstr "المجموعة:"
 
-#: ../src/file-manager/fm-properties-window.c:3807
+#: ../src/file-manager/fm-properties-window.c:3820
 msgid "Others"
 msgstr "أخرى"
 
-#: ../src/file-manager/fm-properties-window.c:3824
+#: ../src/file-manager/fm-properties-window.c:3837
 msgid "Execute:"
 msgstr "تنفيذ:"
 
-#: ../src/file-manager/fm-properties-window.c:3828
+#: ../src/file-manager/fm-properties-window.c:3841
 msgid "Allow _executing file as program"
 msgstr "اسمح بتن_فيذ الملف كبرنامج"
 
-#: ../src/file-manager/fm-properties-window.c:3847
+#: ../src/file-manager/fm-properties-window.c:3860
 msgid "Others:"
 msgstr "آخرين:"
 
-#: ../src/file-manager/fm-properties-window.c:3992
+#: ../src/file-manager/fm-properties-window.c:4008
 msgid "Folder Permissions:"
 msgstr "تصاريح المجلد:"
 
-#: ../src/file-manager/fm-properties-window.c:4004
+#: ../src/file-manager/fm-properties-window.c:4020
 msgid "File Permissions:"
 msgstr "تصاريح الملف:"
 
-#: ../src/file-manager/fm-properties-window.c:4014
+#: ../src/file-manager/fm-properties-window.c:4030
 msgid "Text view:"
 msgstr "عرض النص:"
 
-#: ../src/file-manager/fm-properties-window.c:4161
+#: ../src/file-manager/fm-properties-window.c:4177
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "لست المالك، لذلك لا يمكنك تغيير هذه التصاريح."
 
-#: ../src/file-manager/fm-properties-window.c:4184
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "SELinux Context:"
 msgstr "سياق SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:4188
+#: ../src/file-manager/fm-properties-window.c:4204
 msgid "Last changed:"
 msgstr "آخر تعديل:"
 
-#: ../src/file-manager/fm-properties-window.c:4202
+#: ../src/file-manager/fm-properties-window.c:4218
 msgid "Apply permissions to enclosed files"
 msgstr "طبق التصاريح على الملفات المضمّتة"
 
-#: ../src/file-manager/fm-properties-window.c:4212
+#: ../src/file-manager/fm-properties-window.c:4228
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "لا يمكن تحديد تصاريح \"%s\"."
 
-#: ../src/file-manager/fm-properties-window.c:4215
+#: ../src/file-manager/fm-properties-window.c:4231
 msgid "The permissions of the selected file could not be determined."
 msgstr "لا يمكن تحديد تصاريح الملف المنتقى."
 
-#: ../src/file-manager/fm-properties-window.c:4435
+#: ../src/file-manager/fm-properties-window.c:4451
 msgid "Open With"
 msgstr "افتح باستخدام"
 
-#: ../src/file-manager/fm-properties-window.c:4775
+#: ../src/file-manager/fm-properties-window.c:4791
 msgid "Creating Properties window."
 msgstr "جاري انشاء نافذة الخصائص."
 
-#: ../src/file-manager/fm-properties-window.c:5015
+#: ../src/file-manager/fm-properties-window.c:5031
 msgid "Select Custom Icon"
 msgstr "اختر أيقونة مخصصة"
 
@@ -4163,12 +4162,12 @@ msgstr "شجرة"
 msgid "Show Tree"
 msgstr "اظهر الشجرة"
 
-#: ../src/nautilus-application.c:267
+#: ../src/nautilus-application.c:274
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "لم يتمكن نوتلس من إنشاء المجلد المطلوب \"%s\"."
 
-#: ../src/nautilus-application.c:269
+#: ../src/nautilus-application.c:276
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4176,12 +4175,12 @@ msgstr ""
 "رجاء انشيء المجلد التالي قبل تشغيل نوتلس أو قم بضبط التصاريح حتى يتمكن نوتلس "
 "من إنشائه."
 
-#: ../src/nautilus-application.c:272
+#: ../src/nautilus-application.c:279
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "لم يتمكن نوتلس من إنشاء المجلدات التالية المطلوبة: %s."
 
-#: ../src/nautilus-application.c:274
+#: ../src/nautilus-application.c:281
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4189,15 +4188,15 @@ msgstr ""
 "رجاء قم بإنشاء هذه المجلدات قبل تشغيل نوتلس، أو بضبط التصاريح حتى يتمكن "
 "نوتلس من انشائها."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:340
 msgid "Link To Old Desktop"
 msgstr "وصلة لسطح المكتب القديم"
 
-#: ../src/nautilus-application.c:349
+#: ../src/nautilus-application.c:356
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "انشأت وصلة بإسم \"وصلة لسطح المكتب القديم\" على سطح مكتبك."
 
-#: ../src/nautilus-application.c:350
+#: ../src/nautilus-application.c:357
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4215,7 +4214,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:542
+#: ../src/nautilus-application.c:553
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4226,7 +4225,7 @@ msgstr ""
 "نوتلس مرة أخرى."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:548
+#: ../src/nautilus-application.c:559
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4271,12 +4270,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:578 ../src/nautilus-application.c:596
-#: ../src/nautilus-application.c:603
+#: ../src/nautilus-application.c:589 ../src/nautilus-application.c:607
+#: ../src/nautilus-application.c:614
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "لا يمكن استخدام نوتلس اﻵن لحدوث خطأ غير متوقع."
 
-#: ../src/nautilus-application.c:579
+#: ../src/nautilus-application.c:590
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4284,7 +4283,7 @@ msgstr ""
 "لا يمكن استخدام نوتلس اﻵن لحدوث خطأ غير مترقب من بونوبو أثناء محاولة تسجيل "
 "خادم مشهد مدير الملفات."
 
-#: ../src/nautilus-application.c:597
+#: ../src/nautilus-application.c:608
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4294,7 +4293,7 @@ msgstr ""
 "موقعة المصنع. قتل bonobo-activation-server ثم إعادة تشغيل نوتلس قد يساعد في "
 "حل المشكلة."
 
-#: ../src/nautilus-application.c:604
+#: ../src/nautilus-application.c:615
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4306,7 +4305,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1559 ../src/nautilus-window-menus.c:509
+#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:509
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4947,60 +4946,60 @@ msgstr "افتح الموقع"
 msgid "_Location:"
 msgstr "ال_موقع:"
 
-#: ../src/nautilus-main.c:208
+#: ../src/nautilus-main.c:217
 msgid "Perform a quick set of self-check tests."
 msgstr "إجري مجموعة سريعة من الفحوص الذاتية."
 
-#: ../src/nautilus-main.c:211
+#: ../src/nautilus-main.c:220
 msgid "Create the initial window with the given geometry."
 msgstr "انشيء النافذة الاولية بالأبعاد المعطاة."
 
-#: ../src/nautilus-main.c:211
+#: ../src/nautilus-main.c:220
 msgid "GEOMETRY"
 msgstr "الأبعاد"
 
-#: ../src/nautilus-main.c:213
+#: ../src/nautilus-main.c:222
 msgid "Only create windows for explicitly specified URIs."
 msgstr "أنشيء نوافذ فقط للعناوين المحددة صراحة."
 
-#: ../src/nautilus-main.c:215
+#: ../src/nautilus-main.c:224
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "لا تدِر سطح المكتب (تجاهل مجموعة التفضيلات في حوار التفضيلات)."
 
-#: ../src/nautilus-main.c:217
+#: ../src/nautilus-main.c:226
 msgid "open a browser window."
 msgstr "افتح نافذة متصفح."
 
-#: ../src/nautilus-main.c:219
+#: ../src/nautilus-main.c:228
 msgid "Quit Nautilus."
 msgstr "إنهي نوتلس."
 
-#: ../src/nautilus-main.c:221
+#: ../src/nautilus-main.c:230
 msgid "Restart Nautilus."
 msgstr "أعِد تشغيل نوتلس."
 
-#: ../src/nautilus-main.c:222
+#: ../src/nautilus-main.c:231
 msgid "[URI...]"
 msgstr "[URI...]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
-#: ../src/nautilus-main.c:225
+#: ../src/nautilus-main.c:234
 msgid ""
 "Load a saved session from the specified file. Implies \"--no-default-window"
 "\"."
 msgstr "حمّل واحفظ الجلسة من الملف المحدد. يتطلب \"--no-default-window\"."
 
-#: ../src/nautilus-main.c:225
+#: ../src/nautilus-main.c:234
 msgid "FILENAME"
 msgstr "إسم الملف"
 
-#: ../src/nautilus-main.c:263
+#: ../src/nautilus-main.c:272
 msgid "File Manager"
 msgstr "مدير الملفات"
 
-#: ../src/nautilus-main.c:264
+#: ../src/nautilus-main.c:273
 msgid ""
 "\n"
 "\n"
@@ -5011,24 +5010,24 @@ msgstr ""
 "تصفح نظام الملفات بمدير الملفات"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:272 ../src/nautilus-spatial-window.c:424
+#: ../src/nautilus-main.c:281 ../src/nautilus-spatial-window.c:424
 #: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
 msgid "Nautilus"
 msgstr "نوتلس"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:299 ../src/nautilus-main.c:308
-#: ../src/nautilus-main.c:313
+#: ../src/nautilus-main.c:308 ../src/nautilus-main.c:317
+#: ../src/nautilus-main.c:322
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "نوتلس: لا يمكن استخدام %s مع العناوين URI.\n"
 
-#: ../src/nautilus-main.c:304
+#: ../src/nautilus-main.c:313
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "نوتلس: لا يمكن استخدام --check مع الخيارات الأخرى.\n"
 
-#: ../src/nautilus-main.c:318
+#: ../src/nautilus-main.c:327
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "نوتلس: لا يمكن استخدام --geometry مع أكثر من عنوان URI.\n"
@@ -5263,166 +5262,166 @@ msgstr "ا_حذف..."
 msgid "_Add new..."
 msgstr "أ_ضف جديد..."
 
-#: ../src/nautilus-property-browser.c:978
+#: ../src/nautilus-property-browser.c:974
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "عفوا، لكن تعذّر حذف النمط %s."
 
-#: ../src/nautilus-property-browser.c:979
+#: ../src/nautilus-property-browser.c:975
 msgid "Check that you have permission to delete the pattern."
 msgstr "تأكد من أنك تملك تصاريح كافية لحذف النمط."
 
-#: ../src/nautilus-property-browser.c:1008
+#: ../src/nautilus-property-browser.c:1004
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "عفوا، لم يمكن حذف الشعار %s."
 
-#: ../src/nautilus-property-browser.c:1009
+#: ../src/nautilus-property-browser.c:1005
 msgid "Check that you have permission to delete the emblem."
 msgstr "تأكد من أنك تملك تصاريح كافية لحذف هذا الشعار."
 
-#: ../src/nautilus-property-browser.c:1049
+#: ../src/nautilus-property-browser.c:1052
 msgid "Create a New Emblem"
 msgstr "انشيء شعار جديد"
 
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1071
+#: ../src/nautilus-property-browser.c:1074
 msgid "_Keyword:"
 msgstr "_كلمة مفتاحية:"
 
 #. set up a gnome icon entry to pick the image file
-#: ../src/nautilus-property-browser.c:1090
+#: ../src/nautilus-property-browser.c:1093
 msgid "_Image:"
 msgstr "ال_صورة:"
 
-#: ../src/nautilus-property-browser.c:1098
+#: ../src/nautilus-property-browser.c:1101
 msgid "Select an Image File for the New Emblem"
 msgstr "اختر ملف صورة للشعار الجديد"
 
-#: ../src/nautilus-property-browser.c:1123
+#: ../src/nautilus-property-browser.c:1126
 msgid "Create a New Color:"
 msgstr "انشئ لونا جديدا:"
 
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1137
+#: ../src/nautilus-property-browser.c:1140
 msgid "Color _name:"
 msgstr "ا_سم اللون:"
 
-#: ../src/nautilus-property-browser.c:1153
+#: ../src/nautilus-property-browser.c:1156
 msgid "Color _value:"
 msgstr "_قيمة اللون:"
 
-#: ../src/nautilus-property-browser.c:1185
+#: ../src/nautilus-property-browser.c:1188
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "عفوا، لكن \"%s\" ليس اسم ملف صحيح."
 
-#: ../src/nautilus-property-browser.c:1188
+#: ../src/nautilus-property-browser.c:1191
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "عفوا، لكنك لم تمد إسم ملف سليم."
 
-#: ../src/nautilus-property-browser.c:1189
+#: ../src/nautilus-property-browser.c:1192
 msgid "Please try again."
 msgstr "رجاء حاول مرة أخرى."
 
-#: ../src/nautilus-property-browser.c:1202
+#: ../src/nautilus-property-browser.c:1205
 msgid "Sorry, but you can't replace the reset image."
 msgstr "عفوا، لا يمكنك تبديل صورة إعادة الضبط."
 
-#: ../src/nautilus-property-browser.c:1203
+#: ../src/nautilus-property-browser.c:1206
 msgid "Reset is a special image that cannot be deleted."
 msgstr "إعادة الضبط هي صورة خاصة لا يمكن حذفها."
 
-#: ../src/nautilus-property-browser.c:1235
+#: ../src/nautilus-property-browser.c:1238
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "عفوا، تعذّر تثبيت النمط %s."
 
-#: ../src/nautilus-property-browser.c:1255
+#: ../src/nautilus-property-browser.c:1258
 msgid "Select an Image File to Add as a Pattern"
 msgstr "اختر ملف صورة ﻹضافته كنمط"
 
-#: ../src/nautilus-property-browser.c:1307
-#: ../src/nautilus-property-browser.c:1338
+#: ../src/nautilus-property-browser.c:1310
+#: ../src/nautilus-property-browser.c:1341
 msgid "The color cannot be installed."
 msgstr "لا يمكن تثبيت اللون."
 
-#: ../src/nautilus-property-browser.c:1308
+#: ../src/nautilus-property-browser.c:1311
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr "عفوا، يجب تحديد اسما غير مستخدم للون الجديد."
 
-#: ../src/nautilus-property-browser.c:1339
+#: ../src/nautilus-property-browser.c:1342
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "عفوا، يجب تحديد اسما غير فارغ للون الجديد."
 
-#: ../src/nautilus-property-browser.c:1392
+#: ../src/nautilus-property-browser.c:1395
 msgid "Select a Color to Add"
 msgstr "اختر لونا لإضافته"
 
-#: ../src/nautilus-property-browser.c:1429
-#: ../src/nautilus-property-browser.c:1445
+#: ../src/nautilus-property-browser.c:1432
+#: ../src/nautilus-property-browser.c:1448
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "عفواً، لكن '%s' ليس صورة قابلة للاستعمال."
 
-#: ../src/nautilus-property-browser.c:1430
-#: ../src/nautilus-property-browser.c:1446
+#: ../src/nautilus-property-browser.c:1433
+#: ../src/nautilus-property-browser.c:1449
 msgid "The file is not an image."
 msgstr "الملف ليس صورة."
 
-#: ../src/nautilus-property-browser.c:2148
+#: ../src/nautilus-property-browser.c:2154
 msgid "Select a Category:"
 msgstr "اختر فئة:"
 
-#: ../src/nautilus-property-browser.c:2157
+#: ../src/nautilus-property-browser.c:2163
 msgid "C_ancel Remove"
 msgstr "إ_لغي الحذف"
 
-#: ../src/nautilus-property-browser.c:2163
+#: ../src/nautilus-property-browser.c:2169
 msgid "_Add a New Pattern..."
 msgstr "ا_ضف نمط جديد..."
 
-#: ../src/nautilus-property-browser.c:2166
+#: ../src/nautilus-property-browser.c:2172
 msgid "_Add a New Color..."
 msgstr "ا_ضف لون جديد..."
 
-#: ../src/nautilus-property-browser.c:2169
+#: ../src/nautilus-property-browser.c:2175
 msgid "_Add a New Emblem..."
 msgstr "ا_ضف شعار جديد..."
 
-#: ../src/nautilus-property-browser.c:2192
+#: ../src/nautilus-property-browser.c:2198
 msgid "Click on a pattern to remove it"
 msgstr "انقر على نمط لحذفه"
 
-#: ../src/nautilus-property-browser.c:2195
+#: ../src/nautilus-property-browser.c:2201
 msgid "Click on a color to remove it"
 msgstr "انقر على لون لحذفه"
 
-#: ../src/nautilus-property-browser.c:2198
+#: ../src/nautilus-property-browser.c:2204
 msgid "Click on an emblem to remove it"
 msgstr "انقر على شعار لحذفه"
 
-#: ../src/nautilus-property-browser.c:2207
+#: ../src/nautilus-property-browser.c:2213
 msgid "Patterns:"
 msgstr "الأنماط:"
 
-#: ../src/nautilus-property-browser.c:2210
+#: ../src/nautilus-property-browser.c:2216
 msgid "Colors:"
 msgstr "الألوان:"
 
-#: ../src/nautilus-property-browser.c:2213
+#: ../src/nautilus-property-browser.c:2219
 msgid "Emblems:"
 msgstr "الشعارات:"
 
-#: ../src/nautilus-property-browser.c:2233
+#: ../src/nautilus-property-browser.c:2239
 msgid "_Remove a Pattern..."
 msgstr "ا_حذف نمط..."
 
-#: ../src/nautilus-property-browser.c:2236
+#: ../src/nautilus-property-browser.c:2242
 msgid "_Remove a Color..."
 msgstr "ا_حذف لون..."
 
-#: ../src/nautilus-property-browser.c:2239
+#: ../src/nautilus-property-browser.c:2245
 msgid "_Remove an Emblem..."
 msgstr "ا_حذف شعار..."
 
@@ -5683,7 +5682,7 @@ msgid "translator-credits"
 msgstr ""
 "جهاد عفيفي Djihed Afifi  <djihed@gmail.com> \n"
 "عرفات المديني، تونس <lumina@silverpen.de> \n"
-"خالد حسني <khaledhosny@eglug.or>"
+"خالد حسني <khaledhosny@eglug.org>"
 
 #: ../src/nautilus-window-menus.c:597
 msgid "_File"
