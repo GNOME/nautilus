@@ -803,6 +803,9 @@ nautilus_application_open_desktop (NautilusApplication *application)
 {
 	if (nautilus_application_desktop_windows == NULL) {
 		nautilus_application_create_desktop_windows (application);
+		
+		/* Make sure we update the session when the desktop is created */
+		update_session (gnome_master_client ());
 	}
 }
 
@@ -814,6 +817,9 @@ nautilus_application_close_desktop (void)
 				(GFunc) gtk_widget_destroy, NULL);
 		g_list_free (nautilus_application_desktop_windows);
 		nautilus_application_desktop_windows = NULL;
+
+		/* Make sure we update the session when the desktop goes away */
+		update_session (gnome_master_client ());
 	}
 }
 
@@ -1258,11 +1264,6 @@ desktop_changed_callback (gpointer user_data)
 	} else {
 		nautilus_application_close_desktop ();
 	}
-
-	/* Can't make this function just watch the preference
-	 * itself changing since ordering is important
-	 */
-	update_session (gnome_master_client ());
 }
 
 static gboolean
@@ -1359,7 +1360,7 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
 static void
 removed_from_session (GnomeClient *client, gpointer data)
 {
-	nautilus_main_event_loop_quit ();
+	nautilus_main_event_loop_quit (FALSE);
 }
 
 static char *

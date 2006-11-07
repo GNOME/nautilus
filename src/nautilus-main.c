@@ -48,6 +48,7 @@
 #include <glib/gi18n.h>
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-ui-init.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -132,8 +133,13 @@ nautilus_main_is_event_loop_mainstay (GtkObject *object)
 }
 
 void
-nautilus_main_event_loop_quit (void)
+nautilus_main_event_loop_quit (gboolean explicit)
 {
+	if (explicit) {
+		/* Explicit --quit, make sure we don't restart */
+		gnome_client_set_restart_style (gnome_master_client (),
+						GNOME_RESTART_IF_RUNNING);
+	}
 	while (event_loop_registrants != NULL) {
 		gtk_object_destroy (event_loop_registrants->data);
 	}

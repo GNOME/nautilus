@@ -302,7 +302,7 @@ start_desktop_at_idle (gpointer _data)
 
 	application = NAUTILUS_APPLICATION (data->shell->details->application);
 	nautilus_application_open_desktop (application);
-	
+
 	g_free (data);
 	return FALSE;
 }
@@ -337,7 +337,7 @@ corba_stop_desktop (PortableServer_Servant servant,
 static gboolean
 quit_at_idle (gpointer data)
 {
-	nautilus_main_event_loop_quit ();
+	nautilus_main_event_loop_quit (TRUE);
 	return FALSE;
 }
 
@@ -508,7 +508,7 @@ restart_at_idle (gpointer data)
 {
 	save_window_states ();
 
-	nautilus_main_event_loop_quit ();
+	nautilus_main_event_loop_quit (TRUE);
 	g_setenv ("_NAUTILUS_RESTART", "yes", 1);
 	return FALSE;
 }
