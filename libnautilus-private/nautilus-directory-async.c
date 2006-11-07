@@ -148,8 +148,6 @@ static void     move_file_to_extension_queue    (NautilusDirectory *directory,
 						 NautilusFile      *file);
 static void     nautilus_directory_invalidate_file_attributes (NautilusDirectory      *directory,
 							       NautilusFileAttributes  file_attributes);
-static void     unschedule_call_ready_callbacks (NautilusDirectory *directory);
-
 
 void
 nautilus_set_kde_trash_name (const char *trash_dir)
@@ -1082,7 +1080,7 @@ is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 
 	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->active && callback->request.metafile) {
+		if (callback->request.metafile) {
 			return TRUE;
 		}
 	}
@@ -1547,8 +1545,6 @@ nautilus_async_destroying_file (NautilusFile *file)
 	directory = file->details->directory;
 	changed = FALSE;
 
-	unschedule_call_ready_callbacks (directory);
-	
 	/* Check for callbacks. */
 	for (node = directory->details->call_when_ready_list; node != NULL; node = next) {
 		next = node->next;
@@ -1886,6 +1882,10 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 		g_free (callback);
 	}
 
+	/* When we change the ready list we need to sync up metadata monitors. */
+	update_metadata_monitors (directory);
+
+	nautilus_directory_async_state_changed (directory);
 	
 	return FALSE;
 }
@@ -1896,15 +1896,6 @@ schedule_call_ready_callbacks (NautilusDirectory *directory)
 	if (directory->details->call_ready_idle_id == 0) {
 		directory->details->call_ready_idle_id
 			= g_idle_add (call_ready_callbacks_at_idle, directory);
-	}
-}
-
-static void
-unschedule_call_ready_callbacks (NautilusDirectory *directory)
-{
-	if (directory->details->call_ready_idle_id != 0) {
-		g_source_remove (directory->details->call_ready_idle_id);
-		directory->details->call_ready_idle_id = 0;
 	}
 }
 
@@ -1933,8 +1924,6 @@ call_ready_callbacks (NautilusDirectory *directory)
 	}
 	
 	if (found_any) {
-		/* When we change the ready list we need to sync up metadata monitors. */
-		update_metadata_monitors (directory);
 		schedule_call_ready_callbacks (directory);
 	}
 	
@@ -1952,7 +1941,7 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 	for (node = directory->details->call_when_ready_list;
 	     node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->active && callback->request.file_list) {
+		if (callback->request.file_list) {
 			return TRUE;
 		}
 	}

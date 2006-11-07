@@ -1,5 +1,21 @@
 2006-11-07  Alexander Larsson  <alexl@redhat.com>
 
+	* NEWS:
+	Update for release
+
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory.c:
+	Unschedule call_ready callbacks on directory finalize, not
+	on file finalize.
+	Keep monitors around until we call the call_when_ready callback
+	at idle time.
+	Call async_state_changed and update_metadata_monitors after
+	call_when_ready callbacks have been called at idle.
+	
+	(fixes make check)
+	
+2006-11-07  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-application.c:
 	* src/nautilus-shell.c:
 	* src/nautilus-main.[ch]:

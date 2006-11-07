@@ -203,7 +203,11 @@ nautilus_directory_finalize (GObject *object)
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		g_source_remove (directory->details->dequeue_pending_idle_id);
 	}
- 
+
+	if (directory->details->call_ready_idle_id != 0) {
+		g_source_remove (directory->details->call_ready_idle_id);
+	}
+	
 	g_free (directory->details->uri);
 
 	if (directory->details->vfs_uri != NULL) {
