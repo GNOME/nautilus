@@ -1,3 +1,9 @@
+2006-11-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	Ref the NautilusDirectory during call_ready_callbacks_at_idle.
+	Fixes #372471
+
 2006-11-07  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -1858,6 +1858,8 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	directory->details->call_ready_idle_id = 0;
 
+	nautilus_directory_ref (directory);
+	
 	callback = NULL;
 	while (1) {
 		/* Check if any callbacks are non-active and call them if they are. */
@@ -1886,6 +1888,8 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 	update_metadata_monitors (directory);
 
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 	
 	return FALSE;
 }
