@@ -287,8 +287,6 @@ icon_set_position (NautilusIcon *icon,
 	int x1, y1, x2, y2;
 	int container_x, container_y, container_width, container_height;
 
-	icon->has_lazy_position = FALSE;
-
 	if (icon->x == x && icon->y == y) {
 		return;
 	}
@@ -349,7 +347,7 @@ icon_set_position (NautilusIcon *icon,
 	if (icon->y == ICON_UNPOSITIONED_VALUE) {
 		icon->y = 0;
 	}
-
+	
 	eel_canvas_item_move (EEL_CANVAS_ITEM (icon->item),
 				x - icon->x,
 				y - icon->y);
@@ -5735,13 +5733,9 @@ finish_adding_new_icons (NautilusIconContainer *container)
 	new_icons = g_list_reverse (new_icons);
 	no_position_icons = semi_position_icons = NULL;
 	for (p = new_icons; p != NULL; p = p->next) {
-		gboolean has_lazy_position;
-
 		icon = p->data;
-		has_lazy_position = icon->has_lazy_position;
-
                 if (assign_icon_position (container, icon)) {
-			if (!container->details->is_reloading && !container->details->auto_layout && has_lazy_position) {
+                        if (!container->details->auto_layout && icon->has_lazy_position) {
                                 semi_position_icons = g_list_prepend (semi_position_icons, icon);
                         }
                 } else {
@@ -5774,7 +5768,6 @@ finish_adding_new_icons (NautilusIconContainer *container)
 		for (p = semi_position_icons; p != NULL; p = p->next) {
 			NautilusIcon *icon;
 			int x, y;
-			NautilusIconPosition position;
 
 			icon = p->data;
 			x = icon->x;
@@ -5787,10 +5780,9 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 			placement_grid_mark_icon (grid, icon);
 
-			position.x = icon->x;
-			position.y = icon->y;
-			g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
-				       icon->data, &position);
+			/* ensure that next time we run this code, the formerly semi-positioned
+			 * icons are treated as being positioned. */
+			icon->has_lazy_position = FALSE;
 		}
 
 		placement_grid_free (grid);
@@ -6688,15 +6680,6 @@ nautilus_icon_container_sort (NautilusIconContainer *container)
 	if (changed) {
 		g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 	}
-}
-
-void
-nautilus_icon_container_set_is_reloading (NautilusIconContainer *container,
-					  gboolean               is_reloading)
-{
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	container->details->is_reloading = is_reloading;
 }
 
 gboolean
