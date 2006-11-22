@@ -1,3 +1,10 @@
+2006-11-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-search-engine.c:
+	Look for Beagle before looking for Tracker. Since Tracker
+	autostarts and Beagle doesn't this means you can have both
+	installed and configured and pick which one to use.
+
 2006-11-20  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

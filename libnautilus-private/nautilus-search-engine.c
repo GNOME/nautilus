@@ -126,6 +126,13 @@ nautilus_search_engine_new (void)
 {
 	NautilusSearchEngine *engine;
 	
+#ifdef HAVE_BEAGLE
+	engine = nautilus_search_engine_beagle_new ();
+	if (engine) {
+		return engine;
+	}
+#endif
+	
 #ifdef HAVE_TRACKER
 	engine = nautilus_search_engine_tracker_new ();
 	if (engine) {
@@ -133,12 +140,6 @@ nautilus_search_engine_new (void)
 	}
 #endif
 
-#ifdef HAVE_BEAGLE
-	engine = nautilus_search_engine_beagle_new ();
-	if (engine) {
-		return engine;
-	}
-#endif
 	engine = nautilus_search_engine_simple_new ();
 	return engine;
 }
