@@ -29,6 +29,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-result.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
@@ -319,6 +320,7 @@ fm_rename_file (NautilusFile *file,
 {
 	char *old_name, *wait_message;
 	FMRenameData *data;
+	char *uri;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
@@ -345,6 +347,12 @@ fm_rename_file (NautilusFile *file,
 	eel_timed_wait_start (cancel_rename_callback, file, wait_message, 
 			      NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
 	g_free (wait_message);
+
+	uri = nautilus_file_get_uri (file);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "rename file old=\"%s\", new=\"%s\"",
+			    uri, new_name);
+	g_free (uri);
 
 	/* Start the rename. */
 	nautilus_file_rename (file, new_name,

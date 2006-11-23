@@ -54,6 +54,7 @@
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
@@ -785,6 +786,15 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 	view = FM_LIST_VIEW (callback_data);
 
 	if (fm_list_model_load_subdirectory (view->details->model, path, &directory)) {
+		char *uri;
+
+		uri = nautilus_directory_get_uri (directory);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "list view row expanded window=%p: %s",
+				    fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
+				    uri);
+		g_free (uri);
+
 		fm_directory_view_add_subdirectory (FM_DIRECTORY_VIEW (view), directory);
 		
 		if (nautilus_directory_are_all_files_seen (directory)) {
@@ -848,6 +858,7 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 	GtkTreeIter parent;
 	struct UnloadDelayData *unload_data;
 	GtkTreeModel *model;
+	char *uri;
 	
 	view = FM_LIST_VIEW (callback_data);
 	model = GTK_TREE_MODEL (view->details->model);
@@ -863,6 +874,14 @@ row_collapsed_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *p
 				    -1);
 	}
 	
+
+	uri = nautilus_file_get_uri (file);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "list view row collapsed window=%p: %s",
+			    fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)),
+			    uri);
+	g_free (uri);
+
 	unload_data = g_new (struct UnloadDelayData, 1);
 	unload_data->view = view;
 	unload_data->file = file;

@@ -76,6 +76,7 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -1140,6 +1141,10 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 			if (new_selection) {
 				nautilus_view_set_selection (existing_window->content_view, new_selection);
 			}
+
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "present EXISTING spatial window=%p: %s",
+					    existing_window, location);
 			return existing_window;
 		}
 	}
@@ -1177,6 +1182,10 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 			   spatial_window_destroyed_callback, NULL);
 	
 	nautilus_window_go_to_with_selection (window, location, new_selection);
+
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "present NEW spatial window=%p: %s",
+			    window, location);
 	
 	return window;
 }
@@ -1238,6 +1247,10 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 			 another_navigation_window_already_showing (window));
 	}
 	g_free (geometry_string);
+
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "create new navigation window=%p",
+			    window);
 
 	return window;
 }

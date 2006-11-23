@@ -37,6 +37,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
+#include <signal.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
@@ -50,6 +51,7 @@
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
@@ -198,6 +200,140 @@ slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
 	return event.xproperty.time;
 }
 
+static void
+dump_debug_log (void)
+{
+	char *filename;
+
+	filename = g_build_filename (g_get_home_dir (), "nautilus-debug-log.txt", NULL);
+	nautilus_debug_log_dump (filename, NULL); /* NULL GError */
+	g_free (filename);
+}
+
+static gboolean
+dump_debug_log_idle_cb (gpointer data)
+{
+	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "user requested dump of debug log");
+
+	dump_debug_log ();
+	return FALSE;
+}
+
+/* sigaction structures for the old handlers of these signals */
+static struct sigaction old_segv_sa;
+static struct sigaction old_abrt_sa;
+static struct sigaction old_trap_sa;
+static struct sigaction old_fpe_sa;
+static struct sigaction old_bus_sa;
+
+static void
+sigusr1_handler (int sig)
+{
+	g_idle_add (dump_debug_log_idle_cb, NULL);
+}
+
+static void
+sigfatal_handler (int sig)
+{
+	void (* func) (int);
+
+	/* FIXME: is this totally busted?  We do malloc() inside these functions,
+	 * and yet we are inside a signal handler...
+	 */
+	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "debug log dumped due to signal %d", sig);
+	dump_debug_log ();
+
+	switch (sig) {
+	case SIGSEGV:
+		func = old_segv_sa.sa_handler;
+		break;
+
+	case SIGABRT:
+		func = old_abrt_sa.sa_handler;
+		break;
+
+	case SIGTRAP:
+		func = old_trap_sa.sa_handler;
+		break;
+
+	case SIGFPE:
+		func = old_fpe_sa.sa_handler;
+		break;
+
+	case SIGBUS:
+		func = old_bus_sa.sa_handler;
+		break;
+
+	default:
+		func = NULL;
+		break;
+	}
+
+	/* this scares me */
+	if (func != NULL && func != SIG_IGN && func != SIG_DFL)
+		(* func) (sig);
+}
+
+static void
+setup_debug_log_signals (void)
+{
+	struct sigaction sa;
+
+	sa.sa_handler = sigusr1_handler;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction (SIGUSR1, &sa, NULL);
+
+	sa.sa_handler = sigfatal_handler;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+
+	sigaction(SIGSEGV, &sa, &old_segv_sa);
+	sigaction(SIGABRT, &sa, &old_abrt_sa);
+	sigaction(SIGTRAP, &sa, &old_trap_sa);
+	sigaction(SIGFPE,  &sa, &old_fpe_sa);
+	sigaction(SIGBUS,  &sa, &old_bus_sa);
+}
+
+static void
+setup_debug_log_domains (void)
+{
+	const char *domains[] = {
+		NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC
+	};
+
+	nautilus_debug_log_enable_domains (domains, G_N_ELEMENTS (domains));
+}
+
+static GLogFunc default_log_handler;
+
+static void
+log_override_cb (const gchar   *log_domain,
+		 GLogLevelFlags log_level,
+		 const gchar   *message,
+		 gpointer       user_data)
+{
+	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_GLOG, "%s", message);
+
+	(* default_log_handler) (log_domain, log_level, message, user_data);
+}
+
+static void
+setup_debug_log_glog (void)
+{
+	default_log_handler = g_log_set_default_handler (log_override_cb, NULL);
+}
+
+static void
+setup_debug_log (void)
+{
+	setup_debug_log_domains ();
+	setup_debug_log_signals ();
+	setup_debug_log_glog ();
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -286,6 +422,12 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_GOPTION_CONTEXT, context,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
+
+	/* We do this after gnome_program_init(), since that function sets up
+	 * its own handler for SIGSEGV and others --- we want to chain to those
+	 * handlers.
+	 */
+	setup_debug_log ();
 
 	if (session_to_load != NULL) {
 		no_default_window = TRUE;

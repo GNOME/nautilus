@@ -54,6 +54,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -473,8 +474,17 @@ nautilus_window_open_location_full (NautilusWindow *window,
 {
         NautilusWindow *target_window;
         gboolean do_load_location = TRUE;
+	char *old_location;
         
         target_window = NULL;
+
+	old_location = nautilus_window_get_location (window);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "window %p open location: old=\"%s\", new=\"%s\"",
+			    window,
+			    old_location ? old_location : "(none)",
+			    location);
+	g_free (old_location);
 
 	switch (mode) {
         case NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE :
@@ -1275,6 +1285,15 @@ nautilus_window_report_load_complete (NautilusWindow *window,
 static void
 end_location_change (NautilusWindow *window)
 {
+	char *location;
+
+	location = nautilus_window_get_location (window);
+	if (location) {
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "finished loading window %p: %s", window, location);
+		g_free (location);
+	}
+
         nautilus_window_allow_stop (window, FALSE);
 
         /* Now we can free pending_scroll_to, since the load_complete
@@ -1532,10 +1551,17 @@ nautilus_window_set_content_view (NautilusWindow *window,
                                   const char *id)
 {
 	NautilusFile *file;
+	char *location;
 	
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (window->details->location != NULL);
 	g_return_if_fail (id != NULL);
+
+	location = nautilus_window_get_location (window);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "change view of window %p: \"%s\" to \"%s\"",
+			    window, location, id);
+	g_free (location);
 
         if (nautilus_window_content_view_matches_iid (window, id)) {
         	return;

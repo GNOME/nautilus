@@ -29,6 +29,7 @@
 #include <math.h>
 #include "nautilus-icon-container.h"
 
+#include "nautilus-debug-log.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -3595,6 +3596,8 @@ button_release_event (GtkWidget *widget,
 				nautilus_icon_container_did_not_drag (container, event);
 			} else {
 				nautilus_icon_dnd_end_drag (container);
+				nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+						    "end drag from icon container");
 			}
 			break;
 		case DRAG_STATE_STRETCH:
@@ -3666,6 +3669,8 @@ motion_notify_event (GtkWidget *widget,
 							      event, 
 							      canvas_x,
 							      canvas_y);
+				nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+						    "begin drag from icon container");
 			}
 			break;
 		case DRAG_STATE_STRETCH:

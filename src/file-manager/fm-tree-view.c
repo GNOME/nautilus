@@ -61,6 +61,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -344,12 +345,18 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 	    && eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 
 		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "tree view launch_application_from_command window=%p: %s",
+				    view->details->window, uri);
 		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
 
 	} else if (uri != NULL
 	    	   && eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		   
 		file_uri = nautilus_file_get_uri (file);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "tree view launch_desktop_file window=%p: %s",
+				    view->details->window, file_uri);
 		nautilus_launch_desktop_file (screen, file_uri, NULL, NULL);
 		g_free (file_uri);
 		
@@ -362,6 +369,9 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
 		/* Non-local executables don't get launched. They act like non-executables. */
 		if (file_uri == NULL) {
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "tree view window_info_open_location window=%p: %s",
+					    view->details->window, uri);
 			nautilus_window_info_open_location
 				(view->details->window, 
 				 uri, 
@@ -369,6 +379,9 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				 0,
 				 NULL);
 		} else {
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "tree view launch_application_from_command window=%p: %s",
+					    view->details->window, file_uri);
 			nautilus_launch_application_from_command (screen, NULL, file_uri, NULL, FALSE);
 			g_free (file_uri);
 		}
@@ -380,6 +393,9 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				g_free (view->details->selection_location);
 			}
 			view->details->selection_location = g_strdup (uri);
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "tree view window_info_open_location window=%p: %s",
+					    view->details->window, uri);
 			nautilus_window_info_open_location
 				(view->details->window, 
 				 uri,

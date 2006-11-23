@@ -45,6 +45,7 @@
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -474,6 +475,9 @@ row_activated_callback (GtkTreeView *tree_view,
 		(model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
 	
 	if (uri != NULL) {
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "activate from places sidebar window=%p: %s",
+				    sidebar->window, uri);
 		/* Navigate to the clicked location. */
 		nautilus_window_info_open_location
 			(sidebar->window, 
@@ -484,6 +488,14 @@ row_activated_callback (GtkTreeView *tree_view,
 		gtk_tree_model_get 
 			(model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
 		if (drive != NULL) {
+			char *path;
+
+			path = gnome_vfs_drive_get_device_path (drive);
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "activate drive from places sidebar window=%p: %s",
+					    sidebar->window, path);
+			g_free (path);
+
 			gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
 			gnome_vfs_drive_unref (drive);
 		}

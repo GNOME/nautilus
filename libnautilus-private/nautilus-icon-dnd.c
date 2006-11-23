@@ -31,6 +31,7 @@
 #include <math.h>
 #include "nautilus-icon-dnd.h"
 
+#include "nautilus-debug-log.h"
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
@@ -559,8 +560,15 @@ receive_dropped_color (NautilusIconContainer *container,
 		       GtkSelectionData *data)
 {
 	action = get_background_drag_action (container, action);
-	
+
 	if (action > 0) {
+		char *uri;
+
+		uri = get_container_uri (container);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "dropped color on icon container displaying %s", uri);
+		g_free (uri);
+
 		eel_background_receive_dropped_color
 			(eel_get_widget_background (GTK_WIDGET (container)),
 			 GTK_WIDGET (container), 
@@ -577,6 +585,13 @@ receive_dropped_tile_image (NautilusIconContainer *container, GdkDragAction acti
 	action = get_background_drag_action (container, action);
 
 	if (action > 0) {
+		char *uri;
+
+		uri = get_container_uri (container);
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "dropped tile image on icon container displaying %s", uri);
+		g_free (uri);
+
 		eel_background_receive_dropped_background_image
 			(eel_get_widget_background (GTK_WIDGET (container)), 
 			 action, 
@@ -611,6 +626,11 @@ receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, 
 	 * so we don't have to worry about async. issues here.
 	 */
 	uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
+
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "dropped emblem '%s' on icon container URI: %s",
+			    keyword, uri);
+
 	file = nautilus_file_get (uri);
 	g_free (uri);
 	

@@ -67,6 +67,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-column-utilities.h \
 	nautilus-customization-data.c \
 	nautilus-customization-data.h \
+	nautilus-debug-log.c \
+	nautilus-debug-log.h \
 	nautilus-default-file-icon.c \
 	nautilus-default-file-icon.h \
 	nautilus-desktop-directory-file.c \

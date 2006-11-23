@@ -1,5 +1,108 @@
 2006-11-23  Alexander Larsson  <alexl@redhat.com>
 
+	* Commit federicos debug logging patch:
+
+2006-10-23  Federico Mena Quintero  <federico@novell.com>
+
+	* libnautilus-private/nautilus-debug-log.h
+	(NAUTILUS_DEBUG_LOG_DOMAIN_GLOG): New domain for GLog messages.
+	We'll spit the messages that come from GLog as milestone events.
+
+	* src/nautilus-main.c (setup_debug_log): New function; set up
+	everything here.
+	(setup_debug_log_glog): New function.  Override the default
+	handler for GLog so that its messages will also appear as
+	milestone events in our own debug log.
+
+2006-10-16  Federico Mena Quintero  <federico@novell.com>
+
+	* src/file-manager/fm-directory-view.c (files_added_callback): Log
+	when files are added to the view.
+	(files_changed_callback): Log when files get changed in the view.
+	(fm_directory_view_notify_selection_changed): Log when the
+	selection changes.
+
+	* src/nautilus-main.c (setup_debug_log_domains): Add
+	NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC to the list of enabled log domains.
+
+	* libnautilus-private/nautilus-debug-log.h: New prototype for
+	nautilus_debug_log_with_file_list().
+
+	* libnautilus-private/nautilus-debug-log.c
+	(nautilus_debug_log_with_file_list): New function; takes a GList
+	of NautilusFile.
+
+2006-10-03  Federico Mena Quintero  <federico@novell.com>
+
+	* libnautilus-private/nautilus-debug-log.c (nautilus_debug_logv):
+	Deal with URI lists optionally.
+	(nautilus_debug_log_with_uri_list): New function.
+
+	* libnautilus-private/nautilus-icon-dnd.c
+	(receive_dropped_color): Log when a color is dropped.
+	(receive_dropped_tile_image): Log when a tile image is dropped.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(motion_notify_event): Log when a drag begins.
+	(button_release_event): Log when a drag ends.
+
+	* libnautilus-private/nautilus-file-operations.c
+	(nautilus_file_operations_copy_move): Log move/copy/link actions.
+	(nautilus_file_operations_new_folder): Log when a folder is created.
+	(nautilus_file_operations_new_file_from_template): Log when a file
+	is created from a template.
+	(nautilus_file_operations_new_file): Log when a file is created.
+	(nautilus_file_operations_delete): Log when files are deleted.
+	(do_empty_trash): Log when the trash is emptied.
+
+2006-09-22  Federico Mena Quintero  <federico@novell.com>
+
+	* libnautilus-private/nautilus-debug-log.[ch]: New files with a
+	simple logging infrastructure based on a ring buffer.
+
+	* libnautilus-private/Makefile.am
+	(libnautilus_private_la_SOURCES): Added nautilus-debug-log.[ch].
+
+	* src/nautilus-main.c (main): Make SIGUSR1 dump the debug log to
+	~/nautilus-debug-log.txt.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_activate_files): Log the action of activating a
+	file.
+	(open_location): Likewise.
+	(fm_directory_view_launch_application): Likewise, for launching an
+	application.
+	(action_new_launcher_callback): Likewise, for creating a launcher.
+	(activate_callback): Log the various actions that can happen here.
+
+	* src/file-manager/fm-tree-view.c (got_activation_uri_callback):
+	Log the various activations/launches that can happen.
+
+	* src/nautilus-places-sidebar.c (row_activated_callback): Log the
+	action of the user activating something in the Places sidebar.
+
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_open_location_full): Log the action of changing
+	the location in a window.
+	(nautilus_window_set_content_view): Log the action of thanging the
+	view of a window.
+	(end_location_change): Log when the window finishes loading.
+
+	* src/file-manager/fm-list-view.c (row_expanded_callback): Log the
+	action of expanding a row to load a subdirectory.
+	(row_collapsed_callback): Likewise, for collapsing a row.
+
+	* src/file-manager/fm-error-reporting.c (fm_rename_file): Log the
+	action of renaming a file.
+
+	* src/nautilus-application.c
+	(nautilus_application_present_spatial_window_with_selection): Log
+	when new or existing spatial windows get presented.
+	(nautilus_application_create_navigation_window): Log when a
+	navigation window gets created.
+
+2006-11-23  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Bump version to 2.17.1
 	Gnome 2.16 work continues on gnome-2-16 branch

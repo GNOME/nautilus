@@ -80,6 +80,7 @@
 #include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
+#include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-search-directory.h>
@@ -770,14 +771,18 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 {
 	NautilusFile *file;
 	GList *l;
+	GtkWindow *window;
 
 	g_assert (application != NULL);
 	g_assert (NAUTILUS_IS_FILE (files->data));
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
-	nautilus_launch_application
-			(application, files, 
-			 fm_directory_view_get_containing_window (directory_view));
+	window = fm_directory_view_get_containing_window (directory_view);
+
+	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, files,
+					   "fm_directory_view_launch_application window=%p", window);
+
+	nautilus_launch_application (application, files, window);
 
 	for (l = files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
@@ -816,6 +821,7 @@ open_location (FMDirectoryView *directory_view,
 	       NautilusWindowOpenFlags flags)
 {
 	NautilusFile *file;
+	GtkWindow *window;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 	g_assert (new_uri != NULL);
@@ -830,7 +836,10 @@ open_location (FMDirectoryView *directory_view,
 		monitor_file_for_open_with (directory_view, NULL);
 	}
 	nautilus_file_unref (file);
-	
+
+	window = fm_directory_view_get_containing_window (directory_view);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "directory view open_location window=%p: %s", window, new_uri);
 	nautilus_window_info_open_location (directory_view->details->window,
 					    new_uri, mode, flags, NULL);
 }
@@ -1412,6 +1421,7 @@ action_new_launcher_callback (GtkAction *action,
 {
 	char *parent_uri;
 	FMDirectoryView *view;
+	GtkWindow *window;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -1419,6 +1429,9 @@ action_new_launcher_callback (GtkAction *action,
 
 	parent_uri = fm_directory_view_get_backing_uri (view);
 
+	window = fm_directory_view_get_containing_window (view);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "directory view create new launcher in window=%p: %s", window, parent_uri);
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
 						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit --create-new",
@@ -3097,8 +3110,18 @@ files_added_callback (NautilusDirectory *directory,
 		      gpointer callback_data)
 {
 	FMDirectoryView *view;
+	GtkWindow *window;
+	char *uri;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	window = fm_directory_view_get_containing_window (view);
+	uri = fm_directory_view_get_uri (view);
+	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC, files,
+					   "files added in window %p: %s",
+					   window,
+					   uri ? uri : "(no directory)");
+	g_free (uri);
 
 	schedule_changes (view);
 
@@ -3114,8 +3137,18 @@ files_changed_callback (NautilusDirectory *directory,
 			gpointer callback_data)
 {
 	FMDirectoryView *view;
+	GtkWindow *window;
+	char *uri;
 	
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	window = fm_directory_view_get_containing_window (view);
+	uri = fm_directory_view_get_uri (view);
+	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC, files,
+					   "files changed in window %p: %s",
+					   window,
+					   uri ? uri : "(no directory)");
+	g_free (uri);
 
 	schedule_changes (view);
 
@@ -5297,6 +5330,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	char *quoted_path;
 	char *old_working_dir;
 	char *parameters, *command, *name;
+	GtkWindow *window;
 	
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
 
@@ -5333,6 +5367,10 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	name = nautilus_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
+	window = fm_directory_view_get_containing_window (launch_parameters->directory_view);
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "directory view run_script_callback, window=%p, name=\"%s\", command=\"%s\"",
+			    window, name, command);
 	nautilus_launch_application_from_command (screen, name, command, NULL, FALSE);
 	g_free (name);
 	g_free (command);
@@ -7999,8 +8037,16 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	NautilusFile *file;
 	GList *selection;
+	GtkWindow *window;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	selection = fm_directory_view_get_selection (view);
+
+	window = fm_directory_view_get_containing_window (view);
+	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, selection,
+					   "selection changed in window %p",
+					   window);
 
 	view->details->selection_was_removed = FALSE;
 
@@ -8030,7 +8076,6 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 		/* If there's exactly one item selected we sniff the slower attributes needed
 		 * to activate a file ahead of time to improve interactive response.
 		 */
-		selection = fm_directory_view_get_selection (view);
 
 		if (eel_g_list_exactly_one_item (selection)) {
 			file = NAUTILUS_FILE (selection->data);
@@ -8049,9 +8094,9 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 				 NULL, 
 				 NULL);
 		}
-
-		nautilus_file_list_free (selection);
 	}
+
+	nautilus_file_list_free (selection);
 }
 
 static gboolean
@@ -8293,6 +8338,7 @@ activate_callback (GList *files, gpointer callback_data)
 	char *old_working_dir;
 	ActivationAction action;
 	GdkScreen *screen;
+	GtkWindow *window;
 
 	parameters = callback_data;
 
@@ -8353,12 +8399,18 @@ activate_callback (GList *files, gpointer callback_data)
 		}
 	}
 
+	window = fm_directory_view_get_containing_window (parameters->view);
 
 	launch_desktop_files = g_list_reverse (launch_desktop_files);
 	for (l = launch_desktop_files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 
 		uri = nautilus_file_get_uri (file);
+
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "directory view activate_callback launch_desktop_file window=%p: %s",
+				    window, uri);
+
 		nautilus_launch_desktop_file (
 				screen, uri, NULL,
 				fm_directory_view_get_containing_window (view));
@@ -8370,6 +8422,11 @@ activate_callback (GList *files, gpointer callback_data)
 		file = NAUTILUS_FILE (l->data);
 
 		uri = nautilus_file_get_activation_uri (file);
+
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "directory view activate_callback launch_application_from_command window=%p: %s",
+				    window, uri);
+
 		nautilus_launch_application_from_command (
 				screen, NULL, uri + strlen (NAUTILUS_COMMAND_SPECIFIER),
 				NULL, FALSE);
@@ -8389,6 +8446,11 @@ activate_callback (GList *files, gpointer callback_data)
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
+
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "directory view activate_callback launch_file window=%p: %s",
+				    window, quoted_path);
+
 		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, FALSE);
 		g_free (name);
 		g_free (quoted_path);
@@ -8405,6 +8467,11 @@ activate_callback (GList *files, gpointer callback_data)
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 		quoted_path = g_shell_quote (executable_path);
 		name = nautilus_file_get_name (file);
+
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "directory view activate_callback launch_in_terminal window=%p: %s",
+				    window, quoted_path);
+
 		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, TRUE);
 		g_free (name);
 		g_free (quoted_path);
@@ -8685,12 +8752,18 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	char *file_name;
 	char *timed_wait_prompt;
 	int file_count;
+	GtkWindow *window;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (files == NULL) {
 		return;
 	}
+
+	window = fm_directory_view_get_containing_window (view);
+	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, files,
+					   "fm_directory_view_activate_files window=%p",
+					    window);
 
 	file_count = g_list_length (files);
 

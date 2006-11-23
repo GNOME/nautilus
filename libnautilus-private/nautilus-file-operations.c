@@ -30,6 +30,7 @@
 #include <locale.h>
 #include "nautilus-file-operations.h"
 
+#include "nautilus-debug-log.h"
 #include "nautilus-file-operations-progress.h"
 #include "nautilus-lib-self-check-functions.h"
 
@@ -1907,6 +1908,33 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 	g_assert (item_uris != NULL);
 
+	{
+		const char *action_str;
+
+		switch (copy_action) {
+		case GDK_ACTION_COPY:
+			action_str = "copy";
+			break;
+
+		case GDK_ACTION_MOVE:
+			action_str = "move";
+			break;
+
+		case GDK_ACTION_LINK:
+			action_str = "link";
+			break;
+
+		default:
+			action_str = "[unknown action]";
+			break;
+		}
+
+		nautilus_debug_log_with_uri_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, item_uris,
+						  "%s the following URIs to \"%s\":",
+						  action_str,
+						  target_dir ? target_dir : "[empty location]");
+	}
+
 	target_dir_uri = NULL;
 	trash_dir_uri = NULL;
 	result = GNOME_VFS_OK;
@@ -2376,6 +2404,9 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 
 	g_assert (parent_dir != NULL);
 
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "create an untitled folder in \"%s\"", parent_dir);
+
 	/* pass in the target directory and the new folder name as a destination URI */
 	if (eel_uri_is_desktop (parent_dir)) {
 		char *desktop_dir_uri;
@@ -2574,6 +2605,10 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	g_assert (parent_dir != NULL);
 	g_assert (template_uri != NULL);
 
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "create new file \"%s\" from template \"%s\" in \"%s\"",
+			    target_filename ? target_filename : "(none)", template_uri, parent_dir);
+
 	/* pass in the target directory and the new folder name as a destination URI */
 	if (eel_uri_is_desktop (parent_dir)) {
 		tmp = nautilus_get_desktop_directory_uri ();
@@ -2677,6 +2712,10 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	char *target_filename;
 	int fd;
 
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "create new file in \"%s\"",
+			    parent_dir);
+
 	fd = mkstemp (source_file_str);
 	if (fd == -1) {
 		(*done_callback) (NULL, data);
@@ -2722,6 +2761,9 @@ nautilus_file_operations_delete (const GList *item_uris,
 	const char *item_uri;
 	NautilusFile *file;
 	TransferInfo *transfer_info;
+
+	nautilus_debug_log_with_uri_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, item_uris,
+					  "delete files:");
 
 	uri_list = NULL;
 	for (p = item_uris; p != NULL; p = p->next) {
@@ -2786,6 +2828,9 @@ do_empty_trash (GtkWidget *parent_view)
 {
 	TransferInfo *transfer_info;
 	GList *trash_dir_list;
+
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "empty trash");
 
 	trash_dir_list = nautilus_trash_monitor_get_trash_directories ();
 	if (trash_dir_list != NULL) {
