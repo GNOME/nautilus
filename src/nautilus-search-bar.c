@@ -138,8 +138,7 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 	gtk_widget_show (hbox);
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
-	label = gtk_label_new ("");
-	gtk_label_set_markup (GTK_LABEL (label), _("<b>Search:</b>"));
+	label = gtk_label_new (_("Search:"));
 	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
