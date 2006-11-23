@@ -1,3 +1,47 @@
+2006-11-23  Federico Mena Quintero  <federico@novell.com>
+
+	Use the write-to-a-pipe trick from the signal handler instead of
+	queueing an idle handler from there.
+
+	* src/nautilus-main.c (setup_debug_log_signals): Set up a pair of
+	pipes for the SIGUSR1 handler; set up a GIOChannel on them.
+	(sigusr1_handler): Write a byte to our pipe instead of queueing an
+	idle handler.
+	(debug_log_io_cb): Replaces dump_debug_log_idle_cb().  Read from
+	the pipe, and dump the debug log.
+
+	Add a configuration file for the logging mechanism.  You create
+	~/nautilus-debug-log.conf as a GKeyFile.
+
+	* libnautilus-private/nautilus-debug-log.c
+	(nautilus_debug_log_load_configuration): New function; loads the
+	configuration from a key file like this:
+
+		[debug log]
+		enable domains = foo; bar; baz
+		max lines = 1000
+
+	* libnautilus-private/nautilus-debug-log.c (dump_configuration):
+	New utility function.
+	(nautilus_debug_log_dump): At the end of the log, dump the
+	configuration used for the debug log so that the user can
+	re-create it later.
+
+	* libnautilus-private/nautilus-debug-log.h: New prototype for
+	nautilus_debug_log_load_configuration().
+
+	* src/nautilus-main.c (setup_debug_log): Load the debug log's
+	configuration from ~/nautilus-debug-log.conf
+	(setup_debug_log_domains): Removed.
+
+	* src/nautilus-main.c (log_override_cb): If the log level of the
+	message is G_LOG_LEVEL_DEBUG, don't log it as a milestone.  We'll
+	use this log level for miscellaneous debugging messages from
+	gnome-vfs.  Also, don't send G_LOG_LEVEL_DEBUG messages to the
+	default log handler, to avoid a huge ~/.xsession-errors.
+	(setup_debug_log_domains): Enable logging for 
+	NAUTILUS_DEBUG_LOG_DOMAIN_GLOG.
+
 2006-11-23  Christian Persch  <chpe@cvs.gnome.org>
 
 	* src/nautilus-search-bar.c: (nautilus_search_bar_init):

@@ -210,9 +210,16 @@ dump_debug_log (void)
 	g_free (filename);
 }
 
+static int debug_log_pipes[2];
+
 static gboolean
-dump_debug_log_idle_cb (gpointer data)
+debug_log_io_cb (GIOChannel *io, GIOCondition condition, gpointer data)
 {
+	char a;
+
+	while (read (debug_log_pipes[0], &a, 1) != 1)
+		;
+
 	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 			    "user requested dump of debug log");
 
@@ -230,7 +237,8 @@ static struct sigaction old_bus_sa;
 static void
 sigusr1_handler (int sig)
 {
-	g_idle_add (dump_debug_log_idle_cb, NULL);
+	while (write (debug_log_pipes[1], "a", 1) != 1)
+		;
 }
 
 static void
@@ -280,6 +288,13 @@ static void
 setup_debug_log_signals (void)
 {
 	struct sigaction sa;
+	GIOChannel *io;
+
+	if (pipe (debug_log_pipes) == -1)
+		g_error ("Could not create pipe() for debug log");
+
+	io = g_io_channel_unix_new (debug_log_pipes[0]);
+	g_io_add_watch (io, G_IO_IN, debug_log_io_cb, NULL);
 
 	sa.sa_handler = sigusr1_handler;
 	sigemptyset (&sa.sa_mask);
@@ -297,16 +312,6 @@ setup_debug_log_signals (void)
 	sigaction(SIGBUS,  &sa, &old_bus_sa);
 }
 
-static void
-setup_debug_log_domains (void)
-{
-	const char *domains[] = {
-		NAUTILUS_DEBUG_LOG_DOMAIN_ASYNC
-	};
-
-	nautilus_debug_log_enable_domains (domains, G_N_ELEMENTS (domains));
-}
-
 static GLogFunc default_log_handler;
 
 static void
@@ -315,9 +320,16 @@ log_override_cb (const gchar   *log_domain,
 		 const gchar   *message,
 		 gpointer       user_data)
 {
-	nautilus_debug_log (TRUE, NAUTILUS_DEBUG_LOG_DOMAIN_GLOG, "%s", message);
+	gboolean is_debug;
+	gboolean is_milestone;
 
-	(* default_log_handler) (log_domain, log_level, message, user_data);
+	is_debug = ((log_level & G_LOG_LEVEL_DEBUG) != 0);
+	is_milestone = !is_debug;
+
+	nautilus_debug_log (is_milestone, NAUTILUS_DEBUG_LOG_DOMAIN_GLOG, "%s", message);
+
+	if (!is_debug)
+		(* default_log_handler) (log_domain, log_level, message, user_data);
 }
 
 static void
@@ -329,7 +341,12 @@ setup_debug_log_glog (void)
 static void
 setup_debug_log (void)
 {
-	setup_debug_log_domains ();
+	char *config_filename;
+
+	config_filename = g_build_filename (g_get_home_dir (), "nautilus-debug-log.conf", NULL);
+	nautilus_debug_log_load_configuration (config_filename, NULL); /* NULL GError */
+	g_free (config_filename);
+
 	setup_debug_log_signals ();
 	setup_debug_log_glog ();
 }
