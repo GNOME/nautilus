@@ -366,8 +366,12 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 		g_free (details->editable_text);
 		details->editable_text = g_strdup (g_value_get_string (value));
 		if (details->text_util) {
+			AtkObject *accessible;
+
 			gail_text_util_text_setup (details->text_util,
 						   details->editable_text);
+			accessible = eel_accessibility_get_atk_object (item); 
+			g_object_notify (G_OBJECT(accessible), "accessible-name");
 		}
 		
 		nautilus_icon_canvas_item_invalidate_label_size (item);
