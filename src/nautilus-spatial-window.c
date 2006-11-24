@@ -85,6 +85,7 @@
 #include <sys/time.h>
 
 #define MAX_TITLE_LENGTH 180
+#define MAX_SHORTNAME_PATH 16
 
 #define SPATIAL_ACTION_PLACES               "Places"
 #define SPATIAL_ACTION_GO_TO_LOCATION       "Go to Location"
@@ -939,6 +940,8 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_widget_show (window->details->location_icon);
 	
 	window->details->location_label = gtk_label_new ("");
+	gtk_label_set_ellipsize (GTK_LABEL (window->details->location_label), PANGO_ELLIPSIZE_END);
+	gtk_label_set_max_width_chars (GTK_LABEL (window->details->location_label), MAX_SHORTNAME_PATH);
 	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_label,
 			    FALSE, FALSE, 0);
 	gtk_widget_show (window->details->location_label);
