@@ -34,6 +34,7 @@
 
 #include "fm-tree-model.h"
 #include "fm-properties-window.h"
+#include <eel/eel-alert-dialog.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences.h>
@@ -61,6 +62,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -106,6 +108,7 @@ struct FMTreeViewDetails {
 	GtkWidget *popup_paste;
 	GtkWidget *popup_rename;
 	GtkWidget *popup_trash;
+	GtkWidget *popup_delete;
 	GtkWidget *popup_properties;
 	GtkWidget *popup_unmount_separator;
 	GtkWidget *popup_unmount;
@@ -120,6 +123,7 @@ typedef struct {
 } PrependURIParameters;
 
 static GdkAtom copied_files_atom;
+static gboolean show_delete_command_auto_value;
 
 enum {
 	GNOME_COPIED_FILES
@@ -715,11 +719,35 @@ eject_for_type (GnomeVFSDeviceType type)
 }
 
 static gboolean
+is_parent_writable (NautilusFile *file)
+{
+	NautilusFile *parent;
+	gboolean result;
+	
+	parent = nautilus_file_get_parent (file);
+	
+	/* No parent directory, return FALSE */
+	if (parent == NULL) {
+		return FALSE;
+	}
+	
+	result = nautilus_file_can_write (parent);
+	nautilus_file_unref (parent);
+	
+	return result;	
+}
+
+static gboolean
 button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			 FMTreeView *view)
 {
 	GtkTreePath *path, *cursor_path;
 	char *uri;
+	gboolean parent_file_is_writable;
+	gboolean file_is_home_or_desktop;
+	gboolean file_is_special_link;
+	gboolean can_move_file_to_trash;
+	gboolean can_delete_file;
 
 	if (event->button == 3) {
 		gboolean unmount_is_eject = FALSE;
@@ -753,8 +781,25 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 							copied_files_atom,
 							clipboard_contents_received_callback, view);
 		}
-		gtk_widget_set_sensitive (view->details->popup_trash, can_move_uri_to_trash (uri));
+		can_move_file_to_trash = can_move_uri_to_trash (uri);
+		gtk_widget_set_sensitive (view->details->popup_trash, can_move_file_to_trash);
 		g_free (uri);
+		
+		if (show_delete_command_auto_value) {
+			parent_file_is_writable = is_parent_writable (view->details->popup_file);
+			file_is_home_or_desktop = nautilus_file_is_home (view->details->popup_file)
+				|| nautilus_file_is_desktop_directory (view->details->popup_file);
+			file_is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (view->details->popup_file);
+			
+			can_delete_file = parent_file_is_writable 
+				&& !file_is_home_or_desktop
+				&& !file_is_special_link;
+
+			gtk_widget_show (view->details->popup_delete);
+			gtk_widget_set_sensitive (view->details->popup_delete, can_delete_file);
+		} else {
+			gtk_widget_hide (view->details->popup_delete);
+		}
 		
 		volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (volume) {
@@ -1052,6 +1097,92 @@ fm_tree_view_trash_cb (GtkWidget *menu_item,
 	g_free (directory_uri);
 }
 
+static GtkWindow *
+fm_tree_view_get_containing_window (FMTreeView *view)
+{
+	GtkWidget *window;
+
+	g_assert (FM_IS_TREE_VIEW (view));
+
+	window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
+	if (window == NULL) {
+		return NULL;
+	}
+
+	return GTK_WINDOW (window);
+}
+
+static char *
+file_name_from_uri (const char *uri)
+{
+	NautilusFile *file;
+	char *file_name;
+	
+	file = nautilus_file_get (uri);
+	file_name = nautilus_file_get_display_name (file);
+	nautilus_file_unref (file);
+
+	return file_name;	
+}
+
+static gboolean
+confirm_delete_directly (FMTreeView *view,
+			 const char *directory_uri)
+{
+	GtkDialog *dialog;
+	char *file_name;
+	char *prompt;
+	int response;
+
+	file_name = file_name_from_uri (directory_uri);
+	
+	prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\"?"), 
+				  file_name);
+	g_free (file_name);
+
+	dialog = GTK_DIALOG (eel_alert_dialog_new (fm_tree_view_get_containing_window (view),
+				                   0,
+						   GTK_MESSAGE_WARNING,
+						   GTK_BUTTONS_NONE,
+						   prompt,
+						   _("If you delete an item, it is permanently lost.")));
+
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (dialog, GTK_STOCK_DELETE, GTK_RESPONSE_YES);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
+	
+	g_free (prompt);
+	
+	response = gtk_dialog_run (dialog);
+	
+	gtk_object_destroy (GTK_OBJECT(dialog));	
+	
+	return (response == GTK_RESPONSE_YES);
+}
+
+static void
+fm_tree_view_delete_cb (GtkWidget *menu_item,
+		        FMTreeView *view)
+{
+	GList *uri_list;
+	char *directory_uri;
+		
+	if (!show_delete_command_auto_value) {
+		return;
+	}
+	
+	directory_uri = nautilus_file_get_uri (view->details->popup_file);
+	
+	if (confirm_delete_directly (view, directory_uri)) {
+		uri_list = NULL;
+		uri_list = g_list_prepend (uri_list, g_strdup (directory_uri));
+		
+		nautilus_file_operations_delete (uri_list, GTK_WIDGET (view));
+		eel_g_list_free_deep (uri_list);
+	}
+	g_free (directory_uri);
+}
+
 static void
 fm_tree_view_properties_cb (GtkWidget *menu_item,
 			    FMTreeView *view)
@@ -1196,6 +1327,15 @@ create_popup_menu (FMTreeView *view)
 	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_trash = menu_item;
+	
+	/* add the "delete" menu item */
+	menu_item = gtk_menu_item_new_with_mnemonic (_("_Delete"));
+	g_signal_connect (menu_item, "activate",
+			  G_CALLBACK (fm_tree_view_delete_cb),
+			  view);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	view->details->popup_delete = menu_item;
 	
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
@@ -1481,6 +1621,9 @@ fm_tree_view_class_init (FMTreeViewClass *class)
 	G_OBJECT_CLASS (class)->finalize = fm_tree_view_finalize;
 	
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
+
+	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+					  &show_delete_command_auto_value);	
 }
 
 static const char *
