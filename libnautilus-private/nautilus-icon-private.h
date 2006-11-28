@@ -76,6 +76,7 @@ typedef struct {
 
 	guint prev_x, prev_y;
 	ArtDRect prev_rect;
+	int last_adj_y;
 } NautilusIconRubberbandInfo;
 
 typedef enum {

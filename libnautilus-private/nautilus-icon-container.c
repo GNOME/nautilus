@@ -1963,6 +1963,9 @@ rubberband_timeout_callback (gpointer data)
 	double x1, y1, x2, y2;
 	double world_x, world_y;
 	int x_scroll, y_scroll;
+	int adj_y;
+	gboolean adj_changed;
+	
 	ArtDRect selection_rect;
 
 	widget = GTK_WIDGET (data);
@@ -1972,6 +1975,13 @@ rubberband_timeout_callback (gpointer data)
 	g_assert (band_info->timer_id != 0);
 	g_assert (EEL_IS_CANVAS_RECT (band_info->selection_rectangle) ||
 		  EEL_IS_CANVAS_RECT (band_info->selection_rectangle));
+
+	adj_changed = FALSE;
+	adj_y = gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
+	if (adj_y != band_info->last_adj_y) {
+		band_info->last_adj_y = adj_y;
+		adj_changed = TRUE;
+	}
 
 	gtk_widget_get_pointer (widget, &x, &y);
 
@@ -1996,7 +2006,7 @@ rubberband_timeout_callback (gpointer data)
 	}
 
 	if (y_scroll == 0 && x_scroll == 0
-	    && (int) band_info->prev_x == x && (int) band_info->prev_y == y) {
+	    && (int) band_info->prev_x == x && (int) band_info->prev_y == y && !adj_changed) {
 		return TRUE;
 	}
 
@@ -2130,7 +2140,8 @@ start_rubberbanding (NautilusIconContainer *container,
 
 	eel_canvas_item_grab (band_info->selection_rectangle,
 				(GDK_POINTER_MOTION_MASK
-				 | GDK_BUTTON_RELEASE_MASK),
+				 | GDK_BUTTON_RELEASE_MASK 
+				 | GDK_SCROLL_MASK),
 				NULL, event->time);
 }
 
