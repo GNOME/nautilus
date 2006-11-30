@@ -116,8 +116,18 @@
 #define DEFAULT_SELECTION_BOX_ALPHA 0x40
 #define DEFAULT_HIGHLIGHT_ALPHA 0xff
 #define DEFAULT_NORMAL_ALPHA 0xff
+#define DEFAULT_PRELIGHT_ALPHA 0xff
 #define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
 #define DEFAULT_DARK_INFO_COLOR  0x33337F
+
+#define DEFAULT_NORMAL_ICON_RENDER_MODE 0
+#define DEFAULT_PRELIGHT_ICON_RENDER_MODE 1
+#define DEFAULT_NORMAL_ICON_SATURATION 255
+#define DEFAULT_PRELIGHT_ICON_SATURATION 255
+#define DEFAULT_NORMAL_ICON_BRIGHTNESS 255
+#define DEFAULT_PRELIGHT_ICON_BRIGHTNESS 255
+#define DEFAULT_NORMAL_ICON_LIGHTEN 0
+#define DEFAULT_PRELIGHT_ICON_LIGHTEN 0
 
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
@@ -4881,6 +4891,13 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     DEFAULT_NORMAL_ALPHA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uchar ("prelight_alpha",
+								     _("Prelight Alpha"),
+								     _("Opacity of the prelight icons if frame_text is set"),
+								     0, 0xff,
+								     DEFAULT_PRELIGHT_ALPHA,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boxed ("light_info_color",
 								     "Light Info Color",
 								     "Color used for information text against a dark background",
@@ -4892,6 +4909,82 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     "Color used for information text against a light background",
 								     GDK_TYPE_COLOR,
 								     G_PARAM_READABLE));
+
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("normal_icon_render_mode",
+								     "Normal Icon Render Mode",
+								     "Mode of normal icons being rendered (0=normal, 1=spotlight, 2=colorize, 3=colorize-monochromely)",
+								     0, 3,
+								     DEFAULT_NORMAL_ICON_RENDER_MODE,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("prelight_icon_render_mode",
+								     "Prelight Icon Render Mode",
+								     "Mode of prelight icons being rendered (0=normal, 1=spotlight, 2=colorize, 3=colorize-monochromely)",
+								     0, 3,
+								     DEFAULT_PRELIGHT_ICON_RENDER_MODE,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("normal_icon_color",
+								     "Icon Normal Color",
+								     "Color used for colorizing icons in normal state (default base[NORMAL])",
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("prelight_icon_color",
+								     "Icon Prelight Color",
+								     "Color used for colorizing prelighted icons (default base[PRELIGHT])",
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("normal_icon_saturation",
+								     "Normal Icon Saturation",
+								     "Saturation of icons in normal state",
+								     0, 255,
+								     DEFAULT_NORMAL_ICON_SATURATION,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("prelight_icon_saturation",
+								     "Prelight Icon Saturation",
+								     "Saturation of icons in prelight state",
+								     0, 255,
+								     DEFAULT_PRELIGHT_ICON_SATURATION,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("normal_icon_brightness",
+								     "Normal Icon Brightness",
+								     "Brightness of icons in normal state",
+								     0, 255,
+								     DEFAULT_NORMAL_ICON_BRIGHTNESS,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("prelight_icon_brightness",
+								     "Prelight Icon Brightness",
+								     "Brightness of icons in prelight state",
+								     0, 255,
+								     DEFAULT_PRELIGHT_ICON_BRIGHTNESS,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("normal_icon_lighten",
+								     "Normal Icon Lighten",
+								     "Lighten icons in normal state",
+								     0, 255,
+								     DEFAULT_NORMAL_ICON_LIGHTEN,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uint ("prelight_icon_lighten",
+								     "Prelight Icon Lighten",
+								     "Lighten icons in prelight state",
+								     0, 255,
+								     DEFAULT_PRELIGHT_ICON_LIGHTEN,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boolean ("activate_prelight_icon_label",
+								     "Activate Prelight Icon Label",
+								     "Whether icon labels should make use of its prelight color in prelight state",
+								     FALSE,
+								     G_PARAM_READABLE));
+								     								     
 
 	binding_set = gtk_binding_set_by_class (class);
 
@@ -4926,7 +5019,6 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 {
 	/* End renaming and commit change. */
 	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
-	
 	update_selected (NAUTILUS_ICON_CONTAINER (widget));
 
 	return FALSE;
@@ -7016,10 +7108,11 @@ GdkGC *
 nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container,
 						GdkColor             **color,
 						gboolean               is_name,
-						gboolean               is_highlight)
+						gboolean               is_highlight,
+						gboolean		  is_prelit)
 {
 	int idx;
-
+	
 	if (is_name) {
 		if (is_highlight) {
 			if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container))) {
@@ -7028,7 +7121,11 @@ nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container
 				idx = LABEL_COLOR_ACTIVE;
 			}
 		} else {
-			idx = LABEL_COLOR;
+			if (is_prelit) {
+				idx = LABEL_COLOR_PRELIGHT;
+			} else {
+				idx = LABEL_COLOR;
+			}
 		}
 	} else {
 		if (is_highlight) {
@@ -7108,6 +7205,7 @@ setup_label_gcs (NautilusIconContainer *container)
 
 	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_SELECTED]));
 	setup_gc_with_fg (container, LABEL_COLOR_ACTIVE, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_ACTIVE]));
+	setup_gc_with_fg (container, LABEL_COLOR_PRELIGHT, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_PRELIGHT]));
 	setup_gc_with_fg (container, 
 			  LABEL_INFO_COLOR_HIGHLIGHT, 
 			  eel_gdk_color_is_dark (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
@@ -7233,7 +7331,8 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
 	GtkStyle *style;
-	guchar highlight_alpha, normal_alpha;
+	GdkColor *prelight_icon_color, *normal_icon_color;
+	guchar highlight_alpha, normal_alpha, prelight_alpha;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
@@ -7261,17 +7360,70 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 				     style->base[GTK_STATE_ACTIVE].green >> 8, 
 				     style->base[GTK_STATE_ACTIVE].blue >> 8,
 				     highlight_alpha);
-	
+
+	/* load the prelight icon color */
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "prelight_icon_color", &prelight_icon_color,
+			      NULL);
+
+	if (prelight_icon_color) {
+		container->details->prelight_icon_color_rgba = 
+			EEL_RGBA_COLOR_PACK (prelight_icon_color->red >> 8, 
+					     prelight_icon_color->green >> 8, 
+					     prelight_icon_color->blue >> 8,
+					     255);
+	} else { /* if not defined by rc, set to default value */
+		container->details->prelight_icon_color_rgba = 
+			EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8,
+					     style->base[GTK_STATE_PRELIGHT].green >> 8,
+					     style->base[GTK_STATE_PRELIGHT].blue >> 8,
+					     255);
+	}
+  
+  
+	/* load the normal icon color */
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "normal_icon_color", &normal_icon_color,
+			      NULL);
+
+	if (normal_icon_color) {
+		container->details->normal_icon_color_rgba = 
+			EEL_RGBA_COLOR_PACK (normal_icon_color->red >> 8, 
+					     normal_icon_color->green >> 8, 
+					     normal_icon_color->blue >> 8,
+					     255);
+	} else { /* if not defined by rc, set to default value */
+		container->details->normal_icon_color_rgba = 
+			EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8, 
+					     style->base[GTK_STATE_NORMAL].green >> 8, 
+					     style->base[GTK_STATE_NORMAL].blue >> 8,
+					     255);
+	}
+
+
 	/* load the normal color */
 	gtk_widget_style_get (GTK_WIDGET (container),
 			      "normal_alpha", &normal_alpha,
 			      NULL);
-	
+
 	container->details->normal_color_rgba = 
 		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_NORMAL].red >> 8, 
 				     style->base[GTK_STATE_NORMAL].green >> 8, 
 				     style->base[GTK_STATE_NORMAL].blue >> 8,
 				     normal_alpha);
+
+
+	/* load the prelight color */
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "prelight_alpha", &prelight_alpha,
+			      NULL);
+
+	container->details->prelight_color_rgba = 
+		EEL_RGBA_COLOR_PACK (style->base[GTK_STATE_PRELIGHT].red >> 8, 
+				     style->base[GTK_STATE_PRELIGHT].green >> 8, 
+				     style->base[GTK_STATE_PRELIGHT].blue >> 8,
+				     prelight_alpha);
+
 
 	setup_label_gcs (container);
 }

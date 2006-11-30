@@ -104,6 +104,7 @@ enum {
 	LABEL_COLOR,
 	LABEL_COLOR_HIGHLIGHT,
 	LABEL_COLOR_ACTIVE,
+	LABEL_COLOR_PRELIGHT,
 	LABEL_INFO_COLOR,
 	LABEL_INFO_COLOR_HIGHLIGHT,
 	LABEL_INFO_COLOR_ACTIVE,
@@ -196,7 +197,10 @@ struct NautilusIconContainerDetails {
 	guint32    highlight_color_rgba;
 	guint32    active_color_rgba;
 	guint32    normal_color_rgba;
-	
+	guint32    prelight_color_rgba;
+	guint32    prelight_icon_color_rgba;
+	guint32    normal_icon_color_rgba;
+
 	/* colors for text labels */
 	GdkGC   *label_gcs    [LAST_LABEL_COLOR];
 	GdkColor label_colors [LAST_LABEL_COLOR];
@@ -298,6 +302,7 @@ void          nautilus_icon_container_update_scroll_region        (NautilusIconC
 GdkGC        *nautilus_icon_container_get_label_color_and_gc      (NautilusIconContainer *container,
 								   GdkColor             **color,
 								   gboolean               first_line,
-								   gboolean               needs_highlight);
+								   gboolean               needs_highlight,
+								   gboolean		     is_prelit);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */
