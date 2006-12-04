@@ -146,6 +146,8 @@ typedef struct {
 	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
+	void         (* freeze_updates)           (NautilusIconContainer *container);
+	void         (* unfreeze_updates)         (NautilusIconContainer *container);
 	void         (* start_monitor_top_left)   (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gconstpointer client,

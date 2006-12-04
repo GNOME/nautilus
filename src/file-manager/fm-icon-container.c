@@ -468,6 +468,24 @@ fm_icon_container_compare_icons_by_name (NautilusIconContainer *container,
 }
 
 static void
+fm_icon_container_freeze_updates (NautilusIconContainer *container)
+{
+	FMIconView *icon_view;
+	icon_view = get_icon_view (container);
+	g_return_if_fail (icon_view != NULL);
+	fm_directory_view_freeze_updates (FM_DIRECTORY_VIEW (icon_view));
+}
+
+static void
+fm_icon_container_unfreeze_updates (NautilusIconContainer *container)
+{
+	FMIconView *icon_view;
+	icon_view = get_icon_view (container);
+	g_return_if_fail (icon_view != NULL);
+	fm_directory_view_unfreeze_updates (FM_DIRECTORY_VIEW (icon_view));
+}
+
+static void
 fm_icon_container_dispose (GObject *object)
 {
 	FMIconContainer *icon_container;
@@ -495,6 +513,8 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	ic_class->compare_icons = fm_icon_container_compare_icons;
 	ic_class->compare_icons_by_name = fm_icon_container_compare_icons_by_name;
+	ic_class->freeze_updates = fm_icon_container_freeze_updates;
+	ic_class->unfreeze_updates = fm_icon_container_unfreeze_updates;
 
 	G_OBJECT_CLASS (klass)->dispose = fm_icon_container_dispose;
 }

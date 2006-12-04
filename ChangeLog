@@ -1,3 +1,11 @@
+2006-12-04  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* src/file-manager/fm-icon-container.c:
+	Freeze icon view updates while renaming to avoid things
+	moving around on file changes. (#318373)
+	Patch from Nelson Benítez
+	
 2006-12-04  Luca Ferretti  <elle.uca@libero.it>
 
 	* icons/nautilus-server-connect.png

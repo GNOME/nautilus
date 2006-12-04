@@ -5566,6 +5566,28 @@ nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
 }
 
 static void
+nautilus_icon_container_freeze_updates (NautilusIconContainer *container)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->freeze_updates != NULL);
+
+	klass->freeze_updates (container);
+}
+
+static void
+nautilus_icon_container_unfreeze_updates (NautilusIconContainer *container)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->unfreeze_updates != NULL);
+
+	klass->unfreeze_updates (container);
+}
+
+static void
 nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 						NautilusIconData *data,
 						gconstpointer client,
@@ -6926,6 +6948,9 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	}
 
 	details->original_text = g_strdup (editable_text);
+	
+	/* Freeze updates so files added while renaming don't cause rename to loose focus, bug #318373 */
+	nautilus_icon_container_freeze_updates (container);
 
 	/* Create text renaming widget, if it hasn't been created already.
 	 * We deal with the broken icon text item widget by keeping it around
@@ -7022,6 +7047,8 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	/* We are not in renaming mode */
 	container->details->renaming = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);
+	
+	nautilus_icon_container_unfreeze_updates (container);
 
 	if (commit) {
 		set_pending_icon_to_reveal (container, icon);
