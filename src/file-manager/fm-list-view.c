@@ -969,6 +969,36 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 }
 
 static void
+fm_list_view_reveal_selection (FMDirectoryView *view)
+{
+	GList *selection;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+        selection = fm_directory_view_get_selection (view);
+
+	/* Make sure at least one of the selected items is scrolled into view */
+	if (selection != NULL) {
+		FMListView *list_view;
+		NautilusFile *file;
+		GtkTreeIter iter;
+		GtkTreePath *path;
+		
+		list_view = FM_LIST_VIEW (view);
+		file = selection->data;
+		if (fm_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+
+			gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
+			
+			gtk_tree_path_free (path);
+		}
+	}
+
+        nautilus_file_list_free (selection);
+}
+
+static void
 sort_column_changed_callback (GtkTreeSortable *sortable, 
 			      FMListView *view)
 {
@@ -994,6 +1024,9 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	reversed_attr = (reversed ? "true" : "false");
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 				    default_reversed_attr, reversed_attr);
+				    
+	/* Make sure selected item(s) is visible after sort */
+	fm_list_view_reveal_selection (FM_DIRECTORY_VIEW (view));							      
 }
 
 static void
@@ -1482,7 +1515,7 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
-					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
+					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);					      
 }
 
 static gboolean
@@ -1834,36 +1867,6 @@ static void
 fm_list_view_select_all (FMDirectoryView *view)
 {
 	gtk_tree_selection_select_all (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view));
-}
-
-static void
-fm_list_view_reveal_selection (FMDirectoryView *view)
-{
-	GList *selection;
-
-	g_return_if_fail (FM_IS_LIST_VIEW (view));
-
-        selection = fm_directory_view_get_selection (view);
-
-	/* Make sure at least one of the selected items is scrolled into view */
-	if (selection != NULL) {
-		FMListView *list_view;
-		NautilusFile *file;
-		GtkTreeIter iter;
-		GtkTreePath *path;
-		
-		list_view = FM_LIST_VIEW (view);
-		file = selection->data;
-		if (fm_list_model_get_first_iter_for_file (list_view->details->model, file, &iter)) {
-			path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
-
-			gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
-			
-			gtk_tree_path_free (path);
-		}
-	}
-
-        nautilus_file_list_free (selection);
 }
 
 static void
