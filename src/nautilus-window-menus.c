@@ -433,17 +433,10 @@ action_about_nautilus_callback (GtkAction *action,
 		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
 	};
 	gchar *license_trans;
-	gchar *logo_path;
-	GdkPixbuf *logo = NULL;
 
 	license_trans = g_strjoin ("\n\n", _(license[0]), _(license[1]),
 					     _(license[2]), NULL);
 
-	logo_path = nautilus_pixmap_file ("nautilus-launch-icon.png");
-	if (logo_path != NULL) {
-		logo = gdk_pixbuf_new_from_file (logo_path, NULL);
-	}
-	
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
 			       "name", _("Nautilus"),
 			       "version", VERSION,
@@ -462,15 +455,11 @@ action_about_nautilus_callback (GtkAction *action,
 				 * box to give credit to the translator(s).
 				 */
 			      "translator-credits", _("translator-credits"),
-			      "logo", logo,
+			      "logo-icon-name", "nautilus",
 			      NULL);
 
-	if (logo != NULL) {
-		g_object_unref (logo);
-	}
-
 	g_free (license_trans);
-	g_free (logo_path);
+
 }
 
 static void

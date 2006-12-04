@@ -1,5 +1,7 @@
 NULL=
 
+SUBDIRS = appicon
+
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
@@ -10,7 +12,6 @@ icon_DATA =\
 	emblems.png \
 	erase.png \
 	knob.png \
-	nautilus-launch-icon.png \
 	note-indicator.png \
 	text-selection-frame.png \
 	thumbnail_frame.png \

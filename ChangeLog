@@ -1,5 +1,19 @@
 2006-12-04  Luca Ferretti  <elle.uca@libero.it>
 
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/appicon/*:
+	Add new Nautilus logo from Ulisse Perusin, installed
+	as named icon ("nautilus") in $(prefix)/share/icons/hicolor/.
+
+	* icons/nautilus-launch-icon.png:
+	Removed.
+
+	* src/nautilus-window-menus.c:
+	Use the new named icon logo in about dialog.
+
+2006-12-04  Luca Ferretti  <elle.uca@libero.it>
+
 	* icons/knob.png:
 	Remove black outline, using Tango style.
 	See bug 374722 for details.
