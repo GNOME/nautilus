@@ -26,6 +26,7 @@ typedef struct _GSequence      GSequence;
 typedef struct _GSequenceNode  GSequenceIter;
 
 
+
 typedef gint (* GSequenceIterCompareFunc) (GSequenceIter *a,
 					     GSequenceIter *b,
 					     gpointer	      data);
@@ -65,6 +66,8 @@ GSequenceIter *g_sequence_insert_before        (GSequenceIter *        iter,
 						   gpointer                data);
 void		 g_sequence_move		  (GSequenceIter *	   src,
 						   GSequenceIter *	   dest);
+void		 g_sequence_swap                (GSequenceIter *       a,
+						   GSequenceIter *       b);
 GSequenceIter *g_sequence_insert_sorted        (GSequence            *seq,
 						   gpointer                data,
 						   GCompareDataFunc        cmp_func,
@@ -110,8 +113,6 @@ gint            g_sequence_iter_get_position    (GSequenceIter *        iter);
 GSequenceIter *g_sequence_iter_move            (GSequenceIter *        iter,
 						   gint                    leap);
 GSequence *   g_sequence_iter_get_sequence    (GSequenceIter *        iter);
-void         g_sequence_swap                  (GSequenceIter *a,
-					       GSequenceIter *b);
 
 
 /* search */
