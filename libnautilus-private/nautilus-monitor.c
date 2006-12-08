@@ -108,6 +108,7 @@ monitor_notify_cb (GnomeVFSMonitorHandle    *handle,
 		nautilus_file_changes_queue_file_changed (info_uri);
 		break;
 	case GNOME_VFS_MONITOR_EVENT_DELETED:
+		nautilus_file_changes_queue_schedule_metadata_remove (info_uri);
 		nautilus_file_changes_queue_file_removed (info_uri);
 		break;
 	case GNOME_VFS_MONITOR_EVENT_CREATED:
