@@ -149,8 +149,9 @@ open_window (NautilusShell *shell, const char *uri, const char *startup_id,
 		}
 	} else {
 		home_uri = NULL;
+
 		if (uri == NULL) {
-			home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+			home_uri = nautilus_get_home_directory_uri ();
 			uri = home_uri;
 		}
 		

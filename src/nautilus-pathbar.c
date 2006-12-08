@@ -189,7 +189,7 @@ desktop_location_changed_callback (gpointer user_data)
 	g_free (path_bar->desktop_path);
 	g_free (path_bar->home_path);
 	path_bar->desktop_path = nautilus_get_desktop_directory_uri ();
-	path_bar->home_path = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	path_bar->home_path = nautilus_get_home_directory_uri ();
 	desktop_is_home = (strcmp (path_bar->home_path, path_bar->desktop_path) == 0);
 
         if (path_bar->home_icon) {
@@ -212,7 +212,7 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
         path_bar->icon_size = NAUTILUS_PATH_BAR_ICON_SIZE;
 
         path_bar->desktop_path = nautilus_get_desktop_directory_uri ();
-	path_bar->home_path = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	path_bar->home_path = nautilus_get_home_directory_uri ();
 	path_bar->root_path = g_strdup ("file:///");
 	desktop_is_home = (strcmp (path_bar->home_path, path_bar->desktop_path) == 0);
 

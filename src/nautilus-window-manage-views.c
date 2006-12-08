@@ -942,7 +942,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 				   better test for that */
 				
 				if (!gnome_vfs_uris_match (location, "file:///")) {
-					home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+					home_uri = nautilus_get_home_directory_uri ();
 					if (!gnome_vfs_uris_match (home_uri, location)) {	
 						nautilus_window_go_home (NAUTILUS_WINDOW (window));
 					} else {

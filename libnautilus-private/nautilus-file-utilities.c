@@ -323,7 +323,7 @@ nautilus_is_home_directory_file_escaped (char *escaped_dirname,
 	GnomeVFSURI *vfs_uri;
 	
 	if (escaped_home_dir_dirname == NULL) {
-		uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		uri = nautilus_get_home_directory_uri ();
 		vfs_uri = gnome_vfs_uri_new (uri);
 		g_free (uri);
 

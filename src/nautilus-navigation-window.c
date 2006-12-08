@@ -49,7 +49,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -63,12 +62,7 @@
 #include <gtk/gtkliststore.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-window-icon.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -762,18 +756,6 @@ void
 nautilus_navigation_window_go_forward (NautilusNavigationWindow *window)
 {
 	nautilus_navigation_window_back_or_forward (window, FALSE, 0);
-}
-
-void
-nautilus_navigation_window_go_home (NautilusNavigationWindow *window)
-{
-	char *home_uri;
-
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	
-	g_assert (home_uri != NULL);
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), home_uri);
-	g_free (home_uri);
 }
 
 void

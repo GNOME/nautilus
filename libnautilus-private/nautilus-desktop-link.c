@@ -34,6 +34,7 @@
 #include <gtk/gtksignal.h>
 #include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <string.h>
@@ -130,10 +131,8 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 	switch (type) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
 		link->details->filename = g_strdup ("home");
-
 		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
-		
-		link->details->activation_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		link->details->activation_uri = nautilus_get_home_directory_uri ();
 		link->details->icon = g_strdup ("gnome-fs-home");
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,

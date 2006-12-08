@@ -34,11 +34,11 @@
 
 #include "fm-tree-model.h"
 #include "fm-properties-window.h"
+#include <string.h>
 #include <eel/eel-alert-dialog.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences.h>
-#include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkmain.h>
@@ -66,6 +66,7 @@
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
@@ -346,7 +347,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
 	uri = nautilus_file_get_activation_uri (file);
 	if (uri != NULL
-	    && eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
+	    && g_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 
 		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
 		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
@@ -355,8 +356,8 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
 
 	} else if (uri != NULL
-	    	   && eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
-		   
+		   && g_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+
 		file_uri = nautilus_file_get_uri (file);
 		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 				    "tree view launch_desktop_file window=%p: %s",
@@ -1388,7 +1389,7 @@ create_tree (FMTreeView *view)
 		(view->details->child_model, "row_loaded",
 		 G_CALLBACK (row_loaded_callback),
 		 view, G_CONNECT_AFTER);
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	home_uri = nautilus_get_home_directory_uri ();
 	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-fs-home", NULL);
 	g_free (home_uri);
 	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), "gnome-fs-directory", NULL);

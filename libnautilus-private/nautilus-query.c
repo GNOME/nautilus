@@ -25,10 +25,10 @@
 #include <string.h>
 
 #include "nautilus-query.h"
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 
 struct NautilusQueryDetails {
 	char *text;
@@ -143,9 +143,9 @@ encode_home_uri (const char *uri)
 {
 	char *home_uri;
 	const char *encoded_uri;
-	
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	
+
+	home_uri = nautilus_get_home_directory_uri ();
+
 	if (g_str_has_prefix (uri, home_uri)) {
 		encoded_uri = uri + strlen (home_uri);
 		if (*encoded_uri == '/') {
@@ -169,7 +169,7 @@ decode_home_uri (const char *uri)
 	if (g_str_has_prefix (uri, "file:")) {
 		decoded_uri = g_strdup (uri);
 	} else {
-		home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		home_uri = nautilus_get_home_directory_uri ();
 
 		decoded_uri = g_strconcat (home_uri, "/", uri, NULL);
 		

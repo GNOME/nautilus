@@ -42,30 +42,18 @@
 #include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-marshal.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkoptionmenu.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-window-icon.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -259,8 +247,6 @@ nautilus_window_go_up_signal (NautilusWindow *window, gboolean close_behind)
 	return TRUE;
 }
 
-
-
 void
 nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 {
@@ -366,7 +352,6 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_RELOAD);
 	gtk_action_set_sensitive (action, allow);
-
 }
 
 void
@@ -374,12 +359,8 @@ nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	
-	g_assert (home_uri != NULL);
-	nautilus_window_go_to (window, home_uri);
+	home_uri = nautilus_get_home_directory_uri ();
+	nautilus_window_open_location (window, home_uri, FALSE);
 	g_free (home_uri);
 }
 

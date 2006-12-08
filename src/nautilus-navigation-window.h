@@ -82,7 +82,6 @@ struct _NautilusNavigationWindowClass {
 };
 
 GType    nautilus_navigation_window_get_type             (void);
-void     nautilus_navigation_window_go_home              (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_allow_back           (NautilusNavigationWindow *window,
                                                           gboolean                  allow);
 void     nautilus_navigation_window_allow_forward        (NautilusNavigationWindow *window,

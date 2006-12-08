@@ -1023,9 +1023,11 @@ done_loading_callback (NautilusDirectory *directory,
 	}
 	set_done_loading (root->model, node, TRUE);
 	nautilus_file_unref (file);
-	
+
 	make_iter_for_node (node, &iter, root->model->details->stamp);
-	g_signal_emit_by_name (root->model, "row_loaded", &iter);
+	g_signal_emit (root->model,
+		       tree_model_signals[ROW_LOADED], 0,
+		       &iter);
 }
 
 static NautilusFileAttributes
