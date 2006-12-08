@@ -359,6 +359,8 @@ nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
 
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
 	home_uri = nautilus_get_home_directory_uri ();
 	nautilus_window_open_location (window, home_uri, FALSE);
 	g_free (home_uri);
