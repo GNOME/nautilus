@@ -168,8 +168,6 @@ typedef struct {
 	GList *emblem;
 } EmblemLayout;
 
-#define ANTIALIAS_SELECTION_RECTANGLE TRUE
-
 static int click_policy_auto_value;
 
 /* GtkObject */
@@ -198,10 +196,6 @@ static void     draw_pixbuf                          (GdkPixbuf                 
 						      GdkDrawable                   *drawable,
 						      int                            x,
 						      int                            y);
-static void     draw_mask                            (GdkPixbuf                     *pixbuf,
-						      GdkDrawable                   *drawable,
-						      int                            x,
-						      int                            y);
 static PangoLayout *get_label_layout                 (PangoLayout                  **layout,
 						      NautilusIconCanvasItem        *item,
 						      const char                    *text);
@@ -213,13 +207,9 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      int                            x,
 						      int                            y,
 						      GdkGC                         *gc);
-
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
 						      ArtIRect                       canvas_rect,
 						      GtkCornerType *corner);
-static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
-						      GdkPixbuf                     *corner_pixbuf,
-						      int                            corner_size);
 static void      draw_embedded_text                  (NautilusIconCanvasItem        *icon_item,
 						      GdkDrawable                   *drawable,
 						      int                            x,
@@ -821,57 +811,52 @@ nautilus_icon_canvas_item_update (EelCanvasItem *item,
 }
 
 /* Rendering */
-
 static gboolean
 in_single_click_mode (void)
 {
 	return click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
-/* Multiplies each pixel in a pixbuf by the specified color */
+
+/* Utility routine to create a rectangle with rounded corners.
+ * This could possibly move to Eel as a general purpose routine. 
+ */
 static void
-multiply_pixbuf_rgba (GdkPixbuf *pixbuf, guint rgba)
+make_round_rect (cairo_t *cr,
+		 double x, 
+    		 double y, 
+		 double width, 
+		 double height,
+		 double radius)
 {
-	guchar *pixels;
-	int r, g, b, a;
-	int width, height, rowstride;
-	gboolean has_alpha;
-	int x, y;
-	guchar *p;
+	double cx, cy;
+	
+	width -= 2 * radius;
+	height -= 2 * radius;
+	
+	cairo_move_to (cr, x + radius, y);
+	
+	cairo_rel_line_to (cr, width, 0.0);
+	
+	cairo_get_current_point (cr, &cx, &cy);
+	cairo_arc (cr, cx, cy + radius, radius, 3.0 * G_PI_2, 0);
 
-	g_return_if_fail (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
-	g_return_if_fail (gdk_pixbuf_get_n_channels (pixbuf) == 3
-			  || gdk_pixbuf_get_n_channels (pixbuf) == 4);
+	cairo_rel_line_to (cr, 0.0, height);
 
-	r = EEL_RGBA_COLOR_GET_R (rgba);
-	g = EEL_RGBA_COLOR_GET_G (rgba);
-	b = EEL_RGBA_COLOR_GET_B (rgba);
-	a = EEL_RGBA_COLOR_GET_A (rgba);
+	cairo_get_current_point (cr, &cx, &cy);
+	cairo_arc (cr, cx - radius, cy, radius, 0, G_PI_2);
 
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	cairo_rel_line_to (cr, - width, 0.0);
+	
+	cairo_get_current_point (cr, &cx, &cy);
+	cairo_arc (cr, cx, cy - radius, radius, G_PI_2, G_PI);
 
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	cairo_rel_line_to (cr, 0.0, -height);
 
-	for (y = 0; y < height; y++) {
-		p = pixels;
+	cairo_get_current_point (cr, &cx, &cy);
+	cairo_arc (cr, cx + radius, cy, radius, G_PI, 3.0 * G_PI_2);
 
-		for (x = 0; x < width; x++) {
-			p[0] = p[0] * r / 255;
-			p[1] = p[1] * g / 255;
-			p[2] = p[2] * b / 255;
-
-			if (has_alpha) {
-				p[3] = p[3] * a / 255;
-				p += 4;
-			} else
-				p += 3;
-		}
-
-		pixels += rowstride;
-	}
+	cairo_close_path (cr);
 }
 
 static void
@@ -884,39 +869,43 @@ draw_frame (NautilusIconCanvasItem *item,
 	    int width,
 	    int height)
 {
-	GdkPixbuf *selection_pixbuf;
 	NautilusIconContainer *container;
+	cairo_t *cr;
+	GdkColor background_color_gdk;
+	double r, g, b;
 
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 
-	if (ANTIALIAS_SELECTION_RECTANGLE) {
-		selection_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-						   TRUE,
-						   8,
-						   width,
-						   height);
-		eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
-							  eel_gdk_pixbuf_whole_pixbuf,
-							  0xffffffff);
-		if (container->details->highlight_frame != NULL) {
-			clear_rounded_corners (selection_pixbuf,
-					       container->details->highlight_frame,
-					       5);
-		}
-		multiply_pixbuf_rgba (selection_pixbuf,
-				      color);
-		if (create_mask) {
-			draw_mask (selection_pixbuf, drawable, x, y);
-		} else {
-			draw_pixbuf (selection_pixbuf, drawable, x, y);
-		}
-		g_object_unref (selection_pixbuf);
+	/* Get a cairo context */
+	cr = gdk_cairo_create (drawable);	
+	
+	/* Set the rounded rect clip region. Magic rounding value taken
+	 * from old code. 
+	 */
+	make_round_rect (cr, x, y, width, height, 5);
+	
+	/* Get the GdkColor for the label selection fill */
+	background_color_gdk = eel_gdk_rgb_to_color (color);
+	
+	if (create_mask) {
+		/* Set the background color and opacity. Opacity
+		 * value take from the old draw_mask routine.
+		 */
+		r = (double) background_color_gdk.red / G_MAXUINT16;
+		g = (double) background_color_gdk.green / G_MAXUINT16;
+		b = (double) background_color_gdk.blue / G_MAXUINT16;
+		
+		cairo_set_source_rgba (cr, r, g, b, 128);		
 	} else {
-		gdk_draw_rectangle
-			(drawable, 
-			 GTK_WIDGET (container)->style->black_gc, TRUE,
-			 x, y, width, height);
+		/* Set the label background color */	        	
+		gdk_cairo_set_source_color (cr, &background_color_gdk);
 	}
+	
+	/* Paint into drawable now that we have set up the color and opacity */	
+	cairo_fill (cr);
+	
+	/* Clean up now that drawing is complete */
+	cairo_destroy (cr);		 
 }
 
 /* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
@@ -1048,16 +1037,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		details->text_height = editable_height;
 	}
 
-	if (ANTIALIAS_SELECTION_RECTANGLE) {
-		/* add some extra space for highlighting even when we don't highlight so things won't move */
-		text_back_padding_x = 4;
-		text_back_padding_y = 1;
-	} else {
-		/* add slop used for highlighting, even if we're not highlighting now */
-		text_back_padding_x = 2;
-		text_back_padding_y = 0;
-	}
-
+	/* add some extra space for highlighting even when we don't highlight so things won't move */
+	text_back_padding_x = 4;
+	text_back_padding_y = 1;
+	
 	details->text_height += text_back_padding_y*2; /* extra slop for nicer highlighting */
 	details->text_width += text_back_padding_x*2;  /* extra to make it look nicer */
 
@@ -1075,7 +1058,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 
 	text_rect = compute_text_rectangle (item, icon_rect, TRUE);
-	
+
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && !details->is_renaming &&
 	    details->text_width > 0 && details->text_height > 0) {
@@ -1089,7 +1072,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    text_rect.y1 - text_rect.y0);
 	}
 
-		
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 		x = text_rect.x0 + 2;
 	} else {
@@ -1447,16 +1429,6 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 			 gdk_pixbuf_get_width (pixbuf),
 			 gdk_pixbuf_get_height (pixbuf),
 			 GDK_RGB_DITHER_NORMAL, 0, 0);
-}
-
-static void
-draw_mask (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
-{
-	gdk_pixbuf_render_threshold_alpha (pixbuf, drawable,
-					   0, 0, x, y,
-					   gdk_pixbuf_get_width (pixbuf),
-					   gdk_pixbuf_get_height (pixbuf),
-					   128);
 }
 
 /* should be moved to libeel! */
@@ -1953,48 +1925,6 @@ draw_label_layout (NautilusIconCanvasItem *item,
 				 layout);
 	}
 }
-
-/* clear the corners of the selection pixbuf by copying the corners of the passed-in pixbuf */
-static void
-clear_rounded_corners (GdkPixbuf *destination_pixbuf, GdkPixbuf *corner_pixbuf, int corner_size)
-{
-	int dest_width, dest_height, src_width, src_height;
-		
-	dest_width = gdk_pixbuf_get_width (destination_pixbuf);
-	dest_height = gdk_pixbuf_get_height (destination_pixbuf);
-	
-	src_width = gdk_pixbuf_get_width (corner_pixbuf);
-	src_height = gdk_pixbuf_get_height (corner_pixbuf);
-	
-	/* draw top left corner */
-	gdk_pixbuf_copy_area (corner_pixbuf,
-			      0, 0,
-			      corner_size, corner_size,
-			      destination_pixbuf,
-			      0, 0);
-	
-	/* draw top right corner */
-	gdk_pixbuf_copy_area (corner_pixbuf,
-			      src_width - corner_size, 0,
-			      corner_size, corner_size,
-			      destination_pixbuf,
-			      dest_width - corner_size, 0);
-
-	/* draw bottom left corner */
-	gdk_pixbuf_copy_area (corner_pixbuf,
-			      0, src_height - corner_size,
-			      corner_size, corner_size,
-			      destination_pixbuf,
-			      0, dest_height - corner_size);
-	
-	/* draw bottom right corner */
-	gdk_pixbuf_copy_area (corner_pixbuf,
-			      src_width - corner_size, src_height - corner_size,
-			      corner_size, corner_size,
-			      destination_pixbuf,
-			      dest_width - corner_size, dest_height - corner_size);
-}
-
 
 /* handle events */
 

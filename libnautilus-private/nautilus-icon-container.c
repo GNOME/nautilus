@@ -3053,10 +3053,6 @@ finalize (GObject *object)
 					 nautilus_icon_container_theme_changed,
 					 object);
 	
-	if (details->highlight_frame != NULL) {
-		g_object_unref (details->highlight_frame);
-	}
-
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
 
@@ -7363,13 +7359,6 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
-	/* load the highlight frame */		
-	if (container->details->highlight_frame != NULL) {
-		g_object_unref (container->details->highlight_frame);
-	}
-	
-	container->details->highlight_frame = gdk_pixbuf_new_from_file (DATADIR "/pixmaps/nautilus/text-selection-frame.png", NULL);
-
 	/* load the highlight color */
 	gtk_widget_style_get (GTK_WIDGET (container),
 			      "highlight_alpha", &highlight_alpha,

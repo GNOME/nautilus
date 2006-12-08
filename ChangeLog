@@ -1,3 +1,16 @@
+2006-12-08  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-private.h:
+	Draw selection rect using cairo.
+
+	* icons/Makefile.am:
+	* icons/text-selection-frame.png:
+	Remove old icon used for selection rect.
+
+	Patch from Gene Z. Ragan
+	
 2006-12-04  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-list-view.c:

@@ -193,7 +193,6 @@ struct NautilusIconContainerDetails {
 	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* pixbuf and color for label highlighting */
-	GdkPixbuf *highlight_frame;
 	guint32    highlight_color_rgba;
 	guint32    active_color_rgba;
 	guint32    normal_color_rgba;
