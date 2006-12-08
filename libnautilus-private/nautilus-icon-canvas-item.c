@@ -872,7 +872,6 @@ draw_frame (NautilusIconCanvasItem *item,
 	NautilusIconContainer *container;
 	cairo_t *cr;
 	GdkColor background_color_gdk;
-	double r, g, b;
 
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 
@@ -888,18 +887,14 @@ draw_frame (NautilusIconCanvasItem *item,
 	background_color_gdk = eel_gdk_rgb_to_color (color);
 	
 	if (create_mask) {
-		/* Set the background color and opacity. Opacity
-		 * value take from the old draw_mask routine.
+		/* Dunno how to do this with cairo...
+		 * It used to threshold the rendering so that the
+		 * bitmask didn't show white where alpha < 0.5
 		 */
-		r = (double) background_color_gdk.red / G_MAXUINT16;
-		g = (double) background_color_gdk.green / G_MAXUINT16;
-		b = (double) background_color_gdk.blue / G_MAXUINT16;
-		
-		cairo_set_source_rgba (cr, r, g, b, 128);		
-	} else {
-		/* Set the label background color */	        	
-		gdk_cairo_set_source_color (cr, &background_color_gdk);
 	}
+	
+	/* Set the label background color */	        	
+	gdk_cairo_set_source_color (cr, &background_color_gdk);
 	
 	/* Paint into drawable now that we have set up the color and opacity */	
 	cairo_fill (cr);
