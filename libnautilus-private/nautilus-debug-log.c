@@ -1,24 +1,24 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
    nautilus-debug-log.c: Ring buffer for logging debug messages
- 
+
    Copyright (C) 2006 Novell, Inc.
-  
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
-  
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-  
+
    You should have received a copy of the GNU General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
-  
+
    Author: Federico Mena-Quintero <federico@novell.com>
 */
 #include <config.h>
@@ -31,7 +31,7 @@
 #include "nautilus-debug-log.h"
 #include "nautilus-file.h"
 
-#define DEFAULT_RING_BUFFER_NUM_LINES 30000
+#define DEFAULT_RING_BUFFER_NUM_LINES 1000
 
 #define KEY_FILE_GROUP		"debug log"
 #define KEY_FILE_DOMAINS_KEY	"enable domains"
@@ -44,6 +44,9 @@ static char **ring_buffer;
 static int ring_buffer_next_index;
 static int ring_buffer_num_lines;
 static int ring_buffer_max_lines = DEFAULT_RING_BUFFER_NUM_LINES;
+
+static GSList *milestones_head;
+static GSList *milestones_tail;
 
 static void
 lock (void)
@@ -119,6 +122,23 @@ add_to_ring (char *str)
 	}
 }
 
+static void
+add_to_milestones (const char *str)
+{
+	char *str_copy;
+
+	str_copy = g_strdup (str);
+
+	if (milestones_tail) {
+		milestones_tail = g_slist_append (milestones_tail, str_copy);
+		milestones_tail = milestones_tail->next;
+	} else {
+		milestones_head = milestones_tail = g_slist_append (NULL, str_copy);
+	}
+
+	g_assert (milestones_head != NULL && milestones_tail != NULL);
+}
+
 void
 nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uris, const char *format, va_list args)
 {
@@ -190,8 +210,8 @@ nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uri
 	}
 
 	add_to_ring (debug_str);
-
-	/* FIXME: deal with milestones */
+	if (is_milestone)
+		add_to_milestones (debug_str);
 
  out:
 	unlock ();
@@ -413,10 +433,28 @@ make_key_file_from_configuration (void)
 	}
 
 	/* max lines */
-	
+
 	g_key_file_set_integer (key_file, KEY_FILE_GROUP, KEY_FILE_MAX_LINES_KEY, ring_buffer_max_lines);
 
 	return key_file;
+}
+
+static gboolean
+write_string (const char *filename, FILE *file, const char *str, GError **error)
+{
+	if (fputs (str, file) == EOF) {
+		int saved_errno;
+
+		saved_errno = errno;
+		g_set_error (error,
+			     G_FILE_ERROR,
+			     g_file_error_from_errno (saved_errno),
+			     "error when writing to log file %s", filename);
+
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -427,6 +465,15 @@ dump_configuration (const char *filename, FILE *file, GError **error)
 	gsize length;
 	gboolean success;
 
+	if (!write_string (filename, file,
+			   "\n\n"
+			   "This configuration for the debug log can be re-created\n"
+			   "by putting the following in ~/nautilus-debug-log.conf\n"
+			   "(use ';' to separate domain names):\n\n",
+			   error)) {
+		return FALSE;
+	}
+
 	success = FALSE;
 
 	key_file = make_key_file_from_configuration ();
@@ -435,15 +482,7 @@ dump_configuration (const char *filename, FILE *file, GError **error)
 	if (!data)
 		goto out;
 
-	if (fputs (data, file) == EOF) {
-		int saved_errno;
-
-		saved_errno = errno;
-		g_set_error (error,
-			     G_FILE_ERROR,
-			     g_file_error_from_errno (saved_errno),
-			     "error when writing to log file %s", filename);
-
+	if (!write_string (filename, file, data, error)) {
 		goto out;
 	}
 
@@ -453,13 +492,65 @@ dump_configuration (const char *filename, FILE *file, GError **error)
 	return success;
 }
 
+static gboolean
+dump_milestones (const char *filename, FILE *file, GError **error)
+{
+	GSList *l;
+
+	if (!write_string (filename, file, "===== BEGIN MILESTONES =====\n", error))
+		return FALSE;
+
+	for (l = milestones_head; l; l = l->next) {
+		const char *str;
+
+		str = l->data;
+		if (!(write_string (filename, file, str, error)
+		      && write_string (filename, file, "\n", error)))
+			return FALSE;
+	}
+
+	if (!write_string (filename, file, "===== END MILESTONES =====\n", error))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+dump_ring_buffer (const char *filename, FILE *file, GError **error)
+{
+	int start_index;
+	int i;
+
+	if (!write_string (filename, file, "===== BEGIN RING BUFFER =====\n", error))
+		return FALSE;
+
+	if (ring_buffer_num_lines == ring_buffer_max_lines)
+		start_index = ring_buffer_next_index;
+	else
+		start_index = 0;
+
+	for (i = 0; i < ring_buffer_num_lines; i++) {
+		int idx;
+
+		idx = (start_index + i) % ring_buffer_max_lines;
+
+		if (!(write_string (filename, file, ring_buffer[idx], error)
+		      && write_string (filename, file, "\n", error))) {
+			return FALSE;
+		}
+	}
+
+	if (!write_string (filename, file, "===== END RING BUFFER =====\n", error))
+		return FALSE;
+
+	return TRUE;
+}
+
 gboolean
 nautilus_debug_log_dump (const char *filename, GError **error)
 {
 	FILE *file;
 	gboolean success;
-	int start_index;
-	int i;
 
 	g_assert (error == NULL || *error == NULL);
 
@@ -479,48 +570,11 @@ nautilus_debug_log_dump (const char *filename, GError **error)
 		goto out;
 	}
 
-	if (ring_buffer_num_lines == ring_buffer_max_lines)
-		start_index = ring_buffer_next_index;
-	else
-		start_index = 0;
-
-	for (i = 0; i < ring_buffer_num_lines; i++) {
-		int idx;
-
-		idx = (start_index + i) % ring_buffer_max_lines;
-
-		if (fputs (ring_buffer[idx], file) == EOF
-		    || fputc ('\n', file) == EOF) {
-			int saved_errno;
-
-			saved_errno = errno;
-			g_set_error (error,
-				     G_FILE_ERROR,
-				     g_file_error_from_errno (saved_errno),
-				     "error when writing to log file %s", filename);
-
-			goto do_close;
-		}
-	}
-
-	if (fputs ("\n\n"
-		   "This configuration for the debug log can be re-created\n"
-		   "by putting the following in ~/nautilus-debug-log.conf\n"
-		   "(use ';' to separate domain names):\n\n",
-		   file) == EOF) {
-		int saved_errno;
-
-		saved_errno = errno;
-		g_set_error (error,
-			     G_FILE_ERROR,
-			     g_file_error_from_errno (saved_errno),
-			     "error when writing to log file %s", filename);
-
+	if (!(dump_milestones (filename, file, error)
+	      && dump_ring_buffer (filename, file, error)
+	      && dump_configuration (filename, file, error))) {
 		goto do_close;
 	}
-
-	if (!dump_configuration (filename, file, error))
-		goto do_close;
 
 	success = TRUE;
 
