@@ -118,11 +118,11 @@ nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 	gtk_container_add (GTK_CONTAINER (item), throbber);
 	gtk_widget_show (GTK_WIDGET (item));
 	
-	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
-			    item, -1);
-	
 	g_signal_connect (item, "toolbar-reconfigured",
 			  G_CALLBACK (toolbar_reconfigured_cb), throbber);
+
+	gtk_toolbar_insert (GTK_TOOLBAR (window->details->toolbar),
+			    item, -1);
 
 	window->details->throbber = throbber;
 }

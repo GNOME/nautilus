@@ -78,14 +78,13 @@ typedef struct
 	GtkIconSize size;
 	int width;
 	int height;
-	GdkPixbuf *quiescent_pixbuf;
 	GdkPixbuf **animation_pixbufs;
 	guint n_animation_pixbufs;
 } EphySpinnerImages;
 
 #define LAST_ICON_SIZE			GTK_ICON_SIZE_DIALOG + 1
-#define SPINNER_ICON_NAME		"gnome-spinner"
-#define SPINNER_REST_ICON_NAME		"gnome-spinner-rest"
+#define SPINNER_ICON_NAME		"process-working"
+#define SPINNER_FALLBACK_ICON_NAME	"gnome-spinner"
 #define EPHY_SPINNER_IMAGES_INVALID	((EphySpinnerImages *) 0x1)
 
 typedef struct
@@ -155,8 +154,6 @@ ephy_spinner_images_unref (EphySpinnerImages *images)
 			g_object_unref (images->animation_pixbufs[i]);
 		}
 		g_free (images->animation_pixbufs);
-
-		g_object_unref (images->quiescent_pixbuf);
 
 		g_free (images);
 	}
@@ -236,7 +233,6 @@ ephy_spinner_images_load (GdkScreen *screen,
 			  GtkIconSize icon_size)
 {
 	EphySpinnerImages *images;
-	GdkPixbuf *rest_pixbuf = NULL;
 	GdkPixbuf *icon_pixbuf, *pixbuf;
 	GtkIconInfo *icon_info = NULL;
 	int grid_width, grid_height, x, y, requested_size, size, isw, ish, n;
@@ -252,44 +248,25 @@ ephy_spinner_images_load (GdkScreen *screen,
 
 	requested_size = MAX (ish, isw);
 
-	/* Load the rest icon */
-	icon_info = gtk_icon_theme_lookup_icon (icon_theme,
-						SPINNER_REST_ICON_NAME,
-						requested_size, 0);
-	if (icon_info == NULL)
-	{
-		g_warning ("Throbber rest icon not found");
-		goto loser;
-	}
-
-	size = gtk_icon_info_get_base_size (icon_info);
-	icon = gtk_icon_info_get_filename (icon_info);
-	if (icon == NULL) goto loser;
-
-	rest_pixbuf = gdk_pixbuf_new_from_file (icon, NULL);
-	gtk_icon_info_free (icon_info);
-	icon_info = NULL;
-
-	if (rest_pixbuf == NULL)
-	{
-		g_warning ("Could not load spinner rest icon");
-		goto loser;
-	}
-
-	if (size > requested_size)
-	{
-		rest_pixbuf = scale_to_size (rest_pixbuf, isw, ish);
-	}
-
-	/* Load the animation */
+	/* Load the animation. The 'rest icon' is the 0th frame */
 	icon_info = gtk_icon_theme_lookup_icon (icon_theme,
 						SPINNER_ICON_NAME,
 					        requested_size, 0);
 	if (icon_info == NULL)
 	{
 		g_warning ("Throbber animation not found");
-		goto loser;
+	
+		/* If the icon naming spec compliant name wasn't found, try the old name */
+		icon_info = gtk_icon_theme_lookup_icon (icon_theme,
+							SPINNER_FALLBACK_ICON_NAME,
+							requested_size, 0);
+		if (icon_info == NULL)
+		{
+			g_warning ("Throbber fallback animation not found either");
+			goto loser;
+		}
 	}
+	g_assert (icon_info != NULL);
 
 	size = gtk_icon_info_get_base_size (icon_info);
 	icon = gtk_icon_info_get_filename (icon_info);
@@ -346,13 +323,13 @@ ephy_spinner_images_load (GdkScreen *screen,
 
 	images->size = icon_size;
 	images->width = images->height = requested_size;
-	images->quiescent_pixbuf = rest_pixbuf;
 
 	images->n_animation_pixbufs = n;
 	images->animation_pixbufs = g_new (GdkPixbuf *, n);
 
 	for (l = list; l != NULL; l = l->next)
 	{
+		g_assert (l->data != NULL);
 		images->animation_pixbufs[--n] = l->data;
 	}
 	g_assert (n == 0);
@@ -367,10 +344,6 @@ loser:
 	if (icon_info)
 	{
 		gtk_icon_info_free (icon_info);
-	}
-	if (rest_pixbuf)
-	{
-		g_object_unref (rest_pixbuf);
 	}
 	g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 
@@ -593,7 +566,7 @@ ephy_spinner_load_images (EphySpinner *spinner)
 
 		STOP_PROFILER ("ephy_spinner_load_images")
 
-		details->current_image = 0;
+		details->current_image = 0; /* 'rest' icon */
 		details->need_load = FALSE;
 	}
 
@@ -668,23 +641,15 @@ ephy_spinner_expose (GtkWidget *widget,
 		return FALSE;
 	}
 
-	if (details->spinning &&
-	    images->n_animation_pixbufs > 0)
-	{
-		g_assert (details->current_image >= 0 &&
-			  details->current_image < images->n_animation_pixbufs);
+	/* Otherwise |images| will be NULL anyway */
+	g_assert (images->n_animation_pixbufs > 0);
+		
+	g_assert (details->current_image >= 0 &&
+		  details->current_image < images->n_animation_pixbufs);
 
-		pixbuf = images->animation_pixbufs[details->current_image];
-	}
-	else
-	{
-		pixbuf = images->quiescent_pixbuf;
-	}
+	pixbuf = images->animation_pixbufs[details->current_image];
 
-	if (pixbuf == NULL)
-	{
-		return FALSE;
-	}
+	g_assert (pixbuf != NULL);
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
@@ -729,7 +694,8 @@ bump_spinner_frame_cb (EphySpinner *spinner)
 	details->current_image++;
 	if (details->current_image >= details->images->n_animation_pixbufs)
 	{
-		details->current_image = 0;
+		/* the 0th frame is the 'rest' icon */
+		details->current_image = MIN (1, details->images->n_animation_pixbufs);
 	}
 
 	gtk_widget_queue_draw (GTK_WIDGET (spinner));
@@ -755,12 +721,15 @@ ephy_spinner_start (EphySpinner *spinner)
 	    details->timer_task == 0 &&
 	    ephy_spinner_load_images (spinner))
 	{
-		details->current_image = 0;
+		/* the 0th frame is the 'rest' icon */
+		details->current_image = MIN (1, details->images->n_animation_pixbufs);
 
 		details->timer_task =
-			g_timeout_add (details->timeout,
-				       (GSourceFunc) bump_spinner_frame_cb,
-				       spinner);
+			g_timeout_add_full (G_PRIORITY_LOW,
+			                    details->timeout,
+				            (GSourceFunc) bump_spinner_frame_cb,
+				            spinner,
+				            NULL);
 	}
 }
 
@@ -788,6 +757,7 @@ ephy_spinner_stop (EphySpinner *spinner)
 	EphySpinnerDetails *details = spinner->details;
 
 	details->spinning = FALSE;
+	details->current_image = 0;
 
 	if (details->timer_task != 0)
 	{
