@@ -183,7 +183,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 			    TRUE, TRUE, 0);
 	
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    box, TRUE, TRUE, 0);
+			    box, FALSE, TRUE, 0);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_HELP,
