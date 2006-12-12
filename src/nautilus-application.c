@@ -53,6 +53,7 @@
 #include "nautilus-window-bookmarks.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
+#include <libxml/xmlsave.h>
 #include <glib/gstdio.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
@@ -1384,6 +1385,8 @@ save_session_to_file (void)
 	GList *l;
 	char *dir, *filename;
 	unsigned n_processed;
+	int fd;
+	xmlSaveCtxtPtr ctx;
 
 	doc = xmlNewDoc ("1.0");
 
@@ -1451,16 +1454,27 @@ save_session_to_file (void)
 	}
 
 	dir = nautilus_get_user_directory ();
-	filename = tempnam (dir, "saved-session-");
+	filename = g_build_filename (dir, "saved-session-XXXXXX", NULL);
 	g_free (dir);
 
+	fd = g_mkstemp (filename);
+	if (fd < 0) {
+		g_message ("failed to open session file %s", filename);
+		g_free (filename);
+		filename = NULL;
+		goto out;
+	}
+
 	xmlIndentTreeOutput = 1;
-	if (filename == NULL || xmlSaveFormatFile (filename, doc, 1) < 0) {
+	ctx = xmlSaveToFd (fd, NULL, XML_SAVE_FORMAT);
+	if (xmlSaveDoc (ctx, doc) < 0 ||
+	    xmlSaveFlush (ctx) < 0) {
 		g_message ("failed to save session to %s", filename);
 		g_free (filename);
 		filename = NULL;
 	}
 
+ out:
 	xmlFreeDoc (doc);
 
 	return filename;
