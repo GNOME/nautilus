@@ -222,7 +222,7 @@ nautilus_location_dialog_new (NautilusWindow *window)
 	location = nautilus_window_get_location (window);
 	if (location != NULL) {
 		if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-			formatted_location = nautilus_get_desktop_directory ();
+			formatted_location = g_strdup_printf ("%s/", g_get_home_dir ());
 		} else {
 			formatted_location = eel_format_uri_for_display (location);
 		}
