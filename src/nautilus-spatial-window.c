@@ -874,8 +874,8 @@ static const GtkActionEntry spatial_entries[] = {
   { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
     "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
     G_CALLBACK (action_edit_bookmarks_callback) },
-  { "Search", "gtk-find", N_("_Search"), /* name, stock id, label */
-    "<control>F", N_("Search for files"),
+  { "Search", "gtk-find", N_("_Search for files..."), /* name, stock id, label */
+    "<control>F", N_("Locate documents and folders on this computer by name or content"),
     G_CALLBACK (action_search_callback) },
 };
 

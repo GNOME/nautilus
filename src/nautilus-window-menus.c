@@ -650,31 +650,31 @@ static const GtkActionEntry main_entries[] = {
     G_CALLBACK (action_zoom_normal_callback) },
   { "Connect to Server", NULL,                        /* name, stock id */
     N_("Connect to _Server..."), NULL,           /* label, accelerator */
-    N_("Set up a connection to a network server"),                                      /* tooltip */ 
+    N_("Connect to a remote computer or shared disk"),                                      /* tooltip */ 
     G_CALLBACK (action_connect_to_server_callback) },
   { "Home", "gnome-fs-home",                        /* name, stock id */
-    N_("_Home"), "<alt>Home",           /* label, accelerator */
-    N_("Go to the home folder"),                                  /* tooltip */ 
+    N_("_Home Folder"), "<alt>Home",           /* label, accelerator */
+    N_("Open your personal folder"),                                  /* tooltip */ 
     G_CALLBACK (action_home_callback) },
   { "Go to Computer", "gnome-fs-client",                        /* name, stock id */
     N_("_Computer"), NULL,           /* label, accelerator */
-    N_("Go to the computer location"),                                  /* tooltip */ 
+    N_("Browse all local and remote disks and folders accessible from this computer"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_computer_callback) },
   { "Go to Network", "gnome-fs-network",                        /* name, stock id */
     N_("_Network"), NULL,           /* label, accelerator */
-    N_("Go to the network location"),                                  /* tooltip */ 
+    N_("Browse bookmarked and local network locations"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_network_callback) },
   { "Go to Templates", "stock_new-template",                        /* name, stock id */
     N_("T_emplates"), NULL,           /* label, accelerator */
-    N_("Go to the templates folder"),                                  /* tooltip */ 
+    N_("Open your personal templates folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_templates_callback) },
   { "Go to Trash", "user-trash",                        /* name, stock id */
     N_("_Trash"), NULL,           /* label, accelerator */
-    N_("Go to the trash folder"),                                  /* tooltip */ 
+    N_("Open your personal trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },
   { "Go to Burn CD", "nautilus-cd-burner",                        /* name, stock id */
-    N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
-    N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
+    N_("CD/_DVD"), NULL,           /* label, accelerator */
+    N_("Open a folder into which you can drag files to burn to a CD or DVD"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },
 };
 
