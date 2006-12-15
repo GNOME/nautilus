@@ -701,7 +701,10 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_UP);
 	g_object_set (action, "short_label", _("_Up"), NULL);
-	
+
+	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_HOME);
+	g_object_set (action, "short_label", _("_Home"), NULL);
+
 	window->details->ui_manager = gtk_ui_manager_new ();
 	ui_manager = window->details->ui_manager;
 	gtk_window_add_accel_group (GTK_WINDOW (window),

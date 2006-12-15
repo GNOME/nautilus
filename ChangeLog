@@ -1,3 +1,19 @@
+2006-12-15  Luca Ferretti  <elle.uca@libero.it>
+
+	* src/nautilus-actions.h:
+
+	Add NAUTILUS_ACTION_HOME for Go->Home Folder
+	
+	* src/nautilus-navigation-window-menus.c:
+	(nautilus_navigation_window_initialize_actions),
+	(nautilus_navigation_window_initialize_menus):
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+
+	Define short_label for NAUTILUS_ACTION_HOME and 
+	NAUTILUS_ACTION_SEARCH, to use on toolbar. Also fix capitalization
+	in search menu entry.
+
 2006-12-13  Luca Ferretti  <elle.uca@libero.it>
 
 	* nautilus-computer.desktop.in.in:

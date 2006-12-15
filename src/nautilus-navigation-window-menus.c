@@ -443,7 +443,7 @@ static const GtkActionEntry navigation_entries[] = {
   { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
     "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
     G_CALLBACK (action_edit_bookmarks_callback) },
-  { "Search", "gtk-find", N_("_Search for files..."), /* name, stock id, label */
+  { "Search", "gtk-find", N_("_Search for Files..."), /* name, stock id, label */
     "<control>F", N_("Locate documents and folders on this computer by name or content"),
     G_CALLBACK (action_search_callback) },
 		     
@@ -521,7 +521,11 @@ nautilus_navigation_window_initialize_actions (NautilusNavigationWindow *window)
 	gtk_action_group_add_action_with_accel (action_group,
 						action,
 						"<alt>Right");
+
 	g_object_unref (action);
+
+	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SEARCH);
+	g_object_set (action, "short_label", _("_Search"), NULL);
 
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
@@ -541,7 +545,7 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 {
 	GtkUIManager *ui_manager;
 	const char *ui;
-	
+
 	ui_manager = nautilus_window_get_ui_manager (NAUTILUS_WINDOW (window));
 
 	ui = nautilus_ui_string_get ("nautilus-navigation-window-ui.xml");
