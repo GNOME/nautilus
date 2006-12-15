@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.13.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-04 19:39+0100\n"
-"PO-Revision-Date: 2006-12-04 19:40+0100\n"
+"POT-Creation-Date: 2006-12-15 13:54+0100\n"
+"PO-Revision-Date: 2006-12-15 14:01+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -1035,7 +1035,7 @@ msgid "Use De_fault"
 msgstr "Usa _predefinito"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1341
+#: ../src/file-manager/fm-list-view.c:1374
 msgid "Name"
 msgstr "Nome"
 
@@ -1156,8 +1156,7 @@ msgstr ""
 "Se si vuole smontare il volume, usare la voce «Smonta volume» nel menù a "
 "comparsa del volume."
 
-#: ../libnautilus-private/nautilus-desktop-link.c:180
-#: ../src/network-scheme.desktop.in.h:1
+#: ../libnautilus-private/nautilus-desktop-link.c:179
 msgid "Network Servers"
 msgstr "Server di rete"
 
@@ -1873,11 +1872,12 @@ msgstr "Ricerca"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:563
 #: ../libnautilus-private/nautilus-global-preferences.c:526
-#: ../nautilus-computer.desktop.in.in.h:1
+#: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Computer"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:565
+#: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Rete"
 
@@ -2238,12 +2238,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Cercare i file per nome e proprietà"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
-#: ../src/file-manager/fm-icon-container.c:516
+#: ../src/file-manager/fm-icon-container.c:536
 msgid "Icon View"
 msgstr "Vista a icone"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1394
+#: ../src/file-manager/fm-list-view.c:1427
 msgid "List View"
 msgstr "Vista a elenco"
 
@@ -2324,19 +2324,19 @@ msgstr "Home di %s"
 msgid "The selection rectangle"
 msgstr "Il rettangolo di selezione"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4888
+#: ../libnautilus-private/nautilus-icon-container.c:4884
 msgid "Normal Alpha"
 msgstr "Alpha normale"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4889
+#: ../libnautilus-private/nautilus-icon-container.c:4885
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "Opacità delle icone normali se è impostato frame_text"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4895
+#: ../libnautilus-private/nautilus-icon-container.c:4891
 msgid "Prelight Alpha"
 msgstr "Alpha in prelight"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4896
+#: ../libnautilus-private/nautilus-icon-container.c:4892
 msgid "Opacity of the prelight icons if frame_text is set"
 msgstr "Opacità delle icone in prelight se è impostato frame_text"
 
@@ -2530,13 +2530,14 @@ msgstr "Ripeti modifica"
 msgid "Redo the edit"
 msgstr "Ripeti la modifica"
 
-#: ../nautilus-computer.desktop.in.in.h:2
-msgid "View your computer storage"
-msgstr "Mostra i supporti di memorizzazione del computer"
+#: ../nautilus-computer.desktop.in.in.h:1
+msgid ""
+"Browse all local and remote disks and folder accessible from this computer"
+msgstr ""
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
-msgid "Change how files are managed"
-msgstr "Personalizza la gestione dei file"
+msgid "Change the behaviour and appearance of file manager windows"
+msgstr "Cambia il comportamento e l'aspetto delle finestre del file manager"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:2
 msgid "File Management"
@@ -2546,13 +2547,14 @@ msgstr "Gestione dei file"
 msgid "Open Folder"
 msgstr "Apri cartella"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1392
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1393
 msgid "Home Folder"
 msgstr "Cartella Home"
 
-#: ../nautilus-home.desktop.in.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Mostra la cartella home dell'utente nel file manager Nautilus"
+#. label, accelerator
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:657
+msgid "Open your personal folder"
+msgstr "Apre la propria cartella personale"
 
 #: ../nautilus.desktop.in.in.h:1
 msgid "Browse the file system with the file manager"
@@ -2680,7 +2682,7 @@ msgstr[0] "Verrà aperta %d finestra separata."
 msgstr[1] "Verranno aperte %d finestre separate."
 
 #: ../src/file-manager/fm-directory-view.c:1000
-#: ../src/file-manager/fm-tree-view.c:1139
+#: ../src/file-manager/fm-tree-view.c:1140
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Eliminare permanentemente «%s»?"
@@ -2694,7 +2696,7 @@ msgstr[0] "Eliminare permanentemente l'oggetto selezionato (%d)?"
 msgstr[1] "Eliminare permanentemente gli oggetti selezionati (%d)?"
 
 #: ../src/file-manager/fm-directory-view.c:1015
-#: ../src/file-manager/fm-tree-view.c:1148
+#: ../src/file-manager/fm-tree-view.c:1149
 msgid "If you delete an item, it is permanently lost."
 msgstr "Se si elimina un oggetto, questo è perduto per sempre."
 
@@ -2988,14 +2990,14 @@ msgstr ""
 
 # forma rigirata per evitare il futuro -Luca
 #: ../src/file-manager/fm-directory-view.c:6027
-#: ../src/file-manager/fm-tree-view.c:962
+#: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "Selezionare il comando «Incolla» per spostare «%s»"
 
 # forma rigirata per evitare il futuro
 #: ../src/file-manager/fm-directory-view.c:6031
-#: ../src/file-manager/fm-tree-view.c:966
+#: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "Selezionare il comando «Incolla» per copiare «%s»"
@@ -3023,7 +3025,7 @@ msgstr[1] ""
 "«Incolla»"
 
 #: ../src/file-manager/fm-directory-view.c:6139
-#: ../src/file-manager/fm-tree-view.c:1043
+#: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Gli appunti non contengono nulla da incollare."
 
@@ -3099,7 +3101,7 @@ msgstr "Crea in questa cartella un nuovo file vuoto"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6838
 #: ../src/file-manager/fm-directory-view.c:7717
-#: ../src/file-manager/fm-tree-view.c:1251
+#: ../src/file-manager/fm-tree-view.c:1252
 msgid "_Open"
 msgstr "_Apri"
 
@@ -3169,7 +3171,7 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6880
-#: ../src/file-manager/fm-tree-view.c:1305
+#: ../src/file-manager/fm-tree-view.c:1306
 msgid "_Paste Into Folder"
 msgstr "_Incolla nella cartella"
 
@@ -3252,7 +3254,7 @@ msgstr "Sposta ogni oggetto selezionato nel cestino"
 #: ../src/file-manager/fm-directory-view.c:6912
 #: ../src/file-manager/fm-directory-view.c:6988
 #: ../src/file-manager/fm-directory-view.c:7777
-#: ../src/file-manager/fm-tree-view.c:1332
+#: ../src/file-manager/fm-tree-view.c:1333
 msgid "_Delete"
 msgstr "Eli_mina"
 
@@ -3295,7 +3297,7 @@ msgstr "Monta il volume selezionato"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6928
 #: ../src/file-manager/fm-directory-view.c:6944
-#: ../src/file-manager/fm-tree-view.c:811
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "Smonta _volume"
 
@@ -3425,7 +3427,7 @@ msgstr "_Script"
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7543
 #: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-tree-view.c:1262
+#: ../src/file-manager/fm-tree-view.c:1263
 msgid "Open in New Window"
 msgstr "Apri in nuova finestra"
 
@@ -3862,55 +3864,55 @@ msgstr "Mostra questa posizione con la vista a icone."
 
 # direcory o cartella vuotA
 #: ../src/file-manager/fm-list-model.c:371
-#: ../src/file-manager/fm-tree-model.c:1227
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(Vuota)"
 
 #: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1227
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "Caricamento in corso..."
 
-#: ../src/file-manager/fm-list-view.c:1953
+#: ../src/file-manager/fm-list-view.c:1956
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s colonne visibili"
 
-#: ../src/file-manager/fm-list-view.c:1972
+#: ../src/file-manager/fm-list-view.c:1975
 msgid "Choose the order of information to appear in this folder."
 msgstr "Scegliere l'ordine in cui appaiono le informazioni in questa cartella."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2014
+#: ../src/file-manager/fm-list-view.c:2017
 msgid "Visible _Columns..."
 msgstr "Colonne visi_bili..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2015
+#: ../src/file-manager/fm-list-view.c:2018
 msgid "Select the columns visible in this folder"
 msgstr "Selezionare le colonne visibili in questa cartella"
 
-#: ../src/file-manager/fm-list-view.c:2738
+#: ../src/file-manager/fm-list-view.c:2741
 msgid "List"
 msgstr "Elenco"
 
-#: ../src/file-manager/fm-list-view.c:2739
+#: ../src/file-manager/fm-list-view.c:2742
 msgid "View as List"
 msgstr "Vedi come elenco"
 
-#: ../src/file-manager/fm-list-view.c:2740
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "View as _List"
 msgstr "Vedi come _elenco"
 
-#: ../src/file-manager/fm-list-view.c:2741
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error."
 msgstr "La vista a eleco ha riscontrato un errore."
 
-#: ../src/file-manager/fm-list-view.c:2742
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "The list view encountered an error while starting up."
 msgstr "La vista a elenco ha riscontrato un errore durante l'avvio."
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "Display this location with the list view."
 msgstr "Mostra questa posizione con la vista a elenco."
 
@@ -4246,43 +4248,43 @@ msgstr "Creazione della finestra delle proprietà."
 msgid "Select Custom Icon"
 msgstr "Selezione icona personalizzata"
 
-#: ../src/file-manager/fm-tree-view.c:811
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "E_ject"
 msgstr "_Espelli"
 
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1273
+#: ../src/file-manager/fm-tree-view.c:1274
 msgid "Create Folder"
 msgstr "Crea cartella"
 
-#: ../src/file-manager/fm-tree-view.c:1321
+#: ../src/file-manager/fm-tree-view.c:1322
 msgid "Move to Trash"
 msgstr "Sposta nel cestino"
 
-#: ../src/file-manager/fm-tree-view.c:1394
+#: ../src/file-manager/fm-tree-view.c:1395
 #: ../src/nautilus-places-sidebar.c:260
 msgid "File System"
 msgstr "File system"
 
 # è la traduzione dell'omonimo sotto Win
-#: ../src/file-manager/fm-tree-view.c:1396
+#: ../src/file-manager/fm-tree-view.c:1397
 msgid "Network Neighbourhood"
 msgstr "Risorse di rete"
 
-#: ../src/file-manager/fm-tree-view.c:1638
+#: ../src/file-manager/fm-tree-view.c:1639
 msgid "Tree"
 msgstr "Albero"
 
-#: ../src/file-manager/fm-tree-view.c:1644
+#: ../src/file-manager/fm-tree-view.c:1645
 msgid "Show Tree"
 msgstr "Mostra l'albero"
 
-#: ../src/nautilus-application.c:275
+#: ../src/nautilus-application.c:276
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus non può creare la cartella necessaria «%s»."
 
-#: ../src/nautilus-application.c:277
+#: ../src/nautilus-application.c:278
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4290,12 +4292,12 @@ msgstr ""
 "Prima di eseguire Nautilus, creare la seguente cartella, o impostare i "
 "permessi in modo che Nautilus possa crearla."
 
-#: ../src/nautilus-application.c:280
+#: ../src/nautilus-application.c:281
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus non può creare le seguente cartelle necessarie: %s."
 
-#: ../src/nautilus-application.c:282
+#: ../src/nautilus-application.c:283
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4303,18 +4305,18 @@ msgstr ""
 "Prima di eseguire Nautilus creare queste cartelle, o impostare i permessi in "
 "modo che Nautilus possa crearle."
 
-#: ../src/nautilus-application.c:341
+#: ../src/nautilus-application.c:342
 msgid "Link To Old Desktop"
 msgstr "Collegamento vecchia scrivania"
 
-#: ../src/nautilus-application.c:357
+#: ../src/nautilus-application.c:358
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 "Un collegamento di nome «Collegamento vecchia scrivania» è stato creato "
 "sulla scrivania."
 
 # :new
-#: ../src/nautilus-application.c:358
+#: ../src/nautilus-application.c:359
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4333,7 +4335,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:554
+#: ../src/nautilus-application.c:555
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4345,7 +4347,7 @@ msgstr ""
 
 # :modi
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:560
+#: ../src/nautilus-application.c:561
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4393,12 +4395,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:590 ../src/nautilus-application.c:608
-#: ../src/nautilus-application.c:615
+#: ../src/nautilus-application.c:591 ../src/nautilus-application.c:609
+#: ../src/nautilus-application.c:616
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus non può essere usato ora, a causa di un errore imprevisto."
 
-#: ../src/nautilus-application.c:591
+#: ../src/nautilus-application.c:592
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4407,7 +4409,7 @@ msgstr ""
 "durante il tentativo di registrazione del server per la vista del file "
 "manager."
 
-#: ../src/nautilus-application.c:609
+#: ../src/nautilus-application.c:610
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4418,7 +4420,7 @@ msgstr ""
 "«bonobo-activation-server» e riavviare Nautilus può aiutare a risolvere il "
 "problema."
 
-#: ../src/nautilus-application.c:616
+#: ../src/nautilus-application.c:617
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5149,7 +5151,7 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:425
-#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:155
+#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5275,14 +5277,14 @@ msgstr ""
 
 #: ../src/nautilus-navigation-window-menus.c:446
 #: ../src/nautilus-spatial-window.c:877
-msgid "_Search"
-msgstr "Ric_erca"
+msgid "_Search for Files..."
+msgstr "C_erca file..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
 #: ../src/nautilus-spatial-window.c:878
-msgid "Search for files"
-msgstr "Ricerca di file"
+msgid "Locate documents and folders on this computer by name or content"
+msgstr "Individua documenti e cartelle su questo computer per nome o contenuto"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
@@ -5352,12 +5354,16 @@ msgstr "Va alla posizione successiva"
 msgid "Forward history"
 msgstr "Avanti nella cronologia"
 
-#: ../src/nautilus-navigation-window.c:177
+#: ../src/nautilus-navigation-window-menus.c:528
+msgid "_Search"
+msgstr "Ric_erca"
+
+#: ../src/nautilus-navigation-window.c:171
 msgid "Toggle between button and text-based location bar"
 msgstr ""
 "Commuta tra la barra di posizione con pulsanti e quella basata sul testo"
 
-#: ../src/nautilus-navigation-window.c:906
+#: ../src/nautilus-navigation-window.c:888
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Esplorazione file"
@@ -5995,18 +6001,13 @@ msgstr "Connetti al _server..."
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:653
-msgid "Set up a connection to a network server"
-msgstr "Imposta una connessione ad un server di rete"
+msgid "Connect to a remote computer or shared disk"
+msgstr "Connette a un computer remoto o disco condiviso"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:656
-msgid "_Home"
-msgstr "_Home"
-
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:657
-msgid "Go to the home folder"
-msgstr "Va alla cartella home"
+msgid "_Home Folder"
+msgstr "Cartella _home"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:660
@@ -6015,8 +6016,9 @@ msgstr "C_omputer"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:661
-msgid "Go to the computer location"
-msgstr "Va alla posizione «Computer»"
+msgid ""
+"Browse all local and remote disks and folders accessible from this computer"
+msgstr "Esplora tutti i dischi e cartelle locali e remoti accessibili da questo computer"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:664
@@ -6024,9 +6026,9 @@ msgid "_Network"
 msgstr "_Rete"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:665
-msgid "Go to the network location"
-msgstr "Va alla posizione «Rete»"
+#: ../src/nautilus-window-menus.c:665 ../src/network-scheme.desktop.in.h:1
+msgid "Browse bookmarked and local network locations"
+msgstr "Esplora le posizioni di rete locali e nei segnalibri"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:668
@@ -6035,8 +6037,8 @@ msgstr "_Modelli"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:669
-msgid "Go to the templates folder"
-msgstr "Va alla cartella dei modelli"
+msgid "Open your personal templates folder"
+msgstr "Apre la propria cartella dei modelli"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:672
@@ -6045,23 +6047,27 @@ msgstr "_Cestino"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:673
-msgid "Go to the trash folder"
-msgstr "Va alla cartella del cestino"
+msgid "Open your personal trash folder"
+msgstr "Apre la propria cartella del cestino"
 
 # Voce nel menù "Vai"
 #. name, stock id
 #: ../src/nautilus-window-menus.c:676
-msgid "CD/_DVD Creator"
-msgstr "Creazione CD/_DVD"
+msgid "CD/_DVD"
+msgstr "CD/_DVD"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:677
-msgid "Go to the CD/DVD Creator"
-msgstr "Va alla «Creazione CD/DVD»"
+msgid "Open a folder into which you can drag files to burn to a CD or DVD"
+msgstr "Apre una cartella in cui trascinare i file da masterizzare su un CD o DVD"
 
 #: ../src/nautilus-window-menus.c:703
 msgid "_Up"
 msgstr "_Su"
+
+#: ../src/nautilus-window-menus.c:706
+msgid "_Home"
+msgstr "_Home"
 
 #: ../src/nautilus-zoom-control.c:84
 msgid "Zoom In"
@@ -6087,9 +6093,32 @@ msgstr "Ingrandimento"
 msgid "Set the zoom level of the current view"
 msgstr "Imposta il livello di ingrandimento della vista corrente"
 
-#: ../src/network-scheme.desktop.in.h:2
-msgid "View your network servers in the Nautilus file manager"
-msgstr "Mostra i server della propria rete nel file manager Nautilus"
+#~ msgid "View your computer storage"
+#~ msgstr "Mostra i supporti di memorizzazione del computer"
+
+#~ msgid "Change how files are managed"
+#~ msgstr "Personalizza la gestione dei file"
+
+#~ msgid "View your home folder in the Nautilus file manager"
+#~ msgstr "Mostra la cartella home dell'utente nel file manager Nautilus"
+
+#~ msgid "Set up a connection to a network server"
+#~ msgstr "Imposta una connessione ad un server di rete"
+
+#~ msgid "Go to the home folder"
+#~ msgstr "Va alla cartella home"
+
+#~ msgid "Go to the computer location"
+#~ msgstr "Va alla posizione «Computer»"
+
+#~ msgid "Go to the network location"
+#~ msgstr "Va alla posizione «Rete»"
+
+#~ msgid "Go to the CD/DVD Creator"
+#~ msgstr "Va alla «Creazione CD/DVD»"
+
+#~ msgid "View your network servers in the Nautilus file manager"
+#~ msgstr "Mostra i server della propria rete nel file manager Nautilus"
 
 #~ msgid "<b>Search:</b>"
 #~ msgstr "<b>Cerca:</b>"
