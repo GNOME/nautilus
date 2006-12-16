@@ -1182,7 +1182,6 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 	GList *providers;
 	GList *p;
 	NautilusSidebar *sidebar_panel;
-	NautilusSidebarProvider *provider;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
@@ -1193,6 +1192,8 @@ add_sidebar_panels (NautilusNavigationWindow *window)
  	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_SIDEBAR_PROVIDER);
 	
 	for (p = providers; p != NULL; p = p->next) {
+		NautilusSidebarProvider *provider;
+
 		provider = NAUTILUS_SIDEBAR_PROVIDER (p->data);
 		
 		sidebar_panel = nautilus_sidebar_provider_create (provider,
@@ -1202,7 +1203,9 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 		
 		g_object_unref (sidebar_panel);
 	}
-	
+
+	nautilus_module_extension_list_free (providers);
+
 	current = nautilus_side_pane_get_current_panel (window->sidebar);
 	set_current_side_panel
 		(window, 
