@@ -6805,7 +6805,7 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 }
 
 static const GtkActionEntry directory_view_entries[] = {
-  { "New Documents", NULL, N_("Create _Document") },               /* name, stock id, label */
+  { "New Documents", "document-new", N_("Create _Document") },               /* name, stock id, label */
   { "Open With", NULL, N_("Open Wit_h"),               /* name, stock id, label */
     NULL, N_("Choose a program with which to open the selected item") },
   { "Properties", GTK_STOCK_PROPERTIES,                  /* name, stock id */
@@ -6820,7 +6820,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("_Properties"), NULL,                /* label, accelerator */
     N_("View or modify the properties of the open folder"),                   /* tooltip */ 
     G_CALLBACK (action_self_properties_callback) },
-  { "New Folder", NULL,                  /* name, stock id */
+  { "New Folder", "folder-new",                  /* name, stock id */
     N_("Create _Folder"), "<control><shift>N",                /* label, accelerator */
     N_("Create a new empty folder inside this folder"),                   /* tooltip */ 
     G_CALLBACK (action_new_folder_callback) },

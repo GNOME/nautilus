@@ -425,7 +425,7 @@ action_search_callback (GtkAction *action,
 static const GtkActionEntry navigation_entries[] = {
   { "Go", NULL, N_("_Go") },               /* name, stock id, label */
   { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
-  { "New Window", NULL, N_("Open New _Window"),               /* name, stock id, label */
+  { "New Window", "window-new", N_("Open New _Window"),               /* name, stock id, label */
     "<control>N", N_("Open another Nautilus window for the displayed location"),
     G_CALLBACK (action_new_window_callback) },
   { "Close All Windows", NULL, N_("Close _All Windows"),               /* name, stock id, label */
