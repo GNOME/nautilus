@@ -39,18 +39,6 @@ struct NautilusTrashBarPrivate
 
 G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_HBOX)
 
-GtkWidget *
-nautilus_trash_bar_get_button (NautilusTrashBar *bar)
-{
-	GtkWidget *button;
-
-	g_return_val_if_fail (bar != NULL, NULL);
-
-	button = bar->priv->button;
-
-	return button;
-}
-
 static void
 nautilus_trash_bar_set_property (GObject      *object,
 				 guint         prop_id,
