@@ -35,6 +35,7 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
+#include "nautilus-trash-bar.h"
 #include "nautilus-zoom-control.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
@@ -64,6 +65,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-directory.h>
+#include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
 
@@ -1173,7 +1175,19 @@ add_extension_extra_widgets (NautilusWindow *window, const char *uri)
 	}
 
 	nautilus_module_extension_list_free (providers);
-	
+}
+
+static void
+nautilus_window_show_trash_bar (NautilusWindow *window)
+{
+	GtkWidget *bar;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	bar = nautilus_trash_bar_new ();
+	gtk_widget_show (bar);
+
+	nautilus_window_add_extra_location_widget (window, bar);
 }
 
 /* Handle the changes for the NautilusWindow itself. */
@@ -1233,6 +1247,11 @@ update_for_new_location (NautilusWindow *window)
 		} else {
 			nautilus_window_set_search_mode (window, FALSE, NULL);
 		}
+
+		if (NAUTILUS_IS_TRASH_DIRECTORY (directory)) {
+			nautilus_window_show_trash_bar (window);
+		}
+
 		nautilus_directory_unref (directory);
 
 		add_extension_extra_widgets (window, window->details->location);

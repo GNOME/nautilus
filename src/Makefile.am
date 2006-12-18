@@ -117,6 +117,8 @@ nautilus_SOURCES = \
 	nautilus-spatial-window.h               \
 	nautilus-throbber.c			\
 	nautilus-throbber.h			\
+	nautilus-trash-bar.c			\
+	nautilus-trash-bar.h			\
 	nautilus-window-bookmarks.c		\
 	nautilus-window-bookmarks.h		\
 	nautilus-window-manage-views.c		\

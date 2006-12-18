@@ -36,13 +36,8 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libxml/parser.h>
-#include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
-#include <gtk/gtkpaned.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtksignal.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
@@ -52,17 +47,14 @@
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
-#include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
-#include <math.h>
 
 struct NautilusInformationPanelDetails {
 	GtkVBox *container;
@@ -87,7 +79,6 @@ struct NautilusInformationPanelDetails {
 
 static gboolean nautilus_information_panel_press_event           (GtkWidget                    *widget,
 								  GdkEventButton               *event);
-static void     nautilus_information_panel_destroy               (GtkObject                    *object);
 static void     nautilus_information_panel_finalize              (GObject                      *object);
 static void     nautilus_information_panel_drag_data_received    (GtkWidget                    *widget,
 								  GdkDragContext               *context,
@@ -100,7 +91,6 @@ static void     nautilus_information_panel_read_defaults         (NautilusInform
 static void     nautilus_information_panel_style_set             (GtkWidget                    *widget,
 								  GtkStyle                     *previous_style);
 static void     nautilus_information_panel_theme_changed         (gpointer                      user_data);
-static void     nautilus_information_panel_confirm_trash_changed (gpointer                      user_data);
 static void     nautilus_information_panel_update_appearance     (NautilusInformationPanel     *information_panel);
 static void     nautilus_information_panel_update_buttons        (NautilusInformationPanel     *information_panel);
 static void     add_command_buttons                              (NautilusInformationPanel     *information_panel,
@@ -110,8 +100,6 @@ static void     nautilus_information_panel_iface_init            (NautilusSideba
 static void     nautilus_information_panel_iface_init            (NautilusSidebarIface         *iface);
 static void     sidebar_provider_iface_init                      (NautilusSidebarProviderIface *iface);
 static GType    nautilus_information_panel_provider_get_type     (void);
-
-static gboolean confirm_trash_auto_value = TRUE;
 
 enum {
 	LOCATION_CHANGED,
@@ -213,16 +201,12 @@ nautilus_information_panel_class_init (NautilusInformationPanelClass *klass)
 {
 	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
-	GtkObjectClass *object_class;
 	
 	gobject_class = G_OBJECT_CLASS (klass);
-	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 	
 	gobject_class->finalize = nautilus_information_panel_finalize;
 
-	object_class->destroy = nautilus_information_panel_destroy;
-	
 	widget_class->drag_data_received  = nautilus_information_panel_drag_data_received;
 	widget_class->button_press_event  = nautilus_information_panel_press_event;
 	widget_class->style_set = nautilus_information_panel_style_set;
@@ -262,18 +246,10 @@ static void
 nautilus_information_panel_init (NautilusInformationPanel *information_panel)
 {
 	GtkWidget *widget;
-	static gboolean setup_autos = FALSE;
 
 	widget = GTK_WIDGET (information_panel);
 
 	information_panel->details = g_new0 (NautilusInformationPanelDetails, 1);
-
-	if (!setup_autos) {
-		setup_autos = TRUE;
-		eel_preferences_add_auto_boolean (
-			NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-			&confirm_trash_auto_value);
-	}	
 	
 	/* load the default background */
 	nautilus_information_panel_read_defaults (information_panel);
@@ -303,24 +279,11 @@ nautilus_information_panel_init (NautilusInformationPanel *information_panel)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR, nautilus_information_panel_theme_changed, information_panel);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME, nautilus_information_panel_theme_changed, information_panel);
 
-	/* add a callback for when the preference whether to confirm trashing/deleting file changes */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH, nautilus_information_panel_confirm_trash_changed, information_panel);
-
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (information_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   target_table, G_N_ELEMENTS (target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_ASK);
-}
-
-static void
-nautilus_information_panel_destroy (GtkObject *object)
-{
-	NautilusInformationPanel *information_panel;
-
-	information_panel = NAUTILUS_INFORMATION_PANEL (object);
-
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -351,11 +314,6 @@ nautilus_information_panel_finalize (GObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME,
 					 nautilus_information_panel_theme_changed,
 					 information_panel);
-
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					 nautilus_information_panel_confirm_trash_changed,
-					 information_panel);
-
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -459,17 +417,6 @@ nautilus_information_panel_theme_changed (gpointer user_data)
 	gtk_widget_queue_draw (GTK_WIDGET (information_panel)) ;	
 }
 
-/* handler for handling confirming trash preferences changes */
-
-static void
-nautilus_information_panel_confirm_trash_changed (gpointer user_data)
-{
-	NautilusInformationPanel *information_panel;
-	
-	information_panel = NAUTILUS_INFORMATION_PANEL (user_data);
-	nautilus_information_panel_update_buttons (information_panel);
-}
-
 /* hit testing */
 
 static InformationPanelPart
@@ -518,8 +465,8 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 	char **uris;
 	gboolean exactly_one;
 	GtkWindow *window;
-	
-	uris = g_strsplit (selection_data->data, "\r\n", 0);
+
+	uris = g_uri_list_extract_uris ((gchar *) selection_data->data);
 	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (information_panel)));
 	
@@ -974,43 +921,6 @@ add_buttons_from_metadata (NautilusInformationPanel *information_panel, const ch
 	g_strfreev (terms);
 }
 
-/* handle the hacked-in empty trash command */
-static void
-empty_trash_callback (GtkWidget *button, gpointer data)
-{
-	GtkWidget *window;
-	
-	window = gtk_widget_get_toplevel (button);
-	nautilus_file_operations_empty_trash (window);
-}
-
-
-static void
-burn_cd_callback (GtkWidget *button, gpointer data)
-{
-	GError *error;
-	char *argv[] = { "nautilus-cd-burner", NULL};
-
-	error = NULL;
-	if (!g_spawn_async (NULL,
-			    argv, NULL,
-			    G_SPAWN_SEARCH_PATH,
-			    NULL, NULL,
-			    NULL,
-			    &error)) {
-		eel_show_error_dialog (_("Unable to launch the cd burner application."), error->message,
-				       GTK_WINDOW (gtk_widget_get_toplevel (button)));
-		g_error_free (error);
-	}
-}
-
-static void
-nautilus_information_panel_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
-						gboolean state, gpointer callback_data)
-{
-		gtk_widget_set_sensitive (GTK_WIDGET (callback_data), !nautilus_trash_monitor_is_empty ());
-}
-
 /*
  * nautilus_information_panel_update_buttons:
  * 
@@ -1020,7 +930,6 @@ static void
 nautilus_information_panel_update_buttons (NautilusInformationPanel *information_panel)
 {
 	char *button_data;
-	GtkWidget *temp_button;
 	GList *short_application_list;
 	
 	/* dispose of any existing buttons */
@@ -1037,37 +946,6 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 	if (button_data) {
 		add_buttons_from_metadata (information_panel, button_data);
 		g_free(button_data);
-	}
-
-	/* here is a hack to provide an "empty trash" button when displaying the trash.  Eventually, we
-	 * need a framework to allow protocols to add commands buttons */
-	if (eel_istr_has_prefix (information_panel->details->uri, "trash:")) {
-		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_mnemonic (_("Empty _Trash"));
-
-		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
-					temp_button, FALSE, FALSE, 0);
-		gtk_widget_set_sensitive (temp_button, !nautilus_trash_monitor_is_empty ());
-		gtk_widget_show (temp_button);
-		information_panel->details->has_buttons = TRUE;
-					
-		g_signal_connect (temp_button, "clicked",
-				  G_CALLBACK (empty_trash_callback), NULL);
-		
-		g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
-					 G_CALLBACK (nautilus_information_panel_trash_state_changed_callback), temp_button, 0);
-	}
-	if (eel_istr_has_prefix (information_panel->details->uri, "burn:")) {
-		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_mnemonic (_("_Write contents to CD"));
-
-		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
-					temp_button, FALSE, FALSE, 0);
-		gtk_widget_show (temp_button);
-		information_panel->details->has_buttons = TRUE;
-					
-		g_signal_connect (temp_button, "clicked",
-				  G_CALLBACK (burn_cd_callback), NULL);
 	}
 
 	/* Make buttons for each application */
@@ -1141,7 +1019,6 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 					   G_CALLBACK (background_settings_changed_callback),
 					   information_panel);
 }
-
 
 static void
 background_metadata_changed_callback (NautilusInformationPanel *information_panel)
@@ -1265,8 +1142,6 @@ nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 					    title);
 	g_free (location);
 	g_free (title);
-
-
 }
 
 static NautilusSidebar *
@@ -1298,7 +1173,6 @@ static void
 nautilus_information_panel_provider_class_init (NautilusInformationPanelProviderClass *class)
 {
 }
-
 
 void
 nautilus_information_panel_register (void)

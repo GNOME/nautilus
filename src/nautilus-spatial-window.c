@@ -42,9 +42,6 @@
 #include "nautilus-search-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
-#include <eel/eel-debug.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -54,16 +51,11 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkuimanager.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-window-icon.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-dnd.h>
@@ -76,13 +68,10 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
-#include <math.h>
-#include <sys/time.h>
 
 #define MAX_TITLE_LENGTH 180
 #define MAX_SHORTNAME_PATH 16
