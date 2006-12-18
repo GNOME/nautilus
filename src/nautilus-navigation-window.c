@@ -136,6 +136,9 @@ static void search_bar_cancel_callback               (GtkWidget                *
 
 static void nautilus_navigation_window_show_location_bar_temporarily (NautilusNavigationWindow *window);
 
+static void view_as_menu_switch_views_callback	     (GtkComboBox              *combo_box,
+						      NautilusWindow           *window);
+
 GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
 			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
 
@@ -312,6 +315,8 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 	window->view_as_combo_box = gtk_combo_box_new_text ();
 	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_combo_box, TRUE, FALSE, 0);
 	gtk_widget_show (window->view_as_combo_box);
+	g_signal_connect_object (window->view_as_combo_box, "changed",
+				 G_CALLBACK (view_as_menu_switch_views_callback), window, 0);
 
 	/* Allocate the zoom control and place on the right next to the menu.
 	 * It gets shown later, if the view-frame contains something zoomable.
@@ -876,9 +881,6 @@ load_view_as_menu (NautilusWindow *window)
 					   _(info->view_as_label));
 		selected_index = index;
 	}
-
-	g_signal_connect (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box), 
-			  "changed", G_CALLBACK (view_as_menu_switch_views_callback), window);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box), selected_index);
 }
