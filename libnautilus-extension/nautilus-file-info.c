@@ -109,6 +109,15 @@ nautilus_file_info_get_uri (NautilusFileInfo *file)
 }
 
 char *
+nautilus_file_info_get_activation_uri (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri != NULL, NULL);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri (file);
+}
+
+char *
 nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);

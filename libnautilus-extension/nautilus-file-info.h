@@ -80,6 +80,8 @@ struct _NautilusFileInfoIface
 	gboolean              (*has_drive)        (NautilusFileInfo *file);
 	GnomeVFSVolume*       (*get_volume)       (NautilusFileInfo *file);
 	GnomeVFSDrive*        (*get_drive)        (NautilusFileInfo *file);
+
+	char *            (*get_activation_uri)   (NautilusFileInfo *file);
 };
 
 GList            *nautilus_file_info_list_copy            (GList            *files);
@@ -92,6 +94,7 @@ gboolean          nautilus_file_info_is_gone              (NautilusFileInfo *fil
 /* Name and Location */
 char *            nautilus_file_info_get_name             (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri              (NautilusFileInfo *file);
+char *            nautilus_file_info_get_activation_uri   (NautilusFileInfo *file);
 char *            nautilus_file_info_get_parent_uri       (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri_scheme       (NautilusFileInfo *file);
 
