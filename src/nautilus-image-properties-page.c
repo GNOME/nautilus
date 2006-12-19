@@ -256,8 +256,8 @@ load_finished (NautilusImagePropertiesPage *page)
 	
 		name = gdk_pixbuf_format_get_name (format);
 		desc = gdk_pixbuf_format_get_description (format);
-		g_string_append_printf (str, _("<b>Image Type:</b> %s (%s)\n"),
-					name, desc);
+		g_string_append_printf (str, "<b>%s</b> %s (%s)\n",
+					_("Image Type:"), name, desc);
 		g_string_append_printf (str, ngettext ("<b>Width:</b> %d pixel\n",
 						       "<b>Width:</b> %d pixels\n",
 						       page->details->width),

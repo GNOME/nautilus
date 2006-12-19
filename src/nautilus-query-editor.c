@@ -957,6 +957,7 @@ static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
 	GtkWidget *hbox, *label, *button;
+	char *label_markup;
 
 	editor->details = g_new0 (NautilusQueryEditorDetails, 1);
 	editor->details->is_visible = TRUE;
@@ -977,7 +978,9 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	gtk_widget_show (hbox);
 	
 	label = gtk_label_new ("");
-	gtk_label_set_markup (GTK_LABEL (label), _("<b>Search Folder</b>"));
+	label_markup = g_strconcat ("<b>", _("Search Folder"), "</b>", NULL);
+	gtk_label_set_markup (GTK_LABEL (label), label_markup);
+	g_free (label_markup);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
@@ -1048,6 +1051,7 @@ static void
 setup_internal_entry (NautilusQueryEditor *editor)
 {
 	GtkWidget *hbox, *label;
+	char *label_markup;
 	
 	/* Create visible part: */
 	hbox = gtk_hbox_new (FALSE, 6);
@@ -1055,7 +1059,9 @@ setup_internal_entry (NautilusQueryEditor *editor)
 	gtk_box_pack_start (GTK_BOX (editor->details->visible_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("");
-	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), _("<b>_Search for:</b>"));
+	label_markup = g_strconcat ("<b>", _("_Search for:"), "</b>", NULL);
+	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), label_markup);
+	g_free (label_markup);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
