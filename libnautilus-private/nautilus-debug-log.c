@@ -420,16 +420,17 @@ make_key_file_from_configuration (void)
 
 	if (domains_hash) {
 		num_domains = g_hash_table_size (domains_hash);
+		if (num_domains != 0) {
+			closure.domains = g_new (char *, num_domains);
+			closure.num_domains = 0;
 
-		closure.domains = g_new (char *, num_domains);
-		closure.num_domains = 0;
+			g_hash_table_foreach (domains_hash, domains_foreach_dump_cb, &closure);
+			g_assert (num_domains == closure.num_domains);
 
-		g_hash_table_foreach (domains_hash, domains_foreach_dump_cb, &closure);
-		g_assert (num_domains == closure.num_domains);
-
-		g_key_file_set_string_list (key_file, KEY_FILE_GROUP, KEY_FILE_DOMAINS_KEY,
-					    (const gchar * const *) closure.domains, closure.num_domains);
-		g_free (closure.domains);
+			g_key_file_set_string_list (key_file, KEY_FILE_GROUP, KEY_FILE_DOMAINS_KEY,
+						    (const gchar * const *) closure.domains, closure.num_domains);
+			g_free (closure.domains);
+		}
 	}
 
 	/* max lines */
