@@ -6,10 +6,6 @@
 	each time the contents of the combobox are reloaded, but only on
 	instantiation. Prevents creating as many view instances as times
 	the view/location was already changed when using the view as menu.
-	(This is a pretty bad bug and possibly the cause of many of the
-	strange crashes we've been getting over the last year. It'd also
-	explain why most of these bugs almost exlusively occurred on Ubuntu,
-	as they	use browser mode per default).
 
 2006-12-04  Alexander Larsson  <alexl@redhat.com>
 
