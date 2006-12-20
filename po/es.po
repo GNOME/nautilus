@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-18 12:05+0100\n"
-"PO-Revision-Date: 2006-12-18 12:06+0100\n"
+"POT-Creation-Date: 2006-12-20 19:19+0100\n"
+"PO-Revision-Date: 2006-12-20 19:20+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1313,8 +1313,8 @@ msgstr "%s %ld de %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
-msgid "(%d:%02d:%d Remaining)"
-msgstr "(%d:%02d:%d restantes)"
+msgid "(%d:%02d:%02d Remaining)"
+msgstr "(%d:%02d:%02d restantes)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -2302,7 +2302,7 @@ msgstr "enlace"
 msgid "link (broken)"
 msgstr "enlace (roto)"
 
-#: ../libnautilus-private/nautilus-file.c:6347
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2717,7 +2717,7 @@ msgstr "Buscar «%s»"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "Editar"
 
@@ -5497,10 +5497,9 @@ msgstr "Tasa de velocidad ISO"
 msgid "Software"
 msgstr "Software"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>Tipo de imagen:</b> %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+msgid "Image Type:"
+msgstr "Tipo de imagen:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -5875,12 +5874,12 @@ msgstr "Adelantar histórico"
 msgid "_Search"
 msgstr "_Buscar"
 
-#: ../src/nautilus-navigation-window.c:171
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr "Cambiar entre la barra de lugares de botones y de texto"
 
 # src/file-manager/fm-properties-window.c:1526
-#: ../src/nautilus-navigation-window.c:888
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Navegador de archivos"
@@ -6199,37 +6198,37 @@ msgstr "Otro tipo..."
 msgid "Remove this criterion from the search"
 msgstr "Quitar este criterio de la búsqueda"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
-msgstr "<b>Carpeta de búsqueda</b>"
+#: ../src/nautilus-query-editor.c:981
+msgid "Search Folder"
+msgstr "Carpeta de búsqueda"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "Editar la búsqueda guardada"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "Añadir un criterio nuevo a esta búsqueda"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "Ir"
 
 # src/file-manager/fm-properties-window.c:1573
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "Recargar"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "Realizar o actualizar la búsqueda"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
-msgstr "<b>_Buscar:</b>"
+#: ../src/nautilus-query-editor.c:1062
+msgid "_Search for:"
+msgstr "_Buscar:"
 
 # libnautilus-private/nautilus-global-preferences.c:727
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "Resultado de la búsqueda"
 
@@ -6678,6 +6677,9 @@ msgstr "Ampliación"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Establece el nivel de ampliación de la vista actual"
+
+#~ msgid "<b>Image Type:</b> %s (%s)\n"
+#~ msgstr "<b>Tipo de imagen:</b> %s (%s)\n"
 
 #~ msgid ""
 #~ "Browse all local and remote disks and folder accessible from this computer"
