@@ -6,14 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-09 15:36+0300\n"
-"PO-Revision-Date: 2006-08-09 15:47+0300\n"
+"POT-Creation-Date: 2006-12-24 15:53+0200\n"
+"PO-Revision-Date: 2006-12-24 16:09+0200\n"
 "Last-Translator: Raivis Dejus <orvils@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 #: ../data/browser.xml.h:1
@@ -121,8 +121,8 @@ msgid "Envy"
 msgstr "Skaudība"
 
 #. translators: this is the name of an emblem
-#: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:937
-#: ../src/nautilus-property-browser.c:1795
+#: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:940
+#: ../src/nautilus-property-browser.c:1824
 msgid "Erase"
 msgstr "Dzēšana"
 
@@ -919,7 +919,7 @@ msgstr "Ielikt tekstu, kas saglabāts starpliktuvē"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6840
+#: ../src/file-manager/fm-directory-view.c:6884
 msgid "Select _All"
 msgstr "Izvēlēties _visus"
 
@@ -949,7 +949,7 @@ msgid "Use De_fault"
 msgstr "Lietot _noklusēto"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1311
+#: ../src/file-manager/fm-list-view.c:1374
 msgid "Name"
 msgstr "Nosaukums"
 
@@ -1007,7 +1007,7 @@ msgid "The group of the file."
 msgstr "Faila grupa."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:3770
+#: ../src/file-manager/fm-properties-window.c:4164
 msgid "Permissions"
 msgstr "Atļaujas"
 
@@ -1039,7 +1039,7 @@ msgstr "SELinux konteksts"
 msgid "The SELinux security context of the file."
 msgstr "Šī faila SELinux drošības konteksts."
 
-#: ../libnautilus-private/nautilus-customization-data.c:404
+#: ../libnautilus-private/nautilus-customization-data.c:407
 msgid "Reset"
 msgstr "Pārstatīt"
 
@@ -1070,8 +1070,7 @@ msgstr ""
 "Ja vēlaties nomontēt sējumu, lietojiet \"Nomontēt sējumu\" no sējuma "
 "iznirstošās izvēlnes."
 
-#: ../libnautilus-private/nautilus-desktop-link.c:180
-#: ../src/network-scheme.desktop.in.h:1
+#: ../libnautilus-private/nautilus-desktop-link.c:179
 msgid "Network Servers"
 msgstr "Tīkla serveri"
 
@@ -1149,16 +1148,16 @@ msgstr "%s %ld no %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
-msgid "(%d:%02d:%d Remaining)"
-msgstr "(atlicis %d:%02d:%d)"
+msgid "(%d:%02d:%02d Remaining)"
+msgstr "(atlicis %d:%02d:%02d)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
 msgid "(%d:%02d Remaining)"
 msgstr "(atlicis %d:%02d)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:451
-#: ../libnautilus-private/nautilus-file-operations.c:480
+#: ../libnautilus-private/nautilus-file-operations.c:452
+#: ../libnautilus-private/nautilus-file-operations.c:481
 #: ../libnautilus-private/nautilus-file-utilities.c:87
 #: ../src/nautilus-connect-server-dialog.c:329
 #, c-format
@@ -1166,35 +1165,35 @@ msgid "%s on %s"
 msgstr "%s uz %s"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:462
+#: ../libnautilus-private/nautilus-file-operations.c:463
 msgid "From:"
 msgstr "No:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: ../libnautilus-private/nautilus-file-operations.c:489
+#: ../libnautilus-private/nautilus-file-operations.c:490
 msgid "To:"
 msgstr "Uz:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:670
-#: ../libnautilus-private/nautilus-file-operations.c:718
-#: ../libnautilus-private/nautilus-file-operations.c:723
-#: ../libnautilus-private/nautilus-file-operations.c:733
+#: ../libnautilus-private/nautilus-file-operations.c:671
+#: ../libnautilus-private/nautilus-file-operations.c:719
+#: ../libnautilus-private/nautilus-file-operations.c:724
+#: ../libnautilus-private/nautilus-file-operations.c:734
 msgid "Error while moving."
 msgstr "Kļūda pārvietojot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:671
+#: ../libnautilus-private/nautilus-file-operations.c:672
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
 "\"%s\" nevar tikt pārvietota tāpēc, ka tā atrodas uz tikai nolasīšanai "
 "paredzēta diska."
 
-#: ../libnautilus-private/nautilus-file-operations.c:681
-#: ../libnautilus-private/nautilus-file-operations.c:687
+#: ../libnautilus-private/nautilus-file-operations.c:682
+#: ../libnautilus-private/nautilus-file-operations.c:688
 msgid "Error while deleting."
 msgstr "Kļūda dzēšot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:682
+#: ../libnautilus-private/nautilus-file-operations.c:683
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
@@ -1203,14 +1202,14 @@ msgstr ""
 "\"%s\" nevar tikt idzēsta tāpēc, ka jums nav atļaujas mainīt mapi, kur tā "
 "atrodas."
 
-#: ../libnautilus-private/nautilus-file-operations.c:688
+#: ../libnautilus-private/nautilus-file-operations.c:689
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
 "\"%s\" nevar tikt idzēsta tāpēc, ka tā atrodas uz tikai nolasīšanai "
 "paredzēta diska."
 
-#: ../libnautilus-private/nautilus-file-operations.c:719
+#: ../libnautilus-private/nautilus-file-operations.c:720
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1219,7 +1218,7 @@ msgstr ""
 "\"%s\" nevar tikt pārvietota tāpēc, ka jums nav atļaujas mainīt mapi, kur tā "
 "atrodas."
 
-#: ../libnautilus-private/nautilus-file-operations.c:724
+#: ../libnautilus-private/nautilus-file-operations.c:725
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
@@ -1228,7 +1227,7 @@ msgstr ""
 "\"%s\" nevar tikt pārvietots tāpēc, ka tas vai tā pirmavota mape atrodas "
 "mērķī."
 
-#: ../libnautilus-private/nautilus-file-operations.c:734
+#: ../libnautilus-private/nautilus-file-operations.c:735
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1237,133 +1236,133 @@ msgstr ""
 "\"%s\" nevar tikt pārvietota uz miskasti tāpēc, ka jums nav atļaujas mainīt "
 "mapi, kur tā atrodas."
 
-#: ../libnautilus-private/nautilus-file-operations.c:756
+#: ../libnautilus-private/nautilus-file-operations.c:757
 msgid "Error while copying."
 msgstr "Kļūda kopējot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:757
+#: ../libnautilus-private/nautilus-file-operations.c:758
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "\"%s\" nevar tikt nokopēta tāpēc, ka jums nav atļaujas to nolasīt."
 
-#: ../libnautilus-private/nautilus-file-operations.c:777
-#: ../libnautilus-private/nautilus-file-operations.c:798
-#: ../libnautilus-private/nautilus-file-operations.c:802
+#: ../libnautilus-private/nautilus-file-operations.c:778
+#: ../libnautilus-private/nautilus-file-operations.c:799
+#: ../libnautilus-private/nautilus-file-operations.c:803
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "Kļūda kopējot uz \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:778
-#: ../libnautilus-private/nautilus-file-operations.c:783
-#: ../libnautilus-private/nautilus-file-operations.c:787
+#: ../libnautilus-private/nautilus-file-operations.c:779
+#: ../libnautilus-private/nautilus-file-operations.c:784
+#: ../libnautilus-private/nautilus-file-operations.c:788
 msgid "There is not enough space on the destination."
 msgstr "Uz mērķa nav pietiekami daudz brīvās vietas."
 
-#: ../libnautilus-private/nautilus-file-operations.c:782
+#: ../libnautilus-private/nautilus-file-operations.c:783
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "Kļūda pārvietojot uz \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:786
+#: ../libnautilus-private/nautilus-file-operations.c:787
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "Kļūda saistot iekš \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:799
-#: ../libnautilus-private/nautilus-file-operations.c:810
-#: ../libnautilus-private/nautilus-file-operations.c:821
+#: ../libnautilus-private/nautilus-file-operations.c:800
+#: ../libnautilus-private/nautilus-file-operations.c:811
+#: ../libnautilus-private/nautilus-file-operations.c:822
 msgid "You do not have permissions to write to this folder."
 msgstr "Jums nav atļaujas lai rakstītu šajā mapē."
 
-#: ../libnautilus-private/nautilus-file-operations.c:803
-#: ../libnautilus-private/nautilus-file-operations.c:814
-#: ../libnautilus-private/nautilus-file-operations.c:825
+#: ../libnautilus-private/nautilus-file-operations.c:804
+#: ../libnautilus-private/nautilus-file-operations.c:815
+#: ../libnautilus-private/nautilus-file-operations.c:826
 msgid "The destination disk is read-only."
 msgstr "Mērķa disks ir tikai nolasīšanai."
 
-#: ../libnautilus-private/nautilus-file-operations.c:809
-#: ../libnautilus-private/nautilus-file-operations.c:813
+#: ../libnautilus-private/nautilus-file-operations.c:810
+#: ../libnautilus-private/nautilus-file-operations.c:814
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "Kļūda pārvietojot uz \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:820
-#: ../libnautilus-private/nautilus-file-operations.c:824
+#: ../libnautilus-private/nautilus-file-operations.c:821
+#: ../libnautilus-private/nautilus-file-operations.c:825
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "Kļūda saistot iekš \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:852
+#: ../libnautilus-private/nautilus-file-operations.c:853
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "Kļūda \"%s\" kopējot \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:853
-#: ../libnautilus-private/nautilus-file-operations.c:857
-#: ../libnautilus-private/nautilus-file-operations.c:861
-#: ../libnautilus-private/nautilus-file-operations.c:867
-#: ../libnautilus-private/nautilus-file-operations.c:882
-#: ../libnautilus-private/nautilus-file-operations.c:886
-#: ../libnautilus-private/nautilus-file-operations.c:890
-#: ../libnautilus-private/nautilus-file-operations.c:896
+#: ../libnautilus-private/nautilus-file-operations.c:854
+#: ../libnautilus-private/nautilus-file-operations.c:858
+#: ../libnautilus-private/nautilus-file-operations.c:862
+#: ../libnautilus-private/nautilus-file-operations.c:868
+#: ../libnautilus-private/nautilus-file-operations.c:883
+#: ../libnautilus-private/nautilus-file-operations.c:887
+#: ../libnautilus-private/nautilus-file-operations.c:891
+#: ../libnautilus-private/nautilus-file-operations.c:897
 msgid "Would you like to continue?"
 msgstr ""
 "Vai vēlaties turpināt?\n"
 "\n"
 "Vai jūs vēlaties turpināt?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:856
+#: ../libnautilus-private/nautilus-file-operations.c:857
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "Kļūda \"%s\" pārvietojot \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:860
+#: ../libnautilus-private/nautilus-file-operations.c:861
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "Kļūda \"%s\" veidojot saiti uz \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:866
+#: ../libnautilus-private/nautilus-file-operations.c:867
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "Kļūda \"%s\" dzēšot \"%s\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:881
+#: ../libnautilus-private/nautilus-file-operations.c:882
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "Kļūda \"%s\" kopējot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:885
+#: ../libnautilus-private/nautilus-file-operations.c:886
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "Kļūda \"%s\" pārvietojot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:889
+#: ../libnautilus-private/nautilus-file-operations.c:890
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "Kļūda \"%s\" saistot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:895
+#: ../libnautilus-private/nautilus-file-operations.c:896
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "Kļūda \"%s\" dzēšot."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1028
-#: ../libnautilus-private/nautilus-file-operations.c:1045
+#: ../libnautilus-private/nautilus-file-operations.c:1029
+#: ../libnautilus-private/nautilus-file-operations.c:1046
 msgid "_Retry"
 msgstr "Vēl_reiz"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1045
-#: ../libnautilus-private/nautilus-file-operations.c:1213
-#: ../libnautilus-private/nautilus-file-operations.c:1232
+#: ../libnautilus-private/nautilus-file-operations.c:1046
+#: ../libnautilus-private/nautilus-file-operations.c:1214
+#: ../libnautilus-private/nautilus-file-operations.c:1233
 msgid "_Skip"
 msgstr "Izlai_st"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1136
+#: ../libnautilus-private/nautilus-file-operations.c:1137
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "Nevarēju pārvietot \"%s\" uz jauno vietu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1139
+#: ../libnautilus-private/nautilus-file-operations.c:1140
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -1372,12 +1371,12 @@ msgstr ""
 "pārsaukt. Ja tomēr vēlaties pārvietot šo vienumu, pārsauciet to un mēģiniet "
 "vēlreiz."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1143
+#: ../libnautilus-private/nautilus-file-operations.c:1144
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "Nevarēju nokopēt \"%s\" uz jauno vietu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1146
+#: ../libnautilus-private/nautilus-file-operations.c:1147
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -1386,17 +1385,17 @@ msgstr ""
 "pārsaukt. Ja tomēr vēlaties pārvietot šo vienumu, pārsauciet to un mēģiniet "
 "vēlreiz."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1171
+#: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "A folder named \"%s\" already exists.  Do you want to replace it?"
 msgstr "Mape \"%s\" jau eksistē. Vai vēlaties to aizvietot?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1174
+#: ../libnautilus-private/nautilus-file-operations.c:1175
 #, c-format
 msgid "A file named \"%s\" already exists.  Do you want to replace it?"
 msgstr "Fails \"%s\" jau eksistē. Vai vēlaties to aizvietot?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1193
+#: ../libnautilus-private/nautilus-file-operations.c:1194
 #, c-format
 msgid ""
 "The folder already exists in \"%s\".  Replacing it will overwrite any files "
@@ -1405,21 +1404,21 @@ msgstr ""
 "Mape jau eksistē iekš \"%s\".  Tās aizvietošana pārrakstīs visus failus, kas "
 "konfliktēs ar mapē esošajiem."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1196
+#: ../libnautilus-private/nautilus-file-operations.c:1197
 #, c-format
 msgid "The file already exists in \"%s\".  Replacing it will overwrite its contents."
 msgstr "Fails jau eksistē iekš \"%s\".  Tā pārrakstīšana aizstās visu tā saturu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1213
-#: ../libnautilus-private/nautilus-file-operations.c:1232
+#: ../libnautilus-private/nautilus-file-operations.c:1214
+#: ../libnautilus-private/nautilus-file-operations.c:1233
 msgid "_Replace"
 msgstr "_Aizvietot"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1232
+#: ../libnautilus-private/nautilus-file-operations.c:1233
 msgid "S_kip All"
 msgstr "_Izlaist visus"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1232
+#: ../libnautilus-private/nautilus-file-operations.c:1233
 msgid "Replace _All"
 msgstr "Aizvietot _Visus"
 
@@ -1428,15 +1427,15 @@ msgstr "Aizvietot _Visus"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1305
-#: ../libnautilus-private/nautilus-file.c:4807
-#: ../src/file-manager/fm-directory-view.c:9751
+#: ../libnautilus-private/nautilus-file-operations.c:1306
+#: ../libnautilus-private/nautilus-file.c:4809
+#: ../src/file-manager/fm-directory-view.c:9830
 #, c-format
 msgid "link to %s"
 msgstr "saite uz %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1309
+#: ../libnautilus-private/nautilus-file-operations.c:1310
 #, c-format
 msgid "another link to %s"
 msgstr "vēl cita saite uz %s"
@@ -1445,25 +1444,25 @@ msgstr "vēl cita saite uz %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1325
+#: ../libnautilus-private/nautilus-file-operations.c:1326
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. saite uz %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1329
+#: ../libnautilus-private/nautilus-file-operations.c:1330
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. saite uz %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1333
+#: ../libnautilus-private/nautilus-file-operations.c:1334
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. saite uz %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:1337
+#: ../libnautilus-private/nautilus-file-operations.c:1338
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. saite uz %s"
@@ -1473,12 +1472,12 @@ msgstr "%d. saite uz %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1358
+#: ../libnautilus-private/nautilus-file-operations.c:1359
 msgid " (copy)"
 msgstr " (kopija)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1360
+#: ../libnautilus-private/nautilus-file-operations.c:1361
 msgid " (another copy)"
 msgstr " (vēl viena kopija)"
 
@@ -1486,36 +1485,36 @@ msgstr " (vēl viena kopija)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1363
-#: ../libnautilus-private/nautilus-file-operations.c:1365
-#: ../libnautilus-private/nautilus-file-operations.c:1367
-#: ../libnautilus-private/nautilus-file-operations.c:1377
+#: ../libnautilus-private/nautilus-file-operations.c:1364
+#: ../libnautilus-private/nautilus-file-operations.c:1366
+#: ../libnautilus-private/nautilus-file-operations.c:1368
+#: ../libnautilus-private/nautilus-file-operations.c:1378
 msgid "th copy)"
 msgstr ". kopija)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1370
+#: ../libnautilus-private/nautilus-file-operations.c:1371
 msgid "st copy)"
 msgstr ". kopija)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1372
+#: ../libnautilus-private/nautilus-file-operations.c:1373
 msgid "nd copy)"
 msgstr ". kopija)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:1374
+#: ../libnautilus-private/nautilus-file-operations.c:1375
 msgid "rd copy)"
 msgstr ". kopija)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1391
+#: ../libnautilus-private/nautilus-file-operations.c:1392
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (kopija)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1393
+#: ../libnautilus-private/nautilus-file-operations.c:1394
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (cita kopija)%s"
@@ -1524,246 +1523,246 @@ msgstr "%s (cita kopija)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1396
-#: ../libnautilus-private/nautilus-file-operations.c:1398
-#: ../libnautilus-private/nautilus-file-operations.c:1400
-#: ../libnautilus-private/nautilus-file-operations.c:1409
+#: ../libnautilus-private/nautilus-file-operations.c:1397
+#: ../libnautilus-private/nautilus-file-operations.c:1399
+#: ../libnautilus-private/nautilus-file-operations.c:1401
+#: ../libnautilus-private/nautilus-file-operations.c:1410
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. kopija)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1403
+#: ../libnautilus-private/nautilus-file-operations.c:1404
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. kopija)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1405
+#: ../libnautilus-private/nautilus-file-operations.c:1406
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. kopija)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:1407
+#: ../libnautilus-private/nautilus-file-operations.c:1408
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. kopija)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1507
+#: ../libnautilus-private/nautilus-file-operations.c:1508
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:1515
+#: ../libnautilus-private/nautilus-file-operations.c:1516
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1711
-#: ../libnautilus-private/nautilus-file-operations.c:2357
-#: ../libnautilus-private/nautilus-file-operations.c:2550
+#: ../libnautilus-private/nautilus-file-operations.c:1712
+#: ../libnautilus-private/nautilus-file-operations.c:2385
+#: ../libnautilus-private/nautilus-file-operations.c:2581
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Nezināms GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2093
+#: ../libnautilus-private/nautilus-file-operations.c:2121
 msgid "Moving files to the Trash"
 msgstr "Parvietojam failus uz Atkritumkasti"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2095
+#: ../libnautilus-private/nautilus-file-operations.c:2123
 msgid "Throwing out file:"
 msgstr "Izmetu failu:"
 
 #. localizers: label prepended to the name of the current file moved
-#: ../libnautilus-private/nautilus-file-operations.c:2097
-#: ../libnautilus-private/nautilus-file-operations.c:2108
+#: ../libnautilus-private/nautilus-file-operations.c:2125
+#: ../libnautilus-private/nautilus-file-operations.c:2136
 msgid "Moving"
 msgstr "Pārvietojam"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2098
+#: ../libnautilus-private/nautilus-file-operations.c:2126
 msgid "Preparing to Move to Trash..."
 msgstr "Sagatavojam Pārvietošanai uz Atkritumkasti..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2104
+#: ../libnautilus-private/nautilus-file-operations.c:2132
 msgid "Moving files"
 msgstr "Pārvietoju failus"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2106
+#: ../libnautilus-private/nautilus-file-operations.c:2134
 msgid "Moving file:"
 msgstr "Pārvietoju failu:"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2109
+#: ../libnautilus-private/nautilus-file-operations.c:2137
 msgid "Preparing To Move..."
 msgstr "Sagatavojam Pārvietošanai..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2110
+#: ../libnautilus-private/nautilus-file-operations.c:2138
 msgid "Finishing Move..."
 msgstr "Pabeidzam Pārvietošanu..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2118
+#: ../libnautilus-private/nautilus-file-operations.c:2146
 msgid "Creating links to files"
 msgstr "Izveidojam saites uz failiem"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2120
+#: ../libnautilus-private/nautilus-file-operations.c:2148
 msgid "Linking file:"
 msgstr "Saistu failu:"
 
 #. localizers: label prepended to the name of the current file linked
-#: ../libnautilus-private/nautilus-file-operations.c:2122
+#: ../libnautilus-private/nautilus-file-operations.c:2150
 msgid "Linking"
 msgstr "Saistām"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2123
+#: ../libnautilus-private/nautilus-file-operations.c:2151
 msgid "Preparing to Create Links..."
 msgstr "Sagatavojamies Izveidot Saites..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2124
+#: ../libnautilus-private/nautilus-file-operations.c:2152
 msgid "Finishing Creating Links..."
 msgstr "Beidzam Izveidot Saites..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2130
+#: ../libnautilus-private/nautilus-file-operations.c:2158
 msgid "Copying files"
 msgstr "Kopējam failus"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2132
+#: ../libnautilus-private/nautilus-file-operations.c:2160
 msgid "Copying file:"
 msgstr "Kopējam failu:"
 
 #. localizers: label prepended to the name of the current file copied
-#: ../libnautilus-private/nautilus-file-operations.c:2134
+#: ../libnautilus-private/nautilus-file-operations.c:2162
 msgid "Copying"
 msgstr "Kopējam"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2135
+#: ../libnautilus-private/nautilus-file-operations.c:2163
 msgid "Preparing To Copy..."
 msgstr "Sagatavojam Kopēšanai..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2153
+#: ../libnautilus-private/nautilus-file-operations.c:2181
 msgid "You cannot copy items into the trash."
 msgstr "Jūs nevarat iekopēt objektus atkritumkastē."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2154
+#: ../libnautilus-private/nautilus-file-operations.c:2182
 msgid "You cannot create links inside the trash."
 msgstr "Jūs nevarat veidot saites atkritumkastē."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2155
+#: ../libnautilus-private/nautilus-file-operations.c:2183
 msgid "Files and folders can only be moved into the trash."
 msgstr "Uz atkritumkasti var pārvietot tikai failus un mapes."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2178
+#: ../libnautilus-private/nautilus-file-operations.c:2206
 msgid "You cannot move this trash folder."
 msgstr "Jūs nevarat pārvietot šo akritumkastes mapi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2179
+#: ../libnautilus-private/nautilus-file-operations.c:2207
 msgid "You cannot copy this trash folder."
 msgstr "Jūs nevarat kopēt šo atkritumkastes mapi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2180
+#: ../libnautilus-private/nautilus-file-operations.c:2208
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Miskastes mapi lieto uz miskasti pārvietoto vienumu glabāšanai."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2204
+#: ../libnautilus-private/nautilus-file-operations.c:2232
 msgid "You cannot move a folder into itself."
 msgstr "Jūs nevarat pārvietot mapi viņā pašā."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2205
+#: ../libnautilus-private/nautilus-file-operations.c:2233
 msgid "You cannot copy a folder into itself."
 msgstr "Jūs nevarat kopēt mapi viņā pašā."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2206
+#: ../libnautilus-private/nautilus-file-operations.c:2234
 msgid "The destination folder is inside the source folder."
 msgstr "Mērķa mape atrodas sākotnējajā mapē."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2219
+#: ../libnautilus-private/nautilus-file-operations.c:2247
 msgid "You cannot copy a file over itself."
 msgstr "Jūs nevarat kopēt failu pa virsu viņam pašam."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2220
+#: ../libnautilus-private/nautilus-file-operations.c:2248
 msgid "The destination and source are the same file."
 msgstr "Mērķis un avots ir viens un tas pats fails."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2275
-#: ../libnautilus-private/nautilus-file-operations.c:2445
+#: ../libnautilus-private/nautilus-file-operations.c:2303
+#: ../libnautilus-private/nautilus-file-operations.c:2476
 msgid "You do not have permissions to write to the destination."
 msgstr "Jums nav nepieciešamo tiesību rakstīšanai galamērķī."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2277
-#: ../libnautilus-private/nautilus-file-operations.c:2447
+#: ../libnautilus-private/nautilus-file-operations.c:2305
+#: ../libnautilus-private/nautilus-file-operations.c:2478
 msgid "There is no space on the destination."
 msgstr "Galamērķī pietrūkst vietas."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2279
+#: ../libnautilus-private/nautilus-file-operations.c:2307
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Kļūda \"%s\" veidojot jaunu mapi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2284
+#: ../libnautilus-private/nautilus-file-operations.c:2312
 msgid "Error creating new folder."
 msgstr "Kļūda veidojot jaunu mapi."
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:2391
+#: ../libnautilus-private/nautilus-file-operations.c:2422
 msgid "untitled folder"
 msgstr "nenosaukta mape"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2449
+#: ../libnautilus-private/nautilus-file-operations.c:2480
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Kļūda \"%s\" veidojot jaunu dokumentu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2454
+#: ../libnautilus-private/nautilus-file-operations.c:2485
 msgid "Error creating new document."
 msgstr "Kļūda veidojot jaunu dokumentu."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2695
+#: ../libnautilus-private/nautilus-file-operations.c:2734
 msgid "new file"
 msgstr "jauns fails"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2761
+#: ../libnautilus-private/nautilus-file-operations.c:2803
 msgid "Deleting files"
 msgstr "Dzēšam failus"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2763
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2805
+#: ../libnautilus-private/nautilus-file-operations.c:2843
 msgid "Files deleted:"
 msgstr "Faili izdzēsti:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2765
-#: ../libnautilus-private/nautilus-file-operations.c:2800
+#: ../libnautilus-private/nautilus-file-operations.c:2807
+#: ../libnautilus-private/nautilus-file-operations.c:2845
 msgid "Deleting"
 msgstr "Dzēšam"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2766
+#: ../libnautilus-private/nautilus-file-operations.c:2808
 msgid "Preparing to Delete files..."
 msgstr "Gatavojamies dzēst failus..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2796
+#: ../libnautilus-private/nautilus-file-operations.c:2841
 msgid "Emptying the Trash"
 msgstr "Tukšojam Atkritumkasti"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2801
+#: ../libnautilus-private/nautilus-file-operations.c:2846
 msgid "Preparing to Empty the Trash..."
 msgstr "Sagatavojamies tukšot Atkritumkasti..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2837
+#: ../libnautilus-private/nautilus-file-operations.c:2882
 msgid "Empty all of the items from the trash?"
 msgstr "Jūs tiešām vēlaties nekavējoties dzēst visus failus Atkritumkastē?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2840
+#: ../libnautilus-private/nautilus-file-operations.c:2885
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1771,7 +1770,7 @@ msgstr ""
 "Ja izvēlēsieties iztukšot Atkritumkasti, visas vienības tajā tiks "
 "neatgriezeniski zaudēti. Atcerieties, ka tās iespējams dzēst atsevišķi."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2862
+#: ../libnautilus-private/nautilus-file-operations.c:2907
 msgid "_Empty Trash"
 msgstr "_Iztukšot Atkritumkasti"
 
@@ -1783,34 +1782,35 @@ msgstr "_Iztukšot Atkritumkasti"
 msgid "Search"
 msgstr "Meklēt"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:558
+#: ../libnautilus-private/nautilus-file-utilities.c:563
 #: ../libnautilus-private/nautilus-global-preferences.c:526
-#: ../nautilus-computer.desktop.in.h:1
+#: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Dators"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:560
+#: ../libnautilus-private/nautilus-file-utilities.c:565
+#: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Tīkls"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:562
+#: ../libnautilus-private/nautilus-file-utilities.c:567
 msgid "Fonts"
 msgstr "Fonti"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:564
+#: ../libnautilus-private/nautilus-file-utilities.c:569
 msgid "Themes"
 msgstr "Tēmas"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:566
+#: ../libnautilus-private/nautilus-file-utilities.c:571
 msgid "CD/DVD Creator"
 msgstr "CD/DVD veidotājs"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:568
+#: ../libnautilus-private/nautilus-file-utilities.c:573
 msgid "Windows Network"
 msgstr "Windows tīkls"
 
 #. translators: this is the title of the "dns-sd:///" location
-#: ../libnautilus-private/nautilus-file-utilities.c:571
+#: ../libnautilus-private/nautilus-file-utilities.c:576
 msgid "Services in"
 msgstr "Servisi "
 
@@ -1829,65 +1829,65 @@ msgstr "Servisi "
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2925
+#: ../libnautilus-private/nautilus-file.c:2927
 msgid "today at 00:00:00 PM"
 msgstr "šodien plkst. 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2926
+#: ../libnautilus-private/nautilus-file.c:2928
 #: ../src/nautilus-file-management-properties.c:460
 msgid "today at %-I:%M:%S %p"
 msgstr "šodien %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2928
+#: ../libnautilus-private/nautilus-file.c:2930
 msgid "today at 00:00 PM"
 msgstr "šodien 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2929
+#: ../libnautilus-private/nautilus-file.c:2931
 msgid "today at %-I:%M %p"
 msgstr "šodien %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2931
+#: ../libnautilus-private/nautilus-file.c:2933
 msgid "today, 00:00 PM"
 msgstr "šodien, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2932
+#: ../libnautilus-private/nautilus-file.c:2934
 msgid "today, %-I:%M %p"
 msgstr "šodien, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2934
-#: ../libnautilus-private/nautilus-file.c:2935
+#: ../libnautilus-private/nautilus-file.c:2936
+#: ../libnautilus-private/nautilus-file.c:2937
 msgid "today"
 msgstr "šodien"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2944
+#: ../libnautilus-private/nautilus-file.c:2946
 msgid "yesterday at 00:00:00 PM"
 msgstr "vakar 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2945
+#: ../libnautilus-private/nautilus-file.c:2947
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vakar %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2949
 msgid "yesterday at 00:00 PM"
 msgstr "vakar 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2948
+#: ../libnautilus-private/nautilus-file.c:2950
 msgid "yesterday at %-I:%M %p"
 msgstr "vakar %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2950
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "yesterday, 00:00 PM"
 msgstr "vakar, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2951
+#: ../libnautilus-private/nautilus-file.c:2953
 msgid "yesterday, %-I:%M %p"
 msgstr "vakar, %-I:M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2953
-#: ../libnautilus-private/nautilus-file.c:2954
+#: ../libnautilus-private/nautilus-file.c:2955
+#: ../libnautilus-private/nautilus-file.c:2956
 msgid "yesterday"
 msgstr "vakar"
 
@@ -1896,64 +1896,64 @@ msgstr "vakar"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2965
+#: ../libnautilus-private/nautilus-file.c:2967
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Trešdiena, 0000. gada 0. septembris, 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2966
+#: ../libnautilus-private/nautilus-file.c:2968
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2968
+#: ../libnautilus-private/nautilus-file.c:2970
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pirm, Okt 00 0000, 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2969
+#: ../libnautilus-private/nautilus-file.c:2971
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2971
+#: ../libnautilus-private/nautilus-file.c:2973
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pirm, Okt 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2972
+#: ../libnautilus-private/nautilus-file.c:2974
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2974
+#: ../libnautilus-private/nautilus-file.c:2976
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2975
+#: ../libnautilus-private/nautilus-file.c:2977
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2977
+#: ../libnautilus-private/nautilus-file.c:2979
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2978
+#: ../libnautilus-private/nautilus-file.c:2980
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2980
+#: ../libnautilus-private/nautilus-file.c:2982
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2981
+#: ../libnautilus-private/nautilus-file.c:2983
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2983
+#: ../libnautilus-private/nautilus-file.c:2985
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:2984
+#: ../libnautilus-private/nautilus-file.c:2986
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4321
-#: ../src/file-manager/fm-directory-view.c:2233
+#: ../libnautilus-private/nautilus-file.c:4323
+#: ../src/file-manager/fm-directory-view.c:2249
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -1961,7 +1961,7 @@ msgstr[0] "%u vienība"
 msgstr[1] "%u vienības"
 msgstr[2] "%u vienību"
 
-#: ../libnautilus-private/nautilus-file.c:4322
+#: ../libnautilus-private/nautilus-file.c:4324
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
@@ -1969,7 +1969,7 @@ msgstr[0] "%u mape"
 msgstr[1] "%u mapes"
 msgstr[2] "%u mapju"
 
-#: ../libnautilus-private/nautilus-file.c:4323
+#: ../libnautilus-private/nautilus-file.c:4325
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -1978,43 +1978,43 @@ msgstr[1] "%u faili"
 msgstr[2] "%u failu"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
-#: ../libnautilus-private/nautilus-file.c:4401
+#: ../libnautilus-private/nautilus-file.c:4403
 #, c-format
 msgid "%s (%lld bytes)"
 msgstr "%s (%lldd baiti)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4700
-#: ../libnautilus-private/nautilus-file.c:4716
+#: ../libnautilus-private/nautilus-file.c:4702
+#: ../libnautilus-private/nautilus-file.c:4718
 msgid "? items"
 msgstr "? priekšmeti"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4706
+#: ../libnautilus-private/nautilus-file.c:4708
 msgid "? bytes"
 msgstr "? baiti"
 
-#: ../libnautilus-private/nautilus-file.c:4721
+#: ../libnautilus-private/nautilus-file.c:4723
 msgid "unknown type"
 msgstr "nezināms tips"
 
-#: ../libnautilus-private/nautilus-file.c:4724
+#: ../libnautilus-private/nautilus-file.c:4726
 msgid "unknown MIME type"
 msgstr "nezināms MIME tips"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4730
-#: ../src/file-manager/fm-properties-window.c:1292
+#: ../libnautilus-private/nautilus-file.c:4732
+#: ../src/file-manager/fm-properties-window.c:1308
 msgid "unknown"
 msgstr "nezināms"
 
-#: ../libnautilus-private/nautilus-file.c:4763
+#: ../libnautilus-private/nautilus-file.c:4765
 msgid "program"
 msgstr "programma"
 
-#: ../libnautilus-private/nautilus-file.c:4781
+#: ../libnautilus-private/nautilus-file.c:4783
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2024,7 +2024,7 @@ msgstr ""
 "iespējams jūsu gnome-vfs.keys fails atrodas nepareizā vietā vai arī nevar "
 "tikt atrasta kāda cita iemesla dēļ."
 
-#: ../libnautilus-private/nautilus-file.c:4785
+#: ../libnautilus-private/nautilus-file.c:4787
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2033,15 +2033,15 @@ msgstr ""
 "Nav atrasts apraksts mime tipam \"%s\" (fails ir \"%s\"), lūdzu pasakiet to "
 "gnome-vfs epasta sarakstē."
 
-#: ../libnautilus-private/nautilus-file.c:4801
+#: ../libnautilus-private/nautilus-file.c:4803
 msgid "link"
 msgstr "saite"
 
-#: ../libnautilus-private/nautilus-file.c:4821
+#: ../libnautilus-private/nautilus-file.c:4823
 msgid "link (broken)"
 msgstr "saite (pārrauta)"
 
-#: ../libnautilus-private/nautilus-file.c:6337
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2152,12 +2152,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Meklēt failus pēc faila nosaukuma un faila rekvizītiem"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
-#: ../src/file-manager/fm-icon-container.c:516
+#: ../src/file-manager/fm-icon-container.c:536
 msgid "Icon View"
 msgstr "Ikonu skats"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1364
+#: ../src/file-manager/fm-list-view.c:1427
 msgid "List View"
 msgstr "Saraksta skats"
 
@@ -2234,19 +2234,27 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "%s mājas"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2116
+#: ../libnautilus-private/nautilus-icon-container.c:2137
 msgid "The selection rectangle"
 msgstr "Izvēles taisnstūris"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4832
+#: ../libnautilus-private/nautilus-icon-container.c:4884
 msgid "Normal Alpha"
 msgstr "Normāls alfa"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4833
+#: ../libnautilus-private/nautilus-icon-container.c:4885
 msgid "Opacity of the normal icons if frame_text is set"
-msgstr "Normālu ikonu necaurspīdība ja ir uzstādīts frame_text"
+msgstr "Normālu ikonu caurspīdība ja ir uzstādīts frame_text"
 
-#: ../libnautilus-private/nautilus-icon-dnd.c:813
+#: ../libnautilus-private/nautilus-icon-container.c:4891
+msgid "Prelight Alpha"
+msgstr "Prelight Alpha"
+
+#: ../libnautilus-private/nautilus-icon-container.c:4892
+msgid "Opacity of the prelight icons if frame_text is set"
+msgstr "Normālu ikonu caurspīdība ja ir uzstādīts frame_text"
+
+#: ../libnautilus-private/nautilus-icon-dnd.c:833
 msgid "Switch to Manual Layout?"
 msgstr "Pārslēgties uz rokas izkārtojumu?"
 
@@ -2294,8 +2302,8 @@ msgstr ""
 "Nav pieejamas citas darbības šī faila apskatei. Iespējams, varēsiet šo failu "
 "atvērt, ja nokopēsiet to savā datorā."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:491
-#: ../libnautilus-private/nautilus-program-choosing.c:733
+#: ../libnautilus-private/nautilus-program-choosing.c:489
+#: ../libnautilus-private/nautilus-program-choosing.c:731
 #, c-format
 msgid "Opening %s"
 msgstr "Atveru %s"
@@ -2304,71 +2312,71 @@ msgstr "Atveru %s"
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
 #. Shouldn't have gotten this error unless there's a : separator.
-#: ../libnautilus-private/nautilus-program-choosing.c:579
-#: ../libnautilus-private/nautilus-program-choosing.c:590
-#: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1417
-#: ../src/nautilus-window-manage-views.c:1423
-#: ../src/nautilus-window-manage-views.c:1451
-#: ../src/nautilus-window-manage-views.c:1459
-#: ../src/nautilus-window-manage-views.c:1465
-#: ../src/nautilus-window-manage-views.c:1486
+#: ../libnautilus-private/nautilus-program-choosing.c:577
+#: ../libnautilus-private/nautilus-program-choosing.c:588
+#: ../libnautilus-private/nautilus-program-choosing.c:596
+#: ../libnautilus-private/nautilus-program-choosing.c:601
+#: ../src/nautilus-window-manage-views.c:1455
+#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1489
+#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1524
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nautilus nevar attēlot \"%s\"."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:592
-#: ../libnautilus-private/nautilus-program-choosing.c:915
-#: ../libnautilus-private/nautilus-program-choosing.c:983
+#: ../libnautilus-private/nautilus-program-choosing.c:590
+#: ../libnautilus-private/nautilus-program-choosing.c:913
+#: ../libnautilus-private/nautilus-program-choosing.c:981
 msgid "There was an error launching the application."
 msgstr "Bija kļūda, palaižot aplikāciju."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:600
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../libnautilus-private/nautilus-program-choosing.c:598
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "The attempt to log in failed."
 msgstr "Mēģinājums pieteikties neizdevās."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:605
-#: ../src/nautilus-window-manage-views.c:1467
+#: ../libnautilus-private/nautilus-program-choosing.c:603
+#: ../src/nautilus-window-manage-views.c:1505
 msgid "Access was denied."
 msgstr "Pieeja tika liegta."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:610
-#: ../src/nautilus-window-manage-views.c:1478
+#: ../libnautilus-private/nautilus-program-choosing.c:608
+#: ../src/nautilus-window-manage-views.c:1516
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Nevarēju attēlot \"%s\", jo nevarēju atrast resursdatoru \"%s\"."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:613
-#: ../src/nautilus-window-manage-views.c:1481
+#: ../libnautilus-private/nautilus-program-choosing.c:611
+#: ../src/nautilus-window-manage-views.c:1519
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
 "Pārbaudiet, ka rakstība ir pareiza un ka starpniekservera uzstādījumi ir "
 "pareizi."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:618
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../libnautilus-private/nautilus-program-choosing.c:616
+#: ../src/nautilus-window-manage-views.c:1477
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" nav derīga vieta."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:621
-#: ../libnautilus-private/nautilus-program-choosing.c:628
+#: ../libnautilus-private/nautilus-program-choosing.c:619
+#: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
-#: ../src/nautilus-property-browser.c:1168
-#: ../src/nautilus-window-manage-views.c:1434
-#: ../src/nautilus-window-manage-views.c:1442
+#: ../src/nautilus-property-browser.c:1189
+#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1480
 msgid "Please check the spelling and try again."
 msgstr "Lūdzu pārbaudiet, vai tas ir pareizs un mēģiniet vēlreiz."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:625
-#: ../src/nautilus-window-manage-views.c:1431
+#: ../libnautilus-private/nautilus-program-choosing.c:623
+#: ../src/nautilus-window-manage-views.c:1469
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Nevarēju atrast \"%s\"."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:736
+#: ../libnautilus-private/nautilus-program-choosing.c:734
 #, c-format
 msgid "Opening %d Item"
 msgid_plural "Opening %d Items"
@@ -2376,31 +2384,31 @@ msgstr[0] "Atveru \"%d\" vienību"
 msgstr[1] "Atveru \"%d\" vienības"
 msgstr[2] "Atveru \"%d\" vienību"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:901
+#: ../libnautilus-private/nautilus-program-choosing.c:899
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr "Piedodiet, bet jūs nevarat izpildīt komandas no attālinātās vietas."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:903
+#: ../libnautilus-private/nautilus-program-choosing.c:901
 msgid "This is disabled due to security considerations."
 msgstr "Atslēgts drošības apsvērumu dēļ."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:913
-#: ../libnautilus-private/nautilus-program-choosing.c:981
+#: ../libnautilus-private/nautilus-program-choosing.c:911
+#: ../libnautilus-private/nautilus-program-choosing.c:979
 msgid "Details: "
 msgstr "Detaļas: "
 
-#: ../libnautilus-private/nautilus-program-choosing.c:944
-#: ../libnautilus-private/nautilus-program-choosing.c:955
+#: ../libnautilus-private/nautilus-program-choosing.c:942
+#: ../libnautilus-private/nautilus-program-choosing.c:953
 msgid "This drop target only supports local files."
 msgstr "Nomešanas mērķis atbalsta tikai vietējos failus."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:945
+#: ../libnautilus-private/nautilus-program-choosing.c:943
 msgid "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Lai atvērtu ne-vietējus failus, iekopējiet tos vietējā mapē un tad nometiet "
 "tos vēlreiz."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:956
+#: ../libnautilus-private/nautilus-program-choosing.c:954
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -2414,7 +2422,7 @@ msgid "Search for \"%s\""
 msgstr "Meklēt \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "Rediģēt"
 
@@ -2434,35 +2442,37 @@ msgstr "Atcelt rediģēšanu"
 msgid "Redo the edit"
 msgstr "Atcelt rediģēšanu"
 
-#: ../nautilus-computer.desktop.in.h:2
-msgid "View your computer storage"
-msgstr "Skatīt datora atmiņu"
+#. label, accelerator
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:661
+msgid "Browse all local and remote disks and folders accessible from this computer"
+msgstr "Pārlūkot visus no šīs mašīnas pieejamos attālinātos diskus un mapes"
 
-#: ../nautilus-file-management-properties.desktop.in.h:1
-msgid "Change how files are managed"
-msgstr "Izmainīt, kā faili tiek pārvaldīti"
+#: ../nautilus-file-management-properties.desktop.in.in.h:1
+msgid "Change the behaviour and appearance of file manager windows"
+msgstr "Izmainīt pārvaldnieka logaizskatu un izturēšanos"
 
-#: ../nautilus-file-management-properties.desktop.in.h:2
+#: ../nautilus-file-management-properties.desktop.in.in.h:2
 msgid "File Management"
 msgstr "Failu pārvalde"
 
-#: ../nautilus-folder-handler.desktop.in.h:1
+#: ../nautilus-folder-handler.desktop.in.in.h:1
 msgid "Open Folder"
 msgstr "Atvērt mapi"
 
-#: ../nautilus-home.desktop.in.h:1 ../src/file-manager/fm-tree-view.c:1236
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1393
 msgid "Home Folder"
 msgstr "Mājas mape"
 
-#: ../nautilus-home.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Skatīt mājas mapi Nautilus failu pāvaldniekā"
+#. label, accelerator
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:657
+msgid "Open your personal folder"
+msgstr "Atvērt savu personisko mapi"
 
-#: ../nautilus.desktop.in.h:1
+#: ../nautilus.desktop.in.in.h:1
 msgid "Browse the file system with the file manager"
 msgstr "Pārlūkot failu sistēmu ar failu pārvaldnieku"
 
-#: ../nautilus.desktop.in.h:2
+#: ../nautilus.desktop.in.in.h:2
 msgid "File Browser"
 msgstr "Failu pārlūks"
 
@@ -2500,22 +2510,22 @@ msgstr "Fons"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6818
-#: ../src/file-manager/fm-directory-view.c:7772
+#: ../src/file-manager/fm-directory-view.c:6862
+#: ../src/file-manager/fm-directory-view.c:7816
 msgid "E_mpty Trash"
 msgstr "Tukšot Atkritu_mkasti"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6790
+#: ../src/file-manager/fm-directory-view.c:6834
 msgid "Create L_auncher..."
 msgstr "Jauns p_alaidējs..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6791
+#: ../src/file-manager/fm-directory-view.c:6835
 msgid "Create a new launcher"
 msgstr "Izveidot jaunu palaidēju"
 
@@ -2537,13 +2547,13 @@ msgstr "Iztukšot Atkritumkasti"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6819
+#: ../src/file-manager/fm-directory-view.c:6863
 msgid "Delete all items in the Trash"
 msgstr "Dzēst visus priekšmetus Atkritumkastē"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
-#: ../src/nautilus-places-sidebar.c:249
+#: ../src/nautilus-places-sidebar.c:250
 msgid "Desktop"
 msgstr "Darbavirsma"
 
@@ -2567,11 +2577,11 @@ msgstr "Darbvirsmas skatā gadījās kļūda sākot darbu."
 msgid "Display this location with the desktop view."
 msgstr "Parādīt šo atrašanās vietu darbvirsmas skatā."
 
-#: ../src/file-manager/fm-directory-view.c:665
+#: ../src/file-manager/fm-directory-view.c:666
 msgid "Are you sure you want to open all files?"
 msgstr "Vai esat pārliesināts, ka vēlaties atvērt visus failus?"
 
-#: ../src/file-manager/fm-directory-view.c:666
+#: ../src/file-manager/fm-directory-view.c:667
 #: ../src/nautilus-location-bar.c:154
 #, c-format
 msgid "This will open %d separate window."
@@ -2580,12 +2590,13 @@ msgstr[0] "Šis atvērs %d atsevišķu logu."
 msgstr[1] "Šis atvērs %d atsevišķus logus."
 msgstr[2] "Šis atvērs %d atsevišķu logu."
 
-#: ../src/file-manager/fm-directory-view.c:991
+#: ../src/file-manager/fm-directory-view.c:1000
+#: ../src/file-manager/fm-tree-view.c:1140
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Vai esat pārliesināts, ka vēlaties pavisam izdzēst \"%s\"?"
 
-#: ../src/file-manager/fm-directory-view.c:995
+#: ../src/file-manager/fm-directory-view.c:1004
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
@@ -2593,48 +2604,49 @@ msgstr[0] "Vai esat pārliecināts, ka vēlaties pavisam izdzēst %d izvēlēto 
 msgstr[1] "Vai esat pārliecināts, ka vēlaties pavisam izdzēst %d izvēlētās vienības?"
 msgstr[2] "Vai esat pārliecināts, ka vēlaties pavisam izdzēst %d izvēlēto vienību?"
 
-#: ../src/file-manager/fm-directory-view.c:1006
+#: ../src/file-manager/fm-directory-view.c:1015
+#: ../src/file-manager/fm-tree-view.c:1149
 msgid "If you delete an item, it is permanently lost."
 msgstr "Ja izdzēšat vienību, tā ir neatgriezeniski zaudēta."
 
-#: ../src/file-manager/fm-directory-view.c:1157
-#: ../src/file-manager/fm-properties-window.c:3995
+#: ../src/file-manager/fm-directory-view.c:1166
+#: ../src/file-manager/fm-properties-window.c:4389
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
 msgstr "Parādot palīdzību notika kļūda."
 
-#: ../src/file-manager/fm-directory-view.c:1177
+#: ../src/file-manager/fm-directory-view.c:1186
 msgid "Select Pattern"
 msgstr "Izvēles šablons"
 
-#: ../src/file-manager/fm-directory-view.c:1195
+#: ../src/file-manager/fm-directory-view.c:1204
 msgid "_Pattern:"
 msgstr "_Šablons:"
 
-#: ../src/file-manager/fm-directory-view.c:1304
+#: ../src/file-manager/fm-directory-view.c:1313
 msgid "Save Search as"
 msgstr "Saglabāt meklējumu kā"
 
-#: ../src/file-manager/fm-directory-view.c:1322
+#: ../src/file-manager/fm-directory-view.c:1331
 msgid "Search _name:"
 msgstr "Meklējuma _nosaukums:"
 
-#: ../src/file-manager/fm-directory-view.c:1335
+#: ../src/file-manager/fm-directory-view.c:1344
 #: ../src/nautilus-connect-server-dialog.c:563
 msgid "_Folder:"
 msgstr "_Mape:"
 
-#: ../src/file-manager/fm-directory-view.c:1340
+#: ../src/file-manager/fm-directory-view.c:1349
 msgid "Select Folder to Save Search In"
 msgstr "Izvēlēties Mapi kurā Saglabāt Meklējumu"
 
-#: ../src/file-manager/fm-directory-view.c:2165
+#: ../src/file-manager/fm-directory-view.c:2181
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" izvēleti"
 
-#: ../src/file-manager/fm-directory-view.c:2167
+#: ../src/file-manager/fm-directory-view.c:2183
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -2642,7 +2654,7 @@ msgstr[0] "izvēlēta %d mape"
 msgstr[1] "izvēlētas %d mapes"
 msgstr[2] "izvēlēta %d mape"
 
-#: ../src/file-manager/fm-directory-view.c:2177
+#: ../src/file-manager/fm-directory-view.c:2193
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2651,7 +2663,7 @@ msgstr[1] " (satur %d objektus) "
 msgstr[2] " (satur %d objektu)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2188
+#: ../src/file-manager/fm-directory-view.c:2204
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -2659,12 +2671,12 @@ msgstr[0] " (kopā satur %d vienību)"
 msgstr[1] " (kopā satur %d vienības)"
 msgstr[2] " (kopā satur %d vienību)"
 
-#: ../src/file-manager/fm-directory-view.c:2204
+#: ../src/file-manager/fm-directory-view.c:2220
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" izvēleti (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../src/file-manager/fm-directory-view.c:2224
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -2673,7 +2685,7 @@ msgstr[1] "izvēlētas %d vienības (%s)"
 msgstr[2] "izvēlēta %d vienība (%s)"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2216
+#: ../src/file-manager/fm-directory-view.c:2232
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -2681,7 +2693,7 @@ msgstr[0] "izvēlēta %d cita vienība (%s)"
 msgstr[1] "izvēlētas %d citas vienības (%s)"
 msgstr[2] "izvēlēta %d cita vienība (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2237
+#: ../src/file-manager/fm-directory-view.c:2253
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Brīva vieta: %s"
@@ -2693,7 +2705,7 @@ msgstr "%s, Brīva vieta: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2262
+#: ../src/file-manager/fm-directory-view.c:2278
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2702,54 +2714,54 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2344
+#: ../src/file-manager/fm-directory-view.c:2360
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Mape \"%s\" satur vairāk failu, nekā Nautilus spēj uzturēt. Daži faili "
 "netiks parādīti."
 
-#: ../src/file-manager/fm-directory-view.c:2350
+#: ../src/file-manager/fm-directory-view.c:2366
 msgid "Some files will not be displayed."
 msgstr "Daži faili netiks parādīti."
 
-#: ../src/file-manager/fm-directory-view.c:3788
+#: ../src/file-manager/fm-directory-view.c:3824
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Nevar pārvietot uz Atkritumkasti. Vai vēlaties to izdzēst nekavējoties?"
 
-#: ../src/file-manager/fm-directory-view.c:3789
+#: ../src/file-manager/fm-directory-view.c:3825
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Failu \"%s\" nevar pārvietot uz miskasti."
 
-#: ../src/file-manager/fm-directory-view.c:3793
+#: ../src/file-manager/fm-directory-view.c:3829
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Nevar pārvietot vienības uz Atkritumkasti, vai vēlaties tās izdzēst "
 "nekavējoties?"
 
-#: ../src/file-manager/fm-directory-view.c:3794
+#: ../src/file-manager/fm-directory-view.c:3830
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "Nevienu no %d izvēlētajām vienībām nevar pārvietot uz Atkritumkasti"
 
-#: ../src/file-manager/fm-directory-view.c:3796
+#: ../src/file-manager/fm-directory-view.c:3832
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Dažas vienības nevar pārvietot uz Atkritumkasti, vai vēlaties tās izdzēst "
 "nekavējoties?"
 
-#: ../src/file-manager/fm-directory-view.c:3797
+#: ../src/file-manager/fm-directory-view.c:3833
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d no izvēlētajām vienībām nevar pārvietot uz Atkritumkasti"
 
-#: ../src/file-manager/fm-directory-view.c:3835
+#: ../src/file-manager/fm-directory-view.c:3871
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Vai esat pārliecināts, ka vēlaties pavisam izdzēst \"%s\" no Atkritumkastes?"
 
-#: ../src/file-manager/fm-directory-view.c:3839
+#: ../src/file-manager/fm-directory-view.c:3875
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2767,16 +2779,16 @@ msgstr[2] ""
 "Vai tiešām vēlaties neatgriezeniski izdzēst %d izvēlēto vienību no "
 "atkritumkastes?"
 
-#: ../src/file-manager/fm-directory-view.c:3850
+#: ../src/file-manager/fm-directory-view.c:3886
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ja izdzēsīsiet vienību, tā tiks neatgriezeniski zaudēta."
 
-#: ../src/file-manager/fm-directory-view.c:4438
+#: ../src/file-manager/fm-directory-view.c:4474
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Atvērt ar \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4439
+#: ../src/file-manager/fm-directory-view.c:4475
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -2784,34 +2796,34 @@ msgstr[0] "Lieto \"%s\", lai atvērtu izvēlēto priekšmetu"
 msgstr[1] "Lieto \"%s\", lai atvērtu izvēlētos priekšmetus"
 msgstr[2] "Lieto \"%s\", lai atvērtu izvēlētos priekšmetus"
 
-#: ../src/file-manager/fm-directory-view.c:4531
+#: ../src/file-manager/fm-directory-view.c:4567
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Vai palaist \"%s\" vai vai redzēt tā saturu?"
 
-#: ../src/file-manager/fm-directory-view.c:4533
+#: ../src/file-manager/fm-directory-view.c:4569
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" ir izpildāms teksta fails."
 
-#: ../src/file-manager/fm-directory-view.c:4539
+#: ../src/file-manager/fm-directory-view.c:4575
 msgid "Run in _Terminal"
 msgstr "Palaist _terminālī"
 
-#: ../src/file-manager/fm-directory-view.c:4540
+#: ../src/file-manager/fm-directory-view.c:4576
 msgid "_Display"
 msgstr "_Parādīt"
 
-#: ../src/file-manager/fm-directory-view.c:4543
+#: ../src/file-manager/fm-directory-view.c:4579
 msgid "_Run"
 msgstr "_Palaist"
 
-#: ../src/file-manager/fm-directory-view.c:4939
+#: ../src/file-manager/fm-directory-view.c:4975
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nevar atvērt %s"
 
-#: ../src/file-manager/fm-directory-view.c:4942
+#: ../src/file-manager/fm-directory-view.c:4978
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2826,26 +2838,27 @@ msgstr ""
 "Faila nosaukums \"%s\" norāda, ka šis ir  \"%s\" tipa fails. Faila saturs "
 "liecina, ka šis ir \"%s\" tipa fails. Ja izvēlaties atvērt šo failu, tas var "
 "pdraudēt sistēmas drošību. \n"
+"\n"
 "Neatveriet šo failu, ja vien neesat to izveidojis pats vai saņēmis to no "
 "uzticama avota. Lai atvērtu šo failu, pārsauciet to ar pareizu paplašinājumu "
-"tipam \"%s\", tad atveriet failu kā parasti. Vai, lietojiet \"Atvērt Ar\" "
+"tipam \"%s\", tad atveriet failu kā parasti. Vai, lietojiet Atvērt ar "
 "izvēlni lai norādītu noteiktu aplikāciju faila atvēršanai."
 
-#: ../src/file-manager/fm-directory-view.c:5363
+#: ../src/file-manager/fm-directory-view.c:5404
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Palaist \"%s\" ar katru no izvēlētajiem priekšmetiem"
 
-#: ../src/file-manager/fm-directory-view.c:5612
+#: ../src/file-manager/fm-directory-view.c:5653
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Izveidot Dokumentu no sagataves \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5818
+#: ../src/file-manager/fm-directory-view.c:5859
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Visi izpildāmie faili šajā mapē parādīsies \"Skripti\" izvēlnē."
 
-#: ../src/file-manager/fm-directory-view.c:5820
+#: ../src/file-manager/fm-directory-view.c:5861
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2853,7 +2866,7 @@ msgstr ""
 "Izvēloties skriptu no izvēlnes, tiks palaists dotais skripts ar izvēlētajām "
 "vienībām kā ievadi."
 
-#: ../src/file-manager/fm-directory-view.c:5822
+#: ../src/file-manager/fm-directory-view.c:5863
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2894,27 +2907,31 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: konkrētā loga pozīcija un izmērs"
 
-#: ../src/file-manager/fm-directory-view.c:5983
-#: ../src/file-manager/fm-tree-view.c:901
+#: ../src/file-manager/fm-directory-view.c:6027
+#: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" tiks pārvietots, ja izvēlēsieties Ievietot Failus komandu"
 
-#: ../src/file-manager/fm-directory-view.c:5987
-#: ../src/file-manager/fm-tree-view.c:905
+#: ../src/file-manager/fm-directory-view.c:6031
+#: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" tiks kopēts, ja izvēlēsieties Ievietot Failus komandu"
 
-#: ../src/file-manager/fm-directory-view.c:5994
+#: ../src/file-manager/fm-directory-view.c:6038
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "%d izvēlētā vienība tiks pārvietota, ja izvēlēsieties Ievietot Failus komandu"
-msgstr[1] "%d izvēlētās vienības tiks pārvietota, ja izvēlēsieties Ievietot Failus komandu"
-msgstr[2] "%d izvēlētās vienības tiks pārvietota, ja izvēlēsieties Ievietot Failus komandu"
+msgstr[1] ""
+"%d izvēlētās vienības tiks pārvietota, ja izvēlēsieties Ievietot Failus "
+"komandu"
+msgstr[2] ""
+"%d izvēlētās vienības tiks pārvietota, ja izvēlēsieties Ievietot Failus "
+"komandu"
 
-#: ../src/file-manager/fm-directory-view.c:6001
+#: ../src/file-manager/fm-directory-view.c:6045
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
@@ -2922,142 +2939,142 @@ msgstr[0] "%d izvēlētā vienība tiks kopēta, ja izvēlēsieties Ievietot Fai
 msgstr[1] "%d izvēlētās vienības tiks kopēta, ja izvēlēsieties Ievietot Failus komandu"
 msgstr[2] "%d izvēlētās vienības tiks kopēta, ja izvēlēsieties Ievietot Failus komandu"
 
-#: ../src/file-manager/fm-directory-view.c:6095
-#: ../src/file-manager/fm-tree-view.c:982
+#: ../src/file-manager/fm-directory-view.c:6139
+#: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Starpliktuvē nav nekā, ko ievietot."
 
-#: ../src/file-manager/fm-directory-view.c:6570
+#: ../src/file-manager/fm-directory-view.c:6614
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Pieslēgšanās severim %s"
 
-#: ../src/file-manager/fm-directory-view.c:6575
+#: ../src/file-manager/fm-directory-view.c:6619
 msgid "_Connect"
 msgstr "_Pieslēgties"
 
-#: ../src/file-manager/fm-directory-view.c:6589
+#: ../src/file-manager/fm-directory-view.c:6633
 msgid "Link _name:"
 msgstr "Saites _nosaukums:"
 
-#: ../src/file-manager/fm-directory-view.c:6764
+#: ../src/file-manager/fm-directory-view.c:6808
 msgid "Create _Document"
 msgstr "Izveidot _dokumentu"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6765
+#: ../src/file-manager/fm-directory-view.c:6809
 msgid "Open Wit_h"
 msgstr "Atvē_rt ar"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6766
+#: ../src/file-manager/fm-directory-view.c:6810
 msgid "Choose a program with which to open the selected item"
 msgstr "Izvēlies programmu, ar kuru atvērt izvēlēto priekšmetu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6768
-#: ../src/file-manager/fm-directory-view.c:6776
+#: ../src/file-manager/fm-directory-view.c:6812
+#: ../src/file-manager/fm-directory-view.c:6820
 msgid "_Properties"
 msgstr "_Rekvizīti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6769
+#: ../src/file-manager/fm-directory-view.c:6813
 msgid "View or modify the properties of each selected item"
 msgstr "Skatīt vai mainīt rekvizītus katram izvēlētam priekšmetam"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6777
+#: ../src/file-manager/fm-directory-view.c:6821
 msgid "View or modify the properties of the open folder"
 msgstr "Skatīt vai mainīt rekvizītus atvērtajai mapei"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6780
+#: ../src/file-manager/fm-directory-view.c:6824
 msgid "Create _Folder"
 msgstr "Izveidot _mapi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6781
+#: ../src/file-manager/fm-directory-view.c:6825
 msgid "Create a new empty folder inside this folder"
 msgstr "Izveidot jaunu tukšo mapi iekš šīs mapes"
 
-#: ../src/file-manager/fm-directory-view.c:6783
+#: ../src/file-manager/fm-directory-view.c:6827
 msgid "No templates Installed"
 msgstr "Nav instalētu sagatavju"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6786
+#: ../src/file-manager/fm-directory-view.c:6830
 msgid "_Empty File"
 msgstr "_Tukšs fails"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6787
+#: ../src/file-manager/fm-directory-view.c:6831
 msgid "Create a new empty file inside this folder"
 msgstr "Izveidot jaunu tukšo mapi failu šajā mapē"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6794
-#: ../src/file-manager/fm-directory-view.c:7673
-#: ../src/file-manager/fm-tree-view.c:1104
+#: ../src/file-manager/fm-directory-view.c:6838
+#: ../src/file-manager/fm-directory-view.c:7717
+#: ../src/file-manager/fm-tree-view.c:1252
 msgid "_Open"
 msgstr "_Atvērt"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6795
+#: ../src/file-manager/fm-directory-view.c:6839
 msgid "Open the selected item in this window"
 msgstr "Atvērt izvēlēto priekšmetu šajā logā"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6802
-#: ../src/file-manager/fm-directory-view.c:6926
+#: ../src/file-manager/fm-directory-view.c:6846
+#: ../src/file-manager/fm-directory-view.c:6970
 msgid "Open in Navigation Window"
 msgstr "Atvērt navigācijas logu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6803
+#: ../src/file-manager/fm-directory-view.c:6847
 msgid "Open each selected item in a navigation window"
 msgstr "Atvērt katru izvēlēto vienību pārlūka logā"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6806
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6850
+#: ../src/file-manager/fm-directory-view.c:6854
 msgid "Open with Other _Application..."
 msgstr "Atvērt ar citu _aplikāciju..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6807
-#: ../src/file-manager/fm-directory-view.c:6811
+#: ../src/file-manager/fm-directory-view.c:6851
+#: ../src/file-manager/fm-directory-view.c:6855
 msgid "Choose another application with which to open the selected item"
 msgstr "Izvēlies vēl vienu aplikāciju, ar kuru atvērt izvēlēto priekšmetu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6814
+#: ../src/file-manager/fm-directory-view.c:6858
 msgid "_Open Scripts Folder"
 msgstr "_Atvērt skriptu mapi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6815
+#: ../src/file-manager/fm-directory-view.c:6859
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Parādīt mapi kas satur skriptus šai izvēlnei"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6823
+#: ../src/file-manager/fm-directory-view.c:6867
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Sagatavo izvēlētos failus pārvietošanai ar Ievietot Failus komandu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6827
+#: ../src/file-manager/fm-directory-view.c:6871
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Sagatavo izvēlētos failus kopēšanai ar Ievietot Failus komandu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6831
+#: ../src/file-manager/fm-directory-view.c:6875
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Pārvietot vai kopēt failus, kas iepriekš izvēlēti at Izgriezt Failus vai "
@@ -3066,13 +3083,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6836
-#: ../src/file-manager/fm-tree-view.c:1158
+#: ../src/file-manager/fm-directory-view.c:6880
+#: ../src/file-manager/fm-tree-view.c:1306
 msgid "_Paste Into Folder"
 msgstr "_Ievietot mapē"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6837
+#: ../src/file-manager/fm-directory-view.c:6881
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3081,33 +3098,33 @@ msgstr ""
 "Kopēt Failus komandu šajā mapē"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6841
+#: ../src/file-manager/fm-directory-view.c:6885
 msgid "Select all items in this window"
 msgstr "Izvēlēties visus priekšmetus šajā logā"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6844
+#: ../src/file-manager/fm-directory-view.c:6888
 msgid "Select _Pattern"
 msgstr "Izvēles _šablons"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6845
+#: ../src/file-manager/fm-directory-view.c:6889
 msgid "Select items in this window matching a given pattern"
 msgstr "Izvēlēties vienības šajā mapē pēc norādīta parauga"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6848
+#: ../src/file-manager/fm-directory-view.c:6892
 msgid "D_uplicate"
 msgstr "D_ublicēt"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6849
+#: ../src/file-manager/fm-directory-view.c:6893
 msgid "Duplicate each selected item"
 msgstr "Dublicēt katru izvēlēto priekšmetu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6852
-#: ../src/file-manager/fm-directory-view.c:7746
+#: ../src/file-manager/fm-directory-view.c:6896
+#: ../src/file-manager/fm-directory-view.c:7790
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Iz_veidot saiti"
@@ -3115,243 +3132,243 @@ msgstr[1] "Iz_veidot saites"
 msgstr[2] "Iz_veidot saites"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6853
+#: ../src/file-manager/fm-directory-view.c:6897
 msgid "Create a symbolic link for each selected item"
 msgstr "Izveidot simbolisko saiti katram priekšmetam"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6856
+#: ../src/file-manager/fm-directory-view.c:6900
 msgid "_Rename..."
 msgstr "_Pārsaukt..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6857
+#: ../src/file-manager/fm-directory-view.c:6901
 msgid "Rename selected item"
 msgstr "Pārsaukt izvēlēto priekšmetu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6864
-#: ../src/file-manager/fm-directory-view.c:6940
-#: ../src/file-manager/fm-directory-view.c:7530
-#: ../src/file-manager/fm-directory-view.c:7714
-#: ../src/file-manager/fm-directory-view.c:8103
+#: ../src/file-manager/fm-directory-view.c:6908
+#: ../src/file-manager/fm-directory-view.c:6984
+#: ../src/file-manager/fm-directory-view.c:7574
+#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:8154
 msgid "Mo_ve to Trash"
 msgstr "Pā_rvietot uz Atkritumkasti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6865
-#: ../src/file-manager/fm-directory-view.c:7715
+#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:7759
 msgid "Move each selected item to the Trash"
 msgstr "Pārvietot katru izvēlēto priekšmetu uz Atkritumkasti"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6868
-#: ../src/file-manager/fm-directory-view.c:6944
-#: ../src/file-manager/fm-directory-view.c:7733
+#. add the "delete" menu item
+#: ../src/file-manager/fm-directory-view.c:6912
+#: ../src/file-manager/fm-directory-view.c:6988
+#: ../src/file-manager/fm-directory-view.c:7777
+#: ../src/file-manager/fm-tree-view.c:1333
 msgid "_Delete"
 msgstr "_Dzēst"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6869
+#: ../src/file-manager/fm-directory-view.c:6913
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Dzēst katru izvēlēto priekšmetu, bez pārvietošanas uz Atkritumkasti"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6872
+#: ../src/file-manager/fm-directory-view.c:6916
 msgid "Reset View to _Defaults"
 msgstr "Pārstatīt skatu uz _noklusējumiem"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6873
+#: ../src/file-manager/fm-directory-view.c:6917
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr ""
-"Pārstatīt kārtošanas secību un izmēra līmeni, lai atbilstu preferencēm šim "
-"skatam"
+msgstr "Pārstatīt kārtošanas secību un izmēra līmeni, lai atbilstu šī skata iestatījumiem"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6876
+#: ../src/file-manager/fm-directory-view.c:6920
 msgid "Connect To This Server"
 msgstr "Pieslēgties šim serverim"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6877
+#: ../src/file-manager/fm-directory-view.c:6921
 msgid "Make a permanent connection to this server"
 msgstr "Izveidot patstāvīgu savienojumu ar serveri"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6880
-#: ../src/file-manager/fm-directory-view.c:6896
+#: ../src/file-manager/fm-directory-view.c:6924
+#: ../src/file-manager/fm-directory-view.c:6940
 msgid "_Mount Volume"
 msgstr "_Nomontēt sējumu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6881
+#: ../src/file-manager/fm-directory-view.c:6925
 msgid "Mount the selected volume"
 msgstr "Nomontēt izvēlēto sējumu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6884
-#: ../src/file-manager/fm-directory-view.c:6900
-#: ../src/file-manager/fm-tree-view.c:750
+#: ../src/file-manager/fm-directory-view.c:6928
+#: ../src/file-manager/fm-directory-view.c:6944
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "_Nomontēt partīciju"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6885
+#: ../src/file-manager/fm-directory-view.c:6929
 msgid "Unmount the selected volume"
 msgstr "Nomontēt izvēlēto partīciju"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6888
-#: ../src/file-manager/fm-directory-view.c:6904
-#: ../src/nautilus-places-sidebar.c:1385
+#: ../src/file-manager/fm-directory-view.c:6932
+#: ../src/file-manager/fm-directory-view.c:6948
+#: ../src/nautilus-places-sidebar.c:1397
 msgid "_Eject"
 msgstr "_Izgrūst"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6889
+#: ../src/file-manager/fm-directory-view.c:6933
 msgid "Eject the selected volume"
 msgstr "Izgrūst izvēlēto sējumu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6892
-#: ../src/file-manager/fm-directory-view.c:6908
-#: ../src/nautilus-places-sidebar.c:1392
+#: ../src/file-manager/fm-directory-view.c:6936
+#: ../src/file-manager/fm-directory-view.c:6952
+#: ../src/nautilus-places-sidebar.c:1404
 msgid "_Format"
 msgstr "_Formatēt"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6893
+#: ../src/file-manager/fm-directory-view.c:6937
 msgid "Format the selected volume"
 msgstr "Formatēt izvēlēto partīciju"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6897
+#: ../src/file-manager/fm-directory-view.c:6941
 msgid "Mount the volume associated with the open folder"
 msgstr "Piemontēt sējumu, kas ir saistīts ar atveramo mapi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6901
+#: ../src/file-manager/fm-directory-view.c:6945
 msgid "Unmount the volume associated with the open folder"
 msgstr "Nomontēt sējumu, kas ir saistīts ar atveramo mapi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6905
+#: ../src/file-manager/fm-directory-view.c:6949
 msgid "Eject the volume associated with the open folder"
 msgstr "Izstumt sējumu, kas ir saistīts ar atveramo mapi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:6953
 msgid "Format the volume associated with the open folder"
 msgstr "Formātēt sējumu, kas ir saistīts ar atvērto mapi"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6912
+#: ../src/file-manager/fm-directory-view.c:6956
 msgid "Open File and Close window"
 msgstr "Atvērt failu un aizvērt Logu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6916
+#: ../src/file-manager/fm-directory-view.c:6960
 msgid "Sa_ve Search"
 msgstr "Sa_glabāt meklējumu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6917
+#: ../src/file-manager/fm-directory-view.c:6961
 msgid "Save the edited search"
 msgstr "Saglabāt laboto meklējumu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6920
+#: ../src/file-manager/fm-directory-view.c:6964
 msgid "Sa_ve Search As..."
 msgstr "Sa_glabāt meklējumu kā..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:6965
 msgid "Save the current search as a file"
 msgstr "Saglabāt pašreizējo meklējumu kā failu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6927
+#: ../src/file-manager/fm-directory-view.c:6971
 msgid "Open this folder in a navigation window"
 msgstr "Atvērt šo mapi navigācijas logā"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6932
+#: ../src/file-manager/fm-directory-view.c:6976
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Sagatavot šo mapi pārvietošanai ar Ievietot Failus komandu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6936
+#: ../src/file-manager/fm-directory-view.c:6980
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Sagatavot šo mapi kopēšanai ar Ievietot Failus komandu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6941
+#: ../src/file-manager/fm-directory-view.c:6985
 msgid "Move this folder to the Trash"
 msgstr "Parvietot šo mapi uz Atkritumkasti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6945
+#: ../src/file-manager/fm-directory-view.c:6989
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Dzēst šo mapi bez pārvietošanas uz Atkritumkasti"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6951
+#: ../src/file-manager/fm-directory-view.c:6995
 msgid "Show _Hidden Files"
 msgstr "Parādīt paslēptos failus"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6952
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Pārslēgt neredzamo failu rādīšanu pašreizējajā logā"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7038
+#: ../src/file-manager/fm-directory-view.c:7082
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Palaist vai pārvaldīt skriptus no %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7040
+#: ../src/file-manager/fm-directory-view.c:7084
 msgid "_Scripts"
 msgstr "_Skripti"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7499
-#: ../src/file-manager/fm-directory-view.c:7682
-#: ../src/file-manager/fm-tree-view.c:1115
+#: ../src/file-manager/fm-directory-view.c:7543
+#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-tree-view.c:1263
 msgid "Open in New Window"
 msgstr "Atvērt jaunā logā"
 
-#: ../src/file-manager/fm-directory-view.c:7501
-#: ../src/file-manager/fm-directory-view.c:7690
+#: ../src/file-manager/fm-directory-view.c:7545
+#: ../src/file-manager/fm-directory-view.c:7734
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Pārlūkot mapi"
 msgstr[1] "_Pārlūkot mapes"
 msgstr[2] "_Pārlūkot mapes"
 
-#: ../src/file-manager/fm-directory-view.c:7526
-#: ../src/file-manager/fm-directory-view.c:7710
+#: ../src/file-manager/fm-directory-view.c:7570
+#: ../src/file-manager/fm-directory-view.c:7754
 msgid "_Delete from Trash"
 msgstr "_Dzēst no atkritumkastes"
 
-#: ../src/file-manager/fm-directory-view.c:7527
+#: ../src/file-manager/fm-directory-view.c:7571
 msgid "Delete the open folder permanently"
 msgstr "Dzēst atvērto mapi neatgriezeniski"
 
-#: ../src/file-manager/fm-directory-view.c:7531
+#: ../src/file-manager/fm-directory-view.c:7575
 msgid "Move the open folder to the Trash"
 msgstr "Parvietotot atvērto mapi uz Atkritumkasti"
 
-#: ../src/file-manager/fm-directory-view.c:7666
+#: ../src/file-manager/fm-directory-view.c:7710
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "Atvērt ar \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7684
+#: ../src/file-manager/fm-directory-view.c:7728
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
@@ -3359,35 +3376,35 @@ msgstr[0] "Atvērt %d jaunā logā"
 msgstr[1] "Atvērt %d jaunos logos"
 msgstr[2] "Atvērt %d jaunos logos"
 
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7755
 msgid "Delete all selected items permanently"
 msgstr "Dzēst visus izvēlētos priekšmetus nekavējoties"
 
-#: ../src/file-manager/fm-directory-view.c:8083
+#: ../src/file-manager/fm-directory-view.c:8134
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Saite \"%s\" ir nederīga."
 
-#: ../src/file-manager/fm-directory-view.c:8085
+#: ../src/file-manager/fm-directory-view.c:8136
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Saite \"%s\" ir nederīga. Vai vēlaties pārvietot šo saiti uz Atkritumkasti?"
 
-#: ../src/file-manager/fm-directory-view.c:8091
+#: ../src/file-manager/fm-directory-view.c:8142
 msgid "This link can't be used, because it has no target."
 msgstr "Šo saiti nevar izmantot jo tai nav mērķa."
 
-#: ../src/file-manager/fm-directory-view.c:8093
+#: ../src/file-manager/fm-directory-view.c:8144
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Šo saiti nevar lietot, jo tās mērķis \"%s\" neeksistē."
 
-#: ../src/file-manager/fm-directory-view.c:8716
+#: ../src/file-manager/fm-directory-view.c:8795
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Atveru \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8719
+#: ../src/file-manager/fm-directory-view.c:8798
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3395,34 +3412,34 @@ msgstr[0] "Atveru \"%d\" vienību."
 msgstr[1] "Atveru \"%d\" vienības."
 msgstr[2] "Atveru \"%d\" vienības."
 
-#: ../src/file-manager/fm-directory-view.c:9611
+#: ../src/file-manager/fm-directory-view.c:9690
 msgid "Download location?"
 msgstr "Lejupielāžu vieta?"
 
-#: ../src/file-manager/fm-directory-view.c:9614
+#: ../src/file-manager/fm-directory-view.c:9693
 msgid "You can download it or make a link to it."
 msgstr "Jūs varat to ielādēt vai izveidot saiti uz to."
 
-#: ../src/file-manager/fm-directory-view.c:9617
+#: ../src/file-manager/fm-directory-view.c:9696
 msgid "Make a _Link"
 msgstr "Iz_veidot saiti"
 
-#: ../src/file-manager/fm-directory-view.c:9621
+#: ../src/file-manager/fm-directory-view.c:9700
 msgid "_Download"
 msgstr "_Ielādēt"
 
-#: ../src/file-manager/fm-directory-view.c:9684
-#: ../src/file-manager/fm-directory-view.c:9736
-#: ../src/file-manager/fm-directory-view.c:9837
+#: ../src/file-manager/fm-directory-view.c:9763
+#: ../src/file-manager/fm-directory-view.c:9815
+#: ../src/file-manager/fm-directory-view.c:9916
 msgid "Drag and drop is not supported."
 msgstr "Vilkt un Nomest netiek atbalstīts."
 
-#: ../src/file-manager/fm-directory-view.c:9685
+#: ../src/file-manager/fm-directory-view.c:9764
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Vilkt un Nomest tiek atbalstīts tikai uz vietējās failsistēmās."
 
-#: ../src/file-manager/fm-directory-view.c:9737
-#: ../src/file-manager/fm-directory-view.c:9838
+#: ../src/file-manager/fm-directory-view.c:9816
+#: ../src/file-manager/fm-directory-view.c:9917
 msgid "An invalid drag type was used."
 msgstr "Tika lietots nepareizs vilkšanas tips."
 
@@ -3452,41 +3469,41 @@ msgstr "Komanda"
 msgid "Launcher"
 msgstr "Palaidējs"
 
-#: ../src/file-manager/fm-error-reporting.c:59
+#: ../src/file-manager/fm-error-reporting.c:60
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Jums nav nepieciešamo atļauju, lai apskatītu \"%s\" saturu."
 
-#: ../src/file-manager/fm-error-reporting.c:63
+#: ../src/file-manager/fm-error-reporting.c:64
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
 msgstr "\"%s\" nav atrodams. Iespējams, tas nesen ir ticis izdzēsts."
 
-#: ../src/file-manager/fm-error-reporting.c:70
+#: ../src/file-manager/fm-error-reporting.c:71
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "Piedodiet, nevarēju parādīt visu \"%s\" saturu."
 
-#: ../src/file-manager/fm-error-reporting.c:76
+#: ../src/file-manager/fm-error-reporting.c:77
 msgid "The folder contents could not be displayed."
 msgstr "Mapes saturu nevar parādīt."
 
-#: ../src/file-manager/fm-error-reporting.c:107
+#: ../src/file-manager/fm-error-reporting.c:108
 #, c-format
 msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr "Nosaukums \"%s\" jau ir lietots šajā mapē. Lūdzu lieto citu nosaukumu."
 
-#: ../src/file-manager/fm-error-reporting.c:112
+#: ../src/file-manager/fm-error-reporting.c:113
 #, c-format
 msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "Šajā mapē nav \"%s\". Varbūt tas tika nesen pārvietots vai izdzēsts?"
 
-#: ../src/file-manager/fm-error-reporting.c:117
+#: ../src/file-manager/fm-error-reporting.c:118
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
 msgstr "Jums nav nepieciešamās atļaujas, lai pārsauktu \"%s\"."
 
-#: ../src/file-manager/fm-error-reporting.c:122
+#: ../src/file-manager/fm-error-reporting.c:123
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
@@ -3495,81 +3512,81 @@ msgstr ""
 "Nosaukums \"%s\" nav atļauts, jo tas satur rakstzīmi \"/\". Lūdzu lieto citu "
 "nosaukumu."
 
-#: ../src/file-manager/fm-error-reporting.c:126
+#: ../src/file-manager/fm-error-reporting.c:127
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
 msgstr "Nosaukums \"%s\" nav atļauts. Lūdzu lieto citu nosaukumu."
 
-#: ../src/file-manager/fm-error-reporting.c:132
+#: ../src/file-manager/fm-error-reporting.c:133
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nevarēju izmainīt \"%s\" nosaukumu, jo tas atrodas uz tikai nolasīšanai "
 "paredzēta diska"
 
-#: ../src/file-manager/fm-error-reporting.c:141
+#: ../src/file-manager/fm-error-reporting.c:142
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "Piedodiet, nevarēju pārsaukt \"%s\" par  \"%s\"."
 
-#: ../src/file-manager/fm-error-reporting.c:148
+#: ../src/file-manager/fm-error-reporting.c:149
 msgid "The item could not be renamed."
 msgstr "Nevarēja pārsaukt vienību."
 
-#: ../src/file-manager/fm-error-reporting.c:168
+#: ../src/file-manager/fm-error-reporting.c:169
 #, c-format
 msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Jums nav nepieciešamo atļauju, lai mainītu \"%s\" grupu."
 
-#: ../src/file-manager/fm-error-reporting.c:172
+#: ../src/file-manager/fm-error-reporting.c:173
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nevarēju mainīt \"%s\" grupu, jo tas atrodas uz tikai nolasīšanai paredzēta "
 "diska"
 
-#: ../src/file-manager/fm-error-reporting.c:180
+#: ../src/file-manager/fm-error-reporting.c:181
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "Piedodiet, nevarēju mainīt \"%s\" grupu."
 
-#: ../src/file-manager/fm-error-reporting.c:184
+#: ../src/file-manager/fm-error-reporting.c:185
 msgid "The group could not be changed."
 msgstr "Nevarēja nomainīt grupu."
 
-#: ../src/file-manager/fm-error-reporting.c:206
+#: ../src/file-manager/fm-error-reporting.c:207
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nevarēju mainīt \"%s\" īpašnieku, jo tas atrodas uz tikai nolasīšanai "
 "paredzēta diska"
 
-#: ../src/file-manager/fm-error-reporting.c:213
+#: ../src/file-manager/fm-error-reporting.c:214
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "Piedodiet, nevarēju mainīt \"%s\" īpašnieku."
 
-#: ../src/file-manager/fm-error-reporting.c:216
+#: ../src/file-manager/fm-error-reporting.c:217
 msgid "The owner could not be changed."
 msgstr "Nevarēja nomainīt īpašnieku."
 
-#: ../src/file-manager/fm-error-reporting.c:238
+#: ../src/file-manager/fm-error-reporting.c:239
 #, c-format
 msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nevarēju mainīt \"%s\" atļaujas, jo tas atrodas uz tikai nolasīšanai "
 "paredzēta diska"
 
-#: ../src/file-manager/fm-error-reporting.c:245
+#: ../src/file-manager/fm-error-reporting.c:246
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "Piedodiet, nevarēju mainīt \"%s\" atļaujas."
 
-#: ../src/file-manager/fm-error-reporting.c:248
+#: ../src/file-manager/fm-error-reporting.c:249
 msgid "The permissions could not be changed."
 msgstr "Nevarēju izmainīt atļaujas."
 
-#: ../src/file-manager/fm-error-reporting.c:341
+#: ../src/file-manager/fm-error-reporting.c:343
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "Pārsauc \"%s\" par \"%s\"."
@@ -3579,7 +3596,7 @@ msgid "by _Name"
 msgstr "pēc _nosaukuma"
 
 #: ../src/file-manager/fm-icon-view.c:134
-#: ../src/file-manager/fm-icon-view.c:1460
+#: ../src/file-manager/fm-icon-view.c:1479
 msgid "Keep icons sorted by name in rows"
 msgstr "Turēt ikonas sakārtotas rindā pēc nosaukuma"
 
@@ -3588,7 +3605,7 @@ msgid "by _Size"
 msgstr "pēc _izmēra"
 
 #: ../src/file-manager/fm-icon-view.c:141
-#: ../src/file-manager/fm-icon-view.c:1464
+#: ../src/file-manager/fm-icon-view.c:1483
 msgid "Keep icons sorted by size in rows"
 msgstr "Turēt ikonas sakārtotas rindā pēc izmēra"
 
@@ -3597,7 +3614,7 @@ msgid "by _Type"
 msgstr "pēc _tipa"
 
 #: ../src/file-manager/fm-icon-view.c:148
-#: ../src/file-manager/fm-icon-view.c:1468
+#: ../src/file-manager/fm-icon-view.c:1487
 msgid "Keep icons sorted by type in rows"
 msgstr "Turēt ikonas sakārtotas rindā pēc tipa"
 
@@ -3606,7 +3623,7 @@ msgid "by Modification _Date"
 msgstr "pēc izmaiņu _datuma"
 
 #: ../src/file-manager/fm-icon-view.c:155
-#: ../src/file-manager/fm-icon-view.c:1472
+#: ../src/file-manager/fm-icon-view.c:1491
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Turēt ikonas sakārtotas rindā pēc izmainīšanas datuma"
 
@@ -3615,243 +3632,243 @@ msgid "by _Emblems"
 msgstr "pēc _emblēmas"
 
 #: ../src/file-manager/fm-icon-view.c:162
-#: ../src/file-manager/fm-icon-view.c:1476
+#: ../src/file-manager/fm-icon-view.c:1495
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Turēt ikonas sakārtotas rindā pēc emblēmām"
 
-#: ../src/file-manager/fm-icon-view.c:1420
+#: ../src/file-manager/fm-icon-view.c:1439
 msgid "Arran_ge Items"
 msgstr "Sakārt_ot priekšmetus"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1422
+#: ../src/file-manager/fm-icon-view.c:1441
 msgid "Str_etch Icon"
 msgstr "Iz_stiept ikonu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1423
+#: ../src/file-manager/fm-icon-view.c:1442
 msgid "Make the selected icon stretchable"
 msgstr "Padarīt izvēlēto ikonu izstiepjamu"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1426
-#: ../src/file-manager/fm-icon-view.c:1578
+#: ../src/file-manager/fm-icon-view.c:1445
+#: ../src/file-manager/fm-icon-view.c:1597
 msgid "Restore Icons' Original Si_zes"
 msgstr "Atjaunot ikonas oriģinālos i_zmērus"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1427
+#: ../src/file-manager/fm-icon-view.c:1446
 msgid "Restore each selected icon to its original size"
 msgstr "Atjaunot katru izvēlēto ikonu tās oriģinālajā izmērā"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1430
+#: ../src/file-manager/fm-icon-view.c:1449
 msgid "Clean _Up by Name"
 msgstr "Sako_pt pēc nosaukuma "
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1431
+#: ../src/file-manager/fm-icon-view.c:1450
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Pārpozicionēt ikonas, lai tās labāk iederētos logā un izvairītos no "
 "pārklāšanās"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1437
+#: ../src/file-manager/fm-icon-view.c:1456
 msgid "Compact _Layout"
 msgstr "Kompakts _izkārtojums"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1438
+#: ../src/file-manager/fm-icon-view.c:1457
 msgid "Toggle using a tighter layout scheme"
 msgstr "Slēgt ciešāka izkārtojuma shēmas lietošanu"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1442
+#: ../src/file-manager/fm-icon-view.c:1461
 msgid "Re_versed Order"
 msgstr "Ap_griezta secība"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1443
+#: ../src/file-manager/fm-icon-view.c:1462
 msgid "Display icons in the opposite order"
 msgstr "Parādīt ikonas pretējā secībā"
 
 #. name, stock id
-#: ../src/file-manager/fm-icon-view.c:1447
+#: ../src/file-manager/fm-icon-view.c:1466
 msgid "_Keep Aligned"
 msgstr "Turēt _līdzinātu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1448
+#: ../src/file-manager/fm-icon-view.c:1467
 msgid "Keep icons lined up on a grid"
 msgstr "Turēt ikonas sakārtotas izlīdzinātas"
 
-#: ../src/file-manager/fm-icon-view.c:1455
+#: ../src/file-manager/fm-icon-view.c:1474
 msgid "_Manually"
 msgstr "_Pašrocigi"
 
-#: ../src/file-manager/fm-icon-view.c:1456
+#: ../src/file-manager/fm-icon-view.c:1475
 msgid "Leave icons wherever they are dropped"
 msgstr "Atstāt ikonas, kur tās ir nomestas"
 
-#: ../src/file-manager/fm-icon-view.c:1459
+#: ../src/file-manager/fm-icon-view.c:1478
 msgid "By _Name"
 msgstr "Pēc _nosaukuma"
 
-#: ../src/file-manager/fm-icon-view.c:1463
+#: ../src/file-manager/fm-icon-view.c:1482
 msgid "By _Size"
 msgstr "Pēc _izmēra"
 
-#: ../src/file-manager/fm-icon-view.c:1467
+#: ../src/file-manager/fm-icon-view.c:1486
 msgid "By _Type"
 msgstr "Pēc _tipa"
 
-#: ../src/file-manager/fm-icon-view.c:1471
+#: ../src/file-manager/fm-icon-view.c:1490
 msgid "By Modification _Date"
 msgstr "Pēc izmaiņu _datuma"
 
-#: ../src/file-manager/fm-icon-view.c:1475
+#: ../src/file-manager/fm-icon-view.c:1494
 msgid "By _Emblems"
 msgstr "Pēc _emblēmas"
 
-#: ../src/file-manager/fm-icon-view.c:1579
+#: ../src/file-manager/fm-icon-view.c:1598
 msgid "Restore Icon's Original Si_ze"
 msgstr "Atjaunot ikonas oriģinālo i_zmēru"
 
-#: ../src/file-manager/fm-icon-view.c:1994
+#: ../src/file-manager/fm-icon-view.c:2011
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "norādām uz \"%s\""
 
-#: ../src/file-manager/fm-icon-view.c:2762
+#: ../src/file-manager/fm-icon-view.c:2779
 msgid "Icons"
 msgstr "Ikonas"
 
-#: ../src/file-manager/fm-icon-view.c:2763
+#: ../src/file-manager/fm-icon-view.c:2780
 msgid "View as Icons"
 msgstr "Skatīt kā ikonas"
 
-#: ../src/file-manager/fm-icon-view.c:2764
+#: ../src/file-manager/fm-icon-view.c:2781
 msgid "View as _Icons"
 msgstr "Skatīt kā _ikonas"
 
-#: ../src/file-manager/fm-icon-view.c:2765
+#: ../src/file-manager/fm-icon-view.c:2782
 msgid "The icon view encountered an error."
 msgstr "Ikonu skatā gadījās kļūda."
 
-#: ../src/file-manager/fm-icon-view.c:2766
+#: ../src/file-manager/fm-icon-view.c:2783
 msgid "The icon view encountered an error while starting up."
 msgstr "Ikonu skatā gadījās kļūda sākot darbu."
 
-#: ../src/file-manager/fm-icon-view.c:2767
+#: ../src/file-manager/fm-icon-view.c:2784
 msgid "Display this location with the icon view."
 msgstr "Parādīt šo vietu ikonu skatā."
 
 #: ../src/file-manager/fm-list-model.c:371
-#: ../src/file-manager/fm-tree-model.c:1213
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(Tukša)"
 
 #: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1213
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "Ielādējam..."
 
-#: ../src/file-manager/fm-list-view.c:1923
+#: ../src/file-manager/fm-list-view.c:1956
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Redzamas kolonnas"
 
-#: ../src/file-manager/fm-list-view.c:1942
+#: ../src/file-manager/fm-list-view.c:1975
 msgid "Choose the order of information to appear in this folder."
 msgstr "Izvēlieties secību, kādā informācija parādās šajā mapē."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:1984
+#: ../src/file-manager/fm-list-view.c:2017
 msgid "Visible _Columns..."
 msgstr "Redzamās _kolonnas..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:1985
+#: ../src/file-manager/fm-list-view.c:2018
 msgid "Select the columns visible in this folder"
 msgstr "Izvēlieties šajā mapē redzamās kolonnas"
 
-#: ../src/file-manager/fm-list-view.c:2710
+#: ../src/file-manager/fm-list-view.c:2741
 msgid "List"
 msgstr "Saraksts"
 
-#: ../src/file-manager/fm-list-view.c:2711
+#: ../src/file-manager/fm-list-view.c:2742
 msgid "View as List"
 msgstr "Skatīt kā sarakstu"
 
-#: ../src/file-manager/fm-list-view.c:2712
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "View as _List"
 msgstr "Skatīt kā _sarakstu"
 
-#: ../src/file-manager/fm-list-view.c:2713
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error."
 msgstr "Saraksta skatā gadījās kļūda."
 
-#: ../src/file-manager/fm-list-view.c:2714
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "The list view encountered an error while starting up."
 msgstr "Saraksta skatā gadījās kļūda sākot darbu."
 
-#: ../src/file-manager/fm-list-view.c:2715
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "Display this location with the list view."
 msgstr "Parādīt šo atrašanās vietu saraksta skatā."
 
-#: ../src/file-manager/fm-properties-window.c:487
+#: ../src/file-manager/fm-properties-window.c:503
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Jūs nevarat piešķirt vairāk kā vienu pielāgoto ikonu vienlaicīgi!"
 
-#: ../src/file-manager/fm-properties-window.c:488
-#: ../src/nautilus-information-panel.c:555
+#: ../src/file-manager/fm-properties-window.c:504
+#: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Lūdzu uzvelciet tikai vienu attēlu, lai iestādītu pielāgoto ikonu."
 
-#: ../src/file-manager/fm-properties-window.c:496
-#: ../src/nautilus-information-panel.c:574
+#: ../src/file-manager/fm-properties-window.c:512
+#: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Fails, ko jūs nometāt nav vietējs."
 
-#: ../src/file-manager/fm-properties-window.c:497
-#: ../src/file-manager/fm-properties-window.c:503
-#: ../src/nautilus-information-panel.c:575
+#: ../src/file-manager/fm-properties-window.c:513
+#: ../src/file-manager/fm-properties-window.c:519
+#: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Jūs varat lietot tikai vietējos attēlus kā pielāgotās ikonas."
 
-#: ../src/file-manager/fm-properties-window.c:502
-#: ../src/nautilus-information-panel.c:580
+#: ../src/file-manager/fm-properties-window.c:518
+#: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Fails, ko jūs nometāt nav attēls."
 
-#: ../src/file-manager/fm-properties-window.c:997
+#: ../src/file-manager/fm-properties-window.c:1013
 msgid "Properties"
 msgstr "Rekvizīti"
 
-#: ../src/file-manager/fm-properties-window.c:1005
+#: ../src/file-manager/fm-properties-window.c:1021
 #, c-format
 msgid "%s Properties"
 msgstr "%s rekvizīti"
 
-#: ../src/file-manager/fm-properties-window.c:1528
+#: ../src/file-manager/fm-properties-window.c:1573
 msgid "Cancel Group Change?"
 msgstr "Atsaukt grupas maiņu?"
 
-#: ../src/file-manager/fm-properties-window.c:1721
+#: ../src/file-manager/fm-properties-window.c:1990
 msgid "Cancel Owner Change?"
 msgstr "Atsaukt īpašnieka maiņu?"
 
-#: ../src/file-manager/fm-properties-window.c:1906
+#: ../src/file-manager/fm-properties-window.c:2285
 msgid "nothing"
 msgstr "nekas"
 
-#: ../src/file-manager/fm-properties-window.c:1908
+#: ../src/file-manager/fm-properties-window.c:2287
 msgid "unreadable"
 msgstr "nenolasāms"
 
-#: ../src/file-manager/fm-properties-window.c:1918
+#: ../src/file-manager/fm-properties-window.c:2297
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -3859,7 +3876,7 @@ msgstr[0] "%d vienums, kopā %s"
 msgstr[1] "%d vienumi, kopā %s"
 msgstr[2] "%d vienumu, kopā %s"
 
-#: ../src/file-manager/fm-properties-window.c:1927
+#: ../src/file-manager/fm-properties-window.c:2306
 msgid "(some contents unreadable)"
 msgstr "(dažas lietas nenolasāmas)"
 
@@ -3869,301 +3886,301 @@ msgstr "(dažas lietas nenolasāmas)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:1944
+#: ../src/file-manager/fm-properties-window.c:2323
 msgid "Contents:"
 msgstr "Saturs:"
 
-#: ../src/file-manager/fm-properties-window.c:2256
+#: ../src/file-manager/fm-properties-window.c:2641
 msgid "Basic"
 msgstr "Pamata"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2286
+#: ../src/file-manager/fm-properties-window.c:2671
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nosaukums:"
 msgstr[1] "_Nosaukumi:"
 msgstr[2] "_Nosaukumu:"
 
-#: ../src/file-manager/fm-properties-window.c:2305
+#: ../src/file-manager/fm-properties-window.c:2690
 msgid "Type:"
 msgstr "Tips:"
 
-#: ../src/file-manager/fm-properties-window.c:2307
-#: ../src/file-manager/fm-properties-window.c:2317
-#: ../src/file-manager/fm-properties-window.c:2323
-#: ../src/file-manager/fm-properties-window.c:2330
-#: ../src/file-manager/fm-properties-window.c:2334
-#: ../src/file-manager/fm-properties-window.c:2342
-#: ../src/file-manager/fm-properties-window.c:2348
-#: ../src/file-manager/fm-properties-window.c:2357
-#: ../src/file-manager/fm-properties-window.c:2363
-#: ../src/file-manager/fm-properties-window.c:3379
-#: ../src/file-manager/fm-properties-window.c:3411
-#: ../src/file-manager/fm-properties-window.c:3581
-#: ../src/file-manager/fm-properties-window.c:3602
-#: ../src/file-manager/fm-properties-window.c:3637
-#: ../src/file-manager/fm-properties-window.c:3807
-#: ../src/file-manager/fm-properties-window.c:3811
+#: ../src/file-manager/fm-properties-window.c:2692
+#: ../src/file-manager/fm-properties-window.c:2702
+#: ../src/file-manager/fm-properties-window.c:2708
+#: ../src/file-manager/fm-properties-window.c:2715
+#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2727
+#: ../src/file-manager/fm-properties-window.c:2733
+#: ../src/file-manager/fm-properties-window.c:2742
+#: ../src/file-manager/fm-properties-window.c:2748
+#: ../src/file-manager/fm-properties-window.c:3768
+#: ../src/file-manager/fm-properties-window.c:3801
+#: ../src/file-manager/fm-properties-window.c:3974
+#: ../src/file-manager/fm-properties-window.c:3996
+#: ../src/file-manager/fm-properties-window.c:4031
+#: ../src/file-manager/fm-properties-window.c:4201
+#: ../src/file-manager/fm-properties-window.c:4205
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2315
+#: ../src/file-manager/fm-properties-window.c:2700
 msgid "Size:"
 msgstr "Izmērs:"
 
-#: ../src/file-manager/fm-properties-window.c:2321
+#: ../src/file-manager/fm-properties-window.c:2706
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Atrašanās vieta:"
 
-#: ../src/file-manager/fm-properties-window.c:2328
+#: ../src/file-manager/fm-properties-window.c:2713
 msgid "Volume:"
 msgstr "Skaļums:"
 
-#: ../src/file-manager/fm-properties-window.c:2332
+#: ../src/file-manager/fm-properties-window.c:2717
 msgid "Free space:"
 msgstr "Brīvā vieta:"
 
-#: ../src/file-manager/fm-properties-window.c:2340
+#: ../src/file-manager/fm-properties-window.c:2725
 msgid "Link target:"
 msgstr "Saites mērķis:"
 
-#: ../src/file-manager/fm-properties-window.c:2346
+#: ../src/file-manager/fm-properties-window.c:2731
 msgid "MIME type:"
 msgstr "MIME tips:"
 
-#: ../src/file-manager/fm-properties-window.c:2355
+#: ../src/file-manager/fm-properties-window.c:2740
 msgid "Modified:"
 msgstr "Modificēts:"
 
-#: ../src/file-manager/fm-properties-window.c:2361
+#: ../src/file-manager/fm-properties-window.c:2746
 msgid "Accessed:"
 msgstr "Izmantots:"
 
-#: ../src/file-manager/fm-properties-window.c:2464
-#: ../src/nautilus-emblem-sidebar.c:1041
+#: ../src/file-manager/fm-properties-window.c:2849
+#: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Emblēmas"
 
-#: ../src/file-manager/fm-properties-window.c:2862
+#: ../src/file-manager/fm-properties-window.c:3247
 msgid "_Read"
 msgstr "_Lasīt"
 
-#: ../src/file-manager/fm-properties-window.c:2864
+#: ../src/file-manager/fm-properties-window.c:3249
 msgid "_Write"
 msgstr "_Rakstīt"
 
-#: ../src/file-manager/fm-properties-window.c:2866
+#: ../src/file-manager/fm-properties-window.c:3251
 msgid "E_xecute"
 msgstr "Iz_pildīt"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3116
-#: ../src/file-manager/fm-properties-window.c:3127
-#: ../src/file-manager/fm-properties-window.c:3139
+#: ../src/file-manager/fm-properties-window.c:3501
+#: ../src/file-manager/fm-properties-window.c:3512
+#: ../src/file-manager/fm-properties-window.c:3524
 msgid "no "
-msgstr "no "
+msgstr "nevar "
 
-#: ../src/file-manager/fm-properties-window.c:3119
+#: ../src/file-manager/fm-properties-window.c:3504
 msgid "list"
 msgstr "saraksts"
 
-#: ../src/file-manager/fm-properties-window.c:3121
+#: ../src/file-manager/fm-properties-window.c:3506
 msgid "read"
 msgstr "lasīt"
 
-#: ../src/file-manager/fm-properties-window.c:3130
+#: ../src/file-manager/fm-properties-window.c:3515
 msgid "create/delete"
 msgstr "izveidot/dzēst"
 
-#: ../src/file-manager/fm-properties-window.c:3132
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "write"
 msgstr "rakstīt"
 
-#: ../src/file-manager/fm-properties-window.c:3141
+#: ../src/file-manager/fm-properties-window.c:3526
 msgid "access"
 msgstr "piekļuve"
 
-#: ../src/file-manager/fm-properties-window.c:3189
+#: ../src/file-manager/fm-properties-window.c:3575
 msgid "Access:"
 msgstr "Piekļuve:"
 
-#: ../src/file-manager/fm-properties-window.c:3191
+#: ../src/file-manager/fm-properties-window.c:3577
 msgid "Folder Access:"
 msgstr "Piekļuve mapei:"
 
-#: ../src/file-manager/fm-properties-window.c:3193
+#: ../src/file-manager/fm-properties-window.c:3579
 msgid "File Access:"
 msgstr "Piekļuve failam:"
 
-#: ../src/file-manager/fm-properties-window.c:3205
-#: ../src/file-manager/fm-properties-window.c:3216
+#: ../src/file-manager/fm-properties-window.c:3591
+#: ../src/file-manager/fm-properties-window.c:3602
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Nekas"
 
-#: ../src/file-manager/fm-properties-window.c:3208
+#: ../src/file-manager/fm-properties-window.c:3594
 msgid "List files only"
 msgstr "Atlasīt tikai failus"
 
-#: ../src/file-manager/fm-properties-window.c:3210
+#: ../src/file-manager/fm-properties-window.c:3596
 msgid "Access files"
 msgstr "Piekļuves faili"
 
-#: ../src/file-manager/fm-properties-window.c:3212
+#: ../src/file-manager/fm-properties-window.c:3598
 msgid "Create and delete files"
 msgstr "Izveidot un dzēst failus"
 
-#: ../src/file-manager/fm-properties-window.c:3219
+#: ../src/file-manager/fm-properties-window.c:3605
 msgid "Read-only"
 msgstr "Tikai nolasīšanai"
 
-#: ../src/file-manager/fm-properties-window.c:3221
+#: ../src/file-manager/fm-properties-window.c:3607
 msgid "Read and write"
 msgstr "Lasīt un rakstīt"
 
-#: ../src/file-manager/fm-properties-window.c:3285
+#: ../src/file-manager/fm-properties-window.c:3672
 msgid "Set _user ID"
 msgstr "Uzstādīt _lietotāja ID"
 
-#: ../src/file-manager/fm-properties-window.c:3287
+#: ../src/file-manager/fm-properties-window.c:3674
 msgid "Special flags:"
 msgstr "Speciāli karogi:"
 
-#: ../src/file-manager/fm-properties-window.c:3289
+#: ../src/file-manager/fm-properties-window.c:3676
 msgid "Set gro_up ID"
 msgstr "Uzstādīt gr_upas ID"
 
-#: ../src/file-manager/fm-properties-window.c:3290
+#: ../src/file-manager/fm-properties-window.c:3677
 msgid "_Sticky"
 msgstr "_Lipīgs"
 
-#: ../src/file-manager/fm-properties-window.c:3368
-#: ../src/file-manager/fm-properties-window.c:3570
+#: ../src/file-manager/fm-properties-window.c:3757
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "_Owner:"
 msgstr "_Īpašnieks:"
 
-#: ../src/file-manager/fm-properties-window.c:3374
-#: ../src/file-manager/fm-properties-window.c:3467
-#: ../src/file-manager/fm-properties-window.c:3576
+#: ../src/file-manager/fm-properties-window.c:3763
+#: ../src/file-manager/fm-properties-window.c:3858
+#: ../src/file-manager/fm-properties-window.c:3969
 msgid "Owner:"
 msgstr "Īpašnieks:"
 
-#: ../src/file-manager/fm-properties-window.c:3396
-#: ../src/file-manager/fm-properties-window.c:3587
+#: ../src/file-manager/fm-properties-window.c:3786
+#: ../src/file-manager/fm-properties-window.c:3981
 msgid "_Group:"
 msgstr "_Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:3405
-#: ../src/file-manager/fm-properties-window.c:3468
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3795
+#: ../src/file-manager/fm-properties-window.c:3859
+#: ../src/file-manager/fm-properties-window.c:3990
 msgid "Group:"
 msgstr "Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:3429
+#: ../src/file-manager/fm-properties-window.c:3820
 msgid "Others"
 msgstr "Citi"
 
-#: ../src/file-manager/fm-properties-window.c:3446
+#: ../src/file-manager/fm-properties-window.c:3837
 msgid "Execute:"
 msgstr "Izpildīt:"
 
-#: ../src/file-manager/fm-properties-window.c:3450
+#: ../src/file-manager/fm-properties-window.c:3841
 msgid "Allow _executing file as program"
 msgstr "Ļaut _izpildīt failu kā programmu"
 
-#: ../src/file-manager/fm-properties-window.c:3469
+#: ../src/file-manager/fm-properties-window.c:3860
 msgid "Others:"
 msgstr "Citi:"
 
-#: ../src/file-manager/fm-properties-window.c:3614
+#: ../src/file-manager/fm-properties-window.c:4008
 msgid "Folder Permissions:"
 msgstr "Mapes atļaujas:"
 
-#: ../src/file-manager/fm-properties-window.c:3626
+#: ../src/file-manager/fm-properties-window.c:4020
 msgid "File Permissions:"
 msgstr "Faila atļaujas:"
 
-#: ../src/file-manager/fm-properties-window.c:3636
+#: ../src/file-manager/fm-properties-window.c:4030
 msgid "Text view:"
 msgstr "Teksta skats:"
 
-#: ../src/file-manager/fm-properties-window.c:3783
+#: ../src/file-manager/fm-properties-window.c:4177
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Jūs neesat īpašnieks, tādējādi jūs nevarat izmainīt atļaujas."
 
-#: ../src/file-manager/fm-properties-window.c:3806
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "SELinux Context:"
 msgstr "SELinux konteksts:"
 
-#: ../src/file-manager/fm-properties-window.c:3810
+#: ../src/file-manager/fm-properties-window.c:4204
 msgid "Last changed:"
 msgstr "Pēdējoreiz mainīts:"
 
-#: ../src/file-manager/fm-properties-window.c:3824
+#: ../src/file-manager/fm-properties-window.c:4218
 msgid "Apply permissions to enclosed files"
 msgstr "Attiecināt atļaujas arī un iekļautajiem failiem"
 
-#: ../src/file-manager/fm-properties-window.c:3834
+#: ../src/file-manager/fm-properties-window.c:4228
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Nevaru noteikt atļaujas \"%s\"."
 
-#: ../src/file-manager/fm-properties-window.c:3837
+#: ../src/file-manager/fm-properties-window.c:4231
 msgid "The permissions of the selected file could not be determined."
 msgstr "Nevarēju noteikt izvēlētā faila pieejas tiesības."
 
-#: ../src/file-manager/fm-properties-window.c:4057
+#: ../src/file-manager/fm-properties-window.c:4451
 msgid "Open With"
 msgstr "Atvērt ar"
 
-#: ../src/file-manager/fm-properties-window.c:4397
+#: ../src/file-manager/fm-properties-window.c:4791
 msgid "Creating Properties window."
 msgstr "Izveidoju rekvizītu logu."
 
-#: ../src/file-manager/fm-properties-window.c:4637
+#: ../src/file-manager/fm-properties-window.c:5031
 msgid "Select Custom Icon"
 msgstr "Izvēlēties pielāgotu ikonu"
 
-#: ../src/file-manager/fm-tree-view.c:750
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "E_ject"
 msgstr "At_taisīt"
 
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1126
+#: ../src/file-manager/fm-tree-view.c:1274
 msgid "Create Folder"
 msgstr "Izveidot mapi"
 
-#: ../src/file-manager/fm-tree-view.c:1174
+#: ../src/file-manager/fm-tree-view.c:1322
 msgid "Move to Trash"
 msgstr "Pārvietot uz miskasti"
 
-#: ../src/file-manager/fm-tree-view.c:1238
-#: ../src/nautilus-places-sidebar.c:259
+#: ../src/file-manager/fm-tree-view.c:1395
+#: ../src/nautilus-places-sidebar.c:260
 msgid "File System"
 msgstr "Failu sistēma"
 
-#: ../src/file-manager/fm-tree-view.c:1240
+#: ../src/file-manager/fm-tree-view.c:1397
 msgid "Network Neighbourhood"
 msgstr "Tīkla kaimiņi"
 
-#: ../src/file-manager/fm-tree-view.c:1479
+#: ../src/file-manager/fm-tree-view.c:1639
 msgid "Tree"
 msgstr "Koks"
 
-#: ../src/file-manager/fm-tree-view.c:1485
+#: ../src/file-manager/fm-tree-view.c:1645
 msgid "Show Tree"
 msgstr "Parādīt koku"
 
-#: ../src/nautilus-application.c:267
+#: ../src/nautilus-application.c:276
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus nevarēja izveidot pieprasīto mapi \"%s\"."
 
-#: ../src/nautilus-application.c:269
+#: ../src/nautilus-application.c:278
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4171,12 +4188,12 @@ msgstr ""
 "Pirms Nautilus palaišanas, lūdzu izveidojiet šo mapi vai uzstādiet tādas "
 "atļaujas, ka Nautilus var to izveidot."
 
-#: ../src/nautilus-application.c:272
+#: ../src/nautilus-application.c:281
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus nevarēja izveidot šīs pieprasītās mapes: %s."
 
-#: ../src/nautilus-application.c:274
+#: ../src/nautilus-application.c:283
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4184,15 +4201,15 @@ msgstr ""
 "Pirms Nautilus palaišanas, lūdzu izveidojiet šīs mapes vai uzstādiet tādas "
 "atļaujas, ka Nautilus var tās izveidot."
 
-#: ../src/nautilus-application.c:333
+#: ../src/nautilus-application.c:342
 msgid "Link To Old Desktop"
 msgstr "Saite uz veco darbvirsmu"
 
-#: ../src/nautilus-application.c:349
+#: ../src/nautilus-application.c:358
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "Darbvirsmā ir izveidota saite \"Saite uz Veco Darbvirsmu\"."
 
-#: ../src/nautilus-application.c:350
+#: ../src/nautilus-application.c:359
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -4210,7 +4227,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:542
+#: ../src/nautilus-application.c:555
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4221,7 +4238,7 @@ msgstr ""
 "datoru vai vēlreiz uzinstalēt Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:548
+#: ../src/nautilus-application.c:561
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4268,12 +4285,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:578 ../src/nautilus-application.c:596
-#: ../src/nautilus-application.c:603
+#: ../src/nautilus-application.c:591 ../src/nautilus-application.c:609
+#: ../src/nautilus-application.c:616
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nevar tikt izmantots sakarā ar negaidītu kļūdu."
 
-#: ../src/nautilus-application.c:579
+#: ../src/nautilus-application.c:592
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4281,7 +4298,7 @@ msgstr ""
 "Nautikus nevar tikt tagad izmantots, sakarā ar negaidītu kļūdu no Bonobo, "
 "kāmēr mēģināts reģistrēt failu pārvaldnieka skatu serveri."
 
-#: ../src/nautilus-application.c:597
+#: ../src/nautilus-application.c:610
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -4291,7 +4308,7 @@ msgstr ""
 "kad mēģināts atrast ražotni. Nokaujot bonobo-activation-server un "
 "pārstartējot Nautilus varētu palīdzēt atrisināt problēmu."
 
-#: ../src/nautilus-application.c:604
+#: ../src/nautilus-application.c:617
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4303,7 +4320,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1541 ../src/nautilus-window-menus.c:509
+#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:498
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4520,7 +4537,7 @@ msgstr "Fails '%s' neizskatās, ka būtu derīgs attēls."
 msgid "The dragged file does not appear to be a valid image."
 msgstr "Vilktais fails neizskatās, ka būtu derīgs attēls."
 
-#: ../src/nautilus-emblem-sidebar.c:1047
+#: ../src/nautilus-emblem-sidebar.c:1050
 msgid "Show Emblems"
 msgstr "Rādīt emblēmas"
 
@@ -4685,7 +4702,7 @@ msgstr "Ekrāns"
 
 #: ../src/nautilus-file-management-properties.glade.h:48
 msgid "File Management Preferences"
-msgstr "Failu pārvaldīšanas uzstādījumi"
+msgstr "Failu pārvaldīšanas iestādījumi"
 
 #: ../src/nautilus-file-management-properties.glade.h:49
 msgid "I_nclude a Delete command that bypasses Trash"
@@ -4852,10 +4869,9 @@ msgstr "ISO jutība"
 msgid "Software"
 msgstr "Programmatūra"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>Attēla tips:</b> %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+msgid "Image Type:"
+msgstr "Attēla tips:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -4885,45 +4901,31 @@ msgstr "ielādēju..."
 msgid "Image"
 msgstr "Attēls"
 
-#: ../src/nautilus-information-panel.c:178
+#: ../src/nautilus-information-panel.c:166
 msgid "Information"
 msgstr "Informācija"
 
-#: ../src/nautilus-information-panel.c:184
+#: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
 msgstr "Rādīt informāciju"
 
 #. add the reset background item, possibly disabled
-#: ../src/nautilus-information-panel.c:404
+#: ../src/nautilus-information-panel.c:362
 msgid "Use _Default Background"
 msgstr "Lietot _noklusēto fonu"
 
-#: ../src/nautilus-information-panel.c:554
+#: ../src/nautilus-information-panel.c:501
 msgid "You can't assign more than one custom icon at a time."
 msgstr "Jūs nevarat piešķirt vairāk kā vienu pielāgoto ikonu vienlaicīgi."
 
-#: ../src/nautilus-information-panel.c:581
+#: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
 msgstr "Jūs varat lietot attēlus kā pielāgotas ikonas."
 
-#: ../src/nautilus-information-panel.c:899
+#: ../src/nautilus-information-panel.c:846
 #, c-format
 msgid "Open with %s"
 msgstr "Atvērt ar %s"
-
-#: ../src/nautilus-information-panel.c:1001
-msgid "Unable to launch the cd burner application."
-msgstr "Neizdodas palaist CD rakstīšanas programmu."
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1046
-msgid "Empty _Trash"
-msgstr "Iz_tukšot atkritumkasti"
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1062
-msgid "_Write contents to CD"
-msgstr "_Rakstīt saturu uz CD"
 
 #: ../src/nautilus-location-bar.c:60
 msgid "Go To:"
@@ -4945,64 +4947,60 @@ msgstr "Atvērt atrašanās vietu"
 msgid "_Location:"
 msgstr "_Atrašanās vieta:"
 
-#: ../src/nautilus-main.c:205
+#: ../src/nautilus-main.c:376
 msgid "Perform a quick set of self-check tests."
 msgstr "Izpildīt ātru pašpārbaudes testu kopu."
 
-#: ../src/nautilus-main.c:208
+#: ../src/nautilus-main.c:379
 msgid "Create the initial window with the given geometry."
 msgstr "Izveidot pamata logu ar doto ģeometriju."
 
-#: ../src/nautilus-main.c:208
+#: ../src/nautilus-main.c:379
 msgid "GEOMETRY"
 msgstr "ĢEOMETRIJA"
 
-#: ../src/nautilus-main.c:210
+#: ../src/nautilus-main.c:381
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Izveido tikai logus ar speciāli norādītiem URI."
 
-#: ../src/nautilus-main.c:212
+#: ../src/nautilus-main.c:383
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
-"Nepārvaldīt darbavirsmu (ignorēt preferences, kas uzstādītas preferenču "
-"dialogā)."
+msgstr "Nepārvaldīt darbavirsmu (ignorēt iestatījumus, kas uzstādīti iestatījumu logā)."
 
-#: ../src/nautilus-main.c:214
+#: ../src/nautilus-main.c:385
 msgid "open a browser window."
 msgstr "atver pārlūka logu."
 
-#: ../src/nautilus-main.c:216
+#: ../src/nautilus-main.c:387
 msgid "Quit Nautilus."
 msgstr "Iziet no Nautilus."
 
-#: ../src/nautilus-main.c:218
+#: ../src/nautilus-main.c:389
 msgid "Restart Nautilus."
 msgstr "Parsāknēt Nautilus."
 
-#: ../src/nautilus-main.c:219
+#: ../src/nautilus-main.c:390
 msgid "[URI...]"
 msgstr "[URI...]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
-#: ../src/nautilus-main.c:222
+#: ../src/nautilus-main.c:393
 msgid ""
 "Load a saved session from the specified file. Implies \"--no-default-window"
 "\"."
-msgstr ""
-"Ielādēt saglabātu sesiju no norādītā faila. Nozīmē \"--no-default-window"
-"\"."
+msgstr "Ielādēt saglabātu sesiju no norādītā faila. Nozīmē \"--no-default-window\"."
 
-#: ../src/nautilus-main.c:222
+#: ../src/nautilus-main.c:393
 msgid "FILENAME"
 msgstr "FILENAME"
 
-#: ../src/nautilus-main.c:258
+#: ../src/nautilus-main.c:431
 msgid "File Manager"
 msgstr "Failu pārvaldnieks"
 
-#: ../src/nautilus-main.c:259
+#: ../src/nautilus-main.c:432
 msgid ""
 "\n"
 "\n"
@@ -5013,24 +5011,24 @@ msgstr ""
 "Pārlūkot failu sistēmu ar failu pārvaldnieku"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:267 ../src/nautilus-spatial-window.c:424
-#: ../src/nautilus-window-menus.c:448 ../src/nautilus-window.c:155
+#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
+#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:294 ../src/nautilus-main.c:303
-#: ../src/nautilus-main.c:308
+#: ../src/nautilus-main.c:473 ../src/nautilus-main.c:482
+#: ../src/nautilus-main.c:487
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nauilus: %s nevar lietot ar URI.\n"
 
-#: ../src/nautilus-main.c:299
+#: ../src/nautilus-main.c:478
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nevar tikt izmantots ar citām opcijām.\n"
 
-#: ../src/nautilus-main.c:313
+#: ../src/nautilus-main.c:492
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nevar tikt izmantots ar vairāk kā vienu URI.\n"
@@ -5048,7 +5046,9 @@ msgstr "Ja jā, jūs būsiet nolemts to atkārtot."
 
 #: ../src/nautilus-navigation-window-menus.c:119
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "Vai esat pārliecināts, ka vēlaties attīrīt apmeklēto atrašanās vietu sarakstu?"
+msgstr ""
+"Vai esat pārliecināts, ka vēlaties attīrīt apmeklēto atrašanās vietu "
+"sarakstu?"
 
 #: ../src/nautilus-navigation-window-menus.c:121
 msgid "If you clear the list of locations, they will be permanently deleted."
@@ -5098,7 +5098,7 @@ msgstr "_Atrašanās vieta..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:862
+#: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "Norādiet vietu atvēršanai"
 
@@ -5112,37 +5112,37 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Iztīrīt Iet izvēlni un Atpakaļ/Uz Priekšu sarakstus"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:870
+#: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "Pievienot grām_atzīmi"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:871
+#: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Pievienot grāmatzīmi par pašreizējo atrašanās vietu šajā izvēlnē"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:873
+#: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "R_ediģēt grāmatzīmes"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:874
+#: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Parādīt logu, kas atļauj labot grāmatzīmes šajā izvēlnē"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:876
-msgid "_Search"
-msgstr "_Meklēt"
+#: ../src/nautilus-spatial-window.c:866
+msgid "_Search for Files..."
+msgstr "Meklēt failu_s..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:877
-msgid "Search for files"
-msgstr "Meklēt failus"
+#: ../src/nautilus-spatial-window.c:867
+msgid "Locate documents and folders on this computer by name or content"
+msgstr "Meklēt failus un mapes uz šī datora pēc to nosaukumiem vai satura"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
@@ -5211,11 +5211,15 @@ msgstr "Iet uz nākamo apmeklēto atrašanās vietu"
 msgid "Forward history"
 msgstr "Uz priekšu vēsturē"
 
-#: ../src/nautilus-navigation-window.c:177
+#: ../src/nautilus-navigation-window-menus.c:528
+msgid "_Search"
+msgstr "_Meklēt"
+
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr "Pārslēdzas starp pogām un tekstuālu atrašanās vietas joslu"
 
-#: ../src/nautilus-navigation-window.c:906
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Failu pārlūks"
@@ -5228,203 +5232,203 @@ msgstr "Piezīmes"
 msgid "Show Notes"
 msgstr "Rādīt piezīmes"
 
-#: ../src/nautilus-places-sidebar.c:1350
+#: ../src/nautilus-places-sidebar.c:1362
 msgid "Remove"
 msgstr "Noņemt"
 
-#: ../src/nautilus-places-sidebar.c:1359
+#: ../src/nautilus-places-sidebar.c:1371
 msgid "Rename..."
 msgstr "Pārsaukt..."
 
-#: ../src/nautilus-places-sidebar.c:1371
+#: ../src/nautilus-places-sidebar.c:1383
 msgid "_Mount"
 msgstr "_Montēt"
 
-#: ../src/nautilus-places-sidebar.c:1378
+#: ../src/nautilus-places-sidebar.c:1390
 msgid "_Unmount"
 msgstr "_Nomontēt"
 
-#: ../src/nautilus-places-sidebar.c:1630
+#: ../src/nautilus-places-sidebar.c:1642
 msgid "Places"
 msgstr "Vietas"
 
-#: ../src/nautilus-places-sidebar.c:1636
+#: ../src/nautilus-places-sidebar.c:1648
 msgid "Show Places"
 msgstr "Rādīt Vietas"
 
 #. set the title and standard close accelerator
-#: ../src/nautilus-property-browser.c:278
+#: ../src/nautilus-property-browser.c:280
 msgid "Backgrounds and Emblems"
 msgstr "Foni un Emblēmas"
 
-#: ../src/nautilus-property-browser.c:387
+#: ../src/nautilus-property-browser.c:389
 msgid "_Remove..."
 msgstr "_Izņemt..."
 
-#: ../src/nautilus-property-browser.c:407
+#: ../src/nautilus-property-browser.c:409
 msgid "_Add new..."
 msgstr "_Pievienot jaunu..."
 
-#: ../src/nautilus-property-browser.c:960
+#: ../src/nautilus-property-browser.c:974
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Piedodiet, bet %s raksts nevar tikt izdzēsts."
 
-#: ../src/nautilus-property-browser.c:961
+#: ../src/nautilus-property-browser.c:975
 msgid "Check that you have permission to delete the pattern."
 msgstr "Pārbaudiet, ka jums ir tiesības izdzēst šo rakstu."
 
-#: ../src/nautilus-property-browser.c:990
+#: ../src/nautilus-property-browser.c:1004
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Piedodiet, bet %s emblēma nevar tikt izdzēsta."
 
-#: ../src/nautilus-property-browser.c:991
+#: ../src/nautilus-property-browser.c:1005
 msgid "Check that you have permission to delete the emblem."
 msgstr "Pārbaudiet, ka jums ir tiesības izdzēst emblēmu."
 
-#: ../src/nautilus-property-browser.c:1031
+#: ../src/nautilus-property-browser.c:1052
 msgid "Create a New Emblem"
 msgstr "Izveidot jaunu emblēmu"
 
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1053
+#: ../src/nautilus-property-browser.c:1074
 msgid "_Keyword:"
 msgstr "_Atslēgvārds:"
 
 #. set up a gnome icon entry to pick the image file
-#: ../src/nautilus-property-browser.c:1072
+#: ../src/nautilus-property-browser.c:1093
 msgid "_Image:"
 msgstr "_Attēls:"
 
-#: ../src/nautilus-property-browser.c:1080
+#: ../src/nautilus-property-browser.c:1101
 msgid "Select an Image File for the New Emblem"
 msgstr "Izvēlieties attēla failu jaunajai emblēmai"
 
-#: ../src/nautilus-property-browser.c:1105
+#: ../src/nautilus-property-browser.c:1126
 msgid "Create a New Color:"
 msgstr "Izveidot jaunu krāsu:"
 
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1119
+#: ../src/nautilus-property-browser.c:1140
 msgid "Color _name:"
 msgstr "Krāsas no_saukums:"
 
-#: ../src/nautilus-property-browser.c:1135
+#: ../src/nautilus-property-browser.c:1156
 msgid "Color _value:"
 msgstr "Krāsas _vērtība:"
 
-#: ../src/nautilus-property-browser.c:1167
+#: ../src/nautilus-property-browser.c:1188
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Piedodiet, bet \"%s\" nav pareizs faila nosaukums."
 
-#: ../src/nautilus-property-browser.c:1170
+#: ../src/nautilus-property-browser.c:1191
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Piedodiet, bet jūs nedevāt pareizu faila nosaukumu."
 
-#: ../src/nautilus-property-browser.c:1171
+#: ../src/nautilus-property-browser.c:1192
 msgid "Please try again."
 msgstr "Lūdzu mēģiniet vēlreiz."
 
-#: ../src/nautilus-property-browser.c:1184
+#: ../src/nautilus-property-browser.c:1205
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Piedodiet, bet jūs nevarat aizvietot pārstatīšanas attēlu."
 
-#: ../src/nautilus-property-browser.c:1185
+#: ../src/nautilus-property-browser.c:1206
 msgid "Reset is a special image that cannot be deleted."
 msgstr "Atstatīt ir speciāla ikona ko nevar izdzēst."
 
-#: ../src/nautilus-property-browser.c:1217
+#: ../src/nautilus-property-browser.c:1238
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Piedodiet, bet %s raksts nevar tikt uzstādīts."
 
-#: ../src/nautilus-property-browser.c:1237
+#: ../src/nautilus-property-browser.c:1258
 msgid "Select an Image File to Add as a Pattern"
 msgstr "Izvēlieties attēla failu ko pievienot kā rakstu"
 
-#: ../src/nautilus-property-browser.c:1289
-#: ../src/nautilus-property-browser.c:1320
+#: ../src/nautilus-property-browser.c:1310
+#: ../src/nautilus-property-browser.c:1341
 msgid "The color cannot be installed."
 msgstr "Krāsu nevar instalēt."
 
-#: ../src/nautilus-property-browser.c:1290
+#: ../src/nautilus-property-browser.c:1311
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr "Jaunajai krāsai jānorāda neizmantots krāsas nosaukums."
 
-#: ../src/nautilus-property-browser.c:1321
+#: ../src/nautilus-property-browser.c:1342
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Piedodiet, bet jums jāpiešķir kāds atslēgvārds jaunajai krāsai."
 
-#: ../src/nautilus-property-browser.c:1374
+#: ../src/nautilus-property-browser.c:1395
 msgid "Select a Color to Add"
 msgstr "Izvēlies krāsu, kuru pievienot"
 
-#: ../src/nautilus-property-browser.c:1411
-#: ../src/nautilus-property-browser.c:1427
+#: ../src/nautilus-property-browser.c:1432
+#: ../src/nautilus-property-browser.c:1448
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Piedodiet, bet '%s' nav lietojams attēla fails."
 
-#: ../src/nautilus-property-browser.c:1412
-#: ../src/nautilus-property-browser.c:1428
+#: ../src/nautilus-property-browser.c:1433
+#: ../src/nautilus-property-browser.c:1449
 msgid "The file is not an image."
 msgstr "Šis fails nav attēls."
 
-#: ../src/nautilus-property-browser.c:2105
+#: ../src/nautilus-property-browser.c:2154
 msgid "Select a Category:"
 msgstr "Izvēlēties kategoriju:"
 
-#: ../src/nautilus-property-browser.c:2114
+#: ../src/nautilus-property-browser.c:2163
 msgid "C_ancel Remove"
 msgstr "At_celt izņemšanu"
 
-#: ../src/nautilus-property-browser.c:2120
+#: ../src/nautilus-property-browser.c:2169
 msgid "_Add a New Pattern..."
 msgstr "_Pievienot jaunu rakstu..."
 
-#: ../src/nautilus-property-browser.c:2123
+#: ../src/nautilus-property-browser.c:2172
 msgid "_Add a New Color..."
 msgstr "_Pievienot jaunu krāsu..."
 
-#: ../src/nautilus-property-browser.c:2126
+#: ../src/nautilus-property-browser.c:2175
 msgid "_Add a New Emblem..."
 msgstr "_Pievienot jaunu emblēmu..."
 
-#: ../src/nautilus-property-browser.c:2149
+#: ../src/nautilus-property-browser.c:2198
 msgid "Click on a pattern to remove it"
 msgstr "Klikšķiniet uz raksta, lai to noņemtu"
 
-#: ../src/nautilus-property-browser.c:2152
+#: ../src/nautilus-property-browser.c:2201
 msgid "Click on a color to remove it"
 msgstr "Klikšķiniet uz krāsas, lai to noņemtu"
 
-#: ../src/nautilus-property-browser.c:2155
+#: ../src/nautilus-property-browser.c:2204
 msgid "Click on an emblem to remove it"
 msgstr "Klikšķiniet uz emblēmas, lai to noņemtu"
 
-#: ../src/nautilus-property-browser.c:2164
+#: ../src/nautilus-property-browser.c:2213
 msgid "Patterns:"
 msgstr "Raksti:"
 
-#: ../src/nautilus-property-browser.c:2167
+#: ../src/nautilus-property-browser.c:2216
 msgid "Colors:"
 msgstr "Krāsas:"
 
-#: ../src/nautilus-property-browser.c:2170
+#: ../src/nautilus-property-browser.c:2219
 msgid "Emblems:"
 msgstr "Emblēmas:"
 
-#: ../src/nautilus-property-browser.c:2190
+#: ../src/nautilus-property-browser.c:2239
 msgid "_Remove a Pattern..."
 msgstr "_Noņemt rakstu..."
 
-#: ../src/nautilus-property-browser.c:2193
+#: ../src/nautilus-property-browser.c:2242
 msgid "_Remove a Color..."
 msgstr "_Noņemt krāsu..."
 
-#: ../src/nautilus-property-browser.c:2196
+#: ../src/nautilus-property-browser.c:2245
 msgid "_Remove an Emblem..."
 msgstr "_Noņemt emblēmu..."
 
@@ -5492,78 +5496,78 @@ msgstr "Cits tips..."
 msgid "Remove this criterion from the search"
 msgstr "Aizvākt no"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
-msgstr "<b>Meklēt mapē</b>"
+#: ../src/nautilus-query-editor.c:981
+msgid "Search Folder"
+msgstr "Meklēt mapē"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "Rediģēt saglabāto meklējumu"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "Pievienot jaunu kritēriju meklējumam"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "Iet"
 
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "Pārlādēt"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "Izpildīt vai atsvaidzināt meklējumu"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
-msgstr "<b>Meklēt:</b>"
+#: ../src/nautilus-query-editor.c:1062
+msgid "_Search for:"
+msgstr "_Meklēt:"
 
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "Meklēšanas rezultāti"
 
-#: ../src/nautilus-search-bar.c:142
-msgid "<b>Search:</b>"
-msgstr "<b>Meklēt:</b>"
+#: ../src/nautilus-search-bar.c:141
+msgid "Search:"
+msgstr "Meklēt:"
 
 #: ../src/nautilus-side-pane.c:427
 msgid "Close the side pane"
 msgstr "Aizvērt sāna rūti"
 
-#: ../src/nautilus-spatial-window.c:860
+#: ../src/nautilus-spatial-window.c:850
 msgid "_Places"
 msgstr "_Vietas"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:851
 msgid "Open _Location..."
 msgstr "Atvērt _atrašanās vietu ..."
 
-#: ../src/nautilus-spatial-window.c:864
+#: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
 msgstr "_Aizvērt augstākā līmeņa logus"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:865
+#: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
 msgstr "Aizvērt augstāka līmeņa logus"
 
-#: ../src/nautilus-spatial-window.c:867
+#: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
 msgstr "_Aizvērt visus logus"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:868
+#: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
 msgstr "Aizvērt visus Nautilus logus"
 
-#: ../src/nautilus-throbber.c:514
+#: ../src/nautilus-throbber.c:82
 msgid "throbber"
 msgstr "troberis"
 
-#: ../src/nautilus-throbber.c:515
+#: ../src/nautilus-throbber.c:83
 msgid "provides visual status"
 msgstr "piedāvā visuālo statusu"
 
@@ -5579,56 +5583,56 @@ msgstr ""
 msgid "Bookmark for Nonexistent Location"
 msgstr "Grāmatzīme neeksistējošai atrašanās vietai"
 
-#: ../src/nautilus-window-manage-views.c:640
+#: ../src/nautilus-window-manage-views.c:652
 msgid "You can choose another view or go to a different location."
 msgstr "Jūs varat izvēlēties citu skatu vai pāriet uz citu vietu."
 
-#: ../src/nautilus-window-manage-views.c:653
+#: ../src/nautilus-window-manage-views.c:665
 msgid "The location cannot be displayed with this viewer."
 msgstr "Vietu nevar apskatīt ar šo skatītāju."
 
-#: ../src/nautilus-window-manage-views.c:1022
+#: ../src/nautilus-window-manage-views.c:1034
 msgid "Content View"
 msgstr "Satura Skats"
 
-#: ../src/nautilus-window-manage-views.c:1023
+#: ../src/nautilus-window-manage-views.c:1035
 msgid "View of the current folder"
 msgstr "Skats pašreizējai mapei"
 
-#: ../src/nautilus-window-manage-views.c:1420
+#: ../src/nautilus-window-manage-views.c:1458
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus nav uzstādīts skatītājs, kas spētu parādīt šo mapi."
 
-#: ../src/nautilus-window-manage-views.c:1426
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "The location is not a folder."
 msgstr "Šī vieta nav mape."
 
-#: ../src/nautilus-window-manage-views.c:1453
+#: ../src/nautilus-window-manage-views.c:1491
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus neprot strādāt ar %s: vietām."
 
-#: ../src/nautilus-window-manage-views.c:1488
+#: ../src/nautilus-window-manage-views.c:1526
 msgid "Check that your proxy settings are correct."
 msgstr "Pārbaudiet, vai jūsu starpservera uzstādijumi ir pareizi."
 
-#: ../src/nautilus-window-manage-views.c:1493
+#: ../src/nautilus-window-manage-views.c:1531
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "Nevar attēlot \"%s\", Nautilus nevar sazināties ar SMB master browser."
 
-#: ../src/nautilus-window-manage-views.c:1496
+#: ../src/nautilus-window-manage-views.c:1534
 msgid "Check that an SMB server is running in the local network."
 msgstr "Pārbaudiet, ka vietējajā tīklā strādā kāds SMB serveris."
 
-#: ../src/nautilus-window-manage-views.c:1505
+#: ../src/nautilus-window-manage-views.c:1543
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus nevar attēlot \"%s\"."
 
-#: ../src/nautilus-window-manage-views.c:1507
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Please select another viewer and try again."
 msgstr "Lūdzu izvēlieties citu skatītāju un mēģiniet vēlreiz."
 
@@ -5668,7 +5672,7 @@ msgstr ""
 "Nautilus, ja nē, rakstiet uz Free Software Foundation, Inc., 59 Temple "
 "Place, Suite 330, Boston, MA  02111-1307  USA"
 
-#: ../src/nautilus-window-menus.c:450
+#: ../src/nautilus-window-menus.c:443
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5676,7 +5680,7 @@ msgstr ""
 "Nautilus ir GNOMEs grafiska čaula, kas atļauj viegli parvaldīt jūsu failus "
 "un pārējo sistēmu."
 
-#: ../src/nautilus-window-menus.c:454
+#: ../src/nautilus-window-menus.c:447
 msgid "Copyright © 1999-2006 The Nautilus authors"
 msgstr "Autortiesības © 1999-2005 The Nautilus autori"
 
@@ -5684,47 +5688,48 @@ msgstr "Autortiesības © 1999-2005 The Nautilus autori"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:464
+#: ../src/nautilus-window-menus.c:457
 msgid "translator-credits"
 msgstr ""
+"Raivis Dejus <orvils@gmail.com>\n"
 "Pēteris Krišjānis <peteris.krisjanis@os.lv>\n"
 "Artis Trops <hornet@navigator.lv>"
 
-#: ../src/nautilus-window-menus.c:597
+#: ../src/nautilus-window-menus.c:586
 msgid "_File"
 msgstr "_Fails"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:598
+#: ../src/nautilus-window-menus.c:587
 msgid "_Edit"
 msgstr "R_ediģēt"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:599
+#: ../src/nautilus-window-menus.c:588
 msgid "_View"
 msgstr "_Skats"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:600
+#: ../src/nautilus-window-menus.c:589
 msgid "_Help"
 msgstr "_Palīdzība"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:602
+#: ../src/nautilus-window-menus.c:591
 msgid "_Close"
 msgstr "_Aizvērt"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:592
 msgid "Close this folder"
 msgstr "Aizvērt šo logu"
 
-#: ../src/nautilus-window-menus.c:606
+#: ../src/nautilus-window-menus.c:595
 msgid "_Backgrounds and Emblems..."
 msgstr "_Foni un emblēmas..."
 
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:596
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -5732,165 +5737,159 @@ msgstr ""
 "Parādīt paraugus, krāsas un emblēmas, kuras varētu lietot, lai izmainītu "
 "izskatu"
 
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:599
 msgid "Prefere_nces"
-msgstr "Prefere_nces"
+msgstr "Iesta_tījumi"
 
-#: ../src/nautilus-window-menus.c:611
+#: ../src/nautilus-window-menus.c:600
 msgid "Edit Nautilus preferences"
-msgstr "Rediģēt Nautilus prefrences"
+msgstr "Rediģēt Nautilus iestatījumus"
 
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:602
 msgid "_Undo"
 msgstr "_Atsaukt"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:603
 msgid "Undo the last text change"
 msgstr "Atsaukt pēdējās teksta izmaiņas "
 
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:605
 msgid "Open _Parent"
 msgstr "Atvērt augstāku ma_pi"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:617
+#: ../src/nautilus-window-menus.c:606
 msgid "Open the parent folder"
 msgstr "Atvērt augstāka līmeņa mapi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:612
 msgid "_Stop"
-msgstr "_Stop"
+msgstr "_Apturēt"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:616
 msgid "_Reload"
 msgstr "_Pārlādēt"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:631
+#: ../src/nautilus-window-menus.c:620
 msgid "_Contents"
 msgstr "_Saturs"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:632
+#: ../src/nautilus-window-menus.c:621
 msgid "Display Nautilus help"
 msgstr "Parādīt Nautilus palīdzību"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:635
+#: ../src/nautilus-window-menus.c:624
 msgid "_About"
 msgstr "P_ar"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:625
 msgid "Display credits for the creators of Nautilus"
 msgstr "Parādīt Nautilus veidotājus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:639
+#: ../src/nautilus-window-menus.c:628
 msgid "Zoom _In"
 msgstr "Pal_ielināt"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:640 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:629 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Parādīt saturu detalizētak"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:651
+#: ../src/nautilus-window-menus.c:640
 msgid "Zoom _Out"
 msgstr "Sa_mazināt"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:652 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:641 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Parādīt saturu ne tik detalizēti"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:659
+#: ../src/nautilus-window-menus.c:648
 msgid "Normal Si_ze"
 msgstr "Normāls i_zmērs"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:660
+#: ../src/nautilus-window-menus.c:649
 msgid "Show the contents at the normal size"
 msgstr "Parādīt saturu normālā lielumā"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:663
+#: ../src/nautilus-window-menus.c:652
 msgid "Connect to _Server..."
 msgstr "Pieslēgties _serverim..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:664
-msgid "Set up a connection to a network server"
-msgstr "Uzstādīt savienojumu ar tīkla serveri"
+#: ../src/nautilus-window-menus.c:653
+msgid "Connect to a remote computer or shared disk"
+msgstr "Pieslēgties attālinātam datoram vai kpolietošanas mapei"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:667
-msgid "_Home"
-msgstr "_Mājas"
-
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:668
-msgid "Go to the home folder"
-msgstr "Iet uz mājas mapi"
+#: ../src/nautilus-window-menus.c:656
+msgid "_Home Folder"
+msgstr "_Mājas mape"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:671
+#: ../src/nautilus-window-menus.c:660
 msgid "_Computer"
 msgstr "_Dators"
 
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:672
-msgid "Go to the computer location"
-msgstr "Iet uz datora vietu"
-
 #. name, stock id
-#: ../src/nautilus-window-menus.c:675
+#: ../src/nautilus-window-menus.c:664
 msgid "_Network"
 msgstr "_Tīkls"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:676
-msgid "Go to the network location"
-msgstr "Iet uz tīkla vietu"
+#: ../src/nautilus-window-menus.c:665 ../src/network-scheme.desktop.in.h:1
+msgid "Browse bookmarked and local network locations"
+msgstr "Pārlūkot grāmatzīmēs saglabātās vai lokālā tīkla vietas"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:679
+#: ../src/nautilus-window-menus.c:668
 msgid "T_emplates"
 msgstr "Sagatav_es"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:680
-msgid "Go to the templates folder"
-msgstr "Iet uz sagatavju mapi"
+#: ../src/nautilus-window-menus.c:669
+msgid "Open your personal templates folder"
+msgstr "Atvērt savu sagatavju mapi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:683
+#: ../src/nautilus-window-menus.c:672
 msgid "_Trash"
 msgstr "_Atkritumkaste"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:684
-msgid "Go to the trash folder"
-msgstr "Iet uz atkritumkastes mapi"
+#: ../src/nautilus-window-menus.c:673
+msgid "Open your personal trash folder"
+msgstr "Atvērt savi miskastes mapi"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:687
-msgid "CD/_DVD Creator"
-msgstr "CD/_DVD veidotājs"
+#: ../src/nautilus-window-menus.c:676
+msgid "CD/_DVD"
+msgstr "CD/_DVD"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:688
-msgid "Go to the CD/DVD Creator"
-msgstr "Iet uz CD/DVD veidotāju"
+#: ../src/nautilus-window-menus.c:677
+msgid "Open a folder into which you can drag files to burn to a CD or DVD"
+msgstr "Atvērt mapi kurā'ievilktos failus jūs varat ierakstīt CD vai DVD"
 
-#: ../src/nautilus-window-menus.c:714
+#: ../src/nautilus-window-menus.c:703
 msgid "_Up"
 msgstr "A_ugšup"
+
+#: ../src/nautilus-window-menus.c:706
+msgid "_Home"
+msgstr "_Mājas"
 
 #: ../src/nautilus-zoom-control.c:84
 msgid "Zoom In"
@@ -5915,8 +5914,4 @@ msgstr "Mainīt izmēru"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Uzstādīt izmēra līmeni pašreizējam skatam"
-
-#: ../src/network-scheme.desktop.in.h:2
-msgid "View your network servers in the Nautilus file manager"
-msgstr "Skatīt jūsu tīkla serverus Nautilus failu pāvaldniekā"
 
