@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.gnome-2-16.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-18 01:27+0000\n"
+"POT-Creation-Date: 2006-12-24 21:01+0000\n"
 "PO-Revision-Date: 2006-11-25 21:47+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -1170,8 +1170,8 @@ msgid "%s %ld of %ld %s"
 msgstr "%s %ld من %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
-#, c-format
-msgid "(%d:%02d:%d Remaining)"
+#, fuzzy, c-format
+msgid "(%d:%02d:%02d Remaining)"
 msgstr "(%d:%02d:%d متبقيّة)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
@@ -2054,7 +2054,7 @@ msgstr "وصلة"
 msgid "link (broken)"
 msgstr "وصلة (مكسورة)"
 
-#: ../libnautilus-private/nautilus-file.c:6347
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 msgid "Trash"
@@ -2331,12 +2331,12 @@ msgstr "جاري فتح %s"
 #: ../libnautilus-private/nautilus-program-choosing.c:588
 #: ../libnautilus-private/nautilus-program-choosing.c:596
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1436
-#: ../src/nautilus-window-manage-views.c:1442
-#: ../src/nautilus-window-manage-views.c:1470
-#: ../src/nautilus-window-manage-views.c:1478
-#: ../src/nautilus-window-manage-views.c:1484
-#: ../src/nautilus-window-manage-views.c:1505
+#: ../src/nautilus-window-manage-views.c:1455
+#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1489
+#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1524
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "لم أتمكن من عرض \"%s\"."
@@ -2348,29 +2348,29 @@ msgid "There was an error launching the application."
 msgstr "حدث خطأ عند بدأ التطبيق."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "The attempt to log in failed."
 msgstr "فشلت محاولة تسجيل الدخول."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1486
+#: ../src/nautilus-window-manage-views.c:1505
 msgid "Access was denied."
 msgstr "مُنِع النفاذ."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:608
-#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1516
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "تعذر عرض \"%s\"، لأنه لم يمكن ايجاد المضيف \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1519
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "تثبت من صحة التهجئة و صحة تعيينات البروكسي."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1477
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr " \"%s\" ليس موقعا سليما."
@@ -2379,13 +2379,13 @@ msgstr " \"%s\" ليس موقعا سليما."
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1189
-#: ../src/nautilus-window-manage-views.c:1453
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1480
 msgid "Please check the spelling and try again."
 msgstr "الرجاء التأكد من التهجأة ثم الإعادة مرة أخرى."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:623
-#: ../src/nautilus-window-manage-views.c:1450
+#: ../src/nautilus-window-manage-views.c:1469
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "تعذر ايجاد \"%s\"."
@@ -2436,7 +2436,7 @@ msgid "Search for \"%s\""
 msgstr "ابحث عن \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "حرّر"
 
@@ -3826,23 +3826,23 @@ msgid "You can't assign more than one custom icon at a time!"
 msgstr "لا يمكنك اعطاء أكثر من أيقونة مخصصة واحدة في آن واحد!"
 
 #: ../src/file-manager/fm-properties-window.c:504
-#: ../src/nautilus-information-panel.c:555
+#: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "رجاء اسحب صورة واحدة فقط لضبط أيقونة مخصصة."
 
 #: ../src/file-manager/fm-properties-window.c:512
-#: ../src/nautilus-information-panel.c:574
+#: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "الملف الذي ألقيته ليس محليا."
 
 #: ../src/file-manager/fm-properties-window.c:513
 #: ../src/file-manager/fm-properties-window.c:519
-#: ../src/nautilus-information-panel.c:575
+#: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "يمكنك فقط استعمال الصور المحلية كأيقونات مخصصة."
 
 #: ../src/file-manager/fm-properties-window.c:518
-#: ../src/nautilus-information-panel.c:580
+#: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "الملف الذي القيته ليس صورة."
 
@@ -4868,10 +4868,10 @@ msgstr "ترتيب ISO للسرعة"
 msgid "Software"
 msgstr "برمجيات"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>نوع الصورة:</b> %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+#, fuzzy
+msgid "Image Type:"
+msgstr "ال_صورة:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -4903,45 +4903,31 @@ msgstr "جاري التحميل..."
 msgid "Image"
 msgstr "الصورة"
 
-#: ../src/nautilus-information-panel.c:178
+#: ../src/nautilus-information-panel.c:166
 msgid "Information"
 msgstr "المعلومات"
 
-#: ../src/nautilus-information-panel.c:184
+#: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
 msgstr "اعرض معلومات الصورة"
 
 #. add the reset background item, possibly disabled
-#: ../src/nautilus-information-panel.c:404
+#: ../src/nautilus-information-panel.c:362
 msgid "Use _Default Background"
 msgstr "استخدم الخلفية الإ_فتراضية"
 
-#: ../src/nautilus-information-panel.c:554
+#: ../src/nautilus-information-panel.c:501
 msgid "You can't assign more than one custom icon at a time."
 msgstr "لا يمكنك استخدام أكثر من أيقونة مخصصة واحدة في نفس الوقت."
 
-#: ../src/nautilus-information-panel.c:581
+#: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
 msgstr "لا يمكنك إلا استخدام الصور كأيقونات مخصصة."
 
-#: ../src/nautilus-information-panel.c:899
+#: ../src/nautilus-information-panel.c:846
 #, c-format
 msgid "Open with %s"
 msgstr "افتح بـ %s"
-
-#: ../src/nautilus-information-panel.c:1001
-msgid "Unable to launch the cd burner application."
-msgstr "لا يمكن تشغيل تطبيق حارق الأقراص المدمجة."
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1046
-msgid "Empty _Trash"
-msgstr "افرغ _المهملات"
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1062
-msgid "_Write contents to CD"
-msgstr "ا_كتب المحتويات على القرص المدمج"
 
 #: ../src/nautilus-location-bar.c:60
 msgid "Go To:"
@@ -5028,7 +5014,7 @@ msgstr ""
 "تصفح نظام الملفات بمدير الملفات"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:425
+#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
 #: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "نوتلس"
@@ -5113,7 +5099,7 @@ msgstr "ال_موقع..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:863
+#: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "حدد موقعا لفتحه"
 
@@ -5127,36 +5113,36 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "امسح محتويات قائمة إذهب و قوائم إلى الخلف/الأمام"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:871
+#: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "ا_ضف علامة موقع"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:872
+#: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "إضف علامة موقع للموقع الحالي في هذه القائمة"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:874
+#: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "_حرّر علامات المواقع"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:875
+#: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "اعرض نافذة تسمح بتحرير علامات المواقع في هذه القائمة"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:877
+#: ../src/nautilus-spatial-window.c:866
 #, fuzzy
 msgid "_Search for Files..."
 msgstr "ابحث عن ملفات"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:878
+#: ../src/nautilus-spatial-window.c:867
 msgid "Locate documents and folders on this computer by name or content"
 msgstr ""
 
@@ -5231,11 +5217,11 @@ msgstr "أمام في التاريخ"
 msgid "_Search"
 msgstr "ا_بحث"
 
-#: ../src/nautilus-navigation-window.c:171
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr "بدّل بين شريط العنوان ذو النص وذو الأزرار"
 
-#: ../src/nautilus-navigation-window.c:888
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - متصفح الملفات"
@@ -5512,35 +5498,37 @@ msgstr "فئة أخرى..."
 msgid "Remove this criterion from the search"
 msgstr "ازل هذا المعيار من البحث"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
+#: ../src/nautilus-query-editor.c:981
+#, fuzzy
+msgid "Search Folder"
 msgstr "<b>مجلد البحث</b>"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "حرّر البحث المحفوظ"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "أضف معيار جديد لهذا البحث"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "إذهب"
 
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "أعد التحميل"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "أعد تشكيل أو حدّث البحث"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
+#: ../src/nautilus-query-editor.c:1062
+#, fuzzy
+msgid "_Search for:"
 msgstr "<b>ا_بحث عن:</b>"
 
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "نتائج البحث"
 
@@ -5553,30 +5541,30 @@ msgstr "ابحث"
 msgid "Close the side pane"
 msgstr "غلق اللوح الجانبي"
 
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:850
 msgid "_Places"
 msgstr "ال_أماكن"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:862
+#: ../src/nautilus-spatial-window.c:851
 msgid "Open _Location..."
 msgstr "افتح _موقع..."
 
-#: ../src/nautilus-spatial-window.c:865
+#: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
 msgstr "اغلق المجلدات الأ_ب"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:866
+#: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
 msgstr "اغلق أب المجلد الحالي"
 
-#: ../src/nautilus-spatial-window.c:868
+#: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
 msgstr "اغل_ق جميع المجلّدات"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:869
+#: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
 msgstr "اغلق جميع نوافذ المجلّدات"
 
@@ -5598,56 +5586,56 @@ msgstr "هل تريد حذف أي علامات مواقع ذات موقع غير
 msgid "Bookmark for Nonexistent Location"
 msgstr "علامة موقع لموقع غير موجود"
 
-#: ../src/nautilus-window-manage-views.c:650
+#: ../src/nautilus-window-manage-views.c:652
 msgid "You can choose another view or go to a different location."
 msgstr "يمكنك اختيار مشهد آخر أو الذهاب إلى موقع مختلف."
 
-#: ../src/nautilus-window-manage-views.c:663
+#: ../src/nautilus-window-manage-views.c:665
 msgid "The location cannot be displayed with this viewer."
 msgstr "لا يمكن عرض الموقع بهذا العارض."
 
-#: ../src/nautilus-window-manage-views.c:1032
+#: ../src/nautilus-window-manage-views.c:1034
 msgid "Content View"
 msgstr "عرض المحتوى"
 
-#: ../src/nautilus-window-manage-views.c:1033
+#: ../src/nautilus-window-manage-views.c:1035
 msgid "View of the current folder"
 msgstr "عرض المجلد الحالي"
 
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1458
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "ليس لنوتلس عارض مثبت قادر على عرض المجلد."
 
-#: ../src/nautilus-window-manage-views.c:1445
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "The location is not a folder."
 msgstr "الموقع ليس مجلدا."
 
-#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1491
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "لا يستطيع نوتلس معالجة المواقع %s."
 
-#: ../src/nautilus-window-manage-views.c:1507
+#: ../src/nautilus-window-manage-views.c:1526
 msgid "Check that your proxy settings are correct."
 msgstr "تثبت من صحة تعيينات البروكسي."
 
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1531
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "لم يمكن عرض \"%s\" لان نوتلس لا يستطيع الاتصال بمتصفح SMB الرئيسي."
 
-#: ../src/nautilus-window-manage-views.c:1515
+#: ../src/nautilus-window-manage-views.c:1534
 msgid "Check that an SMB server is running in the local network."
 msgstr "تثبت من أن خادم SMB يعمل في شبكتك المحلية."
 
-#: ../src/nautilus-window-manage-views.c:1524
+#: ../src/nautilus-window-manage-views.c:1543
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "لا يمكن لنوتلس عرض \"%s\"."
 
-#: ../src/nautilus-window-manage-views.c:1526
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Please select another viewer and try again."
 msgstr "رجاء اختر عارض آخر ثم أعد المحاولة."
 
@@ -5939,6 +5927,18 @@ msgstr "اضبط مستوى التكبير في المشهد الحالي"
 
 #~ msgid "View your home folder in the Nautilus file manager"
 #~ msgstr "اعرض مجلدك المنزلي في مدير الملفات نوتلس"
+
+#~ msgid "<b>Image Type:</b> %s (%s)\n"
+#~ msgstr "<b>نوع الصورة:</b> %s (%s)\n"
+
+#~ msgid "Unable to launch the cd burner application."
+#~ msgstr "لا يمكن تشغيل تطبيق حارق الأقراص المدمجة."
+
+#~ msgid "Empty _Trash"
+#~ msgstr "افرغ _المهملات"
+
+#~ msgid "_Write contents to CD"
+#~ msgstr "ا_كتب المحتويات على القرص المدمج"
 
 #~ msgid "<b>Search:</b>"
 #~ msgstr "<b>بحث:</b>"
