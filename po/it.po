@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.13.x\n"
+"Project-Id-Version: nautilus 2.17.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-15 13:54+0100\n"
-"PO-Revision-Date: 2006-12-15 14:01+0100\n"
+"POT-Creation-Date: 2006-12-26 10:35+0100\n"
+"PO-Revision-Date: 2006-12-26 10:29+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -1234,7 +1234,7 @@ msgstr "%s %ld di %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
-msgid "(%d:%02d:%d Remaining)"
+msgid "(%d:%02d:%02d Remaining)"
 msgstr "(rimanente %d.%02d.%d)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
@@ -2127,9 +2127,10 @@ msgstr "collegamento"
 msgid "link (broken)"
 msgstr "collegamento (interrotto)"
 
-#: ../libnautilus-private/nautilus-file.c:6347
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
+#: ../src/nautilus-trash-bar.c:137
 msgid "Trash"
 msgstr "Cestino"
 
@@ -2403,12 +2404,12 @@ msgstr "Apertura di «%s» in corso"
 #: ../libnautilus-private/nautilus-program-choosing.c:588
 #: ../libnautilus-private/nautilus-program-choosing.c:596
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1436
-#: ../src/nautilus-window-manage-views.c:1442
-#: ../src/nautilus-window-manage-views.c:1470
-#: ../src/nautilus-window-manage-views.c:1478
-#: ../src/nautilus-window-manage-views.c:1484
-#: ../src/nautilus-window-manage-views.c:1505
+#: ../src/nautilus-window-manage-views.c:1455
+#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1489
+#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1524
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Non è possibile mostrare «%s»."
@@ -2420,17 +2421,17 @@ msgid "There was an error launching the application."
 msgstr "Si è verificato un errore nell'avvio della applicazione."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "The attempt to log in failed."
 msgstr "Il tentativo di login è fallito."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1486
+#: ../src/nautilus-window-manage-views.c:1505
 msgid "Access was denied."
 msgstr "L'accesso è stato negato."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:608
-#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1516
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr ""
@@ -2438,13 +2439,13 @@ msgstr ""
 "host «%s»."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1519
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Controllare che sia corretto il nome o le impostazioni del proxy."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1477
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "La stringa «%s» non è un nome di posizione valido."
@@ -2453,13 +2454,13 @@ msgstr "La stringa «%s» non è un nome di posizione valido."
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1189
-#: ../src/nautilus-window-manage-views.c:1453
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1480
 msgid "Please check the spelling and try again."
 msgstr "Verificare se corretto e riprovare."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:623
-#: ../src/nautilus-window-manage-views.c:1450
+#: ../src/nautilus-window-manage-views.c:1469
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Non è possibile trovare «%s»."
@@ -2510,7 +2511,7 @@ msgid "Search for \"%s\""
 msgstr "Ricerca «%s»"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "Modifica"
 
@@ -2530,10 +2531,13 @@ msgstr "Ripeti modifica"
 msgid "Redo the edit"
 msgstr "Ripeti la modifica"
 
-#: ../nautilus-computer.desktop.in.in.h:1
+#. label, accelerator
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:661
 msgid ""
-"Browse all local and remote disks and folder accessible from this computer"
+"Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
+"Esplora tutti i dischi e cartelle locali e remoti accessibili da questo "
+"computer"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
@@ -2639,6 +2643,7 @@ msgstr "Svuota cestino"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
 #: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/nautilus-trash-bar.c:153
 msgid "Delete all items in the Trash"
 msgstr "Elimina tutti gli oggetti nel cestino"
 
@@ -3921,23 +3926,23 @@ msgid "You can't assign more than one custom icon at a time!"
 msgstr "Non è possibile assegnare più di un'icona personalizzata alla volta."
 
 #: ../src/file-manager/fm-properties-window.c:504
-#: ../src/nautilus-information-panel.c:555
+#: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Trascinare una sola immagine per impostare l'icona personalizzata."
 
 #: ../src/file-manager/fm-properties-window.c:512
-#: ../src/nautilus-information-panel.c:574
+#: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Il file che è stato trascinato non è locale."
 
 #: ../src/file-manager/fm-properties-window.c:513
 #: ../src/file-manager/fm-properties-window.c:519
-#: ../src/nautilus-information-panel.c:575
+#: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "È possibile usare solo immagini locali come icone personalizzate."
 
 #: ../src/file-manager/fm-properties-window.c:518
-#: ../src/nautilus-information-panel.c:580
+#: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Il file che è stato trascinato non è una immagine."
 
@@ -4991,10 +4996,9 @@ msgstr "Sensibilità ISO"
 msgid "Software"
 msgstr "Software"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>Tipo immagine:</b>  %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+msgid "Image Type:"
+msgstr "Tipo di immagine:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -5022,46 +5026,31 @@ msgstr "caricamento in corso..."
 msgid "Image"
 msgstr "Immagine"
 
-#: ../src/nautilus-information-panel.c:178
+#: ../src/nautilus-information-panel.c:166
 msgid "Information"
 msgstr "Informazioni"
 
-#: ../src/nautilus-information-panel.c:184
+#: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
 msgstr "Mostra le informazioni"
 
 #. add the reset background item, possibly disabled
-#: ../src/nautilus-information-panel.c:404
+#: ../src/nautilus-information-panel.c:362
 msgid "Use _Default Background"
 msgstr "Usa sfondo _predefinito"
 
-#: ../src/nautilus-information-panel.c:554
+#: ../src/nautilus-information-panel.c:501
 msgid "You can't assign more than one custom icon at a time."
 msgstr "Non è possibile assegnare più di un'icona personalizzata alla volta."
 
-#: ../src/nautilus-information-panel.c:581
+#: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
 msgstr "È possibile usare solo immagini come icone personalizzate."
 
-#: ../src/nautilus-information-panel.c:899
+#: ../src/nautilus-information-panel.c:846
 #, c-format
 msgid "Open with %s"
 msgstr "Apri con %s"
-
-#: ../src/nautilus-information-panel.c:1001
-msgid "Unable to launch the cd burner application."
-msgstr "Impossibile avviare l'applicazione per la masterizzazione di CD."
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1046
-msgid "Empty _Trash"
-msgstr "S_vuota cestino"
-
-# pulsante nel riquadro laterale nella posizione burn:///
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1062
-msgid "_Write contents to CD"
-msgstr "_Scrivi contenuto su CD"
 
 #: ../src/nautilus-location-bar.c:60
 msgid "Go To:"
@@ -5150,7 +5139,7 @@ msgstr ""
 "Esplora il file system con il file manager"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:425
+#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
 #: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5238,7 +5227,7 @@ msgstr "_Posizione..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:863
+#: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "Specifica una posizione da aprire"
 
@@ -5252,37 +5241,37 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Cancella il contenuto del menù «Vai» e delle liste Avanti/Indietro"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:871
+#: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "A_ggiungi segnalibro"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:872
+#: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Aggiunge a questo menù un segnalibro per la posizione corrente"
 
 # mmmhhh dovrebbe avere i ... visto che apre una dialog
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:874
+#: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "_Modifica segnalibri"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:875
+#: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 "Mostra una finestra per modificare i segnalibri presenti in questo menù"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:877
+#: ../src/nautilus-spatial-window.c:866
 msgid "_Search for Files..."
 msgstr "C_erca file..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:878
+#: ../src/nautilus-spatial-window.c:867
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "Individua documenti e cartelle su questo computer per nome o contenuto"
 
@@ -5358,12 +5347,12 @@ msgstr "Avanti nella cronologia"
 msgid "_Search"
 msgstr "Ric_erca"
 
-#: ../src/nautilus-navigation-window.c:171
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr ""
 "Commuta tra la barra di posizione con pulsanti e quella basata sul testo"
 
-#: ../src/nautilus-navigation-window.c:888
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Esplorazione file"
@@ -5645,35 +5634,35 @@ msgstr "Altro tipo..."
 msgid "Remove this criterion from the search"
 msgstr "Rimuove questo criterio dalla ricerca"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
-msgstr "<b>Cartella di ricerca</b>"
+#: ../src/nautilus-query-editor.c:981
+msgid "Search Folder"
+msgstr "Cartella di ricerca"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "Modifica la ricerca salvata"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "Aggiunge un nuovo criterio a questa ricerca"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "Vai"
 
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "Aggiorna"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "Esegue o aggiorna la ricerca"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
-msgstr "<b>C_erca:</b>"
+#: ../src/nautilus-query-editor.c:1062
+msgid "_Search for:"
+msgstr "C_erca:"
 
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "Risultati ricerca"
 
@@ -5685,34 +5674,38 @@ msgstr "Ricerca:"
 msgid "Close the side pane"
 msgstr "Chiude il riquadro laterale"
 
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:850
 msgid "_Places"
 msgstr "_Risorse"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:862
+#: ../src/nautilus-spatial-window.c:851
 msgid "Open _Location..."
 msgstr "Apri posi_zione..."
 
-#: ../src/nautilus-spatial-window.c:865
+#: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
 msgstr "Chiudi cartelle s_uperiori"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:866
+#: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
 msgstr "Chiude i \"genitori\" di questa cartella"
 
 # qui non me la sento di togliere l'articolo
-#: ../src/nautilus-spatial-window.c:868
+#: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
 msgstr "Chiudi _tutte le cartelle"
 
 # : --spatial
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:869
+#: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
 msgstr "Chiude tutte le finestre delle cartelle"
+
+#: ../src/nautilus-trash-bar.c:141
+msgid "Empty _Trash"
+msgstr "S_vuota cestino"
 
 #: ../src/nautilus-throbber.c:82
 msgid "throbber"
@@ -5732,44 +5725,44 @@ msgstr "Rimuovere dalla lista tutti i segnalibri a posizioni che non esistono?"
 msgid "Bookmark for Nonexistent Location"
 msgstr "Segnalibro per una posizione inesistente"
 
-#: ../src/nautilus-window-manage-views.c:650
+#: ../src/nautilus-window-manage-views.c:652
 msgid "You can choose another view or go to a different location."
 msgstr ""
 "È possibile scegliere un'altra vista o andare in una diversa posizione."
 
-#: ../src/nautilus-window-manage-views.c:663
+#: ../src/nautilus-window-manage-views.c:665
 msgid "The location cannot be displayed with this viewer."
 msgstr "La posizione non può essere mostrata con questo visualizzatore."
 
 # non ne sono affatto sicuro; controllare il codice
-#: ../src/nautilus-window-manage-views.c:1032
+#: ../src/nautilus-window-manage-views.c:1034
 msgid "Content View"
 msgstr "Vista contenuto"
 
-#: ../src/nautilus-window-manage-views.c:1033
+#: ../src/nautilus-window-manage-views.c:1035
 msgid "View of the current folder"
 msgstr "Vista della cartella corrente"
 
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1458
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
 "Nautilus non ha alcun visualizzatore installato capace di mostrare la "
 "cartella."
 
-#: ../src/nautilus-window-manage-views.c:1445
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "The location is not a folder."
 msgstr "La posizione non è una cartella."
 
-#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1491
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus non può gestire le posizioni «%s:»."
 
-#: ../src/nautilus-window-manage-views.c:1507
+#: ../src/nautilus-window-manage-views.c:1526
 msgid "Check that your proxy settings are correct."
 msgstr "Controllare che le impostazioni del proxy siano corrette."
 
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1531
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5778,16 +5771,16 @@ msgstr ""
 "Impossibile mostrare «%s», perché Nautilus non può contattare il master "
 "browser SMB."
 
-#: ../src/nautilus-window-manage-views.c:1515
+#: ../src/nautilus-window-manage-views.c:1534
 msgid "Check that an SMB server is running in the local network."
 msgstr "Controllare che un server SMB sia in esecuzione nella rete locale."
 
-#: ../src/nautilus-window-manage-views.c:1524
+#: ../src/nautilus-window-manage-views.c:1543
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus non può mostrare «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1526
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Please select another viewer and try again."
 msgstr "Selezionare un altro visualizzatore e tentare di nuovo."
 
@@ -6014,12 +6007,6 @@ msgstr "Cartella _home"
 msgid "_Computer"
 msgstr "C_omputer"
 
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:661
-msgid ""
-"Browse all local and remote disks and folders accessible from this computer"
-msgstr "Esplora tutti i dischi e cartelle locali e remoti accessibili da questo computer"
-
 #. name, stock id
 #: ../src/nautilus-window-menus.c:664
 msgid "_Network"
@@ -6059,7 +6046,8 @@ msgstr "CD/_DVD"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:677
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-msgstr "Apre una cartella in cui trascinare i file da masterizzare su un CD o DVD"
+msgstr ""
+"Apre una cartella in cui trascinare i file da masterizzare su un CD o DVD"
 
 #: ../src/nautilus-window-menus.c:703
 msgid "_Up"
@@ -6092,36 +6080,3 @@ msgstr "Ingrandimento"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Imposta il livello di ingrandimento della vista corrente"
-
-#~ msgid "View your computer storage"
-#~ msgstr "Mostra i supporti di memorizzazione del computer"
-
-#~ msgid "Change how files are managed"
-#~ msgstr "Personalizza la gestione dei file"
-
-#~ msgid "View your home folder in the Nautilus file manager"
-#~ msgstr "Mostra la cartella home dell'utente nel file manager Nautilus"
-
-#~ msgid "Set up a connection to a network server"
-#~ msgstr "Imposta una connessione ad un server di rete"
-
-#~ msgid "Go to the home folder"
-#~ msgstr "Va alla cartella home"
-
-#~ msgid "Go to the computer location"
-#~ msgstr "Va alla posizione «Computer»"
-
-#~ msgid "Go to the network location"
-#~ msgstr "Va alla posizione «Rete»"
-
-#~ msgid "Go to the CD/DVD Creator"
-#~ msgstr "Va alla «Creazione CD/DVD»"
-
-#~ msgid "View your network servers in the Nautilus file manager"
-#~ msgstr "Mostra i server della propria rete nel file manager Nautilus"
-
-#~ msgid "<b>Search:</b>"
-#~ msgstr "<b>Cerca:</b>"
-
-#~ msgid "Always use _text-entry location bar"
-#~ msgstr "Usare sempre la barra di posizione come campo di _testo"
