@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.15.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-15 10:54+0100\n"
-"PO-Revision-Date: 2006-12-15 10:56+0100\n"
+"POT-Creation-Date: 2006-12-29 12:31+0100\n"
+"PO-Revision-Date: 2006-12-29 12:32+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1184,8 +1184,8 @@ msgstr "%s %ld av %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
-msgid "(%d:%02d:%d Remaining)"
-msgstr "(%d:%02d:%d gjenstår)"
+msgid "(%d:%02d:%02d Remaining)"
+msgstr "(%d:%02d:%02d gjenstår)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -2070,9 +2070,10 @@ msgstr "lenke"
 msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
-#: ../libnautilus-private/nautilus-file.c:6347
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
+#: ../src/nautilus-trash-bar.c:137
 msgid "Trash"
 msgstr "Papirkurv"
 
@@ -2345,12 +2346,12 @@ msgstr "Åpner %s"
 #: ../libnautilus-private/nautilus-program-choosing.c:588
 #: ../libnautilus-private/nautilus-program-choosing.c:596
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1436
-#: ../src/nautilus-window-manage-views.c:1442
-#: ../src/nautilus-window-manage-views.c:1470
-#: ../src/nautilus-window-manage-views.c:1478
-#: ../src/nautilus-window-manage-views.c:1484
-#: ../src/nautilus-window-manage-views.c:1505
+#: ../src/nautilus-window-manage-views.c:1455
+#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1489
+#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1524
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Kunne ikke vise «%s»."
@@ -2362,29 +2363,29 @@ msgid "There was an error launching the application."
 msgstr "En feil oppsto under oppstart av programmet."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "The attempt to log in failed."
 msgstr "Påloggingsforsøket feilet."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1486
+#: ../src/nautilus-window-manage-views.c:1505
 msgid "Access was denied."
 msgstr "Tilgang ble nektet."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:608
-#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1516
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Kunne ikke vise «%s», fordi verten «%s» ikke ble funnet."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1519
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Sjekk at stavingen er korrekt og at proxy-innstillingene er korrekte."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1477
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "«%s» er ikke en gyldig lokasjon."
@@ -2393,13 +2394,13 @@ msgstr "«%s» er ikke en gyldig lokasjon."
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1189
-#: ../src/nautilus-window-manage-views.c:1453
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1480
 msgid "Please check the spelling and try again."
 msgstr "Vennligst sjekk stavingen og prøv igjen."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:623
-#: ../src/nautilus-window-manage-views.c:1450
+#: ../src/nautilus-window-manage-views.c:1469
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Kunne ikke finne «%s»."
@@ -2450,7 +2451,7 @@ msgid "Search for \"%s\""
 msgstr "Søk etter «%s»"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "Rediger"
 
@@ -2470,10 +2471,13 @@ msgstr "Gjenopprett redigering"
 msgid "Redo the edit"
 msgstr "Gjenopprett redigeringen"
 
-#: ../nautilus-computer.desktop.in.in.h:1
+#. label, accelerator
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:661
 msgid ""
-"Browse all local and remote disks and folder accessible from this computer"
-msgstr "Bla gjennom alle lokale og eksterne disker og mapper som kan nås fra denne datamaskinen"
+"Browse all local and remote disks and folders accessible from this computer"
+msgstr ""
+"Bla gjennom alle lokale og eksterne disker og mapper som kan nås fra denne "
+"datamaskinen"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
@@ -2578,6 +2582,7 @@ msgstr "Tøm papirkurv"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
 #: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/nautilus-trash-bar.c:153
 msgid "Delete all items in the Trash"
 msgstr "Slett alle oppføringer i papirkurven"
 
@@ -3843,23 +3848,23 @@ msgid "You can't assign more than one custom icon at a time!"
 msgstr "Du kan ikke tilegne mer enn ett egendefinert ikon om gangen!"
 
 #: ../src/file-manager/fm-properties-window.c:504
-#: ../src/nautilus-information-panel.c:555
+#: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Vennligst dra kun ett bilde for å sette egendefinert ikon."
 
 #: ../src/file-manager/fm-properties-window.c:512
-#: ../src/nautilus-information-panel.c:574
+#: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Filen du slapp er ikke lokal."
 
 #: ../src/file-manager/fm-properties-window.c:513
 #: ../src/file-manager/fm-properties-window.c:519
-#: ../src/nautilus-information-panel.c:575
+#: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Du kan kun bruke lokale bilder som egendefinerte ikoner."
 
 #: ../src/file-manager/fm-properties-window.c:518
-#: ../src/nautilus-information-panel.c:580
+#: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Filen du slapp er ikke et bilde."
 
@@ -4889,10 +4894,9 @@ msgstr "ISO hastighet"
 msgid "Software"
 msgstr "Programvare"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>Bildetype:</b> %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+msgid "Image Type:"
+msgstr "Bildetype:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -4920,45 +4924,31 @@ msgstr "laster..."
 msgid "Image"
 msgstr "Bilde"
 
-#: ../src/nautilus-information-panel.c:178
+#: ../src/nautilus-information-panel.c:166
 msgid "Information"
 msgstr "Informasjon"
 
-#: ../src/nautilus-information-panel.c:184
+#: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
 msgstr "Vis informasjon"
 
 #. add the reset background item, possibly disabled
-#: ../src/nautilus-information-panel.c:404
+#: ../src/nautilus-information-panel.c:362
 msgid "Use _Default Background"
 msgstr "Bruk _forvalgt bakgrunn"
 
-#: ../src/nautilus-information-panel.c:554
+#: ../src/nautilus-information-panel.c:501
 msgid "You can't assign more than one custom icon at a time."
 msgstr "Du kan ikke tilegne mer enn ett egendefinert ikon om gangen."
 
-#: ../src/nautilus-information-panel.c:581
+#: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
 msgstr "Du kan kun bruke bilder som egendefinerte ikoner."
 
-#: ../src/nautilus-information-panel.c:899
+#: ../src/nautilus-information-panel.c:846
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
-
-#: ../src/nautilus-information-panel.c:1001
-msgid "Unable to launch the cd burner application."
-msgstr "Kan ikke starte programmet for brenning av CDer."
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1046
-msgid "Empty _Trash"
-msgstr "_Tøm papirkurv"
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1062
-msgid "_Write contents to CD"
-msgstr "_Skriv innholdet til CD"
 
 #: ../src/nautilus-location-bar.c:60
 msgid "Go To:"
@@ -5045,7 +5035,7 @@ msgstr ""
 "Bla gjennom filsystemet med filhåndtereren"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:425
+#: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
 #: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5131,7 +5121,7 @@ msgstr "P_lassering..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:863
+#: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "Oppgi en lokasjon som skal åpnes"
 
@@ -5145,37 +5135,38 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Tøm innhold av Go-menyen og fram/tilbake- listene"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:871
+#: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:872
+#: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Legg til et bokmerke for nåværende adresse i denne menyen"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:874
+#: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "R_ediger bokmerker"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:875
+#: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:877
+#: ../src/nautilus-spatial-window.c:866
 msgid "_Search for Files..."
 msgstr "_Søk etter filer..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:878
+#: ../src/nautilus-spatial-window.c:867
 msgid "Locate documents and folders on this computer by name or content"
-msgstr "Finn dokumenter og mapper på denne datamaskinen etter navn eller innhold"
+msgstr ""
+"Finn dokumenter og mapper på denne datamaskinen etter navn eller innhold"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
@@ -5248,11 +5239,11 @@ msgstr "Fremover"
 msgid "_Search"
 msgstr "_Søk"
 
-#: ../src/nautilus-navigation-window.c:171
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr "Bytt mellom knapper og tekst for adressefeltet"
 
-#: ../src/nautilus-navigation-window.c:888
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Bla gjennom filer"
@@ -5529,35 +5520,35 @@ msgstr "Annen type..."
 msgid "Remove this criterion from the search"
 msgstr "Fjern dette kriteriet fra søket"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
-msgstr "<b>Søkemappe</b>"
+#: ../src/nautilus-query-editor.c:981
+msgid "Search Folder"
+msgstr "Søk i mappe"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "Rediger lagret søk"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "Legg til nytt kriterie for dette søket"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "Start"
 
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "Oppdater"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "Utfør eller oppdater søket"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
-msgstr "<b>_Søk etter:</b>"
+#: ../src/nautilus-query-editor.c:1062
+msgid "_Search for:"
+msgstr "_Søk etter:"
 
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "Søkeresultater"
 
@@ -5569,32 +5560,36 @@ msgstr "Søk:"
 msgid "Close the side pane"
 msgstr "Lukk sidepanelet"
 
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:850
 msgid "_Places"
 msgstr "_Steder"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:862
+#: ../src/nautilus-spatial-window.c:851
 msgid "Open _Location..."
 msgstr "Åpne _lokasjon..."
 
-#: ../src/nautilus-spatial-window.c:865
+#: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
 msgstr "Lukk opph_avsmapper"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:866
+#: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
 msgstr "Lukk denne mappens opphav"
 
-#: ../src/nautilus-spatial-window.c:868
+#: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
 msgstr "Lukk all_e mapper"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:869
+#: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
 msgstr "Lukk alle mappevinduer"
+
+#: ../src/nautilus-trash-bar.c:141
+msgid "Empty _Trash"
+msgstr "_Tøm papirkurv"
 
 #: ../src/nautilus-throbber.c:82
 msgid "throbber"
@@ -5614,40 +5609,40 @@ msgstr "Ønsker du å fjerne alle bokmerker med denne lokasjonen fra din liste?"
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: ../src/nautilus-window-manage-views.c:650
+#: ../src/nautilus-window-manage-views.c:652
 msgid "You can choose another view or go to a different location."
 msgstr "Du kan velge en annen visning eller gå til en annen lokasjon."
 
-#: ../src/nautilus-window-manage-views.c:663
+#: ../src/nautilus-window-manage-views.c:665
 msgid "The location cannot be displayed with this viewer."
 msgstr "Lokasjonen kan ikke vises med denne visningen."
 
-#: ../src/nautilus-window-manage-views.c:1032
+#: ../src/nautilus-window-manage-views.c:1034
 msgid "Content View"
 msgstr "Innholdsvisning"
 
-#: ../src/nautilus-window-manage-views.c:1033
+#: ../src/nautilus-window-manage-views.c:1035
 msgid "View of the current folder"
 msgstr "Visning for aktiv mappe"
 
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1458
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus har ingen installerte visningsprogrammer som kan vise mappen."
 
-#: ../src/nautilus-window-manage-views.c:1445
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "The location is not a folder."
 msgstr "Lokasjonen er ikke en mappe."
 
-#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1491
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus ikke kan håndtere %s-lokasjoner."
 
-#: ../src/nautilus-window-manage-views.c:1507
+#: ../src/nautilus-window-manage-views.c:1526
 msgid "Check that your proxy settings are correct."
 msgstr "Sjekk at proxy-innstillingene er korrekte."
 
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1531
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5655,16 +5650,16 @@ msgid ""
 msgstr ""
 "Kunne ikke vise «%s», fordi Nautilus ikke kan kontakte SMB master browser."
 
-#: ../src/nautilus-window-manage-views.c:1515
+#: ../src/nautilus-window-manage-views.c:1534
 msgid "Check that an SMB server is running in the local network."
 msgstr "Sjekk om en SMB-tjener kjører på det lokale nettverket."
 
-#: ../src/nautilus-window-manage-views.c:1524
+#: ../src/nautilus-window-manage-views.c:1543
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1526
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Please select another viewer and try again."
 msgstr "Vennligst velg et annet visningsprogram og prøv igjen."
 
@@ -5872,12 +5867,6 @@ msgstr "_Hjemmemappe"
 #: ../src/nautilus-window-menus.c:660
 msgid "_Computer"
 msgstr "_Datamaskin"
-
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:661
-msgid ""
-"Browse all local and remote disks and folders accessible from this computer"
-msgstr "Bla gjennom alle lokale og eksterne disker og mapper som kan nås fra denne datamaskinen"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:664
