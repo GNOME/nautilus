@@ -6,14 +6,14 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004, 2005.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000, 2001.
 #
-# $Id$
+# $Id: sv.po,v 1.313 2006/11/28 07:26:55 dnylande Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-24 04:34+0000\n"
-"PO-Revision-Date: 2006-11-27 23:33+0100\n"
+"POT-Creation-Date: 2006-12-31 03:49+0100\n"
+"PO-Revision-Date: 2006-12-31 12:35+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -796,7 +796,7 @@ msgid "Use De_fault"
 msgstr "Använd _standard"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1341
+#: ../src/file-manager/fm-list-view.c:1374
 msgid "Name"
 msgstr "Namn"
 
@@ -909,8 +909,7 @@ msgstr "Om du vill mata ut volymen bör du använda \"Mata ut\" i högerklicksme
 msgid "If you want to unmount the volume, please use \"Unmount Volume\" in the popup menu of the volume."
 msgstr "Om du vill avmontera volymen bör du använda \"Avmontera volym\" i högerklicksmenyn för volymen."
 
-#: ../libnautilus-private/nautilus-desktop-link.c:180
-#: ../src/network-scheme.desktop.in.h:1
+#: ../libnautilus-private/nautilus-desktop-link.c:179
 msgid "Network Servers"
 msgstr "Nätverksservrar"
 
@@ -986,8 +985,8 @@ msgstr "%s %ld av %ld %s"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:447
 #, c-format
-msgid "(%d:%02d:%d Remaining)"
-msgstr "(%d.%02d.%d återstår)"
+msgid "(%d:%02d:%02d Remaining)"
+msgstr "(%d.%02d.%02d återstår)"
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -1582,11 +1581,12 @@ msgstr "Sök"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:563
 #: ../libnautilus-private/nautilus-global-preferences.c:526
-#: ../nautilus-computer.desktop.in.in.h:1
+#: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Dator"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:565
+#: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Nätverk"
 
@@ -1827,9 +1827,10 @@ msgstr "länk"
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
-#: ../libnautilus-private/nautilus-file.c:6347
+#: ../libnautilus-private/nautilus-file.c:6348
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
+#: ../src/nautilus-trash-bar.c:137
 msgid "Trash"
 msgstr "Papperskorg"
 
@@ -1938,12 +1939,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Sök efter filer på filnamn och på filegenskaper"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
-#: ../src/file-manager/fm-icon-container.c:516
+#: ../src/file-manager/fm-icon-container.c:536
 msgid "Icon View"
 msgstr "Ikonvy"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1394
+#: ../src/file-manager/fm-list-view.c:1427
 msgid "List View"
 msgstr "Listvy"
 
@@ -2020,17 +2021,25 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "%.0sHem"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2117
+#: ../libnautilus-private/nautilus-icon-container.c:2137
 msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4867
+#: ../libnautilus-private/nautilus-icon-container.c:4884
 msgid "Normal Alpha"
 msgstr "Normal alfa"
 
-#: ../libnautilus-private/nautilus-icon-container.c:4868
+#: ../libnautilus-private/nautilus-icon-container.c:4885
 msgid "Opacity of the normal icons if frame_text is set"
 msgstr "Opacitet för de normala ikonerna om frame_text är angivet"
+
+#: ../libnautilus-private/nautilus-icon-container.c:4891
+msgid "Prelight Alpha"
+msgstr "Förbelyst alfa"
+
+#: ../libnautilus-private/nautilus-icon-container.c:4892
+msgid "Opacity of the prelight icons if frame_text is set"
+msgstr "Opacitet för de förbelysta ikonerna om frame_text är angivet"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:833
 msgid "Switch to Manual Layout?"
@@ -2078,12 +2087,12 @@ msgstr "Öppnar %s"
 #: ../libnautilus-private/nautilus-program-choosing.c:588
 #: ../libnautilus-private/nautilus-program-choosing.c:596
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1436
-#: ../src/nautilus-window-manage-views.c:1442
-#: ../src/nautilus-window-manage-views.c:1470
-#: ../src/nautilus-window-manage-views.c:1478
-#: ../src/nautilus-window-manage-views.c:1484
-#: ../src/nautilus-window-manage-views.c:1505
+#: ../src/nautilus-window-manage-views.c:1455
+#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1489
+#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1503
+#: ../src/nautilus-window-manage-views.c:1524
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Kunde inte visa \"%s\"."
@@ -2095,28 +2104,28 @@ msgid "There was an error launching the application."
 msgstr "Det inträffade ett fel vid start av programmet."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "The attempt to log in failed."
 msgstr "Inloggningsförsöket misslyckades."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1486
+#: ../src/nautilus-window-manage-views.c:1505
 msgid "Access was denied."
 msgstr "Åtkomst nekades."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:608
-#: ../src/nautilus-window-manage-views.c:1497
+#: ../src/nautilus-window-manage-views.c:1516
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Kunde inte visa \"%s\", eftersom värden \"%s\" inte kunde hittas."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1500
+#: ../src/nautilus-window-manage-views.c:1519
 msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar stämmer."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
-#: ../src/nautilus-window-manage-views.c:1458
+#: ../src/nautilus-window-manage-views.c:1477
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" är inte en giltig plats."
@@ -2125,13 +2134,13 @@ msgstr "\"%s\" är inte en giltig plats."
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:194
 #: ../src/nautilus-property-browser.c:1189
-#: ../src/nautilus-window-manage-views.c:1453
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1480
 msgid "Please check the spelling and try again."
 msgstr "Kontrollera stavningen och försök igen."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:623
-#: ../src/nautilus-window-manage-views.c:1450
+#: ../src/nautilus-window-manage-views.c:1469
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Kunde inte hitta \"%s\"."
@@ -2175,7 +2184,7 @@ msgid "Search for \"%s\""
 msgstr "Sök efter \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:984
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit"
 msgstr "Redigera"
 
@@ -2195,13 +2204,15 @@ msgstr "Gör om redigering"
 msgid "Redo the edit"
 msgstr "Gör om redigeringen"
 
-#: ../nautilus-computer.desktop.in.in.h:2
-msgid "View your computer storage"
-msgstr "Visa din datorlagringsplats"
+#. label, accelerator
+#: ../nautilus-computer.desktop.in.in.h:1
+#: ../src/nautilus-window-menus.c:661
+msgid "Browse all local and remote disks and folders accessible from this computer"
+msgstr "Bläddra bland lokala och fjärrdiskar och mappar som är åtkomliga från den här datorn"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
-msgid "Change how files are managed"
-msgstr "Ändra hur filer hanteras"
+msgid "Change the behaviour and appearance of file manager windows"
+msgstr "Ändra beteendet och utseendet för filhanterarens fönster"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:2
 msgid "File Management"
@@ -2212,13 +2223,15 @@ msgid "Open Folder"
 msgstr "Öppna mapp"
 
 #: ../nautilus-home.desktop.in.in.h:1
-#: ../src/file-manager/fm-tree-view.c:1252
+#: ../src/file-manager/fm-tree-view.c:1393
 msgid "Home Folder"
 msgstr "Hemmapp"
 
+#. label, accelerator
 #: ../nautilus-home.desktop.in.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Visa din hemmapp i filhanteraren Nautilus"
+#: ../src/nautilus-window-menus.c:657
+msgid "Open your personal folder"
+msgstr "Öppna din personliga mapp"
 
 #: ../nautilus.desktop.in.in.h:1
 msgid "Browse the file system with the file manager"
@@ -2296,6 +2309,7 @@ msgstr "Töm papperskorgen"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
 #: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/nautilus-trash-bar.c:153
 msgid "Delete all items in the Trash"
 msgstr "Ta bort alla objekt i papperskorgen"
 
@@ -2339,6 +2353,7 @@ msgstr[0] "Detta kommer att öppna %d separat fönster."
 msgstr[1] "Detta kommer att öppna %d separata fönster."
 
 #: ../src/file-manager/fm-directory-view.c:1000
+#: ../src/file-manager/fm-tree-view.c:1140
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
@@ -2351,6 +2366,7 @@ msgstr[0] "Är du säker att du vill ta bort det markerade objektet permanent?"
 msgstr[1] "Är du säker att du vill ta bort de %d markerade objekten permanent?"
 
 #: ../src/file-manager/fm-directory-view.c:1015
+#: ../src/file-manager/fm-tree-view.c:1149
 msgid "If you delete an item, it is permanently lost."
 msgstr "Om du tar bort ett objekt är det borta för alltid."
 
@@ -2603,13 +2619,13 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: det aktuella fönstrets position och storlek"
 
 #: ../src/file-manager/fm-directory-view.c:6027
-#: ../src/file-manager/fm-tree-view.c:917
+#: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" kommer att flyttas om du väljer kommandot Klistra in"
 
 #: ../src/file-manager/fm-directory-view.c:6031
-#: ../src/file-manager/fm-tree-view.c:921
+#: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kommer att kopieras om du väljer kommandot Klistra in"
@@ -2629,7 +2645,7 @@ msgstr[0] "Det %d markerade objektet kommer att kopieras om du väljer kommandot
 msgstr[1] "De %d markerade objekten kommer att kopieras om du väljer kommandot Klistra in"
 
 #: ../src/file-manager/fm-directory-view.c:6139
-#: ../src/file-manager/fm-tree-view.c:998
+#: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Det finns inget i Urklipp att klistra in."
 
@@ -2707,7 +2723,7 @@ msgstr "Skapa en ny tom fil inuti denna mapp"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6838
 #: ../src/file-manager/fm-directory-view.c:7717
-#: ../src/file-manager/fm-tree-view.c:1120
+#: ../src/file-manager/fm-tree-view.c:1252
 msgid "_Open"
 msgstr "_Öppna"
 
@@ -2773,7 +2789,7 @@ msgstr "Flytta eller kopiera filer som tidigare valts med kommandot Klipp ut ell
 #. accelerator for paste
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6880
-#: ../src/file-manager/fm-tree-view.c:1174
+#: ../src/file-manager/fm-tree-view.c:1306
 msgid "_Paste Into Folder"
 msgstr "Klistra _in i mapp"
 
@@ -2846,9 +2862,11 @@ msgid "Move each selected item to the Trash"
 msgstr "Flytta varje markerat objekt till papperskorgen"
 
 #. name, stock id
+#. add the "delete" menu item
 #: ../src/file-manager/fm-directory-view.c:6912
 #: ../src/file-manager/fm-directory-view.c:6988
 #: ../src/file-manager/fm-directory-view.c:7777
+#: ../src/file-manager/fm-tree-view.c:1333
 msgid "_Delete"
 msgstr "_Ta bort"
 
@@ -2891,7 +2909,7 @@ msgstr "Montera den valda volymen"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6928
 #: ../src/file-manager/fm-directory-view.c:6944
-#: ../src/file-manager/fm-tree-view.c:766
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "_Avmontera volym"
 
@@ -3020,7 +3038,7 @@ msgstr "_Skript"
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7543
 #: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-tree-view.c:1131
+#: ../src/file-manager/fm-tree-view.c:1263
 msgid "Open in New Window"
 msgstr "Öppna i nytt fönster"
 
@@ -3431,55 +3449,55 @@ msgid "Display this location with the icon view."
 msgstr "Visa denna plats med ikonvyn."
 
 #: ../src/file-manager/fm-list-model.c:371
-#: ../src/file-manager/fm-tree-model.c:1227
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(Tomt)"
 
 #: ../src/file-manager/fm-list-model.c:373
-#: ../src/file-manager/fm-tree-model.c:1227
+#: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "Läser in..."
 
-#: ../src/file-manager/fm-list-view.c:1953
+#: ../src/file-manager/fm-list-view.c:1956
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synliga kolumner"
 
-#: ../src/file-manager/fm-list-view.c:1972
+#: ../src/file-manager/fm-list-view.c:1975
 msgid "Choose the order of information to appear in this folder."
 msgstr "Välj i vilken ordning informationen ska visas i denna mapp."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2014
+#: ../src/file-manager/fm-list-view.c:2017
 msgid "Visible _Columns..."
 msgstr "Synliga _kolumner..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2015
+#: ../src/file-manager/fm-list-view.c:2018
 msgid "Select the columns visible in this folder"
 msgstr "Välj de kolumner som ska vara synliga i denna mapp"
 
-#: ../src/file-manager/fm-list-view.c:2738
+#: ../src/file-manager/fm-list-view.c:2741
 msgid "List"
 msgstr "Lista"
 
-#: ../src/file-manager/fm-list-view.c:2739
+#: ../src/file-manager/fm-list-view.c:2742
 msgid "View as List"
 msgstr "Visa som lista"
 
-#: ../src/file-manager/fm-list-view.c:2740
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "View as _List"
 msgstr "Visa som _lista"
 
-#: ../src/file-manager/fm-list-view.c:2741
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error."
 msgstr "Listvyn råkade ut för ett fel."
 
-#: ../src/file-manager/fm-list-view.c:2742
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "The list view encountered an error while starting up."
 msgstr "Listvyn råkade ut för ett fel vid uppstarten."
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "Display this location with the list view."
 msgstr "Visa denna plats med listvyn."
 
@@ -3488,23 +3506,23 @@ msgid "You can't assign more than one custom icon at a time!"
 msgstr "Du kan inte tilldela mer än en anpassad ikon åt gången!"
 
 #: ../src/file-manager/fm-properties-window.c:504
-#: ../src/nautilus-information-panel.c:555
+#: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Dra endast en bild för att ställa in en anpassad ikon."
 
 #: ../src/file-manager/fm-properties-window.c:512
-#: ../src/nautilus-information-panel.c:574
+#: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Filen som du släppte är inte lokal."
 
 #: ../src/file-manager/fm-properties-window.c:513
 #: ../src/file-manager/fm-properties-window.c:519
-#: ../src/nautilus-information-panel.c:575
+#: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Du kan endast använda lokala bilder som anpassade ikoner."
 
 #: ../src/file-manager/fm-properties-window.c:518
-#: ../src/nautilus-information-panel.c:580
+#: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Filen som du släppte är inte en bild."
 
@@ -3809,63 +3827,63 @@ msgstr "Skapar fönstret Egenskaper."
 msgid "Select Custom Icon"
 msgstr "Välj anpassad ikon"
 
-#: ../src/file-manager/fm-tree-view.c:766
+#: ../src/file-manager/fm-tree-view.c:812
 msgid "E_ject"
 msgstr "_Mata ut"
 
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1142
+#: ../src/file-manager/fm-tree-view.c:1274
 msgid "Create Folder"
 msgstr "Skapa mapp"
 
-#: ../src/file-manager/fm-tree-view.c:1190
+#: ../src/file-manager/fm-tree-view.c:1322
 msgid "Move to Trash"
 msgstr "Flytta till papperskorgen"
 
-#: ../src/file-manager/fm-tree-view.c:1254
+#: ../src/file-manager/fm-tree-view.c:1395
 #: ../src/nautilus-places-sidebar.c:260
 msgid "File System"
 msgstr "Filsystem"
 
-#: ../src/file-manager/fm-tree-view.c:1256
+#: ../src/file-manager/fm-tree-view.c:1397
 msgid "Network Neighbourhood"
 msgstr "Nätverket"
 
-#: ../src/file-manager/fm-tree-view.c:1495
+#: ../src/file-manager/fm-tree-view.c:1639
 msgid "Tree"
 msgstr "Träd"
 
-#: ../src/file-manager/fm-tree-view.c:1501
+#: ../src/file-manager/fm-tree-view.c:1645
 msgid "Show Tree"
 msgstr "Visa träd"
 
-#: ../src/nautilus-application.c:275
+#: ../src/nautilus-application.c:276
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus kunde inte skapa den nödvändiga mappen \"%s\"."
 
-#: ../src/nautilus-application.c:277
+#: ../src/nautilus-application.c:278
 msgid "Before running Nautilus, please create the following folder, or set permissions such that Nautilus can create it."
 msgstr "Innan du kör Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga rättigheterna för att Nautilus ska kunna skapa den."
 
-#: ../src/nautilus-application.c:280
+#: ../src/nautilus-application.c:281
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus kunde inte skapa följande nödvändiga mappar: %s."
 
-#: ../src/nautilus-application.c:282
+#: ../src/nautilus-application.c:283
 msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
 msgstr "Innan du kör Nautilus bör du skapa dessa mappar, eller ställa in de nödvändiga rättigheterna för att Nautilus ska kunna skapa dem."
 
-#: ../src/nautilus-application.c:341
+#: ../src/nautilus-application.c:342
 msgid "Link To Old Desktop"
 msgstr "Länk till gammalt skrivbord"
 
-#: ../src/nautilus-application.c:357
+#: ../src/nautilus-application.c:358
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "En länk med namnet \"Länk till gammalt skrivbord\" har skapats på skrivbordet."
 
-#: ../src/nautilus-application.c:358
+#: ../src/nautilus-application.c:359
 msgid "The location of the desktop directory has changed in GNOME 2.4. You can open the link and move over the files you want, then delete the link."
 msgstr "Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. Du kan öppna länken för att flytta över de filer du vill ha och sedan ta bort länken."
 
@@ -3879,12 +3897,12 @@ msgstr "Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. Du kan öppna
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:554
+#: ../src/nautilus-application.c:555
 msgid "Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again."
 msgstr "Nautilus kan inte användas just nu. Att köra kommandot \"bonobo-slay\" från konsollen kan lösa problemet. Om inte kan du prova att starta om datorn eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:560
+#: ../src/nautilus-application.c:561
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again.\n"
 "\n"
@@ -3915,28 +3933,28 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:590
-#: ../src/nautilus-application.c:608
-#: ../src/nautilus-application.c:615
+#: ../src/nautilus-application.c:591
+#: ../src/nautilus-application.c:609
+#: ../src/nautilus-application.c:616
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: ../src/nautilus-application.c:591
+#: ../src/nautilus-application.c:592
 msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to register the file manager view server."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: ../src/nautilus-application.c:609
+#: ../src/nautilus-application.c:610
 msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the factory.Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
 msgstr "Nautilus kan inte användas nu, eftersom det kom ett oväntat fel från Bonobo när den skulle hitta fabriken. Om du dödar bonobo-activation-server och startar om Nautilus kanske problemet löser sig."
 
-#: ../src/nautilus-application.c:616
+#: ../src/nautilus-application.c:617
 msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the shell object. Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
 msgstr "Nautilus kan inte användas nu, eftersom det kom ett oväntat fel från Bonobo när den skulle hitta skalobjektet. Om du dödar bonobo-activation-server och startar om Nautilus kanske problemet löser sig."
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
 #: ../src/nautilus-property-browser.c:1562
-#: ../src/nautilus-window-menus.c:509
+#: ../src/nautilus-window-menus.c:498
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4473,10 +4491,9 @@ msgstr "ISO-hastighetsgradering"
 msgid "Software"
 msgstr "Programvara"
 
-#: ../src/nautilus-image-properties-page.c:259
-#, c-format
-msgid "<b>Image Type:</b> %s (%s)\n"
-msgstr "<b>Bildtyp:</b> %s (%s)\n"
+#: ../src/nautilus-image-properties-page.c:260
+msgid "Image Type:"
+msgstr "Bildtyp:"
 
 #: ../src/nautilus-image-properties-page.c:261
 #, c-format
@@ -4504,45 +4521,31 @@ msgstr "läser in..."
 msgid "Image"
 msgstr "Bild"
 
-#: ../src/nautilus-information-panel.c:178
+#: ../src/nautilus-information-panel.c:166
 msgid "Information"
 msgstr "Information"
 
-#: ../src/nautilus-information-panel.c:184
+#: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
 msgstr "Visa information"
 
 #. add the reset background item, possibly disabled
-#: ../src/nautilus-information-panel.c:404
+#: ../src/nautilus-information-panel.c:362
 msgid "Use _Default Background"
 msgstr "Använd standard_bakgrund"
 
-#: ../src/nautilus-information-panel.c:554
+#: ../src/nautilus-information-panel.c:501
 msgid "You can't assign more than one custom icon at a time."
 msgstr "Du kan inte tilldela mer än en anpassad ikon åt gången."
 
-#: ../src/nautilus-information-panel.c:581
+#: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
 msgstr "Du kan endast använda lokala bilder som anpassade ikoner."
 
-#: ../src/nautilus-information-panel.c:899
+#: ../src/nautilus-information-panel.c:846
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
-
-#: ../src/nautilus-information-panel.c:1001
-msgid "Unable to launch the cd burner application."
-msgstr "Kan inte starta cd-brännarprogrammet."
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1046
-msgid "Empty _Trash"
-msgstr "Töm _papperskorgen"
-
-#. FIXME: We don't use spaces to pad labels!
-#: ../src/nautilus-information-panel.c:1062
-msgid "_Write contents to CD"
-msgstr "_Skriv innehåll till cd"
 
 #: ../src/nautilus-location-bar.c:60
 msgid "Go To:"
@@ -4624,9 +4627,9 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:440
-#: ../src/nautilus-spatial-window.c:424
-#: ../src/nautilus-window-menus.c:448
-#: ../src/nautilus-window.c:155
+#: ../src/nautilus-spatial-window.c:414
+#: ../src/nautilus-window-menus.c:441
+#: ../src/nautilus-window.c:143
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4711,7 +4714,7 @@ msgstr "Pl_ats..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:435
-#: ../src/nautilus-spatial-window.c:862
+#: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "Ange en plats att öppna"
 
@@ -4725,37 +4728,37 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Töm innehållet i Gå-menyn och Föregående/Nästa-listorna"
 
 #: ../src/nautilus-navigation-window-menus.c:440
-#: ../src/nautilus-spatial-window.c:870
+#: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "_Lägg till bokmärke"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:441
-#: ../src/nautilus-spatial-window.c:871
+#: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Lägg till ett bokmärke för den aktuella platsen till denna meny"
 
 #: ../src/nautilus-navigation-window-menus.c:443
-#: ../src/nautilus-spatial-window.c:873
+#: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "_Redigera bokmärken"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:444
-#: ../src/nautilus-spatial-window.c:874
+#: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Visa ett fönster som tillåter redigering av bokmärkena i denna meny"
 
 #: ../src/nautilus-navigation-window-menus.c:446
-#: ../src/nautilus-spatial-window.c:876
-msgid "_Search"
-msgstr "_Sök"
+#: ../src/nautilus-spatial-window.c:866
+msgid "_Search for Files..."
+msgstr "_Sök efter filer..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:447
-#: ../src/nautilus-spatial-window.c:877
-msgid "Search for files"
-msgstr "Sök efter filer"
+#: ../src/nautilus-spatial-window.c:867
+msgid "Locate documents and folders on this computer by name or content"
+msgstr "Hitta dokument och mappar på den här datorn efter namn eller innehåll"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:454
@@ -4824,11 +4827,15 @@ msgstr "Gå till nästa besökta plats"
 msgid "Forward history"
 msgstr "Gå framåt i historiken"
 
-#: ../src/nautilus-navigation-window.c:177
+#: ../src/nautilus-navigation-window-menus.c:528
+msgid "_Search"
+msgstr "_Sök"
+
+#: ../src/nautilus-navigation-window.c:174
 msgid "Toggle between button and text-based location bar"
 msgstr "Växla mellan knapp- och textbaserad platsrad"
 
-#: ../src/nautilus-navigation-window.c:906
+#: ../src/nautilus-navigation-window.c:890
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Filbläddrare"
@@ -5118,35 +5125,35 @@ msgstr "Annan typ..."
 msgid "Remove this criterion from the search"
 msgstr "Ta bort detta kriterium från sökningen"
 
-#: ../src/nautilus-query-editor.c:980
-msgid "<b>Search Folder</b>"
-msgstr "<b>Sök mapp</b>"
+#: ../src/nautilus-query-editor.c:981
+msgid "Search Folder"
+msgstr "Sök mapp"
 
-#: ../src/nautilus-query-editor.c:996
+#: ../src/nautilus-query-editor.c:999
 msgid "Edit the saved search"
 msgstr "Redigera den sparade sökningen"
 
-#: ../src/nautilus-query-editor.c:1027
+#: ../src/nautilus-query-editor.c:1030
 msgid "Add a new criterion to this search"
 msgstr "Lägg till ett nytt kriterium till sökningen"
 
-#: ../src/nautilus-query-editor.c:1031
+#: ../src/nautilus-query-editor.c:1034
 msgid "Go"
 msgstr "Gå"
 
-#: ../src/nautilus-query-editor.c:1033
+#: ../src/nautilus-query-editor.c:1036
 msgid "Reload"
 msgstr "Läs om"
 
-#: ../src/nautilus-query-editor.c:1038
+#: ../src/nautilus-query-editor.c:1041
 msgid "Perform or update the search"
 msgstr "Genomför eller uppdatera sökningen"
 
-#: ../src/nautilus-query-editor.c:1058
-msgid "<b>_Search for:</b>"
-msgstr "<b>_Sök efter:</b>"
+#: ../src/nautilus-query-editor.c:1062
+msgid "_Search for:"
+msgstr "_Sök efter:"
 
-#: ../src/nautilus-query-editor.c:1085
+#: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
 msgstr "Sökresultat"
 
@@ -5158,32 +5165,36 @@ msgstr "Sök:"
 msgid "Close the side pane"
 msgstr "Stäng sidopanelen"
 
-#: ../src/nautilus-spatial-window.c:860
+#: ../src/nautilus-spatial-window.c:850
 msgid "_Places"
 msgstr "_Platser"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:851
 msgid "Open _Location..."
 msgstr "Öppna _plats..."
 
-#: ../src/nautilus-spatial-window.c:864
+#: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
 msgstr "Stäng _föräldermappar"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:865
+#: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
 msgstr "Stäng föräldrarna till denna mapp"
 
-#: ../src/nautilus-spatial-window.c:867
+#: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
 msgstr "Stän_g alla mappar"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:868
+#: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
 msgstr "Stäng alla mappfönster"
+
+#: ../src/nautilus-trash-bar.c:141
+msgid "Empty _Trash"
+msgstr "Töm _papperskorgen"
 
 #: ../src/nautilus-throbber.c:82
 msgid "throbber"
@@ -5201,55 +5212,55 @@ msgstr "Vill du ta bort alla bokmärken med denna plats från din lista?"
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: ../src/nautilus-window-manage-views.c:650
+#: ../src/nautilus-window-manage-views.c:652
 msgid "You can choose another view or go to a different location."
 msgstr "Du kan välja en annan vy eller gå till en annan plats."
 
-#: ../src/nautilus-window-manage-views.c:663
+#: ../src/nautilus-window-manage-views.c:665
 msgid "The location cannot be displayed with this viewer."
 msgstr "Platsen kan inte visas med denna visare."
 
-#: ../src/nautilus-window-manage-views.c:1032
+#: ../src/nautilus-window-manage-views.c:1034
 msgid "Content View"
 msgstr "Innehållsvy"
 
-#: ../src/nautilus-window-manage-views.c:1033
+#: ../src/nautilus-window-manage-views.c:1035
 msgid "View of the current folder"
 msgstr "Vy med aktuell mapp"
 
-#: ../src/nautilus-window-manage-views.c:1439
+#: ../src/nautilus-window-manage-views.c:1458
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus har ingen installerad visare som kan visa mappen."
 
-#: ../src/nautilus-window-manage-views.c:1445
+#: ../src/nautilus-window-manage-views.c:1464
 msgid "The location is not a folder."
 msgstr "Platsen är ingen mapp."
 
-#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1491
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus kan inte hantera %s:-platser."
 
-#: ../src/nautilus-window-manage-views.c:1507
+#: ../src/nautilus-window-manage-views.c:1526
 msgid "Check that your proxy settings are correct."
 msgstr "Kontrollera att dina proxyserverinställningar stämmer."
 
 # Osäker.
-#: ../src/nautilus-window-manage-views.c:1512
+#: ../src/nautilus-window-manage-views.c:1531
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser."
 msgstr "Kunde inte visa \"%s\", eftersom Nautilus inte kan kontakta SMB-huvudbläddraren."
 
-#: ../src/nautilus-window-manage-views.c:1515
+#: ../src/nautilus-window-manage-views.c:1534
 msgid "Check that an SMB server is running in the local network."
 msgstr "Kontrollera att en SMB-server körs på det lokala nätverket."
 
-#: ../src/nautilus-window-manage-views.c:1524
+#: ../src/nautilus-window-manage-views.c:1543
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: ../src/nautilus-window-manage-views.c:1526
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Please select another viewer and try again."
 msgstr "Välj en annan visare och försök igen."
 
@@ -5271,11 +5282,11 @@ msgstr "Nautilus distribueras i hopp om att det ska vara användbart, men UTAN N
 msgid "You should have received a copy of the GNU General Public License along with Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr "Du bör ha fått en kopia av GNU General Public License tillsammans med Nautilus. Om inte, skriv till Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA"
 
-#: ../src/nautilus-window-menus.c:450
+#: ../src/nautilus-window-menus.c:443
 msgid "Nautilus is a graphical shell for GNOME that makes it easy to manage your files and the rest of your system."
 msgstr "Nautilus är ett grafiskt skal till GNOME som gör det enkelt att hantera dina filer och resten av ditt system."
 
-#: ../src/nautilus-window-menus.c:454
+#: ../src/nautilus-window-menus.c:447
 msgid "Copyright © 1999-2006 The Nautilus authors"
 msgstr "Copyright © 1999-2006 Nautilus-författarna"
 
@@ -5283,7 +5294,7 @@ msgstr "Copyright © 1999-2006 Nautilus-författarna"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:464
+#: ../src/nautilus-window-menus.c:457
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander\n"
@@ -5294,205 +5305,200 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "tp-sv@listor.tp-sv.se"
 
-#: ../src/nautilus-window-menus.c:597
+#: ../src/nautilus-window-menus.c:586
 msgid "_File"
 msgstr "_Arkiv"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:598
+#: ../src/nautilus-window-menus.c:587
 msgid "_Edit"
 msgstr "_Redigera"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:599
+#: ../src/nautilus-window-menus.c:588
 msgid "_View"
 msgstr "_Visa"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:600
+#: ../src/nautilus-window-menus.c:589
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:602
+#: ../src/nautilus-window-menus.c:591
 msgid "_Close"
 msgstr "S_täng"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:592
 msgid "Close this folder"
 msgstr "Stäng denna mapp"
 
-#: ../src/nautilus-window-menus.c:606
+#: ../src/nautilus-window-menus.c:595
 msgid "_Backgrounds and Emblems..."
 msgstr "Bakgrunder och _emblem..."
 
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:596
 msgid "Display patterns, colors, and emblems that can be used to customize appearance"
 msgstr "Visa mönster, färger och emblem som kan användas för att ändra utseendet"
 
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:599
 msgid "Prefere_nces"
 msgstr "_Inställningar"
 
-#: ../src/nautilus-window-menus.c:611
+#: ../src/nautilus-window-menus.c:600
 msgid "Edit Nautilus preferences"
 msgstr "Redigera inställningar för Nautilus"
 
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:602
 msgid "_Undo"
 msgstr "_Ångra"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:603
 msgid "Undo the last text change"
 msgstr "Ångra den senaste textändringen"
 
-#: ../src/nautilus-window-menus.c:616
+#: ../src/nautilus-window-menus.c:605
 msgid "Open _Parent"
 msgstr "Öppna _förälder"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:617
+#: ../src/nautilus-window-menus.c:606
 msgid "Open the parent folder"
 msgstr "Öppna föräldermappen"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:612
 msgid "_Stop"
 msgstr "_Stopp"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:616
 msgid "_Reload"
 msgstr "_Läs om"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:631
+#: ../src/nautilus-window-menus.c:620
 msgid "_Contents"
 msgstr "_Innehåll"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:632
+#: ../src/nautilus-window-menus.c:621
 msgid "Display Nautilus help"
 msgstr "Visa hjälp för Nautilus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:635
+#: ../src/nautilus-window-menus.c:624
 msgid "_About"
 msgstr "_Om"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:625
 msgid "Display credits for the creators of Nautilus"
 msgstr "Visa lista över skaparna av Nautilus"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:639
+#: ../src/nautilus-window-menus.c:628
 msgid "Zoom _In"
 msgstr "Zooma _in"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:640
+#: ../src/nautilus-window-menus.c:629
 #: ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Visa innehållet mer detaljerat"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:651
+#: ../src/nautilus-window-menus.c:640
 msgid "Zoom _Out"
 msgstr "Zooma _ut"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:652
+#: ../src/nautilus-window-menus.c:641
 #: ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Visa innehållet mindre detaljerat"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:659
+#: ../src/nautilus-window-menus.c:648
 msgid "Normal Si_ze"
 msgstr "_Normal storlek"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:660
+#: ../src/nautilus-window-menus.c:649
 msgid "Show the contents at the normal size"
 msgstr "Visa innehållet i normal storlek"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:663
+#: ../src/nautilus-window-menus.c:652
 msgid "Connect to _Server..."
 msgstr "Anslut till _server..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:664
-msgid "Set up a connection to a network server"
-msgstr "Konfigurera en anslutning till en nätverksserver"
+#: ../src/nautilus-window-menus.c:653
+msgid "Connect to a remote computer or shared disk"
+msgstr "Anslut till en fjärrdator eller utdelad disk"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:667
-msgid "_Home"
-msgstr "_Hem"
-
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:668
-msgid "Go to the home folder"
-msgstr "Gå till hemmappen"
+#: ../src/nautilus-window-menus.c:656
+msgid "_Home Folder"
+msgstr "_Hemmapp"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:671
+#: ../src/nautilus-window-menus.c:660
 msgid "_Computer"
 msgstr "_Dator"
 
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:672
-msgid "Go to the computer location"
-msgstr "Gå till datorplatsen"
-
 #. name, stock id
-#: ../src/nautilus-window-menus.c:675
+#: ../src/nautilus-window-menus.c:664
 msgid "_Network"
 msgstr "_Nätverk"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:676
-msgid "Go to the network location"
-msgstr "Gå till nätverksplatsen"
+#: ../src/nautilus-window-menus.c:665
+#: ../src/network-scheme.desktop.in.h:1
+msgid "Browse bookmarked and local network locations"
+msgstr "Bläddra bland bokmärkta och lokala nätverksplatser"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:679
+#: ../src/nautilus-window-menus.c:668
 msgid "T_emplates"
 msgstr "_Mallar"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:680
-msgid "Go to the templates folder"
-msgstr "Gå till mallmappen"
+#: ../src/nautilus-window-menus.c:669
+msgid "Open your personal templates folder"
+msgstr "Öppna din personliga mallmapp"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:683
+#: ../src/nautilus-window-menus.c:672
 msgid "_Trash"
 msgstr "_Papperskorg"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:684
-msgid "Go to the trash folder"
-msgstr "Gå till papperskorgsmappen"
+#: ../src/nautilus-window-menus.c:673
+msgid "Open your personal trash folder"
+msgstr "Öppna din personliga papperskorgsmapp"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:687
-msgid "CD/_DVD Creator"
-msgstr "Cd/_dvd-skapare"
+#: ../src/nautilus-window-menus.c:676
+msgid "CD/_DVD"
+msgstr "Cd/_dvd"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:688
-msgid "Go to the CD/DVD Creator"
-msgstr "Gå till cd/dvd-skaparen"
+#: ../src/nautilus-window-menus.c:677
+msgid "Open a folder into which you can drag files to burn to a CD or DVD"
+msgstr "Öppna en mapp i vilken du kan dra filer till för att bränna till en cd eller dvd"
 
-#: ../src/nautilus-window-menus.c:714
+#: ../src/nautilus-window-menus.c:703
 msgid "_Up"
 msgstr "_Upp"
+
+#: ../src/nautilus-window-menus.c:706
+msgid "_Home"
+msgstr "_Hem"
 
 #: ../src/nautilus-zoom-control.c:84
 msgid "Zoom In"
@@ -5518,10 +5524,32 @@ msgstr "Zooma"
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
-#: ../src/network-scheme.desktop.in.h:2
-msgid "View your network servers in the Nautilus file manager"
-msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
-
+#~ msgid "View your computer storage"
+#~ msgstr "Visa din datorlagringsplats"
+#~ msgid "Change how files are managed"
+#~ msgstr "Ändra hur filer hanteras"
+#~ msgid "View your home folder in the Nautilus file manager"
+#~ msgstr "Visa din hemmapp i filhanteraren Nautilus"
+#~ msgid "<b>Image Type:</b> %s (%s)\n"
+#~ msgstr "<b>Bildtyp:</b> %s (%s)\n"
+#~ msgid "Unable to launch the cd burner application."
+#~ msgstr "Kan inte starta cd-brännarprogrammet."
+#~ msgid "_Write contents to CD"
+#~ msgstr "_Skriv innehåll till cd"
+#~ msgid "Set up a connection to a network server"
+#~ msgstr "Konfigurera en anslutning till en nätverksserver"
+#~ msgid "Go to the home folder"
+#~ msgstr "Gå till hemmappen"
+#~ msgid "Go to the computer location"
+#~ msgstr "Gå till datorplatsen"
+#~ msgid "Go to the network location"
+#~ msgstr "Gå till nätverksplatsen"
+#~ msgid "Go to the trash folder"
+#~ msgstr "Gå till papperskorgsmappen"
+#~ msgid "Go to the CD/DVD Creator"
+#~ msgstr "Gå till cd/dvd-skaparen"
+#~ msgid "View your network servers in the Nautilus file manager"
+#~ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgid "<b>Search:</b>"
 #~ msgstr "<b>Sök:</b>"
 #~ msgid "Always use _text-entry location bar"
