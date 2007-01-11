@@ -630,6 +630,15 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                                  nautilus_file_background_theme_changed,
                                                  background);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
+                                                 nautilus_file_background_theme_changed,
+                                                 background);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_COLOR,
+                                                 nautilus_file_background_theme_changed,
+                                                 background);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_FILENAME,
+                                                 nautilus_file_background_theme_changed,
+                                                 background);
 
 	}
 
