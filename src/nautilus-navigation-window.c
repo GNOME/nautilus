@@ -61,7 +61,9 @@
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtkliststore.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-macros.h>
+#ifdef HAVE_X11_XF86KEYSYM_H
+#include <X11/XF86keysym.h>
+#endif
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -133,8 +135,18 @@ static void nautilus_navigation_window_show_location_bar_temporarily (NautilusNa
 static void view_as_menu_switch_views_callback	     (GtkComboBox              *combo_box,
 						      NautilusWindow           *window);
 
-GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
-			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
+G_DEFINE_TYPE (NautilusNavigationWindow, nautilus_navigation_window, NAUTILUS_TYPE_WINDOW)
+#define parent_class nautilus_navigation_window_parent_class
+
+static const struct {
+	unsigned int keyval;
+	const char *action;
+} extra_navigation_window_keybindings [] = {
+#ifdef HAVE_X11_XF86KEYSYM_H
+	{ XF86XK_Back,		NAUTILUS_ACTION_BACK },
+	{ XF86XK_Forward,	NAUTILUS_ACTION_FORWARD }
+#endif
+};
 
 static void
 location_button_toggled_cb (GtkToggleButton *toggle,
@@ -179,7 +191,7 @@ location_button_create (NautilusNavigationWindow *window)
 }
 
 static void
-nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
+nautilus_navigation_window_init (NautilusNavigationWindow *window)
 {
 	GtkUIManager *ui_manager;
 	GtkWidget *toolbar;
@@ -634,6 +646,36 @@ nautilus_navigation_window_state_event (GtkWidget *widget,
 	}
 
 	return FALSE;
+}
+
+static gboolean
+nautilus_navigation_window_key_press_event (GtkWidget *widget,
+					    GdkEventKey *event)
+{
+	NautilusNavigationWindow *window;
+	int i;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (widget);
+
+	for (i = 0; i < G_N_ELEMENTS (extra_navigation_window_keybindings); i++) {
+		if (extra_navigation_window_keybindings[i].keyval == event->keyval) {
+			GtkAction *action;
+
+			action = gtk_action_group_get_action (window->details->navigation_action_group,
+							      extra_navigation_window_keybindings[i].action);
+			g_assert (action != NULL);
+
+			g_assert (action != NULL);
+			if (gtk_action_is_sensitive (action)) {
+				gtk_action_activate (action);
+				return TRUE;
+			}
+
+			break;
+		}
+	}
+
+	return GTK_WIDGET_CLASS (nautilus_navigation_window_parent_class)->key_press_event (widget, event);
 }
 
 static void
@@ -1537,6 +1579,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
+	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
 	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = real_set_content_view_widget;
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;

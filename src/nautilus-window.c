@@ -53,6 +53,9 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <glib/gi18n.h>
+#ifdef HAVE_X11_XF86KEYSYM_H
+#include <X11/XF86keysym.h>
+#endif
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -119,6 +122,27 @@ static GList *history_list;
 G_DEFINE_TYPE_WITH_CODE (NautilusWindow, nautilus_window, GTK_TYPE_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_WINDOW_INFO,
 						nautilus_window_info_iface_init));
+
+static const struct {
+	unsigned int keyval;
+	const char *action;
+} extra_window_keybindings [] = {
+#ifdef HAVE_X11_XF86KEYSYM_H
+	{ XF86XK_AddFavorite,	NAUTILUS_ACTION_ADD_BOOKMARK },
+	{ XF86XK_Favorites,	NAUTILUS_ACTION_EDIT_BOOKMARKS },
+	{ XF86XK_Go,		NAUTILUS_ACTION_GO_TO_LOCATION },
+/* TODO?{ XF86XK_History,	NAUTILUS_ACTION_HISTORY }, */
+	{ XF86XK_HomePage,      NAUTILUS_ACTION_GO_HOME },
+	{ XF86XK_OpenURL,	NAUTILUS_ACTION_GO_TO_LOCATION },
+	{ XF86XK_Refresh,	NAUTILUS_ACTION_RELOAD },
+	{ XF86XK_Reload,	NAUTILUS_ACTION_RELOAD },
+	{ XF86XK_Search,	NAUTILUS_ACTION_SEARCH },
+	{ XF86XK_Start,		NAUTILUS_ACTION_GO_HOME },
+	{ XF86XK_Stop,		NAUTILUS_ACTION_STOP },
+	{ XF86XK_ZoomIn,	NAUTILUS_ACTION_ZOOM_IN },
+	{ XF86XK_ZoomOut,	NAUTILUS_ACTION_ZOOM_OUT }
+#endif
+};
 
 static void
 icons_changed_callback (GObject *factory, NautilusWindow *window)
@@ -723,6 +747,41 @@ nautilus_window_realize (GtkWidget *widget)
 {
 	GTK_WIDGET_CLASS (nautilus_window_parent_class)->realize (widget);
 	update_cursor (NAUTILUS_WINDOW (widget));
+}
+
+static gboolean
+nautilus_window_key_press_event (GtkWidget *widget,
+				 GdkEventKey *event)
+{
+	NautilusWindow *window;
+	int i;
+
+	window = NAUTILUS_WINDOW (widget);
+
+	for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
+		if (extra_window_keybindings[i].keyval == event->keyval) {
+			const GList *action_groups;
+			GtkAction *action;
+
+			action = NULL;
+
+			action_groups = gtk_ui_manager_get_action_groups (window->details->ui_manager);
+			while (action_groups != NULL && action == NULL) {
+				action = gtk_action_group_get_action (action_groups->data, extra_window_keybindings[i].action);
+				action_groups = action_groups->next;
+			}
+
+			g_assert (action != NULL);
+			if (gtk_action_is_sensitive (action)) {
+				gtk_action_activate (action);
+				return TRUE;
+			}
+
+			break;
+		}
+	}
+
+	return GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event);
 }
 
 /*
@@ -1566,6 +1625,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
+	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
 	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
 	class->get_title = real_get_title;
 	class->set_title = real_set_title;

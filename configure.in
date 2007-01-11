@@ -365,6 +365,9 @@ AC_SUBST(CORE_IDL_INCLUDES)
 
 DISABLE_DEPRECATED_CFLAGS=""
 
+dnl Multimedia keys
+AC_CHECK_HEADERS([X11/XF86keysym.h])
+
 
 dnl Taken out for now
 dnl	-DGDK_DISABLE_DEPRECATED \
