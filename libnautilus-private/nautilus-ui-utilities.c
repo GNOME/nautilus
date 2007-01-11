@@ -94,7 +94,7 @@ nautilus_ui_string_get (const char *filename)
 	ui = g_hash_table_lookup (ui_cache, filename);
 	if (ui == NULL) {
 		path = nautilus_ui_file (filename);
-		if (!g_file_get_contents (path, &ui, NULL, NULL)) {
+		if (path == NULL || !g_file_get_contents (path, &ui, NULL, NULL)) {
 			g_warning ("Unable to load ui file %s\n", filename); 
 		} 
 		g_free (path);
