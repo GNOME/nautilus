@@ -309,8 +309,10 @@ get_target_file_for_original_file (NautilusFile *file)
 		drive = nautilus_file_get_drive (file);
 		if (drive != NULL) {
 			uri_to_display = gnome_vfs_drive_get_activation_uri (drive);
-			target_file = nautilus_file_get (uri_to_display);
-			g_free (uri_to_display);
+			if (uri_to_display != NULL) {
+				target_file = nautilus_file_get (uri_to_display);
+				g_free (uri_to_display);
+			}
 		}
 	} else if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
