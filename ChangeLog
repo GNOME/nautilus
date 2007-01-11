@@ -1,5 +1,10 @@
 2007-01-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-async.c (read_dot_hidden_file):
+	Avoid crash on NULL vfs_uri (#320020)
+
+2007-01-11  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
         (nautilus_file_operations_new_file_from_template):
 	Use default permissions when copying template to use

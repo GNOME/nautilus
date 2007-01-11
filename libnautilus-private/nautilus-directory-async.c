@@ -1996,7 +1996,8 @@ read_dot_hidden_file (NautilusDirectory *directory)
 	 * Need to figure out if we should do this async or sync to extend
 	 * it to all types of uris.
 	 */
-	if (eel_strcasecmp (directory->details->vfs_uri->method_string, "file") != 0) {
+	if (directory->details->vfs_uri == NULL ||
+	    (eel_strcasecmp (directory->details->vfs_uri->method_string, "file") != 0)) {
 		return;
 	}
 	
