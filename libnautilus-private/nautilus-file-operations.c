@@ -2658,7 +2658,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 	target_uri_list = g_list_prepend (NULL, target_uri);
 	source_uri_list = g_list_prepend (NULL, source_uri);
 
-	options = GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+	options = GNOME_VFS_XFER_USE_UNIQUE_NAMES | GNOME_VFS_XFER_TARGET_DEFAULT_PERMS;
 
 	gnome_vfs_async_xfer (&state->handle, source_uri_list, target_uri_list,
 	      		      options,

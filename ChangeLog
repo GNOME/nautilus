@@ -1,5 +1,13 @@
 2007-01-11  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+        (nautilus_file_operations_new_file_from_template):
+	Use default permissions when copying template to use
+	umask correctly. (#327249)
+	Patch from Josselin Mouette
+	
+2007-01-11  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-properties-window.c (get_target_file_for_original_file):
 	
 	Handle NULL activation uris from drives
