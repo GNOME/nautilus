@@ -673,7 +673,7 @@ static const GtkActionEntry main_entries[] = {
     N_("Open your personal trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },
   { "Go to Burn CD", "nautilus-cd-burner",                        /* name, stock id */
-    N_("CD/_DVD"), NULL,           /* label, accelerator */
+    N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Open a folder into which you can drag files to burn to a CD or DVD"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },
 };
