@@ -470,7 +470,7 @@ fm_ditem_page_get_type (void)
 	static GType provider_type = 0;
 
 	if (!provider_type) {
-		static const GTypeInfo type_info = {
+		const GTypeInfo type_info = {
 			sizeof (FMDitemPageClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
@@ -482,7 +482,7 @@ fm_ditem_page_get_type (void)
 			(GInstanceInitFunc) fm_ditem_page_instance_init,
 		};
 
-		static const GInterfaceInfo property_page_provider_iface_info = {
+		const GInterfaceInfo property_page_provider_iface_info = {
 			(GInterfaceInitFunc) fm_ditem_page_property_page_provider_iface_init,
 			NULL,
 			NULL

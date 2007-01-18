@@ -1,3 +1,47 @@
+2007-01-18  Christian Persch  <chpe@svn.gnome.org>
+
+	* cut-n-paste-code/libegg/eggtreemultidnd.c:
+	(egg_tree_multi_drag_source_get_type):
+	* libnautilus-extension/nautilus-column-provider.c:
+	(nautilus_column_provider_get_type):
+	* libnautilus-extension/nautilus-column.c:
+	(nautilus_column_get_type):
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_get_type):
+	* libnautilus-extension/nautilus-info-provider.c:
+	(nautilus_info_provider_get_type):
+	* libnautilus-extension/nautilus-location-widget-provider.c:
+	(nautilus_location_widget_provider_get_type):
+	* libnautilus-extension/nautilus-menu-item.c:
+	(nautilus_menu_item_get_type):
+	* libnautilus-extension/nautilus-menu-provider.c:
+	(nautilus_menu_provider_get_type):
+	* libnautilus-extension/nautilus-menu.c: (nautilus_menu_get_type):
+	* libnautilus-extension/nautilus-property-page-provider.c:
+	(nautilus_property_page_provider_get_type):
+	* libnautilus-extension/nautilus-property-page.c:
+	(nautilus_property_page_get_type):
+	* libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.c:
+	(nautilus_cell_renderer_pixbuf_emblem_get_type):
+	* libnautilus-private/nautilus-entry.c: (nautilus_entry_get_type):
+	* libnautilus-private/nautilus-file.c: (nautilus_file_get_type):
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_accessible_get_type),
+	(nautilus_icon_canvas_item_get_type):
+	* libnautilus-private/nautilus-sidebar-provider.c:
+	(nautilus_sidebar_provider_get_type):
+	* libnautilus-private/nautilus-sidebar.c:
+	(nautilus_sidebar_get_type):
+	* libnautilus-private/nautilus-view.c: (nautilus_view_get_type):
+	* libnautilus-private/nautilus-window-info.c:
+	(nautilus_window_info_get_type):
+	* src/file-manager/fm-ditem-page.c: (fm_ditem_page_get_type):
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_type):
+	* src/file-manager/fm-tree-model.c: (fm_tree_model_get_type):
+	* src/nautilus-navigation-action.c:
+	(nautilus_navigation_action_get_type): No need to make GTypeInfo and
+	GInterfaceInfo static. Bug #362034.
+
 2007-01-18  Luca Ferretti  <elle.uca@libero.it>
 
 	* src/nautilus-window-menus.c:

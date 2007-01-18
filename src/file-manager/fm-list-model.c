@@ -1619,7 +1619,7 @@ fm_list_model_get_type (void)
 	static GType object_type = 0;
 
 	if (object_type == 0) {
-		static const GTypeInfo object_info = {
+		const GTypeInfo object_info = {
 			sizeof (FMListModelClass),
 			NULL,		/* base_init */
 			NULL,		/* base_finalize */
@@ -1631,19 +1631,19 @@ fm_list_model_get_type (void)
 			(GInstanceInitFunc) fm_list_model_init,
 		};
 
-		static const GInterfaceInfo tree_model_info = {
+		const GInterfaceInfo tree_model_info = {
 			(GInterfaceInitFunc) fm_list_model_tree_model_init,
 			NULL,
 			NULL
 		};
 
-		static const GInterfaceInfo sortable_info = {
+		const GInterfaceInfo sortable_info = {
 			(GInterfaceInitFunc) fm_list_model_sortable_init,
 			NULL,
 			NULL
 		};
 
-		static const GInterfaceInfo multi_drag_source_info = {
+		const GInterfaceInfo multi_drag_source_info = {
 			(GInterfaceInitFunc) fm_list_model_multi_drag_source_init,
 			NULL,
 			NULL

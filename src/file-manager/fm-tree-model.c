@@ -1878,7 +1878,7 @@ fm_tree_model_get_type (void)
 	static GType object_type = 0;
 
 	if (object_type == 0) {
-		static const GTypeInfo object_info = {
+		const GTypeInfo object_info = {
 			sizeof (FMTreeModelClass),
 			NULL,
 			NULL,
@@ -1890,7 +1890,7 @@ fm_tree_model_get_type (void)
 			(GInstanceInitFunc) fm_tree_model_init,
 		};
 
-		static const GInterfaceInfo tree_model_info = {
+		const GInterfaceInfo tree_model_info = {
 			(GInterfaceInitFunc) fm_tree_model_tree_model_init,
 			NULL,
 			NULL

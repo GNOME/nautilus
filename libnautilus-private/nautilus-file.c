@@ -149,7 +149,7 @@ nautilus_file_get_type (void)
 	static GType type = 0;
 	
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusFileClass),
 			NULL, 
 			NULL,
@@ -161,7 +161,7 @@ nautilus_file_get_type (void)
 			(GInstanceInitFunc) nautilus_file_instance_init,
 		};
 		
-		static const GInterfaceInfo file_info_iface_info = {
+		const GInterfaceInfo file_info_iface_info = {
 			(GInterfaceInitFunc) nautilus_file_info_iface_init,
 			NULL,
 			NULL

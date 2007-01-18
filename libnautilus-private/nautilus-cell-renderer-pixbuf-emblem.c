@@ -85,7 +85,7 @@ nautilus_cell_renderer_pixbuf_emblem_get_type (void)
 	static GType cell_pixbuf_type = 0;
 
 	if (!cell_pixbuf_type) {
-		static const GTypeInfo cell_pixbuf_info =
+		const GTypeInfo cell_pixbuf_info =
 		{
 			sizeof (NautilusCellRendererPixbufEmblemClass),
 			NULL,                                                     /* base_init */

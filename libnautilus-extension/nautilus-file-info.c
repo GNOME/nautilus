@@ -60,7 +60,7 @@ nautilus_file_info_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusFileInfoIface),
 			nautilus_file_info_base_init,
 			NULL,

@@ -53,7 +53,7 @@ nautilus_menu_provider_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusMenuProviderIface),
 			nautilus_menu_provider_base_init,
 			NULL,

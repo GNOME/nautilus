@@ -103,7 +103,7 @@ nautilus_menu_get_type (void)
 	static GType type = 0;
 
 	if(type == 0) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusMenuClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,

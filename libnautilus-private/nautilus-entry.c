@@ -436,14 +436,14 @@ nautilus_entry_get_type (void)
 	static GType entry_type = 0;
 
 	if (entry_type == 0) {						
-		static const GInterfaceInfo editable_info =
+		const GInterfaceInfo editable_info =
 		{
 			(GInterfaceInitFunc) nautilus_entry_editable_init,
 			NULL,
 			NULL
 		};
 
-		static const GTypeInfo object_info = {
+		const GTypeInfo object_info = {
 		    sizeof (NautilusEntryClass),
 		    NULL,		/* base_init */
 		    NULL,		/* base_finalize */		

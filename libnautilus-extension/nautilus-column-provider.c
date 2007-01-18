@@ -38,7 +38,7 @@ nautilus_column_provider_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusColumnProviderIface),
 			nautilus_column_provider_base_init,
 			NULL,

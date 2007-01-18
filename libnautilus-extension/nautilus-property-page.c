@@ -204,7 +204,7 @@ nautilus_property_page_get_type (void)
 	static GType type = 0;
 	
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusPropertyPageClass),
 			NULL,
 			NULL,

@@ -59,7 +59,7 @@ nautilus_sidebar_get_type (void)
 	static GType type = 0;
 	
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusSidebarIface),
 			nautilus_sidebar_base_init,
 			NULL,

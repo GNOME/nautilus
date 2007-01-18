@@ -59,7 +59,7 @@ egg_tree_multi_drag_source_get_type (void)
 
   if (!our_type)
     {
-      static const GTypeInfo our_info =
+      const GTypeInfo our_info =
       {
         sizeof (EggTreeMultiDragSourceIface), /* class_size */
 	NULL,		/* base_init */

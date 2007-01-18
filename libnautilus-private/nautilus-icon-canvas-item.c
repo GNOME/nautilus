@@ -3078,21 +3078,21 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		static const GInterfaceInfo atk_image_info = {
+		const GInterfaceInfo atk_image_info = {
 			(GInterfaceInitFunc)
 			nautilus_icon_canvas_item_accessible_image_interface_init,
 			(GInterfaceFinalizeFunc) NULL,
 			NULL
 		};
 
-		static const GInterfaceInfo atk_text_info = {
+		const GInterfaceInfo atk_text_info = {
 			(GInterfaceInitFunc)
 			nautilus_icon_canvas_item_accessible_text_interface_init,
 			(GInterfaceFinalizeFunc) NULL,
 			NULL
 		};
 
-		static const GInterfaceInfo atk_action_info = {
+		const GInterfaceInfo atk_action_info = {
 			(GInterfaceInitFunc)
 			nautilus_icon_canvas_item_accessible_action_interface_init,
 			(GInterfaceFinalizeFunc) NULL,
@@ -3250,7 +3250,7 @@ nautilus_icon_canvas_item_get_type (void)
 	static GType type = 0;
 
 	if (!type) {
-		static const GTypeInfo info = {
+		const GTypeInfo info = {
 			sizeof (NautilusIconCanvasItemClass),
 			NULL,		/* base_init */
 			NULL,		/* base_finalize */
@@ -3261,7 +3261,7 @@ nautilus_icon_canvas_item_get_type (void)
 			0,                  /* n_preallocs */
 			(GInstanceInitFunc) nautilus_icon_canvas_item_init,
 		};
-		static const GInterfaceInfo eel_text_info = {
+		const GInterfaceInfo eel_text_info = {
 			(GInterfaceInitFunc)
 			nautilus_icon_canvas_item_text_interface_init,
 			(GInterfaceFinalizeFunc) NULL,
