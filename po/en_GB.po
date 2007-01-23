@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-01 22:43+0000\n"
-"PO-Revision-Date: 2007-01-01 22:43-0000\n"
+"POT-Creation-Date: 2007-01-23 20:08+0000\n"
+"PO-Revision-Date: 2007-01-23 20:08-0000\n"
 "Last-Translator: David Lodge <dave@cirt.net>\n"
 "Language-Team: English/GB <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -845,7 +845,7 @@ msgid "The group of the file."
 msgstr "The group of the file."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4164
+#: ../src/file-manager/fm-properties-window.c:4166
 msgid "Permissions"
 msgstr "Permissions"
 
@@ -878,6 +878,7 @@ msgid "The SELinux security context of the file."
 msgstr "The SELinux security context of the file."
 
 #: ../libnautilus-private/nautilus-customization-data.c:407
+#: ../src/nautilus-property-browser.c:1868
 msgid "Reset"
 msgstr "Reset"
 
@@ -1790,7 +1791,7 @@ msgstr "unknown MIME type"
 #. * for which we have no more appropriate default.
 #.
 #: ../libnautilus-private/nautilus-file.c:4732
-#: ../src/file-manager/fm-properties-window.c:1308
+#: ../src/file-manager/fm-properties-window.c:1310
 msgid "unknown"
 msgstr "unknown"
 
@@ -2359,7 +2360,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "If you delete an item, it is permanently lost."
 
 #: ../src/file-manager/fm-directory-view.c:1166
-#: ../src/file-manager/fm-properties-window.c:4389
+#: ../src/file-manager/fm-properties-window.c:4391
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -3489,64 +3490,64 @@ msgstr "The list view encountered an error while starting up."
 msgid "Display this location with the list view."
 msgstr "Display this location with the list view."
 
-#: ../src/file-manager/fm-properties-window.c:503
+#: ../src/file-manager/fm-properties-window.c:505
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "You can't assign more than one custom icon at a time!"
 
-#: ../src/file-manager/fm-properties-window.c:504
+#: ../src/file-manager/fm-properties-window.c:506
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Please drag just one image to set a custom icon."
 
-#: ../src/file-manager/fm-properties-window.c:512
+#: ../src/file-manager/fm-properties-window.c:514
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "The file that you dropped is not local."
 
-#: ../src/file-manager/fm-properties-window.c:513
-#: ../src/file-manager/fm-properties-window.c:519
+#: ../src/file-manager/fm-properties-window.c:515
+#: ../src/file-manager/fm-properties-window.c:521
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "You can only use local images as custom icons."
 
-#: ../src/file-manager/fm-properties-window.c:518
+#: ../src/file-manager/fm-properties-window.c:520
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "The file that you dropped is not an image."
 
-#: ../src/file-manager/fm-properties-window.c:1013
+#: ../src/file-manager/fm-properties-window.c:1015
 msgid "Properties"
 msgstr "Properties"
 
-#: ../src/file-manager/fm-properties-window.c:1021
+#: ../src/file-manager/fm-properties-window.c:1023
 #, c-format
 msgid "%s Properties"
 msgstr "%s Properties"
 
-#: ../src/file-manager/fm-properties-window.c:1573
+#: ../src/file-manager/fm-properties-window.c:1575
 msgid "Cancel Group Change?"
 msgstr "Cancel Group Change?"
 
-#: ../src/file-manager/fm-properties-window.c:1990
+#: ../src/file-manager/fm-properties-window.c:1992
 msgid "Cancel Owner Change?"
 msgstr "Cancel Owner Change?"
 
-#: ../src/file-manager/fm-properties-window.c:2285
+#: ../src/file-manager/fm-properties-window.c:2287
 msgid "nothing"
 msgstr "nothing"
 
-#: ../src/file-manager/fm-properties-window.c:2287
+#: ../src/file-manager/fm-properties-window.c:2289
 msgid "unreadable"
 msgstr "unreadable"
 
-#: ../src/file-manager/fm-properties-window.c:2297
+#: ../src/file-manager/fm-properties-window.c:2299
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d item, with size %s"
 msgstr[1] "%d items, totalling %s"
 
-#: ../src/file-manager/fm-properties-window.c:2306
+#: ../src/file-manager/fm-properties-window.c:2308
 msgid "(some contents unreadable)"
 msgstr "(some contents unreadable)"
 
@@ -3556,261 +3557,261 @@ msgstr "(some contents unreadable)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2323
+#: ../src/file-manager/fm-properties-window.c:2325
 msgid "Contents:"
 msgstr "Contents:"
 
-#: ../src/file-manager/fm-properties-window.c:2641
+#: ../src/file-manager/fm-properties-window.c:2643
 msgid "Basic"
 msgstr "Basic"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2671
+#: ../src/file-manager/fm-properties-window.c:2673
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Name:"
 msgstr[1] "_Names:"
 
-#: ../src/file-manager/fm-properties-window.c:2690
+#: ../src/file-manager/fm-properties-window.c:2692
 msgid "Type:"
 msgstr "Type:"
 
-#: ../src/file-manager/fm-properties-window.c:2692
-#: ../src/file-manager/fm-properties-window.c:2702
-#: ../src/file-manager/fm-properties-window.c:2708
-#: ../src/file-manager/fm-properties-window.c:2715
-#: ../src/file-manager/fm-properties-window.c:2719
-#: ../src/file-manager/fm-properties-window.c:2727
-#: ../src/file-manager/fm-properties-window.c:2733
-#: ../src/file-manager/fm-properties-window.c:2742
-#: ../src/file-manager/fm-properties-window.c:2748
-#: ../src/file-manager/fm-properties-window.c:3768
-#: ../src/file-manager/fm-properties-window.c:3801
-#: ../src/file-manager/fm-properties-window.c:3974
-#: ../src/file-manager/fm-properties-window.c:3996
-#: ../src/file-manager/fm-properties-window.c:4031
-#: ../src/file-manager/fm-properties-window.c:4201
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:2694
+#: ../src/file-manager/fm-properties-window.c:2704
+#: ../src/file-manager/fm-properties-window.c:2710
+#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:2721
+#: ../src/file-manager/fm-properties-window.c:2729
+#: ../src/file-manager/fm-properties-window.c:2735
+#: ../src/file-manager/fm-properties-window.c:2744
+#: ../src/file-manager/fm-properties-window.c:2750
+#: ../src/file-manager/fm-properties-window.c:3770
+#: ../src/file-manager/fm-properties-window.c:3803
+#: ../src/file-manager/fm-properties-window.c:3976
+#: ../src/file-manager/fm-properties-window.c:3998
+#: ../src/file-manager/fm-properties-window.c:4033
+#: ../src/file-manager/fm-properties-window.c:4203
+#: ../src/file-manager/fm-properties-window.c:4207
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2702
 msgid "Size:"
 msgstr "Size:"
 
-#: ../src/file-manager/fm-properties-window.c:2706
+#: ../src/file-manager/fm-properties-window.c:2708
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Location:"
 
-#: ../src/file-manager/fm-properties-window.c:2713
+#: ../src/file-manager/fm-properties-window.c:2715
 msgid "Volume:"
 msgstr "Volume:"
 
-#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:2719
 msgid "Free space:"
 msgstr "Free space:"
 
-#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2727
 msgid "Link target:"
 msgstr "Link target:"
 
-#: ../src/file-manager/fm-properties-window.c:2731
+#: ../src/file-manager/fm-properties-window.c:2733
 msgid "MIME type:"
 msgstr "MIME type:"
 
-#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:2742
 msgid "Modified:"
 msgstr "Modified:"
 
-#: ../src/file-manager/fm-properties-window.c:2746
+#: ../src/file-manager/fm-properties-window.c:2748
 msgid "Accessed:"
 msgstr "Accessed:"
 
-#: ../src/file-manager/fm-properties-window.c:2849
+#: ../src/file-manager/fm-properties-window.c:2851
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Emblems"
 
-#: ../src/file-manager/fm-properties-window.c:3247
+#: ../src/file-manager/fm-properties-window.c:3249
 msgid "_Read"
 msgstr "_Read"
 
-#: ../src/file-manager/fm-properties-window.c:3249
+#: ../src/file-manager/fm-properties-window.c:3251
 msgid "_Write"
 msgstr "_Write"
 
-#: ../src/file-manager/fm-properties-window.c:3251
+#: ../src/file-manager/fm-properties-window.c:3253
 msgid "E_xecute"
 msgstr "E_xecute"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3501
-#: ../src/file-manager/fm-properties-window.c:3512
-#: ../src/file-manager/fm-properties-window.c:3524
+#: ../src/file-manager/fm-properties-window.c:3503
+#: ../src/file-manager/fm-properties-window.c:3514
+#: ../src/file-manager/fm-properties-window.c:3526
 msgid "no "
 msgstr "no "
 
-#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3506
 msgid "list"
 msgstr "list"
 
-#: ../src/file-manager/fm-properties-window.c:3506
+#: ../src/file-manager/fm-properties-window.c:3508
 msgid "read"
 msgstr "read"
 
-#: ../src/file-manager/fm-properties-window.c:3515
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "create/delete"
 msgstr "create/delete"
 
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3519
 msgid "write"
 msgstr "write"
 
-#: ../src/file-manager/fm-properties-window.c:3526
+#: ../src/file-manager/fm-properties-window.c:3528
 msgid "access"
 msgstr "access"
 
-#: ../src/file-manager/fm-properties-window.c:3575
+#: ../src/file-manager/fm-properties-window.c:3577
 msgid "Access:"
 msgstr "Access:"
 
-#: ../src/file-manager/fm-properties-window.c:3577
+#: ../src/file-manager/fm-properties-window.c:3579
 msgid "Folder Access:"
 msgstr "Folder Access:"
 
-#: ../src/file-manager/fm-properties-window.c:3579
+#: ../src/file-manager/fm-properties-window.c:3581
 msgid "File Access:"
 msgstr "File Access:"
 
-#: ../src/file-manager/fm-properties-window.c:3591
-#: ../src/file-manager/fm-properties-window.c:3602
+#: ../src/file-manager/fm-properties-window.c:3593
+#: ../src/file-manager/fm-properties-window.c:3604
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "None"
 
-#: ../src/file-manager/fm-properties-window.c:3594
+#: ../src/file-manager/fm-properties-window.c:3596
 msgid "List files only"
 msgstr "List files only"
 
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3598
 msgid "Access files"
 msgstr "Access files"
 
-#: ../src/file-manager/fm-properties-window.c:3598
+#: ../src/file-manager/fm-properties-window.c:3600
 msgid "Create and delete files"
 msgstr "Create and delete files"
 
-#: ../src/file-manager/fm-properties-window.c:3605
+#: ../src/file-manager/fm-properties-window.c:3607
 msgid "Read-only"
 msgstr "Read-only"
 
-#: ../src/file-manager/fm-properties-window.c:3607
+#: ../src/file-manager/fm-properties-window.c:3609
 msgid "Read and write"
 msgstr "Read and write"
 
-#: ../src/file-manager/fm-properties-window.c:3672
+#: ../src/file-manager/fm-properties-window.c:3674
 msgid "Set _user ID"
 msgstr "Set _user ID"
 
-#: ../src/file-manager/fm-properties-window.c:3674
+#: ../src/file-manager/fm-properties-window.c:3676
 msgid "Special flags:"
 msgstr "Special flags:"
 
-#: ../src/file-manager/fm-properties-window.c:3676
+#: ../src/file-manager/fm-properties-window.c:3678
 msgid "Set gro_up ID"
 msgstr "Set gro_up ID"
 
-#: ../src/file-manager/fm-properties-window.c:3677
+#: ../src/file-manager/fm-properties-window.c:3679
 msgid "_Sticky"
 msgstr "_Sticky"
 
-#: ../src/file-manager/fm-properties-window.c:3757
-#: ../src/file-manager/fm-properties-window.c:3961
+#: ../src/file-manager/fm-properties-window.c:3759
+#: ../src/file-manager/fm-properties-window.c:3963
 msgid "_Owner:"
 msgstr "_Owner:"
 
-#: ../src/file-manager/fm-properties-window.c:3763
-#: ../src/file-manager/fm-properties-window.c:3858
-#: ../src/file-manager/fm-properties-window.c:3969
+#: ../src/file-manager/fm-properties-window.c:3765
+#: ../src/file-manager/fm-properties-window.c:3860
+#: ../src/file-manager/fm-properties-window.c:3971
 msgid "Owner:"
 msgstr "Owner:"
 
-#: ../src/file-manager/fm-properties-window.c:3786
-#: ../src/file-manager/fm-properties-window.c:3981
+#: ../src/file-manager/fm-properties-window.c:3788
+#: ../src/file-manager/fm-properties-window.c:3983
 msgid "_Group:"
 msgstr "_Group:"
 
-#: ../src/file-manager/fm-properties-window.c:3795
-#: ../src/file-manager/fm-properties-window.c:3859
-#: ../src/file-manager/fm-properties-window.c:3990
+#: ../src/file-manager/fm-properties-window.c:3797
+#: ../src/file-manager/fm-properties-window.c:3861
+#: ../src/file-manager/fm-properties-window.c:3992
 msgid "Group:"
 msgstr "Group:"
 
-#: ../src/file-manager/fm-properties-window.c:3820
+#: ../src/file-manager/fm-properties-window.c:3822
 msgid "Others"
 msgstr "Others"
 
-#: ../src/file-manager/fm-properties-window.c:3837
+#: ../src/file-manager/fm-properties-window.c:3839
 msgid "Execute:"
 msgstr "Execute:"
 
-#: ../src/file-manager/fm-properties-window.c:3841
+#: ../src/file-manager/fm-properties-window.c:3843
 msgid "Allow _executing file as program"
 msgstr "Allow _executing file as program"
 
-#: ../src/file-manager/fm-properties-window.c:3860
+#: ../src/file-manager/fm-properties-window.c:3862
 msgid "Others:"
 msgstr "Others:"
 
-#: ../src/file-manager/fm-properties-window.c:4008
+#: ../src/file-manager/fm-properties-window.c:4010
 msgid "Folder Permissions:"
 msgstr "Folder Permissions:"
 
-#: ../src/file-manager/fm-properties-window.c:4020
+#: ../src/file-manager/fm-properties-window.c:4022
 msgid "File Permissions:"
 msgstr "File Permissions:"
 
-#: ../src/file-manager/fm-properties-window.c:4030
+#: ../src/file-manager/fm-properties-window.c:4032
 msgid "Text view:"
 msgstr "Text view:"
 
-#: ../src/file-manager/fm-properties-window.c:4177
+#: ../src/file-manager/fm-properties-window.c:4179
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "You are not the owner, so you can't change these permissions."
 
-#: ../src/file-manager/fm-properties-window.c:4200
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "SELinux Context:"
 msgstr "SELinux Context:"
 
-#: ../src/file-manager/fm-properties-window.c:4204
+#: ../src/file-manager/fm-properties-window.c:4206
 msgid "Last changed:"
 msgstr "Last changed:"
 
-#: ../src/file-manager/fm-properties-window.c:4218
+#: ../src/file-manager/fm-properties-window.c:4220
 msgid "Apply permissions to enclosed files"
 msgstr "Apply permissions to enclosed files"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4230
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "The permissions of \"%s\" could not be determined."
 
-#: ../src/file-manager/fm-properties-window.c:4231
+#: ../src/file-manager/fm-properties-window.c:4233
 msgid "The permissions of the selected file could not be determined."
 msgstr "The permissions of the selected file could not be determined."
 
-#: ../src/file-manager/fm-properties-window.c:4451
+#: ../src/file-manager/fm-properties-window.c:4453
 msgid "Open With"
 msgstr "Open With"
 
-#: ../src/file-manager/fm-properties-window.c:4791
+#: ../src/file-manager/fm-properties-window.c:4793
 msgid "Creating Properties window."
 msgstr "Creating Properties window."
 
-#: ../src/file-manager/fm-properties-window.c:5031
+#: ../src/file-manager/fm-properties-window.c:5033
 msgid "Select Custom Icon"
 msgstr "Select Custom Icon"
 
@@ -4616,7 +4617,7 @@ msgstr ""
 #: ../src/nautilus-main.c:440
 #: ../src/nautilus-spatial-window.c:414
 #: ../src/nautilus-window-menus.c:441
-#: ../src/nautilus-window.c:143
+#: ../src/nautilus-window.c:167
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4818,11 +4819,11 @@ msgstr "Forward History"
 msgid "_Search"
 msgstr "_Search"
 
-#: ../src/nautilus-navigation-window.c:174
+#: ../src/nautilus-navigation-window.c:186
 msgid "Toggle between button and text-based location bar"
 msgstr "Toggle between button and text-based location bar"
 
-#: ../src/nautilus-navigation-window.c:890
+#: ../src/nautilus-navigation-window.c:932
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - File Browser"
@@ -5453,8 +5454,8 @@ msgstr "Open your personal trash folder"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:676
-msgid "CD/_DVD"
-msgstr "CD/_DVD"
+msgid "CD/_DVD Creator"
+msgstr "CD/_DVD Creator"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:677
@@ -5493,6 +5494,8 @@ msgstr "Zoom"
 msgid "Set the zoom level of the current view"
 msgstr "Set the zoom level of the current view"
 
+#~ msgid "CD/_DVD"
+#~ msgstr "CD/_DVD"
 #~ msgid "View your computer storage"
 #~ msgstr "View your computer storage"
 #~ msgid "Change how files are managed"
