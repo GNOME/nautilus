@@ -1,5 +1,10 @@
 2007-01-31  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-application.c (nautilus_application_present_spatial_window_with_selection):
+	Avoid crash if we've not set the content view of the window yet.
+
+2007-01-31  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-file-management-properties.c (update_icon_captions_from_gconf):
 	Avoid crashing if not enough items in icon view caption pref (#357955)
 

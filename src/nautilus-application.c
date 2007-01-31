@@ -1139,7 +1139,8 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 #endif
 
 			gtk_window_present (GTK_WINDOW (existing_window));
-			if (new_selection) {
+			if (new_selection &&
+			    existing_window->content_view != NULL) {
 				nautilus_view_set_selection (existing_window->content_view, new_selection);
 			}
 
