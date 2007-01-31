@@ -168,7 +168,7 @@ fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
  * Get the preference for which caption text should appear
  * beneath icons.
  */
-static EelStringList *
+static const EelStringList *
 fm_icon_container_get_icon_text_attributes_from_preferences (void)
 {
 	static const EelStringList *attributes;
@@ -177,11 +177,6 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 		eel_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 						      &attributes);
 	}
-
-	/* A simple check that the attributes list matches the expected length */
-	g_return_val_if_fail (eel_string_list_get_length (attributes) == ICON_TEXT_ATTRIBUTES_NUM_ITEMS,
-			      eel_string_list_new_from_tokens (ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS, ",", TRUE));
-
 
 	/* We don't need to sanity check the attributes list even though it came
 	 * from preferences.
@@ -207,27 +202,25 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 	 * with the preference.
 	 *
 	 * So, no more error checking on attributes is needed here and we can return
-	 * a copy of the auto stored value.
+	 * a the auto stored value.
 	 */
-	return eel_string_list_copy (attributes);
+	return attributes;
 }
 
 /**
  * fm_icon_view_get_icon_text_attribute_names:
  *
- * Get a string representing which text attributes should be displayed
+ * Get a list representing which text attributes should be displayed
  * beneath an icon. The result is dependent on zoom level and possibly
- * user configuration. Use g_free to free the result.
+ * user configuration. Don't free the result.
  * @view: FMIconView to query.
  * 
- * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
- * 
  **/
-static char *
-fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *container)
+static const EelStringList *
+fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *container,
+						 int *len)
 {
-	EelStringList *attributes;
-	char *result;
+	const EelStringList *attributes;
 	int piece_count;
 
 	const int pieces_by_level[] = {
@@ -243,12 +236,10 @@ fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *containe
 	piece_count = pieces_by_level[nautilus_icon_container_get_zoom_level (container)];
 	
 	attributes = fm_icon_container_get_icon_text_attributes_from_preferences ();
-	g_return_val_if_fail ((guint)piece_count <= eel_string_list_get_length (attributes), NULL);
-	
-	result = eel_string_list_as_string (attributes, "|", piece_count);
-	eel_string_list_free (attributes);
 
-	return result;
+	*len = MIN (piece_count, eel_string_list_get_length (attributes));
+	
+	return attributes;
 }
 
 /* This callback returns the text, both the editable part, and the
@@ -262,10 +253,10 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 {
 	char *actual_uri;
 	gchar *description;
-	char *attribute_names;
-	char **text_array;
-	int i , slot_index;
-	char *attribute_string;
+	const EelStringList *attribute_names;
+	const char *attribute;
+	char *text_array[4];
+	int i, j, num_attributes;
 	FMIconView *icon_view;
 	NautilusFile *file;
 
@@ -310,40 +301,25 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	}
 	
 	/* Find out what attributes go below each icon. */
-	attribute_names = fm_icon_container_get_icon_text_attribute_names (container);
-	text_array = g_strsplit (attribute_names, "|", 0);
-	g_free (attribute_names);
+	attribute_names = fm_icon_container_get_icon_text_attribute_names (container, &num_attributes);
 
 	/* Get the attributes. */
-	for (i = 0; text_array[i] != NULL; i++)	{
-		/* if the attribute is "none", delete the array slot */
-		while (eel_strcmp (text_array[i], "none") == 0) {
-			g_free (text_array[i]);
-			text_array[i] = NULL;
-			slot_index = i + 1;			
-			while (text_array[slot_index] != NULL) {
-				text_array[slot_index - 1] = text_array[slot_index];
-				text_array[slot_index++] = NULL;
-			}
-			if (text_array[i] == NULL)
-				break;
-		} 
-		
-		if (text_array[i] == NULL)
-			break;
-			
-		attribute_string = nautilus_file_get_string_attribute_with_default
-			(file, text_array[i]);
-				
-		/* Replace each attribute name in the array with its string value */
-		g_free (text_array[i]);
-		text_array[i] = attribute_string;
+	for (i = 0, j = 0; i < num_attributes; i++)	{
+		attribute = eel_string_list_peek_nth (attribute_names, i);
+		if (eel_strcmp (attribute, "none") == 0) {
+			continue;
+		}
+		text_array[j++] =
+			nautilus_file_get_string_attribute_with_default (file, attribute);
 	}
+	text_array[j] = NULL;
 
 	/* Return them. */
 	*additional_text = g_strjoinv ("\n", text_array);
 
-	g_strfreev (text_array);
+	for (i = 0; i < j; i++) {
+		g_free(text_array[i]);
+	}
 }
 
 /* Sort as follows:

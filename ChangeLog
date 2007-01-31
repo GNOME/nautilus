@@ -1,3 +1,11 @@
+2007-01-31  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-file-management-properties.c (update_icon_captions_from_gconf):
+	Avoid crashing if not enough items in icon view caption pref (#357955)
+
+	* src/file-manager/fm-icon-container.c (fm_icon_container_get_icon_text):
+	Avoid spewing warnings in above case, also some performance fixes.	
+
 2007-01-25  Luca Ferretti  <elle.uca@libero.it>
 
 	* nautilus-file-management-properties.desktop.in.in:

@@ -392,16 +392,23 @@ update_icon_captions_from_gconf (GladeXML *xml)
 	GList *captions;
 	int i;
 	GList *l;
-	
+	char *data;
 
 	captions = eel_preferences_get_string_glist (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
 
 	for (l = captions, i = 0; 
-	     captions != NULL && icon_captions_components[i] != NULL;
-	      l = l->next, i++) {
+	     icon_captions_components[i] != NULL;
+	     i++) {
+		if (l != NULL) {
+			data = l->data;
+			l = l->next;
+		} else {
+			data = "none";
+		}
+		
 		update_caption_combo_box (xml, 
 					  icon_captions_components[i],
-					  (char *)l->data);
+					  data);
 	}
 	eel_g_list_free_deep (captions);
 }
