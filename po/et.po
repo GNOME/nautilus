@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-02 04:25+0000\n"
-"PO-Revision-Date: 2006-11-24 08:25+0200\n"
+"POT-Creation-Date: 2007-01-19 03:29+0000\n"
+"PO-Revision-Date: 2007-01-31 00:18+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1053,7 +1053,7 @@ msgid "The group of the file."
 msgstr "Faili grupp."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4164
+#: ../src/file-manager/fm-properties-window.c:4166
 msgid "Permissions"
 msgstr "Õigused"
 
@@ -1086,6 +1086,7 @@ msgid "The SELinux security context of the file."
 msgstr "Faili SELinux'i turvakontekst."
 
 #: ../libnautilus-private/nautilus-customization-data.c:407
+#: ../src/nautilus-property-browser.c:1868
 msgid "Reset"
 msgstr "Taasta"
 
@@ -2048,7 +2049,7 @@ msgstr "tundmatu MIME-liik"
 #. * for which we have no more appropriate default.
 #.
 #: ../libnautilus-private/nautilus-file.c:4732
-#: ../src/file-manager/fm-properties-window.c:1308
+#: ../src/file-manager/fm-properties-window.c:1310
 msgid "unknown"
 msgstr "tundmatu"
 
@@ -2290,14 +2291,12 @@ msgid "Opacity of the normal icons if frame_text is set"
 msgstr "Tavaliste ikoonide katvus, kui frame_text on määratud"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4891
-#, fuzzy
 msgid "Prelight Alpha"
-msgstr "Tavaline läbipaistvus"
+msgstr "Eelvalgustusega läbipaistvus"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4892
-#, fuzzy
 msgid "Opacity of the prelight icons if frame_text is set"
-msgstr "Tavaliste ikoonide katvus, kui frame_text on määratud"
+msgstr "Eelvalgustatud ikoonide katvus, kui frame_text on määratud"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:833
 msgid "Switch to Manual Layout?"
@@ -2491,8 +2490,7 @@ msgstr "Tagasta redigeeritud"
 #: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:661
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
-msgstr ""
-"Kõikide kohalike ja kaugelasetsevate kaustade ning ketaste sirvimine"
+msgstr "Kõikide kohalike ja kaugelasetsevate kaustade ning ketaste sirvimine"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
@@ -2656,7 +2654,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Kui kustutad kirje, siis kaob see lõplikult"
 
 #: ../src/file-manager/fm-directory-view.c:1166
-#: ../src/file-manager/fm-properties-window.c:4389
+#: ../src/file-manager/fm-properties-window.c:4391
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -3848,64 +3846,64 @@ msgstr "Loendivaate käivitamise käigus satuti veale."
 msgid "Display this location with the list view."
 msgstr "Selle asukoha kuvamine nimekirjavaatena."
 
-#: ../src/file-manager/fm-properties-window.c:503
+#: ../src/file-manager/fm-properties-window.c:505
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Korraga pole võimalik määrata rohkem kui ühte kohandatud ikooni!"
 
-#: ../src/file-manager/fm-properties-window.c:504
+#: ../src/file-manager/fm-properties-window.c:506
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Kohandatud ikooni seadmiseks lohista ainult ühte pilti."
 
-#: ../src/file-manager/fm-properties-window.c:512
+#: ../src/file-manager/fm-properties-window.c:514
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Fail, mille poetasid, ei ole kohalik."
 
-#: ../src/file-manager/fm-properties-window.c:513
-#: ../src/file-manager/fm-properties-window.c:519
+#: ../src/file-manager/fm-properties-window.c:515
+#: ../src/file-manager/fm-properties-window.c:521
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Failiikoonideks saab kasutada vaid kohalikke pilte."
 
-#: ../src/file-manager/fm-properties-window.c:518
+#: ../src/file-manager/fm-properties-window.c:520
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Fail, mille poetasid, ei ole pilt."
 
-#: ../src/file-manager/fm-properties-window.c:1013
+#: ../src/file-manager/fm-properties-window.c:1015
 msgid "Properties"
 msgstr "Omadused"
 
-#: ../src/file-manager/fm-properties-window.c:1021
+#: ../src/file-manager/fm-properties-window.c:1023
 #, c-format
 msgid "%s Properties"
 msgstr "%s omadused"
 
-#: ../src/file-manager/fm-properties-window.c:1573
+#: ../src/file-manager/fm-properties-window.c:1575
 msgid "Cancel Group Change?"
 msgstr "Kas katkestada grupi muutmine?"
 
-#: ../src/file-manager/fm-properties-window.c:1990
+#: ../src/file-manager/fm-properties-window.c:1992
 msgid "Cancel Owner Change?"
 msgstr "Kas katkestada omaniku muutmine?"
 
-#: ../src/file-manager/fm-properties-window.c:2285
+#: ../src/file-manager/fm-properties-window.c:2287
 msgid "nothing"
 msgstr "puudub"
 
-#: ../src/file-manager/fm-properties-window.c:2287
+#: ../src/file-manager/fm-properties-window.c:2289
 msgid "unreadable"
 msgstr "loetamatu"
 
-#: ../src/file-manager/fm-properties-window.c:2297
+#: ../src/file-manager/fm-properties-window.c:2299
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d kirje, suurusega %s"
 msgstr[1] "%d kirjet, kogusuurusega %s"
 
-#: ../src/file-manager/fm-properties-window.c:2306
+#: ../src/file-manager/fm-properties-window.c:2308
 msgid "(some contents unreadable)"
 msgstr "(osa sisust on loetamatu)"
 
@@ -3915,261 +3913,261 @@ msgstr "(osa sisust on loetamatu)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2323
+#: ../src/file-manager/fm-properties-window.c:2325
 msgid "Contents:"
 msgstr "Sisukord:"
 
-#: ../src/file-manager/fm-properties-window.c:2641
+#: ../src/file-manager/fm-properties-window.c:2643
 msgid "Basic"
 msgstr "Põhiline"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2671
+#: ../src/file-manager/fm-properties-window.c:2673
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nimi:"
 msgstr[1] "_Nimed:"
 
-#: ../src/file-manager/fm-properties-window.c:2690
+#: ../src/file-manager/fm-properties-window.c:2692
 msgid "Type:"
 msgstr "Liik:"
 
-#: ../src/file-manager/fm-properties-window.c:2692
-#: ../src/file-manager/fm-properties-window.c:2702
-#: ../src/file-manager/fm-properties-window.c:2708
-#: ../src/file-manager/fm-properties-window.c:2715
-#: ../src/file-manager/fm-properties-window.c:2719
-#: ../src/file-manager/fm-properties-window.c:2727
-#: ../src/file-manager/fm-properties-window.c:2733
-#: ../src/file-manager/fm-properties-window.c:2742
-#: ../src/file-manager/fm-properties-window.c:2748
-#: ../src/file-manager/fm-properties-window.c:3768
-#: ../src/file-manager/fm-properties-window.c:3801
-#: ../src/file-manager/fm-properties-window.c:3974
-#: ../src/file-manager/fm-properties-window.c:3996
-#: ../src/file-manager/fm-properties-window.c:4031
-#: ../src/file-manager/fm-properties-window.c:4201
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:2694
+#: ../src/file-manager/fm-properties-window.c:2704
+#: ../src/file-manager/fm-properties-window.c:2710
+#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:2721
+#: ../src/file-manager/fm-properties-window.c:2729
+#: ../src/file-manager/fm-properties-window.c:2735
+#: ../src/file-manager/fm-properties-window.c:2744
+#: ../src/file-manager/fm-properties-window.c:2750
+#: ../src/file-manager/fm-properties-window.c:3770
+#: ../src/file-manager/fm-properties-window.c:3803
+#: ../src/file-manager/fm-properties-window.c:3976
+#: ../src/file-manager/fm-properties-window.c:3998
+#: ../src/file-manager/fm-properties-window.c:4033
+#: ../src/file-manager/fm-properties-window.c:4203
+#: ../src/file-manager/fm-properties-window.c:4207
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2702
 msgid "Size:"
 msgstr "Suurus:"
 
-#: ../src/file-manager/fm-properties-window.c:2706
+#: ../src/file-manager/fm-properties-window.c:2708
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Asukoht:"
 
-#: ../src/file-manager/fm-properties-window.c:2713
+#: ../src/file-manager/fm-properties-window.c:2715
 msgid "Volume:"
 msgstr "Ketas:"
 
-#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:2719
 msgid "Free space:"
 msgstr "Vaba ruum:"
 
-#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2727
 msgid "Link target:"
 msgstr "Viit osutab:"
 
-#: ../src/file-manager/fm-properties-window.c:2731
+#: ../src/file-manager/fm-properties-window.c:2733
 msgid "MIME type:"
 msgstr "MIME-liik:"
 
-#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:2742
 msgid "Modified:"
 msgstr "Muudetud:"
 
-#: ../src/file-manager/fm-properties-window.c:2746
+#: ../src/file-manager/fm-properties-window.c:2748
 msgid "Accessed:"
 msgstr "Pöördutud:"
 
-#: ../src/file-manager/fm-properties-window.c:2849
+#: ../src/file-manager/fm-properties-window.c:2851
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Embleemid"
 
-#: ../src/file-manager/fm-properties-window.c:3247
+#: ../src/file-manager/fm-properties-window.c:3249
 msgid "_Read"
 msgstr "_Lugemine"
 
-#: ../src/file-manager/fm-properties-window.c:3249
+#: ../src/file-manager/fm-properties-window.c:3251
 msgid "_Write"
 msgstr "_Kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3251
+#: ../src/file-manager/fm-properties-window.c:3253
 msgid "E_xecute"
 msgstr "K_äivitamine"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3501
-#: ../src/file-manager/fm-properties-window.c:3512
-#: ../src/file-manager/fm-properties-window.c:3524
+#: ../src/file-manager/fm-properties-window.c:3503
+#: ../src/file-manager/fm-properties-window.c:3514
+#: ../src/file-manager/fm-properties-window.c:3526
 msgid "no "
 msgstr "keelatud: "
 
-#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3506
 msgid "list"
 msgstr "loendi võtmine"
 
-#: ../src/file-manager/fm-properties-window.c:3506
+#: ../src/file-manager/fm-properties-window.c:3508
 msgid "read"
 msgstr "lugemine"
 
-#: ../src/file-manager/fm-properties-window.c:3515
+#: ../src/file-manager/fm-properties-window.c:3517
 msgid "create/delete"
 msgstr "loomine/kustutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3519
 msgid "write"
 msgstr "kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3526
+#: ../src/file-manager/fm-properties-window.c:3528
 msgid "access"
 msgstr "ligipääs"
 
-#: ../src/file-manager/fm-properties-window.c:3575
+#: ../src/file-manager/fm-properties-window.c:3577
 msgid "Access:"
 msgstr "Pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3577
+#: ../src/file-manager/fm-properties-window.c:3579
 msgid "Folder Access:"
 msgstr "Kausta pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3579
+#: ../src/file-manager/fm-properties-window.c:3581
 msgid "File Access:"
 msgstr "Faili pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3591
-#: ../src/file-manager/fm-properties-window.c:3602
+#: ../src/file-manager/fm-properties-window.c:3593
+#: ../src/file-manager/fm-properties-window.c:3604
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Puudub"
 
-#: ../src/file-manager/fm-properties-window.c:3594
+#: ../src/file-manager/fm-properties-window.c:3596
 msgid "List files only"
 msgstr "Ainult failide loendile"
 
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3598
 msgid "Access files"
 msgstr "Ligipääs failidele"
 
-#: ../src/file-manager/fm-properties-window.c:3598
+#: ../src/file-manager/fm-properties-window.c:3600
 msgid "Create and delete files"
 msgstr "Failide loomine ja kustutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3605
+#: ../src/file-manager/fm-properties-window.c:3607
 msgid "Read-only"
 msgstr "Ainult loetav"
 
-#: ../src/file-manager/fm-properties-window.c:3607
+#: ../src/file-manager/fm-properties-window.c:3609
 msgid "Read and write"
 msgstr "Lugemine ja kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3672
+#: ../src/file-manager/fm-properties-window.c:3674
 msgid "Set _user ID"
 msgstr "_Kasutaja ID määramine"
 
-#: ../src/file-manager/fm-properties-window.c:3674
+#: ../src/file-manager/fm-properties-window.c:3676
 msgid "Special flags:"
 msgstr "Erilipud:"
 
-#: ../src/file-manager/fm-properties-window.c:3676
+#: ../src/file-manager/fm-properties-window.c:3678
 msgid "Set gro_up ID"
 msgstr "_Grupi ID määramine"
 
-#: ../src/file-manager/fm-properties-window.c:3677
+#: ../src/file-manager/fm-properties-window.c:3679
 msgid "_Sticky"
 msgstr "_Kleepuv"
 
-#: ../src/file-manager/fm-properties-window.c:3757
-#: ../src/file-manager/fm-properties-window.c:3961
+#: ../src/file-manager/fm-properties-window.c:3759
+#: ../src/file-manager/fm-properties-window.c:3963
 msgid "_Owner:"
 msgstr "_Omanik:"
 
-#: ../src/file-manager/fm-properties-window.c:3763
-#: ../src/file-manager/fm-properties-window.c:3858
-#: ../src/file-manager/fm-properties-window.c:3969
+#: ../src/file-manager/fm-properties-window.c:3765
+#: ../src/file-manager/fm-properties-window.c:3860
+#: ../src/file-manager/fm-properties-window.c:3971
 msgid "Owner:"
 msgstr "Omanik:"
 
-#: ../src/file-manager/fm-properties-window.c:3786
-#: ../src/file-manager/fm-properties-window.c:3981
+#: ../src/file-manager/fm-properties-window.c:3788
+#: ../src/file-manager/fm-properties-window.c:3983
 msgid "_Group:"
 msgstr "_Grupp:"
 
-#: ../src/file-manager/fm-properties-window.c:3795
-#: ../src/file-manager/fm-properties-window.c:3859
-#: ../src/file-manager/fm-properties-window.c:3990
+#: ../src/file-manager/fm-properties-window.c:3797
+#: ../src/file-manager/fm-properties-window.c:3861
+#: ../src/file-manager/fm-properties-window.c:3992
 msgid "Group:"
 msgstr "Grupp:"
 
-#: ../src/file-manager/fm-properties-window.c:3820
+#: ../src/file-manager/fm-properties-window.c:3822
 msgid "Others"
 msgstr "Teised"
 
-#: ../src/file-manager/fm-properties-window.c:3837
+#: ../src/file-manager/fm-properties-window.c:3839
 msgid "Execute:"
 msgstr "Käivitamine:"
 
-#: ../src/file-manager/fm-properties-window.c:3841
+#: ../src/file-manager/fm-properties-window.c:3843
 msgid "Allow _executing file as program"
 msgstr "Faili on lubatud _käivitada kui programmi"
 
-#: ../src/file-manager/fm-properties-window.c:3860
+#: ../src/file-manager/fm-properties-window.c:3862
 msgid "Others:"
 msgstr "Teised:"
 
-#: ../src/file-manager/fm-properties-window.c:4008
+#: ../src/file-manager/fm-properties-window.c:4010
 msgid "Folder Permissions:"
 msgstr "Kausta õigused:"
 
-#: ../src/file-manager/fm-properties-window.c:4020
+#: ../src/file-manager/fm-properties-window.c:4022
 msgid "File Permissions:"
 msgstr "Faili õigused:"
 
-#: ../src/file-manager/fm-properties-window.c:4030
+#: ../src/file-manager/fm-properties-window.c:4032
 msgid "Text view:"
 msgstr "Tekstina:"
 
-#: ../src/file-manager/fm-properties-window.c:4177
+#: ../src/file-manager/fm-properties-window.c:4179
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Sa ei ole omanik, seega sa ei saa neid õigusi muuta."
 
-#: ../src/file-manager/fm-properties-window.c:4200
+#: ../src/file-manager/fm-properties-window.c:4202
 msgid "SELinux Context:"
 msgstr "SELinux'i kontekst:"
 
-#: ../src/file-manager/fm-properties-window.c:4204
+#: ../src/file-manager/fm-properties-window.c:4206
 msgid "Last changed:"
 msgstr "Viimati muudetud:"
 
-#: ../src/file-manager/fm-properties-window.c:4218
+#: ../src/file-manager/fm-properties-window.c:4220
 msgid "Apply permissions to enclosed files"
 msgstr "Rakenda õigused määratud failidele"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4230
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" õiguseid pole võimalik tuvastada."
 
-#: ../src/file-manager/fm-properties-window.c:4231
+#: ../src/file-manager/fm-properties-window.c:4233
 msgid "The permissions of the selected file could not be determined."
 msgstr "Valitud faili õiguseid pole võimalik tuvastada."
 
-#: ../src/file-manager/fm-properties-window.c:4451
+#: ../src/file-manager/fm-properties-window.c:4453
 msgid "Open With"
 msgstr "Avamine programmiga"
 
-#: ../src/file-manager/fm-properties-window.c:4791
+#: ../src/file-manager/fm-properties-window.c:4793
 msgid "Creating Properties window."
 msgstr "Omaduste akna loomine"
 
-#: ../src/file-manager/fm-properties-window.c:5031
+#: ../src/file-manager/fm-properties-window.c:5033
 msgid "Select Custom Icon"
 msgstr "Kohandatud ikooni valimine"
 
@@ -5040,7 +5038,7 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
-#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:143
+#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:167
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5245,11 +5243,11 @@ msgstr "Liigu ajaloos edasi"
 msgid "_Search"
 msgstr "_Otsing"
 
-#: ../src/nautilus-navigation-window.c:174
+#: ../src/nautilus-navigation-window.c:186
 msgid "Toggle between button and text-based location bar"
 msgstr "Nuppudel ja tekstil põhineva asukohariba vahel lülitumine"
 
-#: ../src/nautilus-navigation-window.c:890
+#: ../src/nautilus-navigation-window.c:932
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Failisirvija"
@@ -5917,14 +5915,14 @@ msgstr "Ava oma isiklik prügi kaust"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:676
-msgid "CD/_DVD"
-msgstr "_CD/DVD"
+msgid "CD/_DVD Creator"
+msgstr "CD/_DVD looja"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:677
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-msgstr "Ava kaust millesse sa saad CD- või DVD-plaadile kõrvetatavad faile "
-"lohistada"
+msgstr ""
+"Ava kaust millesse sa saad CD- või DVD-plaadile kõrvetatavad faile lohistada"
 
 #: ../src/nautilus-window-menus.c:703
 msgid "_Up"
@@ -5957,6 +5955,9 @@ msgstr "Suurendus"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#~ msgid "CD/_DVD"
+#~ msgstr "_CD/DVD"
 
 #~ msgid "View your computer storage"
 #~ msgstr "Näita kettaseadmeid"
