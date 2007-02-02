@@ -321,7 +321,10 @@ nautilus_desktop_icon_file_new (NautilusDesktopLink *link)
 NautilusDesktopLink *
 nautilus_desktop_icon_file_get_link (NautilusDesktopIconFile *icon_file)
 {
-	return g_object_ref (icon_file->details->link);
+	if (icon_file->details->link)
+		return g_object_ref (icon_file->details->link);
+	else
+		return NULL;
 }
 
 static void
