@@ -1,5 +1,10 @@
 2007-02-02  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-application.c (save_session_to_file):
+	Fix memory leak and fd leak.
+
+2007-02-02  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-desktop-icon-file.c:
 	Fix crasher (#403565)
 	Patch from Padraig O'Briain

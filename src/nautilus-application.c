@@ -1474,6 +1474,9 @@ save_session_to_file (void)
 		g_free (filename);
 		filename = NULL;
 	}
+	
+	xmlSaveClose(ctx);
+	close (fd);	
 
  out:
 	xmlFreeDoc (doc);
