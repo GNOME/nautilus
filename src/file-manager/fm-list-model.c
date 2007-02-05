@@ -942,6 +942,11 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file,
 
 	if (parent_ptr != NULL) {
 		file_entry->parent = g_sequence_get (parent_ptr);
+		/* At this point we set loaded. Either we saw
+		 * "done" and ignored it waiting for this, or we do this
+		 * earlier, but then we replace the dummy row anyway,
+		 * so it doesn't matter */
+		file_entry->parent->loaded = 1;
 		parent_hash = file_entry->parent->reverse_map;
 		files = file_entry->parent->files;
 		if (g_sequence_get_length (files) == 1) {
@@ -1664,45 +1669,37 @@ fm_list_model_get_type (void)
 	return object_type;
 }
 
-struct ChangeDummyData {
-	FMListModel *model;
-	NautilusDirectory *directory;
-};
-
-static gboolean
-change_dummy_row_callback (gpointer callback_data)
+void
+fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *directory)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	FileEntry *file_entry, *dummy_entry;
 	GSequenceIter *parent_ptr, *dummy_ptr;
-	FMListModel *model;
 	GSequence *files;
 	
-	struct ChangeDummyData *data;
-	data = callback_data;
-	model = data->model;
-
 	if (model == NULL || model->details->directory_reverse_map == NULL) {
-		goto out;
+		return;
 	}
-	
 	parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
-					  data->directory);
+					  directory);
 	if (parent_ptr == NULL) {
-		goto out;
+		return;
 	}
 	
 	file_entry = g_sequence_get (parent_ptr);
-	
-	file_entry->loaded = 1;
 	files = file_entry->files;
-	
-	if (g_sequence_get_length (files) == 1) {
+
+	/* Only swap loading -> empty if we saw no files yet at "done",
+	 * otherwise, toggle loading at first added file to the model.
+	 */
+	if (!nautilus_directory_is_not_empty (directory) &&
+	    g_sequence_get_length (files) == 1) {
 		dummy_ptr = g_sequence_get_iter_at_pos (file_entry->files, 0);
 		dummy_entry = g_sequence_get (dummy_ptr);
 		if (dummy_entry->file == NULL) {
 			/* was the dummy file */
+			file_entry->loaded = 1;
 			
 			iter.stamp = model->details->stamp;
 			iter.user_data = dummy_ptr;
@@ -1712,36 +1709,4 @@ change_dummy_row_callback (gpointer callback_data)
 			gtk_tree_path_free (path);
 		}
 	}
-
- out:
-	eel_remove_weak_pointer (&data->model);
-	nautilus_directory_unref (data->directory);
-	g_free (data);
-	
-	return FALSE;
-}
-
-void
-fm_list_model_subdirectory_done_loading (FMListModel *model, NautilusDirectory *directory)
-{
-	GSequenceIter *parent_ptr;
-	struct ChangeDummyData *data;
-
-	parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
-					  directory);
-	if (parent_ptr == NULL) {
-		return;
-	}
-
-	/* Delay slightly before sending the change even for the dummy
-	 * row, to avoid flicker from loading -> empty -> file if we
-	 * get files added quickly.
-	 */
-	data = g_new (struct ChangeDummyData, 1);
-	data->model = model;
-	data->directory = directory;
-	nautilus_directory_ref (directory);
-	eel_add_weak_pointer (&data->model);
-
-	g_timeout_add (LOADING_TO_EMPTY_DELAY, change_dummy_row_callback, data);
 }
