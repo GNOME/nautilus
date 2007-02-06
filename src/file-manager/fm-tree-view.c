@@ -1178,7 +1178,7 @@ fm_tree_view_delete_cb (GtkWidget *menu_item,
 		uri_list = NULL;
 		uri_list = g_list_prepend (uri_list, g_strdup (directory_uri));
 		
-		nautilus_file_operations_delete (uri_list, GTK_WIDGET (view));
+		nautilus_file_operations_delete (uri_list, GTK_WIDGET (view), NULL, NULL);
 		eel_g_list_free_deep (uri_list);
 	}
 	g_free (directory_uri);
@@ -1233,7 +1233,8 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 		if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
 			gnome_vfs_volume_eject (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
 		} else {
-			gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
+			nautilus_file_operations_unmount_volume (GTK_WIDGET (view), volume,
+					volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
 		}
 	}
 }
@@ -1729,4 +1730,3 @@ fm_tree_view_register (void)
 {
         nautilus_module_add_type (fm_tree_view_provider_get_type ());
 }
-

@@ -1276,9 +1276,11 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		gnome_vfs_volume_unmount (volume, volume_op_callback, sidebar);
+		nautilus_file_operations_unmount_volume (GTK_WIDGET (sidebar->tree_view),
+				volume, volume_op_callback, sidebar);
 	} else if (drive != NULL) {
-		gnome_vfs_drive_unmount (drive, volume_op_callback, sidebar);
+		nautilus_file_operations_unmount_drive (GTK_WIDGET (sidebar->tree_view),
+				drive, volume_op_callback, sidebar);
 	}
 	gnome_vfs_volume_unref (volume);
 	gnome_vfs_drive_unref (drive);

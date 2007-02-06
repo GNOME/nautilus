@@ -520,7 +520,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 			GList *delete_me;
 
 			delete_me = g_list_prepend (NULL, progress_info->target_name);
-			nautilus_file_operations_delete (delete_me, transfer_info->parent_view);
+			nautilus_file_operations_delete (delete_me, transfer_info->parent_view, NULL, NULL);
 			g_list_free (delete_me);
 		}
 
@@ -2754,7 +2754,9 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 
 void 
 nautilus_file_operations_delete (const GList *item_uris, 
-				 GtkWidget *parent_view)
+				 GtkWidget *parent_view,
+				 NautilusDeleteCallback done_callback, 
+				 gpointer done_callback_data)
 {
 	GList *uri_list;
 	const GList *p;
@@ -2812,6 +2814,10 @@ nautilus_file_operations_delete (const GList *item_uris,
 	transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 	transfer_info->kind = TRANSFER_DELETE;
 	
+	transfer_info->done_callback = done_callback;
+	transfer_info->done_callback_data = done_callback_data;
+	transfer_info->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
 	gnome_vfs_async_xfer (&transfer_info->handle, uri_list,  NULL,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
@@ -2940,6 +2946,228 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	 */
 	if (confirm_empty_trash (parent_view)) {
 		do_empty_trash (parent_view);
+	}
+}
+
+static gchar* 
+get_trash_uri_for_volume (GnomeVFSVolume *volume)
+{
+	gchar *uri;
+    
+	uri = NULL;
+	if (gnome_vfs_volume_handles_trash (volume)) {
+		GnomeVFSURI     *trash_uri;
+		GnomeVFSURI     *vol_uri;
+		gchar           *vol_uri_str;
+
+		vol_uri_str = gnome_vfs_volume_get_activation_uri (volume);
+		vol_uri = gnome_vfs_uri_new (vol_uri_str);
+		g_free (vol_uri_str);
+
+		if (gnome_vfs_find_directory (vol_uri, 
+					GNOME_VFS_DIRECTORY_KIND_TRASH,
+					&trash_uri, FALSE, TRUE, 0777) == GNOME_VFS_OK)	{
+			uri = gnome_vfs_uri_to_string (trash_uri, 0);
+			gnome_vfs_uri_unref (trash_uri);
+		}
+		gnome_vfs_uri_unref (vol_uri);
+	}
+	return uri;
+}
+
+typedef struct {
+    gpointer			               volume;
+    GnomeVFSVolumeOpCallback	   callback;
+    gpointer			               user_data;
+} NautilusUnmountCallback;
+
+static void 
+delete_callback (GHashTable *debuting_uris,
+                 gpointer    data)
+{
+	NautilusUnmountCallback 	*unmount_info;
+
+	unmount_info = data;
+	if (GNOME_IS_VFS_VOLUME (unmount_info->volume)) {
+		gnome_vfs_volume_unmount (unmount_info->volume, 
+		                          unmount_info->callback, 
+		                          unmount_info->user_data);
+		gnome_vfs_volume_unref (unmount_info->volume);
+	} else if (GNOME_IS_VFS_DRIVE (unmount_info->volume)) {
+		gnome_vfs_drive_unmount (unmount_info->volume, 
+		                         unmount_info->callback, 
+		                         unmount_info->user_data);
+		gnome_vfs_drive_unref (unmount_info->volume);
+	}
+	g_free (unmount_info);
+	g_hash_table_destroy (debuting_uris);
+}
+
+static gint
+prompt_empty_trash (GtkWidget *parent_view)
+{
+	gint                    result;
+	GtkWidget               *dialog;
+	GdkScreen               *screen;
+
+	screen = gtk_widget_get_screen (parent_view);
+
+	/* Do we need to be modal ? */
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+			GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
+			_("Do you want to empty the trash before you umount?"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						_("In order to regain the "
+						"free space on this device "
+						"the trash must be emptied. "
+						"All items in the trash "
+						"will be permanently lost. "));		
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
+	                        _("Don't Empty Trash"), GTK_RESPONSE_REJECT, 
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+	                        _("Empty Trash"), GTK_RESPONSE_ACCEPT, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
+	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
+	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
+	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
+		                                     "Nautilus");
+
+	/* Make transient for the window group */
+	gtk_widget_realize (dialog);
+	gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
+	gdk_screen_get_root_window (screen));
+
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	return result;
+}
+
+void 
+nautilus_file_operations_unmount_volume (GtkWidget *parent_view,
+		GnomeVFSVolume *volume, 
+		GnomeVFSVolumeOpCallback callback,
+		gpointer user_data)
+{
+	g_return_if_fail (parent_view != NULL);
+
+	gchar              *trash_uri_str;
+	gboolean           trash_is_empty;
+
+	trash_is_empty = TRUE;
+	trash_uri_str = get_trash_uri_for_volume (volume);
+	if (trash_uri_str) {
+		NautilusDirectory  *trash_dir;
+		trash_dir = nautilus_directory_get (trash_uri_str);	
+
+		/* Check if the trash on this volume is empty, 
+		* If the trash directory on this volume exists it's monitored 
+		* by the trash monitor so this should give accurate results. */
+		trash_is_empty = ! nautilus_directory_is_not_empty (trash_dir);
+	}
+
+	if (trash_is_empty) {
+		/* no trash so unmount as usual */
+		gnome_vfs_volume_unmount (volume, callback, user_data);
+	} else {
+		switch (prompt_empty_trash (parent_view)) {
+			case GTK_RESPONSE_ACCEPT:
+			{
+				GList                         *trash_dir_list;
+				NautilusUnmountCallback       *unmount_cb;
+
+				trash_dir_list = NULL;
+				unmount_cb = g_new (NautilusUnmountCallback, 1);
+				unmount_cb->volume = gnome_vfs_volume_ref (volume);
+				unmount_cb->callback = callback;
+				unmount_cb->user_data = user_data;
+				trash_dir_list = g_list_append (trash_dir_list, trash_uri_str);
+				nautilus_file_operations_delete (trash_dir_list, parent_view, 
+				                             (NautilusDeleteCallback) delete_callback,
+				                             unmount_cb);
+				g_list_free (trash_dir_list);
+				/* volume is unmounted in the callback */
+				break;
+			}
+			case GTK_RESPONSE_REJECT:
+				gnome_vfs_volume_unmount (volume, callback, user_data);
+				break;
+			default:
+				break;
+		}
+	}
+	g_free (trash_uri_str);
+}
+
+void 
+nautilus_file_operations_unmount_drive (GtkWidget *parent_view,
+		GnomeVFSDrive *drive, 
+		GnomeVFSVolumeOpCallback callback,
+		gpointer user_data)
+{
+	g_return_if_fail (parent_view != NULL);
+
+	GList                   *volumes;
+	GList                   *it;
+	GList                   *trash_dir_list;
+	GnomeVFSVolume          *volume;
+	gchar                   *trash_uri_str;
+	gboolean                trash_is_empty;
+
+	trash_dir_list = NULL;
+	trash_is_empty = TRUE;
+	volumes = gnome_vfs_drive_get_mounted_volumes (drive);
+	for (it = volumes; it != NULL; it = g_list_next (it)) {
+		volume = it->data;
+		trash_uri_str = get_trash_uri_for_volume (volume);
+		if (trash_uri_str) {
+			trash_dir_list = g_list_prepend (trash_dir_list, trash_uri_str);
+			/* Check if any of the volumes have trash on them.
+			* If the trash directories on the volumes exist they are monitored 
+			* by the trash monitor so this should give accurate results. */
+			if (trash_is_empty) {
+				NautilusDirectory          *trash_dir;
+				trash_dir = nautilus_directory_get (trash_uri_str);
+				trash_is_empty = ! nautilus_directory_is_not_empty (trash_dir);
+			}
+		}
+		gnome_vfs_volume_unref (volume);
+	}
+
+	if (trash_is_empty) {
+		/* no trash so unmount as usual */
+		gnome_vfs_drive_unmount (drive, callback, user_data);
+	} else {
+		switch (prompt_empty_trash (parent_view)) {
+			case GTK_RESPONSE_ACCEPT:
+			{				
+				NautilusUnmountCallback            *unmount_cb;
+				gchar                              *temp;
+
+				unmount_cb = g_new (NautilusUnmountCallback, 1);
+				unmount_cb->volume = gnome_vfs_drive_ref (drive);
+				unmount_cb->callback = callback;
+				unmount_cb->user_data = user_data;
+				trash_dir_list = g_list_reverse (trash_dir_list);
+				nautilus_file_operations_delete (trash_dir_list, parent_view, 
+				                            (NautilusDeleteCallback) delete_callback,
+				                            unmount_cb);
+
+				for (it = trash_dir_list; it != NULL; it = g_list_next (it)) {
+					temp = it->data;
+					g_free (temp);
+				}
+				g_list_free (trash_dir_list);
+				/* volume is unmounted in the callback */
+				break;
+			}
+			case GTK_RESPONSE_REJECT:
+				gnome_vfs_drive_unmount (drive, callback, user_data);
+				break;
+			default:
+				break;
+		}
 	}
 }
 

@@ -1047,7 +1047,7 @@ delete_selected_files (FMDirectoryView *view)
 
 	if (confirm_delete_directly (view, 
 				     file_uris)) {
-		nautilus_file_operations_delete (file_uris, GTK_WIDGET (view));
+		nautilus_file_operations_delete (file_uris, GTK_WIDGET (view), NULL, NULL);
 	}
 	
 	eel_g_list_free_deep (file_uris);
@@ -3943,12 +3943,13 @@ trash_or_delete_files_common (FMDirectoryView *view,
 
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
 		if (confirm_delete_from_trash (view, in_trash_uris)) {
-			nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
+			nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view), 
+								NULL, NULL);
 		}
 	} else {
 		if (no_confirm_uris != NULL) {
 			nautilus_file_operations_delete (no_confirm_uris,
-							 GTK_WIDGET (view));
+							 GTK_WIDGET (view), NULL, NULL);
 		}
 		if (moveable_uris != NULL) {
 			nautilus_file_operations_copy_move (moveable_uris, relative_item_points, 
@@ -3959,7 +3960,8 @@ trash_or_delete_files_common (FMDirectoryView *view,
 			if (fm_directory_view_confirm_deletion (view, 
 								unmoveable_uris,
 								moveable_uris == NULL)) {
-				nautilus_file_operations_delete (unmoveable_uris, GTK_WIDGET (view));
+				nautilus_file_operations_delete (unmoveable_uris, 
+								GTK_WIDGET (view), NULL, NULL);
 			}
 		}
 	}
@@ -6366,12 +6368,14 @@ action_unmount_volume_callback (GtkAction *action,
 		if (nautilus_file_has_volume (file)) {
 			volume = nautilus_file_get_volume (file);
 			if (volume != NULL) {
-				gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
+				nautilus_file_operations_unmount_volume (GTK_WIDGET (view), volume,
+						volume_or_drive_unmounted_callback, NULL);
 			}
 		} else if (nautilus_file_has_drive (file)) {
 			drive = nautilus_file_get_drive (file);
 			if (drive != NULL) {
-				gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+				nautilus_file_operations_unmount_drive (GTK_WIDGET (view), drive,
+						volume_or_drive_unmounted_callback, NULL);
 			}
 		}
 	}
@@ -6477,9 +6481,11 @@ action_self_unmount_volume_callback (GtkAction *action,
 	file_get_volume_and_drive (file, &volume, &drive);
 
 	if (volume != NULL) {
-		gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
+		nautilus_file_operations_unmount_volume (GTK_WIDGET (view), volume,
+				volume_or_drive_unmounted_callback, NULL);
 	} else if (drive != NULL) {
-		gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+		nautilus_file_operations_unmount_drive (GTK_WIDGET (view), drive,
+				volume_or_drive_unmounted_callback, NULL);
 	}
 
 	gnome_vfs_volume_unref (volume);
@@ -6752,7 +6758,8 @@ action_location_delete_callback (GtkAction *action,
 
 	files = g_list_append (NULL, file_uri);
 	if (confirm_delete_directly (view, files)) {
-		nautilus_file_operations_delete (files, GTK_WIDGET (view));
+		nautilus_file_operations_delete (files, GTK_WIDGET (view),
+							NULL, NULL);
 	}
 
 	g_free (file_uri);

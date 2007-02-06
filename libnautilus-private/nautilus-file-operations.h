@@ -30,6 +30,8 @@
 #include <gdk/gdkdnd.h>
 #include <gtk/gtkwidget.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
@@ -38,6 +40,8 @@ typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
 typedef void (* NautilusNewFileCallback)   (const char *new_file_uri,
 					    gpointer    callback_data);
 typedef void (* NautilusSetPermissionsCallback) (gpointer    callback_data);
+typedef void (* NautilusDeleteCallback)      (GHashTable *debuting_uris,
+					    gpointer    callback_data);
 
 /* FIXME: int copy_action should be an enum */
 
@@ -69,7 +73,9 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 						      gpointer                 data);
 
 void nautilus_file_operations_delete      (const GList               *item_uris,
-					   GtkWidget                 *parent_view);
+					   GtkWidget                 *parent_view,
+					   NautilusDeleteCallback done_callback,
+					   gpointer done_callback_data);
 
 void nautilus_file_set_permissions_recursive (const char                     *directory,
 					      GnomeVFSFilePermissions         file_permissions,
@@ -78,5 +84,15 @@ void nautilus_file_set_permissions_recursive (const char                     *di
 					      GnomeVFSFilePermissions         folder_mask,
 					      NautilusSetPermissionsCallback  callback,
 					      gpointer                        callback_data);
+
+void nautilus_file_operations_unmount_volume (GtkWidget                      *parent_view,
+								GnomeVFSVolume *volume,
+								GnomeVFSVolumeOpCallback callback,
+								gpointer user_data);
+								
+void nautilus_file_operations_unmount_drive (GtkWidget 						 *parent_view,
+								GnomeVFSDrive *drive, 
+								GnomeVFSVolumeOpCallback callback,
+								gpointer user_data);								
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */
