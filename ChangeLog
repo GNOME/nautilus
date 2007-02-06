@@ -1,5 +1,12 @@
 2007-02-06  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-thumbnails.c:
+        (nautilus_thumbnail_load_image):
+	Fix crash on broken images. (#403255)
+	Patch from Lucas Mazzardo Veloso
+
+2007-02-06  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-emblem-utils.c:
 	OSX build fix. (#403255)
 	Patch from dmacks@netspace.org

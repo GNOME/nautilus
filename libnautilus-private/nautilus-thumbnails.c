@@ -387,7 +387,9 @@ nautilus_thumbnail_load_image (const char *path,
 		return NULL;
 	}
 
-	if (!gdk_pixbuf_loader_close (loader, &error)) {
+	if (!gdk_pixbuf_loader_close (loader, &error) ||
+	    /* Seems we have to check this even if it returned TRUE (#403255) */
+	    error != NULL) {
 		g_message ("Failed to close thumbnail pixbuf loader for %s: %s", path, error->message);
 
 		g_object_unref (G_OBJECT (loader));
