@@ -4881,15 +4881,15 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uchar ("normal_alpha",
-								     _("Normal Alpha"),
-								     _("Opacity of the normal icons if frame_text is set"),
+								     "Normal Alpha",
+								     "Opacity of the normal icons if frame_text is set",
 								     0, 0xff,
 								     DEFAULT_NORMAL_ALPHA,
 								     G_PARAM_READABLE));
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_uchar ("prelight_alpha",
-								     _("Prelight Alpha"),
-								     _("Opacity of the prelight icons if frame_text is set"),
+								     "Prelight Alpha",
+								     "Opacity of the prelight icons if frame_text is set",
 								     0, 0xff,
 								     DEFAULT_PRELIGHT_ALPHA,
 								     G_PARAM_READABLE));
