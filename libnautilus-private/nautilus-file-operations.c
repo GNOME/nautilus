@@ -1303,11 +1303,11 @@ get_link_name (char *name, int count)
 			/* fall through */
 		case 1:
 			/* appended to new link file */
-			format = _("link to %s");
+			format = _("Link to %s");
 			break;
 		case 2:
 			/* appended to new link file */
-			format = _("another link to %s");
+			format = _("Another link to %s");
 			break;
 		}
 		unescaped_result = g_strdup_printf (format, unescaped_name);

@@ -9834,7 +9834,7 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 		}
 		
 		if (!eel_str_is_empty (link_name)) {
-			link_display_name = g_strdup_printf (_("link to %s"), link_name);
+			link_display_name = g_strdup_printf (_("Link to %s"), link_name);
 
 			/* The filename can't contain slashes, strip em.
 			   (the basename of http://foo/ is http://foo/) */

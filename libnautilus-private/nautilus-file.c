@@ -4806,7 +4806,7 @@ update_description_for_link (NautilusFile *file, const char *string)
 		 * (e.g. "folder", "plain text") to file type for symbolic link 
 		 * to that kind of file (e.g. "link to folder").
 		 */
-		return g_strdup_printf (_("link to %s"), string);
+		return g_strdup_printf (_("Link to %s"), string);
 	}
 
 	return g_strdup (string);
