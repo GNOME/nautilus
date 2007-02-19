@@ -347,6 +347,10 @@ LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
 
+# check for gsequence in glib
+PKG_CHECK_EXISTS([glib-2.0 >= 2.13.0],[have_glib_2_14=yes],[have_glib_2_14=no])
+AM_CONDITIONAL([HAVE_GLIB_2_14],[test "$have_glib_2_14" = "yes"])
+
 dnl libnautilus-extension
 LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
 LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"

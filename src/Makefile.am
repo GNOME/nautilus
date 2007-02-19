@@ -29,11 +29,14 @@ INCLUDES =							\
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-        $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la \
 	$(CORE_LIBS) \
 	$(EXIF_LIBS) \
 	$(POPT_LIBS) \
 	$(NULL)
+
+if !HAVE_GLIB_2_14
+LDADD += $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la
+endif
 
 @INTLTOOL_DESKTOP_RULE@
 

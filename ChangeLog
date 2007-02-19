@@ -1,3 +1,11 @@
+2007-02-19  Christian Persch  <chpe@svn.gnome.org>
+
+	* configure.in:
+	* cut-n-paste-code/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/fm-list-model.c: Don't build included GSequence on
+	glib >= 2.13.0. Bug #407618.
+
 2007-02-19  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-pathbar.c:
