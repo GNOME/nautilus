@@ -1064,25 +1064,19 @@ get_button_image (NautilusPathBar *path_bar,
 		      		return path_bar->home_icon;
 			}
 
-			if (!desktop_is_home) {
-				icon_name = get_icon_name_for_file_path (path_bar->home_path);
-				if (strcmp (icon_name, DEFAULT_ICON) == 0) {
-			        	path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_HOME_ICON,
+			icon_name = get_icon_name_for_file_path (path_bar->home_path);
+			if (strcmp (icon_name, DEFAULT_ICON) == 0) {
+				path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_HOME_ICON,
 											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
 											  TRUE, NULL);
-				} else {
-					path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (icon_name,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-				}
-
-				g_free (icon_name);
 			} else {
-				path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_DESKTOP_ICON,
-											     NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											     TRUE, NULL);
+				path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (icon_name,
+											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
+											  TRUE, NULL);
 			}
-                       	return path_bar->home_icon;
+
+			g_free (icon_name);
+			return path_bar->home_icon;
 
                 case DESKTOP_BUTTON:
                       	if (path_bar->desktop_icon != NULL) {
@@ -1123,7 +1117,7 @@ button_data_free (ButtonData *button_data)
 static const char *
 get_dir_name (ButtonData *button_data)
 {
-        if (button_data->type == DESKTOP_BUTTON || (button_data->type == HOME_BUTTON && desktop_is_home)) {
+	if (button_data->type == DESKTOP_BUTTON) {
 		return _("Desktop");
 	} else {
 		return button_data->dir_name;
