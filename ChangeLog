@@ -1,3 +1,15 @@
+2007-02-20  Christian Persch  <chpe@svn.gnome.org>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(set_text_unescaped_trimmed), (create_titled_label),
+	(nautilus_file_operations_progress_init),
+	(nautilus_file_operations_progress_new_file):
+	* src/file-manager/fm-properties-window.c:
+	(value_field_update_internal), (value_field_update),
+	(attach_label), (attach_value_field_internal): Remove
+	EllEllipsisingLabel use, and just use GtkLabel ellipsisation instead.
+	Bug #409276.
+
 2007-02-20  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:

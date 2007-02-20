@@ -27,7 +27,6 @@
 
 #include "fm-error-reporting.h"
 #include <eel/eel-accessibility.h>
-#include <eel/eel-ellipsizing-label.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -1340,45 +1339,34 @@ file_list_all_directories (GList *file_list)
 
 static void
 value_field_update_internal (GtkLabel *label, 
-			     GList *file_list, 
-			     gboolean ellipsize_text)
+			     GList *file_list)
 {
 	const char *attribute_name;
 	char *attribute_value;
 	char *inconsistent_string;
 
 	g_assert (GTK_IS_LABEL (label));
-	g_assert (!ellipsize_text || EEL_IS_ELLIPSIZING_LABEL (label));
 
 	attribute_name = g_object_get_data (G_OBJECT (label), "file_attribute");
 	inconsistent_string = g_object_get_data (G_OBJECT (label), "inconsistent_string");
 	attribute_value = file_list_get_string_attribute (file_list, 
 							  attribute_name,
 							  inconsistent_string);
-
-	if (ellipsize_text) {
-		eel_ellipsizing_label_set_text (EEL_ELLIPSIZING_LABEL (label), 
-						attribute_value);
-	} else {
-		gtk_label_set_text (label, attribute_value);
-	}
-	g_free (attribute_value);	
+	gtk_label_set_text (label, attribute_value);
+	g_free (attribute_value);
 }
 
 static void
 value_field_update (FMPropertiesWindow *window, GtkLabel *label)
 {
-	gboolean ellipsize_text;
-	gboolean use_original;	
+	gboolean use_original;
 
-	ellipsize_text = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "ellipsize_text"));
 	use_original = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "show_original"));
 
 	value_field_update_internal (label, 
 				     (use_original ?
 				      window->details->original_files : 
-				      window->details->target_files),
-				     ellipsize_text);
+				      window->details->target_files));
 }
 
 static GtkLabel *
@@ -1395,7 +1383,10 @@ attach_label (GtkTable *table,
 	GtkWidget *label_field;
 
 	if (ellipsize_text) {
-		label_field = eel_ellipsizing_label_new (initial_text);
+		label_field = gtk_label_new (initial_text);
+                gtk_label_set_ellipsize (GTK_LABEL (label_field),
+                                         right_aligned ? PANGO_ELLIPSIZE_START :
+                                                         PANGO_ELLIPSIZE_END);
 	} else if (mnemonic) {
 		label_field = gtk_label_new_with_mnemonic (initial_text);
 	} else {
@@ -1467,7 +1458,6 @@ attach_value_field_internal (FMPropertiesWindow *window,
 				g_strdup (inconsistent_string), g_free);
 
 	g_object_set_data (G_OBJECT (value_field), "show_original", GINT_TO_POINTER (show_original));
-	g_object_set_data (G_OBJECT (value_field), "ellipsize_text", GINT_TO_POINTER (ellipsize_text));
 
 	window->details->value_fields = g_list_prepend (window->details->value_fields,
 							value_field);
