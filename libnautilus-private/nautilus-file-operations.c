@@ -3050,10 +3050,10 @@ nautilus_file_operations_unmount_volume (GtkWidget *parent_view,
 		GnomeVFSVolumeOpCallback callback,
 		gpointer user_data)
 {
-	g_return_if_fail (parent_view != NULL);
-
 	gchar              *trash_uri_str;
 	gboolean           trash_is_empty;
+
+	g_return_if_fail (parent_view != NULL);
 
 	trash_is_empty = TRUE;
 	trash_uri_str = get_trash_uri_for_volume (volume);
@@ -3106,14 +3106,14 @@ nautilus_file_operations_unmount_drive (GtkWidget *parent_view,
 		GnomeVFSVolumeOpCallback callback,
 		gpointer user_data)
 {
-	g_return_if_fail (parent_view != NULL);
-
 	GList                   *volumes;
 	GList                   *it;
 	GList                   *trash_dir_list;
 	GnomeVFSVolume          *volume;
 	gchar                   *trash_uri_str;
 	gboolean                trash_is_empty;
+
+	g_return_if_fail (parent_view != NULL);
 
 	trash_dir_list = NULL;
 	trash_is_empty = TRUE;
