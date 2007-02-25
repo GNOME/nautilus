@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-07 22:17+0100\n"
-"PO-Revision-Date: 2007-02-07 22:23+0100\n"
+"POT-Creation-Date: 2007-02-25 17:23+0100\n"
+"PO-Revision-Date: 2007-02-25 17:36+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -1036,7 +1036,7 @@ msgid "Use De_fault"
 msgstr "_Utilitza el valor per defecte"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1374
+#: ../src/file-manager/fm-list-view.c:1375
 msgid "Name"
 msgstr "Nom"
 
@@ -1094,7 +1094,7 @@ msgid "The group of the file."
 msgstr "El grup del fitxer."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4166
+#: ../src/file-manager/fm-properties-window.c:4156
 msgid "Permissions"
 msgstr "Permisos"
 
@@ -1232,7 +1232,7 @@ msgstr "No s'ha pogut desar el distintiu personalitzat."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "No s'ha pogut desar el nom del distintiu personalitzat."
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:168
+#: ../libnautilus-private/nautilus-file-operations-progress.c:167
 #, c-format
 msgid "%s %ld of %ld %s"
 msgstr "%s %ld de %ld %s"
@@ -2116,7 +2116,7 @@ msgstr "tipus MIME desconegut"
 #. * for which we have no more appropriate default.
 #.
 #: ../libnautilus-private/nautilus-file.c:4732
-#: ../src/file-manager/fm-properties-window.c:1310
+#: ../src/file-manager/fm-properties-window.c:1309
 msgid "unknown"
 msgstr "desconegut"
 
@@ -2268,7 +2268,7 @@ msgid "Icon View"
 msgstr "Vista d'icones"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1427
+#: ../src/file-manager/fm-list-view.c:1432
 msgid "List View"
 msgstr "Vista de llista"
 
@@ -2656,7 +2656,7 @@ msgid "Delete all items in the Trash"
 msgstr "Suprimeix tots els elements de la paperera"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
-#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
+#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1121
 #: ../src/nautilus-places-sidebar.c:250
 msgid "Desktop"
 msgstr "Escriptori"
@@ -2719,7 +2719,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Si suprimiu un element, es perdrà definitivament."
 
 #: ../src/file-manager/fm-directory-view.c:1166
-#: ../src/file-manager/fm-properties-window.c:4391
+#: ../src/file-manager/fm-properties-window.c:4381
 #: ../src/nautilus-connect-server-dialog.c:393
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -3251,7 +3251,7 @@ msgstr "Crea un enllaç simbòlic per a cada element seleccionat"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6907
 msgid "_Rename..."
-msgstr "_Canvia el nom..."
+msgstr "Canvia el _nom..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6908
@@ -3897,123 +3897,123 @@ msgstr "S'ha produït un error en la vista d'icones mentre s'estava iniciant."
 msgid "Display this location with the icon view."
 msgstr "Mostra aquesta ubicació amb la vista d'icones."
 
-#: ../src/file-manager/fm-list-model.c:371
+#: ../src/file-manager/fm-list-model.c:376
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(Buit)"
 
-#: ../src/file-manager/fm-list-model.c:373
+#: ../src/file-manager/fm-list-model.c:378
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: ../src/file-manager/fm-list-view.c:1956
+#: ../src/file-manager/fm-list-view.c:1961
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnes visibles"
 
-#: ../src/file-manager/fm-list-view.c:1975
+#: ../src/file-manager/fm-list-view.c:1980
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 "Escolliu l'ordre en què ha d'aparèixer la informació a aquesta carpeta."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2017
+#: ../src/file-manager/fm-list-view.c:2022
 msgid "Visible _Columns..."
 msgstr "_Columnes visibles..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2018
+#: ../src/file-manager/fm-list-view.c:2023
 msgid "Select the columns visible in this folder"
 msgstr "Selecciona les columnes visibles d'aquesta carpeta"
 
-#: ../src/file-manager/fm-list-view.c:2741
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "List"
 msgstr "Llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2742
+#: ../src/file-manager/fm-list-view.c:2747
 msgid "View as List"
 msgstr "Visualitza com a llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2748
 msgid "View as _List"
 msgstr "Visualitza com a _llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2744
+#: ../src/file-manager/fm-list-view.c:2749
 msgid "The list view encountered an error."
 msgstr "S'ha produït un error en la vista de llista."
 
 #
-#: ../src/file-manager/fm-list-view.c:2745
+#: ../src/file-manager/fm-list-view.c:2750
 msgid "The list view encountered an error while starting up."
 msgstr "S'ha produït un error en la vista de llista mentre s'estava iniciant."
 
 #
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2751
 msgid "Display this location with the list view."
 msgstr "Mostra aquesta ubicació en la vista de llista."
 
-#: ../src/file-manager/fm-properties-window.c:505
+#: ../src/file-manager/fm-properties-window.c:504
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "No podeu assignar més d'una icona personalitzada alhora."
 
-#: ../src/file-manager/fm-properties-window.c:506
+#: ../src/file-manager/fm-properties-window.c:505
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Arrossegueu una sola imatge per a definir una icona personalitzada."
 
-#: ../src/file-manager/fm-properties-window.c:514
+#: ../src/file-manager/fm-properties-window.c:513
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "El fitxer que heu deixat anar no és local."
 
-#: ../src/file-manager/fm-properties-window.c:515
-#: ../src/file-manager/fm-properties-window.c:521
+#: ../src/file-manager/fm-properties-window.c:514
+#: ../src/file-manager/fm-properties-window.c:520
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Només podeu utilitzar imatges locals com a icones personalitzades."
 
-#: ../src/file-manager/fm-properties-window.c:520
+#: ../src/file-manager/fm-properties-window.c:519
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "El fitxer que heu deixat anar no és una imatge."
 
-#: ../src/file-manager/fm-properties-window.c:1015
+#: ../src/file-manager/fm-properties-window.c:1014
 msgid "Properties"
 msgstr "Propietats"
 
-#: ../src/file-manager/fm-properties-window.c:1023
+#: ../src/file-manager/fm-properties-window.c:1022
 #, c-format
 msgid "%s Properties"
 msgstr "Propietats de %s"
 
-#: ../src/file-manager/fm-properties-window.c:1575
+#: ../src/file-manager/fm-properties-window.c:1565
 msgid "Cancel Group Change?"
 msgstr "Voleu cancel·lar el canvi de grup?"
 
-#: ../src/file-manager/fm-properties-window.c:1992
+#: ../src/file-manager/fm-properties-window.c:1982
 msgid "Cancel Owner Change?"
 msgstr "Voleu cancel·lar el canvi de propietari?"
 
-#: ../src/file-manager/fm-properties-window.c:2287
+#: ../src/file-manager/fm-properties-window.c:2277
 msgid "nothing"
 msgstr "res"
 
-#: ../src/file-manager/fm-properties-window.c:2289
+#: ../src/file-manager/fm-properties-window.c:2279
 msgid "unreadable"
 msgstr "il·legible"
 
-#: ../src/file-manager/fm-properties-window.c:2299
+#: ../src/file-manager/fm-properties-window.c:2289
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d element, amb mida %s"
 msgstr[1] "%d elements, amb una mida total de %s"
 
-#: ../src/file-manager/fm-properties-window.c:2308
+#: ../src/file-manager/fm-properties-window.c:2298
 msgid "(some contents unreadable)"
 msgstr "(part del contingut és il·legible)"
 
@@ -4023,263 +4023,263 @@ msgstr "(part del contingut és il·legible)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2325
+#: ../src/file-manager/fm-properties-window.c:2315
 msgid "Contents:"
 msgstr "Contingut:"
 
-#: ../src/file-manager/fm-properties-window.c:2643
+#: ../src/file-manager/fm-properties-window.c:2633
 msgid "Basic"
 msgstr "Bàsic"
 
 #
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2673
+#: ../src/file-manager/fm-properties-window.c:2663
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nom:"
 msgstr[1] "_Noms:"
 
-#: ../src/file-manager/fm-properties-window.c:2692
+#: ../src/file-manager/fm-properties-window.c:2682
 msgid "Type:"
 msgstr "Tipus:"
 
+#: ../src/file-manager/fm-properties-window.c:2684
 #: ../src/file-manager/fm-properties-window.c:2694
-#: ../src/file-manager/fm-properties-window.c:2704
-#: ../src/file-manager/fm-properties-window.c:2710
-#: ../src/file-manager/fm-properties-window.c:2717
-#: ../src/file-manager/fm-properties-window.c:2721
-#: ../src/file-manager/fm-properties-window.c:2729
-#: ../src/file-manager/fm-properties-window.c:2735
-#: ../src/file-manager/fm-properties-window.c:2744
-#: ../src/file-manager/fm-properties-window.c:2750
-#: ../src/file-manager/fm-properties-window.c:3770
-#: ../src/file-manager/fm-properties-window.c:3803
-#: ../src/file-manager/fm-properties-window.c:3976
-#: ../src/file-manager/fm-properties-window.c:3998
-#: ../src/file-manager/fm-properties-window.c:4033
-#: ../src/file-manager/fm-properties-window.c:4203
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2707
+#: ../src/file-manager/fm-properties-window.c:2711
+#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2734
+#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:3760
+#: ../src/file-manager/fm-properties-window.c:3793
+#: ../src/file-manager/fm-properties-window.c:3966
+#: ../src/file-manager/fm-properties-window.c:3988
+#: ../src/file-manager/fm-properties-window.c:4023
+#: ../src/file-manager/fm-properties-window.c:4193
+#: ../src/file-manager/fm-properties-window.c:4197
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2702
+#: ../src/file-manager/fm-properties-window.c:2692
 msgid "Size:"
 msgstr "Mida:"
 
-#: ../src/file-manager/fm-properties-window.c:2708
+#: ../src/file-manager/fm-properties-window.c:2698
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Ubicació:"
 
-#: ../src/file-manager/fm-properties-window.c:2715
+#: ../src/file-manager/fm-properties-window.c:2705
 msgid "Volume:"
 msgstr "Volum:"
 
-#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2709
 msgid "Free space:"
 msgstr "Espai lliure:"
 
-#: ../src/file-manager/fm-properties-window.c:2727
+#: ../src/file-manager/fm-properties-window.c:2717
 msgid "Link target:"
 msgstr "Destí de l'enllaç:"
 
-#: ../src/file-manager/fm-properties-window.c:2733
+#: ../src/file-manager/fm-properties-window.c:2723
 msgid "MIME type:"
 msgstr "Tipus MIME:"
 
-#: ../src/file-manager/fm-properties-window.c:2742
+#: ../src/file-manager/fm-properties-window.c:2732
 msgid "Modified:"
 msgstr "Modificat:"
 
-#: ../src/file-manager/fm-properties-window.c:2748
+#: ../src/file-manager/fm-properties-window.c:2738
 msgid "Accessed:"
 msgstr "Accedit:"
 
-#: ../src/file-manager/fm-properties-window.c:2851
+#: ../src/file-manager/fm-properties-window.c:2841
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Distintius"
 
-#: ../src/file-manager/fm-properties-window.c:3249
+#: ../src/file-manager/fm-properties-window.c:3239
 msgid "_Read"
 msgstr "_Lectura"
 
-#: ../src/file-manager/fm-properties-window.c:3251
+#: ../src/file-manager/fm-properties-window.c:3241
 msgid "_Write"
 msgstr "_Escriptura"
 
-#: ../src/file-manager/fm-properties-window.c:3253
+#: ../src/file-manager/fm-properties-window.c:3243
 msgid "E_xecute"
 msgstr "E_xecució"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3503
-#: ../src/file-manager/fm-properties-window.c:3514
-#: ../src/file-manager/fm-properties-window.c:3526
+#: ../src/file-manager/fm-properties-window.c:3493
+#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3516
 msgid "no "
 msgstr "no "
 
-#: ../src/file-manager/fm-properties-window.c:3506
+#: ../src/file-manager/fm-properties-window.c:3496
 msgid "list"
 msgstr "llista"
 
-#: ../src/file-manager/fm-properties-window.c:3508
+#: ../src/file-manager/fm-properties-window.c:3498
 msgid "read"
 msgstr "lectura"
 
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3507
 msgid "create/delete"
 msgstr "crear/suprimir"
 
-#: ../src/file-manager/fm-properties-window.c:3519
+#: ../src/file-manager/fm-properties-window.c:3509
 msgid "write"
 msgstr "escriptura"
 
 #
-#: ../src/file-manager/fm-properties-window.c:3528
+#: ../src/file-manager/fm-properties-window.c:3518
 msgid "access"
 msgstr "accés"
 
-#: ../src/file-manager/fm-properties-window.c:3577
+#: ../src/file-manager/fm-properties-window.c:3567
 msgid "Access:"
 msgstr "Accés:"
 
-#: ../src/file-manager/fm-properties-window.c:3579
+#: ../src/file-manager/fm-properties-window.c:3569
 msgid "Folder Access:"
 msgstr "Accés al directori:"
 
-#: ../src/file-manager/fm-properties-window.c:3581
+#: ../src/file-manager/fm-properties-window.c:3571
 msgid "File Access:"
 msgstr "Accés al fitxer:"
 
-#: ../src/file-manager/fm-properties-window.c:3593
-#: ../src/file-manager/fm-properties-window.c:3604
+#: ../src/file-manager/fm-properties-window.c:3583
+#: ../src/file-manager/fm-properties-window.c:3594
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Cap"
 
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
 msgstr "Només llistar fitxers"
 
-#: ../src/file-manager/fm-properties-window.c:3598
+#: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
 msgstr "Fitxers d'accés"
 
-#: ../src/file-manager/fm-properties-window.c:3600
+#: ../src/file-manager/fm-properties-window.c:3590
 msgid "Create and delete files"
 msgstr "Crear i suprimir fitxers"
 
-#: ../src/file-manager/fm-properties-window.c:3607
+#: ../src/file-manager/fm-properties-window.c:3597
 msgid "Read-only"
 msgstr "Només-lectura"
 
-#: ../src/file-manager/fm-properties-window.c:3609
+#: ../src/file-manager/fm-properties-window.c:3599
 msgid "Read and write"
 msgstr "Lectura i escriptura"
 
-#: ../src/file-manager/fm-properties-window.c:3674
+#: ../src/file-manager/fm-properties-window.c:3664
 msgid "Set _user ID"
 msgstr "Defineix l'ID d'_usuari"
 
-#: ../src/file-manager/fm-properties-window.c:3676
+#: ../src/file-manager/fm-properties-window.c:3666
 msgid "Special flags:"
 msgstr "Senyaladors especials:"
 
-#: ../src/file-manager/fm-properties-window.c:3678
+#: ../src/file-manager/fm-properties-window.c:3668
 msgid "Set gro_up ID"
 msgstr "Defineix l'ID del gr_up"
 
-#: ../src/file-manager/fm-properties-window.c:3679
+#: ../src/file-manager/fm-properties-window.c:3669
 msgid "_Sticky"
 msgstr "En_ganxós"
 
-#: ../src/file-manager/fm-properties-window.c:3759
-#: ../src/file-manager/fm-properties-window.c:3963
+#: ../src/file-manager/fm-properties-window.c:3749
+#: ../src/file-manager/fm-properties-window.c:3953
 msgid "_Owner:"
 msgstr "_Propietari:"
 
-#: ../src/file-manager/fm-properties-window.c:3765
-#: ../src/file-manager/fm-properties-window.c:3860
-#: ../src/file-manager/fm-properties-window.c:3971
+#: ../src/file-manager/fm-properties-window.c:3755
+#: ../src/file-manager/fm-properties-window.c:3850
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "Owner:"
 msgstr "Propietari:"
 
-#: ../src/file-manager/fm-properties-window.c:3788
-#: ../src/file-manager/fm-properties-window.c:3983
+#: ../src/file-manager/fm-properties-window.c:3778
+#: ../src/file-manager/fm-properties-window.c:3973
 msgid "_Group:"
 msgstr "_Grup:"
 
-#: ../src/file-manager/fm-properties-window.c:3797
-#: ../src/file-manager/fm-properties-window.c:3861
-#: ../src/file-manager/fm-properties-window.c:3992
+#: ../src/file-manager/fm-properties-window.c:3787
+#: ../src/file-manager/fm-properties-window.c:3851
+#: ../src/file-manager/fm-properties-window.c:3982
 msgid "Group:"
 msgstr "Grup:"
 
-#: ../src/file-manager/fm-properties-window.c:3822
+#: ../src/file-manager/fm-properties-window.c:3812
 msgid "Others"
 msgstr "Altres"
 
-#: ../src/file-manager/fm-properties-window.c:3839
+#: ../src/file-manager/fm-properties-window.c:3829
 msgid "Execute:"
 msgstr "Execució:"
 
-#: ../src/file-manager/fm-properties-window.c:3843
+#: ../src/file-manager/fm-properties-window.c:3833
 msgid "Allow _executing file as program"
-msgstr "Permet _executar fitxers com a programes"
+msgstr "Permet _executar aquest fitxer com a un programa"
 
-#: ../src/file-manager/fm-properties-window.c:3862
+#: ../src/file-manager/fm-properties-window.c:3852
 msgid "Others:"
 msgstr "Altres:"
 
-#: ../src/file-manager/fm-properties-window.c:4010
+#: ../src/file-manager/fm-properties-window.c:4000
 msgid "Folder Permissions:"
 msgstr "Permisos del directori:"
 
-#: ../src/file-manager/fm-properties-window.c:4022
+#: ../src/file-manager/fm-properties-window.c:4012
 msgid "File Permissions:"
 msgstr "Permisos del fitxer:"
 
-#: ../src/file-manager/fm-properties-window.c:4032
+#: ../src/file-manager/fm-properties-window.c:4022
 msgid "Text view:"
 msgstr "Vista de text:"
 
-#: ../src/file-manager/fm-properties-window.c:4179
+#: ../src/file-manager/fm-properties-window.c:4169
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "No en sou el propietari, i per tant no podeu canviar aquests permisos."
 
-#: ../src/file-manager/fm-properties-window.c:4202
+#: ../src/file-manager/fm-properties-window.c:4192
 msgid "SELinux Context:"
 msgstr "Context del SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:4206
+#: ../src/file-manager/fm-properties-window.c:4196
 msgid "Last changed:"
 msgstr "Darrer canvi:"
 
-#: ../src/file-manager/fm-properties-window.c:4220
+#: ../src/file-manager/fm-properties-window.c:4210
 msgid "Apply permissions to enclosed files"
 msgstr "Aplica els permisos als fitxers inclosos"
 
-#: ../src/file-manager/fm-properties-window.c:4230
+#: ../src/file-manager/fm-properties-window.c:4220
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "No s'han pogut determinar els permisos de «%s»."
 
-#: ../src/file-manager/fm-properties-window.c:4233
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "The permissions of the selected file could not be determined."
 msgstr "No s'han pogut determinar els permisos del fitxer seleccionat."
 
-#: ../src/file-manager/fm-properties-window.c:4453
+#: ../src/file-manager/fm-properties-window.c:4443
 msgid "Open With"
 msgstr "Obre amb"
 
-#: ../src/file-manager/fm-properties-window.c:4793
+#: ../src/file-manager/fm-properties-window.c:4783
 msgid "Creating Properties window."
 msgstr "S'està creant la finestra de propietats."
 
-#: ../src/file-manager/fm-properties-window.c:5033
+#: ../src/file-manager/fm-properties-window.c:5023
 msgid "Select Custom Icon"
 msgstr "_Selecciona una icona personalitzada"
 
@@ -4843,7 +4843,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
-msgstr "Compta el _nombre d'elements:"
+msgstr "_Compta el nombre d'elements:"
 
 #: ../src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
@@ -4879,7 +4879,7 @@ msgstr "Previsualització"
 
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview _sound files:"
-msgstr "Previsualitza els fitxers de _so:"
+msgstr "_Previsualitza els fitxers de so:"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Show _only folders"
@@ -4887,7 +4887,7 @@ msgstr "M_ostra només les carpetes"
 
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _thumbnails:"
-msgstr "Mostra les _miniatures:"
+msgstr "_Mostra les miniatures:"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show hidden and _backup files"
@@ -4895,7 +4895,7 @@ msgstr "Mostra els fitxers ocults i de _còpia de seguretat"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show te_xt in icons:"
-msgstr "Mostra te_xt en les icones:"
+msgstr "Mostra text en les _icones:"
 
 #: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Sort _folders before files"
@@ -4940,7 +4940,7 @@ msgstr "Només un _clic per a activar els elements"
 
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Text beside icons"
-msgstr "_Text al costat de les icones"
+msgstr "Te_xt al costat de les icones"
 
 #: ../src/nautilus-file-management-properties.glade.h:71
 msgid "_Use compact layout"
@@ -5952,7 +5952,7 @@ msgstr "Obre la carpeta pare"
 #. name, stock id
 #: ../src/nautilus-window-menus.c:612
 msgid "_Stop"
-msgstr "A_tura"
+msgstr "At_ura"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:616
