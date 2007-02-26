@@ -115,7 +115,7 @@ typedef struct {
 	gboolean use_slow_mime;
 } Operation;
 
-typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
+typedef void (* ModifyListFunction) (GList **list, NautilusFile *file);
 
 enum {
 	CHANGED,
@@ -253,18 +253,16 @@ static void
 modify_link_hash_table (NautilusFile *file,
 			ModifyListFunction modify_function)
 {
-	const char *symlink_name;
+	char *target_uri;
 	gboolean found;
 	gpointer original_key;
-	gpointer original_value;
-	GList *list;
+	GList **list_ptr;
 
 	/* Check if there is a symlink name. If none, we are OK. */
 	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)) {
 		return;
 	}
-	symlink_name = file->details->info->symlink_name;
-	if (symlink_name == NULL) {
+	if (file->details->info->symlink_name == NULL) {
 		return;
 	}
 
@@ -274,28 +272,44 @@ modify_link_hash_table (NautilusFile *file,
 			(g_str_hash, g_str_equal, "nautilus-file.c: symbolic_links");
 	}
 
+	target_uri = nautilus_file_get_symbolic_link_target_uri (file);
+	
 	/* Find the old contents of the hash table. */
 	found = g_hash_table_lookup_extended
-		(symbolic_links, symlink_name,
-		 &original_key, &original_value);
+		(symbolic_links, target_uri,
+		 &original_key, (gpointer *)&list_ptr);
 	if (!found) {
-		list = NULL;
-	} else {
-		g_hash_table_remove (symbolic_links, symlink_name);
-		g_free (original_key);
-		list = original_value;
+		list_ptr = g_new0 (GList *, 1);
+		g_hash_table_insert (symbolic_links, g_strdup (target_uri), list_ptr);
 	}
-	list = (* modify_function) (list, file);
-	if (list != NULL) {
-		g_hash_table_insert (symbolic_links, g_strdup (symlink_name), list);
+	(* modify_function) (list_ptr, file);
+	if (*list_ptr == NULL) {
+		g_hash_table_remove (symbolic_links, target_uri);
+		g_free (list_ptr);
 	}
+	g_free (target_uri);
 }
 
-static GList *
-add_to_link_hash_table_list (GList *list, NautilusFile *file)
+static void
+symbolic_link_weak_notify (gpointer      data,
+			   GObject      *where_the_object_was)
 {
-	g_assert (g_list_find (list, file) == NULL);
-	return g_list_prepend (list, file);
+	GList **list = data;
+	/* This really shouldn't happen, but we're seeing some strange things in
+	   bug #358172 where the symlink hashtable isn't correctly updated. */
+	*list = g_list_remove (*list, where_the_object_was);
+}
+
+static void
+add_to_link_hash_table_list (GList **list, NautilusFile *file)
+{
+	if (g_list_find (*list, file) != NULL) {
+		g_warning ("Adding file to symlink_table multiple times. "
+			   "Please add feedback of what you were doing at http://bugzilla.gnome.org/show_bug.cgi?id=358172\n");
+		return;
+	}
+	g_object_weak_ref (G_OBJECT (file), symbolic_link_weak_notify, list);
+	*list = g_list_prepend (*list, file); 
 }
 
 static void
@@ -304,11 +318,13 @@ add_to_link_hash_table (NautilusFile *file)
 	modify_link_hash_table (file, add_to_link_hash_table_list);
 }
 
-static GList *
-remove_from_link_hash_table_list (GList *list, NautilusFile *file)
+static void
+remove_from_link_hash_table_list (GList **list, NautilusFile *file)
 {
-	g_assert (g_list_find (list, file) != NULL);
-	return g_list_remove (list, file);
+	if (g_list_find (*list, file) != NULL) {
+		g_object_weak_unref (G_OBJECT (file), symbolic_link_weak_notify, list);
+		*list = g_list_remove (*list, file);
+	}
 }
 
 static void
@@ -1351,7 +1367,7 @@ static GList *
 get_link_files (NautilusFile *target_file)
 {
 	char *uri;
-	GList *link_files;
+	GList **link_files;
 	
 	if (symbolic_links == NULL) {
 		link_files = NULL;
@@ -1360,7 +1376,10 @@ get_link_files (NautilusFile *target_file)
 		link_files = g_hash_table_lookup (symbolic_links, uri);
 		g_free (uri);
 	}
-	return nautilus_file_list_copy (link_files);
+	if (link_files) {
+		return nautilus_file_list_copy (*link_files);
+	}
+	return NULL;
 }
 
 static void
