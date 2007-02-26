@@ -1,5 +1,4 @@
 NULL=
 
 SUBDIRS =\
-	gimphwrapbox \
 	$(NULL)

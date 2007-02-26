@@ -1,5 +1,17 @@
 2007-02-26  Alexander Larsson  <alexl@redhat.com>
 
+        * cut-n-paste-code/widgets/Makefile.am:
+        * cut-n-paste-code/widgets/gimphwrapbox/Makefile.am: Removed.
+        * cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.c: Removed.
+        * cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h: Removed.
+        * cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.c: Removed.
+        * cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h: Removed.
+        * libnautilus-private/Makefile.am:
+        * src/Makefile.am:
+	Remove unused gtkhwrapbox.
+
+2007-02-26  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-connect-server-dialog.c:
 	Don't show unsupported methods. (#333151)
 	Patch from Christian Neumair.

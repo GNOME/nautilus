@@ -10,7 +10,6 @@ bin_PROGRAMS=					\
 
 INCLUDES =							\
 	-I$(top_srcdir) 					\
-	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox 	\
 	-I$(top_srcdir)/cut-n-paste-code			\
 	-I$(top_builddir)/libnautilus-private 			\
 	$(CORE_CFLAGS) 						\
