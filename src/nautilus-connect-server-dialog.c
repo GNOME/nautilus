@@ -29,13 +29,18 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnomeui/gnome-help.h>
+#include <libgnomevfs/gnome-vfs-method.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <glib/gi18n.h>
+#include <gtk/gtkcelllayout.h>
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtktreemodel.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkliststore.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkcombobox.h>
 #include "nautilus-location-entry.h"
@@ -174,9 +179,12 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	char *name;
 	char *icon;
 	int index;
+	GtkTreeIter iter;
 	
 	/* Get our method info */
-	index = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo), &iter);
+	gtk_tree_model_get (gtk_combo_box_get_model (GTK_COMBO_BOX (dialog->details->type_combo)),
+			    &iter, 0, &index, -1);
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
@@ -419,9 +427,12 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 	struct MethodInfo *meth;
 	int index, i;
 	GtkWidget *label, *table;
-
+	GtkTreeIter iter;
+	
 	/* Get our method info */
-	index = gtk_combo_box_get_active (GTK_COMBO_BOX (dialog->details->type_combo));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (dialog->details->type_combo), &iter);
+	gtk_tree_model_get (gtk_combo_box_get_model (GTK_COMBO_BOX (dialog->details->type_combo)),
+			    &iter, 0, &index, -1);
 	g_assert (index < G_N_ELEMENTS (methods) && index >= 0);
 	meth = &(methods[index]);
 
@@ -798,6 +809,8 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	GtkWidget *combo;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
 	int i;
 	
 	dialog->details = g_new0 (NautilusConnectServerDialogDetails, 1);
@@ -825,13 +838,40 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    label, FALSE, FALSE, 0);
 
-	dialog->details->type_combo = combo = gtk_combo_box_new_text ();
-	
+	dialog->details->type_combo = combo = gtk_combo_box_new ();
+
+	/* each row contains: method index, textual description */
+	store = gtk_list_store_new (2, G_TYPE_INT, G_TYPE_STRING);
+	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (store));
+	g_object_unref (G_OBJECT (store));
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), renderer, TRUE);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo), renderer, "text", 1);
+
 	for (i = 0; i < G_N_ELEMENTS (methods); i++) {
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), get_method_description (&(methods[i])));
-		if (methods[i].flags & DEFAULT_METHOD) {
-			gtk_combo_box_set_active (GTK_COMBO_BOX (combo), i);
+		GtkTreeIter iter;
+
+		if (methods[i].method != NULL && gnome_vfs_method_get (methods[i].method) == NULL) {
+			/* skip methods that don't have corresponding GnomeVFSMethods */
+			continue;
 		}
+
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    0, i,
+				    1, get_method_description (&(methods[i])),
+				    -1);
+
+
+		if (methods[i].flags & DEFAULT_METHOD) {
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (combo), &iter);
+		}
+	}
+
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo)) < 0) {
+		/* default method not available, use any other */
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	}
 
 	gtk_widget_show (combo);
