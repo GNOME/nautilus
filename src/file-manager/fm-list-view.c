@@ -1360,7 +1360,6 @@ create_and_set_up_tree_view (FMListView *view)
 			view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
-                        gtk_tree_view_column_set_expand (view->details->file_name_column, TRUE);
 			g_object_ref (view->details->file_name_column);
 			gtk_object_sink (GTK_OBJECT (view->details->file_name_column));
 			view->details->file_name_column_num = column_num;
@@ -1385,7 +1384,7 @@ create_and_set_up_tree_view (FMListView *view)
 			cell = gtk_cell_renderer_text_new ();
                         g_object_set (cell,
                                       "ellipsize", PANGO_ELLIPSIZE_END,
-                                      "ellipsize-set", TRUE,
+                                      "width-chars", 16,
                                       NULL);
 			view->details->file_name_cell = (GtkCellRendererText *)cell;
 			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
