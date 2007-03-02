@@ -144,7 +144,7 @@ static void
 exif_content_callback (ExifContent *content, gpointer data)
 {
 	struct ExifAttribute *attribute;
-#if !HAVE_OLD_EXIF
+#ifndef HAVE_OLD_EXIF
 	char b[1024];
 #endif
 

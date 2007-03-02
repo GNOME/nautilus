@@ -358,7 +358,7 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 		 GtkTreePath *path)
 {
 	char *drop_target;
-	guint action;
+	int action;
 	
 	if (!dest->details->have_drag_data ||
 	    (dest->details->drag_type == NAUTILUS_ICON_DND_GNOME_ICON_LIST &&

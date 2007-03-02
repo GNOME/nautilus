@@ -89,7 +89,7 @@ nautilus_search_bar_class_init (NautilusSearchBarClass *class)
 	signals[CANCEL] =
 		g_signal_new ("cancel",
 			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 			      G_STRUCT_OFFSET (NautilusSearchBarClass, cancel),
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,

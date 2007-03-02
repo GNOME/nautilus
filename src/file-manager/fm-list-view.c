@@ -2508,11 +2508,9 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_LIST_VIEW (directory_view));
 
-#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME: This needs to update the emblems of the icons, since
 	 * relative emblems may have changed.
 	 */
-#endif
 }
 
 static char *

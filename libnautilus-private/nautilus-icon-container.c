@@ -6451,7 +6451,7 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	int initial_size;
+	guint initial_size;
 	
 	icon = get_first_selected_icon (container);
 	if (icon == NULL) {

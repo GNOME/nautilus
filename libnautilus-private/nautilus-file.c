@@ -1882,7 +1882,7 @@ prepend_automatic_emblem_names (NautilusFile *file,
 {
 	/* Prepend in reverse order. */
 
-#if TRASH_IS_FAST_ENOUGH
+#ifdef TRASH_IS_FAST_ENOUGH
 	if (nautilus_file_is_in_trash (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));

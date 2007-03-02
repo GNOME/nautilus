@@ -72,7 +72,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 	signals[CANCEL] = g_signal_new
 		("cancel",
 		 G_TYPE_FROM_CLASS (object_class),
-		 G_SIGNAL_RUN_LAST | GTK_RUN_ACTION,
+		 G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    cancel),
 		 NULL, NULL,

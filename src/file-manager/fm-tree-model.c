@@ -124,7 +124,7 @@ static void destroy_node_without_reporting (FMTreeModel *model,
 static void report_node_contents_changed   (FMTreeModel *model,
 					    TreeNode          *node);
 
-static guint
+static GtkTreeModelFlags 
 fm_tree_model_get_flags (GtkTreeModel *tree_model)
 {
 	return GTK_TREE_MODEL_ITERS_PERSIST;
@@ -489,7 +489,7 @@ create_node_for_file (FMTreeModelRoot *root, NautilusFile *file)
 	return node;
 }
 
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 
 static char *
 get_node_uri (GtkTreeIter *iter)
@@ -525,7 +525,7 @@ abandon_node_ref_count (FMTreeModel *model, TreeNode *node)
 {
 	if (node->parent != NULL) {
 		decrement_ref_count (model, node->parent, node->ref_count);
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 		if (node->ref_count != 0) {
 			char *uri;
 
@@ -544,7 +544,7 @@ abandon_dummy_row_ref_count (FMTreeModel *model, TreeNode *node)
 {
 	decrement_ref_count (model, node, node->dummy_child_ref_count);
 	if (node->dummy_child_ref_count != 0) {
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 		char *uri;
 
 		uri = nautilus_file_get_uri (node->file);
@@ -1475,7 +1475,7 @@ static void
 fm_tree_model_ref_node (GtkTreeModel *model, GtkTreeIter *iter)
 {
 	TreeNode *node, *parent;
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 	char *uri;
 #endif
 
@@ -1501,7 +1501,7 @@ fm_tree_model_ref_node (GtkTreeModel *model, GtkTreeIter *iter)
 			}
 			schedule_monitoring_update (FM_TREE_MODEL (model));
 		}
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 		uri = get_node_uri (iter);
 		g_message ("ref of %s, count is now %d",
 			   uri, parent->all_children_ref_count);
@@ -1514,7 +1514,7 @@ static void
 fm_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 {
 	TreeNode *node, *parent;
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 	char *uri;
 #endif
 
@@ -1534,7 +1534,7 @@ fm_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 
 	if (parent != NULL) {
 		g_assert (parent->all_children_ref_count > 0);
-#if LOG_REF_COUNTS
+#ifdef LOG_REF_COUNTS
 		uri = get_node_uri (iter);
 		g_message ("unref of %s, count is now %d",
 			   uri, parent->all_children_ref_count - 1);

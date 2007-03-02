@@ -1,5 +1,25 @@
 2007-03-02  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-trash-file.c:
+        * libnautilus-private/nautilus-tree-view-drag-dest.c:
+        * src/file-manager/fm-desktop-icon-view.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-list-model.c:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/nautilus-image-properties-page.c:
+        * src/nautilus-navigation-bar.c:
+        * src/nautilus-query-editor.c:
+        * src/nautilus-search-bar.c:
+        * src/nautilus-window-private.h:
+	Sparse cleanups from kjartan
+
+2007-03-02  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c (create_and_set_up_tree_view):
 	Don't make filename column expand, instead default
 	to 16 chars wide. (#408155)

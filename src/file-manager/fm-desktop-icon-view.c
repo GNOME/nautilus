@@ -396,7 +396,7 @@ realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 	net_workarea_changed (desktop_icon_view, root_window);
 
 	/* Setup the property filter */
-	gdk_window_set_events (root_window, GDK_PROPERTY_NOTIFY);
+	gdk_window_set_events (root_window, GDK_PROPERTY_CHANGE_MASK);
 	gdk_window_add_filter (root_window,
 			       desktop_icon_view_property_filter,
 			       desktop_icon_view);

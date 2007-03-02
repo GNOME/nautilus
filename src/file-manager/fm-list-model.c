@@ -120,7 +120,7 @@ file_entry_free (FileEntry *file_entry)
 	g_free (file_entry);
 }
 
-static guint
+static GtkTreeModelFlags
 fm_list_model_get_flags (GtkTreeModel *tree_model)
 {
 	return GTK_TREE_MODEL_ITERS_PERSIST;

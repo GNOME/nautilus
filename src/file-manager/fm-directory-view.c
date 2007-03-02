@@ -791,7 +791,7 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	}
 }				      
 
-#if NEW_MIME_COMPLETE
+#ifdef NEW_MIME_COMPLETE
 static void
 fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *application, 
 					      gpointer callback_data)

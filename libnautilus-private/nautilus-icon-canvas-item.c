@@ -938,8 +938,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
-	guint editable_height, editable_width, editable_dx;
-	guint additional_height, additional_width, additional_dx;
+	gint editable_height, editable_width, editable_dx;
+	gint additional_height, additional_width, additional_dx;
 	EelCanvasItem *canvas_item;
 	PangoLayout *editable_layout;
 	PangoLayout *additional_layout;

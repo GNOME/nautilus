@@ -121,7 +121,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				  const char *uri_scheme,
 				  GtkWindow *parent_window)
 {
-#if NEW_MIME_COMPLETE
+#ifdef NEW_MIME_COMPLETE
 	GtkDialog *message_dialog;
 	LaunchParameters *launch_parameters;
 	char *prompt;
@@ -569,7 +569,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 		
 	case GNOME_VFS_ERROR_NO_DEFAULT:
 	case GNOME_VFS_ERROR_NO_HANDLER:
-#if NEW_MIME_COMPLETE
+#ifdef NEW_MIME_COMPLETE
 		nautilus_program_chooser_show_no_choices_message
 					(action_type, file, parent_window);
 		break;
@@ -629,7 +629,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 			break;
 		case GNOME_VFS_OK:
 		default:
-#if NEW_MIME_COMPLETE
+#ifdef NEW_MIME_COMPLETE
 			nautilus_program_chooser_show_invalid_message
 				(action_type, file, parent_window);
 #endif
@@ -816,7 +816,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 		break;
 
 	default:
-#if NEW_MIME_COMPLETE
+#ifdef NEW_MIME_COMPLETE
 		nautilus_program_chooser_show_invalid_message
 			(GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, file, parent_window);
 			 

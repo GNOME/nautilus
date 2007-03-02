@@ -558,7 +558,8 @@ trash_file_get_item_count (NautilusFile *file,
 {
 	NautilusTrashFile *trash;
 	GList *node;
-	guint one_count, one_unreadable;
+	guint one_count;
+	int one_unreadable;
 	gboolean got_count;
 	
 	trash = NAUTILUS_TRASH_FILE (file);
