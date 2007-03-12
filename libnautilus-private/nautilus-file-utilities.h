@@ -37,7 +37,6 @@ gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relati
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
-char *   nautilus_get_xdg_dir                        (const char *type);
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_desktop_directory              (void);
 char *   nautilus_get_desktop_directory_uri          (void);
@@ -50,7 +49,6 @@ gboolean nautilus_is_home_directory_file_escaped     (char *escaped_dirname,
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
-gboolean nautilus_should_use_templates_directory     (void);
 char *   nautilus_get_templates_directory            (void);
 char *   nautilus_get_templates_directory_uri        (void);
 void     nautilus_create_templates_directory         (void);

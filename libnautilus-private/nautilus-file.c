@@ -839,6 +839,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 
 	if ((is_desktop_file (file) && !can_rename_desktop_file (file)) ||
+	     nautilus_file_is_desktop_directory (file) ||
 	     nautilus_file_is_home (file)) {
 		return FALSE;
 	}

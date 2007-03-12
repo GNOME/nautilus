@@ -151,7 +151,6 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION				"/location"
 
 #define MAX_MENU_LEVELS 5
-#define TEMPLATE_LIMIT 30
 
 enum {
 	ADD_FILE,
@@ -187,6 +186,9 @@ static gboolean confirm_trash_auto_value;
 
 static char *scripts_directory_uri;
 static int scripts_directory_uri_length;
+
+static char *templates_directory_uri;
+static int templates_directory_uri_length;
 
 struct FMDirectoryViewDetails
 {
@@ -387,8 +389,6 @@ static gboolean activate_check_mime_types                      (FMDirectoryView 
 								NautilusFile *file,
 								gboolean warn_on_mismatch);
 static GdkDragAction ask_link_action                           (FMDirectoryView      *view);
-static void     update_templates_directory                     (FMDirectoryView *view);
-static void     user_dirs_changed                              (FMDirectoryView *view);
 
 static void file_get_volume_and_drive (NautilusFile    *file,
 				       GnomeVFSVolume **volume,
@@ -1619,6 +1619,17 @@ set_up_scripts_directory_global (void)
 }
 
 static void
+set_up_templates_directory_global (void)
+{
+	if (templates_directory_uri != NULL) {
+		return;
+	}
+	
+	templates_directory_uri = nautilus_get_templates_directory_uri ();
+	templates_directory_uri_length = strlen (templates_directory_uri);
+}
+
+static void
 create_scripts_directory (void)
 {
 	char *gnome1_path, *gnome1_uri_str;
@@ -1901,7 +1912,6 @@ fm_directory_view_init (FMDirectoryView *view)
 	static gboolean setup_autos = FALSE;
 	NautilusDirectory *scripts_directory;
 	NautilusDirectory *templates_directory;
-	char *templates_uri;
 
 	if (!setup_autos) {
 		setup_autos = TRUE;
@@ -1930,18 +1940,10 @@ fm_directory_view_init (FMDirectoryView *view)
 	add_directory_to_scripts_directory_list (view, scripts_directory);
 	nautilus_directory_unref (scripts_directory);
 
-	if (nautilus_should_use_templates_directory ()) {
-		templates_uri = nautilus_get_templates_directory_uri ();
-		templates_directory = nautilus_directory_get (templates_uri);
-		g_free (templates_uri);
-		add_directory_to_templates_directory_list (view, templates_directory);
-		nautilus_directory_unref (templates_directory);
-	}
-	update_templates_directory (view);
-	g_signal_connect_object (nautilus_signaller_get_current (),
-				 "user_dirs_changed",
-				 G_CALLBACK (user_dirs_changed),
-				 view, G_CONNECT_SWAPPED);
+	set_up_templates_directory_global ();
+	templates_directory = nautilus_directory_get (templates_directory_uri);
+	add_directory_to_templates_directory_list (view, templates_directory);
+	nautilus_directory_unref (templates_directory);
 
 	view->details->sort_directories_first = 
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
@@ -5710,52 +5712,19 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 	g_free (action_name);
 }
 
-static void
-update_templates_directory (FMDirectoryView *view)
-{
-	NautilusDirectory *templates_directory;
-	GList *node, *next;
-	char *templates_uri;
-
-	for (node = view->details->templates_directory_list; node != NULL; node = next) {
-		next = node->next;
-		remove_directory_from_templates_directory_list (view, node->data);
-	}
-	
-	if (nautilus_should_use_templates_directory ()) {
-		templates_uri = nautilus_get_templates_directory_uri ();
-		templates_directory = nautilus_directory_get (templates_uri);
-		g_free (templates_uri);
-		add_directory_to_templates_directory_list (view, templates_directory);
-		nautilus_directory_unref (templates_directory);
-	}
-}
-
-static void
-user_dirs_changed (FMDirectoryView *view)
-{
-	update_templates_directory (view);
-	view->details->templates_invalid = TRUE;
-	schedule_update_menus (view);
-}
 
 static gboolean
-directory_belongs_in_templates_menu (const char *templates_directory_uri,
-				     const char *uri)
+directory_belongs_in_templates_menu (const char *uri)
 {
 	int num_levels;
 	int i;
 
-	if (templates_directory_uri == NULL) {
-		return FALSE;
-	}
-	
-	if (!g_str_has_prefix (uri, templates_directory_uri)) {
+	if (!eel_str_has_prefix (uri, templates_directory_uri)) {
 		return FALSE;
 	}
 
 	num_levels = 0;
-	for (i = strlen (templates_directory_uri); uri[i] != '\0'; i++) {
+	for (i = templates_directory_uri_length; uri[i] != '\0'; i++) {
 		if (uri[i] == '/') {
 			num_levels++;
 		}
@@ -5769,9 +5738,7 @@ directory_belongs_in_templates_menu (const char *templates_directory_uri,
 }
 
 static gboolean
-update_directory_in_templates_menu (FMDirectoryView *view,
-				    const char *templates_directory_uri,
-				    NautilusDirectory *directory)
+update_directory_in_templates_menu (FMDirectoryView *view, NautilusDirectory *directory)
 {
 	char *menu_path, *popup_bg_path;
 	GList *file_list, *filtered, *node;
@@ -5780,13 +5747,9 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 	NautilusDirectory *dir;
 	char *escaped_path;
 	char *uri;
-	int num;
-
-	/* We know this directory belongs to the template dir, so it must exist */
-	g_assert (templates_directory_uri);
 	
 	uri = nautilus_directory_get_uri (directory);
-	escaped_path = escape_action_path (uri + strlen (templates_directory_uri));
+	escaped_path = escape_action_path (uri + templates_directory_uri_length);
 	g_free (uri);
 	menu_path = g_strconcat (FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER,
 				 escaped_path,
@@ -5802,14 +5765,13 @@ update_directory_in_templates_menu (FMDirectoryView *view,
 
 	file_list = nautilus_file_list_sort_by_display_name (filtered);
 
-	num = 0;
 	any_templates = FALSE;
-	for (node = file_list; num < TEMPLATE_LIMIT && node != NULL; node = node->next, num++) {
+	for (node = file_list; node != NULL; node = node->next) {
 		file = node->data;
 
 		if (nautilus_file_is_directory (file)) {
 			uri = nautilus_file_get_uri (file);
-			if (directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
+			if (directory_belongs_in_templates_menu (uri)) {
 				dir = nautilus_directory_get (uri);
 				add_directory_to_templates_directory_list (view, dir);
 				nautilus_directory_unref (dir);
@@ -5847,13 +5809,6 @@ update_templates_menu (FMDirectoryView *view)
 	GtkUIManager *ui_manager;
 	char *uri;
 	GtkAction *action;
-	char *templates_directory_uri;
-
-	if (nautilus_should_use_templates_directory ()) {
-		templates_directory_uri = nautilus_get_templates_directory_uri ();
-	} else {
-		templates_directory_uri = NULL;
-	}
 
 	/* There is a race condition here.  If we don't mark the scripts menu as
 	   valid before we begin our task then we can lose template menu updates that
@@ -5878,11 +5833,9 @@ update_templates_menu (FMDirectoryView *view)
 		directory = node->data;
 
 		uri = nautilus_directory_get_uri (directory);
-		if (!directory_belongs_in_templates_menu (templates_directory_uri, uri)) {
+		if (!directory_belongs_in_templates_menu (uri)) {
 			remove_directory_from_templates_directory_list (view, directory);
-		} else if (update_directory_in_templates_menu (view,
-							       templates_directory_uri,
-							       directory)) {
+		} else if (update_directory_in_templates_menu (view, directory)) {
 			any_templates = TRUE;
 		}
 		g_free (uri);
@@ -5891,8 +5844,6 @@ update_templates_menu (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group, FM_ACTION_NO_TEMPLATES);
 	gtk_action_set_visible (action, !any_templates);
-
-	g_free (templates_directory_uri);
 }
 
 

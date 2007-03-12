@@ -31,7 +31,6 @@
 #include "nautilus-metafile.h"
 #include "nautilus-file.h"
 #include "nautilus-search-directory.h"
-#include "nautilus-signaller.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -49,10 +48,6 @@
 #define DESKTOP_DIRECTORY_NAME "Desktop"
 #define LEGACY_DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
-
-static void update_xdg_dir_cache (void);
-static void schedule_user_dirs_changed (void);
-static void desktop_dir_changed (void);
 
 
 char *
@@ -153,280 +148,15 @@ nautilus_get_user_directory (void)
 	return user_directory;
 }
 
-typedef struct {
-	char *type;
-	char *path;
-	NautilusFile *file;
-} XdgDirEntry;
-
-
-static XdgDirEntry *
-parse_xdg_dirs (const char *config_file)
-{
-  GArray *array;
-  char *config_file_free = NULL;
-  XdgDirEntry dir;
-  char *data;
-  char **lines;
-  char *p, *d;
-  int i;
-  char *type_start, *type_end;
-  char *value, *unescaped;
-  gboolean relative;
-
-  array = g_array_new (TRUE, TRUE, sizeof (XdgDirEntry));
-  
-  if (config_file == NULL)
-    {
-      config_file_free = g_build_filename (g_get_user_config_dir (),
-					   "user-dirs.dirs", NULL);
-      config_file = (const char *)config_file_free;
-    }
-
-  if (g_file_get_contents (config_file, &data, NULL, NULL))
-    {
-      lines = g_strsplit (data, "\n", 0);
-      g_free (data);
-      for (i = 0; lines[i] != NULL; i++)
-	{
-	  p = lines[i];
-	  while (g_ascii_isspace (*p))
-	    p++;
-      
-	  if (*p == '#')
-	    continue;
-      
-	  value = strchr (p, '=');
-	  if (value == NULL)
-	    continue;
-	  *value++ = 0;
-      
-	  g_strchug (g_strchomp (p));
-	  if (!g_str_has_prefix (p, "XDG_"))
-	    continue;
-	  if (!g_str_has_suffix (p, "_DIR"))
-	    continue;
-	  type_start = p + 4;
-	  type_end = p + strlen (p) - 4;
-      
-	  while (g_ascii_isspace (*value))
-	    value++;
-      
-	  if (*value != '"')
-	    continue;
-	  value++;
-      
-	  relative = FALSE;
-	  if (g_str_has_prefix (value, "$HOME"))
-	    {
-	      relative = TRUE;
-	      value += 5;
-	      while (*value == '/')
-		      value++;
-	    }
-	  else if (*value != '/')
-	    continue;
-	  
-	  d = unescaped = g_malloc (strlen (value) + 1);
-	  while (*value && *value != '"')
-	    {
-	      if ((*value == '\\') && (*(value + 1) != 0))
-		value++;
-	      *d++ = *value++;
-	    }
-	  *d = 0;
-      
-	  *type_end = 0;
-	  dir.type = g_strdup (type_start);
-	  if (relative)
-	    {
-	      dir.path = g_build_filename (g_get_home_dir (), unescaped, NULL);
-	      g_free (unescaped);
-	    }
-	  else 
-	    dir.path = unescaped;
-      
-	  g_array_append_val (array, dir);
-	}
-      
-      g_strfreev (lines);
-    }
-  
-  g_free (config_file_free);
-  
-  return (XdgDirEntry *)g_array_free (array, FALSE);
-}
-
-static XdgDirEntry *cached_xdg_dirs = NULL;
-static GnomeVFSMonitorHandle *cached_xdg_dirs_handle = NULL;
-
-static void
-xdg_dir_changed (NautilusFile *file,
-		 XdgDirEntry *dir)
-{
-	char *file_uri;
-	char *dir_uri;
-	char *path;
-	
-	file_uri = nautilus_file_get_uri (file);
-	dir_uri = gnome_vfs_get_uri_from_local_path (dir->path);
-	if (file_uri && dir_uri &&
-	    !gnome_vfs_uris_match (dir_uri, file_uri)) {
-		path = gnome_vfs_get_local_path_from_uri (file_uri);
-
-		if (path) {
-			char *argv[5];
-			int i;
-			
-			g_free (dir->path);
-			dir->path = path;
-
-			i = 0;
-			argv[i++] = "xdg-user-dirs-update";
-			argv[i++] = "--set";
-			argv[i++] = dir->type;
-			argv[i++] = dir->path;
-			argv[i++] = NULL;
-
-			/* We do this sync, to avoid possible race-conditions
-			   if multiple dirs change at the same time. Its
-			   blocking the main thread, but these updates should
-			   be very rare and very fast. */
-			g_spawn_sync (NULL, 
-				      argv, NULL,
-				      G_SPAWN_SEARCH_PATH |
-				      G_SPAWN_STDOUT_TO_DEV_NULL |
-				      G_SPAWN_STDERR_TO_DEV_NULL,
-				      NULL, NULL,
-				      NULL, NULL, NULL, NULL);
-			schedule_user_dirs_changed ();
-			desktop_dir_changed ();
-		}
-	}
-	g_free (file_uri);
-	g_free (dir_uri);
-}
-
-static void 
-xdg_dir_cache_changed_cb (GnomeVFSMonitorHandle    *handle,
-			  const gchar              *monitor_uri,
-			  const gchar              *info_uri,
-			  GnomeVFSMonitorEventType  event_type,
-			  gpointer                  user_data)
-{
-	if (event_type == GNOME_VFS_MONITOR_EVENT_CHANGED ||
-	    event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
-		update_xdg_dir_cache ();
-	}
-}
-
-static int user_dirs_changed_tag = 0;
-
-static gboolean
-emit_user_dirs_changed_idle (gpointer data)
-{
-	g_signal_emit_by_name (nautilus_signaller_get_current (),
-			       "user_dirs_changed");
-	user_dirs_changed_tag = 0;
-	return FALSE;
-}
-
-static void
-schedule_user_dirs_changed (void)
-{
-	if (user_dirs_changed_tag == 0) {
-		user_dirs_changed_tag = g_idle_add (emit_user_dirs_changed_idle, NULL);
-	}
-}
-
-static void
-update_xdg_dir_cache (void)
-{
-	static gboolean started_monitor = FALSE;
-	char *config_file, *uri;
-	int i;
-
-	if (cached_xdg_dirs) {
-		for (i = 0 ; cached_xdg_dirs[i].type != NULL; i++) {
-			if (cached_xdg_dirs[i].file != NULL) {
-				nautilus_file_monitor_remove (cached_xdg_dirs[i].file,
-							      &cached_xdg_dirs[i]);
-				g_signal_handlers_disconnect_by_func (cached_xdg_dirs[i].file,
-								      G_CALLBACK (xdg_dir_changed),
-								      &cached_xdg_dirs[i]);
-				nautilus_file_unref (cached_xdg_dirs[i].file);
-			}
-			g_free (cached_xdg_dirs[i].type);
-			g_free (cached_xdg_dirs[i].path);
-		}
-		g_free (cached_xdg_dirs);
-
-		schedule_user_dirs_changed ();
-		desktop_dir_changed ();
-	}
-
-	if (!started_monitor) {
-		config_file = g_build_filename (g_get_user_config_dir (),
-						     "user-dirs.dirs", NULL);
-		uri = gnome_vfs_get_uri_from_local_path (config_file);
-		gnome_vfs_monitor_add (&cached_xdg_dirs_handle,
-				       uri,
-				       GNOME_VFS_MONITOR_FILE,
-				       xdg_dir_cache_changed_cb,
-				       NULL);
-		g_free (uri);
-		g_free (config_file);
-	}
-	
-	cached_xdg_dirs = parse_xdg_dirs (NULL);
-	
-	for (i = 0 ; cached_xdg_dirs[i].type != NULL; i++) {
-		cached_xdg_dirs[i].file = NULL;
-		if (strcmp (cached_xdg_dirs[i].path, g_get_home_dir ()) != 0) {
-			uri = gnome_vfs_get_uri_from_local_path (cached_xdg_dirs[i].path);
-			cached_xdg_dirs[i].file = nautilus_file_get (uri);
-			nautilus_file_monitor_add (cached_xdg_dirs[i].file,
-						   &cached_xdg_dirs[i],
-						   NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
-			g_signal_connect (cached_xdg_dirs[i].file,
-					  "changed", G_CALLBACK (xdg_dir_changed), &cached_xdg_dirs[i]);
-			g_free (uri);
-		}
-	}
-}
-
-char *
-nautilus_get_xdg_dir (const char *type)
-{
-	int i;
-
-	if (cached_xdg_dirs == NULL) {
-		update_xdg_dir_cache ();
-	}
-
-	for (i = 0 ; cached_xdg_dirs != NULL && cached_xdg_dirs[i].type != NULL; i++) {
-		if (strcmp (cached_xdg_dirs[i].type, type) == 0) {
-			return g_strdup (cached_xdg_dirs[i].path);
-		}
-	}
-	if (strcmp ("DESKTOP", type) == 0) {
-		return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
-	}
-	if (strcmp ("TEMPLATES", type) == 0) {
-		return g_build_filename (g_get_home_dir (), "Templates", NULL);
-	}
-	
-	return g_strdup (g_get_home_dir ());
-}
-
 static char *
 get_desktop_path (void)
 {
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		return g_strdup (g_get_home_dir());
 	} else {
-		return nautilus_get_xdg_dir ("DESKTOP");
+		return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
 	}
+	
 }
 
 /**
@@ -501,22 +231,11 @@ nautilus_get_home_directory_uri (void)
 }
 
 
-gboolean
-nautilus_should_use_templates_directory (void)
-{
-	char *dir;
-	gboolean res;
-	
-	dir = nautilus_get_xdg_dir ("TEMPLATES");
-	res = strcmp (dir, g_get_home_dir ()) != 0;
-	g_free (dir);
-	return res;
-}
-
 char *
 nautilus_get_templates_directory (void)
 {
-	return nautilus_get_xdg_dir ("TEMPLATES");
+	return  g_build_filename (g_get_home_dir(),
+				  "Templates", NULL);
 }
 
 void
@@ -564,9 +283,8 @@ static char *escaped_desktop_dir_dirname = NULL;
 static char *escaped_desktop_dir_filename = NULL;
 static gboolean desktop_dir_changed_callback_installed = FALSE;
 
-
 static void
-desktop_dir_changed (void)
+desktop_dir_changed_callback (gpointer callback_data)
 {
 	g_free (escaped_desktop_dir);
 	g_free (escaped_desktop_dir_filename);
@@ -574,12 +292,6 @@ desktop_dir_changed (void)
 	escaped_desktop_dir = NULL;
 	escaped_desktop_dir_dirname = NULL;
 	escaped_desktop_dir_filename = NULL;
-}
-
-static void
-desktop_dir_changed_callback (gpointer callback_data)
-{
-	desktop_dir_changed ();
 }
 
 static void
