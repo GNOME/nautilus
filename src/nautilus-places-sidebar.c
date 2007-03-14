@@ -58,6 +58,7 @@
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
+#include "nautilus-window.h"
 
 #define NAUTILUS_PLACES_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
 #define NAUTILUS_IS_PLACES_SIDEBAR(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
@@ -121,6 +122,10 @@ typedef enum {
 static void  nautilus_places_sidebar_iface_init        (NautilusSidebarIface         *iface);
 static void  sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
 static GType nautilus_places_sidebar_provider_get_type (void);
+static void  open_selected_bookmark		       (NautilusPlacesSidebar *sidebar,
+						        GtkTreeModel	      *model,
+						        GtkTreePath	      *path,
+						        gboolean	      open_in_new_window);
 
 /* Identifiers for target types */
 enum {
@@ -459,47 +464,10 @@ row_activated_callback (GtkTreeView *tree_view,
 			GtkTreeViewColumn *column,
 			gpointer user_data)
 {
-	NautilusPlacesSidebar *sidebar;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	char *uri;
-	
-	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
-	model = gtk_tree_view_get_model (tree_view);
-	
-	if (!gtk_tree_model_get_iter (model, &iter, path)) {
-		return;
-	}
-
-	gtk_tree_model_get 
-		(model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
-	
-	if (uri != NULL) {
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "activate from places sidebar window=%p: %s",
-				    sidebar->window, uri);
-		/* Navigate to the clicked location. */
-		nautilus_window_info_open_location
-			(sidebar->window, 
-			 uri, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0, NULL);
-		g_free (uri);
-	} else {
-		GnomeVFSDrive *drive;
-		gtk_tree_model_get 
-			(model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
-		if (drive != NULL) {
-			char *path;
-
-			path = gnome_vfs_drive_get_device_path (drive);
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "activate drive from places sidebar window=%p: %s",
-					    sidebar->window, path);
-			g_free (path);
-
-			gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
-			gnome_vfs_drive_unref (drive);
-		}
-	}
+	open_selected_bookmark (NAUTILUS_PLACES_SIDEBAR (user_data),
+				gtk_tree_view_get_model (tree_view),
+				path,
+				FALSE);
 }
 
 static void
@@ -1173,6 +1141,91 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 	bookmarks_check_popup_sensitivity (sidebar);
 }
 
+static void
+open_selected_bookmark (NautilusPlacesSidebar *sidebar,
+			GtkTreeModel	      *model,
+			GtkTreePath	      *path,
+			gboolean	      open_in_new_window)
+{
+	GtkTreeIter iter;
+	char *uri;
+
+	if (!path) {
+		return;
+	}
+
+	if (!gtk_tree_model_get_iter (model, &iter, path)) {
+		return;
+	}
+
+	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
+
+	if (uri != NULL) {
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "activate from places sidebar window=%p: %s",
+				    sidebar->window, uri);
+		/* Navigate to the clicked location */
+		if (!open_in_new_window) {
+			nautilus_window_info_open_location (sidebar->window, uri,
+							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+							    0, NULL);
+		} else {
+			NautilusWindow *cur, *new;
+			cur = NAUTILUS_WINDOW (sidebar->window);
+			new = nautilus_application_create_navigation_window (cur->application,
+									     NULL,
+									     gtk_window_get_screen (GTK_WINDOW (cur)));
+			nautilus_window_go_to (new, uri);
+		}
+		g_free (uri);
+
+	} else {
+		GnomeVFSDrive *drive;
+		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
+		if (drive != NULL) {
+			char *path;
+
+			path = gnome_vfs_drive_get_device_path (drive);
+			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+					    "activate drive from places sidebar window=%p: %s",
+					    sidebar->window, path);
+			g_free (path);
+
+			gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
+			gnome_vfs_drive_unref (drive);
+		}
+	}
+}
+
+static void
+open_shortcut_from_menu (NautilusPlacesSidebar *sidebar,
+			 gboolean	       open_in_new_window)
+{
+	GtkTreeModel *model;
+	GtkTreePath *path;
+
+	model = gtk_tree_view_get_model (sidebar->tree_view);
+	gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
+
+	open_selected_bookmark (sidebar, model, path, open_in_new_window);
+
+	gtk_tree_path_free (path);
+}
+
+static void
+open_shortcut_cb (GtkMenuItem		*item,
+		  NautilusPlacesSidebar	*sidebar)
+{
+	open_shortcut_from_menu (sidebar, FALSE);
+}
+
+static void
+open_shortcut_in_new_window_cb (GtkMenuItem	      *item,
+				NautilusPlacesSidebar *sidebar)
+{
+	open_shortcut_from_menu (sidebar, TRUE);
+}
+
 /* Rename the selected bookmark */
 static void
 rename_selected_bookmark (NautilusPlacesSidebar *sidebar)
@@ -1361,6 +1414,20 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 			           GTK_WIDGET (sidebar),
 			           bookmarks_popup_menu_detach_cb);
 	
+	item = gtk_image_menu_item_new_with_label (_("Open"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
+				       gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU));
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (open_shortcut_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	item = gtk_menu_item_new_with_label (_("Open in New Window"));
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (open_shortcut_in_new_window_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
 	item = gtk_image_menu_item_new_with_label (_("Remove"));
 	sidebar->popup_menu_remove_item = item;
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
