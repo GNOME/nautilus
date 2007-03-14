@@ -1,3 +1,10 @@
+2007-03-14  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (schedule_update_menus)
+	(schedule_update_status):
+	Make sure we never schedule an update after the window has been
+	destroyed. Likely fixes #349551
+
 2007-03-12  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

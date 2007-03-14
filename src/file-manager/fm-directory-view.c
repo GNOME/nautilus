@@ -7979,9 +7979,11 @@ schedule_update_menus (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	/* Make sure we haven't already destroyed it */
-	/*g_assert (view->details->window != NULL);*/
-
+	/* Don't schedule updates after destroy (#349551) */
+	if (view->details->window == NULL) {
+		return;
+	}
+	
 	view->details->menu_states_untrustworthy = TRUE;
 
 	/* Schedule a menu update with the current update interval */
@@ -8017,7 +8019,9 @@ schedule_update_status (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* Make sure we haven't already destroyed it */
-	g_assert (view->details->window != NULL);
+	if (view->details->window == NULL) {
+		return;
+	}
 
 	if (view->details->loading) {
 		/* Don't update status bar while loading the dir */
