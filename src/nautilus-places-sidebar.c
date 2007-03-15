@@ -1414,7 +1414,7 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 			           GTK_WIDGET (sidebar),
 			           bookmarks_popup_menu_detach_cb);
 	
-	item = gtk_image_menu_item_new_with_label (_("Open"));
+	item = gtk_image_menu_item_new_with_mnemonic (_("_Open"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
 				       gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU));
 	g_signal_connect (item, "activate",
@@ -1422,7 +1422,7 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
-	item = gtk_menu_item_new_with_label (_("Open in New Window"));
+	item = gtk_menu_item_new_with_mnemonic (_("Open in New _Window"));
 	g_signal_connect (item, "activate",
 			  G_CALLBACK (open_shortcut_in_new_window_cb), sidebar);
 	gtk_widget_show (item);
