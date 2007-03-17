@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.15.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-26 22:29+0100\n"
-"PO-Revision-Date: 2007-02-26 22:33+0100\n"
+"POT-Creation-Date: 2007-03-17 20:27+0100\n"
+"PO-Revision-Date: 2007-03-17 20:30+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -1041,7 +1041,7 @@ msgid "Use De_fault"
 msgstr "_Utiliser les valeurs par défaut"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1375
+#: ../src/file-manager/fm-list-view.c:1374
 msgid "Name"
 msgstr "Nom"
 
@@ -1138,7 +1138,7 @@ msgstr "Réinitialiser"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:443
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:163
-#: ../libnautilus-private/nautilus-trash-file.c:691
+#: ../libnautilus-private/nautilus-trash-file.c:692
 msgid "on the desktop"
 msgstr "sur le bureau"
 
@@ -1521,7 +1521,7 @@ msgstr "_Tout remplacer"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
 #: ../libnautilus-private/nautilus-file.c:4828
-#: ../src/file-manager/fm-directory-view.c:9837
+#: ../src/file-manager/fm-directory-view.c:9841
 #, c-format
 msgid "Link to %s"
 msgstr "Lien vers %s"
@@ -2274,7 +2274,7 @@ msgid "Icon View"
 msgstr "Vue en icônes"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1432
+#: ../src/file-manager/fm-list-view.c:1431
 msgid "List View"
 msgstr "Vue en liste"
 
@@ -2662,7 +2662,7 @@ msgstr "Supprime tous les éléments de la corbeille"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1121
-#: ../src/nautilus-places-sidebar.c:250
+#: ../src/nautilus-places-sidebar.c:255
 msgid "Desktop"
 msgstr "Bureau"
 
@@ -3132,6 +3132,7 @@ msgstr "Crée un nouveau fichier vide dans ce dossier"
 #: ../src/file-manager/fm-directory-view.c:6845
 #: ../src/file-manager/fm-directory-view.c:7724
 #: ../src/file-manager/fm-tree-view.c:1253
+#: ../src/nautilus-places-sidebar.c:1417
 msgid "_Open"
 msgstr "_Ouvrir"
 
@@ -3146,7 +3147,7 @@ msgstr "Ouvre l'élément sélectionné dans cette fenêtre"
 #: ../src/file-manager/fm-directory-view.c:6853
 #: ../src/file-manager/fm-directory-view.c:6977
 msgid "Open in Navigation Window"
-msgstr "Ouvrir dans une fenêtre de Navigation"
+msgstr "Ouvrir dans une fenêtre de navigation"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6854
@@ -3267,7 +3268,7 @@ msgstr "Renomme l'élément sélectionné"
 #: ../src/file-manager/fm-directory-view.c:6991
 #: ../src/file-manager/fm-directory-view.c:7581
 #: ../src/file-manager/fm-directory-view.c:7765
-#: ../src/file-manager/fm-directory-view.c:8161
+#: ../src/file-manager/fm-directory-view.c:8165
 msgid "Mo_ve to Trash"
 msgstr "_Mettre à la corbeille"
 
@@ -3340,7 +3341,7 @@ msgstr "Démonte le volume sélectionné"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6939
 #: ../src/file-manager/fm-directory-view.c:6955
-#: ../src/nautilus-places-sidebar.c:1399
+#: ../src/nautilus-places-sidebar.c:1466
 msgid "_Eject"
 msgstr "É_jecter"
 
@@ -3352,7 +3353,7 @@ msgstr "Éjecte le volume sélectionné"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6943
 #: ../src/file-manager/fm-directory-view.c:6959
-#: ../src/nautilus-places-sidebar.c:1406
+#: ../src/nautilus-places-sidebar.c:1473
 msgid "_Format"
 msgstr "_Formater"
 
@@ -3497,67 +3498,67 @@ msgstr[1] "Ouvrir dans %d nouvelles fenêtres"
 msgid "Delete all selected items permanently"
 msgstr "Supprime définitivement tous les éléments sélectionnés"
 
-#: ../src/file-manager/fm-directory-view.c:8141
+#: ../src/file-manager/fm-directory-view.c:8145
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Le lien « %s » est cassé."
 
-#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8147
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Le lien « %s » est cassé. Voulez-vous le mettre à la corbeille ?"
 
-#: ../src/file-manager/fm-directory-view.c:8149
+#: ../src/file-manager/fm-directory-view.c:8153
 msgid "This link can't be used, because it has no target."
 msgstr "Impossible d'utiliser ce lien car il ne pointe sur rien."
 
-#: ../src/file-manager/fm-directory-view.c:8151
+#: ../src/file-manager/fm-directory-view.c:8155
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Impossible d'utiliser ce lien car sa cible « %s » n'existe pas."
 
-#: ../src/file-manager/fm-directory-view.c:8802
+#: ../src/file-manager/fm-directory-view.c:8806
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Ouverture de « %s »."
 
-#: ../src/file-manager/fm-directory-view.c:8805
+#: ../src/file-manager/fm-directory-view.c:8809
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Ouverture de %d élément."
 msgstr[1] "Ouverture de %d éléments."
 
-#: ../src/file-manager/fm-directory-view.c:9697
+#: ../src/file-manager/fm-directory-view.c:9701
 msgid "Download location?"
 msgstr "Télécharger l'emplacement ?"
 
-#: ../src/file-manager/fm-directory-view.c:9700
+#: ../src/file-manager/fm-directory-view.c:9704
 msgid "You can download it or make a link to it."
 msgstr "Vous pouvez le télécharger ou créer un lien vers lui."
 
-#: ../src/file-manager/fm-directory-view.c:9703
+#: ../src/file-manager/fm-directory-view.c:9707
 msgid "Make a _Link"
 msgstr "Créer un _lien"
 
-#: ../src/file-manager/fm-directory-view.c:9707
+#: ../src/file-manager/fm-directory-view.c:9711
 msgid "_Download"
 msgstr "_Télécharger"
 
-#: ../src/file-manager/fm-directory-view.c:9770
-#: ../src/file-manager/fm-directory-view.c:9822
-#: ../src/file-manager/fm-directory-view.c:9923
+#: ../src/file-manager/fm-directory-view.c:9774
+#: ../src/file-manager/fm-directory-view.c:9826
+#: ../src/file-manager/fm-directory-view.c:9927
 msgid "Drag and drop is not supported."
 msgstr "Le glisser-déposer n'est pas pris en charge."
 
-#: ../src/file-manager/fm-directory-view.c:9771
+#: ../src/file-manager/fm-directory-view.c:9775
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Le glisser-déposer n'est pris en charge que sur les systèmes de fichiers "
 "locaux."
 
-#: ../src/file-manager/fm-directory-view.c:9823
-#: ../src/file-manager/fm-directory-view.c:9924
+#: ../src/file-manager/fm-directory-view.c:9827
+#: ../src/file-manager/fm-directory-view.c:9928
 msgid "An invalid drag type was used."
 msgstr "Un type de glisser non valide a été utilisé."
 
@@ -3903,46 +3904,46 @@ msgstr "(Vide)"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: ../src/file-manager/fm-list-view.c:1961
+#: ../src/file-manager/fm-list-view.c:1960
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s colonnes visibles"
 
-#: ../src/file-manager/fm-list-view.c:1980
+#: ../src/file-manager/fm-list-view.c:1979
 msgid "Choose the order of information to appear in this folder."
 msgstr "Choisissez l'ordre des informations apparaissant dans ce dossier."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2022
+#: ../src/file-manager/fm-list-view.c:2021
 msgid "Visible _Columns..."
 msgstr "_Colonnes visibles..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2023
+#: ../src/file-manager/fm-list-view.c:2022
 msgid "Select the columns visible in this folder"
 msgstr "Sélectionne les colonnes visibles dans ce dossier"
 
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "List"
 msgstr "Liste"
 
-#: ../src/file-manager/fm-list-view.c:2747
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "View as List"
 msgstr "Voir en tant que liste"
 
-#: ../src/file-manager/fm-list-view.c:2748
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "View as _List"
 msgstr "Voir en tant que _liste"
 
-#: ../src/file-manager/fm-list-view.c:2749
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "The list view encountered an error."
 msgstr "La vue liste a rencontré une erreur."
 
-#: ../src/file-manager/fm-list-view.c:2750
+#: ../src/file-manager/fm-list-view.c:2747
 msgid "The list view encountered an error while starting up."
 msgstr "La vue liste a rencontré une erreur lors de son démarrage."
 
-#: ../src/file-manager/fm-list-view.c:2751
+#: ../src/file-manager/fm-list-view.c:2748
 msgid "Display this location with the list view."
 msgstr "Affiche cet emplacement avec la vue liste."
 
@@ -4290,7 +4291,7 @@ msgid "Move to Trash"
 msgstr "Mettre à la corbeille"
 
 #: ../src/file-manager/fm-tree-view.c:1396
-#: ../src/nautilus-places-sidebar.c:260
+#: ../src/nautilus-places-sidebar.c:265
 msgid "File System"
 msgstr "Système de fichiers"
 
@@ -5379,27 +5380,31 @@ msgstr "Notes"
 msgid "Show Notes"
 msgstr "Afficher les notes"
 
-#: ../src/nautilus-places-sidebar.c:1364
+#: ../src/nautilus-places-sidebar.c:1425
+msgid "Open in New _Window"
+msgstr "Ouvrir dans une nouvelle _fenêtre"
+
+#: ../src/nautilus-places-sidebar.c:1431
 msgid "Remove"
 msgstr "Supprimer"
 
-#: ../src/nautilus-places-sidebar.c:1373
+#: ../src/nautilus-places-sidebar.c:1440
 msgid "Rename..."
 msgstr "Renommer..."
 
-#: ../src/nautilus-places-sidebar.c:1385
+#: ../src/nautilus-places-sidebar.c:1452
 msgid "_Mount"
 msgstr "_Monter"
 
-#: ../src/nautilus-places-sidebar.c:1392
+#: ../src/nautilus-places-sidebar.c:1459
 msgid "_Unmount"
 msgstr "_Démonter"
 
-#: ../src/nautilus-places-sidebar.c:1644
+#: ../src/nautilus-places-sidebar.c:1711
 msgid "Places"
 msgstr "Raccourcis"
 
-#: ../src/nautilus-places-sidebar.c:1650
+#: ../src/nautilus-places-sidebar.c:1717
 msgid "Show Places"
 msgstr "Afficher les raccourcis"
 
