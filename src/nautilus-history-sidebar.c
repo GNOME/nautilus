@@ -74,6 +74,8 @@ enum {
 static void  nautilus_history_sidebar_iface_init        (NautilusSidebarIface         *iface);
 static void  sidebar_provider_iface_init                (NautilusSidebarProviderIface *iface);
 static GType nautilus_history_sidebar_provider_get_type (void);
+static void  nautilus_history_sidebar_style_set	        (GtkWidget *widget,
+							 GtkStyle  *previous_style);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusHistorySidebar, nautilus_history_sidebar, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
@@ -267,6 +269,8 @@ static void
 nautilus_history_sidebar_class_init (NautilusHistorySidebarClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = nautilus_history_sidebar_finalize;
+
+	GTK_WIDGET_CLASS (class)->style_set = nautilus_history_sidebar_style_set;
 }
 
 static const char *
@@ -315,6 +319,17 @@ nautilus_history_sidebar_set_parent_window (NautilusHistorySidebar *sidebar,
 					    NautilusWindowInfo *window)
 {
 	sidebar->window = window;
+	update_history (sidebar);
+}
+
+static void
+nautilus_history_sidebar_style_set (GtkWidget *widget,
+				   GtkStyle  *previous_style)
+{
+	NautilusHistorySidebar *sidebar;
+
+	sidebar = NAUTILUS_HISTORY_SIDEBAR (widget);
+
 	update_history (sidebar);
 }
 
