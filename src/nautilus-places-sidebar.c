@@ -122,10 +122,12 @@ typedef enum {
 static void  nautilus_places_sidebar_iface_init        (NautilusSidebarIface         *iface);
 static void  sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
 static GType nautilus_places_sidebar_provider_get_type (void);
-static void  open_selected_bookmark		       (NautilusPlacesSidebar *sidebar,
-						        GtkTreeModel	      *model,
-						        GtkTreePath	      *path,
-						        gboolean	      open_in_new_window);
+static void  open_selected_bookmark                    (NautilusPlacesSidebar        *sidebar,
+							GtkTreeModel                 *model,
+							GtkTreePath                  *path,
+							gboolean                      open_in_new_window);
+static void  nautilus_places_sidebar_style_set         (GtkWidget                    *widget,
+							GtkStyle                     *previous_style);
 
 /* Identifiers for target types */
 enum {
@@ -1697,6 +1699,8 @@ static void
 nautilus_places_sidebar_class_init (NautilusPlacesSidebarClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = nautilus_places_sidebar_finalize;
+
+	GTK_WIDGET_CLASS (class)->style_set = nautilus_places_sidebar_style_set;
 }
 
 static const char *
@@ -1769,6 +1773,17 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 				 G_CALLBACK (drive_disconnected_callback), sidebar, 0);
 	g_signal_connect_object (volume_monitor, "drive_connected",
 				 G_CALLBACK (drive_connected_callback), sidebar, 0);
+
+	update_places (sidebar);
+}
+
+static void
+nautilus_places_sidebar_style_set (GtkWidget *widget,
+				   GtkStyle  *previous_style)
+{
+	NautilusPlacesSidebar *sidebar;
+
+	sidebar = NAUTILUS_PLACES_SIDEBAR (widget);
 
 	update_places (sidebar);
 }
