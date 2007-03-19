@@ -89,7 +89,6 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*title_label;
 	GtkWidget		*more_info_label;
 	GtkWidget		*emblem_box;
-	GtkWidget		*notes;
 
 	guint                    best_icon_size;
 
@@ -167,11 +166,6 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	sidebar_title->details->emblem_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (sidebar_title->details->emblem_box);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
-
-	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
-	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);
-	gtk_widget_show (sidebar_title->details->notes);
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 
 	sidebar_title->details->best_icon_size = get_best_icon_size (sidebar_title);
 	/* Keep track of changes in graphics trade offs */
@@ -527,18 +521,6 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	eel_g_list_free_deep (icons);
 }
 
-static void
-update_notes (NautilusSidebarTitle *sidebar_title)
-{
-	char *text;
-	
-	text = nautilus_file_get_metadata (sidebar_title->details->file,
-					   NAUTILUS_METADATA_KEY_NOTES,
-					   NULL);
-	gtk_label_set_text (GTK_LABEL (sidebar_title->details->notes), text);
-	g_free (text);
-}
-
 /* return the filename text */
 char *
 nautilus_sidebar_title_get_text (NautilusSidebarTitle *sidebar_title)
@@ -607,7 +589,6 @@ update_all (NautilusSidebarTitle *sidebar_title)
 	update_more_info (sidebar_title);
 	
 	update_emblems (sidebar_title);
-	update_notes (sidebar_title);
 
 	/* Redo monitor once the count is ready. */
 	if (!sidebar_title->details->monitoring_count && item_count_ready (sidebar_title)) {

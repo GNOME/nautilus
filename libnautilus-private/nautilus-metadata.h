@@ -63,7 +63,6 @@
 #define NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR		 	"sidebar_tab_color"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR	 	"sidebar_title_tab_color"
 
-#define NAUTILUS_METADATA_KEY_NOTES                      	"notes"
 #define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_ICON_POSITION              	"icon_position"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon_scale"
