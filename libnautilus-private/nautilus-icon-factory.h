@@ -64,9 +64,9 @@ typedef enum {
  * be square. Since individual icons can be stretched,
  * each icon is not constrained to this nominal size.
  */
-#define NAUTILUS_ICON_SIZE_SMALLEST	12
+#define NAUTILUS_ICON_SIZE_SMALLEST	16
 #define NAUTILUS_ICON_SIZE_SMALLER	24
-#define NAUTILUS_ICON_SIZE_SMALL	36
+#define NAUTILUS_ICON_SIZE_SMALL	32
 #define NAUTILUS_ICON_SIZE_STANDARD	48
 #define NAUTILUS_ICON_SIZE_LARGE	72
 #define NAUTILUS_ICON_SIZE_LARGER	96
