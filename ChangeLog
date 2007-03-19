@@ -1,4 +1,11 @@
 2007-03-19  Alexander Larsson  <alexl@redhat.com>
+  
+	* libnautilus-private/nautilus-file.c (nautilus_file_emit_changed):
+	Avoid recursion when updating symlinks (#418771)
+
+==== gnome-2-18 branched from here ===
+	
+2007-03-19  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-places-sidebar.c:
 	Revert previous checkin since it broke the freeze.

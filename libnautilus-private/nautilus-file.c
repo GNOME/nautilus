@@ -5487,7 +5487,9 @@ nautilus_file_emit_changed (NautilusFile *file)
 	/* Tell link files pointing to this object about the change. */
 	link_files = get_link_files (file);
 	for (p = link_files; p != NULL; p = p->next) {
-		nautilus_file_changed (NAUTILUS_FILE (p->data));
+		if (p->data != file) {
+			nautilus_file_changed (NAUTILUS_FILE (p->data));
+		}
 	}
 	nautilus_file_list_free (link_files);
 }
