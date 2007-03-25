@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-18 18:09+0100\n"
+"POT-Creation-Date: 2007-03-25 23:15+0200\n"
 "PO-Revision-Date: 2007-02-18 18:08+0100\n"
 "Last-Translator: Lasse Bang Mikkelsen <lbm@fatalerror.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -1078,7 +1078,7 @@ msgid "The group of the file."
 msgstr "Ejergruppen for filen"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4166
+#: ../src/file-manager/fm-properties-window.c:4156
 msgid "Permissions"
 msgstr "Rettigheder"
 
@@ -1117,7 +1117,7 @@ msgstr "Nulstil"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:443
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:163
-#: ../libnautilus-private/nautilus-trash-file.c:691
+#: ../libnautilus-private/nautilus-trash-file.c:692
 msgid "on the desktop"
 msgstr "på skrivebordet"
 
@@ -1214,7 +1214,7 @@ msgstr "Beklager, kunne ikke gemme brugerdefineret emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Beklager, kunne ikke gemme brugerdefineret emblemnavn."
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:168
+#: ../libnautilus-private/nautilus-file-operations-progress.c:167
 #, c-format
 msgid "%s %ld of %ld %s"
 msgstr "%s %ld af %ld %s"
@@ -1232,7 +1232,7 @@ msgstr "(%d:%02d tilbage)"
 #: ../libnautilus-private/nautilus-file-operations.c:452
 #: ../libnautilus-private/nautilus-file-operations.c:481
 #: ../libnautilus-private/nautilus-file-utilities.c:87
-#: ../src/nautilus-connect-server-dialog.c:329
+#: ../src/nautilus-connect-server-dialog.c:337
 #, c-format
 msgid "%s on %s"
 msgstr "%s på %s"
@@ -1497,8 +1497,8 @@ msgstr "Erstat _alle"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
-#: ../libnautilus-private/nautilus-file.c:4809
-#: ../src/file-manager/fm-directory-view.c:9837
+#: ../libnautilus-private/nautilus-file.c:4828
+#: ../src/file-manager/fm-directory-view.c:9841
 #, c-format
 msgid "Link to %s"
 msgstr "Henvisning til %s"
@@ -1922,66 +1922,66 @@ msgstr "Tjenester i"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2927
+#: ../libnautilus-private/nautilus-file.c:2946
 msgid "today at 00:00:00 PM"
 msgstr "i dag kl. 00:00:00"
 
 # H i stedet for I for 24-timers ur
-#: ../libnautilus-private/nautilus-file.c:2928
+#: ../libnautilus-private/nautilus-file.c:2947
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "i dag kl. %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2930
+#: ../libnautilus-private/nautilus-file.c:2949
 msgid "today at 00:00 PM"
 msgstr "i dag kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2931
+#: ../libnautilus-private/nautilus-file.c:2950
 msgid "today at %-I:%M %p"
 msgstr "i dag kl. %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2933
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "today, 00:00 PM"
 msgstr "i dag, kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2934
+#: ../libnautilus-private/nautilus-file.c:2953
 msgid "today, %-I:%M %p"
 msgstr "i dag, kl. %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2936
-#: ../libnautilus-private/nautilus-file.c:2937
+#: ../libnautilus-private/nautilus-file.c:2955
+#: ../libnautilus-private/nautilus-file.c:2956
 msgid "today"
 msgstr "i dag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2946
+#: ../libnautilus-private/nautilus-file.c:2965
 msgid "yesterday at 00:00:00 PM"
 msgstr "i går kl. 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2966
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "i går kl. %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2949
+#: ../libnautilus-private/nautilus-file.c:2968
 msgid "yesterday at 00:00 PM"
 msgstr "i går kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2950
+#: ../libnautilus-private/nautilus-file.c:2969
 msgid "yesterday at %-I:%M %p"
 msgstr "i går kl. %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2952
+#: ../libnautilus-private/nautilus-file.c:2971
 msgid "yesterday, 00:00 PM"
 msgstr "i går, kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2953
+#: ../libnautilus-private/nautilus-file.c:2972
 msgid "yesterday, %-I:%M %p"
 msgstr "i går, kl. %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2955
-#: ../libnautilus-private/nautilus-file.c:2956
+#: ../libnautilus-private/nautilus-file.c:2974
+#: ../libnautilus-private/nautilus-file.c:2975
 msgid "yesterday"
 msgstr "i går"
 
@@ -1990,64 +1990,64 @@ msgstr "i går"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2967
+#: ../libnautilus-private/nautilus-file.c:2986
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "onsdag d. 0. september 0000 kl. 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2968
+#: ../libnautilus-private/nautilus-file.c:2987
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A d. %-d. %B %Y kl. %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2970
+#: ../libnautilus-private/nautilus-file.c:2989
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "man. d. 0. sept. 0000 kl. 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2971
+#: ../libnautilus-private/nautilus-file.c:2990
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a d. %-d. %b. %Y kl. %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:2973
+#: ../libnautilus-private/nautilus-file.c:2992
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ons. d. 0. sept. 0000 kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2974
+#: ../libnautilus-private/nautilus-file.c:2993
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a d. %-d. %b. %Y kl. %-H:%M"
 
 # afspejler teksten nedenfor
-#: ../libnautilus-private/nautilus-file.c:2976
+#: ../libnautilus-private/nautilus-file.c:2995
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0/10-0000 kl. 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:2977
+#: ../libnautilus-private/nautilus-file.c:2996
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d/%-m-%Y kl. %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2979
+#: ../libnautilus-private/nautilus-file.c:2998
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0/10-0000, 01:00"
 
-#: ../libnautilus-private/nautilus-file.c:2980
+#: ../libnautilus-private/nautilus-file.c:2999
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d/%-m-%Y, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2982
+#: ../libnautilus-private/nautilus-file.c:3001
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00-00, 01:00"
 
-#: ../libnautilus-private/nautilus-file.c:2983
+#: ../libnautilus-private/nautilus-file.c:3002
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%-m-%Y, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:2985
+#: ../libnautilus-private/nautilus-file.c:3004
 msgid "00/00/00"
 msgstr "00/00-00"
 
-#: ../libnautilus-private/nautilus-file.c:2986
+#: ../libnautilus-private/nautilus-file.c:3005
 msgid "%m/%d/%y"
 msgstr "%-d/%-m-%y"
 
-#: ../libnautilus-private/nautilus-file.c:4323
+#: ../libnautilus-private/nautilus-file.c:4342
 #: ../src/file-manager/fm-directory-view.c:2249
 #, c-format
 msgid "%u item"
@@ -2055,14 +2055,14 @@ msgid_plural "%u items"
 msgstr[0] "%u objekt"
 msgstr[1] "%u objekter"
 
-#: ../libnautilus-private/nautilus-file.c:4324
+#: ../libnautilus-private/nautilus-file.c:4343
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u mappe"
 msgstr[1] "%u mapper"
 
-#: ../libnautilus-private/nautilus-file.c:4325
+#: ../libnautilus-private/nautilus-file.c:4344
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2070,43 +2070,43 @@ msgstr[0] "%u fil"
 msgstr[1] "%u filer"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
-#: ../libnautilus-private/nautilus-file.c:4403
+#: ../libnautilus-private/nautilus-file.c:4422
 #, c-format
 msgid "%s (%lld bytes)"
 msgstr "%s (%lld bytes)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4702
-#: ../libnautilus-private/nautilus-file.c:4718
+#: ../libnautilus-private/nautilus-file.c:4721
+#: ../libnautilus-private/nautilus-file.c:4737
 msgid "? items"
 msgstr "? objekter"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4708
+#: ../libnautilus-private/nautilus-file.c:4727
 msgid "? bytes"
 msgstr "? byte"
 
-#: ../libnautilus-private/nautilus-file.c:4723
+#: ../libnautilus-private/nautilus-file.c:4742
 msgid "unknown type"
 msgstr "ukendt type"
 
-#: ../libnautilus-private/nautilus-file.c:4726
+#: ../libnautilus-private/nautilus-file.c:4745
 msgid "unknown MIME type"
 msgstr "ukendt MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4732
-#: ../src/file-manager/fm-properties-window.c:1310
+#: ../libnautilus-private/nautilus-file.c:4751
+#: ../src/file-manager/fm-properties-window.c:1309
 msgid "unknown"
 msgstr "ukendt"
 
-#: ../libnautilus-private/nautilus-file.c:4765
+#: ../libnautilus-private/nautilus-file.c:4784
 msgid "program"
 msgstr "program"
 
-#: ../libnautilus-private/nautilus-file.c:4783
+#: ../libnautilus-private/nautilus-file.c:4802
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2116,7 +2116,7 @@ msgstr ""
 "skyldes sandsynligvis at din gnome-vfs.keys-fil er det forkerte sted eller "
 "ikke bliver fundet af en eller anden grund."
 
-#: ../libnautilus-private/nautilus-file.c:4787
+#: ../libnautilus-private/nautilus-file.c:4806
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2125,15 +2125,15 @@ msgstr ""
 "Ingen beskrivelse fundet for MIME-typen \"%s\" (filen er \"%s\"), fortæl det "
 "venligst til Gnome VFS-postlisten."
 
-#: ../libnautilus-private/nautilus-file.c:4803
+#: ../libnautilus-private/nautilus-file.c:4822
 msgid "link"
 msgstr "henvisning"
 
-#: ../libnautilus-private/nautilus-file.c:4823
+#: ../libnautilus-private/nautilus-file.c:4842
 msgid "link (broken)"
 msgstr "henvisning (ødelagt)"
 
-#: ../libnautilus-private/nautilus-file.c:6348
+#: ../libnautilus-private/nautilus-file.c:6369
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 #: ../src/nautilus-trash-bar.c:137
@@ -2250,7 +2250,7 @@ msgid "Icon View"
 msgstr "Ikonvisning"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1427
+#: ../src/file-manager/fm-list-view.c:1431
 msgid "List View"
 msgstr "Listevisning"
 
@@ -2455,7 +2455,7 @@ msgstr "\"%s\" er ikke en gyldig placering."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:619
 #: ../libnautilus-private/nautilus-program-choosing.c:626
-#: ../src/nautilus-connect-server-dialog.c:194
+#: ../src/nautilus-connect-server-dialog.c:202
 #: ../src/nautilus-property-browser.c:1189
 #: ../src/nautilus-window-manage-views.c:1472
 #: ../src/nautilus-window-manage-views.c:1480
@@ -2644,7 +2644,7 @@ msgid "Delete all items in the Trash"
 msgstr "Slet alle elementer i papirkurven"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
-#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1127
+#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1121
 #: ../src/nautilus-places-sidebar.c:250
 msgid "Desktop"
 msgstr "Skrivebord"
@@ -2704,8 +2704,8 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Hvis du sletter et objekt, er det gået tabt permanent."
 
 #: ../src/file-manager/fm-directory-view.c:1166
-#: ../src/file-manager/fm-properties-window.c:4391
-#: ../src/nautilus-connect-server-dialog.c:393
+#: ../src/file-manager/fm-properties-window.c:4381
+#: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
 msgstr "Der opstod en fejl under visning af hjælp."
@@ -2727,7 +2727,7 @@ msgid "Search _name:"
 msgstr "Navn på søgning:"
 
 #: ../src/file-manager/fm-directory-view.c:1344
-#: ../src/nautilus-connect-server-dialog.c:563
+#: ../src/nautilus-connect-server-dialog.c:574
 msgid "_Folder:"
 msgstr "_Mappe:"
 
@@ -3241,7 +3241,7 @@ msgstr "Omdøb det valgte objekt"
 #: ../src/file-manager/fm-directory-view.c:6991
 #: ../src/file-manager/fm-directory-view.c:7581
 #: ../src/file-manager/fm-directory-view.c:7765
-#: ../src/file-manager/fm-directory-view.c:8161
+#: ../src/file-manager/fm-directory-view.c:8165
 msgid "Mo_ve to Trash"
 msgstr "Smi_d i papirkurv"
 
@@ -3471,67 +3471,67 @@ msgstr[1] "Åbn i %d nye vinduer"
 msgid "Delete all selected items permanently"
 msgstr "Slet alle valgte elementer permanent"
 
-#: ../src/file-manager/fm-directory-view.c:8141
+#: ../src/file-manager/fm-directory-view.c:8145
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Henvisningen \"%s\" er ødelagt."
 
-#: ../src/file-manager/fm-directory-view.c:8143
+#: ../src/file-manager/fm-directory-view.c:8147
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr ""
 "Henvisningen \"%s\" er ødelagt. Ønsker du at flytte den til papirkurven?"
 
-#: ../src/file-manager/fm-directory-view.c:8149
+#: ../src/file-manager/fm-directory-view.c:8153
 msgid "This link can't be used, because it has no target."
 msgstr "Denne henvisning kan ikke benyttes da den ikke har en destination."
 
-#: ../src/file-manager/fm-directory-view.c:8151
+#: ../src/file-manager/fm-directory-view.c:8155
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Denne henvisning kan ikke benyttes da dens destination \"%s\" ikke findes."
 
-#: ../src/file-manager/fm-directory-view.c:8802
+#: ../src/file-manager/fm-directory-view.c:8806
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Åbner \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8805
+#: ../src/file-manager/fm-directory-view.c:8809
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Åbner %d objekt."
 msgstr[1] "Åbner %d objekter."
 
-#: ../src/file-manager/fm-directory-view.c:9697
+#: ../src/file-manager/fm-directory-view.c:9701
 msgid "Download location?"
 msgstr "Overfør sted?"
 
-#: ../src/file-manager/fm-directory-view.c:9700
+#: ../src/file-manager/fm-directory-view.c:9704
 msgid "You can download it or make a link to it."
 msgstr "Du kan overføre det eller lave en henvisning til det."
 
-#: ../src/file-manager/fm-directory-view.c:9703
+#: ../src/file-manager/fm-directory-view.c:9707
 msgid "Make a _Link"
 msgstr "Opret en _henvisning"
 
-#: ../src/file-manager/fm-directory-view.c:9707
+#: ../src/file-manager/fm-directory-view.c:9711
 msgid "_Download"
 msgstr "_Overfør"
 
-#: ../src/file-manager/fm-directory-view.c:9770
-#: ../src/file-manager/fm-directory-view.c:9822
-#: ../src/file-manager/fm-directory-view.c:9923
+#: ../src/file-manager/fm-directory-view.c:9774
+#: ../src/file-manager/fm-directory-view.c:9826
+#: ../src/file-manager/fm-directory-view.c:9927
 msgid "Drag and drop is not supported."
 msgstr "Træk og slip er ikke understøttet."
 
-#: ../src/file-manager/fm-directory-view.c:9771
+#: ../src/file-manager/fm-directory-view.c:9775
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Træk og slip er kun understøttet på lokale filsystemer."
 
-#: ../src/file-manager/fm-directory-view.c:9823
-#: ../src/file-manager/fm-directory-view.c:9924
+#: ../src/file-manager/fm-directory-view.c:9827
+#: ../src/file-manager/fm-directory-view.c:9928
 msgid "An invalid drag type was used."
 msgstr "En ugyldig trækketype blev brugt."
 
@@ -3863,119 +3863,119 @@ msgstr "Ikonvisningen stødte på en fejl ved start."
 msgid "Display this location with the icon view."
 msgstr "Vis dette sted med ikonvisningen."
 
-#: ../src/file-manager/fm-list-model.c:371
+#: ../src/file-manager/fm-list-model.c:376
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(tom)"
 
-#: ../src/file-manager/fm-list-model.c:373
+#: ../src/file-manager/fm-list-model.c:378
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "Indlæser..."
 
-#: ../src/file-manager/fm-list-view.c:1956
+#: ../src/file-manager/fm-list-view.c:1960
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synlige kolonner"
 
-#: ../src/file-manager/fm-list-view.c:1975
+#: ../src/file-manager/fm-list-view.c:1979
 msgid "Choose the order of information to appear in this folder."
 msgstr "Vælg rækkefølgen af oplysninger der vises i denne mappe."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2017
+#: ../src/file-manager/fm-list-view.c:2021
 msgid "Visible _Columns..."
 msgstr "Synlige _kolonner..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2018
+#: ../src/file-manager/fm-list-view.c:2022
 msgid "Select the columns visible in this folder"
 msgstr "Vælg de kolonner som skal være synlige i denne mappe"
 
-#: ../src/file-manager/fm-list-view.c:2741
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "List"
 msgstr "Liste"
 
-#: ../src/file-manager/fm-list-view.c:2742
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "View as List"
 msgstr "Vis som liste"
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "View as _List"
 msgstr "Vis som _liste"
 
-#: ../src/file-manager/fm-list-view.c:2744
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "The list view encountered an error."
 msgstr "Listevisningen stødte på en fejl."
 
-#: ../src/file-manager/fm-list-view.c:2745
+#: ../src/file-manager/fm-list-view.c:2747
 msgid "The list view encountered an error while starting up."
 msgstr "Listevisningen stødte på en fejl ved start."
 
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2748
 msgid "Display this location with the list view."
 msgstr "Vis dette sted med listevisningen."
 
-#: ../src/file-manager/fm-properties-window.c:505
+#: ../src/file-manager/fm-properties-window.c:504
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Du kan ikke angive mere end et brugerdefineret ikon ad gangen!"
 
-#: ../src/file-manager/fm-properties-window.c:506
+#: ../src/file-manager/fm-properties-window.c:505
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Træk venligst kun ét billede for at vælge et brugerdefineret ikon."
 
-#: ../src/file-manager/fm-properties-window.c:514
+#: ../src/file-manager/fm-properties-window.c:513
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Filen du slap, er ikke lokal."
 
-#: ../src/file-manager/fm-properties-window.c:515
-#: ../src/file-manager/fm-properties-window.c:521
+#: ../src/file-manager/fm-properties-window.c:514
+#: ../src/file-manager/fm-properties-window.c:520
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Du kan kun bruge lokale billeder som brugerdefinerede ikoner."
 
-#: ../src/file-manager/fm-properties-window.c:520
+#: ../src/file-manager/fm-properties-window.c:519
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Filen du slap, er ikke et billede."
 
-#: ../src/file-manager/fm-properties-window.c:1015
+#: ../src/file-manager/fm-properties-window.c:1014
 msgid "Properties"
 msgstr "Egenskaber"
 
-#: ../src/file-manager/fm-properties-window.c:1023
+#: ../src/file-manager/fm-properties-window.c:1022
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaber for %s"
 
-#: ../src/file-manager/fm-properties-window.c:1575
+#: ../src/file-manager/fm-properties-window.c:1565
 msgid "Cancel Group Change?"
 msgstr "Fortryd ændring af gruppe?"
 
-#: ../src/file-manager/fm-properties-window.c:1992
+#: ../src/file-manager/fm-properties-window.c:1982
 msgid "Cancel Owner Change?"
 msgstr "Fortryd ændring af ejer?"
 
 # der står 'Indhold:' foran
-#: ../src/file-manager/fm-properties-window.c:2287
+#: ../src/file-manager/fm-properties-window.c:2277
 msgid "nothing"
 msgstr "intet"
 
 # ditto
-#: ../src/file-manager/fm-properties-window.c:2289
+#: ../src/file-manager/fm-properties-window.c:2279
 msgid "unreadable"
 msgstr "ulæseligt"
 
-#: ../src/file-manager/fm-properties-window.c:2299
+#: ../src/file-manager/fm-properties-window.c:2289
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d element, med størrelsen %s"
 msgstr[1] "%d elementer, i alt %s"
 
-#: ../src/file-manager/fm-properties-window.c:2308
+#: ../src/file-manager/fm-properties-window.c:2298
 msgid "(some contents unreadable)"
 msgstr "(noget indhold ulæseligt)"
 
@@ -3985,269 +3985,269 @@ msgstr "(noget indhold ulæseligt)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2325
+#: ../src/file-manager/fm-properties-window.c:2315
 msgid "Contents:"
 msgstr "Indhold:"
 
 # er den første fane under egenskaberne for en fil - 'basal' ser ikke godt ud
-#: ../src/file-manager/fm-properties-window.c:2643
+#: ../src/file-manager/fm-properties-window.c:2633
 msgid "Basic"
 msgstr "Generelt"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2673
+#: ../src/file-manager/fm-properties-window.c:2663
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Navn:"
 msgstr[1] "_Navne:"
 
-#: ../src/file-manager/fm-properties-window.c:2692
+#: ../src/file-manager/fm-properties-window.c:2682
 msgid "Type:"
 msgstr "Type:"
 
+#: ../src/file-manager/fm-properties-window.c:2684
 #: ../src/file-manager/fm-properties-window.c:2694
-#: ../src/file-manager/fm-properties-window.c:2704
-#: ../src/file-manager/fm-properties-window.c:2710
-#: ../src/file-manager/fm-properties-window.c:2717
-#: ../src/file-manager/fm-properties-window.c:2721
-#: ../src/file-manager/fm-properties-window.c:2729
-#: ../src/file-manager/fm-properties-window.c:2735
-#: ../src/file-manager/fm-properties-window.c:2744
-#: ../src/file-manager/fm-properties-window.c:2750
-#: ../src/file-manager/fm-properties-window.c:3770
-#: ../src/file-manager/fm-properties-window.c:3803
-#: ../src/file-manager/fm-properties-window.c:3976
-#: ../src/file-manager/fm-properties-window.c:3998
-#: ../src/file-manager/fm-properties-window.c:4033
-#: ../src/file-manager/fm-properties-window.c:4203
-#: ../src/file-manager/fm-properties-window.c:4207
+#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2707
+#: ../src/file-manager/fm-properties-window.c:2711
+#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2734
+#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:3760
+#: ../src/file-manager/fm-properties-window.c:3793
+#: ../src/file-manager/fm-properties-window.c:3966
+#: ../src/file-manager/fm-properties-window.c:3988
+#: ../src/file-manager/fm-properties-window.c:4023
+#: ../src/file-manager/fm-properties-window.c:4193
+#: ../src/file-manager/fm-properties-window.c:4197
 msgid "--"
 msgstr "-"
 
-#: ../src/file-manager/fm-properties-window.c:2702
+#: ../src/file-manager/fm-properties-window.c:2692
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: ../src/file-manager/fm-properties-window.c:2708
+#: ../src/file-manager/fm-properties-window.c:2698
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Sted:"
 
-#: ../src/file-manager/fm-properties-window.c:2715
+#: ../src/file-manager/fm-properties-window.c:2705
 msgid "Volume:"
 msgstr "Arkiv:"
 
-#: ../src/file-manager/fm-properties-window.c:2719
+#: ../src/file-manager/fm-properties-window.c:2709
 msgid "Free space:"
 msgstr "Fri plads"
 
-#: ../src/file-manager/fm-properties-window.c:2727
+#: ../src/file-manager/fm-properties-window.c:2717
 msgid "Link target:"
 msgstr "Henvisningsmål:"
 
-#: ../src/file-manager/fm-properties-window.c:2733
+#: ../src/file-manager/fm-properties-window.c:2723
 msgid "MIME type:"
 msgstr "Mime-type"
 
-#: ../src/file-manager/fm-properties-window.c:2742
+#: ../src/file-manager/fm-properties-window.c:2732
 msgid "Modified:"
 msgstr "Ændret:"
 
-#: ../src/file-manager/fm-properties-window.c:2748
+#: ../src/file-manager/fm-properties-window.c:2738
 msgid "Accessed:"
 msgstr "Tilgået:"
 
-#: ../src/file-manager/fm-properties-window.c:2851
+#: ../src/file-manager/fm-properties-window.c:2841
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Emblemer"
 
 # rettigheder, ikke bydeform
-#: ../src/file-manager/fm-properties-window.c:3249
+#: ../src/file-manager/fm-properties-window.c:3239
 msgid "_Read"
 msgstr "_Læse"
 
 # ditto
-#: ../src/file-manager/fm-properties-window.c:3251
+#: ../src/file-manager/fm-properties-window.c:3241
 msgid "_Write"
 msgstr "_Skrive"
 
 # ditto
-#: ../src/file-manager/fm-properties-window.c:3253
+#: ../src/file-manager/fm-properties-window.c:3243
 msgid "E_xecute"
 msgstr "_Udførsel"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3503
-#: ../src/file-manager/fm-properties-window.c:3514
-#: ../src/file-manager/fm-properties-window.c:3526
+#: ../src/file-manager/fm-properties-window.c:3493
+#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3516
 msgid "no "
 msgstr "nej "
 
-#: ../src/file-manager/fm-properties-window.c:3506
+#: ../src/file-manager/fm-properties-window.c:3496
 msgid "list"
 msgstr "liste"
 
 # rettigheder, ikke bydeform
-#: ../src/file-manager/fm-properties-window.c:3508
+#: ../src/file-manager/fm-properties-window.c:3498
 msgid "read"
 msgstr "læse"
 
 # rettigheder, ikke bydeform
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3507
 msgid "create/delete"
 msgstr "oprette/slette"
 
 # rettigheder, ikke bydeform
-#: ../src/file-manager/fm-properties-window.c:3519
+#: ../src/file-manager/fm-properties-window.c:3509
 msgid "write"
 msgstr "skrive"
 
 # rettigheder, ikke bydeform
-#: ../src/file-manager/fm-properties-window.c:3528
+#: ../src/file-manager/fm-properties-window.c:3518
 msgid "access"
 msgstr "tilgå"
 
-#: ../src/file-manager/fm-properties-window.c:3577
+#: ../src/file-manager/fm-properties-window.c:3567
 msgid "Access:"
 msgstr "Tilgå:"
 
-#: ../src/file-manager/fm-properties-window.c:3579
+#: ../src/file-manager/fm-properties-window.c:3569
 msgid "Folder Access:"
 msgstr "Tilgå mappe:"
 
-#: ../src/file-manager/fm-properties-window.c:3581
+#: ../src/file-manager/fm-properties-window.c:3571
 msgid "File Access:"
 msgstr "Tilgå fil:"
 
-#: ../src/file-manager/fm-properties-window.c:3593
-#: ../src/file-manager/fm-properties-window.c:3604
+#: ../src/file-manager/fm-properties-window.c:3583
+#: ../src/file-manager/fm-properties-window.c:3594
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Ingen"
 
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
 msgstr "Vis kun filer"
 
-#: ../src/file-manager/fm-properties-window.c:3598
+#: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
 msgstr "Tilgå filer"
 
-#: ../src/file-manager/fm-properties-window.c:3600
+#: ../src/file-manager/fm-properties-window.c:3590
 msgid "Create and delete files"
 msgstr "Oprette og slette filer"
 
-#: ../src/file-manager/fm-properties-window.c:3607
+#: ../src/file-manager/fm-properties-window.c:3597
 msgid "Read-only"
 msgstr "Kun læse"
 
-#: ../src/file-manager/fm-properties-window.c:3609
+#: ../src/file-manager/fm-properties-window.c:3599
 msgid "Read and write"
 msgstr "Læse og skrive"
 
-#: ../src/file-manager/fm-properties-window.c:3674
+#: ../src/file-manager/fm-properties-window.c:3664
 msgid "Set _user ID"
 msgstr "Sæt _bruger-id"
 
-#: ../src/file-manager/fm-properties-window.c:3676
+#: ../src/file-manager/fm-properties-window.c:3666
 msgid "Special flags:"
 msgstr "Specielle kørselstilvalg:"
 
-#: ../src/file-manager/fm-properties-window.c:3678
+#: ../src/file-manager/fm-properties-window.c:3668
 msgid "Set gro_up ID"
 msgstr "Sæt _gruppe-id"
 
-#: ../src/file-manager/fm-properties-window.c:3679
+#: ../src/file-manager/fm-properties-window.c:3669
 msgid "_Sticky"
 msgstr "_Klæbrig"
 
-#: ../src/file-manager/fm-properties-window.c:3759
-#: ../src/file-manager/fm-properties-window.c:3963
+#: ../src/file-manager/fm-properties-window.c:3749
+#: ../src/file-manager/fm-properties-window.c:3953
 msgid "_Owner:"
 msgstr "_Ejer:"
 
-#: ../src/file-manager/fm-properties-window.c:3765
-#: ../src/file-manager/fm-properties-window.c:3860
-#: ../src/file-manager/fm-properties-window.c:3971
+#: ../src/file-manager/fm-properties-window.c:3755
+#: ../src/file-manager/fm-properties-window.c:3850
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "Owner:"
 msgstr "Ejer:"
 
-#: ../src/file-manager/fm-properties-window.c:3788
-#: ../src/file-manager/fm-properties-window.c:3983
+#: ../src/file-manager/fm-properties-window.c:3778
+#: ../src/file-manager/fm-properties-window.c:3973
 msgid "_Group:"
 msgstr "_Gruppe:"
 
-#: ../src/file-manager/fm-properties-window.c:3797
-#: ../src/file-manager/fm-properties-window.c:3861
-#: ../src/file-manager/fm-properties-window.c:3992
+#: ../src/file-manager/fm-properties-window.c:3787
+#: ../src/file-manager/fm-properties-window.c:3851
+#: ../src/file-manager/fm-properties-window.c:3982
 msgid "Group:"
 msgstr "Gruppe"
 
-#: ../src/file-manager/fm-properties-window.c:3822
+#: ../src/file-manager/fm-properties-window.c:3812
 msgid "Others"
 msgstr "Andre"
 
-#: ../src/file-manager/fm-properties-window.c:3839
+#: ../src/file-manager/fm-properties-window.c:3829
 msgid "Execute:"
 msgstr "Udførsel:"
 
-#: ../src/file-manager/fm-properties-window.c:3843
+#: ../src/file-manager/fm-properties-window.c:3833
 msgid "Allow _executing file as program"
 msgstr "Tillad _kørsel af filen som et program"
 
-#: ../src/file-manager/fm-properties-window.c:3862
+#: ../src/file-manager/fm-properties-window.c:3852
 msgid "Others:"
 msgstr "Andre:"
 
-#: ../src/file-manager/fm-properties-window.c:4010
+#: ../src/file-manager/fm-properties-window.c:4000
 msgid "Folder Permissions:"
 msgstr "Mapperettigheder:"
 
-#: ../src/file-manager/fm-properties-window.c:4022
+#: ../src/file-manager/fm-properties-window.c:4012
 msgid "File Permissions:"
 msgstr "Filrettigheder:"
 
-#: ../src/file-manager/fm-properties-window.c:4032
+#: ../src/file-manager/fm-properties-window.c:4022
 msgid "Text view:"
 msgstr "Tekstvisning:"
 
-#: ../src/file-manager/fm-properties-window.c:4179
+#: ../src/file-manager/fm-properties-window.c:4169
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke ejeren, så du kan ikke ændre disse rettigheder."
 
-#: ../src/file-manager/fm-properties-window.c:4202
+#: ../src/file-manager/fm-properties-window.c:4192
 msgid "SELinux Context:"
 msgstr "SELinux-kontekst:"
 
-#: ../src/file-manager/fm-properties-window.c:4206
+#: ../src/file-manager/fm-properties-window.c:4196
 msgid "Last changed:"
 msgstr "Senest ændret:"
 
-#: ../src/file-manager/fm-properties-window.c:4220
+#: ../src/file-manager/fm-properties-window.c:4210
 msgid "Apply permissions to enclosed files"
 msgstr "Anvend rettigheder på indeholdte filer"
 
-#: ../src/file-manager/fm-properties-window.c:4230
+#: ../src/file-manager/fm-properties-window.c:4220
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Kunne ikke afgøre rettighederne for \"%s\"."
 
-#: ../src/file-manager/fm-properties-window.c:4233
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "The permissions of the selected file could not be determined."
 msgstr "Kunne ikke afgøre rettighederne for den valgte fil."
 
-#: ../src/file-manager/fm-properties-window.c:4453
+#: ../src/file-manager/fm-properties-window.c:4443
 msgid "Open With"
 msgstr "Åbn med"
 
-#: ../src/file-manager/fm-properties-window.c:4793
+#: ../src/file-manager/fm-properties-window.c:4783
 msgid "Creating Properties window."
 msgstr "Opretter egenskaber-vinduet."
 
-#: ../src/file-manager/fm-properties-window.c:5033
+#: ../src/file-manager/fm-properties-window.c:5023
 msgid "Select Custom Icon"
 msgstr "Vælg eget ikon"
 
@@ -4476,92 +4476,92 @@ msgstr ""
 "\n"
 "Tilføj tilslutning til servermontering"
 
-#: ../src/nautilus-connect-server-dialog.c:113
+#: ../src/nautilus-connect-server-dialog.c:118
 msgid "Custom Location"
 msgstr "Brugerdefineret sted"
 
-#: ../src/nautilus-connect-server-dialog.c:115
+#: ../src/nautilus-connect-server-dialog.c:120
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/nautilus-connect-server-dialog.c:118
+#: ../src/nautilus-connect-server-dialog.c:123
 msgid "Public FTP"
 msgstr "Offentlig FTP"
 
-#: ../src/nautilus-connect-server-dialog.c:120
+#: ../src/nautilus-connect-server-dialog.c:125
 msgid "FTP (with login)"
 msgstr "FTP (med logind)"
 
-#: ../src/nautilus-connect-server-dialog.c:123
+#: ../src/nautilus-connect-server-dialog.c:128
 msgid "Windows share"
 msgstr "Windows delt mappe"
 
-#: ../src/nautilus-connect-server-dialog.c:125
+#: ../src/nautilus-connect-server-dialog.c:130
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: ../src/nautilus-connect-server-dialog.c:127
+#: ../src/nautilus-connect-server-dialog.c:132
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Sikker WebDAV (HTTPS)"
 
-#: ../src/nautilus-connect-server-dialog.c:192
+#: ../src/nautilus-connect-server-dialog.c:200
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
 msgstr "Kan ikke forbinde til server. \"%s\" er ikke et gyldigt sted."
 
-#: ../src/nautilus-connect-server-dialog.c:208
+#: ../src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
 msgstr "Kan ikke forbinde til server. Du skal indtaste et navn for serveren."
 
-#: ../src/nautilus-connect-server-dialog.c:209
+#: ../src/nautilus-connect-server-dialog.c:217
 msgid "Please enter a name and try again."
 msgstr "Indtast et navn og prøv igen."
 
-#: ../src/nautilus-connect-server-dialog.c:469
+#: ../src/nautilus-connect-server-dialog.c:480
 msgid "_Location (URI):"
 msgstr "_Placering (URI):"
 
-#: ../src/nautilus-connect-server-dialog.c:491
+#: ../src/nautilus-connect-server-dialog.c:502
 msgid "_Server:"
 msgstr "_Server:"
 
-#: ../src/nautilus-connect-server-dialog.c:510
+#: ../src/nautilus-connect-server-dialog.c:521
 msgid "Optional information:"
 msgstr "Valgfri information:"
 
-#: ../src/nautilus-connect-server-dialog.c:522
+#: ../src/nautilus-connect-server-dialog.c:533
 msgid "_Share:"
 msgstr "_Delt mappe:"
 
-#: ../src/nautilus-connect-server-dialog.c:543
+#: ../src/nautilus-connect-server-dialog.c:554
 msgid "_Port:"
 msgstr "_Port:"
 
-#: ../src/nautilus-connect-server-dialog.c:583
+#: ../src/nautilus-connect-server-dialog.c:594
 msgid "_User Name:"
 msgstr "_Brugernavn:"
 
-#: ../src/nautilus-connect-server-dialog.c:604
+#: ../src/nautilus-connect-server-dialog.c:615
 msgid "_Domain Name:"
 msgstr "_Domænenavn:"
 
-#: ../src/nautilus-connect-server-dialog.c:628
+#: ../src/nautilus-connect-server-dialog.c:639
 msgid "_Name to use for connection:"
 msgstr "_Navnet der skal bruges til forbindelsen:"
 
-#: ../src/nautilus-connect-server-dialog.c:805
+#: ../src/nautilus-connect-server-dialog.c:818
 msgid "Connect to Server"
 msgstr "Tilslut til server"
 
-#: ../src/nautilus-connect-server-dialog.c:822
+#: ../src/nautilus-connect-server-dialog.c:835
 msgid "Service _type:"
 msgstr "Tjeneste_type:"
 
-#: ../src/nautilus-connect-server-dialog.c:890
+#: ../src/nautilus-connect-server-dialog.c:930
 msgid "Browse _Network"
 msgstr "Navigér _netværket"
 
-#: ../src/nautilus-connect-server-dialog.c:896
+#: ../src/nautilus-connect-server-dialog.c:936
 msgid "C_onnect"
 msgstr "_Tilslut"
 
