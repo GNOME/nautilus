@@ -486,7 +486,6 @@ nautilus_window_open_location_full (NautilusWindow *window,
 			    window,
 			    old_location ? old_location : "(none)",
 			    location);
-	g_free (old_location);
 
 	switch (mode) {
         case NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE :
@@ -546,6 +545,7 @@ nautilus_window_open_location_full (NautilusWindow *window,
                 break;
         default :
                 g_warning ("Unknown open location mode");
+		g_free (old_location);
                 return;
         }
 
@@ -565,9 +565,12 @@ nautilus_window_open_location_full (NautilusWindow *window,
                 }
         }
 
-        if (!do_load_location) {
+        if ((!do_load_location) ||
+	    (target_window == window && !eel_strcmp (old_location, location))) {
+		g_free (old_location);
                 return;
         }
+	g_free (old_location);
 
         if (!eel_is_valid_uri (location))
                 g_warning ("Possibly invalid new URI '%s'\n"

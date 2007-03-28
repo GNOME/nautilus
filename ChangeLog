@@ -1,3 +1,10 @@
+2007-03-28  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-window-manage-views.c:
+        (nautilus_window_open_location_full):
+	Avoid reloading window with same location. (#417193)
+	Patch from Stefano Teso
+
 2007-03-19  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_emit_changed):
