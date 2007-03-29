@@ -1384,7 +1384,7 @@ create_and_set_up_tree_view (FMListView *view)
 			cell = gtk_cell_renderer_text_new ();
                         g_object_set (cell,
                                       "ellipsize", PANGO_ELLIPSIZE_END,
-                                      "width-chars", 16,
+                                      "width-chars", 32,
                                       NULL);
 			view->details->file_name_cell = (GtkCellRendererText *)cell;
 			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
