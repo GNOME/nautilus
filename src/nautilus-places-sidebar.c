@@ -53,6 +53,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
@@ -86,6 +87,7 @@ typedef struct {
 	GtkWidget *popup_menu_unmount_item;
 	GtkWidget *popup_menu_eject_item;
 	GtkWidget *popup_menu_format_item;
+	GtkWidget *popup_menu_empty_trash_item;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -349,6 +351,15 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (mount_uri);
 	}
 	g_list_free (volumes);
+
+	mount_uri = "trash:///"; /* No need to strdup */
+	icon = nautilus_trash_monitor_is_empty () ? "user-trash" : "user-trash-full";
+	last_iter = add_place (sidebar, PLACES_BUILT_IN,
+			       _("Trash"), icon, mount_uri,
+			       NULL, NULL, 0);
+	if (strcmp (location, mount_uri) == 0) {
+		gtk_tree_selection_select_iter (selection, &last_iter);
+	}
 
 	/* add separator */
 
@@ -1042,6 +1053,7 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_unmount_item = NULL;
 	sidebar->popup_menu_eject_item = NULL;
 	sidebar->popup_menu_format_item = NULL;
+	sidebar->popup_menu_empty_trash_item = NULL;
 }
 
 static gboolean
@@ -1100,6 +1112,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 	gboolean show_unmount;
 	gboolean show_eject;
 	gboolean show_format;
+	gboolean show_empty_trash;
+	char *uri = NULL;
 	
 	type = PLACES_BUILT_IN;
 
@@ -1112,11 +1126,13 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 				    PLACES_SIDEBAR_COLUMN_ROW_TYPE, &type,
 				    PLACES_SIDEBAR_COLUMN_DRIVE, &drive,
  				    PLACES_SIDEBAR_COLUMN_VOLUME, &volume,
+				    PLACES_SIDEBAR_COLUMN_URI, &uri,
 				    -1);
 	}
 
 	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
+	gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !nautilus_trash_monitor_is_empty ());
 
  	check_visibility (volume, drive,
  			  &show_mount, &show_unmount, &show_eject, &show_format);	
@@ -1126,13 +1142,19 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
  	if (show_eject) {
  		show_unmount = FALSE;
   	}
+
+	show_empty_trash = (uri != NULL) &&
+			   (!strcmp (uri, "trash:///"));
 	
 	eel_gtk_widget_set_shown (sidebar->popup_menu_separator_item, 
-			show_mount || show_unmount || show_eject || show_format);
+			show_mount || show_unmount || show_eject || show_format || show_empty_trash);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_mount_item, show_mount);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_unmount_item, show_unmount);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_eject_item, show_eject);
 	eel_gtk_widget_set_shown (sidebar->popup_menu_format_item, show_format);
+	eel_gtk_widget_set_shown (sidebar->popup_menu_empty_trash_item, show_empty_trash);
+
+	g_free (uri);
 }
 
 /* Callback used when the selection in the shortcuts tree changes */
@@ -1374,6 +1396,13 @@ format_shortcut_cb (GtkMenuItem           *item,
 	g_spawn_command_line_async ("gfloppy", NULL);
 }
 
+static void
+empty_trash_cb (GtkMenuItem           *item,
+		NautilusPlacesSidebar *sidebar)
+{
+	nautilus_file_operations_empty_trash (GTK_WIDGET (sidebar->window));
+}
+
 /* Handler for GtkWidget::key-press-event on the shortcuts list */
 static gboolean
 bookmarks_key_press_event_cb (GtkWidget             *widget,
@@ -1479,6 +1508,15 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
+	/* Empty Trash menu item */
+
+	item = gtk_menu_item_new_with_mnemonic (_("Empty _Trash"));
+	sidebar->popup_menu_empty_trash_item = item;
+	g_signal_connect (item, "activate",
+		    G_CALLBACK (empty_trash_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
 	bookmarks_check_popup_sensitivity (sidebar);
 }
 
@@ -1555,6 +1593,21 @@ bookmarks_editing_canceled (GtkCellRenderer       *cell,
 			    NautilusPlacesSidebar *sidebar)
 {
 	g_object_set (cell, "editable", FALSE, NULL);
+}
+
+static void
+trash_state_changed_cb (NautilusTrashMonitor *trash_monitor,
+			gboolean             state,
+			gpointer             data)
+{
+	NautilusPlacesSidebar *sidebar;
+
+	sidebar = NAUTILUS_PLACES_SIDEBAR (data);
+
+	/* The trash icon changed, update the sidebar */
+	update_places (sidebar);
+
+	bookmarks_check_popup_sensitivity (sidebar);
 }
 
 static void
@@ -1669,6 +1722,11 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 						  desktop_location_changed_callback,
 						  sidebar,
 						  G_OBJECT (sidebar));
+
+	g_signal_connect_object (nautilus_trash_monitor_get (),
+				 "trash_state_changed",
+				 G_CALLBACK (trash_state_changed_cb),
+				 sidebar, 0);
 }
 
 static void
