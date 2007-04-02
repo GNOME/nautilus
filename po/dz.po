@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.dz\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-02 04:25+0000\n"
-"PO-Revision-Date: 2007-03-01 14:20+0530\n"
-"Last-Translator: norbu <nor_den@hotmail.com>\n"
+"POT-Creation-Date: 2007-03-20 03:33+0000\n"
+"PO-Revision-Date: 2007-03-30 10:56+0530\n"
+"Last-Translator: sonam pelden <sonaa_peldn@yahoo.com>\n"
 "Language-Team: DZONGKHA <pgeyleg@dit.gov.bt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -756,7 +756,7 @@ msgstr "ཚིག་དོན་འཛིན་པང་གུ་སྦྱར་
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6884
+#: ../src/file-manager/fm-directory-view.c:6891
 msgid "Select _All"
 msgstr "ཆ་མཉམ་སེལ་འཐུ་འབད།(_A)"
 
@@ -844,7 +844,7 @@ msgid "The group of the file."
 msgstr "ཡིག་སྣོད་ཀྱི་སྡེ་ཚན།"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4164
+#: ../src/file-manager/fm-properties-window.c:4156
 msgid "Permissions"
 msgstr "གནང་བ།"
 
@@ -877,12 +877,13 @@ msgid "The SELinux security context of the file."
 msgstr "ཡིག་སྣོད་ཀྱི་ ཨེསི་ཨི་ལི་ནགསི་ སྲུང་སྐྱོབ་ཀྱི་སྐབས་དོན།"
 
 #: ../libnautilus-private/nautilus-customization-data.c:407
+#: ../src/nautilus-property-browser.c:1868
 msgid "Reset"
 msgstr "སླར་སྒྲིག"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:443
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:163
-#: ../libnautilus-private/nautilus-trash-file.c:691
+#: ../libnautilus-private/nautilus-trash-file.c:692
 msgid "on the desktop"
 msgstr "ཌེཀསི་ཊོཔ་གུ།"
 
@@ -932,18 +933,18 @@ msgstr "སྣོད་འཛིན་ཆ་མཉམ་གྱི་དོན་
 msgid "Set as background for _this folder"
 msgstr "སྣོད་འཛིན་འདི་གི་དོན་ལུ་ རྒྱབ་གཞི་སྦེ་ གཞི་སྒྲིག་འབད།(_t)"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:197
-#: ../libnautilus-private/nautilus-emblem-utils.c:202
-#: ../libnautilus-private/nautilus-emblem-utils.c:257
-#: ../libnautilus-private/nautilus-emblem-utils.c:274
+#: ../libnautilus-private/nautilus-emblem-utils.c:198
+#: ../libnautilus-private/nautilus-emblem-utils.c:203
+#: ../libnautilus-private/nautilus-emblem-utils.c:258
+#: ../libnautilus-private/nautilus-emblem-utils.c:275
 msgid "The emblem cannot be installed."
 msgstr "ལས་རྟགས་དེ་ གསར་བཙུགས་འབད་མི་ཚུགས་པས།"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:198
+#: ../libnautilus-private/nautilus-emblem-utils.c:199
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "དགོངསམ་མ་ཁྲེལ་ ཁྱོད་ཀྱིས་ལས་རྟགས་གསར་པའི་དོན་ལུ་ སྟོངམ་མིན་པའི་གཙོ་ཚིག་ཅིག་ གསལ་བཀོད་འབད་དགོ"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:203
+#: ../libnautilus-private/nautilus-emblem-utils.c:204
 msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr "དགོངསམ་མ་ཁྲེལ་ ལས་རྟགས་ཀྱི་གཙོ་ཚིག་ནང་ ཡི་གུ་དང་ བར་སྟོང་ ཨང་གྲངས་ཚུ་རྐྱངམ་གཅིག་བཞག་བཏུབ།"
 
@@ -951,24 +952,24 @@ msgstr "དགོངསམ་མ་ཁྲེལ་ ལས་རྟགས་ཀ�
 #. * what a keyword is, and people should be passing a unique
 #. * keyword to us anyway
 #.
-#: ../libnautilus-private/nautilus-emblem-utils.c:213
+#: ../libnautilus-private/nautilus-emblem-utils.c:214
 #, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
 msgstr "དགོངསམ་མ་ཁྲེལ་ ལས་རྟགས་མིང་\"%s\"འབད་མི་ཅིག་ ཧེ་མ་ལས་རང་འདུག"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:214
+#: ../libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Please choose a different emblem name."
 msgstr "ལས་རྟགས་ཀྱི་མིང་ སོ་སོ་ཅིག་གདམ་ཁ་བརྐྱབ་གནང་།"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:258
+#: ../libnautilus-private/nautilus-emblem-utils.c:259
 msgid "Sorry, unable to save custom emblem."
 msgstr "དགོངསམ་མ་ཁྲེལ་ སྲོལ་སྒྲིག་ལས་རྟགས་ བསྲུང་མ་ཚུགས།"
 
-#: ../libnautilus-private/nautilus-emblem-utils.c:275
+#: ../libnautilus-private/nautilus-emblem-utils.c:276
 msgid "Sorry, unable to save custom emblem name."
 msgstr "དགོངསམ་མ་ཁྲེལ་ སྲོལ་སྒྲིག་ལས་རྟགས་ཀྱི་མིང་ བསྲུང་མ་ཚུགས།"
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:168
+#: ../libnautilus-private/nautilus-file-operations-progress.c:167
 #, c-format
 msgid "%s %ld of %ld %s"
 msgstr "%s %ld། %ld %sགི"
@@ -986,7 +987,7 @@ msgstr "(%d:%02d ལྷག་ལུས་)"
 #: ../libnautilus-private/nautilus-file-operations.c:452
 #: ../libnautilus-private/nautilus-file-operations.c:481
 #: ../libnautilus-private/nautilus-file-utilities.c:87
-#: ../src/nautilus-connect-server-dialog.c:329
+#: ../src/nautilus-connect-server-dialog.c:337
 #, c-format
 msgid "%s on %s"
 msgstr "%s  ལུ་%s"
@@ -1218,17 +1219,17 @@ msgstr "ཆ་མཉམ་ཚབ་བཙུགས།(_A)"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
-#: ../libnautilus-private/nautilus-file.c:4809
-#: ../src/file-manager/fm-directory-view.c:9830
+#: ../libnautilus-private/nautilus-file.c:4828
+#: ../src/file-manager/fm-directory-view.c:9841
 #, c-format
-msgid "link to %s"
-msgstr "%s ལུ་འབྲེལ་མཐུད་འབད།"
+msgid "Link to %s"
+msgstr "%s ལུ་འབྲེལ་ལམ་"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1310
 #, c-format
-msgid "another link to %s"
-msgstr "%s ལུ་ འབྲེལ་མཐུད་གཞན་མི་ཅིག"
+msgid "Another link to %s"
+msgstr "%s ལུ་ འབྲེལ་ལམ་གཞན་མི་ཅིག"
 
 #. Localizers: Feel free to leave out the "st" suffix
 #. * if there's no way to do that nicely for a
@@ -1519,46 +1520,64 @@ msgid "new file"
 msgstr "ཡིག་སྣོད་གསརཔ།"
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2803
+#: ../libnautilus-private/nautilus-file-operations.c:2805
 msgid "Deleting files"
 msgstr "ཡིག་སྣོད་བཏོན་གཏང་དོ།"
 
 #. localizers: label prepended to the progress count
-#: ../libnautilus-private/nautilus-file-operations.c:2805
-#: ../libnautilus-private/nautilus-file-operations.c:2843
+#: ../libnautilus-private/nautilus-file-operations.c:2807
+#: ../libnautilus-private/nautilus-file-operations.c:2849
 msgid "Files deleted:"
 msgstr "ཡིག་སྣོད་བཏོན་བཏང་ཡི་:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: ../libnautilus-private/nautilus-file-operations.c:2807
-#: ../libnautilus-private/nautilus-file-operations.c:2845
+#: ../libnautilus-private/nautilus-file-operations.c:2809
+#: ../libnautilus-private/nautilus-file-operations.c:2851
 msgid "Deleting"
 msgstr "བཏོན་གཏང་དོ།"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2808
+#: ../libnautilus-private/nautilus-file-operations.c:2810
 msgid "Preparing to Delete files..."
 msgstr "ཡིག་སྣོད་བཏོན་གཏང་ནིའི་གྲ་སྒྲིག་རྐྱབ་དོ་..."
 
 #. localizers: progress dialog title
-#: ../libnautilus-private/nautilus-file-operations.c:2841
+#: ../libnautilus-private/nautilus-file-operations.c:2847
 msgid "Emptying the Trash"
 msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན་དོ།"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2846
+#: ../libnautilus-private/nautilus-file-operations.c:2852
 msgid "Preparing to Empty the Trash..."
 msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན་ནིའི་གྲ་སྒྲིག་རྐྱབ་དོ་..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2882
+#: ../libnautilus-private/nautilus-file-operations.c:2888
 msgid "Empty all of the items from the trash?"
 msgstr "ཕྱགས་ཧོད་ནང་ལས་ རྣམ་གྲངས་ཆ་མཉམ་ བཏོན་གཏང་ནི་ཨིན་ན?།"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2885
+#: ../libnautilus-private/nautilus-file-operations.c:2891
 msgid "If you choose to empty the trash, all items in it will be permanently lost. Please note that you can also delete them separately."
 msgstr "ཁྱོད་ཀྱིས་ཕྱགས་ཧོད་སྟོངམ་བཏོན་པ་ཅིན་ དེ་ནང་ཡོད་པའི་རྣམ་གྲངས་ཆ་མཉམ་ རྟག་བརྟན་སྦེ་ བརླག་སྟོར་འགྱོཝ་ཨིན། ཁྱོད་ཀྱིས་རེ་རེ་སྦེ་ བཏོན་གཏང་རུང་བཏུབ།"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2907
+#: ../libnautilus-private/nautilus-file-operations.c:2913
 msgid "_Empty Trash"
 msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན།(_E)"
+
+#: ../libnautilus-private/nautilus-file-operations.c:3018
+msgid "Do you want to empty the trash before you umount?"
+msgstr "ཁྱོད་ཀྱིས་ སྦྱར་བརྩེགས་འབད་མ་བཤོལ་བའི་ཧེ་མ་ལས་ ཕྱག་ཧོད་སྟོངམ་བཏོན་ནི་ཨིན་ན་?"
+
+#: ../libnautilus-private/nautilus-file-operations.c:3020
+msgid "In order to regain the free space on this device the trash must be emptied. All items in the trash will be permanently lost. "
+msgstr "ཐབས་འཕྲུལ་འདི་གུ་ ལོག་ས་སྟོང་དལཝ་བཟོ་ནི་གི་དོན་ལུ་ ཕྱག་ཧོད་འདི་སྟོངམ་བཏོན་དགོ ཕྱག་ཧོད་ནང་གི་རྣམ་གྲངས་ཚུ་ རྩ་བརྟན་སྦེ་བཏོན་གཏང་འོང་།"
+
+#: ../libnautilus-private/nautilus-file-operations.c:3026
+msgid "Don't Empty Trash"
+msgstr "ཕྱགས་ཧོད་སྟོངམ་མ་བཏོན་"
+
+#. label, accelerator
+#: ../libnautilus-private/nautilus-file-operations.c:3028
+#: ../src/file-manager/fm-desktop-icon-view.c:706
+msgid "Empty Trash"
+msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན།"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:75
 #: ../libnautilus-private/nautilus-query.c:135
@@ -1615,65 +1634,65 @@ msgstr "ནང་ལུ་ཞབས་ཏོག"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2927
+#: ../libnautilus-private/nautilus-file.c:2946
 msgid "today at 00:00:00 PM"
 msgstr "ད་རིས་ ཕྱི་ཆ་ ༠༠:༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2928
-#: ../src/nautilus-file-management-properties.c:460
+#: ../libnautilus-private/nautilus-file.c:2947
+#: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "ད་རིས་ %-I:%M:%S %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2930
+#: ../libnautilus-private/nautilus-file.c:2949
 msgid "today at 00:00 PM"
 msgstr "ད་རིས་ ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2931
+#: ../libnautilus-private/nautilus-file.c:2950
 msgid "today at %-I:%M %p"
 msgstr "ད་རིས་ %-I:%M %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2933
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "today, 00:00 PM"
 msgstr "ད་རིས་ ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2934
+#: ../libnautilus-private/nautilus-file.c:2953
 msgid "today, %-I:%M %p"
 msgstr "ད་རིས་ %-I:%M %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2936
-#: ../libnautilus-private/nautilus-file.c:2937
+#: ../libnautilus-private/nautilus-file.c:2955
+#: ../libnautilus-private/nautilus-file.c:2956
 msgid "today"
 msgstr "ད་རིས།"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2946
+#: ../libnautilus-private/nautilus-file.c:2965
 msgid "yesterday at 00:00:00 PM"
 msgstr "ཁ་རྩང་ ཕྱི་ཆ་ ༠༠:༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2966
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ཁ་རྩང་ %-I:%M:%S %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2949
+#: ../libnautilus-private/nautilus-file.c:2968
 msgid "yesterday at 00:00 PM"
 msgstr "ཁ་རྩང་ ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2950
+#: ../libnautilus-private/nautilus-file.c:2969
 msgid "yesterday at %-I:%M %p"
 msgstr "ཁ་རྩང་ %-I:%M %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2952
+#: ../libnautilus-private/nautilus-file.c:2971
 msgid "yesterday, 00:00 PM"
 msgstr "ཁ་རྩང་ ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2953
+#: ../libnautilus-private/nautilus-file.c:2972
 msgid "yesterday, %-I:%M %p"
 msgstr "ཁ་རྩང་ %-I:%M %p ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2955
-#: ../libnautilus-private/nautilus-file.c:2956
+#: ../libnautilus-private/nautilus-file.c:2974
+#: ../libnautilus-private/nautilus-file.c:2975
 msgid "yesterday"
 msgstr "ཁ་རྩང་།"
 
@@ -1682,63 +1701,63 @@ msgstr "ཁ་རྩང་།"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2967
+#: ../libnautilus-private/nautilus-file.c:2986
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "གཟའ་ཕུར་བུ་ སྤྱི་ཟླ་དགུ་པ་ ༠༠ ༠༠༠༠ གི་ ཕྱི་ཆ་ ༠༠:༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2968
+#: ../libnautilus-private/nautilus-file.c:2987
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y at %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2970
+#: ../libnautilus-private/nautilus-file.c:2989
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "གཟའ་མིག་དམར་ སྤྱི་ཟླ་བཅུ་པ་ ༠༠ ༠༠༠༠ གི་ཕྱི་ཆ་ ༠༠:༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2971
+#: ../libnautilus-private/nautilus-file.c:2990
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y at %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2973
+#: ../libnautilus-private/nautilus-file.c:2992
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "གཟའ་མིག་དམར་ སྤྱི་ཟླ་བཅུ་པ་ ༠༠ ༠༠༠༠ གི་ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2974
+#: ../libnautilus-private/nautilus-file.c:2993
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y at %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2976
+#: ../libnautilus-private/nautilus-file.c:2995
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "སྤྱི་ཟླ་བཅུ་པའི་ ༠༠ ༠༠༠༠ ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2977
+#: ../libnautilus-private/nautilus-file.c:2996
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y at %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2979
+#: ../libnautilus-private/nautilus-file.c:2998
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "སྤྱི་ཟླ་༡༠ པའི་ ༠༠ ༠༠༠༠ གི་ཕྱི་ཆ་ ༠༠:༠༠ ལུ།"
 
-#: ../libnautilus-private/nautilus-file.c:2980
+#: ../libnautilus-private/nautilus-file.c:2999
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2982
+#: ../libnautilus-private/nautilus-file.c:3001
 msgid "00/00/00, 00:00 PM"
 msgstr "ཕྱི་ཆ་ ༠༠/༠༠/༠༠, ༠༠:༠༠"
 
-#: ../libnautilus-private/nautilus-file.c:2983
+#: ../libnautilus-private/nautilus-file.c:3002
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2985
+#: ../libnautilus-private/nautilus-file.c:3004
 msgid "00/00/00"
 msgstr "༠༠/༠༠/༠༠"
 
-#: ../libnautilus-private/nautilus-file.c:2986
+#: ../libnautilus-private/nautilus-file.c:3005
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4323
+#: ../libnautilus-private/nautilus-file.c:4342
 #: ../src/file-manager/fm-directory-view.c:2249
 #, c-format
 msgid "%u item"
@@ -1746,14 +1765,14 @@ msgid_plural "%u items"
 msgstr[0] "རྣམ་གྲངས་%u།"
 msgstr[1] "རྣམ་གྲངས་ %u།"
 
-#: ../libnautilus-private/nautilus-file.c:4324
+#: ../libnautilus-private/nautilus-file.c:4343
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "སྣོད་འཛིན་ %u།"
 msgstr[1] "སྣོད་འཛིན་ %u །"
 
-#: ../libnautilus-private/nautilus-file.c:4325
+#: ../libnautilus-private/nautilus-file.c:4344
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -1761,60 +1780,60 @@ msgstr[0] "ཡིག་སྣོད་%u།"
 msgstr[1] "ཡིག་སྣོད་ %u།"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
-#: ../libnautilus-private/nautilus-file.c:4403
+#: ../libnautilus-private/nautilus-file.c:4422
 #, c-format
 msgid "%s (%lld bytes)"
 msgstr "%s (བའིཊིསི་%lld)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4702
-#: ../libnautilus-private/nautilus-file.c:4718
+#: ../libnautilus-private/nautilus-file.c:4721
+#: ../libnautilus-private/nautilus-file.c:4737
 msgid "? items"
 msgstr "? རྣམ་གྲངས་ཚུ།"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4708
+#: ../libnautilus-private/nautilus-file.c:4727
 msgid "? bytes"
 msgstr "? བཱའིཊིསི།"
 
-#: ../libnautilus-private/nautilus-file.c:4723
+#: ../libnautilus-private/nautilus-file.c:4742
 msgid "unknown type"
 msgstr "མ་ཤེས་པའི་དབྱེ་བ།"
 
-#: ../libnautilus-private/nautilus-file.c:4726
+#: ../libnautilus-private/nautilus-file.c:4745
 msgid "unknown MIME type"
 msgstr "མ་ཤེས་པའི་ མ་ཡིམ་དབྱེ་བ།"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4732
-#: ../src/file-manager/fm-properties-window.c:1308
+#: ../libnautilus-private/nautilus-file.c:4751
+#: ../src/file-manager/fm-properties-window.c:1309
 msgid "unknown"
 msgstr "མ་ཤེསཔ།"
 
-#: ../libnautilus-private/nautilus-file.c:4765
+#: ../libnautilus-private/nautilus-file.c:4784
 msgid "program"
 msgstr "ལས་རིམ།"
 
-#: ../libnautilus-private/nautilus-file.c:4783
+#: ../libnautilus-private/nautilus-file.c:4802
 msgid "Can't find description even for \"x-directory/normal\". This probably means that your gnome-vfs.keys file is in the wrong place or isn't being found for some other reason."
 msgstr "ཐ་ན་\"x-directory/normal\" གི་དོན་ལུ་ཡང་ འགྲེལ་བཤད་འཚོལ་མ་ཐོབ། འདི་གི་དོན་དག་ ཁྱོད་ཀྱི"
 
-#: ../libnautilus-private/nautilus-file.c:4787
+#: ../libnautilus-private/nautilus-file.c:4806
 #, c-format
 msgid "No description found for mime type \"%s\" (file is \"%s\"), please tell the gnome-vfs mailing list."
 msgstr "མ་ཡིམ་དབྱེ་བ་ \"%s\" གི་དོན་ལུ་ འགྲེལ་བཤད་འཚོལ་མ་ཐོབ། (ཡིག་སྣོད་དེ་ \"%s\" ཨིན) ཇི་ནོམ་-ཝི་ཨེཕ་ཨེསི་ ཡིག་གཏང་ཐོ་ཡིག་ལུ་སླབ་གནང་།"
 
-#: ../libnautilus-private/nautilus-file.c:4803
+#: ../libnautilus-private/nautilus-file.c:4822
 msgid "link"
 msgstr "འགྲེལ་ལམ།"
 
-#: ../libnautilus-private/nautilus-file.c:4823
+#: ../libnautilus-private/nautilus-file.c:4842
 msgid "link (broken)"
 msgstr "འབྲེལ་ལམ་(ཆད་པ)"
 
-#: ../libnautilus-private/nautilus-file.c:6348
+#: ../libnautilus-private/nautilus-file.c:6369
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 #: ../src/nautilus-trash-bar.c:137
@@ -1926,12 +1945,12 @@ msgid "Search for files by file name and file properties"
 msgstr "ཡིག་སྣོད་ཚུ་ ཡིག་སྣོད་ཀྱི་མིང་དང་ ཡིག་སྣོད་ཀྱི་རྒྱུ་དངོས་ཐོག་ལས་འཚོལ།"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
-#: ../src/file-manager/fm-icon-container.c:536
+#: ../src/file-manager/fm-icon-container.c:512
 msgid "Icon View"
 msgstr "ངོས་དཔར་གྱི་མཐོང་སྣང་།"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1427
+#: ../src/file-manager/fm-list-view.c:1431
 msgid "List View"
 msgstr "ཐོ་ཡིག་གི་མཐོང་སྣང་།"
 
@@ -2011,22 +2030,6 @@ msgstr "%s's ཁྱིམ།"
 #: ../libnautilus-private/nautilus-icon-container.c:2137
 msgid "The selection rectangle"
 msgstr "སེལ་འཐུའི་གྲུ་བཞི་ནར་མོ།"
-
-#: ../libnautilus-private/nautilus-icon-container.c:4884
-msgid "Normal Alpha"
-msgstr "སྤྱིར་བཏང་གི་ཨཱལ་ཕ།"
-
-#: ../libnautilus-private/nautilus-icon-container.c:4885
-msgid "Opacity of the normal icons if frame_text is set"
-msgstr "གཞི་ཁྲམ་ཚིག་ཡིག་ གཞི་སྒྲིག་འབད་བ་ཅིན་ སྤྱིར་བཏང་ངོས་དཔར་ཚུ་གི་དྭངས་སྒྲིབ།"
-
-#: ../libnautilus-private/nautilus-icon-container.c:4891
-msgid "Prelight Alpha"
-msgstr "སྔོན་འོད་ཨཱལ་ཕ་"
-
-#: ../libnautilus-private/nautilus-icon-container.c:4892
-msgid "Opacity of the prelight icons if frame_text is set"
-msgstr "གཞི་ཁྲམ་ཚིག་ཡིག་ གཞི་སྒྲིག་འབད་བ་ཅིན་ སྔོན་འོད་ངོས་དཔར་ཚུ་གི་དྭངས་སྒྲིབ་ (_t)"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:833
 msgid "Switch to Manual Layout?"
@@ -2119,7 +2122,7 @@ msgstr "\"%s\" དེ་ ནུས་ལྡན་གྱི་གནས་ཁོ�
 
 #: ../libnautilus-private/nautilus-program-choosing.c:619
 #: ../libnautilus-private/nautilus-program-choosing.c:626
-#: ../src/nautilus-connect-server-dialog.c:194
+#: ../src/nautilus-connect-server-dialog.c:202
 #: ../src/nautilus-property-browser.c:1189
 #: ../src/nautilus-window-manage-views.c:1472
 #: ../src/nautilus-window-manage-views.c:1480
@@ -2210,7 +2213,7 @@ msgid "Open Folder"
 msgstr "སྣོད་འཛིན་ཁ་ཕྱེ།"
 
 #: ../nautilus-home.desktop.in.in.h:1
-#: ../src/file-manager/fm-tree-view.c:1393
+#: ../src/file-manager/fm-tree-view.c:1394
 msgid "Home Folder"
 msgstr "ཁྱིམ་གྱི་སྣོད་འཛིན།"
 
@@ -2258,22 +2261,22 @@ msgstr "རྒྱབ་གཞི།"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6862
-#: ../src/file-manager/fm-directory-view.c:7816
+#: ../src/file-manager/fm-directory-view.c:6869
+#: ../src/file-manager/fm-directory-view.c:7823
 msgid "E_mpty Trash"
 msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན།(_m)"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6834
+#: ../src/file-manager/fm-directory-view.c:6841
 msgid "Create L_auncher..."
 msgstr "གསར་བཙུགས་འབད་མི་ གསར་བསྐྲུན་འབད་...(_a)"
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6835
+#: ../src/file-manager/fm-directory-view.c:6842
 msgid "Create a new launcher"
 msgstr "གསར་བཙུགས་འབད་མི་གསརཔ་ཅིག་ གསར་བསྐྲུན་འབད།"
 
@@ -2287,22 +2290,17 @@ msgstr "ཌེཀསི་ཊོཔ་གི་རྒྱབ་གཞི་སོ
 msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr "ཁྱོད་རའི་ཌེཀསི་ཊོཔ་གི་ དཔེ་ཚད་དམ་ཚོས་གཞི་ གཞི་སྒྲིག་འབད་བཅུག་མི་ སྒོ་སྒྲིག་ཅིག་སྟོན།"
 
-#. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:706
-msgid "Empty Trash"
-msgstr "ཕྱགས་ཧོད་སྟོངམ་བཏོན།"
-
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/file-manager/fm-directory-view.c:6870
 #: ../src/nautilus-trash-bar.c:153
 msgid "Delete all items in the Trash"
 msgstr "ཕྱགས་ཧོད་ནང་ཡོད་མི་ རྣམ་གྲངས་ཆ་མཉམ་ བཏོན་གཏང་།"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246
-#: ../src/nautilus-pathbar.c:1127
+#: ../src/nautilus-pathbar.c:1121
 #: ../src/nautilus-places-sidebar.c:250
 msgid "Desktop"
 msgstr "ཌེསིཀ་ཊོཔ།"
@@ -2358,8 +2356,8 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "ཁྱོད་ཀྱིས་རྣམ་གྲངས་ཅིག་ བཏོན་གཏང་པ་ཅིན་ དེ་རྟག་བརྟན་སྦེ་ བརླག་སྟོར་འགྱོ་འོང་།"
 
 #: ../src/file-manager/fm-directory-view.c:1166
-#: ../src/file-manager/fm-properties-window.c:4389
-#: ../src/nautilus-connect-server-dialog.c:393
+#: ../src/file-manager/fm-properties-window.c:4381
+#: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
 msgstr "གྲོགས་རམ་བཀྲམ་སྟོན་འབད་ནི་ལུ་ འཛོལ་བ་ཅིག་འདུག"
@@ -2381,7 +2379,7 @@ msgid "Search _name:"
 msgstr "འཚོལ་ཞིབ་མིང་:(_n)"
 
 #: ../src/file-manager/fm-directory-view.c:1344
-#: ../src/nautilus-connect-server-dialog.c:563
+#: ../src/nautilus-connect-server-dialog.c:574
 msgid "_Folder:"
 msgstr "སྣོད་འཛིན་:(_F)"
 
@@ -2509,46 +2507,46 @@ msgstr[1] "ཁྱོད་ཀྱིས་ སེལ་འཐུ་འབད་�
 msgid "If you delete an item, it will be permanently lost."
 msgstr "ཁྱོད་ཀྱིས་རྣམ་གྲངས་ཅིག་ བཏོན་གཏང་པ་ཅིན་ དེ་རྟག་བརྟན་སྦེ་ བརླག་སྟོར་འགྱོ་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:4474
+#: ../src/file-manager/fm-directory-view.c:4476
 #, c-format
 msgid "Open with \"%s\""
 msgstr "\"%s\" གིས་ཁ་ཕྱེ།"
 
-#: ../src/file-manager/fm-directory-view.c:4475
+#: ../src/file-manager/fm-directory-view.c:4477
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ ཁ་ཕྱེ་ནི་ལུ་ \"%s\" ལག་ལེན་འཐབ།"
 msgstr[1] "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ ཁ་ཕྱེ་ནི་ལུ་ \"%s\" ལག་ལེན་འཐབ།"
 
-#: ../src/file-manager/fm-directory-view.c:4567
+#: ../src/file-manager/fm-directory-view.c:4569
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "ཁྱོད་ཀྱིས་ \"%s\" གཡོག་བཀོལ་ནི་ཨིན་ན་ ཡང་ཅིན་ དེ་གི་ནང་དོན་ཚུ་ བཀྲམ་སྟོན་འབད་ནི་ཨིན་ན?"
 
-#: ../src/file-manager/fm-directory-view.c:4569
+#: ../src/file-manager/fm-directory-view.c:4571
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" དེ་ ལག་ལེན་འཐབ་བཏུབ་པའི་ ཚིག་ཡིག་ཡིག་སྣོད་ཅིག་ཨིན།"
 
-#: ../src/file-manager/fm-directory-view.c:4575
+#: ../src/file-manager/fm-directory-view.c:4577
 msgid "Run in _Terminal"
 msgstr "ཊར་མི་ནཱལ་ནང་ གཡོག་བཀོལ།(_T)"
 
-#: ../src/file-manager/fm-directory-view.c:4576
+#: ../src/file-manager/fm-directory-view.c:4578
 msgid "_Display"
 msgstr "བཀྲམ་སྟོན་འབད།(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:4579
+#: ../src/file-manager/fm-directory-view.c:4581
 msgid "_Run"
 msgstr "གཡོག་བཀོལ།(_R)"
 
-#: ../src/file-manager/fm-directory-view.c:4975
+#: ../src/file-manager/fm-directory-view.c:4977
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s ཁ་ཕྱེ་མི་ཚུགས་པས།"
 
-#: ../src/file-manager/fm-directory-view.c:4978
+#: ../src/file-manager/fm-directory-view.c:4980
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents of the file indicate that the file is of type \"%s\". If you open this file, the file might present a security risk to your system.\n"
@@ -2559,25 +2557,25 @@ msgstr ""
 "\n"
 "ཁྱོད་ཀྱིས་ཡིག་སྣོད་གསར་བཟོ་མ་འབད་བའམ་ བློ་གཏད་ཅན་གྱི་འབྱུང་ཁུངས་ཅིག་ལས་ ཡིག་སྣོད་དེ་མ་ཐོབ་པར་ ཡིག་སྣོད་དེ་ཁ་མ་ཕྱེ། ཡིག་སྣོད་དེ་ཁ་ཕྱེ་ནི་ལུ་ \"%s\" གི་དོན་ལས་ རྒྱ་བསྐྱེད་ངོ་མ་ལུ་ ཡིག་སྣོད་ལུ་སླར་མིང་བཏགས་ཞིནམ་ལས་ ཨ་རྟག་བཟུམ་སྦེ་ཁ་ཕྱེ། དེ་མིན་རུང་ ཡིག་སྣོད་དེ་གི་དོན་ལུ་ དམིགས་བསལ་གློག་རིམ་ཅིག་ གདམ་ཁ་བརྐྱབ་ནིའི་དོན་ལུ་ ཨོ་པཱན་ཝིཐ་ཟེར་མི་དཀར་ཆག་དེ་ ལག་ལེན་འཐབ།"
 
-#: ../src/file-manager/fm-directory-view.c:5404
+#: ../src/file-manager/fm-directory-view.c:5406
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ གང་རུང་ཅིག་ལུ་ \"%s\"  གཡོག་བཀོལ།"
 
-#: ../src/file-manager/fm-directory-view.c:5653
+#: ../src/file-manager/fm-directory-view.c:5655
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "ཊེམ་པེལེཊི་ \"%s\" ནང་ལས་ ཡིག་ཆ་གསར་བསྐྲུན་འབད།"
 
-#: ../src/file-manager/fm-directory-view.c:5859
+#: ../src/file-manager/fm-directory-view.c:5861
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "སྣོད་འཛིན་འདི་ནང་ཡོད་མི་ ལག་ལེན་འཐབ་བཏུབ་པའི་ ཡིག་སྣོད་ཆ་མཉམ་ ཡིག་ཚུགས་དཀར་ཆག་ནང་འཐོན་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:5861
+#: ../src/file-manager/fm-directory-view.c:5863
 msgid "Choosing a script from the menu will run that script with any selected items as input."
 msgstr "དཀར་ཆག་དེ་ནང་ལས་ ཡིག་ཚུགས་ཅིག་གདམ་ཁ་རྐྱབ་པ་ཅིན་ ཡིག་ཚུགས་དེ་ སེལ་འཐུ་འབད་མི་ རྣམ་གྲངས་གང་རུང་དང་ཅིག་ཁར་ ཨིན་པུཊི་སྦེ་ གཡོག་བཀོལ་བཏུབ།"
 
-#: ../src/file-manager/fm-directory-view.c:5863
+#: ../src/file-manager/fm-directory-view.c:5865
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
 "\n"
@@ -2606,523 +2604,523 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ད་ལྟོའི་སྒོ་སྒྲིག་གི་གནས་ས་དང་ཚད།"
 
-#: ../src/file-manager/fm-directory-view.c:6027
+#: ../src/file-manager/fm-directory-view.c:6029
 #: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བརྡ་བཀོད་དེ་ སེལ་འཐུ་འབད་བ་ཅིན་ \"%s\" དེ་ སྤོ་བཤུད་འབད་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:6031
+#: ../src/file-manager/fm-directory-view.c:6033
 #: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བརྡ་བཀོད་ སེལ་འཐུ་འབད་བ་ཅིན་ \"%s\" དེ་ འདྲ་བཤུས་བརྐྱབ་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:6038
+#: ../src/file-manager/fm-directory-view.c:6040
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བརྡ་བཀོད་དེ་ སེལ་འཐུ་འབད་བ་ཅིན་ སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ %d དེ་སྤོ་བཤུད་འབད་འོང་།"
 msgstr[1] "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བརྡ་བཀོད་དེ་ སེལ་འཐུ་འབད་བ་ཅིན་ སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ %d དེ་སྤོ་བཤུད་འབད་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:6045
+#: ../src/file-manager/fm-directory-view.c:6047
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བཀོད་དེ་ སེལ་འཐུ་འབད་བ་ཅིན་ སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ %d དེ་ འདྲ་བཤུས་བརྐྱབ་འོང་།"
 msgstr[1] "ཁྱོད་ཀྱིས་སྦྱར་ནིའི་བརྡ་བཀོད་དེ་ སེལ་འཐུ་འབད་བ་ཅིན་ སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ %d ཚུ་འདྲ་བཤུས་བརྐྱབ་འོང་།"
 
-#: ../src/file-manager/fm-directory-view.c:6139
+#: ../src/file-manager/fm-directory-view.c:6141
 #: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "སྦྱར་ནིའི་དོན་ལུ་ འཛིན་པང་གུ་ ག་ནི་ཡང་མིན་འདུག"
 
-#: ../src/file-manager/fm-directory-view.c:6614
+#: ../src/file-manager/fm-directory-view.c:6620
 #, c-format
 msgid "Connect to Server %s"
 msgstr "སར་བར་ %s ལུ་མཐུད།"
 
-#: ../src/file-manager/fm-directory-view.c:6619
+#: ../src/file-manager/fm-directory-view.c:6625
 msgid "_Connect"
 msgstr "མཐུད།(_C)"
 
-#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6639
 msgid "Link _name:"
 msgstr "འབྲེལ་ལམ་གྱི་མིང་:(_n)"
 
-#: ../src/file-manager/fm-directory-view.c:6808
+#: ../src/file-manager/fm-directory-view.c:6815
 msgid "Create _Document"
 msgstr "ཡིག་ཆ་གསར་བསྐྲུན་འབད།(_D)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6809
+#: ../src/file-manager/fm-directory-view.c:6816
 msgid "Open Wit_h"
 msgstr "གི་ཐོག་ལས་ཁ་ཕྱེ།(_h)"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6810
+#: ../src/file-manager/fm-directory-view.c:6817
 msgid "Choose a program with which to open the selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་དེ་ ཁ་ཕྱེ་ནིའི་ལས་རིམ་ཅིག་ གདམ་ཁ་རྐྱབས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6812
-#: ../src/file-manager/fm-directory-view.c:6820
+#: ../src/file-manager/fm-directory-view.c:6819
+#: ../src/file-manager/fm-directory-view.c:6827
 msgid "_Properties"
 msgstr "རྒྱུ་དངོས་ཚུ།(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6813
+#: ../src/file-manager/fm-directory-view.c:6820
 msgid "View or modify the properties of each selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ རེ་རེ་བཞིན་དུ་གི་ རྒྱུ་དངོས་ཚུ་ལུ་བལྟ་ ཡང་ན་ ལེགས་བཅོས་འབད།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6821
+#: ../src/file-manager/fm-directory-view.c:6828
 msgid "View or modify the properties of the open folder"
 msgstr "ཁ་ཕྱེ་སྟེ་ཡོད་མི་སྣོད་འཛིན་དེ་གི་ རྒྱུ་དངོས་ཚུ་སྟོན་ ཡང་ན་ ལེགས་བཅོས་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6824
+#: ../src/file-manager/fm-directory-view.c:6831
 msgid "Create _Folder"
 msgstr "སྣོད་འཛིན་གསར་བསྐྲུན་འབད།(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6825
+#: ../src/file-manager/fm-directory-view.c:6832
 msgid "Create a new empty folder inside this folder"
 msgstr "སྣོད་འཛིན་འདི་གི་ནང་ན་ སྣོད་འཛིན་གསརཔ་སྟོངམ་ཅིག་ གསར་བསྐྲུན་འབད།"
 
-#: ../src/file-manager/fm-directory-view.c:6827
+#: ../src/file-manager/fm-directory-view.c:6834
 msgid "No templates Installed"
 msgstr "ཊེམ་པེལེཊི་་གཅིག་ཡང་ གཞི་བཙུགས་མ་འབད་བས།"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6830
+#: ../src/file-manager/fm-directory-view.c:6837
 msgid "_Empty File"
 msgstr "ཡིག་སྣོད་སྟོངམ།(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6831
+#: ../src/file-manager/fm-directory-view.c:6838
 msgid "Create a new empty file inside this folder"
 msgstr "སྣོད་འཛིན་འདི་གི་ནང་ན་ ཡིག་སྣོད་གསརཔ་སྟོངམ་ཅིག་ གསར་བསྐྲུན་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6838
-#: ../src/file-manager/fm-directory-view.c:7717
-#: ../src/file-manager/fm-tree-view.c:1252
+#: ../src/file-manager/fm-directory-view.c:6845
+#: ../src/file-manager/fm-directory-view.c:7724
+#: ../src/file-manager/fm-tree-view.c:1253
 msgid "_Open"
 msgstr "ཁ་ཕྱེ།(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6839
+#: ../src/file-manager/fm-directory-view.c:6846
 msgid "Open the selected item in this window"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་དེ་ སྒོ་སྒྲིག་འདི་ནང་ཁ་ཕྱེ།"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6846
-#: ../src/file-manager/fm-directory-view.c:6970
+#: ../src/file-manager/fm-directory-view.c:6853
+#: ../src/file-manager/fm-directory-view.c:6977
 msgid "Open in Navigation Window"
 msgstr "འགྲུལ་བསྐྱོད་སྒོ་སྒྲིག་ནང་ཁ་ཕྱེ།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6847
+#: ../src/file-manager/fm-directory-view.c:6854
 msgid "Open each selected item in a navigation window"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ རེ་རེ་བཞིན་དུ་ འགྲུལ་བསྐྱོད་སྒོ་སྒྲིག་འདི་ནང་ཁ་ཕྱེ།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6850
-#: ../src/file-manager/fm-directory-view.c:6854
+#: ../src/file-manager/fm-directory-view.c:6857
+#: ../src/file-manager/fm-directory-view.c:6861
 msgid "Open with Other _Application..."
 msgstr "གློག་རིམ་གཞན་གྱི་ཐོག་ལས་ཁ་ཕྱེ།(_A)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6851
-#: ../src/file-manager/fm-directory-view.c:6855
+#: ../src/file-manager/fm-directory-view.c:6858
+#: ../src/file-manager/fm-directory-view.c:6862
 msgid "Choose another application with which to open the selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ ཁ་ཕྱེ་ནིའི་དོན་ལུ་ གློག་རིམ་གཞན་ཅིག་ གདམ་ཁ་རྐྱབས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6858
+#: ../src/file-manager/fm-directory-view.c:6865
 msgid "_Open Scripts Folder"
 msgstr "ཡིག་ཚུགས་སྣོད་འཛིན་ཁ་ཕྱེ།(_O)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6859
+#: ../src/file-manager/fm-directory-view.c:6866
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "དཀར་ཆག་འདི་ནང་ཐོན་མི་ ཡིག་ཚུགས་ཡོད་མི་ སྣོད་འཛིན་དེ་སྟོན།"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6867
+#: ../src/file-manager/fm-directory-view.c:6874
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "སེལ་འཐུ་འབད་མི་ཡིག་སྣོད་ཚུ་ སྦྱར་ནིའི་བརྡ་བཀོད་ཅིག་གི་ཐོག་ལས་ སྤོ་བཤུད་འབད་ནིའི་གྲ་སྒྲིག་རྐྱབས།"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6871
+#: ../src/file-manager/fm-directory-view.c:6878
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "སེལ་འཐུ་འབད་མི་ཡིག་སྣོད་ཚུ་ སྦྱར་ནིའི་བརྡ་བཀོད་ཅིག་གི་ཐོག་ལས་ འདྲ་བཤུས་བརྐྱབ་ནིའི་ གྲ་སྒྲིག་རྐྱབས།"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6875
+#: ../src/file-manager/fm-directory-view.c:6882
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "ཧེ་མ་ བཏོག་ནིའམ་ འདྲ་བཤུས་བརྐྱབ་ནིའི་བརྡ་བཀོད་ཅིག་གིས་ སེལ་འཐུ་འབད་མི་ཡིག་སྣོད་ཚུ་ སྤོ་བཤུད་འབད་ ཡང་ན་ འདྲ་བཤུས་རྐྱབས།"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6880
-#: ../src/file-manager/fm-tree-view.c:1306
+#: ../src/file-manager/fm-directory-view.c:6887
+#: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Paste Into Folder"
 msgstr "སྣོད་འཛིན་ནང་སྦྱར།(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6881
+#: ../src/file-manager/fm-directory-view.c:6888
 msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
 msgstr "ཧེ་མ་ བཏོག་ནིའམ་ འདྲ་བཤུས་བརྐྱབ་ནིའི་བརྡ་བཀོད་ཅིག་གིས་ སེལ་འཐུ་འབད་མི་ཡིག་སྣོད་ཚུ་ སེལ་འཐུ་འབད་མི་སྣོད་འཛིན་དེ་ནང་ སྤོ་བཤུད་འབད་ ཡང་ན་ འདྲ་བཤུས་རྐྱབས།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6885
+#: ../src/file-manager/fm-directory-view.c:6892
 msgid "Select all items in this window"
 msgstr "སྒོ་སྒྲིག་འདི་ནང་ཡོད་པའི་ རྣམ་གྲངས་ཆ་མཉམ་ སེལ་འཐུ་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6888
+#: ../src/file-manager/fm-directory-view.c:6895
 msgid "Select _Pattern"
 msgstr "དཔེ་གཞི་སེལ་འཐུ་འབད།(_P)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6889
+#: ../src/file-manager/fm-directory-view.c:6896
 msgid "Select items in this window matching a given pattern"
 msgstr "སྒོ་སྒྲིག་འདི་ནང་ གྲ་སྒྲིག་འབད་ཡོད་པའི་དཔེ་གཞི་དང་མཐུན་པའི་རྣམ་གྲངས་ཚུ་ སེལ་འཐུ་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6892
+#: ../src/file-manager/fm-directory-view.c:6899
 msgid "D_uplicate"
 msgstr "ངོ་བཤུས།(_u)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6893
+#: ../src/file-manager/fm-directory-view.c:6900
 msgid "Duplicate each selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ རེ་རེ་བཞིན་དུ་ངོ་བཤུས་།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6896
-#: ../src/file-manager/fm-directory-view.c:7790
+#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-directory-view.c:7797
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "འབྲེལ་ལམ་བཟོ།(_k)"
 msgstr[1] "འབྲེལ་ལམ་བཟོ།(_k)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6897
+#: ../src/file-manager/fm-directory-view.c:6904
 msgid "Create a symbolic link for each selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ རེ་རེ་བཞིན་དུའི་དོན་ལུ་ བརྡ་མཚོན་གྱི་འབྲེལ་ལམ་ཅིག་ གསར་བསྐྲུན་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6900
+#: ../src/file-manager/fm-directory-view.c:6907
 msgid "_Rename..."
 msgstr "བསྐྱར་མིང་བཏགས་...(_R)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6901
+#: ../src/file-manager/fm-directory-view.c:6908
 msgid "Rename selected item"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ཚུ་ལུ་ བསྐྱར་མིང་བཏགས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6908
-#: ../src/file-manager/fm-directory-view.c:6984
-#: ../src/file-manager/fm-directory-view.c:7574
-#: ../src/file-manager/fm-directory-view.c:7758
-#: ../src/file-manager/fm-directory-view.c:8154
+#: ../src/file-manager/fm-directory-view.c:6915
+#: ../src/file-manager/fm-directory-view.c:6991
+#: ../src/file-manager/fm-directory-view.c:7581
+#: ../src/file-manager/fm-directory-view.c:7765
+#: ../src/file-manager/fm-directory-view.c:8165
 msgid "Mo_ve to Trash"
 msgstr "ཕྱགས་ཧོད་ནང་སྤོ།(_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6909
-#: ../src/file-manager/fm-directory-view.c:7759
+#: ../src/file-manager/fm-directory-view.c:6916
+#: ../src/file-manager/fm-directory-view.c:7766
 msgid "Move each selected item to the Trash"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་རེ་རེ་བཞིན་དུ་ ཕྱགས་ཧོད་ནང་སྤོ།"
 
 #. name, stock id
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6912
-#: ../src/file-manager/fm-directory-view.c:6988
-#: ../src/file-manager/fm-directory-view.c:7777
-#: ../src/file-manager/fm-tree-view.c:1333
+#: ../src/file-manager/fm-directory-view.c:6919
+#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:7784
+#: ../src/file-manager/fm-tree-view.c:1334
 msgid "_Delete"
 msgstr "བཏོན་གཏང་།(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6913
+#: ../src/file-manager/fm-directory-view.c:6920
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་རེ་རེ་བཞིན་དུ་ ཕྱགས་ཧོད་ནང་མ་སྤོ་བར་བཏོན་གཏང་།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6916
+#: ../src/file-manager/fm-directory-view.c:6923
 msgid "Reset View to _Defaults"
 msgstr "མཐོང་སྣང་སྔོན་སྒྲིག་ལུ་ སླར་སྒྲིག་འབད།(_D)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6917
+#: ../src/file-manager/fm-directory-view.c:6924
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "དབྱེ་སེལ་གོ་རིམ་དང་ རྒྱས་ཟུམ་གནས་རིམ་ཚུ་ མཐོང་སྣང་འདི་གི་ དགའ་གདམ་དང་མཐུན་ནི་ལུ་ སླར་སྒྲིག་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6920
+#: ../src/file-manager/fm-directory-view.c:6927
 msgid "Connect To This Server"
 msgstr "སར་བར་འདི་ལུ་མཐུད།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:6928
 msgid "Make a permanent connection to this server"
 msgstr "སར་བར་འདི་ལུ་ རྟག་བརྟན་གྱི་མཐུད་ལམ་ཅིག་བཟོ།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6924
-#: ../src/file-manager/fm-directory-view.c:6940
+#: ../src/file-manager/fm-directory-view.c:6931
+#: ../src/file-manager/fm-directory-view.c:6947
 msgid "_Mount Volume"
 msgstr "སྐད་ཤུགས་སྦྱར་བརྩེགས་འབད།(_M)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:6932
 msgid "Mount the selected volume"
 msgstr "སེལ་འཐུ་འབད་མི་སྐད་ཤུགས་སྦྱར་བརྩེགས་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6928
-#: ../src/file-manager/fm-directory-view.c:6944
+#: ../src/file-manager/fm-directory-view.c:6935
+#: ../src/file-manager/fm-directory-view.c:6951
 #: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "སྐད་ཤུགས་སྦྱར་བརྩེགས་བཤོལ།(_U)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6929
+#: ../src/file-manager/fm-directory-view.c:6936
 msgid "Unmount the selected volume"
 msgstr "སེལ་འཐུ་འབད་མི་སྐད་ཤུགས་ སྦྱར་བརྩེགས་བཤོལ།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6932
-#: ../src/file-manager/fm-directory-view.c:6948
-#: ../src/nautilus-places-sidebar.c:1397
+#: ../src/file-manager/fm-directory-view.c:6939
+#: ../src/file-manager/fm-directory-view.c:6955
+#: ../src/nautilus-places-sidebar.c:1399
 msgid "_Eject"
 msgstr "ཕྱིར་བཏོན།(_E)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6933
+#: ../src/file-manager/fm-directory-view.c:6940
 msgid "Eject the selected volume"
 msgstr "སེལ་འཐུ་འབད་མི་སྐད་ཤུགས་ ཕྱིར་བཏོན་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6936
-#: ../src/file-manager/fm-directory-view.c:6952
-#: ../src/nautilus-places-sidebar.c:1404
+#: ../src/file-manager/fm-directory-view.c:6943
+#: ../src/file-manager/fm-directory-view.c:6959
+#: ../src/nautilus-places-sidebar.c:1406
 msgid "_Format"
 msgstr "རྩ་སྒྲིག་:(_F)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6937
+#: ../src/file-manager/fm-directory-view.c:6944
 msgid "Format the selected volume"
 msgstr "སེལ་འཐུ་འབད་མི་སྐད་ཤུགས་རྩ་སྒྲིག་འབད།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6941
+#: ../src/file-manager/fm-directory-view.c:6948
 msgid "Mount the volume associated with the open folder"
 msgstr "ཁ་ཕྱེ་སྟེ་ཡོད་པའི་ སྣོད་འཛིན་དང་འབྲེལ་བའི་སྐད་ཤུགས་ སྦྱར་བརྩེགས་འབད།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6945
+#: ../src/file-manager/fm-directory-view.c:6952
 msgid "Unmount the volume associated with the open folder"
 msgstr "ཁ་ཕྱེ་སྟེ་ཡོད་པའི་ སྣོད་འཛིན་དང་འབྲེལ་བའི་སྐད་ཤུགས་ སྦྱར་བརྩེགས་བཤོལ།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6949
+#: ../src/file-manager/fm-directory-view.c:6956
 msgid "Eject the volume associated with the open folder"
 msgstr "ཁ་ཕྱེ་སྟེ་ཡོད་པའི་སྣོད་འཛིན་དང་འབྲེལ་བ་ཡོད་པའི་ སྐད་ཤུགས་བཏོན་གཏང་།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6953
+#: ../src/file-manager/fm-directory-view.c:6960
 msgid "Format the volume associated with the open folder"
 msgstr "ཁ་ཕྱེ་སྟེ་ཡོད་པའི་ སྣོད་འཛིན་དང་འབྲེལ་བའི་སྐད་ཤུགས་ རྩ་སྒྲིག་འབད།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6956
+#: ../src/file-manager/fm-directory-view.c:6963
 msgid "Open File and Close window"
 msgstr "ཡིག་སྣོད་ཁ་ཕྱེ་སྟེ་ སྒོ་སྒྲིག་ཁ་བསྡམས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6960
+#: ../src/file-manager/fm-directory-view.c:6967
 msgid "Sa_ve Search"
 msgstr "འཚོལ་ཞིབ་སྲུངས།(_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6961
+#: ../src/file-manager/fm-directory-view.c:6968
 msgid "Save the edited search"
 msgstr "ཞུན་དག་འབད་ཡོད་པའི་འཚོལ་ཞིབ་སྲུངས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6964
+#: ../src/file-manager/fm-directory-view.c:6971
 msgid "Sa_ve Search As..."
 msgstr "འཚོལ་ཞིབ་དེ་སྦེ་སྲུངས་...(_v)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6965
+#: ../src/file-manager/fm-directory-view.c:6972
 msgid "Save the current search as a file"
 msgstr "ད་ལྟོའི་འཚོལ་ཞིབ་དེ་ ཡིག་སྣོད་ཅིག་སྦེ་སྲུངས།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6971
+#: ../src/file-manager/fm-directory-view.c:6978
 msgid "Open this folder in a navigation window"
 msgstr "སྣོད་འཛིན་འདི་ འགྲུལ་བསྐྱོད་སྒོ་སྒྲིག་ཅིག་ནང་ཁ་ཕྱེ།"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6976
+#: ../src/file-manager/fm-directory-view.c:6983
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "སྣོད་འཛིན་འདི་ སྦྱར་ནིའི་བརྡ་བཀོད་ཅིག་གི་ཐོག་ལས་ སྤོ་བཤུད་འབད་ནིའི་གྲ་སྒྲིག་རྐྱབས།"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6980
+#: ../src/file-manager/fm-directory-view.c:6987
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "སྣོད་འཛིན་འདི་ སྦྱར་ནིའི་བརྡ་བཀོད་ཅིག་གི་ཐོག་ལས་ འདྲ་བཤུས་བརྐྱབ་ནིའི་གྲ་སྒྲིག་རྐྱབས།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6985
+#: ../src/file-manager/fm-directory-view.c:6992
 msgid "Move this folder to the Trash"
 msgstr "སྣོད་འཛིན་འདི་ ཡིག་སྣོད་ཕྱགས་ཧོད་ནང་ སྤོ་བཤུད་འབད།"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6989
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "Delete this folder, without moving to the Trash"
 msgstr "སྣོད་འཛིན་འདི་ ཕྱགས་ཧོད་ནང་སྤོ་བཤུད་མ་འབད་བར་ བཏོན་གཏང་།"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:7002
 msgid "Show _Hidden Files"
 msgstr "སྦ་སྟེ་ཡོད་པའི་ཡིག་སྣོད་ཚུ་སྟོན།(_H)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6996
+#: ../src/file-manager/fm-directory-view.c:7003
 msgid "Toggle the display of hidden files in the current window"
 msgstr "ད་ལྟོའི་སྒོ་སྒྲིག་ནང་ སྦ་སྟེ་ཡོད་པའི་ཡིག་སྣོད་ཚུ་བཀྲམ་སྟོན་དེ་ སོར་སྟོན་འབད།"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7082
+#: ../src/file-manager/fm-directory-view.c:7089
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "%sནང་ལས་ ཡིག་ཚུགས་ཚུ་ གཡོག་བཀོལ་ ཡང་ན་ འཛིན་སྐྱོང་འཐབ།"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7084
+#: ../src/file-manager/fm-directory-view.c:7091
 msgid "_Scripts"
 msgstr "ཡིག་ཚུགས།(_S)"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7543
-#: ../src/file-manager/fm-directory-view.c:7726
-#: ../src/file-manager/fm-tree-view.c:1263
+#: ../src/file-manager/fm-directory-view.c:7550
+#: ../src/file-manager/fm-directory-view.c:7733
+#: ../src/file-manager/fm-tree-view.c:1264
 msgid "Open in New Window"
 msgstr "སྒོ་སྒྲིག་གསར་པའི་ནང་ཁ་ཕྱེ།"
 
-#: ../src/file-manager/fm-directory-view.c:7545
-#: ../src/file-manager/fm-directory-view.c:7734
+#: ../src/file-manager/fm-directory-view.c:7552
+#: ../src/file-manager/fm-directory-view.c:7741
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "སྣོད་འཛིན་བརྡ་འཚོལ་འབད།(_B)"
 msgstr[1] "སྣོད་འཛིན་ཚུ་བརྡ་འཚོལ་འབད།(_B)"
 
-#: ../src/file-manager/fm-directory-view.c:7570
-#: ../src/file-manager/fm-directory-view.c:7754
+#: ../src/file-manager/fm-directory-view.c:7577
+#: ../src/file-manager/fm-directory-view.c:7761
 msgid "_Delete from Trash"
 msgstr "ཕྱགས་ཧོད་ནང་ལས་ བཏོན་གཏང་།(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:7571
+#: ../src/file-manager/fm-directory-view.c:7578
 msgid "Delete the open folder permanently"
 msgstr "ཁ་ཕྱེ་མི་སྣོད་འཛིན་དེ་ རྟག་བརྟན་སྦེ་བཏོན་གཏང་།"
 
-#: ../src/file-manager/fm-directory-view.c:7575
+#: ../src/file-manager/fm-directory-view.c:7582
 msgid "Move the open folder to the Trash"
 msgstr "ཁ་ཕྱེ་མི་སྣོད་འཛིན་དེ་ ཕྱགས་ཧོད་ནང་ སྤོ་བཤུད་འབད།"
 
-#: ../src/file-manager/fm-directory-view.c:7710
+#: ../src/file-manager/fm-directory-view.c:7717
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "\"%s\" གི་ཐོག་ལས་ཁ་ཕྱེ།(_O)"
 
-#: ../src/file-manager/fm-directory-view.c:7728
+#: ../src/file-manager/fm-directory-view.c:7735
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "སྒོ་སྒྲིག་གསར་པའི་ནང་ཁ་ཕྱེ།"
 msgstr[1] "སྒོ་སྒྲིག་གསརཔ་ %d ཚུ་ནང་ཁ་ཕྱེ།"
 
-#: ../src/file-manager/fm-directory-view.c:7755
+#: ../src/file-manager/fm-directory-view.c:7762
 msgid "Delete all selected items permanently"
 msgstr "སེལ་འཐུ་འབད་མི་རྣམ་གྲངས་ཆ་མཉམ་ རྟག་བརྟན་སྦེ་ བཏོན་གཏང་།"
 
-#: ../src/file-manager/fm-directory-view.c:8134
+#: ../src/file-manager/fm-directory-view.c:8145
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "འབྲེལ་ལམ་\"%s\"དེ་ཆད་སོ་ནུག"
 
-#: ../src/file-manager/fm-directory-view.c:8136
+#: ../src/file-manager/fm-directory-view.c:8147
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "འབྲེལ་ལམ་ \"%s\"དེ་ཆད་སོ་ནུག ཕྱགས་ཧོད་ནང་སྤོ་ནི་ཨིན་ན?"
 
-#: ../src/file-manager/fm-directory-view.c:8142
+#: ../src/file-manager/fm-directory-view.c:8153
 msgid "This link can't be used, because it has no target."
 msgstr "འབྲེལ་ལམ་འདི་ ལག་ལེན་འཐབ་མི་བཏུབ། ག་ཅི་སྦེ་ཟེར་བ་ཅིན་ དེ་ལུ་དམིགས་གཏད་མིན་འདུག"
 
-#: ../src/file-manager/fm-directory-view.c:8144
+#: ../src/file-manager/fm-directory-view.c:8155
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "འབྲེལ་ལམ་འདི་ ལག་ལེན་འཐབ་མི་བཏུབ། ག་ཅི་སྦེ་ཟེར་བ་ཅིན་ དེ་གི་དམིགས་གཏད་ \"%s\" དེ་མིན་འདུག "
 
-#: ../src/file-manager/fm-directory-view.c:8795
+#: ../src/file-manager/fm-directory-view.c:8806
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" ཁ་ཕྱེ་དོ།"
 
-#: ../src/file-manager/fm-directory-view.c:8798
+#: ../src/file-manager/fm-directory-view.c:8809
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "རྣམ་གྲངས་%dཁ་ཕྱེ་དོ།"
 msgstr[1] "རྣམ་གྲངས་%dཁ་ཕྱེ་དོ།"
 
-#: ../src/file-manager/fm-directory-view.c:9690
+#: ../src/file-manager/fm-directory-view.c:9701
 msgid "Download location?"
 msgstr "གནས་ཁོངས་ཕབ་ལེན་འབད།"
 
-#: ../src/file-manager/fm-directory-view.c:9693
+#: ../src/file-manager/fm-directory-view.c:9704
 msgid "You can download it or make a link to it."
 msgstr "ཁྱོད་ཀྱིས་འདི་ ཕབ་ལེན་འབད་ཚུགས་ ཡང་ན་ འབྲེལ་ལམ་ཅིག་བཟོ་ཚུགས།"
 
-#: ../src/file-manager/fm-directory-view.c:9696
+#: ../src/file-manager/fm-directory-view.c:9707
 msgid "Make a _Link"
 msgstr "འབྲེལ་ལམ་ཅིག་བཟོ།(_L)"
 
-#: ../src/file-manager/fm-directory-view.c:9700
+#: ../src/file-manager/fm-directory-view.c:9711
 msgid "_Download"
 msgstr "ཕབ་ལེན་འབད།(_D)"
 
-#: ../src/file-manager/fm-directory-view.c:9763
-#: ../src/file-manager/fm-directory-view.c:9815
-#: ../src/file-manager/fm-directory-view.c:9916
+#: ../src/file-manager/fm-directory-view.c:9774
+#: ../src/file-manager/fm-directory-view.c:9826
+#: ../src/file-manager/fm-directory-view.c:9927
 msgid "Drag and drop is not supported."
 msgstr "འདྲུད་དེ་བཀོག་བཞག་ནི་ལུ་ རྒྱབ་སྐྱོར་མིན་འདུག"
 
-#: ../src/file-manager/fm-directory-view.c:9764
+#: ../src/file-manager/fm-directory-view.c:9775
 msgid "Drag and drop is only supported on local file systems."
 msgstr "འདྲུད་དེ་བཀོག་བཞག་ནི་དེ་ ཉེ་གནས་ཀྱི་ཡིག་སྣོད་རིམ་ལུགས་རྐྱངམ་གཅིག་ལུ་ རྒྱབ་སྐྱོར་འདུག"
 
-#: ../src/file-manager/fm-directory-view.c:9816
-#: ../src/file-manager/fm-directory-view.c:9917
+#: ../src/file-manager/fm-directory-view.c:9827
+#: ../src/file-manager/fm-directory-view.c:9928
 msgid "An invalid drag type was used."
 msgstr "ནུས་མེད་ཀྱི་འདྲུད་བཞག་ཅིག་ ལག་ལེན་འཐབ་ནུག"
 
@@ -3434,117 +3432,117 @@ msgstr "ངོས་དཔར་མཐོང་སྣང་དེ་ལུ་ �
 msgid "Display this location with the icon view."
 msgstr "གནས་ཁོངས་འདི་ ངོས་དཔར་མཐོང་སྣང་དང་གཅིག་ཁར་ བཀྲམ་སྟོན་འབད།"
 
-#: ../src/file-manager/fm-list-model.c:371
+#: ../src/file-manager/fm-list-model.c:376
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(སྟོངམ་)"
 
-#: ../src/file-manager/fm-list-model.c:373
+#: ../src/file-manager/fm-list-model.c:378
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "མངོན་གསལ་འབད་དོ་..."
 
-#: ../src/file-manager/fm-list-view.c:1956
+#: ../src/file-manager/fm-list-view.c:1960
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s མཐོང་ཚུགས་པའི་ཀེར་ཐིག་ཚུ།"
 
-#: ../src/file-manager/fm-list-view.c:1975
+#: ../src/file-manager/fm-list-view.c:1979
 msgid "Choose the order of information to appear in this folder."
 msgstr "སྣོད་འཛིན་འདི་ནང་འཐོན་ནིའི་ བརྡ་དོན་གྱི་གོ་རིམ་ གདམ་ཁ་རྐྱབས།"
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2017
+#: ../src/file-manager/fm-list-view.c:2021
 msgid "Visible _Columns..."
 msgstr "མཐོང་ཚུགས་པའི་ཀེར་ཐིག་ཚུ་...(_C)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2018
+#: ../src/file-manager/fm-list-view.c:2022
 msgid "Select the columns visible in this folder"
 msgstr "སྣོད་འཛིན་འདི་ནང་ མཐོང་ཚུགས་པའི་ཀེར་ཐིག་ཚུ་ སེལ་འཐུ་འབད།"
 
-#: ../src/file-manager/fm-list-view.c:2741
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "List"
 msgstr "ཐོ་ཡིག"
 
-#: ../src/file-manager/fm-list-view.c:2742
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "View as List"
 msgstr "ཐོ་ཡིག་སྦེ་སྟོན།"
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "View as _List"
 msgstr "ཐོ་ཡིག་སྦེ་སྟོན།(_L)"
 
-#: ../src/file-manager/fm-list-view.c:2744
+#: ../src/file-manager/fm-list-view.c:2746
 msgid "The list view encountered an error."
 msgstr "ཐོ་ཡིག་མཐོང་སྣང་དེ་ལུ་ འཛོལ་བ་ཅིག་བྱུང་ཡི།"
 
-#: ../src/file-manager/fm-list-view.c:2745
+#: ../src/file-manager/fm-list-view.c:2747
 msgid "The list view encountered an error while starting up."
 msgstr "ཐོ་ཡིག་མཐོང་སྣང་དེ་ འགོ་བཙུགས་པའི་སྐབས་ འཛོལ་བ་ཅིག་བྱུང་ཡི།"
 
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2748
 msgid "Display this location with the list view."
 msgstr "གནས་ཁོངས་འདི་ ཐོ་ཡིག་མཐོང་སྣང་དང་གཅིག་ཁར་ བཀྲམ་སྟོན་འབད།"
 
-#: ../src/file-manager/fm-properties-window.c:503
+#: ../src/file-manager/fm-properties-window.c:504
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "ཁྱོད་ཀྱིས་དུས་གཅིག་ལུ་ སྲོལ་སྒྲིག་ངོས་དཔར་ གཅིག་ལས་བརྒལ་ཏེ་ འགན་སྤྲོད་འབད་མི་ཚུགས།"
 
-#: ../src/file-manager/fm-properties-window.c:504
+#: ../src/file-manager/fm-properties-window.c:505
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "སྲོལ་སྒྲིག་ངོས་དཔར་ཅིག་ གཞི་སྒྲིག་འབད་ནི་ལུ་ གཟུགས་བརྙན་གཅིག་རྐྱངམ་གཅིག་འདྲུད་གནང་།"
 
-#: ../src/file-manager/fm-properties-window.c:512
+#: ../src/file-manager/fm-properties-window.c:513
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "ཁྱོད་ཀྱིས་བཞག་མི་ཡིག་སྣོད་དེ་ ཉེ་གནས་མིན་པས།"
 
-#: ../src/file-manager/fm-properties-window.c:513
-#: ../src/file-manager/fm-properties-window.c:519
+#: ../src/file-manager/fm-properties-window.c:514
+#: ../src/file-manager/fm-properties-window.c:520
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "ཁྱོད་ཀྱིས་ ཉེ་གནས་ཀྱི་གཟུགས་བརྙན་ཚུ་ སྲོལ་སྒྲིག་ངོས་དཔར་སྦེ་རྐྱངམ་གཅིག་ ལག་ལེན་འཐབ་ཚུགས།"
 
-#: ../src/file-manager/fm-properties-window.c:518
+#: ../src/file-manager/fm-properties-window.c:519
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "ཁྱོད་ཀྱིས་བཞག་མི་ཡིག་སྣོད་དེ་ གཟུགས་བརྙན་མིན་པས།"
 
-#: ../src/file-manager/fm-properties-window.c:1013
+#: ../src/file-manager/fm-properties-window.c:1014
 msgid "Properties"
 msgstr "རྒྱུ་དངོས་ཚུ།"
 
-#: ../src/file-manager/fm-properties-window.c:1021
+#: ../src/file-manager/fm-properties-window.c:1022
 #, c-format
 msgid "%s Properties"
 msgstr "%s  རྒྱུ་དངོས་ཚུ།"
 
-#: ../src/file-manager/fm-properties-window.c:1573
+#: ../src/file-manager/fm-properties-window.c:1565
 msgid "Cancel Group Change?"
 msgstr "སྡེ་ཚན་བསྒྱུར་བཅོས་ ཆ་མེད་གཏང་ནི་ཨིན་ན?"
 
-#: ../src/file-manager/fm-properties-window.c:1990
+#: ../src/file-manager/fm-properties-window.c:1982
 msgid "Cancel Owner Change?"
 msgstr "ཇོ་བདག་བསྒྱུར་བཅོས་ ཆ་མེད་གཏང་ནི་ཨིན་ན?"
 
-#: ../src/file-manager/fm-properties-window.c:2285
+#: ../src/file-manager/fm-properties-window.c:2277
 msgid "nothing"
 msgstr "ག་ནི་ཡང་མེདཔ།"
 
-#: ../src/file-manager/fm-properties-window.c:2287
+#: ../src/file-manager/fm-properties-window.c:2279
 msgid "unreadable"
 msgstr "ལྷག་མ་བཏུབ།"
 
-#: ../src/file-manager/fm-properties-window.c:2297
+#: ../src/file-manager/fm-properties-window.c:2289
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "རྣམ་གྲངས་ %d ཚད་ %s དང་བཅསཔ་སྦེ།"
 msgstr[1] "རྣམ་གྲངས་ %d བསྡོམས་ %s།"
 
-#: ../src/file-manager/fm-properties-window.c:2306
+#: ../src/file-manager/fm-properties-window.c:2298
 msgid "(some contents unreadable)"
 msgstr "(ནང་དོན་ལ་ལོ་ཅིག་ ལྷག་མི་བཏུབ་པས།)"
 
@@ -3554,261 +3552,261 @@ msgstr "(ནང་དོན་ལ་ལོ་ཅིག་ ལྷག་མི་�
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2323
+#: ../src/file-manager/fm-properties-window.c:2315
 msgid "Contents:"
 msgstr "ནང་དོན་ཚུ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2641
+#: ../src/file-manager/fm-properties-window.c:2633
 msgid "Basic"
 msgstr "གཞི་རྩ།"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2671
+#: ../src/file-manager/fm-properties-window.c:2663
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "མིང་:(_N)"
 msgstr[1] "མིང་ཚུ་:(_N)"
 
-#: ../src/file-manager/fm-properties-window.c:2690
+#: ../src/file-manager/fm-properties-window.c:2682
 msgid "Type:"
 msgstr "དབྱེ་བ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2692
-#: ../src/file-manager/fm-properties-window.c:2702
-#: ../src/file-manager/fm-properties-window.c:2708
-#: ../src/file-manager/fm-properties-window.c:2715
+#: ../src/file-manager/fm-properties-window.c:2684
+#: ../src/file-manager/fm-properties-window.c:2694
+#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2707
+#: ../src/file-manager/fm-properties-window.c:2711
 #: ../src/file-manager/fm-properties-window.c:2719
-#: ../src/file-manager/fm-properties-window.c:2727
-#: ../src/file-manager/fm-properties-window.c:2733
-#: ../src/file-manager/fm-properties-window.c:2742
-#: ../src/file-manager/fm-properties-window.c:2748
-#: ../src/file-manager/fm-properties-window.c:3768
-#: ../src/file-manager/fm-properties-window.c:3801
-#: ../src/file-manager/fm-properties-window.c:3974
-#: ../src/file-manager/fm-properties-window.c:3996
-#: ../src/file-manager/fm-properties-window.c:4031
-#: ../src/file-manager/fm-properties-window.c:4201
-#: ../src/file-manager/fm-properties-window.c:4205
+#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2734
+#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:3760
+#: ../src/file-manager/fm-properties-window.c:3793
+#: ../src/file-manager/fm-properties-window.c:3966
+#: ../src/file-manager/fm-properties-window.c:3988
+#: ../src/file-manager/fm-properties-window.c:4023
+#: ../src/file-manager/fm-properties-window.c:4193
+#: ../src/file-manager/fm-properties-window.c:4197
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2700
+#: ../src/file-manager/fm-properties-window.c:2692
 msgid "Size:"
 msgstr "ཚད་:"
 
-#: ../src/file-manager/fm-properties-window.c:2706
+#: ../src/file-manager/fm-properties-window.c:2698
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "གནས་ཁོངས་:"
 
-#: ../src/file-manager/fm-properties-window.c:2713
+#: ../src/file-manager/fm-properties-window.c:2705
 msgid "Volume:"
 msgstr "སྦུང་ཚད།"
 
-#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:2709
 msgid "Free space:"
 msgstr "བར་སྟོང་དལཝ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2725
+#: ../src/file-manager/fm-properties-window.c:2717
 msgid "Link target:"
 msgstr "འབྲེལ་ལམ་དམིགས་གཏད་:"
 
-#: ../src/file-manager/fm-properties-window.c:2731
+#: ../src/file-manager/fm-properties-window.c:2723
 msgid "MIME type:"
 msgstr "མ་ཡིམ་དབྱེ་བ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2740
+#: ../src/file-manager/fm-properties-window.c:2732
 msgid "Modified:"
 msgstr "ལེགས་བཅོས་འབད་འབདཝ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2746
+#: ../src/file-manager/fm-properties-window.c:2738
 msgid "Accessed:"
 msgstr "འཛུལ་སྤྱོད་འབད་འབདཝ་:"
 
-#: ../src/file-manager/fm-properties-window.c:2849
+#: ../src/file-manager/fm-properties-window.c:2841
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "ལས་རྟགས་ཚུ།"
 
-#: ../src/file-manager/fm-properties-window.c:3247
+#: ../src/file-manager/fm-properties-window.c:3239
 msgid "_Read"
 msgstr "ལྷག(_R)"
 
-#: ../src/file-manager/fm-properties-window.c:3249
+#: ../src/file-manager/fm-properties-window.c:3241
 msgid "_Write"
 msgstr "བྲིས།(_W)"
 
-#: ../src/file-manager/fm-properties-window.c:3251
+#: ../src/file-manager/fm-properties-window.c:3243
 msgid "E_xecute"
 msgstr "ལག་ལེན་འཐབ།(_x)"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3501
-#: ../src/file-manager/fm-properties-window.c:3512
-#: ../src/file-manager/fm-properties-window.c:3524
+#: ../src/file-manager/fm-properties-window.c:3493
+#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3516
 msgid "no "
 msgstr "མེན།"
 
-#: ../src/file-manager/fm-properties-window.c:3504
+#: ../src/file-manager/fm-properties-window.c:3496
 msgid "list"
 msgstr "ཐོ་ཡིག།"
 
-#: ../src/file-manager/fm-properties-window.c:3506
+#: ../src/file-manager/fm-properties-window.c:3498
 msgid "read"
 msgstr "ལྷག།"
 
-#: ../src/file-manager/fm-properties-window.c:3515
+#: ../src/file-manager/fm-properties-window.c:3507
 msgid "create/delete"
 msgstr "གསར་བསྐྲུན་/བཏོན་གཏང་།"
 
-#: ../src/file-manager/fm-properties-window.c:3517
+#: ../src/file-manager/fm-properties-window.c:3509
 msgid "write"
 msgstr "བྲིས།"
 
-#: ../src/file-manager/fm-properties-window.c:3526
+#: ../src/file-manager/fm-properties-window.c:3518
 msgid "access"
 msgstr "འཛུལ་སྤྱོད།"
 
-#: ../src/file-manager/fm-properties-window.c:3575
+#: ../src/file-manager/fm-properties-window.c:3567
 msgid "Access:"
 msgstr "འཛུལ་སྤྱོད་:"
 
-#: ../src/file-manager/fm-properties-window.c:3577
+#: ../src/file-manager/fm-properties-window.c:3569
 msgid "Folder Access:"
 msgstr "སྣོད་འཛིན་ལུ་འཛུལ་སྤྱོད་:(_F)"
 
-#: ../src/file-manager/fm-properties-window.c:3579
+#: ../src/file-manager/fm-properties-window.c:3571
 msgid "File Access:"
 msgstr "ཡིག་སྣོད་ལུ་འཛུལ་སྤྱོད་:"
 
-#: ../src/file-manager/fm-properties-window.c:3591
-#: ../src/file-manager/fm-properties-window.c:3602
+#: ../src/file-manager/fm-properties-window.c:3583
+#: ../src/file-manager/fm-properties-window.c:3594
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "ཅི་མེད།"
 
-#: ../src/file-manager/fm-properties-window.c:3594
+#: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
 msgstr "ཡིག་སྣོད་ཚུ་རྐྱངམ་གཅིག་ ཐོ་བཀོད་འབད།"
 
-#: ../src/file-manager/fm-properties-window.c:3596
+#: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
 msgstr "ཡིག་སྣོད་ལུ་འཛུལ་སྤྱོད་འབད།"
 
-#: ../src/file-manager/fm-properties-window.c:3598
+#: ../src/file-manager/fm-properties-window.c:3590
 msgid "Create and delete files"
 msgstr "ཡིག་སྣོད་ཚུ་གསར་བསྐྲུན་འབད་ནི་དང་ བཏོན་གཏང་ནི།"
 
-#: ../src/file-manager/fm-properties-window.c:3605
+#: ../src/file-manager/fm-properties-window.c:3597
 msgid "Read-only"
 msgstr "ལྷག་ནི་རྐྱངམ་གཅིག།"
 
-#: ../src/file-manager/fm-properties-window.c:3607
+#: ../src/file-manager/fm-properties-window.c:3599
 msgid "Read and write"
 msgstr "ལྷག་ནི་དང་འབྲི་ནི།"
 
-#: ../src/file-manager/fm-properties-window.c:3672
+#: ../src/file-manager/fm-properties-window.c:3664
 msgid "Set _user ID"
 msgstr "ལག་ལེན་པའི་ཨའི་ཌི་གཞི་སྒྲིག་འབད།(_u)"
 
-#: ../src/file-manager/fm-properties-window.c:3674
+#: ../src/file-manager/fm-properties-window.c:3666
 msgid "Special flags:"
 msgstr "དམིགས་བསལ་ཟུར་རྟགས་ཚུ་:"
 
-#: ../src/file-manager/fm-properties-window.c:3676
+#: ../src/file-manager/fm-properties-window.c:3668
 msgid "Set gro_up ID"
 msgstr "སྡེ་ཚན་ཨའི་ཌི་གཞི་སྒྲིག་འབད།(_u)"
 
-#: ../src/file-manager/fm-properties-window.c:3677
+#: ../src/file-manager/fm-properties-window.c:3669
 msgid "_Sticky"
 msgstr "སྦྱར་རྩི་ཅན།(_S)"
 
-#: ../src/file-manager/fm-properties-window.c:3757
-#: ../src/file-manager/fm-properties-window.c:3961
+#: ../src/file-manager/fm-properties-window.c:3749
+#: ../src/file-manager/fm-properties-window.c:3953
 msgid "_Owner:"
 msgstr "ཇོ་བདག་:(_O)"
 
-#: ../src/file-manager/fm-properties-window.c:3763
-#: ../src/file-manager/fm-properties-window.c:3858
-#: ../src/file-manager/fm-properties-window.c:3969
+#: ../src/file-manager/fm-properties-window.c:3755
+#: ../src/file-manager/fm-properties-window.c:3850
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "Owner:"
 msgstr "ཇོ་བདག་:"
 
-#: ../src/file-manager/fm-properties-window.c:3786
-#: ../src/file-manager/fm-properties-window.c:3981
+#: ../src/file-manager/fm-properties-window.c:3778
+#: ../src/file-manager/fm-properties-window.c:3973
 msgid "_Group:"
 msgstr "སྡེ་ཚན་:(_G)"
 
-#: ../src/file-manager/fm-properties-window.c:3795
-#: ../src/file-manager/fm-properties-window.c:3859
-#: ../src/file-manager/fm-properties-window.c:3990
+#: ../src/file-manager/fm-properties-window.c:3787
+#: ../src/file-manager/fm-properties-window.c:3851
+#: ../src/file-manager/fm-properties-window.c:3982
 msgid "Group:"
 msgstr "སྡེ་ཚན་:"
 
-#: ../src/file-manager/fm-properties-window.c:3820
+#: ../src/file-manager/fm-properties-window.c:3812
 msgid "Others"
 msgstr "གཞན་ཚུ།"
 
-#: ../src/file-manager/fm-properties-window.c:3837
+#: ../src/file-manager/fm-properties-window.c:3829
 msgid "Execute:"
 msgstr "ལག་ལེན་འཐབ་:"
 
-#: ../src/file-manager/fm-properties-window.c:3841
+#: ../src/file-manager/fm-properties-window.c:3833
 msgid "Allow _executing file as program"
 msgstr "ཡིག་སྣོད་ཚུ་ ལས་རིམ་བཟུམ་སྦེ་ ལག་ལེན་འཐབ་བཅུག།(_e)"
 
-#: ../src/file-manager/fm-properties-window.c:3860
+#: ../src/file-manager/fm-properties-window.c:3852
 msgid "Others:"
 msgstr "གཞན་ཚུ་:"
 
-#: ../src/file-manager/fm-properties-window.c:4008
+#: ../src/file-manager/fm-properties-window.c:4000
 msgid "Folder Permissions:"
 msgstr "སྣོད་འཛིན་གྱི་གནང་བ་ཚུ་:"
 
-#: ../src/file-manager/fm-properties-window.c:4020
+#: ../src/file-manager/fm-properties-window.c:4012
 msgid "File Permissions:"
 msgstr "ཡིག་སྣོད་ཀྱི་གནང་བ་ཚུ་:"
 
-#: ../src/file-manager/fm-properties-window.c:4030
+#: ../src/file-manager/fm-properties-window.c:4022
 msgid "Text view:"
 msgstr "ཚིག་ཡིག་མཐོང་སྣང་:"
 
-#: ../src/file-manager/fm-properties-window.c:4177
+#: ../src/file-manager/fm-properties-window.c:4169
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "ཁྱོད་ཇོ་བདག་མིནམ་ལས་ ཁྱོད་ཀྱིས་གནང་བ་དེ་ཚུ་ བསྒྱུར་བཅོས་འབད་མི་ཚུགས།"
 
-#: ../src/file-manager/fm-properties-window.c:4200
+#: ../src/file-manager/fm-properties-window.c:4192
 msgid "SELinux Context:"
 msgstr "ཨེསི་ཨི་ལི་ནགསི་གི་སྐབས་དོན་:"
 
-#: ../src/file-manager/fm-properties-window.c:4204
+#: ../src/file-manager/fm-properties-window.c:4196
 msgid "Last changed:"
 msgstr "བསྒྱུར་བཅོས་མཇུག་མམ་:"
 
-#: ../src/file-manager/fm-properties-window.c:4218
+#: ../src/file-manager/fm-properties-window.c:4210
 msgid "Apply permissions to enclosed files"
 msgstr "མཉམ་སྦྲགས་ཡིག་སྣོད་ཚུལུ་ གནང་བ་འཇུག་སྤྱོད་འབད།"
 
-#: ../src/file-manager/fm-properties-window.c:4228
+#: ../src/file-manager/fm-properties-window.c:4220
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" གི་གནང་བ་ཚུ་ ངོས་འཛིན་འབད་མ་ཚུགས།"
 
-#: ../src/file-manager/fm-properties-window.c:4231
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "The permissions of the selected file could not be determined."
 msgstr "ལེས་འཐུ་འབད་མི་ཡིག་སྣོད་ཀྱི་ གནང་བ་ཚུ་ ངོས་འཛིན་འབད་མ་ཚུགས།"
 
-#: ../src/file-manager/fm-properties-window.c:4451
+#: ../src/file-manager/fm-properties-window.c:4443
 msgid "Open With"
 msgstr "ཐོག་ལས་ཁ་ཕྱེ།"
 
-#: ../src/file-manager/fm-properties-window.c:4791
+#: ../src/file-manager/fm-properties-window.c:4783
 msgid "Creating Properties window."
 msgstr "རྒྱུ་དངོས་སྒོ་སྒྲིག་ གསར་བསྐྲུན་འབད་དོ།"
 
-#: ../src/file-manager/fm-properties-window.c:5031
+#: ../src/file-manager/fm-properties-window.c:5023
 msgid "Select Custom Icon"
 msgstr "སྲོལ་སྒྲིག་ངོས་དཔར་སེལ་འཐུ་འབད།"
 
@@ -3817,28 +3815,28 @@ msgid "E_ject"
 msgstr "ཕྱིར་བཏོན།(_j)"
 
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1274
+#: ../src/file-manager/fm-tree-view.c:1275
 msgid "Create Folder"
 msgstr "སྣོད་འཛིན་གསར་བསྐྲུན་འབད།"
 
-#: ../src/file-manager/fm-tree-view.c:1322
+#: ../src/file-manager/fm-tree-view.c:1323
 msgid "Move to Trash"
 msgstr "ཕྱགས་ཧོད་ནང་སྤོ།"
 
-#: ../src/file-manager/fm-tree-view.c:1395
+#: ../src/file-manager/fm-tree-view.c:1396
 #: ../src/nautilus-places-sidebar.c:260
 msgid "File System"
 msgstr "ཡིག་སྣོད་རིམ་ལུགས།"
 
-#: ../src/file-manager/fm-tree-view.c:1397
+#: ../src/file-manager/fm-tree-view.c:1398
 msgid "Network Neighbourhood"
 msgstr "ཡོངས་འབྲེལ་གྱི་ཉེ་འཁོར།"
 
-#: ../src/file-manager/fm-tree-view.c:1639
+#: ../src/file-manager/fm-tree-view.c:1640
 msgid "Tree"
 msgstr "རྩ་འབྲེལ།"
 
-#: ../src/file-manager/fm-tree-view.c:1645
+#: ../src/file-manager/fm-tree-view.c:1646
 msgid "Show Tree"
 msgstr "རྩ་འབྲེལ་སྟོན།"
 
@@ -3978,92 +3976,92 @@ msgstr ""
 "\n"
 "སར་བར་སྦྱར་བརྩེགས་ལུ་མཐུད་ལམ་ཁ་སྐོང་རྐྱབས།"
 
-#: ../src/nautilus-connect-server-dialog.c:113
+#: ../src/nautilus-connect-server-dialog.c:118
 msgid "Custom Location"
 msgstr "སྲོལ་སྒྲིག་གནས་ཁོངས།"
 
-#: ../src/nautilus-connect-server-dialog.c:115
+#: ../src/nautilus-connect-server-dialog.c:120
 msgid "SSH"
 msgstr "ཨེསི་ཨེསི་ཨེཆ།"
 
-#: ../src/nautilus-connect-server-dialog.c:118
+#: ../src/nautilus-connect-server-dialog.c:123
 msgid "Public FTP"
 msgstr "མི་མང་གི་ ཨེཕ་ཊི་པི།"
 
-#: ../src/nautilus-connect-server-dialog.c:120
+#: ../src/nautilus-connect-server-dialog.c:125
 msgid "FTP (with login)"
 msgstr "ཨེཕ་ཊི་པི། (ནང་བསྐྱོད་དང་བཅས)"
 
-#: ../src/nautilus-connect-server-dialog.c:123
+#: ../src/nautilus-connect-server-dialog.c:128
 msgid "Windows share"
 msgstr "སྒོ་སྒྲིག་རུབ་སྤྱོད།"
 
-#: ../src/nautilus-connect-server-dialog.c:125
+#: ../src/nautilus-connect-server-dialog.c:130
 msgid "WebDAV (HTTP)"
 msgstr "ཝེབ་ཌེབ་ (ཨེཆ་ཊི་ཊི་པི)"
 
-#: ../src/nautilus-connect-server-dialog.c:127
+#: ../src/nautilus-connect-server-dialog.c:132
 msgid "Secure WebDAV (HTTPS)"
 msgstr "ཝེབ་ཌེབ་ (ཨེཆ་ཊི་ཊི་པི) མཐའ་བཙན་བཟོ།"
 
-#: ../src/nautilus-connect-server-dialog.c:192
+#: ../src/nautilus-connect-server-dialog.c:200
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
 msgstr "སར་བར་ལུ་མཐུད་མི་ཚུགས་པས། \"%s\" དེ་ ནུས་ཅན་གནས་ཁོངས་ཅིག་མིན་པས།"
 
-#: ../src/nautilus-connect-server-dialog.c:208
+#: ../src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
 msgstr "སར་བར་ལུ་མཐུད་མི་ཚུགས་པས། ཁྱོད་ཀྱིས་སར་བར་གྱི་དོན་ལུ་ མིང་ཅིག་བཙུགས་དགོ"
 
-#: ../src/nautilus-connect-server-dialog.c:209
+#: ../src/nautilus-connect-server-dialog.c:217
 msgid "Please enter a name and try again."
 msgstr "མིང་ཅིག་བཙུགས་ཞིནམ་ལས་ ལོག་སྟེ་འབད་རྩོལ་བསྐྱེད་གནང་།"
 
-#: ../src/nautilus-connect-server-dialog.c:469
+#: ../src/nautilus-connect-server-dialog.c:480
 msgid "_Location (URI):"
 msgstr "གནས་ཁོངས་(ཡུ་ཨར་ཨའི་):(_L)"
 
-#: ../src/nautilus-connect-server-dialog.c:491
+#: ../src/nautilus-connect-server-dialog.c:502
 msgid "_Server:"
 msgstr "སར་བར་:(_S)"
 
-#: ../src/nautilus-connect-server-dialog.c:510
+#: ../src/nautilus-connect-server-dialog.c:521
 msgid "Optional information:"
 msgstr "གདམ་ཁ་ཅན་གྱི་ བརྡ་དོན:"
 
-#: ../src/nautilus-connect-server-dialog.c:522
+#: ../src/nautilus-connect-server-dialog.c:533
 msgid "_Share:"
 msgstr "རུབ་སྤྱོད་:(_S)"
 
-#: ../src/nautilus-connect-server-dialog.c:543
+#: ../src/nautilus-connect-server-dialog.c:554
 msgid "_Port:"
 msgstr "མཐུད་ལམ་:(_P)"
 
-#: ../src/nautilus-connect-server-dialog.c:583
+#: ../src/nautilus-connect-server-dialog.c:594
 msgid "_User Name:"
 msgstr "ལག་ལེན་པའི་མིང་:(_U)"
 
-#: ../src/nautilus-connect-server-dialog.c:604
+#: ../src/nautilus-connect-server-dialog.c:615
 msgid "_Domain Name:"
 msgstr "ཌེ་མེན་མིང་:(_D)"
 
-#: ../src/nautilus-connect-server-dialog.c:628
+#: ../src/nautilus-connect-server-dialog.c:639
 msgid "_Name to use for connection:"
 msgstr "མཐུད་ལམ་གྱི་དོན་ལུ་ ལག་ལེན་འཐབ་ནིའི་མིང་:(_N)"
 
-#: ../src/nautilus-connect-server-dialog.c:805
+#: ../src/nautilus-connect-server-dialog.c:818
 msgid "Connect to Server"
 msgstr "སར་བར་ལུ་མཐུད།"
 
-#: ../src/nautilus-connect-server-dialog.c:822
+#: ../src/nautilus-connect-server-dialog.c:835
 msgid "Service _type:"
 msgstr "ཞབས་ཏོག་གི་དབྱེ་བ་:(_t)"
 
-#: ../src/nautilus-connect-server-dialog.c:890
+#: ../src/nautilus-connect-server-dialog.c:930
 msgid "Browse _Network"
 msgstr "ཡོངས་འབྲེལ་བརྡ་འཚོལ།(_N)"
 
-#: ../src/nautilus-connect-server-dialog.c:896
+#: ../src/nautilus-connect-server-dialog.c:936
 msgid "C_onnect"
 msgstr "མཐུད།(_o)"
 
@@ -4604,7 +4602,7 @@ msgstr ""
 #: ../src/nautilus-main.c:440
 #: ../src/nautilus-spatial-window.c:414
 #: ../src/nautilus-window-menus.c:441
-#: ../src/nautilus-window.c:143
+#: ../src/nautilus-window.c:167
 msgid "Nautilus"
 msgstr "ནའུ་ཊི་ལཱསི།"
 
@@ -4806,11 +4804,11 @@ msgstr "ལོ་རྒྱུས་གདོང་བསྐྱོད་འབད
 msgid "_Search"
 msgstr "འཚོལ་ཞིབ།(_S)"
 
-#: ../src/nautilus-navigation-window.c:174
+#: ../src/nautilus-navigation-window.c:186
 msgid "Toggle between button and text-based location bar"
 msgstr "ཨེབ་རྟ་དང་ཚིག་ཡིག་ལུ་བརྟེན་པའི་གནས་ཁོངས་ཕྲ་རིང་གི་བར་ན་ སོར་སྟོན་འབད།"
 
-#: ../src/nautilus-navigation-window.c:890
+#: ../src/nautilus-navigation-window.c:932
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s -ཡིག་སྣོད་བརའུ་ཟར།"
@@ -4824,27 +4822,27 @@ msgstr "དྲན་ཐོ།"
 msgid "Show Notes"
 msgstr "དྲན་འཛིན་ཚུ་སྟོན།"
 
-#: ../src/nautilus-places-sidebar.c:1362
+#: ../src/nautilus-places-sidebar.c:1364
 msgid "Remove"
 msgstr "རྩ་བསྐྲད་གཏང་།"
 
-#: ../src/nautilus-places-sidebar.c:1371
+#: ../src/nautilus-places-sidebar.c:1373
 msgid "Rename..."
 msgstr "བསྐྱར་མིང་བཏགས།"
 
-#: ../src/nautilus-places-sidebar.c:1383
+#: ../src/nautilus-places-sidebar.c:1385
 msgid "_Mount"
 msgstr "སྦྱར་བརྩེགས་འབད།(_M)"
 
-#: ../src/nautilus-places-sidebar.c:1390
+#: ../src/nautilus-places-sidebar.c:1392
 msgid "_Unmount"
 msgstr "སྦྱར་བརྩེགས་བཤོལ།(_U)"
 
-#: ../src/nautilus-places-sidebar.c:1642
+#: ../src/nautilus-places-sidebar.c:1644
 msgid "Places"
 msgstr "ས་གནས་ཚུ།"
 
-#: ../src/nautilus-places-sidebar.c:1648
+#: ../src/nautilus-places-sidebar.c:1650
 msgid "Show Places"
 msgstr "ས་གནས་ཚུ་སྟོན།"
 
@@ -5437,8 +5435,8 @@ msgstr "ཁྱོད་རའི་རང་དོན་གྱི་ཕྱགས
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:676
-msgid "CD/_DVD"
-msgstr "སི་ཌི་/ཌི་བི་ཌི་ (_D)"
+msgid "CD/_DVD Creator"
+msgstr "སི་ཌི་/ཌི་བི་ཌི་ གསར་བསྐྲུན་པ་(_D)"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:677
@@ -5477,6 +5475,16 @@ msgstr "རྒྱས་ཟུམ།"
 msgid "Set the zoom level of the current view"
 msgstr "ད་ལྟོའི་སྒོ་སྒྲིག་གི་ རྒྱས་ཟུམ་གནས་རིམ་ གཞི་སྒྲིག་འབད།"
 
+#~ msgid "Normal Alpha"
+#~ msgstr "སྤྱིར་བཏང་གི་ཨཱལ་ཕ།"
+#~ msgid "Opacity of the normal icons if frame_text is set"
+#~ msgstr "གཞི་ཁྲམ་ཚིག་ཡིག་ གཞི་སྒྲིག་འབད་བ་ཅིན་ སྤྱིར་བཏང་ངོས་དཔར་ཚུ་གི་དྭངས་སྒྲིབ།"
+#~ msgid "Prelight Alpha"
+#~ msgstr "སྔོན་འོད་ཨཱལ་ཕ་"
+#~ msgid "Opacity of the prelight icons if frame_text is set"
+#~ msgstr "གཞི་ཁྲམ་ཚིག་ཡིག་ གཞི་སྒྲིག་འབད་བ་ཅིན་ སྔོན་འོད་ངོས་དཔར་ཚུ་གི་དྭངས་སྒྲིབ་ (_t)"
+#~ msgid "CD/_DVD"
+#~ msgstr "སི་ཌི་/ཌི་བི་ཌི་ (_D)"
 #~ msgid "View your computer storage"
 #~ msgstr "ཁྱོད་རའི་གློག་རིག་གི་བསག་མཛོད་ལུ་བལྟ།"
 #~ msgid "Change how files are managed"
