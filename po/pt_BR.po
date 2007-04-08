@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-17 14:25-0300\n"
-"PO-Revision-Date: 2007-03-17 14:28-0300\n"
+"POT-Creation-Date: 2007-04-08 03:57-0300\n"
+"PO-Revision-Date: 2007-04-08 02:51-0300\n"
 "Last-Translator: Leonardo Fereira Fontenelle <leo.fontenelle@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -325,7 +325,7 @@ msgstr "Ícone do Computador visível na área de trabalho"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching"
-msgstr "Critério para buscas na barra de procura"
+msgstr "Critério para pesquisas na barra de pesquisa"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
@@ -334,9 +334,9 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"Critério para arquivos procurados na barra de procura. Se definido como "
-"\"search_by_text\", o Nautilus procurará apenas pelo nome do arquivo. Se "
-"definido como \"search_by_text_and_properties\", o Nautilus procurará por "
+"Critério para arquivos pesquisados na barra de pesquisa. Se definido como "
+"\"search_by_text\", o Nautilus pesquisará apenas o nome do arquivo. Se "
+"definido como \"search_by_text_and_properties\", o Nautilus pesquisará por "
 "arquivos pelo nome e pelas propriedades."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
@@ -997,7 +997,7 @@ msgstr "_Descer"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:413
 msgid "_Show"
-msgstr "_Exibir"
+msgstr "_Mostrar"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:423
 msgid "Hi_de"
@@ -1035,7 +1035,7 @@ msgstr "O tipo do arquivo."
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 #: ../src/nautilus-image-properties-page.c:228
 msgid "Date Modified"
-msgstr "Data de Modificação"
+msgstr "Data de modificação"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:66
 msgid "The date the file was modified."
@@ -1043,7 +1043,7 @@ msgstr "A data do arquivo foi modificada."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:73
 msgid "Date Accessed"
-msgstr "Data de Acesso"
+msgstr "Data de acesso"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
@@ -1076,7 +1076,7 @@ msgstr "As permissões do arquivo."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:105
 msgid "Octal Permissions"
-msgstr "Permissões em Octal"
+msgstr "Permissões em octal"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
@@ -2122,7 +2122,7 @@ msgstr "link"
 msgid "link (broken)"
 msgstr "link (com problema)"
 
-#: ../libnautilus-private/nautilus-file.c:6367
+#: ../libnautilus-private/nautilus-file.c:6369
 #: ../libnautilus-private/nautilus-global-preferences.c:532
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 #: ../src/nautilus-trash-bar.c:137
@@ -2227,11 +2227,11 @@ msgstr "Perguntar _a cada vez"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:135
 msgid "Search for files by file name only"
-msgstr "Buscar arquivos apenas pelo nome de arquivo"
+msgstr "Pesquisa arquivos apenas pelo nome"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:139
 msgid "Search for files by file name and file properties"
-msgstr "Buscar arquivos pelo nome de arquivo e pelas propriedades de arquivo"
+msgstr "Pesquisa arquivos pelo nome de arquivo e pelas propriedades de arquivo"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
 #: ../src/file-manager/fm-icon-container.c:512
@@ -2491,7 +2491,7 @@ msgstr ""
 #: ../libnautilus-private/nautilus-query.c:138
 #, c-format
 msgid "Search for \"%s\""
-msgstr "Procurar por \"%s\""
+msgstr "Pesquisar por \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../src/nautilus-query-editor.c:987
@@ -2614,7 +2614,7 @@ msgstr "Alterar Plano de _Fundo"
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
-"Exibe uma janela que permite que você configure o padrão ou cor do fundo da "
+"Mostra uma janela que permite que você configure o padrão ou cor do fundo da "
 "área de trabalho"
 
 #. tooltip
@@ -2627,7 +2627,7 @@ msgstr "Excluir todos os itens na Lixeira"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
 #: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1121
-#: ../src/nautilus-places-sidebar.c:255
+#: ../src/nautilus-places-sidebar.c:250
 msgid "Desktop"
 msgstr "Área de Trabalho"
 
@@ -3087,7 +3087,6 @@ msgstr "Cria um arquivo vazio dentro dessa pasta"
 #: ../src/file-manager/fm-directory-view.c:6845
 #: ../src/file-manager/fm-directory-view.c:7724
 #: ../src/file-manager/fm-tree-view.c:1253
-#: ../src/nautilus-places-sidebar.c:1417
 msgid "_Open"
 msgstr "_Abrir"
 
@@ -3295,7 +3294,7 @@ msgstr "Desmonta o volume selecionado"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6939
 #: ../src/file-manager/fm-directory-view.c:6955
-#: ../src/nautilus-places-sidebar.c:1466
+#: ../src/nautilus-places-sidebar.c:1399
 msgid "_Eject"
 msgstr "_Ejetar"
 
@@ -3307,7 +3306,7 @@ msgstr "Ejeta o volume selecionado"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6943
 #: ../src/file-manager/fm-directory-view.c:6959
-#: ../src/nautilus-places-sidebar.c:1473
+#: ../src/nautilus-places-sidebar.c:1406
 msgid "_Format"
 msgstr "_Formatar"
 
@@ -3391,7 +3390,7 @@ msgstr "Exclui essa pasta sem movê-la para a Lixeira"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:7002
 msgid "Show _Hidden Files"
-msgstr "_Exibir arquivos ocultos"
+msgstr "_Mostrar arquivos ocultos"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:7003
@@ -4102,7 +4101,7 @@ msgstr "Nenhum"
 
 #: ../src/file-manager/fm-properties-window.c:3586
 msgid "List files only"
-msgstr "Listar apenas arquivos"
+msgstr "Apenas listar arquivos"
 
 #: ../src/file-manager/fm-properties-window.c:3588
 msgid "Access files"
@@ -4237,7 +4236,7 @@ msgid "Move to Trash"
 msgstr "Mover para a Lixeira"
 
 #: ../src/file-manager/fm-tree-view.c:1396
-#: ../src/nautilus-places-sidebar.c:265
+#: ../src/nautilus-places-sidebar.c:260
 msgid "File System"
 msgstr "Sistema de Arquivos"
 
@@ -4251,7 +4250,7 @@ msgstr "Árvore"
 
 #: ../src/file-manager/fm-tree-view.c:1646
 msgid "Show Tree"
-msgstr "Exibir Árvore"
+msgstr "Mostrar Árvore"
 
 #: ../src/nautilus-application.c:276
 #, c-format
@@ -4622,7 +4621,7 @@ msgstr "O arquivo arrastado não parece ser uma imagem válida."
 
 #: ../src/nautilus-emblem-sidebar.c:1050
 msgid "Show Emblems"
-msgstr "Exibir Emblemas"
+msgstr "Mostrar Emblemas"
 
 #: ../src/nautilus-file-management-properties.glade.h:1
 msgid "    "
@@ -4805,7 +4804,7 @@ msgstr "Colunas da Lista"
 
 #: ../src/nautilus-file-management-properties.glade.h:53
 msgid "Preview"
-msgstr "Pré-visualização"
+msgstr "Visualização"
 
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Preview _sound files:"
@@ -4813,19 +4812,19 @@ msgstr "Prever arquivos de _som:"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Show _only folders"
-msgstr "Exibir apenas pa_stas"
+msgstr "Mostrar apenas pa_stas"
 
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _thumbnails:"
-msgstr "Exibir minia_turas:"
+msgstr "Mostrar minia_turas:"
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Show hidden and _backup files"
-msgstr "Exibir arquivos ocultos e de _backup"
+msgstr "Mostrar arquivos ocultos e de _backup"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "Show te_xt in icons:"
-msgstr "Exibir te_xto nos ícones:"
+msgstr "Mostrar te_xto nos ícones:"
 
 #: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Sort _folders before files"
@@ -4849,7 +4848,7 @@ msgstr "Nível pa_drão de zoom:"
 
 #: ../src/nautilus-file-management-properties.glade.h:65
 msgid "_Double click to activate items"
-msgstr "_Duplo clique para ativar itens"
+msgstr "Clique _duplo para ativar itens"
 
 #: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Format:"
@@ -4877,7 +4876,7 @@ msgstr "_Usar aparência compacta"
 
 #: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_View executable text files when they are clicked"
-msgstr "_Visualizar arquivos de texto executáveis quando eles são clicados"
+msgstr "_Visualizar arquivos de texto executáveis quando forem clicados"
 
 #: ../src/nautilus-first-time-druid.c:40
 msgid ""
@@ -4898,7 +4897,7 @@ msgstr "Histórico"
 
 #: ../src/nautilus-history-sidebar.c:287
 msgid "Show History"
-msgstr "Exibir Histórico"
+msgstr "Mostrar Histórico"
 
 #: ../src/nautilus-image-properties-page.c:220
 msgid "Camera Brand"
@@ -4989,7 +4988,7 @@ msgstr "Informações"
 
 #: ../src/nautilus-information-panel.c:172
 msgid "Show Information"
-msgstr "Exibir Informações"
+msgstr "Mostrar Informações"
 
 #. add the reset background item, possibly disabled
 #: ../src/nautilus-information-panel.c:362
@@ -5314,33 +5313,29 @@ msgstr "Notas"
 
 #: ../src/nautilus-notes-viewer.c:394
 msgid "Show Notes"
-msgstr "Exibir Notas"
+msgstr "Mostrar Notas"
 
-#: ../src/nautilus-places-sidebar.c:1425
-msgid "Open in New _Window"
-msgstr "Abrir em Nova _Janela"
-
-#: ../src/nautilus-places-sidebar.c:1431
+#: ../src/nautilus-places-sidebar.c:1364
 msgid "Remove"
 msgstr "Remover"
 
-#: ../src/nautilus-places-sidebar.c:1440
+#: ../src/nautilus-places-sidebar.c:1373
 msgid "Rename..."
 msgstr "Renomear..."
 
-#: ../src/nautilus-places-sidebar.c:1452
+#: ../src/nautilus-places-sidebar.c:1385
 msgid "_Mount"
 msgstr "_Montar"
 
-#: ../src/nautilus-places-sidebar.c:1459
+#: ../src/nautilus-places-sidebar.c:1392
 msgid "_Unmount"
 msgstr "_Desmontar"
 
-#: ../src/nautilus-places-sidebar.c:1711
+#: ../src/nautilus-places-sidebar.c:1644
 msgid "Places"
 msgstr "Locais"
 
-#: ../src/nautilus-places-sidebar.c:1717
+#: ../src/nautilus-places-sidebar.c:1650
 msgid "Show Places"
 msgstr "Mostrar Locais"
 
@@ -5382,7 +5377,7 @@ msgstr "Criar Novo Emblema"
 #. make the keyword label and field
 #: ../src/nautilus-property-browser.c:1074
 msgid "_Keyword:"
-msgstr "_Palavra chave:"
+msgstr "_Palavra-chave:"
 
 #. set up a gnome icon entry to pick the image file
 #: ../src/nautilus-property-browser.c:1093
@@ -5616,7 +5611,7 @@ msgstr "_Pesquisar por:"
 
 #: ../src/nautilus-query-editor.c:1091
 msgid "Search results"
-msgstr "Resultados da Pesquisa"
+msgstr "Resultados da pesquisa"
 
 #: ../src/nautilus-search-bar.c:141
 msgid "Search:"
@@ -5903,7 +5898,7 @@ msgstr "_Aproximar"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:629 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
-msgstr "Exibe os itens com mais detalhes"
+msgstr "Mostra os itens com mais detalhes"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:640
@@ -5913,7 +5908,7 @@ msgstr "_Distanciar"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:641 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
-msgstr "Exibe os itens com menos detalhes"
+msgstr "Mostra os itens com menos detalhes"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:648
@@ -5923,7 +5918,7 @@ msgstr "_Tamanho Normal"
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:649
 msgid "Show the contents at the normal size"
-msgstr "Exibe os itens em tamanho normal"
+msgstr "Mostra os itens em tamanho normal"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:652
@@ -6018,6 +6013,9 @@ msgstr "Zoom"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Define o nível de aproximação da visão atual"
+
+#~ msgid "Open in New _Window"
+#~ msgstr "Abrir em Nova _Janela"
 
 #~ msgid "Normal Alpha"
 #~ msgstr "Alfa Normal"
@@ -6885,8 +6883,8 @@ msgstr "Define o nível de aproximação da visão atual"
 #~ "Nautilus file manager component that shows a scrollable list for search "
 #~ "results"
 #~ msgstr ""
-#~ "Compomente do gerenciador de arquivos do Nautilus que exibe uma lista que "
-#~ "rola para busca"
+#~ "Compomente do gerenciador de arquivos do Nautilus que exibe uma lista dos "
+#~ "resultados da pesquisa"
 
 #~ msgid ""
 #~ "Nautilus file manager component that shows a two-dimensional icon space"
@@ -6911,7 +6909,7 @@ msgstr "Define o nível de aproximação da visão atual"
 
 #~ msgid "Nautilus file manager search results list view"
 #~ msgstr ""
-#~ "Visão de lista de resultados de busca do gerenciador de arquivos do "
+#~ "Visão de lista de resultados da pesquisa do gerenciador de arquivos do "
 #~ "Nautilus"
 
 #~ msgid "bonobo_ui_init() failed."
@@ -7200,18 +7198,18 @@ msgstr "Define o nível de aproximação da visão atual"
 #~ "Searching is unavailable right now, because you either have no index, or "
 #~ "the search service isn't running."
 #~ msgstr ""
-#~ "A busca não está disponível no momento, ou porque você não possui um "
-#~ "índice ou porque o serviço de busca não está sendo executado."
+#~ "A pesquisa não está disponível no momento, ou porque você não possui um "
+#~ "índice ou porque o serviço de pesquisa não está sendo executado."
 
 #~ msgid ""
 #~ "Be sure that you have started the Medusa search service, and if you don't "
 #~ "have an index, that the Medusa indexer is running."
 #~ msgstr ""
-#~ "Certifique-se de que iniciou o serviço de busca Medusa e, caso não possua "
-#~ "um índice, que o indexador Medusa está sendo executado."
+#~ "Certifique-se de que iniciou o serviço de pesquisa Medusa e, caso não "
+#~ "possua um índice, que o indexador Medusa está sendo executado."
 
 #~ msgid "Searching Unavailable"
-#~ msgstr "Busca Indisponível"
+#~ msgstr "Pesquisa Indisponível"
 
 #~ msgid "Copyright (C) 1999-2001 Eazel, Inc."
 #~ msgstr "Copyright © 1999-2001 Eazel, Inc."
