@@ -1,0 +1,1136 @@
+Major changes in 2.18.1 are:
+* Some crash fixes
+* Bump default name column width to 32 chars
+
+Major changes in 2.18.0.1 are:
+* Reverted accidental commit
+
+Major changes in 2.18.0 are:
+* Fix up desktop file categories
+* Some sparse code cleanups
+* Don't make filename column expand
+
+Major changes in 2.17.92 are:
+* Don't display homedir as "desktop" in pathbar when in home-as-desktop mode
+* Use GtkLabel ellipsizing
+* Ellipsize filename column in list view
+* Don't show unsupported methods in connect-to-server dialog
+* Fix crashes
+
+Major changes in 2.17.91 are:
+* Change file management capplet category
+* Avoid showing "empty" in the tree while loading directory
+* Prompt for empty trash on unmount
+* Capitalize lin" in "Link to ..." names
+* Fix crashes and memory leaks
+
+Major changes in 2.17.90 are:
+* Add nautilus_file_info_get_activation_uri for extensions
+* Zero-pad seconds in progress display
+* Fix permissions of files created from templates
+* Support multimedia keys
+* Fix leaks
+* Fix crashes
+
+Major changes in 2.17.1 are:
+* Empty trash button in trash
+* New menu icons for new document/folder/window
+* Ring buffer for debugging
+* Fix spinner size
+* Open location dialog on desktop defaults to home
+* Remove metadata on external delete events
+* Draw text selection rectangle using cairo
+* Jump to selection on sort order change
+* Fix gsequence crash
+* Freeze icon view while renaming
+* New theming features for icon view
+* New icon in about dialog
+* Handle scroll button while rubberbanding
+* Ellipsize menu button at 16 chars
+
+Major changes in 2.16.3 are:
+* Revert a patch that caused icons to move around
+* Fix crash introduced in 2.16.2
+
+Major changes in 2.16.2 are:
+* Fix a lot of crashes
+* Handle throbbers with different sizes
+* Don't add a newline when pasting filenames
+* Better a11y relationships betweeen widgets
+* Make nautilus --quit not be restarted by session
+* Fix occasional stuck grabs when rubberband selecting 
+* Don't timeout typeahead when scrolling with mouse wheel
+* Add X-GNOME-Bugzilla-Version to desktop files
+* Fix desktop icon overlap problem
+
+Major changes in 2.16.1 are:
+* Default to search in current directory for non-indexed search
+* Fix clash with symbol names in gtk+
+
+Major changes in 2.16.0 are:
+* Handle enter activation when using typeahead search
+* Avoid using gnome_vfs_is_local in wrong places
+* Translations
+
+Major changes in 2.15.92.1 are:
+* Fix crash on startup
+
+Major changes in 2.15.92 are:
+* Fix crash on changing owner/group of file
+* Fix double free
+* Make sure all strings are displayed translated
+
+Major changes in 2.15.91 are:
+* Use gtk recent files code
+* Fix file change notification regression
+* Don't display raw form of selinux contexts
+* Import lates EggSequence with bugfixes
+* DnD fixes
+* Read .hidden symlinks
+* Fix down navigation in last column, next to last row
+
+Major changes in 2.15.90 are:
+* Submenu support for extensions
+* Improved beagle daemon detection
+* Enable D'n'D reordering in the places sidebar
+* New icons for trash operations
+* Add a button/text toggle button to the location bar
+* Fix leak
+
+Major changes in 2.15.4 are:
+* New permission dialog with recursion and selinx support
+* Improve extension interface
+* Add complete session management
+* Handle removal of the displayed location more elegantly
+* Use proper nautilus-cd-burner icon
+* Support dropping uris, urls and text to subfolders
+* Fix leaks and warnings
+
+Major changes in 2.15.2 are:
+* Don't allow formating of mounted floppies
+* Perfomance fixes
+* Don't use deprecated eel features
+* Use less memory when thumbnailing
+
+Major changes in 2.15.1 are:
+* Improve startup performance
+* Use GOption
+* Fix selection box width calculation
+* Improve file permission handling
+* Add volume operations to the file menu, tree and places sidebar
+* New po/LINGUAS handling
+* Smarter date handling for images
+* HIG fixes
+* Fix various typos
+* Fix about dialog to work with current gtk+
+* Fix crashes
+* Show network volumes in the places sidebar
+* Fix progress dialog showing the wrong file
+* Code cleanups
+
+Major changes in 2.14.1 are:
+* Translation updates
+* Code cleanups
+* Use --no-desktop option for all desktop files
+* Startup performance improvements
+* Make files copied from read-only source writeable
+* Don't allow bookmarking x-desktop:///
+* Add help buttons to several dialogs
+* Fix SVG file identification
+* Properly break down URIs for connect to server ui
+* Don't reposition icons on reload
+* Show unmounted but user-visible drives in the places sidebar
+* Display more info in the progress dialog when preparing 
+* Smarter DnD target selection
+* Smaller close icon in the sidebar title
+* GnomeGoals: Use po/LINGUAS
+
+Major changes in 2.14.0 are:
+* Fix deadlock when dragging over list view in some conditions
+* Fix keynav details in text beside icon mode
+* Don't show folder count for smb shares
+* Fix crash on middle click of file
+* Fix a crash when leaving a directory
+* Close window when folder moves to trash
+* Fix deep count in properties dialog in some cases
+* Avoid calculating mime lists for activation
+* Fix text drawing in RTL mode when using text besides icons
+* Remove blank error dialog on mount when using gnome-mount
+
+Major changes in 2.13.92 are:
+* Better filename linebreaking at punctuation marks.
+* List view: If a rename moves the file in the view, scroll to the new position
+* Better handling of broken filename encoding for link targets
+* Some desktop icon positioning fixes
+* Browser mode: don't close window on up if current directory has been removed
+* Pass original files, not target files to property page providers.
+  This allows property page extensions to look at desktop files and symlinks.
+* Various small optimizations
+* Leak fixes
+* Build fixes
+
+Major changes in 2.13.91 are:
+* Fix a desktop icon positioning bug
+* Fix opening saved searches file from outside nautilus
+
+Major changes in 2.13.90 are:
+* Add option to always use the location bar to the preferences dialog
+* Enable the icons in the places sidebar as drop targets
+* Fix for desktop volume icon positioning
+* Show detailed file size in the properties dialog
+* HIG fix for the delete from trash dialog
+* Fix icon scaling for images with extreme ratios
+* Fix leaks & crashes
+
+Major changes in 2.13.4 are:
+* Open modules with BIND_LOCAL
+* Disable network icon on desktop by default
+* Add Network to places menu
+* Fix sort by atime
+* Some HIG fixes
+* Add support for searching for custom mime type
+* store custom icons for folders as relative patch if in folder
+* Much better activation of multiple files
+* Bumped the default image size thumbnailing limit
+* Handle new background image zooming mode
+* Add optional support for Tracker indexer
+* Fix leaks & crashes
+
+Major changes in 2.13.3 are:
+* Added initial support for search
+* Fixed memleaks
+* Don't frame thumbnails with alpha channel
+* Better handling of opening multiple files
+* New resize knob icon
+* View update optimizations
+* No titles for alert dialogs
+* Add network desktop icon
+* Use access() to determine permissions
+
+Major changes in 2.13.2 are:
+* Fix mime list problem introduced with sort change
+* Build fixes
+* Keyboard support for icon stretching
+* Finally fix tree sidebar crash
+* ctrl-shift-g goes backwards in typeahead
+* Add Skip all button in copy/move conflict dialog
+* Position new files/folders correctly in manual layout mode
+* Nicer UI for setting custom file icons
+* Fix CD icon positioning on desktop
+* Fix desktop redraw issues on non-100% zoom levels
+* Use the same home icon always
+
+Major changes in 2.13.1 are:
+* Adds volume/drive api for modules
+* Better sizes of stock icons in many places
+* GtkTreeView style typeahead
+* '/' opens location dialog/entry
+* middle click in browser mode opens new window
+* Handle cancellation of authentication better
+* Add format menu item for floppy drives
+
+Major changes in 2.12.1 are:
+* Pass all selected files to menu extensions, not only one per mimetype
+* Use much fewer file monitors
+* Fix text size on startup with non-standard default zoom size
+* Some fixes to trash handling and unmount
+* Fix some desktop icon positioning details
+* Copy thumbnails when copying files
+* Autofill connect to server dialog when possible
+* Always show deep counts in properties page
+* Fix leaks and crashes
+* Correctly escape filenames for display in progress dialog
+
+Major changes in 2.12.0 are:
+* Fix icon layout in text-beside-icons mode in some cases
+* Fix template creation on volumes other than the same as /tmp
+* Expand file uris correctly on desktop when passing to scripts
+* Workaround crash on audio preview in burn:
+* Fix handling of global show hidden files preference
+* Fix crash caused by earlier memleak fix
+* Don't redraw windows/desktop on focus in/out
+
+Major changes in 2.11.92 are:
+* Enable emblem dropping to the list view
+* Disallow deleting special locations from the location button popup
+* Don't show "Open Folder" as application option in context menus
+* Disallow custom icons for the trash
+* Cleanups & Leak fixed
+
+Major changes in 2.11.91 are:
+* Don't allow renaming of the desktop folder
+* Make moves within burn:// possible
+* Fixes to property browser drag and drop code
+* Add Explorer-style keybindings
+* Add timestamps to metafiles
+* Make ESC switch back to the pathbar
+* Use saner check for mime mismatching
+* Make progress dialog minimizable
+* UI fixes
+
+Major changes in 2.11.90 are:
+* Handle dnd more efficently
+* Use file-manager icon for browser windows
+* Use hover underline and cursor for single click mode
+* Make labels selectable in the sidebar
+* Improve sound preview process handling
+* UI fixes to path- and sidebar
+
+Major changes in 2.11.4 are:
+* Allow dnd of text on view to create a new file
+* show hostname in progress dialogs
+* use pathbar in location toolbar
+* busy curson when loading folder in browser mode too
+
+Major changes in 2.11.3 are:
+* Turn the list view into a tree
+* No dnd drop rect on the desktop
+* Use gtk bookmars as bookmark source
+* Add bookmarks to spatial mode
+* New places sidebar
+* better sort order for filenames with numbers in them
+  (needs glib 2.7.x)
+* Better handling of font sizes wrt zoom in icon view
+* Fix leaks
+
+Major changes in 2.11.2 are:
+* Fix sort order for size/count/time
+* ctrl+scrollwheel changes zoom, ctrl-= zooms in
+* better handling of cut and paste in notes text view
+* Add smb domain field in connect to server dialog
+* nicer handling of drops from mozilla
+* no properties menu item for desktop context menu
+* shift-f2 renames with the whole name initially selected
+* sort by emblem only looks at user-set emblems
+* scroll to icon when selected and partially visible
+
+Major changes in 2.11.1 are:
+* Use authentication in external connect to server app
+* UI polish
+* Allow DnD of location button icon.
+* Context menus on location button and location label in browser
+* Fix memory leaks
+* Fix crashes
+* Speed up delete in list view
+* Fix rename in list view breaking when there was a file change
+* Removed "new terminal" from desktop context menu
+  If you want this, install the nautilus-open-terminal extension,
+  its much better than this feature ever was.
+* Don't thumbnail files constantly if they're changing
+* Fixed a loop that could happen on remote locations when removing
+  a directory.
+* Add properties of the current folder menu item to background
+  context menu
+* Use --no-desktop in default folder handler to avoid taking over
+  the desktop if you don't run gnome.
+
+Major changes in 2.10.1 are:
+* Use less memory for desktop background
+* Make authentication work for the external connect-to-server dialog
+* Fix leaks
+* Redraw less in the list view when deleting
+
+Major changes in 2.10.0 are:
+* Some fixes for startup notification to avoid focus-stealing
+* Center the file management prefs dialog
+
+Major changes in 2.9.92 are:
+* Avoid doing i/o to tree root nodes before they are used.
+  This means we don't get authentication callbacks.
+* Correct handling of startup notification
+* Fix crashers in desktop icon context menus when unmounting volumes
+* Make property page for home icon on desktop show the right size
+* Prevent the progress dialog from displaying strange ETAs
+* Make backspace key open parent folder in list view
+
+Major changes in 2.9.91 are:
+* Fix some crashes
+* Don't pop up mozilla dnd ask dialog under windows
+* Change the look of the path button to make it easier to find
+* Some changes to the look/text of the progress dialog
+* Fix panel size detection on 64bit machines
+* Allow open with menu on folders
+
+Major changes in 2.9.90 are:
+* Better window titles for browser windows
+* Better icons for burn: & computer: in the ui
+* Allow eject of unmounted devices
+* Better handling of DnD from mozilla
+* Make connect to server dialog availible as separate app
+* Use GtkAboutDialog
+
+Major changes in 2.9.2 are:
+* Use the new mime API
+* Fixed bug in finding empty spots on the desktop
+* Handle drags to special desktop icons (trash...)
+* Fix crash in clipboard code
+* Fix crash with non-unique volume filenames
+* Better handling of sizes for image-file-as-icon
+* Fill in ctrl-l dialog correctly for desktop
+* Fix crash in bookmark dialog if parent window goes away
+
+Major changes since 2.8.2 are:
+* Bonobo not used for nautilus views
+* GtkUIManager used for the ui, not BonoboUI
+
+Major changes since 2.8.1 are:
+* On mime mismatch, allow open with default app as open with
+* On dnd of mozilla link, create desktop file with .desktop ending
+* Delay activation when keyboard navigating in tree sidebar
+* Add open new window menu item in browser mode
+* Fix race condition that made up not alway select the folder
+* Better error message when there is no handler for a file
+* Fix throbber right-alignment with latest bonoboui
+* Alt-up selects the directory you came from
+* Display a frame on DnD hover if accepting
+* Fix off-by-one bug in icon positioning on DnD
+* Make creating new files in list view auto-rename
+* Add the icon text to the DnD icon
+* Add eject to volumes in free sidebar
+* Don't close browser window when the showed path is unmounted
+* Save browser window geometry
+* Handle the new env vars for filesystem charset
+
+Major changes since 2.8.0 are:
+* Update to latest egg-recent
+* Fix memory leaks
+* Clear clipboard after a cut file is pasted
+* Properly escape uris created by connect to server dialog
+* Better alignment of icon labels
+* Allow move (not copy) of a file to another filesystem
+* Fix reordering of selection when a listview is resorted
+* Allow keynav on desktop
+* Fix crash in sort-by-emblems mode
+* Performance fixes when selecting files
+* Performance increase in folder load
+* Allow pasting files as text
+* Fix nautilus extensions such as file-roller menus
+* Made select by pattern work in trash
+* Fixed cut/paste of text when renaming in listview
+* Always use homedir icon for homedir
+
+Major changes since 2.7.92 are:
+* Destroy metadata hashtable in right way, fixes crash
+* Fix crash in list view when changing views
+* Translation updates
+
+Major changes since 2.7.4 are:
+* Fix crash when transfer rate near zero
+* Fix crash when renaming in list view and changing directory
+* Fix double call of eel_preferences_remove_callback on shutdown
+* Use default folder view from gconf instead of now broken gnome-vfs mime setting
+* Some fixes to the handling of open with
+* Faster way to get the group list for a user
+* Don't make progress dialog on copy to desktop appear on all workspaces
+* Fix sort by size in computer view
+
+Major changes since 2.7.2 are:
+
+* Fix remaining time reporting in progress dialog
+* Nicer connect to server dialog
+* Various bugfixes and memleak fixes
+
+Major changes since 2.7.1 are:
+
+* Added spatial/browser pref to the prefs dialog
+* Use ctrl+q to add all windows
+* On shift-double-click on a non-folder, close the window after.
+* Bug fixes
+* Show estimated time remaining in the progress dialog.
+* per-window show hidden files setting
+* Don't warn about mime-type mismatches if the handler is the same 
+  for both mime-types.
+* Date formatting improvements
+* Killed start-here
+* Changed to use the new mime spec and UI
+
+Major changes since 2.6.2 are:
+* Desktop file editior property page
+* Display server name in window title for remote URIs
+* Add setting to not show volumes on desktop
+* Prevents read-only emblem from being shown on desktop icons
+  when user is in root group
+* Fix dnd start coordinates when zoomed
+* Start apps in the directory they are launched from
+* Add close all windows to spatial window menu  
+
+Major changes since 2.6.1 are:
+* Accessibility/keynav/theming fixes
+* Leak fixes
+* .desktop file updates
+* Fixed help buttons in the preferences dialog 
+* Portability fix
+* Use initial click position to anchor icon dnd
+* Crash fix in the file properties dialog
+* Don't overlap the close icon and text label when the sidepane
+  is very small.
+
+Major changes since 2.6.0 are:
+* Fix various crashes and leaks
+* Use correct icon for filesystem in treeview
+* Place unplaced windows over the parent window
+* Fix non-ascii typeahead
+* Faster property dialog for operations on many files
+* Faster list view
+* Fill open location dialog with initial path
+* Add down arrow to location button
+* Make shift close window behind in more places
+* Allow smaller spatial windows
+* Allow svg backgrounds
+* Fix ignore kde trash directory hack
+* By default set per-folder background in spatial mode
+
+Major changes since 2.5.91 are:
+* Translation updates
+
+Major changes since 2.5.90 are:
+* Handle failures when opening new window better (don't loop)
+* visiting and accept modifiers were reversed in list view
+* Build fixes
+
+Major changes since 2.5.8 are:
+* Beter typeahead in list view
+* "browse" context menu item in more places
+* Added go -> cd burner in browser mode
+* Fallback to normal icon view if there is a problem launching another view
+* Close windows on unmounted directories
+* Fix crashes
+* Longer delay until cancel open dialog opens
+
+Major changes since 2.5.7 are:
+* Fix crash
+* Nicer names for toplevel uris
+* Browse folder works in more places
+* Added preference to always use browser windows
+* Warn when sniffed/extension-matched mime type disagrees
+* Show applications for both sniffed and extension-matched
+  mimetype in the open with menu
+
+Major changes since 2.5.6 are:
+* Fix icon lookup crash
+* Fix property page crash
+* Some a11y fixes
+* Use new background capplet name
+* Fix rename keyfocus issue
+* Scroll to icon after rename
+* Fix ogg previewing
+* Some HIG rephrasing of strings
+* Fix crash on rename of empty selection
+* Update help userguide links
+* Paste menu sensitivity fix
+* Rename selection keynav now behaves better from the start
+
+Major changes since 2.5.5 are:
+* hig/ui tweaks
+* ngettext support
+* distribute nautilus-list-view-ui.xml
+* New mimetype detection approach
+* performance fixes
+* non-modal open with other dialog
+* Don't show small svgs as themseleves (always thumbnail)
+* update egg-recent
+
+Major changes since 2.5.4 are:
+* Extension system for emblem, property page, menu item, and 
+  list view column plugins.
+* Editable list view columns
+* Don't expand symlinks when following them.
+* Busy cursor in loading spatial windows
+* Icon-view style typeahead in the list view.
+* Emblems in the list view
+* Added a location button to spatial windows
+* Removed tab icon nav from the icon view
+* Add a context menu to the tree side pane. 
+* Pop up folder menu in list view background
+* Turn on home icon on the desktop by default
+* Added status bar info when no files are selected
+* Got rid of unnecessary EelGenerousBin/EelInputEventBox usage
+* HIG fixes
+* Bugfixes
+
+Major changes since 2.5.3 are:
+* Use GtkIconTheme instead of GnomeIconTheme
+* Show visited folders differently
+* Better mouse/keynav in icon and list view
+* Save window geometry on window close
+* HIG message dialogs
+* File templates support
+
+Major changes since 2.5.2 are:
+* Accessibility fixes
+* Better initial size of navigation window
+* Close all parents closes all parents
+* Focus the next item after delete in list view 
+
+Major changes since 2.5.1.1 are:
+* Don't do unnecessary i/o on remote locations
+* handle broken symlinks that go unbroken
+* various bug fixes
+* some accessibility fixes
+
+Major changes since 2.5.1 are:
+
+* Fixed a NautilusFile leak
+* DISABLE_DEPRECATED fixes.
+
+Major changes since 2.5.0 are:
+
+* Start of new volume handling system
+* deprecaton clean
+* fixed leaks
+* performance fixes
+
+Major changes since 2.4.0 are:
+
+* Spatial / Navigational split
+
+* Themed icon for desktop window
+
+* Exif image properties
+
+* Fixes for query-drags
+
+* Don't allow renames to "" in list view
+
+* Expand treeview rows on double click
+
+* Change desktop grid size
+
+* Don't disable deprecated API
+
+* Pattern selection
+
+* No incremental display of files
+
+* Various bug fixes
+
+Major changes since 2.3.90 are:
+
+* don't migrate .gnome-desktop if it is a symlink
+
+* Fix messed up home/trash icons for new users
+
+* Handle xpm icons correctly in desktop files
+
+* Handle non-utf8 user names
+
+Major changes since 2.3.9 are:
+
+* Fix warning on theme changes
+
+* Sometimes the home and trash icons became blank and unusable
+
+* Auto-hide KDE trash directory in desktop directory.
+
+Major changes since 2.3.8 are:
+
+* Fix history sidepane crash
+
+* Add keynav rectangle selection
+
+* Better error string for missing proxy hostnames
+
+* Handle arrow keys on numerical keypad
+
+Major changes since 2.3.7 are:
+
+* Handle write protected gconf keys better
+
+* Make "Write to CD" button higher priority
+
+* Small bugfixes
+
+Major changes since 2.3.6 are:
+
+* Fixed zoom-to-fit in the zoom control.
+
+* Selected files are colorized with the selection color.
+
+* Doesn't create new windows when mounting CD-ROMS.
+
+* Improved the gutter-on-the-right problem. 
+
+* Updates the disks menu when fstab changes
+
+* Performance enhancements for icon layout.
+
+* Added support for total size and total count for multi-file property dialogs.
+
+* String fixes
+
+* Added documentation on nautilus internals
+
+* Various fixes
+
+Major changes since 2.3.5 are:
+
+* .hidden file support
+
+* Improved context menus
+
+* Speed improvements in the list and tree views
+
+* Multi-rooted tree view
+
+* Update emblems list after adding custom emblems
+
+* Prefer existing windows from the command line in open-in-new-window 
+  mode
+
+Major changes since 2.3.4 are:
+
+* Startup notification support when launching files.
+
+* Selection fixes
+
+* Crash fix in the properties dialog
+
+* Icon theme changes in the tree view fixed
+
+* gcc 3.3 build fixes
+
+* Desktop icon bug fixes
+
+* Panel transparency fix
+
+Major changes since 2.3.3 are:
+
+* Added a "text beside icons" pref to the icon view
+
+* Use the authentication manager in the adapter component
+
+* Bonobo context menus can supply an icon
+
+* Zoom control uses stock widgets
+
+* The property dialog can edit multiple files
+
+* HIG-compliance improvements
+
+Major changes since 2.3.2 are:
+
+* Made the throbber themable using icon themes
+  (requires gnome-icon-theme 1.0.4)
+  
+* Get manager selection for desktop
+
+* Fix some bugs in new desktop code
+
+* fixed icon position for DnD in the listview
+
+* Fixed spacing in dialogs to comply better with the HIG
+
+* Use the authentication manager from libgnomeui instead
+  of our own.
+
+* Fix keynav bug with space in listview
+
+
+Major changes since 2.3.1 are:
+
+* Disabled the limit on the number of files in a directory.
+
+* Change desktop directory to ~/Desktop
+
+* Major change to how desktop icons are handled
+
+* Some accessibility fixes
+
+Major changes since 2.2.3 are:
+
+* Performance increases on directory loads.
+
+* Integrate nautilus-cd-burner
+
+* "Keep Aligned" mode on desktop
+
+* Cygwin & AIX port
+
+* Uses new gnome_vfs_show_url API to activate files
+
+* Better bookmarks UI
+
+* Change in how attributes are stored internally.
+
+Major changes since 2.2.2 are:
+
+* Lots of fixes to the list view keyboard and mouse handling
+
+* Lots of fixes to the icon view keyboard and mouse handling
+
+* Automatic notes emblem (requires gnome-icon-theme 1.0.2)
+
+* Correctly scale icons in list view
+
+* No more tearing when zooming the icon view
+
+* Don't select the extension for rename in the list view
+
+* Easier to trigger auto scrolling during drag and drop in the icon
+  view 
+
+* Much better thumbnail queue handling. Visible thumbnails are
+  prioritized.
+  
+* Scroll to previous position on directory reload
+
+* Show volume and free space in the property dialog for directories
+
+* Clean up by name doesn't leave icons outside the screen anymore
+
+* Fix show backup/hidden files and some default view preferences
+
+* Set the Nautilus application name used when grouping in the task
+  list.
+
+* Converted NautilusFile to a GObject
+
+* Make the thumbnail size prefs not affect external thumbnailers, as
+  it makes little sense for e.g. videos.
+
+* Allow you to exit nautilus-file-management-properties
+
+* Fix crash when droping from other app to Nautilus
+
+* Use startup notification when launching Nautilus
+
+* Don't save window geometry when maximized
+
+* Added code to migrate Nautilus 1.0.x scripts
+
+* Added some docs about keyboard and mouse navigation in nautilus views.
+
+* Better accessibility support in the icon view
+
+* Some other small bugfixes and polish
+
+Major changes since 2.2.1 are:
+
+* Going back/forwards scrolls to the position you left
+
+* Better support for Gtk+ themes on the toolbar and location bar
+
+* Disable the "switch to manual layout" dialog
+
+* Ctrl-dragging on a selected file doesn't de-select it
+
+* Save the current active side pane
+
+* Now easier to hit icons, since you can also click on the transparent
+  parts.
+
+* Select the directory name for renaming when creating a new directory
+
+* Select the base name (not extension) when renaming a file
+
+* List view smaller zoomlevel by default
+
+* Text view has copy to clipboard functionallity
+
+* Padding and alignment changes in the preferences dialog
+
+* Performance enhancement for embedded text
+
+* The delete key now works on the desktop
+
+* Added back the "erase" emblem to the Backgrounds & emblems dialog
+
+* Better accessibility support for the icon view
+
+* Refresh listview when icon theme changes
+
+* Correct font size when renaming and not 100% zoomed view
+
+* Remove all usage of deprecated APIs
+
+* Use monospace font in text view
+
+* Added 1 gigabyte pref tor max thumbnailing size
+
+* Handle floppies and cdroms mounted outside /mnt
+
+* Fix duplicated entries in context menu.
+
+* Don't session manage NautilusViews
+
+* Multi-head fixes for the preference dialog
+
+* Leak fixes
+
+* Fix bonobo-activation forkbomb
+
+
+Major changes since 2.2.0.2 are:
+
+* Fix name collisions in trash
+
+* fix image properties crash
+
+* multihead fixes
+
+* allow .svgz rendering
+
+* correct icons dor zip disks
+
+* fix button ordering for transfer error dialogs
+
+* memory leaks fixed
+
+* "slow context menu" fixed
+
+* Fixed smb passwords getting "stuck".
+
+Major changes since 2.2.0.1 are:
+
+* Background crash fix
+
+* Embedded text fix
+
+Major changes since 2.2.0 are:
+
+* NautilusView refcounting fix
+
+* New translations
+
+Major changes since 2.1.91 are:
+
+* i18n fixes
+
+* List view fixes
+
+* Reverted the symlink change.  Now resolves symlinks when following
+  them.
+
+* Context menu corba usage fix
+
+* Reload thumbnails when files changes
+
+* Small fixes
+
+Major changes since 2.1.6 are:
+
+* No flicker on startup.
+
+* Faster expose of the desktop
+
+* Don't resolve symlinks when follow them
+
+* Small bugfixes
+
+Major changes since 2.1.6 are:
+
+* Multihead fixes
+
+* Fixed delete-in-rename-deletes-file bug
+
+* UI review improvements
+
+* Resolved the conflict between Edit and Empty Trash that was causing
+  the desktop to be badly stuck.
+
+* Small bugfixes
+
+Major changes since 2.1.5 are:
+
+* Don't depend on libgnomecanvas
+
+* Don't put icons under panel
+
+* Use new icons for start-here
+
+* Better window titles for e.g. fonts:///
+
+* Handle thumbnail preferences
+
+
+Major changes since 2.1.4 are:
+
+* Handle icon theme changes better
+
+* Query drag with middle button instead of right-click.
+  This allows faster context menus.
+
+* Bugfixes
+
+Major changes since 2.1.2 are:
+
+* Remove unused code.
+
+* Lots of smalll bugfixes.
+
+* Make bonobo property pages regular controls instead of NautilusViews.
+
+* Mimetype-sensitive context menu plugins
+
+* Restructure the cut-and-paste code.
+
+Major changes since 2.1.1 are:
+
+* New preferences dialog and capplet.
+
+* Pluggable file property pages.
+
+* New Image properties page.
+
+* Emblem sidebar work.
+
+* Handle rootwindow drops.
+
+* Background drag and drop changes
+
+* The music view has been removed.
+
+Major changes since 2.1.0 are:
+
+* Multihead support
+
+* Emblem sidebar
+
+* Emblems handled with icon themes
+
+* Uses new pango wrap mode in icon view
+
+* Work on exterminating Nautilus themes
+
+* Recent files support
+
+Major changes since 2.0.7 are:
+
+* Nautilus now uses the system icon theme.
+
+* The sidebar tabs have been replaced with a new widget.
+
+* The icon container uses the new eel canvas.
+
+* UI cleanups.
+
+* Various bugfixes.
+
+Major changes since 2.0.6 are:
+
+* Fixed the assertion failure on startup
+
+* CD handling updates
+
+Major changes since 2.0.5 are:
+
+* Fixed volume handling bug with thrash that made it impossible
+  to unmount removable media while using fam.
+
+Major changes since 2.0.4 are:
+
+* Follow thumbnailing prefs for svgs too
+
+* Correctly handle old non-utf8 trash and home links
+
+* Fix the "icons stacked in top left corner" bug
+
+* Various small bugfixes.
+
+Major changes since 2.0.3 are:
+
+* Don't show progress dialog for fast operations
+
+* Mime handling fixes
+
+* crux theme tweak
+
+* small performance enhancements
+
+* Various bugfixes.
+
+
+Major changes since 2.0.2 are:
+
+* Drag and drop has been implemented in the list view.
+
+* Performance enhancements in the icon factory.
+
+* Various bugfixes.
+
+
+Major changes since 2.0.1 are:
+
+* List view doesn't hang anymore.
+
+* Reflect changes in the eel background api.
+
+* Fix for crash when invoking "nautilus -q".
+
+
+Major changes since 2.0.0 are:
+
+* Various UI cleanups from the ui review
+
+* Various bugfixes
+
+* The Gnome Nautilus theme now follows the gtk+ theme better
+
+* Window geometry is stored even in open-directories-in-same-window mode
+
+* All executable bonobo components moved into libexec.
+
+* Some performance improvements
+
+* Accessibility fixes
+
+* Add support for kernel supermount patch
+
+* Read desktop file icons according to the icon theme specification
+
+* New throbber for the gnome theme
+
+* large version of trash icon
+
+* Better handling of disk ejecting
+
+* Proper handling of launching desktop files according to the spec
+
+
+
+Major changes since 1.0.x are:
+
+* Port to Gtk+ 2 and the Gnome 2 platform.
+
+* Major performance improvements.
+
+* Userlevels are removed.
+
+* Lots of small UI changes in order to comply with the Gnome 2 Human
+  Interface Guidelines.
+
+* Preferences dialog has been trimmed down.
+
+* Anti-aliased mode has been removed. If you want anti-aliased text,
+  you need to use the Gtk+ 2 anti-aliased text mode.
+
+* New emblems added to the default set of emblems.
+
+* Support for editing vfolder menus using nautilus.
+
+* Made most normal component in-process.
+
+* Accessibility support.
+
+* Drop support for public metadata.
+
+* The news was sidebar disabled/removed
+
+* Image view component removed, we now use Eye of Gnome.
+
+* Bugfixes
+
+
+Minor new features:
+
+* Drop-shadow for text on the desktop
+
+* Alt-drag image and pick set-as-background
+
+* New progress dialog window-icon shows progress visually.
+
+* You can use Alt-left/right/up/down to navigate the icon view using
+  the keyboard.
+
+* Ability to easily create launchers on the desktop.
+

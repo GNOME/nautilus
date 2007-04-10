@@ -1,0 +1,26 @@
+#undef ENABLE_INSTALLER
+#undef ENABLE_NLS
+#undef ENABLE_PROFILER
+#undef GETTEXT_PACKAGE
+#undef HAVE_CATGETS
+#undef HAVE_GETTEXT
+#undef HAVE_LC_MESSAGES
+#undef HAVE_LIBBZ2
+#undef HAVE_LIBJPEG
+#undef HAVE_MEDUSA
+#undef HAVE_STPCPY
+#undef bzclose
+#undef bzCompress
+#undef bzCompressInit
+#undef bzDecompress
+#undef bzDecompressInit
+#undef bzdopen
+#undef bzerror
+#undef bzflush
+#undef bzopen
+#undef bzread
+#undef bzwrite
+#define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec functions */
+#undef HAVE_STARTUP_NOTIFICATION
+#undef HAVE_EXIF
+#undef HAVE_OLD_EXIF
