@@ -519,6 +519,8 @@ file_and_directory_list_free (GList *list)
 	for (l = list; l != NULL; l = l->next) {
 		file_and_directory_free (l->data);
 	}
+
+	g_list_free (list);
 }
 
 static gboolean
