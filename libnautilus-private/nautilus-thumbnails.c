@@ -96,6 +96,8 @@ static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
 static GnomeThumbnailFactory *thumbnail_factory = NULL;
 
+static int thumbnail_icon_size = 0;
+
 static gboolean
 get_file_mtime (const char *file_uri, time_t* mtime)
 {
@@ -290,10 +292,10 @@ thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
 		args->base_size = size;                        
 	} else if (args->base_size == 0) {
 		if (args->is_thumbnail) {
-			args->base_size = 128 * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
+			args->base_size = 128 * NAUTILUS_ICON_SIZE_STANDARD / thumbnail_icon_size;
 		} else {
-			if (size > args->nominal_size * NAUTILUS_ICON_SIZE_THUMBNAIL / NAUTILUS_ICON_SIZE_STANDARD) {
-				args->base_size = size * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
+			if (size > args->nominal_size * thumbnail_icon_size / NAUTILUS_ICON_SIZE_STANDARD) {
+				args->base_size = size * NAUTILUS_ICON_SIZE_STANDARD / thumbnail_icon_size;
 			} else if (size > NAUTILUS_ICON_SIZE_STANDARD) {
 				args->base_size = args->nominal_size;
 			} else {
@@ -353,6 +355,12 @@ nautilus_thumbnail_load_image (const char *path,
 
 	error = NULL;
 
+	if (thumbnail_icon_size == 0) {
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+						  &thumbnail_icon_size);
+	}
+
+	
 	if (!g_file_get_contents (path, (gchar **) &buffer, &buflen, &error)) {
 		g_message ("Failed to load %s into memory: %s", path, error->message);
 

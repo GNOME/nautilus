@@ -440,7 +440,11 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "default_zoom_level"
 	},
-
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+	  PREFERENCE_INTEGER,
+	  GINT_TO_POINTER (96)
+	},
+	
 	/* List View Default Preferences */
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_STRING,

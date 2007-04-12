@@ -171,6 +171,7 @@ static guint signals[LAST_SIGNAL];
 
 
 static int cached_thumbnail_limit;
+static int cached_thumbnail_size;
 static int show_image_thumbs;
 
 /* forward declarations */
@@ -180,6 +181,7 @@ static void       nautilus_icon_factory_class_init       (NautilusIconFactoryCla
 static void       nautilus_icon_factory_instance_init    (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_finalize         (GObject                  *object);
 static void       thumbnail_limit_changed_callback       (gpointer                  user_data);
+static void       thumbnail_size_changed_callback       (gpointer                  user_data);
 static void       show_thumbnails_changed_callback       (gpointer                  user_data);
 static void       mime_type_data_changed_callback        (GnomeVFSMIMEMonitor	   *monitor,
 							  gpointer                  user_data);
@@ -210,6 +212,9 @@ destroy_icon_factory (void)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					 thumbnail_limit_changed_callback,
 					 NULL);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+					 thumbnail_size_changed_callback,
+					 NULL);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					 show_thumbnails_changed_callback,
 					 NULL);
@@ -229,6 +234,11 @@ get_icon_factory (void)
 		thumbnail_limit_changed_callback (NULL);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					      thumbnail_limit_changed_callback,
+					      NULL);
+
+		thumbnail_size_changed_callback (NULL);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
+					      thumbnail_size_changed_callback,
 					      NULL);
 
 		show_thumbnails_changed_callback (NULL);
@@ -719,6 +729,20 @@ thumbnail_limit_changed_callback (gpointer user_data)
 }
 
 static void
+thumbnail_size_changed_callback (gpointer user_data)
+{
+	cached_thumbnail_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE);
+
+	/* Tell the world that icons might have changed. We could invent a narrower-scope
+	 * signal to mean only "thumbnails might have changed" if this ends up being slow
+	 * for some reason.
+	 */
+	nautilus_icon_factory_clear ();
+	g_signal_emit (global_icon_factory,
+			 signals[ICONS_CHANGED], 0);
+}
+
+static void
 show_thumbnails_changed_callback (gpointer user_data)
 {
 	show_image_thumbs = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
@@ -1163,7 +1187,7 @@ load_icon_file (const char    *filename,
 
 		original_size = ceil (MAX (gdk_pixbuf_get_width (pixbuf) / *scale_x, gdk_pixbuf_get_height (pixbuf) / *scale_y));
 
-		if ((is_thumbnail || (!force_nominal && base_size == 0 && original_size > NAUTILUS_ICON_SIZE_THUMBNAIL))
+		if ((is_thumbnail || (!force_nominal && base_size == 0 && original_size > cached_thumbnail_size))
 		     && !gdk_pixbuf_get_has_alpha (pixbuf)) {
 			add_frame = TRUE;
 		}
