@@ -136,12 +136,6 @@ static void     link_info_done              (NautilusDirectory      *directory,
 					     const char             *icon,
 					     gulong                  drive_id,
 					     gulong                  volume_id);
-static gboolean file_needs_high_priority_work_done (NautilusDirectory *directory,
-						    NautilusFile      *file);
-static gboolean file_needs_low_priority_work_done  (NautilusDirectory *directory,
-						    NautilusFile      *file);
-static gboolean file_needs_extension_work_done  (NautilusDirectory *directory,
-						 NautilusFile      *file);
 static void     move_file_to_low_priority_queue    (NautilusDirectory *directory,
 						    NautilusFile      *file);
 static void     move_file_to_extension_queue    (NautilusDirectory *directory,
@@ -2298,11 +2292,13 @@ directory_count_stop (NautilusDirectory *directory)
 
 static void
 directory_count_start (NautilusDirectory *directory,
-		       NautilusFile *file)
+		       NautilusFile *file,
+		       gboolean *doing_io)
 {
 	char *uri;
 
 	if (directory->details->count_in_progress != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 
@@ -2311,6 +2307,7 @@ directory_count_start (NautilusDirectory *directory,
 		       wants_directory_count)) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	if (!nautilus_file_is_directory (file)) {
 		file->details->directory_count_is_up_to_date = TRUE;
@@ -2477,11 +2474,13 @@ deep_count_stop (NautilusDirectory *directory)
 
 static void
 deep_count_start (NautilusDirectory *directory,
-		  NautilusFile *file)
+		  NautilusFile *file,
+		  gboolean *doing_io)
 {
 	char *uri;
 
 	if (directory->details->deep_count_in_progress != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 
@@ -2490,6 +2489,7 @@ deep_count_start (NautilusDirectory *directory,
 		       wants_deep_count)) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	if (!nautilus_file_is_directory (file)) {
 		file->details->deep_counts_status = NAUTILUS_REQUEST_DONE;
@@ -2625,13 +2625,15 @@ mime_list_stop (NautilusDirectory *directory)
 
 static void
 mime_list_start (NautilusDirectory *directory,
-		 NautilusFile *file)
+		 NautilusFile *file,
+		 gboolean *doing_io)
 {
 	char *uri;
 
 	mime_list_stop (directory);
 
 	if (directory->details->mime_list_in_progress != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 
@@ -2641,6 +2643,7 @@ mime_list_start (NautilusDirectory *directory,
 		       wants_mime_list)) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	if (!nautilus_file_is_directory (file)) {
 		g_list_free (file->details->mime_list);
@@ -2769,12 +2772,14 @@ top_left_stop (NautilusDirectory *directory)
 
 static void
 top_left_start (NautilusDirectory *directory,
-		NautilusFile *file)
+		NautilusFile *file,
+		gboolean *doing_io)
 {
 	char *uri;
 	gboolean needs_large;
 
 	if (directory->details->top_left_read_state != NULL) {
+ 		*doing_io = TRUE;
 		return;
 	}
 	
@@ -2793,6 +2798,7 @@ top_left_start (NautilusDirectory *directory,
 			wants_top_left))) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	if (!nautilus_file_contains_text (file)) {
 		g_free (file->details->top_left_text);
@@ -2903,7 +2909,8 @@ file_info_stop (NautilusDirectory *directory)
 
 static void
 file_info_start (NautilusDirectory *directory,
-		 NautilusFile *file)
+		 NautilusFile *file,
+		 gboolean *doing_io)
 {
 	char *uri;
 	GnomeVFSURI *vfs_uri;
@@ -2914,6 +2921,7 @@ file_info_start (NautilusDirectory *directory,
 	file_info_stop (directory);
 
 	if (directory->details->get_info_in_progress != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 
@@ -2921,6 +2929,8 @@ file_info_start (NautilusDirectory *directory,
 	    !is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
 		return;
 	}
+	*doing_io = TRUE;
+
 	need_slow_mime = is_needy (file, always_lacks, wants_slow_mime_type);
 	
 	uri = nautilus_file_get_uri (file);
@@ -3105,7 +3115,8 @@ link_info_stop (NautilusDirectory *directory)
 
 static void
 link_info_start (NautilusDirectory *directory,
-		 NautilusFile *file)
+		 NautilusFile *file,
+		 gboolean *doing_io)
 {
 	char *uri;
 	gboolean nautilus_style_link;
@@ -3114,6 +3125,7 @@ link_info_start (NautilusDirectory *directory,
 	GnomeVFSResult result;
 	
 	if (directory->details->link_info_read_state != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 
@@ -3122,6 +3134,7 @@ link_info_start (NautilusDirectory *directory,
 		       wants_link_info)) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	/* Figure out if it is a link. */
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
@@ -3267,7 +3280,8 @@ info_provider_callback (NautilusInfoProvider *provider,
 
 static void
 extension_info_start (NautilusDirectory *directory,
-		      NautilusFile *file)
+		      NautilusFile *file,
+		      gboolean *doing_io)
 {
 	NautilusInfoProvider *provider;
 	NautilusOperationResult result;
@@ -3275,12 +3289,14 @@ extension_info_start (NautilusDirectory *directory,
 	GClosure *update_complete;
 
 	if (directory->details->extension_info_in_progress != NULL) {
+		*doing_io = TRUE;
 		return;
 	}
 	
 	if (!is_needy (file, lacks_extension_info, wants_extension_info)) {
 		return;
 	}
+	*doing_io = TRUE;
 
 	if (!async_job_start (directory, "extension info")) {
 		return;
@@ -3317,6 +3333,7 @@ static void
 start_or_stop_io (NautilusDirectory *directory)
 {
 	NautilusFile *file;
+	gboolean doing_io;
 
 	/* Start or stop reading files. */
 	file_list_start_or_stop (directory);
@@ -3330,49 +3347,50 @@ start_or_stop_io (NautilusDirectory *directory)
 	link_info_stop (directory);
 	extension_info_stop (directory);
 
+	doing_io = FALSE;
 	/* Take files that are all done off the queue. */
 	while (!nautilus_file_queue_is_empty (directory->details->high_priority_queue)) {
 		file = nautilus_file_queue_head (directory->details->high_priority_queue);
 
-		if (file_needs_high_priority_work_done (directory, file)) {
-			/* Start getting attributes if possible */
-			file_info_start (directory, file);
-			link_info_start (directory, file);
+		/* Start getting attributes if possible */
+		file_info_start (directory, file, &doing_io);
+		link_info_start (directory, file, &doing_io);
+
+		if (doing_io) {
 			return;
-		} else {
-			move_file_to_low_priority_queue (directory, file);
 		}
+
+		move_file_to_low_priority_queue (directory, file);
 	}
 
 	/* High priority queue must be empty */
 	while (!nautilus_file_queue_is_empty (directory->details->low_priority_queue)) {
 		file = nautilus_file_queue_head (directory->details->low_priority_queue);
 
-		if (file_needs_low_priority_work_done (directory, file)) {
-			/* Start getting attributes if possible */
-			directory_count_start (directory, file);
-			deep_count_start (directory, file);
-			mime_list_start (directory, file);
-			top_left_start (directory, file);
-			return;
-		} else {
-			move_file_to_extension_queue (directory, file);
+		/* Start getting attributes if possible */
+		directory_count_start (directory, file, &doing_io);
+		deep_count_start (directory, file, &doing_io);
+		mime_list_start (directory, file, &doing_io);
+		top_left_start (directory, file, &doing_io);
 
+		if (doing_io) {
+			return;
 		}
+
+		move_file_to_extension_queue (directory, file);
 	}
 
 	/* Low priority queue must be empty */
 	while (!nautilus_file_queue_is_empty (directory->details->extension_queue)) {
 		file = nautilus_file_queue_head (directory->details->extension_queue);
 
-		if (file_needs_extension_work_done (directory, file)) {
-			/* Start getting attributes if possible */
-			extension_info_start (directory, file);
+		/* Start getting attributes if possible */
+		extension_info_start (directory, file, &doing_io);
+		if (doing_io) {
 			return;
-		} else {
-			nautilus_directory_remove_file_from_work_queue (directory, file);
-
 		}
+
+		nautilus_directory_remove_file_from_work_queue (directory, file);
 	}
 }
 
@@ -3565,84 +3583,11 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
 	nautilus_directory_async_state_changed (directory);
 }
 
-
-
-static gboolean
-file_needs_high_priority_work_done (NautilusDirectory *directory,
-				    NautilusFile *file)
-{
-	if (is_needy (file, lacks_info, wants_info)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_link_info, wants_link_info)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-file_needs_low_priority_work_done (NautilusDirectory *directory,
-				   NautilusFile *file)
-{
-	if (is_needy (file, lacks_directory_count, wants_directory_count)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_deep_count, wants_deep_count)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_mime_list, wants_mime_list)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_top_left, wants_top_left)) {
-		return TRUE;
-	}
-
-	if (is_needy (file, lacks_large_top_left, wants_large_top_left)) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-file_needs_extension_work_done (NautilusDirectory *directory,
-				   NautilusFile *file)
-{
-	if (is_needy (file, lacks_extension_info, wants_extension_info)) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-file_needs_work_done (NautilusDirectory *directory,
-		      NautilusFile *file)
-{
-	return (file_needs_high_priority_work_done (directory, file) ||
-		file_needs_low_priority_work_done (directory, file) || 
-		file_needs_extension_work_done (directory, file));
-}
-
-
 void
 nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
 					   NautilusFile *file)
 {
 	g_return_if_fail (file->details->directory == directory);
-
-	if (!file_needs_work_done (directory, file)) {
-		return;
-	}
 
 	nautilus_file_queue_enqueue (directory->details->high_priority_queue,
 				     file);
@@ -3684,24 +3629,12 @@ move_file_to_low_priority_queue (NautilusDirectory *directory,
 				     file);
 	nautilus_file_queue_remove (directory->details->high_priority_queue,
 				    file);
-
-	if (!file_needs_low_priority_work_done (directory, file)) {
-		move_file_to_extension_queue (directory, file);
-
-		return;
-	}
 }
 
 static void
 move_file_to_extension_queue (NautilusDirectory *directory,
 			      NautilusFile *file)
 {
-	if (!file_needs_extension_work_done (directory, file)) {
-		nautilus_file_queue_remove (directory->details->low_priority_queue,
-					    file);
-		return;
-	}
-
 	/* Must add before removing to avoid ref underflow */
 	nautilus_file_queue_enqueue (directory->details->extension_queue,
 				     file);

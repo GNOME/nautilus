@@ -1,5 +1,11 @@
 2007-04-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-async.c:
+	Limit number of calls to is_needy() (#320282)
+	Based on patch from Aivars Kalvans   
+
+2007-04-12  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/apps_nautilus_preferences.schemas.in:
         * libnautilus-private/nautilus-global-preferences.c:
         * libnautilus-private/nautilus-global-preferences.h:
