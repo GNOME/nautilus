@@ -444,7 +444,7 @@ action_about_nautilus_callback (GtkAction *action,
 					     "for GNOME that makes it "
 					     "easy to manage your files "
 					     "and the rest of your system."),
-			       "copyright", _("Copyright \xC2\xA9 1999-2006 "
+			       "copyright", _("Copyright \xC2\xA9 1999-2007 "
 					      "The Nautilus authors"),
 			       "license", license_trans,
 			       "wrap-license", TRUE,
@@ -456,6 +456,8 @@ action_about_nautilus_callback (GtkAction *action,
 				 */
 			      "translator-credits", _("translator-credits"),
 			      "logo-icon-name", "nautilus",
+			      "website", "http://www.gnome.org/projects/nautilus",
+			      "website-label", "Nautilus Website",			     
 			      NULL);
 
 	g_free (license_trans);
