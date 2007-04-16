@@ -87,6 +87,11 @@ static pthread_mutex_t thumbnails_mutex = PTHREAD_MUTEX_INITIALIZER;
    start more than one. Lock thumbnails_mutex when accessing this. */
 static volatile gboolean thumbnail_thread_is_running = FALSE;
 
+/* Added in glib 2.14 */
+#ifndef G_QUEUE_INIT
+#define G_QUEUE_INIT { NULL, NULL, 0 }
+#endif
+
 /* The list of NautilusThumbnailInfo structs containing information about the
    thumbnails we are making. Lock thumbnails_mutex when accessing this. */
 static volatile GQueue thumbnails_to_make = G_QUEUE_INIT;
