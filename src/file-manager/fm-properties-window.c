@@ -81,6 +81,35 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <string.h>
+#include <cairo.h>
+
+#if HAVE_SYS_STATVFS_H
+#include <sys/statvfs.h>
+#endif
+#if HAVE_SYS_VFS_H
+#include <sys/vfs.h>
+#elif HAVE_SYS_MOUNT_H
+#if HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+#include <sys/mount.h>
+#endif
+
+#define USED_FILL_R  0.988235294
+#define USED_FILL_G  0.91372549
+#define USED_FILL_B  0.309803922
+
+#define USED_STROKE_R  0.929411765
+#define USED_STROKE_G  0.831372549
+#define USED_STROKE_B  0.0
+
+#define FREE_FILL_R  0.447058824
+#define FREE_FILL_G  0.623529412
+#define FREE_FILL_B  0.811764706
+
+#define FREE_STROKE_R  0.203921569
+#define FREE_STROKE_G  0.396078431
+#define FREE_STROKE_B  0.643137255
 
 #define PREVIEW_IMAGE_WIDTH 96
 
@@ -139,6 +168,9 @@ struct FMPropertiesWindowDetails {
 	guint long_operation_underway;
 
  	GList *changed_files;
+ 	
+ 	guint64 volume_capacity;
+ 	guint64 volume_free;
 };
 
 enum {
@@ -234,6 +266,8 @@ static GtkLabel *attach_ellipsizing_value_label   (GtkTable *table,
 						   int row,
 						   int column,
 						   const char *initial_text);
+						   
+static GtkWidget* create_pie_widget 		  (FMPropertiesWindow *window);
 
 G_DEFINE_TYPE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW);
 #define parent_class fm_properties_window_parent_class 
@@ -2619,6 +2653,335 @@ should_show_free_space (FMPropertiesWindow *window)
 	return FALSE;
 }
 
+static gboolean
+should_show_volume_usage (FMPropertiesWindow *window)
+{
+	NautilusFile 		*file;
+	GnomeVFSVolume 		*volume;
+	GnomeVFSVolumeMonitor 	*monitor;
+	GList 			*mounted_volumes;
+	gchar 			*volume_uri;
+	gchar 			*file_uri;
+	gboolean                match, is_root;
+	gboolean 		success = FALSE;
+	
+	file = get_original_file (window);
+
+	if (nautilus_file_has_volume (file)) {
+		volume = nautilus_file_get_volume (file);
+		if (volume != NULL &&
+		    gnome_vfs_volume_get_volume_type (volume) == GNOME_VFS_VOLUME_TYPE_MOUNTPOINT) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	file_uri = nautilus_file_get_activation_uri (file);
+	
+	monitor = gnome_vfs_get_volume_monitor ();		
+	
+	mounted_volumes = gnome_vfs_volume_monitor_get_mounted_volumes (monitor);
+
+	while (mounted_volumes != NULL) {
+		volume = mounted_volumes->data;
+
+		volume_uri = gnome_vfs_volume_get_activation_uri (volume);
+		match = strcmp (volume_uri, file_uri) == 0;
+		is_root = strcmp (volume_uri, "file:///") == 0;
+		g_free (volume_uri);
+
+		if (match &&
+		    (gnome_vfs_volume_is_user_visible (volume) || is_root) &&
+		    gnome_vfs_volume_get_volume_type (volume) == GNOME_VFS_VOLUME_TYPE_MOUNTPOINT) {
+			success = TRUE;
+			break;
+		}
+
+		mounted_volumes = mounted_volumes->next;
+	}
+	
+	g_free (file_uri);
+
+	eel_g_object_list_free (mounted_volumes);
+	
+	return success;
+}
+
+static void
+paint_used_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
+{
+	cairo_t *cr;
+	gint width, height;
+  	width  = widget->allocation.width;
+  	height = widget->allocation.height;
+  	cr = gdk_cairo_create (widget->window);
+	
+	cairo_rectangle  (cr,
+			  2,
+			  2,
+			  width - 4,
+			  height - 4);
+                      
+	cairo_set_source_rgb (cr, USED_FILL_R, USED_FILL_G, USED_FILL_B);
+	cairo_fill_preserve (cr);
+
+	cairo_set_source_rgb (cr, USED_STROKE_R, USED_STROKE_G, USED_STROKE_B);
+	cairo_stroke (cr);
+	
+	cairo_destroy (cr);
+}
+
+static void
+paint_free_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
+{
+	cairo_t *cr;
+	gint width, height;
+	
+  	width  = widget->allocation.width;
+  	height = widget->allocation.height;
+  	cr = gdk_cairo_create (widget->window);
+  
+	cairo_rectangle (cr,
+			 2,
+			 2,
+			 width - 4,
+			 height - 4);
+
+	cairo_set_source_rgb (cr, FREE_FILL_R, FREE_FILL_G, FREE_FILL_B);
+	cairo_fill_preserve(cr);
+
+	cairo_set_source_rgb (cr, FREE_STROKE_R, FREE_STROKE_G, FREE_STROKE_B);
+	cairo_stroke (cr);
+	
+	cairo_destroy (cr);
+}
+
+static void
+paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
+{
+  	
+  	FMPropertiesWindow *window;
+  	cairo_t *cr;
+	gint width, height;
+	double free, used;
+	double angle1, angle2, split, xc, yc, radius;
+
+  	window = FM_PROPERTIES_WINDOW (data);
+	
+	width  = widget->allocation.width;
+  	height = widget->allocation.height;
+  	
+	free = (double)window->details->volume_free / (double)window->details->volume_capacity;
+	used =  1.0 - free;
+
+	angle1 = free * 2 * G_PI;
+	angle2 = used * 2 * G_PI;
+	split = (2 * G_PI - angle1) * .5;
+	xc = width / 2;
+	yc = height / 2;
+  
+  	cr = gdk_cairo_create (widget->window);
+
+	if (width < height) {
+		radius = width / 2 - 8;
+	} else {
+		radius = height / 2 - 8;
+	}
+	
+	if (angle1 != 2 * G_PI && angle1 != 0) {
+		angle1 = angle1 + split;
+	}
+		
+	if (angle2 != 2 * G_PI && angle2 != 0) {
+		angle2 = angle2 - split;
+	}
+	
+	if (used > 0) {
+		if (free != 0) {
+			cairo_move_to (cr,xc,yc);
+		}
+		
+		cairo_arc (cr, xc, yc, radius, angle1, angle2);
+		
+		if (free != 0) {
+			cairo_line_to (cr,xc,yc);
+		}
+		
+		cairo_set_source_rgb (cr, USED_FILL_R,USED_FILL_G,USED_FILL_B);
+		cairo_fill_preserve (cr);
+		
+		cairo_set_source_rgb (cr, USED_STROKE_R,USED_STROKE_G,USED_STROKE_B);
+		cairo_stroke (cr);
+	}
+	
+	if (free > 0) {
+		if (used != 0) {
+			cairo_move_to (cr,xc,yc);
+		}
+	
+		cairo_arc_negative (cr, xc, yc, radius, angle1, angle2);
+	
+		if (used != 0) {
+			cairo_line_to (cr,xc,yc);
+		}
+		
+		cairo_set_source_rgb (cr, FREE_FILL_R,FREE_FILL_G,FREE_FILL_B);
+		cairo_fill_preserve(cr);
+		
+		cairo_set_source_rgb (cr, FREE_STROKE_R,FREE_STROKE_G,FREE_STROKE_B);
+		cairo_stroke (cr);
+	}
+	
+  	cairo_destroy (cr);
+}
+
+static gboolean
+get_mount_stats (gchar *path, guint64 *capacity, guint64 *free)
+{
+	int statfs_result;
+#if HAVE_STATVFS
+	struct statvfs statfs_buffer;
+#else
+	struct statfs statfs_buffer;
+#endif
+	GnomeVFSFileSize block_size;
+
+	if (path == NULL) {
+		return FALSE;
+	}
+		
+#if HAVE_STATVFS
+	statfs_result = statvfs (path, &statfs_buffer);
+	block_size = statfs_buffer.f_frsize; 
+#else
+#if STATFS_ARGS == 2
+	statfs_result = statfs (path, &statfs_buffer);
+#elif STATFS_ARGS == 4
+	statfs_result = statfs (path, &statfs_buffer,
+				sizeof (statfs_buffer), 0);
+#endif
+	block_size = statfs_buffer.f_bsize; 
+#endif  
+
+	*capacity = statfs_buffer.f_blocks * block_size;
+
+	*free 	 = statfs_buffer.f_bavail * block_size; 
+	
+	if (statfs_result != 0) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+static GtkWidget* 
+create_pie_widget (FMPropertiesWindow *window)
+{
+	GnomeVFSVolumeMonitor 	*monitor;
+	GnomeVFSVolume		*volume;
+	NautilusFile		*file;
+	GtkTable 		*table;
+	GtkWidget 		*pie_canvas;
+	GtkWidget 		*used_canvas;
+	GtkWidget 		*used_label;
+	GtkWidget 		*free_canvas;
+	GtkWidget 		*free_label;
+	GtkWidget 		*capacity_label;
+	GtkWidget 		*fstype_label;
+	gchar			*capacity;
+	gchar 			*used;
+	gchar 			*free;
+	gchar 			*fs_type;
+	gchar			*uri;
+	gchar			*path;
+	
+	capacity = gnome_vfs_format_file_size_for_display (window->details->volume_capacity);
+	free 	 = gnome_vfs_format_file_size_for_display (window->details->volume_free);
+	used 	 = gnome_vfs_format_file_size_for_display (window->details->volume_capacity - window->details->volume_free);	
+	
+	file = get_original_file (window);
+	
+	uri = nautilus_file_get_activation_uri (file);
+	
+	table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
+	pie_canvas = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (pie_canvas, 200, 200);
+
+	used_canvas = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (used_canvas, 20, 20);
+	used_label = gtk_label_new (g_strconcat (used, " ", _("used"), NULL));
+
+	free_canvas = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (free_canvas,20,20);
+	free_label = gtk_label_new (g_strconcat (free, " ", _("free"), NULL));  
+
+	capacity_label = gtk_label_new (g_strconcat (_("Total capacity: "), capacity, NULL));
+	fstype_label = gtk_label_new (NULL);
+	
+	monitor = gnome_vfs_get_volume_monitor ();
+	
+	path = g_filename_from_uri (uri, NULL, NULL);
+	
+	volume = gnome_vfs_volume_monitor_get_volume_for_path (monitor, path);
+	
+	if (volume !=NULL) {
+		fs_type = gnome_vfs_volume_get_filesystem_type (volume);
+		if (fs_type != NULL) {
+			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesytem type: "), fs_type, NULL));
+		}
+	}
+	
+	g_free (path);
+	g_free (uri);
+	g_free (capacity);
+	g_free (used);
+	g_free (free);
+
+	gtk_table_attach (table, pie_canvas , 0, 1, 0, 4, GTK_FILL, 	GTK_SHRINK, 5, 5);
+		
+	gtk_table_attach (table, used_canvas, 1, 2, 0, 1, 0, 	    	0, 	    5, 5);	
+	gtk_table_attach (table, used_label , 2, 3, 0, 1, GTK_FILL, 	0,          5, 5);	
+
+	gtk_table_attach (table, free_canvas, 1, 2, 1, 2, 0, 		0,          5, 5);	
+	gtk_table_attach (table, free_label , 2, 3, 1, 2, GTK_FILL, 	0,          5, 5);
+	
+	gtk_table_attach (table, capacity_label , 1, 3, 2, 3, GTK_FILL, 0,          5, 5);
+	gtk_table_attach (table, fstype_label , 1, 3, 3, 4, GTK_FILL, 0,          5, 5);
+	
+	g_signal_connect (G_OBJECT (pie_canvas), "expose-event", G_CALLBACK (paint_pie_chart), window);
+	g_signal_connect (G_OBJECT (used_canvas), "expose-event", G_CALLBACK (paint_used_legend), NULL);
+	g_signal_connect (G_OBJECT (free_canvas), "expose-event", G_CALLBACK (paint_free_legend), NULL);
+	        
+	return GTK_WIDGET (table);
+}
+
+static GtkWidget*
+create_volume_usage_widget (FMPropertiesWindow *window)
+{
+	GtkWidget *piewidget;
+	GnomeVFSURI *vfs_uri;
+	gchar *path;
+	gchar *uri;
+	NautilusFile *file;
+	
+	file = get_original_file (window);
+	
+	uri 	= nautilus_file_get_activation_uri (file);
+	vfs_uri = gnome_vfs_uri_new (uri);
+	path 	= g_filename_from_uri (uri,NULL,NULL);
+	
+	get_mount_stats (path, &window->details->volume_capacity, &window->details->volume_free);
+	
+	g_free (uri);
+	g_free(path);
+				
+	piewidget = create_pie_widget (window);
+	                   
+        gtk_widget_show_all (piewidget);            
+        
+	return piewidget;
+}
+
 static void
 create_basic_page (FMPropertiesWindow *window)
 {
@@ -2626,9 +2989,11 @@ create_basic_page (FMPropertiesWindow *window)
 	GtkWidget *container;
 	GtkWidget *icon_aligner;
 	GtkWidget *icon_pixmap_widget;
-
+	GtkWidget *volume_usage;
 	GtkWidget *hbox, *name_label;
-
+	
+	guint last_row;
+	
 	create_page_with_table_in_vbox (window->details->notebook, 
 					_("Basic"), 
 					1,
@@ -2739,6 +3104,12 @@ create_basic_page (FMPropertiesWindow *window)
 					 "date_accessed",
 					 _("--"),
 					 FALSE);
+	}
+	
+	if (should_show_volume_usage (window)) {
+		last_row = append_row (table);
+		volume_usage = create_volume_usage_widget (window);
+		gtk_table_attach_defaults (GTK_TABLE(table), volume_usage, 0, 2, last_row, last_row+1);
 	}
 }
 
