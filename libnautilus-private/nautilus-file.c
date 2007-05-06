@@ -286,6 +286,7 @@ modify_link_hash_table (NautilusFile *file,
 	if (*list_ptr == NULL) {
 		g_hash_table_remove (symbolic_links, target_uri);
 		g_free (list_ptr);
+		g_free (original_key);
 	}
 	g_free (target_uri);
 }
