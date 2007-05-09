@@ -2128,6 +2128,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 {
 	GList *selection;
 	GnomeVFSFileSize non_folder_size;
+	gboolean non_folder_size_known;
 	guint non_folder_count, folder_count, folder_item_count;
 	gboolean folder_item_count_known;
 	guint file_item_count;
@@ -2147,6 +2148,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	folder_count = 0;
 	folder_item_count = 0;
 	non_folder_count = 0;
+	non_folder_size_known = FALSE;
 	non_folder_size = 0;
 	first_item_name = NULL;
 	folder_count_str = NULL;
@@ -2164,7 +2166,10 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 			}
 		} else {
 			non_folder_count++;
-			non_folder_size += nautilus_file_get_size (file);
+			if (!nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
+				non_folder_size_known = TRUE;
+				non_folder_size += nautilus_file_get_size (file);
+			}
 		}
 
 		if (first_item_name == NULL) {
@@ -2213,32 +2218,44 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	}
 
 	if (non_folder_count != 0) {
-		char *size_string;
-
-		size_string = gnome_vfs_format_file_size_for_display (non_folder_size);
+		char *items_string;
 
 		if (folder_count == 0) {
 			if (non_folder_count == 1) {
-				non_folder_str = g_strdup_printf (_("\"%s\" selected (%s)"), 
-								  first_item_name,
-								  size_string);
+				items_string = g_strdup_printf (_("\"%s\" selected"), 
+								  first_item_name);
 			} else {
-				non_folder_str = g_strdup_printf (ngettext("%d item selected (%s)",
-									   "%d items selected (%s)",
+				items_string = g_strdup_printf (ngettext("%d item selected",
+									   "%d items selected",
 									   non_folder_count), 
-								  non_folder_count, 
-								  size_string);
+								  non_folder_count);
 			}
 		} else {
 			/* Folders selected also, use "other" terminology */
-			non_folder_str = g_strdup_printf (ngettext("%d other item selected (%s)",
-								   "%d other items selected (%s)",
+			items_string = g_strdup_printf (ngettext("%d other item selected",
+								   "%d other items selected",
 								   non_folder_count), 
-							  non_folder_count, 
-							  size_string);
+							  non_folder_count);
 		}
 
-		g_free (size_string);
+		if (non_folder_size_known) {
+			char *size_string;
+
+			size_string = gnome_vfs_format_file_size_for_display (non_folder_size);
+			/* This is marked for translation in case a localiser
+			 * needs to use something other than parentheses. The
+			 * first message gives the number of items selected;
+			 * the message in parentheses the size of those items.
+			 */
+			non_folder_str = g_strdup_printf (_("%s (%s)"), 
+							  items_string, 
+							  size_string);
+
+			g_free (size_string);
+			g_free (items_string);
+		} else {
+			non_folder_str = items_string;
+		}
 	}
 
 	if (folder_count == 0 && non_folder_count == 0)	{
