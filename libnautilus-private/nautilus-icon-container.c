@@ -8109,9 +8109,9 @@ check_compute_stretch (int icon_x, int icon_y, int icon_size,
 void
 nautilus_self_check_icon_container (void)
 {
-	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
-	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
-	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 16, 0, 0, 0, 0), "0,0:16");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 16, 16, 16, 17, 17), "0,0:17");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 16, 16, 16, 17, 16), "0,0:16");
 	EEL_CHECK_STRING_RESULT (check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
 }
 
