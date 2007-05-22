@@ -871,7 +871,6 @@ draw_frame (NautilusIconCanvasItem *item,
 {
 	NautilusIconContainer *container;
 	cairo_t *cr;
-	GdkColor background_color_gdk;
 
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 
@@ -883,18 +882,18 @@ draw_frame (NautilusIconCanvasItem *item,
 	 */
 	make_round_rect (cr, x, y, width, height, 5);
 	
-	/* Get the GdkColor for the label selection fill */
-	background_color_gdk = eel_gdk_rgb_to_color (color);
-	
 	if (create_mask) {
 		/* Dunno how to do this with cairo...
 		 * It used to threshold the rendering so that the
 		 * bitmask didn't show white where alpha < 0.5
 		 */
 	}
-	
-	/* Set the label background color */	        	
-	gdk_cairo_set_source_color (cr, &background_color_gdk);
+
+	cairo_set_source_rgba (cr,
+			       EEL_RGBA_COLOR_GET_R (color) / 255.0,
+			       EEL_RGBA_COLOR_GET_G (color) / 255.0,
+			       EEL_RGBA_COLOR_GET_B (color) / 255.0,
+			       EEL_RGBA_COLOR_GET_A (color) / 255.0);
 	
 	/* Paint into drawable now that we have set up the color and opacity */	
 	cairo_fill (cr);
