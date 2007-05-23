@@ -2849,7 +2849,9 @@ get_mount_stats (gchar *path, guint64 *capacity, guint64 *free)
 	if (path == NULL) {
 		return FALSE;
 	}
-		
+
+	statfs_result = -1;
+	
 #if HAVE_STATVFS
 	statfs_result = statvfs (path, &statfs_buffer);
 	block_size = statfs_buffer.f_frsize; 
@@ -2863,13 +2865,13 @@ get_mount_stats (gchar *path, guint64 *capacity, guint64 *free)
 	block_size = statfs_buffer.f_bsize; 
 #endif  
 
-	*capacity = statfs_buffer.f_blocks * block_size;
-
-	*free 	 = statfs_buffer.f_bavail * block_size; 
-	
 	if (statfs_result != 0) {
 		return FALSE;
 	}
+	
+	*capacity = statfs_buffer.f_blocks * block_size;
+
+	*free 	 = statfs_buffer.f_bavail * block_size; 
 	
 	return TRUE;
 }
