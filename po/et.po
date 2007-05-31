@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-13 03:45+0100\n"
-"PO-Revision-Date: 2007-02-13 23:15+0200\n"
+"POT-Creation-Date: 2007-05-18 21:12+0100\n"
+"PO-Revision-Date: 2007-05-31 21:53+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -973,7 +973,7 @@ msgstr "Lõikelaual hoitava teksti asetamine"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6893
+#: ../src/file-manager/fm-directory-view.c:6959
 msgid "Select _All"
 msgstr "Vali _kõik"
 
@@ -1061,7 +1061,7 @@ msgid "The group of the file."
 msgstr "Faili grupp."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4156
+#: ../src/file-manager/fm-properties-window.c:4527
 msgid "Permissions"
 msgstr "Õigused"
 
@@ -1214,7 +1214,7 @@ msgstr "(%d:%02d lõpuni)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:452
 #: ../libnautilus-private/nautilus-file-operations.c:481
-#: ../libnautilus-private/nautilus-file-utilities.c:87
+#: ../libnautilus-private/nautilus-file-utilities.c:92
 #: ../src/nautilus-connect-server-dialog.c:337
 #, c-format
 msgid "%s on %s"
@@ -1483,7 +1483,7 @@ msgstr "Asenda _kõik"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
 #: ../libnautilus-private/nautilus-file.c:4828
-#: ../src/file-manager/fm-directory-view.c:9843
+#: ../src/file-manager/fm-directory-view.c:9909
 #, c-format
 msgid "Link to %s"
 msgstr "Viit -> %s"
@@ -1850,7 +1850,7 @@ msgstr "Ära tühjenda prügikasti"
 msgid "Empty Trash"
 msgstr "Tühjenda prügikast"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:75
+#: ../libnautilus-private/nautilus-file-utilities.c:80
 #: ../libnautilus-private/nautilus-query.c:135
 #: ../libnautilus-private/nautilus-search-directory-file.c:173
 #: ../libnautilus-private/nautilus-search-directory-file.c:188
@@ -1858,35 +1858,35 @@ msgstr "Tühjenda prügikast"
 msgid "Search"
 msgstr "Otsing"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:563
+#: ../libnautilus-private/nautilus-file-utilities.c:851
 #: ../libnautilus-private/nautilus-global-preferences.c:530
 #: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Arvuti"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:565
+#: ../libnautilus-private/nautilus-file-utilities.c:853
 #: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Võrk"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:567
+#: ../libnautilus-private/nautilus-file-utilities.c:855
 msgid "Fonts"
 msgstr "Kirjatüübid"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:569
+#: ../libnautilus-private/nautilus-file-utilities.c:857
 msgid "Themes"
 msgstr "Teemad"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:571
+#: ../libnautilus-private/nautilus-file-utilities.c:859
 msgid "CD/DVD Creator"
 msgstr "CD/DVD looja"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:573
+#: ../libnautilus-private/nautilus-file-utilities.c:861
 msgid "Windows Network"
 msgstr "Windowsi võrk"
 
 #. translators: this is the title of the "dns-sd:///" location
-#: ../libnautilus-private/nautilus-file-utilities.c:576
+#: ../libnautilus-private/nautilus-file-utilities.c:864
 msgid "Services in"
 msgstr "Teenused asukohas"
 
@@ -2029,7 +2029,7 @@ msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
 #: ../libnautilus-private/nautilus-file.c:4342
-#: ../src/file-manager/fm-directory-view.c:2251
+#: ../src/file-manager/fm-directory-view.c:2266
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2079,7 +2079,7 @@ msgstr "tundmatu MIME-liik"
 #. * for which we have no more appropriate default.
 #.
 #: ../libnautilus-private/nautilus-file.c:4751
-#: ../src/file-manager/fm-properties-window.c:1309
+#: ../src/file-manager/fm-properties-window.c:1343
 msgid "unknown"
 msgstr "tundmatu"
 
@@ -2567,22 +2567,22 @@ msgstr "Taust"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6871
-#: ../src/file-manager/fm-directory-view.c:7825
+#: ../src/file-manager/fm-directory-view.c:6937
+#: ../src/file-manager/fm-directory-view.c:7891
 msgid "E_mpty Trash"
 msgstr "_Tühjenda prügikast"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6843
+#: ../src/file-manager/fm-directory-view.c:6909
 msgid "Create L_auncher..."
 msgstr "Loo kä_ivitaja..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6844
+#: ../src/file-manager/fm-directory-view.c:6910
 msgid "Create a new launcher"
 msgstr "Uue käivitaja loomine"
 
@@ -2600,7 +2600,7 @@ msgstr "Töölaua tausta mustri või värvi valimise akna näitamine"
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6872
+#: ../src/file-manager/fm-directory-view.c:6938
 #: ../src/nautilus-trash-bar.c:153
 msgid "Delete all items in the Trash"
 msgstr "Prügikastist kõikide asjade kustutamine"
@@ -2663,7 +2663,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Kui kustutad kirje, siis kaob see lõplikult"
 
 #: ../src/file-manager/fm-directory-view.c:1168
-#: ../src/file-manager/fm-properties-window.c:4381
+#: ../src/file-manager/fm-properties-window.c:4752
 #: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -2694,19 +2694,20 @@ msgstr "_Kataloog:"
 msgid "Select Folder to Save Search In"
 msgstr "Otsingu salvestamiseks kataloogi valimine"
 
-#: ../src/file-manager/fm-directory-view.c:2183
+#: ../src/file-manager/fm-directory-view.c:2186
+#: ../src/file-manager/fm-directory-view.c:2223
 #, c-format
 msgid "\"%s\" selected"
 msgstr "Valitud \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:2185
+#: ../src/file-manager/fm-directory-view.c:2188
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "Valitud %d kataloog"
 msgstr[1] "Valitud %d kataloogi"
 
-#: ../src/file-manager/fm-directory-view.c:2195
+#: ../src/file-manager/fm-directory-view.c:2198
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2714,34 +2715,39 @@ msgstr[0] " (selles on %d kirje)"
 msgstr[1] " (selles on %d kirjet)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2206
+#: ../src/file-manager/fm-directory-view.c:2209
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (nendes on kokku %d kirje)"
 msgstr[1] " (nendes on kokku %d kirjet)"
 
-#: ../src/file-manager/fm-directory-view.c:2222
-#, c-format
-msgid "\"%s\" selected (%s)"
-msgstr "Valitud \"%s\" (%s)"
-
 #: ../src/file-manager/fm-directory-view.c:2226
 #, c-format
-msgid "%d item selected (%s)"
-msgid_plural "%d items selected (%s)"
-msgstr[0] "Valitud %d kirje (%s)"
-msgstr[1] "Valitud %d kirjet (%s)"
+msgid "%d item selected"
+msgid_plural "%d items selected"
+msgstr[0] "valitud %d kirje"
+msgstr[1] "valitud %d kirjet"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2234
+#: ../src/file-manager/fm-directory-view.c:2233
 #, c-format
-msgid "%d other item selected (%s)"
-msgid_plural "%d other items selected (%s)"
-msgstr[0] "lisaks on valitud veel %d kirje (%s)"
-msgstr[1] "lisaks on valitud veel %d kirjet (%s)"
+msgid "%d other item selected"
+msgid_plural "%d other items selected"
+msgstr[0] "veel on valitud %d kirje"
+msgstr[1] "veel on valitud %d kirjet"
 
-#: ../src/file-manager/fm-directory-view.c:2255
+#. This is marked for translation in case a localiser
+#. * needs to use something other than parentheses. The
+#. * first message gives the number of items selected;
+#. * the message in parentheses the size of those items.
+#.
+#: ../src/file-manager/fm-directory-view.c:2248
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: ../src/file-manager/fm-directory-view.c:2270
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, vaba ruumi: %s"
@@ -2753,7 +2759,7 @@ msgstr "%s, vaba ruumi: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2280
+#: ../src/file-manager/fm-directory-view.c:2295
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2762,53 +2768,53 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2362
+#: ../src/file-manager/fm-directory-view.c:2377
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Kataloog \"%s\" sisaldab rohkem faile, kui Nautilus suudab käsitleda."
 
-#: ../src/file-manager/fm-directory-view.c:2368
+#: ../src/file-manager/fm-directory-view.c:2383
 msgid "Some files will not be displayed."
 msgstr "Osasid faile ei kuvata."
 
-#: ../src/file-manager/fm-directory-view.c:3826
+#: ../src/file-manager/fm-directory-view.c:3841
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Faili pole võimalik prügikasti tõsta. Kas soovid seda koheselt kustutada?"
 
-#: ../src/file-manager/fm-directory-view.c:3827
+#: ../src/file-manager/fm-directory-view.c:3842
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Faili \"%s\" pole võimalik prügikasti tõsta."
 
-#: ../src/file-manager/fm-directory-view.c:3831
+#: ../src/file-manager/fm-directory-view.c:3846
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Kirjeid pole võimalik prügikasti tõsta. Kas soovid neid koheselt kustutada?"
 
-#: ../src/file-manager/fm-directory-view.c:3832
+#: ../src/file-manager/fm-directory-view.c:3847
 #, c-format
 msgid "None of the %d selected items can be moved to the Trash"
 msgstr "Ühtegi %d'st valitud kirjest pole võimalik prügikasti tõsta"
 
-#: ../src/file-manager/fm-directory-view.c:3834
+#: ../src/file-manager/fm-directory-view.c:3849
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Mõningaid kirjeid pole võimalik prügikasti tõsta. Kas soovid neid koheselt "
 "kustutada?"
 
-#: ../src/file-manager/fm-directory-view.c:3835
+#: ../src/file-manager/fm-directory-view.c:3850
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d valitud kirjet pole võimalik prügikasti tõsta"
 
-#: ../src/file-manager/fm-directory-view.c:3873
+#: ../src/file-manager/fm-directory-view.c:3888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Oled kindel, et soovid \"%s\" prügikastist jäädavalt kustutada?"
 
-#: ../src/file-manager/fm-directory-view.c:3877
+#: ../src/file-manager/fm-directory-view.c:3892
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -2821,50 +2827,50 @@ msgstr[0] ""
 msgstr[1] ""
 "Oled sa kindel, et soovid prügikastist kustutada jäädavalt %d valitud faili?"
 
-#: ../src/file-manager/fm-directory-view.c:3888
+#: ../src/file-manager/fm-directory-view.c:3903
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Kui kustutad kirje, on see jäädavalt kadunud."
 
-#: ../src/file-manager/fm-directory-view.c:4478
+#: ../src/file-manager/fm-directory-view.c:4493
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Ava programmiga \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4479
+#: ../src/file-manager/fm-directory-view.c:4494
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "\"%s\" kasutamine valitud kirje avamiseks"
 msgstr[1] "\"%s\" kasutamine valitud kirjete avamiseks"
 
-#: ../src/file-manager/fm-directory-view.c:4571
+#: ../src/file-manager/fm-directory-view.c:4586
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Kas soovid käivitada \"%s\" või kuvada selle sisu?"
 
-#: ../src/file-manager/fm-directory-view.c:4573
+#: ../src/file-manager/fm-directory-view.c:4588
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" on käivitatav tekstifail."
 
-#: ../src/file-manager/fm-directory-view.c:4579
+#: ../src/file-manager/fm-directory-view.c:4594
 msgid "Run in _Terminal"
 msgstr "Käivita _terminalis"
 
-#: ../src/file-manager/fm-directory-view.c:4580
+#: ../src/file-manager/fm-directory-view.c:4595
 msgid "_Display"
 msgstr "_Kuva"
 
-#: ../src/file-manager/fm-directory-view.c:4583
+#: ../src/file-manager/fm-directory-view.c:4598
 msgid "_Run"
 msgstr "_Käivita"
 
-#: ../src/file-manager/fm-directory-view.c:4979
+#: ../src/file-manager/fm-directory-view.c:4994
 #, c-format
 msgid "Cannot open %s"
 msgstr "Faili %s pole võimalik avada"
 
-#: ../src/file-manager/fm-directory-view.c:4982
+#: ../src/file-manager/fm-directory-view.c:4997
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -2886,21 +2892,21 @@ msgstr ""
 "võid kasutada \"Ava programmiga\" menüüd ja valida faili avamiseks sobilik "
 "rakendus."
 
-#: ../src/file-manager/fm-directory-view.c:5408
+#: ../src/file-manager/fm-directory-view.c:5423
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Käivita \"%s\" mõnel valitud kirjel"
 
-#: ../src/file-manager/fm-directory-view.c:5657
+#: ../src/file-manager/fm-directory-view.c:5672
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Dokumendi loomine mallist \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5863
+#: ../src/file-manager/fm-directory-view.c:5929
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Kõik käivitatavad failid selles kataloogis ilmuvad Skriptide menüüsse."
 
-#: ../src/file-manager/fm-directory-view.c:5865
+#: ../src/file-manager/fm-directory-view.c:5931
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2908,7 +2914,7 @@ msgstr ""
 "Menüüst skripti valides käivitatakse see valitud kirjel, sisendparameetrina "
 "kasutatakse valitud kirje nime."
 
-#: ../src/file-manager/fm-directory-view.c:5867
+#: ../src/file-manager/fm-directory-view.c:5933
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -2950,19 +2956,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: käesoleva akna suurus ja asukoht"
 
-#: ../src/file-manager/fm-directory-view.c:6031
+#: ../src/file-manager/fm-directory-view.c:6097
 #: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" tõstetakse ümber, kui valid käsu Aseta"
 
-#: ../src/file-manager/fm-directory-view.c:6035
+#: ../src/file-manager/fm-directory-view.c:6101
 #: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kopeeritakse, kui valid käsu Aseta"
 
-#: ../src/file-manager/fm-directory-view.c:6042
+#: ../src/file-manager/fm-directory-view.c:6108
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -2970,7 +2976,7 @@ msgid_plural ""
 msgstr[0] "%d valitud kirje tõstetakse ümber, kui valid käsu Aseta"
 msgstr[1] "%d valitud kirjet tõstetakse ümber, kui valid käsu Aseta"
 
-#: ../src/file-manager/fm-directory-view.c:6049
+#: ../src/file-manager/fm-directory-view.c:6115
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -2978,143 +2984,143 @@ msgid_plural ""
 msgstr[0] "%d valitud kirje kopeeritakse, kui valid käsu Aseta"
 msgstr[1] "%d valitud kirjet kopeeritakse, kui valid käsu Aseta"
 
-#: ../src/file-manager/fm-directory-view.c:6143
+#: ../src/file-manager/fm-directory-view.c:6209
 #: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Lõikelaualt ei ole midagi asetada."
 
-#: ../src/file-manager/fm-directory-view.c:6622
+#: ../src/file-manager/fm-directory-view.c:6688
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Ühendumine serverisse %s"
 
-#: ../src/file-manager/fm-directory-view.c:6627
+#: ../src/file-manager/fm-directory-view.c:6693
 msgid "_Connect"
 msgstr "Ü_hendu"
 
-#: ../src/file-manager/fm-directory-view.c:6641
+#: ../src/file-manager/fm-directory-view.c:6707
 msgid "Link _name:"
 msgstr "_Viida nimi:"
 
-#: ../src/file-manager/fm-directory-view.c:6817
+#: ../src/file-manager/fm-directory-view.c:6883
 msgid "Create _Document"
 msgstr "Loo _dokument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6818
+#: ../src/file-manager/fm-directory-view.c:6884
 msgid "Open Wit_h"
 msgstr "Ava _programmiga..."
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6819
+#: ../src/file-manager/fm-directory-view.c:6885
 msgid "Choose a program with which to open the selected item"
 msgstr "Vali programm, millega valitud kirje avada"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6821
-#: ../src/file-manager/fm-directory-view.c:6829
+#: ../src/file-manager/fm-directory-view.c:6887
+#: ../src/file-manager/fm-directory-view.c:6895
 msgid "_Properties"
 msgstr "_Omadused"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6822
+#: ../src/file-manager/fm-directory-view.c:6888
 msgid "View or modify the properties of each selected item"
 msgstr "Valitud kirje omaduste vaatamine või muutmine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6830
+#: ../src/file-manager/fm-directory-view.c:6896
 msgid "View or modify the properties of the open folder"
 msgstr "Avatud kataloogi omaduste vaatamine või muutmine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6833
+#: ../src/file-manager/fm-directory-view.c:6899
 msgid "Create _Folder"
 msgstr "Loo _kataloog"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6834
+#: ../src/file-manager/fm-directory-view.c:6900
 msgid "Create a new empty folder inside this folder"
 msgstr "Selle kataloogi sisse uue tühja kataloogi loomine"
 
-#: ../src/file-manager/fm-directory-view.c:6836
+#: ../src/file-manager/fm-directory-view.c:6902
 msgid "No templates Installed"
 msgstr "Malle ei ole paigaldatud"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6839
+#: ../src/file-manager/fm-directory-view.c:6905
 msgid "_Empty File"
 msgstr "_Tühi fail"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6840
+#: ../src/file-manager/fm-directory-view.c:6906
 msgid "Create a new empty file inside this folder"
 msgstr "Selle kataloogi sisse uue tühja faili loomine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6847
-#: ../src/file-manager/fm-directory-view.c:7726
+#: ../src/file-manager/fm-directory-view.c:6913
+#: ../src/file-manager/fm-directory-view.c:7792
 #: ../src/file-manager/fm-tree-view.c:1253
 #: ../src/nautilus-places-sidebar.c:1448
 msgid "_Open"
 msgstr "_Ava"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6848
+#: ../src/file-manager/fm-directory-view.c:6914
 msgid "Open the selected item in this window"
 msgstr "Valitud kirjete avamine praeguses aknas"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6855
-#: ../src/file-manager/fm-directory-view.c:6979
+#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:7045
 msgid "Open in Navigation Window"
 msgstr "Ava navigatsiooniaknas"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6856
+#: ../src/file-manager/fm-directory-view.c:6922
 msgid "Open each selected item in a navigation window"
 msgstr "Kõikide navigatsiooniaknas valitud kirjete avamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6859
-#: ../src/file-manager/fm-directory-view.c:6863
+#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:6929
 msgid "Open with Other _Application..."
 msgstr "_Ava mõne muu rakendusega..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6860
-#: ../src/file-manager/fm-directory-view.c:6864
+#: ../src/file-manager/fm-directory-view.c:6926
+#: ../src/file-manager/fm-directory-view.c:6930
 msgid "Choose another application with which to open the selected item"
 msgstr "Valitud kirje avamiseks teise rakenduse valimine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6867
+#: ../src/file-manager/fm-directory-view.c:6933
 msgid "_Open Scripts Folder"
 msgstr "_Ava skriptide kataloog"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6868
+#: ../src/file-manager/fm-directory-view.c:6934
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Selles menüüs olevate skriptide kataloogi avamine"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6876
+#: ../src/file-manager/fm-directory-view.c:6942
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Valitud failide ettevalmistamine ümbertõstmiseks käsuga Aseta failid"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6880
+#: ../src/file-manager/fm-directory-view.c:6946
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Valitud failide ettevalmistamine kopeerimiseks Aseta käsuga"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6884
+#: ../src/file-manager/fm-directory-view.c:6950
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Eelnevalt Lõika või Kopeeri käskudega valitud failide asetamine või "
@@ -3123,13 +3129,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6889
+#: ../src/file-manager/fm-directory-view.c:6955
 #: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Paste Into Folder"
 msgstr "_Aseta failid kataloogi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6890
+#: ../src/file-manager/fm-directory-view.c:6956
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3138,347 +3144,347 @@ msgstr ""
 "ümbertõstmine või kopeerimine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6894
+#: ../src/file-manager/fm-directory-view.c:6960
 msgid "Select all items in this window"
 msgstr "Kõigi selles aknas olevate kirjete avamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6897
+#: ../src/file-manager/fm-directory-view.c:6963
 msgid "Select _Pattern"
 msgstr "Vali _muster"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6898
+#: ../src/file-manager/fm-directory-view.c:6964
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "Kõigi selles aknas olevate ja määratud mustrile vastavate kirjete avamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6901
+#: ../src/file-manager/fm-directory-view.c:6967
 msgid "D_uplicate"
 msgstr "Loo _duplikaat"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6902
+#: ../src/file-manager/fm-directory-view.c:6968
 msgid "Duplicate each selected item"
 msgstr "Kõigi valitud kirjete dubleerimine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6905
-#: ../src/file-manager/fm-directory-view.c:7799
+#: ../src/file-manager/fm-directory-view.c:6971
+#: ../src/file-manager/fm-directory-view.c:7865
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Loo _viit"
 msgstr[1] "Loo _viidad"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6906
+#: ../src/file-manager/fm-directory-view.c:6972
 msgid "Create a symbolic link for each selected item"
 msgstr "Igale valitud kirjele nimeviida loomine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:6975
 msgid "_Rename..."
 msgstr "Muuda _nime..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6910
+#: ../src/file-manager/fm-directory-view.c:6976
 msgid "Rename selected item"
 msgstr "Valitud kirje ümbernimetamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6917
-#: ../src/file-manager/fm-directory-view.c:6993
-#: ../src/file-manager/fm-directory-view.c:7583
-#: ../src/file-manager/fm-directory-view.c:7767
-#: ../src/file-manager/fm-directory-view.c:8167
+#: ../src/file-manager/fm-directory-view.c:6983
+#: ../src/file-manager/fm-directory-view.c:7059
+#: ../src/file-manager/fm-directory-view.c:7649
+#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:8233
 msgid "Mo_ve to Trash"
 msgstr "_Tõsta prügikasti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6918
-#: ../src/file-manager/fm-directory-view.c:7768
+#: ../src/file-manager/fm-directory-view.c:6984
+#: ../src/file-manager/fm-directory-view.c:7834
 msgid "Move each selected item to the Trash"
 msgstr "Kõigi märgitud kirjete tõstmine prügikasti"
 
 #. name, stock id
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6921
-#: ../src/file-manager/fm-directory-view.c:6997
-#: ../src/file-manager/fm-directory-view.c:7786
+#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:7063
+#: ../src/file-manager/fm-directory-view.c:7852
 #: ../src/file-manager/fm-tree-view.c:1334
 msgid "_Delete"
 msgstr "Kust_uta"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6922
+#: ../src/file-manager/fm-directory-view.c:6988
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Kõigi valitud kirjete kustutamine ilma neid prügikasti tõstmata"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:6991
 msgid "Reset View to _Defaults"
 msgstr "_Taasta vaikimisi vaade"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6926
+#: ../src/file-manager/fm-directory-view.c:6992
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Sortimisjärjestuse ja suurendusastme lähtestamine selle vaate jaoks "
 "vastavaks eelistustele"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6929
+#: ../src/file-manager/fm-directory-view.c:6995
 msgid "Connect To This Server"
 msgstr "Ühendu sellesse võrguserverisse"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6930
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "Make a permanent connection to this server"
 msgstr "Selle serveriga pideva ühenduse loomine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6933
-#: ../src/file-manager/fm-directory-view.c:6949
+#: ../src/file-manager/fm-directory-view.c:6999
+#: ../src/file-manager/fm-directory-view.c:7015
 msgid "_Mount Volume"
 msgstr "_Ühenda kettaseade"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:7000
 msgid "Mount the selected volume"
 msgstr "Valitud kettaseadme ühendamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6937
-#: ../src/file-manager/fm-directory-view.c:6953
+#: ../src/file-manager/fm-directory-view.c:7003
+#: ../src/file-manager/fm-directory-view.c:7019
 #: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "_Ühenda kettaseade lahti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6938
+#: ../src/file-manager/fm-directory-view.c:7004
 msgid "Unmount the selected volume"
 msgstr "Ühenduse katkestamine valitud kettaseadmega"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6941
-#: ../src/file-manager/fm-directory-view.c:6957
+#: ../src/file-manager/fm-directory-view.c:7007
+#: ../src/file-manager/fm-directory-view.c:7023
 #: ../src/nautilus-places-sidebar.c:1497
 msgid "_Eject"
 msgstr "_Väljasta"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6942
+#: ../src/file-manager/fm-directory-view.c:7008
 msgid "Eject the selected volume"
 msgstr "Valitud seadme väljastamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6945
-#: ../src/file-manager/fm-directory-view.c:6961
+#: ../src/file-manager/fm-directory-view.c:7011
+#: ../src/file-manager/fm-directory-view.c:7027
 #: ../src/nautilus-places-sidebar.c:1504
 msgid "_Format"
 msgstr "_Vorming"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6946
+#: ../src/file-manager/fm-directory-view.c:7012
 msgid "Format the selected volume"
 msgstr "Valitud kettaseadme vormindamine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6950
+#: ../src/file-manager/fm-directory-view.c:7016
 msgid "Mount the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme ühendamine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6954
+#: ../src/file-manager/fm-directory-view.c:7020
 msgid "Unmount the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme lahtiühendamine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6958
+#: ../src/file-manager/fm-directory-view.c:7024
 msgid "Eject the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud ketta väljastamine"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6962
+#: ../src/file-manager/fm-directory-view.c:7028
 msgid "Format the volume associated with the open folder"
 msgstr "Avatud kataloogiga seotud kettaseadme vormindamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6965
+#: ../src/file-manager/fm-directory-view.c:7031
 msgid "Open File and Close window"
 msgstr "Ava fail ja sulge aken"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6969
+#: ../src/file-manager/fm-directory-view.c:7035
 msgid "Sa_ve Search"
 msgstr "_Salvesta otsing"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6970
+#: ../src/file-manager/fm-directory-view.c:7036
 msgid "Save the edited search"
 msgstr "Muudetud otsingu salvestamine"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6973
+#: ../src/file-manager/fm-directory-view.c:7039
 msgid "Sa_ve Search As..."
 msgstr "S_alvesta otsing kui..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:7040
 msgid "Save the current search as a file"
 msgstr "Praegune otsingu salvestamine failina"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6980
+#: ../src/file-manager/fm-directory-view.c:7046
 msgid "Open this folder in a navigation window"
 msgstr "Kausta avamine navigeerimisaknas"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6985
+#: ../src/file-manager/fm-directory-view.c:7051
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Avatud kausta ettevalmistamine prügikasti tõstmiseks Aseta käsuga"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6989
+#: ../src/file-manager/fm-directory-view.c:7055
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Selle kausta ettevalmistamine kopeerimiseks Aseta käsuga"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6994
+#: ../src/file-manager/fm-directory-view.c:7060
 msgid "Move this folder to the Trash"
 msgstr "Selle kausta tõstmine prügikasti"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6998
+#: ../src/file-manager/fm-directory-view.c:7064
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Selle kausta kustutamine ilma prügikasti tõstmata"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7004
+#: ../src/file-manager/fm-directory-view.c:7070
 msgid "Show _Hidden Files"
 msgstr "Kuva _peidetud failid"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7005
+#: ../src/file-manager/fm-directory-view.c:7071
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Peidetud failide näitamise käesolevas aknas sisse- ja väljalülitamine"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7091
+#: ../src/file-manager/fm-directory-view.c:7157
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Skriptide käivitamine või korrastamine kataloogis %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7093
+#: ../src/file-manager/fm-directory-view.c:7159
 msgid "_Scripts"
 msgstr "_Skriptid"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7552
-#: ../src/file-manager/fm-directory-view.c:7735
+#: ../src/file-manager/fm-directory-view.c:7618
+#: ../src/file-manager/fm-directory-view.c:7801
 #: ../src/file-manager/fm-tree-view.c:1264
 msgid "Open in New Window"
 msgstr "Ava uues aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7554
-#: ../src/file-manager/fm-directory-view.c:7743
+#: ../src/file-manager/fm-directory-view.c:7620
+#: ../src/file-manager/fm-directory-view.c:7809
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Sirvi kataloogi"
 msgstr[1] "_Sirvi katalooge"
 
-#: ../src/file-manager/fm-directory-view.c:7579
-#: ../src/file-manager/fm-directory-view.c:7763
+#: ../src/file-manager/fm-directory-view.c:7645
+#: ../src/file-manager/fm-directory-view.c:7829
 msgid "_Delete from Trash"
 msgstr "Kustuta _prügikastist"
 
-#: ../src/file-manager/fm-directory-view.c:7580
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "Delete the open folder permanently"
 msgstr "Kustuta avatud kaust jäädavalt"
 
-#: ../src/file-manager/fm-directory-view.c:7584
+#: ../src/file-manager/fm-directory-view.c:7650
 msgid "Move the open folder to the Trash"
 msgstr "Tõsta avatud kaust prügikasti"
 
-#: ../src/file-manager/fm-directory-view.c:7719
+#: ../src/file-manager/fm-directory-view.c:7785
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Ava rakendusega \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7737
+#: ../src/file-manager/fm-directory-view.c:7803
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Ava uues aknas"
 msgstr[1] "Ava %d uues aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7764
+#: ../src/file-manager/fm-directory-view.c:7830
 msgid "Delete all selected items permanently"
 msgstr "Kõigi kirjete lõplik kustutamine"
 
-#: ../src/file-manager/fm-directory-view.c:8147
+#: ../src/file-manager/fm-directory-view.c:8213
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Viit \"%s\" on katki."
 
-#: ../src/file-manager/fm-directory-view.c:8149
+#: ../src/file-manager/fm-directory-view.c:8215
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Viit \"%s\" on kakti. Kas tõsta see prügikasti?"
 
-#: ../src/file-manager/fm-directory-view.c:8155
+#: ../src/file-manager/fm-directory-view.c:8221
 msgid "This link can't be used, because it has no target."
 msgstr "Seda viita pole võimalik kasutada, kuna sellel pole sihtkohta."
 
-#: ../src/file-manager/fm-directory-view.c:8157
+#: ../src/file-manager/fm-directory-view.c:8223
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Seda viita pole võimalik kasutada, kuna sihtkohta \"%s\" pole olemas."
 
-#: ../src/file-manager/fm-directory-view.c:8808
+#: ../src/file-manager/fm-directory-view.c:8874
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" avamine."
 
-#: ../src/file-manager/fm-directory-view.c:8811
+#: ../src/file-manager/fm-directory-view.c:8877
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Avatakse %d kirje."
 msgstr[1] "Avatakse %d kirjet."
 
-#: ../src/file-manager/fm-directory-view.c:9703
+#: ../src/file-manager/fm-directory-view.c:9769
 msgid "Download location?"
 msgstr "Kas laadida asukoht alla?"
 
-#: ../src/file-manager/fm-directory-view.c:9706
+#: ../src/file-manager/fm-directory-view.c:9772
 msgid "You can download it or make a link to it."
 msgstr "Sa võid selle alla laadida või sellele viida luua."
 
-#: ../src/file-manager/fm-directory-view.c:9709
+#: ../src/file-manager/fm-directory-view.c:9775
 msgid "Make a _Link"
 msgstr "Loo _viit"
 
-#: ../src/file-manager/fm-directory-view.c:9713
+#: ../src/file-manager/fm-directory-view.c:9779
 msgid "_Download"
 msgstr "_Laadi alla"
 
-#: ../src/file-manager/fm-directory-view.c:9776
-#: ../src/file-manager/fm-directory-view.c:9828
-#: ../src/file-manager/fm-directory-view.c:9929
+#: ../src/file-manager/fm-directory-view.c:9842
+#: ../src/file-manager/fm-directory-view.c:9894
+#: ../src/file-manager/fm-directory-view.c:9995
 msgid "Drag and drop is not supported."
 msgstr "Pukseerimine ei ole toetatud."
 
-#: ../src/file-manager/fm-directory-view.c:9777
+#: ../src/file-manager/fm-directory-view.c:9843
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Pukseerimine on võimalik vaid kohaliku failisüsteemi ulatuses."
 
-#: ../src/file-manager/fm-directory-view.c:9829
-#: ../src/file-manager/fm-directory-view.c:9930
+#: ../src/file-manager/fm-directory-view.c:9895
+#: ../src/file-manager/fm-directory-view.c:9996
 msgid "An invalid drag type was used."
 msgstr "Kasutati vale lohistamisliiki."
 
@@ -3856,64 +3862,64 @@ msgstr "Loendivaate käivitamise käigus satuti veale."
 msgid "Display this location with the list view."
 msgstr "Selle asukoha kuvamine nimekirjavaatena."
 
-#: ../src/file-manager/fm-properties-window.c:504
+#: ../src/file-manager/fm-properties-window.c:538
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Korraga pole võimalik määrata rohkem kui ühte kohandatud ikooni!"
 
-#: ../src/file-manager/fm-properties-window.c:505
+#: ../src/file-manager/fm-properties-window.c:539
 #: ../src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
 msgstr "Kohandatud ikooni seadmiseks lohista ainult ühte pilti."
 
-#: ../src/file-manager/fm-properties-window.c:513
+#: ../src/file-manager/fm-properties-window.c:547
 #: ../src/nautilus-information-panel.c:521
 msgid "The file that you dropped is not local."
 msgstr "Fail, mille poetasid, ei ole kohalik."
 
-#: ../src/file-manager/fm-properties-window.c:514
-#: ../src/file-manager/fm-properties-window.c:520
+#: ../src/file-manager/fm-properties-window.c:548
+#: ../src/file-manager/fm-properties-window.c:554
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
 msgstr "Failiikoonideks saab kasutada vaid kohalikke pilte."
 
-#: ../src/file-manager/fm-properties-window.c:519
+#: ../src/file-manager/fm-properties-window.c:553
 #: ../src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not an image."
 msgstr "Fail, mille poetasid, ei ole pilt."
 
-#: ../src/file-manager/fm-properties-window.c:1014
+#: ../src/file-manager/fm-properties-window.c:1048
 msgid "Properties"
 msgstr "Omadused"
 
-#: ../src/file-manager/fm-properties-window.c:1022
+#: ../src/file-manager/fm-properties-window.c:1056
 #, c-format
 msgid "%s Properties"
 msgstr "%s omadused"
 
-#: ../src/file-manager/fm-properties-window.c:1565
+#: ../src/file-manager/fm-properties-window.c:1599
 msgid "Cancel Group Change?"
 msgstr "Kas katkestada grupi muutmine?"
 
-#: ../src/file-manager/fm-properties-window.c:1982
+#: ../src/file-manager/fm-properties-window.c:2016
 msgid "Cancel Owner Change?"
 msgstr "Kas katkestada omaniku muutmine?"
 
-#: ../src/file-manager/fm-properties-window.c:2277
+#: ../src/file-manager/fm-properties-window.c:2311
 msgid "nothing"
 msgstr "puudub"
 
-#: ../src/file-manager/fm-properties-window.c:2279
+#: ../src/file-manager/fm-properties-window.c:2313
 msgid "unreadable"
 msgstr "loetamatu"
 
-#: ../src/file-manager/fm-properties-window.c:2289
+#: ../src/file-manager/fm-properties-window.c:2323
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d kirje, suurusega %s"
 msgstr[1] "%d kirjet, kogusuurusega %s"
 
-#: ../src/file-manager/fm-properties-window.c:2298
+#: ../src/file-manager/fm-properties-window.c:2332
 msgid "(some contents unreadable)"
 msgstr "(osa sisust on loetamatu)"
 
@@ -3923,261 +3929,277 @@ msgstr "(osa sisust on loetamatu)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2315
+#: ../src/file-manager/fm-properties-window.c:2349
 msgid "Contents:"
 msgstr "Sisukord:"
 
-#: ../src/file-manager/fm-properties-window.c:2633
+#: ../src/file-manager/fm-properties-window.c:2912
+msgid "used"
+msgstr "kasutusel"
+
+#: ../src/file-manager/fm-properties-window.c:2916
+msgid "free"
+msgstr "vaba"
+
+#: ../src/file-manager/fm-properties-window.c:2918
+msgid "Total capacity: "
+msgstr "Kogumahtuvus:"
+
+#: ../src/file-manager/fm-properties-window.c:2930
+msgid "Filesytem type: "
+msgstr "Failisüsteemi liik: "
+
+#: ../src/file-manager/fm-properties-window.c:2998
 msgid "Basic"
 msgstr "Põhiline"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:2663
+#: ../src/file-manager/fm-properties-window.c:3028
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nimi:"
 msgstr[1] "_Nimed:"
 
-#: ../src/file-manager/fm-properties-window.c:2682
+#: ../src/file-manager/fm-properties-window.c:3047
 msgid "Type:"
 msgstr "Liik:"
 
-#: ../src/file-manager/fm-properties-window.c:2684
-#: ../src/file-manager/fm-properties-window.c:2694
-#: ../src/file-manager/fm-properties-window.c:2700
-#: ../src/file-manager/fm-properties-window.c:2707
-#: ../src/file-manager/fm-properties-window.c:2711
-#: ../src/file-manager/fm-properties-window.c:2719
-#: ../src/file-manager/fm-properties-window.c:2725
-#: ../src/file-manager/fm-properties-window.c:2734
-#: ../src/file-manager/fm-properties-window.c:2740
-#: ../src/file-manager/fm-properties-window.c:3760
-#: ../src/file-manager/fm-properties-window.c:3793
-#: ../src/file-manager/fm-properties-window.c:3966
-#: ../src/file-manager/fm-properties-window.c:3988
-#: ../src/file-manager/fm-properties-window.c:4023
-#: ../src/file-manager/fm-properties-window.c:4193
-#: ../src/file-manager/fm-properties-window.c:4197
+#: ../src/file-manager/fm-properties-window.c:3049
+#: ../src/file-manager/fm-properties-window.c:3059
+#: ../src/file-manager/fm-properties-window.c:3065
+#: ../src/file-manager/fm-properties-window.c:3072
+#: ../src/file-manager/fm-properties-window.c:3076
+#: ../src/file-manager/fm-properties-window.c:3084
+#: ../src/file-manager/fm-properties-window.c:3090
+#: ../src/file-manager/fm-properties-window.c:3099
+#: ../src/file-manager/fm-properties-window.c:3105
+#: ../src/file-manager/fm-properties-window.c:4131
+#: ../src/file-manager/fm-properties-window.c:4164
+#: ../src/file-manager/fm-properties-window.c:4337
+#: ../src/file-manager/fm-properties-window.c:4359
+#: ../src/file-manager/fm-properties-window.c:4394
+#: ../src/file-manager/fm-properties-window.c:4564
+#: ../src/file-manager/fm-properties-window.c:4568
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:2692
+#: ../src/file-manager/fm-properties-window.c:3057
 msgid "Size:"
 msgstr "Suurus:"
 
-#: ../src/file-manager/fm-properties-window.c:2698
+#: ../src/file-manager/fm-properties-window.c:3063
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Asukoht:"
 
-#: ../src/file-manager/fm-properties-window.c:2705
+#: ../src/file-manager/fm-properties-window.c:3070
 msgid "Volume:"
 msgstr "Ketas:"
 
-#: ../src/file-manager/fm-properties-window.c:2709
+#: ../src/file-manager/fm-properties-window.c:3074
 msgid "Free space:"
 msgstr "Vaba ruum:"
 
-#: ../src/file-manager/fm-properties-window.c:2717
+#: ../src/file-manager/fm-properties-window.c:3082
 msgid "Link target:"
 msgstr "Viit osutab:"
 
-#: ../src/file-manager/fm-properties-window.c:2723
+#: ../src/file-manager/fm-properties-window.c:3088
 msgid "MIME type:"
 msgstr "MIME-liik:"
 
-#: ../src/file-manager/fm-properties-window.c:2732
+#: ../src/file-manager/fm-properties-window.c:3097
 msgid "Modified:"
 msgstr "Muudetud:"
 
-#: ../src/file-manager/fm-properties-window.c:2738
+#: ../src/file-manager/fm-properties-window.c:3103
 msgid "Accessed:"
 msgstr "Pöördutud:"
 
-#: ../src/file-manager/fm-properties-window.c:2841
+#: ../src/file-manager/fm-properties-window.c:3212
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Embleemid"
 
-#: ../src/file-manager/fm-properties-window.c:3239
+#: ../src/file-manager/fm-properties-window.c:3610
 msgid "_Read"
 msgstr "_Lugemine"
 
-#: ../src/file-manager/fm-properties-window.c:3241
+#: ../src/file-manager/fm-properties-window.c:3612
 msgid "_Write"
 msgstr "_Kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3243
+#: ../src/file-manager/fm-properties-window.c:3614
 msgid "E_xecute"
 msgstr "K_äivitamine"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3493
-#: ../src/file-manager/fm-properties-window.c:3504
-#: ../src/file-manager/fm-properties-window.c:3516
+#: ../src/file-manager/fm-properties-window.c:3864
+#: ../src/file-manager/fm-properties-window.c:3875
+#: ../src/file-manager/fm-properties-window.c:3887
 msgid "no "
 msgstr "keelatud: "
 
-#: ../src/file-manager/fm-properties-window.c:3496
+#: ../src/file-manager/fm-properties-window.c:3867
 msgid "list"
 msgstr "loendi võtmine"
 
-#: ../src/file-manager/fm-properties-window.c:3498
+#: ../src/file-manager/fm-properties-window.c:3869
 msgid "read"
 msgstr "lugemine"
 
-#: ../src/file-manager/fm-properties-window.c:3507
+#: ../src/file-manager/fm-properties-window.c:3878
 msgid "create/delete"
 msgstr "loomine/kustutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3509
+#: ../src/file-manager/fm-properties-window.c:3880
 msgid "write"
 msgstr "kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3518
+#: ../src/file-manager/fm-properties-window.c:3889
 msgid "access"
 msgstr "ligipääs"
 
-#: ../src/file-manager/fm-properties-window.c:3567
+#: ../src/file-manager/fm-properties-window.c:3938
 msgid "Access:"
 msgstr "Pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3569
+#: ../src/file-manager/fm-properties-window.c:3940
 msgid "Folder Access:"
 msgstr "Kausta pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3571
+#: ../src/file-manager/fm-properties-window.c:3942
 msgid "File Access:"
 msgstr "Faili pääsuõigused:"
 
-#: ../src/file-manager/fm-properties-window.c:3583
-#: ../src/file-manager/fm-properties-window.c:3594
+#: ../src/file-manager/fm-properties-window.c:3954
+#: ../src/file-manager/fm-properties-window.c:3965
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Puudub"
 
-#: ../src/file-manager/fm-properties-window.c:3586
+#: ../src/file-manager/fm-properties-window.c:3957
 msgid "List files only"
 msgstr "Ainult failide loendile"
 
-#: ../src/file-manager/fm-properties-window.c:3588
+#: ../src/file-manager/fm-properties-window.c:3959
 msgid "Access files"
 msgstr "Ligipääs failidele"
 
-#: ../src/file-manager/fm-properties-window.c:3590
+#: ../src/file-manager/fm-properties-window.c:3961
 msgid "Create and delete files"
 msgstr "Failide loomine ja kustutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3597
+#: ../src/file-manager/fm-properties-window.c:3968
 msgid "Read-only"
 msgstr "Ainult loetav"
 
-#: ../src/file-manager/fm-properties-window.c:3599
+#: ../src/file-manager/fm-properties-window.c:3970
 msgid "Read and write"
 msgstr "Lugemine ja kirjutamine"
 
-#: ../src/file-manager/fm-properties-window.c:3664
+#: ../src/file-manager/fm-properties-window.c:4035
 msgid "Set _user ID"
 msgstr "_Kasutaja ID määramine"
 
-#: ../src/file-manager/fm-properties-window.c:3666
+#: ../src/file-manager/fm-properties-window.c:4037
 msgid "Special flags:"
 msgstr "Erilipud:"
 
-#: ../src/file-manager/fm-properties-window.c:3668
+#: ../src/file-manager/fm-properties-window.c:4039
 msgid "Set gro_up ID"
 msgstr "_Grupi ID määramine"
 
-#: ../src/file-manager/fm-properties-window.c:3669
+#: ../src/file-manager/fm-properties-window.c:4040
 msgid "_Sticky"
 msgstr "_Kleepuv"
 
-#: ../src/file-manager/fm-properties-window.c:3749
-#: ../src/file-manager/fm-properties-window.c:3953
+#: ../src/file-manager/fm-properties-window.c:4120
+#: ../src/file-manager/fm-properties-window.c:4324
 msgid "_Owner:"
 msgstr "_Omanik:"
 
-#: ../src/file-manager/fm-properties-window.c:3755
-#: ../src/file-manager/fm-properties-window.c:3850
-#: ../src/file-manager/fm-properties-window.c:3961
+#: ../src/file-manager/fm-properties-window.c:4126
+#: ../src/file-manager/fm-properties-window.c:4221
+#: ../src/file-manager/fm-properties-window.c:4332
 msgid "Owner:"
 msgstr "Omanik:"
 
-#: ../src/file-manager/fm-properties-window.c:3778
-#: ../src/file-manager/fm-properties-window.c:3973
+#: ../src/file-manager/fm-properties-window.c:4149
+#: ../src/file-manager/fm-properties-window.c:4344
 msgid "_Group:"
 msgstr "_Grupp:"
 
-#: ../src/file-manager/fm-properties-window.c:3787
-#: ../src/file-manager/fm-properties-window.c:3851
-#: ../src/file-manager/fm-properties-window.c:3982
+#: ../src/file-manager/fm-properties-window.c:4158
+#: ../src/file-manager/fm-properties-window.c:4222
+#: ../src/file-manager/fm-properties-window.c:4353
 msgid "Group:"
 msgstr "Grupp:"
 
-#: ../src/file-manager/fm-properties-window.c:3812
+#: ../src/file-manager/fm-properties-window.c:4183
 msgid "Others"
 msgstr "Teised"
 
-#: ../src/file-manager/fm-properties-window.c:3829
+#: ../src/file-manager/fm-properties-window.c:4200
 msgid "Execute:"
 msgstr "Käivitamine:"
 
-#: ../src/file-manager/fm-properties-window.c:3833
+#: ../src/file-manager/fm-properties-window.c:4204
 msgid "Allow _executing file as program"
 msgstr "Faili on lubatud _käivitada kui programmi"
 
-#: ../src/file-manager/fm-properties-window.c:3852
+#: ../src/file-manager/fm-properties-window.c:4223
 msgid "Others:"
 msgstr "Teised:"
 
-#: ../src/file-manager/fm-properties-window.c:4000
+#: ../src/file-manager/fm-properties-window.c:4371
 msgid "Folder Permissions:"
 msgstr "Kausta õigused:"
 
-#: ../src/file-manager/fm-properties-window.c:4012
+#: ../src/file-manager/fm-properties-window.c:4383
 msgid "File Permissions:"
 msgstr "Faili õigused:"
 
-#: ../src/file-manager/fm-properties-window.c:4022
+#: ../src/file-manager/fm-properties-window.c:4393
 msgid "Text view:"
 msgstr "Tekstina:"
 
-#: ../src/file-manager/fm-properties-window.c:4169
+#: ../src/file-manager/fm-properties-window.c:4540
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Sa ei ole omanik, seega sa ei saa neid õigusi muuta."
 
-#: ../src/file-manager/fm-properties-window.c:4192
+#: ../src/file-manager/fm-properties-window.c:4563
 msgid "SELinux Context:"
 msgstr "SELinux'i kontekst:"
 
-#: ../src/file-manager/fm-properties-window.c:4196
+#: ../src/file-manager/fm-properties-window.c:4567
 msgid "Last changed:"
 msgstr "Viimati muudetud:"
 
-#: ../src/file-manager/fm-properties-window.c:4210
+#: ../src/file-manager/fm-properties-window.c:4581
 msgid "Apply permissions to enclosed files"
 msgstr "Rakenda õigused määratud failidele"
 
-#: ../src/file-manager/fm-properties-window.c:4220
+#: ../src/file-manager/fm-properties-window.c:4591
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" õiguseid pole võimalik tuvastada."
 
-#: ../src/file-manager/fm-properties-window.c:4223
+#: ../src/file-manager/fm-properties-window.c:4594
 msgid "The permissions of the selected file could not be determined."
 msgstr "Valitud faili õiguseid pole võimalik tuvastada."
 
-#: ../src/file-manager/fm-properties-window.c:4443
+#: ../src/file-manager/fm-properties-window.c:4814
 msgid "Open With"
 msgstr "Avamine programmiga"
 
-#: ../src/file-manager/fm-properties-window.c:4783
+#: ../src/file-manager/fm-properties-window.c:5154
 msgid "Creating Properties window."
 msgstr "Omaduste akna loomine"
 
-#: ../src/file-manager/fm-properties-window.c:5023
+#: ../src/file-manager/fm-properties-window.c:5394
 msgid "Select Custom Icon"
 msgstr "Kohandatud ikooni valimine"
 
@@ -5970,36 +5992,3 @@ msgstr "Suurendus"
 #: ../src/nautilus-zoom-control.c:807
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "<b>Image Type:</b> %s (%s)\n"
-#~ msgstr "<b>Pildi liik:</b> %s (%s)\n"
-
-#~ msgid "Unable to launch the cd burner application."
-#~ msgstr "CD-kirjutamise rakendust pole võimalik käivitada."
-
-#~ msgid "_Write contents to CD"
-#~ msgstr "_Kirjuta sisu CD-plaadile"
-
-#~ msgid "<b>Search:</b>"
-#~ msgstr "<b>Otsing:</b>"
-
-#~ msgid "Set up a connection to a network server"
-#~ msgstr "Ühenduse loomine võrguserverisse"
-
-#~ msgid "Go to the home folder"
-#~ msgstr "Kodukataloogi avamine"
-
-#~ msgid "Go to the computer location"
-#~ msgstr "Arvuti asukoha avamine"
-
-#~ msgid "Go to the network location"
-#~ msgstr "Võrgu asukoha avamine"
-
-#~ msgid "Go to the trash folder"
-#~ msgstr "Prügikasti avamine"
-
-#~ msgid "Go to the CD/DVD Creator"
-#~ msgstr "CD/DVD-looja avamine"
-
-#~ msgid "View your network servers in the Nautilus file manager"
-#~ msgstr "Võrguserverite vaatamine Nautiluse failihalduris"
