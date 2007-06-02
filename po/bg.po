@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus gnome-2-18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-12 09:28+0300\n"
+"POT-Creation-Date: 2007-06-02 11:37+0300\n"
 "PO-Revision-Date: 2007-05-12 09:27+0300\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -305,7 +305,7 @@ msgid ""
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
 msgstr ""
-"Списък с надписи под икона в прегледа като икони, а също и за работния плот. "
+"Списък с надписи под икона в изгледа като икони, а също и за работния плот. "
 "Истинският брой на показаните надписи зависи от мащаба. Възможни стойности "
 "са „size“, „type“, „date_modified“, „date_changed“, „date_accessed“, "
 "„owner“, „group“, „permissions“, „octal_permissions“ и „mime_type“."
@@ -368,11 +368,11 @@ msgstr "Името на файла за стандартния фон на ст�
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
-msgstr "Стандартен ред на колонките в списъчен преглед"
+msgstr "Стандартен ред на колонките в изгледа като списък"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view."
-msgstr "Стандартен ред на колонките в списъчен преглед"
+msgstr "Стандартен ред на колонките в изгледа като списък"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
@@ -384,11 +384,11 @@ msgstr "Подразбираща се големина на иконите"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
-msgstr "Стандартен списък с видими колонки в списъчен преглед"
+msgstr "Стандартен списък с видими колонки в изгледа като списък"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default list of columns visible in the list view."
-msgstr "Стандартен списък с видими колонки в списъчен преглед"
+msgstr "Стандартен списък с видими колонки в изгледа като списък"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
@@ -400,11 +400,11 @@ msgstr "Подреждане по подразбиране"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default zoom level used by the icon view."
-msgstr "Стандартен мащаб използван от преглед като икони."
+msgstr "Стандартен мащаб използван от изгледа като икони."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
-msgstr "Задаване на нивото на мащабиране за текущият преглед"
+msgstr "Стандартен мащаб използван от изгледа като списък."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid "Desktop computer icon name"
@@ -434,7 +434,7 @@ msgid ""
 "true."
 msgstr ""
 "Файлово име за стандартния фон на папките. Използва се, само ако там фонът "
-"за папката е включен."
+"за папката е включен (background_set е ИСТИНА)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
@@ -471,22 +471,21 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr "Ако е включено, ново-отворените прозорци ще имат видима адресна лента."
+msgstr "Ако е включено, новоотворените прозорци ще имат видима адресна лента."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr ""
-"Ако е включено, ново-отворените прозорци ще имат видим страничен панел."
+msgstr "Ако е включено, новоотворените прозорци ще имат видим страничен панел."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
-"Ако е включено, ново-отворените прозорци ще имат видима лента за състоянието."
+"Ако е включено, новоотворените прозорци ще имат видима лента за състоянието."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
-"Ако е включено, ново-отворените прозорци ще имат видима лента с инструменти."
+"Ако е включено, новоотворените прозорци ще имат видима лента с инструменти."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
@@ -509,8 +508,8 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"Ако е включено, Nautilus ще показва папките преди файловете в преглед като "
-"икони и списъчен преглед."
+"Ако е включено, Nautilus ще показва папките преди файловете в изгледа като "
+"икони и изгледа като списък."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -616,7 +615,7 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
-"Ако е включено, файловете в ново-отворените прозорци ще бъдат сортирани в "
+"Ако е включено, файловете в новоотворените прозорци ще бъдат сортирани в "
 "обърнат ред. Тоест ако са сортирани по име вместо да вървят от „а“ към „я“, "
 "ще са подредени от „я“ до „а“."
 
@@ -627,7 +626,7 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
-"Ако е включено, файловете в ново-отворените прозорци ще бъдат сортирани в "
+"Ако е включено, файловете в новоотворените прозорци ще бъдат сортирани в "
 "обърнат ред. Тоест ако са сортирани по име вместо да вървят от „а“ към „я“, "
 "ще са подредени от „я“ до „а“;"
 
@@ -646,7 +645,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, new windows will use manual layout by default."
-msgstr "Ако е включено, ново-отворените прозорци ще използват ръчен изглед."
+msgstr "Ако е включено, новоотворените прозорци ще използват ръчен изглед."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
@@ -654,8 +653,8 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"Изображения над този размер (в байтове) няма да имат малък преглед. Целта на "
-"това е да се избягват малките прегледи на големи изображения, което може да "
+"Изображения над този размер (в байтове) няма да имат малки изображения. "
+"Целта на това е да се избягват малките изображения за големи, което може да "
 "отнеме много време и използва много памет."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
@@ -668,7 +667,7 @@ msgstr "Максимум поддържани файлове в папка"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum image size for thumbnailing"
-msgstr "Максимална големина на изображение за малък преглед"
+msgstr "Максимална големина на малко изображение за преглед"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid ""
@@ -805,20 +804,22 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
-"Стандартния ред за обекти от прегледа като икони. Възможни стойности са "
-"„name“, „size“, „type“, „modification_date“ и „emblems“."
+"Стандартната подредба на обекти от изгледа като икони. Възможни стойности са "
+"„name“ (по име), „size“ (по размер), „type“ (по вид), "
+"„modification_date“ (по време на промяна) и „emblems“ (по емблема)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
-"Стандартния ред за обекти от списъчния преглед. Възможни стойности са "
-"„name“, „size“, „type“ и „modification_date“."
+"Стандартната подредба за обекти от изгледа като списък. Възможни стойности "
+"са „name“ (по име), „size“ (по размер), „type“ (по вид) и "
+"„modification_date“ (по време на промяна)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "The default width of the side pane in new windows."
-msgstr "Стандартната ширина на страничния панел в ново-отворени прозорци."
+msgstr "Стандартната ширина на страничния панел в новоотворени прозорци."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "The font description used for the icons on the desktop."
@@ -829,13 +830,13 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
-"Форматът на датите на файловете. Възможните стойности са „locale“, „iso“ и "
-"„informal“."
+"Форматът на датите на файловете. Възможните стойности са „locale“ (според "
+"локала), „iso“ (по ИСО) и „informal“ (неофициален)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "The side pane view to show in newly opened windows."
 msgstr ""
-"Изгледа на страничния панел, който да се показва в ново-отворени прозорци."
+"Изгледът на страничния панел, който да се показва в новоотворени прозорци."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid ""
@@ -871,11 +872,11 @@ msgstr "Вид натискане за стартиране/отваряне н�
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Use manual layout in new windows"
-msgstr "Използване на ръчен изглед в ново-отворени прозорци"
+msgstr "Използване на ръчен изглед в новоотворени прозорци"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Use tighter layout in new windows"
-msgstr "Използване на по-стегнат изглед в ново-отворени прозорци"
+msgstr "Използване на по-стегнат изглед в новоотворени прозорци"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "What to do with executable text files when activated"
@@ -914,7 +915,7 @@ msgstr "Кога да се показва преглед на текст в ик
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "When to show thumbnails of image files"
-msgstr "Кога да се показва смалени изображения"
+msgstr "Кога да се показват малки изображения"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether a custom default folder background has been set."
@@ -2222,7 +2223,7 @@ msgstr "Търсене за файлове по име и аксесоари н�
 #: ../libnautilus-private/nautilus-global-preferences.c:146
 #: ../src/file-manager/fm-icon-container.c:512
 msgid "Icon View"
-msgstr "Преглед като икони"
+msgstr "Изглед като икони"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:147
 #: ../src/file-manager/fm-list-view.c:1431
@@ -2674,7 +2675,7 @@ msgstr "Грешка при показването на помощта."
 
 #: ../src/file-manager/fm-directory-view.c:1188
 msgid "Select Pattern"
-msgstr "Избор на шаблон"
+msgstr "Шаблон за избиране"
 
 #: ../src/file-manager/fm-directory-view.c:1206
 msgid "_Pattern:"
@@ -3092,7 +3093,7 @@ msgstr "Отваряне на всеки избран обект в навига
 #: ../src/file-manager/fm-directory-view.c:6859
 #: ../src/file-manager/fm-directory-view.c:6863
 msgid "Open with Other _Application..."
-msgstr "Отваряне с друга _програма..."
+msgstr "Отваряне с _друга програма..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6860
@@ -3165,7 +3166,7 @@ msgstr "_Шаблон за избор"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6898
 msgid "Select items in this window matching a given pattern"
-msgstr "Избира обекти в този прозорци пасващи в даден шаблон"
+msgstr "Избиране на обекти в този прозорец напасващи на даден шаблон"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6901
@@ -3182,8 +3183,8 @@ msgstr "Дублиране на всеки избран обект"
 #: ../src/file-manager/fm-directory-view.c:7799
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
-msgstr[0] "Създав_ане на връзка"
-msgstr[1] "Създав_ане на връзки"
+msgstr[0] "Създаване на _връзка"
+msgstr[1] "Създаване на _връзки"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6906
@@ -3193,7 +3194,7 @@ msgstr "Създаване на символна връзка за всеки и
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6909
 msgid "_Rename..."
-msgstr "_Преименуване..."
+msgstr "Преимен_уване..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6910
@@ -3207,7 +3208,7 @@ msgstr "Преименуване на избрания обект"
 #: ../src/file-manager/fm-directory-view.c:7767
 #: ../src/file-manager/fm-directory-view.c:8167
 msgid "Mo_ve to Trash"
-msgstr "П_реместване в кошчето"
+msgstr "Пре_местване в кошчето"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6918
@@ -3703,7 +3704,7 @@ msgstr "_Подреждане на обекти"
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1441
 msgid "Str_etch Icon"
-msgstr "Разт_ягане на икона"
+msgstr "Раз_тягане на икона"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1442
@@ -3714,12 +3715,12 @@ msgstr "Прави избраните икони разтегаеми"
 #: ../src/file-manager/fm-icon-view.c:1445
 #: ../src/file-manager/fm-icon-view.c:1597
 msgid "Restore Icons' Original Si_zes"
-msgstr "Възстановяване на и_коните в оригиналния им размер"
+msgstr "Оригинален размер на _иконите"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1446
 msgid "Restore each selected icon to its original size"
-msgstr "Възстановяване на всяка избрана икона в нейния оригинален размер"
+msgstr "Възстановяване на оригиналния размер на всяка избрана икона"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1449
@@ -3793,7 +3794,7 @@ msgstr "По _емблема"
 
 #: ../src/file-manager/fm-icon-view.c:1598
 msgid "Restore Icon's Original Si_ze"
-msgstr "Възстановяване на иконата в _оригиналния й размер"
+msgstr "Оригинален рамер на _икона"
 
 #: ../src/file-manager/fm-icon-view.c:2011
 #, c-format
@@ -3867,7 +3868,7 @@ msgstr "Изглед като спис_ък"
 
 #: ../src/file-manager/fm-list-view.c:2746
 msgid "The list view encountered an error."
-msgstr "Получи се грешка в списъчния изглед."
+msgstr "Получи се грешка в изгледа като списък."
 
 #: ../src/file-manager/fm-list-view.c:2747
 msgid "The list view encountered an error while starting up."
@@ -3875,7 +3876,7 @@ msgstr "Получи се грешка при стартирането на из
 
 #: ../src/file-manager/fm-list-view.c:2748
 msgid "Display this location with the list view."
-msgstr "Показване на местоположението в списъчния изглед."
+msgstr "Показване на местоположението в изгледа като списък."
 
 #: ../src/file-manager/fm-properties-window.c:504
 msgid "You can't assign more than one custom icon at a time!"
@@ -4665,7 +4666,7 @@ msgstr "<span weight=\"bold\">Заглавия икони</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr "<span weight=\"bold\">Изглед на иконите</span>"
+msgstr "<span weight=\"bold\">Изглед като икони</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">List Columns</span>"
@@ -4673,7 +4674,7 @@ msgstr "<span weight=\"bold\">Списък на колоните</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr "<span weight=\"bold\">Списъчен изглед</span>"
+msgstr "<span weight=\"bold\">Изглед като списък</span>"
 
 #: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Other Previewable Files</span>"
@@ -4741,7 +4742,8 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:44
 msgid "Choose the order of information to appear in the list view."
-msgstr "Изберете реда, в който информацията да се показва в списъчния преглед."
+msgstr ""
+"Изберете реда, в който информацията да се показва в изгледа като списък."
 
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
