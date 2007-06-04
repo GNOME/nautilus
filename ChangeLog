@@ -1,9 +1,14 @@
+2007-06-04  Willie Walker <william.walker@sun.com>
+
+        * src/nautilus-file-management-properties.glade:
+        Add accessible label for/by properties (#356124)
+
 2007-05-23  Alexander Larsson  <alexl@redhat.com>
 
 	* icons/thumbnail_frame.png:
 	Tango compliant thumbnail frame (#440221)
 	Icon from David Prieto
-	
+
 2007-05-23  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:
@@ -13,7 +18,7 @@
 
         * nautilus-folder-handler.desktop.in.in:
 	Don't show in menu editor
-	
+
 2007-05-22  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-icon-canvas-item.c:
@@ -33,17 +38,17 @@
 	Post release version bump
 
 === nautilus 2.19.2 ===
-	
+
 2007-05-14  Alexander Larsson  <alexl@redhat.com>
 
-	* NEWS: 
-	* configure.in: 
+	* NEWS:
+	* configure.in:
 	Bump to 2.19.2
 
 	* libnautilus-private/nautilus-icon-factory.c:
 	* libnautilus-private/nautilus-icon-container.c:
 	Fix up checks
-	
+
 2007-05-09  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-directory-view.c:
@@ -84,7 +89,7 @@
 
 	* libnautilus-private/nautilus-directory-async.c:
 	Limit number of calls to is_needy() (#320282)
-	Based on patch from Aivars Kalvans   
+	Based on patch from Aivars Kalvans
 
 2007-04-12  Alexander Larsson  <alexl@redhat.com>
 
@@ -140,7 +145,7 @@
 
 2007-03-19  Alexander Larsson  <alexl@redhat.com>
 
-	* src/nautilus-places-sidebar.c: 
+	* src/nautilus-places-sidebar.c:
 	Update icons on theme change (#416806)
 	Patch from Stefano Teso
 
@@ -156,13 +161,13 @@
 
         * src/nautilus-places-sidebar.c:
 	Re-apply reverted context menu patch.
-	
+
 2007-03-19  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
 	Bump version to 2.19.1
 	Gnome 2.18 work continues on gnome-2-18 branch
-	
+
 2007-03-19  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-places-sidebar.c:
@@ -194,7 +199,7 @@
 	Post release version bump
 
 === nautilus 2.18.0.1 ===
-	
+
 2007-03-12  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -202,7 +207,7 @@
 
         * configure.in:
 	Set version to 2.18.0.1
-	
+
         * libnautilus-private/nautilus-file-utilities.c:
         * libnautilus-private/nautilus-file-utilities.h:
         * libnautilus-private/nautilus-file.c:
@@ -216,7 +221,7 @@
 	Post release version bump
 
 === nautilus 2.18.0 ===
-	
+
 2007-03-12  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -231,7 +236,7 @@
 	* nautilus-computer.desktop.in.in:
 	* nautilus.desktop.in.in:
 	* nautilus-home.desktop.in.in:
-	* nautilus-file-management-properties.desktop.in.in:	
+	* nautilus-file-management-properties.desktop.in.in:
         "Application" is not a valid category in the freedesktop.org
 	specification. Also added GNOME and/or GTK where appropriate.
 
@@ -267,7 +272,7 @@
 	Post release version bump
 
 === nautilus 2.17.92 ===
-	
+
 2007-02-26  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -344,7 +349,7 @@
 	Post release version bump
 
 === nautilus 2.17.91 ===
-	
+
 2007-02-12  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
@@ -420,7 +425,7 @@
 	Avoid crashing if not enough items in icon view caption pref (#357955)
 
 	* src/file-manager/fm-icon-container.c (fm_icon_container_get_icon_text):
-	Avoid spewing warnings in above case, also some performance fixes.	
+	Avoid spewing warnings in above case, also some performance fixes.
 
 2007-01-25  Luca Ferretti  <elle.uca@libero.it>
 
@@ -428,10 +433,10 @@
 	Move File Management capplet to PersonalSettings.
 
 === nautilus 2.17.90 ===
-	
+
 2007-01-22  Alexander Larsson  <alexl@redhat.com>
 
-	* NEWS: 
+	* NEWS:
 	* configure.in:
 	Bump to 2.17.90
 
@@ -506,7 +511,7 @@
 	* src/nautilus-actions.h:
 	* src/nautilus-window.c:
 	(nautilus_window_key_press_event)
-	* configure.in: 
+	* configure.in:
 	Add support for XF86 multimedia keys (#329920) .
 
 2007-01-11  Alexander Larsson  <alexl@redhat.com>
@@ -521,13 +526,13 @@
 	Use default permissions when copying template to use
 	umask correctly. (#327249)
 	Patch from Josselin Mouette
-	
+
 2007-01-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (get_target_file_for_original_file):
-	
+
 	Handle NULL activation uris from drives
-	
+
 2007-01-11  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-ui-utilities.c:
@@ -588,7 +593,7 @@
 	Post release version bump
 
 === nautilus 2.17.1 ===
-	
+
 2006-12-18  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -626,7 +631,7 @@
 
 	* src/nautilus-navigation-window-menus.c:
 
-	Use "window-new" named icon from Icon Naming Spec for 
+	Use "window-new" named icon from Icon Naming Spec for
 	File->New Window menu entry in browser window.
 
 2006-12-16  Paolo Borelli  <pborelli@katamail.com>
@@ -645,14 +650,14 @@
 	* src/nautilus-actions.h:
 
 	Add NAUTILUS_ACTION_HOME for Go->Home Folder
-	
+
 	* src/nautilus-navigation-window-menus.c:
 	(nautilus_navigation_window_initialize_actions),
 	(nautilus_navigation_window_initialize_menus):
 	* src/nautilus-spatial-window.c:
 	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
 
-	Define short_label for NAUTILUS_ACTION_HOME and 
+	Define short_label for NAUTILUS_ACTION_HOME and
 	NAUTILUS_ACTION_SEARCH, to use on toolbar. Also fix capitalization
 	in search menu entry.
 
@@ -688,7 +693,7 @@
 
 2006-12-12  Christian Persch  <chpe@cvs.gnome.org>
 
-	* src/ephy-spinner.c: 
+	* src/ephy-spinner.c:
 	* src/ephy-spinner.h: Update from Epiphany. Fixes #374623 and #382207.
 
 	* src/nautilus-window-toolbars.c: Fix wrong spinner size. Bug #376952.
@@ -738,7 +743,7 @@
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:
 	Disable the mask code for now...
-	
+
 2006-12-08  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:
@@ -751,12 +756,12 @@
 	Remove old icon used for selection rect.
 
 	Patch from Gene Z. Ragan
-	
+
 2006-12-04  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-list-view.c:
 	Reveal selection on sort-order change.(#332667)
-	Patch from Gene Z. Ragan 
+	Patch from Gene Z. Ragan
 
 2006-12-04  Alexander Larsson  <alexl@redhat.com>
 
@@ -770,7 +775,7 @@
 	Freeze icon view updates while renaming to avoid things
 	moving around on file changes. (#318373)
 	Patch from Nelson Benítez
-	
+
 2006-12-04  Luca Ferretti  <elle.uca@libero.it>
 
 	* icons/nautilus-server-connect.png
@@ -873,7 +878,7 @@
 	use this log level for miscellaneous debugging messages from
 	gnome-vfs.  Also, don't send G_LOG_LEVEL_DEBUG messages to the
 	default log handler, to avoid a huge ~/.xsession-errors.
-	(setup_debug_log_domains): Enable logging for 
+	(setup_debug_log_domains): Enable logging for
 	NAUTILUS_DEBUG_LOG_DOMAIN_GLOG.
 
 2006-11-23  Christian Persch  <chpe@cvs.gnome.org>
@@ -1008,12 +1013,12 @@
 	Post release version bump
 
 === nautilus 2.16.3 ===
-	
+
 2006-11-20  Alexander Larsson  <alexl@redhat.com>
 
-	* NEWS: 
+	* NEWS:
 	Update for release.
-	
+
 2006-11-20  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
@@ -1032,7 +1037,7 @@
 	Post release version bump
 
 === nautilus 2.16.2 ===
-	
+
 2006-11-07  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -1046,9 +1051,9 @@
 	at idle time.
 	Call async_state_changed and update_metadata_monitors after
 	call_when_ready callbacks have been called at idle.
-	
+
 	(fixes make check)
-	
+
 2006-11-07  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-application.c:
@@ -1115,11 +1120,11 @@
 
 2006-11-06  Alexander Larsson  <alexl@redhat.com>
 
-	* libnautilus-private/nautilus-icon-container.c: 
+	* libnautilus-private/nautilus-icon-container.c:
 	Cancel rubberbanding if we get a grab shadow event.
 	This happens when a modal dialog (e.g. an error or auth dialog)
 	appears. (Partially fixes #122688)
-	
+
 2006-11-06  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-icon-view.c (play_file):
@@ -1143,7 +1148,7 @@
 	Always use the in-process metafile factory. We don't need it
 	oop, since nautilus is single process these days. This fixes
 	some strange races with bonobo-activation that caused #351713
-	
+
 	* src/nautilus-application.[ch]:
 	* src/nautilus-shell.h:
 	Change the way we use bonobo-activation to get the NautilusShell
@@ -1152,12 +1157,12 @@
 	We now directly try to register the app-wide shell object with
 	bonobo-activation manually and activate it with
 	Bonobo_ACTIVATION_FLAG_EXISTING_ONLY.
-	
+
 	* src/nautilus-shell.c:
 	Handle all corba calls from the NautilusShell in an idle handler.
 	This fixes some crashes where we reentered badly into e.g. quit
 	when calling gconf.
-	
+
 	* src/nautilus-main.c:
 	Since we now handle the initial open_window shell calls via an idle
 	we need to delay until idle time to know if we can quit or not.
@@ -1169,7 +1174,7 @@
 
 2006-11-02  Alexander Larsson  <alexl@redhat.com>
 
-	* libnautilus-private/nautilus-directory-private.h: 
+	* libnautilus-private/nautilus-directory-private.h:
 	* libnautilus-private/nautilus-directory-async.c:
 	Call all call_when_ready callbacks from an idle handler.
 	This fixes problems with reentrancy, like bug #348161
@@ -1188,7 +1193,7 @@
 	Remove assert that keep randomly failing to fix crash (#352592)
 	Replace it with some debug output that hopefully lets us
 	track down the cause.
-	
+
 2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-extension/nautilus-menu.c: (nautilus_menu_get_items):
@@ -1208,7 +1213,7 @@
 	Also delete colors by their (unique) names and not their color
 	values. That made it possible to delete built-in colors.
 	Fixes #358893.
-	
+
 	Based on a patch from Emil Soleyman-Zomalan
 
 2006-10-30  Martin Wehner  <martin.wehner@gmail.com>
@@ -1286,10 +1291,10 @@
 
 	* src/file-manager/fm-list-view.c:
 	Share target list for all instances (#357573)
-	
+
 	* src/nautilus-location-bar.c: (style_set_handler):
 	Don't leak layout (#352693)
-	
+
 	* src/nautilus-zoom-control.c:
 	Fix O(n^2) use of list (#357589)
 
@@ -1302,7 +1307,7 @@
 	* src/nautilus-throbber.[ch]:
 	Import ephy spinner and use ad throbber.
 	This supports different icon sizes.
-	
+
 	* src/nautilus-window-toolbars.c:
 	Change throbber size when toolbar size changes.
 
@@ -1324,12 +1329,12 @@
 	* libnautilus-private/nautilus-file-private.h:
 	Add is_added flag to NautilusFile to make sure we always
 	send an added event to directory monitors.
-	
+
 	* libnautilus-private/nautilus-directory-async.c:
 	(dequeue_pending_idle_callback):
 	Don't add the file to both added and changed list
 	If the file exist but hasn't been added yet, add it.
-	
+
 	* libnautilus-private/nautilus-directory.c: (is_tentative):
 	Don't return non-added files for get_file_list to avoid duplicating
 	files if you do a list and then track adds.
@@ -1374,7 +1379,7 @@
 	Post release version bump
 
 === nautilus 2.16.1 ===
-	
+
 2006-10-02  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -1412,7 +1417,7 @@
 	* src/nautilus-places-sidebar.c:
 	Don't use the same type name for the shortcut model filter as
 	GtkFileChooser to avoid name clashes. Fixes #355242.
-	
+
 	Patch from Stephen Cook <siti@orcon.net.nz>
 
 2006-09-04  Alexander Larsson  <alexl@redhat.com>
@@ -1435,7 +1440,7 @@
 	* libnautilus-private/nautilus-directory.c:
 	(nautilus_directory_is_local):
 	Cache return value from gnome_vfs_uri_is_local
-	
+
 	* libnautilus-private/nautilus-file-operations.c:
 	* libnautilus-private/nautilus-file-utilities.c:
 	Avoid using gnome_vfs_uri_is_local.
@@ -1446,7 +1451,7 @@
 	Post release version bump
 
 === nautilus 2.15.92.1 ===
-	
+
 2006-08-22  Alexander Larsson  <alexl@redhat.com>
 
 	* libbackground/preferences.c:
@@ -1466,7 +1471,7 @@
 
 	* NEWS:
 	Update for release
-	
+
 2006-08-21  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:
@@ -1530,7 +1535,7 @@
 	* libnautilus-private/nautilus-directory-background.c:
 	Do background change comparison in eel instead (#349961)
 	Patch from Matthias Clasen
-	
+
 2006-08-08  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
@@ -1607,10 +1612,10 @@
 	* cut-n-paste-code/gsequence/gsequence.[ch]:
 	Import the latest EggSequence which supposedly fixes a
 	bunch of bugs.
-	
+
 	* src/file-manager/fm-list-model.c:
-	Fix to use new function names of EggSequence	
-	
+	Fix to use new function names of EggSequence
+
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:
@@ -1631,7 +1636,7 @@
 	* src/nautilus-main.c: (main):
 	Unref GnomeProgram at the end. (#348429)
 
-	Patch from Christian Persch <chpe@gnome.org> 
+	Patch from Christian Persch <chpe@gnome.org>
 
 2006-07-25  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -1854,7 +1859,7 @@
 	nautilus_application_load_session(), move
 	initial navigational geometry handling to
 	nautilus_application_create_navigation_window,
-	maximize window if 
+	maximize window if
 	NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED
 	is set.
 
@@ -1881,21 +1886,21 @@
 
 	* libnautilus-extension/nautilus-menu-provider.[ch]:
 	Add items_updated signal
-	
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-signaller.[ch]:
 	* src/nautilus-signaller.[ch]:
 	* src/Makefile.am:
 	Move NautilusSignaller to libnautilus-private.
 	Add popup_menu_changed signal.
-	
+
 	* src/nautilus-application.c:
 	Signal popup_menu_changed when a menu provider emits items_updated.
-	
+
 	* src/file-manager/fm-directory-view.c:
 	* src/nautilus-window.c:
 	Handle popup_menu_changed.
-	
+
 	* src/nautilus-emblem-sidebar.c:
 	* src/nautilus-history-sidebar.c:
 	* src/nautilus-navigation-window-menus.c:
@@ -1911,14 +1916,14 @@
 
 	* libnautilus-private/nautilus-column-utilities.c:
 	Add selinux context column
-	
+
 	* libnautilus-private/nautilus-directory-async.c:
 	* libnautilus-private/nautilus-file-private.h:
 	* libnautilus-private/nautilus-file.[ch]:
 	Get selinux context for all files.
 	Add nautilus_file_can_get_selinux_context and nautilus_file_get_selinux_context
 	Add selinux_context string attribute.
-	
+
 	* src/file-manager/fm-properties-window.c:
 	Display selinux context in permissions page.
 
@@ -1928,10 +1933,10 @@
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	Add show_advanced_permissions setting
 	Remove show_special_flags setting, its always on in advanced mode.
-	
+
 	* libnautilus-private/nautilus-file-operations.[ch]:
 	Add nautilus_file_set_permissions_recursive
-	
+
 	* src/file-manager/fm-properties-window.c:
 	Change permission page. Implement both simple and advanced mode.
 	Add recursive permissions setting.
@@ -2003,7 +2008,7 @@
 
 2006-05-16  Alexander Larsson  <alexl@redhat.com>
 
-	* src/file-manager/fm-directory-view.c: 
+	* src/file-manager/fm-directory-view.c:
 	* src/nautilus-places-sidebar.c:
 	Don't allow floppy formating if the floppy is mounted,
 	since gfloppy can't handle that. (#125819)
@@ -2130,8 +2135,8 @@
 	* src/nautilus-window-menus.c: (action_about_nautilus_callback):
 	Adapt to new GtkAboutDialog behaviour and use wrap-license.
 	Makes the close button work again. Fixes #336520.
-	
-	Patch from Christian Persch <chpe@gnome.org> 
+
+	Patch from Christian Persch <chpe@gnome.org>
 
 2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -2157,9 +2162,9 @@
 2006-05-01  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-file-operations.c:
-	(handle_transfer_overwrite):  Use the same phrasing and 
+	(handle_transfer_overwrite):  Use the same phrasing and
 	format as the GTK+ overwrite dialog.  Also, per the HIG
-	convert the dialog to a confirmation alert since the user's 
+	convert the dialog to a confirmation alert since the user's
 	command may destroy data. (#325188)
 
 	Patch from Dennis Cranston <dennis_cranston@yahoo.com>
@@ -2215,12 +2220,12 @@
 	* libnautilus-private/nautilus-icon-canvas-item.c:
 	Fix width of text selection in text-below-icons mode.
 	(it was to wide.)
-	
+
 2006-04-26  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
 	Remove popt
-	
+
 	* src/nautilus-connect-server-dialog-main.c:
 	* src/nautilus-main.c:
 	Convert from popt to goption.
@@ -2230,7 +2235,7 @@
 
 	* src/nautilus-main.c:
 	Remove icon registration, as its no longer needed with gtk 2.9.
-	
+
 	* src/nautilus-window-menus.c:
 	(nautilus_menus_append_bookmark_to_menu):
 	Remove bogus TODO.
@@ -2242,10 +2247,10 @@
 	2.14 development continues on gnome-2-14 branch.
 
 ==== gnome-2-14 branched from here ===
-	
+
 2006-04-25  Christian Neumair  <chris@gnome-de.org>
 
-	* configure.in: 
+	* configure.in:
 	Require gnome-vfs 2.14.2, gnome_vfs_volume_compare fixes.
 
 	* src/file-manager/fm-tree-view.c: (create_tree):
@@ -2263,17 +2268,17 @@
 	the normal top-left text to 10x5.
 	Add need_large argument to nautilus_file_peek_top_left_text and
 	nautilus_extract_top_left_text.
-	
+
 	* libnautilus-private/nautilus-icon-canvas-item.[ch]
 	Make details an instance-private instead of allocating separately.
 	Add _set_is_visible() and only keep PangoLayouts cached for
 	visible icons.
-	
+
 	* libnautilus-private/nautilus-icon-container.[ch]:
 	* src/file-manager/fm-icon-container.c:
 	Monitor large embedded text for larger icons.
 	Call nautilus_icon_canvas_item_set_is_visible as needed.
-	
+
 	* libnautilus-private/nautilus-icon-factory.[ch]:
 	Limit never-free recently used cache to 20 items.
 	Free other unused cache items after a 100 sec.
@@ -2281,7 +2286,7 @@
 2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
 
 	* po/LINGUAS:
-	Remove newlines to fix build with CVS intltool. (#338423) 
+	Remove newlines to fix build with CVS intltool. (#338423)
 
 2006-04-15  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -2409,7 +2414,7 @@
 
 2006-03-22  Paolo Borelli  <pborelli@katamail.com>
 
-	* src/nautilus-application.c: use g_strv_length instead of a 
+	* src/nautilus-application.c: use g_strv_length instead of a
 	private copy and gnome_vfs_make_uri_from_shell_arg instead of
 	the old eel_make_uri_from_shell_arg. Bug #334077.
 
@@ -2500,7 +2505,7 @@
 
 	* libnautilus-private/nautilus-query.c:
 	(nautilus_query_to_readable_string):
-	Mark string for translation.		
+	Mark string for translation.
 
 	* po/POTFILES.in:
 	Add nautilus-query.c
@@ -2509,7 +2514,7 @@
 
 2006-03-17  Vladimer Sichinava  <alinux@siena.linux.it>
 
-	* configure.in: Added "ka" Georgian to 
+	* configure.in: Added "ka" Georgian to
 	ALL_LINGUAS.
 
 2006-03-13  Alexander Larsson  <alexl@redhat.com>
@@ -2546,7 +2551,7 @@
 	the view as menu anymore. It was once used for determining a
 	specialized component for directories, but we don't support that
 	anymore. Nowadays it just delays these operations and can cause
-	auth dialogs when opening the popup menu. 
+	auth dialogs when opening the popup menu.
 
 2006-03-05  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -2554,7 +2559,7 @@
 	(nautilus_file_recompute_deep_counts):
 	Add file to work queue of enclosing directory when recomputing
 	deep count for the properties dialog. Fixes #169342.
-	 
+
 	Patch from Christian Neumair
 
 2006-03-03  Alexander Larsson  <alexl@redhat.com>
@@ -2564,13 +2569,13 @@
 	Close window when it gets put in the trash.
 
 	Patch from Christian Neumair
-	
+
 2006-03-03  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.[ch]:
 	measure text in nautilus_icon_canvas_item_get_text_rectangle to avoid
 	icons jumping around
-	
+
 	* libnautilus-private/nautilus-icon-container.c:
 	remove old workaround
 
@@ -2614,7 +2619,7 @@
 	* libnautilus-private/nautilus-tree-view-drag-dest.c:
 	(get_drop_path):
 	Test for the right path in the break condition. Fixes an infinite
-	loop when dragging an item over a non-folder child of an expanded 
+	loop when dragging an item over a non-folder child of an expanded
 	node in the list view, deadlocking the desktop.
 
 2006-02-27  Alexander Larsson  <alexl@redhat.com>
@@ -2790,7 +2795,7 @@
 	Call reveal_selection in an idle callback to work around a bug in
 	GtkTreeView which produces buggy scroll states when the nodes have
 	not yet been allocated. It would make the selection always the top
-	row even when it should ignore alignment, among other oddities. 
+	row even when it should ignore alignment, among other oddities.
 
 2006-02-26  Christian Neumair  <chris@gnome-de.org>
 
@@ -2804,14 +2809,14 @@
 2006-02-25  Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>
 
 	* configure.in: Add "zh_HK" to ALL_LINGUAS.
-	
+
 2006-02-24  Alexander Larsson  <alexl@redhat.com>
-	
+
 	* libnautilus-private/nautilus-directory-async.c:
 	(directory_count_start):
 	Use new GNOME_VFS_FILE_INFO_NAME_ONLY flag when counting files.
 	This avoids lots of stats.
-	
+
 	* configure.in:
 	Require vfs 2.13.92 (cvs for now) for the above.
 
@@ -2848,7 +2853,7 @@
 	* libnautilus-private/nautilus-file.c:
 	(nautilus_file_get_size_as_string_with_real_size):
 	Add a cast to fix build for platforms where GnomeVFSFileSize
-	is not defined as long long (e.g. AMD64). Fixes bug #331636. 
+	is not defined as long long (e.g. AMD64). Fixes bug #331636.
 
 2006-02-21  Alexander Larsson  <alexl@redhat.com>
 
@@ -2857,19 +2862,19 @@
 
 	* src/file-manager/fm-icon-view.c:
 	Pass NULL as above callback
-	
+
 	* src/file-manager/fm-list-view.c:
 	Don't activate file when renaming, delay until rename done.
 	After rename, scroll to renamed file if not visibile, because it
 	may have moved.
 
 	Above based on initial patch by Nelson Benítez <gnel@cenobioracing.com>
-	
+
 	* src/file-manager/fm-list-model.c:
 	On file change, if file was re-sorted emit rows_reordered.
 
 	This fixes bug #326581
-	
+
 2006-02-19  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-mime-actions.c:
@@ -2882,7 +2887,7 @@
 	Avoid redundant application lookups by sorting the files by mime type
 	and skipping the ones which have the same mime type / parent uri
 	combination as the previous one. Prevents nautilus from blocking for
-	seconds when selecting many files of similar type. 
+	seconds when selecting many files of similar type.
 
 2006-02-17  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -2993,7 +2998,7 @@
 	* src/file-manager/fm-directory-view.c:
 	(confirm_delete_from_trash):
 	HIGify the icon in the delete from trash dialog.
-	Patch from Luca Ferretti <elle.uca@libero.it> 
+	Patch from Luca Ferretti <elle.uca@libero.it>
 
 2006-01-26  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -3116,14 +3121,14 @@
 	(bookmarks_button_press_event_cb), (bookmarks_edited),
 	(bookmarks_editing_canceled), (nautilus_places_sidebar_init):
 	Merge parts of the d'n'd and popup menu code from the gtk filechooser
-	into the places sidebar.  
+	into the places sidebar.
 
 2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-directory-background.c:
 	(nautilus_file_background_read_desktop_settings),
 	(nautilus_file_background_write_desktop_settings):
-	Handle new background zooming mode. (#105231) 
+	Handle new background zooming mode. (#105231)
 
 2006-01-14  Martin Wehner  <martin.wehner@gmail.com>
 
@@ -3151,7 +3156,7 @@
 	* src/file-manager/fm-error-reporting.c: (rename_callback),
 	(cancel_rename_callback), (cancel_rename), (fm_rename_file):
 	Don't call eel_timed_wait_stop when the timer triggers. (#302735)
-	
+
 2006-01-11  Sebastien Bacher  <seb128@debian.org>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
@@ -3223,7 +3228,7 @@
 	* src/nautilus-query-editor.c:
 	Support filtering on arbitrary mime type.
 	Uses the new eel_mime_get_availible_mime_types
-	
+
 	* configure.in:
 	Require eel 2.13.4 for new mime list function
 
@@ -3238,7 +3243,7 @@
 	* libnautilus-extension/Makefile.am:
 	* libnautilus-extension/nautilus-location-widget-provider.[ch]:
 	Add NautilusLocationWidgetProvider
-	
+
 	* src/nautilus-window-manage-views.c:
 	Use NautilusLocationWidgetProvider
 
@@ -3252,20 +3257,20 @@
 	(nautilus_navigation_window_instance_init),
 	(nautilus_navigation_window_destroy):
 	Remove unused tooltips object
-	
+
 	* src/nautilus-query-editor.c:
 	Add tooltips, fix spacing
-	
+
 	* src/nautilus-spatial-window.c:
 	* src/nautilus-window-manage-views.c:
 	Fix spacing for extra location widgets
 
 2005-12-18  Dennis Cranston <dennis_cranston@yahoo.com>
 
-	* src/file-manager/fm-directory-view.c 
-	(action_save_search_as_callback):  HIG fixes for the save 
+	* src/file-manager/fm-directory-view.c
+	(action_save_search_as_callback):  HIG fixes for the save
 	search dialog.
-	
+
 2005-12-18  Martin Wehner  <martin.wehner@gmail.com>
 
 	* libnautilus-private/nautilus-desktop-link-monitor.c:
@@ -3285,15 +3290,15 @@
 	and Claudio Saavedra <csaavedra@alumnos.utalca.cl>
 
 2005-12-16  Dennis Cranston  <dennis_cranston@yahoo.com>
- 
+
  	* libnautilus-private/nautilus-dnd.c:
- 	(nautilus_drag_drop_action_ask): HIG fix.  Use title capitalization 
- 	for menu items.  
- 
+ 	(nautilus_drag_drop_action_ask): HIG fix.  Use title capitalization
+ 	for menu items.
+
 2005-12-16  Dennis Cranston  <dennis_cranston@yahoo.com>
 
  	* src/nautilus-property-browser.c: (nautilus_emblem_dialog_new),
- 	(add_new_pattern), (add_new_color): HIG fixes.  Use title 
+ 	(add_new_pattern), (add_new_color): HIG fixes.  Use title
  	capitalization for window titles.  Fix widget spacing.
 
 2005-12-16  Martin Wehner  <martin.wehner@gmail.com>
@@ -3340,7 +3345,7 @@
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	* libnautilus-private/nautilus-global-preferences.c:
 	Disable network icon on desktop by default.
-	
+
 	* src/nautilus-main.c:
 	* src/nautilus-navigation-window-ui.xml:
 	* src/nautilus-spatial-window-ui.xml:
@@ -3377,7 +3382,7 @@
 	Update for release
 
 --- Merged the nautilus-search2 branch ---
-	
+
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
 	Merge in changes from NAUTILUS_SEARCH2_MERGE_ANCHOR1 to
@@ -3399,28 +3404,28 @@
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-search-engine-simple.[ch]:
 	Add new NautilusSearchEngineSimple backend.
-	
+
 	* libnautilus-private/nautilus-file-utilities.[ch]:
 	Add nautilus_get_home_directory_uri.
-	
+
 	* libnautilus-private/nautilus-marshal.list:
 	Add VOID:OBJECT,BOOLEAN, sort
-	
+
 	* libnautilus-private/nautilus-search-directory.[ch]:
 	Add nautilus_search_directory_is_indexed.
 	Make sure saved searches are never returned as search hits.
-	
+
 	* libnautilus-private/nautilus-search-engine-beagle.[ch]:
 	Make _new fail if we can't contact beagle daemon.
 	Set text on query as one string (it can have keywords in it)
 	Move freeing of query data to after query is done.
 	Add _is_indexed
-	
+
 	* libnautilus-private/nautilus-search-engine.[ch]:
 	Add nautilus_search_engine_is_indexed
 	Remove nautilus_search_engine_enabled
 	Use beagle if availible, otherwise simple backend.
-	
+
 	* src/nautilus-navigation-window-menus.c:
 	Remove search disabled code
 
@@ -3429,11 +3434,11 @@
 	Add go/reload button for non-indexed searches
 	Add mnemonic for entry
 	Change saved search string to "Search Folder"
-	
+
 	* src/nautilus-navigation-window.c:
 	Update for query editor changes
 	For indexed search engines, default to search in homedir
-	
+
 	* src/nautilus-spatial-window.c:
 	Update for query editor changes
 	For indexed search engines, default to search in homedir
@@ -3448,13 +3453,13 @@
 
 	* configure.in:
 	Mime API needs gnome-vfs-module. Unfortunate...
-	
+
 	* libnautilus-private/nautilus-query.c:
 	Parse queries fully
-	
+
 	* libnautilus-private/nautilus-search-engine-beagle.c:
 	Look at mime types and location.
-	
+
 	* src/nautilus-query-editor.c:
 	Add mime type and location to query editor
 
@@ -3486,25 +3491,25 @@
 	* libnautilus-private/nautilus-file-utilities.c:
 	(nautilus_compute_title_for_uri):
 	Handle NULL query in search.
-	
+
 	* libnautilus-private/nautilus-file-utilities.h:
 	* libnautilus-private/nautilus-search-directory.h:
 	Move saved search uri/mimetype define to
 	nautilus-file-utilities.h.
-	
+
 	* libnautilus-private/nautilus-search-directory.c:
 	Ref query in get
-	
+
 	* libnautilus-private/nautilus-search-engine.c:
 	Remove unused stuff.
-	
+
 	* src/Makefile.am:
 	* src/nautilus-query-editor.[ch]:
 	Add new files implementing NautilusQueryEditor
-	
+
 	* src/nautilus-places-sidebar.c:
 	Remove search from places sidebar.
-	
+
 	* src/nautilus-search-bar.[ch]:
 	Only handle text queries.
 
@@ -3517,21 +3522,21 @@
 	* src/nautilus-navigation-window.[ch]:
 	* src/nautilus-spatial-window.c:
 	Implement new search ui using extra location widgets
-	
+
 	* src/file-manager/fm-directory-view.c:
 	Implement save search and save search as.
 	Fix free bugs in fm_directory_view_stop.
-	
+
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_supports_uri):
 	* src/file-manager/fm-list-view.c: (fm_list_view_supports_uri):
 	Also handle saved search mimetypes.
-	
+
 
 2005-12-02  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-search-directory.[ch]:
 	More functions to save queres.
-	
+
 	* src/file-manager/fm-actions.h:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/nautilus-directory-view-ui.xml:
@@ -3556,66 +3561,66 @@
 
 	* configure.in:
 	Check for update-mime-database
-	
+
 	* data/.cvsignore:
 	* data/Makefile.am:
 	* data/nautilus.xml.in:
 	Add mime database entries for saved searches.
-	
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-saved-search-file.[ch]:
 	Special file type for saved search files to pretend that
 	they are directories.
-	
+
 	* libnautilus-private/nautilus-directory.[ch]:
 	Make nautilus_directory_ref return its arg.
 	Create NautilusSearchDirectory for saved searches.
-	
+
 	* libnautilus-private/nautilus-file-dnd.c:
 	Non-editable directories do not accept drops.
-	
+
 	* libnautilus-private/nautilus-file-private.h:
 	* libnautilus-private/nautilus-file.h:
 	Move nautilus_file_get_existing to public header.
-	
+
 	* libnautilus-private/nautilus-file.c:
 	Create saved search files at right time
-	
+
 	* libnautilus-private/nautilus-marshal.list:
 	Add new marshallers
-	
+
 	* libnautilus-private/nautilus-monitor.c:
 	Remove some spew
-	
+
 	* libnautilus-private/nautilus-search-directory.[ch]:
 	Split out search file loading to a separate function.
 
 	* libnautilus-private/nautilus-tree-view-drag-dest.c:
 	Handle several layers of cannot accept drop.
-	
+
 	* src/file-manager/fm-directory-view.[ch]:
 	Make files be related to the directory they are in, since
 	a file can be in a tree multiple times, with searches.
 	Sorting us now done in base class, and inheriting classes just
 	add a compare function.
 	Fix file leak in new_folder_done.
-	
+
 	* src/file-manager/fm-icon-view.c:
 	Update to new base class API.
 	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
-	
+
 	* src/file-manager/fm-list-model.[ch]:
 	Rearrange data so that we can have one file in multiple dirs.
 	Still problems with the same directory in multiple dirs.
 	In scroll_to_file, don't create a NautilusFile if it doesn't exist.
 	Fix leak in each_path_get_data_binder
-	
+
 	* src/file-manager/fm-list-view.c:
 	Update to new APIs (base class and model).
 	Fix leak in fm_list_view_get_selection_foreach_func.
-	
+
 --- end of nautilus-search2 merge ---
-    
+
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c:
@@ -3636,7 +3641,7 @@
 
 	* configure.in:
 	Require latest gnome-vfs for GNOME_VFS_FILE_INFO_FIELDS_IDS.
-	
+
 2005-12-12  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:
@@ -3718,7 +3723,7 @@
 	Remove title from alerts. (#323134)
 
 	Patch from jaap@haitsma.org
-	
+
 	* libnautilus-private/nautilus-file-queue.c (nautilus_file_queue_enqueue):
 	Fix warning from ignoring g_list_append return value
 
@@ -3728,15 +3733,15 @@
 	Use combo box instead of option menu (#322567)
 
 	Patch from jaap@haitsma.org
-	
+
 2005-12-08  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-file-management-properties.c:
 	* src/nautilus-file-management-properties.glade:
 	Use the new combo box code (#322487)
-	
+
 	Patch from jaap@haitsma.org
-	
+
 	* configure.in:
 	Require new eel.
 
@@ -3781,13 +3786,13 @@
 	activity in a viewed directory instead of simply scheduling everything
 	as idle. Prevents high CPU load from constant updates in busy
 	directories and allows more efficient use of the cached info for
-	the initial display. 
+	the initial display.
 
 2005-11-24  Dennis Cranston  <dennis_cranston@yahoo.com>
 
 	* src/file-manager/fm-directory-view.c: (confirm_delete_directly):
-	HIG fixes for the delete confirmation dialog.  Remove window 
-	title & convert dialog type from question to warning. 
+	HIG fixes for the delete confirmation dialog.  Remove window
+	title & convert dialog type from question to warning.
 
 2005-11-24  Alexander Larsson  <alexl@redhat.com>
 
@@ -3805,7 +3810,7 @@
 
 	* libnautilus-private/nautilus-file.[ch]:
 	Add nautilus_file_list_cancel_call_when_ready.
-	
+
 	* src/file-manager/fm-directory-view.c:
 	Handle multiple files being activated together.
 
@@ -3821,7 +3826,7 @@
 
 	* src/nautilus-file-management-properties.glade:
 	Use pixel offset for indenting, not spaces.
-	Patch from Jaap Haitsma 
+	Patch from Jaap Haitsma
 
 2005-11-22  Emmanuele Bassi  <ebassi@cvs.gnome.org>
 
@@ -3885,7 +3890,7 @@
        position; check the icon->has_lazy_position flag even after
        retrieving its stored position.  If the flag is turned on, defer
        the icon to the semi_position_icons list.
-	
+
 2005-11-14  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c: (draw_frame):
@@ -3940,7 +3945,7 @@
 	via keyboard, with <Control>+, <Control>- and <Control>0.
 
 	* src/nautilus-window-manage-views.c (zoom_level_changed_callback): Make the
-	ZOOM_NORMAL action insensitive when zooming is not supported, so that it 
+	ZOOM_NORMAL action insensitive when zooming is not supported, so that it
 	does not eat <Control>0.
 
 2005-10-26  Alexander Larsson  <alexl@redhat.com>
@@ -3980,8 +3985,8 @@
 
 2005-10-21  Matthias Clasen  <mclasen@redhat.com>
 
-	* src/file-manager/fm-actions.h: 
-	* src/file-manager/nautilus-directory-view-ui.xml: 
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/nautilus-directory-view-ui.xml:
 	* src/file-manager/fm-directory-view.c: Add a "Format"
 	menuitem to the context menu of Floppy in Computer,
 	which runs gfloppy.
@@ -4042,7 +4047,7 @@
 
 	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file):
 	Scroll into view correctly when renaming (#309964)
-	
+
 2005-10-19  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/Makefile.am (INCLUDES):
@@ -4052,7 +4057,7 @@
 
 	* src/nautilus-shell-interface.idl:
 	Reuse Nautilus::URI from the one defined in libnautilus-private.
-	
+
 	* libnautilus-private/Makefile.am:
 	Link libnautilus-private statically.
 
@@ -4084,21 +4089,21 @@
 
 	* libnautilus-private/nautilus-icon-container.c: (key_press_event):
 	Don't send slash to typeahead
-	
+
 	* src/nautilus-location-dialog.[ch]:
 	Add nautilus_location_dialog_set_location.
-	
+
 	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-navigation-window.c:
 	* src/nautilus-spatial-window.c:
 	* src/nautilus-window.[ch]:
 	Open location dialog/entry when you press '/'.
-	
+
 2005-10-18  Alexander Larsson  <alexl@redhat.com>
 
-	* src/file-manager/fm-list-view.c: 
+	* src/file-manager/fm-list-view.c:
 	Use gtktreeview typeahead. Patch by Christian Neumair.
-	
+
 2005-10-18  Jürg Billeter  <j@bitron.ch>
 
 	* libnautilus-private/nautilus-icon-container.c: (destroy),
@@ -4125,7 +4130,7 @@
 	* libnautilus-private/nautilus-icon-container.h:
 	* libnautilus-private/nautilus-icon-private.h:
 	* libnautilus-private/nautilus-marshal.list:
-	
+
 	Replace NautilusIconContainer typeahead implementation by a port of
 	GtkTreeView's interactive search.
 
@@ -4135,7 +4140,7 @@
 	* libnautilus-private/Makefile.am:
 	Build fixes for cygwin.
 	Patch from Yaakov S (Cygwin Port)
-	
+
 2005-10-17  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-bookmark.c:
@@ -4176,12 +4181,12 @@
 	* configure.in:
 	Bump version to 2.13.1. Further 2.12.x work is on
 	gnome-2-12 branch.
-	
+
 ==== gnome-2-12 branched from here ===
-	
+
 2005-10-03  Alexander Larsson  <alexl@redhat.com>
 
-	* configure.in: 
+	* configure.in:
 	Post release version bump
 
 === nautilus 2.12.1 ===
@@ -4307,7 +4312,7 @@
 	* nautilus-connect-server-dialog.c:
 	(nautilus_connect_server_dialog_new):
 	* nautilus-window-menus.c:
-	(action_connect_to_server_callback): 
+	(action_connect_to_server_callback):
 	Autofill "Connect to server" dialog where possible.
 	Fixes #314745
 
@@ -4334,7 +4339,7 @@
 	* icons/side_bar_image.png:
 	Remove unused icons (#315990)
 	Patch from Jaap A. Haitsma
-	
+
 2005-09-19  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-metafile.c: (copy_file_metadata):
@@ -4356,7 +4361,7 @@
 	* libnautilus-private/nautilus-icon-container.[ch]:
 	* libnautilus-private/nautilus-icon-private.h:
 	Add support for lazily positioned icons.
-	
+
 	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file),
 	(fm_icon_view_screen_changed):
@@ -4378,7 +4383,7 @@
 	connect to "volume_unmounted".  This will let the trash clean up
 	its merged directory even if the unmount is not initiated from
 	Nautilus.
-	
+
 	* libnautilus-private/nautilus-merged-directory.c
 	(merged_remove_real_directory): When a real directory is removed
 	from the merged directory, emit notifications to that effect.
@@ -4487,7 +4492,7 @@
 	Expand pathnames for items in trash.
 	Fixes bug #148545
 	Based on a patch from Christian Neumair  <chris@gnome-de.org>
-	
+
 2005-08-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
@@ -4516,7 +4521,7 @@
 	* configure.in:
 	Require eel 2.11.92.
 
-	* NEWS: 
+	* NEWS:
 	Update for release
 
 2005-08-23  Martin Wehner  <martin.wehner@gmail.com>
@@ -4589,7 +4594,7 @@
 	ANSIfication
 	* libnautilus-private/nautilus-file.c: Mark some variables
 	static.
-	* libnautilus-private/nautilus-icon-container.c: 
+	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_get_selection): Return NULL not
 	FALSE.
 	* libnautilus-private/nautilus-icon-factory.c:
@@ -4625,7 +4630,7 @@
 	* configure.in:
 	Require eel 2.11.91.
 
-	* NEWS: 
+	* NEWS:
 	Update for release
 
 2005-08-09  Martin Wehner  <martin.wehner@gmail.com>
@@ -4656,7 +4661,7 @@
 2005-08-05  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-bookmarks-window.c: (create_bookmarks_window),
-	(open_selected_bookmark): Open the appropriate kind of window when 
+	(open_selected_bookmark): Open the appropriate kind of window when
 	jumping to bookmark. Fixes #312160.
 
 	Patch from Jaap Haitsma <jaap@haitsma.org>
@@ -4754,7 +4759,7 @@
 	* configure.in:
 	Require eel 2.11.90 and bump version.
 
-	* NEWS: 
+	* NEWS:
 	Update for release
 
 2005-07-23  Martin Wehner  <martin.wehner@gmail.com>
@@ -4786,16 +4791,16 @@
 	running sound process using a static variable and kill it
 	before starting any new process.
 	(can_play_sound): copy from nautilus-sound.c
-	
+
 	* src/nautilus-application.c: (finish_startup): don't call
 	nautilus_sound_init()
 
 	* libnautilus-private/nautilus-sound.[ch]: remove old code
 	to track the currently runing sound process using a GConf
 	key.
-	
+
 	* libnautilus-private/Makefile.am: remove nautilus-sound.[ch]
-	
+
 2005-07-19  Mark McLoughlin  <mark@skynet.ie>
 
 	* libnautilus-private/nautilus-global-preferences.c:
@@ -4876,16 +4881,16 @@
 	* configure.in:
 	Require eel 2.11.4
 
-	* NEWS: 
+	* NEWS:
 	Update for release
-	
+
 2005-07-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-image-properties-page.c: (load_finished):
 	list width/height separately (#159851)
 
 	Patch from Christian Neumair <chris@gnome-de.org>
-	
+
 2005-07-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-spatial-window.[ch]:
@@ -4894,7 +4899,7 @@
 	Show busy cursor in browser mode too. (#97887)
 
 	Patch from Christian Neumair <chris@gnome-de.org>
-	
+
 2005-07-11  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
@@ -4925,9 +4930,9 @@
 
 	* src/file-manager/fm-list-view.c:
 	don't activate selection on expand in single click mode (#309389)
-	
+
 	Patch from chris@gnome-de.org
-	
+
 2005-07-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-places-sidebar.c:
@@ -4943,7 +4948,7 @@
 	Add toggle to hide/show main toolbar.
 
         Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
-	
+
 2005-07-10  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-property-browser.c: (add_color_to_browser): Don't allow
@@ -4976,20 +4981,20 @@
 2005-07-08  Alexander Larsson  <alexl@redhat.com>
 
         Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
-	
+
 	* src/Makefile.am:
 	* src/nautilus-pathbar.[ch]:
 	New pathbar widget. Based on code from gtk.
-	
+
 	* src/nautilus-navigation-window.[ch]:
 	* src/nautilus-window-manage-views.c:
 	* src/nautilus-window-private.h:
 	Use pathbar in browser window.
-	
+
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	* libnautilus-private/nautilus-global-preferences.[ch]:
 	Add always_use_location_entry prefs.
-	
+
 	* src/nautilus-navigation-window-menus.c:
 	Whitespace fixup.
 
@@ -5059,7 +5064,7 @@
 	* libnautilus-private/nautilus-icon-private.h:
 	Add normal_alpha style property that is used when
 	frame_text is on.
-	
+
 	Patch from Benjamin Berg <benjamin@sipsolutions.net>
 
 2005-07-05  Joe Shaw  <joeshaw@novell.com>
@@ -5107,15 +5112,15 @@
 	* NEWS:
 	Update for release
 
-	* configure.in: 
+	* configure.in:
 	Require eel 2.11.3
-	
+
 2005-07-01  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-window-info.[ch]:
 	* src/nautilus-window.c:
 	Add nautilus_window_info_get_bookmark_list
-	
+
 	* src/Makefile.am:
 	* src/nautilus-application.c:
 	* src/nautilus-places-sidebar.[ch]:
@@ -5125,7 +5130,7 @@
 
 	* src/file-manager/fm-tree-view.c:
 	Fix runtime warnings.
-	
+
 2005-07-01  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-actions.h:
@@ -5139,9 +5144,9 @@
 	* src/file-manager/fm-directory-view.c:
 	Better strings for browser tooltips.
 	Patch from Luca Ferretti <elle.uca@libero.it>
-	
+
 2005-06-03  Dinoop Thomas <dinoop.thomas@wipro.com>
-	
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(parse_previous_duplicate_name): Use strchr instead of strrchr to parse the
 	base name from the file name. (Fixes #306341).
@@ -5150,11 +5155,11 @@
 
 	* libnautilus-private/nautilus-sidebar.[ch]:
 	Add get_tab_tooltop method.
-	
+
 	* src/nautilus-navigation-window.c:
 	* src/nautilus-side-pane.[ch]:
 	Use get_tab_tooltip.
-	
+
 	* src/nautilus-emblem-sidebar.c:
 	* src/nautilus-history-sidebar.c:
 	* src/nautilus-information-panel.c:
@@ -5187,9 +5192,9 @@
 
 	* src/nautilus-bookmark-list.c:
 	Fix handling of notification of .gtk-bookmark file changes.
-	
+
 	* src/Makefile.am:
-	* src/nautilus-window-bookmarks.[ch]: 
+	* src/nautilus-window-bookmarks.[ch]:
 	* src/nautilus-application.c:
 	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-navigation-window.[ch]:
@@ -5204,23 +5209,23 @@
 2005-06-23  Alexander Larsson  <alexl@redhat.com>
 
         Patch from Jamie McCracken <jamiemcc@blueyonder.co.uk>
-	
+
 	* src/nautilus-bookmark-list.[ch]:
 	Share bookmarks with gtk+.
-	
+
 	* libnautilus-private/nautilus-file-utilities.[ch]:
 	* src/nautilus-window.c: (real_get_title):
 	Move compute_default_title to nautilus_compute_title_for_uri.
-	
+
 	* libnautilus-private/nautilus-bookmark.[ch]:
-	* src/nautilus-bookmarks-window.c: 
+	* src/nautilus-bookmarks-window.c:
 	Add has_custom_name boolean to NautilusBookmark
-	
+
 	* src/Makefile.am:
 	* src/nautilus-bookmark-parsing.[ch]:
 	* src/nautilus-navigation-window-menus.c:
 	Remove no longer needed files nautilus-bookmark-parsing.[ch].
-	
+
 2005-06-20  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/file-manager/fm-directory-view.c: (reset_open_with_menu),
@@ -5229,7 +5234,7 @@
 
 2005-06-20  Alexander Larsson  <alexl@redhat.com>
 
-	* src/nautilus-navigation-window-menus.c: 
+	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-window-menus.c:
 	* src/nautilus-window-private.h:
 	Make bookmark menu item action names unique. (#161859)
@@ -5246,7 +5251,7 @@
 
 2005-06-20  Anders Carlsson  <andersca@imendio.com>
 
-	* src/file-manager/fm-directory-view.c (process_old_files): 
+	* src/file-manager/fm-directory-view.c (process_old_files):
 	Plug leak by freeing the sorted list instead.
 
 2005-06-20  Alexander Larsson  <alexl@redhat.com>
@@ -5265,9 +5270,9 @@
 
 2005-06-19  Anders Carlsson  <andersca@imendio.com>
 
-	* src/nautilus-throbber.c (nautilus_throbber_finalize): 
+	* src/nautilus-throbber.c (nautilus_throbber_finalize):
 	Free throbber->details after we're done using it.
-	
+
 2005-06-17  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-list-model.c:
@@ -5332,12 +5337,12 @@
 
 	* libnautilus-private/nautilus-tree-view-drag-dest.c:
 	Slightly slower auto hover expand.
-	
+
 	* src/file-manager/fm-directory-view.c:
 	Make add/remove_subdirectory more straightforward.
 	Now remove just removes the NautilusDirectory passed in, and
 	you're not allowed to add multiple times or remove non-added.
-	
+
 	* src/file-manager/fm-list-model.[ch]:
 	Actually track the NautilusDirectories that are added to the
 	FMDirectoryView so we can easily remove them when the files are
@@ -5347,14 +5352,14 @@
 	Emits the subdirectory_unloaded signal when subdirectories go away.
 
 	Add support for unloading subdirectories.
-	
+
 	* src/file-manager/fm-list-view.c:
 	Unload subdirectories in timeout on collapse.
 	remove subdirectories when they get unloaded.
 
 2005-06-16  Anders Carlsson  <andersca@imendio.com>
 
-	* src/nautilus-navigation-window-menus.c 
+	* src/nautilus-navigation-window-menus.c
 	(append_dynamic_bookmarks): Unref the action group here too.
 
 2005-06-16  Anders Carlsson  <andersca@imendio.com>
@@ -5374,7 +5379,7 @@
 	Implement fm_directory_view_get_selection_for_file_transfer by
 	filtering out all files there a parent is also in the selection.
 	Do the same for the dnd source list.
-	
+
 	* src/file-manager/fm-list-model.c:
 	Allow deletion of dummy node so that clearing the model
 	doesn't loop forever.
@@ -5392,25 +5397,25 @@
 	* libnautilus-private/nautilus-icon-dnd.c:
 	No dnd shadow on the desktop.
 	Redraw less to get rid of the dnd shadow.
-	
+
 	Patch from Matthias Clasen (#307803)
 
 2005-06-15  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-tree-view-drag-dest.c:
 	Add hover expansion
-	
+
 	* src/file-manager/fm-directory-view.[ch]:
 	Add support for adding/removing subdirectories.
-	
+
 	* src/file-manager/fm-list-model.[ch]:
 	Add support for subdirectories making this a tree view.
-	
+
 	* src/file-manager/fm-list-view.c:
 	Turn listview into a treeview.
 
 	Patch from Jürg Billeter <j@bitron.ch>
-	
+
 2005-06-15  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-spatial-window.c:
@@ -5482,7 +5487,7 @@
 
 	* libnautilus-private/nautilus-column-chooser.c: (add_buttons):
 	Fix conflicting mnemonics in the column chooser (#167475).
-	
+
 	Patch from Michael Terry <mike@mterry.name>
 
 2005-06-06  Martin Wehner  <martin.wehner@gmail.com>
@@ -5498,7 +5503,7 @@
 	* libnautilus-private/nautilus-icon-container.c:
 	(select_one_unselect_others):
 	Reveal icon when selecting it. Fixes #121111.
-	
+
 	Based on a patch from Christian Neumair <chris@gnome-de.org>
 
 2005-06-04  Christian Neumair  <chris@gnome-de.org>
@@ -5522,7 +5527,7 @@
 	* src/nautilus-window-menus.c:
 	Fix critical warnings from the new accelerators
 	by adding dummy labels.
-	
+
 2005-06-03  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-shell-ui.xml: Fix "Zoom In Accel" action.
@@ -5664,7 +5669,7 @@
 	toolbar items. Fixes bug #86569.
 
 2005-05-18  Dinoop Thomas  <dinoop.thomas@wipro.com>
-	
+
 	* src/nautilus-connect-server-dialog.c:
 	(connect_to_server), (nautilus_connect_server_dialog_finalize),
 	(nautilus_connect_server_dialog_init), (setup_for_type):
@@ -5721,7 +5726,7 @@
 2005-05-22  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:
-	Nicer formatted PKG_CHECK_MODULES() output. (#148355)	
+	Nicer formatted PKG_CHECK_MODULES() output. (#148355)
 
 	Patch from Tomasz Kloczko <kloczek@pld.org.pl>
 
@@ -5766,19 +5771,19 @@
 
 	* icons/*/*:
 	Remove old junk.
-	
+
 	* configure.in:
 	Require eel 2.11.1
 	Remove icons/*/Makefile
-	
-	* NEWS: 
+
+	* NEWS:
 	Update for 2.11.1
-	
+
 2005-05-17  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-view.[ch]:
 	Add nautilus_view_pop_up_location_context_menu
-	
+
 	* src/file-manager/fm-actions.h:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-directory-view.h:
@@ -5828,7 +5833,7 @@
 	* libnautilus-private/nautilus-bookmark.c:
 	(bookmark_file_changed_callback):
 	Don't loop when a bookmarked file is removed
-	
+
 	* src/file-manager/fm-directory-view.c: (process_new_files):
 	Don't call get_file_info for files no longer in the directory
 	(was caused by the ready_to_load call).
@@ -5850,7 +5855,7 @@
 
 2005-05-12  David Zeuthen  <david@fubar.dk>
 
-	* libnautilus-private/apps_nautilus_preferences.schemas.in: 
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	Change comment for translator note of default desktop font to
 	say that Sans shouldn't never be changed. Fixes bug #138731.
 
@@ -5901,7 +5906,7 @@
 	(display_pending_files), (fm_directory_view_freeze_updates),
 	(fm_directory_view_unfreeze_updates), (queue_pending_files):
 	Allow freeze of update processing inside a view.
-	
+
 	* src/file-manager/fm-list-view.c:
 	(cell_renderer_editing_canceled), (cell_renderer_edited),
 	(create_and_set_up_tree_view), (fm_list_view_start_renaming_file):
@@ -5917,7 +5922,7 @@
 	* src/nautilus-window-menus.c:
 	Add Ctrl-0 keyboard shortcut to View->Normal Size as
 	recommended by the HIG.
-	
+
 	Patch from Olav Vitters <olav@bkor.dhs.org>
 
 2005-05-02  Martin Wehner  <martin.wehner@gmail.com>
@@ -5927,7 +5932,7 @@
 	Ctrl+Space in an empty directory. Fixes bug #302018.
 
 	Patch from Vinay M R  <vinay.mandyakoppal@wipro.com>
-	
+
 2005-05-02  Frederic Crozat  <fcrozat@mandriva.com>
 
 	* libnautilus-private/nautilus-program-choosing.c:
@@ -5952,7 +5957,7 @@
 	extension. It does this even better than the removed code.
 	Also, in newer Metacity there is a a way to set a keybinding
 	for "new terminal".
-	
+
 2005-04-19  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/nautilus-main.c: (main): Merge fix for leak
@@ -5980,7 +5985,7 @@
 
 	* src/nautilus-connect-server-dialog-main.c: (main)
 	Set window icon.
-	
+
 2005-04-17  Christian Neumair  <chris@gnome-de.org>
 
 	* src/nautilus-spatial-window.c:
@@ -6005,10 +6010,10 @@
 	(fm_directory_view_notify_selection_changed):
 	Remember if the current selection was already removed
 	and don't try to remove it again.
-	
+
 	* src/file-manager/fm-list-view.c: (fm_list_view_remove_file):
 	Only set a new selection if the removal affects the current selection.
-		
+
 2005-04-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-directory-view.c:
@@ -6027,7 +6032,7 @@
 	* src/file-manager/fm-properties-window.c:
 	Use label instead of entry if not editable.
 	(#149201)
-	
+
 	Patch from Michael Terry
 
 2005-04-04  Martin Wehner  <martin.wehner@gmail.com>
@@ -6092,7 +6097,7 @@
 	New svg icon from Corey Woodworth <CoreyWoodworth@gmail.com>
 
 	* icons/audio.png:
-	Remove old file.	
+	Remove old file.
 
 	* icons/Makefile.am:
 	Install new icon.
@@ -6102,7 +6107,7 @@
 	Use svg instead of bitmap audio preview emblem.
 
 	Patch from Jaap Haitsma <jaap@haitsma.org>
-	
+
 2005-03-30  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-spatial-window.c: (get_dnd_icon_size),
@@ -6124,7 +6129,7 @@
 	(nautilus_file_operations_progress_new_file):
 	* libnautilus-private/nautilus-file-operations.c:
 	(progress_dialog_set_to_from_item_text):
-	Change layout of the progress dialog to be more HIG compliant.	
+	Change layout of the progress dialog to be more HIG compliant.
 
 	Patch from Michiel Sikkes <michiel@eyesopened.nl>
 
@@ -6133,7 +6138,7 @@
 	* src/file-manager/fm-desktop-icon-view.c:
 	* src/file-manager/fm-directory-view.c:
 	Add elipses to "Create Launcher" menu item. (#95113)
-	
+
 	Based on a patch from Christian Neumair <chris@gnome-de.org>
 
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
@@ -6143,7 +6148,7 @@
 	(nautilus_desktop_link_monitor_delete_link):
 	Reference the proper context menu item in the volume
 	delete dialog of network volumes. Fixes bug #152391.
-	
+
 	Patch from Dennis Cranston <dennis_cranston@yahoo.com>
 
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
@@ -6151,9 +6156,9 @@
 	* src/file-manager/fm-directory-view.c: (real_merge_menus):
 	Remove hard coded script directory path from tooltip message.
 	Fixes bug #161905.
-	
+
 	Patch from Michael Terry <mike@mterry.name>
-	
+
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-connect-server-dialog.c: (connect_to_server):
@@ -6189,14 +6194,14 @@
 2005-03-23  Fernando Herrera  <fherrera onirica com>
 
 	* src/nautilus-connect-server-dialog-main.c: (main): call
-	gnome_authentication_manager_init to use gnome-vfs auth 
+	gnome_authentication_manager_init to use gnome-vfs auth
 	callbacks.
 
 2005-03-23  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-desktop-window.c:
 	Remove unused code. We avoid flicker in other ways.
-	
+
 2005-03-22  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
@@ -6212,7 +6217,7 @@
 
 	* libnautilus-private/nautilus-window-info.[ch]:
 	Add nautilus_window_info_show_window call.
-	
+
 	* src/file-manager/fm-directory-view.c:
 	* src/nautilus-window-manage-views.c:
 	* src/nautilus-window.[ch]:
@@ -6220,13 +6225,13 @@
 	This allows us to set up the EelBackground before
 	showing the window, causing less flicker (#169347)
 
-	Patch from Nickolay V. Shmyrev  
-	
+	Patch from Nickolay V. Shmyrev
+
 2005-03-16  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
 	Require eel 2.10.1 (for EelBackground changes)
-	
+
 	* libnautilus-private/nautilus-icon-dnd.c:
 	* libnautilus-private/nautilus-directory-background.c:
 	Use the background setting now in eel.
@@ -6271,12 +6276,12 @@
 	Post release version bump
 
 === nautilus 2.10.0 ===
-	
+
 2005-03-07  Martin Wehner  <martin.wehner@gmail.com>
 
 	* THANKS:
 	Update for release
-	
+
 	* check-THANKS.pl:
 	Extract names from ChangeLog bodies too. (#43452)
 	Patch from Richard Hoelscher <rah@rahga.com>
@@ -6285,7 +6290,7 @@
 
 	* NEWS:
 	Update for 2.10.0
-	
+
 	* configure.in:
 	Bump version to 2.10.0, require eel 2.10.0
 
@@ -6314,13 +6319,13 @@
 	Post release version bump
 
 === nautilus 2.9.92 ===
-	
+
 2005-03-01  Alexander Larsson  <alexl@redhat.com>
 
 	* data/applications.desktop.in:
 	* data/favorites.desktop.in:
 	Remove old files.
-	
+
 	* docs/Makefile.am (EXTRA_DIST):
 	Remove nautilus-context-menus.txt from makefile
 
@@ -6355,7 +6360,7 @@
 	Make show_original work (had a typo)
 	Make where use original file, not target.
 	Fixes location display for desktop icons.
-	
+
 2005-02-24  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:
@@ -6393,7 +6398,7 @@
 
 	* src/nautilus-application.c: (end_startup_notification):
 	Don't give critical warnings if we have no startup_id.
-	
+
 	* src/nautilus-window.c: (nautilus_window_update_icon):
 	Use names and not pixbufs for the window icons.
 	This means the icons of the best size are used.
@@ -6417,7 +6422,7 @@
 	* src/file-manager/fm-desktop-icon-view.c:
 	(fm_desktop_icon_view_supports_uri):
 	Use EEL_DESKTOP_URI instead of "x-nautilus-desktop:".
-	
+
 	Patch from Jaap Haitsma <jaap@haitsma.org>
 
 2005-02-18  Paolo Borelli  <pborelli@katamail.com>
@@ -6437,7 +6442,7 @@
 	(add_bookmark_for_current_location):
 	Only add a bookmark once for a given location.
 	Fixes #161862.
-	
+
 	Patch from egeetha@novell.com
 
 2005-02-15  Alexander Larsson  <alexl@redhat.com>
@@ -6457,7 +6462,7 @@
 	* nautilus-home.desktop.in:
 	* nautilus.desktop.in:
 	Enable startup notification.
-	
+
 	* src/nautilus-application.c:
 	* src/nautilus-application.h:
 	* src/nautilus-bookmarks-window.c:
@@ -6480,7 +6485,7 @@
 	This means you don't get any auth dialogs.
 	Removed the monitor on the root file totally, as that should
 	not normally change/go away anyway (and it was doing i/o).
-	
+
 	This changes semantics in the file a bit, we now have a dummy
 	row also if node->directory != NULL and node->parent == NULL.
 
@@ -6490,7 +6495,7 @@
 	Post release version bump
 
 === nautilus 2.9.91 ===
-	
+
 2005-02-10  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
@@ -6504,16 +6509,16 @@
 	* Makefile.am:
 	* nautilus-folder-handler.desktop.in:
 	Add new default folder handler NoDisplay desktop file
-	
+
 	* nautilus.desktop.in:
 	Add %U to exec line
-	
+
 	* src/Nautilus_shell.server.in:
 	Remove all the bonobo components we no longer support
-	
+
 	* src/file-manager/fm-directory-view.c:
 	Allow open with menu on folders (#151747)
-	
+
 2005-02-08  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
@@ -6533,7 +6538,7 @@
 
 	* configure.in:
 	Revert libexif change as it breaks the build with new libexif.
-        
+
 2005-02-06  Martin Wehner  <martin.wehner@epost.de>
 
 	* libnautilus-private/nautilus-program-choosing.c:
@@ -6544,7 +6549,7 @@
 
 	* configure.in:
 	Require gnome-desktop 2.9.91
-		
+
 	Patch from Elijah Newren <newren@gmail.com>
 
 2005-02-06  Martin Wehner  <martin.wehner@epost.de>
@@ -6556,7 +6561,7 @@
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	Make default desktop font localizable. (#138731)
-	
+
 	Patch from Takao Fujiwar <takao.fujiwara@sun.com>
 
 2005-02-05  Martin Wehner  <martin.wehner@epost.de>
@@ -6572,9 +6577,9 @@
 	* src/file-manager/fm-desktop-icon-view.c:
 	(real_update_menus): Added mnemonic for Empty Trash option.
 	Fixes #162307.
-	
+
 	Patch from Dinoop Thomas <dinoop.thomas@wipro.com>
-	
+
 2005-02-04  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-desktop-icon-view.c (net_workarea_changed):
@@ -6586,7 +6591,7 @@
 	* src/file-manager/fm-directory-view.c:
 	(clipboard_targets_received):
 	Handle destroyed windows
-	
+
 	* src/nautilus-window.c: (nautilus_window_destroy):
 	cancel outstanding view as callbacks
 
@@ -6679,7 +6684,7 @@
 	Post release version bump.
 
 === nautilus 2.9.90 ===
-	
+
 2005-01-25  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -6700,7 +6705,7 @@
 
 2005-01-25  Padraig O'Briain  <padraig.obriain@sun.com>
 
-	* libnautilus-private/nautilus-icon-container.c: 
+	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_accessible_selection_changed_cb): Omit call
 	to nautilus_icon_container_accessible_update_selection.
 	(nautilus_icon_container_accessible_ref_selection):
@@ -6709,7 +6714,7 @@
 	to nautilus_icon_container_accessible_update_selection.
 
 	Fixes bug #160087.
-	 
+
 2005-01-24  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-menus.c (action_about_nautilus_callback):
@@ -6730,7 +6735,7 @@
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
 	* src/file-manager/nautilus-directory-view-ui.xml:
 	Remove "Reset Background" entry from folder context menus.
-	
+
 	Patch from Jaap Haitsma <jaap@haitsma.org>
 
 2005-01-21  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
@@ -6771,7 +6776,7 @@
 
 	* nautilus-home.desktop.in:
 	Fix icon
-	
+
 	* nautilus.desktop.in:
 	Put in menus.
 
@@ -6810,7 +6815,7 @@
 	Make connect to server dialog availible as separate application.
 
 	Patch from Vincent Untz <vincent@vuntz.net>
-	
+
 2005-01-14  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-utilities.[ch]:
@@ -6819,7 +6824,7 @@
 	* libnautilus-private/nautilus-link.[ch]:
 	* libnautilus-private/nautilus-link-desktop-file.[ch]:
 	Uniquify name for nautilus_link_local_create if requested.
-	
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_handle_url_drop):
 	Uniquify desktop link name
@@ -6835,13 +6840,13 @@
 
 	* libnautilus-private/nautilus-dnd.[ch]:
 	Add nautilus_drag_default_drop_action_for_url
-	
+
 	* libnautilus-private/nautilus-icon-dnd.c: (receive_dropped_url),
 	(nautilus_icon_container_get_drop_action),
 	(drag_data_received_callback):
 	Handle URL drops separately from URI_LIST
 	Set different actions for URL drop
-	
+
 	* libnautilus-private/nautilus-tree-view-drag-dest.[ch]:
 	(get_drop_action), (receive_dropped_uri_list),
 	(receive_dropped_url), (drag_data_received_callback),
@@ -6849,13 +6854,13 @@
 	Add handle_url and handle_uri lists
 	Set different actions for URL drop
 	Fix bug that made url_list & url drops not work
-	
+
 	* src/file-manager/fm-directory-view.[ch]: (revert_slashes),
 	(ask_link_action), (fm_directory_view_handle_url_drop),
 	(fm_directory_view_handle_uri_list_drop):
 	Move url and uri_list drop handling here. Make it handle
 	url drops better.
-	
+
 	* src/file-manager/fm-icon-view.c: (icon_view_handle_url),
 	(icon_view_handle_uri_list), (fm_icon_view_init):
 	* src/file-manager/fm-list-view.c: (list_view_handle_url),
@@ -6875,7 +6880,7 @@
 	* libnautilus-private/nautilus-link-desktop-file.c:
 	(nautilus_link_desktop_file_local_create):
 	Use right icon field
-	
+
 2005-01-12  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-actions.h:
@@ -6901,17 +6906,17 @@
 	* libnautilus-private/nautilus-link-historical.c:
 	* libnautilus-private/nautilus-link-historical.h:
 	Remove historical link support.
-	
+
 	* libnautilus-private/nautilus-link-desktop-file.[ch]:
 	* libnautilus-private/nautilus-link.[ch]:
 	Remove historical link support and unused functions.
-	
+
 	* src/file-manager/fm-directory-view.h:
 	Remove unused declaration.
-	
+
 	* src/file-manager/fm-icon-view.c:
 	Fix up due to small api change for nautilus-link.
-	
+
 	* src/file-manager/fm-properties-window.c: (set_icon_callback):
 	Fix icon change for desktop files that point to nonexisting binaries.
 
@@ -6925,7 +6930,7 @@
 	* libnautilus-private/nautilus-icon-factory.c:
 	(nautilus_icon_factory_get_icon_for_file):
 	Special case icons for burn: and computer:
-	
+
 	* src/nautilus-main.c: (register_icons):
 	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-window-menus.c:
@@ -6946,7 +6951,7 @@
 	Post release version bump
 
 === nautilus 2.9.2 ===
-	
+
 2004-01-11  James Henstridge  <james@jamesh.id.au>
 
 	* test/Makefile.am: don't define GNOMELOCALEDIR in INCLUDES.
@@ -6989,25 +6994,25 @@
 	Don't use frames for images with alpha.
 
 	Patch from Jaap Haitsma <jaap@haitsma.org>
-	
+
 2004-12-15  Vijaykumar Patwari <vijaykumar.patwari@wipro.com>
 
 	* src/nautilus-bookmarks-window.[ch]:
-	(open_selected_bookmark): New function, choose if to open in 
+	(open_selected_bookmark): New function, choose if to open in
 	parent or new window.
 	(get_bookmark_nautilus_navigation_window_new): Get New window.
 	(on_jump_button_clicked): Call open_selected_bookmark.
 	(on_row_activated): Call open_selected_bookmark.
-	* src/nautilus-navigation-window-menus.c: 
-	(get_or_create_bookmarks_window): Reset signals for the 
+	* src/nautilus-navigation-window-menus.c:
+	(get_or_create_bookmarks_window): Reset signals for the
 	edit bookmark dialog.
 	fixes bug #160224.
-	
+
 2004-12-15  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
 	Require glib 2.6.0
-	
+
 	* libnautilus-private/nautilus-file-utilities.c:
 	(nautilus_get_uri_shortname_for_display):
 	* libnautilus-private/nautilus-file.c:
@@ -7027,7 +7032,7 @@
 
 	* src/nautilus-location-dialog.c: (nautilus_location_dialog_new):
 	Fill in ctrl-l dialog correctly for desktop.
-	
+
 	Patch from Matthew Gatto <poobar@nycap.rr.com>
 
 2004-12-15  Alexander Larsson  <alexl@redhat.com>
@@ -7076,15 +7081,15 @@
 	* libnautilus-private/nautilus-bookmark.c:
 	(nautilus_bookmark_get_pixbuf):
 	Force size for pixbufs.
-	
+
 	* libnautilus-private/nautilus-icon-factory.c: (load_icon_file):
 	Load force-sized svgs right.
 	(nautilus_icon_factory_get_pixbuf_from_name):
 	Allow force-size loading
-	
+
 	* libnautilus-private/nautilus-icon-factory.h:
 	Allow force-size loading in nautilus_icon_factory_get_pixbuf_from_name
-	
+
 	* libnautilus-private/nautilus-ui-utilities.c:
 	(nautilus_action_from_menu_item),
 	(nautilus_toolbar_action_from_menu_item):
@@ -7097,15 +7102,15 @@
 	* src/file-manager/fm-properties-window.c: (create_emblems_page):
 	* src/file-manager/fm-tree-model.c:
 	(tree_node_get_pixbuf_from_factory):
-	
+
 	Force-size load icons
-	
+
 	* src/nautilus-throbber.c: (nautilus_throbber_instance_init),
 	(nautilus_throbber_finalize):
 	Disconnect icon theme changed signal on finalize.
 
 2004-11-29  Alexander Larsson  <alexl@redhat.com>
-	
+
 	* libnautilus-private/nautilus-file-dnd.c:
 	(nautilus_drag_can_accept_item):
 	Handle drags to desktop items.
@@ -7162,11 +7167,11 @@
 
 2004-11-24  Alexander Larsson  <alexl@redhat.com>
 
-	* configure.in: 
+	* configure.in:
 	Post release version bump
 
 === nautilus 2.9.1 ===
-	
+
 2004-11-24  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
@@ -7179,7 +7184,7 @@
 
 2004-11-22  Alexander Larsson  <alexl@redhat.com>
         * Merge bonobo-slay-branch
-	
+
 2004-11-22  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window.c: (action_view_as_callback),
@@ -7197,24 +7202,24 @@
 
 	* libnautilus-private/nautilus-mime-actions.c:
 	removed unneeded includes
-	
+
 	* src/nautilus-application.c:
 	* src/nautilus-desktop-window.c:
 	Removed app_id property on NautilusWindow
-	
+
 	* src/nautilus-main.c: (main):
 	Remove old code
-	
+
 	* src/nautilus-navigation-window.c:
 	* src/nautilus-sidebar-title.c:
 	* src/nautilus-window-menus.c:
 	* src/file-manager/fm-ditem-page.c:
 	Remove bonobo comments
-	
+
 	* src/nautilus-window.c:
 	Remove app_id property
 	fix last bonobo details
-	
+
 	* src/file-manager/fm-actions.h:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/nautilus-directory-view-ui.xml:
@@ -7224,7 +7229,7 @@
 
 	* configure.in:
 	Require new eel
-	
+
 	* src/file-manager/fm-actions.h:
 	* src/file-manager/fm-directory-view.[ch]:
 	* src/file-manager/nautilus-directory-view-ui.xml:
@@ -7250,33 +7255,33 @@
 	Don't check for "application/x-gnome-app-info", as that is already
 	handled by the alias system. This also avoids stating for a
 	mimetype xml file.
-	
+
 	* src/nautilus-throbber.c:
 	Don't create a new icon theme for each throbber.
 	Use GtkIconTheme instead of GnomeIconTheme
-	
+
 	* libnautilus-private/nautilus-ui-utilities.[ch]:
 	New function nautilus_ui_string_get to cache the loaded ui files.
-	
+
 	* src/nautilus-navigation-window.c:
 	Remove old bonoboui stuff
-	
+
 	* src/nautilus-navigation-window-menus.c:
 	Open New window is Ctrl-N.
 	Use the new nautilus_ui_string_get call
-	
+
 	* src/nautilus-spatial-window.c:
-	* src/nautilus-window-menus.c: 
+	* src/nautilus-window-menus.c:
 	* src/file-manager/fm-desktop-icon-view.c:
 	* src/file-manager/fm-directory-view.c:
 	* src/file-manager/fm-icon-view.c:
 	* src/file-manager/fm-list-view.c:
 	Use the new nautilus_ui_string_get call
-	
+
 	* src/file-manager/nautilus-directory-view-ui.xml:
 	* src/file-manager/nautilus-icon-view-ui.xml:
 	Name separators to work around bug #158620
-	
+
 2004-11-18  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-actions.h:
@@ -7309,32 +7314,32 @@
 	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-window-menus.c:
 	Move some functions to nautilus-ui-utilities
-	
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-ui-utilities.[ch]:
 	Various ui utility functions
-	
+
 	* src/file-manager/fm-desktop-icon-view.c:
 	* src/file-manager/fm-directory-view.c:
-	* src/file-manager/fm-icon-view.c: 
+	* src/file-manager/fm-icon-view.c:
 	* src/file-manager/fm-list-view.c:
 	Unmerge everything on destroy
-	
+
 	* src/nautilus-shell-ui.xml:
 	Remove unused stuff
-	
+
 2004-11-18  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-clipboard-monitor.c:
 	Handle ownership changes from XFixes
-	
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-clipboard-ui.xml:
 	Remove (is now inline)
-	
+
 	* libnautilus-private/nautilus-clipboard.[ch]:
 	Convert to GtkUIManager
-	
+
 	* src/nautilus-location-bar.c:
 	* src/nautilus-notes-viewer.c:
 	Adapt to NautilusClipboard changes
@@ -7354,11 +7359,11 @@
 
 	* components/Makefile.am:
 	Remove references to throbber
-	
+
 	* src/Makefile.am:
 	* src/nautilus-throbber.[ch]:
 	Moved throbber here and made it not be a bonobo object
-	
+
 	* src/nautilus-window-private.h:
 	* src/nautilus-window-toolbars.c:
 	Work with the throbber
@@ -7404,13 +7409,13 @@
 
 	* Makefile.am:
 	Remove libnautilus-adapter subdir
-	
+
 	* components/Makefile.am:
 	Don't build throbber atm
-	
+
 	* src/nautilus-navigation-action.c:
 	Use GtkMenuToolButton instead of NautilusArrowToolbutton
-	
+
 	* src/Makefile.am:
 	* src/nautilus-arrow-toolbutton.[ch]:
 	Remove.
@@ -7420,15 +7425,15 @@
 	* libnautilus-private/nautilus-window-info.c:
 	(nautilus_window_info_get_ui_manager):
 	It's NULL now, not CORBA_OBJECT_NIL.
-	
+
 2004-11-16  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-view.h:
 	remove bonoboui inclide
-	
+
 	* src/nautilus-navigation-action.[ch]:
 	Add navigation GtkAction, based on epi code
-	
+
 	* src/nautilus-window-menus.c:
 	* src/nautilus-window-toolbars.c:
 	Correctly handle toolbar icons for extensions
@@ -7437,18 +7442,18 @@
 
 	* configure.in:
 	Remove bonoboui dependencies
-	
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-bonobo-extensions.[ch]:
 	* libnautilus-private/nautilus-bonobo-ui.h:
 	Remove unneeded files
-	
+
 	* libnautilus-private/nautilus-clipboard.c:
 	Comment out for now.
-	
+
 	* libnautilus-private/nautilus-directory-metafile-monitor.c:
 	* libnautilus-private/nautilus-metafile.c:
-	* src/nautilus-application.c: 
+	* src/nautilus-application.c:
 	* src/nautilus-history-sidebar.c:
 	* src/nautilus-information-panel.c:
 	* src/nautilus-main.c: (main):
@@ -7456,25 +7461,25 @@
 	* src/nautilus-sidebar-title.c:
 	* src/file-manager/fm-properties-window.c:
 	Remove bonobo includes
-	
+
 	* libnautilus-private/nautilus-file-utilities.[ch]:
 	(nautilus_get_ui_directory), (nautilus_ui_file):
 	Util functions for ui files.
-	
+
 	* libnautilus-private/nautilus-view.[ch]:
 	* libnautilus-private/nautilus-window-info.[ch]:
 	Remove bonoboui methods
-	
+
 	* src/Makefile.am:
 	Add new files, remove some old ones
 	Move ui files to datadir/nautilus/ui
-	
+
 	* src/nautilus-actions.h:
 	New file with action names
-	
+
 	* src/nautilus-arrow-toolbutton.[ch]:
 	New widget for back/forward buttons.
-	
+
 	* src/nautilus-desktop-window.c:
 	* src/nautilus-navigation-window-menus.c:
 	* src/nautilus-navigation-window-ui.xml:
@@ -7482,22 +7487,22 @@
 	* src/nautilus-shell-ui.xml:
 	* src/nautilus-spatial-window-ui.xml:
 	* src/nautilus-spatial-window.c:
-	* src/nautilus-window-manage-views.[ch]: 
+	* src/nautilus-window-manage-views.[ch]:
 	* src/nautilus-window-menus.c:
 	* src/nautilus-window-private.h:
 	* src/nautilus-window-toolbars.c:
 	* src/nautilus-window.[ch]:
 	Initial port to GtkUIManager
-	
+
 	* src/nautilus-profiler.[ch]:
 	Remove
-	
+
 	* src/file-manager/Makefile.am:
 	* src/file-manager/fm-actions.h:
 	New file with action names
-	
+
 	* src/file-manager/fm-desktop-icon-view.c:
-	* src/file-manager/fm-directory-view.[ch]: 
+	* src/file-manager/fm-directory-view.[ch]:
 	* src/file-manager/fm-icon-view.c:
 	* src/file-manager/fm-list-view.c:
 	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
@@ -7510,7 +7515,7 @@
 
 	* libnautilus-private/nautilus-bonobo-extensions.[ch]:
 	Remove some unused bonobo extensions.
-	
+
 	* libnautilus-private/Makefile.am:
 	* src/nautilus-navigation-window.c:
 	* src/nautilus-property-browser.c:
@@ -7552,23 +7557,23 @@
 	* src/nautilus-window-menus.c:
 	* src/nautilus-window.c:
 	Remove all traces of old medusa support.
-	
+
 2004-11-09  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-factory.[ch]:
 	(nautilus_get_relative_icon_size_for_zoom_level):
 	New function.
-	
+
 	* libnautilus-private/nautilus-view.[ch]:
 	Redo the zooming interface
-	
+
 	* src/file-manager/fm-directory-view.[ch]:
 	* src/file-manager/fm-icon-view.c:
 	* src/file-manager/fm-list-view.c:
 	Implement the new interface for zooming and clean up.
 	Remove the "default zoom affects fonts" behaviour.
-	
-	* src/nautilus-navigation-window.c: 
+
+	* src/nautilus-navigation-window.c:
 	* src/nautilus-zoom-control.[ch]:
 	Use the new simplified zoom interfaces
 
@@ -7593,12 +7598,12 @@
 
 	* components/Makefile.am:
 	Remove image_properties subdir
-	
+
 	* src/Makefile.am:
 	* src/nautilus-application.c: (nautilus_application_instance_init):
 	* src/nautilus-image-properties-page.[ch]:
 	Image property page using new system
-	
+
 	* src/nautilus-notes-viewer.c:
 	add static
 
@@ -7608,8 +7613,8 @@
 	* libnautilus-private/nautilus-sidebar-factory.c:
 	* libnautilus-private/nautilus-sidebar-factory.h:
 	Remove old sidebar-factory API
-	
-	* src/file-manager/fm-tree-view.c: 
+
+	* src/file-manager/fm-tree-view.c:
 	* src/nautilus-emblem-sidebar.c:
 	* src/nautilus-history-sidebar.c:
 	* src/nautilus-information-panel.c:
@@ -7621,10 +7626,10 @@
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-sidebar-provider.[ch]:
 	Add new extensions-style sidebar provider interface
-	
+
 	* src/nautilus-navigation-window.c:
 	Use it.
-	
+
 	* src/nautilus-notes-viewer.[ch]:
 	Convert notes viewer to new iface
 
@@ -7641,7 +7646,7 @@
 
 	* components/Makefile.am:
 	Remove emblem subdir
-	
+
 	* libnautilus-private/nautilus-window-info.[ch]:
 	* src/nautilus-window.c: (nautilus_window_set_hidden_files_mode):
 	hidden_files_mode_changed signal
@@ -7650,7 +7655,7 @@
 	* src/file-manager/fm-tree-view.[ch]:
 	* src/nautilus-application.c: (nautilus_application_instance_init):
 	Make tree view work with new system.
-	
+
 	* src/nautilus-window-manage-views.c: (load_new_location),
 	(location_has_really_changed):
 	Only emit loading_uri after load_underway has been reported.
@@ -7662,7 +7667,7 @@
 	* src/nautilus-application.c:
 	Add emblem sidebar, based on old compontent
 	now uses NautilusSignaller to detect/signal emblem changes
-	
+
 	* src/nautilus-property-browser.c:
 	Catch the emblems_changed signal and refresh
 
@@ -7676,7 +7681,7 @@
 
 	* src/nautilus-navigation-window.c:
 	Fix unref-null warning
-	
+
 	* src/Makefile.am:
 	* src/nautilus-application.c:
 	* src/nautilus-notes-sidebar.[ch]:
@@ -7689,16 +7694,16 @@
 
 	* components/Makefile.am:
 	Remove stuff that are now replaced or not needed anymore.
-	
+
 	* libnautilus-private/nautilus-window-info.[ch]:
 	* src/nautilus-window.c:
 	Add nautilus_window_info_get_history.
-	
+
 	* src/Makefile.am:
 	* src/nautilus-history-sidebar.[ch]:
 	* src/nautilus-application.c: (nautilus_application_instance_init):
 	Add history sidebar widget, based on old component.
-	
+
 	* src/nautilus-information-panel.[ch]:
 	Some fixes
 
@@ -7706,7 +7711,7 @@
 
 	* libnautilus-private/nautilus-directory-background.c:
 	Fix spew
-	
+
 	* libnautilus-private/nautilus-sidebar-factory.h:
 	* libnautilus-private/nautilus-window-info.[ch]:
 	* src/nautilus-application.c:
@@ -7720,43 +7725,43 @@
 
 	* Makefile.am:
 	Don't build libnautilus subdir
-	
+
 	* libnautilus-private/Makefile.am:
 	Don't link to libnautilus
 	Add new files (some from libnautilus)
 	Remove not used files
-	
+
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	Remove hide_built_in_bookmarks
-	
+
 	* libnautilus-private/nautilus-bonobo-ui.h:
 	* libnautilus-private/nautilus-clipboard-ui.xml:
 	* libnautilus-private/nautilus-clipboard.[ch]:
 	* libnautilus-private/nautilus-idle-queue.[ch]:
 	Move here from libnautilus
-	
+
 	* libnautilus-private/nautilus-desktop-link.c:
 	* libnautilus-private/nautilus-global-preferences.[ch]:
 	Remove WEB_NAVIGATION_ENABLED ifdef and HOME_URI/BUILT_IN_BOOKMARKS
 	prefs
-	
+
 	* libnautilus-private/nautilus-directory-private.h:
 	* libnautilus-private/nautilus-metafile-server.idl:
 	* libnautilus-private/nautilus-program-choosing.h:
 	Remove not needed header inclusions
-	
+
 	* libnautilus-private/nautilus-sidebar-factory.[ch]:
 	NautilusSidebar registration and creation
-	
+
 	* libnautilus-private/nautilus-sidebar.[ch]:
 	New NautilusSidebar interface
-	
+
 	* libnautilus-private/nautilus-sidebar-functions.[ch]:
 	* libnautilus-private/nautilus-undo-context.[ch]:
 	* libnautilus-private/nautilus-view-identifier.[ch]:
 	* libnautilus-private/nautilus-view-query.[ch]:
 	Remove not needed files
-	
+
 	* libnautilus-private/nautilus-undo-manager.[ch]:
 	* libnautilus-private/nautilus-undo-private.h:
 	* libnautilus-private/nautilus-undo-transaction.[ch]:
@@ -7765,24 +7770,24 @@
 
 	* libnautilus-private/nautilus-view-factory.[ch]:
 	NautilusView registration and creation
-	
+
 	* libnautilus-private/nautilus-view.[ch]:
 	New NautilusView interface
-	
+
 	* libnautilus-private/nautilus-window-info.[ch]:
 	New NautilusWindowInfo interface
-	
+
 	* src/Makefile.am:
 	Don't link to libnautilus
 	Remove not used files
-	
+
 	* src/nautilus-applicable-views.[ch]:
 	* src/nautilus-component-adapter-factory.[ch]:
 	* src/nautilus-view-frame-corba.[ch]:
 	* src/nautilus-view-frame-private.h:
 	* src/nautilus-view-frame.[ch]:
 	Removed. Not needed anymore.
-	
+
 	* src/nautilus-bookmarks-window.c:
 	* src/nautilus-complex-search-bar.c:
 	* src/nautilus-information-panel.[ch]:
@@ -7797,7 +7802,7 @@
 
 	* src/nautilus-shell.c:
 	Remove WEB_NAVIGATION_ENABLED
-	
+
 	* src/nautilus-application.c:
 	* src/nautilus-desktop-window.c:
 	* src/nautilus-navigation-window-menus.c:
@@ -7825,7 +7830,7 @@
 	* src/file-manager/fm-properties-window.c:
 	* src/file-manager/fm-tree-view.h:
 	Initial conversion to new NautilusView interface.
-	
+
 2004-11-09  Mark McLoughlin  <mark@skynet.ie>
 
 	* Makefile.am: install nautilus-file-management-properties.desktop
@@ -7836,10 +7841,10 @@
 
 2004-10-29  Iain <iaingnome@gmail.com>
 
-	* libnautilus-private/nautilus-icon-canvas-item.c 
+	* libnautilus-private/nautilus-icon-canvas-item.c
 	(compute_text_rectangle): Line up the text with the middle of the icon.
 
-	* libnautilus-private/nautilus-icon-container.c 
+	* libnautilus-private/nautilus-icon-container.c
 	(lay_down_one_line): Take the max height of the row so that icons can
 	be lined up.
 	(lay_down_icons_horizontal): Calculate the grid_width depending on the
@@ -7855,7 +7860,7 @@
 	* ChangeLog: rolled over to ChangeLog-20041029.
 
 ==== gnome-2-8 branched from here ===
-	
+
 # Local Variables:
 # coding: utf-8
 # End:
