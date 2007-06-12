@@ -368,9 +368,6 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 	 */
 	zoom_control->details->marking_menu_items = TRUE;
 
-	/* This is marked for localization in case the % sign is not
-	 * appropriate in some locale. I guess that's unlikely.
-	 */
 	percent = floor ((100.0 * nautilus_get_relative_icon_size_for_zoom_level (zoom_level)) + .5);
 	item_text = g_strdup_printf ("%d%%", percent);
 
@@ -378,6 +375,7 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 		? NULL
 		: gtk_radio_menu_item_get_group (previous_radio_item);
 	menu_item = gtk_radio_menu_item_new_with_label (radio_item_group, item_text);
+	g_free (item_text);
 
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
 					zoom_level == zoom_control->details->zoom_level);

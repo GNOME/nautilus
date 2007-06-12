@@ -1,5 +1,10 @@
 2007-06-12  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-zoom-control.c: (create_zoom_menu_item):
+	Don't leak item text and remove stale comment.
+
+2007-06-12  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
 	(zoom_popup_menu_show), (zoom_popup_menu),
 	(nautilus_zoom_control_button_press_event),
