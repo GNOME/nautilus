@@ -181,7 +181,7 @@ net_workarea_changed (FMDesktopIconView *icon_view,
 			       &format_returned,
 			       &length_returned,
 			       (guchar **) &nworkareas)) {
-		g_warning("Can not caclulate _NET_NUMBER_OF_DESKTOPS");
+		g_warning("Can not calculate _NET_NUMBER_OF_DESKTOPS");
 	}
 	if (gdk_error_trap_pop()
 	    || nworkareas == NULL
