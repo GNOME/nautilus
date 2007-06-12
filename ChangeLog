@@ -1,5 +1,11 @@
 2007-06-13  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-properties-window.c:
+	(should_show_volume_usage):
+	Don't crash on opening properties for multiple files. (#444265)
+
+2007-06-13  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-desktop-icon-view.c: (net_workarea_changed):
 	Fix typo in warning message. (#446911)
 	Patch from Florian Steinel  <fsteinel@flonet.net> 

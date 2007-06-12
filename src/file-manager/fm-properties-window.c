@@ -2665,7 +2665,15 @@ should_show_volume_usage (FMPropertiesWindow *window)
 	gboolean                match, is_root;
 	gboolean 		success = FALSE;
 	
+	if (is_multi_file_window (window)) {
+		return FALSE;
+	}
+
 	file = get_original_file (window);
+
+	if (file == NULL) {
+		return FALSE;
+	}
 
 	if (nautilus_file_has_volume (file)) {
 		volume = nautilus_file_get_volume (file);
