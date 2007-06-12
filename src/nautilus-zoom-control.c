@@ -62,8 +62,8 @@ enum {
 struct NautilusZoomControlDetails {
 	GtkWidget *zoom_in;
 	GtkWidget *zoom_out;
-	GtkWidget *zoom_event;
 	GtkWidget *zoom_label;
+	GtkWidget *zoom_button;
 	
 	NautilusZoomLevel zoom_level;
 	NautilusZoomLevel min_zoom_level;	 
@@ -119,6 +119,27 @@ nautilus_zoom_control_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+static void 
+zoom_button_clicked (GtkButton *button, NautilusZoomControl *zoom_control)
+{
+	g_signal_emit (zoom_control, signals[ZOOM_TO_DEFAULT], 0);
+}
+
+static void
+zoom_popup_menu_show (GdkEventButton *event, NautilusZoomControl *zoom_control)
+{
+	eel_pop_up_context_menu (create_zoom_menu (zoom_control),
+				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				 event);
+}
+
+static void
+zoom_popup_menu (GtkWidget *widget, NautilusZoomControl *zoom_control)
+{
+	zoom_popup_menu_show (NULL, zoom_control);
+}
+
 /* handle button presses */
 static gboolean
 nautilus_zoom_control_button_press_event (GtkWidget *widget,
@@ -129,19 +150,11 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget,
 		return FALSE;
 	}
 
-	gtk_widget_grab_focus (widget);
-
-	/* check for the context menu button and handle by creating and showing the menu */
+	/* check for the context menu button and show the menu */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		eel_pop_up_context_menu (create_zoom_menu (zoom_control),
-					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-					 event);
+		zoom_popup_menu_show (event, zoom_control);
 		return TRUE;
-	} else if (event->button == 1) {
-		g_signal_emit (zoom_control, signals[ZOOM_TO_DEFAULT], 0);
 	}
-
 	/* We don't change our state (to reflect the new zoom) here.
 	   The zoomable will call back with the new level.
 	   Actually, the callback goes to the viewframe containing the
@@ -150,7 +163,7 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget,
 	   calling into is - nautilus_zoom_control_set_zoom_level.
 	*/
 
-	return TRUE;
+	return FALSE;
 }
 
 static void
@@ -227,18 +240,27 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	gtk_box_pack_start (GTK_BOX (zoom_control),
 			    zoom_control->details->zoom_out, FALSE, FALSE, 0);
 
-	zoom_control->details->zoom_event = gtk_event_box_new ();
-	g_signal_connect (G_OBJECT (zoom_control->details->zoom_event),
+	zoom_control->details->zoom_button = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_button),
+			       GTK_RELIEF_NONE);
+			       
+	gtk_widget_add_events (GTK_WIDGET (zoom_control->details->zoom_button),
+			       GDK_BUTTON_PRESS_MASK
+			       | GDK_BUTTON_RELEASE_MASK
+			       | GDK_POINTER_MOTION_MASK);		       
+			       
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_button),
 			  "button-press-event",
 			  G_CALLBACK (nautilus_zoom_control_button_press_event),
 			  zoom_control);
-	GTK_WIDGET_SET_FLAGS (zoom_control->details->zoom_event, GTK_CAN_FOCUS);
-	GTK_WIDGET_UNSET_FLAGS (zoom_control->details->zoom_event, GTK_NO_WINDOW);
-
-	gtk_widget_add_events (GTK_WIDGET (zoom_control->details->zoom_event),
-			       GDK_BUTTON_PRESS_MASK
-			       | GDK_BUTTON_RELEASE_MASK
-			       | GDK_POINTER_MOTION_MASK);
+			  		  		  
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_button),
+			  "clicked", G_CALLBACK (zoom_button_clicked),
+			  zoom_control);
+	
+	g_signal_connect (G_OBJECT (zoom_control->details->zoom_button),
+			  "popup-menu", G_CALLBACK (zoom_popup_menu),
+			  zoom_control);
 
 	zoom_control->details->zoom_label = gtk_label_new ("100%");
 	g_signal_connect (zoom_control->details->zoom_label,
@@ -247,10 +269,10 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 			  zoom_control);
 	set_label_size (zoom_control);
 	
-	gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_event), zoom_control->details->zoom_label);
+	gtk_container_add (GTK_CONTAINER (zoom_control->details->zoom_button), zoom_control->details->zoom_label);
 
 	gtk_box_pack_start (GTK_BOX (zoom_control),
-			    zoom_control->details->zoom_event, TRUE, TRUE, 0);
+			    zoom_control->details->zoom_button, TRUE, TRUE, 0);
 
 	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_MENU);
 	zoom_control->details->zoom_in = gtk_button_new ();
@@ -265,7 +287,7 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 			    zoom_control->details->zoom_in, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (zoom_control->details->zoom_out);
-	gtk_widget_show_all (zoom_control->details->zoom_event);
+	gtk_widget_show_all (zoom_control->details->zoom_button);
 	gtk_widget_show_all (zoom_control->details->zoom_in);
 }
 

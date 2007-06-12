@@ -1,3 +1,13 @@
+2007-06-12  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
+	(zoom_popup_menu_show), (zoom_popup_menu),
+	(nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_instance_init):
+	Make zoom control context menu keyboard-activatable by adding
+	a button to the zoom label. (#326733)
+	Patch from Trevor Davenport  <trevor.davenport@gmail.com>
+
 2007-06-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-file-management-properties.glade:
