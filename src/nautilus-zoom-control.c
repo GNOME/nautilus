@@ -135,9 +135,72 @@ zoom_popup_menu_show (GdkEventButton *event, NautilusZoomControl *zoom_control)
 }
 
 static void
+menu_position_under_widget (GtkMenu   *menu,
+			    gint      *x,
+			    gint      *y,
+			    gboolean  *push_in,
+			    gpointer   user_data)
+{
+	GtkWidget *widget;
+	GtkWidget *container;
+	GtkRequisition req;
+	GtkRequisition menu_req;
+	GdkRectangle monitor;
+	int monitor_num;
+	GdkScreen *screen;
+
+	widget = GTK_WIDGET (user_data);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	container = gtk_widget_get_ancestor (widget, GTK_TYPE_CONTAINER);
+	g_return_if_fail (container != NULL);
+
+	gtk_widget_size_request (widget, &req);
+	gtk_widget_size_request (GTK_WIDGET (menu), &menu_req);
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (menu));
+	monitor_num = gdk_screen_get_monitor_at_window (screen, widget->window);
+	if (monitor_num < 0) {
+		monitor_num = 0;
+	}
+	gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+
+	gdk_window_get_origin (widget->window, x, y);
+	if (GTK_WIDGET_NO_WINDOW (widget)) {
+		*x += widget->allocation.x;
+		*y += widget->allocation.y;
+	}
+
+	if (gtk_widget_get_direction (container) == GTK_TEXT_DIR_LTR) {
+		*x += widget->allocation.width - req.width;
+	} else {
+		*x += req.width - menu_req.width;
+	}
+
+	if ((*y + widget->allocation.height + menu_req.height) <= monitor.y + monitor.height) {
+		*y += widget->allocation.height;
+	} else if ((*y - menu_req.height) >= monitor.y) {
+		*y -= menu_req.height;
+	} else if (monitor.y + monitor.height - (*y + widget->allocation.height) > *y) {
+		*y += widget->allocation.height;
+	} else {
+		*y -= menu_req.height;
+	}
+
+	*push_in = FALSE;
+}
+
+
+static void
 zoom_popup_menu (GtkWidget *widget, NautilusZoomControl *zoom_control)
 {
-	zoom_popup_menu_show (NULL, zoom_control);
+	GtkMenu *menu;
+
+	menu = create_zoom_menu (zoom_control);
+	gtk_menu_popup (menu, NULL, NULL,
+			menu_position_under_widget, widget,
+			0, gtk_get_current_event_time ());
+	gtk_menu_shell_select_first (GTK_MENU_SHELL (menu), FALSE);
 }
 
 /* handle button presses */
