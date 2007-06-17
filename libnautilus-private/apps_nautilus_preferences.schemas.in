@@ -880,6 +880,20 @@ most cases, this should be left alone. -->Sans 10</default>
          </long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/network_icon_name</key>
+      <applyto>/apps/nautilus/desktop/network_icon_name</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <locale name="C">
+         <short>Network servers icon name</short>
+         <long>
+          This name can be set if you want a custom name
+	  for the network servers icon on the desktop.
+         </long>
+      </locale>
+    </schema>
         
   </schemalist>  
 </gconfschemafile>

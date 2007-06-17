@@ -118,6 +118,19 @@ trash_name_changed (gpointer callback_data)
 	nautilus_desktop_link_changed (link);
 }
 
+static void
+network_name_changed (gpointer callback_data)
+{
+	NautilusDesktopLink *link;
+
+	link = NAUTILUS_DESKTOP_LINK (callback_data);
+	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_NETWORK);
+
+	
+	g_free (link->details->display_name);
+	link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
+	nautilus_desktop_link_changed (link);
+}
 
 
 NautilusDesktopLink *
@@ -176,9 +189,13 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 
 	case NAUTILUS_DESKTOP_LINK_NETWORK:
 		link->details->filename = g_strdup ("network");
-		link->details->display_name = g_strdup (_("Network Servers"));
+		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
 		link->details->activation_uri = g_strdup ("network:///");
 		link->details->icon = g_strdup ("gnome-fs-network");
+
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
+					      network_name_changed,
+					      link);
 		break;
 
 	default:
@@ -310,6 +327,7 @@ nautilus_desktop_link_can_rename (NautilusDesktopLink     *link)
 {
 	return (link->details->type == NAUTILUS_DESKTOP_LINK_HOME ||
 		link->details->type == NAUTILUS_DESKTOP_LINK_TRASH ||
+		link->details->type == NAUTILUS_DESKTOP_LINK_NETWORK ||
 		link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER);
 }
 
@@ -328,6 +346,10 @@ nautilus_desktop_link_rename (NautilusDesktopLink     *link,
 		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
 		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
+				     name);
+		break;
+	case NAUTILUS_DESKTOP_LINK_NETWORK:
+		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
 				     name);
 		break;
 	default:
@@ -384,6 +406,12 @@ desktop_link_finalize (GObject *object)
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_TRASH) {
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
 						 trash_name_changed,
+						 link);
+	}
+
+	if (link->details->type == NAUTILUS_DESKTOP_LINK_NETWORK) {
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
+						 network_name_changed,
 						 link);
 	}
 

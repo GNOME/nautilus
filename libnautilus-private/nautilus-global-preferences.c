@@ -55,6 +55,8 @@ static gpointer default_font_callback                    (void);
 static gpointer default_home_link_name                   (void);
 static gpointer default_computer_link_name               (void);
 static gpointer default_trash_link_name                  (void);
+static gpointer default_network_link_name                (void);
+
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -506,6 +508,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (FALSE)
 	},
+
+	{ NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
+	  PREFERENCE_STRING,
+	  NULL,
+	  default_network_link_name, g_free,
+	},
 	
 	{ NULL }
 };
@@ -534,6 +542,12 @@ static gpointer
 default_trash_link_name (void)
 {
 	return g_strdup (_("Trash"));
+}
+
+static gpointer
+default_network_link_name (void)
+{
+	return g_strdup (_("Network Servers"));
 }
 
 
