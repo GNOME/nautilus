@@ -608,7 +608,7 @@ nautilus_application_startup (NautilusApplication *application,
 				/* FIXME bugzilla.gnome.org 42538: When can this happen? */
 				message = _("Nautilus can't be used now, due to an unexpected error.");
 				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
-						     "from Bonobo when attempting to locate the factory."
+						     "from Bonobo when attempting to locate the factory. "
 						     "Killing bonobo-activation-server and restarting Nautilus may help fix the problem.");
 			} else {
 				num_failures++;
