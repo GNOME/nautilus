@@ -1,5 +1,12 @@
 2007-06-18  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window-menus.c: (action_about_nautilus_callback):
+	Set program-name instead of deprecated name property
+	and mark the website-label for translation (#438901).
+	Patch from Christian Persch <chpe@gnome.org>
+
+2007-06-18  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-search-engine-simple.c:
 	(search_thread_data_new), (search_visit_func):
 	Normalize unicode search strings and use g_utf8_strdown to

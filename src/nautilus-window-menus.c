@@ -51,6 +51,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkaboutdialog.h>
 #include <gtk/gtkenums.h>
+#include <gtk/gtkversion.h>
 #include <libgnome/gnome-help.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
@@ -438,7 +439,11 @@ action_about_nautilus_callback (GtkAction *action,
 					     _(license[2]), NULL);
 
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
+#if GTK_CHECK_VERSION (2, 11, 0)
+			       "program-name", _("Nautilus"),
+#else
 			       "name", _("Nautilus"),
+#endif /* GTK 2.11. 0 */
 			       "version", VERSION,
 			       "comments", _("Nautilus is a graphical shell "
 					     "for GNOME that makes it "
@@ -457,7 +462,7 @@ action_about_nautilus_callback (GtkAction *action,
 			      "translator-credits", _("translator-credits"),
 			      "logo-icon-name", "nautilus",
 			      "website", "http://www.gnome.org/projects/nautilus",
-			      "website-label", "Nautilus Website",			     
+			      "website-label", _("Nautilus Web Site"),
 			      NULL);
 
 	g_free (license_trans);
