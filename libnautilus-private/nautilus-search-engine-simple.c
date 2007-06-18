@@ -88,7 +88,7 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 			NautilusQuery *query)
 {
 	SearchThreadData *data;
-	char *text, *lower, *uri;
+	char *text, *lower, *normalized, *uri;
 
 	data = g_new0 (SearchThreadData, 1);
 
@@ -103,10 +103,12 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 	}
 	
 	text = nautilus_query_get_text (query);
-	lower = g_ascii_strdown (text, -1);
+	normalized = g_utf8_normalize (text, -1, G_NORMALIZE_NFD);
+	lower = g_utf8_strdown (normalized, -1);
 	data->words = g_strsplit (lower, " ", -1);
 	g_free (text);
 	g_free (lower);
+	g_free (normalized);
 
 	data->mime_types = nautilus_query_get_mime_types (query);
 
@@ -188,7 +190,7 @@ search_visit_func (const gchar *rel_path,
 {
 	SearchThreadData *data;
 	int i;
-	char *lower_name;
+	char *lower_name, *normalized;
 	GnomeVFSURI *uri;
 	gboolean hit;
 	GList *l;
@@ -211,7 +213,8 @@ search_visit_func (const gchar *rel_path,
 	hit = FALSE;
 
 	if (!is_hidden) {
-		lower_name = g_ascii_strdown (info->name, -1);
+		normalized = g_utf8_normalize (info->name, -1, G_NORMALIZE_NFD);
+		lower_name = g_utf8_strdown (normalized, -1);
 		
 		hit = TRUE;
 		for (i = 0; data->words[i] != NULL; i++) {
@@ -221,6 +224,7 @@ search_visit_func (const gchar *rel_path,
 			}
 		}
 		g_free (lower_name);
+		g_free (normalized);
 	}
 
 	if (hit && data->mime_types != NULL) {

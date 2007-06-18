@@ -1,5 +1,13 @@
 2007-06-18  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-search-engine-simple.c:
+	(search_thread_data_new), (search_visit_func):
+	Normalize unicode search strings and use g_utf8_strdown to
+	lowercase them. (#421486/#421512)
+	Patch from Denis Jacquerye  <moyogo@gmail.com>
+
+2007-06-18  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/file-manager/fm-desktop-icon-view.c:
 	(action_change_background_callback):
 	Call background page of gnome-appearance-properties for
