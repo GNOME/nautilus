@@ -37,6 +37,9 @@ EXTRA_DIST=					\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
 	ChangeLog-20001018			\
+	ChangeLog-20010201			\
+	ChangeLog-20010420			\
+	ChangeLog-20041029			\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
