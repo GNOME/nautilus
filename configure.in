@@ -348,23 +348,22 @@ fi
 AC_MSG_CHECKING(for more warnings, including -Werror)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	AC_MSG_RESULT(yes)
-	CFLAGS="\
+	WARNING_CFLAGS="\
 	-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
 	-Wcast-align -Wsign-compare \
-	-Werror \
-	$CFLAGS"
+	-Werror"
 
 	for option in -Wno-strict-aliasing -Wno-sign-compare -Wno-pointer-sign; do
-		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$CFLAGS $option"
+		SAVE_CFLAGS="$WARNING_CFLAGS"
+		WARNING_CFLAGS="$WARNING_CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
 			has_option=no,)
 		if test $has_option = no; then
-			CFLAGS="$SAVE_CFLAGS"
+			WARNING_CFLAGS="$SAVE_CFLAGS"
 		fi
 		AC_MSG_RESULT($has_option)
 		unset has_option
@@ -398,14 +397,14 @@ AM_CONDITIONAL([HAVE_GLIB_2_14],[test "$have_glib_2_14" = "yes"])
 
 dnl libnautilus-extension
 LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
-LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"
+LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES` $WARNING_CFLAGS"
 AC_SUBST(LIBNAUTILUS_EXTENSION_CFLAGS)
 LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
 CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 $EXTRA_CORE_MODULES"
-CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
+CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $LIBJPEG $x_libs"
 AC_SUBST(CORE_LIBS)
