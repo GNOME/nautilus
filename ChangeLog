@@ -1,5 +1,11 @@
 2007-06-23  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-module.c: (nautilus_module_init):
+	Unref extension modules at shutdown. (#346401)
+	Based on patch from Gustavo Carneiro  <gjc@inescporto.pt>
+
+2007-06-23  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-utilities.c:
 	(update_xdg_dir_cache), (unschedule_user_dirs_changed),
 	(destroy_xdg_dir_cache), (free_xdg_dir_cache):

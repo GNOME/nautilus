@@ -25,6 +25,7 @@
 #include "nautilus-module.h"
 
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-debug.h>
 #include <gmodule.h>
 #include <libgnome/gnome-macros.h>
 
@@ -214,6 +215,9 @@ nautilus_module_init (void)
 		initialized = TRUE;
 		
 		load_module_dir (NAUTILUS_EXTENSIONDIR);
+
+		eel_debug_call_at_shutdown_with_data ((GFreeFunc)nautilus_module_extension_list_free,
+						      module_objects);
 	}
 }
 
