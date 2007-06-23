@@ -35,6 +35,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-debug.h>
 #include <libgnome/gnome-util.h>
 #include <glib/gi18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -340,14 +341,21 @@ schedule_user_dirs_changed (void)
 }
 
 static void
-update_xdg_dir_cache (void)
+unschedule_user_dirs_changed (void)
 {
-	static gboolean started_monitor = FALSE;
-	char *config_file, *uri;
+	if (user_dirs_changed_tag != 0) {
+		g_source_remove (user_dirs_changed_tag);
+		user_dirs_changed_tag = 0;
+	}
+}
+
+static void
+free_xdg_dir_cache (void)
+{
 	int i;
 
-	if (cached_xdg_dirs) {
-		for (i = 0 ; cached_xdg_dirs[i].type != NULL; i++) {
+	if (cached_xdg_dirs != NULL) {
+		for (i = 0; cached_xdg_dirs[i].type != NULL; i++) {
 			if (cached_xdg_dirs[i].file != NULL) {
 				nautilus_file_monitor_remove (cached_xdg_dirs[i].file,
 							      &cached_xdg_dirs[i]);
@@ -360,24 +368,32 @@ update_xdg_dir_cache (void)
 			g_free (cached_xdg_dirs[i].path);
 		}
 		g_free (cached_xdg_dirs);
-
-		schedule_user_dirs_changed ();
-		desktop_dir_changed ();
 	}
+}
 
-	if (!started_monitor) {
-		config_file = g_build_filename (g_get_user_config_dir (),
-						     "user-dirs.dirs", NULL);
-		uri = gnome_vfs_get_uri_from_local_path (config_file);
-		gnome_vfs_monitor_add (&cached_xdg_dirs_handle,
-				       uri,
-				       GNOME_VFS_MONITOR_FILE,
-				       xdg_dir_cache_changed_cb,
-				       NULL);
-		g_free (uri);
-		g_free (config_file);
+static void
+destroy_xdg_dir_cache (void)
+{
+	free_xdg_dir_cache ();
+	unschedule_user_dirs_changed ();
+	desktop_dir_changed ();
+
+	if (cached_xdg_dirs_handle != NULL) {
+		gnome_vfs_monitor_cancel (cached_xdg_dirs_handle);
+		cached_xdg_dirs_handle = NULL;
 	}
-	
+}
+
+static void
+update_xdg_dir_cache (void)
+{
+	char *config_file, *uri;
+	int i;
+
+	free_xdg_dir_cache ();
+	schedule_user_dirs_changed ();
+	desktop_dir_changed ();
+
 	cached_xdg_dirs = parse_xdg_dirs (NULL);
 	
 	for (i = 0 ; cached_xdg_dirs[i].type != NULL; i++) {
@@ -392,6 +408,21 @@ update_xdg_dir_cache (void)
 					  "changed", G_CALLBACK (xdg_dir_changed), &cached_xdg_dirs[i]);
 			g_free (uri);
 		}
+	}
+
+	if (cached_xdg_dirs_handle == NULL) {
+		config_file = g_build_filename (g_get_user_config_dir (),
+						     "user-dirs.dirs", NULL);
+		uri = gnome_vfs_get_uri_from_local_path (config_file);
+		gnome_vfs_monitor_add (&cached_xdg_dirs_handle,
+				       uri,
+				       GNOME_VFS_MONITOR_FILE,
+				       xdg_dir_cache_changed_cb,
+				       NULL);
+		g_free (uri);
+		g_free (config_file);
+
+		eel_debug_call_at_shutdown (destroy_xdg_dir_cache); 
 	}
 }
 
