@@ -40,6 +40,13 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-tree-view.h			\
 	$(NULL)
 
+EMPTY_VIEW_SOURCES = \
+	fm-empty-view.c \
+	fm-empty-view.h
+
+if ENABLE_EMPTY_VIEW
+libnautilus_file_manager_la_SOURCES += $(EMPTY_VIEW_SOURCES)
+endif
 
 uidir = $(datadir)/nautilus/ui
 ui_DATA =					\

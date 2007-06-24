@@ -34,6 +34,9 @@
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-tree-view.h"
+#if ENABLE_EMPTY_VIEW
+#include "file-manager/fm-empty-view.h"
+#endif /* ENABLE_EMPTY_VIEW */
 #include "nautilus-information-panel.h"
 #include "nautilus-history-sidebar.h"
 #include "nautilus-places-sidebar.h"
@@ -192,6 +195,9 @@ nautilus_application_instance_init (NautilusApplication *application)
 	fm_icon_view_register ();
 	fm_desktop_icon_view_register ();
 	fm_list_view_register ();
+#if ENABLE_EMPTY_VIEW
+	fm_empty_view_register ();
+#endif /* ENABLE_EMPTY_VIEW */
 
 	/* register sidebars */
 	nautilus_places_sidebar_register ();
