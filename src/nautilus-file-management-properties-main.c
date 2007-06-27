@@ -55,7 +55,7 @@ main (int argc, char *argv[])
 
 	gnome_program_init ("file-managment-properties", VERSION,
 			    LIBGNOMEUI_MODULE, argc, argv,
-			    NULL);
+			    NULL, NULL);
 
 	eel_preferences_init ("/apps/nautilus");
 
