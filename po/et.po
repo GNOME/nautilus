@@ -17,10 +17,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus\n"
+"Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-18 04:41+0100\n"
-"PO-Revision-Date: 2007-06-18 08:04+0300\n"
+"POT-Creation-Date: 2007-06-19 04:10+0100\n"
+"PO-Revision-Date: 2007-06-23 10:20+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2513,7 +2513,7 @@ msgid "Redo the edit"
 msgstr "Tagasta redigeeritud"
 
 #. label, accelerator
-#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:663
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:668
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr "Kõikide kohalike ja kaugelasetsevate kaustade ning ketaste sirvimine"
@@ -2535,7 +2535,7 @@ msgid "Home Folder"
 msgstr "Kodukataloog"
 
 #. label, accelerator
-#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:659
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:664
 msgid "Open your personal folder"
 msgstr "Isikliku kausta avamine"
 
@@ -4370,11 +4370,11 @@ msgstr ""
 #: ../src/nautilus-application.c:610
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
-"attempting to locate the factory.Killing bonobo-activation-server and "
+"attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 "Nautilust pole hetkel võimalik Bonobo ootamatu vea tõttu kasutada. Viga "
-"tekkis factory asukoha määramise katsel. Bonobo-activation-server'i "
+"tekkis factory asukoha tuvastamise katsel. Bonobo-activation-server'i "
 "kõrvaldamine ja Nautiluse taaskäivitamine võib aidata vea kõrvaldamisel."
 
 #: ../src/nautilus-application.c:617
@@ -4389,7 +4389,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:500
+#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:505
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5082,7 +5082,8 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:440 ../src/nautilus-spatial-window.c:414
-#: ../src/nautilus-window-menus.c:441 ../src/nautilus-window.c:167
+#: ../src/nautilus-window-menus.c:443 ../src/nautilus-window-menus.c:445
+#: ../src/nautilus-window.c:167
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5722,11 +5723,11 @@ msgstr "Nautilus ei saa \"%s\" kuvada."
 msgid "Please select another viewer and try again."
 msgstr "Palun vali teine rakendus ja proovi uuesti."
 
-#: ../src/nautilus-window-menus.c:182
+#: ../src/nautilus-window-menus.c:183
 msgid "Go to the location specified by this bookmark"
 msgstr "Järjehoidjaga määratud asukoha avamine"
 
-#: ../src/nautilus-window-menus.c:423
+#: ../src/nautilus-window-menus.c:424
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
@@ -5738,7 +5739,7 @@ msgstr ""
 "Tarkvara Fondi poolt avaldatud; kas Litsentsi versioon number 2 või "
 "(vastavalt Teie valikule) ükskõik milline hilisem versioon."
 
-#: ../src/nautilus-window-menus.c:427
+#: ../src/nautilus-window-menus.c:428
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -5750,7 +5751,7 @@ msgstr ""
 "TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata GNU Üldist Avalikku "
 "Litsentsi."
 
-#: ../src/nautilus-window-menus.c:431
+#: ../src/nautilus-window-menus.c:432
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
@@ -5760,7 +5761,7 @@ msgstr ""
 "Litsentsist; juhul kui sa seda ei saanud, siis kirjuta Free Software "
 "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
 
-#: ../src/nautilus-window-menus.c:443
+#: ../src/nautilus-window-menus.c:448
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -5768,7 +5769,7 @@ msgstr ""
 "Nautilus on GNOME graafiline kest, mis lihtsustab failihaldust ja üldse kogu "
 "süsteemi käsitlemist."
 
-#: ../src/nautilus-window-menus.c:447
+#: ../src/nautilus-window-menus.c:452
 msgid "Copyright © 1999-2007 The Nautilus authors"
 msgstr "Autoriõigus © 1999-2007 Nautiluse autorid"
 
@@ -5776,7 +5777,7 @@ msgstr "Autoriõigus © 1999-2007 Nautiluse autorid"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:457
+#: ../src/nautilus-window-menus.c:462
 msgid "translator-credits"
 msgstr ""
 "Lauri Kasvandik <lauri.kasvandik@mail.ee>, 2002.\n"
@@ -5786,198 +5787,202 @@ msgstr ""
 "Priit Laes <amd@store20.com>, 2004-2007.\n"
 "Ivar Smolin <okul@linux.ee>, 2005, 2007."
 
-#: ../src/nautilus-window-menus.c:588
+#: ../src/nautilus-window-menus.c:465
+msgid "Nautilus Web Site"
+msgstr "Nautiluse veebisait"
+
+#: ../src/nautilus-window-menus.c:593
 msgid "_File"
 msgstr "_Fail"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:589
+#: ../src/nautilus-window-menus.c:594
 msgid "_Edit"
 msgstr "_Redaktor"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:590
+#: ../src/nautilus-window-menus.c:595
 msgid "_View"
 msgstr "_Vaade"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:591
+#: ../src/nautilus-window-menus.c:596
 msgid "_Help"
 msgstr "_Abi"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:593
+#: ../src/nautilus-window-menus.c:598
 msgid "_Close"
 msgstr "_Sulge"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:594
+#: ../src/nautilus-window-menus.c:599
 msgid "Close this folder"
 msgstr "Sulgeb selle kataloogi"
 
-#: ../src/nautilus-window-menus.c:597
+#: ../src/nautilus-window-menus.c:602
 msgid "_Backgrounds and Emblems..."
 msgstr "_Taustad ja embleemid..."
 
-#: ../src/nautilus-window-menus.c:598
+#: ../src/nautilus-window-menus.c:603
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "Kuvab mustrid, värvid ja embleemid, millega kohandada välimust."
 
-#: ../src/nautilus-window-menus.c:601
+#: ../src/nautilus-window-menus.c:606
 msgid "Prefere_nces"
 msgstr "_Eelistused"
 
-#: ../src/nautilus-window-menus.c:602
+#: ../src/nautilus-window-menus.c:607
 msgid "Edit Nautilus preferences"
 msgstr "Nautiluse eelistuste muutmine"
 
-#: ../src/nautilus-window-menus.c:604
+#: ../src/nautilus-window-menus.c:609
 msgid "_Undo"
 msgstr "_Tühista"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:605
+#: ../src/nautilus-window-menus.c:610
 msgid "Undo the last text change"
 msgstr "Tühista viimane tekstimuutus"
 
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:612
 msgid "Open _Parent"
 msgstr "Ava ü_lemine"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:608
+#: ../src/nautilus-window-menus.c:613
 msgid "Open the parent folder"
 msgstr "Ülemise kataloogi avamine"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:619
 msgid "_Stop"
 msgstr "_Peata"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:618
+#: ../src/nautilus-window-menus.c:623
 msgid "_Reload"
 msgstr "_Laadi uuesti"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:622
+#: ../src/nautilus-window-menus.c:627
 msgid "_Contents"
 msgstr "_Sisukord"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:628
 msgid "Display Nautilus help"
 msgstr "Kuvab Nautiluse abiteabe"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:626
+#: ../src/nautilus-window-menus.c:631
 msgid "_About"
 msgstr "Nautilusest _lähemalt"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:632
 msgid "Display credits for the creators of Nautilus"
 msgstr "Teabe kuvamine Nautiluse autorite ja tõlkijate kohta"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:630
+#: ../src/nautilus-window-menus.c:635
 msgid "Zoom _In"
 msgstr "_Suurenda"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:631 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:636 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Sisu näitamine üksikasjalisemalt"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:642
+#: ../src/nautilus-window-menus.c:647
 msgid "Zoom _Out"
 msgstr "_Vähenda"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:643 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:648 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Sisu näitamine vähem üksikasjaliselt"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:650
+#: ../src/nautilus-window-menus.c:655
 msgid "Normal Si_ze"
 msgstr "Harilik _suurus"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:651
+#: ../src/nautilus-window-menus.c:656
 msgid "Show the contents at the normal size"
 msgstr "Sisu näitamine tavasuuruses"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:654
+#: ../src/nautilus-window-menus.c:659
 msgid "Connect to _Server..."
 msgstr "Ühendu _serverisse..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:655
+#: ../src/nautilus-window-menus.c:660
 msgid "Connect to a remote computer or shared disk"
 msgstr "Loo ühendus eemalasuva arvuti või jagatud kettaga"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:658
+#: ../src/nautilus-window-menus.c:663
 msgid "_Home Folder"
 msgstr "_Kodukataloog"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:662
+#: ../src/nautilus-window-menus.c:667
 msgid "_Computer"
 msgstr "_Arvuti"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:666
+#: ../src/nautilus-window-menus.c:671
 msgid "_Network"
 msgstr "_Võrk"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:667 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:672 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Järjehoidjates või kohaliku võrgus asuvate asukohtade sirvimine"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:670
+#: ../src/nautilus-window-menus.c:675
 msgid "T_emplates"
 msgstr "_Mallid"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:671
+#: ../src/nautilus-window-menus.c:676
 msgid "Open your personal templates folder"
 msgstr "Isikliku mallikausta avamine"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:674
+#: ../src/nautilus-window-menus.c:679
 msgid "_Trash"
 msgstr "_Prügikast"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:675
+#: ../src/nautilus-window-menus.c:680
 msgid "Open your personal trash folder"
 msgstr "Ava oma isiklik prügi kaust"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:678
+#: ../src/nautilus-window-menus.c:683
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD looja"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:679
+#: ../src/nautilus-window-menus.c:684
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
 msgstr ""
 "Ava kaust millesse sa saad CD- või DVD-plaadile kõrvetatavad faile lohistada"
 
-#: ../src/nautilus-window-menus.c:705
+#: ../src/nautilus-window-menus.c:710
 msgid "_Up"
 msgstr "_Üles"
 
-#: ../src/nautilus-window-menus.c:708
+#: ../src/nautilus-window-menus.c:713
 msgid "_Home"
 msgstr "_Kodukataloog"
 
