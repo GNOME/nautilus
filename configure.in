@@ -209,22 +209,22 @@ AC_SUBST(HAVE_JW)
 
 dnl ==========================================================================
 
-dnl exif checking
+AM_CONDITIONAL(HAVE_EXIF, false)
 
-AC_MSG_CHECKING(for libExif)
+dnl libexif checking
 
 PKG_CHECK_MODULES(EXIF, libexif > exif_minver, [
-    AC_DEFINE(HAVE_EXIF, 1, [Define to enable EXIF support])
-    AC_SUBST(EXIF_CFLAGS)
-    AC_SUBST(EXIF_LIBS)
-  ], [
-    PKG_CHECK_MODULES(EXIF, libexif = exif_minver, [
-      AC_DEFINE(HAVE_EXIF, 1)
-      AC_DEFINE(HAVE_OLD_EXIF, 1, [Define if your EXIF library has old API.])
-      AC_SUBST(EXIF_CFLAGS)
-      AC_SUBST(EXIF_LIBS)
-])])
+		  AM_CONDITIONAL(HAVE_EXIF, true)
+		  AC_DEFINE(HAVE_EXIF, 1, [Define to enable EXIF support])
+		  ], [
+		  PKG_CHECK_MODULES(EXIF, libexif = exif_minver, [
+				    AM_CONDITIONAL(HAVE_EXIF, true)
+				    AC_DEFINE(HAVE_OLD_EXIF, 1, [Define if your EXIF library has old API])
+				    ], [AM_CONDITIONAL(HAVE_EXIF, false)])
+		  ])
 
+AC_SUBST(EXIF_CFLAGS)
+AC_SUBST(EXIF_LIBS)
 
 dnl ==========================================================================
 dnl search implementations
