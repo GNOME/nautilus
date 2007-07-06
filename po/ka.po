@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-06-30 02:37+0200\n"
-"PO-Revision-Date: 2007-07-04 21:55+0200\n"
+"PO-Revision-Date: 2007-07-06 02:47+0200\n"
 "Last-Translator: Vladimer Sichinava <vsichi@gnome.org>\n"
 "Language-Team: Georgian <http://mail.gnome.org/mailman/listinfo/gnome-ge-list>\n"
 "MIME-Version: 1.0\n"
@@ -1034,11 +1034,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-dnd.c:619
 msgid "_Move Here"
-msgstr "_გადმოიტანე"
+msgstr "_აქ გადმოტანა"
 
 #: ../libnautilus-private/nautilus-dnd.c:624
 msgid "_Copy Here"
-msgstr "_დააკოპირე"
+msgstr "_ასლის გადაღება"
 
 #: ../libnautilus-private/nautilus-dnd.c:629
 msgid "_Link Here"
@@ -1046,7 +1046,7 @@ msgstr "_ბმულის შექმნა"
 
 #: ../libnautilus-private/nautilus-dnd.c:634
 msgid "Set as _Background"
-msgstr "დააყენე როგორც ფონი"
+msgstr "ფონად დაყენე_ბა"
 
 #: ../libnautilus-private/nautilus-dnd.c:641
 #: ../libnautilus-private/nautilus-dnd.c:694
@@ -1184,7 +1184,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:757
 msgid "Error while copying."
-msgstr "შეცდომა კოპირებისას."
+msgstr "შეცდომა ასლის გადაღებისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:758
 #, c-format
@@ -1325,7 +1325,7 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "A folder named \"%s\" already exists.  Do you want to replace it?"
-msgstr ""
+msgstr "დასტა \"%s\" დასახელებით უკვე არსებობს.  გნებავთ მისი ჩანაცვლება?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1175
 #, c-format
@@ -1338,11 +1338,15 @@ msgid ""
 "The folder already exists in \"%s\".  Replacing it will overwrite any files "
 "in the folder that conflict with the files being copied."
 msgstr ""
+"\"%s\"-ში უკვე არსებობს დასტა მოცემული სახელით, მისი ჩანაცვლებით, გადაიწერება ყოველი "
+"შეუთავსებელი ფაილი ძველ და ახალ დასტებს შორის."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1197
 #, c-format
 msgid "The file already exists in \"%s\".  Replacing it will overwrite its contents."
 msgstr ""
+"\"%s\"-ში უკვე არსებობს ფაილი ამ სახელით.  ფაილის ჩანაცვლებით დაიკარგება "
+"ძველი ფაილის შემადგენელი ინფორმაცია."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1214
 #: ../libnautilus-private/nautilus-file-operations.c:1233
@@ -1976,6 +1980,8 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
+"ვერ მოიძებნა დახასიათება mime ტიპისთვის \"%s\", (ფაილი \"%s\"), გთხოვთ "
+"აცნობოთ gnome-vfs-ის დაგზავნის სიას."
 
 #: ../libnautilus-private/nautilus-file.c:4822
 msgid "link"
@@ -2213,7 +2219,7 @@ msgstr "გახსნა ვერ მოხერხდა, გნება�
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
-msgstr ""
+msgstr "შეუძლებელია ნაგულისხმევი ქმედებით \"%s\"-ის გახსნა, რადგანაც მისი გამოყენებით ვერ მოხერხდა \"%s\" მდებარეობებში წვდომა."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:171
 msgid ""
@@ -2271,7 +2277,7 @@ msgstr "შესვლა აკრძალულია."
 #: ../src/nautilus-window-manage-views.c:1519
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr ""
+msgstr "შეუძლებელია \"%s\" ის დათვალიერება, რადგანაც \"%s\" მისამართი ვერ მოიძებნა."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
 #: ../src/nautilus-window-manage-views.c:1522
@@ -3449,7 +3455,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:154
 msgid "by Modification _Date"
-msgstr "ბოლო ცვლილების თარიღი"
+msgstr "ცვლილების თარიღის მიხედვით"
 
 #: ../src/file-manager/fm-icon-view.c:155
 #: ../src/file-manager/fm-icon-view.c:1491
@@ -3509,17 +3515,17 @@ msgstr "კომპაქტური _განლაგება"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1457
 msgid "Toggle using a tighter layout scheme"
-msgstr ""
+msgstr "პიქტოგრამების კომპაქტურ რეჟიმში ჩვენება"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1461
 msgid "Re_versed Order"
-msgstr "გა_დაბრუნებული განლაგება"
+msgstr "შებრ_უნებული განლაგება"
 
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1462
 msgid "Display icons in the opposite order"
-msgstr ""
+msgstr "პიქტოგრამების შებრუნებული ხედი"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1466
@@ -3529,7 +3535,7 @@ msgstr "_ხაზთან გასწორება"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1467
 msgid "Keep icons lined up on a grid"
-msgstr ""
+msgstr "პიქტოგრამების ბადეზე განთავსება"
 
 #: ../src/file-manager/fm-icon-view.c:1474
 msgid "_Manually"
@@ -3537,7 +3543,7 @@ msgstr "_მანუალურად"
 
 #: ../src/file-manager/fm-icon-view.c:1475
 msgid "Leave icons wherever they are dropped"
-msgstr ""
+msgstr "პიქტოგრამების პირველად პოზიციაში დატოვება"
 
 #: ../src/file-manager/fm-icon-view.c:1478
 msgid "By _Name"
@@ -3586,7 +3592,7 @@ msgstr "\"პიქტოგრამული ხედი\"-ს დროს �
 
 #: ../src/file-manager/fm-icon-view.c:2783
 msgid "The icon view encountered an error while starting up."
-msgstr ""
+msgstr "პიქტოგრამების დამთვალიერებლის ჩართვის დროს დაიშვა შეცდომა."
 
 #: ../src/file-manager/fm-icon-view.c:2784
 msgid "Display this location with the icon view."
@@ -3619,7 +3625,7 @@ msgstr "ხილული _სვეტი"
 #. label, accelerator
 #: ../src/file-manager/fm-list-view.c:2022
 msgid "Select the columns visible in this folder"
-msgstr ""
+msgstr "მოცემულ დასტაში, ხილული სვეტების ამორჩევა"
 
 #: ../src/file-manager/fm-list-view.c:2743
 msgid "List"
@@ -3635,15 +3641,15 @@ msgstr "სიის სახით ჩ_ვენება"
 
 #: ../src/file-manager/fm-list-view.c:2746
 msgid "The list view encountered an error."
-msgstr ""
+msgstr "სიის სახით ჩვენების დროს დაიშვა შეცდომა."
 
 #: ../src/file-manager/fm-list-view.c:2747
 msgid "The list view encountered an error while starting up."
-msgstr ""
+msgstr "დაიშვა შეცდომა სიის სახით ჩვენების კომპონენტის გაშვების დროს."
 
 #: ../src/file-manager/fm-list-view.c:2748
 msgid "Display this location with the list view."
-msgstr ""
+msgstr "მოცემული მდებარეობის \"სიის სახით\" დათვალიერება."
 
 #: ../src/file-manager/fm-properties-window.c:538
 msgid "You can't assign more than one custom icon at a time!"
@@ -4622,11 +4628,11 @@ msgstr "კამერის მოდელი"
 #. Choose which date to show in order of relevance
 #: ../src/nautilus-image-properties-page.c:224
 msgid "Date Taken"
-msgstr "მონაცემი მიღებულია"
+msgstr "სურათის გადაღების თარიღი"
 
 #: ../src/nautilus-image-properties-page.c:226
 msgid "Date Digitized"
-msgstr "ციფრული მონაცემის თარიღი"
+msgstr "ციფრულ ფორმატში გადაყვანის თარიღი"
 
 #: ../src/nautilus-image-properties-page.c:232
 msgid "Exposure Time"
@@ -4646,23 +4652,23 @@ msgstr "გაზომვის რეჟიმი"
 
 #: ../src/nautilus-image-properties-page.c:236
 msgid "Flash Fired"
-msgstr ""
+msgstr "ათინათის გამოყენება"
 
 #: ../src/nautilus-image-properties-page.c:237
 msgid "Focal Length"
-msgstr ""
+msgstr "ფოკალური მანძილი"
 
 #: ../src/nautilus-image-properties-page.c:238
 msgid "Shutter Speed"
-msgstr ""
+msgstr "დაყოვნების სისწრაფე"
 
 #: ../src/nautilus-image-properties-page.c:239
 msgid "ISO Speed Rating"
-msgstr "ISO ინდექსი"
+msgstr "ISO მაჩვენებელი"
 
 #: ../src/nautilus-image-properties-page.c:240
 msgid "Software"
-msgstr "პროგრამები"
+msgstr "პროგრამული უზრუნველყოფა"
 
 #: ../src/nautilus-image-properties-page.c:260
 msgid "Image Type:"
@@ -4711,7 +4717,7 @@ msgstr ""
 
 #: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
-msgstr ""
+msgstr "სურათების გამოყენება შესაძლებელია მხოლოდ ინდივიდუალური პიქტოგრამებისთვის."
 
 #: ../src/nautilus-information-panel.c:846
 #, c-format
@@ -4738,11 +4744,11 @@ msgstr "_მდებარეობა:"
 
 #: ../src/nautilus-main.c:376
 msgid "Perform a quick set of self-check tests."
-msgstr ""
+msgstr "სწრაფი ავტო-შემოწმების შესრულება."
 
 #: ../src/nautilus-main.c:379
 msgid "Create the initial window with the given geometry."
-msgstr ""
+msgstr "თავდაპირველი ფანჯრის შექმნა შეყვანილი გეომეტრიის პარამეტრების მიხედვით."
 
 #: ../src/nautilus-main.c:379
 msgid "GEOMETRY"
@@ -4816,12 +4822,12 @@ msgstr "nautilus: შეუძლებელია %s-ის URI-თ გამ�
 #: ../src/nautilus-main.c:478
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
-msgstr ""
+msgstr "nautilus: სხვა პარამეტრებთან ერთად შეუძლებელია პარამეტრ --check -ის გამოყენება.\n"
 
 #: ../src/nautilus-main.c:492
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
-msgstr ""
+msgstr "nautilus: შეუძლებელია --geometry პარამეტრის გამოყენება URI-ს ერთზე მეტ მნიშვნელობასთან.\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
@@ -4836,11 +4842,11 @@ msgstr "თუ კი, მაშინ ყველაფრის გამე�
 
 #: ../src/nautilus-navigation-window-menus.c:119
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr ""
+msgstr "დარწმუნებული ბრძანდებით რომ გნებავთ მონახული მისამართების სიის გასუფთავება?"
 
 #: ../src/nautilus-navigation-window-menus.c:121
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr ""
+msgstr "მისამართების სიის გასუფთავების შემთხვევაში, თქვენ მათ სამუდამოდ წაშლით."
 
 #: ../src/nautilus-navigation-window-menus.c:288
 #: ../src/nautilus-window-bookmarks.c:96
@@ -5175,7 +5181,7 @@ msgstr "მოცემული ფაილი არ წარმოადგ
 
 #: ../src/nautilus-property-browser.c:2154
 msgid "Select a Category:"
-msgstr "კატეგორიის ამორჩევა:ამორჩევა a კატეგორია:"
+msgstr "კატეგორიის ამორჩევა:"
 
 #: ../src/nautilus-property-browser.c:2163
 msgid "C_ancel Remove"
@@ -5466,7 +5472,7 @@ msgstr "Nautilus წარმოადგენს გნომის გარ�
 
 #: ../src/nautilus-window-menus.c:452
 msgid "Copyright © 1999-2007 The Nautilus authors"
-msgstr "საავტორო უფლება © 1999-2005 ნაუტილუსის ავტორები"
+msgstr "საავტორო უფლება © 1999-2007 ნაუტილუსის ავტორები"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -5688,7 +5694,7 @@ msgstr "საწყისი მაშტაბი"
 
 #: ../src/nautilus-zoom-control.c:98
 msgid "Show in the default detail level"
-msgstr ""
+msgstr "ნაგულისხმევი მაშტაბით ჩვენება"
 
 #: ../src/nautilus-zoom-control.c:884
 msgid "Zoom"
