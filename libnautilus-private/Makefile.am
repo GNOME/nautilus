@@ -53,7 +53,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-audio-player.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
-	nautilus-cdrom-extensions.h \
 	nautilus-cell-renderer-pixbuf-emblem.c \
 	nautilus-cell-renderer-pixbuf-emblem.h \
 	nautilus-clipboard-monitor.c \
