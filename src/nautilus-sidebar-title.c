@@ -670,7 +670,6 @@ sidebar_title_create_title_label (void)
 	gtk_label_set_justify (GTK_LABEL (title_label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_selectable (GTK_LABEL (title_label), TRUE);
 	gtk_label_set_ellipsize (GTK_LABEL (title_label), PANGO_ELLIPSIZE_END);
-	gtk_misc_set_alignment (GTK_MISC (title_label), 0., 0.5);
 
 	return title_label;
 }
@@ -685,7 +684,6 @@ sidebar_title_create_more_info_label (void)
 	gtk_label_set_justify (GTK_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	gtk_label_set_selectable (GTK_LABEL (more_info_label), TRUE);
 	gtk_label_set_ellipsize (GTK_LABEL (more_info_label), PANGO_ELLIPSIZE_END);
-	gtk_misc_set_alignment (GTK_MISC (more_info_label), 0., 0.5);
 	
 	return more_info_label;
 }

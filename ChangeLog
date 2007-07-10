@@ -1,5 +1,12 @@
 2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-sidebar-title.c: (sidebar_title_create_title_label),
+	(sidebar_title_create_more_info_label):
+	Fix alignment of labels in information sidebar. (#414199)
+	Patch from Andrea Cimitan  <andrea.cimitan@gmail.com>
+
+2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
+
 	* configure.in:
 	Remove AC_ISC_POSIX: It would have to be called after AC_PROG_CC,
 	but Interactive Unix is obsolete.
