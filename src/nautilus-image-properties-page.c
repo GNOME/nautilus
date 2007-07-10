@@ -329,7 +329,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		}
 		if (page->details->pixbuf_still_loading
 #ifdef HAVE_EXIF
-		     && (exif_still_loading == 1)   
+		    || (exif_still_loading == 1) 
 #endif
 		   ) {
 			gnome_vfs_async_read (page->details->vfs_handle,
