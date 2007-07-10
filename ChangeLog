@@ -1,5 +1,12 @@
 2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_desktop_file):
+	Check command_string for NULL before using it. (#427618)
+	Patch from Tom Parker  <palfrey@tevp.net>
+
+2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-image-properties-page.c: (file_read_callback):
 	Don't ignore EXIF metadata of JPEG with XMP. (#451344)
 	Patch from Hubert Figuiere  <hfiguiere@teaser.fr>

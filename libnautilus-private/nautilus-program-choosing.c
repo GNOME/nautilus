@@ -932,7 +932,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 
 	/* check if this app only supports local files */
 	command_string = gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC);
-	if ((strstr (command_string, "%F") || strstr (command_string, "%f"))
+	if (command_string != NULL && (strstr (command_string, "%F") || strstr (command_string, "%f"))
 		&& !(strstr (command_string, "%U") || strstr (command_string, "%u"))
 		&& parameter_uris != NULL) {
 	
