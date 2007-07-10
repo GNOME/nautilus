@@ -1,5 +1,15 @@
 2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
 
+	* configure.in:
+	Remove AC_ISC_POSIX: It would have to be called after AC_PROG_CC,
+	but Interactive Unix is obsolete.
+	Remove checks for functions and headers we don't use anymore.
+	Remove check for jw as the SGML docs have been removed.
+	Remove configuration for removed gimphwrapbox.
+	Remove unused variables $CDDA_LIBS and $LIBJPEG. 
+
+2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-cdrom-extensions.h:
 	Remove unused file.

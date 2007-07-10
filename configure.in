@@ -63,7 +63,6 @@ AC_SUBST(NAUTILUS_EXTENSION_VERSION_INFO, [nautilus_extension_current]:[nautilus
 
 AC_C_BIGENDIAN
 AC_C_CONST
-AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
@@ -150,8 +149,7 @@ AC_SUBST(ORBIT_IDL)
 
 dnl ==========================================================================
 
-AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h fstab.h)
+AC_CHECK_HEADERS(sys/mount.h sys/vfs.h)
 			      
 dnl ==========================================================================
 
@@ -238,19 +236,6 @@ x_libs_for_checks=$x_libs
 AC_CHECK_LIB(X11, XOpenDisplay, :, 
 	AC_MSG_ERROR([*** libX11 not found.  Check 'config.log' for more details.]),
 	$x_libs_for_checks) 
-
-dnl ==========================================================================
-
-dnl jw (for doc build)
-
-AC_PATH_PROG(JW,jw,no)
-if test x$JW = xno; then
-  HAVE_JW="no"
-else
-  HAVE_JW="yes"
-fi
-AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
-AC_SUBST(HAVE_JW)
 
 dnl ==========================================================================
 
@@ -384,11 +369,6 @@ fi
 
 dnl ==========================================================================
 
-dnl gimphwrapbox
-GIMPHWRAPBOX_MODULES="gtk+-2.0"
-GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
-AC_SUBST(GIMPHWRAPBOX_CFLAGS)
-
 dnl gsequence
 GSEQUENCE_MODULES="glib-2.0"
 GSEQUENCE_CFLAGS="`$PKG_CONFIG --cflags $GSEQUENCE_MODULES`"
@@ -414,7 +394,7 @@ dnl core nautilus (must list bonobo-activation and libbonobo because idldir does
 CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
-CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $LIBJPEG $x_libs"
+CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
 AC_SUBST(CORE_LIBS)
 CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(CORE_IDL_INCLUDES)
