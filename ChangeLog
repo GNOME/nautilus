@@ -1,3 +1,10 @@
+2007-07-18  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/nautilus-navigation-window.c:
+	(view_as_menu_switch_views_callback):
+	Handle the fact that the gtk+ 2.11.x combobox emits the
+	changed signal on removing the active entry without crash.
+
 2007-07-10  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

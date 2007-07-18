@@ -854,8 +854,10 @@ view_as_menu_switch_views_callback (GtkComboBox *combo_box, NautilusWindow *wind
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	active = gtk_combo_box_get_active (combo_box);
-	
-	if (active < GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_box), "num viewers"))  ) {
+
+	if (active < 0) {
+		return;
+	} else if (active < GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_box), "num viewers"))) {
 		activate_nth_short_list_item (window, active);
 	} else {
 		activate_extra_viewer (window);
