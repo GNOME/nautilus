@@ -36,7 +36,6 @@
 #include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkstock.h>
-#include <gtk/gtktooltips.h>
 #include <gtk/gtktogglebutton.h>
 #include <glib/gi18n.h>
 
@@ -56,14 +55,13 @@ struct _NautilusSidePaneDetails {
 	GtkWidget *title_hbox;
 	GtkWidget *title_label;
 	GtkWidget *shortcut_box;
-	GtkTooltips *tooltips;
 	GList *panels;
 };
 
-static void nautilus_side_pane_class_init (GtkObjectClass *object_klass);
-static void nautilus_side_pane_init       (GtkObject      *object);
-static void nautilus_side_pane_destroy    (GtkObject      *object);
-static void nautilus_side_pane_finalize   (GObject        *object);
+static void nautilus_side_pane_class_init (NautilusSidePaneClass *klass);
+static void nautilus_side_pane_init       (GObject *object);
+static void nautilus_side_pane_dispose    (GObject *object);
+static void nautilus_side_pane_finalize   (GObject *object);
 
 enum {
 	CLOSE_REQUESTED,
@@ -96,7 +94,7 @@ side_panel_free (SidePanel *panel)
 {
 	g_free (panel->title);
 	g_free (panel->tooltip);
-	g_free (panel);
+	g_slice_free (SidePanel, panel);
 }
 
 static void
@@ -162,24 +160,21 @@ nautilus_side_pane_size_allocate (GtkWidget *widget,
 
 /* initializing the class object by installing the operations we override */
 static void
-nautilus_side_pane_class_init (GtkObjectClass *object_klass)
+nautilus_side_pane_class_init (NautilusSidePaneClass *klass)
 {
-	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
-	
-	NautilusSidePaneClass *klass;
-	
-	widget_class = GTK_WIDGET_CLASS (object_klass);
-	klass = NAUTILUS_SIDE_PANE_CLASS (object_klass);
-	gobject_class = G_OBJECT_CLASS (object_klass);
+	GtkWidgetClass *widget_class;
+
+	gobject_class = G_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
 	
 	gobject_class->finalize = nautilus_side_pane_finalize;
-	object_klass->destroy = nautilus_side_pane_destroy;
+	gobject_class->dispose = nautilus_side_pane_dispose;
 	widget_class->size_allocate = nautilus_side_pane_size_allocate;
 
 	signals[CLOSE_REQUESTED] = g_signal_new
 		("close_requested",
-		 G_TYPE_FROM_CLASS (object_klass),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusSidePaneClass,
 				  close_requested),
@@ -188,13 +183,15 @@ nautilus_side_pane_class_init (GtkObjectClass *object_klass)
 		 G_TYPE_NONE, 0);
 	signals[SWITCH_PAGE] = g_signal_new
 		("switch_page",
-		 G_TYPE_FROM_CLASS (object_klass),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusSidePaneClass,
 				  switch_page),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__OBJECT,
 		 G_TYPE_NONE, 1, GTK_TYPE_WIDGET);
+
+	g_type_class_add_private (gobject_class, sizeof (NautilusSidePaneDetails));
 }
 
 static void
@@ -313,7 +310,7 @@ menu_detach_callback (GtkWidget *widget,
 }
 
 static void
-nautilus_side_pane_init (GtkObject *object)
+nautilus_side_pane_init (GObject *object)
 {
 	NautilusSidePane *side_pane;
 	GtkWidget *frame;
@@ -326,7 +323,7 @@ nautilus_side_pane_init (GtkObject *object)
 
 	side_pane = NAUTILUS_SIDE_PANE (object);
 
-	side_pane->details = g_new0 (NautilusSidePaneDetails, 1);
+	side_pane->details = G_TYPE_INSTANCE_GET_PRIVATE (object, NAUTILUS_TYPE_SIDE_PANE, NautilusSidePaneDetails);
 
 	frame = gtk_frame_new (NULL);
 	side_pane->details->title_frame = frame;
@@ -419,16 +416,12 @@ nautilus_side_pane_init (GtkObject *object)
 	
 	gtk_widget_show (side_pane->details->menu);
 
-	side_pane->details->tooltips = gtk_tooltips_new ();
-	g_object_ref (side_pane->details->tooltips);
-	gtk_object_sink (GTK_OBJECT (side_pane->details->tooltips));
-
-	gtk_tooltips_set_tip (side_pane->details->tooltips, close_button,
-			      _("Close the side pane"), NULL);
+	gtk_widget_set_tooltip_text (close_button,
+				     _("Close the side pane"));
 }
 
 static void
-nautilus_side_pane_destroy (GtkObject *object)
+nautilus_side_pane_dispose (GObject *object)
 {
 	NautilusSidePane *side_pane;
 
@@ -439,12 +432,7 @@ nautilus_side_pane_destroy (GtkObject *object)
 		side_pane->details->menu = NULL;
 	}
 
-	if (side_pane->details->tooltips) {
-		g_object_unref (side_pane->details->tooltips);
-		side_pane->details->tooltips = NULL;
-	}
-
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static void
@@ -461,8 +449,6 @@ nautilus_side_pane_finalize (GObject *object)
 
 	g_list_free (side_pane->details->panels);
 
-	g_free (side_pane->details);
-	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
@@ -487,7 +473,7 @@ nautilus_side_pane_add_panel (NautilusSidePane *side_pane,
 	g_return_if_fail (title != NULL);
 	g_return_if_fail (tooltip != NULL);
 
-	panel = g_new0 (SidePanel, 1);
+	panel = g_slice_new0 (SidePanel);
 	panel->title = g_strdup (title);
 	panel->tooltip = g_strdup (tooltip);
 	panel->widget = widget;
@@ -597,7 +583,7 @@ create_shortcut (NautilusSidePane *side_pane,
 	g_signal_connect (button, "clicked", 
 			  G_CALLBACK (shortcut_clicked_callback), side_pane);
 
-	gtk_tooltips_set_tip (side_pane->details->tooltips, button, panel->tooltip, NULL);
+	gtk_widget_set_tooltip_text (button, panel->tooltip);
 
 	image = gtk_image_new_from_pixbuf (pixbuf);
 	gtk_widget_show (image);

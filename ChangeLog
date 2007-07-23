@@ -1,3 +1,27 @@
+2007-07-23  Christian Persch  <chpe@gnome.org>
+
+	* configure.in:
+	* src/nautilus-navigation-action.c: (connect_proxy),
+	(disconnect_proxy):
+	* src/nautilus-navigation-window-menus.c: (connect_proxy_cb),
+	(refresh_go_menu):
+	* src/nautilus-navigation-window.c: (location_button_create),
+	(nautilus_navigation_window_init),
+	(nautilus_navigation_window_destroy),
+	(nautilus_navigation_window_finalize),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-query-editor.c: (nautilus_query_editor_dispose),
+	(nautilus_query_editor_add_row), (nautilus_query_editor_init),
+	(finish_first_line):
+	* src/nautilus-side-pane.c: (side_panel_free),
+	(nautilus_side_pane_class_init), (nautilus_side_pane_init),
+	(nautilus_side_pane_dispose), (nautilus_side_pane_finalize),
+	(nautilus_side_pane_add_panel), (create_shortcut):
+	* src/nautilus-trash-bar.c: (nautilus_trash_bar_class_init),
+	(nautilus_trash_bar_init):
+	* src/nautilus-window-private.h: Port to new gtk+ 2.11 tooltips API.
+	Bug #458284 and bug #455616.
+
 2007-07-23  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-search-engine-simple.c:

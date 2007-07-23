@@ -123,7 +123,6 @@ struct _NautilusNavigationWindowDetails {
         
         /* Toolbar */
         GtkWidget *toolbar;
-        GtkTooltips *tooltips;
         GtkWidget *location_bar;
 
         guint extensions_toolbar_merge_id;

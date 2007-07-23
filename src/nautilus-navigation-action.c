@@ -176,31 +176,20 @@ show_menu_callback (GtkMenuToolButton *button,
 	}
 }
 
-static gboolean
-set_tooltip_callback (GtkMenuToolButton *proxy,
-		      GtkTooltips *tooltips,
-		      const char *tip,
-		      const char *tip_private,
-		      NautilusNavigationAction *action)
-{
-	gtk_menu_tool_button_set_arrow_tooltip (proxy, tooltips,
-						action->priv->arrow_tooltip,
-						NULL);
-
-	return FALSE;
-}
-
 static void
 connect_proxy (GtkAction *action, GtkWidget *proxy)
 {
-	GtkWidget *menu;
-	
 	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
+		NautilusNavigationAction *naction = NAUTILUS_NAVIGATION_ACTION (action);
+		GtkMenuToolButton *button = GTK_MENU_TOOL_BUTTON (proxy);
+		GtkWidget *menu;
+
+		/* set an empty menu, so the arrow button becomes sensitive */
 		menu = gtk_menu_new ();
-		gtk_menu_tool_button_set_menu (GTK_MENU_TOOL_BUTTON (proxy),
-					       menu);
-		g_signal_connect (proxy, "set-tooltip",
-				  G_CALLBACK (set_tooltip_callback), action);
+		gtk_menu_tool_button_set_menu (button, menu);
+
+		gtk_menu_tool_button_set_arrow_tooltip_text (button,
+							     naction->priv->arrow_tooltip);
 		
 		g_signal_connect (proxy, "show-menu",
 				  G_CALLBACK (show_menu_callback), action);
@@ -213,7 +202,6 @@ static void
 disconnect_proxy (GtkAction *action, GtkWidget *proxy)
 {
 	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (set_tooltip_callback), action);
 		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (show_menu_callback), action);
 	}
 

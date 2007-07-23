@@ -182,8 +182,8 @@ location_button_create (NautilusNavigationWindow *window)
 			       "active", location_button_should_be_active (window),
 			       NULL);
 
-	gtk_tooltips_set_tip (window->details->tooltips, button,
-			      _("Toggle between button and text-based location bar"), NULL);
+	gtk_widget_set_tooltip_text (button,
+				     _("Toggle between button and text-based location bar"));
 
 	g_signal_connect (button, "toggled",
 			  G_CALLBACK (location_button_toggled_cb), window);
@@ -199,12 +199,8 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	GtkWidget *view_as_menu_vbox;
 	GtkToolItem *item;
 	GtkWidget *hbox, *vbox, *eventbox, *extras_vbox;
-	
-	window->details = g_new0 (NautilusNavigationWindowDetails, 1);
 
-	window->details->tooltips = gtk_tooltips_new ();
-	g_object_ref (window->details->tooltips);
-	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
+	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_NAVIGATION_WINDOW, NautilusNavigationWindowDetails);
 
 	window->details->content_paned = nautilus_horizontal_splitter_new ();
 	gtk_table_attach (GTK_TABLE (NAUTILUS_WINDOW (window)->details->table),
@@ -696,11 +692,6 @@ nautilus_navigation_window_destroy (GtkObject *object)
 
 	window->details->content_paned = NULL;
 
-	if (window->details->tooltips) {
-		g_object_unref (window->details->tooltips);
-		window->details->tooltips = NULL;
-	}
-	
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
@@ -714,8 +705,6 @@ nautilus_navigation_window_finalize (GObject *object)
 	nautilus_navigation_window_remove_go_menu_callback (window);
 	nautilus_navigation_window_clear_back_list (window);
 	nautilus_navigation_window_clear_forward_list (window);
-
- 	g_free (window->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1591,4 +1580,6 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->get_icon_name = real_get_icon_name;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;
 	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
+
+	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusNavigationWindowDetails));
 }

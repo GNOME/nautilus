@@ -45,7 +45,6 @@
 #include "gtk/gtkscrolledwindow.h"
 #include <gtk/gtkfilechooserbutton.h>
 #include "gtk/gtkcelllayout.h"
-#include "gtk/gtktooltips.h"
 #include "gtk/gtkcellrenderertext.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
@@ -87,7 +86,6 @@ struct NautilusQueryEditorDetails {
 	gboolean is_visible;
 	GtkWidget *invisible_vbox;
 	GtkWidget *visible_vbox;
-	GtkTooltips *tooltips;
 
 	GList *rows;
 	
@@ -179,11 +177,6 @@ nautilus_query_editor_dispose (GObject *object)
 		eel_remove_weak_pointer (&editor->details->bar);
 	}
 
-	if (editor->details->tooltips) {
-		g_object_unref (editor->details->tooltips);
-		editor->details->tooltips = NULL;
-	}
-	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
@@ -931,9 +924,8 @@ nautilus_query_editor_add_row (NautilusQueryEditor *editor,
 
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (remove_row_cb), row);
-
-	gtk_tooltips_set_tip (editor->details->tooltips, button,
-			      _("Remove this criterion from the search"), NULL);
+	gtk_widget_set_tooltip_text (button,
+				     _("Remove this criterion from the search"));
 	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
@@ -991,12 +983,8 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (edit_clicked), editor);
 
-	editor->details->tooltips = gtk_tooltips_new ();
-	g_object_ref (editor->details->tooltips);
-	gtk_object_sink (GTK_OBJECT (editor->details->tooltips));
-
-	gtk_tooltips_set_tip (editor->details->tooltips, button,
-			      _("Edit the saved search"), NULL);
+	gtk_widget_set_tooltip_text (button,
+				     _("Edit the saved search"));
 }
 
 void
@@ -1026,8 +1014,8 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 	
 	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
-	gtk_tooltips_set_tip (editor->details->tooltips, button,
-			      _("Add a new criterion to this search"), NULL);
+	gtk_widget_set_tooltip_text (button,
+				     _("Add a new criterion to this search"));
 
 	if (!editor->details->is_indexed) {
 		if (use_go) {
@@ -1036,9 +1024,9 @@ finish_first_line (NautilusQueryEditor *editor, GtkWidget *hbox, gboolean use_go
 			button = gtk_button_new_with_label (_("Reload"));
 		}
 		gtk_widget_show (button);
-		
-		gtk_tooltips_set_tip (editor->details->tooltips, button,
-				      _("Perform or update the search"), NULL);
+
+		gtk_widget_set_tooltip_text (button,
+					     _("Perform or update the search"));
 		
 		g_signal_connect (button, "clicked",
 				  G_CALLBACK (go_search_cb), editor);

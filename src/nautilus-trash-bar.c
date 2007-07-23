@@ -33,7 +33,6 @@
 
 struct NautilusTrashBarPrivate
 {
-	GtkTooltips *tooltips;
 	GtkWidget   *button;
 };
 
@@ -74,20 +73,6 @@ nautilus_trash_bar_get_property (GObject    *object,
 }
 
 static void
-nautilus_trash_bar_finalize (GObject *object)
-{
-	NautilusTrashBar *bar;
-
-	bar = NAUTILUS_TRASH_BAR (object);
-
-	if (bar->priv->tooltips != NULL) {
-		g_object_unref (bar->priv->tooltips);
-	}
-
-	G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->finalize (object);
-}
-
-static void
 nautilus_trash_bar_trash_state_changed (NautilusTrashMonitor *trash_monitor,
 					gboolean              state,
 					gpointer              data)
@@ -107,7 +92,6 @@ nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
 
 	object_class = G_OBJECT_CLASS (klass);
 
-	object_class->finalize     = nautilus_trash_bar_finalize;
 	object_class->get_property = nautilus_trash_bar_get_property;
 	object_class->set_property = nautilus_trash_bar_set_property;
 
@@ -144,14 +128,8 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
 
 	gtk_widget_set_sensitive (bar->priv->button,
 				  !nautilus_trash_monitor_is_empty ());
-
-	bar->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref_sink (bar->priv->tooltips);
-
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (bar->priv->tooltips),
-			      bar->priv->button,
-			      _("Delete all items in the Trash"),
-			      NULL);
+	gtk_widget_set_tooltip_text (bar->priv->button,
+				     _("Delete all items in the Trash"));
 
 	g_signal_connect (bar->priv->button,
 			  "clicked",
