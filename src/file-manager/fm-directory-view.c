@@ -3844,7 +3844,10 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	} else {
 		if (all) {
 			prompt = _("Cannot move items to trash, do you want to delete them immediately?");
-			detail = g_strdup_printf (_("None of the %d selected items can be moved to the Trash"), uri_count);
+			detail = g_strdup_printf (ngettext("The selected item could not be moved to the Trash",
+							   "The %d selected items could not be moved to the Trash",
+							    uri_count),
+						  uri_count);
 		} else {
 			prompt = _("Cannot move some items to trash, do you want to delete these immediately?");
 			detail = g_strdup_printf (_("%d of the selected items cannot be moved to the Trash"), uri_count);
