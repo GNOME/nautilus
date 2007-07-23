@@ -616,12 +616,12 @@ static const GtkActionEntry main_entries[] = {
     "", NULL,
     G_CALLBACK (action_up_callback) },
   { "Stop", GTK_STOCK_STOP,                        /* name, stock id */
-    N_("_Stop"), NULL,           /* label, accelerator */
+    N_("Stop loading the current location"), /* tooltip */
     NULL,                                      /* tooltip */ 
     G_CALLBACK (action_stop_callback) },
   { "Reload", GTK_STOCK_REFRESH,                        /* name, stock id */
     N_("_Reload"), "<control>R",           /* label, accelerator */
-    NULL,                                      /* tooltip */ 
+    N_("Reload the current location"),     /* tooltip */
     G_CALLBACK (action_reload_callback) },
   { "Nautilus Manual", GTK_STOCK_HELP,                        /* name, stock id */
     N_("_Contents"), "F1",           /* label, accelerator */
