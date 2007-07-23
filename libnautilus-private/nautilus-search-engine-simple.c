@@ -263,12 +263,16 @@ search_thread_func (gpointer user_data)
 {
 	SearchThreadData *data;
 	GnomeVFSResult res;
+	GnomeVFSDirectoryVisitOptions visit_options;
 
 	data = user_data;
 
+	visit_options = GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK |
+			GNOME_VFS_DIRECTORY_VISIT_IGNORE_RECURSE_ERROR;
+
 	res = gnome_vfs_directory_visit_uri (data->uri,
-					     GNOME_VFS_FILE_INFO_GET_MIME_TYPE | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-					     GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK,
+					     GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
+					     visit_options,
 					     search_visit_func,
 					     data);
 	send_batch (data);
