@@ -616,8 +616,8 @@ static const GtkActionEntry main_entries[] = {
     "", NULL,
     G_CALLBACK (action_up_callback) },
   { "Stop", GTK_STOCK_STOP,                        /* name, stock id */
+    N_("_Stop"), NULL,           /* label, accelerator */
     N_("Stop loading the current location"), /* tooltip */
-    NULL,                                      /* tooltip */ 
     G_CALLBACK (action_stop_callback) },
   { "Reload", GTK_STOCK_REFRESH,                        /* name, stock id */
     N_("_Reload"), "<control>R",           /* label, accelerator */
