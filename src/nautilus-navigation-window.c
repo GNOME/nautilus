@@ -179,6 +179,7 @@ location_button_create (NautilusNavigationWindow *window)
 
 	button = g_object_new (GTK_TYPE_TOGGLE_BUTTON,
 			       "image", image,
+			       "focus-on-click", FALSE,
 			       "active", location_button_should_be_active (window),
 			       NULL);
 
@@ -315,6 +316,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 			    item, -1);
 	
 	window->view_as_combo_box = gtk_combo_box_new_text ();
+	gtk_combo_box_set_focus_on_click (GTK_COMBO_BOX (window->view_as_combo_box), FALSE);
 	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_combo_box, TRUE, FALSE, 0);
 	gtk_widget_show (window->view_as_combo_box);
 	g_signal_connect_object (window->view_as_combo_box, "changed",

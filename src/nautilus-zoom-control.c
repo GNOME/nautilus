@@ -114,7 +114,6 @@ static void
 nautilus_zoom_control_finalize (GObject *object)
 {
 	g_list_free (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
-	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -278,7 +277,7 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	GtkWidget *image;
 	int i;
 	
-	zoom_control->details = g_new0 (NautilusZoomControlDetails, 1);
+	zoom_control->details = G_TYPE_INSTANCE_GET_PRIVATE (zoom_control, NAUTILUS_TYPE_ZOOM_CONTROL, NautilusZoomControlDetails);
 
 	zoom_control->details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 	zoom_control->details->min_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
@@ -294,6 +293,7 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 
 	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_MENU);
 	zoom_control->details->zoom_out = gtk_button_new ();
+	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_out), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_out),
 			       GTK_RELIEF_NONE);
 	g_signal_connect (G_OBJECT (zoom_control->details->zoom_out),
@@ -304,6 +304,7 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 			    zoom_control->details->zoom_out, FALSE, FALSE, 0);
 
 	zoom_control->details->zoom_button = gtk_button_new ();
+	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_button), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_button),
 			       GTK_RELIEF_NONE);
 			       
@@ -339,6 +340,7 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 
 	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_MENU);
 	zoom_control->details->zoom_in = gtk_button_new ();
+	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_in), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_in),
 			       GTK_RELIEF_NONE);
 	g_signal_connect (G_OBJECT (zoom_control->details->zoom_in),
@@ -714,6 +716,8 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 				      "change_value",
 				      1, GTK_TYPE_SCROLL_TYPE,
 				      GTK_SCROLL_STEP_UP);
+
+	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusZoomControlDetails));
 }
 
 static gboolean

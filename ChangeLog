@@ -1,3 +1,15 @@
+2007-07-24  Christian Persch  <chpe@gnome.org>
+
+	* src/nautilus-navigation-window.c: (location_button_create),
+	(nautilus_navigation_window_init):
+	* src/nautilus-pathbar.c: (get_slider_button),
+	(make_directory_button):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
+	(nautilus_zoom_control_instance_init),
+	(nautilus_zoom_control_class_init): Don't focus the path bar buttons
+	(and the others on the same 'toolbar') on click, for consistency with
+	toolbars, and the gtk filechooser path bar. Bug #326774.
+
 2007-07-24  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

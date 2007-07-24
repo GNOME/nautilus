@@ -150,6 +150,7 @@ get_slider_button (NautilusPathBar  *path_bar,
         gtk_widget_push_composite_child ();
 
         button = gtk_button_new ();
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
         gtk_container_add (GTK_CONTAINER (button), gtk_arrow_new (arrow_type, GTK_SHADOW_OUT));
         gtk_container_add (GTK_CONTAINER (path_bar), button);
         gtk_widget_show_all (button);
@@ -1330,6 +1331,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 
         button_data->type = find_button_type (path_bar, path, button_data);
         button_data->button = gtk_toggle_button_new ();
+	gtk_button_set_focus_on_click (GTK_BUTTON (button_data->button), FALSE);
 	
         switch (button_data->type) {
                 case ROOT_BUTTON:
