@@ -911,6 +911,16 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	dialog->details->domain_entry = gtk_entry_new ();
 	dialog->details->user_entry = gtk_entry_new ();
 	dialog->details->name_entry = gtk_entry_new ();
+
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->uri_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->server_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->share_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->port_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->folder_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->domain_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->user_entry), TRUE);
+	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->name_entry), TRUE);
+
 	/* We need an extra ref so we can remove them from the table */
 	g_object_ref (dialog->details->uri_entry);
 	g_object_ref (dialog->details->server_entry);
