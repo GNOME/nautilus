@@ -152,8 +152,9 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 					GCallback refresh_callback,
 					NautilusBookmarkFailedCallback failed_callback)
 {
-	BookmarkHolder *bookmark_holder;		
-	char *raw_name, *display_name, *truncated_name, *action_name;
+	BookmarkHolder *bookmark_holder;
+	char action_name[128];
+	char *name;
 	GdkPixbuf *pixbuf;
 	GtkAction *action;
 
@@ -161,25 +162,15 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 
 	bookmark_holder = bookmark_holder_new (bookmark, window, refresh_callback, failed_callback);
-
-	/* We double the underscores here to escape them so gtk+ will know they are
-	 * not keyboard accelerator character prefixes. If we ever find we need to
-	 * escape more than just the underscores, we'll add a menu helper function
-	 * instead of a string utility. (Like maybe escaping control characters.)
-	 */
-	raw_name = nautilus_bookmark_get_name (bookmark);
-	truncated_name = eel_truncate_text_for_menu_item (raw_name);
-	display_name = eel_str_double_underscores (truncated_name);
-	g_free (raw_name);
-	g_free (truncated_name);
+	name = nautilus_bookmark_get_name (bookmark);
 
 	/* Create menu item with pixbuf */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, GTK_ICON_SIZE_MENU);
 
-	action_name = g_strdup_printf ("bookmark_%s_%d", parent_id, index_in_parent);
+	g_snprintf (action_name, sizeof (action_name), "%s%d", parent_id, index_in_parent);
 
 	action = gtk_action_new (action_name,
-				 display_name,
+				 name,
 				 _("Go to the location specified by this bookmark"),
 				 NULL);
 	
@@ -206,8 +197,7 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 			       FALSE);
 
 	g_object_unref (pixbuf);
-	g_free (action_name);
-	g_free (display_name);
+	g_free (name);
 }
 
 static void

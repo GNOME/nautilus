@@ -39,6 +39,8 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 
+#define MENU_ITEM_MAX_WIDTH_CHARS 32
+
 static GtkWindow *bookmarks_window = NULL;
 static NautilusBookmarkList *bookmarks = NULL;
 
@@ -201,6 +203,24 @@ remove_bookmarks_menu_items (NautilusWindow *window)
 }
 
 static void
+connect_proxy_cb (GtkActionGroup *action_group,
+                  GtkAction *action,
+                  GtkWidget *proxy,
+                  gpointer dummy)
+{
+	GtkLabel *label;
+
+	if (!GTK_IS_MENU_ITEM (proxy))
+		return;
+
+	label = GTK_LABEL (GTK_BIN (proxy)->child);
+
+	gtk_label_set_use_underline (label, FALSE);
+	gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
+	gtk_label_set_max_width_chars (label, MENU_ITEM_MAX_WIDTH_CHARS);
+}
+
+static void
 update_bookmarks (NautilusWindow *window)
 {
         NautilusBookmarkList *bookmarks;
@@ -219,6 +239,8 @@ update_bookmarks (NautilusWindow *window)
 	
 	window->details->bookmarks_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
 	window->details->bookmarks_action_group = gtk_action_group_new ("BookmarksGroup");
+	g_signal_connect (window->details->bookmarks_action_group, "connect-proxy",
+			  G_CALLBACK (connect_proxy_cb), NULL);
 
 	gtk_ui_manager_insert_action_group (ui_manager,
 					    window->details->bookmarks_action_group,

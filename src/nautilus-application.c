@@ -58,6 +58,7 @@
 #include "nautilus-window-manage-views.h"
 #include <libxml/xmlsave.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-extensions.h>
@@ -70,7 +71,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-config.h>
-#include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>

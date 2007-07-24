@@ -56,7 +56,6 @@ typedef enum {
 
 struct NautilusCustomizationData {
 	char *customization_name;
-	CustomizationReadingMode reading_mode;
 
 	GList *public_file_list;	
 	GList *private_file_list;
@@ -66,10 +65,11 @@ struct NautilusCustomizationData {
 	
 	GdkPixbuf *pattern_frame;
 
-	gboolean private_data_was_displayed;
-	gboolean data_is_for_a_menu;
 	int maximum_icon_height;
 	int maximum_icon_width;
+
+	guint private_data_was_displayed : 1;
+	guint reading_mode : 2; /* enough bits for CustomizationReadingMode */
 };
 
 
@@ -85,7 +85,6 @@ static void		 load_name_map_hash_table	     (NautilusCustomizationData *data);
 NautilusCustomizationData* 
 nautilus_customization_data_new (const char *customization_name,
 				 gboolean show_public_customizations,
-				 gboolean data_is_for_a_menu,
 				 int maximum_icon_height,
 				 int maximum_icon_width)
 {
@@ -142,7 +141,6 @@ nautilus_customization_data_new (const char *customization_name,
 	}
 
 	data->private_data_was_displayed = FALSE;
-	data->data_is_for_a_menu = data_is_for_a_menu;
 	data->customization_name = g_strdup (customization_name);
 
 	data->maximum_icon_height = maximum_icon_height;
@@ -160,8 +158,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 							  char **label_out)
 {
 	GnomeVFSFileInfo *current_file_info;
-
-	char *image_file_name, *filtered_name;
+	char *image_file_name;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
 	gboolean is_reset_image;
@@ -238,19 +235,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	
 	*pixbuf_out = pixbuf;
 	
-	filtered_name = format_name_for_display (data, current_file_info->name);
-	/* If the data is for a menu,
-	   we want to truncate it and not use the nautilus
-	   label because anti-aliased text doesn't look right
-	   in menus */
-	if (data->data_is_for_a_menu) {
-		*label_out = eel_truncate_text_for_menu_item (filtered_name);
-	}
-	else {
-		*label_out = g_strdup (filtered_name);
-	}
-	
-	g_free (filtered_name);
+	*label_out = format_name_for_display (data, current_file_info->name);
 
 	if (data->reading_mode == READ_PRIVATE_CUSTOMIZATIONS) {
 		data->private_data_was_displayed = TRUE;

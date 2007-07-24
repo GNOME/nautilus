@@ -1760,7 +1760,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	} else {
 		customization_data = nautilus_customization_data_new (property_browser->details->category,
 								      !property_browser->details->remove_mode,
-								      FALSE,
 								      MAX_ICON_WIDTH,
 								      MAX_ICON_HEIGHT);
 		if (customization_data == NULL) {

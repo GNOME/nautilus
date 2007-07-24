@@ -42,7 +42,6 @@ typedef struct NautilusCustomizationData NautilusCustomizationData;
 
 NautilusCustomizationData* nautilus_customization_data_new                          (const char *customization_name,
 										     gboolean show_public_customizations,
-										     gboolean data_is_for_a_menu,
 										     int maximum_icon_height,
 										     int maximum_icon_width);
 

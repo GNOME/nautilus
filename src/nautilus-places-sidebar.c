@@ -766,16 +766,18 @@ drag_leave_callback (GtkTreeView *tree_view,
 /* Parses a "text/uri-list" string and inserts its URIs as bookmarks */
 static void
 bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
-		     const char            *data,
+		     GtkSelectionData      *selection_data,
 		     int                    position)
 {
 	NautilusBookmark *bookmark;
 	NautilusFile *file;
-	char *uri, *name, *name_truncated;
+	char *uri, *name;
 	char **uris;
 	int i;
 	
-	uris = g_uri_list_extract_uris (data);
+	uris = gtk_selection_data_get_uris (selection_data);
+	if (!uris)
+		return;
 	
 	for (i = 0; uris[i]; i++) {
 		uri = uris[i];
@@ -790,9 +792,8 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		nautilus_file_unref (file);
 
 		name = nautilus_compute_title_for_uri (uri);
-		name_truncated = eel_truncate_text_for_menu_item (name);	
 
-		bookmark = nautilus_bookmark_new_with_icon (uri, name_truncated,
+		bookmark = nautilus_bookmark_new_with_icon (uri, name,
 							    FALSE, "gnome-fs-directory");
 		
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
@@ -800,7 +801,6 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		}
 
 		g_object_unref (bookmark);
-		g_free (name_truncated);
 		g_free (name);
 		g_free (uri);
 	}
@@ -964,7 +964,7 @@ drag_data_received_callback (GtkWidget *widget,
 	
 		switch (info) {
 		case TEXT_URI_LIST:
-			bookmarks_drop_uris (sidebar, selection_data->data, position);
+			bookmarks_drop_uris (sidebar, selection_data, position);
 			success = TRUE;
 			break;
 		case GTK_TREE_MODEL_ROW:

@@ -50,6 +50,8 @@ enum {
 #define GENERIC_BOOKMARK_ICON_NAME	"gnome-fs-bookmark"
 #define MISSING_BOOKMARK_ICON_NAME	"gnome-fs-bookmark-missing"
 
+#define ELLIPSISED_MENU_ITEM_MIN_CHARS  32
+
 static guint signals[LAST_SIGNAL];
 
 struct NautilusBookmarkDetails
@@ -525,10 +527,13 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 {
 	GtkWidget *menu_item;
 	GtkWidget *image_widget;
-	GtkWidget *label;
-	char *display_name;
+	GtkLabel *label;
 	
-	menu_item = gtk_image_menu_item_new ();
+	menu_item = gtk_image_menu_item_new_with_label (bookmark->details->name);
+	label = GTK_LABEL (GTK_BIN (menu_item)->child);
+	gtk_label_set_use_underline (label, FALSE);
+	gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
+	gtk_label_set_max_width_chars (label, ELLIPSISED_MENU_ITEM_MIN_CHARS);
 
 	image_widget = create_image_widget_for_bookmark (bookmark);
 	if (image_widget != NULL) {
@@ -536,13 +541,6 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
 					       image_widget);
 	}
-	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
-	label = gtk_label_new (display_name);
-	g_free (display_name);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-
-	gtk_container_add (GTK_CONTAINER (menu_item), label);
-	gtk_widget_show (label);
 
 	return menu_item;
 }

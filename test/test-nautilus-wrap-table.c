@@ -53,7 +53,7 @@ main (int argc, char* argv[])
 
 
 	/* Use nautilus_customization to make the emblem widgets */
-	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
+	customization_data = nautilus_customization_data_new ("emblems", TRUE,
 							      NAUTILUS_ICON_SIZE_SMALL, 
 							      NAUTILUS_ICON_SIZE_SMALL);
 	

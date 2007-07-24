@@ -1,5 +1,28 @@
 2007-07-24  Christian Persch  <chpe@gnome.org>
 
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_menu_item_new):
+	* libnautilus-private/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display):
+	* libnautilus-private/nautilus-customization-data.h:
+	* src/nautilus-application.c:
+	* src/nautilus-bookmark-list.c: (new_bookmark_from_uri):
+	* src/nautilus-navigation-window-menus.c: (connect_proxy_cb),
+	(refresh_go_menu):
+	* src/nautilus-places-sidebar.c: (bookmarks_drop_uris),
+	(drag_data_received_callback):
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	* src/nautilus-window-bookmarks.c: (connect_proxy_cb),
+	(update_bookmarks):
+	* src/nautilus-window-menus.c:
+	(nautilus_menus_append_bookmark_to_menu):
+	* test/test-nautilus-wrap-table.c: (main): Use pango ellipsisation
+	instead of truncating the strings. Bug #410113.
+
+2007-07-24  Christian Persch  <chpe@gnome.org>
+
 	* src/nautilus-navigation-window.c: (location_button_create),
 	(nautilus_navigation_window_init):
 	* src/nautilus-pathbar.c: (get_slider_button),

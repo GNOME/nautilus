@@ -72,20 +72,6 @@ static void 	   bookmark_monitor_notify_cb 		(GnomeVFSMonitorHandle    *handle,
 		            				 GnomeVFSMonitorEventType  event_type,
 		            				 gpointer                  user_data);
 
-
-static char *
-get_default_bookmark_name (const char *text_uri)
-{
-	char *title, *title_truncated;
-
-	title = nautilus_compute_title_for_uri (text_uri);
-	title_truncated = eel_str_middle_truncate (title, MAX_BOOKMARK_LENGTH);	
-	g_free (title);
-
-	return title_truncated;
-
-}
-
 static NautilusBookmark *
 new_bookmark_from_uri (const char *uri, const char *label)
 {
@@ -96,7 +82,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
 
 	has_label = FALSE;
 	if (!label) { 
-		name = get_default_bookmark_name (uri);
+		name = nautilus_compute_title_for_uri (uri);
 	} else {
 		name = g_strdup (label);
 		has_label = TRUE;

@@ -65,6 +65,7 @@
 #define MENU_PATH_HISTORY_PLACEHOLDER			"/MenuBar/Other Menus/Go/History Placeholder"
 
 #define RESPONSE_FORGET		1000
+#define MENU_ITEM_MAX_WIDTH_CHARS 32
 
 static void                  schedule_refresh_go_menu                      (NautilusNavigationWindow   *window);
 
@@ -296,6 +297,23 @@ show_bogus_history_window (NautilusWindow *window,
 	g_free (detail);
 }
 
+static void
+connect_proxy_cb (GtkActionGroup *action_group,
+                  GtkAction *action,
+                  GtkWidget *proxy,
+                  gpointer dummy)
+{
+	GtkLabel *label;
+
+	if (!GTK_IS_MENU_ITEM (proxy))
+		return;
+
+	label = GTK_LABEL (GTK_BIN (proxy)->child);
+
+	gtk_label_set_use_underline (label, FALSE);
+	gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
+	gtk_label_set_max_width_chars (label, MENU_ITEM_MAX_WIDTH_CHARS);
+}
 
 /**
  * refresh_go_menu:
@@ -322,6 +340,8 @@ refresh_go_menu (NautilusNavigationWindow *window)
 
 	window->details->go_menu_merge_id = gtk_ui_manager_new_merge_id (ui_manager);
 	window->details->go_menu_action_group = gtk_action_group_new ("GoMenuGroup");
+	g_signal_connect (window->details->go_menu_action_group, "connect-proxy",
+			  G_CALLBACK (connect_proxy_cb), NULL);
 
 	gtk_ui_manager_insert_action_group (ui_manager,
 					    window->details->go_menu_action_group,
