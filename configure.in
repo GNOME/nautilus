@@ -22,6 +22,7 @@ m4_define(startup_notification_minver, 0.8)
 m4_define(exif_minver,                 0.5.12)
 m4_define(beagle_minver,               0.0.12)
 m4_define(tracker_minver,              0.0.1)
+m4_define(exempi_minver,               1.99.2)
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
 dnl 2. If any interfaces have been added, then increment current and set revision to 0.
@@ -258,6 +259,18 @@ PKG_CHECK_MODULES(EXIF, libexif > exif_minver, [
 
 AC_SUBST(EXIF_CFLAGS)
 AC_SUBST(EXIF_LIBS)
+
+dnl ==========================================================================
+
+dnl exempi checking
+
+PKG_CHECK_MODULES(EXEMPI, exempi-2.0 >= exempi_minver, [
+		  AM_CONDITIONAL(HAVE_EXEMPI, true)
+		  AC_DEFINE(HAVE_EXEMPI, 1, [Define to enable XMP support])
+		  ], [AM_CONDITIONAL(HAVE_EXEMPI, false)])
+
+AC_SUBST(EXEMPI_CFLAGS)
+AC_SUBST(EXEMPI_LIBS)
 
 dnl ==========================================================================
 dnl search implementations

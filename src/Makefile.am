@@ -14,6 +14,7 @@ INCLUDES =							\
 	-I$(top_builddir)/libnautilus-private 			\
 	$(CORE_CFLAGS) 						\
 	$(EXIF_CFLAGS)						\
+	$(EXEMPI_CFLAGS)                                        \
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
@@ -30,6 +31,7 @@ LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(CORE_LIBS) \
 	$(EXIF_LIBS) \
+	$(EXEMPI_LIBS) \
 	$(POPT_LIBS) \
 	$(NULL)
 

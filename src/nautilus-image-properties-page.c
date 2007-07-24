@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2004 Red Hat, Inc
+ * Copyright (c) 2007 Novell, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
+ * XMP support by Hubert Figuiere <hfiguiere@novell.com>
  */
 
 #include <config.h>
@@ -38,6 +40,18 @@
   #include <libexif/exif-data.h>
   #include <libexif/exif-ifd.h>
   #include <libexif/exif-loader.h>
+  #define ENABLE_METADATA 1
+#endif
+#ifdef HAVE_EXEMPI
+  #include <exempi/xmp.h>
+  #include <exempi/xmpconsts.h>
+  #include <libgnomevfs/gnome-vfs-utils.h>
+  #if !defined(ENABLE_METADATA)
+    #define ENABLE_METADATA 1
+  #endif
+#endif
+
+#ifdef ENABLE_METADATA
   #include <gtk/gtkliststore.h>
   #include <gtk/gtktreestore.h>
   #include <gtk/gtktreeview.h>
@@ -61,6 +75,9 @@ struct NautilusImagePropertiesPageDetails {
 #ifdef HAVE_EXIF
 	ExifLoader *exifldr;
 #endif /*HAVE_EXIF*/
+#ifdef HAVE_EXEMPI
+	XmpPtr     xmp;
+#endif
 };
 
 #ifdef HAVE_EXIF
@@ -230,18 +247,68 @@ append_exifdata_string (ExifData *exifdata, GString *string)
                 }
 
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_FLASH,_("Flash Fired"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_SHUTTER_SPEED_VALUE, _("Shutter Speed"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_ISO_SPEED_RATINGS, _("ISO Speed Rating"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_FLASH,_("Flash Fired"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_SOFTWARE, _("Software"));
 
 	}
 }
 #endif /*HAVE_EXIF*/
+
+
+#ifdef HAVE_EXEMPI
+static void
+append_xmp_value_pair(GString *string, XmpPtr xmp, const char * ns, const char * propname, gchar* descr)
+{
+	uint32_t options;
+	XmpStringPtr  value = xmp_string_new();
+	if(xmp_get_property_and_bits(xmp, ns, propname, value, &options)) {
+		if(XMP_IS_PROP_SIMPLE(options)) {
+			g_string_append_printf(string, "<b>%s:</b> %s\n", descr, xmp_string_cstr(value));
+		}
+		else if(XMP_IS_PROP_ARRAY(options)) {
+			XmpIteratorPtr iter = xmp_iterator_new(xmp, ns, propname, XMP_ITER_JUSTLEAFNODES);
+			if(iter) {
+				bool first = true;
+				g_string_append_printf(string, "<b>%s:</b> ", descr);
+				while (xmp_iterator_next(iter, NULL, NULL, value, &options) 
+				       && !XMP_IS_PROP_QUALIFIER(options)) {
+					if(!first) {
+						g_string_append_printf(string, ", ");
+					}
+					else {
+						first = false;
+					}
+					g_string_append_printf(string, "%s",  xmp_string_cstr(value));
+				}
+				xmp_iterator_free(iter);
+				g_string_append_printf(string, "\n");
+			}
+		}
+	}
+	xmp_string_free(value);
+}
+
+
+static void
+append_xmpdata_string(XmpPtr xmp, GString *string)
+{
+	if(xmp != NULL) {
+		append_xmp_value_pair(string, xmp, NS_IPTC4XMP, "Location", _("Location"));
+		append_xmp_value_pair(string, xmp, NS_DC, "description", _("Description"));
+		append_xmp_value_pair(string, xmp, NS_DC, "subject", _("Keywords"));
+		append_xmp_value_pair(string, xmp, NS_DC, "creator", _("Creator"));
+		append_xmp_value_pair(string, xmp, NS_DC, "rights", _("Copyright"));
+		append_xmp_value_pair(string, xmp, NS_XAP,"Rating", _("Rating"));
+		/* TODO add CC licenses */
+	}
+}
+#endif
+
 
 static void
 load_finished (NautilusImagePropertiesPage *page)
@@ -272,6 +339,9 @@ load_finished (NautilusImagePropertiesPage *page)
 #ifdef HAVE_EXIF
 		append_exifdata_string (exif_loader_get_data (page->details->exifldr), str);
 #endif /*HAVE_EXIF*/
+#ifdef HAVE_EXEMPI
+		append_xmpdata_string(page->details->xmp, str);
+#endif /*HAVE EXEMPI*/
 		
 		gtk_label_set_markup (GTK_LABEL (page->details->resolution), str->str);
 		gtk_label_set_selectable (GTK_LABEL (page->details->resolution), TRUE);
@@ -291,6 +361,12 @@ load_finished (NautilusImagePropertiesPage *page)
 		page->details->exifldr = NULL;
 	}
 #endif /*HAVE_EXIF*/
+#ifdef HAVE_EXEMPI
+	if (page->details->xmp != NULL) {
+		xmp_free(page->details->xmp);
+		page->details->xmp = NULL;
+	}
+#endif
 	
 	if (page->details->vfs_handle != NULL) {
 		gnome_vfs_async_close (page->details->vfs_handle, file_closed_callback, NULL);
@@ -401,6 +477,25 @@ load_location (NautilusImagePropertiesPage *page,
 
 	if (page->details->vfs_handle != NULL)
 		gnome_vfs_async_cancel (page->details->vfs_handle);
+
+#ifdef HAVE_EXEMPI
+	{
+		/* Current Exempi does not support setting custom IO to be able to use Gnome-vfs */
+		/* So it will only work with local files. Future version might remove this limitation */
+		XmpFilePtr xf;
+		gchar* localname;
+		localname = gnome_vfs_get_local_path_from_uri (location);
+		if(localname) {
+			xf = xmp_files_open_new(localname, 0);
+			page->details->xmp = xmp_files_get_new_xmp(xf); /* only load when loading */
+			xmp_files_close(xf, 0);
+			g_free(localname);
+		}
+		else {
+			page->details->xmp = NULL;
+		}
+	}
+#endif /*HAVE_EXEMPI*/
 
 	gnome_vfs_async_open (&page->details->vfs_handle,
 			      location,

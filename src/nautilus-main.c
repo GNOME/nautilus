@@ -63,6 +63,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef HAVE_EXEMPI
+#include <exempi/xmp.h>
+#endif
+
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList *event_loop_registrants;
 
@@ -432,6 +436,10 @@ main (int argc, char *argv[])
 	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
 
 	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
+
+#ifdef HAVE_EXEMPI
+	xmp_init();
+#endif
 
 	program = gnome_program_init ("nautilus", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
