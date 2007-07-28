@@ -1677,7 +1677,7 @@ changed_group_callback (GtkComboBox *combo_box, NautilusFile *file)
 	group = gtk_combo_box_get_active_text (combo_box);
 	cur_group = nautilus_file_get_group_name (file);
 
-	if (strcmp (group, cur_group) != 0) {
+	if (group != NULL && strcmp (group, cur_group) != 0) {
 		/* Try to change file group. If this fails, complain to user. */
 		window = FM_PROPERTIES_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (combo_box), GTK_TYPE_WINDOW));
 

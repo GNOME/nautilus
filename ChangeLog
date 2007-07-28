@@ -1,3 +1,10 @@
+2007-07-28  Martin Wehner  <martin.wehner@gmail.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(changed_group_callback): Don't crash if the active group
+	combobox entry is removed or the group information becomes
+	unreadable. Fixes #355018.
+
 2007-07-24  Christian Persch  <chpe@gnome.org>
 
 	* libnautilus-private/nautilus-bookmark.c:
