@@ -1031,22 +1031,18 @@ real_load_view_as_menu (NautilusWindow *window)
 					  window->details->short_list_merge_id);
 		window->details->short_list_merge_id = 0;
 	}
+	if (window->details->extra_viewer_merge_id != 0) {
+		gtk_ui_manager_remove_ui (window->details->ui_manager,
+					  window->details->extra_viewer_merge_id);
+		window->details->extra_viewer_merge_id = 0;
+		window->details->extra_viewer_radio_action = NULL;
+	}
 	if (window->details->view_as_action_group != NULL) {
 		gtk_ui_manager_remove_action_group (window->details->ui_manager,
 						    window->details->view_as_action_group);
 		window->details->view_as_action_group = NULL;
 	}
 
-	if (window->details->extra_viewer_merge_id != 0) {
-		gtk_ui_manager_remove_ui (window->details->ui_manager,
-					  window->details->extra_viewer_merge_id);
-		window->details->extra_viewer_merge_id = 0;
-	}
-	if (window->details->extra_viewer_radio_action != NULL) {
-		gtk_action_group_remove_action (window->details->view_as_action_group,
-						GTK_ACTION (window->details->extra_viewer_radio_action));
-		window->details->extra_viewer_radio_action = NULL;
-	}
 	g_free (window->details->extra_viewer);
 	window->details->extra_viewer = NULL;
 	

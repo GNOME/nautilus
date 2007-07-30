@@ -1,5 +1,12 @@
 2007-07-30  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-window.c: (real_load_view_as_menu):
+	Dont't try to remove extra_viewer_radio_action from a group
+	that may already have been finalized. (#461789)
+	Patch from Christian Persch <chpe@gnome.org>
+
+2007-07-30  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-search-engine-simple.c:
 	(search_visit_func): Don't try to lowercase non-unicode
 	filenames with g_utf8_strdown. Fixes #454799.
