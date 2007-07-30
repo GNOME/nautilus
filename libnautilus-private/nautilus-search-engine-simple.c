@@ -213,8 +213,13 @@ search_visit_func (const gchar *rel_path,
 	hit = FALSE;
 
 	if (!is_hidden) {
-		normalized = g_utf8_normalize (info->name, -1, G_NORMALIZE_NFD);
-		lower_name = g_utf8_strdown (normalized, -1);
+		if (g_utf8_validate (info->name, -1, NULL)) {
+			normalized = g_utf8_normalize (info->name, -1, G_NORMALIZE_NFD);
+			lower_name = g_utf8_strdown (normalized, -1);
+			g_free (normalized);
+		} else {
+			lower_name = g_ascii_strdown (info->name, -1);
+		}
 		
 		hit = TRUE;
 		for (i = 0; data->words[i] != NULL; i++) {
@@ -224,7 +229,6 @@ search_visit_func (const gchar *rel_path,
 			}
 		}
 		g_free (lower_name);
-		g_free (normalized);
 	}
 
 	if (hit && data->mime_types != NULL) {
