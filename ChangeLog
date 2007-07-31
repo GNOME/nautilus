@@ -1,5 +1,12 @@
 2007-07-31  Martin Wehner  <martin.wehner@gmail.com>
 
+	* configure.in: Revert dependency on libSM 1.0.2
+	added on 2007-07-24 as it makes nautilus unbuildable on
+	everything but the most cutting-edge distributions.
+	Plus, nobody else does it.  
+
+2007-07-31  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-window-toolbars.c:
 	(nautilus_navigation_window_load_extension_toolbar_items):
 	Don't use the same name for the extensions menu action group
@@ -83,7 +90,7 @@
 	React on enter key (#449591)
 	Patch from Christian Neumair
 
-2007-08-24  Christian Kirbach  <Christian.Kirbach@googlemail.com>
+2007-07-24  Christian Kirbach  <Christian.Kirbach@googlemail.com>
 
         * configure.in:	
         Add missing dependency on libSM.

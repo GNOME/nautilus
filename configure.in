@@ -14,7 +14,6 @@ m4_define(gnome_ui_minver,             2.6.0)
 m4_define(gnome_vfs_minver,            2.19.3)
 m4_define(orbit_minver,                2.4.0)
 m4_define(pango_minver,                1.1.2)
-m4_define(sm_minver,                   1.0.2)
 m4_define(gtk_minver,                  2.11.6)
 m4_define(rsvg_minver,                 2.0.1)
 m4_define(xml_minver,                  2.4.7)
@@ -54,7 +53,6 @@ AC_SUBST(GNOME_UI_REQUIRED, [gnome_ui_minver])
 AC_SUBST(GNOME_VFS_REQUIRED, [gnome_vfs_minver])
 AC_SUBST(ORBIT_REQUIRED, [orbit_minver])
 AC_SUBST(PANGO_REQUIRED, [pango_minver])
-AC_SUBST(SM_REQUIRED, [sm_minver])
 AC_SUBST(GTK_REQUIRED, [gtk_minver])
 AC_SUBST(RSVG_REQUIRED, [rsvg_minver])
 AC_SUBST(XML_REQUIRED, [xml_minver])
@@ -101,7 +99,6 @@ PKG_CHECK_MODULES(ALL, [
 	gnome-vfs-module-2.0	>= gnome_vfs_minver
 	ORBit-2.0		>= orbit_minver
 	pango			>= pango_minver
-	sm			>= sm_minver
 	gtk+-2.0		>= gtk_minver
 	libart-2.0		>= art_minver
 	libbonobo-2.0		>= bonobo_minver
