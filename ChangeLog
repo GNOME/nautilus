@@ -1,3 +1,14 @@
+2007-08-01  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-cell-renderer-text-ellipsized.c:
+	* libnautilus-private/nautilus-cell-renderer-text-ellipsized.h:
+	* src/file-manager/fm-list-view.c: (create_and_set_up_tree_view):
+	Use a custom cell renderer for the filename column which applies
+	ellipsization but reports its size based on the actual width of 
+	the text to be rendered. This restores the original column
+	autosizing behaviour while keeping the ellipsization. (#419343)
+
 2007-07-31  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

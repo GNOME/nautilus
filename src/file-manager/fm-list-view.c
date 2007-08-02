@@ -69,6 +69,7 @@
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
+#include <libnautilus-private/nautilus-cell-renderer-text-ellipsized.h>
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -1381,11 +1382,7 @@ create_and_set_up_tree_view (FMListView *view)
 							     "pixbuf_emblem", FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN,
 							     NULL);
 			
-			cell = gtk_cell_renderer_text_new ();
-                        g_object_set (cell,
-                                      "ellipsize", PANGO_ELLIPSIZE_END,
-                                      "width-chars", 32,
-                                      NULL);
+			cell = nautilus_cell_renderer_text_ellipsized_new ();
 			view->details->file_name_cell = (GtkCellRendererText *)cell;
 			g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
 			g_signal_connect (cell, "editing-canceled", G_CALLBACK (cell_renderer_editing_canceled), view);
