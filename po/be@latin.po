@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-27 22:49+0300\n"
+"POT-Creation-Date: 2007-08-01 09:11+0300\n"
 "PO-Revision-Date: 2007-05-27 22:51+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: i18n@mova.org <i18n@mova.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Belarusian latin\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -122,9 +123,8 @@ msgid "Envy"
 msgstr "Zajzdraść"
 
 #. translators: this is the name of an emblem
-#: ../data/browser.xml.h:28
-#: ../src/nautilus-emblem-sidebar.c:940
-#: ../src/nautilus-property-browser.c:1824
+#: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:940
+#: ../src/nautilus-property-browser.c:1823
 msgid "Erase"
 msgstr "Vyčyść"
 
@@ -297,8 +297,18 @@ msgid "Saved search"
 msgstr "Zachavany pošuk"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
-msgid "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
-msgstr "Śpis podpisaŭ pad ikonaj u vyhladzie ikonaŭ albo na stale. Kolkaść pakazvanych podpisaŭ zaležyć ad stupieni pavieličeńnia. Dapuščalnyja vartaści: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" i \"mime_type\"."
+msgid ""
+"A list of captions below an icon in the icon view and the desktop. The "
+"actual number of captions shown depends on the zoom level. Possible values "
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
+msgstr ""
+"Śpis podpisaŭ pad ikonaj u vyhladzie ikonaŭ albo na stale. Kolkaść "
+"pakazvanych podpisaŭ zaležyć ad stupieni pavieličeńnia. Dapuščalnyja "
+"vartaści: \"size\", \"type\", \"date_modified\", \"date_changed\", "
+"\"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions"
+"\" i \"mime_type\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Always use the location entry, instead of the pathbar"
@@ -313,8 +323,16 @@ msgid "Criteria for search bar searching"
 msgstr "Pošukavyja krytery dziela paneli pošuku "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
-msgid "Criteria when matching files searched for in the search bar. If set to \"search_by_text\", then Nautilus will Search for files by file name only. If set to \"search_by_text_and_properties\", then Nautilus will search for files by file name and file properties."
-msgstr "Krytery pošuku fajłaŭ panellu pošuku. Kali abranaje \"search_by_text\", tady Nautilus budzie šukać fajły tolki z takoj nazvaj, jakaja pasuje. Kali abranaje \"search_by_text_and_properties\", tady Nautilus budzie šukać fajły z adpaviednaj nazvaj i ŭłaścivaściami."
+msgid ""
+"Criteria when matching files searched for in the search bar. If set to "
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
+msgstr ""
+"Krytery pošuku fajłaŭ panellu pošuku. Kali abranaje \"search_by_text\", tady "
+"Nautilus budzie šukać fajły tolki z takoj nazvaj, jakaja pasuje. Kali "
+"abranaje \"search_by_text_and_properties\", tady Nautilus budzie šukać fajły "
+"z adpaviednaj nazvaj i ŭłaścivaściami."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -350,7 +368,7 @@ msgstr "Zmoŭčanaja nazva fajłu fonu bakavoj paneli"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default Thumbnail Icon Size"
-msgstr ""
+msgstr "Zmoŭčany pamier dla minijaturnych ikonaŭ"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view"
@@ -362,7 +380,7 @@ msgstr "Zmoŭčany paradak kalonaŭ u vyhladzie śpisu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default folder viewer"
-msgstr "Zmoŭčany hartač tečak"
+msgstr "Zmoŭčany hartač katalohaŭ"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default icon zoom level"
@@ -410,35 +428,60 @@ msgstr "Nazva ikony śmetnicy na stale"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr "Uklučaje klasyčnyja pavodziny Nautilusa, dzie ŭsie vokny źjaŭlajucca hartačami"
+msgstr ""
+"Uklučaje klasyčnyja pavodziny Nautilusa, dzie ŭsie vokny źjaŭlajucca "
+"hartačami"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
-msgid "Filename for the default folder background. Only used if background_set is true."
-msgstr "Nazva fajłu dziela zmoŭčanaha fonu tečki. Opcyja ŭžyvajecca, tolki kali źmiennaja \"background_set\" aktyŭnaja."
+msgid ""
+"Filename for the default folder background. Only used if background_set is "
+"true."
+msgstr ""
+"Nazva fajłu dziela zmoŭčanaha fonu katalohu. Opcyja ŭžyvajecca, tolki kali "
+"źmiennaja \"background_set\" aktyŭnaja."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
-msgid "Filename for the default side pane background. Only used if side_pane_background_set is true."
-msgstr "Nazva fajłu dla zmoŭčanaha fonu bakavoj paneli. Opcyja ŭžyvajecca, tolki kali źmiennaja \"side_pane_background_set\" aktyŭnaja."
+msgid ""
+"Filename for the default side pane background. Only used if "
+"side_pane_background_set is true."
+msgstr ""
+"Nazva fajłu dla zmoŭčanaha fonu bakavoj paneli. Opcyja ŭžyvajecca, tolki "
+"kali źmiennaja \"side_pane_background_set\" aktyŭnaja."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
-msgid "Folders over this size will be truncated to around this size. The purpose of this is to avoid unintentionally blowing the heap and killing Nautilus on massive folders. A negative value denotes no limit. The limit is approximate due to the reading of folders chunk-wise."
-msgstr "Tečki, jakija pierakročvajuć padadzieny pamier, buduć pryciatyja. Dziakujučy hetamu paźbiahajuć zaśmiečvańnia pamiaci i zbojaŭ Nautilusa na vialikich tečkach. Admoŭnaja vartaść aznačaje adsutnaść limitu. Limit pryblizny, bo tečki adčytvajucca pa častkach."
+msgid ""
+"Folders over this size will be truncated to around this size. The purpose of "
+"this is to avoid unintentionally blowing the heap and killing Nautilus on "
+"massive folders. A negative value denotes no limit. The limit is approximate "
+"due to the reading of folders chunk-wise."
+msgstr ""
+"Tečki, jakija pierakročvajuć padadzieny pamier, buduć pryciatyja. Dziakujučy "
+"hetamu paźbiahajuć zaśmiečvańnia pamiaci i zbojaŭ Nautilusa na vialikich "
+"katalohach. Admoŭnaja vartaść aznačaje adsutnaść limitu. Limit pryblizny, bo "
+"katalohi adčytvajucca pa častkach."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Home icon visible on desktop"
 msgstr "Chatniaja ikona bačnaja na stale"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
-msgid "If set to true, Nautilus will only show folders in the tree side pane. Otherwise it will show both folders and files."
-msgstr "Akreślivaje, ci Nautilus maje pakazvać tolki tečki ŭ drevie bakavoj paneli, ci tečki j fajły."
+msgid ""
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
+msgstr ""
+"Akreślivaje, ci Nautilus maje pakazvać tolki katalohi ŭ drevie bakavoj paneli, "
+"ci katalohi j fajły."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid "If set to true, newly opened windows will have the location bar visible."
-msgstr "Akreślivaje, ci novaadčynienyja vokny buduć mieć bačnuju panel pałažeńnia."
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
+msgstr ""
+"Akreślivaje, ci novaadčynienyja vokny buduć mieć bačnuju panel pałažeńnia."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Akreślivaje, ci ŭ novaadčynienych voknach budzie bačnaja bakavaja panel."
+msgstr ""
+"Akreślivaje, ci ŭ novaadčynienych voknach budzie bačnaja bakavaja panel."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the status bar visible."
@@ -446,91 +489,177 @@ msgstr "Akreślivaje, ci ŭ novaadčynienych voknach budzie bačnaja panel stanu
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Akreślivaje, ci ŭ novaadčynienych voknach budzie bačnaja panel pryładździa."
+msgstr ""
+"Akreślivaje, ci ŭ novaadčynienych voknach budzie bačnaja panel pryładździa."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then Nautilus browser windows will always use a textual input entry for the location toolbar, instead of the pathbar."
-msgstr "Kali funkcyja aktyŭnaja, hartač Nautilus zaŭždy budzie karystacca tekstavym elementam uvodu dla paneli pałažeńnia zamiest paneli ściežki."
+msgid ""
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
+msgstr ""
+"Kali funkcyja aktyŭnaja, hartač Nautilus zaŭždy budzie karystacca tekstavym "
+"elementam uvodu dla paneli pałažeńnia zamiest paneli ściežki."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid "If set to true, then Nautilus lets you edit and display file permissions in a more unix-like way, accessing some more esoteric options."
-msgstr "Kali funkcyja aktyŭnaja, Nautilus daje bolej opcyjaŭ dla vybaru dazvołaŭ u fajłach."
+msgid ""
+"If set to true, then Nautilus lets you edit and display file permissions in "
+"a more unix-like way, accessing some more esoteric options."
+msgstr ""
+"Kali funkcyja aktyŭnaja, Nautilus daje bolej opcyjaŭ dla vybaru dazvołaŭ u "
+"fajłach."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid "If set to true, then Nautilus shows folders prior to showing files in the icon and list views."
-msgstr "Akreślivaje, ci Nautilus maje pakazvać tečki pierad fajłami ŭ vyhladach ikon i śpisu."
+msgid ""
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
+msgstr ""
+"Akreślivaje, ci Nautilus maje pakazvać katalohi pierad fajłami ŭ vyhladach ikon "
+"i śpisu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
-msgid "If set to true, then Nautilus will ask for confirmation when you attempt to put files in the trash."
-msgstr "Akreślivaje, ci Nautilus budzie damahacca paćvierdžańnia pry sprobie źmiaścić fajły ŭ śmietnicy."
+msgid ""
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"delete files, or empty the Trash."
+msgstr ""
+"Akreślivaje, ci Nautilus budzie damahacca paćvierdžańnia pry sprobie "
+"vydalić fajły albo ačyścić śmietnicy."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr "Akreślivaje, ci Nautilus budzie pakazvać ikony na stale."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
-msgid "If set to true, then Nautilus will have a feature allowing you to delete a file immediately and in-place, instead of moving it to the trash. This feature can be dangerous, so use caution."
-msgstr "Akreślivaje, ci Nautilus budzie mieć mahčymaść nieadkładnaha vydaleńnia fajłu zamiest pieranosu jaho ŭ śmietnicu. Hetaja funkcyja moža być niebiaśpiečnaj, i karystacca joj treba aściarožna."
+msgid ""
+"If set to true, then Nautilus will have a feature allowing you to delete a "
+"file immediately and in-place, instead of moving it to the trash. This "
+"feature can be dangerous, so use caution."
+msgstr ""
+"Akreślivaje, ci Nautilus budzie mieć mahčymaść nieadkładnaha vydaleńnia "
+"fajłu zamiest pieranosu jaho ŭ śmietnicu. Hetaja funkcyja moža być "
+"niebiaśpiečnaj, i karystacca joj treba aściarožna."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-msgid "If set to true, then Nautilus will use the user's home folder as the desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "Akreślivaje, ci budzie Nautilus vykarystoŭvać chatniuju tečku ŭ jakaści stała. Kali nie, u jakaści stała budzie vykarystanaja tečka ~/Desktop."
+msgid ""
+"If set to true, then Nautilus will use the user's home folder as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Akreślivaje, ci budzie Nautilus vykarystoŭvać chatni kataloh u jakaści "
+"stała. Kali nie, u jakaści stała budzie vykarystany kataloh ~/Desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
-msgid "If set to true, then all Nautilus windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behavior."
-msgstr "Kali funkcyja aktyŭnaja, usie vokny Nautilusa buduć voknami hartača. Tak pavodziŭ siabie Nautilus da versii 2.6, i niekatorym adpaviadaje mienavita taki styl."
+msgid ""
+"If set to true, then all Nautilus windows will be browser windows. This is "
+"how Nautilus used to behave before version 2.6, and some people prefer this "
+"behavior."
+msgstr ""
+"Kali funkcyja aktyŭnaja, usie vokny Nautilusa buduć voknami hartača. Tak "
+"pavodziŭ siabie Nautilus da versii 2.6, i niekatorym adpaviadaje mienavita "
+"taki styl."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
-msgid "If set to true, then backup files such as those created by Emacs are displayed. Currently, only files ending in a tilde (~) are considered backup files."
-msgstr "Akreślivaje, ci pakazvać zapasnyja fajły, stvoranyja, naprykład, Emacsam. Na siońnia tolki fajły, jakija majuć na kancy tyldu (~), ličacca zapasnoj kopijaj."
+msgid ""
+"If set to true, then backup files such as those created by Emacs are "
+"displayed. Currently, only files ending in a tilde (~) are considered backup "
+"files."
+msgstr ""
+"Akreślivaje, ci pakazvać zapasnyja fajły, stvoranyja, naprykład, Emacsam. Na "
+"siońnia tolki fajły, jakija majuć na kancy tyldu (~), ličacca zapasnoj "
+"kopijaj."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
-msgid "If set to true, then hidden files are shown in the file manager. Hidden files are either dotfiles or are listed in the folder's .hidden file."
-msgstr "Akreślivaje, ci kiraŭnik fajłaŭ pakazvaje schavanyja fajły. Schavanymi fajłami źjaŭlajucca jak fajły z kropkaj na pačatku nazvy, hetak i nazvanyja ŭ fajle .hidden."
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the folder's .hidden file."
+msgstr ""
+"Akreślivaje, ci kiraŭnik fajłaŭ pakazvaje schavanyja fajły. Schavanymi "
+"fajłami źjaŭlajucca jak fajły z kropkaj na pačatku nazvy, hetak i nazvanyja "
+"ŭ fajle .hidden."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-msgid "If this is set to true, an icon linking to the Network Servers view will be put on the desktop."
-msgstr "Akreślivaje, ci na stale budzie źmieščanaja ikona da sieciŭnych serveraŭ."
+msgid ""
+"If this is set to true, an icon linking to the Network Servers view will be "
+"put on the desktop."
+msgstr ""
+"Akreślivaje, ci na stale budzie źmieščanaja ikona da sieciŭnych serveraŭ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If this is set to true, an icon linking to the computer location will be put on the desktop."
-msgstr "Akreślivaje, ci ikona, jakaja adnosicca da pałažeńnia kamputara, budzie bačnaja na stale."
+msgid ""
+"If this is set to true, an icon linking to the computer location will be put "
+"on the desktop."
+msgstr ""
+"Akreślivaje, ci ikona, jakaja adnosicca da pałažeńnia kamputara, budzie "
+"bačnaja na stale."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
-msgid "If this is set to true, an icon linking to the home folder will be put on the desktop."
-msgstr "Akreślivaje, ci na stale budzie źmieščanaja ikona, paviazanaja z chatniaj tečkaj."
+msgid ""
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
+msgstr ""
+"Akreślivaje, ci na stale budzie źmieščanaja ikona, paviazanaja z chatnim "
+"kataloham."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-msgid "If this is set to true, an icon linking to the trash will be put on the desktop."
+msgid ""
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
 msgstr "Akreślivaje, ci na stale budzie źmieščanaja ikona śmietnicy."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-msgid "If this is set to true, icons linking to mounted volumes will be put on the desktop."
-msgstr "Akreślivaje, ci na stale majuć być źmieščanyja ikony poviaziaŭ da prymantavanaj aparatury."
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr ""
+"Akreślivaje, ci na stale majuć być źmieščanyja ikony poviaziaŭ da "
+"prymantavanaj aparatury."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"."
-msgstr "Akreślivaje, ci fajły ŭ novych voknach buduć paradkavanyja ŭ advarotnaj čarhovaści. Naprykład, kali jany paradkujucca pavodle nazvy, tady zamiest čarhovaści ad \"a\" da \"z\" budzie paradkavańnie ad \"z\" da \"a\"."
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"."
+msgstr ""
+"Akreślivaje, ci fajły ŭ novych voknach buduć paradkavanyja ŭ advarotnaj "
+"čarhovaści. Naprykład, kali jany paradkujucca pavodle nazvy, tady zamiest "
+"čarhovaści ad \"a\" da \"z\" budzie paradkavańnie ad \"z\" da \"a\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"; if sorted by size, instead of being incrementally they will be sorted decrementally."
-msgstr "Akreślivaje, ci fajły ŭ novych voknach buduć paradkavanyja ŭ advarotnaj čarhovaści. Naprykład, kali jany paradkujucca pavodle nazvy, tady zamiest čarhovaści ad \"a\" da \"z\" budzie paradkavańnnie ad \"z\" da \"a\"; kali pavodle pamieru, tady zamiest ad małych da vialikich buduć paradkavacca ad vialikich da małych."
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+msgstr ""
+"Akreślivaje, ci fajły ŭ novych voknach buduć paradkavanyja ŭ advarotnaj "
+"čarhovaści. Naprykład, kali jany paradkujucca pavodle nazvy, tady zamiest "
+"čarhovaści ad \"a\" da \"z\" budzie paradkavańnnie ad \"z\" da \"a\"; kali "
+"pavodle pamieru, tady zamiest ad małych da vialikich buduć paradkavacca ad "
+"vialikich da małych."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "Akreślivaje, ci zmoŭčanyja ikony majuć być ciaśniej raźmieščanyja ŭ novych voknach."
+msgstr ""
+"Akreślivaje, ci zmoŭčanyja ikony majuć być ciaśniej raźmieščanyja ŭ novych "
+"voknach."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
-msgid "If true, labels will be placed beside icons rather than underneath them."
+msgid ""
+"If true, labels will be placed beside icons rather than underneath them."
 msgstr "Akreślivaje, ci etykiety majuć być pakazanyja pobač z ikonami pad imi."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "If true, new windows will use manual layout by default."
-msgstr "Akreślivaje, ci novyja vokny buduć zmoŭčana karystacca ručnym raźmiaščeńniem."
+msgstr ""
+"Akreślivaje, ci novyja vokny buduć zmoŭčana karystacca ručnym raźmiaščeńniem."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-msgid "Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory."
-msgstr "Vyjavy, bolšyja za hety pamier (u bajtach), nia buduć miec minijaturak. Hetaja nałada dazvalaje nie stvarać minijaturak viemi vialikich fajłaŭ, što moža vymahać šmat času j pamiaci."
+msgid ""
+"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
+"setting is to avoid thumbnailing large images that may take a long time to "
+"load or use lots of memory."
+msgstr ""
+"Vyjavy, bolšyja za hety pamier (u bajtach), nia buduć miec minijaturak. "
+"Hetaja nałada dazvalaje nie stvarać minijaturak viemi vialikich fajłaŭ, što "
+"moža vymahać šmat času j pamiaci."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "List of possible captions on icons"
@@ -538,15 +667,19 @@ msgstr "Śpis mahčymych podpisaŭ na ikonach"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum handled files in a folder"
-msgstr "Maksymalnaja kolkaść absłuhoŭvanych fajłaŭ tečki"
+msgstr "Maksymalnaja kolkaść absłuhoŭvanych fajłaŭ katalohu"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum image size for thumbnailing"
 msgstr "Maksymalny pamier vyjavy dziela stvareńnia minijatury"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid "Name of the Nautilus theme to use. This has been deprecated as of Nautilus 2.2. Please use the icon theme instead."
-msgstr "Nazva ŭžyvanaha matyvu Nautilusa. Hetaja opcyja sastarełaja ad versii 2.2 prahramy. Zamiest jaje naležyć karystacca matyvam ikon."
+msgid ""
+"Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
+"2.2. Please use the icon theme instead."
+msgstr ""
+"Nazva ŭžyvanaha matyvu Nautilusa. Hetaja opcyja sastarełaja ad versii 2.2 "
+"prahramy. Zamiest jaje naležyć karystacca matyvam ikon."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Nautilus handles drawing the desktop"
@@ -561,185 +694,282 @@ msgid "Network Servers icon visible on the desktop"
 msgstr "Ikona sieciŭnych serveraŭ bačnaja na stale"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+msgid "Network servers icon name"
+msgstr "Nazva ikony Sieciŭnych serveraŭ"
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "Only show folders in the tree sidebar"
 msgstr "Pakazvaj tolki katalohi ŭ drevie katalohaŭ na bakavoj paneli"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid "Possible values are \"single\" to launch files on a single click, or \"double\" to launch them on a double click."
-msgstr "Mahčymymi vartaściami źjaŭlajucca \"single\", kab uruchamlać fajły adnym klikam, albo \"double\", kab uruchamlać fajły padvojnym klikam."
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+msgid ""
+"Possible values are \"single\" to launch files on a single click, or \"double"
+"\" to launch them on a double click."
+msgstr ""
+"Mahčymymi vartaściami źjaŭlajucca \"single\", kab uruchamlać fajły adnym "
+"klikam, albo \"double\", kab uruchamlać fajły padvojnym klikam."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Put labels beside icons"
 msgstr "Pakažy etykiety pad ikonami"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Reverse sort order in new windows"
 msgstr "Advarotnaja čarhovaść paradkavańnia ŭ novych voknach"
 
 #. Translators: please note this can choose the size. e.g.
 #. "Sans 15". Please do not change "Sans", only change the size if you need to. In
 #. most cases, this should be left alone.
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Sans 10"
 msgstr "Sans 10"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show advanced permissions in in the file property dialog"
 msgstr "Pakazvaje dadatkovyja pravy ŭ vaknie ŭłaścivaściaŭ fajłu"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-msgid "Show folders first in windows"
-msgstr "Pakazvaj tečki pieršymi ŭ voknach"
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+msgid "Show folders first in windows"
+msgstr "Pakazvaj katalohi pieršymi ŭ voknach"
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Show location bar in new windows"
 msgstr "Pakazvaj panel pałažeńnia ŭ novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Show mounted volumes on the desktop"
 msgstr "Pakažy na stale ikony prymantavanaj aparatury"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Show side pane in new windows"
 msgstr "Pakazvaj bakavuju panel u novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid "Show status bar in new windows"
 msgstr "Pakazvaj panel stanu ŭ novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Show toolbar in new windows"
 msgstr "Pakazvaj panel pryładździa ŭ novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "Side pane view"
 msgstr "Vyhlad bakavoj paneli"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-msgid "Speed tradeoff for when to preview a sound file when mousing over a files icon. If set to \"always\" then always plays the sound, even if the file is on a remote server. If set to \"local_only\" then only plays previews on local file systems. If set to \"never\" then it never previews sound."
-msgstr "Nałady chutkaści pry prasłuchoŭvańni fajłu padčas pierasoŭvańnia kursora myšy nad ikonami fajłaŭ. Kali abranaja opcyja \"always\", tady zaŭždy budzie hučać huk, navat kali fajł znachodzicca na addalenym servery. Kali abranaja opcyja \"local_only\", tady huk budzie pajaŭlacca adno pry lakalnych fajłach. Kali abranaja opcyja \"never\", tady huku niama."
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "Speed tradeoff for when to show a preview of text file contents in the file's icon. If set to \"always\" then always show previews, even if the folder is on a remote server. If set to \"local_only\" then only show previews for local file systems. If set to \"never\" then never bother to read preview data."
-msgstr "Nałady chutkaści pry prahladzie źmieściva tekstavych fajłaŭ u ikonach. Kali abrana \"always\", źmiest bačny zaŭždy, navat kali tečka znachodzicca na addalenym servery. Kali abranaje \"local_only\", tady bačny tolki źmiest lakalnych fajłaŭ. Kali abranaje \"never\", pieradahlad źmiestu nie stvarajecca."
+msgid ""
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local_only\" then only plays previews on "
+"local file systems. If set to \"never\" then it never previews sound."
+msgstr ""
+"Nałady chutkaści pry prasłuchoŭvańni fajłu padčas pierasoŭvańnia kursora "
+"myšy nad ikonami fajłaŭ. Kali abranaja opcyja \"always\", tady zaŭždy budzie "
+"hučać huk, navat kali fajł znachodzicca na addalenym servery. Kali abranaja "
+"opcyja \"local_only\", tady huk budzie pajaŭlacca adno pry lakalnych "
+"fajłach. Kali abranaja opcyja \"never\", tady huku niama."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
-msgid "Speed tradeoff for when to show an image file as a thumbnail. If set to \"always\" then always thumbnail, even if the folder is on a remote server. If set to \"local_only\" then only show thumbnails for local file systems. If set to \"never\" then never bother to thumbnail images, just use a generic icon."
-msgstr "Nałady chutkaści pry prahladzie minijaturaŭ hrafičnych fajłaŭ. Kali abranaje \"always\", tady minijaturka zaŭždy bačnaja, navat kali tečka znachodzicca na addalenym servery. Kali abranaje \"local_only\", tady pakazanyja buduć minijaturki lakalnych fajłaŭ. Kali abranaje \"never\", tady zamiest minijaturak bačnyja standartnyja ikony."
+msgid ""
+"Speed tradeoff for when to show a preview of text file contents in the "
+"file's icon. If set to \"always\" then always show previews, even if the "
+"folder is on a remote server. If set to \"local_only\" then only show "
+"previews for local file systems. If set to \"never\" then never bother to "
+"read preview data."
+msgstr ""
+"Nałady chutkaści pry prahladzie źmieściva tekstavych fajłaŭ u ikonach. Kali "
+"abrana \"always\", źmiest bačny zaŭždy, navat kali kataloh znachodzicca na "
+"addalenym servery. Kali abranaje \"local_only\", tady bačny tolki źmiest "
+"lakalnych fajłaŭ. Kali abranaje \"never\", pieradahlad źmiestu nie "
+"stvarajecca."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-msgid "Speed tradeoff for when to show the number of items in a folder. If set to \"always\" then always show item counts, even if the folder is on a remote server. If set to \"local_only\" then only show counts for local file systems. If set to \"never\" then never bother to compute item counts."
-msgstr "Nałady chutkaści pry prahladzie kolkaści elementaŭ u tečcy. Kali abranaje \"always\", tady zaŭždy pakazany ličylnik elementaŭ, navat kali tečka znachodzicca na addalenym servery. Kali abrana \"local_only\", bačnyja ličylniki dla lakalnaj systemy fajłaŭ. Kali abranaje \"never\", elementaŭ nia ličać."
+msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local_only\" then only show thumbnails for local file systems. "
+"If set to \"never\" then never bother to thumbnail images, just use a "
+"generic icon."
+msgstr ""
+"Nałady chutkaści pry prahladzie minijaturaŭ hrafičnych fajłaŭ. Kali abranaje "
+"\"always\", tady minijaturka zaŭždy bačnaja, navat kali kataloh znachodzicca "
+"na addalenym servery. Kali abranaje \"local_only\", tady pakazanyja buduć "
+"minijaturki lakalnych fajłaŭ. Kali abranaje \"never\", tady zamiest "
+"minijaturak bačnyja standartnyja ikony."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
-msgid "The default size of an icon for a thumbnail thumbnail in the icon view."
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"\"always\" then always show item counts, even if the folder is on a remote "
+"server. If set to \"local_only\" then only show counts for local file "
+"systems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Nałady chutkaści pry prahladzie kolkaści elementaŭ u katalohu. Kali abranaje "
+"\"always\", tady zaŭždy pakazany ličylnik elementaŭ, navat kali kataloh "
+"znachodzicca na addalenym servery. Kali abrana \"local_only\", bačnyja "
+"ličylniki dla lakalnaj systemy fajłaŭ. Kali abranaje \"never\", elementaŭ "
+"nia ličać."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-msgid "The default sort-order for items in the icon view. Possible values are \"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr "Zmoŭčany paradak sartavańnia elementaŭ u vyhladzie ikon. Dapuščalnyja vartaści: \"name\" (nazva), \"size\" (pamier), \"type\" (typ), \"modification_date\" (data madyfikacyi) i \"emblems\" (emblemy)."
+msgid "The default size of an icon for a thumbnail in the icon view."
+msgstr "Zmoŭčany pamier ikony dla minijaturaŭ, bačnych u vyhladzie ikonaŭ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
-msgid "The default sort-order for the items in the list view. Possible values are \"name\", \"size\", \"type\", and \"modification_date\"."
-msgstr "Zmoŭčany paradak sartavańnia elementaŭ u vyhladzie śpisu. Dapuščalnyja vartaści: \"name\" (nazva), \"size\" (pamier), \"type\" (typ) i \"modification_date\" (data madyfikacyi)."
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
+msgstr ""
+"Zmoŭčany paradak sartavańnia elementaŭ u vyhladzie ikon. Dapuščalnyja "
+"vartaści: \"name\" (nazva), \"size\" (pamier), \"type\" (typ), "
+"\"modification_date\" (data madyfikacyi) i \"emblems\" (emblemy)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+msgid ""
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
+msgstr ""
+"Zmoŭčany paradak sartavańnia elementaŭ u vyhladzie śpisu. Dapuščalnyja "
+"vartaści: \"name\" (nazva), \"size\" (pamier), \"type\" (typ) i "
+"\"modification_date\" (data madyfikacyi)."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "The default width of the side pane in new windows."
 msgstr "Zmoŭčanaja šyrynia bakavoj paneli ŭ novych voknach."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "The font description used for the icons on the desktop."
 msgstr "Apisańnie šryftu, ŭžyvanaha dla ikon na stale."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
-msgid "The format of file dates. Possible values are \"locale\", \"iso\", and \"informal\"."
-msgstr "Farmat dla fajłaŭ. Dapuščalnyja vartaści: \"locale\", \"iso\" i \"informal\"."
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+msgid ""
+"The format of file dates. Possible values are \"locale\", \"iso\", and "
+"\"informal\"."
+msgstr ""
+"Farmat dla fajłaŭ. Dapuščalnyja vartaści: \"locale\", \"iso\" i \"informal\"."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "The side pane view to show in newly opened windows."
 msgstr "Vyhlad bakavoj paneli ŭ novaadčynienych voknach."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
-msgid "This name can be set if you want a custom name for the computer icon on the desktop."
-msgstr "Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony kamputara na stale."
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-msgid "This name can be set if you want a custom name for the home icon on the desktop."
-msgstr "Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony chatniaj tečki na stale."
+msgid ""
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
+msgstr ""
+"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony kamputara "
+"na stale."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-msgid "This name can be set if you want a custom name for the trash icon on the desktop."
-msgstr "Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony śmetnicy na stale."
+msgid ""
+"This name can be set if you want a custom name for the home icon on the "
+"desktop."
+msgstr ""
+"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony chatniaha "
+"katalohu na stale."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+msgid ""
+"This name can be set if you want a custom name for the network servers icon "
+"on the desktop."
+msgstr ""
+"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony sieciŭnych "
+"serveraŭ na stale."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+msgid ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
+msgstr ""
+"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony śmetnicy "
+"na stale."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Trash icon visible on desktop"
 msgstr "Ikona śmietnicy bačnaja na stale"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Type of click used to launch/open files"
 msgstr "Typ kliku, kab uruchamlać/adčyniać fajły"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Use manual layout in new windows"
 msgstr "Užyćcio ručnoha raźmiaščeńnia ŭ novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Use tighter layout in new windows"
 msgstr "Užyćcio ciaśniejšaha raźmiaščeńnia ŭ novych voknach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "What to do with executable text files when activated"
 msgstr "Što rabić z vykonvalnymi tekstavymi fajłami padčas aktyvizacyi"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
-msgid "What to do with executable text files when they are activated (single or double clicked). Possible values are \"launch\" to launch them as programs, \"ask\" to ask what to do via a dialog, and \"display\" to display them as text files."
-msgstr "Što rabić z vykonvalnymi tekstavymi fajłami, kali ich aktyvizujuć (adnym albo padvojnym klikam). Dapuščalnyja vartaści: \"launch\" – uruchamleńnie jak prahramy, \"ask\" – pytańnie, što zrabić, u vaknie dyjalohu, \"display\" – pakaz u jakaści tekstavych fajłaŭ."
-
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
-msgid "When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are \"list_view\" and \"icon_view\"."
-msgstr "Hartač, užyvany dziela prahladu źmieściva tečki, da taho času, pakul dla jaho nie abiaruć inšaha vyhladu. Dapuščalnyja vartaści: \"list_view\" i \"icon_view\"."
-
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
-msgid "When to show number of items in a folder"
-msgstr "Kali pakazvać kolkaść elementaŭ u tečcy"
+msgid ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+msgstr ""
+"Što rabić z vykonvalnymi tekstavymi fajłami, kali ich aktyvizujuć (adnym "
+"albo padvojnym klikam). Dapuščalnyja vartaści: \"launch\" – uruchamleńnie "
+"jak prahramy, \"ask\" – pytańnie, što zrabić, u vaknie dyjalohu, \"display\" "
+"– pakaz u jakaści tekstavych fajłaŭ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
+msgid ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
+msgstr ""
+"Hartač, užyvany dziela prahladu źmieściva katalohu, da taho času, pakul dla "
+"jaho nie abiaruć inšaha vyhladu. Dapuščalnyja vartaści: \"list_view\" i "
+"\"icon_view\"."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
+msgid "When to show number of items in a folder"
+msgstr "Kali pakazvać kolkaść elementaŭ u katalohu"
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid "When to show preview text in icons"
 msgstr "Kali pakazvać pieradahlad tekstu ŭ ikonach"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid "When to show thumbnails of image files"
 msgstr "Kali pakazvać minijaturki hrafičnych fajłaŭ"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid "Whether a custom default folder background has been set."
-msgstr "Akreślivaje, ci ŭ tečcy byŭ abrany inšy fon, čym zmoŭčany."
+msgstr "Akreślivaje, ci ŭ katalohu byŭ abrany inšy fon, čym zmoŭčany."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Whether a custom default side pane background has been set."
 msgstr "Akreślivaje, ci ŭ bakavoj paneli byŭ akreśleny inšy fon, čym zmoŭčany."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
-msgid "Whether to ask for confirmation when moving files to trash"
-msgstr "Akreślivaje, ci patrabavać paćvierdžańnia pry pieranosie fajłaŭ u śmietnicu"
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
+msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
+msgstr ""
+"Akreślivaje, ci patrabavać paćvierdžańnia pry vydaleńni fajłaŭ albo ačystcy "
+"śmietnicy"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Whether to enable immediate deletion"
 msgstr "Akreślivaje, ci ŭklučyć biezahavoračnaje vydaleńnie"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr "Akreślivaje, ci hrać huk pry pierasoŭvańni kursora myšy nad ikonami hukavych fajłaŭ"
+msgstr ""
+"Akreślivaje, ci hrać huk pry pierasoŭvańni kursora myšy nad ikonami hukavych "
+"fajłaŭ"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid "Whether to show backup files"
 msgstr "Akreślivaje, ci pakazvać zapasnyja fajły"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid "Whether to show hidden files"
 msgstr "Akreślivaje, ci pakazvać schavanyja fajły"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
 msgid "Width of the side pane"
 msgstr "Šyrynia bakavoj paneli"
 
@@ -763,7 +993,7 @@ msgstr "Uklejvaje tekst, zapisany ŭ padručnaj pamiaci"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6959
+#: ../src/file-manager/fm-directory-view.c:6962
 msgid "Select _All"
 msgstr "Zaznač _usio"
 
@@ -793,7 +1023,7 @@ msgid "Use De_fault"
 msgstr "Vykarystaj z_moŭčany"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1374
+#: ../src/file-manager/fm-list-view.c:1375
 msgid "Name"
 msgstr "Nazva"
 
@@ -818,7 +1048,7 @@ msgid "The type of the file."
 msgstr "Typ fajłu."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
-#: ../src/nautilus-image-properties-page.c:228
+#: ../src/nautilus-image-properties-page.c:245
 msgid "Date Modified"
 msgstr "Čas madyfikacyi"
 
@@ -851,7 +1081,7 @@ msgid "The group of the file."
 msgstr "Hrupa fajłu."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4529
+#: ../src/file-manager/fm-properties-window.c:4537
 msgid "Permissions"
 msgstr "Dazvoły"
 
@@ -883,8 +1113,8 @@ msgstr "Kantekst SELinux"
 msgid "The SELinux security context of the file."
 msgstr "Kantekst biaśpieki SELinux dla dadzienaha fajłu."
 
-#: ../libnautilus-private/nautilus-customization-data.c:407
-#: ../src/nautilus-property-browser.c:1868
+#: ../libnautilus-private/nautilus-customization-data.c:392
+#: ../src/nautilus-property-browser.c:1867
 msgid "Reset"
 msgstr "Abnuluj"
 
@@ -900,16 +1130,20 @@ msgid "You cannot move the volume \"%s\" to the trash."
 msgstr "Niemahčyma pieranieści masiŭ \"%s\" u śmietnicu."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:125
-msgid "If you want to eject the volume, please use \"Eject\" in the popup menu of the volume."
-msgstr "Kali chočaš adłučyć aparaturu, skarystaj aperacyju \"Vysuń\" u padručnym menu aparatury."
+msgid ""
+"If you want to eject the volume, please use \"Eject\" in the popup menu of "
+"the volume."
+msgstr ""
+"Kali chočaš adłučyć aparaturu, skarystaj aperacyju \"Vysuń\" u padručnym "
+"menu aparatury."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:134
-msgid "If you want to unmount the volume, please use \"Unmount Volume\" in the popup menu of the volume."
-msgstr "Kali chočaš admantavać aparaturu, skarystaj aperacyju \"Admantuj masiŭ\" u padručnym menu masivu."
-
-#: ../libnautilus-private/nautilus-desktop-link.c:179
-msgid "Network Servers"
-msgstr "Sieciŭnyja servery"
+msgid ""
+"If you want to unmount the volume, please use \"Unmount Volume\" in the "
+"popup menu of the volume."
+msgstr ""
+"Kali chočaš admantavać aparaturu, skarystaj aperacyju \"Admantuj masiŭ\" u "
+"padručnym menu masivu."
 
 #: ../libnautilus-private/nautilus-dnd.c:619
 msgid "_Move Here"
@@ -934,11 +1168,11 @@ msgstr "Anuluj"
 
 #: ../libnautilus-private/nautilus-dnd.c:682
 msgid "Set as background for _all folders"
-msgstr "Abiary ŭ jakaści fonu va _ŭsich tečkach"
+msgstr "Abiary ŭ jakaści fonu va _ŭsich katalohach"
 
 #: ../libnautilus-private/nautilus-dnd.c:687
 msgid "Set as background for _this folder"
-msgstr "Abiary ŭ jakaści fonu ŭ _hetaj tečcy"
+msgstr "Abiary ŭ jakaści fonu ŭ _hetym katalohu"
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:198
 #: ../libnautilus-private/nautilus-emblem-utils.c:203
@@ -952,8 +1186,10 @@ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Vybačaj, ale klučavoje słova dla novaj emblemy nia moža być pustym."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:204
-msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr "Vybačaj, ale klučavyja emblemy mohuć mieć tolki litary, prabieły j ličby."
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgstr ""
+"Vybačaj, ale klučavyja emblemy mohuć mieć tolki litary, prabieły j ličby."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -993,7 +1229,7 @@ msgstr "(Zastałosia %d:%02d)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:452
 #: ../libnautilus-private/nautilus-file-operations.c:481
-#: ../libnautilus-private/nautilus-file-utilities.c:92
+#: ../libnautilus-private/nautilus-file-utilities.c:93
 #: ../src/nautilus-connect-server-dialog.c:337
 #, c-format
 msgid "%s on %s"
@@ -1019,7 +1255,9 @@ msgstr "Pamyłka padčas pieranosu."
 #: ../libnautilus-private/nautilus-file-operations.c:672
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
-msgstr "Niemahčyma pieranieści \"%s\", bo heta znachodzicca na dysku tolki dla čytańnia."
+msgstr ""
+"Niemahčyma pieranieści \"%s\", bo heta znachodzicca na dysku tolki dla "
+"čytańnia."
 
 #: ../libnautilus-private/nautilus-file-operations.c:682
 #: ../libnautilus-private/nautilus-file-operations.c:688
@@ -1028,28 +1266,45 @@ msgstr "Pamyłka padčas vydaleńnia."
 
 #: ../libnautilus-private/nautilus-file-operations.c:683
 #, c-format
-msgid "\"%s\" cannot be deleted because you do not have permissions to modify its parent folder."
-msgstr "Niemahčyma vydalić \"%s\" z pryčyny adsutnaści dazvołu na madyfikacyju nadtečki."
+msgid ""
+"\"%s\" cannot be deleted because you do not have permissions to modify its "
+"parent folder."
+msgstr ""
+"Niemahčyma vydalić \"%s\" z pryčyny adsutnaści dazvołu na madyfikacyju "
+"nadkatalohu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:689
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-msgstr "Niemahčyma vydalić \"%s\", bo heta znachodzicca na dysku tolki da čytańnia."
+msgstr ""
+"Niemahčyma vydalić \"%s\", bo heta znachodzicca na dysku tolki da čytańnia."
 
 #: ../libnautilus-private/nautilus-file-operations.c:720
 #, c-format
-msgid "\"%s\" cannot be moved because you do not have permissions to change it or its parent folder."
-msgstr "Niemahčyma pieranieści \"%s\" z pryčyny adsutnaści dazvołaŭ źmianiać fajł albo nadtečku."
+msgid ""
+"\"%s\" cannot be moved because you do not have permissions to change it or "
+"its parent folder."
+msgstr ""
+"Niemahčyma pieranieści \"%s\" z pryčyny adsutnaści dazvołaŭ źmianiać fajł "
+"albo nadkataloh."
 
 #: ../libnautilus-private/nautilus-file-operations.c:725
 #, c-format
-msgid "Cannot move \"%s\" because it or its parent folder are contained in the destination."
-msgstr "Niemahčyma pieranieści \"%s\", bo hetaje pałažeńnie albo jahonaja nadtečka znachodzicca ŭ metavym pałažeńni."
+msgid ""
+"Cannot move \"%s\" because it or its parent folder are contained in the "
+"destination."
+msgstr ""
+"Niemahčyma pieranieści \"%s\", bo hetaje pałažeńnie albo jahony nadkataloh "
+"znachodzicca ŭ metavym pałažeńni."
 
 #: ../libnautilus-private/nautilus-file-operations.c:735
 #, c-format
-msgid "Cannot move \"%s\" to the trash because you do not have permissions to change it or its parent folder."
-msgstr "Niemahčyma pieranieści \"%s\" u śmietnicu z pryčyny adsutnaści dazvołu źmianiać jaho albo nadtečku."
+msgid ""
+"Cannot move \"%s\" to the trash because you do not have permissions to "
+"change it or its parent folder."
+msgstr ""
+"Niemahčyma pieranieści \"%s\" u śmietnicu z pryčyny adsutnaści dazvołu "
+"źmianiać jaho albo nadkataloh."
 
 #: ../libnautilus-private/nautilus-file-operations.c:757
 msgid "Error while copying."
@@ -1087,7 +1342,7 @@ msgstr "Pamyłka padčas stvareńnia poviazi ŭ \"%s\"."
 #: ../libnautilus-private/nautilus-file-operations.c:811
 #: ../libnautilus-private/nautilus-file-operations.c:822
 msgid "You do not have permissions to write to this folder."
-msgstr "Niama dazvołu zapisvać u hetaj tečcy."
+msgstr "Niama dazvołu zapisvać u hetym nadkatalohu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:804
 #: ../libnautilus-private/nautilus-file-operations.c:815
@@ -1175,8 +1430,13 @@ msgid "Could not move \"%s\" to the new location."
 msgstr "Niemahčyma pieranieści \"%s\" na novaje miesca."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1140
-msgid "The name is already used for a special item that cannot be removed or replaced.  If you still want to move the item, rename it and try again."
-msgstr "Hetuju nazvu ŭžo vykarystoŭvaje admysłovy element, jaki niemahčyma ani vydalić, ani zamianić. Kali ty ŭsio ž chočaš pieranieści element, źmiani jahonuju nazvu i pasprabuj znoŭ."
+msgid ""
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to move the item, rename it and try again."
+msgstr ""
+"Hetuju nazvu ŭžo vykarystoŭvaje admysłovy element, jaki niemahčyma ani "
+"vydalić, ani zamianić. Kali ty ŭsio ž chočaš pieranieści element, źmiani "
+"jahonuju nazvu i pasprabuj znoŭ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1144
 #, c-format
@@ -1184,8 +1444,13 @@ msgid "Could not copy \"%s\" to the new location."
 msgstr "Niemahčyma skapijavać \"%s\" na novaje miesca."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1147
-msgid "The name is already used for a special item that cannot be removed or replaced.  If you still want to copy the item, rename it and try again."
-msgstr "Hetuju nazvu ŭžo vykarystoŭvaje admysłovy element, jaki niemahčyma ani vydalić, ani zamianić. Kali ty ŭsio ž chočaš pieranieści element, źmiani jahonuju nazvu i pasprabuj znoŭ."
+msgid ""
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to copy the item, rename it and try again."
+msgstr ""
+"Hetuju nazvu ŭžo vykarystoŭvaje admysłovy element, jaki niemahčyma ani "
+"vydalić, ani zamianić. Kali ty ŭsio ž chočaš pieranieści element, źmiani "
+"jahonuju nazvu i pasprabuj znoŭ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
@@ -1199,13 +1464,19 @@ msgstr "Fajł \"%s\" užo isnuje. Ci zamianić jaho?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1194
 #, c-format
-msgid "The folder already exists in \"%s\".  Replacing it will overwrite any files in the folder that conflict with the files being copied."
-msgstr "Tečka ŭžo isnuje ŭ \"%s\". Zamiena pryviadzie da taho, što fajły z adnolkavymi nazvami, jakija tam znachodziacca, buduć nadpisanyja."
+msgid ""
+"The folder already exists in \"%s\".  Replacing it will overwrite any files "
+"in the folder that conflict with the files being copied."
+msgstr ""
+"Tečka ŭžo isnuje ŭ \"%s\". Zamiena pryviadzie da taho, što fajły z "
+"adnolkavymi nazvami, jakija tam znachodziacca, buduć nadpisanyja."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1197
 #, c-format
-msgid "The file already exists in \"%s\".  Replacing it will overwrite its contents."
-msgstr "Fajł užo isnuje ŭ \"%s\". Zamiena vykliča nadpisańnie jahonaha źmieściva."
+msgid ""
+"The file already exists in \"%s\".  Replacing it will overwrite its contents."
+msgstr ""
+"Fajł užo isnuje ŭ \"%s\". Zamiena vykliča nadpisańnie jahonaha źmieściva."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1214
 #: ../libnautilus-private/nautilus-file-operations.c:1233
@@ -1227,7 +1498,7 @@ msgstr "Zamiani _ŭsie"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
 #: ../libnautilus-private/nautilus-file.c:4828
-#: ../src/file-manager/fm-directory-view.c:9909
+#: ../src/file-manager/fm-directory-view.c:9912
 #, c-format
 msgid "Link to %s"
 msgstr "Poviaź da %s"
@@ -1455,31 +1726,32 @@ msgstr "Niemahčyma stvaryć poviazi ŭ śmietnicy."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2183
 msgid "Files and folders can only be moved into the trash."
-msgstr "Fajły j tečki možna pieranieści tolki ŭ śmietnicu."
+msgstr "Fajły j katalohi možna pieranieści tolki ŭ śmietnicu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2206
 msgid "You cannot move this trash folder."
-msgstr "Niemahčyma pieranieści tečku śmietnicy."
+msgstr "Niemahčyma pieranieści kataloh śmietnicy."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2207
 msgid "You cannot copy this trash folder."
-msgstr "Niemahčyma kapijavać tečku śmietnicy."
+msgstr "Niemahčyma kapijavać kataloh śmietnicy."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2208
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr "Tečka śmietnicy vykarystoŭvajecca dziela zachoŭvańnia skasavanych fajłaŭ."
+msgstr ""
+"Tečka śmietnicy vykarystoŭvajecca dziela zachoŭvańnia skasavanych fajłaŭ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2232
 msgid "You cannot move a folder into itself."
-msgstr "Niemahčyma pieranieści tečku ŭ jaje samu."
+msgstr "Niemahčyma pieranieści kataloh u jaho samoha."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2233
 msgid "You cannot copy a folder into itself."
-msgstr "Niemahčyma skapijavać tečku ŭ jaje samu."
+msgstr "Niemahčyma skapijavać kataloh u jaho samoha."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2234
 msgid "The destination folder is inside the source folder."
-msgstr "Tečka pryznačeńnia znachodzicca ŭnutry tečki-krynicy."
+msgstr "Tečka pryznačeńnia znachodzicca ŭnutry katalohu-krynicy."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2247
 msgid "You cannot copy a file over itself."
@@ -1502,16 +1774,16 @@ msgstr "U miescy pryznačeńnia nie staje miesca."
 #: ../libnautilus-private/nautilus-file-operations.c:2307
 #, c-format
 msgid "Error \"%s\" creating new folder."
-msgstr "Padčas stvareńnia novaj tečki zdaryłasia pamyłka \"%s\"."
+msgstr "Padčas stvareńnia novaha katalohu zdaryłasia pamyłka \"%s\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2312
 msgid "Error creating new folder."
-msgstr "Pry stvareńni novaj tečki zdaryłasia pamyłka."
+msgstr "Pry stvareńni novaha katalohu zdaryłasia pamyłka."
 
 #. localizers: the initial name of a new folder
 #: ../libnautilus-private/nautilus-file-operations.c:2422
 msgid "untitled folder"
-msgstr "tečka biaz nazvy"
+msgstr "kataloh biaz nazvy"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2480
 #, c-format
@@ -1561,8 +1833,12 @@ msgid "Empty all of the items from the trash?"
 msgstr "Ačyścić śmietnicu ad usich elementaŭ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2891
-msgid "If you choose to empty the trash, all items in it will be permanently lost. Please note that you can also delete them separately."
-msgstr "Kali abiareš ačystku śmietnicy, usie źmieščanyja ŭ joj elementy buduć nazaŭždy stračanyja. Možna taksama vydalać ich paasobku."
+msgid ""
+"If you choose to empty the trash, all items in it will be permanently lost. "
+"Please note that you can also delete them separately."
+msgstr ""
+"Kali abiareš ačystku śmietnicy, usie źmieščanyja ŭ joj elementy buduć "
+"nazaŭždy stračanyja. Možna taksama vydalać ich paasobku."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2913
 msgid "_Empty Trash"
@@ -1573,8 +1849,12 @@ msgid "Do you want to empty the trash before you umount?"
 msgstr "Ci chočaš aparažnić śmietnicu pierad admantavańniem?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3020
-msgid "In order to regain the free space on this device the trash must be emptied. All items in the trash will be permanently lost. "
-msgstr "Śmietnicu treba aparažnić, kab vyzvalić miesca na hetaj aparatury. Usie elementy sa śmietnicy buduć nazaŭždy stračanyja. "
+msgid ""
+"In order to regain the free space on this device the trash must be emptied. "
+"All items in the trash will be permanently lost. "
+msgstr ""
+"Śmietnicu treba aparažnić, kab vyzvalić miesca na hetaj aparatury. Usie "
+"elementy sa śmietnicy buduć nazaŭždy stračanyja. "
 
 #: ../libnautilus-private/nautilus-file-operations.c:3026
 msgid "Don't Empty Trash"
@@ -1586,7 +1866,7 @@ msgstr "Nie aparažniaj śmietnicy"
 msgid "Empty Trash"
 msgstr "Aparažni śmietnicu"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:80
+#: ../libnautilus-private/nautilus-file-utilities.c:81
 #: ../libnautilus-private/nautilus-query.c:135
 #: ../libnautilus-private/nautilus-search-directory-file.c:173
 #: ../libnautilus-private/nautilus-search-directory-file.c:188
@@ -1594,35 +1874,35 @@ msgstr "Aparažni śmietnicu"
 msgid "Search"
 msgstr "Pošuk"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:851
-#: ../libnautilus-private/nautilus-global-preferences.c:530
+#: ../libnautilus-private/nautilus-file-utilities.c:882
+#: ../libnautilus-private/nautilus-global-preferences.c:538
 #: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Kamputar"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:853
+#: ../libnautilus-private/nautilus-file-utilities.c:884
 #: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Sietka"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:855
+#: ../libnautilus-private/nautilus-file-utilities.c:886
 msgid "Fonts"
 msgstr "Šryfty"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:857
+#: ../libnautilus-private/nautilus-file-utilities.c:888
 msgid "Themes"
 msgstr "Matyvy"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:859
+#: ../libnautilus-private/nautilus-file-utilities.c:890
 msgid "CD/DVD Creator"
 msgstr "Stvaralnik CD/DVD"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:861
+#: ../libnautilus-private/nautilus-file-utilities.c:892
 msgid "Windows Network"
 msgstr "Sietka Windows"
 
 #. translators: this is the title of the "dns-sd:///" location
-#: ../libnautilus-private/nautilus-file-utilities.c:864
+#: ../libnautilus-private/nautilus-file-utilities.c:895
 msgid "Services in"
 msgstr "Pasłuhi ŭ"
 
@@ -1777,9 +2057,9 @@ msgstr[2] "%u elementaŭ"
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
-msgstr[0] "%u tečka"
-msgstr[1] "%u tečki"
-msgstr[2] "%u tečak"
+msgstr[0] "%u kataloh"
+msgstr[1] "%u katalohi"
+msgstr[2] "%u katalohaŭ"
 
 #: ../libnautilus-private/nautilus-file.c:4344
 #, c-format
@@ -1827,13 +2107,23 @@ msgid "program"
 msgstr "prahrama"
 
 #: ../libnautilus-private/nautilus-file.c:4802
-msgid "Can't find description even for \"x-directory/normal\". This probably means that your gnome-vfs.keys file is in the wrong place or isn't being found for some other reason."
-msgstr "Niemahčyma znajści apisańnia typu \"x-directory/normal\". Vierahodna, heta aznačaje, što fajł gnome-vfs.keys znachodzicca ŭ nieadpaviednym miescy albo nia znojdzieny ź inšaj pryčyny."
+msgid ""
+"Can't find description even for \"x-directory/normal\". This probably means "
+"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
+"some other reason."
+msgstr ""
+"Niemahčyma znajści apisańnia typu \"x-directory/normal\". Vierahodna, heta "
+"aznačaje, što fajł gnome-vfs.keys znachodzicca ŭ nieadpaviednym miescy albo "
+"nia znojdzieny ź inšaj pryčyny."
 
 #: ../libnautilus-private/nautilus-file.c:4806
 #, c-format
-msgid "No description found for mime type \"%s\" (file is \"%s\"), please tell the gnome-vfs mailing list."
-msgstr "Nia znojdzienaje apisańnie typu MIME \"%s\" (fajł \"%s\"), napišy na adras rassyłki gnome-vfs (pa-anhielsku)."
+msgid ""
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
+msgstr ""
+"Nia znojdzienaje apisańnie typu MIME \"%s\" (fajł \"%s\"), napišy na adras "
+"rassyłki gnome-vfs (pa-anhielsku)."
 
 #: ../libnautilus-private/nautilus-file.c:4822
 msgid "link"
@@ -1844,184 +2134,183 @@ msgid "link (broken)"
 msgstr "poviaź (paškodžanaja)"
 
 #: ../libnautilus-private/nautilus-file.c:6369
-#: ../libnautilus-private/nautilus-global-preferences.c:536
+#: ../libnautilus-private/nautilus-global-preferences.c:544
 #: ../libnautilus-private/nautilus-trash-directory.c:353
-#: ../src/nautilus-places-sidebar.c:358
-#: ../src/nautilus-trash-bar.c:137
+#: ../src/nautilus-places-sidebar.c:358 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "Śmietnica"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:70
+#: ../libnautilus-private/nautilus-global-preferences.c:72
 msgid "_Always"
 msgstr "_Zaŭždy"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:71
+#: ../libnautilus-private/nautilus-global-preferences.c:73
 msgid "_Local File Only"
 msgstr "Tolki _lakalny fajł"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:72
+#: ../libnautilus-private/nautilus-global-preferences.c:74
 msgid "_Never"
 msgstr "_Nikoli"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:78
+#: ../libnautilus-private/nautilus-global-preferences.c:80
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:80
+#: ../libnautilus-private/nautilus-global-preferences.c:82
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:82
+#: ../libnautilus-private/nautilus-global-preferences.c:84
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:84
+#: ../libnautilus-private/nautilus-global-preferences.c:86
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:86
+#: ../libnautilus-private/nautilus-global-preferences.c:88
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:88
+#: ../libnautilus-private/nautilus-global-preferences.c:90
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:90
+#: ../libnautilus-private/nautilus-global-preferences.c:92
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:95
+#: ../libnautilus-private/nautilus-global-preferences.c:97
 msgid "100 K"
 msgstr "100 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:96
+#: ../libnautilus-private/nautilus-global-preferences.c:98
 msgid "500 K"
 msgstr "500 K"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:97
+#: ../libnautilus-private/nautilus-global-preferences.c:99
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:98
+#: ../libnautilus-private/nautilus-global-preferences.c:100
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:99
+#: ../libnautilus-private/nautilus-global-preferences.c:101
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:100
+#: ../libnautilus-private/nautilus-global-preferences.c:102
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:101
+#: ../libnautilus-private/nautilus-global-preferences.c:103
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:107
+#: ../libnautilus-private/nautilus-global-preferences.c:109
 msgid "Activate items with a _single click"
 msgstr "Aktyvizacyja elementaŭ a_dnym klikam"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:111
+#: ../libnautilus-private/nautilus-global-preferences.c:113
 msgid "Activate items with a _double click"
 msgstr "Aktyvizacyja elementaŭ pa_dvojnym klikam"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:119
+#: ../libnautilus-private/nautilus-global-preferences.c:121
 msgid "E_xecute files when they are clicked"
 msgstr "Vykonvańnie fajłaŭ paśla kliku"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:123
+#: ../libnautilus-private/nautilus-global-preferences.c:125
 msgid "Display _files when they are clicked"
 msgstr "Pakaz_vaj fajły, kali ich kliknuć"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:127
+#: ../libnautilus-private/nautilus-global-preferences.c:129
 #: ../src/nautilus-file-management-properties.glade.h:63
 msgid "_Ask each time"
 msgstr "_Kožny raz pytajsia"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:135
+#: ../libnautilus-private/nautilus-global-preferences.c:137
 msgid "Search for files by file name only"
 msgstr "Pošuk fajłaŭ tolki pavodle nazvy"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:139
+#: ../libnautilus-private/nautilus-global-preferences.c:141
 msgid "Search for files by file name and file properties"
 msgstr "Pošuk fajłaŭ pavodle nazvy i ŭłaścivaściaŭ"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:146
+#: ../libnautilus-private/nautilus-global-preferences.c:148
 #: ../src/file-manager/fm-icon-container.c:512
 msgid "Icon View"
 msgstr "Vyhlad ikon"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:147
-#: ../src/file-manager/fm-list-view.c:1431
+#: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../src/file-manager/fm-list-view.c:1428
 msgid "List View"
 msgstr "Vyhlad śpisu"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:152
+#: ../libnautilus-private/nautilus-global-preferences.c:154
 msgid "Manually"
 msgstr "Uručnuju"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:154
+#: ../libnautilus-private/nautilus-global-preferences.c:156
 msgid "By Name"
 msgstr "Pavodle nazvy"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:155
+#: ../libnautilus-private/nautilus-global-preferences.c:157
 msgid "By Size"
 msgstr "Pavodle pamieru"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:156
+#: ../libnautilus-private/nautilus-global-preferences.c:158
 msgid "By Type"
 msgstr "Pavodle typu"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:157
+#: ../libnautilus-private/nautilus-global-preferences.c:159
 msgid "By Modification Date"
 msgstr "Pavodle daty madyfikacyi"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:158
+#: ../libnautilus-private/nautilus-global-preferences.c:160
 msgid "By Emblems"
 msgstr "Pavodle emblemaŭ"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:163
+#: ../libnautilus-private/nautilus-global-preferences.c:165
 msgid "8"
 msgstr "8"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:164
+#: ../libnautilus-private/nautilus-global-preferences.c:166
 msgid "10"
 msgstr "10"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:165
+#: ../libnautilus-private/nautilus-global-preferences.c:167
 msgid "12"
 msgstr "12"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:166
+#: ../libnautilus-private/nautilus-global-preferences.c:168
 msgid "14"
 msgstr "14"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:167
+#: ../libnautilus-private/nautilus-global-preferences.c:169
 msgid "16"
 msgstr "16"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:168
+#: ../libnautilus-private/nautilus-global-preferences.c:170
 msgid "18"
 msgstr "18"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:169
+#: ../libnautilus-private/nautilus-global-preferences.c:171
 msgid "20"
 msgstr "20"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:170
+#: ../libnautilus-private/nautilus-global-preferences.c:172
 msgid "22"
 msgstr "22"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:171
+#: ../libnautilus-private/nautilus-global-preferences.c:173
 msgid "24"
 msgstr "24"
 
@@ -2033,10 +2322,14 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:524
+#: ../libnautilus-private/nautilus-global-preferences.c:532
 #, c-format
 msgid "%s's Home"
-msgstr "Chatniaja tečka %.0s"
+msgstr "Chatni kataloh %.0s"
+
+#: ../libnautilus-private/nautilus-global-preferences.c:550
+msgid "Network Servers"
+msgstr "Sieciŭnyja servery"
 
 #: ../libnautilus-private/nautilus-icon-container.c:2137
 msgid "The selection rectangle"
@@ -2053,8 +2346,12 @@ msgstr "Adčynić nie ŭdałosia, chočaš abrać inšuju aplikacyju?"
 #: ../libnautilus-private/nautilus-program-choosing.c:137
 #: ../libnautilus-private/nautilus-program-choosing.c:168
 #, c-format
-msgid "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" locations."
-msgstr "Pry dapamozie \"%s\" niemahčyma adčynić \"%s\", bo \"%s\" nia maje dostupu da fajłaŭ u \"%s\"."
+msgid ""
+"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+"locations."
+msgstr ""
+"Pry dapamozie \"%s\" niemahčyma adčynić \"%s\", bo \"%s\" nia maje dostupu "
+"da fajłaŭ u \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:142
 msgid "Open Failed, would you like to choose another action?"
@@ -2063,16 +2360,28 @@ msgstr "Adčynić nie ŭdałosia, ci chočaš abrać inšaje dziejańnie?"
 #: ../libnautilus-private/nautilus-program-choosing.c:143
 #: ../libnautilus-private/nautilus-program-choosing.c:175
 #, c-format
-msgid "The default action can't open \"%s\" because it can't access files at \"%s\" locations."
-msgstr "Niemahčyma adčynić pry dapamozie zmoŭčanaha dziejańnia \"%s\", bo jano nia maje dostupu da fajłaŭ z \"%s\"."
+msgid ""
+"The default action can't open \"%s\" because it can't access files at \"%s\" "
+"locations."
+msgstr ""
+"Niemahčyma adčynić pry dapamozie zmoŭčanaha dziejańnia \"%s\", bo jano nia "
+"maje dostupu da fajłaŭ z \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:171
-msgid "No other applications are available to view this file.  If you copy this file onto your computer, you may be able to open it."
-msgstr "Nijakaja inšaja aplikacyja nia moža pakazać hety fajł. Mahčyma, udasca adčynić fajł, skapijavaŭšy jaho na lakalny kamputar."
+msgid ""
+"No other applications are available to view this file.  If you copy this "
+"file onto your computer, you may be able to open it."
+msgstr ""
+"Nijakaja inšaja aplikacyja nia moža pakazać hety fajł. Mahčyma, udasca "
+"adčynić fajł, skapijavaŭšy jaho na lakalny kamputar."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:177
-msgid "No other actions are available to view this file.  If you copy this file onto your computer, you may be able to open it."
-msgstr "Nijakaje inšaje dziejańnie nia moža pakazać hety fajł. Mahčyma, ŭdasca adčynić fajł, skapijavaŭšy jaho na lakalny kamputar."
+msgid ""
+"No other actions are available to view this file.  If you copy this file "
+"onto your computer, you may be able to open it."
+msgstr ""
+"Nijakaje inšaje dziejańnie nia moža pakazać hety fajł. Mahčyma, ŭdasca "
+"adčynić fajł, skapijavaŭšy jaho na lakalny kamputar."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:489
 #: ../libnautilus-private/nautilus-program-choosing.c:731
@@ -2122,8 +2431,10 @@ msgstr "Miemahčyma pakazać \"%s\", bo niemahčyma znajści kamputar \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
 #: ../src/nautilus-window-manage-views.c:1522
-msgid "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Pravier, ci ŭsio napisana pravilna i ci niama pamyłki ŭ naładach proxy."
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr ""
+"Pravier, ci ŭsio napisana pravilna i ci niama pamyłki ŭ naładach proxy."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
 #: ../src/nautilus-window-manage-views.c:1480
@@ -2173,12 +2484,19 @@ msgid "This drop target only supports local files."
 msgstr "Puščać dazvolena tolki lakalnyja fajły."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:943
-msgid "To open non-local files copy them to a local folder and then drop them again."
-msgstr "Kab adčynić addaleny fajł, skapijuj jaho ŭ lakalnuju tečku, a potym znoŭ pieraciahni."
+msgid ""
+"To open non-local files copy them to a local folder and then drop them again."
+msgstr ""
+"Kab adčynić addaleny fajł, skapijuj jaho ŭ lakalny kataloh, a potym znoŭ "
+"pieraciahni."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:954
-msgid "To open non-local files copy them to a local folder and then drop them again. The local files you dropped have already been opened."
-msgstr "Kab adčynić addaleny fajł, skapijuj jaho ŭ lakalnuju tečku, a potym znoŭ pieraciahni. Puščanyja lakalnyja fajły ŭžo byli adčynienyja."
+msgid ""
+"To open non-local files copy them to a local folder and then drop them "
+"again. The local files you dropped have already been opened."
+msgstr ""
+"Kab adčynić addaleny fajł, skapijuj jaho ŭ lakalny kataloh, a potym znoŭ "
+"pieraciahni. Puščanyja lakalnyja fajły ŭžo byli adčynienyja."
 
 #: ../libnautilus-private/nautilus-query.c:138
 #, c-format
@@ -2186,7 +2504,7 @@ msgid "Search for \"%s\""
 msgstr "Pošuk \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
-#: ../src/nautilus-query-editor.c:987
+#: ../src/nautilus-query-editor.c:979
 msgid "Edit"
 msgstr "Redahavańnie"
 
@@ -2207,10 +2525,12 @@ msgid "Redo the edit"
 msgstr "Paŭtaraje źmieny"
 
 #. label, accelerator
-#: ../nautilus-computer.desktop.in.in.h:1
-#: ../src/nautilus-window-menus.c:663
-msgid "Browse all local and remote disks and folders accessible from this computer"
-msgstr "Prahlad usich lakalnych i addalenych dyskaŭ dy tečak, dastupnych z hetaha kamputara"
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:658
+msgid ""
+"Browse all local and remote disks and folders accessible from this computer"
+msgstr ""
+"Prahlad usich lakalnych i addalenych dyskaŭ dy katalohaŭ, dastupnych z hetaha "
+"kamputara"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
@@ -2222,18 +2542,16 @@ msgstr "Kiravańnie fajłami"
 
 #: ../nautilus-folder-handler.desktop.in.in.h:1
 msgid "Open Folder"
-msgstr "Adčyni tečku"
+msgstr "Adčyni kataloh"
 
-#: ../nautilus-home.desktop.in.in.h:1
-#: ../src/file-manager/fm-tree-view.c:1394
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1394
 msgid "Home Folder"
-msgstr "Chatniaja tečka"
+msgstr "Chatni kataloh"
 
 #. label, accelerator
-#: ../nautilus-home.desktop.in.in.h:2
-#: ../src/nautilus-window-menus.c:659
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:654
 msgid "Open your personal folder"
-msgstr "Adčyniaje tvaju pryvatnuju tečku"
+msgstr "Adčyniaje tvaju pryvatny kataloh"
 
 #: ../nautilus.desktop.in.in.h:1
 msgid "Browse the file system with the file manager"
@@ -2260,12 +2578,18 @@ msgid "Nautilus shell"
 msgstr "Abałonka Nautilusa"
 
 #: ../src/Nautilus_shell.server.in.h:5
-msgid "Nautilus shell operations that can be done from subsequent command-line invocations"
-msgstr "Aperacyi abałonki Nautilusa, jakija mohuć być vykananyja pry ŭruchamleńni z zahadnaha radka"
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr ""
+"Aperacyi abałonki Nautilusa, jakija mohuć być vykananyja pry ŭruchamleńni z "
+"zahadnaha radka"
 
 #: ../src/Nautilus_shell.server.in.h:6
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr "Stvaraje abjekty metafajłaŭ, jakija dajuć dostup da źviestak, charakternych dla Nautilusa"
+msgstr ""
+"Stvaraje abjekty metafajłaŭ, jakija dajuć dostup da źviestak, charakternych "
+"dla Nautilusa"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:617
 msgid "Background"
@@ -2273,22 +2597,22 @@ msgstr "Fon"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6937
-#: ../src/file-manager/fm-directory-view.c:7891
+#: ../src/file-manager/fm-directory-view.c:6940
+#: ../src/file-manager/fm-directory-view.c:7894
 msgid "E_mpty Trash"
 msgstr "Aparaž_ni śmietnicu"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:6912
 msgid "Create L_auncher..."
 msgstr "Stvary _aktyvatar..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6910
+#: ../src/file-manager/fm-directory-view.c:6913
 msgid "Create a new launcher"
 msgstr "Stvaraje novy aktyvatar"
 
@@ -2299,20 +2623,20 @@ msgstr "Źmiani _fon stała"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:701
-msgid "Show a window that lets you set your desktop background's pattern or color"
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
 msgstr "Pakazvaje vakno, jakoje dazvalaje abrać arnament albo koler fonu stała"
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6938
-#: ../src/nautilus-trash-bar.c:153
+#: ../src/file-manager/fm-directory-view.c:6941
+#: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Vydalaje ŭsie elementy sa śmietnicy"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:797
-#: ../src/nautilus-desktop-window.c:246
-#: ../src/nautilus-pathbar.c:1121
+#: ../src/nautilus-desktop-window.c:246 ../src/nautilus-pathbar.c:1122
 #: ../src/nautilus-places-sidebar.c:259
 msgid "Desktop"
 msgstr "Stoł"
@@ -2359,7 +2683,8 @@ msgstr "Ci ty sapraŭdy chočaš nazaŭždy vydalić \"%s\"?"
 #: ../src/file-manager/fm-directory-view.c:1006
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural "Are you sure you want to permanently delete the %d selected items?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Ci ty sapraŭdy chočaš nazaŭždy vydalić %d zaznačany element?"
 msgstr[1] "Ci ty sapraŭdy chočaš nazaŭždy vydalić %d zaznačanyja elementy?"
 msgstr[2] "Ci ty sapraŭdy chočaš nazaŭždy vydalić %d zaznačanych elementaŭ?"
@@ -2370,7 +2695,7 @@ msgid "If you delete an item, it is permanently lost."
 msgstr "Kali ty vydališ element, jon budzie niezvarotna stračany."
 
 #: ../src/file-manager/fm-directory-view.c:1168
-#: ../src/file-manager/fm-properties-window.c:4754
+#: ../src/file-manager/fm-properties-window.c:4762
 #: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
@@ -2400,7 +2725,7 @@ msgstr "_Tečka:"
 
 #: ../src/file-manager/fm-directory-view.c:1351
 msgid "Select Folder to Save Search In"
-msgstr "Abiary tečku dziela zapisu pošuku"
+msgstr "Abiary kataloh dziela zapisu pošuku"
 
 #: ../src/file-manager/fm-directory-view.c:2186
 #: ../src/file-manager/fm-directory-view.c:2223
@@ -2412,9 +2737,9 @@ msgstr "Zaznačanaje \"%s\""
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "Zaznačanaja %d tečka"
-msgstr[1] "Zaznačanyja %d tečki"
-msgstr[2] "Zaznačanyja %d tečak"
+msgstr[0] "Zaznačany %d kataloh"
+msgstr[1] "Zaznačanyja %d katalohi"
+msgstr[2] "Zaznačanyja %d katalohaŭ"
 
 #: ../src/file-manager/fm-directory-view.c:2198
 #, c-format
@@ -2484,7 +2809,8 @@ msgstr "%s%s, %s"
 #: ../src/file-manager/fm-directory-view.c:2377
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr "Tečka \"%s\" maje ŭ sabie bolej fajłaŭ, čym moža absłužyć prahrama Nautilus."
+msgstr ""
+"Tečka \"%s\" maje ŭ sabie bolej fajłaŭ, čym moža absłužyć prahrama Nautilus."
 
 #: ../src/file-manager/fm-directory-view.c:2383
 msgid "Some files will not be displayed."
@@ -2505,41 +2831,53 @@ msgstr "Niemahčyma pieranieści elementy ŭ śmietnicu, ci vydalić ich adrazu?
 
 #: ../src/file-manager/fm-directory-view.c:3847
 #, c-format
-msgid "None of the %d selected items can be moved to the Trash"
-msgstr "Nivodzin z %d zaznačanych elementaŭ nia moža być pieraniesieny ŭ śmietnicu"
+msgid "The selected item could not be moved to the Trash"
+msgid_plural "The %d selected items could not be moved to the Trash"
+msgstr[0] ""
+"%d zaznačany element niemahčyma pieranieści ŭ śmietnicu"
+msgstr[1] ""
+"%d zaznačanyja elementy niemahčyma pieranieści ŭ śmietnicu"
+msgstr[2] ""
+"%d zaznačanych elementaŭ niemahčyma pieranieści ŭ śmietnicu"
 
-#: ../src/file-manager/fm-directory-view.c:3849
-msgid "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "Niemahčyma pieranieści častku elementaŭ u śmietnicu, ci vydalić ich adrazu?"
+#: ../src/file-manager/fm-directory-view.c:3852
+msgid ""
+"Cannot move some items to trash, do you want to delete these immediately?"
+msgstr ""
+"Niemahčyma pieranieści častku elementaŭ u śmietnicu, ci vydalić ich adrazu?"
 
-#: ../src/file-manager/fm-directory-view.c:3850
+#: ../src/file-manager/fm-directory-view.c:3853
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d z zaznačanych elementaŭ nia mohuć być pieraniesienyja ŭ śmietnicu"
 
-#: ../src/file-manager/fm-directory-view.c:3888
+#: ../src/file-manager/fm-directory-view.c:3891
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ci sapraŭdy niezvarotna vydalić \"%s\" sa śmietnicy?"
 
-#: ../src/file-manager/fm-directory-view.c:3892
+#: ../src/file-manager/fm-directory-view.c:3895
 #, c-format
-msgid "Are you sure you want to permanently delete the %d selected item from the trash?"
-msgid_plural "Are you sure you want to permanently delete the %d selected items from the trash?"
+msgid ""
+"Are you sure you want to permanently delete the %d selected item from the "
+"trash?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items from the "
+"trash?"
 msgstr[0] "Ci sapraŭdy nazaŭždy vydalić %d zaznačany element sa śmietnicy?"
 msgstr[1] "Ci sapraŭdy nazaŭždy vydalić %d zaznačanyja elementy sa śmietnicy?"
 msgstr[2] "Ci sapraŭdy nazaŭždy vydalić %d zaznačanych elementaŭ sa śmietnicy?"
 
-#: ../src/file-manager/fm-directory-view.c:3903
+#: ../src/file-manager/fm-directory-view.c:3906
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Kali ty vydališ element, jon budzie niezvarotna stračany."
 
-#: ../src/file-manager/fm-directory-view.c:4493
+#: ../src/file-manager/fm-directory-view.c:4496
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Adčyni pry dapamozie \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4494
+#: ../src/file-manager/fm-directory-view.c:4497
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -2547,71 +2885,93 @@ msgstr[0] "Užyćcio \"%s\", kab adčynić zaznačany element"
 msgstr[1] "Užyćcio \"%s\", kab adčynić zaznačanyja elementy"
 msgstr[2] "Užyćcio \"%s\", kab adčynić zaznačanyja elementy"
 
-#: ../src/file-manager/fm-directory-view.c:4586
+#: ../src/file-manager/fm-directory-view.c:4589
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Ty chočaš uruchomić \"%s\" albo pakazać, što tam znachodzicca?"
 
-#: ../src/file-manager/fm-directory-view.c:4588
+#: ../src/file-manager/fm-directory-view.c:4591
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" źjaŭlajecca vykonvalnym tekstavym fajłam."
 
-#: ../src/file-manager/fm-directory-view.c:4594
+#: ../src/file-manager/fm-directory-view.c:4597
 msgid "Run in _Terminal"
 msgstr "Uruchom u _terminale"
 
-#: ../src/file-manager/fm-directory-view.c:4595
+#: ../src/file-manager/fm-directory-view.c:4598
 msgid "_Display"
 msgstr "_Pakažy"
 
-#: ../src/file-manager/fm-directory-view.c:4598
+#: ../src/file-manager/fm-directory-view.c:4601
 msgid "_Run"
 msgstr "U_ruchom"
 
-#: ../src/file-manager/fm-directory-view.c:4994
+#: ../src/file-manager/fm-directory-view.c:4997
 #, c-format
 msgid "Cannot open %s"
 msgstr "Niemahčyma adčynić %s"
 
-#: ../src/file-manager/fm-directory-view.c:4997
+#: ../src/file-manager/fm-directory-view.c:5000
 #, c-format
 msgid ""
-"The filename \"%s\" indicates that this file is of type \"%s\". The contents of the file indicate that the file is of type \"%s\". If you open this file, the file might present a security risk to your system.\n"
+"The filename \"%s\" indicates that this file is of type \"%s\". The contents "
+"of the file indicate that the file is of type \"%s\". If you open this file, "
+"the file might present a security risk to your system.\n"
 "\n"
-"Do not open the file unless you created the file yourself, or received the file from a trusted source. To open the file, rename the file to the correct extension for \"%s\", then open the file normally. Alternatively, use the Open With menu to choose a specific application for the file. "
+"Do not open the file unless you created the file yourself, or received the "
+"file from a trusted source. To open the file, rename the file to the correct "
+"extension for \"%s\", then open the file normally. Alternatively, use the "
+"Open With menu to choose a specific application for the file. "
 msgstr ""
-"Pašyreńnie fajłu \"%s\" śviedčyć pra toje, što heta fajł typu \"%s\". Źmieściva fajłu śviedčyć, što heta fajł typu \"%s\". Kali adčynić hety fajł, jon moža pahražać biaśpiecy systemy.\n"
+"Pašyreńnie fajłu \"%s\" śviedčyć pra toje, što heta fajł typu \"%s\". "
+"Źmieściva fajłu śviedčyć, što heta fajł typu \"%s\". Kali adčynić hety fajł, "
+"jon moža pahražać biaśpiecy systemy.\n"
 "\n"
-"Nie adčyniaj fajłu, kali jon nia stvorany taboj albo kali jon nie pachodzić z nadziejnaj krynicy. Kab adčynić fajł, zamianni jahonaje pašyreńnie na pravilnaje dla \"%s\", a potym adčyni jaho jak zaŭždy. U jakaści alternatyvy možaš skarystać menu \"Adčyni pry dapamozie\", kab vybrać adpaviednuju aplikacyju dla fajłu."
+"Nie adčyniaj fajłu, kali jon nia stvorany taboj albo kali jon nie pachodzić "
+"z nadziejnaj krynicy. Kab adčynić fajł, zamianni jahonaje pašyreńnie na "
+"pravilnaje dla \"%s\", a potym adčyni jaho jak zaŭždy. U jakaści alternatyvy "
+"možaš skarystać menu \"Adčyni pry dapamozie\", kab vybrać adpaviednuju "
+"aplikacyju dla fajłu."
 
-#: ../src/file-manager/fm-directory-view.c:5423
+#: ../src/file-manager/fm-directory-view.c:5426
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Uruchom skrypt \"%s\" na zaznačanych elementach"
 
-#: ../src/file-manager/fm-directory-view.c:5672
+#: ../src/file-manager/fm-directory-view.c:5675
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Stvareńnie dakumentu z šablonu \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5929
+#: ../src/file-manager/fm-directory-view.c:5932
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr "Usie vykonvalnyja fajły, źmieščanyja ŭ hetaj tečcy, pajaviacca ŭ menu Skrypty."
+msgstr ""
+"Usie vykonvalnyja fajły, źmieščanyja ŭ hetym katalohu, pajaviacca ŭ menu "
+"Skrypty."
 
-#: ../src/file-manager/fm-directory-view.c:5931
-msgid "Choosing a script from the menu will run that script with any selected items as input."
-msgstr "Vybar skryptu z menu ŭruchomić jaho razam z zaznačanymi na ŭvachodzie elementami."
-
-#: ../src/file-manager/fm-directory-view.c:5933
+#: ../src/file-manager/fm-directory-view.c:5934
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
+"Choosing a script from the menu will run that script with any selected items "
+"as input."
+msgstr ""
+"Vybar skryptu z menu ŭruchomić jaho razam z zaznačanymi na ŭvachodzie "
+"elementami."
+
+#: ../src/file-manager/fm-directory-view.c:5936
+msgid ""
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script.\n"
 "\n"
-"When executed from a local folder, scripts will be passed the selected file names. When executed from a remote folder (e.g. a folder showing web or ftp content), scripts will be passed no parameters.\n"
+"When executed from a local folder, scripts will be passed the selected file "
+"names. When executed from a remote folder (e.g. a folder showing web or ftp "
+"content), scripts will be passed no parameters.\n"
 "\n"
-"In all cases, the following environment variables will be set by Nautilus, which the scripts may use:\n"
+"In all cases, the following environment variables will be set by Nautilus, "
+"which the scripts may use:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
+"files (only if local)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
 "\n"
@@ -2619,229 +2979,253 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Usie vykonvalnyja fajły, źmieščanyja ŭ hetaj tečcy, pajaviacca ŭ menu Skrypty. Vybar skryptu z menu pryviadzie da ŭruchamleńnia hetaha skryptu.\n"
+"Usie vykonvalnyja fajły, źmieščanyja ŭ hetym katalohu, pajaviacca ŭ menu "
+"Skrypty. Vybar skryptu z menu pryviadzie da ŭruchamleńnia hetaha skryptu.\n"
 "\n"
-"Pry ŭruchamleńni ź lakalnaj tečki buduć pieradadzienyja nazvy zaznačanych fajłaŭ. Pry ŭruchamleńni z addalenaj tečki (napr., pry vyśviatleńni źmieściva servera WWW albo FTP) nijakija parametry nia buduć pieradadzienyja.\n"
+"Pry ŭruchamleńni ź lakalnaha katalohu buduć pieradadzienyja nazvy zaznačanych "
+"fajłaŭ. Pry ŭruchamleńni z addalenaha katalohu (napr., pry vyśviatleńni "
+"źmieściva servera WWW albo FTP) nijakija parametry nia buduć "
+"pieradadzienyja.\n"
 "\n"
-"U lubym vypadku skrypt moža vykarystać źmiennyja asiarodździa, jakiju buduć akreślenyja pierad uruchamleńniem jaho Nautilusam:\n"
+"U lubym vypadku skrypt moža vykarystać źmiennyja asiarodździa, jakiju buduć "
+"akreślenyja pierad uruchamleńniem jaho Nautilusam:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: poŭnyja ściežki zaznačanych fajłaŭ, padzielenyja znakami kanca radka (tolki ŭ vypadku lakalnych tečak)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: poŭnyja ściežki zaznačanych fajłaŭ, "
+"padzielenyja znakami kanca radka (tolki ŭ vypadku lakalnych katalohaŭ)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: URI zaznačanych fajłaŭ, padzielenyja znakami kanca radka\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: URI zaznačanych fajłaŭ, padzielenyja znakami "
+"kanca radka\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: URI dziejnaha pałažeńnia\n"
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pałažeńnie j pamier dziejnaha vakna"
 
-#: ../src/file-manager/fm-directory-view.c:6097
+#: ../src/file-manager/fm-directory-view.c:6100
 #: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" budzie pieraniesieny paśla abrańnia zahadu Ŭklej"
 
-#: ../src/file-manager/fm-directory-view.c:6101
+#: ../src/file-manager/fm-directory-view.c:6104
 #: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" budzie skapijavany paśla abrańnia zahadu Ŭklej"
 
-#: ../src/file-manager/fm-directory-view.c:6108
+#: ../src/file-manager/fm-directory-view.c:6111
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
-msgid_plural "The %d selected items will be moved if you select the Paste command"
-msgstr[0] "%d zaznačany element budzie pieraniesieny paśla abrańnia zahadu Ŭklej"
-msgstr[1] "%d zaznačanyja elementy buduć pieraniesienyja paśla abrańnia zahadu Ŭklej"
-msgstr[2] "%d zaznačanych elementaŭ buduć pieraniesienyja paśla abrańnia zahadu Ŭklej"
+msgid_plural ""
+"The %d selected items will be moved if you select the Paste command"
+msgstr[0] ""
+"%d zaznačany element budzie pieraniesieny paśla abrańnia zahadu Ŭklej"
+msgstr[1] ""
+"%d zaznačanyja elementy buduć pieraniesienyja paśla abrańnia zahadu Ŭklej"
+msgstr[2] ""
+"%d zaznačanych elementaŭ buduć pieraniesienyja paśla abrańnia zahadu Ŭklej"
 
-#: ../src/file-manager/fm-directory-view.c:6115
+#: ../src/file-manager/fm-directory-view.c:6118
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
-msgid_plural "The %d selected items will be copied if you select the Paste command"
+msgid_plural ""
+"The %d selected items will be copied if you select the Paste command"
 msgstr[0] "%d zaznačany element budzie skapijavany paśla abrańnia zahadu Ŭklej"
-msgstr[1] "%d zaznačanyja elementy buduć skapijavanyja paśla abrańnia zahadu Ŭklej"
-msgstr[2] "%d zaznačanych elementaŭ buduć skapijavanyja paśla abrańnia zahadu Ŭklej"
+msgstr[1] ""
+"%d zaznačanyja elementy buduć skapijavanyja paśla abrańnia zahadu Ŭklej"
+msgstr[2] ""
+"%d zaznačanych elementaŭ buduć skapijavanyja paśla abrańnia zahadu Ŭklej"
 
-#: ../src/file-manager/fm-directory-view.c:6209
+#: ../src/file-manager/fm-directory-view.c:6212
 #: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "U abmiennym bufery niama nočoha, kab ukleić."
 
-#: ../src/file-manager/fm-directory-view.c:6688
+#: ../src/file-manager/fm-directory-view.c:6691
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Spałučy z serveram %s"
 
-#: ../src/file-manager/fm-directory-view.c:6693
+#: ../src/file-manager/fm-directory-view.c:6696
 msgid "_Connect"
 msgstr "_Spałučy"
 
-#: ../src/file-manager/fm-directory-view.c:6707
+#: ../src/file-manager/fm-directory-view.c:6710
 msgid "Link _name:"
 msgstr "_Nazva poviazi:"
 
-#: ../src/file-manager/fm-directory-view.c:6883
+#: ../src/file-manager/fm-directory-view.c:6886
 msgid "Create _Document"
 msgstr "Stvary _dakument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6884
+#: ../src/file-manager/fm-directory-view.c:6887
 msgid "Open Wit_h"
 msgstr "Adčyni pry dap_amozie"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6885
+#: ../src/file-manager/fm-directory-view.c:6888
 msgid "Choose a program with which to open the selected item"
-msgstr "Abiary prahramu, pry dapamozie jakoj ty chočaš adčynić zaznačany element"
+msgstr ""
+"Abiary prahramu, pry dapamozie jakoj ty chočaš adčynić zaznačany element"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6887
-#: ../src/file-manager/fm-directory-view.c:6895
+#: ../src/file-manager/fm-directory-view.c:6890
+#: ../src/file-manager/fm-directory-view.c:6898
 msgid "_Properties"
 msgstr "_Ułaścivaści"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6888
+#: ../src/file-manager/fm-directory-view.c:6891
 msgid "View or modify the properties of each selected item"
 msgstr "Pakazvaje albo madyfikuje ŭłascivaści kožnaha z zaznačanych elementaŭ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6896
+#: ../src/file-manager/fm-directory-view.c:6899
 msgid "View or modify the properties of the open folder"
-msgstr "Pakazvaje albo madyfikuje ŭłaścivaści adčynieńnia tečki"
+msgstr "Pakazvaje albo madyfikuje ŭłaścivaści adčynieńnia katalohu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6899
+#: ../src/file-manager/fm-directory-view.c:6902
 msgid "Create _Folder"
-msgstr "St_vary tečku"
+msgstr "St_vary kataloh"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6900
+#: ../src/file-manager/fm-directory-view.c:6903
 msgid "Create a new empty folder inside this folder"
-msgstr "Stvaraje novuju tečku ŭ dziejnaj"
+msgstr "Stvaraje novy kataloh u dziejnym"
 
-#: ../src/file-manager/fm-directory-view.c:6902
+#: ../src/file-manager/fm-directory-view.c:6905
 msgid "No templates Installed"
 msgstr "Šablony nie zainstalavanyja"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6905
+#: ../src/file-manager/fm-directory-view.c:6908
 msgid "_Empty File"
 msgstr "P_usty fajł"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6906
+#: ../src/file-manager/fm-directory-view.c:6909
 msgid "Create a new empty file inside this folder"
-msgstr "Stvaraje novy pusty fajł u dziejnaj tečcy"
+msgstr "Stvaraje novy pusty fajł u dziejnym katalohu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6913
-#: ../src/file-manager/fm-directory-view.c:7792
+#: ../src/file-manager/fm-directory-view.c:6916
+#: ../src/file-manager/fm-directory-view.c:7795
 #: ../src/file-manager/fm-tree-view.c:1253
 #: ../src/nautilus-places-sidebar.c:1448
 msgid "_Open"
 msgstr "_Adčyni"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6914
+#: ../src/file-manager/fm-directory-view.c:6917
 msgid "Open the selected item in this window"
 msgstr "Adčyniaje zaznačany element u dziejnym vaknie"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6921
-#: ../src/file-manager/fm-directory-view.c:7045
+#: ../src/file-manager/fm-directory-view.c:6924
+#: ../src/file-manager/fm-directory-view.c:7048
 msgid "Open in Navigation Window"
 msgstr "Adčyni ŭ vaknie navihacyi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6922
+#: ../src/file-manager/fm-directory-view.c:6925
 msgid "Open each selected item in a navigation window"
 msgstr "Adčyniaje kožny z zaznačanych elementaŭ u vaknie navihacyi"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6925
-#: ../src/file-manager/fm-directory-view.c:6929
+#: ../src/file-manager/fm-directory-view.c:6928
+#: ../src/file-manager/fm-directory-view.c:6932
 msgid "Open with Other _Application..."
 msgstr "Adčyni pry dapamozie inšaj _aplikacyi..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6926
-#: ../src/file-manager/fm-directory-view.c:6930
-msgid "Choose another application with which to open the selected item"
-msgstr "Dazvalaje abrać inšuju aplikacyju, pry dapamozie jakoj možna adčynić zaznačany element"
-
-#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6929
 #: ../src/file-manager/fm-directory-view.c:6933
+msgid "Choose another application with which to open the selected item"
+msgstr ""
+"Dazvalaje abrać inšuju aplikacyju, pry dapamozie jakoj možna adčynić "
+"zaznačany element"
+
+#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6936
 msgid "_Open Scripts Folder"
-msgstr "_Adčyni tečku sa skryptami"
+msgstr "_Adčyni kataloh sa skryptami"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:6937
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr "Pakazvaje tečku sa skryptami, jakija pajaŭlajucca ŭ hetym menu"
+msgstr "Pakazvaje kataloh sa skryptami, jakija pajaŭlajucca ŭ hetym menu"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6942
+#: ../src/file-manager/fm-directory-view.c:6945
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Rychtuje zaznačanyja fajły, kab pieranieści ich zahadam Uklej"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6946
+#: ../src/file-manager/fm-directory-view.c:6949
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Rychtuje zaznačanyja fajły, kab skapijavać ich zahadam Uklej"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6950
+#: ../src/file-manager/fm-directory-view.c:6953
 msgid "Move or copy files previously selected by a Cut or Copy command"
-msgstr "Pieranosić albo kapijuje fajły, zaznačanyja raniej zahadam Skapijuj albo Vytni"
+msgstr ""
+"Pieranosić albo kapijuje fajły, zaznačanyja raniej zahadam Skapijuj albo "
+"Vytni"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6955
+#: ../src/file-manager/fm-directory-view.c:6958
 #: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Paste Into Folder"
-msgstr "Uklej u teč_ku"
+msgstr "Uklej u _kataloh"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6956
-msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
-msgstr "Pieranosić albo kapijuje fajły, zaznačanyja raniej zahadam Skapijuj albo Vytni, u abranuju tečku"
+#: ../src/file-manager/fm-directory-view.c:6959
+msgid ""
+"Move or copy files previously selected by a Cut or Copy command into the "
+"selected folder"
+msgstr ""
+"Pieranosić albo kapijuje fajły, zaznačanyja raniej zahadam Skapijuj albo "
+"Vytni, u abrany kataloh"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6960
+#: ../src/file-manager/fm-directory-view.c:6963
 msgid "Select all items in this window"
 msgstr "Zaznač usie elementy ŭ dziejnym vaknie"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6963
+#: ../src/file-manager/fm-directory-view.c:6966
 msgid "Select _Pattern"
 msgstr "Abiary ŭ_zor"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6964
+#: ../src/file-manager/fm-directory-view.c:6967
 msgid "Select items in this window matching a given pattern"
-msgstr "Zaznač elementy ŭ dziejnym vaknie, jakija adpaviadajuć akreślenamu ŭzoru"
+msgstr ""
+"Zaznač elementy ŭ dziejnym vaknie, jakija adpaviadajuć akreślenamu ŭzoru"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6967
+#: ../src/file-manager/fm-directory-view.c:6970
 msgid "D_uplicate"
 msgstr "D_ublikuj"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6968
+#: ../src/file-manager/fm-directory-view.c:6971
 msgid "Duplicate each selected item"
 msgstr "Dublikuje kožny z zaznačanych elementaŭ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6971
-#: ../src/file-manager/fm-directory-view.c:7865
+#: ../src/file-manager/fm-directory-view.c:6974
+#: ../src/file-manager/fm-directory-view.c:7868
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Stvary _poviaź"
@@ -2849,243 +3233,245 @@ msgstr[1] "Stvary _poviazi"
 msgstr[2] "Stvary _poviazi"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6972
+#: ../src/file-manager/fm-directory-view.c:6975
 msgid "Create a symbolic link for each selected item"
 msgstr "Stvaraje symbaličnuju poviaź da kožnaha z zaznačanych elementaŭ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6975
+#: ../src/file-manager/fm-directory-view.c:6978
 msgid "_Rename..."
 msgstr "Źmi_ani nazvu..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6976
+#: ../src/file-manager/fm-directory-view.c:6979
 msgid "Rename selected item"
 msgstr "Źmianiaje nazvu zaznačanaha elementu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6983
-#: ../src/file-manager/fm-directory-view.c:7059
-#: ../src/file-manager/fm-directory-view.c:7649
-#: ../src/file-manager/fm-directory-view.c:7833
-#: ../src/file-manager/fm-directory-view.c:8233
+#: ../src/file-manager/fm-directory-view.c:6986
+#: ../src/file-manager/fm-directory-view.c:7062
+#: ../src/file-manager/fm-directory-view.c:7652
+#: ../src/file-manager/fm-directory-view.c:7836
+#: ../src/file-manager/fm-directory-view.c:8236
 msgid "Mo_ve to Trash"
 msgstr "V_ykiń u śmietnicu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6984
-#: ../src/file-manager/fm-directory-view.c:7834
+#: ../src/file-manager/fm-directory-view.c:6987
+#: ../src/file-manager/fm-directory-view.c:7837
 msgid "Move each selected item to the Trash"
 msgstr "Pieranosić kožny z zaznačanych elementaŭ u śmietnicu"
 
 #. name, stock id
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6987
-#: ../src/file-manager/fm-directory-view.c:7063
-#: ../src/file-manager/fm-directory-view.c:7852
+#: ../src/file-manager/fm-directory-view.c:6990
+#: ../src/file-manager/fm-directory-view.c:7066
+#: ../src/file-manager/fm-directory-view.c:7855
 #: ../src/file-manager/fm-tree-view.c:1334
 msgid "_Delete"
 msgstr "_Vydal"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6988
+#: ../src/file-manager/fm-directory-view.c:6991
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Vydalaje kožny z zaznačanych elementaŭ bieź pieranosu ŭ śmietnicu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6991
+#: ../src/file-manager/fm-directory-view.c:6994
 msgid "Reset View to _Defaults"
 msgstr "Viarni _zmoŭčanyja nałady vyhladu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6992
+#: ../src/file-manager/fm-directory-view.c:6995
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "Viartaje paradak sartavańnia i pavieličeńnie zhodna z naładami dziejnaha vyhladu"
+msgstr ""
+"Viartaje paradak sartavańnia i pavieličeńnie zhodna z naładami dziejnaha "
+"vyhladu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:6998
 msgid "Connect To This Server"
 msgstr "Spałučy z hetym serveram"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6996
+#: ../src/file-manager/fm-directory-view.c:6999
 msgid "Make a permanent connection to this server"
 msgstr "Stvaraje stałaje spałučeńnie z hetym serveram"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6999
-#: ../src/file-manager/fm-directory-view.c:7015
+#: ../src/file-manager/fm-directory-view.c:7002
+#: ../src/file-manager/fm-directory-view.c:7018
 msgid "_Mount Volume"
 msgstr "_Prymantuj masiŭ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7000
+#: ../src/file-manager/fm-directory-view.c:7003
 msgid "Mount the selected volume"
 msgstr "Mantuje abrany masiŭ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7003
-#: ../src/file-manager/fm-directory-view.c:7019
+#: ../src/file-manager/fm-directory-view.c:7006
+#: ../src/file-manager/fm-directory-view.c:7022
 #: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "A_dmantuj masiŭ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7004
+#: ../src/file-manager/fm-directory-view.c:7007
 msgid "Unmount the selected volume"
 msgstr "Admantoŭvaje abrany masiŭ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7007
-#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7010
+#: ../src/file-manager/fm-directory-view.c:7026
 #: ../src/nautilus-places-sidebar.c:1497
 msgid "_Eject"
 msgstr "Vy_suń"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7008
+#: ../src/file-manager/fm-directory-view.c:7011
 msgid "Eject the selected volume"
 msgstr "Vysoŭvaje abrany masiŭ"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7011
-#: ../src/file-manager/fm-directory-view.c:7027
+#: ../src/file-manager/fm-directory-view.c:7014
+#: ../src/file-manager/fm-directory-view.c:7030
 #: ../src/nautilus-places-sidebar.c:1504
 msgid "_Format"
 msgstr "_Farmatuj"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7012
+#: ../src/file-manager/fm-directory-view.c:7015
 msgid "Format the selected volume"
 msgstr "Farmatuje abrany masiŭ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7016
+#: ../src/file-manager/fm-directory-view.c:7019
 msgid "Mount the volume associated with the open folder"
-msgstr "Prymantuj masiŭ, źviazany z adčynienaj tečkaj"
+msgstr "Prymantuj masiŭ, źviazany z adčynienym kataloham"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7020
+#: ../src/file-manager/fm-directory-view.c:7023
 msgid "Unmount the volume associated with the open folder"
-msgstr "Admantuj maziŭ, źviazany z adčynienaj tečkaj"
+msgstr "Admantuj maziŭ, źviazany z adčynienym kataloham"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7024
+#: ../src/file-manager/fm-directory-view.c:7027
 msgid "Eject the volume associated with the open folder"
-msgstr "Vysuń aparaturu, źviazanuju z adčynienaj tečkaj"
+msgstr "Vysuń aparaturu, źviazanuju z adčynienym kataloham"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7028
+#: ../src/file-manager/fm-directory-view.c:7031
 msgid "Format the volume associated with the open folder"
-msgstr "Farmatuj aparaturu, źviazanuju z adčynienaj tečkaj"
+msgstr "Farmatuj aparaturu, źviazanuju z adčynienym kataloham"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7031
+#: ../src/file-manager/fm-directory-view.c:7034
 msgid "Open File and Close window"
 msgstr "Adčyni fajł i začyni vakno"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7035
+#: ../src/file-manager/fm-directory-view.c:7038
 msgid "Sa_ve Search"
 msgstr "_Zapišy pošuk"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7036
+#: ../src/file-manager/fm-directory-view.c:7039
 msgid "Save the edited search"
 msgstr "Zapisvaje madyfikavany pošuk"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7039
+#: ../src/file-manager/fm-directory-view.c:7042
 msgid "Sa_ve Search As..."
 msgstr "Z_apišy pošuk jak..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7040
+#: ../src/file-manager/fm-directory-view.c:7043
 msgid "Save the current search as a file"
 msgstr "Zapisvaje dziejny pošuk jak fajł"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7046
+#: ../src/file-manager/fm-directory-view.c:7049
 msgid "Open this folder in a navigation window"
-msgstr "Adčyniaje tečku ŭ vaknie navihacyi"
+msgstr "Adčyniaje kataloh ŭ vaknie navihacyi"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7051
+#: ../src/file-manager/fm-directory-view.c:7054
 msgid "Prepare this folder to be moved with a Paste command"
-msgstr "Rychtuje tečku da pieranosu pry dapamozie zahadu Ŭklej"
+msgstr "Rychtuje kataloh da pieranosu pry dapamozie zahadu Ŭklej"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7055
+#: ../src/file-manager/fm-directory-view.c:7058
 msgid "Prepare this folder to be copied with a Paste command"
-msgstr "Rychtuje tečku da kapijavańnia pry dapamozie zahadu Ŭklej"
+msgstr "Rychtuje kataloh da kapijavańnia pry dapamozie zahadu Ŭklej"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7060
+#: ../src/file-manager/fm-directory-view.c:7063
 msgid "Move this folder to the Trash"
-msgstr "Pieranosić tečku ŭ śmietnicu"
+msgstr "Pieranosić kataloh u śmietnicu"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7064
+#: ../src/file-manager/fm-directory-view.c:7067
 msgid "Delete this folder, without moving to the Trash"
-msgstr "Vydalaje tečku bieź pieranosu ŭ śmietnicu"
+msgstr "Vydalaje kataloh bieź pieranosu ŭ śmietnicu"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7070
+#: ../src/file-manager/fm-directory-view.c:7073
 msgid "Show _Hidden Files"
 msgstr "Pakazvaj _schavanyja fajły"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7071
+#: ../src/file-manager/fm-directory-view.c:7074
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Pieraklučaje pakazvańnie schavanych fajłaŭ u dziejnym vaknie"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7157
+#: ../src/file-manager/fm-directory-view.c:7160
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Uruchamlaje albo kiruje skryptami z %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7159
+#: ../src/file-manager/fm-directory-view.c:7162
 msgid "_Scripts"
 msgstr "_Skrypty"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7618
-#: ../src/file-manager/fm-directory-view.c:7801
+#: ../src/file-manager/fm-directory-view.c:7621
+#: ../src/file-manager/fm-directory-view.c:7804
 #: ../src/file-manager/fm-tree-view.c:1264
 msgid "Open in New Window"
 msgstr "Adčyni ŭ novym vaknie"
 
-#: ../src/file-manager/fm-directory-view.c:7620
-#: ../src/file-manager/fm-directory-view.c:7809
+#: ../src/file-manager/fm-directory-view.c:7623
+#: ../src/file-manager/fm-directory-view.c:7812
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
-msgstr[0] "Pr_ahladaj tečku"
-msgstr[1] "Pr_ahladaj tečki"
-msgstr[2] "Pr_ahladaj tečki"
+msgstr[0] "Pr_ahladaj kataloh"
+msgstr[1] "Pr_ahladaj katalohi"
+msgstr[2] "Pr_ahladaj katalohi"
 
-#: ../src/file-manager/fm-directory-view.c:7645
-#: ../src/file-manager/fm-directory-view.c:7829
+#: ../src/file-manager/fm-directory-view.c:7648
+#: ../src/file-manager/fm-directory-view.c:7832
 msgid "_Delete from Trash"
 msgstr "_Vydal sa śmietnicy"
 
-#: ../src/file-manager/fm-directory-view.c:7646
+#: ../src/file-manager/fm-directory-view.c:7649
 msgid "Delete the open folder permanently"
-msgstr "Niezvarotna vydalaje adčynienuju tečku"
+msgstr "Niezvarotna vydalaje adčynieny kataloh"
 
-#: ../src/file-manager/fm-directory-view.c:7650
+#: ../src/file-manager/fm-directory-view.c:7653
 msgid "Move the open folder to the Trash"
-msgstr "Pieranosić adčynienuju tečku ŭ śmietnicu"
+msgstr "Pieranosić adčynieny kataloh u śmietnicu"
 
-#: ../src/file-manager/fm-directory-view.c:7785
+#: ../src/file-manager/fm-directory-view.c:7788
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Adčyni pry dapamozie \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7803
+#: ../src/file-manager/fm-directory-view.c:7806
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
@@ -3093,35 +3479,36 @@ msgstr[0] "Adčyni ŭ %d novym vaknie"
 msgstr[1] "Adčyni ŭ %d novych voknach"
 msgstr[2] "Adčyni ŭ %d novych voknach"
 
-#: ../src/file-manager/fm-directory-view.c:7830
+#: ../src/file-manager/fm-directory-view.c:7833
 msgid "Delete all selected items permanently"
 msgstr "Niezvarotna vydal usie zaznačanyja elementy"
 
-#: ../src/file-manager/fm-directory-view.c:8213
+#: ../src/file-manager/fm-directory-view.c:8216
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Poviaź \"%s\" paškodžanaja."
 
-#: ../src/file-manager/fm-directory-view.c:8215
+#: ../src/file-manager/fm-directory-view.c:8218
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Poviaź \"%s\" paškodžanaja. Ci pieranieści jaje ŭ śmietnicu?"
 
-#: ../src/file-manager/fm-directory-view.c:8221
+#: ../src/file-manager/fm-directory-view.c:8224
 msgid "This link can't be used, because it has no target."
 msgstr "Niemahčyma skarystać poviaź, bo niama prypisanaj mety."
 
-#: ../src/file-manager/fm-directory-view.c:8223
+#: ../src/file-manager/fm-directory-view.c:8226
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr "Niemahčyma skarystać poviaź, bo prypisanaja da jaje meta \"%s\" nie isnuje."
+msgstr ""
+"Niemahčyma skarystać poviaź, bo prypisanaja da jaje meta \"%s\" nie isnuje."
 
-#: ../src/file-manager/fm-directory-view.c:8874
+#: ../src/file-manager/fm-directory-view.c:8877
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Adčyniajecca \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8877
+#: ../src/file-manager/fm-directory-view.c:8880
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3129,34 +3516,36 @@ msgstr[0] "Adčyniajecca %d element."
 msgstr[1] "Adčyniajucca %d elementy."
 msgstr[2] "Adčyniajucca %d elementaŭ."
 
-#: ../src/file-manager/fm-directory-view.c:9769
+#: ../src/file-manager/fm-directory-view.c:9772
 msgid "Download location?"
 msgstr "Ściahnuć pałažeńnie?"
 
-#: ../src/file-manager/fm-directory-view.c:9772
+#: ../src/file-manager/fm-directory-view.c:9775
 msgid "You can download it or make a link to it."
 msgstr "Ty možaš abrać jaho, albo stvaryć poviaź da jaho."
 
-#: ../src/file-manager/fm-directory-view.c:9775
+#: ../src/file-manager/fm-directory-view.c:9778
 msgid "Make a _Link"
 msgstr "Stvary _poviaź"
 
-#: ../src/file-manager/fm-directory-view.c:9779
+#: ../src/file-manager/fm-directory-view.c:9782
 msgid "_Download"
 msgstr "_Ściahni"
 
-#: ../src/file-manager/fm-directory-view.c:9842
-#: ../src/file-manager/fm-directory-view.c:9894
-#: ../src/file-manager/fm-directory-view.c:9995
+#: ../src/file-manager/fm-directory-view.c:9845
+#: ../src/file-manager/fm-directory-view.c:9897
+#: ../src/file-manager/fm-directory-view.c:9998
 msgid "Drag and drop is not supported."
 msgstr "Pieraciahvańnie j puščańnie abjektaŭ nie absłuhoŭvajecca."
 
-#: ../src/file-manager/fm-directory-view.c:9843
+#: ../src/file-manager/fm-directory-view.c:9846
 msgid "Drag and drop is only supported on local file systems."
-msgstr "Pieraciahvańnie j puščańnie abjektaŭ absłuhoŭvajecca tolki ŭ lakalnaj fajłavaj systemie."
+msgstr ""
+"Pieraciahvańnie j puščańnie abjektaŭ absłuhoŭvajecca tolki ŭ lakalnaj "
+"fajłavaj systemie."
 
-#: ../src/file-manager/fm-directory-view.c:9895
-#: ../src/file-manager/fm-directory-view.c:9996
+#: ../src/file-manager/fm-directory-view.c:9898
+#: ../src/file-manager/fm-directory-view.c:9999
 msgid "An invalid drag type was used."
 msgstr "Užyty niapravilny typ pieraciahvanych źviestak."
 
@@ -3171,6 +3560,7 @@ msgstr "URL"
 
 #: ../src/file-manager/fm-ditem-page.c:343
 #: ../src/file-manager/fm-ditem-page.c:354
+#: ../src/nautilus-image-properties-page.c:302
 msgid "Description"
 msgstr "Apisańnie"
 
@@ -3188,7 +3578,8 @@ msgstr "Aktyvatar"
 
 #: ../src/file-manager/fm-error-reporting.c:60
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Niama vymahanaha dazvołu, kab pakazać źmieściva \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:64
@@ -3203,17 +3594,21 @@ msgstr "Nažal, niemahčyma pakazać usio źmieściva \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:77
 msgid "The folder contents could not be displayed."
-msgstr "Niemahčyma pakazać źmieściva tečki."
+msgstr "Niemahčyma pakazać źmieściva katalohu."
 
 #: ../src/file-manager/fm-error-reporting.c:108
 #, c-format
-msgid "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "Nazva \"%s\" była ŭžo vykarystanaja ŭ hetaj tečcy. Skarystaj inšuju nazvu."
+msgid ""
+"The name \"%s\" is already used in this folder. Please use a different name."
+msgstr ""
+"Nazva \"%s\" była ŭžo vykarystanaja ŭ hetym katalohu. Skarystaj inšuju nazvu."
 
 #: ../src/file-manager/fm-error-reporting.c:113
 #, c-format
-msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "Tečka nia maje ŭ sabie \"%s\". Moža, element byŭ pieraniesieny i vydaleny?"
+msgid ""
+"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgstr ""
+"Tečka nia maje ŭ sabie \"%s\". Moža, element byŭ pieraniesieny i vydaleny?"
 
 #: ../src/file-manager/fm-error-reporting.c:118
 #, c-format
@@ -3222,8 +3617,11 @@ msgstr "Niama dazvołu, kab źmianić nazvu \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:123
 #, c-format
-msgid "The name \"%s\" is not valid because it contains the character \"/\". Please use a different name."
-msgstr "Nazva \"%s\" niapravilnaja, bo ŭ joj jość znak \"/\". Skarystaj inšuju nazvu."
+msgid ""
+"The name \"%s\" is not valid because it contains the character \"/\". Please "
+"use a different name."
+msgstr ""
+"Nazva \"%s\" niapravilnaja, bo ŭ joj jość znak \"/\". Skarystaj inšuju nazvu."
 
 #: ../src/file-manager/fm-error-reporting.c:127
 #, c-format
@@ -3233,7 +3631,9 @@ msgstr "Nazva \"%s\" niapravilnaja. Skarystaj inšuju nazvu."
 #: ../src/file-manager/fm-error-reporting.c:133
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr "Niemahčyma źmianić nazvu dla \"%s\", bo jon znachodzicca na dysku na dysku biaz prava zapisu"
+msgstr ""
+"Niemahčyma źmianić nazvu dla \"%s\", bo jon znachodzicca na dysku na dysku "
+"biaz prava zapisu"
 
 #: ../src/file-manager/fm-error-reporting.c:142
 #, c-format
@@ -3246,13 +3646,16 @@ msgstr "Niemahčyma źmianić nazvu elementu."
 
 #: ../src/file-manager/fm-error-reporting.c:169
 #, c-format
-msgid "You do not have the permissions necessary to change the group of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Niama dazvołu, kab źmianić nazvu hrupy \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:173
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr "Niemahčyma źmianić hrupu \"%s\", bo jana znachodzicca na dysku na dysku biaz prava zapisu"
+msgstr ""
+"Niemahčyma źmianić hrupu \"%s\", bo jana znachodzicca na dysku na dysku biaz "
+"prava zapisu"
 
 #: ../src/file-manager/fm-error-reporting.c:181
 #, c-format
@@ -3266,7 +3669,9 @@ msgstr "Niemahčyma źmianić hrupu."
 #: ../src/file-manager/fm-error-reporting.c:207
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-msgstr "Niemahčyma źmianić uładalnika \"%s\", bo jon na dysku na dysku biaz prava zapisu"
+msgstr ""
+"Niemahčyma źmianić uładalnika \"%s\", bo jon na dysku na dysku biaz prava "
+"zapisu"
 
 #: ../src/file-manager/fm-error-reporting.c:214
 #, c-format
@@ -3279,8 +3684,11 @@ msgstr "Niemahčyma źmianić uładalnika."
 
 #: ../src/file-manager/fm-error-reporting.c:239
 #, c-format
-msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr "Nažal, niemahčyma źmianić dazvołaŭ \"%s\", bo jon znachodzicca na dysku biaz prava zapisu."
+msgid ""
+"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgstr ""
+"Nažal, niemahčyma źmianić dazvołaŭ \"%s\", bo jon znachodzicca na dysku biaz "
+"prava zapisu."
 
 #: ../src/file-manager/fm-error-reporting.c:246
 #, c-format
@@ -3375,7 +3783,9 @@ msgstr "Uparadkuj p_avodle nazvy"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1450
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Pieramiaščaje ikony, kab lepiej dapasavać ich da vakna i paźbiehčy nakładańnia"
+msgstr ""
+"Pieramiaščaje ikony, kab lepiej dapasavać ich da vakna i paźbiehčy "
+"nakładańnia"
 
 #. name, stock id
 #: ../src/file-manager/fm-icon-view.c:1456
@@ -3478,46 +3888,47 @@ msgstr "(Pusty)"
 msgid "Loading..."
 msgstr "Zahruzka..."
 
-#: ../src/file-manager/fm-list-view.c:1960
+#: ../src/file-manager/fm-list-view.c:1957
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s bačnych kalon"
 
-#: ../src/file-manager/fm-list-view.c:1979
+#: ../src/file-manager/fm-list-view.c:1976
 msgid "Choose the order of information to appear in this folder."
-msgstr "Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja ŭ hetaj tečcy. "
+msgstr ""
+"Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja ŭ hetym katalohu. "
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2021
+#: ../src/file-manager/fm-list-view.c:2018
 msgid "Visible _Columns..."
 msgstr "Bač_nyja kalony..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2022
+#: ../src/file-manager/fm-list-view.c:2019
 msgid "Select the columns visible in this folder"
-msgstr "Zaznačaje kalony, bačnyja ŭ hetaj tečcy"
+msgstr "Zaznačaje kalony, bačnyja ŭ hetym katalohu"
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2740
 msgid "List"
 msgstr "Śpis"
 
-#: ../src/file-manager/fm-list-view.c:2744
+#: ../src/file-manager/fm-list-view.c:2741
 msgid "View as List"
 msgstr "Vyhlad śpisu"
 
-#: ../src/file-manager/fm-list-view.c:2745
+#: ../src/file-manager/fm-list-view.c:2742
 msgid "View as _List"
 msgstr "Vyhlad _śpisu"
 
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "The list view encountered an error."
 msgstr "Adbyłasia pamyłka padčas vyhladu śpisu."
 
-#: ../src/file-manager/fm-list-view.c:2747
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error while starting up."
 msgstr "Padčas uruchamleńnia vyhladu śpisu adbyłasia pamyłka."
 
-#: ../src/file-manager/fm-list-view.c:2748
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "Display this location with the list view."
 msgstr "Pakazvaje pałažeńnie pry dapamozie vyhladu śpisu."
 
@@ -3593,274 +4004,274 @@ msgstr "(častka źmieściva niečytelnaja)"
 msgid "Contents:"
 msgstr "Źmieściva:"
 
-#: ../src/file-manager/fm-properties-window.c:2914
+#: ../src/file-manager/fm-properties-window.c:2922
 msgid "used"
 msgstr "zaniata"
 
-#: ../src/file-manager/fm-properties-window.c:2918
+#: ../src/file-manager/fm-properties-window.c:2926
 msgid "free"
 msgstr "volna"
 
-#: ../src/file-manager/fm-properties-window.c:2920
+#: ../src/file-manager/fm-properties-window.c:2928
 msgid "Total capacity: "
-msgstr ""
+msgstr "Ahulnaja jomistaść: "
 
-#: ../src/file-manager/fm-properties-window.c:2932
+#: ../src/file-manager/fm-properties-window.c:2940
 msgid "Filesytem type: "
 msgstr "Typ fajłavaj systemy: "
 
-#: ../src/file-manager/fm-properties-window.c:3000
+#: ../src/file-manager/fm-properties-window.c:3008
 msgid "Basic"
 msgstr "Prostaje"
 
 #. Name label
-#: ../src/file-manager/fm-properties-window.c:3030
+#: ../src/file-manager/fm-properties-window.c:3038
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nazva:"
 msgstr[1] "_Nazvy:"
 msgstr[2] "_Nazvy:"
 
-#: ../src/file-manager/fm-properties-window.c:3049
+#: ../src/file-manager/fm-properties-window.c:3057
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../src/file-manager/fm-properties-window.c:3051
-#: ../src/file-manager/fm-properties-window.c:3061
-#: ../src/file-manager/fm-properties-window.c:3067
-#: ../src/file-manager/fm-properties-window.c:3074
-#: ../src/file-manager/fm-properties-window.c:3078
+#: ../src/file-manager/fm-properties-window.c:3059
+#: ../src/file-manager/fm-properties-window.c:3069
+#: ../src/file-manager/fm-properties-window.c:3075
+#: ../src/file-manager/fm-properties-window.c:3082
 #: ../src/file-manager/fm-properties-window.c:3086
-#: ../src/file-manager/fm-properties-window.c:3092
-#: ../src/file-manager/fm-properties-window.c:3101
-#: ../src/file-manager/fm-properties-window.c:3107
-#: ../src/file-manager/fm-properties-window.c:4133
-#: ../src/file-manager/fm-properties-window.c:4166
-#: ../src/file-manager/fm-properties-window.c:4339
-#: ../src/file-manager/fm-properties-window.c:4361
-#: ../src/file-manager/fm-properties-window.c:4396
-#: ../src/file-manager/fm-properties-window.c:4566
-#: ../src/file-manager/fm-properties-window.c:4570
+#: ../src/file-manager/fm-properties-window.c:3094
+#: ../src/file-manager/fm-properties-window.c:3100
+#: ../src/file-manager/fm-properties-window.c:3109
+#: ../src/file-manager/fm-properties-window.c:3115
+#: ../src/file-manager/fm-properties-window.c:4141
+#: ../src/file-manager/fm-properties-window.c:4174
+#: ../src/file-manager/fm-properties-window.c:4347
+#: ../src/file-manager/fm-properties-window.c:4369
+#: ../src/file-manager/fm-properties-window.c:4404
+#: ../src/file-manager/fm-properties-window.c:4574
+#: ../src/file-manager/fm-properties-window.c:4578
 msgid "--"
 msgstr "--"
 
-#: ../src/file-manager/fm-properties-window.c:3059
+#: ../src/file-manager/fm-properties-window.c:3067
 msgid "Size:"
 msgstr "Pamier:"
 
-#: ../src/file-manager/fm-properties-window.c:3065
+#: ../src/file-manager/fm-properties-window.c:3073
 #: ../src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "Pałažeńnie:"
 
-#: ../src/file-manager/fm-properties-window.c:3072
+#: ../src/file-manager/fm-properties-window.c:3080
 msgid "Volume:"
 msgstr "Masiŭ:"
 
-#: ../src/file-manager/fm-properties-window.c:3076
+#: ../src/file-manager/fm-properties-window.c:3084
 msgid "Free space:"
 msgstr "Volnaja prastora:"
 
-#: ../src/file-manager/fm-properties-window.c:3084
+#: ../src/file-manager/fm-properties-window.c:3092
 msgid "Link target:"
 msgstr "Meta poviazi:"
 
-#: ../src/file-manager/fm-properties-window.c:3090
+#: ../src/file-manager/fm-properties-window.c:3098
 msgid "MIME type:"
 msgstr "Typ MIME:"
 
-#: ../src/file-manager/fm-properties-window.c:3099
+#: ../src/file-manager/fm-properties-window.c:3107
 msgid "Modified:"
 msgstr "Madyfikacyja:"
 
-#: ../src/file-manager/fm-properties-window.c:3105
+#: ../src/file-manager/fm-properties-window.c:3113
 msgid "Accessed:"
 msgstr "Dostup:"
 
-#: ../src/file-manager/fm-properties-window.c:3214
+#: ../src/file-manager/fm-properties-window.c:3222
 #: ../src/nautilus-emblem-sidebar.c:1044
 msgid "Emblems"
 msgstr "Emblemy"
 
-#: ../src/file-manager/fm-properties-window.c:3612
+#: ../src/file-manager/fm-properties-window.c:3620
 msgid "_Read"
 msgstr "Čy_tańnie"
 
-#: ../src/file-manager/fm-properties-window.c:3614
+#: ../src/file-manager/fm-properties-window.c:3622
 msgid "_Write"
 msgstr "_Zapis"
 
-#: ../src/file-manager/fm-properties-window.c:3616
+#: ../src/file-manager/fm-properties-window.c:3624
 msgid "E_xecute"
 msgstr "_Vykanańnie"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:3866
-#: ../src/file-manager/fm-properties-window.c:3877
-#: ../src/file-manager/fm-properties-window.c:3889
+#: ../src/file-manager/fm-properties-window.c:3874
+#: ../src/file-manager/fm-properties-window.c:3885
+#: ../src/file-manager/fm-properties-window.c:3897
 msgid "no "
 msgstr "niama"
 
-#: ../src/file-manager/fm-properties-window.c:3869
+#: ../src/file-manager/fm-properties-window.c:3877
 msgid "list"
 msgstr "prahladu"
 
-#: ../src/file-manager/fm-properties-window.c:3871
+#: ../src/file-manager/fm-properties-window.c:3879
 msgid "read"
 msgstr "čytańnia"
 
-#: ../src/file-manager/fm-properties-window.c:3880
+#: ../src/file-manager/fm-properties-window.c:3888
 msgid "create/delete"
 msgstr "stvareńnia/vydaleńnia"
 
-#: ../src/file-manager/fm-properties-window.c:3882
+#: ../src/file-manager/fm-properties-window.c:3890
 msgid "write"
 msgstr "zapisu"
 
-#: ../src/file-manager/fm-properties-window.c:3891
+#: ../src/file-manager/fm-properties-window.c:3899
 msgid "access"
 msgstr "dostupu"
 
-#: ../src/file-manager/fm-properties-window.c:3940
+#: ../src/file-manager/fm-properties-window.c:3948
 msgid "Access:"
 msgstr "Dostup:"
 
-#: ../src/file-manager/fm-properties-window.c:3942
+#: ../src/file-manager/fm-properties-window.c:3950
 msgid "Folder Access:"
-msgstr "Dostup da tečki:"
+msgstr "Dostup da katalohu:"
 
-#: ../src/file-manager/fm-properties-window.c:3944
+#: ../src/file-manager/fm-properties-window.c:3952
 msgid "File Access:"
 msgstr "Dostup da fajłu:"
 
-#: ../src/file-manager/fm-properties-window.c:3956
-#: ../src/file-manager/fm-properties-window.c:3967
+#: ../src/file-manager/fm-properties-window.c:3964
+#: ../src/file-manager/fm-properties-window.c:3975
 #: ../src/nautilus-file-management-properties.c:293
 msgid "None"
 msgstr "Niama"
 
-#: ../src/file-manager/fm-properties-window.c:3959
+#: ../src/file-manager/fm-properties-window.c:3967
 msgid "List files only"
 msgstr "Pakažy tolki fajły"
 
-#: ../src/file-manager/fm-properties-window.c:3961
+#: ../src/file-manager/fm-properties-window.c:3969
 msgid "Access files"
 msgstr "Dostup da fajłaŭ"
 
-#: ../src/file-manager/fm-properties-window.c:3963
+#: ../src/file-manager/fm-properties-window.c:3971
 msgid "Create and delete files"
 msgstr "Stvarańnie j vydalańnie fajłaŭ"
 
-#: ../src/file-manager/fm-properties-window.c:3970
+#: ../src/file-manager/fm-properties-window.c:3978
 msgid "Read-only"
 msgstr "Tolki čytany"
 
-#: ../src/file-manager/fm-properties-window.c:3972
+#: ../src/file-manager/fm-properties-window.c:3980
 msgid "Read and write"
 msgstr "Čytańnie j zapis"
 
-#: ../src/file-manager/fm-properties-window.c:4037
+#: ../src/file-manager/fm-properties-window.c:4045
 msgid "Set _user ID"
 msgstr "Naładžvańnie ID _karystalnika"
 
-#: ../src/file-manager/fm-properties-window.c:4039
+#: ../src/file-manager/fm-properties-window.c:4047
 msgid "Special flags:"
 msgstr "Admysłovyja značniki:"
 
-#: ../src/file-manager/fm-properties-window.c:4041
+#: ../src/file-manager/fm-properties-window.c:4049
 msgid "Set gro_up ID"
 msgstr "Naładžvańnie ID h_rupy"
 
-#: ../src/file-manager/fm-properties-window.c:4042
+#: ../src/file-manager/fm-properties-window.c:4050
 msgid "_Sticky"
 msgstr "_Pryklejeny"
 
-#: ../src/file-manager/fm-properties-window.c:4122
-#: ../src/file-manager/fm-properties-window.c:4326
+#: ../src/file-manager/fm-properties-window.c:4130
+#: ../src/file-manager/fm-properties-window.c:4334
 msgid "_Owner:"
 msgstr "_Uładalnik:"
 
-#: ../src/file-manager/fm-properties-window.c:4128
-#: ../src/file-manager/fm-properties-window.c:4223
-#: ../src/file-manager/fm-properties-window.c:4334
+#: ../src/file-manager/fm-properties-window.c:4136
+#: ../src/file-manager/fm-properties-window.c:4231
+#: ../src/file-manager/fm-properties-window.c:4342
 msgid "Owner:"
 msgstr "Uładalnik:"
 
-#: ../src/file-manager/fm-properties-window.c:4151
-#: ../src/file-manager/fm-properties-window.c:4346
+#: ../src/file-manager/fm-properties-window.c:4159
+#: ../src/file-manager/fm-properties-window.c:4354
 msgid "_Group:"
 msgstr "_Hrupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4160
-#: ../src/file-manager/fm-properties-window.c:4224
-#: ../src/file-manager/fm-properties-window.c:4355
+#: ../src/file-manager/fm-properties-window.c:4168
+#: ../src/file-manager/fm-properties-window.c:4232
+#: ../src/file-manager/fm-properties-window.c:4363
 msgid "Group:"
 msgstr "Hrupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4185
+#: ../src/file-manager/fm-properties-window.c:4193
 msgid "Others"
 msgstr "Inšyja"
 
-#: ../src/file-manager/fm-properties-window.c:4202
+#: ../src/file-manager/fm-properties-window.c:4210
 msgid "Execute:"
 msgstr "Vykanańnie:"
 
-#: ../src/file-manager/fm-properties-window.c:4206
+#: ../src/file-manager/fm-properties-window.c:4214
 msgid "Allow _executing file as program"
 msgstr "Dazvol _vykonvać fajł jak prahramu"
 
-#: ../src/file-manager/fm-properties-window.c:4225
+#: ../src/file-manager/fm-properties-window.c:4233
 msgid "Others:"
 msgstr "Inšyja:"
 
-#: ../src/file-manager/fm-properties-window.c:4373
+#: ../src/file-manager/fm-properties-window.c:4381
 msgid "Folder Permissions:"
-msgstr "Dazvoły tečki:"
+msgstr "Dazvoły katalohu:"
 
-#: ../src/file-manager/fm-properties-window.c:4385
+#: ../src/file-manager/fm-properties-window.c:4393
 msgid "File Permissions:"
 msgstr "Dazvoły fajłu:"
 
-#: ../src/file-manager/fm-properties-window.c:4395
+#: ../src/file-manager/fm-properties-window.c:4403
 msgid "Text view:"
 msgstr "Tekstavy vyhlad:"
 
-#: ../src/file-manager/fm-properties-window.c:4542
+#: ../src/file-manager/fm-properties-window.c:4550
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Nia budučy ŭładalnikam, ty nia možaš źmianiać hetych dazvołaŭ."
 
-#: ../src/file-manager/fm-properties-window.c:4565
+#: ../src/file-manager/fm-properties-window.c:4573
 msgid "SELinux Context:"
 msgstr "Kantekst SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:4569
+#: ../src/file-manager/fm-properties-window.c:4577
 msgid "Last changed:"
 msgstr "Apošniaja źmiena:"
 
-#: ../src/file-manager/fm-properties-window.c:4583
+#: ../src/file-manager/fm-properties-window.c:4591
 msgid "Apply permissions to enclosed files"
 msgstr "Prymiani dazvoły da źmieščanych fajłaŭ"
 
-#: ../src/file-manager/fm-properties-window.c:4593
+#: ../src/file-manager/fm-properties-window.c:4601
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Niemahčyma akreślić dazvoły \"%s\"."
 
-#: ../src/file-manager/fm-properties-window.c:4596
+#: ../src/file-manager/fm-properties-window.c:4604
 msgid "The permissions of the selected file could not be determined."
 msgstr "Niemahčyma akreślić dazvoły abranaha fajłu."
 
-#: ../src/file-manager/fm-properties-window.c:4816
+#: ../src/file-manager/fm-properties-window.c:4824
 msgid "Open With"
 msgstr "Adčyni pry dapamozie"
 
-#: ../src/file-manager/fm-properties-window.c:5156
+#: ../src/file-manager/fm-properties-window.c:5164
 msgid "Creating Properties window."
 msgstr "Stvareńnie vakna ŭłaścivaściaŭ."
 
-#: ../src/file-manager/fm-properties-window.c:5396
+#: ../src/file-manager/fm-properties-window.c:5404
 msgid "Select Custom Icon"
 msgstr "Vybar ikony karystalnika"
 
@@ -3871,7 +4282,7 @@ msgstr "Vy_suń"
 #. add the "create folder" menu item
 #: ../src/file-manager/fm-tree-view.c:1275
 msgid "Create Folder"
-msgstr "Stvary tečku"
+msgstr "Stvary kataloh"
 
 #: ../src/file-manager/fm-tree-view.c:1323
 msgid "Move to Trash"
@@ -3894,35 +4305,47 @@ msgstr "Dreva"
 msgid "Show Tree"
 msgstr "Pakazvaj dreva"
 
-#: ../src/nautilus-application.c:276
+#: ../src/nautilus-application.c:282
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "Nautilus nia moža stvaryć vymahanaj tečki \"%s\"."
+msgstr "Nautilus nia moža stvaryć vymahanym katalohu \"%s\"."
 
-#: ../src/nautilus-application.c:278
-msgid "Before running Nautilus, please create the following folder, or set permissions such that Nautilus can create it."
-msgstr "Stvary nastupnuju tečku pierad uruchamleńniem Nautilusa, albo naładź dazvoły tak, kab možna było stvaryć jaje Nautilusam."
+#: ../src/nautilus-application.c:284
+msgid ""
+"Before running Nautilus, please create the following folder, or set "
+"permissions such that Nautilus can create it."
+msgstr ""
+"Stvary nastupny kataloh pierad uruchamleńniem Nautilusa, albo naładź dazvoły "
+"tak, kab možna było stvaryć jaho Nautilusam."
 
-#: ../src/nautilus-application.c:281
+#: ../src/nautilus-application.c:287
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr "Nautilus nia moža stvaryć nastupnych vymahanych tečak: %s."
+msgstr "Nautilus nia moža stvaryć nastupnych vymahanych katalohaŭ: %s."
 
-#: ../src/nautilus-application.c:283
-msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
-msgstr "Pierad uruchamleńniem Nautilusa stvary hetyja tečki, albo naładź dazvoły tak, kab možna było stvaryć tečki Nautilusam."
+#: ../src/nautilus-application.c:289
+msgid ""
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
+msgstr ""
+"Pierad uruchamleńniem Nautilusa stvary hetyja katalohi, albo naładź dazvoły "
+"tak, kab možna było stvaryć katalohi Nautilusam."
 
-#: ../src/nautilus-application.c:342
+#: ../src/nautilus-application.c:348
 msgid "Link To Old Desktop"
 msgstr "Spasyłka da staroha stała"
 
-#: ../src/nautilus-application.c:358
+#: ../src/nautilus-application.c:364
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "Na stale była stvoranaja poviaź \"Poviaź sa starym stałom\"."
 
-#: ../src/nautilus-application.c:359
-msgid "The location of the desktop directory has changed in GNOME 2.4. You can open the link and move over the files you want, then delete the link."
-msgstr "Pałažeńnie tečki stołu źmianiłasia ŭ GNOME 2.4. Možna skarystać poviaź, kab pieranieści patrebnyja fajły, a potym jaje vydalić."
+#: ../src/nautilus-application.c:365
+msgid ""
+"The location of the desktop directory has changed in GNOME 2.4. You can open "
+"the link and move over the files you want, then delete the link."
+msgstr ""
+"Pałažeńnie katalohu stołu źmianiłasia ŭ GNOME 2.4. Možna skarystać poviaź, "
+"kab pieranieści patrebnyja fajły, a potym jaje vydalić."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -3934,30 +4357,52 @@ msgstr "Pałažeńnie tečki stołu źmianiłasia ŭ GNOME 2.4. Možna skarysta�
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:555
-msgid "Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again."
-msgstr "Uruchomić Nautilus ciapier niemahčyma. Vyrašyć prablemu možna, uruchomiŭšy z zahadnaha radka \"bonobo-slay\". Kali prablema budzie paŭtaracca, pasprabuj uruchomić kamputar jašče raz albo pierainstalavać Nautilusa."
-
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:561
 msgid ""
-"Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again.\n"
-"\n"
-"Bonobo couldn't locate the Nautilus_shell.server file. One cause of this seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation library's directory. Another possible cause would be bad install with a missing Nautilus_Shell.server file.\n"
-"\n"
-"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, which may be needed by other applications.\n"
-"\n"
-"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but we don't know why.\n"
-"\n"
-"We have also seen this error when a faulty version of bonobo-activation was installed."
+"Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
+"console may fix the problem. If not, you can try rebooting the computer or "
+"installing Nautilus again."
 msgstr ""
-"Uruchomić Nautilus ciapier niemahčyma. Vyrašyć prablemu možna, uruchomiŭšy z zahadnaha radka \"bonobo-slay\". Kali prablema budzie paŭtaracca, pasprabuj uruchomić kamputar jašče raz albo pierainstalavać Nautilusa.\n"
+"Uruchomić Nautilus ciapier niemahčyma. Vyrašyć prablemu možna, uruchomiŭšy z "
+"zahadnaha radka \"bonobo-slay\". Kali prablema budzie paŭtaracca, pasprabuj "
+"uruchomić kamputar jašče raz albo pierainstalavać Nautilusa."
+
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
+#: ../src/nautilus-application.c:567
+msgid ""
+"Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
+"console may fix the problem. If not, you can try rebooting the computer or "
+"installing Nautilus again.\n"
 "\n"
-"Bonobo nia moža znajści fajł Nautilus_shell.server. Adnoj z mahčymych pryčyn źjaŭlajecca niapravilnaja instalacyja i adsutnaść hetaha fajłu, a inšaj – adsutnaść tečki ź biblijatekaj bonobo-activation u źmiennaj asiarodździa LD_LIBRARY_PATH.\n"
+"Bonobo couldn't locate the Nautilus_shell.server file. One cause of this "
+"seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation "
+"library's directory. Another possible cause would be bad install with a "
+"missing Nautilus_Shell.server file.\n"
 "\n"
-"Uruchamleńnie \"bonobo-slay\" spynić pracesy bonobo-activation i GConfa, jakija mohuć vykarystoŭvacca inšymi aplikacyjami. Ź nieviadomych dahetul pryčyn takija dziejańni časam dapamahajuć vyrašyć prablemu.\n"
+"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, "
+"which may be needed by other applications.\n"
 "\n"
-"Hetaja prablema moža być taksama prykmietaj zainstalavańnia ŭ systemie nieadpaviednaj versii bonobo-activation."
+"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but "
+"we don't know why.\n"
+"\n"
+"We have also seen this error when a faulty version of bonobo-activation was "
+"installed."
+msgstr ""
+"Uruchomić Nautilus ciapier niemahčyma. Vyrašyć prablemu možna, uruchomiŭšy z "
+"zahadnaha radka \"bonobo-slay\". Kali prablema budzie paŭtaracca, pasprabuj "
+"uruchomić kamputar jašče raz albo pierainstalavać Nautilusa.\n"
+"\n"
+"Bonobo nia moža znajści fajł Nautilus_shell.server. Adnoj z mahčymych pryčyn "
+"źjaŭlajecca niapravilnaja instalacyja i adsutnaść hetaha fajłu, a inšaj – "
+"adsutnaść katalohu ź biblijatekaj bonobo-activation u źmiennaj asiarodździa "
+"LD_LIBRARY_PATH.\n"
+"\n"
+"Uruchamleńnie \"bonobo-slay\" spynić pracesy bonobo-activation i GConfa, "
+"jakija mohuć vykarystoŭvacca inšymi aplikacyjami. Ź nieviadomych dahetul "
+"pryčyn takija dziejańni časam dapamahajuć vyrašyć prablemu.\n"
+"\n"
+"Hetaja prablema moža być taksama prykmietaj zainstalavańnia ŭ systemie "
+"nieadpaviednaj versii bonobo-activation."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -3968,28 +4413,44 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:591
-#: ../src/nautilus-application.c:609
-#: ../src/nautilus-application.c:616
+#: ../src/nautilus-application.c:597 ../src/nautilus-application.c:615
+#: ../src/nautilus-application.c:622
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Z pryčyny niečakanaj pamyłki niemahčyma ciapier karystacca Nautilusam."
 
-#: ../src/nautilus-application.c:592
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to register the file manager view server."
-msgstr "Uruchamleńnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad Bonobo pry sprobie zarehistravać server vyhladu kiraŭnika fajłaŭ."
+#: ../src/nautilus-application.c:598
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to register the file manager view server."
+msgstr ""
+"Uruchamleńnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad "
+"Bonobo pry sprobie zarehistravać server vyhladu kiraŭnika fajłaŭ."
 
-#: ../src/nautilus-application.c:610
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the factory.Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
-msgstr "Uruchamleńnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad Bonobo pry sprobie znajści hieneratar abjektaŭ. U vyrašeńni prablemy moža dapamahčy spynieńnie pracesu bonobo-activation-server i novaje ŭruchamleńnie Nautilusa."
+#: ../src/nautilus-application.c:616
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to locate the factory. Killing bonobo-activation-server and "
+"restarting Nautilus may help fix the problem."
+msgstr ""
+"Vykarystańnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad "
+"Bonobo pry sprobie znajści hieneratar abjektaŭ. U vyrašeńni prablemy moža "
+"dapamahčy zabojstva pracesu bonobo-activation-server i novaje ŭruchamleńnie "
+"Nautilusa."
 
-#: ../src/nautilus-application.c:617
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the shell object. Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
-msgstr "Uruchamleńnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad Bonobo pry sprobie znajści abjekt abałonki. U vyrašeńni prablemy moža dapamahčy spynieńnie pracesu bonobo-activation-server i novaje ŭruchamleńnie Nautilusa."
+#: ../src/nautilus-application.c:623
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to locate the shell object. Killing bonobo-activation-server and "
+"restarting Nautilus may help fix the problem."
+msgstr ""
+"Uruchamleńnie Nautilusa ciapier niemahčymaje z pryčyny niečakanaj pamyłki ad "
+"Bonobo pry sprobie znajści abjekt abałonki. U vyrašeńni prablemy moža "
+"dapamahčy spynieńnie pracesu bonobo-activation-server i novaje ŭruchamleńnie "
+"Nautilusa."
 
 #: ../src/nautilus-bookmarks-window.c:158
 #: ../src/nautilus-file-management-properties.c:216
-#: ../src/nautilus-property-browser.c:1562
-#: ../src/nautilus-window-menus.c:500
+#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:495
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4068,7 +4529,9 @@ msgstr "Biaśpiečny WebDAV (HTTPS)"
 #: ../src/nautilus-connect-server-dialog.c:200
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
-msgstr "Niemahčyma spałučycca z serveram. \"%s\" nie źjaŭlajecca pravilnym pałažeńniem."
+msgstr ""
+"Niemahčyma spałučycca z serveram. \"%s\" nie źjaŭlajecca pravilnym "
+"pałažeńniem."
 
 #: ../src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
@@ -4118,11 +4581,11 @@ msgstr "Spałučy z serveram"
 msgid "Service _type:"
 msgstr "_Typ pasłuhi:"
 
-#: ../src/nautilus-connect-server-dialog.c:930
+#: ../src/nautilus-connect-server-dialog.c:940
 msgid "Browse _Network"
 msgstr "P_rahladaj sietku"
 
-#: ../src/nautilus-connect-server-dialog.c:936
+#: ../src/nautilus-connect-server-dialog.c:946
 msgid "C_onnect"
 msgstr "Sp_ałučy"
 
@@ -4131,10 +4594,13 @@ msgstr "Sp_ałučy"
 msgid "Couldn't remove emblem with name '%s'."
 msgstr "Niemahčyma vydalić emblemu z nazvaj \"%s\"."
 
-#: ../src/nautilus-emblem-sidebar.c:242
-#: ../src/nautilus-emblem-sidebar.c:276
-msgid "This is probably because the emblem is a permanent one, and not one that you added yourself."
-msgstr "Vierahodna, heta aznačaje, što emblema tryvałaja, a nie samastojna stvoranaja."
+#: ../src/nautilus-emblem-sidebar.c:242 ../src/nautilus-emblem-sidebar.c:276
+msgid ""
+"This is probably because the emblem is a permanent one, and not one that you "
+"added yourself."
+msgstr ""
+"Vierahodna, heta aznačaje, što emblema tryvałaja, a nie samastojna "
+"stvoranaja."
 
 #: ../src/nautilus-emblem-sidebar.c:275
 #, c-format
@@ -4158,19 +4624,26 @@ msgid "Add Emblems..."
 msgstr "Dadaj emblemy..."
 
 #: ../src/nautilus-emblem-sidebar.c:556
-msgid "Enter a descriptive name next to each emblem.  This name will be used in other places to identify the emblem."
-msgstr "Pry kožnaj emblemie ŭviadzi apisalnuju nazvu. Jana budzie vykarystoŭvacca ŭ roznych miescach dziela identyfikacyi emblemaŭ."
+msgid ""
+"Enter a descriptive name next to each emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+"Pry kožnaj emblemie ŭviadzi apisalnuju nazvu. Jana budzie vykarystoŭvacca ŭ "
+"roznych miescach dziela identyfikacyi emblemaŭ."
 
 #: ../src/nautilus-emblem-sidebar.c:558
-msgid "Enter a descriptive name next to the emblem.  This name will be used in other places to identify the emblem."
-msgstr "Pry emblemie ŭviadzi apisalnuju nazvu. Jana budzie vykarystoŭvacca ŭ roznych miescach dziela identyfikacyi emblemy."
+msgid ""
+"Enter a descriptive name next to the emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+"Pry emblemie ŭviadzi apisalnuju nazvu. Jana budzie vykarystoŭvacca ŭ roznych "
+"miescach dziela identyfikacyi emblemy."
 
 #: ../src/nautilus-emblem-sidebar.c:777
 msgid "Some of the files could not be added as emblems."
 msgstr "Niekatoryja z fajłaŭ nielha dadać u jakaści emblemaŭ."
 
-#: ../src/nautilus-emblem-sidebar.c:777
-#: ../src/nautilus-emblem-sidebar.c:779
+#: ../src/nautilus-emblem-sidebar.c:777 ../src/nautilus-emblem-sidebar.c:779
 msgid "The emblems do not appear to be valid images."
 msgstr "Zdajecca, emblemy nie źjaŭlajucca pravilnymi vyjavami."
 
@@ -4178,8 +4651,7 @@ msgstr "Zdajecca, emblemy nie źjaŭlajucca pravilnymi vyjavami."
 msgid "None of the files could be added as emblems."
 msgstr "Nivodnaha z fajłaŭ niemahčyma dadać u jakaści emblemy."
 
-#: ../src/nautilus-emblem-sidebar.c:800
-#: ../src/nautilus-emblem-sidebar.c:825
+#: ../src/nautilus-emblem-sidebar.c:800 ../src/nautilus-emblem-sidebar.c:825
 #: ../src/nautilus-emblem-sidebar.c:874
 msgid "The emblem cannot be added."
 msgstr "Niemahčyma dadać emblemu."
@@ -4188,8 +4660,7 @@ msgstr "Niemahčyma dadać emblemu."
 msgid "The dragged text was not a valid file location."
 msgstr "Pieraciahnuty tekst nie źjaŭlajecca pravilnym pałažeńniem fajłu."
 
-#: ../src/nautilus-emblem-sidebar.c:820
-#: ../src/nautilus-emblem-sidebar.c:873
+#: ../src/nautilus-emblem-sidebar.c:820 ../src/nautilus-emblem-sidebar.c:873
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
 msgstr "Fajł \"%s\" nie źjaŭlajecca pravilnaj vyjavaj."
@@ -4339,12 +4810,17 @@ msgstr ""
 "Pavodle emblemaŭ"
 
 #: ../src/nautilus-file-management-properties.glade.h:43
-msgid "Choose the order of information to appear beneath icon names. More information will appear when zooming in closer."
-msgstr "Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja pad nazvami ikon. Razam z rostam pavieličeńnia budzie pajaŭlacca padrabiaźniejšaja infarmacyja."
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"information will appear when zooming in closer."
+msgstr ""
+"Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja pad nazvami ikon. "
+"Razam z rostam pavieličeńnia budzie pajaŭlacca padrabiaźniejšaja infarmacyja."
 
 #: ../src/nautilus-file-management-properties.glade.h:44
 msgid "Choose the order of information to appear in the list view."
-msgstr "Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja ŭ vyhladzie śpisu. "
+msgstr ""
+"Akreśl čarhovaść, u jakoj pavinna pajaŭlacca infarmacyja ŭ vyhladzie śpisu. "
 
 #: ../src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
@@ -4388,7 +4864,7 @@ msgstr "Prasłuchoŭvańnie _hukavych fajłaŭ:"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Show _only folders"
-msgstr "Pakazvaj t_olki tečki"
+msgstr "Pakazvaj t_olki katalohi"
 
 #: ../src/nautilus-file-management-properties.glade.h:56
 msgid "Show _thumbnails:"
@@ -4408,7 +4884,7 @@ msgstr "Teč_ki pierad fajłami"
 
 #: ../src/nautilus-file-management-properties.glade.h:60
 msgid "View _new folders using:"
-msgstr "Prahladaj _novyja tečki pry dapamozie:"
+msgstr "Prahladaj _novyja katalohi pry dapamozie:"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Views"
@@ -4423,8 +4899,8 @@ msgid "_Default zoom level:"
 msgstr "_Zmoŭčanaje pavieličeńnie:"
 
 #: ../src/nautilus-file-management-properties.glade.h:65
-msgid "_Double click to activate items"
-msgstr "Aktyvizacyja elementaŭ pa_dvojnym klikam"
+msgid "_Double click to open items"
+msgstr "Adčynieńnie elementaŭ pa_dvojnym klikam"
 
 #: ../src/nautilus-file-management-properties.glade.h:66
 msgid "_Format:"
@@ -4435,12 +4911,12 @@ msgid "_Only for files smaller than:"
 msgstr "_Tolki dla fajłaŭ, mienšych za:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
-msgid "_Run executable text files when they are clicked"
-msgstr "Vy_konvaj tekstavyja fajły, kali ich kliknuć"
+msgid "_Run executable text files when they are opened"
+msgstr "Vy_konvaj tekstavyja fajły, kali ich adčynić"
 
 #: ../src/nautilus-file-management-properties.glade.h:69
-msgid "_Single click to activate items"
-msgstr "Aktyvizacyja elementaŭ ad_nym klikam"
+msgid "_Single click to open items"
+msgstr "Adčynieńnie elementaŭ ad_nym klikam"
 
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "_Text beside icons"
@@ -4451,8 +4927,8 @@ msgid "_Use compact layout"
 msgstr "_Ščylniejšaje raźmiaščeńnie"
 
 #: ../src/nautilus-file-management-properties.glade.h:72
-msgid "_View executable text files when they are clicked"
-msgstr "Pakazvaj _tekstavyja fajły paśla kliku"
+msgid "_View executable text files when they are opened"
+msgstr "Pakazvaj _tekstavyja fajły pry adčynieńni"
 
 #: ../src/nautilus-first-time-druid.c:40
 msgid ""
@@ -4461,7 +4937,8 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"Isnavańnie hetaha fajłu aznačaje, što było adčynienaje vakno asystenta kanfihuracyi Nautilusa.\n"
+"Isnavańnie hetaha fajłu aznačaje, što było adčynienaje vakno asystenta "
+"kanfihuracyi Nautilusa.\n"
 "\n"
 "Kab akno pajaviłasia znoŭ, ty možaš uručnuju vydalić hety fajł.\n"
 
@@ -4473,64 +4950,81 @@ msgstr "Historyja"
 msgid "Show History"
 msgstr "Pakažy historyju"
 
-#: ../src/nautilus-image-properties-page.c:220
+#: ../src/nautilus-image-properties-page.c:237
 msgid "Camera Brand"
 msgstr "Brand aparatu"
 
-#: ../src/nautilus-image-properties-page.c:221
+#: ../src/nautilus-image-properties-page.c:238
 msgid "Camera Model"
 msgstr "Madel aparatu"
 
 #. Choose which date to show in order of relevance
-#: ../src/nautilus-image-properties-page.c:224
+#: ../src/nautilus-image-properties-page.c:241
 msgid "Date Taken"
 msgstr "Data zdymku"
 
-#: ../src/nautilus-image-properties-page.c:226
+#: ../src/nautilus-image-properties-page.c:243
 msgid "Date Digitized"
 msgstr "Data ličbavańnia"
 
-#: ../src/nautilus-image-properties-page.c:232
+#: ../src/nautilus-image-properties-page.c:249
 msgid "Exposure Time"
 msgstr "Čas vytrymki"
 
-#: ../src/nautilus-image-properties-page.c:233
-msgid "Exposure Program"
-msgstr "Prahrama vytrymki"
-
-#: ../src/nautilus-image-properties-page.c:234
+#: ../src/nautilus-image-properties-page.c:250
 msgid "Aperture Value"
 msgstr "Šyrynia dyjafrahmy"
 
-#: ../src/nautilus-image-properties-page.c:235
-msgid "Metering Mode"
-msgstr "Režym vymiareńnia"
-
-#: ../src/nautilus-image-properties-page.c:236
-msgid "Flash Fired"
-msgstr "Ź lampaj"
-
-#: ../src/nautilus-image-properties-page.c:237
-msgid "Focal Length"
-msgstr "Pamier fokusu"
-
-#: ../src/nautilus-image-properties-page.c:238
-msgid "Shutter Speed"
-msgstr "Chutkaść zasłony"
-
-#: ../src/nautilus-image-properties-page.c:239
+#: ../src/nautilus-image-properties-page.c:251
 msgid "ISO Speed Rating"
 msgstr "Pakaźnik chutkaści ISO"
 
-#: ../src/nautilus-image-properties-page.c:240
+#: ../src/nautilus-image-properties-page.c:252
+msgid "Flash Fired"
+msgstr "Ź lampaj"
+
+#: ../src/nautilus-image-properties-page.c:253
+msgid "Metering Mode"
+msgstr "Režym vymiareńnia"
+
+#: ../src/nautilus-image-properties-page.c:254
+msgid "Exposure Program"
+msgstr "Prahrama vytrymki"
+
+#: ../src/nautilus-image-properties-page.c:255
+msgid "Focal Length"
+msgstr "Pamier fokusu"
+
+#: ../src/nautilus-image-properties-page.c:256
 msgid "Software"
 msgstr "Prahrama"
 
-#: ../src/nautilus-image-properties-page.c:260
+#: ../src/nautilus-image-properties-page.c:301
+#: ../src/nautilus-query-editor.c:130
+msgid "Location"
+msgstr "Pałažeńnie"
+
+#: ../src/nautilus-image-properties-page.c:303
+msgid "Keywords"
+msgstr "Klučavyja słovy"
+
+#: ../src/nautilus-image-properties-page.c:304
+msgid "Creator"
+msgstr "Stvaralnik"
+
+#: ../src/nautilus-image-properties-page.c:305
+msgid "Copyright"
+msgstr "Aŭtarskija pravy"
+
+#: ../src/nautilus-image-properties-page.c:306
+msgid "Rating"
+msgstr "Rejtynh"
+
+#: ../src/nautilus-image-properties-page.c:327
 msgid "Image Type:"
 msgstr "Typ vyjavy:"
 
-#: ../src/nautilus-image-properties-page.c:261
+#: ../src/nautilus-image-properties-page.c:328
 #, c-format
 msgid "<b>Width:</b> %d pixel\n"
 msgid_plural "<b>Width:</b> %d pixels\n"
@@ -4538,7 +5032,7 @@ msgstr[0] "<b>Šyrynia:</b> %d piksel\n"
 msgstr[1] "<b>Šyrynia:</b> %d pikseli\n"
 msgstr[2] "<b>Šyrynia:</b> %d pikselaŭ\n"
 
-#: ../src/nautilus-image-properties-page.c:265
+#: ../src/nautilus-image-properties-page.c:332
 #, c-format
 msgid "<b>Height:</b> %d pixel\n"
 msgid_plural "<b>Height:</b> %d pixels\n"
@@ -4546,15 +5040,15 @@ msgstr[0] "<b>Vyšynia:</b> %d piksel\n"
 msgstr[1] "<b>Vyšynia:</b> %d pikseli\n"
 msgstr[2] "<b>Vyšynia:</b> %d pikselaŭ\n"
 
-#: ../src/nautilus-image-properties-page.c:280
+#: ../src/nautilus-image-properties-page.c:350
 msgid "Failed to load image information"
 msgstr "Niemahčyma adčytać infarmacyju ab vyjavie"
 
-#: ../src/nautilus-image-properties-page.c:430
+#: ../src/nautilus-image-properties-page.c:525
 msgid "loading..."
 msgstr "zahruzka..."
 
-#: ../src/nautilus-image-properties-page.c:496
+#: ../src/nautilus-image-properties-page.c:591
 msgid "Image"
 msgstr "Vyjava"
 
@@ -4604,56 +5098,62 @@ msgstr "Adčyni pałažeńnie"
 msgid "_Location:"
 msgstr "Pałažeńn_ie:"
 
-#: ../src/nautilus-main.c:376
+#: ../src/nautilus-main.c:380
 msgid "Perform a quick set of self-check tests."
 msgstr "Praviadzi karotkija aŭtamatyčnyja testy aŭtapravierki."
 
-#: ../src/nautilus-main.c:379
+#: ../src/nautilus-main.c:383
 msgid "Create the initial window with the given geometry."
 msgstr "Stvary pačatkovaje vakno z padadzienaj hieametryjaj."
 
-#: ../src/nautilus-main.c:379
+#: ../src/nautilus-main.c:383
 msgid "GEOMETRY"
 msgstr "HIEAMETRYJA"
 
-#: ../src/nautilus-main.c:381
+#: ../src/nautilus-main.c:385
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Stvaraj vokny tolki dla jaŭna padadzienych URI."
 
-#: ../src/nautilus-main.c:383
-msgid "Do not manage the desktop (ignore the preference set in the preferences dialog)."
+#: ../src/nautilus-main.c:387
+msgid ""
+"Do not manage the desktop (ignore the preference set in the preferences "
+"dialog)."
 msgstr "Nie absłuhoŭvaj stała (ihnaruje nałady z vakna Nałady)."
 
-#: ../src/nautilus-main.c:385
+#: ../src/nautilus-main.c:389
 msgid "open a browser window."
 msgstr "adčyniaje vakno hartača."
 
-#: ../src/nautilus-main.c:387
+#: ../src/nautilus-main.c:391
 msgid "Quit Nautilus."
 msgstr "Zakančvaje pracu Nautilusa."
 
-#: ../src/nautilus-main.c:389
+#: ../src/nautilus-main.c:393
 msgid "Restart Nautilus."
 msgstr "Znoŭ uruchamlaje Nautilusa."
 
-#: ../src/nautilus-main.c:390
+#: ../src/nautilus-main.c:394
 msgid "[URI...]"
 msgstr "[URI...]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
-#: ../src/nautilus-main.c:393
-msgid "Load a saved session from the specified file. Implies \"--no-default-window\"."
-msgstr "Zahružaje zapisanuju sesiju z padadzienaha fajłu. Gvałtoŭna vyklikaje \"--no-default-window\"."
+#: ../src/nautilus-main.c:397
+msgid ""
+"Load a saved session from the specified file. Implies \"--no-default-window"
+"\"."
+msgstr ""
+"Zahružaje zapisanuju sesiju z padadzienaha fajłu. Gvałtoŭna vyklikaje \"--no-"
+"default-window\"."
 
-#: ../src/nautilus-main.c:393
+#: ../src/nautilus-main.c:397
 msgid "FILENAME"
 msgstr "NAZVA _FAJŁU"
 
-#: ../src/nautilus-main.c:431
+#: ../src/nautilus-main.c:435
 msgid "File Manager"
 msgstr "Kiraŭnik fajłaŭ"
 
-#: ../src/nautilus-main.c:432
+#: ../src/nautilus-main.c:436
 msgid ""
 "\n"
 "\n"
@@ -4664,222 +5164,220 @@ msgstr ""
 "Prahladaje fajłavuju systemu pry dapamozie kiraŭnika fajłaŭ"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:440
-#: ../src/nautilus-spatial-window.c:414
-#: ../src/nautilus-window-menus.c:441
+#: ../src/nautilus-main.c:448 ../src/nautilus-spatial-window.c:414
+#: ../src/nautilus-window-menus.c:433 ../src/nautilus-window-menus.c:435
 #: ../src/nautilus-window.c:167
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:473
-#: ../src/nautilus-main.c:482
-#: ../src/nautilus-main.c:487
+#: ../src/nautilus-main.c:481 ../src/nautilus-main.c:490
+#: ../src/nautilus-main.c:495
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s nia moža być vykarystanaje z URI.\n"
 
-#: ../src/nautilus-main.c:478
+#: ../src/nautilus-main.c:486
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nia moža być vykarystanaje ź inšymi opcyjami.\n"
 
-#: ../src/nautilus-main.c:492
+#: ../src/nautilus-main.c:500
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
-msgstr "nautilus: --geometry nia moža być vykarystanaje z bolš jak adnym URI.\n"
+msgstr ""
+"nautilus: --geometry nia moža być vykarystanaje z bolš jak adnym URI.\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: ../src/nautilus-navigation-window-menus.c:116
+#: ../src/nautilus-navigation-window-menus.c:117
 msgid "Are you sure you want to forget history?"
 msgstr "Sapraŭdy chočaš zabycca pra historyju?"
 
-#: ../src/nautilus-navigation-window-menus.c:117
+#: ../src/nautilus-navigation-window-menus.c:118
 msgid "If you do, you will be doomed to repeat it."
 msgstr "Kali ty zrobiš heta, tabie budzie nakanavana prajści jaje znoŭ."
 
-#: ../src/nautilus-navigation-window-menus.c:119
+#: ../src/nautilus-navigation-window-menus.c:120
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "Ty chočaš vyčyścić śpis pałažeńniaŭ, naviedanych Nautilusam?"
 
-#: ../src/nautilus-navigation-window-menus.c:121
+#: ../src/nautilus-navigation-window-menus.c:122
 msgid "If you clear the list of locations, they will be permanently deleted."
 msgstr "Kali vyčyściš śpis pałažeńniaŭ, jany buduć niezvarotna vydalenyja."
 
-#: ../src/nautilus-navigation-window-menus.c:288
-#: ../src/nautilus-window-bookmarks.c:96
+#: ../src/nautilus-navigation-window-menus.c:289
+#: ../src/nautilus-window-bookmarks.c:98
 #, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "Pałažeńnie \"%s\" nie isnuje."
 
-#: ../src/nautilus-navigation-window-menus.c:290
+#: ../src/nautilus-navigation-window-menus.c:291
 msgid "The history location doesn't exist."
 msgstr "Pałažeńnie z historyi nie isnuje."
 
-#: ../src/nautilus-navigation-window-menus.c:426
+#: ../src/nautilus-navigation-window-menus.c:446
 msgid "_Go"
 msgstr "Pieraj_dzi"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:427
+#: ../src/nautilus-navigation-window-menus.c:447
 msgid "_Bookmarks"
 msgstr "Ulu_bionaje"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:428
+#: ../src/nautilus-navigation-window-menus.c:448
 msgid "Open New _Window"
 msgstr "Adčyni novaje va_kno"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:429
+#: ../src/nautilus-navigation-window-menus.c:449
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Adčyniaje novaje vakno Nautilusa dla pakazvanaha pałažeńnia"
 
-#: ../src/nautilus-navigation-window-menus.c:431
+#: ../src/nautilus-navigation-window-menus.c:451
 msgid "Close _All Windows"
 msgstr "Začyni ŭ_sie vokny"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:432
+#: ../src/nautilus-navigation-window-menus.c:452
 msgid "Close all Navigation windows"
 msgstr "Začyniaje ŭsie navihacyjnyja vokny"
 
-#: ../src/nautilus-navigation-window-menus.c:434
+#: ../src/nautilus-navigation-window-menus.c:454
 msgid "_Location..."
 msgstr "P_ałažeńnie..."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:435
+#: ../src/nautilus-navigation-window-menus.c:455
 #: ../src/nautilus-spatial-window.c:852
 msgid "Specify a location to open"
 msgstr "Akreślivaje pałažeńnie, kab adčynić"
 
-#: ../src/nautilus-navigation-window-menus.c:437
+#: ../src/nautilus-navigation-window-menus.c:457
 msgid "Clea_r History"
 msgstr "Ačyść _historyju"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:438
+#: ../src/nautilus-navigation-window-menus.c:458
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Čyścić źmieściva menu Pierajdzi i śpisy Nazad/Napierad"
 
-#: ../src/nautilus-navigation-window-menus.c:440
+#: ../src/nautilus-navigation-window-menus.c:460
 #: ../src/nautilus-spatial-window.c:860
 msgid "_Add Bookmark"
 msgstr "_Dadaj da zakładak"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:441
+#: ../src/nautilus-navigation-window-menus.c:461
 #: ../src/nautilus-spatial-window.c:861
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Dadaj dziejnaje pałažeńnie da zakładak u hetym menu"
 
-#: ../src/nautilus-navigation-window-menus.c:443
+#: ../src/nautilus-navigation-window-menus.c:463
 #: ../src/nautilus-spatial-window.c:863
 msgid "_Edit Bookmarks"
 msgstr "Z_madyfikuj zakładki"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:444
+#: ../src/nautilus-navigation-window-menus.c:464
 #: ../src/nautilus-spatial-window.c:864
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Pakažy vakno, jakoje dazvalaje madyfikavać Zakładki ŭ hetym menu"
 
-#: ../src/nautilus-navigation-window-menus.c:446
+#: ../src/nautilus-navigation-window-menus.c:466
 #: ../src/nautilus-spatial-window.c:866
 msgid "_Search for Files..."
 msgstr "P_ošuk fajłaŭ..."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:447
+#: ../src/nautilus-navigation-window-menus.c:467
 #: ../src/nautilus-spatial-window.c:867
 msgid "Locate documents and folders on this computer by name or content"
-msgstr "Šukaj dakumenty i tečki ŭ hetym kamputary pavodle nazvy albo źmieściva"
+msgstr "Šukaj dakumenty i katalohi ŭ hetym kamputary pavodle nazvy albo źmieściva"
 
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:454
+#: ../src/nautilus-navigation-window-menus.c:474
 msgid "_Main Toolbar"
 msgstr "Hałoŭnaja panel _pryładździa"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:455
+#: ../src/nautilus-navigation-window-menus.c:475
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Źmiani bačnaść hałoŭnaj paneli pryładździa hetaha vakna "
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:459
+#: ../src/nautilus-navigation-window-menus.c:479
 msgid "_Side Pane"
 msgstr "_Bakavaja panel"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:460
+#: ../src/nautilus-navigation-window-menus.c:480
 msgid "Change the visibility of this window's sidebar"
 msgstr "Źmiani bačnaść bakavoj paneli hetaha vakna"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:464
+#: ../src/nautilus-navigation-window-menus.c:484
 msgid "Location _Bar"
 msgstr "Panel p_ałažeńnia"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:465
+#: ../src/nautilus-navigation-window-menus.c:485
 msgid "Change the visibility of this window's location bar"
 msgstr "Źmiani bačnaść paneli pałažeńnia hetaha vakna"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:469
+#: ../src/nautilus-navigation-window-menus.c:489
 msgid "St_atusbar"
 msgstr "Panel _stanu"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:470
+#: ../src/nautilus-navigation-window-menus.c:490
 msgid "Change the visibility of this window's statusbar"
 msgstr "Źmiani bačnaść paneli stanu hetaha vakna"
 
-#: ../src/nautilus-navigation-window-menus.c:494
+#: ../src/nautilus-navigation-window-menus.c:514
 msgid "_Back"
 msgstr "_Nazad"
 
-#: ../src/nautilus-navigation-window-menus.c:496
+#: ../src/nautilus-navigation-window-menus.c:516
 msgid "Go to the previous visited location"
 msgstr "Pierajdzi da apošniaha naviedanaha miesca"
 
-#: ../src/nautilus-navigation-window-menus.c:497
+#: ../src/nautilus-navigation-window-menus.c:517
 msgid "Back history"
 msgstr "Nazad, pa historyi"
 
-#: ../src/nautilus-navigation-window-menus.c:511
+#: ../src/nautilus-navigation-window-menus.c:531
 msgid "_Forward"
 msgstr "_Napierad"
 
-#: ../src/nautilus-navigation-window-menus.c:513
+#: ../src/nautilus-navigation-window-menus.c:533
 msgid "Go to the next visited location"
 msgstr "Pierajdzi da nastupnaha naviedanaha miesca"
 
-#: ../src/nautilus-navigation-window-menus.c:514
+#: ../src/nautilus-navigation-window-menus.c:534
 msgid "Forward history"
 msgstr "Napierad pa historyi"
 
-#: ../src/nautilus-navigation-window-menus.c:528
+#: ../src/nautilus-navigation-window-menus.c:548
 msgid "_Search"
 msgstr "_Šukaj"
 
-#: ../src/nautilus-navigation-window.c:186
+#: ../src/nautilus-navigation-window.c:187
 msgid "Toggle between button and text-based location bar"
 msgstr "Pieraklučaj pamiž tekstavaj i knopačnaj panellu pałažeńnia"
 
-#: ../src/nautilus-navigation-window.c:932
+#: ../src/nautilus-navigation-window.c:925
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s – Hartač fajłaŭ"
 
-#: ../src/nautilus-notes-viewer.c:388
-#: ../src/nautilus-notes-viewer.c:498
+#: ../src/nautilus-notes-viewer.c:388 ../src/nautilus-notes-viewer.c:498
 msgid "Notes"
 msgstr "Natatki"
 
@@ -4908,8 +5406,7 @@ msgid "_Unmount"
 msgstr "A_dmantuj"
 
 #. Empty Trash menu item
-#: ../src/nautilus-places-sidebar.c:1513
-#: ../src/nautilus-trash-bar.c:141
+#: ../src/nautilus-places-sidebar.c:1513 ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "Aparažni śmie_tnicu"
 
@@ -5002,7 +5499,8 @@ msgstr "Nažal, niemahčyma zamianić vyjavu abnuleńnia."
 
 #: ../src/nautilus-property-browser.c:1206
 msgid "Reset is a special image that cannot be deleted."
-msgstr "Vyjava abnuleńnia źjaŭlajecca admysłovym typam vyjavy i nielha jaje vydalić."
+msgstr ""
+"Vyjava abnuleńnia źjaŭlajecca admysłovym typam vyjavy i nielha jaje vydalić."
 
 #: ../src/nautilus-property-browser.c:1238
 #, c-format
@@ -5041,155 +5539,151 @@ msgstr "Vybačaj, ale \"%s\" nie źjaŭlajecca pryjmalnym fajłam vyjavy."
 msgid "The file is not an image."
 msgstr "Fajł nie źjaŭlajecca vyjavaj."
 
-#: ../src/nautilus-property-browser.c:2154
+#: ../src/nautilus-property-browser.c:2153
 msgid "Select a Category:"
 msgstr "Abiary katehoryju:"
 
-#: ../src/nautilus-property-browser.c:2163
+#: ../src/nautilus-property-browser.c:2162
 msgid "C_ancel Remove"
 msgstr "_Anuluj vydaleńnie"
 
-#: ../src/nautilus-property-browser.c:2169
+#: ../src/nautilus-property-browser.c:2168
 msgid "_Add a New Pattern..."
 msgstr "_Dadaj novy arnament..."
 
-#: ../src/nautilus-property-browser.c:2172
+#: ../src/nautilus-property-browser.c:2171
 msgid "_Add a New Color..."
 msgstr "_Dadaj novy koler..."
 
-#: ../src/nautilus-property-browser.c:2175
+#: ../src/nautilus-property-browser.c:2174
 msgid "_Add a New Emblem..."
 msgstr "_Dadaj novuju emblemu..."
 
-#: ../src/nautilus-property-browser.c:2198
+#: ../src/nautilus-property-browser.c:2197
 msgid "Click on a pattern to remove it"
 msgstr "Klikni arnament, kab vydalić jaho"
 
-#: ../src/nautilus-property-browser.c:2201
+#: ../src/nautilus-property-browser.c:2200
 msgid "Click on a color to remove it"
 msgstr "Klikni koler, kab vydalić jaho"
 
-#: ../src/nautilus-property-browser.c:2204
+#: ../src/nautilus-property-browser.c:2203
 msgid "Click on an emblem to remove it"
 msgstr "Klikni emblemu, kab vydalić jaje"
 
-#: ../src/nautilus-property-browser.c:2213
+#: ../src/nautilus-property-browser.c:2212
 msgid "Patterns:"
 msgstr "Arnamenty:"
 
-#: ../src/nautilus-property-browser.c:2216
+#: ../src/nautilus-property-browser.c:2215
 msgid "Colors:"
 msgstr "Kolery:"
 
-#: ../src/nautilus-property-browser.c:2219
+#: ../src/nautilus-property-browser.c:2218
 msgid "Emblems:"
 msgstr "Emblemy:"
 
-#: ../src/nautilus-property-browser.c:2239
+#: ../src/nautilus-property-browser.c:2238
 msgid "_Remove a Pattern..."
 msgstr "_Vydal arnament..."
 
-#: ../src/nautilus-property-browser.c:2242
+#: ../src/nautilus-property-browser.c:2241
 msgid "_Remove a Color..."
 msgstr "_Vydal koler..."
 
-#: ../src/nautilus-property-browser.c:2245
+#: ../src/nautilus-property-browser.c:2244
 msgid "_Remove an Emblem..."
 msgstr "_Vydal emblemu..."
 
-#: ../src/nautilus-query-editor.c:132
-msgid "Location"
-msgstr "Pałažeńnie"
-
-#: ../src/nautilus-query-editor.c:138
+#: ../src/nautilus-query-editor.c:136
 msgid "File Type"
 msgstr "Typ fajłu"
 
-#: ../src/nautilus-query-editor.c:280
+#: ../src/nautilus-query-editor.c:273
 msgid "Select folder to search in"
 msgstr "Tečka, u jakoj šukać"
 
-#: ../src/nautilus-query-editor.c:364
+#: ../src/nautilus-query-editor.c:357
 msgid "Documents"
 msgstr "Dakumenty"
 
-#: ../src/nautilus-query-editor.c:382
+#: ../src/nautilus-query-editor.c:375
 msgid "Music"
 msgstr "Muzyka"
 
-#: ../src/nautilus-query-editor.c:396
+#: ../src/nautilus-query-editor.c:389
 msgid "Video"
 msgstr "Videa"
 
-#: ../src/nautilus-query-editor.c:412
+#: ../src/nautilus-query-editor.c:405
 msgid "Picture"
 msgstr "Vyjava"
 
-#: ../src/nautilus-query-editor.c:432
+#: ../src/nautilus-query-editor.c:425
 msgid "Illustration"
 msgstr "Ilustracyi"
 
-#: ../src/nautilus-query-editor.c:446
+#: ../src/nautilus-query-editor.c:439
 msgid "Spreadsheet"
 msgstr "Raźlikovy arkuš"
 
-#: ../src/nautilus-query-editor.c:462
+#: ../src/nautilus-query-editor.c:455
 msgid "Presentation"
 msgstr "Prezentacyja"
 
-#: ../src/nautilus-query-editor.c:471
+#: ../src/nautilus-query-editor.c:464
 msgid "Pdf / Postscript"
 msgstr "PDF / Postscript"
 
-#: ../src/nautilus-query-editor.c:479
+#: ../src/nautilus-query-editor.c:472
 msgid "Text File"
 msgstr "Tekstavy fajł"
 
-#: ../src/nautilus-query-editor.c:551
+#: ../src/nautilus-query-editor.c:544
 msgid "Select type"
 msgstr "Abiary typ"
 
-#: ../src/nautilus-query-editor.c:635
+#: ../src/nautilus-query-editor.c:628
 msgid "Any"
 msgstr "Luby"
 
-#: ../src/nautilus-query-editor.c:650
+#: ../src/nautilus-query-editor.c:643
 msgid "Other Type..."
 msgstr "Inšy typ..."
 
-#: ../src/nautilus-query-editor.c:936
+#: ../src/nautilus-query-editor.c:928
 msgid "Remove this criterion from the search"
 msgstr "Vydal hety kryter z pošuku"
 
-#: ../src/nautilus-query-editor.c:981
+#: ../src/nautilus-query-editor.c:973
 msgid "Search Folder"
 msgstr "Tečka pošuku"
 
-#: ../src/nautilus-query-editor.c:999
+#: ../src/nautilus-query-editor.c:987
 msgid "Edit the saved search"
 msgstr "Madyfikuj zapisany pošuk"
 
-#: ../src/nautilus-query-editor.c:1030
+#: ../src/nautilus-query-editor.c:1018
 msgid "Add a new criterion to this search"
 msgstr "Dadaj novy kryter pošuku"
 
-#: ../src/nautilus-query-editor.c:1034
+#: ../src/nautilus-query-editor.c:1022
 msgid "Go"
 msgstr "Pačni"
 
-#: ../src/nautilus-query-editor.c:1036
+#: ../src/nautilus-query-editor.c:1024
 msgid "Reload"
 msgstr "Abnavi"
 
-#: ../src/nautilus-query-editor.c:1041
+#: ../src/nautilus-query-editor.c:1029
 msgid "Perform or update the search"
 msgstr "Pačni albo aktualizuj pošuk"
 
-#: ../src/nautilus-query-editor.c:1062
+#: ../src/nautilus-query-editor.c:1050
 msgid "_Search for:"
 msgstr "_Šukaj:"
 
-#: ../src/nautilus-query-editor.c:1091
+#: ../src/nautilus-query-editor.c:1079
 msgid "Search results"
 msgstr "Vyniki pošuku"
 
@@ -5197,7 +5691,7 @@ msgstr "Vyniki pošuku"
 msgid "Search:"
 msgstr "Pošuk:"
 
-#: ../src/nautilus-side-pane.c:427
+#: ../src/nautilus-side-pane.c:420
 msgid "Close the side pane"
 msgstr "Začyni bakavuju panel"
 
@@ -5212,21 +5706,21 @@ msgstr "Adčyni pałažeńn_ie..."
 
 #: ../src/nautilus-spatial-window.c:854
 msgid "Close P_arent Folders"
-msgstr "Začyni _nadtečki"
+msgstr "Začyni _nadkatalohi"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:855
 msgid "Close this folder's parents"
-msgstr "Začyni nadtečki hetaj tečki"
+msgstr "Začyni nadkatalohi hetaha katalohu"
 
 #: ../src/nautilus-spatial-window.c:857
 msgid "Clos_e All Folders"
-msgstr "Začyni ŭsi_e tečki"
+msgstr "Začyni ŭsi_e katalohi"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:858
 msgid "Close all folder windows"
-msgstr "Začyni ŭsie vokny tečak"
+msgstr "Začyni ŭsie vokny katalohaŭ"
 
 #: ../src/nautilus-throbber.c:82
 msgid "throbber"
@@ -5236,11 +5730,15 @@ msgstr "značnik zaniataści"
 msgid "provides visual status"
 msgstr "prezentuje stan u vizualnym režymie"
 
-#: ../src/nautilus-window-bookmarks.c:94
-msgid "Do you want to remove any bookmarks with the non-existing location from your list?"
-msgstr "Ci chošaš vydalić sa svajho śpisu zakładak elementy, jakija viaduć da niaisnych miescaŭ?"
+#: ../src/nautilus-window-bookmarks.c:96
+msgid ""
+"Do you want to remove any bookmarks with the non-existing location from your "
+"list?"
+msgstr ""
+"Ci chošaš vydalić sa svajho śpisu zakładak elementy, jakija viaduć da "
+"niaisnych miescaŭ?"
 
-#: ../src/nautilus-window-bookmarks.c:99
+#: ../src/nautilus-window-bookmarks.c:101
 msgid "Bookmark for Nonexistent Location"
 msgstr "Zakładka dla niaisnaha pałažeńnia"
 
@@ -5258,15 +5756,16 @@ msgstr "Vyhlad źmieściva"
 
 #: ../src/nautilus-window-manage-views.c:1038
 msgid "View of the current folder"
-msgstr "Vyhlad dziejnaj tečki"
+msgstr "Vyhlad dziejnaha katalohu"
 
 #: ../src/nautilus-window-manage-views.c:1461
 msgid "Nautilus has no installed viewer capable of displaying the folder."
-msgstr "Nautilus nia maje zainstalavanaha hartača, zdolnaha pakazać hetuju tečku."
+msgstr ""
+"Nautilus nia maje zainstalavanaha hartača, zdolnaha pakazać hety kataloh."
 
 #: ../src/nautilus-window-manage-views.c:1467
 msgid "The location is not a folder."
-msgstr "Pałažeńnie nie źjaŭlajecca tečkaj."
+msgstr "Pałažeńnie nie źjaŭlajecca kataloham."
 
 #: ../src/nautilus-window-manage-views.c:1494
 #, c-format
@@ -5279,8 +5778,12 @@ msgstr "Pravier, ci nałady proxy pravilnyja."
 
 #: ../src/nautilus-window-manage-views.c:1534
 #, c-format
-msgid "Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser."
-msgstr "Niemahčyma pakazać \"%s\", bo Nautilus nia moža skantaktavacca z hałoŭnym serveram SMB."
+msgid ""
+"Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
+"browser."
+msgstr ""
+"Niemahčyma pakazać \"%s\", bo Nautilus nia moža skantaktavacca z hałoŭnym "
+"serveram SMB."
 
 #: ../src/nautilus-window-manage-views.c:1537
 msgid "Check that an SMB server is running in the local network."
@@ -5295,27 +5798,52 @@ msgstr "Niemahčyma pakazać \"%s\"."
 msgid "Please select another viewer and try again."
 msgstr "Abiary inšy hartač i pasprabuj znoŭ."
 
-#: ../src/nautilus-window-menus.c:182
+#: ../src/nautilus-window-menus.c:174
 msgid "Go to the location specified by this bookmark"
 msgstr "Pierajdzi da pałažeńnia, apisanaha hetaj zakładkaj"
 
-#: ../src/nautilus-window-menus.c:423
-msgid "Nautilus is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Nautilus źjaŭlajecca svabodnaj prahramaj, jakuju možna raspaŭsiudžvać i/albo madyfikavać zhodna z umovami GNU General Public License, apublikavanaj Free Software Foundation u versii 2 albo luboj paźniejšaj."
+#: ../src/nautilus-window-menus.c:414
+msgid ""
+"Nautilus is free software; you can redistribute it and/or modify it under "
+"the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
+msgstr ""
+"Nautilus źjaŭlajecca svabodnaj prahramaj, jakuju možna raspaŭsiudžvać i/albo "
+"madyfikavać zhodna z umovami GNU General Public License, apublikavanaj Free "
+"Software Foundation u versii 2 albo luboj paźniejšaj."
 
-#: ../src/nautilus-window-menus.c:427
-msgid "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
-msgstr "Nautilus raspaŭsiudžvajuć u nadziei, što jon budzie karysny, ale BIEŹ NIJAKAJ HARANTYI, taksama biez harantyi PRYDATNAŚCI DZIELA KANKRETNAHA VYKARYSTOŬVAŃNIA. Padrabiaznaści možna znajści ŭ GNU General Public License."
+#: ../src/nautilus-window-menus.c:418
+msgid ""
+"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+msgstr ""
+"Nautilus raspaŭsiudžvajuć u nadziei, što jon budzie karysny, ale BIEŹ "
+"NIJAKAJ HARANTYI, taksama biez harantyi PRYDATNAŚCI DZIELA KANKRETNAHA "
+"VYKARYSTOŬVAŃNIA. Padrabiaznaści možna znajści ŭ GNU General Public License."
 
-#: ../src/nautilus-window-menus.c:431
-msgid "You should have received a copy of the GNU General Public License along with Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
-msgstr "Kopija licenzii GNU GPL pavinna być dastaŭlenaja razam z Nautilusam. Kali jaje niama, napišy (pa-anhielsku) na adras Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
+#: ../src/nautilus-window-menus.c:422
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place, Suite 330, Boston, MA  02111-1307  USA"
+msgstr ""
+"Kopija licenzii GNU GPL pavinna być dastaŭlenaja razam z Nautilusam. Kali "
+"jaje niama, napišy (pa-anhielsku) na adras Free Software Foundation, Inc., "
+"59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
 
-#: ../src/nautilus-window-menus.c:443
-msgid "Nautilus is a graphical shell for GNOME that makes it easy to manage your files and the rest of your system."
-msgstr "Nautilus źjaŭlajecca hrafičnaj abałonkaj, jakaja źjaŭlajecca častkaj asiarodździa GNOME. Jon dapamahaje kiravać fajłami dy inšymi elementami systemy."
+#: ../src/nautilus-window-menus.c:438
+msgid ""
+"Nautilus is a graphical shell for GNOME that makes it easy to manage your "
+"files and the rest of your system."
+msgstr ""
+"Nautilus źjaŭlajecca hrafičnaj abałonkaj, jakaja źjaŭlajecca častkaj "
+"asiarodździa GNOME. Jon dapamahaje kiravać fajłami dy inšymi elementami "
+"systemy."
 
-#: ../src/nautilus-window-menus.c:447
+#: ../src/nautilus-window-menus.c:442
 msgid "Copyright © 1999-2007 The Nautilus authors"
 msgstr "Copyright © 1999-2007 Aŭtary Nautilusa"
 
@@ -5323,202 +5851,219 @@ msgstr "Copyright © 1999-2007 Aŭtary Nautilusa"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:457
+#: ../src/nautilus-window-menus.c:452
 msgid "translator-credits"
 msgstr "Alaksandar Navicki & Łacinka.org <zolak@lacinka.org>"
 
-#: ../src/nautilus-window-menus.c:588
+#: ../src/nautilus-window-menus.c:455
+msgid "Nautilus Web Site"
+msgstr "Sajt Nautilusa"
+
+#: ../src/nautilus-window-menus.c:583
 msgid "_File"
 msgstr "_Fajł"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:589
+#: ../src/nautilus-window-menus.c:584
 msgid "_Edit"
 msgstr "_Redahavańnie"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:590
+#: ../src/nautilus-window-menus.c:585
 msgid "_View"
 msgstr "_Vyhlad"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:591
+#: ../src/nautilus-window-menus.c:586
 msgid "_Help"
 msgstr "Dapamo_ha"
 
 #. name, stock id, label
 #. name, stock id
-#: ../src/nautilus-window-menus.c:593
+#: ../src/nautilus-window-menus.c:588
 msgid "_Close"
 msgstr "Z_ačyni"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:594
+#: ../src/nautilus-window-menus.c:589
 msgid "Close this folder"
-msgstr "Začyni hetuju tečku"
+msgstr "Začyni hety kataloh"
 
-#: ../src/nautilus-window-menus.c:597
+#: ../src/nautilus-window-menus.c:592
 msgid "_Backgrounds and Emblems..."
 msgstr "Fony i em_blemy..."
 
-#: ../src/nautilus-window-menus.c:598
-msgid "Display patterns, colors, and emblems that can be used to customize appearance"
-msgstr "Pakažy ŭzory, kolery i emblemy, jakija možna vykarystać, kab dastasavać vyhlad"
+#: ../src/nautilus-window-menus.c:593
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+"Pakažy ŭzory, kolery i emblemy, jakija možna vykarystać, kab dastasavać "
+"vyhlad"
 
-#: ../src/nautilus-window-menus.c:601
+#: ../src/nautilus-window-menus.c:596
 msgid "Prefere_nces"
 msgstr "_Nałady"
 
-#: ../src/nautilus-window-menus.c:602
+#: ../src/nautilus-window-menus.c:597
 msgid "Edit Nautilus preferences"
 msgstr "Madyfikuj nałady Nautilusa"
 
-#: ../src/nautilus-window-menus.c:604
+#: ../src/nautilus-window-menus.c:599
 msgid "_Undo"
 msgstr "_Viarni"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:605
+#: ../src/nautilus-window-menus.c:600
 msgid "Undo the last text change"
 msgstr "Anuluj apošniuju tekstavuju źmienu"
 
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:602
 msgid "Open _Parent"
-msgstr "Adčyni _nadtečku"
+msgstr "Adčyni _nadkataloh"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:608
+#: ../src/nautilus-window-menus.c:603
 msgid "Open the parent folder"
-msgstr "Adčyni nadtečku"
+msgstr "Adčyni nadkataloh"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:609
 msgid "_Stop"
 msgstr "S_pyni"
 
+#. label, accelerator
+#: ../src/nautilus-window-menus.c:610
+msgid "Stop loading the current location"
+msgstr "Spyni zahruzku dziejnaha pałažeńnia"
+
 #. name, stock id
-#: ../src/nautilus-window-menus.c:618
+#: ../src/nautilus-window-menus.c:613
 msgid "_Reload"
 msgstr "_Abnavi"
 
+#. label, accelerator
+#: ../src/nautilus-window-menus.c:614
+msgid "Reload the current location"
+msgstr "Pieračytaj dziejnaje pałažeńnie"
+
 #. name, stock id
-#: ../src/nautilus-window-menus.c:622
+#: ../src/nautilus-window-menus.c:617
 msgid "_Contents"
 msgstr "Źmieś_civa"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:623
+#: ../src/nautilus-window-menus.c:618
 msgid "Display Nautilus help"
 msgstr "Pakažy dapamohu Nautilusa"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:626
+#: ../src/nautilus-window-menus.c:621
 msgid "_About"
 msgstr "_Infarmacyja pra"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:627
+#: ../src/nautilus-window-menus.c:622
 msgid "Display credits for the creators of Nautilus"
 msgstr "Pakažy śpis stvaralnikaŭ Nautilusa"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:630
+#: ../src/nautilus-window-menus.c:625
 msgid "Zoom _In"
 msgstr "Pa_vialič"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:631
-#: ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:626 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Pakažy źmieściva ź vialikaj kolkaściu detalaŭ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:642
+#: ../src/nautilus-window-menus.c:637
 msgid "Zoom _Out"
 msgstr "Pa_mienš"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:643
-#: ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:638 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Pakažy źmieściva ź mienšaj kolkaściu detalaŭ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:650
+#: ../src/nautilus-window-menus.c:645
 msgid "Normal Si_ze"
 msgstr "Zvyčajny _pamier"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:651
+#: ../src/nautilus-window-menus.c:646
 msgid "Show the contents at the normal size"
 msgstr "Pakažy źmieściva zvyčajnaj vieličyni"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:654
+#: ../src/nautilus-window-menus.c:649
 msgid "Connect to _Server..."
 msgstr "Spałučy z _serveram..."
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:655
+#: ../src/nautilus-window-menus.c:650
 msgid "Connect to a remote computer or shared disk"
 msgstr "Spałučy z addalenym kamputaram albo supolnadastupnym dyskam"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:658
+#: ../src/nautilus-window-menus.c:653
 msgid "_Home Folder"
-msgstr "Chatniaja _tečka"
+msgstr "Chatni _kataloh"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:662
+#: ../src/nautilus-window-menus.c:657
 msgid "_Computer"
 msgstr "_Kamputar"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:666
+#: ../src/nautilus-window-menus.c:661
 msgid "_Network"
 msgstr "_Sieciva"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:667
-#: ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:662 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Prahlad zakładak i pałažeńniaŭ u lakalnaj sietcy"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:670
+#: ../src/nautilus-window-menus.c:665
 msgid "T_emplates"
 msgstr "Ša_blony"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:671
+#: ../src/nautilus-window-menus.c:666
 msgid "Open your personal templates folder"
-msgstr "Adčyni pryvatnuju tečku šablonaŭ"
+msgstr "Adčyni pryvatny kataloh šablonaŭ"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:674
+#: ../src/nautilus-window-menus.c:669
 msgid "_Trash"
 msgstr "Śmie_tnica"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:675
+#: ../src/nautilus-window-menus.c:670
 msgid "Open your personal trash folder"
-msgstr "Adčyni pryvatnuju tečku śmietnicy"
+msgstr "Adčyni pryvatny kataloh śmietnicy"
 
 #. name, stock id
-#: ../src/nautilus-window-menus.c:678
+#: ../src/nautilus-window-menus.c:673
 msgid "CD/_DVD Creator"
 msgstr "Stvaralnik CD/D_VD"
 
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:679
+#: ../src/nautilus-window-menus.c:674
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-msgstr "Adčyni tečku, u jakuju možna pieraciahnuć fajły, kab zapisać ich na CD albo DVD"
+msgstr ""
+"Adčyni kataloh, u jaki možna pieraciahnuć fajły, kab zapisać ich na CD albo "
+"DVD"
 
-#: ../src/nautilus-window-menus.c:705
+#: ../src/nautilus-window-menus.c:700
 msgid "_Up"
 msgstr "_Vierch"
 
-#: ../src/nautilus-window-menus.c:708
+#: ../src/nautilus-window-menus.c:703
 msgid "_Home"
 msgstr "Do_m"
 
@@ -5538,28 +6083,41 @@ msgstr "Zmoŭčanaje pavieličeńnie"
 msgid "Show in the default detail level"
 msgstr "Pakažy na zmoŭčanym uzroŭni detalaŭ"
 
-#: ../src/nautilus-zoom-control.c:801
+#: ../src/nautilus-zoom-control.c:888
 msgid "Zoom"
 msgstr "Pavialič"
 
-#: ../src/nautilus-zoom-control.c:807
+#: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Akreśl uzrovień pavieličeńnia dziejnaha vyhladu"
 
+#~ msgid "None of the %d selected items can be moved to the Trash"
+#~ msgstr ""
+#~ "Nivodzin z %d zaznačanych elementaŭ nia moža być pieraniesieny ŭ śmietnicu"
+
+#~ msgid "Shutter Speed"
+#~ msgstr "Chutkaść zasłony"
+
 #~ msgid "\"%s\" selected (%s)"
 #~ msgstr "Zaznačanaje \"%s\" (%s)"
+
 #~ msgid "Normal Alpha"
 #~ msgstr "Zwykły alfa"
+
 #~ msgid "Opacity of the normal icons if frame_text is set"
 #~ msgstr "Negatyw zwykłych ikon jeżeli frame_text jest ustawione"
+
 #~ msgid "Prelight Alpha"
 #~ msgstr "Zwykły alfa"
+
 #~ msgid "Opacity of the prelight icons if frame_text is set"
 #~ msgstr "Przezroczystość zwykłych ikon jeżeli frame_text jest ustawione"
+
 #~ msgid "View your computer storage"
 #~ msgstr "Wyświetla zasoby dyskowe komputera"
+
 #~ msgid "Change how files are managed"
 #~ msgstr "Zmiana sposobu zarządzania plikami"
+
 #~ msgid "View your home folder in the Nautilus file manager"
 #~ msgstr "Wyświetla folder domowy przy użyciu menedżera plików - Nautilusa"
-
