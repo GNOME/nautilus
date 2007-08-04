@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-25 15:13+0700\n"
-"PO-Revision-Date: 2007-07-25 15:36+0700\n"
+"POT-Creation-Date: 2007-08-04 18:04+0700\n"
+"PO-Revision-Date: 2007-08-04 18:19+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -973,7 +973,7 @@ msgid "Use De_fault"
 msgstr "ใช้ค่า_ปริยาย"
 
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1374
+#: src/file-manager/fm-list-view.c:1375
 msgid "Name"
 msgstr "ชื่อ"
 
@@ -1143,11 +1143,11 @@ msgstr "คำหลักใช้ได้แค่ตัวอักษร �
 #: libnautilus-private/nautilus-emblem-utils.c:214
 #, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr "มีชื่อ \"%s\" อยู่แล้ว โปรดใช้ชื่ออื่น"
+msgstr "มีชื่อ \"%s\" อยู่แล้ว กรุณาใช้ชื่ออื่น"
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Please choose a different emblem name."
-msgstr "โปรดเลือกชื่ออื่นสำหรับตรา"
+msgstr "กรุณาตั้งชื่อตราเป็นชื่ออื่น"
 
 #: libnautilus-private/nautilus-emblem-utils.c:259
 msgid "Sorry, unable to save custom emblem."
@@ -1362,28 +1362,28 @@ msgstr "_ข้าม"
 #: libnautilus-private/nautilus-file-operations.c:1137
 #, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "ไม่สามารถ \"%s\" ย้ายไปตำแหน่งใหม่"
+msgstr "ไม่สามารถย้าย \"%s\" ไปตำแหน่งใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:1140
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"จุดหมายมีชื่อนี้อยู่แล้ว ซึ่งไม่สามารถลบหรือเขียนทับได้ ถ้ายังต้องการจะย้ายรายการนี้  "
-"โปรดเปลี่ยนชื่อแล้วลองใหม่"
+"ชื่อนี้สงวนไว้ใช้สำหรับรายการพิเศษ ซึ่งไม่สามารถลบหรือเขียนทับได้ ถ้ายังต้องการจะย้ายรายการนี้  "
+"ก็กรุณาเปลี่ยนชื่อแล้วลองใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:1144
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "ไม่สามารถย้าย \"%s\" ไปตำแหน่งใหม่"
+msgstr "ไม่สามารถคัดลอก \"%s\" ไปตำแหน่งใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:1147
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"จุดหมายมีแฟ้มหรือโฟลเดอร์ชื่อนี้อยู่แล้ว ซึ่งไม่สามารถลบหรือเขียนทับได้ "
-"ถ้ายังต้องการจะคัดลอกรายการนี้โปรดเปลี่ยนชื่อแล้วลองใหม่"
+"ชื่อนี้สงวนไว้ใช้สำหรับรายการพิเศษ ซึ่งไม่สามารถลบหรือเขียนทับได้ "
+"ถ้ายังต้องการจะคัดลอกรายการนี้ ก็กรุณาเปลี่ยนชื่อแล้วลองใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
@@ -2174,7 +2174,7 @@ msgid "Icon View"
 msgstr "มุมมองแบบไอคอน"
 
 #: libnautilus-private/nautilus-global-preferences.c:149
-#: src/file-manager/fm-list-view.c:1431
+#: src/file-manager/fm-list-view.c:1428
 msgid "List View"
 msgstr "มุมมองแบบรายการ"
 
@@ -2319,6 +2319,7 @@ msgstr "กำลังเปิด %s"
 #: src/nautilus-window-manage-views.c:1500
 #: src/nautilus-window-manage-views.c:1506
 #: src/nautilus-window-manage-views.c:1527
+#: src/nautilus-window-manage-views.c:1545
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "ไม่สามารถแสดง \"%s\""
@@ -2349,7 +2350,7 @@ msgstr "ไม่สามารถแสดง \"%s\" เพราะไม่�
 #: src/nautilus-window-manage-views.c:1522
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "โปรดตรวจว่าตัวสะกดชื่อโฮสต์และค่าตั้งพร็อกซีถูกต้อง"
+msgstr "กรุณาตรวจว่าตัวสะกดชื่อโฮสต์ถูกต้อง และค่าตั้งพร็อกซีถูกต้อง"
 
 #: libnautilus-private/nautilus-program-choosing.c:616
 #: src/nautilus-window-manage-views.c:1480
@@ -2364,7 +2365,7 @@ msgstr "\"%s\" ไม่ใช่ตำแหน่งที่ถูกต้�
 #: src/nautilus-window-manage-views.c:1475
 #: src/nautilus-window-manage-views.c:1483
 msgid "Please check the spelling and try again."
-msgstr "โปรดตรวจตัวสะกดแล้วลองใหม่"
+msgstr "กรุณาตรวจตัวสะกดแล้วลองใหม่"
 
 #: libnautilus-private/nautilus-program-choosing.c:623
 #: src/nautilus-window-manage-views.c:1472
@@ -2406,7 +2407,7 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"ถ้าต้องการเปิดแฟ้มจากเครื่องอื่น โปรดคัดลอกแฟ้มมาไว้ที่เครื่องนี้ แล้วลากแฟ้มมาอีกทีใหม่ "
+"ถ้าต้องการเปิดแฟ้มจากเครื่องอื่น ให้คัดลอกแฟ้มมาไว้ที่เครื่องนี้ แล้วลากแฟ้มมาวางใหม่อีกที "
 "ส่วนแฟ้มอื่นที่อยู่ในเครื่องนี้ที่คุณลากมาวางนั้น ถูกเปิดเรียบร้อยแล้ว"
 
 #: libnautilus-private/nautilus-query.c:138
@@ -3437,7 +3438,7 @@ msgstr "แสดงข้อมูลของโฟลเดอร์ไม่
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "ชื่อ \"%s\" มีอยู่แล้วในโฟลเดอร์ โปรดใช้ชื่ออื่น"
+msgstr "ชื่อ \"%s\" มีอยู่แล้วในโฟลเดอร์นี้ กรุณาใช้ชื่ออื่น"
 
 #: src/file-manager/fm-error-reporting.c:113
 #, c-format
@@ -3455,12 +3456,12 @@ msgstr "คุณไม่ได้รับสิทธิ์สำหรับ
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
-msgstr "ใช้ชื่อ \"%s\" ไม่ได้เพราะมีตัวอักษร \"/\".  โปรดใช้ชื่ออื่น"
+msgstr "ใช้ชื่อ \"%s\" ไม่ได้เพราะมีตัวอักษร \"/\".  กรุณาใช้ชื่ออื่น"
 
 #: src/file-manager/fm-error-reporting.c:127
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr "ชื่อ \"%s\" ใช้ไม่ได้  โปรดใช้ชื่ออื่น"
+msgstr "ชื่อ \"%s\" ใช้ไม่ได้  กรุณาใช้ชื่ออื่น"
 
 #: src/file-manager/fm-error-reporting.c:133
 #, c-format
@@ -3704,46 +3705,46 @@ msgstr "(ว่าง)"
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
-#: src/file-manager/fm-list-view.c:1960
+#: src/file-manager/fm-list-view.c:1957
 #, c-format
 msgid "%s Visible Columns"
 msgstr "คอลัมน์ที่แสดงใน %s"
 
-#: src/file-manager/fm-list-view.c:1979
+#: src/file-manager/fm-list-view.c:1976
 msgid "Choose the order of information to appear in this folder."
 msgstr "เลือกลำดับข้อมูลที่จะแสดงในโฟลเดอร์นี้"
 
 #. name, stock id
-#: src/file-manager/fm-list-view.c:2021
+#: src/file-manager/fm-list-view.c:2018
 msgid "Visible _Columns..."
 msgstr "_คอลัมน์ที่แสดง..."
 
 #. label, accelerator
-#: src/file-manager/fm-list-view.c:2022
+#: src/file-manager/fm-list-view.c:2019
 msgid "Select the columns visible in this folder"
 msgstr "เลือกคอลัมน์ที่จะแสดงในโฟลเดอร์นี้"
 
-#: src/file-manager/fm-list-view.c:2743
+#: src/file-manager/fm-list-view.c:2740
 msgid "List"
 msgstr "รายการ"
 
-#: src/file-manager/fm-list-view.c:2744
+#: src/file-manager/fm-list-view.c:2741
 msgid "View as List"
 msgstr "มองเป็นรายการ"
 
-#: src/file-manager/fm-list-view.c:2745
+#: src/file-manager/fm-list-view.c:2742
 msgid "View as _List"
 msgstr "มองเป็น_รายการ"
 
-#: src/file-manager/fm-list-view.c:2746
+#: src/file-manager/fm-list-view.c:2743
 msgid "The list view encountered an error."
 msgstr "เกิดข้อผิดพลาดในมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2747
+#: src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error while starting up."
 msgstr "เกิดข้อผิดพลาดขณะเริ่มต้นมุมมองแบบรายการ"
 
-#: src/file-manager/fm-list-view.c:2748
+#: src/file-manager/fm-list-view.c:2745
 msgid "Display this location with the list view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองแบบรายการ"
 
@@ -3754,7 +3755,7 @@ msgstr "กำหนดไอคอนได้แค่ทีละอัน"
 #: src/file-manager/fm-properties-window.c:539
 #: src/nautilus-information-panel.c:502
 msgid "Please drag just one image to set a custom icon."
-msgstr "ถ้าจะตั้งรูปไอคอน โปรดลากรูปมารูปเดียว"
+msgstr "ถ้าจะตั้งรูปไอคอน กรุณาลากรูปมารูปเดียว"
 
 #: src/file-manager/fm-properties-window.c:547
 #: src/nautilus-information-panel.c:521
@@ -4124,7 +4125,7 @@ msgstr "Nautilus สร้างโฟลเดอร์ (%s) ที่ต้อ
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
-msgstr "ก่อนใช้ Nautilus โปรดสร้างโฟลเดอร์นี้ หรือตั้งสิทธิ์ให้ Nautilus สร้างโฟลเดอร์นี้ได้"
+msgstr "ก่อนใช้ Nautilus กรุณาสร้างโฟลเดอร์นี้ หรือตั้งสิทธิ์ให้ Nautilus สร้างโฟลเดอร์นี้ได้"
 
 #: src/nautilus-application.c:287
 #, c-format
@@ -4136,7 +4137,7 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"ก่อนจะใช้ Nautilus โปรดสร้างโฟลเดอร์เหล่านี้ หรือตั้งสิทธิ์ที่อนุญาตเช่นว่าให้ Nautilus "
+"ก่อนจะใช้ Nautilus กรุณาสร้างโฟลเดอร์เหล่านี้ หรือตั้งสิทธิ์ที่อนุญาตเช่นว่าให้ Nautilus "
 "สร้างโฟลเดอร์เหล่านี้ได้"
 
 #: src/nautilus-application.c:348
@@ -4337,11 +4338,11 @@ msgstr "ไม่สามารถเชื่อมต่อไปยังเ
 
 #: src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
-msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ คุณต้องใส่ชื่อเซิร์ฟเวอร์ด้วย"
+msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ คุณต้องป้อนชื่อเซิร์ฟเวอร์ด้วย"
 
 #: src/nautilus-connect-server-dialog.c:217
 msgid "Please enter a name and try again."
-msgstr "โปรดใส่ชื่อแล้วลองใหม่"
+msgstr "กรุณาป้อนชื่อแล้วลองใหม่"
 
 #: src/nautilus-connect-server-dialog.c:480
 msgid "_Location (URI):"
@@ -5221,7 +5222,7 @@ msgstr "ลบลวดลาย %s ไม่สำเร็จ"
 
 #: src/nautilus-property-browser.c:975
 msgid "Check that you have permission to delete the pattern."
-msgstr "โปรดตรวจดูว่าคุณมีสิทธิ์ลบลวดลายหรือไม่"
+msgstr "กรุณาตรวจดูว่าคุณมีสิทธิ์ลบลวดลายหรือไม่"
 
 #: src/nautilus-property-browser.c:1004
 #, c-format
@@ -5230,7 +5231,7 @@ msgstr "ลบตรา %s ไม่สำเร็จ"
 
 #: src/nautilus-property-browser.c:1005
 msgid "Check that you have permission to delete the emblem."
-msgstr "โปรดตรวจดูว่าคุณมีสิทธิ์ลบตราหรือไม่"
+msgstr "กรุณาตรวจดูว่าคุณมีสิทธิ์ลบตราหรือไม่"
 
 #: src/nautilus-property-browser.c:1052
 msgid "Create a New Emblem"
@@ -5274,7 +5275,7 @@ msgstr "ชื่อที่คุณให้ใช้ไม่ได้"
 
 #: src/nautilus-property-browser.c:1192
 msgid "Please try again."
-msgstr "โปรดลองใหม่"
+msgstr "กรุณาลองใหม่"
 
 #: src/nautilus-property-browser.c:1205
 msgid "Sorry, but you can't replace the reset image."
@@ -5551,7 +5552,7 @@ msgstr "ยังไม่รองรับการแสดงตำแหน
 
 #: src/nautilus-window-manage-views.c:1529
 msgid "Check that your proxy settings are correct."
-msgstr "โปรดตรวจดูว่าตั้งค่าพร็อกซีไว้ถูกต้อง"
+msgstr "กรุณาตรวจดูว่าตั้งค่าพร็อกซีไว้ถูกต้อง"
 
 #: src/nautilus-window-manage-views.c:1534
 #, c-format
@@ -5562,16 +5563,20 @@ msgstr "ไม่สามารถแสดง \"%s\" เพราะ Nautilus 
 
 #: src/nautilus-window-manage-views.c:1537
 msgid "Check that an SMB server is running in the local network."
-msgstr "ตรวจดูว่ามีเซิร์ฟเวอร์ SMB ทำงานอยู่ในเครือข่ายท้องถิ่น"
+msgstr "กรุณาตรวจดูว่ามีเซิร์ฟเวอร์ SMB ทำงานอยู่ในเครือข่ายท้องถิ่น"
 
-#: src/nautilus-window-manage-views.c:1546
+#: src/nautilus-window-manage-views.c:1547
+msgid "Check if the service is available."
+msgstr "กรุณาตรวจสอบว่ามีบริการดังกล่าวอยู่"
+
+#: src/nautilus-window-manage-views.c:1551
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ไม่สามารถแสดง \"%s\" ได้"
 
-#: src/nautilus-window-manage-views.c:1548
+#: src/nautilus-window-manage-views.c:1553
 msgid "Please select another viewer and try again."
-msgstr "โปรดเลือกโปรแกรมอื่นแล้วลองใหม่"
+msgstr "กรุณาเลือกโปรแกรมอื่นแล้วลองใหม่"
 
 #: src/nautilus-window-menus.c:174
 msgid "Go to the location specified by this bookmark"
