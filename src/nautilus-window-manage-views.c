@@ -1542,6 +1542,11 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		return;
 
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
+		error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+						 uri_for_display);
+		detail_message = g_strdup (_("Check if the service is available."));
+		break;
+
 	default:
 		error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
 						 uri_for_display);
