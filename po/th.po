@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-04 18:04+0700\n"
-"PO-Revision-Date: 2007-08-04 18:19+0700\n"
+"POT-Creation-Date: 2007-08-09 22:09+0700\n"
+"PO-Revision-Date: 2007-08-09 22:10+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1382,8 +1382,8 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"ชื่อนี้สงวนไว้ใช้สำหรับรายการพิเศษ ซึ่งไม่สามารถลบหรือเขียนทับได้ "
-"ถ้ายังต้องการจะคัดลอกรายการนี้ ก็กรุณาเปลี่ยนชื่อแล้วลองใหม่"
+"ชื่อนี้สงวนไว้ใช้สำหรับรายการพิเศษ ซึ่งไม่สามารถลบหรือเขียนทับได้ ถ้ายังต้องการจะคัดลอกรายการนี้ "
+"ก็กรุณาเปลี่ยนชื่อแล้วลองใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
@@ -2025,7 +2025,7 @@ msgstr "ประเภท MIME ที่ไม่รู้จัก"
 #: libnautilus-private/nautilus-file.c:4751
 #: src/file-manager/fm-properties-window.c:1343
 msgid "unknown"
-msgstr "ไม่รู้จัก"
+msgstr "ไม่ทราบ"
 
 #: libnautilus-private/nautilus-file.c:4784
 msgid "program"
@@ -2537,7 +2537,8 @@ msgstr "เปิดหน้าต่างเลือกสีหรือล
 #. tooltip
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:708
-#: src/file-manager/fm-directory-view.c:6941 src/nautilus-trash-bar.c:132
+#: src/file-manager/fm-directory-view.c:6941
+#: src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "ลบรายการทั้งหมดในถังขยะ"
 
@@ -2571,7 +2572,8 @@ msgstr "แสดงตำแหน่งนี้ด้วยมุมมอง
 msgid "Are you sure you want to open all files?"
 msgstr "แน่ใจหรือไม่ว่าจะเปิดแฟ้มทุกแฟ้ม?"
 
-#: src/file-manager/fm-directory-view.c:669 src/nautilus-location-bar.c:154
+#: src/file-manager/fm-directory-view.c:669
+#: src/nautilus-location-bar.c:154
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -2597,7 +2599,8 @@ msgstr "ถ้าคุณเลือกลบแล้ว ข้อมูล�
 
 #: src/file-manager/fm-directory-view.c:1168
 #: src/file-manager/fm-properties-window.c:4762
-#: src/nautilus-connect-server-dialog.c:401 src/nautilus-location-dialog.c:115
+#: src/nautilus-connect-server-dialog.c:401
+#: src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
 msgstr "เกิดข้อผิดพลาดขณะแสดงวิธีใช้"
 
@@ -2971,7 +2974,8 @@ msgstr "สร้างแฟ้มเปล่าข้างในโฟลเ
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:6916
 #: src/file-manager/fm-directory-view.c:7795
-#: src/file-manager/fm-tree-view.c:1253 src/nautilus-places-sidebar.c:1448
+#: src/file-manager/fm-tree-view.c:1253
+#: src/nautilus-places-sidebar.c:1448
 msgid "_Open"
 msgstr "_เปิด"
 
@@ -3389,7 +3393,8 @@ msgstr "รองรับการลากไปปล่อยเฉพาะ
 msgid "An invalid drag type was used."
 msgstr "ใช้วิธีลากที่ไม่ถูกต้อง"
 
-#: src/file-manager/fm-ditem-page.c:337 src/file-manager/fm-ditem-page.c:348
+#: src/file-manager/fm-ditem-page.c:337
+#: src/file-manager/fm-ditem-page.c:348
 msgid "Comment"
 msgstr "หมายเหตุ"
 
@@ -3397,7 +3402,8 @@ msgstr "หมายเหตุ"
 msgid "URL"
 msgstr "URL"
 
-#: src/file-manager/fm-ditem-page.c:343 src/file-manager/fm-ditem-page.c:354
+#: src/file-manager/fm-ditem-page.c:343
+#: src/file-manager/fm-ditem-page.c:354
 #: src/nautilus-image-properties-page.c:302
 msgid "Description"
 msgstr "คำบรรยาย"
@@ -3535,7 +3541,8 @@ msgstr "กำลังเปลี่ยนชื่อ \"%s\" ไปเป็�
 msgid "by _Name"
 msgstr "ตาม_ชื่อ"
 
-#: src/file-manager/fm-icon-view.c:134 src/file-manager/fm-icon-view.c:1479
+#: src/file-manager/fm-icon-view.c:134
+#: src/file-manager/fm-icon-view.c:1479
 msgid "Keep icons sorted by name in rows"
 msgstr "เรียงไอคอนเป็นแถวตามชื่อ"
 
@@ -3543,7 +3550,8 @@ msgstr "เรียงไอคอนเป็นแถวตามชื่อ
 msgid "by _Size"
 msgstr "ตาม_ขนาด"
 
-#: src/file-manager/fm-icon-view.c:141 src/file-manager/fm-icon-view.c:1483
+#: src/file-manager/fm-icon-view.c:141
+#: src/file-manager/fm-icon-view.c:1483
 msgid "Keep icons sorted by size in rows"
 msgstr "เรียงไอคอนเป็นแถวตามขนาด"
 
@@ -3551,7 +3559,8 @@ msgstr "เรียงไอคอนเป็นแถวตามขนาด
 msgid "by _Type"
 msgstr "ตาม_ประเภท"
 
-#: src/file-manager/fm-icon-view.c:148 src/file-manager/fm-icon-view.c:1487
+#: src/file-manager/fm-icon-view.c:148
+#: src/file-manager/fm-icon-view.c:1487
 msgid "Keep icons sorted by type in rows"
 msgstr "เรียงไอคอนเป็นแถวตามประเภท"
 
@@ -3559,7 +3568,8 @@ msgstr "เรียงไอคอนเป็นแถวตามประเ
 msgid "by Modification _Date"
 msgstr "ตาม_วันที่แก้ไข"
 
-#: src/file-manager/fm-icon-view.c:155 src/file-manager/fm-icon-view.c:1491
+#: src/file-manager/fm-icon-view.c:155
+#: src/file-manager/fm-icon-view.c:1491
 msgid "Keep icons sorted by modification date in rows"
 msgstr "เรียงไอคอนเป็นแถวตามวันที่ถูกแก้ไข"
 
@@ -3567,7 +3577,8 @@ msgstr "เรียงไอคอนเป็นแถวตามวันท
 msgid "by _Emblems"
 msgstr "ตาม_ตรา"
 
-#: src/file-manager/fm-icon-view.c:162 src/file-manager/fm-icon-view.c:1495
+#: src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:1495
 msgid "Keep icons sorted by emblems in rows"
 msgstr "เรียงไอคอนเป็นแถวตามตรา"
 
@@ -3587,7 +3598,8 @@ msgid "Make the selected icon stretchable"
 msgstr "ย่อขยายขนาดของไอคอนที่เลือก"
 
 #. name, stock id
-#: src/file-manager/fm-icon-view.c:1445 src/file-manager/fm-icon-view.c:1597
+#: src/file-manager/fm-icon-view.c:1445
+#: src/file-manager/fm-icon-view.c:1597
 msgid "Restore Icons' Original Si_zes"
 msgstr "กลับไปใช้_ขนาดปกติของไอคอน"
 
@@ -3697,11 +3709,13 @@ msgstr "เกิดข้อผิดพลาดขณะเริ่มต้
 msgid "Display this location with the icon view."
 msgstr "แสดงตำแหน่งนี้ด้วยมุมมองไอคอน"
 
-#: src/file-manager/fm-list-model.c:376 src/file-manager/fm-tree-model.c:1229
+#: src/file-manager/fm-list-model.c:376
+#: src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(ว่าง)"
 
-#: src/file-manager/fm-list-model.c:378 src/file-manager/fm-tree-model.c:1229
+#: src/file-manager/fm-list-model.c:378
+#: src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
@@ -3872,7 +3886,8 @@ msgstr "--"
 msgid "Size:"
 msgstr "ขนาด:"
 
-#: src/file-manager/fm-properties-window.c:3073 src/nautilus-location-bar.c:59
+#: src/file-manager/fm-properties-window.c:3073
+#: src/nautilus-location-bar.c:59
 msgid "Location:"
 msgstr "ตำแหน่ง:"
 
@@ -4100,7 +4115,8 @@ msgstr "สร้างโฟลเดอร์"
 msgid "Move to Trash"
 msgstr "ทิ้งลงถังขยะ"
 
-#: src/file-manager/fm-tree-view.c:1396 src/nautilus-places-sidebar.c:269
+#: src/file-manager/fm-tree-view.c:1396
+#: src/nautilus-places-sidebar.c:269
 msgid "File System"
 msgstr "ระบบแฟ้ม"
 
@@ -4792,7 +4808,8 @@ msgstr "ระยะโฟกัส"
 msgid "Software"
 msgstr "ซอฟต์แวร์"
 
-#: src/nautilus-image-properties-page.c:301 src/nautilus-query-editor.c:130
+#: src/nautilus-image-properties-page.c:301
+#: src/nautilus-query-editor.c:130
 msgid "Location"
 msgstr "ตำแหน่ง"
 
@@ -4957,7 +4974,8 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:481 src/nautilus-main.c:490 src/nautilus-main.c:495
+#: src/nautilus-main.c:481 src/nautilus-main.c:490
+#: src/nautilus-main.c:495
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: ใช้ %s กับ URI ไม่ได้\n"
@@ -5294,7 +5312,8 @@ msgstr "ติดตั้งลวดลาย %s ไม่สำเร็จ"
 msgid "Select an Image File to Add as a Pattern"
 msgstr "เลือกแฟ้มรูปที่จะใช้เป็นลวดลาย"
 
-#: src/nautilus-property-browser.c:1310 src/nautilus-property-browser.c:1341
+#: src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1341
 msgid "The color cannot be installed."
 msgstr "ไม่สามารถติดตั้งสีได้"
 
@@ -5310,12 +5329,14 @@ msgstr "คุณต้องตั้งชื่อสำหรับสีใ
 msgid "Select a Color to Add"
 msgstr "เลือกสีที่จะเพิ่ม"
 
-#: src/nautilus-property-browser.c:1432 src/nautilus-property-browser.c:1448
+#: src/nautilus-property-browser.c:1432
+#: src/nautilus-property-browser.c:1448
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "\"%s\" ไม่ใช่แฟ้มรูปที่ใช้ได้"
 
-#: src/nautilus-property-browser.c:1433 src/nautilus-property-browser.c:1449
+#: src/nautilus-property-browser.c:1433
+#: src/nautilus-property-browser.c:1449
 msgid "The file is not an image."
 msgstr "แฟ้มนี้ไม่ใช่แฟ้มรูป"
 
