@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.15.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-02 16:30+0200\n"
-"PO-Revision-Date: 2007-08-02 16:32+0200\n"
+"POT-Creation-Date: 2007-08-09 11:14+0200\n"
+"PO-Revision-Date: 2007-08-09 11:15+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -510,13 +510,10 @@ msgstr ""
 "«true»."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
-msgstr ""
-"Nautilus spør om bekreftelse ved plassering av filer i papirkurven hvis satt "
-"til «true»."
+msgstr "Nautilus spør om bekreftelse ved sletting av filer eller tømming av papirkurven hvis satt til «true»."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -804,7 +801,6 @@ msgstr ""
 "filsystemer. Hvis satt til «never» vil antall aldri beregnes."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Forvalgt størrelse på et ikon for en miniatyr i ikonvisning."
 
@@ -934,10 +930,8 @@ msgid "Whether a custom default side pane background has been set."
 msgstr "Om en tilpasset forvalgt bakgrunn er satt for sidepanelet."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
-#, fuzzy
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr ""
-"Om det skal spørres om bekreftelse ved flytting av filer til papirkurven"
+msgstr "Om det skal spørres om bekreftelse ved sletting av filer eller tømming av papirkurven"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Whether to enable immediate deletion"
@@ -2382,6 +2376,7 @@ msgstr "Åpner %s"
 #: ../src/nautilus-window-manage-views.c:1500
 #: ../src/nautilus-window-manage-views.c:1506
 #: ../src/nautilus-window-manage-views.c:1527
+#: ../src/nautilus-window-manage-views.c:1545
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Kunne ikke vise «%s»."
@@ -3904,6 +3899,7 @@ msgid "The file that you dropped is not an image."
 msgstr "Filen du slapp er ikke et bilde."
 
 #: ../src/file-manager/fm-properties-window.c:1048
+#, c-format
 msgid "Properties"
 msgstr "Egenskaper"
 
@@ -5724,12 +5720,16 @@ msgstr ""
 msgid "Check that an SMB server is running in the local network."
 msgstr "Sjekk om en SMB-tjener kjører på det lokale nettverket."
 
-#: ../src/nautilus-window-manage-views.c:1546
+#: ../src/nautilus-window-manage-views.c:1547
+msgid "Check if the service is available."
+msgstr "Sjekk om tjenesten er tilgjengelig."
+
+#: ../src/nautilus-window-manage-views.c:1551
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1548
+#: ../src/nautilus-window-manage-views.c:1553
 msgid "Please select another viewer and try again."
 msgstr "Vennligst velg et annet visningsprogram og prøv igjen."
 
