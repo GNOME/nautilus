@@ -477,7 +477,7 @@ static const GtkToggleActionEntry navigation_toggle_entries[] = {
     TRUE}, /* is_active */
   { "Show Hide Sidebar", NULL,                 /* name, stock id */
     N_("_Side Pane"), "F9",                    /* label, accelerator */     
-    N_("Change the visibility of this window's sidebar"),                       /* tooltip */
+    N_("Change the visibility of this window's side pane"),                       /* tooltip */
     G_CALLBACK (action_show_hide_sidebar_callback),
     TRUE}, /* is_active */
   { "Show Hide Location Bar", NULL,                 /* name, stock id */
