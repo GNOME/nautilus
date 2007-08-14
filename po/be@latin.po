@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-01 09:11+0300\n"
+"POT-Creation-Date: 2007-08-12 18:31+0300\n"
 "PO-Revision-Date: 2007-05-27 22:51+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: i18n@mova.org <i18n@mova.org>\n"
@@ -469,8 +469,8 @@ msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"Akreślivaje, ci Nautilus maje pakazvać tolki katalohi ŭ drevie bakavoj paneli, "
-"ci katalohi j fajły."
+"Akreślivaje, ci Nautilus maje pakazvać tolki katalohi ŭ drevie bakavoj "
+"paneli, ci katalohi j fajły."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
@@ -513,16 +513,16 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"Akreślivaje, ci Nautilus maje pakazvać katalohi pierad fajłami ŭ vyhladach ikon "
-"i śpisu."
+"Akreślivaje, ci Nautilus maje pakazvać katalohi pierad fajłami ŭ vyhladach "
+"ikon i śpisu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
 msgstr ""
-"Akreślivaje, ci Nautilus budzie damahacca paćvierdžańnia pry sprobie "
-"vydalić fajły albo ačyścić śmietnicy."
+"Akreślivaje, ci Nautilus budzie damahacca paćvierdžańnia pry sprobie vydalić "
+"fajły albo ačyścić śmietnicy."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -698,8 +698,8 @@ msgid "Network servers icon name"
 msgstr "Nazva ikony Sieciŭnych serveraŭ"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid "Only show folders in the tree sidebar"
-msgstr "Pakazvaj tolki katalohi ŭ drevie katalohaŭ na bakavoj paneli"
+msgid "Only show folders in the tree side pane"
+msgstr "Tolki pakazvaj katalohi ŭ drevie katalohaŭ na bakavoj paneli"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -872,8 +872,8 @@ msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
 msgstr ""
-"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony sieciŭnych "
-"serveraŭ na stale."
+"Hetaja nazva moža być abranaja, kali patrebnaja inšaja nazva ikony "
+"sieciŭnych serveraŭ na stale."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid ""
@@ -2403,6 +2403,7 @@ msgstr "Adčyniajecca %s"
 #: ../src/nautilus-window-manage-views.c:1500
 #: ../src/nautilus-window-manage-views.c:1506
 #: ../src/nautilus-window-manage-views.c:1527
+#: ../src/nautilus-window-manage-views.c:1545
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Niemahčyma pakazać \"%s\"."
@@ -2529,8 +2530,8 @@ msgstr "Paŭtaraje źmieny"
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
-"Prahlad usich lakalnych i addalenych dyskaŭ dy katalohaŭ, dastupnych z hetaha "
-"kamputara"
+"Prahlad usich lakalnych i addalenych dyskaŭ dy katalohaŭ, dastupnych z "
+"hetaha kamputara"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
@@ -2833,12 +2834,9 @@ msgstr "Niemahčyma pieranieści elementy ŭ śmietnicu, ci vydalić ich adrazu?
 #, c-format
 msgid "The selected item could not be moved to the Trash"
 msgid_plural "The %d selected items could not be moved to the Trash"
-msgstr[0] ""
-"%d zaznačany element niemahčyma pieranieści ŭ śmietnicu"
-msgstr[1] ""
-"%d zaznačanyja elementy niemahčyma pieranieści ŭ śmietnicu"
-msgstr[2] ""
-"%d zaznačanych elementaŭ niemahčyma pieranieści ŭ śmietnicu"
+msgstr[0] "%d zaznačany element niemahčyma pieranieści ŭ śmietnicu"
+msgstr[1] "%d zaznačanyja elementy niemahčyma pieranieści ŭ śmietnicu"
+msgstr[2] "%d zaznačanych elementaŭ niemahčyma pieranieści ŭ śmietnicu"
 
 #: ../src/file-manager/fm-directory-view.c:3852
 msgid ""
@@ -2982,9 +2980,9 @@ msgstr ""
 "Usie vykonvalnyja fajły, źmieščanyja ŭ hetym katalohu, pajaviacca ŭ menu "
 "Skrypty. Vybar skryptu z menu pryviadzie da ŭruchamleńnia hetaha skryptu.\n"
 "\n"
-"Pry ŭruchamleńni ź lakalnaha katalohu buduć pieradadzienyja nazvy zaznačanych "
-"fajłaŭ. Pry ŭruchamleńni z addalenaha katalohu (napr., pry vyśviatleńni "
-"źmieściva servera WWW albo FTP) nijakija parametry nia buduć "
+"Pry ŭruchamleńni ź lakalnaha katalohu buduć pieradadzienyja nazvy "
+"zaznačanych fajłaŭ. Pry ŭruchamleńni z addalenaha katalohu (napr., pry "
+"vyśviatleńni źmieściva servera WWW albo FTP) nijakija parametry nia buduć "
 "pieradadzienyja.\n"
 "\n"
 "U lubym vypadku skrypt moža vykarystać źmiennyja asiarodździa, jakiju buduć "
@@ -5295,7 +5293,8 @@ msgstr "P_ošuk fajłaŭ..."
 #: ../src/nautilus-navigation-window-menus.c:467
 #: ../src/nautilus-spatial-window.c:867
 msgid "Locate documents and folders on this computer by name or content"
-msgstr "Šukaj dakumenty i katalohi ŭ hetym kamputary pavodle nazvy albo źmieściva"
+msgstr ""
+"Šukaj dakumenty i katalohi ŭ hetym kamputary pavodle nazvy albo źmieściva"
 
 #. name, stock id
 #: ../src/nautilus-navigation-window-menus.c:474
@@ -5315,7 +5314,7 @@ msgstr "_Bakavaja panel"
 
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:480
-msgid "Change the visibility of this window's sidebar"
+msgid "Change the visibility of this window's side pane"
 msgstr "Źmiani bačnaść bakavoj paneli hetaha vakna"
 
 #. is_active
@@ -5789,12 +5788,16 @@ msgstr ""
 msgid "Check that an SMB server is running in the local network."
 msgstr "Pravier, ci ŭ lakalnaj sietcy isnuje j pracuje server SMB."
 
-#: ../src/nautilus-window-manage-views.c:1546
+#: ../src/nautilus-window-manage-views.c:1547
+msgid "Check if the service is available."
+msgstr "Pravier dastupnaść servisu."
+
+#: ../src/nautilus-window-manage-views.c:1551
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Niemahčyma pakazać \"%s\"."
 
-#: ../src/nautilus-window-manage-views.c:1548
+#: ../src/nautilus-window-manage-views.c:1553
 msgid "Please select another viewer and try again."
 msgstr "Abiary inšy hartač i pasprabuj znoŭ."
 
