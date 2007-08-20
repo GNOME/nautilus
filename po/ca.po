@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-30 23:38+0200\n"
-"PO-Revision-Date: 2007-07-30 23:49+0200\n"
-"Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
+"POT-Creation-Date: 2007-08-20 23:47+0200\n"
+"PO-Revision-Date: 2007-08-20 23:48+0200\n"
+"Last-Translator: Josep Puigdemont <josep.puigdemont@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -372,9 +372,8 @@ msgid "Default Side Pane Background Filename"
 msgstr "Nom del fitxer del fons per defecte de la subfinestra lateral"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default Thumbnail Icon Size"
-msgstr "Nivell d'ampliació per defecte"
+msgstr "Mida per defecte de les icones de les miniatures"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view"
@@ -531,13 +530,12 @@ msgstr ""
 "fitxers a les vistes d'icona i de llista."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
 msgstr ""
-"Si rep el valor 'cert', el Nautilus demanarà confirmació quan intenteu "
-"enviar fitxers a la paperera."
+"Si s'estableix a cert, el Nautilus demanarà que es confirmi quan intenteu "
+"suprimir fitxers, o buidar la paperera."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -716,13 +714,12 @@ msgid "Network Servers icon visible on the desktop"
 msgstr "La icona de servidors de xarxa és visible a l'escriptori"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
-#, fuzzy
 msgid "Network servers icon name"
-msgstr "Servidors de xarxa"
+msgstr "Nom de la icona dels servidors de xarxa"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid "Only show folders in the tree sidebar"
-msgstr "Mostra només les carpetes a la barra lateral d'arbre"
+msgid "Only show folders in the tree side pane"
+msgstr "Mostra només les carpetes a la subfinestra lateral d'arbre"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -841,9 +838,9 @@ msgstr ""
 "fitxers locals. Si s'estableix a «never», no es comptaran mai els elements."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "The default size of an icon for a thumbnail in the icon view."
-msgstr "Llista per defecte de les columnes visibles a la vista de llista."
+msgstr ""
+"La mida per defecte de les icones de les miniatures en la vista d'icones."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -902,13 +899,12 @@ msgstr ""
 "carpeta inicial."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
 msgstr ""
-"Aquest nom es pot definir si voleu un nom personalitzat per a la icona de la "
-"paperera de l'escriptori."
+"Es pot definir aquest nom si en voleu un de personalitzat per a la icona "
+"dels servidors de xarxa a l'escriptori."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid ""
@@ -983,9 +979,10 @@ msgstr ""
 "lateral."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
-#, fuzzy
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr "Si s'ha de demanar confirmació quan es moguin fitxers a la paperera"
+msgstr ""
+"Si s'ha de demanar confirmació quan se suprimeixin fitxers, o es budi la "
+"paperera"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Whether to enable immediate deletion"
@@ -1062,7 +1059,7 @@ msgid "Use De_fault"
 msgstr "_Utilitza el valor per defecte"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../src/file-manager/fm-list-view.c:1374
+#: ../src/file-manager/fm-list-view.c:1375
 msgid "Name"
 msgstr "Nom"
 
@@ -1175,7 +1172,8 @@ msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
 msgstr ""
-"Si voleu expulsar el volum, utilitzeu «Expulsa» al menú emergent del volum."
+"Si voleu expulsar el volum, utilitzeu «Expulsa» en el menú emergent del "
+"volum."
 
 # 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:134
@@ -2290,7 +2288,7 @@ msgid "Icon View"
 msgstr "Vista d'icones"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:149
-#: ../src/file-manager/fm-list-view.c:1431
+#: ../src/file-manager/fm-list-view.c:1428
 msgid "List View"
 msgstr "Vista de llista"
 
@@ -2443,6 +2441,7 @@ msgstr "S'està obrint %s"
 #: ../src/nautilus-window-manage-views.c:1500
 #: ../src/nautilus-window-manage-views.c:1506
 #: ../src/nautilus-window-manage-views.c:1527
+#: ../src/nautilus-window-manage-views.c:1545
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "No s'ha pogut mostrar «%s»."
@@ -2807,11 +2806,11 @@ msgstr[1] "%d elements seleccionats"
 
 #. Folders selected also, use "other" terminology
 #: ../src/file-manager/fm-directory-view.c:2233
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected"
 msgid_plural "%d other items selected"
-msgstr[0] "un altre element (%d) seleccionat (%s)"
-msgstr[1] "uns altres %d elements seleccionats (%s)"
+msgstr[0] "%d altre element seleccionat"
+msgstr[1] "%d altres elements seleccionats"
 
 #. This is marked for translation in case a localiser
 #. * needs to use something other than parentheses. The
@@ -2870,11 +2869,11 @@ msgstr ""
 "immediatament?"
 
 #: ../src/file-manager/fm-directory-view.c:3847
-#, fuzzy, c-format
+#, c-format
 msgid "The selected item could not be moved to the Trash"
 msgid_plural "The %d selected items could not be moved to the Trash"
-msgstr[0] "%d dels fitxers seleccionats no es poden moure a la paperera."
-msgstr[1] "%d dels fitxers seleccionats no es poden moure a la paperera."
+msgstr[0] "No s'ha pogut moure l'element seleccionat a la paperera"
+msgstr[1] "No s'han pogut moure els %d elements seleccionats a la paperera"
 
 #: ../src/file-manager/fm-directory-view.c:3852
 msgid ""
@@ -2985,8 +2984,7 @@ msgstr "Crea un document a partir de la plantilla «%s»"
 #: ../src/file-manager/fm-directory-view.c:5932
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
-"Tot els fitxers executables d'aquesta carpeta apareixeran al menú de "
-"seqüències."
+"Tot els fitxers executables d'aquesta carpeta apareixeran al menú d'scripts."
 
 #: ../src/file-manager/fm-directory-view.c:5934
 msgid ""
@@ -3017,15 +3015,15 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Tots els fitxers executables d'aquesta carpeta apareixeran al menú de "
-"seqüències. La seqüència escollida des del menú s'executarà.\n"
+"Tots els fitxers executables d'aquesta carpeta apareixeran al menú "
+"d'scripts, i aquell que s'esculli s'executarà.\n"
 "\n"
-"Quan s'executin des d'una carpeta local, les seqüències rebran els noms dels "
-"fitxers seleccionats. Quan s'executin des d'una carpeta remota (p.ex. una "
-"carpeta que mostri un contingut web o ftp), no rebran cap paràmetre.\n"
+"Quan s'executin des d'una carpeta local, es passarà el nom dels fitxers "
+"seleccionats als scripts. Quan s'executin des d'una carpeta remota (p.ex. "
+"una carpeta que mostri un contingut web o ftp), no rebran cap paràmetre.\n"
 "\n"
-"En tots els casos, El Nautilus definirà les variables d'entorn següents, que "
-"poden ser utilitzades per les seqüències:\n"
+"En tots els casos, el Nautilus definirà les variables d'entorn següents que "
+"els scripts podran utilitzar:\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: camins dels fitxers seleccionats (només "
 "si són locals), delimitats per salts de línia\n"
@@ -3186,13 +3184,12 @@ msgstr "Trieu una altra aplicació amb què obrir l'element seleccionat"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6936
 msgid "_Open Scripts Folder"
-msgstr "_Obre la carpeta de seqüències"
+msgstr "_Obre la carpeta dels scripts"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6937
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr ""
-"Mostra la carpeta que conté les seqüències que apareixen en aquest menú"
+msgstr "Mostra la carpeta que conté els scripts que apareixen en aquest menú"
 
 #
 #. name, stock id
@@ -3477,13 +3474,13 @@ msgstr "Commuta la visualització de fitxers ocults en la finestra actual"
 #: ../src/file-manager/fm-directory-view.c:7160
 #, c-format
 msgid "Run or manage scripts from %s"
-msgstr "Executa o gestiona les seqüències de %s"
+msgstr "Executa o gestiona els scripts de %s"
 
 # FIXME: el termcat ha normalitzat "script" com a traducció (josep)
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/file-manager/fm-directory-view.c:7162
 msgid "_Scripts"
-msgstr "_Seqüències"
+msgstr "_Scripts"
 
 #
 #. add the "open in new window" menu item
@@ -3938,52 +3935,52 @@ msgstr "(Buit)"
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: ../src/file-manager/fm-list-view.c:1960
+#: ../src/file-manager/fm-list-view.c:1957
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnes visibles"
 
-#: ../src/file-manager/fm-list-view.c:1979
+#: ../src/file-manager/fm-list-view.c:1976
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 "Escolliu l'ordre en què ha d'aparèixer la informació a aquesta carpeta."
 
 #. name, stock id
-#: ../src/file-manager/fm-list-view.c:2021
+#: ../src/file-manager/fm-list-view.c:2018
 msgid "Visible _Columns..."
 msgstr "_Columnes visibles..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2022
+#: ../src/file-manager/fm-list-view.c:2019
 msgid "Select the columns visible in this folder"
 msgstr "Selecciona les columnes visibles d'aquesta carpeta"
 
-#: ../src/file-manager/fm-list-view.c:2743
+#: ../src/file-manager/fm-list-view.c:2740
 msgid "List"
 msgstr "Llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2744
+#: ../src/file-manager/fm-list-view.c:2741
 msgid "View as List"
 msgstr "Visualitza com a llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2745
+#: ../src/file-manager/fm-list-view.c:2742
 msgid "View as _List"
 msgstr "Visualitza com a _llista"
 
 #
-#: ../src/file-manager/fm-list-view.c:2746
+#: ../src/file-manager/fm-list-view.c:2743
 msgid "The list view encountered an error."
 msgstr "S'ha produït un error en la vista de llista."
 
 #
-#: ../src/file-manager/fm-list-view.c:2747
+#: ../src/file-manager/fm-list-view.c:2744
 msgid "The list view encountered an error while starting up."
 msgstr "S'ha produït un error en la vista de llista mentre s'estava iniciant."
 
 #
-#: ../src/file-manager/fm-list-view.c:2748
+#: ../src/file-manager/fm-list-view.c:2745
 msgid "Display this location with the list view."
 msgstr "Mostra aquesta ubicació en la vista de llista."
 
@@ -4059,14 +4056,12 @@ msgid "Contents:"
 msgstr "Contingut:"
 
 #: ../src/file-manager/fm-properties-window.c:2922
-#, fuzzy
 msgid "used"
-msgstr "emprat"
+msgstr "utilitzat"
 
 #: ../src/file-manager/fm-properties-window.c:2926
-#, fuzzy
 msgid "free"
-msgstr "lliures"
+msgstr "lliure"
 
 #: ../src/file-manager/fm-properties-window.c:2928
 msgid "Total capacity: "
@@ -4481,7 +4476,8 @@ msgstr ""
 #: ../src/nautilus-application.c:597 ../src/nautilus-application.c:615
 #: ../src/nautilus-application.c:622
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr "A causa d'un error inesperat, el Nautilus no es pot utilitzar."
+msgstr ""
+"No es pot utilitzar el Nautilus atès que s'ha produït un error inesperat."
 
 #: ../src/nautilus-application.c:598
 msgid ""
@@ -4980,12 +4976,11 @@ msgid "_Only for files smaller than:"
 msgstr "_Només per a fitxers més petits de:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
-#, fuzzy
 msgid "_Run executable text files when they are opened"
 msgstr "E_xecuta els fitxers de text executables quan s'obrin"
 
+# FIXME
 #: ../src/nautilus-file-management-properties.glade.h:69
-#, fuzzy
 msgid "_Single click to open items"
 msgstr "Només un _clic per a obrir els elements"
 
@@ -4998,7 +4993,6 @@ msgid "_Use compact layout"
 msgstr "_Utilitza una disposició compacta"
 
 #: ../src/nautilus-file-management-properties.glade.h:72
-#, fuzzy
 msgid "_View executable text files when they are opened"
 msgstr "_Mostra els fitxers de text executables quan s'obrin"
 
@@ -5078,22 +5072,18 @@ msgid "Location"
 msgstr "Ubicació"
 
 #: ../src/nautilus-image-properties-page.c:303
-#, fuzzy
 msgid "Keywords"
 msgstr "Paraules clau"
 
 #: ../src/nautilus-image-properties-page.c:304
-#, fuzzy
 msgid "Creator"
 msgstr "Creador"
 
 #: ../src/nautilus-image-properties-page.c:305
-#, fuzzy
 msgid "Copyright"
-msgstr "Drets d'autor"
+msgstr "Copyright"
 
 #: ../src/nautilus-image-properties-page.c:306
-#, fuzzy
 msgid "Rating"
 msgstr "Puntuació"
 
@@ -5398,8 +5388,8 @@ msgstr "Subfinestra _lateral"
 
 #. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:480
-msgid "Change the visibility of this window's sidebar"
-msgstr "Canvia la visibilitat de la barra lateral d'aquesta finestra"
+msgid "Change the visibility of this window's side pane"
+msgstr "Canvia la visibilitat de la subfinestra lateral d'aquesta finestra"
 
 #. is_active
 #. name, stock id
@@ -5879,12 +5869,16 @@ msgstr ""
 msgid "Check that an SMB server is running in the local network."
 msgstr "Comproveu que el servidor d'SMB s'està executant a la xarxa local."
 
-#: ../src/nautilus-window-manage-views.c:1546
+#: ../src/nautilus-window-manage-views.c:1547
+msgid "Check if the service is available."
+msgstr "Comproveu que el servei estigui disponible."
+
+#: ../src/nautilus-window-manage-views.c:1551
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "El Nautilus no pot mostrar «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1548
+#: ../src/nautilus-window-manage-views.c:1553
 msgid "Please select another viewer and try again."
 msgstr "Seleccioneu un altre visualitzador i torneu-ho a intentar."
 
@@ -6030,9 +6024,8 @@ msgstr "At_ura"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:610
-#, fuzzy
 msgid "Stop loading the current location"
-msgstr "Vés a la ubicació «Ordinador»"
+msgstr "Atura la càrrega de la ubicació actual"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:613
@@ -6041,9 +6034,8 @@ msgstr "Ac_tualitza"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:614
-#, fuzzy
 msgid "Reload the current location"
-msgstr "Vés a la ubicació «Ordinador»"
+msgstr "Actualitza la ubicació actual"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:617
@@ -6459,7 +6451,7 @@ msgstr "Estableix el nivell d'ampliació de la vista actual"
 #~ msgstr "Voleu executar-lo o visualitzar-lo?"
 
 #~ msgid "About Scripts"
-#~ msgstr "Quant a les seqüències"
+#~ msgstr "Quant als scripts"
 
 #~ msgid "Mount Error"
 #~ msgstr "S'ha produït un error en muntar"
