@@ -1012,6 +1012,21 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
 	return name_with_prefix;
 }
 
+guint
+nautilus_icon_factory_get_emblem_size_for_icon_size (guint size)
+{
+	if (size >= 96)
+		return 48;
+	if (size >= 64)
+		return 32;
+	if (size >= 48)
+		return 24;
+	if (size >= 32)
+		return 16;
+	
+	return 0; /* no emblems for smaller sizes */
+}
+
 GList *
 nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
 						 EelStringList *exclude)

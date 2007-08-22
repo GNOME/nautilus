@@ -87,7 +87,6 @@
 /* Maximum size (pixels) allowed for icons at the standard zoom level. */
 #define MINIMUM_IMAGE_SIZE 24
 #define MAXIMUM_IMAGE_SIZE 96
-#define MAXIMUM_EMBLEM_SIZE 48
 
 #define ICON_PAD_LEFT 4
 #define ICON_PAD_RIGHT 4
@@ -5692,6 +5691,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_icon_names, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	char *embedded_text;
+	guint emblem_size;
 	GdkRectangle embedded_text_rect;
 	gboolean large_embedded_text;
 	gboolean embedded_text_needs_loading;
@@ -5753,17 +5753,20 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	icon_size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
 			   * icon->scale, NAUTILUS_ICON_SIZE_SMALLEST);
-	for (p = emblem_icon_names; p != NULL; p = p->next) {
-		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data,
-			 NULL,
-			 MIN (icon_size, MAXIMUM_EMBLEM_SIZE),
-			 NULL,
-			 NULL,
-			 FALSE, FALSE, NULL);
-		if (emblem_pixbuf != NULL) {
-			emblem_pixbufs = g_list_prepend
-				(emblem_pixbufs, emblem_pixbuf);
+	emblem_size = nautilus_icon_factory_get_emblem_size_for_icon_size (icon_size);
+	if (emblem_size != 0) {
+		for (p = emblem_icon_names; p != NULL; p = p->next) {
+			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+				(p->data,
+				 NULL,
+				 emblem_size,
+				 NULL,
+				 NULL,
+				 FALSE, FALSE, NULL);
+			if (emblem_pixbuf != NULL) {
+				emblem_pixbufs = g_list_prepend
+					(emblem_pixbufs, emblem_pixbuf);
+			}
 		}
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);

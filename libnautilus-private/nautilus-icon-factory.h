@@ -110,6 +110,7 @@ NautilusFileAttributes nautilus_icon_factory_get_required_file_attributes (void)
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
 									  EelStringList               *exclude);
 char *                nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);
+guint                 nautilus_icon_factory_get_emblem_size_for_icon_size (guint                       size);
 
 guint                 nautilus_icon_factory_get_larger_icon_size         (guint size);
 guint                 nautilus_icon_factory_get_smaller_icon_size        (guint size);

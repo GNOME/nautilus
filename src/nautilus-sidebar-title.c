@@ -509,7 +509,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	for (p = icons; p != NULL; p = p->next) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data, NULL,
-			 NAUTILUS_ICON_SIZE_STANDARD,
+			 nautilus_icon_factory_get_emblem_size_for_icon_size (NAUTILUS_ICON_SIZE_STANDARD),
 			 NULL, NULL,
 			 FALSE, FALSE, NULL);
 		if (pixbuf != NULL) {
