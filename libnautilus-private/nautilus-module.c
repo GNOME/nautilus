@@ -158,6 +158,9 @@ add_module_objects (NautilusModule *module)
 	module->list_types (&types, &num_types);
 	
 	for (i = 0; i < num_types; i++) {
+		if (types[i] == 0) { /* Work around broken extensions */
+			break;
+		}
 		nautilus_module_add_type (types[i]);
 	}
 }
