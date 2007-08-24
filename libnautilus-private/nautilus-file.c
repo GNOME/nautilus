@@ -2679,6 +2679,9 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 				g_free (name);
 				uri = nautilus_file_get_uri (file);
 				local_file = gnome_vfs_get_local_path_from_uri (uri);
+				if (local_file == NULL) { /* Happens for e.g. file:///# */
+					local_file = g_strdup ("/");
+				}
 				name = g_filename_display_basename (local_file);
 				g_free (local_file);
 				g_free (uri);
