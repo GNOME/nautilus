@@ -5189,6 +5189,11 @@ change_to_view_directory (FMDirectoryView *view)
 	old_path = g_get_current_dir ();
 
 	uri = nautilus_directory_get_uri (view->details->model);
+	if (eel_uri_is_desktop (uri)) {
+		g_free (uri);
+		uri = nautilus_get_desktop_directory_uri ();
+		
+	}
 	path = gnome_vfs_get_local_path_from_uri (uri);
 
 	/* FIXME: What to do about non-local directories? */
