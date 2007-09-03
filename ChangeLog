@@ -1,3 +1,15 @@
+2007-09-03  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-application.c: (save_session_to_file),
+	(nautilus_application_load_session): 
+	* src/nautilus-window-manage-views.c: (setup_new_window),
+	(nautilus_spatial_window_state_event):
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_state_event):
+	* libnautilus-private/nautilus-metadata.h:
+	Store keep-above and stickiness for navigation and spatial windows
+	across sessions (#163335).
+
 2007-09-03  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-connect-server-dialog.c:

@@ -801,7 +801,7 @@ setup_new_window (NautilusWindow *window, NautilusFile *file)
 	char *show_hidden_file_setting;
 	char *geometry_string;
 	char *scroll_string;
-	gboolean maximized;
+	gboolean maximized, sticky, above;
 	
 	if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		/* load show hidden state */
@@ -826,6 +826,22 @@ setup_new_window (NautilusWindow *window, NautilusFile *file)
 			gtk_window_maximize (GTK_WINDOW (window));
 		} else {
 			gtk_window_unmaximize (GTK_WINDOW (window));
+		}
+
+		sticky = nautilus_file_get_boolean_metadata
+			(file, NAUTILUS_METADATA_KEY_WINDOW_STICKY, FALSE);
+		if (sticky) {
+			gtk_window_stick (GTK_WINDOW (window));
+		} else {
+			gtk_window_unstick (GTK_WINDOW (window));
+		}
+
+		above = nautilus_file_get_boolean_metadata
+			(file, NAUTILUS_METADATA_KEY_WINDOW_KEEP_ABOVE, FALSE);
+		if (above) {
+			gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
+		} else {
+			gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
 		}
 
 		geometry_string = nautilus_file_get_metadata 

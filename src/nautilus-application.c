@@ -1453,6 +1453,16 @@ save_session_to_file (void)
 			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_MAXIMIZED) {
 				xmlNewProp (win_node, "maximized", "TRUE");
 			}
+
+			if (GTK_WIDGET (window)->window &&
+			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_STICKY) {
+				xmlNewProp (win_node, "sticky", "TRUE");
+			}
+
+			if (GTK_WIDGET (window)->window &&
+			    gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_ABOVE) {
+				xmlNewProp (win_node, "keep-above", "TRUE");
+			}
 		}
 
 		tmp = nautilus_window_get_location (window);
@@ -1586,6 +1596,18 @@ nautilus_application_load_session (NautilusApplication *application,
 							gtk_window_maximize (GTK_WINDOW (window));
 						} else {
 							gtk_window_unmaximize (GTK_WINDOW (window));
+						}
+
+						if (xmlHasProp (node, "sticky")) {
+							gtk_window_stick (GTK_WINDOW (window));
+						} else {
+							gtk_window_unstick (GTK_WINDOW (window));
+						}
+
+						if (xmlHasProp (node, "keep-above")) {
+							gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
+						} else {
+							gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
 						}
 
 						nautilus_window_open_location (window, location, FALSE);
