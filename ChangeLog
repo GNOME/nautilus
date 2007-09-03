@@ -1,3 +1,10 @@
+2007-09-03  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-connect-server-dialog.c:
+        (port_insert_text):
+	Use gdk_window_beep instead of gdk_display_beep (#373760)
+	Based on patch from Young-Ho Cha
+
 2007-08-28  Alexander Larsson  <alexl@redhat.com>
 
 	* nautilus-folder-handler.desktop.in.in (MimeType):

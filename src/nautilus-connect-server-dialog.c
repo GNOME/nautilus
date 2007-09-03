@@ -794,7 +794,10 @@ port_insert_text (GtkEditable *editable,
 	/* Only allow digits to be inserted as port number */
 	for (pos = 0; pos < new_text_length; pos++) {
 		if (!g_ascii_isdigit (new_text[pos])) {
-		    gdk_display_beep (gtk_widget_get_display (GTK_WIDGET (editable)));
+			GtkWidget *toplevel = gtk_widget_get_toplevel (GTK_WIDGET (editable));
+			if (toplevel != NULL) {
+				gdk_window_beep (toplevel->window);
+			}
 		    g_signal_stop_emission_by_name (editable, "insert_text");
 		    return;
 		}
