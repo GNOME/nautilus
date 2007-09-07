@@ -1,4 +1,4 @@
-# translation of nautilus.HEAD.po to Macedonian
+# translation of nautilus.HEAD.mk.po to Macedonian
 # translation of nautilus.HEAD.mk.po to
 # translation of nautilus.HEAD.po to
 # translation of nautilus.HEAD.mk.po to
@@ -25,11 +25,11 @@
 # Arangel Angov <arangel@linux.net.mk>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus.HEAD\n"
+"Project-Id-Version: nautilus.HEAD.mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-14 03:46+0100\n"
-"PO-Revision-Date: 2007-09-02 20:24+0200\n"
-"Last-Translator: Arangel Angov <arangel@linux.net.mk>\n"
+"POT-Creation-Date: 2007-09-02 19:35+0100\n"
+"PO-Revision-Date: 2007-09-07 16:55+0200\n"
+"Last-Translator: Jovan Naumovski <jovan@lugola.net>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1017,7 +1017,7 @@ msgstr "Вметни го текстот зачуван на клипбордо�
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6962
+#: ../src/file-manager/fm-directory-view.c:6967
 msgid "Select _All"
 msgstr "Означи ги _сите"
 
@@ -1521,8 +1521,8 @@ msgstr "Замени _сè"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
-#: ../libnautilus-private/nautilus-file.c:4828
-#: ../src/file-manager/fm-directory-view.c:9912
+#: ../libnautilus-private/nautilus-file.c:4831
+#: ../src/file-manager/fm-directory-view.c:9917
 #, c-format
 msgid "Link to %s"
 msgstr "Врска до %s"
@@ -1540,25 +1540,25 @@ msgstr "Друга врска до %s"
 #: ../libnautilus-private/nautilus-file-operations.c:1326
 #, c-format
 msgid "%dst link to %s"
-msgstr "%dst врска до %s"
+msgstr "%d-ва врска до %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1330
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%dnd врска до %s"
+msgstr "%d-ра врска до %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1334
 #, c-format
 msgid "%drd link to %s"
-msgstr "%drd врска до %s"
+msgstr "%d-та врска до %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1338
 #, c-format
 msgid "%dth link to %s"
-msgstr "%dth врска до %s"
+msgstr "%d-та врска до %s"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -1628,19 +1628,19 @@ msgstr "%s (%d-та копија)%s"
 #: ../libnautilus-private/nautilus-file-operations.c:1404
 #, c-format
 msgid "%s (%dst copy)%s"
-msgstr "%s (%dst копија)%s"
+msgstr "%s (%d-ва копија)%s"
 
 #. localizers: appended to x2nd file copy
 #: ../libnautilus-private/nautilus-file-operations.c:1406
 #, c-format
 msgid "%s (%dnd copy)%s"
-msgstr "%s (%dnd копија)%s"
+msgstr "%s (%d-ра копија)%s"
 
 #. localizers: appended to x3rd file copy
 #: ../libnautilus-private/nautilus-file-operations.c:1408
 #, c-format
 msgid "%s (%drd copy)%s"
-msgstr "%s (%drd копија)%s"
+msgstr "%s (%d-та копија)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
 #: ../libnautilus-private/nautilus-file-operations.c:1508
@@ -1946,65 +1946,65 @@ msgstr "Сервиси во"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:2946
+#: ../libnautilus-private/nautilus-file.c:2949
 msgid "today at 00:00:00 PM"
 msgstr "денес во 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2947
+#: ../libnautilus-private/nautilus-file.c:2950
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "денес во %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2949
+#: ../libnautilus-private/nautilus-file.c:2952
 msgid "today at 00:00 PM"
 msgstr "денес во 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2950
+#: ../libnautilus-private/nautilus-file.c:2953
 msgid "today at %-I:%M %p"
 msgstr "денес во %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2952
+#: ../libnautilus-private/nautilus-file.c:2955
 msgid "today, 00:00 PM"
 msgstr "денес во 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2953
+#: ../libnautilus-private/nautilus-file.c:2956
 msgid "today, %-I:%M %p"
 msgstr "денес, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2955
-#: ../libnautilus-private/nautilus-file.c:2956
+#: ../libnautilus-private/nautilus-file.c:2958
+#: ../libnautilus-private/nautilus-file.c:2959
 msgid "today"
 msgstr "денес"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:2965
+#: ../libnautilus-private/nautilus-file.c:2968
 msgid "yesterday at 00:00:00 PM"
 msgstr "вчера во 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2966
+#: ../libnautilus-private/nautilus-file.c:2969
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "вчера во %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2968
+#: ../libnautilus-private/nautilus-file.c:2971
 msgid "yesterday at 00:00 PM"
 msgstr "вчера во 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2969
+#: ../libnautilus-private/nautilus-file.c:2972
 msgid "yesterday at %-I:%M %p"
 msgstr "вчера во %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2971
+#: ../libnautilus-private/nautilus-file.c:2974
 msgid "yesterday, 00:00 PM"
 msgstr "вчера, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2972
+#: ../libnautilus-private/nautilus-file.c:2975
 msgid "yesterday, %-I:%M %p"
 msgstr "вчера, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2974
-#: ../libnautilus-private/nautilus-file.c:2975
+#: ../libnautilus-private/nautilus-file.c:2977
+#: ../libnautilus-private/nautilus-file.c:2978
 msgid "yesterday"
 msgstr "вчера"
 
@@ -2013,63 +2013,63 @@ msgstr "вчера"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:2986
+#: ../libnautilus-private/nautilus-file.c:2989
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Среда, септември 00 0000 во 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2987
+#: ../libnautilus-private/nautilus-file.c:2990
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y at %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2989
+#: ../libnautilus-private/nautilus-file.c:2992
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Пон, Окт 00 0000 во 00:00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2990
+#: ../libnautilus-private/nautilus-file.c:2993
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y at %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:2992
+#: ../libnautilus-private/nautilus-file.c:2995
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Пон, Окт 00 0000 во 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2993
+#: ../libnautilus-private/nautilus-file.c:2996
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y во %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2995
+#: ../libnautilus-private/nautilus-file.c:2998
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Окт 00 0000 во 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2996
+#: ../libnautilus-private/nautilus-file.c:2999
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y во %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:2998
+#: ../libnautilus-private/nautilus-file.c:3001
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Окт 00 0000, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:2999
+#: ../libnautilus-private/nautilus-file.c:3002
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3001
+#: ../libnautilus-private/nautilus-file.c:3004
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: ../libnautilus-private/nautilus-file.c:3002
+#: ../libnautilus-private/nautilus-file.c:3005
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3004
+#: ../libnautilus-private/nautilus-file.c:3007
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3005
+#: ../libnautilus-private/nautilus-file.c:3008
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4342
+#: ../libnautilus-private/nautilus-file.c:4345
 #: ../src/file-manager/fm-directory-view.c:2266
 #, c-format
 msgid "%u item"
@@ -2078,7 +2078,7 @@ msgstr[0] "%u предмет"
 msgstr[1] "%u предмети"
 msgstr[2] "%u предмети"
 
-#: ../libnautilus-private/nautilus-file.c:4343
+#: ../libnautilus-private/nautilus-file.c:4346
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
@@ -2086,7 +2086,7 @@ msgstr[0] "%u папка"
 msgstr[1] "%u папки"
 msgstr[2] "%u папки"
 
-#: ../libnautilus-private/nautilus-file.c:4344
+#: ../libnautilus-private/nautilus-file.c:4347
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2095,43 +2095,43 @@ msgstr[1] "%u датотеки"
 msgstr[2] "%u датотеки"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
-#: ../libnautilus-private/nautilus-file.c:4422
+#: ../libnautilus-private/nautilus-file.c:4425
 #, c-format
 msgid "%s (%lld bytes)"
 msgstr "%s (%lld бајти)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4721
-#: ../libnautilus-private/nautilus-file.c:4737
+#: ../libnautilus-private/nautilus-file.c:4724
+#: ../libnautilus-private/nautilus-file.c:4740
 msgid "? items"
 msgstr "? предмети"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:4727
+#: ../libnautilus-private/nautilus-file.c:4730
 msgid "? bytes"
 msgstr "? бајти"
 
-#: ../libnautilus-private/nautilus-file.c:4742
+#: ../libnautilus-private/nautilus-file.c:4745
 msgid "unknown type"
 msgstr "непознат вид"
 
-#: ../libnautilus-private/nautilus-file.c:4745
+#: ../libnautilus-private/nautilus-file.c:4748
 msgid "unknown MIME type"
 msgstr "непознат MIME вид"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:4751
+#: ../libnautilus-private/nautilus-file.c:4754
 #: ../src/file-manager/fm-properties-window.c:1343
 msgid "unknown"
 msgstr "непознато"
 
-#: ../libnautilus-private/nautilus-file.c:4784
+#: ../libnautilus-private/nautilus-file.c:4787
 msgid "program"
 msgstr "програма"
 
-#: ../libnautilus-private/nautilus-file.c:4802
+#: ../libnautilus-private/nautilus-file.c:4805
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2141,7 +2141,7 @@ msgstr ""
 "значи дека твоите gnome-vfs.клучни датотеки се на погрешно место или неможат "
 "да бидат најдени поради некоја друга причина."
 
-#: ../libnautilus-private/nautilus-file.c:4806
+#: ../libnautilus-private/nautilus-file.c:4809
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2150,15 +2150,15 @@ msgstr ""
 "Не постои опис за mime видот \"%s\" (датотеката е \"%s\"), те молам прати "
 "mail на gnome-vfs mailing листата."
 
-#: ../libnautilus-private/nautilus-file.c:4822
+#: ../libnautilus-private/nautilus-file.c:4825
 msgid "link"
 msgstr "врска"
 
-#: ../libnautilus-private/nautilus-file.c:4842
+#: ../libnautilus-private/nautilus-file.c:4845
 msgid "link (broken)"
 msgstr "врска (скршено)"
 
-#: ../libnautilus-private/nautilus-file.c:6369
+#: ../libnautilus-private/nautilus-file.c:6372
 #: ../libnautilus-private/nautilus-global-preferences.c:544
 #: ../libnautilus-private/nautilus-trash-directory.c:353
 #: ../src/nautilus-places-sidebar.c:358 ../src/nautilus-trash-bar.c:121
@@ -2358,7 +2358,7 @@ msgstr ""
 msgid "Network Servers"
 msgstr "Мрежни сервери"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2137
+#: ../libnautilus-private/nautilus-icon-container.c:2136
 msgid "The selection rectangle"
 msgstr "Селекција правоаголник"
 
@@ -2620,22 +2620,22 @@ msgstr "Позадина"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6940
-#: ../src/file-manager/fm-directory-view.c:7894
+#: ../src/file-manager/fm-directory-view.c:6945
+#: ../src/file-manager/fm-directory-view.c:7899
 msgid "E_mpty Trash"
 msgstr "И_спразни го ѓубрето"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6912
+#: ../src/file-manager/fm-directory-view.c:6917
 msgid "Create L_auncher..."
 msgstr "Креирај с_тартувач..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6913
+#: ../src/file-manager/fm-directory-view.c:6918
 msgid "Create a new launcher"
 msgstr "Креирај нов лансер"
 
@@ -2654,7 +2654,7 @@ msgstr ""
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6941
+#: ../src/file-manager/fm-directory-view.c:6946
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Избриши ги сите предмети во ѓубрето"
@@ -2956,21 +2956,21 @@ msgstr ""
 "употребете ја опцијата \"Отвори со\" и изберете соодветна апликација за "
 "датотеката."
 
-#: ../src/file-manager/fm-directory-view.c:5426
+#: ../src/file-manager/fm-directory-view.c:5431
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Изврши \"%s\" на било кој избран предмет"
 
-#: ../src/file-manager/fm-directory-view.c:5675
+#: ../src/file-manager/fm-directory-view.c:5680
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Направи документ според мострата \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5932
+#: ../src/file-manager/fm-directory-view.c:5937
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Сите извршливи датотеки во оваа папка ќе се појават во мени за скрипти."
 
-#: ../src/file-manager/fm-directory-view.c:5934
+#: ../src/file-manager/fm-directory-view.c:5939
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -2978,7 +2978,7 @@ msgstr ""
 "Со избирањето на скрипта од менито ќе ја извршите истата заедно со сите "
 "избрани предмети."
 
-#: ../src/file-manager/fm-directory-view.c:5936
+#: ../src/file-manager/fm-directory-view.c:5941
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3018,19 +3018,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 
-#: ../src/file-manager/fm-directory-view.c:6100
+#: ../src/file-manager/fm-directory-view.c:6105
 #: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" ќе биде преместена ако ја изберете командата „Вменти“"
 
-#: ../src/file-manager/fm-directory-view.c:6104
+#: ../src/file-manager/fm-directory-view.c:6109
 #: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" ќе биде ископирана ако ја изберете командата „Вметни“"
 
-#: ../src/file-manager/fm-directory-view.c:6111
+#: ../src/file-manager/fm-directory-view.c:6116
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
@@ -3038,7 +3038,7 @@ msgstr[0] "Избраниот %d предмет ќе биде преместен
 msgstr[1] "Избраните %d предмети ќе бидат преместени ако ја изберете командата „Вменти“"
 msgstr[2] "Избраните %d предмети ќе бидат преместени ако ја изберете командата „Вменти“"
 
-#: ../src/file-manager/fm-directory-view.c:6118
+#: ../src/file-manager/fm-directory-view.c:6123
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
@@ -3046,143 +3046,143 @@ msgstr[0] "Избраниот %d предмет ќе биде ископиран
 msgstr[1] "Избраните %d предмети ќе бидат ископирани ако ја изберете командата „Вметни“"
 msgstr[2] "Избраните %d предмети ќе бидат ископирани ако ја изберете командата „Вметни“"
 
-#: ../src/file-manager/fm-directory-view.c:6212
+#: ../src/file-manager/fm-directory-view.c:6217
 #: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Нема ништо за вметнување"
 
-#: ../src/file-manager/fm-directory-view.c:6691
+#: ../src/file-manager/fm-directory-view.c:6696
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Врзи се со серверот %s"
 
-#: ../src/file-manager/fm-directory-view.c:6696
+#: ../src/file-manager/fm-directory-view.c:6701
 msgid "_Connect"
 msgstr "_Врзи се"
 
-#: ../src/file-manager/fm-directory-view.c:6710
+#: ../src/file-manager/fm-directory-view.c:6715
 msgid "Link _name:"
 msgstr "_Има на врската:"
 
-#: ../src/file-manager/fm-directory-view.c:6886
+#: ../src/file-manager/fm-directory-view.c:6891
 msgid "Create _Document"
 msgstr "Креирај _документ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6887
+#: ../src/file-manager/fm-directory-view.c:6892
 msgid "Open Wit_h"
 msgstr "Отвори _со"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6888
+#: ../src/file-manager/fm-directory-view.c:6893
 msgid "Choose a program with which to open the selected item"
 msgstr "Избери програма со која сакаш да го отвориш саканиот предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6890
-#: ../src/file-manager/fm-directory-view.c:6898
+#: ../src/file-manager/fm-directory-view.c:6895
+#: ../src/file-manager/fm-directory-view.c:6903
 msgid "_Properties"
 msgstr "_Својства"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6891
+#: ../src/file-manager/fm-directory-view.c:6896
 msgid "View or modify the properties of each selected item"
 msgstr "Прегледај ги или промени ги својствата на секој избран предмет"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6899
+#: ../src/file-manager/fm-directory-view.c:6904
 msgid "View or modify the properties of the open folder"
 msgstr "Прегледај ги или промени ги својствата на папката"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6902
+#: ../src/file-manager/fm-directory-view.c:6907
 msgid "Create _Folder"
 msgstr "Креирај _папка"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-directory-view.c:6908
 msgid "Create a new empty folder inside this folder"
 msgstr "Креирај нова празна папка во оваа папка"
 
-#: ../src/file-manager/fm-directory-view.c:6905
+#: ../src/file-manager/fm-directory-view.c:6910
 msgid "No templates Installed"
 msgstr "Нема инсталирани мостри (примероци)"
 
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6908
+#: ../src/file-manager/fm-directory-view.c:6913
 msgid "_Empty File"
 msgstr "_Празна датотека"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6909
+#: ../src/file-manager/fm-directory-view.c:6914
 msgid "Create a new empty file inside this folder"
 msgstr "Креирај празна датотека во оваа папка"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6916
-#: ../src/file-manager/fm-directory-view.c:7795
+#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:7800
 #: ../src/file-manager/fm-tree-view.c:1253
 #: ../src/nautilus-places-sidebar.c:1448
 msgid "_Open"
 msgstr "_Отвори"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6917
+#: ../src/file-manager/fm-directory-view.c:6922
 msgid "Open the selected item in this window"
 msgstr "Отвори го избраниот предмет во овој прозорец"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6924
-#: ../src/file-manager/fm-directory-view.c:7048
+#: ../src/file-manager/fm-directory-view.c:6929
+#: ../src/file-manager/fm-directory-view.c:7053
 msgid "Open in Navigation Window"
 msgstr "Отвори во прозорец за навигација"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6925
+#: ../src/file-manager/fm-directory-view.c:6930
 msgid "Open each selected item in a navigation window"
 msgstr "Отвори го секој избран предмет во прозорец за навигација"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6928
-#: ../src/file-manager/fm-directory-view.c:6932
+#: ../src/file-manager/fm-directory-view.c:6933
+#: ../src/file-manager/fm-directory-view.c:6937
 msgid "Open with Other _Application..."
 msgstr "Отвори со _друга апликација..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6929
-#: ../src/file-manager/fm-directory-view.c:6933
+#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:6938
 msgid "Choose another application with which to open the selected item"
 msgstr "Изберете друга апликација со која што сакате да го отворите саканиот предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6936
+#: ../src/file-manager/fm-directory-view.c:6941
 msgid "_Open Scripts Folder"
 msgstr "_Отвори ја папката со скрипти"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6937
+#: ../src/file-manager/fm-directory-view.c:6942
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Покажи ја папката што ги содржи скриптите прикажани во ова мени"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6945
+#: ../src/file-manager/fm-directory-view.c:6950
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат преместени со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6949
+#: ../src/file-manager/fm-directory-view.c:6954
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат копирани со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6953
+#: ../src/file-manager/fm-directory-view.c:6958
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Отсечи или копирај датотеки претходно избрани со командата „Отсечи“ или "
@@ -3191,13 +3191,13 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6958
+#: ../src/file-manager/fm-directory-view.c:6963
 #: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Paste Into Folder"
 msgstr "_Вметни во папката"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6959
+#: ../src/file-manager/fm-directory-view.c:6964
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3206,33 +3206,33 @@ msgstr ""
 "„Копирај“"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6963
+#: ../src/file-manager/fm-directory-view.c:6968
 msgid "Select all items in this window"
 msgstr "Избери ги сите предмети во овој прозорец"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6966
+#: ../src/file-manager/fm-directory-view.c:6971
 msgid "Select _Pattern"
-msgstr "Изберете _шара"
+msgstr "Избери по _шаблон"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6967
+#: ../src/file-manager/fm-directory-view.c:6972
 msgid "Select items in this window matching a given pattern"
-msgstr "Избери ги сите предмети во овој прозорец што имаат шара..."
+msgstr "Избери ги сите предмети во овој прозорец што се совпаѓаат со даден шаблон..."
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6970
+#: ../src/file-manager/fm-directory-view.c:6975
 msgid "D_uplicate"
 msgstr "Д_уплирај"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6971
+#: ../src/file-manager/fm-directory-view.c:6976
 msgid "Duplicate each selected item"
 msgstr "Дуплирај го секој избран предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6974
-#: ../src/file-manager/fm-directory-view.c:7868
+#: ../src/file-manager/fm-directory-view.c:6979
+#: ../src/file-manager/fm-directory-view.c:7873
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "На_прави врска"
@@ -3240,245 +3240,245 @@ msgstr[1] "На_прави врски"
 msgstr[2] "На_прави врски"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6975
+#: ../src/file-manager/fm-directory-view.c:6980
 msgid "Create a symbolic link for each selected item"
 msgstr "Креирај симболичка врска за секој избран предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6978
+#: ../src/file-manager/fm-directory-view.c:6983
 msgid "_Rename..."
 msgstr "_Преименувај..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6979
+#: ../src/file-manager/fm-directory-view.c:6984
 msgid "Rename selected item"
 msgstr "Преименувај го избраниот предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6986
-#: ../src/file-manager/fm-directory-view.c:7062
-#: ../src/file-manager/fm-directory-view.c:7652
-#: ../src/file-manager/fm-directory-view.c:7836
-#: ../src/file-manager/fm-directory-view.c:8236
+#: ../src/file-manager/fm-directory-view.c:6991
+#: ../src/file-manager/fm-directory-view.c:7067
+#: ../src/file-manager/fm-directory-view.c:7657
+#: ../src/file-manager/fm-directory-view.c:7841
+#: ../src/file-manager/fm-directory-view.c:8241
 msgid "Mo_ve to Trash"
 msgstr "Пр_емести во ѓубрето"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6987
-#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:6992
+#: ../src/file-manager/fm-directory-view.c:7842
 msgid "Move each selected item to the Trash"
 msgstr "Премести ги сите избрани предмети во ѓубрето"
 
 #. name, stock id
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6990
-#: ../src/file-manager/fm-directory-view.c:7066
-#: ../src/file-manager/fm-directory-view.c:7855
+#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:7071
+#: ../src/file-manager/fm-directory-view.c:7860
 #: ../src/file-manager/fm-tree-view.c:1334
 msgid "_Delete"
 msgstr "_Избриши"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6991
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Избриши го секој избран предмет без да го преместиш во ѓубрето"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6994
+#: ../src/file-manager/fm-directory-view.c:6999
 msgid "Reset View to _Defaults"
 msgstr "Ресетирај го погледот на _стандардно"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6995
+#: ../src/file-manager/fm-directory-view.c:7000
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Ресетирај го редоследот и нивото на зум така што ќе се вколпи во "
 "преференциите за овој поглед"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6998
+#: ../src/file-manager/fm-directory-view.c:7003
 msgid "Connect To This Server"
 msgstr "Врзи се со овој сервер"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6999
+#: ../src/file-manager/fm-directory-view.c:7004
 msgid "Make a permanent connection to this server"
 msgstr "Направи постојана врска до овој сервер"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7002
-#: ../src/file-manager/fm-directory-view.c:7018
+#: ../src/file-manager/fm-directory-view.c:7007
+#: ../src/file-manager/fm-directory-view.c:7023
 msgid "_Mount Volume"
 msgstr "_Монтирај диск (партиција)"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7003
+#: ../src/file-manager/fm-directory-view.c:7008
 msgid "Mount the selected volume"
 msgstr "Монтирај го означениот уред (партиција)"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7006
-#: ../src/file-manager/fm-directory-view.c:7022
+#: ../src/file-manager/fm-directory-view.c:7011
+#: ../src/file-manager/fm-directory-view.c:7027
 #: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "_Демонтирај"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7007
+#: ../src/file-manager/fm-directory-view.c:7012
 msgid "Unmount the selected volume"
 msgstr "Демонтирај ја избраната јачина"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7010
-#: ../src/file-manager/fm-directory-view.c:7026
+#: ../src/file-manager/fm-directory-view.c:7015
+#: ../src/file-manager/fm-directory-view.c:7031
 #: ../src/nautilus-places-sidebar.c:1497
 msgid "_Eject"
 msgstr "_Извади"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7011
+#: ../src/file-manager/fm-directory-view.c:7016
 msgid "Eject the selected volume"
 msgstr "Извади го избраниот уред"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7014
-#: ../src/file-manager/fm-directory-view.c:7030
+#: ../src/file-manager/fm-directory-view.c:7019
+#: ../src/file-manager/fm-directory-view.c:7035
 #: ../src/nautilus-places-sidebar.c:1504
 msgid "_Format"
 msgstr "_Форматирај"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7015
+#: ../src/file-manager/fm-directory-view.c:7020
 msgid "Format the selected volume"
 msgstr "Форматирај го означениот простор"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7019
+#: ../src/file-manager/fm-directory-view.c:7024
 msgid "Mount the volume associated with the open folder"
 msgstr "Монтирај го уредот кому му припаѓа отворената папка."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7028
 msgid "Unmount the volume associated with the open folder"
 msgstr "Одмонтирај го уредот кому му припаѓа отворената папка."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7027
+#: ../src/file-manager/fm-directory-view.c:7032
 msgid "Eject the volume associated with the open folder"
 msgstr "Извадете го уредот кому му припаѓа оваа папка"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7031
+#: ../src/file-manager/fm-directory-view.c:7036
 msgid "Format the volume associated with the open folder"
 msgstr "Форматирај го уредот кому му припаѓа отворената папка"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7034
+#: ../src/file-manager/fm-directory-view.c:7039
 msgid "Open File and Close window"
 msgstr "Отвори ја датотеката и затвори го прозорецот"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7038
+#: ../src/file-manager/fm-directory-view.c:7043
 msgid "Sa_ve Search"
 msgstr "Зач_увај пребарување"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7039
+#: ../src/file-manager/fm-directory-view.c:7044
 msgid "Save the edited search"
 msgstr "Зачувај го уреденото пребарување"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7042
+#: ../src/file-manager/fm-directory-view.c:7047
 msgid "Sa_ve Search As..."
 msgstr "За_чувај пребарување како..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7043
+#: ../src/file-manager/fm-directory-view.c:7048
 msgid "Save the current search as a file"
 msgstr "Зачувај го тековното пребарување како датотека"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7049
+#: ../src/file-manager/fm-directory-view.c:7054
 msgid "Open this folder in a navigation window"
 msgstr "Отвори ја оваа папка во прозорец за навигација"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7054
+#: ../src/file-manager/fm-directory-view.c:7059
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Припреми ја папката за преместување со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7058
+#: ../src/file-manager/fm-directory-view.c:7063
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат копирани со командата „Вметни“"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7063
+#: ../src/file-manager/fm-directory-view.c:7068
 msgid "Move this folder to the Trash"
 msgstr "Премести ја оваа папка во ѓубрето"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7067
+#: ../src/file-manager/fm-directory-view.c:7072
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Избриши ја папката без да ја преместиш во ѓубрето"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7073
+#: ../src/file-manager/fm-directory-view.c:7078
 msgid "Show _Hidden Files"
 msgstr "Покажи _скриени датотеки"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7074
+#: ../src/file-manager/fm-directory-view.c:7079
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Го менува покажувањето на скриени датотеки во тековниот прозорец"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7160
+#: ../src/file-manager/fm-directory-view.c:7165
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Изврши или справи се со скрипти од %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7162
+#: ../src/file-manager/fm-directory-view.c:7167
 msgid "_Scripts"
 msgstr "_Скрипти"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7621
-#: ../src/file-manager/fm-directory-view.c:7804
+#: ../src/file-manager/fm-directory-view.c:7626
+#: ../src/file-manager/fm-directory-view.c:7809
 #: ../src/file-manager/fm-tree-view.c:1264
 msgid "Open in New Window"
 msgstr "Отвори во нов прозорец"
 
-#: ../src/file-manager/fm-directory-view.c:7623
-#: ../src/file-manager/fm-directory-view.c:7812
+#: ../src/file-manager/fm-directory-view.c:7628
+#: ../src/file-manager/fm-directory-view.c:7817
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Разгледај папка"
 msgstr[1] "_Разгледај папки"
 msgstr[2] "_Разгледај папки"
 
-#: ../src/file-manager/fm-directory-view.c:7648
-#: ../src/file-manager/fm-directory-view.c:7832
+#: ../src/file-manager/fm-directory-view.c:7653
+#: ../src/file-manager/fm-directory-view.c:7837
 msgid "_Delete from Trash"
 msgstr "_Избриши од ѓубрето"
 
-#: ../src/file-manager/fm-directory-view.c:7649
+#: ../src/file-manager/fm-directory-view.c:7654
 msgid "Delete the open folder permanently"
 msgstr "Избриши ја отворената папка перманентно"
 
-#: ../src/file-manager/fm-directory-view.c:7653
+#: ../src/file-manager/fm-directory-view.c:7658
 msgid "Move the open folder to the Trash"
 msgstr "Премести ја отворената папка во ѓубрето"
 
-#: ../src/file-manager/fm-directory-view.c:7788
+#: ../src/file-manager/fm-directory-view.c:7793
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Отвори со \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7806
+#: ../src/file-manager/fm-directory-view.c:7811
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
@@ -3486,37 +3486,37 @@ msgstr[0] "Отвори во %d нов прозорец"
 msgstr[1] "Отвори во %d нови прозорци"
 msgstr[2] "Отвори во %d нови прозорци"
 
-#: ../src/file-manager/fm-directory-view.c:7833
+#: ../src/file-manager/fm-directory-view.c:7838
 msgid "Delete all selected items permanently"
 msgstr "Избриши ги сите избрани предмети перманентно"
 
-#: ../src/file-manager/fm-directory-view.c:8216
+#: ../src/file-manager/fm-directory-view.c:8221
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Врската \"%s\" е расипана."
 
-#: ../src/file-manager/fm-directory-view.c:8218
+#: ../src/file-manager/fm-directory-view.c:8223
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Врската \"%s\" е расипана. Дали сакате да ја прместите во ѓубрето?"
 
-#: ../src/file-manager/fm-directory-view.c:8224
+#: ../src/file-manager/fm-directory-view.c:8229
 msgid "This link can't be used, because it has no target."
 msgstr "Оваа врска е невалидна зашто не покажува никаде."
 
-#: ../src/file-manager/fm-directory-view.c:8226
+#: ../src/file-manager/fm-directory-view.c:8231
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Оваа врска не може да се искористи поради тоа што нејзината цел \"%s\" не "
 "постои."
 
-#: ../src/file-manager/fm-directory-view.c:8877
+#: ../src/file-manager/fm-directory-view.c:8882
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Отворам \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8880
+#: ../src/file-manager/fm-directory-view.c:8885
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3524,34 +3524,34 @@ msgstr[0] "Се отвора %d"
 msgstr[1] "Се отвораат %d"
 msgstr[2] "Се отвораат %d"
 
-#: ../src/file-manager/fm-directory-view.c:9772
+#: ../src/file-manager/fm-directory-view.c:9777
 msgid "Download location?"
 msgstr "Локација за преземање?"
 
-#: ../src/file-manager/fm-directory-view.c:9775
+#: ../src/file-manager/fm-directory-view.c:9780
 msgid "You can download it or make a link to it."
 msgstr "Можете да ја преземете или да направите врска до неа."
 
-#: ../src/file-manager/fm-directory-view.c:9778
+#: ../src/file-manager/fm-directory-view.c:9783
 msgid "Make a _Link"
 msgstr "Направи _врска"
 
-#: ../src/file-manager/fm-directory-view.c:9782
+#: ../src/file-manager/fm-directory-view.c:9787
 msgid "_Download"
 msgstr "_Преземи"
 
-#: ../src/file-manager/fm-directory-view.c:9845
-#: ../src/file-manager/fm-directory-view.c:9897
-#: ../src/file-manager/fm-directory-view.c:9998
+#: ../src/file-manager/fm-directory-view.c:9850
+#: ../src/file-manager/fm-directory-view.c:9902
+#: ../src/file-manager/fm-directory-view.c:10003
 msgid "Drag and drop is not supported."
 msgstr "Влечење и пуштање не е подржано."
 
-#: ../src/file-manager/fm-directory-view.c:9846
+#: ../src/file-manager/fm-directory-view.c:9851
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Влечење и пуштање е подржано само на локалниот датотечен систем."
 
-#: ../src/file-manager/fm-directory-view.c:9898
-#: ../src/file-manager/fm-directory-view.c:9999
+#: ../src/file-manager/fm-directory-view.c:9903
+#: ../src/file-manager/fm-directory-view.c:10004
 msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
@@ -3870,12 +3870,12 @@ msgstr "Погледот на икони наиде на грешка додек
 msgid "Display this location with the icon view."
 msgstr "Прикажи ја оваа локација со икони."
 
-#: ../src/file-manager/fm-list-model.c:376
+#: ../src/file-manager/fm-list-model.c:386
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "(Empty)"
 msgstr "(Празно)"
 
-#: ../src/file-manager/fm-list-model.c:378
+#: ../src/file-manager/fm-list-model.c:388
 #: ../src/file-manager/fm-tree-model.c:1229
 msgid "Loading..."
 msgstr "Се вчитува..."
