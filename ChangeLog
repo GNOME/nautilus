@@ -1,3 +1,10 @@
+2007-09-10  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_get_octal_permissions_as_string):
+	Filter out any non-unix-permissions flags for the
+	octal mode.
+
 2007-09-03  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-application.c: (save_session_to_file),

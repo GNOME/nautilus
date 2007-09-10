@@ -4240,7 +4240,7 @@ nautilus_file_get_octal_permissions_as_string (NautilusFile *file)
 	}
 
 	permissions = file->details->info->permissions;
-	return g_strdup_printf ("%03o", permissions);
+	return g_strdup_printf ("%03o", permissions & 07777);
 }
 
 /**
