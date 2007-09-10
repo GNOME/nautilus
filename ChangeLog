@@ -1,5 +1,13 @@
 2007-09-10  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-dnd.h:
+        * libnautilus-private/nautilus-file-dnd.c:
+        * libnautilus-private/nautilus-icon-dnd.c:
+	Implement direct save (XDS) DnD.
+	Based on patch from BROCCO Amos
+
+2007-09-10  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file.c:
         (nautilus_file_get_octal_permissions_as_string):
 	Filter out any non-unix-permissions flags for the

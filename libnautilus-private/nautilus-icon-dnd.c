@@ -24,6 +24,10 @@
             Darin Adler <darin@bentspoon.com>,
 	    Andy Hertzfeld <andy@eazel.com>
 	    Pavel Cisler <pavel@eazel.com>
+	    
+
+   XDS support: Benedikt Meurer <benny@xfce.org> (adapted by Amos Brocco <amos.brocco@unifr.ch>)
+				
 */
 
 
@@ -59,6 +63,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -76,6 +81,7 @@ static const GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
 	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND },
+	{ NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
 	/* Must be last: */
 	{ NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE,  0, NAUTILUS_ICON_DND_ROOTWINDOW_DROP }
 };
@@ -372,13 +378,88 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	nautilus_icon_container_position_shadow (container, x, y);
 }
 
+static char *
+get_direct_save_filename (GdkDragContext *context)
+{
+	guchar *prop_text;
+	gint prop_len;
+	
+	if (!gdk_property_get (context->source_window, gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
+			       gdk_atom_intern ("text/plain", FALSE), 0, 1024, FALSE, NULL, NULL,
+			       &prop_len, &prop_text) && prop_text != NULL) {
+		return NULL;
+	}
+	
+	/* Zero-terminate the string */
+	prop_text = g_realloc (prop_text, prop_len + 1);
+	prop_text[prop_len] = '\0';
+	
+	/* Verify that the file name provided by the source is valid */
+	if (*prop_text == '\0' ||
+	    strchr ((const gchar *) prop_text, G_DIR_SEPARATOR) != NULL) {
+		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+				    "Invalid filename provided by XDS drag site");
+		g_free (prop_text);
+		return NULL;
+	}
+	
+	return prop_text;
+}
+
+static void
+set_direct_save_uri (GtkWidget *widget, GdkDragContext *context, NautilusDragInfo *drag_info, int x, int y)
+{
+	GnomeVFSURI *base, *file_uri;
+	char *filename, *drop_target;
+	gchar *uri;
+	
+	drag_info->got_drop_data_type = TRUE;
+	drag_info->data_type = NAUTILUS_ICON_DND_XDNDDIRECTSAVE;
+	
+	uri = NULL;
+	
+	filename = get_direct_save_filename (context);
+	drop_target = nautilus_icon_container_find_drop_target (NAUTILUS_ICON_CONTAINER (widget), 
+								context, x, y, NULL);
+	
+	if (drop_target && eel_uri_is_trash (drop_target)) {
+		g_free (drop_target);
+		drop_target = NULL; /* Cannot save to trash ...*/
+	}
+	if (drop_target && eel_uri_is_desktop (drop_target)) {
+		g_free (drop_target);
+		drop_target = nautilus_get_desktop_directory_uri ();
+	}
+	
+	if (filename != NULL && drop_target != NULL) {
+		/* Resolve relative path */
+		base = gnome_vfs_uri_new (drop_target);
+		file_uri = gnome_vfs_uri_append_file_name (base, (const gchar *) filename);
+		uri = gnome_vfs_uri_to_string (file_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (base);
+		gnome_vfs_uri_unref (file_uri);
+		
+		/* Change the uri property */
+		gdk_property_change (GDK_DRAWABLE (context->source_window),
+				     gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
+				     gdk_atom_intern ("text/plain", FALSE), 8,
+				     GDK_PROP_MODE_REPLACE, (const guchar *) uri,
+				     strlen (uri));
+		
+		drag_info->direct_save_uri = uri;
+	} 
+	
+	g_free (filename);
+	g_free (drop_target);
+}
+
 /* FIXME bugzilla.gnome.org 47445: Needs to become a shared function */
 static void
-get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
+get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time, int x, int y)
 {
 	GtkTargetList *list;
 	GdkAtom target;
-	
+
 	if (drop_types_list == NULL) {
 		drop_types_list = gtk_target_list_new (drop_types,
 						       G_N_ELEMENTS (drop_types) - 1);
@@ -389,7 +470,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 							    G_N_ELEMENTS (drop_types));
 		gtk_target_list_add_text_targets (drop_types_list_root, NAUTILUS_ICON_DND_TEXT);
 	}
-
+	
 	if (nautilus_icon_container_get_is_desktop (NAUTILUS_ICON_CONTAINER (widget))) {
 		list = drop_types_list_root;
 	} else {
@@ -407,14 +488,18 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 		found = gtk_target_list_find (list, target, &info);
 		g_assert (found);
 
-		/* Don't get_data for rootwindow drops unless it's the actual drop */
-		if (info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP &&
+		/* Don't get_data for destructive ops */
+		if ((info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP ||
+		     info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE) &&
 		    !drag_info->drop_occured) {
 			/* We can't call get_data here, because that would
-			   make the source execute the rootwin action */
+			   make the source execute the rootwin action or the direct save */
 			drag_info->got_drop_data_type = TRUE;
-			drag_info->data_type = NAUTILUS_ICON_DND_ROOTWINDOW_DROP;
+			drag_info->data_type = info;
 		} else {
+			if (info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE) {
+				set_direct_save_uri (widget, context, drag_info, x, y);
+			}
 			gtk_drag_get_data (GTK_WIDGET (widget), context,
 					   target, time);
 		}
@@ -431,7 +516,7 @@ nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 	dnd_info = container->details->dnd_info;
 
 	if (!dnd_info->drag_info.got_drop_data_type) {
-		get_data_on_first_target_we_support (GTK_WIDGET (container), context, time);
+		get_data_on_first_target_we_support (GTK_WIDGET (container), context, time, 0, 0);
 	}
 }
 
@@ -1195,6 +1280,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		break;
 
 	case NAUTILUS_ICON_DND_TEXT:
+	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
 		*action = GDK_ACTION_COPY;
 		break;
 	}
@@ -1265,7 +1351,7 @@ static void
 nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 {
 	NautilusIconDndInfo *dnd_info;
-	
+
 	dnd_info = container->details->dnd_info;
 	
 	dnd_info->drag_info.got_drop_data_type = FALSE;
@@ -1278,6 +1364,11 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	if (dnd_info->drag_info.selection_data != NULL) {
 		gtk_selection_data_free (dnd_info->drag_info.selection_data);
 		dnd_info->drag_info.selection_data = NULL;
+	}
+
+	if (dnd_info->drag_info.direct_save_uri != NULL) {
+		g_free (dnd_info->drag_info.direct_save_uri);
+		dnd_info->drag_info.direct_save_uri = NULL;
 	}
 }
 
@@ -1476,7 +1567,7 @@ drag_motion_callback (GtkWidget *widget,
 		      guint32 time)
 {
 	int action;
-	
+
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
@@ -1515,8 +1606,8 @@ drag_drop_callback (GtkWidget *widget,
 	*/
 	dnd_info->drag_info.drop_occured = TRUE;
 
-	get_data_on_first_target_we_support (widget, context, time);
-
+	get_data_on_first_target_we_support (widget, context, time, x, y);
+	
 	return FALSE;
 }
 
@@ -1641,6 +1732,7 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_TEXT:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
+	case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
 		/* Save the data so we can do the actual work on drop. */
 		if (drag_info->selection_data != NULL) {
 			gtk_selection_data_free (drag_info->selection_data);
@@ -1719,6 +1811,30 @@ drag_data_received_callback (GtkWidget *widget,
 			break;
 		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 			/* Do nothing, everything is done by the sender */
+			break;
+		case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
+			/* Indicate that we don't provide "F" fallback */
+          		if (drag_info->selection_data->format == 8 &&
+			    drag_info->selection_data->length == 1 &&
+			    drag_info->selection_data->data[0] == 'F') {
+	              		gdk_property_change (GDK_DRAWABLE (context->source_window),
+						     gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
+						     gdk_atom_intern ("text/plain", FALSE), 8,
+						     GDK_PROP_MODE_REPLACE, (const guchar *) "", 0);
+            		} else if (drag_info->selection_data->format == 8 &&
+				   drag_info->selection_data->length == 1 &&
+				   drag_info->selection_data->data[0] == 'S' &&
+				   drag_info->direct_save_uri != NULL) {
+				GdkPoint p;
+
+				nautilus_file_changes_queue_file_added (drag_info->direct_save_uri);
+				p.x = x; p.y = y;
+				nautilus_file_changes_queue_schedule_position_set (drag_info->direct_save_uri,
+										   p,
+										   gdk_screen_get_number (gtk_widget_get_screen (widget)));
+				nautilus_file_changes_consume_changes (TRUE);
+            		}
+		        success = TRUE;
 			break;
 		}
 		gtk_drag_finish (context, success, FALSE, time);

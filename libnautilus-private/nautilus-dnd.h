@@ -38,6 +38,7 @@
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE          "property/keyword"
 #define NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE "x-special/gnome-reset-background"
 #define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE  "application/x-rootwindow-drop"
+#define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
 
 /* Item of the drag selection list */
 typedef struct {
@@ -57,6 +58,7 @@ typedef enum {
 	NAUTILUS_ICON_DND_KEYWORD,
 	NAUTILUS_ICON_DND_TEXT,
 	NAUTILUS_ICON_DND_RESET_BACKGROUND,
+	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
 	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
 } NautilusIconDndTargetType;
 
@@ -75,6 +77,7 @@ typedef struct {
 	gboolean got_drop_data_type;
 	NautilusIconDndTargetType data_type;
 	GtkSelectionData *selection_data;
+	char *direct_save_uri;
 
 	/* Start of the drag, in window coordinates. */
 	int start_x, start_y;
