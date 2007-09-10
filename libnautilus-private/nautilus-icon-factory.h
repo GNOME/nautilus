@@ -151,6 +151,16 @@ GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_file_with_stock_size (NautilusFi
 								      const char   *modifier,
 								      GtkIconSize   stock_size);
 
+GdkPixbuf * nautilus_icon_factory_get_pixbuf_for_file_with_icon (NautilusFile               *file,
+								 const char                 *icon,
+								 const char                 *modifier,
+								 guint                       size_in_pixels,
+								 NautilusEmblemAttachPoints *attach_points,
+								 GdkRectangle               *embedded_text_rect,
+								 gboolean                    force_size,
+								 gboolean                    wants_default,
+								 char                      **display_name);
+
 
 /* Convenience routine for getting a pixbuf from an icon name
  */

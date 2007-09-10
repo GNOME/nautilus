@@ -1,5 +1,16 @@
 2007-09-10  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-thumbnails.[ch]:
+	Add nautilus_thumbnail_load_image_async and cancel.
+	
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-factory.[ch]:
+	Load thumbnails asynchronously
+
+	Patch from Christian Neumair
+
+2007-09-10  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-dnd.h:
         * libnautilus-private/nautilus-file-dnd.c:
         * libnautilus-private/nautilus-icon-dnd.c:

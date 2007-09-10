@@ -69,6 +69,16 @@ typedef struct {
 	time_t original_file_mtime;
 } NautilusThumbnailInfo;
 
+struct NautilusThumbnailAsyncLoadHandle {
+	EelReadFileHandle *eel_read_handle;
+	char *file_path;
+	guint base_size;
+	guint nominal_size;
+	gboolean force_nominal; 
+	NautilusThumbnailAsyncLoadFunc load_func;
+	gpointer load_func_user_data;
+};
+
 
 /*
  * Thumbnail thread state.
@@ -330,37 +340,24 @@ thumbnail_loader_area_prepared (GdkPixbufLoader *loader,
 	*args->scale_y_out = (double) gdk_pixbuf_get_height (pixbuf) / args->original_height;
 }
 
-/* routine to load an image from the passed-in path
- */
-GdkPixbuf *
-nautilus_thumbnail_load_image (const char *path,
-			       guint base_size,
-			       guint nominal_size,
-			       gboolean force_nominal,
-			       double *scale_x_out,
-			       double *scale_y_out)
+static GdkPixbuf *
+get_pixbuf_from_data (const unsigned char *buffer,
+		      gsize buflen,
+		      const char *path,
+		      guint base_size,
+		      guint nominal_size,
+		      gboolean force_nominal,
+		      double *scale_x_out,
+		      double *scale_y_out)
 {
-	guchar *buffer;
 	GdkPixbufLoader *loader;
 	GdkPixbuf *pixbuf;
-	GError *error;
-	gsize buflen;
 	ThumbnailLoadArgs args;
-
-	error = NULL;
+	GError *error;
 
 	if (thumbnail_icon_size == 0) {
 		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
 						  &thumbnail_icon_size);
-	}
-
-	
-	if (!g_file_get_contents (path, (gchar **) &buffer, &buflen, &error)) {
-		g_message ("Failed to load %s into memory: %s", path, error->message);
-
-		g_error_free (error);
-
-		return NULL;
 	}
 
 	loader = gdk_pixbuf_loader_new ();
@@ -378,16 +375,19 @@ nautilus_thumbnail_load_image (const char *path,
 	args.scale_x_out = scale_x_out;
 	args.scale_y_out = scale_y_out;
 
+	error = NULL;
+
 	if (!gdk_pixbuf_loader_write (loader, buffer, buflen, &error)) {
 		g_message ("Failed to write %s to thumbnail pixbuf loader: %s", path, error->message);
 
 		gdk_pixbuf_loader_close (loader, NULL);
 		g_object_unref (G_OBJECT (loader));
 		g_error_free (error);
-		g_free (buffer);
 
 		return NULL;
 	}
+
+	error = NULL;
 
 	if (!gdk_pixbuf_loader_close (loader, &error) ||
 	    /* Seems we have to check this even if it returned TRUE (#403255) */
@@ -396,7 +396,6 @@ nautilus_thumbnail_load_image (const char *path,
 
 		g_object_unref (G_OBJECT (loader));
 		g_error_free (error);
-		g_free (buffer);
 
 		return NULL;
 	}
@@ -404,9 +403,120 @@ nautilus_thumbnail_load_image (const char *path,
 	pixbuf = g_object_ref (gdk_pixbuf_loader_get_pixbuf (loader));
 
 	g_object_unref (G_OBJECT (loader));
+
+	return pixbuf;
+}
+
+
+/* routine to load an image from the passed-in path
+ */
+GdkPixbuf *
+nautilus_thumbnail_load_image (const char *path,
+			       guint base_size,
+			       guint nominal_size,
+			       gboolean force_nominal,
+			       double *scale_x_out,
+			       double *scale_y_out)
+{
+	GdkPixbuf *pixbuf;
+	guchar *buffer;
+	gsize buflen;
+	GError *error;
+
+	error = NULL;
+	
+	if (!g_file_get_contents (path, (gchar **) &buffer, &buflen, &error)) {
+		g_message ("Failed to load %s into memory: %s", path, error->message);
+
+		g_error_free (error);
+
+		return NULL;
+	}
+
+	pixbuf = get_pixbuf_from_data (buffer, buflen, path,
+				       base_size, nominal_size, force_nominal,
+				       scale_x_out, scale_y_out);
+
 	g_free (buffer);
 
 	return pixbuf;
+}
+
+static void
+async_thumbnail_read_image (GnomeVFSResult result,
+			    GnomeVFSFileSize file_size,
+			    char *file_contents,
+			    gpointer callback_data)
+{
+	GdkPixbuf *pixbuf;
+	double scale_x, scale_y;
+
+	NautilusThumbnailAsyncLoadHandle *handle = callback_data;
+
+	pixbuf = NULL;
+	scale_x = scale_y = 1.0;
+
+	if (result == GNOME_VFS_OK) {
+		pixbuf = get_pixbuf_from_data (file_contents, file_size,
+					       handle->file_path,
+					       handle->base_size,
+					       handle->nominal_size,
+					       handle->force_nominal,
+					       &scale_x, &scale_y);
+	}
+
+	handle->load_func (handle,
+			   handle->file_path,
+			   pixbuf, scale_x, scale_y,
+			   handle->load_func_user_data);
+
+	gdk_pixbuf_unref (pixbuf);
+
+	g_free (handle->file_path);
+	g_free (handle);
+}
+
+NautilusThumbnailAsyncLoadHandle *
+nautilus_thumbnail_load_image_async (const char *path,
+				     guint base_size,
+				     guint nominal_size,
+				     gboolean force_nominal,
+				     NautilusThumbnailAsyncLoadFunc load_func,
+				     gpointer load_func_user_data)
+{
+	NautilusThumbnailAsyncLoadHandle *handle;
+	char *uri;
+
+	uri = gnome_vfs_get_uri_from_local_path (path);
+	if (uri == NULL) {
+		return NULL;
+	}
+
+	handle = g_new (NautilusThumbnailAsyncLoadHandle, 1);
+	handle->eel_read_handle =
+		eel_read_entire_file_async (uri, GNOME_VFS_PRIORITY_DEFAULT,
+					    (EelReadFileCallback) async_thumbnail_read_image,
+					   handle);
+	handle->file_path = g_strdup (path);
+	handle->base_size = base_size;
+	handle->nominal_size = nominal_size;
+	handle->force_nominal = force_nominal;
+	handle->load_func = load_func;
+	handle->load_func_user_data = load_func_user_data;
+
+	g_free (uri);
+
+	return handle;
+}
+
+void
+nautilus_thumbnail_load_image_cancel (NautilusThumbnailAsyncLoadHandle *handle)
+{
+	g_assert (handle != NULL);
+
+	eel_read_file_cancel (handle->eel_read_handle);
+	g_free (handle->file_path);
+	g_free (handle);
 }
 
 void

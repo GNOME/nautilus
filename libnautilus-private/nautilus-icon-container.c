@@ -5678,6 +5678,90 @@ handle_vadjustment_changed (GtkAdjustment *adjustment,
 	nautilus_icon_container_update_visible_icons (container);
 }
 
+/*
+ * used to resize ICON_NAME_THUMBNAIL_LOADING to the expected thumbnail size.
+ */
+static void
+sanitize_loading_thumbnail_image_size (NautilusIconContainer *container,
+				       const char *mime_type,
+				       GdkPixbuf **image,
+				       NautilusEmblemAttachPoints *attach_points,
+				       GdkRectangle *embedded_text_rect)
+{
+	NautilusIconContainerDetails *details;
+	double pixels_per_unit;
+
+	details = container->details;
+	pixels_per_unit = (double) nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+		/ NAUTILUS_ICON_SIZE_STANDARD;
+
+	if (gdk_pixbuf_get_width (*image) < NAUTILUS_ICON_SIZE_THUMBNAIL * pixels_per_unit &&
+	    gdk_pixbuf_get_height (*image) < NAUTILUS_ICON_SIZE_THUMBNAIL * pixels_per_unit) {
+		/* TODO? this only handles icons smaller than the expected thumbnail size ATM.
+		 * Should not be a common problem, though */
+		GdkPixbuf *new_image;
+		double x_size;
+		double y_size;
+		double x_offset;
+		double y_offset;
+		int i;
+
+		if (g_str_has_prefix (mime_type, "video/")) {
+			/* assume 4:3 aspect ratio for videos i.e. we'll always occupy the full width. */
+			x_size = NAUTILUS_ICON_SIZE_THUMBNAIL * pixels_per_unit;
+			y_size = 3./4 * x_size;
+		} else {
+			/* scale up to the max. thumbnail size.
+			 * This is correct at least in one dimension, and prevents the icons from jumping
+			 * around as the thumbnail is created, if it is tall for text below icon, and if it
+			 * is wide for text beside icon.
+			 */
+			x_size = NAUTILUS_ICON_SIZE_THUMBNAIL * pixels_per_unit;
+			y_size = NAUTILUS_ICON_SIZE_THUMBNAIL * pixels_per_unit;
+		}
+
+		/* maybe the estimated size was smaller than the input pixbuf, so size the surrounding
+ 		 * image up. This only seems to be relevant in the 4:3 case, for y_size.
+		 */
+		x_size = MAX (x_size, gdk_pixbuf_get_width (*image));
+		y_size = MAX (y_size, gdk_pixbuf_get_height (*image));
+
+		x_offset = x_size - gdk_pixbuf_get_width (*image);
+		y_offset = y_size - gdk_pixbuf_get_height (*image);
+
+		/* center wrt "minor" dimension, i.e. horizontally for text below
+		 * and vertically for text besides icon */
+		if (details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE)
+			y_offset /= 2;
+		else 
+			x_offset /= 2;
+
+		new_image = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
+					    gdk_pixbuf_get_bits_per_sample (*image),
+					    x_size, y_size);
+
+		gdk_pixbuf_fill (new_image, 0x00000000);
+		gdk_pixbuf_copy_area (*image,
+				      0, 0,
+				      gdk_pixbuf_get_width (*image),
+				      gdk_pixbuf_get_height (*image),
+				      new_image,
+				      x_offset, y_offset);
+
+		g_object_unref (*image);
+		*image = new_image;
+
+		for (i = 0; i < attach_points->num_points; i++) {
+			attach_points->points[i].x += x_offset;
+			attach_points->points[i].y += y_offset;
+		}
+
+		embedded_text_rect->x += x_offset;
+		embedded_text_rect->y += y_offset;
+	}
+}
+
+
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
@@ -5732,15 +5816,14 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		modifier = "accept";
 	}
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(icon_name,
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_icon
+		((NautilusFile *) icon->data,
+		 icon_name,
 		 modifier,
 		 icon_size,
 		 &attach_points,
 		 &embedded_text_rect,
 		 FALSE, TRUE, NULL);
-	
-	g_free (icon_name);
 
 	if (embedded_text_rect.width > MINIMUM_EMBEDDED_TEXT_RECT_WIDTH &&
 	    embedded_text_rect.height > MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT &&
@@ -5794,6 +5877,17 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			     "additional_text", additional_text,
 			     "highlighted_for_drop", icon == details->drop_target,
 			     NULL);
+
+	if (nautilus_file_is_thumbnailing ((NautilusFile *) icon->data)) {
+		char* mime_type;
+		mime_type = nautilus_file_get_mime_type ((NautilusFile *)icon->data);
+		sanitize_loading_thumbnail_image_size (container,
+						       mime_type,
+						       &pixbuf,
+						       &attach_points,
+						       &embedded_text_rect);
+		g_free (mime_type);
+	}
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
@@ -5807,6 +5901,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	g_free (editable_text);
 	g_free (additional_text);
+
+	g_free (icon_name);
 }
 
 static gboolean

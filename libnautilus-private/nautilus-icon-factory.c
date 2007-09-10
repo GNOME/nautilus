@@ -29,6 +29,7 @@
 #include "nautilus-icon-factory.h"
 
 #include "nautilus-default-file-icon.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
@@ -154,6 +155,7 @@ typedef struct {
 	CacheIcon *fallback_icon;
 	GHashTable *image_mime_types;
 
+	GList *async_thumbnail_load_handles;
 } NautilusIconFactory;
 
 #define NAUTILUS_ICON_FACTORY(obj) \
@@ -346,6 +348,64 @@ load_thumbnail_frame (NautilusIconFactory *factory)
 	}
 	g_free (image_path);
 }
+
+typedef struct {
+	NautilusFile *file;
+	char *modifier;
+	guint nominal_size;
+	gboolean force_nominal;
+} AsnycThumbnailLoadFuncData;
+
+static void
+async_thumbnail_load_func (NautilusThumbnailAsyncLoadHandle *handle,
+			   const char *path,
+			   GdkPixbuf  *pixbuf,
+			   double scale_x,
+			   double scale_y,
+			   gpointer user_data)
+{
+	NautilusIconFactory *factory;
+	GHashTable *hash_table;
+	CacheKey *key;
+	CacheIcon *cached_icon;
+	struct stat statbuf;
+	AsnycThumbnailLoadFuncData *data = user_data;
+
+	factory = get_icon_factory ();
+	hash_table = factory->icon_cache;
+
+	nautilus_file_set_is_thumbnailing (data->file, FALSE);
+	factory->async_thumbnail_load_handles = 
+		g_list_remove (factory->async_thumbnail_load_handles, handle);
+
+	if (stat (path, &statbuf) != 0 ||
+	    !S_ISREG (statbuf.st_mode)) {
+		g_message ("NautilusIconFactory: Failed to determine mtime for %s. Aborting thumbnailing request.", path);
+		goto out;
+	}
+
+	cached_icon = cache_icon_new (pixbuf, NULL, scale_x, scale_y);
+	cached_icon->mtime = statbuf.st_mtime;
+
+	if (cached_icon != NULL) {
+		key = g_new (CacheKey, 1);
+		key->name = g_strdup (path);
+		key->modifier = g_strdup (data->modifier);
+		key->nominal_size = data->nominal_size;
+		key->force_nominal = data->force_nominal;
+
+		g_hash_table_insert (hash_table, key, cached_icon);
+
+		nautilus_file_changed (data->file);
+	}
+
+out:
+	nautilus_file_unref (data->file);
+	g_free (data->modifier);
+	g_free (data);
+}
+
+
 
 static void
 nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
@@ -685,11 +745,22 @@ nautilus_icon_factory_clear (void)
 }
 
 static void
+cancel_thumbnail_read_foreach (gpointer data,
+			       gpointer user_data)
+{
+	NautilusThumbnailAsyncLoadHandle *handle = data;
+	nautilus_thumbnail_load_image_cancel (handle);
+}
+
+static void
 nautilus_icon_factory_finalize (GObject *object)
 {
 	NautilusIconFactory *factory;
 
 	factory = NAUTILUS_ICON_FACTORY (object);
+
+	g_list_foreach (factory->async_thumbnail_load_handles, cancel_thumbnail_read_foreach, NULL);
+	g_list_free (factory->async_thumbnail_load_handles);
 
 	if (factory->icon_cache) {
 		g_hash_table_destroy (factory->icon_cache);
@@ -1300,6 +1371,38 @@ create_normal_cache_icon (const char *icon,
 	return cache_icon;
 }
 
+static CacheIcon *
+lookup_icon_from_cache (const char *icon,
+			const char *modifier,
+			guint       nominal_size,
+			gboolean    force_nominal)
+{
+	NautilusIconFactory *factory;
+	GHashTable *hash_table;
+	CacheKey lookup_key, *key;
+	CacheIcon *value;
+
+	lookup_key.name = (char *)icon;
+	lookup_key.modifier = (char *)modifier;
+	lookup_key.nominal_size = nominal_size;
+	lookup_key.force_nominal = force_nominal;
+
+	factory = get_icon_factory ();
+	hash_table = factory->icon_cache;
+
+	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
+					  (gpointer *) &key, (gpointer *) &value)) {
+		/* Found it in the table. */
+		g_assert (key != NULL);
+		g_assert (value != NULL);
+	} else {
+		key = NULL;
+		value = NULL;
+	}
+
+	return value;
+}
+			
 
 /* Get the icon, handling the caching.
  * If @picky is true, then only an unscaled icon is acceptable.
@@ -1316,34 +1419,17 @@ get_icon_from_cache (const char *icon,
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
-	CacheKey lookup_key;
 	CacheKey *key;
 	CacheIcon *cached_icon;
-	gpointer key_in_table, value;
 	struct stat statbuf;
 	
 	g_return_val_if_fail (icon != NULL, NULL);
-
-	key = NULL;
-	cached_icon = NULL;
 	
 	factory = get_icon_factory ();
 	hash_table = factory->icon_cache;
 
 	/* Check to see if it's already in the table. */
-	lookup_key.name = (char *)icon;
-	lookup_key.modifier = (char *)modifier;
-	lookup_key.nominal_size = nominal_size;
-	lookup_key.force_nominal = force_nominal;
-
-	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
-					  &key_in_table, &value)) {
-		/* Found it in the table. */
-		g_assert (key_in_table != NULL);
-		g_assert (value != NULL);
-		key = key_in_table;
-		cached_icon = value;
-	}
+	cached_icon = lookup_icon_from_cache (icon, modifier, nominal_size, force_nominal);
 
 	/* Make sure that thumbnails and image-as-itself icons gets
 	   reloaded when they change: */
@@ -1547,10 +1633,85 @@ nautilus_get_relative_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 	return (float)nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD;
 }
 
-
-
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file
  * and nautilus_icon_factory_get_pixbuf_for_icon.
+ *
+ * If a file has an associated thumbnail, the thumb is loaded asynchronously,
+ * a loading thumbnail image is returned
+ * and the file will receive a "changed" event once the thumbnail has been loaded.
+ *
+ * The "file" parameter is only used for thumbnailing,
+ * for the file change notification once the actual thumbnail
+ * has been loaded.
+ */
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_file_with_icon (NautilusFile                *file,
+						     const char                  *icon,
+						     const char                  *modifier,
+						     guint                        size_in_pixels,
+						     NautilusEmblemAttachPoints  *attach_points,
+						     GdkRectangle                *embedded_text_rect,
+						     gboolean                     force_size,
+						     gboolean                     wants_default,
+						     char                       **display_name)
+{
+	GdkPixbuf *pixbuf;
+	NautilusIconFactory *factory;
+	gboolean is_thumbnail;
+
+	factory = get_icon_factory ();
+
+	is_thumbnail = strstr (icon, "/.thumbnails/") != NULL;
+
+	if (is_thumbnail &&
+	    !lookup_icon_from_cache (icon, modifier, size_in_pixels, force_size)) {
+		AsnycThumbnailLoadFuncData *data;
+
+		/* Asynchronous thumbnail loading.
+ 		 * 
+		 * This heavily improves performance for folders containing lots of
+		 * previously thumbnailed files.
+		 *
+		 * Note: We do not pass the additional thumbnail parameters (attach points etc.)
+		 * to the thread as we don't need them for the cache. The API user may herself
+		 * re-request the loaded thumbnail with the correct parameters, which will be set
+		 * accordingly in nautilus_icon_factory_get_pixbuf_for_icon() on cache hit
+		 * once it is filled.
+		 */
+
+		data = g_new (AsnycThumbnailLoadFuncData, 1);
+		data->file = nautilus_file_ref (file);
+		data->modifier = g_strdup (modifier);
+		data->nominal_size = size_in_pixels;
+		data->force_nominal = force_size;
+
+		nautilus_file_set_is_thumbnailing (file, TRUE);
+
+		factory->async_thumbnail_load_handles = g_list_prepend (
+			factory->async_thumbnail_load_handles,
+			nautilus_thumbnail_load_image_async (icon,
+							     0, /* base_size */
+							     size_in_pixels,
+							     force_size,
+							     async_thumbnail_load_func,
+							     data));
+
+		icon = ICON_NAME_THUMBNAIL_LOADING;
+	}
+
+
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
+							    modifier, size_in_pixels,
+							    attach_points, embedded_text_rect,
+							    force_size,
+							    wants_default, display_name);
+
+	return pixbuf;
+}
+
+/*
+ * like nautilus_icon_factory_get_pixbuf_for_file_with_icon() but does the icon lookup itself,
+ * doesn't allow emblem and text rect fetching.
  */
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
@@ -1558,9 +1719,11 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 					   guint size_in_pixels,
 					   gboolean force_size)
 {
-	char *icon;
 	GdkPixbuf *pixbuf;
+	NautilusIconFactory *factory;
+	char *icon;
 
+	factory = get_icon_factory ();
 
 	/* Get the pixbuf for this file. */
 	icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
@@ -1568,12 +1731,12 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 		return NULL;
 	}
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, modifier,
-							    size_in_pixels,
-							    NULL, NULL,
-							    force_size,
-							    TRUE, NULL);
-	
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file_with_icon (file,
+								      icon, modifier,
+								      size_in_pixels,
+								      NULL, NULL,
+								      force_size,
+								      TRUE, NULL);
 	g_free (icon);
 
 	return pixbuf;
@@ -1586,7 +1749,7 @@ nautilus_icon_factory_get_pixbuf_for_file_with_stock_size (NautilusFile *file,
 {
 	return nautilus_icon_factory_get_pixbuf_for_file (file, modifier,
 							  gtk_icon_size_to_nominal_size (stock_size),
-							  TRUE); /* force_size */
+							  TRUE /* force_size */);
 
 }
 

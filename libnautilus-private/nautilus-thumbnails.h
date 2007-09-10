@@ -28,6 +28,15 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus-private/nautilus-file.h>
 
+typedef struct NautilusThumbnailAsyncLoadHandle NautilusThumbnailAsyncLoadHandle;
+
+typedef void (* NautilusThumbnailAsyncLoadFunc) (NautilusThumbnailAsyncLoadHandle *handle,
+						 const char *path,
+						 GdkPixbuf  *pixbuf,
+						 double      scale_x,
+						 double      scale_y,
+						 gpointer    user_data);
+
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
 void       nautilus_thumbnail_frame_image           (GdkPixbuf **pixbuf);
@@ -37,6 +46,14 @@ GdkPixbuf *nautilus_thumbnail_load_image            (const char *path,
 						     gboolean    force_nominal,
 						     double     *scale_x_out,
 						     double     *scale_y_out);
+NautilusThumbnailAsyncLoadHandle *
+	   nautilus_thumbnail_load_image_async	    (const char *path,
+						     guint       base_size,
+						     guint       nominal_size,
+						     gboolean    force_nominal,
+						     NautilusThumbnailAsyncLoadFunc load_func,
+						     gpointer    load_func_user_data);
+void       nautilus_thumbnail_load_image_cancel     (NautilusThumbnailAsyncLoadHandle *handle);
 void       nautilus_update_thumbnail_file_copied    (const char   *source_file_uri,
 						     const char   *destination_file_uri);
 void       nautilus_update_thumbnail_file_renamed   (const char   *source_file_uri,
