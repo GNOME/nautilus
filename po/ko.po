@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-02 01:05+0900\n"
-"PO-Revision-Date: 2007-08-18 11:58+0900\n"
+"POT-Creation-Date: 2007-09-12 11:45+0900\n"
+"PO-Revision-Date: 2007-09-12 11:45+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@gmail.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1426,7 +1426,7 @@ msgstr ""
 msgid ""
 "The file already exists in \"%s\".  Replacing it will overwrite its contents."
 msgstr ""
-"\"%s\" 안에 이미 파일이 있습니다.  이 파일을 밖N면 그 내용을 덮어 쓰게 됩니"
+"\"%s\" 안에 이미 파일이 있습니다.  이 파일을 바꾸면 그 내용을 덮어 쓰게 됩니"
 "다."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1214
@@ -2278,7 +2278,7 @@ msgstr "네트워크 서버"
 msgid "The selection rectangle"
 msgstr "선택한 영역"
 
-#: ../libnautilus-private/nautilus-icon-dnd.c:833
+#: ../libnautilus-private/nautilus-icon-dnd.c:918
 msgid "Switch to Manual Layout?"
 msgstr "수동 배치로 바꾸겠습니까?"
 
@@ -2340,13 +2340,13 @@ msgstr "%s 여는 중입니다"
 #: ../libnautilus-private/nautilus-program-choosing.c:588
 #: ../libnautilus-private/nautilus-program-choosing.c:596
 #: ../libnautilus-private/nautilus-program-choosing.c:601
-#: ../src/nautilus-window-manage-views.c:1458
-#: ../src/nautilus-window-manage-views.c:1464
-#: ../src/nautilus-window-manage-views.c:1492
-#: ../src/nautilus-window-manage-views.c:1500
-#: ../src/nautilus-window-manage-views.c:1506
-#: ../src/nautilus-window-manage-views.c:1527
-#: ../src/nautilus-window-manage-views.c:1545
+#: ../src/nautilus-window-manage-views.c:1474
+#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1508
+#: ../src/nautilus-window-manage-views.c:1516
+#: ../src/nautilus-window-manage-views.c:1522
+#: ../src/nautilus-window-manage-views.c:1543
+#: ../src/nautilus-window-manage-views.c:1561
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "\"%s\"을(를) 보여 줄 수 없습니다."
@@ -2358,29 +2358,29 @@ msgid "There was an error launching the application."
 msgstr "응용 프로그램을 시작하는 데 오류가 발생했습니다."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:598
-#: ../src/nautilus-window-manage-views.c:1502
+#: ../src/nautilus-window-manage-views.c:1518
 msgid "The attempt to log in failed."
 msgstr "로그인 시도가 실패하였습니다."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:603
-#: ../src/nautilus-window-manage-views.c:1508
+#: ../src/nautilus-window-manage-views.c:1524
 msgid "Access was denied."
 msgstr "접근이 거부되었습니다."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:608
-#: ../src/nautilus-window-manage-views.c:1519
+#: ../src/nautilus-window-manage-views.c:1535
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%2$s\"호스트를 찾을 수 없어서 \"%1$s\"(을)를 보여줄 수 없습니다."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:611
-#: ../src/nautilus-window-manage-views.c:1522
+#: ../src/nautilus-window-manage-views.c:1538
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "맞춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:616
-#: ../src/nautilus-window-manage-views.c:1480
+#: ../src/nautilus-window-manage-views.c:1496
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\"은(는) 올바른 위치가 아닙니다."
@@ -2389,13 +2389,13 @@ msgstr "\"%s\"은(는) 올바른 위치가 아닙니다."
 #: ../libnautilus-private/nautilus-program-choosing.c:626
 #: ../src/nautilus-connect-server-dialog.c:202
 #: ../src/nautilus-property-browser.c:1189
-#: ../src/nautilus-window-manage-views.c:1475
-#: ../src/nautilus-window-manage-views.c:1483
+#: ../src/nautilus-window-manage-views.c:1491
+#: ../src/nautilus-window-manage-views.c:1499
 msgid "Please check the spelling and try again."
 msgstr "정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:623
-#: ../src/nautilus-window-manage-views.c:1472
+#: ../src/nautilus-window-manage-views.c:1488
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "\"%s\"(을)를 찾을 수 없습니다."
@@ -3824,7 +3824,6 @@ msgid "The file that you dropped is not an image."
 msgstr "끌어놓은 파일은 그림이 아닙니다."
 
 #: ../src/file-manager/fm-properties-window.c:1048
-#, c-format
 msgid "Properties"
 msgstr "속성"
 
@@ -4434,19 +4433,19 @@ msgstr "도메인 이름(_D):"
 msgid "_Name to use for connection:"
 msgstr "연결에 사용할 이름(_N):"
 
-#: ../src/nautilus-connect-server-dialog.c:818
+#: ../src/nautilus-connect-server-dialog.c:821
 msgid "Connect to Server"
 msgstr "서버에 연결"
 
-#: ../src/nautilus-connect-server-dialog.c:835
+#: ../src/nautilus-connect-server-dialog.c:838
 msgid "Service _type:"
 msgstr "서비스 종류(_T):"
 
-#: ../src/nautilus-connect-server-dialog.c:940
+#: ../src/nautilus-connect-server-dialog.c:943
 msgid "Browse _Network"
 msgstr "네트워크 찾아보기(_N)"
 
-#: ../src/nautilus-connect-server-dialog.c:946
+#: ../src/nautilus-connect-server-dialog.c:949
 msgid "C_onnect"
 msgstr "연결(_O)"
 
@@ -5016,7 +5015,7 @@ msgstr ""
 "파일 관리자로 파일 시스템을 둘러봅니다"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:448 ../src/nautilus-spatial-window.c:414
+#: ../src/nautilus-main.c:448 ../src/nautilus-spatial-window.c:430
 #: ../src/nautilus-window-menus.c:433 ../src/nautilus-window-menus.c:435
 #: ../src/nautilus-window.c:167
 msgid "Nautilus"
@@ -5102,7 +5101,7 @@ msgstr "위치(_L)..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:455
-#: ../src/nautilus-spatial-window.c:852
+#: ../src/nautilus-spatial-window.c:868
 msgid "Specify a location to open"
 msgstr "열 위치를 지정합니다"
 
@@ -5116,35 +5115,35 @@ msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "이동 메뉴와 뒤로/앞으로의 목록의 내용을 비웁니다"
 
 #: ../src/nautilus-navigation-window-menus.c:460
-#: ../src/nautilus-spatial-window.c:860
+#: ../src/nautilus-spatial-window.c:876
 msgid "_Add Bookmark"
 msgstr "책갈피 추가(_A)"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:461
-#: ../src/nautilus-spatial-window.c:861
+#: ../src/nautilus-spatial-window.c:877
 msgid "Add a bookmark for the current location to this menu"
 msgstr "현재 위치를 책갈피에 추가합니다"
 
 #: ../src/nautilus-navigation-window-menus.c:463
-#: ../src/nautilus-spatial-window.c:863
+#: ../src/nautilus-spatial-window.c:879
 msgid "_Edit Bookmarks"
 msgstr "책갈피 편집(_E)"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:464
-#: ../src/nautilus-spatial-window.c:864
+#: ../src/nautilus-spatial-window.c:880
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "책갈피를 고칠 수 있는 창을 보여줍니다"
 
 #: ../src/nautilus-navigation-window-menus.c:466
-#: ../src/nautilus-spatial-window.c:866
+#: ../src/nautilus-spatial-window.c:882
 msgid "_Search for Files..."
 msgstr "파일 찾기(_S)..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:467
-#: ../src/nautilus-spatial-window.c:867
+#: ../src/nautilus-spatial-window.c:883
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "이름이나 내용으로 컴퓨터의 문서와 폴더를 찾습니다."
 
@@ -5545,30 +5544,30 @@ msgstr "찾기:"
 msgid "Close the side pane"
 msgstr "가장자리 창 닫기"
 
-#: ../src/nautilus-spatial-window.c:850
+#: ../src/nautilus-spatial-window.c:866
 msgid "_Places"
 msgstr "위치(_P)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:851
+#: ../src/nautilus-spatial-window.c:867
 msgid "Open _Location..."
 msgstr "위치 열기(_L)..."
 
-#: ../src/nautilus-spatial-window.c:854
+#: ../src/nautilus-spatial-window.c:870
 msgid "Close P_arent Folders"
 msgstr "상위 폴더 닫기(_A)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:855
+#: ../src/nautilus-spatial-window.c:871
 msgid "Close this folder's parents"
 msgstr "이 폴더의 상위 폴더를 닫습니다"
 
-#: ../src/nautilus-spatial-window.c:857
+#: ../src/nautilus-spatial-window.c:873
 msgid "Clos_e All Folders"
 msgstr "모든 폴더 닫기(_E)"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:858
+#: ../src/nautilus-spatial-window.c:874
 msgid "Close all folder windows"
 msgstr "모든 폴더 창을 닫습니다"
 
@@ -5598,33 +5597,33 @@ msgstr "다른 보기를 선택하거나 다른 위치로 갈 수 있습니다."
 msgid "The location cannot be displayed with this viewer."
 msgstr "이 보기 프로그램에서 위치를 보여줄 수 없습니다."
 
-#: ../src/nautilus-window-manage-views.c:1037
+#: ../src/nautilus-window-manage-views.c:1053
 msgid "Content View"
 msgstr "내용 보기 프로그램"
 
-#: ../src/nautilus-window-manage-views.c:1038
+#: ../src/nautilus-window-manage-views.c:1054
 msgid "View of the current folder"
 msgstr "현재 폴더 보기"
 
-#: ../src/nautilus-window-manage-views.c:1461
+#: ../src/nautilus-window-manage-views.c:1477
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
 "노틸러스에 이 폴더를 표시할 수 있는 보기 프로그램이 설치되어 있지 않았습니다."
 
-#: ../src/nautilus-window-manage-views.c:1467
+#: ../src/nautilus-window-manage-views.c:1483
 msgid "The location is not a folder."
 msgstr "위치가 폴더가 아닙니다."
 
-#: ../src/nautilus-window-manage-views.c:1494
+#: ../src/nautilus-window-manage-views.c:1510
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "%s: 형식의 위치를 처리할 수 없습니다."
 
-#: ../src/nautilus-window-manage-views.c:1529
+#: ../src/nautilus-window-manage-views.c:1545
 msgid "Check that your proxy settings are correct."
 msgstr "프록시 설정이 올바른지 확인하십시오."
 
-#: ../src/nautilus-window-manage-views.c:1534
+#: ../src/nautilus-window-manage-views.c:1550
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -5633,20 +5632,20 @@ msgstr ""
 "\"%s\"을(를) 보여 줄 수 없습니다. 노틸러스가 SMB 마스터 브라우저에 연결할 수 "
 "없습니다."
 
-#: ../src/nautilus-window-manage-views.c:1537
+#: ../src/nautilus-window-manage-views.c:1553
 msgid "Check that an SMB server is running in the local network."
 msgstr "SMB서버가 로컬네트워크에서 실행되고 있는지 확인하십시오."
 
-#: ../src/nautilus-window-manage-views.c:1547
+#: ../src/nautilus-window-manage-views.c:1563
 msgid "Check if the service is available."
 msgstr "서비스가 가능한지 확인하십시오."
 
-#: ../src/nautilus-window-manage-views.c:1551
+#: ../src/nautilus-window-manage-views.c:1567
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "노틸러스가 \"%s\"을(를) 보여 줄 수 없습니다."
 
-#: ../src/nautilus-window-manage-views.c:1553
+#: ../src/nautilus-window-manage-views.c:1569
 msgid "Please select another viewer and try again."
 msgstr "다른 보기 프로그램을 선택하고 다시 시도하십시오."
 
