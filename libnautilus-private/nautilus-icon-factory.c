@@ -384,8 +384,20 @@ async_thumbnail_load_func (NautilusThumbnailAsyncLoadHandle *handle,
 		goto out;
 	}
 
+	if (!gdk_pixbuf_get_has_alpha (pixbuf)) {
+		/* we don't own the pixbuf, but nautilus_thumbnail_frame_image() assumes so and unrefs it. */
+		g_object_ref (pixbuf);
+
+		nautilus_thumbnail_frame_image (&pixbuf);
+		/* at this point, we own a pixbuf, which is the framed version of the passed-in pixbuf. */
+	}
+
 	cached_icon = cache_icon_new (pixbuf, NULL, scale_x, scale_y);
 	cached_icon->mtime = statbuf.st_mtime;
+
+	if (!gdk_pixbuf_get_has_alpha (pixbuf)) {
+		g_object_unref (pixbuf);
+	}
 
 	if (cached_icon != NULL) {
 		key = g_new (CacheKey, 1);
