@@ -200,7 +200,7 @@ static CacheIcon *get_icon_from_cache                    (const char            
 							  const char               *modifier,
 							  guint                     nominal_size,
 							  gboolean		    force_nominal);
-static void nautilus_icon_factory_clear                  (void);
+static void nautilus_icon_factory_clear                  (gboolean                  clear_pathnames);
 
 GNOME_CLASS_BOILERPLATE (NautilusIconFactory,
 			 nautilus_icon_factory,
@@ -270,7 +270,7 @@ icon_theme_changed_callback (GnomeIconTheme *icon_theme,
 {
 	NautilusIconFactory *factory;
 
-	nautilus_icon_factory_clear ();
+	nautilus_icon_factory_clear (FALSE);
 
 	factory = user_data;
 
@@ -726,9 +726,23 @@ remove_all (gpointer key, gpointer value, gpointer user_data)
         return TRUE;
 }
 
-/* Reset the cache to the default state. */
+static gboolean
+remove_non_pathnames (gpointer _key, gpointer value, gpointer user_data)
+{
+	CacheKey *key = _key;
+	
+	if (key->name && key->name[0] == '/') {
+		return FALSE;
+	}
+	    
+        return TRUE; /* Tell the caller to remove the hash table entry. */
+}
+
+/* Reset the cache to the default state.
+   Clear pathnames can be set to FALSE which means we only clear icon names, not
+   absolute pathnames. This is useful to avoid throwing away all loaded thumbnails. */
 static void
-nautilus_icon_factory_clear (void)
+nautilus_icon_factory_clear (gboolean clear_pathnames)
 {
 	NautilusIconFactory *factory;
 	CircularList *head;
@@ -736,24 +750,25 @@ nautilus_icon_factory_clear (void)
 	factory = get_icon_factory ();
 
         g_hash_table_foreach_remove (factory->icon_cache,
-				     remove_all,
+				     clear_pathnames ? remove_all : remove_non_pathnames,
                                      NULL);
 	
 	/* Empty out the recently-used list. */
 	head = &factory->recently_used_dummy_head;
 
-	/* fallback_icon hangs around, but we don't know if it
-	 * was ever inserted in the list
-	 */
-	g_assert (factory->recently_used_count == 0 ||
-		  factory->recently_used_count == 1);
-
-	if (factory->recently_used_count == 1) {
-		/* make sure this one is the fallback_icon */
-		g_assert (head->next == head->prev);
-		g_assert (&factory->fallback_icon->recently_used_node == head->next);
+	if (clear_pathnames) {
+		/* fallback_icon hangs around, but we don't know if it
+		 * was ever inserted in the list
+		 */
+		g_assert (factory->recently_used_count == 0 ||
+			  factory->recently_used_count == 1);
+		if (factory->recently_used_count == 1) {
+			/* make sure this one is the fallback_icon */
+			g_assert (head->next == head->prev);
+			g_assert (&factory->fallback_icon->recently_used_node == head->next);
+		}
 	}
-
+		
 }
 
 static void
@@ -806,7 +821,7 @@ thumbnail_limit_changed_callback (gpointer user_data)
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
 	 */
-	nautilus_icon_factory_clear ();
+	nautilus_icon_factory_clear (TRUE);
 	g_signal_emit (global_icon_factory,
 			 signals[ICONS_CHANGED], 0);
 }
@@ -820,7 +835,7 @@ thumbnail_size_changed_callback (gpointer user_data)
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
 	 */
-	nautilus_icon_factory_clear ();
+	nautilus_icon_factory_clear (TRUE);
 	g_signal_emit (global_icon_factory,
 			 signals[ICONS_CHANGED], 0);
 }
@@ -830,7 +845,7 @@ show_thumbnails_changed_callback (gpointer user_data)
 {
 	show_image_thumbs = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
-	nautilus_icon_factory_clear ();
+	nautilus_icon_factory_clear (TRUE);
 	/* If the user disabled thumbnailing, remove all outstanding thumbnails */ 
 	if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		nautilus_thumbnail_remove_all_from_queue ();
@@ -848,7 +863,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 	/* We don't know which data changed, so we have to assume that
 	 * any or all icons might have changed.
 	 */
-	nautilus_icon_factory_clear ();
+	nautilus_icon_factory_clear (FALSE);
 	g_signal_emit (get_icon_factory (), 
 			 signals[ICONS_CHANGED], 0);
 }				 
