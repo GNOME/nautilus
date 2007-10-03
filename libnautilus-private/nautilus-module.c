@@ -209,6 +209,19 @@ load_module_dir (const char *dirname)
 	}
 }
 
+static void
+free_module_objects (void)
+{
+	GList *l, *next;
+	
+	for (l = module_objects; l != NULL; l = next) {
+		next = l->next;
+		g_object_unref (l->data);
+	}
+	
+	g_list_free (module_objects);
+}
+
 void
 nautilus_module_init (void)
 {
@@ -219,8 +232,7 @@ nautilus_module_init (void)
 		
 		load_module_dir (NAUTILUS_EXTENSIONDIR);
 
-		eel_debug_call_at_shutdown_with_data ((GFreeFunc)nautilus_module_extension_list_free,
-						      module_objects);
+		eel_debug_call_at_shutdown (free_module_objects);
 	}
 }
 
@@ -244,9 +256,10 @@ nautilus_module_get_extensions_for_type (GType type)
 void
 nautilus_module_extension_list_free (GList *extensions)
 {
-	GList *l;
+	GList *l, *next;
 	
-	for (l = extensions; l != NULL; l = l->next) {
+	for (l = extensions; l != NULL; l = next) {
+		next = l->next;
 		g_object_unref (l->data);
 	}
 	g_list_free (extensions);
