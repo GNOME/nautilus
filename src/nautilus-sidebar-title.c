@@ -364,7 +364,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	title_font = pango_font_description_copy (style->font_desc);
 
 	max_style_font_size = pango_font_description_get_size (title_font) * 1.8 / PANGO_SCALE;
-	if (max_style_font_size < MIN_TITLE_FONT_SIZE) {
+	if (max_style_font_size < MIN_TITLE_FONT_SIZE + 1) {
 		max_style_font_size = MIN_TITLE_FONT_SIZE + 1;
 	}
 
