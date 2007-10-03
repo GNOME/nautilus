@@ -4378,7 +4378,9 @@ key_press_event (GtkWidget *widget,
 	 * start the typeahead find capabilities.
 	 * Copied from NautilusIconContainer */
 	if (!handled &&
-	    event->keyval != GDK_slash /* don't steal slash key event, used for "go to" */) {
+	    event->keyval != GDK_slash /* don't steal slash key event, used for "go to" */ &&
+	    event->keyval != GDK_BackSpace &&
+	    event->keyval != GDK_Delete) {
 		GdkEvent *new_event;
 		char *old_text;
 		const char *new_text;
