@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-13 17:50+0200\n"
-"PO-Revision-Date: 2007-10-14 11:12+0200\n"
+"POT-Creation-Date: 2007-10-14 11:21+0200\n"
+"PO-Revision-Date: 2007-10-14 11:26+0200\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -1294,7 +1294,7 @@ msgstr "_Ignorar"
 #: ../libnautilus-private/nautilus-file-operations.c:1137
 #, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr ""
+msgstr "Impossible de desplaçar \"%s\" cap a l'emplaçament novèl."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1140
 msgid ""
@@ -1305,7 +1305,7 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:1144
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr ""
+msgstr "Impossible de copiar \"%s\" cap a l'emplaçament novèl."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1147
 msgid ""
@@ -1563,12 +1563,12 @@ msgstr "Còpia de fichièrs"
 #. localizers: label prepended to the progress count
 #: ../libnautilus-private/nautilus-file-operations.c:2160
 msgid "Copying file:"
-msgstr ""
+msgstr "Còpia del fichièr :"
 
 #. localizers: label prepended to the name of the current file copied
 #: ../libnautilus-private/nautilus-file-operations.c:2162
 msgid "Copying"
-msgstr ""
+msgstr "Còpia"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2163
 msgid "Preparing To Copy..."
@@ -1903,17 +1903,23 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:2266
 #, c-format
 msgid "%u item"
-msgstr "%u element"
+msgid_plural "%u items"
+msgstr[0] "%u element"
+msgstr[1] "%u elements"
 
 #: ../libnautilus-private/nautilus-file.c:4346
 #, c-format
 msgid "%u folder"
-msgstr "%u repertòri"
+msgid_plural "%u folders"
+msgstr[0] "%u repertòri"
+msgstr[1] "%u repertòris"
 
 #: ../libnautilus-private/nautilus-file.c:4347
 #, c-format
 msgid "%u file"
-msgstr "%u fichièr"
+msgid_plural "%u files"
+msgstr[0] "%u fichièr"
+msgstr[1] "%u fichièrs"
 
 #. FIXME: We should use GNOME_VFS_SIZE_FORMAT_STR instead of the explicit format here.
 #: ../libnautilus-private/nautilus-file.c:4425
@@ -2504,7 +2510,6 @@ msgstr ""
 msgid "Are you sure you want to permanently delete the %d selected item?"
 "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Sètz segur que volètz suprimir per totjorn lo %d element seleccionat ?"
-"Sètz segur que volètz suprimir per totjorn los %d elements seleccionats ?"
 
 #: ../src/file-manager/fm-directory-view.c:1017
 #: ../src/file-manager/fm-tree-view.c:1149
@@ -2618,7 +2623,8 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:3841
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Impossible de desplaçar lo fichièr cap a la banasta, lo volètz suprimir ara ?"
+msgstr ""
+"Impossible de desplaçar lo fichièr cap a la banasta, lo volètz suprimir ara ?"
 
 #: ../src/file-manager/fm-directory-view.c:3842
 #, c-format
@@ -2660,10 +2666,11 @@ msgid ""
 "trash?"
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr "Sètz segur que volètz suprimir per totjorn lo %d element seleccionat "
-"de l'escobilièr ?"
- "Sètz segur que volètz suprimir per totjorn los %d elements seleccionats "
-"de l'escobilièr ?"
+msgstr ""
+"Sètz segur que volètz suprimir per totjorn lo %d element seleccionat "
+"de la banasta ?"
+"Sètz segur que volètz suprimir per totjorn los %d elements seleccionats "
+"de la banasta ?"
 
 #: ../src/file-manager/fm-directory-view.c:3906
 msgid "If you delete an item, it will be permanently lost."
@@ -2731,7 +2738,9 @@ msgstr "Crear un document amb lo modèl \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:5937
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr "Totes los fichièrs executables d'aqueste repertòri se visualizaràn dins lo menut Escripts"
+msgstr ""
+"Totes los fichièrs executables d'aqueste repertòri se visualizaràn dins lo "
+"menut Escripts"
 
 #: ../src/file-manager/fm-directory-view.c:5939
 msgid ""
@@ -2793,7 +2802,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6696
 #, c-format
 msgid "Connect to Server %s"
-msgstr ""
+msgstr "Se connectar al servidor %s"
 
 #: ../src/file-manager/fm-directory-view.c:6701
 msgid "_Connect"
@@ -3249,7 +3258,7 @@ msgstr[1] "Dobertura de %d elements."
 
 #: ../src/file-manager/fm-directory-view.c:9777
 msgid "Download location?"
-msgstr ""
+msgstr "Descargar l'emplaçament ?"
 
 #: ../src/file-manager/fm-directory-view.c:9780
 msgid "You can download it or make a link to it."
@@ -4045,7 +4054,8 @@ msgstr ""
 
 #: ../src/nautilus-application.c:364
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr "Un ligam apelat \"Ligam cap al burèu ancien\" es estat creat sul burèu."
+msgstr ""
+"Un ligam apelat \"Ligam cap al burèu ancien\" es estat creat sul burèu."
 
 #: ../src/nautilus-application.c:365
 msgid ""
@@ -4204,7 +4214,8 @@ msgstr ""
 #: ../src/nautilus-connect-server-dialog.c:200
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
-msgstr "Impossible de se connectar al servidor. \"%s\" es pas un emplaçament valid."
+msgstr ""
+"Impossible de se connectar al servidor. \"%s\" es pas un emplaçament valid."
 
 #: ../src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
@@ -4248,7 +4259,7 @@ msgstr ""
 
 #: ../src/nautilus-connect-server-dialog.c:821
 msgid "Connect to Server"
-msgstr ""
+msgstr "Se connectar a un servidor"
 
 #: ../src/nautilus-connect-server-dialog.c:838
 msgid "Service _type:"
@@ -4455,7 +4466,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr ""
+msgstr "Demandar abans de _voidar la banasta o de suprimir de fichièrs"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
 msgid "Behavior"
@@ -5206,15 +5217,15 @@ msgstr "_Apondre un emblèma novèla..."
 
 #: ../src/nautilus-property-browser.c:2197
 msgid "Click on a pattern to remove it"
-msgstr ""
+msgstr "Clicatz sus un motiu per lo suprimir"
 
 #: ../src/nautilus-property-browser.c:2200
 msgid "Click on a color to remove it"
-msgstr ""
+msgstr "Clicatz sus una color per la suprimir"
 
 #: ../src/nautilus-property-browser.c:2203
 msgid "Click on an emblem to remove it"
-msgstr ""
+msgstr "Clicatz sus un emblèma per lo suprimir"
 
 #: ../src/nautilus-property-browser.c:2212
 msgid "Patterns:"
@@ -5338,7 +5349,7 @@ msgstr "Recercar :"
 
 #: ../src/nautilus-side-pane.c:420
 msgid "Close the side pane"
-msgstr ""
+msgstr "Tampar lo panèl lateral"
 
 #: ../src/nautilus-spatial-window.c:866
 msgid "_Places"
@@ -5431,7 +5442,7 @@ msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:1563
 msgid "Check if the service is available."
-msgstr ""
+msgstr "Verificar se lo servici es disponible."
 
 #: ../src/nautilus-window-manage-views.c:1567
 #, c-format
