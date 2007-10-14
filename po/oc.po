@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-13 17:50+0200\n"
-"PO-Revision-Date: 2007-10-14 02:21+0200\n"
+"PO-Revision-Date: 2007-10-14 11:12+0200\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -1010,7 +1010,7 @@ msgstr "sul burèu"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:115
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr ""
+msgstr "Podètz pas desplaçar lo volum \"%s\" cap a la banasta."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:125
 msgid ""
@@ -1576,7 +1576,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2181
 msgid "You cannot copy items into the trash."
-msgstr ""
+msgstr "Podètz pas copiar d'elements dins la banasta."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2182
 msgid "You cannot create links inside the trash."
@@ -1588,11 +1588,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2206
 msgid "You cannot move this trash folder."
-msgstr ""
+msgstr "Podètz pas desplaçar aqueste repertòri de banasta."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2207
 msgid "You cannot copy this trash folder."
-msgstr ""
+msgstr "Podètz pas copiar aqueste repertòri de banasta."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2208
 msgid "A trash folder is used for storing items moved to the trash."
@@ -1600,11 +1600,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2232
 msgid "You cannot move a folder into itself."
-msgstr ""
+msgstr "Podètz pas desplaçar un repertòri cap a el meteis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2233
 msgid "You cannot copy a folder into itself."
-msgstr ""
+msgstr "Podètz pas copiar un repertòri dins el meteis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2234
 msgid "The destination folder is inside the source folder."
@@ -1612,7 +1612,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2247
 msgid "You cannot copy a file over itself."
-msgstr ""
+msgstr "Podètz pas copiar un fichièr sus el meteis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2248
 msgid "The destination and source are the same file."
@@ -2503,7 +2503,8 @@ msgstr ""
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Sètz segur que volètz suprimir per totjorn l'element seleccionat"
+msgstr "Sètz segur que volètz suprimir per totjorn lo %d element seleccionat ?"
+"Sètz segur que volètz suprimir per totjorn los %d elements seleccionats ?"
 
 #: ../src/file-manager/fm-directory-view.c:1017
 #: ../src/file-manager/fm-tree-view.c:1149
@@ -2659,8 +2660,9 @@ msgid ""
 "trash?"
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr "Sètz segur que volètz suprimir per totjorn l'element seleccionat "
+msgstr "Sètz segur que volètz suprimir per totjorn lo %d element seleccionat "
 "de l'escobilièr ?"
+ "Sètz segur que volètz suprimir per totjorn los %d elements seleccionats "
 "de l'escobilièr ?"
 
 #: ../src/file-manager/fm-directory-view.c:3906
@@ -3242,8 +3244,8 @@ msgstr "Dobertura de \"%s\""
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] "Dobertura de %s element."
-msgstr[1] "Dobertura de %s elements."
+msgstr[0] "Dobertura de %d element."
+msgstr[1] "Dobertura de %d elements."
 
 #: ../src/file-manager/fm-directory-view.c:9777
 msgid "Download location?"
@@ -3251,7 +3253,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:9780
 msgid "You can download it or make a link to it."
-msgstr ""
+msgstr "Lo podètz descargar o far un ligam cap a el."
 
 #: ../src/file-manager/fm-directory-view.c:9783
 msgid "Make a _Link"
@@ -3663,7 +3665,7 @@ msgstr ""
 #: ../src/file-manager/fm-properties-window.c:554
 #: ../src/nautilus-information-panel.c:522
 msgid "You can only use local images as custom icons."
-msgstr ""
+msgstr "Podètz utilizar sonque d'imatges locals coma icònas personalizats."
 
 #: ../src/file-manager/fm-properties-window.c:553
 #: ../src/nautilus-information-panel.c:527
@@ -3950,7 +3952,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:4550
 msgid "You are not the owner, so you can't change these permissions."
-msgstr ""
+msgstr "Sètz pas lo propietari doncas podètz pas modificar las permissions."
 
 #: ../src/file-manager/fm-properties-window.c:4573
 msgid "SELinux Context:"
@@ -4202,7 +4204,7 @@ msgstr ""
 #: ../src/nautilus-connect-server-dialog.c:200
 #, c-format
 msgid "Can't Connect to Server. \"%s\" is not a valid location."
-msgstr ""
+msgstr "Impossible de se connectar al servidor. \"%s\" es pas un emplaçament valid."
 
 #: ../src/nautilus-connect-server-dialog.c:216
 msgid "Can't Connect to Server. You must enter a name for the server."
@@ -4724,7 +4726,7 @@ msgstr ""
 
 #: ../src/nautilus-information-panel.c:528
 msgid "You can only use images as custom icons."
-msgstr ""
+msgstr "Podètz utilizar sonque d'imatges coma icònas personalizats."
 
 #: ../src/nautilus-information-panel.c:846
 #, c-format
@@ -5385,7 +5387,7 @@ msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:655
 msgid "You can choose another view or go to a different location."
-msgstr ""
+msgstr "Avètz causit una autra visualizacion o d'anar a un autre emplaçament."
 
 #: ../src/nautilus-window-manage-views.c:668
 msgid "The location cannot be displayed with this viewer."
