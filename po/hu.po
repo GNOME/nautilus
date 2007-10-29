@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-26 19:22+0100\n"
-"PO-Revision-Date: 2007-09-07 18:01+0200\n"
+"PO-Revision-Date: 2007-10-29 10:24+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -1197,11 +1197,11 @@ msgstr "A matrica nem telepíthető."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:199
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr "Sajnálom, de a matrica kulcsszava nem lehet üres."
+msgstr "Elnézést, a matrica kulcsszava nem lehet üres."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:204
 msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr "Sajnálom, de a matrica kulcsszavában csak betűk, szóközök és számok lehetnek."
+msgstr "Elnézést, a matrica kulcsszavában csak betűk, szóközök és számok lehetnek."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -1210,7 +1210,7 @@ msgstr "Sajnálom, de a matrica kulcsszavában csak betűk, szóközök és szá
 #: ../libnautilus-private/nautilus-emblem-utils.c:214
 #, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr "Sajnálom, de a már létezik egy \"%s\" nevű matrica."
+msgstr "Elnézést, már létezik egy \"%s\" nevű matrica."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Please choose a different emblem name."
@@ -1218,11 +1218,11 @@ msgstr "Válasszon egy másik matricanevet."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:259
 msgid "Sorry, unable to save custom emblem."
-msgstr "Sajnálom, az egyéni matrica nem menthető."
+msgstr "Elnézést, az egyéni matrica nem menthető."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:276
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Sajnálom, az egyéni matrica neve nem menthető."
+msgstr "Elnézést, az egyéni matrica neve nem menthető."
 
 #: ../libnautilus-private/nautilus-file-operations-progress.c:167
 #, c-format
@@ -1517,25 +1517,25 @@ msgstr "Még egy link erre: %s"
 #: ../libnautilus-private/nautilus-file-operations.c:1326
 #, c-format
 msgid "%dst link to %s"
-msgstr "%d. link ehhez: %s"
+msgstr "%d. link erre: %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1330
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%d. link ehhez: %s"
+msgstr "%d. link erre: %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1334
 #, c-format
 msgid "%drd link to %s"
-msgstr "%d. link ehhez: %s"
+msgstr "%d. link erre: %s"
 
 #. appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:1338
 #, c-format
 msgid "%dth link to %s"
-msgstr "%d. link ehhez: %s"
+msgstr "%d. link erre: %s"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -1651,7 +1651,7 @@ msgstr "A fájl kidobása:"
 #: ../libnautilus-private/nautilus-file-operations.c:2125
 #: ../libnautilus-private/nautilus-file-operations.c:2136
 msgid "Moving"
-msgstr "Áthelyezés"
+msgstr "Áthelyezés:"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2126
 msgid "Preparing to Move to Trash..."
@@ -1688,7 +1688,7 @@ msgstr "Fájl linkelése:"
 #. localizers: label prepended to the name of the current file linked
 #: ../libnautilus-private/nautilus-file-operations.c:2150
 msgid "Linking"
-msgstr "Linkek létrehozása"
+msgstr "Linkek létrehozása:"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2151
 msgid "Preparing to Create Links..."
@@ -1711,7 +1711,7 @@ msgstr "Fájl másolása:"
 #. localizers: label prepended to the name of the current file copied
 #: ../libnautilus-private/nautilus-file-operations.c:2162
 msgid "Copying"
-msgstr "Másolás alatt"
+msgstr "Másolás alatt:"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2163
 msgid "Preparing To Copy..."
@@ -1815,7 +1815,7 @@ msgstr "Törölt fájlok:"
 #: ../libnautilus-private/nautilus-file-operations.c:2809
 #: ../libnautilus-private/nautilus-file-operations.c:2851
 msgid "Deleting"
-msgstr "Törlés folyamatban"
+msgstr "Törlés folyamatban:"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2810
 msgid "Preparing to Delete files..."
@@ -2466,7 +2466,7 @@ msgstr[1] "%d elem megnyitása"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:899
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "Sajnálom, de távoli helyről nem hajthat végre parancsokat."
+msgstr "Elnézést, de távoli helyről nem hajthat végre parancsokat."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:901
 msgid "This is disabled due to security considerations."
@@ -3551,7 +3551,7 @@ msgstr "A(z) \"%s\" nem található. Lehet, hogy nemrég törölték."
 #: ../src/file-manager/fm-error-reporting.c:71
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr "Sajnálom, a(z) \"%s\" teljes tartalma nem jeleníthető meg."
+msgstr "Elnézést, a(z) \"%s\" teljes tartalma nem jeleníthető meg."
 
 #: ../src/file-manager/fm-error-reporting.c:77
 msgid "The folder contents could not be displayed."
@@ -3594,7 +3594,7 @@ msgstr "A(z) \"%s\" neve nem változtatható meg, mert írásvédett lemezen van
 #: ../src/file-manager/fm-error-reporting.c:142
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Sajnálom, \"%s\" nem nevezhető át erre: \"%s\"."
+msgstr "Elnézést, \"%s\" nem nevezhető át erre: \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:149
 msgid "The item could not be renamed."
@@ -3613,7 +3613,7 @@ msgstr "A(z) \"%s\" írásvédett lemezen van, ezért csoportja nem változtatha
 #: ../src/file-manager/fm-error-reporting.c:181
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr "Sajnálom, a(z) \"%s\" csoportja nem változtatható meg."
+msgstr "Elnézést, a(z) \"%s\" csoportja nem változtatható meg."
 
 #: ../src/file-manager/fm-error-reporting.c:185
 msgid "The group could not be changed."
@@ -3628,7 +3628,7 @@ msgstr "A(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem változtat
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr ""
-"Sajnálom, a(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem "
+"Elnézést, a(z) \"%s\" írásvédett lemezen van, ezért tulajdonosa nem "
 "változtatható meg."
 
 #: ../src/file-manager/fm-error-reporting.c:217
@@ -3645,7 +3645,7 @@ msgstr ""
 #: ../src/file-manager/fm-error-reporting.c:246
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Sajnálom, a(z) \"%s\" jogosultságai nem változtathatók meg."
+msgstr "Elnézést, a(z) \"%s\" jogosultságai nem változtathatók meg."
 
 #: ../src/file-manager/fm-error-reporting.c:249
 msgid "The permissions could not be changed."
@@ -4393,8 +4393,8 @@ msgid ""
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"A Nautilus most nem használható, váratlan bonobo hiba miatt (héjobjektum nem "
-"található). A bonobo-activation-server elpusztítása és a Nautilus "
+"A Nautilus most nem használható, váratlan Bonobo hiba miatt (héjobjektum nem "
+"található). A bonobo-activation-server leállítása és a Nautilus "
 "újraindítása segíthet."
 
 #: ../src/nautilus-bookmarks-window.c:158
@@ -5381,7 +5381,7 @@ msgstr "Új hozzá_adása..."
 #: ../src/nautilus-property-browser.c:974
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr "Sajnálom, de a(z) %s minta nem törölhető."
+msgstr "Elnézést, de a(z) %s minta nem törölhető."
 
 #: ../src/nautilus-property-browser.c:975
 msgid "Check that you have permission to delete the pattern."
@@ -5390,7 +5390,7 @@ msgstr "Ellenőrizze a jogosultságait a minta törléséhez."
 #: ../src/nautilus-property-browser.c:1004
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr "Sajnálom, de a(z) %s matrica nem törölhető."
+msgstr "Elnézést, de a(z) %s matrica nem törölhető."
 
 #: ../src/nautilus-property-browser.c:1005
 msgid "Check that you have permission to delete the emblem."
@@ -5430,11 +5430,11 @@ msgstr "Szín é_rtéke:"
 #: ../src/nautilus-property-browser.c:1188
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr "Sajnálom, de a(z) \"%s\" nem érvényes fájlnév."
+msgstr "Elnézést, de a(z) \"%s\" nem érvényes fájlnév."
 
 #: ../src/nautilus-property-browser.c:1191
 msgid "Sorry, but you did not supply a valid file name."
-msgstr "Sajnálom, de nem adott meg érvényes fájlnevet."
+msgstr "Elnézést, de nem adott meg érvényes fájlnevet."
 
 #: ../src/nautilus-property-browser.c:1192
 msgid "Please try again."
@@ -5442,7 +5442,7 @@ msgstr "Kérem próbálja meg újra."
 
 #: ../src/nautilus-property-browser.c:1205
 msgid "Sorry, but you can't replace the reset image."
-msgstr "Sajnálom, de nem cserélheti le a \"Reset\" képet."
+msgstr "Elnézést, de nem cserélheti le a \"Reset\" képet."
 
 #: ../src/nautilus-property-browser.c:1206
 msgid "Reset is a special image that cannot be deleted."
@@ -5451,7 +5451,7 @@ msgstr "A \"Reset\" egy speciális kép, ami nem törölhető."
 #: ../src/nautilus-property-browser.c:1238
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr "Sajnálom, de a(z) %s minta nem telepíthető."
+msgstr "Elnézést, de a(z) %s minta nem telepíthető."
 
 #: ../src/nautilus-property-browser.c:1258
 msgid "Select an Image File to Add as a Pattern"
@@ -5464,11 +5464,11 @@ msgstr "A szín nem telepíthető."
 
 #: ../src/nautilus-property-browser.c:1311
 msgid "Sorry, but you must specify an unused color name for the new color."
-msgstr "Sajnálom, de egy még nem használt nevet kell megadnia az új színnek."
+msgstr "Elnézést, de egy még nem használt nevet kell megadnia az új színnek."
 
 #: ../src/nautilus-property-browser.c:1342
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr "Sajnálom, de a szín neve nem lehet üres."
+msgstr "Elnézést, de a szín neve nem lehet üres."
 
 #: ../src/nautilus-property-browser.c:1395
 msgid "Select a Color to Add"
@@ -5478,7 +5478,7 @@ msgstr "Válasszon ki egy hozzáadandó színt"
 #: ../src/nautilus-property-browser.c:1448
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "Sajnálom, de a(z) \"%s\" nem egy használható képfájl."
+msgstr "Elnézést, de a(z) \"%s\" nem egy használható képfájl."
 
 #: ../src/nautilus-property-browser.c:1433
 #: ../src/nautilus-property-browser.c:1449
