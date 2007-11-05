@@ -48,5 +48,6 @@
 #define NAUTILUS_ACTION_ZOOM_NORMAL "Zoom Normal"
 #define NAUTILUS_ACTION_CLOSE "Close"
 #define NAUTILUS_ACTION_SEARCH "Search"
+#define NAUTILUS_ACTION_FOLDER_WINDOW "Folder Window"
 
 #endif /* NAUTILUS_ACTIONS_H */

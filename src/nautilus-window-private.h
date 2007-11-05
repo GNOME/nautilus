@@ -220,6 +220,7 @@ void               nautilus_navigation_window_remove_bookmarks_menu_callback    
 
 void               nautilus_navigation_window_remove_bookmarks_menu_items           (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_update_show_hide_menu_items           (NautilusNavigationWindow     *window);
+void               nautilus_navigation_window_update_spatial_menu_item              (NautilusNavigationWindow     *window);
 void               nautilus_navigation_window_remove_go_menu_callback    (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_remove_go_menu_items       (NautilusNavigationWindow    *window);
 

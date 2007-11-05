@@ -1,3 +1,25 @@
+2007-11-05  Jürg Billeter  <j@bitron.ch>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(action_open_folder_window_callback), (open_one_in_folder_window),
+	(action_location_open_folder_window_callback),
+	(real_update_location_menu), (real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-actions.h:
+	* src/nautilus-navigation-window-menus.c:
+	(nautilus_navigation_window_update_spatial_menu_item),
+	(action_folder_window_callback),
+	(nautilus_navigation_window_initialize_menus):
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_init), (always_use_browser_changed):
+	* src/nautilus-window-private.h:
+	Add menu item to open spatial folder window from browser window to File
+	menu and context menus.
+
 2007-10-03  Christian Neumair  <cneumair@gnome.org>
 
         * libnautilus-private/nautilus-module.c:

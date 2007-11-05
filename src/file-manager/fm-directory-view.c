@@ -354,6 +354,8 @@ static void     clipboard_changed_callback                     (NautilusClipboar
 								FMDirectoryView      *view);
 static void     open_one_in_new_window                         (gpointer              data,
 								gpointer              callback_data);
+static void     open_one_in_folder_window                      (gpointer              data,
+								gpointer              callback_data);
 static void     schedule_update_menus                          (FMDirectoryView      *view);
 static void     schedule_update_menus_callback                 (gpointer              callback_data);
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
@@ -423,6 +425,8 @@ static void action_format_volume_callback          (GtkAction *action,
 
 static void action_location_open_alternate_callback (GtkAction *action,
 						     gpointer   callback_data);
+static void action_location_open_folder_window_callback (GtkAction *action,
+							 gpointer   callback_data);
 
 static void action_location_cut_callback            (GtkAction *action,
 						     gpointer   callback_data);
@@ -761,6 +765,23 @@ action_open_alternate_callback (GtkAction *action,
 
 	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
 		g_list_foreach (selection, open_one_in_new_window, view);
+	}
+
+	nautilus_file_list_free (selection);
+}
+
+static void
+action_open_folder_window_callback (GtkAction *action,
+				    gpointer callback_data)
+{
+	FMDirectoryView *view;
+	GList *selection;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	selection = fm_directory_view_get_selection (view);
+
+	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+		g_list_foreach (selection, open_one_in_folder_window, view);
 	}
 
 	nautilus_file_list_free (selection);
@@ -4338,6 +4359,18 @@ open_one_in_new_window (gpointer data, gpointer callback_data)
 					 0);
 }
 
+static void
+open_one_in_folder_window (gpointer data, gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_FILE (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
+					 NAUTILUS_FILE (data),
+					 NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
+					 0);
+}
+
 NautilusFile *
 fm_directory_view_get_directory_as_file (FMDirectoryView *view)
 {
@@ -6763,6 +6796,24 @@ action_location_open_alternate_callback (GtkAction *action,
 }
 
 static void
+action_location_open_folder_window_callback (GtkAction *action,
+					     gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = view->details->directory_as_file;
+	g_return_if_fail (file != NULL);
+
+	fm_directory_view_activate_file (view,
+					 file,
+					 NAUTILUS_WINDOW_OPEN_IN_SPATIAL,
+					 0);
+}
+
+static void
 action_location_cut_callback (GtkAction *action,
 			      gpointer   callback_data)
 {
@@ -6929,6 +6980,10 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Open in Navigation Window"), "<control><shift>o",                /* label, accelerator */
     N_("Open each selected item in a navigation window"),                   /* tooltip */ 
     G_CALLBACK (action_open_alternate_callback) },
+  { "OpenFolderWindow", NULL,                  /* name, stock id */
+    N_("Open in Folder Window"), NULL,                /* label, accelerator */
+    N_("Open each selected item in a folder window"),                   /* tooltip */ 
+    G_CALLBACK (action_open_folder_window_callback) },
   { "OtherApplication1", NULL,                  /* name, stock id */
     N_("Open with Other _Application..."), NULL,                /* label, accelerator */
     N_("Choose another application with which to open the selected item"),                   /* tooltip */ 
@@ -7053,6 +7108,11 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Open in Navigation Window"), "",                /* label, accelerator */
     N_("Open this folder in a navigation window"),                   /* tooltip */ 
     G_CALLBACK (action_location_open_alternate_callback) },
+
+  { FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,                  /* name, stock id */
+    N_("Open in Folder Window"), "",                /* label, accelerator */
+    N_("Open this folder in a folder window"),                   /* tooltip */ 
+    G_CALLBACK (action_location_open_folder_window_callback) },
 
   { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,                  /* name, stock id */
     NULL, "",                /* label, accelerator */
@@ -7619,11 +7679,18 @@ real_update_location_menu (FMDirectoryView *view)
 	gboolean is_read_only;
 	gboolean can_delete_file;
 	gboolean show_separate_delete_command;
+	gboolean show_open_folder_window;
 	char *label;
 	char *tip;
 
+	show_open_folder_window = FALSE;
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-		label = _("Open in New Window");
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			label = _("Open in New Window");
+		} else {
+			label = _("Browse in New Window");
+			show_open_folder_window = TRUE;
+		}
 	} else {
 		label = g_strdup (ngettext ("_Browse Folder",
 					    "_Browse Folders", 1));
@@ -7633,6 +7700,10 @@ real_update_location_menu (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      NULL);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW);
+	gtk_action_set_visible (action, show_open_folder_window);
 
 	file = view->details->directory_as_file;
 	is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
@@ -7716,6 +7787,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean show_save_search;
 	gboolean save_search_sensitive;
 	gboolean show_save_search_as;
+	gboolean show_open_folder_window;
 	ActivationAction activation_action;
 	GtkAction *action;
 	GnomeVFSMimeApplication *app;
@@ -7804,14 +7876,28 @@ real_update_menus (FMDirectoryView *view)
 	g_free (label_with_underscore);
 
 	show_open_alternate = file_list_all_are_folders (selection);
+	show_open_folder_window = FALSE;
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
-		if (selection_count == 0 || selection_count == 1) {
-			label_with_underscore = g_strdup (_("Open in New Window"));
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			if (selection_count == 0 || selection_count == 1) {
+				label_with_underscore = g_strdup (_("Open in New Window"));
+			} else {
+				label_with_underscore = g_strdup_printf (ngettext("Open in %d New Window",
+										  "Open in %d New Windows",
+										  selection_count), 
+									 selection_count);
+			}
+			gtk_action_set_visible (action, FALSE);
 		} else {
-			label_with_underscore = g_strdup_printf (ngettext("Open in %d New Window",
-									  "Open in %d New Windows",
-									  selection_count), 
-								 selection_count);
+			if (selection_count == 0 || selection_count == 1) {
+				label_with_underscore = g_strdup (_("Browse in New Window"));
+			} else {
+				label_with_underscore = g_strdup_printf (ngettext("Browse in %d New Window",
+										  "Browse in %d New Windows",
+										  selection_count), 
+									 selection_count);
+			}
+			show_open_folder_window = show_open_alternate;
 		}
 	} else {
 		label_with_underscore = g_strdup (ngettext ("_Browse Folder",
@@ -7825,6 +7911,10 @@ real_update_menus (FMDirectoryView *view)
 		      label_with_underscore,
 		      NULL);
 	g_free (label_with_underscore);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_OPEN_FOLDER_WINDOW);
+	gtk_action_set_visible (action, show_open_folder_window);
 	
 	gtk_action_set_sensitive (action,  selection_count != 0);
 	gtk_action_set_visible (action, show_open_alternate);

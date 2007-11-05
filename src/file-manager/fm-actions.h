@@ -27,7 +27,9 @@
 
 #define FM_ACTION_OPEN "Open"
 #define FM_ACTION_OPEN_ALTERNATE "OpenAlternate"
+#define FM_ACTION_OPEN_FOLDER_WINDOW "OpenFolderWindow"
 #define FM_ACTION_LOCATION_OPEN_ALTERNATE "LocationOpenAlternate"
+#define FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW "LocationOpenFolderWindow"
 #define FM_ACTION_OTHER_APPLICATION1 "OtherApplication1"
 #define FM_ACTION_OTHER_APPLICATION2 "OtherApplication2"
 #define FM_ACTION_NEW_FOLDER "New Folder"

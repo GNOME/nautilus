@@ -56,6 +56,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
@@ -232,6 +233,19 @@ nautilus_navigation_window_update_show_hide_menu_items (NautilusNavigationWindow
 					      NAUTILUS_ACTION_SHOW_HIDE_STATUSBAR);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
 				      nautilus_navigation_window_status_bar_showing (window));
+}
+
+void
+nautilus_navigation_window_update_spatial_menu_item (NautilusNavigationWindow *window) 
+{
+	GtkAction *action;
+
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+
+	action = gtk_action_group_get_action (window->details->navigation_action_group,
+					      NAUTILUS_ACTION_FOLDER_WINDOW);
+	gtk_action_set_visible (action,
+				!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER));
 }
 
 static void
@@ -421,6 +435,24 @@ action_new_window_callback (GtkAction *action,
 }
 
 static void
+action_folder_window_callback (GtkAction *action,
+			       gpointer user_data)
+{
+	NautilusWindow *current_window;
+	char *current_location;
+
+	current_window = NAUTILUS_WINDOW (user_data);
+	current_location = nautilus_window_get_location (current_window);
+	nautilus_application_present_spatial_window (
+			current_window->application,
+			current_window,
+			NULL,
+			current_location,
+			gtk_window_get_screen (GTK_WINDOW (current_window)));
+	g_free (current_location);
+}
+
+static void
 action_go_to_location_callback (GtkAction *action,
 				gpointer user_data)
 {
@@ -445,9 +477,12 @@ action_search_callback (GtkAction *action,
 static const GtkActionEntry navigation_entries[] = {
   { "Go", NULL, N_("_Go") },               /* name, stock id, label */
   { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
-  { "New Window", "window-new", N_("Open New _Window"),               /* name, stock id, label */
+  { "New Window", "window-new", N_("New _Window"),               /* name, stock id, label */
     "<control>N", N_("Open another Nautilus window for the displayed location"),
     G_CALLBACK (action_new_window_callback) },
+  { "Folder Window", "folder", N_("Open Folder W_indow"),               /* name, stock id, label */
+    NULL, N_("Open a folder window for the displayed location"),
+    G_CALLBACK (action_folder_window_callback) },
   { "Close All Windows", NULL, N_("Close _All Windows"),               /* name, stock id, label */
     "<control><shift>W", N_("Close all Navigation windows"),
     G_CALLBACK (action_close_all_windows_callback) },
@@ -572,6 +607,7 @@ nautilus_navigation_window_initialize_menus (NautilusNavigationWindow *window)
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
 	nautilus_navigation_window_update_show_hide_menu_items (window);
+	nautilus_navigation_window_update_spatial_menu_item (window);
 
         nautilus_navigation_window_initialize_go_menu (window);
 }
