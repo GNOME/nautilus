@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-16 15:18+0200\n"
-"PO-Revision-Date: 2007-09-16 15:18+0100\n"
+"POT-Creation-Date: 2007-11-07 01:06+0100\n"
+"PO-Revision-Date: 2007-11-07 01:07+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -782,7 +782,7 @@ msgstr "Klistra in texten som är sparad i urklipp"
 
 #. name, stock id
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6967
+#: ../src/file-manager/fm-directory-view.c:7022
 msgid "Select _All"
 msgstr "Markera _allt"
 
@@ -1242,7 +1242,7 @@ msgstr "Ersätt _alla"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1306
 #: ../libnautilus-private/nautilus-file.c:4831
-#: ../src/file-manager/fm-directory-view.c:9917
+#: ../src/file-manager/fm-directory-view.c:10007
 #, c-format
 msgid "Link to %s"
 msgstr "Länk till %s"
@@ -1783,7 +1783,7 @@ msgid "%m/%d/%y"
 msgstr "%Y-%m-%d"
 
 #: ../libnautilus-private/nautilus-file.c:4345
-#: ../src/file-manager/fm-directory-view.c:2266
+#: ../src/file-manager/fm-directory-view.c:2287
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2292,22 +2292,22 @@ msgstr "Bakgrund"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:680
-#: ../src/file-manager/fm-directory-view.c:6945
-#: ../src/file-manager/fm-directory-view.c:7899
+#: ../src/file-manager/fm-directory-view.c:7000
+#: ../src/file-manager/fm-directory-view.c:7989
 msgid "E_mpty Trash"
 msgstr "T_öm papperskorgen"
 
 #. label, accelerator
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:692
-#: ../src/file-manager/fm-directory-view.c:6917
+#: ../src/file-manager/fm-directory-view.c:6968
 msgid "Create L_auncher..."
 msgstr "Skapa st_artare..."
 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:694
-#: ../src/file-manager/fm-directory-view.c:6918
+#: ../src/file-manager/fm-directory-view.c:6969
 msgid "Create a new launcher"
 msgstr "Skapa en ny startare"
 
@@ -2324,7 +2324,7 @@ msgstr "Visa ett fönster som låter dig ställa in mönstret eller färgen på 
 #. tooltip
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:708
-#: ../src/file-manager/fm-directory-view.c:6946
+#: ../src/file-manager/fm-directory-view.c:7001
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Ta bort alla objekt i papperskorgen"
@@ -2356,11 +2356,11 @@ msgstr "Skrivbordsvyn råkade ut för ett fel vid uppstarten."
 msgid "Display this location with the desktop view."
 msgstr "Visa denna plats med skrivbordsvyn."
 
-#: ../src/file-manager/fm-directory-view.c:668
+#: ../src/file-manager/fm-directory-view.c:672
 msgid "Are you sure you want to open all files?"
 msgstr "Är du säker att du vill öppna alla filer?"
 
-#: ../src/file-manager/fm-directory-view.c:669
+#: ../src/file-manager/fm-directory-view.c:673
 #: ../src/nautilus-location-bar.c:154
 #, c-format
 msgid "This will open %d separate window."
@@ -2368,70 +2368,70 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Detta kommer att öppna %d separat fönster."
 msgstr[1] "Detta kommer att öppna %d separata fönster."
 
-#: ../src/file-manager/fm-directory-view.c:1002
+#: ../src/file-manager/fm-directory-view.c:1023
 #: ../src/file-manager/fm-tree-view.c:1140
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
 
-#: ../src/file-manager/fm-directory-view.c:1006
+#: ../src/file-manager/fm-directory-view.c:1027
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Är du säker att du vill ta bort det markerade objektet permanent?"
 msgstr[1] "Är du säker att du vill ta bort de %d markerade objekten permanent?"
 
-#: ../src/file-manager/fm-directory-view.c:1017
+#: ../src/file-manager/fm-directory-view.c:1038
 #: ../src/file-manager/fm-tree-view.c:1149
 msgid "If you delete an item, it is permanently lost."
 msgstr "Om du tar bort ett objekt är det borta för alltid."
 
-#: ../src/file-manager/fm-directory-view.c:1168
+#: ../src/file-manager/fm-directory-view.c:1189
 #: ../src/file-manager/fm-properties-window.c:4762
 #: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:115
 msgid "There was an error displaying help."
 msgstr "Det inträffade ett fel vid visande av hjälp."
 
-#: ../src/file-manager/fm-directory-view.c:1188
+#: ../src/file-manager/fm-directory-view.c:1209
 msgid "Select Pattern"
 msgstr "Välj mönster"
 
-#: ../src/file-manager/fm-directory-view.c:1206
+#: ../src/file-manager/fm-directory-view.c:1227
 msgid "_Pattern:"
 msgstr "_Mönster:"
 
-#: ../src/file-manager/fm-directory-view.c:1315
+#: ../src/file-manager/fm-directory-view.c:1336
 msgid "Save Search as"
 msgstr "Spara sökning som"
 
-#: ../src/file-manager/fm-directory-view.c:1333
+#: ../src/file-manager/fm-directory-view.c:1354
 msgid "Search _name:"
 msgstr "Sök _namn:"
 
-#: ../src/file-manager/fm-directory-view.c:1346
+#: ../src/file-manager/fm-directory-view.c:1367
 #: ../src/nautilus-connect-server-dialog.c:574
 msgid "_Folder:"
 msgstr "_Mapp:"
 
-#: ../src/file-manager/fm-directory-view.c:1351
+#: ../src/file-manager/fm-directory-view.c:1372
 msgid "Select Folder to Save Search In"
 msgstr "Välj mapp för att spara sökning i"
 
-#: ../src/file-manager/fm-directory-view.c:2186
-#: ../src/file-manager/fm-directory-view.c:2223
+#: ../src/file-manager/fm-directory-view.c:2207
+#: ../src/file-manager/fm-directory-view.c:2244
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
-#: ../src/file-manager/fm-directory-view.c:2188
+#: ../src/file-manager/fm-directory-view.c:2209
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d mapp markerad"
 msgstr[1] "%d mappar markerade"
 
-#: ../src/file-manager/fm-directory-view.c:2198
+#: ../src/file-manager/fm-directory-view.c:2219
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -2439,14 +2439,14 @@ msgstr[0] " (innehåller %d objekt)"
 msgstr[1] " (innehåller %d objekt)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2209
+#: ../src/file-manager/fm-directory-view.c:2230
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (innehållandes totalt %d objekt)"
 msgstr[1] " (innehållandes totalt %d objekt)"
 
-#: ../src/file-manager/fm-directory-view.c:2226
+#: ../src/file-manager/fm-directory-view.c:2247
 #, c-format
 msgid "%d item selected"
 msgid_plural "%d items selected"
@@ -2454,7 +2454,7 @@ msgstr[0] "%d objekt markerat"
 msgstr[1] "%d objekt markerade"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2233
+#: ../src/file-manager/fm-directory-view.c:2254
 #, c-format
 msgid "%d other item selected"
 msgid_plural "%d other items selected"
@@ -2466,12 +2466,12 @@ msgstr[1] "%d andra objekt markerade"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2248
+#: ../src/file-manager/fm-directory-view.c:2269
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2270
+#: ../src/file-manager/fm-directory-view.c:2291
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ledigt utrymme: %s"
@@ -2483,7 +2483,7 @@ msgstr "%s, ledigt utrymme: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2295
+#: ../src/file-manager/fm-directory-view.c:2316
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -2492,100 +2492,100 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2377
+#: ../src/file-manager/fm-directory-view.c:2398
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Mappen \"%s\" innehåller fler filer än Nautilus kan visa."
 
-#: ../src/file-manager/fm-directory-view.c:2383
+#: ../src/file-manager/fm-directory-view.c:2404
 msgid "Some files will not be displayed."
 msgstr "En del filer kommer inte att visas."
 
-#: ../src/file-manager/fm-directory-view.c:3841
+#: ../src/file-manager/fm-directory-view.c:3862
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Kan inte flytta filen till papperskorgen. Vill du ta bort den omedelbart?"
 
-#: ../src/file-manager/fm-directory-view.c:3842
+#: ../src/file-manager/fm-directory-view.c:3863
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Filen \"%s\" kan inte flyttas till papperskorgen."
 
-#: ../src/file-manager/fm-directory-view.c:3846
+#: ../src/file-manager/fm-directory-view.c:3867
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Kan inte flytta objekt till papperskorgen. Vill du ta bort dem omedelbart?"
 
-#: ../src/file-manager/fm-directory-view.c:3847
+#: ../src/file-manager/fm-directory-view.c:3868
 #, c-format
 msgid "The selected item could not be moved to the Trash"
 msgid_plural "The %d selected items could not be moved to the Trash"
 msgstr[0] "Det markerade objektet kunde inte flyttas till papperskorgen"
 msgstr[1] "De %d markerade objekten kunde inte flyttas till papperskorgen"
 
-#: ../src/file-manager/fm-directory-view.c:3852
+#: ../src/file-manager/fm-directory-view.c:3873
 msgid "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Kan inte flytta en del objekt till papperskorgen. Vill du ta bort dessa omedelbart?"
 
-#: ../src/file-manager/fm-directory-view.c:3853
+#: ../src/file-manager/fm-directory-view.c:3874
 #, c-format
 msgid "%d of the selected items cannot be moved to the Trash"
 msgstr "%d av de markerade objekten kan inte flyttas till papperskorgen"
 
-#: ../src/file-manager/fm-directory-view.c:3891
+#: ../src/file-manager/fm-directory-view.c:3912
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent från papperskorgen?"
 
-#: ../src/file-manager/fm-directory-view.c:3895
+#: ../src/file-manager/fm-directory-view.c:3916
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item from the trash?"
 msgid_plural "Are you sure you want to permanently delete the %d selected items from the trash?"
 msgstr[0] "Är du säker att du vill ta bort det markerade objektet i papperskorgen permanent?"
 msgstr[1] "Är du säker att du vill ta bort de %d markerade objekten i papperskorgen permanent?"
 
-#: ../src/file-manager/fm-directory-view.c:3906
+#: ../src/file-manager/fm-directory-view.c:3927
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Om du tar bort ett objekt är det borta för alltid."
 
-#: ../src/file-manager/fm-directory-view.c:4496
+#: ../src/file-manager/fm-directory-view.c:4529
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Öppna med \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:4497
+#: ../src/file-manager/fm-directory-view.c:4530
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "Använd \"%s\" för att öppna det markerade objektet"
 msgstr[1] "Använd \"%s\" för att öppna de markerade objekten"
 
-#: ../src/file-manager/fm-directory-view.c:4589
+#: ../src/file-manager/fm-directory-view.c:4622
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Vill du köra \"%s\" eller visa dess innehåll?"
 
-#: ../src/file-manager/fm-directory-view.c:4591
+#: ../src/file-manager/fm-directory-view.c:4624
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" är en körbar textfil."
 
-#: ../src/file-manager/fm-directory-view.c:4597
+#: ../src/file-manager/fm-directory-view.c:4630
 msgid "Run in _Terminal"
 msgstr "Kör i _terminal"
 
-#: ../src/file-manager/fm-directory-view.c:4598
+#: ../src/file-manager/fm-directory-view.c:4631
 msgid "_Display"
 msgstr "_Visa"
 
-#: ../src/file-manager/fm-directory-view.c:4601
+#: ../src/file-manager/fm-directory-view.c:4634
 msgid "_Run"
 msgstr "_Kör"
 
-#: ../src/file-manager/fm-directory-view.c:4997
+#: ../src/file-manager/fm-directory-view.c:5030
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan inte öppna %s"
 
-#: ../src/file-manager/fm-directory-view.c:5000
+#: ../src/file-manager/fm-directory-view.c:5033
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents of the file indicate that the file is of type \"%s\". If you open this file, the file might present a security risk to your system.\n"
@@ -2596,25 +2596,25 @@ msgstr ""
 "\n"
 "Öppna inte filen såvida du inte skapat filen själv eller fått filen från en pålitlig källa. För att öppna filen byter du namn på filen till den rätta filändelsen för \"%s\" och öppnar sedan filen normalt. Alternativt kan du använda menyn Öppna med för att välja ett specifikt program för filen."
 
-#: ../src/file-manager/fm-directory-view.c:5431
+#: ../src/file-manager/fm-directory-view.c:5464
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Kör \"%s\" på alla markerade objekt"
 
-#: ../src/file-manager/fm-directory-view.c:5680
+#: ../src/file-manager/fm-directory-view.c:5713
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Skapa dokument från mallen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:5937
+#: ../src/file-manager/fm-directory-view.c:5970
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Alla körbara filer i denna mapp kommer att visas i Skript-menyn."
 
-#: ../src/file-manager/fm-directory-view.c:5939
+#: ../src/file-manager/fm-directory-view.c:5972
 msgid "Choosing a script from the menu will run that script with any selected items as input."
 msgstr "Genom att välja ett skript från menyn kör du det skriptet med alla markerade objekt som indata."
 
-#: ../src/file-manager/fm-directory-view.c:5941
+#: ../src/file-manager/fm-directory-view.c:5974
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
 "\n"
@@ -2642,91 +2642,91 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: det aktuella fönstrets position och storlek"
 
-#: ../src/file-manager/fm-directory-view.c:6105
+#: ../src/file-manager/fm-directory-view.c:6138
 #: ../src/file-manager/fm-tree-view.c:963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" kommer att flyttas om du väljer kommandot Klistra in"
 
-#: ../src/file-manager/fm-directory-view.c:6109
+#: ../src/file-manager/fm-directory-view.c:6142
 #: ../src/file-manager/fm-tree-view.c:967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kommer att kopieras om du väljer kommandot Klistra in"
 
-#: ../src/file-manager/fm-directory-view.c:6116
+#: ../src/file-manager/fm-directory-view.c:6149
 #, c-format
 msgid "The %d selected item will be moved if you select the Paste command"
 msgid_plural "The %d selected items will be moved if you select the Paste command"
 msgstr[0] "Det %d markerade objektet kommer att flyttas om du väljer kommandot Klistra in"
 msgstr[1] "De %d markerade objekten kommer att flyttas om du väljer kommandot Klistra in"
 
-#: ../src/file-manager/fm-directory-view.c:6123
+#: ../src/file-manager/fm-directory-view.c:6156
 #, c-format
 msgid "The %d selected item will be copied if you select the Paste command"
 msgid_plural "The %d selected items will be copied if you select the Paste command"
 msgstr[0] "Det %d markerade objektet kommer att kopieras om du väljer kommandot Klistra in"
 msgstr[1] "De %d markerade objekten kommer att kopieras om du väljer kommandot Klistra in"
 
-#: ../src/file-manager/fm-directory-view.c:6217
+#: ../src/file-manager/fm-directory-view.c:6250
 #: ../src/file-manager/fm-tree-view.c:1044
 msgid "There is nothing on the clipboard to paste."
 msgstr "Det finns inget i Urklipp att klistra in."
 
-#: ../src/file-manager/fm-directory-view.c:6696
+#: ../src/file-manager/fm-directory-view.c:6729
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Anslut till servern %s"
 
-#: ../src/file-manager/fm-directory-view.c:6701
+#: ../src/file-manager/fm-directory-view.c:6734
 msgid "_Connect"
 msgstr "_Anslut"
 
-#: ../src/file-manager/fm-directory-view.c:6715
+#: ../src/file-manager/fm-directory-view.c:6748
 msgid "Link _name:"
 msgstr "Länk_namn:"
 
-#: ../src/file-manager/fm-directory-view.c:6891
+#: ../src/file-manager/fm-directory-view.c:6942
 msgid "Create _Document"
 msgstr "Skapa _dokument"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6892
+#: ../src/file-manager/fm-directory-view.c:6943
 msgid "Open Wit_h"
 msgstr "Ö_ppna med"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6893
+#: ../src/file-manager/fm-directory-view.c:6944
 msgid "Choose a program with which to open the selected item"
 msgstr "Välj ett program att öppna det markerade objektet med"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6895
-#: ../src/file-manager/fm-directory-view.c:6903
+#: ../src/file-manager/fm-directory-view.c:6946
+#: ../src/file-manager/fm-directory-view.c:6954
 msgid "_Properties"
 msgstr "_Egenskaper"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6896
+#: ../src/file-manager/fm-directory-view.c:6947
 msgid "View or modify the properties of each selected item"
 msgstr "Visa eller ändra egenskaperna för varje markerat objekt"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6904
+#: ../src/file-manager/fm-directory-view.c:6955
 msgid "View or modify the properties of the open folder"
 msgstr "Visa eller ändra egenskaperna för den öppna mappen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6907
+#: ../src/file-manager/fm-directory-view.c:6958
 msgid "Create _Folder"
 msgstr "Skapa _mapp"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6908
+#: ../src/file-manager/fm-directory-view.c:6959
 msgid "Create a new empty folder inside this folder"
 msgstr "Skapa en ny tom mapp inuti denna mapp"
 
-#: ../src/file-manager/fm-directory-view.c:6910
+#: ../src/file-manager/fm-directory-view.c:6961
 msgid "No templates Installed"
 msgstr "Inga mallar är installerade"
 
@@ -2735,433 +2735,461 @@ msgstr "Inga mallar är installerade"
 #. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6913
+#: ../src/file-manager/fm-directory-view.c:6964
 msgid "_Empty File"
 msgstr "_Tom fil"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6914
+#: ../src/file-manager/fm-directory-view.c:6965
 msgid "Create a new empty file inside this folder"
 msgstr "Skapa en ny tom fil inuti denna mapp"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6921
-#: ../src/file-manager/fm-directory-view.c:7800
+#: ../src/file-manager/fm-directory-view.c:6972
+#: ../src/file-manager/fm-directory-view.c:7872
 #: ../src/file-manager/fm-tree-view.c:1253
 #: ../src/nautilus-places-sidebar.c:1448
 msgid "_Open"
 msgstr "_Öppna"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6922
+#: ../src/file-manager/fm-directory-view.c:6973
 msgid "Open the selected item in this window"
 msgstr "Öppna det markerade objektet i detta fönster"
 
 #. name, stock id
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6929
-#: ../src/file-manager/fm-directory-view.c:7053
+#: ../src/file-manager/fm-directory-view.c:6980
+#: ../src/file-manager/fm-directory-view.c:7108
 msgid "Open in Navigation Window"
 msgstr "Öppna i navigeringsfönster"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6930
+#: ../src/file-manager/fm-directory-view.c:6981
 msgid "Open each selected item in a navigation window"
 msgstr "Öppna varje markerat objekt i ett navigeringsfönster"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6933
-#: ../src/file-manager/fm-directory-view.c:6937
+#: ../src/file-manager/fm-directory-view.c:6984
+#: ../src/file-manager/fm-directory-view.c:7113
+msgid "Open in Folder Window"
+msgstr "Öppna i mappfönster"
+
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6985
+msgid "Open each selected item in a folder window"
+msgstr "Öppna varje markerat objekt i ett mappfönster"
+
+#. name, stock id
+#: ../src/file-manager/fm-directory-view.c:6988
+#: ../src/file-manager/fm-directory-view.c:6992
 msgid "Open with Other _Application..."
 msgstr "Öppna med annat _program..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6934
-#: ../src/file-manager/fm-directory-view.c:6938
+#: ../src/file-manager/fm-directory-view.c:6989
+#: ../src/file-manager/fm-directory-view.c:6993
 msgid "Choose another application with which to open the selected item"
 msgstr "Välj ett annat program att öppna det markerade objektet med"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6941
+#: ../src/file-manager/fm-directory-view.c:6996
 msgid "_Open Scripts Folder"
 msgstr "_Öppna skriptmapp"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6942
+#: ../src/file-manager/fm-directory-view.c:6997
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Visa mappen som innehåller de skript som visas i denna meny"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6950
+#: ../src/file-manager/fm-directory-view.c:7005
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Förbered för de markerade filerna att flyttas med kommandot Klistra in"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6954
+#: ../src/file-manager/fm-directory-view.c:7009
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Förbered för de markerade filerna att kopieras med kommandot Klistra in"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6958
+#: ../src/file-manager/fm-directory-view.c:7013
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr "Flytta eller kopiera filer som tidigare valts med kommandot Klipp ut eller Kopiera"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6963
+#: ../src/file-manager/fm-directory-view.c:7018
 #: ../src/file-manager/fm-tree-view.c:1307
 msgid "_Paste Into Folder"
 msgstr "Klistra _in i mapp"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6964
+#: ../src/file-manager/fm-directory-view.c:7019
 msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
 msgstr "Flytta eller kopiera filer som tidigare valts med kommandot Klipp ut eller Kopiera till den markerade mappen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6968
+#: ../src/file-manager/fm-directory-view.c:7023
 msgid "Select all items in this window"
 msgstr "Markera alla objekt i detta fönster"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6971
+#: ../src/file-manager/fm-directory-view.c:7026
 msgid "Select _Pattern"
 msgstr "Markera _mönster"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6972
+#: ../src/file-manager/fm-directory-view.c:7027
 msgid "Select items in this window matching a given pattern"
 msgstr "Markera objekt i detta fönster som matchar ett givet mönster"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6975
+#: ../src/file-manager/fm-directory-view.c:7030
 msgid "D_uplicate"
 msgstr "_Duplicera"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6976
+#: ../src/file-manager/fm-directory-view.c:7031
 msgid "Duplicate each selected item"
 msgstr "Duplicera varje markerat objekt"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6979
-#: ../src/file-manager/fm-directory-view.c:7873
+#: ../src/file-manager/fm-directory-view.c:7034
+#: ../src/file-manager/fm-directory-view.c:7963
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Sk_apa länk"
 msgstr[1] "Sk_apa länkar"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6980
+#: ../src/file-manager/fm-directory-view.c:7035
 msgid "Create a symbolic link for each selected item"
 msgstr "Skapa en symbolisk länk för varje markerat objekt"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6983
+#: ../src/file-manager/fm-directory-view.c:7038
 msgid "_Rename..."
 msgstr "_Byt namn..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6984
+#: ../src/file-manager/fm-directory-view.c:7039
 msgid "Rename selected item"
 msgstr "Byt namn på markerat objekt"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6991
-#: ../src/file-manager/fm-directory-view.c:7067
-#: ../src/file-manager/fm-directory-view.c:7657
-#: ../src/file-manager/fm-directory-view.c:7841
-#: ../src/file-manager/fm-directory-view.c:8241
+#: ../src/file-manager/fm-directory-view.c:7046
+#: ../src/file-manager/fm-directory-view.c:7127
+#: ../src/file-manager/fm-directory-view.c:7728
+#: ../src/file-manager/fm-directory-view.c:7931
+#: ../src/file-manager/fm-directory-view.c:8331
 msgid "Mo_ve to Trash"
 msgstr "_Flytta till papperskorgen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6992
-#: ../src/file-manager/fm-directory-view.c:7842
+#: ../src/file-manager/fm-directory-view.c:7047
+#: ../src/file-manager/fm-directory-view.c:7932
 msgid "Move each selected item to the Trash"
 msgstr "Flytta varje markerat objekt till papperskorgen"
 
 #. name, stock id
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6995
-#: ../src/file-manager/fm-directory-view.c:7071
-#: ../src/file-manager/fm-directory-view.c:7860
+#: ../src/file-manager/fm-directory-view.c:7050
+#: ../src/file-manager/fm-directory-view.c:7131
+#: ../src/file-manager/fm-directory-view.c:7950
 #: ../src/file-manager/fm-tree-view.c:1334
 msgid "_Delete"
 msgstr "_Ta bort"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6996
+#: ../src/file-manager/fm-directory-view.c:7051
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Ta bort varje markerat objekt, utan att flytta till papperskorgen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6999
+#: ../src/file-manager/fm-directory-view.c:7054
 msgid "Reset View to _Defaults"
 msgstr "_Återställ vy till standardalternativ"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7000
+#: ../src/file-manager/fm-directory-view.c:7055
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Återställ sorteringsordning och zoomnivå för att stämma överens med inställningarna för denna vy"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7003
+#: ../src/file-manager/fm-directory-view.c:7058
 msgid "Connect To This Server"
 msgstr "Anslut till denna server"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7004
+#: ../src/file-manager/fm-directory-view.c:7059
 msgid "Make a permanent connection to this server"
 msgstr "Skapa en permanent anslutning till denna server"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7007
-#: ../src/file-manager/fm-directory-view.c:7023
+#: ../src/file-manager/fm-directory-view.c:7062
+#: ../src/file-manager/fm-directory-view.c:7078
 msgid "_Mount Volume"
 msgstr "_Montera volym"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7008
+#: ../src/file-manager/fm-directory-view.c:7063
 msgid "Mount the selected volume"
 msgstr "Montera den valda volymen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7011
-#: ../src/file-manager/fm-directory-view.c:7027
+#: ../src/file-manager/fm-directory-view.c:7066
+#: ../src/file-manager/fm-directory-view.c:7082
 #: ../src/file-manager/fm-tree-view.c:812
 msgid "_Unmount Volume"
 msgstr "_Avmontera volym"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7012
+#: ../src/file-manager/fm-directory-view.c:7067
 msgid "Unmount the selected volume"
 msgstr "Avmontera den valda volymen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7015
-#: ../src/file-manager/fm-directory-view.c:7031
+#: ../src/file-manager/fm-directory-view.c:7070
+#: ../src/file-manager/fm-directory-view.c:7086
 #: ../src/nautilus-places-sidebar.c:1497
 msgid "_Eject"
 msgstr "_Mata ut"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7016
+#: ../src/file-manager/fm-directory-view.c:7071
 msgid "Eject the selected volume"
 msgstr "Mata ut den valda volymen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7019
-#: ../src/file-manager/fm-directory-view.c:7035
+#: ../src/file-manager/fm-directory-view.c:7074
+#: ../src/file-manager/fm-directory-view.c:7090
 #: ../src/nautilus-places-sidebar.c:1504
 msgid "_Format"
 msgstr "_Format"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7020
+#: ../src/file-manager/fm-directory-view.c:7075
 msgid "Format the selected volume"
 msgstr "Formatera den valda volymen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7024
+#: ../src/file-manager/fm-directory-view.c:7079
 msgid "Mount the volume associated with the open folder"
 msgstr "Montera volymen associerad med den öppna mappen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7028
+#: ../src/file-manager/fm-directory-view.c:7083
 msgid "Unmount the volume associated with the open folder"
 msgstr "Avmontera volymen associerad med den öppna mappen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7032
+#: ../src/file-manager/fm-directory-view.c:7087
 msgid "Eject the volume associated with the open folder"
 msgstr "Mata ut volymen associerad med den öppna mappen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7036
+#: ../src/file-manager/fm-directory-view.c:7091
 msgid "Format the volume associated with the open folder"
 msgstr "Formatera volymen associerad med den öppna mappen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7039
+#: ../src/file-manager/fm-directory-view.c:7094
 msgid "Open File and Close window"
 msgstr "Öppna fil och stäng fönster"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7043
+#: ../src/file-manager/fm-directory-view.c:7098
 msgid "Sa_ve Search"
 msgstr "Spa_ra sökning"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7044
+#: ../src/file-manager/fm-directory-view.c:7099
 msgid "Save the edited search"
 msgstr "Spara den redigerade sökningen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7047
+#: ../src/file-manager/fm-directory-view.c:7102
 msgid "Sa_ve Search As..."
 msgstr "Spa_ra sökning som..."
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7048
+#: ../src/file-manager/fm-directory-view.c:7103
 msgid "Save the current search as a file"
 msgstr "Spara aktuell sökning som en fil"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7054
+#: ../src/file-manager/fm-directory-view.c:7109
 msgid "Open this folder in a navigation window"
 msgstr "Öppna denna mapp i ett navigeringsfönster"
 
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:7114
+msgid "Open this folder in a folder window"
+msgstr "Öppna denna mapp i ett mappfönster"
+
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7059
+#: ../src/file-manager/fm-directory-view.c:7119
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Förbered för denna mapp att flyttas med kommandot Klistra in"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7063
+#: ../src/file-manager/fm-directory-view.c:7123
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Förbered för denna mapp att kopieras med kommandot Klistra in"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7068
+#: ../src/file-manager/fm-directory-view.c:7128
 msgid "Move this folder to the Trash"
 msgstr "Flytta denna mapp till papperskorgen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7072
+#: ../src/file-manager/fm-directory-view.c:7132
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Ta bort denna mapp, utan att flytta till papperskorgen"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:7078
+#: ../src/file-manager/fm-directory-view.c:7138
 msgid "Show _Hidden Files"
 msgstr "Visa _dolda filer"
 
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:7079
+#: ../src/file-manager/fm-directory-view.c:7139
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Växla visningen av dolda filer i det aktuella fönstret"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:7165
+#: ../src/file-manager/fm-directory-view.c:7225
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Kör eller hantera skript från %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:7167
+#: ../src/file-manager/fm-directory-view.c:7227
 msgid "_Scripts"
 msgstr "_Skript"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7626
-#: ../src/file-manager/fm-directory-view.c:7809
+#: ../src/file-manager/fm-directory-view.c:7689
+#: ../src/file-manager/fm-directory-view.c:7883
 #: ../src/file-manager/fm-tree-view.c:1264
 msgid "Open in New Window"
 msgstr "Öppna i nytt fönster"
 
-#: ../src/file-manager/fm-directory-view.c:7628
-#: ../src/file-manager/fm-directory-view.c:7817
+#: ../src/file-manager/fm-directory-view.c:7691
+#: ../src/file-manager/fm-directory-view.c:7893
+msgid "Browse in New Window"
+msgstr "Bläddra i nytt fönster"
+
+#: ../src/file-manager/fm-directory-view.c:7695
+#: ../src/file-manager/fm-directory-view.c:7903
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Bläddra i mapp"
 msgstr[1] "_Bläddra i mappar"
 
-#: ../src/file-manager/fm-directory-view.c:7653
-#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-directory-view.c:7724
+#: ../src/file-manager/fm-directory-view.c:7927
 msgid "_Delete from Trash"
 msgstr "_Ta bort från papperskorgen"
 
-#: ../src/file-manager/fm-directory-view.c:7654
+#: ../src/file-manager/fm-directory-view.c:7725
 msgid "Delete the open folder permanently"
 msgstr "Ta bort den öppna mappen permanent"
 
-#: ../src/file-manager/fm-directory-view.c:7658
+#: ../src/file-manager/fm-directory-view.c:7729
 msgid "Move the open folder to the Trash"
 msgstr "Flytta den öppna mappen till papperskorgen"
 
-#: ../src/file-manager/fm-directory-view.c:7793
+#: ../src/file-manager/fm-directory-view.c:7865
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Öppna med \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7811
+#: ../src/file-manager/fm-directory-view.c:7885
 #, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Öppna i %d nytt fönster"
 msgstr[1] "Öppna i %d nya fönster"
 
-#: ../src/file-manager/fm-directory-view.c:7838
+#: ../src/file-manager/fm-directory-view.c:7895
+#, c-format
+msgid "Browse in %d New Window"
+msgid_plural "Browse in %d New Windows"
+msgstr[0] "Bläddra i %d nytt fönster"
+msgstr[1] "Bläddra i %d nya fönster"
+
+#: ../src/file-manager/fm-directory-view.c:7928
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: ../src/file-manager/fm-directory-view.c:8221
+#: ../src/file-manager/fm-directory-view.c:8311
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Länken \"%s\" är trasig."
 
-#: ../src/file-manager/fm-directory-view.c:8223
+#: ../src/file-manager/fm-directory-view.c:8313
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Länken \"%s\" är trasig. Vill du flytta den till papperskorgen?"
 
-#: ../src/file-manager/fm-directory-view.c:8229
+#: ../src/file-manager/fm-directory-view.c:8319
 msgid "This link can't be used, because it has no target."
 msgstr "Denna länk kan inte användas eftersom den inte har något mål."
 
-#: ../src/file-manager/fm-directory-view.c:8231
+#: ../src/file-manager/fm-directory-view.c:8321
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Denna länk kan inte användas eftersom dess mål \"%s\" inte finns."
 
-#: ../src/file-manager/fm-directory-view.c:8882
+#: ../src/file-manager/fm-directory-view.c:8972
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Öppnar \"%s\"."
 
-#: ../src/file-manager/fm-directory-view.c:8885
+#: ../src/file-manager/fm-directory-view.c:8975
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "Öppnar %d objekt."
 msgstr[1] "Öppnar %d objekt."
 
-#: ../src/file-manager/fm-directory-view.c:9777
+#: ../src/file-manager/fm-directory-view.c:9867
 msgid "Download location?"
 msgstr "Hämta plats?"
 
-#: ../src/file-manager/fm-directory-view.c:9780
+#: ../src/file-manager/fm-directory-view.c:9870
 msgid "You can download it or make a link to it."
 msgstr "Du kan hämta den eller skapa en länk till den."
 
-#: ../src/file-manager/fm-directory-view.c:9783
+#: ../src/file-manager/fm-directory-view.c:9873
 msgid "Make a _Link"
 msgstr "Skapa en _länk"
 
-#: ../src/file-manager/fm-directory-view.c:9787
+#: ../src/file-manager/fm-directory-view.c:9877
 msgid "_Download"
 msgstr "_Hämta"
 
-#: ../src/file-manager/fm-directory-view.c:9850
-#: ../src/file-manager/fm-directory-view.c:9902
-#: ../src/file-manager/fm-directory-view.c:10003
+#: ../src/file-manager/fm-directory-view.c:9940
+#: ../src/file-manager/fm-directory-view.c:9992
+#: ../src/file-manager/fm-directory-view.c:10093
 msgid "Drag and drop is not supported."
 msgstr "Dra och släpp stöds inte."
 
-#: ../src/file-manager/fm-directory-view.c:9851
+#: ../src/file-manager/fm-directory-view.c:9941
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: ../src/file-manager/fm-directory-view.c:9903
-#: ../src/file-manager/fm-directory-view.c:10004
+#: ../src/file-manager/fm-directory-view.c:9993
+#: ../src/file-manager/fm-directory-view.c:10094
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
@@ -4715,188 +4743,197 @@ msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: ../src/nautilus-navigation-window-menus.c:117
+#: ../src/nautilus-navigation-window-menus.c:118
 msgid "Are you sure you want to forget history?"
 msgstr "Är du säker på att du vill glömma historien?"
 
-#: ../src/nautilus-navigation-window-menus.c:118
+#: ../src/nautilus-navigation-window-menus.c:119
 msgid "If you do, you will be doomed to repeat it."
 msgstr "I så fall kommer du att vara dömd att återupprepa den."
 
-#: ../src/nautilus-navigation-window-menus.c:120
+#: ../src/nautilus-navigation-window-menus.c:121
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "Är du säker på att du vill tömma listan över platser som du har besökt?"
 
-#: ../src/nautilus-navigation-window-menus.c:122
+#: ../src/nautilus-navigation-window-menus.c:123
 msgid "If you clear the list of locations, they will be permanently deleted."
 msgstr "Om du tömmer listan över platser kommer de att tas bort permanent."
 
-#: ../src/nautilus-navigation-window-menus.c:289
+#: ../src/nautilus-navigation-window-menus.c:303
 #: ../src/nautilus-window-bookmarks.c:98
 #, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "Platsen \"%s\" finns inte."
 
-#: ../src/nautilus-navigation-window-menus.c:291
+#: ../src/nautilus-navigation-window-menus.c:305
 msgid "The history location doesn't exist."
 msgstr "Historikplatsen finns inte."
 
-#: ../src/nautilus-navigation-window-menus.c:446
+#: ../src/nautilus-navigation-window-menus.c:478
 msgid "_Go"
 msgstr "_Gå"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:447
+#: ../src/nautilus-navigation-window-menus.c:479
 msgid "_Bookmarks"
 msgstr "_Bokmärken"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:448
-msgid "Open New _Window"
-msgstr "Öppna nytt _fönster"
+#: ../src/nautilus-navigation-window-menus.c:480
+msgid "New _Window"
+msgstr "Nytt _fönster"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:449
+#: ../src/nautilus-navigation-window-menus.c:481
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Öppna ytterligare ett Nautilus-fönster för den visade platsen"
 
-#: ../src/nautilus-navigation-window-menus.c:451
+#: ../src/nautilus-navigation-window-menus.c:483
+msgid "Open Folder W_indow"
+msgstr "Öppna mappfönst_er"
+
+#. name, stock id, label
+#: ../src/nautilus-navigation-window-menus.c:484
+msgid "Open a folder window for the displayed location"
+msgstr "Öppna ett mappfönster för den visade platsen"
+
+#: ../src/nautilus-navigation-window-menus.c:486
 msgid "Close _All Windows"
 msgstr "Stäng _alla fönster"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:452
+#: ../src/nautilus-navigation-window-menus.c:487
 msgid "Close all Navigation windows"
 msgstr "Stäng alla navigeringsfönster"
 
-#: ../src/nautilus-navigation-window-menus.c:454
+#: ../src/nautilus-navigation-window-menus.c:489
 msgid "_Location..."
 msgstr "Pl_ats..."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:455
+#: ../src/nautilus-navigation-window-menus.c:490
 #: ../src/nautilus-spatial-window.c:868
 msgid "Specify a location to open"
 msgstr "Ange en plats att öppna"
 
-#: ../src/nautilus-navigation-window-menus.c:457
+#: ../src/nautilus-navigation-window-menus.c:492
 msgid "Clea_r History"
 msgstr "T_öm historik"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:458
+#: ../src/nautilus-navigation-window-menus.c:493
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Töm innehållet i Gå-menyn och Föregående/Nästa-listorna"
 
-#: ../src/nautilus-navigation-window-menus.c:460
+#: ../src/nautilus-navigation-window-menus.c:495
 #: ../src/nautilus-spatial-window.c:876
 msgid "_Add Bookmark"
 msgstr "_Lägg till bokmärke"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:461
+#: ../src/nautilus-navigation-window-menus.c:496
 #: ../src/nautilus-spatial-window.c:877
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Lägg till ett bokmärke för den aktuella platsen till denna meny"
 
-#: ../src/nautilus-navigation-window-menus.c:463
+#: ../src/nautilus-navigation-window-menus.c:498
 #: ../src/nautilus-spatial-window.c:879
 msgid "_Edit Bookmarks"
 msgstr "R_edigera bokmärken"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:464
+#: ../src/nautilus-navigation-window-menus.c:499
 #: ../src/nautilus-spatial-window.c:880
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Visa ett fönster som tillåter redigering av dina bokmärken i denna meny"
 
-#: ../src/nautilus-navigation-window-menus.c:466
+#: ../src/nautilus-navigation-window-menus.c:501
 #: ../src/nautilus-spatial-window.c:882
 msgid "_Search for Files..."
 msgstr "_Sök efter filer..."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:467
+#: ../src/nautilus-navigation-window-menus.c:502
 #: ../src/nautilus-spatial-window.c:883
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "Hitta dokument och mappar på den här datorn efter namn eller innehåll"
 
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:474
+#: ../src/nautilus-navigation-window-menus.c:509
 msgid "_Main Toolbar"
 msgstr "_Huvudverktygsrad"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:475
+#: ../src/nautilus-navigation-window-menus.c:510
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Ändra synligheten på detta fönsters huvudverktygsrad"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:479
+#: ../src/nautilus-navigation-window-menus.c:514
 msgid "_Side Pane"
 msgstr "Sido_panel"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:480
+#: ../src/nautilus-navigation-window-menus.c:515
 msgid "Change the visibility of this window's side pane"
 msgstr "Ändra synligheten för detta fönsters sidopanel"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:484
+#: ../src/nautilus-navigation-window-menus.c:519
 msgid "Location _Bar"
 msgstr "_Adressrad"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:485
+#: ../src/nautilus-navigation-window-menus.c:520
 msgid "Change the visibility of this window's location bar"
 msgstr "Ändra synligheten på detta fönsters adressrad"
 
 #. is_active
 #. name, stock id
-#: ../src/nautilus-navigation-window-menus.c:489
+#: ../src/nautilus-navigation-window-menus.c:524
 msgid "St_atusbar"
 msgstr "Status_rad"
 
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:490
+#: ../src/nautilus-navigation-window-menus.c:525
 msgid "Change the visibility of this window's statusbar"
 msgstr "Ändra synligheten på detta fönsters statusrad"
 
-#: ../src/nautilus-navigation-window-menus.c:514
+#: ../src/nautilus-navigation-window-menus.c:549
 msgid "_Back"
 msgstr "_Bakåt"
 
-#: ../src/nautilus-navigation-window-menus.c:516
+#: ../src/nautilus-navigation-window-menus.c:551
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: ../src/nautilus-navigation-window-menus.c:517
+#: ../src/nautilus-navigation-window-menus.c:552
 msgid "Back history"
 msgstr "Gå bakåt i historiken"
 
-#: ../src/nautilus-navigation-window-menus.c:531
+#: ../src/nautilus-navigation-window-menus.c:566
 msgid "_Forward"
 msgstr "_Framåt"
 
-#: ../src/nautilus-navigation-window-menus.c:533
+#: ../src/nautilus-navigation-window-menus.c:568
 msgid "Go to the next visited location"
 msgstr "Gå till nästa besökta plats"
 
-#: ../src/nautilus-navigation-window-menus.c:534
+#: ../src/nautilus-navigation-window-menus.c:569
 msgid "Forward history"
 msgstr "Gå framåt i historiken"
 
-#: ../src/nautilus-navigation-window-menus.c:548
+#: ../src/nautilus-navigation-window-menus.c:583
 msgid "_Search"
 msgstr "_Sök"
 
-#: ../src/nautilus-navigation-window.c:187
+#: ../src/nautilus-navigation-window.c:188
 msgid "Toggle between button and text-based location bar"
 msgstr "Växla mellan knapp- och textbaserad platsrad"
 
-#: ../src/nautilus-navigation-window.c:925
+#: ../src/nautilus-navigation-window.c:940
 #, c-format
 msgid "%s - File Browser"
 msgstr "%s - Filbläddrare"
