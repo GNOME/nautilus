@@ -56,6 +56,7 @@ typedef struct {
 
 typedef enum {
 	NAUTILUS_ICON_LAYOUT_L_R_T_B,
+	NAUTILUS_ICON_LAYOUT_R_L_T_B,
 	NAUTILUS_ICON_LAYOUT_T_B_L_R,
 	NAUTILUS_ICON_LAYOUT_T_B_R_L
 } NautilusIconLayoutMode;
@@ -298,5 +299,17 @@ char*             nautilus_icon_container_get_icon_description          (Nautilu
 gboolean          nautilus_icon_container_get_allow_moves               (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_allow_moves               (NautilusIconContainer  *container,
 									 gboolean                allow_moves);
+
+gboolean	  nautilus_icon_container_is_layout_rtl			(NautilusIconContainer  *container);
+
+#define CANVAS_WIDTH(container) ((GTK_WIDGET (container)->allocation.width \
+				- container->details->left_margin \
+				- container->details->right_margin) \
+				/  EEL_CANVAS (container)->pixels_per_unit)
+
+#define CANVAS_HEIGHT(container) ((GTK_WIDGET (container)->allocation.height \
+			 - container->details->top_margin \
+			 - container->details->bottom_margin) \
+			 / EEL_CANVAS (container)->pixels_per_unit)
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

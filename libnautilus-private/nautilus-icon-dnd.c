@@ -1004,8 +1004,8 @@ handle_nonlocal_move (NautilusIconContainer *container,
 {
 	GList *source_uris, *p;
 	GArray *source_item_locations;
-	gboolean free_target_uri;
-	int index;
+	gboolean free_target_uri, is_rtl;
+	int index, item_x;
 
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return;
@@ -1018,6 +1018,8 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	}
 	source_uris = g_list_reverse (source_uris);
 	
+	is_rtl = nautilus_icon_container_is_layout_rtl (container);
+
 	source_item_locations = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
 	if (!icon_hit) {
 		/* Drop onto a container. Pass along the item points to allow placing
@@ -1028,8 +1030,10 @@ handle_nonlocal_move (NautilusIconContainer *container,
 			
 		for (index = 0, p = container->details->dnd_info->drag_info.selection_list;
 			p != NULL; index++, p = p->next) {
-		     	g_array_index (source_item_locations, GdkPoint, index).x =
-		     		((NautilusDragSelectionItem *)p->data)->icon_x;
+		    	item_x = ((NautilusDragSelectionItem *)p->data)->icon_x;
+			if (is_rtl)
+				item_x = -item_x - ((NautilusDragSelectionItem *)p->data)->icon_width;
+		     	g_array_index (source_item_locations, GdkPoint, index).x = item_x;
 		     	g_array_index (source_item_locations, GdkPoint, index).y =
 				((NautilusDragSelectionItem *)p->data)->icon_y;
 		}
@@ -1041,7 +1045,10 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		target_uri = nautilus_get_desktop_directory_uri ();
 		free_target_uri = TRUE;
 	}
-	
+
+	if (is_rtl)
+		x = CANVAS_WIDTH (container) - x;
+
 	/* start the copy */
 	g_signal_emit_by_name (container, "move_copy_items",
 				 source_uris,

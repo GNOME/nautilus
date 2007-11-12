@@ -2480,7 +2480,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
-static void
+static NautilusIconContainer *
 create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -2539,6 +2539,8 @@ create_icon_container (FMIconView *icon_view)
 	fm_icon_view_update_click_mode (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
+
+	return icon_container;
 }
 
 /* Handles an URL received from Mozilla */
@@ -2695,6 +2697,7 @@ static void
 fm_icon_view_init (FMIconView *icon_view)
 {
 	static gboolean setup_sound_preview = FALSE;
+	NautilusIconContainer *icon_container;
 
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
@@ -2702,7 +2705,13 @@ fm_icon_view_init (FMIconView *icon_view)
 	icon_view->details->sort = &sort_criteria[0];
 	icon_view->details->filter_by_screen = FALSE;
 
-	create_icon_container (icon_view);
+	icon_container = create_icon_container (icon_view);
+
+	/* Set our default layout mode */
+	nautilus_icon_container_set_layout_mode (icon_container,
+						 gtk_widget_get_direction (GTK_WIDGET(icon_container)) == GTK_TEXT_DIR_RTL ?
+						 NAUTILUS_ICON_LAYOUT_R_L_T_B :
+						 NAUTILUS_ICON_LAYOUT_L_R_T_B);
 
 	if (!setup_sound_preview) {
 		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,

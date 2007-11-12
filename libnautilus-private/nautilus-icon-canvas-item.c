@@ -188,10 +188,12 @@ static void     get_icon_canvas_rectangle            (NautilusIconCanvasItem    
 						      ArtIRect                      *rect);
 static void     emblem_layout_reset                  (EmblemLayout                  *layout,
 						      NautilusIconCanvasItem        *icon_item,
-						      ArtIRect                       icon_rect);
+						      ArtIRect                       icon_rect,
+						      gboolean			     is_rtl);
 static gboolean emblem_layout_next                   (EmblemLayout                  *layout,
 						      GdkPixbuf                    **emblem_pixbuf,
-						      ArtIRect                      *emblem_rect);
+						      ArtIRect                      *emblem_rect,
+						      gboolean			     is_rtl);
 static void     draw_pixbuf                          (GdkPixbuf                     *pixbuf,
 						      GdkDrawable                   *drawable,
 						      int                            x,
@@ -471,6 +473,7 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	GdkPixbuf *emblem_pixbuf;
 	EmblemLayout emblem_layout;
 	double item_x, item_y;
+	gboolean is_rtl;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
@@ -516,8 +519,11 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	icon_rect.x1 = item_offset_x + gdk_pixbuf_get_width (item->details->pixbuf);
 	icon_rect.y1 = item_offset_y + gdk_pixbuf_get_height (item->details->pixbuf);
 
-	emblem_layout_reset (&emblem_layout, item, icon_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+
+	is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (canvas));
+
+	emblem_layout_reset (&emblem_layout, item, icon_rect, is_rtl);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 		gdk_pixbuf_composite (emblem_pixbuf, pixbuf,
 				      emblem_rect.x0, emblem_rect.y0,
 				      gdk_pixbuf_get_width (emblem_pixbuf),
@@ -726,8 +732,13 @@ compute_text_rectangle (const NautilusIconCanvasItem *item,
 	}
 	
 	if (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-                text_rectangle.x0 = icon_rectangle.x1;
-                text_rectangle.x1 = text_rectangle.x0 + text_dx + text_width;
+		if (!nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas))) {
+                	text_rectangle.x0 = icon_rectangle.x1;
+                	text_rectangle.x1 = text_rectangle.x0 + text_dx + text_width;
+		} else {
+                	text_rectangle.x1 = icon_rectangle.x0;
+                	text_rectangle.x0 = text_rectangle.x1 - text_dx - text_width;
+		}
                 text_rectangle.y0 = (icon_rectangle.y0 + icon_rectangle.y1) / 2- (int) text_height / 2;
                 text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
 	} else {
@@ -763,6 +774,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	EmblemLayout emblem_layout;
 	EelCanvasItem *canvas_item;
 	GdkPixbuf *emblem_pixbuf;
+	gboolean is_rtl;
 
 	canvas_item = EEL_CANVAS_ITEM (item);
 	
@@ -776,6 +788,8 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 		return;
 	}
 	
+	is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (canvas_item->canvas));
+
 	/* Update canvas and text rect cache */
 	get_icon_canvas_rectangle (item, &item->details->canvas_rect);
 	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, TRUE);
@@ -785,8 +799,8 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	item->details->emblem_rect.x1 = 0;
 	item->details->emblem_rect.y0 = 0;
 	item->details->emblem_rect.y1 = 0;
-	emblem_layout_reset (&emblem_layout, item, item->details->canvas_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+	emblem_layout_reset (&emblem_layout, item, item->details->canvas_rect, is_rtl);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 		art_irect_union (&item->details->emblem_rect, &item->details->emblem_rect, &emblem_rect);
 	}
 
@@ -944,7 +958,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	PangoLayout *additional_layout;
 	GdkColor *label_color;
 	int icon_width;
-	gboolean have_editable, have_additional, needs_highlight, needs_frame, prelight_label;
+	gboolean have_editable, have_additional, needs_highlight, needs_frame, prelight_label, is_rtl_label_beside;
 	int max_text_width;
 	int x;
 	GdkGC *gc;
@@ -1053,6 +1067,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	text_rect = compute_text_rectangle (item, icon_rect, TRUE);
 
+	is_rtl_label_beside = nautilus_icon_container_is_layout_rtl (container) &&
+			      container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE;
+
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && !details->is_renaming &&
 	    details->text_width > 0 && details->text_height > 0) {
@@ -1060,9 +1077,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    drawable,
 			    GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container)) ? container->details->highlight_color_rgba : container->details->active_color_rgba,
 			    create_mask,
-			    text_rect.x0,
+			    is_rtl_label_beside ? text_rect.x0 + item->details->text_dx : text_rect.x0,
 			    text_rect.y0,
-			    text_rect.x1 - text_rect.x0,
+			    is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0,
 			    text_rect.y1 - text_rect.y0);
 	}
 
@@ -1268,11 +1285,11 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 }
 
 static void
-emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, ArtIRect icon_rect)
+emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, ArtIRect icon_rect, gboolean is_rtl)
 {
 	layout->icon_item = icon_item;
 	layout->icon_rect = icon_rect;
-	layout->side = RIGHT_SIDE;
+	layout->side = is_rtl ? LEFT_SIDE : RIGHT_SIDE;
 	layout->position = 0;
 	layout->index = 0;
 	layout->emblem = icon_item->details->emblem_pixbufs;
@@ -1281,7 +1298,8 @@ emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, Ar
 static gboolean
 emblem_layout_next (EmblemLayout *layout,
 		    GdkPixbuf **emblem_pixbuf,
-		    ArtIRect *emblem_rect)
+		    ArtIRect *emblem_rect,
+		    gboolean is_rtl)
 {
 	GdkPixbuf *pixbuf;
 	int width, height, x, y;
@@ -1329,18 +1347,18 @@ emblem_layout_next (EmblemLayout *layout,
 		switch (layout->side) {
 		case RIGHT_SIDE:
 			x = layout->icon_rect.x1;
-			y = layout->icon_rect.y0;
+			y = is_rtl ? layout->icon_rect.y1 : layout->icon_rect.y0;
 			break;
 		case BOTTOM_SIDE:
-			x = layout->icon_rect.x1;
+			x = is_rtl ? layout->icon_rect.x0 : layout->icon_rect.x1;
 			y = layout->icon_rect.y1;
 			break;
 		case LEFT_SIDE:
 			x = layout->icon_rect.x0;
-			y = layout->icon_rect.y1;
+			y = is_rtl ? layout->icon_rect.y0 : layout->icon_rect.y1;
 			break;
 		case TOP_SIDE:
-			x = layout->icon_rect.x0;
+			x = is_rtl ? layout->icon_rect.x1 : layout->icon_rect.x0;
 			y = layout->icon_rect.y0;
 			break;
 		default:
@@ -1352,16 +1370,16 @@ emblem_layout_next (EmblemLayout *layout,
 		if (layout->position != 0) {
 			switch (layout->side) {
 			case RIGHT_SIDE:
-				y += layout->position + height / 2;
+				y += (is_rtl ? -1 : 1) * (layout->position + height / 2);
 				break;
 			case BOTTOM_SIDE:
-				x -= layout->position + width / 2;
+				x += (is_rtl ? 1 : -1 ) * (layout->position + width / 2);
 				break;
 			case LEFT_SIDE:
-				y -= layout->position + height / 2;
+				y += (is_rtl ? 1 : -1) * (layout->position + height / 2);
 				break;
 			case TOP_SIDE:
-				x += layout->position + width / 2;
+				x += (is_rtl ? -1 : 1) * (layout->position + width / 2);
 				break;
 			}
 		}
@@ -1397,13 +1415,13 @@ emblem_layout_next (EmblemLayout *layout,
 		/* It doesn't fit, so move to the next side. */
 		switch (layout->side) {
 		case RIGHT_SIDE:
-			layout->side = BOTTOM_SIDE;
+			layout->side = is_rtl ? TOP_SIDE : BOTTOM_SIDE;
 			break;
 		case BOTTOM_SIDE:
-			layout->side = LEFT_SIDE;
+			layout->side = is_rtl ? RIGHT_SIDE : LEFT_SIDE;
 			break;
 		case LEFT_SIDE:
-			layout->side = TOP_SIDE;
+			layout->side = is_rtl ? BOTTOM_SIDE : TOP_SIDE;
 			break;
 		case TOP_SIDE:
 		default:
@@ -1740,6 +1758,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	GdkRectangle draw_rect, pixbuf_rect;
+	gboolean is_rtl;
 			
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -1775,9 +1794,11 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 
 	draw_embedded_text (icon_item, drawable,  icon_rect.x0, icon_rect.y0);
 	
+	is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (item->canvas));
+
 	/* Draw the emblem pixbufs. */
-	emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+	emblem_layout_reset (&emblem_layout, icon_item, icon_rect, is_rtl);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 		draw_pixbuf (emblem_pixbuf, drawable, emblem_rect.x0, emblem_rect.y0);
 	}
 	
@@ -1840,7 +1861,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_auto_dir (layout, FALSE);
 	
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_LTR) {
+		if (!nautilus_icon_container_is_layout_rtl (container)) {
 			pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
 		} else {
 			pango_layout_set_alignment (layout, PANGO_ALIGN_RIGHT);
@@ -2048,6 +2069,7 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 	ArtIRect emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
+	gboolean is_rtl;
 	
 	details = icon_item->details;
 	
@@ -2074,9 +2096,11 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 		return TRUE;
 	}
 
+	is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (icon_item)->canvas));
+
 	/* Check for hit in the emblem pixbufs. */
-	emblem_layout_reset (&emblem_layout, icon_item, icon_item->details->canvas_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+	emblem_layout_reset (&emblem_layout, icon_item, icon_item->details->canvas_rect, is_rtl);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 		if (hit_test_pixbuf (emblem_pixbuf, emblem_rect, canvas_rect)) {
 			return TRUE;
 		}	
@@ -2131,6 +2155,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 	double pixels_per_unit;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
+	gboolean is_rtl;
 
 	g_assert (x1 != NULL);
 	g_assert (y1 != NULL);
@@ -2161,10 +2186,12 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 		/* Compute text rectangle. */
 		text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE);
 		
+		is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (item->canvas));
+
 		/* Compute total rectangle, adding in emblem rectangles. */
 		art_irect_union (&total_rect, &icon_rect, &text_rect);
-		emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
-		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		emblem_layout_reset (&emblem_layout, icon_item, icon_rect, is_rtl);
+		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 			emblem_rect.x0 = floor (emblem_rect.x0 / pixels_per_unit);
 			emblem_rect.y0 = floor (emblem_rect.y0 / pixels_per_unit);
 			emblem_rect.x1 = ceil (emblem_rect.x1 / pixels_per_unit);

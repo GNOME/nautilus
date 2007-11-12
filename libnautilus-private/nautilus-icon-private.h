@@ -43,6 +43,14 @@ typedef struct {
 
 	/* X/Y coordinates. */
 	double x, y;
+
+	/*
+	 * In RTL mode x is RTL x position, we use saved_ltr_x for
+	 * keeping track of x value before it gets converted into
+	 * RTL value, this is used for saving the icon position 
+	 * to the nautilus metafile. 
+	 */
+	 double saved_ltr_x;
 	
 	/* Scale factor (stretches icon). */
 	double scale;

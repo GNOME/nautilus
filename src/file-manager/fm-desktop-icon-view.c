@@ -568,6 +568,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	/* Set our default layout mode */
 	nautilus_icon_container_set_layout_mode (icon_container,
+						 gtk_widget_get_direction (GTK_WIDGET(icon_container)) == GTK_TEXT_DIR_RTL ?
+						 NAUTILUS_ICON_LAYOUT_T_B_R_L :
 						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 
 	g_signal_connect_object (icon_container, "middle_click",

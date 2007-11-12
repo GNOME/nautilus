@@ -206,6 +206,10 @@ static void          nautilus_icon_container_update_visible_icons   (NautilusIco
 static void          reveal_icon                                    (NautilusIconContainer *container,
 								     NautilusIcon *icon);
 
+static void	     nautilus_icon_container_set_rtl_positions (NautilusIconContainer *container);
+static double	     get_mirror_x_position                     (NautilusIconContainer *container,
+								NautilusIcon *icon,
+								double x);
 
 static gpointer accessible_parent_class;
 
@@ -293,9 +297,9 @@ icon_set_position (NautilusIcon *icon,
 	NautilusIconContainer *container;
 	double pixels_per_unit;	
 	int left, top, right, bottom;
-	int width, height;
-	int x1, y1, x2, y2;
+	int width;
 	int container_x, container_y, container_width, container_height;
+	ArtDRect icon_bounds;
 
 	if (icon->x == x && icon->y == y) {
 		return;
@@ -332,16 +336,23 @@ icon_set_position (NautilusIcon *icon,
 		right = left + container_width / pixels_per_unit;
 		bottom = top + container_height / pixels_per_unit;
 
-		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-		width = x2 - x1;
-		height = y2 - y1;
+		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+		width = icon_bounds.x1 - icon_bounds.x0;
 				
-		if (x > right - DESKTOP_ICON_SAFETY_PAD) {
-			x = right - DESKTOP_ICON_SAFETY_PAD;
-		}
-		
-		if (x < left) {
-			x = left;
+		if (nautilus_icon_container_is_layout_rtl(container)) {
+			if (x + width < left + DESKTOP_ICON_SAFETY_PAD) {
+				x = left + DESKTOP_ICON_SAFETY_PAD - width;
+			}
+			if (x + width > right) {
+				x = right - width;
+			}
+		} else {
+			if (x > right - DESKTOP_ICON_SAFETY_PAD) {
+				x = right - DESKTOP_ICON_SAFETY_PAD;
+			}
+			if (x < left) {
+				x = left;
+			}
 		}
 		if (y > bottom - DESKTOP_ICON_SAFETY_PAD) {
 			y = bottom - DESKTOP_ICON_SAFETY_PAD;
@@ -886,6 +897,14 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	 */
 	eel_gtk_adjustment_clamp_value (hadj);
 	eel_gtk_adjustment_clamp_value (vadj);
+
+	/*
+	 * In RTL mode, when displayed force horizontal scrollbar to the 
+	 * right side.
+	 */
+
+	if (nautilus_icon_container_is_layout_rtl(container))
+		gtk_adjustment_set_value (hadj, hadj->upper - hadj->page_size);
 }
 
 static int
@@ -950,8 +969,9 @@ lay_down_one_line (NautilusIconContainer *container,
 	double x, y_offset;
 	IconPositions *position;
 	int i;
+	gboolean is_rtl;
 
-	/* FIXME: Should layout differently when in RTL base mode */
+	is_rtl = nautilus_icon_container_is_layout_rtl (container);
 
 	/* Lay out the icons along the baseline. */
 	x = ICON_PAD_LEFT;
@@ -969,8 +989,10 @@ lay_down_one_line (NautilusIconContainer *container,
 
 		icon_set_position
 			(icon,
-			 x + position->x_offset,
+			 is_rtl ? get_mirror_x_position (container, icon, x + position->x_offset) : x + position->x_offset,
 			 y + y_offset);
+
+		icon->saved_ltr_x = is_rtl ? get_mirror_x_position (container, icon, icon->x) : icon->x;
 
 		x += position->width;
 	}
@@ -1008,14 +1030,8 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	positions = g_array_new (FALSE, FALSE, sizeof (IconPositions));
 	
 	/* Lay out icons a line at a time. */
-	canvas_width = (GTK_WIDGET (container)->allocation.width
-			- container->details->left_margin
-			- container->details->right_margin)
-		/ EEL_CANVAS (container)->pixels_per_unit;
-	canvas_height = (GTK_WIDGET (container)->allocation.height
-			 - container->details->top_margin
-			 - container->details->bottom_margin)
-		/ EEL_CANVAS (container)->pixels_per_unit;
+	canvas_width = CANVAS_WIDTH(container);
+	canvas_height = CANVAS_HEIGHT(container);
 
 	max_icon_width = max_text_width = 0.0;
 
@@ -1158,6 +1174,9 @@ snap_position (NautilusIconContainer *container,
 	icon_width = icon_position.x1 - icon_position.x0;
 	icon_height = icon_position.y1 - icon_position.y0;
 
+	if (nautilus_icon_container_is_layout_rtl (container))
+	    *x = get_mirror_x_position (container, icon, *x);
+
 	if (*x + icon_width / 2 < DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X) {
 		*x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X - icon_width / 2;
 	}
@@ -1168,6 +1187,10 @@ snap_position (NautilusIconContainer *container,
 
 	center_x = *x + icon_width / 2;
 	*x = SNAP_NEAREST_HORIZONTAL (center_x) - (icon_width / 2);
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+	    *x = get_mirror_x_position (container, icon, *x);
+	}
+
 
 	/* Find the grid position vertically and place on the proper baseline */
 	baseline_y = *y + icon_height;
@@ -1206,14 +1229,8 @@ placement_grid_new (NautilusIconContainer *container, gboolean tight)
 	int i;
 
 	/* Get container dimensions */
-	width  = (GTK_WIDGET (container)->allocation.width
-		  - container->details->left_margin
-		  - container->details->right_margin) /
-		EEL_CANVAS (container)->pixels_per_unit;
-	height = (GTK_WIDGET (container)->allocation.height
-		  - container->details->top_margin
-		  - container->details->bottom_margin) /
-		EEL_CANVAS (container)->pixels_per_unit;
+	width  = CANVAS_WIDTH(container);
+	height = CANVAS_HEIGHT(container);
 
 	num_columns = width / SNAP_SIZE_X;
 	num_rows = height / SNAP_SIZE_Y;
@@ -1342,14 +1359,8 @@ find_empty_location (NautilusIconContainer *container,
 	gboolean collision;
 
 	/* Get container dimensions */
-	canvas_width  = (GTK_WIDGET (container)->allocation.width
-			 - container->details->left_margin
-			 - container->details->right_margin) /
-		EEL_CANVAS (container)->pixels_per_unit;
-	canvas_height = (GTK_WIDGET (container)->allocation.height
-			 - container->details->top_margin
-			 - container->details->bottom_margin) /
-		EEL_CANVAS (container)->pixels_per_unit;
+	canvas_width  = CANVAS_WIDTH(container);
+	canvas_height = CANVAS_HEIGHT(container);
 
 	icon_get_bounding_box (icon, 
 			       &icon_position.x0, &icon_position.y0, 
@@ -1412,6 +1423,10 @@ align_icons (NautilusIconContainer *container)
 	unplaced_icons = g_list_sort (unplaced_icons, 
 				      compare_icons_by_position);
 
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+		unplaced_icons = g_list_reverse (unplaced_icons);
+	}
+
 	grid = placement_grid_new (container, TRUE);
 
 	if (!grid) {
@@ -1423,24 +1438,54 @@ align_icons (NautilusIconContainer *container)
 		int x, y;
 
 		icon = l->data;
-		x = icon->x;
+		x = icon->saved_ltr_x;
 		y = icon->y;
-
 		find_empty_location (container, grid, 
 				     icon, x, y, &x, &y);
 
 		icon_set_position (icon, x, y);
-
+		icon->saved_ltr_x = icon->x;
 		placement_grid_mark_icon (grid, icon);
 	}
 
 	g_list_free (unplaced_icons);
 
 	placement_grid_free (grid);
+
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+		nautilus_icon_container_set_rtl_positions (container);
+	}
+}
+
+static double
+get_mirror_x_position (NautilusIconContainer *container, NautilusIcon *icon, double x) {
+	ArtDRect icon_bounds;
+
+	icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+
+	return CANVAS_WIDTH(container) - x - (icon_bounds.x1 - icon_bounds.x0);
 }
 
 static void
-lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
+nautilus_icon_container_set_rtl_positions (NautilusIconContainer *container)
+{
+	GList *l;
+	NautilusIcon *icon;
+	double x;
+
+	if (!container->details->icons) {
+		return;
+	}
+
+	for (l = container->details->icons; l != NULL; l = l->next) {
+		icon = l->data;
+		x = get_mirror_x_position (container, icon, icon->saved_ltr_x);
+		icon_set_position (icon, x, icon->y);
+	}
+}
+
+static void
+lay_down_icons_vertical (NautilusIconContainer *container, GList *icons)
 {
 	GList *p, *placed_icons, *unplaced_icons;
 	int total, new_length, placed;
@@ -1450,14 +1495,8 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	ArtDRect icon_rect;
 
 	/* Get container dimensions */
-	width  = GTK_WIDGET (container)->allocation.width /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->left_margin
-		- container->details->right_margin;
-	height = GTK_WIDGET (container)->allocation.height /
-		EEL_CANVAS (container)->pixels_per_unit
-		- container->details->top_margin
-		- container->details->bottom_margin;
+	width  = CANVAS_WIDTH(container);
+	height = CANVAS_HEIGHT(container);
 
 	/* Determine which icons have and have not been placed */
 	placed_icons = NULL;
@@ -1472,6 +1511,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
 			if (icon_is_positioned (icon)) {
+				icon_set_position(icon, icon->saved_ltr_x, icon->y);
 				placed_icons = g_list_prepend (placed_icons, icon);
 			} else {
 				icon->x = 0;
@@ -1507,6 +1547,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 						     &x, &y);
 				
 				icon_set_position (icon, x, y);
+				icon->saved_ltr_x = x;
 				placement_grid_mark_icon (grid, icon);
 			}
 
@@ -1595,6 +1636,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 						   center_x - (icon_rect.x1 - icon_rect.x0) / 2,
 						   y);
 				
+				icon->saved_ltr_x = icon->x;
 				y += icon_height + DESKTOP_PAD_VERTICAL;
 			}
 			icons = p;
@@ -1618,14 +1660,13 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 	switch (container->details->layout_mode)
 	{
 	case NAUTILUS_ICON_LAYOUT_L_R_T_B:
+	case NAUTILUS_ICON_LAYOUT_R_L_T_B:
 		lay_down_icons_horizontal (container, icons, start_y);
 		break;
 		
 	case NAUTILUS_ICON_LAYOUT_T_B_L_R:
 	case NAUTILUS_ICON_LAYOUT_T_B_R_L:
-		/* FIXME bugzilla.gnome.org 42479: 
-		 * Need to handle T_B_R_L differently. */
-		lay_down_icons_tblr (container, icons);
+		lay_down_icons_vertical (container, icons);
 		break;
 		
 	default:
@@ -1647,6 +1688,10 @@ redo_layout_internal (NautilusIconContainer *container)
 	    && container->details->drag_state != DRAG_STATE_STRETCH) {
 		resort (container);
 		lay_down_icons (container, container->details->icons, 0);
+	}
+
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+		nautilus_icon_container_set_rtl_positions (container);
 	}
 
 	nautilus_icon_container_update_scroll_region (container);
@@ -1887,10 +1932,12 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 			icon_set_position (icon, x, y);
 			emit_signal = update_position;
 		}
+
+		icon->saved_ltr_x = nautilus_icon_container_is_layout_rtl (container) ? get_mirror_x_position (container, icon, icon->x) : icon->x;
 	}
 	
 	if (emit_signal) {
-		position.x = icon->x;
+		position.x = icon->saved_ltr_x;
 		position.y = icon->y;
 		position.scale = scale;
 		g_signal_emit (container,
@@ -2346,10 +2393,10 @@ compare_icons_vertical_first_reverse_horizontal (NautilusIconContainer *containe
 		return +1;
 	}
 	if (ax < bx) {
-		return +1;
+		return (nautilus_icon_container_is_layout_rtl (container) ? -1 : +1);
 	}
 	if (ax > bx) {
-		return -1;
+		return (nautilus_icon_container_is_layout_rtl (container) ? +1 : -1);
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
 }
@@ -3541,8 +3588,13 @@ end_stretching (NautilusIconContainer *container,
 	ungrab_stretch_icon (container);
 
 	/* now that we're done stretching, update the icon's position */
+	
 	icon = container->details->drag_icon;	
-	position.x = icon->x;
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+		position.x = icon->saved_ltr_x = get_mirror_x_position (container, icon, icon->x);
+	} else {
+		position.x = icon->x;
+	}
 	position.y = icon->y;
 	position.scale = icon->scale;
 	g_signal_emit (container,
@@ -5926,6 +5978,7 @@ assign_icon_position (NautilusIconContainer *container,
 	if (!container->details->auto_layout) {
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
+			icon->saved_ltr_x = icon->x;
 		} else {
 			return FALSE;
 		}
@@ -6880,7 +6933,7 @@ nautilus_icon_container_freeze_icon_positions (NautilusIconContainer *container)
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 
-		position.x = icon->x;
+		position.x = icon->saved_ltr_x;
 		position.y = icon->y;
 		position.scale = icon->scale;
 		g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
@@ -7008,6 +7061,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	ArtDRect icon_rect;
+	ArtDRect text_rect;
 	PangoContext *context;
 	PangoFontDescription *desc;
 	const char *editable_text;
@@ -7079,14 +7133,15 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	pango_font_description_free (desc);
 	
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+	text_rect = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
 	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
 
 
 	if (details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 		eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
-				icon_rect.x1,
-				icon_rect.y0,
+				text_rect.x0,
+				text_rect.y0,
 				&x, &y);
 	} else {
 		eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
@@ -8214,6 +8269,15 @@ nautilus_self_check_icon_container (void)
 	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 16, 16, 16, 17, 17), "0,0:17");
 	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 16, 16, 16, 17, 16), "0,0:16");
 	EEL_CHECK_STRING_RESULT (check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
+}
+
+gboolean
+nautilus_icon_container_is_layout_rtl (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
+
+	return container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L ||
+		container->details->layout_mode == NAUTILUS_ICON_LAYOUT_R_L_T_B;
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */
