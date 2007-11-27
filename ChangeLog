@@ -1,3 +1,9 @@
+2007-11-27  Andre Klapper  <a9016009@gmx.de>
+
+	* configure.in:
+	add "sys/param.h" to AC_CHECK_HEADERS() to fix NetBSD build.
+	Fixes bug #496266. Committed on behalf of Christian Kirbach.
+
 2007-10-03  Sebastien Bacher  <seb128@ubuntu.com>
 
 	* libnautilus-private/nautilus-icon-container.c: (key_press_event):
