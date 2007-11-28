@@ -127,6 +127,8 @@ nautilus_search_bar_init (NautilusSearchBar *bar)
 
 	bar->details = g_new0 (NautilusSearchBarDetails, 1);
 
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (bar), FALSE);
+
 	alignment = gtk_alignment_new (0.5, 0.5,
 				       1.0, 1.0);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
