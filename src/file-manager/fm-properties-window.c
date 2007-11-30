@@ -3861,9 +3861,9 @@ add_permissions_combo_box (FMPropertiesWindow *window, GtkTable *table,
 	if (short_label) {
 		row = append_title_field (table, _("Access:"), &label);
 	} else if (is_folder) {
-		row = append_title_field (table, _("Folder Access:"), &label);
+		row = append_title_field (table, _("Folder access:"), &label);
 	} else {
-		row = append_title_field (table, _("File Access:"), &label);
+		row = append_title_field (table, _("File access:"), &label);
 	}
 	
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
@@ -4484,7 +4484,7 @@ create_permissions_page (FMPropertiesWindow *window)
 		gtk_table_set_row_spacing (page_table, page_table->nrows - 1, 18);
 	
 		append_title_value_pair
-			(window, page_table, _("SELinux Context:"), 
+			(window, page_table, _("SELinux context:"), 
 			 "selinux_context", _("--"),
 			 FALSE);
 		append_title_value_pair
@@ -4502,7 +4502,7 @@ create_permissions_page (FMPropertiesWindow *window)
 					  GTK_FILL, 0,
 					  0, 0);
 		
-			button = gtk_button_new_with_mnemonic (_("Apply permissions to enclosed files"));
+			button = gtk_button_new_with_mnemonic (_("Apply Permissions to Enclosed Files"));
 			gtk_widget_show (button);
 			gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 			g_signal_connect (button, "clicked",
