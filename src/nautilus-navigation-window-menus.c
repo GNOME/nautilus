@@ -43,7 +43,6 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
@@ -52,13 +51,9 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-about.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
@@ -291,14 +286,14 @@ nautilus_navigation_window_remove_go_menu_items (NautilusNavigationWindow *windo
 
 static void
 show_bogus_history_window (NautilusWindow *window,
-			    NautilusBookmark *bookmark)
+			   NautilusBookmark *bookmark)
 {
-	char *uri;
+	GFile *file;
 	char *uri_for_display;
 	char *detail;
 
-	uri = nautilus_bookmark_get_uri (bookmark);
-	uri_for_display = eel_format_uri_for_display (uri);
+	file = nautilus_bookmark_get_location (bookmark);
+	uri_for_display = g_file_get_parse_name (file);
 	
 	detail = g_strdup_printf (_("The location \"%s\" does not exist."), uri_for_display);
 
@@ -306,7 +301,7 @@ show_bogus_history_window (NautilusWindow *window,
 				 detail,
 				 GTK_WINDOW (window));
 
-	g_free (uri);
+	g_object_unref (file);
 	g_free (uri_for_display);
 	g_free (detail);
 }
@@ -411,11 +406,8 @@ static void
 nautilus_navigation_window_initialize_go_menu (NautilusNavigationWindow *window)
 {
 	/* Recreate bookmarks part of menu if history list changes
-	 * or if icon theme changes.
 	 */
 	g_signal_connect_object (nautilus_signaller_get_current (), "history_list_changed",
-				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
 				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
 }
 
@@ -439,7 +431,7 @@ action_folder_window_callback (GtkAction *action,
 			       gpointer user_data)
 {
 	NautilusWindow *current_window;
-	char *current_location;
+	GFile *current_location;
 
 	current_window = NAUTILUS_WINDOW (user_data);
 	current_location = nautilus_window_get_location (current_window);
@@ -449,7 +441,9 @@ action_folder_window_callback (GtkAction *action,
 			NULL,
 			current_location,
 			gtk_window_get_screen (GTK_WINDOW (current_window)));
-	g_free (current_location);
+	if (current_location != NULL) {
+		g_object_unref (current_location);
+	}
 }
 
 static void

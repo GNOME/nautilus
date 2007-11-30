@@ -33,14 +33,14 @@
 void                    nautilus_window_manage_views_destroy          (NautilusWindow           *window);
 void                    nautilus_window_manage_views_finalize         (NautilusWindow           *window);
 void                    nautilus_window_open_location                 (NautilusWindow           *window,
-                                                                       const char               *location,
+                                                                       GFile                    *location,
                                                                        gboolean                  close_behind);
 void                    nautilus_window_open_location_with_selection  (NautilusWindow           *window,
-                                                                       const char               *location,
+                                                                       GFile                    *location,
                                                                        GList                    *selection,
                                                                        gboolean                  close_behind);
 void                    nautilus_window_open_location_full            (NautilusWindow           *window,
-                                                                       const char               *location,
+                                                                       GFile                    *location,
                                                                        NautilusWindowOpenMode    mode,
                                                                        NautilusWindowOpenFlags   flags,
                                                                        GList                    *new_selection);

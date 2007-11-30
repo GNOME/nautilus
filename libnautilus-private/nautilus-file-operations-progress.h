@@ -30,7 +30,6 @@
 #define NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 
 #include <gtk/gtkdialog.h>
-#include <libgnomevfs/gnome-vfs-file-size.h>
 
 typedef struct NautilusFileOperationsProgressDetails NautilusFileOperationsProgressDetails;
 
@@ -56,14 +55,14 @@ NautilusFileOperationsProgress *nautilus_file_operations_progress_new           
 											const char                     *from_prefix,
 											const char                     *to_prefix,
 											gulong                          files_total,
-											GnomeVFSFileSize                bytes_total,
+											goffset                bytes_total,
 											gboolean			use_timeout);
 void                            nautilus_file_operations_progress_done                 (NautilusFileOperationsProgress *dialog);
 void                            nautilus_file_operations_progress_set_progress_title   (NautilusFileOperationsProgress *dialog,
 											const char                     *progress_title);
 void                            nautilus_file_operations_progress_set_total            (NautilusFileOperationsProgress *dialog,
 											gulong                          files_total,
-											GnomeVFSFileSize                bytes_total);
+											goffset                bytes_total);
 void                            nautilus_file_operations_progress_set_operation_string (NautilusFileOperationsProgress *dialog,
 											const char                     *operation_string);
 void                            nautilus_file_operations_progress_clear                (NautilusFileOperationsProgress *dialog);
@@ -75,10 +74,10 @@ void                            nautilus_file_operations_progress_new_file      
 											const char                     *from_prefix,
 											const char                     *to_prefix,
 											gulong                          file_index,
-											GnomeVFSFileSize                size);
+											goffset                size);
 void                            nautilus_file_operations_progress_update_sizes         (NautilusFileOperationsProgress *dialog,
-											GnomeVFSFileSize                bytes_done_in_file,
-											GnomeVFSFileSize                bytes_done);
+											goffset                bytes_done_in_file,
+											goffset                bytes_done);
 void				nautilus_file_operations_progress_pause_timeout	       (NautilusFileOperationsProgress *progress);
 void				nautilus_file_operations_progress_resume_timeout       (NautilusFileOperationsProgress *progress);
 

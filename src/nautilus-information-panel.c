@@ -40,10 +40,6 @@
 #include <gtk/gtkhbox.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
@@ -63,7 +59,6 @@ struct NautilusInformationPanelDetails {
 	GtkHBox *button_box_centerer;
 	GtkVBox *button_box;
 	gboolean has_buttons;
-	char *uri;
 	NautilusFile *file;
 	guint file_changed_connection;
 	gboolean background_connected;
@@ -298,7 +293,6 @@ nautilus_information_panel_finalize (GObject *object)
 		nautilus_file_unref (information_panel->details->file);
 	}
 	
-	g_free (information_panel->details->uri);
 	g_free (information_panel->details->default_background_color);
 	g_free (information_panel->details->default_background_image);
 	g_free (information_panel->details->current_background_color);
@@ -441,7 +435,7 @@ uri_is_local_image (const char *uri)
 	GdkPixbuf *pixbuf;
 	char *image_path;
 	
-	image_path = gnome_vfs_get_local_path_from_uri (uri);
+	image_path = g_filename_from_uri (uri, NULL, NULL);
 	if (image_path == NULL) {
 		return FALSE;
 	}
@@ -516,7 +510,10 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 							    NULL);
 			}
 		} else {	
-			if (eel_is_remote_uri (uris[0])) {
+			GFile *f;
+
+			f = g_file_new_for_uri (uris[0]);
+			if (!g_file_is_native (f)) {
 				eel_show_error_dialog (
 					_("The file that you dropped is not local."),
 					_("You can only use local images as custom icons."), 
@@ -528,6 +525,7 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 					_("You can only use images as custom icons."),
 					window);
 			}
+			g_object_unref (f);
 		}	
 		break;
 	}
@@ -795,25 +793,18 @@ nautilus_information_panel_get_window (NautilusInformationPanel *information_pan
 }
 
 static void
-command_button_callback (GtkWidget *button, char *id_str)
+command_button_callback (GtkWidget *button, GAppInfo *application)
 {
 	NautilusInformationPanel *information_panel;
-	GnomeVFSMimeApplication *application;
 	GList files;
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 
-	application = gnome_vfs_mime_application_new_from_desktop_id (id_str);
-
-	if (application != NULL) {
-		files.next = NULL;
-		files.prev = NULL;
-		files.data = information_panel->details->file;
-		nautilus_launch_application (application, &files,
-					     nautilus_information_panel_get_window (information_panel));	
-
-		gnome_vfs_mime_application_free (application);
-	}
+	files.next = NULL;
+	files.prev = NULL;
+	files.data = information_panel->details->file;
+	nautilus_launch_application (application, &files,
+				     nautilus_information_panel_get_window (information_panel));	
 }
 
 /* interpret commands for buttons specified by metadata. Handle some built-in ones explicitly, or fork
@@ -832,10 +823,10 @@ metadata_button_callback (GtkWidget *button, const char *command_str)
 static void
 add_command_buttons (NautilusInformationPanel *information_panel, GList *application_list)
 {
-	char *id_string, *temp_str;
+	char *temp_str;
 	GList *p;
 	GtkWidget *temp_button, *label;
-	GnomeVFSMimeApplication *application;
+	GAppInfo *application;
 
 	/* There's always at least the "Open with..." button */
 	information_panel->details->has_buttons = TRUE;
@@ -843,7 +834,7 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 	for (p = application_list; p != NULL; p = p->next) {
 	        application = p->data;	        
 
-		temp_str = g_strdup_printf (_("Open with %s"), application->name);
+		temp_str = g_strdup_printf (_("Open with %s"), g_app_info_get_name (application));
 	        temp_button = gtk_button_new_with_label (temp_str);
 		label = GTK_BIN (temp_button)->child;
 		gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_START);
@@ -853,13 +844,11 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 				    FALSE, FALSE, 
 				    0);
 
-		id_string = g_strdup (gnome_vfs_mime_application_get_desktop_id (application));
-
 		g_signal_connect_data (temp_button,
 				       "clicked",
 				       G_CALLBACK (command_button_callback),
-				       id_string,
-				       (GClosureNotify)g_free,
+				       g_object_ref (application),
+				       (GClosureNotify)g_object_unref,
 				       0);
 
                 g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
@@ -953,7 +942,7 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 		short_application_list = 
 			nautilus_mime_get_applications_for_file (information_panel->details->file);
 		add_command_buttons (information_panel, short_application_list);
-		gnome_vfs_mime_application_list_free (short_application_list);
+		eel_g_object_list_free (short_application_list);
 	}
 
 	gtk_widget_show (GTK_WIDGET (information_panel->details->button_box_centerer));
@@ -1026,7 +1015,7 @@ background_metadata_changed_callback (NautilusInformationPanel *information_pane
 	NautilusFileAttributes attributes;
 	gboolean ready;
 
-	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
 	ready = nautilus_file_check_if_ready (information_panel->details->file, attributes);
 
 	if (ready) {
@@ -1052,24 +1041,20 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 	g_return_if_fail (initial_title != NULL);
 
 	/* there's nothing to do if the uri is the same as the current one */ 
-	if (eel_strcmp (information_panel->details->uri, new_uri) == 0) {
+	if (information_panel->details->file != NULL &&
+	    nautilus_file_matches_uri (information_panel->details->file, new_uri)) {
 		return;
 	}
-	
-	g_free (information_panel->details->uri);
-	information_panel->details->uri = g_strdup (new_uri);
-		
+
 	if (information_panel->details->file != NULL) {
 		g_signal_handler_disconnect (information_panel->details->file, 
 					     information_panel->details->file_changed_connection);
 		nautilus_file_monitor_remove (information_panel->details->file, information_panel);
 	}
 
-
-	file = nautilus_file_get (information_panel->details->uri);
+	file = nautilus_file_get_by_uri (new_uri);
 
 	nautilus_file_unref (information_panel->details->file);
-
 	information_panel->details->file = file;
 	
 	information_panel->details->file_changed_connection =
@@ -1077,7 +1062,7 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 					 G_CALLBACK (background_metadata_changed_callback),
 					 information_panel, G_CONNECT_SWAPPED);
 
-	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
 	nautilus_file_monitor_add (information_panel->details->file, information_panel, attributes);
 
 	background_metadata_changed_callback (information_panel);

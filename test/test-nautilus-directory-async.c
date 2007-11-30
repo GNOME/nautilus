@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -84,12 +83,11 @@ main (int argc, char **argv)
 	client1 = g_new0 (int, 1);
 	client2 = g_new0 (int, 1);
 
-	gnome_vfs_init ();
 	gtk_init (&argc, &argv);
 
 	query = nautilus_query_new ();
 	nautilus_query_set_text (query, "richard hult");
-	directory = nautilus_directory_get ("x-nautilus-search://0/");
+	directory = nautilus_directory_get_by_uri ("x-nautilus-search://0/");
 	nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 	g_object_unref (query);
 

@@ -165,21 +165,12 @@ nautilus_file_info_is_directory (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_directory (file);
 }
 
-GnomeVFSFileInfo *
-nautilus_file_info_get_vfs_file_info (NautilusFileInfo *file)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_vfs_file_info != NULL, NULL);
-
-	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_vfs_file_info (file);
-}
-
 void
 nautilus_file_info_add_emblem (NautilusFileInfo *file,
 			       const char *emblem_name)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE_INFO (file));
-	g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_vfs_file_info != NULL);
+	g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->add_emblem != NULL);
 
 	NAUTILUS_FILE_INFO_GET_IFACE (file)->add_emblem (file, emblem_name);
 }
@@ -217,40 +208,4 @@ nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
 	g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info != NULL);
 	
 	NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info (file);
-}
-
-gboolean          
-nautilus_file_info_has_volume         (NautilusFileInfo *file) 
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->has_volume != NULL, FALSE);
-
-	return NAUTILUS_FILE_INFO_GET_IFACE (file)->has_volume (file);
-}
-
-gboolean          
-nautilus_file_info_has_drive         (NautilusFileInfo *file)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->has_drive != NULL, FALSE);
-
-	return NAUTILUS_FILE_INFO_GET_IFACE (file)->has_drive (file);
-}
-
-GnomeVFSVolume*   
-nautilus_file_info_get_volume         (NautilusFileInfo *file)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file),NULL);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_volume != NULL,NULL);
-	
-	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_volume (file);
-}
-
-GnomeVFSDrive*   
-nautilus_file_info_get_drive         (NautilusFileInfo *file)
-{
-	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file),NULL);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_drive != NULL,NULL);
-	
-	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_drive (file);
 }

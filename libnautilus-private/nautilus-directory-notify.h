@@ -31,20 +31,36 @@ typedef struct {
 } URIPair;
 
 typedef struct {
-	char *uri;
+	GFile *from;
+	GFile *to;
+} GFilePair;
+
+typedef struct {
+	GFile *location;
 	gboolean set;
 	GdkPoint point;
 	int screen;
 } NautilusFileChangesQueuePosition;
 
 /* Almost-public change notification calls */
-void nautilus_directory_notify_files_added       (GList        *uris);
-void nautilus_directory_notify_files_changed     (GList        *uris);
-void nautilus_directory_notify_files_moved       (GList        *uri_pairs);
-void nautilus_directory_notify_files_removed     (GList        *uris);
-void nautilus_directory_schedule_metadata_copy   (GList        *uri_pairs);
-void nautilus_directory_schedule_metadata_move   (GList        *uri_pairs);
-void nautilus_directory_schedule_metadata_remove (GList        *uris);
+void nautilus_directory_notify_files_added   (GList *files);
+void nautilus_directory_notify_files_moved   (GList *file_pairs);
+void nautilus_directory_notify_files_changed (GList *files);
+void nautilus_directory_notify_files_removed (GList *files);
+
+void nautilus_directory_schedule_metadata_copy   (GList        *file_pairs);
+void nautilus_directory_schedule_metadata_move   (GList        *file_pairs);
+void nautilus_directory_schedule_metadata_remove (GList        *files);
+
+/* Deprecated URI versions: to be converted */
+void nautilus_directory_notify_files_added_by_uri      (GList        *uris);
+void nautilus_directory_notify_files_changed_by_uri    (GList        *uris);
+void nautilus_directory_notify_files_moved_by_uri      (GList        *uri_pairs);
+void nautilus_directory_notify_files_removed_by_uri    (GList        *uris);
+
+void nautilus_directory_schedule_metadata_copy_by_uri   (GList        *uri_pairs);
+void nautilus_directory_schedule_metadata_move_by_uri   (GList        *uri_pairs);
+void nautilus_directory_schedule_metadata_remove_by_uri (GList        *uris);
 void nautilus_directory_schedule_position_set    (GList        *position_setting_list);
 
 /* Change notification hack.

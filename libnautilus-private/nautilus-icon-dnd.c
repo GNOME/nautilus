@@ -59,9 +59,6 @@
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <stdio.h>
@@ -193,10 +190,10 @@ typedef struct {
 
 static void
 canvas_rect_world_to_widget (EelCanvas *canvas,
-			     ArtDRect *world_rect,
-			     ArtIRect *widget_rect)
+			     EelDRect *world_rect,
+			     EelIRect *widget_rect)
 {
-	ArtDRect window_rect;
+	EelDRect window_rect;
 	
 	eel_canvas_world_to_window (canvas,
 				    world_rect->x0, world_rect->y0,
@@ -225,8 +222,8 @@ static gboolean
 icon_get_data_binder (NautilusIcon *icon, gpointer data)
 {
 	IconGetDataBinderContext *context;
-	ArtDRect world_rect;
-	ArtIRect widget_rect;
+	EelDRect world_rect;
+	EelIRect widget_rect;
 	char *uri;
 	NautilusIconContainer *container;
 
@@ -246,11 +243,11 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 		return TRUE;
 	}
 
-	widget_rect = eel_art_irect_offset_by (widget_rect, 
+	widget_rect = eel_irect_offset_by (widget_rect, 
 		- container->details->dnd_info->drag_info.start_x,
 		- container->details->dnd_info->drag_info.start_y);
 
-	widget_rect = eel_art_irect_scale_by (widget_rect, 
+	widget_rect = eel_irect_scale_by (widget_rect, 
 		1 / EEL_CANVAS (container)->pixels_per_unit);
 	
 	/* pass the uri, mouse-relative x/y and icon width/height */
@@ -409,7 +406,7 @@ get_direct_save_filename (GdkDragContext *context)
 static void
 set_direct_save_uri (GtkWidget *widget, GdkDragContext *context, NautilusDragInfo *drag_info, int x, int y)
 {
-	GnomeVFSURI *base, *file_uri;
+	GFile *base, *child;
 	char *filename, *drop_target;
 	gchar *uri;
 	
@@ -433,11 +430,11 @@ set_direct_save_uri (GtkWidget *widget, GdkDragContext *context, NautilusDragInf
 	
 	if (filename != NULL && drop_target != NULL) {
 		/* Resolve relative path */
-		base = gnome_vfs_uri_new (drop_target);
-		file_uri = gnome_vfs_uri_append_file_name (base, (const gchar *) filename);
-		uri = gnome_vfs_uri_to_string (file_uri, GNOME_VFS_URI_HIDE_NONE);
-		gnome_vfs_uri_unref (base);
-		gnome_vfs_uri_unref (file_uri);
+		base = g_file_new_for_uri (drop_target);
+		child = g_file_get_child (base, filename);
+		uri = g_file_get_uri (child);
+		g_object_unref (base);
+		g_object_unref (child);
 		
 		/* Change the uri property */
 		gdk_property_change (GDK_DRAWABLE (context->source_window),
@@ -541,8 +538,8 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 {
 	GList *p;
 	int size;
-	ArtDRect point;
-	ArtIRect canvas_point;
+	EelDRect point;
+	EelIRect canvas_point;
 
 	/* build the hit-test rectangle. Base the size on the scale factor to ensure that it is
 	 * non-empty even at the smallest scale factor
@@ -602,12 +599,7 @@ nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
 	/* get the URI associated with the container */
 	container_uri_string = get_container_uri (container);
 	
-	if (eel_uri_is_trash (container_uri_string)) {
-		/* Special-case "trash:" because the nautilus_drag_items_local
-		 * would not work for it.
-		 */
-		result = nautilus_drag_items_in_trash (items);
-	} else if (eel_uri_is_desktop (container_uri_string)) {
+	if (eel_uri_is_desktop (container_uri_string)) {
 		result = nautilus_drag_items_on_desktop (items);
 	} else {
 		result = nautilus_drag_items_local (container_uri_string, items);
@@ -716,7 +708,7 @@ receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, 
 			    "dropped emblem '%s' on icon container URI: %s",
 			    keyword, uri);
 
-	file = nautilus_file_get (uri);
+	file = nautilus_file_get_by_uri (uri);
 	g_free (uri);
 	
 	nautilus_drag_file_receive_dropped_keyword (file, keyword);
@@ -960,7 +952,7 @@ handle_local_move (NautilusIconContainer *container,
 			 * this screen
 			 */
 
-			file = nautilus_file_get (item->uri);
+			file = nautilus_file_get_by_uri (item->uri);
 
 			screen = gtk_widget_get_screen (GTK_WIDGET (container));
 			screen_string = g_strdup_printf ("%d",
@@ -1097,7 +1089,7 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	if (drop_target_icon != NULL) {
 		icon_uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
 		if (icon_uri != NULL) {
-			file = nautilus_file_get (icon_uri);
+			file = nautilus_file_get_by_uri (icon_uri);
 
 			if (!nautilus_drag_can_accept_info (file,
 							    container->details->dnd_info->drag_info.data_type,
@@ -1130,9 +1122,11 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 static gboolean
 selection_is_image_file (GList *selection_list)
 {
-	char *mime_type;
+	const char *mime_type;
 	NautilusDragSelectionItem *selected_item;
 	gboolean result;
+	GFile *location;
+	GFileInfo *info;
 
 	/* Make sure only one item is selected */
 	if (selection_list == NULL ||
@@ -1142,11 +1136,22 @@ selection_is_image_file (GList *selection_list)
 
 	selected_item = selection_list->data;
 
-	mime_type = gnome_vfs_get_mime_type (selected_item->uri);
+	mime_type = NULL;
+	
+	location = g_file_new_for_uri (selected_item->uri);
+	info = g_file_query_info (location,
+				  G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+				  0, NULL, NULL);
+	if (info) {
+		mime_type = g_file_info_get_content_type (info);
+	}
 
 	result = eel_istr_has_prefix (mime_type, "image/");
-	
-	g_free (mime_type);
+
+	if (info) {
+		g_object_unref (info);
+	}
+	g_object_unref (location);
 	
 	return result;
 }
@@ -1339,7 +1344,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	/* Find if target icon accepts our drop. */
 	if (icon != NULL && (container->details->dnd_info->drag_info.data_type != NAUTILUS_ICON_DND_KEYWORD)) {
 		    uri = nautilus_icon_container_get_icon_uri (container, icon);
-		    file = nautilus_file_get (uri);
+		    file = nautilus_file_get_by_uri (uri);
 		    g_free (uri);
 		
 		    if (!nautilus_drag_can_accept_info (file,
@@ -1633,74 +1638,6 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	 */
 }
 
-/**
- * implements the gnome 1.x gnome_vfs_uri_list_extract_uris(), which
- * returns a GList of char *uris.
- **/
-GList *
-nautilus_icon_dnd_uri_list_extract_uris (const char *uri_list)
-{
-	/* Note that this is mostly very stolen from old libgnome/gnome-mime.c */
-
-	const gchar *p, *q;
-	gchar *retval;
-	GList *result = NULL;
-
-	g_return_val_if_fail (uri_list != NULL, NULL);
-
-	p = uri_list;
-
-	/* We don't actually try to validate the URI according to RFC
-	 * 2396, or even check for allowed characters - we just ignore
-	 * comments and trim whitespace off the ends.  We also
-	 * allow LF delimination as well as the specified CRLF.
-	 */
-	while (p != NULL) {
-		if (*p != '#') {
-			while (g_ascii_isspace (*p))
-				p++;
-
-			q = p;
-			while ((*q != '\0')
-			       && (*q != '\n')
-			       && (*q != '\r'))
-				q++;
-
-			if (q > p) {
-				q--;
-				while (q > p
-				       && g_ascii_isspace (*q))
-					q--;
-
-				retval = g_malloc (q - p + 2);
-				strncpy (retval, p, q - p + 1);
-				retval[q - p + 1] = '\0';
-
-				result = g_list_prepend (result, retval);
-			}
-		}
-		p = strchr (p, '\n');
-		if (p != NULL)
-			p++;
-	}
-
-	return g_list_reverse (result);
-}
-
-/**
- * nautilus_icon_dnd_uri_list_free_strings:
- * @list: A GList returned by nautilus_icon_dnd_uri_list_extract_uris()
- *
- * Releases all of the resources allocated by @list.
- * 
- * stolen from gnome-mime.c
- */
-void
-nautilus_icon_dnd_uri_list_free_strings (GList *list)
-{
-	eel_g_list_free_deep (list);
-}
-
 /** this callback is called in 2 cases.
     It is called upon drag_motion events to get the actual data 
     In that case, it just makes sure it gets the data.
@@ -1833,12 +1770,16 @@ drag_data_received_callback (GtkWidget *widget,
 				   drag_info->selection_data->data[0] == 'S' &&
 				   drag_info->direct_save_uri != NULL) {
 				GdkPoint p;
+				GFile *location;
 
-				nautilus_file_changes_queue_file_added (drag_info->direct_save_uri);
+				location = g_file_new_for_uri (drag_info->direct_save_uri);
+
+				nautilus_file_changes_queue_file_added (location);
 				p.x = x; p.y = y;
-				nautilus_file_changes_queue_schedule_position_set (drag_info->direct_save_uri,
+				nautilus_file_changes_queue_schedule_position_set (location,
 										   p,
 										   gdk_screen_get_number (gtk_widget_get_screen (widget)));
+				g_object_unref (location);
 				nautilus_file_changes_consume_changes (TRUE);
             		}
 		        success = TRUE;

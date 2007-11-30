@@ -50,12 +50,11 @@ typedef struct {
 
 GType      nautilus_column_chooser_get_type            (void);
 GtkWidget *nautilus_column_chooser_new                 (void);
-void       nautilus_column_chooser_set_settings    (NautilusColumnChooser *chooser,
-						    GList                 *visible_columns, 
-						    GList                 *column_order);
+void       nautilus_column_chooser_set_settings    (NautilusColumnChooser   *chooser,
+						    char                   **visible_columns, 
+						    char                   **column_order);
 void       nautilus_column_chooser_get_settings    (NautilusColumnChooser *chooser,
-						    GList                **visible_columns, 
-						    GList                **column_order);
-
+						    char                  ***visible_columns, 
+						    char                  ***column_order);
 
 #endif /* NAUTILUS_COLUMN_CHOOSER_H */

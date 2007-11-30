@@ -31,7 +31,9 @@
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
+#ifdef GIO_CONVERSION_DONE
 #include "nautilus-connect-server-dialog.h"
+#endif
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-window-manage-views.h"
@@ -39,36 +41,22 @@
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-search-bar.h"
-#include <eel/eel-debug.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
-#include <eel/eel-xml-extensions.h>
-#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkaboutdialog.h>
 #include <gtk/gtkenums.h>
 #include <gtk/gtkversion.h>
-#include <libgnome/gnome-help.h>
+#include <gio/gvfs.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-help.h>
-#include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-search-engine.h>
 #include <libnautilus-private/nautilus-signaller.h>
+#include <string.h>
 
 #define MENU_PATH_EXTENSION_ACTIONS                     "/MenuBar/File/Extension Actions"
 #define POPUP_PATH_EXTENSION_ACTIONS                     "/background/Before Zoom Items/Extension Actions"
@@ -128,16 +116,16 @@ static void
 activate_bookmark_in_menu_item (GtkAction *action, gpointer user_data)
 {
         BookmarkHolder *holder;
-        char *uri;
+        GFile *location;
 
         holder = (BookmarkHolder *)user_data;
 
 	if (nautilus_bookmark_uri_known_not_to_exist (holder->bookmark)) {
 		holder->failed_callback (holder->window, holder->bookmark);
 	} else {
-	        uri = nautilus_bookmark_get_uri (holder->bookmark);
-	        nautilus_window_go_to (holder->window, uri);
-	        g_free (uri);
+	        location = nautilus_bookmark_get_location (holder->bookmark);
+	        nautilus_window_go_to (holder->window, location);
+	        g_object_unref (location);
         }
 }
 
@@ -207,6 +195,8 @@ action_close_window_callback (GtkAction *action,
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
 }
 
+#ifdef GIO_CONVERSION_DONE
+
 static void
 action_connect_to_server_callback (GtkAction *action, 
 				   gpointer user_data)
@@ -214,25 +204,34 @@ action_connect_to_server_callback (GtkAction *action,
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GtkWidget *dialog;
 	char *location;
-	location = nautilus_window_get_location (window);
+	location = nautilus_window_get_location_uri (window);
 	dialog = nautilus_connect_server_dialog_new (window, location);
 	g_free (location);
 
 	gtk_widget_show (dialog);
 }
 
+#endif
+
 static gboolean
 have_burn_uri (void)
 {
 	static gboolean initialized = FALSE;
 	static gboolean res;
-	GnomeVFSURI *uri;
+	GVfs *vfs;
+	int i;
+	const gchar * const * supported_uri_schemes;
 
 	if (!initialized) {
-		uri = gnome_vfs_uri_new ("burn:///");
-		res = uri != NULL;
-		if (uri != NULL) {
-			gnome_vfs_uri_unref (uri);
+		vfs = g_vfs_get_default ();
+		supported_uri_schemes = g_vfs_get_supported_uri_schemes (vfs);
+
+		res = FALSE;
+		for (i = 0; supported_uri_schemes != NULL && supported_uri_schemes[i] != NULL; i++) {
+			if (strcmp ("burn", supported_uri_schemes[i]) == 0) {
+				res = TRUE;
+				break;
+			}
 		}
 		initialized = TRUE;
 	}
@@ -265,45 +264,60 @@ static void
 action_go_to_computer_callback (GtkAction *action, 
 				gpointer user_data) 
 {
+	GFile *computer;
+	computer = g_file_new_for_uri (COMPUTER_URI);
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       COMPUTER_URI);
+			       computer);
+	g_object_unref (computer);
 }
 
 static void
 action_go_to_network_callback (GtkAction *action, 
 				gpointer user_data) 
 {
+	GFile *network;
+	network = g_file_new_for_uri (NETWORK_URI);
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       NETWORK_URI);
+			       network);
+	g_object_unref (network);
 }
 
 static void
 action_go_to_templates_callback (GtkAction *action,
 				 gpointer user_data) 
 {
-	char *uri;
+	char *path;
+	GFile *location;
 
-	nautilus_create_templates_directory ();
-	uri = nautilus_get_templates_directory_uri ();
+	path = nautilus_get_templates_directory ();
+	location = g_file_new_for_path (path);
+	g_free (path);
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       uri);
-	g_free (uri);
+			       location);
+	g_object_unref (location);
 }
 
 static void
 action_go_to_trash_callback (GtkAction *action, 
 			     gpointer user_data) 
 {
+	GFile *trash;
+	trash = g_file_new_for_uri ("trash:///");
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       EEL_TRASH_URI);
+			       trash);
+	g_object_unref (trash);
 }
 
 static void
 action_go_to_burn_cd_callback (GtkAction *action,
 			       gpointer user_data) 
 {
+	GFile *burn;
+	burn = g_file_new_for_uri (BURN_CD_URI);
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       BURN_CD_URI);
+			       burn);
+	g_object_unref (burn);
+	
 }
 
 static void
@@ -645,10 +659,12 @@ static const GtkActionEntry main_entries[] = {
     N_("Normal Si_ze"), "<control>0",           /* label, accelerator */
     N_("Show the contents at the normal size"),                                      /* tooltip */ 
     G_CALLBACK (action_zoom_normal_callback) },
+#ifdef GIO_CONVERSION_DONE
   { "Connect to Server", NULL,                        /* name, stock id */
     N_("Connect to _Server..."), NULL,           /* label, accelerator */
     N_("Connect to a remote computer or shared disk"),                                      /* tooltip */ 
     G_CALLBACK (action_connect_to_server_callback) },
+#endif
   { "Home", "gnome-fs-home",                        /* name, stock id */
     N_("_Home Folder"), "<alt>Home",           /* label, accelerator */
     N_("Open your personal folder"),                                  /* tooltip */ 

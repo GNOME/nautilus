@@ -26,13 +26,13 @@
 #define NAUTILUS_DIRECTORY_H
 
 #include <gtk/gtkobject.h>
-#include <libgnomevfs/gnome-vfs-types.h>
+#include <gio/gfile.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
    responsible for managing both real data and cached metadata. On top of
-   the file system independence provided by gnome-vfs, the directory
+   the file system independence provided by gio, the directory
    object also provides:
   
        1) A synchronization framework, which notifies via signals as the
@@ -101,8 +101,7 @@ typedef struct
 	void     (* done_loading)        (NautilusDirectory         *directory);
 
 	void     (* load_error)          (NautilusDirectory         *directory,
-					  GnomeVFSResult             error_result,
-					  const char                *error_message);
+					  GError                    *error);
 
 	/*** Virtual functions for subclasses to override. ***/
 	gboolean (* contains_file)       (NautilusDirectory         *directory,
@@ -152,7 +151,8 @@ GType              nautilus_directory_get_type                 (void);
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-NautilusDirectory *nautilus_directory_get                      (const char                *uri);
+NautilusDirectory *nautilus_directory_get                      (GFile                     *location);
+NautilusDirectory *nautilus_directory_get_by_uri               (const char                *uri);
 NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
 
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
@@ -164,6 +164,7 @@ void               nautilus_directory_unref                    (NautilusDirector
 
 /* Access to a URI. */
 char *             nautilus_directory_get_uri                  (NautilusDirectory         *directory);
+GFile *            nautilus_directory_get_location             (NautilusDirectory         *directory);
 
 /* Is this file still alive and in this directory? */
 gboolean           nautilus_directory_contains_file            (NautilusDirectory         *directory,
@@ -223,7 +224,6 @@ gboolean           nautilus_directory_is_in_trash              (NautilusDirector
  */
 gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
 gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory         *directory);
-char *             nautilus_directory_make_uri_canonical       (const char                *uri);
 
 /* Convenience functions for dealing with a list of NautilusDirectory objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.

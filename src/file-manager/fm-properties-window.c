@@ -26,13 +26,13 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
+#include "libnautilus-private/nautilus-mime-application-chooser.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-labeled-image.h>
-#include <eel/eel-mime-application-chooser.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -64,7 +64,6 @@
 #include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-thumbnail.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
@@ -72,7 +71,6 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -163,7 +161,7 @@ struct FMPropertiesWindowDetails {
 	gboolean deep_count_finished;
 
 	guint total_count;
-	GnomeVFSFileSize total_size;
+	goffset total_size;
 
 	guint long_operation_underway;
 
@@ -325,44 +323,32 @@ static NautilusFile *
 get_target_file_for_original_file (NautilusFile *file)
 {
 	NautilusFile *target_file;
+	GFile *location;
 	char *uri_to_display;
-	GnomeVFSVolume *volume;
-	GnomeVFSDrive *drive;
 	NautilusDesktopLink *link;
 
 	target_file = NULL;
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL) {
-			uri_to_display = gnome_vfs_volume_get_activation_uri (volume);
-			target_file = nautilus_file_get (uri_to_display);
-			g_free (uri_to_display);
-		}
-	} else if (nautilus_file_has_drive (file)) {
-		drive = nautilus_file_get_drive (file);
-		if (drive != NULL) {
-			uri_to_display = gnome_vfs_drive_get_activation_uri (drive);
-			if (uri_to_display != NULL) {
-				target_file = nautilus_file_get (uri_to_display);
-				g_free (uri_to_display);
-			}
-		}
-	} else if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 
 		if (link != NULL) {
 			/* map to linked URI for these types of links */
-			uri_to_display = nautilus_desktop_link_get_activation_uri (link);
-			if (uri_to_display) {
-				target_file = nautilus_file_get (uri_to_display);
-				g_free (uri_to_display);
+			location = nautilus_desktop_link_get_activation_location (link);
+			if (location) {
+				target_file = nautilus_file_get (location);
+				g_object_unref (location);
 			}
 			
 			g_object_unref (link);
 		}
-        }
-
-
+        } else {
+		uri_to_display = nautilus_file_get_activation_uri (file);
+		if (uri_to_display != NULL) {
+			target_file = nautilus_file_get_by_uri (uri_to_display);
+			g_free (uri_to_display);
+		}
+	}
+	
 	if (target_file != NULL) {
 		return target_file;
 	}
@@ -410,7 +396,7 @@ static GdkPixbuf *
 get_pixbuf_for_properties_window (FMPropertiesWindow *window)
 {
 	GdkPixbuf *pixbuf;
-	char *icon;
+	NautilusIconInfo *icon, *new_icon;
 	GList *l;
 	
 	icon = NULL;
@@ -420,30 +406,25 @@ get_pixbuf_for_properties_window (FMPropertiesWindow *window)
 		file = NAUTILUS_FILE (l->data);
 		
 		if (!icon) {
-			icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+			icon = nautilus_file_get_icon (file, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS | NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
 		} else {
-			char *new_icon;
-			new_icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
-			if (!new_icon || strcmp (new_icon, icon)) {
-				g_free (icon);
-				g_free (new_icon);
+			new_icon = nautilus_file_get_icon (file, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS | NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
+			if (!new_icon || new_icon != icon) {
+				g_object_unref (icon);
+				g_object_unref (new_icon);
 				icon = NULL;
 				break;
 			}
-			g_free (new_icon);
+			g_object_unref (new_icon);
 		}
 	}
 
 	if (!icon) {
-		icon = g_strdup ("gnome-fs-regular");
+		icon = nautilus_icon_info_lookup_from_name ("text-x-generic", NAUTILUS_ICON_SIZE_STANDARD);
 	}
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, NULL,
-							    NAUTILUS_ICON_SIZE_STANDARD,
-							    NULL, NULL,
-							    FALSE, TRUE, NULL);
-
-	g_free (icon);
+	pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_ICON_SIZE_STANDARD);
+	g_object_unref (icon);
 
 	return pixbuf;
 }
@@ -473,7 +454,7 @@ uri_is_local_image (const char *uri)
 	GdkPixbuf *pixbuf;
 	char *image_path;
 	
-	image_path = gnome_vfs_get_local_path_from_uri (uri);
+	image_path = g_filename_from_uri (uri, NULL, NULL);
 	if (image_path == NULL) {
 		return FALSE;
 	}
@@ -541,8 +522,11 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
 			set_icon (uris[0], FM_PROPERTIES_WINDOW (window));
-		} else {	
-			if (eel_is_remote_uri (uris[0])) {
+		} else {
+			GFile *f;
+
+			f = g_file_new_for_uri (uris[0]);
+			if (!g_file_is_native (f)) {
 				eel_show_error_dialog
 					(_("The file that you dropped is not local."),
 					 _("You can only use local images as custom icons."), 
@@ -554,6 +538,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 					 _("You can only use local images as custom icons."),
 					 window);
 			}
+			g_object_unref (f);
 		}		
 	}
 	g_strfreev (uris);
@@ -595,12 +580,6 @@ create_image_widget (FMPropertiesWindow *window,
 	g_object_unref (pixbuf);
 
 	g_object_set_data (G_OBJECT (image), "properties_window", window);
-
-	/* React to icon theme changes. */
-	g_signal_connect_object (nautilus_icon_factory_get (),
-				 "icons_changed",
-				 G_CALLBACK (update_properties_window_icon),
-				 image, G_CONNECT_SWAPPED);
 
 	window->details->icon_image = image;
 	window->details->icon_button = button;
@@ -776,7 +755,7 @@ name_field_restore_original_name (NautilusEntry *name_field)
 }
 
 static void
-rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+rename_callback (NautilusFile *file, GFile *res_loc, GError *error, gpointer callback_data)
 {
 	FMPropertiesWindow *window;
 	char *new_name;
@@ -784,11 +763,11 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 	window = FM_PROPERTIES_WINDOW (callback_data);
 
 	/* Complain to user if rename failed. */
-	if (result != GNOME_VFS_OK) {
+	if (error != NULL) {
 		new_name = window->details->pending_name;
 		fm_report_error_renaming_file (file, 
 					       window->details->pending_name, 
-					       result,
+					       error,
 					       GTK_WINDOW (window));
 		if (window->details->name_field != NULL) {
 			name_field_restore_original_name (NAUTILUS_ENTRY (window->details->name_field));
@@ -1347,18 +1326,6 @@ file_list_get_string_attribute (GList *file_list,
 }
 
 
-static gboolean 
-file_list_all_local (GList *file_list)
-{
-	GList *l;
-	for (l = file_list; l != NULL; l = l->next) {
-		if (!nautilus_file_is_local (NAUTILUS_FILE (l->data))) {
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
-
 static gboolean
 file_list_all_directories (GList *file_list)
 {
@@ -1534,7 +1501,8 @@ attach_ellipsizing_value_field (FMPropertiesWindow *window,
 
 static void
 group_change_callback (NautilusFile *file,
-		       GnomeVFSResult result,
+		       GFile *res_loc,
+		       GError *error,
 		       FMPropertiesWindow *window)
 {
 	char *group;
@@ -1547,7 +1515,7 @@ group_change_callback (NautilusFile *file,
 
 	/* Report the error if it's an error. */
 	eel_timed_wait_stop ((EelCancelCallback) cancel_group_change_callback, window);
-	fm_report_error_setting_group (file, result, GTK_WINDOW (window));
+	fm_report_error_setting_group (file, error, GTK_WINDOW (window));
 
 	nautilus_file_unref (file);
 	g_free (group);
@@ -1951,7 +1919,7 @@ attach_group_combo_box (GtkTable *table,
 
 static void
 owner_change_callback (NautilusFile *file,
-		       GnomeVFSResult result,
+		       GError *error,
 		       FMPropertiesWindow *window)
 {
 	char *owner;
@@ -1964,7 +1932,7 @@ owner_change_callback (NautilusFile *file,
 
 	/* Report the error if it's an error. */
 	eel_timed_wait_stop ((EelCancelCallback) cancel_owner_change_callback, window);
-	fm_report_error_setting_owner (file, result, GTK_WINDOW (window));
+	fm_report_error_setting_owner (file, error, GTK_WINDOW (window));
 
 	nautilus_file_unref (file);
 	g_free (owner);
@@ -2252,12 +2220,12 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	guint file_count;
 	guint total_count;
 	guint unreadable_directory_count;
-	GnomeVFSFileSize total_size;
+	goffset total_size;
 	gboolean used_two_lines;
 	NautilusFile *file;
 	GList *l;
 	guint file_unreadable;
-	GnomeVFSFileSize file_size;
+	goffset file_size;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 
@@ -2319,7 +2287,7 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 		}
 	} else {
 		char *size_str;
-		size_str = gnome_vfs_format_file_size_for_display (total_size);
+		size_str = g_format_file_size_for_display (total_size);
 		text = g_strdup_printf (ngettext("%d item, with size %s",
 						 "%d items, totalling %s",
 						 total_count),
@@ -2572,7 +2540,7 @@ is_merged_trash_directory (NautilusFile *file)
 	gboolean result;
 
 	file_uri = nautilus_file_get_uri (file);
-	result = gnome_vfs_uris_match (file_uri, EEL_TRASH_URI);
+	result = strcmp (file_uri, "trash:///") == 0;
 	g_free (file_uri);
 
 	return result;
@@ -2581,13 +2549,7 @@ is_merged_trash_directory (NautilusFile *file)
 static gboolean
 should_show_custom_icon_buttons (FMPropertiesWindow *window) 
 {
-	/* FIXME bugzilla.gnome.org 45642:
-	 * Custom icons aren't displayed on the the desktop Trash icon, so
-	 * we shouldn't pretend that they work by showing them here.
-	 * When bug 5642 is fixed we can remove this case.
-	 */
-	if (!is_multi_file_window (window) 
-	    && is_merged_trash_directory (get_target_file (window))) {
+	if (!is_multi_file_window (window)) {
 		return FALSE;
 	}
 
@@ -2645,8 +2607,7 @@ should_show_link_target (FMPropertiesWindow *window)
 static gboolean
 should_show_free_space (FMPropertiesWindow *window)
 {
-	if (file_list_all_local (window->details->target_files)
-	    && file_list_all_directories (window->details->target_files)) {
+	if (file_list_all_directories (window->details->target_files)) {
 		return TRUE;
 	}
 
@@ -2657,12 +2618,6 @@ static gboolean
 should_show_volume_usage (FMPropertiesWindow *window)
 {
 	NautilusFile 		*file;
-	GnomeVFSVolume 		*volume;
-	GnomeVFSVolumeMonitor 	*monitor;
-	GList 			*mounted_volumes;
-	gchar 			*volume_uri;
-	gchar 			*file_uri;
-	gboolean                match, is_root;
 	gboolean 		success = FALSE;
 	
 	if (is_multi_file_window (window)) {
@@ -2675,43 +2630,13 @@ should_show_volume_usage (FMPropertiesWindow *window)
 		return FALSE;
 	}
 
-	if (nautilus_file_has_volume (file)) {
-		volume = nautilus_file_get_volume (file);
-		if (volume != NULL &&
-		    gnome_vfs_volume_get_volume_type (volume) == GNOME_VFS_VOLUME_TYPE_MOUNTPOINT) {
-			return TRUE;
-		}
-		return FALSE;
+	if (nautilus_file_can_unmount (file)) {
+		return TRUE;
 	}
 
-	file_uri = nautilus_file_get_activation_uri (file);
-	
-	monitor = gnome_vfs_get_volume_monitor ();		
-	
-	mounted_volumes = gnome_vfs_volume_monitor_get_mounted_volumes (monitor);
-
-	while (mounted_volumes != NULL) {
-		volume = mounted_volumes->data;
-
-		volume_uri = gnome_vfs_volume_get_activation_uri (volume);
-		match = strcmp (volume_uri, file_uri) == 0;
-		is_root = strcmp (volume_uri, "file:///") == 0;
-		g_free (volume_uri);
-
-		if (match &&
-		    (gnome_vfs_volume_is_user_visible (volume) || is_root) &&
-		    gnome_vfs_volume_get_volume_type (volume) == GNOME_VFS_VOLUME_TYPE_MOUNTPOINT) {
-			success = TRUE;
-			break;
-		}
-
-		mounted_volumes = mounted_volumes->next;
-	}
-	
-	g_free (file_uri);
-
-	eel_g_object_list_free (mounted_volumes);
-	
+#ifdef TODO_GIO
+	/* Look at is_mountpoint for activation uri */
+#endif
 	return success;
 }
 
@@ -2843,52 +2768,9 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
   	cairo_destroy (cr);
 }
 
-static gboolean
-get_mount_stats (gchar *path, guint64 *capacity, guint64 *free)
-{
-	int statfs_result;
-#if HAVE_STATVFS
-	struct statvfs statfs_buffer;
-#else
-	struct statfs statfs_buffer;
-#endif
-	GnomeVFSFileSize block_size;
-
-	if (path == NULL) {
-		return FALSE;
-	}
-
-	statfs_result = -1;
-	
-#if HAVE_STATVFS
-	statfs_result = statvfs (path, &statfs_buffer);
-	block_size = statfs_buffer.f_frsize; 
-#else
-#if STATFS_ARGS == 2
-	statfs_result = statfs (path, &statfs_buffer);
-#elif STATFS_ARGS == 4
-	statfs_result = statfs (path, &statfs_buffer,
-				sizeof (statfs_buffer), 0);
-#endif
-	block_size = statfs_buffer.f_bsize; 
-#endif  
-
-	if (statfs_result != 0) {
-		return FALSE;
-	}
-	
-	*capacity = statfs_buffer.f_blocks * block_size;
-
-	*free 	 = statfs_buffer.f_bavail * block_size; 
-	
-	return TRUE;
-}
-
 static GtkWidget* 
 create_pie_widget (FMPropertiesWindow *window)
 {
-	GnomeVFSVolumeMonitor 	*monitor;
-	GnomeVFSVolume		*volume;
 	NautilusFile		*file;
 	GtkTable 		*table;
 	GtkWidget 		*pie_canvas;
@@ -2901,13 +2783,14 @@ create_pie_widget (FMPropertiesWindow *window)
 	gchar			*capacity;
 	gchar 			*used;
 	gchar 			*free;
-	gchar 			*fs_type;
+	const char		*fs_type;
 	gchar			*uri;
-	gchar			*path;
+	GFile *location;
+	GFileInfo *info;
 	
-	capacity = gnome_vfs_format_file_size_for_display (window->details->volume_capacity);
-	free 	 = gnome_vfs_format_file_size_for_display (window->details->volume_free);
-	used 	 = gnome_vfs_format_file_size_for_display (window->details->volume_capacity - window->details->volume_free);	
+	capacity = g_format_file_size_for_display (window->details->volume_capacity);
+	free 	 = g_format_file_size_for_display (window->details->volume_free);
+	used 	 = g_format_file_size_for_display (window->details->volume_capacity - window->details->volume_free);	
 	
 	file = get_original_file (window);
 	
@@ -2927,21 +2810,20 @@ create_pie_widget (FMPropertiesWindow *window)
 
 	capacity_label = gtk_label_new (g_strconcat (_("Total capacity: "), capacity, NULL));
 	fstype_label = gtk_label_new (NULL);
-	
-	monitor = gnome_vfs_get_volume_monitor ();
-	
-	path = g_filename_from_uri (uri, NULL, NULL);
-	
-	volume = gnome_vfs_volume_monitor_get_volume_for_path (monitor, path);
-	
-	if (volume !=NULL) {
-		fs_type = gnome_vfs_volume_get_filesystem_type (volume);
+
+	location = g_file_new_for_uri (uri);
+	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FS_TYPE,
+					     NULL, NULL);
+	if (info) {
+		fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FS_TYPE);
 		if (fs_type != NULL) {
 			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesytem type: "), fs_type, NULL));
 		}
+		
+		g_object_unref (info);
 	}
+	g_object_unref (location);
 	
-	g_free (path);
 	g_free (uri);
 	g_free (capacity);
 	g_free (used);
@@ -2969,22 +2851,30 @@ static GtkWidget*
 create_volume_usage_widget (FMPropertiesWindow *window)
 {
 	GtkWidget *piewidget;
-	GnomeVFSURI *vfs_uri;
-	gchar *path;
 	gchar *uri;
 	NautilusFile *file;
+	GFile *location;
+	GFileInfo *info;
 	
 	file = get_original_file (window);
 	
-	uri 	= nautilus_file_get_activation_uri (file);
-	vfs_uri = gnome_vfs_uri_new (uri);
-	path 	= g_filename_from_uri (uri,NULL,NULL);
+	uri = nautilus_file_get_activation_uri (file);
+
+	location = g_file_new_for_uri (uri);
+	info = g_file_query_filesystem_info (location, "fs:*", NULL, NULL);
+
+	if (info) {
+		window->details->volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_SIZE);
+		window->details->volume_free = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_FREE);
+
+		g_object_unref (info);
+	} else {
+		window->details->volume_capacity = 0;		
+		window->details->volume_free = 0;		
+	}
 	
-	get_mount_stats (path, &window->details->volume_capacity, &window->details->volume_free);
+	g_object_unref (location);
 	
-	g_free (uri);
-	g_free(path);
-				
 	piewidget = create_pie_widget (window);
 	                   
         gtk_widget_show_all (piewidget);            
@@ -3075,12 +2965,12 @@ create_basic_page (FMPropertiesWindow *window)
 					    _("--"),
 					    TRUE);
 	
+	append_title_and_ellipsizing_value (window, table, 
+					    _("Volume:"), 
+					    "volume",
+					    _("--"),
+					    FALSE);
 	if (should_show_free_space (window)) {
-		append_title_and_ellipsizing_value (window, table, 
-						    _("Volume:"), 
-						    "volume",
-						    _("--"),
-						    FALSE);
 		append_title_value_pair (window, table, _("Free space:"), 
 					 "free_space",
 					 _("--"),
@@ -3210,6 +3100,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	GdkPixbuf *pixbuf;
 	char *label;
 	GList *icons, *l;
+	NautilusIconInfo *info;
 
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
@@ -3221,7 +3112,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));
 
-	icons = nautilus_emblem_list_availible ();
+	icons = nautilus_emblem_list_available ();
 
 	window->details->initial_emblems = get_initial_emblems (window->details->original_files);
 
@@ -3233,15 +3124,17 @@ create_emblems_page (FMPropertiesWindow *window)
 		if (!nautilus_emblem_should_show_in_list (emblem_name)) {
 			continue;
 		}
-		
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (emblem_name, NULL,
-								     NAUTILUS_ICON_SIZE_SMALL, TRUE,
-								     &label);
+
+		info = nautilus_icon_info_lookup_from_name (emblem_name, NAUTILUS_ICON_SIZE_SMALL);
+		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, NAUTILUS_ICON_SIZE_SMALL);
 
 		if (pixbuf == NULL) {
 			continue;
 		}
-
+		
+		label = g_strdup (nautilus_icon_info_get_display_name (info));
+		g_object_unref (info);
+		
 		if (label == NULL) {
 			label = nautilus_emblem_get_keyword_from_icon_name (emblem_name);
 		}
@@ -3298,7 +3191,10 @@ end_long_operation (FMPropertiesWindow *window)
 }
 
 static void
-permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+permission_change_callback (NautilusFile *file,
+			    GFile *res_loc,
+			    GError *error,
+			    gpointer callback_data)
 {
 	FMPropertiesWindow *window;
 	g_assert (callback_data != NULL);
@@ -3307,15 +3203,15 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 	end_long_operation (window);
 	
 	/* Report the error if it's an error. */
-	fm_report_error_setting_permissions (file, result, NULL);
+	fm_report_error_setting_permissions (file, error, NULL);
 
 	g_object_unref (window);
 }
 
 static void
 update_permissions (FMPropertiesWindow *window,
-		    GnomeVFSFilePermissions vfs_new_perm,
-		    GnomeVFSFilePermissions vfs_mask,
+		    guint32 vfs_new_perm,
+		    guint32 vfs_mask,
 		    gboolean is_folder,
 		    gboolean apply_to_both_folder_and_dir,
 		    gboolean use_original)
@@ -3324,7 +3220,7 @@ update_permissions (FMPropertiesWindow *window,
 	
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		NautilusFile *file;
-		GnomeVFSFilePermissions permissions;
+		guint32 permissions;
 
 		file = NAUTILUS_FILE (l->data);
 
@@ -3360,19 +3256,19 @@ update_permissions (FMPropertiesWindow *window,
 
 static gboolean
 initial_permission_state_consistent (FMPropertiesWindow *window,
-				     GnomeVFSFilePermissions mask,
+				     guint32 mask,
 				     gboolean is_folder,
 				     gboolean both_folder_and_dir)
 {
 	GList *l;
 	gboolean first;
-	GnomeVFSFilePermissions first_permissions;
+	guint32 first_permissions;
 
 	first = TRUE;
 	first_permissions = 0;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		NautilusFile *file;
-		GnomeVFSFilePermissions permissions;
+		guint32 permissions;
 
 		file = l->data;
 		
@@ -3408,7 +3304,7 @@ permission_button_toggled (GtkToggleButton *button,
 			   FMPropertiesWindow *window)
 {
 	gboolean is_folder, is_special;
-	GnomeVFSFilePermissions permission_mask;
+	guint32 permission_mask;
 	gboolean inconsistent;
 	gboolean on;
 	
@@ -3470,7 +3366,7 @@ permission_button_update (FMPropertiesWindow *window,
 	gboolean is_folder, is_special;
 	gboolean no_match;
 	gboolean sensitive;
-	GnomeVFSFilePermissions button_permission;
+	guint32 button_permission;
 
 	if (gtk_toggle_button_get_inconsistent (button) &&
 	    window->details->has_recursive_apply) {
@@ -3494,7 +3390,7 @@ permission_button_update (FMPropertiesWindow *window,
 	no_match = TRUE;
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		NautilusFile *file;
-		GnomeVFSFilePermissions file_permissions;
+		guint32 file_permissions;
 
 		file = NAUTILUS_FILE (l->data);
 
@@ -3553,7 +3449,7 @@ permission_button_update (FMPropertiesWindow *window,
 static void
 set_up_permissions_checkbox (FMPropertiesWindow *window,
 			     GtkWidget *check_button, 
-			     GnomeVFSFilePermissions permission,
+			     guint32 permission,
 			     gboolean is_folder)
 {
 	/* Load up the check_button with data we'll need when updating its state. */
@@ -3579,7 +3475,7 @@ add_permissions_checkbox_with_label (FMPropertiesWindow *window,
 				     GtkTable *table, 
 				     int row, int column,
 				     const char *label,
-				     GnomeVFSFilePermissions permission_to_check,
+				     guint32 permission_to_check,
 				     GtkLabel *label_for,
 				     gboolean is_folder)
 {
@@ -3610,7 +3506,7 @@ static void
 add_permissions_checkbox (FMPropertiesWindow *window,
 			  GtkTable *table, 
 			  int row, int column, 
-			  GnomeVFSFilePermissions permission_to_check,
+			  guint32 permission_to_check,
 			  GtkLabel *label_for,
 			  gboolean is_folder)
 {
@@ -3632,6 +3528,24 @@ add_permissions_checkbox (FMPropertiesWindow *window,
 					     is_folder);
 }
 
+enum {
+	UNIX_PERM_SUID = S_ISUID,
+	UNIX_PERM_SGID = S_ISGID,	
+	UNIX_PERM_STICKY = 01000,	/* S_ISVTX not defined on all systems */
+	UNIX_PERM_USER_READ = S_IRUSR,
+	UNIX_PERM_USER_WRITE = S_IWUSR,
+	UNIX_PERM_USER_EXEC = S_IXUSR,
+	UNIX_PERM_USER_ALL = S_IRUSR | S_IWUSR | S_IXUSR,
+	UNIX_PERM_GROUP_READ = S_IRGRP,
+	UNIX_PERM_GROUP_WRITE = S_IWGRP,
+	UNIX_PERM_GROUP_EXEC = S_IXGRP,
+	UNIX_PERM_GROUP_ALL = S_IRGRP | S_IWGRP | S_IXGRP,
+	UNIX_PERM_OTHER_READ = S_IROTH,
+	UNIX_PERM_OTHER_WRITE = S_IWOTH,
+	UNIX_PERM_OTHER_EXEC = S_IXOTH,
+	UNIX_PERM_OTHER_ALL = S_IROTH | S_IWOTH | S_IXOTH
+};
+
 typedef enum {
 	PERMISSION_READ  = (1<<0),
 	PERMISSION_WRITE = (1<<1),
@@ -3644,16 +3558,16 @@ typedef enum {
 	PERMISSION_OTHER
 } PermissionType;
 
-static GnomeVFSFilePermissions vfs_perms[3][3] = {
-	{GNOME_VFS_PERM_USER_READ, GNOME_VFS_PERM_USER_WRITE, GNOME_VFS_PERM_USER_EXEC},
-	{GNOME_VFS_PERM_GROUP_READ, GNOME_VFS_PERM_GROUP_WRITE, GNOME_VFS_PERM_GROUP_EXEC},
-	{GNOME_VFS_PERM_OTHER_READ, GNOME_VFS_PERM_OTHER_WRITE, GNOME_VFS_PERM_OTHER_EXEC},
+static guint32 vfs_perms[3][3] = {
+	{UNIX_PERM_USER_READ, UNIX_PERM_USER_WRITE, UNIX_PERM_USER_EXEC},
+	{UNIX_PERM_GROUP_READ, UNIX_PERM_GROUP_WRITE, UNIX_PERM_GROUP_EXEC},
+	{UNIX_PERM_OTHER_READ, UNIX_PERM_OTHER_WRITE, UNIX_PERM_OTHER_EXEC},
 };
 
-static GnomeVFSFilePermissions 
+static guint32 
 permission_to_vfs (PermissionType type, PermissionValue perm)
 {
-	GnomeVFSFilePermissions vfs_perm;
+	guint32 vfs_perm;
 	g_assert (type >= 0 && type < 3);
 
 	vfs_perm = 0;
@@ -3672,7 +3586,7 @@ permission_to_vfs (PermissionType type, PermissionValue perm)
 
 
 static PermissionValue
-permission_from_vfs (PermissionType type, GnomeVFSFilePermissions vfs_perm)
+permission_from_vfs (PermissionType type, guint32 vfs_perm)
 {
 	PermissionValue perm;
 	g_assert (type >= 0 && type < 3);
@@ -3699,7 +3613,7 @@ permission_combo_changed (GtkWidget *combo, FMPropertiesWindow *window)
 	gboolean is_folder, use_original;
 	PermissionType type;
 	int new_perm, mask;
-	GnomeVFSFilePermissions vfs_new_perm, vfs_mask;
+	guint32 vfs_new_perm, vfs_mask;
 
 	is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
 	type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
@@ -3796,7 +3710,7 @@ permission_combo_update (FMPropertiesWindow *window,
 	
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		NautilusFile *file;
-		GnomeVFSFilePermissions file_permissions;
+		guint32 file_permissions;
 
 		file = NAUTILUS_FILE (l->data);
 
@@ -4012,7 +3926,7 @@ static GtkWidget *
 append_special_execution_checkbox (FMPropertiesWindow *window,
 				   GtkTable *table,
 				   const char *label_text,
-				   GnomeVFSFilePermissions permission_to_check)
+				   guint32 permission_to_check)
 {
 	GtkWidget *check_button;
 	guint last_row;
@@ -4042,12 +3956,12 @@ static void
 append_special_execution_flags (FMPropertiesWindow *window, GtkTable *table)
 {
 	append_special_execution_checkbox 
-		(window, table, _("Set _user ID"), GNOME_VFS_PERM_SUID);
+		(window, table, _("Set _user ID"), UNIX_PERM_SUID);
 
 	attach_title_field (table, table->nrows - 1, _("Special flags:"));
 
-	append_special_execution_checkbox (window, table, _("Set gro_up ID"), GNOME_VFS_PERM_SGID);
-	append_special_execution_checkbox (window, table, _("_Sticky"), GNOME_VFS_PERM_STICKY);
+	append_special_execution_checkbox (window, table, _("Set gro_up ID"), UNIX_PERM_SGID);
+	append_special_execution_checkbox (window, table, _("_Sticky"), UNIX_PERM_STICKY);
 
 	gtk_table_set_row_spacing (table, table->nrows - 1, 18);
 }
@@ -4096,7 +4010,7 @@ get_initial_permissions (GList *file_list)
 				g_direct_equal);
 	
 	for (l = file_list; l != NULL; l = l->next) {
-		GnomeVFSFilePermissions permissions;
+		guint32 permissions;
 		NautilusFile *file;
 		
 		file = NAUTILUS_FILE (l->data);
@@ -4212,7 +4126,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	add_permissions_checkbox_with_label (window, page_table,
 					     last_row, 1,
 					     _("Allow _executing file as program"),
-					     GNOME_VFS_PERM_USER_EXEC|GNOME_VFS_PERM_GROUP_EXEC|GNOME_VFS_PERM_OTHER_EXEC,
+					     UNIX_PERM_USER_EXEC|UNIX_PERM_GROUP_EXEC|UNIX_PERM_OTHER_EXEC,
 					     execute_label, FALSE);
 	
 }
@@ -4248,7 +4162,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-				  GNOME_VFS_PERM_USER_READ,
+				  UNIX_PERM_USER_READ,
 				  owner_perm_label,
 				  is_folder);
 	
@@ -4256,7 +4170,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-				  GNOME_VFS_PERM_USER_WRITE,
+				  UNIX_PERM_USER_WRITE,
 				  owner_perm_label,
 				  is_folder);
 	
@@ -4264,7 +4178,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-				  GNOME_VFS_PERM_USER_EXEC,
+				  UNIX_PERM_USER_EXEC,
 				  owner_perm_label,
 				  is_folder);
 	
@@ -4272,7 +4186,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-				  GNOME_VFS_PERM_GROUP_READ,
+				  UNIX_PERM_GROUP_READ,
 				  group_perm_label,
 				  is_folder);
 	
@@ -4280,7 +4194,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-				  GNOME_VFS_PERM_GROUP_WRITE,
+				  UNIX_PERM_GROUP_WRITE,
 				  group_perm_label,
 				  is_folder);
 	
@@ -4288,7 +4202,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-				  GNOME_VFS_PERM_GROUP_EXEC,
+				  UNIX_PERM_GROUP_EXEC,
 				  group_perm_label,
 				  is_folder);
 	
@@ -4296,7 +4210,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 				  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-				  GNOME_VFS_PERM_OTHER_READ,
+				  UNIX_PERM_OTHER_READ,
 				  other_perm_label,
 				  is_folder);
 	
@@ -4304,7 +4218,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 				  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-				  GNOME_VFS_PERM_OTHER_WRITE,
+				  UNIX_PERM_OTHER_WRITE,
 				  other_perm_label,
 				  is_folder);
 	
@@ -4312,7 +4226,7 @@ create_permission_checkboxes (FMPropertiesWindow *window,
 				  check_button_table, 
 				  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 				  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-				  GNOME_VFS_PERM_OTHER_EXEC,
+				  UNIX_PERM_OTHER_EXEC,
 				  other_perm_label,
 				  is_folder);
 }
@@ -4421,9 +4335,9 @@ static void
 apply_recursive_clicked (GtkWidget *recursive_button,
 			 FMPropertiesWindow *window)
 {
-	GnomeVFSFilePermissions file_permission, file_permission_mask;
-	GnomeVFSFilePermissions dir_permission, dir_permission_mask;
-	GnomeVFSFilePermissions vfs_mask, vfs_new_perm, p;
+	guint32 file_permission, file_permission_mask;
+	guint32 dir_permission, dir_permission_mask;
+	guint32 vfs_mask, vfs_new_perm, p;
 	GtkWidget *button, *combo;
 	gboolean active, is_folder, is_special, use_original;
 	GList *l;
@@ -4814,7 +4728,7 @@ create_open_with_page (FMPropertiesWindow *window)
 	
 	mime_type = nautilus_file_get_mime_type (get_target_file (window));
 	
-	vbox = eel_mime_application_chooser_new (uri, mime_type);
+	vbox = nautilus_mime_application_chooser_new (uri, mime_type);
 	gtk_widget_show (vbox);
 	
 	g_free (uri);
@@ -4860,9 +4774,10 @@ create_properties_window (StartupData *startup_data)
 
 		file = NAUTILUS_FILE (l->data);
 
-		attributes = nautilus_icon_factory_get_required_file_attributes ();
-		attributes |= NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME
-			| NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
+		attributes =
+			NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
+			NAUTILUS_FILE_ATTRIBUTE_INFO |
+			NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 
 		nautilus_file_monitor_add (NAUTILUS_FILE (l->data),
 					   &window->details->original_files, 
@@ -5169,7 +5084,7 @@ fm_properties_window_present (GList *original_files,
 		next = l->next;
 		nautilus_file_call_when_ready
 			(NAUTILUS_FILE (l->data),
-			 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
+			 NAUTILUS_FILE_ATTRIBUTE_INFO,
 			 is_directory_ready_callback,
 			 startup_data);
 	}
@@ -5297,7 +5212,7 @@ set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 	g_assert (icon_uri != NULL);
 	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
 
-	icon_path = gnome_vfs_get_local_path_from_uri (icon_uri);
+	icon_path = g_filename_from_uri (icon_uri, NULL, NULL);
 	/* we don't allow remote URIs */
 	if (icon_path != NULL) {
 		GList *l;
@@ -5319,7 +5234,8 @@ set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 					gnome_desktop_item_save (ditem, NULL, TRUE, NULL);
 					gnome_desktop_item_unref (ditem);
 					nautilus_file_invalidate_attributes (file,
-									     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+									     NAUTILUS_FILE_ATTRIBUTE_INFO |
+									     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
 				}
 			} else {
 				real_icon_uri = make_relative_uri_from_full (icon_uri, file_uri);
@@ -5436,7 +5352,7 @@ select_image_button_callback (GtkWidget *widget,
 		if (nautilus_file_is_directory (file)) {
 			uri = nautilus_file_get_uri (file);
 
-			image_path = gnome_vfs_get_local_path_from_uri (uri);
+			image_path = g_filename_from_uri (uri, NULL, NULL);
 			if (image_path != NULL) {
 				gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), image_path);
 				g_free (image_path);

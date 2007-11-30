@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FILE_UTILITIES_H
 #define NAUTILUS_FILE_UTILITIES_H
 
-#include <libgnomevfs/gnome-vfs-types.h>
+#include <gio/gfile.h>
 
 #define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
 #define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
@@ -40,13 +40,16 @@ gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relati
 char *   nautilus_get_xdg_dir                        (const char *type);
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_desktop_directory              (void);
+GFile *  nautilus_get_desktop_location               (void);
 char *   nautilus_get_desktop_directory_uri          (void);
 char *   nautilus_get_home_directory_uri             (void);
-gboolean nautilus_is_desktop_directory_file_escaped  (char *escaped_dirname,
-						      char *escaped_filename);
-gboolean nautilus_is_desktop_directory_escaped       (char *escaped_dir);
-gboolean nautilus_is_home_directory_file_escaped     (char *escaped_dirname,
-						      char *escaped_file);
+gboolean nautilus_is_desktop_directory_file          (GFile *dir,
+						      const char *filename);
+gboolean nautilus_is_root_directory                  (GFile *dir);
+gboolean nautilus_is_desktop_directory               (GFile *dir);
+gboolean nautilus_is_home_directory                  (GFile *dir);
+gboolean nautilus_is_home_directory_file             (GFile *dir,
+						      const char *filename);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
@@ -57,7 +60,7 @@ void     nautilus_create_templates_directory         (void);
 
 char *   nautilus_get_searches_directory             (void);
 
-char *	 nautilus_compute_title_for_uri		     (const char *text_uri);
+char *	 nautilus_compute_title_for_location	     (GFile *file);
 
 /* This function returns something that needs to be freed with g_free,
  * is not NULL, but is not garaunteed to exist */
@@ -85,9 +88,6 @@ char *   nautilus_ensure_unique_file_name            (const char *directory_uri,
 			                              const char *extension);
 char *   nautilus_unique_temporary_file_name         (void);
 
-char *   nautilus_find_existing_uri_in_hierarchy     (const char *uri);
-
-const char *nautilus_get_vfs_method_display_name (char *method);
-char *      nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri);
+GFile *  nautilus_find_existing_uri_in_hierarchy     (GFile *location);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

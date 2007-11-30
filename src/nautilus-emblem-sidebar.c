@@ -39,7 +39,6 @@
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkdnd.h>
@@ -59,9 +58,7 @@
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <gconf/gconf-client.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -456,23 +453,26 @@ create_emblem_widget (NautilusEmblemSidebar *emblem_sidebar,
 		      const char *name)
 {
 	GtkWidget *ret;
-	char *display_name, *keyword;
+	const char *display_name;
+	char *keyword;
 	GdkPixbuf *pixbuf;
-	
-	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (name, NULL,
-							     NAUTILUS_ICON_SIZE_STANDARD, TRUE,
-							     &display_name);
+	NautilusIconInfo *info;
 
+	info = nautilus_icon_info_lookup_from_name (name, NAUTILUS_ICON_SIZE_STANDARD);
+
+	pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_ICON_SIZE_STANDARD);
+	
+	display_name = nautilus_icon_info_get_display_name (info);
+	
 	keyword = nautilus_emblem_get_keyword_from_icon_name (name);
 	if (display_name == NULL) {
-		display_name = g_strdup (keyword);
+		display_name = keyword;
 	}
 
 	ret = create_emblem_widget_with_pixbuf (emblem_sidebar, keyword,
 						display_name, pixbuf);
 	g_free (keyword);
-	g_free (display_name);
-
+	g_object_unref (info);
 	return ret;
 }
 
@@ -727,12 +727,14 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 	Emblem *emblem;
 	GdkPixbuf *pixbuf;
 	char *uri, *error, *uri_utf8;
-	GList *uris, *l;
+	char **uris;
+	GFile *f;
+	int i;
 	gboolean had_failure;
 
 	had_failure = FALSE;
 	emblems = NULL;
-	
+
 	switch (info) {
 	case TARGET_URI_LIST:
 		if (data->format != 8 ||
@@ -742,36 +744,36 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 			return;
 		}
 
-		uris = nautilus_icon_dnd_uri_list_extract_uris (data->data);
-		l = uris;
-		while (l != NULL) {
-			uri = eel_make_uri_canonical (l->data);
-			l = l->next;
+		uris = g_uri_list_extract_uris (data->data);
+		if (uris == NULL) {
+			break;
+		}
 
-			if (uri == NULL) {
-				had_failure = TRUE;
-				continue;
-			}
-
-			pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
+		for (i = 0; uris[i] != NULL; ++i) {
+			f = g_file_new_for_uri (uris[i]);
+			pixbuf = nautilus_emblem_load_pixbuf_for_emblem (f);
 
 			if (pixbuf == NULL) {
 				/* this one apparently isn't an image, or
 				 * at least not one that we know how to read
 				 */
 				had_failure = TRUE;
+				g_object_unref (f);
 				continue;
 			}
 
 			emblem = g_new (Emblem, 1);
-			emblem->uri = uri;
+			emblem->uri = g_file_get_uri (f);
 			emblem->name = NULL; /* created later on by the user */
 			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
+			
+			g_object_unref (f);
 
 			emblems = g_slist_prepend (emblems, emblem);
 		}
-		nautilus_icon_dnd_uri_list_free_strings (uris);
+
+		g_strfreev (uris);
 
 		if (had_failure && emblems != NULL) {
 			eel_show_error_dialog (_("Some of the files could not be added as emblems."), _("The emblems do not appear to be valid images."), NULL);
@@ -796,12 +798,8 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 
 		uri = g_strndup (data->data, data->length);
 
-		if (!eel_is_valid_uri (uri)) {
-			eel_show_error_dialog (_("The emblem cannot be added."), _("The dragged text was not a valid file location."), NULL);
-			break;
-		}
-
-		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
+		f = g_file_new_for_uri (uri);
+		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (f);
 
 		if (pixbuf != NULL) {
 			emblem = g_new (Emblem, 1);
@@ -814,7 +812,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 
 			show_add_emblems_dialog (emblem_sidebar, emblems);
 		} else {
-			uri_utf8 = eel_format_uri_for_display (uri);
+			uri_utf8 = g_file_get_parse_name (f);
 
 			if (uri_utf8) {
 				error = g_strdup_printf (_("The file '%s' does not appear to be a valid image."), uri_utf8);
@@ -827,6 +825,7 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 			g_free (uri_utf8);
 		}
 
+		g_object_unref (f);
 		g_free (uri);
 		
 		break;	
@@ -842,20 +841,21 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 		/* apparently, this is a URI/title pair?  or just a pair
 		 * of identical URIs?  Regardless, this seems to work...
 		 */
-		uris = nautilus_icon_dnd_uri_list_extract_uris (data->data);
 
+		uris = g_uri_list_extract_uris (data->data);
 		if (uris == NULL) {
 			break;
 		}
-		
-		uri = uris->data;
 
+		uri = uris[0];
 		if (uri == NULL) {
-			nautilus_icon_dnd_uri_list_free_strings (uris);
+			g_strfreev (uris);
 			break;
 		}
 
-		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
+		f = g_file_new_for_uri (uri);
+		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (f);
+		g_object_unref (f);
 
 		if (pixbuf != NULL) {
 			emblem = g_new (Emblem, 1);
@@ -874,6 +874,9 @@ nautilus_emblem_sidebar_drag_received_cb (GtkWidget *widget,
 			eel_show_error_dialog (_("The emblem cannot be added."), error, NULL);
 			g_free (error);
 		}
+
+		g_strfreev (uris);
+
 		break;
 	}
 }
@@ -945,7 +948,7 @@ nautilus_emblem_sidebar_populate (NautilusEmblemSidebar *emblem_sidebar)
 	}
 
 
-	icons = nautilus_emblem_list_availible ();
+	icons = nautilus_emblem_list_available ();
 
 	l = icons;
 	widgets = NULL;

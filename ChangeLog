@@ -1,3 +1,2054 @@
+2007-11-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Reimplement copy_move helper with _copy and _move
+	Also support move to trash as trash
+	
+        * src/file-manager/fm-directory-view.c:
+	Use _copy_move again
+
+2007-11-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-changes-queue.[ch]:
+	Convert changes queue to only use GFile, not uris.
+	Kill all _by_uri versions
+	
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-link.c:
+        * libnautilus-private/nautilus-monitor.c:
+        * src/file-manager/fm-directory-view.c:
+	Update for above changes
+
+2007-11-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-changes-queue.[ch]:
+	More uri -> gfile API changes
+	
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Add move operation
+	
+        * src/file-manager/fm-directory-view.c:
+	Use move operation
+
+2007-11-29  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-changes-queue.[ch]:
+        * libnautilus-private/nautilus-icon-dnd.c:
+	Change position setting api to accept GFile instead of
+	uri
+	
+        * libnautilus-private/nautilus-file-operations.c:
+	Set positions and copy metadata.
+
+2007-11-29  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-changes-queue.[ch]:
+	Add some GFile version and rename the old to _by_uri
+	
+        * libnautilus-private/nautilus-file-operations.c:
+	Emit change events
+	
+        * libnautilus-private/nautilus-file-operations-progress.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-dnd.c:
+        * libnautilus-private/nautilus-metafile.c:
+        * libnautilus-private/nautilus-monitor.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-icon-view.c:
+	Update to latest APIs
+
+2007-11-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Better status message when copying one folder
+	
+        * libnautilus-private/nautilus-progress-info.c:
+	Correct tooltip message for status icon
+
+2007-11-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Nicer progress texts
+	
+        * libnautilus-private/nautilus-progress-info.c:
+	Hide progress window when last op finishes.
+
+2007-11-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Don't free uninitialized memory.
+	
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-progress-info.[ch]:
+	Add progress info dialog
+
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Handle debuting URIs in file copy op
+	
+        * src/file-manager/fm-directory-view.c:
+	Use new nautilus_file_operations_copy for copy.
+	Make debuting_uri hash into debuting_files in new
+	API. Convert for old calls.
+
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add run_warning and run_error to simplify the
+	code for error dialogs.
+
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add defines for common button names to make sure
+	they are consistent
+
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Use the right create_dest arg to copy_directory
+	
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Free primary / secondary in run_simple_dialog
+
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add IS_IO_ERROR macro and use that
+	
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-progress-info.[ch]:
+	Remove printf versions
+	rename _set_foo_nocopy to _take_foo
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Use new custom printf formating for all strings
+	
+2007-11-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Use eel_strdup_printf_with_custom to make it easier
+	to create error dialogs.
+
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Handle deleting a directory when overwriting it with a
+	file.
+
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Handle errors in remove destination
+	
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Pass cancellable into strdup_with_name
+
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add progress updates to copy.
+	Make some error dialogs more consistent (add skip all, reorder)
+
+        * libnautilus-private/nautilus-progress-info.[ch]:
+	Add nautilus_progress_info_set_status_printf
+
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Don't create dest dir on merges
+	
+2007-11-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Handle recursive copies
+
+2007-11-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Pass in same_fs instead of dest_fs_id so we can
+	reuse copy_file recursively and only check once.
+
+2007-11-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	More work on file copies
+
+2007-11-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add error handling for source scanning
+
+2007-11-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-progress-info.[ch]:
+	Add nautilus_get_all_progress_info()
+	
+        * test/test-copy.c:
+	Print progress info
+	
+        * libnautilus-private/nautilus-file-operations.c:
+	Implement generic run_simple_dialog()
+
+2007-11-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Add generic run_simple_dialog.
+
+2007-11-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-progress-info.c:
+	Fix signal emissions
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Add nautilus_file_operations_copy, with some initial
+	(far from done) code
+	
+        * test/Makefile.am:
+        * test/test-copy.c:
+	nautilus_file_operations_copy testcase
+
+2007-11-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-progress-info.c:
+	Reindent
+	Fix threading issues wrt the idle source
+
+2007-11-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-progress-info.[ch]:
+	Added NautilusProgressInfo class
+	
+        * libnautilus-private/nautilus-file-operations.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-places-sidebar.c:
+	Update to new gio API
+
+2007-11-13  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-error-reporting.c:
+	Remove last use of GNOME_VFS_ERROR
+	
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-vfs-utils.[ch]: Removed.
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-window-manage-views.c:
+	Remove GNOME_VFS_ERROR
+
+2007-11-13  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-window-manage-views.c:
+        * src/nautilus-window-private.h:
+	Better error reporting on view failure
+
+2007-11-13  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-window-manage-views.c:
+        * src/nautilus-window-private.h:
+	Try to mount location if not mounted.
+
+2007-11-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Handle std:target_uri gio links
+
+2007-11-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Fix reversed checks
+
+2007-11-08  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* configure.in:
+	* src/nautilus-image-properties-page.c:
+	Add support for exempi >= 1.99.5 while keeping support for older
+	versions.
+
+2007-11-06  Sebastian Dröge  <slomo@circular-chaos.org>
+
+	* NEWS:
+	* docs/key_mouse_navigation.txt:
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-emblem-utils.h:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-property-browser.c:
+	Fix typo: availible -> available.
+
+2007-11-06  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-program-choosing.c:
+	Update to the new GAppInfo and EelAppLaunchContext APIs
+	Remove old startup notify code
+
+2007-11-05  Jürg Billeter  <j@bitron.ch>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(action_open_folder_window_callback), (open_one_in_folder_window),
+	(action_location_open_folder_window_callback),
+	(real_update_location_menu), (real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-actions.h:
+	* src/nautilus-navigation-window-menus.c:
+	(nautilus_navigation_window_update_spatial_menu_item),
+	(action_folder_window_callback),
+	(nautilus_navigation_window_initialize_menus):
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_init), (always_use_browser_changed):
+	* src/nautilus-window-private.h:
+	Add menu item to open spatial folder window from browser window to File
+	menu and context menus.
+
+2007-11-02  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/file-manager/fm-directory-view.c:
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-navigation-window.c:
+	* libnautilus-private/nautilus-icon-info.c:
+	* libnautilus-private/nautilus-mime-application-chooser.c:
+	Plug some minor memory leaks.
+
+2007-11-02  Paolo Borelli  <pborelli@katamail.com>
+
+        * src/file-manager/fm-icon-container.c:
+        * src/file-manager/fm-list-view.c:
+        * src/nautilus-shell.c:
+        * src/nautilus-file-management-properties.c:
+        * libnautilus-private/nautilus-column-utilities.c:
+        * libnautilus-private/nautilus-column-utilities.h:
+        * libnautilus-private/nautilus-column-chooser.c:
+        * libnautilus-private/nautilus-column-chooser.h:
+	Remove all uses of eel-string-list and update code to the new
+	eel_preferences_[set|get]_string_array api.
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	Update to the eel-enumerations api changes.
+
+2007-11-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-customization-data.[ch]:
+        * libnautilus-private/nautilus-desktop-directory.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.[ch]:
+        * libnautilus-private/nautilus-file-operations-progress.[ch]:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-global-preferences.c:
+        * libnautilus-private/nautilus-icon-dnd.c:
+        * libnautilus-private/nautilus-metafile.c:
+        * libnautilus-private/nautilus-monitor.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-query.h:
+        * libnautilus-private/nautilus-search-directory.c:
+        * libnautilus-private/nautilus-search-engine-tracker.c:
+        * libnautilus-private/nautilus-search-engine.h:
+        * libnautilus-private/nautilus-thumbnails.c:
+        * libnautilus-private/nautilus-tree-view-drag-dest.c:
+        * libnautilus-private/nautilus-vfs-utils.h:
+        * src/file-manager/fm-desktop-icon-view.c:
+        * src/file-manager/fm-ditem-page.c:
+        * src/file-manager/fm-icon-container.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-location-bar.c:
+        * src/nautilus-location-dialog.c:
+        * src/nautilus-location-entry.c:
+        * src/nautilus-main.c:
+        * src/nautilus-navigation-window-menus.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-query-editor.c:
+        * src/nautilus-shell.c:
+        * src/nautilus-sidebar-title.c:
+        * src/nautilus-window-manage-views.c:
+        * src/nautilus-window.c:
+        * test/test-nautilus-mime-actions-set.c:
+        * test/test-nautilus-mime-actions.c:
+        * test/test.h:
+	Remove lots of gnome vfs includes
+	
+        * src/Makefile.am:
+	Disable building of connect to server app
+
+2007-11-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        Add nautilus_file_is_launchable
+
+        * libnautilus-private/nautilus-program-choosing.c:
+	Add launched apps to recent files
+	
+        * libnautilus-private/nautilus-mime-actions.[ch]:
+        * src/file-manager/fm-directory-view.[ch]:
+	Move all the file activaton code from FMDirectoryView
+	to a common place in nautilus-mime-actions
+
+2007-11-01  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Stub out all gnome-vfs using operations with a
+	dialog saying this isn't supported yet.
+	
+        * src/Makefile.am:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-shell-ui.xml:
+        * src/nautilus-window-menus.c:
+	Remove all connect to server use for now
+	Not sure what to do with it in the gvfs world
+	
+        * src/file-manager/fm-error-reporting.c:
+        * src/nautilus-main.c:
+	Remove gnome_vfs uses
+
+2007-11-01  Paolo Borelli  <pborelli@katamail.com>
+
+        * src/nautilus-window-manage-views.c: use g_file_get_uri_scheme
+	instead of a hand rolled version.
+
+2007-11-01  Paolo Borelli  <pborelli@katamail.com>
+
+        * src/file-manager/fm-directory-view.c: do not use the deprecated
+	gnome_util_home_file and make sure tha ~/.gnome2 is created if it
+	doesn't exist.
+
+2007-11-01  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Convert unmount volume to gio
+	Remove unmount drive (makes no sense!)
+	
+        * src/nautilus-places-sidebar.c:
+	Use new APIs
+
+2007-11-01  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_get_uri_scheme):
+	Better get_uri_scheme implementation
+	
+        * libnautilus-private/nautilus-mime-actions.[ch]:
+	Remove the open_with versions (not needed anymore)
+	Add support for uri_handlers
+	
+        * libnautilus-private/nautilus-program-choosing.[ch]:
+	Remove now unused function nautilus_launch_show_file
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-information-panel.c:
+        * src/nautilus-window.c:
+	Update for above api changes
+
+2007-10-31  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-dnd.c:
+	Convert default dnd op to gio code
+
+2007-10-31  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-search-engine-simple.c:
+	Update to changed gio API
+
+2007-10-31  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+	Remove more unused gnome-vfs helpers
+
+2007-10-31  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-icon-view.c (play_file):
+	Use a better pipeline for audio preview (doesn't play videos)
+	Add back totem preview app.
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_get_volume_name):
+	Get volume name using gio
+	
+        * src/file-manager/fm-properties-window.c:
+	Show volume name for non local files too
+	Avoid crashes if query fsinfo fails
+
+2007-10-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-program-choosing.c:
+        (nautilus_launch_show_file):
+	Avoid gnome_vfs calls
+
+2007-10-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        (real_map_pixbuf):
+	Fix indentation
+	
+        * src/file-manager/Makefile.am:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/nautilus-audio-mime-types.h:
+	Replace audio preview code with new one based
+	on gst-launch, removing all the gnome-vfs code
+
+2007-10-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-dnd.c:
+	Remove gnome-vfs code
+
+2007-10-29  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        * libnautilus-private/nautilus-file-operations.c:
+	Move public gnome-vfs functions from file-utilities to internal
+	calls in file-operations.c
+	Replace gnome-vfs use with gio
+	
+        * libnautilus-private/nautilus-file-operations-progress.c:
+        * src/file-manager/fm-tree-view.c:
+	Replace gnome-vfs use with gio
+
+2007-10-29  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Move nautilus_file_operations_delete to the gio code.
+
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-tree-view.c:
+	Update to use new nautilus_file_operations_delete
+
+2007-10-26  Paolo Borelli  <pborelli@katamail.com>
+
+        * libnautilus-private/nautilus-module.c:
+	Fix valgrind warning on shutdown (#346401, ported from trunk).
+
+2007-10-26  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-desktop-link.c:
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	* libnautilus-private/nautilus-bookmark.c:
+	* libnautilus-private/nautilus-trash-monitor.c:
+	* libnautilus-private/nautilus-file.c:
+	Plug minor memory leaks and improper uses of eel_ref_str_*
+
+2007-10-26  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-desktop-link.c: unref the icon instead
+	of freeing it to avoid memory corruption.
+
+2007-10-25  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-changes-queue.[ch]:
+        * libnautilus-private/nautilus-monitor.c:
+	Rename some file change queue functions to _by_uri
+	add GFile based version with the original name
+	
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Add gio based nautilus_file_operations_trash_or_delete() call.
+	
+        * src/file-manager/fm-directory-view.c:
+	Call nautilus_file_operations_trash_or_delete()
+	Remove unused code
+
+2007-10-25  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-directory-view.[ch]:
+	Make file activation handle mounting of mountables and non-mounted
+	locations. Also general cleanup of activation.
+	Cancellation not handled yet.
+
+2007-10-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/file-manager/fm-list-view.c:
+	* libnautilus-private/nautilus-icon-info.c:
+	* libnautilus-private/nautilus-file.c:
+	Plug some minor memory leaks.
+
+2007-10-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-window-manage-view.c (location_has_really_changed):
+	Fix a warning when switching view.
+
+2007-10-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-application.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-shell.c:
+
+	Do not use EelStringList.
+
+2007-10-24  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-file-management-properties.c:
+	remove eel_string_list (ab)use.
+
+2007-10-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-vfs-file.c:
+	Pass GMountOperation instead of parent to mount.
+	Nothing for unmount/eject
+	
+        * src/file-manager/fm-directory-view.c:
+	Pass in a mount operation for mount.
+	Disable timeout when mount operation is active
+
+2007-10-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Use g_utf8_collate, not eel_strcoll.
+
+2007-10-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        * test/test.c:
+	Update for eel changes
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * configure.in:
+        * libnautilus-private/nautilus-icon-canvas-item.[ch]:
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-dnd.c:
+        * libnautilus-private/nautilus-icon-private.h:
+        * test/test.c:
+	Remove libart dependency, use eel rect and point types
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-program-choosing.c:
+        (nautilus_launch_application_from_command):
+	Use gdk_spawn instead of eel
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-dnd.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-information-panel.c:
+	Don't use removed eel gnome-vfs functions
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory.[ch]:
+        Add nautilus_directory_get_location
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Add nautilus_file_get_parent_location.
+	Port from eel_format_uri_for_display to gio parse names
+	
+        * libnautilus-private/nautilus-program-choosing.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-location-bar.c:
+        * src/nautilus-location-dialog.c:
+        * src/nautilus-navigation-window-menus.c:
+        * src/nautilus-window-bookmarks.c:
+	Port from eel_format_uri_for_display to gio parse names
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.c:
+        (nautilus_ensure_unique_file_name):
+	Port from gnome-vfs
+	
+        * src/file-manager/fm-directory-view.c:
+        (fm_directory_view_handle_netscape_url_drop):
+	Handle missing mimetype
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.c:
+        (nautilus_compute_title_for_location):
+	Make this use only display name.
+	
+        * libnautilus-private/nautilus-icon-info.c:
+        (nautilus_icon_info_lookup):
+	Don't free filename before use
+	
+        * libnautilus-private/nautilus-search-directory-file.[ch]:
+        * libnautilus-private/nautilus-search-directory.c:
+	Create nice display name for search directories, and keep it updated.
+	
+        * src/nautilus-window-manage-views.c:
+	Fix wrong type of argument passed to signal
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Replace some gnome vfs calls
+
+2007-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-metafile.c:
+	Use new gio uri escape functions instead of gnome-vfs
+
+2007-10-22  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-location-entry.c:
+	Use GFilenameCompleter
+
+2007-10-22  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-application.c:
+        * src/nautilus-information-panel.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-spatial-window.h:
+        * src/nautilus-window-manage-views.c:
+	Use GFile * instead of uris in some more places
+	
+	Patch from Paolo Borelli
+
+2007-10-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-saved-search-file.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+	Fix handling of mimetype as refstring
+	Fix leak of GFile
+	Code cleanups
+
+	Patch from Paolo Borelli
+
+2007-10-19  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	use g_content_type_equals instead of strcasecmp on the mime type.
+
+	* src/nautilus-window-menus.c:
+	Remove unneeded includes
+
+2007-10-19  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-emblem-utils.h:
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-property-browser.c:
+
+	Make nautilus_emblem_load_pixbuf_for_emblem take a GFile.
+
+2007-10-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_set_display_name):
+	Don't crash on NULL display name
+
+2007-10-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-vfs-file.c:
+	Remove NautilusFileMountCallback and just make
+	NautilusFileOperationCallback take an extra
+	resultant file argument.
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-error-reporting.c:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Update to API change
+	
+        * src/nautilus-pathbar.c:
+        (get_display_name_for_folder):
+	Fix crash if NULL display name
+
+2007-10-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+	Set can_mount/unmount to FALSE unless set
+	
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+	Make the Operation object semi-public
+	Move mount ops to virtual functions
+	
+        * libnautilus-private/nautilus-vfs-file.c:
+	Initial work to implement mount op
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        * src/nautilus-pathbar.c:
+        Add & use nautilus_get_desktop_location
+	
+        * libnautilus-private/nautilus-dnd.c:
+	Port code to gio
+	
+        * libnautilus-private/nautilus-icon-dnd.c:
+	Trash is now a real uri location, remove special case
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+	Make compute_title take a GFile
+
+        * libnautilus-private/nautilus-view-factory.[ch]:
+        * libnautilus-private/nautilus-window-info.[ch]:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-application.[ch]:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-connect-server-dialog-nonmain.c:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-history-sidebar.c:
+        * src/nautilus-location-bar.c:
+        * src/nautilus-location-dialog.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-shell.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-window-manage-views.[ch]:
+        * src/nautilus-window-menus.c:
+        * src/nautilus-window-private.h:
+        * src/nautilus-window.[ch]:
+	Use GFile * instead of char * uri in all loation handling
+	for windows.
+
+2007-10-18  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-image-properties-page.c: port to gio.
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.[ch]:
+        * src/nautilus-application.c:
+	Make nautilus_directory_get_existing take GFile *.
+	Add nautilus_directory_get taking a GFile *
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-directory-file.c:
+        * libnautilus-private/nautilus-desktop-directory.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-desktop-link-monitor.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-directory.h:
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-window-manage-views.c:
+        * test/test-nautilus-directory-async.c:
+	Rename nautilus_directory_get to nautilus_directory_get_by_uri.
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-link.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+	Handle NULL volume
+	
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-dnd.c:
+	Convert gnome_vfs calls to gio
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * src/nautilus-application.c:
+        * src/nautilus-window-menus.c:
+        * test/test-nautilus-directory-async.c:
+        * test/test.c:
+	Convert gnome_vfs calls to gio
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-application.[ch]:
+	Convert gnome_vfs calls to gio
+
+	* TODO-gio:
+	Document some stuff that needs doing in gio-branch
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-search-engine-simple.c:
+	Remove spew
+	
+        * src/nautilus-query-editor.c:
+        Work around crash getting NULL back as the location.
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+	Add nautilus_is_home_directory and nautilus_is_root_directory
+	
+        * src/nautilus-window-manage-views.c:
+	Convert gnome_vfs calls to gio
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window.c (nautilus_window_go_up):
+	Use gio to find parent
+
+2007-10-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-pathbar.[ch]:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-window-manage-views.c:
+	Use gio in pathbar
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+	Remove now unused gnome_vfs to gio helpers
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-location-bar.c:
+	Remove some unused code
+	Replace gnome_vfs code with gio code
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_can_trash):
+	Typo can_delete -> can_trash
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-property-browser.c:
+	Replace some gnome-vfs code with gio code
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-properties-window.c:
+	Replace some gnome-vfs code with gio code
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        Add can_delete and can_trash
+	
+        * src/file-manager/fm-directory-view.c:
+	Replace some gnome-vfs code with gio code
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-location-dialog.c (open_current_location): 
+	Use g_file_parse_name instead of gnome_vfs_make_uri_from_input
+	
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-search-engine-simple.c:
+	Update to use gio
+
+2007-10-17  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-recent.c: do not use gnome-vfs.
+
+2007-10-17  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-emblem-utils.c: do not use gnome-vfs.
+
+2007-10-17  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-link.[ch]: remove.
+	* libnautilus-private/nautilus-link-desktop-file.[ch]: port to gio
+	and rename them to nautilus-link.[ch]
+	* libnautilus-private/nautilus-file.c: adapt for the above change.
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-places-sidebar.c:
+	Use gio volume APIs
+
+2007-10-17  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-file-private.h:
+	Remove has/get_volume/drive, replace with
+	can_mount/unmount/eject and mount/unmount/eject.
+	(Which are not fully implemented yet)
+	Add nautilus_file_is_mountpoint.
+	
+        * libnautilus-extension/nautilus-file-info.[ch]:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-link-desktop-file.[ch]:
+        * libnautilus-private/nautilus-link.[ch]:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.[ch]:
+        * src/file-manager/fm-tree-view.c:
+	Use gio volume APIs
+
+2007-10-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-desktop-link-monitor.c:
+        * libnautilus-private/nautilus-desktop-link.[ch]:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Convert some volume monitor use to gio
+
+2007-10-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-trash-monitor.c:
+	Ref icon in nautilus_trash_monitor_get_icon()
+	
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-desktop-link.c:
+        * libnautilus-private/nautilus-desktop-link.h:
+        * src/nautilus-places-sidebar.c:
+	Use nautilus_trash_monitor_get_icon() when possible
+	
+2007-10-16  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-trash-monitor.[ch]:
+	Add full gio implementation and get_icon()
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-icon-factory-private.h: Removed.
+        * libnautilus-private/nautilus-icon-factory.c: Removed.
+        * libnautilus-private/nautilus-icon-factory.h: Removed.
+	Remove NautilusIconFactory code.
+	Now all code use the new APIs
+	YAHOO!!!
+	
+        * libnautilus-private/nautilus-bookmark.c:
+        * libnautilus-private/nautilus-bookmark.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-global-preferences.c:
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        * libnautilus-private/nautilus-icon-canvas-item.h:
+        * libnautilus-private/nautilus-icon-container.h:
+        * libnautilus-private/nautilus-icon-private.h:
+        * libnautilus-private/nautilus-link-desktop-file.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-view.h:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-list-model.c:
+        * src/file-manager/fm-list-model.h:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-application.c:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-navigation-window-menus.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-pathbar.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-sidebar-title.c:
+        * src/nautilus-window-menus.c:
+        * src/nautilus-window.c:
+        * src/nautilus-zoom-control.h:
+        * test/test-nautilus-wrap-table.c:
+	Don't include the nautilus-icon-factory headers
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Add NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER
+	Fix force_size handling
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-empty-view.c:
+        * src/file-manager/fm-list-model.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-navigation-window-menus.c:
+        * src/nautilus-property-browser.c:
+        * src/nautilus-sidebar-title.c:
+	Convert more stuff to new icon API
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-info.[ch]:
+        Add nautilus_icon_info_lookup_from_name
+	
+        * libnautilus-private/nautilus-ui-utilities.c:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-pathbar.c:
+	Use nautilus_icon_info_lookup_from_name to get less
+	code
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-pathbar.c:
+        * src/nautilus-spatial-window.c:
+	Convert more stuff to new icon API
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Add nautilus_file_get_icon_pixbuf and
+	IGNORE_VISITING icon flag
+	
+        * libnautilus-private/nautilus-icon-info.[ch]:
+        Add nautilus_icon_info_get_used_name function
+
+        * libnautilus-private/nautilus-emblem-utils.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-ui-utilities.c:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-window.[ch]:
+	Convert to new icon APIs
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-audio-player.c: Removed.
+        * libnautilus-private/nautilus-audio-player.h: Removed.
+        * src/file-manager/fm-icon-view.c:
+	Kill old unused code
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-info.[ch]:
+	Add nautilus_icon_info_get_pixbuf_nodefault_at_size
+	
+        * libnautilus-private/nautilus-file.[ch]:
+	New functions for getting emblem icons and emblem pixbufs
+	
+        * libnautilus-private/nautilus-icon-container.[ch]:
+        * libnautilus-private/nautilus-icon-factory.c:
+        * src/file-manager/fm-directory-view.[ch]:
+        * src/file-manager/fm-icon-container.c:
+        * src/file-manager/fm-list-model.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/nautilus-sidebar-title.c:
+	Update to use the new emblem getters
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-info.[ch]:
+	Add nautilus_get_icon_size_for_stock_size
+	
+        * libnautilus-private/nautilus-bookmark.c:
+        * src/nautilus-places-sidebar.c:
+        Use the above
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-thumbnails.c:
+	Add required thumbnailing stuff from NautilusIconFactory here
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-factory.[ch]:
+        * libnautilus-private/nautilus-icon-info.[ch]:
+	Move over icon size util functions to nautilus-icon-info
+
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-lib-self-check-functions.h:
+        * src/file-manager/fm-list-model.c:
+        * src/nautilus-sidebar-title.c:
+	Update to new names
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-factory.h:
+	Remove NAUTILUS_ICON_SIZE_THUMBNAIL define as this is
+	really dynamic.
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Actually handle thumbnail size prefs
+	
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Handle thumbnail size prefs
+	Handle all sorts of icon changes and emit CHANGED on
+	files in this case.
+
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-info.c:
+        * libnautilus-private/nautilus-icon-info.h:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/file-manager/fm-tree-model.h:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-sidebar-title.c:
+        * src/nautilus-window-bookmarks.c:
+        * src/nautilus-window.c:
+	Remove use of icon factory icons_changed signal, using instead
+	the file CHANGED signal.
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_all_attributes):
+	Add thumbnail to all attributes
+
+2007-10-15  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.h:
+	Add NAUTILUS_FILE_ATTRIBUTES_FOR_ICON
+	
+        * libnautilus-private/nautilus-bookmark.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-pathbar.c:
+        * src/nautilus-sidebar-title.c:
+	Use NAUTILUS_FILE_ATTRIBUTES_FOR_ICON instead of
+	nautilus_icon_factory_is_icon_ready_for_file and
+	nautilus_icon_factory_get_required_file_attributes.
+
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-bookmark.[ch]:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-icon-info.c:
+        * src/nautilus-application.c:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-window-manage-views.c:
+        * src/nautilus-window-private.h:
+        * src/nautilus-window.c:
+	Convert bookmarks API to gio / GIcon
+
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-thumbnails.[ch]:
+	Add back support for generating thumbnails.
+
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	For large icons, try to use the original file
+	when thumbnailing.
+
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Only invalidate thumbnails when sizing up, not
+	on the original scale from raw
+	
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Simplify thumbnail size handling and make it work.
+	Now handles resizing icons.
+
+2007-10-12  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	More exact handling of thumbnail up_to_date-ness, including
+	if loading a thumbnail fails.
+	Return thumbnails of the right size.
+	
+        * libnautilus-private/nautilus-thumbnails.[ch]:
+	Add nautilus_thumbnail_unframe_image and export
+	frame element sizes as defines
+
+2007-10-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-directory-async.c:
+        Export nautilus_file_should_show_thumbnail and use it as needed in the
+	thumbnail reading code
+
+2007-10-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-attributes.h:
+	Add NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL attribute
+	
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+	Load thumbnails asynchronosuly.
+	
+        * libnautilus-private/nautilus-file.c:
+	Initial code to use the asynchronoulsy loaded thumbnail
+	
+        * libnautilus-private/nautilus-icon-factory.c:
+	Add NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL as a required attribute for
+	icons
+
+2007-10-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Read thumbnail info from gio
+
+2007-10-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c (nautilus_file_get_gicon):
+	Handle accept, visited and embedding text state and
+	rewrite the icon as needed.
+	
+        * libnautilus-private/nautilus-icon-info.c:
+        (nautilus_icon_info_finalize):
+	Fix crash if pixbuf is NULL
+
+2007-10-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-icon-info.[ch]:
+	Added NautilusInfoInfo, including caches and GIcon => pixbuf lookup
+	
+        * libnautilus-private/nautilus-file.[ch]:
+	Make nautilus_file_get_icon return a NautilusFileInfo
+	
+        * libnautilus-private/nautilus-icon-canvas-item.[ch]:
+	Split out attach points instead of using NautilusAttachPoints
+	
+        * libnautilus-private/nautilus-icon-container.[ch]:
+        * src/file-manager/fm-icon-container.c:
+	Use the new nautilus_file_get_icon and nautilus_file_info_* stuff
+
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-mime-application-chooser.c:
+        * libnautilus-private/nautilus-open-with-dialog.c:
+	Update to g_themed_icon_get_names const type
+	
+2007-10-10  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+	Keep track of GIcon from gio.
+	Add nautilus_file_get_icon()
+	
+        * libnautilus-private/nautilus-icon-factory.[ch]:
+	Add nautilus_icon_factory_get_pixbuf_for_gicon().
+	This is a bit temporary, but can be used to move over
+	users to nautilus_file_get_icon().
+	
+        * libnautilus-private/nautilus-icon-container.[ch]:
+        * src/file-manager/fm-icon-container.c:
+	Use nautilus_file_get_icon() in icon view.
+
+2007-10-10  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-monitor.c:
+        * src/nautilus-bookmark-list.c:
+	Update for file monitoring API change
+	
+        * src/nautilus-spatial-window.c:
+	Gio port from Paolo Borelli
+	
+2007-10-08  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_peek_display_name):
+	Use a display name based on the filename as the default instead
+	of "" before we've read the real display name from the backend.
+
+2007-10-08  Paolo Borelli  <pborelli@katamail.com>
+
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-location-bar.c:
+
+	Replace nautilus_icon_dnd_uri_list_extract_uris with
+	g_uri_list_extract_uris.
+
+2007-10-08  Paolo Borelli  <pborelli@katamail.com>
+
+	* src/nautilus-bookmark-list.[ch]: port to gio.
+
+2007-10-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in: use gio-2.0 instead of gio-standalone.
+
+2007-10-04  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-trash-directory.[ch]:
+        * libnautilus-private/nautilus-trash-file.[ch]:
+	Remove virtual trash locations, we now use the gvfs trash:
+	
+        * libnautilus-private/nautilus-trash-monitor.[ch]:
+	Make this a stub for now. Need to figure out how to do this.
+	
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-window-manage-views.c:
+	Handle the removal of NautilusTrash*
+
+2007-10-04  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-thumbnails.c:
+	Use gio instead of gnome-vfs to get mtime
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-customization-data.c:
+        * libnautilus-private/nautilus-customization-data.h:
+        * src/nautilus-property-browser.c:
+	Use gio to read info
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-dnd.c (selection_is_image_file):
+	Use gio to get mime type
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.c:
+	Use GFileMonitor to monitor xdg user dirs file
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am (INCLUDES):
+	Bump name for extension dir since we're not compatible anymore
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-bookmark.c:
+        * libnautilus-private/nautilus-customization-data.c:
+        * libnautilus-private/nautilus-desktop-directory.c:
+        * libnautilus-private/nautilus-directory-background.c:
+        * libnautilus-private/nautilus-dnd.c:
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-metafile.c:
+        * libnautilus-private/nautilus-search-directory.c:
+        * libnautilus-private/nautilus-search-engine-tracker.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-ditem-page.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-application.c:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-image-properties-page.c:
+        * src/nautilus-information-panel.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-property-browser.c:
+        * src/nautilus-query-editor.c:
+	gnome_vfs_get_local_path_from_uri -> g_filename_from_uri
+	gnome_vfs_get_uri_from_local_path -> g_filename_to_uri
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-factory.c:
+	Don't clear thumbnails and other absolute pathnames from icon
+	cache when mime data or icon theme changes. This is to avoid
+	flashing and async realoading of all thumbnails.
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        (mime_db_changed_callback):
+	Use the right call to invalidate attributes, so that
+	they get re-read correctly.
+
+2007-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-factory.c:
+        (mime_type_data_changed_callback):
+        * libnautilus-private/nautilus-directory-async.c:
+        (mime_db_changed_callback):
+	Fix up types in callbacks
+	
+        * libnautilus-private/nautilus-mime-application-chooser.c:
+        * libnautilus-private/nautilus-open-with-dialog.c:
+	Handle and emit mime_data_changed on NautilusSignaller
+
+2007-10-01  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-mime-application-chooser.[ch]:
+        * libnautilus-private/nautilus-open-with-dialog.[ch]:
+	Moved these from eel and renamed
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Use the nautilus version imported above instead of the eel one.
+
+2007-10-01  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-signaller.c:
+	Replace gnome-vfs mime monitor with NautilusSignaller signal.
+	
+        * src/nautilus-query-editor.c:
+	Use gio to list all mime types
+
+2007-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-theme.[ch]:
+	Delete leftover files
+
+2007-09-28  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Update for new gio pkgconfig name
+
+2007-09-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Update to the new name for g_format_file_size_for_display
+
+2007-09-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-link.c:
+        * src/file-manager/fm-icon-container.c:
+        * src/nautilus-query-editor.c:
+	Use gio mimetype functions instead of gnome-vfs ones.
+
+2007-09-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-mime-actions.[ch]:
+        * libnautilus-private/nautilus-program-choosing.[ch]:
+        * libnautilus-private/nautilus-recent.[ch]:
+	Use GAppInfo instead of GnomeVFSMimeApplication
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-information-panel.c:
+        * test/test-nautilus-mime-actions.c:
+	Update due to the api changes in the GAppInfo move.
+
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Use g_file_size_format_for_display instead of
+	gnome_vfs_format_file_size_for_display
+	
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Remove unused GnomeVFSHandle stuff
+	
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+	Forgot to change GnomeVFSResult to GError in
+	one spot.
+
+007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        Implement nautilus_file_set_owner and nautilus_file_set_group
+	using set_attributes
+	
+
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        Implement nautilus_file_set_permissions using
+	nautilus_file_set_attributes.
+
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        Add nautilus_file_set_attributes
+
+2007-09-27  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+	Add gnome_vfs_result_to_error call
+	
+        * libnautilus-private/nautilus-file.[ch]:
+	Convert renaming to use gio.
+	Pass GError instead of GnomeVFSResult in
+	NautilusFileOperationCallback
+	
+        * src/file-manager/fm-error-reporting.c:
+        * src/file-manager/fm-error-reporting.h:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Update to the NautilusFileOperationCallback API change
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Read can_delete and can_rename from gio.
+	Use can_rename in nautilus_file_can_rename.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Add nautilus_file_get_edit_name()
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+	Make string args const char * where possible.
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Read display_name and edit_name from gio.
+	Kill old cached_display_name creation.
+	Use eel_ref_str for name, display_name, edit_name and make sure to
+	share them when possible.
+	Old use of display_name as the link info only is moved so that
+	its shared with the normal name, with got_custom_display_name showing
+	where its from.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Use new refcounted string implementation for mime_type.
+	This way we don't have to store duplicate strings for
+	each file.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c (nautilus_directory_finalize):
+	directory->details->pending_file_info now has GFileInfo objects, not
+	GnomeVFSFileInfo objects. Free them in the correct way.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Remove old irrelevant comment
+	
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Read top left text with gio
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-ditem-page.c:
+	Use g_file_load_contents_async instead of
+	eel_read_entire_file_async.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-thumbnails.c:
+	Use g_file_load_contents_async instead of
+	eel_read_entire_file_async.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-metafile.c:
+	Use g_file_load_contents_async instead of
+	eel_read_entire_file_async.
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file.c:
+	Initialize hidden_file_hash lazily
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Read link info using gio
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Read mime list using gio
+
+2007-09-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+	Read .hidden using gio.
+
+2007-09-25  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-factory.c:
+	Free file_info after last use (fixed valgrind warning)
+	
+        * libnautilus-private/nautilus-file.c:
+	Sometimes we freed an uninitialized pointer
+	
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Keep all the directory loading info in DirectoryLoadState
+
+2007-09-25  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Implement deep count using gio
+
+2007-09-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-metafile.c (set_metafile_contents):
+	Don't crash on files that have slashes in them.
+
+2007-09-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Use gio to do directory counts
+
+2007-09-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+	Define NAUTILUS_FILE_DEFAULT_ATTRIBUTES
+
+2007-09-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-directory-file.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+        * libnautilus-private/nautilus-saved-search-file.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+        * libnautilus-private/nautilus-trash-file.c:
+	There was some problems removing the virtual call for
+	get_file_type, as this broke getting the type for "virtual"
+	directory types like trash and the desktop. Re-introduce this,
+	but set the type directly instead of via an indirect jump.
+
+2007-09-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+	nautilus_file_get_for_location -> nautilus_file_get
+	same for get_existing
+
+2007-09-24  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-bookmark.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+        * libnautilus-private/nautilus-icon-dnd.c:
+        * libnautilus-private/nautilus-search-directory.c:
+        * libnautilus-private/nautilus-thumbnails.c:
+        * libnautilus-private/nautilus-trash-monitor.c:
+        * libnautilus-private/nautilus-tree-view-drag-dest.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-ditem-page.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-list-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-application.c:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-information-panel.c:
+        * src/nautilus-notes-viewer.c:
+        * src/nautilus-pathbar.c:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-window-manage-views.c:
+        * test/test-nautilus-mime-actions-set.c:
+        * test/test-nautilus-mime-actions.c:
+	Rename nautilus_file_get -> nautilus_file_get_by_uri.
+	Same with nautilus_file_get_existing.
+
+2007-09-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Fix up type for get_permissions return value (don't use gnome-vfs types).
+	
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+	Add gnome_vfs_file_type_from_g_file_type()
+	
+        * libnautilus-private/nautilus-icon-factory.c:
+	Set up more GnomeVFSInfo fields needed for gnome_icon_lookup.
+
+2007-09-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-monitor.[ch]:
+	Use gio to implement file monitoring.
+
+2007-09-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Read info for new files 
+
+2007-09-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Implement get_file_info using gio
+
+2007-09-21  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Read directory list via gio instead of gnome-vfs
+	
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Get is_hidden & is_backup from gio instead of doing
+	filename matching ourselves.
+
+        * libnautilus-private/nautilus-file-utilities.c:
+	Remove unused hidden/backup pattern matching.
+	
+        * src/nautilus-main.c:
+	Initiate GThreads, as we need this for gio async emulation.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-vfs-utils.c:
+	Fix typo in attribute name
+	
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+	Make NautilusFile info update use GFileInfo.
+	Update all call sites to convert to it.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+        Add gnome_vfs_file_info_to_gio
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-metafile-monitor.c:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-metafile.c:
+	Make the filename key for metadata be unescaped in memory.
+	Escape it only when reading/writing the metadata files.
+	This is to avoid escaping a lot since we're now storing the
+	filename unescaped in NautilusFile.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+	Add GFile versions of metadata scheduling functions.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+	Add GFile versions:
+         nautilus_directory_notify_files_changed
+         nautilus_directory_notify_files_removed
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file.c:
+	Avoid for_location suffix when its not needed anymore
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory.c:
+	Add _by_uri suffix to uri versions of functions and
+	remove suffix for GFile versions
+	
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-changes-queue.c:
+        * libnautilus-private/nautilus-link-desktop-file.c:
+        * libnautilus-private/nautilus-merged-directory.c:
+	Rename notify functions that work on uris to _by_uri and
+	the GFile ones to have no suffix
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-metafile.c: 
+        * libnautilus-private/nautilus-directory.[ch]:
+	Remove unused function nautilus_directory_make_uri_canonical
+	
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+	Added nautilus_directory_notify_files_moved_by_location and
+	made nautilus_directory_notify_files_moved use that.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-notify.h:
+        * libnautilus-private/nautilus-directory.c:
+        Add nautilus_directory_notify_files_added_by_location.
+	Use GFile instead of uris in more places
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file.[ch]:
+	Add nautilus_file_get_for_location and nautilus_file_get_existing_for_location.
+	and implement nautilus_file_get based on these.
+
+2007-09-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+        Add nautilus_file_get_location () and use it when
+	generating uris.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory.c:
+        (nautilus_directory_is_desktop_directory):
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        (nautilus_is_home_directory_file):
+        (nautilus_is_desktop_directory_file):
+        (nautilus_is_desktop_directory):
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_is_desktop_directory):
+        (nautilus_file_is_home):
+	Don't keep dup:ing strings for these commonly called
+	functions.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        * libnautilus-private/nautilus-file.c:
+	Use GFile *location to store the uri for NautilusDirectory.
+	In preparation for using GFile for all I/O.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-attributes.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-mime-actions.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-ditem-page.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/nautilus-window.c:
+	Remove slow mimetype attribute and all its use.
+	This is in preparation for the gio move which has
+	a canonical mimetype definition instead of the
+	guessed/slow couple.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-attributes.h:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-mime-actions.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-properties-window.c:
+        * src/file-manager/fm-tree-model.c:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-window-manage-views.c:
+        * src/nautilus-window.c:
+	Limit the set of file attributes to the ones we actually read
+	separately. This makes it more obvious what is happening when
+	doing I/O. It does put some extra work on users, because they
+	need to know where the data is coming from, but that is rarely
+	a problem.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        * libnautilus-private/nautilus-file.c:
+	Store "name" instead of "relative_uri" in NautilusFile.
+	We want to avoid escaping/unescaping as much as possible and
+	limit that to when we go from/to a full uri.
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-private.h:
+	Remove declaration for removed function
+	
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-spatial-window.c:
+        * src/nautilus-window-manage-views.c:
+	Use GError instead of GnomeVFSResult for get_info_error
+
+2007-09-19  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-directory-file.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-saved-search-file.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+        * libnautilus-private/nautilus-trash-file.c:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * libnautilus-private/nautilus-vfs-utils.c:
+        * libnautilus-private/nautilus-vfs-utils.h:
+        * libnautilus-private/nautilus-view-factory.c:
+        * libnautilus-private/nautilus-view-factory.h:
+        * src/file-manager/fm-desktop-icon-view.c:
+        * src/file-manager/fm-empty-view.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-list-view.c:
+	Move from GnomeVFSFileType to GFileType
+
 2007-11-28  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-search-bar.c:
@@ -82,6 +2133,73 @@
 	(async_thumbnail_load_func): Frame asynchronously loaded thumbnails.
 	Fixes #478363.
 
+2007-09-18  Alexander Larsson  <alexl@redhat.com>
+	
+        * libnautilus-private/nautilus-file-private.h:
+	Clean up NautilusFileDetails a bit.
+
+2007-09-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-extension/nautilus-file-info.[ch]:
+        * libnautilus-private/nautilus-desktop-directory-file.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-icon-factory.c:
+        * libnautilus-private/nautilus-saved-search-file.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+        * libnautilus-private/nautilus-thumbnails.c:
+        * libnautilus-private/nautilus-trash-file.c:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * src/file-manager/fm-directory-view.c:
+	Store file info directly in NautilusFile instead of using a
+	GnomeVfsFileInfo.
+
+2007-09-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-directory-file.c:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-file-operations-progress.c:
+        * libnautilus-private/nautilus-file-operations-progress.h:
+        * libnautilus-private/nautilus-file-private.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+        * libnautilus-private/nautilus-metafile.c:
+        * libnautilus-private/nautilus-search-directory-file.c:
+        * libnautilus-private/nautilus-thumbnails.c:
+        * libnautilus-private/nautilus-trash-file.c:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-ditem-page.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-properties-window.c:
+	Use goffset instead of GnomeVFSFileSize
+
+2007-09-18  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-vfs-utils.[ch]:
+	Added tools for conversion from GnomeVFSResult to GError
+	
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.[ch]:
+        * libnautilus-private/nautilus-search-directory.c:
+        * src/file-manager/fm-directory-view.[ch]:
+        * src/file-manager/fm-error-reporting.[ch]:
+	Use GError instead of GnomeVFSResult for directory loading errors
+
+2007-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Add -gio to version for now
+	Pull in gio-standalone
+
+=== gio-branch starts here ===
+	
 2007-09-18  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

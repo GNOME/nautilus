@@ -8,7 +8,6 @@ test_init (int *argc,
 {
 	gtk_init (argc, argv);
 	gdk_rgb_init ();
-	gnome_vfs_init ();
 
 	eel_make_warnings_and_criticals_stop_in_debugger ();
 }
@@ -16,8 +15,6 @@ test_init (int *argc,
 int
 test_quit (int exit_code)
 {
-        /* gnome_vfs_shutdown (); */
-
 	if (gtk_main_level () > 0) {
 		gtk_main_quit ();
 	}
@@ -152,52 +149,3 @@ test_window_set_title_with_pid (GtkWindow *window,
 	g_free (tmp);
 }
 
-void
-test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
-				  const char *tile_name,
-				  int x0,
-				  int y0,
-				  int x1,
-				  int y1,
-				  int opacity)
-{
-	ArtIRect area;
-	GdkPixbuf *tile_pixbuf;
-
-	g_return_if_fail (eel_gdk_pixbuf_is_valid (pixbuf));
-	g_return_if_fail (tile_name != NULL);
- 	g_return_if_fail (opacity > EEL_OPACITY_FULLY_TRANSPARENT);
- 	g_return_if_fail (opacity <= EEL_OPACITY_FULLY_OPAQUE);
-
-	tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
- 	g_return_if_fail (tile_pixbuf != NULL);
-
-	if (x0 == -1 && y0 == -1 && x1 == -1 && y1 == -1) {
-		EelDimensions dimensions;
-		dimensions = eel_gdk_pixbuf_get_dimensions (pixbuf);
-		area = eel_art_irect_assign_dimensions (0, 0, dimensions);
-	} else {
-		g_return_if_fail (x0 >= 0);
-		g_return_if_fail (y0 >= 0);
-		g_return_if_fail (x1 > x0);
-		g_return_if_fail (y1 > y0);
-
-		area.x0 = x0;
-		area.y0 = y0;
-		area.x1 = x1;
-		area.y1 = y1;
-	}
-	
-	eel_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
-					     pixbuf,
-					     area,
-					     gdk_pixbuf_get_width (tile_pixbuf),
-					     gdk_pixbuf_get_height (tile_pixbuf),
-					     0,
-					     0,
-					     opacity,
-					     GDK_INTERP_NEAREST);
-
-	g_object_unref (tile_pixbuf);
-}

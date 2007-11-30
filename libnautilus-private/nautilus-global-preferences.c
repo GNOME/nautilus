@@ -28,7 +28,6 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
-#include "nautilus-icon-factory.h"
 #include <eel/eel-enumeration.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -36,11 +35,9 @@
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 
 /* Constants */
-#define STRING_LIST_DEFAULT_TOKENS_DELIMETER ","
+#define STRING_ARRAY_DEFAULT_TOKENS_DELIMETER ","
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* Path for gnome-vfs preferences */
@@ -64,15 +61,14 @@ typedef enum
 	PREFERENCE_BOOLEAN = 1,
 	PREFERENCE_INTEGER,
 	PREFERENCE_STRING,
-	PREFERENCE_STRING_LIST
+	PREFERENCE_STRING_ARRAY
 } PreferenceType;
 
 /* Enumerations used to qualify some INTEGER preferences */
 static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
 	{ "always",	    N_("_Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
 	{ "local_only",	    N_("_Local File Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
-	{ "never",	    N_("_Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER },
-	{ NULL }
+	{ "never",	    N_("_Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER }
 };
 
 static EelEnumerationEntry default_zoom_level_enum_entries[] = {
@@ -89,8 +85,7 @@ static EelEnumerationEntry default_zoom_level_enum_entries[] = {
 	/* xgettext:no-c-format */
 	{ "larger",	    N_("200%"),		NAUTILUS_ZOOM_LEVEL_LARGER },
 	/* xgettext:no-c-format */
-	{ "largest",	    N_("400%"),		NAUTILUS_ZOOM_LEVEL_LARGEST },
-	{ NULL }
+	{ "largest",	    N_("400%"),		NAUTILUS_ZOOM_LEVEL_LARGEST }
 };
 
 static EelEnumerationEntry file_size_enum_entries[] = {
@@ -100,8 +95,7 @@ static EelEnumerationEntry file_size_enum_entries[] = {
 	{ "3145728",	    N_("3 MB"),		3145728 },
 	{ "5242880",	    N_("5 MB"),		5242880 },
 	{ "10485760",	    N_("10 MB"),	10485760 },
-	{ "104857600",	    N_("100 MB"),	104857600 },
-	{ NULL }
+	{ "104857600",	    N_("100 MB"),	104857600 }
 };
 
 static EelEnumerationEntry click_policy_enum_entries[] = {
@@ -112,8 +106,7 @@ static EelEnumerationEntry click_policy_enum_entries[] = {
 	{ "double",
 	  N_("Activate items with a _double click"),
 	  NAUTILUS_CLICK_POLICY_DOUBLE
-	},
-	{ NULL }
+	}
 };
 
 static EelEnumerationEntry executable_text_activation_enum_entries[] = {
@@ -128,8 +121,7 @@ static EelEnumerationEntry executable_text_activation_enum_entries[] = {
 	{ "ask",
 	  N_("_Ask each time"),
 	  NAUTILUS_EXECUTABLE_TEXT_ASK
-	},
-	{ NULL }
+	}
 };
 
 static EelEnumerationEntry search_bar_type_enum_entries[] = {
@@ -140,14 +132,12 @@ static EelEnumerationEntry search_bar_type_enum_entries[] = {
 	{ "search by text and properties",
 	  N_("Search for files by file name and file properties"),
 	  NAUTILUS_COMPLEX_SEARCH_BAR
-	},
-	{ NULL }
+	}
 };
 
 static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
 	{ "icon_view",	    N_("Icon View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW },
-	{ "list_view",	    N_("List View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW },
-	{ NULL }
+	{ "list_view",	    N_("List View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW }
 };
 
 static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
@@ -157,8 +147,7 @@ static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
 	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
 	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
-	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
-	{ NULL }
+	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS }
 };
 
 static EelEnumerationEntry standard_font_size_entries[] = {
@@ -170,34 +159,14 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 	{ "18",		   N_("18"),	18 },
 	{ "20",		   N_("20"),	20 },
 	{ "22",		   N_("22"),	22 },
-	{ "24",		   N_("24"),	24 },
-	{ NULL }
+	{ "24",		   N_("24"),	24 }
 };
 
 /* These are not translated, because the text is not used in the ui */
 static EelEnumerationEntry date_format_entries[] = {
 	{ "locale",	   "Locale Default",	NAUTILUS_DATE_FORMAT_LOCALE },
 	{ "iso",	   "ISO Format",	NAUTILUS_DATE_FORMAT_ISO },
-	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL },
-	{ NULL }
-};
-
-/* These enumerations are used in the preferences dialog to 
- * populate widgets and route preferences changes between the
- * storage (GConf) and the displayed values.
- */
-static EelEnumerationInfo enumerations[] = {
-	{ "click_policy",		   click_policy_enum_entries },
-	{ "default_folder_viewer",	   default_folder_viewer_enum_entries },
-	{ "default_icon_view_sort_order",  default_icon_view_sort_order_enum_entries },
-	{ "default_zoom_level",		   default_zoom_level_enum_entries },
-	{ "executable_text_activation",	   executable_text_activation_enum_entries },
-	{ "file_size",			   file_size_enum_entries },
-	{ "search_bar_type",		   search_bar_type_enum_entries },
-	{ "speed_tradeoff",		   speed_tradeoff_enum_entries },
-	{ "standard_font_size",		   standard_font_size_entries },
-	{ "date_format",		   date_format_entries },
-	{ NULL }
+	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL }
 };
 
 /*
@@ -236,7 +205,7 @@ typedef struct
  *	PREFERENCE_BOOLEAN
  *	PREFERENCE_INTEGER
  *	PREFERENCE_STRING
- *	PREFERENCE_STRING_LIST
+ *	PREFERENCE_STRING_ARRAY
  * 
  * 3. fallback_value
  *    Emergency fallback value if our gconf schemas are hosed somehow.
@@ -348,7 +317,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  "search_bar_type"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-	  PREFERENCE_STRING_LIST,
+	  PREFERENCE_STRING_ARRAY,
 	  "size,date_modified,type",
 	  NULL, NULL,
 	  NULL
@@ -566,14 +535,47 @@ global_preferences_register_enumerations (void)
 {
 	guint i;
 
-	/* Register the enumerations */
-	eel_enumeration_register (enumerations);
+	/* Register the enumerations.
+	 * These enumerations are used in the preferences dialog to 
+	 * populate widgets and route preferences changes between the
+	 * storage (GConf) and the displayed values.
+	 */
+	eel_enumeration_register ("click_policy",
+				  click_policy_enum_entries,
+				  G_N_ELEMENTS (click_policy_enum_entries));
+	eel_enumeration_register ("default_folder_viewer",
+				  default_folder_viewer_enum_entries,
+				  G_N_ELEMENTS (default_folder_viewer_enum_entries));
+	eel_enumeration_register ("default_icon_view_sort_order",
+				  default_icon_view_sort_order_enum_entries,
+				  G_N_ELEMENTS (default_icon_view_sort_order_enum_entries));
+	eel_enumeration_register ("default_zoom_level",
+				  default_zoom_level_enum_entries,
+				  G_N_ELEMENTS (default_zoom_level_enum_entries));
+	eel_enumeration_register ("executable_text_activation",
+				  executable_text_activation_enum_entries,
+				  G_N_ELEMENTS (executable_text_activation_enum_entries));
+	eel_enumeration_register ("file_size",
+				  file_size_enum_entries,
+				  G_N_ELEMENTS (file_size_enum_entries));
+	eel_enumeration_register ("search_bar_type",
+				  search_bar_type_enum_entries,
+				  G_N_ELEMENTS (search_bar_type_enum_entries));
+	eel_enumeration_register ("speed_tradeoff",
+				  speed_tradeoff_enum_entries,
+				  G_N_ELEMENTS (speed_tradeoff_enum_entries));
+	eel_enumeration_register ("standard_font_size",
+				  standard_font_size_entries,
+				  G_N_ELEMENTS (standard_font_size_entries));
+	eel_enumeration_register ("date_format",
+				  date_format_entries,
+				  G_N_ELEMENTS (date_format_entries));
 
 	/* Set the enumeration ids for preferences that need them */
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
 		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
 			g_assert (preference_defaults[i].type == PREFERENCE_STRING
-				  || preference_defaults[i].type == PREFERENCE_STRING_LIST
+				  || preference_defaults[i].type == PREFERENCE_STRING_ARRAY
 				  || preference_defaults[i].type == PREFERENCE_INTEGER);
 			eel_preferences_set_enumeration_id (preference_defaults[i].name,
 							    preference_defaults[i].enumeration_id);
@@ -587,11 +589,11 @@ global_preferences_install_one_default (const char *preference_name,
 					const PreferenceDefault *preference_default)
 {
 	gpointer value = NULL;
-	EelStringList *string_list_value;
-	
+	char **string_array_value;
+
 	g_return_if_fail (preference_name != NULL);
 	g_return_if_fail (preference_type >= PREFERENCE_BOOLEAN);
-	g_return_if_fail (preference_type <= PREFERENCE_STRING_LIST);
+	g_return_if_fail (preference_type <= PREFERENCE_STRING_ARRAY);
 	g_return_if_fail (preference_default != NULL);
 
 	/* If a callback is given, use that to fetch the default value */
@@ -617,14 +619,14 @@ global_preferences_install_one_default (const char *preference_name,
 		eel_preferences_set_emergency_fallback_string (preference_name,
 							       value);
 		break;
-		
-	case PREFERENCE_STRING_LIST:
-		string_list_value = eel_string_list_new_from_tokens (value,
-								     STRING_LIST_DEFAULT_TOKENS_DELIMETER,
-								     TRUE);
-		eel_preferences_set_emergency_fallback_string_list (preference_name,
-								    string_list_value);
-		eel_string_list_free (string_list_value);
+
+	case PREFERENCE_STRING_ARRAY:
+		string_array_value = g_strsplit (value,
+						 STRING_ARRAY_DEFAULT_TOKENS_DELIMETER,
+						 -1);
+		eel_preferences_set_emergency_fallback_string_array (preference_name,
+								     string_array_value);
+		g_strfreev (string_array_value);
 		break;
 		
 	default:

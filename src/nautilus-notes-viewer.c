@@ -247,7 +247,7 @@ notes_load_metainfo (NautilusNotesViewer *notes)
         NautilusFileAttributes attributes;
         
         done_with_file (notes);
-        notes->details->file = nautilus_file_get (notes->details->uri);
+        notes->details->file = nautilus_file_get_by_uri (notes->details->uri);
 
         /* Block the handler, so we don't respond to our own change.
          */

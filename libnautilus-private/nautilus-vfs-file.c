@@ -29,6 +29,8 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-mount-operation.h>
+#include <glib/gi18n.h>
 
 static void nautilus_vfs_file_init       (gpointer   object,
 						gpointer   klass);
@@ -87,13 +89,6 @@ vfs_file_check_if_ready (NautilusFile *file,
 		 file_attributes);
 }
 
-static GnomeVFSFileType
-vfs_file_get_file_type (NautilusFile *file)
-{
-	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_TYPE)
-		? GNOME_VFS_FILE_TYPE_UNKNOWN : file->details->info->type;
-}
-
 static gboolean
 vfs_file_get_item_count (NautilusFile *file, 
 			 guint *count,
@@ -119,9 +114,9 @@ vfs_file_get_deep_counts (NautilusFile *file,
 			  guint *directory_count,
 			  guint *file_count,
 			  guint *unreadable_directory_count,
-			  GnomeVFSFileSize *total_size)
+			  goffset *total_size)
 {
-	GnomeVFSFileType type;
+	GFileType type;
 
 	if (directory_count != NULL) {
 		*directory_count = 0;
@@ -158,8 +153,8 @@ vfs_file_get_deep_counts (NautilusFile *file,
 
 	/* For directories, or before we know the type, we haven't started. */
 	type = nautilus_file_get_file_type (file);
-	if (type == GNOME_VFS_FILE_TYPE_UNKNOWN
-	    || type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+	if (type == G_FILE_TYPE_UNKNOWN
+	    || type == G_FILE_TYPE_DIRECTORY) {
 		return NAUTILUS_REQUEST_NOT_STARTED;
 	}
 
@@ -175,35 +170,34 @@ vfs_file_get_date (NautilusFile *file,
 	switch (date_type) {
 	case NAUTILUS_DATE_TYPE_CHANGED:
 		/* Before we have info on a file, the date is unknown. */
-		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+		if (file->details->ctime == 0) {
 			return FALSE;
 		}
 		if (date != NULL) {
-			*date = file->details->info->ctime;
+			*date = file->details->ctime;
 		}
 		return TRUE;
 	case NAUTILUS_DATE_TYPE_ACCESSED:
 		/* Before we have info on a file, the date is unknown. */
-		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ATIME)) {
+		if (file->details->atime == 0) {
 			return FALSE;
 		}
 		if (date != NULL) {
-			*date = file->details->info->atime;
+			*date = file->details->atime;
 		}
 		return TRUE;
 	case NAUTILUS_DATE_TYPE_MODIFIED:
 		/* Before we have info on a file, the date is unknown. */
-		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME)) {
+		if (file->details->mtime == 0) {
 			return FALSE;
 		}
 		if (date != NULL) {
-			*date = file->details->info->mtime;
+			*date = file->details->mtime;
 		}
 		return TRUE;
 	case NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED:
 		/* Before we have info on a file, the date is unknown. */
-		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME) ||
-		    nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+		if (file->details->mtime == 0 || file->details->ctime == 0) {
 			return FALSE;
 		}
 		/* mtime is when the contents changed; ctime is when the
@@ -211,11 +205,11 @@ vfs_file_get_date (NautilusFile *file,
 		 * So we can only know when the permissions changed if mtime
 		 * and ctime are different.
 		 */
-		if (file->details->info->mtime == file->details->info->ctime) {
+		if (file->details->mtime == file->details->ctime) {
 			return FALSE;
 		}
 		if (date != NULL) {
-			*date = file->details->info->ctime;
+			*date = file->details->ctime;
 		}
 		return TRUE;
 	}
@@ -227,6 +221,71 @@ vfs_file_get_where_string (NautilusFile *file)
 {
 	return nautilus_file_get_parent_uri_for_display (file);
 }
+
+static void
+vfs_file_mount_callback (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer callback_data)
+{
+	NautilusFileOperation *op;
+	GFile *mounted_on;
+	GError *error;
+
+	op = callback_data;
+
+	error = NULL;
+	mounted_on = g_file_mount_mountable_finish (G_FILE (source_object),
+						    res, &error);
+	
+	nautilus_file_operation_complete (op, mounted_on, error);
+	if (mounted_on) {
+		g_object_unref (mounted_on);
+	}
+	if (error) {
+		g_error_free (error);
+	}
+}
+
+
+static void
+vfs_file_mount (NautilusFile                   *file,
+		GMountOperation                *mount_op,
+		NautilusFileOperationCallback   callback,
+		gpointer                        callback_data)
+{
+	NautilusFileOperation *op;
+	GError *error;
+	GFile *location;
+	
+	if (file->details->type != G_FILE_TYPE_MOUNTABLE) {
+		if (callback) {
+			error = NULL;
+			g_set_error (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+				     _("This file cannot be mounted"));
+			callback (file, NULL, error, callback_data);
+			g_error_free (error);
+		}
+		return;
+	}
+
+	op = nautilus_file_operation_new (file, callback, callback_data);
+
+	location = nautilus_file_get_location (file);
+	g_file_mount_mountable (location,
+				mount_op,
+				op->cancellable,
+				vfs_file_mount_callback,
+				op);
+	g_object_unref (location);
+}
+
+static void
+vfs_file_unmount (NautilusFile                   *file,
+		  NautilusFileOperationCallback   callback,
+		  gpointer                        callback_data)
+{
+}
+
 
 static void
 nautilus_vfs_file_init (gpointer object, gpointer klass)
@@ -249,9 +308,10 @@ nautilus_vfs_file_class_init (gpointer klass)
 	file_class->call_when_ready = vfs_file_call_when_ready;
 	file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
 	file_class->check_if_ready = vfs_file_check_if_ready;
-	file_class->get_file_type = vfs_file_get_file_type;
 	file_class->get_item_count = vfs_file_get_item_count;
 	file_class->get_deep_counts = vfs_file_get_deep_counts;
 	file_class->get_date = vfs_file_get_date;
 	file_class->get_where_string = vfs_file_get_where_string;
+	file_class->mount = vfs_file_mount;
+	file_class->unmount = vfs_file_unmount;
 }

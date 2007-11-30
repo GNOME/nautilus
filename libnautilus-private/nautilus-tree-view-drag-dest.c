@@ -34,7 +34,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-link.h"
@@ -290,7 +289,7 @@ file_for_path (NautilusTreeViewDragDest *dest, GtkTreePath *path)
 
 		file = NULL;
 		if (uri != NULL) {
-			file = nautilus_file_get (uri);
+			file = nautilus_file_get_by_uri (uri);
 		}
 		
 		g_free (uri);
@@ -706,7 +705,7 @@ receive_dropped_keyword (NautilusTreeViewDragDest *dest,
 	drop_target_uri = get_drop_target_uri_at_pos (dest, x, y);
 	g_assert (drop_target_uri != NULL);
 
-	drop_target_file = nautilus_file_get (drop_target_uri);
+	drop_target_file = nautilus_file_get_by_uri (drop_target_uri);
 
 	if (drop_target_file != NULL) {
 		nautilus_drag_file_receive_dropped_keyword (drop_target_file,

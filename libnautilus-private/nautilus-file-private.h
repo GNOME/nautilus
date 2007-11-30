@@ -29,6 +29,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 
 #define NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
 #define NAUTILUS_FILE_LARGE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
@@ -39,10 +40,13 @@
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES               1024
 
 #define NAUTILUS_FILE_DEFAULT_FILE_INFO_OPTIONS \
-	(GNOME_VFS_FILE_INFO_FOLLOW_LINKS | \
-	 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |	\
-	 GNOME_VFS_FILE_INFO_GET_SELINUX_CONTEXT | \
+	(GNOME_VFS_FILE_INFO_FOLLOW_LINKS |	\
+	 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |	  \
+	 GNOME_VFS_FILE_INFO_GET_SELINUX_CONTEXT |	\
 	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
+
+#define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
+	"std:*,access:*,mountable:*,time:*,unix:*,owner:*,selinux:*,thumbnail:*,mountable:*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -60,39 +64,55 @@ typedef struct {
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
-	char *relative_uri;
+	
+	eel_ref_str name;
 
-	/* Cached version of the display name, guaranteed UTF8 safe.
-	 * This is used a lot for sorting views.
-	 */
-	char *cached_display_name;
-	/* We cache the result of g_utf8_collate_key() on
-	 * cached_display_name in order to do quick sorting on
-	 * the display name
-	 */
+	/* File info: */
+	GFileType type;
+
+	eel_ref_str display_name;
 	char *display_name_collation_key;
+	eel_ref_str edit_name;
 
-	GnomeVFSFileInfo *info;
-	GnomeVFSResult get_info_error;
-
+	goffset size; /* -1 is unknown */
+	
+	int sort_order;
+	
+	guint32 permissions;
+	int uid; /* -1 is none */
+	int gid; /* -1 is none */
+	
+	time_t atime; /* 0 is unknown */
+	time_t mtime; /* 0 is unknown */
+	time_t ctime; /* 0 is unknown */
+	
+	char *symlink_name;
+	
+	eel_ref_str mime_type;
+	
+	char* selinux_context;
+	
+	GError *get_info_error;
+	
 	guint directory_count;
 
 	guint deep_directory_count;
 	guint deep_file_count;
 	guint deep_unreadable_count;
-	GnomeVFSFileSize deep_size;
+	goffset deep_size;
 
+	GIcon *icon;
+	
+	char *thumbnail_path;
+	GdkPixbuf *thumbnail;
+	int thumbnail_size; /* 0 means original unframed thumbnail */
+	
 	GList *mime_list; /* If this is a directory, the list of MIME types in it. */
 	char *top_left_text;
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
-	char *display_name;
 	char *custom_icon;
-	char *activation_uri;
-
-	/* The guessed (extension-based) mime type.  This is saved for
-	 * comparison vs. the slow mime type upon activation */
-	char *guessed_mime_type;
+	GFile *activation_location;
 
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to
@@ -128,12 +148,10 @@ struct NautilusFileDetails
 	 * list so the file knows not to do redundant I/O.
 	 */
 	eel_boolean_bit loading_directory             : 1;
-	/* got_info known from info field being non-NULL */
+	eel_boolean_bit got_file_info                 : 1;
 	eel_boolean_bit get_info_failed               : 1;
 	eel_boolean_bit file_info_is_up_to_date       : 1;
 	
-	eel_boolean_bit got_slow_mime_type            : 1;
-
 	eel_boolean_bit got_directory_count           : 1;
 	eel_boolean_bit directory_count_failed        : 1;
 	eel_boolean_bit directory_count_is_up_to_date : 1;
@@ -153,22 +171,52 @@ struct NautilusFileDetails
 
 	eel_boolean_bit got_link_info                 : 1;
 	eel_boolean_bit link_info_is_up_to_date       : 1;
+	eel_boolean_bit got_custom_display_name       : 1;
+	eel_boolean_bit got_custom_activation_location : 1;
 
+	eel_boolean_bit thumbnail_is_up_to_date       : 1;
+	eel_boolean_bit thumbnail_tried_original      : 1;
+	eel_boolean_bit thumbnailing_failed           : 1;
+	
 	eel_boolean_bit is_thumbnailing               : 1;
-
-	eel_boolean_bit has_volume                    : 1;
-	eel_boolean_bit has_drive                     : 1;
 
 	/* TRUE if the file is open in a spatial window */
 	eel_boolean_bit has_open_window               : 1;
+
+	eel_boolean_bit is_symlink                    : 1;
+	eel_boolean_bit is_mountpoint                 : 1;
+	eel_boolean_bit is_hidden                     : 1;
+	eel_boolean_bit is_backup                     : 1;
+
+	eel_boolean_bit has_permissions               : 1;
+	
+	eel_boolean_bit can_read                      : 1;
+	eel_boolean_bit can_write                     : 1;
+	eel_boolean_bit can_execute                   : 1;
+	eel_boolean_bit can_delete                    : 1;
+	eel_boolean_bit can_trash                     : 1;
+	eel_boolean_bit can_rename                    : 1;
+	eel_boolean_bit can_mount                     : 1;
+	eel_boolean_bit can_unmount                   : 1;
+	eel_boolean_bit can_eject                     : 1;
 };
 
+typedef struct {
+	NautilusFile *file;
+	GCancellable *cancellable;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+	gboolean is_rename;
+	
+	gpointer data;
+	GDestroyNotify free_data;
+} NautilusFileOperation;
+
+
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
-							    GnomeVFSFileInfo       *info);
+							    GFileInfo              *info);
 void          nautilus_file_emit_changed                   (NautilusFile           *file);
 void          nautilus_file_mark_gone                      (NautilusFile           *file);
-gboolean      nautilus_file_info_missing                   (NautilusFile           *file,
-							    GnomeVFSFileInfoFields  needed_mask);
 char *        nautilus_extract_top_left_text               (const char             *text,
 							    gboolean                large,
 							    int                     length);
@@ -178,21 +226,25 @@ gboolean      nautilus_file_get_date                       (NautilusFile        
 							    NautilusDateType        date_type,
 							    time_t                 *date);
 void          nautilus_file_updated_deep_count_in_progress (NautilusFile           *file);
-void          nautilus_file_clear_cached_display_name      (NautilusFile           *file);
 
 
+void          nautilus_file_clear_info                     (NautilusFile           *file);
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
  * new state.  */
 gboolean      nautilus_file_update_info                    (NautilusFile           *file,
-							    GnomeVFSFileInfo       *info,
-							    gboolean                info_has_slow_mime);
+							    GFileInfo              *info);
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
 
 gboolean      nautilus_file_update_name_and_directory      (NautilusFile           *file,
 							    const char             *name,
 							    NautilusDirectory      *directory);
+
+gboolean      nautilus_file_set_display_name               (NautilusFile           *file,
+							    const char             *display_name,
+							    const char             *edit_name,
+							    gboolean                custom);
 
 /* Return true if the top lefts of files in this directory should be
  * fetched, according to the preference settings.
@@ -208,7 +260,6 @@ NautilusFileAttributes nautilus_file_get_all_attributes                 (void);
 gboolean               nautilus_file_is_self_owned                      (NautilusFile           *file);
 void                   nautilus_file_invalidate_count_and_mime_list     (NautilusFile           *file);
 gboolean               nautilus_file_rename_in_progress                 (NautilusFile           *file);
-GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info                 (NautilusFile           *file);
 void                   nautilus_file_invalidate_extension_info_internal (NautilusFile           *file);
 void                   nautilus_file_info_providers_done                (NautilusFile           *file);
 
@@ -217,10 +268,13 @@ void                   nautilus_file_info_providers_done                (Nautilu
 void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
 							    gboolean                is_thumbnailing);
 
-/* Volumes: */
-void nautilus_file_set_drive  (NautilusFile   *file,
-			       GnomeVFSDrive  *drive);
-void nautilus_file_set_volume (NautilusFile   *file,
-			       GnomeVFSVolume *volume);
+NautilusFileOperation *nautilus_file_operation_new      (NautilusFile                  *file,
+							 NautilusFileOperationCallback  callback,
+							 gpointer                       callback_data);
+void                   nautilus_file_operation_free     (NautilusFileOperation         *op);
+void                   nautilus_file_operation_complete (NautilusFileOperation         *op,
+							 GFile                         *result_location,
+							 GError                        *error);
+void                   nautilus_file_operation_cancel   (NautilusFileOperation         *op);
 
 #endif

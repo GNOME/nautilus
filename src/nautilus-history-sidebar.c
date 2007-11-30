@@ -145,7 +145,7 @@ row_activated_callback (GtkTreeView *tree_view,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	NautilusBookmark *bookmark;
-	char *uri;
+	GFile *location;
 	
 	sidebar = NAUTILUS_HISTORY_SIDEBAR (user_data);
 	model = gtk_tree_view_get_model (tree_view);
@@ -158,11 +158,11 @@ row_activated_callback (GtkTreeView *tree_view,
 		(model, &iter, HISTORY_SIDEBAR_COLUMN_BOOKMARK, &bookmark, -1);
 	
 	/* Navigate to the clicked location. */
-	uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (bookmark));
+	location = nautilus_bookmark_get_location (NAUTILUS_BOOKMARK (bookmark));
 	nautilus_window_info_open_location
 		(sidebar->window, 
-		 uri, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0, NULL);
-	g_free (uri);
+		 location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, 0, NULL);
+	g_object_unref (location);
 }
 
 static void

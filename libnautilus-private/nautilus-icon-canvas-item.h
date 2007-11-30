@@ -25,10 +25,8 @@
 #ifndef NAUTILUS_ICON_CANVAS_ITEM_H
 #define NAUTILUS_ICON_CANVAS_ITEM_H
 
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_point.h>
 #include <eel/eel-canvas.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
+#include <eel/eel-art-extensions.h>
 
 G_BEGIN_DECLS
 
@@ -70,7 +68,8 @@ void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem       *item,
 								gboolean                      show_stretch_handles);
 void        nautilus_icon_canvas_item_set_attach_points        (NautilusIconCanvasItem       *item,
-								NautilusEmblemAttachPoints   *attach_points);
+								GdkPoint                     *attach_points,
+								int                           n_attach_points);
 void        nautilus_icon_canvas_item_set_embedded_text_rect   (NautilusIconCanvasItem       *item,
 								const GdkRectangle           *text_rect);
 void        nautilus_icon_canvas_item_set_embedded_text        (NautilusIconCanvasItem       *item,
@@ -82,13 +81,13 @@ void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanv
 
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem       *item,
-								ArtIRect                      canvas_rect);
+								EelIRect                      canvas_rect);
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem       *item,
-								ArtPoint                      world_point,
-								GtkCornerType *corner);
+								EelDPoint                     world_point,
+								GtkCornerType                *corner);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
-ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
-ArtDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanvasItem       *item);
+EelDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
+EelDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item,
 								double i2w_dx, double i2w_dy);
 void        nautilus_icon_canvas_item_set_is_visible           (NautilusIconCanvasItem       *item,

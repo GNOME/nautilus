@@ -31,10 +31,10 @@
 #include <string.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-dnd.h>
 
 #if GLIB_CHECK_VERSION (2, 13, 0)
@@ -250,11 +250,12 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	int icon_size;
 	guint emblem_size;
 	NautilusZoomLevel zoom_level;
-	char *modifier;
-	GList *emblem_icons;
+	GList *emblem_pixbufs;
 	NautilusFile *parent_file;
-	EelStringList *emblems_to_ignore;
-
+	char *emblems_to_ignore[3];
+	int i;
+	NautilusFileIconFlags flags;
+	
 	model = (FMListModel *)tree_model;
 
 	g_return_if_fail (model->details->stamp == iter->stamp);
@@ -287,7 +288,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
 			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
 
-			modifier = NULL;
+			flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 			if (model->details->drag_view != NULL) {
 				GtkTreePath *path_a, *path_b;
 				
@@ -298,19 +299,15 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 					path_b = gtk_tree_model_get_path (tree_model, iter);
 
 					if (gtk_tree_path_compare (path_a, path_b) == 0) {
-						modifier = "accept";
+						flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
 					}
 						
 					gtk_tree_path_free (path_a);
 					gtk_tree_path_free (path_b);
 				}
 			}
-			
-			if (nautilus_file_has_open_window (file)) {
-				modifier = "visiting";
-			}
-			
-			icon = nautilus_icon_factory_get_pixbuf_for_file (file, modifier, icon_size, TRUE);
+
+			icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, flags);
   
 			g_value_set_object (value, icon);
 			g_object_unref (icon);
@@ -327,38 +324,34 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
 		if (file != NULL) {
 			parent_file = nautilus_file_get_parent (file);
-			emblems_to_ignore = eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+			i = 0;
+			emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_TRASH;
 			if (parent_file) {
 				if (!nautilus_file_can_write (parent_file)) {
-					eel_string_list_prepend (emblems_to_ignore, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+					emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE;
 				}
 				nautilus_file_unref (parent_file);
 			}
+			emblems_to_ignore[i++] = NULL;
+			
 			zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
 			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
-			emblem_size = nautilus_icon_factory_get_emblem_size_for_icon_size (icon_size);
+			emblem_size = nautilus_icon_get_emblem_size_for_icon_size (icon_size);
 			/* Special case default icon size here. This works semi-ok, since we
 			   only show one emblem for the list view anyway */
 			if (emblem_size == 0 && icon_size >= 24) {
 				emblem_size = 16;
 			}
-			emblem_icons = NULL;
 			if (emblem_size != 0) {
-				emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
-			}
-			eel_string_list_free (emblems_to_ignore);
-
-			if (emblem_icons != NULL) {
-				icon = nautilus_icon_factory_get_pixbuf_for_icon (
-					emblem_icons->data, NULL, emblem_size,
-					NULL, NULL, TRUE, FALSE, NULL);
-				eel_g_list_free_deep (emblem_icons);
-		
-				g_value_set_object (value, icon);
-
-				if (icon != NULL) { 
-					g_object_unref (icon);
+				emblem_pixbufs = nautilus_file_get_emblem_pixbufs (file,
+										   emblem_size,
+										   TRUE,
+										   emblems_to_ignore);
+				if (emblem_pixbufs != NULL) {
+					icon = emblem_pixbufs->data;
+					g_value_set_object (value, icon);
 				}
+				eel_gdk_pixbuf_list_free (emblem_pixbufs);
 			}
 		}
 		break;

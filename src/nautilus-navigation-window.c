@@ -41,13 +41,8 @@
 #include "nautilus-search-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
-#include <eel/eel-accessibility.h>
-#include <eel/eel-debug.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
@@ -69,7 +64,7 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-icon-info.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
@@ -83,6 +78,7 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
+#include <gio/gthemedicon.h>
 
 
 /* FIXME bugzilla.gnome.org 41243: 
@@ -119,7 +115,7 @@ static void navigation_bar_location_changed_callback (GtkWidget                *
 static void navigation_bar_cancel_callback           (GtkWidget                *widget,
 						      NautilusNavigationWindow *window);
 static void path_bar_location_changed_callback       (GtkWidget                *widget,
-						      const char               *uri,
+						      GFile                    *path,
 						      NautilusNavigationWindow *window);
 static void always_use_location_entry_changed        (gpointer                  callback_data);
 static void always_use_browser_changed               (gpointer                  callback_data);
@@ -402,24 +398,24 @@ always_use_browser_changed (gpointer callback_data)
 
 static int
 bookmark_list_get_uri_index (GList *list,
-			     const char *uri)
+			     GFile *location)
 {
 	NautilusBookmark *bookmark;
 	GList *l;
-	char *tmp;
+	GFile *tmp;
 	int i;
 
-	g_return_val_if_fail (uri != NULL, -1);
+	g_return_val_if_fail (location != NULL, -1);
 
 	for (i = 0, l = list; l != NULL; i++, l = l->next) {
 		bookmark = NAUTILUS_BOOKMARK (l->data);
 
-		tmp = nautilus_bookmark_get_uri (bookmark);
-		if (strcmp (tmp, uri) == 0) {
-			g_free (tmp);
+		tmp = nautilus_bookmark_get_location (bookmark);
+		if (g_file_equal (location, tmp)) {
+			g_object_unref (tmp);
 			return i;
 		}
-		g_free (tmp);
+		g_object_unref (tmp);
 	}
 
 	return -1;
@@ -427,7 +423,7 @@ bookmark_list_get_uri_index (GList *list,
 
 static void
 path_bar_location_changed_callback (GtkWidget *widget,
-				    const char *uri,
+				    GFile *location,
 				    NautilusNavigationWindow *window)
 {
 	int i;
@@ -435,11 +431,11 @@ path_bar_location_changed_callback (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	/* check whether we already visited the target location */
-	i = bookmark_list_get_uri_index (window->back_list, uri);
+	i = bookmark_list_get_uri_index (window->back_list, location);
 	if (i >= 0) {
 		nautilus_navigation_window_back_or_forward (window, TRUE, i);
 	} else {
-		nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+		nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
 	}
 }
 
@@ -479,8 +475,12 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 					  const char *uri,
 					  NautilusNavigationWindow *window)
 {
+	GFile *location;
+	
 	hide_temporary_bars (window);
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+	location = g_file_new_for_uri (uri);
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+	g_object_unref (location);
 }
 
 static void
@@ -700,6 +700,7 @@ nautilus_navigation_window_destroy (GtkObject *object)
 
 	window->sidebar = NULL;
 	g_list_foreach (window->sidebar_panels, (GFunc)g_object_unref, NULL);
+	g_list_free (window->sidebar_panels);
 	window->sidebar_panels = NULL;
 
 	window->view_as_combo_box = NULL;
@@ -765,10 +766,8 @@ nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
 	g_signal_connect (sidebar_panel, "tab_icon_changed",
 			  (GCallback)side_panel_image_changed_callback, window);
 
-	
-	g_object_ref (sidebar_panel);
-	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
-
+	window->sidebar_panels = g_list_prepend (window->sidebar_panels,
+						 g_object_ref (sidebar_panel));
 
 	/* Show if default */
 	sidebar_id = nautilus_sidebar_get_sidebar_id (sidebar_panel);
@@ -948,10 +947,10 @@ real_set_title (NautilusWindow *window, const char *title)
 	return changed;
 }
 
-static char *
-real_get_icon_name (NautilusWindow *window)
+static NautilusIconInfo *
+real_get_icon (NautilusWindow *window)
 {
-	return g_strdup ("file-manager");
+	return nautilus_icon_info_lookup_from_name ("file-manager", 48);
 }
 
 static void
@@ -1077,9 +1076,13 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 	NautilusDirectory *directory;
 	NautilusSearchDirectory *search_directory;
 	NautilusQuery *query;
+	GFile *location;
 
 	uri = nautilus_search_directory_generate_new_uri ();
-	directory = nautilus_directory_get (uri);
+	location = g_file_new_for_uri (uri);
+	g_free (uri);
+	
+	directory = nautilus_directory_get (location);
 	
 	g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
 
@@ -1088,7 +1091,7 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 	query = nautilus_search_bar_get_query (NAUTILUS_SEARCH_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->search_bar));
 	if (query != NULL) {
 		if (!nautilus_search_directory_is_indexed (search_directory)) {
-			current_uri = nautilus_window_get_location (window);
+			current_uri = nautilus_window_get_location_uri (window);
 			nautilus_query_set_location (query, current_uri);
 			g_free (current_uri);
 		}
@@ -1096,10 +1099,10 @@ search_bar_activate_callback (NautilusSearchBar *bar,
 		g_object_unref (query);
 	}
 	
-	nautilus_window_go_to (window, uri);
+	nautilus_window_go_to (window, location);
 	
 	nautilus_directory_unref (directory);
-	g_free (uri);
+	g_object_unref (location);
 }
 
 static void
@@ -1594,7 +1597,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_search_mode = real_set_search_mode;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = real_set_title;
-	NAUTILUS_WINDOW_CLASS (class)->get_icon_name = real_get_icon_name;
+	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;
 	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
 

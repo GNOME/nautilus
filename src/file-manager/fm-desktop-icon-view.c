@@ -44,7 +44,6 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
@@ -784,8 +783,8 @@ fm_desktop_icon_view_create (NautilusWindowInfo *window)
 
 static gboolean
 fm_desktop_icon_view_supports_uri (const char *uri,
-			   GnomeVFSFileType file_type,
-			   const char *mime_type)
+				   GFileType file_type,
+				   const char *mime_type)
 {
 	if (g_str_has_prefix (uri, EEL_DESKTOP_URI)) {
 		return TRUE;

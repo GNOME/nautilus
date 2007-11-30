@@ -13,7 +13,7 @@ INCLUDES = 						\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
-	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-1.0"\" \
+	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-2.0"\" \
 	$(NULL)
 
 dependency_static_libs = \
@@ -49,8 +49,6 @@ marshal_sources = \
 
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
-	nautilus-audio-player.c \
-	nautilus-audio-player.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
 	nautilus-cell-renderer-pixbuf-emblem.c \
@@ -125,10 +123,9 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-container.h \
 	nautilus-icon-dnd.c \
 	nautilus-icon-dnd.h \
-	nautilus-icon-factory-private.h \
-	nautilus-icon-factory.c \
-	nautilus-icon-factory.h \
 	nautilus-icon-private.h \
+	nautilus-icon-info.c \
+	nautilus-icon-info.h \
 	nautilus-idle-queue.c \
 	nautilus-idle-queue.h \
 	nautilus-iso9660.h \
@@ -136,8 +133,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-keep-last-vertical-box.h \
 	nautilus-lib-self-check-functions.c \
 	nautilus-lib-self-check-functions.h \
-	nautilus-link-desktop-file.c \
-	nautilus-link-desktop-file.h \
 	nautilus-link.c \
 	nautilus-link.h \
 	nautilus-marshal.c \
@@ -151,10 +146,16 @@ libnautilus_private_la_SOURCES = \
 	nautilus-metafile.h \
 	nautilus-mime-actions.c \
 	nautilus-mime-actions.h \
+	nautilus-mime-application-chooser.c \
+	nautilus-mime-application-chooser.h \
 	nautilus-module.c \
 	nautilus-module.h \
 	nautilus-monitor.c \
 	nautilus-monitor.h \
+	nautilus-open-with-dialog.c \
+	nautilus-open-with-dialog.h \
+	nautilus-progress-info.c \
+	nautilus-progress-info.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
 	nautilus-recent.c \
@@ -179,10 +180,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-query.h \
 	nautilus-thumbnails.c \
 	nautilus-thumbnails.h \
-	nautilus-trash-directory.c \
-	nautilus-trash-directory.h \
-	nautilus-trash-file.c \
-	nautilus-trash-file.h \
 	nautilus-trash-monitor.c \
 	nautilus-trash-monitor.h \
 	nautilus-tree-view-drag-dest.c \

@@ -23,13 +23,10 @@
 */
 #include <config.h>
 
+#include <string.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-string.h>
+#include <gio/gcontenttype.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
@@ -51,19 +48,23 @@ get_icon_view (NautilusIconContainer *container)
 	return ((FMIconContainer *)container)->view;
 }
 
-static char *
+static NautilusIconInfo *
 fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
-				   GList                **emblem_icons,
+				   int                    size,
+				   GList                **emblem_pixbufs,
 				   char                 **embedded_text,
+				   gboolean               for_drag_accept,
 				   gboolean               need_large_embeddded_text,
 				   gboolean              *embedded_text_needs_loading,
 				   gboolean              *has_window_open)
 {
 	FMIconView *icon_view;
-	EelStringList *emblems_to_ignore;
+	char **emblems_to_ignore;
 	NautilusFile *file;
 	gboolean use_embedding;
+	NautilusFileIconFlags flags;
+	guint emblem_size;
 
 	file = (NautilusFile *) data;
 
@@ -77,17 +78,29 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		use_embedding = *embedded_text != NULL;
 	}
 	
-	if (emblem_icons != NULL) {
+	if (emblem_pixbufs != NULL) {
+		emblem_size = nautilus_icon_get_emblem_size_for_icon_size (size);
+		
 		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file
-			(file, emblems_to_ignore);
-		eel_string_list_free (emblems_to_ignore);
+		*emblem_pixbufs = nautilus_file_get_emblem_pixbufs (file,
+								    emblem_size,
+								    FALSE,
+								    emblems_to_ignore);
+		g_strfreev (emblems_to_ignore);
 	}
 
 	*has_window_open = nautilus_file_has_open_window (file);
+
+	flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+	if (use_embedding) {
+		flags |= NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT;
+	}
+	if (for_drag_accept) {
+		flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
+	}
 	
-	return nautilus_icon_factory_get_icon_for_file (file, use_embedding);
+	return nautilus_file_get_icon (file, size, flags);
 }
 
 static char *
@@ -106,7 +119,7 @@ fm_icon_container_get_icon_description (NautilusIconContainer *container,
 	}
 
 	mime_type = nautilus_file_get_mime_type (file);
-	description = gnome_vfs_mime_get_description (mime_type);
+	description = g_content_type_get_description (mime_type);
 	g_free (mime_type);
 	return g_strdup (description);
 }
@@ -163,19 +176,18 @@ fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
 	}
 }
 
-
 /*
  * Get the preference for which caption text should appear
  * beneath icons.
  */
-static const EelStringList *
+static char **
 fm_icon_container_get_icon_text_attributes_from_preferences (void)
 {
-	static const EelStringList *attributes;
+	static char **attributes;
 
 	if (attributes == NULL) {
-		eel_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-						      &attributes);
+		eel_preferences_add_auto_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+						       &attributes);
 	}
 
 	/* We don't need to sanity check the attributes list even though it came
@@ -198,7 +210,7 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 	 * duplicate attributes by making "bad" choices insensitive.
 	 *
 	 * In the second case, the preferences getter (and also the auto storage) for
-	 * string_list values are always valid members of the enumeration associated
+	 * string_array values are always valid members of the enumeration associated
 	 * with the preference.
 	 *
 	 * So, no more error checking on attributes is needed here and we can return
@@ -216,11 +228,11 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
  * @view: FMIconView to query.
  * 
  **/
-static const EelStringList *
+static char **
 fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *container,
 						 int *len)
 {
-	const EelStringList *attributes;
+	char **attributes;
 	int piece_count;
 
 	const int pieces_by_level[] = {
@@ -234,11 +246,11 @@ fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *containe
 	};
 
 	piece_count = pieces_by_level[nautilus_icon_container_get_zoom_level (container)];
-	
+
 	attributes = fm_icon_container_get_icon_text_attributes_from_preferences ();
 
-	*len = MIN (piece_count, eel_string_list_get_length (attributes));
-	
+	*len = MIN (piece_count, g_strv_length (attributes));
+
 	return attributes;
 }
 
@@ -253,8 +265,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 {
 	char *actual_uri;
 	gchar *description;
-	const EelStringList *attribute_names;
-	const char *attribute;
+	char **attribute_names;
 	char *text_array[4];
 	int i, j, num_attributes;
 	FMIconView *icon_view;
@@ -299,18 +310,21 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 		 * make sense. */
 		return;
 	}
-	
+
 	/* Find out what attributes go below each icon. */
-	attribute_names = fm_icon_container_get_icon_text_attribute_names (container, &num_attributes);
+	attribute_names = fm_icon_container_get_icon_text_attribute_names (container,
+									   &num_attributes);
 
 	/* Get the attributes. */
-	for (i = 0, j = 0; i < num_attributes; i++)	{
-		attribute = eel_string_list_peek_nth (attribute_names, i);
-		if (eel_strcmp (attribute, "none") == 0) {
+	j = 0;
+	for (i = 0; i < num_attributes; ++i)
+	{
+		if (strcmp (attribute_names[i], "none") == 0) {
 			continue;
 		}
+
 		text_array[j++] =
-			nautilus_file_get_string_attribute_with_default (file, attribute);
+			nautilus_file_get_string_attribute_with_default (file, attribute_names[i]);
 	}
 	text_array[j] = NULL;
 
@@ -318,7 +332,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	*additional_text = g_strjoinv ("\n", text_array);
 
 	for (i = 0; i < j; i++) {
-		g_free(text_array[i]);
+		g_free (text_array[i]);
 	}
 }
 

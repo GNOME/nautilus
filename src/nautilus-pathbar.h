@@ -22,6 +22,7 @@
 #define NAUTILUS_PATHBAR_H
 
 #include <gtk/gtkcontainer.h>
+#include <gio/gfile.h>
 
 typedef struct _NautilusPathBar      NautilusPathBar;
 typedef struct _NautilusPathBarClass NautilusPathBarClass;
@@ -38,9 +39,9 @@ struct _NautilusPathBar
 {
 	GtkContainer parent;
  
-	char *root_path;
-	char *home_path;
-	char *desktop_path;
+	GFile *root_path;
+	GFile *home_path;
+	GFile *desktop_path;
 
 	GdkPixbuf *root_icon;
 	GdkPixbuf *home_icon;
@@ -67,12 +68,12 @@ struct _NautilusPathBarClass
 	GtkContainerClass parent_class;
 
   	void (* path_clicked)   (NautilusPathBar  *path_bar,
-				 const char       *file_path);
+				 GFile             *location);
 };
 
 GType    nautilus_path_bar_get_type (void) G_GNUC_CONST;
 
-gboolean nautilus_path_bar_set_path    (NautilusPathBar *path_bar, const char *file_path);
+gboolean nautilus_path_bar_set_path    (NautilusPathBar *path_bar, GFile *file);
 void     nautilus_path_bar_clear_buttons (NautilusPathBar *path_bar);
 
 void     nautilus_path_bar_up              (NautilusPathBar *path_bar);

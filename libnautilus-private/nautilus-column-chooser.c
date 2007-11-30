@@ -26,8 +26,6 @@
 #include "nautilus-column-chooser.h"
 
 #include <string.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrenderertext.h>
@@ -71,19 +69,12 @@ enum {
 };
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class);
-static void nautilus_column_chooser_init       (NautilusColumnChooser *chooser);
-static void nautilus_column_chooser_destroy    (GtkObject      *object);
-static void nautilus_column_chooser_finalize   (GObject        *object);
 
-EEL_CLASS_BOILERPLATE (NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_HBOX);
+G_DEFINE_TYPE(NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_HBOX);
 
 static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
-	G_OBJECT_CLASS (chooser_class)->finalize = nautilus_column_chooser_finalize;
-	GTK_OBJECT_CLASS (chooser_class)->destroy = nautilus_column_chooser_destroy;
-
 	signals[CHANGED] = g_signal_new
 		("changed",
 		 G_TYPE_FROM_CLASS (chooser_class),
@@ -498,24 +489,20 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 			  G_CALLBACK (row_deleted_callback), chooser);
 }
 
-static void
-nautilus_column_chooser_destroy (GtkObject      *object)
-{
-	NautilusColumnChooser *chooser;
-	
-	chooser = NAUTILUS_COLUMN_CHOOSER (object);
-}
-
-static void
-nautilus_column_chooser_finalize (GObject        *object)
-{
-}
-
 static void 
 set_visible_columns (NautilusColumnChooser *chooser,
-		     GList *visible_columns)
+		     char **visible_columns)
 {
+	GHashTable *visible_columns_hash;
 	GtkTreeIter iter;
+	int i;
+
+	visible_columns_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	for (i = 0; visible_columns[i] != NULL; ++i) {
+		g_hash_table_insert (visible_columns_hash,
+				     visible_columns[i],
+				     visible_columns[i]);
+	}
 
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->details->store),
 					   &iter)) {
@@ -528,7 +515,7 @@ set_visible_columns (NautilusColumnChooser *chooser,
 					    COLUMN_NAME, &name,
 					    -1);
 
-			visible = (eel_g_str_list_index (visible_columns, name) != -1);
+			visible = (g_hash_table_lookup (visible_columns_hash, name) != NULL);
 
 			gtk_list_store_set (chooser->details->store,
 					    &iter,
@@ -537,17 +524,18 @@ set_visible_columns (NautilusColumnChooser *chooser,
 			g_free (name);
 			
 		} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &iter));
-	}	
+	}
+
+	g_hash_table_destroy (visible_columns_hash);
 }
 
-static GList *
+static char **
 get_column_names (NautilusColumnChooser *chooser, gboolean only_visible)
 {
-	
-	GList *ret;
+	GPtrArray *ret;
 	GtkTreeIter iter;
-	
-	ret = NULL;
+
+	ret = g_ptr_array_new ();
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->details->store),
 					   &iter)) {
 		do {
@@ -559,14 +547,15 @@ get_column_names (NautilusColumnChooser *chooser, gboolean only_visible)
 					    COLUMN_NAME, &name,
 					    -1);
 			if (!only_visible || visible) {
-				/* give ownership to the list */
-				ret = g_list_prepend (ret, name);
+				/* give ownership to the array */
+				g_ptr_array_add (ret, name);
 			}
-			
+
 		} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &iter));
 	}
+	g_ptr_array_add (ret, NULL);
 
-	return g_list_reverse (ret);
+	return (char **) g_ptr_array_free (ret, FALSE);
 }
 
 static gboolean
@@ -603,7 +592,7 @@ get_column_iter (NautilusColumnChooser *chooser,
 
 static void
 set_column_order (NautilusColumnChooser *chooser,
-		  GList *column_order)
+		  char **column_order)
 
 {
 	GList *columns;
@@ -646,8 +635,8 @@ set_column_order (NautilusColumnChooser *chooser,
 
 void
 nautilus_column_chooser_set_settings (NautilusColumnChooser *chooser,
-				      GList *visible_columns,
-				      GList *column_order)
+				      char **visible_columns,
+				      char **column_order)
 {
 	g_return_if_fail (NAUTILUS_IS_COLUMN_CHOOSER (chooser));
 	g_return_if_fail (visible_columns != NULL);
@@ -661,13 +650,13 @@ nautilus_column_chooser_set_settings (NautilusColumnChooser *chooser,
 
 void
 nautilus_column_chooser_get_settings (NautilusColumnChooser *chooser,
-				      GList **visible_columns,
-				      GList **column_order)
+				      char ***visible_columns,
+				      char ***column_order)
 {
 	g_return_if_fail (NAUTILUS_IS_COLUMN_CHOOSER (chooser));
 	g_return_if_fail (visible_columns != NULL);
 	g_return_if_fail (column_order != NULL);
-	
+
 	*visible_columns = get_column_names (chooser, TRUE);
 	*column_order = get_column_names (chooser, FALSE);
 }
@@ -677,6 +666,4 @@ nautilus_column_chooser_new (void)
 {
 	return g_object_new (NAUTILUS_TYPE_COLUMN_CHOOSER, NULL);
 }
-
-
 

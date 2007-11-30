@@ -24,7 +24,6 @@
 #include <config.h>
 #include "nautilus-search-engine-tracker.h"
 #include <tracker.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 
@@ -92,7 +91,7 @@ search_callback (char **results, GError *error, gpointer user_data)
 		
 		char *uri;
 
-		uri = gnome_vfs_get_uri_from_local_path ((char *)*results_p);
+		uri = g_filename_to_uri ((char *)*results_p);
 		if (uri) {
 			hit_uris = g_list_prepend (hit_uris, (char *)uri);
 		}
@@ -132,7 +131,7 @@ nautilus_search_engine_tracker_start (NautilusSearchEngine *engine)
 	location_uri = nautilus_query_get_location (tracker->details->query);
 
 	if (location_uri) {
-		location =  gnome_vfs_get_local_path_from_uri (location_uri);
+		location = g_filename_from_uri (location_uri, NULL, NULL);
 		g_free (location_uri);
 	} else {
 		location = NULL;

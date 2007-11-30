@@ -25,7 +25,6 @@
 #define NAUTILUS_QUERY_H
 
 #include <glib-object.h>
-#include <libgnomevfs/gnome-vfs-result.h>
 
 #define NAUTILUS_TYPE_QUERY		(nautilus_query_get_type ())
 #define NAUTILUS_QUERY(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_QUERY, NautilusQuery))

@@ -44,8 +44,6 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libgnome/gnome-desktop-item.h>
-#include <eel/eel-vfs-extensions.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 
 static void fm_ditem_page_instance_init            (FMDitemPage               *provider);
 static void fm_ditem_page_class_init               (FMDitemPageClass          *class);
@@ -110,7 +108,7 @@ fm_ditem_page_url_drag_data_received (GtkWidget *widget, GdkDragContext *context
 		return;
 	}
 
-	path = gnome_vfs_get_local_path_from_uri (uris[0]);
+	path = g_filename_from_uri (uris[0], NULL, NULL);
 	if (path != NULL) {
 		gtk_entry_set_text (entry, path);
 		g_free (path);
@@ -119,41 +117,6 @@ fm_ditem_page_url_drag_data_received (GtkWidget *widget, GdkDragContext *context
 	}
 	
 	g_strfreev (uris);
-}
-
-static void
-mime_type_ready_cb (NautilusFile *file,
-		    gpointer user_data)
-{
-	GnomeDesktopItem *item;
-	GtkEntry *entry;
-	char *uri;
-	const char *exec;
-	
-	entry = GTK_ENTRY (user_data);
-	uri = nautilus_file_get_uri (file);
-	
-	if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
-	  item = gnome_desktop_item_new_from_uri (uri,
-						  GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
-						  NULL);
-		if (item != NULL &&
-		    gnome_desktop_item_get_entry_type (item) == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
-		  
-			exec = gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_EXEC);
-			gtk_entry_set_text (entry,
-					    exec?exec:"");
-			gnome_desktop_item_unref (item);
-
-			gtk_widget_grab_focus (GTK_WIDGET (entry));
-		}
-	} else {
-		gtk_entry_set_text (entry,
-				    uri?uri:"");
-	}
-
-	g_free (uri);
-	nautilus_file_unref (file);
 }
 
 static void
@@ -166,6 +129,9 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 	char **uris;
 	gboolean exactly_one;
 	NautilusFile *file;
+	GnomeDesktopItem *item;
+	char *uri;
+	const char *exec;
 	
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
         exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
@@ -175,13 +141,33 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 		return;
 	}
 
-	file = nautilus_file_get (uris[0]);
+	file = nautilus_file_get_by_uri (uris[0]);
 
 	g_return_if_fail (file != NULL);
 	
-	nautilus_file_call_when_ready (file,
-				       NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
-				       mime_type_ready_cb, entry);
+	uri = nautilus_file_get_uri (file);
+	if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
+		item = gnome_desktop_item_new_from_uri (uri,
+							GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+							NULL);
+		if (item != NULL &&
+		    gnome_desktop_item_get_entry_type (item) == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
+			
+			exec = gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_EXEC);
+			gtk_entry_set_text (entry,
+					    exec?exec:"");
+			gnome_desktop_item_unref (item);
+			
+			gtk_widget_grab_focus (GTK_WIDGET (entry));
+		}
+	} else {
+		gtk_entry_set_text (entry,
+				    uri?uri:"");
+	}
+	
+	g_free (uri);
+	
+	nautilus_file_unref (file);
 	
 	g_strfreev (uris);
 }
@@ -372,30 +358,38 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 
 
 static void
-ditem_read_cb (GnomeVFSResult result,
-	       GnomeVFSFileSize file_size,
-	       char *file_contents,
+ditem_read_cb (GObject *source_object,
+	       GAsyncResult *res,
 	       gpointer user_data)
 {
 	GnomeDesktopItem *item;
 	GtkWidget *box;
+	gsize file_size;
+	char *file_contents;
 
 	box = GTK_WIDGET (user_data);
-	item = gnome_desktop_item_new_from_string (g_object_get_data (G_OBJECT (box),
-								      "uri"),
-						   file_contents,
-						   file_size,
-						   0, NULL);
-
-	if (item == NULL) {
-		return;
+	
+	if (g_file_load_contents_finish (G_FILE (source_object),
+					 res,
+					 &file_contents, &file_size,
+					 NULL, NULL)) {
+		item = gnome_desktop_item_new_from_string (g_object_get_data (G_OBJECT (box),
+									      "uri"),
+							   file_contents,
+							   file_size,
+							   0, NULL);
+		g_free (file_contents);
+		if (item == NULL) {
+			return;
+		}
+		
+		/* for some reason, this isn't done automatically */
+		gnome_desktop_item_set_location (item, g_object_get_data (G_OBJECT (box), "uri"));
+		
+		create_page (item, box);
+		gnome_desktop_item_unref (item);
 	}
-
-	/* for some reason, this isn't done automatically */
-	gnome_desktop_item_set_location (item, g_object_get_data (G_OBJECT (box), "uri"));
-
-	create_page (item, box);
-	gnome_desktop_item_unref (item);
+	g_object_unref (box);
 }
 
 static void
@@ -403,8 +397,12 @@ fm_ditem_page_create_begin (FMDitemPage *page,
 			    const char *uri,
 			    GtkWidget *box)
 {
+	GFile *location;
+
+	location = g_file_new_for_uri (uri);
 	g_object_set_data_full (G_OBJECT (box), "uri", g_strdup (uri), g_free);
-	eel_read_entire_file_async (uri, 0, ditem_read_cb, box);
+	g_file_load_contents_async (location, NULL, ditem_read_cb, g_object_ref (box));
+	g_object_unref (location);
 }
 
 static GList *

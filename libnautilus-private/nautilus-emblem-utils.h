@@ -23,10 +23,11 @@
 */
 
 #include <glib.h>
+#include <gio/gfile.h>
 #include <gtk/gtkwindow.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-GList *    nautilus_emblem_list_availible             (void);
+GList *    nautilus_emblem_list_available             (void);
 void       nautilus_emblem_refresh_list               (void);
 gboolean   nautilus_emblem_should_show_in_list        (const char *emblem);
 gboolean   nautilus_emblem_verify_keyword             (GtkWindow *parent_window,
@@ -41,7 +42,7 @@ gboolean   nautilus_emblem_remove_emblem              (const char *keyword);
 gboolean   nautilus_emblem_rename_emblem              (const char *keyword,
 						       const char *display_name);
 
-GdkPixbuf *nautilus_emblem_load_pixbuf_for_emblem     (const char *uri);
+GdkPixbuf *nautilus_emblem_load_pixbuf_for_emblem     (GFile      *emblem);
 char *     nautilus_emblem_get_keyword_from_icon_name (const char *emblem);
 char *     nautilus_emblem_get_icon_name_from_keyword (const char *keyword);
 

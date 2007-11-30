@@ -5,9 +5,9 @@
 
 #include <gtk/gtkrecentmanager.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <gio/gappinfo.h>
 
 void nautilus_recent_add_file (NautilusFile *file,
-			       GnomeVFSMimeApplication *application);
+			       GAppInfo *application);
 
 #endif

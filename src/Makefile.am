@@ -5,8 +5,9 @@ SUBDIRS=file-manager
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-file-management-properties	\
-	nautilus-connect-server			\
 	$(NULL)
+
+#	nautilus-connect-server			
 
 INCLUDES =							\
 	-I$(top_srcdir) 					\
@@ -65,9 +66,6 @@ nautilus_SOURCES = \
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\
 	nautilus-bookmarks-window.h		\
-	nautilus-connect-server-dialog.c	\
-	nautilus-connect-server-dialog.h	\
-	nautilus-connect-server-dialog-nonmain.c\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
 	nautilus-emblem-sidebar.c		\
@@ -142,13 +140,14 @@ nautilus_file_management_properties_SOURCES= \
 	nautilus-file-management-properties-main.c	\
 	$(NULL)
 
-nautilus_connect_server_SOURCES= \
-	nautilus-connect-server-dialog.c	\
-	nautilus-connect-server-dialog.h	\
-	nautilus-connect-server-dialog-main.c	\
-	nautilus-location-entry.c		\
-	nautilus-location-entry.h		\
-	$(NULL)
+# Disabled for now in the gio world
+#nautilus_connect_server_SOURCES= \
+#	nautilus-connect-server-dialog.c	\
+#	nautilus-connect-server-dialog.h	\
+#	nautilus-connect-server-dialog-main.c	\
+#	nautilus-location-entry.c		\
+#	nautilus-location-entry.h		\
+#	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL)

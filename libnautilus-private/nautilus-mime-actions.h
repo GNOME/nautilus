@@ -25,22 +25,36 @@
 #ifndef NAUTILUS_MIME_ACTIONS_H
 #define NAUTILUS_MIME_ACTIONS_H
 
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <gio/gappinfo.h>
 
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-window-info.h>
 
-NautilusFileAttributes   nautilus_mime_actions_get_minimum_file_attributes	(void);
-NautilusFileAttributes   nautilus_mime_actions_get_full_file_attributes		(void);
+NautilusFileAttributes nautilus_mime_actions_get_required_file_attributes (void);
 
-GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file		(NautilusFile *file);
-GList *                  nautilus_mime_get_open_with_applications_for_file	(NautilusFile *file);
-GList *			 nautilus_mime_get_applications_for_file		(NautilusFile *file);
+GAppInfo *             nautilus_mime_get_default_application_for_file     (NautilusFile            *file);
+GList *                nautilus_mime_get_applications_for_file            (NautilusFile            *file);
 
-GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_files	(GList        *files);
-GList *                  nautilus_mime_get_open_with_applications_for_files	(GList        *files);
-GList *			 nautilus_mime_get_applications_for_files		(GList        *file);
+GAppInfo *             nautilus_mime_get_default_application_for_files    (GList                   *files);
+GList *                nautilus_mime_get_applications_for_files           (GList                   *file);
 
-gboolean                 nautilus_mime_has_any_applications_for_file		(NautilusFile *file);
-gboolean                 nautilus_mime_has_any_applications_for_files		(GList        *files);
+gboolean               nautilus_mime_has_any_applications_for_file        (NautilusFile            *file);
+gboolean               nautilus_mime_has_any_applications_for_files       (GList                   *files);
+
+gboolean               nautilus_mime_file_opens_in_view                   (NautilusFile            *file);
+gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
+void                   nautilus_mime_activate_files                       (GtkWindow               *parent_window,
+									   NautilusWindowInfo      *window_info,
+									   GList                   *files,
+									   const char              *launch_directory,
+									   NautilusWindowOpenMode   mode,
+									   NautilusWindowOpenFlags  flags);
+void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
+									   NautilusWindowInfo      *window_info,
+									   NautilusFile            *file,
+									   const char              *launch_directory,
+									   NautilusWindowOpenMode   mode,
+									   NautilusWindowOpenFlags  flags);
+
 
 #endif /* NAUTILUS_MIME_ACTIONS_H */

@@ -30,7 +30,7 @@
 #include "nautilus-dnd.h"
 #include "nautilus-directory.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
+#include <string.h>
 
 static gboolean
 nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
@@ -134,11 +134,11 @@ nautilus_drag_can_accept_info (NautilusFile *drop_target_item,
 			g_assert_not_reached ();
 			return FALSE;
 	}
-	
 }
 
 void
-nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, const char *keyword)
+nautilus_drag_file_receive_dropped_keyword (NautilusFile *file,
+					    const char *keyword)
 {
 	GList *keywords, *word;
 
@@ -159,7 +159,7 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, const char *keyw
 			g_list_free_1 (word);
 		}
 	}
-	
+
 	nautilus_file_set_keywords (file, keywords);
 	eel_g_list_free_deep (keywords);
 }

@@ -32,7 +32,7 @@ GList *nautilus_column_list_copy      (GList       *columns);
 void   nautilus_column_list_free      (GList       *columns);
 
 GList *nautilus_sort_columns          (GList       *columns,
-				       GList       *column_order);
+				       char       **column_order);
 
 
 #endif /* NAUTILUS_COLUMN_UTILITIES_H */

@@ -44,11 +44,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-sidebar.h>
 #include <string.h>
@@ -144,10 +141,6 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 {
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 	
-	/* Register to find out about icon theme changes */
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (update_icon), sidebar_title, G_CONNECT_SWAPPED);
-
 	/* Create the icon */
 	sidebar_title->details->icon = gtk_image_new ();
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
@@ -291,9 +284,9 @@ get_best_icon_size (NautilusSidebarTitle *sidebar_title)
 
 	if (width < 0) {
 		/* use smallest available icon size */
-		return nautilus_icon_factory_get_smaller_icon_size (0);
+		return nautilus_icon_get_smaller_icon_size (0);
 	} else {
-		return nautilus_icon_factory_get_smaller_icon_size ((guint) width);
+		return nautilus_icon_get_smaller_icon_size ((guint) width);
 	}
 }
 
@@ -302,6 +295,7 @@ static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
+	NautilusIconInfo *info;
 	char *icon_name;
 	gboolean leave_pixbuf_unchanged;
 	
@@ -312,12 +306,16 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 
 	pixbuf = NULL;
 	if (icon_name != NULL && icon_name[0] != '\0') {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE, NULL);
-	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
-								    "accept",
-								    sidebar_title->details->best_icon_size,
-								    FALSE);
+		info = nautilus_icon_info_lookup_from_name (icon_name, NAUTILUS_ICON_SIZE_LARGE);
+		pixbuf = nautilus_icon_info_get_pixbuf_at_size (info,  NAUTILUS_ICON_SIZE_LARGE);
+		g_object_unref (info);
+	} else if (sidebar_title->details->file != NULL &&
+		   nautilus_file_check_if_ready (sidebar_title->details->file,
+						 NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
+		pixbuf = nautilus_file_get_icon_pixbuf (sidebar_title->details->file,
+							sidebar_title->details->best_icon_size,
+							FALSE,
+							NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
@@ -489,7 +487,7 @@ add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 static void
 update_emblems (NautilusSidebarTitle *sidebar_title)
 {
-	GList *icons, *p;
+	GList *pixbufs, *p;
 	GdkPixbuf *pixbuf;
 
 	/* exit if we don't have the file yet */
@@ -503,22 +501,18 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			       NULL);
 
 	/* fetch the emblem icons from metadata */
-	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, NULL);
+	pixbufs = nautilus_file_get_emblem_pixbufs (sidebar_title->details->file,
+						    nautilus_icon_get_emblem_size_for_icon_size (NAUTILUS_ICON_SIZE_STANDARD),
+						    FALSE,
+						    NULL);
 
 	/* loop through the list of emblems, installing them in the box */
-	for (p = icons; p != NULL; p = p->next) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data, NULL,
-			 nautilus_icon_factory_get_emblem_size_for_icon_size (NAUTILUS_ICON_SIZE_STANDARD),
-			 NULL, NULL,
-			 FALSE, FALSE, NULL);
-		if (pixbuf != NULL) {
-			add_emblem (sidebar_title, pixbuf);
-			g_object_unref (pixbuf);
-		}
+	for (p = pixbufs; p != NULL; p = p->next) {
+		pixbuf = p->data;
+		add_emblem (sidebar_title, pixbuf);
+		g_object_unref (pixbuf);
 	}
-	
-	eel_g_list_free_deep (icons);
+	g_list_free (pixbufs);
 }
 
 /* return the filename text */
@@ -570,9 +564,7 @@ monitor_add (NautilusSidebarTitle *sidebar_title)
 
 	sidebar_title->details->monitoring_count = item_count_ready (sidebar_title);
 
-	attributes = nautilus_icon_factory_get_required_file_attributes ();		
-	attributes |= NAUTILUS_FILE_ATTRIBUTE_METADATA;
-	
+	attributes = NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_METADATA;
 	if (sidebar_title->details->monitoring_count) {
 		attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
 	}

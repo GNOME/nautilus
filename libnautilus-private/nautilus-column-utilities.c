@@ -190,18 +190,31 @@ nautilus_column_list_free (GList *columns)
 }
 
 static int
-column_compare (NautilusColumn *a, NautilusColumn *b, GList *column_order)
+strv_index (char **strv, const char *str)
+{
+	int i;
+
+	for (i = 0; strv[i] != NULL; ++i) {
+		if (strcmp (strv[i], str) == 0)
+			return i;
+	}
+
+	return -1;
+}
+
+static int
+column_compare (NautilusColumn *a, NautilusColumn *b, char **column_order)
 {
 	int index_a;
 	int index_b;
 	char *name;
 	
 	g_object_get (G_OBJECT (a), "name", &name, NULL);
-	index_a = eel_g_str_list_index (column_order, name);
+	index_a = strv_index (column_order, name);
 	g_free (name);
 
 	g_object_get (G_OBJECT (b), "name", &name, NULL);
-	index_b = eel_g_str_list_index (column_order, name);
+	index_b = strv_index (column_order, name);
 	g_free (name);
 
 	if (index_a == index_b) {
@@ -226,8 +239,8 @@ column_compare (NautilusColumn *a, NautilusColumn *b, GList *column_order)
 }
 
 GList *
-nautilus_sort_columns (GList *columns, 
-		       GList *column_order)
+nautilus_sort_columns (GList  *columns, 
+		       char  **column_order)
 {
 	return g_list_sort_with_data (columns,
 				      (GCompareDataFunc)column_compare,

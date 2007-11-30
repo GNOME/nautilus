@@ -36,17 +36,20 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 					    GtkWidget *widget)
 {
 	NautilusWindow *window;
+	GFile *location;
 	
+	location = g_file_new_for_uri (uri);
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									NULL,
 									gtk_widget_get_screen (widget));
-		nautilus_window_go_to (window, uri);
+		nautilus_window_go_to (window, location);
 	} else {
 		nautilus_application_present_spatial_window (application,
 							     NULL,
 							     NULL,
-							     uri,
+							     location,
 							     gtk_widget_get_screen (widget));
 	}
+	g_object_unref (location);
 }

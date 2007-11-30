@@ -43,8 +43,6 @@
 #include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-directory.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libxml/parser.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,13 +72,47 @@ struct NautilusCustomizationData {
 
 
 /* The Property here should be one of "emblems", "colors" or "patterns" */
-static char *            get_global_customization_uri        (const char *customization_name);
-static char *            get_private_customization_uri       (const char *customization_name);
+static char *            get_global_customization_path       (const char *customization_name);
+static char *            get_private_customization_path      (const char *customization_name);
 static char *            get_file_path_for_mode              (const NautilusCustomizationData *data,
 							      const char *file_name);
 static char*             format_name_for_display             (NautilusCustomizationData *data, const char *name);
 static char*             strip_extension                     (const char* string_to_strip);
 static void		 load_name_map_hash_table	     (NautilusCustomizationData *data);
+
+
+static gboolean
+read_all_children (char *filename,
+		   const char *attributes,
+		   GList **list_out)
+{
+	GFileEnumerator *enumerator;
+	GList *list;
+	GFile *file;
+	GFileInfo *info;
+
+	file = g_file_new_for_path (filename);
+
+	enumerator = g_file_enumerate_children (file, attributes, 0, NULL, NULL);
+	if (enumerator == NULL) {
+		return FALSE;
+	}
+
+	list = NULL;
+	do {
+		info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+		if (info) {
+			list = g_list_prepend (list, info);
+		}
+	} while (info != NULL);
+
+	g_object_unref (enumerator);
+	g_object_unref (file);
+
+	*list_out = g_list_reverse (list);
+	return TRUE;
+}
+
 
 NautilusCustomizationData* 
 nautilus_customization_data_new (const char *customization_name,
@@ -89,42 +121,40 @@ nautilus_customization_data_new (const char *customization_name,
 				 int maximum_icon_width)
 {
 	NautilusCustomizationData *data;
-	char *public_directory_uri, *private_directory_uri;
+	char *public_directory_path, *private_directory_path;
 	char *temp_str;
-	GnomeVFSResult public_result, private_result;
+	gboolean public_result, private_result;
 
 	data = g_new0 (NautilusCustomizationData, 1);
 
-	public_result = GNOME_VFS_OK;
+	public_result = TRUE;
 
 	if (show_public_customizations) {
-		public_directory_uri = get_global_customization_uri (customization_name);
+		public_directory_path = get_global_customization_path (customization_name);
 		
-		
-		public_result = gnome_vfs_directory_list_load (&data->public_file_list,
-							       public_directory_uri,
-							       GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-		g_free (public_directory_uri);
+		public_result  = read_all_children (public_directory_path,
+						    G_FILE_ATTRIBUTE_STD_NAME ","
+						    G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+						    &data->public_file_list);
+		g_free (public_directory_path);
 	}
 
-	private_directory_uri = get_private_customization_uri (customization_name);
-	private_result = gnome_vfs_directory_list_load (&data->private_file_list,
-							private_directory_uri,
-							GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (private_directory_uri);
-	if (public_result != GNOME_VFS_OK && 
-	    private_result != GNOME_VFS_OK) {
+	private_directory_path = get_private_customization_path (customization_name);
+	private_result = read_all_children (private_directory_path,
+					    G_FILE_ATTRIBUTE_STD_NAME ","
+					    G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+					    &data->private_file_list);
+	g_free (private_directory_path);
+	if (!public_result && !private_result) {
 		g_warning ("Couldn't read any of the emblem directories\n");
 		g_free (data);
 		return NULL;
 	}
-	if (private_result == GNOME_VFS_OK) {
+	if (private_result) {
 		data->reading_mode = READ_PRIVATE_CUSTOMIZATIONS;
 		data->current_file_list = data->private_file_list;
 	}
-	if (show_public_customizations && public_result == GNOME_VFS_OK) {
+	if (show_public_customizations && public_result) {
 		data->reading_mode = READ_PUBLIC_CUSTOMIZATIONS;	
 		data->current_file_list = data->public_file_list;
 	}
@@ -151,27 +181,27 @@ nautilus_customization_data_new (const char *customization_name,
 	return data;
 }
 
-GnomeVFSResult
+gboolean
 nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 							  char **emblem_name,
 							  GdkPixbuf **pixbuf_out,
 							  char **label_out)
 {
-	GnomeVFSFileInfo *current_file_info;
+	GFileInfo *current_file_info;
 	char *image_file_name;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
 	gboolean is_reset_image;
 	
-	g_return_val_if_fail (data != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	g_return_val_if_fail (emblem_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	g_return_val_if_fail (pixbuf_out != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	g_return_val_if_fail (label_out != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (emblem_name != NULL, FALSE);
+	g_return_val_if_fail (pixbuf_out != NULL, FALSE);
+	g_return_val_if_fail (label_out != NULL, FALSE);
 	
 	if (data->current_file_list == NULL) {
 		if (data->reading_mode == READ_PUBLIC_CUSTOMIZATIONS) {
 			if (data->private_file_list == NULL) {
-				return GNOME_VFS_ERROR_EOF;
+				return FALSE;
 			}
 			data->reading_mode = READ_PRIVATE_CUSTOMIZATIONS;
 			data->current_file_list = data->private_file_list;
@@ -181,7 +211,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 											 label_out);
 		}
 		else {
-			return GNOME_VFS_ERROR_EOF;
+			return FALSE;
 		}
 	}
 	
@@ -191,8 +221,8 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	g_assert (current_file_info != NULL);
 
-	if (!eel_istr_has_prefix (current_file_info->mime_type, "image/")
-	    || eel_istr_has_prefix (current_file_info->name, ".")) {
+	if (!eel_istr_has_prefix (g_file_info_get_content_type (current_file_info), "image/")
+	    || eel_istr_has_prefix (g_file_info_get_name (current_file_info), ".")) {
 		return nautilus_customization_data_get_next_element_for_display (data,
 										 emblem_name,
 										 pixbuf_out,
@@ -200,7 +230,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	}
 
 	image_file_name = get_file_path_for_mode (data,
-						  current_file_info->name);
+						  g_file_info_get_name (current_file_info));
 	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
 
 	if (orig_pixbuf == NULL) {
@@ -218,9 +248,9 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 										 label_out);
 	}
 
-	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
+	is_reset_image = eel_strcmp(g_file_info_get_name (current_file_info), RESET_IMAGE_NAME) == 0;
 
-	*emblem_name = g_strdup (current_file_info->name);
+	*emblem_name = g_strdup (g_file_info_get_name (current_file_info));
 
 	if (strcmp (data->customization_name, "patterns") == 0 &&
 	    data->pattern_frame != NULL) {
@@ -235,12 +265,12 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	
 	*pixbuf_out = pixbuf;
 	
-	*label_out = format_name_for_display (data, current_file_info->name);
+	*label_out = format_name_for_display (data, g_file_info_get_name (current_file_info));
 
 	if (data->reading_mode == READ_PRIVATE_CUSTOMIZATIONS) {
 		data->private_data_was_displayed = TRUE;
 	}
-	return GNOME_VFS_OK;
+	return TRUE;
 }
 
 gboolean                   
@@ -259,8 +289,8 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		g_object_unref (data->pattern_frame);
 	}
 
-	gnome_vfs_file_info_list_free (data->public_file_list);
-	gnome_vfs_file_info_list_free (data->private_file_list);
+	eel_g_object_list_free (data->public_file_list);
+	eel_g_object_list_free (data->private_file_list);
 
 	if (data->name_map_hash != NULL) {
 		g_hash_table_destroy (data->name_map_hash);	
@@ -279,19 +309,11 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
    Return value: The directory name where the customization's 
    public pixmaps are stored */
 static char *                  
-get_global_customization_uri (const char *customization_name)
+get_global_customization_path (const char *customization_name)
 {
-	char *directory_path, *directory_uri;
-	
-	directory_path = g_build_filename (NAUTILUS_DATADIR,
-					   customization_name,
-					   NULL);
-	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-	
-	g_free (directory_path);
-
-	return directory_uri;
-	
+	return g_build_filename (NAUTILUS_DATADIR,
+				 customization_name,
+				 NULL);
 }
 
 
@@ -303,20 +325,18 @@ get_global_customization_uri (const char *customization_name)
    Return value: The directory name where the customization's 
    user-specific pixmaps are stored */
 static char *                  
-get_private_customization_uri (const char *customization_name)
+get_private_customization_path (const char *customization_name)
 {
 	char *user_directory;
-	char *directory_path, *directory_uri;
+	char *directory_path;
 
 	user_directory = nautilus_get_user_directory ();
 	directory_path = g_build_filename (user_directory,
 					   customization_name,
 					   NULL);
 	g_free (user_directory);
-	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-	g_free (directory_path);
 	
-	return directory_uri;
+	return directory_path;
 }
 
 
@@ -324,20 +344,18 @@ static char *
 get_file_path_for_mode (const NautilusCustomizationData *data,
 			const char *file_name)
 {
-	char *directory_uri, *uri, *directory_name;
+	char *directory_path, *file;
 	if (data->reading_mode == READ_PUBLIC_CUSTOMIZATIONS) {
-		directory_uri = get_global_customization_uri (data->customization_name);
+		directory_path = get_global_customization_path (data->customization_name);
 	}
 	else {
-		directory_uri = get_private_customization_uri (data->customization_name);
+		directory_path = get_private_customization_path (data->customization_name);
 	}
 	
-	uri = g_build_filename (directory_uri, file_name, NULL);
-	g_free (directory_uri);
-	directory_name = gnome_vfs_get_local_path_from_uri (uri);
-	g_free (uri);
+	file = g_build_filename (directory_path, file_name, NULL);
+	g_free (directory_path);
 
-	return directory_name;
+	return file;
 }
 
 

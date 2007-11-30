@@ -2,7 +2,6 @@ AC_PREREQ(2.54)
 
 dnl ===========================================================================
 
-m4_define(art_minver,                  2.3.10)
 m4_define(bonobo_activation_minver,    2.1.0)
 m4_define(bonobo_minver,               2.1.0)
 m4_define(eel_minver,                  2.15.91)
@@ -22,6 +21,7 @@ m4_define(exif_minver,                 0.5.12)
 m4_define(beagle_minver,               0.0.12)
 m4_define(tracker_minver,              0.0.1)
 m4_define(exempi_minver,               1.99.2)
+m4_define(exempi_minver_newapi,        1.99.5)
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
 dnl 2. If any interfaces have been added, then increment current and set revision to 0.
@@ -29,7 +29,7 @@ dnl Interface break is not allowed.
 m4_define(nautilus_extension_current,  2)
 m4_define(nautilus_extension_revision, 0)
 
-AC_INIT(nautilus, 2.20.1,
+AC_INIT(nautilus, 2.21.1
         [http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus])
 
 dnl ===========================================================================
@@ -41,7 +41,6 @@ AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AC_SUBST([ACLOCAL_AMFLAGS], ["\${ACLOCAL_FLAGS}"])
 
-AC_SUBST(ART_REQUIRED, [art_minver])
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED, [bonobo_activation_minver])
 AC_SUBST(BONOBO_REQUIRED, [bonobo_minver])
 AC_SUBST(EEL_REQUIRED, [eel_minver])
@@ -97,10 +96,10 @@ PKG_CHECK_MODULES(ALL, [
 	gnome-desktop-2.0	>= gnome_desktop_minver
 	gnome-vfs-2.0		>= gnome_vfs_minver
 	gnome-vfs-module-2.0	>= gnome_vfs_minver
+	gio-2.0		
 	ORBit-2.0		>= orbit_minver
 	pango			>= pango_minver
 	gtk+-2.0		>= gtk_minver
-	libart-2.0		>= art_minver
 	libbonobo-2.0		>= bonobo_minver
 	libgnome-2.0		>= gnome_minver
 	libgnomeui-2.0		>= gnome_ui_minver
@@ -266,6 +265,9 @@ PKG_CHECK_MODULES(EXEMPI, exempi-2.0 >= exempi_minver, [
 		  AC_DEFINE(HAVE_EXEMPI, 1, [Define to enable XMP support])
 		  ], [AM_CONDITIONAL(HAVE_EXEMPI, false)])
 
+PKG_CHECK_MODULES(EXEMPI_NEW_API, exempi-2.0 >= exempi_minver_newapi,
+		  AC_DEFINE(HAVE_EXEMPI_NEW_API, 1, [Define if we have exempi with the new API]), true)
+
 AC_SUBST(EXEMPI_CFLAGS)
 AC_SUBST(EXEMPI_LIBS)
 
@@ -404,7 +406,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 gio-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"

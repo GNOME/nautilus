@@ -22,10 +22,8 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
+#include <gio/gfile.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-private/nautilus-directory-metafile-monitor.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-queue.h>
@@ -39,13 +37,18 @@
 typedef struct LinkInfoReadState LinkInfoReadState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 typedef struct FileMonitors FileMonitors;
+typedef struct DirectoryLoadState DirectoryLoadState;
+typedef struct DirectoryCountState DirectoryCountState;
+typedef struct DeepCountState DeepCountState;
+typedef struct GetInfoState GetInfoState;
+typedef struct NewFilesState NewFilesState;
+typedef struct MimeListState MimeListState;
+typedef struct ThumbnailState ThumbnailState;
 
 struct NautilusDirectoryDetails
 {
 	/* The location. */
-	char *uri;
-	GnomeVFSURI *vfs_uri;
-	int is_local_state;
+	GFile *location;
 
 	/* The file objects. */
 	NautilusFile *as_file;
@@ -77,44 +80,33 @@ struct NautilusDirectoryDetails
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	gboolean directory_loaded_sent_notification;
-	GnomeVFSAsyncHandle *directory_load_in_progress;
+	DirectoryLoadState *directory_load_in_progress;
 
 	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
 	int confirmed_file_count;
         guint dequeue_pending_idle_id;
 
-	NautilusFile *load_directory_file;
-	int load_file_count;
-	GHashTable *load_mime_list_hash;
-
-	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */
+	GList *new_files_in_progress; /* list of NewFilesState * */
 
 	NautilusFile *count_file;
-	GnomeVFSAsyncHandle *count_in_progress;
+	DirectoryCountState *count_in_progress;
 
 	NautilusFile *deep_count_file;
-	GnomeVFSAsyncHandle *deep_count_in_progress;
-	char *deep_count_uri;
-	GList *deep_count_subdirectories;
+	DeepCountState *deep_count_in_progress;
 
 	NautilusFile *mime_list_file;
-	GnomeVFSAsyncHandle *mime_list_in_progress;
-	GHashTable *mime_list_hash;
+	MimeListState *mime_list_in_progress;
 
 	NautilusFile *get_info_file;
-	GnomeVFSAsyncHandle *get_info_in_progress;
-	gboolean get_info_has_slow_mime_type;
-
-	int is_in_trash_state;
-
-	NautilusFile *slow_mime_type_file;
-	GnomeVFSAsyncHandle *slow_mime_type_in_progress;
+	GetInfoState *get_info_in_progress;
 
 	NautilusFile *extension_info_file;
 	NautilusInfoProvider *extension_info_provider;
 	NautilusOperationHandle *extension_info_in_progress;
 	guint extension_info_idle;
 
+	ThumbnailState *thumbnail_state;
+	
 	TopLeftTextReadState *top_left_read_state;
 
 	LinkInfoReadState *link_info_read_state;
@@ -136,10 +128,10 @@ typedef struct {
 	gboolean top_left_text;
 	gboolean large_top_left_text;
 	gboolean extension_info;
-	gboolean slow_mime_type;
+	gboolean thumbnail;
 } Request;
 
-NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
+NautilusDirectory *nautilus_directory_get_existing                    (GFile                     *location);
 
 /* async. interface */
 void               nautilus_directory_async_state_changed             (NautilusDirectory         *directory);
@@ -195,11 +187,11 @@ void               nautilus_directory_emit_files_changed              (NautilusD
 void               nautilus_directory_emit_change_signals             (NautilusDirectory         *directory,
 								       GList                     *changed_files);
 void               emit_change_signals_for_all_files		      (NautilusDirectory	 *directory);
+void               emit_change_signals_for_all_files_in_all_directories (void);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
-								       GnomeVFSResult             error_result,
-								       const char                *error_message);
-NautilusDirectory *nautilus_directory_get_internal                    (const char                *uri,
+								       GError                    *error);
+NautilusDirectory *nautilus_directory_get_internal                    (GFile                     *location,
 								       gboolean                   create);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
 void               nautilus_directory_set_up_request                  (Request                   *request,
@@ -207,11 +199,9 @@ void               nautilus_directory_set_up_request                  (Request  
 
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
-								       const char                *relative_uri);
-NautilusFile *     nautilus_directory_find_file_by_relative_uri       (NautilusDirectory         *directory,
-								       const char                *relative_uri);
-NautilusFile *     nautilus_directory_find_file_by_internal_uri       (NautilusDirectory         *directory,
-								       const char                *relative_uri);
+								       const char                *filename);
+NautilusFile *     nautilus_directory_find_file_by_internal_filename  (NautilusDirectory         *directory,
+								       const char                *internal_filename);
 
 void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);

@@ -24,22 +24,24 @@
 #define NAUTILUS_FILE_CHANGES_QUEUE_H
 
 #include <gdk/gdktypes.h>
+#include <gio/gfile.h>
 
-void nautilus_file_changes_queue_file_added               (const char *uri);
-void nautilus_file_changes_queue_file_changed             (const char *uri);
-void nautilus_file_changes_queue_file_removed             (const char *uri);
-void nautilus_file_changes_queue_file_moved               (const char *from_uri,
-							   const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_copy   (const char *from_uri,
-							   const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_move   (const char *from_uri,
-							   const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_remove (const char *uri);
-void nautilus_file_changes_queue_schedule_position_set    (const char *uri,
-							   GdkPoint    point,
-							   int screen);
-void nautilus_file_changes_queue_schedule_position_remove (const char *uri);
+void nautilus_file_changes_queue_file_added                      (GFile      *location);
+void nautilus_file_changes_queue_file_changed                    (GFile      *location);
+void nautilus_file_changes_queue_file_removed                    (GFile      *location);
+void nautilus_file_changes_queue_file_moved                      (GFile      *from,
+								  GFile      *to);
+void nautilus_file_changes_queue_schedule_metadata_copy          (GFile      *from,
+								  GFile      *to);
+void nautilus_file_changes_queue_schedule_metadata_move          (GFile      *from,
+								  GFile      *to);
+void nautilus_file_changes_queue_schedule_metadata_remove        (GFile      *location);
+void nautilus_file_changes_queue_schedule_position_set           (GFile      *location,
+								  GdkPoint    point,
+								  int         screen);
+void nautilus_file_changes_queue_schedule_position_remove        (GFile      *location);
 
-void nautilus_file_changes_consume_changes                (gboolean    consume_all);
+void nautilus_file_changes_consume_changes                       (gboolean    consume_all);
+
 
 #endif /* NAUTILUS_FILE_CHANGES_QUEUE_H */

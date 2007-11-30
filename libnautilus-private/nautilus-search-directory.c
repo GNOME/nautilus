@@ -22,6 +22,7 @@
 
 #include <config.h>
 #include "nautilus-search-directory.h"
+#include "nautilus-search-directory-file.h"
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
@@ -29,8 +30,8 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-engine.h"
 #include <eel/eel-glib-extensions.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <gtk/gtksignal.h>
+#include <gio/gioerror.h>
 #include <libgnome/gnome-macros.h>
 #include <string.h>
 #include <sys/time.h>
@@ -484,7 +485,7 @@ search_engine_hits_added (NautilusSearchEngine *engine, GList *hits,
 			continue;
 		}
 		
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get_by_uri (uri);
 		
 		for (monitor_list = search->details->monitor_list; monitor_list; monitor_list = monitor_list->next) {
 			monitor = monitor_list->data;
@@ -522,7 +523,7 @@ search_engine_hits_subtracted (NautilusSearchEngine *engine, GList *hits,
 
 	for (hit_list = hits; hit_list != NULL; hit_list = hit_list->next) {
 		uri = hit_list->data;
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get_by_uri (uri);
 
 		for (monitor_list = search->details->monitor_list; monitor_list; 
 		     monitor_list = monitor_list->next) {
@@ -559,8 +560,13 @@ search_callback_add_pending_file_callbacks (SearchCallback *callback)
 static void
 search_engine_error (NautilusSearchEngine *engine, const char *error_message, NautilusSearchDirectory *search)
 {
+	GError *error;
+
+	error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED,
+				     error_message);
 	nautilus_directory_emit_load_error (NAUTILUS_DIRECTORY (search),
-					    -1, error_message);
+					    error);
+	g_error_free (error);
 }
 
 static void
@@ -746,12 +752,9 @@ char *
 nautilus_search_directory_generate_new_uri (void)
 {
 	static int counter = 0;
-	struct timeval tv;
 	char *uri;
 
-	gettimeofday (&tv, NULL);
-
-	uri = g_strdup_printf (EEL_SEARCH_URI"///%ld-%ld-%d/", tv.tv_sec, tv.tv_usec, counter++);
+	uri = g_strdup_printf (EEL_SEARCH_URI"//%d/", counter++);
 
 	return uri;
 }
@@ -761,10 +764,13 @@ void
 nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 				     NautilusQuery *query)
 {
+	NautilusDirectory *dir;
+	NautilusFile *as_file;
+
 	if (search->details->query != query) {
 		search->details->modified = TRUE;
 	}
-	
+
 	if (query) {
 		g_object_ref (query);
 	}
@@ -774,6 +780,12 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
 	}
 
 	search->details->query = query;
+
+	dir = NAUTILUS_DIRECTORY (search);
+	as_file = dir->details->as_file;
+	if (as_file != NULL) {
+		nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (as_file));
+	}
 }
 
 NautilusQuery *
@@ -797,7 +809,7 @@ nautilus_search_directory_new_from_saved_search (const char *uri)
 
 	search->details->saved_search_uri = g_strdup (uri);
 	
-	file = gnome_vfs_get_local_path_from_uri (uri);
+	file = g_filename_from_uri (uri, NULL, NULL);
 	if (file != NULL) {
 		query = nautilus_query_load (file);
 		if (query != NULL) {
@@ -839,7 +851,7 @@ nautilus_search_directory_save_to_file (NautilusSearchDirectory *search,
 {
 	char *file;
 	
-	file = gnome_vfs_get_local_path_from_uri (save_file_uri);
+	file = g_filename_from_uri (save_file_uri, NULL, NULL);
 	if (file == NULL) {
 		return;
 	}

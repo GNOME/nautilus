@@ -29,7 +29,7 @@
 #define NAUTILUS_BOOKMARK_LIST_H
 
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
+#include <gio/gfilemonitor.h>
 
 typedef struct NautilusBookmarkList NautilusBookmarkList;
 typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;
@@ -48,7 +48,7 @@ typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;
 struct NautilusBookmarkList {
 	GtkObject object;
 	GList *list; 
-	GnomeVFSMonitorHandle *handle;
+	GFileMonitor *monitor;
 };
 
 struct NautilusBookmarkListClass {

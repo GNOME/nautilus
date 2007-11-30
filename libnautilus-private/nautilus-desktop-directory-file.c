@@ -69,7 +69,7 @@ typedef struct {
 
 
 static void nautilus_desktop_directory_file_init       (gpointer   object,
-						  gpointer   klass);
+							gpointer   klass);
 static void nautilus_desktop_directory_file_class_init (gpointer   klass);
 
 EEL_CLASS_BOILERPLATE (NautilusDesktopDirectoryFile,
@@ -370,12 +370,6 @@ desktop_directory_file_check_if_ready (NautilusFile *file,
 					      delegated_attributes);
 }
 
-static GnomeVFSFileType
-desktop_directory_file_get_file_type (NautilusFile *file)
-{
-	return GNOME_VFS_FILE_TYPE_DIRECTORY;
-}			      
-
 static gboolean
 desktop_directory_file_get_item_count (NautilusFile *file, 
 				       guint *count,
@@ -402,7 +396,7 @@ desktop_directory_file_get_deep_counts (NautilusFile *file,
 					guint *directory_count,
 					guint *file_count,
 					guint *unreadable_directory_count,
-					GnomeVFSFileSize *total_size)
+					goffset *total_size)
 {
 	NautilusDesktopDirectoryFile *desktop_file;
 	NautilusRequestStatus status;
@@ -464,7 +458,7 @@ nautilus_desktop_directory_file_init (gpointer object, gpointer klass)
 
 	desktop_file = NAUTILUS_DESKTOP_DIRECTORY_FILE (object);
 
-	desktop_directory = NAUTILUS_DESKTOP_DIRECTORY (nautilus_directory_get (EEL_DESKTOP_URI));
+	desktop_directory = NAUTILUS_DESKTOP_DIRECTORY (nautilus_directory_get_by_uri (EEL_DESKTOP_URI));
 
 	desktop_file->details = g_new0 (NautilusDesktopDirectoryFileDetails, 1);
 	desktop_file->details->desktop_directory = desktop_directory;
@@ -473,7 +467,7 @@ nautilus_desktop_directory_file_init (gpointer object, gpointer klass)
 		(desktop_callback_hash, desktop_callback_equal);
 	desktop_file->details->monitors = g_hash_table_new_full (NULL, NULL,
 								 NULL, monitor_destroy);
-	
+
 	real_dir = nautilus_desktop_directory_get_real_directory (desktop_directory);
 	real_dir_file = nautilus_directory_get_corresponding_file (real_dir);
 	nautilus_directory_unref (real_dir);
@@ -537,12 +531,13 @@ nautilus_desktop_directory_file_class_init (gpointer klass)
 	
 	object_class->finalize = desktop_finalize;
 
+	file_class->default_file_type = G_FILE_TYPE_DIRECTORY;
+	
 	file_class->monitor_add = desktop_directory_file_monitor_add;
 	file_class->monitor_remove = desktop_directory_file_monitor_remove;
 	file_class->call_when_ready = desktop_directory_file_call_when_ready;
 	file_class->cancel_call_when_ready = desktop_directory_file_cancel_call_when_ready;
 	file_class->check_if_ready = desktop_directory_file_check_if_ready;
-	file_class->get_file_type = desktop_directory_file_get_file_type;
 	file_class->get_item_count = desktop_directory_file_get_item_count;
 	file_class->get_deep_counts = desktop_directory_file_get_deep_counts;
 	file_class->get_date = desktop_directory_file_get_date;

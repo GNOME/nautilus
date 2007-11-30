@@ -40,11 +40,6 @@
 #include <gtk/gtkseparatormenuitem.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>
@@ -216,8 +211,7 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 	 * we should really test each item but that would be slow for large selections
 	 * and currently dropped items can only be from the same container
 	 */
-	GnomeVFSURI *target_uri;
-	GnomeVFSURI *item_uri;
+	GFile *target, *item, *parent;
 	gboolean result;
 
 	/* must have at least one item */
@@ -225,21 +219,17 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 
 	result = FALSE;
 
-	target_uri = gnome_vfs_uri_new (target_uri_string);
+	target = g_file_new_for_uri (target_uri_string);
 
-	if (target_uri != NULL) {
-		/* get the parent URI of the first item in the selection */
-		item_uri = gnome_vfs_uri_new (((NautilusDragSelectionItem *)selection_list->data)->uri);
-		
-		if (item_uri != NULL) {
-			result = gnome_vfs_uri_is_parent (target_uri, item_uri, FALSE);
-			
-			gnome_vfs_uri_unref (item_uri);
-		}
-		
-		gnome_vfs_uri_unref (target_uri);
+	/* get the parent URI of the first item in the selection */
+	item = g_file_new_for_uri (((NautilusDragSelectionItem *)selection_list->data)->uri);
+	parent = g_file_get_parent (item);
+	g_object_unref (item);
+	
+	if (parent != NULL) {
+		result = g_file_equal (parent, target);
+		g_object_unref (parent);
 	}
-		
 	
 	return result;
 }
@@ -252,15 +242,14 @@ nautilus_drag_items_in_trash (const GList *selection_list)
 	 * we should really test each item but that would be slow for large selections
 	 * and currently dropped items can only be from the same container
 	 */
-	return eel_uri_is_in_trash (((NautilusDragSelectionItem *)selection_list->data)->uri);
+	return eel_uri_is_trash (((NautilusDragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean
 nautilus_drag_items_on_desktop (const GList *selection_list)
 {
 	char *uri;
-	GnomeVFSURI *vfs_uri, *desktop_vfs_uri;
-	char *desktop_uri;
+	GFile *desktop, *item, *parent;
 	gboolean result;
 	
 	/* check if the first item on the list is in trash.
@@ -272,16 +261,20 @@ nautilus_drag_items_on_desktop (const GList *selection_list)
 	if (eel_uri_is_desktop (uri)) {
 		return TRUE;
 	}
+	
+	desktop = nautilus_get_desktop_location ();
+	
+	item = g_file_new_for_uri (uri);
+	parent = g_file_get_parent (item);
+	g_object_unref (item);
 
-	vfs_uri = gnome_vfs_uri_new (uri);
-	desktop_uri = nautilus_get_desktop_directory_uri ();
-	desktop_vfs_uri = gnome_vfs_uri_new (desktop_uri);
-	g_free (desktop_uri);
+	result = FALSE;
 	
-	result = gnome_vfs_uri_is_parent (desktop_vfs_uri, vfs_uri, FALSE);
-	
-	gnome_vfs_uri_unref (desktop_vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
+	if (parent) {
+		result = g_file_equal (desktop, parent);
+		g_object_unref (parent);
+	}
+	g_object_unref (desktop);
 	
 	return result;
 	
@@ -303,18 +296,59 @@ nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 	return context->suggested_action;
 }
 
+static gboolean
+check_same_fs (GFile *file1, GFile *file2)
+{
+	GFileInfo *info1, *info2;
+	const char *id1, *id2;
+	gboolean res;
+	
+	info1 = g_file_query_info (file1,
+				   G_FILE_ATTRIBUTE_ID_FS,
+				   0, NULL, NULL);
+
+	if (info1 == NULL) {
+		return FALSE;
+	}
+
+	id1 = g_file_info_get_attribute_string (info1, G_FILE_ATTRIBUTE_ID_FS);
+	if (id1 == NULL) {
+		g_object_unref (info1);
+		return FALSE;
+	}
+	
+	info2 = g_file_query_info (file2,
+				   G_FILE_ATTRIBUTE_ID_FS,
+				   0, NULL, NULL);
+	if (info2 == NULL) {
+		g_object_unref (info1);
+		return FALSE;
+	}
+
+	id2 = g_file_info_get_attribute_string (info2, G_FILE_ATTRIBUTE_ID_FS);
+	if (id2 == NULL) {
+		g_object_unref (info1);
+		g_object_unref (info2);
+		return FALSE;
+	}
+
+	res = strcmp (id1, id2) == 0;
+	
+	g_object_unref (info1);
+	g_object_unref (info2);
+	
+	return res;
+}
 
 void
 nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
-	const char *target_uri_string, const GList *items,
-	int *action)
+					     const char *target_uri_string, const GList *items,
+					     int *action)
 {
 	gboolean same_fs;
 	gboolean target_is_source_parent;
-	GnomeVFSURI *target_uri;
-	GnomeVFSURI *dropped_uri;
+	GFile *target, *dropped;
 	GdkDragAction actions;
-	GnomeVFSResult result;
 
 	if (target_uri_string == NULL) {
 		*action = 0;
@@ -340,20 +374,9 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	 * passed with 700 while creating .Trash directory
 	 */
 	if (eel_uri_is_trash (target_uri_string)) {
-		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-						   &target_uri, TRUE, FALSE, 0);
-		if (result != GNOME_VFS_OK) {
-			*action = 0;
-			return;
-		}
-
 		/* Only move to Trash */
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
-		}
-
-		if (target_uri) {
-			gnome_vfs_uri_unref (target_uri);
 		}
 
 		return;
@@ -365,30 +388,16 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		}
 		return;
 	} else if (eel_uri_is_desktop (target_uri_string)) {
-		char *desktop_uri;
-		desktop_uri = nautilus_get_desktop_directory_uri ();
-		target_uri = gnome_vfs_uri_new (desktop_uri);
-		g_free (desktop_uri);
+		target = nautilus_get_desktop_location ();
 	} else {
-		target_uri = gnome_vfs_uri_new (target_uri_string);
-	}
-
-	if (target_uri == NULL) {
-		*action = 0;
-		return;
+		target = g_file_new_for_uri (target_uri_string);
 	}
 
 	/* Compare the first dropped uri with the target uri for same fs match. */
-	dropped_uri = gnome_vfs_uri_new (((NautilusDragSelectionItem *)items->data)->uri);
-	same_fs = TRUE;
+	dropped = g_file_new_for_uri (((NautilusDragSelectionItem *)items->data)->uri);
+	same_fs = check_same_fs (target, dropped);
 	target_is_source_parent = FALSE;
-
-	if (dropped_uri != NULL) {
-		gnome_vfs_check_same_fs_uris (dropped_uri, target_uri, &same_fs);
-		target_is_source_parent = gnome_vfs_uri_is_parent (target_uri, dropped_uri, FALSE);
-		gnome_vfs_uri_unref (dropped_uri);
-	}
-	gnome_vfs_uri_unref (target_uri);
+	target_is_source_parent = g_file_contains_file (target, dropped);	
 	
 	if (same_fs || target_is_source_parent) {
 		if (actions & GDK_ACTION_MOVE) {
@@ -403,6 +412,10 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*action = context->suggested_action;
 		}
 	}
+
+	g_object_unref (target);
+	g_object_unref (dropped);
+	
 }
 
 /* Encode a "x-special/gnome-icon-list" selection.
@@ -480,7 +493,7 @@ add_one_compatible_uri (const char *uri, int x, int y, int w, int h, gpointer da
 		g_string_append (result, uri);
 		g_string_append (result, "\r\n");
 	} else {
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
+		local_path = g_filename_from_uri (uri, NULL, NULL);
 
 		/* Check for characters that confuse the old
 		 * gnome_uri_list_extract_filenames implementation, and just leave

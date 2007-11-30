@@ -33,9 +33,9 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
+#include <gio/gthemedicon.h>
+#include <gio/gvolumemonitor.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include "nautilus-pathbar.h"
@@ -64,9 +64,9 @@ static gboolean desktop_is_home;
 
 #define NAUTILUS_PATH_BAR_ICON_SIZE 16
 
-#define DEFAULT_ICON 		"gnome-fs-directory"
-#define DEFAULT_DESKTOP_ICON 	"gnome-fs-desktop"
-#define DEFAULT_HOME_ICON 	"gnome-fs-home"
+#define DEFAULT_ICON 		"folder"
+#define DEFAULT_DESKTOP_ICON 	"user-desktop"
+#define DEFAULT_HOME_ICON 	"user-home"
 #define DEFAULT_FILESYSTEM_ICON	"gnome-dev-harddisk"
 
 typedef struct _ButtonData ButtonData;
@@ -76,10 +76,10 @@ struct _ButtonData
         GtkWidget *button;
         ButtonType type;
         char *dir_name;
-        char *path;
+        GFile *path;
 
 	/* custom icon */ 
-	char *custom_icon_name;
+	GdkPixbuf *custom_icon;
 
 	/* flag to indicate its the base folder in the URI */
 	gboolean is_base_dir;
@@ -139,7 +139,7 @@ static void     nautilus_path_bar_update_button_appearance (NautilusPathBar *pat
 							    ButtonData      *button_data,
 							    gboolean         current_dir);
 static gboolean nautilus_path_bar_update_path              (NautilusPathBar *path_bar,
-							    const char      *file_path);
+							    GFile           *file_path);
 
 static GtkWidget *
 get_slider_button (NautilusPathBar  *path_bar,
@@ -164,7 +164,7 @@ static void
 update_button_types (NautilusPathBar *path_bar)
 {
 	GList *list;
-	char *path = NULL;
+	GFile *path = NULL;
 
 	for (list = path_bar->button_list; list; list = list->next) {
 		ButtonData *button_data;
@@ -187,11 +187,11 @@ desktop_location_changed_callback (gpointer user_data)
 	
 	path_bar = NAUTILUS_PATH_BAR (user_data);
 	
-	g_free (path_bar->desktop_path);
-	g_free (path_bar->home_path);
-	path_bar->desktop_path = nautilus_get_desktop_directory_uri ();
-	path_bar->home_path = nautilus_get_home_directory_uri ();
-	desktop_is_home = (strcmp (path_bar->home_path, path_bar->desktop_path) == 0);
+	g_object_unref (path_bar->desktop_path);
+	g_object_unref (path_bar->home_path);
+	path_bar->desktop_path = nautilus_get_desktop_location ();
+	path_bar->home_path = g_file_new_for_path (g_get_home_dir ());
+	desktop_is_home = g_file_equal (path_bar->home_path, path_bar->desktop_path);
 
         if (path_bar->home_icon) {
                 g_object_unref (path_bar->home_icon);
@@ -204,6 +204,8 @@ desktop_location_changed_callback (gpointer user_data)
 static void
 nautilus_path_bar_init (NautilusPathBar *path_bar)
 {
+	char *p;
+	
         GTK_WIDGET_SET_FLAGS (path_bar, GTK_NO_WINDOW);
         gtk_widget_set_redraw_on_allocate (GTK_WIDGET (path_bar), FALSE);
 
@@ -212,10 +214,12 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
         path_bar->down_slider_button = get_slider_button (path_bar, GTK_ARROW_RIGHT);
         path_bar->icon_size = NAUTILUS_PATH_BAR_ICON_SIZE;
 
-        path_bar->desktop_path = nautilus_get_desktop_directory_uri ();
-	path_bar->home_path = nautilus_get_home_directory_uri ();
-	path_bar->root_path = g_strdup ("file:///");
-	desktop_is_home = (strcmp (path_bar->home_path, path_bar->desktop_path) == 0);
+	p = nautilus_get_desktop_directory ();
+	path_bar->desktop_path = g_file_new_for_path (p);
+	g_free (p);
+	path_bar->home_path = g_file_new_for_path (g_get_home_dir ());
+	path_bar->root_path = g_file_new_for_path ("/");
+	desktop_is_home = g_file_equal (path_bar->home_path, path_bar->desktop_path);
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 						  desktop_location_changed_callback,
@@ -267,7 +271,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__STRING,
 		  G_TYPE_NONE, 1,
-		  G_TYPE_STRING);
+		  G_TYPE_FILE);
 }
 
 
@@ -282,15 +286,15 @@ nautilus_path_bar_finalize (GObject *object)
 
         g_list_free (path_bar->button_list);
 	if (path_bar->root_path) {
-		g_free (path_bar->root_path);
+		g_object_unref (path_bar->root_path);
 		path_bar->root_path = NULL;
 	}
 	if (path_bar->home_path) {
-		g_free (path_bar->home_path);
+		g_object_unref (path_bar->home_path);
 		path_bar->home_path = NULL;
 	}
 	if (path_bar->desktop_path) {
-		g_free (path_bar->desktop_path);
+		g_object_unref (path_bar->desktop_path);
 		path_bar->desktop_path = NULL;
 	}
 
@@ -1012,33 +1016,37 @@ button_clicked_cb (GtkWidget *button,
         g_signal_emit (path_bar, path_bar_signals [PATH_CLICKED], 0, button_data->path);
 }
 
-static char *
-get_icon_name_for_file_path (const char *file_path)
+static GdkPixbuf *
+get_icon_for_file_path (GFile *location, const char *default_icon_name)
 {
 	NautilusFile *file;
-	char 	     *icon_name;
+	NautilusIconInfo *info;
+	GdkPixbuf *pixbuf;
 
-	file = nautilus_file_get (file_path);
-	if (!file) {
-		return g_strdup (DEFAULT_ICON);
+	file = nautilus_file_get (location);
+	
+	if (file != NULL &&
+	    nautilus_file_check_if_ready (file,
+					  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
+		info = nautilus_file_get_icon (file, NAUTILUS_PATH_BAR_ICON_SIZE, 0);
+		pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_PATH_BAR_ICON_SIZE);
+		g_object_unref (info);
+		return pixbuf;
 	}
-	icon_name = NULL;
-	if (nautilus_icon_factory_is_icon_ready_for_file (file)) {
-		icon_name = nautilus_icon_factory_get_icon_for_file (file, FALSE);
-	}
-	if (!icon_name) {
-		icon_name = g_strdup (DEFAULT_ICON);
-	}
+
 	nautilus_file_unref (file);
-	return icon_name;
+
+	info = nautilus_icon_info_lookup_from_name (default_icon_name, NAUTILUS_PATH_BAR_ICON_SIZE);
+	pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_PATH_BAR_ICON_SIZE);
+	g_object_unref (info);
+	
+	return pixbuf;
 }
 
 static GdkPixbuf *
 get_button_image (NautilusPathBar *path_bar,
 		  ButtonType  button_type)
 {
-	char *icon_name;
-
 	switch (button_type)
         {
 		case ROOT_BUTTON:
@@ -1046,18 +1054,7 @@ get_button_image (NautilusPathBar *path_bar,
 				return path_bar->root_icon;
                        	}
 
-			icon_name = get_icon_name_for_file_path (path_bar->root_path);
-			if (strcmp (icon_name, DEFAULT_ICON) == 0) {
-			        path_bar->root_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_FILESYSTEM_ICON,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-			} else {
-				path_bar->root_icon = nautilus_icon_factory_get_pixbuf_from_name (icon_name,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-			}
-
-			g_free (icon_name);
+			path_bar->root_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_FILESYSTEM_ICON);
 			return path_bar->root_icon;
 
 		case HOME_BUTTON:
@@ -1065,36 +1062,14 @@ get_button_image (NautilusPathBar *path_bar,
 		      		return path_bar->home_icon;
 			}
 
-			icon_name = get_icon_name_for_file_path (path_bar->home_path);
-			if (strcmp (icon_name, DEFAULT_ICON) == 0) {
-				path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_HOME_ICON,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-			} else {
-				path_bar->home_icon = nautilus_icon_factory_get_pixbuf_from_name (icon_name,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-			}
-
-			g_free (icon_name);
+			path_bar->home_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_HOME_ICON);
 			return path_bar->home_icon;
 
                 case DESKTOP_BUTTON:
                       	if (path_bar->desktop_icon != NULL) {
 				return path_bar->desktop_icon;
 			}
-			icon_name = get_icon_name_for_file_path (path_bar->desktop_path);
-			if (strcmp (icon_name, DEFAULT_ICON) == 0) {
-		      		path_bar->desktop_icon = nautilus_icon_factory_get_pixbuf_from_name (DEFAULT_DESKTOP_ICON,
-											     NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											     TRUE, NULL);
-			} else {
-				path_bar->desktop_icon = nautilus_icon_factory_get_pixbuf_from_name (icon_name,
-											  NULL, NAUTILUS_PATH_BAR_ICON_SIZE,
-											  TRUE, NULL);
-			}
-
-			g_free (icon_name);
+			path_bar->desktop_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_DESKTOP_ICON);
       			return path_bar->desktop_icon;
 
 	    	default:
@@ -1107,10 +1082,10 @@ get_button_image (NautilusPathBar *path_bar,
 static void
 button_data_free (ButtonData *button_data)
 {
-        g_free (button_data->path);
+        g_object_unref (button_data->path);
         g_free (button_data->dir_name);
-	if (button_data->custom_icon_name) {
-		g_free (button_data->custom_icon_name);
+	if (button_data->custom_icon) {
+		g_object_unref (button_data->custom_icon);
 	}
         g_free (button_data);
 }
@@ -1176,8 +1151,8 @@ nautilus_path_bar_update_button_appearance (NautilusPathBar *path_bar,
 		if (button_data->type == VOLUME_BUTTON || (button_data->type == NORMAL_BUTTON && button_data->is_base_dir) ) {
 	
 			/* set custom icon for roots */
-			if (button_data->custom_icon_name) {
-				gtk_image_set_from_icon_name (GTK_IMAGE (button_data->image), button_data->custom_icon_name, GTK_ICON_SIZE_MENU);  
+			if (button_data->custom_icon) {
+				gtk_image_set_from_pixbuf (GTK_IMAGE (button_data->image), button_data->custom_icon);  
 			}
 		} else {
 	                GdkPixbuf *pixbuf;
@@ -1194,65 +1169,47 @@ nautilus_path_bar_update_button_appearance (NautilusPathBar *path_bar,
 }
 
 static gboolean
-is_file_path_equal (const char *file_path_1, const char *file_path_2)
+is_file_path_mounted_volume (GFile *location, ButtonData *button_data)
 {
-	GnomeVFSURI *vfs_uri_1, *vfs_uri_2;
-	gboolean result;
-
-	vfs_uri_1 = gnome_vfs_uri_new (file_path_1);
-	if (vfs_uri_1 == NULL) {
-		return FALSE;
-	}
-
-	vfs_uri_2 = gnome_vfs_uri_new (file_path_2);
-	if (vfs_uri_2 == NULL) {
-		gnome_vfs_uri_unref (vfs_uri_1);
-		return FALSE;
-	}
-
-	result = gnome_vfs_uri_equal (vfs_uri_1, vfs_uri_2);
-
-	gnome_vfs_uri_unref (vfs_uri_1);
-	gnome_vfs_uri_unref (vfs_uri_2);
-	return result;
-}
-
-static gboolean
-is_file_path_mounted_volume (const char *file_path, ButtonData *button_data)
-{
-	GnomeVFSVolumeMonitor *volume_monitor;
+	GVolumeMonitor *volume_monitor;
 	GList 		      *volumes, *l;
-	GnomeVFSVolume 	      *volume;
+	GVolume 	      *volume;
 	gboolean	       result;
-	char		      *mount_uri;
+	GIcon *icon;
+	NautilusIconInfo *info;
+	GFile *root;
 
 	result = FALSE;
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+	volume_monitor = g_volume_monitor_get ();
+	volumes = g_volume_monitor_get_mounted_volumes (volume_monitor);
 	for (l = volumes; l != NULL; l = l->next) {
 		volume = l->data;
-		if (result || !gnome_vfs_volume_is_user_visible (volume)) {
-			gnome_vfs_volume_unref (volume);
+		if (result) {
+			g_object_unref (volume);
 			continue;
 		}
-		mount_uri = gnome_vfs_volume_get_activation_uri (volume);
-		if (is_file_path_equal (file_path, mount_uri)) {
+		root = g_volume_get_root (volume);
+		if (g_file_equal (location, root)) {
 			result = TRUE;
 			/* set volume specific details in button_data */
 			if (button_data) {
-				button_data->custom_icon_name = gnome_vfs_volume_get_icon (volume);
-				if (!button_data->custom_icon_name) {
-					button_data->custom_icon_name = g_strdup (DEFAULT_ICON);
+				icon = g_volume_get_icon (volume);
+				if (icon == NULL) {
+					icon = g_themed_icon_new (DEFAULT_ICON);
 				}
-				button_data->path = g_strdup (mount_uri);
-				button_data->dir_name = gnome_vfs_volume_get_display_name (volume);
+				info = nautilus_icon_info_lookup (icon, NAUTILUS_PATH_BAR_ICON_SIZE);
+				g_object_unref (icon);
+				button_data->custom_icon = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_PATH_BAR_ICON_SIZE);
+				g_object_unref (info);
+				button_data->path = g_object_ref (location);
+				button_data->dir_name = g_volume_get_name (volume);
 			}
-			gnome_vfs_volume_unref (volume);
-			g_free (mount_uri);
+			g_object_unref (volume);
+			g_object_unref (root);
 			continue;
 		}
-		gnome_vfs_volume_unref (volume);
-		g_free (mount_uri);
+		g_object_unref (volume);
+		g_object_unref (root);
 	}
 	g_list_free (volumes);
 	return result;
@@ -1260,25 +1217,25 @@ is_file_path_mounted_volume (const char *file_path, ButtonData *button_data)
 
 static ButtonType
 find_button_type (NautilusPathBar  *path_bar,
-		  const char       *path,
+		  GFile *location,
 		  ButtonData       *button_data)
 {
 
 
-        if (path_bar->root_path != NULL && is_file_path_equal (path, path_bar->root_path)) {
+        if (path_bar->root_path != NULL && g_file_equal (location, path_bar->root_path)) {
                 return ROOT_BUTTON;
 	}
-        if (path_bar->home_path != NULL && is_file_path_equal (path, path_bar->home_path)) {
+        if (path_bar->home_path != NULL && g_file_equal (location, path_bar->home_path)) {
 	       	return HOME_BUTTON;
 	}
-        if (path_bar->desktop_path != NULL && is_file_path_equal (path, path_bar->desktop_path)) {
+        if (path_bar->desktop_path != NULL && g_file_equal (location, path_bar->desktop_path)) {
 		if (!desktop_is_home) {
                 	return DESKTOP_BUTTON;
 		} else {
 			return NORMAL_BUTTON;
 		}
 	}
-	if (is_file_path_mounted_volume (path, button_data)) {
+	if (is_file_path_mounted_volume (location, button_data)) {
 		return VOLUME_BUTTON;
 	}	
 
@@ -1295,9 +1252,12 @@ button_drag_data_get_cb (GtkWidget          *widget,
 {
         ButtonData *button_data;
         char *uri_list;
+	char *uri;
 
         button_data = data;
-        uri_list = g_strconcat (button_data->path, "\r\n", NULL);
+	uri = g_file_get_uri (button_data->path);
+        uri_list = g_strconcat (uri, "\r\n", NULL);
+	g_free (uri);
         gtk_selection_data_set (selection_data,
 			  	selection_data->target,
 			  	8,
@@ -1309,7 +1269,7 @@ button_drag_data_get_cb (GtkWidget          *widget,
 static ButtonData *
 make_directory_button (NautilusPathBar  *path_bar,
 		       const char       *dir_name,
-		       const char       *path,
+		       GFile            *path,
 		       gboolean          current_dir,
 		       gboolean          base_dir,	
 		       gboolean          file_is_hidden)
@@ -1361,7 +1321,7 @@ make_directory_button (NautilusPathBar  *path_bar,
         	                gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
         	                gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
 				button_data->is_base_dir = TRUE;
-				button_data->custom_icon_name = get_icon_name_for_file_path (path);
+				button_data->custom_icon = get_icon_for_file_path (path, DEFAULT_ICON);
 			} else {
 				button_data->is_base_dir = FALSE;
 	      			button_data->label = gtk_label_new (NULL);
@@ -1385,7 +1345,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 	/* do not set these for volumes */
 	if (button_data->type != VOLUME_BUTTON) {
 		button_data->dir_name = g_strdup (dir_name);
-        	button_data->path = g_strdup (path);
+        	button_data->path = g_object_ref (path);
 	}
 
         button_data->file_is_hidden = file_is_hidden;
@@ -1410,7 +1370,7 @@ make_directory_button (NautilusPathBar  *path_bar,
 
 static gboolean
 nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
-				     const char  *file_path)
+				     GFile *location)
 {
         GList *list;
         GList *current_path;
@@ -1423,7 +1383,7 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
                 ButtonData *button_data;
 
                 button_data = list->data;
-                if (is_file_path_equal (file_path, button_data->path)) {
+                if (g_file_equal (location, button_data->path)) {
 			current_path = list;
 		  	break;
 		}
@@ -1464,55 +1424,36 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
 }
 
 static char *
-get_parent_directory (const char *file_path) 
+get_display_name_for_folder (GFile *location)
 {
-	GnomeVFSURI *vfs_uri, *parent_vfs_uri;
-	char *parent_directory;
-
-
-	vfs_uri = gnome_vfs_uri_new (file_path);
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-
-	parent_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
-	if (parent_vfs_uri == NULL) {
-		return NULL;
-	}
-
-	parent_directory = gnome_vfs_uri_to_string (parent_vfs_uri,
-		  				    GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (parent_vfs_uri);
-	return parent_directory;
-
-}
-
-
-static char *
-get_display_name_for_folder (const char *file_path)
-{
-	GnomeVFSURI *vfs_uri;
-	NautilusFile *file;
+	GFileInfo *info;
 	char *name;
 
-	vfs_uri = gnome_vfs_uri_new (file_path);
- 	if (vfs_uri == NULL) {
-		file = nautilus_file_get (file_path);
-		name = nautilus_file_get_display_name (file);
-		nautilus_file_unref (file);
-		return name;
+	/* This does sync i/o, which isn't ideal.
+	 * It should probably use the NautilusFile machinery
+	 */
+	
+	name = NULL;
+	info = g_file_query_info (location,
+				  G_FILE_ATTRIBUTE_STD_DISPLAY_NAME,
+				  0, NULL, NULL);
+	if (info) {
+		name = g_strdup (g_file_info_get_display_name (info));
+		g_object_unref (info);
 	}
-	name = nautilus_get_uri_shortname_for_display (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);	
+
+	if (name == NULL) {
+		name = g_file_get_basename (location);
+	}
 	return name;
 }
 
 
 static gboolean
-nautilus_path_bar_update_path (NautilusPathBar *path_bar, const char *file_path)
+nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 {
-        char *path, *parent_path, *name;
+        GFile *path, *parent_path;
+	char *name;
         gboolean first_directory, last_directory;
         gboolean result;
         GList *new_buttons, *l, *fake_root;
@@ -1529,17 +1470,17 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, const char *file_path)
 	last_directory = FALSE;
 	new_buttons = NULL;
 
-        path = g_strdup (file_path);
+        path = g_object_ref (file_path);
 
         gtk_widget_push_composite_child ();
 
         while (path != NULL) {
 
-                parent_path = get_parent_directory (path);
+                parent_path = g_file_get_parent (path);
                 name = get_display_name_for_folder (path);	
 		last_directory = !parent_path;
                 button_data = make_directory_button (path_bar, name, path, first_directory, last_directory, FALSE);
-                g_free (path);
+                g_object_unref (path);
 		g_free (name);
 
                 new_buttons = g_list_prepend (new_buttons, button_data);
@@ -1568,7 +1509,7 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, const char *file_path)
 }
 
 gboolean
-nautilus_path_bar_set_path (NautilusPathBar *path_bar, const char *file_path)
+nautilus_path_bar_set_path (NautilusPathBar *path_bar, GFile *file_path)
 {
         g_return_val_if_fail (NAUTILUS_IS_PATH_BAR (path_bar), FALSE);
         g_return_val_if_fail (file_path != NULL, FALSE);

@@ -33,7 +33,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
@@ -479,8 +478,8 @@ update_desktop_directory (NautilusDesktopDirectory *desktop)
 	}
 
 	desktop_path = nautilus_get_desktop_directory ();
-	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
-	real_directory = nautilus_directory_get (desktop_uri);
+	desktop_uri = g_filename_to_uri (desktop_path, NULL, NULL);
+	real_directory = nautilus_directory_get_by_uri (desktop_uri);
 	g_free (desktop_uri);
 	g_free (desktop_path);
 

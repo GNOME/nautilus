@@ -34,13 +34,10 @@
 #include "nautilus-signaller.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-debug.h>
 #include <libgnome/gnome-util.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <gio/gfilemonitor.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -57,72 +54,28 @@ static void desktop_dir_changed (void);
 
 
 char *
-nautilus_compute_title_for_uri (const char *text_uri)
+nautilus_compute_title_for_location (GFile *location)
 {
 	NautilusFile *file;
-	GnomeVFSURI *uri;
-	char *title, *displayname;
-	const char *hostname;
-	NautilusDirectory *directory;
-	NautilusQuery *query;
-	hostname = NULL;
+	char *title;
 
-	if (text_uri) {
-		if (eel_uri_is_search (text_uri)) {
-			directory = nautilus_directory_get (text_uri);
-			
-			query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-			nautilus_directory_unref (directory);
-			
-			if (query != NULL) {
-				title = nautilus_query_to_readable_string (query);
-				g_object_unref (query);
-			} else {
-				title = g_strdup (_("Search"));
-			}
-
-			return title;
-		}
-		file = nautilus_file_get (text_uri);
-		uri = gnome_vfs_uri_new (text_uri);
-		if (uri && strcmp (uri->method_string, "file") != 0) {
-			hostname = gnome_vfs_uri_get_host_name (uri);
-		}
-		displayname = nautilus_file_get_display_name (file);
-		if (hostname) {
-			title = g_strdup_printf (_("%s on %s"), displayname, hostname);
-			g_free (displayname);
-		} else {
-			title = displayname;
-		}
-		if (uri) {
-			gnome_vfs_uri_unref (uri);
-		}
+	/* TODO-gio: This doesn't really work all that great if the
+	   info about the file isn't known atm... */
+	
+	title = NULL;
+	if (location) {
+		file = nautilus_file_get (location);
+		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);
-	} else {
+	}
+
+	if (title == NULL) {
 		title = g_strdup ("");
 	}
 	
 	return title;
 }
 
-
-gboolean
-nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
-{
-	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
-
-	return name_or_relative_uri[0] == '.';
-}
-
-gboolean
-nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
-{
-	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
-
-	return g_str_has_suffix (name_or_relative_uri, "~") &&
-	       !g_str_equal (name_or_relative_uri, "~");
-}
 
 /**
  * nautilus_get_user_directory:
@@ -259,21 +212,19 @@ parse_xdg_dirs (const char *config_file)
 }
 
 static XdgDirEntry *cached_xdg_dirs = NULL;
-static GnomeVFSMonitorHandle *cached_xdg_dirs_handle = NULL;
+static GFileMonitor *cached_xdg_dirs_monitor = NULL;
 
 static void
 xdg_dir_changed (NautilusFile *file,
 		 XdgDirEntry *dir)
 {
-	char *file_uri;
-	char *dir_uri;
+	GFile *location, *dir_location;
 	char *path;
-	
-	file_uri = nautilus_file_get_uri (file);
-	dir_uri = gnome_vfs_get_uri_from_local_path (dir->path);
-	if (file_uri && dir_uri &&
-	    !gnome_vfs_uris_match (dir_uri, file_uri)) {
-		path = gnome_vfs_get_local_path_from_uri (file_uri);
+
+	location = nautilus_file_get_location (file);
+	dir_location = g_file_new_for_path (dir->path);
+	if (!g_file_equal (location, dir_location)) {
+		path = g_file_get_path (location);
 
 		if (path) {
 			char *argv[5];
@@ -304,19 +255,18 @@ xdg_dir_changed (NautilusFile *file,
 			desktop_dir_changed ();
 		}
 	}
-	g_free (file_uri);
-	g_free (dir_uri);
+	g_object_unref (location);
+	g_object_unref (dir_location);
 }
 
 static void 
-xdg_dir_cache_changed_cb (GnomeVFSMonitorHandle    *handle,
-			  const gchar              *monitor_uri,
-			  const gchar              *info_uri,
-			  GnomeVFSMonitorEventType  event_type,
-			  gpointer                  user_data)
+xdg_dir_cache_changed_cb (GFileMonitor  *monitor,
+			  GFile *file,
+			  GFile *other_file,
+			  GFileMonitorEvent event_type)
 {
-	if (event_type == GNOME_VFS_MONITOR_EVENT_CHANGED ||
-	    event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
+	if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
+	    event_type == G_FILE_MONITOR_EVENT_CREATED) {
 		update_xdg_dir_cache ();
 	}
 }
@@ -378,15 +328,16 @@ destroy_xdg_dir_cache (void)
 	unschedule_user_dirs_changed ();
 	desktop_dir_changed ();
 
-	if (cached_xdg_dirs_handle != NULL) {
-		gnome_vfs_monitor_cancel (cached_xdg_dirs_handle);
-		cached_xdg_dirs_handle = NULL;
+	if (cached_xdg_dirs_monitor != NULL) {
+		g_object_unref  (cached_xdg_dirs_monitor);
+		cached_xdg_dirs_monitor = NULL;
 	}
 }
 
 static void
 update_xdg_dir_cache (void)
 {
+	GFile *file;
 	char *config_file, *uri;
 	int i;
 
@@ -399,27 +350,25 @@ update_xdg_dir_cache (void)
 	for (i = 0 ; cached_xdg_dirs[i].type != NULL; i++) {
 		cached_xdg_dirs[i].file = NULL;
 		if (strcmp (cached_xdg_dirs[i].path, g_get_home_dir ()) != 0) {
-			uri = gnome_vfs_get_uri_from_local_path (cached_xdg_dirs[i].path);
-			cached_xdg_dirs[i].file = nautilus_file_get (uri);
+			uri = g_filename_to_uri (cached_xdg_dirs[i].path, NULL, NULL);
+			cached_xdg_dirs[i].file = nautilus_file_get_by_uri (uri);
 			nautilus_file_monitor_add (cached_xdg_dirs[i].file,
 						   &cached_xdg_dirs[i],
-						   NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
+						   NAUTILUS_FILE_ATTRIBUTE_INFO);
 			g_signal_connect (cached_xdg_dirs[i].file,
 					  "changed", G_CALLBACK (xdg_dir_changed), &cached_xdg_dirs[i]);
 			g_free (uri);
 		}
 	}
 
-	if (cached_xdg_dirs_handle == NULL) {
+	if (cached_xdg_dirs_monitor == NULL) {
 		config_file = g_build_filename (g_get_user_config_dir (),
 						     "user-dirs.dirs", NULL);
-		uri = gnome_vfs_get_uri_from_local_path (config_file);
-		gnome_vfs_monitor_add (&cached_xdg_dirs_handle,
-				       uri,
-				       GNOME_VFS_MONITOR_FILE,
-				       xdg_dir_cache_changed_cb,
-				       NULL);
-		g_free (uri);
+		file = g_file_new_for_path (config_file);
+		cached_xdg_dirs_monitor = g_file_monitor_file (file, 0, NULL);
+		g_signal_connect (cached_xdg_dirs_monitor, "changed",
+				  G_CALLBACK (xdg_dir_cache_changed_cb), NULL);
+		g_object_unref (file);
 		g_free (config_file);
 
 		eel_debug_call_at_shutdown (destroy_xdg_dir_cache); 
@@ -491,6 +440,19 @@ nautilus_get_desktop_directory (void)
 	return desktop_directory;
 }
 
+GFile *
+nautilus_get_desktop_location (void)
+{
+	char *desktop_directory;
+	GFile *res;
+	
+	desktop_directory = get_desktop_path ();
+
+	res = g_file_new_for_path (desktop_directory);
+	g_free (desktop_directory);
+	return res;
+}
+
 
 /**
  * nautilus_get_desktop_directory_uri:
@@ -506,7 +468,7 @@ nautilus_get_desktop_directory_uri (void)
 	char *desktop_uri;
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	desktop_uri = g_filename_to_uri (desktop_path, NULL, NULL);
 	g_free (desktop_path);
 
 	return desktop_uri;
@@ -519,7 +481,7 @@ nautilus_get_desktop_directory_uri_no_create (void)
 	char *desktop_uri;
 	
 	desktop_path = get_desktop_path ();
-	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	desktop_uri = g_filename_to_uri (desktop_path, NULL, NULL);
 	g_free (desktop_path);
 
 	return desktop_uri;
@@ -528,7 +490,7 @@ nautilus_get_desktop_directory_uri_no_create (void)
 char *
 nautilus_get_home_directory_uri (void)
 {
-	return  gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	return  g_filename_to_uri (g_get_home_dir (), NULL, NULL);
 }
 
 
@@ -568,7 +530,7 @@ nautilus_get_templates_directory_uri (void)
 	char *directory, *uri;
 
 	directory = nautilus_get_templates_directory ();
-	uri = gnome_vfs_get_uri_from_local_path (directory);
+	uri = g_filename_to_uri (directory, NULL, NULL);
 	g_free (directory);
 	return uri;
 }
@@ -590,21 +552,25 @@ nautilus_get_searches_directory (void)
 }
 
 /* These need to be reset to NULL when desktop_is_home_dir changes */
-static char *escaped_desktop_dir = NULL;
-static char *escaped_desktop_dir_dirname = NULL;
-static char *escaped_desktop_dir_filename = NULL;
+static GFile *desktop_dir = NULL;
+static GFile *desktop_dir_dir = NULL;
+static char *desktop_dir_filename = NULL;
 static gboolean desktop_dir_changed_callback_installed = FALSE;
 
 
 static void
 desktop_dir_changed (void)
 {
-	g_free (escaped_desktop_dir);
-	g_free (escaped_desktop_dir_filename);
-	g_free (escaped_desktop_dir_dirname);
-	escaped_desktop_dir = NULL;
-	escaped_desktop_dir_dirname = NULL;
-	escaped_desktop_dir_filename = NULL;
+	if (desktop_dir) {
+		g_object_unref (desktop_dir);
+	}
+	if (desktop_dir_dir) {
+		g_object_unref (desktop_dir_dir);
+	}
+	g_free (desktop_dir_filename);
+	desktop_dir = NULL;
+	desktop_dir_dir = NULL;
+	desktop_dir_filename = NULL;
 }
 
 static void
@@ -616,49 +582,66 @@ desktop_dir_changed_callback (gpointer callback_data)
 static void
 update_desktop_dir (void)
 {
-	char *uri, *path;
-	GnomeVFSURI *vfs_uri;
+	char *path;
+	char *dirname;
 
 	path = get_desktop_path ();
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	vfs_uri = gnome_vfs_uri_new (uri);
+	desktop_dir = g_file_new_for_path (path);
+	
+	dirname = g_path_get_dirname (path);
+	desktop_dir_dir = g_file_new_for_path (dirname);
+	g_free (dirname);
+	desktop_dir_filename = g_path_get_basename (path);
 	g_free (path);
-	g_free (uri);
-	
-	escaped_desktop_dir = g_strdup (vfs_uri->text);
-	escaped_desktop_dir_filename = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-	escaped_desktop_dir_dirname = gnome_vfs_uri_extract_dirname (vfs_uri);
-	
-	gnome_vfs_uri_unref (vfs_uri);
 }
 
 gboolean
-nautilus_is_home_directory_file_escaped (char *escaped_dirname,
-					 char *escaped_file)
+nautilus_is_home_directory_file (GFile *dir,
+				 const char *filename)
 {
-	static char *escaped_home_dir_dirname = NULL;
-	static char *escaped_home_dir_filename = NULL;
-	char *uri;
-	GnomeVFSURI *vfs_uri;
+	char *dirname;
+	static GFile *home_dir_dir = NULL;
+	static char *home_dir_filename = NULL;
 	
-	if (escaped_home_dir_dirname == NULL) {
-		uri = nautilus_get_home_directory_uri ();
-		vfs_uri = gnome_vfs_uri_new (uri);
-		g_free (uri);
-
-		escaped_home_dir_filename = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-		escaped_home_dir_dirname = gnome_vfs_uri_extract_dirname (vfs_uri);
-
-		gnome_vfs_uri_unref (vfs_uri);
+	if (home_dir_dir == NULL) {
+		dirname = g_path_get_dirname (g_get_home_dir ());
+		home_dir_dir = g_file_new_for_path (dirname);
+		g_free (dirname);
+		home_dir_filename = g_path_get_basename (g_get_home_dir ());
 	}
 
-	return (strcmp (escaped_dirname, escaped_home_dir_dirname) == 0 &&
-		strcmp (escaped_file, escaped_home_dir_filename) == 0);
+	return (g_file_equal (dir, home_dir_dir) &&
+		strcmp (filename, home_dir_filename) == 0);
 }
-					 
+
 gboolean
-nautilus_is_desktop_directory_file_escaped (char *escaped_dirname,
-					    char *escaped_file)
+nautilus_is_home_directory (GFile *dir)
+{
+	static GFile *home_dir = NULL;
+	
+	if (home_dir == NULL) {
+		home_dir = g_file_new_for_path (g_get_home_dir ());
+	}
+
+	return g_file_equal (dir, home_dir);
+}
+
+gboolean
+nautilus_is_root_directory (GFile *dir)
+{
+	static GFile *root_dir = NULL;
+	
+	if (root_dir == NULL) {
+		root_dir = g_file_new_for_path ("/");
+	}
+
+	return g_file_equal (dir, root_dir);
+}
+		
+		
+gboolean
+nautilus_is_desktop_directory_file (GFile *dir,
+				    const char *file)
 {
 
 	if (!desktop_dir_changed_callback_installed) {
@@ -668,16 +651,16 @@ nautilus_is_desktop_directory_file_escaped (char *escaped_dirname,
 		desktop_dir_changed_callback_installed = TRUE;
 	}
 		
-	if (escaped_desktop_dir == NULL) {
+	if (desktop_dir == NULL) {
 		update_desktop_dir ();
 	}
 
-	return (strcmp (escaped_dirname, escaped_desktop_dir_dirname) == 0 &&
-		strcmp (escaped_file, escaped_desktop_dir_filename) == 0);
+	return (g_file_equal (dir, desktop_dir_dir) &&
+		strcmp (file, desktop_dir_filename) == 0);
 }
 
 gboolean
-nautilus_is_desktop_directory_escaped (char *escaped_dir)
+nautilus_is_desktop_directory (GFile *dir)
 {
 
 	if (!desktop_dir_changed_callback_installed) {
@@ -687,11 +670,11 @@ nautilus_is_desktop_directory_escaped (char *escaped_dir)
 		desktop_dir_changed_callback_installed = TRUE;
 	}
 		
-	if (escaped_desktop_dir == NULL) {
+	if (desktop_dir == NULL) {
 		update_desktop_dir ();
 	}
 
-	return strcmp (escaped_dir, escaped_desktop_dir) == 0;
+	return g_file_equal (dir, desktop_dir);
 }
 
 
@@ -768,67 +751,52 @@ nautilus_get_data_file_path (const char *partial_path)
 	return NULL;
 }
 
-/**
- * < 0  invalid URI
- * == 0 no
- * > 0  yes
- **/
-static int
-test_uri_exists (const char *path)
-{
-	GnomeVFSURI *uri;
-	gboolean exists;
-
-	uri = gnome_vfs_uri_new (path);
-	if (uri == NULL) {
-		return -1;
-	} else {
-		exists = gnome_vfs_uri_exists (uri);
-		gnome_vfs_uri_unref (uri);
-
-		return exists ? 1 : 0;
-	}
-}
-
 char *
 nautilus_ensure_unique_file_name (const char *directory_uri,
 				  const char *base_name,
 				  const char *extension)
 {
-	char *path, *escaped_name;
-	int exists;
+	GFileInfo *info;
+	char *filename;
+	GFile *dir, *child;
 	int copy;
+	char *res;
 
-	escaped_name = gnome_vfs_escape_string (base_name);
+	dir = g_file_new_for_uri (directory_uri);
 
-	path = g_strdup_printf ("%s/%s%s",
-				directory_uri,
-				escaped_name,
-				extension);
-	exists = test_uri_exists (path);
+	info = g_file_query_info (dir, G_FILE_ATTRIBUTE_STD_TYPE, 0, NULL, NULL);
+	if (info == NULL) {
+		g_object_unref (dir);
+		return NULL;
+	}
+	g_object_unref (info);
 
+	filename = g_strdup_printf ("%s%s",
+				    base_name,
+				    extension);
+	child = g_file_get_child (dir, filename);
+	g_free (filename);
+	
 	copy = 1;
-	while (exists > 0) {
-		g_free (path);
-		path = g_strdup_printf ("%s/%s-%d%s",
-					directory_uri,
-					escaped_name,
-					copy,
-					extension);
-
-		exists = test_uri_exists (path);
-
+	while ((info = g_file_query_info (child, G_FILE_ATTRIBUTE_STD_TYPE, 0, NULL, NULL)) != NULL) {
+		g_object_unref (info);
+		g_object_unref (child);
+		
+		filename = g_strdup_printf ("%s-%d%s",
+					    base_name,
+					    copy,
+					    extension);
+		child = g_file_get_child (dir, filename);
+		g_free (filename);
+		
 		copy++;
 	}
 
-	g_free (escaped_name);
-
-	if (exists < 0) {
-		g_free (path);
-		path = NULL;
-	}
-
-	return path;
+	res = g_file_get_uri (child);
+	g_object_unref (child);
+	g_object_unref (dir);
+	
+	return res;
 }
 
 char *
@@ -851,101 +819,29 @@ nautilus_unique_temporary_file_name (void)
 	return file_name;
 }
 
-char *
-nautilus_find_existing_uri_in_hierarchy (const char *uri)
+GFile *
+nautilus_find_existing_uri_in_hierarchy (GFile *location)
 {
-	GnomeVFSURI *vfs_uri, *parent_vfs_uri;
-	char *ret = NULL;
+	GFileInfo *info;
+	GFile *tmp;
 
-	g_assert (uri != NULL);
+	g_assert (location != NULL);
 
-	vfs_uri = gnome_vfs_uri_new (uri);
-
-	while (vfs_uri != NULL) {
-		if (gnome_vfs_uri_exists (vfs_uri)) {
-			ret = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
-			break;
+	location = g_object_ref (location);
+	while (location != NULL) {
+		info = g_file_query_info (location,
+					  "std:name",
+					  0, NULL, NULL);
+		g_object_unref (info);
+		if (info != NULL) {
+			return location;
 		}
-
-		parent_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
-		gnome_vfs_uri_unref (vfs_uri);
-		vfs_uri = parent_vfs_uri;
+		tmp = location;
+		location = g_file_get_parent (location);
+		g_object_unref (tmp);
 	}
-
-	return ret;
-}
-
-const char *
-nautilus_get_vfs_method_display_name (char *method)
-{
-	if (g_ascii_strcasecmp (method, "computer") == 0 ) {
-		return _("Computer");
-	} else if (g_ascii_strcasecmp (method, "network") == 0 ) {
-		return _("Network");
-	} else if (g_ascii_strcasecmp (method, "fonts") == 0 ) {
-		return _("Fonts");
-	} else if (g_ascii_strcasecmp (method, "themes") == 0 ) {
-		return _("Themes");
-	} else if (g_ascii_strcasecmp (method, "burn") == 0 ) {
-		return _("CD/DVD Creator");
-	} else if (g_ascii_strcasecmp (method, "smb") == 0 ) {
-		return _("Windows Network");
-	} else if (g_ascii_strcasecmp (method, "dns-sd") == 0 ) {
-		/* translators: this is the title of the "dns-sd:///" location */
-		return _("Services in");
-	}
-	return NULL;
-}
-
-char *
-nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
-{
-	char *utf8_name, *name, *tmp;
-	char *text_uri, *local_file;
-	gboolean validated;
-	const char *method;
-
 	
-	validated = FALSE;
-	name = gnome_vfs_uri_extract_short_name (uri);
-	if (name == NULL) {
-		name = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
-	} else if (g_ascii_strcasecmp (uri->method_string, "file") == 0) {
-		text_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
-		local_file = gnome_vfs_get_local_path_from_uri (text_uri);
-		g_free (name);
-		if (local_file == NULL) { /* Happens for e.g. file:///# */
-			local_file = g_strdup ("/");
-		}
-		name = g_filename_display_basename (local_file);
-		g_free (local_file);
-		g_free (text_uri);
-		validated = TRUE;
-	} else if (!gnome_vfs_uri_has_parent (uri)) {
-		/* Special-case the display name for roots that are not local files */
-		method = nautilus_get_vfs_method_display_name (uri->method_string);
-		if (method == NULL) {
-			method = uri->method_string;
-		}
-		
-		if (name == NULL ||
-		    strcmp (name, GNOME_VFS_URI_PATH_STR) == 0) {
-			g_free (name);
-			name = g_strdup (method);
-		} else {
-			tmp = name;
-			name = g_strdup_printf ("%s: %s", method, name);
-			g_free (tmp);
-		}
-	}
-
-	if (!validated && !g_utf8_validate (name, -1, NULL)) {
-		utf8_name = eel_make_valid_utf8 (name);
-		g_free (name);
-		name = utf8_name;
-	}
-
-	return name;
+	return location;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

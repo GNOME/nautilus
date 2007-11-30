@@ -30,7 +30,6 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-icon-factory.h"
 #include "nautilus-icon-private.h"
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
@@ -45,10 +44,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gdk/gdk.h>
-#include <libart_lgpl/art_rgb.h>
-#include <libart_lgpl/art_rgb_affine.h>
-#include <libart_lgpl/art_rgb_rgba_affine.h>
-#include <libart_lgpl/art_svp_vpath.h>
 #include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
 #include <eel/eel-canvas-util.h>
@@ -77,7 +72,8 @@ struct NautilusIconCanvasItemDetails {
 	GList *emblem_pixbufs;
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
-	NautilusEmblemAttachPoints *attach_points;
+	GdkPoint *attach_points;
+	int n_attach_points;
 	
 	/* Size of the text at current font. */
 	int text_dx;
@@ -115,11 +111,11 @@ struct NautilusIconCanvasItemDetails {
 	PangoLayout *embedded_text_layout;
 
 	/* Cached rectangle in canvas coordinates */
-	ArtIRect canvas_rect;
-	ArtIRect text_rect;
-	ArtIRect emblem_rect;
+	EelIRect canvas_rect;
+	EelIRect text_rect;
+	EelIRect emblem_rect;
 
-	ArtIRect bounds_cache;
+	EelIRect bounds_cache;
 	
 	/* Accessibility bits */
 	GailTextUtil *text_util;
@@ -161,7 +157,7 @@ typedef struct {
 
 typedef struct {
 	NautilusIconCanvasItem *icon_item;
-	ArtIRect icon_rect;
+	EelIRect icon_rect;
 	RectangleSide side;
 	int position;
 	int index;
@@ -178,21 +174,21 @@ static void     nautilus_icon_canvas_item_init       (NautilusIconCanvasItem    
 static void     draw_or_measure_label_text           (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
 						      gboolean                       create_mask,
-						      ArtIRect                       icon_rect);
+						      EelIRect                       icon_rect);
 static void     draw_label_text                      (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
 						      gboolean                       create_mask,
-						      ArtIRect                       icon_rect);
+						      EelIRect                       icon_rect);
 static void     measure_label_text                   (NautilusIconCanvasItem        *item);
 static void     get_icon_canvas_rectangle            (NautilusIconCanvasItem        *item,
-						      ArtIRect                      *rect);
+						      EelIRect                      *rect);
 static void     emblem_layout_reset                  (EmblemLayout                  *layout,
 						      NautilusIconCanvasItem        *icon_item,
-						      ArtIRect                       icon_rect,
+						      EelIRect                       icon_rect,
 						      gboolean			     is_rtl);
 static gboolean emblem_layout_next                   (EmblemLayout                  *layout,
 						      GdkPixbuf                    **emblem_pixbuf,
-						      ArtIRect                      *emblem_rect,
+						      EelIRect                      *emblem_rect,
 						      gboolean			     is_rtl);
 static void     draw_pixbuf                          (GdkPixbuf                     *pixbuf,
 						      GdkDrawable                   *drawable,
@@ -210,7 +206,7 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      int                            y,
 						      GdkGC                         *gc);
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
-						      ArtIRect                       canvas_rect,
+						      EelIRect                       canvas_rect,
 						      GtkCornerType *corner);
 static void      draw_embedded_text                  (NautilusIconCanvasItem        *icon_item,
 						      GdkDrawable                   *drawable,
@@ -467,8 +463,8 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	GdkGC *gc;
 	int width, height;
 	int item_offset_x, item_offset_y;
-	ArtIRect icon_rect;
-	ArtIRect emblem_rect;
+	EelIRect icon_rect;
+	EelIRect emblem_rect;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *emblem_pixbuf;
 	EmblemLayout emblem_layout;
@@ -635,14 +631,16 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 
 void 
 nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
-					     NautilusEmblemAttachPoints *attach_points)
+					     GdkPoint *attach_points,
+					     int n_attach_points)
 {
 	g_free (item->details->attach_points);
 	item->details->attach_points = NULL;
+	item->details->n_attach_points = 0;
 
-	if (attach_points != NULL && attach_points->num_points != 0) {
-		item->details->attach_points = g_new (NautilusEmblemAttachPoints, 1);
-		*item->details->attach_points = *attach_points;
+	if (attach_points != NULL && n_attach_points != 0) {
+		item->details->attach_points = g_memdup (attach_points, n_attach_points * sizeof (GdkPoint));
+		item->details->n_attach_points = n_attach_points;
 	}
 	
 	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
@@ -691,7 +689,7 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 	 */
 
 	EelCanvasItem *item;
-	ArtPoint top_left, bottom_right;
+	EelDPoint top_left, bottom_right;
 
 	item = EEL_CANVAS_ITEM (icon_item);
 
@@ -711,12 +709,12 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 			  &item->x2, &item->y2);
 }
 
-static ArtIRect
+static EelIRect
 compute_text_rectangle (const NautilusIconCanvasItem *item,
-			ArtIRect icon_rectangle,
+			EelIRect icon_rectangle,
 			gboolean canvas_coords)
 {
-	ArtIRect text_rectangle;
+	EelIRect text_rectangle;
 	double pixels_per_unit;
 	double text_width, text_height, text_dx;
 
@@ -751,12 +749,12 @@ compute_text_rectangle (const NautilusIconCanvasItem *item,
 	return text_rectangle;
 }
 
-static ArtIRect
+static EelIRect
 get_current_canvas_bounds (EelCanvasItem *item)
 {
-	ArtIRect bounds;
+	EelIRect bounds;
 
-	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), eel_art_irect_empty);
+	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), eel_irect_empty);
 
 	bounds.x0 = item->x1;
 	bounds.y0 = item->y1;
@@ -770,7 +768,7 @@ void
 nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 					 double i2w_dx, double i2w_dy)
 {
-	ArtIRect before, after, emblem_rect;
+	EelIRect before, after, emblem_rect;
 	EmblemLayout emblem_layout;
 	EelCanvasItem *canvas_item;
 	GdkPixbuf *emblem_pixbuf;
@@ -784,7 +782,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	after = get_current_canvas_bounds (canvas_item);
 
 	/* If the bounds didn't change, we are done. */
-	if (eel_art_irect_equal (before, after)) {
+	if (eel_irect_equal (before, after)) {
 		return;
 	}
 	
@@ -801,7 +799,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	item->details->emblem_rect.y1 = 0;
 	emblem_layout_reset (&emblem_layout, item, item->details->canvas_rect, is_rtl);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
-		art_irect_union (&item->details->emblem_rect, &item->details->emblem_rect, &emblem_rect);
+		eel_irect_union (&item->details->emblem_rect, &item->details->emblem_rect, &emblem_rect);
 	}
 
 	/* queue a redraw. */
@@ -947,7 +945,7 @@ static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    GdkDrawable *drawable,
 			    gboolean create_mask,
-			    ArtIRect icon_rect)
+			    EelIRect icon_rect)
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
@@ -962,7 +960,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	int max_text_width;
 	int x;
 	GdkGC *gc;
-	ArtIRect text_rect;
+	EelIRect text_rect;
 	int text_back_padding_x, text_back_padding_y;
 	
 	icon_width = 0;
@@ -1166,7 +1164,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 static void
 measure_label_text (NautilusIconCanvasItem *item)
 {
-	ArtIRect rect = {0, };
+	EelIRect rect = {0, };
 	
 	/* check to see if the cached values are still valid; if so, there's
 	 * no work necessary
@@ -1181,7 +1179,7 @@ measure_label_text (NautilusIconCanvasItem *item)
 
 static void
 draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
-		 gboolean create_mask, ArtIRect icon_rect)
+		 gboolean create_mask, EelIRect icon_rect)
 {
 	draw_or_measure_label_text (item, drawable, create_mask, icon_rect);
 }
@@ -1232,7 +1230,7 @@ get_knob_pixbuf (void)
 
 static void
 draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
-		      const ArtIRect *rect)
+		      const EelIRect *rect)
 {
 	GtkWidget *widget;
 	GdkGC *gc;
@@ -1285,7 +1283,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 }
 
 static void
-emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, ArtIRect icon_rect, gboolean is_rtl)
+emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, EelIRect icon_rect, gboolean is_rtl)
 {
 	layout->icon_item = icon_item;
 	layout->icon_rect = icon_rect;
@@ -1298,12 +1296,12 @@ emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, Ar
 static gboolean
 emblem_layout_next (EmblemLayout *layout,
 		    GdkPixbuf **emblem_pixbuf,
-		    ArtIRect *emblem_rect,
+		    EelIRect *emblem_rect,
 		    gboolean is_rtl)
 {
 	GdkPixbuf *pixbuf;
 	int width, height, x, y;
-	NautilusEmblemAttachPoints *attach_points;
+	GdkPoint *attach_points;
 	
 	/* Check if we have layed out all of the pixbufs. */
 	if (layout->emblem == NULL) {
@@ -1321,12 +1319,12 @@ emblem_layout_next (EmblemLayout *layout,
 
 	attach_points = layout->icon_item->details->attach_points;
 	if (attach_points != NULL) {
-		if (layout->index >= attach_points->num_points) {
+		if (layout->index >= layout->icon_item->details->n_attach_points) {
 			return FALSE;
 		}
 		
-		x = layout->icon_rect.x0 + attach_points->points[layout->index].x;
-		y = layout->icon_rect.y0 + attach_points->points[layout->index].y;
+		x = layout->icon_rect.x0 + attach_points[layout->index].x;
+		y = layout->icon_rect.y0 + attach_points[layout->index].y;
 
 		layout->index += 1;
 		
@@ -1602,9 +1600,9 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 			audio_filename = nautilus_pixmap_file ("audio.svg");
 			if (audio_filename != NULL) {
 				audio_pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (audio_filename, zoom, zoom,
-																	   NAUTILUS_ICON_MAXIMUM_SIZE,
-																	   NAUTILUS_ICON_MAXIMUM_SIZE,
-																	   NULL);
+										       NAUTILUS_ICON_MAXIMUM_SIZE,
+										       NAUTILUS_ICON_MAXIMUM_SIZE,
+										       NULL);
 			} else {
 				audio_pixbuf = NULL;
 			}
@@ -1754,7 +1752,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 {
 	NautilusIconCanvasItem *icon_item;
 	NautilusIconCanvasItemDetails *details;
-	ArtIRect icon_rect, emblem_rect;
+	EelIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	GdkRectangle draw_rect, pixbuf_rect;
@@ -2017,9 +2015,9 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 }
 
 static gboolean
-hit_test_pixbuf (GdkPixbuf *pixbuf, ArtIRect pixbuf_location, ArtIRect probe_rect)
+hit_test_pixbuf (GdkPixbuf *pixbuf, EelIRect pixbuf_location, EelIRect probe_rect)
 {
-	ArtIRect relative_rect, pixbuf_rect;
+	EelIRect relative_rect, pixbuf_rect;
 	int x, y;
 	guint8 *pixel;
 	
@@ -2037,8 +2035,8 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, ArtIRect pixbuf_location, ArtIRect probe_rec
 	pixbuf_rect.y0 = 0;
 	pixbuf_rect.x1 = gdk_pixbuf_get_width (pixbuf);
 	pixbuf_rect.y1 = gdk_pixbuf_get_height (pixbuf);
-	art_irect_intersect (&relative_rect, &relative_rect, &pixbuf_rect);
-	if (art_irect_empty (&relative_rect)) {
+	eel_irect_intersect (&relative_rect, &relative_rect, &pixbuf_rect);
+	if (eel_irect_is_empty (&relative_rect)) {
 		return FALSE;
 	}
 
@@ -2063,10 +2061,10 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, ArtIRect pixbuf_location, ArtIRect probe_rec
 }
 
 static gboolean
-hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
+hit_test (NautilusIconCanvasItem *icon_item, EelIRect canvas_rect)
 {
 	NautilusIconCanvasItemDetails *details;
-	ArtIRect emblem_rect;
+	EelIRect emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
 	gboolean is_rtl;
@@ -2074,9 +2072,9 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 	details = icon_item->details;
 	
 	/* Quick check to see if the rect hits the icon, text or emblems at all. */
-	if (!eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)
-	    && (!eel_art_irect_hits_irect (details->text_rect, canvas_rect))
-	    && (!eel_art_irect_hits_irect (details->emblem_rect, canvas_rect))) {
+	if (!eel_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)
+	    && (!eel_irect_hits_irect (details->text_rect, canvas_rect))
+	    && (!eel_irect_hits_irect (details->emblem_rect, canvas_rect))) {
 		return FALSE;
 	}
 
@@ -2086,12 +2084,12 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 	}
 	
 	/* Check for hit in the icon. */
-	if (eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
+	if (eel_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
 		return TRUE;
 	}
 
 	/* Check for hit in the text. */
-	if (eel_art_irect_hits_irect (details->text_rect, canvas_rect)
+	if (eel_irect_hits_irect (details->text_rect, canvas_rect)
 	    && !icon_item->details->is_renaming) {
 		return TRUE;
 	}
@@ -2114,7 +2112,7 @@ static double
 nautilus_icon_canvas_item_point (EelCanvasItem *item, double x, double y, int cx, int cy,
 				 EelCanvasItem **actual_item)
 {
-	ArtIRect canvas_rect;
+	EelIRect canvas_rect;
 
 	*actual_item = item;
 	canvas_rect.x0 = cx;
@@ -2151,7 +2149,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 {
 	NautilusIconCanvasItem *icon_item;
 	NautilusIconCanvasItemDetails *details;
-	ArtIRect icon_rect, text_rect, total_rect, emblem_rect;
+	EelIRect icon_rect, text_rect, total_rect, emblem_rect;
 	double pixels_per_unit;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
@@ -2189,7 +2187,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 		is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (item->canvas));
 
 		/* Compute total rectangle, adding in emblem rectangles. */
-		art_irect_union (&total_rect, &icon_rect, &text_rect);
+		eel_irect_union (&total_rect, &icon_rect, &text_rect);
 		emblem_layout_reset (&emblem_layout, icon_item, icon_rect, is_rtl);
 		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 			emblem_rect.x0 = floor (emblem_rect.x0 / pixels_per_unit);
@@ -2197,7 +2195,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 			emblem_rect.x1 = ceil (emblem_rect.x1 / pixels_per_unit);
 			emblem_rect.y1 = ceil (emblem_rect.y1 / pixels_per_unit);
 
-			art_irect_union (&total_rect, &total_rect, &emblem_rect);
+			eel_irect_union (&total_rect, &total_rect, &emblem_rect);
 		}
 
 		details->bounds_cache = total_rect;
@@ -2212,14 +2210,14 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 }
 
 /* Get the rectangle of the icon only, in world coordinates. */
-ArtDRect
+EelDRect
 nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item)
 {
-	ArtDRect rectangle;
+	EelDRect rectangle;
 	double pixels_per_unit;
 	GdkPixbuf *pixbuf;
 	
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_art_drect_empty);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_drect_empty);
 
 	rectangle.x0 = item->details->x;
 	rectangle.y0 = item->details->y;
@@ -2240,17 +2238,17 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 	return rectangle;
 }
 
-ArtDRect
+EelDRect
 nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item)
 {
 	/* FIXME */
-	ArtIRect icon_rectangle;
-	ArtIRect text_rectangle;
-	ArtDRect ret;
+	EelIRect icon_rectangle;
+	EelIRect text_rectangle;
+	EelDRect ret;
 	double pixels_per_unit;
 	GdkPixbuf *pixbuf;
 	
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_art_drect_empty);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_drect_empty);
 
 	icon_rectangle.x0 = item->details->x;
 	icon_rectangle.y0 = item->details->y;
@@ -2283,7 +2281,7 @@ nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item)
 /* Get the rectangle of the icon only, in canvas coordinates. */
 static void
 get_icon_canvas_rectangle (NautilusIconCanvasItem *item,
-			   ArtIRect *rect)
+			   EelIRect *rect)
 {
 	GdkPixbuf *pixbuf;
 
@@ -2320,10 +2318,10 @@ nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem *item
 /* Check if one of the stretch handles was hit. */
 static gboolean
 hit_test_stretch_handle (NautilusIconCanvasItem *item,
-			 ArtIRect probe_canvas_rect,
+			 EelIRect probe_canvas_rect,
 			 GtkCornerType *corner)
 {
-	ArtIRect icon_rect;
+	EelIRect icon_rect;
 	GdkPixbuf *knob_pixbuf;
 	int knob_width, knob_height;
 	int hit_corner;
@@ -2337,7 +2335,7 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 
 	/* Quick check to see if the rect hits the icon at all. */
 	icon_rect = item->details->canvas_rect;
-	if (!eel_art_irect_hits_irect (probe_canvas_rect, icon_rect)) {
+	if (!eel_irect_hits_irect (probe_canvas_rect, icon_rect)) {
 		return FALSE;
 	}
 	
@@ -2368,10 +2366,10 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 
 gboolean
 nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
-						    ArtPoint world_point,
+						    EelDPoint world_point,
 						    GtkCornerType *corner)
 {
-	ArtIRect canvas_rect;
+	EelIRect canvas_rect;
 
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 	
@@ -2391,7 +2389,7 @@ nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item
  * canvas rect.
  */
 gboolean
-nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item, ArtIRect canvas_rect)
+nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item, EelIRect canvas_rect)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 

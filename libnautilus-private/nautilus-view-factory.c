@@ -71,24 +71,28 @@ nautilus_view_factory_create (const char *id,
 
 gboolean
 nautilus_view_factory_view_supports_uri (const char *id,
-					 const char *uri,
-					 GnomeVFSFileType file_type,
+					 GFile *location,
+					 GFileType file_type,
 					 const char *mime_type)
 {
 	const NautilusViewInfo *view_info;
+	char *uri;
+	gboolean res;
 
 	view_info = nautilus_view_factory_lookup (id);
 	if (view_info == NULL) {
 		return FALSE;
 	}
-
-	return view_info->supports_uri (uri, file_type, mime_type);
+	uri = g_file_get_uri (location);
+	res = view_info->supports_uri (uri, file_type, mime_type);
+	g_free (uri);
+	return res;
 	
 }
 
 GList *
 nautilus_view_factory_get_views_for_uri (const char *uri,
-					 GnomeVFSFileType file_type,
+					 GFileType file_type,
 					 const char *mime_type)
 {
 	GList *l, *res;

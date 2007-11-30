@@ -36,12 +36,9 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
+#include <glib/gurifuncs.h>
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
@@ -110,14 +107,13 @@ BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafile, nautilus_metafile,
 			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 typedef struct MetafileReadState {
-	EelReadFileHandle *handle;
-	GnomeVFSAsyncHandle *get_file_info_handle;
+	NautilusMetafile *metafile;
+	GCancellable *cancellable;
 } MetafileReadState;
 
 typedef struct MetafileWriteState {
-	GnomeVFSAsyncHandle *handle;
 	xmlChar *buffer;
-	GnomeVFSFileSize size;
+	goffset size;
 	gboolean write_again;
 } MetafileWriteState;
 
@@ -137,7 +133,6 @@ struct NautilusMetafileDetails {
 
 	char *private_uri;
 	char *directory_uri;
-	GnomeVFSURI *directory_vfs_uri;
 };
 
 static GHashTable *metafiles;
@@ -162,9 +157,6 @@ finalize (GObject *object)
 	async_read_cancel (metafile);
 	g_assert (metafile->details->read_state == NULL);
 
-	if (metafile->details->directory_vfs_uri != NULL) {
-		gnome_vfs_uri_unref (metafile->details->directory_vfs_uri);
-	}
 
 	g_hash_table_remove (metafiles, metafile->details->directory_uri);
 	
@@ -182,6 +174,43 @@ finalize (GObject *object)
 }
 
 static char *
+escape_slashes (const char *str)
+{
+	int n_reserved;
+	const char *p;
+	char *escaped, *e;
+
+	n_reserved = 0;
+	for (p = str; *p != 0; p++) {
+		if (*p == '%' || *p == '/') {
+			n_reserved++;
+		}
+	}
+
+	escaped = g_malloc (strlen (str) + 2*n_reserved + 1);
+
+	e = escaped;
+	
+	for (p = str; *p != 0; p++) {
+		if (*p == '%') {
+			*e++ = '%';
+			*e++ = '2';
+			*e++ = '5';
+		} else if (*p == '/') {
+			*e++ = '%';
+			*e++ = '2';
+			*e++ = 'f';
+		} else {
+			*e++ = *p;
+		}
+	}
+	*e = 0;
+
+	return escaped;
+}
+	
+
+static char *
 construct_private_metafile_uri (const char *uri)
 {
 	char *user_directory, *metafiles_directory;
@@ -195,7 +224,7 @@ construct_private_metafile_uri (const char *uri)
 	mkdir (metafiles_directory, 0700);
 
 	/* Construct a file name from the URI. */
-	escaped_uri = gnome_vfs_escape_slashes (uri);
+	escaped_uri = escape_slashes (uri);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
 	g_free (escaped_uri);
 
@@ -203,7 +232,7 @@ construct_private_metafile_uri (const char *uri)
 	alternate_path = g_build_filename (metafiles_directory, file_name, NULL);
 	g_free (metafiles_directory);
 	g_free (file_name);
-	alternate_uri = gnome_vfs_get_uri_from_local_path (alternate_path);
+	alternate_uri = g_filename_to_uri (alternate_path, NULL, NULL);
 	g_free (alternate_path);
 
 	return alternate_uri;
@@ -219,11 +248,6 @@ nautilus_metafile_set_directory_uri (NautilusMetafile *metafile,
 
 	g_free (metafile->details->directory_uri);
 	metafile->details->directory_uri = g_strdup (directory_uri);
-
-	if (metafile->details->directory_vfs_uri != NULL) {
-		gnome_vfs_uri_unref (metafile->details->directory_vfs_uri);
-	}
-	metafile->details->directory_vfs_uri = gnome_vfs_uri_new (directory_uri);
 
 	g_free (metafile->details->private_uri);
 	metafile->details->private_uri
@@ -247,6 +271,7 @@ nautilus_metafile_get (const char *directory_uri)
 {
 	NautilusMetafile *metafile;
 	char *canonical_uri;
+	GFile *file;
 	
 	g_return_val_if_fail (directory_uri != NULL, NULL);
 
@@ -259,8 +284,11 @@ nautilus_metafile_get (const char *directory_uri)
 		metafiles = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, __FILE__ ": metafiles");
 	}
-	
-	canonical_uri = nautilus_directory_make_uri_canonical (directory_uri);
+
+
+	file = g_file_new_for_uri (directory_uri);
+	canonical_uri = g_file_get_uri (file);
+	g_object_unref (file);
 	
 	metafile = g_hash_table_lookup (metafiles, canonical_uri);
 	
@@ -992,6 +1020,7 @@ get_file_node (NautilusMetafile *metafile,
 {
 	GHashTable *hash;
 	xmlNode *root, *node;
+	char *escaped_file_name;
 	
 	g_assert (NAUTILUS_IS_METAFILE (metafile));
 
@@ -1004,7 +1033,9 @@ get_file_node (NautilusMetafile *metafile,
 	if (create) {
 		root = create_metafile_root (metafile);
 		node = xmlNewChild (root, NULL, "file", NULL);
-		xmlSetProp (node, "name", file_name);
+		escaped_file_name = g_uri_escape_string (file_name, NULL, 0);
+		xmlSetProp (node, "name", escaped_file_name);
+		g_free (escaped_file_name);
 		g_hash_table_insert (hash, xmlMemStrdup (file_name), node);
 		return node;
 	}
@@ -1523,10 +1554,16 @@ static char *
 metafile_get_file_uri (NautilusMetafile *metafile,
 		       const char *file_name)
 {
+	char *escaped_file_name, *uri;
+	
 	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
 	g_return_val_if_fail (file_name != NULL, NULL);
-
-	return g_build_filename (metafile->details->directory_uri, file_name, NULL);
+	
+	escaped_file_name = g_uri_escape_string (file_name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, FALSE);
+	
+	uri = g_build_filename (metafile->details->directory_uri, escaped_file_name, NULL);
+	g_free (escaped_file_name);
+	return uri;
 }
 
 static void
@@ -1539,6 +1576,7 @@ rename_file_metadata (NautilusMetafile *metafile,
 	xmlNode *file_node;
 	GHashTable *hash;
 	char *old_file_uri, *new_file_uri;
+	char *escaped;
 
 	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 	g_return_if_fail (old_file_name != NULL);
@@ -1559,7 +1597,9 @@ rename_file_metadata (NautilusMetafile *metafile,
 			xmlFree (key);
 			g_hash_table_insert (hash,
 					     xmlMemStrdup (new_file_name), value);
-			xmlSetProp (file_node, "name", new_file_name);
+			escaped = g_uri_escape_string (new_file_name, NULL, FALSE);
+			xmlSetProp (file_node, "name", escaped);
+			g_free (escaped);
 			directory_request_write_metafile (metafile);
 		}
 	} else {
@@ -1667,6 +1707,7 @@ real_copy_file_metadata (NautilusMetafile *source_metafile,
 {
 	xmlNodePtr source_node, node, root;
 	GHashTable *hash, *changes;
+	char *escaped;
 
 	real_remove_file_metadata (destination_metafile, destination_file_name);
 	g_assert (get_file_node (destination_metafile, destination_file_name, FALSE) == NULL);
@@ -1676,7 +1717,9 @@ real_copy_file_metadata (NautilusMetafile *source_metafile,
 		node = xmlCopyNode (source_node, TRUE);
 		root = create_metafile_root (destination_metafile);
 		xmlAddChild (root, node);
-		xmlSetProp (node, "name", destination_file_name);
+		escaped = g_uri_escape_string (destination_file_name, NULL, FALSE);
+		xmlSetProp (node, "name", escaped);
+		g_free (escaped);
 		set_file_node_timestamp (node);
 		g_hash_table_insert (destination_metafile->details->node_hash,
 				     xmlMemStrdup (destination_file_name), node);
@@ -1803,6 +1846,7 @@ set_metafile_contents (NautilusMetafile *metafile,
 	GHashTable *hash;
 	xmlNodePtr node;
 	xmlChar *name;
+	char *unescaped_name;
 
 	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 	g_return_if_fail (metafile->details->xml == NULL);
@@ -1819,11 +1863,13 @@ set_metafile_contents (NautilusMetafile *metafile,
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "file") == 0) {
 			name = xmlGetProp (node, "name");
-			if (g_hash_table_lookup (hash, name) != NULL) {
+			unescaped_name = g_uri_unescape_string (name, "/");
+			if (unescaped_name == NULL ||
+			    g_hash_table_lookup (hash, unescaped_name) != NULL) {
 				xmlFree (name);
 				/* FIXME: Should we delete duplicate nodes as we discover them? */
 			} else {
-				g_hash_table_insert (hash, name, node);
+				g_hash_table_insert (hash, unescaped_name, node);
 			}
 		}
 	}
@@ -1833,21 +1879,23 @@ static void
 metafile_read_cancel (NautilusMetafile *metafile)
 {
 	if (metafile->details->read_state != NULL) {
-		if (metafile->details->read_state->handle != NULL) {
-			eel_read_file_cancel (metafile->details->read_state->handle);
-		}
-		if (metafile->details->read_state->get_file_info_handle != NULL) {
-			gnome_vfs_async_cancel (metafile->details->read_state->get_file_info_handle);
-		}
-		g_free (metafile->details->read_state);
+		g_cancellable_cancel (metafile->details->read_state->cancellable);
+		metafile->details->read_state->metafile = NULL;
 		metafile->details->read_state = NULL;
 	}
 }
 
 static void
+metafile_read_state_free (MetafileReadState *state)
+{
+	g_object_unref (state->cancellable);
+	g_free (state);
+}
+
+static void
 metafile_read_mark_done (NautilusMetafile *metafile)
 {
-	g_free (metafile->details->read_state);
+	metafile_read_state_free (metafile->details->read_state);
 	metafile->details->read_state = NULL;	
 
 	metafile->details->is_read = TRUE;
@@ -1862,8 +1910,34 @@ metafile_read_mark_done (NautilusMetafile *metafile)
 }
 
 static void
-metafile_read_done (NautilusMetafile *metafile)
+metafile_read_done_callback (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
 {
+	MetafileReadState *state;
+	NautilusMetafile *metafile;
+	gsize file_size;
+	char *file_contents;
+
+	state = user_data;
+ 
+	if (state->metafile == NULL) {
+		/* Operation was cancelled. Bail out */
+		metafile_read_state_free (state);
+		return;
+	}
+	
+	metafile = state->metafile;
+	g_assert (metafile->details->xml == NULL);
+
+	if (g_file_load_contents_finish (G_FILE (source_object),
+					 res,
+					 &file_contents, &file_size,
+					 NULL, NULL)) {
+		set_metafile_contents (metafile, xmlParseMemory (file_contents, file_size));
+		g_free (file_contents);
+	}
+
 	metafile_read_mark_done (metafile);
 
 	nautilus_metadata_process_ready_copies ();
@@ -1871,57 +1945,23 @@ metafile_read_done (NautilusMetafile *metafile)
 }
 
 static void
-metafile_read_failed (NautilusMetafile *metafile)
-{
-	g_assert (NAUTILUS_IS_METAFILE (metafile));
-
-	metafile->details->read_state->handle = NULL;
-
-	metafile_read_done (metafile);
-}
-
-static void
-metafile_read_done_callback (GnomeVFSResult result,
-			     GnomeVFSFileSize file_size,
-			     char *file_contents,
-			     gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-	int size;
-	char *buffer;
-
-	metafile = NAUTILUS_METAFILE (callback_data);
-	g_assert (metafile->details->xml == NULL);
-
-	if (result != GNOME_VFS_OK) {
-		g_assert (file_contents == NULL);
-		metafile_read_failed (metafile);
-		return;
-	}
-
-	size = file_size;
-	if ((GnomeVFSFileSize) size != file_size) {
-		g_free (file_contents);
-		metafile_read_failed (metafile);
-		return;
-	}
-	
-	/* The libxml parser requires a zero-terminated array. */
-	buffer = g_realloc (file_contents, size + 1);
-	buffer[size] = '\0';
-	set_metafile_contents (metafile, xmlParseMemory (buffer, size));
-	g_free (buffer);
-
-	metafile_read_done (metafile);
-}
-
-static void
 metafile_read_restart (NautilusMetafile *metafile)
 {
-	metafile->details->read_state->handle = eel_read_entire_file_async
-		(metafile->details->private_uri,
-		 GNOME_VFS_PRIORITY_DEFAULT,
-		 metafile_read_done_callback, metafile);
+	GFile *location;
+	MetafileReadState *state;
+
+	state = g_new0 (MetafileReadState, 1);
+	state->metafile = metafile;
+	state->cancellable = g_cancellable_new ();
+
+	metafile->details->read_state = state;
+
+	location = g_file_new_for_uri (metafile->details->private_uri);
+
+	g_file_load_contents_async (location, state->cancellable,
+				    metafile_read_done_callback, state);
+	
+	g_object_unref (location);
 }
 
 static gboolean
@@ -1973,7 +2013,6 @@ metafile_read_start (NautilusMetafile *metafile)
 	if (!allow_metafile (metafile)) {
 		metafile_read_mark_done (metafile);
 	} else {
-		metafile->details->read_state = g_new0 (MetafileReadState, 1);
 		metafile_read_restart (metafile);
 	}
 }
@@ -2083,7 +2122,7 @@ metafile_write_start (NautilusMetafile *metafile)
 
 	metafile_uri = metafile->details->private_uri;
 
-	metafile_path = gnome_vfs_get_local_path_from_uri (metafile_uri);
+	metafile_path = g_filename_from_uri (metafile_uri, NULL, NULL);
 	g_assert (metafile_path != NULL);
 	
 	metafile_write_local (metafile, metafile_path);

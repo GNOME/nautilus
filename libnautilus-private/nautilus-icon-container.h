@@ -27,7 +27,7 @@
 #define NAUTILUS_ICON_CONTAINER_H
 
 #include <eel/eel-canvas.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-icon-info.h>
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
@@ -128,10 +128,12 @@ typedef struct {
 	 * These must be implemented. The default "do nothing" is not
 	 * good enough, these are _not_ signals.
 	 */
-	char *       (* get_icon_images)          (NautilusIconContainer *container,
+	NautilusIconInfo *(* get_icon_images)     (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   GList **emblem_icons,
+						   int icon_size,
+						   GList **emblem_pixbufs,
 						   char **embedded_text,
+						   gboolean for_drag_accept,
 						   gboolean need_large_embeddded_text,
 						   gboolean *embedded_text_needs_loading,
 						   gboolean *has_window_open);

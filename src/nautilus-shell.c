@@ -36,7 +36,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -45,7 +44,6 @@
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <stdlib.h>
@@ -134,7 +132,7 @@ static void
 open_window (NautilusShell *shell, const char *uri, const char *startup_id,
 	     const char *geometry, gboolean browser_window)
 {
-	char *home_uri;
+	GFile *location;
 	NautilusWindow *window;
 
 	if (browser_window ||
@@ -145,22 +143,23 @@ open_window (NautilusShell *shell, const char *uri, const char *startup_id,
 		if (uri == NULL) {
 			nautilus_window_go_home (window);
 		} else {
-			nautilus_window_go_to (window, uri);
+			location = g_file_new_for_uri (uri);
+			nautilus_window_go_to (window, location);
+			g_object_unref (location);
 		}
 	} else {
-		home_uri = NULL;
-
 		if (uri == NULL) {
-			home_uri = nautilus_get_home_directory_uri ();
-			uri = home_uri;
+			location = g_file_new_for_path (g_get_home_dir ());
+		} else {
+			location = g_file_new_for_uri (uri);
 		}
 		
 		window = nautilus_application_present_spatial_window (shell->details->application,
 								      NULL,
 								      startup_id,
-								      uri,
+								      location,
 								      gdk_screen_get_default ());
-		g_free (home_uri);
+		g_object_unref (location);
 	}
 	
 	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
@@ -380,10 +379,10 @@ save_window_states (void)
 	char *window_attributes;
 	int x, y, width, height;
 	char *location;
-	EelStringList *states;
+	GPtrArray *states;
 	int screen_num = -1;
 
-	states = NULL;
+	states = g_ptr_array_new ();
 	windows = nautilus_application_get_window_list ();
 	for (node = windows; node; node = g_list_next (node)) {
 		g_assert (node->data != NULL);
@@ -396,7 +395,7 @@ save_window_states (void)
 		gdk_window = GTK_WIDGET (window)->window;
 		gdk_window_get_root_origin (gdk_window, &x, &y);
 
-		location = nautilus_window_get_location (window);
+		location = nautilus_window_get_location_uri (window);
 
 		screen_num = gdk_screen_get_number (
 					gtk_window_get_screen (GTK_WINDOW (window)));
@@ -407,27 +406,24 @@ save_window_states (void)
 						     location,
 						     screen_num);
 		g_free (location);
-		
-		if (states == NULL) {
-			states = eel_string_list_new (TRUE);
-		}
-		eel_string_list_insert (states, window_attributes);
-		g_free (window_attributes);
+
+		g_ptr_array_add (states, window_attributes);
 	}
+	g_ptr_array_add (states, NULL);
 
 	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
-		eel_preferences_set_string_list (START_STATE_CONFIG, states);
+		eel_preferences_set_string_array (START_STATE_CONFIG,
+						  (char **) states->pdata);
 	}
 
-	eel_string_list_free (states);
+	g_ptr_array_free (states, TRUE);
 }
 
 static void
-restore_one_window_callback (const char *attributes,
-			     gpointer callback_data)
+restore_one_window (const char *attributes, NautilusShell *shell)
 {
-	NautilusShell *shell;
-	EelStringList *attribute_list;
+	char **attrs;
+	int attrs_len;
 	int x;
 	int y;
 	int width;
@@ -435,30 +431,40 @@ restore_one_window_callback (const char *attributes,
 	char *location;
 	NautilusWindow *window;
 	GdkScreen *screen = NULL;
-	int screen_num;
-	int list_length;
 
-	g_return_if_fail (eel_strlen (attributes) > 0);
-	g_return_if_fail (NAUTILUS_IS_SHELL (callback_data));
+	g_return_if_fail (!eel_str_is_empty (attributes));
+	g_return_if_fail (NAUTILUS_IS_SHELL (shell));
 
-	shell = NAUTILUS_SHELL (callback_data);
+	attrs = g_strsplit (attributes, ",", -1);
+	attrs_len = g_strv_length (attrs);
 
-	attribute_list = eel_string_list_new_from_tokens (attributes, ",", TRUE);
+	x = 0;
+	y = 0;
+	width = 0;
+	height= 0;
+	location = NULL;
 
-	list_length = eel_string_list_get_length (attribute_list);
-
-	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_WIDTH, &width);
-	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_HEIGHT, &height);
-	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_X, &x);
-	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_Y, &y);
-	location = eel_string_list_nth (attribute_list, WINDOW_STATE_ATTRIBUTE_LOCATION);
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_WIDTH) {
+		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_WIDTH], &width);
+	}
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_HEIGHT) {
+		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_HEIGHT], &width);
+	}
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_X) {
+		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_X], &x);
+	}
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_Y) {
+		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_Y], &y);
+	}
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_LOCATION) {
+		location = g_strdup (attrs[WINDOW_STATE_ATTRIBUTE_LOCATION]);
+	}
 
 	/* Support sessions with no screen number for backwards compat.
 	 */
-	if (list_length >= WINDOW_STATE_ATTRIBUTE_SCREEN + 1) {
-		eel_string_list_nth_as_integer (
-			attribute_list, WINDOW_STATE_ATTRIBUTE_SCREEN, &screen_num);
-
+	if (attrs_len > WINDOW_STATE_ATTRIBUTE_SCREEN) {
+		int screen_num;
+		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_SCREEN], &screen_num);
 		screen = gdk_display_get_screen (gdk_display_get_default (), screen_num);
 	} else {
 		screen = gdk_screen_get_default ();
@@ -468,11 +474,15 @@ restore_one_window_callback (const char *attributes,
 /* don't always create object windows here */
 #endif
 	if (eel_strlen (location) > 0) {
+		GFile *f;
+
+		f = g_file_new_for_uri (location);
 		window = nautilus_application_present_spatial_window (shell->details->application, 
 								      NULL,
 								      NULL,
-								      location,
+								      f,
 								      screen);
+		g_object_unref (f);
 	} else {
 		window = nautilus_application_create_navigation_window (shell->details->application,
 									NULL,
@@ -484,23 +494,35 @@ restore_one_window_callback (const char *attributes,
 	gtk_widget_set_size_request (GTK_WIDGET (window), width, height);
 
 	g_free (location);
-	eel_string_list_free (attribute_list);
+	g_strfreev (attrs);
 }
 
 /* returns TRUE if there was state info which has been used to create new windows */
 static gboolean
 restore_window_states (NautilusShell *shell)
 {
-	EelStringList *states;
+	char **states;
 	gboolean result;
+	int i;
 
-	states = eel_preferences_get_string_list (START_STATE_CONFIG);
-	result = eel_string_list_get_length (states) > 0;
-	eel_string_list_for_each (states, restore_one_window_callback, shell);
-	eel_string_list_free (states);
-	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
-		eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	result = FALSE;
+
+	states = eel_preferences_get_string_array (START_STATE_CONFIG);
+	if (!states) {
+		return result;
 	}
+
+	for (i = 0; states[i] != NULL; ++i) {
+		result = TRUE;
+		restore_one_window (states[i], shell);
+	}
+
+	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
+		eel_preferences_set_string_array (START_STATE_CONFIG, NULL);
+	}
+
+	g_strfreev (states);
+
 	return result;
 }
 

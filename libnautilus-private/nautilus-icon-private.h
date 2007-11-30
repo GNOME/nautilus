@@ -30,7 +30,6 @@
 #include <libnautilus-private/nautilus-icon-canvas-item.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 
 /* An Icon. */
 
@@ -83,7 +82,7 @@ typedef struct {
 	guint timer_id;
 
 	guint prev_x, prev_y;
-	ArtDRect prev_rect;
+	EelDRect prev_rect;
 	int last_adj_y;
 } NautilusIconRubberbandInfo;
 

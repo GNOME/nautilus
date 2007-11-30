@@ -27,7 +27,6 @@
 #include <gdk/gdkdnd.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-extension/nautilus-column.h>
 
 #ifndef FM_LIST_MODEL_H

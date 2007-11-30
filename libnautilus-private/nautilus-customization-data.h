@@ -32,7 +32,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtklabel.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 
 #define RESET_IMAGE_NAME "reset.png"
 
@@ -51,7 +50,7 @@ NautilusCustomizationData* nautilus_customization_data_new                      
  * object_pixbuf - Pixbuf for graphical display of the object. 
  * object_label  - Textual label display of the object. 
  */
-GnomeVFSResult             nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
+gboolean                   nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 										     char **object_name,
 										     GdkPixbuf **object_pixbuf,
 										     char **object_label);

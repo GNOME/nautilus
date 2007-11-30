@@ -25,8 +25,6 @@
 #include <config.h>
 
 #include <gnome.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <stdio.h>
 
@@ -121,7 +119,7 @@ main (int argc, char **argv)
 	field = argv[2];
  	value = argv[3];
 
-	file = nautilus_file_get (uri);
+	file = nautilus_file_get_by_uri (uri);
 
 	attributes = nautilus_mime_actions_get_full_file_attributes ();
 	nautilus_file_call_when_ready (file, attributes, ready_callback, NULL);

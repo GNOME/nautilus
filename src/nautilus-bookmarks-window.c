@@ -34,14 +34,12 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gtk/gtkenums.h>
 #include <gtk/gtkhbbox.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-help.h>
 #include <glade/glade.h>
-
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or
@@ -385,11 +383,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 		g_signal_connect (jump_button, "clicked",
 				  G_CALLBACK (on_jump_button_clicked), undo_manager_source);
 
-	/* Register to find out about icon theme changes */
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (repopulate), window,
-				 G_CONNECT_SWAPPED);
-                      	    
 	gtk_tree_selection_set_mode (bookmark_selection, GTK_SELECTION_BROWSE);
 	
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
@@ -550,7 +543,7 @@ open_selected_bookmark (gpointer user_data, GdkScreen *screen)
 {
 	NautilusBookmark *selected;
 	NautilusWindow *window;
-	char *uri = NULL;
+	GFile *location;
 	
 	selected = get_selected_bookmark ();
 
@@ -558,36 +551,35 @@ open_selected_bookmark (gpointer user_data, GdkScreen *screen)
 		return;
 	}
 
-	uri = nautilus_bookmark_get_uri (selected);
-
-	if (!uri) { 
+	location = nautilus_bookmark_get_location (selected);
+	if (location == NULL) { 
 		return;
 	}
 
 	if (NAUTILUS_IS_NAVIGATION_WINDOW (user_data)) {
-		nautilus_window_go_to (NAUTILUS_WINDOW (user_data), uri);
+		nautilus_window_go_to (NAUTILUS_WINDOW (user_data), location);
 	} else if (NAUTILUS_IS_SPATIAL_WINDOW (user_data)) {
 		window = nautilus_application_present_spatial_window (application, 
 								      NULL,
 								      NULL,
-								      uri,
+								      location,
 								      screen);
 	} else { /* window that opened bookmarks window has been closed */
 		if (parent_is_browser_window || eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			window = nautilus_application_create_navigation_window (application, 
 										NULL,
 										screen);
-			nautilus_window_go_to (window, uri);
+			nautilus_window_go_to (window, location);
 		} else {
 			window = nautilus_application_present_spatial_window (application, 
 									      NULL,
 									      NULL,
-									      uri,
+									      location,
 									      screen);
 		}
 	}
 
-	g_free (uri);
+	g_object_unref (location);
 }
 
 static void
@@ -783,15 +775,17 @@ update_bookmark_from_text (void)
 		GdkPixbuf *pixbuf;
 		guint selected_row;
 		GtkTreeIter iter;
+		GFile *location;
 
 		g_assert (GTK_IS_ENTRY (name_field));
 		g_assert (GTK_IS_ENTRY (uri_field));
 
-		bookmark = nautilus_bookmark_new
-			(gtk_entry_get_text (GTK_ENTRY (uri_field)),
-			 gtk_entry_get_text (GTK_ENTRY (name_field)));
-
-		nautilus_bookmark_set_has_custom_name (bookmark, name_text_changed);
+		location = g_file_new_for_uri (gtk_entry_get_text (GTK_ENTRY (uri_field)));
+		
+		bookmark = nautilus_bookmark_new_with_icon (location, gtk_entry_get_text (GTK_ENTRY (name_field)),
+							    name_text_changed, NULL);
+		
+		g_object_unref (location);
 
 		selected_row = get_selected_row ();
 

@@ -50,7 +50,6 @@
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-client.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -85,7 +84,7 @@ quit_if_in_main_loop (gpointer callback_data)
 
 	level = gtk_main_level ();
 
-	/* We can be called even outside the main loop by gnome_vfs_shutdown,
+	/* We can be called even outside the main loop,
 	 * so check that we are in a loop before calling quit.
 	 */
 	if (level != 0) {
@@ -399,6 +398,8 @@ main (int argc, char *argv[])
 		{ NULL }
 	};
 
+	g_thread_init (NULL);
+
 	setlocale (LC_ALL, "");
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
@@ -556,17 +557,8 @@ main (int argc, char *argv[])
 		gtk_main ();
 	}
 
-	/* This has to be done before gnome_vfs_shutdown, because
- 	 * it might call nautilus_file_get_uri() which might call
- 	 * gnome_vfs_uri_append_string()
- 	 */
  	eel_debug_shut_down ();
 
-	gnome_vfs_shutdown ();
-
-	/* This has to be done after gnome_vfs_shutdown, because shutdown
-	 * can call pending completion callbacks which reference application.
-	 */
 	if (application != NULL) {
 		bonobo_object_unref (application);
 	}

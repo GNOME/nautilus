@@ -32,23 +32,17 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-search-directory.h"
 #include <gtk/gtksignal.h>
 #include <glib/gi18n.h>
 #include <string.h>
 
-static void nautilus_search_directory_file_init       (gpointer   object,
-						       gpointer   klass);
-static void nautilus_search_directory_file_class_init (gpointer   klass);
-
-EEL_CLASS_BOILERPLATE (NautilusSearchDirectoryFile,
-		       nautilus_search_directory_file,
-		       NAUTILUS_TYPE_FILE);
-
 struct NautilusSearchDirectoryFileDetails {
 	NautilusSearchDirectory *search_directory;
 };
+
+G_DEFINE_TYPE(NautilusSearchDirectoryFile, nautilus_search_directory_file, NAUTILUS_TYPE_FILE);
+
 
 static void
 search_directory_file_monitor_add (NautilusFile *file,
@@ -57,6 +51,9 @@ search_directory_file_monitor_add (NautilusFile *file,
 {
 	/* No need for monitoring, we always emit changed when files
 	   are added/removed, and no other metadata changes */
+
+	/* Update display name, in case this didn't happen yet */
+	nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (file));
 }
 
 static void
@@ -73,6 +70,9 @@ search_directory_file_call_when_ready (NautilusFile *file,
 				       gpointer callback_data)
 
 {
+	/* Update display name, in case this didn't happen yet */
+	nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (file));
+	
 	/* All data for directory-as-file is always uptodate */
 	(* callback) (file, callback_data);
 }
@@ -85,19 +85,12 @@ search_directory_file_cancel_call_when_ready (NautilusFile *file,
 	/* Do nothing here, we don't have any pending calls */
 }
 
-
 static gboolean
 search_directory_file_check_if_ready (NautilusFile *file,
 				      NautilusFileAttributes attributes)
 {
 	return TRUE;
 }
-
-static GnomeVFSFileType
-search_directory_file_get_file_type (NautilusFile *file)
-{
-	return GNOME_VFS_FILE_TYPE_DIRECTORY;
-}			      
 
 static gboolean
 search_directory_file_get_item_count (NautilusFile *file, 
@@ -125,13 +118,13 @@ search_directory_file_get_deep_counts (NautilusFile *file,
 				       guint *directory_count,
 				       guint *file_count,
 				       guint *unreadable_directory_count,
-				       GnomeVFSFileSize *total_size)
+				       goffset *total_size)
 {
 	NautilusSearchDirectory *search_dir;
 	NautilusFile *dir_file;
 	GList *file_list, *l;
 	guint dirs, files;
-	GnomeVFSFileType type;
+	GFileType type;
 
 	search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
 	
@@ -141,7 +134,7 @@ search_directory_file_get_deep_counts (NautilusFile *file,
 	for (l = file_list; l != NULL; l = l->next) {
 		dir_file = NAUTILUS_FILE (l->data);
 		type = nautilus_file_get_file_type (dir_file);
-		if (type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		if (type == G_FILE_TYPE_DIRECTORY) {
 			dirs++;
 		} else {
 			files++;
@@ -172,54 +165,67 @@ search_directory_file_get_where_string (NautilusFile *file)
 {
 	return g_strdup (_("Search"));
 }
-    
-static void
-nautilus_search_directory_file_init (gpointer object, gpointer klass)
+
+void
+nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile *search_file)
 {
-	NautilusSearchDirectoryFile *search_file;
 	NautilusFile *file;
-	GnomeVFSFileInfo *file_info;
+	NautilusSearchDirectory *search_dir;
+	NautilusQuery *query;
+	char *display_name;
+	gboolean changed;
 
-	search_file = NAUTILUS_SEARCH_DIRECTORY_FILE (object);
-	file = NAUTILUS_FILE(object);
-
-	file_info = file->details->info = gnome_vfs_file_info_new ();
-
-	file_info->name = g_strdup (_("Search"));
-	file_info->mime_type = g_strdup ("x-directory/normal");
-	file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
-	file_info->flags = GNOME_VFS_FILE_FLAGS_NONE;
-	file_info->link_count = 1;
-	file_info->size = 0;
-	file_info->permissions =
-		GNOME_VFS_PERM_OTHER_WRITE |
-		GNOME_VFS_PERM_GROUP_WRITE |
-		GNOME_VFS_PERM_USER_READ |
-		GNOME_VFS_PERM_OTHER_READ |
-		GNOME_VFS_PERM_GROUP_READ;
 	
-	file_info->valid_fields = GNOME_VFS_FILE_INFO_FIELDS_TYPE |
-		GNOME_VFS_FILE_INFO_FIELDS_FLAGS |
-		GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE |
-		GNOME_VFS_FILE_INFO_FIELDS_SIZE |
-		GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS |
-		GNOME_VFS_FILE_INFO_FIELDS_LINK_COUNT;
+	display_name = NULL;
+	file = NAUTILUS_FILE (search_file);
+	if (file->details->directory) {
+		search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
+		query = nautilus_search_directory_get_query (search_dir);
+	
+		if (query != NULL) {
+			display_name = nautilus_query_to_readable_string (query);
+			g_object_unref (query);
+		} 
+	}
+
+	if (display_name == NULL) {
+		display_name = g_strdup (_("Search"));
+	}
+
+	changed = nautilus_file_set_display_name (file, display_name, NULL, FALSE);
+	if (changed) {
+		nautilus_file_emit_changed (file);
+	}
+}
+
+static void
+nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (search_file);
+
+	file->details->got_file_info = TRUE;
+	file->details->mime_type = eel_ref_str_get_unique ("x-directory/normal");
+	file->details->type = G_FILE_TYPE_DIRECTORY;
+	file->details->size = 0;
 
 	file->details->file_info_is_up_to_date = TRUE;
 
-	file->details->display_name = g_strdup (_("Search"));
 	file->details->custom_icon = NULL;
-	file->details->activation_uri = NULL;
+	file->details->activation_location = NULL;
 	file->details->got_link_info = TRUE;
 	file->details->link_info_is_up_to_date = TRUE;
 
 	file->details->directory_count = 0;
 	file->details->got_directory_count = TRUE;
 	file->details->directory_count_is_up_to_date = TRUE;
+
+	nautilus_file_set_display_name (file, _("Search"), NULL, FALSE);
 }
 
 static void
-nautilus_search_directory_file_class_init (gpointer klass)
+nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *klass)
 {
 	GObjectClass *object_class;
 	NautilusFileClass *file_class;
@@ -227,11 +233,12 @@ nautilus_search_directory_file_class_init (gpointer klass)
 	object_class = G_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
 
+	file_class->default_file_type = G_FILE_TYPE_DIRECTORY;
+
 	file_class->monitor_add = search_directory_file_monitor_add;
 	file_class->monitor_remove = search_directory_file_monitor_remove;
 	file_class->call_when_ready = search_directory_file_call_when_ready;
 	file_class->cancel_call_when_ready = search_directory_file_cancel_call_when_ready;
-	file_class->get_file_type = search_directory_file_get_file_type;
 	file_class->check_if_ready = search_directory_file_check_if_ready;
 	file_class->get_item_count = search_directory_file_get_item_count;
 	file_class->get_deep_counts = search_directory_file_get_deep_counts;

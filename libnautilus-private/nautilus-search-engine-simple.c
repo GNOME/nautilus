@@ -28,23 +28,26 @@
 #include <glib/gstrfuncs.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
-#include <libgnomevfs/gnome-vfs-directory.h>
+#include <gio/gfile.h>
+#include <gio/gfileenumerator.h>
+#include <gio/gcontenttype.h>
 
 #define BATCH_SIZE 500
 
 typedef struct {
 	NautilusSearchEngineSimple *engine;
+	GCancellable *cancellable;
 
-	GnomeVFSURI *uri;
 	GList *mime_types;
 	char **words;
 	GList *found_list;
+
+	GQueue *directories; /* GFiles */
+
+	GHashTable *visited;
 	
 	gint n_processed_files;
 	GList *uri_hits;
-
-	/* accessed on both threads: */
-	volatile gboolean cancelled;
 } SearchThreadData;
 
 
@@ -89,18 +92,23 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 {
 	SearchThreadData *data;
 	char *text, *lower, *normalized, *uri;
-
+	GFile *location;
+	
 	data = g_new0 (SearchThreadData, 1);
 
 	data->engine = engine;
+	data->directories = g_queue_new ();
+	data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	uri = nautilus_query_get_location (query);
+	location = NULL;
 	if (uri != NULL) {
-		data->uri = gnome_vfs_uri_new (uri);
+		location = g_file_new_for_uri (uri);
 		g_free (uri);
 	}
-	if (data->uri == NULL) {
-		data->uri = gnome_vfs_uri_new ("file:///");
+	if (location == NULL) {
+		location = g_file_new_for_path ("/");
 	}
+	g_queue_push_tail (data->directories, location);
 	
 	text = nautilus_query_get_text (query);
 	normalized = g_utf8_normalize (text, -1, G_NORMALIZE_NFD);
@@ -112,15 +120,22 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 
 	data->mime_types = nautilus_query_get_mime_types (query);
 
+	data->cancellable = g_cancellable_new ();
+	
 	return data;
 }
 
 static void 
 search_thread_data_free (SearchThreadData *data)
 {
-	gnome_vfs_uri_unref (data->uri);
+	g_queue_foreach (data->directories,
+			 (GFunc)g_object_unref, NULL);
+	g_queue_free (data->directories);
+	g_hash_table_destroy (data->visited);
+	g_object_unref (data->cancellable);
 	g_strfreev (data->words);	
 	eel_g_list_free_deep (data->mime_types);
+	eel_g_list_free_deep (data->uri_hits);
 	g_free (data);
 }
 
@@ -131,7 +146,7 @@ search_thread_done_idle (gpointer user_data)
 
 	data = user_data;
 
-	if (!data->cancelled) {
+	if (!g_cancellable_is_cancelled (data->cancellable)) {
 		nautilus_search_engine_finished (NAUTILUS_SEARCH_ENGINE (data->engine));
 		data->engine->details->active_search = NULL;
 	}
@@ -154,7 +169,7 @@ search_thread_add_hits_idle (gpointer user_data)
 
 	hits = user_data;
 
-	if (!hits->thread_data->cancelled) {
+	if (!g_cancellable_is_cancelled (hits->thread_data->cancellable)) {
 		nautilus_search_engine_hits_added (NAUTILUS_SEARCH_ENGINE (hits->thread_data->engine),
 						   hits->uris);
 	}
@@ -181,45 +196,53 @@ send_batch (SearchThreadData *data)
 	data->uri_hits = NULL;
 }
 
-static gboolean
-search_visit_func (const gchar *rel_path,
-		   GnomeVFSFileInfo *info,
-		   gboolean recursing_will_loop,
-		   gpointer user_data,
-		   gboolean *recurse)
+#define STD_ATTRIBUTES \
+	G_FILE_ATTRIBUTE_STD_NAME "," \
+	G_FILE_ATTRIBUTE_STD_DISPLAY_NAME "," \
+	G_FILE_ATTRIBUTE_STD_IS_HIDDEN "," \
+	G_FILE_ATTRIBUTE_STD_TYPE "," \
+	G_FILE_ATTRIBUTE_ID_FILE
+
+static void
+visit_directory (GFile *dir, SearchThreadData *data)
 {
-	SearchThreadData *data;
-	int i;
+	GFileEnumerator *enumerator;
+	GFileInfo *info;
+	GFile *child;
+	const char *mime_type, *display_name;
 	char *lower_name, *normalized;
-	GnomeVFSURI *uri;
 	gboolean hit;
+	int i;
 	GList *l;
-	gboolean is_hidden;
-	
-	data = user_data;
+	const char *id;
+	gboolean visited;
 
-	if (data->cancelled) {
-		return FALSE;
+	enumerator = g_file_enumerate_children (dir,
+						data->mime_types != NULL ?
+						STD_ATTRIBUTES ","
+						G_FILE_ATTRIBUTE_STD_CONTENT_TYPE
+						:
+						STD_ATTRIBUTES
+						,
+						0, data->cancellable, NULL);
+	
+	if (enumerator == NULL) {
+		return;
 	}
 
-	is_hidden = *info->name == '.';
-	
-	if (recursing_will_loop || is_hidden) {
-		*recurse = FALSE;
-	} else {
-		*recurse = TRUE;
-	}
-
-	hit = FALSE;
-
-	if (!is_hidden) {
-		if (g_utf8_validate (info->name, -1, NULL)) {
-			normalized = g_utf8_normalize (info->name, -1, G_NORMALIZE_NFD);
-			lower_name = g_utf8_strdown (normalized, -1);
-			g_free (normalized);
-		} else {
-			lower_name = g_ascii_strdown (info->name, -1);
+	while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL) {
+		if (g_file_info_get_is_hidden (info)) {
+			goto next;
 		}
+		
+		display_name = g_file_info_get_display_name (info);
+		if (display_name == NULL) {
+			goto next;
+		}
+		
+		normalized = g_utf8_normalize (display_name, -1, G_NORMALIZE_NFD);
+		lower_name = g_utf8_strdown (normalized, -1);
+		g_free (normalized);
 		
 		hit = TRUE;
 		for (i = 0; data->words[i] != NULL; i++) {
@@ -229,56 +252,82 @@ search_visit_func (const gchar *rel_path,
 			}
 		}
 		g_free (lower_name);
-	}
-
-	if (hit && data->mime_types != NULL) {
-		hit = FALSE;
-
-		if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) {
-			for (l = data->mime_types; l != NULL; l = l->next) {
-				if (strcmp (info->mime_type, l->data) == 0) {
+		
+		if (hit && data->mime_types) {
+			mime_type = g_file_info_get_content_type (info);
+			hit = FALSE;
+			
+			for (l = data->mime_types; mime_type != NULL && l != NULL; l = l->next) {
+				if (g_content_type_equals (mime_type, l->data) == 0) {
 					hit = TRUE;
 					break;
 				}
 			}
 		}
+		
+		child = g_file_get_child (dir, g_file_info_get_name (info));
+		
+		if (hit) {
+			data->uri_hits = g_list_prepend (data->uri_hits, g_file_get_uri (child));
+		}
+		
+		data->n_processed_files++;
+		if (data->n_processed_files > BATCH_SIZE) {
+			send_batch (data);
+		}
+
+		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+			id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
+			visited = FALSE;
+			if (id) {
+				if (g_hash_table_lookup_extended (data->visited,
+								  id, NULL, NULL)) {
+					visited = TRUE;
+				} else {
+					g_hash_table_insert (data->visited, g_strdup (id), NULL);
+				}
+			}
+			
+			if (!visited) {
+				g_queue_push_tail (data->directories, g_object_ref (child));
+			}
+		}
+		
+		g_object_unref (child);
+	next:
+		g_object_unref (info);
 	}
 
-	if (hit) {
-		uri  = gnome_vfs_uri_append_string (data->uri, rel_path);
-		data->uri_hits = g_list_prepend (data->uri_hits, gnome_vfs_uri_to_string (uri, 0));
-		gnome_vfs_uri_unref (uri);
-	}
-
-	data->n_processed_files++;
-
-	if (data->n_processed_files > BATCH_SIZE) {
-		send_batch (data);
-	}
-	
-		 
-	return TRUE;
+	g_object_unref (enumerator);
 }
-
 
 
 static gpointer 
 search_thread_func (gpointer user_data)
 {
 	SearchThreadData *data;
-	GnomeVFSResult res;
-	GnomeVFSDirectoryVisitOptions visit_options;
+	GFile *dir;
+	GFileInfo *info;
+	const char *id;
 
 	data = user_data;
 
-	visit_options = GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK |
-			GNOME_VFS_DIRECTORY_VISIT_IGNORE_RECURSE_ERROR;
-
-	res = gnome_vfs_directory_visit_uri (data->uri,
-					     GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
-					     visit_options,
-					     search_visit_func,
-					     data);
+	/* Insert id for toplevel directory into visited */
+	dir = g_queue_peek_head (data->directories);
+	info = g_file_query_info (dir, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
+	if (info) {
+		id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
+		if (id) {
+			g_hash_table_insert (data->visited, g_strdup (id), NULL);
+		}
+		g_object_unref (info);
+	}
+	
+	while (!g_cancellable_is_cancelled (data->cancellable) &&
+	       (dir = g_queue_pop_head (data->directories)) != NULL) {
+		visit_directory (dir, data);
+		g_object_unref (dir);
+	}
 	send_batch (data);
 
 	g_idle_add (search_thread_done_idle, data);
@@ -317,7 +366,7 @@ nautilus_search_engine_simple_stop (NautilusSearchEngine *engine)
 	simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (engine);
 
 	if (simple->details->active_search != NULL) {
-		simple->details->active_search->cancelled = TRUE;
+		g_cancellable_cancel (simple->details->active_search->cancellable);
 		simple->details->active_search = NULL;
 	}
 }

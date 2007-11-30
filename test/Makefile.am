@@ -16,7 +16,10 @@ noinst_PROGRAMS =\
 	test-nautilus-wrap-table \
 	test-nautilus-search-engine \
 	test-nautilus-directory-async \
+	test-nautilus-copy \
 	$(NULL)
+
+test_nautilus_copy_SOURCES = test-copy.c test.c
 
 test_nautilus_wrap_table_SOURCES = test-nautilus-wrap-table.c test.c
 

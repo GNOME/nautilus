@@ -40,6 +40,7 @@
 #include <eel/eel-string-list.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
+#include <gio/gappinfo.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
@@ -121,8 +122,7 @@ struct FMDirectoryViewClass {
 	 * load failures like ACCESS_DENIED.
 	 */
 	void    (* load_error)           (FMDirectoryView *view,
-					  GnomeVFSResult result,
-					  const char *error_message);
+					  GError *error);
 
 	/* Function pointers that don't have corresponding signals */
 
@@ -226,7 +226,7 @@ struct FMDirectoryViewClass {
 	 * be displayed with each file. By default, all emblems returned by
 	 * NautilusFile are displayed.
 	 */
-	EelStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
+	char ** (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
 	/* file_limit_reached is a function pointer that subclasses may
 	 * override to control what happens when a directory is loaded
@@ -373,19 +373,23 @@ gboolean            fm_directory_view_get_loading                      (FMDirect
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void                fm_directory_view_activate_files                   (FMDirectoryView  *view,
-									GList            *files,
-									NautilusWindowOpenMode mode,
+void                fm_directory_view_activate_files                   (FMDirectoryView        *view,
+									GList                  *files,
+									NautilusWindowOpenMode  mode,
+									NautilusWindowOpenFlags flags);
+void                fm_directory_view_activate_file                    (FMDirectoryView        *view,
+									NautilusFile           *file,
+									NautilusWindowOpenMode  mode,
 									NautilusWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
-gboolean            fm_directory_view_confirm_multiple_windows         (FMDirectoryView  *view,
+gboolean            fm_directory_view_confirm_multiple_windows         (GtkWindow        *parent_window,
 									int               window_count);
 void                fm_directory_view_queue_file_change                (FMDirectoryView  *view,
 									NautilusFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 GtkUIManager *      fm_directory_view_get_ui_manager                   (FMDirectoryView  *view);
-EelStringList *     fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
+char **             fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);

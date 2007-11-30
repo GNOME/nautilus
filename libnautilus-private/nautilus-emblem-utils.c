@@ -27,17 +27,15 @@
 #include <sys/types.h>
 #include <utime.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include "nautilus-icon-factory.h"
-#include <eel/eel-string.h>
+#include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-icon-theme.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <gtk/gtkicontheme.h>
 #include "nautilus-emblem-utils.h"
 
 #define EMBLEM_NAME_TRASH   "emblem-trash"
@@ -48,14 +46,13 @@
 #define EMBLEM_NAME_DESKTOP "emblem-desktop"
 
 GList *
-nautilus_emblem_list_availible (void)
+nautilus_emblem_list_available (void)
 {
 	GtkIconTheme *icon_theme;
 	GList *list;
 	
-	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	icon_theme = gtk_icon_theme_get_default ();
 	list = gtk_icon_theme_list_icons (icon_theme, "Emblems");
-	g_object_unref (icon_theme);
 	return list;
 }
 
@@ -64,9 +61,8 @@ nautilus_emblem_refresh_list (void)
 {
 	GtkIconTheme *icon_theme;
 	
-	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	icon_theme = gtk_icon_theme_get_default ();
 	gtk_icon_theme_rescan_if_needed (icon_theme);
-	g_object_unref (icon_theme);
 }
 
 char *
@@ -80,37 +76,39 @@ nautilus_emblem_get_icon_name_from_keyword (const char *keyword)
 static gboolean
 is_reserved_keyword (const char *keyword)
 {
-	GList *availible;
+	GList *available;
 	char *icon_name;
 	gboolean result;
 
+	g_assert (keyword != NULL);
+
 	/* check intrinsic emblems */
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
 		return TRUE;
 	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
 		return TRUE;
 	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
 		return TRUE;
 	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
 		return TRUE;
 	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
 		return TRUE;
 	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
+	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
 		return TRUE;
 	}
 
-	availible = nautilus_emblem_list_availible ();
+	available = nautilus_emblem_list_available ();
 	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
 	/* see if the keyword already exists */
-	result = g_list_find_custom (availible,
+	result = g_list_find_custom (available,
 				     (char *) icon_name,
-				     (GCompareFunc) eel_strcasecmp) != NULL;
-	eel_g_list_free_deep (availible);	
+				     (GCompareFunc) g_strcasecmp) != NULL;
+	eel_g_list_free_deep (available);	
 	g_free (icon_name);
 	return result;
 }
@@ -145,7 +143,7 @@ nautilus_emblem_get_keyword_from_icon_name (const char *emblem)
 {
 	g_return_val_if_fail (emblem != NULL, NULL);
 
-	if (eel_str_has_prefix (emblem, "emblem-")) {
+	if (g_str_has_prefix (emblem, "emblem-")) {
 		return g_strdup (&emblem[7]);
 	} else {
 		return g_strdup (emblem);
@@ -153,19 +151,26 @@ nautilus_emblem_get_keyword_from_icon_name (const char *emblem)
 }
 
 GdkPixbuf *
-nautilus_emblem_load_pixbuf_for_emblem (const char *uri)
+nautilus_emblem_load_pixbuf_for_emblem (GFile *emblem)
 {
+	GInputStream *stream;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *scaled;
 
-	pixbuf = eel_gdk_pixbuf_load (uri);
+	stream = (GInputStream *) g_file_read (emblem, NULL, NULL);
+	if (!stream) {
+		return NULL;
+	}
 
+	pixbuf = eel_gdk_pixbuf_load_from_stream (stream);
 	g_return_val_if_fail (pixbuf != NULL, NULL);
 
 	scaled = eel_gdk_pixbuf_scale_down_to_fit (pixbuf,
 						   NAUTILUS_ICON_SIZE_STANDARD,
 						   NAUTILUS_ICON_SIZE_STANDARD);
-	g_object_unref (G_OBJECT (pixbuf));
+
+	g_object_unref (pixbuf);
+	g_object_unref (stream);
 
 	return scaled;
 }
@@ -227,9 +232,7 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 				       const char *display_name,
 				       GtkWindow *parent_window)
 {
-	GnomeVFSURI *vfs_uri;
-	char *path, *dir, *stat_dir;
-	FILE *file;
+	char *basename, *path, *dir, *stat_dir;
 	struct stat stat_buf;
 	struct utimbuf ubuf;
 	
@@ -239,19 +242,25 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		return;
 	}
 
-	dir = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems",
-			       g_get_home_dir ());
-	stat_dir = g_strdup_printf ("%s/.icons/hicolor",
-				    g_get_home_dir ());
+	dir = g_build_filename (g_get_home_dir (),
+				".icons", "hicolor", "48x48", "emblems",
+				NULL);
+	stat_dir = g_build_filename (g_get_home_dir (),
+				     ".icons", "hicolor",
+				     NULL);
 
-	vfs_uri = gnome_vfs_uri_new (dir);
+	if (g_mkdir_with_parents (dir, 0755) != 0) {
+		eel_show_error_dialog (_("The emblem cannot be installed."),
+				       _("Sorry, unable to save custom emblem."), 				       
+				       GTK_WINDOW (parent_window));
+		g_free (dir);
+		g_free (stat_dir);
+		return;
+	}
 
-	g_return_if_fail (vfs_uri != NULL);
-	
-	eel_make_directory_and_parents (vfs_uri, 0755);
-	gnome_vfs_uri_unref (vfs_uri);
-	
-	path = g_strdup_printf ("%s/emblem-%s.png", dir, keyword);
+	basename = g_strdup_printf ("emblem-%s.png", keyword);
+	path = g_build_filename (dir, basename, NULL);
+	g_free (basename);
 
 	/* save the image */
 	if (eel_gdk_pixbuf_save_to_file (pixbuf, path) != TRUE) {
@@ -267,23 +276,28 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	g_free (path);
 
 	if (display_name != NULL) {
-		path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
-		file = fopen (path, "w+");
-		g_free (path);
+		char *contents;
 
-		if (file == NULL) {
+		basename = g_strdup_printf ("emblem-%s.icon", keyword);
+		path = g_build_filename (dir, basename, NULL);
+		g_free (basename);
+
+		contents = g_strdup_printf ("\n[Icon Data]\n\nDisplayName=%s\n",
+					    display_name);
+
+		if (!g_file_set_contents (path, contents, strlen (contents), NULL)) {
 			eel_show_error_dialog (_("The emblem cannot be installed."),
 					       _("Sorry, unable to save custom emblem name."), 
 					       GTK_WINDOW (parent_window));
+			g_free (contents);
+			g_free (path);
 			g_free (stat_dir);
 			g_free (dir);
 			return;
 		}
-		
-		/* write the icon description */
-		fprintf (file, "\n[Icon Data]\n\nDisplayName=%s\n", display_name);
-		fflush (file);
-		fclose (file);
+
+		g_free (contents);
+		g_free (path);
 	}
 
 	/* Touch the toplevel dir */
@@ -292,7 +306,7 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 		ubuf.modtime = time (NULL);
 		utime (stat_dir, &ubuf);
 	}
-	
+
 	g_free (dir);
 	g_free (stat_dir);
 
@@ -416,8 +430,7 @@ nautilus_emblem_rename_emblem (const char *keyword, const char *name)
 	fclose (file);
 
 	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
-	nautilus_icon_factory_remove_from_cache (icon_name, NULL, 
-						 NAUTILUS_ICON_SIZE_STANDARD);
+	nautilus_icon_info_clear_caches (); /* A bit overkill, but this happens rarely */
 	
 	g_free (icon_name);
 

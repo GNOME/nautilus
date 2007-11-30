@@ -51,11 +51,12 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <gio/gvolumemonitor.h>
+#include <gio/gthemedicon.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"
@@ -73,6 +74,7 @@ typedef struct {
 	GtkTreeModel       *filter_model;
 	NautilusWindowInfo *window;
 	NautilusBookmarkList *bookmarks;
+	GVolumeMonitor *volume_monitor;
 
 	/* DnD */
 	GList     *drag_list;
@@ -188,16 +190,22 @@ static GtkTreeIter
 add_place (NautilusPlacesSidebar *sidebar,
 	   PlaceType place_type,
 	   const char *name,
-	   const char *icon,
+	   GIcon *icon,
 	   const char *uri,
-	   GnomeVFSDrive *drive,
-	   GnomeVFSVolume *volume,
+	   GDrive *drive,
+	   GVolume *volume,
 	   const int index)
 {
 	GdkPixbuf            *pixbuf;
 	GtkTreeIter           iter, child_iter;
+	NautilusIconInfo *icon_info;
+	int icon_size;
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_from_name_with_stock_size (icon, NULL, GTK_ICON_SIZE_MENU, NULL);
+	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+	icon_info = nautilus_icon_info_lookup (icon, icon_size);
+
+	pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+	g_object_unref (icon_info);
 	gtk_list_store_append (sidebar->store, &iter);
 	gtk_list_store_set (sidebar->store, &iter,
 			    PLACES_SIDEBAR_COLUMN_ICON, pixbuf,
@@ -221,16 +229,19 @@ add_place (NautilusPlacesSidebar *sidebar,
 static void
 update_places (NautilusPlacesSidebar *sidebar)
 {
-	NautilusBookmark      *bookmark;
-	GtkTreeSelection      *selection;
-	GtkTreeIter           iter, last_iter;
-	GnomeVFSVolumeMonitor *volume_monitor;
-	GList 		      *volumes, *l, *ll;
-	GnomeVFSVolume	      *volume;
-	GList		      *drives;
-	GnomeVFSDrive	      *drive;
-	int 		      bookmark_count, index;
-	char 		      *location, *icon, *mount_uri, *name, *desktop_path;
+	NautilusBookmark *bookmark;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter, last_iter;
+	GVolumeMonitor *volume_monitor;
+	GList *volumes, *l, *ll;
+	GVolume *volume;
+	GList *drives;
+	GDrive *drive;
+	int bookmark_count, index;
+	char *location, *mount_uri, *name, *desktop_path;
+	GIcon *icon;
+	GFile *root;
+	
 		
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 	gtk_list_store_clear (sidebar->store);
@@ -244,9 +255,11 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 		mount_uri = nautilus_get_home_directory_uri ();
 		display_name = g_filename_display_basename (g_get_home_dir ());
+		icon = g_themed_icon_new ("gnome-fs-home");
 		last_iter = add_place (sidebar, PLACES_BUILT_IN,
-				       display_name, "gnome-fs-home",
+				       display_name, icon,
 				       mount_uri, NULL, NULL, 0);
+		g_object_unref (icon);
 		g_free (display_name);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
@@ -254,10 +267,12 @@ update_places (NautilusPlacesSidebar *sidebar)
 		g_free (mount_uri);
 	}
 
-	mount_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
+	icon = g_themed_icon_new ("gnome-fs-desktop");
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       _("Desktop"), "gnome-fs-desktop",
+			       _("Desktop"), icon,
 			       mount_uri, NULL, NULL, 0);
+	g_object_unref (icon);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
@@ -265,45 +280,40 @@ update_places (NautilusPlacesSidebar *sidebar)
 	g_free (desktop_path);
 	
  	mount_uri = "file:///"; /* No need to strdup */
+	icon = g_themed_icon_new ("gnome-dev-harddisk");
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
-			       _("File System"), "gnome-dev-harddisk",
+			       _("File System"), icon,
 			       mount_uri, NULL, NULL, 0);
+	g_object_unref (icon);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}
 
 	/* for all drives add all its volumes */
 
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	drives = gnome_vfs_volume_monitor_get_connected_drives (volume_monitor);
-	drives = g_list_sort (drives, (GCompareFunc)gnome_vfs_drive_compare);
+	volume_monitor = sidebar->volume_monitor;
+	drives = g_volume_monitor_get_connected_drives (volume_monitor);
 	for (l = drives; l != NULL; l = l->next) {
 		drive = l->data;
-		if (!gnome_vfs_drive_is_user_visible (drive)) {
-			gnome_vfs_drive_unref (drive);
-			continue;
-		}
-		if (gnome_vfs_drive_is_mounted (drive)) {
+		if (g_drive_has_volumes (drive)) {
 			/* The drive is mounted, add all its volumes */
-			volumes = gnome_vfs_drive_get_mounted_volumes (drive);
-			volumes = g_list_sort (volumes, (GCompareFunc)gnome_vfs_volume_compare);
+			volumes = g_drive_get_volumes (drive);
 			for (ll = volumes; ll != NULL; ll = ll->next) {
 				volume = ll->data;
-				if (!gnome_vfs_volume_is_user_visible (volume)) {
-					gnome_vfs_volume_unref (volume);
-					continue;
-				}
-				icon = gnome_vfs_volume_get_icon (volume);
-				mount_uri = gnome_vfs_volume_get_activation_uri (volume);
-				name = gnome_vfs_volume_get_display_name (volume);
+				icon = g_volume_get_icon (volume);
+
+				root = g_volume_get_root (volume);
+				mount_uri = g_file_get_uri (root);
+				g_object_unref (root);
+				name = g_volume_get_name (volume);
 				last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
 						       name, icon, mount_uri,
 						       drive, volume, 0);
 				if (strcmp (location, mount_uri) == 0) {
 					gtk_tree_selection_select_iter (selection, &last_iter);
 				}
-				gnome_vfs_volume_unref (volume);
-				g_free (icon);
+				g_object_unref (volume);
+				g_object_unref (icon);
 				g_free (name);
 				g_free (mount_uri);
 			}
@@ -312,54 +322,56 @@ update_places (NautilusPlacesSidebar *sidebar)
 			/* The drive is unmounted but visible, add it.
 			 * This is for drives like floppy that can't be
 			 * auto-mounted */
-			icon = gnome_vfs_drive_get_icon (drive);
-			name = gnome_vfs_drive_get_display_name (drive);
+			icon = g_drive_get_icon (drive);
+			name = g_drive_get_name (drive);
 			last_iter = add_place (sidebar, PLACES_BUILT_IN,
 					       name, icon, NULL,
 					       drive, NULL, 0);
-			g_free (icon);
+			g_object_unref (icon);
 			g_free (name);
 		}		
-		gnome_vfs_drive_unref (drive);
+		g_object_unref (drive);
 	}
 	g_list_free (drives);
 
 	/* add mounted volumes that has no drive (ftp, sftp,...) */
 
-	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
-	volumes = g_list_sort (volumes, (GCompareFunc)gnome_vfs_volume_compare);
+	volumes = g_volume_monitor_get_mounted_volumes (volume_monitor);
 	for (l = volumes; l != NULL; l = l->next) {
 		volume = l->data;
-		drive = gnome_vfs_volume_get_drive (volume);
-		if (!gnome_vfs_volume_is_user_visible (volume) || drive != NULL) {
-		    	gnome_vfs_drive_unref (drive);
-			gnome_vfs_volume_unref (volume);
+		drive = g_volume_get_drive (volume);
+		if (drive != NULL) {
+		    	g_object_unref (drive);
+			g_object_unref (volume);
 			continue;
 		}
-		icon = gnome_vfs_volume_get_icon (volume);
-		mount_uri = gnome_vfs_volume_get_activation_uri (volume);
-		name = gnome_vfs_volume_get_display_name (volume);
+		icon = g_volume_get_icon (volume);
+		root = g_volume_get_root (volume);
+		mount_uri = g_file_get_uri (root);
+		g_object_unref (root);
+		name = g_volume_get_name (volume);
 		last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
 				       name, icon, mount_uri,
 				       NULL, volume, 0);
 		if (strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
-		gnome_vfs_volume_unref (volume);
-		g_free (icon);
+		g_object_unref (volume);
+		g_object_unref (icon);
 		g_free (name);
 		g_free (mount_uri);
 	}
 	g_list_free (volumes);
 
 	mount_uri = "trash:///"; /* No need to strdup */
-	icon = nautilus_trash_monitor_is_empty () ? "user-trash" : "user-trash-full";
+	icon = nautilus_trash_monitor_get_icon ();
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
 			       _("Trash"), icon, mount_uri,
 			       NULL, NULL, 0);
 	if (strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}
+	g_object_unref (icon);
 
 	/* add separator */
 
@@ -388,7 +400,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
 		g_free (name);
-		g_free (icon);
+		g_object_unref (icon);
 		g_free (mount_uri);
 	}
 	g_free (location);
@@ -419,16 +431,16 @@ nautilus_shortcuts_row_separator_func (GtkTreeModel *model,
 
 
 static void
-volume_mounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			 GnomeVFSVolume *volume,
+volume_mounted_callback (GVolumeMonitor *volume_monitor,
+			 GVolume *volume,
 			 NautilusPlacesSidebar *sidebar)
 {
 	update_places (sidebar);
 }
 
 static void
-volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			   GnomeVFSVolume *volume,
+volume_unmounted_callback (GVolumeMonitor *volume_monitor,
+			   GVolume *volume,
 			   NautilusPlacesSidebar *sidebar)
 {
 	/* At this point the volume still appears to be mounted.
@@ -439,36 +451,19 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
 }
 
 static void
-drive_disconnected_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			     GnomeVFSDrive         *drive,
+drive_disconnected_callback (GVolumeMonitor *volume_monitor,
+			     GDrive         *drive,
 			     NautilusPlacesSidebar *sidebar)
 {
 	update_places (sidebar);
 }
 
 static void
-drive_connected_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			  GnomeVFSDrive         *drive,
+drive_connected_callback (GVolumeMonitor *volume_monitor,
+			  GDrive         *drive,
 			  NautilusPlacesSidebar *sidebar)
 {
 	update_places (sidebar);
-}
-
-static void
-volume_op_callback (gboolean succeeded,
-		    char *error,
-		    char *detailed_error,
-		    gpointer user_data)
-{
-	if (!succeeded) {
-		if (*error == 0 &&
-		    detailed_error != NULL && *detailed_error == 0) {
-			/* This means the command displays its own errors */
-			return;
-		}
-		eel_show_error_dialog_with_details (error, NULL,
-						    detailed_error, NULL);
-	}
 }
 
 static void
@@ -674,7 +669,7 @@ can_accept_items_as_bookmarks (const GList *items)
 	 */
 	for (max = 100; items != NULL && max >= 0; items = items->next, max--) {
 		uri = ((NautilusDragSelectionItem *)items->data)->uri;
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get_by_uri (uri);
 		if (!can_accept_file_as_bookmark (file)) {
 			nautilus_file_unref (file);
 			return FALSE;
@@ -774,6 +769,8 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 	char *uri, *name;
 	char **uris;
 	int i;
+	GFile *location;
+	GIcon *icon;
 	
 	uris = gtk_selection_data_get_uris (selection_data);
 	if (!uris)
@@ -781,7 +778,7 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 	
 	for (i = 0; uris[i]; i++) {
 		uri = uris[i];
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get_by_uri (uri);
 
 		if (!can_accept_file_as_bookmark (file)) {
 			nautilus_file_unref (file);
@@ -789,17 +786,21 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 		}
 
 		uri = nautilus_file_get_drop_target_uri (file);
+		location = g_file_new_for_uri (uri);
 		nautilus_file_unref (file);
 
-		name = nautilus_compute_title_for_uri (uri);
+		name = nautilus_compute_title_for_location (location);
 
-		bookmark = nautilus_bookmark_new_with_icon (uri, name,
-							    FALSE, "gnome-fs-directory");
+		icon = g_themed_icon_new ("gnome-fs-directory");
+		bookmark = nautilus_bookmark_new_with_icon (location, name,
+							    FALSE, icon);
+		g_object_unref (icon);
 		
 		if (!nautilus_bookmark_list_contains (sidebar->bookmarks, bookmark)) {
 			nautilus_bookmark_list_insert_item (sidebar->bookmarks, bookmark, position++);
 		}
 
+		g_object_unref (location);
 		g_object_unref (bookmark);
 		g_free (name);
 		g_free (uri);
@@ -1056,22 +1057,9 @@ bookmarks_popup_menu_detach_cb (GtkWidget *attach_widget,
 	sidebar->popup_menu_empty_trash_item = NULL;
 }
 
-static gboolean
-eject_for_type (GnomeVFSDeviceType type)
-{
-	switch (type) {
-	case GNOME_VFS_DEVICE_TYPE_CDROM:
-	case GNOME_VFS_DEVICE_TYPE_ZIP:
-	case GNOME_VFS_DEVICE_TYPE_JAZ:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
-
 static void
-check_visibility (GnomeVFSVolume *volume,
-		  GnomeVFSDrive  *drive,
+check_visibility (GVolume *volume,
+		  GDrive  *drive,
 		  gboolean       *show_mount,
 		  gboolean       *show_unmount,
 		  gboolean       *show_eject,
@@ -1083,21 +1071,23 @@ check_visibility (GnomeVFSVolume *volume,
 	*show_format = FALSE;
 
 	if (volume != NULL) {
-		*show_unmount = TRUE;
-		*show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+		*show_unmount = g_volume_can_unmount (volume);
+		*show_eject = g_volume_can_eject (volume);
 	} else if (drive != NULL) {
-		*show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
-		if (gnome_vfs_drive_is_mounted (drive)) {
+		*show_eject = g_drive_can_eject (drive);
+		if (g_drive_has_volumes (drive)) {
 			*show_unmount = TRUE;
 		} else {
 			*show_mount = TRUE;
 		}
 
-		if (gnome_vfs_drive_get_device_type (drive) == GNOME_VFS_DEVICE_TYPE_FLOPPY &&
-		    !gnome_vfs_drive_is_mounted (drive) &&
+#ifdef TODO_GIO
+		if (something &&
 		    g_find_program_in_path ("gfloppy")) {
 			*show_format = TRUE;
 		}
+#endif
+		
 	}
 }
 
@@ -1106,8 +1096,8 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
 	PlaceType type; 
-	GnomeVFSDrive *drive = NULL;
-	GnomeVFSVolume *volume = NULL;
+	GDrive *drive = NULL;
+	GVolume *volume = NULL;
 	gboolean show_mount;
 	gboolean show_unmount;
 	gboolean show_eject;
@@ -1172,6 +1162,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			gboolean	      open_in_new_window)
 {
 	GtkTreeIter iter;
+	GFile *location;
 	char *uri;
 
 	if (!path) {
@@ -1188,35 +1179,31 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 				    "activate from places sidebar window=%p: %s",
 				    sidebar->window, uri);
+		location = g_file_new_for_uri (uri);
 		/* Navigate to the clicked location */
 		if (!open_in_new_window) {
-			nautilus_window_info_open_location (sidebar->window, uri,
+			nautilus_window_info_open_location (sidebar->window, location,
 							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 							    0, NULL);
 		} else {
 			NautilusWindow *cur, *new;
+			
 			cur = NAUTILUS_WINDOW (sidebar->window);
 			new = nautilus_application_create_navigation_window (cur->application,
 									     NULL,
 									     gtk_window_get_screen (GTK_WINDOW (cur)));
-			nautilus_window_go_to (new, uri);
+			nautilus_window_go_to (new, location);
 		}
+		g_object_unref (location);
 		g_free (uri);
 
 	} else {
-		GnomeVFSDrive *drive;
+		GDrive *drive;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
 		if (drive != NULL) {
-			char *path;
-
-			path = gnome_vfs_drive_get_device_path (drive);
-			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-					    "activate drive from places sidebar window=%p: %s",
-					    sidebar->window, path);
-			g_free (path);
-
-			gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
-			gnome_vfs_drive_unref (drive);
+			/* TODO-gio: Handle callbacks etc */
+			g_drive_mount (drive, NULL, NULL, NULL, sidebar);
+			g_object_unref (drive);
 		}
 	}
 }
@@ -1319,7 +1306,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 		   NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
-	GnomeVFSDrive *drive;
+	GDrive *drive;
 
 	if (!get_selected_iter (sidebar, &iter)) {
 		return;
@@ -1330,8 +1317,9 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (drive != NULL) {
-		gnome_vfs_drive_mount (drive, volume_op_callback, sidebar);
-		gnome_vfs_drive_unref (drive);
+		/* TODO-gio: Handle callbacks etc */
+		g_drive_mount (drive, NULL, NULL, NULL, sidebar);
+		g_object_unref (drive);
 	}
 }
 
@@ -1340,8 +1328,8 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 		     NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
-	GnomeVFSVolume *volume;
-	GnomeVFSDrive  *drive;
+	GVolume *volume;
+	GDrive *drive;
 
 	if (!get_selected_iter (sidebar, &iter)) {
 		return;
@@ -1353,14 +1341,20 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		nautilus_file_operations_unmount_volume (GTK_WIDGET (sidebar->tree_view),
-				volume, volume_op_callback, sidebar);
-	} else if (drive != NULL) {
-		nautilus_file_operations_unmount_drive (GTK_WIDGET (sidebar->tree_view),
-				drive, volume_op_callback, sidebar);
+		GtkWidget *toplevel;
+		
+		/* TODO-gio: Handle callbacks etc */
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
+
+		nautilus_file_operations_unmount_volume (GTK_WINDOW (toplevel),
+							 volume, NULL, sidebar);
 	}
-	gnome_vfs_volume_unref (volume);
-	gnome_vfs_drive_unref (drive);
+	if (volume != NULL) {
+		g_object_unref (volume);
+	}
+	if (drive != NULL) {
+		g_object_unref (drive);
+	}
 }
 
 static void
@@ -1368,8 +1362,8 @@ eject_shortcut_cb (GtkMenuItem           *item,
 		   NautilusPlacesSidebar *sidebar)
 {
 	GtkTreeIter iter;
-	GnomeVFSVolume *volume;
-	GnomeVFSDrive  *drive;
+	GVolume *volume;
+	GDrive  *drive;
 
 	if (!get_selected_iter (sidebar, &iter)) {
 		return;
@@ -1381,12 +1375,14 @@ eject_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		gnome_vfs_volume_eject (volume, volume_op_callback, sidebar);
+		/* TODO-gio: Handle callbacks etc */
+		g_volume_eject (volume, NULL, NULL, sidebar);
 	} else if (drive != NULL) {
-		gnome_vfs_drive_eject (drive, volume_op_callback, sidebar);
+		/* TODO-gio: Handle callbacks etc */
+		g_drive_eject (drive, NULL, NULL, sidebar);
 	}
-	gnome_vfs_volume_unref (volume);
-	gnome_vfs_drive_unref (drive);
+	g_object_unref (volume);
+	g_object_unref (drive);
 }
 
 static void
@@ -1618,6 +1614,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	GtkCellRenderer   *cell;
 	GtkTreeSelection  *selection;
 
+	sidebar->volume_monitor = g_volume_monitor_get ();
+	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
 					GTK_POLICY_NEVER,
 					GTK_POLICY_AUTOMATIC);
@@ -1658,8 +1656,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	sidebar->store = gtk_list_store_new (PLACES_SIDEBAR_COLUMN_COUNT,
 					     G_TYPE_INT, 
 					     G_TYPE_STRING,
-					     GNOME_VFS_TYPE_DRIVE,
-					     GNOME_VFS_TYPE_VOLUME,
+					     G_TYPE_DRIVE,
+					     G_TYPE_VOLUME,
 					     G_TYPE_STRING,
 					     GDK_TYPE_PIXBUF,
 					     G_TYPE_INT
@@ -1746,6 +1744,8 @@ nautilus_places_sidebar_finalize (GObject *object)
 		sidebar->store = NULL;
 	}
 
+	g_object_unref (sidebar->volume_monitor);
+	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					 click_policy_changed_callback,
 					 sidebar);
@@ -1806,8 +1806,6 @@ static void
 nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 					    NautilusWindowInfo *window)
 {	
-	GnomeVFSVolumeMonitor *volume_monitor;
-
 	sidebar->window = window;
 	
 	sidebar->bookmarks = nautilus_window_info_get_bookmark_list (window);
@@ -1821,15 +1819,13 @@ nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 				 G_CALLBACK (loading_uri_callback),
 				 sidebar, 0);
 			 
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	
-	g_signal_connect_object (volume_monitor, "volume_mounted",
+	g_signal_connect_object (sidebar->volume_monitor, "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), sidebar, 0);
-	g_signal_connect_object (volume_monitor, "volume_unmounted",
+	g_signal_connect_object (sidebar->volume_monitor, "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), sidebar, 0);
-	g_signal_connect_object (volume_monitor, "drive_disconnected",
+	g_signal_connect_object (sidebar->volume_monitor, "drive_disconnected",
 				 G_CALLBACK (drive_disconnected_callback), sidebar, 0);
-	g_signal_connect_object (volume_monitor, "drive_connected",
+	g_signal_connect_object (sidebar->volume_monitor, "drive_connected",
 				 G_CALLBACK (drive_connected_callback), sidebar, 0);
 
 	update_places (sidebar);

@@ -30,8 +30,8 @@
 #include <gtk/gtklabel.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <eel/eel-gnome-extensions.h>
+#include <gio/gfile.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <string.h>
@@ -40,32 +40,17 @@
   #include <libexif/exif-data.h>
   #include <libexif/exif-ifd.h>
   #include <libexif/exif-loader.h>
-  #define ENABLE_METADATA 1
 #endif
 #ifdef HAVE_EXEMPI
   #include <exempi/xmp.h>
   #include <exempi/xmpconsts.h>
-  #include <libgnomevfs/gnome-vfs-utils.h>
-  #if !defined(ENABLE_METADATA)
-    #define ENABLE_METADATA 1
-  #endif
-#endif
-
-#ifdef ENABLE_METADATA
-  #include <gtk/gtkliststore.h>
-  #include <gtk/gtktreestore.h>
-  #include <gtk/gtktreeview.h>
-  #include <gtk/gtkscrolledwindow.h>
-  #include <gtk/gtkcellrenderertext.h>
-  #include <eel/eel-vfs-extensions.h>
 #endif
 
 #define LOAD_BUFFER_SIZE 8192
 
 struct NautilusImagePropertiesPageDetails {
-	char *location;
+	GCancellable *cancellable;
 	GtkWidget *resolution;
-	GnomeVFSAsyncHandle *vfs_handle;
 	GdkPixbufLoader *loader;
 	gboolean got_size;
 	gboolean pixbuf_still_loading;
@@ -101,8 +86,6 @@ typedef struct {
 } NautilusImagePropertiesPageProviderClass;
 
 
-static GObjectClass *parent_class = NULL;
-
 static GType nautilus_image_properties_page_provider_get_type (void);
 static void  property_page_provider_iface_init                (NautilusPropertyPageProviderIface *iface);
 
@@ -120,23 +103,30 @@ nautilus_image_properties_page_finalize (GObject *object)
 
 	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (object);
 
-	if (page->details->vfs_handle != NULL) {
-		gnome_vfs_async_cancel (page->details->vfs_handle);
+	if (page->details->cancellable) {
+		g_cancellable_cancel (page->details->cancellable);
+		g_object_unref (page->details->cancellable);
+		page->details->cancellable = NULL;
 	}
-	
-	page->details->vfs_handle = NULL;
-	g_free (page->details->location);
 
-	g_free (page->details);
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_image_properties_page_parent_class)->finalize (object);
 }
 
 static void
-file_closed_callback (GnomeVFSAsyncHandle *handle,
-		      GnomeVFSResult result,
-		      gpointer callback_data)
+file_close_callback (GObject      *object,
+		     GAsyncResult *res,
+		     gpointer      data)
 {
+	NautilusImagePropertiesPage *page;
+	GInputStream *stream;
+
+	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (data);
+	stream = G_INPUT_STREAM (object);
+
+	g_input_stream_close_finish (stream, res, NULL);
+
+	g_object_unref (page->details->cancellable);
+	page->details->cancellable = NULL;
 }
 
 #ifdef HAVE_EXIF
@@ -209,11 +199,14 @@ exifdata_get_tag_value_utf8 (ExifData *data, ExifTag tag)
 }
 
 static gboolean
-append_tag_value_pair (GString *string, ExifData *data, ExifTag tag, gchar *description) 
+append_tag_value_pair (GString  *string,
+		       ExifData *data,
+		       ExifTag   tag,
+		       char     *description) 
 {
         char *utf_attribute;
         char *utf_value;
- 
+
 	utf_attribute = exifdata_get_tag_name_utf8 (tag);
 	utf_value = exifdata_get_tag_value_utf8 (data, tag);
 
@@ -223,7 +216,9 @@ append_tag_value_pair (GString *string, ExifData *data, ExifTag tag, gchar *desc
    		return FALSE;
 	}
 
-	g_string_append_printf (string, "<b>%s:</b> %s\n", (description != NULL) ? description : utf_attribute, utf_value);
+	g_string_append_printf (string, "<b>%s:</b> %s\n",
+				description ? description : utf_attribute,
+				utf_value);
 
         g_free (utf_attribute);
         g_free (utf_value);
@@ -254,36 +249,51 @@ append_exifdata_string (ExifData *exifdata, GString *string)
                 append_tag_value_pair (string, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_SOFTWARE, _("Software"));
-
 	}
 }
 #endif /*HAVE_EXIF*/
 
-
 #ifdef HAVE_EXEMPI
 static void
-append_xmp_value_pair(GString *string, XmpPtr xmp, const char * ns, const char * propname, gchar* descr)
+append_xmp_value_pair (GString    *string,
+		       XmpPtr      xmp,
+		       const char *ns,
+		       const char *propname,
+		       char       *descr)
 {
 	uint32_t options;
-	XmpStringPtr  value = xmp_string_new();
-	if(xmp_get_property_and_bits(xmp, ns, propname, value, &options)) {
-		if(XMP_IS_PROP_SIMPLE(options)) {
-			g_string_append_printf(string, "<b>%s:</b> %s\n", descr, xmp_string_cstr(value));
+	XmpStringPtr value;
+
+	value = xmp_string_new();
+#ifdef HAVE_EXEMPI_NEW_API
+	if (xmp_get_property (xmp, ns, propname, value, &options)) {
+#else
+	if (xmp_get_property_and_bits (xmp, ns, propname, value, &options)) {
+#endif
+		if (XMP_IS_PROP_SIMPLE (options)) {
+			g_string_append_printf (string,
+						"<b>%s:</b> %s\n",
+						descr,
+						xmp_string_cstr (value));
 		}
-		else if(XMP_IS_PROP_ARRAY(options)) {
-			XmpIteratorPtr iter = xmp_iterator_new(xmp, ns, propname, XMP_ITER_JUSTLEAFNODES);
-			if(iter) {
-				bool first = true;
-				g_string_append_printf(string, "<b>%s:</b> ", descr);
-				while (xmp_iterator_next(iter, NULL, NULL, value, &options) 
+		else if (XMP_IS_PROP_ARRAY (options)) {
+			XmpIteratorPtr iter;
+
+			iter = xmp_iterator_new (xmp, ns, propname, XMP_ITER_JUSTLEAFNODES);
+			if (iter) {
+				gboolean first = TRUE;
+				g_string_append_printf (string, "<b>%s:</b> ", descr);
+				while (xmp_iterator_next (iter, NULL, NULL, value, &options) 
 				       && !XMP_IS_PROP_QUALIFIER(options)) {
-					if(!first) {
-						g_string_append_printf(string, ", ");
+					if (!first) {
+						g_string_append_printf (string, ", ");
 					}
 					else {
-						first = false;
+						first = FALSE;
 					}
-					g_string_append_printf(string, "%s",  xmp_string_cstr(value));
+					g_string_append_printf (string,
+								"%s",
+								xmp_string_cstr(value));
 				}
 				xmp_iterator_free(iter);
 				g_string_append_printf(string, "\n");
@@ -292,7 +302,6 @@ append_xmp_value_pair(GString *string, XmpPtr xmp, const char * ns, const char *
 	}
 	xmp_string_free(value);
 }
-
 
 static void
 append_xmpdata_string(XmpPtr xmp, GString *string)
@@ -308,7 +317,6 @@ append_xmpdata_string(XmpPtr xmp, GString *string)
 	}
 }
 #endif
-
 
 static void
 load_finished (NautilusImagePropertiesPage *page)
@@ -367,56 +375,75 @@ load_finished (NautilusImagePropertiesPage *page)
 		page->details->xmp = NULL;
 	}
 #endif
-	
-	if (page->details->vfs_handle != NULL) {
-		gnome_vfs_async_close (page->details->vfs_handle, file_closed_callback, NULL);
-		page->details->vfs_handle = NULL;
-	}
 }
 
 static void
-file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
-		    GnomeVFSResult result,
-		    gpointer buffer,
-		    GnomeVFSFileSize bytes_requested,
-		    GnomeVFSFileSize bytes_read,
-		    gpointer callback_data)
+file_read_callback (GObject      *object,
+		    GAsyncResult *res,
+		    gpointer      data)
 {
 	NautilusImagePropertiesPage *page;
-#ifdef HAVE_EXIF
+	GInputStream *stream;
+	gssize count_read;
+	GError *error;
 	int exif_still_loading;
-#endif
+	gboolean done_reading;
 
-	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (callback_data);
+	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (data);
+	stream = G_INPUT_STREAM (object);
 
-	if (result == GNOME_VFS_OK && bytes_read != 0) {
+	error = NULL;
+	done_reading = FALSE;
+	count_read = g_input_stream_read_finish (stream, res, &error);
+
+	if (count_read > 0) {
+
+		g_assert (count_read <= sizeof(page->details->buffer));
+
 #ifdef HAVE_EXIF
 		exif_still_loading = exif_loader_write (page->details->exifldr,
-				  		        buffer,
-				  			bytes_read);
+				  		        page->details->buffer,
+				  			count_read);
+#else
+		exif_still_loading = 0;
 #endif
+
 		if (page->details->pixbuf_still_loading) {
 			if (!gdk_pixbuf_loader_write (page->details->loader,
-					      	      buffer,
-					      	      bytes_read,
+					      	      page->details->buffer,
+					      	      count_read,
 					      	      NULL)) {
 				page->details->pixbuf_still_loading = FALSE;
 			}
 		}
-		if (page->details->pixbuf_still_loading
-#ifdef HAVE_EXIF
-		    || (exif_still_loading == 1) 
-#endif
-		   ) {
-			gnome_vfs_async_read (page->details->vfs_handle,
-					      page->details->buffer,
-					      sizeof (page->details->buffer),
-					      file_read_callback,
-					      page);
-			return;
+
+		if (page->details->pixbuf_still_loading ||
+		    (exif_still_loading == 1)) {
+			g_input_stream_read_async (G_INPUT_STREAM (stream),
+						   page->details->buffer,
+						   sizeof (page->details->buffer),
+						   0,
+						   page->details->cancellable,
+						   file_read_callback,
+						   page);
+		}
+		else {
+			done_reading = TRUE;
 		}
 	}
-	load_finished (page);
+	else {
+		/* either EOF, cancelled or an error occurred */
+		done_reading = TRUE;
+	}
+
+	if (done_reading) {
+		load_finished (page);
+		g_input_stream_close_async (stream,
+					    0,
+					    page->details->cancellable,
+					    file_close_callback,
+					    page);
+	}
 }
 
 static void
@@ -428,7 +455,7 @@ size_prepared_callback (GdkPixbufLoader *loader,
 	NautilusImagePropertiesPage *page;
 
 	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (callback_data);
-	
+
 	page->details->height = height;
 	page->details->width = width;
 	page->details->got_size = TRUE;
@@ -436,60 +463,71 @@ size_prepared_callback (GdkPixbufLoader *loader,
 }
 
 static void
-file_opened_callback (GnomeVFSAsyncHandle *vfs_handle,
-		      GnomeVFSResult result,
-		      gpointer callback_data)
+file_open_callback (GObject      *object,
+		    GAsyncResult *res,
+		    gpointer      data)
 {
 	NautilusImagePropertiesPage *page;
+	GFile *file;
+	GFileInputStream *stream;
+	GError *error;
 
-	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (callback_data);
-	
-	if (result != GNOME_VFS_OK) {
-		page->details->vfs_handle = NULL;
-		return;
-	}
+	page = NAUTILUS_IMAGE_PROPERTIES_PAGE (data);
+	file = G_FILE (object);
 
-	page->details->loader = gdk_pixbuf_loader_new ();
-	page->details->pixbuf_still_loading = TRUE;
-	page->details->width = 0;
-	page->details->height = 0;
+	error = NULL;
+	stream = g_file_read_finish (file, res, &error);
+	if (stream) {
+		page->details->loader = gdk_pixbuf_loader_new ();
+		page->details->pixbuf_still_loading = TRUE;
+		page->details->width = 0;
+		page->details->height = 0;
 #ifdef HAVE_EXIF
-	page->details->exifldr = exif_loader_new ();
+		page->details->exifldr = exif_loader_new ();
 #endif /*HAVE_EXIF*/
 
-	g_signal_connect (page->details->loader, "size_prepared",
-			  G_CALLBACK (size_prepared_callback), page);
-	
-	gnome_vfs_async_read (vfs_handle,
-			      page->details->buffer,
-			      sizeof (page->details->buffer),
-			      file_read_callback,
-			      page);
-}
+		g_signal_connect (page->details->loader,
+				  "size_prepared",
+				  G_CALLBACK (size_prepared_callback),
+				  page);
 
+		g_input_stream_read_async (G_INPUT_STREAM (stream),
+					   page->details->buffer,
+					   sizeof (page->details->buffer),
+					   0,
+					   page->details->cancellable,
+					   file_read_callback,
+					   page);
+
+		g_object_unref (stream);
+	}
+}
 
 static void
 load_location (NautilusImagePropertiesPage *page,
-	       const char *location)
+	       const char                  *location)
 {
+	GFile *file;
+
 	g_assert (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE (page));
 	g_assert (location != NULL);
 
-	if (page->details->vfs_handle != NULL)
-		gnome_vfs_async_cancel (page->details->vfs_handle);
+	page->details->cancellable = g_cancellable_new ();
+	file = g_file_new_for_uri (location);
 
 #ifdef HAVE_EXEMPI
 	{
 		/* Current Exempi does not support setting custom IO to be able to use Gnome-vfs */
 		/* So it will only work with local files. Future version might remove this limitation */
 		XmpFilePtr xf;
-		gchar* localname;
-		localname = gnome_vfs_get_local_path_from_uri (location);
-		if(localname) {
-			xf = xmp_files_open_new(localname, 0);
-			page->details->xmp = xmp_files_get_new_xmp(xf); /* only load when loading */
-			xmp_files_close(xf, 0);
-			g_free(localname);
+		char *localname;
+
+		localname = g_filename_from_uri (location, NULL, NULL);
+		if (localname) {
+			xf = xmp_files_open_new (localname, 0);
+			page->details->xmp = xmp_files_get_new_xmp (xf); /* only load when loading */
+			xmp_files_close (xf, 0);
+			g_free (localname);
 		}
 		else {
 			page->details->xmp = NULL;
@@ -497,26 +535,33 @@ load_location (NautilusImagePropertiesPage *page,
 	}
 #endif /*HAVE_EXEMPI*/
 
-	gnome_vfs_async_open (&page->details->vfs_handle,
-			      location,
-			      GNOME_VFS_OPEN_READ,
-			      -2,
-			      file_opened_callback,
-			      page);
+	g_file_read_async (file,
+			   0,
+			   page->details->cancellable,
+			   file_open_callback,
+			   page);
+
+	g_object_unref (file);
 }
 
 static void
 nautilus_image_properties_page_class_init (NautilusImagePropertiesPageClass *class)
 {
-	parent_class = g_type_class_peek_parent (class);
-	
-	G_OBJECT_CLASS (class)->finalize = nautilus_image_properties_page_finalize;
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+
+	object_class->finalize = nautilus_image_properties_page_finalize;
+
+	g_type_class_add_private (object_class, sizeof(NautilusImagePropertiesPageDetails));
 }
 
 static void
 nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
 {
-	page->details = g_new0 (NautilusImagePropertiesPageDetails, 1);
+	page->details = G_TYPE_INSTANCE_GET_PRIVATE (page,
+						     NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE,
+						     NautilusImagePropertiesPageDetails);
 
 	gtk_box_set_homogeneous (GTK_BOX (page), FALSE);
 	gtk_box_set_spacing (GTK_BOX (page), 2);
@@ -581,10 +626,11 @@ get_property_pages (NautilusPropertyPageProvider *provider,
 	pages = NULL;
 	
         uri = nautilus_file_info_get_uri (file);
-	
+
 	page = g_object_new (nautilus_image_properties_page_get_type (), NULL);
-        page->details->location = uri;
-	load_location (page, page->details->location);
+	load_location (page, uri);
+
+	g_free (uri);
 
         real_page = nautilus_property_page_new
                 ("NautilusImagePropertiesPage::property_page", 

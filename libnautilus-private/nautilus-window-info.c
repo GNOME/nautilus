@@ -153,7 +153,7 @@ nautilus_window_info_report_selection_changed (NautilusWindowInfo      *window)
 
 void
 nautilus_window_info_open_location (NautilusWindowInfo      *window,
-				    const char              *location,
+				    GFile                   *location,
 				    NautilusWindowOpenMode   mode,
 				    NautilusWindowOpenFlags  flags,
 				    GList                   *selection)

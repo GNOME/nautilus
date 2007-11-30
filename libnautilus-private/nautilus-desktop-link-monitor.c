@@ -39,12 +39,12 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <glib/gi18n.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <gio/gvolumemonitor.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <string.h>
 
 struct NautilusDesktopLinkMonitorDetails {
+	GVolumeMonitor *volume_monitor;
 	NautilusDirectory *desktop_dir;
 	
 	NautilusDesktopLink *home_link;
@@ -87,24 +87,11 @@ nautilus_desktop_link_monitor_get (void)
 	return the_link_monitor;
 }
 
-static gboolean
-eject_for_type (GnomeVFSDeviceType type)
-{
-	switch (type) {
-	case GNOME_VFS_DEVICE_TYPE_CDROM:
-	case GNOME_VFS_DEVICE_TYPE_ZIP:
-	case GNOME_VFS_DEVICE_TYPE_JAZ:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
-
 static void
 volume_delete_dialog (GtkWidget *parent_view,
                       NautilusDesktopLink *link)
 {
-	GnomeVFSVolume *volume;
+	GVolume *volume;
 	char *dialog_str;
 	char *display_name;
 
@@ -116,7 +103,7 @@ volume_delete_dialog (GtkWidget *parent_view,
 					      display_name);
 		g_free (display_name);
 
-		if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
+		if (g_volume_can_eject (volume)) {
 			eel_run_simple_dialog
 				(parent_view, 
 				 FALSE,
@@ -136,7 +123,7 @@ volume_delete_dialog (GtkWidget *parent_view,
 				 GTK_STOCK_OK, NULL);
 		}
 
-		gnome_vfs_volume_unref (volume);
+		g_object_unref (volume);
 		g_free (dialog_str);
 	}
 }
@@ -198,15 +185,11 @@ nautilus_desktop_link_monitor_make_filename_unique (NautilusDesktopLinkMonitor *
 
 static void
 create_volume_link (NautilusDesktopLinkMonitor *monitor,
-		    GnomeVFSVolume *volume)
+		    GVolume *volume)
 {
 	NautilusDesktopLink *link;
 
 	link = NULL;
-
-	if (!gnome_vfs_volume_is_user_visible (volume)) {
-		return;
-	}
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
 		link = nautilus_desktop_link_new_from_volume (volume);
@@ -217,8 +200,8 @@ create_volume_link (NautilusDesktopLinkMonitor *monitor,
 
 
 static void
-volume_mounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			 GnomeVFSVolume *volume, 
+volume_mounted_callback (GVolumeMonitor *volume_monitor,
+			 GVolume *volume, 
 			 NautilusDesktopLinkMonitor *monitor)
 {
 	create_volume_link (monitor, volume);
@@ -226,23 +209,23 @@ volume_mounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
 
 
 static void
-volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			   GnomeVFSVolume *volume, 
+volume_unmounted_callback (GVolumeMonitor *volume_monitor,
+			   GVolume *volume, 
 			   NautilusDesktopLinkMonitor *monitor)
 {
 	GList *l;
 	NautilusDesktopLink *link;
-	GnomeVFSVolume *other_volume;
+	GVolume *other_volume;
 
 	link = NULL;
 	for (l = monitor->details->volume_links; l != NULL; l = l->next) {
 		other_volume = nautilus_desktop_link_get_volume (l->data);
 		if (volume == other_volume) {
-			gnome_vfs_volume_unref (other_volume);
+			g_object_unref (other_volume);
 			link = l->data;
 			break;
 		}
-		gnome_vfs_volume_unref (other_volume);
+		g_object_unref (other_volume);
 	}
 
 	if (link) {
@@ -324,19 +307,17 @@ desktop_network_visible_changed (gpointer callback_data)
 static void
 desktop_volumes_visible_changed (gpointer callback_data)
 {
-	GnomeVFSVolumeMonitor *volume_monitor;
 	NautilusDesktopLinkMonitor *monitor;
 	GList *l, *volumes;
 	
-	volume_monitor = gnome_vfs_get_volume_monitor ();
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
 		if (monitor->details->volume_links == NULL) {
-			volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+			volumes = g_volume_monitor_get_mounted_volumes (monitor->details->volume_monitor);
 			for (l = volumes; l != NULL; l = l->next) {
 				create_volume_link (monitor, l->data);
-				gnome_vfs_volume_unref (l->data);
+				g_object_unref (l->data);
 			}
 			g_list_free (volumes);
 		}
@@ -366,8 +347,7 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDesktopLinkMonitor *monitor;
 	GList *l, *volumes;
-	GnomeVFSVolume *volume;
-	GnomeVFSVolumeMonitor *volume_monitor;
+	GVolume *volume;
 
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
@@ -375,8 +355,10 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	
 	monitor->details = g_new0 (NautilusDesktopLinkMonitorDetails, 1);
 
+	monitor->details->volume_monitor = g_volume_monitor_get ();
+
 	/* We keep around a ref to the desktop dir */
-	monitor->details->desktop_dir = nautilus_directory_get (EEL_DESKTOP_URI);
+	monitor->details->desktop_dir = nautilus_directory_get_by_uri (EEL_DESKTOP_URI);
 
 	/* Default links */
 
@@ -406,13 +388,11 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 
 	/* Volume links */
 
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	
-	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+	volumes = g_volume_monitor_get_mounted_volumes (monitor->details->volume_monitor);
 	for (l = volumes; l != NULL; l = l->next) {
 		volume = l->data;
 		create_volume_link (monitor, volume);
-		gnome_vfs_volume_unref (volume);
+		g_object_unref (volume);
 	}
 	g_list_free (volumes);
 
@@ -420,10 +400,12 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 				      desktop_volumes_visible_changed,
 				      monitor);
 
-	monitor->details->mount_id = g_signal_connect_object (volume_monitor, "volume_mounted",
-							      G_CALLBACK (volume_mounted_callback), monitor, 0);
-	monitor->details->unmount_id = g_signal_connect_object (volume_monitor, "volume_unmounted",
-								G_CALLBACK (volume_unmounted_callback), monitor, 0);
+	monitor->details->mount_id =
+		g_signal_connect_object (monitor->details->volume_monitor, "volume_mounted",
+					 G_CALLBACK (volume_mounted_callback), monitor, 0);
+	monitor->details->unmount_id =
+		g_signal_connect_object (monitor->details->volume_monitor, "volume_unmounted",
+					 G_CALLBACK (volume_unmounted_callback), monitor, 0);
 
 }
 
@@ -448,6 +430,8 @@ desktop_link_monitor_finalize (GObject *object)
 
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
+	g_object_unref (monitor->details->volume_monitor);
+	
 	/* Default links */
 
 	remove_link_and_preference (&monitor->details->home_link,

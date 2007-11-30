@@ -32,7 +32,6 @@
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
-#include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-main.h"
@@ -56,12 +55,10 @@
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
 #endif
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-horizontal-splitter.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
@@ -145,14 +142,6 @@ static const struct {
 };
 
 static void
-icons_changed_callback (GObject *factory, NautilusWindow *window)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_update_icon (window);
-}
-
-static void
 nautilus_window_init (NautilusWindow *window)
 {
 	GtkWidget *table;
@@ -194,13 +183,6 @@ nautilus_window_init (NautilusWindow *window)
 			  0, 1,                               0, 1,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0,
 			  0,                                  0);
-
-	/* Register IconFactory callback to update the window border icon
-	 * when the icon-theme is changed.
-	 */
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (icons_changed_callback), window,
-				 0);
 
 	/* Register to menu provider extension signal managing menu updates */
 	g_signal_connect_object (nautilus_signaller_get_current (), "popup_menu_changed",
@@ -248,20 +230,20 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 }
 
 void
-nautilus_window_go_to (NautilusWindow *window, const char *uri)
+nautilus_window_go_to (NautilusWindow *window, GFile *location)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_open_location (window, uri, FALSE);
+	nautilus_window_open_location (window, location, FALSE);
 }
 
 
 void
-nautilus_window_go_to_with_selection (NautilusWindow *window, const char *uri, GList *new_selection)
+nautilus_window_go_to_with_selection (NautilusWindow *window, GFile *location, GList *new_selection)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_open_location_with_selection (window, uri, new_selection, FALSE);
+	nautilus_window_open_location_with_selection (window, location, new_selection, FALSE);
 }
 
 static gboolean
@@ -274,10 +256,8 @@ nautilus_window_go_up_signal (NautilusWindow *window, gboolean close_behind)
 void
 nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 {
-	GnomeVFSURI *current_uri;
-	GnomeVFSURI *parent_uri;
+	GFile *parent;
 	GList *selection;
-	char *parent_uri_string;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -285,23 +265,19 @@ nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 		return;
 	}
 	
-	current_uri = gnome_vfs_uri_new (window->details->location);
-	parent_uri = gnome_vfs_uri_get_parent (current_uri);
-	gnome_vfs_uri_unref (current_uri);
+	parent = g_file_get_parent (window->details->location);
 
-	if (parent_uri == NULL) {
+	if (parent == NULL) {
 		return;
 	}
 	
-	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (parent_uri);
-
-	selection = g_list_prepend (NULL, g_strdup (window->details->location));
+	selection = g_list_prepend (NULL, g_object_ref (window->details->location));
 	
-	nautilus_window_open_location_with_selection (window, parent_uri_string, selection, close_behind);
+	nautilus_window_open_location_with_selection (window, parent, selection, close_behind);
 	
-	g_free (parent_uri_string);
-	eel_g_list_free_deep (selection);
+	g_object_unref (parent);
+	
+	eel_g_object_list_free (selection);
 }
 
 static void
@@ -381,13 +357,13 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 void
 nautilus_window_go_home (NautilusWindow *window)
 {
-	char *home_uri;
+	GFile *home;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	home_uri = nautilus_get_home_directory_uri ();
-	nautilus_window_open_location (window, home_uri, FALSE);
-	g_free (home_uri);
+	home = g_file_new_for_path (g_get_home_dir ());
+	nautilus_window_open_location (window, home, FALSE);
+	g_object_unref (home);
 }
 
 void
@@ -401,11 +377,25 @@ nautilus_window_prompt_for_location (NautilusWindow *window,
 }
 
 char *
+nautilus_window_get_location_uri (NautilusWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	if (window->details->location) {
+		return g_file_get_uri (window->details->location);
+	}
+	return NULL;
+}
+
+GFile *
 nautilus_window_get_location (NautilusWindow *window)
 {
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
-	return g_strdup (window->details->location);
+	if (window->details->location != NULL) {
+		return g_object_ref (window->details->location);
+	}
+	return NULL;
 }
 
 void
@@ -629,7 +619,9 @@ nautilus_window_finalize (GObject *object)
 
 	free_stored_viewers (window);
 
-	g_free (window->details->location);
+	if (window->details->location) {
+		g_object_ref (window->details->location);
+	}
 	eel_g_list_free_deep (window->details->pending_selection);
 
 	if (window->current_location_bookmark != NULL) {
@@ -1101,7 +1093,7 @@ nautilus_window_load_view_as_menus (NautilusWindow *window)
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
 
 	cancel_view_as_callback (window);
 	nautilus_file_call_when_ready (window->details->viewed_file,
@@ -1136,7 +1128,7 @@ real_get_title (NautilusWindow *window)
         }
         
 	if (title == NULL) {
-                title = nautilus_compute_title_for_uri (window->details->location);
+                title = nautilus_compute_title_for_location (window->details->location);
         }
 
 	return title;
@@ -1232,16 +1224,30 @@ nautilus_window_update_title (NautilusWindow *window)
 void
 nautilus_window_update_icon (NautilusWindow *window)
 {
-	char *icon_name;
+	NautilusIconInfo *info;
+	const char *icon_name;
+	GdkPixbuf *pixbuf;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	icon_name = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
-						       get_icon_name, (window));
+	info = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
+						 get_icon, (window));
 
-	if (icon_name != NULL) {
-		gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
-		g_free (icon_name);
+	icon_name = NULL;
+	if (info) {
+		icon_name = nautilus_icon_info_get_used_name (info);
+		if (icon_name != NULL) {
+			gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
+		} else {
+			pixbuf = nautilus_icon_info_get_pixbuf_nodefault (info);
+			
+			if (pixbuf) {
+				gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+			} 
+			g_object_unref (pixbuf);
+		}
+		
+		g_object_unref (info);
 	}
 }
 
@@ -1347,7 +1353,9 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	}
 
 	if (file != NULL) {
-		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME | NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
+		attributes =
+			NAUTILUS_FILE_ATTRIBUTE_INFO |
+			NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 		nautilus_file_monitor_add (file, window, attributes);
 	}
 
@@ -1438,25 +1446,25 @@ add_to_history_list (NautilusBookmark *bookmark)
 }
 
 void
-nautilus_remove_from_history_list_no_notify (const char *uri)
+nautilus_remove_from_history_list_no_notify (GFile *location)
 {
 	NautilusBookmark *bookmark;
 
-	bookmark = nautilus_bookmark_new (uri, "");
+	bookmark = nautilus_bookmark_new (location, "");
 	remove_from_history_list (bookmark);
 	g_object_unref (bookmark);
 }
 
 gboolean
-nautilus_add_to_history_list_no_notify (const char *uri,
+nautilus_add_to_history_list_no_notify (GFile *location,
 					const char *name,
 					gboolean has_custom_name,
-					const char *icon)
+					GIcon *icon)
 {
 	NautilusBookmark *bookmark;
 	gboolean ret;
 
-	bookmark = nautilus_bookmark_new_with_icon (uri, name, has_custom_name, icon);
+	bookmark = nautilus_bookmark_new_with_icon (location, name, has_custom_name, icon);
 	ret = add_to_history_list (bookmark);
 	g_object_unref (bookmark);
 
@@ -1600,7 +1608,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_title = nautilus_window_get_cached_title;
 	iface->get_history = nautilus_window_get_history;
 	iface->get_bookmark_list = nautilus_window_get_bookmark_list;
-	iface->get_current_location = nautilus_window_get_location;
+	iface->get_current_location = nautilus_window_get_location_uri;
 	iface->get_ui_manager = nautilus_window_get_ui_manager;
 	iface->get_selection_count = nautilus_window_get_selection_count;
 	iface->get_selection = nautilus_window_get_selection;

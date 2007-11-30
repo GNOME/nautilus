@@ -25,13 +25,11 @@
 #include "nautilus-location-dialog.h"
 
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
 #include <libgnomeui/gnome-help.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
 #include "nautilus-desktop-window.h"
@@ -76,16 +74,14 @@ nautilus_location_dialog_destroy (GtkObject *object)
 static void
 open_current_location (NautilusLocationDialog *dialog)
 {
-	char *uri;
+	GFile *location;
 	char *user_location;
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->entry), 0, -1);
-	uri = gnome_vfs_make_uri_from_input (user_location);
+	location = g_file_parse_name (user_location);
+	nautilus_window_go_to (dialog->details->window, location);
+	g_object_unref (location);
 	g_free (user_location);
-
-	nautilus_window_go_to (dialog->details->window, uri);
-
-	g_free (uri);
 }
 
 static void
@@ -206,7 +202,7 @@ GtkWidget *
 nautilus_location_dialog_new (NautilusWindow *window)
 {
 	GtkWidget *dialog;
-	char *location;
+	GFile *location;
 	char *formatted_location;
 	
 	dialog = gtk_widget_new (NAUTILUS_TYPE_LOCATION_DIALOG, NULL);
@@ -224,13 +220,13 @@ nautilus_location_dialog_new (NautilusWindow *window)
 		if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 			formatted_location = g_strdup_printf ("%s/", g_get_home_dir ());
 		} else {
-			formatted_location = eel_format_uri_for_display (location);
+			formatted_location = g_file_get_parse_name (location);
 		}
 		nautilus_entry_set_text (NAUTILUS_ENTRY (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), formatted_location);
 		gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, -1);
 		gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
 		g_free (formatted_location);
-		g_free (location);
+		g_object_unref (location);
 	}
 	
 	gtk_widget_grab_focus (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry);

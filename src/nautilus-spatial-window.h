@@ -57,12 +57,10 @@ struct _NautilusSpatialWindowClass {
 
 
 GType            nautilus_spatial_window_get_type			(void);
-GtkWidget       *nautilus_spatial_window_get				(const char            *uri);
 void             nautilus_spatial_window_save_geometry			(NautilusSpatialWindow *window);
 void             nautilus_spatial_window_save_scroll_position		(NautilusSpatialWindow *window);
 void             nautilus_spatial_window_save_show_hidden_files_mode	(NautilusSpatialWindow *window);
 void             nautilus_spatial_window_set_location_button		(NautilusSpatialWindow *window,
-									 const char            *location);
-
+									 GFile                 *location);
 
 #endif

@@ -29,7 +29,7 @@
 
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <gio/gfileinfo.h>
 
 G_BEGIN_DECLS
 
@@ -46,7 +46,7 @@ struct _NautilusViewInfo {
 	NautilusView * (*create) (NautilusWindowInfo *window);
 	/* BONOBOTODO: More args here */
 	gboolean (*supports_uri) (const char *uri,
-				  GnomeVFSFileType file_type,
+				  GFileType file_type,
 				  const char *mime_type);
 };
 
@@ -56,11 +56,11 @@ const NautilusViewInfo *nautilus_view_factory_lookup            (const char     
 NautilusView *          nautilus_view_factory_create            (const char         *id,
 								 NautilusWindowInfo *window);
 gboolean                nautilus_view_factory_view_supports_uri (const char         *id,
-								 const char         *uri,
-								 GnomeVFSFileType    file_type,
+								 GFile              *location,
+								 GFileType          file_type,
 								 const char         *mime_type);
 GList *                 nautilus_view_factory_get_views_for_uri (const char         *uri,
-								 GnomeVFSFileType    file_type,
+								 GFileType          file_type,
 								 const char         *mime_type);
 
 

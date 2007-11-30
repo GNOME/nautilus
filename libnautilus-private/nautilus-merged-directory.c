@@ -559,7 +559,7 @@ real_directory_notify_files_removed (NautilusDirectory *real_directory)
 	}
 
 	if (files) {
-		nautilus_directory_notify_files_removed (files);
+		nautilus_directory_notify_files_removed_by_uri (files);
 	}
 
 	eel_g_list_free_deep (files);

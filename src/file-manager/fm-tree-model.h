@@ -29,6 +29,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtktreemodel.h>
+#include <gio/gvolume.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define FM_TYPE_TREE_MODEL	    (fm_tree_model_get_type ())
@@ -64,29 +65,28 @@ typedef struct {
 GType              fm_tree_model_get_type                  (void);
 FMTreeModel *fm_tree_model_new                       (void);
 void               fm_tree_model_set_show_hidden_files     (FMTreeModel *model,
-								  gboolean           show_hidden_files);
+							    gboolean           show_hidden_files);
 void               fm_tree_model_set_show_backup_files     (FMTreeModel *model,
-								  gboolean           show_backup_files);
+							    gboolean           show_backup_files);
 void               fm_tree_model_set_show_only_directories (FMTreeModel *model,
-								  gboolean           show_only_directories);
+							    gboolean           show_only_directories);
 NautilusFile *     fm_tree_model_iter_get_file             (FMTreeModel *model,
-								  GtkTreeIter       *iter);
+							    GtkTreeIter       *iter);
 void               fm_tree_model_add_root_uri              (FMTreeModel *model,
-								  const char        *root_uri,
-								  const char        *display_name,
-								  const char        *icon_name,
-								  GnomeVFSVolume    *volume);
+							    const char        *root_uri,
+							    const char        *display_name,
+							    GIcon             *icon,
+							    GVolume           *volume);
 void               fm_tree_model_remove_root_uri           (FMTreeModel *model,
-								  const char        *root_uri);
+							    const char        *root_uri);
 gboolean           fm_tree_model_iter_is_root              (FMTreeModel *model,
-								  GtkTreeIter *iter);
+							    GtkTreeIter *iter);
 gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
-								  GtkTreeIter *iter,
-								  NautilusFile *file,
-								  GtkTreeIter *currentIter);
+							    GtkTreeIter *iter,
+							    NautilusFile *file,
+							    GtkTreeIter *currentIter);
 
-void               fm_tree_model_set_theme                 (FMTreeModel *model);
-GnomeVFSVolume *   fm_tree_model_get_volume_for_root_node_file        
+GVolume *         fm_tree_model_get_volume_for_root_node_file        
                                                            (FMTreeModel  *model, 
                                                             NautilusFile *file);
 

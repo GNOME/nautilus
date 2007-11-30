@@ -25,7 +25,6 @@
 #define NAUTILUS_SEARCH_ENGINE_H
 
 #include <glib-object.h>
-#include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-private/nautilus-query.h>
 
 #define NAUTILUS_TYPE_SEARCH_ENGINE		(nautilus_search_engine_get_type ())

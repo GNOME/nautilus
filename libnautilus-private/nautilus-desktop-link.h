@@ -26,7 +26,7 @@
 #define NAUTILUS_DESKTOP_LINK_H
 
 #include <libnautilus-private/nautilus-file.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
+#include <gio/gvolume.h>
 
 #define NAUTILUS_TYPE_DESKTOP_LINK \
 	(nautilus_desktop_link_get_type ())
@@ -60,20 +60,20 @@ typedef enum {
 
 GType   nautilus_desktop_link_get_type (void);
 
-NautilusDesktopLink *   nautilus_desktop_link_new                (NautilusDesktopLinkType  type);
-NautilusDesktopLink *   nautilus_desktop_link_new_from_volume    (GnomeVFSVolume          *volume);
-NautilusDesktopLinkType nautilus_desktop_link_get_link_type      (NautilusDesktopLink     *link);
-char *                  nautilus_desktop_link_get_file_name      (NautilusDesktopLink     *link);
-char *                  nautilus_desktop_link_get_display_name   (NautilusDesktopLink     *link);
-char *                  nautilus_desktop_link_get_icon           (NautilusDesktopLink     *link);
-char *                  nautilus_desktop_link_get_activation_uri (NautilusDesktopLink     *link);
-gboolean                nautilus_desktop_link_get_date           (NautilusDesktopLink     *link,
-								  NautilusDateType         date_type,
-								  time_t                  *date);
-GnomeVFSVolume *        nautilus_desktop_link_get_volume         (NautilusDesktopLink     *link);
+NautilusDesktopLink *   nautilus_desktop_link_new                     (NautilusDesktopLinkType  type);
+NautilusDesktopLink *   nautilus_desktop_link_new_from_volume         (GVolume                 *volume);
+NautilusDesktopLinkType nautilus_desktop_link_get_link_type           (NautilusDesktopLink     *link);
+char *                  nautilus_desktop_link_get_file_name           (NautilusDesktopLink     *link);
+char *                  nautilus_desktop_link_get_display_name        (NautilusDesktopLink     *link);
+GIcon *                 nautilus_desktop_link_get_icon                (NautilusDesktopLink     *link);
+GFile *                 nautilus_desktop_link_get_activation_location (NautilusDesktopLink     *link);
+gboolean                nautilus_desktop_link_get_date                (NautilusDesktopLink     *link,
+								       NautilusDateType         date_type,
+								       time_t                  *date);
+GVolume *               nautilus_desktop_link_get_volume              (NautilusDesktopLink     *link);
+gboolean                nautilus_desktop_link_can_rename              (NautilusDesktopLink     *link);
+gboolean                nautilus_desktop_link_rename                  (NautilusDesktopLink     *link,
+								       const char              *name);
 
-gboolean                nautilus_desktop_link_can_rename         (NautilusDesktopLink     *link);
-gboolean                nautilus_desktop_link_rename             (NautilusDesktopLink     *link,
-								  const char              *name);
 
 #endif /* NAUTILUS_DESKTOP_LINK_H */

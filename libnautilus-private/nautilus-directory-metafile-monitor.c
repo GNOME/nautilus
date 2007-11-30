@@ -81,7 +81,7 @@ corba_metafile_changed (PortableServer_Servant       servant,
 	file_list = NULL;
 	
 	for (buf_pos = 0; buf_pos < file_names->_length; ++buf_pos) {
-		file = nautilus_directory_find_file_by_internal_uri
+		file = nautilus_directory_find_file_by_internal_filename
 			(monitor->details->directory, file_names->_buffer [buf_pos]);
 
 		if (file != NULL) {

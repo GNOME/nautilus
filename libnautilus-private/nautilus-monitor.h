@@ -27,12 +27,12 @@
 #define NAUTILUS_MONITOR_H
 
 #include <glib/gtypes.h>
+#include <gio/gfile.h>
 
 typedef struct NautilusMonitor NautilusMonitor;
 
 gboolean         nautilus_monitor_active    (void);
-NautilusMonitor *nautilus_monitor_file      (const char      *uri);
-NautilusMonitor *nautilus_monitor_directory (const char      *uri);
+NautilusMonitor *nautilus_monitor_directory (GFile *location);
 void             nautilus_monitor_cancel    (NautilusMonitor *monitor);
 
 #endif /* NAUTILUS_MONITOR_H */

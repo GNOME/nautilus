@@ -85,13 +85,13 @@ show_bogus_bookmark_window (NautilusWindow *window,
 			    NautilusBookmark *bookmark)
 {
 	GtkDialog *dialog;
-	char *uri;
+	GFile *location;
 	char *uri_for_display;
 	char *prompt;
 	char *detail;
 
-	uri = nautilus_bookmark_get_uri (bookmark);
-	uri_for_display = eel_format_uri_for_display (uri);
+	location = nautilus_bookmark_get_location (bookmark);
+	uri_for_display = g_file_get_parse_name (location);
 	
 	prompt = _("Do you want to remove any bookmarks with the "
 		   "non-existing location from your list?");
@@ -105,13 +105,13 @@ show_bogus_bookmark_window (NautilusWindow *window,
 	g_signal_connect_data (dialog,
 			       "response",
 			       G_CALLBACK (remove_bookmarks_for_uri_if_yes),
-			       g_strdup (uri),
+			       g_file_get_uri (location),
 			       (GClosureNotify)g_free,
 			       0);
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 
-	g_free (uri);
+	g_object_unref (location);
 	g_free (uri_for_display);
 	g_free (detail);
 }
@@ -323,11 +323,6 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 
 	/* Recreate dynamic part of menu if bookmark list changes */
 	g_signal_connect_object (nautilus_get_bookmark_list (), "contents_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu),
-				 window, G_CONNECT_SWAPPED);
-
-	/* Recreate static & dynamic parts of menu if icon theme changes */
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
 				 G_CALLBACK (schedule_refresh_bookmarks_menu),
 				 window, G_CONNECT_SWAPPED);
 }

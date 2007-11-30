@@ -29,13 +29,11 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-utilities.h"
 
+#include <gio/gdirectorymonitor.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 struct NautilusMonitor {
-	GnomeVFSMonitorHandle *handle;
+	GDirectoryMonitor *monitor;
 };
 
 gboolean
@@ -43,47 +41,23 @@ nautilus_monitor_active (void)
 {
 	static gboolean tried_monitor = FALSE;
 	static gboolean monitor_success;
-	char *desktop_directory, *uri;
-	NautilusMonitor *monitor;
+	GDirectoryMonitor *dir_monitor;
+	GFile *file;
 
 	if (tried_monitor == FALSE) {	
-		desktop_directory = nautilus_get_desktop_directory ();
-		uri = gnome_vfs_get_uri_from_local_path (desktop_directory);
-
-		monitor = nautilus_monitor_directory (uri);
-		monitor_success = (monitor != NULL);
-
-		if (monitor != NULL) {
-			nautilus_monitor_cancel (monitor);
+		file = g_file_new_for_path (g_get_home_dir ());
+		dir_monitor = g_file_monitor_directory (file, G_FILE_MONITOR_FLAGS_NONE, NULL);
+		g_object_unref (file);
+		
+		monitor_success = (dir_monitor != NULL);
+		if (dir_monitor) {
+			g_object_unref (dir_monitor);
 		}
-
-		g_free (desktop_directory);
-		g_free (uri);
 
 		tried_monitor = TRUE;
 	}
 
 	return monitor_success;
-}
-
-static gboolean
-path_is_on_readonly_volume (const char *path)
-{
-	GnomeVFSVolumeMonitor *volume_monitor;
-	GnomeVFSVolume *volume;
-	gboolean res;
-
-	g_assert (path != NULL);
-
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	volume = gnome_vfs_volume_monitor_get_volume_for_path (volume_monitor, 
-							       path);
-	res = FALSE;
-	if (volume != NULL) {
-		res = gnome_vfs_volume_is_read_only (volume);
-		gnome_vfs_volume_unref (volume);
-	}
-	return res;
 }
 
 static gboolean call_consume_changes_idle_id = 0;
@@ -96,92 +70,81 @@ call_consume_changes_idle_cb (gpointer not_used)
 	return FALSE;
 }
 
-static void 
-monitor_notify_cb (GnomeVFSMonitorHandle    *handle,
-		   const gchar              *monitor_uri,
-		   const gchar              *info_uri,
-		   GnomeVFSMonitorEventType  event_type,
-		   gpointer                  user_data)
+static void
+dir_changed (GDirectoryMonitor* monitor,
+	     GFile *child,
+	     GFile *other_file,
+	     GFileMonitorEvent event_type,
+	     gpointer user_data)
 {
-	switch (event_type) {
-	case GNOME_VFS_MONITOR_EVENT_CHANGED:
-		nautilus_file_changes_queue_file_changed (info_uri);
-		break;
-	case GNOME_VFS_MONITOR_EVENT_DELETED:
-		nautilus_file_changes_queue_schedule_metadata_remove (info_uri);
-		nautilus_file_changes_queue_file_removed (info_uri);
-		break;
-	case GNOME_VFS_MONITOR_EVENT_CREATED:
-		nautilus_file_changes_queue_file_added (info_uri);
-		break;
+	char *uri, *to_uri;
+	
+	uri = g_file_get_uri (child);
+	to_uri = NULL;
+	if (other_file) {
+		to_uri = g_file_get_uri (other_file);
+	}
 
-	/* None of the following are supported yet */
-	case GNOME_VFS_MONITOR_EVENT_STARTEXECUTING:
-	case GNOME_VFS_MONITOR_EVENT_STOPEXECUTING:
-	case GNOME_VFS_MONITOR_EVENT_METADATA_CHANGED:
+	switch (event_type) {
+	default:
+	case G_FILE_MONITOR_EVENT_CHANGED:
+		/* ignore */
+		break;
+	case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
+	case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
+		nautilus_file_changes_queue_file_changed (child);
+		break;
+	case G_FILE_MONITOR_EVENT_DELETED:
+		nautilus_file_changes_queue_file_removed (child);
+		break;
+	case G_FILE_MONITOR_EVENT_CREATED:
+		nautilus_file_changes_queue_file_added (child);
+		break;
+		
+	case G_FILE_MONITOR_EVENT_PRE_UNMOUNT:
+		/* TODO: Do something */
+		break;
+	case G_FILE_MONITOR_EVENT_UNMOUNTED:
+		/* TODO: Do something */
 		break;
 	}
+
+	g_free (uri);
+	g_free (to_uri);
 
 	if (call_consume_changes_idle_id == 0) {
 		call_consume_changes_idle_id = 
 			g_idle_add (call_consume_changes_idle_cb, NULL);
 	}
 }
-
-static NautilusMonitor *
-monitor_add_internal (const char *uri, gboolean is_directory)
+ 
+NautilusMonitor *
+nautilus_monitor_directory (GFile *location)
 {
-	gchar *path;
+	GDirectoryMonitor *dir_monitor;
 	NautilusMonitor *ret;
-	GnomeVFSResult result;
 
-	path = gnome_vfs_get_local_path_from_uri (uri);
+	dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_FLAGS_MONITOR_MOUNTS, NULL);
 
-	/*
-	 * Don't monitor URIs on a read-only volume. 
-	 * This is a hack to avoid FAM keeping open fds to CD-ROMs, 
-	 * causing unmount/eject to fail.  
-	 */
-	if (path != NULL && path_is_on_readonly_volume (path) == TRUE) {
-		g_free (path);
+	if (dir_monitor == NULL) {
 		return NULL;
 	}
-	g_free (path);
 
 	ret = g_new0 (NautilusMonitor, 1);
+	ret->monitor = dir_monitor;
 
-	result = gnome_vfs_monitor_add (&ret->handle,
-					uri,
-					is_directory == TRUE ?  
-						GNOME_VFS_MONITOR_DIRECTORY :
-						GNOME_VFS_MONITOR_FILE,
-					monitor_notify_cb,
-					NULL);
-	if (result != GNOME_VFS_OK) {
-		g_free (ret);
-		return NULL;
-	}
+	g_signal_connect (ret->monitor, "changed", (GCallback)dir_changed, ret);
 
 	return ret;
-}
-
-NautilusMonitor *
-nautilus_monitor_directory (const char *uri)
-{
-	return monitor_add_internal (uri, TRUE);
-}
-
-NautilusMonitor *
-nautilus_monitor_file (const char *uri)
-{
-	return monitor_add_internal (uri, FALSE);
 }
 
 void 
 nautilus_monitor_cancel (NautilusMonitor *monitor)
 {
-	if (monitor->handle != NULL) {
-		gnome_vfs_monitor_cancel (monitor->handle);
+	if (monitor->monitor != NULL) {
+		g_signal_handlers_disconnect_by_func (monitor->monitor, dir_changed, monitor);
+		g_directory_monitor_cancel (monitor->monitor);
+		g_object_unref (monitor->monitor);
 	}
 
 	g_free (monitor);

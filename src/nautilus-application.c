@@ -46,6 +46,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
 #include "nautilus-main.h"
@@ -59,31 +60,21 @@
 #include <libxml/xmlsave.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
+#include <gio/gfile.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string-list.h>
-#include <eel/eel-string.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkinvisible.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gio/gfile.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>
-#include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metafile-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
@@ -92,6 +83,9 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <gio/gthemedicon.h>
+#include <gio/gfileicon.h>
+
 #ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
 #include <libsn/sn-launchee.h>
@@ -117,11 +111,11 @@ static GList *nautilus_application_spatial_window_list;
 
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
-static void     volume_unmounted_callback         (GnomeVFSVolumeMonitor    *monitor,
-						   GnomeVFSVolume           *volume,
+static void     volume_unmounted_callback         (GVolumeMonitor           *monitor,
+						   GVolume                  *volume,
 						   NautilusApplication      *application);
-static void     volume_mounted_callback           (GnomeVFSVolumeMonitor    *monitor,
-						   GnomeVFSVolume           *volume,
+static void     volume_mounted_callback           (GVolumeMonitor           *monitor,
+						   GVolume                  *volume,
 						   NautilusApplication      *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
@@ -184,11 +178,13 @@ nautilus_application_instance_init (NautilusApplication *application)
 	 * used anymore */
 
 	/* Watch for volume unmounts so we can close open windows */
-	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_unmounted",
+	/* TODO-gio: This should be using the UNMOUNTED feature of GDirectoryMonitor instead */
+	application->volume_monitor = g_volume_monitor_get ();
+	g_signal_connect_object (application->volume_monitor, "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
-	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_pre_unmount",
+	g_signal_connect_object (application->volume_monitor, "volume_pre_unmount",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
-	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_mounted",
+	g_signal_connect_object (application->volume_monitor, "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), application, 0);
 
 	/* register views */
@@ -236,6 +232,11 @@ nautilus_application_destroy (BonoboObject *object)
 	
 	g_object_unref (application->undo_manager);
 
+	if (application->volume_monitor) {
+		g_object_unref (application->volume_monitor);
+		application->volume_monitor = NULL;
+	}
+	
 	if (application->shell_registered) {
 		bonobo_activation_unregister_active_server (SHELL_IID, BONOBO_OBJREF (application->shell));
 	}
@@ -249,58 +250,68 @@ check_required_directories (NautilusApplication *application)
 {
 	char *user_directory;
 	char *desktop_directory;
-	EelStringList *directories;
-	char *directories_as_string;
-	char *error_string;
-	char *detail_string;
-	GtkDialog *dialog;
-	int failed_count;
-	
+	GSList *directories;
+	gboolean ret;
+
 	g_assert (NAUTILUS_IS_APPLICATION (application));
+
+	ret = TRUE;
 
 	user_directory = nautilus_get_user_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
-	directories = eel_string_list_new (TRUE);
-	
+	directories = NULL;
+
 	if (!g_file_test (user_directory, G_FILE_TEST_IS_DIR)) {
-		eel_string_list_insert (directories, user_directory);
+		directories = g_slist_prepend (directories, user_directory);
 	}
-	g_free (user_directory);	    
-	    
+
 	if (!g_file_test (desktop_directory, G_FILE_TEST_IS_DIR)) {
-		eel_string_list_insert (directories, desktop_directory);
+		directories = g_slist_prepend (directories, desktop_directory);
 	}
-	g_free (desktop_directory);
 
-	failed_count = eel_string_list_get_length (directories);
+	if (directories != NULL) {
+		int failed_count;
+		GString *directories_as_string;
+		GSList *l;
+		char *error_string;
+		const char *detail_string;
+		GtkDialog *dialog;
 
-	if (failed_count != 0) {
-		directories_as_string = eel_string_list_as_string (directories, ", ", EEL_STRING_LIST_ALL_STRINGS);
+		ret = FALSE;
+
+		failed_count = g_slist_length (directories);
+
+		directories_as_string = g_string_new ((const char *)directories->data);
+		for (l = directories->next; l != NULL; l = l->next) {
+			g_string_append_printf (directories_as_string, ", %s", (const char *)l->data);
+		}
 
 		if (failed_count == 1) {
 			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\"."),
-							directories_as_string);
+							directories_as_string->str);
 			detail_string = _("Before running Nautilus, please create the following folder, or "
 					  "set permissions such that Nautilus can create it.");
 		} else {
 			error_string = g_strdup_printf (_("Nautilus could not create the following required folders: "
-							  "%s."), directories_as_string);
-  			detail_string = _("Before running Nautilus, please create these folders, or "
+							  "%s."), directories_as_string->str);
+			detail_string = _("Before running Nautilus, please create these folders, or "
 					  "set permissions such that Nautilus can create them.");
 		}
-		
+
 		dialog = eel_show_error_dialog (error_string, detail_string, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
-		g_free (directories_as_string);
+		g_string_free (directories_as_string, TRUE);
 		g_free (error_string);
 	}
 
-	eel_string_list_free (directories);
+	g_slist_free (directories);
+	g_free (user_directory);
+	g_free (desktop_directory);
 
-	return failed_count == 0;
+	return ret;
 }
 
 static Nautilus_URIList *
@@ -308,6 +319,7 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 {
 	int length, i;
 	Nautilus_URIList *uri_list;
+	GFile *file;
 	char *translated_uri;
 
 	length = g_strv_length ((char **) strv);
@@ -317,7 +329,9 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	uri_list->_length = length;
 	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
 	for (i = 0; i < length; i++) {
-		translated_uri = gnome_vfs_make_uri_from_shell_arg (strv[i]);
+		file = g_file_new_for_commandline_arg (strv[i]);
+		translated_uri = g_file_get_uri (file);
+		g_object_unref (file);
 		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
 		g_free (translated_uri);
 		translated_uri = NULL;
@@ -433,7 +447,7 @@ initialize_kde_trash_hack (void)
 	trash_dir = NULL;
 
 	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
-	desktop_dir = gnome_vfs_get_local_path_from_uri (desktop_uri);
+	desktop_dir = g_filename_from_uri (desktop_uri, NULL, NULL);
 	g_free (desktop_uri);
 	
 	if (g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
@@ -851,21 +865,22 @@ nautilus_application_close_all_navigation_windows (void)
 }
 
 static NautilusSpatialWindow *
-nautilus_application_get_existing_spatial_window (const char *location)
+nautilus_application_get_existing_spatial_window (GFile *location)
 {
 	GList *l;
-	
+
 	for (l = nautilus_application_get_spatial_window_list ();
 	     l != NULL; l = l->next) {
-		char *window_location;
-		
+		GFile *window_location;
+
 		window_location = nautilus_window_get_location (NAUTILUS_WINDOW (l->data));
-		if (window_location != NULL &&
-		    strcmp (location, window_location) == 0) {
-			g_free (window_location);
-			return NAUTILUS_SPATIAL_WINDOW (l->data);
+		if (window_location != NULL) {
+			if (g_file_equal (location, window_location)) {
+				g_object_unref (window_location);
+				return NAUTILUS_SPATIAL_WINDOW (l->data);
+			}
+			g_object_unref (window_location);
 		}
-		g_free (window_location);
 	}
 	return NULL;
 }
@@ -875,8 +890,7 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 {
 	NautilusFile *file;
 	NautilusFile *parent_file;
-	char *location;
-	char *desktop_directory;
+	GFile *location;
 
 	location = nautilus_window_get_location (NAUTILUS_WINDOW (window));
 	if (location == NULL) {
@@ -888,28 +902,23 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 	if (!file) {
 		return NULL;
 	}
-	
-	desktop_directory = nautilus_get_desktop_directory_uri ();	
-	
+
 	parent_file = nautilus_file_get_parent (file);
 	nautilus_file_unref (file);
 	while (parent_file) {
 		NautilusSpatialWindow *parent_window;
-		
-		location = nautilus_file_get_uri (parent_file);
 
 		/* Stop at the desktop directory, as this is the
 		 * conceptual root of the spatial windows */
-		if (!strcmp (location, desktop_directory)) {
-			g_free (location);
-			g_free (desktop_directory);
+		if (nautilus_file_is_desktop_directory (parent_file)) {
 			nautilus_file_unref (parent_file);
 			return NULL;
 		}
 
+		location = nautilus_file_get_location (parent_file);
 		parent_window = nautilus_application_get_existing_spatial_window (location);
-		g_free (location);
-		
+		g_object_unref (location);
+
 		if (parent_window) {
 			nautilus_file_unref (parent_file);
 			return parent_window;
@@ -918,7 +927,6 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 		parent_file = nautilus_file_get_parent (file);
 		nautilus_file_unref (file);
 	}
-	g_free (desktop_directory);
 
 	return NULL;
 }
@@ -1025,7 +1033,7 @@ NautilusWindow *
 nautilus_application_present_spatial_window (NautilusApplication *application,
 					     NautilusWindow      *requesting_window,
 					     const char          *startup_id,
-					     const char          *location,
+					     GFile               *location,
 					     GdkScreen           *screen)
 {
 	return nautilus_application_present_spatial_window_with_selection (application,
@@ -1117,19 +1125,20 @@ NautilusWindow *
 nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 							    NautilusWindow      *requesting_window,
 							    const char          *startup_id,
-							    const char          *location,
+							    GFile               *location,
 							    GList		*new_selection,
 							    GdkScreen           *screen)
 {
 	NautilusWindow *window;
 	GList *l;
+	char *uri;
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
-
+	
 	for (l = nautilus_application_get_spatial_window_list ();
 	     l != NULL; l = l->next) {
 		NautilusWindow *existing_window;
-		char *existing_location;
+		GFile *existing_location;
                	     
 		existing_window = NAUTILUS_WINDOW (l->data);
 		existing_location = existing_window->details->pending_location;
@@ -1137,8 +1146,8 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		if (existing_location == NULL) {
 			existing_location = existing_window->details->location;
 		}
-
-		if (gnome_vfs_uris_match (existing_location, location)) {
+		
+		if (g_file_equal (existing_location, location)) {
 #ifdef HAVE_STARTUP_NOTIFICATION
 			end_startup_notification (GTK_WIDGET (existing_window),
 						  startup_id);
@@ -1150,9 +1159,11 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 				nautilus_view_set_selection (existing_window->content_view, new_selection);
 			}
 
+			uri = g_file_get_uri (location);
 			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 					    "present EXISTING spatial window=%p: %s",
-					    existing_window, location);
+					    existing_window, uri);
+			g_free (uri);
 			return existing_window;
 		}
 	}
@@ -1191,9 +1202,11 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 	
 	nautilus_window_go_to_with_selection (window, location, new_selection);
 
+	uri = g_file_get_uri (location);
 	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 			    "present NEW spatial window=%p: %s",
-			    window, location);
+			    window, uri);
+	g_free (uri);
 	
 	return window;
 }
@@ -1298,16 +1311,16 @@ window_can_be_closed (NautilusWindow *window)
 }
 
 static void
-volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
-			 GnomeVFSVolume *volume,
+volume_mounted_callback (GVolumeMonitor *monitor,
+			 GVolume *volume,
 			 NautilusApplication *application)
 {
-	char *activation_uri;
 	NautilusDirectory *directory;
+	GFile *root;
 		
-	activation_uri = gnome_vfs_volume_get_activation_uri (volume);
-	directory = nautilus_directory_get_existing (activation_uri);
-	g_free (activation_uri);
+	root = g_volume_get_root (volume);
+	directory = nautilus_directory_get_existing (root);
+	g_object_unref (root);
 	if (directory != NULL) {
 		nautilus_directory_force_reload (directory);
 		nautilus_directory_unref (directory);
@@ -1321,49 +1334,35 @@ volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
  * This is also called on pre_unmount.
  */
 static void
-volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
-			   GnomeVFSVolume *volume,
+volume_unmounted_callback (GVolumeMonitor *monitor,
+			   GVolume *volume,
 			   NautilusApplication *application)
 {
 	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
-	char *uri, *activation_uri, *path;
-	GnomeVFSVolumeMonitor *volume_monitor;
-	GnomeVFSVolume *window_volume;
-	
+	GFile *root;
+
 	close_list = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
 	window_list = nautilus_application_get_window_list ();
 
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-
-	activation_uri = gnome_vfs_volume_get_activation_uri (volume);
+	root = g_volume_get_root (volume);
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
 	for (node = window_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
 		if (window != NULL && window_can_be_closed (window)) {
-			uri = nautilus_window_get_location (window);
-			if (eel_str_has_prefix (uri, activation_uri)) {
+			GFile *location;
+
+			location = nautilus_window_get_location (window);
+
+			if (g_file_contains_file (root, location)) {
 				close_list = g_list_prepend (close_list, window);
-			} else {
-				path = gnome_vfs_get_local_path_from_uri (uri);
-				if (path != NULL) {
-					window_volume = gnome_vfs_volume_monitor_get_volume_for_path (volume_monitor,
-												      path);
-					if (window_volume != NULL && window_volume == volume) {
-						close_list = g_list_prepend (close_list, window);
-					}
-					gnome_vfs_volume_unref (window_volume);
-					g_free (path);
-				}
-				
-			}
-			g_free (uri);
+			} 
+			g_object_unref (location);
 		}
 	}
-	g_free (activation_uri);
-		
+
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
@@ -1373,15 +1372,53 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
 			nautilus_window_go_home (window);
 		}
 	}
-		
+
 	g_list_free (close_list);
 }
-
 
 static void
 removed_from_session (GnomeClient *client, gpointer data)
 {
 	nautilus_main_event_loop_quit (FALSE);
+}
+
+static char *
+icon_to_string (GIcon *icon)
+{
+	const char * const *names;
+	GFile *file;
+	
+	if (icon == NULL) {
+		return NULL;
+	} else if (G_IS_THEMED_ICON (icon)) {
+		names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+		return g_strjoinv (":", (char **)names);		
+	} else if (G_IS_FILE_ICON (icon)) {
+		file = g_file_icon_get_file (G_FILE_ICON (icon));
+		return g_file_get_path (file);
+	}
+	return NULL;
+}
+
+static GIcon *
+icon_from_string (const char *string)
+{
+	GFile *file;
+	GIcon *icon;
+	gchar **names;
+	
+	if (g_path_is_absolute (string)) {
+		file = g_file_new_for_path (string);
+		icon = g_file_icon_new (file);
+		g_object_unref (file);
+		return icon;
+	} else {
+		names = g_strsplit (string, ":", 0);
+		icon = g_themed_icon_new_from_names (names, -1);
+		g_strfreev (names);
+		return icon;
+	}
+	return NULL;
 }
 
 static char *
@@ -1406,6 +1443,7 @@ save_session_to_file (void)
 	for (l = nautilus_get_history_list (); l != NULL; l = l->next) {
 		NautilusBookmark *bookmark;
 		xmlNodePtr bookmark_node;
+		GIcon *icon;
 		char *tmp;
 
 		bookmark = l->data;
@@ -1416,9 +1454,13 @@ save_session_to_file (void)
 		xmlNewProp (bookmark_node, "name", tmp);
 		g_free (tmp);
 
-		tmp = nautilus_bookmark_get_icon (bookmark);
-		xmlNewProp (bookmark_node, "icon", tmp);
-		g_free (tmp);
+		icon = nautilus_bookmark_get_icon (bookmark);
+		tmp = icon_to_string (icon);
+		g_object_unref (icon);
+		if (tmp) {
+			xmlNewProp (bookmark_node, "icon", tmp);
+			g_free (tmp);
+		}
 
 		tmp = nautilus_bookmark_get_uri (bookmark);
 		xmlNewProp (bookmark_node, "uri", tmp);
@@ -1465,7 +1507,7 @@ save_session_to_file (void)
 			}
 		}
 
-		tmp = nautilus_window_get_location (window);
+		tmp = nautilus_window_get_location_uri (window);
 		xmlNewProp (win_node, "location", tmp);
 		g_free (tmp);
 	}
@@ -1534,19 +1576,31 @@ nautilus_application_load_session (NautilusApplication *application,
 						if (!strcmp (bookmark_node->name, "text")) {
 							continue;
 						} else if (!strcmp (bookmark_node->name, "bookmark")) {
-							xmlChar *name, *icon, *uri;
+							xmlChar *name, *icon_str, *uri;
 							gboolean has_custom_name;
+							GIcon *icon;
+							GFile *location;
 
 							uri = xmlGetProp (bookmark_node, "uri");
 							name = xmlGetProp (bookmark_node, "name");
 							has_custom_name = xmlHasProp (bookmark_node, "has_custom_name") ? TRUE : FALSE;
-							icon = xmlGetProp (bookmark_node, "icon");
+							icon_str = xmlGetProp (bookmark_node, "icon");
+							icon = NULL;
+							if (icon_str) {
+								icon = icon_from_string (icon_str);
+							}
+							location = g_file_new_for_uri (uri);
 
-							emit_change |= nautilus_add_to_history_list_no_notify (uri, name, has_custom_name, icon);
+							emit_change |= nautilus_add_to_history_list_no_notify (location, name, has_custom_name, icon);
 
+							g_object_unref (location);
+
+							if (icon) {
+								g_object_unref (icon);
+							}
 							xmlFree (name);
 							xmlFree (uri);
-							xmlFree (icon);
+							xmlFree (icon_str);
 						} else {
 							g_message ("unexpected bookmark node %s while parsing %s", bookmark_node->name, filename);
 							bail = TRUE;
@@ -1559,7 +1613,8 @@ nautilus_application_load_session (NautilusApplication *application,
 					}
 				} else if (!strcmp (node->name, "window")) {
 					NautilusWindow *window;
-					xmlChar *type, *location;
+					xmlChar *type, *location_uri;
+					GFile *location;
 
 					type = xmlGetProp (node, "type");
 					if (type == NULL) {
@@ -1568,8 +1623,8 @@ nautilus_application_load_session (NautilusApplication *application,
 						continue;
 					}
 
-					location = xmlGetProp (node, "location");
-					if (location == NULL) {
+					location_uri = xmlGetProp (node, "location");
+					if (location_uri == NULL) {
 						g_message ("empty location node while parsing %s", filename);
 						bail = TRUE;
 						xmlFree (type);
@@ -1610,16 +1665,20 @@ nautilus_application_load_session (NautilusApplication *application,
 							gtk_window_set_keep_above (GTK_WINDOW (window), FALSE);
 						}
 
+						location = g_file_new_for_uri (location_uri);
 						nautilus_window_open_location (window, location, FALSE);
+						g_object_unref (location);
 					} else if (!strcmp (type, "spatial")) {
+						location = g_file_new_for_uri (location_uri);
 						window = nautilus_application_present_spatial_window (application, NULL, NULL, location, gdk_screen_get_default ());
+						g_object_unref (location);
 					} else {
 						g_message ("unknown window type \"%s\" while parsing %s", type, filename);
 						bail = TRUE;
 					}
 
 					xmlFree (type);
-					xmlFree (location);
+					xmlFree (location_uri);
 				} else {
 					g_message ("unexpected node %s while parsing %s", node->name, filename);
 					bail = TRUE;
@@ -1636,25 +1695,16 @@ nautilus_application_load_session (NautilusApplication *application,
 	if (bail) {
 		g_message ("failed to load session from %s", filename);
 	} else {
-		char *uri;
-		GnomeVFSFileInfo *info;
+		struct stat buf;
+		
 		/* only remove file if it is regular, user-owned and the user has write access. */
 
-		uri = gnome_vfs_get_uri_from_local_path (filename);
-		info = gnome_vfs_file_info_new ();
-		if (uri != NULL &&
-		    gnome_vfs_get_file_info (uri, info, GNOME_VFS_FILE_INFO_DEFAULT) == GNOME_VFS_OK &&
-		    (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) &&
-		    (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) &&
-		    (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_IDS) &&
-		    info->type == GNOME_VFS_FILE_TYPE_REGULAR &&
-		    (info->permissions & (GNOME_VFS_PERM_USER_WRITE |
-					  GNOME_VFS_PERM_USER_WRITE)) &&
-		    info->uid == geteuid ()) {
+		if (g_stat (filename, &buf) == 0 &&
+		    S_ISREG (buf.st_mode) &&
+		    (buf.st_mode & S_IWUSR) &&
+		    buf.st_uid == geteuid()) {	
 			g_remove (filename);
 		}
-		gnome_vfs_file_info_unref (info);
-		g_free (uri);
 	}
 }
 

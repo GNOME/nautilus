@@ -28,6 +28,7 @@
 #define NAUTILUS_APPLICATION_H
 
 #include <gdk/gdk.h>
+#include <gio/gvolumemonitor.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
@@ -56,6 +57,7 @@ typedef struct {
 	NautilusUndoManager *undo_manager;
 	NautilusShell *shell;
 	gboolean shell_registered;
+	GVolumeMonitor *volume_monitor;
 } NautilusApplication;
 
 typedef struct {
@@ -82,12 +84,12 @@ unsigned int         nautilus_application_get_n_windows            (void);
 NautilusWindow *     nautilus_application_present_spatial_window     (NautilusApplication *application,
 								      NautilusWindow      *requesting_window,
 								      const char          *startup_id,
-								      const char          *location,
+								      GFile               *location,
 								      GdkScreen           *screen);
 NautilusWindow *     nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 										 NautilusWindow      *requesting_window,
 										 const char          *startup_id,
-										 const char          *location,
+										 GFile               *location,
 										 GList		     *new_selection,
 										 GdkScreen           *screen);
 

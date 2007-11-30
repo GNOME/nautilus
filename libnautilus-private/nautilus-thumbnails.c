@@ -28,15 +28,13 @@
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-icon-factory-private.h"
-#include "nautilus-icon-factory.h"
+#include "nautilus-file-utilities.h"
 #include <math.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkmain.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <librsvg/rsvg.h>
 #include <errno.h>
 #include <stdio.h>
@@ -45,6 +43,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
+#include <libgnomeui/gnome-thumbnail.h>
 
 #include "nautilus-file-private.h"
 
@@ -70,7 +69,7 @@ typedef struct {
 } NautilusThumbnailInfo;
 
 struct NautilusThumbnailAsyncLoadHandle {
-	EelReadFileHandle *eel_read_handle;
+	GCancellable *cancellable;
 	char *file_path;
 	guint base_size;
 	guint nominal_size;
@@ -120,18 +119,17 @@ static int thumbnail_icon_size = 0;
 static gboolean
 get_file_mtime (const char *file_uri, time_t* mtime)
 {
-	GnomeVFSFileInfo *file_info;
+	GFile *file;
+	GFileInfo *info;
 
-	/* gather the info and then compare modification times */
-	file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+	*mtime = INVALID_MTIME;
 
-	if (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MTIME)
-		*mtime = file_info->mtime;
-	else
-		*mtime = INVALID_MTIME;
-
-	gnome_vfs_file_info_unref (file_info);
+	file = g_file_new_for_uri (file_uri);
+	info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
+	if (info) {
+		*mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+		g_object_unref (info);
+	}
 	
 	return TRUE;
 }
@@ -143,6 +141,19 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
 	g_free (info->mime_type);
 	g_free (info);
 }
+
+static GnomeThumbnailFactory *
+get_thumbnail_factory (void)
+{
+	static GnomeThumbnailFactory *thumbnail_factory = NULL;
+
+	if (thumbnail_factory == NULL) {
+		thumbnail_factory = gnome_thumbnail_factory_new (GNOME_THUMBNAIL_SIZE_NORMAL);
+	}
+
+	return thumbnail_factory;
+}
+
 
 /* This function is added as a very low priority idle function to start the
    thread to create any needed thumbnails. It is added with a very low priority
@@ -156,7 +167,7 @@ thumbnail_thread_starter_cb (gpointer data)
 
 	/* Don't do this in thread, since g_object_ref is not threadsafe */
 	if (thumbnail_factory == NULL) {
-		thumbnail_factory = nautilus_icon_factory_get_thumbnail_factory ();
+		thumbnail_factory = get_thumbnail_factory ();
 	}
 
 	/* We create the thread in the detached state, as we don't need/want
@@ -190,33 +201,32 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 {
 	char *old_thumbnail_path;
 	GdkPixbuf *pixbuf;
-	GnomeVFSFileInfo *file_info;
+	GFileInfo *file_info;
 	GnomeThumbnailFactory *factory;
+	GFile *destination_file;
 	
 	old_thumbnail_path = gnome_thumbnail_path_for_uri (source_file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
 	if (old_thumbnail_path != NULL &&
 	    g_file_test (old_thumbnail_path, G_FILE_TEST_EXISTS)) {
-		file_info = gnome_vfs_file_info_new ();
-		if (gnome_vfs_get_file_info (destination_file_uri,
-					     file_info,
-					     GNOME_VFS_FILE_INFO_DEFAULT) == GNOME_VFS_OK) {
+		destination_file = g_file_new_for_uri (destination_file_uri);
+		file_info = g_file_query_info (destination_file, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
+		g_object_unref (destination_file);
+		if (file_info != NULL) {
 			pixbuf = gdk_pixbuf_new_from_file (old_thumbnail_path, NULL);
 			
 			if (pixbuf && gnome_thumbnail_has_uri (pixbuf, source_file_uri)) {
-				factory = nautilus_icon_factory_get_thumbnail_factory ();
+				factory = get_thumbnail_factory ();
 				gnome_thumbnail_factory_save_thumbnail (factory,
 									pixbuf,
 									destination_file_uri,
-									file_info->mtime);
-				g_object_unref (factory);
+									g_file_info_get_attribute_uint64 (file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED));
 			}
 			
 			if (pixbuf) {
 				g_object_unref (pixbuf);
 			}
-			
+			g_object_unref (file_info);
 		}
-		gnome_vfs_file_info_unref (file_info);
 	}
 
 	g_free (old_thumbnail_path);
@@ -242,6 +252,24 @@ nautilus_remove_thumbnail_for_file (const char *file_uri)
 	g_free (thumbnail_path);
 }
 
+static GdkPixbuf *
+nautilus_get_thumbnail_frame (void)
+{
+	char *image_path;
+	static GdkPixbuf *thumbnail_frame = NULL;
+
+	if (thumbnail_frame == NULL) {
+		image_path = nautilus_pixmap_file ("thumbnail_frame.png");
+		if (image_path != NULL) {
+			thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
+		}
+		g_free (image_path);
+	}
+	
+	return thumbnail_frame;
+}
+
+
 void
 nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 {
@@ -252,22 +280,59 @@ nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 	 * an old Nautilus), so we must embed it in a frame.
 	 */
 
-	frame = nautilus_icon_factory_get_thumbnail_frame ();
+	frame = nautilus_get_thumbnail_frame ();
 	if (frame == NULL) {
 		return;
 	}
 	
-	left_offset = 3;
-	top_offset = 3;
-	right_offset = 6;
-	bottom_offset = 6;
+	left_offset = NAUTILUS_THUMBNAIL_FRAME_LEFT;
+	top_offset = NAUTILUS_THUMBNAIL_FRAME_TOP;
+	right_offset = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
+	bottom_offset = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
 	
 	pixbuf_with_frame = eel_embed_image_in_frame
 		(*pixbuf, frame,
 		 left_offset, top_offset, right_offset, bottom_offset);
 	g_object_unref (*pixbuf);	
 
-	*pixbuf=pixbuf_with_frame;
+	*pixbuf = pixbuf_with_frame;
+}
+
+GdkPixbuf *
+nautilus_thumbnail_unframe_image (GdkPixbuf *pixbuf)
+{
+	GdkPixbuf *pixbuf_without_frame, *frame;
+	int left_offset, top_offset, right_offset, bottom_offset;
+	int w, h;
+		
+	/* The pixbuf isn't already framed (i.e., it was not made by
+	 * an old Nautilus), so we must embed it in a frame.
+	 */
+
+	frame = nautilus_get_thumbnail_frame ();
+	if (frame == NULL) {
+		return NULL;
+	}
+	
+	left_offset = NAUTILUS_THUMBNAIL_FRAME_LEFT;
+	top_offset = NAUTILUS_THUMBNAIL_FRAME_TOP;
+	right_offset = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
+	bottom_offset = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
+
+	w = gdk_pixbuf_get_width (pixbuf) - left_offset - right_offset;
+	h = gdk_pixbuf_get_height (pixbuf) - top_offset - bottom_offset;
+	pixbuf_without_frame =
+		gdk_pixbuf_new (gdk_pixbuf_get_colorspace (pixbuf),
+				gdk_pixbuf_get_has_alpha (pixbuf),
+				gdk_pixbuf_get_bits_per_sample (pixbuf),
+				w, h);
+
+	gdk_pixbuf_copy_area (pixbuf,
+			      left_offset, top_offset,
+			      w, h,
+			      pixbuf_without_frame, 0, 0);
+	
+	return pixbuf_without_frame;
 }
 
 typedef struct {
@@ -443,26 +508,30 @@ nautilus_thumbnail_load_image (const char *path,
 }
 
 static void
-async_thumbnail_read_image (GnomeVFSResult result,
-			    GnomeVFSFileSize file_size,
-			    char *file_contents,
+async_thumbnail_read_image (GObject *source_object,
+			    GAsyncResult *res,
 			    gpointer callback_data)
 {
+	NautilusThumbnailAsyncLoadHandle *handle = callback_data;
 	GdkPixbuf *pixbuf;
 	double scale_x, scale_y;
-
-	NautilusThumbnailAsyncLoadHandle *handle = callback_data;
+	gsize file_size;
+	char *file_contents;
 
 	pixbuf = NULL;
 	scale_x = scale_y = 1.0;
 
-	if (result == GNOME_VFS_OK) {
+	if (g_file_load_contents_finish (G_FILE (source_object),
+					 res,
+					 &file_contents, &file_size,
+					 NULL, NULL)) {
 		pixbuf = get_pixbuf_from_data (file_contents, file_size,
 					       handle->file_path,
 					       handle->base_size,
 					       handle->nominal_size,
 					       handle->force_nominal,
 					       &scale_x, &scale_y);
+		g_free (file_contents);
 	}
 
 	handle->load_func (handle,
@@ -472,6 +541,7 @@ async_thumbnail_read_image (GnomeVFSResult result,
 
 	gdk_pixbuf_unref (pixbuf);
 
+	g_object_unref (handle->cancellable);
 	g_free (handle->file_path);
 	g_free (handle);
 }
@@ -485,18 +555,11 @@ nautilus_thumbnail_load_image_async (const char *path,
 				     gpointer load_func_user_data)
 {
 	NautilusThumbnailAsyncLoadHandle *handle;
-	char *uri;
+	GFile *location;
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	if (uri == NULL) {
-		return NULL;
-	}
 
 	handle = g_new (NautilusThumbnailAsyncLoadHandle, 1);
-	handle->eel_read_handle =
-		eel_read_entire_file_async (uri, GNOME_VFS_PRIORITY_DEFAULT,
-					    (EelReadFileCallback) async_thumbnail_read_image,
-					   handle);
+	handle->cancellable = g_cancellable_new ();
 	handle->file_path = g_strdup (path);
 	handle->base_size = base_size;
 	handle->nominal_size = nominal_size;
@@ -504,8 +567,13 @@ nautilus_thumbnail_load_image_async (const char *path,
 	handle->load_func = load_func;
 	handle->load_func_user_data = load_func_user_data;
 
-	g_free (uri);
 
+	location = g_file_new_for_path (path);
+	g_file_load_contents_async (location, handle->cancellable,
+				    async_thumbnail_read_image,
+				    handle);
+	g_object_unref (location);
+	
 	return handle;
 }
 
@@ -514,9 +582,7 @@ nautilus_thumbnail_load_image_cancel (NautilusThumbnailAsyncLoadHandle *handle)
 {
 	g_assert (handle != NULL);
 
-	eel_read_file_cancel (handle->eel_read_handle);
-	g_free (handle->file_path);
-	g_free (handle);
+	g_cancellable_cancel  (handle->cancellable);
 }
 
 void
@@ -642,14 +708,16 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 
 	GDK_THREADS_ENTER ();
 
-	file = nautilus_file_get ((char *) image_uri);
+	file = nautilus_file_get_by_uri ((char *) image_uri);
 #ifdef DEBUG_THUMBNAILS
 	g_message ("(Thumbnail Thread) Notifying file changed file:%p uri: %s\n", file, (char*) image_uri);
 #endif
 
 	if (file != NULL) {
 		nautilus_file_set_is_thumbnailing (file, FALSE);
-		nautilus_file_changed (file);
+		nautilus_file_invalidate_attributes (file,
+						     NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
+						     NAUTILUS_FILE_ATTRIBUTE_INFO);
 		nautilus_file_unref (file);
 	}
 	g_free (image_uri);
@@ -657,6 +725,30 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 	GDK_THREADS_LEAVE ();
 
 	return FALSE;
+}
+
+gboolean
+nautilus_can_thumbnail (NautilusFile *file)
+{
+	GnomeThumbnailFactory *factory;
+	gboolean res;
+	char *uri;
+	time_t mtime;
+	char *mime_type;
+		
+	uri = nautilus_file_get_uri (file);
+	mime_type = nautilus_file_get_mime_type (file);
+	mtime = nautilus_file_get_mtime (file);
+	
+	factory = get_thumbnail_factory ();
+	res = gnome_thumbnail_factory_can_thumbnail (factory,
+						     uri,
+						     mime_type,
+						     mtime);
+	g_free (mime_type);
+	g_free (uri);
+
+	return res;
 }
 
 void
@@ -675,10 +767,10 @@ nautilus_create_thumbnail (NautilusFile *file)
 	
 	/* Hopefully the NautilusFile will already have the image file mtime,
 	   so we can just use that. Otherwise we have to get it ourselves. */
-	if (file->details->info
-	    && file->details->file_info_is_up_to_date
-	    && file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MTIME) {
-		file_mtime = file->details->info->mtime;
+	if (file->details->got_file_info &&
+	    file->details->file_info_is_up_to_date &&
+	    file->details->mtime != 0) {
+		file_mtime = file->details->mtime;
 	} else {
 		get_file_mtime (info->image_uri, &file_mtime);
 	}

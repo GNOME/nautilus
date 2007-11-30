@@ -40,7 +40,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
@@ -57,10 +56,10 @@
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkclipboard.h>
 #include <glib/gi18n.h>
+#include <gio/gvolumemonitor.h>
+#include <gio/gthemedicon.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-debug-log.h>
@@ -70,7 +69,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -89,6 +87,8 @@ struct FMTreeViewDetails {
 	GtkTreeView *tree_widget;
 	GtkTreeModelSort *sort_model;
 	FMTreeModel *child_model;
+
+	GVolumeMonitor *volume_monitor;
 
 	NautilusFile *activation_file;
 	gboolean activation_in_new_window;
@@ -214,7 +214,7 @@ show_selection_idle_callback (gpointer callback_data)
 
 	view->details->show_selection_idle_id = 0;
 
-	file = nautilus_file_get (view->details->selection_location);
+	file = nautilus_file_get_by_uri (view->details->selection_location);
 	if (file == NULL) {
 		return FALSE;
 	}
@@ -291,7 +291,7 @@ row_loaded_callback (GtkTreeModel     *tree_model,
 	}
 
 	/* if iter is ancestor of wanted selection_location then update selection */
-	selection_file = nautilus_file_get (view->details->selection_location);
+	selection_file = nautilus_file_get_by_uri (view->details->selection_location);
 	while (selection_file != NULL) {
 		if (file == selection_file) {
 			nautilus_file_unref (file);
@@ -334,6 +334,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
         FMTreeView *view;
 	GdkScreen *screen;
 	NautilusWindowOpenMode mode;
+	GFile *location;
 	
         view = FM_TREE_VIEW (callback_data);
 
@@ -370,19 +371,21 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 		   && nautilus_file_can_execute (file)
 		   && !nautilus_file_is_directory (file)) {	
 		   
-		file_uri = gnome_vfs_get_local_path_from_uri (uri);
+		file_uri = g_filename_from_uri (uri, NULL, NULL);
 
 		/* Non-local executables don't get launched. They act like non-executables. */
 		if (file_uri == NULL) {
 			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 					    "tree view window_info_open_location window=%p: %s",
 					    view->details->window, uri);
+			location = g_file_new_for_uri (uri);
 			nautilus_window_info_open_location
 				(view->details->window, 
-				 uri, 
+				 location, 
 				 mode,
 				 0,
 				 NULL);
+			g_object_unref (location);
 		} else {
 			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 					    "tree view launch_application_from_command window=%p: %s",
@@ -401,12 +404,14 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 					    "tree view window_info_open_location window=%p: %s",
 					    view->details->window, uri);
+			location = g_file_new_for_uri (uri);
 			nautilus_window_info_open_location
 				(view->details->window, 
-				 uri,
+				 location,
 				 mode,
 				 0,
 				 NULL);
+			g_object_unref (location);
 		}
 	}
 
@@ -467,7 +472,7 @@ selection_changed_timer_callback(FMTreeView *view)
 	}
 	view->details->activation_in_new_window = FALSE;
 		
-	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+	attributes = NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 	nautilus_file_call_when_ready (view->details->activation_file, attributes,
 				       got_activation_uri_callback, view);
 	return FALSE; /* remove timeout */
@@ -590,57 +595,49 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 }
 
 static void
-theme_changed_callback (GObject *icon_factory, gpointer callback_data)
-{
-        FMTreeView *view; 
-
-        view = FM_TREE_VIEW (callback_data);
-	if (view->details->child_model != NULL) {
-		fm_tree_model_set_theme (FM_TREE_MODEL (view->details->child_model));
-	}
-}
-
-static void
 add_root_for_volume (FMTreeView *view,
-		     GnomeVFSVolume *volume)
+		     GVolume *volume)
 {
-	char *icon, *mount_uri, *name;
+	char *mount_uri, *name;
+	GFile *root;
+	GIcon *icon;
 
-	if (!gnome_vfs_volume_is_user_visible (volume)) {
-		return;
-	}
-	
-	icon = gnome_vfs_volume_get_icon (volume);
-	mount_uri = gnome_vfs_volume_get_activation_uri (volume);
-	name = gnome_vfs_volume_get_display_name (volume);
+	icon = g_volume_get_icon (volume);
+	root = g_volume_get_root (volume);
+	mount_uri = g_file_get_uri (root);
+	g_object_unref (root);
+	name = g_volume_get_name (volume);
 	
 	fm_tree_model_add_root_uri(view->details->child_model,
 				   mount_uri, name, icon, volume);
 
-	g_free (icon);
+	g_object_unref (icon);
 	g_free (name);
 	g_free (mount_uri);
 	
 }
 
 static void
-volume_mounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			 GnomeVFSVolume *volume,
+volume_mounted_callback (GVolumeMonitor *volume_monitor,
+			 GVolume *volume,
 			 FMTreeView *view)
 {
 	add_root_for_volume (view, volume);
 }
 
 static void
-volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
-			   GnomeVFSVolume *volume,
+volume_unmounted_callback (GVolumeMonitor *volume_monitor,
+			   GVolume *volume,
 			   FMTreeView *view)
 {
+	GFile *root;
 	char *mount_uri;
-	
-	mount_uri = gnome_vfs_volume_get_activation_uri (volume);
+
+	root = g_volume_get_root (volume);
+	mount_uri = g_file_get_uri (root);
+	g_object_unref (root);
 	fm_tree_model_remove_root_uri (view->details->child_model,
-					     mount_uri);
+				       mount_uri);
 	g_free (mount_uri);
 }
 
@@ -667,59 +664,6 @@ get_clipboard (GtkWidget *widget)
 }
 
 static gboolean
-can_move_uri_to_trash (const char *file_uri_string)
-{
-	/* Return TRUE if we can get a trash directory on the same volume as this file. */
-	GnomeVFSURI *file_uri;
-	GnomeVFSURI *directory_uri;
-	GnomeVFSURI *trash_dir_uri;
-	gboolean result;
-
-	g_return_val_if_fail (file_uri_string != NULL, FALSE);
-
-	file_uri = gnome_vfs_uri_new (file_uri_string);
-
-	if (file_uri == NULL) {
-		return FALSE;
-	}
-
-	/* FIXME: Why can't we just pass file_uri to gnome_vfs_find_directory? */
-	directory_uri = gnome_vfs_uri_get_parent (file_uri);
-	gnome_vfs_uri_unref (file_uri);
-
-	if (directory_uri == NULL) {
-		return FALSE;
-	}
-
-	/*
-	 * Create a new trash if needed but don't go looking for an old Trash.
-	 * Passing 0 permissions as gnome-vfs would override the permissions 
-	 * passed with 700 while creating .Trash directory
-	 */
-	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, TRUE, FALSE, 0) == GNOME_VFS_OK;
-	if (result) {
-		gnome_vfs_uri_unref (trash_dir_uri);
-	}
-	gnome_vfs_uri_unref (directory_uri);
-
-	return result;
-}
-
-static gboolean
-eject_for_type (GnomeVFSDeviceType type)
-{
-	switch (type) {
-	case GNOME_VFS_DEVICE_TYPE_CDROM:
-	case GNOME_VFS_DEVICE_TYPE_ZIP:
-	case GNOME_VFS_DEVICE_TYPE_JAZ:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
-
-static gboolean
 is_parent_writable (NautilusFile *file)
 {
 	NautilusFile *parent;
@@ -743,7 +687,6 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			 FMTreeView *view)
 {
 	GtkTreePath *path, *cursor_path;
-	char *uri;
 	gboolean parent_file_is_writable;
 	gboolean file_is_home_or_desktop;
 	gboolean file_is_special_link;
@@ -753,7 +696,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 	if (event->button == 3) {
 		gboolean unmount_is_eject = FALSE;
 		gboolean show_unmount = FALSE;
-		GnomeVFSVolume *volume = NULL;
+		GVolume *volume = NULL;
 		
 		if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
 						    &path, NULL, NULL, NULL)) {
@@ -768,7 +711,6 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		gtk_tree_view_get_cursor (view->details->tree_widget, &cursor_path, NULL);
 		gtk_tree_view_set_cursor (view->details->tree_widget, path, NULL, FALSE);
 		gtk_tree_path_free (path);
-		uri = nautilus_file_get_uri (view->details->popup_file);
 		
 		gtk_widget_set_sensitive (view->details->popup_open_in_new_window,
 			nautilus_file_is_directory (view->details->popup_file));
@@ -782,9 +724,8 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 							copied_files_atom,
 							clipboard_contents_received_callback, view);
 		}
-		can_move_file_to_trash = can_move_uri_to_trash (uri);
+		can_move_file_to_trash = nautilus_file_can_trash (view->details->popup_file);
 		gtk_widget_set_sensitive (view->details->popup_trash, can_move_file_to_trash);
-		g_free (uri);
 		
 		if (show_delete_command_auto_value) {
 			parent_file_is_writable = is_parent_writable (view->details->popup_file);
@@ -805,7 +746,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (volume) {
 			show_unmount = TRUE;
-			unmount_is_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+			unmount_is_eject = g_volume_can_eject (volume);
 		} 
 		
 		gtk_label_set_text (GTK_LABEL (GTK_BIN (GTK_MENU_ITEM (view->details->popup_unmount))->child),
@@ -852,7 +793,7 @@ fm_tree_view_activate_file (FMTreeView *view,
 	view->details->activation_file = nautilus_file_ref (file);
 	view->details->activation_in_new_window = open_in_new_window;
 		
-	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+	attributes = NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 	nautilus_file_call_when_ready (view->details->activation_file, attributes,
 				       got_activation_uri_callback, view);
 }
@@ -879,7 +820,7 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	/* show the properties window for the newly created
 	 * folder so the user can change its name
 	 */
-	list = g_list_prepend (NULL, nautilus_file_get (new_folder_uri));
+	list = g_list_prepend (NULL, nautilus_file_get_by_uri (new_folder_uri));
 
 	fm_properties_window_present (list, GTK_WIDGET (data));
 
@@ -1077,27 +1018,6 @@ fm_tree_view_paste_cb (GtkWidget *menu_item,
 					paste_into_clipboard_received_callback, view);
 }
 
-static void
-fm_tree_view_trash_cb (GtkWidget *menu_item,
-		       FMTreeView *view)
-{
-	GList *list;
-	char *directory_uri;
-
-	directory_uri = nautilus_file_get_uri (view->details->popup_file);
-	
-	if (can_move_uri_to_trash (directory_uri))
-	{
-		list = g_list_prepend (NULL, g_strdup (directory_uri));
-	
-		nautilus_file_operations_copy_move (list, NULL, 
-						    EEL_TRASH_URI, GDK_ACTION_MOVE, GTK_WIDGET (view->details->tree_widget),
-						    NULL, NULL);
-	}
-	
-	g_free (directory_uri);
-}
-
 static GtkWindow *
 fm_tree_view_get_containing_window (FMTreeView *view)
 {
@@ -1113,75 +1033,40 @@ fm_tree_view_get_containing_window (FMTreeView *view)
 	return GTK_WINDOW (window);
 }
 
-static char *
-file_name_from_uri (const char *uri)
+static void
+fm_tree_view_trash_cb (GtkWidget *menu_item,
+		       FMTreeView *view)
 {
-	NautilusFile *file;
-	char *file_name;
-	
-	file = nautilus_file_get (uri);
-	file_name = nautilus_file_get_display_name (file);
-	nautilus_file_unref (file);
+	GList *list;
 
-	return file_name;	
-}
-
-static gboolean
-confirm_delete_directly (FMTreeView *view,
-			 const char *directory_uri)
-{
-	GtkDialog *dialog;
-	char *file_name;
-	char *prompt;
-	int response;
-
-	file_name = file_name_from_uri (directory_uri);
+	if (!nautilus_file_can_trash (view->details->popup_file)) {
+		return;
+	}
 	
-	prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\"?"), 
-				  file_name);
-	g_free (file_name);
-
-	dialog = GTK_DIALOG (eel_alert_dialog_new (fm_tree_view_get_containing_window (view),
-				                   0,
-						   GTK_MESSAGE_WARNING,
-						   GTK_BUTTONS_NONE,
-						   prompt,
-						   _("If you delete an item, it is permanently lost.")));
-
-	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (dialog, GTK_STOCK_DELETE, GTK_RESPONSE_YES);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
+	list = g_list_prepend (NULL,
+			       nautilus_file_get_location (view->details->popup_file));
 	
-	g_free (prompt);
-	
-	response = gtk_dialog_run (dialog);
-	
-	gtk_object_destroy (GTK_OBJECT(dialog));	
-	
-	return (response == GTK_RESPONSE_YES);
+	nautilus_file_operations_trash_or_delete (list, 
+						  fm_tree_view_get_containing_window (view),
+						  NULL, NULL);
+	eel_g_object_list_free (list);
 }
 
 static void
 fm_tree_view_delete_cb (GtkWidget *menu_item,
 		        FMTreeView *view)
 {
-	GList *uri_list;
-	char *directory_uri;
+	GList *location_list;
 		
 	if (!show_delete_command_auto_value) {
 		return;
 	}
 	
-	directory_uri = nautilus_file_get_uri (view->details->popup_file);
+	location_list = g_list_prepend (NULL,
+					nautilus_file_get_location (view->details->popup_file));
 	
-	if (confirm_delete_directly (view, directory_uri)) {
-		uri_list = NULL;
-		uri_list = g_list_prepend (uri_list, g_strdup (directory_uri));
-		
-		nautilus_file_operations_delete (uri_list, GTK_WIDGET (view), NULL, NULL);
-		eel_g_list_free_deep (uri_list);
-	}
-	g_free (directory_uri);
+	nautilus_file_operations_delete (location_list, fm_tree_view_get_containing_window (view), NULL, NULL);
+	eel_g_object_list_free (location_list);
 }
 
 static void
@@ -1198,30 +1083,11 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
 }
 
 static void
-volume_or_drive_unmounted_callback (gboolean succeeded,
-				    char *error,
-				    char *detailed_error,
-				    gpointer data)
-{
-	gboolean eject;
-
-	eject = GPOINTER_TO_INT (data);
-	if (!succeeded) {
-		if (eject) {
-			eel_show_error_dialog_with_details (error, NULL, detailed_error, NULL);
-		} else {
-			eel_show_error_dialog_with_details (error, NULL, detailed_error, NULL);
-		}
-	}
-}
-
-
-static void
 fm_tree_view_unmount_cb (GtkWidget *menu_item,
 			    FMTreeView *view)
 {
 	NautilusFile *file = view->details->popup_file;
-	GnomeVFSVolume *volume;
+	GVolume *volume;
 	
 	if (file == NULL) {
 		return;
@@ -1230,11 +1096,12 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, file);
 	
 	if (volume != NULL) {
-		if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
-			gnome_vfs_volume_eject (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
+		if (g_volume_can_eject (volume)) {
+			/* TODO-gio: Handle callbacks */
+			g_volume_eject (volume, NULL, NULL, NULL);
 		} else {
-			nautilus_file_operations_unmount_volume (GTK_WIDGET (view), volume,
-					volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
+			/* TODO-gio: Handle callbacks */
+			g_volume_unmount (volume, NULL, NULL, NULL);
 		}
 	}
 }
@@ -1371,10 +1238,11 @@ create_tree (FMTreeView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	GnomeVFSVolumeMonitor *volume_monitor;
+	GVolumeMonitor *volume_monitor;
 	char *home_uri;
 	GList *volumes, *l;
 	char *location;
+	GIcon *icon;
 	
 	view->details->child_model = fm_tree_model_new ();
 	view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -1391,19 +1259,25 @@ create_tree (FMTreeView *view)
 		 G_CALLBACK (row_loaded_callback),
 		 view, G_CONNECT_AFTER);
 	home_uri = nautilus_get_home_directory_uri ();
-	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-fs-home", NULL);
+	icon = g_themed_icon_new ("user-home");
+	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), icon, NULL);
+	g_object_unref (icon);
 	g_free (home_uri);
-	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), "gnome-fs-directory", NULL);
+	icon = g_themed_icon_new ("folder");
+	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), icon, NULL);
+	g_object_unref (icon);
 #ifdef NOT_YET_USABLE
+	icon = g_themed_icon_new ("gnome-fs-network");
 	fm_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), "gnome-fs-network", NULL);
+	g_object_unref (icon);
 #endif
 	
-	volume_monitor = gnome_vfs_get_volume_monitor ();
-	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
-	volumes = g_list_sort (volumes, (GCompareFunc) gnome_vfs_volume_compare);
+	volume_monitor = g_volume_monitor_get ();
+	view->details->volume_monitor = volume_monitor;
+	volumes = g_volume_monitor_get_mounted_volumes (volume_monitor);
 	for (l = volumes; l != NULL; l = l->next) {
 		add_root_for_volume (view, l->data);
-		gnome_vfs_volume_unref (l->data);
+		g_object_unref (l->data);
 	}
 	g_list_free (volumes);
 	
@@ -1558,9 +1432,6 @@ fm_tree_view_init (FMTreeView *view)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback, view);
 	
-	g_signal_connect_object (nautilus_icon_factory_get(), "icons_changed",
-				 G_CALLBACK (theme_changed_callback), view, 0);  
-
 	view->details->popup_file = NULL;
 	create_popup_menu (view);
 }
@@ -1611,6 +1482,8 @@ fm_tree_view_finalize (GObject *object)
 		g_free (view->details->selection_location);
 	}
 
+	g_object_unref (view->details->volume_monitor);
+	
 	g_free (view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

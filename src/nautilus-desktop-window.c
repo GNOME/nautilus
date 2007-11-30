@@ -33,8 +33,8 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <gio/gthemedicon.h>
 
 struct NautilusDesktopWindowDetails {
 	int dummy;
@@ -82,10 +82,14 @@ nautilus_desktop_window_delete_event (NautilusDesktopWindow *window)
 void
 nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 {
+	GFile *location;
+	
 	g_assert (NAUTILUS_IS_DESKTOP_WINDOW (window));
 	
 	NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = TRUE;
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), EEL_DESKTOP_URI);
+	location = g_file_new_for_uri (EEL_DESKTOP_URI);
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+	g_object_unref (location);
 }
 
 static void
@@ -246,10 +250,10 @@ real_get_title (NautilusWindow *window)
 	return g_strdup (_("Desktop"));
 }
 
-static char *
-real_get_icon_name (NautilusWindow *window)
+static NautilusIconInfo *
+real_get_icon (NautilusWindow *window)
 {
-	return g_strdup ("gnome-fs-desktop");
+	return nautilus_icon_info_lookup_from_name ("user-desktop", 48);
 }
 
 static void
@@ -268,7 +272,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 		= real_add_current_location_to_history_list;
 	NAUTILUS_WINDOW_CLASS (class)->get_title 
 		= real_get_title;
-	NAUTILUS_WINDOW_CLASS (class)->get_icon_name
-		= real_get_icon_name;
+	NAUTILUS_WINDOW_CLASS (class)->get_icon
+		= real_get_icon;
 
 }

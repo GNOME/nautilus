@@ -38,6 +38,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-tree-model.h			\
 	fm-tree-view.c			\
 	fm-tree-view.h			\
+	nautilus-audio-mime-types.h	\
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \

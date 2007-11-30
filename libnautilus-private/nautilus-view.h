@@ -29,7 +29,7 @@
 #include <gtk/gtkwidget.h>
 
 /* For NautilusZoomLevel */
-#include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-icon-info.h>
 
 G_BEGIN_DECLS
 

@@ -30,11 +30,11 @@
 #include "fm-tree-model.h"
 
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <gtk/gtkenums.h>
 #include <string.h>
 
@@ -61,8 +61,8 @@ struct TreeNode {
 
 	NautilusFile *file;
 	char *display_name;
-	char *icon_name;
-	GnomeVFSVolume *volume;
+	GIcon *icon;
+	GVolume *volume;
 	GdkPixbuf *closed_pixbuf;
 	GdkPixbuf *open_pixbuf;
 	GdkPixbuf *emblem_pixbuf;
@@ -203,7 +203,7 @@ tree_node_destroy (FMTreeModel *model, TreeNode *node)
 
 	g_object_unref (node->file);
 	g_free (node->display_name);
-	g_free (node->icon_name);
+	object_unref_if_not_NULL (node->icon);
 	object_unref_if_not_NULL (node->closed_pixbuf);
 	object_unref_if_not_NULL (node->open_pixbuf);
 	object_unref_if_not_NULL (node->emblem_pixbuf);
@@ -241,29 +241,59 @@ tree_node_parent (TreeNode *node, TreeNode *parent)
 }
 
 static GdkPixbuf *
-tree_node_get_pixbuf_from_factory (TreeNode *node,
-				   const char *modifier)
+get_menu_icon (GIcon *icon)
+{
+	NautilusIconInfo *info;
+	GdkPixbuf *pixbuf;
+	int size;
+
+	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+	
+	info = nautilus_icon_info_lookup (icon, size);
+	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	g_object_unref (info);
+	
+	return pixbuf;
+}
+
+static GdkPixbuf *
+get_menu_icon_for_file (NautilusFile *file,
+			NautilusFileIconFlags flags)
+{
+	NautilusIconInfo *info;
+	GdkPixbuf *pixbuf;
+	int size;
+
+	size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+	
+	info = nautilus_file_get_icon (file, size, flags);
+	pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+	g_object_unref (info);
+	
+	return pixbuf;
+}
+
+static GdkPixbuf *
+tree_node_get_pixbuf (TreeNode *node,
+		      NautilusFileIconFlags flags)
 {
 	if (node->parent == NULL) {
-		return nautilus_icon_factory_get_pixbuf_from_name_with_stock_size
-			(node->icon_name, NULL,
-			 GTK_ICON_SIZE_MENU, NULL);
+		return get_menu_icon (node->icon);
 	}
-	return nautilus_icon_factory_get_pixbuf_for_file_with_stock_size
-		(node->file, modifier, GTK_ICON_SIZE_MENU);
+	return get_menu_icon_for_file (node->file, flags);
 }
 
 static gboolean
 tree_node_update_pixbuf (TreeNode *node,
 			 GdkPixbuf **pixbuf_storage,
-			 const char *modifier)
+			 NautilusFileIconFlags flags)
 {
 	GdkPixbuf *pixbuf;
 
 	if (*pixbuf_storage == NULL) {
 		return FALSE;
 	}
-	pixbuf = tree_node_get_pixbuf_from_factory (node, modifier);
+	pixbuf = tree_node_get_pixbuf (node, flags);
 	if (pixbuf == *pixbuf_storage) {
 		g_object_unref (pixbuf);
 		return FALSE;
@@ -276,42 +306,47 @@ tree_node_update_pixbuf (TreeNode *node,
 static gboolean
 tree_node_update_closed_pixbuf (TreeNode *node)
 {
-	return tree_node_update_pixbuf (node, &node->closed_pixbuf, NULL);
+	return tree_node_update_pixbuf (node, &node->closed_pixbuf, 0);
 }
 
 static gboolean
 tree_node_update_open_pixbuf (TreeNode *node)
 {
-	return tree_node_update_pixbuf (node, &node->open_pixbuf, "accept");
+	return tree_node_update_pixbuf (node, &node->open_pixbuf, NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER);
 }
 
 static GdkPixbuf *
-tree_node_get_emblem_pixbuf_from_factory (TreeNode *node)
+tree_node_get_emblem_pixbuf_internal (TreeNode *node)
 {
 	GdkPixbuf *pixbuf;
-	GList *emblem_icons;
-	EelStringList *emblems_to_ignore;
-
-	emblems_to_ignore = eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+	GList *emblem_pixbufs;
+	char *emblems_to_ignore[3];
+	int i;
+	
+	i = 0;
+	emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_TRASH;
+	
 	if (node->parent && node->parent->file) {
 		if (!nautilus_file_can_write (node->parent->file)) {
-			eel_string_list_prepend (emblems_to_ignore, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+			emblems_to_ignore[i++] = NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE;
 		}
 	}
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file
-		(node->file, emblems_to_ignore);
-	eel_string_list_free (emblems_to_ignore);
+	
+	emblems_to_ignore[i++] = NULL;
 
-	if (emblem_icons != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon_with_stock_size
-			(emblem_icons->data, NULL,
-			 GTK_ICON_SIZE_MENU,
-			 NULL, NULL, FALSE, NULL);
+	emblem_pixbufs = nautilus_file_get_emblem_pixbufs (node->file,
+							   nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU),
+							   TRUE,
+							   emblems_to_ignore);
+	
+
+	if (emblem_pixbufs != NULL) {
+		pixbuf = g_object_ref (emblem_pixbufs->data);
 	} else {
 		pixbuf = NULL;
 	}
 
-	eel_g_list_free_deep (emblem_icons);
+	eel_gdk_pixbuf_list_free (emblem_pixbufs);
 
 	return pixbuf;
 }
@@ -324,7 +359,7 @@ tree_node_update_emblem_pixbuf (TreeNode *node)
 	if (node->emblem_pixbuf == NULL) {
 		return FALSE;
 	}
-	pixbuf = tree_node_get_emblem_pixbuf_from_factory (node);
+	pixbuf = tree_node_get_emblem_pixbuf_internal (node);
 	if (pixbuf == node->emblem_pixbuf) {
 		g_object_unref (pixbuf);
 		return FALSE;
@@ -360,7 +395,7 @@ static GdkPixbuf *
 tree_node_get_closed_pixbuf (TreeNode *node)
 {
 	if (node->closed_pixbuf == NULL) {
-		node->closed_pixbuf = tree_node_get_pixbuf_from_factory (node, NULL);
+		node->closed_pixbuf = tree_node_get_pixbuf (node, 0);
 	}
 	return node->closed_pixbuf;
 }
@@ -369,7 +404,7 @@ static GdkPixbuf *
 tree_node_get_open_pixbuf (TreeNode *node)
 {
 	if (node->open_pixbuf == NULL) {
-		node->open_pixbuf = tree_node_get_pixbuf_from_factory (node, "accept");
+		node->open_pixbuf = tree_node_get_pixbuf (node, NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER);
 	}
 	return node->open_pixbuf;
 }
@@ -378,7 +413,7 @@ static GdkPixbuf *
 tree_node_get_emblem_pixbuf (TreeNode *node)
 {
 	if (node->emblem_pixbuf == NULL) {
-		node->emblem_pixbuf = tree_node_get_emblem_pixbuf_from_factory (node);
+		node->emblem_pixbuf = tree_node_get_emblem_pixbuf_internal (node);
 	}
 	return node->emblem_pixbuf;
 }
@@ -1035,9 +1070,10 @@ get_tree_monitor_attributes (void)
 {
 	NautilusFileAttributes attributes;
 
-	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	attributes |= NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
-		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+	attributes =
+		NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
+		NAUTILUS_FILE_ATTRIBUTE_INFO |
+		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
 	
 	return attributes;
 }
@@ -1547,21 +1583,20 @@ fm_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 }
 
 void
-fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char *display_name, const char *icon_name, GnomeVFSVolume *volume)
+fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char *display_name, GIcon *icon, GVolume *volume)
 {
 	NautilusFile *file;
 	TreeNode *node, *cnode;
 	FMTreeModelRoot *newroot;
 	
-	file = nautilus_file_get (root_uri);
+	file = nautilus_file_get_by_uri (root_uri);
 
 	newroot = tree_model_root_new (model);
 	node = create_node_for_file (newroot, file);
 	node->display_name = g_strdup (display_name);
-	node->icon_name = g_strdup (icon_name);
+	node->icon = g_object_ref (icon);
 	if (volume) {
-		gnome_vfs_volume_ref (volume);
-		node->volume = volume;
+		node->volume = g_object_ref (volume);
 	}
 	newroot->root_node = node;
 	node->parent = NULL;
@@ -1580,7 +1615,7 @@ fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char
 	report_node_inserted (model, node);
 }
 
-GnomeVFSVolume *
+GVolume *
 fm_tree_model_get_volume_for_root_node_file (FMTreeModel *model, NautilusFile *file)
 {
 	TreeNode *node;
@@ -1606,7 +1641,7 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 	FMTreeModelRoot *root;
 	NautilusFile *file;
 
-	file = nautilus_file_get (uri);
+	file = nautilus_file_get_by_uri (uri);
 	for (node = model->details->root_node; node != NULL; node = node->next) {
 		if (file == node->file) {
 			break;
@@ -1618,7 +1653,7 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 		/* remove the node */
 		
 		if (node->volume) {
-			gnome_vfs_volume_unref (node->volume);
+			g_object_unref (node->volume);
 			node->volume = NULL;
 		}
 
@@ -1656,36 +1691,6 @@ fm_tree_model_new (void)
 	
 	return model;
 }
-
-static void
-set_theme (TreeNode *node, FMTreeModel *model)
-{
-	TreeNode *child;
-	
-	tree_node_update_closed_pixbuf (node);
-	tree_node_update_open_pixbuf (node);
-	
-	report_node_contents_changed (model, node);
-	
-	for (child = node->first_child; child != NULL; child = child->next) {
-		set_theme (child, model);
-	}
-} 
-
-void
-fm_tree_model_set_theme (FMTreeModel *model)
-{
-	TreeNode *node;
-
-	g_return_if_fail (FM_IS_TREE_MODEL (model));
-
-	node = model->details->root_node;
-	while (node != NULL) {
-		set_theme (node, model);
-		node = node->next;
-	}
-}
-
 
 void
 fm_tree_model_set_show_hidden_files (FMTreeModel *model,

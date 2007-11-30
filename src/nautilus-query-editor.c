@@ -27,9 +27,9 @@
 #include <string.h>
 #include <libnautilus-private/nautilus-marshal.h>
 #include <glib/gi18n.h>
+#include <gio/gcontenttype.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-mime-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkbutton.h>
@@ -46,8 +46,6 @@
 #include <gtk/gtkfilechooserbutton.h>
 #include "gtk/gtkcelllayout.h"
 #include "gtk/gtkcellrenderertext.h"
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
 
 typedef enum {
 	NAUTILUS_QUERY_EDITOR_ROW_LOCATION,
@@ -269,7 +267,7 @@ static GtkWidget *
 location_row_create_widgets (NautilusQueryEditorRow *row)
 {
 	GtkWidget *chooser;
-	
+
 	chooser = gtk_file_chooser_button_new (_("Select folder to search in"),
 					       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
@@ -293,9 +291,15 @@ location_row_add_to_query (NautilusQueryEditorRow *row,
 	char *folder, *uri;
 	
 	folder = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (row->type_widget));
-	uri = gnome_vfs_get_uri_from_local_path (folder);
+	if (folder == NULL) {
+		/* I don't know why, but i got NULL here on initial search in browser mode
+		   even with the location set to the homedir in create_widgets... */
+		folder = g_strdup (g_get_home_dir ());
+	}
+	
+	uri = g_filename_to_uri (folder, NULL, NULL);
 	g_free (folder);
-
+		
 	nautilus_query_set_location (query, uri);
 	g_free (uri);
 }
@@ -317,7 +321,7 @@ location_add_rows_from_query (NautilusQueryEditor    *editor,
 	if (uri == NULL) {
 		return;
 	}
-	folder = gnome_vfs_get_local_path_from_uri (uri);
+	folder = g_filename_from_uri (uri, NULL, NULL);
 	g_free (uri);
 	if (folder == NULL) {
 		return;
@@ -521,20 +525,27 @@ type_combo_changed (GtkComboBox *combo_box, NautilusQueryEditorRow *row)
 		GtkWidget *toplevel;
 		GtkTreeSelection *selection;
 
-		mime_infos = eel_mime_get_available_mime_types ();
+		mime_infos = g_content_types_get_registered ();
 
 		store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
 		for (l = mime_infos; l != NULL; l = l->next) {
 			GtkTreeIter iter;
-			EelMimeTypeInfo *info = l->data;
+			char *mime_type = l->data;
+			char *description;
 
+			description = g_content_type_get_description (mime_type);
+			if (description == NULL) {
+				description = g_strdup (mime_type);
+			}
+			
 			gtk_list_store_append (store, &iter);
 			gtk_list_store_set (store, &iter,
-					    0, info->description,
-					    1, info->mime_type,
+					    0, description,
+					    1, mime_type,
 					    -1);
 			
-			eel_mime_type_info_free (info);
+			g_free (mime_type);
+			g_free (description);
 		}
 		g_list_free (mime_infos);
 		
@@ -786,7 +797,7 @@ type_add_rows_from_query (NautilusQueryEditor    *editor,
 	for (l = mime_types; l != NULL; l = l->next) {
 		mime_type = l->data;
 
-		desc = gnome_vfs_mime_get_value (mime_type, "description");
+		desc = g_content_type_get_description (mime_type);
 		if (desc == NULL) {
 			desc = mime_type;
 		}

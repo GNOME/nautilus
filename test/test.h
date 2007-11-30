@@ -4,7 +4,6 @@
 #include <config.h>
 #include <gtk/gtk.h>
 #include <gnome.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-art-gtk-extensions.h>

@@ -47,7 +47,6 @@
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <stdio.h>
@@ -66,9 +65,6 @@ struct NautilusLocationBarDetails {
 	NautilusEntry *entry;
 	
 	char *last_location;
-	
-	char *current_directory;
-	GList *file_info_list;
 	
 	guint idle_id;
 };
@@ -117,7 +113,7 @@ drag_data_received_callback (GtkWidget *widget,
 		             guint32 time,
 			     gpointer callback_data)
 {
-	GList *names, *node;
+	char **names;
 	NautilusApplication *application;
 	int name_count;
 	NautilusWindow *new_window;
@@ -126,14 +122,15 @@ drag_data_received_callback (GtkWidget *widget,
 	gboolean new_windows_for_extras;
 	char *prompt;
 	char *detail;
+	GFile *location;
 
 	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
 	g_assert (callback_data == NULL);
 
-	names = nautilus_icon_dnd_uri_list_extract_uris (data->data);
+	names = g_uri_list_extract_uris (data->data);
 
-	if (names == NULL) {
+	if (names == NULL || *names == NULL) {
 		g_warning ("No D&D URI's");
 		gtk_drag_finish (context, FALSE, FALSE, time);
 		return;
@@ -145,7 +142,7 @@ drag_data_received_callback (GtkWidget *widget,
 	 * for multiple dropped URIs. This is likely to have been
 	 * a mistake.
 	 */
-	name_count = g_list_length (names);
+	name_count = g_strv_length (names);
 	if (name_count > 1) {
 		prompt = g_strdup_printf (ngettext("Do you want to view %d location?",
 						   "Do you want to view %d locations?",
@@ -176,20 +173,24 @@ drag_data_received_callback (GtkWidget *widget,
 	}
 
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (widget),
-					      names->data);	
+					      names[0]);	
 	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget));
 
 	if (new_windows_for_extras) {
+		int i;
+
 		application = NAUTILUS_WINDOW (window)->application;
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
-		for (node = names->next; node != NULL; node = node->next) {
+		for (i = 1; names[i] != NULL; ++i) {
 			new_window = nautilus_application_create_navigation_window (application, NULL, screen);
-			nautilus_window_go_to (new_window, node->data);
+			location = g_file_new_for_uri (names[i]);
+			nautilus_window_go_to (new_window, location);
+			g_object_unref (location);
 		}
 	}
 
-	nautilus_icon_dnd_uri_list_free_strings (names);
+	g_strfreev (names);
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
 }
@@ -280,7 +281,6 @@ label_button_pressed_callback (GtkWidget             *widget,
 	return FALSE;
 }
 
-
 static int
 get_editable_number_of_chars (GtkEditable *editable)
 {
@@ -358,14 +358,6 @@ destroy (GtkObject *object)
 		g_source_remove (bar->details->idle_id);
 		bar->details->idle_id = 0;
 	}
-	
-	if (bar->details->file_info_list) {
-		gnome_vfs_file_info_list_free (bar->details->file_info_list);	
-		bar->details->file_info_list = NULL;
-	}
-	
-	g_free (bar->details->current_directory);
-	bar->details->current_directory = NULL;
 	
 	g_free (bar->details->last_location);
 	bar->details->last_location = NULL;
@@ -486,6 +478,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 {
 	NautilusLocationBar *bar;
 	char *formatted_location;
+	GFile *file;
 
 	g_assert (location != NULL);
 	
@@ -498,20 +491,15 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 		nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (bar->details->entry),
 							  "");
 	} else {
-		formatted_location = eel_format_uri_for_display (location);
+		file = g_file_new_for_uri (location);
+		formatted_location = g_file_get_parse_name (file);
+		g_object_unref (file);
 		nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
 					 formatted_location);
 		set_position_and_selection_to_end (GTK_EDITABLE (bar->details->entry));
 		g_free (formatted_location);
 	}
 
-	/* free up the cached file info from the previous location */
-	g_free (bar->details->current_directory);
-	bar->details->current_directory = NULL;
-	
-	gnome_vfs_file_info_list_free (bar->details->file_info_list);	
-	bar->details->file_info_list = NULL;			
-	
 	/* remember the original location for later comparison */
 	
 	if (bar->details->last_location != location) {
@@ -530,7 +518,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  * @bar: A NautilusLocationBar.
  *
  * returns a newly allocated "string" containing the mangled
- * (by gnome_vfs_make_uri_from_input) text that the user typed in...maybe a URI 
+ * (by g_file_parse_name) text that the user typed in...maybe a URI 
  * but not guaranteed.
  *
  **/
@@ -538,14 +526,17 @@ static char *
 nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar) 
 {
 	NautilusLocationBar *bar;
-	char *user_location, *best_uri;
+	char *user_location, *uri;
+	GFile *location;
 
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	best_uri = gnome_vfs_make_uri_from_input (user_location);
+	location = g_file_parse_name (user_location);
 	g_free (user_location);
-	return best_uri;
+	uri = g_file_get_uri (location);
+	g_object_unref (location);
+	return uri;
 }
 	       
 /**
@@ -558,16 +549,19 @@ static void
 nautilus_location_bar_update_label (NautilusLocationBar *bar)
 {
 	const char *current_text;
-	char *current_location;
+	GFile *location;
+	GFile *last_location;
 	
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
-	current_location = gnome_vfs_make_uri_from_input (current_text);
+	location = g_file_parse_name (current_text);
+	last_location = g_file_parse_name (bar->details->last_location);
 	
-	if (gnome_vfs_uris_match (bar->details->last_location, current_location)) {
+	if (g_file_equal (last_location, location)) {
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
 	}
 
-	g_free (current_location);
+	g_object_unref (location);
+	g_object_unref (last_location);
 }
