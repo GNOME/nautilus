@@ -58,6 +58,7 @@ char *        nautilus_progress_info_get_status      (NautilusProgressInfo *info
 char *        nautilus_progress_info_get_details     (NautilusProgressInfo *info);
 double        nautilus_progress_info_get_progress    (NautilusProgressInfo *info);
 GCancellable *nautilus_progress_info_get_cancellable (NautilusProgressInfo *info);
+void          nautilus_progress_info_cancel          (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_started  (NautilusProgressInfo *info);
 gboolean      nautilus_progress_info_get_is_finished (NautilusProgressInfo *info);
 

@@ -91,7 +91,6 @@ typedef struct {
 	GtkWidget *parent_window;
 	NautilusProgressInfo *progress;
 	GCancellable *cancellable;
-	gboolean aborted;
 	GHashTable *skip_files;
 	GHashTable *skip_readdir_error;
 	gboolean skip_all_error;
@@ -3453,6 +3452,19 @@ run_warning (CommonJob *job,
 	return res;
 }
 
+static void
+abort_job (CommonJob *job)
+{
+	g_cancellable_cancel (job->cancellable);
+	
+}
+
+static gboolean
+job_aborted (CommonJob *job)
+{
+	return g_cancellable_is_cancelled (job->cancellable);
+}
+
 static gboolean
 confirm_delete_from_trash (GIOJob *job,
 			   GtkWindow *parent_window,
@@ -4472,7 +4484,9 @@ scan_dir (GFile *dir,
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
 		
-		if (error) {
+		if (error && IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+		} else if (error) {
 			primary = f (_("Error while copying."));
 			details = NULL;
 			
@@ -4490,11 +4504,11 @@ scan_dir (GFile *dir,
 						details,
 						GTK_STOCK_CANCEL, RETRY, SKIP,
 						NULL);
-			
+
 			g_error_free (error);
 			
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-				job->aborted = TRUE;
+				abort_job (job);
 			} else if (response == 1) {
 				*source_info = saved_info;
 				goto retry;
@@ -4506,7 +4520,10 @@ scan_dir (GFile *dir,
 		}
 		
 	} else if (job->skip_all_error) {
+		g_error_free (error);
 		skip_file (job, dir);
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
 	} else {
 		primary = f (_("Error while copying."));
 		details = NULL;
@@ -4525,11 +4542,11 @@ scan_dir (GFile *dir,
 					details,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP, RETRY,
 					NULL);
-
+		
 		g_error_free (error);
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1 || response == 2) {
 			if (response == 1) {
 				job->skip_all_error = TRUE;
@@ -4577,7 +4594,10 @@ scan_file (GFile *file,
 		
 		g_object_unref (info);
 	} else if (job->skip_all_error) {
+		g_error_free (error);
 		skip_file (job, file);
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
 	} else {
 		primary = f (_("Error while copying."));
 		details = NULL;
@@ -4600,7 +4620,7 @@ scan_file (GFile *file,
 		g_error_free (error);
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1 || response == 2) {
 			if (response == 1) {
 				job->skip_all_error = TRUE;
@@ -4613,7 +4633,7 @@ scan_file (GFile *file,
 		}
 	}
 		
-	while (!job->aborted && 
+	while (!job_aborted (job) && 
 	       (dir = g_queue_pop_head (dirs)) != NULL) {
 		scan_dir (dir, source_info, job, dirs);
 		g_object_unref (dir);
@@ -4637,7 +4657,7 @@ scan_sources (GList *files,
 						   _("Preparing for copy"));
 	}
 	
-	for (l = files; l != NULL && !job->aborted; l = l->next) {
+	for (l = files; l != NULL && !job_aborted (job); l = l->next) {
 		file = l->data;
 
 		scan_file (file,
@@ -4675,6 +4695,11 @@ verify_destination (CommonJob *job,
 				  &error);
 
 	if (info == NULL) {
+		if (IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+			return;
+		}
+		
 		primary = f (_("Error while copying to \"%B\"."), dest);
 		details = NULL;
 		
@@ -4695,7 +4720,7 @@ verify_destination (CommonJob *job,
 		g_error_free (error);
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) {
 			goto retry;
 		} else {
@@ -4726,7 +4751,7 @@ verify_destination (CommonJob *job,
 		
 		g_error_free (error);
 
-		job->aborted = TRUE;
+		abort_job (job);
 		return;
 	}
 	
@@ -4761,7 +4786,7 @@ verify_destination (CommonJob *job,
 						NULL);
 			
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-				job->aborted = TRUE;
+				abort_job (job);
 			} else if (response == 1) {
 				goto retry;
 			} else {
@@ -4770,7 +4795,7 @@ verify_destination (CommonJob *job,
 		}
 	}
 	
-	if (!job->aborted &&
+	if (!job_aborted (job) &&
 	    g_file_info_get_attribute_boolean (fsinfo,
 					       G_FILE_ATTRIBUTE_FS_READONLY)) {
 		primary = f (_("Error while copying to \"%B\"."), dest);
@@ -4785,7 +4810,7 @@ verify_destination (CommonJob *job,
 		
 		g_error_free (error);
 
-		job->aborted = TRUE;
+		abort_job (job);
 	}
 	
 	g_object_unref (fsinfo);
@@ -4990,6 +5015,10 @@ create_dest_dir (CommonJob *job,
 	
 	error = NULL;
 	if (!g_file_make_directory (dest, job->cancellable, &error)) {
+		if (IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+			return FALSE;
+		}
 		primary = f (_("Error while copying."));
 		details = NULL;
 		
@@ -5011,7 +5040,7 @@ create_dest_dir (CommonJob *job,
 		g_error_free (error);
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) {
 			/* Skip: Do Nothing  */
 		} else if (response == 2) {
@@ -5072,7 +5101,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 	if (enumerator) {
 		error = NULL;
 		
-		while (!job->aborted &&
+		while (!job_aborted (job) &&
 		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error)) != NULL) {
 			src_file = g_file_get_child (src,
 						     g_file_info_get_name (info));
@@ -5081,7 +5110,9 @@ copy_move_directory (CopyMoveJob *copy_job,
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
 		
-		if (error) {
+		if (error && IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+		} else if (error) {
 			if (copy_job->is_move) {
 				primary = f (_("Error while moving."));
 			} else {
@@ -5107,7 +5138,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 			g_error_free (error);
 			
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-				job->aborted = TRUE;
+				abort_job (job);
 			} else if (response == 1) {
 				/* Skip: Do Nothing */
 				local_skipped_file = TRUE;
@@ -5123,6 +5154,8 @@ copy_move_directory (CopyMoveJob *copy_job,
 		if (debuting_files) {
 			g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (create_dest));
 		}
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
 	} else {
 		if (copy_job->is_move) {
 			primary = f (_("Error while moving."));
@@ -5149,7 +5182,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 		g_error_free (error);
 
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) {
 			/* Skip: Do Nothing  */
 			local_skipped_file = TRUE;
@@ -5167,7 +5200,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 					job->cancellable, NULL);
 	}
 
-	if (!job->aborted && copy_job->is_move &&
+	if (!job_aborted (job) && copy_job->is_move &&
 	    /* Don't delete source if there was a skipped file */
 	    !local_skipped_file) {
 		if (!g_file_delete (src, job->cancellable, &error)) {
@@ -5186,7 +5219,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 						NULL);
 			
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-				job->aborted = TRUE;
+				abort_job (job);
 			} else if (response == 1) { /* skip all */
 				job->skip_all_error = TRUE;
 				local_skipped_file = TRUE;
@@ -5231,7 +5264,7 @@ remove_target_recursively (CommonJob *job,
 	if (enumerator) {
 		error = NULL;
 		
-		while (!job->aborted &&
+		while (!job_aborted (job) &&
 		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL) {
 			child = g_file_get_child (file,
 						  g_file_info_get_name (info));
@@ -5247,6 +5280,8 @@ remove_target_recursively (CommonJob *job,
 		/* Not a dir, continue */
 		g_error_free (error);
 		
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
 	} else {
 		if (job->skip_all_error) {
 			goto skip1;
@@ -5264,7 +5299,7 @@ remove_target_recursively (CommonJob *job,
 					NULL);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) { /* skip all */
 			job->skip_all_error = TRUE;
 		} else if (response == 2) { /* skip */
@@ -5285,7 +5320,8 @@ remove_target_recursively (CommonJob *job,
 	error = NULL;
 	
 	if (!g_file_delete (file, job->cancellable, &error)) {
-		if (job->skip_all_error) {
+		if (job->skip_all_error ||
+		    IS_IO_ERROR (error, CANCELLED)) {
 			goto skip2;
 		}
 		primary = f (_("Error while copying \"%B\"."), src);
@@ -5300,7 +5336,7 @@ remove_target_recursively (CommonJob *job,
 					NULL);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) { /* skip all */
 			job->skip_all_error = TRUE;
 		} else if (response == 2) { /* skip */
@@ -5490,7 +5526,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		g_error_free (error);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1 || response == 3) { /* skip all / skip */
 			if (response == 1) {
 				job->skip_all_conflict = TRUE;
@@ -5553,7 +5589,7 @@ copy_move_file (CopyMoveJob *copy_job,
 				g_error_free (error);
 				
 				if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-					job->aborted = TRUE;
+					abort_job (job);
 				} else if (response == 1) { /* skip all */
 					job->skip_all_error = TRUE;
 				} else if (response == 2) { /* skip */
@@ -5583,6 +5619,10 @@ copy_move_file (CopyMoveJob *copy_job,
 		return;
 	}
 	
+	else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
+	}
+	
 	/* Other error */
 	else {
 		if (job->skip_all_error) {
@@ -5602,7 +5642,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		g_error_free (error);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) { /* skip all */
 			job->skip_all_error = TRUE;
 		} else if (response == 2) { /* skip */
@@ -5636,7 +5676,7 @@ copy_files (CopyMoveJob *job,
 	
 	i = 0;
 	for (l = job->files;
-	     l != NULL && !common->aborted ;
+	     l != NULL && !job_aborted (common);
 	     l = l->next) {
 		src = l->data;
 
@@ -5705,7 +5745,7 @@ copy_job (GIOJob *io_job,
 	scan_sources (job->files,
 		      &source_info,
 		      common);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 
@@ -5713,7 +5753,7 @@ copy_job (GIOJob *io_job,
 			    job->destination,
 			    &dest_fs_id,
 			    source_info.num_bytes);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 
@@ -5905,7 +5945,7 @@ move_file_prepare (CopyMoveJob *move_job,
 		g_error_free (error);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1 || response == 3) { /* skip all / skip */
 			if (response == 1) {
 				job->skip_all_conflict = TRUE;
@@ -5945,6 +5985,10 @@ move_file_prepare (CopyMoveJob *move_job,
 		}
 	}
 
+	else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
+	}
+	
 	/* Other error */
 	else {
 		if (job->skip_all_error) {
@@ -5964,7 +6008,7 @@ move_file_prepare (CopyMoveJob *move_job,
 		g_error_free (error);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
-			job->aborted = TRUE;
+			abort_job (job);
 		} else if (response == 1) { /* skip all */
 			job->skip_all_error = TRUE;
 		} else if (response == 2) { /* skip */
@@ -6000,7 +6044,7 @@ move_files_prepare (CopyMoveJob *job,
 
 	i = 0;
 	for (l = job->files;
-	     l != NULL && !common->aborted ;
+	     l != NULL && !job_aborted (common);
 	     l = l->next) {
 		src = l->data;
 
@@ -6049,7 +6093,7 @@ move_files (CopyMoveJob *job,
 	
 	i = 0;
 	for (l = files;
-	     l != NULL && !common->aborted ;
+	     l != NULL && !job_aborted (common);
 	     l = l->next) {
 		src = l->data;
 
@@ -6125,7 +6169,7 @@ move_job (GIOJob *io_job,
 			    job->destination,
 			    &dest_fs_id,
 			    -1);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 
@@ -6134,7 +6178,7 @@ move_job (GIOJob *io_job,
 
 	/* This moves all files that we can do without copy + delete */
 	move_files_prepare (job, dest_fs_id, &copy_files, copy_positions);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 
@@ -6147,7 +6191,7 @@ move_job (GIOJob *io_job,
 	scan_sources (copy_files,
 		      &source_info,
 		      common);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 
@@ -6155,7 +6199,7 @@ move_job (GIOJob *io_job,
 			    job->destination,
 			    &dest_fs_id,
 			    source_info.num_bytes);
-	if (common->aborted) {
+	if (job_aborted (common)) {
 		goto aborted;
 	}
 

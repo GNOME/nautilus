@@ -305,19 +305,35 @@ op_finished (ProgressWidgetData *data)
 	update_status_icon_and_window ();
 }
 
+static void
+cancel_clicked (GtkWidget *button,
+		ProgressWidgetData *data)
+{
+	nautilus_progress_info_cancel (data->info);
+	gtk_widget_set_sensitive (button, FALSE);
+}
+
+
 static GtkWidget *
 progress_widget_new (NautilusProgressInfo *info)
 {
 	ProgressWidgetData *data;
-	GtkWidget *label, *bar;
+	GtkWidget *label, *bar, *hbox, *vbox, *button, *image;
 
 	data = g_new0 (ProgressWidgetData, 1);
 	data->info = g_object_ref (info);
 	
-	data->widget = gtk_vbox_new (FALSE, 0);
-
+	hbox = gtk_hbox_new (FALSE, 0);
+	data->widget = hbox;
 	g_object_set_data_full (G_OBJECT (data->widget),
 				"data", data, (GDestroyNotify)progress_widget_data_free);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    vbox,
+			    FALSE, FALSE,
+			    2);
+	gtk_widget_show (vbox);
 	
 	label = gtk_label_new ("details");
 	gtk_widget_set_size_request (label,
@@ -326,7 +342,7 @@ progress_widget_new (NautilusProgressInfo *info)
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (data->widget),
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    label,
 			    FALSE, FALSE,
 			    2);
@@ -336,7 +352,7 @@ progress_widget_new (NautilusProgressInfo *info)
 	gtk_progress_bar_set_pulse_step (data->progress_bar, 0.05);
 	
 	gtk_widget_show (bar);
-	gtk_box_pack_start (GTK_BOX (data->widget),
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    bar,
 			    FALSE, FALSE,
 			    2);
@@ -348,11 +364,32 @@ progress_widget_new (NautilusProgressInfo *info)
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (data->widget),
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    label,
 			    FALSE, FALSE,
 			    0);
 
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    vbox,
+			    FALSE, FALSE,
+			    0);
+	gtk_widget_show (vbox);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_CANCEL, GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (image);
+	button = gtk_button_new ();
+	gtk_container_add (GTK_CONTAINER (button), image);
+	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    button,
+			    TRUE, FALSE,
+			    0);
+
+	g_signal_connect (button, "clicked", (GCallback)cancel_clicked, data);
+
+	
 	update_data (data);
 	update_progress (data);
 
@@ -476,6 +513,16 @@ nautilus_progress_info_get_progress (NautilusProgressInfo *info)
 	G_UNLOCK (progress_info);
 	
 	return res;
+}
+
+void
+nautilus_progress_info_cancel (NautilusProgressInfo *info)
+{
+	G_LOCK (progress_info);
+	
+	g_cancellable_cancel (info->cancellable);
+	
+	G_UNLOCK (progress_info);
 }
 
 GCancellable *
