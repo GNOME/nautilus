@@ -91,7 +91,7 @@ search_callback (char **results, GError *error, gpointer user_data)
 		
 		char *uri;
 
-		uri = g_filename_to_uri ((char *)*results_p);
+		uri = g_filename_to_uri ((char *)*results_p, NULL, NULL);
 		if (uri) {
 			hit_uris = g_list_prepend (hit_uris, (char *)uri);
 		}

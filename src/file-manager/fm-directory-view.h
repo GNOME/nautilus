@@ -37,7 +37,6 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-link.h>
-#include <eel/eel-string-list.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
 #include <gio/gappinfo.h>
