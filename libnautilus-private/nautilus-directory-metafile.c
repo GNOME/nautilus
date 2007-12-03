@@ -429,11 +429,11 @@ nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
 					      int default_metadata)
 {
 	char *result_as_string;
-	char *default_as_string;
+	char default_as_string[32];
 	int result;
 	char c;
 
-	default_as_string = g_strdup_printf ("%d", default_metadata);
+	g_snprintf (default_as_string, sizeof (default_as_string), "%d", default_metadata);
 	result_as_string = nautilus_directory_get_file_metadata
 		(directory, file_name, key, default_as_string);
 
@@ -449,7 +449,6 @@ nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
 		g_free (result_as_string);
 	}
 
-	g_free (default_as_string);
 	return result;
 }
 
@@ -460,18 +459,15 @@ nautilus_directory_set_integer_file_metadata (NautilusDirectory *directory,
 					      int default_metadata,
 					      int metadata)
 {
-	char *value_as_string;
-	char *default_as_string;
+	char value_as_string[32];
+	char default_as_string[32];
 
-	value_as_string = g_strdup_printf ("%d", metadata);
-	default_as_string = g_strdup_printf ("%d", default_metadata);
+	g_snprintf (value_as_string, sizeof (value_as_string), "%d", metadata);
+	g_snprintf (default_as_string, sizeof (default_as_string), "%d", default_metadata);
 
 	nautilus_directory_set_file_metadata
 		(directory, file_name, key,
 		 default_as_string, value_as_string);
-
-	g_free (value_as_string);
-	g_free (default_as_string);
 }
 
 void

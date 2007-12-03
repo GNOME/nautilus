@@ -3721,7 +3721,7 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 {
 	FMDirectoryView *directory_view;
 	NautilusFile *file;
-	char *screen_string;
+	char screen_string[32];
 	GdkScreen *screen;
 	NewFolderData *data;
 
@@ -3742,14 +3742,13 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 	}
 	
 	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
-	screen_string = g_strdup_printf ("%d", gdk_screen_get_number (screen));
+	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
 
 	file = nautilus_file_get_by_uri (new_folder_uri);
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_SCREEN,
 		 NULL,
 		 screen_string);
-	g_free (screen_string);
 
 	if (g_hash_table_lookup_extended (data->added_uris, new_folder_uri, NULL, NULL)) {
 		/* The file was already added */

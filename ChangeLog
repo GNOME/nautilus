@@ -1,3 +1,25 @@
+2007-12-03  Christian Persch  <chpe@gnome.org>
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(nautilus_directory_get_integer_file_metadata),
+	(nautilus_directory_set_integer_file_metadata):
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_schedule_position_set):
+	* libnautilus-private/nautilus-dnd.c: (add_one_gnome_icon):
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(time_remaining_callback):
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move):
+	* src/file-manager/fm-directory-view.c: (new_folder_done):
+	* src/nautilus-application.c: (get_desktop_manager_selection):
+	* src/nautilus-connect-server-dialog.c: (display_server_uri):
+	* src/nautilus-information-panel.c: (receive_dropped_color):
+	* src/nautilus-property-browser.c: (add_color_to_browser):
+	* src/nautilus-window.c: (nautilus_window_init),
+	(nautilus_window_finalize), (free_activate_view_data),
+	(add_view_as_menu_item), (nautilus_window_synch_view_as_menus),
+	(nautilus_window_class_init): Remove some small allocations, and use
+	GSlice more often. Bug #461795.
+
 2007-12-03  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:

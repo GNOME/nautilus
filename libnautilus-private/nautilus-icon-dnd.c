@@ -928,7 +928,7 @@ handle_local_move (NautilusIconContainer *container,
 	NautilusDragSelectionItem *item;
 	NautilusIcon *icon;
 	NautilusFile *file;
-	char *screen_string;
+	char screen_string[32];
 	GdkScreen *screen;
 
 	if (container->details->auto_layout) {
@@ -955,13 +955,11 @@ handle_local_move (NautilusIconContainer *container,
 			file = nautilus_file_get_by_uri (item->uri);
 
 			screen = gtk_widget_get_screen (GTK_WIDGET (container));
-			screen_string = g_strdup_printf ("%d",
-						gdk_screen_get_number (screen));
+			g_snprintf (screen_string, sizeof (screen_string), "%d",
+				    gdk_screen_get_number (screen));
 			nautilus_file_set_metadata (file,
 					NAUTILUS_METADATA_KEY_SCREEN,
 					NULL, screen_string);
-
-			g_free (screen_string);
 
 			nautilus_icon_container_add (container,
 					NAUTILUS_ICON_CONTAINER_ICON_DATA (file),

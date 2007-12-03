@@ -717,14 +717,13 @@ selection_get_cb (GtkWidget          *widget,
 static GtkWidget *
 get_desktop_manager_selection (GdkDisplay *display, int screen)
 {
-	char *selection_name;
+	char selection_name[32];
 	GdkAtom selection_atom;
 	Window selection_owner;
 	GtkWidget *selection_widget;
 
-	selection_name = g_strdup_printf ("_NET_DESKTOP_MANAGER_S%d", screen);
+	g_snprintf (selection_name, sizeof (selection_name), "_NET_DESKTOP_MANAGER_S%d", screen);
 	selection_atom = gdk_atom_intern (selection_name, FALSE);
-	g_free (selection_name);
 
 	selection_owner = XGetSelectionOwner (GDK_DISPLAY_XDISPLAY (display),
 					      gdk_x11_atom_to_xatom_for_display (display, 

@@ -540,7 +540,7 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 		       GtkSelectionData *selection_data)
 {
 	guint16 *channels;
-	char *color_spec;
+	char color_spec[8];
 
 	if (selection_data->length != 8 || selection_data->format != 16) {
 		g_warning ("received invalid color data");
@@ -548,7 +548,8 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 	}
 	
 	channels = (guint16 *) selection_data->data;
-	color_spec = g_strdup_printf ("#%02X%02X%02X", channels[0] >> 8, channels[1] >> 8, channels[2] >> 8);
+	g_snprintf (color_spec, sizeof (color_spec),
+		    "#%02X%02X%02X", channels[0] >> 8, channels[1] >> 8, channels[2] >> 8);
 
 	switch (hit_test (information_panel, x, y)) {
 	case NO_PART:
@@ -570,7 +571,6 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 		
 		break;
 	}
-	g_free(color_spec);
 }
 
 /* handle receiving a dropped keyword */

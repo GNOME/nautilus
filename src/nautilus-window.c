@@ -148,7 +148,7 @@ nautilus_window_init (NautilusWindow *window)
 	GtkWidget *menu;
 	GtkWidget *statusbar;
 
-	window->details = g_new0 (NautilusWindowDetails, 1);
+	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_WINDOW, NautilusWindowDetails);
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 	
@@ -638,9 +638,7 @@ nautilus_window_finalize (GObject *object)
 	}
 
 	g_free (window->details->title);
-	
-	g_free (window->details);
-	
+
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
 
@@ -788,7 +786,8 @@ free_activate_view_data (gpointer data)
 	activate_data = data;
 
 	g_free (activate_data->id);
-	g_free (activate_data);
+
+	g_slice_free (ActivateViewData, activate_data);
 }
 
 static void
@@ -810,16 +809,16 @@ add_view_as_menu_item (NautilusWindow *window,
 {
 	const NautilusViewInfo *info;
 	GtkRadioAction *action;
-	char *action_name;
+	char action_name[32];
 	ActivateViewData *data;
 
-	char *accel;
-	char *accel_path;
+	char accel[32];
+	char accel_path[48];
 	unsigned int accel_keyval;
 
 	info = nautilus_view_factory_lookup (identifier);
 	
-	action_name = g_strdup_printf ("view_as_%d", index);
+	g_snprintf (action_name, sizeof (action_name), "view_as_%d", index);
 	action = gtk_radio_action_new (action_name,
 				       _(info->view_as_label_with_mnemonic),
 				       _(info->display_location_label),
@@ -827,18 +826,14 @@ add_view_as_menu_item (NautilusWindow *window,
 				       0);
 
 	if (index >= 1 && index <= 9) {
-		accel = g_strdup_printf ("%d", index);
-
-		accel_path = g_strdup_printf ("<Nautilus-Window>/%s", action_name);
+		g_snprintf (accel, sizeof (accel), "%d", index);
+		g_snprintf (accel_path, sizeof (accel_path), "<Nautilus-Window>/%s", action_name);
 
 		accel_keyval = gdk_keyval_from_name (accel);
 		g_assert (accel_keyval != GDK_VoidSymbol);
 
 		gtk_accel_map_add_entry (accel_path, accel_keyval, GDK_CONTROL_MASK);
 		gtk_action_set_accel_path (GTK_ACTION (action), accel_path);
-
-		g_free (accel);
-		g_free (accel_path);
 	}
 
 	if (window->details->view_as_radio_action != NULL) {
@@ -850,7 +845,7 @@ add_view_as_menu_item (NautilusWindow *window,
 		window->details->view_as_radio_action = action;
 	}
 
-	data = g_new (ActivateViewData, 1);
+	data = g_slice_new (ActivateViewData);
 	data->window = window;
 	data->id = g_strdup (identifier);
 	g_signal_connect_data (action, "activate",
@@ -868,8 +863,7 @@ add_view_as_menu_item (NautilusWindow *window,
 			       action_name,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
-	g_free (action_name);
-	
+
 	return action; /* return value owned by group */
 }
 
@@ -949,7 +943,7 @@ static void
 nautilus_window_synch_view_as_menus (NautilusWindow *window)
 {
 	int index;
-	char *action_name;
+	char action_name[32];
 	GList *node;
 	GtkAction *action;
 
@@ -972,10 +966,9 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 		remove_extra_viewer_in_view_as_menus (window);
 	}
 
-	action_name = g_strdup_printf ("view_as_%d", index);
+	g_snprintf (action_name, sizeof (action_name), "view_as_%d", index);
 	action = gtk_action_group_get_action (window->details->view_as_action_group,
 					      action_name);
-	g_free (action_name);
 
 	/* Don't trigger the action callback when we're synchronizing */
 	g_signal_handlers_block_matched (action,
@@ -1692,6 +1685,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 			     "\n"
 			     "    widget \"*.nautilus-extra-view-widget\" style:rc \"nautilus-extra-view-widgets-style-internal\" \n"
 			     "\n");
+
+	g_type_class_add_private (G_OBJECT_CLASS (class), sizeof (NautilusWindowDetails));
 }
 
 /**

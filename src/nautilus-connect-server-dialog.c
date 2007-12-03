@@ -736,9 +736,9 @@ display_server_uri (NautilusConnectServerDialog *dialog, GnomeVFSURI *uri)
 		if (meth->flags & SHOW_PORT) {
 			guint port = gnome_vfs_uri_get_host_port (uri);
 			if (port != 0) {
-				char *sport = g_strdup_printf ("%d", port);
+				char sport[32];
+				g_snprintf (sport, sizeof (sport), "%d", port);
 				gtk_entry_set_text (GTK_ENTRY (dialog->details->port_entry), sport);
-				g_free (sport);
 			}
 		}
 

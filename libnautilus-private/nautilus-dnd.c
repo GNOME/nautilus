@@ -427,13 +427,11 @@ add_one_gnome_icon (const char *uri, int x, int y, int w, int h,
 		    gpointer data)
 {
 	GString *result;
-	char *s;
 
 	result = (GString *) data;
-	s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
-			     uri, x, y, w, h);
-	g_string_append (result, s);
-	g_free (s);
+
+	g_string_append_printf (result, "%s\r%d:%d:%hu:%hu\r\n",
+				uri, x, y, w, h);
 }
 
 /*

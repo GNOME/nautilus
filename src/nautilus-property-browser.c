@@ -1320,17 +1320,17 @@ add_color_to_file (NautilusPropertyBrowser *property_browser, const char *color_
 static void
 add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 {
-	char *color_spec;
+	char color_spec[8];
 	const char *color_name;
 	char *stripped_color_name;
-	
+
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
 
 	if (which_button == GTK_RESPONSE_OK) {
 		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
-		color_spec = g_strdup_printf
-			("#%02X%02X%02X",
+		g_snprintf (color_spec, sizeof (color_spec),
+			 "#%02X%02X%02X",
 			 (guint) (color[0] * 255.0 + 0.5),
 			 (guint) (color[1] * 255.0 + 0.5),
 			 (guint) (color[2] * 255.0 + 0.5));
@@ -1347,8 +1347,7 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 			nautilus_property_browser_update_contents(property_browser);
 		}
 		g_free (stripped_color_name);
-		g_free(color_spec);	
-	} 
+	}
 	
 	gtk_widget_destroy(property_browser->details->colors_dialog);
 	property_browser->details->colors_dialog = NULL;
