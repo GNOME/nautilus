@@ -281,7 +281,9 @@ update_status_icon_and_window (void)
 {
 	char *tooltip;
 
-	tooltip = g_strdup_printf (_("%d file operations active"),
+	tooltip = g_strdup_printf (ngettext ("%d file operation active",
+					     "%d file operations active",
+					     n_progress_ops),
 				   n_progress_ops);
 	gtk_status_icon_set_tooltip (status_icon, tooltip);
 	g_free (tooltip);

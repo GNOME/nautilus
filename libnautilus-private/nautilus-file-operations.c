@@ -145,7 +145,7 @@ format_time (int seconds)
 
 	if (seconds < 60*60) {
 		minutes = (seconds + 30) / 60;
-		return g_strdup_printf (ngettext (_("%d minute"), _("%d minutes"), minutes), minutes);
+		return g_strdup_printf (ngettext ("%d minute", "%d minutes", minutes), minutes);
 	}
 
 	hours = seconds / (60*60);
@@ -155,15 +155,17 @@ format_time (int seconds)
 
 		minutes = (seconds - hours * 60 * 60 + 30) / 60;
 		
-		h = g_strdup_printf (ngettext (_("%d hour"), _("%d hours"), hours), hours);
-		m = g_strdup_printf (ngettext (_("%d minute"), _("%d minutes"), minutes), minutes);
+		h = g_strdup_printf (ngettext ("%d hour", "%d hours", hours), hours);
+		m = g_strdup_printf (ngettext ("%d minute", "%d minutes", minutes), minutes);
 		res = g_strconcat (h, ", ", m, NULL);
 		g_free (h);
 		g_free (m);
 		return res;
 	}
 	
-	return g_strdup_printf (_("about %d hours"), hours);
+	return g_strdup_printf (ngettext ("approximately %d hour",
+					  "approximately %d hours",
+					  hours), hours);
 }
 
 static char *
@@ -4749,7 +4751,7 @@ verify_destination (CommonJob *job,
 			primary = f (_("Error while copying to \"%B\"."), dest);
 			secondary = _("There is not enough space on the destination. Try to remove files to make space.");
 			
-			details = f (_("There is %S availible, but %S is required."), free_size, required_size);
+			details = f (_("There is %S available, but %S is required."), free_size, required_size);
 			
 			response = run_warning (job,
 						primary,
@@ -4832,16 +4834,26 @@ report_copy_progress (CopyMoveJob *copy_job,
 		   copy_job->files->next == NULL) {
 		nautilus_progress_info_take_status (job->progress,
 						    f (is_move?
-						       _("Moving %d files (in \"%B\") to \"%B\""):
-						       _("Copying %d files (in \"%B\") to \"%B\""),
+						       ngettext ("Moving %d file (in \"%B\") to \"%B\"",
+								 "Moving %d files (in \"%B\") to \"%B\"",
+								 files_left)
+						       :
+						       ngettext ("Copying %d file (in \"%B\") to \"%B\"",
+								 "Copying %d files (in \"%B\") to \"%B\"",
+								 files_left),
 						       files_left,
 						       (GFile *)copy_job->files->data,
 						       copy_job->destination));
 	} else {
 		nautilus_progress_info_take_status (job->progress,
 						    f (is_move?
-						       _("Moving %d files to \"%B\""):
-						       _("Copying %d files to \"%B\""),
+						       ngettext ("Moving %d file to \"%B\"",
+								 "Moving %d files to \"%B\"",
+								 files_left)
+						       :
+						       ngettext ("Copying %d file to \"%B\"",
+								 "Copying %d files to \"%B\"",
+								 files_left),
 						       files_left, copy_job->destination));
 	}
 
@@ -4850,6 +4862,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 	elapsed = g_timer_elapsed (job->time, NULL);
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
 		char *s;
+		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB" */		
 		s = f (_("%S of %S"), transfer_info->num_bytes, total_size);
 		nautilus_progress_info_take_details (job->progress, s);
 	} else {
@@ -4857,6 +4870,9 @@ report_copy_progress (CopyMoveJob *copy_job,
 		transfer_rate = transfer_info->num_bytes / elapsed;
 		remaining_time = (total_size - transfer_info->num_bytes) / transfer_rate;
 
+		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
+		 * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
+		 */		
 		s = f (_("%S of %S \xE2\x80\x94 %T left (%S/sec)"),
 		       transfer_info->num_bytes, total_size,
 		       remaining_time,
@@ -5237,7 +5253,7 @@ remove_target_recursively (CommonJob *job,
 		}
 		
 		primary = f (_("Error while copying \"%B\"."), src);
-		secondary = f (_("Couldn't remove files from the already folder %F."), file);
+		secondary = f (_("Couldn't remove files from the already existing folder %F."), file);
 		details = error->message;
 		
 		response = run_warning (job,
@@ -5768,7 +5784,9 @@ report_move_progress (CopyMoveJob *move_job, int total, int left)
 					       move_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,
-					     f (_("Preparing to move %d files"), left));
+					     f (ngettext ("Preparing to move %d file",
+							  "Preparing to move %d files",
+							  left), left));
 
 	nautilus_progress_info_pulse_progress (job->progress);
 }
