@@ -15,7 +15,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 
