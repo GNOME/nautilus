@@ -1,6 +1,13 @@
 2007-12-03  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+	Move screen_num to CommonJob
+	Use GtkWindow * for parent_window in CommonJob
+	shallow conversion to CommonJob use for delete
+
+2007-12-03  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
 	Remove old gnome-vfs base implementation to make
 	this easier to read.
 	

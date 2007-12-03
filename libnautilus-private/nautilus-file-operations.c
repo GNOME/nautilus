@@ -87,7 +87,8 @@ static gboolean confirm_trash_auto_value;
 typedef struct {
 	GIOJob *io_job;	
 	GTimer *time;
-	GtkWidget *parent_window;
+	GtkWindow *parent_window;
+	int screen_num;
 	NautilusProgressInfo *progress;
 	GCancellable *cancellable;
 	GHashTable *skip_files;
@@ -105,11 +106,20 @@ typedef struct {
 	GFile *destination;
 	GdkPoint *icon_positions;
 	int n_icon_positions;
-	int screen_num;
 	GHashTable *debuting_files;
 	NautilusCopyCallback  done_callback;
 	gpointer done_callback_data;
 } CopyMoveJob;
+
+typedef struct {
+	CommonJob common;
+	GList *files;
+	gboolean try_trash;
+	gboolean delete_if_all_already_in_trash;
+	NautilusDeleteCallback done_callback;
+	gpointer done_callback_data;
+} DeleteJob;
+
 
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 15
 #define NSEC_PER_SEC 1000000000
@@ -691,6 +701,96 @@ f (const char *format, ...) {
 	return res;
 }
 
+#define op_job_new(__type, parent_window) ((__type *)(init_common (sizeof(__type), parent_window)))
+
+static gpointer
+init_common (gsize job_size,
+	     GtkWindow *parent_window)
+{
+	CommonJob *common;
+	GdkScreen *screen;
+
+	common = g_malloc0 (job_size);
+	
+	common->parent_window = g_object_ref (parent_window);
+	common->progress = nautilus_progress_info_new ();
+	common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
+	common->time = g_timer_new ();
+
+	common->screen_num = 0;
+	if (parent_window) {
+		screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
+		common->screen_num = gdk_screen_get_number (screen);
+	}
+	
+	return common;
+}
+
+static void
+finalize_common (CommonJob *common)
+{
+	nautilus_progress_info_finish (common->progress);
+
+	g_timer_destroy (common->time);
+	
+	if (common->parent_window) {
+		 g_object_unref (common->parent_window);
+	}
+	if (common->skip_files) {
+		g_hash_table_destroy (common->skip_files);
+	}
+	if (common->skip_readdir_error) {
+		g_hash_table_destroy (common->skip_readdir_error);
+	}
+	g_object_unref (common->progress);
+	g_object_unref (common->cancellable);
+	g_free (common);
+}
+
+static void
+skip_file (CommonJob *common,
+	   GFile *file)
+{
+	if (common->skip_files == NULL) {
+		common->skip_files =
+			g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+	}
+
+	g_hash_table_insert (common->skip_files, g_object_ref (file), file);
+}
+
+static void
+skip_readdir_error (CommonJob *common,
+		    GFile *dir)
+{
+	if (common->skip_readdir_error == NULL) {
+		common->skip_readdir_error =
+			g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+	}
+
+	g_hash_table_insert (common->skip_readdir_error, g_object_ref (dir), dir);
+}
+
+static gboolean
+should_skip_file (CommonJob *common,
+		  GFile *file)
+{
+	if (common->skip_files != NULL) {
+		return g_hash_table_lookup (common->skip_files, file) != NULL;
+	}
+	return FALSE;
+}
+
+static gboolean
+should_skip_readdir_error (CommonJob *common,
+			   GFile *dir)
+{
+	if (common->skip_readdir_error != NULL) {
+		return g_hash_table_lookup (common->skip_readdir_error, dir) != NULL;
+	}
+	return FALSE;
+}
+
 static void
 setup_autos (void)
 {
@@ -701,15 +801,6 @@ setup_autos (void)
 						  &confirm_trash_auto_value);
 	}
 }
-
-typedef struct {
-	GList *files;
-	GtkWindow *parent_window;
-	gboolean try_trash;
-	gboolean delete_if_all_already_in_trash;
-	NautilusDeleteCallback done_callback;
-	gpointer done_callback_data;
-} DeleteJob;
 
 static gboolean
 can_delete_without_confirm (GFile *file)
@@ -1236,8 +1327,26 @@ confirm_delete_directly (GIOJob *job,
 	return response == 1;
 }
 
+static void
+delete_job_done (gpointer user_data)
+{
+	DeleteJob *job;
+	GHashTable *debuting_uris;
 
-static void delete_job_done (gpointer data);
+	job = user_data;
+	
+	eel_g_object_list_free (job->files);
+
+	if (job->done_callback) {
+		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+		job->done_callback (debuting_uris, job->done_callback_data);
+		g_hash_table_unref (debuting_uris);
+	}
+	
+	finalize_common ((CommonJob *)job);
+
+	nautilus_file_changes_consume_changes (TRUE);
+}
 
 static void
 delete_job (GIOJob *io_job,
@@ -1252,6 +1361,7 @@ delete_job (GIOJob *io_job,
 	GList *l;
 	GFile *file;
 	gboolean confirmed;
+	CommonJob *common;
 
 	/* Collect three lists: (1) items that can be moved to trash,
 	 * (2) items that can only be deleted in place, and (3) items that
@@ -1268,6 +1378,8 @@ delete_job (GIOJob *io_job,
 	in_trash_files = NULL;
 	no_confirm_files = NULL;
 
+	common = (CommonJob *)job;
+	
 	for (l = job->files; l != NULL; l = l->next) {
 		file = l->data;
 		
@@ -1286,26 +1398,26 @@ delete_job (GIOJob *io_job,
 	}
 
 	if (in_trash_files != NULL && trashable_files == NULL && untrashable_files == NULL) {
-		if (confirm_delete_from_trash (io_job, job->parent_window, in_trash_files)) {
-			delete_files (in_trash_files, NULL, job->parent_window);
+		if (confirm_delete_from_trash (io_job, common->parent_window, in_trash_files)) {
+			delete_files (in_trash_files, NULL, common->parent_window);
 		}
 	} else {
 		if (no_confirm_files != NULL) {
-			delete_files (no_confirm_files, NULL, job->parent_window);
+			delete_files (no_confirm_files, NULL, common->parent_window);
 		}
 		if (trashable_files != NULL) {
-			trash_files (trashable_files, NULL, job->parent_window);
+			trash_files (trashable_files, NULL, common->parent_window);
 		}
 		if (untrashable_files != NULL) {
 			if (job->try_trash) {
-				confirmed = confirm_deletion (io_job, job->parent_window,
+				confirmed = confirm_deletion (io_job, common->parent_window,
 							      untrashable_files, trashable_files == NULL);
 			} else {
-				confirmed = confirm_delete_directly (io_job, job->parent_window, untrashable_files);
+				confirmed = confirm_delete_directly (io_job, common->parent_window, untrashable_files);
 			}
 				
 			if (confirmed) {
-				delete_files (untrashable_files, NULL, job->parent_window);
+				delete_files (untrashable_files, NULL, common->parent_window);
 			}
 		}
 	}
@@ -1324,27 +1436,6 @@ delete_job (GIOJob *io_job,
 }
 
 static void
-delete_job_done (gpointer user_data)
-{
-	DeleteJob *job = user_data;
-	GHashTable *debuting_uris;
-
-	eel_g_object_list_free (job->files);
-	if (job->parent_window) {
-		g_object_unref (job->parent_window);
-	}
-
-	if (job->done_callback) {
-		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
-		job->done_callback (debuting_uris, job->done_callback_data);
-		g_hash_table_unref (debuting_uris);
-	}
-	g_free (job);
-
-	nautilus_file_changes_consume_changes (TRUE);
-}
-
-static void
 trash_or_delete_internal (GList                  *files,
 			  GtkWindow              *parent_window,
 			  gboolean                try_trash,			  
@@ -1358,10 +1449,9 @@ trash_or_delete_internal (GList                  *files,
 	/* TODO: special case desktop icon link files ... */
 
 	/* TODO: Progress dialog, cancellation */
-	
-	job = g_new0 (DeleteJob, 1);
+
+	job = op_job_new (DeleteJob, parent_window);
 	job->files = eel_g_object_list_copy (files);
-	job->parent_window = g_object_ref (parent_window);
 	job->try_trash = try_trash;
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
@@ -1444,90 +1534,6 @@ nautilus_file_operations_unmount_volume (GtkWindow                      *parent_
 			  data);
 }
 
-
-#define op_job_new(__type, parent_window) ((__type *)(init_common (sizeof(__type), parent_window)))
-
-static gpointer
-init_common (gsize job_size,
-	     GtkWindow *parent_window)
-{
-	CommonJob *common;
-
-	common = g_malloc0 (job_size);
-	
-	common->parent_window = g_object_ref (parent_window);
-	common->progress = nautilus_progress_info_new ();
-	common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
-	common->time = g_timer_new ();
-
-	return common;
-}
-
-static void
-finalize_common (CommonJob *common)
-{
-	nautilus_progress_info_finish (common->progress);
-
-	g_timer_destroy (common->time);
-	
-	if (common->parent_window) {
-		 g_object_unref (common->parent_window);
-	}
-	if (common->skip_files) {
-		g_hash_table_destroy (common->skip_files);
-	}
-	if (common->skip_readdir_error) {
-		g_hash_table_destroy (common->skip_readdir_error);
-	}
-	g_object_unref (common->progress);
-	g_object_unref (common->cancellable);
-	g_free (common);
-}
-
-static void
-skip_file (CommonJob *common,
-	   GFile *file)
-{
-	if (common->skip_files == NULL) {
-		common->skip_files =
-			g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
-	}
-
-	g_hash_table_insert (common->skip_files, g_object_ref (file), file);
-}
-
-static void
-skip_readdir_error (CommonJob *common,
-		    GFile *dir)
-{
-	if (common->skip_readdir_error == NULL) {
-		common->skip_readdir_error =
-			g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
-	}
-
-	g_hash_table_insert (common->skip_readdir_error, g_object_ref (dir), dir);
-}
-
-static gboolean
-should_skip_file (CommonJob *common,
-		  GFile *file)
-{
-	if (common->skip_files != NULL) {
-		return g_hash_table_lookup (common->skip_files, file) != NULL;
-	}
-	return FALSE;
-}
-
-static gboolean
-should_skip_readdir_error (CommonJob *common,
-			   GFile *dir)
-{
-	if (common->skip_readdir_error != NULL) {
-		return g_hash_table_lookup (common->skip_readdir_error, dir) != NULL;
-	}
-	return FALSE;
-}
-
 typedef enum {
 	OP_KIND_COPY = 0
 } OpKind;
@@ -1551,7 +1557,8 @@ report_count_progress (CommonJob *job,
 		       SourceInfo *source_info)
 {
 	char *s;
-	
+
+	/* TODO: Handle other kinds */
 	if (source_info->op == OP_KIND_COPY) {
 		s = f (_("Preparing to copy %d files (%S)"),
 		       source_info->num_files, source_info->num_bytes);
@@ -2585,7 +2592,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		if (debuting_files) {
 			nautilus_file_changes_queue_schedule_metadata_copy (src, dest);
 			if (position) {
-				nautilus_file_changes_queue_schedule_position_set (dest, *position, copy_job->screen_num);
+				nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
 			} else {
 				nautilus_file_changes_queue_schedule_position_remove (dest);
 			}
@@ -2917,7 +2924,6 @@ nautilus_file_operations_copy (GList *files,
 			       gpointer done_callback_data)
 {
 	CopyMoveJob *job;
-	GdkScreen *screen;
 
 	job = op_job_new (CopyMoveJob, parent_window);
 	job->done_callback = done_callback;
@@ -2930,11 +2936,6 @@ nautilus_file_operations_copy (GList *files,
 			g_memdup (relative_item_points->data,
 				  sizeof (GdkPoint) * relative_item_points->len);
 		job->n_icon_positions = relative_item_points->len;
-	}
-	job->screen_num = 0;
-	if (parent_window) {
-		screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
-		job->screen_num = gdk_screen_get_number (screen);
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
@@ -3367,7 +3368,6 @@ nautilus_file_operations_move (GList *files,
 			       gpointer done_callback_data)
 {
 	CopyMoveJob *job;
-	GdkScreen *screen;
 
 	job = op_job_new (CopyMoveJob, parent_window);
 	job->is_move = TRUE;
@@ -3381,11 +3381,6 @@ nautilus_file_operations_move (GList *files,
 			g_memdup (relative_item_points->data,
 				  sizeof (GdkPoint) * relative_item_points->len);
 		job->n_icon_positions = relative_item_points->len;
-	}
-	job->screen_num = 0;
-	if (parent_window) {
-		screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
-		job->screen_num = gdk_screen_get_number (screen);
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
