@@ -849,35 +849,6 @@ can_trash_file (GFile *file, GCancellable *cancellable)
 	return res;
 }
 
-static char *
-get_display_name (GFile *file, GCancellable *cancellable)
-{
-	GFileInfo *info;
-	char *name, *basename;
-
-	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STD_DISPLAY_NAME,
-				  0, cancellable, NULL);
-
-	name = NULL;
-	if (info) {
-		name = g_strdup (g_file_info_get_display_name (info));
-		g_object_unref (info);
-	}
-	
-	if (name == NULL) {
-		basename = g_file_get_basename (file);
-		if (g_utf8_validate (basename, -1, NULL)) {
-			name = basename;
-		} else {
-			name = g_uri_escape_string (basename, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
-			g_free (basename);
-		}
-	}
-	
-	return name;
-}
-
 static void
 delete_files (GList *files, GCancellable  *cancellable, GtkWindow *parent_window)
 {
@@ -974,89 +945,6 @@ do_run_simple_dialog (gpointer _data)
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
 	data->result = result;
-}
-
-static int
-_run_simple_dialog (GIOJob *job,
-		   GtkWindow *parent_window,
-		   gboolean ignore_close_box,
-		   GtkMessageType message_type,
-		   const char *primary_text,
-		   const char *secondary_text,
-		   const char *details_text,
-		   ...)
-{
-	RunSimpleDialogData *data;
-	va_list varargs;
-	int res;
-	const char *button_title;
-	GPtrArray *ptr_array;
-
-	data = g_new0 (RunSimpleDialogData, 1);
-	data->parent_window = parent_window;
-	data->ignore_close_box = ignore_close_box;
-	data->message_type = message_type;
-	data->primary_text = primary_text;
-	data->secondary_text = secondary_text;
-	data->details_text = details_text;
-
-	ptr_array = g_ptr_array_new ();
-	va_start (varargs, details_text);
-	while ((button_title = va_arg (varargs, const char *)) != NULL) {
-		g_ptr_array_add (ptr_array, (char *)button_title);
-	}
-	g_ptr_array_add (ptr_array, NULL);
-	data->button_titles = (const char **)g_ptr_array_free (ptr_array, FALSE);
-	va_end (varargs);
-
-	g_io_job_send_to_mainloop (job,
-				   do_run_simple_dialog,
-				   data,
-				   NULL,
-				   TRUE);
-
-	res = data->result;
-
-	g_free (data->button_titles);
-	g_free (data);
-	return res;
-}
-
-static int 
-_run_alert (GIOJob *job,
-	   GtkWindow *parent_window,
-	   const char *primary_message,
-	   const char *secondary_message,
-	   const char *ok_label)
-{
-	return _run_simple_dialog (job, parent_window,
-				  FALSE,
-				  GTK_MESSAGE_WARNING,
-				  primary_message,
-				  secondary_message,
-				  NULL,
-				  GTK_STOCK_CANCEL, 
-				  ok_label,
-				  NULL);
-}
-
-static int
-_run_yes_no_dialog (GIOJob *job,
-		   const char *prompt,
-		   const char *detail,
-		   const char *yes_label,
-		   const char *no_label,
-		   GtkWindow *parent_window)
-{
-	return _run_simple_dialog (job, parent_window,
-				  FALSE,
-				  GTK_MESSAGE_QUESTION,
-				  prompt,
-				  detail,
-				  NULL,
-				  no_label,
-				  yes_label,
-				  NULL);
 }
 
 /* NOTE: This frees the primary / secondary strings, in order to
@@ -1182,6 +1070,28 @@ run_warning (CommonJob *job,
 	return res;
 }
 
+static int
+run_question (CommonJob *job,
+	      char *primary_text,
+	      char *secondary_text,
+	      const char *details_text,
+	      ...)
+{
+	va_list varargs;
+	int res;
+
+	va_start (varargs, details_text);
+	res = run_simple_dialog_va (job,
+				    FALSE,
+				    GTK_MESSAGE_QUESTION,
+				    primary_text,
+				    secondary_text,
+				    details_text,
+				    varargs);
+	va_end (varargs);
+	return res;
+}
+
 static void
 abort_job (CommonJob *job)
 {
@@ -1196,12 +1106,10 @@ job_aborted (CommonJob *job)
 }
 
 static gboolean
-confirm_delete_from_trash (GIOJob *job,
-			   GtkWindow *parent_window,
+confirm_delete_from_trash (CommonJob *job,
 			   GList *files)
 {
 	char *prompt;
-	char *file_name;
 	int file_count;
 	int response;
 
@@ -1214,30 +1122,29 @@ confirm_delete_from_trash (GIOJob *job,
 	g_assert (file_count > 0);
 	
 	if (file_count == 1) {
-		file_name = get_display_name ((GFile *) files->data, NULL);
-		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\" "
-					    "from the trash?"), file_name);
-		g_free (file_name);
+		prompt = f (_("Are you sure you want to permanently delete \"%B\" "
+					    "from the trash?"), files->data);
 	} else {
-		prompt = g_strdup_printf (ngettext("Are you sure you want to permanently delete "
-						   "the %d selected item from the trash?",
-						   "Are you sure you want to permanently delete "
-						   "the %d selected items from the trash?",
-						   file_count), 
-					  file_count);
+		prompt = f (ngettext("Are you sure you want to permanently delete "
+				     "the %d selected item from the trash?",
+				     "Are you sure you want to permanently delete "
+				     "the %d selected items from the trash?",
+				     file_count), 
+			    file_count);
 	}
 
-	response = _run_alert (job, parent_window,
-			       prompt,
-			       _("If you delete an item, it will be permanently lost."),
-			       GTK_STOCK_DELETE);
+	response = run_warning (job,
+				prompt,
+				f (_("If you delete an item, it will be permanently lost.")),
+				NULL,
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				NULL);
 	
 	return (response == 1);
 }
 
 static gboolean
-confirm_deletion (GIOJob *job,
-		  GtkWindow *parent_window,
+confirm_deletion (CommonJob *job,
 		  GList *files,
 		  gboolean all)
 {
@@ -1245,7 +1152,6 @@ confirm_deletion (GIOJob *job,
 	char *detail;
 	int file_count;
 	GFile *file;
-	char *file_name;
 	int response;
 
 	file_count = g_list_length (files);
@@ -1257,41 +1163,36 @@ confirm_deletion (GIOJob *job,
 			/* Don't ask for desktop icons */
 			return TRUE;
 		}
-		file_name = get_display_name (file, NULL);
-		prompt = _("Cannot move file to trash, do you want to delete immediately?");
-		detail = g_strdup_printf (_("The file \"%s\" cannot be moved to the trash."), file_name);
-		g_free (file_name);
+		prompt = f (_("Cannot move file to trash, do you want to delete immediately?"));
+		detail = f (_("The file \"%B\" cannot be moved to the trash."), file);
 	} else {
 		if (all) {
-			prompt = _("Cannot move items to trash, do you want to delete them immediately?");
-			detail = g_strdup_printf (ngettext("The selected item could not be moved to the Trash",
-							   "The %d selected items could not be moved to the Trash",
-							   file_count),
-						  file_count);
+			prompt = f (_("Cannot move items to trash, do you want to delete them immediately?"));
+			detail = f (ngettext("The selected item could not be moved to the Trash",
+					     "The %d selected items could not be moved to the Trash",
+					     file_count),
+				    file_count);
 		} else {
-			prompt = _("Cannot move some items to trash, do you want to delete these immediately?");
-			detail = g_strdup_printf (_("%d of the selected items cannot be moved to the Trash"), file_count);
+			prompt = f (_("Cannot move some items to trash, do you want to delete these immediately?"));
+			detail = f (_("%d of the selected items cannot be moved to the Trash"), file_count);
 		}
 	}
 	
-	response = _run_yes_no_dialog (job,
-				       prompt,
-				       detail,
-				       GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
-				       parent_window);
-	
-	g_free (detail);
+	response = run_question (job,
+				 prompt,
+				 detail,
+				 NULL,
+				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				 NULL);
 	
 	return (response == 1);
 }
 
 static gboolean
-confirm_delete_directly (GIOJob *job,
-			 GtkWindow *parent_window,
+confirm_delete_directly (CommonJob *job,
 			 GList *files)
 {
 	char *prompt;
-	char *file_name;
 	int file_count;
 	int response;
 
@@ -1308,21 +1209,22 @@ confirm_delete_directly (GIOJob *job,
 	}
 
 	if (file_count == 1) {
-		file_name = get_display_name (files->data, NULL);
-		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\"?"), 
-					  file_name);
-		g_free (file_name);
+		prompt = f (_("Are you sure you want to permanently delete \"%B\"?"), 
+			    files->data);
 	} else {
-		prompt = g_strdup_printf (ngettext("Are you sure you want to permanently delete "
-						   "the %d selected item?",
-						   "Are you sure you want to permanently delete "
-						   "the %d selected items?", file_count), file_count);
+		prompt = f (ngettext("Are you sure you want to permanently delete "
+				     "the %d selected item?",
+				     "Are you sure you want to permanently delete "
+				     "the %d selected items?", file_count),
+			    file_count);
 	}
-
-	response = _run_alert (job, parent_window,
-			       prompt,
-			       _("If you delete an item, it will be permanently lost."),
-			       GTK_STOCK_DELETE);
+	
+	response = run_warning (job, 
+				prompt,
+				f (_("If you delete an item, it will be permanently lost.")),
+				NULL,
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				NULL);
 
 	return response == 1;
 }
@@ -1398,7 +1300,7 @@ delete_job (GIOJob *io_job,
 	}
 
 	if (in_trash_files != NULL && trashable_files == NULL && untrashable_files == NULL) {
-		if (confirm_delete_from_trash (io_job, common->parent_window, in_trash_files)) {
+		if (confirm_delete_from_trash (common, in_trash_files)) {
 			delete_files (in_trash_files, NULL, common->parent_window);
 		}
 	} else {
@@ -1410,10 +1312,10 @@ delete_job (GIOJob *io_job,
 		}
 		if (untrashable_files != NULL) {
 			if (job->try_trash) {
-				confirmed = confirm_deletion (io_job, common->parent_window,
+				confirmed = confirm_deletion (common, 
 							      untrashable_files, trashable_files == NULL);
 			} else {
-				confirmed = confirm_delete_directly (io_job, common->parent_window, untrashable_files);
+				confirmed = confirm_delete_directly (common, untrashable_files);
 			}
 				
 			if (confirmed) {
