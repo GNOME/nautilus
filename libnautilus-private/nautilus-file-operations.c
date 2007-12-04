@@ -119,6 +119,9 @@ typedef struct {
 	gpointer done_callback_data;
 } DeleteJob;
 
+typedef struct {
+	CommonJob common;
+} EmptyTrashJob;
 
 typedef enum {
 	OP_KIND_COPY,
@@ -1242,6 +1245,7 @@ delete_dir (CommonJob *job, GFile *dir,
 			file = g_file_get_child (dir,
 						 g_file_info_get_name (info));
 			delete_file (job, file, &local_skipped_file, source_info, transfer_info, FALSE);
+			g_object_unref (file);
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
@@ -1683,8 +1687,6 @@ trash_or_delete_internal (GList                  *files,
 	setup_autos ();
 
 	/* TODO: special case desktop icon link files ... */
-
-	/* TODO: Progress dialog, cancellation */
 
 	job = op_job_new (DeleteJob, parent_window);
 	job->files = eel_g_object_list_copy (files);
@@ -2501,6 +2503,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 			src_file = g_file_get_child (src,
 						     g_file_info_get_name (info));
 			copy_move_file (copy_job, src_file, dest, same_fs, source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file);
+			g_object_unref (src_file);
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
@@ -2667,6 +2670,7 @@ remove_target_recursively (CommonJob *job,
 				stop = TRUE;
 				break;
 			}
+			g_object_unref (child);
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
@@ -3774,11 +3778,81 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 }
 
 
+
+static void
+delete_trash_file (CommonJob *job,
+		   GFile *file,
+		   gboolean del_dir)
+{
+	GFileInfo *info;
+	GFile *child;
+	GFileEnumerator *enumerator;
+
+	if (job_aborted (job)) {
+		return;
+	}
+	
+	enumerator = g_file_enumerate_children (file,
+						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+						job->cancellable,
+						NULL);
+	if (enumerator) {
+		while (!job_aborted (job) &&
+		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, NULL)) != NULL) {
+			child = g_file_get_child (file,
+						  g_file_info_get_name (info));
+			delete_trash_file (job, child, TRUE);
+			g_object_unref (child);
+			g_object_unref (info);
+		}
+		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+	} 
+	
+	if (!job_aborted (job) && del_dir) {
+		g_file_delete (file, job->cancellable, NULL);
+	}
+}
+
+static void
+empty_trash_job (GIOJob *io_job,
+		 GCancellable *cancellable,
+		 gpointer user_data)
+{
+	EmptyTrashJob *job = user_data;
+	CommonJob *common;
+	GFile *top;
+
+	common = (CommonJob *)job;
+	common->io_job = io_job;
+
+	nautilus_progress_info_start (job->common.progress);
+
+	top = g_file_new_for_uri ("trash:");
+
+	delete_trash_file (common, top, FALSE);
+
+	finalize_common ((CommonJob *)job);
+}
+
 void 
 nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 {
-	/* TODO-gio: Implement */
-	not_supported_yet ();
+	EmptyTrashJob *job;
+	GtkWindow *parent_window;
+
+	parent_window = NULL;
+	if (parent_view) {
+		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
+	}
+	
+	job = op_job_new (EmptyTrashJob, parent_window);
+	
+	g_schedule_io_job (empty_trash_job,
+			   job,
+			   NULL,
+			   0,
+			   NULL);
 }
 
 
