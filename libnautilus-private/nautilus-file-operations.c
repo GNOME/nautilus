@@ -121,6 +121,27 @@ typedef struct {
 } DeleteJob;
 
 
+typedef enum {
+	OP_KIND_COPY,
+	OP_KIND_MOVE,
+	OP_KIND_DELETE,
+	OP_KIND_TRASH
+} OpKind;
+
+typedef struct {
+	int num_files;
+	goffset num_bytes;
+	int num_files_since_progress;
+	OpKind op;
+} SourceInfo;
+
+typedef struct {
+	int num_files;
+	goffset num_bytes;
+	OpKind op;
+	guint64 last_report_time;
+} TransferInfo;
+
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 15
 #define NSEC_PER_SEC 1000000000
 #define NSEC_PER_MSEC 1000000
@@ -134,6 +155,12 @@ typedef struct {
 #define REPLACE_ALL _("Replace _All")
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
+
+static void scan_sources (GList *files,
+			  SourceInfo *source_info,
+			  CommonJob *job,
+			  OpKind kind);
+
 
 static char *
 format_time (int seconds)
@@ -849,48 +876,6 @@ can_trash_file (GFile *file, GCancellable *cancellable)
 	return res;
 }
 
-static void
-delete_files (GList *files, GCancellable  *cancellable, GtkWindow *parent_window)
-{
-	GList *l;
-	GFile *file;
-	GError *error;
-
-	for (l = files; l != NULL; l = l->next) {
-		file = l->data;
-
-		error = NULL;
-		if (!g_file_delete (file, cancellable, &error)) {
-			/* TODO-gio: Dialog here, and handle recursive deletes */
-			g_print ("Error deleting file: %s\n", error->message);
-		} else {
-			nautilus_file_changes_queue_schedule_metadata_remove (file);
-			nautilus_file_changes_queue_file_removed (file);
-		}
-	}
-}
-
-static void
-trash_files (GList *files, GCancellable  *cancellable, GtkWindow *parent_window)
-{
-	GList *l;
-	GFile *file;
-	GError *error;
-
-	for (l = files; l != NULL; l = l->next) {
-		file = l->data;
-
-		error = NULL;
-		if (!g_file_trash (file, cancellable, &error)) {
-			/* TODO-gio: Dialog here, allow delete instead of trash, etc */
-			g_print ("Error trashing file: %s\n", error->message);
-		} else {
-			nautilus_file_changes_queue_schedule_metadata_remove (file);
-			nautilus_file_changes_queue_file_removed (file);
-		}
-	}
-}
-
 typedef struct {
 	GtkWindow *parent_window;
 	gboolean ignore_close_box;
@@ -1230,6 +1215,349 @@ confirm_delete_directly (CommonJob *job,
 }
 
 static void
+report_delete_progress (CommonJob *job,
+		      SourceInfo *source_info,
+		      TransferInfo *transfer_info)
+{
+	int files_left;
+	double elapsed, transfer_rate;
+	int remaining_time;
+	guint64 now;
+
+	now = g_thread_gettime ();
+	if (transfer_info->last_report_time != 0 &&
+	    ABS (transfer_info->last_report_time - now) < 100 * NSEC_PER_MSEC) {
+		return;
+	}
+	transfer_info->last_report_time = now;
+	
+	files_left = source_info->num_files - transfer_info->num_files;
+
+	/* Races and whatnot could cause this to be negative... */
+	if (files_left < 0) {
+		files_left = 1;
+	}
+
+	nautilus_progress_info_take_status (job->progress,
+					    f (_("Deleting files")));
+
+	elapsed = g_timer_elapsed (job->time, NULL);
+	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
+		char *s;
+		s = f (ngettext ("%d file left to delete",
+				 "%d files left to delete",
+				 files_left),
+		       files_left);
+		nautilus_progress_info_take_details (job->progress, s);
+	} else {
+		char *s;
+		transfer_rate = transfer_info->num_files / elapsed;
+		remaining_time = files_left / transfer_rate;
+
+		/* To translators: %T will expand to a time like "2 minutes" */		
+		s = f (ngettext ("%d file left to delete \xE2\x80\x94 %T left",
+				 "%d files left to delete \xE2\x80\x94 %T left",
+				 files_left),
+		       files_left, remaining_time);
+		nautilus_progress_info_take_details (job->progress, s);
+	}
+
+	nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_files / source_info->num_files);
+}
+
+static void delete_file (CommonJob *job, GFile *file,
+			 gboolean *skipped_file,
+			 SourceInfo *source_info,
+			 TransferInfo *transfer_info,
+			 gboolean toplevel);
+
+static void
+delete_dir (CommonJob *job, GFile *dir,
+	    gboolean *skipped_file,
+	    SourceInfo *source_info,
+	    TransferInfo *transfer_info,
+	    gboolean toplevel)
+{
+	GFileInfo *info;
+	GError *error;
+	GFile *file;
+	GFileEnumerator *enumerator;
+	char *primary, *secondary, *details;
+	int response;
+	gboolean skip_error;
+	gboolean local_skipped_file;
+
+	local_skipped_file = FALSE;
+	
+	skip_error = should_skip_readdir_error (job, dir);
+ retry:
+	error = NULL;
+	enumerator = g_file_enumerate_children (dir,
+						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+						job->cancellable,
+						&error);
+	if (enumerator) {
+		error = NULL;
+		
+		while (!job_aborted (job) &&
+		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error)) != NULL) {
+			file = g_file_get_child (dir,
+						 g_file_info_get_name (info));
+			delete_file (job, file, &local_skipped_file, source_info, transfer_info, FALSE);
+			g_object_unref (info);
+		}
+		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		
+		if (error && IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+		} else if (error) {
+			primary = f (_("Error while deleting."));
+			details = NULL;
+			
+			if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
+				secondary = f (_("Files in the folder \"%B\" cannot be deleted because you do "
+						 "not have permissions to see them."), dir);
+			} else {
+				secondary = f (_("There was an error getting information about the files in the folder \"%B\"."), dir);
+				details = error->message;
+			}
+			
+			response = run_warning (job,
+						primary,
+						secondary,
+						details,
+						GTK_STOCK_CANCEL, _("_Skip files"),
+						NULL);
+			
+			g_error_free (error);
+			
+			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+				abort_job (job);
+			} else if (response == 1) {
+				/* Skip: Do Nothing */
+				local_skipped_file = TRUE;
+			} else {
+				g_assert_not_reached ();
+			}
+		}
+		
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
+	} else {
+		primary = f (_("Error while deleting."));
+		details = NULL;
+		if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
+			secondary = f (_("The folder \"%B\" cannot be deleted because you do not have "
+					 "permissions to read it."), dir);
+		} else {
+			secondary = f (_("There was an error reading the folder \"%B\"."), dir);
+			details = error->message;
+		}
+		
+		response = run_warning (job,
+					primary,
+					secondary,
+					details,
+					GTK_STOCK_CANCEL, SKIP, RETRY,
+					NULL);
+
+		g_error_free (error);
+
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (job);
+		} else if (response == 1) {
+			/* Skip: Do Nothing  */
+			local_skipped_file = TRUE;
+		} else if (response == 2) {
+			goto retry;
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	if (!job_aborted (job) &&
+	    /* Don't delete dir if there was a skipped file */
+	    !local_skipped_file) {
+		if (!g_file_delete (dir, job->cancellable, &error)) {
+			if (job->skip_all_error) {
+				goto skip;
+			}
+			primary = f (_("Error while deleting."));
+			secondary = f (_("Couldn't remove the folder %B."), dir);
+			details = error->message;
+			
+			response = run_warning (job,
+						primary,
+						secondary,
+						details,
+						GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+						NULL);
+			
+			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+				abort_job (job);
+			} else if (response == 1) { /* skip all */
+				job->skip_all_error = TRUE;
+				local_skipped_file = TRUE;
+			} else if (response == 2) { /* skip */
+				local_skipped_file = TRUE;
+			} else {
+				g_assert_not_reached ();
+			}
+			
+		skip:
+			g_error_free (error);
+		} else {
+			if (toplevel) {
+				nautilus_file_changes_queue_schedule_metadata_remove (dir);
+			}
+			nautilus_file_changes_queue_file_removed (dir);
+			transfer_info->num_files ++;
+			report_delete_progress (job, source_info, transfer_info);
+			return;
+		}
+	}
+
+	if (local_skipped_file) {
+		*skipped_file = TRUE;
+	}
+}
+
+static void
+delete_file (CommonJob *job, GFile *file,
+	     gboolean *skipped_file,
+	     SourceInfo *source_info,
+	     TransferInfo *transfer_info,
+	     gboolean toplevel)
+{
+	GError *error;
+	char *primary, *secondary, *details;
+	int response;
+
+	if (should_skip_file (job, file)) {
+		*skipped_file = TRUE;
+		return;
+	}
+	
+	error = NULL;
+	if (g_file_delete (file, job->cancellable, &error)) {
+		if (toplevel) {
+			nautilus_file_changes_queue_schedule_metadata_remove (file);
+		}
+		nautilus_file_changes_queue_file_removed (file);
+		transfer_info->num_files ++;
+		report_delete_progress (job, source_info, transfer_info);
+		return;
+	}
+
+	if (IS_IO_ERROR (error, NOT_EMPTY)) {
+		g_error_free (error);
+		delete_dir (job, file,
+			    skipped_file,
+			    source_info, transfer_info,
+			    toplevel);
+		return;
+		
+	} else if (IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
+		
+	} else {
+		if (job->skip_all_error) {
+			goto skip;
+		}
+		primary = f (_("Error while deleting."));
+		secondary = f (_("There was an error deleting %B."), file);
+		details = error->message;
+		
+		response = run_warning (job,
+					primary,
+					secondary,
+					details,
+					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+					NULL);
+
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (job);
+		} else if (response == 1) { /* skip all */
+			job->skip_all_error = TRUE;
+		} else if (response == 2) { /* skip */
+			/* do nothing */
+		} else {
+			g_assert_not_reached ();
+		}
+	skip:
+		g_error_free (error);
+	}
+	
+	*skipped_file = TRUE;
+}
+
+static void
+delete_files (CommonJob *job, GList *files)
+{
+	GList *l;
+	GFile *file;
+	SourceInfo source_info;
+	TransferInfo transfer_info;
+	gboolean skipped_file;
+	
+	if (job_aborted (job)) {
+		return;
+	}
+
+	scan_sources (files,
+		      &source_info,
+		      job,
+		      OP_KIND_DELETE);
+	if (job_aborted (job)) {
+		return;
+	}
+
+	g_timer_start (job->time);
+	
+	memset (&transfer_info, 0, sizeof (transfer_info));
+	report_delete_progress (job, &source_info, &transfer_info);
+	
+	for (l = files;
+	     l != NULL && !job_aborted (job);
+	     l = l->next) {
+		file = l->data;
+
+		skipped_file = FALSE;
+		delete_file (job, file,
+			     &skipped_file,
+			     &source_info, &transfer_info,
+			     TRUE);
+	}
+}
+
+static void
+trash_files (CommonJob *job, GList *files)
+{
+	GList *l;
+	GFile *file;
+	GError *error;
+
+	if (job_aborted (job)) {
+		return;
+	}
+	
+
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+
+		error = NULL;
+		if (!g_file_trash (file, job->cancellable, &error)) {
+			/* TODO-gio: Dialog here, allow delete instead of trash, etc */
+			g_print ("Error trashing file: %s\n", error->message);
+		} else {
+			nautilus_file_changes_queue_schedule_metadata_remove (file);
+			nautilus_file_changes_queue_file_removed (file);
+		}
+	}
+}
+
+static void
 delete_job_done (gpointer user_data)
 {
 	DeleteJob *job;
@@ -1265,6 +1593,11 @@ delete_job (GIOJob *io_job,
 	gboolean confirmed;
 	CommonJob *common;
 
+	common = (CommonJob *)job;
+	common->io_job = io_job;
+
+	nautilus_progress_info_start (job->common.progress);
+	
 	/* Collect three lists: (1) items that can be moved to trash,
 	 * (2) items that can only be deleted in place, and (3) items that
 	 * are already in trash. 
@@ -1280,8 +1613,6 @@ delete_job (GIOJob *io_job,
 	in_trash_files = NULL;
 	no_confirm_files = NULL;
 
-	common = (CommonJob *)job;
-	
 	for (l = job->files; l != NULL; l = l->next) {
 		file = l->data;
 		
@@ -1301,14 +1632,14 @@ delete_job (GIOJob *io_job,
 
 	if (in_trash_files != NULL && trashable_files == NULL && untrashable_files == NULL) {
 		if (confirm_delete_from_trash (common, in_trash_files)) {
-			delete_files (in_trash_files, NULL, common->parent_window);
+			delete_files (common, in_trash_files);
 		}
 	} else {
 		if (no_confirm_files != NULL) {
-			delete_files (no_confirm_files, NULL, common->parent_window);
+			delete_files (common, no_confirm_files);
 		}
 		if (trashable_files != NULL) {
-			trash_files (trashable_files, NULL, common->parent_window);
+			trash_files (common, trashable_files);
 		}
 		if (untrashable_files != NULL) {
 			if (job->try_trash) {
@@ -1319,7 +1650,7 @@ delete_job (GIOJob *io_job,
 			}
 				
 			if (confirmed) {
-				delete_files (untrashable_files, NULL, common->parent_window);
+				delete_files (common, untrashable_files);
 			}
 		}
 	}
@@ -1436,24 +1767,6 @@ nautilus_file_operations_unmount_volume (GtkWindow                      *parent_
 			  data);
 }
 
-typedef enum {
-	OP_KIND_COPY = 0
-} OpKind;
-
-typedef struct {
-	int num_files;
-	goffset num_bytes;
-	int num_files_since_progress;
-	OpKind op;
-} SourceInfo;
-
-typedef struct {
-	int num_files;
-	goffset num_bytes;
-	OpKind op;
-	guint64 last_report_time;
-} TransferInfo;
-
 static void
 report_count_progress (CommonJob *job,
 		       SourceInfo *source_info)
@@ -1461,12 +1774,27 @@ report_count_progress (CommonJob *job,
 	char *s;
 
 	/* TODO: Handle other kinds */
-	if (source_info->op == OP_KIND_COPY) {
+	switch (source_info->op) {
+	default:
+	case OP_KIND_COPY:
 		s = f (_("Preparing to copy %d files (%S)"),
 		       source_info->num_files, source_info->num_bytes);
-		nautilus_progress_info_take_details (job->progress, s);
-	}
+		break;
+	case OP_KIND_MOVE:
+		s = f (_("Preparing to move %d files (%S)"),
+		       source_info->num_files, source_info->num_bytes);
+		break;
+	case OP_KIND_DELETE:
+		s = f (_("Preparing to delete %d files (%S)"),
+		       source_info->num_files, source_info->num_bytes);
+		break;
+	case OP_KIND_TRASH:
+		s = f (_("Preparing to trash %d files"),
+		       source_info->num_files);
+		break;
+	} 
 
+	nautilus_progress_info_take_details (job->progress, s);
 	nautilus_progress_info_pulse_progress (job->progress);
 }
 
@@ -1482,8 +1810,24 @@ count_file (GFileInfo *info,
 		report_count_progress (job, source_info);
 		source_info->num_files_since_progress = 0;
 	}
-	
 }
+
+static char *
+get_scan_primary (OpKind kind)
+{
+	switch (kind) {
+	default:
+	case OP_KIND_COPY:
+		return f (_("Error while copying."));
+	case OP_KIND_MOVE:
+		return f (_("Error while moving."));
+	case OP_KIND_DELETE:
+		return f (_("Error while deleting."));
+	case OP_KIND_TRASH:
+		return f (_("Error while moving files to trash."));
+	}
+}
+
 static void
 scan_dir (GFile *dir,
 	  SourceInfo *source_info,
@@ -1529,12 +1873,12 @@ scan_dir (GFile *dir,
 		if (error && IS_IO_ERROR (error, CANCELLED)) {
 			g_error_free (error);
 		} else if (error) {
-			primary = f (_("Error while copying."));
+			primary = get_scan_primary (source_info->op);
 			details = NULL;
 			
 			if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
-				secondary = f (_("Files in the folder \"%B\" cannot be copied because you do "
-						 "not have permissions to read them."), dir);
+				secondary = f (_("Files in the folder \"%B\" cannot be handled because you do "
+						 "not have permissions to see them."), dir);
 			} else {
 				secondary = f (_("There was an error getting information about the files in the folder \"%B\"."), dir);
 				details = error->message;
@@ -1566,12 +1910,12 @@ scan_dir (GFile *dir,
 		skip_file (job, dir);
 	} else if (IS_IO_ERROR (error, CANCELLED)) {
 		g_error_free (error);
-	} else {
-		primary = f (_("Error while copying."));
+	} else {	
+		primary = get_scan_primary (source_info->op);
 		details = NULL;
 		
 		if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
-			secondary = f (_("The folder \"%B\" cannot be copied because you do not have "
+			secondary = f (_("The folder \"%B\" cannot be handled because you do not have "
 					 "permissions to read it."), dir);
 		} else {
 			secondary = f (_("There was an error reading the folder \"%B\"."), dir);
@@ -1641,11 +1985,11 @@ scan_file (GFile *file,
 	} else if (IS_IO_ERROR (error, CANCELLED)) {
 		g_error_free (error);
 	} else {
-		primary = f (_("Error while copying."));
+		primary = get_scan_primary (source_info->op);
 		details = NULL;
 		
 		if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
-			secondary = f (_("The file \"%B\" cannot be copied because you do not have "
+			secondary = f (_("The file \"%B\" cannot be handled because you do not have "
 					 "permissions to read it."), file);
 		} else {
 			secondary = f (_("There was an error getting information about \"%B\"."), file);
@@ -1689,15 +2033,16 @@ scan_file (GFile *file,
 static void
 scan_sources (GList *files,
 	      SourceInfo *source_info,
-	      CommonJob *job)
+	      CommonJob *job,
+	      OpKind kind)
 {
 	GList *l;
 	GFile *file;
 
-	if (source_info->op == OP_KIND_COPY) {
-		nautilus_progress_info_set_status (job->progress,
-						   _("Preparing for copy"));
-	}
+	memset (source_info, 0, sizeof (SourceInfo));
+	source_info->op = kind;
+
+	report_count_progress (job, source_info);
 	
 	for (l = files; l != NULL && !job_aborted (job); l = l->next) {
 		file = l->data;
@@ -2164,7 +2509,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 			
 			if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
 				secondary = f (_("Files in the folder \"%B\" cannot be copied because you do "
-						 "not have permissions to read them."), src);
+						 "not have permissions to see them."), src);
 			} else {
 				secondary = f (_("There was an error getting information about the files in the folder \"%B\"."), src);
 				details = error->message;
@@ -2611,6 +2956,7 @@ copy_move_file (CopyMoveJob *copy_job,
 			if (!g_file_delete (dest, job->cancellable, &error) &&
 			    !IS_IO_ERROR (error, NOT_FOUND)) {
 				if (job->skip_all_error) {
+					g_error_free (error);
 					goto out;
 				}
 				if (copy_job->is_move) {
@@ -2668,6 +3014,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	/* Other error */
 	else {
 		if (job->skip_all_error) {
+			g_error_free (error);
 			goto out;
 		}
 		primary = f (_("Error while copying \"%B\"."), src);
@@ -2783,10 +3130,10 @@ copy_job (GIOJob *io_job,
 	
 	nautilus_progress_info_start (job->common.progress);
 	
-	memset (&source_info, 0, sizeof (SourceInfo));
 	scan_sources (job->files,
 		      &source_info,
-		      common);
+		      common,
+		      OP_KIND_COPY);
 	if (job_aborted (common)) {
 		goto aborted;
 	}
@@ -3223,10 +3570,10 @@ move_job (GIOJob *io_job,
 	/* The rest we need to do deep copy + delete behind on,
 	   so scan for size */
 	
-	memset (&source_info, 0, sizeof (SourceInfo));
 	scan_sources (copy_files,
 		      &source_info,
-		      common);
+		      common,
+		      OP_KIND_MOVE);
 	if (job_aborted (common)) {
 		goto aborted;
 	}
