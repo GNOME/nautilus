@@ -78,7 +78,7 @@ static gboolean confirm_trash_auto_value;
 
 /* TODO:
  *  Implement missing functions:
- *   duplicate, new file, new folder, empty trash, set_permissions recursive
+ *   duplicate, link, new file, new folder, set_permissions recursive
  * TESTING!!!
  */
 
