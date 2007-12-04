@@ -79,8 +79,6 @@ static gboolean confirm_trash_auto_value;
 /* TODO:
  *  Implement missing functions:
  *   duplicate, new file, new folder, empty trash, set_permissions recursive
- *  Make delete handle recursive deletes
- *  Use CommonJob in trash/delete code
  * TESTING!!!
  */
 
@@ -97,6 +95,7 @@ typedef struct {
 	gboolean skip_all_conflict;
 	gboolean merge_all;
 	gboolean replace_all;
+	gboolean delete_all;
 } CommonJob;
 
 typedef struct {
@@ -151,6 +150,7 @@ typedef struct {
 #define SKIP _("_Skip")
 #define SKIP_ALL _("S_kip All")
 #define RETRY _("_Retry")
+#define DELETE_ALL _("Delete _All")
 #define REPLACE _("_Replace")
 #define REPLACE_ALL _("Replace _All")
 #define MERGE _("_Merge")
@@ -832,7 +832,8 @@ setup_autos (void)
 static gboolean
 can_delete_without_confirm (GFile *file)
 {
-	if (g_file_has_uri_scheme (file, "burn")) {
+	if (g_file_has_uri_scheme (file, "burn") ||
+	    g_file_has_uri_scheme (file, "x-nautilus-desktop")) {
 		return TRUE;
 	}
 
@@ -853,27 +854,6 @@ can_delete_files_without_confirm (GList *files)
 	}
 
 	return TRUE;
-}
-
-static gboolean
-can_trash_file (GFile *file, GCancellable *cancellable)
-{
-	GFileInfo *info;
-	gboolean res;
-
-	res = FALSE;
-	info = g_file_query_info (file, 
-				  G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH,
-				  0,
-				  cancellable,
-				  NULL);
-
-	if (info) {
-		res = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH);
-		g_object_unref (info);
-	}
-
-	return res;
 }
 
 typedef struct {
@@ -1129,51 +1109,6 @@ confirm_delete_from_trash (CommonJob *job,
 }
 
 static gboolean
-confirm_deletion (CommonJob *job,
-		  GList *files,
-		  gboolean all)
-{
-	char *prompt;
-	char *detail;
-	int file_count;
-	GFile *file;
-	int response;
-
-	file_count = g_list_length (files);
-	g_assert (file_count > 0);
-	
-	if (file_count == 1) {
-		file = files->data;
-		if (g_file_has_uri_scheme (file, "x-nautilus-desktop")) {
-			/* Don't ask for desktop icons */
-			return TRUE;
-		}
-		prompt = f (_("Cannot move file to trash, do you want to delete immediately?"));
-		detail = f (_("The file \"%B\" cannot be moved to the trash."), file);
-	} else {
-		if (all) {
-			prompt = f (_("Cannot move items to trash, do you want to delete them immediately?"));
-			detail = f (ngettext("The selected item could not be moved to the Trash",
-					     "The %d selected items could not be moved to the Trash",
-					     file_count),
-				    file_count);
-		} else {
-			prompt = f (_("Cannot move some items to trash, do you want to delete these immediately?"));
-			detail = f (_("%d of the selected items cannot be moved to the Trash"), file_count);
-		}
-	}
-	
-	response = run_question (job,
-				 prompt,
-				 detail,
-				 NULL,
-				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
-				 NULL);
-	
-	return (response == 1);
-}
-
-static gboolean
 confirm_delete_directly (CommonJob *job,
 			 GList *files)
 {
@@ -1216,8 +1151,8 @@ confirm_delete_directly (CommonJob *job,
 
 static void
 report_delete_progress (CommonJob *job,
-		      SourceInfo *source_info,
-		      TransferInfo *transfer_info)
+			SourceInfo *source_info,
+			TransferInfo *transfer_info)
 {
 	int files_left;
 	double elapsed, transfer_rate;
@@ -1262,7 +1197,9 @@ report_delete_progress (CommonJob *job,
 		nautilus_progress_info_take_details (job->progress, s);
 	}
 
-	nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_files / source_info->num_files);
+	if (source_info->num_files != 0) {
+		nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_files / source_info->num_files);
+	}
 }
 
 static void delete_file (CommonJob *job, GFile *file,
@@ -1532,28 +1469,109 @@ delete_files (CommonJob *job, GList *files)
 }
 
 static void
+report_trash_progress (CommonJob *job,
+		       int files_trashed,
+		       int total_files)
+{
+	int files_left;
+	char *s;
+
+	files_left = total_files - files_trashed;
+
+	nautilus_progress_info_take_status (job->progress,
+					    f (_("Moving files to trash")));
+
+	s = f (ngettext ("%d file left to trash",
+			 "%d files left to trash",
+			 files_left),
+	       files_left);
+	nautilus_progress_info_take_details (job->progress, s);
+
+	if (total_files != 0) {
+		nautilus_progress_info_set_progress (job->progress, (double)files_trashed / total_files);
+	}
+}
+
+
+static void
 trash_files (CommonJob *job, GList *files)
 {
 	GList *l;
 	GFile *file;
+	GList *to_delete;
 	GError *error;
+	int total_files, files_trashed;
+	char *primary, *secondary, *details;
+	int response;
 
 	if (job_aborted (job)) {
 		return;
 	}
-	
 
-	for (l = files; l != NULL; l = l->next) {
+	total_files = g_list_length (files);
+	files_trashed = 0;
+
+	report_trash_progress (job, files_trashed, total_files);
+
+	to_delete = NULL;
+	for (l = files;
+	     l != NULL && !job_aborted (job);
+	     l = l->next) {
 		file = l->data;
 
 		error = NULL;
 		if (!g_file_trash (file, job->cancellable, &error)) {
-			/* TODO-gio: Dialog here, allow delete instead of trash, etc */
-			g_print ("Error trashing file: %s\n", error->message);
+			if (job->skip_all_error) {
+				goto skip;
+			}
+
+			if (job->delete_all) {
+				to_delete = g_list_prepend (to_delete, file);
+				goto skip;
+			}
+
+			primary = f (_("Cannot move file to trash, do you want to delete immediately?"));
+			secondary = f (_("The file \"%B\" cannot be moved to the trash."), file);
+			details = NULL;
+			if (!IS_IO_ERROR (error, NOT_SUPPORTED)) {
+				details = error->message;
+			}
+
+			response = run_question (job,
+						 primary,
+						 secondary,
+						 details,
+						 GTK_STOCK_CANCEL, SKIP_ALL, SKIP, DELETE_ALL, GTK_STOCK_DELETE,
+						 NULL);
+
+			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+				abort_job (job);
+			} else if (response == 1) { /* skip all */
+				job->skip_all_error = TRUE;
+			} else if (response == 2) { /* skip */
+				/* nothing */
+			} else if (response == 3) { /* delete all */
+				to_delete = g_list_prepend (to_delete, file);
+			} else if (response == 4) { /* delete */
+				to_delete = g_list_prepend (to_delete, file);
+			}
+
+		skip:
+			g_error_free (error);
+			total_files--;
 		} else {
 			nautilus_file_changes_queue_schedule_metadata_remove (file);
 			nautilus_file_changes_queue_file_removed (file);
+			
+			files_trashed++;
+			report_trash_progress (job, files_trashed, total_files);
 		}
+	}
+
+	if (to_delete) {
+		to_delete = g_list_reverse (to_delete);
+		delete_files (job, to_delete);
+		g_list_free (to_delete);
 	}
 }
 
@@ -1584,88 +1602,73 @@ delete_job (GIOJob *io_job,
 	    gpointer user_data)
 {
 	DeleteJob *job = user_data;
-	GList *trashable_files;
-	GList *untrashable_files;
-	GList *in_trash_files;
-	GList *no_confirm_files;
+	GList *to_trash_files;
+	GList *to_delete_files;
 	GList *l;
 	GFile *file;
 	gboolean confirmed;
 	CommonJob *common;
+	gboolean must_confirm_delete_in_trash;
+	gboolean must_confirm_delete;
 
 	common = (CommonJob *)job;
 	common->io_job = io_job;
 
 	nautilus_progress_info_start (job->common.progress);
 	
-	/* Collect three lists: (1) items that can be moved to trash,
-	 * (2) items that can only be deleted in place, and (3) items that
-	 * are already in trash. 
-	 * 
-	 * Always move (1) to trash if non-empty.
-	 * Delete (3) only if (1) and (2) are non-empty, otherwise ignore (3).
-	 * Ask before deleting (2) if non-empty.
-	 * Ask before deleting (3) if non-empty.
-	 */
+	to_trash_files = NULL;
+	to_delete_files = NULL;
 
-	trashable_files = NULL;
-	untrashable_files = NULL;
-	in_trash_files = NULL;
-	no_confirm_files = NULL;
-
+	must_confirm_delete_in_trash = FALSE;
+	must_confirm_delete = FALSE;
+	
 	for (l = job->files; l != NULL; l = l->next) {
 		file = l->data;
 		
 		if (job->try_trash &&
 		    job->delete_if_all_already_in_trash &&
 		    g_file_has_uri_scheme (file, "trash")) {
-			in_trash_files = g_list_prepend (in_trash_files, file);
+			must_confirm_delete_in_trash = TRUE;
+			to_delete_files = g_list_prepend (to_delete_files, file);
 		} else if (can_delete_without_confirm (file)) {
-			no_confirm_files = g_list_prepend (no_confirm_files, file);
-		} else if (job->try_trash &&
-			   can_trash_file (file, NULL)) {
-			trashable_files = g_list_prepend (trashable_files, file);
+			to_delete_files = g_list_prepend (to_delete_files, file);
 		} else {
-			untrashable_files = g_list_prepend (untrashable_files, file);
-		}
-	}
-
-	if (in_trash_files != NULL && trashable_files == NULL && untrashable_files == NULL) {
-		if (confirm_delete_from_trash (common, in_trash_files)) {
-			delete_files (common, in_trash_files);
-		}
-	} else {
-		if (no_confirm_files != NULL) {
-			delete_files (common, no_confirm_files);
-		}
-		if (trashable_files != NULL) {
-			trash_files (common, trashable_files);
-		}
-		if (untrashable_files != NULL) {
 			if (job->try_trash) {
-				confirmed = confirm_deletion (common, 
-							      untrashable_files, trashable_files == NULL);
+				to_trash_files = g_list_prepend (to_trash_files, file);
 			} else {
-				confirmed = confirm_delete_directly (common, untrashable_files);
-			}
-				
-			if (confirmed) {
-				delete_files (common, untrashable_files);
+				must_confirm_delete = TRUE;
+				to_delete_files = g_list_prepend (to_delete_files, file);
 			}
 		}
 	}
 	
-	g_list_free (in_trash_files);
-	g_list_free (trashable_files);
-	g_list_free (untrashable_files);
-	g_list_free (no_confirm_files);
+	if (to_delete_files != NULL) {
+		to_delete_files = g_list_reverse (to_delete_files);
+		confirmed = TRUE;
+		if (must_confirm_delete_in_trash) {
+			confirmed = confirm_delete_from_trash (common, to_delete_files);
+		} else if (must_confirm_delete) {
+			confirmed = confirm_delete_directly (common, to_delete_files);
+		}
+		if (confirmed) {
+			delete_files (common, to_delete_files);
+		}
+	}
+	
+	if (to_trash_files != NULL) {
+		to_trash_files = g_list_reverse (to_trash_files);
+		
+		trash_files (common, to_trash_files);
+	}
+	
+	g_list_free (to_trash_files);
+	g_list_free (to_delete_files);
 
 	g_io_job_send_to_mainloop (io_job,
 				   delete_job_done,
 				   job,
 				   NULL,
 				   FALSE);
-
 }
 
 static void
@@ -1703,7 +1706,7 @@ nautilus_file_operations_trash_or_delete (GList                  *files,
 					  gpointer                done_callback_data)
 {
 	trash_or_delete_internal (files, parent_window,
-				  TRUE,			  
+				  TRUE,
 				  done_callback,  done_callback_data);
 }
 
@@ -2272,14 +2275,19 @@ report_copy_progress (CopyMoveJob *copy_job,
 	total_size = MAX (source_info->num_bytes, transfer_info->num_bytes);
 	
 	elapsed = g_timer_elapsed (job->time, NULL);
-	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
+	transfer_rate = 0;
+	if (elapsed > 0) {
+		transfer_rate = transfer_info->num_bytes / elapsed;
+	}
+
+	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE &&
+	    transfer_rate > 0) {
 		char *s;
 		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB" */		
 		s = f (_("%S of %S"), transfer_info->num_bytes, total_size);
 		nautilus_progress_info_take_details (job->progress, s);
 	} else {
 		char *s;
-		transfer_rate = transfer_info->num_bytes / elapsed;
 		remaining_time = (total_size - transfer_info->num_bytes) / transfer_rate;
 
 		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like

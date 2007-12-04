@@ -1,3 +1,12 @@
+2007-12-04  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Implement trash with CommonJob
+	
+        * libnautilus-private/nautilus-progress-info.c:
+        (nautilus_progress_info_set_progress):
+	Ensure progress always is inside 0.0 - 1.0
+
 2007-12-04 Kevin Kubasik <kevin@kubasik.net>
 	* libnautilus-private/nautilus-search-engine-beagle.c:
 	Replace depreciated beagle_query_add_hit_type and
