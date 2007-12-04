@@ -187,8 +187,11 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 
 	mimetypes = nautilus_query_get_mime_types (beagle->details->query);
 	for (l = mimetypes; l != NULL; l = l->next) {
+		char* temp;
 		mimetype = l->data;
-		beagle_query_add_text (beagle->details->current_query,g_strconcat ("mimetype:", mimetype, NULL));
+		temp = g_strconcat ("mimetype:", mimetype, NULL);
+		beagle_query_add_text (beagle->details->current_query,temp);
+		g_free (temp);
 	}
 
 	beagle->details->current_query_uri_prefix = nautilus_query_get_location (beagle->details->query);
