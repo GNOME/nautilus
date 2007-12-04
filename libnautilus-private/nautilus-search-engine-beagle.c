@@ -176,7 +176,7 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 			  "error", G_CALLBACK (beagle_error), engine);
 
 	/* We only want files */
-	beagle_query_add_text (beagle->details->current_query,"type:File");
+	beagle_query_add_text (beagle->details->current_query," type:File");
 				   
 	beagle_query_set_max_hits (beagle->details->current_query,
 				   1000);
@@ -189,7 +189,7 @@ nautilus_search_engine_beagle_start (NautilusSearchEngine *engine)
 	for (l = mimetypes; l != NULL; l = l->next) {
 		char* temp;
 		mimetype = l->data;
-		temp = g_strconcat ("mimetype:", mimetype, NULL);
+		temp = g_strconcat (" mimetype:", mimetype, NULL);
 		beagle_query_add_text (beagle->details->current_query,temp);
 		g_free (temp);
 	}
