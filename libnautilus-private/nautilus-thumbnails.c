@@ -442,6 +442,27 @@ nautilus_thumbnail_load_image (const char *path,
 	return pixbuf;
 }
 
+#define MAX_ASYNC_LOADS 10
+static GList *outstanding_async_handles = NULL;
+static int n_async_loads = 0;
+
+static void start_async_handle (NautilusThumbnailAsyncLoadHandle *handle);
+
+static void
+handle_outstanding_async (void)
+{
+	NautilusThumbnailAsyncLoadHandle *handle;
+	
+	if (outstanding_async_handles != NULL) {
+		handle = outstanding_async_handles->data;
+		outstanding_async_handles = g_list_delete_link (outstanding_async_handles, outstanding_async_handles);
+		start_async_handle (handle);
+	} else {
+		/* No more work atm, make this slot availible */
+		n_async_loads--;
+	}
+}
+
 static void
 async_thumbnail_read_image (GnomeVFSResult result,
 			    GnomeVFSFileSize file_size,
@@ -450,7 +471,6 @@ async_thumbnail_read_image (GnomeVFSResult result,
 {
 	GdkPixbuf *pixbuf;
 	double scale_x, scale_y;
-
 	NautilusThumbnailAsyncLoadHandle *handle = callback_data;
 
 	pixbuf = NULL;
@@ -474,6 +494,21 @@ async_thumbnail_read_image (GnomeVFSResult result,
 
 	g_free (handle->file_path);
 	g_free (handle);
+
+	handle_outstanding_async ();
+}
+
+static void
+start_async_handle (NautilusThumbnailAsyncLoadHandle *handle)
+{
+	char *uri;
+	
+	uri = gnome_vfs_get_uri_from_local_path (handle->file_path);
+	handle->eel_read_handle = 
+		eel_read_entire_file_async (uri, GNOME_VFS_PRIORITY_DEFAULT,
+					    (EelReadFileCallback) async_thumbnail_read_image,
+					    handle);
+	g_free (uri);
 }
 
 NautilusThumbnailAsyncLoadHandle *
@@ -485,18 +520,9 @@ nautilus_thumbnail_load_image_async (const char *path,
 				     gpointer load_func_user_data)
 {
 	NautilusThumbnailAsyncLoadHandle *handle;
-	char *uri;
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	if (uri == NULL) {
-		return NULL;
-	}
 
 	handle = g_new (NautilusThumbnailAsyncLoadHandle, 1);
-	handle->eel_read_handle =
-		eel_read_entire_file_async (uri, GNOME_VFS_PRIORITY_DEFAULT,
-					    (EelReadFileCallback) async_thumbnail_read_image,
-					   handle);
+	handle->eel_read_handle = NULL;
 	handle->file_path = g_strdup (path);
 	handle->base_size = base_size;
 	handle->nominal_size = nominal_size;
@@ -504,8 +530,14 @@ nautilus_thumbnail_load_image_async (const char *path,
 	handle->load_func = load_func;
 	handle->load_func_user_data = load_func_user_data;
 
-	g_free (uri);
-
+	/* Limit nr of outstanding loads so that we don't run out of fd:s */
+	if (n_async_loads < MAX_ASYNC_LOADS) {
+		n_async_loads++;
+		start_async_handle (handle);
+	} else {
+		outstanding_async_handles = g_list_prepend (outstanding_async_handles, handle);
+	}
+	
 	return handle;
 }
 
@@ -514,7 +546,12 @@ nautilus_thumbnail_load_image_cancel (NautilusThumbnailAsyncLoadHandle *handle)
 {
 	g_assert (handle != NULL);
 
-	eel_read_file_cancel (handle->eel_read_handle);
+	if (handle->eel_read_handle != NULL) {
+		eel_read_file_cancel (handle->eel_read_handle);
+		handle_outstanding_async ();
+	} else {
+		outstanding_async_handles = g_list_remove (outstanding_async_handles, handle);
+	}
 	g_free (handle->file_path);
 	g_free (handle);
 }

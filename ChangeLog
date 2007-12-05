@@ -1,3 +1,9 @@
+2007-12-05  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-thumbnails.c:
+	Limit nr of outstanding async thumbnail reads. Otherwise
+	we can run out of fds on large dirs. (#483884)
+
 2007-12-04 Kevin Kubasik <kevin@kubasik.net>
 	* libnautilus-private/nautilus-search-engine-beagle.c:
 	Fixed some spacing issues.
