@@ -7008,13 +7008,14 @@ real_update_menus (FMDirectoryView *view)
 		      NULL);
 	g_free (label_with_underscore);
 
+	gtk_action_set_sensitive (action,  selection_count != 0);
+	gtk_action_set_visible (action, show_open_alternate);
+	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_OPEN_FOLDER_WINDOW);
 	gtk_action_set_visible (action, show_open_folder_window);
 	
-	gtk_action_set_sensitive (action,  selection_count != 0);
-	gtk_action_set_visible (action, show_open_alternate);
-	
+
 	/* Broken into its own function just for convenience */
 	reset_open_with_menu (view, selection);
 	reset_extension_actions_menu (view, selection);
