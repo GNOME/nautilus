@@ -78,7 +78,7 @@ static gboolean confirm_trash_auto_value;
 
 /* TODO:
  *  Implement missing functions:
- *   duplicate, link, new file, new folder, set_permissions recursive
+ *   link, new file, new folder, set_permissions recursive
  * TESTING!!!
  */
 
@@ -305,6 +305,9 @@ get_link_name (char *name, int count)
 
 	return result;
 }
+
+
+#endif /* GIO_CONVERSION_DONE */
 
 /* Localizers: 
  * Feel free to leave out the st, nd, rd and th suffix or
@@ -583,45 +586,6 @@ get_duplicate_name (const char *name, int count_increment)
 
 	return result;
 }
-
-static char *
-get_next_duplicate_name (char *name, int count_increment)
-{
-	char *unescaped_name;
-	char *unescaped_tmp_name;
-	char *unescaped_result;
-	char *result;
-	char *new_file;
-
-	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
-	g_free (name);
-
-	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
-					     NULL, NULL, NULL);
-	if (!unescaped_name) {
-		/* Couldn't convert to utf8 - probably
-		 * G_BROKEN_FILENAMES not set when it should be.
-		 * Try converting from the locale */
-		unescaped_name = g_locale_to_utf8 (unescaped_tmp_name, -1, NULL, NULL, NULL);	
-
-		if (!unescaped_name) {
-			unescaped_name = eel_make_valid_utf8 (unescaped_tmp_name);
-		}
-	}
-		
-	g_free (unescaped_tmp_name);
-	
-	unescaped_result = get_duplicate_name (unescaped_name, count_increment);
-	g_free (unescaped_name);
-
-	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
-	result = gnome_vfs_escape_path_string (new_file);
-	g_free (unescaped_result);
-	g_free (new_file);
-	return result;
-}
-
-#endif /* GIO_CONVERSION_DONE */
 
 static char *
 custom_full_name_to_string (char *format, va_list va)
@@ -2241,37 +2205,60 @@ report_copy_progress (CopyMoveJob *copy_job,
 	}
 
 	if (source_info->num_files == 1) {
-		nautilus_progress_info_take_status (job->progress,
-						    f (is_move ?
-						       _("Moving \"%B\" to \"%B\""):
-						       _("Copying \"%B\" to \"%B\""),
-						       (GFile *)copy_job->files->data,
-						       copy_job->destination));
+		if (copy_job->destination != NULL) {
+			nautilus_progress_info_take_status (job->progress,
+							    f (is_move ?
+							       _("Moving \"%B\" to \"%B\""):
+							       _("Copying \"%B\" to \"%B\""),
+							       (GFile *)copy_job->files->data,
+							       copy_job->destination));
+		} else {
+			nautilus_progress_info_take_status (job->progress,
+							    f (_("Duplicating \"%B\""),
+							       (GFile *)copy_job->files->data));
+		}
 	} else if (copy_job->files != NULL &&
 		   copy_job->files->next == NULL) {
-		nautilus_progress_info_take_status (job->progress,
-						    f (is_move?
-						       ngettext ("Moving %d file (in \"%B\") to \"%B\"",
-								 "Moving %d files (in \"%B\") to \"%B\"",
-								 files_left)
-						       :
-						       ngettext ("Copying %d file (in \"%B\") to \"%B\"",
-								 "Copying %d files (in \"%B\") to \"%B\"",
-								 files_left),
-						       files_left,
-						       (GFile *)copy_job->files->data,
-						       copy_job->destination));
+		if (copy_job->destination != NULL) {
+			nautilus_progress_info_take_status (job->progress,
+							    f (is_move?
+							       ngettext ("Moving %d file (in \"%B\") to \"%B\"",
+									 "Moving %d files (in \"%B\") to \"%B\"",
+									 files_left)
+							       :
+							       ngettext ("Copying %d file (in \"%B\") to \"%B\"",
+									 "Copying %d files (in \"%B\") to \"%B\"",
+									 files_left),
+							       files_left,
+							       (GFile *)copy_job->files->data,
+							       copy_job->destination));
+		} else {
+			nautilus_progress_info_take_status (job->progress,
+							    f (ngettext ("Duplicating %d file (in \"%B\")",
+									 "Duplicating %d files (in \"%B\")",
+									 files_left),
+							       files_left,
+							       (GFile *)copy_job->files->data));
+		}
 	} else {
-		nautilus_progress_info_take_status (job->progress,
-						    f (is_move?
-						       ngettext ("Moving %d file to \"%B\"",
-								 "Moving %d files to \"%B\"",
-								 files_left)
-						       :
-						       ngettext ("Copying %d file to \"%B\"",
-								 "Copying %d files to \"%B\"",
-								 files_left),
-						       files_left, copy_job->destination));
+		if (copy_job->destination != NULL) {
+			nautilus_progress_info_take_status (job->progress,
+							    f (is_move?
+							       ngettext ("Moving %d file to \"%B\"",
+									 "Moving %d files to \"%B\"",
+									 files_left)
+							       :
+							       ngettext ("Copying %d file to \"%B\"",
+									 "Copying %d files to \"%B\"",
+									 files_left),
+							       files_left, copy_job->destination));
+		} else {
+			nautilus_progress_info_take_status (job->progress,
+							    f (ngettext ("Duplicating %d file",
+									 "Duplicating %d files",
+									 files_left),
+							       files_left));
+		}
 	}
 
 	total_size = MAX (source_info->num_bytes, transfer_info->num_bytes);
@@ -2303,6 +2290,58 @@ report_copy_progress (CopyMoveJob *copy_job,
 	}
 
 	nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_bytes / total_size);
+}
+
+static GFile *
+get_unique_target_file (GFile *src,
+			GFile *dest_dir,
+			gboolean same_fs,
+			int count)
+{
+	const char *editname, *end;
+	char *basename, *new_name;
+	GFileInfo *info;
+	GFile *dest;
+	
+	dest = NULL;
+	info = g_file_query_info (src,
+				  G_FILE_ATTRIBUTE_STD_EDIT_NAME,
+				  0, NULL, NULL);
+	if (info != NULL) {
+		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_EDIT_NAME);
+		
+		if (editname != NULL) {
+			new_name = get_duplicate_name (editname, count);
+			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
+			g_free (new_name);
+		}
+		
+		g_object_unref (info);
+	}
+
+	if (dest == NULL) {
+		basename = g_file_get_basename (src);
+
+		if (g_utf8_validate (basename, -1, NULL)) {
+			new_name = get_duplicate_name (basename, count);
+			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
+			g_free (new_name);
+		} 
+
+		if (dest == NULL) {
+			end = strrchr (basename, '.');
+			if (end != NULL) {
+				count += atoi (end + 1);
+			}
+			new_name = g_strdup_printf ("%s.%d", basename, count);
+			dest = g_file_get_child (dest_dir, new_name);
+			g_free (new_name);
+		}
+		
+		g_free (basename);
+	}
+
+	return dest;
 }
 
 static GFile *
@@ -2390,6 +2429,7 @@ static void copy_move_file (CopyMoveJob *job,
 			    GFile *src,
 			    GFile *dest_dir,
 			    gboolean same_fs,
+			    gboolean unique_names,
 			    SourceInfo *source_info,
 			    TransferInfo *transfer_info,
 			    GHashTable *debuting_files,
@@ -2502,7 +2542,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error?NULL:&error)) != NULL) {
 			src_file = g_file_get_child (src,
 						     g_file_info_get_name (info));
-			copy_move_file (copy_job, src_file, dest, same_fs, source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file);
+			copy_move_file (copy_job, src_file, dest, same_fs, FALSE, source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file);
 			g_object_unref (src_file);
 			g_object_unref (info);
 		}
@@ -2790,6 +2830,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		GFile *src,
 		GFile *dest_dir,
 		gboolean same_fs,
+		gboolean unique_names,
 		SourceInfo *source_info,
 		TransferInfo *transfer_info,
 		GHashTable *debuting_files,
@@ -2806,6 +2847,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	gboolean would_recurse;
 	CommonJob *job;
 	gboolean res;
+	int unique_name_nr;
 
 	job = (CommonJob *)copy_job;
 	
@@ -2814,7 +2856,13 @@ copy_move_file (CopyMoveJob *copy_job,
 		return;
 	}
 
-	dest = get_target_file (src, dest_dir, same_fs);
+	unique_name_nr = 1;
+
+	if (unique_names) {
+		dest = get_unique_target_file (src, dest_dir, same_fs, unique_name_nr++);
+	} else {
+		dest = get_target_file (src, dest_dir, same_fs);
+	}
 
  retry:
 	
@@ -2868,6 +2916,13 @@ copy_move_file (CopyMoveJob *copy_job,
 	    IS_IO_ERROR (error, EXISTS)) {
 		gboolean is_merge;
 
+		if (unique_names) {
+			g_object_unref (dest);
+			dest = get_unique_target_file (src, dest_dir, same_fs, unique_name_nr++);
+			g_error_free (error);
+			goto retry;
+		}
+		
 		is_merge = FALSE;
 		if (is_dir (dest)) {
 			if (is_dir (src)) {
@@ -3070,11 +3125,14 @@ copy_files (CopyMoveJob *job,
 	int i;
 	GdkPoint *point;
 	gboolean skipped_file;
+	gboolean unique_names;
+	GFile *dest;
 
 	common = &job->common;
 
 	report_copy_progress (job, source_info, transfer_info);
-	
+
+	unique_names = (job->destination == NULL);
 	i = 0;
 	for (l = job->files;
 	     l != NULL && !job_aborted (common);
@@ -3093,12 +3151,21 @@ copy_files (CopyMoveJob *job,
 			same_fs = has_fs_id (src, dest_fs_id);
 		}
 
-		skipped_file = FALSE;
-		copy_move_file (job, src, job->destination,
-				same_fs,
-				source_info, transfer_info,
-				job->debuting_files,
-				point, FALSE, &skipped_file);
+		if (job->destination) {
+			dest = g_object_ref (job->destination);
+		} else {
+			dest = g_file_get_parent (src);
+			
+		}
+		if (dest) {
+			skipped_file = FALSE;
+			copy_move_file (job, src, dest,
+					same_fs, unique_names,
+					source_info, transfer_info,
+					job->debuting_files,
+					point, FALSE, &skipped_file);
+			g_object_unref (dest);
+		}
 		i++;
 	}
 }
@@ -3114,7 +3181,9 @@ copy_job_done (gpointer user_data)
 	}
 
 	eel_g_object_list_free (job->files);
-	g_object_unref (job->destination);
+	if (job->destination) {
+		g_object_unref (job->destination);
+	}
 	g_hash_table_unref (job->debuting_files);
 	g_free (job->icon_positions);
 	
@@ -3133,6 +3202,7 @@ copy_job (GIOJob *io_job,
 	SourceInfo source_info;
 	TransferInfo transfer_info;
 	char *dest_fs_id;
+	GFile *dest;
 
 	job = user_data;
 	common = &job->common;
@@ -3150,10 +3220,20 @@ copy_job (GIOJob *io_job,
 		goto aborted;
 	}
 
+	if (job->destination) {
+		dest = g_object_ref (job->destination);
+	} else {
+		/* Duplication, no dest,
+		 * use source for free size, etc
+		 */
+		dest = g_file_get_parent (job->files->data);
+	}
+	
 	verify_destination (&job->common,
-			    job->destination,
+			    dest,
 			    &dest_fs_id,
 			    source_info.num_bytes);
+	g_object_unref (dest);
 	if (job_aborted (common)) {
 		goto aborted;
 	}
@@ -3507,7 +3587,7 @@ move_files (CopyMoveJob *job,
 		   selected overwrite on all toplevel items */
 		skipped_file = FALSE;
 		copy_move_file (job, src, job->destination,
-				same_fs,
+				same_fs, FALSE, 
 				source_info, transfer_info,
 				job->debuting_files,
 				point, TRUE, &skipped_file);
@@ -3652,7 +3732,35 @@ nautilus_file_operations_move (GList *files,
 			   job->common.cancellable);
 }
 
+void
+nautilus_file_operations_duplicate (GList *files,
+				    GArray *relative_item_points,
+				    GtkWindow *parent_window,
+				    NautilusCopyCallback  done_callback,
+				    gpointer done_callback_data)
+{
+	CopyMoveJob *job;
 
+	job = op_job_new (CopyMoveJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->files = eel_g_object_list_copy (files);
+	job->destination = NULL;
+	if (relative_item_points != NULL &&
+	    relative_item_points->len > 0) {
+		job->icon_positions =
+			g_memdup (relative_item_points->data,
+				  sizeof (GdkPoint) * relative_item_points->len);
+		job->n_icon_positions = relative_item_points->len;
+	}
+	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+
+	g_schedule_io_job (copy_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
+}
 
 static void
 not_supported_yet (void)
@@ -3703,8 +3811,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GList *locations;
 	GFile *dest;
 	GtkWindow *parent_window;
-	
-	dest = g_file_new_for_uri (target_dir);
+
+	dest = NULL;
+	if (target_dir) {
+		dest = g_file_new_for_uri (target_dir);
+	}
 	locations = location_list_from_uri_list (item_uris);
 
 	parent_window = NULL;
@@ -3713,14 +3824,20 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 	
 	if (copy_action == GDK_ACTION_COPY) {
-		nautilus_file_operations_copy (locations,
-					       relative_item_points,
-					       dest,
-					       parent_window,
-					       done_callback, done_callback_data);
+		if (target_dir == NULL) {
+			nautilus_file_operations_duplicate (locations,
+							    relative_item_points,
+							    parent_window,
+							    done_callback, done_callback_data);
+		} else {
+			nautilus_file_operations_copy (locations,
+						       relative_item_points,
+						       dest,
+						       parent_window,
+						       done_callback, done_callback_data);
+		}
 		
 	} else if (copy_action == GDK_ACTION_MOVE) {
-
 		if (g_file_has_uri_scheme (dest, "trash")) {
 			nautilus_file_operations_trash_or_delete (locations,
 								  parent_window,
@@ -3738,7 +3855,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 	
 	eel_g_object_list_free (locations);
-	g_object_unref (dest);
+	if (dest) {
+		g_object_unref (dest);
+	}
 }
 
 void 
@@ -3863,7 +3982,6 @@ nautilus_self_check_file_operations (void)
 {
 	setlocale (LC_MESSAGES, "C");
 
-#ifdef GIO_CONVERSION_DONE
 	
 	/* test the next duplicate name generator */
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1), " (another copy)");
@@ -3908,8 +4026,6 @@ nautilus_self_check_file_operations (void)
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy)", 1), "foo (124th copy)");
 	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy).txt", 1), "foo (124th copy).txt");
 
-#endif /* GIO_CONVERSION_DONE */
-	
 	setlocale (LC_MESSAGES, "");
 }
 

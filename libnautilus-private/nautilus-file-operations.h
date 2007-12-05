@@ -109,4 +109,11 @@ void nautilus_file_operations_move (GList *files,
 				    NautilusCopyCallback  done_callback,
 				    gpointer done_callback_data);
 
+void nautilus_file_operations_duplicate (GList *files,
+					 GArray *relative_item_points,
+					 GtkWindow *parent_window,
+					 NautilusCopyCallback done_callback,
+					 gpointer done_callback_data);
+
+
 #endif /* NAUTILUS_FILE_OPERATIONS_H */
