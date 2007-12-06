@@ -813,14 +813,14 @@ fm_tree_view_open_in_new_window_cb (GtkWidget *menu_item,
 }
 
 static void
-new_folder_done (const char *new_folder_uri, gpointer data)
+new_folder_done (GFile *new_folder, gpointer data)
 {
 	GList *list;
 
 	/* show the properties window for the newly created
 	 * folder so the user can change its name
 	 */
-	list = g_list_prepend (NULL, nautilus_file_get_by_uri (new_folder_uri));
+	list = g_list_prepend (NULL, nautilus_file_get (new_folder));
 
 	fm_properties_window_present (list, GTK_WIDGET (data));
 

@@ -33,9 +33,7 @@
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
-typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
-					    gpointer    callback_data);
-typedef void (* NautilusNewFileCallback)   (const char *new_file_uri,
+typedef void (* NautilusCreateCallback)    (GFile      *new_file,
 					    gpointer    callback_data);
 typedef void (* NautilusSetPermissionsCallback) (gpointer    callback_data);
 typedef void (* NautilusDeleteCallback)      (GHashTable *debuting_uris,
@@ -56,20 +54,20 @@ void nautilus_file_operations_empty_trash (GtkWidget                 *parent_vie
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
 					   GdkPoint                  *target_point,
 					   const char                *parent_dir_uri,
-					   NautilusNewFolderCallback  done_callback,
+					   NautilusCreateCallback     done_callback,
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
 					   GdkPoint                  *target_point,
 					   const char                *parent_dir,
 					   const char                *initial_contents,
-					   NautilusNewFileCallback    done_callback,
+					   NautilusCreateCallback     done_callback,
 					   gpointer                   data);
 void nautilus_file_operations_new_file_from_template (GtkWidget               *parent_view,
 					   	      GdkPoint                *target_point,
 						      const char              *parent_dir,
 						      const char              *target_filename,
 						      const char              *template_uri,
-						      NautilusNewFileCallback  done_callback,
+						      NautilusCreateCallback   done_callback,
 						      gpointer                 data);
 
 void nautilus_file_operations_delete          (GList                  *files,

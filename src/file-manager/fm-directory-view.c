@@ -3683,7 +3683,7 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 		
 		return;
 	}
-	
+
 	/* no need to select because start_renaming_file selects
 	 * fm_directory_view_select_file (view, new_file);
 	 */
@@ -3692,35 +3692,40 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 }
 
 static void
-reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, NautilusDirectory *directory, const char *target_uri)
+reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file,
+			   NautilusDirectory *directory, GFile *target_location)
 {
-	if (nautilus_file_matches_uri (new_file, target_uri)) {
+	GFile *location;
+
+	location = nautilus_file_get_location (new_file);
+	if (g_file_equal (location, target_location)) {
 		g_signal_handlers_disconnect_by_func (view,
 						      G_CALLBACK (reveal_newly_added_folder),
-						      (void *) target_uri);
+						      (void *) target_location);
 		rename_file (view, new_file);
 	}
+	g_object_unref (location);
 }
 
 typedef struct {
 	FMDirectoryView *directory_view;
-	GHashTable *added_uris;
+	GHashTable *added_locations;
 } NewFolderData;
 
 
 static void
-track_newly_added_uris (FMDirectoryView *view, NautilusFile *new_file,
-			NautilusDirectory *directory, gpointer user_data)
+track_newly_added_locations (FMDirectoryView *view, NautilusFile *new_file,
+			     NautilusDirectory *directory, gpointer user_data)
 {
 	NewFolderData *data;
 
 	data = user_data;
 
-	g_hash_table_insert (data->added_uris, nautilus_file_get_uri (new_file), NULL);
+	g_hash_table_insert (data->added_locations, nautilus_file_get_location (new_file), NULL);
 }
 
 static void
-new_folder_done (const char *new_folder_uri, gpointer user_data)
+new_folder_done (GFile *new_folder, gpointer user_data)
 {
 	FMDirectoryView *directory_view;
 	NautilusFile *file;
@@ -3737,23 +3742,24 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 	}
 
 	g_signal_handlers_disconnect_by_func (directory_view,
-					      G_CALLBACK (track_newly_added_uris),
+					      G_CALLBACK (track_newly_added_locations),
 					      (void *) data);
 
-	if (new_folder_uri == NULL) {
+	if (new_folder == NULL) {
 		goto fail;
 	}
 	
 	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
 	g_snprintf (screen_string, sizeof (screen_string), "%d", gdk_screen_get_number (screen));
 
-	file = nautilus_file_get_by_uri (new_folder_uri);
+	
+	file = nautilus_file_get (new_folder);
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_SCREEN,
 		 NULL,
 		 screen_string);
 
-	if (g_hash_table_lookup_extended (data->added_uris, new_folder_uri, NULL, NULL)) {
+	if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
 		/* The file was already added */
 		rename_file (directory_view, file);
 	} else {
@@ -3764,14 +3770,14 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 		g_signal_connect_data (directory_view,
 				       "add_file",
 				       G_CALLBACK (reveal_newly_added_folder),
-				       g_strdup (new_folder_uri),
-				       (GClosureNotify)g_free,
+				       g_object_ref (new_folder),
+				       (GClosureNotify)g_object_unref,
 				       G_CONNECT_AFTER);
 	}
 	nautilus_file_unref (file);
 
  fail:
-	g_hash_table_destroy (data->added_uris);
+	g_hash_table_destroy (data->added_locations);
 	eel_remove_weak_pointer (&data->directory_view);
 	g_free (data);
 }
@@ -3784,8 +3790,8 @@ new_folder_data_new (FMDirectoryView *directory_view)
 
 	data = g_new (NewFolderData, 1);
 	data->directory_view = directory_view;
-	data->added_uris = g_hash_table_new_full (g_str_hash, g_str_equal,
-						  g_free, NULL);
+	data->added_locations = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal,
+						       g_object_unref, NULL);
 	eel_add_weak_pointer (&data->directory_view);
 
 	return data;
@@ -3831,7 +3837,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 
 	g_signal_connect_data (directory_view,
 			       "add_file",
-			       G_CALLBACK (track_newly_added_uris),
+			       G_CALLBACK (track_newly_added_locations),
 			       data,
 			       (GClosureNotify)NULL,
 			       G_CONNECT_AFTER);
@@ -3855,7 +3861,7 @@ setup_new_folder_data (FMDirectoryView *directory_view)
 
 	g_signal_connect_data (directory_view,
 			       "add_file",
-			       G_CALLBACK (track_newly_added_uris),
+			       G_CALLBACK (track_newly_added_locations),
 			       data,
 			       (GClosureNotify)NULL,
 			       G_CONNECT_AFTER);

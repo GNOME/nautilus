@@ -1,5 +1,16 @@
 2007-12-06  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-directory.c:
+	Don't avoid adding existing files that are not is_added.
+	Fixes a problem where new folder didn't display the new folder.
+	
+        * libnautilus-private/nautilus-file-operations.[ch]:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-tree-view.c:
+	Implement new folder.
+
+2007-12-06  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
 	Set position on move and link
 

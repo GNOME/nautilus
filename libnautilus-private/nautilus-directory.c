@@ -1003,7 +1003,11 @@ nautilus_directory_notify_files_added (GList *files)
 		}
 
 		file = nautilus_file_get_existing (location);
-		if (file) {
+		/* We check is_added here, because the file could have been added
+		 * to the directory by a nautilus_file_get() but not gotten 
+		 * files_added emitted
+		 */
+		if (file && file->details->is_added) {
 			/* A file already exists, it was probably renamed.
 			 * If it was renamed this could be ignored, but 
 			 * queue a change just in case */

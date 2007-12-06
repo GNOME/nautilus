@@ -121,6 +121,21 @@ typedef struct {
 
 typedef struct {
 	CommonJob common;
+	GFile *dest_dir;
+	char *filename;
+	gboolean make_dir;
+	GFile *src;
+	char *src_data;
+	GdkPoint position;
+	gboolean has_position;
+	GFile *created_file;
+	NautilusCreateCallback done_callback;
+	gpointer done_callback_data;
+} CreateJob;
+
+
+typedef struct {
+	CommonJob common;
 } EmptyTrashJob;
 
 typedef enum {
@@ -3820,6 +3835,8 @@ link_file (CopyMoveJob *job,
 		} else {
 			nautilus_file_changes_queue_schedule_position_remove (dest);
 		}
+
+		g_object_unref (dest);
 		
 		return;
 	}
@@ -4129,15 +4146,207 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 }
 
+static void
+create_job_done (gpointer user_data)
+{
+	CreateJob *job;
+
+	job = user_data;
+	if (job->done_callback) {
+		job->done_callback (job->created_file, job->done_callback_data);
+	}
+
+	g_object_unref (job->dest_dir);
+	if (job->src) {
+		g_object_unref (job->src);
+	}
+	g_free (job->src_data);
+	g_free (job->filename);
+	if (job->created_file) {
+		g_object_unref (job->created_file);
+	}
+	
+	finalize_common ((CommonJob *)job);
+
+	nautilus_file_changes_consume_changes (TRUE);
+}
+
+static void
+create_job (GIOJob *io_job,
+	    GCancellable *cancellable,
+	    gpointer user_data)
+{
+	CreateJob *job;
+	CommonJob *common;
+	int count;
+	GFile *dest;
+	char *filename, *filename2;
+	GError *error;
+	gboolean res;
+	gboolean filename_is_utf8;
+	char *primary, *secondary, *details;
+	int response;
+
+	job = user_data;
+	common = &job->common;
+	common->io_job = io_job;
+
+	nautilus_progress_info_start (job->common.progress);
+
+	filename = NULL;
+	dest = NULL;
+	
+	verify_destination (common,
+			    job->dest_dir,
+			    NULL, -1);
+	if (job_aborted (common)) {
+		goto aborted;
+	}
+
+	filename = g_strdup (job->filename);
+	filename_is_utf8 = FALSE;
+	if (filename) {
+		filename_is_utf8 = g_utf8_validate (filename, -1, NULL);		
+	}
+	if (filename == NULL) {
+		if (job->make_dir) {
+			/* localizers: the initial name of a new folder  */
+			filename = g_strdup (_("untitled folder"));
+			filename_is_utf8 = TRUE; /* Pass in utf8 */
+		} else {
+			if (job->src != NULL) {
+				filename = g_file_get_basename (job->src);
+			}
+			if (filename == NULL) {
+				/* localizers: the initial name of a new empty file */
+				filename = g_strdup (_("new file"));
+				filename_is_utf8 = TRUE; /* Pass in utf8 */
+			}
+		}
+	} 
+
+	if (filename_is_utf8) {
+		dest = g_file_get_child_for_display_name (job->dest_dir, filename, NULL);
+	}
+	if (dest == NULL) {
+		dest = g_file_get_child (job->dest_dir, filename);
+	}
+	count = 1;
+
+ retry:
+
+	error = NULL;
+	if (job->make_dir) {
+		res = g_file_make_directory (dest,
+					     common->cancellable,
+					     &error);
+	} else {
+		if (job->src) {
+		} else {
+			if (job->src_data) {
+			}
+		}
+	}
+
+	if (res) {
+		job->created_file = g_object_ref (dest);
+		nautilus_file_changes_queue_file_added (dest);
+		if (job->has_position) {
+			nautilus_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
+		} else {
+			nautilus_file_changes_queue_schedule_position_remove (dest);
+		}
+	} else {
+		if (error != NULL && IS_IO_ERROR (error, EXISTS)) {
+			g_object_unref (dest);
+			dest = NULL;
+			filename2 = g_strdup_printf ("%s %d", filename, ++count);
+			if (filename_is_utf8) {
+				dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);
+			}
+			if (dest == NULL) {
+				dest = g_file_get_child (job->dest_dir, filename2);
+			}
+			g_free (filename2);
+			g_error_free (error);
+			goto retry;
+		}
+		
+		else if (error != NULL && IS_IO_ERROR (error, CANCELLED)) {
+			g_error_free (error);
+		}
+		
+		/* Other error */
+		else {
+			if (job->make_dir) {
+				primary = f (_("Error while creating directory %B."), dest);
+			} else {
+				primary = f (_("Error while creating file %B."), dest);
+			}
+			secondary = f (_("There was an error creating the directory in %F."), job->dest_dir);
+			details = error->message;
+		
+			response = run_warning (common,
+						primary,
+						secondary,
+						details,
+						GTK_STOCK_CANCEL, SKIP,
+						NULL);
+			
+			g_error_free (error);
+		
+			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+				abort_job (common);
+			} else if (response == 1) { /* skip */
+				/* do nothing */
+			} else {
+				g_assert_not_reached ();
+			}
+		}
+	}
+
+ aborted:
+	if (dest) {
+		g_object_unref (dest);
+	}
+	g_free (filename);
+	g_io_job_send_to_mainloop (io_job,
+				   create_job_done,
+				   job,
+				   NULL,
+				   FALSE);
+}
+
 void 
 nautilus_file_operations_new_folder (GtkWidget *parent_view, 
 				     GdkPoint *target_point,
 				     const char *parent_dir,
-				     NautilusNewFolderCallback done_callback,
-				     gpointer data)
+				     NautilusCreateCallback done_callback,
+				     gpointer done_callback_data)
 {
-	/* TODO-gio: Implement */
-	not_supported_yet ();
+	CreateJob *job;
+	GtkWindow *parent_window;
+
+	parent_window = NULL;
+	if (parent_view) {
+		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
+	}
+
+	job = op_job_new (CreateJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->dest_dir = g_file_new_for_uri (parent_dir);
+	job->make_dir = TRUE;
+	if (target_point != NULL) {
+		job->position = *target_point;
+		job->has_position = TRUE;
+	}
+
+	g_schedule_io_job (create_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
 }
 
 void 
@@ -4146,8 +4355,8 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 						 const char *parent_dir,
 						 const char *target_filename,
 						 const char *template_uri,
-						 NautilusNewFileCallback done_callback,
-						 gpointer data)
+						 NautilusCreateCallback done_callback,
+						 gpointer done_callback_data)
 {
 	/* TODO-gio: Implement */
 	not_supported_yet ();
@@ -4158,8 +4367,8 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 				   GdkPoint *target_point,
 				   const char *parent_dir,
 				   const char *initial_contents,
-				   NautilusNewFileCallback done_callback,
-				   gpointer data)
+				   NautilusCreateCallback done_callback,
+				   gpointer done_callback_data)
 {
 	/* TODO-gio: Implement */
 	not_supported_yet ();
