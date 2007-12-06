@@ -78,7 +78,7 @@ static gboolean confirm_trash_auto_value;
 
 /* TODO:
  *  Implement missing functions:
- *   link, new file, new folder, set_permissions recursive
+ *   new file, new folder, set_permissions recursive
  * TESTING!!!
  */
 
@@ -206,43 +206,17 @@ format_time (int seconds)
 					  hours), hours);
 }
 
-#ifdef GIO_CONVERSION_DONE
-
 /* Note that we have these two separate functions with separate format
  * strings for ease of localization.
  */
 
 static char *
-get_link_name (char *name, int count) 
+get_link_name (const char *name, int count) 
 {
-	char *result;
-	char *unescaped_name;
-	char *unescaped_tmp_name;
-	char *unescaped_result;
-	char *new_file;
-
 	const char *format;
+	char *result;
 	
 	g_assert (name != NULL);
-
-	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
-	g_free (name);
-
-	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
-					     NULL, NULL, NULL);
-
-	if (!unescaped_name) {
-		/* Couldn't convert to utf8 - probably
-		 * G_BROKEN_FILENAMES not set when it should be.
-		 * Try converting from the locale */
-		unescaped_name = g_locale_to_utf8 (unescaped_tmp_name, -1, NULL, NULL, NULL);	
-
-		if (!unescaped_name) {
-			unescaped_name = eel_make_valid_utf8 (unescaped_tmp_name);
-		}
-	}
-
-	g_free (unescaped_tmp_name);
 
 	if (count < 1) {
 		g_warning ("bad count in get_link_name");
@@ -266,7 +240,7 @@ get_link_name (char *name, int count)
 			format = _("Another link to %s");
 			break;
 		}
-		unescaped_result = g_strdup_printf (format, unescaped_name);
+		result = g_strdup_printf (format, name);
 
 	} else {
 		/* Handle special cases for the first few numbers of each ten.
@@ -294,20 +268,12 @@ get_link_name (char *name, int count)
 			format = _("%dth link to %s");
 			break;
 		}
-		unescaped_result = g_strdup_printf (format, count, unescaped_name);
+		result = g_strdup_printf (format, count, name);
 	}
-	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
-	result = gnome_vfs_escape_path_string (new_file);
-	
-	g_free (unescaped_name);
-	g_free (unescaped_result);
-	g_free (new_file);
 
 	return result;
 }
 
-
-#endif /* GIO_CONVERSION_DONE */
 
 /* Localizers: 
  * Feel free to leave out the st, nd, rd and th suffix or
@@ -2038,7 +2004,9 @@ verify_destination (CommonJob *job,
 	int response;
 	GFileType file_type;
 
-	*dest_fs_id = NULL;
+	if (dest_fs_id) {
+		*dest_fs_id = NULL;
+	}
 
  retry:
 	
@@ -2088,9 +2056,11 @@ verify_destination (CommonJob *job,
 
 	file_type = g_file_info_get_file_type (info);
 
-	*dest_fs_id =
-		g_strdup (g_file_info_get_attribute_string (info,
-							    G_FILE_ATTRIBUTE_ID_FS));
+	if (dest_fs_id) {
+		*dest_fs_id =
+			g_strdup (g_file_info_get_attribute_string (info,
+								    G_FILE_ATTRIBUTE_ID_FS));
+	}
 	
 	g_object_unref (info);
 	
@@ -2334,6 +2304,57 @@ get_unique_target_file (GFile *src,
 				count += atoi (end + 1);
 			}
 			new_name = g_strdup_printf ("%s.%d", basename, count);
+			dest = g_file_get_child (dest_dir, new_name);
+			g_free (new_name);
+		}
+		
+		g_free (basename);
+	}
+
+	return dest;
+}
+
+static GFile *
+get_target_file_for_link (GFile *src,
+			  GFile *dest_dir,
+			  int count)
+{
+	const char *editname;
+	char *basename, *new_name;
+	GFileInfo *info;
+	GFile *dest;
+	
+	dest = NULL;
+	info = g_file_query_info (src,
+				  G_FILE_ATTRIBUTE_STD_EDIT_NAME,
+				  0, NULL, NULL);
+	if (info != NULL) {
+		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_EDIT_NAME);
+		
+		if (editname != NULL) {
+			new_name = get_link_name (editname, count);
+			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
+			g_free (new_name);
+		}
+		
+		g_object_unref (info);
+	}
+
+	if (dest == NULL) {
+		basename = g_file_get_basename (src);
+
+		if (g_utf8_validate (basename, -1, NULL)) {
+			new_name = get_link_name (basename, count);
+			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
+			g_free (new_name);
+		} 
+
+		if (dest == NULL) {
+			if (count == 1) {
+				new_name = g_strdup_printf ("%s.lnk", basename);
+			} else {
+				new_name = g_strdup_printf ("%s.lnk%d", basename, count);
+			}
 			dest = g_file_get_child (dest_dir, new_name);
 			g_free (new_name);
 		}
@@ -3541,6 +3562,7 @@ move_files_prepare (CopyMoveJob *job,
 				   point,
 				   copy_files,
 				   copy_positions);
+		report_move_progress (job, total, --left);
 		i++;
 	}
 
@@ -3732,6 +3754,241 @@ nautilus_file_operations_move (GList *files,
 			   job->common.cancellable);
 }
 
+static void
+report_link_progress (CopyMoveJob *link_job, int total, int left)
+{
+	CommonJob *job;
+
+	job = (CommonJob *)link_job;
+	
+	nautilus_progress_info_take_status (job->progress,
+					    f (_("Creating links in to \"%B\""),
+					       link_job->destination));
+
+	nautilus_progress_info_take_details (job->progress,
+					     f (ngettext ("Making links to %d file",
+							  "Making links to %d files",
+							  left), left));
+
+	nautilus_progress_info_set_progress (job->progress, (double)left / total);
+}
+
+
+static void
+link_file (CopyMoveJob *job,
+	   GFile *src, GFile *dest_dir,
+	   GHashTable *debuting_files,
+	   GdkPoint *position)
+{
+	GFile *dest;
+	int count;
+	char *path;
+	gboolean not_local;
+	GError *error;
+	CommonJob *common;
+	char *primary, *secondary, *details;
+	int response;
+
+	common = (CommonJob *)job;
+
+	count = 1;
+
+	dest = get_target_file_for_link (src, dest_dir, count);
+
+ retry:
+	error = NULL;
+	not_local = FALSE;
+	path = g_file_get_path (src);
+	if (path == NULL) {
+		not_local = TRUE;
+	} else if (g_file_make_symbolic_link (dest,
+					      path, 
+					      common->cancellable,
+					      &error)) {
+		g_free (path);
+		if (debuting_files) {
+			g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
+		}
+		
+		nautilus_file_changes_queue_file_added (dest);
+		
+		return;
+	}
+	g_free (path);
+
+	/* Conflict */
+	if (error != NULL && IS_IO_ERROR (error, EXISTS)) {
+		g_object_unref (dest);
+		dest = get_target_file_for_link (src, dest_dir, count++);
+		g_error_free (error);
+		goto retry;
+	}
+
+	else if (error != NULL && IS_IO_ERROR (error, CANCELLED)) {
+		g_error_free (error);
+	}
+	
+	/* Other error */
+	else {
+		if (common->skip_all_error) {
+			goto out;
+		}
+		primary = f (_("Error while creating link to %B."), src);
+		if (not_local) {
+			secondary = f (_("Symbolic links only supported for local files"));
+			details = NULL;
+		} else if (IS_IO_ERROR (error, NOT_SUPPORTED)) {
+			secondary = f (_("The target doesn't support symbolic links."));
+			details = NULL;
+		} else {
+			secondary = f (_("There was an error creating the symlink in %F."), dest_dir);
+			details = error->message;
+		}
+		
+		response = run_warning (common,
+					primary,
+					secondary,
+					details,
+					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+					NULL);
+
+		if (error) {
+			g_error_free (error);
+		}
+		
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (common);
+		} else if (response == 1) { /* skip all */
+			common->skip_all_error = TRUE;
+		} else if (response == 2) { /* skip */
+			/* do nothing */
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+	
+ out:
+	g_object_unref (dest);
+}
+
+static void
+link_job_done (gpointer user_data)
+{
+	CopyMoveJob *job;
+
+	job = user_data;
+	if (job->done_callback) {
+		job->done_callback (job->debuting_files, job->done_callback_data);
+	}
+
+	eel_g_object_list_free (job->files);
+	g_object_unref (job->destination);
+	g_hash_table_unref (job->debuting_files);
+	g_free (job->icon_positions);
+	
+	finalize_common ((CommonJob *)job);
+
+	nautilus_file_changes_consume_changes (TRUE);
+}
+
+static void
+link_job (GIOJob *io_job,
+	  GCancellable *cancellable,
+	  gpointer user_data)
+{
+	CopyMoveJob *job;
+	CommonJob *common;
+	GList *copy_files;
+	GArray *copy_positions;
+	GFile *src;
+	GdkPoint *point;
+	int total, left;
+	int i;
+	GList *l;
+
+	job = user_data;
+	common = &job->common;
+	common->io_job = io_job;
+
+	copy_files = NULL;
+	copy_positions = NULL;
+	
+	nautilus_progress_info_start (job->common.progress);
+	
+	verify_destination (&job->common,
+			    job->destination,
+			    NULL,
+			    -1);
+	if (job_aborted (common)) {
+		goto aborted;
+	}
+
+	total = left = g_list_length (job->files);
+	
+	report_link_progress (job, total, left);
+
+	i = 0;
+	for (l = job->files;
+	     l != NULL && !job_aborted (common);
+	     l = l->next) {
+		src = l->data;
+
+		if (i < job->n_icon_positions) {
+			point = &job->icon_positions[i];
+		} else {
+			point = NULL;
+		}
+
+		
+		link_file (job, src, job->destination,
+			   job->debuting_files,
+			   point);
+		report_link_progress (job, total, --left);
+		i++;
+		
+	}
+
+ aborted:
+	
+	g_io_job_send_to_mainloop (io_job,
+				   link_job_done,
+				   job,
+				   NULL,
+				   FALSE);
+}
+
+void
+nautilus_file_operations_link (GList *files,
+			       GArray *relative_item_points,
+			       GFile *target_dir,
+			       GtkWindow *parent_window,
+			       NautilusCopyCallback  done_callback,
+			       gpointer done_callback_data)
+{
+	CopyMoveJob *job;
+
+	job = op_job_new (CopyMoveJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->files = eel_g_object_list_copy (files);
+	job->destination = g_object_ref (target_dir);
+	if (relative_item_points != NULL &&
+	    relative_item_points->len > 0) {
+		job->icon_positions =
+			g_memdup (relative_item_points->data,
+				  sizeof (GdkPoint) * relative_item_points->len);
+		job->n_icon_positions = relative_item_points->len;
+	}
+	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
+
+	g_schedule_io_job (link_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
+}
+
+
 void
 nautilus_file_operations_duplicate (GList *files,
 				    GArray *relative_item_points,
@@ -3850,8 +4107,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 						       done_callback, done_callback_data);
 		}
 	} else {
-		/* TODO-gio: Implement link */
-		not_supported_yet ();
+		nautilus_file_operations_link (locations,
+					       relative_item_points,
+					       dest,
+					       parent_window,
+					       done_callback, done_callback_data);
 	}
 	
 	eel_g_object_list_free (locations);

@@ -95,25 +95,29 @@ void nautilus_file_operations_unmount_volume (GtkWindow                      *pa
 					      gpointer                        user_data);
 								
 
-void nautilus_file_operations_copy (GList *files,
-				    GArray *relative_item_points,
-				    GFile *target_dir,
-				    GtkWindow *parent_window,
-				    NautilusCopyCallback  done_callback,
-				    gpointer done_callback_data);
-
-void nautilus_file_operations_move (GList *files,
-				    GArray *relative_item_points,
-				    GFile *target_dir,
-				    GtkWindow *parent_window,
-				    NautilusCopyCallback  done_callback,
-				    gpointer done_callback_data);
-
-void nautilus_file_operations_duplicate (GList *files,
-					 GArray *relative_item_points,
-					 GtkWindow *parent_window,
-					 NautilusCopyCallback done_callback,
-					 gpointer done_callback_data);
+void nautilus_file_operations_copy      (GList                *files,
+					 GArray               *relative_item_points,
+					 GFile                *target_dir,
+					 GtkWindow            *parent_window,
+					 NautilusCopyCallback  done_callback,
+					 gpointer              done_callback_data);
+void nautilus_file_operations_move      (GList                *files,
+					 GArray               *relative_item_points,
+					 GFile                *target_dir,
+					 GtkWindow            *parent_window,
+					 NautilusCopyCallback  done_callback,
+					 gpointer              done_callback_data);
+void nautilus_file_operations_duplicate (GList                *files,
+					 GArray               *relative_item_points,
+					 GtkWindow            *parent_window,
+					 NautilusCopyCallback  done_callback,
+					 gpointer              done_callback_data);
+void nautilus_file_operations_link      (GList                *files,
+					 GArray               *relative_item_points,
+					 GFile                *target_dir,
+					 GtkWindow            *parent_window,
+					 NautilusCopyCallback  done_callback,
+					 gpointer              done_callback_data);
 
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

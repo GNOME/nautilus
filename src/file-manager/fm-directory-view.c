@@ -3459,6 +3459,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 					  GArray *relative_item_points)
 {
 	GList *uris;
+	char *dir_uri;
 	CopyMoveDoneData *copy_move_done_data;
 	g_assert (relative_item_points->len == 0
 		  || g_list_length (files) == relative_item_points->len);
@@ -3481,8 +3482,10 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 			    DUPLICATE_VERTICAL_ICON_OFFSET);
 
         copy_move_done_data = pre_copy_move (view);
-	nautilus_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_LINK, 
-		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+	dir_uri = fm_directory_view_get_backing_uri (view);
+	nautilus_file_operations_copy_move (uris, relative_item_points, dir_uri, GDK_ACTION_LINK, 
+					    GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+	g_free (dir_uri);
 	eel_g_list_free_deep (uris);
 }
 
