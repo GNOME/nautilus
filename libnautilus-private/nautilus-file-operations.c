@@ -1708,7 +1708,6 @@ report_count_progress (CommonJob *job,
 {
 	char *s;
 
-	/* TODO: Handle other kinds */
 	switch (source_info->op) {
 	default:
 	case OP_KIND_COPY:
@@ -3373,6 +3372,11 @@ move_file_prepare (CopyMoveJob *move_job,
 		
 		nautilus_file_changes_queue_file_moved (src, dest);
 		nautilus_file_changes_queue_schedule_metadata_move (src, dest);
+		if (position) {
+			nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
+		} else {
+			nautilus_file_changes_queue_schedule_position_remove (dest);
+		}
 		
 		return;
 	}
@@ -3811,6 +3815,11 @@ link_file (CopyMoveJob *job,
 		}
 		
 		nautilus_file_changes_queue_file_added (dest);
+		if (position) {
+			nautilus_file_changes_queue_schedule_position_set (dest, *position, common->screen_num);
+		} else {
+			nautilus_file_changes_queue_schedule_position_remove (dest);
+		}
 		
 		return;
 	}
