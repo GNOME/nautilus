@@ -576,21 +576,13 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_in_trash (NautilusDirectory *directory)
 {
-	char *uri;
-	gboolean res;
-	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	
 	if (directory->details->location == NULL) {
 		return FALSE;
 	}
-	
-	/* TODO-gio: Should have g_file_is_in_trash()? */
-	uri = nautilus_directory_get_uri (directory);
-	res = eel_uri_is_trash (uri);
-	g_free (uri);
-	
-	return res;
+
+	return g_file_has_uri_scheme (directory->details->location, "trash");
 }
 
 gboolean

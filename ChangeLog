@@ -1,5 +1,12 @@
 2007-12-07  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory.c (nautilus_directory_is_in_trash):
+	No need to get the uri to figure out if the
+	directory is in the trash, just use
+	g_file_has_uri_scheme().
+	
+2007-12-07  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-places-sidebar.c:
 	Display errors on mount/unmount failure
 
