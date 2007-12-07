@@ -78,7 +78,7 @@ static gboolean confirm_trash_auto_value;
 
 /* TODO:
  *  Implement missing functions:
- *   new file, new folder, set_permissions recursive
+ *   set_permissions recursive
  * TESTING!!!
  */
 
@@ -136,6 +136,9 @@ typedef struct {
 
 typedef struct {
 	CommonJob common;
+	GList *trash_dirs;
+	NautilusOpCallback done_callback;
+	gpointer done_callback_data;
 } EmptyTrashJob;
 
 typedef enum {
@@ -179,6 +182,10 @@ static void scan_sources (GList *files,
 			  CommonJob *job,
 			  OpKind kind);
 
+
+static void empty_trash_job (GIOJob *io_job,
+			     GCancellable *cancellable,
+			     gpointer user_data);
 
 static char *
 format_time (int seconds)
@@ -1671,8 +1678,10 @@ nautilus_file_operations_delete (GList                  *files,
 
 
 typedef struct {
+	gboolean eject;
 	NautilusUnmountCallback callback;
 	gpointer user_data;
+	GVolume *volume;
 } UnmountData;
 
 static void
@@ -1691,30 +1700,218 @@ unmount_volume_callback (GObject *source_object,
 	}
 
 	if (error) {
+
+		/* TODO: Display dialog */
+		
 		g_error_free (error);
 	}
-	
+	g_object_unref (data->volume);
 	g_free (data);
 }
 
+static void
+do_unmount (UnmountData *data)
+{
+	if (data->eject) {
+		g_volume_eject (data->volume, 
+				NULL,
+				unmount_volume_callback,
+				data);
+	} else {
+		g_volume_unmount (data->volume,
+				  NULL,
+				  unmount_volume_callback,
+				  data);
+	}
+}
+
+static gboolean
+dir_has_files (GFile *dir)
+{
+	GFileEnumerator *enumerator;
+	gboolean res;
+	GFileInfo *file_info;
+
+	res = FALSE;
+	
+	enumerator = g_file_enumerate_children (dir,
+						G_FILE_ATTRIBUTE_STD_NAME,
+						0,
+						NULL, NULL);
+	if (enumerator) {
+		file_info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+		if (file_info != NULL) {
+			res = TRUE;
+			g_object_unref (file_info);
+		}
+		
+		g_file_enumerator_close (enumerator, NULL, NULL);
+	}
+	
+
+	return res;
+}
+
+static GList *
+get_trash_dirs_for_volume (GVolume *volume)
+{
+	GFile *root;
+	GFile *trash;
+	char *relpath;
+	GList *list;
+
+	root = g_volume_get_root (volume);
+	if (root == NULL) {
+		return NULL;
+	}
+
+	list = NULL;
+	
+	if (g_file_is_native (root)) {
+		relpath = g_strdup_printf (".Trash/%d", getuid ());
+		trash = g_file_resolve_relative_path (root, relpath);
+		g_free (relpath);
+
+		list = g_list_prepend (list, g_file_get_child (trash, "files"));
+		list = g_list_prepend (list, g_file_get_child (trash, "info"));
+		
+		g_object_unref (trash);
+		
+		relpath = g_strdup_printf (".Trash-%d", getuid ());
+		trash = g_file_get_child (root, relpath);
+		g_free (relpath);
+
+		list = g_list_prepend (list, g_file_get_child (trash, "files"));
+		list = g_list_prepend (list, g_file_get_child (trash, "info"));
+		
+		g_object_unref (trash);
+	}
+	
+	g_object_unref (root);
+	
+	return list;
+}
+
+static gboolean
+has_trash_files (GVolume *volume)
+{
+	GList *dirs, *l;
+	GFile *dir;
+	gboolean res;
+
+	dirs = get_trash_dirs_for_volume (volume);
+
+	res = FALSE;
+
+	for (l = dirs; l != NULL; l = l->next) {
+		dir = l->data;
+
+		g_print ("dir: %s\n", g_file_get_path (dir));
+
+		
+		if (dir_has_files (dir)) {
+			res = TRUE;
+			break;
+		}
+	}
+
+	eel_g_object_list_free (dirs);
+	
+	return res;
+}
+
+
+static gint
+prompt_empty_trash (GtkWindow *parent_window)
+{
+	gint                    result;
+	GtkWidget               *dialog;
+	GdkScreen               *screen;
+
+	screen = NULL;
+	if (parent_window != NULL) {
+		screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
+	}
+
+	/* Do we need to be modal ? */
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
+					 _("Do you want to empty the trash before you unmount?"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("In order to regain the "
+						    "free space on this volume "
+						    "the trash must be emptied. "
+						    "All trashed items on the volume "
+						    "will be permanently lost. "));
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
+	                        _("Don't Empty Trash"), GTK_RESPONSE_REJECT, 
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+	                        _("Empty Trash"), GTK_RESPONSE_ACCEPT, NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
+	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
+	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
+	if (screen) {
+		gtk_window_set_screen (GTK_WINDOW (dialog), screen);
+	}
+	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
+				"Nautilus");
+	
+	/* Make transient for the window group */
+	gtk_widget_realize (dialog);
+	gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
+				      gdk_screen_get_root_window (screen));
+	
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	return result;
+}
 
 void
 nautilus_file_operations_unmount_volume (GtkWindow                      *parent_window,
 					 GVolume                        *volume,
+					 gboolean                        eject,
 					 NautilusUnmountCallback         callback,
 					 gpointer                        user_data)
 {
-	/* TODO-gio: Empty trash before unmount */
-
 	UnmountData *data;
+	int response;
 
+	g_print ("nautilus_file_operations_unmount_volume\n");
+	
 	data = g_new0 (UnmountData, 1);
+	data->eject = eject;
 	data->callback = callback;
 	data->user_data = user_data;
-	g_volume_unmount (volume,
-			  NULL,
-			  unmount_volume_callback,
-			  data);
+	data->volume = g_object_ref (volume);
+
+	if (has_trash_files (volume)) {
+		response = prompt_empty_trash (parent_window);
+
+		if (response == GTK_RESPONSE_ACCEPT) {
+			EmptyTrashJob *job;
+			
+			job = op_job_new (EmptyTrashJob, parent_window);
+			job->trash_dirs = get_trash_dirs_for_volume (volume);
+			job->done_callback = (NautilusOpCallback)do_unmount;
+			job->done_callback_data = data;
+			g_schedule_io_job (empty_trash_job,
+					   job,
+					   NULL,
+					   0,
+					   NULL);
+			return;
+		} else if (response == GTK_RESPONSE_CANCEL) {
+			if (data->callback) {
+				data->callback (NULL, user_data);
+			}
+			g_object_unref (data->volume);
+			g_free (data);
+			return;
+		}
+	}
+	
+	do_unmount (data);
 }
 
 static void
@@ -4059,7 +4256,7 @@ nautilus_file_set_permissions_recursive (const char                     *directo
 					 guint32         file_mask,
 					 guint32         dir_permissions,
 					 guint32         dir_mask,
-					 NautilusSetPermissionsCallback  callback,
+					 NautilusOpCallback  callback,
 					 gpointer                        callback_data)
 {
 	/* TODO-gio: Implement */
@@ -4492,24 +4689,46 @@ delete_trash_file (CommonJob *job,
 }
 
 static void
+empty_trash_job_done (gpointer user_data)
+{
+	EmptyTrashJob *job;
+
+	job = user_data;
+	
+	eel_g_object_list_free (job->trash_dirs);
+
+	if (job->done_callback) {
+		job->done_callback (job->done_callback_data);
+	}
+	
+	finalize_common ((CommonJob *)job);
+}
+
+static void
 empty_trash_job (GIOJob *io_job,
 		 GCancellable *cancellable,
 		 gpointer user_data)
 {
 	EmptyTrashJob *job = user_data;
 	CommonJob *common;
-	GFile *top;
-
+	GList *l;
+	
 	common = (CommonJob *)job;
 	common->io_job = io_job;
-
+	
 	nautilus_progress_info_start (job->common.progress);
 
-	top = g_file_new_for_uri ("trash:");
+	for (l = job->trash_dirs;
+	     l != NULL && !job_aborted (common);
+	     l = l->next) {
+		delete_trash_file (common, l->data, FALSE);
+	}
 
-	delete_trash_file (common, top, FALSE);
-
-	finalize_common ((CommonJob *)job);
+	g_io_job_send_to_mainloop (io_job,
+				   empty_trash_job_done,
+				   job,
+				   NULL,
+				   FALSE);
 }
 
 void 
@@ -4524,6 +4743,8 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	}
 	
 	job = op_job_new (EmptyTrashJob, parent_window);
+	job->trash_dirs = g_list_prepend (job->trash_dirs,
+					  g_file_new_for_uri ("trash:"));
 	
 	g_schedule_io_job (empty_trash_job,
 			   job,

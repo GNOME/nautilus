@@ -1084,7 +1084,7 @@ fm_tree_view_properties_cb (GtkWidget *menu_item,
 
 static void
 fm_tree_view_unmount_cb (GtkWidget *menu_item,
-			    FMTreeView *view)
+			 FMTreeView *view)
 {
 	NautilusFile *file = view->details->popup_file;
 	GVolume *volume;
@@ -1096,13 +1096,10 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, file);
 	
 	if (volume != NULL) {
-		if (g_volume_can_eject (volume)) {
-			/* TODO-gio: Handle callbacks */
-			g_volume_eject (volume, NULL, NULL, NULL);
-		} else {
-			/* TODO-gio: Handle callbacks */
-			g_volume_unmount (volume, NULL, NULL, NULL);
-		}
+		nautilus_file_operations_unmount_volume (fm_tree_view_get_containing_window (view),
+							 volume,
+							 g_volume_can_eject (volume),
+							 NULL, NULL);
 	}
 }
 

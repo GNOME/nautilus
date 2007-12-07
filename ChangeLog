@@ -1,6 +1,15 @@
 2007-12-07  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.[ch]:
+        * src/nautilus-places-sidebar.c:
+	Implement empty trash on unmount and eject
+	
+        * src/file-manager/fm-tree-view.c:
+	Use the file op version of unmount
+
+2007-12-07  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
 	Implement the rest of the file create ops
 	
         * src/file-manager/fm-directory-view.c:

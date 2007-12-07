@@ -1347,7 +1347,7 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
 
 		nautilus_file_operations_unmount_volume (GTK_WINDOW (toplevel),
-							 volume, NULL, sidebar);
+							 volume, FALSE, NULL, sidebar);
 	}
 	if (volume != NULL) {
 		g_object_unref (volume);
