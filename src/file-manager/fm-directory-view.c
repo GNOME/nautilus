@@ -5704,7 +5704,7 @@ action_mount_volume_callback (GtkAction *action,
 		
 		if (nautilus_file_can_mount (file)) {
 			mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
-			nautilus_file_mount (file, mount_op,
+			nautilus_file_mount (file, mount_op, NULL,
 					     NULL, NULL);
 			g_object_unref (mount_op);
 		}
@@ -5794,7 +5794,7 @@ action_self_mount_volume_callback (GtkAction *action,
 	}
 
 	mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
-	nautilus_file_mount (file, mount_op, NULL, NULL);
+	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
 	g_object_unref (mount_op);
 }
 

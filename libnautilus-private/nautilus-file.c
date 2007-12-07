@@ -856,6 +856,7 @@ nautilus_file_can_eject (NautilusFile *file)
 void
 nautilus_file_mount (NautilusFile                   *file,
 		     GMountOperation                *mount_op,
+		     GCancellable                   *cancellable,
 		     NautilusFileOperationCallback   callback,
 		     gpointer                        callback_data)
 {
@@ -870,7 +871,7 @@ nautilus_file_mount (NautilusFile                   *file,
 			g_error_free (error);
 		}
 	} else {
-		NAUTILUS_FILE_GET_CLASS (file)->mount (file, mount_op, callback, callback_data);
+		NAUTILUS_FILE_GET_CLASS (file)->mount (file, mount_op, cancellable, callback, callback_data);
 	}
 }
 

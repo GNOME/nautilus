@@ -250,6 +250,7 @@ vfs_file_mount_callback (GObject *source_object,
 static void
 vfs_file_mount (NautilusFile                   *file,
 		GMountOperation                *mount_op,
+		GCancellable                   *cancellable,
 		NautilusFileOperationCallback   callback,
 		gpointer                        callback_data)
 {
@@ -269,6 +270,10 @@ vfs_file_mount (NautilusFile                   *file,
 	}
 
 	op = nautilus_file_operation_new (file, callback, callback_data);
+	if (cancellable) {
+		g_object_unref (op->cancellable);
+		op->cancellable = g_object_ref (cancellable);
+	}
 
 	location = nautilus_file_get_location (file);
 	g_file_mount_mountable (location,

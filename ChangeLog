@@ -1,5 +1,15 @@
 2007-12-07  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * src/file-manager/fm-directory-view.c:
+	Add optional cancellable arg to nautilus_file_mount
+	
+        * libnautilus-private/nautilus-mime-actions.c:
+	Implement cancellation of file activation
+
+2007-12-07  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
         Implement nautilus_file_set_permissions_recursive
 

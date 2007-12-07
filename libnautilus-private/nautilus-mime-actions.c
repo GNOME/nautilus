@@ -68,6 +68,7 @@ typedef struct {
 	NautilusWindowOpenMode mode;
 	NautilusWindowOpenFlags flags;
 	char *timed_wait_prompt;
+	gboolean timed_wait_active;
 	NautilusFileListHandle *files_handle;
 	gboolean tried_mounting;
 	char *activation_directory;
@@ -851,9 +852,7 @@ file_was_cancelled (NautilusFile *file)
 		error != NULL &&
 		error->domain == G_IO_ERROR &&
 		error->code == G_IO_ERROR_CANCELLED;
-	
 }
-
 
 static gboolean
 file_was_not_mounted (NautilusFile *file)
@@ -870,6 +869,10 @@ file_was_not_mounted (NautilusFile *file)
 static void
 activation_parameters_free (ActivateParameters *parameters)
 {
+	if (parameters->timed_wait_active) {
+		eel_timed_wait_stop (cancel_activate_callback, parameters);
+	}
+	
 	if (parameters->window_info) {
 		g_object_remove_weak_pointer (G_OBJECT (parameters->window_info), (gpointer *)&parameters->window_info);
 	}
@@ -889,12 +892,22 @@ activation_parameters_free (ActivateParameters *parameters)
 static void
 cancel_activate_callback (gpointer callback_data)
 {
-	/* TODO-gio */
+	ActivateParameters *parameters = callback_data;
+
+	parameters->timed_wait_active = FALSE;
+	
+	g_cancellable_cancel (parameters->cancellable);
+
+	if (parameters->files_handle) {
+		nautilus_file_list_cancel_call_when_ready (parameters->files_handle);
+		activation_parameters_free (parameters);
+	}
 }
 
 static void
 activation_start_timed_cancel (ActivateParameters *parameters)
 {
+	parameters->timed_wait_active = TRUE;
 	eel_timed_wait_start_with_duration
 		(DELAY_UNTIL_CANCEL_MSECS,
 		 cancel_activate_callback,
@@ -909,9 +922,14 @@ activate_mount_op_active (EelMountOperation *operation,
 			  ActivateParameters *parameters)
 {
 	if (is_active) {
-		eel_timed_wait_stop (cancel_activate_callback, parameters);
+		if (parameters->timed_wait_active) {
+			eel_timed_wait_stop (cancel_activate_callback, parameters);
+			parameters->timed_wait_active = FALSE;
+		}
 	} else {
-		activation_start_timed_cancel (parameters);
+		if (!parameters->timed_wait_active) {
+			activation_start_timed_cancel (parameters);
+		}
 	}
 }
 
@@ -1190,7 +1208,6 @@ activate_files (ActivateParameters *parameters)
 	g_list_free (open_in_app_parameters);
 	g_list_free (unhandled_open_in_app_files);
 	
-	eel_timed_wait_stop (cancel_activate_callback, parameters);
 	activation_parameters_free (parameters);
 }
 
@@ -1326,7 +1343,6 @@ activate_activation_uris_ready_callback (GList *files_ignore,
 	}
 
 	if (parameters->files == NULL) {
-		eel_timed_wait_stop (cancel_activate_callback, parameters);
 		activation_parameters_free (parameters);
 		return;
 	}
@@ -1388,7 +1404,6 @@ activation_get_activation_uris (ActivateParameters *parameters)
 	}
 
 	if (parameters->files == NULL) {
-		eel_timed_wait_stop (cancel_activate_callback, parameters);
 		activation_parameters_free (parameters);
 		return;
 	}
@@ -1439,6 +1454,11 @@ activation_mountable_mounted (NautilusFile  *file,
 			eel_show_error_dialog (_("Unable to mount location"),
 					       error->message, NULL);
 		}
+
+		if (error->code == G_IO_ERROR_CANCELLED) {
+			activation_parameters_free (parameters);
+			return;
+		}
 	}
 
 	/* Mount more mountables */
@@ -1458,6 +1478,7 @@ activation_mount_mountables (ActivateParameters *parameters)
 		g_signal_connect (mount_op, "active_changed", (GCallback)activate_mount_op_active, parameters);
 		nautilus_file_mount (file,
 				     mount_op,
+				     parameters->cancellable,
 				     activation_mountable_mounted,
 				     parameters);
 		g_object_unref (mount_op);

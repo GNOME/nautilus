@@ -250,6 +250,7 @@ gboolean                nautilus_file_can_eject                         (Nautilu
 
 void                    nautilus_file_mount                             (NautilusFile                   *file,
 									 GMountOperation                *mount_op,
+									 GCancellable                   *cancellable,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
 void                    nautilus_file_unmount                           (NautilusFile                   *file,
@@ -476,6 +477,7 @@ typedef struct {
 
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,
+							  GCancellable                   *cancellable,
 							  NautilusFileOperationCallback   callback,
 							  gpointer                        callback_data);
 	void                 (* unmount)                 (NautilusFile                   *file,
