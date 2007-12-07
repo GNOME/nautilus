@@ -76,11 +76,7 @@
 
 static gboolean confirm_trash_auto_value;
 
-/* TODO:
- *  Implement missing functions:
- *   set_permissions recursive
- * TESTING!!!
- */
+/* TODO: TESTING!!! */
 
 typedef struct {
 	GIOJob *io_job;	
@@ -140,6 +136,17 @@ typedef struct {
 	NautilusOpCallback done_callback;
 	gpointer done_callback_data;
 } EmptyTrashJob;
+
+typedef struct {
+	CommonJob common;
+	GFile *file;
+	NautilusOpCallback done_callback;
+	gpointer done_callback_data;
+	guint32 file_permissions;
+	guint32 file_mask;
+	guint32 dir_permissions;
+	guint32 dir_mask;
+} SetPermissionsJob;
 
 typedef enum {
 	OP_KIND_COPY,
@@ -710,8 +717,10 @@ init_common (gsize job_size,
 	GdkScreen *screen;
 
 	common = g_malloc0 (job_size);
-	
-	common->parent_window = g_object_ref (parent_window);
+
+	if (parent_window) {
+		common->parent_window = g_object_ref (parent_window);
+	}
 	common->progress = nautilus_progress_info_new ();
 	common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
 	common->time = g_timer_new ();
@@ -4259,24 +4268,152 @@ nautilus_file_operations_duplicate (GList *files,
 }
 
 static void
-not_supported_yet (void)
+set_permissions_job_done (gpointer user_data)
 {
-	eel_show_warning_dialog ("This operation isn't supported with the gio-based nautilus",
-				 "This is work in progress. Please be patient",
-				 NULL);
+	SetPermissionsJob *job;
+
+	job = user_data;
+	
+	g_object_unref (job->file);
+
+	if (job->done_callback) {
+		job->done_callback (job->done_callback_data);
+	}
+	
+	finalize_common ((CommonJob *)job);
 }
 
+static void
+set_permissions_file (SetPermissionsJob *job,
+		      GFile *file,
+		      GFileInfo *info)
+{
+	CommonJob *common;
+	GFileInfo *child_info;
+	gboolean free_info;
+	guint32 current;
+	guint32 value;
+	guint32 mask;
+	GFileEnumerator *enumerator;
+	GFile *child;
+	
+	common = (CommonJob *)job;
+
+	nautilus_progress_info_pulse_progress (common->progress);
+	
+	free_info = FALSE;
+	if (info == NULL) {
+		free_info = TRUE;
+		info = g_file_query_info (file,
+					  G_FILE_ATTRIBUTE_STD_TYPE","
+					  G_FILE_ATTRIBUTE_UNIX_MODE,
+					  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+					  common->cancellable,
+					  NULL);
+		/* Ignore errors */
+		if (info == NULL) {
+			return;
+		}
+	}
+
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		value = job->dir_permissions;
+		mask = job->dir_mask;
+	} else {
+		value = job->file_permissions;
+		mask = job->file_mask;
+	}
+
+	
+	if (!job_aborted (common) &&
+	    g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE)) {
+		current = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
+		current = (current & ~mask) | value;
+
+		g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_MODE,
+					     current, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+					     common->cancellable, NULL);
+	}
+	
+	if (!job_aborted (common) &&
+	    g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		enumerator = g_file_enumerate_children (file,
+							G_FILE_ATTRIBUTE_STD_NAME","
+							G_FILE_ATTRIBUTE_STD_TYPE","
+							G_FILE_ATTRIBUTE_UNIX_MODE,
+							G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+							common->cancellable,
+							NULL);
+		if (enumerator) {
+			while (!job_aborted (common) &&
+			       (child_info = g_file_enumerator_next_file (enumerator, common->cancellable, NULL)) != NULL) {
+				child = g_file_get_child (file,
+							  g_file_info_get_name (child_info));
+				set_permissions_file (job, child, child_info);
+				g_object_unref (child);
+				g_object_unref (child_info);
+			}
+			g_file_enumerator_close (enumerator, common->cancellable, NULL);
+		} 
+	}
+	if (free_info) {
+		g_object_unref (info);
+	}
+}
+
+
+static void
+set_permissions_job (GIOJob *io_job,
+		     GCancellable *cancellable,
+		     gpointer user_data)
+{
+	SetPermissionsJob *job = user_data;
+	CommonJob *common;
+	
+	common = (CommonJob *)job;
+	common->io_job = io_job;
+	
+	nautilus_progress_info_set_status (common->progress,
+					   _("Setting permissions"));
+
+	nautilus_progress_info_start (job->common.progress);
+
+	set_permissions_file (job, job->file, NULL);
+
+	g_io_job_send_to_mainloop (io_job,
+				   set_permissions_job_done,
+				   job,
+				   NULL,
+				   FALSE);
+}
+
+
+
 void
-nautilus_file_set_permissions_recursive (const char                     *directory,
+nautilus_file_set_permissions_recursive (const char *directory,
 					 guint32         file_permissions,
 					 guint32         file_mask,
 					 guint32         dir_permissions,
 					 guint32         dir_mask,
 					 NautilusOpCallback  callback,
-					 gpointer                        callback_data)
+					 gpointer  callback_data)
 {
-	/* TODO-gio: Implement */
-	not_supported_yet ();
+	SetPermissionsJob *job;
+	
+	job = op_job_new (SetPermissionsJob, NULL);
+	job->file = g_file_new_for_uri (directory);
+	job->file_permissions = file_permissions;
+	job->file_mask = file_mask;
+	job->dir_permissions = dir_permissions;
+	job->dir_mask = dir_mask;
+	job->done_callback = callback;
+	job->done_callback_data = callback_data;
+	
+	g_schedule_io_job (set_permissions_job,
+			   job,
+			   NULL,
+			   0,
+			   NULL);
 }
 
 static GList *
