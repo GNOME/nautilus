@@ -1156,6 +1156,31 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 }
 
 static void
+drive_mount_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_drive_mount_finish (G_DRIVE (source_object),
+				   res, &error)) {
+		name = g_drive_get_name (G_DRIVE (source_object));
+		primary = g_strdup_printf (_("Unable to mount %s"), name);
+		g_free (name);
+		eel_show_error_dialog (primary,
+				       error->message,
+				       NULL);
+		g_free (primary);
+		g_error_free (error);
+	}
+}
+
+
+
+static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
 			GtkTreePath	      *path,
@@ -1201,8 +1226,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GDrive *drive;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_DRIVE, &drive, -1);
 		if (drive != NULL) {
-			/* TODO-gio: Handle callbacks etc */
-			g_drive_mount (drive, NULL, NULL, NULL, sidebar);
+			g_drive_mount (drive, NULL, NULL, drive_mount_cb, NULL);
 			g_object_unref (drive);
 		}
 	}
@@ -1317,8 +1341,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (drive != NULL) {
-		/* TODO-gio: Handle callbacks etc */
-		g_drive_mount (drive, NULL, NULL, NULL, sidebar);
+		g_drive_mount (drive, NULL, NULL, drive_mount_cb, NULL);
 		g_object_unref (drive);
 	}
 }
@@ -1356,6 +1379,29 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 }
 
 static void
+drive_eject_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_drive_eject_finish (G_DRIVE (source_object),
+				   res, &error)) {
+		name = g_drive_get_name (G_DRIVE (source_object));
+		primary = g_strdup_printf (_("Unable to eject %s"), name);
+		g_free (name);
+		eel_show_error_dialog (primary,
+				       error->message,
+				       NULL);
+		g_free (primary);
+		g_error_free (error);
+	}
+}
+
+static void
 eject_shortcut_cb (GtkMenuItem           *item,
 		   NautilusPlacesSidebar *sidebar)
 {
@@ -1380,8 +1426,7 @@ eject_shortcut_cb (GtkMenuItem           *item,
 							 volume,
 							 TRUE);
 	} else if (drive != NULL) {
-		/* TODO-gio: Handle callbacks etc */
-		g_drive_eject (drive, NULL, NULL, sidebar);
+		g_drive_eject (drive, NULL, drive_eject_cb, NULL);
 	}
 	g_object_unref (volume);
 	g_object_unref (drive);
