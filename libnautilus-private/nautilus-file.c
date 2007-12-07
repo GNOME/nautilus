@@ -2675,20 +2675,10 @@ nautilus_file_is_home (NautilusFile *file)
 gboolean
 nautilus_file_is_in_desktop (NautilusFile *file)
 {
-	char *path;
-	gboolean res;
-
-	/* This handles visiting other people's desktops, but it can arguably
-	 * be said that this might break and that we should lookup the passwd table.
-	 */
-	/* TODO: This is totally broken with translated desktop dirs, and the dup is slow */
-	path = g_file_get_path (file->details->directory->details->location);
-	res = FALSE;
-	if (path) {
-		res = (strstr (path, "/Desktop") != NULL);
+	if (file->details->directory->details->location) {
+		return nautilus_is_desktop_directory (file->details->directory->details->location);
 	}
-	g_free (path);
-	return res;
+	return FALSE;
 	
 }
 

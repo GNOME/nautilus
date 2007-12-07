@@ -1,5 +1,10 @@
 2007-12-07  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (nautilus_file_is_in_desktop):
+	Use new gio apis to avoid getting uri.
+
+2007-12-07  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory.c (nautilus_directory_is_in_trash):
 	No need to get the uri to figure out if the
 	directory is in the trash, just use
