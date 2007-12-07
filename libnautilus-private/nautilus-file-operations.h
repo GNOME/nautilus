@@ -59,6 +59,7 @@ void nautilus_file_operations_new_folder  (GtkWidget                 *parent_vie
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
 					   GdkPoint                  *target_point,
 					   const char                *parent_dir,
+					   const char                *target_filename,
 					   const char                *initial_contents,
 					   NautilusCreateCallback     done_callback,
 					   gpointer                   data);

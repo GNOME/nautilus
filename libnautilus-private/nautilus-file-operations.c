@@ -4186,6 +4186,8 @@ create_job (GIOJob *io_job,
 	gboolean filename_is_utf8;
 	char *primary, *secondary, *details;
 	int response;
+	char *data;
+	GFileOutputStream *out;
 
 	job = user_data;
 	common = &job->common;
@@ -4242,8 +4244,38 @@ create_job (GIOJob *io_job,
 					     &error);
 	} else {
 		if (job->src) {
+			res = g_file_copy (job->src,
+					   dest,
+					   G_FILE_COPY_FLAGS_NONE,
+					   common->cancellable,
+					   NULL, NULL,
+					   &error);
 		} else {
+			data = "";
 			if (job->src_data) {
+				data = job->src_data;
+			}
+
+			out = g_file_create (dest,
+					     G_FILE_CREATE_FLAGS_NONE,
+					     common->cancellable,
+					     &error);
+			if (out) {
+				res = g_output_stream_write_all (G_OUTPUT_STREAM (out),
+								 data, strlen (data),
+								 NULL,
+								 common->cancellable,
+								 &error);
+				if (res) {
+					res = g_output_stream_close (G_OUTPUT_STREAM (out),
+								     common->cancellable,
+								     &error);
+				}
+
+				/* This will close if the write failed and we didn't close */
+				g_object_unref (out);
+			} else {
+				res = FALSE;
 			}
 		}
 	}
@@ -4358,20 +4390,68 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 						 NautilusCreateCallback done_callback,
 						 gpointer done_callback_data)
 {
-	/* TODO-gio: Implement */
-	not_supported_yet ();
+	CreateJob *job;
+	GtkWindow *parent_window;
+
+	parent_window = NULL;
+	if (parent_view) {
+		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
+	}
+
+	job = op_job_new (CreateJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->dest_dir = g_file_new_for_uri (parent_dir);
+	if (target_point != NULL) {
+		job->position = *target_point;
+		job->has_position = TRUE;
+	}
+	job->filename = g_strdup (target_filename);
+
+	if (template_uri) {
+		job->src = g_file_new_for_uri (template_uri);
+	}
+
+	g_schedule_io_job (create_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
 }
 
 void 
 nautilus_file_operations_new_file (GtkWidget *parent_view, 
 				   GdkPoint *target_point,
 				   const char *parent_dir,
+				   const char *target_filename,
 				   const char *initial_contents,
 				   NautilusCreateCallback done_callback,
 				   gpointer done_callback_data)
 {
-	/* TODO-gio: Implement */
-	not_supported_yet ();
+	CreateJob *job;
+	GtkWindow *parent_window;
+
+	parent_window = NULL;
+	if (parent_view) {
+		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
+	}
+
+	job = op_job_new (CreateJob, parent_window);
+	job->done_callback = done_callback;
+	job->done_callback_data = done_callback_data;
+	job->dest_dir = g_file_new_for_uri (parent_dir);
+	if (target_point != NULL) {
+		job->position = *target_point;
+		job->has_position = TRUE;
+	}
+	job->src_data = g_strdup (initial_contents);
+	job->filename = g_strdup (target_filename);
+
+	g_schedule_io_job (create_job,
+			   job,
+			   NULL, /* destroy notify */
+			   0,
+			   job->common.cancellable);
 }
 
 

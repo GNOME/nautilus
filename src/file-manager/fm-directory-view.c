@@ -3733,6 +3733,8 @@ new_folder_done (GFile *new_folder, gpointer user_data)
 	GdkScreen *screen;
 	NewFolderData *data;
 
+	g_print ("new folder: %s\n", g_file_get_uri (new_folder));
+	
 	data = (NewFolderData *)user_data;
 
 	directory_view = data->directory_view;
@@ -3872,6 +3874,7 @@ setup_new_folder_data (FMDirectoryView *directory_view)
 static void
 fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_view,
 						  const char *parent_uri,
+						  const char *filename,
 						  const char *initial_contents)
 {
 	GdkPoint *pos;
@@ -3884,7 +3887,7 @@ fm_directory_view_new_file_with_initial_contents (FMDirectoryView *directory_vie
 	pos = context_menu_to_file_operation_position (directory_view);
 
 	nautilus_file_operations_new_file (GTK_WIDGET (directory_view),
-					   pos, parent_uri,
+					   pos, parent_uri, filename,
 					   initial_contents,
 					   new_folder_done, data);
 }
@@ -3908,6 +3911,7 @@ fm_directory_view_new_file (FMDirectoryView *directory_view,
 	if (source == NULL) {
 		fm_directory_view_new_file_with_initial_contents (directory_view,
 								  parent_uri != NULL ? parent_uri : container_uri,
+								  NULL,
 								  NULL);
 		g_free (container_uri);
 		return;
@@ -8500,7 +8504,10 @@ fm_directory_view_handle_text_drop (FMDirectoryView  *view,
 	}
 
 	fm_directory_view_new_file_with_initial_contents (
-		view, target_uri != NULL ? target_uri : container_uri, text);
+		view, target_uri != NULL ? target_uri : container_uri,
+		/* Translator: This is the filename used for when you dnd text to a directory */
+		_("dropped text.txt"),
+		text);
 
 	g_free (container_uri);
 }
