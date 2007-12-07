@@ -662,11 +662,28 @@ custom_time_skip (va_list *va)
 	va_arg (*va, int);
 }
 
+static char *
+custom_volume_to_string (char *format, va_list va)
+{
+	GVolume *volume;
+
+	volume = va_arg (va, GVolume *);
+	return g_volume_get_name (volume);
+}
+
+static void
+custom_volume_skip (va_list *va)
+{
+	va_arg (*va, GVolume *);
+}
+
+
 static EelPrintfHandler handlers[] = {
 	{ 'F', custom_full_name_to_string, custom_full_name_skip },
 	{ 'B', custom_basename_to_string, custom_basename_skip },
 	{ 'S', custom_size_to_string, custom_size_skip },
 	{ 'T', custom_time_to_string, custom_time_skip },
+	{ 'V', custom_volume_to_string, custom_volume_skip },
 	{ 0 }
 };
 
@@ -1679,9 +1696,8 @@ nautilus_file_operations_delete (GList                  *files,
 
 typedef struct {
 	gboolean eject;
-	NautilusUnmountCallback callback;
-	gpointer user_data;
 	GVolume *volume;
+	GtkWindow *parent_window;
 } UnmountData;
 
 static void
@@ -1691,19 +1707,25 @@ unmount_volume_callback (GObject *source_object,
 {
 	UnmountData *data = user_data;
 	GError *error;
+	char *primary;
 
 	error = NULL;
-	g_volume_unmount_finish (G_VOLUME (source_object),
-				 res, &error);
-	if (data->callback) {
-		data->callback (error, data->user_data);
-	}
-
-	if (error) {
-
-		/* TODO: Display dialog */
-		
+	if (!g_volume_unmount_finish (G_VOLUME (source_object),
+				      res, &error)) {
+		if (data->eject) {
+			primary = f (_("Unable to eject %V"), source_object);
+		} else {
+			primary = f (_("Unable to unmount %V"), source_object);
+		}
+		eel_show_error_dialog (primary,
+				       error->message,
+				       data->parent_window);
+		g_free (primary);
 		g_error_free (error);
+	}
+	
+	if (data->parent_window) {
+		g_object_unref (data->parent_window);
 	}
 	g_object_unref (data->volume);
 	g_free (data);
@@ -1806,9 +1828,6 @@ has_trash_files (GVolume *volume)
 	for (l = dirs; l != NULL; l = l->next) {
 		dir = l->data;
 
-		g_print ("dir: %s\n", g_file_get_path (dir));
-
-		
 		if (dir_has_files (dir)) {
 			res = TRUE;
 			break;
@@ -1870,19 +1889,16 @@ prompt_empty_trash (GtkWindow *parent_window)
 void
 nautilus_file_operations_unmount_volume (GtkWindow                      *parent_window,
 					 GVolume                        *volume,
-					 gboolean                        eject,
-					 NautilusUnmountCallback         callback,
-					 gpointer                        user_data)
+					 gboolean                        eject)
 {
 	UnmountData *data;
 	int response;
 
-	g_print ("nautilus_file_operations_unmount_volume\n");
-	
 	data = g_new0 (UnmountData, 1);
+	if (parent_window) {
+		data->parent_window = g_object_ref (parent_window);
+	}
 	data->eject = eject;
-	data->callback = callback;
-	data->user_data = user_data;
 	data->volume = g_object_ref (volume);
 
 	if (has_trash_files (volume)) {
@@ -1902,8 +1918,8 @@ nautilus_file_operations_unmount_volume (GtkWindow                      *parent_
 					   NULL);
 			return;
 		} else if (response == GTK_RESPONSE_CANCEL) {
-			if (data->callback) {
-				data->callback (NULL, user_data);
+			if (data->parent_window) {
+				g_object_unref (data->parent_window);
 			}
 			g_object_unref (data->volume);
 			g_free (data);

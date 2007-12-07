@@ -1343,11 +1343,9 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 	if (volume != NULL) {
 		GtkWidget *toplevel;
 		
-		/* TODO-gio: Handle callbacks etc */
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
-
 		nautilus_file_operations_unmount_volume (GTK_WINDOW (toplevel),
-							 volume, FALSE, NULL, sidebar);
+							 volume, FALSE);
 	}
 	if (volume != NULL) {
 		g_object_unref (volume);
@@ -1375,8 +1373,12 @@ eject_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		/* TODO-gio: Handle callbacks etc */
-		g_volume_eject (volume, NULL, NULL, sidebar);
+		GtkWidget *toplevel;
+		
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
+		nautilus_file_operations_unmount_volume (GTK_WINDOW (toplevel),
+							 volume,
+							 TRUE);
 	} else if (drive != NULL) {
 		/* TODO-gio: Handle callbacks etc */
 		g_drive_eject (drive, NULL, NULL, sidebar);

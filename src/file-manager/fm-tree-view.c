@@ -745,7 +745,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		
 		volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (volume) {
-			show_unmount = TRUE;
+			show_unmount = g_volume_can_unmount (volume) || g_volume_can_eject (volume);
 			unmount_is_eject = g_volume_can_eject (volume);
 		} 
 		
@@ -1098,8 +1098,7 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	if (volume != NULL) {
 		nautilus_file_operations_unmount_volume (fm_tree_view_get_containing_window (view),
 							 volume,
-							 g_volume_can_eject (volume),
-							 NULL, NULL);
+							 g_volume_can_eject (volume));
 	}
 }
 

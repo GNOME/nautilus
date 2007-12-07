@@ -38,8 +38,6 @@ typedef void (* NautilusCreateCallback)    (GFile      *new_file,
 typedef void (* NautilusOpCallback)        (gpointer    callback_data);
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
 					    gpointer    callback_data);
-typedef void (* NautilusUnmountCallback)   (GError     *error,
-					    gpointer    callback_data);
 
 /* FIXME: int copy_action should be an enum */
 
@@ -90,9 +88,7 @@ void nautilus_file_set_permissions_recursive (const char                     *di
 
 void nautilus_file_operations_unmount_volume (GtkWindow                      *parent_window,
 					      GVolume                        *volume,
-					      gboolean                        eject,
-					      NautilusUnmountCallback         callback,
-					      gpointer                        user_data);
+					      gboolean                        eject);
 								
 
 void nautilus_file_operations_copy      (GList                *files,
