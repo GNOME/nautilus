@@ -24,11 +24,10 @@
 
 #include <gio/gfile.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libnautilus-private/nautilus-directory-metafile-monitor.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-queue.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-metafile-server.h>
+#include <libnautilus-private/nautilus-metafile.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-idle-queue.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
@@ -71,8 +70,8 @@ struct NautilusDirectoryDetails
 	gulong 		 mime_db_monitor;
 
 	NautilusIdleQueue *idle_queue;
-	NautilusMetafileMonitor *metafile_monitor;
-	Nautilus_Metafile metafile_corba_object;
+	gboolean metafile_monitored;
+	NautilusMetafile *metafile;
 
 	gboolean in_async_service_loop;
 	gboolean state_changed;

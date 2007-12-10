@@ -35,20 +35,12 @@ libnautilus_private_la_LIBADD =		\
 	$(CORE_LIBS)			\
 	$(NULL)
 
-nautilus_metafile_server_idl_sources = \
-	nautilus-metafile-server-stubs.c \
-	nautilus-metafile-server-skels.c \
-	nautilus-metafile-server.h \
-	nautilus-metafile-server-common.c \
-	$(NULL)
-
 marshal_sources = \
 	nautilus-marshal.h \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
-	$(nautilus_metafile_server_idl_sources)	\
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
 	nautilus-cell-renderer-pixbuf-emblem.c \
@@ -82,8 +74,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-background.h \
-	nautilus-directory-metafile-monitor.c \
-	nautilus-directory-metafile-monitor.h \
 	nautilus-directory-metafile.c \
 	nautilus-directory-metafile.h \
 	nautilus-directory-notify.h \
@@ -140,8 +130,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-merged-directory.c \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
-	nautilus-metafile-factory.c \
-	nautilus-metafile-factory.h \
 	nautilus-metafile.c \
 	nautilus-metafile.h \
 	nautilus-mime-actions.c \
@@ -227,17 +215,12 @@ endif
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
-$(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
-nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
-	$(ORBIT_IDL) -I$(top_srcdir) $(CORE_IDL_INCLUDES) $<
-	touch $@
-
 nautilus-marshal.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
 nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@
 
-$(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp $(marshal_sources)
+$(libnautilus_private_la_OBJECTS): $(marshal_sources)
 
 
 schema_in_files =  apps_nautilus_preferences.schemas.in
@@ -257,7 +240,6 @@ install-data-local:
 endif
 
 EXTRA_DIST = 				\
-	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
 	$(schema_in_files)              \
 	$(BEAGLE_SOURCES)		\
@@ -265,8 +247,6 @@ EXTRA_DIST = 				\
 	$(NULL)
 
 CLEANFILES = \
-	$(nautilus_metafile_server_idl_sources)		\
-	nautilus_metafile_server_idl_stamp		\
 	$(marshal_sources)				\
 	$(schema_DATA)			                \
 	$(NULL)

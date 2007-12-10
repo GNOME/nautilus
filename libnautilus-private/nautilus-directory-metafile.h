@@ -79,5 +79,3 @@ void	 nautilus_directory_rename_directory_metadata      (NautilusDirectory *dire
 
 void nautilus_directory_register_metadata_monitor   (NautilusDirectory *directory);
 void nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory);
-
-void	 nautilus_directory_use_self_contained_metafile_factory (void);

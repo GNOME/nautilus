@@ -23,9 +23,8 @@
 #ifndef NAUTILUS_METAFILE_H
 #define NAUTILUS_METAFILE_H
 
-#include <bonobo/bonobo-object.h>
+#include <glib-object.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-metafile-server.h>
 #include <libxml/tree.h>
 
 #define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
@@ -34,20 +33,50 @@
 #define NAUTILUS_IS_METAFILE(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_METAFILE))
 #define NAUTILUS_IS_METAFILE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_METAFILE))
 
-typedef struct NautilusMetafileDetails NautilusMetafileDetails;
+typedef struct _NautilusMetafile NautilusMetafile;
 
 typedef struct {
-	BonoboObject parent_slot;
-	NautilusMetafileDetails *details;
-} NautilusMetafile;
+	GObjectClass parent_slot;
 
-typedef struct {
-	BonoboObjectClass parent_slot;
-	POA_Nautilus_Metafile__epv epv;
+	void *(*changed) (NautilusMetafile *metafile,
+			  GList *files);
+	void *(*ready)   (NautilusMetafile *metafile);
 } NautilusMetafileClass;
 
 GType   nautilus_metafile_get_type (void);
 
-NautilusMetafile *nautilus_metafile_get (const char *directory_uri);
+NautilusMetafile *nautilus_metafile_get_for_uri (const char *directory_uri);
+
+gboolean nautilus_metafile_is_read            (NautilusMetafile               *metafile);
+char *   nautilus_metafile_get                (NautilusMetafile               *metafile,
+					       const char                     *file_name,
+					       const char                     *key,
+					       const char                     *default_value);
+GList *  nautilus_metafile_get_list           (NautilusMetafile               *metafile,
+					       const char                     *file_name,
+					       const char                     *list_key,
+					       const char                     *list_subkey);
+void     nautilus_metafile_set                (NautilusMetafile               *metafile,
+					       const char                     *file_name,
+					       const char                     *key,
+					       const char                     *default_value,
+					       const char                     *metadata);
+void     nautilus_metafile_set_list           (NautilusMetafile               *metafile,
+					       const char                     *file_name,
+					       const char                     *list_key,
+					       const char                     *list_subkey,
+					       GList                          *list);
+void     nautilus_metafile_copy               (NautilusMetafile               *metafile,
+					       const char                     *source_file_name,
+					       const char                     *destination_directory_uri,
+					       const char                     *destination_file_name);
+void     nautilus_metafile_remove             (NautilusMetafile               *metafile,
+					       const char                     *file_name);
+void     nautilus_metafile_rename             (NautilusMetafile               *metafile,
+					       const char                     *old_file_name,
+					       const char                     *new_file_name);
+void     nautilus_metafile_rename_directory   (NautilusMetafile               *metafile,
+					       const char                     *new_directory_uri);
+void     nautilus_metafile_load               (NautilusMetafile               *metafile);
 
 #endif /* NAUTILUS_METAFILE_H */

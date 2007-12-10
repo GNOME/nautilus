@@ -526,8 +526,6 @@ main (int argc, char *argv[])
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		/* Run the checks (each twice) for nautilus and libnautilus-private. */
 
-		nautilus_directory_use_self_contained_metafile_factory ();
-
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
 		eel_exit_if_self_checks_failed ();

@@ -1,3 +1,20 @@
+2007-12-10  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-metafile.[ch]:
+        * libnautilus-private/nautilus-metafile.[ch]:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.c:
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/nautilus-directory-metafile-monitor.[ch]: Removed.
+        * libnautilus-private/nautilus-metafile-factory.[ch]: Removed.
+        * libnautilus-private/nautilus-metafile-server.idl: Removed.
+        * src/nautilus-application.c:
+        * src/nautilus-main.c:
+        * src/nautilus-spatial-window.c:
+	Remove the bonobo layer for metadata, as we're always in-process anyway
+	these days.
+
 2007-12-07  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file.[ch]:

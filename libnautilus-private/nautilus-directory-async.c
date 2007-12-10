@@ -683,7 +683,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	/* We could just call update_metadata_monitors here, but we can be smarter
 	 * since we know what monitor was just added.
 	 */
-	if (monitor->request.metafile && directory->details->metafile_monitor == NULL) {
+	if (monitor->request.metafile && !directory->details->metafile_monitored) {
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
 
@@ -1066,13 +1066,13 @@ update_metadata_monitors (NautilusDirectory *directory)
 	
 	is_metadata_monitored = is_anyone_waiting_for_metafile (directory);
 	
-	if (directory->details->metafile_monitor == NULL) {
+	if (!directory->details->metafile_monitored) {
 		if (is_metadata_monitored) {
-			nautilus_directory_register_metadata_monitor (directory);	
+			nautilus_directory_register_metadata_monitor (directory);
 		}
 	} else {
 		if (!is_metadata_monitored) {
-			nautilus_directory_unregister_metadata_monitor (directory);	
+			nautilus_directory_unregister_metadata_monitor (directory);
 		}
 	}
 }
@@ -1298,7 +1298,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	 * We could just call update_metadata_monitors here, but we can be smarter
 	 * since we know what was just added.
 	 */
-	if (callback.request.metafile && directory->details->metafile_monitor == NULL) {
+	if (callback.request.metafile && !directory->details->metafile_monitored) {
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
 

@@ -190,11 +190,13 @@ nautilus_directory_finalize (GObject *object)
 		nautilus_monitor_cancel (directory->details->monitor);
 	}
 
-	if (directory->details->metafile_monitor != NULL) {
+	if (directory->details->metafile_monitored) {
 		nautilus_directory_unregister_metadata_monitor (directory);
 	}
 
-	bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
+	if (directory->details->metafile != NULL) {
+		g_object_unref (directory->details->metafile);
+	}
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		g_source_remove (directory->details->dequeue_pending_idle_id);

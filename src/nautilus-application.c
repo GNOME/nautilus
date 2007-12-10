@@ -75,7 +75,6 @@
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-metafile-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
@@ -137,8 +136,6 @@ create_object (PortableServer_Servant servant,
 	if (strcmp (iid, SHELL_IID) == 0) {
 		application = NAUTILUS_APPLICATION (bonobo_object_from_servant (servant));
 		object = BONOBO_OBJECT (nautilus_shell_new (application));
-	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
-		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
 	} else {
 		object = CORBA_OBJECT_NIL;
 	}

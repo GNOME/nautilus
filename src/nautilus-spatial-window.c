@@ -178,30 +178,34 @@ static gboolean
 nautilus_spatial_window_state_event (GtkWidget *widget,
 				     GdkEventWindowState *event)
 {
-	if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED &&
-	    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
-		nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
-						    NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED,
-						    FALSE,
-						    event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
-	}
+	if (!NAUTILUS_IS_DESKTOP_WINDOW (widget)) {
+		
+		if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED &&
+		    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
+			nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
+							    NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED,
+							    FALSE,
+							    event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
+		}
+		
+		if (event->changed_mask & GDK_WINDOW_STATE_STICKY &&
+		    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
+			nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
+							    NAUTILUS_METADATA_KEY_WINDOW_STICKY,
+							    FALSE,
+							    event->new_window_state & GDK_WINDOW_STATE_STICKY);
+		}
+		
+		if (event->changed_mask & GDK_WINDOW_STATE_ABOVE &&
+		    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
+			nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
+							    NAUTILUS_METADATA_KEY_WINDOW_KEEP_ABOVE,
+							    FALSE,
+							    event->new_window_state & GDK_WINDOW_STATE_ABOVE);
+		}
 
-	if (event->changed_mask & GDK_WINDOW_STATE_STICKY &&
-	    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
-		nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
-						    NAUTILUS_METADATA_KEY_WINDOW_STICKY,
-						    FALSE,
-						    event->new_window_state & GDK_WINDOW_STATE_STICKY);
 	}
-
-	if (event->changed_mask & GDK_WINDOW_STATE_ABOVE &&
-	    NAUTILUS_WINDOW (widget)->details->viewed_file != NULL) {
-		nautilus_file_set_boolean_metadata (NAUTILUS_WINDOW (widget)->details->viewed_file,
-						    NAUTILUS_METADATA_KEY_WINDOW_KEEP_ABOVE,
-						    FALSE,
-						    event->new_window_state & GDK_WINDOW_STATE_ABOVE);
-	}
-
+	
 	if (GTK_WIDGET_CLASS (nautilus_spatial_window_parent_class)->window_state_event != NULL) {
 		return GTK_WIDGET_CLASS (nautilus_spatial_window_parent_class)->window_state_event (widget, event);
 	}
