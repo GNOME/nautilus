@@ -5677,15 +5677,15 @@ nautilus_file_get_volume_name (NautilusFile *file)
 {
 	GFile *location;
 	char *res;
-	GVolume *volume;
+	GMount *mount;
 
 	res = NULL;
 	
 	location = nautilus_file_get_location (file);
-	volume = g_file_find_enclosing_volume (location, NULL, NULL);
-	if (volume) {
-		res = g_strdup (g_volume_get_name (volume));
-		g_object_unref (volume);
+	mount = g_file_find_enclosing_mount (location, NULL, NULL);
+	if (mount) {
+		res = g_strdup (g_mount_get_name (mount));
+		g_object_unref (mount);
 	}
 	g_object_unref (location);
 

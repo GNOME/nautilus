@@ -35,6 +35,7 @@
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
 #include <string.h>
+#include <gio/gdrive.h>
 
 struct NautilusDesktopIconFileDetails {
 	NautilusDesktopLink *link;
@@ -161,7 +162,7 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	NautilusFile *file;
 	NautilusDesktopLink *link;
 	char *display_name;
-	GVolume *volume;
+	GMount *mount;
 	
 	file = NAUTILUS_FILE (icon_file);
 	
@@ -182,11 +183,20 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	file->details->can_mount = FALSE;
 	file->details->can_unmount = FALSE;
 	file->details->can_eject = FALSE;
-	volume = nautilus_desktop_link_get_volume (link);
-	if (volume) {
-		file->details->can_unmount = g_volume_can_unmount (volume);
-		file->details->can_eject = g_volume_can_eject (volume);
-		g_object_unref (volume);
+	mount = nautilus_desktop_link_get_mount (link);
+	if (mount) {
+		GDrive *drive;
+		gboolean can_eject = FALSE;
+
+		drive = g_mount_get_drive (mount);
+		if (drive != NULL) {
+			can_eject = g_drive_can_eject (drive);
+			g_object_unref (drive);
+		}
+
+		file->details->can_unmount = g_mount_can_unmount (mount);
+		file->details->can_eject = can_eject;
+		g_object_unref (mount);
 	}
 	
 	file->details->file_info_is_up_to_date = TRUE;

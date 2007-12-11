@@ -30,8 +30,8 @@
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
 #include <gio/gthemedicon.h>
+#include <gio/gmount.h>
 #include <gio/gvolume.h>
-#include <gio/gdrive.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -49,8 +49,8 @@ struct NautilusDesktopLinkDetails {
 	/* Just for trash icons: */
 	gulong trash_state_handler;
 
-	/* Just for volume icons: */
-	GVolume *volume;
+	/* Just for mount icons: */
+	GMount *mount;
 };
 
 G_DEFINE_TYPE(NautilusDesktopLink, nautilus_desktop_link, G_TYPE_OBJECT)
@@ -201,7 +201,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		break;
 
 	default:
-	case NAUTILUS_DESKTOP_LINK_VOLUME:
+	case NAUTILUS_DESKTOP_LINK_MOUNT:
 		g_assert_not_reached();
 	}
 
@@ -211,26 +211,26 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 }
 
 NautilusDesktopLink *
-nautilus_desktop_link_new_from_volume (GVolume *volume)
+nautilus_desktop_link_new_from_mount (GMount *mount)
 {
 	NautilusDesktopLink *link;
-	GDrive *drive;
+	GVolume *volume;
 	char *name, *filename;
 
 	link = NAUTILUS_DESKTOP_LINK (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK, NULL));
 	
-	link->details->type = NAUTILUS_DESKTOP_LINK_VOLUME;
+	link->details->type = NAUTILUS_DESKTOP_LINK_MOUNT;
 
-	link->details->volume = g_object_ref (volume);
+	link->details->mount = g_object_ref (mount);
 
 	/* We try to use the drive name to get somewhat stable filenames
 	   for metadata */
-	drive = g_volume_get_drive (volume);
-	if (drive != NULL) {
-		name = g_drive_get_name (drive);
-		g_object_unref (drive);
-	} else {
+	volume = g_mount_get_volume (mount);
+	if (volume != NULL) {
 		name = g_volume_get_name (volume);
+		g_object_unref (volume);
+	} else {
+		name = g_mount_get_name (mount);
 	}
 
 	/* Replace slashes in name */
@@ -241,21 +241,21 @@ nautilus_desktop_link_new_from_volume (GVolume *volume)
 	g_free (filename);
 	g_free (name);
 	
-	link->details->display_name = g_volume_get_name (volume);
+	link->details->display_name = g_mount_get_name (mount);
 	
-	link->details->activation_location = g_volume_get_root (volume);
-	link->details->icon = g_volume_get_icon (volume);
+	link->details->activation_location = g_mount_get_root (mount);
+	link->details->icon = g_mount_get_icon (mount);
 	
 	create_icon_file (link);
 
 	return link;
 }
 
-GVolume *
-nautilus_desktop_link_get_volume (NautilusDesktopLink *link)
+GMount *
+nautilus_desktop_link_get_mount (NautilusDesktopLink *link)
 {
-	if (link->details->volume) {
-		return g_object_ref (link->details->volume);
+	if (link->details->mount) {
+		return g_object_ref (link->details->mount);
 	}
 	return NULL;
 }
@@ -394,8 +394,8 @@ desktop_link_finalize (GObject *object)
 						 link);
 	}
 
-	if (link->details->type == NAUTILUS_DESKTOP_LINK_VOLUME) {
-		g_object_unref (link->details->volume);
+	if (link->details->type == NAUTILUS_DESKTOP_LINK_MOUNT) {
+		g_object_unref (link->details->mount);
 	}
 
 	g_free (link->details->filename);

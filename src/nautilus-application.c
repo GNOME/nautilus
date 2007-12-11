@@ -110,11 +110,11 @@ static GList *nautilus_application_spatial_window_list;
 
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
-static void     volume_unmounted_callback         (GVolumeMonitor           *monitor,
-						   GVolume                  *volume,
+static void     mount_removed_callback         (GVolumeMonitor           *monitor,
+						   GMount                  *mount,
 						   NautilusApplication      *application);
-static void     volume_mounted_callback           (GVolumeMonitor           *monitor,
-						   GVolume                  *volume,
+static void     mount_added_callback           (GVolumeMonitor           *monitor,
+						   GMount                  *mount,
 						   NautilusApplication      *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
@@ -170,19 +170,19 @@ nautilus_application_instance_init (NautilusApplication *application)
 
 	application->shell = nautilus_shell_new (application);
 	
-	/* Watch for volume mounts so we can restore open windows
-	 * This used to be for showing new window on mount, but is not
-	 * used anymore */
+	/* Watch for mounts so we can restore open windows This used
+	 * to be for showing new window on mount, but is not used
+	 * anymore */
 
-	/* Watch for volume unmounts so we can close open windows */
+	/* Watch for unmounts so we can close open windows */
 	/* TODO-gio: This should be using the UNMOUNTED feature of GDirectoryMonitor instead */
 	application->volume_monitor = g_volume_monitor_get ();
-	g_signal_connect_object (application->volume_monitor, "volume_unmounted",
-				 G_CALLBACK (volume_unmounted_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "volume_pre_unmount",
-				 G_CALLBACK (volume_unmounted_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "volume_mounted",
-				 G_CALLBACK (volume_mounted_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "mount_removed",
+				 G_CALLBACK (mount_removed_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "mount_pre_unmount",
+				 G_CALLBACK (mount_removed_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "mount_added",
+				 G_CALLBACK (mount_added_callback), application, 0);
 
 	/* register views */
 	fm_icon_view_register ();
@@ -1307,14 +1307,14 @@ window_can_be_closed (NautilusWindow *window)
 }
 
 static void
-volume_mounted_callback (GVolumeMonitor *monitor,
-			 GVolume *volume,
-			 NautilusApplication *application)
+mount_added_callback (GVolumeMonitor *monitor,
+		      GMount *mount,
+		      NautilusApplication *application)
 {
 	NautilusDirectory *directory;
 	GFile *root;
 		
-	root = g_volume_get_root (volume);
+	root = g_mount_get_root (mount);
 	directory = nautilus_directory_get_existing (root);
 	g_object_unref (root);
 	if (directory != NULL) {
@@ -1323,16 +1323,17 @@ volume_mounted_callback (GVolumeMonitor *monitor,
 	}
 }
 
-/* Called whenever a volume is unmounted. Check and see if there are any windows open
- * displaying contents on the volume. If there are, close them.
- * It would also be cool to save open window and position info.
+/* Called whenever a mount is unmounted. Check and see if there are
+ * any windows open displaying contents on the mount. If there are,
+ * close them.  It would also be cool to save open window and position
+ * info.
  *
  * This is also called on pre_unmount.
  */
 static void
-volume_unmounted_callback (GVolumeMonitor *monitor,
-			   GVolume *volume,
-			   NautilusApplication *application)
+mount_removed_callback (GVolumeMonitor *monitor,
+			GMount *mount,
+			NautilusApplication *application)
 {
 	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
@@ -1340,10 +1341,10 @@ volume_unmounted_callback (GVolumeMonitor *monitor,
 
 	close_list = NULL;
 	
-	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
+	/* Check and see if any of the open windows are displaying contents from the unmounted mount */
 	window_list = nautilus_application_get_window_list ();
 
-	root = g_volume_get_root (volume);
+	root = g_mount_get_root (mount);
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
 	for (node = window_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);

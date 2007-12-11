@@ -62,7 +62,7 @@ struct TreeNode {
 	NautilusFile *file;
 	char *display_name;
 	GIcon *icon;
-	GVolume *volume;
+	GMount *mount;
 	GdkPixbuf *closed_pixbuf;
 	GdkPixbuf *open_pixbuf;
 	GdkPixbuf *emblem_pixbuf;
@@ -1583,7 +1583,7 @@ fm_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 }
 
 void
-fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char *display_name, GIcon *icon, GVolume *volume)
+fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char *display_name, GIcon *icon, GMount *mount)
 {
 	NautilusFile *file;
 	TreeNode *node, *cnode;
@@ -1595,8 +1595,8 @@ fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char
 	node = create_node_for_file (newroot, file);
 	node->display_name = g_strdup (display_name);
 	node->icon = g_object_ref (icon);
-	if (volume) {
-		node->volume = g_object_ref (volume);
+	if (mount) {
+		node->mount = g_object_ref (mount);
 	}
 	newroot->root_node = node;
 	node->parent = NULL;
@@ -1615,8 +1615,8 @@ fm_tree_model_add_root_uri (FMTreeModel *model, const char *root_uri, const char
 	report_node_inserted (model, node);
 }
 
-GVolume *
-fm_tree_model_get_volume_for_root_node_file (FMTreeModel *model, NautilusFile *file)
+GMount *
+fm_tree_model_get_mount_for_root_node_file (FMTreeModel *model, NautilusFile *file)
 {
 	TreeNode *node;
 
@@ -1627,7 +1627,7 @@ fm_tree_model_get_volume_for_root_node_file (FMTreeModel *model, NautilusFile *f
 	}
 
 	if (node) {
-		return node->volume;
+		return node->mount;
 	}
 
 	return NULL;
@@ -1652,9 +1652,9 @@ fm_tree_model_remove_root_uri (FMTreeModel *model, const char *uri)
 	if (node) {
 		/* remove the node */
 		
-		if (node->volume) {
-			g_object_unref (node->volume);
-			node->volume = NULL;
+		if (node->mount) {
+			g_object_unref (node->mount);
+			node->mount = NULL;
 		}
 
 		nautilus_file_monitor_remove (node->file, model);

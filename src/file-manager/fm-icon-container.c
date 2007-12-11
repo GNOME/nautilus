@@ -371,7 +371,7 @@ get_sort_category (NautilusFile *file)
 			case NAUTILUS_DESKTOP_LINK_HOME:
 				category = SORT_HOME_LINK;
 				break;
-			case NAUTILUS_DESKTOP_LINK_VOLUME:
+			case NAUTILUS_DESKTOP_LINK_MOUNT:
 				category = SORT_MOUNT_LINK;
 				break;
 			case NAUTILUS_DESKTOP_LINK_TRASH:

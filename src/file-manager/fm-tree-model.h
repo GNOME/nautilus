@@ -29,7 +29,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtktreemodel.h>
-#include <gio/gvolume.h>
+#include <gio/gmount.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define FM_TYPE_TREE_MODEL	    (fm_tree_model_get_type ())
@@ -76,7 +76,7 @@ void               fm_tree_model_add_root_uri              (FMTreeModel *model,
 							    const char        *root_uri,
 							    const char        *display_name,
 							    GIcon             *icon,
-							    GVolume           *volume);
+							    GMount            *mount);
 void               fm_tree_model_remove_root_uri           (FMTreeModel *model,
 							    const char        *root_uri);
 gboolean           fm_tree_model_iter_is_root              (FMTreeModel *model,
@@ -86,7 +86,7 @@ gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
 							    NautilusFile *file,
 							    GtkTreeIter *currentIter);
 
-GVolume *         fm_tree_model_get_volume_for_root_node_file        
+GMount *         fm_tree_model_get_mount_for_root_node_file        
                                                            (FMTreeModel  *model, 
                                                             NautilusFile *file);
 

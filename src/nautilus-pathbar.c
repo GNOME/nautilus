@@ -50,7 +50,7 @@ typedef enum {
         ROOT_BUTTON,
         HOME_BUTTON,
         DESKTOP_BUTTON,
-	VOLUME_BUTTON
+	MOUNT_BUTTON
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *)(x))
@@ -94,7 +94,7 @@ struct _ButtonData
  * All buttons in front of a fake root are automatically hidden when in a
  * directory below a fake root and replaced with the "<" arrow button.
  */
-#define BUTTON_IS_FAKE_ROOT(button) ((button)->type == HOME_BUTTON || (button)->type == VOLUME_BUTTON)
+#define BUTTON_IS_FAKE_ROOT(button) ((button)->type == HOME_BUTTON || (button)->type == MOUNT_BUTTON)
 
 G_DEFINE_TYPE (NautilusPathBar,
 	       nautilus_path_bar,
@@ -1148,7 +1148,7 @@ nautilus_path_bar_update_button_appearance (NautilusPathBar *path_bar,
         }
 
         if (button_data->image != NULL) {
-		if (button_data->type == VOLUME_BUTTON || (button_data->type == NORMAL_BUTTON && button_data->is_base_dir) ) {
+		if (button_data->type == MOUNT_BUTTON || (button_data->type == NORMAL_BUTTON && button_data->is_base_dir) ) {
 	
 			/* set custom icon for roots */
 			if (button_data->custom_icon) {
@@ -1169,11 +1169,11 @@ nautilus_path_bar_update_button_appearance (NautilusPathBar *path_bar,
 }
 
 static gboolean
-is_file_path_mounted_volume (GFile *location, ButtonData *button_data)
+is_file_path_mounted_mount (GFile *location, ButtonData *button_data)
 {
 	GVolumeMonitor *volume_monitor;
-	GList 		      *volumes, *l;
-	GVolume 	      *volume;
+	GList 		      *mounts, *l;
+	GMount 	      *mount;
 	gboolean	       result;
 	GIcon *icon;
 	NautilusIconInfo *info;
@@ -1181,19 +1181,19 @@ is_file_path_mounted_volume (GFile *location, ButtonData *button_data)
 
 	result = FALSE;
 	volume_monitor = g_volume_monitor_get ();
-	volumes = g_volume_monitor_get_mounted_volumes (volume_monitor);
-	for (l = volumes; l != NULL; l = l->next) {
-		volume = l->data;
+	mounts = g_volume_monitor_get_mounts (volume_monitor);
+	for (l = mounts; l != NULL; l = l->next) {
+		mount = l->data;
 		if (result) {
-			g_object_unref (volume);
+			g_object_unref (mount);
 			continue;
 		}
-		root = g_volume_get_root (volume);
+		root = g_mount_get_root (mount);
 		if (g_file_equal (location, root)) {
 			result = TRUE;
-			/* set volume specific details in button_data */
+			/* set mount specific details in button_data */
 			if (button_data) {
-				icon = g_volume_get_icon (volume);
+				icon = g_mount_get_icon (mount);
 				if (icon == NULL) {
 					icon = g_themed_icon_new (DEFAULT_ICON);
 				}
@@ -1202,16 +1202,16 @@ is_file_path_mounted_volume (GFile *location, ButtonData *button_data)
 				button_data->custom_icon = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_PATH_BAR_ICON_SIZE);
 				g_object_unref (info);
 				button_data->path = g_object_ref (location);
-				button_data->dir_name = g_volume_get_name (volume);
+				button_data->dir_name = g_mount_get_name (mount);
 			}
-			g_object_unref (volume);
+			g_object_unref (mount);
 			g_object_unref (root);
 			continue;
 		}
-		g_object_unref (volume);
+		g_object_unref (mount);
 		g_object_unref (root);
 	}
-	g_list_free (volumes);
+	g_list_free (mounts);
 	return result;
 }
 
@@ -1235,8 +1235,8 @@ find_button_type (NautilusPathBar  *path_bar,
 			return NORMAL_BUTTON;
 		}
 	}
-	if (is_file_path_mounted_volume (location, button_data)) {
-		return VOLUME_BUTTON;
+	if (is_file_path_mounted_mount (location, button_data)) {
+		return MOUNT_BUTTON;
 	}	
 
  	return NORMAL_BUTTON;
@@ -1301,7 +1301,7 @@ make_directory_button (NautilusPathBar  *path_bar,
                         break;
                 case HOME_BUTTON:
                 case DESKTOP_BUTTON:
-		case VOLUME_BUTTON:
+		case MOUNT_BUTTON:
                         button_data->image = gtk_image_new ();
                         button_data->label = gtk_label_new (NULL);
                         label_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
@@ -1342,8 +1342,8 @@ make_directory_button (NautilusPathBar  *path_bar,
 			      	  G_CALLBACK (label_size_request_cb), button_data);
 	}
 	
-	/* do not set these for volumes */
-	if (button_data->type != VOLUME_BUTTON) {
+	/* do not set these for mounts */
+	if (button_data->type != MOUNT_BUTTON) {
 		button_data->dir_name = g_strdup (dir_name);
         	button_data->path = g_object_ref (path);
 	}

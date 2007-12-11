@@ -670,18 +670,18 @@ custom_time_skip (va_list *va)
 }
 
 static char *
-custom_volume_to_string (char *format, va_list va)
+custom_mount_to_string (char *format, va_list va)
 {
-	GVolume *volume;
+	GMount *mount;
 
-	volume = va_arg (va, GVolume *);
-	return g_volume_get_name (volume);
+	mount = va_arg (va, GMount *);
+	return g_mount_get_name (mount);
 }
 
 static void
-custom_volume_skip (va_list *va)
+custom_mount_skip (va_list *va)
 {
-	va_arg (*va, GVolume *);
+	va_arg (*va, GMount *);
 }
 
 
@@ -690,7 +690,7 @@ static EelPrintfHandler handlers[] = {
 	{ 'B', custom_basename_to_string, custom_basename_skip },
 	{ 'S', custom_size_to_string, custom_size_skip },
 	{ 'T', custom_time_to_string, custom_time_skip },
-	{ 'V', custom_volume_to_string, custom_volume_skip },
+	{ 'V', custom_mount_to_string, custom_mount_skip },
 	{ 0 }
 };
 
@@ -1705,12 +1705,12 @@ nautilus_file_operations_delete (GList                  *files,
 
 typedef struct {
 	gboolean eject;
-	GVolume *volume;
+	GMount *mount;
 	GtkWindow *parent_window;
 } UnmountData;
 
 static void
-unmount_volume_callback (GObject *source_object,
+unmount_mount_callback (GObject *source_object,
 			 GAsyncResult *res,
 			 gpointer user_data)
 {
@@ -1719,7 +1719,7 @@ unmount_volume_callback (GObject *source_object,
 	char *primary;
 
 	error = NULL;
-	if (!g_volume_unmount_finish (G_VOLUME (source_object),
+	if (!g_mount_unmount_finish (G_MOUNT (source_object),
 				      res, &error)) {
 		if (data->eject) {
 			primary = f (_("Unable to eject %V"), source_object);
@@ -1736,7 +1736,7 @@ unmount_volume_callback (GObject *source_object,
 	if (data->parent_window) {
 		g_object_unref (data->parent_window);
 	}
-	g_object_unref (data->volume);
+	g_object_unref (data->mount);
 	g_free (data);
 }
 
@@ -1744,14 +1744,23 @@ static void
 do_unmount (UnmountData *data)
 {
 	if (data->eject) {
-		g_volume_eject (data->volume, 
+#if 0
+/* TODO */
+		GDrive *drive;
+
+		drive = g_mount_get_drive (drive);
+		if (drive != NULL) {
+			g_drive_eject (drive, 
 				NULL,
-				unmount_volume_callback,
+				unmount_mount_callback,
 				data);
+			g_object_unref (drive);
+		}
+#endif
 	} else {
-		g_volume_unmount (data->volume,
+		g_mount_unmount (data->mount,
 				  NULL,
-				  unmount_volume_callback,
+				  unmount_mount_callback,
 				  data);
 	}
 }
@@ -1784,14 +1793,14 @@ dir_has_files (GFile *dir)
 }
 
 static GList *
-get_trash_dirs_for_volume (GVolume *volume)
+get_trash_dirs_for_mount (GMount *mount)
 {
 	GFile *root;
 	GFile *trash;
 	char *relpath;
 	GList *list;
 
-	root = g_volume_get_root (volume);
+	root = g_mount_get_root (mount);
 	if (root == NULL) {
 		return NULL;
 	}
@@ -1824,13 +1833,13 @@ get_trash_dirs_for_volume (GVolume *volume)
 }
 
 static gboolean
-has_trash_files (GVolume *volume)
+has_trash_files (GMount *mount)
 {
 	GList *dirs, *l;
 	GFile *dir;
 	gboolean res;
 
-	dirs = get_trash_dirs_for_volume (volume);
+	dirs = get_trash_dirs_for_mount (mount);
 
 	res = FALSE;
 
@@ -1896,8 +1905,8 @@ prompt_empty_trash (GtkWindow *parent_window)
 }
 
 void
-nautilus_file_operations_unmount_volume (GtkWindow                      *parent_window,
-					 GVolume                        *volume,
+nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
+					 GMount                        *mount,
 					 gboolean                        eject)
 {
 	UnmountData *data;
@@ -1908,16 +1917,16 @@ nautilus_file_operations_unmount_volume (GtkWindow                      *parent_
 		data->parent_window = g_object_ref (parent_window);
 	}
 	data->eject = eject;
-	data->volume = g_object_ref (volume);
+	data->mount = g_object_ref (mount);
 
-	if (has_trash_files (volume)) {
+	if (has_trash_files (mount)) {
 		response = prompt_empty_trash (parent_window);
 
 		if (response == GTK_RESPONSE_ACCEPT) {
 			EmptyTrashJob *job;
 			
 			job = op_job_new (EmptyTrashJob, parent_window);
-			job->trash_dirs = get_trash_dirs_for_volume (volume);
+			job->trash_dirs = get_trash_dirs_for_mount (mount);
 			job->done_callback = (NautilusOpCallback)do_unmount;
 			job->done_callback_data = data;
 			g_schedule_io_job (empty_trash_job,
@@ -1930,7 +1939,7 @@ nautilus_file_operations_unmount_volume (GtkWindow                      *parent_
 			if (data->parent_window) {
 				g_object_unref (data->parent_window);
 			}
-			g_object_unref (data->volume);
+			g_object_unref (data->mount);
 			g_free (data);
 			return;
 		}

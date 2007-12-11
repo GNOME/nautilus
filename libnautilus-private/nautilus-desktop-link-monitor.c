@@ -54,8 +54,9 @@ struct NautilusDesktopLinkMonitorDetails {
 
 	gulong mount_id;
 	gulong unmount_id;
+	gulong changed_id;
 	
-	GList *volume_links;
+	GList *mount_links;
 };
 
 
@@ -91,19 +92,28 @@ static void
 volume_delete_dialog (GtkWidget *parent_view,
                       NautilusDesktopLink *link)
 {
-	GVolume *volume;
+	GMount *mount;
 	char *dialog_str;
 	char *display_name;
 
-	volume = nautilus_desktop_link_get_volume (link);
+	mount = nautilus_desktop_link_get_mount (link);
 
-	if (volume != NULL) {
+	if (mount != NULL) {
+		GDrive *drive;
+		gboolean can_eject = FALSE;
+
+		drive = g_mount_get_drive (mount);
+		if (drive != NULL) {
+			can_eject = g_drive_can_eject (drive);
+			g_object_unref (drive);
+		}
+
 		display_name = nautilus_desktop_link_get_display_name (link);
 		dialog_str = g_strdup_printf (_("You cannot move the volume \"%s\" to the trash."),
 					      display_name);
 		g_free (display_name);
 
-		if (g_volume_can_eject (volume)) {
+		if (can_eject) {
 			eel_run_simple_dialog
 				(parent_view, 
 				 FALSE,
@@ -123,7 +133,7 @@ volume_delete_dialog (GtkWidget *parent_view,
 				 GTK_STOCK_OK, NULL);
 		}
 
-		g_object_unref (volume);
+		g_object_unref (mount);
 		g_free (dialog_str);
 	}
 }
@@ -154,7 +164,7 @@ volume_file_name_used (NautilusDesktopLinkMonitor *monitor,
 	char *other_name;
 	gboolean same;
 
-	for (l = monitor->details->volume_links; l != NULL; l = l->next) {
+	for (l = monitor->details->mount_links; l != NULL; l = l->next) {
 		other_name = nautilus_desktop_link_get_file_name (l->data);
 		same = strcmp (name, other_name) == 0;
 		g_free (other_name);
@@ -184,54 +194,62 @@ nautilus_desktop_link_monitor_make_filename_unique (NautilusDesktopLinkMonitor *
 }
 
 static void
-create_volume_link (NautilusDesktopLinkMonitor *monitor,
-		    GVolume *volume)
+create_mount_link (NautilusDesktopLinkMonitor *monitor,
+		   GMount *mount)
 {
 	NautilusDesktopLink *link;
 
 	link = NULL;
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
-		link = nautilus_desktop_link_new_from_volume (volume);
-		monitor->details->volume_links = g_list_prepend (monitor->details->volume_links, link);
+		link = nautilus_desktop_link_new_from_mount (mount);
+		monitor->details->mount_links = g_list_prepend (monitor->details->mount_links, link);
 	}
 }
 
 
 
 static void
-volume_mounted_callback (GVolumeMonitor *volume_monitor,
-			 GVolume *volume, 
-			 NautilusDesktopLinkMonitor *monitor)
+mount_added_callback (GVolumeMonitor *volume_monitor,
+		      GMount *mount, 
+		      NautilusDesktopLinkMonitor *monitor)
 {
-	create_volume_link (monitor, volume);
+	create_mount_link (monitor, mount);
 }
 
 
 static void
-volume_unmounted_callback (GVolumeMonitor *volume_monitor,
-			   GVolume *volume, 
-			   NautilusDesktopLinkMonitor *monitor)
+mount_removed_callback (GVolumeMonitor *volume_monitor,
+			GMount *mount, 
+			NautilusDesktopLinkMonitor *monitor)
 {
 	GList *l;
 	NautilusDesktopLink *link;
-	GVolume *other_volume;
+	GMount *other_mount;
 
 	link = NULL;
-	for (l = monitor->details->volume_links; l != NULL; l = l->next) {
-		other_volume = nautilus_desktop_link_get_volume (l->data);
-		if (volume == other_volume) {
-			g_object_unref (other_volume);
+	for (l = monitor->details->mount_links; l != NULL; l = l->next) {
+		other_mount = nautilus_desktop_link_get_mount (l->data);
+		if (mount == other_mount) {
+			g_object_unref (other_mount);
 			link = l->data;
 			break;
 		}
-		g_object_unref (other_volume);
+		g_object_unref (other_mount);
 	}
 
 	if (link) {
-		monitor->details->volume_links = g_list_remove (monitor->details->volume_links, link);
+		monitor->details->mount_links = g_list_remove (monitor->details->mount_links, link);
 		g_object_unref (link);
 	}
+}
+
+static void
+mount_changed_callback (GVolumeMonitor *volume_monitor,
+			GMount *mount, 
+			NautilusDesktopLinkMonitor *monitor)
+{
+	/* TODO: update the mount */
 }
 
 static void
@@ -308,23 +326,23 @@ static void
 desktop_volumes_visible_changed (gpointer callback_data)
 {
 	NautilusDesktopLinkMonitor *monitor;
-	GList *l, *volumes;
+	GList *l, *mounts;
 	
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
-		if (monitor->details->volume_links == NULL) {
-			volumes = g_volume_monitor_get_mounted_volumes (monitor->details->volume_monitor);
-			for (l = volumes; l != NULL; l = l->next) {
-				create_volume_link (monitor, l->data);
+		if (monitor->details->mount_links == NULL) {
+			mounts = g_volume_monitor_get_mounts (monitor->details->volume_monitor);
+			for (l = mounts; l != NULL; l = l->next) {
+				create_mount_link (monitor, l->data);
 				g_object_unref (l->data);
 			}
-			g_list_free (volumes);
+			g_list_free (mounts);
 		}
 	} else {
-		g_list_foreach (monitor->details->volume_links, (GFunc)g_object_unref, NULL);
-		g_list_free (monitor->details->volume_links);
-		monitor->details->volume_links = NULL;
+		g_list_foreach (monitor->details->mount_links, (GFunc)g_object_unref, NULL);
+		g_list_free (monitor->details->mount_links);
+		monitor->details->mount_links = NULL;
 	}
 }
 
@@ -346,8 +364,8 @@ static void
 nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDesktopLinkMonitor *monitor;
-	GList *l, *volumes;
-	GVolume *volume;
+	GList *l, *mounts;
+	GMount *mount;
 
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
@@ -386,26 +404,29 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 					desktop_network_visible_changed,
 					monitor);
 
-	/* Volume links */
+	/* Mount links */
 
-	volumes = g_volume_monitor_get_mounted_volumes (monitor->details->volume_monitor);
-	for (l = volumes; l != NULL; l = l->next) {
-		volume = l->data;
-		create_volume_link (monitor, volume);
-		g_object_unref (volume);
+	mounts = g_volume_monitor_get_mounts (monitor->details->volume_monitor);
+	for (l = mounts; l != NULL; l = l->next) {
+		mount = l->data;
+		create_mount_link (monitor, mount);
+		g_object_unref (mount);
 	}
-	g_list_free (volumes);
+	g_list_free (mounts);
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
 				      desktop_volumes_visible_changed,
 				      monitor);
 
 	monitor->details->mount_id =
-		g_signal_connect_object (monitor->details->volume_monitor, "volume_mounted",
-					 G_CALLBACK (volume_mounted_callback), monitor, 0);
+		g_signal_connect_object (monitor->details->volume_monitor, "mount_added",
+					 G_CALLBACK (mount_added_callback), monitor, 0);
 	monitor->details->unmount_id =
-		g_signal_connect_object (monitor->details->volume_monitor, "volume_unmounted",
-					 G_CALLBACK (volume_unmounted_callback), monitor, 0);
+		g_signal_connect_object (monitor->details->volume_monitor, "mount_removed",
+					 G_CALLBACK (mount_removed_callback), monitor, 0);
+	monitor->details->changed_id =
+		g_signal_connect_object (monitor->details->volume_monitor, "mount_changed",
+					 G_CALLBACK (mount_changed_callback), monitor, 0);
 
 }
 
@@ -454,11 +475,11 @@ desktop_link_monitor_finalize (GObject *object)
 				    desktop_network_visible_changed,
 				    monitor);
 
-	/* Volumes */
+	/* Mounts */
 
-	g_list_foreach (monitor->details->volume_links, (GFunc)g_object_unref, NULL);
-	g_list_free (monitor->details->volume_links);
-	monitor->details->volume_links = NULL;
+	g_list_foreach (monitor->details->mount_links, (GFunc)g_object_unref, NULL);
+	g_list_free (monitor->details->mount_links);
+	monitor->details->mount_links = NULL;
 		
 	nautilus_directory_unref (monitor->details->desktop_dir);
 	monitor->details->desktop_dir = NULL;
@@ -472,6 +493,9 @@ desktop_link_monitor_finalize (GObject *object)
 	}
 	if (monitor->details->unmount_id != 0) {
 		g_source_remove (monitor->details->unmount_id);
+	}
+	if (monitor->details->changed_id != 0) {
+		g_source_remove (monitor->details->changed_id);
 	}
 	
 	g_free (monitor->details);

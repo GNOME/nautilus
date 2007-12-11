@@ -595,21 +595,21 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 }
 
 static void
-add_root_for_volume (FMTreeView *view,
-		     GVolume *volume)
+add_root_for_mount (FMTreeView *view,
+		     GMount *mount)
 {
 	char *mount_uri, *name;
 	GFile *root;
 	GIcon *icon;
 
-	icon = g_volume_get_icon (volume);
-	root = g_volume_get_root (volume);
+	icon = g_mount_get_icon (mount);
+	root = g_mount_get_root (mount);
 	mount_uri = g_file_get_uri (root);
 	g_object_unref (root);
-	name = g_volume_get_name (volume);
+	name = g_mount_get_name (mount);
 	
 	fm_tree_model_add_root_uri(view->details->child_model,
-				   mount_uri, name, icon, volume);
+				   mount_uri, name, icon, mount);
 
 	g_object_unref (icon);
 	g_free (name);
@@ -618,22 +618,22 @@ add_root_for_volume (FMTreeView *view,
 }
 
 static void
-volume_mounted_callback (GVolumeMonitor *volume_monitor,
-			 GVolume *volume,
-			 FMTreeView *view)
+mount_added_callback (GVolumeMonitor *volume_monitor,
+		      GMount *mount,
+		      FMTreeView *view)
 {
-	add_root_for_volume (view, volume);
+	add_root_for_mount (view, mount);
 }
 
 static void
-volume_unmounted_callback (GVolumeMonitor *volume_monitor,
-			   GVolume *volume,
-			   FMTreeView *view)
+mount_removed_callback (GVolumeMonitor *volume_monitor,
+			GMount *mount,
+			FMTreeView *view)
 {
 	GFile *root;
 	char *mount_uri;
 
-	root = g_volume_get_root (volume);
+	root = g_mount_get_root (mount);
 	mount_uri = g_file_get_uri (root);
 	g_object_unref (root);
 	fm_tree_model_remove_root_uri (view->details->child_model,
@@ -696,7 +696,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 	if (event->button == 3) {
 		gboolean unmount_is_eject = FALSE;
 		gboolean show_unmount = FALSE;
-		GVolume *volume = NULL;
+		GMount *mount = NULL;
 		
 		if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
 						    &path, NULL, NULL, NULL)) {
@@ -743,10 +743,20 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			gtk_widget_hide (view->details->popup_delete);
 		}
 		
-		volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, view->details->popup_file);
-		if (volume) {
-			show_unmount = g_volume_can_unmount (volume) || g_volume_can_eject (volume);
-			unmount_is_eject = g_volume_can_eject (volume);
+		mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, view->details->popup_file);
+		if (mount) {
+			GDrive *drive;
+			gboolean can_eject = FALSE;
+
+			drive = g_mount_get_drive (mount);
+			if (drive != NULL) {
+				can_eject = g_drive_can_eject (drive);
+				g_object_unref (drive);
+			}
+
+			show_unmount = g_mount_can_unmount (mount) || can_eject;
+			/* TODO: show both unmount and eject if there are more than one volume for the drive */
+			unmount_is_eject = can_eject;
 		} 
 		
 		gtk_label_set_text (GTK_LABEL (GTK_BIN (GTK_MENU_ITEM (view->details->popup_unmount))->child),
@@ -1087,18 +1097,27 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 			 FMTreeView *view)
 {
 	NautilusFile *file = view->details->popup_file;
-	GVolume *volume;
+	GMount *mount;
 	
 	if (file == NULL) {
 		return;
 	}
 
-	volume = fm_tree_model_get_volume_for_root_node_file (view->details->child_model, file);
+	mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, file);
 	
-	if (volume != NULL) {
-		nautilus_file_operations_unmount_volume (fm_tree_view_get_containing_window (view),
-							 volume,
-							 g_volume_can_eject (volume));
+	if (mount != NULL) {
+		GDrive *drive;
+		gboolean can_eject = FALSE;
+
+		drive = g_mount_get_drive (mount);
+		if (drive != NULL) {
+			can_eject = g_drive_can_eject (drive);
+			g_object_unref (drive);
+		}
+
+		nautilus_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
+							 mount,
+							 can_eject);
 	}
 }
 
@@ -1236,7 +1255,7 @@ create_tree (FMTreeView *view)
 	GtkTreeViewColumn *column;
 	GVolumeMonitor *volume_monitor;
 	char *home_uri;
-	GList *volumes, *l;
+	GList *mounts, *l;
 	char *location;
 	GIcon *icon;
 	
@@ -1270,17 +1289,17 @@ create_tree (FMTreeView *view)
 	
 	volume_monitor = g_volume_monitor_get ();
 	view->details->volume_monitor = volume_monitor;
-	volumes = g_volume_monitor_get_mounted_volumes (volume_monitor);
-	for (l = volumes; l != NULL; l = l->next) {
-		add_root_for_volume (view, l->data);
+	mounts = g_volume_monitor_get_mounts (volume_monitor);
+	for (l = mounts; l != NULL; l = l->next) {
+		add_root_for_mount (view, l->data);
 		g_object_unref (l->data);
 	}
-	g_list_free (volumes);
+	g_list_free (mounts);
 	
-	g_signal_connect_object (volume_monitor, "volume_mounted",
-				 G_CALLBACK (volume_mounted_callback), view, 0);
-	g_signal_connect_object (volume_monitor, "volume_unmounted",
-				 G_CALLBACK (volume_unmounted_callback), view, 0);
+	g_signal_connect_object (volume_monitor, "mount_added",
+				 G_CALLBACK (mount_added_callback), view, 0);
+	g_signal_connect_object (volume_monitor, "mount_removed",
+				 G_CALLBACK (mount_removed_callback), view, 0);
 	
 	g_object_unref (view->details->child_model);
 

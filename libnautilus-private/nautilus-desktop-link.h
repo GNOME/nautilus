@@ -26,7 +26,7 @@
 #define NAUTILUS_DESKTOP_LINK_H
 
 #include <libnautilus-private/nautilus-file.h>
-#include <gio/gvolume.h>
+#include <gio/gmount.h>
 
 #define NAUTILUS_TYPE_DESKTOP_LINK \
 	(nautilus_desktop_link_get_type ())
@@ -54,14 +54,14 @@ typedef enum {
 	NAUTILUS_DESKTOP_LINK_HOME,
 	NAUTILUS_DESKTOP_LINK_COMPUTER,
 	NAUTILUS_DESKTOP_LINK_TRASH,
-	NAUTILUS_DESKTOP_LINK_VOLUME,
+	NAUTILUS_DESKTOP_LINK_MOUNT,
 	NAUTILUS_DESKTOP_LINK_NETWORK
 } NautilusDesktopLinkType;
 
 GType   nautilus_desktop_link_get_type (void);
 
 NautilusDesktopLink *   nautilus_desktop_link_new                     (NautilusDesktopLinkType  type);
-NautilusDesktopLink *   nautilus_desktop_link_new_from_volume         (GVolume                 *volume);
+NautilusDesktopLink *   nautilus_desktop_link_new_from_mount          (GMount                 *mount);
 NautilusDesktopLinkType nautilus_desktop_link_get_link_type           (NautilusDesktopLink     *link);
 char *                  nautilus_desktop_link_get_file_name           (NautilusDesktopLink     *link);
 char *                  nautilus_desktop_link_get_display_name        (NautilusDesktopLink     *link);
@@ -70,7 +70,7 @@ GFile *                 nautilus_desktop_link_get_activation_location (NautilusD
 gboolean                nautilus_desktop_link_get_date                (NautilusDesktopLink     *link,
 								       NautilusDateType         date_type,
 								       time_t                  *date);
-GVolume *               nautilus_desktop_link_get_volume              (NautilusDesktopLink     *link);
+GMount *                nautilus_desktop_link_get_mount               (NautilusDesktopLink     *link);
 gboolean                nautilus_desktop_link_can_rename              (NautilusDesktopLink     *link);
 gboolean                nautilus_desktop_link_rename                  (NautilusDesktopLink     *link,
 								       const char              *name);

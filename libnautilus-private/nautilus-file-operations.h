@@ -29,7 +29,7 @@
 
 #include <gdk/gdkdnd.h>
 #include <gtk/gtkwidget.h>
-#include <gio/gvolume.h>
+#include <gio/gmount.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
@@ -86,9 +86,9 @@ void nautilus_file_set_permissions_recursive (const char                     *di
 					      NautilusOpCallback              callback,
 					      gpointer                        callback_data);
 
-void nautilus_file_operations_unmount_volume (GtkWindow                      *parent_window,
-					      GVolume                        *volume,
-					      gboolean                        eject);
+void nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
+					     GMount                        *mount,
+					     gboolean                        eject);
 								
 
 void nautilus_file_operations_copy      (GList                *files,
