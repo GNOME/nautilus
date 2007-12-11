@@ -4,10 +4,9 @@
 #define NAUTILUS_SHELL_INTERFACE_IDL
 
 #include <Bonobo.idl>
-/* For URI define */
-#include <libnautilus-private/nautilus-metafile-server.idl>
 
 module Nautilus {
+	typedef string URI;
 	typedef sequence<URI> URIList;
 
 	interface Shell : ::Bonobo::Unknown {
