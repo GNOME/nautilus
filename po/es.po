@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-07 14:34+0000\n"
-"PO-Revision-Date: 2007-12-09 23:24+0100\n"
+"POT-Creation-Date: 2007-12-09 22:27+0000\n"
+"PO-Revision-Date: 2007-12-11 15:45+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1421,7 +1421,7 @@ msgstr[1] "%d horas aproximadamente"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:265
-#: ../libnautilus-private/nautilus-file.c:5299
+#: ../libnautilus-private/nautilus-file.c:5300
 #: ../src/file-manager/fm-directory-view.c:8355
 #, c-format
 msgid "Link to %s"
@@ -1624,13 +1624,12 @@ msgid "Error while deleting."
 msgstr "Error al borrar."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1238
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
 msgstr ""
-"Los archivos en la carpeta «%B» no se pueden copiar porque no tiene permisos "
-"para leerlos."
+"Los archivos en la carpeta «%B» no se pueden borrar porque no tiene permisos "
+"para verlos."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1241
 #: ../libnautilus-private/nautilus-file-operations.c:2054
@@ -1645,38 +1644,32 @@ msgstr ""
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
 #: ../libnautilus-private/nautilus-file-operations.c:1249
 #: ../libnautilus-private/nautilus-file-operations.c:2830
-#, fuzzy
 msgid "_Skip files"
-msgstr "_Omitir"
+msgstr "_Omitir archivos"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1270
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
-msgstr "«%s» no puede copiarse porque usted no tiene permisos para leerlo."
+msgstr "La carpeta «%s» no se puede borrar porque no tiene permisos para leerla."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1273
 #: ../libnautilus-private/nautilus-file-operations.c:2092
 #: ../libnautilus-private/nautilus-file-operations.c:2866
-#, fuzzy
 msgid "There was an error reading the folder \"%B\"."
-msgstr "Hubo un error al mostrar la ayuda."
+msgstr "Hubo un error al leer la carpeta «%B»."
 
 # src/file-manager/dfos-xfer.c:778
 #: ../libnautilus-private/nautilus-file-operations.c:1306
-#, fuzzy
 msgid "Couldn't remove the folder %B."
-msgstr "No puede mover esta carpeta papelera."
+msgstr "No se pudo eliminar la carpeta %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1388
-#, fuzzy
 msgid "There was an error deleting %B."
-msgstr "Hubo un error al mostrar la ayuda."
+msgstr "Hubo un error al borrar %B."
 
 # src/file-manager/dfos-xfer.c:961
 #: ../libnautilus-private/nautilus-file-operations.c:1464
-#, fuzzy
 msgid "Moving files to trash"
 msgstr "Moviendo archivos a la papelera"
 
@@ -1693,9 +1686,8 @@ msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "No puede mover el archivo a la papelera. ¿Quiere borrarlo inmediatamente?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1516
-#, fuzzy
 msgid "The file \"%B\" cannot be moved to the trash."
-msgstr "El archivo «%s» no puede moverse a la papelera."
+msgstr "El archivo «%s» no se puede mover a la papelera."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1725
 msgid "Unable to eject %V"
@@ -1710,14 +1702,12 @@ msgid "Do you want to empty the trash before you unmount?"
 msgstr "¿Quiere vaciar la papelera antes de desmontar?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1869
-#, fuzzy
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost. "
 msgstr ""
-"Con el fin de recuperar el espacio libre en este dispositivo, la papelera "
-"debe vaciarse. Todos los elementos de la papelera se perderán "
-"permanentemente. "
+"Con el fin de recuperar el espacio libre en este volumen la papelera debe vaciarse. "
+"Todos los elementos de la papelera se perderán permanentemente. "
 
 # src/file-manager/fm-directory-view.c:2154
 #: ../libnautilus-private/nautilus-file-operations.c:1875
@@ -1739,21 +1729,21 @@ msgstr "Preparándose para copiar %d archivos (%S)"
 
 # src/file-manager/dfos-xfer.c:1009
 #: ../libnautilus-private/nautilus-file-operations.c:1955
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to move %d files (%S)"
-msgstr "Preparándose para borrar archivos…"
+msgstr "Preparándose para mover %d archivos (%S)"
 
 # src/file-manager/dfos-xfer.c:1009
 #: ../libnautilus-private/nautilus-file-operations.c:1959
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to delete %d files (%S)"
-msgstr "Preparándose para copiar %d archivos (%S)"
+msgstr "Preparándose para borrar %d archivos (%S)"
 
 # src/file-manager/dfos-xfer.c:1009
 #: ../libnautilus-private/nautilus-file-operations.c:1963
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to trash %d files"
-msgstr "Preparándose para borrar archivos…"
+msgstr "Preparándose para mover a la papelera %d archivos"
 
 # src/file-manager/dfos-xfer.c:745
 #: ../libnautilus-private/nautilus-file-operations.c:1992
@@ -1772,56 +1762,48 @@ msgstr "Error al mover."
 
 # src/file-manager/dfos-xfer.c:745
 #: ../libnautilus-private/nautilus-file-operations.c:1998
-#, fuzzy
 msgid "Error while moving files to trash."
-msgstr "Error al mover elementos a «%s»."
+msgstr "Error al mover los archivos a la papelera."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2051
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
 msgstr ""
-"Los archivos en la carpeta «%B» no se pueden copiar porque no tiene permisos "
-"para leerlos."
+"Los archivos en la carpeta «%B» no se pueden gestionar porque no tiene permisos "
+"para verlos."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2089
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
-msgstr "«%s» no puede copiarse porque usted no tiene permisos para leerlo."
+msgstr "La carpeta «%B» no se puede gestionar porque no tiene permisos para leerla."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2163
-#, fuzzy
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
-msgstr "«%s» no puede copiarse porque usted no tiene permisos para leerlo."
+msgstr "El archivo «%B» no se puede gestionar porque usted no tiene permisos para leerlo."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2166
-#, fuzzy
 msgid "There was an error getting information about \"%B\"."
-msgstr "Se ha producido un error al lanzar la aplicación."
+msgstr "Hubo un error al obtener la información acerca de «%B»."
 
 # src/file-manager/dfos-xfer.c:745
 #: ../libnautilus-private/nautilus-file-operations.c:2263
 #: ../libnautilus-private/nautilus-file-operations.c:2304
 #: ../libnautilus-private/nautilus-file-operations.c:2338
 #: ../libnautilus-private/nautilus-file-operations.c:2363
-#, fuzzy
 msgid "Error while copying to \"%B\"."
-msgstr "Error durante la copia a «%s»."
+msgstr "Error al copiar a «%B»."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2267
-#, fuzzy
 msgid "You don't have permissions to access the destination folder."
-msgstr "No tiene permiso para escribir en el destino."
+msgstr "No tiene permiso para acceder a la carpeta de destino."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2269
-#, fuzzy
 msgid "There was an error getting information about the destination."
-msgstr "No hay suficiente espacio en el destino."
+msgstr "Hubo un error al obtener la información acerca del destino."
 
 # src/nautilus-window-menus.c:602
 #: ../libnautilus-private/nautilus-file-operations.c:2305
@@ -2140,37 +2122,37 @@ msgstr "Se produjo un error al crear un enlace en «%s»."
 msgid "There was an error creating the directory in %F."
 msgstr "Hubo un error al mostrar la ayuda."
 
-#: ../libnautilus-private/nautilus-file.c:868
-#: ../libnautilus-private/nautilus-vfs-file.c:264
+#: ../libnautilus-private/nautilus-file.c:869
+#: ../libnautilus-private/nautilus-vfs-file.c:265
 msgid "This file cannot be mounted"
 msgstr "Este archivo no se puede montar"
 
-#: ../libnautilus-private/nautilus-file.c:888
+#: ../libnautilus-private/nautilus-file.c:889
 msgid "This file cannot be unmounted"
 msgstr "Este archivo no se puede desmontar"
 
-#: ../libnautilus-private/nautilus-file.c:908
+#: ../libnautilus-private/nautilus-file.c:909
 msgid "This file cannot be eject"
 msgstr "Este archivo no se puede expulsar"
 
-#: ../libnautilus-private/nautilus-file.c:1294
+#: ../libnautilus-private/nautilus-file.c:1295
 msgid "Slashes are not allowed in filenames"
 msgstr "No se permiten barras en los nombres de archivo"
 
-#: ../libnautilus-private/nautilus-file.c:1312
+#: ../libnautilus-private/nautilus-file.c:1313
 msgid "File not found"
 msgstr "No se encontró el archivo"
 
 # src/file-manager/fm-properties-window.c:1641
-#: ../libnautilus-private/nautilus-file.c:1338
+#: ../libnautilus-private/nautilus-file.c:1339
 msgid "Toplevel files cannot be renamed"
 msgstr "Los archivos de nivel superior no se pueden renombrar"
 
-#: ../libnautilus-private/nautilus-file.c:1355
+#: ../libnautilus-private/nautilus-file.c:1356
 msgid "Unable to rename desktop icon"
 msgstr "No se pudo renombrar el icono del escritorio"
 
-#: ../libnautilus-private/nautilus-file.c:1387
+#: ../libnautilus-private/nautilus-file.c:1388
 msgid "Unable to rename desktop file"
 msgstr "No se pudo renombrar el archivo del escritorio"
 
@@ -2189,37 +2171,37 @@ msgstr "No se pudo renombrar el archivo del escritorio"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3411
+#: ../libnautilus-private/nautilus-file.c:3412
 msgid "today at 00:00:00 PM"
 msgstr "hoy a las 00:00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1557
-#: ../libnautilus-private/nautilus-file.c:3412
+#: ../libnautilus-private/nautilus-file.c:3413
 #: ../src/nautilus-file-management-properties.c:465
 msgid "today at %-I:%M:%S %p"
 msgstr "hoy a las %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:1557
-#: ../libnautilus-private/nautilus-file.c:3414
+#: ../libnautilus-private/nautilus-file.c:3415
 msgid "today at 00:00 PM"
 msgstr "hoy a las 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1557
-#: ../libnautilus-private/nautilus-file.c:3415
+#: ../libnautilus-private/nautilus-file.c:3416
 msgid "today at %-I:%M %p"
 msgstr "hoy a las %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3417
+#: ../libnautilus-private/nautilus-file.c:3418
 msgid "today, 00:00 PM"
 msgstr "hoy, 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1557
-#: ../libnautilus-private/nautilus-file.c:3418
+#: ../libnautilus-private/nautilus-file.c:3419
 msgid "today, %-I:%M %p"
 msgstr "hoy, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3420
 #: ../libnautilus-private/nautilus-file.c:3421
+#: ../libnautilus-private/nautilus-file.c:3422
 msgid "today"
 msgstr "hoy"
 
@@ -2227,39 +2209,39 @@ msgstr "hoy"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3430
+#: ../libnautilus-private/nautilus-file.c:3431
 msgid "yesterday at 00:00:00 PM"
 msgstr "ayer a las 00:00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1560
-#: ../libnautilus-private/nautilus-file.c:3431
+#: ../libnautilus-private/nautilus-file.c:3432
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ayer a las %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:1560
-#: ../libnautilus-private/nautilus-file.c:3433
+#: ../libnautilus-private/nautilus-file.c:3434
 msgid "yesterday at 00:00 PM"
 msgstr "ayer a las 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1560
-#: ../libnautilus-private/nautilus-file.c:3434
+#: ../libnautilus-private/nautilus-file.c:3435
 msgid "yesterday at %-I:%M %p"
 msgstr "ayer a las %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3436
+#: ../libnautilus-private/nautilus-file.c:3437
 msgid "yesterday, 00:00 PM"
 msgstr "ayer, 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1560
-#: ../libnautilus-private/nautilus-file.c:3437
+#: ../libnautilus-private/nautilus-file.c:3438
 msgid "yesterday, %-I:%M %p"
 msgstr "ayer, %-I:%M %p"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:94
 # components/services/install/command-line/eazel-revert.c:78
 # components/services/install/command-line/eazel-uninstall.c:69
-#: ../libnautilus-private/nautilus-file.c:3439
 #: ../libnautilus-private/nautilus-file.c:3440
+#: ../libnautilus-private/nautilus-file.c:3441
 msgid "yesterday"
 msgstr "ayer"
 
@@ -2268,94 +2250,94 @@ msgstr "ayer"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3451
+#: ../libnautilus-private/nautilus-file.c:3452
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Miércoles, 00 de septiembre de 0000 a las 00:00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1563
-#: ../libnautilus-private/nautilus-file.c:3452
+#: ../libnautilus-private/nautilus-file.c:3453
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d de %B de %Y a las %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:3454
+#: ../libnautilus-private/nautilus-file.c:3455
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Lun, 00 de oct de 0000 a las 00:00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1563
-#: ../libnautilus-private/nautilus-file.c:3455
+#: ../libnautilus-private/nautilus-file.c:3456
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d de %b de %Y a las %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:3457
+#: ../libnautilus-private/nautilus-file.c:3458
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Lun, 00 oct 0000 a las 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1563
-#: ../libnautilus-private/nautilus-file.c:3458
+#: ../libnautilus-private/nautilus-file.c:3459
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y a las %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3460
+#: ../libnautilus-private/nautilus-file.c:3461
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 oct 0000 a las 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1565
-#: ../libnautilus-private/nautilus-file.c:3461
+#: ../libnautilus-private/nautilus-file.c:3462
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y a las %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3463
+#: ../libnautilus-private/nautilus-file.c:3464
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 oct 0000, 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1565
-#: ../libnautilus-private/nautilus-file.c:3464
+#: ../libnautilus-private/nautilus-file.c:3465
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3466
+#: ../libnautilus-private/nautilus-file.c:3467
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 pm"
 
 # libnautilus-private/nautilus-file.c:1565
-#: ../libnautilus-private/nautilus-file.c:3467
+#: ../libnautilus-private/nautilus-file.c:3468
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: ../libnautilus-private/nautilus-file.c:3469
+#: ../libnautilus-private/nautilus-file.c:3470
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3470
+#: ../libnautilus-private/nautilus-file.c:3471
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # src/file-manager/fm-properties-window.c:1493
-#: ../libnautilus-private/nautilus-file.c:4064
+#: ../libnautilus-private/nautilus-file.c:4065
 msgid "Not allowed to set permissions"
 msgstr "No se le permite establecer permisos"
 
-#: ../libnautilus-private/nautilus-file.c:4372
+#: ../libnautilus-private/nautilus-file.c:4373
 msgid "Not allowed to set owner"
 msgstr "No se le permite establecer el propietario"
 
 # src/nautilus-window-menus.c:602
-#: ../libnautilus-private/nautilus-file.c:4390
+#: ../libnautilus-private/nautilus-file.c:4391
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "El propietario especificado «%s» no existe"
 
-#: ../libnautilus-private/nautilus-file.c:4654
+#: ../libnautilus-private/nautilus-file.c:4655
 msgid "Not allowed to set group"
 msgstr "No se le permite establecer el grupo"
 
-#: ../libnautilus-private/nautilus-file.c:4672
+#: ../libnautilus-private/nautilus-file.c:4673
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "El grupo especificado «%s» no existe"
 
 # libnautilus-private/nautilus-file.c:2594
-#: ../libnautilus-private/nautilus-file.c:4815
+#: ../libnautilus-private/nautilus-file.c:4816
 #: ../src/file-manager/fm-directory-view.c:2113
 #, c-format
 msgid "%u item"
@@ -2364,7 +2346,7 @@ msgstr[0] "%u elemento"
 msgstr[1] "%u elementos"
 
 # libnautilus-private/nautilus-file.c:2595
-#: ../libnautilus-private/nautilus-file.c:4816
+#: ../libnautilus-private/nautilus-file.c:4817
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
@@ -2372,7 +2354,7 @@ msgstr[0] "%u carpeta"
 msgstr[1] "%u carpetas"
 
 # libnautilus-private/nautilus-file.c:2595
-#: ../libnautilus-private/nautilus-file.c:4817
+#: ../libnautilus-private/nautilus-file.c:4818
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2380,35 +2362,35 @@ msgstr[0] "%u archivo"
 msgstr[1] "%u archivos"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:4896
+#: ../libnautilus-private/nautilus-file.c:4897
 msgid "%"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file.c:4897
+#: ../libnautilus-private/nautilus-file.c:4898
 #, fuzzy, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s)"
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5196
-#: ../libnautilus-private/nautilus-file.c:5212
+#: ../libnautilus-private/nautilus-file.c:5197
+#: ../libnautilus-private/nautilus-file.c:5213
 msgid "? items"
 msgstr "? elementos"
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5202
+#: ../libnautilus-private/nautilus-file.c:5203
 msgid "? bytes"
 msgstr "? bytes "
 
 # libnautilus-private/nautilus-file.c:2929
-#: ../libnautilus-private/nautilus-file.c:5217
+#: ../libnautilus-private/nautilus-file.c:5218
 msgid "unknown type"
 msgstr "tipo desconocido"
 
 # libnautilus-private/nautilus-file.c:2931
-#: ../libnautilus-private/nautilus-file.c:5220
+#: ../libnautilus-private/nautilus-file.c:5221
 msgid "unknown MIME type"
 msgstr "tipo MIME desconocido"
 
@@ -2416,17 +2398,17 @@ msgstr "tipo MIME desconocido"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5226
+#: ../libnautilus-private/nautilus-file.c:5227
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "desconocido"
 
 # libnautilus-private/nautilus-file.c:2965
-#: ../libnautilus-private/nautilus-file.c:5255
+#: ../libnautilus-private/nautilus-file.c:5256
 msgid "program"
 msgstr "programa"
 
-#: ../libnautilus-private/nautilus-file.c:5273
+#: ../libnautilus-private/nautilus-file.c:5274
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2436,7 +2418,7 @@ msgstr ""
 "esto signifique que su archivo gnome-vfs.keys está en un lugar incorrecto o "
 "que no se encuentra por alguna otra razón."
 
-#: ../libnautilus-private/nautilus-file.c:5277
+#: ../libnautilus-private/nautilus-file.c:5278
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2446,15 +2428,15 @@ msgstr ""
 "avise a la lista de correo de gnome-vfs."
 
 # src/file-manager/dfos-xfer.c:714
-#: ../libnautilus-private/nautilus-file.c:5293
+#: ../libnautilus-private/nautilus-file.c:5294
 msgid "link"
 msgstr "enlace"
 
-#: ../libnautilus-private/nautilus-file.c:5313
+#: ../libnautilus-private/nautilus-file.c:5314
 msgid "link (broken)"
 msgstr "enlace (roto)"
 
-#: ../libnautilus-private/nautilus-file.c:6963
+#: ../libnautilus-private/nautilus-file.c:6964
 #: ../libnautilus-private/nautilus-global-preferences.c:513
 #: ../src/nautilus-places-sidebar.c:369 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
@@ -2683,28 +2665,28 @@ msgstr "El rectángulo de selección"
 msgid "Switch to Manual Layout?"
 msgstr "¿Cambiar a organización manual?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:562
+#: ../libnautilus-private/nautilus-mime-actions.c:563
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "El enlace «%s» está roto."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:564
+#: ../libnautilus-private/nautilus-mime-actions.c:565
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "El enlace «%s» está roto. ¿Quiere moverlo a la papelera?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:570
+#: ../libnautilus-private/nautilus-mime-actions.c:571
 msgid "This link can't be used, because it has no target."
 msgstr "Este enlace no puede usarse porque no tiene destino."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:572
+#: ../libnautilus-private/nautilus-mime-actions.c:573
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Este enlace no puede usarse, porque su destino «%s» no existe."
 
 # src/file-manager/fm-directory-view.c:2145
 #. name, stock id
-#: ../libnautilus-private/nautilus-mime-actions.c:582
+#: ../libnautilus-private/nautilus-mime-actions.c:583
 #: ../src/file-manager/fm-directory-view.c:6246
 #: ../src/file-manager/fm-directory-view.c:6327
 #: ../src/file-manager/fm-directory-view.c:6848
@@ -2712,38 +2694,38 @@ msgstr "Este enlace no puede usarse, porque su destino «%s» no existe."
 msgid "Mo_ve to Trash"
 msgstr "_Mover a la papelera"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:642
+#: ../libnautilus-private/nautilus-mime-actions.c:643
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "¿Quiere ejecutar «%s» o ver su contenido?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:644
+#: ../libnautilus-private/nautilus-mime-actions.c:645
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "«%s» es un archivo de texto ejecutable."
 
 # src/file-manager/fm-desktop-icon-view.c:222
-#: ../libnautilus-private/nautilus-mime-actions.c:650
+#: ../libnautilus-private/nautilus-mime-actions.c:651
 msgid "Run in _Terminal"
 msgstr "Ejecutar en un _terminal"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-global-preferences.c:149
-#: ../libnautilus-private/nautilus-mime-actions.c:651
+#: ../libnautilus-private/nautilus-mime-actions.c:652
 msgid "_Display"
 msgstr "_Mostrar"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:654
+#: ../libnautilus-private/nautilus-mime-actions.c:655
 msgid "_Run"
 msgstr "E_jecutar"
 
 # src/file-manager/fm-directory-view.c:1855
-#: ../libnautilus-private/nautilus-mime-actions.c:930
+#: ../libnautilus-private/nautilus-mime-actions.c:948
 #: ../src/file-manager/fm-directory-view.c:611
 msgid "Are you sure you want to open all files?"
 msgstr "¿Seguro que desea abrir todos los archivos?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:931
+#: ../libnautilus-private/nautilus-mime-actions.c:949
 #: ../src/file-manager/fm-directory-view.c:612
 #: ../src/nautilus-location-bar.c:151
 #, c-format
@@ -2753,7 +2735,7 @@ msgstr[0] "Esto abrirá %d ventana separada."
 msgstr[1] "Esto abrirá %d ventanas separadas."
 
 # src/nautilus-window-manage-views.c:1299
-#: ../libnautilus-private/nautilus-mime-actions.c:1164
+#: ../libnautilus-private/nautilus-mime-actions.c:1182
 #: ../src/nautilus-window-manage-views.c:1576
 #: ../src/nautilus-window-manage-views.c:1582
 #: ../src/nautilus-window-manage-views.c:1599
@@ -2764,23 +2746,23 @@ msgstr[1] "Esto abrirá %d ventanas separadas."
 msgid "Couldn't display \"%s\"."
 msgstr "No se pudo mostrar «%s»."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1170
+#: ../libnautilus-private/nautilus-mime-actions.c:1188
 msgid "There is no application installed for this file type"
 msgstr "No existe una aplicación instalada para este tipo de archivo"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1213
-#: ../libnautilus-private/nautilus-mime-actions.c:1439
+#: ../libnautilus-private/nautilus-mime-actions.c:1230
+#: ../libnautilus-private/nautilus-mime-actions.c:1454
 msgid "Unable to mount location"
 msgstr "No se pudo montar el lugar"
 
 # src/file-manager/fm-icon-view.c:1277
-#: ../libnautilus-private/nautilus-mime-actions.c:1518
+#: ../libnautilus-private/nautilus-mime-actions.c:1539
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Abriendo «%s»."
 
 # src/file-manager/fm-icon-view.c:1277
-#: ../libnautilus-private/nautilus-mime-actions.c:1521
+#: ../libnautilus-private/nautilus-mime-actions.c:1542
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3827,7 +3809,7 @@ msgstr "Guarda la búsqueda editada"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6302
 msgid "Sa_ve Search As..."
-msgstr "Guardar búsqueda _como..."
+msgstr "Guardar búsqueda _como…"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6303
@@ -5766,7 +5748,7 @@ msgstr "Reiniciar Nautilus."
 
 #: ../src/nautilus-main.c:393
 msgid "[URI...]"
-msgstr "[URI...]"
+msgstr "[URI…]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
 #: ../src/nautilus-main.c:396
@@ -5946,7 +5928,7 @@ msgstr "Muestra una ventana que permite editar los marcadores que hay en este me
 #: ../src/nautilus-navigation-window-menus.c:495
 #: ../src/nautilus-spatial-window.c:893
 msgid "_Search for Files..."
-msgstr "_Buscar archivos..."
+msgstr "_Buscar archivos…"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:496
@@ -6364,7 +6346,7 @@ msgstr "Cualquiera"
 
 #: ../src/nautilus-query-editor.c:654
 msgid "Other Type..."
-msgstr "Otro tipo..."
+msgstr "Otro tipo…"
 
 # src/file-manager/dfos-xfer.c:961
 #: ../src/nautilus-query-editor.c:939
