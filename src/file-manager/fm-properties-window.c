@@ -2802,10 +2802,12 @@ create_pie_widget (FMPropertiesWindow *window)
 
 	used_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (used_canvas, 20, 20);
+	/* Translators: "used" refers to the capacity of the filesystem */
 	used_label = gtk_label_new (g_strconcat (used, " ", _("used"), NULL));
 
 	free_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (free_canvas,20,20);
+	/* Translators: "free" refers to the capacity of the filesystem */
 	free_label = gtk_label_new (g_strconcat (free, " ", _("free"), NULL));  
 
 	capacity_label = gtk_label_new (g_strconcat (_("Total capacity: "), capacity, NULL));
@@ -2817,7 +2819,7 @@ create_pie_widget (FMPropertiesWindow *window)
 	if (info) {
 		fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FS_TYPE);
 		if (fs_type != NULL) {
-			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesytem type: "), fs_type, NULL));
+			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesystem type: "), fs_type, NULL));
 		}
 		
 		g_object_unref (info);
