@@ -3733,8 +3733,6 @@ new_folder_done (GFile *new_folder, gpointer user_data)
 	GdkScreen *screen;
 	NewFolderData *data;
 
-	g_print ("new folder: %s\n", g_file_get_uri (new_folder));
-	
 	data = (NewFolderData *)user_data;
 
 	directory_view = data->directory_view;
@@ -4057,7 +4055,8 @@ add_submenu (GtkUIManager *ui_manager,
 	     const char *parent_path,
 	     const char *uri,
 	     const char *label,
-	     GdkPixbuf *pixbuf)
+	     GdkPixbuf *pixbuf,
+	     gboolean add_action)
 {
 	char *escaped_label;
 	char *action_name;
@@ -4071,19 +4070,21 @@ add_submenu (GtkUIManager *ui_manager,
 		escaped_submenu_name = escape_action_path (submenu_name);
 		escaped_label = eel_str_double_underscores (label);
 
-		action = gtk_action_new (action_name,
-					 escaped_label,
-					 NULL,
-					 NULL);
-		g_object_set_data_full (G_OBJECT (action), "menu-icon",
-					g_object_ref (pixbuf),
-					g_object_unref);
-
-		g_object_set (action, "hide-if-empty", FALSE, NULL);
-		
-		gtk_action_group_add_action (action_group,
-					     action);
-		g_object_unref (action);
+		if (add_action) {
+			action = gtk_action_new (action_name,
+						 escaped_label,
+						 NULL,
+						 NULL);
+			g_object_set_data_full (G_OBJECT (action), "menu-icon",
+						g_object_ref (pixbuf),
+						g_object_unref);
+			
+			g_object_set (action, "hide-if-empty", FALSE, NULL);
+			
+			gtk_action_group_add_action (action_group,
+						     action);
+			g_object_unref (action);
+		}
 
 		gtk_ui_manager_add_ui (ui_manager,
 				       merge_id,
@@ -4869,9 +4870,9 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	uri = nautilus_file_get_uri (file);
 	name = nautilus_file_get_display_name (file);
 	pixbuf = get_menu_icon_for_file (file);
-	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf);
-	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf);
-	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf);
+	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf, TRUE);
+	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf, FALSE);
+	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf, FALSE);
 	g_object_unref (pixbuf);
 	g_free (name);
 	g_free (uri);

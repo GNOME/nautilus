@@ -1,5 +1,14 @@
 2007-12-12  Alexander Larsson  <alexl@redhat.com>
 
+        * src/file-manager/fm-directory-view.c:
+        (new_folder_done):
+	Remove spew
+        (add_submenu):
+        (add_submenu_to_directory_menus):
+	Avoid creating three copies of template menu actions
+
+2007-12-12  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-private.h:
         * libnautilus-private/nautilus-file-utilities.c:
 	Update to new gio attribute names
