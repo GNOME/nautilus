@@ -830,7 +830,7 @@ nautilus_find_existing_uri_in_hierarchy (GFile *location)
 	location = g_object_ref (location);
 	while (location != NULL) {
 		info = g_file_query_info (location,
-					  "std:name",
+					  "std::name",
 					  0, NULL, NULL);
 		g_object_unref (info);
 		if (info != NULL) {

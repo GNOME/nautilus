@@ -46,7 +46,7 @@
 	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"std:*,access:*,mountable:*,time:*,unix:*,owner:*,selinux:*,thumbnail:*,mountable:*"
+	"std::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,mountable::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
