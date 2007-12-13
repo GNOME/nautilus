@@ -1223,7 +1223,7 @@ activation_mount_not_mounted_callback (GObject *source_object,
 	file = parameters->not_mounted->data;
 		
 	error = NULL;
-	if (!g_mount_for_location_finish (G_FILE (source_object), res, &error)) {
+	if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error)) {
 		if (error->domain != G_IO_ERROR &&
 		    error->code != G_IO_ERROR_CANCELLED &&
 		    error->code != G_IO_ERROR_ALREADY_MOUNTED) {
@@ -1259,8 +1259,8 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 		mount_op = eel_mount_operation_new (parameters->parent_window);
 		g_signal_connect (mount_op, "active_changed", (GCallback)activate_mount_op_active, parameters);
 		location = nautilus_file_get_location (file);
-		g_mount_for_location (location, mount_op, parameters->cancellable,
-				      activation_mount_not_mounted_callback, parameters);
+		g_file_mount_enclosing_volume (location, mount_op, parameters->cancellable,
+					       activation_mount_not_mounted_callback, parameters);
 		g_object_unref (location);
 		g_object_unref (mount_op);
 		return;

@@ -914,7 +914,7 @@ mount_not_mounted_callback (GObject *source_object,
 	window->details->determine_view_file = nautilus_file_get (window->details->pending_location);
 	
 	error = NULL;
-	if (!g_mount_for_location_finish (G_FILE (source_object), res, &error)) {
+	if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error)) {
 		window->details->mount_error = error;
 		got_file_info_for_view_selection_callback (window->details->determine_view_file, window);
 		window->details->mount_error = NULL;
@@ -965,8 +965,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		data->cancellable = g_cancellable_new ();
 		data->window = window;
 		window->details->mount_cancellable = data->cancellable;
-		g_mount_for_location (location, mount_op, window->details->mount_cancellable,
-				      mount_not_mounted_callback, data);
+		g_file_mount_enclosing_volume (location, mount_op, window->details->mount_cancellable,
+					       mount_not_mounted_callback, data);
 		g_object_unref (location);
 		g_object_unref (mount_op);
 		
