@@ -79,7 +79,7 @@ static gboolean confirm_trash_auto_value;
 /* TODO: TESTING!!! */
 
 typedef struct {
-	GIOJob *io_job;	
+	GIOSchedulerJob *io_job;	
 	GTimer *time;
 	GtkWindow *parent_window;
 	int screen_num;
@@ -190,7 +190,7 @@ static void scan_sources (GList *files,
 			  OpKind kind);
 
 
-static void empty_trash_job (GIOJob *io_job,
+static void empty_trash_job (GIOSchedulerJob *io_job,
 			     GCancellable *cancellable,
 			     gpointer user_data);
 
@@ -849,7 +849,7 @@ typedef struct {
 	int result;
 } RunSimpleDialogData;
 
-static void
+static gboolean
 do_run_simple_dialog (gpointer _data)
 {
 	RunSimpleDialogData *data = _data;
@@ -891,6 +891,8 @@ do_run_simple_dialog (gpointer _data)
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
 	data->result = result;
+	
+	return FALSE;
 }
 
 /* NOTE: This frees the primary / secondary strings, in order to
@@ -927,11 +929,10 @@ run_simple_dialog_va (CommonJob *job,
 	g_ptr_array_add (ptr_array, NULL);
 	data->button_titles = (const char **)g_ptr_array_free (ptr_array, FALSE);
 
-	g_io_job_send_to_mainloop (job->io_job,
-				   do_run_simple_dialog,
-				   data,
-				   NULL,
-				   TRUE);
+	g_io_scheduler_job_send_to_mainloop (job->io_job,
+					     do_run_simple_dialog,
+					     data,
+					     NULL);
 
 	res = data->result;
 
@@ -1557,7 +1558,7 @@ trash_files (CommonJob *job, GList *files)
 	}
 }
 
-static void
+static gboolean
 delete_job_done (gpointer user_data)
 {
 	DeleteJob *job;
@@ -1576,10 +1577,12 @@ delete_job_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
+
+	return FALSE;
 }
 
 static void
-delete_job (GIOJob *io_job,
+delete_job (GIOSchedulerJob *io_job,
 	    GCancellable *cancellable,
 	    gpointer user_data)
 {
@@ -1646,11 +1649,10 @@ delete_job (GIOJob *io_job,
 	g_list_free (to_trash_files);
 	g_list_free (to_delete_files);
 
-	g_io_job_send_to_mainloop (io_job,
-				   delete_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop_async (io_job,
+						   delete_job_done,
+						   job,
+						   NULL);
 }
 
 static void
@@ -1672,7 +1674,7 @@ trash_or_delete_internal (GList                  *files,
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	
-	g_schedule_io_job (delete_job,
+	g_io_scheduler_push_job (delete_job,
 			   job,
 			   NULL,
 			   0,
@@ -1929,7 +1931,7 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 			job->trash_dirs = get_trash_dirs_for_mount (mount);
 			job->done_callback = (NautilusOpCallback)do_unmount;
 			job->done_callback_data = data;
-			g_schedule_io_job (empty_trash_job,
+			g_io_scheduler_push_job (empty_trash_job,
 					   job,
 					   NULL,
 					   0,
@@ -3436,7 +3438,7 @@ copy_files (CopyMoveJob *job,
 	}
 }
 
-static void
+static gboolean
 copy_job_done (gpointer user_data)
 {
 	CopyMoveJob *job;
@@ -3456,10 +3458,11 @@ copy_job_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
+	return FALSE;
 }
 
 static void
-copy_job (GIOJob *io_job,
+copy_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
 {
@@ -3515,11 +3518,10 @@ copy_job (GIOJob *io_job,
 	
 	g_free (dest_fs_id);
 	
-	g_io_job_send_to_mainloop (io_job,
-				   copy_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop_async (io_job,
+						   copy_job_done,
+						   job,
+						   NULL);
 }
 
 void
@@ -3546,7 +3548,7 @@ nautilus_file_operations_copy (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	g_schedule_io_job (copy_job,
+	g_io_scheduler_push_job (copy_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -3868,7 +3870,7 @@ move_files (CopyMoveJob *job,
 }
 
 
-static void
+static gboolean
 move_job_done (gpointer user_data)
 {
 	CopyMoveJob *job;
@@ -3886,10 +3888,11 @@ move_job_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
+	return FALSE;
 }
 
 static void
-move_job (GIOJob *io_job,
+move_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
 {
@@ -3965,11 +3968,10 @@ move_job (GIOJob *io_job,
 
 	g_free (dest_fs_id);
 	
-	g_io_job_send_to_mainloop (io_job,
-				   move_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop (io_job,
+					     move_job_done,
+					     job,
+					     NULL);
 }
 
 void
@@ -3997,7 +3999,7 @@ nautilus_file_operations_move (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	g_schedule_io_job (move_job,
+	g_io_scheduler_push_job (move_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -4128,7 +4130,7 @@ link_file (CopyMoveJob *job,
 	g_object_unref (dest);
 }
 
-static void
+static gboolean
 link_job_done (gpointer user_data)
 {
 	CopyMoveJob *job;
@@ -4146,10 +4148,11 @@ link_job_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
+	return FALSE;
 }
 
 static void
-link_job (GIOJob *io_job,
+link_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
 {
@@ -4207,11 +4210,10 @@ link_job (GIOJob *io_job,
 
  aborted:
 	
-	g_io_job_send_to_mainloop (io_job,
-				   link_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop (io_job,
+					     link_job_done,
+					     job,
+					     NULL);
 }
 
 void
@@ -4238,7 +4240,7 @@ nautilus_file_operations_link (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	g_schedule_io_job (link_job,
+	g_io_scheduler_push_job (link_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -4269,14 +4271,14 @@ nautilus_file_operations_duplicate (GList *files,
 	}
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
-	g_schedule_io_job (copy_job,
+	g_io_scheduler_push_job (copy_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
 			   job->common.cancellable);
 }
 
-static void
+static gboolean
 set_permissions_job_done (gpointer user_data)
 {
 	SetPermissionsJob *job;
@@ -4290,6 +4292,7 @@ set_permissions_job_done (gpointer user_data)
 	}
 	
 	finalize_common ((CommonJob *)job);
+	return FALSE;
 }
 
 static void
@@ -4372,7 +4375,7 @@ set_permissions_file (SetPermissionsJob *job,
 
 
 static void
-set_permissions_job (GIOJob *io_job,
+set_permissions_job (GIOSchedulerJob *io_job,
 		     GCancellable *cancellable,
 		     gpointer user_data)
 {
@@ -4389,11 +4392,10 @@ set_permissions_job (GIOJob *io_job,
 
 	set_permissions_file (job, job->file, NULL);
 
-	g_io_job_send_to_mainloop (io_job,
-				   set_permissions_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop_async (io_job,
+						   set_permissions_job_done,
+						   job,
+						   NULL);
 }
 
 
@@ -4418,7 +4420,7 @@ nautilus_file_set_permissions_recursive (const char *directory,
 	job->done_callback = callback;
 	job->done_callback_data = callback_data;
 	
-	g_schedule_io_job (set_permissions_job,
+	g_io_scheduler_push_job (set_permissions_job,
 			   job,
 			   NULL,
 			   0,
@@ -4505,7 +4507,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 }
 
-static void
+static gboolean
 create_job_done (gpointer user_data)
 {
 	CreateJob *job;
@@ -4528,10 +4530,11 @@ create_job_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
+	return FALSE;
 }
 
 static void
-create_job (GIOJob *io_job,
+create_job (GIOSchedulerJob *io_job,
 	    GCancellable *cancellable,
 	    gpointer user_data)
 {
@@ -4701,11 +4704,10 @@ create_job (GIOJob *io_job,
 		g_object_unref (dest);
 	}
 	g_free (filename);
-	g_io_job_send_to_mainloop (io_job,
-				   create_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop_async (io_job,
+						   create_job_done,
+						   job,
+						   NULL);
 }
 
 void 
@@ -4733,7 +4735,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 		job->has_position = TRUE;
 	}
 
-	g_schedule_io_job (create_job,
+	g_io_scheduler_push_job (create_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -4771,7 +4773,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget *parent_view,
 		job->src = g_file_new_for_uri (template_uri);
 	}
 
-	g_schedule_io_job (create_job,
+	g_io_scheduler_push_job (create_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -4806,7 +4808,7 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 	job->src_data = g_strdup (initial_contents);
 	job->filename = g_strdup (target_filename);
 
-	g_schedule_io_job (create_job,
+	g_io_scheduler_push_job (create_job,
 			   job,
 			   NULL, /* destroy notify */
 			   0,
@@ -4850,7 +4852,7 @@ delete_trash_file (CommonJob *job,
 	}
 }
 
-static void
+static gboolean
 empty_trash_job_done (gpointer user_data)
 {
 	EmptyTrashJob *job;
@@ -4864,10 +4866,11 @@ empty_trash_job_done (gpointer user_data)
 	}
 	
 	finalize_common ((CommonJob *)job);
+	return FALSE;
 }
 
 static void
-empty_trash_job (GIOJob *io_job,
+empty_trash_job (GIOSchedulerJob *io_job,
 		 GCancellable *cancellable,
 		 gpointer user_data)
 {
@@ -4886,11 +4889,10 @@ empty_trash_job (GIOJob *io_job,
 		delete_trash_file (common, l->data, FALSE);
 	}
 
-	g_io_job_send_to_mainloop (io_job,
-				   empty_trash_job_done,
-				   job,
-				   NULL,
-				   FALSE);
+	g_io_scheduler_job_send_to_mainloop_async (io_job,
+						   empty_trash_job_done,
+						   job,
+						   NULL);
 }
 
 void 
@@ -4908,7 +4910,7 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	job->trash_dirs = g_list_prepend (job->trash_dirs,
 					  g_file_new_for_uri ("trash:"));
 	
-	g_schedule_io_job (empty_trash_job,
+	g_io_scheduler_push_job (empty_trash_job,
 			   job,
 			   NULL,
 			   0,
