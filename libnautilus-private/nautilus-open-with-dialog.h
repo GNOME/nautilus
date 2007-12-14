@@ -27,7 +27,7 @@
 #define NAUTILUS_OPEN_WITH_DIALOG_H
 
 #include <gtk/gtkdialog.h>
-#include <gio/gappinfo.h>
+#include <gio/gio.h>
 
 #define NAUTILUS_TYPE_OPEN_WITH_DIALOG         (nautilus_open_with_dialog_get_type ())
 #define NAUTILUS_OPEN_WITH_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_OPEN_WITH_DIALOG, NautilusOpenWithDialog))

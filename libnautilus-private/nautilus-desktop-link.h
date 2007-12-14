@@ -26,7 +26,7 @@
 #define NAUTILUS_DESKTOP_LINK_H
 
 #include <libnautilus-private/nautilus-file.h>
-#include <gio/gmount.h>
+#include <gio/gio.h>
 
 #define NAUTILUS_TYPE_DESKTOP_LINK \
 	(nautilus_desktop_link_get_type ())

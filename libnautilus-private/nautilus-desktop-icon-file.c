@@ -35,7 +35,7 @@
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
 #include <string.h>
-#include <gio/gdrive.h>
+#include <gio/gio.h>
 
 struct NautilusDesktopIconFileDetails {
 	NautilusDesktopLink *link;

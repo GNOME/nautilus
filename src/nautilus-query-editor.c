@@ -27,7 +27,7 @@
 #include <string.h>
 #include <libnautilus-private/nautilus-marshal.h>
 #include <glib/gi18n.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <gdk/gdkkeysyms.h>

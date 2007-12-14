@@ -39,7 +39,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <glib/gi18n.h>
-#include <gio/gvolumemonitor.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <string.h>
 

@@ -60,7 +60,7 @@
 #include <libxml/xmlsave.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
-#include <gio/gfile.h>
+#include <gio/gio.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-extensions.h>
@@ -68,7 +68,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkwindow.h>
-#include <gio/gfile.h>
 #include <libgnome/gnome-config.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>
@@ -82,8 +81,6 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <bonobo-activation/bonobo-activation.h>
-#include <gio/gthemedicon.h>
-#include <gio/gfileicon.h>
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT

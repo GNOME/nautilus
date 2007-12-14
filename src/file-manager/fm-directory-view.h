@@ -39,7 +39,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <gio/gappinfo.h>
+#include <gio/gio.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;

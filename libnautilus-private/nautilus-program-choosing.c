@@ -39,8 +39,7 @@
 #include <gtk/gtk.h>
 #include <libgnome/gnome-config.h>
 #include <glib/gi18n.h>
-#include <gio/gfileicon.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnome/gnome-url.h>

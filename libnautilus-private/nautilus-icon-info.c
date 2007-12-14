@@ -23,8 +23,7 @@
 #include "nautilus-default-file-icon.h"
 #include <gtk/gtkicontheme.h>
 #include <gtk/gtkiconfactory.h>
-#include <gio/gloadableicon.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 
 #define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"

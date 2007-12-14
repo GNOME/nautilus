@@ -29,9 +29,7 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
-#include <gio/gthemedicon.h>
-#include <gio/gmount.h>
-#include <gio/gvolume.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

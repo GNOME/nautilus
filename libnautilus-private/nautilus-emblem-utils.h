@@ -23,7 +23,7 @@
 */
 
 #include <glib.h>
-#include <gio/gfile.h>
+#include <gio/gio.h>
 #include <gtk/gtkwindow.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 

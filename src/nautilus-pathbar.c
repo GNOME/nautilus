@@ -33,8 +33,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <glib/gi18n.h>
-#include <gio/gthemedicon.h>
-#include <gio/gvolumemonitor.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

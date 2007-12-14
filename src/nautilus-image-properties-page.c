@@ -30,7 +30,7 @@
 #include <gtk/gtklabel.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
-#include <gio/gfile.h>
+#include <gio/gio.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-module.h>

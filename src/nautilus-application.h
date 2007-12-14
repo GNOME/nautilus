@@ -28,7 +28,7 @@
 #define NAUTILUS_APPLICATION_H
 
 #include <gdk/gdk.h>
-#include <gio/gvolumemonitor.h>
+#include <gio/gio.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 

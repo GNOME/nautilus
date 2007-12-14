@@ -25,7 +25,7 @@
 #include <config.h>
 #include "nautilus-ui-utilities.h"
 #include "nautilus-icon-info.h"
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 
 #include <gtk/gtkenums.h>
 #include <eel/eel-debug.h>

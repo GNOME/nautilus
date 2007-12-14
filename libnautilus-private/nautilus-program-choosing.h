@@ -27,7 +27,7 @@
 #define NAUTILUS_PROGRAM_CHOOSING_H
 
 #include <gtk/gtkwindow.h>
-#include <gio/gappinfo.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"

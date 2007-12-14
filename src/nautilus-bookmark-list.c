@@ -32,9 +32,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <gio/gfile.h>
-#include <gio/gfilemonitor.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 
 #define MAX_BOOKMARK_LENGTH 80
 

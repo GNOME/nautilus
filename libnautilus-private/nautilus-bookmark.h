@@ -27,8 +27,7 @@
 
 #include <gtk/gtkenums.h>
 #include <gtk/gtkwidget.h>
-#include <gio/gfile.h>
-#include <gio/gicon.h>
+#include <gio/gio.h>
 typedef struct NautilusBookmark NautilusBookmark;
 
 #define NAUTILUS_TYPE_BOOKMARK \

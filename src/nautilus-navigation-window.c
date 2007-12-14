@@ -78,7 +78,6 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <math.h>
 #include <sys/time.h>
-#include <gio/gthemedicon.h>
 
 
 /* FIXME bugzilla.gnome.org 41243: 

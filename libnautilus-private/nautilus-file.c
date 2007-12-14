@@ -55,12 +55,10 @@
 #include <grp.h>
 #include <gtk/gtksignal.h>
 #include <glib/gi18n.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <glib/gurifuncs.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gfileutils.h>
-#include <gio/gthemedicon.h>
-#include <gio/gfileicon.h>
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libxml/parser.h>
 #include <pwd.h>

@@ -28,9 +28,7 @@
 #include <glib/gstrfuncs.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
-#include <gio/gfile.h>
-#include <gio/gfileenumerator.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 
 #define BATCH_SIZE 500
 

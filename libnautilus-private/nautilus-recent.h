@@ -5,7 +5,7 @@
 
 #include <gtk/gtkrecentmanager.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <gio/gappinfo.h>
+#include <gio/gio.h>
 
 void nautilus_recent_add_file (NautilusFile *file,
 			       GAppInfo *application);

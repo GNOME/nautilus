@@ -26,7 +26,7 @@
 #define NAUTILUS_DIRECTORY_H
 
 #include <gtk/gtkobject.h>
-#include <gio/gfile.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,

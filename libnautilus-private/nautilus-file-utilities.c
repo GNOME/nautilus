@@ -37,7 +37,7 @@
 #include <eel/eel-debug.h>
 #include <libgnome/gnome-util.h>
 #include <glib/gi18n.h>
-#include <gio/gfilemonitor.h>
+#include <gio/gio.h>
 #include <unistd.h>
 #include <stdlib.h>
 

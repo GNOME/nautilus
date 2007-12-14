@@ -55,8 +55,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
-#include <gio/gvolumemonitor.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-places-sidebar.h"

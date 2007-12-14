@@ -31,7 +31,7 @@
 #include "nautilus-search-engine.h"
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtksignal.h>
-#include <gio/gioerror.h>
+#include <gio/gio.h>
 #include <libgnome/gnome-macros.h>
 #include <string.h>
 #include <sys/time.h>

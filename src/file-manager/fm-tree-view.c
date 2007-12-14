@@ -56,8 +56,7 @@
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkclipboard.h>
 #include <glib/gi18n.h>
-#include <gio/gvolumemonitor.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>

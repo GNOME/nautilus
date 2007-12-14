@@ -1,5 +1,64 @@
 2007-12-14  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-bookmark.c:
+        * libnautilus-private/nautilus-bookmark.h:
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-desktop-link-monitor.c:
+        * libnautilus-private/nautilus-desktop-link.c:
+        * libnautilus-private/nautilus-desktop-link.h:
+        * libnautilus-private/nautilus-directory-private.h:
+        * libnautilus-private/nautilus-directory.h:
+        * libnautilus-private/nautilus-emblem-utils.h:
+        * libnautilus-private/nautilus-file-changes-queue.h:
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-file-operations.h:
+        * libnautilus-private/nautilus-file-utilities.c:
+        * libnautilus-private/nautilus-file-utilities.h:
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-file.h:
+        * libnautilus-private/nautilus-icon-info.c:
+        * libnautilus-private/nautilus-icon-info.h:
+        * libnautilus-private/nautilus-link.c:
+        * libnautilus-private/nautilus-mime-actions.h:
+        * libnautilus-private/nautilus-mime-application-chooser.c:
+        * libnautilus-private/nautilus-monitor.c:
+        * libnautilus-private/nautilus-monitor.h:
+        * libnautilus-private/nautilus-open-with-dialog.c:
+        * libnautilus-private/nautilus-open-with-dialog.h:
+        * libnautilus-private/nautilus-program-choosing.c:
+        * libnautilus-private/nautilus-program-choosing.h:
+        * libnautilus-private/nautilus-progress-info.h:
+        * libnautilus-private/nautilus-recent.h:
+        * libnautilus-private/nautilus-search-directory.c:
+        * libnautilus-private/nautilus-search-engine-simple.c:
+        * libnautilus-private/nautilus-trash-monitor.c:
+        * libnautilus-private/nautilus-trash-monitor.h:
+        * libnautilus-private/nautilus-ui-utilities.c:
+        * libnautilus-private/nautilus-view-factory.h:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-directory-view.h:
+        * src/file-manager/fm-icon-container.c:
+        * src/file-manager/fm-icon-view.c:
+        * src/file-manager/fm-tree-model.h:
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-application.c:
+        * src/nautilus-application.h:
+        * src/nautilus-bookmark-list.c:
+        * src/nautilus-bookmark-list.h:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-image-properties-page.c:
+        * src/nautilus-location-entry.c:
+        * src/nautilus-navigation-window.c:
+        * src/nautilus-pathbar.c:
+        * src/nautilus-pathbar.h:
+        * src/nautilus-places-sidebar.c:
+        * src/nautilus-property-browser.c:
+        * src/nautilus-query-editor.c:
+        * src/nautilus-window-menus.c:
+	Only use <gio/gio.h> include 
+
+2007-12-14  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
 	Update to gioscheduler.h changes
 

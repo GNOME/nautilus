@@ -4,7 +4,7 @@
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdktypes.h>
-#include <gio/gicon.h>
+#include <gio/gio.h>
 #include <gtk/gtkstock.h>
 
 G_BEGIN_DECLS

@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_MIME_ACTIONS_H
 #define NAUTILUS_MIME_ACTIONS_H
 
-#include <gio/gappinfo.h>
+#include <gio/gio.h>
 
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-window-info.h>

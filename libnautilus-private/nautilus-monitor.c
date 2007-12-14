@@ -29,7 +29,7 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-utilities.h"
 
-#include <gio/gdirectorymonitor.h>
+#include <gio/gio.h>
 #include <libgnome/gnome-util.h>
 
 struct NautilusMonitor {

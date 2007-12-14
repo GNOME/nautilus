@@ -26,7 +26,7 @@
 #define NAUTILUS_PROGRESS_INFO_H
 
 #include <glib-object.h>
-#include <gio/gcancellable.h>
+#include <gio/gio.h>
 
 #define NAUTILUS_TYPE_PROGRESS_INFO         (nautilus_progress_info_get_type ())
 #define NAUTILUS_PROGRESS_INFO(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_PROGRESS_INFO, NautilusProgressInfo))

@@ -67,8 +67,7 @@
 #include <gtk/gtkviewport.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <gio/gfile.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-color-picker.h>

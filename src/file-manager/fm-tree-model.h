@@ -29,7 +29,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtktreemodel.h>
-#include <gio/gmount.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define FM_TYPE_TREE_MODEL	    (fm_tree_model_get_type ())

@@ -22,7 +22,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#include <gio/gfile.h>
+#include <gio/gio.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-queue.h>

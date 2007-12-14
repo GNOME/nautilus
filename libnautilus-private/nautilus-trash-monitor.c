@@ -30,8 +30,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include <eel/eel-debug.h>
-#include <gio/gthemedicon.h>
-#include <gio/gfilemonitor.h>
+#include <gio/gio.h>
 #include <string.h>
 
 struct NautilusTrashMonitorDetails {

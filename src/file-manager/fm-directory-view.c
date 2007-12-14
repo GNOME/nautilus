@@ -67,8 +67,7 @@
 #include <gtk/gtkenums.h>
 #include <gtk/gtkbindings.h>
 #include <glib/gi18n.h>
-#include <gio/gioerror.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>

@@ -34,7 +34,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 
 struct NautilusDesktopWindowDetails {
 	int dummy;

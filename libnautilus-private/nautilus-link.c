@@ -33,9 +33,7 @@
 #include "nautilus-program-choosing.h"
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
-#include <gio/gfile.h>
-#include <gio/gfileinfo.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
 

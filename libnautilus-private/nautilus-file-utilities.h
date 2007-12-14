@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FILE_UTILITIES_H
 #define NAUTILUS_FILE_UTILITIES_H
 
-#include <gio/gfile.h>
+#include <gio/gio.h>
 
 #define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
 #define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"

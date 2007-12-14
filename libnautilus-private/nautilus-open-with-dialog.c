@@ -51,9 +51,7 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkvbox.h>
-#include <gio/gcontenttype.h>
-#include <gio/gthemedicon.h>
-#include <gio/gfileicon.h>
+#include <gio/gio.h>
 
 #define sure_string(s)                    ((const char *)((s)!=NULL?(s):""))
 #define DESKTOP_ENTRY_GROUP		  "Desktop Entry"

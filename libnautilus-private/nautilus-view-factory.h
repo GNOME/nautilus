@@ -29,7 +29,7 @@
 
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <gio/gfileinfo.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 

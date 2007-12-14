@@ -53,9 +53,7 @@
 #include <gtk/gtktreeview.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtkvbox.h>
-#include <gio/gcontenttype.h>
-#include <gio/gthemedicon.h>
-#include <gio/gfileicon.h>
+#include <gio/gio.h>
 
 struct _NautilusMimeApplicationChooserDetails {
 	char *uri;

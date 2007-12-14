@@ -38,7 +38,7 @@
 #include <gtk/gtkiconfactory.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
-#include <gio/gthemedicon.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
 enum {

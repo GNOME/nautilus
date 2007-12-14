@@ -29,7 +29,7 @@
 #define NAUTILUS_BOOKMARK_LIST_H
 
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <gio/gfilemonitor.h>
+#include <gio/gio.h>
 
 typedef struct NautilusBookmarkList NautilusBookmarkList;
 typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;

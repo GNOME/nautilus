@@ -42,14 +42,13 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtksignal.h>
 #include <glib/gi18n.h>
-#include <gio/gfilenamecompleter.h>
+#include <gio/gio.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-clipboard.h>
-#include <gio/gfilenamecompleter.h>
 #include <stdio.h>
 #include <string.h>
 

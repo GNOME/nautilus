@@ -29,7 +29,7 @@
 
 #include <gdk/gdkdnd.h>
 #include <gtk/gtkwidget.h>
-#include <gio/gmount.h>
+#include <gio/gio.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);

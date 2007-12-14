@@ -26,7 +26,7 @@
 #include <string.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
-#include <gio/gcontenttype.h>
+#include <gio/gio.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>

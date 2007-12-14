@@ -22,7 +22,7 @@
 #define NAUTILUS_PATHBAR_H
 
 #include <gtk/gtkcontainer.h>
-#include <gio/gfile.h>
+#include <gio/gio.h>
 
 typedef struct _NautilusPathBar      NautilusPathBar;
 typedef struct _NautilusPathBarClass NautilusPathBarClass;
