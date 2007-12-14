@@ -241,7 +241,7 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 		if (app_name != NULL) {
 			app = g_app_info_create_from_commandline (commandline,
 								  app_name,
-								  G_APP_INFO_CREATE_FLAGS_NONE,
+								  G_APP_INFO_CREATE_NONE,
 								  &error);
 		}
 	}

@@ -4607,7 +4607,7 @@ create_job (GIOSchedulerJob *io_job,
 		if (job->src) {
 			res = g_file_copy (job->src,
 					   dest,
-					   G_FILE_COPY_FLAGS_NONE,
+					   G_FILE_COPY_NONE,
 					   common->cancellable,
 					   NULL, NULL,
 					   &error);
@@ -4618,7 +4618,7 @@ create_job (GIOSchedulerJob *io_job,
 			}
 
 			out = g_file_create (dest,
-					     G_FILE_CREATE_FLAGS_NONE,
+					     G_FILE_CREATE_NONE,
 					     common->cancellable,
 					     &error);
 			if (out) {
