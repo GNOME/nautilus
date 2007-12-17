@@ -230,19 +230,23 @@ debug_log_io_cb (GIOChannel *io, GIOCondition condition, gpointer data)
 	return FALSE;
 }
 
-/* sigaction structures for the old handlers of these signals */
-static struct sigaction old_segv_sa;
-static struct sigaction old_abrt_sa;
-static struct sigaction old_trap_sa;
-static struct sigaction old_fpe_sa;
-static struct sigaction old_bus_sa;
-
 static void
 sigusr1_handler (int sig)
 {
 	while (write (debug_log_pipes[1], "a", 1) != 1)
 		;
 }
+
+/* This is totally broken as we're using non-signal safe
+ * calls in sigfatal_handler. Disable by default. */
+#ifdef USE_SEGV_HANDLER
+
+/* sigaction structures for the old handlers of these signals */
+static struct sigaction old_segv_sa;
+static struct sigaction old_abrt_sa;
+static struct sigaction old_trap_sa;
+static struct sigaction old_fpe_sa;
+static struct sigaction old_bus_sa;
 
 static void
 sigfatal_handler (int sig)
@@ -286,6 +290,7 @@ sigfatal_handler (int sig)
 	if (func != NULL && func != SIG_IGN && func != SIG_DFL)
 		(* func) (sig);
 }
+#endif
 
 static void
 setup_debug_log_signals (void)
@@ -304,6 +309,9 @@ setup_debug_log_signals (void)
 	sa.sa_flags = 0;
 	sigaction (SIGUSR1, &sa, NULL);
 
+	/* This is totally broken as we're using non-signal safe
+	 * calls in sigfatal_handler. Disable by default. */
+#ifdef USE_SEGV_HANDLER
 	sa.sa_handler = sigfatal_handler;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;
@@ -313,6 +321,7 @@ setup_debug_log_signals (void)
 	sigaction(SIGTRAP, &sa, &old_trap_sa);
 	sigaction(SIGFPE,  &sa, &old_fpe_sa);
 	sigaction(SIGBUS,  &sa, &old_bus_sa);
+#endif
 }
 
 static GLogFunc default_log_handler;
