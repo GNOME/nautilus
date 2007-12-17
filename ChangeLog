@@ -1,3 +1,19 @@
+2007-12-14  David Zeuthen  <davidz@redhat.com>
+
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	(update_info_from_link):
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(volume_delete_dialog):
+	* src/file-manager/fm-tree-view.c: (button_pressed_callback),
+	(fm_tree_view_unmount_cb):
+	* src/nautilus-pathbar.c: (nautilus_path_bar_class_init):
+	* src/nautilus-places-sidebar.c: (check_visibility),
+	(volume_mount_cb), (open_selected_bookmark), (mount_shortcut_cb),
+	(drive_eject_cb), (volume_eject_cb), (mount_eject_cb),
+	(eject_shortcut_cb):
+
+	Update for API changes in gio trunk.
+
 2007-12-14  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:

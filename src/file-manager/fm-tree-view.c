@@ -744,18 +744,9 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		
 		mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (mount) {
-			GDrive *drive;
-			gboolean can_eject = FALSE;
-
-			drive = g_mount_get_drive (mount);
-			if (drive != NULL) {
-				can_eject = g_drive_can_eject (drive);
-				g_object_unref (drive);
-			}
-
-			show_unmount = g_mount_can_unmount (mount) || can_eject;
+			show_unmount = g_mount_can_unmount (mount) || g_mount_can_eject (mount);
 			/* TODO: show both unmount and eject if there are more than one volume for the drive */
-			unmount_is_eject = can_eject;
+			unmount_is_eject = g_mount_can_eject (mount);
 		} 
 		
 		gtk_label_set_text (GTK_LABEL (GTK_BIN (GTK_MENU_ITEM (view->details->popup_unmount))->child),
@@ -1105,18 +1096,9 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, file);
 	
 	if (mount != NULL) {
-		GDrive *drive;
-		gboolean can_eject = FALSE;
-
-		drive = g_mount_get_drive (mount);
-		if (drive != NULL) {
-			can_eject = g_drive_can_eject (drive);
-			g_object_unref (drive);
-		}
-
 		nautilus_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
-							 mount,
-							 can_eject);
+							mount,
+							g_mount_can_eject (mount));
 	}
 }
 

@@ -1181,12 +1181,15 @@ check_visibility (GMount           *mount,
 			*show_rescan = TRUE;
 	}
 
-	if (volume != NULL && mount == NULL) {
-		*show_mount = g_volume_can_mount (volume);
+	if (volume != NULL) {
+		*show_eject |= g_volume_can_eject (volume);
+		if (mount == NULL)
+			*show_mount = g_volume_can_mount (volume);
 	}
-
+	
 	if (mount != NULL) {
 		*show_unmount = g_mount_can_unmount (mount);
+		*show_eject |= g_mount_can_eject (mount);
 	}
 
 #ifdef TODO_GIO
@@ -1268,6 +1271,7 @@ volume_mount_cb (GObject *source_object,
 		 GAsyncResult *res,
 		 gpointer user_data)
 {
+	GMountOperation *mount_op = user_data;
 	GError *error;
 	char *primary;
 	char *name;
@@ -1283,6 +1287,8 @@ volume_mount_cb (GObject *source_object,
 		g_free (primary);
 		g_error_free (error);
 	}
+
+	g_object_unref (mount_op);
 }
 
 static void
@@ -1331,7 +1337,9 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GVolume *volume;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
 		if (volume != NULL) {
-			g_volume_mount (volume, NULL, NULL, volume_mount_cb, NULL);
+			GMountOperation *mount_op;
+			mount_op = g_mount_operation_new ();
+			g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
 			g_object_unref (volume);
 		}
 	}
@@ -1447,10 +1455,8 @@ mount_shortcut_cb (GtkMenuItem           *item,
 
 	if (volume != NULL) {
 		GMountOperation *mount_op;
-
-		/* TODO: do we leak this? */
 		mount_op = g_mount_operation_new ();
-		g_volume_mount (volume, mount_op, NULL, volume_mount_cb, NULL);
+		g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
 		g_object_unref (volume);
 	}
 }
@@ -1495,11 +1501,51 @@ drive_eject_cb (GObject *source_object,
 	GError *error;
 	char *primary;
 	char *name;
-
 	error = NULL;
-	if (!g_drive_eject_finish (G_DRIVE (source_object),
-				   res, &error)) {
+	if (!g_drive_eject_finish (G_DRIVE (source_object), res, &error)) {
 		name = g_drive_get_name (G_DRIVE (source_object));
+		primary = g_strdup_printf (_("Unable to eject %s"), name);
+		g_free (name);
+		eel_show_error_dialog (primary,
+				       error->message,
+				       NULL);
+		g_free (primary);
+		g_error_free (error);
+	}
+}
+
+static void
+volume_eject_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+	error = NULL;
+	if (!g_volume_eject_finish (G_VOLUME (source_object), res, &error)) {
+		name = g_volume_get_name (G_VOLUME (source_object));
+		primary = g_strdup_printf (_("Unable to eject %s"), name);
+		g_free (name);
+		eel_show_error_dialog (primary,
+				       error->message,
+				       NULL);
+		g_free (primary);
+		g_error_free (error);
+	}
+}
+
+static void
+mount_eject_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+	error = NULL;
+	if (!g_mount_eject_finish (G_MOUNT (source_object), res, &error)) {
+		name = g_mount_get_name (G_MOUNT (source_object));
 		primary = g_strdup_printf (_("Unable to eject %s"), name);
 		g_free (name);
 		eel_show_error_dialog (primary,
@@ -1530,18 +1576,19 @@ eject_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (mount != NULL) {
-		GtkWidget *toplevel;
-		
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
-		nautilus_file_operations_unmount_mount (GTK_WINDOW (toplevel),
-							 mount,
-							 TRUE);
+		g_mount_eject (mount, NULL, mount_eject_cb, NULL);
+	} else if (volume != NULL) {
+		g_volume_eject (volume, NULL, volume_eject_cb, NULL);
 	} else if (drive != NULL) {
 		g_drive_eject (drive, NULL, drive_eject_cb, NULL);
 	}
-	g_object_unref (mount);
-	g_object_unref (volume);
-	g_object_unref (drive);
+
+	if (mount != NULL)
+		g_object_unref (mount);
+	if (volume != NULL)
+		g_object_unref (volume);
+	if (drive != NULL)
+		g_object_unref (drive);
 }
 
 static void

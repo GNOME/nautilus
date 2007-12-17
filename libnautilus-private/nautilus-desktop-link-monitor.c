@@ -99,21 +99,12 @@ volume_delete_dialog (GtkWidget *parent_view,
 	mount = nautilus_desktop_link_get_mount (link);
 
 	if (mount != NULL) {
-		GDrive *drive;
-		gboolean can_eject = FALSE;
-
-		drive = g_mount_get_drive (mount);
-		if (drive != NULL) {
-			can_eject = g_drive_can_eject (drive);
-			g_object_unref (drive);
-		}
-
 		display_name = nautilus_desktop_link_get_display_name (link);
 		dialog_str = g_strdup_printf (_("You cannot move the volume \"%s\" to the trash."),
 					      display_name);
 		g_free (display_name);
 
-		if (can_eject) {
+		if (g_mount_can_eject (mount)) {
 			eel_run_simple_dialog
 				(parent_view, 
 				 FALSE,

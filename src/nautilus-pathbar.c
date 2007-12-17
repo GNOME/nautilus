@@ -268,7 +268,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 		  G_SIGNAL_RUN_FIRST,
 		  G_STRUCT_OFFSET (NautilusPathBarClass, path_clicked),
 		  NULL, NULL,
-		  g_cclosure_marshal_VOID__STRING,
+		  g_cclosure_marshal_VOID__OBJECT,
 		  G_TYPE_NONE, 1,
 		  G_TYPE_FILE);
 }

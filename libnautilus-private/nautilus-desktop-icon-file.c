@@ -185,17 +185,8 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	file->details->can_eject = FALSE;
 	mount = nautilus_desktop_link_get_mount (link);
 	if (mount) {
-		GDrive *drive;
-		gboolean can_eject = FALSE;
-
-		drive = g_mount_get_drive (mount);
-		if (drive != NULL) {
-			can_eject = g_drive_can_eject (drive);
-			g_object_unref (drive);
-		}
-
 		file->details->can_unmount = g_mount_can_unmount (mount);
-		file->details->can_eject = can_eject;
+		file->details->can_eject = g_mount_can_eject (mount);
 		g_object_unref (mount);
 	}
 	
