@@ -4849,7 +4849,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	if (file->details->size == -1) {
 		return NULL;
 	}
-	return g_format_file_size_for_display (file->details->size);
+	return g_format_size_for_display (file->details->size);
 }
 
 /**
@@ -4890,7 +4890,7 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 		return NULL;
 	}
 
-	formated = g_format_file_size_for_display (file->details->size);
+	formated = g_format_size_for_display (file->details->size);
 	/* Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string */
 	real_size = g_strdup_printf (_("%"G_GUINT64_FORMAT), (guint64) file->details->size);
 	formated_plus_real = g_strdup_printf (_("%s (%s bytes)"), formated, real_size);
@@ -4956,7 +4956,7 @@ nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 	 * directly if desired.
 	 */
 	if (report_size) {
-		return g_format_file_size_for_display (total_size);
+		return g_format_size_for_display (total_size);
 	}
 
 	return format_item_count_for_display (report_directory_count
@@ -5653,7 +5653,7 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 	if (info) {
 		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FS_FREE)) {
 			free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_FREE);
-			res = g_format_file_size_for_display (free_space);
+			res = g_format_size_for_display (free_space);
 		}
 		g_object_unref (info);
 	}
