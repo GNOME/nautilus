@@ -1278,13 +1278,15 @@ volume_mount_cb (GObject *source_object,
 
 	error = NULL;
 	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
-		name = g_volume_get_name (G_VOLUME (source_object));
-		primary = g_strdup_printf (_("Unable to mount %s"), name);
-		g_free (name);
-		eel_show_error_dialog (primary,
-				       error->message,
-				       NULL);
-		g_free (primary);
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_volume_get_name (G_VOLUME (source_object));
+			primary = g_strdup_printf (_("Unable to mount %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
 		g_error_free (error);
 	}
 
@@ -1503,13 +1505,15 @@ drive_eject_cb (GObject *source_object,
 	char *name;
 	error = NULL;
 	if (!g_drive_eject_finish (G_DRIVE (source_object), res, &error)) {
-		name = g_drive_get_name (G_DRIVE (source_object));
-		primary = g_strdup_printf (_("Unable to eject %s"), name);
-		g_free (name);
-		eel_show_error_dialog (primary,
-				       error->message,
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to eject %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
 				       NULL);
-		g_free (primary);
+			g_free (primary);
+		}
 		g_error_free (error);
 	}
 }
@@ -1524,13 +1528,15 @@ volume_eject_cb (GObject *source_object,
 	char *name;
 	error = NULL;
 	if (!g_volume_eject_finish (G_VOLUME (source_object), res, &error)) {
-		name = g_volume_get_name (G_VOLUME (source_object));
-		primary = g_strdup_printf (_("Unable to eject %s"), name);
-		g_free (name);
-		eel_show_error_dialog (primary,
-				       error->message,
-				       NULL);
-		g_free (primary);
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_volume_get_name (G_VOLUME (source_object));
+			primary = g_strdup_printf (_("Unable to eject %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
 		g_error_free (error);
 	}
 }
@@ -1545,13 +1551,15 @@ mount_eject_cb (GObject *source_object,
 	char *name;
 	error = NULL;
 	if (!g_mount_eject_finish (G_MOUNT (source_object), res, &error)) {
-		name = g_mount_get_name (G_MOUNT (source_object));
-		primary = g_strdup_printf (_("Unable to eject %s"), name);
-		g_free (name);
-		eel_show_error_dialog (primary,
-				       error->message,
-				       NULL);
-		g_free (primary);
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_mount_get_name (G_MOUNT (source_object));
+			primary = g_strdup_printf (_("Unable to eject %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
 		g_error_free (error);
 	}
 }
@@ -1602,13 +1610,15 @@ drive_poll_for_media_cb (GObject *source_object,
 
 	error = NULL;
 	if (!g_drive_poll_for_media_finish (G_DRIVE (source_object), res, &error)) {
-		name = g_drive_get_name (G_DRIVE (source_object));
-		primary = g_strdup_printf (_("Unable to poll %s for media changes"), name);
-		g_free (name);
-		eel_show_error_dialog (primary,
-				       error->message,
-				       NULL);
-		g_free (primary);
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to poll %s for media changes"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
 		g_error_free (error);
 	}
 }

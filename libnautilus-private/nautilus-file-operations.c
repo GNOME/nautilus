@@ -1722,15 +1722,17 @@ unmount_mount_callback (GObject *source_object,
 	error = NULL;
 	if (!g_mount_unmount_finish (G_MOUNT (source_object),
 				      res, &error)) {
-		if (data->eject) {
-			primary = f (_("Unable to eject %V"), source_object);
-		} else {
-			primary = f (_("Unable to unmount %V"), source_object);
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			if (data->eject) {
+				primary = f (_("Unable to eject %V"), source_object);
+			} else {
+				primary = f (_("Unable to unmount %V"), source_object);
+			}
+			eel_show_error_dialog (primary,
+					       error->message,
+					       data->parent_window);
+			g_free (primary);
 		}
-		eel_show_error_dialog (primary,
-				       error->message,
-				       data->parent_window);
-		g_free (primary);
 		g_error_free (error);
 	}
 	

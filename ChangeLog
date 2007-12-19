@@ -1,3 +1,14 @@
+2007-12-19  David Zeuthen  <davidz@redhat.com>
+
+	Don't put up error dialogs if the error code is
+	G_IO_ERROR_FAILED_HANDLED.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(unmount_mount_callback):
+	* src/nautilus-places-sidebar.c: (volume_mount_cb),
+	(drive_eject_cb), (volume_eject_cb), (mount_eject_cb),
+	(drive_poll_for_media_cb):
+
 2007-12-17  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-main.c:
