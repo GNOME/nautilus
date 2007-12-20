@@ -4,13 +4,12 @@ dnl ===========================================================================
 
 m4_define(bonobo_activation_minver,    2.1.0)
 m4_define(bonobo_minver,               2.1.0)
-m4_define(eel_minver,                  2.15.91)
+m4_define(eel_minver,                  2.21.1)
 m4_define(esound_minver,               0.2.27)
-m4_define(glib_minver,                 2.6.0)
+m4_define(glib_minver,                 2.15.0)
 m4_define(gnome_desktop_minver,        2.9.91)
 m4_define(gnome_minver,                2.14.0)
 m4_define(gnome_ui_minver,             2.6.0)
-m4_define(gnome_vfs_minver,            2.19.3)
 m4_define(orbit_minver,                2.4.0)
 m4_define(pango_minver,                1.1.2)
 m4_define(gtk_minver,                  2.11.6)
@@ -49,7 +48,6 @@ AC_SUBST(GLIB_REQUIRED [glib_minver])
 AC_SUBST(GNOME_DESKTOP_REQUIRED, [gnome_desktop_minver])
 AC_SUBST(GNOME_REQUIRED, [gnome_minver])
 AC_SUBST(GNOME_UI_REQUIRED, [gnome_ui_minver])
-AC_SUBST(GNOME_VFS_REQUIRED, [gnome_vfs_minver])
 AC_SUBST(ORBIT_REQUIRED, [orbit_minver])
 AC_SUBST(PANGO_REQUIRED, [pango_minver])
 AC_SUBST(GTK_REQUIRED, [gtk_minver])
@@ -94,8 +92,6 @@ PKG_CHECK_MODULES(ALL, [
 	eel-2.0			>= eel_minver
 	glib-2.0		>= glib_minver
 	gnome-desktop-2.0	>= gnome_desktop_minver
-	gnome-vfs-2.0		>= gnome_vfs_minver
-	gnome-vfs-module-2.0	>= gnome_vfs_minver
 	gio-2.0		
 	ORBit-2.0		>= orbit_minver
 	pango			>= pango_minver
@@ -399,14 +395,14 @@ PKG_CHECK_EXISTS([glib-2.0 >= 2.13.0],[have_glib_2_14=yes],[have_glib_2_14=no])
 AM_CONDITIONAL([HAVE_GLIB_2_14],[test "$have_glib_2_14" = "yes"])
 
 dnl libnautilus-extension
-LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
+LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0"
 LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES` $WARNING_CFLAGS"
 AC_SUBST(LIBNAUTILUS_EXTENSION_CFLAGS)
 LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gnome-vfs-module-2.0 gio-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gio-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
