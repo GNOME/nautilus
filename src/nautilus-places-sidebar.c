@@ -1584,11 +1584,11 @@ eject_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (mount != NULL) {
-		g_mount_eject (mount, NULL, mount_eject_cb, NULL);
+		g_mount_eject (mount, 0, NULL, mount_eject_cb, NULL);
 	} else if (volume != NULL) {
-		g_volume_eject (volume, NULL, volume_eject_cb, NULL);
+		g_volume_eject (volume, 0, NULL, volume_eject_cb, NULL);
 	} else if (drive != NULL) {
-		g_drive_eject (drive, NULL, drive_eject_cb, NULL);
+		g_drive_eject (drive, 0, NULL, drive_eject_cb, NULL);
 	}
 
 	if (mount != NULL)

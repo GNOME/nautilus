@@ -1762,9 +1762,9 @@ do_unmount (UnmountData *data)
 #endif
 	} else {
 		g_mount_unmount (data->mount,
-				  NULL,
-				  unmount_mount_callback,
-				  data);
+				 0, NULL,
+				 unmount_mount_callback,
+				 data);
 	}
 }
 
