@@ -195,10 +195,10 @@ send_batch (SearchThreadData *data)
 }
 
 #define STD_ATTRIBUTES \
-	G_FILE_ATTRIBUTE_STD_NAME "," \
-	G_FILE_ATTRIBUTE_STD_DISPLAY_NAME "," \
-	G_FILE_ATTRIBUTE_STD_IS_HIDDEN "," \
-	G_FILE_ATTRIBUTE_STD_TYPE "," \
+	G_FILE_ATTRIBUTE_STANDARD_NAME "," \
+	G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," \
+	G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
+	G_FILE_ATTRIBUTE_STANDARD_TYPE "," \
 	G_FILE_ATTRIBUTE_ID_FILE
 
 static void
@@ -218,7 +218,7 @@ visit_directory (GFile *dir, SearchThreadData *data)
 	enumerator = g_file_enumerate_children (dir,
 						data->mime_types != NULL ?
 						STD_ATTRIBUTES ","
-						G_FILE_ATTRIBUTE_STD_CONTENT_TYPE
+						G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE
 						:
 						STD_ATTRIBUTES
 						,

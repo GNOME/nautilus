@@ -1138,7 +1138,7 @@ selection_is_image_file (GList *selection_list)
 	
 	location = g_file_new_for_uri (selected_item->uri);
 	info = g_file_query_info (location,
-				  G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 				  0, NULL, NULL);
 	if (info) {
 		mime_type = g_file_info_get_content_type (info);

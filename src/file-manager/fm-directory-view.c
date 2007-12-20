@@ -8299,7 +8299,7 @@ fm_directory_view_handle_netscape_url_drop (FMDirectoryView  *view,
 		const char *mime_type;
 
 		f = g_file_new_for_uri (url);
-		info = g_file_query_info (f, G_FILE_ATTRIBUTE_STD_CONTENT_TYPE, 0, NULL, NULL);
+		info = g_file_query_info (f, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0, NULL, NULL);
 		mime_type = NULL;
 
 		if (info) {

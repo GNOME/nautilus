@@ -1566,7 +1566,7 @@ update_info_internal (NautilusFile *file,
 	file->details->type = file_type;
 
 	if (!file->details->got_custom_activation_location) {
-		activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_TARGET_URI);
+		activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 		if (activation_uri == NULL) {
 			if (file->details->activation_location) {
 				g_object_unref (file->details->activation_location);
@@ -1706,7 +1706,7 @@ update_info_internal (NautilusFile *file,
 	file->details->gid = gid;
 	
 	size = -1;
-	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STD_SIZE)) {
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)) {
 		size = g_file_info_get_size (info);
 	}
 	if (file->details->size != size) {
@@ -5649,10 +5649,10 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 	res = NULL;
 
 	location = nautilus_file_get_location (file);
-	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FS_FREE, NULL, NULL);
+	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_FREE, NULL, NULL);
 	if (info) {
-		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FS_FREE)) {
-			free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_FREE);
+		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE)) {
+			free_space = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 			res = g_format_size_for_display (free_space);
 		}
 		g_object_unref (info);

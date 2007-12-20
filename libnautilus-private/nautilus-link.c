@@ -68,7 +68,7 @@ is_local_file_a_link (const char *uri)
 	file = g_file_new_for_uri (uri);
 
 	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 				  0, NULL, &error);
 	if (info) {
 		link = is_link_mime_type (g_file_info_get_content_type (info));

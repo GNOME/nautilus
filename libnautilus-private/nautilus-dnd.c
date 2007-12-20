@@ -304,28 +304,28 @@ check_same_fs (GFile *file1, GFile *file2)
 	gboolean res;
 	
 	info1 = g_file_query_info (file1,
-				   G_FILE_ATTRIBUTE_ID_FS,
+				   G_FILE_ATTRIBUTE_ID_FILESYSTEM,
 				   0, NULL, NULL);
 
 	if (info1 == NULL) {
 		return FALSE;
 	}
 
-	id1 = g_file_info_get_attribute_string (info1, G_FILE_ATTRIBUTE_ID_FS);
+	id1 = g_file_info_get_attribute_string (info1, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
 	if (id1 == NULL) {
 		g_object_unref (info1);
 		return FALSE;
 	}
 	
 	info2 = g_file_query_info (file2,
-				   G_FILE_ATTRIBUTE_ID_FS,
+				   G_FILE_ATTRIBUTE_ID_FILESYSTEM,
 				   0, NULL, NULL);
 	if (info2 == NULL) {
 		g_object_unref (info1);
 		return FALSE;
 	}
 
-	id2 = g_file_info_get_attribute_string (info2, G_FILE_ATTRIBUTE_ID_FS);
+	id2 = g_file_info_get_attribute_string (info2, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
 	if (id2 == NULL) {
 		g_object_unref (info1);
 		g_object_unref (info2);

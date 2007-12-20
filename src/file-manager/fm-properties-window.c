@@ -2814,10 +2814,10 @@ create_pie_widget (FMPropertiesWindow *window)
 	fstype_label = gtk_label_new (NULL);
 
 	location = g_file_new_for_uri (uri);
-	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FS_TYPE,
+	info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
 					     NULL, NULL);
 	if (info) {
-		fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FS_TYPE);
+		fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 		if (fs_type != NULL) {
 			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesystem type: "), fs_type, NULL));
 		}
@@ -2863,11 +2863,11 @@ create_volume_usage_widget (FMPropertiesWindow *window)
 	uri = nautilus_file_get_activation_uri (file);
 
 	location = g_file_new_for_uri (uri);
-	info = g_file_query_filesystem_info (location, "fs:*", NULL, NULL);
+	info = g_file_query_filesystem_info (location, "filesystem::*", NULL, NULL);
 
 	if (info) {
-		window->details->volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_SIZE);
-		window->details->volume_free = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FS_FREE);
+		window->details->volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+		window->details->volume_free = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
 		g_object_unref (info);
 	} else {

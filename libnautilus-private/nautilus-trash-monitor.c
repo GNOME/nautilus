@@ -141,7 +141,7 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
 	location = g_file_new_for_uri ("trash:///");
 
 	g_file_query_info_async (location,
-				 G_FILE_ATTRIBUTE_STD_ICON,
+				 G_FILE_ATTRIBUTE_STANDARD_ICON,
 				 0, 0, NULL,
 				 update_info_cb, g_object_ref (trash_monitor));
 	

@@ -718,7 +718,7 @@ ensure_file_is_image (GFile *file)
 	GFileInfo *info;
 	const char *mime_type;
 
-	info = g_file_query_info (file, G_FILE_ATTRIBUTE_STD_CONTENT_TYPE, 0, NULL, NULL);
+	info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0, NULL, NULL);
 	if (info == NULL) {
 		return FALSE;
 	}

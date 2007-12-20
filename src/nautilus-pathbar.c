@@ -1434,7 +1434,7 @@ get_display_name_for_folder (GFile *location)
 	
 	name = NULL;
 	info = g_file_query_info (location,
-				  G_FILE_ATTRIBUTE_STD_DISPLAY_NAME,
+				  G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
 				  0, NULL, NULL);
 	if (info) {
 		name = g_strdup (g_file_info_get_display_name (info));

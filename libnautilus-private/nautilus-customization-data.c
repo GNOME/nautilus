@@ -133,16 +133,16 @@ nautilus_customization_data_new (const char *customization_name,
 		public_directory_path = get_global_customization_path (customization_name);
 		
 		public_result  = read_all_children (public_directory_path,
-						    G_FILE_ATTRIBUTE_STD_NAME ","
-						    G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+						    G_FILE_ATTRIBUTE_STANDARD_NAME ","
+						    G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 						    &data->public_file_list);
 		g_free (public_directory_path);
 	}
 
 	private_directory_path = get_private_customization_path (customization_name);
 	private_result = read_all_children (private_directory_path,
-					    G_FILE_ATTRIBUTE_STD_NAME ","
-					    G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+					    G_FILE_ATTRIBUTE_STANDARD_NAME ","
+					    G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 					    &data->private_file_list);
 	g_free (private_directory_path);
 	if (!public_result && !private_result) {

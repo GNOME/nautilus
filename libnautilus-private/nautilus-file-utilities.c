@@ -764,7 +764,7 @@ nautilus_ensure_unique_file_name (const char *directory_uri,
 
 	dir = g_file_new_for_uri (directory_uri);
 
-	info = g_file_query_info (dir, G_FILE_ATTRIBUTE_STD_TYPE, 0, NULL, NULL);
+	info = g_file_query_info (dir, G_FILE_ATTRIBUTE_STANDARD_TYPE, 0, NULL, NULL);
 	if (info == NULL) {
 		g_object_unref (dir);
 		return NULL;
@@ -778,7 +778,7 @@ nautilus_ensure_unique_file_name (const char *directory_uri,
 	g_free (filename);
 	
 	copy = 1;
-	while ((info = g_file_query_info (child, G_FILE_ATTRIBUTE_STD_TYPE, 0, NULL, NULL)) != NULL) {
+	while ((info = g_file_query_info (child, G_FILE_ATTRIBUTE_STANDARD_TYPE, 0, NULL, NULL)) != NULL) {
 		g_object_unref (info);
 		g_object_unref (child);
 		
@@ -830,7 +830,7 @@ nautilus_find_existing_uri_in_hierarchy (GFile *location)
 	location = g_object_ref (location);
 	while (location != NULL) {
 		info = g_file_query_info (location,
-					  "std::name",
+					  G_FILE_ATTRIBUTE_STANDARD_NAME,
 					  0, NULL, NULL);
 		g_object_unref (info);
 		if (info != NULL) {

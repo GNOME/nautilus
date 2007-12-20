@@ -1932,7 +1932,7 @@ read_dot_hidden_file (NautilusDirectory *directory)
 
 	type = G_FILE_TYPE_UNKNOWN;
 	
-	info = g_file_query_info (child, G_FILE_ATTRIBUTE_STD_TYPE, 0, NULL, NULL);
+	info = g_file_query_info (child, G_FILE_ATTRIBUTE_STANDARD_TYPE, 0, NULL, NULL);
 	if (info != NULL) {
 		type = g_file_info_get_file_type (info);
 		g_object_unref (info);
@@ -2539,7 +2539,9 @@ directory_count_start (NautilusDirectory *directory,
 	location = nautilus_file_get_location (file);
 	
 	g_file_enumerate_children_async (location,
-					 "std:name,std:is_hidden,std:is_backup",
+					 G_FILE_ATTRIBUTE_STANDARD_NAME ","
+					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
+					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
 					 0, /* flags */
 					 G_PRIORITY_DEFAULT, /* prio */
 					 state->cancellable,
@@ -2576,7 +2578,7 @@ deep_count_one (DeepCountState *state,
 	}
 
 	/* Count the size. */
-	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STD_SIZE)) {
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)) {
 		file->details->deep_size += g_file_info_get_size (info);
 	}
 }
@@ -2740,7 +2742,11 @@ deep_count_load (DeepCountState *state, GFile *location)
 	g_message ("load_directory called to get deep file count for %p", location);
 #endif	
 	g_file_enumerate_children_async (state->deep_count_location,
-					 "std:name,std:is_hidden,std:is_backup,std:type,std:size",
+					 G_FILE_ATTRIBUTE_STANDARD_NAME ","
+					 G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+					 G_FILE_ATTRIBUTE_STANDARD_SIZE ","
+					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
+					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
 					 0, /* flags */
 					 G_PRIORITY_LOW, /* prio */
 					 state->cancellable,
@@ -3054,7 +3060,7 @@ mime_list_start (NautilusDirectory *directory,
 	
 	location = nautilus_file_get_location (file);
 	g_file_enumerate_children_async (location,
-					 G_FILE_ATTRIBUTE_STD_CONTENT_TYPE,
+					 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 					 0, /* flags */
 					 G_PRIORITY_LOW, /* prio */
 					 state->cancellable,

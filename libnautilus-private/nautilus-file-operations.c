@@ -607,7 +607,7 @@ custom_basename_to_string (char *format, va_list va)
 	file = va_arg (va, GFile *);
 
 	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STD_DISPLAY_NAME,
+				  G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
 				  0,
 				  g_cancellable_get_current (),
 				  NULL);
@@ -1211,7 +1211,7 @@ delete_dir (CommonJob *job, GFile *dir,
  retry:
 	error = NULL;
 	enumerator = g_file_enumerate_children (dir,
-						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
 						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						job->cancellable,
 						&error);
@@ -1778,7 +1778,7 @@ dir_has_files (GFile *dir)
 	res = FALSE;
 	
 	enumerator = g_file_enumerate_children (dir,
-						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
 						0,
 						NULL, NULL);
 	if (enumerator) {
@@ -2030,9 +2030,9 @@ scan_dir (GFile *dir,
  retry:
 	error = NULL;
 	enumerator = g_file_enumerate_children (dir,
-						G_FILE_ATTRIBUTE_STD_NAME","
-						G_FILE_ATTRIBUTE_STD_TYPE","
-						G_FILE_ATTRIBUTE_STD_SIZE,
+						G_FILE_ATTRIBUTE_STANDARD_NAME","
+						G_FILE_ATTRIBUTE_STANDARD_TYPE","
+						G_FILE_ATTRIBUTE_STANDARD_SIZE,
 						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						job->cancellable,
 						&error);
@@ -2148,8 +2148,8 @@ scan_file (GFile *file,
  retry:
 	error = NULL;
 	info = g_file_query_info (file, 
-				  G_FILE_ATTRIBUTE_STD_TYPE","
-				  G_FILE_ATTRIBUTE_STD_SIZE,
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE","
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
 				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 				  job->cancellable,
 				  &error);
@@ -2260,8 +2260,8 @@ verify_destination (CommonJob *job,
 	
 	error = NULL;
 	info = g_file_query_info (dest, 
-				  G_FILE_ATTRIBUTE_STD_TYPE","
-				  G_FILE_ATTRIBUTE_ID_FS,
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE","
+				  G_FILE_ATTRIBUTE_ID_FILESYSTEM,
 				  0,
 				  job->cancellable,
 				  &error);
@@ -2307,7 +2307,7 @@ verify_destination (CommonJob *job,
 	if (dest_fs_id) {
 		*dest_fs_id =
 			g_strdup (g_file_info_get_attribute_string (info,
-								    G_FILE_ATTRIBUTE_ID_FS));
+								    G_FILE_ATTRIBUTE_ID_FILESYSTEM));
 	}
 	
 	g_object_unref (info);
@@ -2330,8 +2330,8 @@ verify_destination (CommonJob *job,
 	}
 	
 	fsinfo = g_file_query_filesystem_info (dest,
-					       G_FILE_ATTRIBUTE_FS_FREE","
-					       G_FILE_ATTRIBUTE_FS_READONLY,
+					       G_FILE_ATTRIBUTE_FILESYSTEM_FREE","
+					       G_FILE_ATTRIBUTE_FILESYSTEM_READONLY,
 					       job->cancellable,
 					       NULL);
 	if (fsinfo == NULL) {
@@ -2342,9 +2342,9 @@ verify_destination (CommonJob *job,
 	}
 	
 	if (required_size > 0 &&
-	    g_file_info_has_attribute (fsinfo, G_FILE_ATTRIBUTE_FS_FREE)) {
+	    g_file_info_has_attribute (fsinfo, G_FILE_ATTRIBUTE_FILESYSTEM_FREE)) {
 		free_size = g_file_info_get_attribute_uint64 (fsinfo,
-							      G_FILE_ATTRIBUTE_FS_FREE);
+							      G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 		
 		if (free_size < required_size) {
 			primary = f (_("Error while copying to \"%B\"."), dest);
@@ -2371,7 +2371,7 @@ verify_destination (CommonJob *job,
 	
 	if (!job_aborted (job) &&
 	    g_file_info_get_attribute_boolean (fsinfo,
-					       G_FILE_ATTRIBUTE_FS_READONLY)) {
+					       G_FILE_ATTRIBUTE_FILESYSTEM_READONLY)) {
 		primary = f (_("Error while copying to \"%B\"."), dest);
 		secondary = f (_("The destination is read-only."));
 
@@ -2523,10 +2523,10 @@ get_unique_target_file (GFile *src,
 	
 	dest = NULL;
 	info = g_file_query_info (src,
-				  G_FILE_ATTRIBUTE_STD_EDIT_NAME,
+				  G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME,
 				  0, NULL, NULL);
 	if (info != NULL) {
-		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_EDIT_NAME);
+		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
 		
 		if (editname != NULL) {
 			new_name = get_duplicate_name (editname, count);
@@ -2574,10 +2574,10 @@ get_target_file_for_link (GFile *src,
 	
 	dest = NULL;
 	info = g_file_query_info (src,
-				  G_FILE_ATTRIBUTE_STD_EDIT_NAME,
+				  G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME,
 				  0, NULL, NULL);
 	if (info != NULL) {
-		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_EDIT_NAME);
+		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
 		
 		if (editname != NULL) {
 			new_name = get_link_name (editname, count);
@@ -2626,11 +2626,11 @@ get_target_file (GFile *src,
 	dest = NULL;
 	if (!same_fs) {
 		info = g_file_query_info (src,
-					  G_FILE_ATTRIBUTE_STD_COPY_NAME,
+					  G_FILE_ATTRIBUTE_STANDARD_COPY_NAME,
 					  0, NULL, NULL);
 		
 		if (info) {
-			copyname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STD_COPY_NAME);
+			copyname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_COPY_NAME);
 
 			if (copyname) {
 				dest = g_file_get_child_for_display_name (dest_dir, copyname, NULL);
@@ -2658,12 +2658,12 @@ has_fs_id (GFile *file, const char *fs_id)
 
 	res = FALSE;
 	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_ID_FS,
+				  G_FILE_ATTRIBUTE_ID_FILESYSTEM,
 				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 				  NULL, NULL);
 
 	if (info) {
-		id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FS);
+		id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
 		
 		if (id && strcmp (id, fs_id) == 0) {
 			res = TRUE;
@@ -2683,7 +2683,7 @@ is_dir (GFile *file)
 
 	res = FALSE;
 	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STD_TYPE,
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE,
 				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 				  NULL, NULL);
 	if (info) {
@@ -2800,7 +2800,7 @@ copy_move_directory (CopyMoveJob *copy_job,
  retry:
 	error = NULL;
 	enumerator = g_file_enumerate_children (src,
-						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
 						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						job->cancellable,
 						&error);
@@ -2964,7 +2964,7 @@ remove_target_recursively (CommonJob *job,
 	
 	error = NULL;
 	enumerator = g_file_enumerate_children (file,
-						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
 						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						job->cancellable,
 						&error);
@@ -4318,7 +4318,7 @@ set_permissions_file (SetPermissionsJob *job,
 	if (info == NULL) {
 		free_info = TRUE;
 		info = g_file_query_info (file,
-					  G_FILE_ATTRIBUTE_STD_TYPE","
+					  G_FILE_ATTRIBUTE_STANDARD_TYPE","
 					  G_FILE_ATTRIBUTE_UNIX_MODE,
 					  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 					  common->cancellable,
@@ -4351,8 +4351,8 @@ set_permissions_file (SetPermissionsJob *job,
 	if (!job_aborted (common) &&
 	    g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
 		enumerator = g_file_enumerate_children (file,
-							G_FILE_ATTRIBUTE_STD_NAME","
-							G_FILE_ATTRIBUTE_STD_TYPE","
+							G_FILE_ATTRIBUTE_STANDARD_NAME","
+							G_FILE_ATTRIBUTE_STANDARD_TYPE","
 							G_FILE_ATTRIBUTE_UNIX_MODE,
 							G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 							common->cancellable,
@@ -4832,7 +4832,7 @@ delete_trash_file (CommonJob *job,
 	}
 	
 	enumerator = g_file_enumerate_children (file,
-						G_FILE_ATTRIBUTE_STD_NAME,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
 						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 						job->cancellable,
 						NULL);
