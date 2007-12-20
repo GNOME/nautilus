@@ -1,0 +1,66 @@
+<ui>
+<menubar name="MenuBar">
+	<menu action="File">
+		<placeholder name="New Items Placeholder">
+			<menuitem name="New Window" action="New Window"/>
+			<menuitem name="Folder Window" action="Folder Window"/>
+		</placeholder>
+		
+		<placeholder name="Close Items Placeholder">
+			<menuitem name="Close All Windows" action="Close All Windows"/>
+		</placeholder>
+	</menu>
+	<menu action="View">
+		<placeholder name="Show Hide Placeholder">
+			<menuitem name="Show Hide Toolbar" action="Show Hide Toolbar"/>
+			<menuitem name="Show Hide Sidebar" action="Show Hide Sidebar"/>
+			<menuitem name="Show Hide Location Bar" action="Show Hide Location Bar"/>
+			<menuitem name="Show Hide Statusbar" action="Show Hide Statusbar"/>
+		</placeholder>
+	</menu>
+        <placeholder name="Other Menus">
+	        <menu action="Go">
+                        <placeholder name="Navigation Items">
+			<menuitem name="Up" action="Up"/>
+			<menuitem name="Back" action="Back"/>
+			<menuitem name="Forward"  action="Forward"/>
+	                </placeholder>
+	                <separator/>
+			<menuitem name="Home" action="Home"/>
+			<menuitem name="Computer" action="Go to Computer"/>
+			<menuitem name="Go to Templates" action="Go to Templates"/>
+			<menuitem name="Go to Trash" action="Go to Trash"/>
+			<menuitem name="Go to Burn CD" action="Go to Burn CD"/>
+		        <menuitem name="Go to Network" action="Go to Network"/>
+			<menuitem name="Go to Location" action="Go to Location"/>
+			<menuitem name="Search" action="Search"/>
+			<separator/>
+			<menuitem name="Clear History" action="Clear History"/>
+			<separator/>
+			<placeholder name="History Placeholder"/>
+		</menu>
+		<menu action="Bookmarks">
+			<menuitem name="Add Bookmark" action="Add Bookmark"/>
+			<menuitem name="Edit Bookmark" action="Edit Bookmarks"/>
+			<separator/>
+			<placeholder name="Bookmarks Placeholder"/>
+		</menu>
+        </placeholder>
+</menubar>
+<toolbar name="Toolbar">
+	<toolitem name="Back" action="Back"/>
+	<toolitem name="Forward" action="Forward"/>
+
+	<toolitem name="Up" action="Up"/>
+	<toolitem name="Stop" action="Stop"/>
+	<toolitem name="Reload" action="Reload"/>
+	<separator/>
+	<toolitem name="Home" action="Home"/>
+	<toolitem name="Computer" action="Go to Computer"/>
+	<separator/>
+	<toolitem name="Search" action="Search"/>
+	<placeholder name="Extra Buttons Placeholder">
+	          <placeholder name="Extension Actions"/>
+        </placeholder>
+</toolbar>
+</ui>

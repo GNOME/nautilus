@@ -1,0 +1,24 @@
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
+#ifndef NAUTILUS_SHELL_INTERFACE_IDL
+#define NAUTILUS_SHELL_INTERFACE_IDL
+
+#include <Bonobo.idl>
+
+module Nautilus {
+	typedef string URI;
+	typedef sequence<URI> URIList;
+
+	interface Shell : ::Bonobo::Unknown {
+		void open_windows (in URIList uris, in string startup_id, in string geometry, in boolean browser_window);
+		void open_default_window (in string startup_id, in string geometry, in boolean browser_window);
+		void start_desktop ();
+		void stop_desktop ();
+		void quit ();
+		void restart ();
+		void load_session (in string filename);
+	};
+
+};
+
+#endif /* NAUTILUS_SHELL_INTERFACE_IDL */
