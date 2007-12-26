@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-21 23:19-0700\n"
-"PO-Revision-Date: 2007-12-21 23:19-0700\n"
+"POT-Creation-Date: 2007-12-26 12:02-0700\n"
+"PO-Revision-Date: 2007-12-26 12:02-0700\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -126,7 +126,7 @@ msgstr "Éad"
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:943
 #: ../src/nautilus-property-browser.c:1826
 msgid "Erase"
-msgstr "Bánaigh"
+msgstr "Léirscrios"
 
 #: ../data/browser.xml.h:29
 msgid "Fibers"
@@ -1002,9 +1002,8 @@ msgid "SELinux Context"
 msgstr "Comhthéacs SELinux"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:121
-#, fuzzy
 msgid "The SELinux security context of the file."
-msgstr "Ainm agus dealbh do comhad."
+msgstr "Comhthéacs SELinux an chomhaid."
 
 #: ../libnautilus-private/nautilus-customization-data.c:410
 #: ../src/nautilus-property-browser.c:1870
@@ -1129,9 +1128,8 @@ msgid "_Retry"
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:180
-#, fuzzy
 msgid "Delete _All"
-msgstr "Pioc G_ach rud"
+msgstr "Scrios _Gach Rud"
 
 #: ../libnautilus-private/nautilus-file-operations.c:181
 msgid "_Replace"
@@ -1142,14 +1140,12 @@ msgid "Replace _All"
 msgstr "Athchuir _Gach rud"
 
 #: ../libnautilus-private/nautilus-file-operations.c:183
-#, fuzzy
 msgid "_Merge"
-msgstr "_Bog Anseo"
+msgstr "Cu_maisc"
 
 #: ../libnautilus-private/nautilus-file-operations.c:184
-#, fuzzy
 msgid "Merge _All"
-msgstr "Pioc G_ach rud"
+msgstr "Cumaisc _Gach Rud"
 
 #: ../libnautilus-private/nautilus-file-operations.c:209
 #, c-format
@@ -1163,14 +1159,14 @@ msgstr[4] ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:214
 #: ../libnautilus-private/nautilus-file-operations.c:225
-#, fuzzy, c-format
+#, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "mír amháin"
-msgstr[1] "%u mhír"
-msgstr[2] "%u mhír"
-msgstr[3] "%u mír"
-msgstr[4] "%u mír"
+msgstr[0] "%d nóiméad"
+msgstr[1] "%d nóiméad"
+msgstr[2] "%d nóiméad"
+msgstr[3] "%d nóiméad"
+msgstr[4] "%d nóiméad"
 
 #: ../libnautilus-private/nautilus-file-operations.c:224
 #, c-format
@@ -1409,9 +1405,8 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1249
 #: ../libnautilus-private/nautilus-file-operations.c:2842
-#, fuzzy
 msgid "_Skip files"
-msgstr "Ag bogadh comhaid"
+msgstr "_Scipeáil comhaid"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1270
 msgid ""
@@ -1436,9 +1431,8 @@ msgid "There was an error deleting %B."
 msgstr "Bhí earraid ag rith an Clár"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1464
-#, fuzzy
 msgid "Moving files to trash"
-msgstr "Ag bogadh comhaid"
+msgstr "Comhaid á bhogadh go bruscar"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1466
 #, c-format
@@ -1789,9 +1783,9 @@ msgid ""
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3747
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error moving the file into %F."
-msgstr "Bhí earraid ag rith an Clár"
+msgstr "Tharla earráid ag bogadh an comhad isteach i %F."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4018
 msgid "Creating links in to \"%B\""
@@ -1840,19 +1834,17 @@ msgid "new file"
 msgstr "comhad nua"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4677
-#, fuzzy
 msgid "Error while creating directory %B."
-msgstr "Earraidh ag dealaigh."
+msgstr "Earráid agus comhadlann %B á chruthú."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4679
-#, fuzzy
 msgid "Error while creating file %B."
-msgstr "Earraidh ag dealaigh."
+msgstr "Earráid agus comhad %B á chruthú."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4681
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error creating the directory in %F."
-msgstr "Bhí earraid ag rith an Clár"
+msgstr "Tharla earráid ag cruthú an chomhadlann i %F."
 
 #: ../libnautilus-private/nautilus-file.c:867
 #: ../libnautilus-private/nautilus-vfs-file.c:265
@@ -2356,9 +2348,9 @@ msgid "The Link \"%s\" is Broken."
 msgstr ""
 
 #: ../libnautilus-private/nautilus-mime-actions.c:570
-#, fuzzy, c-format
+#, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
-msgstr "Tá an nasc briste, an bhfuil ag iarraigh chuir sa Bosca Bruscair?"
+msgstr "Is Briste é Nasc \"%s\". Bog go Bruscar?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:576
 msgid "This link can't be used, because it has no target."
@@ -2431,24 +2423,23 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1235
 #: ../libnautilus-private/nautilus-mime-actions.c:1459
-#, fuzzy
 msgid "Unable to mount location"
-msgstr "Dul go dtí an áit atá baile"
+msgstr "Ní féidir suíomh a fheistiú"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1544
 #, c-format
 msgid "Opening \"%s\"."
-msgstr "Ag Oscail \"%s\"."
+msgstr "\"%s\" á Oscailt."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1547
-#, fuzzy, c-format
+#, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] "%s á Oscailt"
-msgstr[1] "%s á Oscailt"
-msgstr[2] "%s á Oscailt"
-msgstr[3] "%s á Oscailt"
-msgstr[4] "%s á Oscailt"
+msgstr[0] "%d mhír á oscailt."
+msgstr[1] "%d mhír á oscailt."
+msgstr[2] "%d mhír á oscailt."
+msgstr[3] "%d mír á oscailt."
+msgstr[4] "%d mír á oscailt."
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:172
 #: ../libnautilus-private/nautilus-open-with-dialog.c:271
@@ -2475,7 +2466,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:563
 msgid "No applications selected"
-msgstr "Gan feidhmchlár roghnaithe"
+msgstr "Níl aon fheidhmchlár roghnaithe"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:606
 #: ../libnautilus-private/nautilus-open-with-dialog.c:905
@@ -2611,7 +2602,7 @@ msgstr "Sonraí:"
 #: ../libnautilus-private/nautilus-program-choosing.c:410
 #: ../libnautilus-private/nautilus-program-choosing.c:476
 msgid "There was an error launching the application."
-msgstr "Bhí earraid ag rith an Clár"
+msgstr "Tharla earráid ag tosú an feidhmchlár."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:439
 #: ../libnautilus-private/nautilus-program-choosing.c:450
@@ -2656,9 +2647,9 @@ msgid "Search"
 msgstr "Cuardaigh"
 
 #: ../libnautilus-private/nautilus-query.c:138
-#, fuzzy, c-format
+#, c-format
 msgid "Search for \"%s\""
-msgstr "Cuardaigh an Liosta"
+msgstr "Cuardaigh ar \"%s\""
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: ../src/nautilus-query-editor.c:990
@@ -2667,19 +2658,19 @@ msgstr "Eagar"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo Edit"
-msgstr "Cuir ar ais"
+msgstr "Cealaigh Eagarthóireacht"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:176
 msgid "Undo the edit"
-msgstr "Cuir ar ais roimh an eagar"
+msgstr "Cealaigh an eagarthóireacht"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:177
 msgid "Redo Edit"
-msgstr "Déan an Eagar arís"
+msgstr "Athfheidhmigh Eagarthóireacht"
 
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:178
 msgid "Redo the edit"
-msgstr "Déan an Eagar arís"
+msgstr "Athfheidhmigh an eagarthóireacht"
 
 #. label, accelerator
 #: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:674
@@ -2707,9 +2698,8 @@ msgstr "Fillteán Baile"
 
 #. label, accelerator
 #: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:670
-#, fuzzy
 msgid "Open your personal folder"
-msgstr "Radharc an comhad nó an comhadlann láithreach"
+msgstr "Oscail d'fhillteán pearsanta"
 
 #: ../nautilus.desktop.in.in.h:1
 #, fuzzy
@@ -2818,6 +2808,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:1060
 #: ../src/file-manager/fm-properties-window.c:4678
+#: ../src/nautilus-connect-server-dialog.c:401
 #: ../src/nautilus-location-dialog.c:111
 msgid "There was an error displaying help."
 msgstr ""
@@ -2831,16 +2822,15 @@ msgid "_Pattern:"
 msgstr "_Patrún:"
 
 #: ../src/file-manager/fm-directory-view.c:1208
-#, fuzzy
 msgid "Save Search as"
-msgstr "Cuardaigh an Liosta"
+msgstr "Sábháil Cuardach Mar"
 
 #: ../src/file-manager/fm-directory-view.c:1226
-#, fuzzy
 msgid "Search _name:"
-msgstr "_Ainm datha:"
+msgstr "_Ainm cuardaigh:"
 
 #: ../src/file-manager/fm-directory-view.c:1239
+#: ../src/nautilus-connect-server-dialog.c:574
 msgid "_Folder:"
 msgstr "_Fillteán:"
 
@@ -3096,7 +3086,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:6161
 msgid "No templates Installed"
-msgstr ""
+msgstr "Níl aon teimpléad suiteáilte"
 
 #. name, stock id, label
 #. name, stock id
@@ -3131,9 +3121,8 @@ msgstr ""
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6184
 #: ../src/file-manager/fm-directory-view.c:6313
-#, fuzzy
 msgid "Open in Folder Window"
-msgstr "Oscail i Fhuinneog Nua"
+msgstr "Oscail i bhFuinneog Fhillteáin"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6185
@@ -3186,9 +3175,8 @@ msgstr ""
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6218
 #: ../src/file-manager/fm-tree-view.c:1170
-#, fuzzy
 msgid "_Paste Into Folder"
-msgstr "Greamaigh Comhad Isteach san Fhillteán"
+msgstr "G_reamaigh Isteach i bhFillteán"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6219
@@ -3205,7 +3193,7 @@ msgstr ""
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6226
 msgid "Select _Pattern"
-msgstr ""
+msgstr "Roghnaigh _Patrún"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6227
@@ -3215,7 +3203,7 @@ msgstr ""
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6230
 msgid "D_uplicate"
-msgstr ""
+msgstr "Dú_bail"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6231
@@ -3292,7 +3280,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6262
 #: ../src/file-manager/fm-directory-view.c:6278
 msgid "_Mount Volume"
-msgstr ""
+msgstr "_Feistigh Imleabhar"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6263
@@ -3304,7 +3292,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6282
 #: ../src/file-manager/fm-tree-view.c:753
 msgid "_Unmount Volume"
-msgstr ""
+msgstr "_Dífheistigh Imleabhar"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6267
@@ -3363,7 +3351,7 @@ msgstr "Oscail Comhad agus Dún fuinneog"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6298
 msgid "Sa_ve Search"
-msgstr ""
+msgstr "Sá_bháil Cuardach"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6299
@@ -3373,7 +3361,7 @@ msgstr ""
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6302
 msgid "Sa_ve Search As..."
-msgstr ""
+msgstr "Sá_bháil Cuardach Mar..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6303
@@ -3419,7 +3407,7 @@ msgstr "Tá an nasc briste, an bhfuil ag iarraigh chuir sa Bosca Bruscair?"
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6338
 msgid "Show _Hidden Files"
-msgstr ""
+msgstr "Taispeáin Comhaid _Folaithe"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6339
@@ -3435,7 +3423,7 @@ msgstr ""
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/file-manager/fm-directory-view.c:6426
 msgid "_Scripts"
-msgstr ""
+msgstr "_Scripteanna"
 
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:6809
@@ -3478,14 +3466,14 @@ msgid "_Open with \"%s\""
 msgstr "_Oscail le \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:6994
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %d New Window"
 msgid_plural "Open in %d New Windows"
-msgstr[0] "Oscail %d i Fhuinneoga Nua"
-msgstr[1] "Oscail %d i Fhuinneoga Nua"
-msgstr[2] "Oscail %d i Fhuinneoga Nua"
-msgstr[3] "Oscail %d i Fhuinneoga Nua"
-msgstr[4] "Oscail %d i Fhuinneoga Nua"
+msgstr[0] "Oscail i %d Fhuinneog Nua"
+msgstr[1] "Oscail i %d Fhuinneog Nua"
+msgstr[2] "Oscail i %d Fhuinneog Nua"
+msgstr[3] "Oscail i %d bhFuinneog Nua"
+msgstr[4] "Oscail i %d Fuinneog Nua"
 
 #: ../src/file-manager/fm-directory-view.c:7004
 #, fuzzy, c-format
@@ -3664,7 +3652,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:123
 msgid "by _Name"
-msgstr "faoi Ai_nm"
+msgstr "de réir _Ainm"
 
 #: ../src/file-manager/fm-icon-view.c:124
 #: ../src/file-manager/fm-icon-view.c:1464
@@ -3673,7 +3661,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:130
 msgid "by _Size"
-msgstr "faoi _Meid"
+msgstr "de réir _Méide"
 
 #: ../src/file-manager/fm-icon-view.c:131
 #: ../src/file-manager/fm-icon-view.c:1468
@@ -3682,7 +3670,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:137
 msgid "by _Type"
-msgstr "faoi _Saghas"
+msgstr "de réir _Cineáil"
 
 #: ../src/file-manager/fm-icon-view.c:138
 #: ../src/file-manager/fm-icon-view.c:1472
@@ -3700,7 +3688,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:151
 msgid "by _Emblems"
-msgstr ""
+msgstr "de réir _Suaitheantas"
 
 #: ../src/file-manager/fm-icon-view.c:152
 #: ../src/file-manager/fm-icon-view.c:1480
@@ -3775,7 +3763,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:1459
 msgid "_Manually"
-msgstr ""
+msgstr "De _Láimh"
 
 #: ../src/file-manager/fm-icon-view.c:1460
 msgid "Leave icons wherever they are dropped"
@@ -3783,15 +3771,15 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:1463
 msgid "By _Name"
-msgstr "faoi _Ainm"
+msgstr "De Réir _Ainm"
 
 #: ../src/file-manager/fm-icon-view.c:1467
 msgid "By _Size"
-msgstr "faoi _Meid"
+msgstr "De Réir _Méide"
 
 #: ../src/file-manager/fm-icon-view.c:1471
 msgid "By _Type"
-msgstr "Le _Cineál"
+msgstr "De Réir _Cineáil"
 
 #: ../src/file-manager/fm-icon-view.c:1475
 msgid "By Modification _Date"
@@ -3799,7 +3787,7 @@ msgstr ""
 
 #: ../src/file-manager/fm-icon-view.c:1479
 msgid "By _Emblems"
-msgstr ""
+msgstr "De Réir _Suaitheantas"
 
 #: ../src/file-manager/fm-icon-view.c:1583
 msgid "Restore Icon's Original Si_ze"
@@ -3938,12 +3926,14 @@ msgid "unreadable"
 msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:2291
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "mí amhain, le meid %s"
-msgstr[1] "mí amhain, le meid %s"
-msgstr[2] "mí amhain, le meid %s"
+msgstr[0] "%d mhír, le méid %s"
+msgstr[1] "%d mhír, %s iomlán"
+msgstr[2] "%d mhír, %s iomlán"
+msgstr[3] "%d mír, %s iomlán"
+msgstr[4] "%d mír, %s iomlán"
 
 #: ../src/file-manager/fm-properties-window.c:2300
 msgid "(some contents unreadable)"
@@ -3957,7 +3947,7 @@ msgstr ""
 #.
 #: ../src/file-manager/fm-properties-window.c:2317
 msgid "Contents:"
-msgstr "Inneachar:"
+msgstr "Ábhair:"
 
 #. Translators: "used" refers to the capacity of the filesystem
 #: ../src/file-manager/fm-properties-window.c:2806
@@ -4090,23 +4080,20 @@ msgid "write"
 msgstr "scríobh"
 
 #: ../src/file-manager/fm-properties-window.c:3815
-#, fuzzy
 msgid "access"
-msgstr "̈́Á_iteanna"
+msgstr "rochtain"
 
 #: ../src/file-manager/fm-properties-window.c:3864
 msgid "Access:"
 msgstr "Rochtain:"
 
 #: ../src/file-manager/fm-properties-window.c:3866
-#, fuzzy
 msgid "Folder access:"
-msgstr "Gearr Comhadlann"
+msgstr "Rochtain fhillteáin:"
 
 #: ../src/file-manager/fm-properties-window.c:3868
-#, fuzzy
 msgid "File access:"
-msgstr "Úinear na Comhad:"
+msgstr "Rochtain chomhaid:"
 
 #: ../src/file-manager/fm-properties-window.c:3880
 #: ../src/file-manager/fm-properties-window.c:3891
@@ -4119,18 +4106,16 @@ msgid "List files only"
 msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:3885
-#, fuzzy
 msgid "Access files"
-msgstr "0 comhad"
+msgstr "Déan rochtain ar chomhaid"
 
 #: ../src/file-manager/fm-properties-window.c:3887
-#, fuzzy
 msgid "Create and delete files"
-msgstr "Ag ullamhaigh chun na comhad a scíos"
+msgstr "Cruthaigh agus scrios comhaid"
 
 #: ../src/file-manager/fm-properties-window.c:3894
 msgid "Read-only"
-msgstr "Léamh-amháin"
+msgstr "Léigh-amháin"
 
 #: ../src/file-manager/fm-properties-window.c:3896
 msgid "Read and write"
@@ -4216,7 +4201,7 @@ msgstr "Athrú is déanaí:"
 
 #: ../src/file-manager/fm-properties-window.c:4507
 msgid "Apply Permissions to Enclosed Files"
-msgstr ""
+msgstr "Cuir Ceadanna i bhFeidhm ar Chomaid Iata"
 
 #: ../src/file-manager/fm-properties-window.c:4517
 #, c-format
@@ -4232,9 +4217,8 @@ msgid "Creating Properties window."
 msgstr "Ag cruthaigh fhuinneog Álbachta."
 
 #: ../src/file-manager/fm-properties-window.c:5322
-#, fuzzy
 msgid "Select Custom Icon"
-msgstr "Tóg dealbh"
+msgstr "Roghnaigh Deilbhín Saincheaptha"
 
 #: ../src/file-manager/fm-tree-view.c:753
 msgid "E_ject"
@@ -4404,6 +4388,123 @@ msgstr "<b>Ai_nm</b>"
 msgid "Edit Bookmarks"
 msgstr "Cuir Leabharmharcanna in Eagar"
 
+#: ../src/nautilus-connect-server-dialog-main.c:67
+#, c-format
+msgid "Can't display location \"%s\""
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog-main.c:102
+msgid "[URI]"
+msgstr "[URI]"
+
+#: ../src/nautilus-connect-server-dialog-main.c:111
+#, fuzzy
+msgid ""
+"\n"
+"\n"
+"Add connect to server mount"
+msgstr "Nasc le Freastalaí %s"
+
+#: ../src/nautilus-connect-server-dialog.c:118
+msgid "Custom Location"
+msgstr "Suíomh Saincheaptha"
+
+#: ../src/nautilus-connect-server-dialog.c:120
+msgid "SSH"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:123
+msgid "Public FTP"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:125
+msgid "FTP (with login)"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:128
+msgid "Windows share"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:130
+msgid "WebDAV (HTTP)"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:132
+msgid "Secure WebDAV (HTTPS)"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:200
+#, c-format
+msgid "Can't Connect to Server. \"%s\" is not a valid location."
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:202
+#: ../src/nautilus-property-browser.c:1188
+#: ../src/nautilus-window-manage-views.c:1594
+msgid "Please check the spelling and try again."
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:216
+msgid "Can't Connect to Server. You must enter a name for the server."
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:217
+msgid "Please enter a name and try again."
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:337
+#, c-format
+msgid "%s on %s"
+msgstr "%s ar %s"
+
+#: ../src/nautilus-connect-server-dialog.c:480
+msgid "_Location (URI):"
+msgstr "_Suíomh (URI):"
+
+#: ../src/nautilus-connect-server-dialog.c:502
+msgid "_Server:"
+msgstr "_Freastalaí:"
+
+#: ../src/nautilus-connect-server-dialog.c:521
+msgid "Optional information:"
+msgstr "Eolas breise:"
+
+#: ../src/nautilus-connect-server-dialog.c:533
+msgid "_Share:"
+msgstr "Comh_roinnt:"
+
+#: ../src/nautilus-connect-server-dialog.c:554
+msgid "_Port:"
+msgstr "_Port:"
+
+#: ../src/nautilus-connect-server-dialog.c:594
+msgid "_User Name:"
+msgstr "_Ainm Úsáideora:"
+
+#: ../src/nautilus-connect-server-dialog.c:615
+msgid "_Domain Name:"
+msgstr "Ainm _Fearainn:"
+
+#: ../src/nautilus-connect-server-dialog.c:639
+msgid "_Name to use for connection:"
+msgstr ""
+
+#: ../src/nautilus-connect-server-dialog.c:821
+msgid "Connect to Server"
+msgstr "Nasc le Freastalaí"
+
+#: ../src/nautilus-connect-server-dialog.c:838
+msgid "Service _type:"
+msgstr "Ci_neál seirbhíse:"
+
+#: ../src/nautilus-connect-server-dialog.c:943
+msgid "Browse _Network"
+msgstr "Brabhsáil _Líonra"
+
+#: ../src/nautilus-connect-server-dialog.c:949
+msgid "C_onnect"
+msgstr "_Nasc"
+
 #: ../src/nautilus-emblem-sidebar.c:238
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
@@ -4474,9 +4575,8 @@ msgid "The emblem cannot be added."
 msgstr ""
 
 #: ../src/nautilus-emblem-sidebar.c:1053
-#, fuzzy
 msgid "Show Emblems"
-msgstr "_Comharthanna"
+msgstr "Taispeáin Suaitheantais"
 
 #: ../src/nautilus-file-management-properties.glade.h:1
 msgid "    "
@@ -4798,7 +4898,7 @@ msgstr "Suíomh"
 
 #: ../src/nautilus-image-properties-page.c:312
 msgid "Keywords"
-msgstr ""
+msgstr "Lorgfhocail"
 
 #: ../src/nautilus-image-properties-page.c:313
 msgid "Creator"
@@ -5068,7 +5168,7 @@ msgstr ""
 #: ../src/nautilus-navigation-window-menus.c:489
 #: ../src/nautilus-spatial-window.c:891
 msgid "_Add Bookmark"
-msgstr "_Cuir Leabharmharc Leis"
+msgstr "Cuir Leabharmharc _Leis"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:490
@@ -5089,9 +5189,8 @@ msgstr ""
 
 #: ../src/nautilus-navigation-window-menus.c:495
 #: ../src/nautilus-spatial-window.c:897
-#, fuzzy
 msgid "_Search for Files..."
-msgstr "Cuardaigh an ríomhaire le haighaidh comhaid"
+msgstr "Cuar_daigh ar Comhaid..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:496
@@ -5226,9 +5325,8 @@ msgid "_Unmount"
 msgstr "_Dífheistigh"
 
 #: ../src/nautilus-places-sidebar.c:1759
-#, fuzzy
 msgid "_Rescan"
-msgstr "_Léigh"
+msgstr "_Athscan"
 
 #. Empty Trash menu item
 #: ../src/nautilus-places-sidebar.c:1775 ../src/nautilus-trash-bar.c:125
@@ -5275,9 +5373,8 @@ msgid "Check that you have permission to delete the emblem."
 msgstr ""
 
 #: ../src/nautilus-property-browser.c:1052
-#, fuzzy
 msgid "Create a New Emblem"
-msgstr "Cruthaigh Dath Nua:"
+msgstr "Cruthaigh Suaitheantas Nua"
 
 #. make the keyword label and field
 #: ../src/nautilus-property-browser.c:1074
@@ -5309,11 +5406,6 @@ msgstr "_Luach datha:"
 #: ../src/nautilus-property-browser.c:1187
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr ""
-
-#: ../src/nautilus-property-browser.c:1188
-#: ../src/nautilus-window-manage-views.c:1594
-msgid "Please check the spelling and try again."
 msgstr ""
 
 #: ../src/nautilus-property-browser.c:1190
@@ -5404,7 +5496,7 @@ msgstr ""
 
 #: ../src/nautilus-property-browser.c:2215
 msgid "Patterns:"
-msgstr ""
+msgstr "_Patrúin:"
 
 #: ../src/nautilus-property-browser.c:2218
 msgid "Colors:"
@@ -5412,11 +5504,11 @@ msgstr "Dathanna:"
 
 #: ../src/nautilus-property-browser.c:2221
 msgid "Emblems:"
-msgstr ""
+msgstr "Suaitheantais:"
 
 #: ../src/nautilus-property-browser.c:2241
 msgid "_Remove a Pattern..."
-msgstr ""
+msgstr "_Bain Patrún..."
 
 #: ../src/nautilus-property-browser.c:2244
 msgid "_Remove a Color..."
@@ -5424,7 +5516,7 @@ msgstr "_Bain Dath..."
 
 #: ../src/nautilus-property-browser.c:2247
 msgid "_Remove an Emblem..."
-msgstr ""
+msgstr "_Bain Suaitheantas..."
 
 #: ../src/nautilus-query-editor.c:134
 msgid "File Type"
@@ -5448,22 +5540,20 @@ msgid "Video"
 msgstr "Físeán"
 
 #: ../src/nautilus-query-editor.c:409
-#, fuzzy
 msgid "Picture"
-msgstr "Pictiúrí"
+msgstr "Pictiúr"
 
 #: ../src/nautilus-query-editor.c:429
-#, fuzzy
 msgid "Illustration"
-msgstr "Idirnaisiúnta"
+msgstr "Léaráid"
 
 #: ../src/nautilus-query-editor.c:443
 msgid "Spreadsheet"
-msgstr ""
+msgstr "Scarbhileog"
 
 #: ../src/nautilus-query-editor.c:459
 msgid "Presentation"
-msgstr ""
+msgstr "Láithreoireacht"
 
 #: ../src/nautilus-query-editor.c:468
 msgid "Pdf / Postscript"
@@ -5479,7 +5569,7 @@ msgstr "Roghnaigh cineál"
 
 #: ../src/nautilus-query-editor.c:639
 msgid "Any"
-msgstr ""
+msgstr "Ar Bith"
 
 #: ../src/nautilus-query-editor.c:654
 msgid "Other Type..."
@@ -5490,9 +5580,8 @@ msgid "Remove this criterion from the search"
 msgstr ""
 
 #: ../src/nautilus-query-editor.c:984
-#, fuzzy
 msgid "Search Folder"
-msgstr "Cruthaigh Fillteán"
+msgstr "Cuardaigh Fillteán"
 
 #: ../src/nautilus-query-editor.c:998
 msgid "Edit the saved search"
@@ -5515,9 +5604,8 @@ msgid "Perform or update the search"
 msgstr ""
 
 #: ../src/nautilus-query-editor.c:1061
-#, fuzzy
 msgid "_Search for:"
-msgstr "Cuardaigh an Liosta"
+msgstr "Cuar_daigh ar:"
 
 #: ../src/nautilus-query-editor.c:1090
 #, fuzzy
@@ -5530,7 +5618,7 @@ msgstr "Cuardaigh:"
 
 #: ../src/nautilus-side-pane.c:420
 msgid "Close the side pane"
-msgstr " Dún an Pána ar an Thaobh"
+msgstr "Dún an pána taoibh"
 
 #: ../src/nautilus-spatial-window.c:881
 msgid "_Places"
@@ -5548,7 +5636,7 @@ msgstr "Dún Máthai_rfhillteáin"
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:886
 msgid "Close this folder's parents"
-msgstr " Dún an Pána ar an Thaobh"
+msgstr "Dún máithreacha an fhillteáin seo"
 
 #: ../src/nautilus-spatial-window.c:888
 msgid "Clos_e All Folders"
@@ -5588,7 +5676,7 @@ msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:1135
 msgid "Content View"
-msgstr ""
+msgstr "Amharc Ábhair"
 
 #: ../src/nautilus-window-manage-views.c:1136
 #, fuzzy
@@ -5623,7 +5711,7 @@ msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:1618
 msgid "Access was denied."
-msgstr ""
+msgstr "Diúltaíodh cead."
 
 #. This case can be hit for user-typed strings like "foo" due to
 #. * the code that guesses web addresses when there's no initial "/".
@@ -5679,10 +5767,12 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
+"Is Nautilus blaosc ghrafach a dhéanann éasca bainisteoireacht chomhad agus "
+"na cuid eile do chórais."
 
 #: ../src/nautilus-window-menus.c:456
 msgid "Copyright © 1999-2007 The Nautilus authors"
-msgstr ""
+msgstr "Cóipcheart © 1999-2007 Na húdair Nautilus"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -5696,9 +5786,8 @@ msgstr ""
 "Seán de Búrca <leftmostcat@gmail.com>"
 
 #: ../src/nautilus-window-menus.c:469
-#, fuzzy
 msgid "Nautilus Web Site"
-msgstr "Amharc Crann le haighaidh Nautilus"
+msgstr "Suíomh Gréasáin Nautilus"
 
 #: ../src/nautilus-window-menus.c:597
 msgid "_File"
@@ -5732,7 +5821,7 @@ msgstr "Dún an fillteán seo"
 
 #: ../src/nautilus-window-menus.c:606
 msgid "_Backgrounds and Emblems..."
-msgstr ""
+msgstr "Cúlraí agus S_uaitheantais..."
 
 #: ../src/nautilus-window-menus.c:607
 msgid ""
@@ -5851,7 +5940,7 @@ msgstr ""
 #. name, stock id
 #: ../src/nautilus-window-menus.c:669
 msgid "_Home Folder"
-msgstr "Fillteán _Baile"
+msgstr "_Fillteán Baile"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:673
@@ -5870,9 +5959,8 @@ msgstr "Brábhsáil suíomh líonra leabharmharcáilte agus logánta"
 
 #. name, stock id
 #: ../src/nautilus-window-menus.c:681
-#, fuzzy
 msgid "T_emplates"
-msgstr "_Athchuir"
+msgstr "_Teimpléid"
 
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:682
