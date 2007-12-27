@@ -347,6 +347,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 {
 	gboolean same_fs;
 	gboolean target_is_source_parent;
+	const char *dropped_uri;
 	GFile *target, *dropped;
 	GdkDragAction actions;
 
@@ -368,6 +369,8 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		return;
 	}
 	
+	dropped_uri = ((NautilusDragSelectionItem *)items->data)->uri;
+	
 	/*
 	 * Check for trash URI.  We do a find_directory for any Trash directory.
 	 * Passing 0 permissions as gnome-vfs would override the permissions
@@ -381,23 +384,30 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 
 		return;
 
-	} else if (g_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)
-			|| g_str_has_prefix (target_uri_string, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+	} else if (g_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER) ||
+		   g_str_has_prefix (target_uri_string, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		}
 		return;
 	} else if (eel_uri_is_desktop (target_uri_string)) {
 		target = nautilus_get_desktop_location ();
+		if (eel_uri_is_desktop (dropped_uri)) {
+			/* Only move to Desktop icons */
+			if (actions & GDK_ACTION_MOVE) {
+				*action = GDK_ACTION_MOVE;
+			}
+			
+			return;
+		}
 	} else {
 		target = g_file_new_for_uri (target_uri_string);
 	}
 
 	/* Compare the first dropped uri with the target uri for same fs match. */
-	dropped = g_file_new_for_uri (((NautilusDragSelectionItem *)items->data)->uri);
+	dropped = g_file_new_for_uri (dropped_uri);
 	same_fs = check_same_fs (target, dropped);
-	target_is_source_parent = FALSE;
-	target_is_source_parent = g_file_contains_file (target, dropped);	
+	target_is_source_parent = g_file_contains_file (target, dropped);
 	
 	if (same_fs || target_is_source_parent) {
 		if (actions & GDK_ACTION_MOVE) {
