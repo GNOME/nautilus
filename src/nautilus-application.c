@@ -423,6 +423,7 @@ finish_startup (NautilusApplication *application)
 static void
 initialize_kde_trash_hack (void)
 {
+	char *trash_file;
 	char *trash_dir;
 	char *desktop_dir, *desktop_uri, *kde_trash_dir;
 	char *dir, *basename;
@@ -435,8 +436,16 @@ initialize_kde_trash_hack (void)
 	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
 	desktop_dir = gnome_vfs_get_local_path_from_uri (desktop_uri);
 	g_free (desktop_uri);
+
+	/* Newer kde use trash:// and have a trash.desktop link on the desktop instead */
+	trash_file = g_build_filename (desktop_dir, "trash.desktop", NULL);
+	if (g_file_test (trash_file, G_FILE_TEST_EXISTS)) {
+		trash_dir = g_strdup ("trash.desktop");
+	}
+	g_free (trash_file);
 	
-	if (g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
+	if (trash_dir == NULL &&
+	    g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
 		/* Look for trash directory */
 		kde_conf_file = g_build_filename (g_get_home_dir(), ".kde/share/config/kdeglobals", NULL);
 		key = g_strconcat ("=", kde_conf_file, "=/Paths/Trash", NULL);
@@ -465,13 +474,13 @@ initialize_kde_trash_hack (void)
 			g_free (basename);
 			g_free (dir);
 		} 
-
-		if (trash_dir != NULL) {
-			nautilus_set_kde_trash_name (trash_dir);
-		}
-
+	}
+	
+	if (trash_dir != NULL) {
+		nautilus_set_kde_trash_name (trash_dir);
 		g_free (trash_dir);
 	}
+	
 	g_free (desktop_dir);
 }
 
