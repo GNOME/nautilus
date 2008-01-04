@@ -27,6 +27,7 @@
 #define NAUTILUS_FILE_INFO_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -73,6 +74,11 @@ struct _NautilusFileInfoIface
 	void              (*invalidate_extension_info) (NautilusFileInfo *file);
 	
 	char *            (*get_activation_uri)   (NautilusFileInfo *file);
+
+	GFileType         (*get_file_type)        (NautilusFileInfo *file);
+	GFile *           (*get_location)         (NautilusFileInfo *file);
+	GFile *           (*get_parent_location)  (NautilusFileInfo *file);
+  
 };
 
 GList            *nautilus_file_info_list_copy            (GList            *files);
@@ -83,9 +89,12 @@ GType             nautilus_file_info_get_type             (void);
 gboolean          nautilus_file_info_is_gone              (NautilusFileInfo *file);
 
 /* Name and Location */
+GFileType         nautilus_file_info_get_file_type        (NautilusFileInfo *file);
+GFile *           nautilus_file_info_get_location         (NautilusFileInfo *file);
 char *            nautilus_file_info_get_name             (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri              (NautilusFileInfo *file);
 char *            nautilus_file_info_get_activation_uri   (NautilusFileInfo *file);
+GFile *           nautilus_file_info_get_parent_location  (NautilusFileInfo *file);
 char *            nautilus_file_info_get_parent_uri       (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri_scheme       (NautilusFileInfo *file);
 

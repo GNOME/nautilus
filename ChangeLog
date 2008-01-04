@@ -1,5 +1,18 @@
 2008-01-04  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-extension/libnautilus-extension.pc.in:
+	Pull in gio, not gnome-vfs.
+	
+        * libnautilus-extension/nautilus-file-info.[ch]:
+        * libnautilus-private/nautilus-file.c:
+	Export some gio specific things like file type and
+	location/parent location.
+	
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+	These are G_FILE_TYPE_SHORTCUT files, not REGULAR files.
+
+2008-01-04  Alexander Larsson  <alexl@redhat.com>
+
         * configure.in:
         * src/nautilus-main.c:
 	Set desktop env for GAppInfo

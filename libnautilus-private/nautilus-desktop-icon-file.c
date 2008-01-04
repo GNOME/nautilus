@@ -174,7 +174,7 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 
 	eel_ref_str_unref (file->details->mime_type);
 	file->details->mime_type = eel_ref_str_get_unique ("application/x-nautilus-link");
-	file->details->type = G_FILE_TYPE_REGULAR;
+	file->details->type = G_FILE_TYPE_SHORTCUT;
 	file->details->size = 0;
 	file->details->has_permissions = FALSE;
 	file->details->can_read = TRUE;

@@ -90,6 +90,15 @@ nautilus_file_info_is_gone (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_gone (file);
 }
 
+GFileType
+nautilus_file_info_get_file_type (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), G_FILE_TYPE_UNKNOWN);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_file_type != NULL, G_FILE_TYPE_UNKNOWN);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_file_type (file);
+}
+
 char *
 nautilus_file_info_get_name (NautilusFileInfo *file)
 {
@@ -99,6 +108,14 @@ nautilus_file_info_get_name (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_name (file);
 }
 
+GFile *
+nautilus_file_info_get_location (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_location != NULL, NULL);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_location (file);
+}
 char *
 nautilus_file_info_get_uri (NautilusFileInfo *file)
 {
@@ -117,11 +134,20 @@ nautilus_file_info_get_activation_uri (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri (file);
 }
 
+GFile *
+nautilus_file_info_get_parent_location (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_location != NULL, NULL);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_location (file);
+}
+
 char *
 nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri != NULL, NULL);
 
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri (file);
 }

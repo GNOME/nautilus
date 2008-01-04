@@ -6869,7 +6869,10 @@ nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
 {
 	iface->is_gone = nautilus_file_is_gone;
 	iface->get_name = nautilus_file_get_name;
+	iface->get_file_type = nautilus_file_get_file_type;
+	iface->get_location = nautilus_file_get_location;
 	iface->get_uri = nautilus_file_get_uri;
+	iface->get_parent_location = nautilus_file_get_parent_location;
 	iface->get_parent_uri = nautilus_file_get_parent_uri;
 	iface->get_uri_scheme = nautilus_file_get_uri_scheme;
 	iface->get_activation_uri = nautilus_file_get_activation_uri;
