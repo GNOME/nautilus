@@ -607,6 +607,10 @@ nautilus_open_with_dialog_add_items_idle (NautilusOpenWithDialog *dialog)
 		GtkTreeIter     iter;
 		GtkTreePath    *path;
 
+		if (!g_app_info_supports_uris (app) &&
+		    !g_app_info_supports_files (app))
+			continue;
+
 		gtk_list_store_append (dialog->details->program_list_store, &iter);
 		gtk_list_store_set (dialog->details->program_list_store, &iter,
 				    COLUMN_APP_INFO,  app,

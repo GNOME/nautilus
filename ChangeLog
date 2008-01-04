@@ -1,5 +1,15 @@
 2008-01-04  Alexander Larsson  <alexl@redhat.com>
 
+        * configure.in:
+        * src/nautilus-main.c:
+	Set desktop env for GAppInfo
+	
+        * libnautilus-private/nautilus-open-with-dialog.c:
+	Filter out apps that don't take file args from
+	open with list.
+
+2008-01-04  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
         (delete_job):
 	Remove unnecessary delete_if_all_already_in_trash boolean.

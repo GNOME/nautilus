@@ -47,6 +47,7 @@
 #include <gtk/gtksignal.h>
 #include <gdk/gdk.h>
 #include <glib/gi18n.h>
+#include <gio/gdesktopappinfo.h>
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-client.h>
@@ -410,6 +411,9 @@ main (int argc, char *argv[])
 	g_thread_init (NULL);
 
 	setlocale (LC_ALL, "");
+
+	/* This will be done by gtk+ later, but for now, force it to GNOME */
+	g_desktop_app_info_set_desktop_env ("GNOME");
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
