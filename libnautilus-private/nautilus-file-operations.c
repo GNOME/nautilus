@@ -109,7 +109,6 @@ typedef struct {
 	CommonJob common;
 	GList *files;
 	gboolean try_trash;
-	gboolean delete_if_all_already_in_trash;
 	NautilusDeleteCallback done_callback;
 	gpointer done_callback_data;
 } DeleteJob;
@@ -1610,7 +1609,6 @@ delete_job (GIOSchedulerJob *io_job,
 		file = l->data;
 		
 		if (job->try_trash &&
-		    job->delete_if_all_already_in_trash &&
 		    g_file_has_uri_scheme (file, "trash")) {
 			must_confirm_delete_in_trash = TRUE;
 			to_delete_files = g_list_prepend (to_delete_files, file);
