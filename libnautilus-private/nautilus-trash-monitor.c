@@ -149,7 +149,7 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
 }
 
 static void
-file_changed (GDirectoryMonitor* monitor,
+file_changed (GFileMonitor* monitor,
 	      GFile *child,
 	      GFile *other_file,
 	      GFileMonitorEvent event_type,

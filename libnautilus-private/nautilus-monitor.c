@@ -33,7 +33,7 @@
 #include <libgnome/gnome-util.h>
 
 struct NautilusMonitor {
-	GDirectoryMonitor *monitor;
+	GFileMonitor *monitor;
 };
 
 gboolean
@@ -41,7 +41,7 @@ nautilus_monitor_active (void)
 {
 	static gboolean tried_monitor = FALSE;
 	static gboolean monitor_success;
-	GDirectoryMonitor *dir_monitor;
+	GFileMonitor *dir_monitor;
 	GFile *file;
 
 	if (tried_monitor == FALSE) {	
@@ -71,7 +71,7 @@ call_consume_changes_idle_cb (gpointer not_used)
 }
 
 static void
-dir_changed (GDirectoryMonitor* monitor,
+dir_changed (GFileMonitor* monitor,
 	     GFile *child,
 	     GFile *other_file,
 	     GFileMonitorEvent event_type,
@@ -121,7 +121,7 @@ dir_changed (GDirectoryMonitor* monitor,
 NautilusMonitor *
 nautilus_monitor_directory (GFile *location)
 {
-	GDirectoryMonitor *dir_monitor;
+	GFileMonitor *dir_monitor;
 	NautilusMonitor *ret;
 
 	dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_WATCH_MOUNTS, NULL);
@@ -143,7 +143,7 @@ nautilus_monitor_cancel (NautilusMonitor *monitor)
 {
 	if (monitor->monitor != NULL) {
 		g_signal_handlers_disconnect_by_func (monitor->monitor, dir_changed, monitor);
-		g_directory_monitor_cancel (monitor->monitor);
+		g_file_monitor_cancel (monitor->monitor);
 		g_object_unref (monitor->monitor);
 	}
 
