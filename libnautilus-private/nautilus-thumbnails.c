@@ -130,6 +130,7 @@ get_file_mtime (const char *file_uri, time_t* mtime)
 		*mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 		g_object_unref (info);
 	}
+	g_object_unref (file);
 	
 	return TRUE;
 }
