@@ -251,12 +251,8 @@ void                    nautilus_file_mount                             (Nautilu
 									 GCancellable                   *cancellable,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
-void                    nautilus_file_unmount                           (NautilusFile                   *file,
-									 NautilusFileOperationCallback   callback,
-									 gpointer                        callback_data);
-void                    nautilus_file_eject                             (NautilusFile                   *file,
-									 NautilusFileOperationCallback   callback,
-									 gpointer                        callback_data);
+void                    nautilus_file_unmount                           (NautilusFile                   *file);
+void                    nautilus_file_eject                             (NautilusFile                   *file);
 
 /* Basic operations for file objects. */
 void                    nautilus_file_set_owner                         (NautilusFile                   *file,
@@ -478,12 +474,8 @@ typedef struct {
 							  GCancellable                   *cancellable,
 							  NautilusFileOperationCallback   callback,
 							  gpointer                        callback_data);
-	void                 (* unmount)                 (NautilusFile                   *file,
-							  NautilusFileOperationCallback   callback,
-							  gpointer                        callback_data);
-	void                 (* eject)                   (NautilusFile                   *file,
-							  NautilusFileOperationCallback   callback,
-							  gpointer                        callback_data);
+	void                 (* unmount)                 (NautilusFile *file);
+	void                 (* eject)                   (NautilusFile *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

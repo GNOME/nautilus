@@ -312,14 +312,12 @@ vfs_file_unmount_callback (GObject *source_object,
 }
 
 static void
-vfs_file_unmount (NautilusFile                   *file,
-		  NautilusFileOperationCallback   callback,
-		  gpointer                        callback_data)
+vfs_file_unmount (NautilusFile *file)
 {
 	NautilusFileOperation *op;
 	GFile *location;
 	
-	op = nautilus_file_operation_new (file, callback, callback_data);
+	op = nautilus_file_operation_new (file, NULL, NULL);
 
 	location = nautilus_file_get_location (file);
 	g_file_unmount_mountable (location,
@@ -358,14 +356,12 @@ vfs_file_eject_callback (GObject *source_object,
 }
 
 static void
-vfs_file_eject (NautilusFile                   *file,
-		  NautilusFileOperationCallback   callback,
-		  gpointer                        callback_data)
+vfs_file_eject (NautilusFile *file)
 {
 	NautilusFileOperation *op;
 	GFile *location;
 	
-	op = nautilus_file_operation_new (file, callback, callback_data);
+	op = nautilus_file_operation_new (file, NULL, NULL);
 
 	location = nautilus_file_get_location (file);
 	g_file_eject_mountable (location,

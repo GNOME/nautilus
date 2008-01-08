@@ -1,6 +1,15 @@
 2008-01-08  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-desktop-icon-file.c:
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * src/file-manager/fm-directory-view.c:
+	Remove unused callbacks in nautilus_file_unmount/eject.
+	Patch from Tomas Bzatek <tbzatek@redhat.com>
+
+2008-01-08  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-desktop-icon-file.c:
         * libnautilus-private/nautilus-file-operations.c:
         * libnautilus-private/nautilus-vfs-file.c:
 	Implement some missing mount/unmount functionallity.

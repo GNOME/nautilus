@@ -5727,8 +5727,7 @@ action_unmount_volume_callback (GtkAction *action,
 	for (l = selection; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		if (nautilus_file_can_unmount (file)) {
-			nautilus_file_unmount (file, 
-					       NULL, NULL);
+			nautilus_file_unmount (file);
 		}
 	}
 	nautilus_file_list_free (selection);
@@ -5772,7 +5771,7 @@ action_eject_volume_callback (GtkAction *action,
 		file = NAUTILUS_FILE (l->data);
 		
 		if (nautilus_file_can_eject (file)) {
-			nautilus_file_eject (file, NULL, NULL);
+			nautilus_file_eject (file);
 		}
 	}	
 	nautilus_file_list_free (selection);
@@ -5812,7 +5811,7 @@ action_self_unmount_volume_callback (GtkAction *action,
 		return;
 	}
 
-	nautilus_file_unmount (file, NULL, NULL);
+	nautilus_file_unmount (file);
 }
 
 static void
@@ -5829,7 +5828,7 @@ action_self_eject_volume_callback (GtkAction *action,
 		return;
 	}
 	
-	nautilus_file_eject (file, NULL, NULL);
+	nautilus_file_eject (file);
 }
 
 static void 

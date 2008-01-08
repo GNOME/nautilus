@@ -874,42 +874,18 @@ nautilus_file_mount (NautilusFile                   *file,
 }
 
 void
-nautilus_file_unmount (NautilusFile                   *file,
-		       NautilusFileOperationCallback   callback,
-		       gpointer                        callback_data)
+nautilus_file_unmount (NautilusFile *file)
 {
-	GError *error;
-	
-	if (NAUTILUS_FILE_GET_CLASS (file)->unmount == NULL) {
-		if (callback) {
-			error = NULL;
-			g_set_error (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-				     _("This file cannot be unmounted"));
-			callback (file, NULL, error, callback_data);
-			g_error_free (error);
-		}
-	} else {
-		NAUTILUS_FILE_GET_CLASS (file)->unmount (file, callback, callback_data);
+	if (NAUTILUS_FILE_GET_CLASS (file)->unmount != NULL) {
+		NAUTILUS_FILE_GET_CLASS (file)->unmount (file);
 	}
 }
 
 void
-nautilus_file_eject (NautilusFile                   *file,
-		     NautilusFileOperationCallback   callback,
-		     gpointer                        callback_data)
+nautilus_file_eject (NautilusFile *file)
 {
-	GError *error;
-	
-	if (NAUTILUS_FILE_GET_CLASS (file)->eject == NULL) {
-		if (callback) {
-			error = NULL;
-			g_set_error (&error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-				     _("This file cannot be eject"));
-			callback (file, NULL, error, callback_data);
-			g_error_free (error);
-		}
-	} else {
-		NAUTILUS_FILE_GET_CLASS (file)->eject (file, callback, callback_data);
+	if (NAUTILUS_FILE_GET_CLASS (file)->eject != NULL) {
+		NAUTILUS_FILE_GET_CLASS (file)->eject (file);
 	}
 }
 

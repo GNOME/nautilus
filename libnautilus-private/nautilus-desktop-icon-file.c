@@ -302,9 +302,7 @@ nautilus_desktop_icon_file_get_link (NautilusDesktopIconFile *icon_file)
 }
 
 static void
-nautilus_desktop_icon_file_unmount (NautilusFile *file,
-        NautilusFileOperationCallback callback,
-        gpointer callback_data)
+nautilus_desktop_icon_file_unmount (NautilusFile *file)
 {
 	NautilusDesktopIconFile *desktop_file;
     GMount *mount;
@@ -320,9 +318,7 @@ nautilus_desktop_icon_file_unmount (NautilusFile *file,
 }
 
 static void
-nautilus_desktop_icon_file_eject (NautilusFile *file,
-        NautilusFileOperationCallback callback,
-        gpointer callback_data)
+nautilus_desktop_icon_file_eject (NautilusFile *file)
 {
 	NautilusDesktopIconFile *desktop_file;
     GMount *mount;
