@@ -1716,10 +1716,18 @@ unmount_mount_callback (GObject *source_object,
 	UnmountData *data = user_data;
 	GError *error;
 	char *primary;
+	gboolean unmounted;
 
 	error = NULL;
-	if (!g_mount_unmount_finish (G_MOUNT (source_object),
-				      res, &error)) {
+	if (data->eject) {
+		unmounted = g_mount_unmount_finish (G_MOUNT (source_object),
+		      							res, &error);
+	} else {
+		unmounted = g_mount_eject_finish (G_MOUNT (source_object),
+		      							res, &error);
+	}
+	
+	if (! unmounted) {
 		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
 			if (data->eject) {
 				primary = f (_("Unable to eject %V"), source_object);
@@ -1745,19 +1753,10 @@ static void
 do_unmount (UnmountData *data)
 {
 	if (data->eject) {
-#if 0
-/* TODO */
-		GDrive *drive;
-
-		drive = g_mount_get_drive (drive);
-		if (drive != NULL) {
-			g_drive_eject (drive, 
-				NULL,
-				unmount_mount_callback,
-				data);
-			g_object_unref (drive);
-		}
-#endif
+		g_mount_eject (data->mount,
+				 0, NULL,
+				 unmount_mount_callback,
+				 data);
 	} else {
 		g_mount_unmount (data->mount,
 				 0, NULL,
@@ -1897,8 +1896,10 @@ prompt_empty_trash (GtkWindow *parent_window)
 	
 	/* Make transient for the window group */
 	gtk_widget_realize (dialog);
-	gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
-				      gdk_screen_get_root_window (screen));
+	if (screen != NULL) {
+		gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
+				      		gdk_screen_get_root_window (screen));
+	}
 	
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);

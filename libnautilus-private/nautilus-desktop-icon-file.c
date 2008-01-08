@@ -31,6 +31,7 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-file-operations.h"
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
@@ -301,6 +302,43 @@ nautilus_desktop_icon_file_get_link (NautilusDesktopIconFile *icon_file)
 }
 
 static void
+nautilus_desktop_icon_file_unmount (NautilusFile *file,
+        NautilusFileOperationCallback callback,
+        gpointer callback_data)
+{
+	NautilusDesktopIconFile *desktop_file;
+    GMount *mount;
+    
+    desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+    if (desktop_file) {
+    	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
+       	if (mount != NULL) {
+       		nautilus_file_operations_unmount_mount (NULL, mount, FALSE);
+       	}
+    }
+	
+}
+
+static void
+nautilus_desktop_icon_file_eject (NautilusFile *file,
+        NautilusFileOperationCallback callback,
+        gpointer callback_data)
+{
+	NautilusDesktopIconFile *desktop_file;
+    GMount *mount;
+    
+    desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+    if (desktop_file) {
+    	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
+       	if (mount != NULL) {
+       		nautilus_file_operations_unmount_mount (NULL, mount, TRUE);
+       	}
+    }
+}
+
+
+
+static void
 nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 {
 	GObjectClass *object_class;
@@ -320,6 +358,8 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 	file_class->get_deep_counts = desktop_icon_file_get_deep_counts;
 	file_class->get_date = desktop_icon_file_get_date;
 	file_class->get_where_string = desktop_icon_file_get_where_string;
+	file_class->unmount = nautilus_desktop_icon_file_unmount;
+	file_class->eject = nautilus_desktop_icon_file_eject;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }

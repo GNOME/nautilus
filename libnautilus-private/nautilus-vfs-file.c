@@ -285,12 +285,96 @@ vfs_file_mount (NautilusFile                   *file,
 }
 
 static void
+vfs_file_unmount_callback (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer callback_data)
+{
+	NautilusFileOperation *op;
+	gboolean unmounted;
+	GError *error;
+
+	op = callback_data;
+
+	error = NULL;
+	unmounted = g_file_unmount_mountable_finish (G_FILE (source_object),
+						    res, &error);
+	
+    if ((! unmounted) && ((error->domain == G_IO_ERROR_FAILED_HANDLED) ||
+                          (error->domain == G_IO_ERROR_CANCELLED))) {
+        g_error_free (error);
+    	error = NULL;
+    }
+
+    nautilus_file_operation_complete (op, G_FILE (source_object), error);
+	if (error) {
+		g_error_free (error);
+	}
+}
+
+static void
 vfs_file_unmount (NautilusFile                   *file,
 		  NautilusFileOperationCallback   callback,
 		  gpointer                        callback_data)
 {
+	NautilusFileOperation *op;
+	GFile *location;
+	
+	op = nautilus_file_operation_new (file, callback, callback_data);
+
+	location = nautilus_file_get_location (file);
+	g_file_unmount_mountable (location,
+				G_MOUNT_UNMOUNT_NONE,
+				op->cancellable,
+				vfs_file_unmount_callback,
+				op);
+	g_object_unref (location);
 }
 
+static void
+vfs_file_eject_callback (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer callback_data)
+{
+	NautilusFileOperation *op;
+	gboolean ejected;
+	GError *error;
+
+	op = callback_data;
+
+	error = NULL;
+	ejected = g_file_eject_mountable_finish (G_FILE (source_object),
+						    res, &error);
+
+	if ((! ejected) && ((error->domain == G_IO_ERROR_FAILED_HANDLED) ||
+                        (error->domain == G_IO_ERROR_CANCELLED))) {
+        g_error_free (error);
+    	error = NULL;
+    }
+	
+	nautilus_file_operation_complete (op, G_FILE (source_object), error);
+	if (error) {
+		g_error_free (error);
+	}
+}
+
+static void
+vfs_file_eject (NautilusFile                   *file,
+		  NautilusFileOperationCallback   callback,
+		  gpointer                        callback_data)
+{
+	NautilusFileOperation *op;
+	GFile *location;
+	
+	op = nautilus_file_operation_new (file, callback, callback_data);
+
+	location = nautilus_file_get_location (file);
+	g_file_eject_mountable (location,
+				G_MOUNT_UNMOUNT_NONE,
+				op->cancellable,
+				vfs_file_eject_callback,
+				op);
+	g_object_unref (location);
+}
 
 static void
 nautilus_vfs_file_init (gpointer object, gpointer klass)
@@ -319,4 +403,5 @@ nautilus_vfs_file_class_init (gpointer klass)
 	file_class->get_where_string = vfs_file_get_where_string;
 	file_class->mount = vfs_file_mount;
 	file_class->unmount = vfs_file_unmount;
+	file_class->eject = vfs_file_eject;
 }
