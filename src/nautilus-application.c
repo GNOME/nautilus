@@ -172,7 +172,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	 * anymore */
 
 	/* Watch for unmounts so we can close open windows */
-	/* TODO-gio: This should be using the UNMOUNTED feature of GDirectoryMonitor instead */
+	/* TODO-gio: This should be using the UNMOUNTED feature of GFileMonitor instead */
 	application->volume_monitor = g_volume_monitor_get ();
 	g_signal_connect_object (application->volume_monitor, "mount_removed",
 				 G_CALLBACK (mount_removed_callback), application, 0);
