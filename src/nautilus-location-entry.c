@@ -58,6 +58,9 @@ struct NautilusLocationEntryDetails {
 	
 	char *current_directory;
 	GList *file_info_list;
+	char *base_name;
+	int user_location_length;
+	GnomeVFSAsyncHandle *async_handle;
 	
 	guint idle_id;
 
@@ -128,6 +131,109 @@ accumulate_name_locale (char *full_name, char *candidate_name)
 	return result_name;
 }
 
+static void
+write_location_entry (NautilusLocationEntry *entry_copy)
+{
+	char *base_name;
+	char *current_path;
+	char *dir_name;
+	char *expand_text;
+	char *expand_name;
+	char *insert_text;
+	GnomeVFSFileInfo *current_file_info;
+	GList *element;
+	int base_name_length;
+	int user_location_length;
+	int expand_text_length;
+	int pos;
+	GtkEditable *editable;
+	char *base_name_utf8 = NULL;
+	char *expand_text_utf8;
+	const char *filename_charset;
+	gboolean utf8_filenames;
+
+	if (entry_copy->details->file_info_list == NULL) {
+		return;
+	}
+
+	base_name = g_strdup (entry_copy->details->base_name);
+	user_location_length = entry_copy->details->user_location_length;
+	expand_text = NULL;
+
+	editable = GTK_EDITABLE (entry_copy);	
+	utf8_filenames = eel_get_filename_charset (&filename_charset);
+
+        /* iterate through the directory, keeping the intersection of all the names that
+           have the current basename as a prefix. */
+	for (element = entry_copy->details->file_info_list; element != NULL; element = element->next) {
+		current_file_info = element->data;
+		if (eel_str_has_prefix (current_file_info->name, base_name)) {
+			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+				expand_name = g_strconcat (current_file_info->name, "/", NULL);
+			} else {
+				expand_name = g_strdup (current_file_info->name);
+			}
+			if (utf8_filenames) {
+				expand_text = accumulate_name_utf8 (expand_text, expand_name);
+			} else {
+			expand_text = accumulate_name_locale (expand_text, expand_name);
+			}
+			g_free (expand_name);
+		}
+	}
+
+	if (!utf8_filenames) {
+		if (expand_text) {
+			expand_text_utf8 = g_convert (expand_text, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
+			g_free (expand_text);
+			expand_text = expand_text_utf8;
+		}
+
+		base_name_utf8 = g_convert (base_name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
+		g_free (base_name);
+		base_name = base_name_utf8;
+	}
+
+	/* if we've got something, add it to the entry */
+	if (expand_text != NULL && base_name != NULL) {
+		expand_text_length = g_utf8_strlen (expand_text, -1);
+		base_name_length = g_utf8_strlen (base_name, -1);
+
+		if (!eel_str_has_suffix (base_name, expand_text)
+			&& base_name_length < expand_text_length) {
+
+			insert_text = g_utf8_offset_to_pointer (expand_text, base_name_length);
+			pos = user_location_length;
+			gtk_editable_insert_text (editable,
+						  insert_text,
+						  strlen (insert_text),
+						  &pos);
+
+			pos = user_location_length;
+			gtk_editable_select_region (editable, pos, -1);
+		}
+	}
+
+	g_free (base_name);
+}
+
+static void
+async_dir_list_callback (GnomeVFSAsyncHandle * handle,GnomeVFSResult result,
+			GList * list, guint entries_read, gpointer callback_data)
+{
+	NautilusLocationEntry *entry_copy;
+	GList *element;
+	GList *temp;
+	GnomeVFSFileInfo *info;
+	entry_copy = (NautilusLocationEntry *) callback_data;
+
+	if (list !=NULL) {
+		entry_copy->details->file_info_list = gnome_vfs_file_info_list_copy (list);
+		write_location_entry (entry_copy);
+	}
+	entry_copy->details->async_handle = NULL;
+}
+
 /* utility routine to load the file info list for the current directory, if necessary */
 static void
 get_file_info_list (NautilusLocationEntry *entry, const char* dir_name)
@@ -142,14 +248,18 @@ get_file_info_list (NautilusLocationEntry *entry, const char* dir_name)
 		}
 
 		entry->details->current_directory = g_strdup (dir_name);
-		result = gnome_vfs_directory_list_load (&entry->details->file_info_list, dir_name,
-							GNOME_VFS_FILE_INFO_DEFAULT);
-		if (result != GNOME_VFS_OK) {
-			if (entry->details->file_info_list) {
-				gnome_vfs_file_info_list_free (entry->details->file_info_list);	
-				entry->details->file_info_list = NULL;			
-			}
+
+		if(entry->details->async_handle){
+			gnome_vfs_async_cancel (entry->details->async_handle);
+			entry->details->async_handle = NULL;
 		}
+
+		gnome_vfs_async_load_directory (&entry->details->async_handle,dir_name,
+						GNOME_VFS_FILE_INFO_DEFAULT,1000,
+						GNOME_VFS_PRIORITY_DEFAULT,async_dir_list_callback,entry);
+	}
+	else {
+		write_location_entry (entry);
 	}
 }
 
@@ -166,8 +276,6 @@ try_to_expand_path (gpointer callback_data)
 	GList *element;
 	GnomeVFSURI *uri;
 	GtkEditable *editable;
-	gboolean utf8_filenames;
-	const char *filename_charset;
 
 	char *base_name_uri_escaped;
 	char *base_name;
@@ -213,6 +321,7 @@ try_to_expand_path (gpointer callback_data)
 	}
 
 	user_location_length = g_utf8_strlen (user_location, -1);
+	entry->details->user_location_length = user_location_length;
 
 	g_free (user_location);
 
@@ -232,6 +341,10 @@ try_to_expand_path (gpointer callback_data)
 		return FALSE;
 	}
 
+	g_free (entry->details->base_name);
+
+	entry->details->base_name = g_strdup (base_name);
+
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
 	gnome_vfs_uri_unref (uri);
@@ -239,70 +352,6 @@ try_to_expand_path (gpointer callback_data)
 
 	/* get file info for the directory, if it hasn't changed since last time */
 	get_file_info_list (entry, dir_name);
-	if (entry->details->file_info_list == NULL) {
-		g_free (dir_name);
-		g_free (base_name);
-		g_free (current_path);
-		return FALSE;
-	}
-
-	utf8_filenames = eel_get_filename_charset (&filename_charset);
-
-	/* iterate through the directory, keeping the intersection of all the names that
-	   have the current basename as a prefix. */
-	expand_text = NULL;
-	for (element = entry->details->file_info_list; element != NULL; element = element->next) {
-		current_file_info = element->data;
-		if (eel_str_has_prefix (current_file_info->name, base_name)) {
-			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-				expand_name = g_strconcat (current_file_info->name, "/", NULL);
-			} else {
-				expand_name = g_strdup (current_file_info->name);
-			}
-			if (utf8_filenames) {
-				expand_text = accumulate_name_utf8 (expand_text, expand_name);
-			} else {
-				expand_text = accumulate_name_locale (expand_text, expand_name);
-			}
-			g_free (expand_name);
-		}
-	}
-
-	if (!utf8_filenames) {
-		if (expand_text) {
-			expand_text_utf8 = g_convert (expand_text, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
-			g_free (expand_text);
-			expand_text = expand_text_utf8;
-		}
-		
-		base_name_utf8 = g_convert (base_name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
-		g_free (base_name);
-		base_name = base_name_utf8;
-	} 
-
-	/* if we've got something, add it to the entry */
-	if (expand_text != NULL && base_name != NULL) {
-		expand_text_length = g_utf8_strlen (expand_text, -1);
-		base_name_length = g_utf8_strlen (base_name, -1);
-		
-		if (!eel_str_has_suffix (base_name, expand_text)
-		    && base_name_length < expand_text_length) {
-			insert_text = g_utf8_offset_to_pointer (expand_text, base_name_length);
-			pos = user_location_length;
-			gtk_editable_insert_text (editable,
-						  insert_text,
-						  strlen (insert_text),
-						  &pos);
-
-			pos = user_location_length;
-			gtk_editable_select_region (editable, pos, -1);
-		}
-	}
-	g_free (expand_text);
-
-	g_free (dir_name);
-	g_free (base_name);
-	g_free (current_path);
 
 	return FALSE;
 }
@@ -461,6 +510,11 @@ destroy (GtkObject *object)
 	
 	g_free (entry->details->current_directory);
 	entry->details->current_directory = NULL;
+
+	if (entry->details->async_handle) {
+		gnome_vfs_async_cancel (entry->details->async_handle);
+		entry->details->async_handle = NULL;
+	}
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -515,6 +569,10 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 	entry->details = g_new0 (NautilusLocationEntryDetails, 1);
 
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
+
+	entry->details->base_name = NULL;
+
+	entry->details->async_handle = NULL;
 
 	g_signal_connect (entry, "event_after",
 		          G_CALLBACK (editable_event_after_callback), entry);

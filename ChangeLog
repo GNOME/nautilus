@@ -1,3 +1,13 @@
+2008-01-09  Rajan Singh<singh.rajan@wipro.com>
+
+	Make try_to_expand_path() asychronous. Fixes #455908.
+
+	*src/nautilus-location-entry.c:
+	(get_file_info_list): Using gnomevfs asynchronous call to get the directory list
+	(try_to_expand_path), (write_location_entry) : Re-factoring the code.
+	Move out the logic for expanding the path to a seperate function.
+	(async_dir_list_callback): Callback for gnome_vfs_async_load_directory ()
+
 2008-01-04  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-application.c:
