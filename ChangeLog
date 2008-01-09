@@ -1,3 +1,10 @@
+2008-01-09  A. Walton  <awalton@svn.gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(move_file_prepare):
+	Remove bad g_error_free()'s causing crashes while 
+	merging files.
+
 2008-01-09  Alexander Larsson  <alexl@redhat.com>
 
         * src/Makefile.am:

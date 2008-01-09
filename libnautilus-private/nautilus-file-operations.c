@@ -3665,7 +3665,6 @@ move_file_prepare (CopyMoveJob *move_job,
 		    (!is_merge && job->replace_all)) {
 			g_free (primary);
 			g_free (secondary);
-			g_error_free (error);
 			
 			overwrite = TRUE;
 			goto retry;
@@ -3674,7 +3673,6 @@ move_file_prepare (CopyMoveJob *move_job,
 		if (job->skip_all_conflict) {
 			g_free (primary);
 			g_free (secondary);
-			g_error_free (error);
 			
 			goto out;
 		}
@@ -3689,8 +3687,6 @@ move_file_prepare (CopyMoveJob *move_job,
 					SKIP,
 					is_merge?MERGE:REPLACE,
 					NULL);
-		
-		g_error_free (error);
 		
 		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
 			abort_job (job);
