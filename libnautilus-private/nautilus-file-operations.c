@@ -2347,7 +2347,7 @@ verify_destination (CommonJob *job,
 		
 		if (free_size < required_size) {
 			primary = f (_("Error while copying to \"%B\"."), dest);
-			secondary = _("There is not enough space on the destination. Try to remove files to make space.");
+			secondary = f(_("There is not enough space on the destination. Try to remove files to make space."));
 			
 			details = f (_("There is %S available, but %S is required."), free_size, required_size);
 			
