@@ -191,6 +191,8 @@ EXTRA_DIST =					\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
 	$(desktop_in_files)			\
+	nautilus-connect-server-dialog-main.c	\
+	nautilus-connect-server-dialog.c	\
 	$(NULL)
 
 BUILT_SOURCES = \
