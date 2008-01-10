@@ -6830,9 +6830,11 @@ real_update_location_menu (FMDirectoryView *view)
 		|| nautilus_file_is_desktop_directory (file);
 	is_read_only = fm_directory_view_is_read_only (view);
 
-	can_delete_file = !is_read_only
-		&& !is_special_link
-		&& !is_desktop_or_home_dir;
+	can_delete_file =
+		nautilus_file_can_delete (file) &&
+		!is_read_only &&
+		!is_special_link &&
+		!is_desktop_or_home_dir;
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_CUT);
@@ -6883,6 +6885,21 @@ clipboard_changed_callback (NautilusClipboardMonitor *monitor, FMDirectoryView *
 	
 }
 
+static gboolean
+can_delete_all (GList *files)
+{
+	NautilusFile *file;
+	GList *l;
+
+	for (l = files; l != NULL; l = l->next) {
+		file = l->data;
+		if (!nautilus_file_can_delete (file)) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 static void
 real_update_menus (FMDirectoryView *view)
 {
@@ -6918,10 +6935,12 @@ real_update_menus (FMDirectoryView *view)
 	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_create_files = fm_directory_view_supports_creating_files (view);
-	can_delete_files = !is_read_only
-		&& selection_count != 0
-		&& !selection_contains_special_link
-		&& !selection_contains_desktop_or_home_dir;
+	can_delete_files =
+		can_delete_all (selection) &&
+		!is_read_only &&
+		selection_count != 0 &&
+		!selection_contains_special_link &&
+		!selection_contains_desktop_or_home_dir;
 	can_copy_files = selection_count != 0
 		&& !selection_contains_special_link;	
 
