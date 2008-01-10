@@ -22,6 +22,7 @@ EXTRA_DIST = $(nautilusdata_DATA) \
 CLEANFILES = $(xml_files)
 
 SUBDIRS = \
+	icons    \
 	patterns \
 	$(NULL)
 

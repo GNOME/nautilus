@@ -1,3 +1,17 @@
+2008-01-10  Luca Ferretti  <elle.uca@libero.it>
+
+	* configure.in:
+	* data/Makefile.am:
+	* data/icons/*:
+	* icons/Makefile.am:
+	* icons/appicon/*:
+	Move "nautilus" named icon from icon/appicon to data/icons
+	matching the directory and naming structure of other GNOME
+	projects.
+
+	This will also help if we'll need to add custom themeable
+	icons.
+
 2008-01-10  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-mime-actions.c:

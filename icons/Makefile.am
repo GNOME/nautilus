@@ -1,7 +1,5 @@
 NULL=
 
-SUBDIRS = appicon
-
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
