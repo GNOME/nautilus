@@ -1,3 +1,13 @@
+2008-01-10  Sven Herzberg  <herzi@gnome-de.org>
+
+	Don't check for unportable functions, fixes #396923
+
+	Reviewed by Alex.
+
+	* configure.in: don't check for unportable functions to modify the
+	environment
+	* src/nautilus-main.c: don't use putenv(), use g_unsetenv()
+
 2008-01-10  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-directory-view.c:

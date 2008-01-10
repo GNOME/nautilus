@@ -150,9 +150,6 @@ AC_CHECK_HEADERS(sys/mount.h sys/vfs.h sys/param.h)
 			      
 dnl ==========================================================================
 
-AC_CHECK_FUNCS(setenv unsetenv putenv)
-
-dnl ==========================================================================
 AC_CHECK_FUNCS(statfs statvfs)
 AC_CHECK_HEADERS(sys/statfs.h sys/statvfs.h)
 

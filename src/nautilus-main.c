@@ -429,7 +429,7 @@ main (int argc, char *argv[])
 	if (startup_id != NULL && *startup_id != '\0') {
 		/* Clear the DESKTOP_STARTUP_ID, but make sure to copy it first */
 		startup_id_copy = g_strdup (startup_id);
-		putenv ("DESKTOP_STARTUP_ID=");
+		g_unsetenv ("DESKTOP_STARTUP_ID");
 	}
 
 	/* we'll do it ourselves due to complicated factory setup */
