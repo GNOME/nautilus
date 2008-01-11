@@ -366,6 +366,7 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
 /* Get the URI that's used when activating the file.
  * Getting this can require reading the contents of the file.
  */
+gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 
 char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);

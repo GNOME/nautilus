@@ -1346,6 +1346,16 @@ activate_activation_uris_ready_callback (GList *files_ignore,
 			report_broken_symbolic_link (parameters->parent_window, file);
 			continue;
 		}
+
+		if (nautilus_file_get_file_type (file) == G_FILE_TYPE_MOUNTABLE &&
+		    !nautilus_file_has_activation_uri (file)) {
+			/* Don't launch these... There is nothing we
+			   can do */
+			nautilus_file_unref (file);
+			parameters->files = g_list_delete_link (parameters->files, l);
+			continue;
+		}
+		
 	}
 
 	if (parameters->files == NULL) {

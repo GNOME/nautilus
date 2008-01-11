@@ -2176,6 +2176,9 @@ prepend_automatic_keywords (NautilusFile *file,
 			    GList *names)
 {
 	/* Prepend in reverse order. */
+	NautilusFile *parent;
+
+	parent = nautilus_file_get_parent (file);
 
 #ifdef TRASH_IS_FAST_ENOUGH
 	if (nautilus_file_is_in_trash (file)) {
@@ -2191,7 +2194,8 @@ prepend_automatic_keywords (NautilusFile *file,
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_NOTE));
 	}
-	if (!nautilus_file_can_write (file)) {
+	if (!nautilus_file_can_write (file) &&
+	    (parent == NULL || nautilus_file_can_write (parent))) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
 	}
@@ -2204,6 +2208,11 @@ prepend_automatic_keywords (NautilusFile *file,
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
 	}
 
+	if (parent) {
+		nautilus_file_unref (parent);
+	}
+		
+	
 	return names;
 }
 
@@ -2953,6 +2962,12 @@ nautilus_file_monitor_remove (NautilusFile *file,
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_remove, (file, client));
 }			      
+
+gboolean
+nautilus_file_has_activation_uri (NautilusFile *file)
+{
+	return file->details->activation_location != NULL;
+}
 
 
 /* Return the uri associated with the passed-in file, which may not be

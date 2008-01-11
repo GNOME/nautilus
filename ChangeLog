@@ -1,3 +1,13 @@
+2008-01-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.[ch]:
+	Add nautilus_file_has_activation_uri.
+	Don't show can't write emblems if you can't
+	write in the parent either.
+	
+        * libnautilus-private/nautilus-mime-actions.c:
+	Don't launch mountables that have no activation uri.
+
 2008-01-10  Sven Herzberg  <herzi@gnome-de.org>
 
 	Don't check for unportable functions, fixes #396923
