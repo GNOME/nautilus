@@ -67,6 +67,69 @@
          </long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/media_automount</key>
+      <applyto>/apps/nautilus/preferences/media_automount</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to automatically mount media</short>
+         <long>
+           If set to true, then Nautilus will automatically mount media
+           such as user-visible hard disks and removable media on start-up
+           and and media insertion.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/media_automount_open</key>
+      <applyto>/apps/nautilus/preferences/media_automount_open</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to automatically open a folder for automounted media</short>
+         <long>
+           If set to true, then Nautilus will automatically open a folder when
+           media is automounted. This only applies to media where no known
+           x-content/* type was detected; for media where a known x-content
+           type is detected, the user configurable action will be taken instead.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_ask</key>
+      <applyto>/apps/nautilus/preferences/media_autorun_x_content_ask</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+         <short>list of x-content/* types to ask the user what to do on insertion</short>
+         <long>
+           list of x-content/* types to ask the user what to do on insertion
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_ignore</key>
+      <applyto>/apps/nautilus/preferences/media_autorun_x_content_ignore</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+         <short>list of x-content/* types to ignore on insertion</short>
+         <long>
+           list of x-content/* types to ask the user what to do on insertion
+         </long>
+      </locale>
+    </schema>
     
     <schema>
       <key>/schemas/apps/nautilus/preferences/confirm_trash</key>

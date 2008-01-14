@@ -46,6 +46,14 @@ G_BEGIN_DECLS
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
+/* Automount options */
+#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT	                "preferences/media_automount"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"preferences/media_automount_open"
+
+/* Autorun options */
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK        "preferences/media_autorun_x_content_ask"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "preferences/media_autorun_x_content_ignore"
+
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"

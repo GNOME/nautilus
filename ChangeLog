@@ -1,3 +1,24 @@
+2008-01-14  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.[ch]:
+	Add check_trash arg to nautilus_file_operations_unmount_mount.
+	Add nautilus_file_operations_mount_volume().
+	
+        * libnautilus-private/nautilus-desktop-icon-file.c:
+        * src/nautilus-places-sidebar.c:
+        * src/file-manager/fm-tree-view.c:
+	Update to API change.
+	
+        * data/nautilus.xml.in:
+        * libnautilus-private/Makefile.am:
+        * libnautilus-private/apps_nautilus_preferences.schemas.in:
+        * libnautilus-private/nautilus-autorun.[ch]: Added.
+        * libnautilus-private/nautilus-global-preferences.[ch]:
+        * src/nautilus-application.c:
+        * src/nautilus-file-management-properties.c:
+        * src/nautilus-file-management-properties.glade:
+	Add new autorun setup (by David Zeuthen)
+
 2008-01-11  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file.[ch]:

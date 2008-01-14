@@ -5,4 +5,74 @@
      <_comment>Saved search</_comment>
      <glob pattern="*.savedSearch"/>
    </mime-type>
+
+
+   <!-- this section lists definitions for x-content/* types; this should be 
+        standardized on xdg-list (TODO: davidz) 
+     -->
+
+   <mime-type type="x-content/video-vcd">
+     <!-- http://en.wikipedia.org/wiki/Video_CD -->
+     <_comment>VCD Video</_comment>
+   </mime-type>
+   <mime-type type="x-content/video-svcd">
+     <!-- http://en.wikipedia.org/wiki/Super_Video_CD -->
+     <_comment>SVCD Video</_comment>
+   </mime-type>
+   <mime-type type="x-content/video-dvd">
+     <!-- http://en.wikipedia.org/wiki/DVD-Video -->
+     <_comment>DVD Video</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/image-dcf">
+     <!-- http://en.wikipedia.org/wiki/Design_rule_for_Camera_File_system -->
+     <_comment>Digital Photos</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/audio-cdda">
+     <!-- http://en.wikipedia.org/wiki/Red_Book_(audio_CD_standard) -->
+     <_comment>Compact Disc Audio</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/blank-media">
+     <!-- http://en.wikipedia.org/wiki/Compact_Disc -->
+     <!-- http://en.wikipedia.org/wiki/DVD -->
+     <_comment>Blank Media</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/software-autostart">
+     <!-- http://www.freedesktop.org/wiki/Specifications/autostart-spec -->
+     <_comment>Software</_comment>
+   </mime-type>
+
+   <!-- TODO:
+
+         - Blu-Ray video  : http://en.wikipedia.org/wiki/Blu-ray_Disc
+         - HD-DVD video   : http://en.wikipedia.org/wiki/HD_DVD
+         - DVD-Audio      : http://en.wikipedia.org/wiki/DVD-Audio
+
+         - Photo CD       : http://en.wikipedia.org/wiki/Photo_CD
+         - Picture CD     : http://en.wikipedia.org/wiki/Picture_CD
+
+         - SACD           : http://en.wikipedia.org/wiki/Super_Audio_CD
+           - This might be dead and appear to be totally unsupported anyway
+
+         - Enhanced Audio CD (see link 1. below)
+          - http://en.wikipedia.org/wiki/Enhanced_CD
+         - Enhanced DVD Movie (see link 1. below)
+          - ??
+
+          - music player (x-content/music-player)
+
+         - picture files
+         - audio files
+         - video files
+           - for these three; launch a given program when detecting such files in the root
+             directory. Should default to "Don't do anything" since it's a bit crackful
+        
+        See also
+         1. http://www.phdcc.com/shellrun/autorun.htm
+         
+     -->
+
 </mime-info>

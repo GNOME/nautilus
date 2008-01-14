@@ -47,6 +47,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-mount-operation.h>
 
 #include <glib/gstdio.h>
 #include <gnome.h>
@@ -1908,8 +1909,9 @@ prompt_empty_trash (GtkWindow *parent_window)
 
 void
 nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
-					 GMount                        *mount,
-					 gboolean                        eject)
+					GMount                         *mount,
+					gboolean                        eject,
+					gboolean                        check_trash)
 {
 	UnmountData *data;
 	int response;
@@ -1921,7 +1923,7 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 	data->eject = eject;
 	data->mount = g_object_ref (mount);
 
-	if (has_trash_files (mount)) {
+	if (check_trash && has_trash_files (mount)) {
 		response = prompt_empty_trash (parent_window);
 
 		if (response == GTK_RESPONSE_ACCEPT) {
@@ -1949,6 +1951,45 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 	
 	do_unmount (data);
 }
+
+static void
+volume_mount_cb (GObject *source_object,
+		 GAsyncResult *res,
+		 gpointer user_data)
+{
+	GMountOperation *mount_op = user_data;
+	GError *error;
+	char *primary;
+	char *name;
+
+	error = NULL;
+	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_volume_get_name (G_VOLUME (source_object));
+			primary = g_strdup_printf (_("Unable to mount %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+					       NULL);
+			g_free (primary);
+		}
+		g_error_free (error);
+	}
+	
+	g_object_unref (mount_op);
+}
+
+
+void
+nautilus_file_operations_mount_volume (GtkWindow *parent_window,
+				       GVolume *volume)
+{
+	GMountOperation *mount_op;
+	
+	mount_op = eel_mount_operation_new (parent_window);
+	g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
+}
+
 
 static void
 report_count_progress (CommonJob *job,

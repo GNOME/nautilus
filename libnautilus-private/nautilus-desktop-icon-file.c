@@ -311,7 +311,7 @@ nautilus_desktop_icon_file_unmount (NautilusFile *file)
     if (desktop_file) {
     	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
        	if (mount != NULL) {
-       		nautilus_file_operations_unmount_mount (NULL, mount, FALSE);
+       		nautilus_file_operations_unmount_mount (NULL, mount, FALSE, TRUE);
        	}
     }
 	
@@ -327,7 +327,7 @@ nautilus_desktop_icon_file_eject (NautilusFile *file)
     if (desktop_file) {
     	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
        	if (mount != NULL) {
-       		nautilus_file_operations_unmount_mount (NULL, mount, TRUE);
+       		nautilus_file_operations_unmount_mount (NULL, mount, TRUE, TRUE);
        	}
     }
 }

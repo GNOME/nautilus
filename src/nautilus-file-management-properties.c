@@ -50,6 +50,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-module.h>
 
+#include <libnautilus-private/nautilus-autorun.h>
+
 /* string enum preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "icon_view_zoom_combobox"
@@ -72,6 +74,8 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET "new_window_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET "hidden_files_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET "treeview_folders_checkbutton"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT "media_automount_checkbutton"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN "media_automount_open_checkbutton"
 
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_combobox"
@@ -513,6 +517,26 @@ nautilus_file_management_properties_dialog_setup_list_column_page (GladeXML *xml
 	gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
+
+static void
+nautilus_file_management_properties_dialog_setup_media_page (GladeXML *xml_dialog)
+{
+	unsigned int n;
+	const char *s[] = {"media_audio_cdda_combobox",   "x-content/audio-cdda",
+			   "media_video_dvd_combobox",    "x-content/video-dvd",
+			   "media_video_vcd_combobox",    "x-content/video-vcd",
+			   "media_video_svcd_combobox",   "x-content/video-svcd",
+			   "media_blank_combobox",        "x-content/blank-media",
+			   "media_music_player_combobox", "x-content/music-player",
+			   "media_dcf_combobox",          "x-content/image-dcf",
+			   NULL};
+
+	for (n = 0; s[n*2] != NULL; n++) {
+		nautilus_autorun_prepare_combo_box (glade_xml_get_widget (xml_dialog, s[n*2]), s[n*2 + 1],
+						    TRUE, TRUE, NULL, NULL); 
+	}
+}
+
 static  void
 nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindow *window)
 {
@@ -553,6 +577,14 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET,
 					    NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER);
+
+	eel_preferences_glade_connect_bool (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT,
+					    NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT);
+	eel_preferences_glade_connect_bool (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MEDIA_AUTOMOUNT_OPEN,
+					    NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN);
+
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET,
 					    NAUTILUS_PREFERENCES_CONFIRM_TRASH);
@@ -626,6 +658,8 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 
 	nautilus_file_management_properties_dialog_setup_icon_caption_page (xml_dialog);
 	nautilus_file_management_properties_dialog_setup_list_column_page (xml_dialog);
+
+	nautilus_file_management_properties_dialog_setup_media_page (xml_dialog);
 	
 	/* UI callbacks */
 	dialog = glade_xml_get_widget (xml_dialog, "file_management_dialog");

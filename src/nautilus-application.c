@@ -55,6 +55,7 @@
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
 #include "nautilus-window-bookmarks.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
 #include <libxml/xmlsave.h>
@@ -81,6 +82,7 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <libnautilus-private/nautilus-autorun.h>
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
@@ -107,12 +109,15 @@ static GList *nautilus_application_spatial_window_list;
 
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
-static void     mount_removed_callback         (GVolumeMonitor           *monitor,
-						   GMount                  *mount,
-						   NautilusApplication      *application);
-static void     mount_added_callback           (GVolumeMonitor           *monitor,
-						   GMount                  *mount,
-						   NautilusApplication      *application);
+static void     mount_removed_callback            (GVolumeMonitor            *monitor,
+						   GMount                    *mount,
+						   NautilusApplication       *application);
+static void     mount_added_callback              (GVolumeMonitor            *monitor,
+						   GMount                    *mount,
+						   NautilusApplication       *application);
+static void     volume_added_callback              (GVolumeMonitor           *monitor,
+						    GVolume                  *volume,
+						    NautilusApplication      *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
@@ -180,6 +185,8 @@ nautilus_application_instance_init (NautilusApplication *application)
 				 G_CALLBACK (mount_removed_callback), application, 0);
 	g_signal_connect_object (application->volume_monitor, "mount_added",
 				 G_CALLBACK (mount_added_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "volume_added",
+				 G_CALLBACK (volume_added_callback), application, 0);
 
 	/* register views */
 	fm_icon_view_register ();
@@ -1304,6 +1311,16 @@ window_can_be_closed (NautilusWindow *window)
 }
 
 static void
+volume_added_callback (GVolumeMonitor *monitor,
+		       GVolume *volume,
+		       NautilusApplication *application)
+{
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT)) {
+		nautilus_file_operations_mount_volume (NULL, volume);
+	}
+}
+
+static void
 mount_added_callback (GVolumeMonitor *monitor,
 		      GMount *mount,
 		      NautilusApplication *application)
@@ -1318,6 +1335,8 @@ mount_added_callback (GVolumeMonitor *monitor,
 		nautilus_directory_force_reload (directory);
 		nautilus_directory_unref (directory);
 	}
+
+	nautilus_autorun (mount);
 }
 
 /* Called whenever a mount is unmounted. Check and see if there are

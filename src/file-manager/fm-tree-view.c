@@ -1098,7 +1098,7 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	if (mount != NULL) {
 		nautilus_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
 							mount,
-							g_mount_can_eject (mount));
+							g_mount_can_eject (mount), TRUE);
 	}
 }
 

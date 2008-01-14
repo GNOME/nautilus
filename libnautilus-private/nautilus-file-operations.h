@@ -87,8 +87,11 @@ void nautilus_file_set_permissions_recursive (const char                     *di
 					      gpointer                        callback_data);
 
 void nautilus_file_operations_unmount_mount (GtkWindow                      *parent_window,
-					     GMount                        *mount,
-					     gboolean                        eject);
+					     GMount                         *mount,
+					     gboolean                        eject,
+					     gboolean                        check_trash);
+void nautilus_file_operations_mount_volume  (GtkWindow                      *parent_window,
+					     GVolume                        *volume);
 								
 
 void nautilus_file_operations_copy      (GList                *files,

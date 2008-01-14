@@ -1267,33 +1267,6 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 }
 
 static void
-volume_mount_cb (GObject *source_object,
-		 GAsyncResult *res,
-		 gpointer user_data)
-{
-	GMountOperation *mount_op = user_data;
-	GError *error;
-	char *primary;
-	char *name;
-
-	error = NULL;
-	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
-		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
-			name = g_volume_get_name (G_VOLUME (source_object));
-			primary = g_strdup_printf (_("Unable to mount %s"), name);
-			g_free (name);
-			eel_show_error_dialog (primary,
-					       error->message,
-					       NULL);
-			g_free (primary);
-		}
-		g_error_free (error);
-	}
-
-	g_object_unref (mount_op);
-}
-
-static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
 			GtkTreePath	      *path,
@@ -1339,9 +1312,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GVolume *volume;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
 		if (volume != NULL) {
-			GMountOperation *mount_op;
-			mount_op = g_mount_operation_new ();
-			g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
+			nautilus_file_operations_mount_volume (NULL, volume);
 			g_object_unref (volume);
 		}
 	}
@@ -1456,9 +1427,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		GMountOperation *mount_op;
-		mount_op = g_mount_operation_new ();
-		g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
+		nautilus_file_operations_mount_volume (NULL, volume);
 		g_object_unref (volume);
 	}
 }
@@ -1485,7 +1454,7 @@ unmount_shortcut_cb (GtkMenuItem           *item,
 		
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (sidebar->tree_view));
 		nautilus_file_operations_unmount_mount (GTK_WINDOW (toplevel),
-							mount, FALSE);
+							mount, FALSE, TRUE);
 	}
 	if (mount != NULL) {
 		g_object_unref (mount);
@@ -2071,7 +2040,7 @@ nautilus_places_sidebar_iface_init (NautilusSidebarIface *iface)
 
 static void
 nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
-					    NautilusWindowInfo *window)
+					   NautilusWindowInfo *window)
 {	
 	sidebar->window = window;
 	
@@ -2121,7 +2090,7 @@ nautilus_places_sidebar_style_set (GtkWidget *widget,
 
 static NautilusSidebar *
 nautilus_places_sidebar_create (NautilusSidebarProvider *provider,
-				 NautilusWindowInfo *window)
+				NautilusWindowInfo *window)
 {
 	NautilusPlacesSidebar *sidebar;
 	
