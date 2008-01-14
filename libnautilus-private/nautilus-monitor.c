@@ -46,7 +46,7 @@ nautilus_monitor_active (void)
 
 	if (tried_monitor == FALSE) {	
 		file = g_file_new_for_path (g_get_home_dir ());
-		dir_monitor = g_file_monitor_directory (file, G_FILE_MONITOR_NONE, NULL);
+		dir_monitor = g_file_monitor_directory (file, G_FILE_MONITOR_NONE, NULL, NULL);
 		g_object_unref (file);
 		
 		monitor_success = (dir_monitor != NULL);
@@ -124,7 +124,7 @@ nautilus_monitor_directory (GFile *location)
 	GFileMonitor *dir_monitor;
 	NautilusMonitor *ret;
 
-	dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_WATCH_MOUNTS, NULL);
+	dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_WATCH_MOUNTS, NULL, NULL);
 
 	if (dir_monitor == NULL) {
 		return NULL;

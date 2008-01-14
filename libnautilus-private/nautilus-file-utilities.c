@@ -365,7 +365,7 @@ update_xdg_dir_cache (void)
 		config_file = g_build_filename (g_get_user_config_dir (),
 						     "user-dirs.dirs", NULL);
 		file = g_file_new_for_path (config_file);
-		cached_xdg_dirs_monitor = g_file_monitor_file (file, 0, NULL);
+		cached_xdg_dirs_monitor = g_file_monitor_file (file, 0, NULL, NULL);
 		g_signal_connect (cached_xdg_dirs_monitor, "changed",
 				  G_CALLBACK (xdg_dir_cache_changed_cb), NULL);
 		g_object_unref (file);

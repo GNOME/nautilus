@@ -176,7 +176,7 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 
 	location = g_file_new_for_uri ("trash:///");
 
-	trash_monitor->details->file_monitor = g_file_monitor_file (location, 0, NULL);
+	trash_monitor->details->file_monitor = g_file_monitor_file (location, 0, NULL, NULL);
 
 	g_signal_connect (trash_monitor->details->file_monitor, "changed",
 			  (GCallback)file_changed, trash_monitor);

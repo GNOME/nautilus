@@ -162,7 +162,7 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 	nautilus_bookmark_list_load_file (bookmarks);
 
 	file = nautilus_bookmark_list_get_file ();
-	bookmarks->monitor = g_file_monitor_file (file, 0, NULL);
+	bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
 	g_signal_connect (bookmarks->monitor, "changed",
 			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 
@@ -570,7 +570,7 @@ error:
 		g_error_free (error);
 
 	/* re-enable bookmark file monitoring */
-	bookmarks->monitor = g_file_monitor_file (file, 0, NULL);
+	bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
 	g_signal_connect (bookmarks->monitor, "changed",
 			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 
