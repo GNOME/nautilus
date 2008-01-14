@@ -114,6 +114,20 @@ extension_action_callback (GtkAction *action,
 	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
 }
 
+static void
+extension_action_sensitive_callback (NautilusMenuItem *item,
+                                     GParamSpec *arg1,
+                                     gpointer user_data)
+{
+	gboolean value;
+	
+	g_object_get (G_OBJECT (item),
+	              "sensitive", &value,
+		      NULL);
+
+	gtk_action_set_sensitive (GTK_ACTION (user_data), value);
+}
+
 GtkAction *
 nautilus_action_from_menu_item (NautilusMenuItem *item)
 {
@@ -205,6 +219,11 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 			       G_CALLBACK (extension_action_callback),
 			       g_object_ref (item), 
 			       (GClosureNotify)g_object_unref, 0);
+
+	g_signal_connect_object (item, "notify::sensitive",
+				 G_CALLBACK (extension_action_sensitive_callback),
+				 action,
+				 0);
 
 	g_free (name);
 	g_free (label);

@@ -1,5 +1,12 @@
 2008-01-14  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-ui-utilities.c:
+        (extension_action_sensitive_callback):
+        (nautilus_toolbar_action_from_menu_item):
+	Update toolbar item sensitivity if menu item changes.
+
+2008-01-14  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.[ch]:
 	Add check_trash arg to nautilus_file_operations_unmount_mount.
 	Add nautilus_file_operations_mount_volume().
