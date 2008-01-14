@@ -55,7 +55,7 @@
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
 #include "nautilus-window-bookmarks.h"
-#include "nautilus-file-operations.h"
+#include "libnautilus-private/nautilus-file-operations.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-manage-views.h"
 #include <libxml/xmlsave.h>
