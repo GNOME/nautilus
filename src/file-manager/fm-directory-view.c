@@ -4318,6 +4318,40 @@ extension_action_callback_data_free (ExtensionActionCallbackData *data)
 	g_free (data);
 }
 
+static gboolean
+search_in_menu_items (GList* items, const char *item_name)
+{
+	GList* list;
+	
+	for (list = items; list != NULL; list = list->next) {
+		NautilusMenu* menu;
+		char *name;
+		
+		g_object_get (list->data, "name", &name, NULL);
+		if (strcmp (name, item_name) == 0) {
+			g_free (name);
+			return TRUE;
+		}
+		g_free (name);
+
+		menu = NULL;
+		g_object_get (list->data, "menu", &menu, NULL);
+		if (menu != NULL) {
+			gboolean ret;
+			GList* submenus;
+
+			submenus = nautilus_menu_get_items (menu);
+			ret = search_in_menu_items (submenus, name);
+			nautilus_menu_item_list_free (submenus);
+			g_object_unref (menu);
+			if (ret) {
+			    return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
 static void
 extension_action_callback (GtkAction *action,
 			   gpointer callback_data)
@@ -4336,19 +4370,7 @@ extension_action_callback (GtkAction *action,
 	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (data->view)), 
 					      data->selection);
 	
-	is_valid = FALSE;
-	for (l = items; l != NULL; l = l->next) {
-		char *name;
-		
-		g_object_get (l->data, "name", &name, NULL);
-		
-		if (strcmp (name, item_name) == 0) {
-			is_valid = TRUE;
-			g_free (name);
-			break;
-		}
-		g_free (name);
-	}
+	is_valid = search_in_menu_items (items, item_name);
 
 	for (l = items; l != NULL; l = l->next) {
 		g_object_unref (l->data);

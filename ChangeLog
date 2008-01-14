@@ -1,5 +1,13 @@
 2008-01-14  Alexander Larsson  <alexl@redhat.com>
 
+        * src/file-manager/fm-directory-view.c:
+        (search_in_menu_items):
+        (extension_action_callback):
+	Check recursively for valid menu items (#508878)
+	Patch from Choe Hwanjin.
+
+2008-01-14  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-ui-utilities.c:
         (extension_action_sensitive_callback):
         (nautilus_toolbar_action_from_menu_item):
