@@ -1,5 +1,14 @@
 2008-01-15  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-dnd.[ch]:
+	Add nautilus_drag_uris_local
+	
+        * libnautilus-private/nautilus-tree-view-drag-dest.c:
+	Don't copy/move files if you dnd within the same
+	location (#508216)
+
+2008-01-15  Alexander Larsson  <alexl@redhat.com>
+
         * src/file-manager/fm-directory-view.c:
 	Selection lists are GFiles now, not uris (#505944)
 

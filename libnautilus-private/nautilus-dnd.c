@@ -202,9 +202,9 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 	return result;
 }
 
-
-gboolean
-nautilus_drag_items_local (const char *target_uri_string, const GList *selection_list)
+static gboolean
+nautilus_drag_file_local_internal (const char *target_uri_string,
+				   const char *first_source_uri)
 {
 	/* check if the first item on the list has target_uri_string as a parent
 	 * FIXME:
@@ -214,15 +214,12 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 	GFile *target, *item, *parent;
 	gboolean result;
 
-	/* must have at least one item */
-	g_assert (selection_list);
-
 	result = FALSE;
 
 	target = g_file_new_for_uri (target_uri_string);
 
 	/* get the parent URI of the first item in the selection */
-	item = g_file_new_for_uri (((NautilusDragSelectionItem *)selection_list->data)->uri);
+	item = g_file_new_for_uri (first_source_uri);
 	parent = g_file_get_parent (item);
 	g_object_unref (item);
 	
@@ -232,6 +229,27 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 	}
 	
 	return result;
+}	
+
+gboolean
+nautilus_drag_uris_local (const char *target_uri,
+			  const GList *source_uri_list)
+{
+	/* must have at least one item */
+	g_assert (source_uri_list);
+	
+	return nautilus_drag_file_local_internal (target_uri, source_uri_list->data);
+}
+
+gboolean
+nautilus_drag_items_local (const char *target_uri_string,
+			   const GList *selection_list)
+{
+	/* must have at least one item */
+	g_assert (selection_list);
+
+	return nautilus_drag_file_local_internal (target_uri_string,
+						  ((NautilusDragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean

@@ -581,11 +581,13 @@ receive_uris (NautilusTreeViewDragDest *dest,
 	}
 
 	if (context->action > 0) {
-		g_signal_emit (dest, signals[MOVE_COPY_ITEMS], 0,
-			       source_uris, 
-			       drop_target,
-			       context->action,
-			       x, y);
+		if (!nautilus_drag_uris_local (drop_target, source_uris)) {
+			g_signal_emit (dest, signals[MOVE_COPY_ITEMS], 0,
+				       source_uris, 
+				       drop_target,
+				       context->action,
+				       x, y);
+		}
 	}
 
 	g_free (drop_target);
