@@ -1,5 +1,15 @@
 2008-01-15  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-file-management-properties.c:
+        (nautilus_file_management_properties_dialog_response_cb):
+	Don't crash when exiting separate properties app. (#505687)
+	
+        * src/nautilus-window.c:
+        (nautilus_window_update_icon):
+	Unref pixbuf inside != NULL block.
+
+2008-01-15  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-directory-async.c:
         * libnautilus-private/nautilus-file-private.h:
         * libnautilus-private/nautilus-file.c:

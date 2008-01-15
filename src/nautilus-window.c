@@ -1236,8 +1236,8 @@ nautilus_window_update_icon (NautilusWindow *window)
 			
 			if (pixbuf) {
 				gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+				g_object_unref (pixbuf);
 			} 
-			g_object_unref (pixbuf);
 		}
 		
 		g_object_unref (info);

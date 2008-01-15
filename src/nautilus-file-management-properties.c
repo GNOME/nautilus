@@ -250,8 +250,6 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 		eel_gconf_monitor_remove ("/apps/nautilus/list_view");
 		eel_gconf_monitor_remove ("/apps/nautilus/preferences");
 		eel_gconf_monitor_remove ("/desktop/gnome/file_views");
-
-		g_object_unref (xml_dialog);
 	}
 }
 
