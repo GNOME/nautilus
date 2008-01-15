@@ -105,6 +105,7 @@ struct NautilusFileDetails
 	
 	char *thumbnail_path;
 	GdkPixbuf *thumbnail;
+	time_t thumbnail_mtime;
 	int thumbnail_size; /* 0 means original unframed thumbnail */
 	
 	GList *mime_list; /* If this is a directory, the list of MIME types in it. */

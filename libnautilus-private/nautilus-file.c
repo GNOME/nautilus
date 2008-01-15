@@ -1708,6 +1708,13 @@ update_info_internal (NautilusFile *file,
 	file->details->ctime = ctime;
 	file->details->mtime = mtime;
 
+	if (file->details->thumbnail != NULL &&
+	    file->details->thumbnail_mtime != 0 &&
+	    file->details->thumbnail_mtime != mtime) {
+		file->details->thumbnail_is_up_to_date = FALSE;
+		changed = TRUE;
+	}
+
 	icon = g_file_info_get_icon (info);
 	if (!g_icon_equal (icon, file->details->icon)) {
 		changed = TRUE;
