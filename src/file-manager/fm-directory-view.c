@@ -220,7 +220,7 @@ struct FMDirectoryViewDetails
 	GList *old_added_files;
 	GList *old_changed_files;
 
-	GList *pending_uris_selected;
+	GList *pending_locations_selected;
 
 	/* loading indicates whether this view has begun loading a directory.
 	 * This flag should need not be set inside subclasses. FMDirectoryView automatically
@@ -1662,26 +1662,26 @@ fm_directory_view_get_selection_count (NautilusView *view)
 }
 
 static GList *
-fm_directory_view_get_selection_uris (NautilusView *view)
+fm_directory_view_get_selection_locations (NautilusView *view)
 {
 	GList *files;
-	GList *uris;
-	char *uri;
+	GList *locations;
+	GFile *location;
 	GList *l;
 
 	files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
-	uris = NULL;
+	locations = NULL;
 	for (l = files; l != NULL; l = l->next) {
-		uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
-		uris = g_list_prepend (uris, uri);
+		location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+		locations = g_list_prepend (locations, location);
 	}
 	nautilus_file_list_free (files);
 	
-	return g_list_reverse (uris);
+	return g_list_reverse (locations);
 }
 
 static GList *
-file_list_from_uri_list (const GList *uri_list)
+file_list_from_location_list (const GList *uri_list)
 {
 	GList *file_list;
 	const GList *node;
@@ -1690,14 +1690,14 @@ file_list_from_uri_list (const GList *uri_list)
 	for (node = uri_list; node != NULL; node = node->next) {
 		file_list = g_list_prepend
 			(file_list,
-			 nautilus_file_get_by_uri (node->data));
+			 nautilus_file_get (node->data));
 	}
 	return g_list_reverse (file_list);
 }
 
 static void
-fm_directory_view_set_selection_uris (NautilusView *nautilus_view,
-				      GList *selection_uris)
+fm_directory_view_set_selection_locations (NautilusView *nautilus_view,
+					   GList *selection_locations)
 {
 	GList *selection;
 	FMDirectoryView *view;
@@ -1708,7 +1708,7 @@ fm_directory_view_set_selection_uris (NautilusView *nautilus_view,
 		/* If we aren't still loading, set the selection right now,
 		 * and reveal the new selection.
 		 */
-		selection = file_list_from_uri_list (selection_uris);
+		selection = file_list_from_location_list (selection_locations);
 		view->details->selection_change_is_due_to_shell = TRUE;
 		fm_directory_view_set_selection (view, selection);
 		view->details->selection_change_is_due_to_shell = FALSE;
@@ -1718,12 +1718,9 @@ fm_directory_view_set_selection_uris (NautilusView *nautilus_view,
 		/* If we are still loading, set the list of pending URIs instead.
 		 * done_loading() will eventually select the pending URIs and reveal them.
 		 */
-		eel_g_list_free_deep (view->details->pending_uris_selected);
-		view->details->pending_uris_selected = NULL;
-
-		view->details->pending_uris_selected =
-			g_list_concat (view->details->pending_uris_selected,
-				       eel_g_str_list_copy (selection_uris));
+		eel_g_object_list_free (view->details->pending_locations_selected);
+		view->details->pending_locations_selected =
+			eel_g_object_list_copy (selection_locations);
 	}
 }
 
@@ -1736,8 +1733,8 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
 	iface->stop_loading = fm_directory_view_stop_loading;
 
 	iface->get_selection_count = fm_directory_view_get_selection_count;
-	iface->get_selection = fm_directory_view_get_selection_uris;
-	iface->set_selection = fm_directory_view_set_selection_uris;
+	iface->get_selection = fm_directory_view_get_selection_locations;
+	iface->set_selection = fm_directory_view_set_selection_locations;
 	
 	iface->supports_zooming = (gpointer)fm_directory_view_supports_zooming;
 	iface->bump_zoom_level = (gpointer)fm_directory_view_bump_zoom_level;
@@ -2255,7 +2252,7 @@ reveal_selection_idle_callback (gpointer data)
 static void
 done_loading (FMDirectoryView *view)
 {
-	GList *uris_selected, *selection;
+	GList *locations_selected, *selection;
 
 	if (!view->details->loading) {
 		return;
@@ -2271,12 +2268,12 @@ done_loading (FMDirectoryView *view)
 		check_for_directory_hard_limit (view);
 		reset_update_interval (view);
 
-		uris_selected = view->details->pending_uris_selected;
-		if (uris_selected != NULL) {
-			view->details->pending_uris_selected = NULL;
+		locations_selected = view->details->pending_locations_selected;
+		if (locations_selected != NULL) {
+			view->details->pending_locations_selected = NULL;
 			
-			selection = file_list_from_uri_list (uris_selected);
-			eel_g_list_free_deep (uris_selected);
+			selection = file_list_from_location_list (locations_selected);
+			eel_g_object_list_free (locations_selected);
 
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
@@ -7829,8 +7826,8 @@ fm_directory_view_stop (FMDirectoryView *view)
 	view->details->old_added_files = NULL;
 	file_and_directory_list_free (view->details->old_changed_files);
 	view->details->old_changed_files = NULL;
-	eel_g_list_free_deep (view->details->pending_uris_selected);
-	view->details->pending_uris_selected = NULL;
+	eel_g_object_list_free (view->details->pending_locations_selected);
+	view->details->pending_locations_selected = NULL;
 
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
