@@ -82,8 +82,10 @@ enum {
 	NUM_COLUMNS
 };
 
-static void refresh_model      (NautilusMimeApplicationChooser *chooser);
-static void refresh_model_soon (NautilusMimeApplicationChooser *chooser);
+static void refresh_model             (NautilusMimeApplicationChooser *chooser);
+static void refresh_model_soon        (NautilusMimeApplicationChooser *chooser);
+static void mime_type_data_changed_cb (GObject                        *signaller,
+				       gpointer                        user_data);
 
 static gpointer parent_class;
 
@@ -97,6 +99,11 @@ nautilus_mime_application_chooser_finalize (GObject *object)
 	if (chooser->details->refresh_timeout) {
 		g_source_remove (chooser->details->refresh_timeout);
 	}
+
+	g_signal_handlers_disconnect_by_func (nautilus_signaller_get_current (),
+					      G_CALLBACK (mime_type_data_changed_cb),
+					      chooser);
+	
 	
 	g_free (chooser->details->uri);
 	g_free (chooser->details->content_type);
