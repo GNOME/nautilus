@@ -1,5 +1,12 @@
 2008-01-16  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-application.c:
+        (find_parent_spatial_window):
+	unref, not free the GFile.
+	Fixes crash in close parent windows (#509821)
+
+2008-01-16  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-file-management-properties.c:
         (nautilus_file_management_properties_dialog_setup):
 	Fix help crash by actually owning a ref to 
