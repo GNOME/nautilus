@@ -661,9 +661,11 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	
 	/* UI callbacks */
 	dialog = glade_xml_get_widget (xml_dialog, "file_management_dialog");
-	g_signal_connect (G_OBJECT (dialog), "response",
-			  G_CALLBACK (nautilus_file_management_properties_dialog_response_cb),
-			  xml_dialog);
+	g_signal_connect_data (G_OBJECT (dialog), "response",
+			       G_CALLBACK (nautilus_file_management_properties_dialog_response_cb),
+			       g_object_ref (xml_dialog),
+			       (GClosureNotify)g_object_unref,
+			       0);
 
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "file-manager");
 

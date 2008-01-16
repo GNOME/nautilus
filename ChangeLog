@@ -1,3 +1,10 @@
+2008-01-16  Alexander Larsson  <alexl@redhat.com>
+
+        * src/nautilus-file-management-properties.c:
+        (nautilus_file_management_properties_dialog_setup):
+	Fix help crash by actually owning a ref to 
+	xml_dialog. (#509835)
+
 2008-01-15  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-dnd.[ch]:
