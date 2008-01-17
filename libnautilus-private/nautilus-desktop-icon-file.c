@@ -184,11 +184,14 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	file->details->can_mount = FALSE;
 	file->details->can_unmount = FALSE;
 	file->details->can_eject = FALSE;
+	if (file->details->mount) {
+		g_object_unref (file->details->mount);
+	}
 	mount = nautilus_desktop_link_get_mount (link);
+	file->details->mount = mount;
 	if (mount) {
 		file->details->can_unmount = g_mount_can_unmount (mount);
 		file->details->can_eject = g_mount_can_eject (mount);
-		g_object_unref (mount);
 	}
 	
 	file->details->file_info_is_up_to_date = TRUE;

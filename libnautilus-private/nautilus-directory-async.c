@@ -83,6 +83,12 @@ struct ThumbnailState {
 	gboolean tried_original;
 };
 
+struct MountState {
+	NautilusDirectory *directory;
+	GCancellable *cancellable;
+	NautilusFile *file;
+};
+
 struct DirectoryLoadState {
 	NautilusDirectory *directory;
 	GCancellable *cancellable;
@@ -490,6 +496,17 @@ thumbnail_cancel (NautilusDirectory *directory)
 }
 
 static void
+mount_cancel (NautilusDirectory *directory)
+{
+	if (directory->details->mount_state != NULL) {
+		g_cancellable_cancel (directory->details->mount_state->cancellable);
+		directory->details->mount_state->directory = NULL;
+		directory->details->mount_state = NULL;
+		async_job_end (directory, "mount");
+	}
+}
+
+static void
 file_info_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->get_info_in_progress != NULL) {
@@ -615,6 +632,11 @@ nautilus_directory_set_up_request (Request *request,
 
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL) {
 		request->thumbnail = TRUE;
+		request->file_info = TRUE;
+	}
+
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_MOUNT) {
+		request->mount = TRUE;
 		request->file_info = TRUE;
 	}
 }
@@ -1553,6 +1575,12 @@ nautilus_async_destroying_file (NautilusFile *file)
 		changed = TRUE;
 	}
 	
+	if (directory->details->mount_state != NULL &&
+	    directory->details->mount_state->file ==  file) {
+		directory->details->mount_state->file = NULL;
+		changed = TRUE;
+	}
+	
 	/* Let the directory take care of the rest. */
 	if (changed) {
 		nautilus_directory_async_state_changed (directory);
@@ -1700,6 +1728,20 @@ wants_thumbnail (const Request *request)
 }
 
 static gboolean
+lacks_mount (NautilusFile *file)
+{
+	return (file->details->is_mountpoint ||
+		file->details->type == G_FILE_TYPE_MOUNTABLE) &&
+		!file->details->mount_is_up_to_date;
+}
+
+static gboolean
+wants_mount (const Request *request)
+{
+	return request->mount;
+}
+
+static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
 {
 	GList *node;
@@ -1761,6 +1803,18 @@ request_is_satisfied (NautilusDirectory *directory,
 		}
 	}
 
+	if (request->thumbnail) {
+		if (has_problem (directory, file, lacks_thumbnail)) {
+			return FALSE;
+		}
+	}
+	
+	if (request->mount) {
+		if (has_problem (directory, file, lacks_mount)) {
+			return FALSE;
+		}
+	}
+	
 	if (request->mime_list) {
 		if (has_problem (directory, file, lacks_mime_list)) {
 			return FALSE;
@@ -3798,6 +3852,121 @@ thumbnail_start (NautilusDirectory *directory,
 	g_object_unref (location);
 }
 
+static void
+mount_stop (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+
+	if (directory->details->mount_state != NULL) {
+		file = directory->details->mount_state->file;
+
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file,
+				      lacks_mount,
+				      wants_mount)) {
+				return;
+			}
+		}
+
+		/* The link info is not wanted, so stop it. */
+		mount_cancel (directory);
+	}
+}
+
+static void
+mount_state_free (MountState *state)
+{
+	g_object_unref (state->cancellable);
+	g_free (state);
+}
+
+static void
+find_enclosing_mount_callback (GObject *source_object,
+			       GAsyncResult *res,
+			       gpointer user_data)
+{
+	GMount *mount;
+	NautilusDirectory *directory;
+	MountState *state;
+	NautilusFile *file;
+
+	state = user_data;
+	if (state->directory == NULL) {
+		/* Operation was cancelled. Bail out */
+		mount_state_free (state);
+		return;
+	}
+
+	directory = nautilus_directory_ref (state->directory);
+	
+	mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
+						    res, NULL);
+
+
+	state->directory->details->mount_state = NULL;
+	async_job_end (state->directory, "mount");
+	
+	file = nautilus_file_ref (state->file);
+	
+	file->details->mount_is_up_to_date = TRUE;
+	if (file->details->mount) {
+		g_object_unref (file->details->mount);
+	}
+	file->details->mount = mount;
+	
+	nautilus_directory_async_state_changed (directory);
+	nautilus_file_changed (file);
+	
+	nautilus_file_unref (file);
+	
+	nautilus_directory_unref (directory);
+	
+	mount_state_free (state);
+
+}
+
+static void
+mount_start (NautilusDirectory *directory,
+	     NautilusFile *file,
+	     gboolean *doing_io)
+{
+	GFile *location;
+	MountState *state;
+	
+	if (directory->details->mount_state != NULL) {
+		*doing_io = TRUE;
+		return;
+	}
+
+	if (!is_needy (file,
+		       lacks_mount,
+		       wants_mount)) {
+		return;
+	}
+	*doing_io = TRUE;
+
+	if (!async_job_start (directory, "mount")) {
+		return;
+	}
+	
+	state = g_new0 (MountState, 1);
+	state->directory = directory;
+	state->file = file;
+	state->cancellable = g_cancellable_new ();
+
+	location = nautilus_file_get_location (file);
+	
+	directory->details->mount_state = state;
+	
+	g_file_find_enclosing_mount_async (location,
+					   G_PRIORITY_DEFAULT,
+					   state->cancellable,
+					   find_enclosing_mount_callback,
+					   state);
+	g_object_unref (location);
+}
 
 static void
 extension_info_cancel (NautilusDirectory *directory)
@@ -3975,6 +4144,7 @@ start_or_stop_io (NautilusDirectory *directory)
 	top_left_stop (directory);
 	link_info_stop (directory);
 	extension_info_stop (directory);
+	mount_stop (directory);
 	thumbnail_stop (directory);
 
 	doing_io = FALSE;
@@ -3998,6 +4168,7 @@ start_or_stop_io (NautilusDirectory *directory)
 		file = nautilus_file_queue_head (directory->details->low_priority_queue);
 
 		/* Start getting attributes if possible */
+		mount_start (directory, file, &doing_io);
 		directory_count_start (directory, file, &doing_io);
 		deep_count_start (directory, file, &doing_io);
 		mime_list_start (directory, file, &doing_io);
@@ -4073,6 +4244,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	top_left_cancel (directory);
 	extension_info_cancel (directory);
 	thumbnail_cancel (directory);
+	mount_cancel (directory);
 
 	/* We aren't waiting for anything any more. */
 	if (waiting_directories != NULL) {
@@ -4130,6 +4302,26 @@ cancel_file_info_for_file (NautilusDirectory *directory,
 }
 
 static void
+cancel_thumbnail_for_file (NautilusDirectory *directory,
+			   NautilusFile      *file)
+{
+	if (directory->details->thumbnail_state != NULL &&
+	    directory->details->thumbnail_state->file == file) {
+		thumbnail_cancel (directory);
+	}
+}
+
+static void
+cancel_mount_for_file (NautilusDirectory *directory,
+			   NautilusFile      *file)
+{
+	if (directory->details->mount_state != NULL &&
+	    directory->details->mount_state->file == file) {
+		mount_cancel (directory);
+	}
+}
+
+static void
 cancel_link_info_for_file (NautilusDirectory *directory,
 			   NautilusFile      *file)
 {
@@ -4175,6 +4367,10 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	if (request.thumbnail) {
 		thumbnail_cancel (directory);
 	}
+
+	if (request.mount) {
+		mount_cancel (directory);
+	}
 	
 	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
 	   implement invalidating metadata */
@@ -4211,6 +4407,12 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
 	}
 	if (request.link_info) {
 		cancel_link_info_for_file (directory, file);
+	}
+	if (request.thumbnail) {
+		cancel_thumbnail_for_file (directory, file);
+	}
+	if (request.mount) {
+		cancel_mount_for_file (directory, file);
 	}
 
 	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we

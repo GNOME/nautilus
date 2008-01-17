@@ -639,6 +639,9 @@ finalize (GObject *object)
 	if (file->details->thumbnail) {
 		g_object_unref (file->details->thumbnail);
 	}
+	if (file->details->mount) {
+		g_object_unref (file->details->mount);
+	}
 	
 	eel_g_list_free_deep (file->details->mime_list);
 
@@ -6314,7 +6317,8 @@ nautilus_file_get_all_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT | 
 		NAUTILUS_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT |
 		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |
-		NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL;
+		NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
+		NAUTILUS_FILE_ATTRIBUTE_MOUNT;
 }
 
 void
