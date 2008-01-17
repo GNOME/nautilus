@@ -102,6 +102,21 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/media_autorun_never_</key>
+      <applyto>/apps/nautilus/preferences/media_autorun_never</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Never prompt or autorun/autostart programs when media is inserted</short>
+         <long>
+           If set to true, then Nautilus will never prompt nor autorun/autostart
+           programs when media is inserted.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_ask</key>
       <applyto>/apps/nautilus/preferences/media_autorun_x_content_ask</applyto>
       <owner>nautilus</owner>
@@ -109,9 +124,9 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-         <short>list of x-content/* types to ask the user what to do on insertion</short>
+         <short>List of x-content/* types to ask the user what to do on insertion</short>
          <long>
-           list of x-content/* types to ask the user what to do on insertion
+           List of x-content/* types to ask the user what to do on insertion.
          </long>
       </locale>
     </schema>
@@ -124,9 +139,25 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-         <short>list of x-content/* types to ignore on insertion</short>
+         <short>List of x-content/* where to prompt the user on insertion</short>
          <long>
-           list of x-content/* types to ask the user what to do on insertion
+           List of x-content/* types to ask the user what to do on insertion.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_open_folder</key>
+      <applyto>/apps/nautilus/preferences/media_autorun_x_content_open_folder</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+         <short>List of x-content/* types where a folder window should be opened</short>
+         <long>
+           List of x-content/* types where a folder window should be opened
+           on insertion.
          </long>
       </locale>
     </schema>

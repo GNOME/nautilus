@@ -118,6 +118,11 @@ static void     mount_added_callback              (GVolumeMonitor            *mo
 static void     volume_added_callback              (GVolumeMonitor           *monitor,
 						    GVolume                  *volume,
 						    NautilusApplication      *application);
+static void     drive_connected_callback           (GVolumeMonitor           *monitor,
+						    GDrive                   *drive,
+						    NautilusApplication      *application);
+static void     drive_listen_for_eject_button      (GDrive *drive, 
+						    NautilusApplication *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
@@ -165,6 +170,55 @@ nautilus_application_get_n_windows (void)
 }
 
 static void
+startup_volume_mount_cb (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer user_data)
+{
+	if (!g_volume_mount_finish (G_VOLUME (source_object), res, NULL)) {
+		/* There was an error mounting the volume, so we
+		   clear the automount part. This is otherwise done
+		   when the mount is added to the volume monitor */
+		g_object_set_data (source_object, "nautilus-automounted", GINT_TO_POINTER (0));
+	}
+}
+
+static void
+automount_all_volumes (NautilusApplication *application)
+{
+	GList *volumes, *l;
+	GMount *mount;
+	GVolume *volume;
+		
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT)) {
+		/* automount all mountable volumes at start-up */
+		volumes = g_volume_monitor_get_volumes (application->volume_monitor);
+		for (l = volumes; l != NULL; l = l->next) {
+			volume = l->data;
+			
+			/* TODO: only do this for local volumes */
+			
+			if (!g_volume_can_mount (volume)) {
+				continue;
+			}
+			
+			mount = g_volume_get_mount (volume);
+			if (mount != NULL) {
+				g_object_unref (mount);
+				continue;
+			}
+			
+			/* Set this so we don't autorun stuff from it */
+			g_object_set_data (G_OBJECT (volume), "nautilus-automounted", GINT_TO_POINTER (1));
+
+			/* pass NULL as GMountOperation to avoid user interaction */
+			g_volume_mount (volume, NULL, NULL, startup_volume_mount_cb, NULL);
+		}
+		eel_g_object_list_free (volumes);
+	}
+	
+}
+
+static void
 nautilus_application_instance_init (NautilusApplication *application)
 {
 	/* Create an undo manager */
@@ -172,22 +226,6 @@ nautilus_application_instance_init (NautilusApplication *application)
 
 	application->shell = nautilus_shell_new (application);
 	
-	/* Watch for mounts so we can restore open windows This used
-	 * to be for showing new window on mount, but is not used
-	 * anymore */
-
-	/* Watch for unmounts so we can close open windows */
-	/* TODO-gio: This should be using the UNMOUNTED feature of GFileMonitor instead */
-	application->volume_monitor = g_volume_monitor_get ();
-	g_signal_connect_object (application->volume_monitor, "mount_removed",
-				 G_CALLBACK (mount_removed_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "mount_pre_unmount",
-				 G_CALLBACK (mount_removed_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "mount_added",
-				 G_CALLBACK (mount_added_callback), application, 0);
-	g_signal_connect_object (application->volume_monitor, "volume_added",
-				 G_CALLBACK (volume_added_callback), application, 0);
-
 	/* register views */
 	fm_icon_view_register ();
 	fm_desktop_icon_view_register ();
@@ -343,49 +381,6 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 }
 
 static void
-migrate_old_nautilus_files (void)
-{
-	char *new_desktop_dir;
-	char *old_desktop_dir;
-	char *migrated_file;
-	char *link_name;
-	char *link_path;
-	int fd;
-	
-	old_desktop_dir = nautilus_get_gmc_desktop_directory ();
-	if (!g_file_test (old_desktop_dir, G_FILE_TEST_IS_DIR) ||
-	    g_file_test (old_desktop_dir, G_FILE_TEST_IS_SYMLINK)) {
-		g_free (old_desktop_dir);
-		return;
-	}
-	migrated_file = g_build_filename (old_desktop_dir, ".migrated", NULL);
-	if (!g_file_test (migrated_file, G_FILE_TEST_EXISTS)) {
-		link_name = g_filename_from_utf8 (_("Link To Old Desktop"), -1, NULL, NULL, NULL);
-		new_desktop_dir = nautilus_get_desktop_directory ();
-		link_path = g_build_filename (new_desktop_dir, link_name, NULL);
-	
-		
-		symlink ("../.gnome-desktop", link_path);
-		
-		g_free (link_name);
-		g_free (new_desktop_dir);
-		g_free (link_path);
-
-		fd = creat (migrated_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
-		if (fd >= 0) {
-			close (fd);
-		}
-		
-		eel_show_info_dialog (_("A link called \"Link To Old Desktop\" has been created on the desktop."),
-				      _("The location of the desktop directory has changed in GNOME 2.4. "
-					"You can open the link and move over the files you want, then delete the link."),
-				      NULL);
-	}
-	g_free (old_desktop_dir);
-	g_free (migrated_file);
-}
-
-static void
 menu_provider_items_updated_handler (NautilusMenuProvider *provider, GtkWidget* parent_window, gpointer data)
 {
 
@@ -417,6 +412,8 @@ menu_provider_init_callback (void)
 static void
 finish_startup (NautilusApplication *application)
 {
+	GList *drives;
+
 	/* initialize nautilus modules */
 	nautilus_module_init ();
 
@@ -425,14 +422,34 @@ finish_startup (NautilusApplication *application)
 	/* attach menu-provider module callback */
 	menu_provider_init_callback ();
 	
-	/* initialize URI authentication manager */
-	gnome_authentication_manager_init ();
-
-	/* Make the desktop work with old Nautilus. */
-	migrate_old_nautilus_files ();
-
 	/* Initialize the desktop link monitor singleton */
 	nautilus_desktop_link_monitor_get ();
+
+	/* Watch for mounts so we can restore open windows This used
+	 * to be for showing new window on mount, but is not used
+	 * anymore */
+
+	/* Watch for unmounts so we can close open windows */
+	/* TODO-gio: This should be using the UNMOUNTED feature of GFileMonitor instead */
+	application->volume_monitor = g_volume_monitor_get ();
+	g_signal_connect_object (application->volume_monitor, "mount_removed",
+				 G_CALLBACK (mount_removed_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "mount_pre_unmount",
+				 G_CALLBACK (mount_removed_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "mount_added",
+				 G_CALLBACK (mount_added_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "volume_added",
+				 G_CALLBACK (volume_added_callback), application, 0);
+	g_signal_connect_object (application->volume_monitor, "drive_connected",
+				 G_CALLBACK (drive_connected_callback), application, 0);
+
+	/* listen for eject button presses */
+	drives = g_volume_monitor_get_connected_drives (application->volume_monitor);
+	g_list_foreach (drives, (GFunc) drive_listen_for_eject_button, application);
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
+
+	automount_all_volumes (application);
 }
 
 static void
@@ -1315,9 +1332,83 @@ volume_added_callback (GVolumeMonitor *monitor,
 		       GVolume *volume,
 		       NautilusApplication *application)
 {
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT)) {
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
+	    g_volume_can_mount (volume)) {
 		nautilus_file_operations_mount_volume (NULL, volume);
 	}
+}
+
+static void
+drive_eject_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	GError *error;
+	char *primary;
+	char *name;
+	error = NULL;
+	if (!g_drive_eject_finish (G_DRIVE (source_object), res, &error)) {
+		if (error->code != G_IO_ERROR_FAILED_HANDLED) {
+			name = g_drive_get_name (G_DRIVE (source_object));
+			primary = g_strdup_printf (_("Unable to eject %s"), name);
+			g_free (name);
+			eel_show_error_dialog (primary,
+					       error->message,
+				       NULL);
+			g_free (primary);
+		}
+		g_error_free (error);
+	}
+}
+
+static void
+drive_eject_button_pressed (GDrive *drive,
+			    NautilusApplication *application)
+{
+	g_drive_eject (drive, 0, NULL, drive_eject_cb, NULL);
+}
+
+static void
+drive_listen_for_eject_button (GDrive *drive, NautilusApplication *application)
+{
+	g_signal_connect (drive,
+			  "eject-button",
+			  G_CALLBACK (drive_eject_button_pressed),
+			  application);
+}
+
+static void
+drive_connected_callback (GVolumeMonitor *monitor,
+			  GDrive *drive,
+			  NautilusApplication *application)
+{
+	drive_listen_for_eject_button (drive, application);
+}
+
+static void
+autorun_show_window (GMount *mount, gpointer user_data)
+{
+	GFile *location;
+	NautilusApplication *application = user_data;
+	
+	location = g_mount_get_root (mount);
+	
+	/* Ther should probably be an easier way to do this */
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		NautilusWindow *window;
+		window = nautilus_application_create_navigation_window (application, 
+									NULL, 
+									gdk_screen_get_default ());
+		nautilus_window_go_to (window, location);
+
+	} else {
+		nautilus_application_present_spatial_window (application, 
+							     NULL, 
+							     NULL, 
+							     location, 
+							     gdk_screen_get_default ());
+	}
+	g_object_unref (location);
 }
 
 static void
@@ -1327,6 +1418,8 @@ mount_added_callback (GVolumeMonitor *monitor,
 {
 	NautilusDirectory *directory;
 	GFile *root;
+	GVolume *enclosing_volume;
+	gboolean ignore_autorun;
 		
 	root = g_mount_get_root (mount);
 	directory = nautilus_directory_get_existing (root);
@@ -1336,7 +1429,21 @@ mount_added_callback (GVolumeMonitor *monitor,
 		nautilus_directory_unref (directory);
 	}
 
-	nautilus_autorun (mount);
+	ignore_autorun = FALSE;
+
+	enclosing_volume = g_mount_get_volume (mount);
+	if (enclosing_volume != NULL) {
+		if (g_object_get_data (G_OBJECT (enclosing_volume), "nautilus-automounted") != NULL) {
+			ignore_autorun = TRUE;
+			/* Autorun if the user unmounts and then mounts */
+			g_object_set_data (G_OBJECT (enclosing_volume), "nautilus-automounted", NULL);
+		}
+		g_object_unref (enclosing_volume);
+	}
+
+	if (!ignore_autorun) {
+		nautilus_autorun (mount, autorun_show_window, application);
+	}
 }
 
 /* Called whenever a mount is unmounted. Check and see if there are

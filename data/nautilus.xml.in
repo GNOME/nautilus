@@ -13,11 +13,11 @@
 
    <mime-type type="x-content/video-vcd">
      <!-- http://en.wikipedia.org/wiki/Video_CD -->
-     <_comment>VCD Video</_comment>
+     <_comment>Video CD</_comment>
    </mime-type>
    <mime-type type="x-content/video-svcd">
      <!-- http://en.wikipedia.org/wiki/Super_Video_CD -->
-     <_comment>SVCD Video</_comment>
+     <_comment>Super Video CD</_comment>
    </mime-type>
    <mime-type type="x-content/video-dvd">
      <!-- http://en.wikipedia.org/wiki/DVD-Video -->
@@ -34,26 +34,57 @@
      <_comment>Compact Disc Audio</_comment>
    </mime-type>
 
-   <mime-type type="x-content/blank-media">
+   <mime-type type="x-content/blank-cd">
      <!-- http://en.wikipedia.org/wiki/Compact_Disc -->
-     <!-- http://en.wikipedia.org/wiki/DVD -->
-     <_comment>Blank Media</_comment>
+     <_comment>Blank CD Disc</_comment>
    </mime-type>
 
-   <mime-type type="x-content/software-autostart">
-     <!-- http://www.freedesktop.org/wiki/Specifications/autostart-spec -->
+   <mime-type type="x-content/blank-dvd">
+     <!-- http://en.wikipedia.org/wiki/DVD -->
+     <_comment>Blank DVD Disc</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/blank-bd">
+     <!-- http://en.wikipedia.org/wiki/Blu-ray_Disc -->
+     <_comment>Blank Blu-Ray Disc</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/blank-hddvd">
+     <!-- http://en.wikipedia.org/wiki/HD_DVD -->
+     <_comment>Blank HD DVD Disc</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/audio-dvd">
+     <!-- http://en.wikipedia.org/wiki/DVD-Audio -->
+     <_comment>DVD Audio</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/video-bluray">
+     <!-- http://en.wikipedia.org/wiki/Blu-ray_Disc -->
+     <_comment>Blu-Ray Video</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/video-hddvd">
+     <!-- http://en.wikipedia.org/wiki/HD_DVD -->
+     <_comment>HD DVD Video</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/image-picturecd">
+     <!-- http://en.wikipedia.org/wiki/Picture_CD -->
+     <_comment>Picture CD</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/audio-player">
+     <!-- see fd.o hal spec -->
+     <_comment>Portable Audio Player</_comment>
+   </mime-type>
+
+   <mime-type type="x-content/software">
+     <!-- http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html -->
      <_comment>Software</_comment>
    </mime-type>
 
    <!-- TODO:
-
-         - Blu-Ray video  : http://en.wikipedia.org/wiki/Blu-ray_Disc
-         - HD-DVD video   : http://en.wikipedia.org/wiki/HD_DVD
-         - DVD-Audio      : http://en.wikipedia.org/wiki/DVD-Audio
-
-         - Photo CD       : http://en.wikipedia.org/wiki/Photo_CD
-         - Picture CD     : http://en.wikipedia.org/wiki/Picture_CD
-
          - SACD           : http://en.wikipedia.org/wiki/Super_Audio_CD
            - This might be dead and appear to be totally unsupported anyway
 
@@ -61,8 +92,6 @@
           - http://en.wikipedia.org/wiki/Enhanced_CD
          - Enhanced DVD Movie (see link 1. below)
           - ??
-
-          - music player (x-content/music-player)
 
          - picture files
          - audio files

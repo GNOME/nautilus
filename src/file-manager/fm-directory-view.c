@@ -95,6 +95,7 @@
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-signaller.h>
+#include <libnautilus-private/nautilus-autorun.h>
 #include <unistd.h>
 
 /* Minimum starting update inverval */
@@ -4158,6 +4159,27 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 	g_free (tip);
 }
 
+static void
+add_x_content_apps (NautilusFile *file, GList **applications)
+{
+	char **x_content_types;
+
+	g_return_if_fail (applications != NULL);
+
+	x_content_types = nautilus_autorun_get_x_content_types_for_file (file, NULL, FALSE, FALSE);
+		
+	if (x_content_types != NULL) {
+		unsigned int n;
+		for (n = 0; x_content_types[n] != NULL; n++) {
+			char *x_content_type = x_content_types[n];
+			GList *app_info_for_x_content_type;
+			
+			app_info_for_x_content_type = g_app_info_get_all_for_type (x_content_type);
+			*applications = g_list_concat (*applications, app_info_for_x_content_type);
+		}
+		g_strfreev (x_content_types);
+	}
+}
 
 static void
 reset_open_with_menu (FMDirectoryView *view, GList *selection)
@@ -4191,6 +4213,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 	filter_default = (selection != NULL);
 
 	for (node = selection; node != NULL; node = node->next) {
+
 		file = NAUTILUS_FILE (node->data);
 
 		other_applications_visible &=
@@ -4207,6 +4230,11 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 	if (other_applications_visible) {
 		applications = nautilus_mime_get_applications_for_files (selection);
 	}
+
+	if (g_list_length (selection) == 1) {
+		add_x_content_apps (NAUTILUS_FILE (selection->data), &applications);
+	}
+
 
 	num_applications = g_list_length (applications);
 	

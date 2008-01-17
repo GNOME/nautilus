@@ -5606,6 +5606,14 @@ nautilus_file_is_mountpoint (NautilusFile *file)
 	return file->details->is_mountpoint;
 }
 
+GMount *
+nautilus_file_get_mount (NautilusFile *file)
+{
+	if (file->details->mount) {
+		return g_object_ref (file->details->mount);
+	}
+	return NULL;
+}
 
 /**
  * nautilus_file_is_broken_symbolic_link

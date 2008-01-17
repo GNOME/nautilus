@@ -137,6 +137,9 @@ struct NautilusFileDetails
 	GHashTable *extension_attributes;
 	GHashTable *pending_extension_attributes;
 
+	/* Mount for mountpoint or the references GMount for a "mountable" */
+	GMount *mount;
+	
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
@@ -166,6 +169,8 @@ struct NautilusFileDetails
 	eel_boolean_bit mime_list_failed              : 1;
 	eel_boolean_bit mime_list_is_up_to_date       : 1;
 
+	eel_boolean_bit mount_is_up_to_date           : 1;
+	
 	eel_boolean_bit got_top_left_text             : 1;
 	eel_boolean_bit got_large_top_left_text       : 1;
 	eel_boolean_bit top_left_text_is_up_to_date   : 1;

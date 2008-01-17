@@ -51,8 +51,10 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN		"preferences/media_automount_open"
 
 /* Autorun options */
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER                "preferences/media_autorun_never"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK        "preferences/media_autorun_x_content_ask"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "preferences/media_autorun_x_content_ignore"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "preferences/media_autorun_x_content_open_folder"
 
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"

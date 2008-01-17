@@ -44,10 +44,28 @@
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 
+void _g_mount_guess_content_type_async (GMount              *mount,
+					gboolean             force_rescan,
+					GCancellable        *cancellable,
+					GAsyncReadyCallback  callback,
+					gpointer             user_data);
+
+char ** _g_mount_guess_content_type_finish (GMount              *mount,
+					    GAsyncResult        *result,
+					    GError             **error);
+
+char ** _g_mount_guess_content_type (GMount              *mount,
+				     gboolean             force_rescan,
+				     GError             **error);
+
+
 typedef void (*NautilusAutorunComboBoxChanged) (gboolean selected_ask,
 						gboolean selected_ignore,
+						gboolean selected_open_folder,
 						GAppInfo *selected_app,
 						gpointer user_data);
+
+typedef void (*NautilusAutorunOpenWindow) (GMount *mount, gpointer user_data);
 
 void nautilus_autorun_prepare_combo_box (GtkWidget *combo_box, 
 					 const char *x_content_type, 
@@ -56,10 +74,16 @@ void nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 					 NautilusAutorunComboBoxChanged changed_cb,
 					 gpointer user_data);
 
-void nautilus_autorun_set_preferences (const char *x_content_type, gboolean pref_ask, gboolean pref_ignore);
-void nautilus_autorun_get_preferences (const char *x_content_type, gboolean *pref_ask, gboolean *pref_ignore);
+void nautilus_autorun_set_preferences (const char *x_content_type, gboolean pref_ask, gboolean pref_ignore, gboolean pref_open_folder);
+void nautilus_autorun_get_preferences (const char *x_content_type, gboolean *pref_ask, gboolean *pref_ignore, gboolean *pref_open_folder);
 
-void nautilus_autorun (GMount *mount);
+void nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpointer user_data);
 
+char **nautilus_autorun_get_x_content_types_for_file (NautilusFile   *file, 
+						      GMount       **out_mount,
+						      gboolean       force_rescan, 
+						      gboolean       include_child_dirs);
+
+void nautilus_autorun_launch_for_mount (GMount *mount, GAppInfo *app_info);
 
 #endif /* NAUTILUS_AUTORUN_H */

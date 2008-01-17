@@ -5,6 +5,7 @@ SUBDIRS=file-manager
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-file-management-properties	\
+	nautilus-autorun-software		\
 	$(NULL)
 
 #	nautilus-connect-server			
@@ -130,6 +131,8 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c              \
 	nautilus-window.c			\
 	nautilus-window.h			\
+	nautilus-x-content-bar.c		\
+	nautilus-x-content-bar.h		\
 	nautilus-zoom-control.c			\
 	nautilus-zoom-control.h			\
 	$(NULL)
@@ -138,6 +141,10 @@ nautilus_file_management_properties_SOURCES= \
 	nautilus-file-management-properties.c		\
 	nautilus-file-management-properties.h		\
 	nautilus-file-management-properties-main.c	\
+	$(NULL)
+
+nautilus_autorun_software_SOURCES= 			\
+	nautilus-autorun-software.c			\
 	$(NULL)
 
 # Disabled for now in the gio world

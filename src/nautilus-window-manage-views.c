@@ -36,6 +36,7 @@
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
 #include "nautilus-trash-bar.h"
+#include "nautilus-x-content-bar.h"
 #include "nautilus-zoom-control.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
@@ -63,6 +64,7 @@
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
+#include <libnautilus-private/nautilus-autorun.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -1291,6 +1293,32 @@ add_extension_extra_widgets (NautilusWindow *window, GFile *location)
 }
 
 static void
+nautilus_window_show_x_content_bar (NautilusWindow *window, GMount *mount, char **x_content_types)
+{
+	unsigned int n;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	for (n = 0; x_content_types[n] != NULL; n++) {
+		GAppInfo *default_app;
+
+		/* skip blank media; the burn:/// location will provide it's own cluebar */
+		if (g_str_has_prefix (x_content_types[n], "x-content/blank-"))
+			continue;
+
+		/* only show the cluebar if a default app is available */
+		default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
+		if (default_app != NULL)  {
+			GtkWidget *bar;
+			bar = nautilus_x_content_bar_new (mount, x_content_types[n]);
+			gtk_widget_show (bar);
+			nautilus_window_add_extra_location_widget (window, bar);
+			g_object_unref (default_app);
+		}
+	}
+}
+
+static void
 nautilus_window_show_trash_bar (NautilusWindow *window)
 {
 	GtkWidget *bar;
@@ -1312,6 +1340,8 @@ update_for_new_location (NautilusWindow *window)
 	NautilusDirectory *directory;
 	gboolean location_really_changed;
 	char *uri;
+	char **x_content_types;
+	GMount *mount;
         
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
@@ -1368,6 +1398,13 @@ update_for_new_location (NautilusWindow *window)
 
 		if (nautilus_directory_is_in_trash (directory)) {
 			nautilus_window_show_trash_bar (window);
+		}
+
+		x_content_types = nautilus_autorun_get_x_content_types_for_file (file, &mount, FALSE, TRUE);
+		if (x_content_types != NULL) {
+			nautilus_window_show_x_content_bar (window, mount, x_content_types);
+			g_strfreev (x_content_types);
+			g_object_unref (mount);
 		}
 
 		nautilus_directory_unref (directory);
