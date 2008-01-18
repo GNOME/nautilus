@@ -369,6 +369,7 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
  */
 gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
+GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);
 
 char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
 

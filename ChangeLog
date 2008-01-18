@@ -1,5 +1,13 @@
 2008-01-18  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.[ch]:
+        Add nautilus_file_get_activation_location.
+	
+        * libnautilus-private/nautilus-directory-async.c:
+	Get mounts from mountable files too.
+	
+2008-01-18  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-x-content-bar.c:
 	Don't free result of g_app_info_get_icon ().
 

@@ -2996,6 +2996,18 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 	return nautilus_file_get_uri (file);
 }
 
+GFile *
+nautilus_file_get_activation_location (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (file->details->activation_location != NULL) {
+		return g_object_ref (file->details->activation_location);
+	}
+	
+	return nautilus_file_get_location (file);
+}
+
 
 char *
 nautilus_file_get_drop_target_uri (NautilusFile *file)

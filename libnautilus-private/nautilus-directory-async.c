@@ -1730,9 +1730,21 @@ wants_thumbnail (const Request *request)
 static gboolean
 lacks_mount (NautilusFile *file)
 {
-	return (file->details->is_mountpoint ||
-		file->details->type == G_FILE_TYPE_MOUNTABLE) &&
-		!file->details->mount_is_up_to_date;
+	return (!file->details->mount_is_up_to_date &&
+		(
+		 /* Unix mountpoint, could be a GMount */
+		 file->details->is_mountpoint ||
+		 
+		 /* The toplevel directory of something */
+		 (file->details->type == G_FILE_TYPE_DIRECTORY &&
+		  nautilus_file_is_self_owned (file)) ||
+		 
+		 /* Mountable with a target_uri, could be a mountpoint */
+		 (file->details->type == G_FILE_TYPE_MOUNTABLE &&
+		  file->details->activation_location != NULL)
+
+		 )
+		);
 }
 
 static gboolean
@@ -3883,38 +3895,27 @@ mount_state_free (MountState *state)
 }
 
 static void
-find_enclosing_mount_callback (GObject *source_object,
-			       GAsyncResult *res,
-			       gpointer user_data)
+got_mount (MountState *state, GMount *mount)
 {
-	GMount *mount;
 	NautilusDirectory *directory;
-	MountState *state;
 	NautilusFile *file;
-
-	state = user_data;
-	if (state->directory == NULL) {
-		/* Operation was cancelled. Bail out */
-		mount_state_free (state);
-		return;
-	}
-
-	directory = nautilus_directory_ref (state->directory);
 	
-	mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
-						    res, NULL);
-
+	directory = nautilus_directory_ref (state->directory);
 
 	state->directory->details->mount_state = NULL;
 	async_job_end (state->directory, "mount");
 	
 	file = nautilus_file_ref (state->file);
-	
-	file->details->mount_is_up_to_date = TRUE;
+
 	if (file->details->mount) {
 		g_object_unref (file->details->mount);
+		file->details->mount = NULL;
 	}
-	file->details->mount = mount;
+	
+	file->details->mount_is_up_to_date = TRUE;
+	if (mount) {
+		file->details->mount = g_object_ref (mount);
+	}
 	
 	nautilus_directory_async_state_changed (directory);
 	nautilus_file_changed (file);
@@ -3925,6 +3926,73 @@ find_enclosing_mount_callback (GObject *source_object,
 	
 	mount_state_free (state);
 
+}
+
+static void
+find_enclosing_mount_callback (GObject *source_object,
+			       GAsyncResult *res,
+			       gpointer user_data)
+{
+	GMount *mount;
+	MountState *state;
+	GFile *location, *root;
+
+	state = user_data;
+	if (state->directory == NULL) {
+		/* Operation was cancelled. Bail out */
+		mount_state_free (state);
+		return;
+	}
+
+	mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
+						    res, NULL);
+
+	if (mount) {
+		root = g_mount_get_root (mount);
+		location = nautilus_file_get_location (state->file);
+		if (!g_file_equal (location, root)) {
+			g_object_unref (mount);
+			mount = NULL;
+		}
+		g_object_unref (root);
+		g_object_unref (location);
+	}
+
+	got_mount (state, mount);
+
+	if (mount) {
+		g_object_unref (mount);
+	}
+}
+
+static GMount *
+get_mount_at (GFile *target)
+{
+	GVolumeMonitor *monitor;
+	GFile *root;
+	GList *mounts, *l;
+	GMount *found;
+	
+	monitor = g_volume_monitor_get ();
+	mounts = g_volume_monitor_get_mounts (monitor);
+
+	found = NULL;
+	for (l = mounts; l != NULL; l = l->next) {
+		root = g_mount_get_root (l->data);
+
+		if (g_file_equal (target, root)) {
+			found = g_object_ref (l->data);
+			break;
+		}
+		
+		g_object_unref (root);
+	}
+
+	eel_g_object_list_free (mounts);
+	
+	g_object_unref (monitor);
+
+	return found;
 }
 
 static void
@@ -3959,12 +4027,30 @@ mount_start (NautilusDirectory *directory,
 	location = nautilus_file_get_location (file);
 	
 	directory->details->mount_state = state;
-	
-	g_file_find_enclosing_mount_async (location,
-					   G_PRIORITY_DEFAULT,
-					   state->cancellable,
-					   find_enclosing_mount_callback,
-					   state);
+
+	if (file->details->type == G_FILE_TYPE_MOUNTABLE) {
+		GFile *target;
+		GMount *mount;
+
+		mount = NULL;
+		target = nautilus_file_get_activation_location (file);
+		if (target != NULL) {
+			mount = get_mount_at (target);
+			g_object_unref (target);
+		}
+
+		got_mount (state, mount);
+
+		if (mount) {
+			g_object_unref (mount);
+		}
+	} else {
+		g_file_find_enclosing_mount_async (location,
+						   G_PRIORITY_DEFAULT,
+						   state->cancellable,
+						   find_enclosing_mount_callback,
+						   state);
+	}
 	g_object_unref (location);
 }
 
