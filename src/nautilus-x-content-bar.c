@@ -114,7 +114,6 @@ nautilus_x_content_bar_set_x_content_type (NautilusXContentBar *bar, const char 
 			image = gtk_image_new_from_pixbuf (pixbuf);
 			g_object_unref (pixbuf);
 			g_object_unref (icon_info);
-			g_object_unref (icon);
 		} else {
 			image = NULL;
 		}
@@ -150,8 +149,9 @@ nautilus_x_content_bar_get_mount (NautilusXContentBar *bar)
 void
 nautilus_x_content_bar_set_mount (NautilusXContentBar *bar, GMount *mount)
 {
-	if (bar->priv->mount != NULL)
+	if (bar->priv->mount != NULL) {
 		g_object_unref (bar->priv->mount);
+	}
 	bar->priv->mount = mount != NULL ? g_object_ref (mount) : NULL;
 }
 
