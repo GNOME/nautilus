@@ -593,10 +593,14 @@ _g_mount_guess_content_type (GMount              *mount,
 	GVolume *volume;
 	char *disc_type = NULL;
 
-	/* TODO: We can't really sensibly cache anything right now..
-	 *       But when moved to gio this can be done.
+	/* TODO: This cache handling isn't really threadsafe.
+	 * I think this is ok for nautilus use, but not for general gio use
 	 */
-
+	ret = g_object_get_data (G_OBJECT (mount), "content-type-cache");
+	if (ret != NULL) {
+		return g_strdupv (ret);
+	}
+	
 	types = g_ptr_array_new ();
 
 	root = g_mount_get_root (mount);
@@ -719,17 +723,19 @@ _g_mount_guess_content_type (GMount              *mount,
 
 no_sniff:
 	
-	if (types->len == 0) {
-		ret = NULL;
-		g_ptr_array_free (types, TRUE);
-	} else {
-		g_ptr_array_add (types, NULL);
-		ret = (char **) g_ptr_array_free (types, FALSE);
-	}
+	g_ptr_array_add (types, NULL);
+	ret = (char **) g_ptr_array_free (types, FALSE);
 
-	if (volume != NULL)
+	if (volume != NULL) {
 		g_object_unref (volume);
+	}
 	g_object_unref (root);
+
+	g_object_set_data_full (G_OBJECT (mount),
+				"content-type-cache",
+				g_strdupv (ret),
+				(GDestroyNotify)g_strfreev);
+	
 	return ret;
 }
 
@@ -1232,67 +1238,17 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 }
 
 char **
-nautilus_autorun_get_x_content_types_for_file (NautilusFile *nautilus_file, 
-					       GMount      **out_mount,
-					       gboolean      force_rescan,
-					       gboolean      include_child_dirs)
+nautilus_autorun_get_x_content_types_for_mount (GMount      *mount,
+						gboolean     force_rescan)
 {
-	GMount *mount;
-	char **x_content_types;
-
-	x_content_types = NULL;
-
-	g_return_val_if_fail (nautilus_file != NULL, NULL);
-
-	mount = NULL;
-	if (g_type_is_a (G_OBJECT_TYPE (nautilus_file), NAUTILUS_TYPE_DESKTOP_ICON_FILE)) {
-		NautilusDesktopIconFile *desktop_icon_file = NAUTILUS_DESKTOP_ICON_FILE (nautilus_file);
-		NautilusDesktopLink *desktop_link;
-		
-		desktop_link = nautilus_desktop_icon_file_get_link (desktop_icon_file);
-		if (desktop_link != NULL) {
-			if (nautilus_desktop_link_get_link_type (desktop_link) == NAUTILUS_DESKTOP_LINK_MOUNT) {
-				mount = nautilus_desktop_link_get_mount (desktop_link);
-			}
-			g_object_unref (desktop_link);
-		}		
-	} else {
-		GFile *file;
-		file = nautilus_file_get_location (nautilus_file);
-		if (file != NULL) {
-			mount = g_file_find_enclosing_mount (file, NULL, NULL);
-			if (mount != NULL) {
-				GFile *mount_root;
-				mount_root = g_mount_get_root (mount);
-				if (!include_child_dirs) {
-					if (!g_file_equal (mount_root, file)) {
-						g_object_unref (mount);
-						mount = NULL;
-					}
-				}
-				g_object_unref (mount_root);
-			}
-			g_object_unref (file);
-		}
+	if (mount == NULL) {
+		return NULL;
 	}
 
-
-	/* TODO: handle files in computer:///. 
+	/* since we always guess the content type at mount type, we're guaranteed
+	 * to get the cached results
 	 *
-	 * Also need to handle those in libnautilus-private/nautilus-program-choosing.c:nautilus_launch_application()
-	 *
-	 * These NautilusFile instances are of class NautilusVFSFile.. URI is 'computer:///CompactFlash%20Drive.drive'
+	 * TODO: Really? what if we didn't mount the mount ourself?
 	 */
-
-	if (mount != NULL) {
-		/* since we always guess the content type at mount type, we're guaranteed
-		 * to get the cached results
-		 */
-		x_content_types = _g_mount_guess_content_type (mount, force_rescan, NULL);
-		if (out_mount != NULL)
-			*out_mount = g_object_ref (mount);
-		g_object_unref (mount);
-	}
-
-	return x_content_types;
+	return _g_mount_guess_content_type (mount, force_rescan, NULL);
 }

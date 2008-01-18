@@ -3091,6 +3091,7 @@ fm_directory_view_add_subdirectory (FMDirectoryView  *view,
 		NAUTILUS_FILE_ATTRIBUTE_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
 	nautilus_directory_file_monitor_add (directory,
@@ -4162,14 +4163,21 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 static void
 add_x_content_apps (NautilusFile *file, GList **applications)
 {
+	GMount *mount;
 	char **x_content_types;
+	unsigned int n;
 
 	g_return_if_fail (applications != NULL);
 
-	x_content_types = nautilus_autorun_get_x_content_types_for_file (file, NULL, FALSE, FALSE);
+	mount = nautilus_file_get_mount (file);
+
+	if (mount == NULL) {
+		return;
+	}
+	
+	x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
 		
 	if (x_content_types != NULL) {
-		unsigned int n;
 		for (n = 0; x_content_types[n] != NULL; n++) {
 			char *x_content_type = x_content_types[n];
 			GList *app_info_for_x_content_type;
@@ -4179,6 +4187,8 @@ add_x_content_apps (NautilusFile *file, GList **applications)
 		}
 		g_strfreev (x_content_types);
 	}
+
+	g_object_unref (mount);
 }
 
 static void
@@ -7570,6 +7580,7 @@ finish_loading (FMDirectoryView *view)
 		NAUTILUS_FILE_ATTRIBUTE_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
 	nautilus_directory_file_monitor_add (view->details->model,

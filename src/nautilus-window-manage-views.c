@@ -799,6 +799,7 @@ begin_location_change (NautilusWindow *window,
 
 	nautilus_file_call_when_ready (window->details->determine_view_file,
 				       NAUTILUS_FILE_ATTRIBUTE_INFO |
+				       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 				       NAUTILUS_FILE_ATTRIBUTE_METADATA,
                                        got_file_info_for_view_selection_callback,
 				       window);
@@ -1303,8 +1304,9 @@ nautilus_window_show_x_content_bar (NautilusWindow *window, GMount *mount, char 
 		GAppInfo *default_app;
 
 		/* skip blank media; the burn:/// location will provide it's own cluebar */
-		if (g_str_has_prefix (x_content_types[n], "x-content/blank-"))
+		if (g_str_has_prefix (x_content_types[n], "x-content/blank-")) {
 			continue;
+		}
 
 		/* only show the cluebar if a default app is available */
 		default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
@@ -1400,9 +1402,12 @@ update_for_new_location (NautilusWindow *window)
 			nautilus_window_show_trash_bar (window);
 		}
 
-		x_content_types = nautilus_autorun_get_x_content_types_for_file (file, &mount, FALSE, TRUE);
-		if (x_content_types != NULL) {
-			nautilus_window_show_x_content_bar (window, mount, x_content_types);
+		mount = nautilus_file_get_mount (file);
+		if (mount != NULL) {
+			x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
+			if (x_content_types != NULL && x_content_types[0] != NULL) {
+				nautilus_window_show_x_content_bar (window, mount, x_content_types);
+			}
 			g_strfreev (x_content_types);
 			g_object_unref (mount);
 		}

@@ -1,5 +1,17 @@
 2008-01-18  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-program-choosing.c:
+	Just use get_activation_location instead of all
+	the unnecessary special casing.
+	
+        * libnautilus-private/nautilus-autorun.[ch]:
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-window-manage-views.c:
+	Use nautilus_file_get_mount() to do the
+	x-content type detection.
+
+2008-01-18  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file.[ch]:
         Add nautilus_file_get_activation_location.
 	

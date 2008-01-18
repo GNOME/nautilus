@@ -79,10 +79,8 @@ void nautilus_autorun_get_preferences (const char *x_content_type, gboolean *pre
 
 void nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpointer user_data);
 
-char **nautilus_autorun_get_x_content_types_for_file (NautilusFile   *file, 
-						      GMount       **out_mount,
-						      gboolean       force_rescan, 
-						      gboolean       include_child_dirs);
+char **nautilus_autorun_get_x_content_types_for_mount (GMount       *mount,
+						       gboolean      force_rescan);
 
 void nautilus_autorun_launch_for_mount (GMount *mount, GAppInfo *app_info);
 

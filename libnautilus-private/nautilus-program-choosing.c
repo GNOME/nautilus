@@ -245,7 +245,6 @@ nautilus_launch_application (GAppInfo *application,
 			     GList *files,
 			     GtkWindow *parent_window)
 {
-	char		*uri;
 	char            *uri_scheme;
 	GList           *locations, *l;
 	GFile *location;
@@ -261,37 +260,7 @@ nautilus_launch_application (GAppInfo *application,
 	for (l = files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		
-		location = NULL;
-
-		if (g_type_is_a (G_OBJECT_TYPE (file), NAUTILUS_TYPE_DESKTOP_ICON_FILE)) {
-			NautilusDesktopIconFile *desktop_icon_file = NAUTILUS_DESKTOP_ICON_FILE (file);
-			NautilusDesktopLink *desktop_link;
-		
-			desktop_link = nautilus_desktop_icon_file_get_link (desktop_icon_file);
-			if (desktop_link != NULL) {
-				if (nautilus_desktop_link_get_link_type (desktop_link) == NAUTILUS_DESKTOP_LINK_MOUNT) {
-					GMount *mount;
-					mount = nautilus_desktop_link_get_mount (desktop_link);
-					if (mount != NULL) {
-						location = g_mount_get_root (mount);
-						g_object_unref (mount);
-					}
-				}
-				g_object_unref (desktop_link);
-			}		
-		}
-		
-		if (location == NULL) {
-			if (nautilus_file_is_nautilus_link (file)) {
-				uri = nautilus_file_get_activation_uri (file);
-				location = g_file_new_for_uri (uri);
-				g_free (uri);
-			}
-		}
-		
-		if (location == NULL) {
-			location = nautilus_file_get_location (file);
-		}
+		location = nautilus_file_get_activation_location (file);
 
 		locations = g_list_prepend (locations, location);
 	}
