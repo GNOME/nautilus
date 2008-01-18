@@ -80,8 +80,9 @@ _check_file (GFile *mount_root, const char *file_path, gboolean must_be_executab
 				       NULL);
 	if (file_info != NULL) {
 		if (must_be_executable) {
-			if (g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE))
+			if (g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE)) {
 				ret = TRUE;
+			}
 		} else {
 			ret = TRUE;
 		}
@@ -128,8 +129,9 @@ autorun (GMount *mount)
                 /* TODO */
         }
 
-        if (program_to_spawn != NULL)
+        if (program_to_spawn != NULL) {
                 path_to_spawn = g_file_get_path (program_to_spawn);
+	}
 
         cwd_for_program = g_file_get_path (root);
 
@@ -142,8 +144,9 @@ autorun (GMount *mount)
         }
         g_warning ("Cannot find path for program to spawn");
 
-        if (program_to_spawn != NULL)
+        if (program_to_spawn != NULL) {
                 g_object_unref (program_to_spawn);
+	}
         g_free (path_to_spawn);
         g_free (cwd_for_program);
 }
@@ -231,21 +234,25 @@ main (int argc, char *argv[])
 			    LIBGNOMEUI_MODULE, argc, argv,
 			    NULL, NULL);
 
-        if (argc != 2)
+        if (argc != 2) {
                 goto out;
+	}
 
         /* instantiate monitor so we get the "unmounted" signal properly */
         monitor = g_volume_monitor_get ();
-        if (monitor == NULL)
+        if (monitor == NULL) {
                 goto out;
+	}
 
         file = g_file_new_for_commandline_arg (argv[1]);
-        if (file == NULL)
+        if (file == NULL) {
                 goto out;
+	}
 
         mount = g_file_find_enclosing_mount (file, NULL, NULL);
-        if (mount == NULL)
+        if (mount == NULL) {
                 goto out;
+	}
 
         present_autorun_for_software_dialog (mount);
 

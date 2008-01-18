@@ -191,8 +191,9 @@ static void
 nautilus_autorun_combobox_data_destroy (NautilusAutorunComboBoxData *data)
 {
 	/* signal handler may be automatically disconnected by destroying the widget */
-	if (g_signal_handler_is_connected (G_OBJECT (data->combo_box), data->changed_signal_id))
+	if (g_signal_handler_is_connected (G_OBJECT (data->combo_box), data->changed_signal_id)) {
 		g_signal_handler_disconnect (G_OBJECT (data->combo_box), data->changed_signal_id);
+	}
 	g_free (data);
 }
 
