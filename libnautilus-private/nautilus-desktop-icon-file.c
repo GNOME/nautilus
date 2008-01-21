@@ -308,15 +308,15 @@ static void
 nautilus_desktop_icon_file_unmount (NautilusFile *file)
 {
 	NautilusDesktopIconFile *desktop_file;
-    GMount *mount;
-    
-    desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
-    if (desktop_file) {
-    	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
-       	if (mount != NULL) {
-       		nautilus_file_operations_unmount_mount (NULL, mount, FALSE, TRUE);
-       	}
-    }
+	GMount *mount;
+	
+	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+	if (desktop_file) {
+		mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
+		if (mount != NULL) {
+			nautilus_file_operations_unmount_mount (NULL, mount, FALSE, TRUE);
+		}
+	}
 	
 }
 
@@ -324,15 +324,15 @@ static void
 nautilus_desktop_icon_file_eject (NautilusFile *file)
 {
 	NautilusDesktopIconFile *desktop_file;
-    GMount *mount;
-    
-    desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
-    if (desktop_file) {
-    	mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
-       	if (mount != NULL) {
-       		nautilus_file_operations_unmount_mount (NULL, mount, TRUE, TRUE);
-       	}
-    }
+	GMount *mount;
+	
+	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
+	if (desktop_file) {
+		mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
+		if (mount != NULL) {
+			nautilus_file_operations_unmount_mount (NULL, mount, TRUE, TRUE);
+		}
+	}
 }
 
 

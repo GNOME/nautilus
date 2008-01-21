@@ -34,6 +34,7 @@
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -843,7 +844,9 @@ nautilus_file_can_unmount (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return file->details->can_unmount;
+	return file->details->can_unmount ||
+		(file->details->mount != NULL &&
+		 g_mount_can_unmount (file->details->mount));
 }
 	
 gboolean
@@ -851,7 +854,9 @@ nautilus_file_can_eject (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return file->details->can_eject;
+	return file->details->can_eject ||
+		(file->details->mount != NULL &&
+		 g_mount_can_eject (file->details->mount));
 }
 
 void
@@ -879,16 +884,26 @@ nautilus_file_mount (NautilusFile                   *file,
 void
 nautilus_file_unmount (NautilusFile *file)
 {
-	if (NAUTILUS_FILE_GET_CLASS (file)->unmount != NULL) {
-		NAUTILUS_FILE_GET_CLASS (file)->unmount (file);
+	if (file->details->can_unmount) {
+		if (NAUTILUS_FILE_GET_CLASS (file)->unmount != NULL) {
+			NAUTILUS_FILE_GET_CLASS (file)->unmount (file);
+		}
+	} else if (file->details->mount != NULL &&
+		   g_mount_can_unmount (file->details->mount)) {
+		nautilus_file_operations_unmount_mount (NULL, file->details->mount, FALSE, TRUE);
 	}
 }
 
 void
 nautilus_file_eject (NautilusFile *file)
 {
-	if (NAUTILUS_FILE_GET_CLASS (file)->eject != NULL) {
-		NAUTILUS_FILE_GET_CLASS (file)->eject (file);
+	if (file->details->can_eject) {
+		if (NAUTILUS_FILE_GET_CLASS (file)->eject != NULL) {
+			NAUTILUS_FILE_GET_CLASS (file)->eject (file);
+		}
+	} else if (file->details->mount != NULL &&
+		   g_mount_can_eject (file->details->mount)) {
+		nautilus_file_operations_unmount_mount (NULL, file->details->mount, TRUE, TRUE);
 	}
 }
 
