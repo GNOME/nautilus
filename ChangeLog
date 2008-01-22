@@ -1,6 +1,14 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file.c:
+        (nautilus_file_invalidate_extension_info_internal):
+        (nautilus_file_add_string_attribute):
+	Lazily allocate the extension info hashtable.
+	Internalize the extension info attribute names.
+
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
         (nautilus_file_get_emblem_pixbufs):
 	Don't leak NautilusIconInfo
 

@@ -6197,12 +6197,6 @@ nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
 	file->details->pending_info_providers =
 		nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
-	if (!file->details->pending_extension_attributes) {
-		file->details->pending_extension_attributes = 
-			g_hash_table_new_full (g_str_hash, g_str_equal,
-					       (GDestroyNotify)g_free, 
-					       (GDestroyNotify)g_free);
-	}
 }
 
 void
@@ -6850,12 +6844,25 @@ nautilus_file_add_string_attribute (NautilusFile *file,
 				    const char *value)
 {
 	if (file->details->pending_info_providers) {
+		/* Lazily create hashtable */
+		if (!file->details->pending_extension_attributes) {
+			file->details->pending_extension_attributes = 
+				g_hash_table_new_full (g_str_hash, g_str_equal,
+						       NULL, 
+						       (GDestroyNotify)g_free);
+		}
 		g_hash_table_insert (file->details->pending_extension_attributes,
-				     g_strdup (attribute_name),
+				     (char *)g_intern_string (attribute_name),
 				     g_strdup (value));
 	} else {
+		if (!file->details->extension_attributes) {
+			file->details->extension_attributes = 
+				g_hash_table_new_full (g_str_hash, g_str_equal,
+						       NULL, 
+						       (GDestroyNotify)g_free);
+		}
 		g_hash_table_insert (file->details->extension_attributes,
-				     g_strdup (attribute_name),
+				     (char *)g_intern_string (attribute_name),
 				     g_strdup (value));
 	}
 
