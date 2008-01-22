@@ -1698,10 +1698,11 @@ set_metafile_contents (NautilusMetafile *metafile,
 		if (strcmp (node->name, "file") == 0) {
 			name = xmlGetProp (node, "name");
 			unescaped_name = g_uri_unescape_string (name, "/");
+			xmlFree (name);
 			if (unescaped_name == NULL ||
 			    g_hash_table_lookup (hash, unescaped_name) != NULL) {
-				xmlFree (name);
 				/* FIXME: Should we delete duplicate nodes as we discover them? */
+				g_free (unescaped_name);
 			} else {
 				g_hash_table_insert (hash, unescaped_name, node);
 			}

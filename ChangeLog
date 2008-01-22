@@ -1,5 +1,16 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.c:
+        (get_description):
+        (update_description_for_link):
+	Fix leak of description
+	
+        * libnautilus-private/nautilus-metafile.c:
+        (set_metafile_contents):
+	fix leak of xmlName.
+
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/apps_nautilus_preferences.schemas.in:
         * libnautilus-private/nautilus-file-operations.c:
         * src/Nautilus_shell.server.in:

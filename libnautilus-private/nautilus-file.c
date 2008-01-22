@@ -5263,12 +5263,11 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
-
-static const char *
+static char *
 get_description (NautilusFile *file)
 {
-	const char *mime_type, *description;
-	static GHashTable *warned = NULL;
+	const char *mime_type;
+	char *description;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
@@ -5279,7 +5278,7 @@ get_description (NautilusFile *file)
 
 	if (g_content_type_is_unknown (mime_type) &&
 	    nautilus_file_is_executable (file)) {
-		return _("program");
+		return g_strdup (_("program"));
 	}
 
 	description = g_content_type_get_description (mime_type);
@@ -5287,33 +5286,15 @@ get_description (NautilusFile *file)
 		return description;
 	}
 
-	if (warned == NULL) {
-		warned = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-		eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy, warned);
-	}
-	
-	/* We want to update gnome-vfs/data/mime/gnome-vfs.keys to include 
-	 * English (& localizable) versions of every mime type anyone ever sees.
-	 */
-	if (!g_hash_table_lookup (warned, mime_type)) {
-		if (g_ascii_strcasecmp (mime_type, "x-directory/normal") == 0) {
-			g_warning (_("Can't find description even for \"x-directory/normal\". This "
-				     "probably means that your gnome-vfs.keys file is in the wrong place "
-				     "or isn't being found for some other reason."));
-		} else {
-			g_warning (_("No description found for mime type \"%s\" (file is \"%s\"), "
-				     "please tell the gnome-vfs mailing list."),
-				   mime_type,
-				   eel_ref_str_peek (file->details->name));
-		}
-		g_hash_table_insert (warned, g_strdup (mime_type), GINT_TO_POINTER (1));
-	}
-	return mime_type;
+	return g_strdup (mime_type);
 }
 
+/* Takes ownership of string */
 static char *
-update_description_for_link (NautilusFile *file, const char *string)
+update_description_for_link (NautilusFile *file, char *string)
 {
+	char *res;
+	
 	if (nautilus_file_is_symbolic_link (file)) {
 		g_assert (!nautilus_file_is_broken_symbolic_link (file));
 		if (string == NULL) {
@@ -5323,10 +5304,12 @@ update_description_for_link (NautilusFile *file, const char *string)
 		 * (e.g. "folder", "plain text") to file type for symbolic link 
 		 * to that kind of file (e.g. "link to folder").
 		 */
-		return g_strdup_printf (_("Link to %s"), string);
+		res = g_strdup_printf (_("Link to %s"), string);
+		g_free (string);
+		return res;
 	}
 
-	return g_strdup (string);
+	return string;
 }
 
 static char *
