@@ -1,5 +1,17 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-extension/nautilus-column.c:
+	Add attribute_q property that is the Quark
+	of the attribute property.
+	
+        * src/file-manager/fm-icon-container.c:
+        * src/file-manager/fm-list-model.[ch]:
+        * src/file-manager/fm-list-view.c:
+	Use the quark versions of the string attribute
+	calls for better performance.
+
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file.[ch]:
 	Add quark-bases string-attribute accessors.
 	Store extension infos as quarks

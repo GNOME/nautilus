@@ -30,6 +30,7 @@ enum {
 	PROP_0,
 	PROP_NAME,
 	PROP_ATTRIBUTE,
+	PROP_ATTRIBUTE_Q,
 	PROP_LABEL,
 	PROP_DESCRIPTION,
 	PROP_XALIGN,
@@ -38,7 +39,7 @@ enum {
 
 struct _NautilusColumnDetails {
 	char *name;
-	char *attribute;
+	GQuark attribute;
 	char *label;
 	char *description;
 	float xalign;
@@ -84,7 +85,10 @@ nautilus_column_get_property (GObject *object,
 		g_value_set_string (value, column->details->name);
 		break;
 	case PROP_ATTRIBUTE :
-		g_value_set_string (value, column->details->attribute);
+		g_value_set_string (value, g_quark_to_string (column->details->attribute));
+		break;
+	case PROP_ATTRIBUTE_Q :
+		g_value_set_uint (value, column->details->attribute);
 		break;
 	case PROP_LABEL :
 		g_value_set_string (value, column->details->label);
@@ -118,9 +122,9 @@ nautilus_column_set_property (GObject *object,
 		g_object_notify (object, "name");
 		break;
 	case PROP_ATTRIBUTE :
-		g_free (column->details->attribute);
-		column->details->attribute = g_strdup (g_value_get_string (value));
+		column->details->attribute = g_quark_from_string (g_value_get_string (value));
 		g_object_notify (object, "attribute");
+		g_object_notify (object, "attribute_q");
 		break;
 	case PROP_LABEL :
 		g_free (column->details->label);
@@ -150,7 +154,6 @@ nautilus_column_finalize (GObject *object)
 	column = NAUTILUS_COLUMN (object);
 
 	g_free (column->details->name);
-	g_free (column->details->attribute);
 	g_free (column->details->label);
 	g_free (column->details->description);
 
@@ -189,6 +192,13 @@ nautilus_column_class_init (NautilusColumnClass *class)
 							      "The attribute name to display",
 							      NULL,
 							      G_PARAM_READWRITE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_ATTRIBUTE_Q,
+					 g_param_spec_uint ("attribute_q",
+							    "Attribute quark",
+							    "The attribute name to display, in quark form",
+							    0, G_MAXUINT, 0,
+							    G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 PROP_LABEL,
 					 g_param_spec_string ("label",

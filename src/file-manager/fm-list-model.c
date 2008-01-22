@@ -48,14 +48,18 @@ enum {
 	LAST_SIGNAL
 };
 
+static GQuark attribute_name_q,
+	attribute_modification_date_q,
+	attribute_date_modified_q;
+
 /* msec delay after Loading... dummy row turns into (empty) */
 #define LOADING_TO_EMPTY_DELAY 100
 
 static guint list_model_signals[LAST_SIGNAL] = { 0 };
 
 static int fm_list_model_file_entry_compare_func (gconstpointer a,
-				       gconstpointer b,
-				       gpointer      user_data);
+						  gconstpointer b,
+						  gpointer      user_data);
 
 static GObjectClass *parent_class;
 
@@ -66,7 +70,7 @@ struct FMListModelDetails {
 
 	int stamp;
 
-	char *sort_attribute;
+	GQuark sort_attribute;
 	GtkSortType order;
 
 	gboolean sort_directories_first;
@@ -363,25 +367,24 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
  	default:
  		if (column >= FM_LIST_MODEL_NUM_COLUMNS || column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len) {
 			NautilusColumn *nautilus_column;
-			char *attribute;
+			GQuark attribute;
 			nautilus_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
 			
 			g_value_init (value, G_TYPE_STRING);
 			g_object_get (nautilus_column, 
-				      "attribute", &attribute, 
+				      "attribute_q", &attribute, 
 				      NULL);
 			if (file != NULL) {
-				str = nautilus_file_get_string_attribute_with_default (file, 
-									       attribute);
+				str = nautilus_file_get_string_attribute_with_default_q (file, 
+											 attribute);
 				g_value_set_string_take_ownership (value, str);
-			} else if (!strcmp (attribute, "name")) {
+			} else if (attribute == attribute_name_q) {
 				if (file_entry->parent->loaded) {
 					g_value_set_string (value, _("(Empty)"));
 				} else {
 					g_value_set_string (value, _("Loading..."));
 				}
 			}
-			g_free (attribute);
 		} else {
 			g_assert_not_reached ();
 		}
@@ -642,10 +645,10 @@ fm_list_model_file_entry_compare_func (gconstpointer a,
 	file_entry2 = (FileEntry *)b;
 	
 	if (file_entry1->file != NULL && file_entry2->file != NULL) {
-		result = nautilus_file_compare_for_sort_by_attribute (file_entry1->file, file_entry2->file,
-							      model->details->sort_attribute,
-							      model->details->sort_directories_first,
-							      (model->details->order == GTK_SORT_DESCENDING));
+		result = nautilus_file_compare_for_sort_by_attribute_q (file_entry1->file, file_entry2->file,
+									model->details->sort_attribute,
+									model->details->sort_directories_first,
+									(model->details->order == GTK_SORT_DESCENDING));
 	} else if (file_entry1->file == NULL) {
 		return -1;
 	} else {
@@ -662,10 +665,10 @@ fm_list_model_compare_func (FMListModel *model,
 {
 	int result;
 
-	result = nautilus_file_compare_for_sort_by_attribute (file1, file2,
-							      model->details->sort_attribute,
-							      model->details->sort_directories_first,
-							      (model->details->order == GTK_SORT_DESCENDING));
+	result = nautilus_file_compare_for_sort_by_attribute_q (file1, file2,
+								model->details->sort_attribute,
+								model->details->sort_directories_first,
+								(model->details->order == GTK_SORT_DESCENDING));
 
 	return result;
 }
@@ -778,7 +781,6 @@ fm_list_model_set_sort_column_id (GtkTreeSortable *sortable, gint sort_column_id
 
 	model = (FMListModel *)sortable;
 
-	g_free (model->details->sort_attribute);
 	model->details->sort_attribute = fm_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
 
 	model->details->order = order;
@@ -1309,57 +1311,55 @@ fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean so
 
 int
 fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
-						 const char *attribute)
+						 GQuark attribute)
 {
 	guint i;
 
-	if (attribute == NULL) {
+	if (attribute == 0) {
 		return -1;
 	}
 
 	/* Hack - the preferences dialog sets modification_date for some 
 	 * rather than date_modified for some reason.  Make sure that 
 	 * works. */
-	if (!strcmp (attribute, "modification_date")) {
-		attribute = "date_modified";
+	if (attribute == attribute_modification_date_q) {
+		attribute = attribute_date_modified_q;
 	}
 
 	for (i = 0; i < model->details->columns->len; i++) {
 		NautilusColumn *column;
-		char *column_attribute;
+		GQuark column_attribute;
 		
 		column = 
 			NAUTILUS_COLUMN (model->details->columns->pdata[i]);
 		g_object_get (G_OBJECT (column), 
-			      "attribute", &column_attribute, 
+			      "attribute_q", &column_attribute, 
 			      NULL);
-		if (!strcmp (column_attribute, attribute)) {
-			g_free (column_attribute);
+		if (column_attribute == attribute) {
 			return FM_LIST_MODEL_NUM_COLUMNS + i;
 		}
-		g_free (column_attribute);
 	}
 	
 	return -1;
 }
 
-char *
+GQuark
 fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
 						 int sort_column_id)
 {
 	NautilusColumn *column;
 	int index;
-	char *attribute;
+	GQuark attribute;
 	
 	index = sort_column_id - FM_LIST_MODEL_NUM_COLUMNS;
 
 	if (index < 0 || index >= model->details->columns->len) {
 		g_warning ("unknown sort column id: %d", sort_column_id);
-		return NULL;
+		return 0;
 	}
 
 	column = NAUTILUS_COLUMN (model->details->columns->pdata[index]);
-	g_object_get (G_OBJECT (column), "attribute", &attribute, NULL);
+	g_object_get (G_OBJECT (column), "attribute_q", &attribute, NULL);
 
 	return attribute;
 }
@@ -1553,7 +1553,6 @@ fm_list_model_finalize (GObject *object)
 
 	model = FM_LIST_MODEL (object);
 
-	g_free (model->details->sort_attribute);
 	g_free (model->details);
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -1567,7 +1566,7 @@ fm_list_model_init (FMListModel *model)
 	model->details->top_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	model->details->directory_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	model->details->stamp = g_random_int ();
-	model->details->sort_attribute = NULL;
+	model->details->sort_attribute = 0;
 	model->details->columns = g_ptr_array_new ();
 }
 
@@ -1576,6 +1575,10 @@ fm_list_model_class_init (FMListModelClass *klass)
 {
 	GObjectClass *object_class;
 
+	attribute_name_q = g_quark_from_static_string ("name");
+	attribute_modification_date_q = g_quark_from_static_string ("modification_date");
+	attribute_date_modified_q = g_quark_from_static_string ("date_modified");
+	
 	object_class = (GObjectClass *)klass;
 	parent_class = g_type_class_peek_parent (klass);
 

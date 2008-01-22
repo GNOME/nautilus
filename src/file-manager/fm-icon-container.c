@@ -41,6 +41,8 @@ GNOME_CLASS_BOILERPLATE (FMIconContainer, fm_icon_container,
 			 NautilusIconContainer,
 			 nautilus_icon_container_get_type ())
 
+static GQuark attribute_none_q;
+
 static FMIconView *
 get_icon_view (NautilusIconContainer *container)
 {
@@ -176,20 +178,41 @@ fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
 	}
 }
 
+static void
+update_captions (GQuark **attributes_p)
+{
+	char **attribute_names;
+	int i;
+
+	attribute_names = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+
+	g_free (*attributes_p);
+	*attributes_p = g_new (GQuark, g_strv_length (attribute_names) + 1);
+
+	for (i = 0; attribute_names[i] != NULL; ++i) {
+		(*attributes_p)[i] = g_quark_from_string (attribute_names[i]);
+	}
+	(*attributes_p)[i] = 0;
+	
+	g_strfreev (attribute_names);
+}
+
 /*
  * Get the preference for which caption text should appear
  * beneath icons.
  */
-static char **
+static GQuark *
 fm_icon_container_get_icon_text_attributes_from_preferences (void)
 {
-	static char **attributes;
+	static GQuark *attributes = NULL;
 
 	if (attributes == NULL) {
-		eel_preferences_add_auto_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-						       &attributes);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+					      (EelPreferencesCallback)update_captions,
+					      &attributes);
+		update_captions (&attributes);
 	}
-
+	
 	/* We don't need to sanity check the attributes list even though it came
 	 * from preferences.
 	 *
@@ -219,6 +242,17 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 	return attributes;
 }
 
+static int
+quarkv_length (GQuark *attributes)
+{
+	int i;
+	i = 0;
+	while (attributes[i] != 0) {
+		i++;
+	}
+	return i;
+}
+
 /**
  * fm_icon_view_get_icon_text_attribute_names:
  *
@@ -228,11 +262,11 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
  * @view: FMIconView to query.
  * 
  **/
-static char **
+static GQuark *
 fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *container,
 						 int *len)
 {
-	char **attributes;
+	GQuark *attributes;
 	int piece_count;
 
 	const int pieces_by_level[] = {
@@ -249,7 +283,7 @@ fm_icon_container_get_icon_text_attribute_names (NautilusIconContainer *containe
 
 	attributes = fm_icon_container_get_icon_text_attributes_from_preferences ();
 
-	*len = MIN (piece_count, g_strv_length (attributes));
+	*len = MIN (piece_count, quarkv_length (attributes));
 
 	return attributes;
 }
@@ -265,7 +299,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 {
 	char *actual_uri;
 	gchar *description;
-	char **attribute_names;
+	GQuark *attributes;
 	char *text_array[4];
 	int i, j, num_attributes;
 	FMIconView *icon_view;
@@ -312,27 +346,33 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	}
 
 	/* Find out what attributes go below each icon. */
-	attribute_names = fm_icon_container_get_icon_text_attribute_names (container,
+	attributes = fm_icon_container_get_icon_text_attribute_names (container,
 									   &num_attributes);
 
 	/* Get the attributes. */
 	j = 0;
-	for (i = 0; i < num_attributes; ++i)
-	{
-		if (strcmp (attribute_names[i], "none") == 0) {
+	for (i = 0; i < num_attributes; ++i) {
+		if (attributes[i] == attribute_none_q) {
 			continue;
 		}
 
 		text_array[j++] =
-			nautilus_file_get_string_attribute_with_default (file, attribute_names[i]);
+			nautilus_file_get_string_attribute_with_default_q (file, attributes[i]);
 	}
 	text_array[j] = NULL;
 
 	/* Return them. */
-	*additional_text = g_strjoinv ("\n", text_array);
-
-	for (i = 0; i < j; i++) {
-		g_free (text_array[i]);
+	if (j == 0) {
+		*additional_text = NULL;
+	} else if (j == 1) {
+		/* Only one item, avoid the strdup + free */
+		*additional_text = text_array[0];
+	} else {
+		*additional_text = g_strjoinv ("\n", text_array);
+		
+		for (i = 0; i < j; i++) {
+			g_free (text_array[i]);
+		}
 	}
 }
 
@@ -494,6 +534,8 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	ic_class = &klass->parent_class;
 
+	attribute_none_q = g_quark_from_static_string ("none");
+	
 	ic_class->get_icon_text = fm_icon_container_get_icon_text;
 	ic_class->get_icon_images = fm_icon_container_get_icon_images;
 	ic_class->get_icon_description = fm_icon_container_get_icon_description;

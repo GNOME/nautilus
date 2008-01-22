@@ -99,9 +99,8 @@ void     fm_list_model_set_should_sort_directories_first (FMListModel          *
 							  gboolean              sort_directories_first);
 
 int      fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
-
-							  const char           *attribute);
-char    *fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
+							  GQuark       attribute);
+GQuark   fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
 							  int sort_column_id);
 void     fm_list_model_sort_files                        (FMListModel *model,
 							  GList **files);

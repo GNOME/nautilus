@@ -5128,10 +5128,6 @@ char *
 nautilus_file_get_string_attribute_q (NautilusFile *file, GQuark attribute_q)
 {
 	char *extension_attribute;
-	
-	/* FIXME bugzilla.gnome.org 40646: 
-	 * Use hash table and switch statement or function pointers for speed? 
-	 */
 
 	if (attribute_q == attribute_name_q) {
 		return nautilus_file_get_display_name (file);
