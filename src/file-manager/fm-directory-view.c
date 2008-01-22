@@ -6214,7 +6214,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Create _Folder"), "<control><shift>N",                /* label, accelerator */
     N_("Create a new empty folder inside this folder"),                   /* tooltip */ 
     G_CALLBACK (action_new_folder_callback) },
-  { "No Templates", NULL, N_("No templates Installed") },               /* name, stock id, label */
+  { "No Templates", NULL, N_("No templates installed") },               /* name, stock id, label */
   { "New Empty File", NULL,                  /* name, stock id */
     /* translators: this is used to indicate that a file doesn't contain anything */
     N_("_Empty File"), NULL,                /* label, accelerator */

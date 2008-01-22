@@ -108,6 +108,8 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 
 	args = NULL;
+	/* Translators: This is the --help description gor the connect to server app,
+	   the initial newlines are between the command line arg and the description */
 	context = g_option_context_new (N_("\n\nAdd connect to server mount"));
 	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
 

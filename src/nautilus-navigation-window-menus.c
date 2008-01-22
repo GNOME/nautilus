@@ -111,6 +111,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 		 * implemented this feature so I could use this joke. 
 		 */
 		prompt = _("Are you sure you want to forget history?");
+		/* Translators: This is part of a joke and is paired with "Are you sure you want to forget history?" */
 		detail = _("If you do, you will be doomed to repeat it.");
 	} else {
 		prompt = _("Are you sure you want to clear the list "

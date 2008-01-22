@@ -1880,7 +1880,7 @@ prompt_empty_trash (GtkWindow *parent_window)
 						    "free space on this volume "
 						    "the trash must be emptied. "
 						    "All trashed items on the volume "
-						    "will be permanently lost. "));
+						    "will be permanently lost."));
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
 	                        _("Don't Empty Trash"), GTK_RESPONSE_REJECT, 
 	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
@@ -4051,7 +4051,7 @@ report_link_progress (CopyMoveJob *link_job, int total, int left)
 	job = (CommonJob *)link_job;
 	
 	nautilus_progress_info_take_status (job->progress,
-					    f (_("Creating links in to \"%B\""),
+					    f (_("Creating links in \"%B\""),
 					       link_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,

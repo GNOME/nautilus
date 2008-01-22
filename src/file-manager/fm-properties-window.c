@@ -2810,7 +2810,7 @@ create_pie_widget (FMPropertiesWindow *window)
 	/* Translators: "free" refers to the capacity of the filesystem */
 	free_label = gtk_label_new (g_strconcat (free, " ", _("free"), NULL));  
 
-	capacity_label = gtk_label_new (g_strconcat (_("Total capacity: "), capacity, NULL));
+	capacity_label = gtk_label_new (g_strconcat (_("Total capacity:"), " ", capacity, NULL));
 	fstype_label = gtk_label_new (NULL);
 
 	location = g_file_new_for_uri (uri);
@@ -2819,7 +2819,7 @@ create_pie_widget (FMPropertiesWindow *window)
 	if (info) {
 		fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 		if (fs_type != NULL) {
-			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesystem type: "), fs_type, NULL));
+			gtk_label_set_text (GTK_LABEL (fstype_label), g_strconcat (_("Filesystem type:"), " ", fs_type, NULL));
 		}
 		
 		g_object_unref (info);
@@ -2948,7 +2948,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_value_pair (window,
 					 table, _("Type:"), 
 					 "type",
-					 _("--"),
+					 "--",
 					 FALSE);
 	}
 
@@ -2958,24 +2958,24 @@ create_basic_page (FMPropertiesWindow *window)
 	} else {
 		append_title_value_pair (window, table, _("Size:"), 
 					 "size_detail",
-					 _("--"),
+					 "--",
 					 FALSE);
 	}
 
 	append_title_and_ellipsizing_value (window, table, _("Location:"), 
 					    "where",
-					    _("--"),
+					    "--",
 					    TRUE);
 	
 	append_title_and_ellipsizing_value (window, table, 
 					    _("Volume:"), 
 					    "volume",
-					    _("--"),
+					    "--",
 					    FALSE);
 	if (should_show_free_space (window)) {
 		append_title_value_pair (window, table, _("Free space:"), 
 					 "free_space",
-					 _("--"),
+					 "--",
 					 FALSE);
 	}
 
@@ -2983,13 +2983,13 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_and_ellipsizing_value (window, table, 
 						    _("Link target:"), 
 						    "link_target",
-						    _("--"),
+						    "--",
 						    FALSE);
 	}
 	if (should_show_mime_type (window)) {
 		append_title_value_pair (window, table, _("MIME type:"), 
 					 "mime_type",
-					 _("--"),
+					 "--",
 					 FALSE);
 	}				  
 	
@@ -2998,13 +2998,13 @@ create_basic_page (FMPropertiesWindow *window)
 	
 	append_title_value_pair (window, table, _("Modified:"), 
 				 "date_modified",
-				 _("--"),
+				 "--",
 				 FALSE);
 	
 	if (should_show_accessed_date (window)) {
 		append_title_value_pair (window, table, _("Accessed:"), 
 					 "date_accessed",
-					 _("--"),
+					 "--",
 					 FALSE);
 	}
 	
@@ -4054,7 +4054,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
-				    _("--"),
+				    "--",
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
@@ -4087,7 +4087,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, page_table, last_row, 
 				    VALUE_COLUMN, 
 				    "group",
-				    _("--"),
+				    "--",
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (group_label, value);
 	}
@@ -4260,7 +4260,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
-				    _("--"),
+				    "--",
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
@@ -4282,7 +4282,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		attach_value_field (window, page_table, last_row, 
 				    VALUE_COLUMN, 
 				    "group",
-				    _("--"),
+				    "--",
 				    FALSE); 
 	}
 
@@ -4317,7 +4317,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	
 	append_title_value_pair
 		(window, page_table, _("Text view:"), 
-		 "permissions", _("--"),
+		 "permissions", "--",
 		 FALSE);
 }
 
@@ -4487,11 +4487,11 @@ create_permissions_page (FMPropertiesWindow *window)
 	
 		append_title_value_pair
 			(window, page_table, _("SELinux context:"), 
-			 "selinux_context", _("--"),
+			 "selinux_context", "--",
 			 FALSE);
 		append_title_value_pair
 			(window, page_table, _("Last changed:"), 
-			 "date_permissions", _("--"),
+			 "date_permissions", "--",
 			 FALSE);
 	
 		if (window->details->has_recursive_apply) {
