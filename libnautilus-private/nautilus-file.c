@@ -118,6 +118,34 @@ static GObjectClass *parent_class = NULL;
 
 static GHashTable *symbolic_links;
 
+static GQuark attribute_name_q,
+	attribute_size_q,
+	attribute_type_q,
+	attribute_modification_date_q,
+	attribute_date_modified_q,
+	attribute_accessed_date_q,
+	attribute_date_accessed_q,
+	attribute_emblems_q,
+	attribute_mime_type_q,
+	attribute_size_detail_q,
+	attribute_deep_size_q,
+	attribute_deep_file_count_q,
+	attribute_deep_directory_count_q,
+	attribute_deep_total_count_q,
+	attribute_date_changed_q,
+	attribute_date_permissions_q,
+	attribute_permissions_q,
+	attribute_selinux_context_q,
+	attribute_octal_permissions_q,
+	attribute_owner_q,
+	attribute_group_q,
+	attribute_uri_q,
+	attribute_where_q,
+	attribute_link_target_q,
+	attribute_volume_q,
+	attribute_free_space_q;
+
+
 static void     nautilus_file_instance_init                  (NautilusFile          *file);
 static void     nautilus_file_class_init                     (NautilusFileClass     *class);
 static void     nautilus_file_info_iface_init                (NautilusFileInfoIface *iface);
@@ -2538,9 +2566,9 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 }
 
 int
-nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
+nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   *file_1,
 						 NautilusFile                   *file_2,
-						 const char                     *attribute,
+						 GQuark                          attribute,
 						 gboolean                        directories_first,
 						 gboolean                        reversed)
 {
@@ -2553,32 +2581,32 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 	/* Convert certain attributes into NautilusFileSortTypes and use
 	 * nautilus_file_compare_for_sort()
 	 */
-	if (attribute == NULL || !strcmp (attribute, "name")) {
+	if (attribute == 0 || attribute == attribute_name_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 						       directories_first,
 						       reversed);
-	} else if (!strcmp (attribute, "size")) {
+	} else if (attribute == attribute_size_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_SIZE,
 						       directories_first,
 						       reversed);
-	} else if (!strcmp (attribute, "type")) {
+	} else if (attribute == attribute_type_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_TYPE,
 						       directories_first,
 						       reversed);
-	} else if (!strcmp (attribute, "modification_date") || !strcmp (attribute, "date_modified")) {
+	} else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_MTIME,
 						       directories_first,
 						       reversed);
-        } else if (!strcmp (attribute, "accessed_date") || !strcmp (attribute, "date_accessed")) {
+        } else if (attribute == attribute_accessed_date_q || attribute == attribute_date_accessed_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_ATIME,
 						       directories_first,
 						       reversed);
-	} else if (!strcmp (attribute, "emblems")) {
+	} else if (attribute == attribute_emblems_q) {
 		return nautilus_file_compare_for_sort (file_1, file_2,
 						       NAUTILUS_FILE_SORT_BY_EMBLEMS,
 						       directories_first,
@@ -2593,10 +2621,10 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 		char *value_1;
 		char *value_2;
 		
-		value_1 = nautilus_file_get_string_attribute (file_1, 
-							      attribute);
-		value_2 = nautilus_file_get_string_attribute (file_2, 
-							      attribute);
+		value_1 = nautilus_file_get_string_attribute_q (file_1, 
+								attribute);
+		value_2 = nautilus_file_get_string_attribute_q (file_2, 
+								attribute);
 
 		if (value_1 != NULL && value_2 != NULL) {
 			result = strcmp (value_1, value_2);
@@ -2612,6 +2640,20 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 	
 	return result;
 }
+
+int
+nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
+						 NautilusFile                   *file_2,
+						 const char                     *attribute,
+						 gboolean                        directories_first,
+						 gboolean                        reversed)
+{
+	return nautilus_file_compare_for_sort_by_attribute_q (file_1, file_2,
+							      g_quark_from_string (attribute),
+							      directories_first,
+							      reversed);
+}
+
 
 /**
  * nautilus_file_compare_name:
@@ -5083,7 +5125,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * 
  **/
 char *
-nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
+nautilus_file_get_string_attribute_q (NautilusFile *file, GQuark attribute_q)
 {
 	char *extension_attribute;
 	
@@ -5091,92 +5133,101 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
 
-	if (strcmp (attribute_name, "name") == 0) {
+	if (attribute_q == attribute_name_q) {
 		return nautilus_file_get_display_name (file);
 	}
-	if (strcmp (attribute_name, "type") == 0) {
+	if (attribute_q == attribute_type_q) {
 		return nautilus_file_get_type_as_string (file);
 	}
-	if (strcmp (attribute_name, "mime_type") == 0) {
+	if (attribute_q == attribute_mime_type_q) {
 		return nautilus_file_get_mime_type (file);
 	}
-	if (strcmp (attribute_name, "size") == 0) {
+	if (attribute_q == attribute_size_q) {
 		return nautilus_file_get_size_as_string (file);
 	}
-	if (strcmp (attribute_name, "size_detail") == 0) {
+	if (attribute_q == attribute_size_detail_q) {
 		return nautilus_file_get_size_as_string_with_real_size (file);
 	}
-	if (strcmp (attribute_name, "deep_size") == 0) {
+	if (attribute_q == attribute_deep_size_q) {
 		return nautilus_file_get_deep_size_as_string (file);
 	}
-	if (strcmp (attribute_name, "deep_file_count") == 0) {
+	if (attribute_q == attribute_deep_file_count_q) {
 		return nautilus_file_get_deep_file_count_as_string (file);
 	}
-	if (strcmp (attribute_name, "deep_directory_count") == 0) {
+	if (attribute_q == attribute_deep_directory_count_q) {
 		return nautilus_file_get_deep_directory_count_as_string (file);
 	}
-	if (strcmp (attribute_name, "deep_total_count") == 0) {
+	if (attribute_q == attribute_deep_total_count_q) {
 		return nautilus_file_get_deep_total_count_as_string (file);
 	}
-	if (strcmp (attribute_name, "date_modified") == 0) {
+	if (attribute_q == attribute_date_modified_q) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED);
 	}
-	if (strcmp (attribute_name, "date_changed") == 0) {
+	if (attribute_q == attribute_date_changed_q) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_CHANGED);
 	}
-	if (strcmp (attribute_name, "date_accessed") == 0) {
+	if (attribute_q == attribute_date_accessed_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED);
 	}
-	if (strcmp (attribute_name, "date_permissions") == 0) {
+	if (attribute_q == attribute_date_permissions_q) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED);
 	}
-	if (strcmp (attribute_name, "permissions") == 0) {
+	if (attribute_q == attribute_permissions_q) {
 		return nautilus_file_get_permissions_as_string (file);
 	}
-	if (strcmp (attribute_name, "selinux_context") == 0) {
+	if (attribute_q == attribute_selinux_context_q) {
 		return nautilus_file_get_selinux_context (file);
 	}
-	if (strcmp (attribute_name, "octal_permissions") == 0) {
+	if (attribute_q == attribute_octal_permissions_q) {
 		return nautilus_file_get_octal_permissions_as_string (file);
 	}
-	if (strcmp (attribute_name, "owner") == 0) {
+	if (attribute_q == attribute_owner_q) {
 		return nautilus_file_get_owner_as_string (file, TRUE);
 	}
-	if (strcmp (attribute_name, "group") == 0) {
+	if (attribute_q == attribute_group_q) {
 		return nautilus_file_get_group_name (file);
 	}
-	if (strcmp (attribute_name, "uri") == 0) {
+	if (attribute_q == attribute_uri_q) {
 		return nautilus_file_get_uri (file);
 	}
-	if (strcmp (attribute_name, "where") == 0) {
+	if (attribute_q == attribute_where_q) {
 		return nautilus_file_get_where_string (file);
 	}
-	if (strcmp (attribute_name, "link_target") == 0) {
+	if (attribute_q == attribute_link_target_q) {
 		return nautilus_file_get_symbolic_link_target_path (file);
 	}
-	if (strcmp (attribute_name, "volume") == 0) {
+	if (attribute_q == attribute_volume_q) {
 		return nautilus_file_get_volume_name (file);
 	}
-	if (strcmp (attribute_name, "free_space") == 0) {
+	if (attribute_q == attribute_free_space_q) {
 		return nautilus_file_get_volume_free_space (file);
 	}
 
 	extension_attribute = NULL;
 	
 	if (file->details->pending_extension_attributes) {
-		extension_attribute = g_hash_table_lookup (file->details->pending_extension_attributes, attribute_name);
+		extension_attribute = g_hash_table_lookup (file->details->pending_extension_attributes,
+							   GINT_TO_POINTER (attribute_q));
 	} 
 
 	if (extension_attribute == NULL && file->details->extension_attributes) {
-		extension_attribute = g_hash_table_lookup (file->details->extension_attributes, attribute_name);
+		extension_attribute = g_hash_table_lookup (file->details->extension_attributes,
+							   GINT_TO_POINTER (attribute_q));
 	}
 		
 	return g_strdup (extension_attribute);
 }
+
+char *
+nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
+{
+	return nautilus_file_get_string_attribute_q (file, g_quark_from_string (attribute_name));
+}
+
 
 /**
  * nautilus_file_get_string_attribute_with_default:
@@ -5196,14 +5247,14 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
  * 
  **/
 char *
-nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char *attribute_name)
+nautilus_file_get_string_attribute_with_default_q (NautilusFile *file, GQuark attribute_q)
 {
 	char *result;
 	guint item_count;
 	gboolean count_unreadable;
 	NautilusRequestStatus status;
 
-	result = nautilus_file_get_string_attribute (file, attribute_name);
+	result = nautilus_file_get_string_attribute_q (file, attribute_q);
 	if (result != NULL) {
 		return result;
 	}
@@ -5212,7 +5263,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	/* FIXME bugzilla.gnome.org 40646: 
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
-	if (strcmp (attribute_name, "size") == 0) {
+	if (attribute_q == attribute_size_q) {
 		if (!nautilus_file_should_show_directory_item_count (file)) {
 			return g_strdup ("--");
 		}
@@ -5222,7 +5273,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		}
 		return g_strdup (count_unreadable ? _("? items") : "...");
 	}
-	if (strcmp (attribute_name, "deep_size") == 0) {
+	if (attribute_q == attribute_deep_size_q) {
 		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
@@ -5230,9 +5281,9 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		}
 		return g_strdup ("...");
 	}
-	if (strcmp (attribute_name, "deep_file_count") == 0
-	    || strcmp (attribute_name, "deep_directory_count") == 0
-	    || strcmp (attribute_name, "deep_total_count") == 0) {
+	if (attribute_q == attribute_deep_file_count_q
+	    || attribute_q == attribute_deep_directory_count_q
+	    || attribute_q == attribute_deep_total_count_q) {
 		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
 		if (status == NAUTILUS_REQUEST_DONE) {
 			/* This means no contents at all were readable */
@@ -5240,10 +5291,10 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 		}
 		return g_strdup ("...");
 	}
-	if (strcmp (attribute_name, "type") == 0) {
+	if (attribute_q == attribute_type_q) {
 		return g_strdup (_("unknown type"));
 	}
-	if (strcmp (attribute_name, "mime_type") == 0) {
+	if (attribute_q == attribute_mime_type_q) {
 		return g_strdup (_("unknown MIME type"));
 	}
 	
@@ -5251,6 +5302,12 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	 * for which we have no more appropriate default.
 	 */
 	return g_strdup (_("unknown"));
+}
+
+char *
+nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char *attribute_name)
+{
+	return nautilus_file_get_string_attribute_with_default_q (file, g_quark_from_string (attribute_name));
 }
 
 /**
@@ -6771,6 +6828,33 @@ nautilus_file_class_init (NautilusFileClass *class)
 	
 	parent_class = g_type_class_peek_parent (class);
 
+	attribute_name_q = g_quark_from_static_string ("name");
+	attribute_size_q = g_quark_from_static_string ("size");
+	attribute_type_q = g_quark_from_static_string ("type");
+	attribute_modification_date_q = g_quark_from_static_string ("modification_date");
+	attribute_date_modified_q = g_quark_from_static_string ("date_modified");
+	attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
+	attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
+	attribute_emblems_q = g_quark_from_static_string ("emblems");
+	attribute_mime_type_q = g_quark_from_static_string ("mime_type");
+	attribute_size_detail_q = g_quark_from_static_string ("size_detail");
+	attribute_deep_size_q = g_quark_from_static_string ("deep_size");
+	attribute_deep_file_count_q = g_quark_from_static_string ("deep_file_count");
+	attribute_deep_directory_count_q = g_quark_from_static_string ("deep_directory_count");
+	attribute_deep_total_count_q = g_quark_from_static_string ("deep_total_count");
+	attribute_date_changed_q = g_quark_from_static_string ("date_changed");
+	attribute_date_permissions_q = g_quark_from_static_string ("date_permissions");
+	attribute_permissions_q = g_quark_from_static_string ("permissions");
+	attribute_selinux_context_q = g_quark_from_static_string ("selinux_context");
+	attribute_octal_permissions_q = g_quark_from_static_string ("octal_permissions");
+	attribute_owner_q = g_quark_from_static_string ("owner");
+	attribute_group_q = g_quark_from_static_string ("group");
+	attribute_uri_q = g_quark_from_static_string ("uri");
+	attribute_where_q = g_quark_from_static_string ("where");
+	attribute_link_target_q = g_quark_from_static_string ("link_target");
+	attribute_volume_q = g_quark_from_static_string ("volume");
+	attribute_free_space_q = g_quark_from_static_string ("free_space");
+	
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
 
@@ -6847,22 +6931,22 @@ nautilus_file_add_string_attribute (NautilusFile *file,
 		/* Lazily create hashtable */
 		if (!file->details->pending_extension_attributes) {
 			file->details->pending_extension_attributes = 
-				g_hash_table_new_full (g_str_hash, g_str_equal,
+				g_hash_table_new_full (g_direct_hash, g_direct_equal,
 						       NULL, 
 						       (GDestroyNotify)g_free);
 		}
 		g_hash_table_insert (file->details->pending_extension_attributes,
-				     (char *)g_intern_string (attribute_name),
+				     GINT_TO_POINTER (g_quark_from_string (attribute_name)),
 				     g_strdup (value));
 	} else {
 		if (!file->details->extension_attributes) {
 			file->details->extension_attributes = 
-				g_hash_table_new_full (g_str_hash, g_str_equal,
+				g_hash_table_new_full (g_direct_hash, g_direct_equal,
 						       NULL, 
 						       (GDestroyNotify)g_free);
 		}
 		g_hash_table_insert (file->details->extension_attributes,
-				     (char *)g_intern_string (attribute_name),
+				     GINT_TO_POINTER (g_quark_from_string (attribute_name)),
 				     g_strdup (value));
 	}
 

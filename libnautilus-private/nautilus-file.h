@@ -324,8 +324,12 @@ void                    nautilus_file_set_integer_metadata              (Nautilu
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute              (NautilusFile                   *file,
 									 const char                     *attribute_name);
+char *                  nautilus_file_get_string_attribute_q            (NautilusFile                   *file,
+									 GQuark                          attribute_q);
 char *                  nautilus_file_get_string_attribute_with_default (NautilusFile                   *file,
 									 const char                     *attribute_name);
+char *                  nautilus_file_get_string_attribute_with_default_q (NautilusFile                  *file,
+									 GQuark                          attribute_q);
 char *			nautilus_file_fit_modified_date_as_string	(NautilusFile 			*file,
 									 int				 width,
 									 NautilusWidthMeasureCallback    measure_callback,
@@ -348,6 +352,11 @@ int                     nautilus_file_compare_for_sort                  (Nautilu
 int                     nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
 									 NautilusFile                   *file_2,
 									 const char                     *attribute,
+									 gboolean                        directories_first,
+									 gboolean                        reversed);
+int                     nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   *file_1,
+									 NautilusFile                   *file_2,
+									 GQuark                          attribute,
 									 gboolean                        directories_first,
 									 gboolean                        reversed);
 int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
