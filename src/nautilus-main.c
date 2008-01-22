@@ -568,6 +568,8 @@ main (int argc, char *argv[])
 		gtk_main ();
 	}
 
+	nautilus_icon_info_clear_caches ();
+	
  	eel_debug_shut_down ();
 
 	if (application != NULL) {

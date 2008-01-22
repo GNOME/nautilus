@@ -1,5 +1,11 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-main.c:
+        (main):
+	Clear caches on shutdown to help track leaks.
+
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file.c:
         (get_description):
         (update_description_for_link):
