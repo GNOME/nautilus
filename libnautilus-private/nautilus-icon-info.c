@@ -437,11 +437,13 @@ nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo  *icon)
 		res = NULL;
 	} else {
 		res = g_object_ref (icon->pixbuf);
-		icon->sole_owner = FALSE;
-		
-		g_object_add_toggle_ref (G_OBJECT (res),
-					 pixbuf_toggle_notify,
-					 icon);
+
+		if (icon->sole_owner) {
+			icon->sole_owner = FALSE;
+			g_object_add_toggle_ref (G_OBJECT (res),
+						 pixbuf_toggle_notify,
+						 icon);
+		}
 	}
 	
 	return res;

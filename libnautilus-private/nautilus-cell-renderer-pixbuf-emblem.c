@@ -263,9 +263,9 @@ nautilus_cell_renderer_pixbuf_emblem_get_property (GObject        *object,
                                                                                                                                                                        
 static void
 nautilus_cell_renderer_pixbuf_emblem_set_property (GObject      *object,
-                                            guint         param_id,
-                                            const GValue *value,
-                                            GParamSpec   *pspec)
+						   guint         param_id,
+						   const GValue *value,
+						   GParamSpec   *pspec)
 {
 	GdkPixbuf *pixbuf;
 	NautilusCellRendererPixbufEmblem *cellpixbuf = NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM (object);
@@ -343,7 +343,7 @@ nautilus_cell_renderer_pixbuf_emblem_new (void)
 
 static void
 nautilus_cell_renderer_pixbuf_emblem_create_stock_pixbuf (NautilusCellRendererPixbufEmblem *cellpixbuf,
-					      GtkWidget             *widget)
+							  GtkWidget             *widget)
 {
 	NautilusCellRendererPixbufEmblemInfo *cellinfo = g_object_get_data (G_OBJECT (cellpixbuf), CELLINFO_KEY);
 

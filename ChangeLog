@@ -1,5 +1,18 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-bookmark.c:
+        (nautilus_bookmark_get_pixbuf):
+	Don't leak icon
+	
+        * libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.c:
+	Indentation fixups
+	
+        * libnautilus-private/nautilus-icon-info.c:
+        (nautilus_icon_info_get_pixbuf_nodefault):
+	Only set toggle ref first time we get a pixbuf request.
+	
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-main.c:
         (main):
 	Clear caches on shutdown to help track leaks.

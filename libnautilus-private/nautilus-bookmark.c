@@ -240,6 +240,8 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	info = nautilus_icon_info_lookup (icon, pixel_size);
 	result = nautilus_icon_info_get_pixbuf_at_size (info, pixel_size);	
 	g_object_unref (info);
+
+	g_object_unref (icon);
 	
 	return result;
 }
