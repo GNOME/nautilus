@@ -4839,9 +4839,9 @@ format_item_count_for_display (guint item_count,
 
 	return g_strdup_printf (includes_directories
 			? (includes_files 
-			   ? ngettext ("%u item", "%u items", item_count) 
-			   : ngettext ("%u folder", "%u folders", item_count))
-			: ngettext ("%u file", "%u files", item_count), item_count);
+			   ? ngettext ("%'u item", "%'u items", item_count) 
+			   : ngettext ("%'u folder", "%'u folders", item_count))
+			: ngettext ("%'u file", "%'u files", item_count), item_count);
 }
 
 /**

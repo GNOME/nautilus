@@ -609,8 +609,8 @@ fm_directory_view_confirm_multiple_windows (GtkWindow *parent_window, int count)
 	}
 
 	prompt = _("Are you sure you want to open all files?");
-	detail = g_strdup_printf (ngettext("This will open %d separate window.",
-					   "This will open %d separate windows.", count), count);
+	detail = g_strdup_printf (ngettext("This will open %'d separate window.",
+					   "This will open %'d separate windows.", count), count);
 	dialog = eel_show_yes_no_dialog (prompt, detail, 
 					 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 					 parent_window);
@@ -634,7 +634,7 @@ selection_contains_one_item_in_menu_callback (FMDirectoryView *view, GList *sele
 	 * Otherwise, we will complain.
 	 */
 	if (!view->details->menu_states_untrustworthy) {
-		g_warning ("Expected one selected item, found %d. No action will be performed.", 	
+		g_warning ("Expected one selected item, found %'d. No action will be performed.", 	
 			   g_list_length (selection));
 	}
 
@@ -2029,8 +2029,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		if (folder_count == 1 && non_folder_count == 0) {
 			folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
 		} else {
-			folder_count_str = g_strdup_printf (ngettext("%d folder selected", 
-								     "%d folders selected", 
+			folder_count_str = g_strdup_printf (ngettext("%'d folder selected", 
+								     "%'d folders selected", 
 								     folder_count), 
 							    folder_count);
 		}
@@ -2039,8 +2039,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 			if (!folder_item_count_known) {
 				folder_item_count_str = g_strdup ("");
 			} else {
-				folder_item_count_str = g_strdup_printf (ngettext(" (containing %d item)",
-										  " (containing %d items)",
+				folder_item_count_str = g_strdup_printf (ngettext(" (containing %'d item)",
+										  " (containing %'d items)",
 										  folder_item_count), 
 									 folder_item_count);
 			}
@@ -2050,8 +2050,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 				folder_item_count_str = g_strdup ("");
 			} else {
 				/* translators: this is preceded with a string of form 'N folders' (N more than 1) */
-				folder_item_count_str = g_strdup_printf (ngettext(" (containing a total of %d item)",
-										  " (containing a total of %d items)",
+				folder_item_count_str = g_strdup_printf (ngettext(" (containing a total of %'d item)",
+										  " (containing a total of %'d items)",
 										  folder_item_count), 
 									 folder_item_count);
 			}
@@ -2067,15 +2067,15 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 				items_string = g_strdup_printf (_("\"%s\" selected"), 
 								  first_item_name);
 			} else {
-				items_string = g_strdup_printf (ngettext("%d item selected",
-									   "%d items selected",
+				items_string = g_strdup_printf (ngettext("%'d item selected",
+									   "%'d items selected",
 									   non_folder_count), 
 								  non_folder_count);
 			}
 		} else {
 			/* Folders selected also, use "other" terminology */
-			items_string = g_strdup_printf (ngettext("%d other item selected",
-								   "%d other items selected",
+			items_string = g_strdup_printf (ngettext("%'d other item selected",
+								   "%'d other items selected",
 								   non_folder_count), 
 							  non_folder_count);
 		}
@@ -2107,7 +2107,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 
 		item_count = fm_directory_view_get_item_count (view);
 		
-		item_count_str = g_strdup_printf (ngettext ("%u item", "%u items", item_count), item_count);
+		item_count_str = g_strdup_printf (ngettext ("%'u item", "%'u items", item_count), item_count);
 
 		free_space_str = nautilus_file_get_volume_free_space (view->details->directory_as_file);
 		if (free_space_str != NULL) {
@@ -5525,16 +5525,16 @@ copy_or_cut_files (FMDirectoryView *view,
 		g_free (name);
 	} else {
 		if (cut) {
-			status_string = g_strdup_printf (ngettext("The %d selected item will be moved "
+			status_string = g_strdup_printf (ngettext("The %'d selected item will be moved "
 								  "if you select the Paste command",
-								  "The %d selected items will be moved "
+								  "The %'d selected items will be moved "
 								  "if you select the Paste command",
 								  count),
 							 count);
 		} else {
-			status_string = g_strdup_printf (ngettext("The %d selected item will be copied "
+			status_string = g_strdup_printf (ngettext("The %'d selected item will be copied "
 								  "if you select the Paste command",
-								  "The %d selected items will be copied "
+								  "The %'d selected items will be copied "
 								  "if you select the Paste command",
 								  count),
 							 count);
@@ -7066,8 +7066,8 @@ real_update_menus (FMDirectoryView *view)
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Open in New Window"));
 			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Open in %d New Window",
-										  "Open in %d New Windows",
+				label_with_underscore = g_strdup_printf (ngettext("Open in %'d New Window",
+										  "Open in %'d New Windows",
 										  selection_count), 
 									 selection_count);
 			}
@@ -7076,8 +7076,8 @@ real_update_menus (FMDirectoryView *view)
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Browse in New Window"));
 			} else {
-				label_with_underscore = g_strdup_printf (ngettext("Browse in %d New Window",
-										  "Browse in %d New Windows",
+				label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New Window",
+										  "Browse in %'d New Windows",
 										  selection_count), 
 									 selection_count);
 			}

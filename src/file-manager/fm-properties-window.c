@@ -2288,8 +2288,8 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	} else {
 		char *size_str;
 		size_str = g_format_size_for_display (total_size);
-		text = g_strdup_printf (ngettext("%d item, with size %s",
-						 "%d items, totalling %s",
+		text = g_strdup_printf (ngettext("%'d item, with size %s",
+						 "%'d items, totalling %s",
 						 total_count),
 					total_count, size_str);
 		g_free (size_str);

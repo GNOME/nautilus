@@ -206,12 +206,12 @@ format_time (int seconds)
 	}
 	
 	if (seconds < 60) {
-		return g_strdup_printf (ngettext ("%d second","%d seconds", (int) seconds), (int) seconds);
+		return g_strdup_printf (ngettext ("%'d second","%'d seconds", (int) seconds), (int) seconds);
 	}
 
 	if (seconds < 60*60) {
 		minutes = (seconds + 30) / 60;
-		return g_strdup_printf (ngettext ("%d minute", "%d minutes", minutes), minutes);
+		return g_strdup_printf (ngettext ("%'d minute", "%'d minutes", minutes), minutes);
 	}
 
 	hours = seconds / (60*60);
@@ -221,16 +221,16 @@ format_time (int seconds)
 
 		minutes = (seconds - hours * 60 * 60 + 30) / 60;
 		
-		h = g_strdup_printf (ngettext ("%d hour", "%d hours", hours), hours);
-		m = g_strdup_printf (ngettext ("%d minute", "%d minutes", minutes), minutes);
+		h = g_strdup_printf (ngettext ("%'d hour", "%'d hours", hours), hours);
+		m = g_strdup_printf (ngettext ("%'d minute", "%'d minutes", minutes), minutes);
 		res = g_strconcat (h, ", ", m, NULL);
 		g_free (h);
 		g_free (m);
 		return res;
 	}
 	
-	return g_strdup_printf (ngettext ("approximately %d hour",
-					  "approximately %d hours",
+	return g_strdup_printf (ngettext ("approximately %'d hour",
+					  "approximately %'d hours",
 					  hours), hours);
 }
 
@@ -281,19 +281,19 @@ get_link_name (const char *name, int count)
 			 * if there's no way to do that nicely for a
 			 * particular language.
 			 */
-			format = _("%dst link to %s");
+			format = _("%'dst link to %s");
 			break;
 		case 2:
 			/* appended to new link file */
-			format = _("%dnd link to %s");
+			format = _("%'dnd link to %s");
 			break;
 		case 3:
 			/* appended to new link file */
-			format = _("%drd link to %s");
+			format = _("%'drd link to %s");
 			break;
 		default:
 			/* appended to new link file */
-			format = _("%dth link to %s");
+			format = _("%'dth link to %s");
 			break;
 		}
 		result = g_strdup_printf (format, count, name);
@@ -347,20 +347,20 @@ static const char untranslated_first_copy_duplicate_format[] = N_("%s (copy)%s")
 static const char untranslated_second_copy_duplicate_format[] = N_("%s (another copy)%s");
 
 /* localizers: appended to x11th file copy */
-static const char untranslated_x11th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+static const char untranslated_x11th_copy_duplicate_format[] = N_("%s (%'dth copy)%s");
 /* localizers: appended to x12th file copy */
-static const char untranslated_x12th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+static const char untranslated_x12th_copy_duplicate_format[] = N_("%s (%'dth copy)%s");
 /* localizers: appended to x13th file copy */
-static const char untranslated_x13th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+static const char untranslated_x13th_copy_duplicate_format[] = N_("%s (%'dth copy)%s");
 
 /* localizers: appended to x1st file copy */
-static const char untranslated_st_copy_duplicate_format[] = N_("%s (%dst copy)%s");
+static const char untranslated_st_copy_duplicate_format[] = N_("%s (%'dst copy)%s");
 /* localizers: appended to x2nd file copy */
-static const char untranslated_nd_copy_duplicate_format[] = N_("%s (%dnd copy)%s");
+static const char untranslated_nd_copy_duplicate_format[] = N_("%s (%'dnd copy)%s");
 /* localizers: appended to x3rd file copy */
-static const char untranslated_rd_copy_duplicate_format[] = N_("%s (%drd copy)%s");
+static const char untranslated_rd_copy_duplicate_format[] = N_("%s (%'drd copy)%s");
 /* localizers: appended to xxth file copy */
-static const char untranslated_th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
+static const char untranslated_th_copy_duplicate_format[] = N_("%s (%'dth copy)%s");
 
 #define FIRST_COPY_DUPLICATE_FORMAT _(untranslated_first_copy_duplicate_format)
 #define SECOND_COPY_DUPLICATE_FORMAT _(untranslated_second_copy_duplicate_format)
@@ -466,7 +466,7 @@ parse_previous_duplicate_name (const char *name,
 			}
 			*name_base = extract_string_until (name, tag);
 			/* localizers: opening parentheses of the "th copy)" string */
-			if (sscanf (tag, _(" (%d"), count) == 1) {
+			if (sscanf (tag, _(" (%'d"), count) == 1) {
 				if (*count < 1 || *count > 1000000) {
 					/* keep the count within a reasonable range */
 					*count = 0;
@@ -1072,9 +1072,9 @@ confirm_delete_from_trash (CommonJob *job,
 					    "from the trash?"), files->data);
 	} else {
 		prompt = f (ngettext("Are you sure you want to permanently delete "
-				     "the %d selected item from the trash?",
+				     "the %'d selected item from the trash?",
 				     "Are you sure you want to permanently delete "
-				     "the %d selected items from the trash?",
+				     "the %'d selected items from the trash?",
 				     file_count), 
 			    file_count);
 	}
@@ -1114,9 +1114,9 @@ confirm_delete_directly (CommonJob *job,
 			    files->data);
 	} else {
 		prompt = f (ngettext("Are you sure you want to permanently delete "
-				     "the %d selected item?",
+				     "the %'d selected item?",
 				     "Are you sure you want to permanently delete "
-				     "the %d selected items?", file_count),
+				     "the %'d selected items?", file_count),
 			    file_count);
 	}
 	
@@ -1160,8 +1160,8 @@ report_delete_progress (CommonJob *job,
 	elapsed = g_timer_elapsed (job->time, NULL);
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
 		char *s;
-		s = f (ngettext ("%d file left to delete",
-				 "%d files left to delete",
+		s = f (ngettext ("%'d file left to delete",
+				 "%'d files left to delete",
 				 files_left),
 		       files_left);
 		nautilus_progress_info_take_details (job->progress, s);
@@ -1171,8 +1171,8 @@ report_delete_progress (CommonJob *job,
 		remaining_time = files_left / transfer_rate;
 
 		/* To translators: %T will expand to a time like "2 minutes" */		
-		s = f (ngettext ("%d file left to delete \xE2\x80\x94 %T left",
-				 "%d files left to delete \xE2\x80\x94 %T left",
+		s = f (ngettext ("%'d file left to delete \xE2\x80\x94 %T left",
+				 "%'d files left to delete \xE2\x80\x94 %T left",
 				 files_left),
 		       files_left, remaining_time);
 		nautilus_progress_info_take_details (job->progress, s);
@@ -1463,8 +1463,8 @@ report_trash_progress (CommonJob *job,
 	nautilus_progress_info_take_status (job->progress,
 					    f (_("Moving files to trash")));
 
-	s = f (ngettext ("%d file left to trash",
-			 "%d files left to trash",
+	s = f (ngettext ("%'d file left to trash",
+			 "%'d files left to trash",
 			 files_left),
 	       files_left);
 	nautilus_progress_info_take_details (job->progress, s);
@@ -2000,19 +2000,19 @@ report_count_progress (CommonJob *job,
 	switch (source_info->op) {
 	default:
 	case OP_KIND_COPY:
-		s = f (_("Preparing to copy %d files (%S)"),
+		s = f (_("Preparing to copy %'d files (%S)"),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_MOVE:
-		s = f (_("Preparing to move %d files (%S)"),
+		s = f (_("Preparing to move %'d files (%S)"),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_DELETE:
-		s = f (_("Preparing to delete %d files (%S)"),
+		s = f (_("Preparing to delete %'d files (%S)"),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_TRASH:
-		s = f (_("Preparing to trash %d files"),
+		s = f (_("Preparing to trash %'d files"),
 		       source_info->num_files);
 		break;
 	} 
@@ -2480,20 +2480,20 @@ report_copy_progress (CopyMoveJob *copy_job,
 		if (copy_job->destination != NULL) {
 			nautilus_progress_info_take_status (job->progress,
 							    f (is_move?
-							       ngettext ("Moving %d file (in \"%B\") to \"%B\"",
-									 "Moving %d files (in \"%B\") to \"%B\"",
+							       ngettext ("Moving %'d file (in \"%B\") to \"%B\"",
+									 "Moving %'d files (in \"%B\") to \"%B\"",
 									 files_left)
 							       :
-							       ngettext ("Copying %d file (in \"%B\") to \"%B\"",
-									 "Copying %d files (in \"%B\") to \"%B\"",
+							       ngettext ("Copying %'d file (in \"%B\") to \"%B\"",
+									 "Copying %'d files (in \"%B\") to \"%B\"",
 									 files_left),
 							       files_left,
 							       (GFile *)copy_job->files->data,
 							       copy_job->destination));
 		} else {
 			nautilus_progress_info_take_status (job->progress,
-							    f (ngettext ("Duplicating %d file (in \"%B\")",
-									 "Duplicating %d files (in \"%B\")",
+							    f (ngettext ("Duplicating %'d file (in \"%B\")",
+									 "Duplicating %'d files (in \"%B\")",
 									 files_left),
 							       files_left,
 							       (GFile *)copy_job->files->data));
@@ -2502,18 +2502,18 @@ report_copy_progress (CopyMoveJob *copy_job,
 		if (copy_job->destination != NULL) {
 			nautilus_progress_info_take_status (job->progress,
 							    f (is_move?
-							       ngettext ("Moving %d file to \"%B\"",
-									 "Moving %d files to \"%B\"",
+							       ngettext ("Moving %'d file to \"%B\"",
+									 "Moving %'d files to \"%B\"",
 									 files_left)
 							       :
-							       ngettext ("Copying %d file to \"%B\"",
-									 "Copying %d files to \"%B\"",
+							       ngettext ("Copying %'d file to \"%B\"",
+									 "Copying %'d files to \"%B\"",
 									 files_left),
 							       files_left, copy_job->destination));
 		} else {
 			nautilus_progress_info_take_status (job->progress,
-							    f (ngettext ("Duplicating %d file",
-									 "Duplicating %d files",
+							    f (ngettext ("Duplicating %'d file",
+									 "Duplicating %'d files",
 									 files_left),
 							       files_left));
 		}
@@ -3608,8 +3608,8 @@ report_move_progress (CopyMoveJob *move_job, int total, int left)
 					       move_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,
-					     f (ngettext ("Preparing to move %d file",
-							  "Preparing to move %d files",
+					     f (ngettext ("Preparing to move %'d file",
+							  "Preparing to move %'d files",
 							  left), left));
 
 	nautilus_progress_info_pulse_progress (job->progress);
@@ -4055,8 +4055,8 @@ report_link_progress (CopyMoveJob *link_job, int total, int left)
 					       link_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,
-					     f (ngettext ("Making links to %d file",
-							  "Making links to %d files",
+					     f (ngettext ("Making links to %'d file",
+							  "Making links to %'d files",
 							  left), left));
 
 	nautilus_progress_info_set_progress (job->progress, (double)left / total);
