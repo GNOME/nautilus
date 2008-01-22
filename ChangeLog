@@ -1,5 +1,11 @@
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_get_emblem_pixbufs):
+	Don't leak NautilusIconInfo
+
+2008-01-22  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-bookmark.c:
         (nautilus_bookmark_get_pixbuf):
 	Don't leak icon

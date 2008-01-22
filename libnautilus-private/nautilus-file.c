@@ -5509,6 +5509,7 @@ nautilus_file_get_emblem_pixbufs (NautilusFile *file,
 		}
 		
 		
+		g_object_unref (icon_info);
 		g_object_unref (icon);
 	}
 	g_list_free (icons);
