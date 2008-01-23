@@ -1,3 +1,13 @@
+2008-01-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Don't leak enumerators
+	
+        * libnautilus-private/nautilus-trash-monitor.c:
+	Don't leak file info
+
+	Fixes from Matthias Clasen
+
 2008-01-22  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-extension/nautilus-column.c:

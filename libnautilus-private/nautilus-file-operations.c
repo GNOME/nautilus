@@ -1227,6 +1227,7 @@ delete_dir (CommonJob *job, GFile *dir,
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		g_object_unref (enumerator);
 		
 		if (error && IS_IO_ERROR (error, CANCELLED)) {
 			g_error_free (error);
@@ -1787,6 +1788,7 @@ dir_has_files (GFile *dir)
 		}
 		
 		g_file_enumerator_close (enumerator, NULL, NULL);
+		g_object_unref (enumerator);
 	}
 	
 
@@ -2092,6 +2094,7 @@ scan_dir (GFile *dir,
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		g_object_unref (enumerator);
 		
 		if (error && IS_IO_ERROR (error, CANCELLED)) {
 			g_error_free (error);
@@ -2856,6 +2859,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		g_object_unref (enumerator);
 		
 		if (error && IS_IO_ERROR (error, CANCELLED)) {
 			g_error_free (error);
@@ -3023,6 +3027,7 @@ remove_target_recursively (CommonJob *job,
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		g_object_unref (enumerator);
 		
 	} else if (IS_IO_ERROR (error, NOT_DIRECTORY)) {
 		/* Not a dir, continue */
@@ -4403,6 +4408,7 @@ set_permissions_file (SetPermissionsJob *job,
 				g_object_unref (child_info);
 			}
 			g_file_enumerator_close (enumerator, common->cancellable, NULL);
+			g_object_unref (enumerator);
 		} 
 	}
 	if (free_info) {
@@ -4882,6 +4888,7 @@ delete_trash_file (CommonJob *job,
 			g_object_unref (info);
 		}
 		g_file_enumerator_close (enumerator, job->cancellable, NULL);
+		g_object_unref (enumerator);
 	} 
 	
 	if (!job_aborted (job) && del_dir) {

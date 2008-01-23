@@ -128,6 +128,7 @@ update_info_cb (GObject *source_object,
 				       signals[TRASH_STATE_CHANGED], 0,
 				       trash_monitor->details->empty);
 		}
+		g_object_unref (info);
 	}
 
 	g_object_unref (trash_monitor);
