@@ -1,3 +1,59 @@
+2008-01-24  Luca Ferretti  <elle.uca@libero.it>
+
+	reviewed by: Alexander Larsson
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-icon-names.h
+
+	Add a new file to define icon names, like
+	  #define NAUTILUS_ICON_HOME "user-home"
+	using named icons from fd.o icon naming spec.
+	
+	* libnautilus-private/nautilus-desktop-link.c:
+	(nautilus_desktop_link_new):
+	* libnautilus-private/nautilus-link.c:
+	(nautilus_link_get_link_icon_from_desktop):
+	* libnautilus-private/nautilus-trash-monitor.c: (update_info_cb),
+	(nautilus_trash_monitor_init):
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-tree-view.c: (create_popup_menu),
+	(create_tree):
+	* src/nautilus-bookmark-list.c: (new_bookmark_from_uri):
+	* src/nautilus-connect-server-dialog-main.c: (main):
+	* src/nautilus-desktop-window.c: (real_get_icon):
+	* src/nautilus-main.c: (main):
+	* src/nautilus-pathbar.c: (get_icon_for_file_path),
+	(get_button_image), (is_file_path_mounted_mount),
+	(make_directory_button):
+	* src/nautilus-places-sidebar.c: (update_places),
+	(bookmarks_drop_uris):
+	* src/nautilus-window-menus.c:
+
+	Include nautilus-icon-name.h and use its icons defines.
+	This means that now Nautilus is using "user-home",
+	"user-desktop", "folder", "user-trash*", "computer", 
+	"drive-harddisk", "folder-remote", "network-workgroup",
+	and "text-x-generic-template".
+
+	* src/network-scheme.desktop.in:
+	* nautilus-computer.desktop.in.in:
+	* nautilus-file-management-properties.desktop.in.in:
+	* nautilus-folder-handler.desktop.in.in:
+	* nautilus-home.desktop.in.in:
+	* nautilus.desktop.in.in:
+
+	Use icons from fd.o spec here too. In details, we have
+	 Launcher       | New Icon
+	----------------+----------------------
+	Computer        | computer
+	File Browser    | system-file-manager
+	Open Folder     | folder-open
+	Home Folder     | user-home
+	File Management | system-file-manager
+	Network		| network-workgroup
+
+	For other details see bug #407130.
+
 2008-01-23  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:

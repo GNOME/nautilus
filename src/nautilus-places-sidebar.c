@@ -55,6 +55,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <gio/gio.h>
 
 #include "nautilus-bookmark-list.h"
@@ -259,7 +260,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 
 		mount_uri = nautilus_get_home_directory_uri ();
 		display_name = g_filename_display_basename (g_get_home_dir ());
-		icon = g_themed_icon_new ("gnome-fs-home");
+		icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
 		last_iter = add_place (sidebar, PLACES_BUILT_IN,
 				       display_name, icon,
 				       mount_uri, NULL, NULL, NULL, 0);
@@ -272,7 +273,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	}
 
 	mount_uri = g_filename_to_uri (desktop_path, NULL, NULL);
-	icon = g_themed_icon_new ("gnome-fs-desktop");
+	icon = g_themed_icon_new (NAUTILUS_ICON_DESKTOP);
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
 			       _("Desktop"), icon,
 			       mount_uri, NULL, NULL, NULL, 0);
@@ -284,7 +285,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	g_free (desktop_path);
 	
  	mount_uri = "file:///"; /* No need to strdup */
-	icon = g_themed_icon_new ("gnome-dev-harddisk");
+	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
 			       _("File System"), icon,
 			       mount_uri, NULL, NULL, NULL, 0);
@@ -889,7 +890,7 @@ bookmarks_drop_uris (NautilusPlacesSidebar *sidebar,
 
 		name = nautilus_compute_title_for_location (location);
 
-		icon = g_themed_icon_new ("gnome-fs-directory");
+		icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
 		bookmark = nautilus_bookmark_new_with_icon (location, name,
 							    FALSE, icon);
 		g_object_unref (icon);

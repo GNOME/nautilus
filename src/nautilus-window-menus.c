@@ -50,6 +50,7 @@
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
@@ -665,27 +666,27 @@ static const GtkActionEntry main_entries[] = {
     N_("Connect to a remote computer or shared disk"),                                      /* tooltip */ 
     G_CALLBACK (action_connect_to_server_callback) },
 #endif
-  { "Home", "gnome-fs-home",                        /* name, stock id */
+  { "Home", NAUTILUS_ICON_HOME,                        /* name, stock id */
     N_("_Home Folder"), "<alt>Home",           /* label, accelerator */
     N_("Open your personal folder"),                                  /* tooltip */ 
     G_CALLBACK (action_home_callback) },
-  { "Go to Computer", "gnome-fs-client",                        /* name, stock id */
+  { "Go to Computer", NAUTILUS_ICON_COMPUTER,                        /* name, stock id */
     N_("_Computer"), NULL,           /* label, accelerator */
     N_("Browse all local and remote disks and folders accessible from this computer"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_computer_callback) },
-  { "Go to Network", "gnome-fs-network",                        /* name, stock id */
+  { "Go to Network", NAUTILUS_ICON_NETWORK,                        /* name, stock id */
     N_("_Network"), NULL,           /* label, accelerator */
     N_("Browse bookmarked and local network locations"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_network_callback) },
-  { "Go to Templates", "stock_new-template",                        /* name, stock id */
+  { "Go to Templates", NAUTILUS_ICON_TEMPLATE,                        /* name, stock id */
     N_("T_emplates"), NULL,           /* label, accelerator */
     N_("Open your personal templates folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_templates_callback) },
-  { "Go to Trash", "user-trash",                        /* name, stock id */
+  { "Go to Trash", NAUTILUS_ICON_TRASH,                        /* name, stock id */
     N_("_Trash"), NULL,           /* label, accelerator */
     N_("Open your personal trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },
-  { "Go to Burn CD", "nautilus-cd-burner",                        /* name, stock id */
+  { "Go to Burn CD", NAUTILUS_ICON_BURN,                        /* name, stock id */
     N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Open a folder into which you can drag files to burn to a CD or DVD"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },

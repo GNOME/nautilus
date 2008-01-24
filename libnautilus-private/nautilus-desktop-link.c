@@ -28,6 +28,7 @@
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-desktop-directory.h"
+#include "nautilus-icon-names.h"
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -152,7 +153,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		link->details->filename = g_strdup ("home");
 		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
 		link->details->activation_location = g_file_new_for_path (g_get_home_dir ());
-		link->details->icon = g_themed_icon_new ("user-home");
+		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 					      home_name_changed,
@@ -165,7 +166,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME);
 		link->details->activation_location = g_file_new_for_uri ("computer:///");
 		/* TODO: This might need a different icon: */
-		link->details->icon = g_themed_icon_new ("gnome-fs-client");
+		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_COMPUTER);
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME,
 					      computer_name_changed,
@@ -191,7 +192,7 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		link->details->filename = g_strdup ("network");
 		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME);
 		link->details->activation_location = g_file_new_for_uri ("network:///");
-		link->details->icon = g_themed_icon_new ("gnome-fs-network");
+		link->details->icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME,
 					      network_name_changed,

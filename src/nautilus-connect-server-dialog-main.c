@@ -39,6 +39,8 @@
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 
+#include <libnautilus-private/nautilus-icon-names.h>
+
 #include "nautilus-window.h"
 #include "nautilus-connect-server-dialog.h"
 
@@ -124,7 +126,7 @@ main (int argc, char *argv[])
 
 	eel_preferences_init ("/apps/nautilus");
 
-	gtk_window_set_default_icon_name ("gnome-fs-directory");
+	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
 
 
 	/* command line arguments, null terminated array */

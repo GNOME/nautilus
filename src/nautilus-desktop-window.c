@@ -34,6 +34,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <gio/gio.h>
 
 struct NautilusDesktopWindowDetails {
@@ -253,7 +254,7 @@ real_get_title (NautilusWindow *window)
 static NautilusIconInfo *
 real_get_icon (NautilusWindow *window)
 {
-	return nautilus_icon_info_lookup_from_name ("user-desktop", 48);
+	return nautilus_icon_info_lookup_from_name (NAUTILUS_ICON_DESKTOP, 48);
 }
 
 static void

@@ -37,6 +37,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include "nautilus-pathbar.h"
 
 enum {
@@ -62,11 +63,6 @@ static guint path_bar_signals [LAST_SIGNAL] = { 0 };
 static gboolean desktop_is_home;
 
 #define NAUTILUS_PATH_BAR_ICON_SIZE 16
-
-#define DEFAULT_ICON 		"folder"
-#define DEFAULT_DESKTOP_ICON 	"user-desktop"
-#define DEFAULT_HOME_ICON 	"user-home"
-#define DEFAULT_FILESYSTEM_ICON	"gnome-dev-harddisk"
 
 typedef struct _ButtonData ButtonData;
 
@@ -1016,7 +1012,7 @@ button_clicked_cb (GtkWidget *button,
 }
 
 static GdkPixbuf *
-get_icon_for_file_path (GFile *location, const char *default_icon_name)
+get_icon_for_file_path (GFile *location, const char *NAUTILUS_ICON_FOLDER_name)
 {
 	NautilusFile *file;
 	NautilusIconInfo *info;
@@ -1035,7 +1031,7 @@ get_icon_for_file_path (GFile *location, const char *default_icon_name)
 
 	nautilus_file_unref (file);
 
-	info = nautilus_icon_info_lookup_from_name (default_icon_name, NAUTILUS_PATH_BAR_ICON_SIZE);
+	info = nautilus_icon_info_lookup_from_name (NAUTILUS_ICON_FOLDER_name, NAUTILUS_PATH_BAR_ICON_SIZE);
 	pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_PATH_BAR_ICON_SIZE);
 	g_object_unref (info);
 	
@@ -1053,7 +1049,7 @@ get_button_image (NautilusPathBar *path_bar,
 				return path_bar->root_icon;
                        	}
 
-			path_bar->root_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_FILESYSTEM_ICON);
+			path_bar->root_icon = get_icon_for_file_path (path_bar->root_path, NAUTILUS_ICON_FILESYSTEM);
 			return path_bar->root_icon;
 
 		case HOME_BUTTON:
@@ -1061,14 +1057,14 @@ get_button_image (NautilusPathBar *path_bar,
 		      		return path_bar->home_icon;
 			}
 
-			path_bar->home_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_HOME_ICON);
+			path_bar->home_icon = get_icon_for_file_path (path_bar->root_path, NAUTILUS_ICON_HOME);
 			return path_bar->home_icon;
 
                 case DESKTOP_BUTTON:
                       	if (path_bar->desktop_icon != NULL) {
 				return path_bar->desktop_icon;
 			}
-			path_bar->desktop_icon = get_icon_for_file_path (path_bar->root_path, DEFAULT_DESKTOP_ICON);
+			path_bar->desktop_icon = get_icon_for_file_path (path_bar->root_path, NAUTILUS_ICON_DESKTOP);
       			return path_bar->desktop_icon;
 
 	    	default:
@@ -1194,7 +1190,7 @@ is_file_path_mounted_mount (GFile *location, ButtonData *button_data)
 			if (button_data) {
 				icon = g_mount_get_icon (mount);
 				if (icon == NULL) {
-					icon = g_themed_icon_new (DEFAULT_ICON);
+					icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
 				}
 				info = nautilus_icon_info_lookup (icon, NAUTILUS_PATH_BAR_ICON_SIZE);
 				g_object_unref (icon);
@@ -1320,7 +1316,7 @@ make_directory_button (NautilusPathBar  *path_bar,
         	                gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
         	                gtk_box_pack_start (GTK_BOX (child), label_alignment, FALSE, FALSE, 0);
 				button_data->is_base_dir = TRUE;
-				button_data->custom_icon = get_icon_for_file_path (path, DEFAULT_ICON);
+				button_data->custom_icon = get_icon_for_file_path (path, NAUTILUS_ICON_FOLDER);
 			} else {
 				button_data->is_base_dir = FALSE;
 	      			button_data->label = gtk_label_new (NULL);

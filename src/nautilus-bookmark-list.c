@@ -30,6 +30,7 @@
 
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <gio/gio.h>
@@ -88,7 +89,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
 		nautilus_file_unref (file);
 		
 		if (icon == NULL) {
-			icon = g_themed_icon_new ("gnome-fs-directory");
+			icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
 		}
 
 		new_bookmark = nautilus_bookmark_new_with_icon (location, name, has_label, icon);

@@ -66,6 +66,7 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
@@ -1180,7 +1181,7 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 	
 	/* add the "move to trash" menu item */
-	menu_image = gtk_image_new_from_icon_name ("user-trash",
+	menu_image = gtk_image_new_from_icon_name (NAUTILUS_ICON_TRASH,
 						   GTK_ICON_SIZE_MENU);
 	gtk_widget_show (menu_image);
 	menu_item = gtk_image_menu_item_new_with_label (_("Move to Trash"));
@@ -1255,16 +1256,16 @@ create_tree (FMTreeView *view)
 		 G_CALLBACK (row_loaded_callback),
 		 view, G_CONNECT_AFTER);
 	home_uri = nautilus_get_home_directory_uri ();
-	icon = g_themed_icon_new ("user-home");
+	icon = g_themed_icon_new (NAUTILUS_ICON_HOME);
 	fm_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), icon, NULL);
 	g_object_unref (icon);
 	g_free (home_uri);
-	icon = g_themed_icon_new ("folder");
+	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
 	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), icon, NULL);
 	g_object_unref (icon);
 #ifdef NOT_YET_USABLE
-	icon = g_themed_icon_new ("gnome-fs-network");
-	fm_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), "gnome-fs-network", NULL);
+	icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
+	fm_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), NAUTILUS_ICON_NETWORK, NULL);
 	g_object_unref (icon);
 #endif
 	

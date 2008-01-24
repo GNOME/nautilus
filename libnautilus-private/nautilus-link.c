@@ -31,6 +31,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-program-choosing.h"
+#include "nautilus-icon-names.h"
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -364,7 +365,7 @@ nautilus_link_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 		return g_strdup ("gnome-dev-harddisk");
 
 	case GNOME_DESKTOP_ITEM_TYPE_DIRECTORY:
-		return g_strdup ("gnome-fs-directory");
+		return g_strdup (NAUTILUS_ICON_FOLDER);
 
 	case GNOME_DESKTOP_ITEM_TYPE_SERVICE:
 	case GNOME_DESKTOP_ITEM_TYPE_SERVICE_TYPE:

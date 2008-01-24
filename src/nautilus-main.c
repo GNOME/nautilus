@@ -55,6 +55,7 @@
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <libxml/parser.h>
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -482,7 +483,7 @@ main (int argc, char *argv[])
 	}
 
         /* Set default icon for all nautilus windows */
-	gtk_window_set_default_icon_name ("gnome-fs-directory");
+	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
 	
 	/* Need to set this to the canonical DISPLAY value, since
 	   thats where we're registering per-display components */

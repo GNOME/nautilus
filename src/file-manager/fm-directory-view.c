@@ -96,6 +96,7 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-autorun.h>
+#include <libnautilus-private/nautilus-icon-names.h>
 #include <unistd.h>
 
 /* Minimum starting update inverval */
@@ -6298,7 +6299,7 @@ static const GtkActionEntry directory_view_entries[] = {
     "RenameSelectAll", "<shift>F2",                /* label, accelerator */
     NULL,                   /* tooltip */ 
     G_CALLBACK (action_rename_select_all_callback) },
-  { "Trash", "user-trash",                  /* name, stock id */
+  { "Trash", NAUTILUS_ICON_TRASH,                  /* name, stock id */
     N_("Mo_ve to Trash"), "<control>T",                /* label, accelerator */
     N_("Move each selected item to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_trash_callback) },
@@ -6379,7 +6380,7 @@ static const GtkActionEntry directory_view_entries[] = {
     N_("Prepare this folder to be copied with a Paste command"),                   /* tooltip */ 
     G_CALLBACK (action_location_copy_callback) },
 
-  { FM_ACTION_LOCATION_TRASH, "user-trash",                  /* name, stock id */
+  { FM_ACTION_LOCATION_TRASH, NAUTILUS_ICON_TRASH,                  /* name, stock id */
     N_("Mo_ve to Trash"), "",                /* label, accelerator */
     N_("Move this folder to the Trash"),                   /* tooltip */ 
     G_CALLBACK (action_location_trash_callback) },

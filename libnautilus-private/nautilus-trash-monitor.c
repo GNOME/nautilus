@@ -29,6 +29,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
+#include "nautilus-icon-names.h"
 #include <eel/eel-debug.h>
 #include <gio/gio.h>
 #include <string.h>
@@ -115,7 +116,7 @@ update_info_cb (GObject *source_object,
 			if (G_IS_THEMED_ICON (icon)) {
 				names = g_themed_icon_get_names (G_THEMED_ICON (icon));
 				for (i = 0; names[i] != NULL; i++) {
-					if (strcmp (names[i], "user-trash-full") == 0) {
+					if (strcmp (names[i], NAUTILUS_ICON_TRASH_FULL) == 0) {
 						empty = FALSE;
 						break;
 					}
@@ -173,7 +174,7 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 							      NautilusTrashMonitorDetails);
 
 	trash_monitor->details->empty = TRUE;
-	trash_monitor->details->icon = g_themed_icon_new ("user-trash");
+	trash_monitor->details->icon = g_themed_icon_new (NAUTILUS_ICON_TRASH);
 
 	location = g_file_new_for_uri ("trash:///");
 
