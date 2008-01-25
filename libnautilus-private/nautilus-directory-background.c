@@ -61,7 +61,6 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
 
-	eel_background_set_is_constant_size (background, TRUE);
 	eel_background_set_desktop (background, GTK_WIDGET (icon_container), TRUE);
 
 	/* Strictly speaking, we don't need to know about metadata changes, since
