@@ -189,9 +189,9 @@ static void scan_sources (GList *files,
 			  OpKind kind);
 
 
-static void empty_trash_job (GIOSchedulerJob *io_job,
-			     GCancellable *cancellable,
-			     gpointer user_data);
+static gboolean empty_trash_job (GIOSchedulerJob *io_job,
+				 GCancellable *cancellable,
+				 gpointer user_data);
 
 static char *
 format_time (int seconds)
@@ -1581,7 +1581,7 @@ delete_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 delete_job (GIOSchedulerJob *io_job,
 	    GCancellable *cancellable,
 	    gpointer user_data)
@@ -1652,6 +1652,8 @@ delete_job (GIOSchedulerJob *io_job,
 						   delete_job_done,
 						   job,
 						   NULL);
+
+	return FALSE;
 }
 
 static void
@@ -3507,7 +3509,7 @@ copy_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 copy_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
@@ -3568,6 +3570,8 @@ copy_job (GIOSchedulerJob *io_job,
 						   copy_job_done,
 						   job,
 						   NULL);
+
+	return FALSE;
 }
 
 void
@@ -3933,7 +3937,7 @@ move_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 move_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
@@ -4014,6 +4018,8 @@ move_job (GIOSchedulerJob *io_job,
 					     move_job_done,
 					     job,
 					     NULL);
+
+	return FALSE;
 }
 
 void
@@ -4193,7 +4199,7 @@ link_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 link_job (GIOSchedulerJob *io_job,
 	  GCancellable *cancellable,
 	  gpointer user_data)
@@ -4256,6 +4262,8 @@ link_job (GIOSchedulerJob *io_job,
 					     link_job_done,
 					     job,
 					     NULL);
+
+	return FALSE;
 }
 
 void
@@ -4417,7 +4425,7 @@ set_permissions_file (SetPermissionsJob *job,
 }
 
 
-static void
+static gboolean
 set_permissions_job (GIOSchedulerJob *io_job,
 		     GCancellable *cancellable,
 		     gpointer user_data)
@@ -4439,6 +4447,8 @@ set_permissions_job (GIOSchedulerJob *io_job,
 						   set_permissions_job_done,
 						   job,
 						   NULL);
+
+	return FALSE;
 }
 
 
@@ -4576,7 +4586,7 @@ create_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 create_job (GIOSchedulerJob *io_job,
 	    GCancellable *cancellable,
 	    gpointer user_data)
@@ -4751,6 +4761,8 @@ create_job (GIOSchedulerJob *io_job,
 						   create_job_done,
 						   job,
 						   NULL);
+
+	return FALSE;
 }
 
 void 
@@ -4913,7 +4925,7 @@ empty_trash_job_done (gpointer user_data)
 	return FALSE;
 }
 
-static void
+static gboolean
 empty_trash_job (GIOSchedulerJob *io_job,
 		 GCancellable *cancellable,
 		 gpointer user_data)
@@ -4937,6 +4949,8 @@ empty_trash_job (GIOSchedulerJob *io_job,
 						   empty_trash_job_done,
 						   job,
 						   NULL);
+
+	return FALSE;
 }
 
 void 
