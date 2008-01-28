@@ -202,7 +202,7 @@ escape_slashes (const char *str)
 		} else if (*p == '/') {
 			*e++ = '%';
 			*e++ = '2';
-			*e++ = 'f';
+			*e++ = 'F';
 		} else {
 			*e++ = *p;
 		}

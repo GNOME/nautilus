@@ -1,3 +1,11 @@
+2008-01-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-metafile.c:
+        (escape_slashes):
+	Escape slashes in the same way as old versions,
+	fixing loss of metadata customization.
+	Patch from Rached Ben Mustapha (#511592)
+
 2008-01-25  Soren Sandmann  <sandmann@redhat.com>
 
 	* libnautilus-private/nautilus-directory-background.c
