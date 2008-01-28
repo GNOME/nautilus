@@ -1,5 +1,13 @@
 2008-01-28  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-directory-async.c:
+        (thumbnail_done):
+	Don't reference thumb_mtime_str if its not
+	set, fixing a crash on zoom in. (#511406)
+	Patch from John Millikin
+
+2008-01-28  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
         (report_count_progress):
 	Use ngettext for number of files strings. (#512203)

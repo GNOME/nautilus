@@ -3650,7 +3650,7 @@ thumbnail_done (NautilusDirectory *directory,
 		gboolean tried_original)
 {
 	const char *thumb_mtime_str;
-	time_t thumb_mtime;
+	time_t thumb_mtime = 0;
 	
 	file->details->thumbnail_is_up_to_date = TRUE;
 	file->details->thumbnail_tried_original  = tried_original;
@@ -3661,8 +3661,10 @@ thumbnail_done (NautilusDirectory *directory,
 	file->details->thumbnail_size = 0;
 	if (pixbuf) {
 		thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
-		thumb_mtime = atol (thumb_mtime_str);
-
+		if (thumb_mtime_str) {
+			thumb_mtime = atol (thumb_mtime_str);
+		}
+		
 		if (thumb_mtime == 0 ||
 		    thumb_mtime == file->details->mtime) {
 			file->details->thumbnail = g_object_ref (pixbuf);
