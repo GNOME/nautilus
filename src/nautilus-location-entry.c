@@ -135,8 +135,6 @@ static void
 write_location_entry (NautilusLocationEntry *entry_copy)
 {
 	char *base_name;
-	char *current_path;
-	char *dir_name;
 	char *expand_text;
 	char *expand_name;
 	char *insert_text;
@@ -222,9 +220,6 @@ async_dir_list_callback (GnomeVFSAsyncHandle * handle,GnomeVFSResult result,
 			GList * list, guint entries_read, gpointer callback_data)
 {
 	NautilusLocationEntry *entry_copy;
-	GList *element;
-	GList *temp;
-	GnomeVFSFileInfo *info;
 	entry_copy = (NautilusLocationEntry *) callback_data;
 
 	if (list !=NULL) {
@@ -238,8 +233,6 @@ async_dir_list_callback (GnomeVFSAsyncHandle * handle,GnomeVFSResult result,
 static void
 get_file_info_list (NautilusLocationEntry *entry, const char* dir_name)
 {
-	GnomeVFSResult result;
-
 	if (eel_strcmp (entry->details->current_directory, dir_name) != 0) {
 		g_free (entry->details->current_directory);
 		if (entry->details->file_info_list) {
@@ -272,26 +265,15 @@ try_to_expand_path (gpointer callback_data)
 {
 	NautilusLocationEntry *entry;
 
-	GnomeVFSFileInfo *current_file_info;
-	GList *element;
 	GnomeVFSURI *uri;
 	GtkEditable *editable;
 
 	char *base_name_uri_escaped;
 	char *base_name;
-	char *base_name_utf8;
 	char *user_location;
 	char *current_path;
 	char *dir_name;
-	char *expand_text;
-	char *expand_text_utf8;
-	char *expand_name;
-	char *insert_text;
-
-	int base_name_length;
 	int user_location_length;
-	int expand_text_length;
-	int pos;
 
 	entry = NAUTILUS_LOCATION_ENTRY (callback_data);
 	editable = GTK_EDITABLE (entry);
