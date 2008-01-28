@@ -1,5 +1,12 @@
 2008-01-28  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+        (report_count_progress):
+	Use ngettext for number of files strings. (#512203)
+	Patch from Vasiliy Faronov
+
+2008-01-28  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-metafile.c:
         (escape_slashes):
 	Escape slashes in the same way as old versions,

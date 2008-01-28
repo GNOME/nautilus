@@ -2004,19 +2004,27 @@ report_count_progress (CommonJob *job,
 	switch (source_info->op) {
 	default:
 	case OP_KIND_COPY:
-		s = f (_("Preparing to copy %'d files (%S)"),
+		s = f (ngettext("Preparing to copy %'d file (%S)",
+		                "Preparing to copy %'d files (%S)",
+		                source_info->num_files),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_MOVE:
-		s = f (_("Preparing to move %'d files (%S)"),
+		s = f (ngettext("Preparing to move %'d file (%S)",
+		                "Preparing to move %'d files (%S)",
+		                source_info->num_files),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_DELETE:
-		s = f (_("Preparing to delete %'d files (%S)"),
+		s = f (ngettext("Preparing to delete %'d file (%S)",
+		                "Preparing to delete %'d files (%S)",
+		                source_info->num_files),
 		       source_info->num_files, source_info->num_bytes);
 		break;
 	case OP_KIND_TRASH:
-		s = f (_("Preparing to trash %'d files"),
+		s = f (ngettext("Preparing to trash %'d file",
+		                "Preparing to trash %'d files",
+		                source_info->num_files),
 		       source_info->num_files);
 		break;
 	} 
