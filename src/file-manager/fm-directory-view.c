@@ -5671,7 +5671,7 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 
 	selection = fm_directory_view_get_selection (view);
 
-	directory_uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+	directory_uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
 
 	paste_clipboard_data (view, selection_data, directory_uri);
 
@@ -6509,6 +6509,37 @@ real_merge_menus (FMDirectoryView *view)
 	view->details->templates_invalid = TRUE;
 }
 
+static gboolean
+can_paste_into_file (NautilusFile *file)
+{
+	if (nautilus_file_is_directory (file) &&
+	    nautilus_file_can_write (file)) {
+		return TRUE;
+	}
+	if (nautilus_file_has_activation_uri (file)) {
+		GFile *location;
+		NautilusFile *activation_file;
+		gboolean res;
+		
+		location = nautilus_file_get_activation_location (file);
+		activation_file = nautilus_file_get (location);
+		g_object_unref (location);
+	
+		/* The target location might not have data for it read yet,
+		   and we can't want to do sync I/O, so treat the unknown
+		   case as can-write */
+		res = (nautilus_file_get_file_type (activation_file) == G_FILE_TYPE_UNKNOWN) ||
+			(nautilus_file_get_file_type (activation_file) == G_FILE_TYPE_DIRECTORY &&
+			 nautilus_file_can_write (activation_file));
+
+		nautilus_file_unref (activation_file);
+		
+		return res;
+	}
+	
+	return FALSE;
+}
+
 static void
 clipboard_targets_received (GtkClipboard     *clipboard,
 			    GtkSelectionData *selection_data,
@@ -6554,9 +6585,8 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_PASTE_FILES_INTO);
 	gtk_action_set_sensitive (action,
-				  can_paste && count == 1 &&
-				  nautilus_file_is_directory (NAUTILUS_FILE (selection->data)) &&
-				  nautilus_file_can_write (NAUTILUS_FILE (selection->data)));
+	                          can_paste && count == 1 &&
+	                          can_paste_into_file (NAUTILUS_FILE (selection->data)));
 	
 	nautilus_file_list_free (selection);
 	
@@ -6820,13 +6850,14 @@ real_update_paste_menu (FMDirectoryView *view,
 	gboolean is_read_only;
 	GtkAction *action;
 
-	selection_is_read_only = selection_count == 1
-		&& !nautilus_file_can_write (NAUTILUS_FILE (selection->data));
-	
+	selection_is_read_only = selection_count == 1 &&
+		(!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
+		 !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
+		 
 	is_read_only = fm_directory_view_is_read_only (view);
 	
-	can_paste_files_into = selection_count == 1 && 
-		nautilus_file_is_directory (NAUTILUS_FILE (selection->data));
+	can_paste_files_into = (selection_count == 1 && 
+	                        can_paste_into_file (NAUTILUS_FILE (selection->data)));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_PASTE);
