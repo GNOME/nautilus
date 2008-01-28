@@ -41,6 +41,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-open-with-dialog.h"
 #include "nautilus-desktop-icon-file.h"
+#include "nautilus-file-utilities.h"
 
 enum
 {
@@ -536,15 +537,13 @@ _check_nonempty_dir (GFile *mount_root, const char *dirname)
 }
 
 static gboolean
-_check_file (GFile *mount_root, const char *file_path, gboolean must_be_executable)
+_check_file_common (GFile *file, gboolean must_be_executable)
 {
-	GFile *file;
 	GFileInfo *file_info;
 	gboolean ret;
 
 	ret = FALSE;
 
-	file = g_file_get_child (mount_root, file_path);
 	file_info = g_file_query_info (file,
 				       G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE,
 				       G_FILE_QUERY_INFO_NONE,
@@ -562,6 +561,24 @@ _check_file (GFile *mount_root, const char *file_path, gboolean must_be_executab
 	g_object_unref (file);
 
 	return ret;
+}
+
+static gboolean
+_check_file (GFile *mount_root, const char *file_path,
+             gboolean must_be_executable)
+{
+	/* Unreffed in _check_file_common() */
+	GFile *file = g_file_get_child (mount_root, file_path);
+	return _check_file_common (file, must_be_executable);
+}
+
+static gboolean
+_check_file_case_insensitive (GFile *mount_root, const char *file_path,
+                              gboolean must_be_executable)
+{
+	/* Unreffed in _check_file_common() */
+	GFile *file = nautilus_find_file_insensitive (mount_root, file_path);
+	return _check_file_common (file, must_be_executable);
 }
 
 /**
@@ -713,8 +730,8 @@ _g_mount_guess_content_type (GMount              *mount,
 	if (_check_file (root, ".autorun", TRUE) ||
 	    _check_file (root, "autorun", TRUE) ||
 	    _check_file (root, "autorun.sh", TRUE) ||
-	    _check_file (root, "autorun.exe", TRUE) || _check_file (root, "AUTORUN.EXE", TRUE) ||
-	    _check_file (root, "autorun.inf", FALSE) || _check_file (root, "AUTORUN.INF", FALSE)) {
+	    _check_file_case_insensitive (root, "autorun.exe", TRUE) ||
+	    _check_file_case_insensitive (root, "autorun.inf", FALSE)) {
 		/* http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html */
 
 		/* http://bugzilla.gnome.org/show_bug.cgi?id=509823#c3 for the autorun.exe and autorun.inf stuff */

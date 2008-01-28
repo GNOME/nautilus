@@ -90,4 +90,7 @@ char *   nautilus_unique_temporary_file_name         (void);
 
 GFile *  nautilus_find_existing_uri_in_hierarchy     (GFile *location);
 
+GFile *
+nautilus_find_file_insensitive (GFile *parent, const gchar *name);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */

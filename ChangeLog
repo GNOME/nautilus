@@ -1,5 +1,15 @@
 2008-01-28  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-autorun.c:
+	Better finding of case insensitive files. (#511450)
+	
+        * libnautilus-private/nautilus-file-utilities.[ch]:
+        Add nautilus_find_file_insensitive
+
+	Based on patch from John Millikin
+
+2008-01-28  Alexander Larsson  <alexl@redhat.com>
+
         * src/file-manager/fm-directory-view.c:
 	Enable paste into folder for volume links (#386800)
 	Based on patch from John Millikin
