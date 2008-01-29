@@ -4074,7 +4074,7 @@ report_link_progress (CopyMoveJob *link_job, int total, int left)
 					       link_job->destination));
 
 	nautilus_progress_info_take_details (job->progress,
-					     f (ngettext ("Making links to %'d file",
+					     f (ngettext ("Making link to %'d file",
 							  "Making links to %'d files",
 							  left), left));
 
