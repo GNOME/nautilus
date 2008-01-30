@@ -207,8 +207,7 @@ automount_all_volumes (NautilusApplication *application)
 				continue;
 			}
 			
-			/* Set this so we don't autorun stuff from it */
-			g_object_set_data (G_OBJECT (volume), "nautilus-automounted", GINT_TO_POINTER (1));
+			nautilus_inhibit_autorun_for_volume (volume);
 
 			/* pass NULL as GMountOperation to avoid user interaction */
 			g_volume_mount (volume, NULL, NULL, startup_volume_mount_cb, NULL);
@@ -1418,8 +1417,6 @@ mount_added_callback (GVolumeMonitor *monitor,
 {
 	NautilusDirectory *directory;
 	GFile *root;
-	GVolume *enclosing_volume;
-	gboolean ignore_autorun;
 		
 	root = g_mount_get_root (mount);
 	directory = nautilus_directory_get_existing (root);
@@ -1429,21 +1426,7 @@ mount_added_callback (GVolumeMonitor *monitor,
 		nautilus_directory_unref (directory);
 	}
 
-	ignore_autorun = FALSE;
-
-	enclosing_volume = g_mount_get_volume (mount);
-	if (enclosing_volume != NULL) {
-		if (g_object_get_data (G_OBJECT (enclosing_volume), "nautilus-automounted") != NULL) {
-			ignore_autorun = TRUE;
-			/* Autorun if the user unmounts and then mounts */
-			g_object_set_data (G_OBJECT (enclosing_volume), "nautilus-automounted", NULL);
-		}
-		g_object_unref (enclosing_volume);
-	}
-
-	if (!ignore_autorun) {
-		nautilus_autorun (mount, autorun_show_window, application);
-	}
+	nautilus_autorun (mount, autorun_show_window, application);
 }
 
 /* Called whenever a mount is unmounted. Check and see if there are

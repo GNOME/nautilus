@@ -60,6 +60,8 @@ enum
 	COLUMN_AUTORUN_ITEM_TYPE,	
 };
 
+static gboolean should_autorun_mount (GMount *mount);
+
 void
 nautilus_autorun_get_preferences (const char *x_content_type, 
 				  gboolean *pref_ask, 
@@ -1233,7 +1235,8 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 {
 	AutorunData *data;
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER))
+	if (!should_autorun_mount (mount) ||
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER))
 		return;
 		
 	/* TODO: only do this for local mounts */
@@ -1269,4 +1272,95 @@ nautilus_autorun_get_x_content_types_for_mount (GMount      *mount,
 	 * TODO: Really? what if we didn't mount the mount ourself?
 	 */
 	return _g_mount_guess_content_type (mount, force_rescan, NULL);
+}
+
+
+static GList *inhibit_mount_handling_for = NULL;
+
+
+static gboolean
+remove_inhibit_file_cb (gpointer data)
+{
+	GFile *file = data;
+	GList *l;
+
+	l = g_list_find (inhibit_mount_handling_for, file);
+	if (l != NULL) {
+		inhibit_mount_handling_for = g_list_delete_link (inhibit_mount_handling_for, l);
+		g_object_unref (file);
+	}
+	
+	return FALSE;
+}
+
+void
+nautilus_inhibit_autorun_for_file (GFile *file)
+{
+	inhibit_mount_handling_for = g_list_prepend (inhibit_mount_handling_for, g_object_ref (file));
+	g_timeout_add_full (0,
+			    5000,
+			    remove_inhibit_file_cb,
+			    g_object_ref (file),
+			    g_object_unref);
+}
+
+static gboolean
+remove_inhibit_volume (gpointer data)
+{
+	GVolume *volume = data;
+
+	g_object_set_data (G_OBJECT (volume), "nautilus-inhibit-autorun", NULL);
+	return FALSE;
+}
+
+void
+nautilus_inhibit_autorun_for_volume (GVolume *volume)
+{
+	g_object_set_data (G_OBJECT (volume), "nautilus-inhibit-autorun", GINT_TO_POINTER (1));
+	g_timeout_add_full (0,
+			    5000,
+			    remove_inhibit_volume,
+			    g_object_ref (volume),
+			    g_object_unref);
+}
+
+static gboolean
+should_autorun_mount (GMount *mount)
+{
+	GFile *root, *file;
+	GList *l;
+	GVolume *enclosing_volume;
+	gboolean ignore_autorun;
+
+	ignore_autorun = FALSE;
+	enclosing_volume = g_mount_get_volume (mount);
+	if (enclosing_volume != NULL) {
+		if (g_object_get_data (G_OBJECT (enclosing_volume), "nautilus-inhibit-autorun") != NULL) {
+			ignore_autorun = TRUE;
+			g_object_set_data (G_OBJECT (enclosing_volume), "nautilus-inhibit-autorun", NULL);
+		}
+		g_object_unref (enclosing_volume);
+	}
+
+	if (ignore_autorun) {
+		return FALSE;
+	}
+	
+	root = g_mount_get_root (mount);
+
+	for (l = inhibit_mount_handling_for; l != NULL; l = l->next) {
+		file = l->data;
+		if (g_file_contains_file (root, file)) {
+			ignore_autorun = TRUE;
+			
+			inhibit_mount_handling_for = g_list_delete_link (inhibit_mount_handling_for, l);
+			g_object_unref (file);
+			
+			break;
+		}
+	}
+	
+	g_object_unref (root);
+
+	return !ignore_autorun;
 }

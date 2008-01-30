@@ -1,3 +1,18 @@
+2008-01-30  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-autorun.[ch]:
+	Add functions to inhibit autorun for a volume
+	or for the volume of a file.
+	
+        * src/nautilus-application.c:
+	Convert automount code to new way to inhibit autorun.
+	
+        * libnautilus-private/nautilus-file-operations.c:
+        * libnautilus-private/nautilus-mime-actions.c:
+        * libnautilus-private/nautilus-vfs-file.c:
+        * src/nautilus-window-manage-views.c:
+	Inhibit autorun if we manually mount stuff.
+
 2008-01-29  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c (report_link_progress):

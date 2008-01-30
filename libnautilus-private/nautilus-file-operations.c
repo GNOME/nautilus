@@ -71,6 +71,7 @@
 #include "nautilus-desktop-link-monitor.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
+#include "nautilus-autorun.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
 
@@ -1991,6 +1992,7 @@ nautilus_file_operations_mount_volume (GtkWindow *parent_window,
 	GMountOperation *mount_op;
 	
 	mount_op = eel_mount_operation_new (parent_window);
+	nautilus_inhibit_autorun_for_volume (volume);
 	g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
 }
 

@@ -28,6 +28,7 @@
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
+#include "nautilus-autorun.h"
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-mount-operation.h>
 #include <glib/gi18n.h>
@@ -236,9 +237,9 @@ vfs_file_mount_callback (GObject *source_object,
 	error = NULL;
 	mounted_on = g_file_mount_mountable_finish (G_FILE (source_object),
 						    res, &error);
-	
 	nautilus_file_operation_complete (op, mounted_on, error);
 	if (mounted_on) {
+		nautilus_inhibit_autorun_for_file (mounted_on);
 		g_object_unref (mounted_on);
 	}
 	if (error) {
