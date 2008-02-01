@@ -129,13 +129,16 @@ filter_nautilus_handler (GList *apps)
 {
 	GList *l, *next;
 	GAppInfo *application;
+	const char *id;
 
 	l = apps;
 	while (l != NULL) {
 		application = (GAppInfo *) l->data;
 		next = l->next;
 
-		if (strcmp (g_app_info_get_id (application),
+		id = g_app_info_get_id (application);
+		if (id != NULL &&
+		    strcmp (id,
 			    "nautilus-folder-handler.desktop") == 0) {
 			g_object_unref (application);
 			apps = g_list_delete_link (apps, l); 
@@ -284,8 +287,31 @@ static int
 application_compare_by_id (const GAppInfo *app_a,
 			   const GAppInfo *app_b)
 {
-	return g_utf8_collate (g_app_info_get_id ((GAppInfo *)app_a),
-			       g_app_info_get_id ((GAppInfo *)app_b));
+	const char *id_a, *id_b;
+
+	id_a = g_app_info_get_id ((GAppInfo *)app_a);
+	id_b = g_app_info_get_id ((GAppInfo *)app_b);
+
+	if (id_a == NULL && id_b == NULL) {
+		if (g_app_info_equal ((GAppInfo *)app_a, (GAppInfo *)app_b)) {
+			return 0;
+		}
+		if ((gsize)app_a < (gsize) app_b) {
+			return -1;
+		}
+		return 1;
+	}
+
+	if (id_a == NULL) {
+		return -1;
+	}
+	
+	if (id_b == NULL) {
+		return 1;
+	}
+	
+	
+	return strcmp (id_a, id_b);
 }
 
 GList *
@@ -429,8 +455,7 @@ intersect_application_lists (GList *a,
 		a_app = (GAppInfo *) l->data;
 		b_app = (GAppInfo *) m->data;
 
-		cmp = strcmp (g_app_info_get_id (a_app),
-			      g_app_info_get_id (b_app));
+		cmp = application_compare_by_id (a_app, b_app);
 		if (cmp > 0) {
 			g_object_unref (b_app);
 			m = m->next;
@@ -763,7 +788,15 @@ nautilus_mime_file_opens_in_external_app (NautilusFile *file)
 static unsigned int
 mime_application_hash (GAppInfo *app)
 {
-	return g_str_hash (g_app_info_get_id (app));
+	const char *id;
+
+	id = g_app_info_get_id (app);
+
+	if (id == NULL) {
+		return (guint) app;
+	}
+	
+	return g_str_hash (id);
 }
 
 static void
