@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-02 21:16+0100\n"
+"POT-Creation-Date: 2008-02-02 21:54+0100\n"
 "PO-Revision-Date: 2008-02-02 21:16+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1637,13 +1637,15 @@ msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1075
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr ""
+msgstr[0] "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
+msgstr[1] "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1085
 #: ../libnautilus-private/nautilus-file-operations.c:1126
@@ -1655,10 +1657,12 @@ msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Sètz segur que volètz suprimir per totjon \"%B\" ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1117
-#, c-format
+#, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr ""
+msgstr[0] "Sètz segur que volètz suprimir per totjon \"%B\" ?"
+msgstr[1] "Sètz segur que volètz suprimir per totjon \"%B\" ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1159
 msgid "Deleting files"
@@ -1667,12 +1671,16 @@ msgstr "Supression de fichièrs"
 #: ../libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "%'d file left to delete"
-msgstr ""
+msgid_plural "%'d files left to delete"
+msgstr[0] ""
+msgstr[1] ""
 
 #. To translators: %T will expand to a time like "2 minutes"
 #: ../libnautilus-private/nautilus-file-operations.c:1175
 msgid "%'d file left to delete — %T left"
-msgstr ""
+msgid_plural "%'d files left to delete — %T left"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1236
 #: ../libnautilus-private/nautilus-file-operations.c:1269
@@ -2087,7 +2095,9 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:4079
 #, c-format
 msgid "Making link to %'d file"
-msgstr ""
+msgid_plural "Making links to %'d files"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:4153
 msgid "Error while creating link to %B."
@@ -2900,7 +2910,9 @@ msgstr ""
 #: ../libnautilus-private/nautilus-progress-info.c:284
 #, c-format
 msgid "%'d file operation active"
-msgstr ""
+msgid_plural "%'d file operations active"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libnautilus-private/nautilus-progress-info.c:474
 #: ../libnautilus-private/nautilus-progress-info.c:492
@@ -3261,16 +3273,20 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 
 #: ../src/file-manager/fm-directory-view.c:5529
-#, c-format
+#, fuzzy, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
+msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
-msgstr ""
+msgstr[0] "Se seleccionatz la comanda Pegar, \"%s\" serà desplaçat"
+msgstr[1] "Se seleccionatz la comanda Pegar, \"%s\" serà desplaçat"
 
 #: ../src/file-manager/fm-directory-view.c:5536
-#, c-format
+#, fuzzy, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
+msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr ""
+msgstr[0] "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
+msgstr[1] "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 
 #: ../src/file-manager/fm-directory-view.c:5630
 #: ../src/file-manager/fm-tree-view.c:986
@@ -4169,7 +4185,9 @@ msgstr ""
 #: ../src/file-manager/fm-properties-window.c:2291
 #, c-format
 msgid "%'d item, with size %s"
-msgstr ""
+msgid_plural "%'d items, totalling %s"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../src/file-manager/fm-properties-window.c:2300
 msgid "(some contents unreadable)"
@@ -6223,4 +6241,3 @@ msgstr "Definir lo nivèl de zoom de la visualizacion actuala"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Ret"
-
