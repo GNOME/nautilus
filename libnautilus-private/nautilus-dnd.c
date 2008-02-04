@@ -427,7 +427,8 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	same_fs = check_same_fs (target, dropped);
 	target_is_source_parent = g_file_contains_file (target, dropped);
 	
-	if (same_fs || target_is_source_parent) {
+	if (same_fs || target_is_source_parent ||
+	    g_file_has_uri_scheme (dropped, "trash")) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		} else {
