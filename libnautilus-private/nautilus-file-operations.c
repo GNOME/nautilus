@@ -4885,7 +4885,8 @@ nautilus_file_operations_new_file (GtkWidget *parent_view,
 static void
 delete_trash_file (CommonJob *job,
 		   GFile *file,
-		   gboolean del_dir)
+		   gboolean del_file,
+		   gboolean del_children)
 {
 	GFileInfo *info;
 	GFile *child;
@@ -4894,26 +4895,30 @@ delete_trash_file (CommonJob *job,
 	if (job_aborted (job)) {
 		return;
 	}
-	
-	enumerator = g_file_enumerate_children (file,
-						G_FILE_ATTRIBUTE_STANDARD_NAME,
-						G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-						job->cancellable,
-						NULL);
-	if (enumerator) {
-		while (!job_aborted (job) &&
-		       (info = g_file_enumerator_next_file (enumerator, job->cancellable, NULL)) != NULL) {
-			child = g_file_get_child (file,
-						  g_file_info_get_name (info));
-			delete_trash_file (job, child, TRUE);
-			g_object_unref (child);
-			g_object_unref (info);
+
+	if (del_children) {
+		enumerator = g_file_enumerate_children (file,
+							G_FILE_ATTRIBUTE_STANDARD_NAME ","
+							G_FILE_ATTRIBUTE_STANDARD_TYPE,
+							G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+							job->cancellable,
+							NULL);
+		if (enumerator) {
+			while (!job_aborted (job) &&
+			       (info = g_file_enumerator_next_file (enumerator, job->cancellable, NULL)) != NULL) {
+				child = g_file_get_child (file,
+							  g_file_info_get_name (info));
+				delete_trash_file (job, child, TRUE,
+						   g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
+				g_object_unref (child);
+				g_object_unref (info);
+			}
+			g_file_enumerator_close (enumerator, job->cancellable, NULL);
+			g_object_unref (enumerator);
 		}
-		g_file_enumerator_close (enumerator, job->cancellable, NULL);
-		g_object_unref (enumerator);
-	} 
+	}
 	
-	if (!job_aborted (job) && del_dir) {
+	if (!job_aborted (job) && del_file) {
 		g_file_delete (file, job->cancellable, NULL);
 	}
 }
@@ -4952,7 +4957,7 @@ empty_trash_job (GIOSchedulerJob *io_job,
 	for (l = job->trash_dirs;
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
-		delete_trash_file (common, l->data, FALSE);
+		delete_trash_file (common, l->data, FALSE, TRUE);
 	}
 
 	g_io_scheduler_job_send_to_mainloop_async (io_job,
