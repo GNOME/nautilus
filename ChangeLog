@@ -1,5 +1,10 @@
 2008-02-04  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-properties-window.c (create_permissions_page):
+	Only show selinux context if HAVE_SELINUX.
+	
+2008-02-04  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
 	Don't follow symlinks when emptying trash (#513912)
 
