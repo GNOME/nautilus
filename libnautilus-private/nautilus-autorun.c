@@ -1223,8 +1223,9 @@ autorun_guessed_content_type_callback (GObject *source_object,
 	}
 
 	/* only open the folder once.. */
-	if (open_folder)
+	if (open_folder) {
 		autorun_open_folder_for_mount (data);
+	}
 
 	g_object_unref (data->mount);
 	g_free (data);
@@ -1236,10 +1237,9 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 	AutorunData *data;
 
 	if (!should_autorun_mount (mount) ||
-	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER))
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER)) {
 		return;
-		
-	/* TODO: only do this for local mounts */
+	}
 
 	/* Sniff the newly added mount to generate x-content/ types;
 	 * we do this asynchronously (in another thread) since it
@@ -1359,7 +1359,12 @@ should_autorun_mount (GMount *mount)
 			break;
 		}
 	}
-	
+
+	if (!g_file_is_native (root)) {
+		/* only do autorun on local files */
+		/* TODO: Maybe we should do this on some gvfs mounts? like gphoto: ? */
+		ignore_autorun = TRUE;
+	}
 	g_object_unref (root);
 
 	return !ignore_autorun;
