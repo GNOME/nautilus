@@ -582,6 +582,28 @@ get_duplicate_name (const char *name, int count_increment)
 	return result;
 }
 
+static gboolean
+has_invalid_xml_char (char *str)
+{
+	gunichar c;
+
+	while (*str != 0) {
+		c = g_utf8_get_char (str);
+		/* characters XML permits */
+		if (!(c == 0x9 ||
+		      c == 0xA ||
+		      c == 0xD ||
+		      (c >= 0x20 && c <= 0xD7FF) ||
+		      (c >= 0xE000 && c <= 0xFFFD) ||
+		      (c >= 0x10000 && c <= 0x10FFFF))) {
+			return TRUE;
+		}
+		str = g_utf8_next_char (str);
+	}
+	return FALSE;
+}
+
+
 static char *
 custom_full_name_to_string (char *format, va_list va)
 {
@@ -603,7 +625,7 @@ custom_basename_to_string (char *format, va_list va)
 {
 	GFile *file;
 	GFileInfo *info;
-	char *name, *basename;
+	char *name, *basename, *tmp;
 
 	file = va_arg (va, GFile *);
 
@@ -627,6 +649,13 @@ custom_basename_to_string (char *format, va_list va)
 			name = g_uri_escape_string (basename, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 			g_free (basename);
 		}
+	}
+
+	/* Some chars can't be put in the markup we use for the dialogs... */
+	if (has_invalid_xml_char (name)) {
+		tmp = name;
+		name = g_uri_escape_string (name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
+		g_free (tmp);
 	}
 	
 	return name;
