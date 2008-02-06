@@ -896,6 +896,13 @@ nautilus_find_file_insensitive_next (GFile *parent, const gchar *name)
 	GFile *file;
 	const char *child_name, *compare_key;
 
+	/* First check the given version */
+	file = g_file_get_child (parent, name);
+	if (g_file_query_exists (file, NULL)) {
+		return file;
+	}
+	g_object_unref (file);
+	
 	ascii_collation_key = g_ascii_strdown (name, -1);
 	use_utf8 = g_utf8_validate (name, -1, NULL);
 	utf8_collation_key = NULL;	
@@ -905,42 +912,37 @@ nautilus_find_file_insensitive_next (GFile *parent, const gchar *name)
 		g_free (case_folded_name);
 	}
 
-	/* First check the given version */
-	file = g_file_get_child (parent, name);
-	if (g_file_query_exists (file, NULL)) {
-		return file;
-	}
-	g_object_unref (file);
-	
 	/* Enumerate and compare insensitive */
 	filename = NULL;
 	children = g_file_enumerate_children (parent,
 	                                      G_FILE_ATTRIBUTE_STANDARD_NAME,
 	                                      0, NULL, NULL);
-	while ((info = g_file_enumerator_next_file (children, NULL, NULL))) {
-		child_name = g_file_info_get_name (info);
-		
-		if (use_utf8 && g_utf8_validate (child_name, -1, NULL)) {
-			gchar *case_folded;
+	if (children != NULL) {
+		while ((info = g_file_enumerator_next_file (children, NULL, NULL))) {
+			child_name = g_file_info_get_name (info);
 			
-			case_folded = g_utf8_casefold (child_name, -1);
-			child_key = g_utf8_collate_key (case_folded, -1);
-			g_free (case_folded);
-			compare_key = utf8_collation_key;
-		} else {
-			child_key = g_ascii_strdown (child_name, -1);
-			compare_key = ascii_collation_key;
+			if (use_utf8 && g_utf8_validate (child_name, -1, NULL)) {
+				gchar *case_folded;
+				
+				case_folded = g_utf8_casefold (child_name, -1);
+				child_key = g_utf8_collate_key (case_folded, -1);
+				g_free (case_folded);
+				compare_key = utf8_collation_key;
+			} else {
+				child_key = g_ascii_strdown (child_name, -1);
+				compare_key = ascii_collation_key;
+			}
+			
+			found = strcmp (child_key, compare_key) == 0;
+			g_free (child_key);
+			if (found) {
+				filename = g_strdup (child_name);
+				break;
+			}
 		}
-
-		found = strcmp (child_key, compare_key) == 0;
-		g_free (child_key);
-		if (found) {
-			filename = g_strdup (child_name);
-			break;
-		}
+		g_file_enumerator_close (children, NULL, NULL);
+		g_object_unref (children);
 	}
-	g_file_enumerator_close (children, NULL, NULL);
-	g_object_unref (children);
 	
 	g_free (ascii_collation_key);
 	g_free (utf8_collation_key);

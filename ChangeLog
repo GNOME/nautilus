@@ -1,5 +1,11 @@
 2008-02-06  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-utilities.c (nautilus_find_file_insensitive_next):
+	Don't crash if parent doesn't exist (#512636)
+	Move exact change before key generation to avoid leak.
+
+2008-02-06  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-window-manage-views.c:
         (nautilus_window_reload):
 	Selection is already GFiles now, no need to
