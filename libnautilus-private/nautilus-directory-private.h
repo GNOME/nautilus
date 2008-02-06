@@ -88,13 +88,11 @@ struct NautilusDirectoryDetails
 
 	GList *new_files_in_progress; /* list of NewFilesState * */
 
-	NautilusFile *count_file;
 	DirectoryCountState *count_in_progress;
 
 	NautilusFile *deep_count_file;
 	DeepCountState *deep_count_in_progress;
 
-	NautilusFile *mime_list_file;
 	MimeListState *mime_list_in_progress;
 
 	NautilusFile *get_info_file;

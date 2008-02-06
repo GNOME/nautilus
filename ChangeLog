@@ -1,3 +1,25 @@
+2008-02-06  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Change how we handle cancellation of the directory count
+	and mime list for files in a directory. We now make sure
+	that the callback for the cancelled operation is run before
+	starting a new one.
+	
+	This was causing problems when viewing a directory that had
+	a subdirectory getting a lot of new files added, as for each
+	new file added the directory count would be cancelled and
+	re-started, leading to lots of outstanding (cancelled)
+	operations. Each of these was using a file descriptor for
+	the readdir operation, which wasn't really leaking (it was
+	eventually freed) but could cause temporary out-of-fd errors.
+
+	Perhaps we should do something similar for all kinds of
+	operations, but its worst for dir count and mime list due to
+	nautilus_directory_invalidate_count_and_mime_list() which is
+	called on file creation.
+
 2008-02-05  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c (custom_basename_to_string):

@@ -100,6 +100,7 @@ struct DirectoryLoadState {
 
 struct MimeListState {
 	NautilusDirectory *directory;
+	NautilusFile *mime_list_file;
 	GCancellable *cancellable;
 	GFileEnumerator *enumerator;
 	GHashTable *mime_list_hash;
@@ -118,6 +119,7 @@ struct NewFilesState {
 
 struct DirectoryCountState {
 	NautilusDirectory *directory;
+	NautilusFile *count_file;
 	GCancellable *cancellable;
 	GFileEnumerator *enumerator;
 	int file_count;
@@ -309,7 +311,7 @@ async_job_start (NautilusDirectory *directory,
 				(g_str_hash, g_str_equal,
 				 "nautilus-directory-async.c: async_jobs");
 		}
-		uri = = nautilus_directory_get_uri (directory);
+		uri = nautilus_directory_get_uri (directory);
 		key = g_strconcat (uri, ": ", job, NULL);
 		if (g_hash_table_lookup (async_jobs, key) != NULL) {
 			g_warning ("same job twice: %s in %s",
@@ -418,12 +420,6 @@ directory_count_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->count_in_progress != NULL) {
 		g_cancellable_cancel (directory->details->count_in_progress->cancellable);
-		directory->details->count_in_progress->directory = NULL;
-		directory->details->count_in_progress = NULL;
-		directory->details->count_file = NULL;
-		
-
-		async_job_end (directory, "directory count");
 	}
 }
 
@@ -449,15 +445,7 @@ static void
 mime_list_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->mime_list_in_progress != NULL) {
-		g_assert (NAUTILUS_IS_FILE (directory->details->mime_list_file));
-
 		g_cancellable_cancel (directory->details->mime_list_in_progress->cancellable);
-		
-		directory->details->mime_list_in_progress->directory = NULL;
-		directory->details->mime_list_in_progress = NULL;
-		directory->details->mime_list_file = NULL;
-
-		async_job_end (directory, "MIME list");
 	}
 }
 
@@ -1538,16 +1526,18 @@ nautilus_async_destroying_file (NautilusFile *file)
 	/* Check if it's a file that's currently being worked on.
 	 * If so, make that NULL so it gets canceled right away.
 	 */
-	if (directory->details->count_file == file) {
-		directory->details->count_file = NULL;
+	if (directory->details->count_in_progress != NULL &&
+	    directory->details->count_in_progress->count_file == file) {
+		directory->details->count_in_progress->count_file = NULL;
 		changed = TRUE;
 	}
 	if (directory->details->deep_count_file == file) {
 		directory->details->deep_count_file = NULL;
 		changed = TRUE;
 	}
-	if (directory->details->mime_list_file == file) {
-		directory->details->mime_list_file = NULL;
+	if (directory->details->mime_list_in_progress != NULL &&
+	    directory->details->mime_list_in_progress->mime_list_file == file) {
+		directory->details->mime_list_in_progress->mime_list_file = NULL;
 		changed = TRUE;
 	}
 	if (directory->details->get_info_file == file) {
@@ -2383,7 +2373,7 @@ directory_count_stop (NautilusDirectory *directory)
 	NautilusFile *file;
 
 	if (directory->details->count_in_progress != NULL) {
-		file = directory->details->count_file;
+		file = directory->details->count_in_progress->count_file;
 		if (file != NULL) {
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
@@ -2418,16 +2408,11 @@ count_non_skipped_files (GList *list)
 
 static void
 count_children_done (NautilusDirectory *directory,
+		     NautilusFile *count_file,
 		     gboolean succeeded,
 		     int count)
 {
-	NautilusFile *count_file;
-
-	count_file = directory->details->count_file;
-	
 	g_assert (NAUTILUS_IS_FILE (count_file));
-
-	nautilus_directory_ref (directory);
 
 	count_file->details->directory_count_is_up_to_date = TRUE;
 
@@ -2441,7 +2426,6 @@ count_children_done (NautilusDirectory *directory,
 		count_file->details->got_directory_count = TRUE;
 		count_file->details->directory_count = count;
 	}
-	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
 
 	/* Send file-changed even if count failed, so interested parties can
@@ -2452,8 +2436,6 @@ count_children_done (NautilusDirectory *directory,
 	/* Start up the next one. */
 	async_job_end (directory, "directory count");
 	nautilus_directory_async_state_changed (directory);
-
-	nautilus_directory_unref (directory);
 }
 
 static void
@@ -2467,6 +2449,7 @@ directory_count_state_free (DirectoryCountState *state)
 		g_object_unref (state->enumerator);
 	}
 	g_object_unref (state->cancellable);
+	nautilus_directory_unref (state->directory);
 	g_free (state);
 }
 
@@ -2481,15 +2464,20 @@ count_more_files_callback (GObject *source_object,
 	GList *files;
 
 	state = user_data;
-
-	if (state->directory == NULL) {
+	directory = state->directory;
+	
+	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
+		directory->details->count_in_progress = NULL;
+
+		async_job_end (directory, "directory count");
+		nautilus_directory_async_state_changed (directory);
+		
 		directory_count_state_free (state);
+
 		return;
 	}
 
-	directory = nautilus_directory_ref (state->directory);
-	
 	g_assert (directory->details->count_in_progress != NULL);
 	g_assert (directory->details->count_in_progress == state);
 
@@ -2500,7 +2488,8 @@ count_more_files_callback (GObject *source_object,
 	state->file_count += count_non_skipped_files (files);
 	
 	if (files == NULL) {
-		count_children_done (directory, TRUE, state->file_count);
+		count_children_done (directory, state->count_file,
+				     TRUE, state->file_count);
 		directory_count_state_free (state);
 	} else {
 		g_file_enumerator_next_files_async (state->enumerator,
@@ -2513,8 +2502,6 @@ count_more_files_callback (GObject *source_object,
 
 	eel_g_object_list_free (files);
 
-	nautilus_directory_unref (directory);
-	
 	if (error) {
 		g_error_free (error);
 	}
@@ -2527,13 +2514,21 @@ count_children_callback (GObject *source_object,
 {
 	DirectoryCountState *state;
 	GFileEnumerator *enumerator;
+	NautilusDirectory *directory;
 	GError *error;
 
 	state = user_data;
 
-	if (state->directory == NULL) {
+	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
+		directory = state->directory;
+		directory->details->count_in_progress = NULL;
+
+		async_job_end (directory, "directory count");
+		nautilus_directory_async_state_changed (directory);
+		
 		directory_count_state_free (state);
+
 		return;
 	}
 	
@@ -2542,7 +2537,9 @@ count_children_callback (GObject *source_object,
 							res, &error);
 
 	if (enumerator == NULL) {
-		count_children_done (state->directory, FALSE, 0);
+		count_children_done (state->directory,
+				     state->count_file,
+				     FALSE, 0);
 		g_error_free (error);
 		directory_count_state_free (state);
 		return;
@@ -2591,10 +2588,9 @@ directory_count_start (NautilusDirectory *directory,
 	}
 
 	/* Start counting. */
-	directory->details->count_file = file;
-
 	state = g_new0 (DirectoryCountState, 1);
-	state->directory = directory;
+	state->count_file = file;
+	state->directory = nautilus_directory_ref (directory);
 	state->cancellable = g_cancellable_new ();
 	
 	directory->details->count_in_progress = state;
@@ -2603,7 +2599,7 @@ directory_count_start (NautilusDirectory *directory,
 	g_message ("load_directory called to get shallow file count for %s", uri);
 #endif
 	location = nautilus_file_get_location (file);
-	
+
 	g_file_enumerate_children_async (location,
 					 G_FILE_ATTRIBUTE_STANDARD_NAME ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
@@ -2898,7 +2894,7 @@ mime_list_stop (NautilusDirectory *directory)
 	NautilusFile *file;
 
 	if (directory->details->mime_list_in_progress != NULL) {
-		file = directory->details->mime_list_file;
+		file = directory->details->mime_list_in_progress->mime_list_file;
 		if (file != NULL) {
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
@@ -2908,7 +2904,7 @@ mime_list_stop (NautilusDirectory *directory)
 				return;
 			}
 		}
-
+		
 		/* The count is not wanted, so stop it. */
 		mime_list_cancel (directory);
 	}
@@ -2926,6 +2922,7 @@ mime_list_state_free (MimeListState *state)
 	}
 	g_object_unref (state->cancellable);
 	istr_set_destroy (state->mime_list_hash);
+	nautilus_directory_unref (state->directory);
 	g_free (state);
 }
 
@@ -2939,7 +2936,7 @@ mime_list_done (MimeListState *state, gboolean success)
 	directory = state->directory;
 	g_assert (directory != NULL);
 	
-	file = directory->details->mime_list_file;
+	file = state->mime_list_file;
 	
 	file->details->mime_list_is_up_to_date = TRUE;
 	eel_g_list_free_deep (file->details->mime_list);
@@ -2951,7 +2948,6 @@ mime_list_done (MimeListState *state, gboolean success)
 		file->details->mime_list = istr_set_get_as_list	(state->mime_list_hash);
 	}
 	directory->details->mime_list_in_progress = NULL;
-	directory->details->mime_list_file = NULL;
 
 	/* Send file-changed even if getting the item type list
 	 * failed, so interested parties can distinguish between
@@ -2962,7 +2958,6 @@ mime_list_done (MimeListState *state, gboolean success)
 	/* Start up the next one. */
 	async_job_end (directory, "MIME list");
 	nautilus_directory_async_state_changed (directory);
-	
 }
 
 static void
@@ -2994,15 +2989,20 @@ mime_list_callback (GObject *source_object,
 	GFileInfo *info;
 
 	state = user_data;
+	directory = state->directory;
 
-	if (state->directory == NULL) {
+	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
+		directory->details->mime_list_in_progress = NULL;
+
+		async_job_end (directory, "MIME list");
+		nautilus_directory_async_state_changed (directory);
+		
 		mime_list_state_free (state);
+
 		return;
 	}
 
-	directory = nautilus_directory_ref (state->directory);
-	
 	g_assert (directory->details->mime_list_in_progress != NULL);
 	g_assert (directory->details->mime_list_in_progress == state);
 
@@ -3029,8 +3029,6 @@ mime_list_callback (GObject *source_object,
 	}
 
 	g_list_free (files);
-
-	nautilus_directory_unref (directory);
 	
 	if (error) {
 		g_error_free (error);
@@ -3044,13 +3042,21 @@ list_mime_enum_callback (GObject *source_object,
 {
 	MimeListState *state;
 	GFileEnumerator *enumerator;
+	NautilusDirectory *directory;
 	GError *error;
 
 	state = user_data;
 
-	if (state->directory == NULL) {
+	if (g_cancellable_is_cancelled (state->cancellable)) {
 		/* Operation was cancelled. Bail out */
+		directory = state->directory;
+		directory->details->mime_list_in_progress = NULL;
+
+		async_job_end (directory, "MIME list");
+		nautilus_directory_async_state_changed (directory);
+		
 		mime_list_state_free (state);
+
 		return;
 	}
 	
@@ -3113,11 +3119,11 @@ mime_list_start (NautilusDirectory *directory,
 
 
 	state = g_new0 (MimeListState, 1);
-	state->directory = directory;
+	state->mime_list_file = file;
+	state->directory = nautilus_directory_ref (directory);
 	state->cancellable = g_cancellable_new ();
 	state->mime_list_hash = istr_set_new ();
 
-	directory->details->mime_list_file = file;
 	directory->details->mime_list_in_progress = state;
 
 #ifdef DEBUG_LOAD_DIRECTORY		
@@ -4347,7 +4353,8 @@ static void
 cancel_directory_count_for_file (NautilusDirectory *directory,
 				 NautilusFile      *file)
 {
-	if (directory->details->count_file == file) {
+	if (directory->details->count_in_progress != NULL &&
+	    directory->details->count_in_progress->count_file == file) {
 		directory_count_cancel (directory);
 	}
 }
@@ -4365,7 +4372,8 @@ static void
 cancel_mime_list_for_file (NautilusDirectory *directory,
 			   NautilusFile      *file)
 {
-	if (directory->details->mime_list_file == file) {
+	if (directory->details->mime_list_in_progress != NULL &&
+	    directory->details->mime_list_in_progress->mime_list_file == file) {
 		mime_list_cancel (directory);
 	}
 }
