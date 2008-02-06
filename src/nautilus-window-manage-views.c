@@ -1916,7 +1916,6 @@ nautilus_window_reload (NautilusWindow *window)
 {
 	GFile *location;
         char *current_pos;
-	GList *selection_uris, *l;
 	GList *selection;
 	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -1933,13 +1932,7 @@ nautilus_window_reload (NautilusWindow *window)
 	selection = NULL;
 	if (window->content_view != NULL) {
 		current_pos = nautilus_view_get_first_visible_file (window->content_view);
-		selection_uris = nautilus_view_get_selection (window->content_view);
-		selection = NULL;
-		for (l = selection_uris; l != NULL; l = l->next) {
-			selection = g_list_prepend (selection, g_file_new_for_uri (l->data));
-		}
-		eel_g_list_free_deep (selection_uris);
-		selection = g_list_reverse (selection);
+		selection = nautilus_view_get_selection (window->content_view);
 	}
 	begin_location_change
 		(window, location, selection,

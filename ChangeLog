@@ -1,5 +1,13 @@
 2008-02-06  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-window-manage-views.c:
+        (nautilus_window_reload):
+	Selection is already GFiles now, no need to
+	convert from uris (#514458)
+	Patch from John Millikin
+
+2008-02-06  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-directory-async.c:
         (directory_load_one):
 	Avoid crashing if gvfs backend gives NULL as name for
