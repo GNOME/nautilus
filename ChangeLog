@@ -1,6 +1,13 @@
 2008-02-06  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-directory-async.c:
+        (directory_load_one):
+	Avoid crashing if gvfs backend gives NULL as name for
+	a new file. (#511601)
+
+2008-02-06  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
         * libnautilus-private/nautilus-directory-private.h:
 	Change how we handle cancellation of the directory count
 	and mime list for files in a directory. We now make sure
