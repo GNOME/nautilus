@@ -90,7 +90,8 @@ static GtkTargetList *drop_types_list_root = NULL;
 
 static char * nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 							GdkDragContext *context,
-							int x, int y, gboolean *icon_hit);
+							int x, int y, gboolean *icon_hit,
+							gboolean rewrite_desktop);
 
 static EelCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
@@ -417,15 +418,11 @@ set_direct_save_uri (GtkWidget *widget, GdkDragContext *context, NautilusDragInf
 	
 	filename = get_direct_save_filename (context);
 	drop_target = nautilus_icon_container_find_drop_target (NAUTILUS_ICON_CONTAINER (widget), 
-								context, x, y, NULL);
+								context, x, y, NULL, TRUE);
 	
 	if (drop_target && eel_uri_is_trash (drop_target)) {
 		g_free (drop_target);
 		drop_target = NULL; /* Cannot save to trash ...*/
-	}
-	if (drop_target && eel_uri_is_desktop (drop_target)) {
-		g_free (drop_target);
-		drop_target = nautilus_get_desktop_directory_uri ();
 	}
 	
 	if (filename != NULL && drop_target != NULL) {
@@ -727,7 +724,7 @@ receive_dropped_netscape_url (NautilusIconContainer *container, const char *enco
 		return;
 	}
 
-	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL);
+	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL, TRUE);
 
 	g_signal_emit_by_name (container, "handle_netscape_url",
 			       encoded_url,
@@ -748,7 +745,7 @@ receive_dropped_uri_list (NautilusIconContainer *container, const char *uri_list
 		return;
 	}
 
-	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL);
+	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL, TRUE);
 
 	g_signal_emit_by_name (container, "handle_uri_list",
 				 uri_list,
@@ -769,7 +766,7 @@ receive_dropped_text (NautilusIconContainer *container, const char *text, GdkDra
 		return;
 	}
 
-	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL);
+	drop_target = nautilus_icon_container_find_drop_target (container, context, x, y, NULL, TRUE);
 	
 	g_signal_emit_by_name (container, "handle_text",
 			       text,
@@ -1036,8 +1033,9 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		free_target_uri = TRUE;
 	}
 
-	if (is_rtl)
+	if (is_rtl) {
 		x = CANVAS_WIDTH (container) - x;
+	}
 
 	/* start the copy */
 	g_signal_emit_by_name (container, "move_copy_items",
@@ -1059,13 +1057,15 @@ static char *
 nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 					  GdkDragContext *context,
 					  int x, int y,
-					  gboolean *icon_hit)
+					  gboolean *icon_hit,
+					  gboolean rewrite_desktop)
 {
 	NautilusIcon *drop_target_icon;
 	double world_x, world_y;
 	NautilusFile *file;
 	char *icon_uri;
-
+	char *container_uri;
+	
 	if (icon_hit) {
 		*icon_hit = FALSE;
 	}
@@ -1108,7 +1108,16 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 			*icon_hit = FALSE;
 		}
 
-		return get_container_uri (container);
+		container_uri = get_container_uri (container);
+
+		if (rewrite_desktop &&
+		    container_uri != NULL &&
+		    eel_uri_is_desktop (container_uri)) {
+			g_free (container_uri);
+			container_uri = nautilus_get_desktop_directory_uri ();
+		}
+		
+		return container_uri;
 	}
 	
 	if (icon_hit) {
@@ -1206,7 +1215,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					    &world_x, &world_y);
 
 		drop_target = nautilus_icon_container_find_drop_target (container, 
-			context, x, y, &icon_hit);
+									context, x, y, &icon_hit, FALSE);
 
 		local_move_only = FALSE;
 		if (!icon_hit && context->action == GDK_ACTION_MOVE) {
@@ -1260,13 +1269,13 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 			return;
 		}
 		drop_target = nautilus_icon_container_find_drop_target (container,
-			context, x, y, &icon_hit);
+									context, x, y, &icon_hit, FALSE);
 		if (!drop_target) {
 			return;
 		}
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
-			container->details->dnd_info->drag_info.selection_list, 
-			action);
+							     container->details->dnd_info->drag_info.selection_list, 
+							     action);
 		g_free (drop_target);
 		break;
 
