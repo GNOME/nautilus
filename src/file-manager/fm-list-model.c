@@ -377,7 +377,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			if (file != NULL) {
 				str = nautilus_file_get_string_attribute_with_default_q (file, 
 											 attribute);
-				g_value_set_string_take_ownership (value, str);
+				g_value_take_string (value, str);
 			} else if (attribute == attribute_name_q) {
 				if (file_entry->parent->loaded) {
 					g_value_set_string (value, _("(Empty)"));

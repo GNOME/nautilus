@@ -3576,7 +3576,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	file_date = eel_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
-	g_date_set_time (today, time (NULL));
+	g_date_set_time_t (today, time (NULL));
 
 	/* Overflow results in a large number; fine for our purposes. */
 	file_date_age = (g_date_get_julian (today) -

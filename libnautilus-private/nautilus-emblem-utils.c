@@ -83,22 +83,22 @@ is_reserved_keyword (const char *keyword)
 	g_assert (keyword != NULL);
 
 	/* check intrinsic emblems */
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
 		return TRUE;
 	}
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
 		return TRUE;
 	}
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
 		return TRUE;
 	}
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
 		return TRUE;
 	}
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
 		return TRUE;
 	}
-	if (g_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
+	if (g_ascii_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
 		return TRUE;
 	}
 
@@ -107,7 +107,7 @@ is_reserved_keyword (const char *keyword)
 	/* see if the keyword already exists */
 	result = g_list_find_custom (available,
 				     (char *) icon_name,
-				     (GCompareFunc) g_strcasecmp) != NULL;
+				     (GCompareFunc) g_ascii_strcasecmp) != NULL;
 	eel_g_list_free_deep (available);	
 	g_free (icon_name);
 	return result;

@@ -1,3 +1,12 @@
+2008-02-07  A. Walton <awalton@svn.gnome.org>
+	* configure.in:
+	* libnautilus-private/nautilus-emblem-utils.c:
+	(is_reserved_keyword):
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_fit_date_as_string):
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_value):
+	Remove deprecated GLib symbols and build with -DG_DISABLE_DEPRECATED.
+
 2008-02-07  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-icon-dnd.c:
