@@ -6884,7 +6884,6 @@ real_update_location_menu (FMDirectoryView *view)
 	NautilusFile *file;
 	gboolean is_special_link;
 	gboolean is_desktop_or_home_dir;
-	gboolean is_read_only;
 	gboolean can_delete_file;
 	gboolean show_separate_delete_command;
 	gboolean show_open_folder_window;
@@ -6917,11 +6916,9 @@ real_update_location_menu (FMDirectoryView *view)
 	is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
 	is_desktop_or_home_dir = nautilus_file_is_home (file)
 		|| nautilus_file_is_desktop_directory (file);
-	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_delete_file =
 		nautilus_file_can_delete (file) &&
-		!is_read_only &&
 		!is_special_link &&
 		!is_desktop_or_home_dir;
 
@@ -6998,7 +6995,6 @@ real_update_menus (FMDirectoryView *view)
 	char *label_with_underscore;
 	gboolean selection_contains_special_link;
 	gboolean selection_contains_desktop_or_home_dir;
-	gboolean is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
 	gboolean can_copy_files;
@@ -7021,12 +7017,10 @@ real_update_menus (FMDirectoryView *view)
 
 	selection_contains_special_link = special_link_in_selection (view);
 	selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (view);
-	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_create_files = fm_directory_view_supports_creating_files (view);
 	can_delete_files =
 		can_delete_all (selection) &&
-		!is_read_only &&
 		selection_count != 0 &&
 		!selection_contains_special_link &&
 		!selection_contains_desktop_or_home_dir;
