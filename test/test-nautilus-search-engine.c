@@ -34,6 +34,8 @@ main (int argc, char* argv[])
 	NautilusSearchEngine *engine;
 	NautilusQuery *query;
 
+	g_thread_init (NULL);
+	
 	gtk_init (&argc, &argv);
 
 	engine = nautilus_search_engine_new ();
