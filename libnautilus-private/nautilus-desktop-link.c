@@ -69,6 +69,24 @@ nautilus_desktop_link_changed (NautilusDesktopLink *link)
 }
 
 static void
+mount_changed_callback (GMount *mount, NautilusDesktopLink *link)
+{
+	g_free (link->details->display_name);
+	if (link->details->activation_location) {
+		g_object_unref (link->details->activation_location);
+	}
+	if (link->details->icon) {
+		g_object_unref (link->details->icon);
+	}
+	
+	link->details->display_name = g_mount_get_name (mount);
+	link->details->activation_location = g_mount_get_root (mount);
+	link->details->icon = g_mount_get_icon (mount);
+	
+	nautilus_desktop_link_changed (link);
+}
+
+static void
 trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 			      gboolean state,
 			      gpointer callback_data)
@@ -244,6 +262,9 @@ nautilus_desktop_link_new_from_mount (GMount *mount)
 	
 	link->details->activation_location = g_mount_get_root (mount);
 	link->details->icon = g_mount_get_icon (mount);
+	
+	g_signal_connect (mount, "changed",
+	                  G_CALLBACK (mount_changed_callback), link);
 	
 	create_icon_file (link);
 
