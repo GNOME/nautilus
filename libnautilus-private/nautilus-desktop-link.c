@@ -45,8 +45,8 @@ struct NautilusDesktopLinkDetails {
 
 	NautilusDesktopIconFile *icon_file;
 	
-	/* Just for trash icons: */
-	gulong trash_state_handler;
+	GObject *signal_handler_obj;
+	gulong signal_handler;
 
 	/* Just for mount icons: */
 	GMount *mount;
@@ -201,7 +201,8 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
 					      trash_name_changed,
 					      link);
-		link->details->trash_state_handler =
+		link->details->signal_handler_obj = G_OBJECT (nautilus_trash_monitor_get ());
+		link->details->signal_handler =
 			g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 						 G_CALLBACK (trash_state_changed_callback), link, 0);	
 		break;
@@ -263,8 +264,10 @@ nautilus_desktop_link_new_from_mount (GMount *mount)
 	link->details->activation_location = g_mount_get_root (mount);
 	link->details->icon = g_mount_get_icon (mount);
 	
-	g_signal_connect (mount, "changed",
-	                  G_CALLBACK (mount_changed_callback), link);
+	link->details->signal_handler_obj = G_OBJECT (mount);
+	link->details->signal_handler =
+		g_signal_connect (mount, "changed",
+				  G_CALLBACK (mount_changed_callback), link);
 	
 	create_icon_file (link);
 
@@ -379,9 +382,9 @@ desktop_link_finalize (GObject *object)
 
 	link = NAUTILUS_DESKTOP_LINK (object);
 
-	if (link->details->trash_state_handler != 0) {
-		g_signal_handler_disconnect (nautilus_trash_monitor_get (),
-					     link->details->trash_state_handler);
+	if (link->details->signal_handler != 0) {
+		g_signal_handler_disconnect (link->details->signal_handler_obj,
+					     link->details->signal_handler);
 	}
 
 	if (link->details->icon_file != NULL) {
