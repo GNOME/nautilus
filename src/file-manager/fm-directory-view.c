@@ -7097,7 +7097,6 @@ real_update_menus (FMDirectoryView *view)
 										  selection_count), 
 									 selection_count);
 			}
-			gtk_action_set_visible (action, FALSE);
 		} else {
 			if (selection_count == 0 || selection_count == 1) {
 				label_with_underscore = g_strdup (_("Browse in New Window"));
