@@ -1,14 +1,14 @@
 Hacking on Nautilus
 -------------------
 
-The Nautilus source tree is available from GNOME cvs (cvs.gnome.org) and 
+The Nautilus source tree is available from GNOME svn (svn.gnome.org) and 
 in releases on the GNOME FTP site
 (http://ftp.gnome.org/pub/GNOME/sources/nautilus/).
 
 If you plan to hack on Nautilus, please make sure you work from the
-CVS version. The CVS version can be checked from the GNOME cvs server.
-See http://developer.gnome.org/tools/cvs.html for details on how to get 
-started with GNOME CVS.
+SVN version. The SVN version can be checked from the GNOME svn server.
+See http://developer.gnome.org/tools/svn.html for details on how to get 
+started with GNOME SVN.
 
 If you want to contribute in development discussions, please send mail
 to the nautilus mailing list: <nautilus-list@gnome.org>.  Archives and
@@ -23,11 +23,11 @@ If you've been working on a change to Nautilus and want to propose it
 for inclusion, you have to generate a patch and submit it for review
 by the maintainers.
 
-Patches should be made with 'cvs diff -pu >patch' and should conform to
-Nautilus coding style as described in docs/style-guide.html. We are
-pretty strict about coding style, so please make sure you follow the
-style guide to avoid unnecessary work on both sides when reviewing the
-patch.
+Patches should be made with 'svn diff --diff-cmd diff -x -up >patch'
+and should conform to Nautilus coding style as described in
+docs/style-guide.html. We are pretty strict about coding style, so
+please make sure you follow the style guide to avoid unnecessary
+work on both sides when reviewing the patch.
 
 The best way to submit a patch for review is to post it on the mailing
 list. That way everyone sees it and can take part in the following
