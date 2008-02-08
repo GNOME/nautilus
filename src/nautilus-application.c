@@ -195,9 +195,8 @@ automount_all_volumes (NautilusApplication *application)
 		for (l = volumes; l != NULL; l = l->next) {
 			volume = l->data;
 			
-			/* TODO: only do this for local volumes */
-			
-			if (!g_volume_can_mount (volume)) {
+			if (!g_volume_should_automount (volume) ||
+			    !g_volume_can_mount (volume)) {
 				continue;
 			}
 			
@@ -1332,6 +1331,7 @@ volume_added_callback (GVolumeMonitor *monitor,
 		       NautilusApplication *application)
 {
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
+	    g_volume_should_automount (volume) &&
 	    g_volume_can_mount (volume)) {
 		nautilus_file_operations_mount_volume (NULL, volume);
 	}
