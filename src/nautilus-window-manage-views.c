@@ -969,7 +969,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		data->window = window;
 		window->details->mount_cancellable = data->cancellable;
 		nautilus_inhibit_autorun_for_file (location);
-		g_file_mount_enclosing_volume (location, mount_op, window->details->mount_cancellable,
+		g_file_mount_enclosing_volume (location, 0, mount_op, window->details->mount_cancellable,
 					       mount_not_mounted_callback, data);
 		g_object_unref (location);
 		g_object_unref (mount_op);

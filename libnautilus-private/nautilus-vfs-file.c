@@ -278,6 +278,7 @@ vfs_file_mount (NautilusFile                   *file,
 
 	location = nautilus_file_get_location (file);
 	g_file_mount_mountable (location,
+				0,
 				mount_op,
 				op->cancellable,
 				vfs_file_mount_callback,

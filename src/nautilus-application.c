@@ -209,7 +209,7 @@ automount_all_volumes (NautilusApplication *application)
 			nautilus_inhibit_autorun_for_volume (volume);
 
 			/* pass NULL as GMountOperation to avoid user interaction */
-			g_volume_mount (volume, NULL, NULL, startup_volume_mount_cb, NULL);
+			g_volume_mount (volume, 0, NULL, NULL, startup_volume_mount_cb, NULL);
 		}
 		eel_g_object_list_free (volumes);
 	}

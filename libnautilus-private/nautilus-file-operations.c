@@ -2022,7 +2022,7 @@ nautilus_file_operations_mount_volume (GtkWindow *parent_window,
 	
 	mount_op = eel_mount_operation_new (parent_window);
 	nautilus_inhibit_autorun_for_volume (volume);
-	g_volume_mount (volume, mount_op, NULL, volume_mount_cb, mount_op);
+	g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, mount_op);
 }
 
 
