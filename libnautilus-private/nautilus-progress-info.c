@@ -784,17 +784,26 @@ nautilus_progress_info_pulse_progress (NautilusProgressInfo *info)
 
 void
 nautilus_progress_info_set_progress (NautilusProgressInfo *info,
-				     double                current_percent)
+				     double                current,
+				     double                total)
 {
-	G_LOCK (progress_info);
+	double current_percent;
+	
+	if (total <= 0) {
+		current_percent = 1.0;
+	} else {
+		current_percent = current / total;
 
-	if (current_percent < 0) {
-		current_percent	= 0;
-	}
+		if (current_percent < 0) {
+			current_percent	= 0;
+		}
 		
-	if (current_percent > 1.0) {
-		current_percent	= 1.0;
+		if (current_percent > 1.0) {
+			current_percent	= 1.0;
+		}
 	}
+	
+	G_LOCK (progress_info);
 	
 	if (info->activity_mode || /* emit on switch from activity mode */
 	    fabs (current_percent - info->progress) > 0.005 /* Emit on change of 0.5 percent */

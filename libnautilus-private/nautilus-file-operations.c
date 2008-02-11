@@ -1209,7 +1209,7 @@ report_delete_progress (CommonJob *job,
 	}
 
 	if (source_info->num_files != 0) {
-		nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_files / source_info->num_files);
+		nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
 	}
 }
 
@@ -1501,7 +1501,7 @@ report_trash_progress (CommonJob *job,
 	nautilus_progress_info_take_details (job->progress, s);
 
 	if (total_files != 0) {
-		nautilus_progress_info_set_progress (job->progress, (double)files_trashed / total_files);
+		nautilus_progress_info_set_progress (job->progress, files_trashed, total_files);
 	}
 }
 
@@ -2591,7 +2591,7 @@ report_copy_progress (CopyMoveJob *copy_job,
 		nautilus_progress_info_take_details (job->progress, s);
 	}
 
-	nautilus_progress_info_set_progress (job->progress, (double)transfer_info->num_bytes / total_size);
+	nautilus_progress_info_set_progress (job->progress, transfer_info->num_bytes, total_size);
 }
 
 static GFile *
@@ -4109,7 +4109,7 @@ report_link_progress (CopyMoveJob *link_job, int total, int left)
 							  "Making links to %'d files",
 							  left), left));
 
-	nautilus_progress_info_set_progress (job->progress, (double)left / total);
+	nautilus_progress_info_set_progress (job->progress, left, total);
 }
 
 
