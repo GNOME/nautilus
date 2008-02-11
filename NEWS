@@ -1,3 +1,15 @@
+Major changes in 2.21.91 are:
+* String cleanups
+* Inhibit autorun for things we mount ourselves
+* Fix crashes and leaks
+* Only show selinux context if selinux detected
+* Default to move, not copy when dragging from trash
+* Don't autorun/automount non-local mounts
+* Fix case where we could run out of file descriptors
+* Handle drop of files on the desktop
+* Fix sensitiveness of delete from trash menu item
+* Fix open with context menu in always-use-browser mode
+
 Major changes in 2.21.90 are:
 * Use thousand separators in all numbers (if used by locale)
 * Fix leaks
