@@ -342,6 +342,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 				}
 				g_object_unref (volume);
 			}
+			g_list_free (volumes);
 		} else {
 			if (g_drive_is_media_removable (drive) && !g_drive_is_media_check_automatic (drive)) {
 				/* If the drive has no mountable volumes and we cannot detect media change.. we
