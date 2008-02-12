@@ -55,14 +55,6 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkwidget.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-result.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <gio/gio.h>
 #include <glib/gurifuncs.h>
 #include "nautilus-file-changes-queue.h"
