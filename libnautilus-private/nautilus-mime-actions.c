@@ -793,9 +793,9 @@ mime_application_hash (GAppInfo *app)
 	id = g_app_info_get_id (app);
 
 	if (id == NULL) {
-		return (guint) app;
+		return GPOINTER_TO_UINT(app);
 	}
-	
+
 	return g_str_hash (id);
 }
 
