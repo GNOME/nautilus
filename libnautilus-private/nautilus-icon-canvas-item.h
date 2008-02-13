@@ -62,7 +62,8 @@ GType       nautilus_icon_canvas_item_get_type                 (void);
 void        nautilus_icon_canvas_item_set_image                (NautilusIconCanvasItem       *item,
 								GdkPixbuf                    *image);
 GdkPixmap * nautilus_icon_canvas_item_get_image                (NautilusIconCanvasItem       *item,
-								GdkBitmap                   **mask);
+								GdkBitmap                   **mask,
+								GdkColormap		     *colormap);
 void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanvasItem       *item,
 								GList                        *emblem_pixbufs);
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem       *item,

@@ -1417,19 +1417,37 @@ drag_begin_callback (GtkWidget      *widget,
 		     gpointer        data)
 {
 	NautilusIconContainer *container;
+	GdkScreen *screen;
+	GdkColormap *colormap;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	double x1, y1, x2, y2, winx, winy;
 	int x_offset, y_offset;
 	int start_x, start_y;
+	gboolean use_mask;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
+
+	screen = gtk_widget_get_screen (widget);
+	colormap = NULL;
+	if (gdk_screen_is_composited (screen)) {
+		colormap = gdk_screen_get_rgba_colormap (screen);
+		if (colormap != NULL) {
+			use_mask = FALSE;
+		}
+	}
+	
+	/* Fall back on using the same colormap as the widget */
+	if (colormap == NULL) {
+		colormap = gtk_widget_get_colormap (widget);		
+		use_mask = TRUE;
+	}
 
 	start_x = container->details->dnd_info->drag_info.start_x + gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
 	start_y = container->details->dnd_info->drag_info.start_y + gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
 
         /* create a pixmap and mask to drag with */
-        pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);
+        pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask, colormap);
     
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
@@ -1444,8 +1462,8 @@ drag_begin_callback (GtkWidget      *widget,
         y_offset = start_y - winy;
 
 	gtk_drag_set_icon_pixmap (context,
-				  gtk_widget_get_colormap (GTK_WIDGET (container)),
-				  pixmap, mask,
+				  colormap,
+				  pixmap, (use_mask ? mask : NULL),
 				  x_offset, y_offset);
 }
 

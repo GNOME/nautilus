@@ -454,12 +454,12 @@ nautilus_icon_canvas_item_get_property (GObject        *object,
       
 GdkPixmap *
 nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
-				     GdkBitmap **mask)
+				     GdkBitmap **mask,
+				     GdkColormap *colormap)
 {
 	GdkPixmap *pixmap;
 	EelCanvas *canvas;
 	GdkScreen *screen;
-	GdkColormap *colormap;
 	GdkGC *gc;
 	int width, height;
 	int item_offset_x, item_offset_y;
@@ -474,7 +474,6 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
 	canvas = EEL_CANVAS_ITEM (item)->canvas;
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (canvas));
 	screen = gdk_colormap_get_screen (colormap);
 
 	/* Assume we're updated so canvas item data is right */
@@ -529,11 +528,14 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 				      GDK_INTERP_BILINEAR, 255);
 	}
 
+	/* clear the pixmap */
+	cairo_t *cr;
+	cr = gdk_cairo_create (pixmap);
+	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+	cairo_paint (cr);
+	cairo_destroy (cr);
+	
 	gc = gdk_gc_new (pixmap);
-	gdk_draw_rectangle (pixmap, GTK_WIDGET (canvas)->style->white_gc,
-			    TRUE,
-			    0, 0,
-			    width, height);
 	gdk_draw_pixbuf (pixmap, gc, pixbuf, 
 			 0, 0, 0, 0,
 			 gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
