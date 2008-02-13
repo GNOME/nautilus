@@ -1,5 +1,12 @@
 2008-02-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-link.c:
+        (nautilus_link_get_link_icon_from_desktop):
+	Strip extension from non-absolute-filename icons.
+	This fixes icons for some old-school desktop files.
+
+2008-02-13  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file.[ch]:
         * libnautilus-private/nautilus-file-private.h:
 	Add nautilus_file_is_launcher()

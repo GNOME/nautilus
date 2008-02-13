@@ -330,7 +330,7 @@ nautilus_link_get_link_name_from_desktop (GnomeDesktopItem *desktop_file)
 static char *
 nautilus_link_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	char *icon_uri;
+	char *icon_uri, *icon_copy, *p;
 	const char *icon;
 	GnomeDesktopItemType desktop_type;
 
@@ -341,7 +341,15 @@ nautilus_link_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 
 	icon = gnome_desktop_item_get_string (desktop_file, GNOME_DESKTOP_ITEM_ICON);
 	if (icon != NULL) {
-		return g_strdup (icon);
+		icon_copy = g_strdup (icon);
+		if (!g_path_is_absolute (icon_copy)) {
+			/* Strip out any extension on non-filename icons. Old desktop files may have this */
+			p = strchr (icon_copy, '.');
+			if (p != NULL) {
+				*p = 0;
+			}
+		}
+		return icon_copy;
 	}
 
 	desktop_type = gnome_desktop_item_get_entry_type (desktop_file);
