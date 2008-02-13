@@ -155,9 +155,9 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 		return 1;
 	}
 
-	if (g_file_equal (bookmark_a->details->location,
-			  bookmark_b->details->location)) {
-		return 0;
+	if (!g_file_equal (bookmark_a->details->location,
+			   bookmark_b->details->location)) {
+		return 1;
 	}
 	
 	return 0;
