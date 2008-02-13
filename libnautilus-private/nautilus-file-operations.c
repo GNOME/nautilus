@@ -2399,8 +2399,6 @@ verify_destination (CommonJob *job,
 				      GTK_STOCK_CANCEL,
 				      NULL);
 		
-		g_error_free (error);
-
 		abort_job (job);
 		return;
 	}
