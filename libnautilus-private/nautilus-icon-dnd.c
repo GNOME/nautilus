@@ -1461,6 +1461,17 @@ drag_begin_callback (GtkWidget      *widget,
         x_offset = start_x - winx;
         y_offset = start_y - winy;
 
+	if (!use_mask) {
+		cairo_t *cr;
+
+		/* If composite works, make the icons partially transparent */
+		cr = gdk_cairo_create (pixmap);
+		cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OUT);
+		cairo_set_source_rgba(cr, 1,0,0,0.35);
+		cairo_paint (cr);
+		cairo_destroy (cr);
+	}
+	
 	gtk_drag_set_icon_pixmap (context,
 				  colormap,
 				  pixmap, (use_mask ? mask : NULL),
