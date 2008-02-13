@@ -470,6 +470,7 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	EmblemLayout emblem_layout;
 	double item_x, item_y;
 	gboolean is_rtl;
+	cairo_t *cr;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
@@ -529,7 +530,6 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	}
 
 	/* clear the pixmap */
-	cairo_t *cr;
 	cr = gdk_cairo_create (pixmap);
 	cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
 	cairo_paint (cr);
