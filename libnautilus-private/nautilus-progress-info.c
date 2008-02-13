@@ -59,6 +59,7 @@ struct _NautilusProgressInfo
 	gboolean activity_mode;
 	gboolean started;
 	gboolean finished;
+	gboolean paused;
 	
 	GSource *idle_source;
 	gboolean source_is_now;
@@ -423,6 +424,9 @@ handle_new_progress_info (NautilusProgressInfo *info)
 static gboolean
 new_op_started_timeout (NautilusProgressInfo *info)
 {
+	if (nautilus_progress_info_get_is_paused (info)) {
+		return TRUE;
+	}
 	if (!nautilus_progress_info_get_is_finished (info)) {
 		handle_new_progress_info (info);
 	}
@@ -567,6 +571,20 @@ nautilus_progress_info_get_is_finished (NautilusProgressInfo *info)
 	return res;
 }
 
+gboolean
+nautilus_progress_info_get_is_paused (NautilusProgressInfo *info)
+{
+	gboolean res;
+	
+	G_LOCK (progress_info);
+	
+	res = info->paused;
+	
+	G_UNLOCK (progress_info);
+	
+	return res;
+}
+
 static gboolean
 idle_callback (gpointer data)
 {
@@ -664,6 +682,30 @@ queue_idle (NautilusProgressInfo *info, gboolean now)
 		g_source_set_callback (info->idle_source, idle_callback, info, NULL);
 		g_source_attach (info->idle_source, NULL);
 	}
+}
+
+void
+nautilus_progress_info_pause (NautilusProgressInfo *info)
+{
+	G_LOCK (progress_info);
+
+	if (!info->paused) {
+		info->paused = TRUE;
+	}
+
+	G_UNLOCK (progress_info);
+}
+
+void
+nautilus_progress_info_resume (NautilusProgressInfo *info)
+{
+	G_LOCK (progress_info);
+
+	if (info->paused) {
+		info->paused = FALSE;
+	}
+
+	G_UNLOCK (progress_info);
 }
 
 void

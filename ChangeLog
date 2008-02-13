@@ -1,5 +1,14 @@
 2008-02-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-progress-info.[ch]:
+        * libnautilus-private/nautilus-file-operations.c:
+	Add paused status to progress infos and use it
+	to avoid poping up the progress dialog while dialogs
+	are up. (#512406)
+	Patch from Cosimo Cecchi
+	
+2008-02-13  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-icon-dnd.c:
 	If using composite, make dnd icons partially transparent.
 	

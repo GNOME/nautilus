@@ -950,11 +950,12 @@ run_simple_dialog_va (CommonJob *job,
 	g_ptr_array_add (ptr_array, NULL);
 	data->button_titles = (const char **)g_ptr_array_free (ptr_array, FALSE);
 
+	nautilus_progress_info_pause (job->progress);
 	g_io_scheduler_job_send_to_mainloop (job->io_job,
 					     do_run_simple_dialog,
 					     data,
 					     NULL);
-
+	nautilus_progress_info_resume (job->progress);
 	res = data->result;
 
 	g_free (data->button_titles);
