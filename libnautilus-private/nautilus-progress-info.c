@@ -193,6 +193,17 @@ delete_event (GtkWidget *widget,
 	return TRUE;
 }
 
+static void
+status_icon_activate_cb (GtkStatusIcon *icon,
+			 GtkWidget *progress_window)
+{
+	if (GTK_WIDGET_VISIBLE (progress_window)) {
+		gtk_widget_hide (progress_window);
+	} else {
+		gtk_window_present (GTK_WINDOW (progress_window));
+	}
+}
+
 static GtkWidget *
 get_progress_window (void)
 {
@@ -211,8 +222,8 @@ get_progress_window (void)
 			      _("File operations"));
 	gtk_window_set_wmclass (GTK_WINDOW (progress_window),
 				"file_progress", "Nautilus");
-	gtk_window_set_type_hint (GTK_WINDOW (progress_window),
-				  GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_position (GTK_WINDOW (progress_window),
+				 GTK_WIN_POS_CENTER_ALWAYS);
 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
@@ -224,7 +235,9 @@ get_progress_window (void)
 	g_signal_connect (progress_window, "delete_event", (GCallback)delete_event, NULL);
 
 	status_icon = gtk_status_icon_new_from_icon_name ("stock_folder-copy");
-	g_signal_connect_swapped (status_icon, "activate", (GCallback)gtk_window_present, progress_window);
+	g_signal_connect (status_icon, "activate",
+			  (GCallback)status_icon_activate_cb,
+			  progress_window);
 
 	gtk_status_icon_set_visible (status_icon, FALSE);
 	
