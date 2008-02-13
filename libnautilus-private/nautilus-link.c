@@ -298,7 +298,6 @@ nautilus_link_local_get_additional_text (const char *path)
 static char *
 nautilus_link_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	const char *launch_string;
 	const char *type;
 	char *retval;
 
@@ -309,15 +308,7 @@ nautilus_link_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 		return NULL;
 	}
 
-	if (strcmp (type, "Application") == 0) {
-		launch_string = gnome_desktop_item_get_string (desktop_file, "Exec");
-		if (launch_string == NULL) {
-			return NULL;
-		}
-
-		launch_string = gnome_desktop_item_get_location (desktop_file);
-		retval = g_strconcat (NAUTILUS_DESKTOP_COMMAND_SPECIFIER, launch_string, NULL);
-	} else if (strcmp (type, "URL") == 0) {
+	if (strcmp (type, "URL") == 0) {
 		/* Some old broken desktop files use this nonstandard feature, we need handle it though */
 		retval = g_strdup (gnome_desktop_item_get_string (desktop_file, "Exec"));
 	} else if ((strcmp (type, NAUTILUS_LINK_GENERIC_TAG) == 0) ||
@@ -405,9 +396,11 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 int          link_file_size,
 						 char       **uri,
 						 char       **name,
-						 char       **icon)
+						 char       **icon,
+						 gboolean    *is_launcher)
 {
 	GnomeDesktopItem *desktop_file;
+	const char *type;
 
 	if (!is_link_data (file_contents, link_file_size)) {
 		return;
@@ -422,6 +415,14 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 	*name = nautilus_link_get_link_name_from_desktop (desktop_file);
 	*icon = nautilus_link_get_link_icon_from_desktop (desktop_file);
 
+	*is_launcher = FALSE;
+	type = gnome_desktop_item_get_string (desktop_file, "Type");
+	if (type != NULL &&
+	    strcmp (type, "Application") == 0 &&
+	    gnome_desktop_item_get_string (desktop_file, "Exec") != NULL) {
+		*is_launcher = TRUE;
+	}
+	
 	gnome_desktop_item_unref (desktop_file);
 }
 

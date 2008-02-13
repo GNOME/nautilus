@@ -1,5 +1,24 @@
 2008-02-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.[ch]:
+        * libnautilus-private/nautilus-file-private.h:
+	Add nautilus_file_is_launcher()
+	
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-dnd.c:
+        * libnautilus-private/nautilus-link.[ch]
+        * libnautilus-private/nautilus-mime-actions.c:
+        * libnautilus-private/nautilus-program-choosing.[ch]:
+        * src/file-manager/fm-directory-view.c:
+        * src/file-manager/fm-tree-view.c:
+	Remove weird desktop-file: and command: hacks, and
+	replace with usage and implementation of
+	nautilus_file_is_launcher().
+	This fixes some problems where the old desktop-file uri
+	was interpreted as an actual file.
+
+2008-02-13  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-operations.c (verify_destination):
 	Don't free NULL GError.
 

@@ -30,9 +30,6 @@
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
-#define NAUTILUS_COMMAND_SPECIFIER "command:"
-#define NAUTILUS_DESKTOP_COMMAND_SPECIFIER "desktop-file:"
-
 typedef void (*NautilusApplicationChoiceCallback) (GAppInfo                      *application,
 						   gpointer			  callback_data);
 

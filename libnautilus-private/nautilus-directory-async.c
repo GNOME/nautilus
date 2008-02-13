@@ -191,7 +191,8 @@ static void     link_info_done                                (NautilusDirectory
 							       NautilusFile           *file,
 							       const char             *uri,
 							       const char             *name,
-							       const char             *icon);
+							       const char             *icon,
+							       gboolean                is_launcher);
 static void     move_file_to_low_priority_queue               (NautilusDirectory      *directory,
 							       NautilusFile           *file);
 static void     move_file_to_extension_queue                  (NautilusDirectory      *directory,
@@ -1687,7 +1688,7 @@ lacks_link_info (NautilusFile *file)
 		if (nautilus_file_is_nautilus_link (file)) {
 			return TRUE;
 		} else {
-			link_info_done (file->details->directory, file, NULL, NULL, NULL);
+			link_info_done (file->details->directory, file, NULL, NULL, NULL, FALSE);
 			return FALSE;
 		}
 	} else {
@@ -3469,7 +3470,8 @@ link_info_done (NautilusDirectory *directory,
 		NautilusFile *file,
 		const char *uri,
 		const char *name, 
-		const char *icon)
+		const char *icon,
+		gboolean is_launcher)
 {
 	file->details->link_info_is_up_to_date = TRUE;
 
@@ -3486,6 +3488,7 @@ link_info_done (NautilusDirectory *directory,
 		file->details->activation_location = g_file_new_for_uri (uri);
 	}
 	file->details->custom_icon = g_strdup (icon);
+	file->details->is_launcher = is_launcher;
 	
 	nautilus_directory_async_state_changed (directory);
 }
@@ -3531,23 +3534,25 @@ link_info_got_data (NautilusDirectory *directory,
 		    char *file_contents)
 {
 	char *uri, *name, *icon;
+	gboolean is_launcher;
 
 	nautilus_directory_ref (directory);
 
 	uri = NULL;
 	name = NULL;
 	icon = NULL;
+	is_launcher = FALSE;
 	
 	/* Handle the case where we read the Nautilus link. */
 	if (result) {
 		nautilus_link_get_link_info_given_file_contents (file_contents, bytes_read,
-								 &uri, &name, &icon);
+								 &uri, &name, &icon, &is_launcher);
 	} else {
 		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
 	}
 
 	nautilus_file_ref (file);
-	link_info_done (directory, file, uri, name, icon);
+	link_info_done (directory, file, uri, name, icon, is_launcher);
 	nautilus_file_changed (file);
 	nautilus_file_unref (file);
 	
@@ -3633,7 +3638,7 @@ link_info_start (NautilusDirectory *directory,
 	
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!nautilus_style_link) {
-		link_info_done (directory, file, NULL, NULL, NULL);
+		link_info_done (directory, file, NULL, NULL, NULL, FALSE);
 	} else if (should_read_link_info_sync (file)) {
 		result = g_file_load_contents (location, NULL, &file_contents, &file_size, NULL, NULL);
 		link_info_got_data (directory, file, result, file_size, file_contents);

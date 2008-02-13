@@ -369,11 +369,6 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	GFile *file;
 	Time timestamp;
 
-	/* strip the leading command specifier */
-	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
-		desktop_file_uri += strlen (NAUTILUS_DESKTOP_COMMAND_SPECIFIER);
-	}
-
 	/* Don't allow command execution from remote locations where the
 	 * uri scheme isn't file:// (This is because files on for example
 	 * nfs are treated as remote) to partially mitigate the security

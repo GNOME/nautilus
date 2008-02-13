@@ -45,7 +45,8 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  int                link_file_size,
 								  char             **uri,
 								  char             **name,
-								  char             **icon);
+								  char             **icon,
+								  gboolean          *is_launcher);
 void             nautilus_link_local_create_from_gnome_entry     (GnomeDesktopItem  *entry,
 								  const char        *dest_uri,
 								  const GdkPoint    *position,

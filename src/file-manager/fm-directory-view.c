@@ -6623,11 +6623,13 @@ file_list_all_are_folders (GList *file_list)
 		file = NAUTILUS_FILE (l->data);
 		if (nautilus_file_is_nautilus_link (file) &&
 		    !NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+			if (nautilus_file_is_launcher (file)) {
+				return FALSE;
+			}
+				
 			activation_uri = nautilus_file_get_activation_uri (file);
 			
-			if (activation_uri == NULL ||
-			    eel_str_has_prefix (activation_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
-			    eel_str_has_prefix (activation_uri, NAUTILUS_COMMAND_SPECIFIER)) {
+			if (activation_uri == NULL) {
 				g_free (activation_uri);
 				return FALSE;
 			}
@@ -8176,8 +8178,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				   int x, int y,
 				   FMDirectoryView *view)
 {
-	char *parameters, *temp;
-	GList *p;
+	NautilusFile *target_file;
 	
 	g_assert (relative_item_points == NULL
 		  || relative_item_points->len == 0 
@@ -8186,32 +8187,17 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 	/* add the drop location to the icon offsets */
 	offset_drop_points (relative_item_points, x, y);
 
+	target_file = nautilus_file_get_existing_by_uri (target_uri);
 	/* special-case "command:" here instead of starting a move/copy */
-	if (eel_str_has_prefix (target_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+	if (target_file != NULL && nautilus_file_is_launcher (target_file)) {
+		nautilus_file_unref (target_file);
 		nautilus_launch_desktop_file (
 				gtk_widget_get_screen (GTK_WIDGET (view)),
 				target_uri, item_uris,
 				fm_directory_view_get_containing_window (view));
 		return;
-	} else if (eel_str_has_prefix (target_uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		parameters = NULL;
-		for (p = (GList *) item_uris; p != NULL; p = p->next) {
-			temp = g_strconcat ((char *) p->data, " ", parameters, NULL);
-			if (parameters != NULL) {
-				g_free (parameters);
-			}
-			parameters = temp;
-		}
-
-		target_uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-
-		nautilus_launch_application_from_command (
-				gtk_widget_get_screen (GTK_WIDGET (view)),
-				NULL, target_uri, parameters, FALSE);
-		g_free (parameters);
-		
-		return;
 	}
+	nautilus_file_unref (target_file);
 
 	nautilus_file_operations_copy_move
 		(item_uris, relative_item_points, 

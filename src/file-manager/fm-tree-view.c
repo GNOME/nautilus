@@ -344,28 +344,14 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
         
         mode = view->details->activation_in_new_window ? NAUTILUS_WINDOW_OPEN_IN_NAVIGATION : NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE;
 
-	/* FIXME: reenable && !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) */
-
 	uri = nautilus_file_get_activation_uri (file);
-	if (uri != NULL
-	    && g_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
-
-		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "tree view launch_application_from_command window=%p: %s",
-				    view->details->window, uri);
-		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
-
-	} else if (uri != NULL
-		   && g_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
-
+	if (nautilus_file_is_launcher (file)) {
 		file_uri = nautilus_file_get_uri (file);
 		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 				    "tree view launch_desktop_file window=%p: %s",
 				    view->details->window, file_uri);
 		nautilus_launch_desktop_file (screen, file_uri, NULL, NULL);
 		g_free (file_uri);
-		
 	} else if (uri != NULL
 		   && nautilus_file_is_executable (file)
 		   && nautilus_file_can_execute (file)

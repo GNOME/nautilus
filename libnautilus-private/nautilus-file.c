@@ -322,6 +322,7 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->thumbnail_path = NULL;
 	file->details->thumbnailing_failed = FALSE;
 	
+	file->details->is_launcher = FALSE;
 	file->details->is_symlink = FALSE;
 	file->details->is_hidden = FALSE;
 	file->details->is_backup = FALSE;
@@ -3029,6 +3030,12 @@ nautilus_file_monitor_remove (NautilusFile *file,
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_remove, (file, client));
 }			      
+
+gboolean
+nautilus_file_is_launcher (NautilusFile *file)
+{
+	return file->details->is_launcher;
+}
 
 gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)

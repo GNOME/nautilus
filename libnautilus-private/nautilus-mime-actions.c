@@ -45,7 +45,6 @@
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,
-	ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND,
 	ACTIVATION_ACTION_ASK,
 	ACTIVATION_ACTION_LAUNCH,
 	ACTIVATION_ACTION_LAUNCH_IN_TERMINAL,
@@ -736,6 +735,10 @@ get_activation_action (NautilusFile *file)
 {
 	ActivationAction action;
 	char *activation_uri;
+
+	if (nautilus_file_is_launcher (file)) {
+		return ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
+	}
 	
 	activation_uri = nautilus_file_get_activation_uri (file);
 	if (activation_uri == NULL) {
@@ -743,12 +746,7 @@ get_activation_action (NautilusFile *file)
 	}
 
 	action = ACTIVATION_ACTION_DO_NOTHING;
-	
-	if (eel_str_has_prefix (activation_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
-		action = ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
-	} else if (eel_str_has_prefix (activation_uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		action = ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND;
-	} else if (nautilus_file_is_launchable (file)) {
+	if (nautilus_file_is_launchable (file)) {
 		char *executable_path;
 		
 		action = ACTIVATION_ACTION_LAUNCH;
@@ -1004,7 +1002,6 @@ activate_files (ActivateParameters *parameters)
 {
 	NautilusFile *file;
 	GList *launch_desktop_files;
-	GList *launch_from_command_files;
 	GList *launch_files;
 	GList *launch_in_terminal_files;
 	GList *open_in_app_files;
@@ -1023,7 +1020,6 @@ activate_files (ActivateParameters *parameters)
 	screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
 
 	launch_desktop_files = NULL;
-	launch_from_command_files = NULL;
 	launch_files = NULL;
 	launch_in_terminal_files = NULL;
 	open_in_app_files = NULL;
@@ -1047,9 +1043,6 @@ activate_files (ActivateParameters *parameters)
 		switch (action) {
 		case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE :
 			launch_desktop_files = g_list_prepend (launch_desktop_files, file);
-			break;
-		case ACTIVATION_ACTION_LAUNCH_APPLICATION_FROM_COMMAND :
-			launch_from_command_files = g_list_prepend (launch_from_command_files, file);
 			break;
 		case ACTIVATION_ACTION_LAUNCH :
 			launch_files = g_list_prepend (launch_files, file);
@@ -1081,22 +1074,6 @@ activate_files (ActivateParameters *parameters)
 				    parameters->parent_window, uri);
 		nautilus_launch_desktop_file (screen, uri, NULL,
 					      parameters->parent_window);
-		g_free (uri);
-	}
-
-	launch_from_command_files = g_list_reverse (launch_from_command_files);
-	for (l = launch_from_command_files; l != NULL; l = l->next) {
-		file = NAUTILUS_FILE (l->data);
-
-		uri = nautilus_file_get_activation_uri (file);
-
-		nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-				    "directory view activate_callback launch_application_from_command window=%p: %s",
-				    parameters->parent_window, uri);
-
-		nautilus_launch_application_from_command (
-				screen, NULL, uri + strlen (NAUTILUS_COMMAND_SPECIFIER),
-				NULL, FALSE);
 		g_free (uri);
 	}
 
@@ -1240,7 +1217,6 @@ activate_files (ActivateParameters *parameters)
 	}
 
 	g_list_free (launch_desktop_files);
-	g_list_free (launch_from_command_files);
 	g_list_free (launch_files);
 	g_list_free (launch_in_terminal_files);
 	g_list_free (open_in_view_files);
@@ -1407,9 +1383,7 @@ activate_activation_uris_ready_callback (GList *files_ignore,
 		 * about the attributes for that, not for the original file.
 		 */
 		uri = nautilus_file_get_activation_uri (file);
-		if (uri != NULL &&
-		    !(g_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
-		      g_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
+		if (uri != NULL) {
 			NautilusFile *actual_file;
 			
 			actual_file = nautilus_file_get_by_uri (uri);

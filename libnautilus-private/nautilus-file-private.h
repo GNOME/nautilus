@@ -189,6 +189,7 @@ struct NautilusFileDetails
 	/* TRUE if the file is open in a spatial window */
 	eel_boolean_bit has_open_window               : 1;
 
+	eel_boolean_bit is_launcher                   : 1;
 	eel_boolean_bit is_symlink                    : 1;
 	eel_boolean_bit is_mountpoint                 : 1;
 	eel_boolean_bit is_hidden                     : 1;
