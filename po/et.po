@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-29 10:38+0000\n"
-"PO-Revision-Date: 2008-02-02 12:59+0200\n"
+"PO-Revision-Date: 2008-02-14 07:08+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1842,32 +1842,32 @@ msgid "Unable to mount %s"
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2007
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
-msgstr[0] "Ettevalmistused %d faili kopeerimiseks (%S)"
-msgstr[1] "Ettevalmistused %d faili kopeerimiseks (%S)"
+msgstr[0] "Ettevalmistused %'d faili kopeerimiseks (%S)"
+msgstr[1] "Ettevalmistused %'d faili kopeerimiseks (%S)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2013
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
-msgstr[0] "Ettevalmistused %d faili ümbertõstmiseks (%S)"
-msgstr[1] "Ettevalmistused %d faili ümbertõstmiseks (%S)"
+msgstr[0] "Ettevalmistused %'d faili ümbertõstmiseks (%S)"
+msgstr[1] "Ettevalmistused %'d faili ümbertõstmiseks (%S)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2019
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
-msgstr[0] "Ettevalmistused %d faili kustutamiseks (%S)"
-msgstr[1] "Ettevalmistused %d faili kustutamiseks (%S)"
+msgstr[0] "Ettevalmistused %'d faili kustutamiseks (%S)"
+msgstr[1] "Ettevalmistused %'d faili kustutamiseks (%S)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2025
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
-msgstr[0] "Ettevalmistused %d faili prügikasti viskamiseks"
-msgstr[1] "Ettevalmistused %d faili prügikasti viskamiseks"
+msgstr[0] "Ettevalmistused %'d faili viskamiseks prügikasti"
+msgstr[1] "Ettevalmistused %'d faili viskamiseks prügikasti"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2056
 #: ../libnautilus-private/nautilus-file-operations.c:2781
@@ -1963,9 +1963,8 @@ msgid "Copying \"%B\" to \"%B\""
 msgstr "\"%s\" ümbernimetamine \"%s\"-ks"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2488
-#, fuzzy
 msgid "Duplicating \"%B\""
-msgstr "osutab kirjele \"%s\""
+msgstr "\"%B\" dubleerimine"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2496
 #, fuzzy
@@ -2030,9 +2029,8 @@ msgid ""
 msgstr "\"%s\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2788
-#, fuzzy
 msgid "There was an error creating the folder \"%B\"."
-msgstr "Viga abiteabe kuvamisel."
+msgstr "Kataloogi \"%B\" loomisel tekkis viga."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2885
 #, fuzzy
@@ -2141,11 +2139,11 @@ msgid "Preparing to Move to \"%B\""
 msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3628
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
-msgstr[0] "Ettevalmistused %d faili ümbertõstmiseks (%S)"
-msgstr[1] "Ettevalmistused %d faili ümbertõstmiseks (%S)"
+msgstr[0] "Ettevalmistused %'d faili ümbertõstmiseks"
+msgstr[1] "Ettevalmistused %'d faili ümbertõstmiseks"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3703
 #, fuzzy
@@ -2154,7 +2152,7 @@ msgid ""
 "confirmation before replacing any files in the folder that conflict with the "
 "files being moved."
 msgstr ""
-"Kataloog on juba \"%s\" all olemas.  Selle kataloogi asendamisega "
+"Lähtekataloog on juba \"%B\" all olemas.  Selle kataloogi asendamisega "
 "asendatakse ka kõik olemasolevad failid, mis on kopeeritavate failidega "
 "vastuolus."
 
@@ -2164,9 +2162,8 @@ msgid "There was an error moving the file into %F."
 msgstr "Rakenduse käivitamisel tekkis viga."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4073
-#, fuzzy
 msgid "Creating links in \"%B\""
-msgstr "Failidele viitade loomine"
+msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:4077
 #, fuzzy, c-format
@@ -2176,9 +2173,8 @@ msgstr[0] "Failidele viitade loomine"
 msgstr[1] "Failidele viitade loomine"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4151
-#, fuzzy
 msgid "Error while creating link to %B."
-msgstr "Viga viida loomisel \"%s\"."
+msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:4153
 #, fuzzy
@@ -2196,9 +2192,8 @@ msgid "There was an error creating the symlink in %F."
 msgstr "Rakenduse käivitamisel tekkis viga."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4448
-#, fuzzy
 msgid "Setting permissions"
-msgstr "Õigused"
+msgstr "Õiguste seadmine"
 
 #. localizers: the initial name of a new folder
 #: ../libnautilus-private/nautilus-file-operations.c:4639
@@ -2211,14 +2206,12 @@ msgid "new file"
 msgstr "uus fail"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4737
-#, fuzzy
 msgid "Error while creating directory %B."
-msgstr "Viga viida loomisel \"%s\"."
+msgstr "Viga kataloogi %B loomisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4739
-#, fuzzy
 msgid "Error while creating file %B."
-msgstr "Viga viida loomisel \"%s\"."
+msgstr "Viga faili %B loomisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4741
 #, fuzzy, c-format
@@ -3205,41 +3198,41 @@ msgid "\"%s\" selected"
 msgstr "Valitud \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:2033
-#, fuzzy, c-format
+#, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
-msgstr[0] "Valitud %d kataloog"
-msgstr[1] "Valitud %d kataloogi"
+msgstr[0] "Valitud %'d kataloog"
+msgstr[1] "Valitud %'d kataloogi"
 
 #: ../src/file-manager/fm-directory-view.c:2043
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
-msgstr[0] " (selles on %d kirje)"
-msgstr[1] " (selles on %d kirjet)"
+msgstr[0] " (selles on %'d kirje)"
+msgstr[1] " (selles on %'d kirjet)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: ../src/file-manager/fm-directory-view.c:2054
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
-msgstr[0] " (nendes on kokku %d kirje)"
-msgstr[1] " (nendes on kokku %d kirjet)"
+msgstr[0] " (nendes on kokku %'d kirje)"
+msgstr[1] " (nendes on kokku %'d kirjet)"
 
 #: ../src/file-manager/fm-directory-view.c:2071
-#, fuzzy, c-format
+#, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
-msgstr[0] "valitud %d kirje"
-msgstr[1] "valitud %d kirjet"
+msgstr[0] "valitud %'d kirje"
+msgstr[1] "valitud %'d kirjet"
 
 #. Folders selected also, use "other" terminology
 #: ../src/file-manager/fm-directory-view.c:2078
-#, fuzzy, c-format
+#, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
-msgstr[0] "veel on valitud %d kirje"
-msgstr[1] "veel on valitud %d kirjet"
+msgstr[0] "veel on valitud %'d kirje"
+msgstr[1] "veel on valitud %'d kirjet"
 
 #. This is marked for translation in case a localiser
 #. * needs to use something other than parentheses. The
@@ -3444,7 +3437,6 @@ msgid "Create a new empty folder inside this folder"
 msgstr "Selle kataloogi sisse uue tühja kataloogi loomine"
 
 #: ../src/file-manager/fm-directory-view.c:6218
-#, fuzzy
 msgid "No templates installed"
 msgstr "Malle ei ole paigaldatud"
 
@@ -6314,47 +6306,44 @@ msgid "_Home"
 msgstr "_Kodukataloog"
 
 #: ../src/nautilus-x-content-bar.c:68
-#, fuzzy
 msgid "These files are on an Audio CD."
-msgstr "See fail ei ole pilt."
+msgstr "Need failid on audio-CD peal."
 
 #: ../src/nautilus-x-content-bar.c:70
 msgid "These files are on an Audio DVD."
-msgstr ""
+msgstr "Need failid on audio-DVD peal."
 
 #: ../src/nautilus-x-content-bar.c:72
-#, fuzzy
 msgid "These files are on a Video DVD."
-msgstr "See fail ei ole pilt."
+msgstr "Need failid on video-DVD peal."
 
 #: ../src/nautilus-x-content-bar.c:74
-#, fuzzy
 msgid "These files are on a Video CD."
-msgstr "See fail ei ole pilt."
+msgstr "Need failid on video-CD peal."
 
 #: ../src/nautilus-x-content-bar.c:76
 msgid "These files are on a Super Video CD."
-msgstr ""
+msgstr "Need failid on Super Video CD peal."
 
 #: ../src/nautilus-x-content-bar.c:78
 msgid "These files are on a Photo CD."
-msgstr ""
+msgstr "Need failid on foto-CD peal."
 
 #: ../src/nautilus-x-content-bar.c:80
 msgid "These files are on a Picture CD."
-msgstr ""
+msgstr "Need failid on pildi-CD peal."
 
 #: ../src/nautilus-x-content-bar.c:82
 msgid "The media contains digital photos."
-msgstr ""
+msgstr "Meedia sisaldab digifotosid."
 
 #: ../src/nautilus-x-content-bar.c:84
 msgid "These files are on a digital audio player."
-msgstr ""
+msgstr "Need failid on digitaalses audioesitajas."
 
 #: ../src/nautilus-x-content-bar.c:86
 msgid "The media contains software."
-msgstr ""
+msgstr "Meedia sisaldab tarkvara."
 
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:89
