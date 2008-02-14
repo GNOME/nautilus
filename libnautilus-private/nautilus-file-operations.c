@@ -1112,6 +1112,31 @@ confirm_delete_from_trash (CommonJob *job,
 }
 
 static gboolean
+confirm_empty_trash (CommonJob *job)
+{
+	char *prompt;
+	int response;
+
+	/* Just Say Yes if the preference says not to confirm. */
+	if (!confirm_trash_auto_value) {
+		return TRUE;
+	}
+
+	prompt = f (_("Empty all of the items from the trash?"));
+
+	response = run_warning (job,
+				prompt,
+				f(_("If you choose to empty the trash, all items "
+				    "in it will be permanently lost. Please note "
+				    "that you can also delete them separately.")),
+				NULL,
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				NULL);
+
+	return (response == 1);
+}
+
+static gboolean
 confirm_delete_directly (CommonJob *job,
 			 GList *files)
 {
@@ -4970,11 +4995,13 @@ empty_trash_job (GIOSchedulerJob *io_job,
 	common->io_job = io_job;
 	
 	nautilus_progress_info_start (job->common.progress);
-
-	for (l = job->trash_dirs;
-	     l != NULL && !job_aborted (common);
-	     l = l->next) {
-		delete_trash_file (common, l->data, FALSE, TRUE);
+	
+	if (confirm_empty_trash (common)) {
+		for (l = job->trash_dirs;
+		     l != NULL && !job_aborted (common);
+		     l = l->next) {
+			delete_trash_file (common, l->data, FALSE, TRUE);
+		}
 	}
 
 	g_io_scheduler_job_send_to_mainloop_async (io_job,
