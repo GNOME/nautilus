@@ -1,5 +1,11 @@
 2008-02-14  Alexander Larsson  <alexl@redhat.com>
 
+        * src/file-manager/fm-properties-window.[ch]:
+	Close properties dialog on escape (#515620)
+	Patch from Cosimo Cecchi
+
+2008-02-14  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-file-operations.c:
 	Don't ref parent window during operation, as this
 	could lead to some crash when the gtkuimanager is updated

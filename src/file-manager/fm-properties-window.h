@@ -51,6 +51,9 @@ struct FMPropertiesWindow {
 
 struct FMPropertiesWindowClass {
 	GtkWindowClass parent_class;
+	
+	/* Keybinding signals */
+	void (* close)    (FMPropertiesWindow *window);
 };
 
 typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;

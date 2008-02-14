@@ -191,6 +191,13 @@ enum {
 	COLUMN_COUNT
 };
 
+enum {
+	CLOSE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 typedef struct {
 	GList *original_files;
 	GList *target_files;
@@ -5398,10 +5405,43 @@ select_image_button_callback (GtkWidget *widget,
 }
 
 static void
+fm_properties_window_close (FMPropertiesWindow *pwindow)
+{
+	/* Synthesize delete_event to close dialog. */
+	
+	GtkWidget *widget = GTK_WIDGET (pwindow);
+	GdkEvent *event;
+	
+	event = gdk_event_new (GDK_DELETE);
+	
+	event->any.window = g_object_ref (widget->window);
+	event->any.send_event = TRUE;
+	
+	gtk_main_do_event (event);
+	gdk_event_free (event);
+}
+
+static void
 fm_properties_window_class_init (FMPropertiesWindowClass *class)
 {
+	GtkBindingSet *binding_set;
+
 	G_OBJECT_CLASS (class)->finalize = real_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = real_destroy;
+	class->close = fm_properties_window_close;
+	
+	signals[CLOSE] =
+	  g_signal_new ("close",
+			G_OBJECT_CLASS_TYPE (class),
+			G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			G_STRUCT_OFFSET (FMPropertiesWindowClass, close),
+			NULL, NULL,
+			g_cclosure_marshal_VOID__VOID,
+			G_TYPE_NONE, 0);
+
+	binding_set = gtk_binding_set_by_class (class);
+	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0,
+				      "close", 0);
 }
 
 static void
