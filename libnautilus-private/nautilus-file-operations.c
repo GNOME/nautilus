@@ -159,6 +159,7 @@ typedef struct {
 	goffset num_bytes;
 	OpKind op;
 	guint64 last_report_time;
+	int last_reported_files_left;
 } TransferInfo;
 
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 15
@@ -2519,63 +2520,69 @@ report_copy_progress (CopyMoveJob *copy_job,
 		files_left = 1;
 	}
 
-	if (source_info->num_files == 1) {
-		if (copy_job->destination != NULL) {
-			nautilus_progress_info_take_status (job->progress,
-							    f (is_move ?
-							       _("Moving \"%B\" to \"%B\""):
-							       _("Copying \"%B\" to \"%B\""),
-							       (GFile *)copy_job->files->data,
-							       copy_job->destination));
+	if (files_left != transfer_info->last_reported_files_left ||
+	    transfer_info->last_reported_files_left == 0) {
+		/* Avoid changing this unless files_left changed since last time */
+		transfer_info->last_reported_files_left = files_left;
+		
+		if (source_info->num_files == 1) {
+			if (copy_job->destination != NULL) {
+				nautilus_progress_info_take_status (job->progress,
+								    f (is_move ?
+								       _("Moving \"%B\" to \"%B\""):
+								       _("Copying \"%B\" to \"%B\""),
+								       (GFile *)copy_job->files->data,
+								       copy_job->destination));
+			} else {
+				nautilus_progress_info_take_status (job->progress,
+								    f (_("Duplicating \"%B\""),
+								       (GFile *)copy_job->files->data));
+			}
+		} else if (copy_job->files != NULL &&
+			   copy_job->files->next == NULL) {
+			if (copy_job->destination != NULL) {
+				nautilus_progress_info_take_status (job->progress,
+								    f (is_move?
+								       ngettext ("Moving %'d file (in \"%B\") to \"%B\"",
+										 "Moving %'d files (in \"%B\") to \"%B\"",
+										 files_left)
+								       :
+								       ngettext ("Copying %'d file (in \"%B\") to \"%B\"",
+										 "Copying %'d files (in \"%B\") to \"%B\"",
+										 files_left),
+								       files_left,
+								       (GFile *)copy_job->files->data,
+								       copy_job->destination));
+			} else {
+				nautilus_progress_info_take_status (job->progress,
+								    f (ngettext ("Duplicating %'d file (in \"%B\")",
+										 "Duplicating %'d files (in \"%B\")",
+										 files_left),
+								       files_left,
+								       (GFile *)copy_job->files->data));
+			}
 		} else {
-			nautilus_progress_info_take_status (job->progress,
-							    f (_("Duplicating \"%B\""),
-							       (GFile *)copy_job->files->data));
-		}
-	} else if (copy_job->files != NULL &&
-		   copy_job->files->next == NULL) {
-		if (copy_job->destination != NULL) {
-			nautilus_progress_info_take_status (job->progress,
-							    f (is_move?
-							       ngettext ("Moving %'d file (in \"%B\") to \"%B\"",
-									 "Moving %'d files (in \"%B\") to \"%B\"",
-									 files_left)
-							       :
-							       ngettext ("Copying %'d file (in \"%B\") to \"%B\"",
-									 "Copying %'d files (in \"%B\") to \"%B\"",
-									 files_left),
-							       files_left,
-							       (GFile *)copy_job->files->data,
-							       copy_job->destination));
-		} else {
-			nautilus_progress_info_take_status (job->progress,
-							    f (ngettext ("Duplicating %'d file (in \"%B\")",
-									 "Duplicating %'d files (in \"%B\")",
-									 files_left),
-							       files_left,
-							       (GFile *)copy_job->files->data));
-		}
-	} else {
-		if (copy_job->destination != NULL) {
-			nautilus_progress_info_take_status (job->progress,
-							    f (is_move?
-							       ngettext ("Moving %'d file to \"%B\"",
-									 "Moving %'d files to \"%B\"",
-									 files_left)
-							       :
-							       ngettext ("Copying %'d file to \"%B\"",
-									 "Copying %'d files to \"%B\"",
-									 files_left),
-							       files_left, copy_job->destination));
-		} else {
-			nautilus_progress_info_take_status (job->progress,
-							    f (ngettext ("Duplicating %'d file",
-									 "Duplicating %'d files",
-									 files_left),
-							       files_left));
+			if (copy_job->destination != NULL) {
+				nautilus_progress_info_take_status (job->progress,
+								    f (is_move?
+								       ngettext ("Moving %'d file to \"%B\"",
+										 "Moving %'d files to \"%B\"",
+										 files_left)
+								       :
+								       ngettext ("Copying %'d file to \"%B\"",
+										 "Copying %'d files to \"%B\"",
+										 files_left),
+								       files_left, copy_job->destination));
+			} else {
+				nautilus_progress_info_take_status (job->progress,
+								    f (ngettext ("Duplicating %'d file",
+										 "Duplicating %'d files",
+										 files_left),
+								       files_left));
+			}
 		}
 	}
-
+	
 	total_size = MAX (source_info->num_bytes, transfer_info->num_bytes);
 	
 	elapsed = g_timer_elapsed (job->time, NULL);

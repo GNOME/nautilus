@@ -1,6 +1,14 @@
 2008-02-14  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+        (report_copy_progress):
+	Only change progress status string as needed when
+	copying. This avoids a lot of I/O ops to get the
+	name.
+
+2008-02-14  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
 	ask before emptying the trash or deleting files (#509877)
 	Patch from Cosimo Cecchi and Luca Ferretti
 
