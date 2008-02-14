@@ -1,3 +1,11 @@
+2008-02-14  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
+	Don't ref parent window during operation, as this
+	could lead to some crash when the gtkuimanager is updated
+	but the child widgets were destroyed. Instead use
+	a weak ref.
+
 2008-02-13  Alexander Larsson  <alexl@redhat.com>
 
         * configure.in:

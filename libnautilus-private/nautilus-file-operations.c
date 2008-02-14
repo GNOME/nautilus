@@ -740,7 +740,8 @@ init_common (gsize job_size,
 	common = g_malloc0 (job_size);
 
 	if (parent_window) {
-		common->parent_window = g_object_ref (parent_window);
+		common->parent_window = parent_window;
+		eel_add_weak_pointer (&common->parent_window);
 	}
 	common->progress = nautilus_progress_info_new ();
 	common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
@@ -761,10 +762,8 @@ finalize_common (CommonJob *common)
 	nautilus_progress_info_finish (common->progress);
 
 	g_timer_destroy (common->time);
-	
-	if (common->parent_window) {
-		 g_object_unref (common->parent_window);
-	}
+
+	eel_remove_weak_pointer (&common->parent_window);
 	if (common->skip_files) {
 		g_hash_table_destroy (common->skip_files);
 	}
@@ -859,7 +858,7 @@ can_delete_files_without_confirm (GList *files)
 }
 
 typedef struct {
-	GtkWindow *parent_window;
+	GtkWindow **parent_window;
 	gboolean ignore_close_box;
 	GtkMessageType message_type;
 	const char *primary_text;
@@ -880,7 +879,7 @@ do_run_simple_dialog (gpointer _data)
 	int response_id;
 
 	/* Create the dialog. */
-	dialog = eel_alert_dialog_new (data->parent_window, 
+	dialog = eel_alert_dialog_new (*data->parent_window, 
 	                               0,
 	                               data->message_type,
 	                               GTK_BUTTONS_NONE,
@@ -936,7 +935,7 @@ run_simple_dialog_va (CommonJob *job,
 	g_timer_stop (job->time);
 	
 	data = g_new0 (RunSimpleDialogData, 1);
-	data->parent_window = GTK_WINDOW (job->parent_window);
+	data->parent_window = &job->parent_window;
 	data->ignore_close_box = ignore_close_box;
 	data->message_type = message_type;
 	data->primary_text = primary_text;
@@ -1769,9 +1768,7 @@ unmount_mount_callback (GObject *source_object,
 		g_error_free (error);
 	}
 	
-	if (data->parent_window) {
-		g_object_unref (data->parent_window);
-	}
+	eel_remove_weak_pointer (&data->parent_window);
 	g_object_unref (data->mount);
 	g_free (data);
 }
@@ -1945,7 +1942,9 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 
 	data = g_new0 (UnmountData, 1);
 	if (parent_window) {
-		data->parent_window = g_object_ref (parent_window);
+		data->parent_window = parent_window;
+		eel_add_weak_pointer (&data->parent_window);
+		
 	}
 	data->eject = eject;
 	data->mount = g_object_ref (mount);
@@ -1967,9 +1966,7 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 					   NULL);
 			return;
 		} else if (response == GTK_RESPONSE_CANCEL) {
-			if (data->parent_window) {
-				g_object_unref (data->parent_window);
-			}
+			eel_remove_weak_pointer (&data->parent_window);
 			g_object_unref (data->mount);
 			g_free (data);
 			return;
