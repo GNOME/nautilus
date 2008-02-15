@@ -301,10 +301,12 @@ vfs_file_unmount_callback (GObject *source_object,
 	unmounted = g_file_unmount_mountable_finish (G_FILE (source_object),
 						    res, &error);
 	
-    if ((! unmounted) && ((error->domain == G_IO_ERROR_FAILED_HANDLED) ||
-                          (error->domain == G_IO_ERROR_CANCELLED))) {
-        g_error_free (error);
-    	error = NULL;
+    if (!unmounted &&
+	error->domain == G_IO_ERROR && 
+	(error->code == G_IO_ERROR_FAILED_HANDLED ||
+	 error->code == G_IO_ERROR_CANCELLED)) {
+	    g_error_free (error);
+	    error = NULL;
     }
 
     nautilus_file_operation_complete (op, G_FILE (source_object), error);
@@ -345,11 +347,13 @@ vfs_file_eject_callback (GObject *source_object,
 	ejected = g_file_eject_mountable_finish (G_FILE (source_object),
 						    res, &error);
 
-	if ((! ejected) && ((error->domain == G_IO_ERROR_FAILED_HANDLED) ||
-                        (error->domain == G_IO_ERROR_CANCELLED))) {
-        g_error_free (error);
-    	error = NULL;
-    }
+	if (!ejected &&
+	    error->domain == G_IO_ERROR &&
+	    (error->code == G_IO_ERROR_FAILED_HANDLED ||
+	     error->code == G_IO_ERROR_CANCELLED)) {
+		g_error_free (error);
+		error = NULL;
+	}
 	
 	nautilus_file_operation_complete (op, G_FILE (source_object), error);
 	if (error) {
