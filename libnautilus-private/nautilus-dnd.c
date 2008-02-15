@@ -199,7 +199,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 		oldp = p;
 	}
 
-	return result;
+	return g_list_reverse (result);
 }
 
 static gboolean
