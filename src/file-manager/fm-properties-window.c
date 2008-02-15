@@ -2556,7 +2556,7 @@ is_merged_trash_directory (NautilusFile *file)
 static gboolean
 should_show_custom_icon_buttons (FMPropertiesWindow *window) 
 {
-	if (!is_multi_file_window (window)) {
+	if (is_multi_file_window (window)) {
 		return FALSE;
 	}
 
