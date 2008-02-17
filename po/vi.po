@@ -538,7 +538,7 @@ msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr "Nếu đúng, Nautilus sẽ dùng thư mục cá nhân của người dùng làm màn hình nền. "
-"Ngược lại dùng thư mục <~/Desktop> làm màn hình nền."
+"Ngược lại dùng thư mục ~/Desktop làm màn hình nền."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -964,11 +964,11 @@ msgstr "Chọn tất cả các văn bản trong một trường văn bản"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:385
 msgid "Move _Up"
-msgstr "Đem _lên"
+msgstr "Chuyển _lên"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:395
 msgid "Move Dow_n"
-msgstr "Đem _xuống"
+msgstr "Chuyển _xuống"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:404
 msgid "_Show"
@@ -1105,7 +1105,7 @@ msgstr "Nếu bạn muốn tháo gắn kết khối tin ra, vui lòng dùng lệ
 
 #: ../libnautilus-private/nautilus-dnd.c:640
 msgid "_Move Here"
-msgstr "Đe_m vào đây"
+msgstr "C_huyển vào đây"
 
 #: ../libnautilus-private/nautilus-dnd.c:645
 msgid "_Copy Here"
@@ -1254,7 +1254,7 @@ msgstr[0] "khoảng %d giờ"
 #: ../src/file-manager/fm-directory-view.c:8355
 #, c-format
 msgid "Link to %s"
-msgstr "liên kết đến %s"
+msgstr "Liên kết đến %s"
 
 #.appended to new link file
 #: ../libnautilus-private/nautilus-file-operations.c:268
@@ -1312,22 +1312,22 @@ msgstr " (bản sao khác)"
 #: ../libnautilus-private/nautilus-file-operations.c:321
 #: ../libnautilus-private/nautilus-file-operations.c:331
 msgid "th copy)"
-msgstr "(bản sao"
+msgstr "(bản sao thứ"
 
 #.localizers: tag used to detect the x1st copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:324
 msgid "st copy)"
-msgstr "(bản sao"
+msgstr "(bản sao thứ"
 
 #.localizers: tag used to detect the x2nd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:326
 msgid "nd copy)"
-msgstr "(bản sao"
+msgstr "(bản sao thứ"
 
 #.localizers: tag used to detect the x3rd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:328
 msgid "rd copy)"
-msgstr "(bản sao"
+msgstr "(bản sao thứ"
 
 #.localizers: appended to first file copy
 #: ../libnautilus-private/nautilus-file-operations.c:345
@@ -1380,7 +1380,7 @@ msgstr " ("
 #: ../libnautilus-private/nautilus-file-operations.c:469
 #, c-format
 msgid " (%d"
-msgstr " (%d"
+msgstr " %d)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1071
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
@@ -1497,7 +1497,7 @@ msgstr "Không thể đẩy %V ra"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1729
 msgid "Unable to unmount %V"
-msgstr "Không thể bỏ lắp %V"
+msgstr "Không thể bỏ gắn kết %V"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1879
 msgid "Do you want to empty the trash before you unmount?"
@@ -1845,11 +1845,11 @@ msgstr "Gặp lỗi khi tạo thư mục trong %F."
 #: ../libnautilus-private/nautilus-file.c:867
 #: ../libnautilus-private/nautilus-vfs-file.c:265
 msgid "This file cannot be mounted"
-msgstr "Không thể lắp tập tin này"
+msgstr "Không thể gắn kết tập tin này"
 
 #: ../libnautilus-private/nautilus-file.c:887
 msgid "This file cannot be unmounted"
-msgstr "Không thể bỏ lắp tập tin này"
+msgstr "Không thể bỏ gắn kết tập tin này"
 
 #: ../libnautilus-private/nautilus-file.c:907
 msgid "This file cannot be eject"
@@ -2333,12 +2333,12 @@ msgstr "Chuyển đổi sang bố trí tự làm không?"
 #: ../libnautilus-private/nautilus-mime-actions.c:568
 #, c-format
 msgid "The Link \"%s\" is Broken."
-msgstr "Liên kết <%s> bị ngắt."
+msgstr "Liên kết \"%s\" bị ngắt."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:570
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
-msgstr "Liên kết <%s> bị ngắt nên chuyển nó vào Sọt rác chứ?"
+msgstr "Liên kết \"%s\" bị ngắt nên chuyển nó vào Sọt rác chứ?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:576
 msgid "This link can't be used, because it has no target."
@@ -2411,7 +2411,7 @@ msgstr "Chưa cài đặt ứng dụng để xử lý kiểu tập tin này"
 #: ../libnautilus-private/nautilus-mime-actions.c:1235
 #: ../libnautilus-private/nautilus-mime-actions.c:1459
 msgid "Unable to mount location"
-msgstr "Không thể lắp vị trí"
+msgstr "Không thể gắn kết vị trí"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1544
 #, c-format
@@ -3755,7 +3755,7 @@ msgstr "Đưa biểu tượng về kích cỡ _gốc"
 #: ../src/file-manager/fm-icon-view.c:1937
 #, c-format
 msgid "pointing at \"%s\""
-msgstr "chỉ vào « %s »"
+msgstr "chỉ đến « %s »"
 
 #: ../src/file-manager/fm-icon-view.c:2710
 msgid "Icons"
@@ -4152,7 +4152,7 @@ msgstr "Thay đổi cuối cùng:"
 
 #: ../src/file-manager/fm-properties-window.c:4507
 msgid "Apply Permissions to Enclosed Files"
-msgstr "Áp dụng quyền hạn cho các tập tin đã bao"
+msgstr "Áp dụng quyền hạn cho các tập tin bên trong"
 
 #: ../src/file-manager/fm-properties-window.c:4517
 #, c-format
@@ -4385,7 +4385,7 @@ msgid ""
 "Add connect to server mount"
 msgstr "\n"
 "\n"
-"Thêm điều lắp kết nối đến máy phục vụ"
+"Thêm gắn kết đến máy phục vụ"
 
 #: ../src/nautilus-connect-server-dialog.c:118
 msgid "Custom Location"
@@ -5282,7 +5282,7 @@ msgstr "Hiển thị các lời ghi chú"
 #: ../src/nautilus-places-sidebar.c:1283
 #, c-format
 msgid "Unable to mount %s"
-msgstr "Không thể lắp %s"
+msgstr "Không thể gắn kết %s"
 
 #: ../src/nautilus-places-sidebar.c:1510
 #: ../src/nautilus-places-sidebar.c:1533
@@ -5696,7 +5696,7 @@ msgstr "Nautilus không thể xử lý vị trí kiểu này."
 
 #: ../src/nautilus-window-manage-views.c:1612
 msgid "Unable to mount the location."
-msgstr "Không thể lắp địa chỉ."
+msgstr "Không thể gắn kết địa chỉ."
 
 #: ../src/nautilus-window-manage-views.c:1618
 msgid "Access was denied."
