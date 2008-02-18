@@ -3601,7 +3601,9 @@ link_info_nautilus_link_read_callback (GObject *source_object,
 	
 	link_info_got_data (state->directory, state->file, result, file_size, file_contents);
 
-	g_free (file_contents);
+	if (result) {
+		g_free (file_contents);
+	}
 	
 	link_info_read_state_free (state);
 	
