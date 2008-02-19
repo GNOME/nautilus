@@ -37,6 +37,7 @@ typedef void (* NautilusCreateCallback)    (GFile      *new_file,
 					    gpointer    callback_data);
 typedef void (* NautilusOpCallback)        (gpointer    callback_data);
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
+					    gboolean    user_cancel,
 					    gpointer    callback_data);
 
 /* FIXME: int copy_action should be an enum */

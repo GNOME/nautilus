@@ -102,6 +102,7 @@ typedef struct {
 	CommonJob common;
 	GList *files;
 	gboolean try_trash;
+	gboolean user_cancel;
 	NautilusDeleteCallback done_callback;
 	gpointer done_callback_data;
 } DeleteJob;
@@ -1617,7 +1618,7 @@ delete_job_done (gpointer user_data)
 
 	if (job->done_callback) {
 		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
-		job->done_callback (debuting_uris, job->done_callback_data);
+		job->done_callback (debuting_uris, job->user_cancel, job->done_callback_data);
 		g_hash_table_unref (debuting_uris);
 	}
 	
@@ -1683,6 +1684,8 @@ delete_job (GIOSchedulerJob *io_job,
 		}
 		if (confirmed) {
 			delete_files (common, to_delete_files);
+		} else {
+			job->user_cancel = TRUE;
 		}
 	}
 	
@@ -1719,6 +1722,7 @@ trash_or_delete_internal (GList                  *files,
 	job = op_job_new (DeleteJob, parent_window);
 	job->files = eel_g_object_list_copy (files);
 	job->try_trash = try_trash;
+	job->user_cancel = FALSE;
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
 	
@@ -4554,6 +4558,20 @@ location_list_from_uri_list (const GList *uris)
 	return g_list_reverse (files);
 }
 
+typedef struct {
+	NautilusCopyCallback real_callback;
+	gpointer real_data;
+} MoveTrashCBData;
+
+static void
+callback_for_move_to_trash (GHashTable *debuting_uris,
+			    gboolean user_cancelled,
+			    MoveTrashCBData *data)
+{
+	data->real_callback (debuting_uris, data->real_data);
+	g_slice_free (MoveTrashCBData, data);
+}
+
 void
 nautilus_file_operations_copy_move (const GList *item_uris,
 				    GArray *relative_item_points,
@@ -4594,9 +4612,15 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		
 	} else if (copy_action == GDK_ACTION_MOVE) {
 		if (g_file_has_uri_scheme (dest, "trash")) {
+			MoveTrashCBData *cb_data;
+			
+			cb_data = g_slice_new0 (MoveTrashCBData);
+			cb_data->real_callback = done_callback;
+			cb_data->real_data = done_callback_data;
 			nautilus_file_operations_trash_or_delete (locations,
 								  parent_window,
-								  done_callback, done_callback_data);
+								  (NautilusDeleteCallback) callback_for_move_to_trash,
+								  cb_data);
 		} else {
 			nautilus_file_operations_move (locations,
 						       relative_item_points,

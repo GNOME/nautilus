@@ -1,3 +1,15 @@
+2008-02-19  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(delete_job_done), (delete_job), (trash_or_delete_internal),
+	(callback_for_move_to_trash), (nautilus_file_operations_copy_move):
+	* libnautilus-private/nautilus-file-operations.h:
+	* src/file-manager/fm-directory-view.c:
+	(trash_or_delete_selected_files), (trash_or_delete_done_cb),
+	(trash_or_delete_files), (action_location_trash_callback):
+	Reset selection_was_removed in FMDirectoryView if the user
+	cancels the deletion from trash (#337937).
+
 2008-02-19  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-clipboard.c:

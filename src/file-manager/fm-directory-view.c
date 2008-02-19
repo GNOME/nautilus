@@ -298,7 +298,8 @@ static void     fm_directory_view_create_links_for_files       (FMDirectoryView 
 								GArray               *item_locations);
 static void     trash_or_delete_files                          (GtkWindow            *parent_window,
 								const GList          *files,
-								gboolean              delete_if_all_already_in_trash);
+								gboolean              delete_if_all_already_in_trash,
+								FMDirectoryView      *view);
 static void     load_directory                                 (FMDirectoryView      *view,
 								NautilusDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
@@ -905,7 +906,9 @@ trash_or_delete_selected_files (FMDirectoryView *view)
 	 */
 	if (!view->details->selection_was_removed) {
 		selection = fm_directory_view_get_selection_for_file_transfer (view);
-		trash_or_delete_files (fm_directory_view_get_containing_window (view), selection, TRUE);
+		trash_or_delete_files (fm_directory_view_get_containing_window (view),
+				       selection, TRUE,
+				       view);
 		nautilus_file_list_free (selection);
 		view->details->selection_was_removed = TRUE;
 	}
@@ -3591,9 +3594,20 @@ desktop_or_home_dir_in_selection (FMDirectoryView *view)
 }
 
 static void
+trash_or_delete_done_cb (GHashTable *debuting_uris,
+			 gboolean user_cancel,
+			 FMDirectoryView *view)
+{
+	if (user_cancel) {
+		view->details->selection_was_removed = FALSE;
+	}
+}
+
+static void
 trash_or_delete_files (GtkWindow *parent_window,
 		       const GList *files,
-		       gboolean delete_if_all_already_in_trash)
+		       gboolean delete_if_all_already_in_trash,
+		       FMDirectoryView *view)
 {
 	GList *locations;
 	const GList *node;
@@ -3608,7 +3622,8 @@ trash_or_delete_files (GtkWindow *parent_window,
 
 	nautilus_file_operations_trash_or_delete (locations,
 						  parent_window,
-						  NULL, NULL);
+						  (NautilusDeleteCallback) trash_or_delete_done_cb,
+						  view);
 	eel_g_object_list_free (locations);
 }
 
@@ -6123,7 +6138,9 @@ action_location_trash_callback (GtkAction *action,
 	g_return_if_fail (file != NULL);
 
 	files = g_list_append (NULL, file);
-	trash_or_delete_files (fm_directory_view_get_containing_window (view), files, TRUE);
+	trash_or_delete_files (fm_directory_view_get_containing_window (view),
+			       files, TRUE,
+			       view);
 	g_list_free (files);
 }
 
