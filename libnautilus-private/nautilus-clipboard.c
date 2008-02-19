@@ -437,22 +437,22 @@ target_data_free (TargetCallbackData *target_data)
 }
 
 static const GtkActionEntry clipboard_entries[] = {
-  { "Cut", GTK_STOCK_CUT,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Cut the selected text to the clipboard"),                   /* tooltip */ 
-    G_CALLBACK (action_cut_callback) },
-  { "Copy", GTK_STOCK_COPY,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Copy the selected text to the clipboard"),                   /* tooltip */ 
-    G_CALLBACK (action_copy_callback) },
-  { "Paste", GTK_STOCK_PASTE,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Paste the text stored on the clipboard"),                   /* tooltip */ 
-    G_CALLBACK (action_paste_callback) },
-  { "Select All", NULL,                  /* name, stock id */
-    N_("Select _All"), "<control>A",                /* label, accelerator */
-    N_("Select all the text in a text field"),                   /* tooltip */ 
-    G_CALLBACK (action_select_all_callback) },
+  /* name, stock id */      { "Cut", GTK_STOCK_CUT,
+  /* label, accelerator */    NULL, NULL,
+  /* tooltip */               N_("Cut the selected text to the clipboard"),
+                              G_CALLBACK (action_cut_callback) },
+  /* name, stock id */      { "Copy", GTK_STOCK_COPY,
+  /* label, accelerator */    NULL, NULL,
+  /* tooltip */               N_("Copy the selected text to the clipboard"),
+                              G_CALLBACK (action_copy_callback) },
+  /* name, stock id */      { "Paste", GTK_STOCK_PASTE,
+  /* label, accelerator */    NULL, NULL,
+  /* tooltip */               N_("Paste the text stored on the clipboard"),
+                              G_CALLBACK (action_paste_callback) },
+  /* name, stock id */      { "Select All", NULL,
+  /* label, accelerator */    N_("Select _All"), "<control>A",
+  /* tooltip */               N_("Select all the text in a text field"),
+                              G_CALLBACK (action_select_all_callback) },
 };
 
 static TargetCallbackData *

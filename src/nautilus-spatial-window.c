@@ -878,25 +878,25 @@ action_search_callback (GtkAction *action,
 }
 
 static const GtkActionEntry spatial_entries[] = {
-  { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },               /* name, stock id, label */
-  { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."), /* name, stock id, label */
-    "<control>L", N_("Specify a location to open"),
-    G_CALLBACK (action_go_to_location_callback) },
-  { SPATIAL_ACTION_CLOSE_PARENT_FOLDERS, NULL, N_("Close P_arent Folders"), /* name, stock id, label */
-    "<control><shift>W", N_("Close this folder's parents"),
-    G_CALLBACK (action_close_parent_folders_callback) },
-  { SPATIAL_ACTION_CLOSE_ALL_FOLDERS, NULL, N_("Clos_e All Folders"), /* name, stock id, label */
-    "<control>Q", N_("Close all folder windows"),
-    G_CALLBACK (action_close_all_folders_callback) },
-  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"), /* name, stock id, label */
-    "<control>d", N_("Add a bookmark for the current location to this menu"),
-    G_CALLBACK (action_add_bookmark_callback) },
-  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
-    "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
-    G_CALLBACK (action_edit_bookmarks_callback) },
-  { "Search", "gtk-find", N_("_Search for Files..."), /* name, stock id, label */
-    "<control>F", N_("Locate documents and folders on this computer by name or content"),
-    G_CALLBACK (action_search_callback) },
+  /* name, stock id, label */  { SPATIAL_ACTION_PLACES, NULL, N_("_Places") },
+  /* name, stock id, label */  { SPATIAL_ACTION_GO_TO_LOCATION, NULL, N_("Open _Location..."),
+                                 "<control>L", N_("Specify a location to open"),
+                                 G_CALLBACK (action_go_to_location_callback) },
+  /* name, stock id, label */  { SPATIAL_ACTION_CLOSE_PARENT_FOLDERS, NULL, N_("Close P_arent Folders"),
+                                 "<control><shift>W", N_("Close this folder's parents"),
+                                 G_CALLBACK (action_close_parent_folders_callback) },
+  /* name, stock id, label */  { SPATIAL_ACTION_CLOSE_ALL_FOLDERS, NULL, N_("Clos_e All Folders"), 
+                                 "<control>Q", N_("Close all folder windows"),
+                                 G_CALLBACK (action_close_all_folders_callback) },
+  /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
+                                 "<control>d", N_("Add a bookmark for the current location to this menu"),
+                                 G_CALLBACK (action_add_bookmark_callback) },
+  /* name, stock id, label */  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"),
+                                 "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
+                                 G_CALLBACK (action_edit_bookmarks_callback) },
+  /* name, stock id, label */  { "Search", "gtk-find", N_("_Search for Files..."),
+                                 "<control>F", N_("Locate documents and folders on this computer by name or content"),
+                                 G_CALLBACK (action_search_callback) },
 };
 
 static void

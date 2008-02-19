@@ -595,101 +595,101 @@ connect_proxy_cb (GtkUIManager *manager,
 }
 
 static const GtkActionEntry main_entries[] = {
-  { "File", NULL, N_("_File") },               /* name, stock id, label */
-  { "Edit", NULL, N_("_Edit") },               /* name, stock id, label */
-  { "View", NULL, N_("_View") },               /* name, stock id, label */
-  { "Help", NULL, N_("_Help") },               /* name, stock id, label */
-  { "Close", GTK_STOCK_CLOSE,                  /* name, stock id */
-    N_("_Close"), "<control>W",                /* label, accelerator */
-    N_("Close this folder"),                   /* tooltip */ 
-    G_CALLBACK (action_close_window_callback) },
-  { "Backgrounds and Emblems", NULL,
-    N_("_Backgrounds and Emblems..."),               
-    NULL, N_("Display patterns, colors, and emblems that can be used to customize appearance"),
-    G_CALLBACK (action_backgrounds_and_emblems_callback) },
-  { "Preferences", GTK_STOCK_PREFERENCES,
-    N_("Prefere_nces"),               
-    NULL, N_("Edit Nautilus preferences"),
-    G_CALLBACK (action_preferences_callback) },
-  { "Undo", NULL, N_("_Undo"),               /* name, stock id, label */
-    "<control>Z", N_("Undo the last text change"),
-    G_CALLBACK (action_undo_callback) },
-  { "Up", GTK_STOCK_GO_UP, N_("Open _Parent"),               /* name, stock id, label */
-    "<alt>Up", N_("Open the parent folder"),
-    G_CALLBACK (action_up_callback) },
-  { "UpAccel", NULL, "UpAccel",               /* name, stock id, label */
-    "", NULL,
-    G_CALLBACK (action_up_callback) },
-  { "Stop", GTK_STOCK_STOP,                        /* name, stock id */
-    N_("_Stop"), NULL,           /* label, accelerator */
-    N_("Stop loading the current location"), /* tooltip */
-    G_CALLBACK (action_stop_callback) },
-  { "Reload", GTK_STOCK_REFRESH,                        /* name, stock id */
-    N_("_Reload"), "<control>R",           /* label, accelerator */
-    N_("Reload the current location"),     /* tooltip */
-    G_CALLBACK (action_reload_callback) },
-  { "Nautilus Manual", GTK_STOCK_HELP,                        /* name, stock id */
-    N_("_Contents"), "F1",           /* label, accelerator */
-    N_("Display Nautilus help"),                                      /* tooltip */ 
-    G_CALLBACK (action_nautilus_manual_callback) },
-  { "About Nautilus", GTK_STOCK_ABOUT,                        /* name, stock id */
-    N_("_About"), NULL,           /* label, accelerator */
-    N_("Display credits for the creators of Nautilus"),                                      /* tooltip */ 
-    G_CALLBACK (action_about_nautilus_callback) },
-  { "Zoom In", GTK_STOCK_ZOOM_IN,                        /* name, stock id */
-    N_("Zoom _In"), "<control>plus",           /* label, accelerator */
-    N_("Show the contents in more detail"),                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_in_callback) },
-  { "ZoomInAccel", NULL,                        /* name, stock id */
-    "ZoomInAccel", "<control>equal",           /* label, accelerator */
-    NULL,                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_in_callback) },
-  { "ZoomInAccel2", NULL,                        /* name, stock id */
-    "ZoomInAccel2", "<control>KP_Add",           /* label, accelerator */
-    NULL,                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_in_callback) },
-  { "Zoom Out", GTK_STOCK_ZOOM_OUT,                        /* name, stock id */
-    N_("Zoom _Out"), "<control>minus",           /* label, accelerator */
-    N_("Show the contents in less detail"),                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_out_callback) },
-  { "ZoomOutAccel", NULL,                        /* name, stock id */
-    "ZoomOutAccel", "<control>KP_Subtract",           /* label, accelerator */
-    NULL,                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_out_callback) },
-  { "Zoom Normal", GTK_STOCK_ZOOM_100,                        /* name, stock id */
-    N_("Normal Si_ze"), "<control>0",           /* label, accelerator */
-    N_("Show the contents at the normal size"),                                      /* tooltip */ 
-    G_CALLBACK (action_zoom_normal_callback) },
+  /* name, stock id, label */  { "File", NULL, N_("_File") },
+  /* name, stock id, label */  { "Edit", NULL, N_("_Edit") },
+  /* name, stock id, label */  { "View", NULL, N_("_View") },
+  /* name, stock id, label */  { "Help", NULL, N_("_Help") },
+  /* name, stock id */         { "Close", GTK_STOCK_CLOSE,
+  /* label, accelerator */       N_("_Close"), "<control>W",
+  /* tooltip */                  N_("Close this folder"),
+                                 G_CALLBACK (action_close_window_callback) },
+                               { "Backgrounds and Emblems", NULL,
+                                 N_("_Backgrounds and Emblems..."),               
+                                 NULL, N_("Display patterns, colors, and emblems that can be used to customize appearance"),
+                                 G_CALLBACK (action_backgrounds_and_emblems_callback) },
+                               { "Preferences", GTK_STOCK_PREFERENCES,
+                                 N_("Prefere_nces"),               
+                                 NULL, N_("Edit Nautilus preferences"),
+                                 G_CALLBACK (action_preferences_callback) },
+  /* name, stock id, label */  { "Undo", NULL, N_("_Undo"),
+                                 "<control>Z", N_("Undo the last text change"),
+                                 G_CALLBACK (action_undo_callback) },
+  /* name, stock id, label */  { "Up", GTK_STOCK_GO_UP, N_("Open _Parent"),
+                                 "<alt>Up", N_("Open the parent folder"),
+                                 G_CALLBACK (action_up_callback) },
+  /* name, stock id, label */  { "UpAccel", NULL, "UpAccel",
+                                 "", NULL,
+                                 G_CALLBACK (action_up_callback) },
+  /* name, stock id */         { "Stop", GTK_STOCK_STOP,
+  /* label, accelerator */       N_("_Stop"), NULL,
+  /* tooltip */                  N_("Stop loading the current location"),
+                                 G_CALLBACK (action_stop_callback) },
+  /* name, stock id */         { "Reload", GTK_STOCK_REFRESH,
+  /* label, accelerator */       N_("_Reload"), "<control>R",
+  /* tooltip */                  N_("Reload the current location"),
+                                 G_CALLBACK (action_reload_callback) },
+  /* name, stock id */         { "Nautilus Manual", GTK_STOCK_HELP,
+  /* label, accelerator */       N_("_Contents"), "F1",
+  /* tooltip */                  N_("Display Nautilus help"),
+                                 G_CALLBACK (action_nautilus_manual_callback) },
+  /* name, stock id */         { "About Nautilus", GTK_STOCK_ABOUT,
+  /* label, accelerator */       N_("_About"), NULL,
+  /* tooltip */                  N_("Display credits for the creators of Nautilus"),
+                                 G_CALLBACK (action_about_nautilus_callback) },
+  /* name, stock id */         { "Zoom In", GTK_STOCK_ZOOM_IN,
+  /* label, accelerator */       N_("Zoom _In"), "<control>plus",
+  /* tooltip */                  N_("Show the contents in more detail"),
+                                 G_CALLBACK (action_zoom_in_callback) },
+  /* name, stock id */         { "ZoomInAccel", NULL,
+  /* label, accelerator */       "ZoomInAccel", "<control>equal",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_zoom_in_callback) },
+  /* name, stock id */         { "ZoomInAccel2", NULL,
+  /* label, accelerator */       "ZoomInAccel2", "<control>KP_Add",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_zoom_in_callback) },
+  /* name, stock id */         { "Zoom Out", GTK_STOCK_ZOOM_OUT,
+  /* label, accelerator */       N_("Zoom _Out"), "<control>minus",
+  /* tooltip */                  N_("Show the contents in less detail"),
+                                 G_CALLBACK (action_zoom_out_callback) },
+  /* name, stock id */         { "ZoomOutAccel", NULL,
+  /* label, accelerator */       "ZoomOutAccel", "<control>KP_Subtract",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_zoom_out_callback) },
+  /* name, stock id */         { "Zoom Normal", GTK_STOCK_ZOOM_100,
+  /* label, accelerator */       N_("Normal Si_ze"), "<control>0",
+  /* tooltip */                  N_("Show the contents at the normal size"),
+                                 G_CALLBACK (action_zoom_normal_callback) },
 #ifdef GIO_CONVERSION_DONE
-  { "Connect to Server", NULL,                        /* name, stock id */
-    N_("Connect to _Server..."), NULL,           /* label, accelerator */
-    N_("Connect to a remote computer or shared disk"),                                      /* tooltip */ 
-    G_CALLBACK (action_connect_to_server_callback) },
+  /* name, stock id */         { "Connect to Server", NULL, 
+  /* label, accelerator */       N_("Connect to _Server..."), NULL,
+  /* tooltip */                  N_("Connect to a remote computer or shared disk"),
+                                 G_CALLBACK (action_connect_to_server_callback) },
 #endif
-  { "Home", NAUTILUS_ICON_HOME,                        /* name, stock id */
-    N_("_Home Folder"), "<alt>Home",           /* label, accelerator */
-    N_("Open your personal folder"),                                  /* tooltip */ 
-    G_CALLBACK (action_home_callback) },
-  { "Go to Computer", NAUTILUS_ICON_COMPUTER,                        /* name, stock id */
-    N_("_Computer"), NULL,           /* label, accelerator */
-    N_("Browse all local and remote disks and folders accessible from this computer"),                                  /* tooltip */ 
-    G_CALLBACK (action_go_to_computer_callback) },
-  { "Go to Network", NAUTILUS_ICON_NETWORK,                        /* name, stock id */
-    N_("_Network"), NULL,           /* label, accelerator */
-    N_("Browse bookmarked and local network locations"),                                  /* tooltip */ 
-    G_CALLBACK (action_go_to_network_callback) },
-  { "Go to Templates", NAUTILUS_ICON_TEMPLATE,                        /* name, stock id */
-    N_("T_emplates"), NULL,           /* label, accelerator */
-    N_("Open your personal templates folder"),                                  /* tooltip */ 
-    G_CALLBACK (action_go_to_templates_callback) },
-  { "Go to Trash", NAUTILUS_ICON_TRASH,                        /* name, stock id */
-    N_("_Trash"), NULL,           /* label, accelerator */
-    N_("Open your personal trash folder"),                                  /* tooltip */ 
-    G_CALLBACK (action_go_to_trash_callback) },
-  { "Go to Burn CD", NAUTILUS_ICON_BURN,                        /* name, stock id */
-    N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
-    N_("Open a folder into which you can drag files to burn to a CD or DVD"),                                  /* tooltip */ 
-    G_CALLBACK (action_go_to_burn_cd_callback) },
+  /* name, stock id */         { "Home", NAUTILUS_ICON_HOME,
+  /* label, accelerator */       N_("_Home Folder"), "<alt>Home",
+  /* tooltip */                  N_("Open your personal folder"),
+                                 G_CALLBACK (action_home_callback) },
+  /* name, stock id */         { "Go to Computer", NAUTILUS_ICON_COMPUTER,
+  /* label, accelerator */       N_("_Computer"), NULL,
+  /* tooltip */                  N_("Browse all local and remote disks and folders accessible from this computer"),
+                                 G_CALLBACK (action_go_to_computer_callback) },
+  /* name, stock id */         { "Go to Network", NAUTILUS_ICON_NETWORK,
+  /* label, accelerator */       N_("_Network"), NULL,
+  /* tooltip */                  N_("Browse bookmarked and local network locations"),
+                                 G_CALLBACK (action_go_to_network_callback) },
+  /* name, stock id */         { "Go to Templates", NAUTILUS_ICON_TEMPLATE,
+  /* label, accelerator */       N_("T_emplates"), NULL,
+  /* tooltip */                  N_("Open your personal templates folder"),
+                                 G_CALLBACK (action_go_to_templates_callback) },
+  /* name, stock id */         { "Go to Trash", NAUTILUS_ICON_TRASH,
+  /* label, accelerator */       N_("_Trash"), NULL,
+  /* tooltip */                  N_("Open your personal trash folder"),
+                                 G_CALLBACK (action_go_to_trash_callback) },
+  /* name, stock id */         { "Go to Burn CD", NAUTILUS_ICON_BURN,
+  /* label, accelerator */       N_("CD/_DVD Creator"), NULL,
+  /* tooltip */                  N_("Open a folder into which you can drag files to burn to a CD or DVD"),
+                                 G_CALLBACK (action_go_to_burn_cd_callback) },
 };
 
 /**

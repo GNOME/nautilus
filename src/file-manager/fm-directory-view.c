@@ -6196,206 +6196,206 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 }
 
 static const GtkActionEntry directory_view_entries[] = {
-  { "New Documents", "document-new", N_("Create _Document") },               /* name, stock id, label */
-  { "Open With", NULL, N_("Open Wit_h"),               /* name, stock id, label */
-    NULL, N_("Choose a program with which to open the selected item") },
-  { "Properties", GTK_STOCK_PROPERTIES,                  /* name, stock id */
-    N_("_Properties"), "<alt>Return",                /* label, accelerator */
-    N_("View or modify the properties of each selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_properties_callback) },
-  { "PropertiesAccel", NULL,                  /* name, stock id */
-    "PropertiesAccel", "<control>I",                /* label, accelerator */
-    NULL,                   /* tooltip */ 
-    G_CALLBACK (action_properties_callback) },
-  { "SelfProperties", GTK_STOCK_PROPERTIES,                  /* name, stock id */
-    N_("_Properties"), NULL,                /* label, accelerator */
-    N_("View or modify the properties of the open folder"),                   /* tooltip */ 
-    G_CALLBACK (action_self_properties_callback) },
-  { "New Folder", "folder-new",                  /* name, stock id */
-    N_("Create _Folder"), "<control><shift>N",                /* label, accelerator */
-    N_("Create a new empty folder inside this folder"),                   /* tooltip */ 
-    G_CALLBACK (action_new_folder_callback) },
-  { "No Templates", NULL, N_("No templates installed") },               /* name, stock id, label */
-  { "New Empty File", NULL,                  /* name, stock id */
+  /* name, stock id, label */  { "New Documents", "document-new", N_("Create _Document") },
+  /* name, stock id, label */  { "Open With", NULL, N_("Open Wit_h"),
+                                 NULL, N_("Choose a program with which to open the selected item") },
+  /* name, stock id */         { "Properties", GTK_STOCK_PROPERTIES,
+  /* label, accelerator */       N_("_Properties"), "<alt>Return",
+  /* tooltip */                  N_("View or modify the properties of each selected item"),
+                                 G_CALLBACK (action_properties_callback) },
+  /* name, stock id */         { "PropertiesAccel", NULL,
+  /* label, accelerator */       "PropertiesAccel", "<control>I",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_properties_callback) },
+  /* name, stock id */         { "SelfProperties", GTK_STOCK_PROPERTIES,
+  /* label, accelerator */       N_("_Properties"), NULL,
+  /* tooltip */                  N_("View or modify the properties of the open folder"),
+                                 G_CALLBACK (action_self_properties_callback) },
+  /* name, stock id */         { "New Folder", "folder-new",
+  /* label, accelerator */       N_("Create _Folder"), "<control><shift>N",
+  /* tooltip */                  N_("Create a new empty folder inside this folder"),
+                                 G_CALLBACK (action_new_folder_callback) },
+  /* name, stock id, label */  { "No Templates", NULL, N_("No templates installed") },
+  /* name, stock id */         { "New Empty File", NULL,
     /* translators: this is used to indicate that a file doesn't contain anything */
-    N_("_Empty File"), NULL,                /* label, accelerator */
-    N_("Create a new empty file inside this folder"),                   /* tooltip */ 
-    G_CALLBACK (action_new_empty_file_callback) },
-  { "New Launcher", NULL,                  /* name, stock id */
-    N_("Create L_auncher..."), NULL,                /* label, accelerator */
-    N_("Create a new launcher"),                   /* tooltip */ 
-    G_CALLBACK (action_new_launcher_callback) },
-  { "Open", GTK_STOCK_OPEN,                  /* name, stock id */
-    N_("_Open"), "<control>o",                /* label, accelerator */
-    N_("Open the selected item in this window"),                   /* tooltip */ 
-    G_CALLBACK (action_open_callback) },
-  { "OpenAccel", NULL,                  /* name, stock id */
-    "OpenAccel", "<alt>Down",                /* label, accelerator */
-    NULL,                   /* tooltip */ 
-    G_CALLBACK (action_open_callback) },
-  { "OpenAlternate", NULL,                  /* name, stock id */
-    N_("Open in Navigation Window"), "<control><shift>o",                /* label, accelerator */
-    N_("Open each selected item in a navigation window"),                   /* tooltip */ 
-    G_CALLBACK (action_open_alternate_callback) },
-  { "OpenFolderWindow", NULL,                  /* name, stock id */
-    N_("Open in Folder Window"), NULL,                /* label, accelerator */
-    N_("Open each selected item in a folder window"),                   /* tooltip */ 
-    G_CALLBACK (action_open_folder_window_callback) },
-  { "OtherApplication1", NULL,                  /* name, stock id */
-    N_("Open with Other _Application..."), NULL,                /* label, accelerator */
-    N_("Choose another application with which to open the selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_other_application_callback) },
-  { "OtherApplication2", NULL,                  /* name, stock id */
-    N_("Open with Other _Application..."), NULL,                /* label, accelerator */
-    N_("Choose another application with which to open the selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_other_application_callback) },
-  { "Open Scripts Folder", NULL,                  /* name, stock id */
-    N_("_Open Scripts Folder"), NULL,                /* label, accelerator */
-    N_("Show the folder containing the scripts that appear in this menu"),                   /* tooltip */ 
-    G_CALLBACK (action_open_scripts_folder_callback) },
-  { "Empty Trash", NULL,                  /* name, stock id */
-    N_("E_mpty Trash"), NULL,                /* label, accelerator */
-    N_("Delete all items in the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_empty_trash_callback) },
-  { "Cut", GTK_STOCK_CUT,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Prepare the selected files to be moved with a Paste command"),                   /* tooltip */ 
-    G_CALLBACK (action_cut_files_callback) },
-  { "Copy", GTK_STOCK_COPY,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Prepare the selected files to be copied with a Paste command"),                   /* tooltip */ 
-    G_CALLBACK (action_copy_files_callback) },
-  { "Paste", GTK_STOCK_PASTE,                  /* name, stock id */
-    NULL, NULL,                /* label, accelerator */
-    N_("Move or copy files previously selected by a Cut or Copy command"),                   /* tooltip */ 
-    G_CALLBACK (action_paste_files_callback) },
+  /* label, accelerator */       N_("_Empty File"), NULL,
+  /* tooltip */                  N_("Create a new empty file inside this folder"),
+                                 G_CALLBACK (action_new_empty_file_callback) },
+  /* name, stock id */         { "New Launcher", NULL,
+  /* label, accelerator */       N_("Create L_auncher..."), NULL,
+  /* tooltip */                  N_("Create a new launcher"),
+                                 G_CALLBACK (action_new_launcher_callback) },
+  /* name, stock id */         { "Open", GTK_STOCK_OPEN,
+  /* label, accelerator */       N_("_Open"), "<control>o",
+  /* tooltip */                  N_("Open the selected item in this window"),
+                                 G_CALLBACK (action_open_callback) },
+  /* name, stock id */         { "OpenAccel", NULL,
+  /* label, accelerator */       "OpenAccel", "<alt>Down",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_open_callback) },
+  /* name, stock id */         { "OpenAlternate", NULL,
+  /* label, accelerator */       N_("Open in Navigation Window"), "<control><shift>o",
+  /* tooltip */                  N_("Open each selected item in a navigation window"),
+                                 G_CALLBACK (action_open_alternate_callback) },
+  /* name, stock id */         { "OpenFolderWindow", NULL,
+  /* label, accelerator */       N_("Open in Folder Window"), NULL,
+  /* tooltip */                  N_("Open each selected item in a folder window"),
+                                 G_CALLBACK (action_open_folder_window_callback) },
+  /* name, stock id */         { "OtherApplication1", NULL,
+  /* label, accelerator */       N_("Open with Other _Application..."), NULL,
+  /* tooltip */                  N_("Choose another application with which to open the selected item"),
+                                 G_CALLBACK (action_other_application_callback) },
+  /* name, stock id */         { "OtherApplication2", NULL,
+  /* label, accelerator */       N_("Open with Other _Application..."), NULL,
+  /* tooltip */                  N_("Choose another application with which to open the selected item"),
+                                 G_CALLBACK (action_other_application_callback) },
+  /* name, stock id */         { "Open Scripts Folder", NULL,
+  /* label, accelerator */       N_("_Open Scripts Folder"), NULL,
+   /* tooltip */                 N_("Show the folder containing the scripts that appear in this menu"),
+                                 G_CALLBACK (action_open_scripts_folder_callback) },
+  /* name, stock id */         { "Empty Trash", NULL,
+  /* label, accelerator */       N_("E_mpty Trash"), NULL,
+  /* tooltip */                  N_("Delete all items in the Trash"),
+                                 G_CALLBACK (action_empty_trash_callback) },
+  /* name, stock id */         { "Cut", GTK_STOCK_CUT,
+  /* label, accelerator */       NULL, NULL,
+  /* tooltip */                  N_("Prepare the selected files to be moved with a Paste command"),
+                                 G_CALLBACK (action_cut_files_callback) },
+  /* name, stock id */         { "Copy", GTK_STOCK_COPY,
+  /* label, accelerator */       NULL, NULL,
+  /* tooltip */                  N_("Prepare the selected files to be copied with a Paste command"),
+                                 G_CALLBACK (action_copy_files_callback) },
+  /* name, stock id */         { "Paste", GTK_STOCK_PASTE,
+  /* label, accelerator */       NULL, NULL,
+  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command"),
+                                 G_CALLBACK (action_paste_files_callback) },
   /* We make accelerator "" instead of null here to not inherit the stock
      accelerator for paste */
-  { "Paste Files Into", GTK_STOCK_PASTE,                  /* name, stock id */
-    N_("_Paste Into Folder"), "",                /* label, accelerator */
-    N_("Move or copy files previously selected by a Cut or Copy command into the selected folder"),                   /* tooltip */ 
-    G_CALLBACK (action_paste_files_into_callback) },
-  { "Select All", NULL,                  /* name, stock id */
-    N_("Select _All"), "<control>A",                /* label, accelerator */
-    N_("Select all items in this window"),                   /* tooltip */ 
-    G_CALLBACK (action_select_all_callback) },
-  { "Select Pattern", NULL,                  /* name, stock id */
-    N_("Select _Pattern"), "<control>S",                /* label, accelerator */
-    N_("Select items in this window matching a given pattern"),                   /* tooltip */ 
-    G_CALLBACK (action_select_pattern_callback) },
-  { "Duplicate", NULL,                  /* name, stock id */
-    N_("D_uplicate"), NULL,                /* label, accelerator */
-    N_("Duplicate each selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_duplicate_callback) },
-  { "Create Link", NULL,                  /* name, stock id */
-    N_("Ma_ke Link"), "<control>M",                /* label, accelerator */
-    N_("Create a symbolic link for each selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_create_link_callback) },
-  { "Rename", NULL,                  /* name, stock id */
-    N_("_Rename..."), "F2",                /* label, accelerator */
-    N_("Rename selected item"),                   /* tooltip */ 
-    G_CALLBACK (action_rename_callback) },
-  { "RenameSelectAll", NULL,                  /* name, stock id */
-    "RenameSelectAll", "<shift>F2",                /* label, accelerator */
-    NULL,                   /* tooltip */ 
-    G_CALLBACK (action_rename_select_all_callback) },
-  { "Trash", NAUTILUS_ICON_TRASH,                  /* name, stock id */
-    N_("Mo_ve to Trash"), "<control>T",                /* label, accelerator */
-    N_("Move each selected item to the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_trash_callback) },
-  { "Delete", NULL,                  /* name, stock id */
-    N_("_Delete"), "<shift>Delete",                /* label, accelerator */
-    N_("Delete each selected item, without moving to the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_delete_callback) },
-  { "Reset to Defaults", NULL,                  /* name, stock id */
-    N_("Reset View to _Defaults"), NULL,                /* label, accelerator */
-    N_("Reset sorting order and zoom level to match preferences for this view"),                   /* tooltip */ 
-    G_CALLBACK (action_reset_to_defaults_callback) },
-  { "Connect To Server Link", NULL,                  /* name, stock id */
-    N_("Connect To This Server"), NULL,                /* label, accelerator */
-    N_("Make a permanent connection to this server"),                   /* tooltip */ 
-    G_CALLBACK (action_connect_to_server_link_callback) },
-  { "Mount Volume", NULL,                  /* name, stock id */
-    N_("_Mount Volume"), NULL,                /* label, accelerator */
-    N_("Mount the selected volume"),                   /* tooltip */ 
-    G_CALLBACK (action_mount_volume_callback) },
-  { "Unmount Volume", NULL,                  /* name, stock id */
-    N_("_Unmount Volume"), NULL,                /* label, accelerator */
-    N_("Unmount the selected volume"),                   /* tooltip */ 
-    G_CALLBACK (action_unmount_volume_callback) },
-  { "Eject Volume", NULL,                  /* name, stock id */
-    N_("_Eject"), NULL,                /* label, accelerator */
-    N_("Eject the selected volume"),                   /* tooltip */ 
-    G_CALLBACK (action_eject_volume_callback) },
-  { "Format Volume", NULL,                  /* name, stock id */
-    N_("_Format"), NULL,                /* label, accelerator */
-    N_("Format the selected volume"),                   /* tooltip */ 
-    G_CALLBACK (action_format_volume_callback) },
-  { "Self Mount Volume", NULL,                  /* name, stock id */
-    N_("_Mount Volume"), NULL,                /* label, accelerator */
-    N_("Mount the volume associated with the open folder"),                   /* tooltip */ 
-    G_CALLBACK (action_self_mount_volume_callback) },
-  { "Self Unmount Volume", NULL,                  /* name, stock id */
-    N_("_Unmount Volume"), NULL,                /* label, accelerator */
-    N_("Unmount the volume associated with the open folder"),                   /* tooltip */ 
-    G_CALLBACK (action_self_unmount_volume_callback) },
-  { "Self Eject Volume", NULL,                  /* name, stock id */
-    N_("_Eject"), NULL,                /* label, accelerator */
-    N_("Eject the volume associated with the open folder"),                   /* tooltip */ 
-    G_CALLBACK (action_self_eject_volume_callback) },
-  { "Self Format Volume", NULL,                  /* name, stock id */
-    N_("_Format"), NULL,                /* label, accelerator */
-    N_("Format the volume associated with the open folder"),                   /* tooltip */ 
-    G_CALLBACK (action_self_format_volume_callback) },
-  { "OpenCloseParent", NULL,                  /* name, stock id */
-    N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
-    NULL,                   /* tooltip */ 
-    G_CALLBACK (action_open_close_parent_callback) },
-  { "Save Search", NULL,                     /* name, stock id */
-    N_("Sa_ve Search"), NULL,                /* label, accelerator */
-    N_("Save the edited search"),            /* tooltip */ 
-    G_CALLBACK (action_save_search_callback) },
-  { "Save Search As", NULL,                  /* name, stock id */
-    N_("Sa_ve Search As..."), NULL,             /* label, accelerator */
-    N_("Save the current search as a file"), /* tooltip */ 
-    G_CALLBACK (action_save_search_as_callback) },
+  /* name, stock id */         { "Paste Files Into", GTK_STOCK_PASTE,
+  /* label, accelerator */       N_("_Paste Into Folder"), "",
+  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into the selected folder"),
+                                 G_CALLBACK (action_paste_files_into_callback) },
+  /* name, stock id */         { "Select All", NULL,
+  /* label, accelerator */       N_("Select _All"), "<control>A",
+  /* tooltip */                  N_("Select all items in this window"),
+                                 G_CALLBACK (action_select_all_callback) },
+  /* name, stock id */         { "Select Pattern", NULL,
+  /* label, accelerator */       N_("Select _Pattern"), "<control>S",
+  /* tooltip */                  N_("Select items in this window matching a given pattern"),
+                                 G_CALLBACK (action_select_pattern_callback) },
+  /* name, stock id */         { "Duplicate", NULL,
+  /* label, accelerator */       N_("D_uplicate"), NULL,
+  /* tooltip */                  N_("Duplicate each selected item"),
+                                 G_CALLBACK (action_duplicate_callback) },
+  /* name, stock id */         { "Create Link", NULL,
+  /* label, accelerator */       N_("Ma_ke Link"), "<control>M",
+  /* tooltip */                  N_("Create a symbolic link for each selected item"),
+                                 G_CALLBACK (action_create_link_callback) },
+  /* name, stock id */         { "Rename", NULL,
+  /* label, accelerator */       N_("_Rename..."), "F2",
+  /* tooltip */                  N_("Rename selected item"),
+                                 G_CALLBACK (action_rename_callback) },
+  /* name, stock id */         { "RenameSelectAll", NULL,
+  /* label, accelerator */       "RenameSelectAll", "<shift>F2",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_rename_select_all_callback) },
+  /* name, stock id */         { "Trash", NAUTILUS_ICON_TRASH,
+  /* label, accelerator */       N_("Mo_ve to Trash"), "<control>T",
+  /* tooltip */                  N_("Move each selected item to the Trash"),
+                                 G_CALLBACK (action_trash_callback) },
+  /* name, stock id */         { "Delete", NULL,
+  /* label, accelerator */       N_("_Delete"), "<shift>Delete",
+  /* tooltip */                  N_("Delete each selected item, without moving to the Trash"),
+                                 G_CALLBACK (action_delete_callback) },
+  /* name, stock id */         { "Reset to Defaults", NULL,
+  /* label, accelerator */       N_("Reset View to _Defaults"), NULL,
+  /* tooltip */                  N_("Reset sorting order and zoom level to match preferences for this view"),
+                                 G_CALLBACK (action_reset_to_defaults_callback) },
+  /* name, stock id */         { "Connect To Server Link", NULL,
+  /* label, accelerator */       N_("Connect To This Server"), NULL,
+  /* tooltip */                  N_("Make a permanent connection to this server"),
+                                 G_CALLBACK (action_connect_to_server_link_callback) },
+  /* name, stock id */         { "Mount Volume", NULL,
+  /* label, accelerator */       N_("_Mount Volume"), NULL,
+  /* tooltip */                  N_("Mount the selected volume"),
+                                 G_CALLBACK (action_mount_volume_callback) },
+  /* name, stock id */         { "Unmount Volume", NULL,
+  /* label, accelerator */       N_("_Unmount Volume"), NULL,
+  /* tooltip */                  N_("Unmount the selected volume"),
+                                 G_CALLBACK (action_unmount_volume_callback) },
+  /* name, stock id */         { "Eject Volume", NULL,
+  /* label, accelerator */       N_("_Eject"), NULL,
+  /* tooltip */                  N_("Eject the selected volume"),
+                                 G_CALLBACK (action_eject_volume_callback) },
+  /* name, stock id */         { "Format Volume", NULL,
+  /* label, accelerator */       N_("_Format"), NULL,
+  /* tooltip */                  N_("Format the selected volume"),
+                                 G_CALLBACK (action_format_volume_callback) },
+  /* name, stock id */         { "Self Mount Volume", NULL,
+  /* label, accelerator */       N_("_Mount Volume"), NULL,
+  /* tooltip */                  N_("Mount the volume associated with the open folder"),
+                                 G_CALLBACK (action_self_mount_volume_callback) },
+  /* name, stock id */         { "Self Unmount Volume", NULL,
+  /* label, accelerator */       N_("_Unmount Volume"), NULL,
+  /* tooltip */                  N_("Unmount the volume associated with the open folder"),
+                                 G_CALLBACK (action_self_unmount_volume_callback) },
+  /* name, stock id */         { "Self Eject Volume", NULL,
+  /* label, accelerator */       N_("_Eject"), NULL,
+  /* tooltip */                  N_("Eject the volume associated with the open folder"),
+                                 G_CALLBACK (action_self_eject_volume_callback) },
+  /* name, stock id */         { "Self Format Volume", NULL,
+  /* label, accelerator */       N_("_Format"), NULL,
+  /* tooltip */                  N_("Format the volume associated with the open folder"),
+                                 G_CALLBACK (action_self_format_volume_callback) },
+  /* name, stock id */         { "OpenCloseParent", NULL,
+  /* label, accelerator */       N_("Open File and Close window"), "<alt><shift>Down",
+  /* tooltip */                  NULL,
+                                 G_CALLBACK (action_open_close_parent_callback) },
+  /* name, stock id */         { "Save Search", NULL,
+  /* label, accelerator */       N_("Sa_ve Search"), NULL,
+  /* tooltip */                  N_("Save the edited search"),
+                                 G_CALLBACK (action_save_search_callback) },
+  /* name, stock id */         { "Save Search As", NULL,
+  /* label, accelerator */       N_("Sa_ve Search As..."), NULL,
+  /* tooltip */                  N_("Save the current search as a file"),
+                                 G_CALLBACK (action_save_search_as_callback) },
 
   /* Location-specific actions */
-  { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,                  /* name, stock id */
-    N_("Open in Navigation Window"), "",                /* label, accelerator */
-    N_("Open this folder in a navigation window"),                   /* tooltip */ 
-    G_CALLBACK (action_location_open_alternate_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_ALTERNATE, NULL,
+  /* label, accelerator */       N_("Open in Navigation Window"), "",
+  /* tooltip */                  N_("Open this folder in a navigation window"),
+                                 G_CALLBACK (action_location_open_alternate_callback) },
 
-  { FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,                  /* name, stock id */
-    N_("Open in Folder Window"), "",                /* label, accelerator */
-    N_("Open this folder in a folder window"),                   /* tooltip */ 
-    G_CALLBACK (action_location_open_folder_window_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,
+  /* label, accelerator */       N_("Open in Folder Window"), "",
+  /* tooltip */                  N_("Open this folder in a folder window"),
+                                 G_CALLBACK (action_location_open_folder_window_callback) },
 
-  { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,                  /* name, stock id */
-    NULL, "",                /* label, accelerator */
-    N_("Prepare this folder to be moved with a Paste command"),                   /* tooltip */ 
-    G_CALLBACK (action_location_cut_callback) },
-  { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,                  /* name, stock id */
-    NULL, "",                /* label, accelerator */
-    N_("Prepare this folder to be copied with a Paste command"),                   /* tooltip */ 
-    G_CALLBACK (action_location_copy_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_CUT, GTK_STOCK_CUT,
+  /* label, accelerator */       NULL, "",
+  /* tooltip */                  N_("Prepare this folder to be moved with a Paste command"),
+                                 G_CALLBACK (action_location_cut_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_COPY, GTK_STOCK_COPY,
+  /* label, accelerator */       NULL, "",
+  /* tooltip */                  N_("Prepare this folder to be copied with a Paste command"),
+                                 G_CALLBACK (action_location_copy_callback) },
 
-  { FM_ACTION_LOCATION_TRASH, NAUTILUS_ICON_TRASH,                  /* name, stock id */
-    N_("Mo_ve to Trash"), "",                /* label, accelerator */
-    N_("Move this folder to the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_location_trash_callback) },
-  { FM_ACTION_LOCATION_DELETE, NULL,                  /* name, stock id */
-    N_("_Delete"), "",                /* label, accelerator */
-    N_("Delete this folder, without moving to the Trash"),                   /* tooltip */ 
-    G_CALLBACK (action_location_delete_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_TRASH, NAUTILUS_ICON_TRASH,
+  /* label, accelerator */       N_("Mo_ve to Trash"), "",
+  /* tooltip */                  N_("Move this folder to the Trash"),
+                                 G_CALLBACK (action_location_trash_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, NULL,
+  /* label, accelerator */       N_("_Delete"), "",
+  /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
+                                 G_CALLBACK (action_location_delete_callback) },
 };
 
 static const GtkToggleActionEntry directory_view_toggle_entries[] = {
-  { "Show Hidden Files", NULL,                  /* name, stock id */
-    N_("Show _Hidden Files"), "<control>H",                /* label, accelerator */
-    N_("Toggle the display of hidden files in the current window"),                   /* tooltip */ 
-    G_CALLBACK (action_show_hidden_files_callback),
-    TRUE },
+  /* name, stock id */         { "Show Hidden Files", NULL,
+  /* label, accelerator */       N_("Show _Hidden Files"), "<control>H",
+  /* tooltip */                  N_("Toggle the display of hidden files in the current window"),
+                                 G_CALLBACK (action_show_hidden_files_callback),
+                                 TRUE },
 };
 
 static void

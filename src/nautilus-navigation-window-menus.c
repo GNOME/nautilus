@@ -470,56 +470,56 @@ action_search_callback (GtkAction *action,
 }
 
 static const GtkActionEntry navigation_entries[] = {
-  { "Go", NULL, N_("_Go") },               /* name, stock id, label */
-  { "Bookmarks", NULL, N_("_Bookmarks") },               /* name, stock id, label */
-  { "New Window", "window-new", N_("New _Window"),               /* name, stock id, label */
-    "<control>N", N_("Open another Nautilus window for the displayed location"),
-    G_CALLBACK (action_new_window_callback) },
-  { "Folder Window", "folder", N_("Open Folder W_indow"),               /* name, stock id, label */
-    NULL, N_("Open a folder window for the displayed location"),
-    G_CALLBACK (action_folder_window_callback) },
-  { "Close All Windows", NULL, N_("Close _All Windows"),               /* name, stock id, label */
-    "<control><shift>W", N_("Close all Navigation windows"),
-    G_CALLBACK (action_close_all_windows_callback) },
-  { "Go to Location", NULL, N_("_Location..."), /* name, stock id, label */
-    "<control>L", N_("Specify a location to open"),
-    G_CALLBACK (action_go_to_location_callback) },
-  { "Clear History", NULL, N_("Clea_r History"), /* name, stock id, label */
-    NULL, N_("Clear contents of Go menu and Back/Forward lists"),
-    G_CALLBACK (action_clear_history_callback) },
-  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"), /* name, stock id, label */
-    "<control>d", N_("Add a bookmark for the current location to this menu"),
-    G_CALLBACK (action_add_bookmark_callback) },
-  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"), /* name, stock id, label */
-    "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
-    G_CALLBACK (action_edit_bookmarks_callback) },
-  { "Search", "gtk-find", N_("_Search for Files..."), /* name, stock id, label */
-    "<control>F", N_("Locate documents and folders on this computer by name or content"),
-    G_CALLBACK (action_search_callback) },
+  /* name, stock id, label */  { "Go", NULL, N_("_Go") },
+  /* name, stock id, label */  { "Bookmarks", NULL, N_("_Bookmarks") },
+  /* name, stock id, label */  { "New Window", "window-new", N_("New _Window"),
+                                 "<control>N", N_("Open another Nautilus window for the displayed location"),
+                                 G_CALLBACK (action_new_window_callback) },
+  /* name, stock id, label */  { "Folder Window", "folder", N_("Open Folder W_indow"),
+                                 NULL, N_("Open a folder window for the displayed location"),
+                                 G_CALLBACK (action_folder_window_callback) },
+  /* name, stock id, label */  { "Close All Windows", NULL, N_("Close _All Windows"),
+                                 "<control><shift>W", N_("Close all Navigation windows"),
+                                 G_CALLBACK (action_close_all_windows_callback) },
+  /* name, stock id, label */  { "Go to Location", NULL, N_("_Location..."),
+                                 "<control>L", N_("Specify a location to open"),
+                                 G_CALLBACK (action_go_to_location_callback) },
+  /* name, stock id, label */  { "Clear History", NULL, N_("Clea_r History"),
+                                 NULL, N_("Clear contents of Go menu and Back/Forward lists"),
+                                 G_CALLBACK (action_clear_history_callback) },
+  /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
+                                 "<control>d", N_("Add a bookmark for the current location to this menu"),
+                                 G_CALLBACK (action_add_bookmark_callback) },
+  /* name, stock id, label */  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"),
+                                 "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
+                                 G_CALLBACK (action_edit_bookmarks_callback) },
+  /* name, stock id, label */  { "Search", "gtk-find", N_("_Search for Files..."),
+                                 "<control>F", N_("Locate documents and folders on this computer by name or content"),
+                                 G_CALLBACK (action_search_callback) },
 		     
 };
 
 static const GtkToggleActionEntry navigation_toggle_entries[] = {
-  { "Show Hide Toolbar", NULL,                 /* name, stock id */
-    N_("_Main Toolbar"), NULL,                    /* label, accelerator */     
-    N_("Change the visibility of this window's main toolbar"),                       /* tooltip */
-    G_CALLBACK (action_show_hide_toolbar_callback),
-    TRUE}, /* is_active */
-  { "Show Hide Sidebar", NULL,                 /* name, stock id */
-    N_("_Side Pane"), "F9",                    /* label, accelerator */     
-    N_("Change the visibility of this window's side pane"),                       /* tooltip */
-    G_CALLBACK (action_show_hide_sidebar_callback),
-    TRUE}, /* is_active */
-  { "Show Hide Location Bar", NULL,                 /* name, stock id */
-    N_("Location _Bar"), NULL,                    /* label, accelerator */     
-    N_("Change the visibility of this window's location bar"),                    /* tooltip */
-    G_CALLBACK (action_show_hide_location_bar_callback),
-    TRUE},                                    /* is_active */
-  { "Show Hide Statusbar", NULL,                 /* name, stock id */
-    N_("St_atusbar"), NULL,                    /* label, accelerator */     
-    N_("Change the visibility of this window's statusbar"),                    /* tooltip */
-    G_CALLBACK (action_show_hide_statusbar_callback),
-    TRUE},                                    /* is_active */
+  /* name, stock id */     { "Show Hide Toolbar", NULL,
+  /* label, accelerator */   N_("_Main Toolbar"), NULL,
+  /* tooltip */              N_("Change the visibility of this window's main toolbar"),
+                             G_CALLBACK (action_show_hide_toolbar_callback),
+  /* is_active */            TRUE }, 
+  /* name, stock id */     { "Show Hide Sidebar", NULL,
+  /* label, accelerator */   N_("_Side Pane"), "F9",
+  /* tooltip */              N_("Change the visibility of this window's side pane"),
+                             G_CALLBACK (action_show_hide_sidebar_callback),
+  /* is_active */            TRUE }, 
+  /* name, stock id */     { "Show Hide Location Bar", NULL,
+  /* label, accelerator */   N_("Location _Bar"), NULL,
+  /* tooltip */              N_("Change the visibility of this window's location bar"),
+                             G_CALLBACK (action_show_hide_location_bar_callback),
+  /* is_active */            TRUE }, 
+  /* name, stock id */     { "Show Hide Statusbar", NULL,
+  /* label, accelerator */   N_("St_atusbar"), NULL,
+  /* tooltip */              N_("Change the visibility of this window's statusbar"),
+                             G_CALLBACK (action_show_hide_statusbar_callback),
+  /* is_active */            TRUE }, 
 };
 
 void 

@@ -1421,37 +1421,37 @@ fm_icon_view_start_renaming_file (FMDirectoryView *view,
 }
 
 static const GtkActionEntry icon_view_entries[] = {
-  { "Arrange Items", NULL, N_("Arran_ge Items") }, /* name, stock id, label */
-  { "Stretch", NULL,                               /* name, stock id */
-    N_("Str_etch Icon"), NULL,                     /* label, accelerator */
-    N_("Make the selected icon stretchable"),      /* tooltip */ 
-    G_CALLBACK (action_stretch_callback) },
-  { "Unstretch", NULL,                               /* name, stock id */
-    N_("Restore Icons' Original Si_zes"), NULL,                     /* label, accelerator */
-    N_("Restore each selected icon to its original size"),      /* tooltip */ 
-    G_CALLBACK (action_unstretch_callback) },
-  { "Clean Up", NULL,                               /* name, stock id */
-    N_("Clean _Up by Name"), NULL,                     /* label, accelerator */
-    N_("Reposition icons to better fit in the window and avoid overlapping"),      /* tooltip */ 
-    G_CALLBACK (action_clean_up_callback) },
+  /* name, stock id, label */  { "Arrange Items", NULL, N_("Arran_ge Items") }, 
+  /* name, stock id */         { "Stretch", NULL,
+  /* label, accelerator */       N_("Str_etch Icon"), NULL,
+  /* tooltip */                  N_("Make the selected icon stretchable"),
+                                 G_CALLBACK (action_stretch_callback) },
+  /* name, stock id */         { "Unstretch", NULL,
+  /* label, accelerator */       N_("Restore Icons' Original Si_zes"), NULL,
+  /* tooltip */                  N_("Restore each selected icon to its original size"),
+                                 G_CALLBACK (action_unstretch_callback) },
+  /* name, stock id */         { "Clean Up", NULL,
+  /* label, accelerator */       N_("Clean _Up by Name"), NULL,
+  /* tooltip */                  N_("Reposition icons to better fit in the window and avoid overlapping"),
+                                 G_CALLBACK (action_clean_up_callback) },
 };
 
 static const GtkToggleActionEntry icon_view_toggle_entries[] = {
-  { "Tighter Layout", NULL,                               /* name, stock id */
-    N_("Compact _Layout"), NULL,                     /* label, accelerator */
-    N_("Toggle using a tighter layout scheme"),      /* tooltip */ 
-    G_CALLBACK (action_tighter_layout_callback),
-    0 },
-  { "Reversed Order", NULL,                               /* name, stock id */
-    N_("Re_versed Order"), NULL,                     /* label, accelerator */
-    N_("Display icons in the opposite order"),      /* tooltip */ 
-    G_CALLBACK (action_reversed_order_callback),
-    0 },
-  { "Keep Aligned", NULL,                               /* name, stock id */
-    N_("_Keep Aligned"), NULL,                     /* label, accelerator */
-    N_("Keep icons lined up on a grid"),      /* tooltip */ 
-    G_CALLBACK (action_keep_aligned_callback),
-    0 },
+  /* name, stock id */      { "Tighter Layout", NULL,
+  /* label, accelerator */    N_("Compact _Layout"), NULL,
+  /* tooltip */               N_("Toggle using a tighter layout scheme"),
+                              G_CALLBACK (action_tighter_layout_callback),
+                              0 },
+  /* name, stock id */      { "Reversed Order", NULL,
+  /* label, accelerator */    N_("Re_versed Order"), NULL,
+  /* tooltip */               N_("Display icons in the opposite order"),
+                              G_CALLBACK (action_reversed_order_callback),
+                              0 },
+  /* name, stock id */      { "Keep Aligned", NULL,
+  /* label, accelerator */    N_("_Keep Aligned"), NULL,
+  /* tooltip */               N_("Keep icons lined up on a grid"),
+                              G_CALLBACK (action_keep_aligned_callback),
+                              0 },
 };
 
 static const GtkRadioActionEntry arrange_radio_entries[] = {
