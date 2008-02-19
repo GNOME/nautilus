@@ -507,9 +507,9 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 	}
 
 	/* don't sort root nodes */
-	if (fm_tree_model_iter_is_root (FM_TREE_MODEL (model), a)
-	    || fm_tree_model_iter_is_root (FM_TREE_MODEL (model), b)) {
-		return 0;
+	if (fm_tree_model_iter_is_root (FM_TREE_MODEL (model), a) &&
+	    fm_tree_model_iter_is_root (FM_TREE_MODEL (model), b)) {
+		return fm_tree_model_iter_compare_roots (FM_TREE_MODEL (model), a, b);
 	}
 
 	file_a = fm_tree_model_iter_get_file (FM_TREE_MODEL (model), a);

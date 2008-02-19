@@ -1,3 +1,14 @@
+2008-02-19  Alexander Larsson  <alexl@redhat.com>
+
+        * src/file-manager/fm-tree-model.[ch]:
+        Add fm_tree_model_iter_compare_roots to compare roots
+        Report dummy rows added before reporting has_child_toggled.
+	
+        * src/file-manager/fm-tree-view.c:
+        (compare_rows):
+	Use fm_tree_model_iter_compare_roots when comparing roots
+	to force a stable sort, because GtkTreeModelSort isn't stable.
+
 2008-02-19  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c:

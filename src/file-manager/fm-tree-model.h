@@ -81,6 +81,9 @@ void               fm_tree_model_remove_root_uri           (FMTreeModel *model,
 							    const char        *root_uri);
 gboolean           fm_tree_model_iter_is_root              (FMTreeModel *model,
 							    GtkTreeIter *iter);
+int                fm_tree_model_iter_compare_roots        (FMTreeModel *model,
+							    GtkTreeIter *iter_a,
+							    GtkTreeIter *iter_b);
 gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
 							    GtkTreeIter *iter,
 							    NautilusFile *file,

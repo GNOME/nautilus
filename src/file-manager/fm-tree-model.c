@@ -667,12 +667,13 @@ report_node_inserted (FMTreeModel *model, TreeNode *node)
 	report_row_inserted (model, &iter);
 	node->inserted = TRUE;
 
+	if (tree_node_has_dummy_child (node)) {
+		report_dummy_row_inserted (model, node);
+	}
+
 	if (node->directory != NULL ||
 	    node->parent == NULL) {
 		report_row_has_child_toggled (model, &iter);
-       }
-       if (tree_node_has_dummy_child (node)) {
-               report_dummy_row_inserted (model, node);
 	}
 }
 
@@ -1765,6 +1766,40 @@ fm_tree_model_iter_get_file (FMTreeModel *model, GtkTreeIter *iter)
 
 	node = iter->user_data;
 	return node == NULL ? NULL : nautilus_file_ref (node->file);
+}
+
+/* This is used to work around some sort order stability problems
+   with gtktreemodelsort */
+int
+fm_tree_model_iter_compare_roots (FMTreeModel *model,
+				  GtkTreeIter *iter_a,
+				  GtkTreeIter *iter_b)
+{
+	TreeNode *a, *b, *n;
+
+	g_return_val_if_fail (FM_IS_TREE_MODEL (model), 0);
+	g_return_val_if_fail (iter_is_valid (model, iter_a), 0);
+	g_return_val_if_fail (iter_is_valid (model, iter_b), 0);
+	
+	a = iter_a->user_data;
+	b = iter_b->user_data;
+	
+	g_assert (a != NULL && a->parent == NULL);
+	g_assert (b != NULL && b->parent == NULL);
+
+	if (a == b) {
+		return 0;
+	}
+	
+	for (n = model->details->root_node; n != NULL; n = n->next) {
+		if (n == a) {
+			return -1;
+		}
+		if (n == b) {
+			return 1;
+		}
+	}
+	g_assert_not_reached ();
 }
 
 gboolean
