@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-19 21:12+0100\n"
-"PO-Revision-Date: 2008-02-19 21:13+0100\n"
+"POT-Creation-Date: 2008-02-20 19:15+0100\n"
+"PO-Revision-Date: 2008-02-20 19:15+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -1052,7 +1052,7 @@ msgid "Use De_fault"
 msgstr "Använd _standard"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:286
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:290
 #: ../src/file-manager/fm-list-view.c:1399
 msgid "Name"
 msgstr "Namn"
@@ -1868,24 +1868,24 @@ msgid "Setting permissions"
 msgstr "Ställer in rättigheter"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:4713
+#: ../libnautilus-private/nautilus-file-operations.c:4719
 msgid "untitled folder"
 msgstr "namnlös mapp"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:4721
+#: ../libnautilus-private/nautilus-file-operations.c:4727
 msgid "new file"
 msgstr "ny fil"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4811
+#: ../libnautilus-private/nautilus-file-operations.c:4817
 msgid "Error while creating directory %B."
 msgstr "Fel vid skapande av katalogen %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4813
+#: ../libnautilus-private/nautilus-file-operations.c:4819
 msgid "Error while creating file %B."
 msgstr "Fel vid skapande av filen %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4815
+#: ../libnautilus-private/nautilus-file-operations.c:4821
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Det inträffade ett fel vid skapandet av katalogen i %F."
@@ -2462,49 +2462,55 @@ msgid_plural "Opening %d items."
 msgstr[0] "Öppnar %d objekt."
 msgstr[1] "Öppnar %d objekt."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:179
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:183
 #: ../libnautilus-private/nautilus-open-with-dialog.c:271
 #, c-format
 msgid "Could not set application as the default: %s"
 msgstr "Kunde inte ställa in programmet som standard: %s"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:180
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:184
 #: ../libnautilus-private/nautilus-open-with-dialog.c:272
 msgid "Could not set as default application"
 msgstr "Kunde inte ställa in som standardprogram"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:269
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:273
 msgid "Default"
 msgstr "Standard"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:277
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:281
 msgid "Icon"
 msgstr "Ikon"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:334
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:343
 msgid "Could not remove application"
 msgstr "Kunde inte ta bort programmet"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:570
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:580
 msgid "No applications selected"
 msgstr "Inga program valda"
 
 # DN. FIXME. Osäker. Bör testas.
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:613
-#: ../libnautilus-private/nautilus-open-with-dialog.c:909
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:608
+#: ../libnautilus-private/nautilus-open-with-dialog.c:920
 #, c-format
 msgid "%s document"
 msgstr "%s-dokument"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:621
-#: ../libnautilus-private/nautilus-open-with-dialog.c:915
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:615
+#: ../libnautilus-private/nautilus-open-with-dialog.c:926
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:630
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:648
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Välj ett program att öppna %s med och andra filer av typen \"%s\""
+
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:716
+#: ../libnautilus-private/nautilus-open-with-dialog.c:938
+#, c-format
+msgid "Open all files of type \"%s\" with:"
+msgstr "Öppna alla filer av typen \"%s\" med:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:162
 msgid "Could not run application"
@@ -2533,7 +2539,7 @@ msgid "Select an Application"
 msgstr "Välj ett program"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:743
-#: ../src/file-manager/fm-properties-window.c:4749
+#: ../src/file-manager/fm-properties-window.c:4779
 msgid "Open With"
 msgstr "Öppna med"
 
@@ -2559,16 +2565,18 @@ msgstr "_Bläddra..."
 msgid "_Open"
 msgstr "_Öppna"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:923
+#: ../libnautilus-private/nautilus-open-with-dialog.c:935
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr "Öppna %s och andra filer av typen \"%s\" med:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:954
+#: ../libnautilus-private/nautilus-open-with-dialog.c:971
+#: ../libnautilus-private/nautilus-open-with-dialog.c:986
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:955
+#: ../libnautilus-private/nautilus-open-with-dialog.c:972
+#: ../libnautilus-private/nautilus-open-with-dialog.c:987
 msgid "Add Application"
 msgstr "Lägg till program"
 
@@ -4183,11 +4191,11 @@ msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 msgid "The permissions of the selected file could not be determined."
 msgstr "Rättigheterna för den markerade filen kunde inte fastställas."
 
-#: ../src/file-manager/fm-properties-window.c:5090
+#: ../src/file-manager/fm-properties-window.c:5120
 msgid "Creating Properties window."
 msgstr "Skapar fönstret Egenskaper."
 
-#: ../src/file-manager/fm-properties-window.c:5331
+#: ../src/file-manager/fm-properties-window.c:5361
 msgid "Select Custom Icon"
 msgstr "Välj anpassad ikon"
 
