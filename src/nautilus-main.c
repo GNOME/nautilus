@@ -571,12 +571,12 @@ main (int argc, char *argv[])
 
 	nautilus_icon_info_clear_caches ();
 	
- 	eel_debug_shut_down ();
-
 	if (application != NULL) {
 		bonobo_object_unref (application);
 	}
 
+ 	eel_debug_shut_down ();
+	
 	/* If told to restart, exec() myself again. This is used when
 	 * the program is told to restart with CORBA, for example when
 	 * an update takes place.
