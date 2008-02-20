@@ -1249,9 +1249,9 @@ create_tree (FMTreeView *view)
 	icon = g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
 	fm_tree_model_add_root_uri (view->details->child_model, "file:///", _("File System"), icon, NULL);
 	g_object_unref (icon);
-#ifdef NOT_YET_USABLE
+#ifdef NOT_YET_USABLE /* Do we really want this? */
 	icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
-	fm_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), NAUTILUS_ICON_NETWORK, NULL);
+	fm_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), icon, NULL);
 	g_object_unref (icon);
 #endif
 	
