@@ -286,7 +286,7 @@ is_multi_file_window (FMPropertiesWindow *window)
 	count = 0;
 	
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		if (!nautilus_file_is_gone (NAUTILUS_FILE (l->data))) {
+		if (!nautilus_file_is_gone (NAUTILUS_FILE (l->data))) {			
 			count++;
 			if (count > 1) {
 				return TRUE;
@@ -4704,22 +4704,43 @@ file_changed_callback (NautilusFile *file, gpointer user_data)
 }
 
 static gboolean
+is_a_special_file (NautilusFile *file)
+{
+	if (file == NULL ||
+	    NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
+	    nautilus_file_is_nautilus_link (file)) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
 should_show_open_with (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
 	
 	if (is_multi_file_window (window)) {
-		return FALSE;
-	}
-
-	/* Don't show open with tab for desktop special icons (trash, etc)
-	 * or desktop files. We don't get the open-with menu for these anyway.
-	 */
-	file = get_original_file (window);
-	if (file == NULL ||
-	    NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
-	    nautilus_file_is_nautilus_link (file)) {
-		return FALSE;
+		if (!file_list_attributes_identical (window->details->original_files,
+						     "mime_type")) {
+			return FALSE;
+		} else {
+			/* Don't show open with tab for desktop special icons (trash, etc)
+			* or desktop files. We don't get the open-with menu for these anyway.
+			*/
+			
+			GList *l;
+			
+			for (l = window->details->original_files; l; l = l->next) {
+				if (is_a_special_file (NAUTILUS_FILE (l->data))) {
+					return FALSE;
+				}
+			}
+		}		
+	} else {
+		file = get_original_file (window);
+		if (is_a_special_file (file)) {
+			return FALSE;
+		}
 	}
 	return TRUE;
 }
@@ -4728,21 +4749,30 @@ static void
 create_open_with_page (FMPropertiesWindow *window)
 {
 	GtkWidget *vbox;
-	char *uri;
 	char *mime_type;
-	
-	uri = nautilus_file_get_uri (get_target_file (window));
+	char *uri;
 
-	if (uri == NULL) {
-		return;
-	}
-	
 	mime_type = nautilus_file_get_mime_type (get_target_file (window));
 	
-	vbox = nautilus_mime_application_chooser_new (uri, mime_type);
-	gtk_widget_show (vbox);
+	if (!is_multi_file_window (window)) {
+		uri = nautilus_file_get_uri (get_target_file (window));
+		if (uri == NULL) {
+			return;
+		}
+		vbox = nautilus_mime_application_chooser_new (uri, mime_type);
+
+		g_free (uri);
+	} else {
+		GList *uris;
+		
+		uris = window->details->original_files;
+		if (uris == NULL) {
+			return;
+		}
+		vbox = nautilus_mime_application_chooser_new_for_multiple_files (uris, mime_type);
+	}
 	
-	g_free (uri);
+	gtk_widget_show (vbox);
 	g_free (mime_type);
 
 	gtk_notebook_append_page (window->details->notebook, 

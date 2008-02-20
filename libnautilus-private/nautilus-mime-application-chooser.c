@@ -69,6 +69,8 @@ struct _NautilusMimeApplicationChooserDetails {
 	GtkWidget *entry;
 	GtkWidget *treeview;
 	GtkWidget *remove_button;
+	
+	gboolean for_multiple_files;
 
 	GtkListStore *model;
 	GtkCellRenderer *toggle_renderer;
@@ -307,8 +309,13 @@ add_clicked_cb (GtkButton *button,
 	
 	chooser = NAUTILUS_MIME_APPLICATION_CHOOSER (user_data);
 	
-	dialog = nautilus_add_application_dialog_new (chooser->details->uri,
-						      chooser->details->orig_mime_type);
+	if (chooser->details->for_multiple_files) {
+		dialog = nautilus_add_application_dialog_new_for_multiple_files (chooser->details->extension,
+										 chooser->details->orig_mime_type);
+	} else {
+		dialog = nautilus_add_application_dialog_new (chooser->details->uri,
+							      chooser->details->orig_mime_type);
+	}
 	gtk_window_set_screen (GTK_WINDOW (dialog),
 			       gtk_widget_get_screen (GTK_WIDGET (chooser)));
 	gtk_widget_show (dialog);
@@ -363,6 +370,7 @@ nautilus_mime_application_chooser_instance_init (NautilusMimeApplicationChooser 
 	
 	chooser->details = g_new0 (NautilusMimeApplicationChooserDetails, 1);
 
+	chooser->details->for_multiple_files = FALSE;
 	gtk_container_set_border_width (GTK_CONTAINER (chooser), 8);
 	gtk_box_set_spacing (GTK_BOX (chooser), 0);
 	gtk_box_set_homogeneous (GTK_BOX (chooser), FALSE);
@@ -584,6 +592,31 @@ refresh_model (NautilusMimeApplicationChooser *chooser)
 	eel_g_object_list_free (applications);
 }
 
+static void
+set_extension_and_description (NautilusMimeApplicationChooser *chooser,
+			       const char *extension,
+			       const char *mime_type)
+{
+	chooser->details->extension = g_strdup (extension);
+	if (extension != NULL &&
+	    g_content_type_is_unknown (mime_type)) {
+		    chooser->details->content_type = g_strdup_printf ("application/x-extension-%s", extension);
+		    /* the %s here is a file extension */
+		    chooser->details->type_description =
+			    g_strdup_printf (_("%s document"), extension);
+	    } else {
+		    char *description;
+
+		    chooser->details->content_type = g_strdup (mime_type);
+		    description = g_content_type_get_description (mime_type);
+		    if (description == NULL) {
+			    description = g_strdup (_("Unknown"));
+		    }
+		    
+		    chooser->details->type_description = description;
+	    }
+}
+
 static gboolean
 set_uri_and_type (NautilusMimeApplicationChooser *chooser, 
 		  const char *uri,
@@ -600,29 +633,12 @@ set_uri_and_type (NautilusMimeApplicationChooser *chooser,
 	file = g_file_new_for_uri (uri);
 	name = g_file_get_basename (file);
 	g_object_unref (file);
-
-	chooser->details->orig_mime_type = g_strdup (mime_type);
 	
+	chooser->details->orig_mime_type = g_strdup (mime_type);
+
 	extension = get_extension (name);
-	if (extension != NULL &&
-	    g_content_type_is_unknown (mime_type)) {
-		chooser->details->extension = g_strdup (extension);
-		chooser->details->content_type = g_strdup_printf ("application/x-extension-%s", extension);
-		/* the %s here is a file extension */
-		chooser->details->type_description =
-			g_strdup_printf (_("%s document"), extension);
-	} else {
-		char *description;
-
-		chooser->details->content_type = g_strdup (mime_type);
-		description = g_content_type_get_description (mime_type);
-
-		if (description == NULL) {
-			description = g_strdup (_("Unknown"));
-		}
-
-		chooser->details->type_description = description;
-	}
+	set_extension_and_description (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
+				       extension, mime_type);
 	g_free (extension);
 
 	/* first %s is filename, second %s is mime-type description */
@@ -641,6 +657,49 @@ set_uri_and_type (NautilusMimeApplicationChooser *chooser,
 	return TRUE;
 }
 
+static gboolean
+set_uri_and_type_for_multiple_files (NautilusMimeApplicationChooser *chooser,
+				     GList *uris,
+				     const char *mime_type)
+{
+	char *label;
+	char *extension;
+	char *name;
+	GFile *file;
+	GList *iter;
+	
+	chooser->details->for_multiple_files = TRUE;
+	chooser->details->uri = NULL;
+	chooser->details->orig_mime_type = g_strdup (mime_type);
+	extension = NULL;
+	iter = uris;
+
+	while (extension == NULL && iter != NULL) {
+		g_free (extension);
+
+		file = g_file_new_for_uri ((const char *) uris->data);
+		name = g_file_get_basename (file);
+		extension = get_extension (name);
+		iter = iter->next;
+
+		g_free (name);
+		g_object_unref (file);
+	}
+	set_extension_and_description (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
+				       extension, mime_type);
+	g_free (extension);
+
+	label = g_strdup_printf (_("Open all files of type \"%s\" with:"),
+				 chooser->details->type_description);
+	gtk_label_set_markup (GTK_LABEL (chooser->details->label), label);
+
+	g_free (label);
+
+	refresh_model (chooser);
+
+	return TRUE;		
+}
+
 GtkWidget *
 nautilus_mime_application_chooser_new (const char *uri,
 				  const char *mime_type)
@@ -651,6 +710,20 @@ nautilus_mime_application_chooser_new (const char *uri,
 
 	set_uri_and_type (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser), uri, mime_type);
 
+	return chooser;
+}
+
+GtkWidget *
+nautilus_mime_application_chooser_new_for_multiple_files (GList *uris,
+							  const char *mime_type)
+{
+	GtkWidget *chooser;
+	
+	chooser = gtk_widget_new (NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NULL);
+	
+	set_uri_and_type_for_multiple_files (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
+					     uris, mime_type);
+	
 	return chooser;
 }
 

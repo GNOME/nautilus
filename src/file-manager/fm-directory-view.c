@@ -849,7 +849,7 @@ choose_program (FMDirectoryView *view,
 	uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
 
-	dialog = nautilus_open_with_dialog_new (uri, mime_type);
+	dialog = nautilus_open_with_dialog_new (uri, mime_type, NULL);
 	g_object_set_data_full (G_OBJECT (dialog), 
 				"directory-view:file",
 				g_object_ref (file),

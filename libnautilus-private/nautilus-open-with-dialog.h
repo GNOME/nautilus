@@ -52,9 +52,12 @@ struct _NautilusOpenWithDialogClass {
 
 GType      nautilus_open_with_dialog_get_type (void);
 GtkWidget* nautilus_open_with_dialog_new      (const char *uri,
-					       const char *mime_type);
+					       const char *mime_type,
+					       const char *extension);
 GtkWidget* nautilus_add_application_dialog_new (const char *uri,
 						const char *mime_type);
+GtkWidget* nautilus_add_application_dialog_new_for_multiple_files (const char *extension,
+								   const char *mime_type);
 
 
 

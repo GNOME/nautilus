@@ -887,20 +887,31 @@ get_extension (const char *basename)
 static void
 set_uri_and_type (NautilusOpenWithDialog *dialog,
 		  const char *uri,
-		  const char *mime_type)
+		  const char *mime_type,
+		  const char *passed_extension)
 {
 	char *label;
-	char *name;
 	char *emname;
-	GFile *file;
-	char *extension;
-	const char *description;
-		
-	file = g_file_new_for_uri (uri);
-	name = g_file_get_basename (file);
-	g_object_unref (file);
+	char *name, *extension;
 	
-	extension = get_extension (name);
+	const char *description;
+	
+	name = NULL;
+	extension = NULL;
+	
+	if (uri != NULL) {
+		GFile *file;
+
+		file = g_file_new_for_uri (uri);
+		name = g_file_get_basename (file);
+		g_object_unref (file);
+	}
+	if (passed_extension == NULL && name != NULL) {
+		extension = get_extension (name);
+	} else {
+		extension = g_strdup (passed_extension);
+	}
+
 	if (extension != NULL &&
 	    g_content_type_is_unknown (mime_type)) {
 		dialog->details->extension = g_strdup (extension);
@@ -919,9 +930,14 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 	}
 	g_free (extension);
 
-	emname = g_strdup_printf ("<i>%s</i>", name);
-	label = g_strdup_printf (_("Open %s and other files of type \"%s\" with:"), emname, dialog->details->type_description);
-	g_free (emname);
+	if (name != NULL) {
+		emname = g_strdup_printf ("<i>%s</i>", name);
+		label = g_strdup_printf (_("Open %s and other files of type \"%s\" with:"), emname, dialog->details->type_description);
+		g_free (emname);
+	} else {
+		label = g_strdup_printf (_("Open all files of type \"%s\" with:"),
+					 dialog->details->type_description);
+	}
 
 	gtk_label_set_markup (GTK_LABEL (dialog->details->label), label);
 
@@ -931,13 +947,14 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 
 GtkWidget *
 nautilus_open_with_dialog_new (const char *uri,
-			       const char *mime_type)
+			       const char *mime_type,
+			       const char *extension)
 {
 	GtkWidget *dialog;
 
 	dialog = gtk_widget_new (NAUTILUS_TYPE_OPEN_WITH_DIALOG, NULL);
 
-	set_uri_and_type (NAUTILUS_OPEN_WITH_DIALOG (dialog), uri, mime_type);
+	set_uri_and_type (NAUTILUS_OPEN_WITH_DIALOG (dialog), uri, mime_type, extension);
 
 	return dialog;
 }
@@ -948,7 +965,22 @@ nautilus_add_application_dialog_new (const char *uri,
 {
 	NautilusOpenWithDialog *dialog;
 	
-	dialog = NAUTILUS_OPEN_WITH_DIALOG (nautilus_open_with_dialog_new (uri, mime_type));
+	dialog = NAUTILUS_OPEN_WITH_DIALOG (nautilus_open_with_dialog_new (uri, mime_type, NULL));
+	
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (dialog->details->open_label),
+					  _("_Add"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Add Application"));
+
+	return GTK_WIDGET (dialog);
+}
+
+GtkWidget* 
+nautilus_add_application_dialog_new_for_multiple_files (const char *extension,
+							const char *mime_type)
+{
+	NautilusOpenWithDialog *dialog;
+	
+	dialog = NAUTILUS_OPEN_WITH_DIALOG (nautilus_open_with_dialog_new (NULL, mime_type, extension));
 	
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (dialog->details->open_label),
 					  _("_Add"));
