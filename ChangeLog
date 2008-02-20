@@ -1,5 +1,10 @@
 2008-02-20  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file-operations.c:
+	Duplicate if src and dest dirs are the same (#512392)
+
+2008-02-20  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-main.c:
 	Call eel_debug_shut_down() after freeing
 	NautilusApplications (fixes warning about

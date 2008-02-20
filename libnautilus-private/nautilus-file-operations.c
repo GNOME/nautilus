@@ -4582,7 +4582,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				    gpointer done_callback_data)
 {
 	GList *locations;
-	GFile *dest;
+	GFile *dest, *src_dir;
 	GtkWindow *parent_window;
 
 	dest = NULL;
@@ -4597,7 +4597,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 	
 	if (copy_action == GDK_ACTION_COPY) {
-		if (target_dir == NULL) {
+		src_dir = g_file_get_parent (locations->data);
+		if (target_dir == NULL ||
+		    (src_dir != NULL &&
+		     g_file_equal (src_dir, dest))) {
 			nautilus_file_operations_duplicate (locations,
 							    relative_item_points,
 							    parent_window,
@@ -4608,6 +4611,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 						       dest,
 						       parent_window,
 						       done_callback, done_callback_data);
+		}
+		if (src_dir) {
+			g_object_unref (src_dir);
 		}
 		
 	} else if (copy_action == GDK_ACTION_MOVE) {
