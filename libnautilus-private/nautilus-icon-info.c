@@ -487,6 +487,10 @@ nautilus_icon_info_get_pixbuf_nodefault_at_size (NautilusIconInfo  *icon,
 	w = gdk_pixbuf_get_width (pixbuf);
 	h = gdk_pixbuf_get_height (pixbuf);
 	s = MAX (w, h);
+	if (s == forced_size) {
+		return pixbuf;
+	}
+
 	scale = (double)forced_size / s;
 	scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
 						 w * scale, h * scale,
@@ -509,6 +513,10 @@ nautilus_icon_info_get_pixbuf_at_size (NautilusIconInfo  *icon,
 	w = gdk_pixbuf_get_width (pixbuf);
 	h = gdk_pixbuf_get_height (pixbuf);
 	s = MAX (w, h);
+	if (s == forced_size) {
+		return pixbuf;
+	}
+
 	scale = (double)forced_size / s;
 	scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
 						 w * scale, h * scale,
