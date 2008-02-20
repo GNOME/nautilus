@@ -30,8 +30,10 @@
 
 #include "nautilus-open-with-dialog.h"
 #include "nautilus-signaller.h"
+#include "nautilus-file.h"
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
@@ -657,37 +659,59 @@ set_uri_and_type (NautilusMimeApplicationChooser *chooser,
 	return TRUE;
 }
 
+static char *
+get_extension_from_file (NautilusFile *nfile)
+{
+	char *name;
+	char *extension;
+
+	name = nautilus_file_get_name (nfile);
+	extension = get_extension (name);
+	
+	g_free (name);
+	
+	return extension;
+}
+
 static gboolean
 set_uri_and_type_for_multiple_files (NautilusMimeApplicationChooser *chooser,
 				     GList *uris,
 				     const char *mime_type)
 {
 	char *label;
-	char *extension;
-	char *name;
-	GFile *file;
+	char *first_extension;
+	gboolean same_extension;
 	GList *iter;
 	
 	chooser->details->for_multiple_files = TRUE;
 	chooser->details->uri = NULL;
 	chooser->details->orig_mime_type = g_strdup (mime_type);
-	extension = NULL;
-	iter = uris;
+	same_extension = TRUE;
+	first_extension = get_extension_from_file (NAUTILUS_FILE (uris->data));
+	iter = uris->next;
 
-	while (extension == NULL && iter != NULL) {
-		g_free (extension);
+	while (iter != NULL) {
+		char *extension_current;
 
-		file = g_file_new_for_uri ((const char *) uris->data);
-		name = g_file_get_basename (file);
-		extension = get_extension (name);
+		extension_current = get_extension_from_file (NAUTILUS_FILE (iter->data));
+		if (eel_strcmp (first_extension, extension_current)) {
+			same_extension = FALSE;
+			g_free (extension_current);
+			break;
+		}
 		iter = iter->next;
 
-		g_free (name);
-		g_object_unref (file);
+		g_free (extension_current);
 	}
-	set_extension_and_description (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
-				       extension, mime_type);
-	g_free (extension);
+	if (!same_extension) {
+		set_extension_and_description (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
+					       NULL, mime_type);
+	} else {
+		set_extension_and_description (NAUTILUS_MIME_APPLICATION_CHOOSER (chooser),
+					       first_extension, mime_type);
+	}
+
+	g_free (first_extension);
 
 	label = g_strdup_printf (_("Open all files of type \"%s\" with:"),
 				 chooser->details->type_description);
