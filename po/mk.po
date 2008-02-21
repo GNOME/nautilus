@@ -27,8 +27,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 10:28+0000\n"
-"PO-Revision-Date: 2008-02-16 00:26+0100\n"
+"POT-Creation-Date: 2008-02-20 11:41+0000\n"
+"PO-Revision-Date: 2008-02-22 00:23+0100\n"
 "Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -1253,9 +1253,10 @@ msgid "_Always perform this action"
 msgstr "_Секогаш прави го ова"
 
 #. name, stock id
+#. label, accelerator
 #: ../libnautilus-private/nautilus-autorun.c:1143
-#: ../src/file-manager/fm-directory-view.c:6327
-#: ../src/file-manager/fm-directory-view.c:6343
+#: ../src/file-manager/fm-directory-view.c:6344
+#: ../src/file-manager/fm-directory-view.c:6360
 #: ../src/nautilus-places-sidebar.c:1723
 msgid "_Eject"
 msgstr "_Извади"
@@ -1267,29 +1268,33 @@ msgstr "_Демонтирај"
 
 #. name, stock id
 #. label, accelerator
+#. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:442
 msgid "Cut the selected text to the clipboard"
 msgstr "Отсечи го избраниот текст на клипбордот"
 
 #. name, stock id
 #. label, accelerator
+#. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:446
 msgid "Copy the selected text to the clipboard"
 msgstr "Копирај го избраниот текст на клипборд"
 
 #. name, stock id
 #. label, accelerator
+#. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:450
 msgid "Paste the text stored on the clipboard"
 msgstr "Вметни го текстот зачуван на клипбордот"
 
 #. name, stock id
+#. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:453
-#: ../src/file-manager/fm-directory-view.c:6279
+#: ../src/file-manager/fm-directory-view.c:6296
 msgid "Select _All"
 msgstr "Означи ги _сите"
 
-#. label, accelerator
+#. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:454
 msgid "Select all the text in a text field"
 msgstr "Избери го целиот текст од полето за текст"
@@ -1315,7 +1320,7 @@ msgid "Use De_fault"
 msgstr "Користи ст_андардно"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:286
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:288
 #: ../src/file-manager/fm-list-view.c:1399
 msgid "Name"
 msgstr "Име"
@@ -1506,54 +1511,39 @@ msgstr "Извинете, не можам да го зачувам креира�
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Жалам, не можам да го зачувам името на креираниот амблем"
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:167
-#, c-format
-msgid "%s %ld of %ld %s"
-msgstr "%s %ld од %ld %s"
-
-#: ../libnautilus-private/nautilus-file-operations-progress.c:447
-#, c-format
-msgid "(%d:%02d:%02d Remaining)"
-msgstr "(Преостанато %d:%02d:%02d)"
-
-#: ../libnautilus-private/nautilus-file-operations-progress.c:452
-#, c-format
-msgid "(%d:%02d Remaining)"
-msgstr "(Преостанато %d:%02d)"
-
-#: ../libnautilus-private/nautilus-file-operations.c:170
+#: ../libnautilus-private/nautilus-file-operations.c:171
 msgid "_Skip"
 msgstr "П_рескокни"
 
-#: ../libnautilus-private/nautilus-file-operations.c:171
+#: ../libnautilus-private/nautilus-file-operations.c:172
 msgid "S_kip All"
 msgstr "П_рескокни сѐ"
 
-#: ../libnautilus-private/nautilus-file-operations.c:172
+#: ../libnautilus-private/nautilus-file-operations.c:173
 msgid "_Retry"
 msgstr "Обиди се _повторно"
 
-#: ../libnautilus-private/nautilus-file-operations.c:173
+#: ../libnautilus-private/nautilus-file-operations.c:174
 msgid "Delete _All"
 msgstr "Избриши ги _сите"
 
-#: ../libnautilus-private/nautilus-file-operations.c:174
+#: ../libnautilus-private/nautilus-file-operations.c:175
 msgid "_Replace"
 msgstr "Замени"
 
-#: ../libnautilus-private/nautilus-file-operations.c:175
+#: ../libnautilus-private/nautilus-file-operations.c:176
 msgid "Replace _All"
 msgstr "Замени _сè"
 
-#: ../libnautilus-private/nautilus-file-operations.c:176
+#: ../libnautilus-private/nautilus-file-operations.c:177
 msgid "_Merge"
 msgstr "_Спои"
 
-#: ../libnautilus-private/nautilus-file-operations.c:177
+#: ../libnautilus-private/nautilus-file-operations.c:178
 msgid "Merge _All"
 msgstr "Спои ги _сите"
 
-#: ../libnautilus-private/nautilus-file-operations.c:202
+#: ../libnautilus-private/nautilus-file-operations.c:203
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
@@ -1561,8 +1551,8 @@ msgstr[0] "%'d секунда"
 msgstr[1] "%'d секунди"
 msgstr[2] "%'d секунди"
 
-#: ../libnautilus-private/nautilus-file-operations.c:207
-#: ../libnautilus-private/nautilus-file-operations.c:218
+#: ../libnautilus-private/nautilus-file-operations.c:208
+#: ../libnautilus-private/nautilus-file-operations.c:219
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
@@ -1570,7 +1560,7 @@ msgstr[0] "%'d минута"
 msgstr[1] "%'d минути"
 msgstr[2] "%'d минути"
 
-#: ../libnautilus-private/nautilus-file-operations.c:217
+#: ../libnautilus-private/nautilus-file-operations.c:218
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
@@ -1578,7 +1568,7 @@ msgstr[0] "%'d час"
 msgstr[1] "%'d час"
 msgstr[2] "%'d час"
 
-#: ../libnautilus-private/nautilus-file-operations.c:225
+#: ../libnautilus-private/nautilus-file-operations.c:226
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -1591,15 +1581,15 @@ msgstr[2] "од прилика %'d час"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:257
+#: ../libnautilus-private/nautilus-file-operations.c:258
 #: ../libnautilus-private/nautilus-file.c:5367
-#: ../src/file-manager/fm-directory-view.c:8442
+#: ../src/file-manager/fm-directory-view.c:8459
 #, c-format
 msgid "Link to %s"
 msgstr "Врска до %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:261
+#: ../libnautilus-private/nautilus-file-operations.c:262
 #, c-format
 msgid "Another link to %s"
 msgstr "Друга врска до %s"
@@ -1608,25 +1598,25 @@ msgstr "Друга врска до %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:277
+#: ../libnautilus-private/nautilus-file-operations.c:278
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'d-ва врска до %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:281
+#: ../libnautilus-private/nautilus-file-operations.c:282
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'d-ра врска до %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:285
+#: ../libnautilus-private/nautilus-file-operations.c:286
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'d-та врска до %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:289
+#: ../libnautilus-private/nautilus-file-operations.c:290
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'d-та врска до %s"
@@ -1636,12 +1626,12 @@ msgstr "%'d-та врска до %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:305
+#: ../libnautilus-private/nautilus-file-operations.c:306
 msgid " (copy)"
 msgstr " (копија)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:307
+#: ../libnautilus-private/nautilus-file-operations.c:308
 msgid " (another copy)"
 msgstr " (друга копија)"
 
@@ -1649,36 +1639,36 @@ msgstr " (друга копија)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:310
-#: ../libnautilus-private/nautilus-file-operations.c:312
-#: ../libnautilus-private/nautilus-file-operations.c:314
-#: ../libnautilus-private/nautilus-file-operations.c:324
+#: ../libnautilus-private/nautilus-file-operations.c:311
+#: ../libnautilus-private/nautilus-file-operations.c:313
+#: ../libnautilus-private/nautilus-file-operations.c:315
+#: ../libnautilus-private/nautilus-file-operations.c:325
 msgid "th copy)"
 msgstr "-та копија)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:317
+#: ../libnautilus-private/nautilus-file-operations.c:318
 msgid "st copy)"
 msgstr "-ва копија)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:319
+#: ../libnautilus-private/nautilus-file-operations.c:320
 msgid "nd copy)"
 msgstr "-ра копија)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:321
+#: ../libnautilus-private/nautilus-file-operations.c:322
 msgid "rd copy)"
 msgstr "-та копија)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:338
+#: ../libnautilus-private/nautilus-file-operations.c:339
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (копија)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:340
+#: ../libnautilus-private/nautilus-file-operations.c:341
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (друга копија)%s"
@@ -1687,48 +1677,48 @@ msgstr "%s (друга копија)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:343
-#: ../libnautilus-private/nautilus-file-operations.c:345
-#: ../libnautilus-private/nautilus-file-operations.c:347
-#: ../libnautilus-private/nautilus-file-operations.c:356
+#: ../libnautilus-private/nautilus-file-operations.c:344
+#: ../libnautilus-private/nautilus-file-operations.c:346
+#: ../libnautilus-private/nautilus-file-operations.c:348
+#: ../libnautilus-private/nautilus-file-operations.c:357
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%'d-та копија)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:350
+#: ../libnautilus-private/nautilus-file-operations.c:351
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%'d-ва копија)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:352
+#: ../libnautilus-private/nautilus-file-operations.c:353
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%'d-ра копија)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:354
+#: ../libnautilus-private/nautilus-file-operations.c:355
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%'d-та копија)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:454
+#: ../libnautilus-private/nautilus-file-operations.c:455
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:462
+#: ../libnautilus-private/nautilus-file-operations.c:463
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1093
+#: ../libnautilus-private/nautilus-file-operations.c:1094
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Дали сте сигурни дека сакате трајно да ја отстранитe %B од ѓубрето?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1096
+#: ../libnautilus-private/nautilus-file-operations.c:1097
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1740,29 +1730,29 @@ msgstr[0] "Дали сте сигурни дека сакате трајно д�
 msgstr[1] "Дали сте сигурни дека сакате трајно да отстранитe %'d предмети од ѓубрето?"
 msgstr[2] "Дали сте сигурни дека сакате трајно да отстранитe %'d предмети од ѓубрето?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1106
-#: ../libnautilus-private/nautilus-file-operations.c:1172
+#: ../libnautilus-private/nautilus-file-operations.c:1107
+#: ../libnautilus-private/nautilus-file-operations.c:1173
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ако избришете некој предмет, тој ќе биде трајно отстранет."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1125
+#: ../libnautilus-private/nautilus-file-operations.c:1126
 msgid "Empty all of the items from the trash?"
 msgstr "Да ги избришам сите предмети од ѓубрето?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1129
+#: ../libnautilus-private/nautilus-file-operations.c:1130
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr ""
 "Ако изберете да го испразните ѓубрето, сите предмети во него ќе бидат "
-"перманентно изгубени. Ве молам имајте на ум дека можете да ги избришете "
-"и посебно."
+"перманентно изгубени. Ве молам имајте на ум дека можете да ги избришете и "
+"посебно."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1160
+#: ../libnautilus-private/nautilus-file-operations.c:1161
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Дали сте сигурни дека сакате перманентно да го избришете %B?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1163
+#: ../libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
@@ -1770,11 +1760,11 @@ msgstr[0] "Дали сте сигурни дека сакате перманен
 msgstr[1] "Дали сте сигурни дека сакате перманентно да избришете %'d избрани предмети?"
 msgstr[2] "Дали сте сигурни дека сакате перманентно да избришете %'d избрани предмети?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1205
+#: ../libnautilus-private/nautilus-file-operations.c:1206
 msgid "Deleting files"
 msgstr "Бришење на датотеки"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1210
+#: ../libnautilus-private/nautilus-file-operations.c:1211
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
@@ -1783,22 +1773,22 @@ msgstr[1] "%'d датотеки избрани за бришење"
 msgstr[2] "%'d датотеки избрани за бришење"
 
 #. To translators: %T will expand to a time like "2 minutes"
-#: ../libnautilus-private/nautilus-file-operations.c:1221
+#: ../libnautilus-private/nautilus-file-operations.c:1222
 msgid "%'d file left to delete — %T left"
 msgid_plural "%'d files left to delete — %T left"
 msgstr[0] "%'d датотека преостаната за бришење — %T преостанато"
 msgstr[1] "%'d датотеки преостанати за бришење — %T преостанато"
 msgstr[2] "%'d датотеки преостанати за бришење — %T преостанато"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1282
-#: ../libnautilus-private/nautilus-file-operations.c:1315
-#: ../libnautilus-private/nautilus-file-operations.c:1353
-#: ../libnautilus-private/nautilus-file-operations.c:1435
-#: ../libnautilus-private/nautilus-file-operations.c:2106
+#: ../libnautilus-private/nautilus-file-operations.c:1283
+#: ../libnautilus-private/nautilus-file-operations.c:1316
+#: ../libnautilus-private/nautilus-file-operations.c:1354
+#: ../libnautilus-private/nautilus-file-operations.c:1436
+#: ../libnautilus-private/nautilus-file-operations.c:2110
 msgid "Error while deleting."
 msgstr "Грешка при отстранувањето."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1286
+#: ../libnautilus-private/nautilus-file-operations.c:1287
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
@@ -1806,44 +1796,44 @@ msgstr ""
 "Датотеките во папката %B не можат да се копираат бидејќи немате пермисии да "
 "ги прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1289
-#: ../libnautilus-private/nautilus-file-operations.c:2165
-#: ../libnautilus-private/nautilus-file-operations.c:2932
+#: ../libnautilus-private/nautilus-file-operations.c:1290
+#: ../libnautilus-private/nautilus-file-operations.c:2169
+#: ../libnautilus-private/nautilus-file-operations.c:2942
 msgid "There was an error getting information about the files in the folder \"%B\"."
 msgstr ""
 "Се појави грешка при собирање на информациите за датотеките во папката \"%B"
 "\"."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1297
-#: ../libnautilus-private/nautilus-file-operations.c:2940
+#: ../libnautilus-private/nautilus-file-operations.c:1298
+#: ../libnautilus-private/nautilus-file-operations.c:2950
 msgid "_Skip files"
 msgstr "_Прескокни"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1318
+#: ../libnautilus-private/nautilus-file-operations.c:1319
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
 msgstr "Папката \"$B\" не може да се копира бидејќи немате пермисии да ја прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1321
-#: ../libnautilus-private/nautilus-file-operations.c:2203
-#: ../libnautilus-private/nautilus-file-operations.c:2976
+#: ../libnautilus-private/nautilus-file-operations.c:1322
+#: ../libnautilus-private/nautilus-file-operations.c:2207
+#: ../libnautilus-private/nautilus-file-operations.c:2986
 msgid "There was an error reading the folder \"%B\"."
 msgstr "Се појави грешка при читањето на папката %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1354
+#: ../libnautilus-private/nautilus-file-operations.c:1355
 msgid "Couldn't remove the folder %B."
 msgstr "Не можам да ја отстранам папката %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1436
+#: ../libnautilus-private/nautilus-file-operations.c:1437
 msgid "There was an error deleting %B."
 msgstr "Се појави грешка при бришењето на %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1512
+#: ../libnautilus-private/nautilus-file-operations.c:1513
 msgid "Moving files to trash"
 msgstr "Ги преместувам датотеките во ѓубрето"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1514
+#: ../libnautilus-private/nautilus-file-operations.c:1515
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
@@ -1851,29 +1841,29 @@ msgstr[0] "%'d датотека останата за бришење"
 msgstr[1] "%'d датотеки останати за бришење"
 msgstr[2] "%'d датотеки останати за бришење"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1563
+#: ../libnautilus-private/nautilus-file-operations.c:1564
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Не можам да ја преместам датотеката во ѓубрето. Дали сакате да ја отстраните "
 "веднаш?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1564
+#: ../libnautilus-private/nautilus-file-operations.c:1565
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "Датотеката %B не може да биде преместена во ѓубрето."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1784
+#: ../libnautilus-private/nautilus-file-operations.c:1788
 msgid "Unable to eject %V"
 msgstr "Не можам да го исфрлам %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1786
+#: ../libnautilus-private/nautilus-file-operations.c:1790
 msgid "Unable to unmount %V"
 msgstr "Не можам да го демонтирам %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1926
+#: ../libnautilus-private/nautilus-file-operations.c:1930
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Дали сакате да го испразните ѓубрето пред да демонтирате?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1928
+#: ../libnautilus-private/nautilus-file-operations.c:1932
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -1881,22 +1871,22 @@ msgstr ""
 "За да ослободите простор на овој уред, ѓубрето мора да биде испразнето. Сите "
 "предмети во ѓубрето ќе бидат трајно изгубени. "
 
-#: ../libnautilus-private/nautilus-file-operations.c:1934
+#: ../libnautilus-private/nautilus-file-operations.c:1938
 msgid "Don't Empty Trash"
 msgstr "Не го празни ѓубрето"
 
 #. label, accelerator
-#: ../libnautilus-private/nautilus-file-operations.c:1936
+#: ../libnautilus-private/nautilus-file-operations.c:1940
 #: ../src/file-manager/fm-desktop-icon-view.c:707
 msgid "Empty Trash"
 msgstr "Испразни го ѓубрето"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2018
+#: ../libnautilus-private/nautilus-file-operations.c:2022
 #, c-format
 msgid "Unable to mount %s"
 msgstr "Не успеав да монтирам %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2053
+#: ../libnautilus-private/nautilus-file-operations.c:2057
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
@@ -1904,7 +1894,7 @@ msgstr[0] "Се спремам да избришам %'d датотеки (%S)"
 msgstr[1] "Се подготвувам за избришам %'d датотеки (%S);"
 msgstr[2] "Се подготвувам за избришам %'d датотеки (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2059
+#: ../libnautilus-private/nautilus-file-operations.c:2063
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
@@ -1912,7 +1902,7 @@ msgstr[0] "Се подготвувам за бришење на %'d датоте
 msgstr[1] "Се подготвувам за бришење на %'d датотеки (%S)"
 msgstr[2] "Се подготвувам за бришење на %'d датотеки (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2065
+#: ../libnautilus-private/nautilus-file-operations.c:2069
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
@@ -1920,7 +1910,7 @@ msgstr[0] "Се подготвувам да избришам %'d датотек�
 msgstr[1] "Се подготвувам да избришам %'d датотеки (%S)"
 msgstr[2] "Се подготвувам да избришам %'d датотеки (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2071
+#: ../libnautilus-private/nautilus-file-operations.c:2075
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -1928,24 +1918,24 @@ msgstr[0] "Подготвување за бришење на %'d датотек�
 msgstr[1] "Подготвување за бришење на %'d датотеки"
 msgstr[2] "Подготвување за бришење на %'d датотеки"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2102
-#: ../libnautilus-private/nautilus-file-operations.c:2825
-#: ../libnautilus-private/nautilus-file-operations.c:2924
-#: ../libnautilus-private/nautilus-file-operations.c:2968
+#: ../libnautilus-private/nautilus-file-operations.c:2106
+#: ../libnautilus-private/nautilus-file-operations.c:2835
+#: ../libnautilus-private/nautilus-file-operations.c:2934
+#: ../libnautilus-private/nautilus-file-operations.c:2978
 msgid "Error while copying."
 msgstr "Грешка при копирањето."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2104
-#: ../libnautilus-private/nautilus-file-operations.c:2922
-#: ../libnautilus-private/nautilus-file-operations.c:2966
+#: ../libnautilus-private/nautilus-file-operations.c:2108
+#: ../libnautilus-private/nautilus-file-operations.c:2932
+#: ../libnautilus-private/nautilus-file-operations.c:2976
 msgid "Error while moving."
 msgstr "Грешка при поместувањето."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2108
+#: ../libnautilus-private/nautilus-file-operations.c:2112
 msgid "Error while moving files to trash."
 msgstr "Грешка при преместување на предметите во ѓубрето."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2162
+#: ../libnautilus-private/nautilus-file-operations.c:2166
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -1953,7 +1943,7 @@ msgstr ""
 "Датотеките во папката %B не можат да бидат ископирани бидејќи немате "
 "пермисии да ги прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2200
+#: ../libnautilus-private/nautilus-file-operations.c:2204
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
@@ -1961,36 +1951,36 @@ msgstr ""
 "Не може да се справувате со папката %B бидејќи немате пермисии да ја "
 "прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2274
+#: ../libnautilus-private/nautilus-file-operations.c:2278
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr "Датотеката %B не може да се копира бидејќи немате пермисии да ја прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2277
+#: ../libnautilus-private/nautilus-file-operations.c:2281
 msgid "There was an error getting information about \"%B\"."
 msgstr "Се појави грешка при собирање на информации за %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2374
-#: ../libnautilus-private/nautilus-file-operations.c:2415
-#: ../libnautilus-private/nautilus-file-operations.c:2447
-#: ../libnautilus-private/nautilus-file-operations.c:2472
+#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2419
+#: ../libnautilus-private/nautilus-file-operations.c:2451
+#: ../libnautilus-private/nautilus-file-operations.c:2476
 msgid "Error while copying to \"%B\"."
 msgstr "Грешка при копирањето во %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2378
+#: ../libnautilus-private/nautilus-file-operations.c:2382
 msgid "You don't have permissions to access the destination folder."
 msgstr "Немате пермисии за пристап до дестинационата папка."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2380
+#: ../libnautilus-private/nautilus-file-operations.c:2384
 msgid "There was an error getting information about the destination."
 msgstr "Се појави грешка при добивањето на информациите за дестинацијата."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2416
+#: ../libnautilus-private/nautilus-file-operations.c:2420
 msgid "The destination is not a folder."
 msgstr "Локацијата не е папка."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2448
+#: ../libnautilus-private/nautilus-file-operations.c:2452
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -1998,63 +1988,63 @@ msgstr ""
 "Нема доволно слободен простор на дестинацијата. Обидете се да отстраните "
 "датотеки за да направите простор."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2450
+#: ../libnautilus-private/nautilus-file-operations.c:2454
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "Има %S достапни, но потребни се %S."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2473
+#: ../libnautilus-private/nautilus-file-operations.c:2477
 msgid "The destination is read-only."
 msgstr "Дестинацијата е само за читање."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2526
+#: ../libnautilus-private/nautilus-file-operations.c:2535
 msgid "Moving \"%B\" to \"%B\""
 msgstr "Преместувам %B во %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2527
+#: ../libnautilus-private/nautilus-file-operations.c:2536
 msgid "Copying \"%B\" to \"%B\""
 msgstr "Копирам %B до %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2532
+#: ../libnautilus-private/nautilus-file-operations.c:2541
 msgid "Duplicating \"%B\""
 msgstr "Дуплирам %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2540
+#: ../libnautilus-private/nautilus-file-operations.c:2549
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Преместувам %'d датотека (во %B) во %B"
 msgstr[1] "Преместувам %'d датотека (во %B) во %B%"
 msgstr[2] "Преместувам %'d датотека (во %B) во %B%"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2544
+#: ../libnautilus-private/nautilus-file-operations.c:2553
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Копирам %'d датотека (во %B) во %B"
 msgstr[1] "Копирам %'d датотека (во %B) во %B%B\""
 msgstr[2] "Копирам %'d датотека (во %B) во %B%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2552
+#: ../libnautilus-private/nautilus-file-operations.c:2561
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "Дуплирање на %'d датотека (во %B)"
 msgstr[1] "Дуплирање на %'d датотека (во %B)"
 msgstr[2] "Дуплирање на %'d датотека (во %B)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2562
+#: ../libnautilus-private/nautilus-file-operations.c:2571
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "Преместувам %'d датотека во %B"
 msgstr[1] "Преместувам %'d датотеки во %B"
 msgstr[2] "Преместувам %'d датотеки во %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2566
+#: ../libnautilus-private/nautilus-file-operations.c:2575
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "Копирам %'d датотека во %B"
 msgstr[1] "Копирам %'d датотеки во %B"
 msgstr[2] "Копирам %'d датотеки во %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2572
+#: ../libnautilus-private/nautilus-file-operations.c:2581
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2063,7 +2053,7 @@ msgstr[1] "Дуплирам %'d датотеки"
 msgstr[2] "Дуплирам %'d датотеки"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2591
+#: ../libnautilus-private/nautilus-file-operations.c:2601
 #, c-format
 msgid "%S of %S"
 msgstr "%S од %S"
@@ -2071,21 +2061,21 @@ msgstr "%S од %S"
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 #. * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2600
+#: ../libnautilus-private/nautilus-file-operations.c:2610
 msgid "%S of %S — %T left (%S/sec)"
 msgstr "%S од %S — %T преостануваат (%S/сек)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2829
+#: ../libnautilus-private/nautilus-file-operations.c:2839
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr "Папката %B не може да се копира бидејќи немате пермисии да ја прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2832
+#: ../libnautilus-private/nautilus-file-operations.c:2842
 msgid "There was an error creating the folder \"%B\"."
 msgstr "Се појави грешка при креирање на папката %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2929
+#: ../libnautilus-private/nautilus-file-operations.c:2939
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -2093,47 +2083,47 @@ msgstr ""
 "Датотеките во папката %B не можат да се копираат бидејќи немате пермисии да "
 "ги гледате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2973
+#: ../libnautilus-private/nautilus-file-operations.c:2983
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr "Папката %B не може да се копира бидејќи немате пермисии да ја прочитате."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3015
-#: ../libnautilus-private/nautilus-file-operations.c:3398
-#: ../libnautilus-private/nautilus-file-operations.c:3843
+#: ../libnautilus-private/nautilus-file-operations.c:3025
+#: ../libnautilus-private/nautilus-file-operations.c:3408
+#: ../libnautilus-private/nautilus-file-operations.c:3853
 msgid "Error while moving \"%B\"."
 msgstr "Грешка при преместувањето на %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3016
+#: ../libnautilus-private/nautilus-file-operations.c:3026
 msgid "Couldn't remove the source folder."
 msgstr "Не можам да ја отстранам изворната папка."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3097
-#: ../libnautilus-private/nautilus-file-operations.c:3134
-#: ../libnautilus-private/nautilus-file-operations.c:3400
-#: ../libnautilus-private/nautilus-file-operations.c:3455
+#: ../libnautilus-private/nautilus-file-operations.c:3107
+#: ../libnautilus-private/nautilus-file-operations.c:3144
+#: ../libnautilus-private/nautilus-file-operations.c:3410
+#: ../libnautilus-private/nautilus-file-operations.c:3465
 msgid "Error while copying \"%B\"."
 msgstr "Грешка при копирањето на %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3098
+#: ../libnautilus-private/nautilus-file-operations.c:3108
 #, c-format
 msgid "Couldn't remove files from the already existing folder %F."
 msgstr "Не можам да ги отстранам датотеките од веќе постоечката папка %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3135
+#: ../libnautilus-private/nautilus-file-operations.c:3145
 #, c-format
 msgid "Couldn't remove the already existing file %F."
 msgstr "Не можам да ја отстранам веќе постоечката датотека %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3298
-#: ../libnautilus-private/nautilus-file-operations.c:3745
+#: ../libnautilus-private/nautilus-file-operations.c:3308
+#: ../libnautilus-private/nautilus-file-operations.c:3755
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr "Папката %B веќе постои.  Дали сакате да ја споите постоечката папка?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3300
+#: ../libnautilus-private/nautilus-file-operations.c:3310
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2142,13 +2132,13 @@ msgstr ""
 "Папката веќе постои во %B.  Спојувањето ќе побара потврдапред да ги замени "
 "сите датотеки во папката "
 
-#: ../libnautilus-private/nautilus-file-operations.c:3305
-#: ../libnautilus-private/nautilus-file-operations.c:3752
+#: ../libnautilus-private/nautilus-file-operations.c:3315
+#: ../libnautilus-private/nautilus-file-operations.c:3762
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Папката %B веќе постои.  Дали сакате да ја замените?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3307
-#: ../libnautilus-private/nautilus-file-operations.c:3754
+#: ../libnautilus-private/nautilus-file-operations.c:3317
+#: ../libnautilus-private/nautilus-file-operations.c:3764
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2157,34 +2147,34 @@ msgstr ""
 "Папката веќе постои во \"%F\".  Заменувањето ќе ги отстрани ситедатотеки во "
 "папката."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3312
-#: ../libnautilus-private/nautilus-file-operations.c:3759
+#: ../libnautilus-private/nautilus-file-operations.c:3322
+#: ../libnautilus-private/nautilus-file-operations.c:3769
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Датотеката %B веќе постои. Дали сакате да ја замените?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3314
-#: ../libnautilus-private/nautilus-file-operations.c:3761
+#: ../libnautilus-private/nautilus-file-operations.c:3324
+#: ../libnautilus-private/nautilus-file-operations.c:3771
 #, c-format
 msgid "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
 "Датотеката веќе постои во \"%F\".  Заменувањето ќе запише врз нејзината "
 "содржина."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3402
+#: ../libnautilus-private/nautilus-file-operations.c:3412
 #, c-format
 msgid "Couldn't remove the already existing file with the same name in %F."
 msgstr "Не можам да ја отстранам веќе постоечката датотека со истото име во %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3456
+#: ../libnautilus-private/nautilus-file-operations.c:3466
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Се појави грешка при копирање на датотеката во %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3668
+#: ../libnautilus-private/nautilus-file-operations.c:3678
 msgid "Preparing to Move to \"%B\""
 msgstr "Се спремам за преместување во %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3672
+#: ../libnautilus-private/nautilus-file-operations.c:3682
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2192,7 +2182,7 @@ msgstr[0] "Се спремам за поместување на %'d датоте
 msgstr[1] "Се спремам за поместување на %'d датотеки"
 msgstr[2] "Се спремам за поместување на %'d датотеки"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3747
+#: ../libnautilus-private/nautilus-file-operations.c:3757
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2202,16 +2192,16 @@ msgstr ""
 "бидатзаменети било кои датотеки во папката која што е во конфилкт со "
 "датотекитешто се преместуваат."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3844
+#: ../libnautilus-private/nautilus-file-operations.c:3854
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Се појави грешка при преместувањето на датотеката во %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4117
+#: ../libnautilus-private/nautilus-file-operations.c:4127
 msgid "Creating links in \"%B\""
 msgstr "Креирам врски до %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4121
+#: ../libnautilus-private/nautilus-file-operations.c:4131
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2219,46 +2209,46 @@ msgstr[0] "Креирам поврзување до %'d датотека"
 msgstr[1] "Креирам поврзување до %'d датотеки"
 msgstr[2] "Креирам поврзување до %'d датотеки"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4195
+#: ../libnautilus-private/nautilus-file-operations.c:4205
 msgid "Error while creating link to %B."
 msgstr "Грешка при креирање на врска во %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4197
+#: ../libnautilus-private/nautilus-file-operations.c:4207
 msgid "Symbolic links only supported for local files"
 msgstr "Симболичките врски се поддржани само од локалните датотеки"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4200
+#: ../libnautilus-private/nautilus-file-operations.c:4210
 msgid "The target doesn't support symbolic links."
 msgstr "Дестинацијата не подржува симболички врски."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4203
+#: ../libnautilus-private/nautilus-file-operations.c:4213
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Се појави грешка при креирање на симболичка врска во %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4492
+#: ../libnautilus-private/nautilus-file-operations.c:4502
 msgid "Setting permissions"
 msgstr "Поставувам пермисии"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:4683
+#: ../libnautilus-private/nautilus-file-operations.c:4719
 msgid "untitled folder"
 msgstr "папка без име"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:4691
+#: ../libnautilus-private/nautilus-file-operations.c:4727
 msgid "new file"
 msgstr "нова датотека"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4781
+#: ../libnautilus-private/nautilus-file-operations.c:4817
 msgid "Error while creating directory %B."
 msgstr "Грешка при креирање на директориумот %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4783
+#: ../libnautilus-private/nautilus-file-operations.c:4819
 msgid "Error while creating file %B."
 msgstr "Грешка при креирање на датотеката %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4785
+#: ../libnautilus-private/nautilus-file-operations.c:4821
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Се појави грешка при креирање на директориум во %F."
@@ -2449,7 +2439,7 @@ msgid "Specified group '%s' doesn't exist"
 msgstr "Одредената група '%s' не постои"
 
 #: ../libnautilus-private/nautilus-file.c:4891
-#: ../src/file-manager/fm-directory-view.c:2111
+#: ../src/file-manager/fm-directory-view.c:2114
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -2753,11 +2743,12 @@ msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Оваа врска не може да се искористи поради тоа што нејзината цел %s не постои."
 
 #. name, stock id
+#. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:613
-#: ../src/file-manager/fm-directory-view.c:6303
-#: ../src/file-manager/fm-directory-view.c:6384
-#: ../src/file-manager/fm-directory-view.c:6937
-#: ../src/file-manager/fm-directory-view.c:7143
+#: ../src/file-manager/fm-directory-view.c:6320
+#: ../src/file-manager/fm-directory-view.c:6401
+#: ../src/file-manager/fm-directory-view.c:6954
+#: ../src/file-manager/fm-directory-view.c:7160
 msgid "Mo_ve to Trash"
 msgstr "Пр_емести во ѓубрето"
 
@@ -2785,7 +2776,7 @@ msgid "_Run"
 msgstr "_Изврши"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:986
-#: ../src/file-manager/fm-directory-view.c:612
+#: ../src/file-manager/fm-directory-view.c:613
 msgid "Are you sure you want to open all files?"
 msgstr "Сакате да ги отворите сите датотеки?"
 
@@ -2831,48 +2822,54 @@ msgstr[0] "Се отвора %d"
 msgstr[1] "Се отвораат %d"
 msgstr[2] "Се отвораат %d"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:179
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:181
 #: ../libnautilus-private/nautilus-open-with-dialog.c:271
 #, c-format
 msgid "Could not set application as the default: %s"
 msgstr "Не можам да ја поставам апликацијата како стандардна: %s"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:180
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:182
 #: ../libnautilus-private/nautilus-open-with-dialog.c:272
 msgid "Could not set as default application"
 msgstr "Не можам да ја поставам стандардната апликација"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:269
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:271
 msgid "Default"
 msgstr "Стандардно"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:277
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:279
 msgid "Icon"
 msgstr "Икона"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:334
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:341
 msgid "Could not remove application"
 msgstr "Не можам да ја отстранам апликацијата"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:570
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:578
 msgid "No applications selected"
 msgstr "Не е избрана апликација"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:613
-#: ../libnautilus-private/nautilus-open-with-dialog.c:909
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:606
+#: ../libnautilus-private/nautilus-open-with-dialog.c:920
 #, c-format
 msgid "%s document"
 msgstr "%s документ"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:621
-#: ../libnautilus-private/nautilus-open-with-dialog.c:915
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:613
+#: ../libnautilus-private/nautilus-open-with-dialog.c:926
 msgid "Unknown"
 msgstr "Непознато"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:630
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:646
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr "Изберете апликација за отворање на %s и други датотеки од типот %s"
+
+#: ../libnautilus-private/nautilus-mime-application-chooser.c:692
+#: ../libnautilus-private/nautilus-open-with-dialog.c:938
+#, c-format
+msgid "Open all files of type \"%s\" with:"
+msgstr "Отворај ги сите датотеки од типот %s со:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:162
 msgid "Could not run application"
@@ -2901,7 +2898,7 @@ msgid "Select an Application"
 msgstr "Изберете апликација"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:743
-#: ../src/file-manager/fm-properties-window.c:4749
+#: ../src/file-manager/fm-properties-window.c:4779
 msgid "Open With"
 msgstr "Отвори со"
 
@@ -2918,24 +2915,27 @@ msgid "_Browse..."
 msgstr "_Разгледај..."
 
 #. name, stock id
+#. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:844
-#: ../src/file-manager/fm-directory-view.c:6229
-#: ../src/file-manager/fm-directory-view.c:7084
+#: ../src/file-manager/fm-directory-view.c:6246
+#: ../src/file-manager/fm-directory-view.c:7101
 #: ../src/file-manager/fm-tree-view.c:1103
 #: ../src/nautilus-places-sidebar.c:1674
 msgid "_Open"
 msgstr "_Отвори"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:923
+#: ../libnautilus-private/nautilus-open-with-dialog.c:935
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr "Отворај %s и други датотеки од типот %s со:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:954
+#: ../libnautilus-private/nautilus-open-with-dialog.c:971
+#: ../libnautilus-private/nautilus-open-with-dialog.c:986
 msgid "_Add"
 msgstr "_Додај"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:955
+#: ../libnautilus-private/nautilus-open-with-dialog.c:972
+#: ../libnautilus-private/nautilus-open-with-dialog.c:987
 msgid "Add Application"
 msgstr "Додај апликација"
 
@@ -3075,7 +3075,7 @@ msgstr "Повтори го уреденото"
 msgid "Autorun Prompt"
 msgstr "Автоматско извршување"
 
-#. label, accelerator
+#. tooltip
 #: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:675
 msgid "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3094,7 +3094,7 @@ msgstr "Подредување на датотеки"
 msgid "Home Folder"
 msgstr "Домашна папка"
 
-#. label, accelerator
+#. tooltip
 #: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:671
 msgid "Open your personal folder"
 msgstr "Отвори ја твојата папка"
@@ -3138,23 +3138,24 @@ msgid "Background"
 msgstr "Позадина"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:681
-#: ../src/file-manager/fm-directory-view.c:6257
-#: ../src/file-manager/fm-directory-view.c:7201
+#: ../src/file-manager/fm-directory-view.c:6274
+#: ../src/file-manager/fm-directory-view.c:7218
 msgid "E_mpty Trash"
 msgstr "И_спразни го ѓубрето"
 
 #. label, accelerator
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:693
-#: ../src/file-manager/fm-directory-view.c:6225
+#: ../src/file-manager/fm-directory-view.c:6242
 msgid "Create L_auncher..."
 msgstr "Креирај с_тартувач..."
 
 #. tooltip
-#. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:695
-#: ../src/file-manager/fm-directory-view.c:6226
+#: ../src/file-manager/fm-directory-view.c:6243
 msgid "Create a new launcher"
 msgstr "Креирај нов лансер"
 
@@ -3171,9 +3172,8 @@ msgstr ""
 "околина"
 
 #. tooltip
-#. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:709
-#: ../src/file-manager/fm-directory-view.c:6258
+#: ../src/file-manager/fm-directory-view.c:6275
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Избриши ги сите предмети во ѓубрето"
@@ -3204,7 +3204,7 @@ msgstr "Погледот на работната површина наиде н�
 msgid "Display this location with the desktop view."
 msgstr "Прикажи ја оваа локација со погледот на работна површина."
 
-#: ../src/file-manager/fm-directory-view.c:613
+#: ../src/file-manager/fm-directory-view.c:614
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
@@ -3212,43 +3212,43 @@ msgstr[0] "Ова ќе отвори %'d посебен прозорец."
 msgstr[1] "Ова ќе отвори %'d посебни прозорци."
 msgstr[2] "Ова ќе отвори %'d посебни прозорци."
 
-#: ../src/file-manager/fm-directory-view.c:1062
+#: ../src/file-manager/fm-directory-view.c:1065
 #: ../src/file-manager/fm-properties-window.c:4687
 #: ../src/nautilus-location-dialog.c:111
 msgid "There was an error displaying help."
 msgstr "Се појави грешка при прикажувањето на помош."
 
-#: ../src/file-manager/fm-directory-view.c:1082
+#: ../src/file-manager/fm-directory-view.c:1085
 msgid "Select Pattern"
 msgstr "Шаблон на избор"
 
-#: ../src/file-manager/fm-directory-view.c:1100
+#: ../src/file-manager/fm-directory-view.c:1103
 msgid "_Pattern:"
 msgstr "_Шаблон:"
 
-#: ../src/file-manager/fm-directory-view.c:1210
+#: ../src/file-manager/fm-directory-view.c:1213
 msgid "Save Search as"
 msgstr "Зачувај пребарување како"
 
-#: ../src/file-manager/fm-directory-view.c:1228
+#: ../src/file-manager/fm-directory-view.c:1231
 msgid "Search _name:"
 msgstr "Име за _пребарување:"
 
-#: ../src/file-manager/fm-directory-view.c:1241
+#: ../src/file-manager/fm-directory-view.c:1244
 msgid "_Folder:"
 msgstr "_Папка:"
 
-#: ../src/file-manager/fm-directory-view.c:1246
+#: ../src/file-manager/fm-directory-view.c:1249
 msgid "Select Folder to Save Search In"
 msgstr "Изберете папка за зачувување на пребарувањето"
 
-#: ../src/file-manager/fm-directory-view.c:2031
-#: ../src/file-manager/fm-directory-view.c:2068
+#: ../src/file-manager/fm-directory-view.c:2034
+#: ../src/file-manager/fm-directory-view.c:2071
 #, c-format
 msgid "\"%s\" selected"
 msgstr "%s е означен"
 
-#: ../src/file-manager/fm-directory-view.c:2033
+#: ../src/file-manager/fm-directory-view.c:2036
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -3256,7 +3256,7 @@ msgstr[0] "%'d избрана папка"
 msgstr[1] "%'d избрани папки"
 msgstr[2] "%'d избрани папки"
 
-#: ../src/file-manager/fm-directory-view.c:2043
+#: ../src/file-manager/fm-directory-view.c:2046
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3265,7 +3265,7 @@ msgstr[1] " (содржат %'d предмети)"
 msgstr[2] " (содржат %'d предмети)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2054
+#: ../src/file-manager/fm-directory-view.c:2057
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
@@ -3273,7 +3273,7 @@ msgstr[0] " (содржи вкупно %'d предмет)"
 msgstr[1] " (содржи вкупно %'d предмети)"
 msgstr[2] " (содржи вкупно %'d предмети)"
 
-#: ../src/file-manager/fm-directory-view.c:2071
+#: ../src/file-manager/fm-directory-view.c:2074
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3282,7 +3282,7 @@ msgstr[1] "избрани се %'d предмети"
 msgstr[2] "избрани се %'d предмети"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2078
+#: ../src/file-manager/fm-directory-view.c:2081
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3295,12 +3295,12 @@ msgstr[2] "избрани се %'d други предмети"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2093
+#: ../src/file-manager/fm-directory-view.c:2096
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2115
+#: ../src/file-manager/fm-directory-view.c:2118
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, слободен простор: %s"
@@ -3312,7 +3312,7 @@ msgstr "%s, слободен простор: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2140
+#: ../src/file-manager/fm-directory-view.c:2143
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3321,21 +3321,21 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2222
+#: ../src/file-manager/fm-directory-view.c:2225
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Папката %s содржи повеќе датотеки одошто Nautilus може да прикаже."
 
-#: ../src/file-manager/fm-directory-view.c:2228
+#: ../src/file-manager/fm-directory-view.c:2231
 msgid "Some files will not be displayed."
 msgstr "Некои датотеки нема да бидат покажани."
 
-#: ../src/file-manager/fm-directory-view.c:4120
+#: ../src/file-manager/fm-directory-view.c:4135
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Отвори со %s"
 
-#: ../src/file-manager/fm-directory-view.c:4121
+#: ../src/file-manager/fm-directory-view.c:4136
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgid_plural "Use \"%s\" to open the selected items"
@@ -3343,21 +3343,21 @@ msgstr[0] "Искористете %s за да го отворите сакан�
 msgstr[1] "Искористете %s за да ги отворите саканите предмети"
 msgstr[2] "Искористете %s за да ги отворите саканите предмети"
 
-#: ../src/file-manager/fm-directory-view.c:4853
+#: ../src/file-manager/fm-directory-view.c:4868
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Изврши %s на било кој избран предмет"
 
-#: ../src/file-manager/fm-directory-view.c:5100
+#: ../src/file-manager/fm-directory-view.c:5115
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Направи документ според мострата %s"
 
-#: ../src/file-manager/fm-directory-view.c:5356
+#: ../src/file-manager/fm-directory-view.c:5371
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Сите извршливи датотеки во оваа папка ќе се појават во мени за скрипти."
 
-#: ../src/file-manager/fm-directory-view.c:5358
+#: ../src/file-manager/fm-directory-view.c:5373
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3365,7 +3365,7 @@ msgstr ""
 "Со избирањето на скрипта од менито ќе ја извршите истата заедно со сите "
 "избрани предмети."
 
-#: ../src/file-manager/fm-directory-view.c:5360
+#: ../src/file-manager/fm-directory-view.c:5375
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3405,19 +3405,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 
-#: ../src/file-manager/fm-directory-view.c:5518
+#: ../src/file-manager/fm-directory-view.c:5533
 #: ../src/file-manager/fm-tree-view.c:891
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "%s ќе биде преместена ако ја изберете командата „Вменти“"
 
-#: ../src/file-manager/fm-directory-view.c:5522
+#: ../src/file-manager/fm-directory-view.c:5537
 #: ../src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "%s ќе биде ископирана ако ја изберете командата „Вметни“"
 
-#: ../src/file-manager/fm-directory-view.c:5529
+#: ../src/file-manager/fm-directory-view.c:5544
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural "The %'d selected items will be moved if you select the Paste command"
@@ -3425,7 +3425,7 @@ msgstr[0] "%'d избран предмет ќе биде преместен ак
 msgstr[1] "%'d избрани предмети ќе бидат преместени ако ја изберете командата Вметни"
 msgstr[2] "%'d избрани предмети ќе бидат преместени ако ја изберете командата Вметни"
 
-#: ../src/file-manager/fm-directory-view.c:5536
+#: ../src/file-manager/fm-directory-view.c:5551
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural "The %'d selected items will be copied if you select the Paste command"
@@ -3433,146 +3433,157 @@ msgstr[0] "%'d избран предмет ќе биде ископиран ак
 msgstr[1] "%'d избрани предмети ќе бидат ископирани ако ја изберете командата Вметни"
 msgstr[2] "%'d избрани предмети ќе бидат ископирани ако ја изберете командата Вметни"
 
-#: ../src/file-manager/fm-directory-view.c:5630
+#: ../src/file-manager/fm-directory-view.c:5645
 #: ../src/file-manager/fm-tree-view.c:972
 msgid "There is nothing on the clipboard to paste."
 msgstr "Нема ништо за вметнување"
 
-#: ../src/file-manager/fm-directory-view.c:5989
+#: ../src/file-manager/fm-directory-view.c:6004
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Врзи се со серверот %s"
 
-#: ../src/file-manager/fm-directory-view.c:5994
+#: ../src/file-manager/fm-directory-view.c:6009
 msgid "_Connect"
 msgstr "_Врзи се"
 
-#: ../src/file-manager/fm-directory-view.c:6008
+#: ../src/file-manager/fm-directory-view.c:6023
 msgid "Link _name:"
 msgstr "_Има на врската:"
 
-#: ../src/file-manager/fm-directory-view.c:6199
+#. name, stock id, label
+#: ../src/file-manager/fm-directory-view.c:6216
 msgid "Create _Document"
 msgstr "Креирај _документ"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6200
+#: ../src/file-manager/fm-directory-view.c:6217
 msgid "Open Wit_h"
 msgstr "Отвори _со"
 
-#. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6201
+#: ../src/file-manager/fm-directory-view.c:6218
 msgid "Choose a program with which to open the selected item"
 msgstr "Избери програма со која сакаш да го отвориш саканиот предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6203
-#: ../src/file-manager/fm-directory-view.c:6211
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6220
+#: ../src/file-manager/fm-directory-view.c:6228
 msgid "_Properties"
 msgstr "_Својства"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6204
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6221
 msgid "View or modify the properties of each selected item"
 msgstr "Прегледај ги или промени ги својствата на секој избран предмет"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6212
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6229
 msgid "View or modify the properties of the open folder"
 msgstr "Прегледај ги или промени ги својствата на папката"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6215
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6232
 msgid "Create _Folder"
 msgstr "Креирај _папка"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6216
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6233
 msgid "Create a new empty folder inside this folder"
 msgstr "Креирај нова празна папка во оваа папка"
 
-#: ../src/file-manager/fm-directory-view.c:6218
+#. name, stock id, label
+#: ../src/file-manager/fm-directory-view.c:6235
 msgid "No templates installed"
 msgstr "Нема инсталирани мостри"
 
-#. name, stock id, label
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
-#: ../src/file-manager/fm-directory-view.c:6221
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6238
 msgid "_Empty File"
 msgstr "_Празна датотека"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6222
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6239
 msgid "Create a new empty file inside this folder"
 msgstr "Креирај празна датотека во оваа папка"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6230
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6247
 msgid "Open the selected item in this window"
 msgstr "Отвори го избраниот предмет во овој прозорец"
 
 #. name, stock id
+#. label, accelerator
 #. Location-specific actions
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6237
-#: ../src/file-manager/fm-directory-view.c:6365
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6254
+#: ../src/file-manager/fm-directory-view.c:6382
 msgid "Open in Navigation Window"
 msgstr "Отвори во прозорец за навигација"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6238
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6255
 msgid "Open each selected item in a navigation window"
 msgstr "Отвори го секој избран предмет во прозорец за навигација"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6241
-#: ../src/file-manager/fm-directory-view.c:6370
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6258
+#: ../src/file-manager/fm-directory-view.c:6387
 msgid "Open in Folder Window"
 msgstr "Отвори во прозорецот на папката"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6242
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6259
 msgid "Open each selected item in a folder window"
 msgstr "Отвори го секој избран предмет прозорецот на папката"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6245
-#: ../src/file-manager/fm-directory-view.c:6249
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6262
+#: ../src/file-manager/fm-directory-view.c:6266
 msgid "Open with Other _Application..."
 msgstr "Отвори со _друга апликација..."
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6246
-#: ../src/file-manager/fm-directory-view.c:6250
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6263
+#: ../src/file-manager/fm-directory-view.c:6267
 msgid "Choose another application with which to open the selected item"
 msgstr "Изберете друга апликација со која што сакате да го отворите саканиот предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6253
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6270
 msgid "_Open Scripts Folder"
 msgstr "_Отвори ја папката со скрипти"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6254
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6271
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Покажи ја папката што ги содржи скриптите прикажани во ова мени"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6262
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6279
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат преместени со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6266
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6283
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат копирани со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6270
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6287
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Отсечи или копирај датотеки претходно избрани со командата „Отсечи“ или "
@@ -3581,13 +3592,14 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6275
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6292
 #: ../src/file-manager/fm-tree-view.c:1157
 msgid "_Paste Into Folder"
 msgstr "_Вметни во папката"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6276
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6293
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3595,274 +3607,290 @@ msgstr ""
 "Помести или копирај претходно избрани датотеки со командата „Отсечи“ или "
 "„Копирај“"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6280
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6297
 msgid "Select all items in this window"
 msgstr "Избери ги сите предмети во овој прозорец"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6283
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6300
 msgid "Select _Pattern"
 msgstr "Избери по _шаблон"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6284
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6301
 msgid "Select items in this window matching a given pattern"
 msgstr "Избери ги сите предмети во овој прозорец што се совпаѓаат со даден шаблон..."
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6287
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6304
 msgid "D_uplicate"
 msgstr "Д_уплирај"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6288
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6305
 msgid "Duplicate each selected item"
 msgstr "Дуплирај го секој избран предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6291
-#: ../src/file-manager/fm-directory-view.c:7175
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6308
+#: ../src/file-manager/fm-directory-view.c:7192
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "На_прави врска"
 msgstr[1] "На_прави врски"
 msgstr[2] "На_прави врски"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6292
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6309
 msgid "Create a symbolic link for each selected item"
 msgstr "Креирај симболичка врска за секој избран предмет"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6295
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6312
 msgid "_Rename..."
 msgstr "_Реименувај..."
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6296
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6313
 msgid "Rename selected item"
 msgstr "Реименувај го избраниот предмет"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6304
-#: ../src/file-manager/fm-directory-view.c:7144
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6321
+#: ../src/file-manager/fm-directory-view.c:7161
 msgid "Move each selected item to the Trash"
 msgstr "Премести ги сите избрани предмети во ѓубрето"
 
 #. name, stock id
+#. label, accelerator
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6307
-#: ../src/file-manager/fm-directory-view.c:6388
-#: ../src/file-manager/fm-directory-view.c:7162
+#: ../src/file-manager/fm-directory-view.c:6324
+#: ../src/file-manager/fm-directory-view.c:6405
+#: ../src/file-manager/fm-directory-view.c:7179
 #: ../src/file-manager/fm-tree-view.c:1184
 msgid "_Delete"
 msgstr "_Избриши"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6308
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6325
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Избриши го секој избран предмет без да го преместиш во ѓубрето"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6311
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6328
 msgid "Reset View to _Defaults"
 msgstr "Ресетирај го погледот на _стандардно"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6312
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6329
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Ресетирај го редоследот и нивото на зум така што ќе се вколпи во "
 "преференциите за овој поглед"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6315
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6332
 msgid "Connect To This Server"
 msgstr "Врзи се со овој сервер"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6316
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6333
 msgid "Make a permanent connection to this server"
 msgstr "Направи постојана врска до овој сервер"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6319
-#: ../src/file-manager/fm-directory-view.c:6335
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6336
+#: ../src/file-manager/fm-directory-view.c:6352
 msgid "_Mount Volume"
 msgstr "_Монтирај диск (партиција)"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6320
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6337
 msgid "Mount the selected volume"
 msgstr "Монтирај го означениот уред (партиција)"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6323
-#: ../src/file-manager/fm-directory-view.c:6339
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6340
+#: ../src/file-manager/fm-directory-view.c:6356
 #: ../src/file-manager/fm-tree-view.c:740
 msgid "_Unmount Volume"
 msgstr "_Демонтирај"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6324
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6341
 msgid "Unmount the selected volume"
 msgstr "Демонтирај ја избраната јачина"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6328
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6345
 msgid "Eject the selected volume"
 msgstr "Извади го избраниот уред"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6331
-#: ../src/file-manager/fm-directory-view.c:6347
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6348
+#: ../src/file-manager/fm-directory-view.c:6364
 #: ../src/nautilus-places-sidebar.c:1737
 msgid "_Format"
 msgstr "_Форматирај"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6332
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6349
 msgid "Format the selected volume"
 msgstr "Форматирај го означениот простор"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6336
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6353
 msgid "Mount the volume associated with the open folder"
 msgstr "Монтирај го уредот кому му припаѓа отворената папка."
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6340
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6357
 msgid "Unmount the volume associated with the open folder"
 msgstr "Одмонтирај го уредот кому му припаѓа отворената папка."
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6344
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6361
 msgid "Eject the volume associated with the open folder"
 msgstr "Извадете го уредот кому му припаѓа оваа папка"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6348
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6365
 msgid "Format the volume associated with the open folder"
 msgstr "Форматирај го уредот кому му припаѓа отворената папка"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6351
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6368
 msgid "Open File and Close window"
 msgstr "Отвори ја датотеката и затвори го прозорецот"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6355
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6372
 msgid "Sa_ve Search"
 msgstr "Зач_увај пребарување"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6356
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6373
 msgid "Save the edited search"
 msgstr "Зачувај го уреденото пребарување"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6359
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6376
 msgid "Sa_ve Search As..."
 msgstr "За_чувај пребарување како..."
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6360
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6377
 msgid "Save the current search as a file"
 msgstr "Зачувај го тековното пребарување како датотека"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6366
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6383
 msgid "Open this folder in a navigation window"
 msgstr "Отвори ја оваа папка во прозорец за навигација"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6371
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6388
 msgid "Open this folder in a folder window"
 msgstr "Отвори ја оваа папка во прозорец за папка"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6376
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6393
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Припреми ја папката за преместување со командата „Вметни“"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6380
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6397
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Припреми ги избраните датотеки да бидат копирани со командата „Вметни“"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6385
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6402
 msgid "Move this folder to the Trash"
 msgstr "Премести ја оваа папка во ѓубрето"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6389
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6406
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Избриши ја папката без да ја преместиш во ѓубрето"
 
 #. name, stock id
-#: ../src/file-manager/fm-directory-view.c:6395
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6412
 msgid "Show _Hidden Files"
 msgstr "Покажи _скриени датотеки"
 
-#. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6396
+#. tooltip
+#: ../src/file-manager/fm-directory-view.c:6413
 msgid "Toggle the display of hidden files in the current window"
 msgstr "Го менува покажувањето на скриени датотеки во тековниот прозорец"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6481
+#: ../src/file-manager/fm-directory-view.c:6498
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Изврши или справи се со скрипти од %s"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6483
+#: ../src/file-manager/fm-directory-view.c:6500
 msgid "_Scripts"
 msgstr "_Скрипти"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:6898
-#: ../src/file-manager/fm-directory-view.c:7095
+#: ../src/file-manager/fm-directory-view.c:6915
+#: ../src/file-manager/fm-directory-view.c:7112
 #: ../src/file-manager/fm-tree-view.c:1114
 msgid "Open in New Window"
 msgstr "Отвори во нов прозорец"
 
-#: ../src/file-manager/fm-directory-view.c:6900
-#: ../src/file-manager/fm-directory-view.c:7104
+#: ../src/file-manager/fm-directory-view.c:6917
+#: ../src/file-manager/fm-directory-view.c:7121
 msgid "Browse in New Window"
 msgstr "Разгледај во нов прозорец"
 
-#: ../src/file-manager/fm-directory-view.c:6904
-#: ../src/file-manager/fm-directory-view.c:7114
+#: ../src/file-manager/fm-directory-view.c:6921
+#: ../src/file-manager/fm-directory-view.c:7131
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Разгледај папка"
 msgstr[1] "_Разгледај папки"
 msgstr[2] "_Разгледај папки"
 
-#: ../src/file-manager/fm-directory-view.c:6933
-#: ../src/file-manager/fm-directory-view.c:7139
+#: ../src/file-manager/fm-directory-view.c:6950
+#: ../src/file-manager/fm-directory-view.c:7156
 msgid "_Delete from Trash"
 msgstr "_Избриши од ѓубрето"
 
-#: ../src/file-manager/fm-directory-view.c:6934
+#: ../src/file-manager/fm-directory-view.c:6951
 msgid "Delete the open folder permanently"
 msgstr "Избриши ја отворената папка перманентно"
 
-#: ../src/file-manager/fm-directory-view.c:6938
+#: ../src/file-manager/fm-directory-view.c:6955
 msgid "Move the open folder to the Trash"
 msgstr "Премести ја отворената папка во ѓубрето"
 
-#: ../src/file-manager/fm-directory-view.c:7077
+#: ../src/file-manager/fm-directory-view.c:7094
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Отвори со %s"
 
-#: ../src/file-manager/fm-directory-view.c:7097
+#: ../src/file-manager/fm-directory-view.c:7114
 #, c-format
 msgid "Open in %'d New Window"
 msgid_plural "Open in %'d New Windows"
@@ -3870,7 +3898,7 @@ msgstr[0] "Отвори во %'d нов прозорец"
 msgstr[1] "Отвори во %'d нови прозорци"
 msgstr[2] "Отвори во %'d нови прозорци"
 
-#: ../src/file-manager/fm-directory-view.c:7106
+#: ../src/file-manager/fm-directory-view.c:7123
 #, c-format
 msgid "Browse in %'d New Window"
 msgid_plural "Browse in %'d New Windows"
@@ -3878,43 +3906,43 @@ msgstr[0] "Разгледај во %'d нов прозорец"
 msgstr[1] "Отвори во %'d нови прозорци"
 msgstr[2] "Отвори во %'d нови прозорци"
 
-#: ../src/file-manager/fm-directory-view.c:7140
+#: ../src/file-manager/fm-directory-view.c:7157
 msgid "Delete all selected items permanently"
 msgstr "Избриши ги сите избрани предмети перманентно"
 
-#: ../src/file-manager/fm-directory-view.c:8286
+#: ../src/file-manager/fm-directory-view.c:8303
 msgid "Download location?"
 msgstr "Локација за преземање?"
 
-#: ../src/file-manager/fm-directory-view.c:8289
+#: ../src/file-manager/fm-directory-view.c:8306
 msgid "You can download it or make a link to it."
 msgstr "Можете да ја преземете или да направите врска до неа."
 
-#: ../src/file-manager/fm-directory-view.c:8292
+#: ../src/file-manager/fm-directory-view.c:8309
 msgid "Make a _Link"
 msgstr "Направи _врска"
 
-#: ../src/file-manager/fm-directory-view.c:8296
+#: ../src/file-manager/fm-directory-view.c:8313
 msgid "_Download"
 msgstr "_Преземи"
 
-#: ../src/file-manager/fm-directory-view.c:8358
-#: ../src/file-manager/fm-directory-view.c:8423
-#: ../src/file-manager/fm-directory-view.c:8528
+#: ../src/file-manager/fm-directory-view.c:8375
+#: ../src/file-manager/fm-directory-view.c:8440
+#: ../src/file-manager/fm-directory-view.c:8545
 msgid "Drag and drop is not supported."
 msgstr "Влечење и пуштање не е подржано."
 
-#: ../src/file-manager/fm-directory-view.c:8359
+#: ../src/file-manager/fm-directory-view.c:8376
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Влечење и пуштање е подржано само на локалниот датотечен систем."
 
-#: ../src/file-manager/fm-directory-view.c:8424
-#: ../src/file-manager/fm-directory-view.c:8529
+#: ../src/file-manager/fm-directory-view.c:8441
+#: ../src/file-manager/fm-directory-view.c:8546
 msgid "An invalid drag type was used."
 msgstr "Користен е невалиден тип на движење."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:8596
+#: ../src/file-manager/fm-directory-view.c:8613
 msgid "dropped text.txt"
 msgstr "испуштен текст.txt"
 
@@ -4086,68 +4114,74 @@ msgstr "по _амблеми"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Држи ги иконите сортирани по амблеми во редови"
 
+#. name, stock id, label
 #: ../src/file-manager/fm-icon-view.c:1424
 msgid "Arran_ge Items"
 msgstr "Подре_ди ги предметите"
 
-#. name, stock id, label
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1426
 msgid "Str_etch Icon"
 msgstr "Изд_олжи икона"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1427
 msgid "Make the selected icon stretchable"
 msgstr "Направи ја избраната икона променлива"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1430
 #: ../src/file-manager/fm-icon-view.c:1582
 msgid "Restore Icons' Original Si_zes"
 msgstr "Поврати ги оригиналните големини на иконите"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1431
 msgid "Restore each selected icon to its original size"
 msgstr "Поврати ја секоја избрана икона во нејзината оригинална големина"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1434
 msgid "Clean _Up by Name"
 msgstr "Исчис_ти по име"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1435
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "Распореди ги иконите за да одговараат подобро и за да се одбегне преклопување"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1441
 msgid "Compact _Layout"
 msgstr "Компактен _распоред"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1442
 msgid "Toggle using a tighter layout scheme"
 msgstr "Промени користејќи посредена схема."
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1446
 msgid "Re_versed Order"
 msgstr "Об_ратен редослед"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1447
 msgid "Display icons in the opposite order"
 msgstr "Прикажи ги иконите по обратен редослед"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1451
 msgid "_Keep Aligned"
 msgstr "Одржувај ред"
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-icon-view.c:1452
 msgid "Keep icons lined up on a grid"
 msgstr "Држи ги иконите наредени по име во редови"
@@ -4214,12 +4248,12 @@ msgid "Display this location with the icon view."
 msgstr "Прикажи ја оваа локација со икони."
 
 #: ../src/file-manager/fm-list-model.c:383
-#: ../src/file-manager/fm-tree-model.c:1265
+#: ../src/file-manager/fm-tree-model.c:1266
 msgid "(Empty)"
 msgstr "(Празно)"
 
 #: ../src/file-manager/fm-list-model.c:385
-#: ../src/file-manager/fm-tree-model.c:1265
+#: ../src/file-manager/fm-tree-model.c:1266
 msgid "Loading..."
 msgstr "Се вчитува..."
 
@@ -4235,11 +4269,12 @@ msgstr ""
 "папка."
 
 #. name, stock id
+#. label, accelerator
 #: ../src/file-manager/fm-list-view.c:2095
 msgid "Visible _Columns..."
 msgstr "Видливи _колони..."
 
-#. label, accelerator
+#. tooltip
 #: ../src/file-manager/fm-list-view.c:2096
 msgid "Select the columns visible in this folder"
 msgstr "Изберете ги колоните видливи за оваа папка"
@@ -4582,11 +4617,11 @@ msgstr "Неможат да се одредат пермисиите на %s ."
 msgid "The permissions of the selected file could not be determined."
 msgstr "Пермисиите на избраната датотека неможат да бидат одредени."
 
-#: ../src/file-manager/fm-properties-window.c:5090
+#: ../src/file-manager/fm-properties-window.c:5120
 msgid "Creating Properties window."
 msgstr "Креирам прозорец за својства"
 
-#: ../src/file-manager/fm-properties-window.c:5331
+#: ../src/file-manager/fm-properties-window.c:5361
 msgid "Select Custom Icon"
 msgstr "Изберете друга икона"
 
@@ -5480,6 +5515,7 @@ msgstr "Локацијата %s не постои."
 msgid "The history location doesn't exist."
 msgstr "Локацијата за историјата не постои."
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:473
 msgid "_Go"
 msgstr "_Оди"
@@ -5494,120 +5530,123 @@ msgstr "_Обележувачи"
 msgid "New _Window"
 msgstr "Нов _прозорец"
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:476
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Отвори уште еден прозорец за прикажаната локација"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:478
 msgid "Open Folder W_indow"
 msgstr "Отвори прозорец со п_апка"
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:479
 msgid "Open a folder window for the displayed location"
 msgstr "Отвори прозорец за папка со прикажаната локација"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:481
 msgid "Close _All Windows"
 msgstr "Затвори ги _сите прозорци"
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:482
 msgid "Close all Navigation windows"
 msgstr "Затвори ги сите прозорци за навигација"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:484
 msgid "_Location..."
 msgstr "_Локација..."
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:485
 #: ../src/nautilus-spatial-window.c:883
 msgid "Specify a location to open"
 msgstr "Одредете локација за отворање"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:487
 msgid "Clea_r History"
 msgstr "Исчист_и ја историјата"
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:488
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Исчисти ги содржините од менито „Оди“ и од листите за „Назад/Напред“"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:490
 #: ../src/nautilus-spatial-window.c:891
 msgid "_Add Bookmark"
 msgstr "_Додај обележувач"
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:491
 #: ../src/nautilus-spatial-window.c:892
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Додај обележувач на сегашната локација во ова мени"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:493
 #: ../src/nautilus-spatial-window.c:894
 msgid "_Edit Bookmarks"
 msgstr "_Уреди "
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:494
 #: ../src/nautilus-spatial-window.c:895
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Прикажи прозорец што дозволува уредување на обележувачи во ова мени"
 
+#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:496
 #: ../src/nautilus-spatial-window.c:897
 msgid "_Search for Files..."
 msgstr "_Барај датотеки..."
 
-#. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:497
 #: ../src/nautilus-spatial-window.c:898
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "Лоцирај документи и папки на овој компјутер по име или содржина"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:504
 msgid "_Main Toolbar"
 msgstr "_Главна лента со алатки"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-navigation-window-menus.c:505
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Промени ја видливоста на главната лента со алатки на овој прозорец"
 
 #. is_active
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:509
 msgid "_Side Pane"
 msgstr "_Странична лента"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-navigation-window-menus.c:510
 msgid "Change the visibility of this window's side pane"
 msgstr "Промени ја видливоста на страничната лента на овој прозорец"
 
 #. is_active
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:514
 msgid "Location _Bar"
 msgstr "Локациона _лента"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-navigation-window-menus.c:515
 msgid "Change the visibility of this window's location bar"
 msgstr "Промени ја видливоста на локационата-лента на овој прозорец"
 
 #. is_active
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-navigation-window-menus.c:519
 msgid "St_atusbar"
 msgstr "Ста_тусна лента"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-navigation-window-menus.c:520
 msgid "Change the visibility of this window's statusbar"
 msgstr "Промени ја видливоста на статусната-лента на овој прозорец"
@@ -5976,6 +6015,7 @@ msgstr "Пребарај:"
 msgid "Close the side pane"
 msgstr "Затвори ја страничната лента"
 
+#. name, stock id, label
 #: ../src/nautilus-spatial-window.c:881
 msgid "_Places"
 msgstr "_Локации"
@@ -5985,20 +6025,20 @@ msgstr "_Локации"
 msgid "Open _Location..."
 msgstr "Отвори _локација..."
 
+#. name, stock id, label
 #: ../src/nautilus-spatial-window.c:885
 msgid "Close P_arent Folders"
 msgstr "Затвори ги сите _матични прозорци"
 
-#. name, stock id, label
 #: ../src/nautilus-spatial-window.c:886
 msgid "Close this folder's parents"
 msgstr "Затвори ја матичната папка на оваа"
 
+#. name, stock id, label
 #: ../src/nautilus-spatial-window.c:888
 msgid "Clos_e All Folders"
 msgstr "Затвори ги сите _папки"
 
-#. name, stock id, label
 #: ../src/nautilus-spatial-window.c:889
 msgid "Close all folder windows"
 msgstr "Затвори ги сите прозорци"
@@ -6159,6 +6199,7 @@ msgstr ""
 msgid "Nautilus Web Site"
 msgstr "Веб сајтот на Nautilus"
 
+#. name, stock id, label
 #: ../src/nautilus-window-menus.c:598
 msgid "_File"
 msgstr "_Датотека"
@@ -6178,13 +6219,13 @@ msgstr "_Поглед"
 msgid "_Help"
 msgstr "_Помош"
 
-#. name, stock id, label
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:603
 msgid "_Close"
 msgstr "_Затвори"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:604
 msgid "Close this folder"
 msgstr "Затвори ја папката"
@@ -6207,150 +6248,164 @@ msgstr "Префе_ренци"
 msgid "Edit Nautilus preferences"
 msgstr "Уреди ги преференциите за Nautilus"
 
+#. name, stock id, label
 #: ../src/nautilus-window-menus.c:614
 msgid "_Undo"
 msgstr "_Врати"
 
-#. name, stock id, label
 #: ../src/nautilus-window-menus.c:615
 msgid "Undo the last text change"
 msgstr "Врати ја последната измена на текстот"
 
+#. name, stock id, label
 #: ../src/nautilus-window-menus.c:617
 msgid "Open _Parent"
 msgstr "Отвори ја _матичната папка"
 
-#. name, stock id, label
 #: ../src/nautilus-window-menus.c:618
 msgid "Open the parent folder"
 msgstr "Отвори ја матичната папка"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:624
 msgid "_Stop"
 msgstr "_Стоп"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:625
 msgid "Stop loading the current location"
 msgstr "Престани со вчитување на тековната локација"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:628
 msgid "_Reload"
 msgstr "_Освежи"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:629
 msgid "Reload the current location"
 msgstr "Освежи ја тековната локација"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:632
 msgid "_Contents"
 msgstr "_Содржини"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:633
 msgid "Display Nautilus help"
 msgstr "Прикажи помош за Nautilus"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:636
 msgid "_About"
 msgstr "_За"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:637
 msgid "Display credits for the creators of Nautilus"
 msgstr "Прикажи заслуги за создавачите на Nautilus"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:640
 msgid "Zoom _In"
 msgstr "Зголем_и"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:641 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Покажи ја содржината со повеќе детали"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:652
 msgid "Zoom _Out"
 msgstr "Намал_и"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:653 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Покажи ја содржината со помалку детали"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:660
 msgid "Normal Si_ze"
 msgstr "Нормална голе_мина"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:661
 msgid "Show the contents at the normal size"
 msgstr "Покажи ја содржината со нормална големина"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:665
 msgid "Connect to _Server..."
 msgstr "Врзи се со серверот..."
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:666
 msgid "Connect to a remote computer or shared disk"
 msgstr "Врзи се на споделен диск на далечен компјутер"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:670
 msgid "_Home Folder"
 msgstr "_Домашна папка"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:674
 msgid "_Computer"
 msgstr "_Компјутер"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:678
 msgid "_Network"
 msgstr "_Мрежа"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:679 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Разгледај обележани и локални мрежни локации"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:682
 msgid "T_emplates"
 msgstr "М_остри"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:683
 msgid "Open your personal templates folder"
 msgstr "Отвори ја личната папка со мостри"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:686
 msgid "_Trash"
 msgstr "_Ѓубре"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:687
 msgid "Open your personal trash folder"
 msgstr "Отовори ја личната папка со ѓубре"
 
 #. name, stock id
+#. label, accelerator
 #: ../src/nautilus-window-menus.c:690
 msgid "CD/_DVD Creator"
 msgstr "Креатор на CD/_DVD"
 
-#. label, accelerator
+#. tooltip
 #: ../src/nautilus-window-menus.c:691
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
 msgstr ""
