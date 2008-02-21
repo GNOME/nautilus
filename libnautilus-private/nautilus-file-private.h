@@ -206,6 +206,10 @@ struct NautilusFileDetails
 	eel_boolean_bit can_mount                     : 1;
 	eel_boolean_bit can_unmount                   : 1;
 	eel_boolean_bit can_eject                     : 1;
+
+	eel_boolean_bit filesystem_readonly           : 1;
+	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */
+	eel_boolean_bit filesystem_info_is_up_to_date : 1;
 };
 
 typedef struct {

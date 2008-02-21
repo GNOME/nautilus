@@ -1240,7 +1240,7 @@ collect_directories_by_container (gpointer key, gpointer value, gpointer callbac
 	directory = NAUTILUS_DIRECTORY (value);
 	collect_data = (CollectData *) callback_data;
 
-	if (g_file_contains_file (collect_data->container, location) ||
+	if (g_file_has_prefix (location, collect_data->container) ||
 	    g_file_equal (collect_data->container, location)) {
 		nautilus_directory_ref (directory);
 		collect_data->directories =

@@ -1339,10 +1339,12 @@ should_autorun_mount (GMount *mount)
 			ignore_autorun = TRUE;
 			g_object_set_data (G_OBJECT (enclosing_volume), "nautilus-inhibit-autorun", NULL);
 		}
-		g_object_unref (enclosing_volume);
 	}
 
 	if (ignore_autorun) {
+		if (enclosing_volume != NULL) {
+			g_object_unref (enclosing_volume);
+		}
 		return FALSE;
 	}
 	
@@ -1350,7 +1352,7 @@ should_autorun_mount (GMount *mount)
 
 	for (l = inhibit_mount_handling_for; l != NULL; l = l->next) {
 		file = l->data;
-		if (g_file_contains_file (root, file)) {
+		if (g_file_has_prefix (file, root)) {
 			ignore_autorun = TRUE;
 			
 			inhibit_mount_handling_for = g_list_delete_link (inhibit_mount_handling_for, l);
@@ -1360,10 +1362,14 @@ should_autorun_mount (GMount *mount)
 		}
 	}
 
-	if (!g_file_is_native (root)) {
-		/* only do autorun on local files */
-		/* TODO: Maybe we should do this on some gvfs mounts? like gphoto: ? */
-		ignore_autorun = TRUE;
+	/* only do autorun on local files or files where g_volume_should_automount() returns TRUE */
+	ignore_autorun = TRUE;
+	if (g_file_is_native (root) || 
+	    (enclosing_volume != NULL && g_volume_should_automount (enclosing_volume))) {
+		ignore_autorun = FALSE;
+	}
+	if (enclosing_volume != NULL) {
+		g_object_unref (enclosing_volume);
 	}
 	g_object_unref (root);
 

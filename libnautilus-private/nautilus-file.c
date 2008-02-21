@@ -3199,10 +3199,30 @@ mimetype_limited_by_size (const char *mime_type)
         return FALSE;
 }
 
+GFilesystemPreviewType
+nautilus_file_get_filesystem_use_preview (NautilusFile *file)
+{
+	GFilesystemPreviewType use_preview;
+	NautilusFile *parent;
+
+	parent = nautilus_file_get_parent (file);
+	if (parent != NULL) {
+		use_preview = parent->details->filesystem_use_preview;
+		g_object_unref (parent);
+	} else {
+		use_preview = 0;
+	}
+
+	return use_preview;
+}
+
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
 	const char *mime_type;
+	GFilesystemPreviewType use_preview;
+
+	use_preview = nautilus_file_get_filesystem_use_preview (file);
 
 	mime_type = eel_ref_str_peek (file->details->mime_type);
 	if (mime_type == NULL) {
@@ -3213,14 +3233,26 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 	    nautilus_file_get_size (file) > (unsigned int)cached_thumbnail_limit) {
 		return FALSE;
 	}
-	
+
 	if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
+		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+			return FALSE;
+		} else {
+			return TRUE;
+		}
 	} else if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	} else {
-		/* only local files */
-		return nautilus_file_is_local (file);
+		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+			/* file system says to never thumbnail anything */
+			return FALSE;
+		} else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL) {
+			/* file system says we should treat file as if it's local */
+			return TRUE;
+		} else {
+			/* only local files */
+			return nautilus_file_is_local (file);
+		}
 	}
 
 	return FALSE;
@@ -3715,10 +3747,18 @@ show_directory_item_count_changed_callback (gpointer callback_data)
 static gboolean
 get_speed_tradeoff_preference_for_file (NautilusFile *file, NautilusSpeedTradeoffValue value)
 {
+	GFilesystemPreviewType use_preview;
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	use_preview = nautilus_file_get_filesystem_use_preview (file);
 	
 	if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
+		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+			return FALSE;
+		} else {
+			return TRUE;
+		}
 	}
 	
 	if (value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
@@ -3726,7 +3766,17 @@ get_speed_tradeoff_preference_for_file (NautilusFile *file, NautilusSpeedTradeof
 	}
 
 	g_assert (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-	return nautilus_file_is_local (file);
+
+	if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+		/* file system says to never preview anything */
+		return FALSE;
+	} else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL) {
+		/* file system says we should treat file as if it's local */
+		return TRUE;
+	} else {
+		/* only local files */
+		return nautilus_file_is_local (file);
+	}
 }
 
 gboolean

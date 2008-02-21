@@ -89,6 +89,12 @@ struct MountState {
 	NautilusFile *file;
 };
 
+struct FilesystemInfoState {
+	NautilusDirectory *directory;
+	GCancellable *cancellable;
+	NautilusFile *file;
+};
+
 struct DirectoryLoadState {
 	NautilusDirectory *directory;
 	GCancellable *cancellable;
@@ -627,6 +633,10 @@ nautilus_directory_set_up_request (Request *request,
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_MOUNT) {
 		request->mount = TRUE;
 		request->file_info = TRUE;
+	}
+
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO) {
+		request->filesystem_info = TRUE;
 	}
 }
 
@@ -1581,6 +1591,12 @@ nautilus_async_destroying_file (NautilusFile *file)
 		directory->details->mount_state->file = NULL;
 		changed = TRUE;
 	}
+
+	if (directory->details->filesystem_info_state != NULL &&
+	    directory->details->filesystem_info_state->file == file) {
+		directory->details->filesystem_info_state->file = NULL;
+		changed = TRUE;
+	}
 	
 	/* Let the directory take care of the rest. */
 	if (changed) {
@@ -1645,9 +1661,21 @@ lacks_info (NautilusFile *file)
 }
 
 static gboolean
+lacks_filesystem_info (NautilusFile *file)
+{
+	return !file->details->filesystem_info_is_up_to_date;
+}
+
+static gboolean
 wants_info (const Request *request)
 {
 	return request->file_info;
+}
+
+static gboolean
+wants_filesystem_info (const Request *request)
+{
+	return request->filesystem_info;
 }
 
 static gboolean
@@ -1794,6 +1822,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->file_info) {
 		if (has_problem (directory, file, lacks_info)) {
+			return FALSE;
+		}
+	}
+
+	if (request->filesystem_info) {
+		if (has_problem (directory, file, lacks_filesystem_info)) {
 			return FALSE;
 		}
 	}
@@ -2606,10 +2640,15 @@ directory_count_start (NautilusDirectory *directory,
 	
 	directory->details->count_in_progress = state;
 	
-#ifdef DEBUG_LOAD_DIRECTORY		
-	g_message ("load_directory called to get shallow file count for %s", uri);
-#endif
 	location = nautilus_file_get_location (file);
+#ifdef DEBUG_LOAD_DIRECTORY		
+	{
+		char *uri;
+		uri = g_file_get_uri (location);
+		g_message ("load_directory called to get shallow file count for %s", uri);
+		g_free (uri);
+	}
+#endif
 
 	g_file_enumerate_children_async (location,
 					 G_FILE_ATTRIBUTE_STANDARD_NAME ","
@@ -3137,11 +3176,16 @@ mime_list_start (NautilusDirectory *directory,
 
 	directory->details->mime_list_in_progress = state;
 
+	location = nautilus_file_get_location (file);
 #ifdef DEBUG_LOAD_DIRECTORY		
-	g_message ("load_directory called to get MIME list of %s", uri);
+	{
+		char *uri;
+		uri = g_file_get_uri (location);
+		g_message ("load_directory called to get MIME list of %s", uri);
+		g_free (uri);
+	}
 #endif	
 	
-	location = nautilus_file_get_location (file);
 	g_file_enumerate_children_async (location,
 					 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 					 0, /* flags */
@@ -4080,6 +4124,147 @@ mount_start (NautilusDirectory *directory,
 }
 
 static void
+filesystem_info_cancel (NautilusDirectory *directory)
+{
+	if (directory->details->filesystem_info_state != NULL) {
+		g_cancellable_cancel (directory->details->filesystem_info_state->cancellable);
+		directory->details->filesystem_info_state->directory = NULL;
+		directory->details->filesystem_info_state = NULL;
+		async_job_end (directory, "filesystem info");
+	}
+}
+
+static void
+filesystem_info_stop (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+
+	if (directory->details->filesystem_info_state != NULL) {
+		file = directory->details->filesystem_info_state->file;
+
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file,
+				      lacks_filesystem_info,
+				      wants_filesystem_info)) {
+				return;
+			}
+		}
+
+		/* The filesystem info is not wanted, so stop it. */
+		filesystem_info_cancel (directory);
+	}
+}
+
+static void
+filesystem_info_state_free (FilesystemInfoState *state)
+{
+	g_object_unref (state->cancellable);
+	g_free (state);
+}
+
+static void
+got_filesystem_info (FilesystemInfoState *state, GFileInfo *info)
+{
+	NautilusDirectory *directory;
+	NautilusFile *file;
+
+	/* careful here, info may be NULL */
+
+	directory = nautilus_directory_ref (state->directory);
+
+	state->directory->details->filesystem_info_state = NULL;
+	async_job_end (state->directory, "filesystem info");
+	
+	file = nautilus_file_ref (state->file);
+
+	file->details->filesystem_info_is_up_to_date = TRUE;
+	if (info != NULL) {
+		file->details->filesystem_use_preview = 
+			g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW);
+		file->details->filesystem_readonly = 
+			g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_READONLY);
+	}
+	
+	nautilus_directory_async_state_changed (directory);
+	nautilus_file_changed (file);
+	
+	nautilus_file_unref (file);
+	
+	nautilus_directory_unref (directory);
+	
+	filesystem_info_state_free (state);
+}
+
+static void
+query_filesystem_info_callback (GObject *source_object,
+				GAsyncResult *res,
+				gpointer user_data)
+{
+	GFileInfo *info;
+	FilesystemInfoState *state;
+
+	state = user_data;
+	if (state->directory == NULL) {
+		/* Operation was cancelled. Bail out */
+		filesystem_info_state_free (state);
+		return;
+	}
+
+	info = g_file_query_filesystem_info_finish (G_FILE (source_object), res, NULL);
+
+	got_filesystem_info (state, info);
+
+	if (info != NULL) {
+		g_object_unref (info);
+	}
+}
+
+static void
+filesystem_info_start (NautilusDirectory *directory,
+		       NautilusFile *file,
+		       gboolean *doing_io)
+{
+	GFile *location;
+	FilesystemInfoState *state;
+
+	if (directory->details->filesystem_info_state != NULL) {
+		*doing_io = TRUE;
+		return;
+	}
+
+	if (!is_needy (file,
+		       lacks_filesystem_info,
+		       wants_filesystem_info)) {
+		return;
+	}
+	*doing_io = TRUE;
+
+	if (!async_job_start (directory, "filesystem info")) {
+		return;
+	}
+	
+	state = g_new0 (FilesystemInfoState, 1);
+	state->directory = directory;
+	state->file = file;
+	state->cancellable = g_cancellable_new ();
+
+	location = nautilus_file_get_location (file);
+	
+	directory->details->filesystem_info_state = state;
+
+	g_file_query_filesystem_info_async (location,
+					    G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
+					    G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW,
+					    G_PRIORITY_DEFAULT,
+					    state->cancellable, 
+					    query_filesystem_info_callback, 
+					    state);
+	g_object_unref (location);
+}
+
+static void
 extension_info_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->extension_info_in_progress != NULL) {
@@ -4257,6 +4442,7 @@ start_or_stop_io (NautilusDirectory *directory)
 	extension_info_stop (directory);
 	mount_stop (directory);
 	thumbnail_stop (directory);
+	filesystem_info_stop (directory);
 
 	doing_io = FALSE;
 	/* Take files that are all done off the queue. */
@@ -4285,6 +4471,7 @@ start_or_stop_io (NautilusDirectory *directory)
 		mime_list_start (directory, file, &doing_io);
 		top_left_start (directory, file, &doing_io);
 		thumbnail_start (directory, file, &doing_io);
+		filesystem_info_start (directory, file, &doing_io);
 
 		if (doing_io) {
 			return;
@@ -4356,6 +4543,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	extension_info_cancel (directory);
 	thumbnail_cancel (directory);
 	mount_cancel (directory);
+	filesystem_info_cancel (directory);
 
 	/* We aren't waiting for anything any more. */
 	if (waiting_directories != NULL) {
@@ -4435,6 +4623,16 @@ cancel_mount_for_file (NautilusDirectory *directory,
 }
 
 static void
+cancel_filesystem_info_for_file (NautilusDirectory *directory,
+				 NautilusFile      *file)
+{
+	if (directory->details->filesystem_info_state != NULL &&
+	    directory->details->filesystem_info_state->file == file) {
+		filesystem_info_cancel (directory);
+	}
+}
+
+static void
 cancel_link_info_for_file (NautilusDirectory *directory,
 			   NautilusFile      *file)
 {
@@ -4468,6 +4666,9 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	}
 	if (request.file_info) {
 		file_info_cancel (directory);
+	}
+	if (request.filesystem_info) {
+		filesystem_info_cancel (directory);
 	}
 	if (request.link_info) {
 		link_info_cancel (directory);
@@ -4517,6 +4718,9 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
 	}
 	if (request.file_info) {
 		cancel_file_info_for_file (directory, file);
+	}
+	if (request.filesystem_info) {
+		cancel_filesystem_info_for_file (directory, file);
 	}
 	if (request.link_info) {
 		cancel_link_info_for_file (directory, file);

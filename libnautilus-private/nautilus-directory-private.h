@@ -44,6 +44,7 @@ typedef struct NewFilesState NewFilesState;
 typedef struct MimeListState MimeListState;
 typedef struct ThumbnailState ThumbnailState;
 typedef struct MountState MountState;
+typedef struct FilesystemInfoState FilesystemInfoState;
 
 struct NautilusDirectoryDetails
 {
@@ -106,6 +107,8 @@ struct NautilusDirectoryDetails
 	ThumbnailState *thumbnail_state;
 
 	MountState *mount_state;
+
+	FilesystemInfoState *filesystem_info_state;
 	
 	TopLeftTextReadState *top_left_read_state;
 
@@ -130,6 +133,7 @@ typedef struct {
 	gboolean extension_info;
 	gboolean thumbnail;
 	gboolean mount;
+	gboolean filesystem_info;
 } Request;
 
 NautilusDirectory *nautilus_directory_get_existing                    (GFile                     *location);

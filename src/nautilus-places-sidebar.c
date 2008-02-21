@@ -56,6 +56,7 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-icon-names.h>
+#include <libnautilus-private/nautilus-autorun.h>
 #include <gio/gio.h>
 
 #include "nautilus-bookmark-list.h"
@@ -1314,6 +1315,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GVolume *volume;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
 		if (volume != NULL) {
+			nautilus_inhibit_autorun_for_volume (volume);
 			nautilus_file_operations_mount_volume (NULL, volume);
 			g_object_unref (volume);
 		}
@@ -1429,6 +1431,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
+		nautilus_inhibit_autorun_for_volume (volume);
 		nautilus_file_operations_mount_volume (NULL, volume);
 		g_object_unref (volume);
 	}

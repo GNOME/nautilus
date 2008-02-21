@@ -1888,6 +1888,9 @@ static gboolean
 should_preview_sound (NautilusFile *file)
 {
 	GFile *location;
+	GFilesystemPreviewType use_preview;
+
+	use_preview = nautilus_file_get_filesystem_use_preview (file);
 
 	location = nautilus_file_get_location (file);
 	if (g_file_has_uri_scheme (location, "burn")) {
@@ -1902,10 +1905,23 @@ should_preview_sound (NautilusFile *file)
 	}
 		
 	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
+		if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+			return FALSE;
+		} else {
+			return TRUE;
+		}
 	}
 	
-	return nautilus_file_is_local (file);
+	if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER) {
+		/* file system says to never preview anything */
+		return FALSE;
+	} else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL) {
+		/* file system says we should treat file as if it's local */
+		return TRUE;
+	} else {
+		/* only local files */
+		return nautilus_file_is_local (file);
+	}
 }
 
 static int

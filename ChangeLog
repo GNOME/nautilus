@@ -1,3 +1,49 @@
+2008-02-21  David Zeuthen  <davidz@redhat.com>
+
+	* libnautilus-private/nautilus-autorun.c: (should_autorun_mount):
+	Use g_volume_should_automount() to determine if we should autorun
+	programs on a mount.
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_set_up_request),
+	(nautilus_async_destroying_file), (lacks_filesystem_info),
+	(wants_filesystem_info), (request_is_satisfied),
+	(directory_count_start), (mime_list_start),
+	(filesystem_info_cancel), (filesystem_info_stop),
+	(filesystem_info_state_free), (got_filesystem_info),
+	(query_filesystem_info_callback), (filesystem_info_start),
+	(start_or_stop_io), (nautilus_directory_cancel),
+	(cancel_filesystem_info_for_file), (cancel_loading_attributes),
+	(nautilus_directory_cancel_loading_file_attributes):
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-file-attributes.h: Add new
+	filesystem info attribute; right now two bits in NautilusFile's
+	private structure are set; the filesystem::use-preview and
+	filesystem:readonly.
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_mount_volume):
+	* src/nautilus-places-sidebar.c: (open_selected_bookmark),
+	(mount_shortcut_cb): Don't inhibit automount from
+	nautilus_file_operations_mount_volume() because then everything
+	will be inhibited as the mount_added callback use it as
+	well. Rather, move the call to inhibit out to the proper call
+	sites.
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_filesystem_use_preview),
+	(nautilus_file_should_show_thumbnail),
+	(get_speed_tradeoff_preference_for_file),
+	(nautilus_file_get_mount):
+	* libnautilus-private/nautilus-file.h:
+	* src/file-manager/fm-directory-view.c: (load_directory):
+	* src/file-manager/fm-icon-view.c: (should_preview_sound):
+	* src/nautilus-window-manage-views.c: (update_for_new_location):
+	Use the new filesystem::use-preview hint to determine if we should
+	preview non-native files (such as gphoto2:// and cdda://
+	mounts). 
+
 2008-02-21  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-application.c: (find_parent_spatial_window):

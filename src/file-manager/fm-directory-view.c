@@ -7552,7 +7552,9 @@ load_directory (FMDirectoryView *view,
          * well as doing a call when ready), in case external forces
          * change the directory's file metadata.
 	 */
-	attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
+	attributes = 
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO;
 	view->details->metadata_for_directory_as_file_pending = TRUE;
 	view->details->metadata_for_files_in_directory_pending = TRUE;
 	nautilus_file_call_when_ready
@@ -7568,7 +7570,9 @@ load_directory (FMDirectoryView *view,
 	/* If capabilities change, then we need to update the menus
 	 * because of New Folder, and relative emblems.
 	 */
-	attributes = NAUTILUS_FILE_ATTRIBUTE_INFO;
+	attributes = 
+		NAUTILUS_FILE_ATTRIBUTE_INFO |
+		NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO;
 	nautilus_file_monitor_add (view->details->directory_as_file,
 				   &view->details->directory_as_file,
 				   attributes);
