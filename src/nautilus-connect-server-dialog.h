@@ -24,6 +24,7 @@
 #ifndef NAUTILUS_CONNECT_SERVER_DIALOG_H
 #define NAUTILUS_CONNECT_SERVER_DIALOG_H
 
+#include <gio/gio.h>
 #include <gtk/gtkdialog.h>
 #include "nautilus-window.h"
 
@@ -47,12 +48,12 @@ struct _NautilusConnectServerDialogClass {
 
 GType      nautilus_connect_server_dialog_get_type (void);
 GtkWidget* nautilus_connect_server_dialog_new      (NautilusWindow *window, 
-						    const gchar *uri);
+						    GFile *location);
 
 /* Private internal calls */
 
 void       nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
-						       const char *uri,
+						       GFile *location,
 						       GtkWidget *widget);
 						     
 #endif /* NAUTILUS_CONNECT_SERVER_DIALOG_H */

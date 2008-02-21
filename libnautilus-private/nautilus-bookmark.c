@@ -471,7 +471,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 NautilusBookmark *
 nautilus_bookmark_new (GFile *location, const char *name)
 {
-	return nautilus_bookmark_new_with_icon (location, name, FALSE, NULL);
+	return nautilus_bookmark_new_with_icon (location, name, TRUE, NULL);
 }
 
 static void

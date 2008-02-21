@@ -31,9 +31,7 @@
 
 #include "nautilus-actions.h"
 #include "nautilus-application.h"
-#ifdef GIO_CONVERSION_DONE
 #include "nautilus-connect-server-dialog.h"
-#endif
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-window-manage-views.h"
@@ -196,23 +194,21 @@ action_close_window_callback (GtkAction *action,
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
 }
 
-#ifdef GIO_CONVERSION_DONE
-
 static void
 action_connect_to_server_callback (GtkAction *action, 
 				   gpointer user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 	GtkWidget *dialog;
-	char *location;
-	location = nautilus_window_get_location_uri (window);
+	GFile *location;
+	location = nautilus_window_get_location (window);
 	dialog = nautilus_connect_server_dialog_new (window, location);
-	g_free (location);
+	if (location) {
+		g_object_unref (location);
+	}
 
 	gtk_widget_show (dialog);
 }
-
-#endif
 
 static gboolean
 have_burn_uri (void)
@@ -660,12 +656,10 @@ static const GtkActionEntry main_entries[] = {
   /* label, accelerator */       N_("Normal Si_ze"), "<control>0",
   /* tooltip */                  N_("Show the contents at the normal size"),
                                  G_CALLBACK (action_zoom_normal_callback) },
-#ifdef GIO_CONVERSION_DONE
   /* name, stock id */         { "Connect to Server", NULL, 
   /* label, accelerator */       N_("Connect to _Server..."), NULL,
   /* tooltip */                  N_("Connect to a remote computer or shared disk"),
                                  G_CALLBACK (action_connect_to_server_callback) },
-#endif
   /* name, stock id */         { "Home", NAUTILUS_ICON_HOME,
   /* label, accelerator */       N_("_Home Folder"), "<alt>Home",
   /* tooltip */                  N_("Open your personal folder"),

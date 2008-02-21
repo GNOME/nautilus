@@ -6,9 +6,8 @@ bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-file-management-properties	\
 	nautilus-autorun-software		\
+	nautilus-connect-server			
 	$(NULL)
-
-#	nautilus-connect-server			
 
 INCLUDES =							\
 	-I$(top_srcdir) 					\
@@ -67,6 +66,9 @@ nautilus_SOURCES = \
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\
 	nautilus-bookmarks-window.h		\
+	nautilus-connect-server-dialog.c	\
+	nautilus-connect-server-dialog.h	\
+	nautilus-connect-server-dialog-nonmain.c	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
 	nautilus-emblem-sidebar.c		\
@@ -147,14 +149,15 @@ nautilus_autorun_software_SOURCES= 			\
 	nautilus-autorun-software.c			\
 	$(NULL)
 
-# Disabled for now in the gio world
-#nautilus_connect_server_SOURCES= \
-#	nautilus-connect-server-dialog.c	\
-#	nautilus-connect-server-dialog.h	\
-#	nautilus-connect-server-dialog-main.c	\
-#	nautilus-location-entry.c		\
-#	nautilus-location-entry.h		\
-#	$(NULL)
+nautilus_connect_server_SOURCES= \
+	nautilus-bookmark-list.c		\
+	nautilus-bookmark-list.h		\
+	nautilus-connect-server-dialog.c	\
+	nautilus-connect-server-dialog.h	\
+	nautilus-connect-server-dialog-main.c	\
+	nautilus-location-entry.c		\
+	nautilus-location-entry.h		\
+	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL)
@@ -198,8 +201,6 @@ EXTRA_DIST =					\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
 	$(desktop_in_files)			\
-	nautilus-connect-server-dialog-main.c	\
-	nautilus-connect-server-dialog.c	\
 	$(NULL)
 
 BUILT_SOURCES = \

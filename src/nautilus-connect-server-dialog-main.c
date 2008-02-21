@@ -33,9 +33,9 @@
 
 #include <libgnome/gnome-program.h>
 #include <libgnomeui/gnome-ui-init.h>
-#include <libgnomeui/gnome-url.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 
+#include <eel/eel-app-launch-context.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 
@@ -61,9 +61,18 @@ show_uri (const char *uri,
 	GtkDialog *error_dialog;
 	GError    *error;
 	char      *error_message;
+	EelAppLaunchContext *launch_context;
+
+	launch_context = eel_app_launch_context_new ();
+	eel_app_launch_context_set_screen (launch_context, screen);
 
 	error = NULL;
-	gnome_url_show_on_screen (uri, screen, &error);
+	/* FIXME: doesn't automount */
+	g_app_info_launch_default_for_uri (uri,
+					   G_APP_LAUNCH_CONTEXT (launch_context),
+					   &error);
+
+	g_object_unref (launch_context);
 
 	if (error) {
 		error_message = g_strdup_printf (_("Can't display location \"%s\""),
@@ -87,10 +96,14 @@ show_uri (const char *uri,
 
 void
 nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
-					    const char *uri,
+					    GFile *location,
 					    GtkWidget *widget)
 {
+	char *uri;
+
+	uri = g_file_get_uri (location);
 	show_uri (uri, gtk_widget_get_screen (widget));
+	g_free (uri);
 }
 
 int
@@ -100,6 +113,7 @@ main (int argc, char *argv[])
 	GtkWidget *dialog;
 	GOptionContext *context;
 	const char **args;
+	GFile *location;
 	const GOptionEntry options[] = {
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, NULL,  N_("[URI]") },
 		{ NULL }
@@ -130,7 +144,16 @@ main (int argc, char *argv[])
 
 
 	/* command line arguments, null terminated array */
-	dialog = nautilus_connect_server_dialog_new (NULL, args != NULL ? *args : NULL);
+	location = NULL;
+	if (args) {
+		location = g_file_new_for_commandline_arg (*args);
+	}
+
+	dialog = nautilus_connect_server_dialog_new (NULL, location);
+
+	if (location) {
+		g_object_unref (location);
+	}
 
 	open_dialogs = 1;
 	g_signal_connect (dialog, "destroy",

@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <gio/gio.h>
 #include "nautilus-connect-server-dialog.h"
 #include <libnautilus-private/nautilus-global-preferences.h>
 
@@ -32,13 +33,11 @@
 
 void
 nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
-					    const char *uri,
+					    GFile *location,
 					    GtkWidget *widget)
 {
 	NautilusWindow *window;
-	GFile *location;
-	
-	location = g_file_new_for_uri (uri);
+
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
 									NULL,
@@ -51,5 +50,4 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 							     location,
 							     gtk_widget_get_screen (widget));
 	}
-	g_object_unref (location);
 }

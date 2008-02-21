@@ -1,3 +1,30 @@
+2008-02-21  Vincent Untz  <vuntz@gnome.org>
+
+	Bring back the Connect to dialog. It still needs some work, but it's
+	better than nothing.
+
+	* libnautilus-private/nautilus-bookmark.c: (nautilus_bookmark_new):
+	Actually save the name in the bookmark, instead of forgetting it.
+
+	* src/Makefile.am: Updated to build the connect dialog stuff.
+	* src/nautilus-connect-server-dialog-main.c: (show_uri),
+	(nautilus_connect_server_dialog_present_uri), (main):
+	Port to gio. We use g_app_info_launch_default_for_uri() to open the
+	URI, but it will need some more work because it doesn't automount the
+	URI.
+	* src/nautilus-connect-server-dialog-nonmain.c:
+	(nautilus_connect_server_dialog_present_uri): Trivial update.
+	* src/nautilus-connect-server-dialog.[ch]: (get_method_description),
+	(nautilus_connect_server_dialog_finalize), (connect_to_server),
+	(response_callback), (setup_for_type), (display_server_location),
+	(nautilus_connect_server_dialog_init),
+	(nautilus_connect_server_dialog_new): Port to gio. Add bookmark saving
+	feature, to replace the old gnome-vfs network volumes. Remove the
+	Browse button, which isn't really needed there. Needs some more polish.
+	* src/nautilus-shell-ui.xml: Uncomment the "Connect to" action
+	* src/nautilus-window-menus.c: (action_connect_to_server_callback):
+	Uncomment code to make use of the dialog
+
 2008-02-21  David Zeuthen  <davidz@redhat.com>
 
 	* libnautilus-private/nautilus-autorun.c: (should_autorun_mount):
