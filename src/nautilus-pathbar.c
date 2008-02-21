@@ -38,6 +38,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-names.h>
+#include <libnautilus-private/nautilus-trash-monitor.h>
 #include "nautilus-pathbar.h"
 
 enum {
@@ -197,6 +198,32 @@ desktop_location_changed_callback (gpointer user_data)
 }
 
 static void
+trash_state_changed_cb (NautilusTrashMonitor *monitor,
+                        gboolean state,
+                        NautilusPathBar *path_bar)
+{
+        GFile *file;
+        GList *list;
+      
+        file = g_file_new_for_uri ("trash:///");
+        for (list = path_bar->button_list; list; list = list->next) {
+                ButtonData *button_data;
+                button_data = BUTTON_DATA (list->data);
+                if (g_file_equal (file, button_data->path)) {
+                        GIcon *icon;
+                        NautilusIconInfo *icon_info;
+                        GdkPixbuf *pixbuf;
+
+                        icon = nautilus_trash_monitor_get_icon ();
+                        icon_info = nautilus_icon_info_lookup (icon, NAUTILUS_PATH_BAR_ICON_SIZE);                        
+                        pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, NAUTILUS_PATH_BAR_ICON_SIZE);
+                        gtk_image_set_from_pixbuf (GTK_IMAGE (button_data->image), pixbuf);
+                }
+        }
+        g_object_unref (file);
+}
+
+static void
 nautilus_path_bar_init (NautilusPathBar *path_bar)
 {
 	char *p;
@@ -228,6 +255,11 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
         g_signal_connect (path_bar->up_slider_button, "button_release_event", G_CALLBACK (nautilus_path_bar_slider_button_release), path_bar);
         g_signal_connect (path_bar->down_slider_button, "button_press_event", G_CALLBACK (nautilus_path_bar_slider_button_press), path_bar);
         g_signal_connect (path_bar->down_slider_button, "button_release_event", G_CALLBACK (nautilus_path_bar_slider_button_release), path_bar);
+
+        g_signal_connect (nautilus_trash_monitor_get (),
+                          "trash_state_changed",
+                          G_CALLBACK (trash_state_changed_cb),
+                          path_bar);
 }
 
 static void
