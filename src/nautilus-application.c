@@ -923,16 +923,17 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 	while (parent_file) {
 		NautilusSpatialWindow *parent_window;
 
-		/* Stop at the desktop directory, as this is the
-		 * conceptual root of the spatial windows */
-		if (nautilus_file_is_desktop_directory (parent_file)) {
-			nautilus_file_unref (parent_file);
-			return NULL;
-		}
-
 		location = nautilus_file_get_location (parent_file);
 		parent_window = nautilus_application_get_existing_spatial_window (location);
 		g_object_unref (location);
+
+		/* Stop at the desktop directory if it's not explicitely opened
+		 * in a spatial window of its own.
+		 */
+		if (nautilus_file_is_desktop_directory (parent_file) && !parent_window) {
+			nautilus_file_unref (parent_file);
+			return NULL;
+		}
 
 		if (parent_window) {
 			nautilus_file_unref (parent_file);

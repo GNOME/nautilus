@@ -1,5 +1,11 @@
 2008-02-21  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* src/nautilus-application.c: (find_parent_spatial_window):
+	Stop closing parent windows at Desktop in spatial mode only if it's
+	not explicitly opened in a spatial window. (#515180).
+
+2008-02-21  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-pathbar.c: (trash_state_changed_cb),
 	(nautilus_path_bar_init):
 	Update the trash icon on the pathbar according to the trash state.
