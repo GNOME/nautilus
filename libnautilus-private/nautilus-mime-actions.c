@@ -1284,6 +1284,12 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 	}
 
 	parameters->tried_mounting = TRUE;
+
+	if (parameters->files == NULL) {
+		activation_parameters_free (parameters);
+		return;
+	}
+	
 	nautilus_file_list_call_when_ready
 		(parameters->files,
 		 nautilus_mime_actions_get_required_file_attributes () | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO,

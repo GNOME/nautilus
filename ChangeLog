@@ -1,3 +1,10 @@
+2008-02-22  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-mime-actions.c:
+        (activation_mount_not_mounted):
+	Don't crash if all files were removed due to error
+	when activating.
+
 2008-02-22  Chrustian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c:
