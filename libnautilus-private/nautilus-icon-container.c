@@ -203,6 +203,7 @@ static void          nautilus_icon_container_start_monitor_top_left (NautilusIco
 								     gboolean               large_text);
 static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
 								     NautilusIconContainer *container);
+static GList *       nautilus_icon_container_get_selected_icons (NautilusIconContainer *container);
 static void          nautilus_icon_container_update_visible_icons   (NautilusIconContainer *container);
 static void          reveal_icon                                    (NautilusIconContainer *container,
 								     NautilusIcon *icon);
@@ -2208,6 +2209,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 		    guint32 time)
 {
 	NautilusIconRubberbandInfo *band_info;
+	GList *icons;
 
 	band_info = &container->details->rubberband_info;
 
@@ -2221,6 +2223,14 @@ stop_rubberbanding (NautilusIconContainer *container,
 	eel_canvas_item_ungrab (band_info->selection_rectangle, time);
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
+
+	/* if only one item has been selected, use it as range
+	 * selection base (cf. handle_icon_button_press) */
+	icons = nautilus_icon_container_get_selected_icons (container);
+	if (g_list_length (icons) == 1) {
+		container->details->range_selection_base_icon = icons->data;
+	}
+	g_list_free (icons);
 
 	g_signal_emit (container,
 			 signals[BAND_SELECT_ENDED], 0);
@@ -6190,6 +6200,26 @@ nautilus_icon_container_get_selection (NautilusIconContainer *container)
 	return g_list_reverse (list);
 }
 
+static GList *
+nautilus_icon_container_get_selected_icons (NautilusIconContainer *container)
+{
+	GList *list, *p;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
+
+	list = NULL;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		NautilusIcon *icon;
+
+		icon = p->data;
+		if (icon->is_selected) {
+			list = g_list_prepend (list, icon);
+		}
+	}
+
+	return g_list_reverse (list);
+}
+
 /* Returns an array of GdkPoints of locations of the icons. */
 static GArray *
 nautilus_icon_container_get_icon_locations (NautilusIconContainer *container,
@@ -6222,20 +6252,11 @@ GArray *
 nautilus_icon_container_get_selected_icon_locations (NautilusIconContainer *container)
 {
 	GArray *result;
-	GList *icons, *node;
+	GList *icons;
 
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
 
-	icons = NULL;
-	for (node = container->details->icons; node != NULL; node = node->next) {
-		NautilusIcon *icon;
-
-		icon = node->data;
-		if (icon->is_selected) {
-			icons = g_list_prepend (icons, icon);
-		}
-	}
-
+	icons = nautilus_icon_container_get_selected_icons (container);
 	result = nautilus_icon_container_get_icon_locations (container, icons);
 	g_list_free (icons);
 	

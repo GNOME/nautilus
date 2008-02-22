@@ -1,3 +1,12 @@
+2008-02-22  Chrustian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_selected_icons),
+	(nautilus_icon_container_get_selected_icon_locations),
+	(stop_rubberbanding): Add
+	nautilus_icon_container_get_selected_icons(). Use icon as range
+	selection base if it has been rubberbanded. Fixes #512894.
+
 2008-02-21  Vincent Untz  <vuntz@gnome.org>
 
 	Bring back the Connect to dialog. It still needs some work, but it's
