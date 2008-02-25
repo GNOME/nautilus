@@ -22,6 +22,7 @@
    Author: David Zeuthen <davidz@redhat.com>
 */
 
+
 #include <config.h>
 
 #include <unistd.h>
@@ -96,6 +97,7 @@ _check_file (GFile *mount_root, const char *file_path, gboolean must_be_executab
 static void
 autorun (GMount *mount)
 {
+	char *error_string;
         GFile *root;
         GFile *program_to_spawn;
         char *path_to_spawn;
@@ -135,20 +137,37 @@ autorun (GMount *mount)
 
         cwd_for_program = g_file_get_path (root);
 
+	error_string = NULL;
         if (path_to_spawn != NULL && cwd_for_program != NULL) {
                 if (chdir (cwd_for_program) == 0)  {
                         execl (path_to_spawn, path_to_spawn, NULL);
-                        g_warning ("Error execing program: %m");
+			error_string = g_strdup_printf (_("Error starting autorun program: %s"), strerror (errno));
+			goto out;
                 }
-                g_warning ("Error chdir to '%s': %m", cwd_for_program);
+                error_string = g_strdup_printf (_("Error starting autorun program: %s"), strerror (errno));
+		goto out;
         }
-        g_warning ("Cannot find path for program to spawn");
+	error_string = g_strdup_printf (_("Cannot find the autorun program"));
 
+out:
         if (program_to_spawn != NULL) {
                 g_object_unref (program_to_spawn);
 	}
         g_free (path_to_spawn);
         g_free (cwd_for_program);
+
+	if (error_string != NULL) {
+		GtkWidget *dialog;
+		dialog = gtk_message_dialog_new_with_markup (NULL, /* TODO: parent window? */
+							     0,
+							     GTK_MESSAGE_ERROR,
+							     GTK_BUTTONS_OK,
+							     _("<big><b>Error autorunnning software</b></big>"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), error_string);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		g_free (error_string);
+	}
 }
 
 static void
@@ -211,6 +230,7 @@ present_autorun_for_software_dialog (GMount *mount)
         gtk_widget_show_all (dialog);
 
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+		gtk_widget_destroy (dialog);
                 autorun (mount);
         }
 
