@@ -3819,6 +3819,9 @@ context_menu_to_file_operation_position (FMDirectoryView *directory_view)
 	if (fm_directory_view_using_manual_layout (directory_view)
 	    && directory_view->details->context_menu_position.x >= 0
 	    && directory_view->details->context_menu_position.y >= 0) {
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, directory_view,
+				 widget_to_file_operation_position,
+				 (directory_view, &directory_view->details->context_menu_position));
 		return &directory_view->details->context_menu_position;
 	} else {
 		return NULL;

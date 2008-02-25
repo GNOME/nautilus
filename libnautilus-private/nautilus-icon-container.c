@@ -7949,6 +7949,27 @@ nautilus_icon_container_accessible_select_all_selection (AtkSelection *accessibl
 	return TRUE;
 }
 
+void
+nautilus_icon_container_widget_to_file_operation_position (NautilusIconContainer *container,
+							   GdkPoint              *position)
+{
+	double x, y;
+
+	g_return_if_fail (position != NULL);
+
+	x = position->x;
+	y = position->y;
+
+	eel_canvas_window_to_world (EEL_CANVAS (container), x, y, &x, &y);
+
+	position->x = (int) x;
+	position->y = (int) y;
+
+	/* ensure that we end up in the middle of the icon */
+	position->x -= nautilus_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
+	position->y -= nautilus_get_icon_size_for_zoom_level (container->details->zoom_level) / 2;
+}
+
 static void 
 nautilus_icon_container_accessible_selection_interface_init (AtkSelectionIface *iface)
 {

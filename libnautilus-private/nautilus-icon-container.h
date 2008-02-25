@@ -304,6 +304,10 @@ void              nautilus_icon_container_set_allow_moves               (Nautilu
 
 gboolean	  nautilus_icon_container_is_layout_rtl			(NautilusIconContainer  *container);
 
+void              nautilus_icon_container_widget_to_file_operation_position (NautilusIconContainer *container,
+									     GdkPoint              *position);
+
+
 #define CANVAS_WIDTH(container) ((GTK_WIDGET (container)->allocation.width \
 				- container->details->left_margin \
 				- container->details->right_margin) \

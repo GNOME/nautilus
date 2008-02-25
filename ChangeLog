@@ -1,5 +1,14 @@
 2008-02-25  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-icon-container.[ch]:
+        * src/file-manager/fm-directory-view.[ch]:
+        * src/file-manager/fm-icon-view.c:
+	Fixes the icon position when creating a new folder,
+	and the view is zoomed.
+	Patch from Christian Neumair
+
+2008-02-25  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-info.c (nautilus_icon_info_new_for_icon_info):
 	Fix s/display_name/filename/ typo (#515903)
 	Fixes blurry window icons
