@@ -93,21 +93,14 @@
 #include <sys/mount.h>
 #endif
 
-#define USED_FILL_R  0.988235294
-#define USED_FILL_G  0.91372549
-#define USED_FILL_B  0.309803922
+#define USED_FILL_R  (0.988235294 * 65535)
+#define USED_FILL_G  (0.91372549 * 65535)
+#define USED_FILL_B  (0.309803922 * 65535)
 
-#define USED_STROKE_R  0.929411765
-#define USED_STROKE_G  0.831372549
-#define USED_STROKE_B  0.0
+#define FREE_FILL_R  (0.447058824 * 65535)
+#define FREE_FILL_G  (0.623529412 * 65535)
+#define FREE_FILL_B  (0.811764706 * 65535)
 
-#define FREE_FILL_R  0.447058824
-#define FREE_FILL_G  0.623529412
-#define FREE_FILL_B  0.811764706
-
-#define FREE_STROKE_R  0.203921569
-#define FREE_STROKE_G  0.396078431
-#define FREE_STROKE_B  0.643137255
 
 #define PREVIEW_IMAGE_WIDTH 96
 
@@ -169,6 +162,11 @@ struct FMPropertiesWindowDetails {
  	
  	guint64 volume_capacity;
  	guint64 volume_free;
+	
+	GdkColor used_color;
+	GdkColor free_color;
+	GdkColor used_stroke_color;
+	GdkColor free_stroke_color;
 };
 
 enum {
@@ -2650,11 +2648,16 @@ should_show_volume_usage (FMPropertiesWindow *window)
 static void
 paint_used_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 {
+	FMPropertiesWindow *window;
 	cairo_t *cr;
 	gint width, height;
+	
   	width  = widget->allocation.width;
   	height = widget->allocation.height;
-  	cr = gdk_cairo_create (widget->window);
+  	
+	window = FM_PROPERTIES_WINDOW (data);
+	
+	cr = gdk_cairo_create (widget->window);
 	
 	cairo_rectangle  (cr,
 			  2,
@@ -2662,10 +2665,10 @@ paint_used_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 			  width - 4,
 			  height - 4);
                       
-	cairo_set_source_rgb (cr, USED_FILL_R, USED_FILL_G, USED_FILL_B);
+	cairo_set_source_rgb (cr, (double) window->details->used_color.red / 65535, (double) window->details->used_color.green / 65535, (double) window->details->used_color.blue / 65535);
 	cairo_fill_preserve (cr);
 
-	cairo_set_source_rgb (cr, USED_STROKE_R, USED_STROKE_G, USED_STROKE_B);
+	cairo_set_source_rgb (cr, (double) window->details->used_stroke_color.red / 65535, (double) window->details->used_stroke_color.green / 65535, (double) window->details->used_stroke_color.blue / 65535);
 	cairo_stroke (cr);
 	
 	cairo_destroy (cr);
@@ -2674,8 +2677,11 @@ paint_used_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 static void
 paint_free_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 {
+	FMPropertiesWindow *window;
 	cairo_t *cr;
 	gint width, height;
+		
+	window = FM_PROPERTIES_WINDOW (data);
 	
   	width  = widget->allocation.width;
   	height = widget->allocation.height;
@@ -2687,10 +2693,10 @@ paint_free_legend (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 			 width - 4,
 			 height - 4);
 
-	cairo_set_source_rgb (cr, FREE_FILL_R, FREE_FILL_G, FREE_FILL_B);
+	cairo_set_source_rgb (cr, (double) window->details->free_color.red / 65535, (double) window->details->free_color.green / 65535, (double) window->details->free_color.blue / 65535);
 	cairo_fill_preserve(cr);
 
-	cairo_set_source_rgb (cr, FREE_STROKE_R, FREE_STROKE_G, FREE_STROKE_B);
+	cairo_set_source_rgb (cr, (double) window->details->free_stroke_color.red / 65535, (double) window->details->free_stroke_color.green / 65535, (double) window->details->free_stroke_color.blue / 65535);
 	cairo_stroke (cr);
 	
 	cairo_destroy (cr);
@@ -2710,7 +2716,8 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 	
 	width  = widget->allocation.width;
   	height = widget->allocation.height;
-  	
+	
+		
 	free = (double)window->details->volume_free / (double)window->details->volume_capacity;
 	used =  1.0 - free;
 
@@ -2747,10 +2754,10 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 			cairo_line_to (cr,xc,yc);
 		}
 		
-		cairo_set_source_rgb (cr, USED_FILL_R,USED_FILL_G,USED_FILL_B);
+		cairo_set_source_rgb (cr, (double) window->details->used_color.red / 65535, (double) window->details->used_color.green / 65535, (double) window->details->used_color.blue / 65535);
 		cairo_fill_preserve (cr);
 		
-		cairo_set_source_rgb (cr, USED_STROKE_R,USED_STROKE_G,USED_STROKE_B);
+		cairo_set_source_rgb (cr, (double) window->details->used_stroke_color.red / 65535, (double) window->details->used_stroke_color.green / 65535, (double) window->details->used_stroke_color.blue / 65535);
 		cairo_stroke (cr);
 	}
 	
@@ -2765,21 +2772,209 @@ paint_pie_chart (GtkWidget *widget, GdkEventExpose *eev, gpointer data)
 			cairo_line_to (cr,xc,yc);
 		}
 		
-		cairo_set_source_rgb (cr, FREE_FILL_R,FREE_FILL_G,FREE_FILL_B);
+		cairo_set_source_rgb (cr, (double) window->details->free_color.red / 65535, (double) window->details->free_color.green / 65535,(double) window->details->free_color.blue / 65535);
 		cairo_fill_preserve(cr);
 		
-		cairo_set_source_rgb (cr, FREE_STROKE_R,FREE_STROKE_G,FREE_STROKE_B);
+		cairo_set_source_rgb (cr, (double) window->details->free_stroke_color.red / 65535, (double) window->details->free_stroke_color.green / 65535, (double) window->details->free_stroke_color.blue / 65535);
 		cairo_stroke (cr);
 	}
 	
   	cairo_destroy (cr);
 }
 
+
+/* Copied from gtk/gtkstyle.c */
+
+static void
+rgb_to_hls (gdouble *r,
+            gdouble *g,
+            gdouble *b)
+{
+  gdouble min;
+  gdouble max;
+  gdouble red;
+  gdouble green;
+  gdouble blue;
+  gdouble h, l, s;
+  gdouble delta;
+  
+  red = *r;
+  green = *g;
+  blue = *b;
+  
+  if (red > green)
+    {
+      if (red > blue)
+        max = red;
+      else
+        max = blue;
+      
+      if (green < blue)
+        min = green;
+      else
+        min = blue;
+    }
+  else
+    {
+      if (green > blue)
+        max = green;
+      else
+        max = blue;
+      
+      if (red < blue)
+        min = red;
+      else
+        min = blue;
+    }
+  
+  l = (max + min) / 2;
+  s = 0;
+  h = 0;
+  
+  if (max != min)
+    {
+      if (l <= 0.5)
+        s = (max - min) / (max + min);
+      else
+        s = (max - min) / (2 - max - min);
+      
+      delta = max -min;
+      if (red == max)
+        h = (green - blue) / delta;
+      else if (green == max)
+        h = 2 + (blue - red) / delta;
+      else if (blue == max)
+        h = 4 + (red - green) / delta;
+      
+      h *= 60;
+      if (h < 0.0)
+        h += 360;
+    }
+  
+  *r = h;
+  *g = l;
+  *b = s;
+}
+
+static void
+hls_to_rgb (gdouble *h,
+            gdouble *l,
+            gdouble *s)
+{
+  gdouble hue;
+  gdouble lightness;
+  gdouble saturation;
+  gdouble m1, m2;
+  gdouble r, g, b;
+  
+  lightness = *l;
+  saturation = *s;
+  
+  if (lightness <= 0.5)
+    m2 = lightness * (1 + saturation);
+  else
+    m2 = lightness + saturation - lightness * saturation;
+  m1 = 2 * lightness - m2;
+  
+  if (saturation == 0)
+    {
+      *h = lightness;
+      *l = lightness;
+      *s = lightness;
+    }
+  else
+    {
+      hue = *h + 120;
+      while (hue > 360)
+        hue -= 360;
+      while (hue < 0)
+        hue += 360;
+      
+      if (hue < 60)
+        r = m1 + (m2 - m1) * hue / 60;
+      else if (hue < 180)
+        r = m2;
+      else if (hue < 240)
+        r = m1 + (m2 - m1) * (240 - hue) / 60;
+      else
+        r = m1;
+      
+      hue = *h;
+      while (hue > 360)
+        hue -= 360;
+      while (hue < 0)
+        hue += 360;
+      
+      if (hue < 60)
+        g = m1 + (m2 - m1) * hue / 60;
+      else if (hue < 180)
+        g = m2;
+      else if (hue < 240)
+        g = m1 + (m2 - m1) * (240 - hue) / 60;
+      else
+        g = m1;
+      
+      hue = *h - 120;
+      while (hue > 360)
+        hue -= 360;
+      while (hue < 0)
+        hue += 360;
+      
+      if (hue < 60)
+        b = m1 + (m2 - m1) * hue / 60;
+      else if (hue < 180)
+        b = m2;
+      else if (hue < 240)
+        b = m1 + (m2 - m1) * (240 - hue) / 60;
+      else
+        b = m1;
+      
+      *h = r;
+      *l = g;
+      *s = b;
+    }
+}
+static void
+_pie_style_shade (GdkColor *a,
+                  GdkColor *b,
+                  gdouble   k)
+{
+  gdouble red;
+  gdouble green;
+  gdouble blue;
+  
+  red = (gdouble) a->red / 65535.0;
+  green = (gdouble) a->green / 65535.0;
+  blue = (gdouble) a->blue / 65535.0;
+  
+  rgb_to_hls (&red, &green, &blue);
+  
+  green *= k;
+  if (green > 1.0)
+    green = 1.0;
+  else if (green < 0.0)
+    green = 0.0;
+  
+  blue *= k;
+  if (blue > 1.0)
+    blue = 1.0;
+  else if (blue < 0.0)
+    blue = 0.0;
+  
+  hls_to_rgb (&red, &green, &blue);
+  
+  b->red = red * 65535.0;
+  b->green = green * 65535.0;
+  b->blue = blue * 65535.0;
+}
+
+
 static GtkWidget* 
 create_pie_widget (FMPropertiesWindow *window)
 {
 	NautilusFile		*file;
 	GtkTable 		*table;
+	GtkStyle		*style;
 	GtkWidget 		*pie_canvas;
 	GtkWidget 		*used_canvas;
 	GtkWidget 		*used_label;
@@ -2804,6 +2999,24 @@ create_pie_widget (FMPropertiesWindow *window)
 	uri = nautilus_file_get_activation_uri (file);
 	
 	table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
+	
+	style = gtk_rc_get_style (GTK_WIDGET(table));
+	
+	if (!gtk_style_lookup_color (style, "chart_color_1", &window->details->used_color)) { 
+		window->details->used_color.red = USED_FILL_R;
+		window->details->used_color.green = USED_FILL_G;
+		window->details->used_color.blue = USED_FILL_B;
+	}
+	
+	if (!gtk_style_lookup_color (style, "chart_color_2", &window->details->free_color)) {
+		window->details->free_color.red = FREE_FILL_R;
+		window->details->free_color.green = FREE_FILL_G;
+		window->details->free_color.blue = FREE_FILL_B;
+	}
+	
+	_pie_style_shade (&window->details->used_color, &window->details->used_stroke_color, 0.7);
+	_pie_style_shade (&window->details->free_color, &window->details->free_stroke_color, 0.7);
+	
 	pie_canvas = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (pie_canvas, 200, 200);
 
@@ -2850,8 +3063,8 @@ create_pie_widget (FMPropertiesWindow *window)
 	gtk_table_attach (table, fstype_label , 1, 3, 3, 4, GTK_FILL, 0,          5, 5);
 	
 	g_signal_connect (G_OBJECT (pie_canvas), "expose-event", G_CALLBACK (paint_pie_chart), window);
-	g_signal_connect (G_OBJECT (used_canvas), "expose-event", G_CALLBACK (paint_used_legend), NULL);
-	g_signal_connect (G_OBJECT (free_canvas), "expose-event", G_CALLBACK (paint_free_legend), NULL);
+	g_signal_connect (G_OBJECT (used_canvas), "expose-event", G_CALLBACK (paint_used_legend), window);
+	g_signal_connect (G_OBJECT (free_canvas), "expose-event", G_CALLBACK (paint_free_legend), window);
 	        
 	return GTK_WIDGET (table);
 }
