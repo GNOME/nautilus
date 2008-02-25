@@ -1,5 +1,12 @@
 2008-02-25  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-window-manage-views.c:
+        (got_file_info_for_view_selection_callback):
+	Fix NautilusFile leak.
+	Patch from Christian Neumair
+
+2008-02-25  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-icon-container.[ch]:
         * src/file-manager/fm-directory-view.[ch]:
         * src/file-manager/fm-icon-view.c:

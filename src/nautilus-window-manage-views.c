@@ -973,7 +973,9 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 					       mount_not_mounted_callback, data);
 		g_object_unref (location);
 		g_object_unref (mount_op);
-		
+
+		nautilus_file_unref (file);
+
 		return;
 	}
 	
