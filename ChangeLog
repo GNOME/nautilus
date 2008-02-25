@@ -1,5 +1,12 @@
 2008-02-25  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-info.c (nautilus_icon_info_new_for_icon_info):
+	Fix s/display_name/filename/ typo (#515903)
+	Fixes blurry window icons
+	Patch from Christian Neumair
+
+2008-02-25  Alexander Larsson  <alexl@redhat.com>
+
         * src/file-manager/fm-properties-window.c:
 	Allow theming of chart colors (#478471)
 	Patch from Baris Cicek

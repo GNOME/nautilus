@@ -150,7 +150,7 @@ nautilus_icon_info_new_for_icon_info (GtkIconInfo *icon_info)
 
 	icon->display_name = g_strdup (gtk_icon_info_get_display_name (icon_info));
 
-	filename = gtk_icon_info_get_display_name (icon_info);
+	filename = gtk_icon_info_get_filename (icon_info);
 	if (filename != NULL) {
 		basename = g_path_get_basename (filename);
 		p = strrchr (basename, '.');
