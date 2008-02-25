@@ -1242,6 +1242,7 @@ activation_mount_not_mounted_callback (GObject *source_object,
 	if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), res, &error)) {
 		if (error->domain != G_IO_ERROR ||
 		    (error->code != G_IO_ERROR_CANCELLED &&
+		     error->code != G_IO_ERROR_FAILED_HANDLED &&
 		     error->code != G_IO_ERROR_ALREADY_MOUNTED)) {
 			eel_show_error_dialog (_("Unable to mount location"),
 					       error->message, NULL);
@@ -1474,13 +1475,15 @@ activation_mountable_mounted (NautilusFile  *file,
 		/* Remove failed file */
 		
 		if (error->domain != G_IO_ERROR ||
-		    error->code != G_IO_ERROR_ALREADY_MOUNTED) {
+		    (error->code != G_IO_ERROR_FAILED_HANDLED &&
+		     error->code != G_IO_ERROR_ALREADY_MOUNTED)) {
 			parameters->files = g_list_remove (parameters->files, file); 
 			nautilus_file_unref (file);
 		}
 		
 		if (error->domain != G_IO_ERROR ||
 		    (error->code != G_IO_ERROR_CANCELLED &&
+		     error->code != G_IO_ERROR_FAILED_HANDLED &&
 		     error->code != G_IO_ERROR_ALREADY_MOUNTED)) {
 			eel_show_error_dialog (_("Unable to mount location"),
 					       error->message, NULL);

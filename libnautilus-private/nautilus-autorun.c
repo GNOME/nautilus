@@ -848,6 +848,10 @@ _g_mount_guess_content_type_finish (GMount              *mount,
 
 /*- END MOVE TO GIO ---*/
 
+enum {
+	AUTORUN_DIALOG_RESPONSE_EJECT = 0
+};
+
 typedef struct
 {
 	GtkWidget *dialog;
@@ -915,6 +919,13 @@ static void
 autorun_dialog_response (GtkDialog *dialog, gint response, AutorunDialogData *data)
 {
 	switch (response) {
+	case AUTORUN_DIALOG_RESPONSE_EJECT:
+		nautilus_file_operations_unmount_mount (GTK_WINDOW (dialog),
+							data->mount,
+							data->should_eject,
+							FALSE);
+		break;
+
 	case GTK_RESPONSE_NONE:
 		/* window was closed */
 		break;
@@ -1154,7 +1165,7 @@ show_dialog:
 		eject_button = gtk_button_new_with_mnemonic (_("_Unmount"));
 		data->should_eject = FALSE;
 	}
-	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), eject_button, 0);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), eject_button, AUTORUN_DIALOG_RESPONSE_EJECT);
 	gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (GTK_DIALOG (dialog)->action_area), eject_button, TRUE);
 
 	/* show the dialog */

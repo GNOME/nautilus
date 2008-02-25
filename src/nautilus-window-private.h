@@ -101,6 +101,8 @@ struct NautilusWindowDetails
 
         NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
         gboolean search_mode;
+
+        GCancellable *find_mount_cancellable;
 };
 
 struct _NautilusNavigationWindowDetails {

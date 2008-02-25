@@ -1334,6 +1334,48 @@ nautilus_window_show_trash_bar (NautilusWindow *window)
 	nautilus_window_add_extra_location_widget (window, bar);
 }
 
+typedef struct {
+	NautilusWindow *window;
+	GCancellable *cancellable;
+} FindMountData;
+
+static void
+found_mount_cb (GObject *source_object,
+		GAsyncResult *res,
+		gpointer user_data)
+{
+	FindMountData *data = user_data;
+	GMount *mount;
+	NautilusWindow *window;	
+	char **x_content_types;
+
+	if (g_cancellable_is_cancelled (data->cancellable)) {
+		goto out;
+	}
+	
+	window = data->window;
+	
+	mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
+						    res,
+						    NULL);
+	if (mount != NULL) {
+		x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
+		if (x_content_types != NULL && x_content_types[0] != NULL) {
+			nautilus_window_show_x_content_bar (window, mount, x_content_types);
+			update_extra_location_widgets_visibility (window);
+		}
+		g_strfreev (x_content_types);
+		
+		g_object_unref (mount);
+	}
+	
+	window->details->find_mount_cancellable = NULL;
+
+ out:
+	g_object_unref (data->cancellable);
+	g_free (data);
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 update_for_new_location (NautilusWindow *window)
@@ -1343,8 +1385,7 @@ update_for_new_location (NautilusWindow *window)
 	NautilusDirectory *directory;
 	gboolean location_really_changed;
 	char *uri;
-	char **x_content_types;
-	GMount *mount;
+	FindMountData *data;
         
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
@@ -1403,15 +1444,22 @@ update_for_new_location (NautilusWindow *window)
 			nautilus_window_show_trash_bar (window);
 		}
 
-		mount = nautilus_file_get_mount (file);
-		if (mount != NULL) {
-			x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
-			if (x_content_types != NULL && x_content_types[0] != NULL) {
-				nautilus_window_show_x_content_bar (window, mount, x_content_types);
-			}
-			g_strfreev (x_content_types);
-			g_object_unref (mount);
+		/* need the mount to determine if we should put up the x-content cluebar */
+		if (window->details->find_mount_cancellable != NULL) {
+			g_cancellable_cancel (window->details->find_mount_cancellable);
+			window->details->find_mount_cancellable = NULL;
 		}
+		
+		data = g_new (FindMountData, 1);
+		data->window = window;
+		data->cancellable = g_cancellable_new ();
+		
+		window->details->find_mount_cancellable = data->cancellable;
+		g_file_find_enclosing_mount_async (window->details->location, 
+						   G_PRIORITY_DEFAULT, 
+						   data->cancellable,
+						   found_mount_cb,
+						   data);
 
 		nautilus_directory_unref (directory);
 

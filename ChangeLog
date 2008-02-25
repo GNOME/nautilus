@@ -1,3 +1,21 @@
+2008-02-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-mime-actions.c (activation_mountable_mounted):
+	Don't display error on G_IO_ERROR_FAILED_HANDLED.
+
+2008-02-22  David Zeuthen  <davidz@redhat.com>
+
+	* libnautilus-private/nautilus-autorun.c:
+	(autorun_dialog_response), (do_autorun_for_content_type):
+	Actually handle when the user presses the Eject or Unmount button.
+
+	* src/nautilus-window-manage-views.c: (found_mount_cb),
+	(update_for_new_location):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_finalize):
+	Find the mount for the window, used for determining if a x-content
+	clue bar should be shown, async.
+
 2008-02-22  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-mime-actions.c:

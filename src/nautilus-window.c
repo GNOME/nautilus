@@ -639,6 +639,11 @@ nautilus_window_finalize (GObject *object)
 
 	g_free (window->details->title);
 
+	if (window->details->find_mount_cancellable != NULL) {
+		g_cancellable_cancel (window->details->find_mount_cancellable);
+		window->details->find_mount_cancellable = NULL;
+	}
+
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
 
