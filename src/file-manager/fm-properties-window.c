@@ -2552,6 +2552,19 @@ is_merged_trash_directory (NautilusFile *file)
 }
 
 static gboolean
+is_computer_directory (NautilusFile *file)
+{
+	char *file_uri;
+	gboolean result;
+	
+	file_uri = nautilus_file_get_uri (file);
+	result = strcmp (file_uri, "computer:///") == 0;
+	g_free (file_uri);
+	
+	return result;
+}
+
+static gboolean
 should_show_custom_icon_buttons (FMPropertiesWindow *window) 
 {
 	if (is_multi_file_window (window)) {
@@ -4814,11 +4827,16 @@ should_show_emblems (FMPropertiesWindow *window)
 static gboolean
 should_show_permissions (FMPropertiesWindow *window) 
 {
-	/* Don't show permissions for the Trash since it's not
-	 * really a file system object.
+	NautilusFile *file;
+
+	file = get_target_file (window);
+
+	/* Don't show permissions for Trash and Computer since they're not
+	 * really file system objects.
 	 */
 	if (!is_multi_file_window (window)
-	    && is_merged_trash_directory (get_target_file (window))) {
+	    && (is_merged_trash_directory (file) ||
+		is_computer_directory (file))) {
 		return FALSE;
 	}
 
@@ -4921,7 +4939,9 @@ is_a_special_file (NautilusFile *file)
 {
 	if (file == NULL ||
 	    NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
-	    nautilus_file_is_nautilus_link (file)) {
+	    nautilus_file_is_nautilus_link (file) ||
+	    is_merged_trash_directory (file) ||
+	    is_computer_directory (file)) {
 		return TRUE;
 	}
 	return FALSE;
