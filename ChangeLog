@@ -1,5 +1,10 @@
 2008-02-25  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (is_uri_relative):
+	g_uri_get_scheme -> g_uri_parse_scheme
+
+2008-02-25  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-mime-actions.c (activation_mountable_mounted):
 	Don't display error on G_IO_ERROR_FAILED_HANDLED.
 

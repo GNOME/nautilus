@@ -3120,7 +3120,7 @@ is_uri_relative (const char *uri)
 {
 	char *scheme;
 
-	scheme = g_uri_get_scheme (uri);
+	scheme = g_uri_parse_scheme (uri);
 	g_free (scheme);
 	return scheme == NULL;
 }
