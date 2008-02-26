@@ -162,7 +162,7 @@ out:
 							     0,
 							     GTK_MESSAGE_ERROR,
 							     GTK_BUTTONS_OK,
-							     _("<big><b>Error autorunnning software</b></big>"));
+							     _("<big><b>Error autorunning software</b></big>"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), error_string);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
