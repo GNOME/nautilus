@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-26 11:11+0300\n"
+"POT-Creation-Date: 2008-02-26 12:40+0300\n"
 "PO-Revision-Date: 2007-02-12 18:54+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -3186,6 +3186,7 @@ msgstr[1] "Tämä avaa  %d erillistä ikkunaa."
 
 #: ../src/file-manager/fm-directory-view.c:1065
 #: ../src/file-manager/fm-properties-window.c:4918
+#: ../src/nautilus-connect-server-dialog.c:357
 #: ../src/nautilus-location-dialog.c:111
 msgid "There was an error displaying help."
 msgstr "Virhe ohjeen näyttämisessä."
@@ -3207,6 +3208,7 @@ msgid "Search _name:"
 msgstr "Haun _nimi:"
 
 #: ../src/file-manager/fm-directory-view.c:1244
+#: ../src/nautilus-connect-server-dialog.c:534
 msgid "_Folder:"
 msgstr "_Kansio:"
 
@@ -4770,8 +4772,8 @@ msgid "Cannot find the autorun program"
 msgstr "Autorun-ohjelmaa ei löydy"
 
 #: ../src/nautilus-autorun-software.c:165
-msgid "<big><b>Error autorunnning software</b></big>"
-msgstr "<big><b>Virhe automaattisuoritettaessa</b></big>"
+msgid "<big><b>Error autorunning software</b></big>"
+msgstr "<big><b>Virhe ohjelman automaattisuorituksessa</b></big>"
 
 #: ../src/nautilus-autorun-software.c:191
 msgid ""
@@ -4824,6 +4826,111 @@ msgstr "<b>_Nimi</b>"
 #: ../src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
 msgstr "Muokkaa kirjanmerkkejä"
+
+#: ../src/nautilus-connect-server-dialog-main.c:78
+#, c-format
+msgid "Can't display location \"%s\""
+msgstr "Sijaintia \"%s\" ei voi näyttää"
+
+#: ../src/nautilus-connect-server-dialog-main.c:118
+msgid "[URI]"
+msgstr "[URI]"
+
+#. Translators: This is the --help description gor the connect to server app,
+#. the initial newlines are between the command line arg and the description
+#: ../src/nautilus-connect-server-dialog-main.c:129
+msgid ""
+"\n"
+"\n"
+"Add connect to server mount"
+msgstr ""
+"\n"
+"\n"
+"Lisää \"yhdistä palvelimeen\"-liitoskohta"
+
+#: ../src/nautilus-connect-server-dialog.c:124
+msgid "Custom Location"
+msgstr "Muu sijainti"
+
+#: ../src/nautilus-connect-server-dialog.c:126
+msgid "SSH"
+msgstr "SSH"
+
+#: ../src/nautilus-connect-server-dialog.c:129
+msgid "Public FTP"
+msgstr "Julkinen FTP"
+
+#: ../src/nautilus-connect-server-dialog.c:131
+msgid "FTP (with login)"
+msgstr "FTP (sisään kirjautumisen vaativa)"
+
+#: ../src/nautilus-connect-server-dialog.c:134
+msgid "Windows share"
+msgstr "Windows-jako"
+
+#: ../src/nautilus-connect-server-dialog.c:136
+msgid "WebDAV (HTTP)"
+msgstr "WebDAV (HTTP)"
+
+#: ../src/nautilus-connect-server-dialog.c:138
+msgid "Secure WebDAV (HTTPS)"
+msgstr "Turvallinen WebDAV (HTTPS)"
+
+#: ../src/nautilus-connect-server-dialog.c:204
+msgid "Can't Connect to Server. You must enter a name for the server."
+msgstr "Palvelimeen ei saada yhteyttä. Palvelimella täytyy olla nimi."
+
+#: ../src/nautilus-connect-server-dialog.c:205
+msgid "Please enter a name and try again."
+msgstr "Anna nimi ja yritä uudelleen."
+
+#: ../src/nautilus-connect-server-dialog.c:440
+msgid "_Location (URI):"
+msgstr "_Sijainti (URL):"
+
+#: ../src/nautilus-connect-server-dialog.c:462
+msgid "_Server:"
+msgstr "_Palvelin:"
+
+#: ../src/nautilus-connect-server-dialog.c:481
+msgid "Optional information:"
+msgstr "Valinnaisia tietoja:"
+
+#: ../src/nautilus-connect-server-dialog.c:493
+msgid "_Share:"
+msgstr "_Jako:"
+
+#: ../src/nautilus-connect-server-dialog.c:514
+msgid "_Port:"
+msgstr "_Portti:"
+
+#: ../src/nautilus-connect-server-dialog.c:554
+msgid "_User Name:"
+msgstr "_Käyttäjätunnus:"
+
+#: ../src/nautilus-connect-server-dialog.c:575
+msgid "_Domain Name:"
+msgstr "_Aluenimi:"
+
+#: ../src/nautilus-connect-server-dialog.c:607
+msgid "Bookmark _name:"
+msgstr "Kirjanmerkin _nimi:"
+
+#: ../src/nautilus-connect-server-dialog.c:796
+msgid "Connect to Server"
+msgstr "Yhdistä palvelimeen"
+
+#: ../src/nautilus-connect-server-dialog.c:813
+msgid "Service _type:"
+msgstr "Palvelu_tyyppi:"
+
+#: ../src/nautilus-connect-server-dialog.c:907
+msgid "Add _bookmark"
+msgstr "_Lisää kirjanmerkki"
+
+#: ../src/nautilus-connect-server-dialog.c:939
+msgid "C_onnect"
+msgstr "_Yhdistä"
 
 #: ../src/nautilus-emblem-sidebar.c:238
 #, c-format
@@ -6800,83 +6907,14 @@ msgstr "Verkko"
 #~ "Työpöytäkansion sijainti on muuttunut Gnome 2.4:ssä. Voit avata linkin, "
 #~ "siirtää haluamasi tiedostot ja lopuksi poistaa sen."
 
-#~ msgid "Can't display location \"%s\""
-#~ msgstr "Sijaintia \"%s\" ei voi näyttää"
-
-#~ msgid "[URI]"
-#~ msgstr "[URI]"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Add connect to server mount"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Lisää \"yhdistä palvelimeen\"-liitoskohta"
-
-#~ msgid "Custom Location"
-#~ msgstr "Muu sijainti"
-
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#~ msgid "Public FTP"
-#~ msgstr "Julkinen FTP"
-
-#~ msgid "FTP (with login)"
-#~ msgstr "FTP (sisään kirjautumisen vaativa)"
-
-#~ msgid "Windows share"
-#~ msgstr "Windows-jako"
-
-#~ msgid "WebDAV (HTTP)"
-#~ msgstr "WebDAV (HTTP)"
-
-#~ msgid "Secure WebDAV (HTTPS)"
-#~ msgstr "Turvallinen WebDAV (HTTPS)"
-
 #~ msgid "Can't Connect to Server. \"%s\" is not a valid location."
 #~ msgstr "Palvelimeen ei saada yhteyttä. \"%s\" ei ole kelvollinen sijainti."
-
-#~ msgid "Can't Connect to Server. You must enter a name for the server."
-#~ msgstr "Palvelimeen ei saada yhteyttä. Palvelimella täytyy olla nimi."
-
-#~ msgid "Please enter a name and try again."
-#~ msgstr "Anna nimi ja yritä uudelleen."
-
-#~ msgid "_Location (URI):"
-#~ msgstr "_Sijainti (URL):"
-
-#~ msgid "_Server:"
-#~ msgstr "_Palvelin:"
-
-#~ msgid "Optional information:"
-#~ msgstr "Valinnaisia tietoja:"
-
-#~ msgid "_Share:"
-#~ msgstr "_Jako:"
-
-#~ msgid "_User Name:"
-#~ msgstr "_Käyttäjätunnus:"
-
-#~ msgid "_Domain Name:"
-#~ msgstr "_Aluenimi:"
 
 #~ msgid "_Name to use for connection:"
 #~ msgstr "_Yhteydestä käytettävä nimi:"
 
-#~ msgid "Connect to Server"
-#~ msgstr "Yhdistä palvelimeen"
-
-#~ msgid "Service _type:"
-#~ msgstr "Palvelu_tyyppi:"
-
 #~ msgid "Browse _Network"
 #~ msgstr "Selaa _verkkoa"
-
-#~ msgid "C_onnect"
-#~ msgstr "_Yhdistä"
 
 #~ msgid "The dragged text was not a valid file location."
 #~ msgstr "Pudotettu teksti ei ollut kelvollinen tiedostosijainti."
