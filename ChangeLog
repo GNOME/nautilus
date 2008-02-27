@@ -1,3 +1,10 @@
+2008-02-07  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-metafile.c: (metafile_read_state_free):
+	Handle NULL state (#512042).
+	* src/nautilus-pathbar.c: (nautilus_path_bar_finalize): Disconnect
+	trash monitor signal (#519050).
+
 2008-02-26  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-autorun-software.c (autorun):

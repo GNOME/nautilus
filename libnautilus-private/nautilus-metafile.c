@@ -1723,6 +1723,10 @@ metafile_read_cancel (NautilusMetafile *metafile)
 static void
 metafile_read_state_free (MetafileReadState *state)
 {
+	if (state == NULL) {
+		return;
+	}
+
 	g_object_unref (state->cancellable);
 	g_free (state);
 }
