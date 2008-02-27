@@ -338,8 +338,8 @@ nautilus_path_bar_finalize (GObject *object)
 		path_bar->desktop_icon = NULL;
 	}
 
-	g_signal_disconnect_by_func (nautilus_trash_monitor_get (),
-				     trash_state_changed_cb, path_bar);
+	g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
+					      trash_state_changed_cb, path_bar);
 
         G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
