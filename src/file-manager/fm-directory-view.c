@@ -6705,7 +6705,7 @@ file_should_show_foreach (NautilusFile *file,
 	}
 
 	if (nautilus_file_can_mount (file)) {
-		*show_unmount = TRUE;
+		*show_mount = TRUE;
 
 #ifdef TODO_GIO		
 		if (something &&

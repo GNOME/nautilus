@@ -1,5 +1,11 @@
 2008-02-28  Alexander Larsson  <alexl@redhat.com>
 
+        * src/file-manager/fm-directory-view.c:
+        (file_should_show_foreach):
+	Add mount entry for mountables, not unmount (#519056)
+	
+2008-02-28  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-progress-info.c:
 	Use better icon for system tray. (#518644)
 	Patch from Michael Monreal
