@@ -224,6 +224,8 @@ get_progress_window (void)
 				"file_progress", "Nautilus");
 	gtk_window_set_position (GTK_WINDOW (progress_window),
 				 GTK_WIN_POS_CENTER_ALWAYS);
+    gtk_window_set_icon_name (GTK_WINDOW (progress_window),
+                 "system-file-manager");
 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
@@ -234,7 +236,7 @@ get_progress_window (void)
 
 	g_signal_connect (progress_window, "delete_event", (GCallback)delete_event, NULL);
 
-	status_icon = gtk_status_icon_new_from_icon_name ("stock_folder-copy");
+	status_icon = gtk_status_icon_new_from_icon_name ("system-file-manager");
 	g_signal_connect (status_icon, "activate",
 			  (GCallback)status_icon_activate_cb,
 			  progress_window);
