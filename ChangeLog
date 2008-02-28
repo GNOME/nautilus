@@ -1,3 +1,10 @@
+2008-02-28  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file.c: (nautilus_file_get_gicon):
+	Handle NULL file.
+	* src/nautilus-bookmark-list.c: (nautilus_bookmark_list_load_file):
+	Ignore lines beginning with a space (#512593).
+
 2008-02-28  Alexander Larsson  <alexl@redhat.com>
 
         * src/file-manager/fm-directory-view.c:

@@ -3269,6 +3269,10 @@ nautilus_file_get_gicon (NautilusFile *file,
 	int i;
 	gboolean changed;
 
+	if (file == NULL) {
+		return NULL;
+	}
+
 	if (file->details->icon) {
 		icon = NULL;
 		

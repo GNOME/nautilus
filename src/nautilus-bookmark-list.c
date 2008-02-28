@@ -453,7 +453,8 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 
 		lines = g_strsplit (contents, "\n", -1);
       	 	for (i = 0; lines[i]; i++) {
-	  		if (lines[i][0]) {
+			/* Ignore empty or invalid lines that cannot be parsed properly */
+	  		if (lines[i][0] != '\0' && lines[i][0] != ' ') {
 				/* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space */
 				/* we must seperate the bookmark uri and the potential label */
  				char *space, *label;
