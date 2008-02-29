@@ -1,3 +1,9 @@
+2008-02-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-file-management-properties.c:
+	(update_icon_captions_from_gconf):
+	Fix a crasher when reading NULL values from GConf. (#518974)
+
 2008-02-28  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c: (nautilus_file_get_gicon):
