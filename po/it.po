@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-27 21:19+0100\n"
-"PO-Revision-Date: 2008-02-28 13:26+0100\n"
+"POT-Creation-Date: 2008-02-28 21:37+0100\n"
+"PO-Revision-Date: 2008-02-28 21:57+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -302,28 +302,30 @@ msgid "_Patterns"
 msgstr "_Motivi"
 
 # GNOME-2-22
+# messo nella forma "disco vuoto" per elencarli uno accanto
+# all'altro
 #. http://en.wikipedia.org/wiki/Blu-ray_Disc
 #: ../data/nautilus.xml.in.h:2
 msgid "Blank Blu-Ray Disc"
-msgstr "Disco Blu-Ray vuoto"
+msgstr "Disco vuoto Blu-Ray"
 
 # GNOME-2-22
 #. http://en.wikipedia.org/wiki/Compact_Disc
 #: ../data/nautilus.xml.in.h:4
 msgid "Blank CD Disc"
-msgstr "Disco CD vuoto"
+msgstr "Disco vuoto CD"
 
 # GNOME-2-22
 #. http://en.wikipedia.org/wiki/DVD
 #: ../data/nautilus.xml.in.h:6
 msgid "Blank DVD Disc"
-msgstr "Disco DVD vuoto"
+msgstr "Disco vuoto DVD"
 
 # GNOME-2-22
 #. http://en.wikipedia.org/wiki/HD_DVD
 #: ../data/nautilus.xml.in.h:8
 msgid "Blank HD DVD Disc"
-msgstr "Disco HD DVD vuoto"
+msgstr "Disco vuoto HD DVD"
 
 # GNOME-2-22
 #. http://en.wikipedia.org/wiki/Blu-ray_Disc
@@ -658,7 +660,10 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and and media insertion."
-msgstr "Se impostata a VERO, allora Nautilus monta automaticamente i supporti come quelli rimovibili e gli hard disk visibili all'utente all'avvio e all'inserimento del supporto."
+msgstr ""
+"Se impostata a VERO, allora Nautilus monta automaticamente i supporti come "
+"quelli rimovibili e gli hard disk visibili all'utente all'avvio e "
+"all'inserimento del supporto."
 
 # GNOME-2-22
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
@@ -667,7 +672,12 @@ msgid ""
 "automounted. This only applies to media where no known x-content/* type was "
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
-msgstr "Se impostata a VERO, allora Nautilus apre automaticamente una cartella quando i supporti sono montati in modo automatico. Questo si applica solo a quei supporti per i quali è stato rilevato un tipo x-content/* non noto; per i supporti per i quali viene rilevato un tipo x-content noto, viene invece intrapresa l'azione configutata dall'utente."
+msgstr ""
+"Se impostata a VERO, allora Nautilus apre automaticamente una cartella "
+"quando i supporti sono montati in modo automatico. Questo si applica solo a "
+"quei supporti per i quali è stato rilevato un tipo x-content/* non noto; per "
+"i supporti per i quali viene rilevato un tipo x-content noto, viene invece "
+"intrapresa l'azione configutata dall'utente."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -688,7 +698,9 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when media is inserted."
-msgstr "Se impostata a VERO, allora Nautilus non chiede conferma, nè vengono eseguiti/avviati automaticamente i programmi all'inserimento dei supporti."
+msgstr ""
+"Se impostata a VERO, allora Nautilus non chiede conferma, nè vengono "
+"eseguiti/avviati automaticamente i programmi all'inserimento dei supporti."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -830,31 +842,39 @@ msgstr "Lista di possibili didascalie delle icone"
 # FIXME dovrebbe essere quella breve...
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "List of x-content/* types to ask the user what to do on insertion"
-msgstr "Lista di tipi x-content/* per i quali domandare all'utente cosa fare all'inserimento"
+msgstr ""
+"Lista di tipi x-content/* per i quali domandare all'utente cosa fare "
+"all'inserimento"
 
 # GNOME-2-22
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "List of x-content/* types to ask the user what to do on insertion."
-msgstr "Lista di tipi x-content/* per i quali domandare all'utente cosa fare all'inserimento."
+msgstr ""
+"Lista di tipi x-content/* per i quali domandare all'utente cosa fare "
+"all'inserimento."
 
 # GNOME-2-22
 # FIXME dovrebbe essere quella breve...
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "List of x-content/* types where a folder window should be opened"
-msgstr "Lista di tipi x-content/* per i quali si dovrebbe aprire una finesta cartella"
+msgstr ""
+"Lista di tipi x-content/* per i quali si dovrebbe aprire una finesta cartella"
 
 # GNOME-2-22
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "List of x-content/* types where a folder window should be opened on "
 "insertion."
-msgstr "Lista di tipi x-content/* per i quali si dovrebbe aprire una finesta cartella all'inserimento."
+msgstr ""
+"Lista di tipi x-content/* per i quali si dovrebbe aprire una finesta "
+"cartella all'inserimento."
 
 # GNOME-2-22
 # FIXME dovrebbe essere quella breve...
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "List of x-content/* where to prompt the user on insertion"
-msgstr "Lista di x-content/* per i quali chiedere conferma all'utente all'inserimento"
+msgstr ""
+"Lista di x-content/* per i quali chiedere conferma all'utente all'inserimento"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Maximum handled files in a folder"
@@ -3249,7 +3269,7 @@ msgid "File operations"
 msgstr "Operazioni sui file"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-progress-info.c:298
+#: ../libnautilus-private/nautilus-progress-info.c:300
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
@@ -3257,8 +3277,8 @@ msgstr[0] "%'d operazione su file attiva"
 msgstr[1] "%'d operazioni su file attive"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-progress-info.c:491
-#: ../libnautilus-private/nautilus-progress-info.c:509
+#: ../libnautilus-private/nautilus-progress-info.c:493
+#: ../libnautilus-private/nautilus-progress-info.c:511
 msgid "Preparing"
 msgstr "Preparazione"
 
@@ -5604,9 +5624,10 @@ msgstr "_Disporre gli oggetti:"
 msgid "_DVD Video:"
 msgstr "_DVD video:"
 
+# GNOME-2-22
 #: ../src/nautilus-file-management-properties.glade.h:72
 msgid "_Default zoom level:"
-msgstr "Livello di _ingrandimento predefinito:"
+msgstr "Li_vello di ingrandimento predefinito:"
 
 #: ../src/nautilus-file-management-properties.glade.h:73
 msgid "_Double click to open items"
@@ -5624,12 +5645,12 @@ msgstr "Lettore _musicale:"
 # GNOME-2-22
 #: ../src/nautilus-file-management-properties.glade.h:76
 msgid "_Never prompt or start programs on media insertion"
-msgstr ""
-"_Non chiedere conferma nè avviare i programmi all'inserimento di supporti"
+msgstr "_Non chiedere conferma nè avviare programmi all'inserimento di supporti"
 
+# GNOME-2-22
 #: ../src/nautilus-file-management-properties.glade.h:77
 msgid "_Only for files smaller than:"
-msgstr "S_olo per file più piccoli di:"
+msgstr "_Solo per file più piccoli di:"
 
 # GNOME-2-22
 #: ../src/nautilus-file-management-properties.glade.h:78
