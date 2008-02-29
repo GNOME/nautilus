@@ -1,5 +1,13 @@
 2008-02-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* nautilus-computer.desktop.in.in:
+	* nautilus-folder-handler.desktop.in.in:
+	* nautilus-home.desktop.in.in:
+	Computer, Home and Open Folder .desktop files should only show in
+	GNOME. Patch from Federico Mena Quintero. (#350947)
+
+2008-02-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-file-management-properties.c:
 	(update_icon_captions_from_gconf):
 	Fix a crasher when reading NULL values from GConf. (#518974)
