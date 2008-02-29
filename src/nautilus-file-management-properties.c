@@ -387,6 +387,8 @@ update_icon_captions_from_gconf (GladeXML *xml)
 	int i, j;
 
 	captions = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+	if (captions == NULL)
+		return;
 
 	for (i = 0, j = 0; 
 	     icon_captions_components[i] != NULL;
