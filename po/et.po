@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-29 10:38+0000\n"
-"PO-Revision-Date: 2008-02-14 07:08+0200\n"
+"PO-Revision-Date: 2008-02-24 18:16+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1129,7 +1129,7 @@ msgstr "Kataloogi avamine"
 
 #: ../libnautilus-private/nautilus-autorun.c:412
 #: ../src/nautilus-x-content-bar.c:122
-#, fuzzy, c-format
+#, c-format
 msgid "Open %s"
 msgstr "%s avamine"
 
@@ -1198,7 +1198,7 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-autorun.c:1094
 msgid "Choose what application to launch."
-msgstr ""
+msgstr "Vali käivitatav rakendus."
 
 #: ../libnautilus-private/nautilus-autorun.c:1103
 #, c-format
@@ -1706,9 +1706,8 @@ msgid "If you delete an item, it will be permanently lost."
 msgstr "Kui kustutad kirje, on see jäädavalt kadunud."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1113
-#, fuzzy
 msgid "Are you sure you want to permanently delete \"%B\"?"
-msgstr "Oled kindel, et soovid \"%s\" jäädavalt kustutada?"
+msgstr "Oled kindel, et soovid \"%B\" jäädavalt kustutada?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1116
 #, fuzzy, c-format
@@ -1746,11 +1745,12 @@ msgid "Error while deleting."
 msgstr "Viga kustutamisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1239
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
-msgstr "\"%s\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
+msgstr ""
+"Kaustas \"%B\" asuvaid faile pole võimalik kustutada kuna sul pole nende "
+"nägemiseks õiguseid."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1242
 #: ../libnautilus-private/nautilus-file-operations.c:2119
@@ -1765,11 +1765,12 @@ msgid "_Skip files"
 msgstr "_Jäta failid vahele"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1271
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
-msgstr "\"%s\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
+msgstr ""
+"Kausta \"%B\" pole võimalik kustutada, kuna sul puuduvad selle õigused "
+"lugemiseks."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1274
 #: ../libnautilus-private/nautilus-file-operations.c:2157
@@ -1818,13 +1819,12 @@ msgid "Do you want to empty the trash before you unmount?"
 msgstr "Kas soovid enne lahtihaakimist tühjendada prügikasti?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1883
-#, fuzzy
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
 msgstr ""
-"Et sellele seadmele vaba ruumi tekitada, tuleks prügikast tühjaks teha. Kõik "
-"prügikastis olevad kirjed lähevad jäädavalt kaotsi. "
+"Sellele seadmele täiendava vaba ruumi tekitamiseks tuleks prügikast tühjaks "
+"teha. Kõik prügikastis olevad kirjed lähevad siis jäädavalt kaotsi. "
 
 #: ../libnautilus-private/nautilus-file-operations.c:1889
 msgid "Don't Empty Trash"
@@ -1916,9 +1916,8 @@ msgstr "Rakenduse käivitamisel tekkis viga."
 #: ../libnautilus-private/nautilus-file-operations.c:2369
 #: ../libnautilus-private/nautilus-file-operations.c:2403
 #: ../libnautilus-private/nautilus-file-operations.c:2428
-#, fuzzy
 msgid "Error while copying to \"%B\"."
-msgstr "Viga \"%s\" kopeerimisel."
+msgstr "Viga \"%B\" kopeerimisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2332
 #, fuzzy
@@ -1936,11 +1935,12 @@ msgid "The destination is not a folder."
 msgstr "Asukoht ei ole kataloog."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2404
-#, fuzzy
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
-msgstr "Sihtkohas ei ole piisavalt vaba ruumi."
+msgstr ""
+"Sihtkohas ei ole piisavalt vaba ruumi. Lisaruumi tekitamiseks proovi "
+"võimalusel sealt mõned tarbetud failid kustutada."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2406
 #, c-format
@@ -2026,7 +2026,8 @@ msgstr "%S %S-st, jäänud %T (%S sekundis)"
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
-msgstr "\"%s\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
+msgstr ""
+"Kataloogi \"%B\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2788
 msgid "There was an error creating the folder \"%B\"."
@@ -2788,9 +2789,8 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:180
 #: ../libnautilus-private/nautilus-open-with-dialog.c:272
-#, fuzzy
 msgid "Could not set as default application"
-msgstr "\"%s\" pole võimalik sihtkohta ümber tõsta."
+msgstr "Pole võimalik vaikimisi rakenduseks määrata"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:269
 msgid "Default"
@@ -4883,7 +4883,7 @@ msgstr "<b>Kataloogid</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:22
 msgid "<b>Icon Captions</b>"
-msgstr ""
+msgstr "<b>Ikoonide pealdised</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:23
 msgid "<b>Icon View Defaults</b>"
@@ -6116,7 +6116,7 @@ msgstr "_Vaade"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:601
 msgid "_Help"
-msgstr "_Abi"
+msgstr "A_bi"
 
 #. name, stock id, label
 #. name, stock id
@@ -6423,9 +6423,6 @@ msgstr "Võrk"
 
 #~ msgid "<span weight=\"bold\">Folders</span>"
 #~ msgstr "<span weight=\"bold\">Kataloogid</span>"
-
-#~ msgid "<span weight=\"bold\">Icon Captions</span>"
-#~ msgstr "<span weight=\"bold\">Ikoonide allkirjad</span>"
 
 #~ msgid "<span weight=\"bold\">List Columns</span>"
 #~ msgstr "<span weight=\"bold\">Loendi veerud</span>"
