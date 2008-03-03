@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-29 20:58+0000\n"
-"PO-Revision-Date: 2008-03-02 11:08+0200\n"
+"PO-Revision-Date: 2008-03-03 13:24+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -403,11 +403,10 @@ msgid "Always use the location entry, instead of the pathbar"
 msgstr "Rajariba asemel alati asukohakirje kasutamine"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
-#, fuzzy
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
 msgstr ""
-"Kataloogi vaikimisi tausta failinimi. Kasutatakse ainult siis, kui võti "
+"Kataloogi vaikimisi tausta värvus. Kasutatakse ainult siis, kui võti "
 "background_set on märgitud."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
@@ -645,11 +644,10 @@ msgstr ""
 "ettevaatlikult."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when media is inserted."
-msgstr "Kui märgitud, näitab Nautilus töölaual ikoone."
+msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -854,9 +852,8 @@ msgid "Sans 10"
 msgstr "Sans 10"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "Show advanced permissions in the file property dialog"
-msgstr "Faili omaduste dialoogis laiendatud pääsuõiguste näitamine"
+msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Show folders first in windows"
@@ -1486,7 +1483,7 @@ msgstr "_Korda"
 #: ../libnautilus-private/nautilus-file-operations.c:174
 #, fuzzy
 msgid "Delete _All"
-msgstr "Vali _kõik"
+msgstr "Kustuta _kõik"
 
 #: ../libnautilus-private/nautilus-file-operations.c:175
 msgid "_Replace"
@@ -1724,19 +1721,18 @@ msgid "Deleting files"
 msgstr "Failide kustutamine"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1211
-#, fuzzy, c-format
+#, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
-msgstr[0] "Valitud %d kataloog"
-msgstr[1] "Valitud %d kataloogi"
+msgstr[0] ""
+msgstr[1] ""
 
 #. To translators: %T will expand to a time like "2 minutes"
 #: ../libnautilus-private/nautilus-file-operations.c:1222
-#, fuzzy
 msgid "%'d file left to delete — %T left"
 msgid_plural "%'d files left to delete — %T left"
-msgstr[0] "Valitud %d kataloog"
-msgstr[1] "Valitud %d kataloogi"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1283
 #: ../libnautilus-private/nautilus-file-operations.c:1316
@@ -1793,11 +1789,11 @@ msgid "Moving files to trash"
 msgstr "Failide prügikasti viskamine"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1515
-#, fuzzy, c-format
+#, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
-msgstr[0] "Failide tõstmine prügikasti"
-msgstr[1] "Failide tõstmine prügikasti"
+msgstr[0] "Prügikasti on jäänud %'d fail"
+msgstr[1] "Prügikasti on jäänud %'d faili"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1564
 msgid "Cannot move file to trash, do you want to delete immediately?"
@@ -1889,11 +1885,12 @@ msgid "Error while moving files to trash."
 msgstr "Viga failide prügikasti viskamisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2165
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
-msgstr "\"%s\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
+msgstr ""
+"Kataloogis \"%B\" olevaid faile pole võimalik käsitleda, kuna sul puuduvad "
+"õigused nende nägemiseks."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2203
 #, fuzzy
@@ -2022,12 +2019,12 @@ msgid "%S of %S — %T left (%S/sec)"
 msgstr "%S %S-st, jäänud %T (%S sekundis)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2838
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"Kataloogi \"%B\" pole võimalik kopeerida, kuna sul puuduvad lugemisõigused."
+"Kataloogi \"%B\" pole võimalik kopeerida, kuna sul puuduvad sihtkohas "
+"õigused selle loomiseks."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2841
 msgid "There was an error creating the folder \"%B\"."
@@ -2096,25 +2093,23 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3314
 #: ../libnautilus-private/nautilus-file-operations.c:3761
-#, fuzzy
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
-msgstr "Kataloog nimega \"%s\" on juba olemas. Kas soovid seda asendada?"
+msgstr "Kataloog nimega \"%B\" on juba olemas. Kas soovid seda asendada?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3316
 #: ../libnautilus-private/nautilus-file-operations.c:3763
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
 "the folder."
 msgstr ""
-"Fail on juba \"%s\" all olema. Selle asendamisega kirjutatakse faili sisu "
-"üle."
+"Kataloog on juba \"%F\" all olema.  Selle asendamisega eemaldatakse kõik "
+"selles kataloogis olevad failid."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3321
 #: ../libnautilus-private/nautilus-file-operations.c:3768
-#, fuzzy
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
-msgstr "Fail nimega \"%s\" on juba olemas. Kas soovid seda asendada?"
+msgstr "Fail nimega \"%B\" on juba olemas.  Kas soovid seda asendada?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3323
 #: ../libnautilus-private/nautilus-file-operations.c:3770
@@ -2215,15 +2210,15 @@ msgid "Error while creating file %B."
 msgstr "Viga faili %B loomisel."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4820
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error creating the directory in %F."
-msgstr "Rakenduse käivitamisel tekkis viga."
+msgstr "%F sisse kataloogi loomisel tekkis viga."
 
 #: ../libnautilus-private/nautilus-file.c:904
 #: ../libnautilus-private/nautilus-vfs-file.c:266
-#, fuzzy, c-format
+#, c-format
 msgid "This file cannot be mounted"
-msgstr "Embleemi pole võimalik paigaldada."
+msgstr "Seda faili pole võimalik külge haakida"
 
 #: ../libnautilus-private/nautilus-file.c:1316
 #, c-format
@@ -2995,11 +2990,11 @@ msgid "File operations"
 msgstr "Failioperatsioonis"
 
 #: ../libnautilus-private/nautilus-progress-info.c:300
-#, fuzzy, c-format
+#, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
-msgstr[0] "%d aktiivne failioperatsioon"
-msgstr[1] "%d aktiivset failioperatsiooni"
+msgstr[0] "%'d aktiivne failioperatsioon"
+msgstr[1] "%'d aktiivset failioperatsiooni"
 
 #: ../libnautilus-private/nautilus-progress-info.c:493
 #: ../libnautilus-private/nautilus-progress-info.c:511
@@ -3172,11 +3167,11 @@ msgid "Display this location with the desktop view."
 msgstr "Selle asukoha kuvamine töölauavaatena."
 
 #: ../src/file-manager/fm-directory-view.c:614
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
-msgstr[0] "See avab %d eraldi akna."
-msgstr[1] "See avab %d eraldi akent."
+msgstr[0] "See avab %'d eraldi akna."
+msgstr[1] "See avab %'d eraldi akent."
 
 #: ../src/file-manager/fm-directory-view.c:1065
 #: ../src/file-manager/fm-properties-window.c:4918
@@ -3855,18 +3850,18 @@ msgid "_Open with \"%s\""
 msgstr "_Ava rakendusega \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:7117
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %'d New Window"
 msgid_plural "Open in %'d New Windows"
 msgstr[0] "Ava uues aknas"
-msgstr[1] "Ava %d uues aknas"
+msgstr[1] "Ava %'d uues aknas"
 
 #: ../src/file-manager/fm-directory-view.c:7126
-#, fuzzy, c-format
+#, c-format
 msgid "Browse in %'d New Window"
 msgid_plural "Browse in %'d New Windows"
 msgstr[0] "Sirvi uues aknas"
-msgstr[1] "Sirvi %d uues aknas"
+msgstr[1] "Sirvi %'d uues aknas"
 
 #: ../src/file-manager/fm-directory-view.c:7160
 msgid "Delete all selected items permanently"
@@ -5101,9 +5096,8 @@ msgid "<b>Tree View Defaults</b>"
 msgstr "<b>Puuvaate vaikeväärtused</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:33
-#, fuzzy
 msgid "Acti_on:"
-msgstr "Asukoht:"
+msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:34
 msgid ""
@@ -6195,9 +6189,9 @@ msgstr "Ligipääs oli keelatud."
 #. * the proxy is set up wrong.
 #.
 #: ../src/nautilus-window-manage-views.c:1720
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\", because the host could be found."
-msgstr "\"%s\" pole võimalik kuvada, kuna hosti \"%s\" pole võimalik leida."
+msgstr "Aadressi \"%s\" pole võimalik kuvada, kuna hosti pole võimalik leida."
 
 #: ../src/nautilus-window-manage-views.c:1722
 msgid ""
