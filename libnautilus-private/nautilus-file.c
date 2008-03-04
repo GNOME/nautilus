@@ -231,7 +231,7 @@ nautilus_file_set_display_name (NautilusFile *file,
 {
 	gboolean changed;
 
-	if (display_name == NULL) {
+	if (display_name == NULL || *display_name == 0) {
 		return FALSE;
 	}
 	
