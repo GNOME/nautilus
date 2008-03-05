@@ -1,6 +1,6 @@
-# Dutch Translation of Nautilus
+# Dutch Translation for Nautilus
 #
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# This file is distributed under the same license as the Nautilus package.
 #
 # Dennis Smit <synap@area101.penguin.nl>, 2001.
 # Dirk-Jan C. Binnema <dirkjan@gnome.org>, 2001.
@@ -11,7 +11,7 @@
 # Ronald Hummelink <ronald@hummelink.xs4all.nl>, 2002.
 # Jordi Bosveld <jotti@jotti.dhs.org>, 2002.
 # Reinout van Schouwen <reinout@cs.vu.nl>, 2002-2007
-# Tino Meinen <a.t.meinen@chello.nl>, 2006
+# Tino Meinen <a.t.meinen@chello.nl>, 2006, 2008.
 # Wouter Bolsterlee <wbolster@gnome.org>, 2006, 2007
 #
 # Op 20 augustus 2006 heb ik alle "quotes" vervangen door typografisch meer
@@ -26,9 +26,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-03 01:58+0100\n"
-"PO-Revision-Date: 2008-03-03 02:08+0100\n"
-"Last-Translator: Reinout van Schouwen <reinouts@gnome.org>\n"
+"POT-Creation-Date: 2008-03-05 11:39+0100\n"
+"PO-Revision-Date: 2008-03-04 02:31+0100\n"
+"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -592,7 +592,7 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
-"Indien ingeschakeld is de zijbalk zichtbaar in nieuw geopende vensters."
+"Indien ingeschakeld is het zijpaneel zichtbaar in nieuw geopende vensters."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid "If set to true, newly opened windows will have the status bar visible."
@@ -642,6 +642,8 @@ msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and and media insertion."
 msgstr ""
+"Indien ingeschakeld koppelt Nautilus automatisch media aan zoals harde "
+"schijven en verwijderbare media, bij het opstarten en invoeren van media."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -650,6 +652,11 @@ msgid ""
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
 msgstr ""
+"Indien ingeschakeld opent Nautilus automatisch een mapvenster wanneer een "
+"medium automatisch aangekoppeld wordt. Dit is alleen van toepassing op media "
+"waarin geen herkenbaar x-content/*-type aangetroffen werd. Voor media waar "
+"herkenbaar x-content-type aangetroffen wordt, zal de door de gebruiker "
+"gewenste actie worden genomen."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -811,24 +818,32 @@ msgstr "Lijst van mogelijke bijschriften bij pictogrammen"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "List of x-content/* types to ask the user what to do on insertion"
 msgstr ""
+"Lijst met x-content/*-types waarbij de gebruiker gevraagd wordt wat te doen "
+"bij invoer van het medium"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "List of x-content/* types to ask the user what to do on insertion."
 msgstr ""
+"Lijst met x-content/*-types waarbij de gebruiker gevraagd wordt wat te doen "
+"bij invoer van het medium."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "List of x-content/* types where a folder window should be opened"
-msgstr ""
+msgstr "Lijst met x-content/*-types waarbij een mapvenster geopend moet worden"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "List of x-content/* types where a folder window should be opened on "
 "insertion."
 msgstr ""
+"Lijst met x-content/*-types waarbij een mapvenster geopend moet worden bij "
+"invoer van het medium."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "List of x-content/* where to prompt the user on insertion"
 msgstr ""
+"Lijst met x-content/*-types waarbij de gebruiker gevraagd wordt bij invoer "
+"van het medium"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Maximum handled files in a folder"
@@ -844,11 +859,11 @@ msgid ""
 "2.2. Please use the icon theme instead."
 msgstr ""
 "Naam van het te gebruiken Nautilus-thema. Dit is verouderd sinds Nautilus "
-"2.2. Gelieve het pictogramthema in plaats ervan te gebruiken."
+"2.2. Gebruik in plaats daarvan het pictogramthema."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Nautilus handles drawing the desktop"
-msgstr "Nautilus neemt het tekenen van het bureaublad voor zijn rekening"
+msgstr "Nautilus neemt het weergeven van het bureaublad voor zijn rekening"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Nautilus uses the users home folder as the desktop"
@@ -860,15 +875,15 @@ msgstr "Netwerkservers-pictogram zichtbaar op bureaublad"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Network servers icon name"
-msgstr "Pictogramnaam van Netwerkservers"
+msgstr "Pictogramnaam van netwerkservers"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Never prompt or autorun/autostart programs when media is inserted"
-msgstr ""
+msgstr "Nooit vragen of programma's automatisch starten bij invoeren van media"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Only show folders in the tree side pane"
-msgstr "Alleen mappen in de boom-zijbalk tonen"
+msgstr "Alleen mappen in de boom-zijpaneel tonen"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
@@ -1126,11 +1141,13 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid "Whether to automatically mount media"
-msgstr "Of media automatisch gekoppeld dienen te worden"
+msgstr "Of media automatisch aangekoppeld dienen te worden"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "Whether to automatically open a folder for automounted media"
 msgstr ""
+"Of automatisch een mapvenster geopend wordt voor automatisch aangekoppelde "
+"media"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
 msgid "Whether to enable immediate deletion"
@@ -1229,12 +1246,18 @@ msgstr "U heeft zojuist media ingevoerd waar digitale foto's op staan."
 msgid "You have just inserted a digital audio player."
 msgstr "U heeft zojuist een digitale audiospeler aangesloten."
 
+# met daarop/met/waarop
+# kreeg deze melding ook te zien bij het browsen naar een 
+# FTP-site als: ftp.gnome.org
 #: ../libnautilus-private/nautilus-autorun.c:1102
 msgid ""
 "You have just inserted media with software intended to be automatically "
 "started."
 msgstr ""
+"U heeft zojuist een opslagmedium ingevoerd met software wat bedoeld is om "
+"automatisch te starten."
 
+# opslagmedium/media
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1105
 msgid "You have just inserted media."
@@ -1244,12 +1267,15 @@ msgstr "U heeft zojuist media ingevoerd."
 msgid "Choose what application to launch."
 msgstr "Kies de te starten toepassing."
 
+# hoe/waarmee
 #: ../libnautilus-private/nautilus-autorun.c:1116
 #, c-format
 msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
 "for other media of type \"%s\"."
 msgstr ""
+"Selecteer hoe ‘%s’ geopend moet worden en of in de toekomst andere bestanden "
+"van type ‘%s’ ook zo geopend moeten worden."
 
 #: ../libnautilus-private/nautilus-autorun.c:1138
 msgid "_Always perform this action"
@@ -1506,7 +1532,7 @@ msgstr "Sorry, maar er is reeds een embleem met de naam ‘%s’. "
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:220
 msgid "Please choose a different emblem name."
-msgstr "Gelieve een andere naam ervoor te kiezen."
+msgstr "Kies een andere naam voor het embleem."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:254
 #: ../libnautilus-private/nautilus-emblem-utils.c:268
@@ -1721,7 +1747,7 @@ msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Weet u zeker dat u ‘%B’ blijvend wilt verwijderen uit de prullenbak?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1097
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
@@ -1757,14 +1783,14 @@ msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Weet u zeker dat u ‘%B’ blijvend wilt verwijderen?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1164
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] ""
-"Weet u zeker dat u het %d geselecteerde item permanent wilt verwijderen?"
+"Weet u zeker dat u het geselecteerde item blijvend wilt verwijderen?"
 msgstr[1] ""
-"Weet u zeker dat u de %d geselecteerde items permanent wilt verwijderen?"
+"Weet u zeker dat u de %'d geselecteerde items blijvend wilt verwijderen?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1206
 msgid "Deleting files"
@@ -1887,10 +1913,11 @@ msgstr "Prullenbak niet legen"
 msgid "Empty Trash"
 msgstr "Prullenbak legen"
 
+# Kon %s niet aankoppelen
 #: ../libnautilus-private/nautilus-file-operations.c:2022
 #, c-format
 msgid "Unable to mount %s"
-msgstr "Niet in staat %s te koppelen"
+msgstr "Niet in staat %s aan te koppelen"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2056
 #, c-format
@@ -2810,15 +2837,15 @@ msgstr[1] "Dit zal %d nieuwe vensters openen."
 msgid "Couldn't display \"%s\"."
 msgstr "Kan ‘%s’ niet weergeven."
 
+# beschikbaar/geinstalleerd
 #: ../libnautilus-private/nautilus-mime-actions.c:1205
 msgid "There is no application installed for this file type"
-msgstr ""
+msgstr "Er is voor dit bestandstype geen toepassing geïnstalleerd"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1247
 #: ../libnautilus-private/nautilus-mime-actions.c:1488
-#, fuzzy
 msgid "Unable to mount location"
-msgstr "/sbin/mount kon niet worden gestart."
+msgstr "Kon de locatie niet aankoppelen"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1573
 #, c-format
@@ -2834,15 +2861,14 @@ msgstr[1] "Bezig met openen van %d items"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:183
 #: ../libnautilus-private/nautilus-open-with-dialog.c:271
-#, fuzzy, c-format
+#, c-format
 msgid "Could not set application as the default: %s"
-msgstr "kan de SSL-encryptiebibliotheek niet als standaard instellen\n"
+msgstr "Kon niet als standaardtoepassing instellen: %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:184
 #: ../libnautilus-private/nautilus-open-with-dialog.c:272
-#, fuzzy
 msgid "Could not set as default application"
-msgstr "kan de SSL-encryptiebibliotheek niet als standaard instellen\n"
+msgstr "Kon niet als standaardtoepassing instellen"
 
 #  add the reset background item, possibly disabled
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:273
@@ -2854,9 +2880,8 @@ msgid "Icon"
 msgstr "Pictogram"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:343
-#, fuzzy
 msgid "Could not remove application"
-msgstr "%1 toepassing kan niet worden gestart."
+msgstr "Kon toepassing niet verwijderen"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:580
 msgid "No applications selected"
@@ -2877,22 +2902,23 @@ msgstr "Onbekend"
 #, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
 msgstr ""
+"Selecteer een toepassing waarmee %s en andere bestanden van type ‘%s’ "
+"geopend kunnen worden"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:716
 #: ../libnautilus-private/nautilus-open-with-dialog.c:938
-#, fuzzy, c-format
+#, c-format
 msgid "Open all files of type \"%s\" with:"
-msgstr "%s en andere bestanden van type \"%s\" openen met:"
+msgstr "Alle bestanden van type ‘%s’ openen met:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:162
-#, fuzzy
 msgid "Could not run application"
-msgstr "Kan applicatie niet uitvoeren"
+msgstr "Kan de toepassing niet uitvoeren"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:174
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find '%s'"
-msgstr "Kon '%s' niet vinden"
+msgstr "Kon ‘%s’ niet vinden"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:177
 msgid "Could not find application"
@@ -2907,6 +2933,7 @@ msgstr "Kon toepassing niet toevoegen aan toepassingendatabase: %s"
 msgid "Could not add application"
 msgstr "Kon toepassing niet toevoegen"
 
+# titel van bladervenster
 #: ../libnautilus-private/nautilus-open-with-dialog.c:391
 msgid "Select an Application"
 msgstr "Selecteer een toepassing"
@@ -2917,19 +2944,19 @@ msgid "Open With"
 msgstr "Openen met"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:780
-#, fuzzy
 msgid "Select an application to view its description."
 msgstr "Selecteer een toepassing om de omschrijving ervan te bekijken."
 
+# _a wordt gebruikt voor _Annuleren
 #: ../libnautilus-private/nautilus-open-with-dialog.c:805
-#, fuzzy
 msgid "_Use a custom command"
-msgstr "Gebruik een _aangepaste opdracht"
+msgstr "_Gebruik een aangepaste opdracht"
 
+# bladeren/verkennen/browsen/opzoeken (in dit geval)
+# bladeren naar andere programma's
 #: ../libnautilus-private/nautilus-open-with-dialog.c:822
-#, fuzzy
 msgid "_Browse..."
-msgstr "_Verkennen..."
+msgstr "_Bladeren..."
 
 #. name, stock id
 #. label, accelerator
@@ -2942,21 +2969,19 @@ msgid "_Open"
 msgstr "_Openen"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:935
-#, fuzzy, c-format
+#, c-format
 msgid "Open %s and other files of type \"%s\" with:"
-msgstr "%s en andere bestanden van type \"%s\" openen met:"
+msgstr "%s en andere bestanden van type ‘%s’ openen met:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:971
 #: ../libnautilus-private/nautilus-open-with-dialog.c:986
-#, fuzzy
 msgid "_Add"
 msgstr "_Toevoegen"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:972
 #: ../libnautilus-private/nautilus-open-with-dialog.c:987
-#, fuzzy
 msgid "Add Application"
-msgstr "Programma toevoegen"
+msgstr "Toepassing toevoegen"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:126
 msgid "Open Failed, would you like to choose another application?"
@@ -2991,8 +3016,8 @@ msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"Geen andere programma's zijn beschikbaar om dit bestand weer te geven. "
-"Wellicht kunt u het bestand wel openen als u het naar uw computer kopiëert."
+"Er zijn geen andere toepassingen beschikbaar om dit bestand weer te geven. "
+"Wellicht kunt u het bestand wel openen als u het naar uw computer kopieert."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:167
 msgid ""
@@ -3000,7 +3025,7 @@ msgid ""
 "onto your computer, you may be able to open it."
 msgstr ""
 "Geen andere programma's zijn beschikbaar om dit bestand weer te geven. "
-"Wellicht kunt u het bestand wel openen als u het naar uw computer kopiëert."
+"Wellicht kunt u het bestand wel openen als u het naar uw computer kopieert."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:381
 msgid "Sorry, but you can't execute commands from a remote site."
@@ -3044,16 +3069,15 @@ msgstr ""
 
 # Dit zijn kopjes in het venster. Vrij vertaald (Wouter Bolsterlee)
 #: ../libnautilus-private/nautilus-progress-info.c:222
-#, fuzzy
 msgid "File operations"
-msgstr "Weergeven van bestandsbewerkingen"
+msgstr "Bestandsbewerkingen"
 
 #: ../libnautilus-private/nautilus-progress-info.c:300
-#, fuzzy, c-format
+#, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
-msgstr[0] "Sla actieve fractal in bestand op"
-msgstr[1] ""
+msgstr[0] "%'d bestandsbewerking actief"
+msgstr[1] "%'d bestandsbewerkingen actief"
 
 #: ../libnautilus-private/nautilus-progress-info.c:493
 #: ../libnautilus-private/nautilus-progress-info.c:511
@@ -3096,9 +3120,8 @@ msgid "Redo the edit"
 msgstr "De bewerking opnieuw doen"
 
 #: ../nautilus-autorun-software.desktop.in.in.h:1
-#, fuzzy
 msgid "Autorun Prompt"
-msgstr "Wachtwoordprompt"
+msgstr "Autorun dialoogvenster"
 
 #. tooltip
 #: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:669
@@ -3123,6 +3146,8 @@ msgstr "Persoonlijke map"
 msgid "Open your personal folder"
 msgstr "Persoonlijke map openen"
 
+# Door (uw) bestanden bladeren met het bestandsbeheer
+# Het bestandssysteem verkennen met het bestandsbeheer
 #: ../nautilus.desktop.in.in.h:1
 msgid "Browse the file system with the file manager"
 msgstr "Bestandssysteem doorbladeren met het bestandsbeheer"
@@ -3137,22 +3162,22 @@ msgstr "“Factory” voor de Nautilus-schil en -bestandsbeheer"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
-msgstr "Nautilusfactory"
+msgstr "Nautilus-factory"
 
 #: ../src/Nautilus_shell.server.in.h:3
-#, fuzzy
 msgid "Nautilus instance"
-msgstr "Naam van het exemplaar"
+msgstr "Nautilus-instantie"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus metafile factory"
 msgstr "“Factory” voor Nautilus-metabestanden"
 
 #: ../src/Nautilus_shell.server.in.h:5
-#, fuzzy
 msgid ""
 "Nautilus operations that can be done from subsequent command-line invocations"
-msgstr "Nautilus shell-opdrachten kunnen worden in gedaan op de commandoregel"
+msgstr ""
+"Nautilus-bewerkingen die nadien uitgevoerd kunnen worden vanaf de "
+"opdrachtregel"
 
 #: ../src/Nautilus_shell.server.in.h:6
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -3232,11 +3257,11 @@ msgid "Display this location with the desktop view."
 msgstr "Deze locatie weergeven met de bureaubladweergave."
 
 #: ../src/file-manager/fm-directory-view.c:614
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
-msgstr[0] "Dit zal %d afzonderlijk venster openen."
-msgstr[1] "Dit zal %d nieuwe vensters openen."
+msgstr[0] "Dit zal %'d afzonderlijk venster openen."
+msgstr[1] "Dit zal %'d nieuwe vensters openen."
 
 #: ../src/file-manager/fm-directory-view.c:1065
 #: ../src/file-manager/fm-properties-window.c:4918
@@ -3278,41 +3303,41 @@ msgid "\"%s\" selected"
 msgstr "‘%s’ geselecteerd"
 
 #: ../src/file-manager/fm-directory-view.c:2036
-#, fuzzy, c-format
+#, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
-msgstr[0] "Geselecteerde map"
-msgstr[1] "%d mappen geselecteerd"
+msgstr[0] "%'d map geselecteerd"
+msgstr[1] "%'d mappen geselecteerd"
 
 #: ../src/file-manager/fm-directory-view.c:2046
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
-msgstr[0] " (bevat %d item)"
-msgstr[1] " (bevat %d items)"
+msgstr[0] " (bevat %'d item)"
+msgstr[1] " (bevat %'d items)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: ../src/file-manager/fm-directory-view.c:2057
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
-msgstr[0] " (bevatten in totaal %d item)"
-msgstr[1] " (bevatten in totaal %d items)"
+msgstr[0] " (bevatten in totaal %'d item)"
+msgstr[1] " (bevatten in totaal %'d items)"
 
 #: ../src/file-manager/fm-directory-view.c:2074
-#, fuzzy, c-format
+#, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
-msgstr[0] "%d item geselecteerd"
-msgstr[1] "%d items geselecteerd"
+msgstr[0] "%'d item geselecteerd"
+msgstr[1] "%'d items geselecteerd"
 
 #. Folders selected also, use "other" terminology
 #: ../src/file-manager/fm-directory-view.c:2081
-#, fuzzy, c-format
+#, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
-msgstr[0] "%d ander item geselecteerd (%s)"
-msgstr[1] "%d andere items geselecteerd"
+msgstr[0] "%'d ander item geselecteerd"
+msgstr[1] "%'d andere items geselecteerd"
 
 #. This is marked for translation in case a localiser
 #. * needs to use something other than parentheses. The
@@ -3446,24 +3471,24 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "‘%s’ wordt gekopieerd als u de opdracht 'Plakken' geeft"
 
 #: ../src/file-manager/fm-directory-view.c:5547
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] ""
 "Het geselecteerde item wordt verplaatst als u de opdracht Plakken geeft"
 msgstr[1] ""
-"De %d geselecteerde items worden verplaatst als u de opdracht Plakken geeft"
+"De %'d geselecteerde items worden verplaatst als u de opdracht Plakken geeft"
 
 #: ../src/file-manager/fm-directory-view.c:5554
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] ""
 "Het geselecteerde item wordt gekopieerd als u de opdracht Plakken geeft"
 msgstr[1] ""
-"De %d geselecteerde items worden gekopieerd als u de opdracht Plakken geeft"
+"De %'d geselecteerde items worden gekopieerd als u de opdracht Plakken geeft"
 
 #: ../src/file-manager/fm-directory-view.c:5648
 #: ../src/file-manager/fm-tree-view.c:972
@@ -3527,7 +3552,6 @@ msgstr "Nieuwe lege map aanmaken in deze map"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6238
-#, fuzzy
 msgid "No templates installed"
 msgstr "Geen Sjablonen geïnstalleerd"
 
@@ -3567,15 +3591,13 @@ msgstr "Elk geselecteerd item in een navigatievenster openen"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6261
 #: ../src/file-manager/fm-directory-view.c:6390
-#, fuzzy
 msgid "Open in Folder Window"
-msgstr "Deze map in een navigatievenster openen"
+msgstr "Openen in mapvenster"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6262
-#, fuzzy
 msgid "Open each selected item in a folder window"
-msgstr "Elk geselecteerd item in een navigatievenster openen"
+msgstr "Elk geselecteerd item in een mapvenster openen"
 
 #. name, stock id
 #. label, accelerator
@@ -3588,7 +3610,7 @@ msgstr "Met _andere toepassing openen..."
 #: ../src/file-manager/fm-directory-view.c:6266
 #: ../src/file-manager/fm-directory-view.c:6270
 msgid "Choose another application with which to open the selected item"
-msgstr "Ander programma kiezen om het geselecteerde item mee te openen"
+msgstr "Andere toepassing kiezen om het geselecteerde item mee te openen"
 
 #. name, stock id
 #. label, accelerator
@@ -3841,9 +3863,8 @@ msgstr "Deze map in een navigatievenster openen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6391
-#, fuzzy
 msgid "Open this folder in a folder window"
-msgstr "Deze map in een navigatievenster openen"
+msgstr "Deze map in een mapvenster openen"
 
 #. name, stock id
 #. label, accelerator
@@ -3900,9 +3921,8 @@ msgstr "Openen in nieuw venster"
 
 #: ../src/file-manager/fm-directory-view.c:6920
 #: ../src/file-manager/fm-directory-view.c:7124
-#, fuzzy
 msgid "Browse in New Window"
-msgstr "In nieuw _venster openen"
+msgstr "In nieuw venster doorbladeren"
 
 #: ../src/file-manager/fm-directory-view.c:6924
 #: ../src/file-manager/fm-directory-view.c:7134
@@ -3930,18 +3950,18 @@ msgid "_Open with \"%s\""
 msgstr "_Openen met ‘%s’"
 
 #: ../src/file-manager/fm-directory-view.c:7117
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %'d New Window"
 msgid_plural "Open in %'d New Windows"
-msgstr[0] "In nieuw _venster openen"
-msgstr[1] "Openen in %d nieuwe vensters"
+msgstr[0] "In nieuw venster openen"
+msgstr[1] "Openen in %'d nieuwe vensters"
 
 #: ../src/file-manager/fm-directory-view.c:7126
-#, fuzzy, c-format
+#, c-format
 msgid "Browse in %'d New Window"
 msgid_plural "Browse in %'d New Windows"
-msgstr[0] "In nieuw _venster openen"
-msgstr[1] "Openen in %d nieuwe vensters"
+msgstr[0] "In nieuw venster doorbladeren"
+msgstr[1] "Doorbladeren in %'d nieuwe vensters"
 
 #: ../src/file-manager/fm-directory-view.c:7160
 msgid "Delete all selected items permanently"
@@ -3953,7 +3973,7 @@ msgstr "Locatie downloaden?"
 
 #: ../src/file-manager/fm-directory-view.c:8313
 msgid "You can download it or make a link to it."
-msgstr "U het downloaden of er een verwijzing naar maken."
+msgstr "U kunt het downloaden of er een verwijzing naar maken."
 
 #: ../src/file-manager/fm-directory-view.c:8316
 msgid "Make a _Link"
@@ -3978,11 +3998,11 @@ msgstr "Slepen en neerzetten is alleen ondersteund op lokale bestandssystemen."
 msgid "An invalid drag type was used."
 msgstr "Een ongeldig sleeptype werd gebruikt."
 
+# gesleepte/versleepte
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/file-manager/fm-directory-view.c:8620
-#, fuzzy
 msgid "dropped text.txt"
-msgstr "*.txt|Platte tekst (Latin 1) (*.txt)"
+msgstr "versleepte tekst.txt"
 
 #: ../src/file-manager/fm-ditem-page.c:323
 #: ../src/file-manager/fm-ditem-page.c:334
@@ -4023,9 +4043,9 @@ msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
 msgstr "‘%s’ is niet gevonden. Misschien is het kort geleden verwijderd."
 
 #: ../src/file-manager/fm-error-reporting.c:67
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\": %s"
-msgstr "Sorry, het weergeven van de inhoud van ‘%s’is mislukt."
+msgstr "Sorry, het weergeven van de inhoud van ‘%s’is mislukt: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:74
 msgid "The folder contents could not be displayed."
@@ -4035,8 +4055,7 @@ msgstr "Kan inhoud van de map niet weergeven."
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr ""
-"De naam ‘%s’ is al in gebruik in deze map. Gelieve een andere naam te kiezen."
+msgstr "De naam ‘%s’ is al in gebruik in deze map. Kies een andere naam."
 
 #: ../src/file-manager/fm-error-reporting.c:108
 #, c-format
@@ -4057,19 +4076,18 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"De naam ‘%s’ is ongeldig, omdat het een ‘/’ bevat. Gelieve een andere naam "
-"te kiezen."
+"De naam ‘%s’ is ongeldig, omdat het een ‘/’ bevat. Kies een andere naam."
 
 #: ../src/file-manager/fm-error-reporting.c:122
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr "De naam ‘%s’ is ongeldig. Gelieve een andere naam te kiezen."
+msgstr "De naam ‘%s’ is ongeldig. Kies een andere naam."
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:137
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\": %s"
-msgstr "Sorry, kan ‘%s’ niet hernoemen naar ‘%s’."
+msgstr "Sorry, kan ‘%s’ niet hernoemen naar ‘%s’: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:145
 msgid "The item could not be renamed."
@@ -4079,35 +4097,37 @@ msgstr "Kan het item niet hernoemen."
 #, c-format
 msgid ""
 "You do not have the permissions necessary to change the group of \"%s\"."
-msgstr "U hebt de benodigde rechten niet om de groep van ‘%s’ te veranderen."
+msgstr "U hebt de benodigde rechten niet om de groep van ‘%s’ te wijzigen."
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:180
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, couldn't change the group of \"%s\": %s"
-msgstr "Sorry, kan de groep van ‘%s’ niet veranderen."
+msgstr "Sorry, kan de groep van ‘%s’ niet wijzigen: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:185
 msgid "The group could not be changed."
-msgstr "Kan de groep niet veranderen."
+msgstr "Kan de groep niet wijzigen."
 
 #: ../src/file-manager/fm-error-reporting.c:205
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, couldn't change the owner of \"%s\": %s"
-msgstr "Sorry, kan de eigenaar van ‘%s’ niet wijzigen."
+msgstr "Sorry, kan de eigenaar van ‘%s’ niet wijzigen: %s"
 
+# er kan niet van eigenaar gewisseld worden
 #: ../src/file-manager/fm-error-reporting.c:207
 msgid "The owner could not be changed."
-msgstr "Kan de eigenaar niet veranderen."
+msgstr "Kan de eigenaar niet wijzigen."
 
 #: ../src/file-manager/fm-error-reporting.c:227
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\": %s"
-msgstr "Sorry, kan de rechten van ‘%s’ niet veranderen."
+msgstr "Sorry, kan de rechten van ‘%s’ niet wijzigen: %s"
 
+# De rechten zijn niet te wijzigen.
 #: ../src/file-manager/fm-error-reporting.c:229
 msgid "The permissions could not be changed."
-msgstr "De rechten zijn niet veranderbaar."
+msgstr "Kan de rechten niet wijzigen."
 
 #: ../src/file-manager/fm-error-reporting.c:334
 #, c-format
@@ -4403,11 +4423,11 @@ msgid "unreadable"
 msgstr "onleesbaar"
 
 #: ../src/file-manager/fm-properties-window.c:2296
-#, fuzzy, c-format
+#, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
-msgstr[0] "%d item, met grootte %s"
-msgstr[1] "%d items, in totaal %s"
+msgstr[0] "%'d item, met grootte %s"
+msgstr[1] "%'d items, in totaal %s"
 
 #: ../src/file-manager/fm-properties-window.c:2305
 msgid "(some contents unreadable)"
@@ -4433,15 +4453,16 @@ msgstr "gebruikt"
 msgid "free"
 msgstr "vrij"
 
+# opslagruimte/capaciteit.
+# is de optelsom van vrije en gebruikte ruimte
+# Totaal/Totale opslagruimte/Opslagruimte totaal/Opslagruimte
 #: ../src/file-manager/fm-properties-window.c:3046
-#, fuzzy
 msgid "Total capacity:"
-msgstr "Totale capaciteit:"
+msgstr "Totale opslagruimte:"
 
 #: ../src/file-manager/fm-properties-window.c:3055
-#, fuzzy
 msgid "Filesystem type:"
-msgstr "Bestandssysteem-type: "
+msgstr "Type bestandssysteem:"
 
 #: ../src/file-manager/fm-properties-window.c:3133
 msgid "Basic"
@@ -4544,14 +4565,12 @@ msgid "Access:"
 msgstr "Toegang:"
 
 #: ../src/file-manager/fm-properties-window.c:4099
-#, fuzzy
 msgid "Folder access:"
 msgstr "Maptoegang:"
 
 #: ../src/file-manager/fm-properties-window.c:4101
-#, fuzzy
 msgid "File access:"
-msgstr "Bestandstoegang"
+msgstr "Bestandstoegang:"
 
 #: ../src/file-manager/fm-properties-window.c:4113
 #: ../src/file-manager/fm-properties-window.c:4124
@@ -4656,16 +4675,14 @@ msgid "You are not the owner, so you can't change these permissions."
 msgstr "U bent niet de eigenaar en kunt dus geen eigenschappen wijzigen."
 
 #: ../src/file-manager/fm-properties-window.c:4723
-#, fuzzy
 msgid "SELinux context:"
-msgstr "SELinux-context"
+msgstr "SELinux-context:"
 
 #: ../src/file-manager/fm-properties-window.c:4728
 msgid "Last changed:"
 msgstr "Laatste wijziging:"
 
 #: ../src/file-manager/fm-properties-window.c:4742
-#, fuzzy
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Rechten op bestanden in de map toepassen"
 
@@ -4847,30 +4864,32 @@ msgstr ""
 
 #: ../src/nautilus-application.c:1353 ../src/nautilus-places-sidebar.c:1484
 #: ../src/nautilus-places-sidebar.c:1507 ../src/nautilus-places-sidebar.c:1530
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to eject %s"
-msgstr "Kan media niet uitwerpen"
+msgstr "Kan %s niet uitwerpen"
 
 #: ../src/nautilus-autorun-software.c:144
 #: ../src/nautilus-autorun-software.c:147
 #, c-format
 msgid "Error starting autorun program: %s"
-msgstr ""
+msgstr "Fout bij starten van autorun-programma: %s"
 
 #: ../src/nautilus-autorun-software.c:150
 #, c-format
 msgid "Cannot find the autorun program"
-msgstr ""
+msgstr "Kan het autorun-programma niet vinden"
 
 #: ../src/nautilus-autorun-software.c:165
 msgid "<big><b>Error autorunning software</b></big>"
-msgstr ""
+msgstr "<big><b>Fout bij automatsch uitvoeren software</b></big>"
 
 #: ../src/nautilus-autorun-software.c:191
 msgid ""
 "<big><b>This media contains software intended to be automatically started. "
 "Would you like to run it?</b></big>"
 msgstr ""
+"<big><b>Dit medium bevat software bedoeld om automatisch te starten. Wilt u "
+"de software uitvoeren?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:193
 #, c-format
@@ -4880,6 +4899,10 @@ msgid ""
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
+"De software zal vanaf het medium ‘%s’ uitgevoerd worden. U moet nooit "
+"software uitvoeren die u niet vertrouwt.\n"
+"\n"
+"Bij twijfel klikt u op Annuleren."
 
 #: ../src/nautilus-bookmarks-window.c:156
 #: ../src/nautilus-file-management-properties.c:203
@@ -4913,122 +4936,119 @@ msgid "Edit Bookmarks"
 msgstr "Bladwijzers bewerken"
 
 #: ../src/nautilus-connect-server-dialog-main.c:78
-#, fuzzy, c-format
+#, c-format
 msgid "Can't display location \"%s\""
-msgstr "Kan ‘%s’ niet weergeven."
+msgstr "Kan locatie ‘%s’ niet weergeven"
 
 #: ../src/nautilus-connect-server-dialog-main.c:118
-#, fuzzy
 msgid "[URI]"
-msgstr "[URI...]"
+msgstr "[URI]"
 
 #. Translators: This is the --help description gor the connect to server app,
 #. the initial newlines are between the command line arg and the description
 #: ../src/nautilus-connect-server-dialog-main.c:129
-#, fuzzy
 msgid ""
 "\n"
 "\n"
 "Add connect to server mount"
-msgstr "Verbinden met server %s"
+msgstr ""
+"\n"
+"\n"
+"Verbinden met server-koppeling"
 
+# zelfgemaakte/aangepaste
 #: ../src/nautilus-connect-server-dialog.c:124
-#, fuzzy
 msgid "Custom Location"
-msgstr "Locatie"
+msgstr "Aangepaste locatie"
 
 #: ../src/nautilus-connect-server-dialog.c:126
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: ../src/nautilus-connect-server-dialog.c:129
 msgid "Public FTP"
-msgstr ""
+msgstr "Publieke FTP"
 
 #: ../src/nautilus-connect-server-dialog.c:131
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP (met aanmelding)"
 
 #: ../src/nautilus-connect-server-dialog.c:134
-#, fuzzy
 msgid "Windows share"
 msgstr "Windows-netwerk"
 
 #: ../src/nautilus-connect-server-dialog.c:136
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: ../src/nautilus-connect-server-dialog.c:138
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "Beveiligd WebDAV (HTTPS)"
 
+# van/voor?
 #: ../src/nautilus-connect-server-dialog.c:204
 msgid "Can't Connect to Server. You must enter a name for the server."
 msgstr ""
+"Kan niet met de server verbinden. U moet een naam voor de server geven."
 
 #: ../src/nautilus-connect-server-dialog.c:205
-#, fuzzy
 msgid "Please enter a name and try again."
-msgstr "Controleer de spelling en probeer opnieuw."
+msgstr "Geef een naam en probeer opnieuw."
 
 #: ../src/nautilus-connect-server-dialog.c:440
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "_Locatie:"
+msgstr "_Locatie (URI):"
 
+# dit is het adres van de server
+# server/server-adres
 #: ../src/nautilus-connect-server-dialog.c:462
-#, fuzzy
 msgid "_Server:"
-msgstr "_Nooit"
+msgstr "_Server:"
 
+# Dit moet eigenlijk vetgerdrukt zijn (HIG)
+# Optional information:
+# Poort:
+# Map:
+# -----
+# Extra opties/Aanvullende informatie/Aanvullend/Facultatieve informatie
 #: ../src/nautilus-connect-server-dialog.c:481
-#, fuzzy
 msgid "Optional information:"
-msgstr "Informatie tonen"
+msgstr "Facultatieve informatie:"
 
+# Windows-deel/gedeelde map
 #: ../src/nautilus-connect-server-dialog.c:493
-#, fuzzy
 msgid "_Share:"
-msgstr "Software"
+msgstr "_Windows share:"
 
 #: ../src/nautilus-connect-server-dialog.c:514
-#, fuzzy
 msgid "_Port:"
-msgstr "_Formaat:"
+msgstr "_Poort:"
 
 #: ../src/nautilus-connect-server-dialog.c:554
-#, fuzzy
 msgid "_User Name:"
-msgstr "_Naam:"
+msgstr "_Gebruikersnaam:"
 
 #: ../src/nautilus-connect-server-dialog.c:575
-#, fuzzy
 msgid "_Domain Name:"
-msgstr "_Naam:"
+msgstr "_Domeinnaam:"
 
 #: ../src/nautilus-connect-server-dialog.c:607
-#, fuzzy
 msgid "Bookmark _name:"
-msgstr "Kleur_naam:"
+msgstr "Bladwijzer_naam:"
 
 #: ../src/nautilus-connect-server-dialog.c:796
-#, fuzzy
 msgid "Connect to Server"
-msgstr "Verbinden met server %s"
+msgstr "Verbinden met server"
 
-# venstertitel om bestandstype te selecteren
 #: ../src/nautilus-connect-server-dialog.c:813
-#, fuzzy
 msgid "Service _type:"
-msgstr "Selecteer type"
+msgstr "S_ervertype:"
 
 #: ../src/nautilus-connect-server-dialog.c:907
-#, fuzzy
 msgid "Add _bookmark"
 msgstr "_Bladwijzer toevoegen"
 
 #: ../src/nautilus-connect-server-dialog.c:939
-#, fuzzy
 msgid "C_onnect"
 msgstr "_Verbinden"
 
@@ -5187,18 +5207,16 @@ msgid "<b>List View Defaults</b>"
 msgstr "<b>Standaardinstellingen lijstweergave</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:26
-#, fuzzy
 msgid "<b>Media Handling</b>"
-msgstr "Spam afhandeling"
+msgstr "<b>Afhandeling media</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<b>Other Media</b>"
 msgstr "<b>Andere media</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:28
-#, fuzzy
 msgid "<b>Other Previewable Files</b>"
-msgstr "Reservekopie andere bestanden..."
+msgstr "<b>Andere voorbeeldweergaven</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:29
 msgid "<b>Sound Files</b>"
@@ -5227,7 +5245,7 @@ msgid ""
 "Never"
 msgstr ""
 "Altijd\n"
-"Alleen lokale bestanden\n"
+"Alleen bij lokale bestanden\n"
 "Nooit"
 
 #: ../src/nautilus-file-management-properties.glade.h:37
@@ -5282,8 +5300,8 @@ msgstr "Kies de volgorde waarin informatie verschijnt in de lijstweergave."
 msgid ""
 "Choose what happens when inserting media or connecting devices to the system"
 msgstr ""
-"Bepalen wat er gebeurt bij het invoeren van media of het verbinden van apparaten "
-"aan het systeem"
+"Bepalen wat er gebeurt bij het invoeren van media of het verbinden van "
+"apparaten aan het systeem"
 
 #: ../src/nautilus-file-management-properties.glade.h:50
 msgid "Count _number of items:"
@@ -5333,9 +5351,10 @@ msgstr "Voorbeeld"
 msgid "Preview _sound files:"
 msgstr "Fragment van geluid_sbestanden spelen:"
 
+# de A was nog ongebruikt
 #: ../src/nautilus-file-management-properties.glade.h:62
 msgid "Show _only folders"
-msgstr "Alleen mappen t_onen"
+msgstr "_Alleen mappen tonen"
 
 #: ../src/nautilus-file-management-properties.glade.h:63
 msgid "Show _thumbnails:"
@@ -5343,7 +5362,7 @@ msgstr "Minia_tuurafbeeldingen tonen:"
 
 #: ../src/nautilus-file-management-properties.glade.h:64
 msgid "Show hidden and _backup files"
-msgstr "Ver_borgen- en reservekopiebestanden tonen"
+msgstr "_Verborgen- en reservekopiebestanden tonen"
 
 #: ../src/nautilus-file-management-properties.glade.h:65
 msgid "Show te_xt in icons:"
@@ -5353,9 +5372,10 @@ msgstr "Te_kst in pictogrammen tonen:"
 msgid "Sort _folders before files"
 msgstr "_Mappen vóór bestanden sorteren"
 
+# Nieuwe mappen starten in [Pictogrammenweergave/Lijstweergave]
 #: ../src/nautilus-file-management-properties.glade.h:67
 msgid "View _new folders using:"
-msgstr "_Nieuwe mappen weergeven met:"
+msgstr "_Nieuwe mappen starten in:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
 msgid "Views"
@@ -5377,6 +5397,7 @@ msgstr "_Standaard zoomfactor:"
 msgid "_Double click to open items"
 msgstr "_Dubbelklikken om items te openen"
 
+# bestandsindeling/format/formaat
 #: ../src/nautilus-file-management-properties.glade.h:74
 msgid "_Format:"
 msgstr "_Formaat:"
@@ -5387,7 +5408,7 @@ msgstr "_Muziekspeler:"
 
 #: ../src/nautilus-file-management-properties.glade.h:76
 msgid "_Never prompt or start programs on media insertion"
-msgstr ""
+msgstr "_Nooit vragen, of programma's starten bij invoeren van media"
 
 #: ../src/nautilus-file-management-properties.glade.h:77
 msgid "_Only for files smaller than:"
@@ -5417,9 +5438,10 @@ msgstr "_Tekst naast pictogrammen"
 msgid "_Type:"
 msgstr "_Type:"
 
+# De U wordt al gebruikt voor Sl_uiten
 #: ../src/nautilus-file-management-properties.glade.h:84
 msgid "_Use compact layout"
-msgstr "Compacte lay-out gebr_uiken"
+msgstr "_Compacte lay-out gebruiken"
 
 #: ../src/nautilus-file-management-properties.glade.h:85
 msgid "_View executable text files when they are opened"
@@ -5721,7 +5743,6 @@ msgstr "Bl_adwijzers"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:475
-#, fuzzy
 msgid "New _Window"
 msgstr "Nieu_w venster"
 
@@ -5731,14 +5752,12 @@ msgstr "Open een nieuw Nautilus-venster voor de weergegeven locatie"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:478
-#, fuzzy
 msgid "Open Folder W_indow"
-msgstr "Bovenliggende map openen"
+msgstr "_Mapvenster openen"
 
 #: ../src/nautilus-navigation-window-menus.c:479
-#, fuzzy
 msgid "Open a folder window for the displayed location"
-msgstr "Een nieuw Thunar-venster openen voor de weergegeven locatie"
+msgstr "Een mapvenster openen voor de weergegeven locatie"
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:481
@@ -5803,98 +5822,79 @@ msgid "Locate documents and folders on this computer by name or content"
 msgstr "Documenten en bestanden op deze computer vinden op naam of inhoud"
 
 #. name, stock id
-#. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:505
-#: ../src/nautilus-navigation-window-menus.c:526
+#: ../src/nautilus-navigation-window-menus.c:504
 msgid "_Main Toolbar"
 msgstr "Hoofd_werkbalk"
 
-#. label, accelerator
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:506
-#: ../src/nautilus-navigation-window-menus.c:527
+#: ../src/nautilus-navigation-window-menus.c:505
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Zichtbaarheid veranderen van de hoofdwerkbalk van dit venster"
 
 #. is_active
 #. name, stock id
-#. is_active
-#. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:510
-#: ../src/nautilus-navigation-window-menus.c:531
+#: ../src/nautilus-navigation-window-menus.c:509
 msgid "_Side Pane"
 msgstr "_Zijpaneel"
 
-#. label, accelerator
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:511
-#: ../src/nautilus-navigation-window-menus.c:532
+#: ../src/nautilus-navigation-window-menus.c:510
 msgid "Change the visibility of this window's side pane"
-msgstr "Zichtbaarheid van de vensterzijbalk van dit venster veranderen"
+msgstr "Zichtbaarheid van het zijpaneel van dit venster veranderen"
 
 #. is_active
 #. name, stock id
-#. is_active
-#. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:515
-#: ../src/nautilus-navigation-window-menus.c:536
+#: ../src/nautilus-navigation-window-menus.c:514
 msgid "Location _Bar"
 msgstr "Locatie_balk"
 
-#. label, accelerator
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:516
-#: ../src/nautilus-navigation-window-menus.c:537
+#: ../src/nautilus-navigation-window-menus.c:515
 msgid "Change the visibility of this window's location bar"
 msgstr "Zichtbaarheid van locatiebalk in dit venster veranderen"
 
 #. is_active
 #. name, stock id
-#. is_active
-#. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:520
-#: ../src/nautilus-navigation-window-menus.c:541
+#: ../src/nautilus-navigation-window-menus.c:519
 msgid "St_atusbar"
 msgstr "St_atusbalk"
 
-#. label, accelerator
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:521
-#: ../src/nautilus-navigation-window-menus.c:542
+#: ../src/nautilus-navigation-window-menus.c:520
 msgid "Change the visibility of this window's statusbar"
 msgstr "Zichtbaarheid van de statusbalk in dit venster veranderen"
 
-#: ../src/nautilus-navigation-window-menus.c:567
+#: ../src/nautilus-navigation-window-menus.c:544
 msgid "_Back"
 msgstr "_Terug"
 
-#: ../src/nautilus-navigation-window-menus.c:569
+#: ../src/nautilus-navigation-window-menus.c:546
 msgid "Go to the previous visited location"
 msgstr "Naar de vorige bezochte locatie gaan"
 
-#: ../src/nautilus-navigation-window-menus.c:570
+#: ../src/nautilus-navigation-window-menus.c:547
 msgid "Back history"
 msgstr "Terug-geschiedenis"
 
-#: ../src/nautilus-navigation-window-menus.c:584
+#: ../src/nautilus-navigation-window-menus.c:561
 msgid "_Forward"
 msgstr "_Vooruit"
 
-#: ../src/nautilus-navigation-window-menus.c:586
+#: ../src/nautilus-navigation-window-menus.c:563
 msgid "Go to the next visited location"
 msgstr "Naar de volgende bezochte locatie gaan"
 
-#: ../src/nautilus-navigation-window-menus.c:587
+#: ../src/nautilus-navigation-window-menus.c:564
 msgid "Forward history"
 msgstr "Vooruit-geschiedenis"
 
 # komt in het menu: Ga naar.
 # indien aangeklikt wordt een zoekbalk getoond
-#: ../src/nautilus-navigation-window-menus.c:601
+#: ../src/nautilus-navigation-window-menus.c:578
 msgid "_Search"
 msgstr "_Zoekopdracht"
 
@@ -6333,29 +6333,29 @@ msgstr "Kan ‘%s’ niet vinden."
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus kan niet omgaan met %s: locaties."
 
+# soort/type
 #: ../src/nautilus-window-manage-views.c:1698
-#, fuzzy
 msgid "Nautilus cannot handle this kind of locations."
-msgstr "Nautilus kan niet omgaan met %s: locaties."
+msgstr "Nautilus kan niet omgaan met dit type locaties."
 
 #: ../src/nautilus-window-manage-views.c:1705
-#, fuzzy
 msgid "Unable to mount the location."
-msgstr "/sbin/mount kon niet worden gestart."
+msgstr "De locatie kon niet worden aangekoppeld."
 
 #: ../src/nautilus-window-manage-views.c:1711
 msgid "Access was denied."
 msgstr "Toegang geweigerd."
 
+# BUG: engles: 'because the host could be found.'
 #. This case can be hit for user-typed strings like "foo" due to
 #. * the code that guesses web addresses when there's no initial "/".
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
 #: ../src/nautilus-window-manage-views.c:1720
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\", because the host could be found."
-msgstr "Kan ‘%s’ niet weergeven, omdat computer ‘%s’ onvindbaar is."
+msgstr "Kan ‘%s’ niet weergeven, omdat de computer onvindbaar is."
 
 #: ../src/nautilus-window-manage-views.c:1722
 msgid ""
@@ -6363,11 +6363,13 @@ msgid ""
 msgstr "Controleer de spelling en uw proxy-instellingen."
 
 #: ../src/nautilus-window-manage-views.c:1736
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error: %s\n"
 "Please select another viewer and try again."
-msgstr "Kies een andere weergavemethode en probeer het opnieuw."
+msgstr ""
+"Fout: %s\n"
+"Kies een andere weergavemethode en probeer het opnieuw."
 
 #: ../src/nautilus-window-menus.c:161
 msgid "Go to the location specified by this bookmark"
@@ -6669,58 +6671,54 @@ msgid "_Home"
 msgstr "Persoonlijke _map"
 
 #: ../src/nautilus-x-content-bar.c:68
-#, fuzzy
 msgid "These files are on an Audio CD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een muziek-cd."
 
 #: ../src/nautilus-x-content-bar.c:70
-#, fuzzy
 msgid "These files are on an Audio DVD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een muziek-dvd."
 
 #: ../src/nautilus-x-content-bar.c:72
-#, fuzzy
 msgid "These files are on a Video DVD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een video-dvd."
 
 #: ../src/nautilus-x-content-bar.c:74
-#, fuzzy
 msgid "These files are on a Video CD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een Super Video-cd"
 
 #: ../src/nautilus-x-content-bar.c:76
 msgid "These files are on a Super Video CD."
 msgstr "Deze bestanden staan op een super-video-cd."
 
+# Merknaam Photo?
 #: ../src/nautilus-x-content-bar.c:78
-#, fuzzy
 msgid "These files are on a Photo CD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een Photo-cd."
 
+# Merknaam Picture?
 #: ../src/nautilus-x-content-bar.c:80
-#, fuzzy
 msgid "These files are on a Picture CD."
-msgstr "U gaat zodadelijk de %1 wijzigen van deze bestanden."
+msgstr "Deze bestanden staan op een Picture-cd."
 
 #: ../src/nautilus-x-content-bar.c:82
-#, fuzzy
 msgid "The media contains digital photos."
-msgstr "Automatisch foto's van uw digitale camera laden"
+msgstr "het medium bevat digitale foto's."
 
 #: ../src/nautilus-x-content-bar.c:84
 msgid "These files are on a digital audio player."
 msgstr "Deze bestanden staan op een digitale audiospeler."
 
 #: ../src/nautilus-x-content-bar.c:86
-#, fuzzy
 msgid "The media contains software."
-msgstr "Software Mediabeheer"
+msgstr "Het medium bevat software."
 
+# gedetecteerd/
+# vrij vertaald als aangekoppeld, wat duidelijker is hier.
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "The media has been detected as \"%s\"."
-msgstr "Er is een foto-kaart gevonden."
+msgstr "Het medium is aangekoppeld als ‘%s’."
 
 #: ../src/nautilus-zoom-control.c:84
 msgid "Zoom In"
