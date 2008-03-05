@@ -66,6 +66,7 @@ typedef void (*NautilusAutorunComboBoxChanged) (gboolean selected_ask,
 						gpointer user_data);
 
 typedef void (*NautilusAutorunOpenWindow) (GMount *mount, gpointer user_data);
+typedef void (*NautilusAutorunGetContent) (char **content, gpointer user_data);
 
 void nautilus_autorun_prepare_combo_box (GtkWidget *combo_box, 
 					 const char *x_content_type, 
@@ -79,8 +80,12 @@ void nautilus_autorun_get_preferences (const char *x_content_type, gboolean *pre
 
 void nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpointer user_data);
 
-char **nautilus_autorun_get_x_content_types_for_mount (GMount       *mount,
-						       gboolean      force_rescan);
+char **nautilus_autorun_get_cached_x_content_types_for_mount (GMount       *mount);
+
+void nautilus_autorun_get_x_content_types_for_mount_async (GMount *mount,
+							   NautilusAutorunGetContent callback,
+							   GCancellable *cancellable,
+							   gpointer user_data);
 
 void nautilus_autorun_launch_for_mount (GMount *mount, GAppInfo *app_info);
 

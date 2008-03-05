@@ -1297,7 +1297,7 @@ add_extension_extra_widgets (NautilusWindow *window, GFile *location)
 }
 
 static void
-nautilus_window_show_x_content_bar (NautilusWindow *window, GMount *mount, char **x_content_types)
+nautilus_window_show_x_content_bar (NautilusWindow *window, GMount *mount, const char **x_content_types)
 {
 	unsigned int n;
 
@@ -1339,7 +1339,32 @@ nautilus_window_show_trash_bar (NautilusWindow *window)
 typedef struct {
 	NautilusWindow *window;
 	GCancellable *cancellable;
+	GMount *mount;
 } FindMountData;
+
+static void
+found_content_type_cb (const char **x_content_types, FindMountData *data)
+{
+	NautilusWindow *window;
+	
+	if (g_cancellable_is_cancelled (data->cancellable)) {
+		goto out;
+	}
+	
+	window = data->window;
+	
+	if (x_content_types != NULL && x_content_types[0] != NULL) {
+		nautilus_window_show_x_content_bar (window, data->mount, x_content_types);
+		update_extra_location_widgets_visibility (window);
+	}
+
+	window->details->find_mount_cancellable = NULL;
+
+ out:
+	g_object_unref (data->mount);
+	g_object_unref (data->cancellable);
+	g_free (data);
+}
 
 static void
 found_mount_cb (GObject *source_object,
@@ -1349,7 +1374,6 @@ found_mount_cb (GObject *source_object,
 	FindMountData *data = user_data;
 	GMount *mount;
 	NautilusWindow *window;	
-	char **x_content_types;
 
 	if (g_cancellable_is_cancelled (data->cancellable)) {
 		goto out;
@@ -1361,14 +1385,12 @@ found_mount_cb (GObject *source_object,
 						    res,
 						    NULL);
 	if (mount != NULL) {
-		x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
-		if (x_content_types != NULL && x_content_types[0] != NULL) {
-			nautilus_window_show_x_content_bar (window, mount, x_content_types);
-			update_extra_location_widgets_visibility (window);
-		}
-		g_strfreev (x_content_types);
-		
-		g_object_unref (mount);
+		data->mount = mount;
+		nautilus_autorun_get_x_content_types_for_mount_async (mount,
+								      (NautilusAutorunGetContent)found_content_type_cb,
+								      data->cancellable,
+								      data);
+		return;
 	}
 	
 	window->details->find_mount_cancellable = NULL;
@@ -1455,6 +1477,7 @@ update_for_new_location (NautilusWindow *window)
 		data = g_new (FindMountData, 1);
 		data->window = window;
 		data->cancellable = g_cancellable_new ();
+		data->mount = NULL;
 		
 		window->details->find_mount_cancellable = data->cancellable;
 		g_file_find_enclosing_mount_async (window->details->location, 

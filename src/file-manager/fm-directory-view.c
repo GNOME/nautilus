@@ -4180,7 +4180,21 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 }
 
 static void
-add_x_content_apps (NautilusFile *file, GList **applications)
+get_x_content_async_callback (char **content,
+			      gpointer user_data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (user_data);
+
+	if (view->details->window != NULL) {
+		schedule_update_menus (view);
+	}
+	g_object_unref (view);
+}
+
+static void
+add_x_content_apps (FMDirectoryView *view, NautilusFile *file, GList **applications)
 {
 	GMount *mount;
 	char **x_content_types;
@@ -4194,8 +4208,7 @@ add_x_content_apps (NautilusFile *file, GList **applications)
 		return;
 	}
 	
-	x_content_types = nautilus_autorun_get_x_content_types_for_mount (mount, FALSE);
-		
+	x_content_types = nautilus_autorun_get_cached_x_content_types_for_mount (mount);
 	if (x_content_types != NULL) {
 		for (n = 0; x_content_types[n] != NULL; n++) {
 			char *x_content_type = x_content_types[n];
@@ -4205,6 +4218,12 @@ add_x_content_apps (NautilusFile *file, GList **applications)
 			*applications = g_list_concat (*applications, app_info_for_x_content_type);
 		}
 		g_strfreev (x_content_types);
+	} else {
+		nautilus_autorun_get_x_content_types_for_mount_async (mount,
+								      get_x_content_async_callback,
+								      NULL,
+								      g_object_ref (view));
+		
 	}
 
 	g_object_unref (mount);
@@ -4261,7 +4280,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 	}
 
 	if (g_list_length (selection) == 1) {
-		add_x_content_apps (NAUTILUS_FILE (selection->data), &applications);
+		add_x_content_apps (view, NAUTILUS_FILE (selection->data), &applications);
 	}
 
 

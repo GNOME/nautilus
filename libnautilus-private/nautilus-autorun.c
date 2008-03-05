@@ -1269,20 +1269,80 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 					   data);
 }
 
-char **
-nautilus_autorun_get_x_content_types_for_mount (GMount      *mount,
-						gboolean     force_rescan)
+typedef struct {
+	NautilusAutorunGetContent callback;
+	gpointer user_data;
+} GetContentTypesData;
+
+static void
+get_types_cb (GObject *source_object,
+	      GAsyncResult *res,
+	      gpointer user_data)
 {
+	GetContentTypesData *data;
+	char **types;
+
+	data = user_data;
+	types = _g_mount_guess_content_type_finish (G_MOUNT (source_object), res, NULL);
+
+	if (data->callback) {
+		data->callback (types, data->user_data);
+	}
+	g_strfreev (types);
+	g_free (data);
+}
+
+void
+nautilus_autorun_get_x_content_types_for_mount_async (GMount *mount,
+						      NautilusAutorunGetContent callback,
+						      GCancellable *cancellable,
+						      gpointer user_data)
+{
+	char **cached;
+	GetContentTypesData *data;
+	
+	if (mount == NULL) {
+		if (callback) {
+			callback (NULL, user_data);
+		}
+		return;
+	}
+
+	cached = g_object_get_data (G_OBJECT (mount), "content-type-cache");
+	if (cached != NULL) {
+		if (callback) {
+			callback (cached, user_data);
+		}
+		return;
+	}
+
+	data = g_new (GetContentTypesData, 1);
+	data->callback = callback;
+	data->user_data = user_data;
+	
+	_g_mount_guess_content_type_async (mount,
+					   FALSE,
+					   cancellable,
+					   get_types_cb,
+					   data);
+}
+
+
+char **
+nautilus_autorun_get_cached_x_content_types_for_mount (GMount      *mount)
+{
+	char **cached;
+	
 	if (mount == NULL) {
 		return NULL;
 	}
 
-	/* since we always guess the content type at mount type, we're guaranteed
-	 * to get the cached results
-	 *
-	 * TODO: Really? what if we didn't mount the mount ourself?
-	 */
-	return _g_mount_guess_content_type (mount, force_rescan, NULL);
+	cached = g_object_get_data (G_OBJECT (mount), "content-type-cache");
+	if (cached != NULL) {
+		return g_strdupv (cached);
+	}
+
+	return NULL;
 }
 
 

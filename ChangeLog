@@ -1,3 +1,13 @@
+2008-03-05  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-autorun.[ch]:
+	Add async x-content type getter, change sync one
+	to only read the cached value
+	
+        * src/file-manager/fm-directory-view.c:
+        * src/nautilus-window-manage-views.c:
+	Get x-content type async
+
 2008-03-04  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_set_display_name):
