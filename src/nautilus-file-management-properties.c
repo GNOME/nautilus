@@ -610,7 +610,7 @@ nautilus_file_management_properties_dialog_setup_media_page (GladeXML *xml_dialo
 		if (icon != NULL) {
 			icon_info = nautilus_icon_info_lookup (icon, icon_size);
 			g_object_unref (icon);
-			pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+			pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (icon_info, icon_size);
 			g_object_unref (icon_info);
 		} else {
 			pixbuf = NULL;
