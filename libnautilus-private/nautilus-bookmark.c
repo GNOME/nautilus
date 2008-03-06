@@ -609,10 +609,10 @@ nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
 	gboolean exists;
 
 	/* Convert to a path, returning FALSE if not local. */
-	path_name = g_file_get_path (bookmark->details->location);
-	if (path_name == NULL) {
+	if (!g_file_is_native (bookmark->details->location)) {
 		return FALSE;
 	}
+	path_name = g_file_get_path (bookmark->details->location);
 
 	/* Now check if the file exists (sync. call OK because it is local). */
 	exists = g_file_test (path_name, G_FILE_TEST_EXISTS);

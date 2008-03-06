@@ -1,5 +1,12 @@
 2008-03-06  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-bookmark.c:
+        (nautilus_bookmark_uri_known_not_to_exist):
+	Fix this check to actually only access local
+	files, not fuse-based gvfs paths.
+
+2008-03-06  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-icon-container.c:
         (nautilus_icon_container_update_icon):
 	Remove dead code
