@@ -1,5 +1,10 @@
 2008-03-06  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (add_template_to_templates_menus): 
+	Avoid crashing if no pixbuf for menu icon. (#513719)
+	
+2008-03-06  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-file-management-properties.c:
 	Avoid showing broken icons for the media type list (#519880)
 

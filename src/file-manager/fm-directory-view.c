@@ -4890,7 +4890,6 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
-	pixbuf = get_menu_icon_for_file (file);
 
 	action_name = escape_action_name (uri, "script_");
 	escaped_label = eel_str_double_underscores (name);
@@ -4900,9 +4899,12 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 				 tip,
 				 NULL);
 	
-	g_object_set_data_full (G_OBJECT (action), "menu-icon",
-				g_object_ref (pixbuf),
-				g_object_unref);
+	pixbuf = get_menu_icon_for_file (file);
+	if (pixbuf != NULL) {
+		g_object_set_data_full (G_OBJECT (action), "menu-icon",
+					pixbuf,
+					g_object_unref);
+	}
 
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (run_script_callback),
@@ -4937,8 +4939,6 @@ add_script_to_scripts_menus (FMDirectoryView *directory_view,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
 
-
-	g_object_unref (pixbuf);
 	g_free (name);
 	g_free (uri);
 	g_free (tip);
@@ -4967,7 +4967,9 @@ add_submenu_to_directory_menus (FMDirectoryView *directory_view,
 	add_submenu (ui_manager, action_group, merge_id, menu_path, uri, name, pixbuf, TRUE);
 	add_submenu (ui_manager, action_group, merge_id, popup_path, uri, name, pixbuf, FALSE);
 	add_submenu (ui_manager, action_group, merge_id, popup_bg_path, uri, name, pixbuf, FALSE);
-	g_object_unref (pixbuf);
+	if (pixbuf) {
+		g_object_unref (pixbuf);
+	}
 	g_free (name);
 	g_free (uri);
 }
@@ -5142,8 +5144,6 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 		*dot = 0;
 	}
 
-	pixbuf = get_menu_icon_for_file (file);
-
 	action_name = escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);
 	
@@ -5154,9 +5154,12 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 				 tip,
 				 NULL);
 	
-	g_object_set_data_full (G_OBJECT (action), "menu-icon",
-				g_object_ref (pixbuf),
-				g_object_unref);
+	pixbuf = get_menu_icon_for_file (file);
+	if (pixbuf != NULL) {
+		g_object_set_data_full (G_OBJECT (action), "menu-icon",
+					pixbuf,
+					g_object_unref);
+	}
 
 	g_signal_connect_data (action, "activate",
 			       G_CALLBACK (create_template_callback),
@@ -5185,7 +5188,6 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 			       GTK_UI_MANAGER_MENUITEM,
 			       FALSE);
 	
-	g_object_unref (pixbuf);
 	g_free (escaped_label);
 	g_free (name);
 	g_free (tip);
