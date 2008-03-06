@@ -5797,9 +5797,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		nautilus_icon_container_start_monitor_top_left (container, icon->data, icon, large_embedded_text);
 	}
 	
-	icon_size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			 * icon->scale, NAUTILUS_ICON_SIZE_SMALLEST);
-
 	nautilus_icon_container_get_icon_text (container,
 					       icon->data,
 					       &editable_text,

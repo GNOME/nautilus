@@ -1,5 +1,15 @@
 2008-03-06  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-icon-container.c:
+        (nautilus_icon_container_update_icon):
+	Remove dead code
+	
+        * libnautilus-private/nautilus-icon-info.c:
+        (nautilus_icon_info_lookup):
+	Resize custom icons (#513102)
+
+2008-03-06  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (add_template_to_templates_menus): 
 	Avoid crashing if no pixbuf for menu icon. (#513719)
 	
