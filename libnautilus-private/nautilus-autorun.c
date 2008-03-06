@@ -729,17 +729,17 @@ _g_mount_guess_content_type (GMount              *mount,
 		g_ptr_array_add (types, g_strdup ("x-content/image-picturecd"));
 	}
 
-	if (_check_file (root, ".autorun", TRUE) ||
-	    _check_file (root, "autorun", TRUE) ||
-	    _check_file (root, "autorun.sh", TRUE) ||
-	    _check_file_case_insensitive (root, "autorun.exe", TRUE) ||
-	    _check_file_case_insensitive (root, "autorun.inf", FALSE)) {
+	if (g_file_is_native (root) &&
+	    (_check_file (root, ".autorun", TRUE) ||
+	     _check_file (root, "autorun", TRUE) ||
+	     _check_file (root, "autorun.sh", TRUE) ||
+	     _check_file_case_insensitive (root, "autorun.exe", TRUE) ||
+	     _check_file_case_insensitive (root, "autorun.inf", FALSE))) {
 		/* http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html */
-
+		
 		/* http://bugzilla.gnome.org/show_bug.cgi?id=509823#c3 for the autorun.exe and autorun.inf stuff */
 		g_ptr_array_add (types, g_strdup ("x-content/software"));
 	}
-
 
 no_sniff:
 	

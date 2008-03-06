@@ -1,3 +1,10 @@
+2008-03-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-autorun.c (_g_mount_guess_content_type):
+	Only look for autorun stuff for local files.
+	We can't generally exec stuff for non-local files anyway,
+	and is a performance hit to do the check.
+
 2008-03-05  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-autorun.[ch]:
