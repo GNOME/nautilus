@@ -4134,7 +4134,8 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 {
 	uid_t user_id;
 
-	if (file->details->uid != -1) {
+	if (file->details->uid != -1 &&
+	    nautilus_file_is_local (file)) {
 		/* Check the user. */
 		user_id = geteuid();
 

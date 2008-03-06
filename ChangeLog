@@ -1,5 +1,11 @@
 2008-03-06  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-file.c:
+        (nautilus_file_can_set_permissions):
+	Try to set permissions on remote shares. (#520572)
+
+2008-03-06  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-autorun.c (_g_mount_guess_content_type):
 	Only look for autorun stuff for local files.
 	We can't generally exec stuff for non-local files anyway,
