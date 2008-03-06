@@ -1583,6 +1583,7 @@ trash_files (CommonJob *job, GList *files)
 				/* nothing */
 			} else if (response == 3) { /* delete all */
 				to_delete = g_list_prepend (to_delete, file);
+				job->delete_all = TRUE;
 			} else if (response == 4) { /* delete */
 				to_delete = g_list_prepend (to_delete, file);
 			}
