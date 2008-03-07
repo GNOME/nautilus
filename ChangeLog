@@ -1,3 +1,9 @@
+2008-03-07  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(callback_for_move_to_trash):
+	Fix a crash due to a missing NULL check (#520947).
+
 2008-03-06  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-bookmark.c:
