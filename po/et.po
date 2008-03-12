@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-29 20:58+0000\n"
-"PO-Revision-Date: 2008-03-10 21:57+0200\n"
+"PO-Revision-Date: 2008-03-12 07:41+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -620,9 +620,9 @@ msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and and media insertion."
 msgstr ""
-"Kui märgitud, siis haagib Nautilus oma käivitamisel või meedia sisestamisel "
-"automaatselt külge kõik külgehaagitava meedia (näiteks kasutajale nähtavad "
-"kõvakettad või irdmeedia)."
+"Kui märgitud, siis haagib Nautilus oma käivitamisel või meediumi sisestamisel "
+"automaatselt külge kõik külgehaagitava meediumi (näiteks kasutajale nähtavad "
+"kõvakettad või irdmeedium)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -631,10 +631,10 @@ msgid ""
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
 msgstr ""
-"Kui märgitud, siis avab Nautilus meedia automaatsel ühendamisel kataloogi. "
-"See rakendub ainult meediale, mille kohta pole x-content/* tüüpi tuvastatud. "
-"Tuvastatud x-content tüübiga meedia korral rakendatakse aga kasutaja poolt "
-"määratud tegevus."
+"Kui märgitud, siis avab Nautilus meediumi automaatsel ühendamisel kataloogi. "
+"See rakendub ainult meediumile, mille kohta pole x-content/* tüüpi "
+"tuvastatud. Tuvastatud x-content tüübiga meediumi korral rakendatakse aga "
+"kasutaja poolt määratud tegevus."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -655,7 +655,7 @@ msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when media is inserted."
 msgstr ""
-"Kui märgitud, siis ei küsi Nautilus meedia sisestamise korral automaatselt "
+"Kui märgitud, siis ei küsi Nautilus meediumi sisestamise korral automaatselt "
 "käivitatavate programmide käivitamisel kasutajalt kunagi kinnitust."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
@@ -778,24 +778,32 @@ msgstr "Võimalike ikoonipealkirjade nimekiri"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "List of x-content/* types to ask the user what to do on insertion"
 msgstr ""
+"Nimekiri x-content/* liikidest, mille sisestamisel küsitakse kasutajalt "
+"juhendeid edasiste tegevuste kohta"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "List of x-content/* types to ask the user what to do on insertion."
 msgstr ""
+"Nimekiri x-content/* liikidest, mille sisestamisel küsitakse kasutajalt "
+"juhendeid edasiste tegevuste kohta."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "List of x-content/* types where a folder window should be opened"
-msgstr ""
+msgstr "Nimekiri x-content/* liikidest, mille puhul tuleb kataloogiaken avada"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "List of x-content/* types where a folder window should be opened on "
 "insertion."
 msgstr ""
+"Nimekiri x-content/* liikidest, mille sisestamise puhul tuleb kataloogiaken "
+"avada."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "List of x-content/* where to prompt the user on insertion"
 msgstr ""
+"Nimekiri x-content/* liikidest, mille sisestamise puhul tuleb kasutajalt "
+"edasiste tegevuste kohta kinnitust küsida"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Maximum handled files in a folder"
@@ -832,6 +840,8 @@ msgstr "Võrguserverite ikooni nimi"
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Never prompt or autorun/autostart programs when media is inserted"
 msgstr ""
+"Automaatkäivitusega programmide käivitamise kohta ei küsita meediumi "
+"sisestamisel kinnitust"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Only show folders in the tree side pane"
@@ -1090,12 +1100,12 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid "Whether to automatically mount media"
-msgstr "Kas ühendatav meedia haagitakse automaatselt külge või mitte"
+msgstr "Kas ühendatav meedium haagitakse automaatselt külge või mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "Whether to automatically open a folder for automounted media"
 msgstr ""
-"Kas automaatselt külge haagitud meedia kataloogi avatakse automaatselt või "
+"Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt või "
 "mitte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
@@ -1187,7 +1197,7 @@ msgstr "Sa sisestasid tühja pildi-CD."
 
 #: ../libnautilus-private/nautilus-autorun.c:1098
 msgid "You have just inserted media with digital photos."
-msgstr "Sa sisestasid digipilte sisaldava meedia."
+msgstr "Sa sisestasid digipilte sisaldava meediumi."
 
 #: ../libnautilus-private/nautilus-autorun.c:1100
 msgid "You have just inserted a digital audio player."
@@ -1198,11 +1208,13 @@ msgid ""
 "You have just inserted media with software intended to be automatically "
 "started."
 msgstr ""
+"Sa sisestasid meediumi, millel olev tarkvara kavatsetakse automaatselt "
+"käivitada."
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1105
 msgid "You have just inserted media."
-msgstr ""
+msgstr "Sa sisestasid meediumi."
 
 #: ../libnautilus-private/nautilus-autorun.c:1107
 msgid "Choose what application to launch."
@@ -1214,10 +1226,12 @@ msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
 "for other media of type \"%s\"."
 msgstr ""
+"Vali, mismoodi tuleb \"%s\" käivitada ning kas ka tulevikus tuleb \"%s\"-"
+"liigilise meediumi korral sedasama teha."
 
 #: ../libnautilus-private/nautilus-autorun.c:1138
 msgid "_Always perform this action"
-msgstr ""
+msgstr "Seda tehakse _alati"
 
 #. name, stock id
 #. label, accelerator
@@ -2785,7 +2799,7 @@ msgstr[1] "Avatakse %d kirjet."
 #: ../libnautilus-private/nautilus-open-with-dialog.c:271
 #, c-format
 msgid "Could not set application as the default: %s"
-msgstr ""
+msgstr "Rakendust pole võimalik vaikimisi rakenduseks määrata: %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:184
 #: ../libnautilus-private/nautilus-open-with-dialog.c:272
@@ -4761,6 +4775,8 @@ msgid ""
 "<big><b>This media contains software intended to be automatically started. "
 "Would you like to run it?</b></big>"
 msgstr ""
+"<big><b>See meedium sisaldab tarkvara, mida plaanitakse automaatselt tööle "
+"panna. Kas lubad seda käivitada?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:193
 #, c-format
@@ -4770,7 +4786,7 @@ msgid ""
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
-"Tarkvara käivitatakse otse meedialt \"%s\". Sa ei tohiks mitte kunagi "
+"Tarkvara käivitatakse otse meediumilt \"%s\". Sa ei tohiks mitte kunagi "
 "käivitada tarkvara, mida Sa ei usalda.\n"
 "\n"
 "Kui kahtled, siis vajuta \"Loobu\"."
@@ -5071,7 +5087,7 @@ msgstr "<b>Meediakäsitlemine</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<b>Other Media</b>"
-msgstr "<b>Muu meedia</b>"
+msgstr "<b>Muu meedium</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:28
 msgid "<b>Other Previewable Files</b>"
@@ -5118,7 +5134,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:39
 msgid "B_rowse media when inserted"
-msgstr "Meedia si_rvimine pärast sisestamist"
+msgstr "Meediumi si_rvimine pärast sisestamist"
 
 #: ../src/nautilus-file-management-properties.glade.h:40
 msgid "Behavior"
@@ -5158,7 +5174,7 @@ msgstr "Nimekirjavaates ilmuvate andmete järjekorra valimine."
 msgid ""
 "Choose what happens when inserting media or connecting devices to the system"
 msgstr 
-"Vali, mida tuleb seadmete ühendamisel või meedia sisestamisel ette võtta"
+"Vali, mida tuleb seadmete ühendamisel või meediumi sisestamisel ette võtta"
 
 #: ../src/nautilus-file-management-properties.glade.h:50
 msgid "Count _number of items:"
@@ -5190,7 +5206,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:57
 msgid "Less common media formats can be configured here"
-msgstr "Siin on võimalik seadistada vähemtuntud meediavorminguid"
+msgstr "Siin on võimalik seadistada vähemtuntud meediumivorminguid"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
 msgid "List Columns"
@@ -5198,7 +5214,7 @@ msgstr "Nimekirja veerud"
 
 #: ../src/nautilus-file-management-properties.glade.h:59
 msgid "Media"
-msgstr "Meedia"
+msgstr "Meedium"
 
 #: ../src/nautilus-file-management-properties.glade.h:60
 msgid "Preview"
@@ -5771,7 +5787,7 @@ msgstr "Näita märkmeid"
 #: ../src/nautilus-places-sidebar.c:1589
 #, c-format
 msgid "Unable to poll %s for media changes"
-msgstr ""
+msgstr "%s meediumimuutuste pollimine pole võimalik"
 
 #: ../src/nautilus-places-sidebar.c:1685
 msgid "Open in New _Window"
@@ -5791,7 +5807,7 @@ msgstr "Ü_henda"
 
 #: ../src/nautilus-places-sidebar.c:1733
 msgid "_Rescan"
-msgstr ""
+msgstr "_Otsi uuesti"
 
 #. Empty Trash menu item
 #: ../src/nautilus-places-sidebar.c:1749 ../src/nautilus-trash-bar.c:125
@@ -6527,7 +6543,7 @@ msgstr "Need failid on pildi-CD peal."
 
 #: ../src/nautilus-x-content-bar.c:82
 msgid "The media contains digital photos."
-msgstr "Meedia sisaldab digifotosid."
+msgstr "Meedium sisaldab digifotosid."
 
 #: ../src/nautilus-x-content-bar.c:84
 msgid "These files are on a digital audio player."
@@ -6535,13 +6551,13 @@ msgstr "Need failid on digitaalses audioesitajas."
 
 #: ../src/nautilus-x-content-bar.c:86
 msgid "The media contains software."
-msgstr "Meedia sisaldab tarkvara."
+msgstr "Meedium sisaldab tarkvara."
 
 #. fallback to generic greeting
 #: ../src/nautilus-x-content-bar.c:89
 #, c-format
 msgid "The media has been detected as \"%s\"."
-msgstr ""
+msgstr "Meedium tuvastati kui \"%s\"."
 
 #: ../src/nautilus-zoom-control.c:84
 msgid "Zoom In"
@@ -6570,317 +6586,3 @@ msgstr "Praeguse vaate suurendusastme seadmine"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Võrk"
-
-#~ msgid ""
-#~ "Can't find description even for \"x-directory/normal\". This probably "
-#~ "means that your gnome-vfs.keys file is in the wrong place or isn't being "
-#~ "found for some other reason."
-#~ msgstr ""
-#~ "Isegi \"x-directory/normal\" kirjeldust pole võimalik leida. See tähendab "
-#~ "tõenäoliselt, et gnome-vfs.keys fail on vales kohas või ei ole mingil "
-#~ "muul põhjusel leitav."
-
-#~ msgid ""
-#~ "No description found for mime type \"%s\" (file is \"%s\"), please tell "
-#~ "the gnome-vfs mailing list."
-#~ msgstr ""
-#~ "Ei leidu kirjeldust mime-tüübile \"%s\" (fail \"%s\"), palun kirjuta "
-#~ "sellest gnome-vfs postiloendisse."
-
-#~ msgid "--"
-#~ msgstr "--"
-
-#~ msgid "Link To Old Desktop"
-#~ msgstr "Viit vanale töölauale"
-
-#~ msgid ""
-#~ "A link called \"Link To Old Desktop\" has been created on the desktop."
-#~ msgstr "Töölauale loodi viit nimega 'Viit vanale töölauale'."
-
-#~ msgid ""
-#~ "The location of the desktop directory has changed in GNOME 2.4. You can "
-#~ "open the link and move over the files you want, then delete the link."
-#~ msgstr ""
-#~ "Töölauakataloogi asukoht on alates GNOME 2.4-st muutunud. Sa või avada "
-#~ "viida ja tõsta soovitud failid ümber ja siis viida kustutada."
-
-#~ msgid "\"%s\" cannot be moved because it is on a read-only disk."
-#~ msgstr ""
-#~ "\"%s\" pole võimalik ümber tõsta, kuna see asub kirjutuskaitsega kettal."
-
-#~ msgid ""
-#~ "\"%s\" cannot be deleted because you do not have permissions to modify "
-#~ "its parent folder."
-#~ msgstr ""
-#~ "\"%s\" pole võimalik kustutada, kuna sul puuduvad õigused muuta "
-#~ "ülemkataloogi."
-
-#~ msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-#~ msgstr ""
-#~ "\"%s\" pole võimalik kustutada, kuna see asub kirjutuskaitsega kettal."
-
-#~ msgid ""
-#~ "\"%s\" cannot be moved because you do not have permissions to change it "
-#~ "or its parent folder."
-#~ msgstr ""
-#~ "Kirjet \"%s\" pole võimalik ümber tõsta, kuna sul puuduvad õigused muuta "
-#~ "seda või selle ülemkataloogi."
-
-#~ msgid ""
-#~ "Cannot move \"%s\" because it or its parent folder are contained in the "
-#~ "destination."
-#~ msgstr ""
-#~ "\"%s\" pole võimalik ümber tõsta, kuna see kataloog või selle kataloogi "
-#~ "ülemkataloog sisalduvad sihtkohas."
-
-#~ msgid ""
-#~ "Cannot move \"%s\" to the trash because you do not have permissions to "
-#~ "change it or its parent folder."
-#~ msgstr ""
-#~ "\"%s\" pole võimalik prügikasti tõsta, sest sul pole seda kataloogi või "
-#~ "selle ülemkataloogi muuta."
-
-#~ msgid "You do not have permissions to write to this folder."
-#~ msgstr "Sul ei ole õigust siia kataloogi kirjutada."
-
-#~ msgid "Error while creating links in \"%s\"."
-#~ msgstr "Viga viitade loomisel \"%s\"."
-
-#~ msgid "Error \"%s\" while copying \"%s\"."
-#~ msgstr "Viga \"%s\", \"%s\" kopeerimisel."
-
-#~ msgid "Would you like to continue?"
-#~ msgstr "Kas soovid jätkata?"
-
-#~ msgid "Error \"%s\" while moving \"%s\"."
-#~ msgstr "Viga \"%s\", \"%s\" ümbertõstmisel."
-
-#~ msgid "Error \"%s\" while creating a link to \"%s\"."
-#~ msgstr "Viga \"%s\" lingi \"%s\" loomisel."
-
-#~ msgid "Error \"%s\" while deleting \"%s\"."
-#~ msgstr "Viga \"%s\", \"%s\" kustutamisel."
-
-#~ msgid "Error \"%s\" while copying."
-#~ msgstr "Viga \"%s\" kopeerimisel."
-
-#~ msgid "Error \"%s\" while moving."
-#~ msgstr "Viga \"%s\" ümbertõstmisel."
-
-#~ msgid "Error \"%s\" while linking."
-#~ msgstr "Viga \"%s\" viida loomisel."
-
-#~ msgid "Error \"%s\" while deleting."
-#~ msgstr "Viga \"%s\" kustutamisel."
-
-#~ msgid ""
-#~ "The name is already used for a special item that cannot be removed or "
-#~ "replaced.  If you still want to move the item, rename it and try again."
-#~ msgstr ""
-#~ "Nime juba kasutakse erikirje jaoks ja seda pole võimalik eemaldada ega "
-#~ "asendada. Kui siiski soovid kirjet ümber tõsta, nimeta see ümber ja "
-#~ "proovi uuesti."
-
-#~ msgid "Could not copy \"%s\" to the new location."
-#~ msgstr "\"%s\" pole võimalik sihtkohta kopeerida."
-
-#~ msgid ""
-#~ "The name is already used for a special item that cannot be removed or "
-#~ "replaced.  If you still want to copy the item, rename it and try again."
-#~ msgstr ""
-#~ "Nime juba kasutakse erikirje jaoks ja seda pole võimalik eemaldada ega "
-#~ "asendada. Kui siiski soovid seda kirjet kopeerida, nimeta see ümber ja "
-#~ "proovi uuesti."
-
-#~ msgid "Unknown GnomeVFSXferProgressStatus %d"
-#~ msgstr "Tundmatu GnomeVFSXferProgressStatus %d"
-
-#~ msgid "Throwing out file:"
-#~ msgstr "Faili äraviskamine:"
-
-#~ msgid "Moving"
-#~ msgstr "Tõstetakse ümber"
-
-#~ msgid "Moving file:"
-#~ msgstr "Faili ümbertõstmine:"
-
-#~ msgid "Finishing Move..."
-#~ msgstr "Ümbertõstmise lõpetamine..."
-
-#~ msgid "Linking file:"
-#~ msgstr "Faili viitamine:"
-
-#~ msgid "Linking"
-#~ msgstr "Linkimisel:"
-
-#~ msgid "Preparing to Create Links..."
-#~ msgstr "Ettevalmistused viitade loomiseks..."
-
-#~ msgid "Finishing Creating Links..."
-#~ msgstr "Linkide loomise lõpetamine..."
-
-#~ msgid "Copying file:"
-#~ msgstr "Faili kopeerimine:"
-
-#~ msgid "Copying"
-#~ msgstr "Kopeeritakse"
-
-#~ msgid "Preparing To Copy..."
-#~ msgstr "Ettevalmistused kopeerimiseks..."
-
-#~ msgid "You cannot copy items into the trash."
-#~ msgstr "Prügikasti ei ole võimalik kirjeid kopeerida."
-
-#~ msgid "You cannot create links inside the trash."
-#~ msgstr "Prügikastis ei ole võimalik viitasid tekitada."
-
-#~ msgid "Files and folders can only be moved into the trash."
-#~ msgstr "Faile ja katalooge saab tõsta ainult prügikasti"
-
-#~ msgid "You cannot copy this trash folder."
-#~ msgstr "Prügikasti pole võimalik kopeerida."
-
-#~ msgid "A trash folder is used for storing items moved to the trash."
-#~ msgstr "Pügikastis hoitakse sinna pandud kirjeid."
-
-#~ msgid "You cannot move a folder into itself."
-#~ msgstr "Kataloogi pole võimalik iseendasse ümber tõsta."
-
-#~ msgid "You cannot copy a folder into itself."
-#~ msgstr "Kataloogi pole võimalik iseendasse kopeerida."
-
-#~ msgid "The destination folder is inside the source folder."
-#~ msgstr "Sihtkataloog asub lähtekataloogi sees."
-
-#~ msgid "You cannot copy a file over itself."
-#~ msgstr "Faili pole võimalik iseenda peale kopeerida."
-
-#~ msgid "The destination and source are the same file."
-#~ msgstr "Sihtkoht ja lähtekoht on sama fail."
-
-#~ msgid "There is no space on the destination."
-#~ msgstr "Sihtkohas ei ole vaba ruumi."
-
-#~ msgid "Error \"%s\" creating new folder."
-#~ msgstr "Viga \"%s\" uue kataloogi loomisel."
-
-#~ msgid "Error creating new folder."
-#~ msgstr "Viga uue kataloogi loomisel."
-
-#~ msgid "Error \"%s\" creating new document."
-#~ msgstr "Viga \"%s\" uue dokumendi loomisel."
-
-#~ msgid "Error creating new document."
-#~ msgstr "Viga uue dokumendi loomisel."
-
-#~ msgid "Files deleted:"
-#~ msgstr "Faile kustutatud:"
-
-#~ msgid "Deleting"
-#~ msgstr "Kustutamine"
-
-#~ msgid "Emptying the Trash"
-#~ msgstr "Prügikasti tühjendamine"
-
-#~ msgid "Preparing to Empty the Trash..."
-#~ msgstr "Ettevalmistused prügikasti tühjendamiseks..."
-
-#~ msgid "_Empty Trash"
-#~ msgstr "_Tühjenda prügikast"
-
-#~ msgid "Fonts"
-#~ msgstr "Kirjatüübid"
-
-#~ msgid "Themes"
-#~ msgstr "Teemad"
-
-#~ msgid "CD/DVD Creator"
-#~ msgstr "CD/DVD looja"
-
-#~ msgid "Windows Network"
-#~ msgstr "Windowsi võrk"
-
-#~ msgid "Services in"
-#~ msgstr "Teenused asukohas"
-
-#~ msgid "The attempt to log in failed."
-#~ msgstr "Sisselogimine nurjus."
-
-#~ msgid "\"%s\" is not a valid location."
-#~ msgstr "\"%s\" ei ole sobilik faili asukoht."
-
-#~ msgid "If you delete an item, it is permanently lost."
-#~ msgstr "Kui kustutad kirje, siis kaob see lõplikult"
-
-#~ msgid "Cannot move items to trash, do you want to delete them immediately?"
-#~ msgstr ""
-#~ "Kirjeid pole võimalik prügikasti tõsta. Kas soovid neid koheselt "
-#~ "kustutada?"
-
-#~ msgid "The selected item could not be moved to the Trash"
-#~ msgid_plural "The %d selected items could not be moved to the Trash"
-#~ msgstr[0] "Valitud kirjet pole võimalik prügikasti tõsta"
-#~ msgstr[1] "Valitud %d kirjet pole võimalik prügikasti tõsta"
-
-#~ msgid ""
-#~ "Cannot move some items to trash, do you want to delete these immediately?"
-#~ msgstr ""
-#~ "Mõningaid kirjeid pole võimalik prügikasti tõsta. Kas soovid neid "
-#~ "koheselt kustutada?"
-
-#~ msgid "%d of the selected items cannot be moved to the Trash"
-#~ msgstr "%d valitud kirjet pole võimalik prügikasti tõsta"
-
-#~ msgid "Cannot open %s"
-#~ msgstr "Faili %s pole võimalik avada"
-
-#~ msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "\"%s\" nime pole võimalik muuta, kuna see asub kirjutuskaitsega kettal"
-
-#~ msgid ""
-#~ "Couldn't change the group of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "\"%s\" gruppi pole võimalik muuta, kuna see asub kirjutuskaitsega kettal"
-
-#~ msgid ""
-#~ "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "\"%s\" omanikku pole võimalik muuta, kuna see asub kirjutuskaitsega kettal"
-
-#~ msgid ""
-#~ "Couldn't change the permissions of \"%s\" because it is on a read-only "
-#~ "disk"
-#~ msgstr ""
-#~ "\"%s\" õiguseid pole võimalik muuta, kuna see asub kirjutuskaitsega kettal"
-
-#~ msgid "Can't Connect to Server. \"%s\" is not a valid location."
-#~ msgstr "Serveriga ei saa ühenduda. \"%s\" on vigane asukoht."
-
-#~ msgid "_Name to use for connection:"
-#~ msgstr "Ühendumiseks kasutatav _nimi:"
-
-#~ msgid "Browse _Network"
-#~ msgstr "Sirvi _võrku"
-
-#~ msgid "The dragged text was not a valid file location."
-#~ msgstr "Lohistatud tekst ei ole sobilik faili asukoht."
-
-#~ msgid "Check that your proxy settings are correct."
-#~ msgstr "Kontrolli, et su proksi sätted oleks õiged."
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser."
-#~ msgstr ""
-#~ "\"%s\" kuvamine pole võimalik, kuna Nautilus ei saa ühendust SMB master "
-#~ "browser'iga."
-
-#~ msgid "Check that an SMB server is running in the local network."
-#~ msgstr "Kontrolli, kas kohalikus võrgus on töötav SMB server."
-
-#~ msgid "Check if the service is available."
-#~ msgstr "Kontrolli, kas teenus on saadaval."
-
-#~ msgid "Nautilus cannot display \"%s\"."
-#~ msgstr "Nautilusel pole võimalik \"%s\" kuvada."
