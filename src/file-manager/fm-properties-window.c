@@ -1924,7 +1924,8 @@ attach_group_combo_box (GtkTable *table,
 
 static void
 owner_change_callback (NautilusFile *file,
-		       GError *error,
+                       GFile 	    *result_location,
+		       GError        *error,
 		       FMPropertiesWindow *window)
 {
 	char *owner;
@@ -2067,7 +2068,9 @@ changed_owner_callback (GtkComboBox *combo_box, NautilusFile* file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	owner_text = combo_box_get_active_entry (combo_box, 0);
-	name_array = g_strsplit (owner_text, " - ", 2);
+        if (! owner_text)
+	    return;
+    	name_array = g_strsplit (owner_text, " - ", 2);
 	new_owner = name_array[0];
 	g_free (owner_text);
 	cur_owner = nautilus_file_get_owner_name (file);
