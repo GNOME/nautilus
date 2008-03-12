@@ -1729,7 +1729,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 				continue;
 			}
 			object_name = nautilus_emblem_get_keyword_from_icon_name (icon_name);
-			info = nautilus_icon_info_lookup_from_name (object_name, NAUTILUS_ICON_SIZE_STANDARD);
+			info = nautilus_icon_info_lookup_from_name (icon_name, NAUTILUS_ICON_SIZE_STANDARD);
 			object_pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_ICON_SIZE_STANDARD);
 			object_label = g_strdup (nautilus_icon_info_get_display_name (info));
 			g_object_unref (info);
