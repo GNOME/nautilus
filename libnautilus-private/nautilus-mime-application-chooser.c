@@ -599,9 +599,9 @@ set_extension_and_description (NautilusMimeApplicationChooser *chooser,
 			       const char *extension,
 			       const char *mime_type)
 {
-	chooser->details->extension = g_strdup (extension);
 	if (extension != NULL &&
 	    g_content_type_is_unknown (mime_type)) {
+		chooser->details->extension = g_strdup (extension);
 		    chooser->details->content_type = g_strdup_printf ("application/x-extension-%s", extension);
 		    /* the %s here is a file extension */
 		    chooser->details->type_description =
