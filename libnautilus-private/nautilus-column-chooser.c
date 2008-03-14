@@ -351,23 +351,13 @@ use_default_clicked_callback (GtkWidget *button, gpointer user_data)
 static GtkWidget *
 button_new_with_mnemonic (const gchar *stockid, const gchar *str)
 {
-	GtkWidget *label;
 	GtkWidget *image;
 	GtkWidget *button;
-	GtkWidget *hbox;
-	GtkWidget *align;
 	
-	button = gtk_button_new ();
-	label = gtk_label_new_with_mnemonic (str);
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label),
-				       GTK_WIDGET (button));
+	button = gtk_button_new_with_mnemonic (str);
 	image = gtk_image_new_from_stock (stockid, GTK_ICON_SIZE_BUTTON);
-	hbox = gtk_hbox_new (FALSE, 2);
-	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (button), align);
-	gtk_container_add (GTK_CONTAINER (align), hbox);
+	
+	gtk_button_set_image (GTK_BUTTON (button), image);
 
 	return button;
 }
