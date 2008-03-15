@@ -1,5 +1,13 @@
 2008-03-14  A. Walton  <awalton@svn.gnome.org>
 
+	* src/nautilus-connect-server-dialog.c
+	(bookmark_checkmark_toggled),
+	(nautilus_connect_server_dialog_init):
+	Set the bookmark name widget in the connect server dialog insensitive
+	if the user doesn't check the add bookmark check button.
+
+2008-03-14  A. Walton  <awalton@svn.gnome.org>
+
 	* libnautilus-private/nautilus-bookmark.c
 	(nautilus_bookmark_compare_with):
 	Fixes crash if the user doesn't set a name for the bookmark (#522446).

@@ -780,6 +780,13 @@ port_insert_text (GtkEditable *editable,
 }
 
 static void
+bookmark_checkmark_toggled (GtkToggleButton *toggle, NautilusConnectServerDialog *dialog)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET(dialog->details->name_entry),
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (toggle)));
+}
+
+static void
 nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 {
 	GtkWidget *label;
@@ -906,6 +913,12 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	dialog->details->user_entry = gtk_entry_new ();
 	dialog->details->bookmark_check = gtk_check_button_new_with_mnemonic (_("Add _bookmark"));
 	dialog->details->name_entry = gtk_entry_new ();
+
+	g_signal_connect (dialog->details->bookmark_check, "toggled", 
+			  G_CALLBACK (bookmark_checkmark_toggled), dialog);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->details->bookmark_check), FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET(dialog->details->name_entry), FALSE);
 
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->uri_entry), TRUE);
 	gtk_entry_set_activates_default (GTK_ENTRY (dialog->details->server_entry), TRUE);
