@@ -3,13 +3,13 @@
 # Copyright (C) 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
 #
-# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007.
+# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007-2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-16 12:03+0100\n"
-"PO-Revision-Date: 2008-03-16 14:13+0100\n"
+"POT-Creation-Date: 2008-03-16 13:18+0000\n"
+"PO-Revision-Date: 2008-03-16 14:30+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -690,8 +690,8 @@ msgid ""
 "files."
 msgstr ""
 "S'es verai, los fichièrs de salvagarda coma los creats per Emacs son "
-"visualizats. Ara, sonque los fichièrs que s'acaban per una tilda (~) "
-"son considerats coma de fichièrs de salvagarda."
+"visualizats. Ara, sonque los fichièrs que s'acaban per una tilda (~) son "
+"considerats coma de fichièrs de salvagarda."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -762,8 +762,9 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "S'es verai, las icònas son rengadas per defaut d'un biais compact "
-"dins las fenèstras novèlas."
+msgstr ""
+"S'es verai, las icònas son rengadas per defaut d'un biais compact dins las "
+"fenèstras novèlas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid ""
@@ -773,7 +774,9 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "If true, new windows will use manual layout by default."
-msgstr "S'es verai, las fenèstras novèlas utilizaràn la disposicion manuala per defaut."
+msgstr ""
+"S'es verai, las fenèstras novèlas utilizaràn la disposicion manuala per "
+"defaut."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid ""
@@ -781,10 +784,9 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"Los imatges pus bèls qu'aquesta talha auràn pas de miniatura. "
-"L'objectiu d'aqueste paramètre es d'evitar que d'imatges tròp "
-"ajan de miniaturas que serián tròp longs de cargar o utilizarián "
-"tròp de memòria."
+"Los imatges pus bèls qu'aquesta talha auràn pas de miniatura. L'objectiu "
+"d'aqueste paramètre es d'evitar que d'imatges tròp ajan de miniaturas que "
+"serián tròp longs de cargar o utilizarián tròp de memòria."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "List of possible captions on icons"
@@ -792,13 +794,15 @@ msgstr "Tièra de las legendas possiblas sus las icònas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "List of x-content/* types to ask the user what to do on insertion"
-msgstr "Tièra dels tipes  x-content/* que cal demandar una accion a "
-"l'utilizaire a l'insercion"
+msgstr ""
+"Tièra dels tipes  x-content/* que cal demandar una accion a l'utilizaire a "
+"l'insercion"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "List of x-content/* types to ask the user what to do on insertion."
-msgstr "Tièra dels tipes  x-content/* que cal demandar una accion a "
-"l'utilizaire a l'insercion."
+msgstr ""
+"Tièra dels tipes  x-content/* que cal demandar una accion a l'utilizaire a "
+"l'insercion."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "List of x-content/* types where a folder window should be opened"
@@ -809,11 +813,13 @@ msgid ""
 "List of x-content/* types where a folder window should be opened on "
 "insertion."
 msgstr ""
-"Tièra dels tipes  x-content/* que cal dobrir una fenèstra de repertòri."
+"Tièra dels tipes  x-content/* que cal dobrir una fenèstra de repertòri "
+"a l'insercion."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "List of x-content/* where to prompt the user on insertion"
-msgstr ""
+msgstr "Tièra dels tipes x-content/* que se fa una demanda a l'utilizaire "
+"a l'insercion"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Maximum handled files in a folder"
@@ -1670,6 +1676,15 @@ msgstr " (%'d"
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 
+#: ../libnautilus-private/nautilus-file-operations.c:1097
+#, fuzzy, c-format
+msgid ""
+"Are you sure you want to permanently delete the %'d selected item from the "
+"trash?"
+"Are you sure you want to permanently delete the %'d selected items from the "
+"trash?"
+msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
+
 #: ../libnautilus-private/nautilus-file-operations.c:1107
 #: ../libnautilus-private/nautilus-file-operations.c:1173
 msgid "If you delete an item, it will be permanently lost."
@@ -1690,6 +1705,12 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1161
 msgid "Are you sure you want to permanently delete \"%B\"?"
+msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
+
+#: ../libnautilus-private/nautilus-file-operations.c:1164
+#, fuzzy, c-format
+msgid "Are you sure you want to permanently delete the %'d selected item?"
+"Are you sure you want to permanently delete the %'d selected items?"
 msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1206
@@ -2984,7 +3005,7 @@ msgstr "Tornar far la modificacion"
 
 #: ../nautilus-autorun-software.desktop.in.in.h:1
 msgid "Autorun Prompt"
-msgstr ""
+msgstr "Demanda d'execucion automatica"
 
 #. tooltip
 #: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:669
@@ -3134,7 +3155,7 @@ msgstr "Seleccionar un motiu"
 
 #: ../src/file-manager/fm-directory-view.c:1103
 msgid "_Pattern:"
-msgstr "_Motiu :"
+msgstr "_Motiu :"
 
 #: ../src/file-manager/fm-directory-view.c:1213
 msgid "Save Search as"
@@ -3291,6 +3312,26 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
+"Totes los fichièrs executables d'aqueste repertòri se visualizaràn dins lo menut "
+"Escripts. Se causissètz un escript dins aqueste menut, serà aviat.\n"
+"\n"
+"Un escript executat a partir d'un repertòri local recep en paramètre los noms "
+"dels fichièrs seleccionats. Quand es executat a partir d'un repertòri "
+"distant (per exemple un repertòri situat sus un servidor web o FTP), los "
+"escripts recebon pas cap de paramètre.\n"
+"\n"
+"Dins totes los cases, Nautilus bota las variablas d'environament "
+"seguentas que los escripts pòdon utilizar :\n"
+"\n"
+"NAUTILUS_escript_SELECTED_FILE_PATHS : camins dels fichièrs seleccionats "
+"separats per linhas novèlas (newline) (sonque pels fichièrs locals)\n"
+"\n"
+"NAUTILUS_escript_SELECTED_URIS : URI dels fichièrs seleccionats separats per "
+"de linhas novèlas (newline)\n"
+"\n"
+"NAUTILUS_escript_CURRENT_URI : URI de l'emplaçament actual\n"
+"\n"
+"NAUTILUS_escript_WINDOW_GEOMETRY : posicion e talha de la fenèstra actuala"
 
 #: ../src/file-manager/fm-directory-view.c:5557
 #: ../src/file-manager/fm-tree-view.c:891
@@ -3302,6 +3343,18 @@ msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà desplaçat"
 #: ../src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
+msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
+
+#: ../src/file-manager/fm-directory-view.c:5568
+#, fuzzy, c-format
+msgid "The %'d selected item will be moved if you select the Paste command"
+"The %'d selected items will be moved if you select the Paste command"
+msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà desplaçat"
+
+#: ../src/file-manager/fm-directory-view.c:5575
+#, fuzzy, c-format
+msgid "The %'d selected item will be copied if you select the Paste command"
+"The %'d selected items will be copied if you select the Paste command"
 msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 
 #: ../src/file-manager/fm-directory-view.c:5669
@@ -3808,7 +3861,7 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:8469
 #: ../src/file-manager/fm-directory-view.c:8574
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "Una mena de rossegada invalida es estada utilizada."
 
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/file-manager/fm-directory-view.c:8641
@@ -4649,7 +4702,7 @@ msgstr ""
 
 #: ../src/nautilus-autorun-software.c:165
 msgid "<big><b>Error autorunning software</b></big>"
-msgstr ""
+msgstr "<big><b>Error al moment d'executar automaticament lo logicial</b></big>"
 
 #: ../src/nautilus-autorun-software.c:191
 msgid ""
@@ -5034,8 +5087,8 @@ msgid ""
 "information will appear when zooming in closer."
 msgstr ""
 "Causissètz l'òrdre de las entresenhas que se visualizan jol nom de las "
-"icònas. Mai zoomatz sus un element, mai las entresenhas visualizadas "
-"seràn nombrosas."
+"icònas. Mai zoomatz sus un element, mai las entresenhas visualizadas seràn "
+"nombrosas."
 
 #: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Choose the order of information to appear in the list view."
@@ -5045,8 +5098,8 @@ msgstr "Causissètz l'òrdre de las entresenhas dins la visualizacion en tièra.
 msgid ""
 "Choose what happens when inserting media or connecting devices to the system"
 msgstr ""
-"Causissètz l'accion d'efectuar a l'insercion d'un supòrt o a la connexion d'un "
-"aparelh al sistèma"
+"Causissètz l'accion d'efectuar a l'insercion d'un supòrt o a la connexion "
+"d'un aparelh al sistèma"
 
 #: ../src/nautilus-file-management-properties.glade.h:50
 msgid "Count _number of items:"
