@@ -9,13 +9,13 @@ msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-16 16:30+0100\n"
-"PO-Revision-Date: 2008-03-16 16:23+0100\n"
+"PO-Revision-Date: 2008-03-16 21:20+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -956,6 +956,12 @@ msgid ""
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
 msgstr ""
+"Optimizacion de la velocitat de visualizacion d'un fichièr imatge en miniatura. "
+"S'es definit a \"always\", la miniatura se visualiza totjorn, e mai lo "
+"repertòri es sus un servidor distant. S'es definit a \"local_only\", "
+"las miniaturas se visualizan pas que pels sistèmas de fichièrs "
+"locals. S'es défini a \"never\", las miniaturas son pas jamai "
+"visualizadas, s'utilizan sonque d'icòna genericas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid ""
@@ -964,6 +970,12 @@ msgid ""
 "server. If set to \"local_only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Optimizacion de la velocitat de visualizacion del nombre d'elements d'un "
+"repertòri. S'es definit à \"always\", lo nombre d'elements se visualiza totjorn, "
+"e mai lo repertòri siá sus un servidor distant. S'es definit a \"local_only\", "
+"lo nombre d'elements es pas visualizat que pels sistèmas de fichièrs "
+"locals. S'es definit a \"never\", lo nombre d'elements es pas jamai "
+"visualizat."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "The default size of an icon for a thumbnail in the icon view."
@@ -1001,10 +1013,12 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
+"Lo format de las datas de fichièrs. Las valors possiblas son \"locale\", "
+"\"iso\", e \"informal\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
+msgstr "La visualizacion de panèl lateral de visualizar dins las fenèstras novèlament dobèrtas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid ""
@@ -1048,11 +1062,11 @@ msgstr "Tipe de clic utilizat per aviar/dobrir de fichièrs"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid "Use manual layout in new windows"
-msgstr ""
+msgstr "Utilizar la disposicion manuala dins las fenèstras novèlas"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid "Use tighter layout in new windows"
-msgstr ""
+msgstr "Utilizar una disposicion compacta dins las fenèstras novèlas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid "What to do with executable text files when activated"
@@ -1065,6 +1079,10 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
+"Indica çò que cal far amb los fichièrs tèxt executables quand son "
+"activats (simple o doble clic). Las valors possiblas son \"launch\" per "
+"los executar coma de programas, \"ask\" per demandar de que far dins una "
+"fenèstra e \"display\" per los visualizar coma de fichièrs tèxt."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid ""
@@ -1072,6 +1090,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
+"Quand se consulta un repertòri, aqueste visualizaira es utilizada levat se "
+"avètz seleccionat una autra visualizacion per aqueste repertòri. Las valors "
+"possiblas son \"list_view\" e \"icon_view\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid "When to show number of items in a folder"
@@ -1087,35 +1108,37 @@ msgstr "Quora visualizar una miniatura dels imatges"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
 msgid "Whether a custom default folder background has been set."
-msgstr ""
+msgstr "Indica se un fons de repertòri per defaut personalizat es definit."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "Whether a custom default side pane background has been set."
-msgstr ""
+msgstr "Indica se un fons de panèl lateral per defaut personalizat es definit."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
-msgstr ""
+msgstr "Indica se cal demandar una confirmacion al moment de suprimir los "
+"fichièrs o de voidar la banasta."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid "Whether to automatically mount media"
-msgstr ""
+msgstr "Indica se cal montar automaticament los supòrts"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "Whether to automatically open a folder for automounted media"
-msgstr ""
+msgstr "Indica se cal dobrir automaticament un repertòri quand de supòrts "
+"son montats automaticament"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Indica se cal activar la supression immediata"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr ""
+msgstr "Indica se cal una escota previa quand la mirga passa endessús d'una icòna"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Indica se cal visualizar los fichièrs de salvagarda"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "Whether to show hidden files"
@@ -1207,6 +1230,7 @@ msgid ""
 "You have just inserted media with software intended to be automatically "
 "started."
 msgstr ""
+"Venètz d'inserir un supòrt amb un logiciel previst per s'aviar automaticament."
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1105
@@ -1223,6 +1247,8 @@ msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
 "for other media of type \"%s\"."
 msgstr ""
+"Seleccionatz cossí dobrir \"%s\" e se cal efectuar aquesta accion a partir "
+"d'ara per d'autres supòrts del tipe \"%s\"."
 
 #: ../libnautilus-private/nautilus-autorun.c:1138
 msgid "_Always perform this action"
@@ -1261,7 +1287,7 @@ msgstr "Copiar lo tèxt seleccionat dins lo pòrta-papièr"
 #. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:450
 msgid "Paste the text stored on the clipboard"
-msgstr ""
+msgstr "Pega lo tèxt estocat dins lo pòrta-papièr"
 
 #. name, stock id
 #. label, accelerator
@@ -1273,7 +1299,7 @@ msgstr "Seleccionar un fichièr"
 #. tooltip
 #: ../libnautilus-private/nautilus-clipboard.c:454
 msgid "Select all the text in a text field"
-msgstr ""
+msgstr "Selecciona tot lo tèxt dins una zòna de tèxt"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:375
 msgid "Move _Up"
@@ -1369,7 +1395,7 @@ msgstr "Permissions en octal"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
-msgstr ""
+msgstr "Las permissions del fichièr, en notacion octala."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:113
 msgid "MIME Type"
@@ -1699,20 +1725,18 @@ msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Sètz segur que volètz suprimir per totjorn l'element seleccionat de "
 "l'escobilièr ?"
-msgstr[1] ""
 "Sètz segur que volètz suprimir per totjorn los %'d elements seleccionats "
 "de l'escobilièr ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1107
 #: ../libnautilus-private/nautilus-file-operations.c:1173
 msgid "If you delete an item, it will be permanently lost."
-msgstr ""
+msgstr "Se suprimissètz un element, serà perdut per totjorn."
 
 #
 #: ../libnautilus-private/nautilus-file-operations.c:1126
@@ -1734,11 +1758,9 @@ msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
 #: ../libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr[0] "Sètz segur que volètz suprimir per totjorn l'element"
+msgstr "Sètz segur que volètz suprimir per totjorn l'element"
 "seleccionat ?"
-msgstr[1] ""
 "Sètz segur que volètz suprimir per totjorn los %'d elements"
 "seleccionats ?"
 
@@ -1849,6 +1871,9 @@ msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
 msgstr ""
+"Per recobrar d'espaci liure sus aqueste periferic, la banasta deu "
+"èsser voidada. Totrs los elements de la banasta seràn suprimits "
+"per totjorn."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1939
 msgid "Don't Empty Trash"
@@ -1915,6 +1940,8 @@ msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
 msgstr ""
+"Impossible de tractar los fichièrs del repertòri \"%B\" per çò que "
+"avètz pas la permission de los legir."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2204
 msgid ""
@@ -1975,7 +2002,7 @@ msgstr "La cibla es en lectura sola."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2535
 msgid "Moving \"%B\" to \"%B\""
-msgstr ""
+msgstr "Desplaçament de \"%B\" cap a \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2536
 msgid "Copying \"%B\" to \"%B\""
@@ -2103,6 +2130,9 @@ msgid ""
 "confirmation before replacing any files in the folder that conflict with the "
 "files being copied."
 msgstr ""
+"Lo repertòri sorga existís ja dins \"%B\". La fusion demanderà una "
+"confirmacion abans cada remplaçament de fichièr qu'es conflicte amb "
+"los fichièrs a se copiar dins lo repertòri."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3315
 #: ../libnautilus-private/nautilus-file-operations.c:3762
@@ -2161,6 +2191,9 @@ msgid ""
 "confirmation before replacing any files in the folder that conflict with the "
 "files being moved."
 msgstr ""
+"Lo repertòri sorga existís ja dins \"%B\". La fusion demanderà una "
+"confirmacion abans cada remplaçament de fichièr qu'es conflicte amb "
+"los fichièrs a se desplaçar dins lo repertòri."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3854
 #, c-format
@@ -2175,8 +2208,8 @@ msgstr "Creacion de ligams dins \"%B\""
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Creacion d'un ligam cap a %'d fichièr"
+msgstr[1] "Creacion de ligams cap a %'d fichièrs"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4205
 msgid "Error while creating link to %B."
@@ -2241,7 +2274,7 @@ msgstr "Impossible de trobar lo fichièr"
 #: ../libnautilus-private/nautilus-file.c:1360
 #, c-format
 msgid "Toplevel files cannot be renamed"
-msgstr ""
+msgstr "Impossible de renommar los fichièrs rasiga"
 
 #: ../libnautilus-private/nautilus-file.c:1377
 #, c-format
@@ -2287,7 +2320,7 @@ msgstr "uèi a %-H:%M"
 
 #: ../libnautilus-private/nautilus-file.c:3529
 msgid "today, 00:00 PM"
-msgstr "uèi, 00:00"
+msgstr "uèi, a 00:00"
 
 #: ../libnautilus-private/nautilus-file.c:3530
 msgid "today, %-I:%M %p"
@@ -2337,7 +2370,7 @@ msgstr "ièr"
 #.
 #: ../libnautilus-private/nautilus-file.c:3563
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "Divendres 00 de setembre de 0000 a 00:00:00"
 
 #: ../libnautilus-private/nautilus-file.c:3564
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
@@ -2599,7 +2632,7 @@ msgstr "Visualizacion en icònas"
 #: ../libnautilus-private/nautilus-global-preferences.c:140
 #: ../src/file-manager/fm-list-view.c:1454
 msgid "List View"
-msgstr ""
+msgstr "Visualizacion en tièra"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:144
 msgid "Manually"
@@ -2979,29 +3012,33 @@ msgstr ""
 #: ../libnautilus-private/nautilus-program-choosing.c:425
 #: ../libnautilus-private/nautilus-program-choosing.c:436
 msgid "This drop target only supports local files."
-msgstr ""
+msgstr "La cibla de rossegar-pausar gerís pas que los fichièrs locals."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:426
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
+"Per dobrir de fichièrs distants, copiatz-los dins un repertòri local puèi "
+"rossegatz-los tornamai."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:437
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
+"Per dobrir de fichièrs distants, copiatz-los dins un repertòri local puèi "
+"rossegatz-los tornamai. Los fichièrs locals qu'avètz rossegats son ja dobèrts."
 
 #: ../libnautilus-private/nautilus-progress-info.c:222
 msgid "File operations"
-msgstr ""
+msgstr "Operacions suls fichièrs"
 
 #: ../libnautilus-private/nautilus-progress-info.c:300
 #, c-format
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%'d operacion de fichièr activa"
+msgstr[1] "%'d operacions de fichièrs activas"
 
 #: ../libnautilus-private/nautilus-progress-info.c:493
 #: ../libnautilus-private/nautilus-progress-info.c:511
@@ -3080,28 +3117,30 @@ msgstr "Navegaire de fichièrs"
 
 #: ../src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "Fabrica pel terminal e lo gestionari de fichièrs Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
-msgstr ""
+msgstr "Fabrica Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:3
 msgid "Nautilus instance"
-msgstr ""
+msgstr "Instància de Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus metafile factory"
-msgstr ""
+msgstr "Fabrica de metafichièrs de Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:5
 msgid ""
 "Nautilus operations that can be done from subsequent command-line invocations"
 msgstr ""
+"Operacions de Nautilus que podètz executar de mercés a de paramètres "
+"que correspondon en linha de commanda"
 
 #: ../src/Nautilus_shell.server.in.h:6
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr ""
+msgstr "Produsís d'objèctes metafichièrs per accedir a las metadonadas Nautilus"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:618
 msgid "Background"
@@ -3388,22 +3427,18 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:5568
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
-msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "desplaçat"
-msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "desplaçats"
 
 #: ../src/file-manager/fm-directory-view.c:5575
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "copiat"
-msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "copiats"
 
@@ -3471,7 +3506,7 @@ msgstr "Crear un repertòri void novèl dins aqueste repertòri"
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6259
 msgid "No templates installed"
-msgstr ""
+msgstr "Pas de modèls installats"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
@@ -3814,7 +3849,7 @@ msgstr "Visualizar los fichièrs _aganits"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6437
 msgid "Toggle the display of hidden files in the current window"
-msgstr ""
+msgstr "Visualiza o non los fichièrs amagats dins la fenèstra activa"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6522
@@ -3902,11 +3937,11 @@ msgstr "_Descargar"
 #: ../src/file-manager/fm-directory-view.c:8468
 #: ../src/file-manager/fm-directory-view.c:8573
 msgid "Drag and drop is not supported."
-msgstr ""
+msgstr "Es pas possible de rossegar e pausar."
 
 #: ../src/file-manager/fm-directory-view.c:8404
 msgid "Drag and drop is only supported on local file systems."
-msgstr ""
+msgstr "Rossegar-pausar es pas gerit que suls sistèmas de fichièrs locals."
 
 #: ../src/file-manager/fm-directory-view.c:8469
 #: ../src/file-manager/fm-directory-view.c:8574
@@ -3916,7 +3951,7 @@ msgstr "Una mena de rossegada invalida es estada utilizada."
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/file-manager/fm-directory-view.c:8641
 msgid "dropped text.txt"
-msgstr "tèxt trach.txt"
+msgstr "tèxt rossegat.txt"
 
 #: ../src/file-manager/fm-ditem-page.c:323
 #: ../src/file-manager/fm-ditem-page.c:334
@@ -4051,7 +4086,7 @@ msgstr "Impossible de modificar las permissions."
 #: ../src/file-manager/fm-error-reporting.c:334
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Renommatge \"%s\" en \"%s\"."
 
 #: ../src/file-manager/fm-icon-view.c:123
 msgid "by _Name"
@@ -4107,12 +4142,12 @@ msgstr "Arren_gar los elements"
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1426
 msgid "Str_etch Icon"
-msgstr ""
+msgstr "Redim_ensionar l'icòna"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1427
 msgid "Make the selected icon stretchable"
-msgstr ""
+msgstr "Autorizar la modificacion de talha de l'icòna seleccionada"
 
 #. name, stock id
 #. label, accelerator
@@ -4135,7 +4170,8 @@ msgstr "_Ordenar per nom"
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1435
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
+msgstr "Reposiciona las icònas per los adaptar d'un biais armoniós "
+"a la fenèstra e evitar los encambaments"
 
 #. name, stock id
 #. label, accelerator
@@ -4146,13 +4182,13 @@ msgstr "_Disposicion compacta"
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1442
 msgid "Toggle using a tighter layout scheme"
-msgstr ""
+msgstr "Utiliza una disposicion pus compacta"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1446
 msgid "Re_versed Order"
-msgstr ""
+msgstr "Òrdre inversat"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1447
@@ -4176,7 +4212,7 @@ msgstr "_Manualament"
 
 #: ../src/file-manager/fm-icon-view.c:1460
 msgid "Leave icons wherever they are dropped"
-msgstr ""
+msgstr "Las icònas demòran ont son pausadas"
 
 #: ../src/file-manager/fm-icon-view.c:1463
 msgid "By _Name"
@@ -4205,7 +4241,7 @@ msgstr "Restaurar la talha d'origina de l'icòna"
 #: ../src/file-manager/fm-icon-view.c:1963
 #, c-format
 msgid "pointing at \"%s\""
-msgstr ""
+msgstr "afusta sus \"%s\""
 
 #: ../src/file-manager/fm-icon-view.c:2737
 msgid "Icons"
@@ -4288,12 +4324,12 @@ msgstr "Visualizar aqueste emplaçament amb la visualizacion en tièra."
 
 #: ../src/file-manager/fm-properties-window.c:524
 msgid "You can't assign more than one custom icon at a time!"
-msgstr ""
+msgstr "Podètz pas atribuir mai d'una icòna personalizada a l'encòp !"
 
 #: ../src/file-manager/fm-properties-window.c:525
 #: ../src/nautilus-information-panel.c:496
 msgid "Please drag just one image to set a custom icon."
-msgstr ""
+msgstr "Seleccionatz un sol imatge per ne far una icòna personalizada."
 
 #: ../src/file-manager/fm-properties-window.c:536
 #: ../src/nautilus-information-panel.c:518
@@ -4522,7 +4558,7 @@ msgstr "Definir l'IDE del gr_op"
 
 #: ../src/file-manager/fm-properties-window.c:4202
 msgid "_Sticky"
-msgstr ""
+msgstr "_Persistenta"
 
 #: ../src/file-manager/fm-properties-window.c:4282
 #: ../src/file-manager/fm-properties-window.c:4486
@@ -4679,6 +4715,9 @@ msgid ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
+"Podètz pas utilizar Nautilus ara. Aviar la comanda \"bonobo-slay\" dins lo  "
+"terminal pòt resòlvre lo problèma. S'es pas lo cas, podètz ensajar de "
+"tornar aviar l'ordenador o de tornar installar Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:597
@@ -4701,6 +4740,24 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
+"Podètz pas utilizar Nautilus ara. Executar la commanda \"bonobo-slay\" "
+"dempuèi lo terminal pòt gerir lo problèma. Si que non, podètz ensajar  "
+"de tornar aviar l'ordenador o de tornar installar Nautilus.\n"
+"\n"
+"Bonobo pòt pas localizar lo fichièr Nautilus_shell.server. Sembla "
+"qu'una rason a-n aquò siá que LD_LIBRARY_PATH inclusís pas lo "
+"repertòri de las bibliotècas de bonobo-activation. Una autra causa"
+"possibla pòt èsser una marrida installacion amb lo fichièr "
+"Nautilus_Shell.server que manca.\n"
+"\n"
+"Executar \"bonobo-slay\" tua totes los procediments Bonobo Activation e "
+"GConf, que pòdon èsser necessaris a d'autras aplicacions.\n"
+"\n"
+"De còps, tuar bonobo-activation-server e gconfd resòlv lo problèma, "
+"mas sabèm pas perqué.\n"
+"\n"
+"Avèm tanben remarcat aquesta error quand una marrida version de bonobo-"
+"activation es installada."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -4721,6 +4778,9 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
+"Podètz pas utilizar Nautilus ara a causa d'una error imprevista que ven de "
+"Bonobo al moment d'ensajar de declarar lo servidor de visualizacion "
+"del gestionari de fichièrs."
 
 #: ../src/nautilus-application.c:646
 msgid ""
@@ -4728,6 +4788,10 @@ msgid ""
 "attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Podètz pas utilizar Nautilus ara a causa d'una error imprevista que ven "
+"de Bonobo al moment d'ensajar de localizar la fabrica. Tuar "
+"bonobo-activation-server e tornar aviar Nautilus pòt ajudar a "
+"resòlvre lo problèma."
 
 #: ../src/nautilus-application.c:653
 msgid ""
@@ -4735,6 +4799,10 @@ msgid ""
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Podètz pas utilizar Nautilus ara a causa d'una error imprevista que ven "
+"de Bonobo al moment d'ensajar de localizar l'objècte shell. Tuar "
+"bonobo-activation-server e tornar aviar Nautilus pòt ajudar a "
+"resòlvre lo problèma."
 
 #: ../src/nautilus-application.c:1353 ../src/nautilus-places-sidebar.c:1484
 #: ../src/nautilus-places-sidebar.c:1507 ../src/nautilus-places-sidebar.c:1530
@@ -4746,7 +4814,7 @@ msgstr "Impossible d'ejectar %s"
 #: ../src/nautilus-autorun-software.c:147
 #, c-format
 msgid "Error starting autorun program: %s"
-msgstr ""
+msgstr "Error al moment d'aviar automaticament lo programa : %s"
 
 #: ../src/nautilus-autorun-software.c:150
 #, c-format
@@ -4774,6 +4842,10 @@ msgid ""
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
+"Aqueste logicial s'aviarà directament dempuèi lo supòrt \"%s\". Deuriatz pas "
+"jamai aviar un logicial que vos fisatz pas.\n"
+"\n"
+"En cas de dobte, cliquez sur Anullar."
 
 #: ../src/nautilus-bookmarks-window.c:156
 #: ../src/nautilus-file-management-properties.c:203
@@ -4923,6 +4995,8 @@ msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
 msgstr ""
+"Es segurament per çò que s'agís d'una emblèma permanenta e pas d'una "
+"emblèma qu'avètz aponduda."
 
 #: ../src/nautilus-emblem-sidebar.c:272
 #, c-format
@@ -4950,12 +5024,16 @@ msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Picatz un nom descriptiu al costat de cada emblèma. Aqueste nom serà utilizat "
+"als autres endreches per identificar l'emblèma."
 
 #: ../src/nautilus-emblem-sidebar.c:558
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Picatz un nom descriptiu al costat de l'emblèma. Aqueste nom serà utilizat "
+"als autres endreches per identificar l'emblèma."
 
 #: ../src/nautilus-emblem-sidebar.c:779
 msgid "Some of the files could not be added as emblems."
@@ -6571,25 +6649,3 @@ msgstr "Definir lo nivèl de zoom de la visualizacion actuala"
 #: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "Ret"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %'d selected item?Are you "
-#~ "sure you want to permanently delete the %'d selected items?"
-#~ msgstr ""
-#~ "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?Sètz "
-#~ "segur que volètz suprimir per totjorn los %'d elements seleccionats ?"
-
-#~ msgid ""
-#~ "The %'d selected item will be moved if you select the Paste commandThe "
-#~ "%'d selected items will be moved if you select the Paste command"
-#~ msgstr ""
-#~ "Se seleccionatz la comanda Pegar, l'element seleccionat serà desplaçatSe "
-#~ "seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
-#~ "desplaçats"
-
-#~ msgid ""
-#~ "The %'d selected item will be copied if you select the Paste commandThe "
-#~ "%'d selected items will be copied if you select the Paste command"
-#~ msgstr ""
-#~ "Se seleccionatz la comanda Pegar, l'element seleccionat serà copiatSe "
-#~ "seleccionatz la comanda Pegar, los %'d elements seleccionats seràn copiats"
