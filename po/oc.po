@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-16 13:18+0000\n"
-"PO-Revision-Date: 2008-03-16 16:00+0100\n"
+"PO-Revision-Date: 2008-03-16 16:23+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -939,6 +939,12 @@ msgid ""
 "previews for local file systems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
+"Optimizacion de la velocitat al moment de la previsualizacion del contengut "
+"d'un fichièr tèxt dins l'icòna del fichièr. S'es definit a \"always\", "
+"se visualiza totjorn la previsualizacion, e mai lo repertòri siá sus un "
+"servidor distant. S'es definit a \"local_only\", se visualiza la previsualizacion "
+"sonque pels sistèmas de fichièrs locals. S'es definit a \"never\", "
+"las donadas de la previsualizacion son jamai legidas."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid ""
@@ -1144,23 +1150,23 @@ msgstr "Dobrir %s"
 
 #: ../libnautilus-private/nautilus-autorun.c:1076
 msgid "You have just inserted an Audio CD."
-msgstr ""
+msgstr "Venètz d'inserir un CD audiò."
 
 #: ../libnautilus-private/nautilus-autorun.c:1078
 msgid "You have just inserted an Audio DVD."
-msgstr ""
+msgstr "Venètz d'inserir un DVD audiò."
 
 #: ../libnautilus-private/nautilus-autorun.c:1080
 msgid "You have just inserted a Video DVD."
-msgstr ""
+msgstr "Venètz d'inserir un DVD vidèo."
 
 #: ../libnautilus-private/nautilus-autorun.c:1082
 msgid "You have just inserted a Video CD."
-msgstr ""
+msgstr "Venètz d'inserir un CD vidèo."
 
 #: ../libnautilus-private/nautilus-autorun.c:1084
 msgid "You have just inserted a Super Video CD."
-msgstr ""
+msgstr "Venètz d'inserir un CD super vidèo."
 
 #: ../libnautilus-private/nautilus-autorun.c:1086
 msgid "You have just inserted a blank CD."
@@ -1168,31 +1174,31 @@ msgstr "Venètz d'inserir un CD void."
 
 #: ../libnautilus-private/nautilus-autorun.c:1088
 msgid "You have just inserted a blank DVD."
-msgstr ""
+msgstr "Venètz d'inserir un DVD void."
 
 #: ../libnautilus-private/nautilus-autorun.c:1090
 msgid "You have just inserted a blank Blu-Ray disc."
-msgstr ""
+msgstr "Venètz d'inserir un disc Blu-Ray void."
 
 #: ../libnautilus-private/nautilus-autorun.c:1092
 msgid "You have just inserted a blank HD DVD."
-msgstr ""
+msgstr "Venètz d'inserir un HD-DVD void."
 
 #: ../libnautilus-private/nautilus-autorun.c:1094
 msgid "You have just inserted a Photo CD."
-msgstr ""
+msgstr "Venètz d'inserir un CD de fotografias."
 
 #: ../libnautilus-private/nautilus-autorun.c:1096
 msgid "You have just inserted a Picture CD."
-msgstr ""
+msgstr "Venètz d'inserir un CD d'imatges."
 
 #: ../libnautilus-private/nautilus-autorun.c:1098
 msgid "You have just inserted media with digital photos."
-msgstr ""
+msgstr "Venètz d'inserir un supòrt amb de fotografias numericas."
 
 #: ../libnautilus-private/nautilus-autorun.c:1100
 msgid "You have just inserted a digital audio player."
-msgstr ""
+msgstr "Venètz d'inserir un legidor audiò numeric."
 
 #: ../libnautilus-private/nautilus-autorun.c:1102
 msgid ""
@@ -1203,7 +1209,7 @@ msgstr ""
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1105
 msgid "You have just inserted media."
-msgstr ""
+msgstr "Venètz d'inserir un supòrt."
 
 #: ../libnautilus-private/nautilus-autorun.c:1107
 msgid "Choose what application to launch."
@@ -1269,11 +1275,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-column-chooser.c:375
 msgid "Move _Up"
-msgstr ""
+msgstr "Desplaçar cap en_naut"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:385
 msgid "Move Dow_n"
-msgstr ""
+msgstr "Desplaçar cap en_bas"
 
 #: ../libnautilus-private/nautilus-column-chooser.c:394
 msgid "_Show"
@@ -1357,7 +1363,7 @@ msgstr "Las permissions del fichièr."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:105
 msgid "Octal Permissions"
-msgstr ""
+msgstr "Permissions en octal"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:106
 msgid "The permissions of the file, in octal notation."
@@ -1382,7 +1388,7 @@ msgstr "Lo contèxt de seguretat SELinux del fichièr."
 #: ../libnautilus-private/nautilus-customization-data.c:410
 #: ../src/nautilus-property-browser.c:1870
 msgid "Reset"
-msgstr ""
+msgstr "Reinicializar"
 
 #: ../libnautilus-private/nautilus-desktop-directory-file.c:437
 #: ../libnautilus-private/nautilus-desktop-icon-file.c:149
@@ -1720,10 +1726,8 @@ msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
 #: ../libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr[0] "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?"
-msgstr[1] ""
+msgstr "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?"
 "Sètz segur que volètz suprimir per totjorn los %'d elements seleccionats ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1206
@@ -3355,11 +3359,9 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:5568
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
-msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "desplaçat"
-msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "desplaçats"
 
@@ -3367,25 +3369,11 @@ msgstr[1] ""
 #: ../src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "copiat"
-msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "copiats"
-
-#: ../src/file-manager/fm-directory-view.c:5568
-#, c-format
-msgid "The %'d selected item will be moved if you select the Paste command"
-"The %'d selected items will be moved if you select the Paste command"
-msgstr ""
-
-#: ../src/file-manager/fm-directory-view.c:5575
-#, c-format
-msgid "The %'d selected item will be copied if you select the Paste command"
-"The %'d selected items will be copied if you select the Paste command"
-msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5669
 #: ../src/file-manager/fm-tree-view.c:972
@@ -4319,7 +4307,9 @@ msgstr "pas legible"
 #: ../src/file-manager/fm-properties-window.c:2299
 #, c-format
 msgid "%'d item, with size %s"
-msgstr ""
+msgid_plural "%'d items, totalling %s"
+msgstr[0] "%'d element, de talha %s"
+msgstr[1] "%'d elements, per un total de %s"
 
 #: ../src/file-manager/fm-properties-window.c:2308
 msgid "(some contents unreadable)"
