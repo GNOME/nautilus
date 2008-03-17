@@ -50,4 +50,7 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 							     location,
 							     gtk_widget_get_screen (widget));
 	}
+
+	gtk_widget_destroy (widget);
+	g_object_unref (location);
 }

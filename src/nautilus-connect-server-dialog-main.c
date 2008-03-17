@@ -38,6 +38,7 @@
 #include <eel/eel-app-launch-context.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-mount-operation.h>
 
 #include <libnautilus-private/nautilus-icon-names.h>
 
@@ -47,27 +48,60 @@
 static int open_dialogs;
 
 static void
-dialog_destroyed (GtkWidget *widget,
-		  gpointer   user_data)
+main_dialog_destroyed (GtkWidget *widget,
+		       gpointer   user_data)
+{
+	/* this only happens when user clicks "cancel"
+	 * on the main dialog or when we are all done.
+	 */
+	gtk_main_quit ();
+}
+
+static void
+error_dialog_destroyed (GtkWidget *widget,
+			GtkWidget *main_dialog)
 {
 	if (--open_dialogs <= 0)
-		gtk_main_quit ();
+		gtk_widget_destroy (main_dialog);
+}
+
+static void
+display_error_dialog (GError *error, 
+		      const char *uri,
+		      GtkWidget *parent)
+{
+	GtkDialog *error_dialog;
+	char *error_message;
+
+	error_message = g_strdup_printf (_("Can't display location \"%s\""),
+					 uri);
+	error_dialog = eel_show_error_dialog (error_message,
+					      error->message,
+					      NULL);
+
+	open_dialogs++;
+
+	g_signal_connect (error_dialog, "destroy",
+			  G_CALLBACK (error_dialog_destroyed), parent);
+
+	gtk_window_set_screen (GTK_WINDOW (error_dialog),
+			       gtk_widget_get_screen (parent));
+
+	g_free (error_message);
 }
 
 static void
 show_uri (const char *uri,
-	  GdkScreen  *screen)
+	  GtkWidget  *widget)
 {
-	GtkDialog *error_dialog;
 	GError    *error;
-	char      *error_message;
 	EelAppLaunchContext *launch_context;
 
 	launch_context = eel_app_launch_context_new ();
-	eel_app_launch_context_set_screen (launch_context, screen);
+	eel_app_launch_context_set_screen (launch_context,
+					   gtk_widget_get_screen (widget));
 
 	error = NULL;
-	/* FIXME: doesn't automount */
 	g_app_info_launch_default_for_uri (uri,
 					   G_APP_LAUNCH_CONTEXT (launch_context),
 					   &error);
@@ -75,23 +109,33 @@ show_uri (const char *uri,
 	g_object_unref (launch_context);
 
 	if (error) {
-		error_message = g_strdup_printf (_("Can't display location \"%s\""),
-						 uri);
-
-		error_dialog = eel_show_error_dialog (error_message,
-						      error->message,
-						      NULL);
-
-		open_dialogs++;
-
-		g_signal_connect (error_dialog, "destroy",
-				  G_CALLBACK (dialog_destroyed), NULL);
-
-		gtk_window_set_screen (GTK_WINDOW (error_dialog), screen);
-
+		display_error_dialog (error, uri, widget);
 		g_error_free (error);
-		g_free (error_message);
+	} else {
+		/* everything is OK, destroy the main dialog and quit */
+		gtk_widget_destroy (widget);
 	}
+}
+
+static void
+mount_enclosing_ready_cb (GFile *location,
+			  GAsyncResult *res,
+			  GtkWidget *widget)
+{
+	char *uri;
+	GError *error = NULL;
+	
+	g_file_mount_enclosing_volume_finish (location,
+					      res, &error);
+	uri = g_file_get_uri (location);
+	if (error) {
+		display_error_dialog (error, uri, widget);
+	} else {
+		/* volume is mounted, show it */
+		show_uri (uri, widget);
+		g_object_unref (location);
+	}
+	g_free (uri);
 }
 
 void
@@ -99,11 +143,14 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 					    GFile *location,
 					    GtkWidget *widget)
 {
-	char *uri;
+	GMountOperation *op;
 
-	uri = g_file_get_uri (location);
-	show_uri (uri, gtk_widget_get_screen (widget));
-	g_free (uri);
+	op = eel_mount_operation_new (GTK_WINDOW (widget));
+	g_file_mount_enclosing_volume (location,
+				       0, op,
+				       NULL,
+				       (GAsyncReadyCallback) mount_enclosing_ready_cb,
+				       widget);
 }
 
 int
@@ -155,9 +202,9 @@ main (int argc, char *argv[])
 		g_object_unref (location);
 	}
 
-	open_dialogs = 1;
+	open_dialogs = 0;
 	g_signal_connect (dialog, "destroy",
-			  G_CALLBACK (dialog_destroyed), NULL);
+			  G_CALLBACK (main_dialog_destroyed), NULL);
 
 	gtk_widget_show (dialog);
 

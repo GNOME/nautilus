@@ -325,10 +325,6 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	nautilus_connect_server_dialog_present_uri (dialog->details->application,
 						    location,
 						    GTK_WIDGET (dialog));
-
-	g_object_unref (location);
-
-	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
