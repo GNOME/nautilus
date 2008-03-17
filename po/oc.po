@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-16 20:22+0000\n"
+"POT-Creation-Date: 2008-03-17 19:56+0100\n"
 "PO-Revision-Date: 2008-03-16 21:53+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1730,12 +1730,13 @@ msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr "Sètz segur que volètz suprimir per totjorn l'element seleccionat "
-"de la banasta ?"
-"Sètz segur que volètz suprimir per totjorn los %'d elements seleccionats "
-"de la banasta ?"
+msgstr[0] "Sètz segur que volètz suprimir per totjorn l'element seleccionat "
+"de l'escobilièr ?"
+msgstr[1] "Sètz segur que volètz suprimir per totjorn los %'d elements "
+"seleccionats de l'escobilièr ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1107
 #: ../libnautilus-private/nautilus-file-operations.c:1173
@@ -1762,9 +1763,11 @@ msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
 #: ../libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr "Sètz segur que volètz suprimir per totjorn l'element "
+msgstr[0] "Sètz segur que volètz suprimir per totjorn l'element "
 "seleccionat ?"
+msgstr[1] ""
 "Sètz segur que volètz suprimir per totjorn los %'d elements "
 "seleccionats ?"
 
@@ -3183,8 +3186,8 @@ msgstr "Modificar lo _fons del burèu"
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
-"Visualiza una fenèstra que vos permet de definir los motius e las colors "
-"del fons de vòstre burèu"
+"Visualiza una fenèstra que vos permet de definir los motius e las colors del "
+"fons de vòstre burèu"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:709
@@ -3228,7 +3231,7 @@ msgstr[1] "Dobrirà %'d fenèstras."
 
 #: ../src/file-manager/fm-directory-view.c:1065
 #: ../src/file-manager/fm-properties-window.c:4921
-#: ../src/nautilus-connect-server-dialog.c:357
+#: ../src/nautilus-connect-server-dialog.c:353
 #: ../src/nautilus-location-dialog.c:111
 msgid "There was an error displaying help."
 msgstr "I a aguda una error al moment de visualizar l'ajuda."
@@ -3250,7 +3253,7 @@ msgid "Search _name:"
 msgstr "_Nom de recèrca :"
 
 #: ../src/file-manager/fm-directory-view.c:1244
-#: ../src/nautilus-connect-server-dialog.c:534
+#: ../src/nautilus-connect-server-dialog.c:530
 msgid "_Folder:"
 msgstr "_Repertòri :"
 
@@ -3434,18 +3437,22 @@ msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 #: ../src/file-manager/fm-directory-view.c:5568
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
+msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
-msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "desplaçat"
+msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "desplaçats"
 
 #: ../src/file-manager/fm-directory-view.c:5575
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
+msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
+msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà "
 "copiat"
+msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "copiats"
 
@@ -3582,7 +3589,9 @@ msgstr "_Dobrir lo repertòri dels escriptes"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6295
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr "Visualizar lo repertòri que conten los escripts que se visualizan dins aqueste menu"
+msgstr ""
+"Visualizar lo repertòri que conten los escripts que se visualizan dins "
+"aqueste menu"
 
 #. name, stock id
 #. label, accelerator
@@ -3640,7 +3649,9 @@ msgstr "Seleccionar un _motiu"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6325
 msgid "Select items in this window matching a given pattern"
-msgstr "Seleccionatz los elements d'aquesta fenèstra que correspondon a un motiu balhat"
+msgstr ""
+"Seleccionatz los elements d'aquesta fenèstra que correspondon a un motiu "
+"balhat"
 
 #. name, stock id
 #. label, accelerator
@@ -3709,8 +3720,9 @@ msgstr "Inicializar la visualizar a las valors per _defaut"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6353
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "Aplica l'òrdre de classificacion e lo nivèl de zoom indicats dins las preferéncias "
-"a-n aquesta visualizacion"
+msgstr ""
+"Aplica l'òrdre de classificacion e lo nivèl de zoom indicats dins las "
+"preferéncias a-n aquesta visualizacion"
 
 #. name, stock id
 #. label, accelerator
@@ -4270,7 +4282,8 @@ msgstr "I a aguda una error dins la visualizacion en icònas."
 
 #: ../src/file-manager/fm-icon-view.c:2741
 msgid "The icon view encountered an error while starting up."
-msgstr "I a aguda una error dins la visualizacion en icònas al moment de s'aviar."
+msgstr ""
+"I a aguda una error dins la visualizacion en icònas al moment de s'aviar."
 
 #: ../src/file-manager/fm-icon-view.c:2742
 msgid "Display this location with the icon view."
@@ -4325,7 +4338,8 @@ msgstr "I a aguda una error dins la visualizacion en tièra."
 
 #: ../src/file-manager/fm-list-view.c:2803
 msgid "The list view encountered an error while starting up."
-msgstr "I a aguda una error dins la visualizacion en tièra al moment de s'aviar."
+msgstr ""
+"I a aguda una error dins la visualizacion en tièra al moment de s'aviar."
 
 #: ../src/file-manager/fm-list-view.c:2804
 msgid "Display this location with the list view."
@@ -4884,18 +4898,18 @@ msgstr "<b>_Nom</b>"
 msgid "Edit Bookmarks"
 msgstr "Modificar los favorits"
 
-#: ../src/nautilus-connect-server-dialog-main.c:78
+#: ../src/nautilus-connect-server-dialog-main.c:76
 #, c-format
 msgid "Can't display location \"%s\""
 msgstr "Impossible de visualizar l'emplaçament \"%s\""
 
-#: ../src/nautilus-connect-server-dialog-main.c:118
+#: ../src/nautilus-connect-server-dialog-main.c:165
 msgid "[URI]"
 msgstr "[URI]"
 
 #. Translators: This is the --help description gor the connect to server app,
 #. the initial newlines are between the command line arg and the description
-#: ../src/nautilus-connect-server-dialog-main.c:129
+#: ../src/nautilus-connect-server-dialog-main.c:176
 msgid ""
 "\n"
 "\n"
@@ -4942,52 +4956,52 @@ msgstr ""
 msgid "Please enter a name and try again."
 msgstr "Picatz un nom e tornatz ensajar."
 
-#: ../src/nautilus-connect-server-dialog.c:440
+#: ../src/nautilus-connect-server-dialog.c:436
 msgid "_Location (URI):"
 msgstr "_Emplaçament (URI) :"
 
-#: ../src/nautilus-connect-server-dialog.c:462
+#: ../src/nautilus-connect-server-dialog.c:458
 msgid "_Server:"
 msgstr "_Servidor :"
 
-#: ../src/nautilus-connect-server-dialog.c:481
+#: ../src/nautilus-connect-server-dialog.c:477
 msgid "Optional information:"
 msgstr "Entresenhas opcionalas :"
 
 #
-#: ../src/nautilus-connect-server-dialog.c:493
+#: ../src/nautilus-connect-server-dialog.c:489
 msgid "_Share:"
 msgstr "_Partiment :"
 
-#: ../src/nautilus-connect-server-dialog.c:514
+#: ../src/nautilus-connect-server-dialog.c:510
 msgid "_Port:"
 msgstr "_Pòrt:"
 
-#: ../src/nautilus-connect-server-dialog.c:554
+#: ../src/nautilus-connect-server-dialog.c:550
 msgid "_User Name:"
 msgstr "Nom d'_utilizaire :"
 
-#: ../src/nautilus-connect-server-dialog.c:575
+#: ../src/nautilus-connect-server-dialog.c:571
 msgid "_Domain Name:"
 msgstr "Nom de _domeni :"
 
-#: ../src/nautilus-connect-server-dialog.c:607
+#: ../src/nautilus-connect-server-dialog.c:603
 msgid "Bookmark _name:"
 msgstr "_Nom del favorit :"
 
-#: ../src/nautilus-connect-server-dialog.c:803
+#: ../src/nautilus-connect-server-dialog.c:799
 msgid "Connect to Server"
 msgstr "Se connectar al servidor"
 
-#: ../src/nautilus-connect-server-dialog.c:820
+#: ../src/nautilus-connect-server-dialog.c:816
 msgid "Service _type:"
 msgstr "_Mena de servici :"
 
-#: ../src/nautilus-connect-server-dialog.c:914
+#: ../src/nautilus-connect-server-dialog.c:910
 msgid "Add _bookmark"
 msgstr "_Apondre un favorit"
 
-#: ../src/nautilus-connect-server-dialog.c:952
+#: ../src/nautilus-connect-server-dialog.c:948
 msgid "C_onnect"
 msgstr "Se _connectar"
 
@@ -6656,3 +6670,33 @@ msgstr "Definir lo nivèl de zoom de la visualizacion actuala"
 msgid "Network"
 msgstr "Ret"
 
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %'d selected item from "
+#~ "the trash?Are you sure you want to permanently delete the %'d selected "
+#~ "items from the trash?"
+#~ msgstr ""
+#~ "Sètz segur que volètz suprimir per totjorn l'element seleccionat de la "
+#~ "banasta ?Sètz segur que volètz suprimir per totjorn los %'d elements "
+#~ "seleccionats de la banasta ?"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %'d selected item?Are you "
+#~ "sure you want to permanently delete the %'d selected items?"
+#~ msgstr ""
+#~ "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?Sètz "
+#~ "segur que volètz suprimir per totjorn los %'d elements seleccionats ?"
+
+#~ msgid ""
+#~ "The %'d selected item will be moved if you select the Paste commandThe "
+#~ "%'d selected items will be moved if you select the Paste command"
+#~ msgstr ""
+#~ "Se seleccionatz la comanda Pegar, l'element seleccionat serà desplaçatSe "
+#~ "seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
+#~ "desplaçats"
+
+#~ msgid ""
+#~ "The %'d selected item will be copied if you select the Paste commandThe "
+#~ "%'d selected items will be copied if you select the Paste command"
+#~ msgstr ""
+#~ "Se seleccionatz la comanda Pegar, l'element seleccionat serà copiatSe "
+#~ "seleccionatz la comanda Pegar, los %'d elements seleccionats seràn copiats"
