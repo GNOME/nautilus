@@ -3186,19 +3186,6 @@ static int cached_thumbnail_limit;
 static int cached_thumbnail_size;
 static int show_image_thumbs;
 
-static gboolean
-mimetype_limited_by_size (const char *mime_type)
-{
-	/* TODO: re-add */
-	/*
-        if (g_hash_table_lookup (factory->image_mime_types, mime_type)) {
-                return TRUE;
-	}
-	*/
-
-        return FALSE;
-}
-
 GFilesystemPreviewType
 nautilus_file_get_filesystem_use_preview (NautilusFile *file)
 {
@@ -3229,7 +3216,11 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 		mime_type = "application/octet-stream";
 	}
 	
-	if (mimetype_limited_by_size (mime_type) &&
+	/* If the thumbnail has already been created, don't care about the size
+	 * of the original file.
+	 */
+	if (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type) &&
+	    file->details->thumbnail_path == NULL &&
 	    nautilus_file_get_size (file) > (unsigned int)cached_thumbnail_limit) {
 		return FALSE;
 	}

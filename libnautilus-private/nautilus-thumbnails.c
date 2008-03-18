@@ -114,6 +114,14 @@ static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
 static GnomeThumbnailFactory *thumbnail_factory = NULL;
 
+static const char *types [] = {
+	"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
+	"image/png", "image/pnm", "image/ras", "image/tga",
+	"image/tiff", "image/wbmp", "image/bmp", "image/x-xbitmap",
+	"image/x-xpixmap"
+};
+static GHashTable *image_mime_types = NULL;
+
 static int thumbnail_icon_size = 0;
 
 static gboolean
@@ -726,6 +734,36 @@ thumbnail_thread_notify_file_changed (gpointer image_uri)
 	GDK_THREADS_LEAVE ();
 
 	return FALSE;
+}
+
+static GHashTable *
+get_types_table (void)
+{
+	int i;
+
+	if (image_mime_types == NULL) {
+		image_mime_types = g_hash_table_new (g_str_hash, g_str_equal);
+		for (i = 0; i < G_N_ELEMENTS (types); i++) {
+			g_hash_table_insert (image_mime_types,
+					     (gpointer) types [i],
+					     GUINT_TO_POINTER (1));
+		}
+	}
+
+	return image_mime_types;
+}
+
+gboolean
+nautilus_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
+{
+	GHashTable *image_mime_types;
+	
+	image_mime_types = get_types_table ();
+        if (g_hash_table_lookup (image_mime_types, mime_type)) {
+                return TRUE;
+	}
+
+        return FALSE;
 }
 
 gboolean

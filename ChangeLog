@@ -1,3 +1,16 @@
+2008-03-18  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_should_show_thumbnail):
+	* libnautilus-private/nautilus-thumbnails.c: (get_types_table),
+	(nautilus_thumbnail_is_mimetype_limited_by_size):
+	* libnautilus-private/nautilus-thumbnails.h:
+	Always use the thumbnails regardless of the original file size if
+	it has been already generated (#501268).
+	Also, reimplement image	mimetypes table to determine if we have
+	to check for file size limit.
+
+
 2008-03-17  A. Walton  <awalton@svn.gnome.org>
 
 	* libnautilus-private/nautilus-icon-info.h:
