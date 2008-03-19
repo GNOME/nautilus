@@ -1145,6 +1145,7 @@ action_show_hidden_files_callback (GtkAction *action,
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 	
 	directory_view->details->show_hidden_files = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+	directory_view->details->show_backup_files = directory_view->details->show_hidden_files;
 	
 	if (directory_view->details->show_hidden_files) {
 		mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE;

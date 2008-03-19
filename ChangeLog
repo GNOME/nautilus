@@ -1,5 +1,13 @@
 2008-03-19  Sebastian Dröge  <slomo@circular-chaos.org>
 
+	* src/file-manager/fm-directory-view.c:
+	(action_show_hidden_files_callback): Show backup files too if the
+	option for it is set. Showing hidden files and backup files is
+	handled exactly the same in nautilus nowadays (#327361).
+	Patch by Stephen Cook.
+
+2008-03-19  Sebastian Dröge  <slomo@circular-chaos.org>
+
 	* src/file-manager/fm-directory-view.c: (file_should_show_foreach):
 	Allow "Connect to server" for sftp and ssh shares too (#385608).
 	Patch from Mike Hommey.
