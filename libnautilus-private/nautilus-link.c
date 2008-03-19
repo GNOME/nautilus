@@ -345,7 +345,14 @@ nautilus_link_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 		if (!g_path_is_absolute (icon_copy)) {
 			/* Strip out any extension on non-filename icons. Old desktop files may have this */
 			p = strchr (icon_copy, '.');
-			if (p != NULL) {
+                        /* Only strip known icon extensions */
+			if ((p != NULL) &&
+                         ((g_ascii_strcasecmp (p, ".png") == 0)
+                       || (g_ascii_strcasecmp (p, ".svn") == 0)
+                       || (g_ascii_strcasecmp (p, ".jpg") == 0)
+                       || (g_ascii_strcasecmp (p, ".xpm") == 0)
+                       || (g_ascii_strcasecmp (p, ".bmp") == 0)
+                       || (g_ascii_strcasecmp (p, ".jpeg") == 0))) {
 				*p = 0;
 			}
 		}
