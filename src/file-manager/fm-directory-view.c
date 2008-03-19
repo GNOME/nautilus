@@ -6740,6 +6740,8 @@ file_should_show_foreach (NautilusFile *file,
 		uri = nautilus_file_get_activation_uri (file);
 		if (uri != NULL &&
 		    (eel_istr_has_prefix (uri, "ftp:") ||
+		     eel_istr_has_prefix (uri, "ssh:") ||
+		     eel_istr_has_prefix (uri, "sftp:") ||
 		     eel_istr_has_prefix (uri, "dav:") ||
 		     eel_istr_has_prefix (uri, "davs:"))) {
 			*show_connect = TRUE;
