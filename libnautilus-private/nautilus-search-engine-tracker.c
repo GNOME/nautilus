@@ -258,10 +258,19 @@ nautilus_search_engine_tracker_new (void)
 {
 	NautilusSearchEngineTracker *engine;
 	TrackerClient *tracker_client;
+	GError *err = NULL;
 
 	tracker_client =  tracker_connect (FALSE);
 
 	if (!tracker_client) {
+		return NULL;
+	}
+
+	tracker_get_version (tracker_client, &err);
+
+	if (err != NULL) {
+		g_error_free (err);
+		tracker_disconnect (tracker_client);
 		return NULL;
 	}
 

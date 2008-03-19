@@ -1,5 +1,12 @@
 2008-03-19  Sebastian Dröge  <slomo@circular-chaos.org>
 
+	* libnautilus-private/nautilus-search-engine-tracker.c:
+	(nautilus_search_engine_tracker_new): Check that tracker is
+	actually running before using it (#386512).
+	Patch by Josselin Mouette.
+
+2008-03-19  Sebastian Dröge  <slomo@circular-chaos.org>
+
 	* src/file-manager/fm-directory-view.c:
 	(action_show_hidden_files_callback): Show backup files too if the
 	option for it is set. Showing hidden files and backup files is
