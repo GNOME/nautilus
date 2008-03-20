@@ -5678,6 +5678,8 @@ paste_clipboard_data (FMDirectoryView *view,
 		if (cut) {
 			gtk_clipboard_clear (get_clipboard (view));
 		}
+
+		eel_g_list_free_deep (item_uris);
 	}
 }
 

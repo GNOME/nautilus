@@ -30,6 +30,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
+#include "nautilus-desktop-icon-file.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -37,59 +38,13 @@
 #include <eel/eel-string.h>
 #include <eel/eel-app-launch-context.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-config.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libgnome/gnome-util.h>
-#include <libgnome/gnome-desktop-item.h>
-#include <libgnome/gnome-url.h>
-#include <libgnomeui/gnome-uidefs.h>
+#include <gio/gdesktopappinfo.h>
 #include <stdlib.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-
-#include "nautilus-desktop-icon-file.h"
-
-extern char **environ;
-
-/* Cut and paste from gdkspawn-x11.c */
-static gchar **
-my_gdk_spawn_make_environment_for_screen (GdkScreen  *screen,
-					  gchar     **envp)
-{
-  gchar **retval = NULL;
-  gchar  *display_name;
-  gint    display_index = -1;
-  gint    i, env_len;
-
-  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
-
-  if (envp == NULL)
-    envp = environ;
-
-  for (env_len = 0; envp[env_len]; env_len++)
-    if (strncmp (envp[env_len], "DISPLAY", strlen ("DISPLAY")) == 0)
-      display_index = env_len;
-
-  retval = g_new (char *, env_len + 1);
-  retval[env_len] = NULL;
-
-  display_name = gdk_screen_make_display_name (screen);
-
-  for (i = 0; i < env_len; i++)
-    if (i == display_index)
-      retval[i] = g_strconcat ("DISPLAY=", display_name, NULL);
-    else
-      retval[i] = g_strdup (envp[i]);
-
-  g_assert (i == env_len);
-
-  g_free (display_name);
-
-  return retval;
-}
-
 
 /**
  * application_cannot_open_location
@@ -176,59 +131,6 @@ application_cannot_open_location (GAppInfo *application,
 	g_free (file_name);
 #endif
 }
-
-/* FIXME: This is the wrong way to do this; there should be some event
- * (e.g. button press) available with a good time.  A function like
- * this should not be needed.
- */
-static Time
-slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
-{
-	Window xwindow;
-	XEvent event;
-	
-	{
-		XSetWindowAttributes attrs;
-		Atom atom_name;
-		Atom atom_type;
-		char* name;
-		
-		attrs.override_redirect = True;
-		attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
-		
-		xwindow =
-			XCreateWindow (xdisplay,
-				       RootWindow (xdisplay, 0),
-				       -100, -100, 1, 1,
-				       0,
-				       CopyFromParent,
-				       CopyFromParent,
-				       (Visual *)CopyFromParent,
-				       CWOverrideRedirect | CWEventMask,
-				       &attrs);
-		
-		atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
-		g_assert (atom_name != None);
-		atom_type = XInternAtom (xdisplay, "STRING", TRUE);
-		g_assert (atom_type != None);
-		
-		name = "Fake Window";
-		XChangeProperty (xdisplay, 
-				 xwindow, atom_name,
-				 atom_type,
-				 8, PropModeReplace, name, strlen (name));
-	}
-	
-	XWindowEvent (xdisplay,
-		      xwindow,
-		      PropertyChangeMask,
-		      &event);
-	
-	XDestroyWindow(xdisplay, xwindow);
-	
-	return event.xproperty.time;
-}
-
 
 /**
  * nautilus_launch_application:
@@ -359,24 +261,23 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 			      GtkWindow   *parent_window)
 {
 	GError *error;
-	GnomeDesktopItem *ditem;
-	GnomeDesktopItemLaunchFlags flags;
-	const char *command_string;
-	char *local_path, *message;
+	char *message, *desktop_file_path;
 	const GList *p;
+	GList *files;
 	int total, count;
-	char **envp;
-	GFile *file;
-	Time timestamp;
+	GFile *file, *desktop_file;
+	GDesktopAppInfo *app_info;
+	EelAppLaunchContext *context;
 
-	/* Don't allow command execution from remote locations where the
-	 * uri scheme isn't file:// (This is because files on for example
-	 * nfs are treated as remote) to partially mitigate the security
+	/* Don't allow command execution from remote locations
+	 * to partially mitigate the security
 	 * risk of executing arbitrary commands.
 	 */
-	file = g_file_new_for_uri (desktop_file_uri);
-	if (!g_file_is_native (file)) {
-		g_object_unref (file);
+	desktop_file = g_file_new_for_uri (desktop_file_uri);
+	desktop_file_path = g_file_get_path (desktop_file);
+	if (!g_file_is_native (desktop_file)) {
+		g_free (desktop_file_path);
+		g_object_unref (desktop_file);
 		eel_show_error_dialog
 			(_("Sorry, but you can't execute commands from "
 			   "a remote site."), 
@@ -385,40 +286,34 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 			 
 		return;
 	}
-	g_object_unref (file);
-	
-	error = NULL;
-	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri, 0,
-						&error);	
-	if (error != NULL) {
-		message = g_strconcat (_("Details: "), error->message, NULL);
+	g_object_unref (desktop_file);
+
+	app_info = g_desktop_app_info_new_from_filename (desktop_file_path);
+	g_free (desktop_file_path);
+	if (app_info == NULL) {
 		eel_show_error_dialog
 			(_("There was an error launching the application."),
-			 message,
-			 parent_window);			
-			 
-		g_error_free (error);
-		g_free (message);
+			 NULL,
+			 parent_window);
 		return;
 	}
 	
 	/* count the number of uris with local paths */
 	count = 0;
 	total = g_list_length ((GList *) parameter_uris);
+	files = NULL;
 	for (p = parameter_uris; p != NULL; p = p->next) {
-		local_path = g_filename_from_uri ((const char *) p->data, NULL, NULL);
-		if (local_path != NULL) {
-			g_free (local_path);
+		file = g_file_new_for_uri ((const char *) p->data);
+		if (g_file_is_native (file)) {
 			count++;
 		}
+		files = g_list_prepend (files, file);
 	}
 
 	/* check if this app only supports local files */
-	command_string = gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC);
-	if (command_string != NULL && (strstr (command_string, "%F") || strstr (command_string, "%f"))
-		&& !(strstr (command_string, "%U") || strstr (command_string, "%u"))
-		&& parameter_uris != NULL) {
-	
+	if (g_app_info_supports_files (G_APP_INFO (app_info)) &&
+	    !g_app_info_supports_uris (G_APP_INFO (app_info)) &&
+	    parameter_uris != NULL) {
 		if (count == 0) {
 			/* all files are non-local */
 			eel_show_error_dialog
@@ -427,46 +322,53 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 				   " drop them again."),
 				 parent_window);
 			
-			gnome_desktop_item_unref (ditem);
+			eel_g_object_list_free (files);
+			g_object_unref (app_info);
 			return;
-
 		} else if (count != total) {
-			/* some files were non-local */
+			/* some files are non-local */
 			eel_show_warning_dialog
 				(_("This drop target only supports local files."),
 				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again. The local files you dropped have already been opened."),
 				 parent_window);
-		}		
-	}
-
-	envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
-	
-	/* we append local paths only if all parameters are local */
-	if (count == total) {
-		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_PATHS;
-	} else {
-		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS;
+		}
 	}
 
 	error = NULL;
-
-	timestamp = slowly_and_stupidly_obtain_timestamp (GDK_WINDOW_XDISPLAY (GTK_WIDGET (parent_window)->window));
-	gnome_desktop_item_set_launch_time (ditem, timestamp);
-	gnome_desktop_item_launch_with_env (ditem, (GList *) parameter_uris,
-					    flags, envp,
-					    &error);
+	context = eel_app_launch_context_new ();
+	/* TODO: Ideally we should accept a timestamp here instead of using GDK_CURRENT_TIME */
+	eel_app_launch_context_set_timestamp (context, GDK_CURRENT_TIME);
+	eel_app_launch_context_set_screen (context,
+					   gtk_window_get_screen (parent_window));
+	if (count == total) {
+		/* All files are local, so we can use g_app_info_launch () with
+		 * the file list we constructed before.
+		 */
+		g_app_info_launch (G_APP_INFO (app_info),
+				   files,
+				   G_APP_LAUNCH_CONTEXT (context),
+				   &error);
+	} else {
+		/* Some files are non local, better use g_app_info_launch_uris ().
+		 */
+		g_app_info_launch_uris (G_APP_INFO (app_info),
+					(GList *) parameter_uris,
+					G_APP_LAUNCH_CONTEXT (context),
+					&error);
+	}
 	if (error != NULL) {
 		message = g_strconcat (_("Details: "), error->message, NULL);
 		eel_show_error_dialog
 			(_("There was an error launching the application."),
 			 message,
-			 parent_window);			
-			 
+			 parent_window);
+		
 		g_error_free (error);
 		g_free (message);
 	}
 	
-	gnome_desktop_item_unref (ditem);
-	g_strfreev (envp);
+	eel_g_object_list_free (files);
+	g_object_unref (context);
+	g_object_unref (app_info);
 }
