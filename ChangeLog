@@ -1,3 +1,9 @@
+2008-03-22  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(delayed_rename_file_hack_callback):
+	Only start renaming if we have not yet been destroyed.
+
 2008-03-20  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-program-choosing.c:

@@ -3658,8 +3658,10 @@ delayed_rename_file_hack_callback (RenameData *data)
 	view = data->view;
 	new_file = data->new_file;
 
-	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
-	fm_directory_view_reveal_selection (view);
+	if (view->details->window != NULL) {
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
+		fm_directory_view_reveal_selection (view);
+	}
 	
 	g_object_unref (data->view);
 	nautilus_file_unref (data->new_file);
