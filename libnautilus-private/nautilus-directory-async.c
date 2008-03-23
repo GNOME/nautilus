@@ -2654,7 +2654,7 @@ directory_count_start (NautilusDirectory *directory,
 					 G_FILE_ATTRIBUTE_STANDARD_NAME ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
-					 0, /* flags */
+					 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, /* flags */
 					 G_PRIORITY_DEFAULT, /* prio */
 					 state->cancellable,
 					 count_children_callback,
@@ -2859,7 +2859,7 @@ deep_count_load (DeepCountState *state, GFile *location)
 					 G_FILE_ATTRIBUTE_STANDARD_SIZE ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
-					 0, /* flags */
+					 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, /* flags */
 					 G_PRIORITY_LOW, /* prio */
 					 state->cancellable,
 					 deep_count_callback,

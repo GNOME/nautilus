@@ -1,5 +1,11 @@
 2008-03-23  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-directory-async.c
+	(directory_count_start), (deep_count_load):
+	Do not follow symlinks. (#504980).
+
+2008-03-23  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file-operations.c
 	(custom_full_name_skip), (custom_basename_skip),
 	(custom_size_skip), (custom_time_skip), (custom_mount_skip):
