@@ -92,7 +92,8 @@ try_to_expand_path (gpointer callback_data)
 	
 	suffix = g_filename_completer_get_completion_suffix (entry->details->completer,
 							     user_location);
-	
+	g_free (user_location);
+
 	/* if we've got something, add it to the entry */
 	if (suffix != NULL) {
 		pos = user_location_length;
