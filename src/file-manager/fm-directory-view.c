@@ -5697,9 +5697,13 @@ paste_clipboard_received_callback (GtkClipboard     *clipboard,
 
 	view_uri = fm_directory_view_get_backing_uri (view);
 
-	paste_clipboard_data (view, selection_data, view_uri);
+	if (view->details->window != NULL) {
+		paste_clipboard_data (view, selection_data, view_uri);
+	}
 
 	g_free (view_uri);
+
+	g_object_unref (view);
 }
 
 static void
@@ -5713,14 +5717,18 @@ paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 
 	view = FM_DIRECTORY_VIEW (data);
 
-	selection = fm_directory_view_get_selection (view);
+	if (view->details->window != NULL) {
+		selection = fm_directory_view_get_selection (view);
 
-	directory_uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+		directory_uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
 
-	paste_clipboard_data (view, selection_data, directory_uri);
+		paste_clipboard_data (view, selection_data, directory_uri);
 
-	g_free (directory_uri);
-	nautilus_file_list_free (selection);
+		g_free (directory_uri);
+		nautilus_file_list_free (selection);
+	}
+
+	g_object_unref (view);
 }
 
 static void
@@ -5731,6 +5739,7 @@ action_paste_files_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
+	g_object_ref (view);
 	gtk_clipboard_request_contents (get_clipboard (view),
 					copied_files_atom,
 					paste_clipboard_received_callback,
@@ -5745,6 +5754,7 @@ action_paste_files_into_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
+	g_object_ref (view);
 	gtk_clipboard_request_contents (get_clipboard (view),
 					copied_files_atom,
 					paste_into_clipboard_received_callback,

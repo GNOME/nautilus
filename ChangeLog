@@ -1,5 +1,27 @@
 2008-03-23  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-directory-view.c
+	(directory_list_lookup_file), (fm_directory_view_new_folder),
+	(paste_clipboard_received_callback),
+	(paste_into_clipboard_received_callback),
+	(action_paste_files_callback), (action_paste_files_into_callback):
+	Ref/unref view before/after receiving clipboard data, and check
+	whether it has been disposed. Should fix most of the clipboard crashers.
+
+	* src/file-manager/fm-tree-view.c
+	(clipboard_contents_received_callback), (button_pressed_callback),
+	(create_popup_menu), (fm_tree_view_init), (fm_tree_view_dispose),
+	(fm_tree_view_finalize):
+	Cancel activation and destroy popup in dispose() and not in finalize().
+	Create popup menu on demand.
+	Unref popup file in dispose() instead of leaking a reference.
+	Use eel_preferences_add_callback_while_alive() for preferences
+	callbacks.
+	Also ref/unref before/after requesting clipboard data, and check for
+	previous disposal in callback. Should fix rest of clipboard crashers.
+
+2008-03-23  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-icon-view.c (play_file):
 	Use playbin for playback, but keep video playback disabled. (#523959).
 

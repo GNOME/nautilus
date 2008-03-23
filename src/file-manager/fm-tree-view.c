@@ -138,6 +138,8 @@ static void  fm_tree_view_iface_init        (NautilusSidebarIface         *iface
 static void  sidebar_provider_iface_init    (NautilusSidebarProviderIface *iface);
 static GType fm_tree_view_provider_get_type (void);
 
+static void create_popup_menu (FMTreeView *view);
+
 G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						fm_tree_view_iface_init));
@@ -637,9 +639,12 @@ clipboard_contents_received_callback (GtkClipboard     *clipboard,
 	view = FM_TREE_VIEW (data);
 
 	if (selection_data->type == copied_files_atom
-	    && selection_data->length > 0) {
+	    && selection_data->length > 0 &&
+	    view->details->popup != NULL) {
 		gtk_widget_set_sensitive (view->details->popup_paste, TRUE);
 	}
+
+	g_object_unref (view);
 }
 
 static GtkClipboard *
@@ -697,7 +702,9 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		gtk_tree_view_get_cursor (view->details->tree_widget, &cursor_path, NULL);
 		gtk_tree_view_set_cursor (view->details->tree_widget, path, NULL, FALSE);
 		gtk_tree_path_free (path);
-		
+
+		create_popup_menu (view);
+
 		gtk_widget_set_sensitive (view->details->popup_open_in_new_window,
 			nautilus_file_is_directory (view->details->popup_file));
 		gtk_widget_set_sensitive (view->details->popup_create_folder,
@@ -708,7 +715,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			nautilus_file_can_write (view->details->popup_file)) {
 			gtk_clipboard_request_contents (get_clipboard (GTK_WIDGET (view->details->tree_widget)),
 							copied_files_atom,
-							clipboard_contents_received_callback, view);
+							clipboard_contents_received_callback, g_object_ref (view));
 		}
 		can_move_file_to_trash = nautilus_file_can_trash (view->details->popup_file);
 		gtk_widget_set_sensitive (view->details->popup_trash, can_move_file_to_trash);
@@ -1093,6 +1100,11 @@ static void
 create_popup_menu (FMTreeView *view)
 {
 	GtkWidget *popup, *menu_item, *menu_image;
+
+	if (view->details->popup != NULL) {
+		/* already created */
+		return;
+	}
 	
 	popup = gtk_menu_new ();
 	
@@ -1408,15 +1420,14 @@ fm_tree_view_init (FMTreeView *view)
 	
 	view->details->selecting = FALSE;
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-				      filtering_changed_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-				      filtering_changed_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-				      filtering_changed_callback, view);
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						  filtering_changed_callback, view, G_OBJECT (view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						  filtering_changed_callback, view, G_OBJECT (view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+						  filtering_changed_callback, view, G_OBJECT (view));
 	
 	view->details->popup_file = NULL;
-	create_popup_menu (view);
 }
 
 static void
@@ -1441,6 +1452,30 @@ fm_tree_view_dispose (GObject *object)
 		view->details->show_selection_idle_id = 0;
 	}
 
+	cancel_activation (view);
+
+	if (view->details->popup != NULL) {
+		gtk_widget_destroy (view->details->popup);
+		view->details->popup = NULL;
+	}
+
+	if (view->details->popup_file != NULL) {
+		nautilus_file_unref (view->details->popup_file);
+		view->details->popup_file = NULL;
+	}
+
+	if (view->details->selection_location != NULL) {
+		g_free (view->details->selection_location);
+		view->details->selection_location = NULL;
+	}
+
+	if (view->details->volume_monitor != NULL) {
+		g_object_unref (view->details->volume_monitor);
+		view->details->volume_monitor = NULL;
+	}
+
+	view->details->window = NULL;
+
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -1451,22 +1486,6 @@ fm_tree_view_finalize (GObject *object)
 
 	view = FM_TREE_VIEW (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					 filtering_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					 filtering_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-					 filtering_changed_callback, view);
-
-	cancel_activation (view);
-	gtk_widget_destroy (view->details->popup);
-
-	if (view->details->selection_location != NULL) {
-		g_free (view->details->selection_location);
-	}
-
-	g_object_unref (view->details->volume_monitor);
-	
 	g_free (view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
