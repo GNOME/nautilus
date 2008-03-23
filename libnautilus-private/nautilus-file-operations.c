@@ -610,7 +610,7 @@ custom_full_name_to_string (char *format, va_list va)
 static void
 custom_full_name_skip (va_list *va)
 {
-	va_arg (*va, GFile *);
+	(void) va_arg (*va, GFile *);
 }
 
 static char *
@@ -657,7 +657,7 @@ custom_basename_to_string (char *format, va_list va)
 static void
 custom_basename_skip (va_list *va)
 {
-	va_arg (*va, GFile *);
+	(void) va_arg (*va, GFile *);
 }
 
 
@@ -673,7 +673,7 @@ custom_size_to_string (char *format, va_list va)
 static void
 custom_size_skip (va_list *va)
 {
-	va_arg (*va, goffset);
+	(void) va_arg (*va, goffset);
 }
 
 static char *
@@ -688,7 +688,7 @@ custom_time_to_string (char *format, va_list va)
 static void
 custom_time_skip (va_list *va)
 {
-	va_arg (*va, int);
+	(void) va_arg (*va, int);
 }
 
 static char *
@@ -703,7 +703,7 @@ custom_mount_to_string (char *format, va_list va)
 static void
 custom_mount_skip (va_list *va)
 {
-	va_arg (*va, GMount *);
+	(void) va_arg (*va, GMount *);
 }
 
 
