@@ -1764,14 +1764,10 @@ get_preview_argv (char *uri)
 		argv = g_new (char *, 10);
 		i = 0;
 		argv[i++] = command;
-		argv[i++] = g_strdup ("uridecodebin");
+		argv[i++] = g_strdup ("playbin");
 		argv[i++] = g_strconcat ("uri=", uri, NULL);
-		argv[i++] = g_strdup ("!");
-		argv[i++] = g_strdup ("audioconvert");
-		argv[i++] = g_strdup ("!");
-		argv[i++] = g_strdup ("audioresample");
-		argv[i++] = g_strdup ("!");
-		argv[i++] = g_strdup ("autoaudiosink");
+		/* do not display videos */
+		argv[i++] = g_strdup ("current-video=-1");
 		argv[i++] = NULL;
 		return argv;
 	}
