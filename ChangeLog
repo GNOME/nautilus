@@ -1,3 +1,11 @@
+2008-03-24  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(delayed_rename_file_hack_callback),
+	(delayed_rename_file_hack_removed), (rename_file):
+	Ensure that the rename file callback data is destroyed. We leaked it
+	in case of cancellation.
+
 2008-03-23  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-directory-view.c

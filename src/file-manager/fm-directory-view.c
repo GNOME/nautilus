@@ -3662,13 +3662,18 @@ delayed_rename_file_hack_callback (RenameData *data)
 		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file, FALSE));
 		fm_directory_view_reveal_selection (view);
 	}
-	
-	g_object_unref (data->view);
-	nautilus_file_unref (data->new_file);
-	g_free (data);
 
 	return FALSE;
 }
+
+static void
+delayed_rename_file_hack_removed (RenameData *data)
+{
+	g_object_unref (data->view);
+	nautilus_file_unref (data->new_file);
+	g_free (data);
+}
+
 
 static void
 rename_file (FMDirectoryView *view, NautilusFile *new_file)
@@ -3695,8 +3700,9 @@ rename_file (FMDirectoryView *view, NautilusFile *new_file)
 			g_source_remove (view->details->delayed_rename_file_id);
 		}
 		view->details->delayed_rename_file_id = 
-			g_timeout_add (100, (GSourceFunc)delayed_rename_file_hack_callback,
-				       data);
+			g_timeout_add_full (G_PRIORITY_DEFAULT,
+					    100, (GSourceFunc)delayed_rename_file_hack_callback,
+					    data, (GDestroyNotify) delayed_rename_file_hack_removed);
 		
 		return;
 	}
