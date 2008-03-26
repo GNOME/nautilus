@@ -126,15 +126,14 @@ nautilus_monitor_directory (GFile *location)
 
 	dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_WATCH_MOUNTS, NULL, NULL);
 
-	if (dir_monitor == NULL) {
-		return NULL;
-	}
-
 	ret = g_new0 (NautilusMonitor, 1);
 	ret->monitor = dir_monitor;
 
-	g_signal_connect (ret->monitor, "changed", (GCallback)dir_changed, ret);
+	if (ret->monitor) {
+		g_signal_connect (ret->monitor, "changed", (GCallback)dir_changed, ret);
+	}
 
+	/* We return a monitor even on failure, so we can avoid later trying again */
 	return ret;
 }
 

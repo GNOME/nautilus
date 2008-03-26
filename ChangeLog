@@ -1,3 +1,11 @@
+2008-03-26  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-monitor.c:
+        (nautilus_monitor_directory):
+	Avoid constantly trying to create directory monitors
+	if it fails once by returning an "empty"
+	NautilusMonitor instead of NULL.
+
 2008-03-24  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-directory-view.c
