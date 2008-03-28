@@ -1,3 +1,11 @@
+2008-03-28  A. Walton  <awalton@svn.gnome.org>
+
+	* libnautilus-private/nautilus-progress-info.c:
+	(get_progress_window):
+	Fix annoying behavior of the file progress info dialog jumping
+	to the center of the screen when new file operations begin.
+	Closes #524241.
+
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:

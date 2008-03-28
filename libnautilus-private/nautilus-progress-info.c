@@ -223,9 +223,9 @@ get_progress_window (void)
 	gtk_window_set_wmclass (GTK_WINDOW (progress_window),
 				"file_progress", "Nautilus");
 	gtk_window_set_position (GTK_WINDOW (progress_window),
-				 GTK_WIN_POS_CENTER_ALWAYS);
-    gtk_window_set_icon_name (GTK_WINDOW (progress_window),
-                 "system-file-manager");
+				 GTK_WIN_POS_CENTER);
+	gtk_window_set_icon_name (GTK_WINDOW (progress_window),
+				"system-file-manager");
 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
