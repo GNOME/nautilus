@@ -3222,7 +3222,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	char *primary, *secondary, *details;
 	int response;
 	ProgressData pdata;
-	gboolean would_recurse;
+	gboolean would_recurse, is_merge;
 	CommonJob *job;
 	gboolean res;
 	int unique_name_nr;
@@ -3391,6 +3391,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	/* Needs to recurse */
 	else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
 		 IS_IO_ERROR (error, WOULD_MERGE)) {
+		is_merge = error->code == G_IO_ERROR_WOULD_MERGE;
 		would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
 		g_error_free (error);
 
@@ -3443,6 +3444,15 @@ copy_move_file (CopyMoveJob *copy_job,
 			nautilus_file_changes_queue_file_removed (dest);
 		}
 
+		if (is_merge) {
+			/* On merge we now write in the target directory, which may not
+			   be in the same directory as the source, even if the parent is
+			   (if the merged directory is a mountpoint). This could cause
+			   problems as we then don't transcode filenames.
+			   We just set same_fs to FALSE which is safe but a bit slower. */
+			same_fs = FALSE;
+		}
+		
 		copy_move_directory (copy_job, src, dest, same_fs,
 				     would_recurse,
 				     source_info, transfer_info,

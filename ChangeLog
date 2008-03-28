@@ -1,6 +1,15 @@
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+        (copy_move_file):
+	During the merge part of a recursive move/copy always
+	disable same_fs to make sure we transcode filenames
+	correctly, as the target directory may be on another
+	filesystem.
+
+2008-03-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
 	When prepare move fails and we didn't select overwrite
 	do not silently overwrite. Instead we remember for each
 	file if overwrite was already specified or not.
