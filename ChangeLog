@@ -1,6 +1,13 @@
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+        (copy_move_file):
+	Make sure to queue a move even if the op was a move,
+	not just an added event.
+
+2008-03-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
 	(move_job): 
 	Don't leak dest_fs_id by requesting it twice.
 	

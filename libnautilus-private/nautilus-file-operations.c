@@ -3275,7 +3275,11 @@ copy_move_file (CopyMoveJob *copy_job,
 		report_copy_progress (copy_job, source_info, transfer_info);
 
 		if (debuting_files) {
-			nautilus_file_changes_queue_schedule_metadata_copy (src, dest);
+			if (copy_job->is_move) {
+				nautilus_file_changes_queue_schedule_metadata_move (src, dest);
+			} else {
+				nautilus_file_changes_queue_schedule_metadata_copy (src, dest);
+			}
 			if (position) {
 				nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
 			} else {
@@ -3284,7 +3288,11 @@ copy_move_file (CopyMoveJob *copy_job,
 			
 			g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
 		}
-		nautilus_file_changes_queue_file_added (dest);
+		if (copy_job->is_move) {
+			nautilus_file_changes_queue_file_moved (src, dest);
+		} else {
+			nautilus_file_changes_queue_file_added (dest);
+		}
 		g_object_unref (dest);
 		return;
 	}
@@ -4148,10 +4156,10 @@ nautilus_file_operations_move (GList *files,
 	job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
 
 	g_io_scheduler_push_job (move_job,
-			   job,
-			   NULL, /* destroy notify */
-			   0,
-			   job->common.cancellable);
+				 job,
+				 NULL, /* destroy notify */
+				 0,
+				 job->common.cancellable);
 }
 
 static void
