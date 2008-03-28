@@ -1,3 +1,25 @@
+Major changes in 2.22.1 are:
+* Fix crashes and leaks
+* Fix emblem display in property page
+* Fix mime choosing to not always create application/x-ext-<extension> type
+* Actually mount location in external connect to server dialog
+* Fix thumbnail size limit checks
+* Fix "show hidden" to also show backup files
+  (was broken in some situations)
+* Verify that tracker is running before using it
+* Fix desktop file icon handling with absolute filenames
+* Use GDesktopAppInfos to launch desktop files
+* Don't follow symlinks for deep file count
+* Fix audio preview with later gstreamer
+* Make "move file over directory" overwrite case work
+* Sometimes we failed to ask for overwrite when move
+  operations falled back to copy + delete
+* Make sure we correctly transcode filenames when merging
+  directories if the directory is on another filesystem.
+* Some moves were reported as copies, not moves in the ui
+  which could cause not up-to-date directory displays
+* Don't center file progress dialog if its already displayed
+
 Major changes in 2.22.0 are:
 * Fix typo in strings
 * Fix crashes
