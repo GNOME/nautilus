@@ -4097,7 +4097,7 @@ move_job (GIOSchedulerJob *io_job,
 
 	verify_destination (&job->common,
 			    job->destination,
-			    &dest_fs_id,
+			    NULL,
 			    source_info.num_bytes);
 	if (job_aborted (common)) {
 		goto aborted;

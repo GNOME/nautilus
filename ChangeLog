@@ -1,6 +1,12 @@
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+	(move_job): 
+	Don't leak dest_fs_id by requesting it twice.
+	
+2008-03-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
         (copy_move_file):
 	During the merge part of a recursive move/copy always
 	disable same_fs to make sure we transcode filenames
