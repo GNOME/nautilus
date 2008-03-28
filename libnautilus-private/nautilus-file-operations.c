@@ -3835,12 +3835,27 @@ move_file_prepare (CopyMoveJob *move_job,
 			error = NULL;
 		}
 
+		/* TODO: Handle delete dest */
+		
 		*copy_files = g_list_prepend (*copy_files, src);
 		if (position) {
 			g_array_append_val (copy_positions, *position);
 		}
 	}
 
+	else if (overwrite &&
+		 IS_IO_ERROR (error, IS_DIRECTORY)) {
+
+		g_error_free (error);
+
+		/* TODO delete_dest is TRUE here  */
+		
+		*copy_files = g_list_prepend (*copy_files, src);
+		if (position) {
+			g_array_append_val (copy_positions, *position);
+		}
+	}
+	
 	else if (IS_IO_ERROR (error, CANCELLED)) {
 		g_error_free (error);
 	}
