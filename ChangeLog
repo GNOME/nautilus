@@ -1,6 +1,13 @@
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file-operations.c:
+	When prepare move fails and we didn't select overwrite
+	do not silently overwrite. Instead we remember for each
+	file if overwrite was already specified or not.
+
+2008-03-28  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file-operations.c:
         (move_file_prepare):
 	Actually handle the move-file-over-directory case.
 

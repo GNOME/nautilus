@@ -3686,6 +3686,47 @@ report_move_progress (CopyMoveJob *move_job, int total, int left)
 	nautilus_progress_info_pulse_progress (job->progress);
 }
 
+typedef struct {
+	GFile *file;
+	gboolean overwrite;
+	gboolean has_position;
+	GdkPoint position;
+} MoveFileCopyFallback;
+
+static MoveFileCopyFallback *
+move_copy_file_callback_new (GFile *file,
+			     gboolean overwrite,
+			     GdkPoint *position)
+{
+	MoveFileCopyFallback *fallback;
+
+	fallback = g_new (MoveFileCopyFallback, 1);
+	fallback->file = file;
+	fallback->overwrite = overwrite;
+	if (position) {
+		fallback->has_position = TRUE;
+		fallback->position = *position;
+	} else {
+		fallback->has_position = FALSE;
+	}
+
+	return fallback;
+}
+
+static GList *
+get_files_from_fallbacks (GList *fallbacks)
+{
+	MoveFileCopyFallback *fallback;
+	GList *res, *l;
+
+	res = NULL;
+	for (l = fallbacks; l != NULL; l = l->next) {
+		fallback = l->data;
+		res = g_list_prepend (res, fallback->file);
+	}
+	return g_list_reverse (res);
+}
+
 static void
 move_file_prepare (CopyMoveJob *move_job,
 		   GFile *src,
@@ -3693,8 +3734,7 @@ move_file_prepare (CopyMoveJob *move_job,
 		   gboolean same_fs,
 		   GHashTable *debuting_files,
 		   GdkPoint *position,
-		   GList **copy_files,
-		   GArray *copy_positions)
+		   GList **fallback_files)
 {
 	GFile *dest;
 	GError *error;
@@ -3703,7 +3743,7 @@ move_file_prepare (CopyMoveJob *move_job,
 	char *primary, *secondary, *details;
 	int response;
 	GFileCopyFlags flags;
-	gboolean would_recurse;
+	MoveFileCopyFallback *fallback;
 
 	overwrite = FALSE;
 
@@ -3823,37 +3863,14 @@ move_file_prepare (CopyMoveJob *move_job,
 
 	else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
 		 IS_IO_ERROR (error, WOULD_MERGE) ||
-		 IS_IO_ERROR (error, NOT_SUPPORTED)) {
-		gboolean delete_dest;
-		would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
+		 IS_IO_ERROR (error, NOT_SUPPORTED) ||
+		 (overwrite && IS_IO_ERROR (error, IS_DIRECTORY))) {
 		g_error_free (error);
-
-		delete_dest = FALSE;
-		if (overwrite && would_recurse) {
-			delete_dest = TRUE;
-			
-			error = NULL;
-		}
-
-		/* TODO: Handle delete dest */
 		
-		*copy_files = g_list_prepend (*copy_files, src);
-		if (position) {
-			g_array_append_val (copy_positions, *position);
-		}
-	}
-
-	else if (overwrite &&
-		 IS_IO_ERROR (error, IS_DIRECTORY)) {
-
-		g_error_free (error);
-
-		/* TODO delete_dest is TRUE here  */
-		
-		*copy_files = g_list_prepend (*copy_files, src);
-		if (position) {
-			g_array_append_val (copy_positions, *position);
-		}
+		fallback = move_copy_file_callback_new (src,
+							overwrite, 
+							position);
+		*fallback_files = g_list_prepend (*fallback_files, fallback);
 	}
 	
 	else if (IS_IO_ERROR (error, CANCELLED)) {
@@ -3896,8 +3913,7 @@ move_file_prepare (CopyMoveJob *move_job,
 static void
 move_files_prepare (CopyMoveJob *job,
 		    const char *dest_fs_id,
-		    GList **copy_files,
-		    GArray *copy_positions)
+		    GList **fallbacks)
 {
 	CommonJob *common;
 	GList *l;
@@ -3935,18 +3951,19 @@ move_files_prepare (CopyMoveJob *job,
 				   same_fs,
 				   job->debuting_files,
 				   point,
-				   copy_files,
-				   copy_positions);
+				   fallbacks);
 		report_move_progress (job, total, --left);
 		i++;
 	}
 
+	*fallbacks = g_list_reverse (*fallbacks);
+
+	
 }
 
 static void
 move_files (CopyMoveJob *job,
-	    GList *files,
-	    GArray *icon_positions,
+	    GList *fallbacks,
 	    const char *dest_fs_id,
 	    SourceInfo *source_info,
 	    TransferInfo *transfer_info)
@@ -3958,19 +3975,21 @@ move_files (CopyMoveJob *job,
 	int i;
 	GdkPoint *point;
 	gboolean skipped_file;
+	MoveFileCopyFallback *fallback;
 
 	common = &job->common;
 
 	report_copy_progress (job, source_info, transfer_info);
 	
 	i = 0;
-	for (l = files;
+	for (l = fallbacks;
 	     l != NULL && !job_aborted (common);
 	     l = l->next) {
-		src = l->data;
+		fallback = l->data;
+		src = fallback->file;
 
-		if (i < icon_positions->len) {
-			point = &g_array_index (icon_positions, GdkPoint, i);
+		if (fallback->has_position) {
+			point = &fallback->position;
 		} else {
 			point = NULL;
 		}
@@ -3987,7 +4006,7 @@ move_files (CopyMoveJob *job,
 				same_fs, FALSE, 
 				source_info, transfer_info,
 				job->debuting_files,
-				point, TRUE, &skipped_file);
+				point, fallback->overwrite, &skipped_file);
 		i++;
 	}
 }
@@ -4021,11 +4040,11 @@ move_job (GIOSchedulerJob *io_job,
 {
 	CopyMoveJob *job;
 	CommonJob *common;
-	GList *copy_files;
-	GArray *copy_positions;
+	GList *fallbacks;
 	SourceInfo source_info;
 	TransferInfo transfer_info;
 	char *dest_fs_id;
+	GList *fallback_files;
 
 	job = user_data;
 	common = &job->common;
@@ -4033,8 +4052,7 @@ move_job (GIOSchedulerJob *io_job,
 
 	dest_fs_id = NULL;
 
-	copy_files = NULL;
-	copy_positions = NULL;
+	fallbacks = NULL;
 	
 	nautilus_progress_info_start (job->common.progress);
 	
@@ -4046,24 +4064,23 @@ move_job (GIOSchedulerJob *io_job,
 		goto aborted;
 	}
 
-	copy_files = NULL;
-	copy_positions = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-
 	/* This moves all files that we can do without copy + delete */
-	move_files_prepare (job, dest_fs_id, &copy_files, copy_positions);
+	move_files_prepare (job, dest_fs_id, &fallbacks);
 	if (job_aborted (common)) {
 		goto aborted;
 	}
 
-	copy_files = g_list_reverse (copy_files);
-
 	/* The rest we need to do deep copy + delete behind on,
 	   so scan for size */
-	
-	scan_sources (copy_files,
+
+	fallback_files = get_files_from_fallbacks (fallbacks);
+	scan_sources (fallback_files,
 		      &source_info,
 		      common,
 		      OP_KIND_MOVE);
+	
+	g_list_free (fallback_files);
+	
 	if (job_aborted (common)) {
 		goto aborted;
 	}
@@ -4078,16 +4095,12 @@ move_job (GIOSchedulerJob *io_job,
 
 	memset (&transfer_info, 0, sizeof (transfer_info));
 	move_files (job,
-		    copy_files,
-		    copy_positions,
+		    fallbacks,
 		    dest_fs_id,
 		    &source_info, &transfer_info);
 
  aborted:
-	g_list_free (copy_files);
-	if (copy_positions) {
-		g_array_free (copy_positions, TRUE);
-	}
+	eel_g_list_free_deep (fallbacks);
 
 	g_free (dest_fs_id);
 	
