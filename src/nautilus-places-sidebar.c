@@ -295,6 +295,16 @@ update_places (NautilusPlacesSidebar *sidebar)
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}
 
+ 	mount_uri = "network:///"; /* No need to strdup */
+	icon = g_themed_icon_new (NAUTILUS_ICON_NETWORK);
+	last_iter = add_place (sidebar, PLACES_BUILT_IN,
+			       _("Network"), icon,
+			       mount_uri, NULL, NULL, NULL, 0);
+	g_object_unref (icon);
+	if (strcmp (location, mount_uri) == 0) {
+		gtk_tree_selection_select_iter (selection, &last_iter);
+	}
+
 	volume_monitor = sidebar->volume_monitor;
 
 	/* first go through all connected drives */
