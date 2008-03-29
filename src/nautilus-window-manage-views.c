@@ -1740,7 +1740,7 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 			 * But this case is also hit for legitimate web addresses when
 			 * the proxy is set up wrong.
 			 */
-			error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host could be found."),
+			error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host couldn't be found."),
 							 uri_for_display);
 			detail_message = g_strdup (_("Check that the spelling is correct and that your proxy settings are correct."));
 			break;
