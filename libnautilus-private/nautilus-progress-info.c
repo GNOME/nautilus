@@ -219,7 +219,7 @@ get_progress_window (void)
 				  FALSE);
 
 	gtk_window_set_title (GTK_WINDOW (progress_window),
-			      _("File operations"));
+			      _("File Operations"));
 	gtk_window_set_wmclass (GTK_WINDOW (progress_window),
 				"file_progress", "Nautilus");
 	gtk_window_set_position (GTK_WINDOW (progress_window),
