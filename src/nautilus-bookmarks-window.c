@@ -63,6 +63,7 @@ static int		     uri_field_changed_signal_id;
 static int		     row_changed_signal_id;
 static int		     row_deleted_signal_id;
 static int                   row_activated_signal_id;
+static int                   button_pressed_signal_id;
 static int                   key_pressed_signal_id;
 static int                   jump_button_signal_id;
 static NautilusApplication  *application;
@@ -92,6 +93,9 @@ static void	on_row_activated			    (GtkTreeView	  *view,
 							     GtkTreePath	  *path,
                                                              GtkTreeViewColumn    *column,
 							     gpointer		   user_data);
+static gboolean	on_button_pressed                           (GtkTreeView	  *view,
+                                                             GdkEventButton       *event,
+							     gpointer		   user_data);
 static gboolean	on_key_pressed                              (GtkTreeView	  *view,
                                                              GdkEventKey          *event,
 							     gpointer		   user_data);
@@ -113,6 +117,7 @@ static void     on_window_destroy_event                     (GtkWidget          
 static void     repopulate                                  (void);
 static void     set_up_close_accelerator                    (GtkWidget            *window);
 static void	open_selected_bookmark 			    (gpointer   user_data, GdkScreen *screen);
+static void	update_bookmark_from_text		    (void);
 
 /* We store a pointer to the bookmark in a column so when an item is moved
    with DnD we know which item it is. However we have to be careful to keep
@@ -344,6 +349,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
         row_activated_signal_id =
                 g_signal_connect (bookmark_list_widget, "row_activated",
                                   G_CALLBACK (on_row_activated), undo_manager_source);
+        button_pressed_signal_id =
+                g_signal_connect (bookmark_list_widget, "button_press_event",
+                                  G_CALLBACK (on_button_pressed), NULL);
         key_pressed_signal_id =
                 g_signal_connect (bookmark_list_widget, "key_press_event",
                                   G_CALLBACK (on_key_pressed), NULL);
@@ -685,6 +693,28 @@ on_row_changed (GtkListStore *store,
 	}
 }
 
+/* The update_bookmark_from_text() calls in the
+ * on_button_pressed() and on_key_pressed() handlers
+ * of the tree view are a hack.
+ *
+ * The purpose is to track selection changes to the view
+ * and write the text fields back before the selection
+ * actually changed.
+ *
+ * Note that the focus-out event of the text entries is emitted
+ * after the selection changed, else this would not not be neccessary.
+ */
+
+static gboolean
+on_button_pressed (GtkTreeView *view,
+		   GdkEventButton *event,
+		   gpointer user_data)
+{
+	update_bookmark_from_text ();
+
+	return FALSE;
+}
+
 static gboolean
 on_key_pressed (GtkTreeView *view,
                 GdkEventKey *event,
@@ -694,6 +724,8 @@ on_key_pressed (GtkTreeView *view,
                 bookmarks_delete_bookmark ();
                 return TRUE;
         }
+
+	update_bookmark_from_text ();
 
         return FALSE;
 }
@@ -903,13 +935,18 @@ on_window_destroy_event (GtkWidget *widget,
 static void
 repopulate (void)
 {
-	guint index;
+	NautilusBookmark *selected;
 	GtkListStore *store;
-	
+	GtkTreePath *path;
+	GtkTreeRowReference *reference;
+	guint index;
+
 	g_assert (GTK_IS_TREE_VIEW (bookmark_list_widget));
 	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	
 	store = GTK_LIST_STORE (bookmark_list_store);
+
+	selected = get_selected_bookmark ();
 
 	g_signal_handler_block (bookmark_selection,
 				selection_changed_id);
@@ -919,6 +956,8 @@ repopulate (void)
                                 row_activated_signal_id);
         g_signal_handler_block (bookmark_list_widget,
                                 key_pressed_signal_id);
+        g_signal_handler_block (bookmark_list_widget,
+                                button_pressed_signal_id);
 
 	gtk_list_store_clear (store);
 	
@@ -926,6 +965,8 @@ repopulate (void)
 				  row_activated_signal_id);
         g_signal_handler_unblock (bookmark_list_widget,
                                   key_pressed_signal_id);
+        g_signal_handler_unblock (bookmark_list_widget,
+                                  button_pressed_signal_id);
 	g_signal_handler_unblock (bookmark_list_store,
 				  row_deleted_signal_id);
 	g_signal_handler_unblock (bookmark_selection,
@@ -933,6 +974,8 @@ repopulate (void)
 	
 	/* Fill the list in with the bookmark names. */
 	g_signal_handler_block (store, row_changed_signal_id);
+
+	reference = NULL;
 
 	for (index = 0; index < nautilus_bookmark_list_length (bookmarks); ++index) {
 		NautilusBookmark *bookmark;
@@ -951,12 +994,40 @@ repopulate (void)
 				    BOOKMARK_LIST_COLUMN_BOOKMARK, bookmark,
 				    BOOKMARK_LIST_COLUMN_STYLE, PANGO_STYLE_NORMAL,
 				    -1);
-		
+
+		if (bookmark == selected) {
+			/* save old selection */
+			GtkTreePath *path;
+
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (store), &iter);
+			reference = gtk_tree_row_reference_new (GTK_TREE_MODEL (store), path);
+			gtk_tree_path_free (path);
+		}
+
 		g_free (bookmark_name);
 		g_object_unref (bookmark_pixbuf);
 		
 	}
 	g_signal_handler_unblock (store, row_changed_signal_id);
+
+	if (reference != NULL) {
+		/* restore old selection */
+
+		/* bookmarks_set_empty() will call the selection change handler,
+ 		 * so we block it here in case of selection change.
+ 		 */
+		g_signal_handler_block (bookmark_selection, selection_changed_id);
+
+		g_assert (index != 0);
+		g_assert (gtk_tree_row_reference_valid (reference));
+
+		path = gtk_tree_row_reference_get_path (reference);
+		gtk_tree_selection_select_path (bookmark_selection, path);
+		gtk_tree_row_reference_free (reference);
+		gtk_tree_path_free (path);
+
+		g_signal_handler_unblock (bookmark_selection, selection_changed_id);
+	}
 
 	bookmarks_set_empty (index == 0);	  
 }
