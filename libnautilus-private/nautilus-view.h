@@ -83,6 +83,9 @@ struct _NautilusViewIface
 	void           (* set_selection)          (NautilusView          *view,
 						   GList                 *list);
 	
+	/* Inverts the selection in the view */	
+	void           (* invert_selection)       (NautilusView          *view);
+	
 	/* Return the uri of the first visible file */	
 	char *         (* get_first_visible_file) (NautilusView          *view);
 	/* Scroll the view so that the file specified by the uri is at the top
@@ -138,6 +141,7 @@ int               nautilus_view_get_selection_count        (NautilusView      *v
 GList *           nautilus_view_get_selection              (NautilusView      *view);
 void              nautilus_view_set_selection              (NautilusView      *view,
 							    GList             *list);
+void              nautilus_view_invert_selection           (NautilusView      *view);
 char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
 void              nautilus_view_scroll_to_file             (NautilusView      *view,
 							    const char        *uri);

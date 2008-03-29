@@ -159,6 +159,13 @@ nautilus_view_set_selection (NautilusView *view,
 							   list);
 }
 
+void
+nautilus_view_invert_selection (NautilusView *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	
+	(* NAUTILUS_VIEW_GET_IFACE (view)->invert_selection) (view);
+}
 
 char *
 nautilus_view_get_first_visible_file (NautilusView *view)

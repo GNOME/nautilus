@@ -1,3 +1,25 @@
+2008-03-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_invert_selection):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-view.c:
+	(nautilus_view_invert_selection):
+	* libnautilus-private/nautilus-view.h:
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(action_invert_selection_callback),
+	(fm_directory_view_invert_selection), (real_update_menus),
+	(fm_directory_view_class_init):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_invert_selection),
+	(fm_icon_view_class_init):
+	* src/file-manager/fm-list-view.c: (fm_list_view_invert_selection),
+	(fm_list_view_class_init):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Add support for "Invert Selection". Patch by Amos Brocco
+	<amos.brocco@unifr.ch>. (#305295).
+
 2008-03-29  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-application.c

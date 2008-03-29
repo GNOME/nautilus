@@ -1674,6 +1674,15 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 		(get_icon_container (FM_ICON_VIEW (view)), selection);
 }
 
+static void
+fm_icon_view_invert_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_ICON_VIEW (view));
+
+	nautilus_icon_container_invert_selection
+		(get_icon_container (FM_ICON_VIEW (view)));
+}
+
 static gboolean
 fm_icon_view_using_manual_layout (FMDirectoryView *view)
 {
@@ -2593,6 +2602,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
+	fm_directory_view_class->invert_selection = fm_icon_view_invert_selection;
 	fm_directory_view_class->compare_files = compare_files;
 	fm_directory_view_class->zoom_to_level = fm_icon_view_zoom_to_level;
 	fm_directory_view_class->get_zoom_level = fm_icon_view_get_zoom_level;

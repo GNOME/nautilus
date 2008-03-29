@@ -260,6 +260,7 @@ void              nautilus_icon_container_select_all                    (Nautilu
 
 /* operations on the selection */
 GList     *       nautilus_icon_container_get_selection                 (NautilusIconContainer  *view);
+void			  nautilus_icon_container_invert_selection				(NautilusIconContainer  *view);
 void              nautilus_icon_container_set_selection                 (NautilusIconContainer  *view,
 									 GList                  *selection);
 GArray    *       nautilus_icon_container_get_selected_icon_locations   (NautilusIconContainer  *view);

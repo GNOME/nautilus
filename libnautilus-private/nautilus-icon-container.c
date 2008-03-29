@@ -6217,6 +6217,29 @@ nautilus_icon_container_get_selected_icons (NautilusIconContainer *container)
 	return g_list_reverse (list);
 }
 
+/**
+ * nautilus_icon_container_invert_selection:
+ * @container: An icon container.
+ * 
+ * Inverts the selection in @container.
+ * 
+ **/
+void
+nautilus_icon_container_invert_selection (NautilusIconContainer *container)
+{
+	GList *p;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		NautilusIcon *icon;
+
+		icon = p->data;
+		icon_toggle_selected (container, icon);
+	}
+}
+
+
 /* Returns an array of GdkPoints of locations of the icons. */
 static GArray *
 nautilus_icon_container_get_icon_locations (NautilusIconContainer *container,

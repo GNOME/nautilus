@@ -1921,6 +1921,43 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 }
 
 static void
+fm_list_view_invert_selection (FMDirectoryView *view)
+{
+	FMListView *list_view;
+	GtkTreeSelection *tree_selection;
+	GList *node;
+	GList *iters, *l;
+	NautilusFile *file;
+	GList *selection = NULL;
+	
+	list_view = FM_LIST_VIEW (view);
+	tree_selection = gtk_tree_view_get_selection (list_view->details->tree_view);
+
+	g_signal_handlers_block_by_func (tree_selection, list_selection_changed_callback, view);
+	
+	gtk_tree_selection_selected_foreach (tree_selection,
+					 fm_list_view_get_selection_foreach_func, &selection);
+
+	gtk_tree_selection_select_all (tree_selection);
+	
+	for (node = selection; node != NULL; node = node->next) {
+		file = node->data;
+		iters = fm_list_model_get_all_iters_for_file (list_view->details->model, file);
+
+		for (l = iters; l != NULL; l = l->next) {
+			gtk_tree_selection_unselect_iter (tree_selection,
+							(GtkTreeIter *)l->data);
+		}
+		eel_g_list_free_deep (iters);
+	}
+
+	g_list_free (selection);
+
+	g_signal_handlers_unblock_by_func (tree_selection, list_selection_changed_callback, view);
+	fm_directory_view_notify_selection_changed (view);
+}
+
+static void
 fm_list_view_select_all (FMDirectoryView *view)
 {
 	gtk_tree_selection_select_all (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view));
@@ -2686,6 +2723,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+	fm_directory_view_class->invert_selection = fm_list_view_invert_selection;
 	fm_directory_view_class->compare_files = fm_list_view_compare_files;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;

@@ -157,6 +157,11 @@ struct FMDirectoryViewClass {
 
         void     (* set_selection)	 	(FMDirectoryView *view, 
         					 GList *selection);
+        					 
+        /* invert_selection is a function pointer that subclasses must
+         * override to invert selection. */
+
+        void     (* invert_selection)	 	(FMDirectoryView *view);        					 
 
 	/* Return an array of locations of selected icons in their view. */
 	GArray * (* get_selected_icon_locations) (FMDirectoryView *view);
@@ -336,6 +341,7 @@ gboolean            fm_directory_view_can_accept_item                  (Nautilus
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection_for_file_transfer  (FMDirectoryView  *view);
+void                fm_directory_view_invert_selection                 (FMDirectoryView  *view);
 void                fm_directory_view_stop                             (FMDirectoryView  *view);
 guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_in                      (FMDirectoryView  *view);

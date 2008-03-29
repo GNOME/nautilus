@@ -398,6 +398,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_zoom_level)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, invert_selection)
 
 typedef struct {
 	GAppInfo *application;
@@ -1024,6 +1025,16 @@ action_select_all_callback (GtkAction *action,
 
 	fm_directory_view_select_all (callback_data);
 }
+
+static void
+action_invert_selection_callback (GtkAction *action,
+				  gpointer callback_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	fm_directory_view_invert_selection (callback_data);
+}
+
 
 static void
 pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
@@ -3379,6 +3390,16 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_selection, (view));
+}
+
+void
+fm_directory_view_invert_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 invert_selection, (view));
 }
 
 GList *
@@ -6345,6 +6366,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Select _Pattern"), "<control>S",
   /* tooltip */                  N_("Select items in this window matching a given pattern"),
                                  G_CALLBACK (action_select_pattern_callback) },
+  /* name, stock id */         { "Invert Selection", NULL,
+  /* label, accelerator */       N_("_Invert Selection"), "<control><shift>I",
+  /* tooltip */                  N_("Select all and only the items that are not currently selected"),
+                                 G_CALLBACK (action_invert_selection_callback) }, 
   /* name, stock id */         { "Duplicate", NULL,
   /* label, accelerator */       N_("D_uplicate"), NULL,
   /* tooltip */                  N_("Duplicate each selected item"),
@@ -7297,6 +7322,10 @@ real_update_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_SELECT_PATTERN);
+	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
+	
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_INVERT_SELECTION);
 	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -8866,6 +8895,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, restore_default_zoom_level);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, invert_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_zoom_level);
 
