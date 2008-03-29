@@ -1,3 +1,10 @@
+2008-03-29  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-bookmarks-window.c (create_bookmarks_window),
+	(on_button_pressed), (on_key_pressed), (repopulate):
+	Write back changes to selected bookmark before changing
+	selection (#318278).
+
 2008-03-28  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
