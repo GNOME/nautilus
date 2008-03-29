@@ -1,5 +1,15 @@
 2008-03-29  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-application.c
+	(nautilus_application_save_session_to_file), (save_session):
+	* src/nautilus-application.h:
+	* src/nautilus-main.c (main):
+	* src/nautilus-shell.c (open_windows_at_idle), (restart_at_idle):
+	When restarting with "nautilus --restart", use XML file session
+	save / load mechanism, instead of writing to / reading from GConf.
+
+2008-03-29  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-bookmarks-window.c (create_bookmarks_window),
 	(on_button_pressed), (on_key_pressed), (repopulate):
 	Write back changes to selected bookmark before changing

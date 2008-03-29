@@ -127,8 +127,6 @@ static void     update_session                    (gpointer                  cal
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
 
-static char    *save_session_to_file              (void);
-
 BONOBO_CLASS_BOILERPLATE (NautilusApplication, nautilus_application,
 			  BonoboGenericFactory, BONOBO_TYPE_GENERIC_FACTORY)
 
@@ -1525,8 +1523,8 @@ icon_from_string (const char *string)
 	return NULL;
 }
 
-static char *
-save_session_to_file (void)
+char *
+nautilus_application_save_session_to_file (void)
 {
 	xmlDocPtr doc;
 	xmlNodePtr root_node, history_node;
@@ -1820,7 +1818,7 @@ save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style, gint s
 
 	argv[0] = "nautilus";
 
-	argv[2] = save_session_to_file ();
+	argv[2] = nautilus_application_save_session_to_file ();
 	if (argv[2] != NULL) {
 		argv[1] = "--load-session";
 	}

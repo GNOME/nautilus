@@ -582,19 +582,17 @@ main (int argc, char *argv[])
 	 * an update takes place.
 	 */
 
-	if (g_getenv ("_NAUTILUS_RESTART") != NULL) {
-		g_unsetenv ("_NAUTILUS_RESTART");
-		
-		/* Might eventually want to copy all the parameters
-		 * from argv into the new exec. For now, though, that
-		 * would just interfere with the re-creation of
-		 * windows based on the window info stored in gconf,
-		 * including whether the desktop was started.
-		 */
-		argv_copy = g_new0 (char *, 2);
-		argv_copy[0] = argv[0];
-		
+	if (g_getenv ("_NAUTILUS_RESTART_SESSION_FILENAME") != NULL) {
+		argv_copy = g_new0 (char *, 4);
+		argv_copy[0] = g_strdup (argv[0]);
+		argv_copy[1] = g_strdup ("--load-session");
+		argv_copy[2] = g_strdup (g_getenv ("_NAUTILUS_RESTART_SESSION_FILENAME"));
+
+		g_unsetenv ("_NAUTILUS_RESTART_SESSION_FILENAME");
+
 		execvp (argv[0], argv_copy);
+
+		g_strfreev (argv_copy);
 	}
 
 	g_object_unref (G_OBJECT (program));

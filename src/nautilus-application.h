@@ -104,4 +104,5 @@ void                 nautilus_application_open_desktop      (NautilusApplication
 void                 nautilus_application_close_desktop     (void);
 void                 nautilus_application_load_session      (NautilusApplication *application,
 							     const char *filename); 
+char *               nautilus_application_save_session_to_file (void);
 #endif /* NAUTILUS_APPLICATION_H */

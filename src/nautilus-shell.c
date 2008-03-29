@@ -81,7 +81,6 @@ static void     corba_quit                      (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static void     corba_restart                   (PortableServer_Servant  servant,
 						 CORBA_Environment      *ev);
-static gboolean restore_window_states           (NautilusShell          *shell);
 
 BONOBO_CLASS_BOILERPLATE_FULL (NautilusShell, nautilus_shell,
 			       Nautilus_Shell,
@@ -187,11 +186,9 @@ open_windows_at_idle (gpointer _data)
 	GList *l;
 
 	if (data->uris == NULL) {
-		if (!restore_window_states (data->shell)) {
-			/* Open a window pointing at the default location. */
-			open_window (data->shell, NULL, data->startup_id,
-				     data->geometry, data->browser_window);
-		}
+		/* Open a window pointing at the default location. */
+		open_window (data->shell, NULL, data->startup_id,
+			     data->geometry, data->browser_window);
 	} else {
 		/* Open windows at each requested location. */
 		for (l = data->uris; l != NULL; l = l->next) {
@@ -349,190 +346,21 @@ corba_quit (PortableServer_Servant servant,
 	g_idle_add (quit_at_idle, NULL);
 }
 
-/*
- * code for saving the state of nautilus windows across a restart
- *
- * for now, only the window geometry & uri is saved, into "start-state",
- * in a list of strings like:
- *
- *     "<width>,<height>,<x>,<y>,<location>"
- *
- * For example:
- *
- *     "800,600,10,10,file:///tmp"
- */
-
-#define WINDOW_STATE_ATTRIBUTE_WIDTH	0
-#define WINDOW_STATE_ATTRIBUTE_HEIGHT	1
-#define WINDOW_STATE_ATTRIBUTE_X	2
-#define WINDOW_STATE_ATTRIBUTE_Y	3
-#define WINDOW_STATE_ATTRIBUTE_LOCATION	4
-#define WINDOW_STATE_ATTRIBUTE_SCREEN	5
-
-static void
-save_window_states (void)
-{
-	GList *windows;
-	GList *node;
-	NautilusWindow *window;
-	GdkWindow *gdk_window;
-	char *window_attributes;
-	int x, y, width, height;
-	char *location;
-	GPtrArray *states;
-	int screen_num = -1;
-
-	states = g_ptr_array_new ();
-	windows = nautilus_application_get_window_list ();
-	for (node = windows; node; node = g_list_next (node)) {
-		g_assert (node->data != NULL);
-		window = node->data;
-
-		width = GTK_WIDGET (window)->allocation.width;
-		height = GTK_WIDGET (window)->allocation.height;
-
-		/* need root origin (origin of all the window dressing) */
-		gdk_window = GTK_WIDGET (window)->window;
-		gdk_window_get_root_origin (gdk_window, &x, &y);
-
-		location = nautilus_window_get_location_uri (window);
-
-		screen_num = gdk_screen_get_number (
-					gtk_window_get_screen (GTK_WINDOW (window)));
-
-		window_attributes = g_strdup_printf ("%d,%d,%d,%d,%s,%d", 
-						     width, height, 
-						     x, y, 
-						     location,
-						     screen_num);
-		g_free (location);
-
-		g_ptr_array_add (states, window_attributes);
-	}
-	g_ptr_array_add (states, NULL);
-
-	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
-		eel_preferences_set_string_array (START_STATE_CONFIG,
-						  (char **) states->pdata);
-	}
-
-	g_ptr_array_free (states, TRUE);
-}
-
-static void
-restore_one_window (const char *attributes, NautilusShell *shell)
-{
-	char **attrs;
-	int attrs_len;
-	int x;
-	int y;
-	int width;
-	int height;
-	char *location;
-	NautilusWindow *window;
-	GdkScreen *screen = NULL;
-
-	g_return_if_fail (!eel_str_is_empty (attributes));
-	g_return_if_fail (NAUTILUS_IS_SHELL (shell));
-
-	attrs = g_strsplit (attributes, ",", -1);
-	attrs_len = g_strv_length (attrs);
-
-	x = 0;
-	y = 0;
-	width = 0;
-	height= 0;
-	location = NULL;
-
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_WIDTH) {
-		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_WIDTH], &width);
-	}
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_HEIGHT) {
-		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_HEIGHT], &width);
-	}
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_X) {
-		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_X], &x);
-	}
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_Y) {
-		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_Y], &y);
-	}
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_LOCATION) {
-		location = g_strdup (attrs[WINDOW_STATE_ATTRIBUTE_LOCATION]);
-	}
-
-	/* Support sessions with no screen number for backwards compat.
-	 */
-	if (attrs_len > WINDOW_STATE_ATTRIBUTE_SCREEN) {
-		int screen_num;
-		eel_str_to_int (attrs[WINDOW_STATE_ATTRIBUTE_SCREEN], &screen_num);
-		screen = gdk_display_get_screen (gdk_display_get_default (), screen_num);
-	} else {
-		screen = gdk_screen_get_default ();
-	}
-
-#if NEW_UI_COMPLETE 
-/* don't always create object windows here */
-#endif
-	if (eel_strlen (location) > 0) {
-		GFile *f;
-
-		f = g_file_new_for_uri (location);
-		window = nautilus_application_present_spatial_window (shell->details->application, 
-								      NULL,
-								      NULL,
-								      f,
-								      screen);
-		g_object_unref (f);
-	} else {
-		window = nautilus_application_create_navigation_window (shell->details->application,
-									NULL,
-									screen);
-		nautilus_window_go_home (window);
-	}
-
-	gtk_window_move (GTK_WINDOW (window), x, y);
-	gtk_widget_set_size_request (GTK_WIDGET (window), width, height);
-
-	g_free (location);
-	g_strfreev (attrs);
-}
-
-/* returns TRUE if there was state info which has been used to create new windows */
-static gboolean
-restore_window_states (NautilusShell *shell)
-{
-	char **states;
-	gboolean result;
-	int i;
-
-	result = FALSE;
-
-	states = eel_preferences_get_string_array (START_STATE_CONFIG);
-	if (!states) {
-		return result;
-	}
-
-	for (i = 0; states[i] != NULL; ++i) {
-		result = TRUE;
-		restore_one_window (states[i], shell);
-	}
-
-	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
-		eel_preferences_set_string_array (START_STATE_CONFIG, NULL);
-	}
-
-	g_strfreev (states);
-
-	return result;
-}
-
 static gboolean
 restart_at_idle (gpointer data)
 {
-	save_window_states ();
+	char *filename;
 
-	nautilus_main_event_loop_quit (TRUE);
-	g_setenv ("_NAUTILUS_RESTART", "yes", 1);
+	filename = nautilus_application_save_session_to_file ();
+	if (filename != NULL) {
+		nautilus_main_event_loop_quit (TRUE);
+		g_setenv ("_NAUTILUS_RESTART_SESSION_FILENAME", filename, 1);
+		g_free (filename);
+	} else {
+		g_message ("Could not save session. Not restarting.");
+	}
+
+
 	return FALSE;
 }
 
