@@ -52,6 +52,8 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"list_view_column_order"
 #define NAUTILUS_METADATA_SUBKEY_COLUMNS                        "columns" 
 
+#define NAUTILUS_METADATA_KEY_COMPACT_VIEW_ZOOM_LEVEL		"compact_view_zoom_level"
+
 #define NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY			"window_geometry"
 #define NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION		"window_scroll_position"
 #define NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES		"window_show_hidden_files"

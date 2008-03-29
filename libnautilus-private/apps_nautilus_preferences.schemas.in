@@ -532,8 +532,8 @@ most cases, this should be left alone. -->Sans 10</default>
          <short>Default folder viewer</short>
          <long>
 	 When a folder is visited this viewer is used unless you have selected
-	 another view for that particular folder. Possible values are "list_view"
-	 and "icon_view".
+	 another view for that particular folder. Possible values are "list_view",
+	 "icon_view" and "compact_view".
          </long>
       </locale>
     </schema>
@@ -663,6 +663,36 @@ most cases, this should be left alone. -->Sans 10</default>
          </long>
       </locale>
     </schema>    
+
+   <!-- Icon View -->
+    <schema>
+      <key>/schemas/apps/nautilus/compact_view/default_zoom_level</key>
+      <applyto>/apps/nautilus/compact_view/default_zoom_level</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>standard</default>
+      <locale name="C">
+         <short>Default compact view zoom level</short>
+         <long>
+             Default zoom level used by the compact view.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/compact_view/all_columns_have_same_width</key>
+      <applyto>/apps/nautilus/compact_view/all_columns_have_same_width</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>standard</default>
+      <locale name="C">
+         <short>All columns have same width</short>
+         <long>
+             If this preference is set, all columns in the compact view have the same
+	     width. Otherwise, the width of each column is determined seperately.
+         </long>
+      </locale>
+    </schema>
     
     <!-- List View -->
 

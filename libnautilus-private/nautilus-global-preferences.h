@@ -109,13 +109,15 @@ typedef enum
 enum
 {
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW,
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW,
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
 };
 
 /* These IIDs are used by the preferences code and in nautilus-application.c */
-#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:Nautilus_File_Manager_Icon_View"
-#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:Nautilus_File_Manager_List_View"
+#define NAUTILUS_ICON_VIEW_IID		"OAFIID:Nautilus_File_Manager_Icon_View"
+#define NAUTILUS_COMPACT_VIEW_IID	"OAFIID:Nautilus_File_Manager_Compact_View"
+#define NAUTILUS_LIST_VIEW_IID		"OAFIID:Nautilus_File_Manager_List_View"
 
 
 /* Icon View */
@@ -142,6 +144,10 @@ enum
 
 /* The default size for thumbnail icons */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE			"icon_view/thumbnail_size"
+
+/* Compact View */
+#define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"compact_view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH	"compact_view/all_columns_same_width"
 
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"

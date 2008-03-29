@@ -37,6 +37,7 @@ typedef struct FMIconViewClass FMIconViewClass;
 #define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_VIEW))
 
 #define FM_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Icon_View"
+#define FM_COMPACT_VIEW_ID "OAFIID:Nautilus_File_Manager_Compact_View"
 
 typedef struct FMIconViewDetails FMIconViewDetails;
 
@@ -86,6 +87,13 @@ struct FMIconViewClass {
 	 */
 	gboolean (* supports_auto_layout)	 (FMIconView *view);
 
+	/* supports_manual_layout is a function pointer that subclasses may
+	 * override to control whether or not the manual layout options
+	 * should be enabled. The default implementation returns TRUE iff
+	 * not in compact mode.
+	 */
+	gboolean (* supports_manual_layout)	 (FMIconView *view);
+
 	/* supports_auto_layout is a function pointer that subclasses may
 	 * override to control whether snap-to-grid mode
 	 * should be enabled. The default implementation returns FALSE.
@@ -105,6 +113,7 @@ int     fm_icon_view_compare_files (FMIconView   *icon_view,
 				    NautilusFile *a,
 				    NautilusFile *b);
 void    fm_icon_view_filter_by_screen (FMIconView *icon_view, gboolean filter);
+gboolean fm_icon_view_is_compact   (FMIconView *icon_view);
 
 void    fm_icon_view_register       (void);
 

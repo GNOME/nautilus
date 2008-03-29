@@ -62,6 +62,7 @@
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
 #define MAX_TEXT_WIDTH_BESIDE 90
+#define MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM 300
 
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
@@ -1816,6 +1817,11 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	 (g_ascii_isdigit (*(p+1)) && \
 	  g_ascii_isdigit (*(p+2))))
 
+#define IS_COMPACT_VIEW(container) \
+        container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R && \
+        container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE
+
+
 static PangoLayout *
 create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
@@ -1872,6 +1878,9 @@ create_label_layout (NautilusIconCanvasItem *item,
 
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
 	pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
+	if (IS_COMPACT_VIEW (container)) {
+		pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
+	}
 
 	/* Create a font description */
 	if (container->details->font) {
@@ -2424,14 +2433,19 @@ double
 nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 {
 	EelCanvasItem *canvas_item;
-	
+
 	canvas_item = EEL_CANVAS_ITEM (item);
 	if (nautilus_icon_container_is_tighter_layout (NAUTILUS_ICON_CONTAINER (canvas_item->canvas))) {
 		return MAX_TEXT_WIDTH_TIGHTER * canvas_item->canvas->pixels_per_unit;
 	} else {
 				
                 if (NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-			return MAX_TEXT_WIDTH_BESIDE * canvas_item->canvas->pixels_per_unit;
+			if (NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R ||
+			    NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L) {
+				return MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM * canvas_item->canvas->pixels_per_unit;
+			} else {
+				return MAX_TEXT_WIDTH_BESIDE * canvas_item->canvas->pixels_per_unit;
+			}
                 } else {
 			return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
                 }

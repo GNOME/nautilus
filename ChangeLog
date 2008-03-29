@@ -1,3 +1,55 @@
+2008-03-29  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.c
+	(nautilus_global_preferences_get_default_folder_viewer_preference_a
+	s_iid):
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(create_label_layout),
+	(nautilus_icon_canvas_item_get_max_text_width):
+	* libnautilus-private/nautilus-icon-container.c
+	(lay_down_one_column), (get_max_icon_dimensions),
+	(lay_down_icons_vertical), (lay_down_icons_vertical_desktop),
+	(lay_down_icons), (size_allocate),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_set_layout_mode),
+	(nautilus_icon_container_start_renaming_selected_item),
+	(nautilus_icon_container_set_forced_icon_size),
+	(nautilus_icon_container_set_all_columns_same_width):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-metadata.h:
+	* src/file-manager/fm-icon-container.c
+	(fm_icon_container_get_icon_images),
+	(fm_icon_container_get_icon_text):
+	* src/file-manager/fm-icon-view.c
+	(get_stored_icon_position_callback),
+	(fm_icon_view_supports_manual_layout),
+	(fm_icon_view_supports_tighter_layout), (update_layout_menus),
+	(fm_icon_view_real_set_directory_sort_reversed),
+	(fm_icon_view_get_directory_auto_layout),
+	(fm_icon_view_real_get_directory_auto_layout),
+	(fm_icon_view_set_directory_auto_layout),
+	(fm_icon_view_real_set_directory_auto_layout),
+	(fm_icon_view_real_set_directory_tighter_layout),
+	(real_supports_manual_layout), (get_default_zoom_level),
+	(set_labels_beside_icons), (set_columns_same_width),
+	(fm_icon_view_begin_loading), (fm_icon_view_set_zoom_level),
+	(fm_icon_view_zoom_to_level),
+	(fm_icon_view_restore_default_zoom_level),
+	(default_zoom_level_changed_callback),
+	(all_columns_same_width_changed_callback),
+	(fm_icon_view_set_property), (fm_icon_view_class_init),
+	(fm_icon_view_get_id), (fm_icon_view_init), (fm_icon_view_create),
+	(fm_compact_view_create), (fm_icon_view_is_compact),
+	(fm_icon_view_register):
+	* src/file-manager/fm-icon-view.h:
+	* src/nautilus-file-management-properties.c
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade:
+	Added compact view.
+
 2008-03-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-window-manage-views.c:

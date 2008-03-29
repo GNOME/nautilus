@@ -82,19 +82,28 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	
 	if (emblem_pixbufs != NULL) {
 		emblem_size = nautilus_icon_get_emblem_size_for_icon_size (size);
-		
-		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
-			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_pixbufs = nautilus_file_get_emblem_pixbufs (file,
-								    emblem_size,
-								    FALSE,
-								    emblems_to_ignore);
-		g_strfreev (emblems_to_ignore);
+		/* don't return images larger than the actual icon size */
+		emblem_size = MIN (emblem_size, size);
+
+		if (emblem_size > 0) {
+			emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
+				(FM_DIRECTORY_VIEW (icon_view));
+			*emblem_pixbufs = nautilus_file_get_emblem_pixbufs (file,
+									    emblem_size,
+									    FALSE,
+									    emblems_to_ignore);
+			g_strfreev (emblems_to_ignore);
+		}
 	}
 
 	*has_window_open = nautilus_file_has_open_window (file);
 
-	flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+	flags = 0;
+	if (!fm_icon_view_is_compact (icon_view) ||
+	    nautilus_icon_container_get_zoom_level (container) > NAUTILUS_ZOOM_LEVEL_STANDARD) {
+		flags |= NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+	}
+
 	if (use_embedding) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT;
 	}
@@ -319,6 +328,11 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	} else {
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_display_name (file);
+	}
+
+	if (fm_icon_view_is_compact (icon_view)) {
+		*additional_text = NULL;
+		return;
 	}
 
 	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {

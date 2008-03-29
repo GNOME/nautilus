@@ -1001,6 +1001,40 @@ lay_down_one_line (NautilusIconContainer *container,
 }
 
 static void
+lay_down_one_column (NautilusIconContainer *container,
+		     GList *line_start,
+		     GList *line_end,
+		     double x,
+		     double y_start,
+		     double y_iter,
+		     GArray *positions)
+{
+	GList *p;
+	NautilusIcon *icon;
+	double y;
+	IconPositions *position;
+	int i;
+
+	/* FIXME: Should layout differently when in RTL base mode */
+
+	/* Lay out the icons along the baseline. */
+	y = y_start;
+	i = 0;
+	for (p = line_start; p != line_end; p = p->next) {
+		icon = p->data;
+
+		position = &g_array_index (positions, IconPositions, i++);
+
+		icon_set_position
+			(icon,
+			 x + position->x_offset,
+			 y + position->y_offset);
+
+		y += y_iter;
+	}
+}
+
+static void
 lay_down_icons_horizontal (NautilusIconContainer *container,
 			   GList *icons,
 			   double start_y)
@@ -1156,6 +1190,160 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		
 		/* Advance to next line. */
 		y += max_height_below + ICON_PAD_BOTTOM;
+	}
+
+	g_array_free (positions, TRUE);
+}
+
+static void
+get_max_icon_dimensions (GList *icon_start,
+			 GList *icon_end,
+			 double *max_icon_width,
+			 double *max_icon_height,
+			 double *max_text_width,
+			 double *max_text_height)
+{
+	NautilusIcon *icon;
+	EelDRect icon_bounds;
+	EelDRect text_bounds;
+	GList *p;
+
+	*max_icon_width = *max_text_width = 0.0;
+	*max_icon_height = *max_text_height = 0.0;
+
+	/* Would it be worth caching these bounds for the next loop? */
+	for (p = icon_start; p != icon_end; p = p->next) {
+		icon = p->data;
+
+		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+		*max_icon_width = MAX (*max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
+		*max_icon_height = MAX (*max_icon_height, ceil (icon_bounds.y1 - icon_bounds.y0));
+
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+		*max_text_width = MAX (*max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
+		*max_text_height = MAX (*max_text_height, ceil (text_bounds.y1 - text_bounds.y0));
+	}
+}
+
+/* column-wise layout. At the moment, this only works with label-beside-icon (used by "Compact View"). */
+static void
+lay_down_icons_vertical (NautilusIconContainer *container,
+			 GList *icons,
+			 double start_y)
+{
+	GList *p, *line_start;
+	NautilusIcon *icon;
+	double canvas_width, x, canvas_height;
+	GArray *positions;
+	IconPositions *position;
+	EelDRect icon_bounds;
+	EelDRect text_bounds;
+	EelCanvasItem *item;
+
+	double line_height;
+
+	double max_height;
+	double max_height_with_borders;
+	double max_width;
+	double max_width_in_column;
+
+	double max_text_width, max_icon_width;
+	double max_text_height, max_icon_height;
+	int height;
+	int i;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE);
+
+	if (icons == NULL) {
+		return;
+	}
+
+	positions = g_array_new (FALSE, FALSE, sizeof (IconPositions));
+
+	/* Lay out icons a column at a time. */
+	canvas_width = CANVAS_WIDTH(container);
+	canvas_height = CANVAS_HEIGHT(container);
+
+	max_icon_width = max_text_width = 0.0;
+	max_icon_height = max_text_height = 0.0;
+
+	get_max_icon_dimensions (icons, NULL,
+				 &max_icon_width, &max_icon_height,
+				 &max_text_width, &max_text_height);
+
+	max_width = max_icon_width + max_text_width;
+	max_height = MAX (max_icon_height, max_text_height);
+	max_height_with_borders = ICON_PAD_TOP + max_height + ICON_PAD_BOTTOM;
+
+	line_height = ICON_PAD_TOP;
+	line_start = icons;
+	x = 0;
+	i = 0;
+
+	max_width_in_column = 0.0;
+
+	for (p = icons; p != NULL; p = p->next) {
+		icon = p->data;
+		item = EEL_CANVAS_ITEM (icon->item);
+
+		/* If this icon doesn't fit, it's time to lay out the column that's queued up. */
+		if (line_start != p && line_height + max_height_with_borders + ICON_PAD_BOTTOM > canvas_height ) {
+			x += ICON_PAD_LEFT;
+
+			/* correctly set (per-column) width */
+			if (!container->details->all_columns_same_width) {
+				for (i = 0; i < (int) positions->len; i++) {
+					position = &g_array_index (positions, IconPositions, i);
+					position->width = max_width_in_column;
+				}
+			}
+
+			lay_down_one_column (container, line_start, p, x, CONTAINER_PAD_TOP, max_height_with_borders, positions);
+
+			/* Advance to next column. */
+			if (container->details->all_columns_same_width) {
+				x += max_width + ICON_PAD_RIGHT;
+			} else {
+				x += max_width_in_column + ICON_PAD_RIGHT;
+			}
+
+			line_height = ICON_PAD_TOP;
+			line_start = p;
+			i = 0;
+
+			max_width_in_column = 0;
+		}
+
+		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+
+		max_width_in_column = MAX (max_width_in_column,
+					   ceil (icon_bounds.x1 - icon_bounds.x0) +
+					   ceil (text_bounds.x1 - text_bounds.x0));
+
+		g_array_set_size (positions, i + 1);
+		position = &g_array_index (positions, IconPositions, i++);
+		if (container->details->all_columns_same_width) {
+			position->width = max_width;
+		}
+		position->height = max_height;
+		position->y_offset = ICON_PAD_TOP;
+		position->x_offset = ICON_PAD_LEFT;
+
+		position->x_offset += max_icon_width - ceil (icon_bounds.x1 - icon_bounds.x0);
+
+		height = MAX (ceil (icon_bounds.y1 - icon_bounds.y0), ceil(text_bounds.y1 - text_bounds.y0));
+		position->y_offset += (max_height - height) / 2;
+
+		/* Add this icon. */
+		line_height += max_height_with_borders;
+	}
+
+	/* Lay down that last column of icons. */
+	if (line_start != NULL) {
+		x += ICON_PAD_LEFT;
+		lay_down_one_column (container, line_start, NULL, x, CONTAINER_PAD_TOP, max_height_with_borders, positions);
 	}
 
 	g_array_free (positions, TRUE);
@@ -1488,7 +1676,7 @@ nautilus_icon_container_set_rtl_positions (NautilusIconContainer *container)
 }
 
 static void
-lay_down_icons_vertical (NautilusIconContainer *container, GList *icons)
+lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 {
 	GList *p, *placed_icons, *unplaced_icons;
 	int total, new_length, placed;
@@ -1669,7 +1857,11 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 		
 	case NAUTILUS_ICON_LAYOUT_T_B_L_R:
 	case NAUTILUS_ICON_LAYOUT_T_B_R_L:
-		lay_down_icons_vertical (container, icons);
+		if (nautilus_icon_container_get_is_desktop (container)) {
+			lay_down_icons_vertical_desktop (container, icons);
+		} else {
+			lay_down_icons_vertical (container, icons, start_y);
+		}
 		break;
 		
 	default:
@@ -3154,6 +3346,10 @@ size_allocate (GtkWidget *widget,
 	need_layout_redone = !container->details->has_been_allocated;
 
 	if (allocation->width != widget->allocation.width) {
+		need_layout_redone = TRUE;
+	}
+
+	if (allocation->height != widget->allocation.height) {
 		need_layout_redone = TRUE;
 	}
 
@@ -5768,9 +5964,14 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
 	max_image_size = MAX (MAXIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit, NAUTILUS_ICON_MAXIMUM_SIZE);
-		
+
 	/* Get the appropriate images for the file. */
-	icon_get_size (container, icon, &icon_size);
+	if (container->details->forced_icon_size > 0) {
+		icon_size = container->details->forced_icon_size;
+	} else {
+		icon_get_size (container, icon, &icon_size);
+	}
+
 
 	icon_size = MAX (icon_size, min_image_size);
 	icon_size = MIN (icon_size, max_image_size);
@@ -5787,7 +5988,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 							     &has_open_window);
 
 
-	pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
+	if (container->details->forced_icon_size > 0)
+		pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+	else
+		pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
 	nautilus_icon_info_get_attach_points (icon_info, &attach_points, &n_attach_points);
 	has_embedded_text_rect = nautilus_icon_info_get_embedded_rect (icon_info,
 								       &embedded_text_rect);
@@ -6803,6 +7007,7 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->layout_mode = mode;
+	invalidate_label_sizes (container);
 
 	redo_layout (container);
 
@@ -7022,7 +7227,11 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		eel_editable_label_set_line_wrap (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
 		eel_editable_label_set_line_wrap_mode (EEL_EDITABLE_LABEL (details->rename_widget), PANGO_WRAP_WORD_CHAR);
 		eel_editable_label_set_draw_outline (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
-		eel_editable_label_set_justify (EEL_EDITABLE_LABEL (details->rename_widget), GTK_JUSTIFY_CENTER);
+
+		if (details->label_position != NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			eel_editable_label_set_justify (EEL_EDITABLE_LABEL (details->rename_widget), GTK_JUSTIFY_CENTER);
+		}
+
 		gtk_misc_set_padding (GTK_MISC (details->rename_widget), 1, 1);
 		gtk_layout_put (GTK_LAYOUT (container),
 				details->rename_widget, 0, 0);
@@ -7589,6 +7798,34 @@ nautilus_icon_container_set_allow_moves	(NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->drag_allow_moves = allow_moves;
+}
+
+void
+nautilus_icon_container_set_forced_icon_size (NautilusIconContainer *container,
+					      int                    forced_icon_size)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	if (forced_icon_size != container->details->forced_icon_size) {
+		container->details->forced_icon_size = forced_icon_size;
+
+		invalidate_label_sizes (container);
+		nautilus_icon_container_request_update_all (container);
+	}
+}
+
+void
+nautilus_icon_container_set_all_columns_same_width (NautilusIconContainer *container,
+						    gboolean               all_columns_same_width)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	if (all_columns_same_width != container->details->all_columns_same_width) {
+		container->details->all_columns_same_width = all_columns_same_width;
+
+		invalidate_label_sizes (container);
+		nautilus_icon_container_request_update_all (container);
+	}
 }
 
 /* NautilusIconContainerAccessible */

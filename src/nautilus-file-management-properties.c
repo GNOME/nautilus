@@ -50,6 +50,7 @@
 /* string enum preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "icon_view_zoom_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_VIEW_ZOOM_WIDGET "compact_view_zoom_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "list_view_zoom_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET "date_format_combobox"
@@ -62,6 +63,7 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET "sort_folders_first_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_LAYOUT_WIDGET "compact_layout_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LABELS_BESIDE_ICONS_WIDGET "labels_beside_icons_checkbutton"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALL_COLUMNS_SAME_WIDTH "all_columns_same_width_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_BROWSER_WIDGET "always_use_browser_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALWAYS_USE_LOCATION_ENTRY_WIDGET "always_use_location_entry_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET "trash_confirm_checkbutton"
@@ -77,6 +79,7 @@
 
 static const char * const default_view_values[] = {
 	"icon_view",
+	"compact_view",
 	"list_view",
 	NULL
 };
@@ -661,6 +664,8 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	/* setup gconf stuff */
 	eel_gconf_monitor_add ("/apps/nautilus/icon_view");
 	eel_gconf_preload_cache ("/apps/nautilus/icon_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
+	eel_gconf_monitor_add ("/apps/nautilus/compact_view");
+	eel_gconf_preload_cache ("/apps/nautilus/compact_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
 	eel_gconf_monitor_add ("/apps/nautilus/list_view");
 	eel_gconf_preload_cache ("/apps/nautilus/list_view", GCONF_CLIENT_PRELOAD_ONELEVEL);
 	eel_gconf_monitor_add ("/apps/nautilus/preferences");
@@ -671,7 +676,7 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	/* setup UI */
 	nautilus_file_management_properties_size_group_create (xml_dialog, 
 							       "views_label",
-							       4);
+							       5);
 	nautilus_file_management_properties_size_group_create (xml_dialog,
 							       "captions_label",
 							       3);
@@ -687,6 +692,9 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LABELS_BESIDE_ICONS_WIDGET,
 					    NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS);
+	eel_preferences_glade_connect_bool (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ALL_COLUMNS_SAME_WIDTH,
+					    NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH);
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET,
 					    NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST); 
@@ -724,6 +732,10 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
 							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,						     
 							     NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+							     (const char **) zoom_values);
+	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
+							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_COMPACT_VIEW_ZOOM_WIDGET,
+							     NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
 							     (const char **) zoom_values);
 	eel_preferences_glade_connect_string_enum_combo_box (xml_dialog,
 							     NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,

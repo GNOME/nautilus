@@ -137,6 +137,7 @@ static EelEnumerationEntry search_bar_type_enum_entries[] = {
 
 static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
 	{ "icon_view",	    N_("Icon View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW },
+	{ "compact_view",   N_("Compact View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW },
 	{ "list_view",	    N_("List View"),	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW }
 };
 
@@ -414,6 +415,14 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (96)
+	},
+
+	/* Compact Icon View Default Preferences */
+	{ NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
+	  PREFERENCE_STRING,
+	  "standard",
+	  NULL, NULL,
+	  "default_zoom_level"
 	},
 	
 	/* List View Default Preferences */
@@ -706,6 +715,8 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
+	} else if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW) {
+		viewer_iid = NAUTILUS_COMPACT_VIEW_IID;
 	} else {
 		viewer_iid = NAUTILUS_ICON_VIEW_IID;
 	}
