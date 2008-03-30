@@ -1,3 +1,13 @@
+2008-03-31  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(create_label_layout),
+	(nautilus_icon_canvas_item_get_max_text_width):
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_start_renaming_selected_item):
+	For column layout, do not limit text width if each columns determines
+	its own width.
+
 2008-03-30  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-icon-view.c

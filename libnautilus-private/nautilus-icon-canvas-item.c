@@ -1862,7 +1862,11 @@ create_label_layout (NautilusIconCanvasItem *item,
 	}
 
 	pango_layout_set_text (layout, zeroified_text, -1);
-	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
+	if (nautilus_icon_canvas_item_get_max_text_width (item) < 0) {
+		pango_layout_set_width (layout, -1);
+	} else {
+		pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
+	}
 			
 	pango_layout_set_auto_dir (layout, FALSE);
 	
@@ -2433,16 +2437,23 @@ double
 nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 {
 	EelCanvasItem *canvas_item;
+	NautilusIconContainer *container;
 
 	canvas_item = EEL_CANVAS_ITEM (item);
-	if (nautilus_icon_container_is_tighter_layout (NAUTILUS_ICON_CONTAINER (canvas_item->canvas))) {
+	container = NAUTILUS_ICON_CONTAINER (canvas_item->canvas);
+
+	if (nautilus_icon_container_is_tighter_layout (container)) {
 		return MAX_TEXT_WIDTH_TIGHTER * canvas_item->canvas->pixels_per_unit;
 	} else {
 				
-                if (NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-			if (NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R ||
-			    NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L) {
-				return MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM * canvas_item->canvas->pixels_per_unit;
+                if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			if (container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R ||
+			    container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L) {
+				if (container->details->all_columns_same_width) {
+					return MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM * canvas_item->canvas->pixels_per_unit;
+				} else {
+					return -1;
+				}
 			} else {
 				return MAX_TEXT_WIDTH_BESIDE * canvas_item->canvas->pixels_per_unit;
 			}

@@ -7253,9 +7253,15 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	text_rect = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
-	
-	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
 
+	if ((container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R ||
+	     container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L) &&
+	     container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		/* for one-line editables, the width changes dynamically */
+		width = -1;
+	} else {
+		width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
+	}
 
 	if (details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 		eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
