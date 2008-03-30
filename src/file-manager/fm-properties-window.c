@@ -397,10 +397,11 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
   	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 2*ROW_PAD);
 }
 
-static GdkPixbuf *
-get_pixbuf_for_properties_window (FMPropertiesWindow *window)
+static void
+get_image_for_properties_window (FMPropertiesWindow *window,
+				 char **icon_name,
+				 GdkPixbuf **icon_pixbuf)
 {
-	GdkPixbuf *pixbuf;
 	NautilusIconInfo *icon, *new_icon;
 	GList *l;
 	
@@ -427,28 +428,39 @@ get_pixbuf_for_properties_window (FMPropertiesWindow *window)
 	if (!icon) {
 		icon = nautilus_icon_info_lookup_from_name ("text-x-generic", NAUTILUS_ICON_SIZE_STANDARD);
 	}
-	
-	pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_ICON_SIZE_STANDARD);
-	g_object_unref (icon);
 
-	return pixbuf;
+	if (icon_name != NULL) {
+		*icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
+	}
+
+	if (icon_pixbuf != NULL) {
+		*icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_ICON_SIZE_STANDARD);
+	}
+
+	g_object_unref (icon);
 }
 
 
 static void
 update_properties_window_icon (GtkImage *image)
 {
-	GdkPixbuf	*pixbuf;
 	FMPropertiesWindow *window;
+	GdkPixbuf *pixbuf;
+	char *name;
 
 	window = g_object_get_data (G_OBJECT (image), "properties_window");
 	
-	pixbuf = get_pixbuf_for_properties_window (window);
+	get_image_for_properties_window (window, &name, &pixbuf);
+
+	if (name != NULL) {
+		gtk_window_set_icon_name (GTK_WINDOW (window), name);
+	} else {
+		gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+	}
 
 	gtk_image_set_from_pixbuf (image, pixbuf);
 
-	gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
-	
+	g_free (name);
 	g_object_unref (pixbuf);
 }
 
@@ -557,8 +569,7 @@ create_image_widget (FMPropertiesWindow *window,
 	GtkWidget *image;
 	GdkPixbuf *pixbuf;
 	
-	pixbuf = get_pixbuf_for_properties_window (window);
-	
+	get_image_for_properties_window (window, NULL, &pixbuf);
 
 	image = gtk_image_new ();
 	gtk_widget_show (image);
