@@ -1,5 +1,17 @@
 2008-03-30  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_register):
+	Do not translate unused desktop icon view labels.
+
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Use "... View" instead of "View as ..." for view menu and dropdown.
+	This makes the labels consistent with the preference dialog and with
+	the compact view.
+
+2008-03-30  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-properties-window.c
 	(get_image_for_properties_window), (update_properties_window_icon),
 	(create_image_widget):
