@@ -1,5 +1,11 @@
 2008-03-30  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_real_get_directory_tighter_layout):
+	Return FALSE if view does not support tighter layout.
+
+2008-03-30  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-desktop-icon-view.c
 	(fm_desktop_icon_view_register):
 	Do not translate unused desktop icon view labels.

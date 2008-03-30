@@ -980,6 +980,10 @@ static gboolean
 fm_icon_view_real_get_directory_tighter_layout (FMIconView *icon_view,
 						NautilusFile *file)
 {
+	if (!fm_icon_view_supports_tighter_layout (icon_view)) {
+		return FALSE;
+	}
+
 	return nautilus_file_get_boolean_metadata
 		(file,
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT,
