@@ -1396,6 +1396,20 @@ nautilus_inhibit_autorun_for_volume (GVolume *volume)
 }
 
 static gboolean
+should_skip_native_mount_root (GFile *root)
+{
+	char *path;
+	gboolean should_skip;
+
+	/* skip any mounts in hidden directory hierarchies */
+	path = g_file_get_path (root);
+	should_skip = strstr (path, "/.") != NULL;
+	g_free (path);
+
+	return should_skip;
+}
+
+static gboolean
 should_autorun_mount (GMount *mount)
 {
 	GFile *root, *file;
@@ -1435,7 +1449,7 @@ should_autorun_mount (GMount *mount)
 
 	/* only do autorun on local files or files where g_volume_should_automount() returns TRUE */
 	ignore_autorun = TRUE;
-	if (g_file_is_native (root) || 
+	if ((g_file_is_native (root) && !should_skip_native_mount_root (root)) || 
 	    (enclosing_volume != NULL && g_volume_should_automount (enclosing_volume))) {
 		ignore_autorun = FALSE;
 	}
