@@ -1,5 +1,12 @@
 2008-03-31  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(lay_down_icons_vertical):
+	Reduce vertical space between icons, do not request space at the
+	bottom of a column.
+
+2008-03-31  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c
 	(create_label_layout),
 	(nautilus_icon_canvas_item_get_max_text_width):

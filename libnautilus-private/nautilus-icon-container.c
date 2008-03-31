@@ -1274,7 +1274,7 @@ lay_down_icons_vertical (NautilusIconContainer *container,
 
 	max_width = max_icon_width + max_text_width;
 	max_height = MAX (max_icon_height, max_text_height);
-	max_height_with_borders = ICON_PAD_TOP + max_height + ICON_PAD_BOTTOM;
+	max_height_with_borders = ICON_PAD_TOP + max_height;
 
 	line_height = ICON_PAD_TOP;
 	line_start = icons;
@@ -1288,7 +1288,7 @@ lay_down_icons_vertical (NautilusIconContainer *container,
 		item = EEL_CANVAS_ITEM (icon->item);
 
 		/* If this icon doesn't fit, it's time to lay out the column that's queued up. */
-		if (line_start != p && line_height + max_height_with_borders + ICON_PAD_BOTTOM > canvas_height ) {
+		if (line_start != p && line_height + max_height_with_borders > canvas_height ) {
 			x += ICON_PAD_LEFT;
 
 			/* correctly set (per-column) width */
