@@ -1,3 +1,9 @@
+2008-03-31  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-autorun.c
+	(should_skip_native_mount_root), (should_autorun_mount):
+	Do not automount mount points inside hidden hierarchies (#524075).
+
 2008-03-30  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-properties-window.c
