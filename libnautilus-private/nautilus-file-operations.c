@@ -125,6 +125,7 @@ typedef struct {
 typedef struct {
 	CommonJob common;
 	GList *trash_dirs;
+	gboolean should_confirm;
 	NautilusOpCallback done_callback;
 	gpointer done_callback_data;
 } EmptyTrashJob;
@@ -1986,6 +1987,7 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 			EmptyTrashJob *job;
 			
 			job = op_job_new (EmptyTrashJob, parent_window);
+			job->should_confirm = FALSE;
 			job->trash_dirs = get_trash_dirs_for_mount (mount);
 			job->done_callback = (NautilusOpCallback)do_unmount;
 			job->done_callback_data = data;
@@ -5073,13 +5075,19 @@ empty_trash_job (GIOSchedulerJob *io_job,
 	EmptyTrashJob *job = user_data;
 	CommonJob *common;
 	GList *l;
+	gboolean confirmed;
 	
 	common = (CommonJob *)job;
 	common->io_job = io_job;
 	
 	nautilus_progress_info_start (job->common.progress);
-	
-	if (confirm_empty_trash (common)) {
+
+	if (job->should_confirm) {
+		confirmed = confirm_empty_trash (common);
+	} else {
+		confirmed = TRUE;
+	}
+	if (confirmed) {
 		for (l = job->trash_dirs;
 		     l != NULL && !job_aborted (common);
 		     l = l->next) {
@@ -5109,6 +5117,7 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 	job = op_job_new (EmptyTrashJob, parent_window);
 	job->trash_dirs = g_list_prepend (job->trash_dirs,
 					  g_file_new_for_uri ("trash:"));
+	job->should_confirm = TRUE;
 	
 	g_io_scheduler_push_job (empty_trash_job,
 			   job,
