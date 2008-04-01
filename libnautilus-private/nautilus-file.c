@@ -3393,6 +3393,7 @@ nautilus_file_get_icon (NautilusFile *file,
 			g_object_unref (scaled_pixbuf);
 			return icon;
 		} else if (file->details->thumbnail_path == NULL &&
+			   file->details->can_read &&				
 			   !file->details->thumbnailing_failed &&
 			   !file->details->is_thumbnailing) {
 			if (nautilus_can_thumbnail (file)) {

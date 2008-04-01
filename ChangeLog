@@ -1,3 +1,9 @@
+2008-04-01  Michael J. Chudobiak  <mjc@svn.gnome.org>
+
+	* libnautilus-private/nautilus-file.c: (nautilus_file_get_icon):
+	Skip the thumbnailing of unreadable files. This is more efficient
+	than relying on failed thumbnails. (#525594).
+
 2008-04-01  A. Walton  <awalton@svn.gnome.org>
 
 	reviewed by: Cosimo Cecchi
