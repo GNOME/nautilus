@@ -73,7 +73,7 @@ display_error_dialog (GError *error,
 	GtkDialog *error_dialog;
 	char *error_message;
 
-	error_message = g_strdup_printf (_("Can't display location \"%s\""),
+	error_message = g_strdup_printf (_("Cannot display location \"%s\""),
 					 uri);
 	error_dialog = eel_show_error_dialog (error_message,
 					      error->message,

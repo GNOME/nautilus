@@ -1353,7 +1353,7 @@ delete_dir (CommonJob *job, GFile *dir,
 				goto skip;
 			}
 			primary = f (_("Error while deleting."));
-			secondary = f (_("Couldn't remove the folder %B."), dir);
+			secondary = f (_("Could not remove the folder %B."), dir);
 			details = error->message;
 			
 			response = run_warning (job,
@@ -1937,7 +1937,7 @@ prompt_empty_trash (GtkWindow *parent_window)
 						    "All trashed items on the volume "
 						    "will be permanently lost."));
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
-	                        _("Don't Empty Trash"), GTK_RESPONSE_REJECT, 
+	                        _("Do not Empty Trash"), GTK_RESPONSE_REJECT, 
 	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
 	                        _("Empty Trash"), GTK_RESPONSE_ACCEPT, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
@@ -2381,7 +2381,7 @@ verify_destination (CommonJob *job,
 		details = NULL;
 		
 		if (IS_IO_ERROR (error, PERMISSION_DENIED)) {
-			secondary = f (_("You don't have permissions to access the destination folder."));
+			secondary = f (_("You do not have permissions to access the destination folder."));
 		} else {
 			secondary = f (_("There was an error getting information about the destination."));
 			details = error->message;
@@ -3025,7 +3025,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 				goto skip;
 			}
 			primary = f (_("Error while moving \"%B\"."), src);
-			secondary = f (_("Couldn't remove the source folder."));
+			secondary = f (_("Could not remove the source folder."));
 			details = error->message;
 			
 			response = run_warning (job,
@@ -3107,7 +3107,7 @@ remove_target_recursively (CommonJob *job,
 		}
 		
 		primary = f (_("Error while copying \"%B\"."), src);
-		secondary = f (_("Couldn't remove files from the already existing folder %F."), file);
+		secondary = f (_("Could not remove files from the already existing folder %F."), file);
 		details = error->message;
 		
 		response = run_warning (job,
@@ -3144,7 +3144,7 @@ remove_target_recursively (CommonJob *job,
 			goto skip2;
 		}
 		primary = f (_("Error while copying \"%B\"."), src);
-		secondary = f (_("Couldn't remove the already existing file %F."), file);
+		secondary = f (_("Could not remove the already existing file %F."), file);
 		details = error->message;
 		
 		response = run_warning (job,
@@ -3420,7 +3420,7 @@ copy_move_file (CopyMoveJob *copy_job,
 				} else {
 					primary = f (_("Error while copying \"%B\"."), src);
 				}
-				secondary = f (_("Couldn't remove the already existing file with the same name in %F."), dest_dir);
+				secondary = f (_("Could not remove the already existing file with the same name in %F."), dest_dir);
 				details = error->message;
 				
 				response = run_warning (job,

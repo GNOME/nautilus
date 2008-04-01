@@ -598,9 +598,9 @@ report_broken_symbolic_link (GtkWindow *parent_window, NautilusFile *file)
 
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
 	if (target_path == NULL) {
-		detail = g_strdup (_("This link can't be used, because it has no target."));
+		detail = g_strdup (_("This link cannot be used, because it has no target."));
 	} else {
-		detail = g_strdup_printf (_("This link can't be used, because its target "
+		detail = g_strdup_printf (_("This link cannot be used, because its target "
 					    "\"%s\" doesn't exist."), target_path);
 	}
 	
@@ -1196,7 +1196,7 @@ activate_files (ActivateParameters *parameters)
 			(full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
 		g_free (full_uri_for_display);
 	
-		error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+		error_message = g_strdup_printf (_("Could not display \"%s\"."),
 						 uri_for_display);
 		
 		g_free (uri_for_display);

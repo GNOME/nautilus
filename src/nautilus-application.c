@@ -586,18 +586,18 @@ nautilus_application_startup (NautilusApplication *application,
 			 * this problem but we don't exactly understand why,
 			 * since neither of the above causes explain it.
 			 */
-			message = _("Nautilus can't be used now. "
+			message = _("Nautilus cannot be used now. "
 				    "Running the command \"bonobo-slay\""
 				    " from the console may fix the problem. If not,"
 				    " you can try rebooting the computer or"
 				    " installing Nautilus again.");
 			/* FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame. */
-			detailed_message = _("Nautilus can't be used now. "
+			detailed_message = _("Nautilus cannot be used now. "
 					     "Running the command \"bonobo-slay\" "
 					     "from the console may fix the problem. If not, "
 					     "you can try rebooting the computer or "
 					     "installing Nautilus again.\n\n"
-					     "Bonobo couldn't locate the Nautilus_shell.server file. "
+					     "Bonobo could not locate the Nautilus_shell.server file. "
 					     "One cause of this seems to be an LD_LIBRARY_PATH "
 					     "that does not include the bonobo-activation library's directory. "
 					     "Another possible cause would be bad install "
@@ -606,7 +606,7 @@ nautilus_application_startup (NautilusApplication *application,
 					     "Bonobo Activation and GConf processes, which may be needed by "
 					     "other applications.\n\n"
 					     "Sometimes killing bonobo-activation-server and gconfd fixes "
-					     "the problem, but we don't know why.\n\n"
+					     "the problem, but we do not know why.\n\n"
 					     "We have also seen this error when a faulty "
 					     "version of bonobo-activation was installed.");
 			break;
@@ -622,8 +622,8 @@ nautilus_application_startup (NautilusApplication *application,
 			 * current OAF. I guess I read the code wrong. Need to figure out when and make a
 			 * good message.
 			 */
-			message = _("Nautilus can't be used now, due to an unexpected error.");
-			detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+			message = _("Nautilus cannot be used now, due to an unexpected error.");
+			detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
 					     "from Bonobo when attempting to register the file manager view server.");
 			break;
 		}
@@ -640,15 +640,15 @@ nautilus_application_startup (NautilusApplication *application,
 			 */
 			if (result == Bonobo_ACTIVATION_REG_SUCCESS) {
 				/* FIXME bugzilla.gnome.org 42538: When can this happen? */
-				message = _("Nautilus can't be used now, due to an unexpected error.");
-				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+				message = _("Nautilus cannot be used now, due to an unexpected error.");
+				detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
 						     "from Bonobo when attempting to locate the factory. "
 						     "Killing bonobo-activation-server and restarting Nautilus may help fix the problem.");
 			} else {
 				num_failures++;
 				if (num_failures > 20) {
-					message = _("Nautilus can't be used now, due to an unexpected error.");
-					detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+					message = _("Nautilus cannot be used now, due to an unexpected error.");
+					detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
 							     "from Bonobo when attempting to locate the shell object. "
 							     "Killing bonobo-activation-server and restarting Nautilus may help fix the problem.");
 					

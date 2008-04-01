@@ -201,7 +201,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 		server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
 		if (strlen (server) == 0) {
-			eel_show_error_dialog (_("Can't Connect to Server. You must enter a name for the server."), 
+			eel_show_error_dialog (_("Cannot Connect to Server. You must enter a name for the server."), 
 					       _("Please enter a name and try again."), 
 					       GTK_WINDOW (dialog));
 			g_free (server);

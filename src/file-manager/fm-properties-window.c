@@ -533,7 +533,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 	if (!exactly_one) {
 		eel_show_error_dialog
-			(_("You can't assign more than one custom icon at a time!"),
+			(_("You cannot assign more than one custom icon at a time!"),
 			 _("Please drag just one image to set a custom icon."), 
 			 window);
 	} else {		
@@ -4710,7 +4710,7 @@ create_permissions_page (FMPropertiesWindow *window)
 		if (!all_can_set_permissions (file_list)) {
 			add_prompt_and_separator (
 				GTK_VBOX (vbox), 
-				_("You are not the owner, so you can't change these permissions."));
+				_("You are not the owner, so you cannot change these permissions."));
 		}
 
 		page_table = GTK_TABLE (gtk_table_new (1, COLUMN_COUNT, FALSE));

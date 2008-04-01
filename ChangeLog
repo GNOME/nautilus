@@ -1,5 +1,36 @@
 2008-04-01  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c: (delete_dir),
+	(prompt_empty_trash), (verify_destination), (copy_move_directory),
+	(remove_target_recursively), (copy_move_file):
+	* libnautilus-private/nautilus-mime-actions.c:
+	(report_broken_symbolic_link), (activate_files):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(application_cannot_open_location), (nautilus_launch_application),
+	(nautilus_launch_desktop_file):
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_loading_directory),
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions):
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_drag_data_received),
+	(create_permissions_page):
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-connect-server-dialog-main.c:
+	(display_error_dialog):
+	* src/nautilus-connect-server-dialog.c: (connect_to_server):
+	* src/nautilus-emblem-sidebar.c:
+	(nautilus_emblem_sidebar_delete_cb), (rename_dialog_response_cb):
+	* src/nautilus-information-panel.c: (receive_dropped_uri_list):
+	* src/nautilus-property-browser.c: (remove_pattern),
+	(remove_emblem), (add_pattern_to_browser):
+	* src/nautilus-window-manage-views.c:
+	(display_view_selection_failure):
+	Do not use contractions in strings. (#145356).
+
+2008-04-01  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(nautilus_file_operations_unmount_mount), (empty_trash_job),
 	(nautilus_file_operations_empty_trash):

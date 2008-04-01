@@ -235,7 +235,7 @@ nautilus_emblem_sidebar_delete_cb (GtkWidget *menu_item,
 	if (nautilus_emblem_remove_emblem (emblem_sidebar->details->popup_emblem_keyword)) {
 		send_emblems_changed ();
 	} else {
-		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'."), emblem_sidebar->details->popup_emblem_display_name);
+		error = g_strdup_printf (_("Could not remove emblem with name '%s'."), emblem_sidebar->details->popup_emblem_display_name);
 		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
 				       NULL);
 		g_free (error);
@@ -269,7 +269,7 @@ rename_dialog_response_cb (GtkWidget *dialog, int response,
 	if (nautilus_emblem_rename_emblem (keyword, name)) {
 		send_emblems_changed ();
 	} else {
-		error = g_strdup_printf (_("Couldn't rename emblem with name '%s'."), name);
+		error = g_strdup_printf (_("Could not rename emblem with name '%s'."), name);
 		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
 				       NULL);
 		g_free (error);

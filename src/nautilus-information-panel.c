@@ -492,7 +492,7 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		
 		if (!exactly_one) {
 			eel_show_error_dialog (
-				_("You can't assign more than one custom icon at a time."),
+				_("You cannot assign more than one custom icon at a time."),
 				_("Please drag just one image to set a custom icon."), 
 				window);
 			break;

@@ -79,13 +79,13 @@ application_cannot_open_location (GAppInfo *application,
 	if (nautilus_mime_has_any_applications_for_file (file)) {
 		if (application != NULL) {
 			prompt = _("Open Failed, would you like to choose another application?");
-			message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+			message = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 						     "locations."),
 						   g_app_info_get_name (application), file_name, 
 						   g_app_info_get_name (application), uri_scheme);
 		} else {
 			prompt = _("Open Failed, would you like to choose another action?");
-			message = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
+			message = g_strdup_printf (_("The default action cannot open \"%s\" because it cannot access files at \"%s\" "
 						     "locations."),
 						   file_name, uri_scheme);
 		}
@@ -110,14 +110,14 @@ application_cannot_open_location (GAppInfo *application,
 		g_free (message);
 	} else {
 		if (application != NULL) {
-			prompt = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+			prompt = g_strdup_printf (_("\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 						    "locations."), g_app_info_get_name (application), file_name, 
 						    g_app_info_get_name (application), uri_scheme);
 			message = _("No other applications are available to view this file.  "
 				    "If you copy this file onto your computer, you may be able to open "
 				    "it.");
 		} else {
-			prompt = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
+			prompt = g_strdup_printf (_("The default action cannot open \"%s\" because it cannot access files at \"%s\" "
 						    "locations."), file_name, uri_scheme);
      			message = _("No other actions are available to view this file.  "
 				    "If you copy this file onto your computer, you may be able to open "
@@ -203,7 +203,7 @@ nautilus_launch_application (GAppInfo *application,
 			nautilus_program_chooser_show_invalid_message
 				(GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, file, parent_window);
 #else
-			g_warning ("Can't open app: %s\n", error->message);
+			g_warning ("Cannot open app: %s\n", error->message);
 #endif
 		}
 	} else {
@@ -279,7 +279,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		g_free (desktop_file_path);
 		g_object_unref (desktop_file);
 		eel_show_error_dialog
-			(_("Sorry, but you can't execute commands from "
+			(_("Sorry, but you cannot execute commands from "
 			   "a remote site."), 
 			 _("This is disabled due to security considerations."),
 			 parent_window);

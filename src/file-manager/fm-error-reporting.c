@@ -60,11 +60,11 @@ fm_report_error_loading_directory (NautilusFile *file,
 						   file_name);
 			break;
 		case G_IO_ERROR_NOT_FOUND:
-			message = g_strdup_printf (_("\"%s\" couldn't be found. Perhaps it has recently been deleted."),
+			message = g_strdup_printf (_("\"%s\" could not be found. Perhaps it has recently been deleted."),
 						   file_name);
 			break;
 		default:
-			message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\": %s"), file_name,
+			message = g_strdup_printf (_("Sorry, could not display all the contents of \"%s\": %s"), file_name,
 						   error->message);
 		}
 	} else {
@@ -134,7 +134,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		g_warning ("Hit unhandled case %s:%d in fm_report_error_renaming_file", 
 			   g_quark_to_string (error->domain), error->code);
 		/* fall through */
-		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\": %s"), 
+		message = g_strdup_printf (_("Sorry, could not rename \"%s\" to \"%s\": %s"), 
 					   original_name_truncated, new_name_truncated,
 					   error->message);
 	}
@@ -177,7 +177,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		g_warning ("Hit unhandled case %s:%d in fm_report_error_setting_group", 
 			   g_quark_to_string (error->domain), error->code);
 		/* fall through */
-		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\": %s"), file_name,
+		message = g_strdup_printf (_("Sorry, could not change the group of \"%s\": %s"), file_name,
 					   error->message);
 	}
 	
@@ -202,7 +202,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 
 	file_name = nautilus_file_get_display_name (file);
 
-	message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\": %s"), file_name, error->message);
+	message = g_strdup_printf (_("Sorry, could not change the owner of \"%s\": %s"), file_name, error->message);
 
 	eel_show_error_dialog (_("The owner could not be changed."), message, parent_window);
 
@@ -224,7 +224,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 
 	file_name = nautilus_file_get_display_name (file);
 
-	message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\": %s"), file_name, error->message);
+	message = g_strdup_printf (_("Sorry, could not change the permissions of \"%s\": %s"), file_name, error->message);
 
 	eel_show_error_dialog (_("The permissions could not be changed."), message, parent_window);
 

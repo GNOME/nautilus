@@ -973,7 +973,7 @@ remove_pattern(NautilusPropertyBrowser *property_browser, const char* pattern_na
 
 	/* delete the pattern from the pattern directory */
 	if (g_unlink (pattern_path) != 0) {
-		char *message = g_strdup_printf (_("Sorry, but pattern %s couldn't be deleted."), pattern_name);
+		char *message = g_strdup_printf (_("Sorry, but pattern %s could not be deleted."), pattern_name);
 		char *detail = _("Check that you have permission to delete the pattern.");
 		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
 		g_free (message);
@@ -1002,7 +1002,7 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 
 	/* delete the emblem from the emblem directory */
 	if (g_unlink (emblem_path) != 0) {
-		char *message = g_strdup_printf (_("Sorry, but emblem %s couldn't be deleted."), emblem_name);
+		char *message = g_strdup_printf (_("Sorry, but emblem %s could not be deleted."), emblem_name);
 		char *detail = _("Check that you have permission to delete the emblem.");
 		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
 		g_free (message);
@@ -1201,7 +1201,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	/* don't allow the user to change the reset image */
 	basename = g_path_get_basename (path_name);
 	if (basename && eel_strcmp (basename, RESET_IMAGE_NAME) == 0) {
-		eel_show_error_dialog (_("Sorry, but you can't replace the reset image."), 
+		eel_show_error_dialog (_("Sorry, but you cannot replace the reset image."), 
 		                       _("Reset is a special image that cannot be deleted."), 
 		                       NULL);
 		g_free (path_uri);
@@ -1232,7 +1232,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	if (!g_file_copy (src, dest,
 			  0,
 			  NULL, NULL, NULL, NULL)) {
-		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
+		char *message = g_strdup_printf (_("Sorry, but the pattern %s could not be installed."), path_name);
 		eel_show_error_dialog (message, NULL, GTK_WINDOW (property_browser));
 		g_free (message);
 	}
