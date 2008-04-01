@@ -50,7 +50,6 @@ void                    nautilus_window_set_content_view              (NautilusW
 gboolean                nautilus_window_content_view_matches_iid      (NautilusWindow           *window,
                                                                        const char               *iid);
 const char             *nautilus_window_get_content_view_id           (NautilusWindow           *window);
-char                   *nautilus_window_get_view_label                (NautilusWindow           *window);
 char                   *nautilus_window_get_view_error_label          (NautilusWindow           *window);
 char                   *nautilus_window_get_view_startup_error_label  (NautilusWindow           *window);
 void                    nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,

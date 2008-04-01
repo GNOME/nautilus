@@ -37,9 +37,8 @@ typedef struct _NautilusViewInfo NautilusViewInfo;
 
 struct _NautilusViewInfo {
 	char *id;
-	char *label;                       /* Foo View */
-	char *view_as_label;               /* View as Foo */
-	char *view_as_label_with_mnemonic; /* View as _Foo */
+	char *view_combo_label;               /* Foo View (used in preferences dialog and navigation combo) */
+	char *view_menu_label_with_mnemonic;  /* View -> _Foo (this is the "_Foo" part) */
 	char *error_label;                 /* The foo view encountered an error. */
 	char *startup_error_label;         /* The foo view encountered an error while starting up. */
 	char *display_location_label;      /* Display this location with the foo view. */

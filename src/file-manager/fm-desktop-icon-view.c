@@ -795,9 +795,8 @@ fm_desktop_icon_view_supports_uri (const char *uri,
 
 static NautilusViewInfo fm_desktop_icon_view = {
 	FM_DESKTOP_ICON_VIEW_ID,
-	N_("Desktop"),
 	"Desktop View",
-	"_Desktop View",
+	"_Desktop",
 	N_("The desktop view encountered an error."),
 	N_("The desktop view encountered an error while starting up."),
 	"Display this location with the desktop view.",
@@ -808,7 +807,6 @@ static NautilusViewInfo fm_desktop_icon_view = {
 void
 fm_desktop_icon_view_register (void)
 {
-	fm_desktop_icon_view.label = _(fm_desktop_icon_view.label);
 	fm_desktop_icon_view.error_label = _(fm_desktop_icon_view.error_label);
 	fm_desktop_icon_view.startup_error_label = _(fm_desktop_icon_view.startup_error_label);
 	

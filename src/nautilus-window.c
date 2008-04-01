@@ -825,7 +825,7 @@ add_view_as_menu_item (NautilusWindow *window,
 	
 	g_snprintf (action_name, sizeof (action_name), "view_as_%d", index);
 	action = gtk_radio_action_new (action_name,
-				       _(info->view_as_label_with_mnemonic),
+				       _(info->view_menu_label_with_mnemonic),
 				       _(info->display_location_label),
 				       NULL,
 				       0);

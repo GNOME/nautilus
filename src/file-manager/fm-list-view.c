@@ -2834,9 +2834,11 @@ fm_list_view_supports_uri (const char *uri,
 
 static NautilusViewInfo fm_list_view = {
 	FM_LIST_VIEW_ID,
-	N_("List"),
+	/* translators: this is used in the view selection dropdown
+	 * of navigation windows and in the preferences dialog */
 	N_("List View"),
-	N_("_List View"),
+	/* translators: this is used in the view menu */
+	N_("_List"),
 	N_("The list view encountered an error."),
 	N_("The list view encountered an error while starting up."),
 	N_("Display this location with the list view."),
@@ -2847,9 +2849,8 @@ static NautilusViewInfo fm_list_view = {
 void
 fm_list_view_register (void)
 {
-	fm_list_view.label = _(fm_list_view.label);
-	fm_list_view.view_as_label = _(fm_list_view.view_as_label);
-	fm_list_view.view_as_label_with_mnemonic = _(fm_list_view.view_as_label_with_mnemonic);
+	fm_list_view.view_combo_label = _(fm_list_view.view_combo_label);
+	fm_list_view.view_menu_label_with_mnemonic = _(fm_list_view.view_menu_label_with_mnemonic);
 	fm_list_view.error_label = _(fm_list_view.error_label);
 	fm_list_view.startup_error_label = _(fm_list_view.startup_error_label);
 	fm_list_view.display_location_label = _(fm_list_view.display_location_label);

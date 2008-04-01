@@ -2925,9 +2925,8 @@ fm_icon_view_supports_uri (const char *uri,
 }
 
 #define TRANSLATE_VIEW_INFO(view_info) \
-	view_info.label = _(view_info.label); \
-	view_info.view_as_label = _(view_info.view_as_label); \
-	view_info.view_as_label_with_mnemonic = _(view_info.view_as_label_with_mnemonic); \
+	view_info.view_combo_label = _(view_info.view_combo_label); \
+	view_info.view_menu_label_with_mnemonic = _(view_info.view_menu_label_with_mnemonic); \
 	view_info.error_label = _(view_info.error_label); \
 	view_info.startup_error_label = _(view_info.startup_error_label); \
 	view_info.display_location_label = _(view_info.display_location_label); \
@@ -2935,9 +2934,11 @@ fm_icon_view_supports_uri (const char *uri,
 
 static NautilusViewInfo fm_icon_view = {
 	FM_ICON_VIEW_ID,
-	N_("Icons"),
+	/* translators: this is used in the view selection dropdown
+	 * of navigation windows and in the preferences dialog */
 	N_("Icon View"),
-	N_("_Icon View"),
+	/* translators: this is used in the view menu */
+	N_("_Icons"),
 	N_("The icon view encountered an error."),
 	N_("The icon view encountered an error while starting up."),
 	N_("Display this location with the icon view."),
@@ -2947,9 +2948,11 @@ static NautilusViewInfo fm_icon_view = {
 
 static NautilusViewInfo fm_compact_view = {
 	FM_COMPACT_VIEW_ID,
-	N_("Compact"),
+	/* translators: this is used in the view selection dropdown
+	 * of navigation windows and in the preferences dialog */
 	N_("Compact View"),
-	N_("_Compact View"),
+	/* translators: this is used in the view menu */
+	N_("_Compact"),
 	N_("The compact view encountered an error."),
 	N_("The compact view encountered an error while starting up."),
 	N_("Display this location with the compact view."),

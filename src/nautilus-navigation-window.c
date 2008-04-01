@@ -894,7 +894,7 @@ load_view_as_menu (NautilusWindow *window)
              node != NULL; 
              node = node->next, ++index) {
 		info = nautilus_view_factory_lookup (node->data);
-		gtk_combo_box_append_text (combo_box, _(info->view_as_label));
+		gtk_combo_box_append_text (combo_box, _(info->view_combo_label));
 
 		if (nautilus_window_content_view_matches_iid (NAUTILUS_WINDOW (window), (char *)node->data)) {
 			selected_index = index;
@@ -908,7 +908,7 @@ load_view_as_menu (NautilusWindow *window)
 		id = nautilus_window_get_content_view_id (window);
 		info = nautilus_view_factory_lookup (id);
 		gtk_combo_box_append_text (GTK_COMBO_BOX (NAUTILUS_NAVIGATION_WINDOW (window)->view_as_combo_box),
-					   _(info->view_as_label));
+					   _(info->view_combo_label));
 		selected_index = index;
 	}
 

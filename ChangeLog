@@ -1,3 +1,19 @@
+2008-04-01  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-view-factory.h:
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_register):
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c (fm_list_view_register):
+	* src/nautilus-navigation-window.c (load_view_as_menu):
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window.c (add_view_as_menu_item):
+	Remove unused "label" field of NautilusViewInfo and
+	nautilus_window_get_view_label().
+	Rename two other fields of NautilusViewInfo and make their use
+	more explicit. Remove redundand "View" from view menu label.
+
 2008-04-01  Michael J. Chudobiak  <mjc@svn.gnome.org>
 
 	* libnautilus-private/nautilus-file.c: (nautilus_file_get_icon):

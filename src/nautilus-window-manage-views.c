@@ -626,16 +626,6 @@ nautilus_window_open_location_with_selection (NautilusWindow *window,
 }					      
 
 char *
-nautilus_window_get_view_label (NautilusWindow *window)
-{
-	const NautilusViewInfo *info;
-
-	info = nautilus_view_factory_lookup (nautilus_window_get_content_view_id (window));
-
-	return g_strdup (info->label);
-}
-
-char *
 nautilus_window_get_view_error_label (NautilusWindow *window)
 {
 	const NautilusViewInfo *info;
