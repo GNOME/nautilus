@@ -66,6 +66,7 @@
 #include "nautilus-autorun.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-file-conflict-dialog.h"
 
 static gboolean confirm_trash_auto_value;
 
@@ -4041,6 +4042,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	if (!overwrite &&
 	    IS_IO_ERROR (error, EXISTS)) {
 		gboolean is_merge;
+		GtkWidget *dialog;
 
 		if (unique_names) {
 			g_object_unref (dest);
@@ -4048,9 +4050,14 @@ copy_move_file (CopyMoveJob *copy_job,
 			g_error_free (error);
 			goto retry;
 		}
+		    
+		dialog = nautilus_file_conflict_dialog_new (job->parent_window,
+							    src, dest, dest_dir);
+		gtk_widget_show (dialog);
 		
 		is_merge = FALSE;
-		if (is_dir (dest)) {
+#if 0
+		    if (is_dir (dest)) {
 			if (is_dir (src)) {
 				is_merge = TRUE;
 				primary = f (_("A folder named \"%B\" already exists.  Do you want to merge the source folder?"), 
@@ -4125,6 +4132,7 @@ copy_move_file (CopyMoveJob *copy_job,
 		} else {
 			g_assert_not_reached ();
 		}
+#endif
 	}
 	
 	else if (overwrite &&
