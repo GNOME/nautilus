@@ -88,6 +88,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-attributes.h \
 	nautilus-file-changes-queue.c \
 	nautilus-file-changes-queue.h \
+	nautilus-file-conflict-dialog.c \
+	nautilus-file-conflict-dialog.h \
 	nautilus-file-dnd.c \
 	nautilus-file-dnd.h \
 	nautilus-file-operations.c \
