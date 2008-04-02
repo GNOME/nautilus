@@ -83,7 +83,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	gboolean source_is_dir;
 	gboolean dest_is_dir;
 	NautilusFileConflictDialogDetails *details;
-	char *primary_text, *secondary_text;
+	char *primary_text, *secondary_text, *primary_markup;
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
 	char *size, *date;
@@ -143,7 +143,10 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 			 dest_dir_name);
 	}
 
-	label = gtk_label_new (primary_text);
+	label = gtk_label_new (NULL);
+	primary_markup = g_strconcat ("<b>", primary_text, "</b>", NULL);
+	gtk_label_set_markup (GTK_LABEL (label), primary_markup);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
 			    label, FALSE, 0, 0);
 	gtk_widget_show (label);
@@ -152,6 +155,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 			    label, FALSE, 0, 0);
 	gtk_widget_show (label);
 	g_free (primary_text);
+	g_free (primary_markup);
 	g_free (secondary_text);
 #if 0
 	/* Set up file icons */
@@ -299,8 +303,8 @@ checkbox_toggled_cb (GtkToggleButton *t,
 static void
 nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 {
-	GtkWidget *titles_vbox, *first_hbox, *second_hbox;
-	GtkWidget *expander, *entry, *checkbox;
+	GtkWidget *hbox, *vbox;
+	GtkWidget *widget;
 	NautilusFileConflictDialogDetails *details;
 	GtkDialog *dialog;
 	
@@ -312,47 +316,68 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 6);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_dialog_set_has_separator (dialog, FALSE);
-
-	/* Setup the vbox containing the dialog messages */
-	titles_vbox = gtk_vbox_new (FALSE, 6);
+	
+	/* Setup the main hbox */
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    titles_vbox, FALSE, FALSE, 0);
-	gtk_widget_show (titles_vbox);
-	details->titles_vbox = titles_vbox;
+			    hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+	
+	/* Setup the dialog image */
+	widget = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING,
+					   GTK_ICON_SIZE_DIALOG);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    widget, FALSE, FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (widget), 0.5, 0.0);
+	gtk_widget_show (widget);
+
+	/* Setup the vbox containing the dialog */
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    vbox, FALSE, FALSE, 0);
+	gtk_widget_show (vbox);
+	
+	/* Setup the vbox for the dialog labels */
+	widget = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
+	details->titles_vbox = widget;
+	
 
 	/* Setup the hboxes to pack file infos into */
-	first_hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    first_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (first_hbox);
-	second_hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    second_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (second_hbox);
-	details->first_hbox = first_hbox;
-	details->second_hbox = second_hbox;
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+	details->first_hbox = hbox;
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    hbox, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+	details->second_hbox = hbox;
 
 	/* Setup the checkbox to apply the action to all files */
-	checkbox = gtk_check_button_new_with_mnemonic (_("Apply this action to all files"));
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    checkbox, FALSE, FALSE, 0);
-	gtk_widget_show (checkbox);
-	g_signal_connect (checkbox, "toggled",
+	widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files"));
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
+	g_signal_connect (widget, "toggled",
 			  G_CALLBACK (checkbox_toggled_cb),
 			  dialog);
 
 	/* Setup the expander for the rename action */
-	expander = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
-	entry = gtk_entry_new ();
-	gtk_container_add (GTK_CONTAINER (expander),
-			   entry);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    expander, FALSE, FALSE, 0);
-	gtk_widget_show (expander);
-	gtk_widget_show (entry);
-	details->expander = expander;
-	details->entry = entry;
-	g_signal_connect_object (entry, "notify::text",
+	widget = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
+	details->expander = widget;
+	widget = gtk_entry_new ();
+	gtk_container_add (GTK_CONTAINER (details->expander),
+			   widget);
+	gtk_widget_show (widget);
+	details->entry = widget;
+	g_signal_connect_object (widget, "notify::text",
 				 G_CALLBACK (entry_text_notify_cb),
 				 dialog, 0);
 }
