@@ -87,9 +87,9 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
 	char *size, *date;
-	//NautilusIconInfo *src_icon, *dest_icon;
-	//GdkPixbuf *src_pixbuf, *dest_pixbuf;
-	//GtkWidget *src_image, *dest_image;
+	NautilusIconInfo *src_icon, *dest_icon;
+	GdkPixbuf *src_pixbuf, *dest_pixbuf;
+	GtkWidget *src_image, *dest_image;
 	GtkWidget *label;
 	GtkWidget *rename_button;
 	NautilusFile *src, *dest, *dest_dir;
@@ -157,7 +157,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	g_free (primary_text);
 	g_free (primary_markup);
 	g_free (secondary_text);
-#if 0
+
 	/* Set up file icons */
 
 	src_icon = nautilus_file_get_icon (src,
@@ -181,16 +181,15 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	dest_pixbuf = nautilus_icon_info_get_pixbuf_at_size (src_icon,
 							    NAUTILUS_ICON_SIZE_STANDARD);
 
-	src_image = gtk_image_new ();
-	dest_image = gtk_image_new ();
-	gtk_widget_show (src_image);
-	gtk_widget_show (dest_image);
+	src_image = gtk_image_new_from_pixbuf (src_pixbuf);
+	dest_image = gtk_image_new_from_pixbuf (dest_pixbuf);
 	gtk_box_pack_start (GTK_BOX (details->first_hbox),
 			    src_image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (details->second_hbox),
 			    dest_image, FALSE, FALSE, 0);
+	gtk_widget_show (src_image);
+	gtk_widget_show (dest_image);
 
-#endif
 	/* Set up labels */
 	label = gtk_label_new (NULL);
 	date = nautilus_file_get_string_attribute (src,
