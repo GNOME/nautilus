@@ -42,12 +42,21 @@ typedef struct _NautilusFileConflictDialogClass   NautilusFileConflictDialogClas
 typedef struct _NautilusFileConflictDialogDetails NautilusFileConflictDialogDetails;
 
 struct _NautilusFileConflictDialog {
-	GtkMessageDialog parent;
+	GtkDialog parent;
 	NautilusFileConflictDialogDetails *details;
 };
 
 struct _NautilusFileConflictDialogClass {
-	GtkMessageDialogClass parent_class;
+	GtkDialogClass parent_class;
+};
+
+enum
+{
+	CONFLICT_RESPONSE_SKIP = 1,
+	CONFLICT_RESPONSE_REPLACE = 2,
+	CONFLICT_RESPONSE_RENAME = 3,
+	CONFLICT_RESPONSE_SKIP_ALL = 4,
+	CONFLICT_RESPONSE_REPLACE_ALL = 5
 };
 
 GType nautilus_file_conflict_dialog_get_type (void) G_GNUC_CONST;
