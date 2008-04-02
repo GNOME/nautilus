@@ -1,3 +1,24 @@
+2008-04-02  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_update_scroll_region),
+	(lay_down_icons_horizontal), (get_max_icon_dimensions),
+	(lay_down_icons_vertical),
+	(nautilus_icon_container_start_renaming_selected_item),
+	(nautilus_icon_container_is_layout_vertical):
+	* libnautilus-private/nautilus-icon-container.h:
+	* src/nautilus-window.c
+	(nautilus_window_set_initial_window_geometry):
+	Subtract 1 from icon rectangle's x2/y2 positions before setting scroll
+	area since the entire canvas codes requests 1 px more than it needs.
+	Wrap when the icon hits the canvas, rather than wrapping to late.
+	Fixes most of the "text besides icons" glitches.
+
+	Add container padding on the RHS for vertical layout, and consider
+	max. emblem rectangles when deciding whether to wrap. This may wrap
+	slightly to early in some (high zoom level) situations, but we will
+	never get scroll glitches.
+
 2008-04-01  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-view-factory.h:

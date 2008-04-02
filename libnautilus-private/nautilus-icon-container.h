@@ -308,6 +308,7 @@ void		  nautilus_icon_container_set_all_columns_same_width	(NautilusIconContaine
 									 gboolean                all_columns_same_width);
 
 gboolean	  nautilus_icon_container_is_layout_rtl			(NautilusIconContainer  *container);
+gboolean	  nautilus_icon_container_is_layout_vertical		(NautilusIconContainer  *container);
 
 void              nautilus_icon_container_widget_to_file_operation_position (NautilusIconContainer *container,
 									     GdkPoint              *position);
