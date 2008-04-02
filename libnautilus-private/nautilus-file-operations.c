@@ -3741,7 +3741,7 @@ static gboolean
 test_dir_is_parent (GFile *child, GFile *root)
 {
 	GFile *f;
-
+	
 	f = g_file_dup (child);
 	while (f) {
 		if (g_file_equal (f, root)) {
@@ -3750,7 +3750,6 @@ test_dir_is_parent (GFile *child, GFile *root)
 		}
 		f = g_file_get_parent (f);
 	}
-
 	if (f) {
 		g_object_unref (f);
 	}
@@ -3829,6 +3828,56 @@ is_trusted_desktop_file (GFile *file,
 	g_object_unref (info);
 	
 	return res;
+}
+
+typedef struct {
+	GFile *src;
+	GFile *dest;
+	GFile *dest_dir;
+	GtkWindow *parent;
+} MyData;
+
+static gboolean
+do_run_my_dialog (gpointer _data)
+{
+	MyData *data = _data;
+	GtkWidget *dialog;
+	
+	dialog = nautilus_file_conflict_dialog_new (data->parent,
+						    data->src,
+						    data->dest,
+						    data->dest_dir);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	return FALSE;
+}
+
+static void
+run_my_dialog (CommonJob *job,
+	       GFile *src,
+	       GFile *dest,
+	       GFile *dest_dir)
+{
+	MyData *data;
+
+	g_timer_stop (job->time);
+	
+	data = g_new0 (MyData, 1);
+	data->parent = job->parent_window;
+	data->src = src;
+	data->dest = dest;
+	data->dest_dir = dest_dir;
+	
+	nautilus_progress_info_pause (job->progress);
+	g_io_scheduler_job_send_to_mainloop (job->io_job,
+					     do_run_my_dialog,
+					     data,
+					     NULL);
+	nautilus_progress_info_resume (job->progress);
+
+	g_free (data);
+
+	g_timer_continue (job->time);
 }
 
 /* Debuting files is non-NULL only for toplevel items */
@@ -4042,7 +4091,6 @@ copy_move_file (CopyMoveJob *copy_job,
 	if (!overwrite &&
 	    IS_IO_ERROR (error, EXISTS)) {
 		gboolean is_merge;
-		GtkWidget *dialog;
 
 		if (unique_names) {
 			g_object_unref (dest);
@@ -4051,10 +4099,7 @@ copy_move_file (CopyMoveJob *copy_job,
 			goto retry;
 		}
 		    
-		dialog = nautilus_file_conflict_dialog_new (job->parent_window,
-							    src, dest, dest_dir);
-		gtk_widget_show (dialog);
-		
+		run_my_dialog (job, src, dest, dest_dir);	
 		is_merge = FALSE;
 #if 0
 		    if (is_dir (dest)) {
