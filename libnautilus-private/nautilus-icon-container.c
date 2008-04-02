@@ -867,6 +867,9 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		y1 -= CONTAINER_PAD_TOP;
 	}
 
+	x2 -= 1;
+	y2 -= 1;
+
 	y2 += CONTAINER_PAD_BOTTOM;
 
 	if (reset_scroll_region) {
@@ -1090,7 +1093,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		height_below = bounds.y1 - icon_bounds.y1;
 
 		/* If this icon doesn't fit, it's time to lay out the line that's queued up. */
-		if (line_start != p && line_width + icon_width > canvas_width ) {
+		if (line_start != p && line_width + icon_width >= canvas_width ) {
 			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 				y += ICON_PAD_TOP;
 			} else {
