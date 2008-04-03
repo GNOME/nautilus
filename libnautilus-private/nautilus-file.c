@@ -1799,7 +1799,7 @@ update_info_internal (NautilusFile *file,
 	eel_ref_str_unref (file->details->mime_type);
 	file->details->mime_type = eel_ref_str_get_unique (mime_type);
 	
-	selinux_context = g_file_info_get_attribute_string (info, "selinux:context");
+	selinux_context = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_SELINUX_CONTEXT);
 	if (eel_strcmp (file->details->selinux_context, selinux_context) != 0) {
 		changed = TRUE;
 		g_free (file->details->selinux_context);
