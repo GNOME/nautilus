@@ -871,7 +871,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	x2 = MAX (x1, x2);
 
 	y2 -= 1;
-	x2 = MAX (y1, y2);
+	y2 = MAX (y1, y2);
 
 	y2 += CONTAINER_PAD_BOTTOM;
 
