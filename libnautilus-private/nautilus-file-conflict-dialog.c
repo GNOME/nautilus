@@ -86,15 +86,12 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	char *primary_text, *secondary_text, *primary_markup;
 	char *src_name, *dest_name, *dest_dir_name;
 	char *label_text;
-	char *size, *date;
-	NautilusIconInfo *src_icon, *dest_icon;
-	GdkPixbuf *src_pixbuf, *dest_pixbuf;
-	GtkWidget *src_image, *dest_image;
+	char *size, *date, *type;
+	GdkPixbuf *pixbuf;
+	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *rename_button;
 	NautilusFile *src, *dest, *dest_dir;
-	
-	g_print ("build dialog appearance \n");
 	
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
@@ -148,58 +145,50 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	gtk_label_set_markup (GTK_LABEL (label), primary_markup);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-			    label, FALSE, 0, 0);
+			    label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	label = gtk_label_new (secondary_text);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-			    label, FALSE, 0, 0);
+			    label, TRUE, TRUE, 0);
 	gtk_widget_show (label);
 	g_free (primary_text);
 	g_free (primary_markup);
 	g_free (secondary_text);
 
 	/* Set up file icons */
-
-	src_icon = nautilus_file_get_icon (src,
-					   NAUTILUS_ICON_SIZE_STANDARD,
-					   NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-					   NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
-	if (!src_icon) {
-		src_icon = nautilus_icon_info_lookup_from_name
-			("text-x-generic", NAUTILUS_ICON_SIZE_STANDARD);
-	}
-	src_pixbuf = nautilus_icon_info_get_pixbuf_at_size (src_icon,
-							    NAUTILUS_ICON_SIZE_STANDARD);
-	dest_icon = nautilus_file_get_icon (dest,
-					    NAUTILUS_ICON_SIZE_STANDARD,
-					    NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-					    NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
-	if (!dest_icon) {
-		dest_icon = nautilus_icon_info_lookup_from_name
-			("text-x-generic", NAUTILUS_ICON_SIZE_STANDARD);
-	}
-	dest_pixbuf = nautilus_icon_info_get_pixbuf_at_size (src_icon,
-							    NAUTILUS_ICON_SIZE_STANDARD);
-
-	src_image = gtk_image_new_from_pixbuf (src_pixbuf);
-	dest_image = gtk_image_new_from_pixbuf (dest_pixbuf);
+	pixbuf = nautilus_file_get_icon_pixbuf (src,
+						NAUTILUS_ICON_SIZE_LARGE,
+						TRUE,
+						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+	image = gtk_image_new_from_pixbuf (pixbuf);
 	gtk_box_pack_start (GTK_BOX (details->first_hbox),
-			    src_image, FALSE, FALSE, 0);
+			    image, FALSE, FALSE, 0);
+	gtk_widget_show (image);
+	g_object_unref (pixbuf);
+
+	pixbuf = nautilus_file_get_icon_pixbuf (dest,
+						NAUTILUS_ICON_SIZE_LARGE,
+						TRUE,
+						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+	image = gtk_image_new_from_pixbuf (pixbuf);
 	gtk_box_pack_start (GTK_BOX (details->second_hbox),
-			    dest_image, FALSE, FALSE, 0);
-	gtk_widget_show (src_image);
-	gtk_widget_show (dest_image);
+			    image, FALSE, FALSE, 0);
+	gtk_widget_show (image);
+	g_object_unref (pixbuf);
 
 	/* Set up labels */
 	label = gtk_label_new (NULL);
 	date = nautilus_file_get_string_attribute (src,
 						   "date_modified");
 	size = nautilus_file_get_string_attribute (src, "size");
-	label_text = g_markup_printf_escaped (_("<b>Original file:</b> %s\n"
+	type = nautilus_file_get_string_attribute (src, "type");
+	label_text = g_markup_printf_escaped (_("<b>Original file</b>\n"
 						"<i>Size:</i> %s\n"
+						"<i>Type:</i> %s\n"
 						"<i>Last modified:</i> %s"),
-						src_name,
 						size,
+						type,
 						date);
 	gtk_label_set_markup (GTK_LABEL (label),
 			      label_text);
@@ -208,6 +197,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	gtk_widget_show (label);
 
 	g_free (size);
+	g_free (type);
 	g_free (date);
 	g_free (label_text);
 	
@@ -215,11 +205,13 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	date = nautilus_file_get_string_attribute (dest,
 						   "date_modified");
 	size = nautilus_file_get_string_attribute (dest, "size");
-	label_text = g_markup_printf_escaped (_("<b>Replace with:</b> %s\n"
+	type = nautilus_file_get_string_attribute (dest, "type");
+	label_text = g_markup_printf_escaped (_("<b>Replace with</b>\n"
 						"<i>Size:</i> %s\n"
+						"<i>Type:</i> %s\n"
 						"<i>Last modified:</i> %s"),
-						dest_name,
 						size,
+						type,
 						date);
 	gtk_label_set_markup (GTK_LABEL (label),
 			      label_text);
@@ -310,16 +302,11 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	details = fcd->details = NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE (fcd);
 	dialog = GTK_DIALOG (fcd);
 	
-	/* Setup HIG properties */
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);		
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 6);
-	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_dialog_set_has_separator (dialog, FALSE);
-	
 	/* Setup the main hbox */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (dialog->vbox),
 			    hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
 	
 	/* Setup the dialog image */
@@ -330,14 +317,14 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.5, 0.0);
 	gtk_widget_show (widget);
 
-	/* Setup the vbox containing the dialog */
-	vbox = gtk_vbox_new (FALSE, 6);
+	/* Setup the vbox containing the dialog body */
+	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    vbox, FALSE, FALSE, 0);
 	gtk_widget_show (vbox);
 	
 	/* Setup the vbox for the dialog labels */
-	widget = gtk_vbox_new (FALSE, 6);
+	widget = gtk_vbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    widget, FALSE, FALSE, 0);
 	gtk_widget_show (widget);
@@ -345,12 +332,12 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	
 
 	/* Setup the hboxes to pack file infos into */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 	details->first_hbox = hbox;
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
@@ -379,6 +366,12 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	g_signal_connect_object (widget, "notify::text",
 				 G_CALLBACK (entry_text_notify_cb),
 				 dialog, 0);
+	
+	/* Setup HIG properties */
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);		
+	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 14);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+	gtk_dialog_set_has_separator (dialog, FALSE);
 }
 
 static void
