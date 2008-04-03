@@ -1,5 +1,15 @@
 2008-04-03  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_icon_is_different):
+	Fix icon comparison if icon has not yet been set.
+
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_update_icon):
+	Never update icon if a file has not yet been confirmed.
+
+2008-04-03  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(nautilus_icon_container_update_scroll_region):
 	Do not make x2/y2 smaller than x1/y2. Fixes flashing scrollbar

@@ -329,7 +329,7 @@ nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 	g_assert (new_icon != NULL);
 
 	if (bookmark->details->icon == NULL) {
-		return new_icon == NULL;
+		return TRUE;
 	}
 	
 	return !g_icon_equal (bookmark->details->icon, new_icon) != 0;
@@ -350,7 +350,8 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 		return FALSE;
 	}
 
-	if (nautilus_file_check_if_ready (bookmark->details->file,
+	if (!nautilus_file_is_not_yet_confirmed (bookmark->details->file) &&
+	    nautilus_file_check_if_ready (bookmark->details->file,
 					  NAUTILUS_FILE_ATTRIBUTES_FOR_ICON)) {
 		new_icon = nautilus_file_get_gicon (bookmark->details->file, 0);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
