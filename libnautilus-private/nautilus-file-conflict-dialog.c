@@ -88,9 +88,7 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	char *label_text;
 	char *size, *date, *type;
 	GdkPixbuf *pixbuf;
-	GtkWidget *image;
-	GtkWidget *label;
-	GtkWidget *rename_button;
+	GtkWidget *image, *label, *button;
 	NautilusFile *src, *dest, *dest_dir;
 	
 	dialog = GTK_DIALOG (fcd);
@@ -227,15 +225,15 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	gtk_dialog_add_buttons (dialog,
 				GTK_STOCK_CANCEL,
 				GTK_RESPONSE_CANCEL,
-				_("S_kip"),
+				_("_Skip"),
 				CONFLICT_RESPONSE_SKIP,
 				NULL);
-	rename_button = gtk_dialog_add_button (dialog,
-					       _("Re_name"),
-					       CONFLICT_RESPONSE_RENAME);
-	gtk_widget_set_sensitive (rename_button,
+	button = gtk_dialog_add_button (dialog,
+					_("Re_name"),
+					CONFLICT_RESPONSE_RENAME);
+	gtk_widget_set_sensitive (button,
 				  FALSE);
-	details->rename_button = rename_button;
+	details->rename_button = button;
 	gtk_dialog_add_button (dialog,
 			       _("_Replace"),
 			       CONFLICT_RESPONSE_REPLACE);
@@ -348,6 +346,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    widget, FALSE, FALSE, 0);
 	gtk_widget_show (widget);
+	details->checkbox = widget;
 	g_signal_connect (widget, "toggled",
 			  G_CALLBACK (checkbox_toggled_cb),
 			  dialog);
@@ -378,6 +377,20 @@ static void
 nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass)
 {
 	g_type_class_add_private (klass, sizeof (NautilusFileConflictDialogDetails));
+}
+
+char *
+nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
+{
+	return g_strdup (gtk_entry_get_text
+			 (GTK_ENTRY (dialog->details->entry)));
+}
+
+gboolean
+nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog)
+{
+	return gtk_toggle_button_get_active 
+		(GTK_TOGGLE_BUTTON (dialog->details->checkbox));
 }
 
 GtkWidget *
