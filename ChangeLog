@@ -1,3 +1,10 @@
+2008-04-03  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_update_scroll_region):
+	Do not make x2/y2 smaller than x1/y2. Fixes flashing scrollbar
+	for empty container.
+
 2008-04-03  Tomas Bzatek  <tbzatek@redhat.com>
 
 	* libnautilus-private/nautilus-file.c: (update_info_internal):
