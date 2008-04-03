@@ -55,16 +55,15 @@ enum
 	CONFLICT_RESPONSE_SKIP = 1,
 	CONFLICT_RESPONSE_REPLACE = 2,
 	CONFLICT_RESPONSE_RENAME = 3,
-	CONFLICT_RESPONSE_SKIP_ALL = 4,
-	CONFLICT_RESPONSE_REPLACE_ALL = 5
 };
 
 GType nautilus_file_conflict_dialog_get_type (void) G_GNUC_CONST;
 
-GtkWidget* nautilus_file_conflict_dialog_new (GtkWindow *parent,
-					      GFile *source,
-					      GFile *destination,
-					      GFile *dest_dir);
-char* nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog);					      
+GtkWidget* nautilus_file_conflict_dialog_new              (GtkWindow *parent,
+							   GFile *source,
+							   GFile *destination,
+							   GFile *dest_dir);
+char*      nautilus_file_conflict_dialog_get_new_name     (NautilusFileConflictDialog *dialog);
+gboolean   nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog);
 
 #endif /* NAUTILUS_FILE_CONFLICT_DIALOG_H */

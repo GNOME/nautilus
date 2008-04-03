@@ -3831,42 +3831,68 @@ is_trusted_desktop_file (GFile *file,
 }
 
 typedef struct {
+	int response;
+	char *new_name;
+	gboolean apply_to_all;
+} ConflictResponseData;
+
+typedef struct {
 	GFile *src;
 	GFile *dest;
 	GFile *dest_dir;
 	GtkWindow *parent;
-} MyData;
+	ConflictResponseData *resp_data;
+} ConflictDialogData;
 
 static gboolean
 do_run_my_dialog (gpointer _data)
 {
-	MyData *data = _data;
+	ConflictDialogData *data = _data;
 	GtkWidget *dialog;
+	int response;
 	
 	dialog = nautilus_file_conflict_dialog_new (data->parent,
 						    data->src,
 						    data->dest,
 						    data->dest_dir);
-	gtk_dialog_run (GTK_DIALOG (dialog));
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	
+	if (response == CONFLICT_RESPONSE_RENAME) {
+		data->resp_data->new_name = 
+			nautilus_file_conflict_dialog_get_new_name (NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
+	} else if (response != GTK_RESPONSE_CANCEL ||
+		   response != GTK_RESPONSE_NONE) {
+		   data->resp_data->apply_to_all =
+			   nautilus_file_conflict_dialog_get_apply_to_all 
+				(NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
+	}
+	
+	data->resp_data->response = response;
+	
+	gtk_widget_destroy (dialog);
 	
 	return FALSE;
 }
 
-static void
-run_my_dialog (CommonJob *job,
-	       GFile *src,
-	       GFile *dest,
-	       GFile *dest_dir)
+static ConflictResponseData *
+run_conflict_dialog (CommonJob *job,
+		     GFile *src,
+		     GFile *dest,
+		     GFile *dest_dir)
 {
-	MyData *data;
-
+	ConflictDialogData *data;
+	ConflictResponseData *resp_data;
+	
 	g_timer_stop (job->time);
 	
-	data = g_new0 (MyData, 1);
+	data = g_slice_new0 (ConflictDialogData);
 	data->parent = job->parent_window;
 	data->src = src;
 	data->dest = dest;
 	data->dest_dir = dest_dir;
+
+	resp_data = g_slice_new0 (ConflictResponseData);
+	data->resp_data = resp_data;
 	
 	nautilus_progress_info_pause (job->progress);
 	g_io_scheduler_job_send_to_mainloop (job->io_job,
@@ -3874,10 +3900,12 @@ run_my_dialog (CommonJob *job,
 					     data,
 					     NULL);
 	nautilus_progress_info_resume (job->progress);
-
-	g_free (data);
-
+	
+	g_slice_free (ConflictDialogData, data);
+	
 	g_timer_continue (job->time);
+	
+	return resp_data;
 }
 
 /* Debuting files is non-NULL only for toplevel items */
@@ -4091,6 +4119,7 @@ copy_move_file (CopyMoveJob *copy_job,
 	if (!overwrite &&
 	    IS_IO_ERROR (error, EXISTS)) {
 		gboolean is_merge;
+		ConflictResponseData *response;
 
 		if (unique_names) {
 			g_object_unref (dest);
@@ -4099,7 +4128,9 @@ copy_move_file (CopyMoveJob *copy_job,
 			goto retry;
 		}
 		    
-		run_my_dialog (job, src, dest, dest_dir);	
+		response = run_conflict_dialog (job, src, dest, dest_dir);
+		g_print ("my response was: id %d, new name %s, apply all %d\n",
+			 response->response, response->new_name, (int) response->apply_to_all);
 		is_merge = FALSE;
 #if 0
 		    if (is_dir (dest)) {
