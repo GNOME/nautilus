@@ -923,6 +923,7 @@ mount_not_mounted_callback (GObject *source_object,
 		window->details->mount_error = NULL;
 		g_error_free (error);
 	} else {
+		nautilus_inhibit_autorun_for_file (G_FILE (source_object));
 		nautilus_file_invalidate_all_attributes (window->details->determine_view_file);
 		nautilus_file_call_when_ready (window->details->determine_view_file,
 					       NAUTILUS_FILE_ATTRIBUTE_INFO |
@@ -968,7 +969,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 		data->cancellable = g_cancellable_new ();
 		data->window = window;
 		window->details->mount_cancellable = data->cancellable;
-		nautilus_inhibit_autorun_for_file (location);
 		g_file_mount_enclosing_volume (location, 0, mount_op, window->details->mount_cancellable,
 					       mount_not_mounted_callback, data);
 		g_object_unref (location);

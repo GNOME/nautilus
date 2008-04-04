@@ -1235,6 +1235,7 @@ activation_mount_not_mounted_callback (GObject *source_object,
 	ActivateParameters *parameters = user_data;
 	GError *error;
 	NautilusFile *file;
+	GFile *location;
 
 	file = parameters->not_mounted->data;
 		
@@ -1255,6 +1256,10 @@ activation_mount_not_mounted_callback (GObject *source_object,
 		}
 
 		g_error_free (error);
+	} else {
+		location = nautilus_file_get_location (file);
+		nautilus_inhibit_autorun_for_file (location);
+		g_object_unref (G_OBJECT (location));
 	}
 	
 	parameters->not_mounted = g_list_delete_link (parameters->not_mounted,
@@ -1276,7 +1281,6 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 		mount_op = eel_mount_operation_new (parameters->parent_window);
 		g_signal_connect (mount_op, "active_changed", (GCallback)activate_mount_op_active, parameters);
 		location = nautilus_file_get_location (file);
-		nautilus_inhibit_autorun_for_file (location);
 		g_file_mount_enclosing_volume (location, 0, mount_op, parameters->cancellable,
 					       activation_mount_not_mounted_callback, parameters);
 		g_object_unref (location);

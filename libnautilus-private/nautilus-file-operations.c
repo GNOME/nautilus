@@ -2015,6 +2015,9 @@ volume_mount_cb (GObject *source_object,
 	GError *error;
 	char *primary;
 	char *name;
+	gboolean inhibit_autorun;
+
+	inhibit_autorun = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (mount_op), "inhibit-autorun"));
 
 	error = NULL;
 	if (!g_volume_mount_finish (G_VOLUME (source_object), res, &error)) {
@@ -2028,6 +2031,10 @@ volume_mount_cb (GObject *source_object,
 			g_free (primary);
 		}
 		g_error_free (error);
+	} else {
+		if (inhibit_autorun) {
+			nautilus_inhibit_autorun_for_volume (G_VOLUME (source_object));
+		}
 	}
 	
 	g_object_unref (mount_op);
@@ -2036,11 +2043,13 @@ volume_mount_cb (GObject *source_object,
 
 void
 nautilus_file_operations_mount_volume (GtkWindow *parent_window,
-				       GVolume *volume)
+				       GVolume *volume,
+				       gboolean inhibit_autorun)
 {
 	GMountOperation *mount_op;
 	
 	mount_op = eel_mount_operation_new (parent_window);
+	g_object_set_data (G_OBJECT (mount_op), "inhibit-autorun", GINT_TO_POINTER (inhibit_autorun));
 	g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, mount_op);
 }
 
