@@ -1950,9 +1950,10 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	g_signal_connect (tree_view, "button-press-event",
 			  G_CALLBACK (bookmarks_button_press_event_cb), sidebar);
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed_callback,
-				      sidebar);
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						  click_policy_changed_callback,
+						  sidebar,
+						  G_OBJECT (sidebar));
 	update_click_policy (sidebar);
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
@@ -1967,11 +1968,14 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 }
 
 static void
-nautilus_places_sidebar_finalize (GObject *object)
+nautilus_places_sidebar_dispose (GObject *object)
 {
 	NautilusPlacesSidebar *sidebar;
-	
+
 	sidebar = NAUTILUS_PLACES_SIDEBAR (object);
+
+	sidebar->window = NULL;
+	sidebar->tree_view = NULL;
 
 	g_free (sidebar->uri);
 	sidebar->uri = NULL;
@@ -1983,19 +1987,18 @@ nautilus_places_sidebar_finalize (GObject *object)
 		sidebar->store = NULL;
 	}
 
-	g_object_unref (sidebar->volume_monitor);
-	
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed_callback,
-					 sidebar);
+	if (sidebar->volume_monitor != NULL) {
+		g_object_unref (sidebar->volume_monitor);
+		sidebar->volume_monitor = NULL;
+	}
 
-	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
 }
 
 static void
 nautilus_places_sidebar_class_init (NautilusPlacesSidebarClass *class)
 {
-	G_OBJECT_CLASS (class)->finalize = nautilus_places_sidebar_finalize;
+	G_OBJECT_CLASS (class)->dispose = nautilus_places_sidebar_dispose;
 
 	GTK_WIDGET_CLASS (class)->style_set = nautilus_places_sidebar_style_set;
 }
