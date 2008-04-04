@@ -1,3 +1,14 @@
+2008-04-04  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_get_parent_info),
+	(nautilus_file_info_get_mount), (nautilus_file_info_can_write):
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_info_iface_init):
+	Add new APIs for extensions to NautilusFileInfo (can_write, get_mount
+	and get_parent_info). (#521612).
+
 2008-04-04  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c (volume_mount_cb),
