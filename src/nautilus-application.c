@@ -172,11 +172,8 @@ startup_volume_mount_cb (GObject *source_object,
 			 GAsyncResult *res,
 			 gpointer user_data)
 {
-	if (!g_volume_mount_finish (G_VOLUME (source_object), res, NULL)) {
-		/* There was an error mounting the volume, so we
-		   clear the automount part. This is otherwise done
-		   when the mount is added to the volume monitor */
-		g_object_set_data (source_object, "nautilus-automounted", GINT_TO_POINTER (0));
+	if (g_volume_mount_finish (G_VOLUME (source_object), res, NULL)) {
+		nautilus_inhibit_autorun_for_volume (G_VOLUME (source_object));
 	}
 }
 
@@ -203,8 +200,6 @@ automount_all_volumes (NautilusApplication *application)
 				g_object_unref (mount);
 				continue;
 			}
-			
-			nautilus_inhibit_autorun_for_volume (volume);
 
 			/* pass NULL as GMountOperation to avoid user interaction */
 			g_volume_mount (volume, 0, NULL, NULL, startup_volume_mount_cb, NULL);
@@ -1332,7 +1327,7 @@ volume_added_callback (GVolumeMonitor *monitor,
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
 	    g_volume_should_automount (volume) &&
 	    g_volume_can_mount (volume)) {
-		nautilus_file_operations_mount_volume (NULL, volume);
+		nautilus_file_operations_mount_volume (NULL, volume, FALSE);
 	}
 }
 

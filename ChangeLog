@@ -1,3 +1,32 @@
+2008-04-04  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c (volume_mount_cb),
+	(nautilus_file_operations_mount_volume):
+	* libnautilus-private/nautilus-file-operations.h:
+	* libnautilus-private/nautilus-mime-actions.c
+	(activation_mount_not_mounted_callback),
+	(activation_mount_not_mounted):
+	* src/nautilus-application.c (startup_volume_mount_cb),
+	(automount_all_volumes), (volume_added_callback):
+	* src/nautilus-places-sidebar.c (open_selected_bookmark),
+	(mount_shortcut_cb):
+	* src/nautilus-window-manage-views.c (mount_not_mounted_callback),
+	(got_file_info_for_view_selection_callback):
+	Inhibit autorun in mount callbacks after finishing mounts rather than
+	before mounting.
+
+	It is neccessary because the mount may take a very long time (floppy,
+	password prompt), which may take longer than the inhibition timeout.
+
+	This approach works because with the current HAL volume monitor
+	implementation, GVolumeMonitor signal emission is scheduled, while the
+	mount callbacks are invoked synchronously.
+
+	This should also fix the not working inhibition on startup, which
+	could happen because parallel mounts in the background and the rest of
+	the startup process eat resources, so the mounts may also take longer
+	than the inhibition timeout.
+
 2008-04-03  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-bookmark.c

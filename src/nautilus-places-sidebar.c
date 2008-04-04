@@ -1325,8 +1325,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		GVolume *volume;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
 		if (volume != NULL) {
-			nautilus_inhibit_autorun_for_volume (volume);
-			nautilus_file_operations_mount_volume (NULL, volume);
+			nautilus_file_operations_mount_volume (NULL, volume, TRUE);
 			g_object_unref (volume);
 		}
 	}
@@ -1441,8 +1440,7 @@ mount_shortcut_cb (GtkMenuItem           *item,
 			    -1);
 
 	if (volume != NULL) {
-		nautilus_inhibit_autorun_for_volume (volume);
-		nautilus_file_operations_mount_volume (NULL, volume);
+		nautilus_file_operations_mount_volume (NULL, volume, TRUE);
 		g_object_unref (volume);
 	}
 }
