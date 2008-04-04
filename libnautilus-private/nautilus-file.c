@@ -7036,11 +7036,14 @@ nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
 	iface->get_uri = nautilus_file_get_uri;
 	iface->get_parent_location = nautilus_file_get_parent_location;
 	iface->get_parent_uri = nautilus_file_get_parent_uri;
+	iface->get_parent_info = nautilus_file_get_parent;
+	iface->get_mount = nautilus_file_get_mount;
 	iface->get_uri_scheme = nautilus_file_get_uri_scheme;
 	iface->get_activation_uri = nautilus_file_get_activation_uri;
 	iface->get_mime_type = nautilus_file_get_mime_type;
 	iface->is_mime_type = nautilus_file_is_mime_type;
 	iface->is_directory = nautilus_file_is_directory;
+	iface->can_write = nautilus_file_can_write;
 	iface->add_emblem = nautilus_file_add_emblem;
 	iface->get_string_attribute = nautilus_file_get_string_attribute;
 	iface->add_string_attribute = nautilus_file_add_string_attribute;

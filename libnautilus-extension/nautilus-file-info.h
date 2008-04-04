@@ -78,6 +78,9 @@ struct _NautilusFileInfoIface
 	GFileType         (*get_file_type)        (NautilusFileInfo *file);
 	GFile *           (*get_location)         (NautilusFileInfo *file);
 	GFile *           (*get_parent_location)  (NautilusFileInfo *file);
+	NautilusFileInfo* (*get_parent_info)      (NautilusFileInfo *file);
+	GMount *          (*get_mount)            (NautilusFileInfo *file);
+	gboolean          (*can_write)            (NautilusFileInfo *file);
   
 };
 
@@ -96,13 +99,19 @@ char *            nautilus_file_info_get_uri              (NautilusFileInfo *fil
 char *            nautilus_file_info_get_activation_uri   (NautilusFileInfo *file);
 GFile *           nautilus_file_info_get_parent_location  (NautilusFileInfo *file);
 char *            nautilus_file_info_get_parent_uri       (NautilusFileInfo *file);
+GMount *          nautilus_file_info_get_mount            (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri_scheme       (NautilusFileInfo *file);
+/* It's not safe to call this recursively multiple times, as it works
+ * only for files already cached by Nautilus.
+ */
+NautilusFileInfo* nautilus_file_info_get_parent_info      (NautilusFileInfo *file);
 
 /* File Type */
 char *            nautilus_file_info_get_mime_type        (NautilusFileInfo *file);
 gboolean          nautilus_file_info_is_mime_type         (NautilusFileInfo *file,
 							   const char       *mime_type);
 gboolean          nautilus_file_info_is_directory         (NautilusFileInfo *file);
+gboolean          nautilus_file_info_can_write            (NautilusFileInfo *file);
 
 
 /* Modifying the NautilusFileInfo */

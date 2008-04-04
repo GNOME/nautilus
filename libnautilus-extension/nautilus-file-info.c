@@ -152,6 +152,24 @@ nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri (file);
 }
 
+NautilusFileInfo *
+nautilus_file_info_get_parent_info (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_info != NULL, NULL);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_info (file);
+}
+
+GMount *
+nautilus_file_info_get_mount (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mount != NULL, NULL);
+    
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mount (file);
+}
+
 char *
 nautilus_file_info_get_uri_scheme (NautilusFileInfo *file)
 {
@@ -189,6 +207,15 @@ nautilus_file_info_is_directory (NautilusFileInfo *file)
 	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->is_directory != NULL, FALSE);
 
 	return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_directory (file);
+}
+
+gboolean
+nautilus_file_info_can_write (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->can_write != NULL, FALSE);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->can_write (file);
 }
 
 void
