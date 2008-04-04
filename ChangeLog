@@ -1,3 +1,12 @@
+2008-04-04  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-places-sidebar.c (nautilus_places_sidebar_init),
+	(nautilus_places_sidebar_dispose),
+	(nautilus_places_sidebar_class_init):
+
+	Move finalize to dispose, unset pointers to window/tree_view, use
+	eel_preferences_add_callback_while_alive().
+
 2008-04-04  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-extension/nautilus-file-info.c:
