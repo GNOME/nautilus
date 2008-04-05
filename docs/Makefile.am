@@ -1,5 +1,7 @@
 NULL = 
 
+SUBDIRS = reference
+
 EXTRA_DIST = \
 	architecture.txt \
 	dnd.txt \
