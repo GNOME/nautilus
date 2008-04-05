@@ -574,6 +574,7 @@ _check_file (GFile *mount_root, const char *file_path,
 	return _check_file_common (file, must_be_executable);
 }
 
+#ifdef NAUTILUS_AUTORUN_SUPPORTS_AUTORUN_EXE
 static gboolean
 _check_file_case_insensitive (GFile *mount_root, const char *file_path,
                               gboolean must_be_executable)
@@ -582,6 +583,7 @@ _check_file_case_insensitive (GFile *mount_root, const char *file_path,
 	GFile *file = nautilus_find_file_insensitive (mount_root, file_path);
 	return _check_file_common (file, must_be_executable);
 }
+#endif
 
 /**
  * _g_mount_guess_content_type:
@@ -733,8 +735,14 @@ _g_mount_guess_content_type (GMount              *mount,
 	    (_check_file (root, ".autorun", TRUE) ||
 	     _check_file (root, "autorun", TRUE) ||
 	     _check_file (root, "autorun.sh", TRUE) ||
+#ifdef NAUTILUS_AUTORUN_SUPPORTS_AUTORUN_EXE
+	     /* TODO */
 	     _check_file_case_insensitive (root, "autorun.exe", TRUE) ||
-	     _check_file_case_insensitive (root, "autorun.inf", FALSE))) {
+	     _check_file_case_insensitive (root, "autorun.inf", FALSE)))
+#else
+	    0))
+#endif
+	{
 		/* http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html */
 		
 		/* http://bugzilla.gnome.org/show_bug.cgi?id=509823#c3 for the autorun.exe and autorun.inf stuff */

@@ -1,3 +1,12 @@
+2008-04-05  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-autorun.c:
+	(_g_mount_guess_content_type):
+	Disable autorun when detecting autorun.exe and autorun.inf,
+	as we do not support those yet (part of bug #524270).
+	* src/nautilus-autorun-software.c: (autorun), (main):
+	Plug some minor leaks.
+
 2008-04-04  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-places-sidebar.c (nautilus_places_sidebar_init),

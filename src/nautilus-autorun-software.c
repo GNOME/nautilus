@@ -153,6 +153,9 @@ out:
         if (program_to_spawn != NULL) {
                 g_object_unref (program_to_spawn);
 	}
+	if (root != NULL) {
+		g_object_unref (root);
+	}
         g_free (path_to_spawn);
         g_free (cwd_for_program);
 
@@ -266,15 +269,21 @@ main (int argc, char *argv[])
 
         file = g_file_new_for_commandline_arg (argv[1]);
         if (file == NULL) {
+		g_object_unref (monitor);
                 goto out;
 	}
 
         mount = g_file_find_enclosing_mount (file, NULL, NULL);
         if (mount == NULL) {
+		g_object_unref (file);
+		g_object_unref (monitor);
                 goto out;
 	}
 
         present_autorun_for_software_dialog (mount);
+	g_object_unref (file);
+	g_object_unref (monitor);
+	g_object_unref (mount);
 
 out:	
 	return 0;
