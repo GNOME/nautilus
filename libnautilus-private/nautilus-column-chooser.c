@@ -50,8 +50,6 @@ struct _NautilusColumnChooserDetails
 
 	GtkWidget *move_up_button;
 	GtkWidget *move_down_button;
-	GtkWidget *show_button;
-	GtkWidget *hide_button;
 	GtkWidget *use_default_button;
 };
 
@@ -134,18 +132,10 @@ update_buttons (NautilusColumnChooser *chooser)
 					  !top);
 		gtk_widget_set_sensitive (chooser->details->move_down_button,
 					  !bottom);
-		gtk_widget_set_sensitive (chooser->details->show_button,
-					  !visible);
-		gtk_widget_set_sensitive (chooser->details->hide_button,
-					  visible);
 	} else {
 		gtk_widget_set_sensitive (chooser->details->move_up_button,
 					  FALSE);
 		gtk_widget_set_sensitive (chooser->details->move_down_button,
-					  FALSE);
-		gtk_widget_set_sensitive (chooser->details->show_button,
-					  FALSE);
-		gtk_widget_set_sensitive (chooser->details->hide_button,
 					  FALSE);
 	}
 }
@@ -258,24 +248,6 @@ add_tree_view (NautilusColumnChooser *chooser)
 }
 
 static void
-set_selection_visible (NautilusColumnChooser *chooser, gboolean visible)
-{
-	GtkTreeIter iter;
-	GtkTreeSelection *selection;
-
-	selection = gtk_tree_view_get_selection (chooser->details->view);
-	
-	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
-		gtk_list_store_set (chooser->details->store,
-				    &iter, 
-				    COLUMN_VISIBLE, visible, 
-				    -1);
-	}
-
-	list_changed (chooser);
-}
-
-static void
 move_up_clicked_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusColumnChooser *chooser;
@@ -330,18 +302,6 @@ move_down_clicked_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
-show_clicked_callback (GtkWidget *button, gpointer user_data)
-{
-	set_selection_visible (NAUTILUS_COLUMN_CHOOSER (user_data), TRUE);
-}
-
-static void
-hide_clicked_callback (GtkWidget *button, gpointer user_data)
-{
-	set_selection_visible (NAUTILUS_COLUMN_CHOOSER (user_data), FALSE);
-}
-
-static void
 use_default_clicked_callback (GtkWidget *button, gpointer user_data)
 {
 	g_signal_emit (NAUTILUS_COLUMN_CHOOSER (user_data), 
@@ -389,25 +349,6 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_widget_show_all (chooser->details->move_down_button);
 	gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_down_button,
-			    FALSE, FALSE, 0);
-
-	chooser->details->show_button = gtk_button_new_with_mnemonic (_("_Show"));
-	g_signal_connect (chooser->details->show_button, 
-			  "clicked",  G_CALLBACK (show_clicked_callback),
-			  chooser);
-			  
-	gtk_widget_set_sensitive (chooser->details->show_button, FALSE);
-	gtk_widget_show (chooser->details->show_button);
-	gtk_box_pack_start (GTK_BOX (box), chooser->details->show_button,
-			    FALSE, FALSE, 0);
-
-	chooser->details->hide_button = gtk_button_new_with_mnemonic (_("Hi_de"));
-	g_signal_connect (chooser->details->hide_button, 
-			  "clicked",  G_CALLBACK (hide_clicked_callback),
-			  chooser);
-	gtk_widget_set_sensitive (chooser->details->hide_button, FALSE);
-	gtk_widget_show (chooser->details->hide_button);
-	gtk_box_pack_start (GTK_BOX (box), chooser->details->hide_button,
 			    FALSE, FALSE, 0);
 
 	separator = gtk_hseparator_new ();
