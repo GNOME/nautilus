@@ -1,3 +1,15 @@
+Major changes in 2.22.2 are:
+* Add NautilusFileInfo APIs: can_write(), get_mount(), get_parent_info()
+* Do not try to autorun autorun.exe and autorun.inf
+* Automount in idle callback rather than at startup to improve user experience
+* Properly inhibit automount on startup, or for long login procedures
+* Do not automount directories in hidden hierarchies
+* Fix scrollbar display bug in "text besides icon" icon view mode
+* Do not thumbnail unreadable files
+* Correctly display bookmark icons
+* Fix blurry property window icon
+* Fix bookmark editing window
+
 Major changes in 2.22.1 are:
 * Fix crashes and leaks
 * Fix emblem display in property page
