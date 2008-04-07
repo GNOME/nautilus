@@ -58,6 +58,7 @@ typedef struct {
 	NautilusShell *shell;
 	gboolean shell_registered;
 	GVolumeMonitor *volume_monitor;
+	unsigned int automount_idle_id;
 } NautilusApplication;
 
 typedef struct {

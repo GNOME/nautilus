@@ -272,6 +272,11 @@ nautilus_application_destroy (BonoboObject *object)
 	}
 	bonobo_object_unref (application->shell);
 
+	if (application->automount_idle_id != 0) {
+		g_source_remove (application->automount_idle_id);
+		application->automount_idle_id = 0;
+	}
+
 	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
 }
 
@@ -400,6 +405,17 @@ menu_provider_init_callback (void)
         nautilus_module_extension_list_free (providers);
 }
 
+static gboolean
+automount_all_volumes_idle_cb (gpointer data)
+{
+	NautilusApplication *application = NAUTILUS_APPLICATION (data);
+
+	automount_all_volumes (application);
+
+	application->automount_idle_id = 0;
+	return FALSE;
+}
+
 static void
 finish_startup (NautilusApplication *application)
 {
@@ -440,7 +456,10 @@ finish_startup (NautilusApplication *application)
 	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
 	g_list_free (drives);
 
-	automount_all_volumes (application);
+	application->automount_idle_id = 
+		g_idle_add_full (G_PRIORITY_LOW,
+				 automount_all_volumes_idle_cb,
+				 application, NULL);
 }
 
 static void

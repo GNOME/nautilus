@@ -1,5 +1,13 @@
 2008-04-07  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-application.c (nautilus_application_destroy),
+	(automount_all_volumes_idle_cb), (finish_startup):
+	* src/nautilus-application.h:
+	Automount volumes in idle callback rather than during startup
+	(#526471).
+
+2008-04-07  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-column-chooser.c (update_buttons),
 	(add_buttons):
 	Remove show/hide buttons. The entries can be toggled directly using
