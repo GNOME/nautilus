@@ -2560,6 +2560,10 @@ fm_list_view_finalize (GObject *object)
 		gtk_tree_path_free (list_view->details->hover_path);
 	}
 
+	if (list_view->details->column_editor != NULL) {
+		gtk_widget_destroy (list_view->details->column_editor);
+	}
+
 	g_free (list_view->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
