@@ -75,8 +75,6 @@ nautilus_SOURCES = \
 	nautilus-emblem-sidebar.h		\
 	nautilus-file-management-properties.c	\
 	nautilus-file-management-properties.h	\
-	nautilus-first-time-druid.c		\
-	nautilus-first-time-druid.h		\
 	nautilus-history-sidebar.c		\
 	nautilus-history-sidebar.h		\
 	nautilus-image-properties-page.c	\

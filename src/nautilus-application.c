@@ -48,7 +48,6 @@
 #include <fcntl.h>
 #include <string.h>
 #include "nautilus-desktop-window.h"
-#include "nautilus-first-time-druid.h"
 #include "nautilus-main.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-navigation-window.h"
@@ -540,7 +539,6 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean restart_shell,
 			      gboolean no_default_window,
 			      gboolean no_desktop,
-			      gboolean do_first_time_druid_check,
 			      gboolean browser_window,
 			      const char *startup_id,
 			      const char *geometry,

@@ -554,7 +554,6 @@ main (int argc, char *argv[])
 		nautilus_application_startup
 			(application,
 			 kill_shell, restart_shell, no_default_window, no_desktop,
-			 !(kill_shell || restart_shell),
 			 browser_window,
 			 startup_id_copy,
 			 geometry,

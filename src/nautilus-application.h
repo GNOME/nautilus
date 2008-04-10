@@ -72,7 +72,6 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             restart_shell,
 							     gboolean             no_default_window,
 							     gboolean             no_desktop,
-							     gboolean             do_first_time_druid_check,
 							     gboolean             browser_window,
 							     const char          *startup_id,
 							     const char          *default_geometry,
