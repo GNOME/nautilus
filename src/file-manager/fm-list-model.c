@@ -36,12 +36,7 @@
 #include <gtk/gtktreesortable.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-dnd.h>
-
-#if GLIB_CHECK_VERSION (2, 13, 0)
 #include <glib/gsequence.h>
-#else
-#include <gsequence/gsequence.h>
-#endif
 
 enum {
 	SUBDIRECTORY_UNLOADED,

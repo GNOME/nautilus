@@ -1,5 +1,18 @@
 2008-04-10  A. Walton  <awalton@svn.gnome.org>
 
+	* configure.in:
+	* cut-n-paste-code/Makefile.am:
+	* cut-n-paste-code/gsequence/Makefile.am:
+	* cut-n-paste-code/gsequence/gsequence.c:
+	* cut-n-paste-code/gsequence/gsequence.h:
+	* src/Makefile.am:
+	* src/file-manager/fm-list-model.c:
+	Remove GSequence hack as it is no longer necessary;
+	we require a newer GLib in order to support GIO.
+	More work towards bug #520773.
+
+2008-04-10  A. Walton  <awalton@svn.gnome.org>
+
 	* src/Makefile.am:
 	* src/nautilus-application.c: (nautilus_application_startup):
 	* src/nautilus-application.h:

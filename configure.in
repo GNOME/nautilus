@@ -390,20 +390,11 @@ else
 fi
 
 dnl ==========================================================================
-
-dnl gsequence
-GSEQUENCE_MODULES="glib-2.0"
-GSEQUENCE_CFLAGS="`$PKG_CONFIG --cflags $GSEQUENCE_MODULES`"
-AC_SUBST(GSEQUENCE_CFLAGS)
 	
 dnl libegg
 LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
-
-# check for gsequence in glib
-PKG_CHECK_EXISTS([glib-2.0 >= 2.13.0],[have_glib_2_14=yes],[have_glib_2_14=no])
-AM_CONDITIONAL([HAVE_GLIB_2_14],[test "$have_glib_2_14" = "yes"])
 
 dnl libnautilus-extension
 LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0"
@@ -413,7 +404,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gio-2.0 gio-unix-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gio-2.0 gio-unix-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
@@ -469,7 +460,6 @@ AC_CONFIG_FILES([
 Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/libegg/Makefile
-cut-n-paste-code/gsequence/Makefile
 cut-n-paste-code/widgets/Makefile
 data/Makefile
 data/icons/Makefile

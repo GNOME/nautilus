@@ -36,10 +36,6 @@ LDADD =\
 	$(POPT_LIBS) \
 	$(NULL)
 
-if !HAVE_GLIB_2_14
-LDADD += $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la
-endif
-
 @INTLTOOL_DESKTOP_RULE@
 
 desktop_in_files=network-scheme.desktop.in
