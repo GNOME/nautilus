@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-06 23:27+0100\n"
-"PO-Revision-Date: 2008-04-11 00:22+0200\n"
+"POT-Creation-Date: 2008-04-11 05:48+0100\n"
+"PO-Revision-Date: 2008-04-13 12:37+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2149,7 +2149,7 @@ msgstr "Moviendo «%s» a «%s»"
 # src/file-manager/fm-error-reporting.c:214
 #: ../libnautilus-private/nautilus-file-operations.c:2547
 msgid "Copying \"%B\" to \"%B\""
-msgstr "Copiando «%s» a «%s»"
+msgstr "Copiando «%B» a «%B»"
 
 # src/file-manager/fm-icon-view.c:1277
 #: ../libnautilus-private/nautilus-file-operations.c:2552
@@ -2848,7 +2848,7 @@ msgstr "Vista compacta"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-list-view.c:1454
-#: ../src/file-manager/fm-list-view.c:2839
+#: ../src/file-manager/fm-list-view.c:2843
 msgid "List View"
 msgstr "Vista de lista"
 
@@ -4634,12 +4634,12 @@ msgstr "La vista compacta ha encontrado un error mientras se iniciaba."
 msgid "Display this location with the compact view."
 msgstr "Muestra este lugar con la vista compacta."
 
-#: ../src/file-manager/fm-list-model.c:383
+#: ../src/file-manager/fm-list-model.c:378
 #: ../src/file-manager/fm-tree-model.c:1266
 msgid "(Empty)"
 msgstr "(Vacío)"
 
-#: ../src/file-manager/fm-list-model.c:385
+#: ../src/file-manager/fm-list-model.c:380
 #: ../src/file-manager/fm-tree-model.c:1266
 msgid "Loading..."
 msgstr "Cargando…"
@@ -4670,20 +4670,20 @@ msgstr "Seleccione las columnas visibles en esta carpeta"
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2841
+#: ../src/file-manager/fm-list-view.c:2845
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:2842
+#: ../src/file-manager/fm-list-view.c:2846
 msgid "The list view encountered an error."
 msgstr "La vista de lista ha encontrado un error."
 
-#: ../src/file-manager/fm-list-view.c:2843
+#: ../src/file-manager/fm-list-view.c:2847
 msgid "The list view encountered an error while starting up."
 msgstr "La vista de lista ha encontrado un error mientras se iniciaba."
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: ../src/file-manager/fm-list-view.c:2844
+#: ../src/file-manager/fm-list-view.c:2848
 msgid "Display this location with the list view."
 msgstr "Muestra este lugar con la vista de lista."
 
@@ -5110,12 +5110,12 @@ msgstr "Árbol"
 msgid "Show Tree"
 msgstr "Mostrar árbol"
 
-#: ../src/nautilus-application.c:321
+#: ../src/nautilus-application.c:325
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus no pudo crear la carpeta requerida «%s»."
 
-#: ../src/nautilus-application.c:323
+#: ../src/nautilus-application.c:327
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5123,12 +5123,12 @@ msgstr ""
 "Antes de ejecutar Nautilus, debe crear la siguiente carpeta o establecer "
 "permisos para que Nautilus la pueda crear."
 
-#: ../src/nautilus-application.c:326
+#: ../src/nautilus-application.c:330
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus no pudo crear las siguientes carpetas requeridas: %s."
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:332
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5146,8 +5146,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:584
-#, fuzzy
+#: ../src/nautilus-application.c:601
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5159,8 +5158,7 @@ msgstr ""
 
 # src/nautilus-application.c:353
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:590
-#, fuzzy
+#: ../src/nautilus-application.c:607
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5187,13 +5185,13 @@ msgstr ""
 "Bonobo no ha podido ubicar el archivo Nautilus_shell.server. Una de las "
 "causas de esto parece ser un LD_LIBRARY_PATH que no incluye la carpeta de la "
 "biblioteca bonobo-activation. Otra posible causa podría ser una mala "
-"instalación con un archivo Nautilus_Shell.server perdido.\n"
+"instalación con un archivo Nautilus_Shell.server faltante.\n"
 "\n"
-"La ejecución de «bonobo-slay» borrará todos los procesos de activación de "
+"La ejecución de «bonobo-slay» matará todos los procesos de activación de "
 "Bonobo y GConf, que podrían ser necesarios para otras aplicaciones.\n"
 "\n"
-"Algunas veces matar a bonobo-activation-server y gconfd arregla el problema, "
-"pero no sabemos el porqué.\n"
+"Algunas veces matar bonobo-activation-server y gconfd arregla el problema, "
+"pero no sabemos porqué.\n"
 "\n"
 "También hemos visto este error cuando se instala una versión de bonobo-"
 "activation con fallos."
@@ -5208,13 +5206,13 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:620 ../src/nautilus-application.c:638
-#: ../src/nautilus-application.c:645
+#: ../src/nautilus-application.c:637 ../src/nautilus-application.c:655
+#: ../src/nautilus-application.c:662
 msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr "No se puede usar Nautilus ahora debido a un error inesperado."
 
 # src/nautilus-application.c:379
-#: ../src/nautilus-application.c:621
+#: ../src/nautilus-application.c:638
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5223,7 +5221,7 @@ msgstr ""
 "cuando intentaba registrar el servidor de vistas del gestor de archivos."
 
 # src/nautilus-application.c:397
-#: ../src/nautilus-application.c:639
+#: ../src/nautilus-application.c:656
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
@@ -5234,7 +5232,7 @@ msgstr ""
 "reiniciar Nautilus quizá ayude a arreglar el problema."
 
 # src/nautilus-application.c:397
-#: ../src/nautilus-application.c:646
+#: ../src/nautilus-application.c:663
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5244,7 +5242,7 @@ msgstr ""
 "cuando intentaba encontrar el objeto shell. Matar bonobo-activation-server y "
 "reiniciar Nautilus quizá ayude a arreglar el problema."
 
-#: ../src/nautilus-application.c:1346 ../src/nautilus-places-sidebar.c:1492
+#: ../src/nautilus-application.c:1363 ../src/nautilus-places-sidebar.c:1492
 #: ../src/nautilus-places-sidebar.c:1515 ../src/nautilus-places-sidebar.c:1538
 #, c-format
 msgid "Unable to eject %s"
@@ -5886,20 +5884,6 @@ msgstr "_Usar distribución compacta"
 #: ../src/nautilus-file-management-properties.glade.h:89
 msgid "_View executable text files when they are opened"
 msgstr "_Ver los archivos de texto ejecutables cuando al abrirlos"
-
-# src/nautilus-application.c:614
-#: ../src/nautilus-first-time-druid.c:40
-msgid ""
-"Existence of this file indicates that the Nautilus configuration druid\n"
-"has been presented.\n"
-"\n"
-"You can manually erase this file to present the druid again.\n"
-msgstr ""
-"La existencia de este archivo indica que el asistente de configuración de "
-"Nautilus ya se ha mostrado.\n"
-"\n"
-"Puede borrar manualmente este archivo para que se muestre el asistente "
-"nuevamente.\n"
 
 #: ../src/nautilus-history-sidebar.c:285
 msgid "History"
