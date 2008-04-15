@@ -1,3 +1,9 @@
+2008-04-15  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file.c: (compare_by_time):
+	Initialize two vars to get rid of a warning with gcc 4.3.
+	Patch by Paweł Paprota. (#528081).
+
 2008-04-10  A. Walton  <awalton@svn.gnome.org>
 
 	Remove GSequence directory and files (for real this time).
