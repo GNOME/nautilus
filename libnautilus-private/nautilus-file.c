@@ -2405,6 +2405,9 @@ compare_by_time (NautilusFile *file_1, NautilusFile *file_2, NautilusDateType ty
 	Knowledge time_known_1, time_known_2;
 	time_t time_1, time_2;
 
+	time_1 = 0;
+	time_2 = 0;
+
 	time_known_1 = get_time (file_1, &time_1, type);
 	time_known_2 = get_time (file_2, &time_2, type);
 
