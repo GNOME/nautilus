@@ -373,7 +373,8 @@ main (int argc, char *argv[])
 	gboolean no_default_window;
 	gboolean browser_window;
 	gboolean no_desktop;
-	const char *startup_id;
+	gboolean autostart_mode;
+	const char *startup_id, *autostart_id;
 	char *startup_id_copy;
 	char *session_to_load;
 	gchar *geometry;
@@ -433,6 +434,11 @@ main (int argc, char *argv[])
 		g_unsetenv ("DESKTOP_STARTUP_ID");
 	}
 
+	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
+	if (autostart_id != NULL && *autostart_id != '\0') {
+		autostart_mode = TRUE;
+        }
+
 	/* we'll do it ourselves due to complicated factory setup */
 	gtk_window_set_auto_startup_notification (FALSE);
 
@@ -471,6 +477,14 @@ main (int argc, char *argv[])
 
 	if (session_to_load != NULL) {
 		no_default_window = TRUE;
+	}
+
+	/* If in autostart mode (aka started by gnome-session), we need to ensure 
+         * nautilus starts with the correct options.
+         */
+	if (autostart_mode) {
+		no_default_window = TRUE;
+		no_desktop = FALSE;
 	}
 
 	/* Do this here so that gdk_display is initialized */
