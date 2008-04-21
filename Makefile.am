@@ -56,4 +56,4 @@ DISTCLEANFILES = \
   intltool-merge \
   intltool-update
 
-DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
+DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb --enable-gtk-doc
