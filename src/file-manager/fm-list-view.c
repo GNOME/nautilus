@@ -933,6 +933,7 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	case GDK_F10:
 		if (event->state & GDK_CONTROL_MASK) {
 			fm_directory_view_pop_up_background_context_menu (view, &button_event);
+			handled = TRUE;
 		}
 		break;
 	case GDK_space:
