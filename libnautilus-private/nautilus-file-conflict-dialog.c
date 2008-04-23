@@ -57,31 +57,11 @@ G_DEFINE_TYPE (NautilusFileConflictDialog,
 
 #define NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, NautilusFileConflictDialogDetails))
 
-static gboolean
-is_dir (GFile *file)
-{
-	GFileInfo *info;
-	gboolean res;
-
-	res = FALSE;
-	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STANDARD_TYPE,
-				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-				  NULL, NULL);
-	if (info) {
-		res = g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY;
-		g_object_unref (info);
-	}
-	
-	return res;
-}
-
 static void
 build_dialog_appearance (NautilusFileConflictDialog *fcd)
 {
 	GtkDialog *dialog;
-	gboolean source_is_dir;
-	gboolean dest_is_dir;
+	gboolean source_is_dir,	dest_is_dir;
 	NautilusFileConflictDialogDetails *details;
 	char *primary_text, *secondary_text, *primary_markup;
 	char *src_name, *dest_name, *dest_dir_name;
@@ -93,8 +73,6 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	
 	dialog = GTK_DIALOG (fcd);
 	details = fcd->details;
-	source_is_dir = is_dir (details->source);
-	dest_is_dir = is_dir (details->destination);
 
 	src = nautilus_file_get (details->source);
 	dest = nautilus_file_get (details->destination);
@@ -103,6 +81,9 @@ build_dialog_appearance (NautilusFileConflictDialog *fcd)
 	src_name = nautilus_file_get_display_name (src);
 	dest_name = nautilus_file_get_display_name (dest);
 	dest_dir_name = nautilus_file_get_display_name (dest_dir);
+	
+	source_is_dir = nautilus_file_is_directory (src);
+	dest_is_dir = nautilus_file_is_directory (dest);
 
 	/* Set up the right labels */
 	if (dest_is_dir) {
