@@ -95,7 +95,8 @@ static EelEnumerationEntry file_size_enum_entries[] = {
 	{ "3145728",	    N_("3 MB"),		3145728 },
 	{ "5242880",	    N_("5 MB"),		5242880 },
 	{ "10485760",	    N_("10 MB"),	10485760 },
-	{ "104857600",	    N_("100 MB"),	104857600 }
+	{ "104857600",	    N_("100 MB"),	104857600 },
+	{ "1073741824",     N_("1 GB"),         1073741824 }
 };
 
 static EelEnumerationEntry click_policy_enum_entries[] = {
@@ -285,7 +286,7 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER(3145728),
+	  GINT_TO_POINTER(10485760),
 	  NULL, NULL,
 	  "file_size"
 	},
