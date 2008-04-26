@@ -732,6 +732,13 @@ clear_keyboard_focus (NautilusIconContainer *container)
 	container->details->keyboard_focus = NULL;
 }
 
+static void inline
+emit_atk_focus_tracker_notify (NautilusIcon *icon)
+{
+	AtkObject *atk_object = eel_accessibility_for_object (icon->item);
+	atk_focus_tracker_notify (atk_object);
+}
+
 /* Set @icon as the icon currently selected for keyboard operations. */
 static void
 set_keyboard_focus (NautilusIconContainer *container,
@@ -750,6 +757,8 @@ set_keyboard_focus (NautilusIconContainer *container,
 	eel_canvas_item_set (EEL_CANVAS_ITEM (container->details->keyboard_focus->item),
 			       "highlighted_as_keyboard_focus", 1,
 			       NULL);
+
+	emit_atk_focus_tracker_notify (icon);
 }
 
 static void
@@ -1864,8 +1873,7 @@ select_range (NautilusIconContainer *container,
 	}
 	
 	if (selection_changed && icon2 != NULL) {
-		AtkObject *atk_object = eel_accessibility_for_object (icon2->item);
-		atk_focus_tracker_notify (atk_object);
+		emit_atk_focus_tracker_notify (icon2);
 	}
 	return selection_changed;
 }
@@ -1889,8 +1897,7 @@ select_one_unselect_others (NautilusIconContainer *container,
 	}
 	
 	if (selection_changed && icon_to_select != NULL) {
-		AtkObject *atk_object = eel_accessibility_for_object (icon_to_select->item);
-		atk_focus_tracker_notify (atk_object);
+		emit_atk_focus_tracker_notify (icon_to_select);
 		reveal_icon (container, icon_to_select);
 	}
 	return selection_changed;
@@ -2004,9 +2011,7 @@ rubberband_select (NautilusIconContainer *container,
 		}
 		
 		is_in = nautilus_icon_canvas_item_hit_test_rectangle (icon->item, canvas_rect);
-		
-		g_assert (icon->was_selected_before_rubberband == FALSE
-			  || icon->was_selected_before_rubberband == TRUE);
+
 		selection_changed |= icon_set_selected
 			(container, icon,
 			 is_in ^ icon->was_selected_before_rubberband);
@@ -2756,10 +2761,9 @@ keyboard_move_to (NautilusIconContainer *container,
 			set_keyboard_rubberband_start (container, from);
 		} 
 
-		select_one_unselect_others (container, icon);
 		set_keyboard_focus (container, icon);
 
-		if (icon && container->details->keyboard_rubberband_start && container->details->keyboard_rubberband_start != icon) {
+		if (icon && container->details->keyboard_rubberband_start) {
 			rect = get_rubberband (container->details->keyboard_rubberband_start,
 					       icon);
 			rubberband_select (container, NULL, &rect);
