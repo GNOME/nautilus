@@ -1,3 +1,14 @@
+2008-04-27  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(emit_atk_focus_tracker_notify), (set_keyboard_focus),
+	(select_range), (select_one_unselect_others), (rubberband_select),
+	(keyboard_move_to):
+	Properly handle selection changes when using keyboard navigation. We
+	did not emit a "selection-change" signal when keyboard rubberbanding
+	was used, and all except one icon were deselected. Fixes #509432.
+	Thanks to Paweł Paprota.
+
 2008-04-24  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-list-view.c: (key_press_callback):
