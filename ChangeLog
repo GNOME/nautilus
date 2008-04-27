@@ -1,5 +1,12 @@
 2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_save_geometry):
+	Always properly remember window size, also in the case the window is
+	closed being maximized. (#385176).
+
+2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-window.c: (nautilus_window_key_press_event):
 	Reverse the order in which the keybindings are processed by the
 	NautilusWindow, and use the same approach as GEdit.
