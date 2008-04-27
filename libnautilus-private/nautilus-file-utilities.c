@@ -66,7 +66,10 @@ nautilus_compute_title_for_location (GFile *location)
 	title = NULL;
 	if (location) {
 		file = nautilus_file_get (location);
-		title = nautilus_file_get_display_name (file);
+		title = nautilus_file_get_description (file);
+		if (title == NULL) {
+			title = nautilus_file_get_display_name (file);
+		}
 		nautilus_file_unref (file);
 	}
 

@@ -1,3 +1,16 @@
+2008-04-26  A. Walton  <awalton@gnome.org>
+
+	reviewed by: Christian Neumair
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file-utilities.c
+	(nautilus_compute_title_for_location):
+	* libnautilus-private/nautilus-file.c (update_info_internal),
+	(nautilus_file_get_description):
+	* libnautilus-private/nautilus-file.h:
+	Use standard::description in the window title when it's available.
+	Closes bug #516007.
+
 2008-04-27  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

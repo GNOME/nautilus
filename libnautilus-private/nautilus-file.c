@@ -1552,6 +1552,7 @@ update_info_internal (NautilusFile *file,
 	GIcon *icon;
 	GFile *old_activation_location;
 	const char *activation_uri;
+	const char *description;
 	
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1804,6 +1805,13 @@ update_info_internal (NautilusFile *file,
 		changed = TRUE;
 		g_free (file->details->selinux_context);
 		file->details->selinux_context = g_strdup (selinux_context);
+	}
+	
+	description = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_DESCRIPTION);
+	if (eel_strcmp (file->details->description, description) != 0) {
+		changed = TRUE;
+		g_free (file->details->description);
+		file->details->description = g_strdup (description);
 	}
 	
 	if (update_name) {
@@ -3007,6 +3015,22 @@ char *
 nautilus_file_get_name (NautilusFile *file)
 {
 	return g_strdup (eel_ref_str_peek (file->details->name));
+}
+
+/**
+ * nautilus_file_get_description:
+ * @file: a #NautilusFile.
+ * 
+ * Gets the standard::description key from @file, if 
+ * it has been cached.
+ * 
+ * Returns: a string containing the value of the standard::description 
+ * 	key, or %NULL.
+ */
+char *
+nautilus_file_get_description (NautilusFile *file)
+{
+	return g_strdup (file->details->description);
 }
    
 void             

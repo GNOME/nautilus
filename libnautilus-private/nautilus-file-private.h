@@ -46,7 +46,7 @@
 	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,mountable::*"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -90,7 +90,8 @@ struct NautilusFileDetails
 	
 	eel_ref_str mime_type;
 	
-	char* selinux_context;
+	char *selinux_context;
+	char *description;
 	
 	GError *get_info_error;
 	
