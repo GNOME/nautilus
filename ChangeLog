@@ -1,3 +1,11 @@
+2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-window.c: (nautilus_window_key_press_event):
+	Reverse the order in which the keybindings are processed by the
+	NautilusWindow, and use the same approach as GEdit.
+	This fixes some bugs where the GtkWindow accelerators were executed
+	before the focused widget one. (#314431).
+
 2008-04-27  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-list-view.c (button_press_callback):
