@@ -1536,13 +1536,17 @@ static void
 nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 {
 	char *geometry_string;
+	gboolean is_maximized;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	if (GTK_WIDGET(window)->window) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+		is_maximized = gdk_window_get_state (GTK_WIDGET (window)->window)
+				& GDK_WINDOW_STATE_MAXIMIZED;
 		
-		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY)) {
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY) &&
+		    !is_maximized) {
 			eel_preferences_set
 				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY, 
 				 geometry_string);
@@ -1552,7 +1556,7 @@ nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
 		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED)) {
 			eel_preferences_set_boolean
 				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED, 
-				 gdk_window_get_state (GTK_WIDGET (window)->window) & GDK_WINDOW_STATE_MAXIMIZED);
+				 is_maximized);
 		}
 	}
 }
