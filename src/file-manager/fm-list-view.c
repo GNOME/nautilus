@@ -629,6 +629,17 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
+		gtk_widget_style_get (widget,
+				      "expander-size", &expander_size,
+				      "horizontal-separator", &horizontal_separator,
+				      NULL);
+		/* TODO we should not hardcode this extra padding. It is
+		 * EXPANDER_EXTRA_PADDING from GtkTreeView.
+		 */
+		expander_size += 4;
+		on_expander = (event->x <= horizontal_separator / 2 +
+			       gtk_tree_path_get_depth (path) * expander_size);
+
 		/* Keep track of path of last click so double clicks only happen
 		 * on the same item */
 		if ((event->button == 1 || event->button == 2)  && 
@@ -643,7 +654,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			/* Double clicking does not trigger a D&D action. */
 			view->details->drag_button = 0;
 			if (view->details->double_click_path[1] &&
-			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0) {
+			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0 &&
+			    !on_expander) {
 				/* NOTE: Activation can actually destroy the view if we're switching */
 				if (!button_event_modifies_selection (event)) {
 					if ((event->button == 1 || event->button == 3)) {
@@ -660,8 +672,9 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 						nautilus_file_unref (file);
 					}
 				}
+			} else {
+				tree_view_class->button_press_event (widget, event);
 			}
-			tree_view_class->button_press_event (widget, event);
 		} else {
 	
 			/* We're going to filter out some situations where
@@ -676,15 +689,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			
 			if ((event->button == 1 || event->button == 2) &&
 			    ((event->state & GDK_CONTROL_MASK) != 0 ||
-			     (event->state & GDK_SHIFT_MASK) == 0)) {
-				gtk_widget_style_get (widget,
-						      "expander-size", &expander_size,
-						      "horizontal-separator", &horizontal_separator,
-						      NULL);
-				on_expander = (event->x <= horizontal_separator / 2 +
-					       gtk_tree_path_get_depth (path) * expander_size);
-
-				
+			     (event->state & GDK_SHIFT_MASK) == 0)) {			
 				view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
 				if (view->details->row_selected_on_button_down) {
 					call_parent = on_expander;
