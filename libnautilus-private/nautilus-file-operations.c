@@ -1462,7 +1462,7 @@ delete_file (CommonJob *job, GFile *file,
 }
 
 static void
-delete_files (CommonJob *job, GList *files)
+delete_files (CommonJob *job, GList *files, int *files_skipped)
 {
 	GList *l;
 	GFile *file;
@@ -1497,6 +1497,9 @@ delete_files (CommonJob *job, GList *files)
 			     &skipped_file,
 			     &source_info, &transfer_info,
 			     TRUE);
+		if (skipped_file) {
+			(*files_skipped)++;
+		}
 	}
 }
 
@@ -1526,7 +1529,7 @@ report_trash_progress (CommonJob *job,
 
 
 static void
-trash_files (CommonJob *job, GList *files)
+trash_files (CommonJob *job, GList *files, int *files_skipped)
 {
 	GList *l;
 	GFile *file;
@@ -1554,6 +1557,7 @@ trash_files (CommonJob *job, GList *files)
 		error = NULL;
 		if (!g_file_trash (file, job->cancellable, &error)) {
 			if (job->skip_all_error) {
+				(*files_skipped)++;
 				goto skip;
 			}
 
@@ -1577,11 +1581,13 @@ trash_files (CommonJob *job, GList *files)
 						 NULL);
 
 			if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+				((DeleteJob *) job)->user_cancel = TRUE;				
 				abort_job (job);
 			} else if (response == 1) { /* skip all */
+				(*files_skipped)++;
 				job->skip_all_error = TRUE;
 			} else if (response == 2) { /* skip */
-				/* nothing */
+				(*files_skipped)++;
 			} else if (response == 3) { /* delete all */
 				to_delete = g_list_prepend (to_delete, file);
 				job->delete_all = TRUE;
@@ -1603,7 +1609,7 @@ trash_files (CommonJob *job, GList *files)
 
 	if (to_delete) {
 		to_delete = g_list_reverse (to_delete);
-		delete_files (job, to_delete);
+		delete_files (job, to_delete, files_skipped);
 		g_list_free (to_delete);
 	}
 }
@@ -1645,6 +1651,7 @@ delete_job (GIOSchedulerJob *io_job,
 	CommonJob *common;
 	gboolean must_confirm_delete_in_trash;
 	gboolean must_confirm_delete;
+	int files_skipped;
 
 	common = (CommonJob *)job;
 	common->io_job = io_job;
@@ -1656,6 +1663,7 @@ delete_job (GIOSchedulerJob *io_job,
 
 	must_confirm_delete_in_trash = FALSE;
 	must_confirm_delete = FALSE;
+	files_skipped = 0;
 	
 	for (l = job->files; l != NULL; l = l->next) {
 		file = l->data;
@@ -1685,7 +1693,7 @@ delete_job (GIOSchedulerJob *io_job,
 			confirmed = confirm_delete_directly (common, to_delete_files);
 		}
 		if (confirmed) {
-			delete_files (common, to_delete_files);
+			delete_files (common, to_delete_files, &files_skipped);
 		} else {
 			job->user_cancel = TRUE;
 		}
@@ -1694,11 +1702,16 @@ delete_job (GIOSchedulerJob *io_job,
 	if (to_trash_files != NULL) {
 		to_trash_files = g_list_reverse (to_trash_files);
 		
-		trash_files (common, to_trash_files);
+		trash_files (common, to_trash_files, &files_skipped);
 	}
 	
 	g_list_free (to_trash_files);
 	g_list_free (to_delete_files);
+	
+	if (files_skipped == g_list_length (job->files)) {
+		/* User has skipped all files, report user cancel */
+		job->user_cancel = TRUE;
+	}
 
 	g_io_scheduler_job_send_to_mainloop_async (io_job,
 						   delete_job_done,
