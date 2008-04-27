@@ -1,3 +1,10 @@
+2008-04-27  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(dequeue_pending_idle_callback), (mime_list_one):
+	Do not insert NULL MIME types into MIME type hash table. Fixes #522534.
+	Thanks to Paweł Paprota.
+
 2008-01-28  Colin Walters  <walters@redhat.com>
 
 	* src/nautilus-location-entry.c: Remove unused variables so we build

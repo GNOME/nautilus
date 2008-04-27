@@ -844,7 +844,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 			/* Add the MIME type to the set. */
 			if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
-			    && directory->details->load_mime_list_hash != NULL) {
+			    && directory->details->load_mime_list_hash != NULL
+			    && file_info->mime_type != NULL) {
 				istr_set_insert (directory->details->load_mime_list_hash,
 						 file_info->mime_type);
 			}
@@ -2522,7 +2523,8 @@ mime_list_one (NautilusDirectory *directory,
 		return;
 	}
 
-	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
+	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0 &&
+	     info->mime_type != NULL) {
 		istr_set_insert (directory->details->mime_list_hash, info->mime_type);
 	}
 }
