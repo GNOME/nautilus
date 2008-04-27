@@ -1,5 +1,13 @@
 2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c: (delete_files),
+	(trash_files), (delete_job):
+	Report user cancel when all the files we're about to trash or delete
+	are skipped in the operation. This allows to use the same selection for
+	requesting another deletion from the view. (#519746).
+
+2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-places-sidebar.c: (nautilus_places_sidebar_init):
 	Always use single click policy in the Places sidebar. (#355760).
 
