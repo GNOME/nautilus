@@ -1,3 +1,12 @@
+2008-04-27  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-list-view.c (button_press_callback):
+	Do not activate twice if the activated paths are already selected.
+	Always expand when an expander is clicked, even when the activation
+	paths are already selected. Add 4 to the GtkTreeView's claimed
+	expander size, which accounts for hard coded internal GtkTreeView
+	expander padding. Fixes #448562. Thanks to Paweł Paprota.
+
 2008-04-26  A. Walton  <awalton@gnome.org>
 
 	reviewed by: Christian Neumair
