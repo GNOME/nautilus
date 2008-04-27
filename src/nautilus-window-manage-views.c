@@ -1705,7 +1705,7 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 			error_message = g_strdup_printf (_("Could not display \"%s\"."),
 							 uri_for_display);
 			if (scheme_string != NULL) {
-				detail_message = g_strdup_printf (_("Nautilus cannot handle \"%s:\"locations."),
+				detail_message = g_strdup_printf (_("Nautilus cannot handle \"%s\" locations."),
 								  scheme_string);
 			} else {
 				detail_message = g_strdup (_("Nautilus cannot handle this kind of locations."));
