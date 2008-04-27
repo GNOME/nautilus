@@ -580,27 +580,6 @@ row_activated_callback (GtkTreeView *tree_view,
 }
 
 static void
-update_click_policy (NautilusPlacesSidebar *sidebar)
-{
-	int policy;
-	
-	policy = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
-	
-	eel_gtk_tree_view_set_activate_on_single_click
-		(sidebar->tree_view, policy == NAUTILUS_CLICK_POLICY_SINGLE);
-}
-
-static void
-click_policy_changed_callback (gpointer user_data)
-{
-	NautilusPlacesSidebar *sidebar;
-	
-	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
-
-	update_click_policy (sidebar);
-}
-
-static void
 desktop_location_changed_callback (gpointer user_data)
 {
 	NautilusPlacesSidebar *sidebar;
@@ -1950,11 +1929,8 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	g_signal_connect (tree_view, "button-press-event",
 			  G_CALLBACK (bookmarks_button_press_event_cb), sidebar);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						  click_policy_changed_callback,
-						  sidebar,
-						  G_OBJECT (sidebar));
-	update_click_policy (sidebar);
+	eel_gtk_tree_view_set_activate_on_single_click (sidebar->tree_view,
+							TRUE);
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 						  desktop_location_changed_callback,
