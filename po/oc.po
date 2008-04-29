@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-23 09:58+0200\n"
-"PO-Revision-Date: 2008-03-16 21:53+0100\n"
+"PO-Revision-Date: 2008-04-28 18:36+0200\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -391,7 +391,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "All columns have same width"
-msgstr ""
+msgstr "Totas las colomnas a la meteissa largor"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid "Always use the location entry, instead of the pathbar"
@@ -471,9 +471,8 @@ msgid "Default column order in the list view."
 msgstr "Òrdre per defaut de las colomnas dins la visualizacion en tièra."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
-#, fuzzy
 msgid "Default compact view zoom level"
-msgstr "Nivèl de zoom per defaut de las icònas"
+msgstr "Nivèl de zoom de la visualizacion compacta per defaut"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default folder viewer"
@@ -500,9 +499,8 @@ msgid "Default sort order"
 msgstr "Òrdre de classificacion per defaut"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
-#, fuzzy
 msgid "Default zoom level used by the compact view."
-msgstr "Nivèl de zoom per defaut utilizat per la visualizacion en icònas."
+msgstr "Nivèl de zoom per defaut de la visualizacion compacta"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "Default zoom level used by the icon view."
@@ -756,6 +754,9 @@ msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
 msgstr ""
+"S'aquesta preferéncia es definida, totas las colomnas de la visualizacion "
+"compacta auràn la meteissa largor. Si que non, la largor de cada colomna "
+"serà determinada individualament."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
@@ -1106,15 +1107,15 @@ msgstr ""
 "\"display\" per los visualizar coma de fichièrs tèxt."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
-#, fuzzy
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\", "
 "\"icon_view\" and \"compact_view\"."
 msgstr ""
-"Quand se consulta un repertòri, aqueste visualizaira es utilizada levat se "
-"avètz seleccionat una autra visualizacion per aqueste repertòri. Las valors "
-"possiblas son \"list_view\" e \"icon_view\"."
+"Quand un repertòri es visitat, aquesta visualizaira es utilizada, levat "
+"s'avètz seleccionada una autra visualizacion per aqueste repertòri "
+"en particulièr. Las valors possiblas son \"list_view\", \"icon_view\" e "
+"\"compact_view\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "When to show number of items in a folder"
@@ -1743,13 +1744,11 @@ msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Sètz segur que volètz suprimir per totjorn l'element seleccionat de "
 "l'escobilièr ?"
-msgstr[1] ""
 "Sètz segur que volètz suprimir per totjorn los %'d elements seleccionats de "
 "l'escobilièr ?"
 
@@ -1778,10 +1777,8 @@ msgstr "Sètz segur que volètz suprimir per totjorn \"%B\" ?"
 #: ../libnautilus-private/nautilus-file-operations.c:1165
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr[0] "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?"
-msgstr[1] ""
+msgstr "Sètz segur que volètz suprimir per totjorn l'element seleccionat ?"
 "Sètz segur que volètz suprimir per totjorn los %'d elements seleccionats ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1207
@@ -1847,7 +1844,6 @@ msgid "There was an error reading the folder \"%B\"."
 msgstr "I a aguda una error al moment de copiar lo fichièr\" %B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1356
-#, fuzzy
 msgid "Could not remove the folder %B."
 msgstr "Impossible de suprimir lo repertòri %B."
 
@@ -1896,9 +1892,8 @@ msgstr ""
 "voidada. Totrs los elements de la banasta seràn suprimits per totjorn."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1940
-#, fuzzy
 msgid "Do not Empty Trash"
-msgstr "Voida pas la banasta"
+msgstr "Voidar pas la banasta"
 
 #. label, accelerator
 #: ../libnautilus-private/nautilus-file-operations.c:1942
@@ -1992,9 +1987,8 @@ msgid "Error while copying to \"%B\"."
 msgstr "Error al moment de copiar dins \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2393
-#, fuzzy
 msgid "You do not have permissions to access the destination folder."
-msgstr "Avètz pas las permissions per accedit al repertòri cibla."
+msgstr "Avètz pas las permissions per accedir al repertòri cibla."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2395
 msgid "There was an error getting information about the destination."
@@ -2119,7 +2113,6 @@ msgid "Error while moving \"%B\"."
 msgstr "Error al moment de desplaçar %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3037
-#, fuzzy
 msgid "Could not remove the source folder."
 msgstr "Impossible de suprimir lo repertòri sorga."
 
@@ -2131,12 +2124,12 @@ msgid "Error while copying \"%B\"."
 msgstr "Error al moment de copiar \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3119
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Impossible de suprimir los fichièrs del repertòri %F qu'existís ja."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3156
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Impossible de suprimir lo fichièr %F qu'existís ja."
 
@@ -2187,10 +2180,9 @@ msgstr ""
 "remplaçat."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3432
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file with the same name in %F."
-msgstr ""
-"Impossible de suprimir lo fichièr qu'existís ja amb lo meteis nom dins %F."
+msgstr "Impossible de suprimir lo fichièr qu'existís ja amb lo meteis nom dins %F."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3495
 #, c-format
@@ -2659,9 +2651,8 @@ msgstr "Visualizacion en icònas"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
 #: ../src/file-manager/fm-icon-view.c:2953
-#, fuzzy
 msgid "Compact View"
-msgstr "Vista del conetgut"
+msgstr "Vista compacta"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -2777,14 +2768,13 @@ msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Lo ligam \"%s\" es copat. Lo volètz desplaçar cap a la banasta ?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:601
-#, fuzzy
 msgid "This link cannot be used, because it has no target."
 msgstr "Impossible d'utilizar lo ligam per que a pas de cibla."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:603
-#, fuzzy, c-format
+#, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
-msgstr "Impossible d'utilizar lo ligam per que la cibla \"%s\" existís pas."
+msgstr "Impossible d'utilizar lo ligam per que sa cibla \"%s\" existís pas."
 
 #. name, stock id
 #. label, accelerator
@@ -2839,9 +2829,9 @@ msgstr[1] "Dobrirà %d fenèstras."
 #: ../src/nautilus-window-manage-views.c:1716
 #: ../src/nautilus-window-manage-views.c:1722
 #: ../src/nautilus-window-manage-views.c:1747
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\"."
-msgstr "Impossible de visualizar %s."
+msgstr "Impossible de visualizar \"%s\"."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1205
 msgid "There is no application installed for this file type"
@@ -2990,12 +2980,12 @@ msgstr "Impossible de dobrir, volètz causir una autra aplicacion ?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:82
 #: ../libnautilus-private/nautilus-program-choosing.c:113
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 "locations."
 msgstr ""
-"\"%s\" pòt pas dobrir \"%s\" per que \"%s\" pòt pas accedit als fichièrs "
+"\"%s\" pòt pas dobrir \"%s\" per que \"%s\" pòt pas accedir als fichièrs "
 "dins los emplaçaments \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:87
@@ -3004,7 +2994,7 @@ msgstr "Impossible de dobrir, volètz causir una autra accion ?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:88
 #: ../libnautilus-private/nautilus-program-choosing.c:120
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
 "\" locations."
@@ -3029,10 +3019,8 @@ msgstr ""
 "copiatz sul ordenador, es possible que lo poscatz pas dobrir."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:282
-#, fuzzy
 msgid "Sorry, but you cannot execute commands from a remote site."
-msgstr ""
-"Desconsolat mas podètz pas executar de comandar dempuèi un siti distant."
+msgstr "Desconsolat mas podètz pas executar de comandar dempuèi un siti distant."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:284
 msgid "This is disabled due to security considerations."
@@ -3069,7 +3057,6 @@ msgid "Details: "
 msgstr "Detalhs : "
 
 #: ../libnautilus-private/nautilus-progress-info.c:222
-#, fuzzy
 msgid "File Operations"
 msgstr "Operacions suls fichièrs"
 
@@ -3452,21 +3439,17 @@ msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 #: ../src/file-manager/fm-directory-view.c:5598
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
-msgstr[0] ""
+msgstr ""
 "Se seleccionatz la comanda Pegar, l'element seleccionat serà desplaçat"
-msgstr[1] ""
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn "
 "desplaçats"
 
 #: ../src/file-manager/fm-directory-view.c:5605
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
-msgid_plural ""
 "The %'d selected items will be copied if you select the Paste command"
-msgstr[0] "Se seleccionatz la comanda Pegar, l'element seleccionat serà copiat"
-msgstr[1] ""
+msgstr "Se seleccionatz la comanda Pegar, l'element seleccionat serà copiat"
 "Se seleccionatz la comanda Pegar, los %'d elements seleccionats seràn copiats"
 
 #: ../src/file-manager/fm-directory-view.c:5699
@@ -3670,12 +3653,12 @@ msgstr ""
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6370
 msgid "_Invert Selection"
-msgstr ""
+msgstr "_Inversar la seleccion"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6371
 msgid "Select all and only the items that are not currently selected"
-msgstr ""
+msgstr "Seleccionatz totes los elements que son pas seleccionats ara (e sonque eles)"
 
 #. name, stock id
 #. label, accelerator
@@ -4032,16 +4015,14 @@ msgstr ""
 "Avètz pas las permissions necessàrias per visualizar lo contengut de \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:63
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" could not be found. Perhaps it has recently been deleted."
-msgstr ""
-"Impossible de trobar \"%s\". Benlèu qu'es estat suprimit i a pauc de temps."
+msgstr "Impossible de trobar \"%s\". Benlèu qu'es estat suprimit i a pauc de temps."
 
 #: ../src/file-manager/fm-error-reporting.c:67
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not display all the contents of \"%s\": %s"
-msgstr ""
-"Desconsolat mas es impossible de visualizar tot lo contengut de \"%s\" : %s"
+msgstr "Desconsolat mas es impossible de visualizar tot lo contengut de \"%s\" : %s"
 
 #: ../src/file-manager/fm-error-reporting.c:74
 msgid "The folder contents could not be displayed."
@@ -4083,7 +4064,7 @@ msgstr "Lo nom \"%s\" es pas valid. Utilizatz un autre nom."
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:137
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not rename \"%s\" to \"%s\": %s"
 msgstr "Desconsolat mas es impossible de renommar \"%s\" en \"%s\" : %s"
 
@@ -4099,7 +4080,7 @@ msgstr "Avètz pas las permissions necessàrias per modificar lo grop de \"%s\".
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:180
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the group of \"%s\": %s"
 msgstr "Desconsolat mas es impossible de modificar lo grop de \"%s\" : %s"
 
@@ -4108,20 +4089,18 @@ msgid "The group could not be changed."
 msgstr "Impossible de cambiar lo grop."
 
 #: ../src/file-manager/fm-error-reporting.c:205
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the owner of \"%s\": %s"
-msgstr ""
-"Desconsolat mas es impossible de modificar lo propietari de \"%s\" : %s"
+msgstr "Desconsolat mas es impossible de modificar lo propietari de \"%s\" : %s"
 
 #: ../src/file-manager/fm-error-reporting.c:207
 msgid "The owner could not be changed."
 msgstr "Impossible de cambiar lo propietari."
 
 #: ../src/file-manager/fm-error-reporting.c:227
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the permissions of \"%s\": %s"
-msgstr ""
-"Desconsolat mas es impossible de modificar las permissions de \"%s\" : %s"
+msgstr "Desconsolat mas es impossible de modificar las permissions de \"%s\" : %s"
 
 #: ../src/file-manager/fm-error-reporting.c:229
 msgid "The permissions could not be changed."
@@ -4290,9 +4269,8 @@ msgstr "afusta sus \"%s\""
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:2941
-#, fuzzy
 msgid "_Icons"
-msgstr "Icònas"
+msgstr "_Icònas"
 
 #: ../src/file-manager/fm-icon-view.c:2942
 msgid "The icon view encountered an error."
@@ -4309,25 +4287,20 @@ msgstr "Visualizar aqueste emplaçament amb la visualizacion en icònas."
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:2955
-#, fuzzy
 msgid "_Compact"
-msgstr "_Ordenador"
+msgstr "_Compacte"
 
 #: ../src/file-manager/fm-icon-view.c:2956
-#, fuzzy
 msgid "The compact view encountered an error."
-msgstr "I a aguda una error dins la visualizacion en icònas."
+msgstr "I a aguda una error dins la visualizacion compacta."
 
 #: ../src/file-manager/fm-icon-view.c:2957
-#, fuzzy
 msgid "The compact view encountered an error while starting up."
-msgstr ""
-"I a aguda una error dins la visualizacion en icònas al moment de s'aviar."
+msgstr "I a aguda una error dins la visualizacion compacta al moment de s'aviar."
 
 #: ../src/file-manager/fm-icon-view.c:2958
-#, fuzzy
 msgid "Display this location with the compact view."
-msgstr "Visualizar aqueste emplaçament amb la visualizacion en icònas."
+msgstr "Visualizar aqueste emplaçament amb la visualizacion compacta."
 
 #: ../src/file-manager/fm-list-model.c:378
 #: ../src/file-manager/fm-tree-model.c:1266
@@ -4362,9 +4335,8 @@ msgstr "Seleccionatz las colomnas visiblas d'aqueste repertòri"
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-list-view.c:2845
-#, fuzzy
 msgid "_List"
-msgstr "Tièra"
+msgstr "_Tièra"
 
 #: ../src/file-manager/fm-list-view.c:2846
 msgid "The list view encountered an error."
@@ -4380,7 +4352,6 @@ msgid "Display this location with the list view."
 msgstr "Visualizar aqueste emplaçament amb la visualizacion en tièra."
 
 #: ../src/file-manager/fm-properties-window.c:536
-#, fuzzy
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Podètz pas atribuir mai d'una icòna personalizada a l'encòp !"
 
@@ -4669,9 +4640,8 @@ msgid "Text view:"
 msgstr "Visualizacion de tèxt :"
 
 #: ../src/file-manager/fm-properties-window.c:4713
-#, fuzzy
 msgid "You are not the owner, so you cannot change these permissions."
-msgstr "Sètz pas lo propietari doncas podètz pas modificar las permissions."
+msgstr "Sètz pas lo propietari, doncas podètz pas modificar las permissions."
 
 #: ../src/file-manager/fm-properties-window.c:4737
 msgid "SELinux context:"
@@ -4769,19 +4739,17 @@ msgstr ""
 #. * since neither of the above causes explain it.
 #.
 #: ../src/nautilus-application.c:601
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"Podètz pas utilizar Nautilus ara. Aviar la comanda \"bonobo-slay\" dins lo  "
+"Podètz pas utilizar Nautilus ara. Aviar la comanda \"bonobo-slay\" dins lo "
 "terminal pòt resòlvre lo problèma. S'es pas lo cas, podètz ensajar de tornar "
 "aviar l'ordenador o de tornar installar Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:607
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4830,12 +4798,10 @@ msgstr ""
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: ../src/nautilus-application.c:637 ../src/nautilus-application.c:655
 #: ../src/nautilus-application.c:662
-#, fuzzy
 msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr "Impossible d'utilizar Nautilus a causa d'una error inesperada."
 
 #: ../src/nautilus-application.c:638
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4845,7 +4811,6 @@ msgstr ""
 "gestionari de fichièrs."
 
 #: ../src/nautilus-application.c:656
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
@@ -4856,7 +4821,6 @@ msgstr ""
 "server e tornar aviar Nautilus pòt ajudar a resòlvre lo problèma."
 
 #: ../src/nautilus-application.c:663
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4941,7 +4905,7 @@ msgid "Edit Bookmarks"
 msgstr "Modificar los favorits"
 
 #: ../src/nautilus-connect-server-dialog-main.c:76
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot display location \"%s\""
 msgstr "Impossible de visualizar l'emplaçament \"%s\""
 
@@ -4990,10 +4954,8 @@ msgid "Secure WebDAV (HTTPS)"
 msgstr "WebDAV segur (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:204
-#, fuzzy
 msgid "Cannot Connect to Server. You must enter a name for the server."
-msgstr ""
-"Impossible de se connectar al servidor. Debètz picar un nom pel servidor."
+msgstr "Impossible de se connectar al servidor. Debètz picar un nom pel servidor."
 
 #: ../src/nautilus-connect-server-dialog.c:205
 msgid "Please enter a name and try again."
@@ -5054,9 +5016,9 @@ msgid "Desktop"
 msgstr "Burèu"
 
 #: ../src/nautilus-emblem-sidebar.c:238
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove emblem with name '%s'."
-msgstr "Impossible de suprimir l'emblèma que s'apèla '%s'."
+msgstr "Impossible de suprimir l'emblèma que lo nom es '%s'."
 
 #: ../src/nautilus-emblem-sidebar.c:239 ../src/nautilus-emblem-sidebar.c:273
 msgid ""
@@ -5067,7 +5029,7 @@ msgstr ""
 "qu'avètz aponduda."
 
 #: ../src/nautilus-emblem-sidebar.c:272
-#, fuzzy, c-format
+#, c-format
 msgid "Could not rename emblem with name '%s'."
 msgstr "Impossible de renommar l'emblèma que lo nom es '%s'."
 
@@ -5176,9 +5138,8 @@ msgid "<b>Behavior</b>"
 msgstr "<b>Compòrtament</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:18
-#, fuzzy
 msgid "<b>Compact View Defaults</b>"
-msgstr "<b>Paramètres per defaut de la visualizacion en icòna</b>"
+msgstr "<b>Paramètres per defaut de la visualizacion compacta</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:19
 msgid "<b>Date</b>"
@@ -5242,7 +5203,7 @@ msgstr "<b>Paramètres per defaut de la visualizacion en arborescéncia</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:34
 msgid "A_ll columns have the same width"
-msgstr ""
+msgstr "To_tas las colomnas a la meteissa largor"
 
 #
 #: ../src/nautilus-file-management-properties.glade.h:35
@@ -5318,7 +5279,6 @@ msgid "Count _number of items:"
 msgstr "Comptar lo _nombre d'elements :"
 
 #: ../src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
 msgid "D_efault zoom level:"
 msgstr "Nivèl de _zoom per defaut :"
 
@@ -5339,13 +5299,13 @@ msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_Inclure una comanda Suprimir que sauta l'etapa de la banasta"
 
 #: ../src/nautilus-file-management-properties.glade.h:58
-#, fuzzy
 msgid ""
 "Icon View\n"
 "Compact View\n"
 "List View"
 msgstr ""
 "Visualizacion en icònas\n"
+"Visualizacion compacta\n"
 "Visualizacion en tièra"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
@@ -5581,7 +5541,6 @@ msgid "Use _Default Background"
 msgstr "Utilizar lo _fons per defaut"
 
 #: ../src/nautilus-information-panel.c:495
-#, fuzzy
 msgid "You cannot assign more than one custom icon at a time."
 msgstr "Podètz pas atribuir mai d'una icòna personalizada a l'encòp."
 
@@ -5978,7 +5937,7 @@ msgid "_Add new..."
 msgstr "_Apondre un novèl..."
 
 #: ../src/nautilus-property-browser.c:976
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but pattern %s could not be deleted."
 msgstr "Desconsolat mas es impossible de suprimir lo motiu %s."
 
@@ -5987,7 +5946,7 @@ msgid "Check that you have permission to delete the pattern."
 msgstr "Verificatz qu'avètz las permissions per suprimir lo motiu."
 
 #: ../src/nautilus-property-browser.c:1005
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but emblem %s could not be deleted."
 msgstr "Desconsolat mas es impossible de suprimir l'emblèma %s."
 
@@ -6045,7 +6004,6 @@ msgid "Please try again."
 msgstr "Tornatz ensajar."
 
 #: ../src/nautilus-property-browser.c:1204
-#, fuzzy
 msgid "Sorry, but you cannot replace the reset image."
 msgstr "Desconsolat mas podètz pas remplaçar l'imatge Reinicializar."
 
@@ -6054,7 +6012,7 @@ msgid "Reset is a special image that cannot be deleted."
 msgstr "Reinicializar es un imatge especial que podètz pas suprimir."
 
 #: ../src/nautilus-property-browser.c:1235
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but the pattern %s could not be installed."
 msgstr "Desconsolat mas es impossible d'installar lo motiu %s."
 
@@ -6322,7 +6280,7 @@ msgid "The location is not a folder."
 msgstr "L'emplaçament es pas un repertòri."
 
 #: ../src/nautilus-window-manage-views.c:1697
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find \"%s\"."
 msgstr "Impossible de trobar \"%s\"."
 
@@ -6349,7 +6307,7 @@ msgstr "L'accès es estat refusat."
 #. * the proxy is set up wrong.
 #.
 #: ../src/nautilus-window-manage-views.c:1733
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "Impossible de visualizar \"%s\" per que l'òste se pòt pas trobar."
 
