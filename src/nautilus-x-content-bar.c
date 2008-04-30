@@ -271,7 +271,9 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
 	hbox = GTK_WIDGET (bar);
 
 	bar->priv->label = gtk_label_new (NULL);
-	gtk_box_pack_start (GTK_BOX (bar), bar->priv->label, FALSE, FALSE, 0);
+	gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
+	gtk_misc_set_alignment (GTK_MISC (bar->priv->label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (bar), bar->priv->label, TRUE, TRUE, 0);
 
 	bar->priv->button = gtk_button_new ();
 	gtk_box_pack_end (GTK_BOX (hbox), bar->priv->button, FALSE, FALSE, 0);
