@@ -5,7 +5,6 @@ dnl ===========================================================================
 m4_define(bonobo_activation_minver,    2.1.0)
 m4_define(bonobo_minver,               2.1.0)
 m4_define(eel_minver,                  2.21.90)
-m4_define(esound_minver,               0.2.27)
 m4_define(glib_minver,                 2.15.6)
 m4_define(gnome_desktop_minver,        2.9.91)
 m4_define(gnome_minver,                2.14.0)
@@ -43,7 +42,6 @@ AC_SUBST([ACLOCAL_AMFLAGS], ["\${ACLOCAL_FLAGS}"])
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED, [bonobo_activation_minver])
 AC_SUBST(BONOBO_REQUIRED, [bonobo_minver])
 AC_SUBST(EEL_REQUIRED, [eel_minver])
-AC_SUBST(ESOUND_REQUIRED, [esound_minver])
 AC_SUBST(GLIB_REQUIRED, [glib_minver])
 AC_SUBST(GNOME_DESKTOP_REQUIRED, [gnome_desktop_minver])
 AC_SUBST(GNOME_REQUIRED, [gnome_minver])
@@ -87,7 +85,6 @@ fi
 AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
 PKG_CHECK_MODULES(ALL, [
-	esound			>= esound_minver
 	bonobo-activation-2.0	>= bonobo_activation_minver
 	eel-2.0			>= eel_minver
 	glib-2.0		>= glib_minver
@@ -402,7 +399,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="glib-2.0 eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 esound gnome-desktop-2.0 gio-2.0 gio-unix-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 gnome-desktop-2.0 gio-2.0 gio-unix-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
