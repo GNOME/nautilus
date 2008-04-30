@@ -68,7 +68,7 @@ nautilus_horizontal_splitter_finalize (GObject *object)
 static void
 splitter_expand (NautilusHorizontalSplitter *splitter, int position)
 {
-	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+	g_assert (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	if (position >= CLOSED_THRESHOLD) {
 		return;
@@ -85,7 +85,7 @@ splitter_expand (NautilusHorizontalSplitter *splitter, int position)
 static void
 splitter_collapse (NautilusHorizontalSplitter *splitter, int position)
 {
-	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+	g_assert (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	splitter->details->saved_size = position;
 	gtk_paned_set_position (GTK_PANED (splitter), 0);
@@ -94,7 +94,7 @@ splitter_collapse (NautilusHorizontalSplitter *splitter, int position)
 static void
 splitter_toggle (NautilusHorizontalSplitter *splitter, int position)
 {
-	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+	g_assert (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	if (gtk_paned_get_position (GTK_PANED (splitter)) >= CLOSED_THRESHOLD) {
 		nautilus_horizontal_splitter_collapse (splitter);

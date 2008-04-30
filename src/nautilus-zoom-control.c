@@ -149,10 +149,10 @@ menu_position_under_widget (GtkMenu   *menu,
 	GdkScreen *screen;
 
 	widget = GTK_WIDGET (user_data);
-	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_assert (GTK_IS_WIDGET (widget));
 
 	container = gtk_widget_get_ancestor (widget, GTK_TYPE_CONTAINER);
-	g_return_if_fail (container != NULL);
+	g_assert (container != NULL);
 
 	gtk_widget_size_request (widget, &req);
 	gtk_widget_size_request (GTK_WIDGET (menu), &menu_req);
@@ -725,7 +725,7 @@ nautilus_zoom_control_accessible_do_action (AtkAction *accessible, int i)
 {
 	GtkWidget *widget;
 	
-	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, FALSE);
+	g_assert (i >= 0 && i < NUM_ACTIONS);
 
 	widget = GTK_ACCESSIBLE (accessible)->widget;
 	if (!widget) {
@@ -750,7 +750,7 @@ static G_CONST_RETURN char *
 nautilus_zoom_control_accessible_action_get_description (AtkAction *accessible, 
 							 int i)
 {
-	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, NULL);
+	g_assert (i >= 0 && i < NUM_ACTIONS);
 
 	return _(nautilus_zoom_control_accessible_action_descriptions[i]);
 }
@@ -759,7 +759,7 @@ static G_CONST_RETURN char *
 nautilus_zoom_control_accessible_action_get_name (AtkAction *accessible, 
 						  int i)
 {
-	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, NULL);
+	g_assert (i >= 0 && i < NUM_ACTIONS);
 
 	return _(nautilus_zoom_control_accessible_action_names[i]);
 }

@@ -1208,7 +1208,7 @@ change_directory_location (NautilusDirectory *directory,
 	 * to be moved. But if that did somehow happen, this function
 	 * wouldn't do enough to handle it.
 	 */
-	g_return_if_fail (directory->details->as_file == NULL);
+	g_assert (directory->details->as_file == NULL);
 
 	g_hash_table_remove (directories,
 			     directory->details->location);

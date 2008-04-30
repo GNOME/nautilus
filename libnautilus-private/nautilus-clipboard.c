@@ -66,7 +66,7 @@ struct _TargetCallbackData {
 static void
 cut_callback (gpointer target)
 {
-	g_return_if_fail (target != NULL);
+	g_assert (target != NULL);
 
 	g_signal_emit_by_name (target, "cut-clipboard");
 }
@@ -74,7 +74,7 @@ cut_callback (gpointer target)
 static void
 copy_callback (gpointer target)
 {
-	g_return_if_fail (target != NULL);
+	g_assert (target != NULL);
 
 	g_signal_emit_by_name (target, "copy-clipboard");
 }
@@ -82,7 +82,7 @@ copy_callback (gpointer target)
 static void
 paste_callback (gpointer target)
 {
-	g_return_if_fail (target != NULL);
+	g_assert (target != NULL);
 
 	g_signal_emit_by_name (target, "paste-clipboard");
 }
@@ -93,7 +93,7 @@ editable_select_all_callback (gpointer target)
 	GtkEditable *editable;
 
 	editable = GTK_EDITABLE (target);
-	g_return_if_fail (editable != NULL);
+	g_assert (editable != NULL);
 
 	gtk_editable_set_position (editable, -1);
 	gtk_editable_select_region (editable, 0, -1);
@@ -102,7 +102,7 @@ editable_select_all_callback (gpointer target)
 static void
 text_view_select_all_callback (gpointer target)
 {
-	g_return_if_fail (GTK_IS_TEXT_VIEW (target));
+	g_assert (GTK_IS_TEXT_VIEW (target));
 
 	g_signal_emit_by_name (target, "select-all", TRUE);
 }
@@ -134,10 +134,10 @@ action_select_all_callback (GtkAction *action,
 {
 	TargetCallbackData *target_data;
 
-	g_return_if_fail (callback_data != NULL);
+	g_assert (callback_data != NULL);
 
 	target_data = g_object_get_data (callback_data, "Nautilus:clipboard_target_data");
-	g_return_if_fail (target_data != NULL);
+	g_assert (target_data != NULL);
 
 	target_data->select_all_callback (callback_data);
 }
@@ -393,7 +393,7 @@ selection_changed_callback (GtkWidget *widget,
 	g_assert (target_data != NULL);
 
 	editable = GTK_EDITABLE (widget);
-	g_return_if_fail (editable != NULL);
+	g_assert (editable != NULL);
 
 	if (gtk_editable_get_selection_bounds (editable, &start, &end) && start != end) {
 		set_clipboard_menu_items_sensitive (target_data->action_group);

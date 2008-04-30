@@ -185,7 +185,7 @@ handle_go_back (NautilusNavigationWindow *window, GFile *location)
         GList *link;
         NautilusBookmark *bookmark;
 
-        g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+        g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
         /* Going back. Move items from the back list to the forward list. */
         g_assert (g_list_length (window->back_list) > NAUTILUS_WINDOW (window)->details->location_change_distance);
@@ -224,7 +224,7 @@ handle_go_forward (NautilusNavigationWindow *window, GFile *location)
         GList *link;
         NautilusBookmark *bookmark;
 
-        g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+        g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
         /* Going forward. Move items from the forward list to the back list. */
         g_assert (g_list_length (window->forward_list) > NAUTILUS_WINDOW (window)->details->location_change_distance);

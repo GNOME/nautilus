@@ -83,7 +83,7 @@ expiring_cache_new (time_t expire_time, ExpiringCacheGetValFunc get_value_func,
 {
 	ExpiringCache *cache;
 
-	g_return_val_if_fail (get_value_func != NULL, NULL);
+	g_assert (get_value_func != NULL);
 
 	cache = g_new (ExpiringCache, 1);
 	cache->expire_time = expire_time;
@@ -130,7 +130,7 @@ expiring_cache_get_value (ExpiringCache *cache, guint key)
 {
 	ExpiringCacheEntry *entry;
 
-	g_return_val_if_fail (cache != NULL, NULL);
+	g_assert (cache != NULL);
 
 	if (!g_hash_table_lookup_extended (cache->cached_values, GSIZE_TO_POINTER (key),
 	                                   NULL, (gpointer) &entry)) {

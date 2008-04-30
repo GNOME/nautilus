@@ -360,9 +360,9 @@ nautilus_file_new_from_filename (NautilusDirectory *directory,
 {
 	NautilusFile *file;
 
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (filename != NULL, NULL);
-	g_return_val_if_fail (filename[0] != '\0', NULL);
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (filename != NULL);
+	g_assert (filename[0] != '\0');
 
 	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
 		if (self_owned) {
@@ -519,7 +519,7 @@ nautilus_file_get_internal (GFile *location, gboolean create)
 	GFile *parent;
 	char *basename;
 
-	g_return_val_if_fail (location != NULL, NULL);
+	g_assert (location != NULL);
 
 	parent = g_file_get_parent (location);
 	
@@ -4853,7 +4853,7 @@ nautilus_file_get_octal_permissions_as_string (NautilusFile *file)
 {
 	guint32 permissions;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	if (!nautilus_file_can_get_permissions (file)) {
 		return NULL;
@@ -4885,7 +4885,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 		return NULL;
 	}
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	permissions = file->details->permissions;
 	is_directory = nautilus_file_is_directory (file);
@@ -4958,7 +4958,7 @@ format_item_count_for_display (guint item_count,
 			       gboolean includes_directories, 
 			       gboolean includes_files)
 {
-	g_return_val_if_fail (includes_directories || includes_files, NULL);
+	g_assert (includes_directories || includes_files);
 
 	return g_strdup_printf (includes_directories
 			? (includes_files 
@@ -4988,7 +4988,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		return NULL;
 	}
 	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 	
 	if (nautilus_file_is_directory (file)) {
 		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
@@ -5028,7 +5028,7 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 		return NULL;
 	}
 	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 	
 	if (nautilus_file_is_directory (file)) {
 		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
@@ -5065,15 +5065,15 @@ nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 	goffset total_size;
 
 	/* Must ask for size or some kind of count, but not both. */
-	g_return_val_if_fail (!report_size || (!report_directory_count && !report_file_count), NULL);
-	g_return_val_if_fail (report_size || report_directory_count || report_file_count, NULL);
+	g_assert (!report_size || (!report_directory_count && !report_file_count));
+	g_assert (report_size || report_directory_count || report_file_count);
 
 	if (file == NULL) {
 		return NULL;
 	}
 	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-	g_return_val_if_fail (nautilus_file_is_directory (file), NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (nautilus_file_is_directory (file));
 
 	status = nautilus_file_get_deep_counts 
 		(file, &directory_count, &file_count, &unreadable_count, &total_size, FALSE);

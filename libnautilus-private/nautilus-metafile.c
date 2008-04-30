@@ -1390,8 +1390,8 @@ metafile_get_file_uri (NautilusMetafile *metafile,
 {
 	char *escaped_file_name, *uri;
 	
-	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
-	g_return_val_if_fail (file_name != NULL, NULL);
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+	g_assert (file_name != NULL);
 	
 	escaped_file_name = g_uri_escape_string (file_name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, FALSE);
 	
@@ -1412,9 +1412,9 @@ rename_file_metadata (NautilusMetafile *metafile,
 	char *old_file_uri, *new_file_uri;
 	char *escaped;
 
-	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
-	g_return_if_fail (old_file_name != NULL);
-	g_return_if_fail (new_file_name != NULL);
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+	g_assert (old_file_name != NULL);
+	g_assert (new_file_name != NULL);
 
 	remove_file_metadata (metafile, new_file_name);
 
@@ -1580,10 +1580,10 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 	char *source_file_uri;
 	char *destination_file_uri;
 
-	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
-	g_return_if_fail (source_file_name != NULL);
-	g_return_if_fail (NAUTILUS_IS_METAFILE (destination_metafile));
-	g_return_if_fail (destination_file_name != NULL);
+	g_assert (NAUTILUS_IS_METAFILE (source_metafile));
+	g_assert (source_file_name != NULL);
+	g_assert (NAUTILUS_IS_METAFILE (destination_metafile));
+	g_assert (destination_file_name != NULL);
 
 	if (source_metafile->is_read
 	    && destination_metafile->is_read) {
@@ -1658,8 +1658,8 @@ remove_file_metadata (NautilusMetafile *metafile,
 {
 	char *file_uri;
 
-	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
-	g_return_if_fail (file_name != NULL);
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+	g_assert (file_name != NULL);
 
 	if (nautilus_metadata_has_scheduled_copy (metafile, file_name)) {
 		nautilus_metadata_schedule_removal (metafile, file_name);
@@ -1682,8 +1682,8 @@ set_metafile_contents (NautilusMetafile *metafile,
 	xmlChar *name;
 	char *unescaped_name;
 
-	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
-	g_return_if_fail (metafile->xml == NULL);
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+	g_assert (metafile->xml == NULL);
 
 	if (metafile_contents == NULL) {
 		return;

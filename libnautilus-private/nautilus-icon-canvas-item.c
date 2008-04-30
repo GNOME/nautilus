@@ -257,7 +257,7 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 {
 	NautilusIconCanvasItemDetails *details;
 
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (object));
+	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (object));
 
 	details = NAUTILUS_ICON_CANVAS_ITEM (object)->details;
 
@@ -757,7 +757,7 @@ get_current_canvas_bounds (EelCanvasItem *item)
 {
 	EelIRect bounds;
 
-	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), eel_irect_empty);
+	g_assert (EEL_IS_CANVAS_ITEM (item));
 
 	bounds.x0 = item->x1;
 	bounds.y0 = item->y1;
@@ -1466,12 +1466,12 @@ nautilus_icon_canvas_lighten_pixbuf (GdkPixbuf* src, guint lighten_value) {
 	guchar *target_pixels, *original_pixels;
 	guchar *pixsrc, *pixdest;
 
-	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
-	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+	g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
+	g_assert ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+				  && gdk_pixbuf_get_n_channels (src) == 4));
+	g_assert (gdk_pixbuf_get_bits_per_sample (src) == 8);
 
 	dest = gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
 			       gdk_pixbuf_get_has_alpha (src),
@@ -2300,8 +2300,8 @@ get_icon_canvas_rectangle (NautilusIconCanvasItem *item,
 {
 	GdkPixbuf *pixbuf;
 
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
-	g_return_if_fail (rect != NULL);
+	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
+	g_assert (rect != NULL);
 
 	eel_canvas_w2c (EEL_CANVAS_ITEM (item)->canvas,
 			item->details->x,
@@ -2341,7 +2341,7 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 	int knob_width, knob_height;
 	int hit_corner;
 	
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
+	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
 
 	/* Make sure there are handles to hit. */
 	if (!item->details->show_stretch_handles) {
@@ -2536,7 +2536,7 @@ nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
 	NautilusIcon *icon;
 	NautilusIconContainer *container;
 
-	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+	g_assert (i < LAST_ACTION);
 
 	item = eel_accessibility_get_gobject (ATK_OBJECT (accessible));
 	if (!item) {
@@ -2578,7 +2578,7 @@ nautilus_icon_canvas_item_accessible_action_get_description (AtkAction *accessib
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
 
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 	if (priv->action_descriptions[i]) {
@@ -2591,7 +2591,7 @@ nautilus_icon_canvas_item_accessible_action_get_description (AtkAction *accessib
 static const char *
 nautilus_icon_canvas_item_accessible_action_get_name (AtkAction *accessible, int i)
 {
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	return nautilus_icon_canvas_item_accessible_action_names[i];
 }
@@ -2600,7 +2600,7 @@ static const char *
 nautilus_icon_canvas_item_accessible_action_get_keybinding (AtkAction *accessible,
                                                           int i)
 {
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	return NULL;
 }
@@ -2612,7 +2612,7 @@ nautilus_icon_canvas_item_accessible_action_set_description (AtkAction *accessib
 {
 	NautilusIconCanvasItemAccessiblePrivate *priv;
 
-	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+	g_assert (i < LAST_ACTION);
 
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 
@@ -3180,7 +3180,7 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 	GString *item_text;
 
 	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
-	g_return_val_if_fail (item != NULL, NULL);
+	g_assert (item != NULL);
 
 	type = nautilus_icon_canvas_item_accessible_get_type ();
 

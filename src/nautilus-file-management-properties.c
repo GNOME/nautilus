@@ -191,8 +191,8 @@ preferences_show_help (GtkWindow *parent,
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	g_return_if_fail (helpfile != NULL);
-	g_return_if_fail (sect_id != NULL);
+	g_assert (helpfile != NULL);
+	g_assert (sect_id != NULL);
 
 	gnome_help_display_desktop (NULL,
 				    "user-guide",

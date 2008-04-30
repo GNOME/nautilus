@@ -1,3 +1,24 @@
+2008-04-30  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-clipboard.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-entry.c:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-horizontal-splitter.c:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-users-groups-cache.c:
+	* libnautilus-private/nautilus-vfs-directory.c:
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window.c:
+	* src/nautilus-zoom-control.c:
+	Replace g_return_*() with g_assert() in private, internal
+	functions. Closes #530321.
+
 2008-04-29  David Zeuthen  <davidz@redhat.com>
 
 	* libnautilus-private/nautilus-autorun.c:

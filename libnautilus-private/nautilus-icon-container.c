@@ -954,7 +954,7 @@ sort_icons (NautilusIconContainer *container,
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->compare_icons != NULL);
+	g_assert (klass->compare_icons != NULL);
 
 	*icons = g_list_sort_with_data (*icons, compare_icons, container);
 }
@@ -1501,10 +1501,10 @@ placement_grid_position_is_free (PlacementGrid *grid, EelIRect pos)
 {
 	int x, y;
 	
-	g_return_val_if_fail (pos.x0 >= 0 && pos.x0 < grid->num_columns, TRUE);
-	g_return_val_if_fail (pos.y0 >= 0 && pos.y0 < grid->num_rows, TRUE);
-	g_return_val_if_fail (pos.x1 >= 0 && pos.x1 < grid->num_columns, TRUE);
-	g_return_val_if_fail (pos.y1 >= 0 && pos.y1 < grid->num_rows, TRUE);
+	g_assert (pos.x0 >= 0 && pos.x0 < grid->num_columns);
+	g_assert (pos.y0 >= 0 && pos.y0 < grid->num_rows);
+	g_assert (pos.x1 >= 0 && pos.x1 < grid->num_columns);
+	g_assert (pos.y1 >= 0 && pos.y1 < grid->num_rows);
 
 	for (x = pos.x0; x <= pos.x1; x++) {
 		for (y = pos.y0; y <= pos.y1; y++) {
@@ -1522,10 +1522,10 @@ placement_grid_mark (PlacementGrid *grid, EelIRect pos)
 {
 	int x, y;
 	
-	g_return_if_fail (pos.x0 >= 0 && pos.x0 < grid->num_columns);
-	g_return_if_fail (pos.y0 >= 0 && pos.y0 < grid->num_rows);
-	g_return_if_fail (pos.x1 >= 0 && pos.x1 < grid->num_columns);
-	g_return_if_fail (pos.y1 >= 0 && pos.y1 < grid->num_rows);
+	g_assert (pos.x0 >= 0 && pos.x0 < grid->num_columns);
+	g_assert (pos.y0 >= 0 && pos.y0 < grid->num_rows);
+	g_assert (pos.x1 >= 0 && pos.x1 < grid->num_columns);
+	g_assert (pos.y1 >= 0 && pos.y1 < grid->num_rows);
 
 	for (x = pos.x0; x <= pos.x1; x++) {
 		for (y = pos.y0; y <= pos.y1; y++) {
@@ -4173,7 +4173,7 @@ nautilus_icon_container_search_delete_event (GtkWidget *widget,
 					     GdkEventAny *event,
 					     NautilusIconContainer *container)
 {
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+	g_assert (GTK_IS_WIDGET (widget));
 
 	nautilus_icon_container_search_dialog_hide (widget, container);
 
@@ -4185,7 +4185,7 @@ nautilus_icon_container_search_button_press_event (GtkWidget *widget,
 						   GdkEventButton *event,
 						   NautilusIconContainer *container)
 {
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+	g_assert (GTK_IS_WIDGET (widget));
 
 	nautilus_icon_container_search_dialog_hide (widget, container);
 
@@ -4207,8 +4207,8 @@ nautilus_icon_container_search_iter (NautilusIconContainer *container,
 	char *normalized_key, *case_normalized_key;
 	char *normalized_name, *case_normalized_name;
 	
-	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (n >= 1, FALSE);
+	g_assert (key != NULL);
+	g_assert (n >= 1);
 	
 	normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
 	if (!normalized_key) {
@@ -4278,7 +4278,7 @@ nautilus_icon_container_search_move (GtkWidget *window,
 
 	text = gtk_entry_get_text (GTK_ENTRY (container->details->search_entry));
 
-	g_return_if_fail (text != NULL);
+	g_assert (text != NULL);
 
 	if (container->details->selected_iter == 0) {
 		return;
@@ -4345,8 +4345,8 @@ nautilus_icon_container_search_key_press_event (GtkWidget *widget,
 {
 	gboolean retval = FALSE;
 
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+	g_assert (GTK_IS_WIDGET (widget));
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	/* close window and cancel the search */
 	if (event->keyval == GDK_Escape || event->keyval == GDK_Tab) {
@@ -4398,8 +4398,8 @@ nautilus_icon_container_search_init (GtkWidget   *entry,
 	gint len;
 	const gchar *text;
 
-	g_return_if_fail (GTK_IS_ENTRY (entry));
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (GTK_IS_ENTRY (entry));
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 	len = strlen (text);
@@ -5503,7 +5503,7 @@ item_event_callback (EelCanvasItem *item,
 	details = container->details;
 
 	icon = NAUTILUS_ICON_CANVAS_ITEM (item)->user_data;
-	g_return_val_if_fail (icon != NULL, FALSE);
+	g_assert (icon != NULL);
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -5790,7 +5790,7 @@ activate_selected_items_alternate (NautilusIconContainer *container,
 {
 	GList *selection;
 
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	if (icon != NULL) {
 		selection = g_list_prepend (NULL, icon->data);
@@ -5836,7 +5836,7 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
+	g_assert (klass->get_icon_images != NULL);
 
 	return klass->get_icon_images (container, data, size, emblem_pixbufs, embedded_text, for_drag_accept, need_large_embeddded_text, embedded_text_needs_loading, has_open_window);
 }
@@ -5851,7 +5851,7 @@ nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->get_icon_text != NULL);
+	g_assert (klass->get_icon_text != NULL);
 
 	klass->get_icon_text (container, data, editable_text, additional_text);
 }
@@ -5862,7 +5862,7 @@ nautilus_icon_container_freeze_updates (NautilusIconContainer *container)
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->freeze_updates != NULL);
+	g_assert (klass->freeze_updates != NULL);
 
 	klass->freeze_updates (container);
 }
@@ -5873,7 +5873,7 @@ nautilus_icon_container_unfreeze_updates (NautilusIconContainer *container)
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->unfreeze_updates != NULL);
+	g_assert (klass->unfreeze_updates != NULL);
 
 	klass->unfreeze_updates (container);
 }
@@ -5887,7 +5887,7 @@ nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->start_monitor_top_left != NULL);
+	g_assert (klass->start_monitor_top_left != NULL);
 
 	klass->start_monitor_top_left (container, data, client, large_text);
 }
@@ -5913,7 +5913,7 @@ nautilus_icon_container_prioritize_thumbnailing (NautilusIconContainer *containe
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->prioritize_thumbnailing != NULL);
+	g_assert (klass->prioritize_thumbnailing != NULL);
 
 	klass->prioritize_thumbnailing (container, icon->data);
 }
@@ -6699,7 +6699,7 @@ get_nth_selected_icon (NautilusIconContainer *container, int index)
 	NautilusIcon *icon;
 	int selection_count;
 
-	g_return_val_if_fail (index > 0, NULL);
+	g_assert (index > 0);
 
 	/* Find the nth selected icon. */
 	selection_count = 0;
@@ -7933,7 +7933,7 @@ nautilus_icon_container_accessible_action_get_description (AtkAction *accessible
 {
 	NautilusIconContainerAccessiblePrivate *priv;
 	
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 	
@@ -7947,7 +7947,7 @@ nautilus_icon_container_accessible_action_get_description (AtkAction *accessible
 static const char *
 nautilus_icon_container_accessible_action_get_name (AtkAction *accessible, int i)
 {
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	return nautilus_icon_container_accessible_action_names[i];
 }
@@ -7956,7 +7956,7 @@ static const char *
 nautilus_icon_container_accessible_action_get_keybinding (AtkAction *accessible, 
 							  int i)
 {
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
+	g_assert (i < LAST_ACTION);
 
 	return NULL;
 }
@@ -7968,7 +7968,7 @@ nautilus_icon_container_accessible_action_set_description (AtkAction *accessible
 {
 	NautilusIconContainerAccessiblePrivate *priv;
 
-	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+	g_assert (i < LAST_ACTION);
 
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 

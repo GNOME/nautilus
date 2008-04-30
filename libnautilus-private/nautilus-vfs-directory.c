@@ -51,7 +51,7 @@ vfs_contains_file (NautilusDirectory *directory,
 		   NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	return file->details->directory == directory;
 }
@@ -144,8 +144,8 @@ vfs_are_all_files_seen (NautilusDirectory *directory)
 static gboolean
 vfs_is_not_empty (NautilusDirectory *directory)
 {
-	g_return_val_if_fail (NAUTILUS_IS_VFS_DIRECTORY (directory), FALSE);
-	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	g_assert (nautilus_directory_is_anyone_monitoring_file_list (directory));
 
 	return directory->details->file_list != NULL;
 }

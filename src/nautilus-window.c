@@ -286,7 +286,7 @@ real_set_allow_up (NautilusWindow *window,
 {
 	GtkAction *action;
 	
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+        g_assert (NAUTILUS_IS_WINDOW (window));
 
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_UP);
@@ -981,7 +981,7 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 	GList *node;
 	GtkAction *action;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	if (window->content_view == NULL) {
 		return;
@@ -1214,7 +1214,7 @@ static void
 nautilus_window_set_title (NautilusWindow *window, 
 			   const char *title)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
                          set_title, (window, title));
@@ -1285,8 +1285,8 @@ real_set_content_view_widget (NautilusWindow *window,
 {
 	GtkWidget *widget;
 	
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW (new_view));
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (new_view == NULL || NAUTILUS_IS_VIEW (new_view));
 	
 	if (new_view == window->content_view) {
 		return;
@@ -1575,7 +1575,7 @@ nautilus_window_get_history (NautilusWindow *window)
 static NautilusWindowType
 nautilus_window_get_window_type (NautilusWindow *window)
 {
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NAUTILUS_WINDOW_SPATIAL);
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	return NAUTILUS_WINDOW_GET_CLASS (window)->window_type;
 }

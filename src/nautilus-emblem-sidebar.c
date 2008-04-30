@@ -1008,7 +1008,7 @@ nautilus_emblem_sidebar_finalize (GObject *object)
 {
 	NautilusEmblemSidebar *emblem_sidebar;
 
-	g_return_if_fail (NAUTILUS_IS_EMBLEM_SIDEBAR (object));
+	g_assert (NAUTILUS_IS_EMBLEM_SIDEBAR (object));
 	emblem_sidebar = NAUTILUS_EMBLEM_SIDEBAR (object);
 
 	if (emblem_sidebar->details != NULL) {

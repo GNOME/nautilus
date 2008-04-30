@@ -645,8 +645,8 @@ mime_db_changed_callback (GObject *ignore, NautilusDirectory *dir)
 {
 	NautilusFileAttributes attrs;
 
-	g_return_if_fail (dir != NULL);
-	g_return_if_fail (dir->details != NULL);
+	g_assert (dir != NULL);
+	g_assert (dir->details != NULL);
 
 	attrs = NAUTILUS_FILE_ATTRIBUTE_INFO |
 		NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |

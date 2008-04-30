@@ -353,7 +353,7 @@ static gboolean
 nautilus_entry_selection_clear (GtkWidget *widget,
 			        GdkEventSelection *event)
 {
-	g_return_val_if_fail (NAUTILUS_IS_ENTRY (widget), FALSE);
+	g_assert (NAUTILUS_IS_ENTRY (widget));
 	
 	if (gdk_selection_owner_get (event->selection) == widget->window) {
 		return FALSE;
