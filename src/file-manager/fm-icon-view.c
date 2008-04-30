@@ -68,7 +68,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <esd.h>
 
 #include "nautilus-audio-mime-types.h"
 
