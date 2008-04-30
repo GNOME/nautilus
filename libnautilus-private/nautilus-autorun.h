@@ -89,7 +89,7 @@ void nautilus_autorun_get_x_content_types_for_mount_async (GMount *mount,
 
 void nautilus_autorun_launch_for_mount (GMount *mount, GAppInfo *app_info);
 
-void nautilus_inhibit_autorun_for_volume (GVolume *volume);
-void nautilus_inhibit_autorun_for_file (GFile *file);
+void nautilus_allow_autorun_for_volume (GVolume *volume);
+void nautilus_allow_autorun_for_volume_finish (GVolume *volume);
 
 #endif /* NAUTILUS_AUTORUN_H */

@@ -239,7 +239,6 @@ vfs_file_mount_callback (GObject *source_object,
 						    res, &error);
 	nautilus_file_operation_complete (op, mounted_on, error);
 	if (mounted_on) {
-		nautilus_inhibit_autorun_for_file (mounted_on);
 		g_object_unref (mounted_on);
 	}
 	if (error) {

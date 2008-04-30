@@ -171,9 +171,7 @@ startup_volume_mount_cb (GObject *source_object,
 			 GAsyncResult *res,
 			 gpointer user_data)
 {
-	if (g_volume_mount_finish (G_VOLUME (source_object), res, NULL)) {
-		nautilus_inhibit_autorun_for_volume (G_VOLUME (source_object));
-	}
+	g_volume_mount_finish (G_VOLUME (source_object), res, NULL);
 }
 
 static void
@@ -1344,7 +1342,7 @@ volume_added_callback (GVolumeMonitor *monitor,
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT) &&
 	    g_volume_should_automount (volume) &&
 	    g_volume_can_mount (volume)) {
-		nautilus_file_operations_mount_volume (NULL, volume, FALSE);
+		nautilus_file_operations_mount_volume (NULL, volume, TRUE);
 	}
 }
 

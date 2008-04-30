@@ -1258,7 +1258,6 @@ activation_mount_not_mounted_callback (GObject *source_object,
 		g_error_free (error);
 	} else {
 		location = nautilus_file_get_location (file);
-		nautilus_inhibit_autorun_for_file (location);
 		g_object_unref (G_OBJECT (location));
 	}
 	

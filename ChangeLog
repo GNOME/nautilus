@@ -1,3 +1,31 @@
+2008-04-29  David Zeuthen  <davidz@redhat.com>
+
+	* libnautilus-private/nautilus-autorun.c:
+	* libnautilus-private/nautilus-autorun.h:
+	* libnautilus-private/nautilus-file-operations.c:
+	(volume_mount_cb), (nautilus_file_operations_mount_volume):
+	* libnautilus-private/nautilus-file-operations.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(activation_mount_not_mounted_callback):
+	* libnautilus-private/nautilus-vfs-file.c:
+	(vfs_file_mount_callback):
+	* src/nautilus-application.c: (startup_volume_mount_cb),
+	(volume_added_callback):
+	* src/nautilus-places-sidebar.c: (open_selected_bookmark),
+	(mount_shortcut_cb):
+	* src/nautilus-window-manage-views.c: (mount_not_mounted_callback):
+	Fix how autorunning works. Instead of inhibiting autorunning
+	every time we run something, we turn things around and instead
+	allow automounting only in the instance where Nautilus automounted
+	something itself. So in essence this patch is s/inhibit/allow/.
+	This fixes an annoying problem where Nautilus would do autorun
+	everytime something was mounted even from the command line. A
+	consequence of this are windows popping up and other annoyances.
+	This patch fixes that problem.
+
+	* src/nautilus-x-content-bar.c: (nautilus_x_content_bar_init):
+	Make sure the label is ellipsized.
+
 2008-04-27  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c: (delete_files),

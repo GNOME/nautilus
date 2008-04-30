@@ -93,7 +93,7 @@ void nautilus_file_operations_unmount_mount (GtkWindow                      *par
 					     gboolean                        check_trash);
 void nautilus_file_operations_mount_volume  (GtkWindow                      *parent_window,
 					     GVolume                        *volume,
-					     gboolean                        inhibit_autorun);
+					     gboolean                        allow_autorun);
 								
 
 void nautilus_file_operations_copy      (GList                *files,
