@@ -1,3 +1,9 @@
+2008-04-30  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-property-browser.c: (ensure_file_is_image):
+	Do not unref the file info before checking the mime type,
+	otherwise the mime_type string will be invalidated. (#530549).
+
 2008-04-30  A. Walton  <awalton@gnome.org>
 
 	* configure.in:
