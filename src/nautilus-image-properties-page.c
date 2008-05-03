@@ -228,7 +228,7 @@ append_tag_value_pair (GString  *string,
 static void
 append_exifdata_string (ExifData *exifdata, GString *string)
 {
-	if (exifdata->ifd[0] && exifdata->ifd[0]->count) {
+	if (exifdata && exifdata->ifd[0] && exifdata->ifd[0]->count) {
                 append_tag_value_pair (string, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
 
