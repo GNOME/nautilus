@@ -1,3 +1,9 @@
+2008-05-03  Hans Petter Jansson  <hpj@novell.com>
+
+	* src/nautilus-image-properties-page.c (append_exifdata_string):
+	If we get a NULL exifdata, don't try to dereference it. Fixes
+	BGO #530851.
+
 2008-04-30  A. Walton  <awalton@gnome.org>
 
 	* configure.in:
