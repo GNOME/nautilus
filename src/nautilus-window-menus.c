@@ -432,7 +432,7 @@ action_about_nautilus_callback (GtkAction *action,
 		   "GNU General Public License for more details."),
 		N_("You should have received a copy of the GNU General Public License "
 		   "along with Nautilus; if not, write to the Free Software Foundation, Inc., "
-		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
+		   "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA")
 	};
 	gchar *license_trans;
 
@@ -440,17 +440,13 @@ action_about_nautilus_callback (GtkAction *action,
 					     _(license[2]), NULL);
 
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
-#if GTK_CHECK_VERSION (2, 11, 0)
 			       "program-name", _("Nautilus"),
-#else
-			       "name", _("Nautilus"),
-#endif /* GTK 2.11. 0 */
 			       "version", VERSION,
 			       "comments", _("Nautilus is a graphical shell "
 					     "for GNOME that makes it "
 					     "easy to manage your files "
 					     "and the rest of your system."),
-			       "copyright", _("Copyright \xC2\xA9 1999-2007 "
+			       "copyright", _("Copyright \xC2\xA9 1999-2008 "
 					      "The Nautilus authors"),
 			       "license", license_trans,
 			       "wrap-license", TRUE,

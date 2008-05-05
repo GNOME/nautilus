@@ -1,5 +1,12 @@
 2008-05-05  A. Walton  <awalton@gnome.org>
 
+	* src/nautilus-window-menus.c (action_about_nautilus_callback):
+	Update FSF address, bump the copyright year to 2008, and remove
+	a unnecessary version test macro (we require a later Gtk+ now, 
+	making this test unnecessary). Closes bug #409038.
+
+2008-05-05  A. Walton  <awalton@gnome.org>
+
 	* configure.in:
 	Use -Wstrict-aliasing=0 instead of -Wno-strict-aliasing, known to be
 	broken on GCC 4.3.x < r130902 (GCC Bug #34973). Closes GNOME 
