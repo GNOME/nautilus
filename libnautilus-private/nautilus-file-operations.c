@@ -3221,6 +3221,26 @@ copy_file_progress_callback (goffset current_num_bytes,
 	}
 }
 
+static gboolean
+test_dir_is_parent (GFile *child, GFile *root)
+{
+	GFile *f;
+
+	f = g_file_dup (child);
+	while (f) {
+		if (g_file_equal (f, root)) {
+			g_object_unref (f);
+			return TRUE;
+		}
+		f = g_file_get_parent (f);
+	}
+
+	if (f) {
+		g_object_unref (f);
+	}
+	return FALSE;
+}
+
 /* Debuting files is non-NULL only for toplevel items */
 static void
 copy_move_file (CopyMoveJob *copy_job,
@@ -3261,6 +3281,41 @@ copy_move_file (CopyMoveJob *copy_job,
 		dest = get_target_file (src, dest_dir, same_fs);
 	}
 
+
+	/* Don't allow recursive move/copy into itself.  
+	 * (We would get a file system error if we proceeded but it is nicer to 
+	 * detect and report it at this level) */
+	if (test_dir_is_parent (dest_dir, src)) {
+		if (job->skip_all_error) {
+			g_error_free (error);
+			goto out;
+		}
+		
+		/*  the run_warning() frees all strings passed in automatically  */
+		primary = copy_job->is_move ? g_strdup (_("You cannot move a folder into itself."))
+					    : g_strdup (_("You cannot copy a folder into itself."));
+		secondary = g_strdup (_("The destination folder is inside the source folder."));
+		
+		response = run_warning (job,
+					primary,
+					secondary,
+					NULL,
+					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+					NULL);
+
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (job);
+		} else if (response == 1) { /* skip all */
+			job->skip_all_error = TRUE;
+		} else if (response == 2) { /* skip */
+			/* do nothing */
+		} else {
+			g_assert_not_reached ();
+		}
+
+		goto out;
+	}
+	
  retry:
 	
 	error = NULL;
@@ -3787,6 +3842,41 @@ move_file_prepare (CopyMoveJob *move_job,
 	job = (CommonJob *)move_job;
 	
 	dest = get_target_file (src, dest_dir, same_fs);
+
+
+	/* Don't allow recursive move/copy into itself.  
+	 * (We would get a file system error if we proceeded but it is nicer to 
+	 * detect and report it at this level) */
+	if (test_dir_is_parent (dest_dir, src)) {
+		if (job->skip_all_error) {
+			g_error_free (error);
+			goto out;
+		}
+		
+		/*  the run_warning() frees all strings passed in automatically  */
+		primary = move_job->is_move ? g_strdup (_("You cannot move a folder into itself."))
+					    : g_strdup (_("You cannot copy a folder into itself."));
+		secondary = g_strdup (_("The destination folder is inside the source folder."));
+		
+		response = run_warning (job,
+					primary,
+					secondary,
+					NULL,
+					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
+					NULL);
+		
+		if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+			abort_job (job);
+		} else if (response == 1) { /* skip all */
+			job->skip_all_error = TRUE;
+		} else if (response == 2) { /* skip */
+			/* do nothing */
+		} else {
+			g_assert_not_reached ();
+		}
+
+		goto out;
+	}
 
  retry:
 	
