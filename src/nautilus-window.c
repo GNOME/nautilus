@@ -744,68 +744,39 @@ nautilus_window_realize (GtkWidget *widget)
 	update_cursor (NAUTILUS_WINDOW (widget));
 }
 
-/* Here we use an approach similar to the GEdit one. We override
- * GtkWindow's handler to reverse the order in which keybindings are
- * processed, and then we chain up to the grand parent handler.
- */
 static gboolean
 nautilus_window_key_press_event (GtkWidget *widget,
 				 GdkEventKey *event)
 {
-	static gpointer grand_parent_class = NULL;
 	NautilusWindow *window;
-	gboolean handled;
 	int i;
 
 	window = NAUTILUS_WINDOW (widget);
-	handled = FALSE;
-	if (!grand_parent_class) {
-		grand_parent_class = g_type_class_peek_parent (nautilus_window_parent_class);
-	}
 
-	/* handle currently focused widget */
-	if (!handled) {
-		handled = gtk_window_propagate_key_event (GTK_WINDOW (window), event);
-	}
-	
-	/* handle extra window keybindings */
-	if (!handled) {
-		for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
-			if (extra_window_keybindings[i].keyval == event->keyval) {
-				const GList *action_groups;
-				GtkAction *action;
+	for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++) {
+		if (extra_window_keybindings[i].keyval == event->keyval) {
+			const GList *action_groups;
+			GtkAction *action;
 
-				action = NULL;
+			action = NULL;
 
-				action_groups = gtk_ui_manager_get_action_groups (window->details->ui_manager);
-				while (action_groups != NULL && action == NULL) {
-					action = gtk_action_group_get_action (action_groups->data,
-									      extra_window_keybindings[i].action);
-					action_groups = action_groups->next;
-				}
-
-				g_assert (action != NULL);
-				if (gtk_action_is_sensitive (action)) {
-					gtk_action_activate (action);
-					handled = TRUE;
-				}
-
-				break;
+			action_groups = gtk_ui_manager_get_action_groups (window->details->ui_manager);
+			while (action_groups != NULL && action == NULL) {
+				action = gtk_action_group_get_action (action_groups->data, extra_window_keybindings[i].action);
+				action_groups = action_groups->next;
 			}
+
+			g_assert (action != NULL);
+			if (gtk_action_is_sensitive (action)) {
+				gtk_action_activate (action);
+				return TRUE;
+			}
+
+			break;
 		}
 	}
-	
-	/* handle mnemonics and accelerators */
-	if (!handled) {
-		handled = gtk_window_activate_key (GTK_WINDOW (window), event);
-	}
-	
-	/* chain up to the grand parent */
-	if (!handled) {
-		handled = GTK_WIDGET_CLASS (grand_parent_class)->key_press_event (widget, event);
-	}
-	
-	return handled;
+
+	return GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event);
 }
 
 /*
