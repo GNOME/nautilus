@@ -361,7 +361,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wcast-align \
 	-Werror"
 
-	for option in -Wno-strict-aliasing -Wno-pointer-sign; do
+	for option in -Wstrict-aliasing=0 -Wno-pointer-sign; do
 		SAVE_CFLAGS="$WARNING_CFLAGS"
 		WARNING_CFLAGS="$WARNING_CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
