@@ -123,18 +123,26 @@ mount_enclosing_ready_cb (GFile *location,
 			  GtkWidget *widget)
 {
 	char *uri;
+	gboolean success;
 	GError *error = NULL;
-	
-	g_file_mount_enclosing_volume_finish (location,
-					      res, &error);
+
 	uri = g_file_get_uri (location);
-	if (error) {
-		display_error_dialog (error, uri, widget);
-	} else {
+	success = g_file_mount_enclosing_volume_finish (location,
+							res, &error);
+
+	if (success ||
+	    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED)) {
 		/* volume is mounted, show it */
 		show_uri (uri, widget);
-		g_object_unref (location);
+	} else {
+		display_error_dialog (error, uri, widget);
 	}
+
+	if (error) {
+		g_error_free (error);
+	}
+
+	g_object_unref (location);
 	g_free (uri);
 }
 
