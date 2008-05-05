@@ -1,3 +1,10 @@
+2008-05-05  A. Walton  <awalton@gnome.org>
+
+	* configure.in:
+	Use -Wstrict-aliasing=0 instead of -Wno-strict-aliasing, known to be
+	broken on GCC 4.3.x < r130902 (GCC Bug #34973). Closes GNOME 
+	bug #528081.
+
 2008-05-05  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-window.c: (nautilus_window_key_press_event):
