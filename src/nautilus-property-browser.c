@@ -717,6 +717,7 @@ ensure_file_is_image (GFile *file)
 {
 	GFileInfo *info;
 	const char *mime_type;
+	gboolean ret;
 
 	info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, 0, NULL, NULL);
 	if (info == NULL) {
@@ -728,11 +729,13 @@ ensure_file_is_image (GFile *file)
 		return FALSE;
 	}
 
+	ret = (g_content_type_is_a (mime_type, "image/*") &&
+	       !g_content_type_equals (mime_type, "image/svg") &&
+	       !g_content_type_equals (mime_type, "image/svg+xml"));
+	
 	g_object_unref (info);
-
-	return  g_content_type_is_a (mime_type, "image/*") &&
-		!g_content_type_equals (mime_type, "image/svg") &&
-		!g_content_type_equals (mime_type, "image/svg+xml");
+	
+	return ret;
 }
 
 /* create the appropriate pixbuf for the passed in file */

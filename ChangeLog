@@ -1,5 +1,12 @@
 2008-05-05  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* src/nautilus-property-browser.c: (ensure_file_is_image):
+	Do not unref the file info before checking the mime type,
+	otherwise the mime_type string will be invalidated. (#530549).
+	(Backporting patch from trunk).
+
+2008-05-05  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-window.c: (nautilus_window_key_press_event):
 	Revert the patch for bug #314431 as it seems to break cut and paste.
 
