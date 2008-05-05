@@ -1,5 +1,15 @@
 2008-05-05  A. Walton  <awalton@gnome.org>
 
+	reviewed by: Cosimo Cecchi
+
+	* libnautilus-private/nautilus-module.c (nautilus_module_load):
+	* src/file-manager/fm-ditem-page.c (save_entry):
+	* src/nautilus-autorun-software.c (autorun):
+	Fixes build on toolchains with -Wformat enabled. 
+	Closes bug #531562.
+
+2008-05-05  A. Walton  <awalton@gnome.org>
+
 	* src/nautilus-window-menus.c (action_about_nautilus_callback):
 	Update FSF address, bump the copyright year to 2008, and remove
 	a unnecessary version test macro (we require a later Gtk+ now, 

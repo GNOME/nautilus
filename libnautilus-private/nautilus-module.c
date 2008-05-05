@@ -76,7 +76,7 @@ nautilus_module_load (GTypeModule *gmodule)
 	module->library = g_module_open (module->path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 
 	if (!module->library) {
-		g_warning (g_module_error ());
+		g_warning ("%s", g_module_error ());
 		return FALSE;
 	}
 
@@ -90,7 +90,7 @@ nautilus_module_load (GTypeModule *gmodule)
 			      "nautilus_module_list_types",
 			      (gpointer *)&module->list_types)) {
 
-		g_warning (g_module_error ());
+		g_warning ("%s", g_module_error ());
 		g_module_close (module->library);
 		
 		return FALSE;
