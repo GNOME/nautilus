@@ -2807,6 +2807,66 @@ same_row_left_side_rightmost (NautilusIconContainer *container,
 }
 
 static gboolean
+next_row_leftmost (NautilusIconContainer *container,
+		   NautilusIcon *start_icon,
+	           NautilusIcon *best_so_far,
+		   NautilusIcon *candidate,
+		   void *data)
+{
+	/* sort out icons that are not below the current row */
+	if (compare_with_start_row (container, candidate) >= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) > 0) {
+			/* candidate is above best choice, but below the current row */
+			return TRUE;
+		}
+
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) > 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
+previous_row_rightmost (NautilusIconContainer *container,
+		        NautilusIcon *start_icon,
+			NautilusIcon *best_so_far,
+			NautilusIcon *candidate,
+			void *data)
+{
+	/* sort out icons that are not above the current row */
+	if (compare_with_start_row (container, candidate) <= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) < 0) {
+			/* candidate is below the best choice, but above the current row */
+			return TRUE;
+		}
+
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) < 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
 same_column_above_lowest (NautilusIconContainer *container,
 			  NautilusIcon *start_icon,
 			  NautilusIcon *best_so_far,
@@ -2866,6 +2926,79 @@ same_column_below_highest (NautilusIconContainer *container,
 	}
 
 	return TRUE;
+}
+
+static gboolean
+next_column_highest (NautilusIconContainer *container,
+		     NautilusIcon *start_icon,
+		     NautilusIcon *best_so_far,
+		     NautilusIcon *candidate,
+		     void *data)
+{
+	/* sort out icons that are not after the current column */
+	if (compare_with_start_column (container, candidate) >= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) > 0) {
+			/* candidate is left of the best choice, but right of the current column */
+			return TRUE;
+		}
+
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) > 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
+previous_column_lowest (NautilusIconContainer *container,
+		        NautilusIcon *start_icon,
+			NautilusIcon *best_so_far,
+			NautilusIcon *candidate,
+			void *data)
+{
+	/* sort out icons that are not before the current column */
+	if (compare_with_start_column (container, candidate) <= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) < 0) {
+			/* candidate is right of the best choice, but left of the current column */
+			return TRUE;
+		}
+
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) < 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
+last_column_lowest (NautilusIconContainer *container,
+		    NautilusIcon *start_icon,
+		    NautilusIcon *best_so_far,
+		    NautilusIcon *candidate,
+		    void *data)
+{
+	if (best_so_far == NULL) {
+		return TRUE;
+	}
+	return compare_icons_horizontal_first (container, best_so_far, candidate) < 0;
 }
 
 static gboolean
@@ -3036,7 +3169,11 @@ keyboard_end (NautilusIconContainer *container,
 	from = find_best_selected_icon (container, NULL,
 					leftmost_in_top_row, 
 					NULL);
-	to = find_best_icon (container, NULL, rightmost_in_bottom_row, NULL);
+	to = find_best_icon (container, NULL,
+			     nautilus_icon_container_is_layout_vertical (container) ?
+			     last_column_lowest :
+			     rightmost_in_bottom_row,
+			     NULL);
 
 	container->details->arrow_key_axis = AXIS_NONE;
 	keyboard_move_to (container, to, from, event);
@@ -3082,6 +3219,7 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		    IsBetterIconFunction better_start,
 		    IsBetterIconFunction empty_start,
 		    IsBetterIconFunction better_destination,
+		    IsBetterIconFunction better_destination_fallback_if_no_a11y,
 		    IsBetterIconFunction better_destination_manual)
 {
 	NautilusIcon *from;
@@ -3128,6 +3266,20 @@ keyboard_arrow_key (NautilusIconContainer *container,
 			(container, from,
 			 container->details->auto_layout ? better_destination : better_destination_manual,
 			 &data);
+
+		/* only wrap around to next/previous row/column if no a11y is used.
+		 * Visually impaired people may be easily confused by this.
+		 */
+		if (to == NULL &&
+		    better_destination_fallback_if_no_a11y != NULL &&
+		    container->details->auto_layout &&
+		    ATK_IS_NO_OP_OBJECT (gtk_widget_get_accessible (GTK_WIDGET (container)))) {
+			to = find_best_icon
+				(container, from,
+				 better_destination_fallback_if_no_a11y,
+				 &data);
+		}
+
 	}
 
 	keyboard_move_to (container, to, from, event);
@@ -3146,6 +3298,7 @@ keyboard_right (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
 			    same_row_right_side_leftmost,
+			    next_row_leftmost,
 			    closest_in_90_degrees);
 }
 
@@ -3162,6 +3315,7 @@ keyboard_left (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
 			    same_row_left_side_rightmost,
+			    previous_row_rightmost,
 			    closest_in_90_degrees);
 }
 
@@ -3178,6 +3332,7 @@ keyboard_down (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
 			    same_column_below_highest,
+			    next_column_highest,
 			    closest_in_90_degrees);
 }
 
@@ -3194,6 +3349,7 @@ keyboard_up (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
 			    same_column_above_lowest,
+			    previous_column_lowest,
 			    closest_in_90_degrees);
 }
 

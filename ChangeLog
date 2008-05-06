@@ -1,3 +1,15 @@
+2008-05-06  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(next_row_leftmost), (previous_row_rightmost),
+	(next_column_highest), (previous_column_lowest),
+	(last_column_lowest), (keyboard_end), (keyboard_arrow_key),
+	(keyboard_right), (keyboard_left), (keyboard_down), (keyboard_up):
+	Wrap to next row/column when pressing arrow key, except if a11y is
+	used. Fixes #526802.
+	For vertical layout, make the "End" key select bottom item in last
+	column, instead of the last item in the bottom row.
+
 2008-05-05  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-global-preferences.h:
