@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-30 02:15+0200\n"
-"PO-Revision-Date: 2008-04-30 02:16+0200\n"
+"POT-Creation-Date: 2008-05-06 13:03+0200\n"
+"PO-Revision-Date: 2008-05-06 13:05+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -123,7 +123,7 @@ msgstr "Misunnelse"
 
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:943
-#: ../src/nautilus-property-browser.c:1826
+#: ../src/nautilus-property-browser.c:1829
 msgid "Erase"
 msgstr "Slett"
 
@@ -616,10 +616,8 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
-"visible hard disks and removable media on start-up and and media insertion."
-msgstr ""
-"Hvis denne settes til «true» vil Nautilus montere medier som harddisker og "
-"avtagbare medier ved oppstart og innsetting av medie."
+"visible hard disks and removable media on start-up and media insertion."
+msgstr "Hvis denne settes til «true» vil Nautilus montere medier som harddisker som er synlige for brukerene og avtagbare medier ved oppstart og innsetting av medie."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -1378,7 +1376,7 @@ msgid "The SELinux security context of the file."
 msgstr "SELinux sikkerhetskontekst for filen."
 
 #: ../libnautilus-private/nautilus-customization-data.c:409
-#: ../src/nautilus-property-browser.c:1870
+#: ../src/nautilus-property-browser.c:1873
 msgid "Reset"
 msgstr "Nullstill"
 
@@ -1744,7 +1742,7 @@ msgstr[1] "%'d filer igjen å slette -- %T gjenstår"
 #: ../libnautilus-private/nautilus-file-operations.c:1316
 #: ../libnautilus-private/nautilus-file-operations.c:1354
 #: ../libnautilus-private/nautilus-file-operations.c:1436
-#: ../libnautilus-private/nautilus-file-operations.c:2133
+#: ../libnautilus-private/nautilus-file-operations.c:2128
 msgid "Error while deleting."
 msgstr "Feil under sletting."
 
@@ -1757,14 +1755,14 @@ msgstr ""
 "dem."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1290
-#: ../libnautilus-private/nautilus-file-operations.c:2192
-#: ../libnautilus-private/nautilus-file-operations.c:2965
+#: ../libnautilus-private/nautilus-file-operations.c:2187
+#: ../libnautilus-private/nautilus-file-operations.c:2960
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "Det oppsto en feil under henting av informasjon om filene i mappe «%B»."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1298
-#: ../libnautilus-private/nautilus-file-operations.c:2973
+#: ../libnautilus-private/nautilus-file-operations.c:2968
 msgid "_Skip files"
 msgstr "_Hopp over filer"
 
@@ -1776,8 +1774,8 @@ msgstr ""
 "Mappen «%B» kan ikke slettes fordi du ikke har rettigheter til å lese den."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1322
-#: ../libnautilus-private/nautilus-file-operations.c:2230
-#: ../libnautilus-private/nautilus-file-operations.c:3009
+#: ../libnautilus-private/nautilus-file-operations.c:2225
+#: ../libnautilus-private/nautilus-file-operations.c:3004
 msgid "There was an error reading the folder \"%B\"."
 msgstr "Det oppsto en feil under lesing av mappe «%B»."
 
@@ -1839,57 +1837,57 @@ msgstr "Ikke tøm papirkurv"
 msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2040
+#: ../libnautilus-private/nautilus-file-operations.c:2038
 #, c-format
 msgid "Unable to mount %s"
 msgstr "Kan ikke montere %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2080
+#: ../libnautilus-private/nautilus-file-operations.c:2075
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "Forbereder kopiering av %'d fil (%S)..."
 msgstr[1] "Forbereder kopiering av %'d filer (%S)..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2086
+#: ../libnautilus-private/nautilus-file-operations.c:2081
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "Forbereder flytting av %'d fil (%S)..."
 msgstr[1] "Forbereder flytting av %'d filer (%S)..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2092
+#: ../libnautilus-private/nautilus-file-operations.c:2087
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "Forbereder sletting av %'d fil (%S)..."
 msgstr[1] "Forbereder sletting av %'d filer (%S)..."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2098
+#: ../libnautilus-private/nautilus-file-operations.c:2093
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "Forbereder kasting av %'d fil"
 msgstr[1] "Forbereder kasting av %'d filer"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2129
-#: ../libnautilus-private/nautilus-file-operations.c:2858
-#: ../libnautilus-private/nautilus-file-operations.c:2957
-#: ../libnautilus-private/nautilus-file-operations.c:3001
+#: ../libnautilus-private/nautilus-file-operations.c:2124
+#: ../libnautilus-private/nautilus-file-operations.c:2853
+#: ../libnautilus-private/nautilus-file-operations.c:2952
+#: ../libnautilus-private/nautilus-file-operations.c:2996
 msgid "Error while copying."
 msgstr "Feil under kopiering."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2131
-#: ../libnautilus-private/nautilus-file-operations.c:2955
-#: ../libnautilus-private/nautilus-file-operations.c:2999
+#: ../libnautilus-private/nautilus-file-operations.c:2126
+#: ../libnautilus-private/nautilus-file-operations.c:2950
+#: ../libnautilus-private/nautilus-file-operations.c:2994
 msgid "Error while moving."
 msgstr "Feil under flytting."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2135
+#: ../libnautilus-private/nautilus-file-operations.c:2130
 msgid "Error while moving files to trash."
 msgstr "Feil under flytting av filer til papirkurv."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2189
+#: ../libnautilus-private/nautilus-file-operations.c:2184
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -1897,101 +1895,101 @@ msgstr ""
 "Filer i mappeb «%B» kan ikke håndteres fordi du ikke har rettigheter til å se "
 "dem."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2227
+#: ../libnautilus-private/nautilus-file-operations.c:2222
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Mappe «%B» kan ikke håndteres fordi du ikke har rettigheter til å lese den."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2301
+#: ../libnautilus-private/nautilus-file-operations.c:2296
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Filen «%B» kan ikke håndteres fordi du ikke har rettigheter til å lese den."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2304
+#: ../libnautilus-private/nautilus-file-operations.c:2299
 msgid "There was an error getting information about \"%B\"."
 msgstr "Det oppsto en feil under henting av informasjon om «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2401
-#: ../libnautilus-private/nautilus-file-operations.c:2442
-#: ../libnautilus-private/nautilus-file-operations.c:2474
-#: ../libnautilus-private/nautilus-file-operations.c:2499
+#: ../libnautilus-private/nautilus-file-operations.c:2396
+#: ../libnautilus-private/nautilus-file-operations.c:2437
+#: ../libnautilus-private/nautilus-file-operations.c:2469
+#: ../libnautilus-private/nautilus-file-operations.c:2494
 msgid "Error while copying to \"%B\"."
 msgstr "Feil under kopiering til «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2405
+#: ../libnautilus-private/nautilus-file-operations.c:2400
 msgid "You do not have permissions to access the destination folder."
 msgstr "Du har ikke rettigheter til å aksessere målmappen."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2407
+#: ../libnautilus-private/nautilus-file-operations.c:2402
 msgid "There was an error getting information about the destination."
 msgstr "Det oppsto en feil under henting av informsjon om målet."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2443
+#: ../libnautilus-private/nautilus-file-operations.c:2438
 msgid "The destination is not a folder."
 msgstr "Målet er ikke en mappe."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2475
+#: ../libnautilus-private/nautilus-file-operations.c:2470
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "Ikke nok plass på målet. Prøve å fjerne filer for å frigjøre plass."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2477
+#: ../libnautilus-private/nautilus-file-operations.c:2472
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr "%S tilgjengelig, men %S kreves."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2500
+#: ../libnautilus-private/nautilus-file-operations.c:2495
 msgid "The destination is read-only."
 msgstr "Målet er skrivebeskyttet."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2558
+#: ../libnautilus-private/nautilus-file-operations.c:2553
 msgid "Moving \"%B\" to \"%B\""
 msgstr "Flytter «%B» til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2559
+#: ../libnautilus-private/nautilus-file-operations.c:2554
 msgid "Copying \"%B\" to \"%B\""
 msgstr "Kopierer «%B» til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2564
+#: ../libnautilus-private/nautilus-file-operations.c:2559
 msgid "Duplicating \"%B\""
 msgstr "Dupliserer «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2572
+#: ../libnautilus-private/nautilus-file-operations.c:2567
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Flytter %'d fil (i «%B») til «%B»"
 msgstr[1] "Flytter %'d filer (i «%B») til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2576
+#: ../libnautilus-private/nautilus-file-operations.c:2571
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "Kopierer %'d fil (i «%B») til «%B»"
-msgstr[1] "Kopierer %'d filer (i «%B») til «B»"
+msgstr[1] "Kopierer %'d filer (i «%B») til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2584
+#: ../libnautilus-private/nautilus-file-operations.c:2579
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "Dupliserer %'d fil (i «%B»)"
 msgstr[1] "Dupliserer %'d filer (i «%B»)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2594
+#: ../libnautilus-private/nautilus-file-operations.c:2589
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "Flytter %'d fil til «%B»"
 msgstr[1] "Flytter %'d filer til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2598
+#: ../libnautilus-private/nautilus-file-operations.c:2593
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "Kopierer %'d fil til «%B»"
 msgstr[1] "Kopierer %'d filer til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2604
+#: ../libnautilus-private/nautilus-file-operations.c:2599
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -1999,7 +1997,7 @@ msgstr[0] "Dupliserer %'d fil"
 msgstr[1] "Dupliserer %'d filer"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2624
+#: ../libnautilus-private/nautilus-file-operations.c:2619
 #, c-format
 msgid "%S of %S"
 msgstr "%S av %S"
@@ -2007,11 +2005,11 @@ msgstr "%S av %S"
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 #. * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2633
+#: ../libnautilus-private/nautilus-file-operations.c:2628
 msgid "%S of %S — %T left (%S/sec)"
 msgstr "%S av %S -- %T igjen (%S/sek)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2862
+#: ../libnautilus-private/nautilus-file-operations.c:2857
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -2019,11 +2017,11 @@ msgstr ""
 "Mappen «%B» kan ikke kopieres fordi du ikke har rettigheter til å opprette "
 "den på målet."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2865
+#: ../libnautilus-private/nautilus-file-operations.c:2860
 msgid "There was an error creating the folder \"%B\"."
 msgstr "Det oppsto en feil under oppretting av mappe «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2962
+#: ../libnautilus-private/nautilus-file-operations.c:2957
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -2031,48 +2029,64 @@ msgstr ""
 "Filer i mappe «%B» kan ikke kopieres fordi du ikke har rettigheter til å se "
 "dem."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3006
+#: ../libnautilus-private/nautilus-file-operations.c:3001
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr ""
 "Mappe «%B» kan ikke kopieres fordi du ikke har rettigheter til å lese den."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3048
-#: ../libnautilus-private/nautilus-file-operations.c:3440
-#: ../libnautilus-private/nautilus-file-operations.c:3926
+#: ../libnautilus-private/nautilus-file-operations.c:3043
+#: ../libnautilus-private/nautilus-file-operations.c:3490
+#: ../libnautilus-private/nautilus-file-operations.c:4011
 msgid "Error while moving \"%B\"."
 msgstr "Feil under flytting av «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3049
+#: ../libnautilus-private/nautilus-file-operations.c:3044
 msgid "Could not remove the source folder."
 msgstr "Kunne ikke fjerne kildemappen."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3130
-#: ../libnautilus-private/nautilus-file-operations.c:3167
-#: ../libnautilus-private/nautilus-file-operations.c:3442
-#: ../libnautilus-private/nautilus-file-operations.c:3506
+#: ../libnautilus-private/nautilus-file-operations.c:3125
+#: ../libnautilus-private/nautilus-file-operations.c:3162
+#: ../libnautilus-private/nautilus-file-operations.c:3492
+#: ../libnautilus-private/nautilus-file-operations.c:3556
 msgid "Error while copying \"%B\"."
 msgstr "Feil under kopiering av «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3131
+#: ../libnautilus-private/nautilus-file-operations.c:3126
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Kunne ikke fjerne filer fra allerede eksisterende mappe %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3168
+#: ../libnautilus-private/nautilus-file-operations.c:3163
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Kunne ikke fjerne allerede eksisterende fil %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3339
-#: ../libnautilus-private/nautilus-file-operations.c:3836
+#. the run_warning() frees all strings passed in automatically
+#: ../libnautilus-private/nautilus-file-operations.c:3294
+#: ../libnautilus-private/nautilus-file-operations.c:3856
+msgid "You cannot move a folder into itself."
+msgstr "Du kan ikke flytte en mappe til seg selv."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3295
+#: ../libnautilus-private/nautilus-file-operations.c:3857
+msgid "You cannot copy a folder into itself."
+msgstr "Du kan ikke kopiere en mappe til seg selv."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3296
+#: ../libnautilus-private/nautilus-file-operations.c:3858
+msgid "The destination folder is inside the source folder."
+msgstr "Målmappen er inne i kildemappen."
+
+#: ../libnautilus-private/nautilus-file-operations.c:3389
+#: ../libnautilus-private/nautilus-file-operations.c:3921
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr "En mappe med navn «%B» eksisterer allerede. Vil du flette kildemappen?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3341
+#: ../libnautilus-private/nautilus-file-operations.c:3391
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2081,13 +2095,13 @@ msgstr ""
 "Kildemappen finnes allerede i «%B». Hvis du vil flette mappene vil du bli "
 "spurt om bekreftelse før filer i mappen som er i konflikt blir kopiert."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3346
-#: ../libnautilus-private/nautilus-file-operations.c:3843
+#: ../libnautilus-private/nautilus-file-operations.c:3396
+#: ../libnautilus-private/nautilus-file-operations.c:3928
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "En mappe med navn «%B» eksisterer allerede. Vil du erstatte den?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3348
-#: ../libnautilus-private/nautilus-file-operations.c:3845
+#: ../libnautilus-private/nautilus-file-operations.c:3398
+#: ../libnautilus-private/nautilus-file-operations.c:3930
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2096,13 +2110,13 @@ msgstr ""
 "Mappen finnes allerede i \"%F\". Hvis du erstatter den vil alle filene i "
 "mappen fjernes."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3353
-#: ../libnautilus-private/nautilus-file-operations.c:3850
+#: ../libnautilus-private/nautilus-file-operations.c:3403
+#: ../libnautilus-private/nautilus-file-operations.c:3935
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "En fil med navn «%B» eksisterer allerede. Vil du erstatte den?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3355
-#: ../libnautilus-private/nautilus-file-operations.c:3852
+#: ../libnautilus-private/nautilus-file-operations.c:3405
+#: ../libnautilus-private/nautilus-file-operations.c:3937
 #, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
@@ -2110,28 +2124,28 @@ msgstr ""
 "Filen finnes allerede i «%F». Hvis du erstatter den vil dette overskrive "
 "innholdet."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3444
+#: ../libnautilus-private/nautilus-file-operations.c:3494
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Kunne ikke fjerne eksisterende fil med samme navn i %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3507
+#: ../libnautilus-private/nautilus-file-operations.c:3557
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "En feil oppsto under kopiering av filen til %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3719
+#: ../libnautilus-private/nautilus-file-operations.c:3769
 msgid "Preparing to Move to \"%B\""
 msgstr "Forbereder flytting til «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3723
+#: ../libnautilus-private/nautilus-file-operations.c:3773
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Forbereder flytting av %'d fil"
 msgstr[1] "Forbereder flytting av %'d filer"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3838
+#: ../libnautilus-private/nautilus-file-operations.c:3923
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2140,68 +2154,68 @@ msgstr ""
 "Kildemappen finnes allerede i «%B». Ved fletting vil du bli spurt om å "
 "bekrefte erstatting av filer som er i konflikt med filene som flyttes."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3927
+#: ../libnautilus-private/nautilus-file-operations.c:4012
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Det oppsto en feil ved flytting av filen til %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4196
+#: ../libnautilus-private/nautilus-file-operations.c:4281
 msgid "Creating links in \"%B\""
 msgstr "Oppretter lenker i «%B»"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4200
+#: ../libnautilus-private/nautilus-file-operations.c:4285
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Oppretter lenke til %'d fil"
 msgstr[1] "Oppretter lenker til %'d filer"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4274
+#: ../libnautilus-private/nautilus-file-operations.c:4359
 msgid "Error while creating link to %B."
 msgstr "Feil under oppretting av lenke til «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4276
+#: ../libnautilus-private/nautilus-file-operations.c:4361
 msgid "Symbolic links only supported for local files"
 msgstr "Symbolske lenker er kun støttet for lokale filer."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4279
+#: ../libnautilus-private/nautilus-file-operations.c:4364
 msgid "The target doesn't support symbolic links."
 msgstr "Målet støtter ikke symbolske lenker."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4282
+#: ../libnautilus-private/nautilus-file-operations.c:4367
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Det oppsto en feil ved oppretting av symbolsk lenke i %F."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4571
+#: ../libnautilus-private/nautilus-file-operations.c:4656
 msgid "Setting permissions"
 msgstr "Setter rettigheter"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:4789
+#: ../libnautilus-private/nautilus-file-operations.c:4874
 msgid "untitled folder"
 msgstr "mappe uten navn"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:4797
+#: ../libnautilus-private/nautilus-file-operations.c:4882
 msgid "new file"
 msgstr "ny fil"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4887
+#: ../libnautilus-private/nautilus-file-operations.c:4972
 msgid "Error while creating directory %B."
 msgstr "Feil under oppretting av katalog %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4889
+#: ../libnautilus-private/nautilus-file-operations.c:4974
 msgid "Error while creating file %B."
 msgstr "Feil under oppretting av fil «%B»."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4891
+#: ../libnautilus-private/nautilus-file-operations.c:4976
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Det oppsto en feil under oppretting av katalog i %F."
 
 #: ../libnautilus-private/nautilus-file.c:904
-#: ../libnautilus-private/nautilus-vfs-file.c:266
+#: ../libnautilus-private/nautilus-vfs-file.c:265
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "Denne filen kan ikke monteres"
@@ -2577,14 +2591,14 @@ msgstr "Søk etter filer på tekstinnhold og egenskaper"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
 #: ../src/file-manager/fm-icon-container.c:582
-#: ../src/file-manager/fm-icon-view.c:2939
+#: ../src/file-manager/fm-icon-view.c:2938
 msgid "Icon View"
 msgstr "Ikonvisning"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
-#: ../src/file-manager/fm-icon-view.c:2953
+#: ../src/file-manager/fm-icon-view.c:2952
 msgid "Compact View"
 msgstr "Kompakt visning"
 
@@ -2757,12 +2771,12 @@ msgstr[0] "Dette vil åpne %d separat vindu."
 msgstr[1] "Dette vil åpne %d separate vinduer."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1199
-#: ../src/nautilus-window-manage-views.c:1682
-#: ../src/nautilus-window-manage-views.c:1688
-#: ../src/nautilus-window-manage-views.c:1705
-#: ../src/nautilus-window-manage-views.c:1716
-#: ../src/nautilus-window-manage-views.c:1722
-#: ../src/nautilus-window-manage-views.c:1747
+#: ../src/nautilus-window-manage-views.c:1681
+#: ../src/nautilus-window-manage-views.c:1687
+#: ../src/nautilus-window-manage-views.c:1704
+#: ../src/nautilus-window-manage-views.c:1715
+#: ../src/nautilus-window-manage-views.c:1721
+#: ../src/nautilus-window-manage-views.c:1746
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "Kunne ikke vise «%s»."
@@ -2772,16 +2786,16 @@ msgid "There is no application installed for this file type"
 msgstr "Ingen programmer er installert for denne filtypen"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1248
-#: ../libnautilus-private/nautilus-mime-actions.c:1492
+#: ../libnautilus-private/nautilus-mime-actions.c:1491
 msgid "Unable to mount location"
 msgstr "Kan ikke montere lokasjon"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1577
+#: ../libnautilus-private/nautilus-mime-actions.c:1576
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Åpner «%s»."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1580
+#: ../libnautilus-private/nautilus-mime-actions.c:1579
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3039,7 +3053,7 @@ msgid "Autorun Prompt"
 msgstr "Dialog for automatisk kjøring"
 
 #. tooltip
-#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:669
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:665
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3059,7 +3073,7 @@ msgid "Home Folder"
 msgstr "Hjemmemappe"
 
 #. tooltip
-#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:665
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:661
 msgid "Open your personal folder"
 msgstr "Åpne din personlige mappe"
 
@@ -4031,87 +4045,87 @@ msgstr "Rettighetene kunne ikke endres."
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "Endrer navn fra «%s» til «%s»."
 
-#: ../src/file-manager/fm-icon-view.c:131
+#: ../src/file-manager/fm-icon-view.c:130
 msgid "by _Name"
 msgstr "etter _navn"
 
-#: ../src/file-manager/fm-icon-view.c:132
-#: ../src/file-manager/fm-icon-view.c:1568
+#: ../src/file-manager/fm-icon-view.c:131
+#: ../src/file-manager/fm-icon-view.c:1567
 msgid "Keep icons sorted by name in rows"
 msgstr "Behold ikoner sortert etter navn i rader"
 
-#: ../src/file-manager/fm-icon-view.c:138
+#: ../src/file-manager/fm-icon-view.c:137
 msgid "by _Size"
 msgstr "etter _størrelse"
 
-#: ../src/file-manager/fm-icon-view.c:139
-#: ../src/file-manager/fm-icon-view.c:1572
+#: ../src/file-manager/fm-icon-view.c:138
+#: ../src/file-manager/fm-icon-view.c:1571
 msgid "Keep icons sorted by size in rows"
 msgstr "Behold ikoner sortert etter størrelse i rader"
 
-#: ../src/file-manager/fm-icon-view.c:145
+#: ../src/file-manager/fm-icon-view.c:144
 msgid "by _Type"
 msgstr "etter _type"
 
-#: ../src/file-manager/fm-icon-view.c:146
-#: ../src/file-manager/fm-icon-view.c:1576
+#: ../src/file-manager/fm-icon-view.c:145
+#: ../src/file-manager/fm-icon-view.c:1575
 msgid "Keep icons sorted by type in rows"
 msgstr "Behold ikoner sortert etter type i rader"
 
-#: ../src/file-manager/fm-icon-view.c:152
+#: ../src/file-manager/fm-icon-view.c:151
 msgid "by Modification _Date"
 msgstr "etter endrings_dato"
 
-#: ../src/file-manager/fm-icon-view.c:153
-#: ../src/file-manager/fm-icon-view.c:1580
+#: ../src/file-manager/fm-icon-view.c:152
+#: ../src/file-manager/fm-icon-view.c:1579
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Behold ikoner sortert etter endringsdato i rader"
 
-#: ../src/file-manager/fm-icon-view.c:159
+#: ../src/file-manager/fm-icon-view.c:158
 msgid "by _Emblems"
 msgstr "etter _emblemer"
 
-#: ../src/file-manager/fm-icon-view.c:160
-#: ../src/file-manager/fm-icon-view.c:1584
+#: ../src/file-manager/fm-icon-view.c:159
+#: ../src/file-manager/fm-icon-view.c:1583
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Behold ikoner sortert etter emblemer i rader"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-icon-view.c:1528
+#: ../src/file-manager/fm-icon-view.c:1527
 msgid "Arran_ge Items"
 msgstr "_Plasser oppføringer"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1530
+#: ../src/file-manager/fm-icon-view.c:1529
 msgid "Str_etch Icon"
 msgstr "Str_ekk ikon"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1531
+#: ../src/file-manager/fm-icon-view.c:1530
 msgid "Make the selected icon stretchable"
 msgstr "Gjør valgt ikon strekkbart"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1534
-#: ../src/file-manager/fm-icon-view.c:1686
+#: ../src/file-manager/fm-icon-view.c:1533
+#: ../src/file-manager/fm-icon-view.c:1685
 msgid "Restore Icons' Original Si_zes"
 msgstr "G_jenopprett ikonenes opprinnelige størrelser"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1535
+#: ../src/file-manager/fm-icon-view.c:1534
 msgid "Restore each selected icon to its original size"
 msgstr "Gjenopprett original størrelse for alle valgte ikoner"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1538
+#: ../src/file-manager/fm-icon-view.c:1537
 msgid "Clean _Up by Name"
 msgstr "Rydd _opp etter navn"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1539
+#: ../src/file-manager/fm-icon-view.c:1538
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Plasser ikonene på nytt slik at de passer bedre til vinduene og unngår "
@@ -4119,105 +4133,105 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1545
+#: ../src/file-manager/fm-icon-view.c:1544
 msgid "Compact _Layout"
 msgstr "Tettere p_lassering"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1546
+#: ../src/file-manager/fm-icon-view.c:1545
 msgid "Toggle using a tighter layout scheme"
 msgstr "Slå av/på bruk av tettere plassering"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1550
+#: ../src/file-manager/fm-icon-view.c:1549
 msgid "Re_versed Order"
 msgstr "Om_vendt rekkefølge"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1551
+#: ../src/file-manager/fm-icon-view.c:1550
 msgid "Display icons in the opposite order"
 msgstr "Vis ikoner i omvendt rekkefølge"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1555
+#: ../src/file-manager/fm-icon-view.c:1554
 msgid "_Keep Aligned"
 msgstr "_Behold justert"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1556
+#: ../src/file-manager/fm-icon-view.c:1555
 msgid "Keep icons lined up on a grid"
 msgstr "Behold ikoner justert i et rutenett"
 
-#: ../src/file-manager/fm-icon-view.c:1563
+#: ../src/file-manager/fm-icon-view.c:1562
 msgid "_Manually"
 msgstr "_Manuelt"
 
-#: ../src/file-manager/fm-icon-view.c:1564
+#: ../src/file-manager/fm-icon-view.c:1563
 msgid "Leave icons wherever they are dropped"
 msgstr "La ikoner bli hvor de slippes"
 
-#: ../src/file-manager/fm-icon-view.c:1567
+#: ../src/file-manager/fm-icon-view.c:1566
 msgid "By _Name"
 msgstr "Etter _navn"
 
-#: ../src/file-manager/fm-icon-view.c:1571
+#: ../src/file-manager/fm-icon-view.c:1570
 msgid "By _Size"
 msgstr "Etter _størrelse"
 
-#: ../src/file-manager/fm-icon-view.c:1575
+#: ../src/file-manager/fm-icon-view.c:1574
 msgid "By _Type"
 msgstr "Etter _type"
 
-#: ../src/file-manager/fm-icon-view.c:1579
+#: ../src/file-manager/fm-icon-view.c:1578
 msgid "By Modification _Date"
 msgstr "Etter endrings_dato"
 
-#: ../src/file-manager/fm-icon-view.c:1583
+#: ../src/file-manager/fm-icon-view.c:1582
 msgid "By _Emblems"
 msgstr "Etter _emblemer"
 
-#: ../src/file-manager/fm-icon-view.c:1687
+#: ../src/file-manager/fm-icon-view.c:1686
 msgid "Restore Icon's Original Si_ze"
 msgstr "G_jenopprett ikonets opprinnelige størrelse"
 
-#: ../src/file-manager/fm-icon-view.c:2072
+#: ../src/file-manager/fm-icon-view.c:2071
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til «%s»"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:2941
+#: ../src/file-manager/fm-icon-view.c:2940
 msgid "_Icons"
 msgstr "_Ikoner"
 
-#: ../src/file-manager/fm-icon-view.c:2942
+#: ../src/file-manager/fm-icon-view.c:2941
 msgid "The icon view encountered an error."
 msgstr "Ikonvisningen ble utsatt for en feil."
 
-#: ../src/file-manager/fm-icon-view.c:2943
+#: ../src/file-manager/fm-icon-view.c:2942
 msgid "The icon view encountered an error while starting up."
 msgstr "Ikonvisningen ble utsatt for en feil under oppstart."
 
-#: ../src/file-manager/fm-icon-view.c:2944
+#: ../src/file-manager/fm-icon-view.c:2943
 msgid "Display this location with the icon view."
 msgstr "Vis denne lokasjonen med ikonvisning."
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:2955
+#: ../src/file-manager/fm-icon-view.c:2954
 msgid "_Compact"
 msgstr "_Kompakt"
 
-#: ../src/file-manager/fm-icon-view.c:2956
+#: ../src/file-manager/fm-icon-view.c:2955
 msgid "The compact view encountered an error."
 msgstr "Kompakt visning ble utsatt for en feil."
 
-#: ../src/file-manager/fm-icon-view.c:2957
+#: ../src/file-manager/fm-icon-view.c:2956
 msgid "The compact view encountered an error while starting up."
 msgstr "Kompakt visning ble utsatt for en feil under oppstart."
 
-#: ../src/file-manager/fm-icon-view.c:2958
+#: ../src/file-manager/fm-icon-view.c:2957
 msgid "Display this location with the compact view."
 msgstr "Vis denne lokasjonen med kompakt visning."
 
@@ -4619,12 +4633,12 @@ msgstr "Tre"
 msgid "Show Tree"
 msgstr "Vis tre"
 
-#: ../src/nautilus-application.c:324
+#: ../src/nautilus-application.c:322
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus kunne ikke opprette nødvendig mappe «%s»."
 
-#: ../src/nautilus-application.c:326
+#: ../src/nautilus-application.c:324
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4632,12 +4646,12 @@ msgstr ""
 "Opprett denne mappen før du kjører Nautilus, eller endre rettighetene slik "
 "at Nautilus kan opprette den."
 
-#: ../src/nautilus-application.c:329
+#: ../src/nautilus-application.c:327
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus kunne ikke opprette følgende mapper som kreves: %s."
 
-#: ../src/nautilus-application.c:331
+#: ../src/nautilus-application.c:329
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4655,7 +4669,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:600
+#: ../src/nautilus-application.c:598
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4666,7 +4680,7 @@ msgstr ""
 "datamaskinen på nytt eller installere Nautilus på nytt."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:606
+#: ../src/nautilus-application.c:604
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4713,12 +4727,12 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:636 ../src/nautilus-application.c:654
-#: ../src/nautilus-application.c:661
+#: ../src/nautilus-application.c:634 ../src/nautilus-application.c:652
+#: ../src/nautilus-application.c:659
 msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå pga en uventet feil."
 
-#: ../src/nautilus-application.c:637
+#: ../src/nautilus-application.c:635
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -4726,7 +4740,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra Bonobo under forsøk på å "
 "registrere visningstjeneren for filbehandleren."
 
-#: ../src/nautilus-application.c:655
+#: ../src/nautilus-application.c:653
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
@@ -4736,7 +4750,7 @@ msgstr ""
 "å finne fabrikken. Du kan rette opp problemet ved å terminere bonobo-"
 "activation-server og starte Nautilus på nytt."
 
-#: ../src/nautilus-application.c:662
+#: ../src/nautilus-application.c:660
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -4746,7 +4760,7 @@ msgstr ""
 "å finne skall-objektet. Hvis du dreper bonobo-activation-server og starter "
 "Nautilus på nytt vil dette kunne fikse problemet."
 
-#: ../src/nautilus-application.c:1362 ../src/nautilus-places-sidebar.c:1471
+#: ../src/nautilus-application.c:1360 ../src/nautilus-places-sidebar.c:1471
 #: ../src/nautilus-places-sidebar.c:1494 ../src/nautilus-places-sidebar.c:1517
 #, c-format
 msgid "Unable to eject %s"
@@ -4790,7 +4804,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:161
 #: ../src/nautilus-file-management-properties.c:206
-#: ../src/nautilus-property-browser.c:1562 ../src/nautilus-window-menus.c:506
+#: ../src/nautilus-property-browser.c:1565 ../src/nautilus-window-menus.c:502
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4824,13 +4838,13 @@ msgstr "Rediger bokmerker"
 msgid "Cannot display location \"%s\""
 msgstr "Kan ikke vise lokasjon «%s»"
 
-#: ../src/nautilus-connect-server-dialog-main.c:165
+#: ../src/nautilus-connect-server-dialog-main.c:173
 msgid "[URI]"
 msgstr "[URI]"
 
 #. Translators: This is the --help description gor the connect to server app,
 #. the initial newlines are between the command line arg and the description
-#: ../src/nautilus-connect-server-dialog-main.c:176
+#: ../src/nautilus-connect-server-dialog-main.c:184
 msgid ""
 "\n"
 "\n"
@@ -5548,8 +5562,7 @@ msgstr ""
 
 #. Set initial window title
 #: ../src/nautilus-main.c:469 ../src/nautilus-spatial-window.c:420
-#: ../src/nautilus-window-menus.c:444 ../src/nautilus-window-menus.c:446
-#: ../src/nautilus-window.c:156
+#: ../src/nautilus-window-menus.c:443 ../src/nautilus-window.c:156
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5838,171 +5851,171 @@ msgstr "Fje_rn..."
 msgid "_Add new..."
 msgstr "_Legg til ny..."
 
-#: ../src/nautilus-property-browser.c:976
+#: ../src/nautilus-property-browser.c:979
 #, c-format
 msgid "Sorry, but pattern %s could not be deleted."
 msgstr "Mønster %s kunne ikke slettes."
 
-#: ../src/nautilus-property-browser.c:977
+#: ../src/nautilus-property-browser.c:980
 msgid "Check that you have permission to delete the pattern."
 msgstr "Sjekk at du har rettigheter til å slette mønsteret."
 
-#: ../src/nautilus-property-browser.c:1005
+#: ../src/nautilus-property-browser.c:1008
 #, c-format
 msgid "Sorry, but emblem %s could not be deleted."
 msgstr "Emblem %s kunne ikke slettes."
 
-#: ../src/nautilus-property-browser.c:1006
+#: ../src/nautilus-property-browser.c:1009
 msgid "Check that you have permission to delete the emblem."
 msgstr "Sjekk at du har rettigheter til å slette emblemet."
 
-#: ../src/nautilus-property-browser.c:1052
+#: ../src/nautilus-property-browser.c:1055
 msgid "Create a New Emblem"
 msgstr "Opprett et nytt emblem:"
 
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1074
+#: ../src/nautilus-property-browser.c:1077
 msgid "_Keyword:"
 msgstr "Nø_kkelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: ../src/nautilus-property-browser.c:1093
+#: ../src/nautilus-property-browser.c:1096
 msgid "_Image:"
 msgstr "B_ilde:"
 
-#: ../src/nautilus-property-browser.c:1101
+#: ../src/nautilus-property-browser.c:1104
 msgid "Select an Image File for the New Emblem"
 msgstr "Velg en bildefil for det nye emblemet"
 
-#: ../src/nautilus-property-browser.c:1126
+#: ../src/nautilus-property-browser.c:1129
 msgid "Create a New Color:"
 msgstr "Lag en ny farge:"
 
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1140
+#: ../src/nautilus-property-browser.c:1143
 msgid "Color _name:"
 msgstr "Farge_navn:"
 
-#: ../src/nautilus-property-browser.c:1156
+#: ../src/nautilus-property-browser.c:1159
 msgid "Color _value:"
 msgstr "Farge_verdi:"
 
-#: ../src/nautilus-property-browser.c:1187
+#: ../src/nautilus-property-browser.c:1190
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Beklager, men «%s» er ikke et gyldig filnavn."
 
-#: ../src/nautilus-property-browser.c:1188
-#: ../src/nautilus-window-manage-views.c:1700
+#: ../src/nautilus-property-browser.c:1191
+#: ../src/nautilus-window-manage-views.c:1699
 msgid "Please check the spelling and try again."
 msgstr "Vennligst sjekk stavingen og prøv igjen."
 
-#: ../src/nautilus-property-browser.c:1190
+#: ../src/nautilus-property-browser.c:1193
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Beklager, men du oppga ikke et gyldig filnavn."
 
-#: ../src/nautilus-property-browser.c:1191
+#: ../src/nautilus-property-browser.c:1194
 msgid "Please try again."
 msgstr "Vennligst prøv igjen."
 
-#: ../src/nautilus-property-browser.c:1204
+#: ../src/nautilus-property-browser.c:1207
 msgid "Sorry, but you cannot replace the reset image."
 msgstr "Du kan ikke erstatte nullstill-bildet."
 
-#: ../src/nautilus-property-browser.c:1205
+#: ../src/nautilus-property-browser.c:1208
 msgid "Reset is a special image that cannot be deleted."
 msgstr "Nullstill er et spesielt bilde som ikke kan slettes."
 
-#: ../src/nautilus-property-browser.c:1235
+#: ../src/nautilus-property-browser.c:1238
 #, c-format
 msgid "Sorry, but the pattern %s could not be installed."
 msgstr "Mønster %s kunne ikke installeres."
 
-#: ../src/nautilus-property-browser.c:1257
+#: ../src/nautilus-property-browser.c:1260
 msgid "Select an Image File to Add as a Pattern"
 msgstr "Velg en bildefil som skal legges til som mønster"
 
-#: ../src/nautilus-property-browser.c:1309
-#: ../src/nautilus-property-browser.c:1340
+#: ../src/nautilus-property-browser.c:1312
+#: ../src/nautilus-property-browser.c:1343
 msgid "The color cannot be installed."
 msgstr "Fargen kan ikke installeres."
 
-#: ../src/nautilus-property-browser.c:1310
+#: ../src/nautilus-property-browser.c:1313
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr "Du må oppgi et ubrukt navn for den nye fargen."
 
-#: ../src/nautilus-property-browser.c:1341
+#: ../src/nautilus-property-browser.c:1344
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du må spesifisere et navn for den nye fargen."
 
-#: ../src/nautilus-property-browser.c:1393
+#: ../src/nautilus-property-browser.c:1396
 msgid "Select a Color to Add"
 msgstr "Velg en farge som skal legges til"
 
-#: ../src/nautilus-property-browser.c:1431
-#: ../src/nautilus-property-browser.c:1448
+#: ../src/nautilus-property-browser.c:1434
+#: ../src/nautilus-property-browser.c:1451
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "«%s» kan ikke brukes som bildefil."
 
-#: ../src/nautilus-property-browser.c:1432
-#: ../src/nautilus-property-browser.c:1449
+#: ../src/nautilus-property-browser.c:1435
+#: ../src/nautilus-property-browser.c:1452
 msgid "The file is not an image."
 msgstr "Filen er ikke et bilde."
 
-#: ../src/nautilus-property-browser.c:2156
+#: ../src/nautilus-property-browser.c:2159
 msgid "Select a Category:"
 msgstr "Velg en kategori:"
 
-#: ../src/nautilus-property-browser.c:2165
+#: ../src/nautilus-property-browser.c:2168
 msgid "C_ancel Remove"
 msgstr "_Avbryt fjern"
 
-#: ../src/nautilus-property-browser.c:2171
+#: ../src/nautilus-property-browser.c:2174
 msgid "_Add a New Pattern..."
 msgstr "_Legg til et nytt mønster..."
 
-#: ../src/nautilus-property-browser.c:2174
+#: ../src/nautilus-property-browser.c:2177
 msgid "_Add a New Color..."
 msgstr "_Legg til en ny farge..."
 
-#: ../src/nautilus-property-browser.c:2177
+#: ../src/nautilus-property-browser.c:2180
 msgid "_Add a New Emblem..."
 msgstr "_Legg til et nytt emblem..."
 
-#: ../src/nautilus-property-browser.c:2200
+#: ../src/nautilus-property-browser.c:2203
 msgid "Click on a pattern to remove it"
 msgstr "Klikk på et mønster for å fjerne det."
 
-#: ../src/nautilus-property-browser.c:2203
+#: ../src/nautilus-property-browser.c:2206
 msgid "Click on a color to remove it"
 msgstr "Klikk på en farge for å fjerne den"
 
-#: ../src/nautilus-property-browser.c:2206
+#: ../src/nautilus-property-browser.c:2209
 msgid "Click on an emblem to remove it"
 msgstr "Klikk på et emblem for å fjerne den"
 
-#: ../src/nautilus-property-browser.c:2215
+#: ../src/nautilus-property-browser.c:2218
 msgid "Patterns:"
 msgstr "Mønstre:"
 
-#: ../src/nautilus-property-browser.c:2218
+#: ../src/nautilus-property-browser.c:2221
 msgid "Colors:"
 msgstr "Farger:"
 
-#: ../src/nautilus-property-browser.c:2221
+#: ../src/nautilus-property-browser.c:2224
 msgid "Emblems:"
 msgstr "Emblemer:"
 
-#: ../src/nautilus-property-browser.c:2241
+#: ../src/nautilus-property-browser.c:2244
 msgid "_Remove a Pattern..."
 msgstr "Fje_rn et mønster..."
 
-#: ../src/nautilus-property-browser.c:2244
+#: ../src/nautilus-property-browser.c:2247
 msgid "_Remove a Color..."
 msgstr "Fje_rn en farge..."
 
-#: ../src/nautilus-property-browser.c:2247
+#: ../src/nautilus-property-browser.c:2250
 msgid "_Remove an Emblem..."
 msgstr "Fje_rn et emblem..."
 
@@ -6160,41 +6173,41 @@ msgstr "Du kan velge en annen visning eller gå til en annen lokasjon."
 msgid "The location cannot be displayed with this viewer."
 msgstr "Lokasjonen kan ikke vises med denne visningen."
 
-#: ../src/nautilus-window-manage-views.c:1131
+#: ../src/nautilus-window-manage-views.c:1130
 msgid "Content View"
 msgstr "Innholdsvisning"
 
-#: ../src/nautilus-window-manage-views.c:1132
+#: ../src/nautilus-window-manage-views.c:1131
 msgid "View of the current folder"
 msgstr "Visning for aktiv mappe"
 
-#: ../src/nautilus-window-manage-views.c:1685
+#: ../src/nautilus-window-manage-views.c:1684
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr "Nautilus har ingen installerte visningsprogrammer som kan vise mappen."
 
-#: ../src/nautilus-window-manage-views.c:1691
+#: ../src/nautilus-window-manage-views.c:1690
 msgid "The location is not a folder."
 msgstr "Lokasjonen er ikke en mappe."
 
-#: ../src/nautilus-window-manage-views.c:1697
+#: ../src/nautilus-window-manage-views.c:1696
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "Kunne ikke finne «%s»."
 
-#: ../src/nautilus-window-manage-views.c:1708
+#: ../src/nautilus-window-manage-views.c:1707
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilus ikke kan håndtere %s-lokasjoner."
 
-#: ../src/nautilus-window-manage-views.c:1711
+#: ../src/nautilus-window-manage-views.c:1710
 msgid "Nautilus cannot handle this kind of locations."
 msgstr "Nautilus ikke kan håndtere denne type lokasjoner."
 
-#: ../src/nautilus-window-manage-views.c:1718
+#: ../src/nautilus-window-manage-views.c:1717
 msgid "Unable to mount the location."
 msgstr "Kan ikke montere lokasjonen."
 
-#: ../src/nautilus-window-manage-views.c:1724
+#: ../src/nautilus-window-manage-views.c:1723
 msgid "Access was denied."
 msgstr "Tilgang ble nektet."
 
@@ -6203,17 +6216,17 @@ msgstr "Tilgang ble nektet."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1733
+#: ../src/nautilus-window-manage-views.c:1732
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "Kunne ikke vise «%s» fordi verten ikke ble funnet."
 
-#: ../src/nautilus-window-manage-views.c:1735
+#: ../src/nautilus-window-manage-views.c:1734
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Sjekk at stavingen er korrekt og at proxy-innstillingene er korrekte."
 
-#: ../src/nautilus-window-manage-views.c:1749
+#: ../src/nautilus-window-manage-views.c:1748
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -6252,14 +6265,11 @@ msgstr ""
 #: ../src/nautilus-window-menus.c:433
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
-"Nautilus; if not, write to the Free Software Foundation, Inc., 59 Temple "
-"Place, Suite 330, Boston, MA  02111-1307  USA"
-msgstr ""
-"Du skal ha mottatt en kopi av GNU General Public License sammen med "
-"Nautilus. Hvis dette ikke er tilfelle, kan du skrive til Free Software "
-"Foundation, Inc. 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
+"Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgstr "Du skal ha mottatt en kopi av GNU General Public License sammen med Nautilus. Hvis dette ikke er tilfelle, kan du skrive til Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
-#: ../src/nautilus-window-menus.c:449
+#: ../src/nautilus-window-menus.c:445
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -6267,58 +6277,58 @@ msgstr ""
 "Nautilus er et grafisk skall for GNOME som gjør det lett å håndtere dine "
 "filer og resten av ditt system."
 
-#: ../src/nautilus-window-menus.c:453
-msgid "Copyright © 1999-2007 The Nautilus authors"
-msgstr "Opphavsrett © 1999-2007 Nautilus-utviklerene"
+#: ../src/nautilus-window-menus.c:449
+msgid "Copyright © 1999-2008 The Nautilus authors"
+msgstr "Opphavsrett © 1999-2008 Nautilus-utviklerene"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:463
+#: ../src/nautilus-window-menus.c:459
 msgid "translator-credits"
 msgstr "Kjartan Maraas <kmaraas@gnome.org>"
 
-#: ../src/nautilus-window-menus.c:466
+#: ../src/nautilus-window-menus.c:462
 msgid "Nautilus Web Site"
 msgstr "Nautilus nettsted"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:594
+#: ../src/nautilus-window-menus.c:590
 msgid "_File"
 msgstr "_Fil"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:595
+#: ../src/nautilus-window-menus.c:591
 msgid "_Edit"
 msgstr "R_ediger"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:596
+#: ../src/nautilus-window-menus.c:592
 msgid "_View"
 msgstr "_Vis"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:597
+#: ../src/nautilus-window-menus.c:593
 msgid "_Help"
 msgstr "_Hjelp"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:599
+#: ../src/nautilus-window-menus.c:595
 msgid "_Close"
 msgstr "_Lukk"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:600
+#: ../src/nautilus-window-menus.c:596
 msgid "Close this folder"
 msgstr "Lukk denne mappen"
 
-#: ../src/nautilus-window-menus.c:603
+#: ../src/nautilus-window-menus.c:599
 msgid "_Backgrounds and Emblems..."
 msgstr "_Bakgrunner og emblemer..."
 
-#: ../src/nautilus-window-menus.c:604
+#: ../src/nautilus-window-menus.c:600
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -6326,181 +6336,181 @@ msgstr ""
 "Vis mønstre, farger og emblemer som kan brukes for å lage et tilpasset "
 "utseende"
 
-#: ../src/nautilus-window-menus.c:607
+#: ../src/nautilus-window-menus.c:603
 msgid "Prefere_nces"
 msgstr "_Brukervalg"
 
-#: ../src/nautilus-window-menus.c:608
+#: ../src/nautilus-window-menus.c:604
 msgid "Edit Nautilus preferences"
 msgstr "Rediger brukervalg for Nautilus"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:610
+#: ../src/nautilus-window-menus.c:606
 msgid "_Undo"
 msgstr "_Angre"
 
-#: ../src/nautilus-window-menus.c:611
+#: ../src/nautilus-window-menus.c:607
 msgid "Undo the last text change"
 msgstr "Angre siste tekstendring"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:613
+#: ../src/nautilus-window-menus.c:609
 msgid "Open _Parent"
 msgstr "Åpne o_pphav"
 
-#: ../src/nautilus-window-menus.c:614
+#: ../src/nautilus-window-menus.c:610
 msgid "Open the parent folder"
 msgstr "Åpne opphavsmappen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:620
+#: ../src/nautilus-window-menus.c:616
 msgid "_Stop"
 msgstr "_Stopp"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:621
+#: ../src/nautilus-window-menus.c:617
 msgid "Stop loading the current location"
 msgstr "Stopp lasting av aktiv lokasjon"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:624
+#: ../src/nautilus-window-menus.c:620
 msgid "_Reload"
 msgstr "_Oppdater"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:625
+#: ../src/nautilus-window-menus.c:621
 msgid "Reload the current location"
 msgstr "Last aktiv lokasjon på nytt"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:628
+#: ../src/nautilus-window-menus.c:624
 msgid "_Contents"
 msgstr "_Innhold"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:629
+#: ../src/nautilus-window-menus.c:625
 msgid "Display Nautilus help"
 msgstr "Vis hjelp for Nautilus"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:632
+#: ../src/nautilus-window-menus.c:628
 msgid "_About"
 msgstr "_Om"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:633
+#: ../src/nautilus-window-menus.c:629
 msgid "Display credits for the creators of Nautilus"
 msgstr "Vis informasjon om dem som laget Nautilus"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:636
+#: ../src/nautilus-window-menus.c:632
 msgid "Zoom _In"
 msgstr "Zoom _inn"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:637 ../src/nautilus-zoom-control.c:96
+#: ../src/nautilus-window-menus.c:633 ../src/nautilus-zoom-control.c:96
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:648
+#: ../src/nautilus-window-menus.c:644
 msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:649 ../src/nautilus-zoom-control.c:97
+#: ../src/nautilus-window-menus.c:645 ../src/nautilus-zoom-control.c:97
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:656
+#: ../src/nautilus-window-menus.c:652
 msgid "Normal Si_ze"
 msgstr "Normal st_ørrelse"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:657
+#: ../src/nautilus-window-menus.c:653
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:660
+#: ../src/nautilus-window-menus.c:656
 msgid "Connect to _Server..."
 msgstr "Koble til _tjener..."
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:661
+#: ../src/nautilus-window-menus.c:657
 msgid "Connect to a remote computer or shared disk"
 msgstr "Koble til en ekstern datamaskin eller delt disk"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:664
+#: ../src/nautilus-window-menus.c:660
 msgid "_Home Folder"
 msgstr "_Hjemmemappe"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:668
+#: ../src/nautilus-window-menus.c:664
 msgid "_Computer"
 msgstr "_Datamaskin"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:672
+#: ../src/nautilus-window-menus.c:668
 msgid "_Network"
 msgstr "_Nettverk"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:673 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:669 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Bla gjennom nettverkslokasjoner i bokmerker og lokalt"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:676
+#: ../src/nautilus-window-menus.c:672
 msgid "T_emplates"
 msgstr "_Maler"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:677
+#: ../src/nautilus-window-menus.c:673
 msgid "Open your personal templates folder"
 msgstr "Åpne din personlige malmappe"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:680
+#: ../src/nautilus-window-menus.c:676
 msgid "_Trash"
 msgstr "_Papirkurv"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:681
+#: ../src/nautilus-window-menus.c:677
 msgid "Open your personal trash folder"
 msgstr "Åpne din personlige papirkurv"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:684
+#: ../src/nautilus-window-menus.c:680
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD-brenner"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:685
+#: ../src/nautilus-window-menus.c:681
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
 msgstr "Åpne en mappe hvor du kan dra filer for å brenne en CD eller DVD"
 
-#: ../src/nautilus-window-menus.c:711
+#: ../src/nautilus-window-menus.c:707
 msgid "_Up"
 msgstr "_Opp"
 
-#: ../src/nautilus-window-menus.c:714
+#: ../src/nautilus-window-menus.c:710
 msgid "_Home"
 msgstr "_Hjem"
 
