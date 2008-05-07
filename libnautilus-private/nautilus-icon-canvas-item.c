@@ -62,7 +62,7 @@
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
 #define MAX_TEXT_WIDTH_BESIDE 90
-#define MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM 300
+#define MAX_TEXT_WIDTH_BESIDE_TOP_TO_BOTTOM 150
 
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
