@@ -1,3 +1,21 @@
+2008-05-08  Federico Mena Quintero  <federico@novell.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=364843
+
+	Keep the generated names for "reallylongfilename (copy).txt" from
+	overflowing the maximum allowed length for path names.
+
+	Original patch by Dave Camp <campd@campd.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(shorten_utf8_string): New function; takes an UTF8 string and
+	hygienically truncates it to a given number of bytes.
+	(get_link_name): Ensure the final name doesn't exceed a maximum length.
+	(make_next_duplicate_name): Likewise.
+	(get_max_name_length): Wrapper around pathconf() for basename lengths.
+	(get_unique_target_file): Use a maximum length for the target name.
+	(get_target_file_for_link): Likewise.
+
 2008-05-07  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:
