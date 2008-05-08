@@ -228,15 +228,55 @@ format_time (int seconds)
 					  hours), hours);
 }
 
+static char *
+shorten_utf8_string (const char *base, int reduce_by_num_bytes)
+{
+	int len;
+	char *ret;
+	const char *p;
+	
+	len = strlen (base);
+	len -= reduce_by_num_bytes;
+	
+	if (len <= 0) {
+		return NULL;
+	}
+
+	ret = g_new (char, len + 1);
+
+	p = base;
+	while (len) {
+		char *next;
+		next = g_utf8_next_char (p);
+		if (next - p > len || *next == '\0') {
+			break;
+		}
+		
+		len -= next - p;
+		p = next;
+	}
+	
+	if (p - base == 0) {
+		g_free (ret);
+		return NULL;
+	} else {
+		memcpy (ret, base, p - base);
+		ret[p - base] = '\0';
+		return ret;
+	}
+}
+
 /* Note that we have these two separate functions with separate format
  * strings for ease of localization.
  */
 
 static char *
-get_link_name (const char *name, int count) 
+get_link_name (const char *name, int count, int max_length)
 {
 	const char *format;
 	char *result;
+	int unshortened_length;
+	gboolean use_count;
 	
 	g_assert (name != NULL);
 
@@ -262,8 +302,8 @@ get_link_name (const char *name, int count)
 			format = _("Another link to %s");
 			break;
 		}
-		result = g_strdup_printf (format, name);
 
+		use_count = FALSE;
 	} else {
 		/* Handle special cases for the first few numbers of each ten.
 		 * For locales where getting this exactly right is difficult,
@@ -290,7 +330,30 @@ get_link_name (const char *name, int count)
 			format = _("%'dth link to %s");
 			break;
 		}
+
+		use_count = TRUE;
+	}
+
+	if (use_count)
 		result = g_strdup_printf (format, count, name);
+	else
+		result = g_strdup_printf (format, name);
+
+	if (max_length > 0 && (unshortened_length = strlen (result)) > max_length) {
+		char *new_name;
+
+		new_name = shorten_utf8_string (name, unshortened_length - max_length);
+		if (new_name) {
+			g_free (result);
+
+			if (use_count)
+				result = g_strdup_printf (format, count, new_name);
+			else
+				result = g_strdup_printf (format, new_name);
+
+			g_assert (strlen (result) <= max_length);
+			g_free (new_name);
+		}
 	}
 
 	return result;
@@ -482,11 +545,12 @@ parse_previous_duplicate_name (const char *name,
 }
 
 static char *
-make_next_duplicate_name (const char *base, const char *suffix, int count)
+make_next_duplicate_name (const char *base, const char *suffix, int count, int max_length)
 {
 	const char *format;
 	char *result;
-
+	int unshortened_length;
+	gboolean use_count;
 
 	if (count < 1) {
 		g_warning ("bad count %d in get_duplicate_name", count);
@@ -510,7 +574,8 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 			break;
 
 		}
-		result = g_strdup_printf (format, base, suffix);
+
+		use_count = FALSE;
 	} else {
 
 		/* Handle special cases for the first few numbers of each ten.
@@ -553,14 +618,37 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 			}
 		}
 
+		use_count = TRUE;
+
+	}
+
+	if (use_count)
 		result = g_strdup_printf (format, base, count, suffix);
+	else
+		result = g_strdup_printf (format, base, suffix);
+
+	if (max_length > 0 && (unshortened_length = strlen (result)) > max_length) {
+		char *new_base;
+
+		new_base = shorten_utf8_string (base, unshortened_length - max_length);
+		if (new_base) {
+			g_free (result);
+
+			if (use_count)
+				result = g_strdup_printf (format, new_base, count, suffix);
+			else
+				result = g_strdup_printf (format, new_base, suffix);
+
+			g_assert (strlen (result) <= max_length);
+			g_free (new_base);
+		}
 	}
 
 	return result;
 }
 
 static char *
-get_duplicate_name (const char *name, int count_increment)
+get_duplicate_name (const char *name, int count_increment, int max_length)
 {
 	char *result;
 	char *name_base;
@@ -568,7 +656,7 @@ get_duplicate_name (const char *name, int count_increment)
 	int count;
 
 	parse_previous_duplicate_name (name, &name_base, &suffix, &count);
-	result = make_next_duplicate_name (name_base, suffix, count + count_increment);
+	result = make_next_duplicate_name (name_base, suffix, count + count_increment, max_length);
 
 	g_free (name_base);
 
@@ -2634,6 +2722,45 @@ report_copy_progress (CopyMoveJob *copy_job,
 	nautilus_progress_info_set_progress (job->progress, transfer_info->num_bytes, total_size);
 }
 
+static int
+get_max_name_length (GFile *file_dir)
+{
+	int max_length;
+	char *dir;
+	long max_path;
+	long max_name;
+
+	max_length = -1;
+
+	if (!g_file_has_uri_scheme (file_dir, "file"))
+		return max_length;
+
+	dir = g_file_get_path (file_dir);
+	if (!dir)
+		return max_length;
+
+	max_path = pathconf (dir, _PC_PATH_MAX);
+	max_name = pathconf (dir, _PC_NAME_MAX);
+
+	if (max_name == -1 && max_path == -1) {
+		max_length = -1;
+	} else if (max_name == -1 && max_path != -1) {
+		max_length = max_path - (strlen (dir) + 1);
+	} else if (max_name != -1 && max_path == -1) {
+		max_length = max_name;
+	} else {
+		int leftover;
+
+		leftover = max_path - (strlen (dir) + 1);
+
+		max_length = MIN (leftover, max_name);
+	}
+
+	g_free (dir);
+
+	return max_length;
+}
+
 static GFile *
 get_unique_target_file (GFile *src,
 			GFile *dest_dir,
@@ -2644,6 +2771,9 @@ get_unique_target_file (GFile *src,
 	char *basename, *new_name;
 	GFileInfo *info;
 	GFile *dest;
+	int max_length;
+
+	max_length = get_max_name_length (dest_dir);
 	
 	dest = NULL;
 	info = g_file_query_info (src,
@@ -2653,7 +2783,7 @@ get_unique_target_file (GFile *src,
 		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
 		
 		if (editname != NULL) {
-			new_name = get_duplicate_name (editname, count);
+			new_name = get_duplicate_name (editname, count, max_length);
 			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
 			g_free (new_name);
 		}
@@ -2665,7 +2795,7 @@ get_unique_target_file (GFile *src,
 		basename = g_file_get_basename (src);
 
 		if (g_utf8_validate (basename, -1, NULL)) {
-			new_name = get_duplicate_name (basename, count);
+			new_name = get_duplicate_name (basename, count, max_length);
 			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
 			g_free (new_name);
 		} 
@@ -2695,7 +2825,10 @@ get_target_file_for_link (GFile *src,
 	char *basename, *new_name;
 	GFileInfo *info;
 	GFile *dest;
-	
+	int max_length;
+
+	max_length = get_max_name_length (dest_dir);
+
 	dest = NULL;
 	info = g_file_query_info (src,
 				  G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME,
@@ -2704,7 +2837,7 @@ get_target_file_for_link (GFile *src,
 		editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
 		
 		if (editname != NULL) {
-			new_name = get_link_name (editname, count);
+			new_name = get_link_name (editname, count, max_length);
 			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
 			g_free (new_name);
 		}
@@ -2716,7 +2849,7 @@ get_target_file_for_link (GFile *src,
 		basename = g_file_get_basename (src);
 
 		if (g_utf8_validate (basename, -1, NULL)) {
-			new_name = get_link_name (basename, count);
+			new_name = get_link_name (basename, count, max_length);
 			dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
 			g_free (new_name);
 		} 
@@ -5144,47 +5277,47 @@ nautilus_self_check_file_operations (void)
 
 	
 	/* test the next duplicate name generator */
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1), " (another copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo", 1), "foo (copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (".bashrc", 1), ".bashrc (copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (".foo.txt", 1), ".foo (copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo", 1), "foo foo (copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo.txt", 1), "foo (copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt", 1), "foo foo (copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt", 1), "foo foo (copy).txt txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1), "foo (copy)...txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1), "foo (copy)...");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo. (copy)", 1), "foo. (another copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy)", 1), "foo (another copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy).txt", 1), "foo (another copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy)", 1), "foo (3rd copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy).txt", 1), "foo (3rd copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (another copy).txt", 1), "foo foo (3rd copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy)", 1), "foo (14th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy).txt", 1), "foo (14th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy)", 1), "foo (22nd copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy).txt", 1), "foo (22nd copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy)", 1), "foo (23rd copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy).txt", 1), "foo (23rd copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy)", 1), "foo (24th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy).txt", 1), "foo (24th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy)", 1), "foo (25th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy).txt", 1), "foo (25th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy)", 1), "foo foo (25th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy).txt", 1), "foo foo (25th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (100000000000000th copy).txt", 1), "foo foo (copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy)", 1), "foo (11th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy).txt", 1), "foo (11th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy)", 1), "foo (12th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy).txt", 1), "foo (12th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy)", 1), "foo (13th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy).txt", 1), "foo (13th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy)", 1), "foo (111th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy).txt", 1), "foo (111th copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy)", 1), "foo (123rd copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy).txt", 1), "foo (123rd copy).txt");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy)", 1), "foo (124th copy)");
-	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy).txt", 1), "foo (124th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1, -1), " (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo", 1, -1), "foo (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (".bashrc", 1, -1), ".bashrc (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (".foo.txt", 1, -1), ".foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo", 1, -1), "foo foo (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo.txt", 1, -1), "foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt", 1, -1), "foo foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt", 1, -1), "foo foo (copy).txt txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1, -1), "foo (copy)...txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1, -1), "foo (copy)...");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo. (copy)", 1, -1), "foo. (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy)", 1, -1), "foo (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy).txt", 1, -1), "foo (another copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy)", 1, -1), "foo (3rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy).txt", 1, -1), "foo (3rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (another copy).txt", 1, -1), "foo foo (3rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy)", 1, -1), "foo (14th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy).txt", 1, -1), "foo (14th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy)", 1, -1), "foo (22nd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy).txt", 1, -1), "foo (22nd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy)", 1, -1), "foo (23rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy).txt", 1, -1), "foo (23rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy)", 1, -1), "foo (24th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy).txt", 1, -1), "foo (24th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy)", 1, -1), "foo (25th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy).txt", 1, -1), "foo (25th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy)", 1, -1), "foo foo (25th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy).txt", 1, -1), "foo foo (25th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (100000000000000th copy).txt", 1, -1), "foo foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy)", 1, -1), "foo (11th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy).txt", 1, -1), "foo (11th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy)", 1, -1), "foo (12th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy).txt", 1, -1), "foo (12th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy)", 1, -1), "foo (13th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy).txt", 1, -1), "foo (13th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy)", 1, -1), "foo (111th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy).txt", 1, -1), "foo (111th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy)", 1, -1), "foo (123rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy).txt", 1, -1), "foo (123rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy)", 1, -1), "foo (124th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy).txt", 1, -1), "foo (124th copy).txt");
 
 	setlocale (LC_MESSAGES, "");
 }
