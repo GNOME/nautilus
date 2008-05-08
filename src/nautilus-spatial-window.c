@@ -551,6 +551,7 @@ got_file_info_for_location_menu_callback (NautilusFile *file,
 	name = nautilus_file_get_display_name (file);
 	label = gtk_bin_get_child (GTK_BIN (menu_item));
 	gtk_label_set_label (GTK_LABEL (label), name);
+	g_free (name);
 
 	pixbuf = nautilus_file_get_icon_pixbuf (file,
 						nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU),

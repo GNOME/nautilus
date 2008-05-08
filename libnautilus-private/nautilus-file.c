@@ -3146,10 +3146,12 @@ static gboolean
 is_uri_relative (const char *uri)
 {
 	char *scheme;
+	gboolean ret;
 
 	scheme = g_uri_parse_scheme (uri);
+	ret = (scheme == NULL);
 	g_free (scheme);
-	return scheme == NULL;
+	return ret;
 }
 
 static char *
@@ -3193,6 +3195,7 @@ get_custom_icon (NautilusFile *file)
 		icon_file = g_file_new_for_uri (custom_icon_uri);
 		icon = g_file_icon_new (icon_file);
 		g_object_unref (icon_file);
+		g_free (custom_icon_uri);
 	}
  
 	if (icon == NULL && file->details->got_link_info && file->details->custom_icon != NULL) {

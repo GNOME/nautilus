@@ -228,6 +228,8 @@ nautilus_drag_file_local_internal (const char *target_uri_string,
 		g_object_unref (parent);
 	}
 	
+	g_object_unref (target);
+	
 	return result;
 }	
 
@@ -586,6 +588,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	gtk_selection_data_set (selection_data,
 				selection_data->target,
 				8, result->str, result->len);
+	g_string_free (result, TRUE);
 
 	return TRUE;
 }

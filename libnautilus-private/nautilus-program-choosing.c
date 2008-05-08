@@ -206,6 +206,7 @@ nautilus_launch_application (GAppInfo *application,
 			g_warning ("Cannot open app: %s\n", error->message);
 #endif
 		}
+		g_error_free (error);
 	} else {
 		for (l = files; l != NULL; l = l->next) {
 			file = NAUTILUS_FILE (l->data);

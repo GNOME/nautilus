@@ -1,3 +1,21 @@
+2008-05-09  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_file_local_internal), (nautilus_drag_drag_data_get):
+	* libnautilus-private/nautilus-open-with-dialog.c:
+	(add_or_find_application):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_application):
+	* src/nautilus-sidebar-title.c: (update_icon):
+	* src/nautilus-spatial-window.c:
+	(got_file_info_for_location_menu_callback):
+	* libnautilus-private/nautilus-file.c: (get_custom_icon):
+	Plugged some leaks around.
+	* libnautilus-private/nautilus-file.c: (is_uri_relative):
+	Cleaned up this bit of code.
+
+	Bug #532126.
+
 2008-05-08  Federico Mena Quintero  <federico@novell.com>
 
 	http://bugzilla.gnome.org/show_bug.cgi?id=364843

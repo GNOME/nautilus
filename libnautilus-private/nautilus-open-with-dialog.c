@@ -243,6 +243,7 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 								  app_name,
 								  G_APP_INFO_CREATE_NONE,
 								  &error);
+			g_free (app_name);
 		}
 	}
 

@@ -327,13 +327,14 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	g_free (icon_name);
-	
-	if (pixbuf != NULL) {
-		sidebar_title->details->determined_icon = TRUE;
-	}
 
 	if (!leave_pixbuf_unchanged) {
 		gtk_image_set_from_pixbuf (GTK_IMAGE (sidebar_title->details->icon), pixbuf);
+	}
+	
+	if (pixbuf != NULL) {
+		sidebar_title->details->determined_icon = TRUE;
+		g_object_unref (pixbuf);
 	}
 }
 
