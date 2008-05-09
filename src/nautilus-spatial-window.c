@@ -892,7 +892,7 @@ static const GtkActionEntry spatial_entries[] = {
   /* name, stock id, label */  { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"),
                                  "<control>d", N_("Add a bookmark for the current location to this menu"),
                                  G_CALLBACK (action_add_bookmark_callback) },
-  /* name, stock id, label */  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks"),
+  /* name, stock id, label */  { "Edit Bookmarks", NULL, N_("_Edit Bookmarks..."),
                                  "<control>b", N_("Display a window that allows editing the bookmarks in this menu"),
                                  G_CALLBACK (action_edit_bookmarks_callback) },
   /* name, stock id, label */  { "Search", "gtk-find", N_("_Search for Files..."),

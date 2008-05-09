@@ -1093,7 +1093,7 @@ select_pattern (FMDirectoryView *view)
 	GList *ret;
 
 	ret = NULL;
-	dialog = gtk_dialog_new_with_buttons (_("Select Pattern"),
+	dialog = gtk_dialog_new_with_buttons (_("Select Items Matching"),
 			fm_directory_view_get_containing_window (view),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_STOCK_HELP,
@@ -6363,7 +6363,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Select all items in this window"),
                                  G_CALLBACK (action_select_all_callback) },
   /* name, stock id */         { "Select Pattern", NULL,
-  /* label, accelerator */       N_("Select _Pattern"), "<control>S",
+  /* label, accelerator */       N_("Select I_tems Matching..."), "<control>S",
   /* tooltip */                  N_("Select items in this window matching a given pattern"),
                                  G_CALLBACK (action_select_pattern_callback) },
   /* name, stock id */         { "Invert Selection", NULL,
