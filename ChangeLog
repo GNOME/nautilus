@@ -1,3 +1,11 @@
+2008-05-13  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(action_self_properties_callback):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Do not unref displayed file when opening properties window through
+	location or background popup menu. Fix location popup separators.
+
 2008-05-08  Federico Mena Quintero  <federico@novell.com>
 
 	Merged from trunk:

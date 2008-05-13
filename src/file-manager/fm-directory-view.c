@@ -1371,11 +1371,13 @@ action_self_properties_callback (GtkAction *action,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	files = g_list_append (NULL, view->details->directory_as_file);
+	if (view->details->directory_as_file != NULL) {
+		files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
 
-	fm_properties_window_present (files, GTK_WIDGET (view));
+		fm_properties_window_present (files, GTK_WIDGET (view));
 
-	nautilus_file_list_free (files);
+		nautilus_file_list_free (files);
+	}
 }
 
 static gboolean
