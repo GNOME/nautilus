@@ -616,7 +616,7 @@ location_button_pressed_callback (GtkWidget      *widget,
 {
 	if (event->button == 3 &&
 	    window->content_view != NULL) {
-		nautilus_view_pop_up_location_context_menu (window->content_view, event);
+		nautilus_view_pop_up_location_context_menu (window->content_view, event, NULL);
 	}
 
 	return FALSE;

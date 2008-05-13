@@ -116,6 +116,9 @@ static void navigation_bar_cancel_callback           (GtkWidget                *
 static void path_bar_location_changed_callback       (GtkWidget                *widget,
 						      GFile                    *path,
 						      NautilusNavigationWindow *window);
+static void path_bar_path_set_callback               (GtkWidget                *widget,
+						      GFile                    *location,
+						      NautilusNavigationWindow *window);
 static void always_use_location_entry_changed        (gpointer                  callback_data);
 static void always_use_browser_changed               (gpointer                  callback_data);
 
@@ -274,6 +277,8 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	
 	g_signal_connect_object (window->path_bar, "path_clicked",
 				 G_CALLBACK (path_bar_location_changed_callback), window, 0);
+	g_signal_connect_object (window->path_bar, "path_set",
+				 G_CALLBACK (path_bar_path_set_callback), window, 0);
 	
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    window->path_bar,
@@ -1025,6 +1030,66 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 	if (nautilus_window->details->pending_location == NULL) {
 		load_view_as_menu (nautilus_window);
 	}
+}
+
+static gboolean
+path_bar_button_pressed_callback (GtkWidget *widget,
+				  GdkEventButton *event,
+				  NautilusNavigationWindow *window)
+{
+	NautilusView *view;
+	GFile *location;
+	char *uri;
+
+	if (event->button == 3) {
+		view = NAUTILUS_WINDOW (window)->content_view;
+		if (view != NULL) {
+			location = nautilus_path_bar_get_path_for_button (
+				NAUTILUS_PATH_BAR (window->path_bar), widget);
+			if (location != NULL) {
+				uri = g_file_get_uri (location);
+				nautilus_view_pop_up_location_context_menu (
+					view, event, uri);
+				g_object_unref (G_OBJECT (location));
+				g_free (uri);
+				return TRUE;
+			}
+		}
+	}
+
+
+	return FALSE;
+}
+
+static void
+path_bar_path_set_callback (GtkWidget *widget,
+			    GFile *location,
+			    NautilusNavigationWindow *window)
+{
+	GList *children, *l;
+	GtkWidget *child;
+
+	children = gtk_container_get_children (GTK_CONTAINER (widget));
+
+	for (l = children; l != NULL; l = l->next) {
+		child = GTK_WIDGET (l->data);
+
+		if (!GTK_IS_TOGGLE_BUTTON (child)) {
+			continue;
+		}
+
+		if (!g_signal_handler_find (child,
+					    G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+					    0, 0, NULL, 
+					    path_bar_button_pressed_callback,
+					    window)) {
+			g_signal_connect (child, "button-press-event",
+					  G_CALLBACK (path_bar_button_pressed_callback),
+					  window);
+		}
+	}
+
+	g_list_free (children);
 }
 
 static void

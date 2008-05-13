@@ -69,11 +69,15 @@ struct _NautilusPathBarClass
 
   	void (* path_clicked)   (NautilusPathBar  *path_bar,
 				 GFile             *location);
+  	void (* path_set)       (NautilusPathBar  *path_bar,
+				 GFile             *location);
 };
 
 GType    nautilus_path_bar_get_type (void) G_GNUC_CONST;
 
 gboolean nautilus_path_bar_set_path    (NautilusPathBar *path_bar, GFile *file);
+GFile *  nautilus_path_bar_get_path_for_button (NautilusPathBar *path_bar,
+						GtkWidget       *button);
 void     nautilus_path_bar_clear_buttons (NautilusPathBar *path_bar);
 
 void     nautilus_path_bar_up              (NautilusPathBar *path_bar);

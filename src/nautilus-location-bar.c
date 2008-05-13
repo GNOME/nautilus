@@ -276,7 +276,7 @@ label_button_pressed_callback (GtkWidget             *widget,
 		return FALSE;
 	}
 
-	nautilus_view_pop_up_location_context_menu (view, event);
+	nautilus_view_pop_up_location_context_menu (view, event, NULL);
 
 	return FALSE;
 }

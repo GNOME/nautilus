@@ -1,3 +1,46 @@
+2008-05-13  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-view.c
+	(nautilus_view_pop_up_location_context_menu):
+	* libnautilus-private/nautilus-view.h:
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c
+	(action_self_properties_callback),
+	(action_location_properties_callback),
+	(fm_directory_view_finalize),
+	(action_location_mount_volume_callback),
+	(action_location_unmount_volume_callback),
+	(action_location_eject_volume_callback),
+	(action_location_format_volume_callback),
+	(action_location_open_folder_window_callback),
+	(action_location_cut_callback), (action_location_copy_callback),
+	(action_location_trash_callback),
+	(action_location_delete_callback),
+	(real_update_location_menu_volumes), (real_update_location_menu),
+	(fm_directory_view_pop_up_background_context_menu),
+	(real_pop_up_location_context_menu),
+	(location_popup_file_attributes_ready),
+	(unschedule_pop_up_location_context_menu),
+	(schedule_pop_up_location_context_menu),
+	(fm_directory_view_pop_up_location_context_menu), (load_directory):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-location-bar.c (label_button_pressed_callback):
+	* src/nautilus-navigation-window.c
+	(nautilus_navigation_window_init),
+	(path_bar_button_pressed_callback), (path_bar_path_set_callback):
+	* src/nautilus-pathbar.c (nautilus_path_bar_class_init),
+	(nautilus_path_bar_update_path),
+	(nautilus_path_bar_get_path_for_button):
+	* src/nautilus-pathbar.h:
+	* src/nautilus-spatial-window.c (location_button_pressed_callback):
+	Allow to open location popup menu for any location, and not just for
+	currently open folder. Enable location popup menu for all path bar
+	buttons. Add volume operations to location context menu. Fix
+	separators in location context menu. Fixes #309844.
+	Do not unref file when opening properties dialog from background
+	context menu.
+
 2008-05-13  Martin Wehner  <martin.wehner@gmail.com>
 
 	* configure.in:

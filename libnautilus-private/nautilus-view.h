@@ -114,11 +114,14 @@ struct _NautilusViewIface
 	/* Request popup of context menu referring to the open location.
 	 * This is triggered in spatial windows by right-clicking the location button,
 	 * in navigational windows by right-clicking the "Location:" label in the
-	 * navigation bar.
+	 * navigation bar or any of the buttons in the pathbar.
+	 * The location parameter specifies the location this popup should be displayed for.
+	 * If it is NULL, the currently displayed location should be used.
 	 * The view may display the popup synchronously, asynchronously
 	 * or not react to the popup request at all. */
 	void           (* pop_up_location_context_menu) (NautilusView   *view,
-							 GdkEventButton *event);
+							 GdkEventButton *event,
+							 const char     *location);
 
 	/* Padding for future expansion */
 	void (*_reserved1) (void);
@@ -156,7 +159,8 @@ gboolean          nautilus_view_can_zoom_in                (NautilusView      *v
 gboolean          nautilus_view_can_zoom_out               (NautilusView      *view);
 NautilusZoomLevel nautilus_view_get_zoom_level             (NautilusView      *view);
 void              nautilus_view_pop_up_location_context_menu (NautilusView    *view,
-							      GdkEventButton  *event);
+							      GdkEventButton  *event,
+							      const char      *location);
 void              nautilus_view_grab_focus                 (NautilusView      *view);
 
 G_END_DECLS

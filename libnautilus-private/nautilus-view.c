@@ -269,11 +269,12 @@ nautilus_view_grab_focus (NautilusView   *view)
 
 void
 nautilus_view_pop_up_location_context_menu (NautilusView   *view,
-					    GdkEventButton *event)
+					    GdkEventButton *event,
+					    const char     *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
 	if (NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu != NULL) {
-		(* NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu) (view, event);
+		(* NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu) (view, event, location);
 	}
 }

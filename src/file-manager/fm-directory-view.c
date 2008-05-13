@@ -181,6 +181,8 @@ struct FMDirectoryViewDetails
 	NautilusWindowInfo *window;
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
+	NautilusFile *location_popup_directory_as_file;
+	GdkEventButton *location_popup_event;
 	GtkActionGroup *dir_action_group;
 	guint dir_merge_id;
 
@@ -378,6 +380,10 @@ static void action_location_trash_callback          (GtkAction *action,
 						     gpointer   callback_data);
 static void action_location_delete_callback         (GtkAction *action,
 						     gpointer   callback_data);
+static void action_location_properties_callback     (GtkAction *action,
+						     gpointer   callback_data);
+
+static void unschedule_pop_up_location_context_menu (FMDirectoryView *view);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -1382,7 +1388,29 @@ action_self_properties_callback (GtkAction *action,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	files = g_list_append (NULL, view->details->directory_as_file);
+
+	if (view->details->directory_as_file != NULL) {
+		files = g_list_append (NULL, nautilus_file_ref (view->details->directory_as_file));
+
+		fm_properties_window_present (files, GTK_WIDGET (view));
+
+		nautilus_file_list_free (files);
+	}
+}
+
+static void
+action_location_properties_callback (GtkAction *action,
+				     gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	GList           *files;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
+
+	files = g_list_append (NULL, nautilus_file_ref (view->details->location_popup_directory_as_file));
 
 	fm_properties_window_present (files, GTK_WIDGET (view));
 
@@ -1966,6 +1994,11 @@ fm_directory_view_finalize (GObject *object)
 					 click_policy_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					 sort_directories_first_changed_callback, view);
+
+	unschedule_pop_up_location_context_menu (view);
+	if (view->details->location_popup_event != NULL) {
+		gdk_event_free ((GdkEvent *) view->details->location_popup_event);
+	}
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
@@ -5992,6 +6025,81 @@ action_self_format_volume_callback (GtkAction *action,
 }
 
 static void
+action_location_mount_volume_callback (GtkAction *action,
+				       gpointer data)
+{
+	NautilusFile *file;
+	FMDirectoryView *view;
+	GMountOperation *mount_op;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+	mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
+	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
+	g_object_unref (mount_op);
+}
+
+static void
+action_location_unmount_volume_callback (GtkAction *action,
+					 gpointer data)
+{
+	NautilusFile *file;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+	nautilus_file_unmount (file);
+}
+
+static void
+action_location_eject_volume_callback (GtkAction *action,
+				       gpointer data)
+{
+	NautilusFile *file;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+	
+	nautilus_file_eject (file);
+}
+
+static void 
+action_location_format_volume_callback (GtkAction *action,
+					gpointer   data)
+{
+	NautilusFile *file;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+#ifdef TODO_GIO
+	if (something) {
+		g_spawn_command_line_async ("gfloppy", NULL);
+	}
+#endif
+}
+
+static void
 connect_to_server_response_callback (GtkDialog *dialog,
 				     int response_id,
 				     gpointer data)
@@ -6145,7 +6253,7 @@ action_location_open_folder_window_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = view->details->directory_as_file;
+	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
 	fm_directory_view_activate_file (view,
@@ -6164,7 +6272,7 @@ action_location_cut_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = fm_directory_view_get_directory_as_file (view);
+	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
 	files = g_list_append (NULL, file);
@@ -6182,7 +6290,7 @@ action_location_copy_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = fm_directory_view_get_directory_as_file (view);
+	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
 	files = g_list_append (NULL, file);
@@ -6200,7 +6308,7 @@ action_location_trash_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = fm_directory_view_get_directory_as_file (view);
+	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
 	files = g_list_append (NULL, file);
@@ -6221,7 +6329,7 @@ action_location_delete_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = fm_directory_view_get_directory_as_file (view);
+	file = view->details->location_popup_directory_as_file;
 	g_return_if_fail (file != NULL);
 
 	location = nautilus_file_get_location (file);
@@ -6475,6 +6583,28 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Delete"), "",
   /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
                                  G_CALLBACK (action_location_delete_callback) },
+
+  /* name, stock id */         { "Location Mount Volume", NULL,
+  /* label, accelerator */       N_("_Mount Volume"), NULL,
+  /* tooltip */                  N_("Mount the volume associated with this folder"),
+                                 G_CALLBACK (action_location_mount_volume_callback) },
+  /* name, stock id */         { "Location Unmount Volume", NULL,
+  /* label, accelerator */       N_("_Unmount Volume"), NULL,
+  /* tooltip */                  N_("Unmount the volume associated with this folder"),
+                                 G_CALLBACK (action_location_unmount_volume_callback) },
+  /* name, stock id */         { "Location Eject Volume", NULL,
+  /* label, accelerator */       N_("_Eject"), NULL,
+  /* tooltip */                  N_("Eject the volume associated with this folder"),
+                                 G_CALLBACK (action_location_eject_volume_callback) },
+  /* name, stock id */         { "Location Format Volume", NULL,
+  /* label, accelerator */       N_("_Format"), NULL,
+  /* tooltip */                  N_("Format the volume associated with this folder"),
+                                 G_CALLBACK (action_location_format_volume_callback) },
+
+  /* name, stock id */         { "LocationProperties", GTK_STOCK_PROPERTIES,
+  /* label, accelerator */       N_("_Properties"), NULL,
+  /* tooltip */                  N_("View or modify the properties of this folder"),
+                                 G_CALLBACK (action_location_properties_callback) },
 };
 
 static const GtkToggleActionEntry directory_view_toggle_entries[] = {
@@ -6932,6 +7062,45 @@ real_update_menus_volumes (FMDirectoryView *view,
 }
 
 static void
+real_update_location_menu_volumes (FMDirectoryView *view)
+{
+	GtkAction *action;
+	NautilusFile *file;
+	gboolean show_mount;
+	gboolean show_unmount;
+	gboolean show_eject;
+	gboolean show_connect;
+	gboolean show_format;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
+
+	file = NAUTILUS_FILE (view->details->location_popup_directory_as_file);
+	file_should_show_foreach (file,
+				  &show_mount,
+				  &show_unmount,
+				  &show_eject,
+				  &show_connect,
+				  &show_format);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_MOUNT_VOLUME);
+	gtk_action_set_visible (action, show_mount);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_UNMOUNT_VOLUME);
+	gtk_action_set_visible (action, show_unmount);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_EJECT_VOLUME);
+	gtk_action_set_visible (action, show_eject);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_FORMAT_VOLUME);
+	gtk_action_set_visible (action, show_format);
+}
+
+static void
 real_update_paste_menu (FMDirectoryView *view,
 			GList *selection,
 			gint selection_count)
@@ -7003,7 +7172,12 @@ real_update_location_menu (FMDirectoryView *view)
 					      FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW);
 	gtk_action_set_visible (action, show_open_folder_window);
 
-	file = view->details->directory_as_file;
+	file = view->details->location_popup_directory_as_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_INFO |
+						      NAUTILUS_FILE_ATTRIBUTE_MOUNT |
+						      NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO));
+
 	is_special_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
 	is_desktop_or_home_dir = nautilus_file_is_home (file)
 		|| nautilus_file_is_desktop_directory (file);
@@ -7043,8 +7217,10 @@ real_update_location_menu (FMDirectoryView *view)
 		gtk_action_set_sensitive (action, can_delete_file);
 	}
 
+	real_update_location_menu_volumes (view);
+
 	/* we silently assume that fm_directory_view_supports_properties always returns the same value.
-	 * Therefore, we don't update the sensitivity of FM_ACTION_SELF_PROPERTIES */
+	 * Therefore, we don't update the sensitivity of FM_ACTION_LOCATION_PROPERTIES */
 }
 
 static void
@@ -7412,11 +7588,85 @@ fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
 
 	update_context_menu_position_from_event (view, event);
 
+
 	eel_pop_up_context_menu (create_popup_menu 
 				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      event);
+}
+
+static void
+real_pop_up_location_context_menu (FMDirectoryView *view)
+{
+	/* always update the menu before showing it. Shouldn't be too expensive. */
+	real_update_location_menu (view);
+
+	update_context_menu_position_from_event (view, view->details->location_popup_event);
+
+	eel_pop_up_context_menu (create_popup_menu 
+				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION),
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      view->details->location_popup_event);
+}
+
+static void
+location_popup_file_attributes_ready (NautilusFile *file,
+				      gpointer      data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	g_assert (file == view->details->location_popup_directory_as_file);
+
+	real_pop_up_location_context_menu (view);
+}
+
+static void
+unschedule_pop_up_location_context_menu (FMDirectoryView *view)
+{
+	if (view->details->location_popup_directory_as_file != NULL) {
+		g_assert (NAUTILUS_IS_FILE (view->details->location_popup_directory_as_file));
+		nautilus_file_cancel_call_when_ready (view->details->location_popup_directory_as_file,
+						      location_popup_file_attributes_ready,
+						      view);
+		nautilus_file_unref (view->details->location_popup_directory_as_file);
+		view->details->location_popup_directory_as_file = NULL;
+	}
+}
+
+static void
+schedule_pop_up_location_context_menu (FMDirectoryView *view,
+				       GdkEventButton  *event,
+				       NautilusFile    *file)
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (view->details->location_popup_event != NULL) {
+		gdk_event_free ((GdkEvent *) view->details->location_popup_event);
+	}
+	view->details->location_popup_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *)event);
+
+	if (file == view->details->location_popup_directory_as_file) {
+		if (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_INFO |
+							NAUTILUS_FILE_ATTRIBUTE_MOUNT |
+							NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO)) {
+			real_pop_up_location_context_menu (view);
+		}
+	} else {
+		unschedule_pop_up_location_context_menu (view);
+
+		view->details->location_popup_directory_as_file = nautilus_file_ref (file);
+		nautilus_file_call_when_ready (view->details->location_popup_directory_as_file,
+					       NAUTILUS_FILE_ATTRIBUTE_INFO |
+					       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
+					       NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO,
+					       location_popup_file_attributes_ready,
+					       view);
+	}
 }
 
 /**
@@ -7425,24 +7675,29 @@ fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
  * Pop up a context menu appropriate to the view globally.
  * @view: FMDirectoryView of interest.
  * @event: GdkEventButton triggering the popup.
+ * @location: The location the popup-menu should be created for,
+ * or NULL for the currently displayed location.
  *
  **/
 void 
 fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view, 
-						GdkEventButton  *event)
+						GdkEventButton  *event,
+						const char      *location)
 {
+	NautilusFile *file;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	/* always update the menu before showing it. Shouldn't be too expensive. */
-	real_update_location_menu (view);
+	if (location != NULL) {
+		file = nautilus_file_get_by_uri (location);
+	} else {
+		file = nautilus_file_ref (view->details->directory_as_file);
+	}
 
-	update_context_menu_position_from_event (view, event);
-
-	eel_pop_up_context_menu (create_popup_menu 
-				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_LOCATION),
-				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      event);
+	if (file != NULL) {
+		schedule_pop_up_location_context_menu (view, event, file);
+		nautilus_file_unref (file);
+	}
 }
 
 static void
@@ -7629,7 +7884,8 @@ load_directory (FMDirectoryView *view,
          * change the directory's file metadata.
 	 */
 	attributes = 
-		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_INFO |
+		NAUTILUS_FILE_ATTRIBUTE_MOUNT |
 		NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO;
 	view->details->metadata_for_directory_as_file_pending = TRUE;
 	view->details->metadata_for_files_in_directory_pending = TRUE;
