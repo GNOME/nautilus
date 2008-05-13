@@ -5416,6 +5416,9 @@ real_destroy (GtkObject *object)
 	g_list_free (window->details->permission_buttons);
 	window->details->permission_buttons = NULL;
 
+	g_list_free (window->details->permission_combos);
+	window->details->permission_combos = NULL;
+
 	if (window->details->initial_permissions) {
 		g_hash_table_destroy (window->details->initial_permissions);
 		window->details->initial_permissions = NULL;
