@@ -1,5 +1,14 @@
 2008-05-13  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c
+	(nautilus_file_operations_copy_move):
+	Never move to "burn:///". Fixes #531750.
+
+	* src/file-manager/fm-properties-window.c (real_destroy):
+	Free permission_combos list.
+
+2008-05-13  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-view.c
 	(nautilus_view_pop_up_location_context_menu):
 	* libnautilus-private/nautilus-view.h:

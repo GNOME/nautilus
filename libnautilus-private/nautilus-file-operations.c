@@ -4871,15 +4871,44 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				    gpointer done_callback_data)
 {
 	GList *locations;
+	GList *p;
 	GFile *dest, *src_dir;
 	GtkWindow *parent_window;
-
+	gboolean target_is_mapping;
+	gboolean have_nonmapping_source;
+	char *file_scheme;
+	                        	
 	dest = NULL;
+	target_is_mapping = FALSE;
+	have_nonmapping_source = FALSE;
+                
 	if (target_dir) {
 		dest = g_file_new_for_uri (target_dir);
+		file_scheme = g_file_get_uri_scheme (dest);
+		if (strcmp (file_scheme, "burn") == 0) {
+			target_is_mapping = TRUE;
+                }
+		g_free (file_scheme);
 	}
 	locations = location_list_from_uri_list (item_uris);
-
+	
+	for (p = location_list_from_uri_list (item_uris); p != NULL; p = p->next) {
+		file_scheme = g_file_get_uri_scheme ((GFile *)p->data);
+                
+		if (strcmp (file_scheme, "burn") != 0) {
+			have_nonmapping_source = TRUE;
+		}
+                
+		g_free (file_scheme);
+	}
+	
+	if (target_is_mapping && have_nonmapping_source && copy_action == GDK_ACTION_MOVE) {
+		/* never move to "burn:///", but fall back to copy.
+		 * This is a workaround, because otherwise the source files would be removed.
+		 */
+		copy_action = GDK_ACTION_COPY;
+	}
+	
 	parent_window = NULL;
 	if (parent_view) {
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
