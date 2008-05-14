@@ -47,6 +47,7 @@
 #define FM_ACTION_LOCATION_COPY "LocationCopy"
 #define FM_ACTION_PASTE "Paste"
 #define FM_ACTION_PASTE_FILES_INTO "Paste Files Into"
+#define FM_ACTION_LOCATION_PASTE_FILES_INTO "LocationPasteFilesInto"
 #define FM_ACTION_NEW_LAUNCHER "New Launcher"
 #define FM_ACTION_RENAME "Rename"
 #define FM_ACTION_DUPLICATE "Duplicate"

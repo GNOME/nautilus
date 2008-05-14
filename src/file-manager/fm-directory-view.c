@@ -5766,29 +5766,35 @@ paste_clipboard_received_callback (GtkClipboard     *clipboard,
 	g_object_unref (view);
 }
 
+typedef struct {
+	FMDirectoryView *view;
+	NautilusFile *target;
+} PasteIntoData;
+
 static void
 paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
 					GtkSelectionData *selection_data,
-					gpointer          data)
+					gpointer          callback_data)
 {
-	GList *selection;
+	PasteIntoData *data;
 	FMDirectoryView *view;
 	char *directory_uri;
 
-	view = FM_DIRECTORY_VIEW (data);
+	data = (PasteIntoData *) callback_data;
+
+	view = FM_DIRECTORY_VIEW (data->view);
 
 	if (view->details->window != NULL) {
-		selection = fm_directory_view_get_selection (view);
-
-		directory_uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+		directory_uri = nautilus_file_get_activation_uri (data->target);
 
 		paste_clipboard_data (view, selection_data, directory_uri);
 
 		g_free (directory_uri);
-		nautilus_file_list_free (selection);
 	}
 
 	g_object_unref (view);
+	nautilus_file_unref (data->target);
+	g_free (data);
 }
 
 static void
@@ -5807,18 +5813,39 @@ action_paste_files_callback (GtkAction *action,
 }
 
 static void
+paste_into (FMDirectoryView *view,
+	    NautilusFile *target)
+{
+	PasteIntoData *data;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (target));
+
+	data = g_new (PasteIntoData, 1);
+
+	data->view = g_object_ref (view);
+	data->target = nautilus_file_ref (target);
+
+	gtk_clipboard_request_contents (get_clipboard (view),
+					copied_files_atom,
+					paste_into_clipboard_received_callback,
+					data);
+}
+
+static void
 action_paste_files_into_callback (GtkAction *action,
 				  gpointer callback_data)
 {
 	FMDirectoryView *view;
+	GList *selection;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-	
-	g_object_ref (view);
-	gtk_clipboard_request_contents (get_clipboard (view),
-					copied_files_atom,
-					paste_into_clipboard_received_callback,
-					callback_data);
+	selection = fm_directory_view_get_selection (view);
+	if (selection != NULL) {
+		paste_into (view, NAUTILUS_FILE (selection->data));
+		nautilus_file_list_free (selection);
+	}
+
 }
 
 static void
@@ -6299,6 +6326,21 @@ action_location_copy_callback (GtkAction *action,
 }
 
 static void
+action_location_paste_files_into_callback (GtkAction *action,
+					   gpointer callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = view->details->location_popup_directory_as_file;
+	g_return_if_fail (file != NULL);
+
+	paste_into (view, file);
+}
+
+static void
 action_location_trash_callback (GtkAction *action,
 				gpointer   callback_data)
 {
@@ -6574,6 +6616,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       NULL, "",
   /* tooltip */                  N_("Prepare this folder to be copied with a Paste command"),
                                  G_CALLBACK (action_location_copy_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_PASTE_FILES_INTO, GTK_STOCK_PASTE,
+  /* label, accelerator */       N_("_Paste Into Folder"), "",
+  /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into this folder"),
+                                 G_CALLBACK (action_location_paste_files_into_callback) },
 
   /* name, stock id */         { FM_ACTION_LOCATION_TRASH, NAUTILUS_ICON_TRASH,
   /* label, accelerator */       N_("Mo_ve to Trash"), "",
@@ -6804,7 +6850,18 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	gtk_action_set_sensitive (action,
 	                          can_paste && count == 1 &&
 	                          can_paste_into_file (NAUTILUS_FILE (selection->data)));
-	
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_PASTE_FILES_INTO);
+	g_object_set_data (G_OBJECT (action),
+			   "can-paste-according-to-clipboard",
+			   GINT_TO_POINTER (can_paste));
+	gtk_action_set_sensitive (action,
+				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
+						   "can-paste-according-to-clipboard")) &&
+				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
+						   "can-paste-according-to-destination")));
+
 	nautilus_file_list_free (selection);
 	
 	g_object_unref (view);
@@ -7100,6 +7157,10 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_format);
 }
 
+/* TODO: we should split out this routine into two functions:
+ * Update on clipboard changes
+ * Update on selection changes
+ */
 static void
 real_update_paste_menu (FMDirectoryView *view,
 			GList *selection,
@@ -7127,14 +7188,13 @@ real_update_paste_menu (FMDirectoryView *view,
 					      FM_ACTION_PASTE_FILES_INTO);
 	gtk_action_set_visible (action, can_paste_files_into);
 	gtk_action_set_sensitive (action, !selection_is_read_only);
-	if (!selection_is_read_only || !is_read_only) {
-		/* Ask the clipboard */
-		g_object_ref (view); /* Need to keep the object alive until we get the reply */
-		gtk_clipboard_request_contents (get_clipboard (view),
-						gdk_atom_intern ("TARGETS", FALSE),
-						clipboard_targets_received,
-						view);
-	}
+
+	/* Ask the clipboard */
+	g_object_ref (view); /* Need to keep the object alive until we get the reply */
+	gtk_clipboard_request_contents (get_clipboard (view),
+					gdk_atom_intern ("TARGETS", FALSE),
+					clipboard_targets_received,
+					view);
 }
 
 static void
@@ -7190,6 +7250,17 @@ real_update_location_menu (FMDirectoryView *view)
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_CUT);
 	gtk_action_set_sensitive (action, can_delete_file);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_PASTE_FILES_INTO);
+	g_object_set_data (G_OBJECT (action),
+			   "can-paste-according-to-destination",
+			   GINT_TO_POINTER (can_paste_into_file (file)));
+	gtk_action_set_sensitive (action,
+				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
+						   "can-paste-according-to-clipboard")) &&
+				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
+						   "can-paste-according-to-destination")));
 
 	if (file != NULL &&
 	    nautilus_file_is_in_trash (file)) {
