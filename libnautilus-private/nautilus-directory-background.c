@@ -140,6 +140,8 @@ nautilus_file_background_read_desktop_settings (char **color,
 	gboolean use_gradient;
 	gboolean is_horizontal;
 
+	filename = NULL;
+
         client = gconf_client_get_default ();
 
         /* Get the image filename */
