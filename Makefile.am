@@ -15,7 +15,6 @@ desktop_in_files = 					\
 SUBDIRS =			\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
-	libbackground		\
 	libnautilus-private 	\
 	src 			\
 	test 			\

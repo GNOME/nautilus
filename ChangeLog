@@ -1,3 +1,17 @@
+Fri May 16 23:56:37 2008  Søren Sandmann  <sandmann@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_read_desktop_settings):
+	Rewrite this function using gconf directly instead of relying on
+	libbackground.
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_write_desktop_settings): 
+	Rewrite to use gconf directly
+
+	* libbackground: 
+	Remove.
+
 2008-05-14  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-actions.h:

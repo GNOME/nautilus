@@ -35,7 +35,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file-attributes.h"
 #include <gtk/gtkmain.h>
-#include <libbackground/preferences.h>
+#include <string.h>
 
 static void background_changed_callback     (EelBackground *background, 
                                              GdkDragAction  action,
@@ -100,63 +100,130 @@ nautilus_file_background_get_default_settings (char **color,
 }
 
 
+#define BG_PREFERENCES_DRAW_BACKGROUND    "/desktop/gnome/background/draw_background"
+#define BG_PREFERENCES_PRIMARY_COLOR      "/desktop/gnome/background/primary_color"
+#define BG_PREFERENCES_SECONDARY_COLOR    "/desktop/gnome/background/secondary_color"
+#define BG_PREFERENCES_COLOR_SHADING_TYPE "/desktop/gnome/background/color_shading_type"
+#define BG_PREFERENCES_PICTURE_OPTIONS    "/desktop/gnome/background/picture_options"
+#define BG_PREFERENCES_PICTURE_OPACITY    "/desktop/gnome/background/picture_opacity"
+#define BG_PREFERENCES_PICTURE_FILENAME   "/desktop/gnome/background/picture_filename"
+
+static void
+read_color (GConfClient *client, const char *key, GdkColor *color)
+{
+        gchar *tmp;
+        
+        tmp = gconf_client_get_string (client, key, NULL);
+
+        if (tmp != NULL) {
+                if (!gdk_color_parse (tmp, color))
+                        gdk_color_parse ("black", color);
+        }
+        else {
+                gdk_color_parse ("black", color);
+        }
+
+        gdk_rgb_find_color (gdk_rgb_get_colormap (), color);
+}
+
 static void
 nautilus_file_background_read_desktop_settings (char **color,
                                                 char **image,
                                                 EelBackgroundImagePlacement *placement)
 {
+        GConfClient *client;
+        gboolean enabled;
+        GdkColor primary, secondary;
+        gchar *tmp, *filename;
 	char	*end_color;
 	char	*start_color;
 	gboolean use_gradient;
 	gboolean is_horizontal;
 
-	BGPreferences *prefs;
+        client = gconf_client_get_default ();
 
-        prefs = BG_PREFERENCES (bg_preferences_new ());
+        /* Get the image filename */
+        enabled = gconf_client_get_bool (client, BG_PREFERENCES_DRAW_BACKGROUND, NULL);
+        if (enabled) {
+                tmp = gconf_client_get_string (client, BG_PREFERENCES_PICTURE_FILENAME, NULL);
+                if (tmp != NULL) {
+                        if (g_utf8_validate (tmp, -1, NULL) && g_file_test (tmp, G_FILE_TEST_EXISTS)) {
+                                filename = g_strdup (tmp);
+                        }
+                        else {
+                                filename = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
+                        }
+                }
+                g_free (tmp);
 
-	bg_preferences_load (prefs);
-
-        if (prefs->wallpaper_enabled) {
-                if (prefs->wallpaper_filename != NULL &&
-                    prefs->wallpaper_filename [0] != '\0') {
-                        *image = g_filename_to_uri (prefs->wallpaper_filename, NULL, NULL);
-                } else {
+                if (filename != NULL && filename[0] != '\0') {
+                        *image = g_filename_to_uri (filename, NULL, NULL);
+                }
+                else {
                         *image = NULL;
                 }
-	}
-        else {
-		*image = NULL;
-	}
-	
-        switch (prefs->wallpaper_type) {
-        default:
-                g_assert_not_reached ();
-
-/*        case WPTYPE_EMBOSSED:*/
-                /* FIXME bugzilla.gnome.org 42193: we don't support embossing.
-                 * Just treat it as centered - ugh.
-                 */
-        case WPTYPE_CENTERED:
-                *placement = EEL_BACKGROUND_CENTERED;
-                break;
-        case WPTYPE_TILED:
-                *placement = EEL_BACKGROUND_TILED;
-                break;
-        case WPTYPE_STRETCHED:
-                *placement = EEL_BACKGROUND_SCALED;
-                break;
-        case WPTYPE_SCALED:
-                *placement = EEL_BACKGROUND_SCALED_ASPECT;
-                break;
-        case WPTYPE_ZOOM:
-                *placement = EEL_BACKGROUND_ZOOM;
-                break;
+                g_free (filename);
         }
-	
-        end_color     = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (prefs->color2));
-	start_color   = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (prefs->color1));
-	use_gradient  = prefs->gradient_enabled;
-	is_horizontal = (prefs->orientation == ORIENTATION_HORIZ);
+        else {
+                *image = NULL;
+        }
+        
+        /* Get the placement */
+        tmp = gconf_client_get_string (client, BG_PREFERENCES_PICTURE_OPTIONS, NULL);
+        if (tmp != NULL) {
+                if (strcmp (tmp, "wallpaper") == 0) {
+                        *placement = EEL_BACKGROUND_TILED;
+                }
+                else if (strcmp (tmp, "centered") == 0) {
+                        *placement = EEL_BACKGROUND_CENTERED;
+                }
+                else if (strcmp (tmp, "scaled") == 0) {
+                        *placement = EEL_BACKGROUND_SCALED_ASPECT;
+                }
+                else if (strcmp (tmp, "stretched") == 0) {
+                        *placement = EEL_BACKGROUND_SCALED;
+                }
+                else if (strcmp (tmp, "zoom") == 0) {
+                        *placement = EEL_BACKGROUND_ZOOM;
+                }
+                else {
+                        *placement = EEL_BACKGROUND_CENTERED;
+                }
+        }
+        else {
+                *placement = EEL_BACKGROUND_CENTERED;
+        }
+                
+        /* Get the color */
+        tmp = gconf_client_get_string (client, BG_PREFERENCES_COLOR_SHADING_TYPE, NULL);
+        if (tmp != NULL) {
+                if (strcmp (tmp, "solid") == 0) {
+                        use_gradient = FALSE;
+                        is_horizontal = FALSE;
+                }
+                else if (strcmp (tmp, "vertical-gradient") == 0) {
+                        use_gradient = TRUE;
+                        is_horizontal = FALSE;
+                }
+                else if (strcmp (tmp, "horizontal-gradient") == 0) {
+                        use_gradient = TRUE;
+                        is_horizontal = TRUE;
+                }
+                else {
+                        use_gradient = FALSE;
+                        is_horizontal = FALSE;
+                }
+        }
+        else {
+                use_gradient = FALSE;
+                is_horizontal = FALSE;
+        }
+        
+        read_color (client, BG_PREFERENCES_PRIMARY_COLOR, &primary);
+        read_color (client, BG_PREFERENCES_SECONDARY_COLOR, &secondary);
+
+	start_color   = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (&primary));
+        end_color     = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (&secondary));
 
 	if (use_gradient) {
 		*color = eel_gradient_new (start_color, end_color, is_horizontal);
@@ -166,8 +233,15 @@ nautilus_file_background_read_desktop_settings (char **color,
 
 	g_free (start_color);
 	g_free (end_color);
+}
 
-	g_object_unref (prefs);
+static char *
+color_to_string (const GdkColor *color)
+{
+	return g_strdup_printf ("#%02x%02x%02x",
+                                color->red >> 8,
+                                color->green >> 8,
+                                color->blue >> 8);
 }
 
 static void
@@ -175,76 +249,89 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 {
 	char *end_color;
 	char *start_color;
-        char *original_filename;
 
-	wallpaper_type_t wallpaper_align;
-	BGPreferences *prefs;
-
-        prefs = BG_PREFERENCES (bg_preferences_new ());
-	bg_preferences_load (prefs);
-
+        GdkColor tmp;
+        const char *options;
+        const char *shading;
+        gchar *primary;
+        gchar *secondary;
+        GConfClient *client;
+        gchar *filename;
+        
+        client = gconf_client_get_default();
+        
 	if (color != NULL) {
 		start_color = eel_gradient_get_start_color_spec (color);
-		gdk_color_parse (start_color, prefs->color1);
+		gdk_color_parse (start_color, &tmp);
 		g_free (start_color);
+                primary = color_to_string (&tmp);
 
 		/* if color is not a gradient, this ends up writing same as start_color */
 		end_color = eel_gradient_get_end_color_spec (color);
-		gdk_color_parse (end_color, prefs->color2);
+		gdk_color_parse (end_color, &tmp);
 		g_free (end_color);
+                secondary = color_to_string (&tmp);
 
 		if (eel_gradient_is_gradient (color)) {
-			prefs->gradient_enabled = TRUE;
-			prefs->orientation = eel_gradient_is_horizontal (color) ? ORIENTATION_HORIZ : ORIENTATION_VERT;
+			if (eel_gradient_is_horizontal (color)) {
+                                shading = "horizontal-gradient";
+                        }
+                        else {
+                                shading = "vertical-gradient";
+                        }
 		} else {
-			prefs->gradient_enabled = FALSE;
-			prefs->orientation = ORIENTATION_SOLID;
-		}
+                        shading = "solid";
+                }
 	} else {
-		/* We set it to white here because that's how backgrounds with a NULL color
-		 * are drawn by Nautilus - due to usage of eel_gdk_color_parse_with_white_default.
-		 */
-		gdk_color_parse ("#FFFFFF", prefs->color1);
-		gdk_color_parse ("#FFFFFF", prefs->color2);
-		prefs->gradient_enabled = FALSE;
-		prefs->orientation = ORIENTATION_SOLID;
-	}
-
-        original_filename = prefs->wallpaper_filename;
-	if (image != NULL) {
-		prefs->wallpaper_filename = g_filename_from_uri (image, NULL, NULL);
-                prefs->wallpaper_enabled = TRUE;
-		switch (placement) {
-			case EEL_BACKGROUND_TILED:
-				wallpaper_align = WPTYPE_TILED;
-				break;	
-			case EEL_BACKGROUND_CENTERED:
-				wallpaper_align = WPTYPE_CENTERED;
-				break;	
-			case EEL_BACKGROUND_SCALED:
-				wallpaper_align = WPTYPE_STRETCHED;
-				break;	
-			case EEL_BACKGROUND_SCALED_ASPECT:
-				wallpaper_align = WPTYPE_SCALED;
-				break;
-			case EEL_BACKGROUND_ZOOM:
-				wallpaper_align = WPTYPE_ZOOM;
-				break;
-			default:
-				g_assert_not_reached ();
-				wallpaper_align = WPTYPE_TILED;
-				break;	
-		}
-	
-		prefs->wallpaper_type = wallpaper_align;
-	} else {
-                prefs->wallpaper_enabled = FALSE;
-                prefs->wallpaper_filename = g_strdup (original_filename);
+                shading = "solid";
+                primary = g_strdup ("#FFFFFF");
+                secondary = g_strdup ("#FFFFFF");
         }
-        g_free (original_filename);
 
-	bg_preferences_save (prefs);
-	g_object_unref (prefs);
+        gconf_client_set_string (client, BG_PREFERENCES_PRIMARY_COLOR, primary, NULL);
+        gconf_client_set_string (client, BG_PREFERENCES_SECONDARY_COLOR, secondary, NULL);
+        gconf_client_set_string (client, BG_PREFERENCES_COLOR_SHADING_TYPE, shading, NULL);
+        
+        g_free (primary);
+        g_free (secondary);
+
+        if (image != NULL) {
+                filename = g_filename_from_uri (image, NULL, NULL);
+
+                switch (placement) {
+                case EEL_BACKGROUND_TILED:
+                        options = "wallpaper";
+                        break;	
+                case EEL_BACKGROUND_CENTERED:
+                        options = "centered";
+                        break;	
+                case EEL_BACKGROUND_SCALED:
+                        options = "stretched";
+                        break;	
+                case EEL_BACKGROUND_SCALED_ASPECT:
+                        options = "scaled";
+                        break;
+                case EEL_BACKGROUND_ZOOM:
+                        options = "zoom";
+                        break;
+                default:
+                        g_assert_not_reached ();
+                        options = "wallpaper";
+                        break;	
+                }
+        }
+        else {
+                filename = NULL;
+                options = "none";
+        }
+
+        if (filename != NULL) {
+                gconf_client_set_string (client, BG_PREFERENCES_PICTURE_FILENAME, filename, NULL);
+        }
+
+        gconf_client_set_string (client, BG_PREFERENCES_PICTURE_OPTIONS, options, NULL);
+
+        g_free (filename);
 }
 
 static void
@@ -445,7 +532,7 @@ initialize_background_from_settings (NautilusFile *file,
                   == file);
 
 	if (eel_background_is_desktop (background)) {
-		nautilus_file_background_read_desktop_settings (&color, &image, &placement);
+                nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 	} else {
 		color = nautilus_file_get_metadata (file,
                                                     NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
@@ -455,11 +542,11 @@ initialize_background_from_settings (NautilusFile *file,
                                                     NULL);
 	        placement = EEL_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
 
-		/* if there's none, read the default from the theme */
-		if (color == NULL && image == NULL) {
-			nautilus_file_background_get_default_settings
+                /* if there's none, read the default from the theme */
+                if (color == NULL && image == NULL) {
+                        nautilus_file_background_get_default_settings
                                 (&color, &image, &placement);	
-		}
+                }
 	}
 
         /* Block the other handler while we are responding to changes
@@ -478,7 +565,7 @@ initialize_background_from_settings (NautilusFile *file,
                 eel_background_set_image_uri (background, image);
         }
         eel_background_set_image_placement (background, placement);
-	
+        
 	/* Unblock the handler. */
         g_signal_handlers_unblock_by_func
                 (background,
