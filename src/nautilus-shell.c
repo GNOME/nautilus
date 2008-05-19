@@ -163,6 +163,10 @@ open_window (NautilusShell *shell, const char *uri, const char *startup_id,
 	}
 	
 	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
+		/* never maximize windows opened from shell if a
+		 * custom geometry has been requested.
+		 */
+		gtk_window_unmaximize (GTK_WINDOW (window));
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								 geometry,
 								 APPLICATION_WINDOW_MIN_WIDTH,
