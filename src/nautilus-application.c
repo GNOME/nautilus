@@ -1468,7 +1468,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 
 			location = nautilus_window_get_location (window);
 
-			if (g_file_has_prefix (location, root)) {
+			if (g_file_equal(location, root) || g_file_has_prefix (location, root)) {
 				close_list = g_list_prepend (close_list, window);
 			} 
 			g_object_unref (location);
