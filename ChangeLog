@@ -1,3 +1,19 @@
+2008-05-19  Christian Neumair  <cneumair@gnome.org>
+
+	(from Søren Sandmann <sandmann@redhat.com>, backported from trunk)
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_read_desktop_settings):
+	Rewrite this function using gconf directly instead of relying on
+	libbackground.
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_write_desktop_settings): 
+	Rewrite to use gconf directly
+
+	* libbackground: 
+	Remove.
+
 2008-05-13  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c

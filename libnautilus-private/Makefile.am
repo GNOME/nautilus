@@ -18,7 +18,6 @@ INCLUDES = 						\
 
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
-	$(top_builddir)/libbackground/libbackground.la \
         $(NULL)
 
 libnautilus_private_la_LDFLAGS =	\
