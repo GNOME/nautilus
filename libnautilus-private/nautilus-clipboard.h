@@ -44,6 +44,13 @@ void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
 						    gboolean            shares_selection_changes);
 void nautilus_clipboard_set_up_text_view           (GtkTextView        *target,
 						    GtkUIManager       *ui_manager);
-
+void nautilus_clipboard_clear_if_colliding_uris    (GtkWidget          *widget,
+						    const GList        *item_uris,
+						    GdkAtom             copied_files_atom);
+GtkClipboard* nautilus_clipboard_get                (GtkWidget          *widget);
+GList* nautilus_clipboard_get_uri_list_from_selection_data
+						   (GtkSelectionData   *selection_data,
+						    gboolean           *cut,
+						    GdkAtom             copied_files_atom);
 
 #endif /* NAUTILUS_CLIPBOARD_H */

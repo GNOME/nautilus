@@ -71,6 +71,7 @@
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-private/nautilus-recent.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
@@ -3481,6 +3482,14 @@ fm_directory_view_get_model (FMDirectoryView *view)
 	return view->details->model;
 }
 
+GdkAtom
+fm_directory_view_get_copied_files_atom (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), GDK_NONE);
+	
+	return copied_files_atom;
+}
+
 static void
 prepend_uri_one (gpointer data, gpointer callback_data)
 {
@@ -5572,13 +5581,6 @@ clear_clipboard_callback (GtkClipboard *clipboard,
 	g_free (info);
 }
 
-static GtkClipboard *
-get_clipboard (FMDirectoryView *view)
-{
-	return gtk_clipboard_get_for_display (gtk_widget_get_display (GTK_WIDGET (view)),
-					      GDK_SELECTION_CLIPBOARD);
-}
-
 static GList *
 convert_file_list_to_uri_list (GList *files)
 {
@@ -5606,7 +5608,7 @@ copy_or_cut_files (FMDirectoryView *view,
 	info->file_uris = convert_file_list_to_uri_list (clipboard_contents);
 	info->cut = cut;
 	
-	gtk_clipboard_set_with_data (get_clipboard (view),
+	gtk_clipboard_set_with_data (nautilus_clipboard_get (GTK_WIDGET (view)),
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
 				     info);
@@ -5677,55 +5679,17 @@ action_cut_files_callback (GtkAction *action,
 	nautilus_file_list_free (selection);
 }
 
-static GList *
-convert_lines_to_str_list (char **lines, gboolean *cut)
-{
-	int i;
-	GList *result;
-
-	*cut = FALSE;
-
-	if (lines[0] == NULL) {
-		return NULL;
-	}
-
-	if (strcmp (lines[0], "cut") == 0) {
-		*cut = TRUE;
-	} else if (strcmp (lines[0], "copy") != 0) {
-		return NULL;
-	}
-
-	result = NULL;
-	for (i = 1; lines[i] != NULL; i++) {
-		result = g_list_prepend (result, g_strdup (lines[i]));
-	}
-	return g_list_reverse (result);
-}
-
 static void
 paste_clipboard_data (FMDirectoryView *view,
 		      GtkSelectionData *selection_data,
 		      char *destination_uri)
 {
-	char **lines;
 	gboolean cut;
 	GList *item_uris;
 
 	cut = FALSE;
-	if (selection_data->type != copied_files_atom
-	    || selection_data->length <= 0) {
-		item_uris = NULL;
-	} else {
-		/* Not sure why it's legal to assume there's an extra byte
-		 * past the end of the selection data that it's safe to write
-		 * to. But gtk_editable_selection_received does this, so I
-		 * think it is OK.
-		 */
-		selection_data->data[selection_data->length] = '\0';
-		lines = g_strsplit (selection_data->data, "\n", 0);
-		item_uris = convert_lines_to_str_list (lines, &cut);
-		g_strfreev (lines);
-	}
+	item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+									 copied_files_atom);
 
 	if (item_uris == NULL|| destination_uri == NULL) {
 		nautilus_window_info_set_status (view->details->window,
@@ -5738,7 +5702,7 @@ paste_clipboard_data (FMDirectoryView *view,
 
 		/* If items are cut then remove from clipboard */
 		if (cut) {
-			gtk_clipboard_clear (get_clipboard (view));
+			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
 		}
 
 		eel_g_list_free_deep (item_uris);
@@ -5806,7 +5770,7 @@ action_paste_files_callback (GtkAction *action,
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
 	g_object_ref (view);
-	gtk_clipboard_request_contents (get_clipboard (view),
+	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
 					copied_files_atom,
 					paste_clipboard_received_callback,
 					callback_data);
@@ -5826,7 +5790,7 @@ paste_into (FMDirectoryView *view,
 	data->view = g_object_ref (view);
 	data->target = nautilus_file_ref (target);
 
-	gtk_clipboard_request_contents (get_clipboard (view),
+	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
 					copied_files_atom,
 					paste_into_clipboard_received_callback,
 					data);
@@ -7191,7 +7155,7 @@ real_update_paste_menu (FMDirectoryView *view,
 
 	/* Ask the clipboard */
 	g_object_ref (view); /* Need to keep the object alive until we get the reply */
-	gtk_clipboard_request_contents (get_clipboard (view),
+	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
 					gdk_atom_intern ("TARGETS", FALSE),
 					clipboard_targets_received,
 					view);

@@ -2540,6 +2540,9 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 			   int x, int y,
 			   FMDirectoryView *view)
 {
+	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+						    item_uris,
+						    fm_directory_view_get_copied_files_atom (view));
 	fm_directory_view_move_copy_items (item_uris, relative_item_points, target_dir,
 		copy_action, x, y, view);
 }

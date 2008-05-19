@@ -1,3 +1,25 @@
+2008-05-20  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-clipboard.c:
+	(convert_lines_to_str_list),
+	(nautilus_clipboard_get_uri_list_from_selection_data),
+	(nautilus_clipboard_get),
+	(nautilus_clipboard_clear_if_colliding_uris):
+	* libnautilus-private/nautilus-clipboard.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_get_copied_files_atom), (copy_or_cut_files),
+	(paste_clipboard_data), (action_paste_files_callback),
+	(paste_into), (real_update_paste_menu):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (icon_view_move_copy_items):
+	* src/file-manager/fm-list-view.c: (move_copy_items_callback):
+	* src/file-manager/fm-tree-view.c: (move_copy_items_callback),
+	(button_pressed_callback), (copy_or_cut_files),
+	(paste_clipboard_data), (fm_tree_view_paste_cb):
+	Empty the clipboard when copying/moving with DnD a file contained
+	in it. Also, refactor some clipboard code from fm-directory-view.c and
+	fm-tree-view.c into nautilus-clipboard.c. (#532850).
+
 2008-05-19  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* docs/Makefile.am:

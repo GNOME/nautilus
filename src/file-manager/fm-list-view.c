@@ -1152,12 +1152,17 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 			  gpointer user_data)
 
 {
+	FMDirectoryView *view = user_data;
+
+	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+						    item_uris,
+						    fm_directory_view_get_copied_files_atom (view));
 	fm_directory_view_move_copy_items (item_uris,
 					   NULL,
 					   target_uri,
 					   action,
 					   x, y,
-					   FM_DIRECTORY_VIEW (user_data));
+					   view);
 }
 
 static void

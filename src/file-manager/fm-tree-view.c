@@ -59,6 +59,7 @@
 #include <gio/gio.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-debug-log.h>
@@ -572,7 +573,10 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 	FMTreeView *view;
 
 	view = FM_TREE_VIEW (user_data);
-
+	
+	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+						    item_uris,
+						    copied_files_atom);
 	nautilus_file_operations_copy_move
 		(item_uris,
 		 NULL,
@@ -647,13 +651,6 @@ clipboard_contents_received_callback (GtkClipboard     *clipboard,
 	g_object_unref (view);
 }
 
-static GtkClipboard *
-get_clipboard (GtkWidget *widget)
-{
-	return gtk_clipboard_get_for_display (gtk_widget_get_display (widget),
-					      GDK_SELECTION_CLIPBOARD);
-}
-
 static gboolean
 is_parent_writable (NautilusFile *file)
 {
@@ -713,7 +710,7 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		gtk_widget_set_sensitive (view->details->popup_paste, FALSE);
 		if (nautilus_file_is_directory (view->details->popup_file) &&
 			nautilus_file_can_write (view->details->popup_file)) {
-			gtk_clipboard_request_contents (get_clipboard (GTK_WIDGET (view->details->tree_widget)),
+			gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
 							copied_files_atom,
 							clipboard_contents_received_callback, g_object_ref (view));
 		}
@@ -887,7 +884,7 @@ copy_or_cut_files (FMTreeView *view,
 	
 	clipboard_string = convert_file_to_string (view->details->popup_file, cut);
 	
-	gtk_clipboard_set_with_data (get_clipboard (GTK_WIDGET (view->details->tree_widget)),
+	gtk_clipboard_set_with_data (nautilus_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
 				     clipboard_string);
@@ -924,55 +921,17 @@ fm_tree_view_copy_cb (GtkWidget *menu_item,
 	copy_or_cut_files (view, FALSE);
 }
 
-static GList *
-convert_lines_to_str_list (char **lines, gboolean *cut)
-{
-	int i;
-	GList *result;
-
-	*cut = FALSE;
-
-	if (lines[0] == NULL) {
-		return NULL;
-	}
-
-	if (strcmp (lines[0], "cut") == 0) {
-		*cut = TRUE;
-	} else if (strcmp (lines[0], "copy") != 0) {
-		return NULL;
-	}
-
-	result = NULL;
-	for (i = 1; lines[i] != NULL; i++) {
-		result = g_list_prepend (result, g_strdup (lines[i]));
-	}
-	return g_list_reverse (result);
-}
-
 static void
 paste_clipboard_data (FMTreeView *view,
 		      GtkSelectionData *selection_data,
 		      char *destination_uri)
 {
-	char **lines;
 	gboolean cut;
 	GList *item_uris;
 
 	cut = FALSE;
-	if (selection_data->type != copied_files_atom
-	    || selection_data->length <= 0) {
-		item_uris = NULL;
-	} else {
-		/* Not sure why it's legal to assume there's an extra byte
-		 * past the end of the selection data that it's safe to write
-		 * to. But gtk_editable_selection_received does this, so I
-		 * think it is OK.
-		 */
-		selection_data->data[selection_data->length] = '\0';
-		lines = g_strsplit (selection_data->data, "\n", 0);
-		item_uris = convert_lines_to_str_list (lines, &cut);
-		g_strfreev (lines);
-	}
+	item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data, &cut,
+									 copied_files_atom);
 
 	if (item_uris == NULL|| destination_uri == NULL) {
 		nautilus_window_info_set_status (view->details->window,
@@ -983,6 +942,13 @@ paste_clipboard_data (FMTreeView *view,
 			 cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
 			 GTK_WIDGET (view->details->tree_widget),
 			 NULL, NULL);
+
+		/* If items are cut then remove from clipboard */
+		if (cut) {
+			gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
+		}
+		
+		eel_g_list_free_deep (item_uris);
 	}
 }
 
@@ -1007,7 +973,7 @@ static void
 fm_tree_view_paste_cb (GtkWidget *menu_item,
 		       FMTreeView *view)
 {
-	gtk_clipboard_request_contents (get_clipboard (GTK_WIDGET (view->details->tree_widget)),
+	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view->details->tree_widget)),
 					copied_files_atom,
 					paste_into_clipboard_received_callback, view);
 }

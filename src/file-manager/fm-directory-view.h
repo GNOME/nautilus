@@ -373,6 +373,7 @@ void                fm_directory_view_move_copy_items                  (const GL
 									int               x,
 									int               y,
 									FMDirectoryView  *view);
+GdkAtom	            fm_directory_view_get_copied_files_atom            (FMDirectoryView  *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
