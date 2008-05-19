@@ -1526,7 +1526,7 @@ fm_icon_view_start_renaming_file (FMDirectoryView *view,
 static const GtkActionEntry icon_view_entries[] = {
   /* name, stock id, label */  { "Arrange Items", NULL, N_("Arran_ge Items") }, 
   /* name, stock id */         { "Stretch", NULL,
-  /* label, accelerator */       N_("Str_etch Icon..."), NULL,
+  /* label, accelerator */       N_("Stretc_h Icon..."), NULL,
   /* tooltip */                  N_("Make the selected icon stretchable"),
                                  G_CALLBACK (action_stretch_callback) },
   /* name, stock id */         { "Unstretch", NULL,
