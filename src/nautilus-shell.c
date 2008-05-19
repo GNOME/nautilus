@@ -224,8 +224,8 @@ corba_open_windows (PortableServer_Servant servant,
 	data = g_new0 (OpenWindowData, 1);
 	
 	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
-	data->startup_id = g_strdup (startup_id);
-	data->geometry = g_strdup (geometry);
+	data->startup_id = strcmp (startup_id, "") ? g_strdup (startup_id) : NULL;
+	data->geometry = strcmp (geometry, "") ? g_strdup (geometry) : NULL;
 	data->browser_window = browser_window;
 
 	for (i = 0; i < list->_length; i++) {
@@ -251,8 +251,8 @@ corba_open_default_window (PortableServer_Servant servant,
 	data = g_new0 (OpenWindowData, 1);
 	
 	data->shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
-	data->startup_id = g_strdup (startup_id);
-	data->geometry = g_strdup (geometry);
+	data->startup_id = strcmp (startup_id, "") ? g_strdup (startup_id) : NULL;
+	data->geometry = strcmp (geometry, "") ? g_strdup (geometry) : NULL;
 	data->browser_window = browser_window;
 
 	g_idle_add (open_windows_at_idle, data);

@@ -1,5 +1,11 @@
 2008-05-19  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-shell.c (corba_open_windows),
+	(corba_open_default_window):
+	Treat "" CORBA strings as NULL.
+
+2008-05-19  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-shell.c (open_window):
 	Never maximize windows opened from shell if a custom geometry has been
 	specified. Fixes #92566.
