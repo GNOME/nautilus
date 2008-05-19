@@ -1,5 +1,15 @@
 2008-05-19  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_icon):
+	* libnautilus-private/nautilus-icon-info.c
+	(nautilus_icon_info_lookup),
+	(nautilus_icon_info_get_pixbuf_nodefault_at_size),
+	(nautilus_icon_info_get_pixbuf_at_size):
+	Use bilinear interpolation instead of hyperbolic. Massively speeds up
+	loading of directories with previously generated thumbnails.
+
+2008-05-19  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-shell.c (corba_open_windows),
 	(corba_open_default_window):
 	Treat "" CORBA strings as NULL.

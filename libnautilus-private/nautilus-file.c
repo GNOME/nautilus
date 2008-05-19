@@ -3400,7 +3400,7 @@ nautilus_file_get_icon (NautilusFile *file,
 
 				scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
 									 w * scale, h * scale,
-									 GDK_INTERP_HYPER);
+									 GDK_INTERP_BILINEAR);
 				nautilus_thumbnail_frame_image (&scaled_pixbuf);
 				
 				g_object_unref (raw_pixbuf);
