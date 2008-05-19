@@ -760,7 +760,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 			g_free (image_file_name);
 		} else {
 			icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
-			info = nautilus_icon_info_lookup_from_name (file_name, NAUTILUS_ICON_SIZE_STANDARD);
+			info = nautilus_icon_info_lookup_from_name (icon_name, NAUTILUS_ICON_SIZE_STANDARD);
 			pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_ICON_SIZE_STANDARD);
 			g_object_unref (info);
 			g_free (icon_name);
