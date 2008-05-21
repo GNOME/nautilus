@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_PROGRAM_CHOOSING_H
 #define NAUTILUS_PROGRAM_CHOOSING_H
 
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 

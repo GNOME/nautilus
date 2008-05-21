@@ -32,10 +32,7 @@
 #include "nautilus-navigation-action.h"
 #include "nautilus-navigation-window.h"
 
-#include <gtk/gtkimage.h>
-#include <gtk/gtkimagemenuitem.h>
-#include <gtk/gtktoolbar.h>
-#include <gtk/gtkmenutoolbutton.h>
+#include <gtk/gtk.h>
 
 static void nautilus_navigation_action_init       (NautilusNavigationAction *action);
 static void nautilus_navigation_action_class_init (NautilusNavigationActionClass *class);

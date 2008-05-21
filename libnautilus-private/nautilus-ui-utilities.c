@@ -27,7 +27,7 @@
 #include "nautilus-icon-info.h"
 #include <gio/gio.h>
 
-#include <gtk/gtkenums.h>
+#include <gtk/gtk.h>
 #include <eel/eel-debug.h>
 
 void

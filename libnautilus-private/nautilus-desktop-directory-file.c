@@ -34,7 +34,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-desktop-directory.h"
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <string.h>
 

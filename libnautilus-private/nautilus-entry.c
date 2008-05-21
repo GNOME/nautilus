@@ -33,8 +33,7 @@
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 struct NautilusEntryDetails {

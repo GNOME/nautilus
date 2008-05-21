@@ -28,7 +28,7 @@
 #define FM_TREE_MODEL_H
 
 #include <glib-object.h>
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 

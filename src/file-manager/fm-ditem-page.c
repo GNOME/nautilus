@@ -27,15 +27,7 @@
 #include <string.h>
 
 #include <eel/eel-glib-extensions.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkdnd.h>
-#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extension/nautilus-extension-types.h>

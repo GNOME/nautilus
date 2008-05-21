@@ -42,7 +42,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <librsvg/rsvg.h>
 #include <glib/gi18n.h>

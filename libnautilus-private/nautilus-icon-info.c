@@ -21,8 +21,7 @@
 #include <string.h>
 #include "nautilus-icon-info.h"
 #include "nautilus-default-file-icon.h"
-#include <gtk/gtkicontheme.h>
-#include <gtk/gtkiconfactory.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 

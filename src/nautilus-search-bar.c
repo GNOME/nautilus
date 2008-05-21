@@ -27,13 +27,7 @@
 #include <glib/gi18n.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 struct NautilusSearchBarDetails {
 	GtkWidget *entry;

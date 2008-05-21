@@ -36,11 +36,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
-#include <gtk/gtkaccessible.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkradiomenuitem.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbindings.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

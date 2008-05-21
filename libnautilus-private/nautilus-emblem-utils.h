@@ -24,7 +24,7 @@
 
 #include <glib.h>
 #include <gio/gio.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 GList *    nautilus_emblem_list_available             (void);

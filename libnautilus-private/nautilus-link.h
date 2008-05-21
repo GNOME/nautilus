@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_LINK_H
 #define NAUTILUS_LINK_H
 
-#include <gdk/gdktypes.h>
+#include <gdk/gdk.h>
 #include <libgnome/gnome-desktop-item.h>
 
 gboolean         nautilus_link_local_create                      (const char        *directory_uri,

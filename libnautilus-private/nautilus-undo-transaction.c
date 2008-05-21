@@ -30,7 +30,7 @@
 #include <libnautilus-private/nautilus-undo-transaction.h>
 
 #include "nautilus-undo-private.h"
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
 

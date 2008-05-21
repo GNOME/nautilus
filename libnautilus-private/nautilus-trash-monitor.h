@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_TRASH_MONITOR_H
 #define NAUTILUS_TRASH_MONITOR_H
 
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 typedef struct NautilusTrashMonitor NautilusTrashMonitor;

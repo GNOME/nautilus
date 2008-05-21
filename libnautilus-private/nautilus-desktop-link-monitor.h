@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_DESKTOP_LINK_MONITOR_H
 #define NAUTILUS_DESKTOP_LINK_MONITOR_H
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-desktop-link.h>
 
 #define NAUTILUS_TYPE_DESKTOP_LINK_MONITOR \

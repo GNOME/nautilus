@@ -31,7 +31,7 @@
 #ifndef NAUTILUS_NAVIGATION_ACTION_H
 #define NAUTILUS_NAVIGATION_ACTION_H
 
-#include <gtk/gtkaction.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_NAVIGATION_ACTION            (nautilus_navigation_action_get_type ())
 #define NAUTILUS_NAVIGATION_ACTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_NAVIGATION_ACTION, NautilusNavigationAction))

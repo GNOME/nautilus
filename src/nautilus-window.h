@@ -29,8 +29,7 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-window-info.h>

@@ -26,7 +26,7 @@
 #include <config.h>
 #include "nautilus-idle-queue.h"
 
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 
 struct NautilusIdleQueue {
 	GList *functions;

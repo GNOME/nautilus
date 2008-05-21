@@ -27,16 +27,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkarrow.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkimagemenuitem.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktogglebutton.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 typedef struct {

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_BOOKMARKS_WINDOW_H
 #define NAUTILUS_BOOKMARKS_WINDOW_H
 
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include "nautilus-bookmark-list.h"
 
 GtkWindow *create_bookmarks_window                 (NautilusBookmarkList *bookmarks,

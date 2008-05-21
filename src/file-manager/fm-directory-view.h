@@ -28,10 +28,7 @@
 #ifndef FM_DIRECTORY_VIEW_H
 #define FM_DIRECTORY_VIEW_H
 
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>

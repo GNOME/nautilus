@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_SEARCH_BAR_H
 #define NAUTILUS_SEARCH_BAR_H
 
-#include <gtk/gtkeventbox.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-query.h>
 
 #define NAUTILUS_TYPE_SEARCH_BAR (nautilus_search_bar_get_type ())

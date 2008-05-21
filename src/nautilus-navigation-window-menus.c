@@ -45,7 +45,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-help.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>

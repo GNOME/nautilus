@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_IMAGE_PROPERTIES_PAGE_H
 #define NAUTILUS_IMAGE_PROPERTIES_PAGE_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE	     (nautilus_image_properties_page_get_type ())
 #define NAUTILUS_IMAGE_PROPERTIES_PAGE(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE, NautilusImagePropertiesPage))

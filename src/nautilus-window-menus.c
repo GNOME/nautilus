@@ -39,10 +39,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-search-bar.h"
-#include <gtk/gtkmain.h>
-#include <gtk/gtkaboutdialog.h>
-#include <gtk/gtkenums.h>
-#include <gtk/gtkversion.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-help.h>

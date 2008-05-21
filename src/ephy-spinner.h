@@ -25,8 +25,7 @@
 #ifndef EPHY_SPINNER_H
 #define EPHY_SPINNER_H
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkenums.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

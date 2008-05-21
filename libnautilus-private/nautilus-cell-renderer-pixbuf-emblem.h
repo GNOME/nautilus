@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM_H
 #define NAUTILUS_CELL_RENDERER_PIXBUF_EMBLEM_H
 
-#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_CELL_RENDERER_PIXBUF_EMBLEM \
 	(nautilus_cell_renderer_pixbuf_emblem_get_type ())

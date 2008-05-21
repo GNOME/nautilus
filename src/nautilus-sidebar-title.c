@@ -38,11 +38,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

@@ -54,7 +54,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <grp.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <glib/gurifuncs.h>

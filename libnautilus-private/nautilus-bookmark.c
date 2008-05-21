@@ -31,11 +31,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtkaccellabel.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkimagemenuitem.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkiconfactory.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
 #include <gio/gio.h>

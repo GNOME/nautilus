@@ -39,14 +39,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkradiomenuitem.h>
-#include <gtk/gtkradioaction.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkstock.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-directory-background.h>

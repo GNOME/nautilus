@@ -38,7 +38,7 @@
 #include <eel/eel-xml-extensions.h>
 #include <glib/gurifuncs.h>
 #include <libxml/parser.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>

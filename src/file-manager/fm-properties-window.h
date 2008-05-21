@@ -26,7 +26,7 @@
 #ifndef FM_PROPERTIES_WINDOW_H
 #define FM_PROPERTIES_WINDOW_H
 
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-file.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;

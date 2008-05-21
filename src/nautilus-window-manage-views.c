@@ -46,8 +46,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-mount-operation.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-icon-theme.h>

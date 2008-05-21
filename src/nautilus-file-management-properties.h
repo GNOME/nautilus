@@ -26,7 +26,7 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_H
 
 #include <glib-object.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

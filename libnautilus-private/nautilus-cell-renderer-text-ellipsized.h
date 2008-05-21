@@ -27,8 +27,7 @@
 #ifndef NAUTILUS_CELL_RENDERER_TEXT_ELLIPSIZED_H
 #define NAUTILUS_CELL_RENDERER_TEXT_ELLIPSIZED_H
 
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_CELL_RENDERER_TEXT_ELLIPSIZED \
 	(nautilus_cell_renderer_text_ellipsized_get_type ())

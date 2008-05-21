@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_HORIZONTAL_SPLITTER_H
 #define NAUTILUS_HORIZONTAL_SPLITTER_H
 
-#include <gtk/gtkhpaned.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

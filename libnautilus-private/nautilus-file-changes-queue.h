@@ -23,7 +23,7 @@
 #ifndef NAUTILUS_FILE_CHANGES_QUEUE_H
 #define NAUTILUS_FILE_CHANGES_QUEUE_H
 
-#include <gdk/gdktypes.h>
+#include <gdk/gdk.h>
 #include <gio/gio.h>
 
 void nautilus_file_changes_queue_file_added                      (GFile      *location);

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_ZOOM_CONTROL_H
 #define NAUTILUS_ZOOM_CONTROL_H
 
-#include <gtk/gtkhbox.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-icon-info.h> /* For NautilusZoomLevel */
 
 #define NAUTILUS_TYPE_ZOOM_CONTROL	      (nautilus_zoom_control_get_type ())

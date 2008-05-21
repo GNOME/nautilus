@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_LOCATION_DIALOG_H
 #define NAUTILUS_LOCATION_DIALOG_H
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_LOCATION_DIALOG         (nautilus_location_dialog_get_type ())

@@ -35,9 +35,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkseparatormenuitem.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

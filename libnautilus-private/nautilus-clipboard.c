@@ -32,13 +32,7 @@
 #include "nautilus-file-utilities.h"
 
 #include <glib/gi18n.h>
-#include <gtk/gtkclipboard.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkinvisible.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtktext.h>
-#include <gtk/gtktextview.h>
+#include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
 #include <string.h>
 

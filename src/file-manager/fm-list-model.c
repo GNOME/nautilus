@@ -32,8 +32,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <gtk/gtktreednd.h>
-#include <gtk/gtktreesortable.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <glib/gsequence.h>

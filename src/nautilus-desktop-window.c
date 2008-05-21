@@ -29,7 +29,7 @@
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtklayout.h>
+#include <gtk/gtk.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>

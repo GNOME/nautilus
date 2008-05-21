@@ -35,8 +35,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <gtk/gtkenums.h>
-#include <gtk/gtkhbbox.h>
+#include <gtk/gtk.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-help.h>
 #include <glade/glade.h>

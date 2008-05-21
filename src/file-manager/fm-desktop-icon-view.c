@@ -30,7 +30,7 @@
 #include "fm-actions.h"
 
 #include <X11/Xatom.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -41,7 +41,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <fcntl.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkcheckmenuitem.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-util.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
@@ -65,7 +64,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <gtk/gtkmessagedialog.h>
 
 /* Timeout to check the desktop directory for updates */
 #define RESCAN_TIMEOUT 4000

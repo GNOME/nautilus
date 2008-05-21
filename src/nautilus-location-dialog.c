@@ -26,9 +26,7 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
+#include <gtk/gtk.h>
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"

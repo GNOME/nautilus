@@ -27,8 +27,7 @@
 #ifndef NAUTILUS_FILE_OPERATIONS_H
 #define NAUTILUS_FILE_OPERATIONS_H
 
-#include <gdk/gdkdnd.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,

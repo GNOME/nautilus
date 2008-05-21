@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_SIDE_PANE_H
 #define NAUTILUS_SIDE_PANE_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

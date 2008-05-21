@@ -26,7 +26,7 @@
 #ifndef FM_ERROR_REPORTING_H
 #define FM_ERROR_REPORTING_H
 
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-private/nautilus-file.h>
 

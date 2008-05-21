@@ -3,7 +3,7 @@
 #ifndef __NAUTILUS_RECENT_H__
 #define __NAUTILUS_RECENT_H__
 
-#include <gtk/gtkrecentmanager.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <gio/gio.h>
 

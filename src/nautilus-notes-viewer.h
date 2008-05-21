@@ -26,10 +26,9 @@
 #ifndef _NAUTILUS_NOTES_VIEWER_H
 #define _NAUTILUS_NOTES_VIEWER_H
 
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <gtk/gtkscrolledwindow.h>
 
 #define NAUTILUS_NOTES_SIDEBAR_ID    "NautilusNotesSidebar"
 

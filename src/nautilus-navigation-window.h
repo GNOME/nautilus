@@ -31,7 +31,7 @@
 #define NAUTILUS_NAVIGATION_WINDOW_H
 
 #include <bonobo/bonobo-window.h>
-#include <gtk/gtktoolitem.h>
+#include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-sidebar.h>

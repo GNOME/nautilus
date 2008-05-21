@@ -48,10 +48,7 @@
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-icon-item.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkaccessible.h>
-#include <gtk/gtklayout.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <stdio.h>

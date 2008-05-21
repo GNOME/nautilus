@@ -33,24 +33,7 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkexpander.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkfilechooserdialog.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkicontheme.h>
-#include <gtk/gtkiconfactory.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 #define sure_string(s)                    ((const char *)((s)!=NULL?(s):""))

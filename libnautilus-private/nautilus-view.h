@@ -26,7 +26,7 @@
 #define NAUTILUS_VIEW_H
 
 #include <glib-object.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 /* For NautilusZoomLevel */
 #include <libnautilus-private/nautilus-icon-info.h>

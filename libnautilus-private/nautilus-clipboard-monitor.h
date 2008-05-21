@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_CLIPBOARD_MONITOR_H
 #define NAUTILUS_CLIPBOARD_MONITOR_H
 
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_CLIPBOARD_MONITOR \
 	(nautilus_clipboard_monitor_get_type ())

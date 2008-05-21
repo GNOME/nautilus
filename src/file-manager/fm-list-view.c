@@ -37,16 +37,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkcursor.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 #include <libegg/eggtreemultidnd.h>
 #include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>

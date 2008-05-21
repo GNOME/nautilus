@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_OPEN_WITH_DIALOG_H
 #define NAUTILUS_OPEN_WITH_DIALOG_H
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 #define NAUTILUS_TYPE_OPEN_WITH_DIALOG         (nautilus_open_with_dialog_get_type ())

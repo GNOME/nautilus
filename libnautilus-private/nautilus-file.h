@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FILE_H
 #define NAUTILUS_FILE_H
 
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-icon-info.h>

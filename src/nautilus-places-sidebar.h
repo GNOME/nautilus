@@ -24,10 +24,9 @@
 #ifndef _NAUTILUS_PLACES_SIDEBAR_H
 #define _NAUTILUS_PLACES_SIDEBAR_H
 
-#include <gtk/gtktreeview.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_PLACES_SIDEBAR_ID    "NautilusPlacesSidebar"
 

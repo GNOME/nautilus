@@ -38,23 +38,7 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtkalignment.h> 
-#include <gtk/gtkbox.h> 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrenderertoggle.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkhbbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkicontheme.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 
 struct _NautilusMimeApplicationChooserDetails {

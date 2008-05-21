@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_UI_UTILITIES_H
 #define NAUTILUS_UI_UTILITIES_H
 
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 #include <libnautilus-extension/nautilus-menu-item.h>
 
 char *      nautilus_get_ui_directory              (void);

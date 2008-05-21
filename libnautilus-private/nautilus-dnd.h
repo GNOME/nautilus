@@ -27,7 +27,7 @@
 #ifndef NAUTILUS_DND_H
 #define NAUTILUS_DND_H
 
-#include <gtk/gtkdnd.h>
+#include <gtk/gtk.h>
 
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE  "x-special/gnome-icon-list"

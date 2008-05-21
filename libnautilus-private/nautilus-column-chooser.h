@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_COLUMN_CHOOSER_H
 #define NAUTILUS_COLUMN_CHOOSER_H
 
-#include <gtk/gtkhbox.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER                (nautilus_column_chooser_get_type ())
 #define NAUTILUS_COLUMN_CHOOSER(obj)                (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooser))

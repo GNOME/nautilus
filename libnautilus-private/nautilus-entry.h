@@ -27,7 +27,7 @@
 #ifndef NAUTILUS_ENTRY_H
 #define NAUTILUS_ENTRY_H
 
-#include <gtk/gtkentry.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

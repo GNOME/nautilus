@@ -33,7 +33,7 @@
 #include "nautilus-file-utilities.h"
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-search-directory.h"
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <string.h>
 

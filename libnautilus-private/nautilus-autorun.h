@@ -40,7 +40,7 @@
 #ifndef NAUTILUS_AUTORUN_H
 #define NAUTILUS_AUTORUN_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 

@@ -24,14 +24,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkarrow.h>
-#include <gtk/gtkdnd.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>

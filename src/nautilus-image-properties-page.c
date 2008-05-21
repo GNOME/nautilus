@@ -26,8 +26,7 @@
 #include <config.h>
 #include "nautilus-image-properties-page.h"
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>

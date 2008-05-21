@@ -31,12 +31,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkenums.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtktreeselection.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-bookmark.h>

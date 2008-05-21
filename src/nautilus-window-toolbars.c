@@ -37,8 +37,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktogglebutton.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-popup-menu.h>

@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_DIRECTORY_H
 #define NAUTILUS_DIRECTORY_H
 
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 

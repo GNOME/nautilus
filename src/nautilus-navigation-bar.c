@@ -31,8 +31,7 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkbindings.h>
+#include <gtk/gtk.h>
 #include <string.h>
 
 enum {

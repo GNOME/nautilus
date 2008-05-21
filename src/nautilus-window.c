@@ -46,11 +46,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkmenubar.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>

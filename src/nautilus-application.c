@@ -67,7 +67,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-config.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 #include <libgnomeui/gnome-client.h>

@@ -32,9 +32,7 @@
 
 #include "nautilus-navigation-bar.h"
 #include "nautilus-navigation-window.h"
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_LOCATION_BAR (nautilus_location_bar_get_type ())
 #define NAUTILUS_LOCATION_BAR(obj) \

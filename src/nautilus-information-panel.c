@@ -36,8 +36,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtkdnd.h>
-#include <gtk/gtkhbox.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-dnd.h>

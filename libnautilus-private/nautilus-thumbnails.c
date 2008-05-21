@@ -34,7 +34,7 @@
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 #include <errno.h>
 #include <stdio.h>

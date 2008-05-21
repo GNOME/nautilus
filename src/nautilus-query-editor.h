@@ -24,8 +24,7 @@
 #ifndef NAUTILUS_QUERY_EDITOR_H
 #define NAUTILUS_QUERY_EDITOR_H
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkentry.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-query.h>
 #include <nautilus-search-bar.h>
 

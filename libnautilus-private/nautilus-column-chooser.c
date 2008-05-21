@@ -26,19 +26,7 @@
 #include "nautilus-column-chooser.h"
 
 #include <string.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrenderertoggle.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkhseparator.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 #include "nautilus-column-utilities.h"

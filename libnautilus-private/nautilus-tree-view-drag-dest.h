@@ -30,7 +30,7 @@
 #ifndef NAUTILUS_TREE_VIEW_DRAG_DEST_H
 #define NAUTILUS_TREE_VIEW_DRAG_DEST_H
 
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 
 #include "nautilus-file.h"
 

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_MIME_APPLICATION_CHOOSER_H
 #define NAUTILUS_MIME_APPLICATION_CHOOSER_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER         (nautilus_mime_application_chooser_get_type ())
 #define NAUTILUS_MIME_APPLICATION_CHOOSER(obj)         (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NautilusMimeApplicationChooser))

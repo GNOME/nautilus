@@ -42,10 +42,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkiconfactory.h>
-#include <gtk/gtksignal.h>
-#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gdesktopappinfo.h>
 #include <libgnome/gnome-init.h>

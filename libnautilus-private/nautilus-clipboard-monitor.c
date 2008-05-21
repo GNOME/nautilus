@@ -29,7 +29,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <gtk/gtkclipboard.h>
+#include <gtk/gtk.h>
 
 /* X11 has a weakness when it comes to clipboard handling,
  * there is no way to get told when the owner of the clipboard

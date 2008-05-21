@@ -31,8 +31,7 @@
 #include "nautilus-tree-view-drag-dest.h"
 
 #include <eel/eel-gtk-macros.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-macros.h>
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-dnd.h"

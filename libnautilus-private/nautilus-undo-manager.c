@@ -28,7 +28,7 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtk.h>
 #include <bonobo/bonobo-main.h>
 #include "nautilus-undo-private.h"
 

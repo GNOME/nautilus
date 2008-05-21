@@ -37,7 +37,7 @@
 #include "nautilus-metafile.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <stdio.h>
 #include <stdlib.h>

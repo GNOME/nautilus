@@ -26,9 +26,7 @@
 #ifndef NAUTILUS_CLIPBOARD_H
 #define NAUTILUS_CLIPBOARD_H
 
-#include <gtk/gtkeditable.h>
-#include <gtk/gtktextview.h>
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 
 /* This makes this editable or text view put clipboard commands into
  * the passed UI manager when the editable/text view is in focus.

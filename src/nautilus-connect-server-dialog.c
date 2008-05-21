@@ -31,17 +31,7 @@
 #include <libgnomeui/gnome-help.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkcombobox.h>
+#include <gtk/gtk.h>
 #include "nautilus-location-entry.h"
 #include <libnautilus-private/nautilus-global-preferences.h>
 

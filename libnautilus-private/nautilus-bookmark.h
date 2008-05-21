@@ -25,8 +25,7 @@
 #ifndef NAUTILUS_BOOKMARK_H
 #define NAUTILUS_BOOKMARK_H
 
-#include <gtk/gtkenums.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 typedef struct NautilusBookmark NautilusBookmark;
 

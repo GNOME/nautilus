@@ -32,7 +32,7 @@
 #define NAUTILUS_PROPERTY_BROWSER_H
 
 #include <gdk/gdk.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 typedef struct NautilusPropertyBrowser NautilusPropertyBrowser;
 typedef struct NautilusPropertyBrowserClass  NautilusPropertyBrowserClass;

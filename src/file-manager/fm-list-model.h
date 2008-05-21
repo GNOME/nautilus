@@ -22,8 +22,7 @@
    Authors: Anders Carlsson <andersca@gnu.org>
 */
 
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkdnd.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-directory.h>

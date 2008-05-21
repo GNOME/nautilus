@@ -35,7 +35,7 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <glib/gi18n.h>
-#include <gtk/gtkicontheme.h>
+#include <gtk/gtk.h>
 #include "nautilus-emblem-utils.h"
 
 #define EMBLEM_NAME_TRASH   "emblem-trash"

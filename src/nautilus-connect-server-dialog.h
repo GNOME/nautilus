@@ -25,7 +25,7 @@
 #define NAUTILUS_CONNECT_SERVER_DIALOG_H
 
 #include <gio/gio.h>
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 #include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_CONNECT_SERVER_DIALOG         (nautilus_connect_server_dialog_get_type ())

@@ -28,8 +28,7 @@
 
 #include "nautilus-undo-private.h"
 #include "nautilus-undo-transaction.h"
-#include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <libgnomecanvas/gnome-canvas.h>
 
 #define NAUTILUS_UNDO_MANAGER_DATA "Nautilus undo manager"

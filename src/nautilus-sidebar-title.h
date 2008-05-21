@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_SIDEBAR_TITLE_H
 #define NAUTILUS_SIDEBAR_TITLE_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 

@@ -52,9 +52,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkstock.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock-icons.h>

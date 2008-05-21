@@ -31,7 +31,7 @@
 #define NAUTILUS_CUSTOMIZATION_DATA_H
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 #define RESET_IMAGE_NAME "reset.png"
 

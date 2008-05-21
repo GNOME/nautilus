@@ -48,12 +48,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkdnd.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkmenubar.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

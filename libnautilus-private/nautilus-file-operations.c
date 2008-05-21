@@ -51,9 +51,7 @@
 #include <glib/gstdio.h>
 #include <gnome.h>
 #include <gdk/gdkdnd.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib/gurifuncs.h>
 #include "nautilus-file-changes-queue.h"

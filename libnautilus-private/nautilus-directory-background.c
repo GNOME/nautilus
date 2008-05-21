@@ -34,7 +34,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-file-attributes.h"
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 #include <string.h>
 
 static void background_changed_callback     (EelBackground *background, 

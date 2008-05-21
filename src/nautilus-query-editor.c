@@ -31,21 +31,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkdialog.h>
-#include "gtk/gtkliststore.h"
-#include "gtk/gtktreeselection.h"
-#include "gtk/gtkscrolledwindow.h"
-#include <gtk/gtkfilechooserbutton.h>
-#include "gtk/gtkcelllayout.h"
-#include "gtk/gtkcellrenderertext.h"
+#include <gtk/gtk.h>
 
 typedef enum {
 	NAUTILUS_QUERY_EDITOR_ROW_LOCATION,

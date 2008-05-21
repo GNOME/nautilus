@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_KEEP_LAST_VERTICAL_BOX_H
 #define NAUTILUS_KEEP_LAST_VERTICAL_BOX_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX            (nautilus_keep_last_vertical_box_get_type ())
 #define NAUTILUS_KEEP_LAST_VERTICAL_BOX(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_KEEP_LAST_VERTICAL_BOX, NautilusKeepLastVerticalBox))

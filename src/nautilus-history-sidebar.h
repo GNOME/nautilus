@@ -27,10 +27,9 @@
 #ifndef _NAUTILUS_HISTORY_SIDEBAR_H
 #define _NAUTILUS_HISTORY_SIDEBAR_H
 
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
-#include <gtk/gtkscrolledwindow.h>
 
 #define NAUTILUS_HISTORY_SIDEBAR_ID    "NautilusHistorySidebar"
 
