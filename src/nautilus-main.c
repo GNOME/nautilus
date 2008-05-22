@@ -431,6 +431,8 @@ main (int argc, char *argv[])
 		g_unsetenv ("DESKTOP_STARTUP_ID");
 	}
 
+	autostart_mode = FALSE;
+
 	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
 	if (autostart_id != NULL && *autostart_id != '\0') {
 		autostart_mode = TRUE;
