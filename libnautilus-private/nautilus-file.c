@@ -3365,14 +3365,14 @@ nautilus_file_get_icon (NautilusFile *file,
 				w = gdk_pixbuf_get_width (raw_pixbuf);
 				h = gdk_pixbuf_get_height (raw_pixbuf);
 				
-				/* These compensates for frame size which will be added on the raw image */
-				s = MAX (NAUTILUS_THUMBNAIL_FRAME_LEFT + w + NAUTILUS_THUMBNAIL_FRAME_RIGHT,
-					 NAUTILUS_THUMBNAIL_FRAME_TOP + h + NAUTILUS_THUMBNAIL_FRAME_BOTTOM);
+				s = MAX (w, h);
 				
 				scale = (double)modified_size / s;
 
+				/* These compensate for the size of the frame which will be added around the raw image */
 				scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
-									 w * scale, h * scale,
+									 NAUTILUS_THUMBNAIL_FRAME_LEFT + w * scale + NAUTILUS_THUMBNAIL_FRAME_RIGHT,
+									 NAUTILUS_THUMBNAIL_FRAME_TOP + h * scale + NAUTILUS_THUMBNAIL_FRAME_BOTTOM,
 									 GDK_INTERP_BILINEAR);
 				nautilus_thumbnail_frame_image (&scaled_pixbuf);
 				
