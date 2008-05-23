@@ -45,12 +45,12 @@ typedef struct FMPropertiesWindow FMPropertiesWindow;
 typedef struct FMPropertiesWindowDetails FMPropertiesWindowDetails;
 
 struct FMPropertiesWindow {
-	GtkWindow window;
+	GtkDialog window;
 	FMPropertiesWindowDetails *details;	
 };
 
 struct FMPropertiesWindowClass {
-	GtkWindowClass parent_class;
+	GtkDialogClass parent_class;
 	
 	/* Keybinding signals */
 	void (* close)    (FMPropertiesWindow *window);

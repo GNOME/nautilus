@@ -1,3 +1,20 @@
+2008-05-23  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-properties-window.c (set_name_field),
+	(update_name_field), (value_field_update_internal),
+	(attach_title_field), (create_page_with_hbox), (append_blank_row),
+	(is_merged_trash_directory), (is_computer_directory),
+	(is_network_directory), (is_burn_directory),
+	(should_show_file_type), (should_show_location_info),
+	(should_show_accessed_date), (should_show_free_space),
+	(create_basic_page), (create_properties_window), (real_response),
+	(fm_properties_window_class_init), (fm_properties_window_init):
+	* src/file-manager/fm-properties-window.h:
+	Remove useless properties for computer, trash, burn and network
+	locations. Add spacing, make properties dialog HIG compliant.
+	Derive dialog from GtkDialog, instead of GtkWindow.
+	Fixes #325024.
+
 2008-05-22  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_icon):

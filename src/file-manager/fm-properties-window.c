@@ -103,8 +103,9 @@ struct FMPropertiesWindowDetails {
 	GtkWidget *icon_image;
 	GtkWidget *icon_chooser;
 
-	GtkWidget *name_label;
+	GtkLabel *name_label;
 	GtkWidget *name_field;
+	unsigned int name_row;
 	char *pending_name;
 
 	GtkLabel *directory_contents_title_field;
@@ -168,13 +169,6 @@ enum {
 	VALUE_COLUMN,
 	COLUMN_COUNT
 };
-
-enum {
-	CLOSE,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
 
 typedef struct {
 	GList *original_files;
@@ -252,7 +246,7 @@ static GtkLabel *attach_ellipsizing_value_label   (GtkTable *table,
 						   
 static GtkWidget* create_pie_widget 		  (FMPropertiesWindow *window);
 
-G_DEFINE_TYPE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_DIALOG);
 #define parent_class fm_properties_window_parent_class 
 
 static gboolean
@@ -605,7 +599,11 @@ set_name_field (FMPropertiesWindow *window, const gchar *original_name,
 		}
 
 		if (use_label) {
-			window->details->name_field = GTK_WIDGET (attach_ellipsizing_value_label (window->details->basic_table, 0, VALUE_COLUMN, name));		
+			window->details->name_field =
+				GTK_WIDGET (attach_ellipsizing_value_label
+					(window->details->basic_table,
+					 window->details->name_row,
+					 VALUE_COLUMN, name));		
 		} else {
 			window->details->name_field = nautilus_entry_new ();
 			gtk_entry_set_text (GTK_ENTRY (window->details->name_field), name);
@@ -614,7 +612,8 @@ set_name_field (FMPropertiesWindow *window, const gchar *original_name,
 					  window->details->name_field,
 					  VALUE_COLUMN, 
 					  VALUE_COLUMN + 1,
-					  0, 1,
+					  window->details->name_row,
+					  window->details->name_row + 1,
 					  GTK_FILL, 0,
 					  0, 0);
 			gtk_label_set_mnemonic_widget (GTK_LABEL (window->details->name_label), window->details->name_field);
@@ -664,7 +663,11 @@ static void
 update_name_field (FMPropertiesWindow *window)
 {
 	NautilusFile *file;
-	
+
+	gtk_label_set_text_with_mnemonic (window->details->name_label,
+					  ngettext ("_Name:", "_Names:",
+						    get_not_gone_original_file_count (window)));
+
 	if (is_multi_file_window (window)) {
 		/* Multifile property dialog, show all names */
 		GString *str;
@@ -1341,6 +1344,7 @@ value_field_update_internal (GtkLabel *label,
 	const char *attribute_name;
 	char *attribute_value;
 	char *inconsistent_string;
+	char *mime_type, *tmp;
 
 	g_assert (GTK_IS_LABEL (label));
 
@@ -1349,6 +1353,18 @@ value_field_update_internal (GtkLabel *label,
 	attribute_value = file_list_get_string_attribute (file_list, 
 							  attribute_name,
 							  inconsistent_string);
+	if (!strcmp (attribute_name, "type") && strcmp (attribute_value, inconsistent_string)) {
+		mime_type = file_list_get_string_attribute (file_list,
+							    "mime_type",
+							    inconsistent_string);
+		if (strcmp (mime_type, inconsistent_string)) {
+			tmp = attribute_value;
+			attribute_value = g_strdup_printf (Q_("MIME type description (MIME type)|%s (%s)"), attribute_value, mime_type);
+			g_free (tmp);
+		}
+		g_free (mime_type);
+	}
+
 	gtk_label_set_text (label, attribute_value);
 	g_free (attribute_value);
 }
@@ -2391,7 +2407,7 @@ attach_title_field (GtkTable *table,
 		     int row,
 		     const char *title)
 {
-	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE, FALSE, FALSE, TRUE);
+	return attach_label (table, row, TITLE_COLUMN, title, FALSE, FALSE, FALSE, FALSE, TRUE);
 }		      
 
 static guint
@@ -2474,6 +2490,24 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 }
 
 static GtkWidget *
+create_page_with_hbox (GtkNotebook *notebook,
+		       const char *title)
+{
+	GtkWidget *hbox;
+
+	g_assert (GTK_IS_NOTEBOOK (notebook));
+	g_assert (title != NULL);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
+	gtk_box_set_spacing (GTK_BOX (hbox), 12);
+	gtk_notebook_append_page (notebook, hbox, gtk_label_new (title));
+
+	return hbox;
+}
+
+static GtkWidget *
 create_page_with_vbox (GtkNotebook *notebook,
 		       const char *title)
 {
@@ -2489,6 +2523,16 @@ create_page_with_vbox (GtkNotebook *notebook,
 
 	return vbox;
 }		       
+
+static GtkWidget *
+append_blank_row (GtkTable *table)
+{
+	GtkWidget *separator;
+
+	append_title_field (table, "", (GtkLabel **) &separator);
+
+	return separator;
+}
 
 static void
 apply_standard_table_padding (GtkTable *table)
@@ -2509,28 +2553,6 @@ create_attribute_value_table (GtkVBox *vbox, int row_count)
 
 	return table;
 }
-
-static void
-create_page_with_table_in_vbox (GtkNotebook *notebook, 
-				const char *title, 
-				int row_count, 
-				GtkTable **return_table, 
-				GtkWidget **return_vbox)
-{
-	GtkWidget *table;
-	GtkWidget *vbox;
-
-	vbox = create_page_with_vbox (notebook, title);
-	table = create_attribute_value_table (GTK_VBOX (vbox), row_count);
-
-	if (return_table != NULL) {
-		*return_table = GTK_TABLE (table);
-	}
-
-	if (return_vbox != NULL) {
-		*return_vbox = vbox;
-	}
-}		
 
 static gboolean
 is_merged_trash_directory (NautilusFile *file) 
@@ -2559,6 +2581,32 @@ is_computer_directory (NautilusFile *file)
 }
 
 static gboolean
+is_network_directory (NautilusFile *file)
+{
+	char *file_uri;
+	gboolean result;
+	
+	file_uri = nautilus_file_get_uri (file);
+	result = strcmp (file_uri, "network:///") == 0;
+	g_free (file_uri);
+	
+	return result;
+}
+
+static gboolean
+is_burn_directory (NautilusFile *file)
+{
+	char *file_uri;
+	gboolean result;
+	
+	file_uri = nautilus_file_get_uri (file);
+	result = strcmp (file_uri, "burn:///") == 0;
+	g_free (file_uri);
+	
+	return result;
+}
+
+static gboolean
 should_show_custom_icon_buttons (FMPropertiesWindow *window) 
 {
 	if (is_multi_file_window (window)) {
@@ -2571,12 +2619,28 @@ should_show_custom_icon_buttons (FMPropertiesWindow *window)
 static gboolean
 should_show_file_type (FMPropertiesWindow *window) 
 {
-	/* The trash on the desktop is one-of-a-kind */
 	if (!is_multi_file_window (window) 
-	    && is_merged_trash_directory (get_target_file (window))) {
+	    && (is_merged_trash_directory (get_target_file (window)) ||
+		is_computer_directory (get_target_file (window)) ||
+		is_network_directory (get_target_file (window)) ||
+		is_burn_directory (get_target_file (window)))) {
 		return FALSE;
 	}
 
+
+	return TRUE;
+}
+
+static gboolean
+should_show_location_info (FMPropertiesWindow *window) 
+{
+	if (!is_multi_file_window (window) 
+	    && (is_merged_trash_directory (get_target_file (window)) ||
+		is_computer_directory (get_target_file (window)) ||
+		is_network_directory (get_target_file (window)) ||
+		is_burn_directory (get_target_file (window)))) {
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -2588,16 +2652,6 @@ should_show_accessed_date (FMPropertiesWindow *window)
 	 * day decide that it is useful, we should separately
 	 * consider whether it's useful for "trash:".
 	 */
-	if (file_list_all_directories (window->details->target_files)) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
-should_show_mime_type (FMPropertiesWindow *window) 
-{
 	if (file_list_all_directories (window->details->target_files)) {
 		return FALSE;
 	}
@@ -2619,6 +2673,15 @@ should_show_link_target (FMPropertiesWindow *window)
 static gboolean
 should_show_free_space (FMPropertiesWindow *window)
 {
+
+	if (!is_multi_file_window (window)
+	    && (is_merged_trash_directory (get_target_file (window)) ||
+		is_computer_directory (get_target_file (window)) ||
+		is_network_directory (get_target_file (window)) ||
+		is_burn_directory (get_target_file (window)))) {
+		return FALSE;
+	}
+
 	if (file_list_all_directories (window->details->target_files)) {
 		return TRUE;
 	}
@@ -3115,51 +3178,41 @@ static void
 create_basic_page (FMPropertiesWindow *window)
 {
 	GtkTable *table;
-	GtkWidget *container;
 	GtkWidget *icon_aligner;
 	GtkWidget *icon_pixmap_widget;
 	GtkWidget *volume_usage;
-	GtkWidget *hbox, *name_label;
+	GtkWidget *hbox, *vbox;
 	
-	guint last_row;
-	
-	create_page_with_table_in_vbox (window->details->notebook, 
-					_("Basic"), 
-					1,
-					&table, 
-					&container);
-	window->details->basic_table = table;
+	guint last_row, row;
+
+	hbox = create_page_with_hbox (window->details->notebook, _("Basic"));
 	
 	/* Icon pixmap */
-	hbox = gtk_hbox_new (FALSE, 4);
-	gtk_widget_show (hbox);
-	gtk_table_attach (table,
-			  hbox,
-			  TITLE_COLUMN, 
-			  TITLE_COLUMN + 1,
-			  0, 1,
-			  0, 0,
-			  0, 0);
 
 	icon_pixmap_widget = create_image_widget (
 		window, should_show_custom_icon_buttons (window));
 	gtk_widget_show (icon_pixmap_widget);
 
-	icon_aligner = gtk_alignment_new (1, 0.5, 0, 0);
+	icon_aligner = gtk_alignment_new (1, 0, 0, 0);
 	gtk_widget_show (icon_aligner);
 	
 	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
-	gtk_box_pack_start (GTK_BOX (hbox), icon_aligner, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon_aligner, FALSE, FALSE, 0);
 
 	window->details->icon_chooser = NULL;
 
-	/* Name label */
-	name_label = gtk_label_new_with_mnemonic (ngettext ("_Name:", "_Names:",
-							    get_not_gone_original_file_count (window)));
-	eel_gtk_label_make_bold (GTK_LABEL (name_label));
-	gtk_widget_show (name_label);
-	gtk_box_pack_end (GTK_BOX (hbox), name_label, FALSE, FALSE, 0);
-	window->details->name_label = name_label;
+	/* Table */
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (hbox), vbox);
+
+	table = GTK_TABLE (create_attribute_value_table (GTK_VBOX (vbox), 0));
+	window->details->basic_table = table;
+
+	/* Name label.  The text will be determined in update_name_field */
+	row = append_title_field (table, NULL, &window->details->name_label);
+	window->details->name_row = row;
 
 	/* Name field */
 	window->details->name_field = NULL;
@@ -3179,6 +3232,14 @@ create_basic_page (FMPropertiesWindow *window)
 					 FALSE);
 	}
 
+	if (should_show_link_target (window)) {
+		append_title_and_ellipsizing_value (window, table, 
+						    _("Link target:"), 
+						    "link_target",
+						    _("--"),
+						    FALSE);
+	}
+
 	if (is_multi_file_window (window) ||
 	    nautilus_file_is_directory (get_target_file (window))) {
 		append_directory_contents_fields (window, table);
@@ -3189,52 +3250,43 @@ create_basic_page (FMPropertiesWindow *window)
 					 FALSE);
 	}
 
-	append_title_and_ellipsizing_value (window, table, _("Location:"), 
-					    "where",
-					    "--",
-					    TRUE);
-	
-	append_title_and_ellipsizing_value (window, table, 
-					    _("Volume:"), 
-					    "volume",
-					    "--",
-					    FALSE);
+	append_blank_row (table);
+
+	if (should_show_location_info (window)) {
+		append_title_and_ellipsizing_value (window, table, _("Location:"), 
+						    "where",
+						    "--",
+						    TRUE);
+		
+		append_title_and_ellipsizing_value (window, table, 
+						    _("Volume:"), 
+						    "volume",
+						    "--",
+						    FALSE);
+	}
+
+	if (should_show_accessed_date (window)) {
+		append_blank_row (table);
+
+		append_title_value_pair (window, table, _("Accessed:"), 
+					 "date_accessed",
+					 _("--"),
+					 FALSE);
+		append_title_value_pair (window, table, _("Modified:"), 
+					 "date_modified",
+					 _("--"),
+					 FALSE);
+	}
+
 	if (should_show_free_space (window)) {
+		append_blank_row (table);
+
 		append_title_value_pair (window, table, _("Free space:"), 
 					 "free_space",
 					 "--",
 					 FALSE);
 	}
 
-	if (should_show_link_target (window)) {
-		append_title_and_ellipsizing_value (window, table, 
-						    _("Link target:"), 
-						    "link_target",
-						    "--",
-						    FALSE);
-	}
-	if (should_show_mime_type (window)) {
-		append_title_value_pair (window, table, _("MIME type:"), 
-					 "mime_type",
-					 "--",
-					 FALSE);
-	}				  
-	
-	/* Blank title ensures standard row height */
-	append_title_field (table, "", NULL);
-	
-	append_title_value_pair (window, table, _("Modified:"), 
-				 "date_modified",
-				 "--",
-				 FALSE);
-	
-	if (should_show_accessed_date (window)) {
-		append_title_value_pair (window, table, _("Accessed:"), 
-					 "date_accessed",
-					 "--",
-					 FALSE);
-	}
-	
 	if (should_show_volume_usage (window)) {
 		last_row = append_row (table);
 		volume_usage = create_volume_usage_widget (window);
@@ -4900,22 +4952,6 @@ startup_data_free (StartupData *data)
 }
 
 static void
-help_button_callback (GtkWidget *widget, GtkWidget *property_window)
-{
-	GError *error = NULL;
-
-	gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
-					      gtk_window_get_screen (GTK_WINDOW (property_window)),
-&error);
-
-	if (error) {
-		eel_show_error_dialog (_("There was an error displaying help."), error->message,
-				       GTK_WINDOW (property_window));
-		g_error_free (error);
-	}
-}
-
-static void
 file_changed_callback (NautilusFile *file, gpointer user_data)
 {
 	FMPropertiesWindow *window = FM_PROPERTIES_WINDOW (user_data);
@@ -5011,9 +5047,6 @@ static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
 	FMPropertiesWindow *window;
-	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkWidget *button;
 	GList *l;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
@@ -5083,17 +5116,11 @@ create_properties_window (StartupData *startup_data)
 					 0);
 	}
 
-	/* Create box for notebook and button box. */
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
-	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (window),
-			   GTK_WIDGET (vbox));
-
 	/* Create the notebook tabs. */
 	window->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
 	gtk_widget_show (GTK_WIDGET (window->details->notebook));
-	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (window->details->notebook),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+			    GTK_WIDGET (window->details->notebook),
 			    TRUE, TRUE, 0);
 
 	/* Create the pages. */
@@ -5114,27 +5141,17 @@ create_properties_window (StartupData *startup_data)
 	/* append pages from available views */
 	append_extension_pages (window);
 
-	/* Create box for help and close buttons. */
-	hbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox), FALSE, TRUE, 5);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox), GTK_BUTTONBOX_EDGE);
+	gtk_dialog_add_buttons (GTK_DIALOG (window),
+				GTK_STOCK_HELP, GTK_RESPONSE_HELP,
+				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+				NULL);
 
-	button = gtk_button_new_from_stock (GTK_STOCK_HELP);
- 	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button),
-			    FALSE, TRUE, 0);
-	g_signal_connect_object (button, "clicked",
-				 G_CALLBACK (help_button_callback),
-				 window, 0);
-	
-	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	gtk_widget_show (button);
-	gtk_box_pack_end (GTK_BOX (hbox), GTK_WIDGET (button),
-			    FALSE, TRUE, 0);
-	g_signal_connect_swapped (button, "clicked",
-				  G_CALLBACK (gtk_widget_destroy),
-				  window);
+	/* FIXME - HIGificiation, should be done inside GTK+ */
+	gtk_widget_ensure_style (GTK_WIDGET (window));
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (window)->vbox), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (window)->action_area), 0);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (window)->vbox), 12);
+	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
 
 	/* Update from initial state */
 	properties_window_update (window, NULL);
@@ -5355,6 +5372,36 @@ fm_properties_window_present (GList *original_files,
 			 NAUTILUS_FILE_ATTRIBUTE_INFO,
 			 is_directory_ready_callback,
 			 startup_data);
+	}
+}
+
+static void
+real_response (GtkDialog *dialog,
+	       int        response)
+{
+	GError *error = NULL;
+
+	switch (response) {
+	case GTK_RESPONSE_HELP:
+		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
+						      gtk_window_get_screen (GTK_WINDOW (dialog)),
+						      &error);
+		if (error != NULL) {
+			eel_show_error_dialog (_("There was an error displaying help."), error->message,
+					       GTK_WINDOW (dialog));
+			g_error_free (error);
+		}
+		break;
+
+	case GTK_RESPONSE_NONE:
+	case GTK_RESPONSE_CLOSE:
+	case GTK_RESPONSE_DELETE_EVENT:
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+
+	default:
+		g_assert_not_reached ();
+		break;
 	}
 }
 
@@ -5665,39 +5712,13 @@ select_image_button_callback (GtkWidget *widget,
 }
 
 static void
-fm_properties_window_close (FMPropertiesWindow *pwindow)
-{
-	/* Synthesize delete_event to close dialog. */
-	
-	GtkWidget *widget = GTK_WIDGET (pwindow);
-	GdkEvent *event;
-	
-	event = gdk_event_new (GDK_DELETE);
-	
-	event->any.window = g_object_ref (widget->window);
-	event->any.send_event = TRUE;
-	
-	gtk_main_do_event (event);
-	gdk_event_free (event);
-}
-
-static void
 fm_properties_window_class_init (FMPropertiesWindowClass *class)
 {
 	GtkBindingSet *binding_set;
 
 	G_OBJECT_CLASS (class)->finalize = real_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = real_destroy;
-	class->close = fm_properties_window_close;
-	
-	signals[CLOSE] =
-	  g_signal_new ("close",
-			G_OBJECT_CLASS_TYPE (class),
-			G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-			G_STRUCT_OFFSET (FMPropertiesWindowClass, close),
-			NULL, NULL,
-			g_cclosure_marshal_VOID__VOID,
-			G_TYPE_NONE, 0);
+	GTK_DIALOG_CLASS (class)->response = real_response;
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_Escape, 0,
@@ -5708,6 +5729,4 @@ static void
 fm_properties_window_init (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
-
-	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
 }
