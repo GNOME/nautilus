@@ -1,3 +1,11 @@
+2008-05-23  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c (seen_inode),
+	(mark_inode_as_seen), (deep_count_one), (deep_count_state_free),
+	(deep_count_load), (deep_count_start):
+	Do not count the same inode twice when calculating size. Fixes
+	#313668.
+
 2008-05-22  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_icon):

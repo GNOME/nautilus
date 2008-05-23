@@ -137,6 +137,7 @@ struct DeepCountState {
 	GFileEnumerator *enumerator;
 	GFile *deep_count_location;
 	GList *deep_count_subdirectories;
+	GArray *seen_deep_count_inodes;
 };
 
 
@@ -2662,15 +2663,54 @@ directory_count_start (NautilusDirectory *directory,
 	g_object_unref (location);
 }
 
+static inline gboolean
+seen_inode (DeepCountState *state,
+	    GFileInfo *info)
+{
+	guint64 inode, inode2;
+	guint i;
+
+	inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
+
+	if (inode != 0) {
+		for (i = 0; i < state->seen_deep_count_inodes->len; i++) {
+			inode2 = g_array_index (state->seen_deep_count_inodes, guint64, i);
+			if (inode == inode2) {
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
+static inline void
+mark_inode_as_seen (DeepCountState *state,
+		    GFileInfo *info)
+{
+	guint64 inode;
+
+	inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
+	if (inode != 0) {
+		g_array_append_val (state->seen_deep_count_inodes, inode);
+	}
+}
+
 static void
 deep_count_one (DeepCountState *state,
 		GFileInfo *info)
 {
 	NautilusFile *file;
 	GFile *subdir;
+	gboolean is_seen_inode;
 
 	if (should_skip_file (NULL, info)) {
 		return;
+	}
+
+	is_seen_inode = seen_inode (state, info);
+	if (!is_seen_inode) {
+		mark_inode_as_seen (state, info);
 	}
 
 	file = state->directory->details->deep_count_file;
@@ -2690,7 +2730,7 @@ deep_count_one (DeepCountState *state,
 	}
 
 	/* Count the size. */
-	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)) {
+	if (!is_seen_inode && g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)) {
 		file->details->deep_size += g_file_info_get_size (info);
 	}
 }
@@ -2710,6 +2750,7 @@ deep_count_state_free (DeepCountState *state)
 		g_object_unref (state->deep_count_location);
 	}
 	eel_g_object_list_free (state->deep_count_subdirectories);
+	g_array_free (state->seen_deep_count_inodes, TRUE);
 	g_free (state);
 }
 
@@ -2858,7 +2899,8 @@ deep_count_load (DeepCountState *state, GFile *location)
 					 G_FILE_ATTRIBUTE_STANDARD_TYPE ","
 					 G_FILE_ATTRIBUTE_STANDARD_SIZE ","
 					 G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
-					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP,
+					 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP ","
+					 G_FILE_ATTRIBUTE_UNIX_INODE,
 					 G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, /* flags */
 					 G_PRIORITY_LOW, /* prio */
 					 state->cancellable,
@@ -2930,6 +2972,7 @@ deep_count_start (NautilusDirectory *directory,
 	state = g_new0 (DeepCountState, 1);
 	state->directory = directory;
 	state->cancellable = g_cancellable_new ();
+	state->seen_deep_count_inodes = g_array_new (FALSE, TRUE, sizeof (guint64));
 
 	directory->details->deep_count_in_progress = state;
 	
