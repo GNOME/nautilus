@@ -1,16 +1,17 @@
 2008-05-24  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-property-browser.c (nautilus_property_browser_init),
+	(nautilus_property_browser_update_contents):
+	Set window role to dialog, do not use custom hacks to pack images into
+	window buttons. Fixes #78907.
+
+2008-05-24  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
 	* libnautilus-private/nautilus-autorun.c:
 	* src/nautilus-autorun-software.c
 	(present_autorun_for_software_dialog):
 	Use medium as singular of media. Fixes #522986.
-
-2008-05-23  Christian Neumair  <cneumair@gnome.org>
-
-	reviewed by: <delete if not using a buddy>
-
-	* libnautilus-private/nautilus-directory-async.c (deep_count_one):
 
 2008-05-23  Christian Neumair  <cneumair@gnome.org>
 

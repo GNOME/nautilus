@@ -92,10 +92,8 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *bottom_box;
 	
 	GtkWidget *add_button;
-	GtkWidget *add_button_label;
 	GtkWidget *add_button_image;
 	GtkWidget *remove_button;
-	GtkWidget *remove_button_label;
 	GtkWidget *remove_button_image;
 	
 	GtkWidget *patterns_dialog;
@@ -232,7 +230,7 @@ nautilus_property_browser_init (GtkObject *object)
 {
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget *widget, *temp_box, *temp_hbox, *temp_frame, *vbox;
-	GtkWidget *temp_button, *align;
+	GtkWidget *temp_button;
 	GtkWidget *viewport;
 	char *temp_str;
 	
@@ -259,6 +257,7 @@ nautilus_property_browser_init (GtkObject *object)
 	/* set the title and standard close accelerator */
 	gtk_window_set_title (GTK_WINDOW (widget), _("Backgrounds and Emblems"));
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "property_browser", "Nautilus");
+	gtk_window_set_type_hint (GTK_WINDOW (widget), GDK_WINDOW_TYPE_HINT_DIALOG);
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 
 	/* create the main vbox. */
@@ -336,16 +335,11 @@ nautilus_property_browser_init (GtkObject *object)
   	temp_box = gtk_event_box_new();
   	gtk_widget_show(temp_box);
 
-  	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
-  	gtk_widget_show(temp_frame);
-  	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
-
   	property_browser->details->bottom_box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (property_browser->details->bottom_box);
 	
 	gtk_box_pack_end (GTK_BOX (vbox), temp_box, FALSE, FALSE, 0);
-  	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
+  	gtk_container_add (GTK_CONTAINER (temp_box), property_browser->details->bottom_box);
   
   	/* create the "help" button */
 	temp_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
@@ -365,17 +359,11 @@ nautilus_property_browser_init (GtkObject *object)
  	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser, 0);
 
 	/* create the "remove" button */
-  	property_browser->details->remove_button = gtk_button_new();
-	property_browser->details->remove_button_label = gtk_label_new_with_mnemonic (_("_Remove..."));	
-	gtk_label_set_mnemonic_widget (GTK_LABEL (property_browser->details->remove_button_label),
-				       GTK_WIDGET (property_browser->details->remove_button));
+  	property_browser->details->remove_button = gtk_button_new_with_mnemonic (_("_Remove..."));	
+
 	property_browser->details->remove_button_image = gtk_image_new_from_stock (GTK_STOCK_REMOVE, GTK_ICON_SIZE_BUTTON);
-	temp_hbox = gtk_hbox_new (FALSE, 2);
-	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (temp_hbox), property_browser->details->remove_button_image, FALSE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->remove_button_label, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (property_browser->details->remove_button), align);
-	gtk_container_add (GTK_CONTAINER (align), temp_hbox);
+	gtk_button_set_image (GTK_BUTTON (property_browser->details->remove_button),
+			      property_browser->details->remove_button_image);
 	gtk_widget_show_all (property_browser->details->remove_button);
 
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box),
@@ -385,18 +373,11 @@ nautilus_property_browser_init (GtkObject *object)
 				 G_CALLBACK (remove_button_callback), property_browser, 0);
 
   	/* now create the "add new" button */
-  	property_browser->details->add_button = gtk_button_new ();
-	property_browser->details->add_button_label = gtk_label_new_with_mnemonic (_("_Add new..."));
-	gtk_label_set_mnemonic_widget (GTK_LABEL (property_browser->details->add_button_label),
-				       GTK_WIDGET (property_browser->details->add_button));
+	property_browser->details->add_button = gtk_button_new_with_mnemonic (_("Add new..."));
 
 	property_browser->details->add_button_image = gtk_image_new_from_stock (GTK_STOCK_ADD, GTK_ICON_SIZE_BUTTON);
-	temp_hbox = gtk_hbox_new (FALSE, 2);
-	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (temp_hbox), property_browser->details->add_button_image, FALSE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->add_button_label, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (property_browser->details->add_button), align);
-	gtk_container_add (GTK_CONTAINER (align), temp_hbox);
+	gtk_button_set_image (GTK_BUTTON (property_browser->details->add_button),
+			      property_browser->details->add_button_image);
 	gtk_widget_show_all (property_browser->details->add_button);
 
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box),
@@ -2171,7 +2152,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 					  GTK_ICON_SIZE_BUTTON);
 		
 		if (text != NULL) {
-			gtk_label_set_text_with_mnemonic (GTK_LABEL(property_browser->details->add_button_label), text);
+			gtk_button_set_label (GTK_BUTTON (property_browser->details->add_button), text);
 
 		}
 		gtk_widget_show (property_browser->details->add_button);
@@ -2241,7 +2222,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		else
 			gtk_widget_show(property_browser->details->remove_button);
 		if (text != NULL) {
-			gtk_label_set_text_with_mnemonic (GTK_LABEL(property_browser->details->remove_button_label), text);
+			gtk_button_set_label (GTK_BUTTON (property_browser->details->remove_button), text);
 		}
 	}
 }
