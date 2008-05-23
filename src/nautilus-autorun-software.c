@@ -191,9 +191,9 @@ present_autorun_for_software_dialog (GMount *mount)
 						     0,
 						     GTK_MESSAGE_OTHER,
 						     GTK_BUTTONS_CANCEL,
-						     _("<big><b>This media contains software intended to be automatically started. Would you like to run it?</b></big>"));
+						     _("<big><b>This medium contains software intended to be automatically started. Would you like to run it?</b></big>"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("The software will run directly from the media \"%s\". "
+						  _("The software will run directly from the medium \"%s\". "
 						    "You should never run software that you don't trust.\n"
 						    "\n"
 						    "If in doubt, press Cancel."),

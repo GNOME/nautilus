@@ -1103,14 +1103,14 @@ show_dialog:
 	} else if (strcmp (x_content_type, "x-content/image-picturecd") == 0) {
 		media_greeting = _("You have just inserted a Picture CD.");
 	} else if (strcmp (x_content_type, "x-content/image-dcf") == 0) {
-		media_greeting = _("You have just inserted media with digital photos.");
+		media_greeting = _("You have just inserted a medium with digital photos.");
 	} else if (strcmp (x_content_type, "x-content/audio-player") == 0) {
 		media_greeting = _("You have just inserted a digital audio player.");
 	} else if (strcmp (x_content_type, "x-content/software") == 0) {
-		media_greeting = _("You have just inserted media with software intended to be automatically started.");
+		media_greeting = _("You have just inserted a medium with software intended to be automatically started.");
 	} else {
 		/* fallback to generic greeting */
-		media_greeting = _("You have just inserted media.");
+		media_greeting = _("You have just inserted a medium.");
 	}
 	markup = g_strdup_printf ("<big><b>%s %s</b></big>", media_greeting, _("Choose what application to launch."));
 	gtk_label_set_markup (GTK_LABEL (label), markup);
