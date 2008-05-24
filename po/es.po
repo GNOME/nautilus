@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-23 16:24+0000\n"
-"PO-Revision-Date: 2008-05-23 23:36+0200\n"
+"POT-Creation-Date: 2008-05-23 23:06+0000\n"
+"PO-Revision-Date: 2008-05-24 10:20+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -139,7 +139,7 @@ msgstr "Verde envidia"
 # components/music/nautilus-music-view.c:1146
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:931
-#: ../src/nautilus-property-browser.c:1810
+#: ../src/nautilus-property-browser.c:1791
 msgid "Erase"
 msgstr "Borrar"
 
@@ -707,7 +707,7 @@ msgstr ""
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
-"programs when media is inserted."
+"programs when a medium is inserted."
 msgstr ""
 "Si se establece a «true», entonces Nautilus nunca preguntará ni ejecutará "
 "automáticamente programas cuando se introduzca un soporte."
@@ -917,10 +917,10 @@ msgid "Network servers icon name"
 msgstr "Nombre del icono de los servidores de red"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-msgid "Never prompt or autorun/autostart programs when media is inserted"
+msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr ""
 "Nunca preguntar si se deben ejecutar programas automáticos cuando se "
-"introduce un soporte."
+"introduce un soporte"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "Only show folders in the tree side pane"
@@ -1292,7 +1292,7 @@ msgid "You have just inserted a Picture CD."
 msgstr "Ha introducido un disco de fotos Picture CD."
 
 #: ../libnautilus-private/nautilus-autorun.c:1106
-msgid "You have just inserted media with digital photos."
+msgid "You have just inserted a medium with digital photos."
 msgstr "Ha introducido un soporte con fotos digitales."
 
 #: ../libnautilus-private/nautilus-autorun.c:1108
@@ -1301,7 +1301,7 @@ msgstr "Ha introducido un reproductor de sonido digital."
 
 #: ../libnautilus-private/nautilus-autorun.c:1110
 msgid ""
-"You have just inserted media with software intended to be automatically "
+"You have just inserted a medium with software intended to be automatically "
 "started."
 msgstr ""
 "Ha introducido un soporte con software previsto para que se ejecute "
@@ -1309,7 +1309,7 @@ msgstr ""
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1113
-msgid "You have just inserted media."
+msgid "You have just inserted a medium."
 msgstr "Ha introducido un soporte."
 
 #: ../libnautilus-private/nautilus-autorun.c:1115
@@ -1517,7 +1517,7 @@ msgid "The SELinux security context of the file."
 msgstr "El contexto SELinux de seguridad del archivo."
 
 #: ../libnautilus-private/nautilus-customization-data.c:410
-#: ../src/nautilus-property-browser.c:1854
+#: ../src/nautilus-property-browser.c:1835
 msgid "Reset"
 msgstr "Restablecer"
 
@@ -5331,16 +5331,16 @@ msgstr "<big><b>Error al autoejecutar el software</b></big>"
 
 #: ../src/nautilus-autorun-software.c:194
 msgid ""
-"<big><b>This media contains software intended to be automatically started. "
+"<big><b>This medium contains software intended to be automatically started. "
 "Would you like to run it?</b></big>"
 msgstr ""
 "<big><b>Este soporte contiene software previsto para iniciarse "
-"automáticamente ¿Quiere ejecutarlo?</b></big>"
+"automáticamente. ¿Quiere ejecutarlo?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:196
 #, c-format
 msgid ""
-"The software will run directly from the media \"%s\". You should never run "
+"The software will run directly from the medium \"%s\". You should never run "
 "software that you don't trust.\n"
 "\n"
 "If in doubt, press Cancel."
@@ -5352,7 +5352,7 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:160
 #: ../src/nautilus-file-management-properties.c:206
-#: ../src/nautilus-property-browser.c:1546 ../src/nautilus-window-menus.c:499
+#: ../src/nautilus-property-browser.c:1527 ../src/nautilus-window-menus.c:499
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6507,215 +6507,217 @@ msgid "Show Places"
 msgstr "Mostrar lugares"
 
 #. set the title and standard close accelerator
-#: ../src/nautilus-property-browser.c:260
+#: ../src/nautilus-property-browser.c:258
 msgid "Backgrounds and Emblems"
 msgstr "Fondos y emblemas"
 
 # src/nautilus-property-browser.c:307
-#: ../src/nautilus-property-browser.c:369
+#. create the "remove" button
+#: ../src/nautilus-property-browser.c:362
 msgid "_Remove..."
 msgstr "_Quitar…"
 
 # src/nautilus-property-browser.c:296
-#: ../src/nautilus-property-browser.c:389
-msgid "_Add new..."
-msgstr "_Añadir nuevo…"
+#. now create the "add new" button
+#: ../src/nautilus-property-browser.c:376
+msgid "Add new..."
+msgstr "Añadir nuevo…"
 
-#: ../src/nautilus-property-browser.c:960
+#: ../src/nautilus-property-browser.c:941
 #, c-format
 msgid "Sorry, but pattern %s could not be deleted."
 msgstr "El patrón %s no se ha podido borrar."
 
-#: ../src/nautilus-property-browser.c:961
+#: ../src/nautilus-property-browser.c:942
 msgid "Check that you have permission to delete the pattern."
 msgstr "Compruebe que tiene permiso para borrar el patrón."
 
-#: ../src/nautilus-property-browser.c:989
+#: ../src/nautilus-property-browser.c:970
 #, c-format
 msgid "Sorry, but emblem %s could not be deleted."
 msgstr "El emblema %s no se ha podido borrar."
 
-#: ../src/nautilus-property-browser.c:990
+#: ../src/nautilus-property-browser.c:971
 msgid "Check that you have permission to delete the emblem."
 msgstr "Compruebe que tiene permiso para borrar el emblema."
 
 # src/nautilus-property-browser.c:853
-#: ../src/nautilus-property-browser.c:1036
+#: ../src/nautilus-property-browser.c:1017
 msgid "Create a New Emblem"
 msgstr "Crear un emblema nuevo"
 
 # src/nautilus-property-browser.c:858
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1058
+#: ../src/nautilus-property-browser.c:1039
 msgid "_Keyword:"
 msgstr "_Palabra clave:"
 
 #. set up a gnome icon entry to pick the image file
-#: ../src/nautilus-property-browser.c:1077
+#: ../src/nautilus-property-browser.c:1058
 msgid "_Image:"
 msgstr "_Imagen:"
 
 # src/nautilus-property-browser.c:875
-#: ../src/nautilus-property-browser.c:1085
+#: ../src/nautilus-property-browser.c:1066
 msgid "Select an Image File for the New Emblem"
 msgstr "Seleccione un archivo de imagen para el emblema nuevo"
 
 # src/nautilus-property-browser.c:853
-#: ../src/nautilus-property-browser.c:1110
+#: ../src/nautilus-property-browser.c:1091
 msgid "Create a New Color:"
 msgstr "Crear un color nuevo:"
 
 # libnautilus-private/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1124
+#: ../src/nautilus-property-browser.c:1105
 msgid "Color _name:"
 msgstr "Nombre del _color:"
 
-#: ../src/nautilus-property-browser.c:1140
+#: ../src/nautilus-property-browser.c:1121
 msgid "Color _value:"
 msgstr "_Valor del color:"
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: ../src/nautilus-property-browser.c:1171
+#: ../src/nautilus-property-browser.c:1152
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "«%s» no es un nombre de archivo válido."
 
 # src/nautilus-window-manage-views.c:1241
-#: ../src/nautilus-property-browser.c:1172
+#: ../src/nautilus-property-browser.c:1153
 #: ../src/nautilus-window-manage-views.c:1698
 msgid "Please check the spelling and try again."
 msgstr "Compruebe lo que ha escrito e intente otra vez."
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: ../src/nautilus-property-browser.c:1174
+#: ../src/nautilus-property-browser.c:1155
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "No escribió un archivo de nombre válido."
 
-#: ../src/nautilus-property-browser.c:1175
+#: ../src/nautilus-property-browser.c:1156
 msgid "Please try again."
 msgstr "Inténtelo de nuevo."
 
-#: ../src/nautilus-property-browser.c:1188
+#: ../src/nautilus-property-browser.c:1169
 msgid "Sorry, but you cannot replace the reset image."
 msgstr "No puede reemplazar la imagen de reinicio."
 
-#: ../src/nautilus-property-browser.c:1189
+#: ../src/nautilus-property-browser.c:1170
 msgid "Reset is a special image that cannot be deleted."
 msgstr "«Reiniciar» es una imagen especial que no se puede borrar."
 
-#: ../src/nautilus-property-browser.c:1219
+#: ../src/nautilus-property-browser.c:1200
 #, c-format
 msgid "Sorry, but the pattern %s could not be installed."
 msgstr "El patrón %s no se ha podido instalar."
 
 # src/nautilus-property-browser.c:985
-#: ../src/nautilus-property-browser.c:1241
+#: ../src/nautilus-property-browser.c:1222
 msgid "Select an Image File to Add as a Pattern"
 msgstr "Seleccione un archivo de imagen para añadirlo como un patrón"
 
-#: ../src/nautilus-property-browser.c:1293
-#: ../src/nautilus-property-browser.c:1324
+#: ../src/nautilus-property-browser.c:1274
+#: ../src/nautilus-property-browser.c:1305
 msgid "The color cannot be installed."
 msgstr "El color no se puede instalar."
 
-#: ../src/nautilus-property-browser.c:1294
+#: ../src/nautilus-property-browser.c:1275
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr ""
 "Lo siento, pero debe especificar un nombre de color no usado para el color "
 "nuevo."
 
-#: ../src/nautilus-property-browser.c:1325
+#: ../src/nautilus-property-browser.c:1306
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr ""
 "Lo siento, pero debe especificar un nombre con al menos un carácter para el "
 "color nuevo."
 
 # src/nautilus-property-browser.c:1083
-#: ../src/nautilus-property-browser.c:1377
+#: ../src/nautilus-property-browser.c:1358
 msgid "Select a Color to Add"
 msgstr "Seleccione un color para añadir"
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: ../src/nautilus-property-browser.c:1415
-#: ../src/nautilus-property-browser.c:1432
+#: ../src/nautilus-property-browser.c:1396
+#: ../src/nautilus-property-browser.c:1413
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Lo siento, pero «%s» no es un archivo de imagen que se pueda usar."
 
-#: ../src/nautilus-property-browser.c:1416
-#: ../src/nautilus-property-browser.c:1433
+#: ../src/nautilus-property-browser.c:1397
+#: ../src/nautilus-property-browser.c:1414
 msgid "The file is not an image."
 msgstr "El archivo no es una imagen."
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
-#: ../src/nautilus-property-browser.c:2140
+#: ../src/nautilus-property-browser.c:2121
 msgid "Select a Category:"
 msgstr "Seleccione una categoría:"
 
 # src/nautilus-property-browser.c:1985
-#: ../src/nautilus-property-browser.c:2149
+#: ../src/nautilus-property-browser.c:2130
 msgid "C_ancel Remove"
 msgstr "C_ancelar eliminación"
 
 # src/nautilus-property-browser.c:1987
-#: ../src/nautilus-property-browser.c:2155
+#: ../src/nautilus-property-browser.c:2136
 msgid "_Add a New Pattern..."
 msgstr "_Añadir un patrón nuevo…"
 
 # src/nautilus-property-browser.c:1987
-#: ../src/nautilus-property-browser.c:2158
+#: ../src/nautilus-property-browser.c:2139
 msgid "_Add a New Color..."
 msgstr "_Añadir un color nuevo…"
 
 # src/nautilus-property-browser.c:1987
-#: ../src/nautilus-property-browser.c:2161
+#: ../src/nautilus-property-browser.c:2142
 msgid "_Add a New Emblem..."
 msgstr "_Añadir un emblema nuevo…"
 
 # src/nautilus-property-browser.c:2002
-#: ../src/nautilus-property-browser.c:2184
+#: ../src/nautilus-property-browser.c:2165
 msgid "Click on a pattern to remove it"
 msgstr "Pulse sobre un patrón para quitarlo"
 
 # src/nautilus-property-browser.c:2002
-#: ../src/nautilus-property-browser.c:2187
+#: ../src/nautilus-property-browser.c:2168
 msgid "Click on a color to remove it"
 msgstr "Pulse en un color para quitarlo"
 
 # src/nautilus-property-browser.c:2002
-#: ../src/nautilus-property-browser.c:2190
+#: ../src/nautilus-property-browser.c:2171
 msgid "Click on an emblem to remove it"
 msgstr "Pulse en un emblema para quitarlo"
 
 # src/file-manager/fm-properties-window.c:1560
-#: ../src/nautilus-property-browser.c:2199
+#: ../src/nautilus-property-browser.c:2180
 msgid "Patterns:"
 msgstr "Patrones:"
 
 # src/nautilus-window.c:1267
-#: ../src/nautilus-property-browser.c:2202
+#: ../src/nautilus-property-browser.c:2183
 msgid "Colors:"
 msgstr "Colores:"
 
 # src/file-manager/fm-properties-window.c:1237
-#: ../src/nautilus-property-browser.c:2205
+#: ../src/nautilus-property-browser.c:2186
 msgid "Emblems:"
 msgstr "Emblemas:"
 
 # src/nautilus-sidebar.c:424
-#: ../src/nautilus-property-browser.c:2225
+#: ../src/nautilus-property-browser.c:2206
 msgid "_Remove a Pattern..."
 msgstr "_Quitar un patrón…"
 
 # src/nautilus-property-browser.c:2014
-#: ../src/nautilus-property-browser.c:2228
+#: ../src/nautilus-property-browser.c:2209
 msgid "_Remove a Color..."
 msgstr "_Quitar un color…"
 
 # src/nautilus-property-browser.c:2014
-#: ../src/nautilus-property-browser.c:2231
+#: ../src/nautilus-property-browser.c:2212
 msgid "_Remove an Emblem..."
 msgstr "_Quitar un emblema…"
 
