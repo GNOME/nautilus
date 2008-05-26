@@ -1,3 +1,13 @@
+2008-05-27  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_uri_list):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_container_get_drop_action):
+	Select GDK_ACTION_MOVE as default action when DnD-ing a uri list
+	into the trash. (#534769).	
+
 2008-05-24  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-property-browser.c (nautilus_property_browser_init),

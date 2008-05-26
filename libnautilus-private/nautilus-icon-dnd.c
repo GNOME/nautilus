@@ -1276,6 +1276,13 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 							     action);
 		g_free (drop_target);
 		break;
+	case NAUTILUS_ICON_DND_URI_LIST:
+		drop_target = nautilus_icon_container_find_drop_target (container,
+									context, x, y, &icon_hit, FALSE);
+		*action = nautilus_drag_default_drop_action_for_uri_list (context, drop_target);
+
+		g_free (drop_target);
+		break;
 
 	/* handle emblems by setting the action if we're over an object */
 	case NAUTILUS_ICON_DND_KEYWORD:
@@ -1291,7 +1298,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
-	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = context->suggested_action;
 		break;

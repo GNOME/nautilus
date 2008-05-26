@@ -453,6 +453,18 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	
 }
 
+GdkDragAction
+nautilus_drag_default_drop_action_for_uri_list (GdkDragContext *context,
+						const char *target_uri_string)
+{
+	if (eel_uri_is_trash (target_uri_string) && (context->actions & GDK_ACTION_MOVE)) {
+		/* Only move to Trash */
+		return GDK_ACTION_MOVE;
+	} else {
+		return context->suggested_action;
+	}
+}
+
 /* Encode a "x-special/gnome-icon-list" selection.
    Along with the URIs of the dragged files, this encodes
    the location and size of each icon relative to the cursor.
