@@ -1,3 +1,9 @@
+2008-05-27  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-icon-dnd.c: (drag_begin_callback):
+	Don't try to create a Cairo context for a NULL pixmap.
+	Fixes bug #534226.
+
 2008-05-27  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-dnd.c:
