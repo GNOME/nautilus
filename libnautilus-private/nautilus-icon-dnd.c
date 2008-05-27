@@ -1467,7 +1467,7 @@ drag_begin_callback (GtkWidget      *widget,
         x_offset = start_x - winx;
         y_offset = start_y - winy;
 
-	if (!use_mask) {
+	if (!use_mask && pixmap != NULL) {
 		cairo_t *cr;
 
 		/* If composite works, make the icons partially transparent */
