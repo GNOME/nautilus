@@ -1,3 +1,24 @@
+Major changes in 2.22.3 are:
+* Use bilinear interpolation instead of hyperbolic. Massively speeds up thumbnailing.
+* Use single click policy in the sidebar
+* Fix autorun: Always inhibit, unless we mount ourselves
+* Properly close windows displaying a removable media root when it is unmounted
+* Fix thumbnail frame size calculation
+* Do not count the same inode twice when calculating deep folder size
+* Fix potential DND crash by not creating cairo context from NULL pixmap
+* When duplicating, truncate file names when max. file system name length is reached using pathconf()
+* Never move to burn:///, always move to trash:///
+* Never maximize windows opened from shell if window geometry has been specified
+* Do not always open a default window
+* Remove ESD dependency
+* Use self-written code instead of libbackground GConf code for wallpapers
+* Properly close column editor window when closing parent window
+* Handle CTRL+F10 keybinding in list view
+* Improve keyboard navigation
+* Fix list view expander interaction bug
+* Fix emacs keybinding location bar interaction
+* When closing maximized windows, remember last un-maximized window size
+
 Major changes in 2.22.2 are:
 * Add NautilusFileInfo APIs: can_write(), get_mount(), get_parent_info()
 * Do not try to autorun autorun.exe and autorun.inf
