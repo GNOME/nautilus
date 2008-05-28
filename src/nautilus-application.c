@@ -29,7 +29,6 @@
 #include "nautilus-application.h"
 
 
-#include "file-manager/fm-ditem-page.h"
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
@@ -420,8 +419,6 @@ finish_startup (NautilusApplication *application)
 
 	/* initialize nautilus modules */
 	nautilus_module_init ();
-
-	nautilus_module_add_type (FM_TYPE_DITEM_PAGE);
 
 	/* attach menu-provider module callback */
 	menu_provider_init_callback ();

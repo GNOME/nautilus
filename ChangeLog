@@ -1,3 +1,13 @@
+2008-05-28  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-ditem-page.c (build_table), (create_page),
+	(fm_ditem_page_create_begin), (fm_ditem_page_make_box),
+	(fm_ditem_page_should_show):
+	* src/file-manager/fm-ditem-page.h:
+	* src/file-manager/fm-properties-window.c (create_basic_page):
+	* src/nautilus-application.c (finish_startup):
+	Display launcher editables on "Basic" page. Get rid of "Launcher" page.
+
 2008-05-27  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-icon-dnd.c: (drag_begin_callback):

@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "fm-properties-window.h"
+#include "fm-ditem-page.h"
 
 #include "fm-error-reporting.h"
 #include "libnautilus-private/nautilus-mime-application-chooser.h"
@@ -3222,6 +3223,25 @@ create_basic_page (FMPropertiesWindow *window)
 	if (NAUTILUS_IS_ENTRY (window->details->name_field)) {
 		nautilus_entry_select_all (NAUTILUS_ENTRY (window->details->name_field));
 		gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
+	}
+
+	if (fm_ditem_page_should_show (window->details->target_files)) {
+		GtkSizeGroup *label_size_group;
+		GtkWidget *box;
+
+		row = append_row (table);
+
+		label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+		gtk_size_group_add_widget (label_size_group,
+					   GTK_WIDGET (window->details->name_label));
+		box = fm_ditem_page_make_box (label_size_group,
+					      window->details->target_files);
+
+		gtk_table_attach (window->details->basic_table, box,
+				  TITLE_COLUMN, VALUE_COLUMN + 1,
+				  row, row + 1,
+				  GTK_FILL, 0,
+				  0, 0);
 	}
 
 	if (should_show_file_type (window)) {

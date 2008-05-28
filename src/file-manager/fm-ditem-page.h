@@ -24,25 +24,23 @@
 #ifndef FM_DITEM_PAGE_H
 #define FM_DITEM_PAGE_H
 
+#include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define FM_TYPE_DITEM_PAGE  (fm_ditem_page_get_type ())
-#define FM_DITEM_PAGE(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), FM_TYPE_DITEM_PAGE, FMDitemPage))
-#define FM_IS_DITEM_PAGE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), FM_TYPE_DITEM_PAGE))
-typedef struct _FMDitemPage       FMDitemPage;
-typedef struct _FMDitemPageClass  FMDitemPageClass;
+/* This is a mis-nomer. Launcher editables initially were displayed on separate
+ * a property notebook page, which implemented the NautilusPropertyPageProvider
+ * interface.
+ *
+ * Nowadays, they are displayed on the "Basic" page, so just the setup
+ * routines are left.
+ */
 
-struct _FMDitemPage {
-	GObject parent_slot;
-};
-
-struct _FMDitemPageClass {
-	GObjectClass parent_slot;
-};
-
-GType fm_ditem_page_get_type      (void);
+GtkWidget *fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
+				   GList *files);
+gboolean   fm_ditem_page_should_show (GList *files);
 
 G_END_DECLS
 

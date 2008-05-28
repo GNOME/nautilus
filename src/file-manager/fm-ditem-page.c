@@ -32,15 +32,9 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extension/nautilus-extension-types.h>
 #include <libnautilus-extension/nautilus-file-info.h>
-#include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libgnome/gnome-desktop-item.h>
-
-static void fm_ditem_page_instance_init            (FMDitemPage               *provider);
-static void fm_ditem_page_class_init               (FMDitemPageClass          *class);
-
-static GObjectClass *parent_class;
 
 typedef struct ItemEntry {
 	const char *field;
@@ -206,8 +200,8 @@ entry_focus_out_cb (GtkWidget *entry,
 
 static GtkWidget *
 build_table (GnomeDesktopItem *item,
-	     GList *entries,
-	     int length) {
+	     GtkSizeGroup *label_size_group,
+	     GList *entries) {
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *entry;
@@ -215,18 +209,21 @@ build_table (GnomeDesktopItem *item,
 	const char *val;
 	int i;
 	
-	table = gtk_table_new (length, 2, FALSE);
+	table = gtk_table_new (g_list_length (entries) + 1, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	i = 0;
 	
 	for (l = entries; l; l = l->next) {
 		ItemEntry *item_entry = (ItemEntry *)l->data;
 		char *label_text;
 
-		label_text = g_strdup_printf ("<b>%s:</b>", item_entry->description);
+		label_text = g_strdup_printf ("%s:", item_entry->description);
 		label = gtk_label_new (label_text);
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 		g_free (label_text);
-		gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_size_group_add_widget (label_size_group, label);
 
 		entry = gtk_entry_new ();
 
@@ -241,10 +238,10 @@ build_table (GnomeDesktopItem *item,
 
 		gtk_table_attach (GTK_TABLE (table), label,
 				  0, 1, i, i+1, GTK_FILL, GTK_FILL,
-				  4, 4);
+				  0, 0);
 		gtk_table_attach (GTK_TABLE (table), entry,
 				  1, 2, i, i+1, GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL,
-				  4, 4);
+				  0, 0);
 		g_signal_connect (entry, "activate",
 				  G_CALLBACK (entry_activate_cb),
 				  item);
@@ -279,6 +276,13 @@ build_table (GnomeDesktopItem *item,
 		i++;
 	}
 
+	/* append dummy row */
+	label = gtk_label_new ("");
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1, i, i+1, GTK_FILL, GTK_FILL,
+			  0, 0);
+	gtk_size_group_add_widget (label_size_group, label);
+
 
 	gtk_widget_show_all (table);
 	return table;
@@ -300,12 +304,10 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 {
 	GtkWidget *table;
 	GList *entries;
+	GtkSizeGroup *label_size_group;
 	GnomeDesktopItemType item_type;
-	GtkLabel *label;
 	
 	entries = NULL;
-
-	label = g_object_get_data (G_OBJECT (box), "label");
 
 	item_type = gnome_desktop_item_get_entry_type (item);
 	
@@ -319,7 +321,6 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 		entries = g_list_prepend (entries,
 					  item_entry_new (GNOME_DESKTOP_ITEM_GENERIC_NAME,
 							  _("Description"), TRUE, FALSE));
-		gtk_label_set_text (label, _("Link"));
 	} else if (item_type == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
 		entries = g_list_prepend (entries,
 					  item_entry_new (GNOME_DESKTOP_ITEM_COMMENT,
@@ -330,10 +331,11 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 		entries = g_list_prepend (entries,
 					  item_entry_new (GNOME_DESKTOP_ITEM_GENERIC_NAME,
 							  _("Description"), TRUE, FALSE));
-		gtk_label_set_text (label, _("Launcher"));		
 	} else {
 		/* we only handle launchers and links */
-		return;
+
+		/* ensure that we build an empty table with a dummy row at the end */
+		goto build_table;
 	}
 
 	gnome_desktop_item_ref (item);
@@ -341,7 +343,11 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 	g_object_weak_ref (G_OBJECT (box),
 			   box_weak_cb, item);
 
-	table = build_table (item, entries, 2);
+
+build_table:
+	label_size_group = g_object_get_data (G_OBJECT (box), "label-size-group");
+
+	table = build_table (item, label_size_group, entries);
 	g_list_free (entries);
 	
 	gtk_box_pack_start (GTK_BOX (box), table, FALSE, TRUE, 0);
@@ -385,8 +391,7 @@ ditem_read_cb (GObject *source_object,
 }
 
 static void
-fm_ditem_page_create_begin (FMDitemPage *page,
-			    const char *uri,
+fm_ditem_page_create_begin (const char *uri,
 			    GtkWidget *box)
 {
 	GFile *location;
@@ -397,96 +402,44 @@ fm_ditem_page_create_begin (FMDitemPage *page,
 	g_object_unref (location);
 }
 
-static GList *
-fm_ditem_page_get_pages (NautilusPropertyPageProvider *provider,
-			 GList *files)
+GtkWidget *
+fm_ditem_page_make_box (GtkSizeGroup *label_size_group,
+			GList *files)
 {
-	GList *pages;
-	NautilusPropertyPage *page;
 	NautilusFileInfo *info;
 	char *uri;
 	GtkWidget *box;
-	GtkWidget *label;
+
+	g_assert (fm_ditem_page_should_show (files));
+
+	box = gtk_vbox_new (FALSE, 6);
+	g_object_set_data_full (G_OBJECT (box), "label-size-group",
+				label_size_group, (GDestroyNotify) g_object_unref);
+
+	info = NAUTILUS_FILE_INFO (files->data);
+
+	uri = nautilus_file_info_get_uri (info);
+	fm_ditem_page_create_begin (uri, box);
+	g_free (uri);
+
+	return box;
+}
+
+gboolean
+fm_ditem_page_should_show (GList *files)
+{
+	NautilusFileInfo *info;
 
 	if (!files || files->next) {
-		return NULL;
+		return FALSE;
 	}
 
 	info = NAUTILUS_FILE_INFO (files->data);
 
 	if (!nautilus_file_info_is_mime_type (info, "application/x-desktop")) {
-		return NULL;
+		return FALSE;
 	}
 
-	box = gtk_vbox_new (FALSE, 6);
-	label = gtk_label_new ("");
-	g_object_set_data (G_OBJECT (box), "label", label);
-	
-	uri = nautilus_file_info_get_uri (info);
-	fm_ditem_page_create_begin (FM_DITEM_PAGE (provider),
-				    uri, box);
-	g_free (uri);
-	
-	page = nautilus_property_page_new ("Desktop Item Page",
-					   label,
-					   box);
-	
-		
-	pages = g_list_prepend (NULL, page);
-
-	return pages;
-}
-
-static void 
-fm_ditem_page_property_page_provider_iface_init (NautilusPropertyPageProviderIface *iface)
-{
-	iface->get_pages = fm_ditem_page_get_pages;
-}
-
-static void 
-fm_ditem_page_instance_init (FMDitemPage *provider)
-{
-}
-
-static void
-fm_ditem_page_class_init (FMDitemPageClass *class)
-{
-	parent_class = g_type_class_peek_parent (class);
-}
-
-GType
-fm_ditem_page_get_type (void) 
-{
-	static GType provider_type = 0;
-
-	if (!provider_type) {
-		const GTypeInfo type_info = {
-			sizeof (FMDitemPageClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) fm_ditem_page_class_init,
-			NULL, 
-			NULL,
-			sizeof (FMDitemPage),
-			0,
-			(GInstanceInitFunc) fm_ditem_page_instance_init,
-		};
-
-		const GInterfaceInfo property_page_provider_iface_info = {
-			(GInterfaceInitFunc) fm_ditem_page_property_page_provider_iface_init,
-			NULL,
-			NULL
-		};
-		
-		provider_type = g_type_register_static (G_TYPE_OBJECT,
-							"FMDitemPage",
-							&type_info, 0);
-
-		g_type_add_interface_static (provider_type,
-					     NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
-					     &property_page_provider_iface_info);
-	}
-
-	return provider_type;
+	return TRUE;
 }
 
