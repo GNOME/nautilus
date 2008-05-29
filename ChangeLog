@@ -1,3 +1,19 @@
+2008-05-29  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_default_drop_action_for_icons):
+	* libnautilus-private/nautilus-file-dnd.c
+	(nautilus_drag_can_accept_files):
+	* libnautilus-private/nautilus-file-utilities.c
+	(nautilus_is_file_roller_installed):
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-file.c (nautilus_file_is_archive):
+	* libnautilus-private/nautilus-file.h:
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_move_copy_items):
+	Support adding files to archives via file-roller.
+	Thanks to Nelson Benítez. Fixes #377157.
+
 2008-05-28  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-ditem-page.c (build_table), (create_page),

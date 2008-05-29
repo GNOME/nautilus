@@ -29,6 +29,7 @@
 
 #include "nautilus-dnd.h"
 #include "nautilus-directory.h"
+#include "nautilus-file-utilities.h"
 #include <eel/eel-glib-extensions.h>
 #include <string.h>
 
@@ -58,6 +59,11 @@ nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
 	 * permissions.
 	 */
 	if (nautilus_file_is_nautilus_link (drop_target_item)) {
+		return TRUE;
+	}
+
+	if (nautilus_is_file_roller_installed () &&
+	    nautilus_file_is_archive (drop_target_item)) {
 		return TRUE;
 	}
 	

@@ -959,6 +959,22 @@ nautilus_find_file_insensitive_next (GFile *parent, const gchar *name)
 	return NULL;
 }
 
+gboolean
+nautilus_is_file_roller_installed (void)
+{
+	static int installed = - 1;
+
+	if (installed < 0) {
+		if (g_find_program_in_path ("file-roller")) {
+			installed = 1;
+		} else {
+			installed = 0;
+		}
+	}
+
+	return installed > 0 ? TRUE : FALSE;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

@@ -8569,6 +8569,40 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				target_uri, item_uris,
 				fm_directory_view_get_containing_window (view));
 		return;
+	} else if (copy_action == GDK_ACTION_COPY &&
+		   nautilus_is_file_roller_installed () &&
+		   target_file != NULL &&
+		   nautilus_file_is_archive (target_file)) {
+		char *command, *quoted_uri, *tmp;
+		const GList *l;
+		GdkScreen  *screen;
+
+		/* Handle dropping onto a file-roller archiver file, instead of starting a move/copy */
+
+		nautilus_file_unref (target_file);
+
+		quoted_uri = g_shell_quote (target_uri);
+		command = g_strconcat ("file-roller -a ", quoted_uri, NULL);
+		g_free (quoted_uri);
+
+		for (l = item_uris; l != NULL; l = l->next) {
+			quoted_uri = g_shell_quote ((char *) l->data);
+
+			tmp = g_strconcat (command, " ", quoted_uri, NULL);
+			g_free (command);
+			command = tmp;
+
+			g_free (quoted_uri);
+		} 
+
+		screen = gtk_widget_get_screen (GTK_WIDGET (view));
+		if (screen == NULL) {
+			screen = gdk_screen_get_default ();
+		}
+		gdk_spawn_command_line_on_screen (screen, command, NULL);
+		g_free (command);
+
+		return;
 	}
 	nautilus_file_unref (target_file);
 

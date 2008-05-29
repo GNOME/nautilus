@@ -79,6 +79,8 @@ char *   nautilus_pixmap_file                        (const char *partial_path);
 /* Locate a file in either the uers directory or the datadir. */
 char *   nautilus_get_data_file_path                 (const char *partial_path);
 
+gboolean nautilus_is_file_roller_installed           (void);
+
 /* Return an allocated file name that is guranteed to be unique, but
  * tries to make the name readable to users.
  * This isn't race-free, so don't use for security-related things

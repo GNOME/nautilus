@@ -181,6 +181,7 @@ gboolean                nautilus_file_is_broken_symbolic_link           (Nautilu
 gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
+gboolean		nautilus_file_is_archive			(NautilusFile			*file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_desktop                     (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);

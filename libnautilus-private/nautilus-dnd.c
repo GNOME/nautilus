@@ -368,7 +368,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	const char *dropped_uri;
 	GFile *target, *dropped;
 	GdkDragAction actions;
-	NautilusFile *target_file;
+	NautilusFile *dropped_file, *target_file;
 
 	if (target_uri_string == NULL) {
 		*action = 0;
@@ -389,7 +389,8 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	}
 	
 	dropped_uri = ((NautilusDragSelectionItem *)items->data)->uri;
-	target_file = nautilus_file_get_existing_by_uri (dropped_uri);
+	dropped_file = nautilus_file_get_existing_by_uri (dropped_uri);
+	target_file = nautilus_file_get_existing_by_uri (target_uri_string);
 	
 	/*
 	 * Check for trash URI.  We do a find_directory for any Trash directory.
@@ -402,13 +403,15 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*action = GDK_ACTION_MOVE;
 		}
 
+		nautilus_file_unref (dropped_file);
 		nautilus_file_unref (target_file);
 		return;
 
-	} else if (target_file != NULL && nautilus_file_is_launcher (target_file)) {
+	} else if (dropped_file != NULL && nautilus_file_is_launcher (dropped_file)) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		}
+		nautilus_file_unref (dropped_file);
 		nautilus_file_unref (target_file);
 		return;
 	} else if (eel_uri_is_desktop (target_uri_string)) {
@@ -419,13 +422,22 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 				*action = GDK_ACTION_MOVE;
 			}
 			
+			g_free (target);
+			nautilus_file_unref (dropped_file);
 			nautilus_file_unref (target_file);
 			return;
 		}
+	} else if (target_file != NULL && nautilus_file_is_archive (target_file)) {
+		*action = GDK_ACTION_COPY;
+
+		nautilus_file_unref (dropped_file);
+		nautilus_file_unref (target_file);
+		return;
 	} else {
 		target = g_file_new_for_uri (target_uri_string);
 	}
 
+	nautilus_file_unref (dropped_file);
 	nautilus_file_unref (target_file);
 	
 	/* Compare the first dropped uri with the target uri for same fs match. */
