@@ -524,7 +524,7 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 
 	out = (GOutputStream *)g_file_replace (file, NULL, FALSE, 0, NULL, &error);
 	if (out == NULL) {
-		g_warning ("Error opening bookmark file: %s\n", error->message);
+		g_message ("Opening bookmark file failed: %s\n", error->message);
 		goto error;
 	}
 
@@ -564,7 +564,7 @@ nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 	}
 
 	if (!g_output_stream_close (out, NULL, &error)) {
-		g_warning ("Error closing bookmark file: %s\n", error->message);
+		g_warning ("Closing bookmark file failed: %s\n", error->message);
 	}
 
 error:

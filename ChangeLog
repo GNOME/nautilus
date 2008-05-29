@@ -1,5 +1,11 @@
 2008-05-29  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-bookmark-list.c (nautilus_bookmark_list_save_file):
+	Convert g_warning() about inability to write to ~/.gtk-bookmarks to
+	g_message().
+
+2008-05-29  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-dnd.c
 	(nautilus_drag_default_drop_action_for_icons):
 	* libnautilus-private/nautilus-file-dnd.c
