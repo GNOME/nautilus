@@ -188,6 +188,12 @@ nautilus_file_background_read_desktop_settings (char **color,
                 else if (strcmp (tmp, "zoom") == 0) {
                         *placement = EEL_BACKGROUND_ZOOM;
                 }
+                else if (strcmp (tmp, "none") == 0) {
+                        g_free (*image);
+                        
+                        *placement = EEL_BACKGROUND_CENTERED;
+                        *image = NULL;
+                }
                 else {
                         *placement = EEL_BACKGROUND_CENTERED;
                 }

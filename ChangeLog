@@ -1,3 +1,9 @@
+Sat May 31 03:20:11 2008  Søren Sandmann  <sandmann@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_read_desktop_settings): If the placement
+	is "none", then set image to NULL.
+
 Fri May 30 23:33:17 2008  Søren Sandmann  <sandmann@redhat.com>
 
 	* Revert last commit as we do still need to deal with uris.
