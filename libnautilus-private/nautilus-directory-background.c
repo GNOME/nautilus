@@ -437,7 +437,7 @@ nautilus_file_background_is_set (EelBackground *background)
 	gboolean is_set;
 	
 	color = eel_background_get_color (background);
-	image = eel_background_get_image_filename (background);
+	image = eel_background_get_image_uri (background);
 
         is_set = (color || image);
         
@@ -462,7 +462,7 @@ background_changed_callback (EelBackground *background,
         
 
 	color = eel_background_get_color (background);
-	image = eel_background_get_image_filename (background);
+	image = eel_background_get_image_uri (background);
 
 	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_settings (color, image, eel_background_get_image_placement (background));
@@ -560,7 +560,7 @@ initialize_background_from_settings (NautilusFile *file,
                  file);
 
         eel_background_set_color (background, color);
-        eel_background_set_image_filename (background, image);
+        eel_background_set_image_uri (background, image);
         eel_background_set_image_placement (background, placement);
         
 	/* Unblock the handler. */

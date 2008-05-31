@@ -54,18 +54,18 @@ test_gtk_widget_set_background_image (GtkWidget *widget,
 				      const char *image_name)
 {
 	EelBackground *background;
-	char *filename;
+	char *uri;
 
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (image_name != NULL);
 
 	background = eel_get_widget_background (widget);
 	
-	filename = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_name);
+	uri = g_strdup_printf ("file://%s/%s", NAUTILUS_DATADIR, image_name);
 
-	eel_background_set_image_filename (background, filename);
+	eel_background_set_image_uri (background, uri);
 
-	g_free (filename);
+	g_free (uri);
 }
 
 void
