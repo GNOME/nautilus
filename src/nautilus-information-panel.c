@@ -334,7 +334,7 @@ information_panel_has_background (NautilusInformationPanel *information_panel)
 	background = eel_get_widget_background (GTK_WIDGET(information_panel));
 
 	color = eel_background_get_color (background);
-	image = eel_background_get_image_uri (background);
+	image = eel_background_get_image_filename (background);
 	
 	has_background = (color || image);
 
@@ -682,7 +682,7 @@ background_settings_changed_callback (EelBackground *background, GdkDragAction a
 					 information_panel);
 
 	color = eel_background_get_color (background);
-	image = eel_background_get_image_uri (background);
+	image = eel_background_get_image_filename (background);
 
 	if (action != NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
 		nautilus_file_set_metadata (information_panel->details->file,
@@ -992,7 +992,7 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 		g_free (information_panel->details->current_background_image);
 		information_panel->details->current_background_image = g_strdup (background_image);
 
-		eel_background_set_image_uri (background, background_image);
+		eel_background_set_image_filename (background, background_image);
 		eel_background_set_color (background, background_color);
 
 		nautilus_sidebar_title_select_text_color
