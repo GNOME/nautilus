@@ -1,3 +1,10 @@
+Fri May 30 21:25:59 2008  Søren Sandmann  <sandmann@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(initialize_background_from_settings): Don't call
+	eel_background_set_image_uri_sync() since it has been exactly
+	identical to eel_background_set_image_uri() for a while.
+
 2008-05-29  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-bookmark-list.c (nautilus_bookmark_list_save_file):
