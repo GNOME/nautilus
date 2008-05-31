@@ -5285,6 +5285,8 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 		parent_window = (GtkWindow *)gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
 	}
 	
+	setup_autos ();
+	
 	job = op_job_new (EmptyTrashJob, parent_window);
 	job->trash_dirs = g_list_prepend (job->trash_dirs,
 					  g_file_new_for_uri ("trash:"));
