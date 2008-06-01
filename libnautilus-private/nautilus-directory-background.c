@@ -48,9 +48,6 @@ static void saved_settings_changed_callback (NautilusFile       *file,
                                          
 static void nautilus_file_background_receive_gconf_changes (EelBackground *background);
 
-static void nautilus_file_background_write_desktop_settings (char *color,
-							     char *image,
-							     EelBackgroundImagePlacement placement);
 static void nautilus_file_background_theme_changed (gpointer user_data);
 
 void
@@ -243,105 +240,6 @@ nautilus_file_background_read_desktop_settings (char **color,
 	g_free (end_color);
 }
 
-static char *
-color_to_string (const GdkColor *color)
-{
-	return g_strdup_printf ("#%02x%02x%02x",
-                                color->red >> 8,
-                                color->green >> 8,
-                                color->blue >> 8);
-}
-
-static void
-nautilus_file_background_write_desktop_settings (char *color, char *image, EelBackgroundImagePlacement placement)
-{
-	char *end_color;
-	char *start_color;
-
-        GdkColor tmp;
-        const char *options;
-        const char *shading;
-        gchar *primary;
-        gchar *secondary;
-        GConfClient *client;
-        gchar *filename;
-        
-        client = gconf_client_get_default();
-        
-	if (color != NULL) {
-		start_color = eel_gradient_get_start_color_spec (color);
-		gdk_color_parse (start_color, &tmp);
-		g_free (start_color);
-                primary = color_to_string (&tmp);
-
-		/* if color is not a gradient, this ends up writing same as start_color */
-		end_color = eel_gradient_get_end_color_spec (color);
-		gdk_color_parse (end_color, &tmp);
-		g_free (end_color);
-                secondary = color_to_string (&tmp);
-
-		if (eel_gradient_is_gradient (color)) {
-			if (eel_gradient_is_horizontal (color)) {
-                                shading = "horizontal-gradient";
-                        }
-                        else {
-                                shading = "vertical-gradient";
-                        }
-		} else {
-                        shading = "solid";
-                }
-	} else {
-                shading = "solid";
-                primary = g_strdup ("#FFFFFF");
-                secondary = g_strdup ("#FFFFFF");
-        }
-
-        gconf_client_set_string (client, BG_PREFERENCES_PRIMARY_COLOR, primary, NULL);
-        gconf_client_set_string (client, BG_PREFERENCES_SECONDARY_COLOR, secondary, NULL);
-        gconf_client_set_string (client, BG_PREFERENCES_COLOR_SHADING_TYPE, shading, NULL);
-        
-        g_free (primary);
-        g_free (secondary);
-
-        if (image != NULL) {
-                filename = g_filename_from_uri (image, NULL, NULL);
-
-                switch (placement) {
-                case EEL_BACKGROUND_TILED:
-                        options = "wallpaper";
-                        break;	
-                case EEL_BACKGROUND_CENTERED:
-                        options = "centered";
-                        break;	
-                case EEL_BACKGROUND_SCALED:
-                        options = "stretched";
-                        break;	
-                case EEL_BACKGROUND_SCALED_ASPECT:
-                        options = "scaled";
-                        break;
-                case EEL_BACKGROUND_ZOOM:
-                        options = "zoom";
-                        break;
-                default:
-                        g_assert_not_reached ();
-                        options = "wallpaper";
-                        break;	
-                }
-        }
-        else {
-                filename = NULL;
-                options = "none";
-        }
-
-        if (filename != NULL) {
-                gconf_client_set_string (client, BG_PREFERENCES_PICTURE_FILENAME, filename, NULL);
-        }
-
-        gconf_client_set_string (client, BG_PREFERENCES_PICTURE_OPTIONS, options, NULL);
-
-        g_free (filename);
-}
-
 static void
 nautilus_file_background_write_desktop_default_settings (void)
 {
@@ -471,7 +369,7 @@ background_changed_callback (EelBackground *background,
 	image = eel_background_get_image_uri (background);
 
 	if (eel_background_is_desktop (background)) {
-		nautilus_file_background_write_desktop_settings (color, image, eel_background_get_image_placement (background));
+                eel_background_save_to_gconf (background);
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
