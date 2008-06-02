@@ -1,3 +1,21 @@
+Major changes in 2.23.3 are:
+* Use bilinear interpolation instead of hyperbolic. Massively speeds up thumbnailing.
+* Fix thumbnail frame size calculation
+* Rework properties dialog
+  * Remove "Launcher" tab, and move all the launcher properties to "Basic"
+  * Hide useless file info widgets from "Basic" tab for special locations like "computer:///".
+* Support adding files to archives via file-roller
+* Add location popup context menu to all path bar buttons
+* Fix location popup context menu separators
+* Add "Paste Into" item to location popup context menu
+* Do not count the same inode twice when calculating directory sizes
+* Never copy to "trash:///", never move to "burn:///"
+* Never maximize windows opened from shell if a custom geometry has been specified
+* Properly close windows displaying the media root location when ejecting a medium
+* Empty the clipboard when copying/moving with DND to a container
+* Remove libbackground
+* Require eel 2.23.2 due to directory background API changes.
+
 Major changes in 2.23.2 are:
 * Increase default thumbnailing size limit
 * Various fixes to keyboard handling in icon and list view
