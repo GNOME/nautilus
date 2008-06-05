@@ -827,7 +827,7 @@ fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
 					       NautilusFile *file,
 					       gboolean sort_reversed)
 {
-	return nautilus_file_set_boolean_metadata
+	nautilus_file_set_boolean_metadata
 		(file,
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
 		 get_default_sort_in_reverse_order (),

@@ -1,3 +1,10 @@
+2008-06-05  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_real_set_directory_sort_reversed):
+	Don't return anything for void function.
+	Patch by Damien Carbery. (#536787).
+
 2008-06-03  Vincent Untz  <vuntz@gnome.org>
 
 	* configure.in: post-release bump to 2.23.4
