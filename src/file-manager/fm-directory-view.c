@@ -4425,7 +4425,7 @@ search_in_menu_items (GList* items, const char *item_name)
 			GList* submenus;
 
 			submenus = nautilus_menu_get_items (menu);
-			ret = search_in_menu_items (submenus, name);
+			ret = search_in_menu_items (submenus, item_name);
 			nautilus_menu_item_list_free (submenus);
 			g_object_unref (menu);
 			if (ret) {
@@ -4626,7 +4626,6 @@ static void
 reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 {
 	GList *items;
-	GList *l;
 	GtkUIManager *ui_manager;
 	
 	/* Clear any previous inserted items in the extension actions placeholder */
@@ -4646,10 +4645,7 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 	if (items != NULL) {
 		add_extension_menu_items (view, selection, items, "");
 
-		for (l = items; l != NULL; l = l->next) {
-			g_object_unref (l->data);
-		}
-
+		g_list_foreach (items, (GFunc) g_object_unref, NULL);
 		g_list_free (items);
 	}
 }

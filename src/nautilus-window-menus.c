@@ -774,15 +774,76 @@ get_extension_menus (NautilusWindow *window)
 	return items;
 }
 
+static void
+add_extension_menu_items (NautilusWindow *window,
+			  guint merge_id,
+			  GtkActionGroup *action_group,
+			  GList *menu_items,
+			  const char *subdirectory)
+{
+	GtkUIManager *ui_manager;
+	GList *l;
+
+	ui_manager = window->details->ui_manager;
+	
+	for (l = menu_items; l; l = l->next) {
+		NautilusMenuItem *item;
+		NautilusMenu *menu;
+		GtkAction *action;
+		char *path;
+		
+		item = NAUTILUS_MENU_ITEM (l->data);
+		
+		g_object_get (item, "menu", &menu, NULL);
+		
+		action = nautilus_action_from_menu_item (item);
+		gtk_action_group_add_action (action_group, action);
+		
+		path = g_build_path ("/", POPUP_PATH_EXTENSION_ACTIONS, subdirectory, NULL);
+		gtk_ui_manager_add_ui (ui_manager,
+				       merge_id,
+				       path,
+				       gtk_action_get_name (action),
+				       gtk_action_get_name (action),
+				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
+				       FALSE);
+		g_free (path);
+
+		path = g_build_path ("/", MENU_PATH_EXTENSION_ACTIONS, subdirectory, NULL);
+		gtk_ui_manager_add_ui (ui_manager,
+				       merge_id,
+				       path,
+				       gtk_action_get_name (action),
+				       gtk_action_get_name (action),
+				       (menu != NULL) ? GTK_UI_MANAGER_MENU : GTK_UI_MANAGER_MENUITEM,
+				       FALSE);
+		g_free (path);
+
+		/* recursively fill the menu */		       
+		if (menu != NULL) {
+			char *subdir;
+			GList *children;
+			
+			children = nautilus_menu_get_items (menu);
+			
+			subdir = g_build_path ("/", subdirectory, "/", gtk_action_get_name (action), NULL);
+			add_extension_menu_items (window,
+						  merge_id,
+						  action_group,
+						  children,
+						  subdir);
+
+			nautilus_menu_item_list_free (children);
+			g_free (subdir);
+		}			
+	}
+}
+
 void
 nautilus_window_load_extension_menus (NautilusWindow *window)
 {
-	NautilusMenuItem *item;
 	GtkActionGroup *action_group;
-	GtkAction *action;
 	GList *items;
-	GList *l;
-	int i;
 	guint merge_id;
 
 	if (window->details->extensions_menu_merge_id != 0) {
@@ -807,35 +868,12 @@ nautilus_window_load_extension_menus (NautilusWindow *window)
 
 	items = get_extension_menus (window);
 
-	for (l = items, i = 0; l != NULL; l = l->next, i++) {
-		item = NAUTILUS_MENU_ITEM (l->data);
+	if (items != NULL) {
+		add_extension_menu_items (window, merge_id, action_group, items, "");
 
-		action = nautilus_action_from_menu_item (item);
-		gtk_action_group_add_action (action_group,
-					     GTK_ACTION (action));
-		g_object_unref (action);
-		
-		gtk_ui_manager_add_ui (window->details->ui_manager,
-				       merge_id,
-				       MENU_PATH_EXTENSION_ACTIONS,
-				       gtk_action_get_name (action),
-				       gtk_action_get_name (action),
-				       GTK_UI_MANAGER_MENUITEM,
-				       FALSE);
-
-		gtk_ui_manager_add_ui (window->details->ui_manager,
-				       merge_id,
-				       POPUP_PATH_EXTENSION_ACTIONS,
-				       gtk_action_get_name (action),
-				       gtk_action_get_name (action),
-				       GTK_UI_MANAGER_MENUITEM,
-				       FALSE);
-
-		
-		g_object_unref (item);
+		g_list_foreach (items, (GFunc) g_object_unref, NULL);
+		g_list_free (items);
 	}
-
-	g_list_free (items);
 }
 
 

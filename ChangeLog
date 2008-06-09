@@ -1,3 +1,16 @@
+2008-06-08  German Poo-Caamano  <gpoo@gnome.org>
+
+	* src/nautilus-window-menus.c:
+	(add_extension_menu_items): New function to fill submenus from
+	extensions using NautilusMenuProvider::get_background_items.
+	(nautilus_window_load_extension_menus): Fixed submenu support
+	for extensions using NautilusMenuProvider::get_background_items.
+	* src/file-manager/fm-directory-view.c:
+	(search_in_menu_items): Fix typo. Submenus provided by
+	extensions were not activated (#508878).
+	(reset_extension_actions_menu): Code cleanup, using g_list_foreach
+	instead for.
+
 2008-05-31  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c:
