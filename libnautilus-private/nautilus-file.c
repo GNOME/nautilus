@@ -2715,14 +2715,29 @@ is_file_hidden (NautilusFile *file)
 	
 }
 
+/**
+ * nautilus_file_should_show:
+ * @file: the file to check.
+ * @show_hidden: whether we want to show hidden files or not.
+ * @show_backup: whether we want to show backup files or not.
+ * 
+ * Determines if a #NautilusFile should be shown. Note that when browsing
+ * a trash directory, this function will always return %TRUE. 
+ *
+ * Returns: %TRUE if the file should be shown, %FALSE if it shouldn't.
+ */
 gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
 			   gboolean show_backup)
 {
-	return (show_hidden || (!nautilus_file_is_hidden_file (file) && !is_file_hidden (file))) &&
-		(show_backup || !nautilus_file_is_backup_file (file));
-
+	/* Never hide any files in trash. */
+	if (nautilus_file_is_in_trash (file)) {
+		return TRUE;
+	} else {
+		return (show_hidden || (!nautilus_file_is_hidden_file (file) && !is_file_hidden (file))) &&
+			(show_backup || !nautilus_file_is_backup_file (file));
+	}
 }
 
 gboolean
