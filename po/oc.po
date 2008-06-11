@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-05 22:08+0200\n"
-"PO-Revision-Date: 2008-06-05 22:09+0200\n"
+"POT-Creation-Date: 2008-06-09 15:21+0200\n"
+"PO-Revision-Date: 2008-06-11 13:23+0200\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -669,7 +669,6 @@ msgstr ""
 
 #
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
@@ -876,10 +875,8 @@ msgid "Network servers icon name"
 msgstr "Nom d'icòna dels servidors ret"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid "Never prompt or autorun/autostart programs when media are inserted"
-msgstr ""
-"Jamai demandar o aviar automaticament los programas quand un supòrt es "
+msgstr "Jamai demandar o aviar automaticament los programas quand un supòrt es "
 "inserit"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
@@ -1245,7 +1242,6 @@ msgid "You have just inserted a Picture CD."
 msgstr "Venètz d'inserir un CD d'imatges."
 
 #: ../libnautilus-private/nautilus-autorun.c:1106
-#, fuzzy
 msgid "You have just inserted a medium with digital photos."
 msgstr "Venètz d'inserir un supòrt amb de fotografias numericas."
 
@@ -1254,17 +1250,13 @@ msgid "You have just inserted a digital audio player."
 msgstr "Venètz d'inserir un legidor audiò numeric."
 
 #: ../libnautilus-private/nautilus-autorun.c:1110
-#, fuzzy
 msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
 msgstr ""
-"Venètz d'inserir un supòrt amb un logiciel previst per s'aviar "
-"automaticament."
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1113
-#, fuzzy
 msgid "You have just inserted a medium."
 msgstr "Venètz d'inserir un supòrt."
 
@@ -1745,13 +1737,17 @@ msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1184
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
 "trash?"
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr "Sètz segur que volètz suprimir per totjorn '%B' de l'escobilièr ?"
+msgstr ""
+"Sètz segur que volèz suprimir per totjorn l'element seleccionat de "
+"la banasta ?"
+"Sètz segur que volèz suprimir per totjorn los %'d elements seleccionats "
+"de la banasta ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1194
 #: ../libnautilus-private/nautilus-file-operations.c:1260
@@ -1776,10 +1772,11 @@ msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Sètz segur que volètz suprimir per totjon \"%B\" ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1251
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr "Sètz segur que volètz suprimir per totjon \"%B\" ?"
+msgstr "Sètz segur que volèz suprimir per totjorn l'element seleccionat ?"
+"Sètz segur que volèz suprimir per totjorn los %'d elements seleccionats ?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1293
 msgid "Deleting files"
@@ -1790,14 +1787,14 @@ msgstr "Supression de fichièrs"
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
 msgstr[0] "Demòra %'d fichièr de suprimir"
-msgstr[1] "Demòra %'d fichièrs de suprimir"
+msgstr[1] "Demòran %'d fichièrs de suprimir"
 
 #. To translators: %T will expand to a time like "2 minutes"
 #: ../libnautilus-private/nautilus-file-operations.c:1309
 msgid "%'d file left to delete — %T left"
 msgid_plural "%'d files left to delete — %T left"
 msgstr[0] "Demòra %'d fichièr de suprimir - encara %T"
-msgstr[1] "Demòra %'d fichièrs de suprimir - encara %T"
+msgstr[1] "Demòran %'d fichièrs de suprimir - encara %T"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1370
 #: ../libnautilus-private/nautilus-file-operations.c:1403
@@ -1860,7 +1857,7 @@ msgstr "Desplaçament de fichièrs dins l'escobilièr"
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "Demòra %'d fichièr dins l'escobilièr"
-msgstr[1] "Demòra %'d fichièrs dins l'escobilièr"
+msgstr[1] "Demòran %'d fichièrs dins l'escobilièr"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1655
 msgid "Cannot move file to trash, do you want to delete immediately?"
@@ -2076,7 +2073,7 @@ msgstr "%S sus %S"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:2715
 msgid "%S of %S — %T left (%S/sec)"
-msgstr "%S sus %S — demòra %T (%S/seg)"
+msgstr "%S sus %S — demòra(n) %T (%S/seg)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2989
 msgid ""
@@ -2136,21 +2133,18 @@ msgstr "Impossible de suprimir lo fichièr %F qu'existís ja."
 #. the run_warning() frees all strings passed in automatically
 #: ../libnautilus-private/nautilus-file-operations.c:3426
 #: ../libnautilus-private/nautilus-file-operations.c:3988
-#, fuzzy
 msgid "You cannot move a folder into itself."
-msgstr "Podètz pas desplaçar lo volum \"%s\" cap a la banasta."
+msgstr "Podètz pas desplaçar un repertòri dins el meteis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3427
 #: ../libnautilus-private/nautilus-file-operations.c:3989
-#, fuzzy
 msgid "You cannot copy a folder into itself."
-msgstr "Lo podètz descargar o far un ligam cap a el."
+msgstr "Podètz pas copiar un repertòri dins el meteis."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3428
 #: ../libnautilus-private/nautilus-file-operations.c:3990
-#, fuzzy
 msgid "The destination folder is inside the source folder."
-msgstr "La cibla es pas un repertòri."
+msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3521
 #: ../libnautilus-private/nautilus-file-operations.c:4053
@@ -3264,9 +3258,8 @@ msgid "There was an error displaying help."
 msgstr "I a aguda una error al moment de visualizar l'ajuda."
 
 #: ../src/file-manager/fm-directory-view.c:1088
-#, fuzzy
 msgid "Select Items Matching"
-msgstr "Seleccionar totes los elements d'aquesta fenèstra"
+msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:1106
 msgid "_Pattern:"
@@ -3463,16 +3456,16 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
 
 #: ../src/file-manager/fm-directory-view.c:5618
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 "The %'d selected items will be moved if you select the Paste command"
-msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà desplaçat"
+msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5625
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 "The %'d selected items will be copied if you select the Paste command"
-msgstr "Se seleccionatz la comanda Pegar, \"%s\" serà copiat"
+msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5681
 #: ../src/file-manager/fm-tree-view.c:924
@@ -3887,13 +3880,10 @@ msgstr "Preparar la còpia d'aqueste repertòri amb una comanda Pegar"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6570
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr ""
-"Desplaçar o copiar los fichièrs seleccionats abans amb una comanda Copar o "
-"Copiar dins lo repertòri seleccionat"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6575
@@ -3907,33 +3897,28 @@ msgstr "Suprimir aqueste repertòri, sens lo desplaçar dins la banasta"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6584
-#, fuzzy
 msgid "Mount the volume associated with this folder"
-msgstr "Montar lo volum associat al repertòri dobèrt"
+msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6588
-#, fuzzy
 msgid "Unmount the volume associated with this folder"
-msgstr "Desmontar lo volum associat al repertòri dobèrt"
+msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6592
-#, fuzzy
 msgid "Eject the volume associated with this folder"
-msgstr "Ejectar lo volum associat al repertòri dobèrt"
+msgstr "Ejectar lo volum associat a-n aqueste repertòri"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6596
-#, fuzzy
 msgid "Format the volume associated with this folder"
-msgstr "Formatar lo volum associat al repertòri dobèrt"
+msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6601
-#, fuzzy
 msgid "View or modify the properties of this folder"
-msgstr "Visualizar o modificar las propietats del repertòri dobèrt"
+msgstr ""
 
 #. name, stock id
 #. label, accelerator
@@ -4228,9 +4213,8 @@ msgstr "Arren_gar los elements"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1522
-#, fuzzy
 msgid "Stretc_h Icon..."
-msgstr "Redim_ensionar l'icòna"
+msgstr ""
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1523
@@ -4925,26 +4909,19 @@ msgstr ""
 "<big><b>Error al moment d'executar automaticament lo logicial</b></big>"
 
 #: ../src/nautilus-autorun-software.c:194
-#, fuzzy
 msgid ""
 "<big><b>This medium contains software intended to be automatically started. "
 "Would you like to run it?</b></big>"
 msgstr ""
-"<big><b>Aqueste supòrt conten un logicial previst per èsser aviat "
-"automaticament. Lo volètz aviar ?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:196
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The software will run directly from the medium \"%s\". You should never run "
 "software that you don't trust.\n"
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
-"Aqueste logicial s'aviarà directament dempuèi lo supòrt \"%s\". Deuriatz pas "
-"jamai aviar un logicial que vos fisatz pas.\n"
-"\n"
-"En cas de dobte, cliquez sur Anullar."
 
 #: ../src/nautilus-bookmarks-window.c:160
 #: ../src/nautilus-file-management-properties.c:206
@@ -6359,9 +6336,9 @@ msgid "Could not find \"%s\"."
 msgstr "Impossible de trobar \"%s\"."
 
 #: ../src/nautilus-window-manage-views.c:1706
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
-msgstr "Nautilus pòt pas gerir los emplaçaments %s:."
+msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:1709
 msgid "Nautilus cannot handle this kind of locations."
@@ -6429,15 +6406,11 @@ msgstr ""
 "generala GNU per mai d'entresenhas."
 
 #: ../src/nautilus-window-menus.c:430
-#, fuzzy
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr ""
-"Deuriatz aver recebut una còpia de la licéncia GNU GPL amb Nautilus ; s'es "
-"pas lo cas, escrivètz a Free Software Foundation, Inc., 59 Temple Place, "
-"Suite 330, Boston, MA  02111-1307  USA"
 
 #: ../src/nautilus-window-menus.c:442
 msgid ""
@@ -6755,4 +6728,3 @@ msgstr "Zoom"
 #: ../src/nautilus-zoom-control.c:890
 msgid "Set the zoom level of the current view"
 msgstr "Definir lo nivèl de zoom de la visualizacion actuala"
-
