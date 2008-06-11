@@ -370,7 +370,7 @@ nautilus_zoom_control_redraw (NautilusZoomControl *zoom_control)
 	gtk_widget_set_sensitive (zoom_control->details->zoom_out,
 				  nautilus_zoom_control_can_zoom_out (zoom_control));
 
-	percent = floor ((100.0 * nautilus_get_relative_icon_size_for_zoom_level (zoom_control->details->zoom_level)) + .5);
+	percent = floor ((100.0 * nautilus_get_relative_icon_size_for_zoom_level (zoom_control->details->zoom_level)) + .2);
 	num_str = g_strdup_printf ("%d%%", percent);
 	gtk_label_set_text (GTK_LABEL (zoom_control->details->zoom_label), num_str);
 	g_free (num_str);

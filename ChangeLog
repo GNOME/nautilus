@@ -1,5 +1,14 @@
 2008-06-11  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-file-management-properties.glade:
+	* src/nautilus-zoom-control.c (nautilus_zoom_control_redraw):
+	Slightly change zoom level algorithm to display "66%" instead of
+	"67%". This looks more consistent with the "33%" label for a .3 zoom
+	level. Also change preferences dialog accordingly: rename "75%" to
+	"66%", and "25%" to "33%". Fixes #485965.
+
+2008-06-11  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file.c (update_info_internal),
 	(nautilus_file_get_icon):
 	* libnautilus-private/nautilus-thumbnails.c
