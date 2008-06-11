@@ -1750,6 +1750,10 @@ update_info_internal (NautilusFile *file,
 	if (file->details->atime != atime ||
 	    file->details->mtime != mtime ||
 	    file->details->ctime != ctime) {
+		if (file->details->thumbnail == NULL) {
+			file->details->thumbnail_is_up_to_date = FALSE;
+		}
+
 		changed = TRUE;
 	}
 	file->details->atime = atime;
@@ -3424,8 +3428,9 @@ nautilus_file_get_icon (NautilusFile *file,
 			return icon;
 		} else if (file->details->thumbnail_path == NULL &&
 			   file->details->can_read &&				
-			   !file->details->thumbnailing_failed &&
-			   !file->details->is_thumbnailing) {
+			   !file->details->is_thumbnailing &&
+			   (!file->details->thumbnailing_failed ||
+			    !nautilus_has_valid_failed_thumbnail (file))) {
 			if (nautilus_can_thumbnail (file)) {
 				nautilus_create_thumbnail (file);
 			}
