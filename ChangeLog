@@ -1,3 +1,14 @@
+2008-06-11  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file.c (update_info_internal),
+	(nautilus_file_get_icon):
+	* libnautilus-private/nautilus-thumbnails.c
+	(nautilus_has_valid_failed_thumbnail):
+	* libnautilus-private/nautilus-thumbnails.h:
+	Fix thumbnail handling. Always request thumbnailing if a file without
+	any thumbnail changes its mtime, or if a failed thumbnail is not up to
+	date (i.e. its mtime differs from the file's mtime).
+
 2008-06-08  German Poo-Caamano  <gpoo@gnome.org>
 
 	* src/nautilus-window-menus.c:
