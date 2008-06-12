@@ -1,3 +1,9 @@
+2008-06-12  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Don't use g_free () on a GFile. (#537995).
+
 2008-06-11  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_should_show):

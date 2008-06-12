@@ -422,7 +422,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 				*action = GDK_ACTION_MOVE;
 			}
 			
-			g_free (target);
+			g_object_unref (target);
 			nautilus_file_unref (dropped_file);
 			nautilus_file_unref (target_file);
 			return;
