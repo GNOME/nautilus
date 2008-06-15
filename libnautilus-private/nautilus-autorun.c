@@ -1200,15 +1200,6 @@ typedef struct {
 	gpointer user_data;
 } AutorunData;
 
-
-static void
-autorun_open_folder_for_mount (AutorunData *data)
-{
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN) && 
-	    data->open_window_func != NULL)
-		data->open_window_func (data->mount, data->user_data);
-}
-
 static void
 autorun_guessed_content_type_callback (GObject *source_object,
 				       GAsyncResult *res,
@@ -1237,13 +1228,14 @@ autorun_guessed_content_type_callback (GObject *source_object,
 			}
 			g_strfreev (guessed_content_type);
 		} else {
-			open_folder = TRUE;
+			if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDIA_AUTOMOUNT_OPEN))
+				open_folder = TRUE;
 		}
 	}
 
 	/* only open the folder once.. */
-	if (open_folder) {
-		autorun_open_folder_for_mount (data);
+	if (open_folder && data->open_window_func != NULL) {
+		data->open_window_func (data->mount, data->user_data);
 	}
 
 	g_object_unref (data->mount);
