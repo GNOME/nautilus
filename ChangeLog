@@ -1,5 +1,14 @@
 2008-06-16  A. Walton  <awalton@gnome.org>
 
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_permissions_as_string):
+	Correct a typo in the permissions code: 
+	suid should test for S_ISUID instead of G_ISGID.
+	Closes bug #538468.
+	Patch by Marcel Stimberg.
+
+2008-06-16  A. Walton  <awalton@gnome.org>
+
 	* libnautilus-private/nautilus-emblem-utils.c
 	(is_reserved_keyword), (nautilus_emblem_should_show_in_list):
 	* libnautilus-private/nautilus-file.c (prepend_automatic_keywords):
