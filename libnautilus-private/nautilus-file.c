@@ -2252,10 +2252,6 @@ prepend_automatic_keywords (NautilusFile *file,
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
 #endif
-	if (nautilus_file_is_desktop_directory (file)) {
-		names = g_list_prepend 
-			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_DESKTOP));
-	}
 	if (file_has_note (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_NOTE));

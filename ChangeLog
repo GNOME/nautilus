@@ -1,3 +1,12 @@
+2008-06-16  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-emblem-utils.c
+	(is_reserved_keyword), (nautilus_emblem_should_show_in_list):
+	* libnautilus-private/nautilus-file.c (prepend_automatic_keywords):
+	Remove the emblem-desktop from Nautilus, as GIO now returns the
+	user-desktop icon for the user's Desktop directory.
+	Closes bug #538152.
+
 2008-06-16  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c (copy_move_file):
