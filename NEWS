@@ -1,3 +1,13 @@
+Major changes in 2.23.4 are:
+* Fix background extension submenus for background context menus
+* Fix thumbnailing
+  * Always re-thumbnail if a file without any thumbnail changes
+  * Always re-thumbnail if a failed thumbnail is not up to date
+* Make zoom level specifications consistent (33% vs. 25%), round to 66% rather than 67%.
+* Never hide hidden or backup files in trash
+* Always copy file entire metadata when copying. Fixes timestamp preservation.
+* Remove desktop emblem from desktop directory, since the folder now uses a desktop icon
+
 Major changes in 2.23.3 are:
 * Use bilinear interpolation instead of hyperbolic. Massively speeds up thumbnailing.
 * Fix thumbnail frame size calculation
