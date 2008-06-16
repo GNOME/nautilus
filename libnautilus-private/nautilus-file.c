@@ -4873,7 +4873,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	is_link = nautilus_file_is_symbolic_link (file);
 
 	/* We use ls conventions for displaying these three obscure flags */
-	suid = permissions & S_ISGID;
+	suid = permissions & S_ISUID;
 	sgid = permissions & S_ISGID;
 	sticky = permissions & S_ISVTX;
 

@@ -1,3 +1,12 @@
+2008-06-16  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_permissions_as_string):
+	Correct a typo in the permissions code: 
+	suid should test for S_ISUID instead of G_ISGID.
+	Closes bug #538468.
+	Patch by Marcel Stimberg.
+
 2008-06-16  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c (copy_move_file):
