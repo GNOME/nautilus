@@ -1,3 +1,15 @@
+2008-06-19  Christian Persch  <chpe@gnome.org>
+
+	* src/file-manager/fm-directory-view.c:
+	(convert_file_list_to_string), (get_clipboard_callback),
+	(clear_clipboard_callback), (convert_file_list_to_uris),
+	(copy_or_cut_files), (clipboard_targets_received),
+	(real_update_paste_menu), (fm_directory_view_class_init):
+	* src/file-manager/fm-tree-view.c: (get_clipboard_callback),
+	(clear_clipboard_callback), (convert_file_to_uri),
+	(copy_or_cut_files): Store the clipboard selection also in
+	text/uri-list format. Part of bug #314120.
+
 2008-06-16  Christian Neumair  <cneumair@gnome.org>
 
 	* configure.in: post-release bump to 2.23.5.

@@ -154,7 +154,6 @@ enum
 static guint signals[LAST_SIGNAL];
 
 static GdkAtom copied_files_atom;
-static GdkAtom utf8_string_atom;
 
 static gboolean show_delete_command_auto_value;
 static gboolean confirm_trash_auto_value;
@@ -262,16 +261,6 @@ typedef struct {
 	NautilusFile *file;
 	NautilusDirectory *directory;
 } FileAndDirectory;
-
-enum {
-	GNOME_COPIED_FILES,
-	UTF8_STRING
-};
-
-static const GtkTargetEntry clipboard_targets[] = {
-	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
-	{ "UTF8_STRING", 0, UTF8_STRING }
-};
 
 /* forward declarations */
 
@@ -5480,28 +5469,29 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 }
 
 typedef struct {
-	GList *file_uris;
+	char **file_uris;
+        guint n_file_uris;
 	gboolean cut;
 } ClipboardInfo;
 
 static char *
-convert_file_list_to_string (GList *files,
+convert_file_list_to_string (ClipboardInfo *info,
 			     gboolean format_for_text,
-			     gboolean cut)
+                             gsize *len)
 {
 	GString *uris;
-	GList *node;
 	char *uri, *tmp;
 	GFile *f;
+        guint i;
 
 	if (format_for_text) {
 		uris = g_string_new (NULL);
 	} else {
-		uris = g_string_new (cut ? "cut" : "copy");
+		uris = g_string_new (info->cut ? "cut" : "copy");
 	}
-	
-	for (node = files; node != NULL; node = node->next) {
-		uri = node->data;
+
+        for (i = 0; i < info->n_file_uris; ++i) {
+		uri = info->file_uris[i];
 		
 		if (format_for_text) {
 			f = g_file_new_for_uri (uri);
@@ -5516,7 +5506,7 @@ convert_file_list_to_string (GList *files,
 			}
 
 			/* skip newline for last element */
-			if (node->next != NULL) {
+			if (i + 1 < info->n_file_uris) {
 				g_string_append_c (uris, '\n');
 			}
 		} else {
@@ -5525,6 +5515,7 @@ convert_file_list_to_string (GList *files,
 		}
 	}
 
+        *len = uris->len;
 	return g_string_free (uris, FALSE);
 }
 
@@ -5532,48 +5523,57 @@ static void
 get_clipboard_callback (GtkClipboard     *clipboard,
 			GtkSelectionData *selection_data,
 			guint             info,
-			gpointer          user_data_or_owner)
+			gpointer          user_data)
 {
-	ClipboardInfo *clipboard_info = user_data_or_owner;
-	char *str;
+	ClipboardInfo *clipboard_info = user_data;
 
-	str = convert_file_list_to_string (clipboard_info->file_uris,
-					   info == UTF8_STRING,
-					   clipboard_info->cut);
+        if (gtk_targets_include_uri (&selection_data->target, 1)) {
+                gtk_selection_data_set_uris (selection_data, clipboard_info->file_uris);
+        } else if (gtk_targets_include_text (&selection_data->target, 1)) {
+                char *str;
+                gsize len;
 
+                str = convert_file_list_to_string (clipboard_info, TRUE, &len);
+                gtk_selection_data_set_text (selection_data, str, len);
+                g_free (str);
+        } else if (selection_data->target == copied_files_atom) {
+                char *str;
+                gsize len;
 
-	gtk_selection_data_set (selection_data,
-				selection_data->target,
-				8,
-				str,
-				strlen (str));
-	
-	g_free (str);
+                str = convert_file_list_to_string (clipboard_info, FALSE, &len);
+                gtk_selection_data_set (selection_data, copied_files_atom, 8, str, len);
+                g_free (str);
+        }
 }
 
 static void
 clear_clipboard_callback (GtkClipboard *clipboard,
-			  gpointer      user_data_or_owner)
+			  gpointer      user_data)
 {
-	ClipboardInfo *info = user_data_or_owner;
-	
-	eel_g_list_free_deep (info->file_uris);
+	ClipboardInfo *info = user_data;
 
-	g_free (info);
+        g_strfreev (info->file_uris);
+	g_slice_free (ClipboardInfo, info);
 }
 
-static GList *
-convert_file_list_to_uri_list (GList *files)
+static ClipboardInfo *
+convert_file_list_to_uris (GList *files,
+                           gboolean cut)
 {
-	GList *tmp = NULL;
-	
-	while (files != NULL) {
-		tmp = g_list_prepend (tmp, nautilus_file_get_uri (files->data));
+        ClipboardInfo *info;
+        guint i;
 
-		files = files->next;
-	}
+	info = g_slice_new (ClipboardInfo);
+        info->cut = cut;
+        info->n_file_uris = g_list_length (files);
+        info->file_uris = g_new (char *, info->n_file_uris + 1);
 
-	return g_list_reverse (tmp);
+        for (i = 0; files != NULL; files = files->next, ++i)
+                info->file_uris[i] = nautilus_file_get_uri (files->data);
+
+        info->file_uris[info->n_file_uris] = NULL;
+
+        return info;
 }
 	
 static void
@@ -5584,18 +5584,28 @@ copy_or_cut_files (FMDirectoryView *view,
 	int count;
 	char *status_string, *name;
 	ClipboardInfo *info;
-	
-	info = g_new0 (ClipboardInfo, 1);
-	info->file_uris = convert_file_list_to_uri_list (clipboard_contents);
-	info->cut = cut;
-	
+        GtkTargetList *target_list;
+        GtkTargetEntry *targets;
+        int n_targets;
+
+	info = convert_file_list_to_uris (clipboard_contents, cut);
+
+        target_list = gtk_target_list_new (NULL, 0);
+        gtk_target_list_add (target_list, copied_files_atom, 0, 0);
+        gtk_target_list_add_uri_targets (target_list, 0);
+        gtk_target_list_add_text_targets (target_list, 0);
+
+        targets = gtk_target_table_new_from_list (target_list, &n_targets);
+        gtk_target_list_unref (target_list);
+
 	gtk_clipboard_set_with_data (nautilus_clipboard_get (GTK_WIDGET (view)),
-				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
+				     targets, n_targets,
 				     get_clipboard_callback, clear_clipboard_callback,
 				     info);
+        gtk_target_table_free (targets, n_targets);
+
 	nautilus_clipboard_monitor_emit_changed ();
-	
-	
+
 	count = g_list_length (clipboard_contents);
 	if (count == 1) {
 		name = nautilus_file_get_display_name (clipboard_contents->data);
@@ -6750,13 +6760,12 @@ can_paste_into_file (NautilusFile *file)
 
 static void
 clipboard_targets_received (GtkClipboard     *clipboard,
-			    GtkSelectionData *selection_data,
+                            GdkAtom          *targets,
+                            int               n_targets,
 			    gpointer          user_data)
 {
 	FMDirectoryView *view;
 	gboolean can_paste;
-	GdkAtom *targets;
-	int n_targets;
 	int i;
 	GList *selection;
 	int count;
@@ -6770,15 +6779,13 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 		g_object_unref (view);
 		return;
 	}
-	
-	if (gtk_selection_data_get_targets (selection_data, &targets, &n_targets)) {
+
+	if (targets) {
 		for (i=0; i < n_targets; i++) {
 			if (targets[i] == copied_files_atom) {
 				can_paste = TRUE;
 			}
 		}
-
-		g_free (targets);
 	}
 	
 	
@@ -7136,10 +7143,9 @@ real_update_paste_menu (FMDirectoryView *view,
 
 	/* Ask the clipboard */
 	g_object_ref (view); /* Need to keep the object alive until we get the reply */
-	gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-					gdk_atom_intern ("TARGETS", FALSE),
-					clipboard_targets_received,
-					view);
+	gtk_clipboard_request_targets (nautilus_clipboard_get (GTK_WIDGET (view)),
+				       clipboard_targets_received,
+				       view);
 }
 
 static void
@@ -9206,7 +9212,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_zoom_level);
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
-	utf8_string_atom = gdk_atom_intern ("UTF8_STRING", FALSE);
 
 	g_object_class_install_property (G_OBJECT_CLASS (klass),
 					 PROP_WINDOW,
