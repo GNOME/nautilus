@@ -87,6 +87,7 @@ typedef enum {
 #define NAUTILUS_FILE_EMBLEM_NAME_TRASH "trash"
 #define NAUTILUS_FILE_EMBLEM_NAME_NOTE "note"
 #define NAUTILUS_FILE_EMBLEM_NAME_DESKTOP "desktop"
+#define NAUTILUS_FILE_EMBLEM_NAME_SHARED "shared"
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
