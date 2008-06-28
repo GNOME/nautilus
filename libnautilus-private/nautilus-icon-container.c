@@ -2907,6 +2907,10 @@ keyboard_arrow_key (NautilusIconContainer *container,
 			(container, from,
 			 container->details->auto_layout ? better_destination : better_destination_manual,
 			 &data);
+
+		if (to == NULL) { 
+			to = from;
+		}
 	}
 
 	keyboard_move_to (container, to, from, event);
