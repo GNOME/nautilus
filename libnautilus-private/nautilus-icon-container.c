@@ -3276,6 +3276,10 @@ keyboard_arrow_key (NautilusIconContainer *container,
 				 better_destination_fallback_if_no_a11y,
 				 &data);
 		}
+		
+		if (to == NULL) { 
+			to = from;
+		}
 
 	}
 
