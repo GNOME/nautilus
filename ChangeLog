@@ -1,3 +1,11 @@
+2008-06-28  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c (keyboard_move_to),
+	(keyboard_space):
+	If no icon is selected, but an icon has the keyboard focus, select it
+	when pressing space. Thanks to Nelson Benítez León, A. Walton and Amir
+	Reza Khosroshahi. Fixes #378202.
+
 2008-06-23  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* configure.in: require libbeagle >= 0.2.4. (#351288).

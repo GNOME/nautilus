@@ -2747,13 +2747,13 @@ keyboard_move_to (NautilusIconContainer *container,
 		return;
 	}
 
-	if ((event->state & GDK_CONTROL_MASK) != 0) {
+	if (event != NULL && (event->state & GDK_CONTROL_MASK) != 0) {
 		/* Move the keyboard focus. Use Control modifier
 		 * rather than Alt to avoid Sawfish conflict.
 		 */
 		set_keyboard_focus (container, icon);
 		container->details->keyboard_rubberband_start = NULL;
-	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
+	} else if (event != NULL && (event->state & GDK_SHIFT_MASK) != 0) {
 		/* Do rubberband selection */		
 		EelDRect rect;
 
@@ -2982,8 +2982,13 @@ keyboard_space (NautilusIconContainer *container,
 {
 	NautilusIcon *icon;
 	
-	/* Control-space toggles the selection state of the current icon. */
-	if ((event->state & GDK_CONTROL_MASK) != 0) {
+	if (!has_selection (container) &&
+	    container->details->keyboard_focus != NULL) {
+		keyboard_move_to (container,
+				  container->details->keyboard_focus,
+				  NULL, NULL);
+	} else if ((event->state & GDK_CONTROL_MASK) != 0) {
+		/* Control-space toggles the selection state of the current icon. */
 		if (container->details->keyboard_focus != NULL) {
 			icon_toggle_selected (container, container->details->keyboard_focus);
 			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
