@@ -1,5 +1,19 @@
 2008-06-28  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_report_selection_changed),
+	(nautilus_window_report_load_underway),
+	(nautilus_window_report_load_complete), (free_location_change),
+	(nautilus_window_report_view_failed),
+	(nautilus_window_stop_loading):
+	* src/nautilus-window-private.h:
+	Stop loading of new view instead of just unreffing it when freeing a
+	location change.
+	Ignore view signals of new view when stopping it. Otherwise we'd have
+	infinite recursion.
+
+2008-06-28  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c (keyboard_move_to),
 	(keyboard_space):
 	If no icon is selected, but an icon has the keyboard focus, select it

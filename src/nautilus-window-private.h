@@ -103,6 +103,12 @@ struct NautilusWindowDetails
         gboolean search_mode;
 
         GCancellable *find_mount_cancellable;
+
+	/* Ensures that we do not react on signals of a
+	 * view that is re-used as new view when its loading
+	 * is cancelled
+	 */
+	gboolean temporarily_ignore_view_signals;
 };
 
 struct _NautilusNavigationWindowDetails {

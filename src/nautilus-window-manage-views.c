@@ -114,6 +114,10 @@ static void remove_extra_location_widgets             (NautilusWindow           
 void
 nautilus_window_report_selection_changed (NautilusWindowInfo *window)
 {
+	if (window->details->temporarily_ignore_view_signals) {
+		return;
+	}
+
 	g_signal_emit_by_name (window, "selection_changed");
 }
 
@@ -1212,6 +1216,10 @@ void
 nautilus_window_report_load_underway (NautilusWindow *window,
 				      NautilusView *view)
 {
+	if (window->details->temporarily_ignore_view_signals) {
+		return;
+	}
+
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         if (view == window->new_content_view) {
@@ -1511,6 +1519,10 @@ void
 nautilus_window_report_load_complete (NautilusWindow *window,
 				      NautilusView *view)
 {
+	if (window->details->temporarily_ignore_view_signals) {
+		return;
+	}
+
         g_assert (NAUTILUS_IS_WINDOW (window));
 
 	/* Only handle this if we're expecting it.
@@ -1575,6 +1587,10 @@ free_location_change (NautilusWindow *window)
         }
 
         if (window->new_content_view != NULL) {
+		window->details->temporarily_ignore_view_signals = TRUE;
+		nautilus_view_stop_loading (window->new_content_view);
+		window->details->temporarily_ignore_view_signals = FALSE;
+
                 disconnect_view (window, window->new_content_view);
         	g_object_unref (window->new_content_view);
                 window->new_content_view = NULL;
@@ -1613,8 +1629,12 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 {
 	gboolean do_close_window;
 	GFile *fallback_load_location;
-        g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
 
+	if (window->details->temporarily_ignore_view_signals) {
+		return;
+	}
+
+        g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
 
 	do_close_window = FALSE;
 	fallback_load_location = NULL;
@@ -1761,7 +1781,9 @@ nautilus_window_stop_loading (NautilusWindow *window)
 	nautilus_view_stop_loading (window->content_view);
 	
 	if (window->new_content_view != NULL) {
+		window->details->temporarily_ignore_view_signals = TRUE;
 		nautilus_view_stop_loading (window->new_content_view);
+		window->details->temporarily_ignore_view_signals = FALSE;
 	}
 
         cancel_location_change (window);
