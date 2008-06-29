@@ -1,3 +1,9 @@
+2008-06-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-window.c: (nautilus_window_set_status):
+	Fix a huge leak as messages were pushed in the statusbar but almost
+	never popped. Patch by Vincent Untz. (#536968).
+
 2008-06-29  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

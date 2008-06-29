@@ -205,27 +205,16 @@ nautilus_window_ui_update (NautilusWindow *window)
 	gtk_ui_manager_ensure_update (window->details->ui_manager);
 }
 
-static gboolean
-nautilus_window_clear_status (gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	gtk_statusbar_pop (GTK_STATUSBAR (window->details->statusbar), 0); /* clear any previous message, underflow is allowed */
-
-	return FALSE;
-}
-
 void
 nautilus_window_set_status (NautilusWindow *window, const char *text)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
+	/* clear any previous message, underflow is allowed */
+	gtk_statusbar_pop (GTK_STATUSBAR (window->details->statusbar), 0);
+
 	if (text != NULL && text[0] != '\0') {
 		gtk_statusbar_push (GTK_STATUSBAR (window->details->statusbar), 0, text);
-	} else {
-		nautilus_window_clear_status (window);
 	}
 }
 
