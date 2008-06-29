@@ -274,6 +274,9 @@ struct NautilusIconContainerDetails {
 	GtkWidget *search_entry;
 	guint search_entry_changed_id;
 	guint typeselect_flush_timeout;
+
+	/* Needed for dblclicking activation of partially shown icons, see bug #347423 */
+	gboolean icon_revealed;
 };
 
 /* Private functions shared by mutiple files. */

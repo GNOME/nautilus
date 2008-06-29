@@ -1,3 +1,12 @@
+2008-06-29  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(clicked_within_double_click_interval), (handle_icon_button_press):
+	* libnautilus-private/nautilus-icon-private.h:
+	Use customized double click detection, for supporting double clicks
+	on half shown items, where the first click triggers a scroll event.
+	Thanks to Nelson Benítez León. Fixes #347423.
+
 2008-06-28  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

@@ -3439,6 +3439,31 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 	}
 }
 
+static gboolean
+clicked_within_double_click_interval (NautilusIconContainer *container)
+{
+	static gint64 last_click_time = 0;
+	static gint click_count = 0;
+	gint double_click_time;
+	gint64 current_time;
+
+	/* Determine click count */
+	g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))), 
+		      "gtk-double-click-time", &double_click_time,
+		      NULL);
+	current_time = eel_get_system_time ();
+	if (current_time - last_click_time < double_click_time * 1000) {
+		click_count++;
+	} else {
+		click_count = 0;
+	}
+
+	/* Stash time for next compare */
+	last_click_time = current_time;
+
+	return (click_count > 0);
+}
+
 static void
 clear_drag_state (NautilusIconContainer *container)
 {
@@ -5193,8 +5218,9 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->double_click_icon[1] = details->double_click_icon[0];
 		details->double_click_icon[0] = icon;
 	}
-	if (event->type == GDK_2BUTTON_PRESS &&
-	    (event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON)) {
+
+	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON)
+	    && (!details->single_click_mode && clicked_within_double_click_interval(container) && details->icon_revealed)) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;
@@ -5211,6 +5237,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 				activate_selected_items_alternate (container, icon);
 			}
 		}
+		details->icon_revealed = FALSE;
 		return TRUE;
 	}
 	if (event->button == DRAG_BUTTON
@@ -5259,6 +5286,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 				       signals[SELECTION_CHANGED], 0);
 		} else {
 			select_one_unselect_others (container, icon);
+			details->icon_revealed = TRUE;
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
