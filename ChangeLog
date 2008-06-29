@@ -1,5 +1,11 @@
 2008-06-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* cut-n-paste-code/Makefile.am:
+	* cut-n-paste-code/widgets/Makefile.am:
+	Remove useless empty widgets directory.
+
+2008-06-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* src/nautilus-window.c: (nautilus_window_set_status):
 	Fix a huge leak as messages were pushed in the statusbar but almost
 	never popped. Patch by Vincent Untz. (#536968).
