@@ -1,3 +1,19 @@
+Major changes in 2.22.4 are:
+* Properly display submenus that are provided by extensions
+* Preserve mtime when copying files
+* Fix navigation where window was inconsistently "stuck" between two
+  directories, i.e. the view was not completely changed.
+* Icon view fixes
+  * If no icon is selected, but an icon has the keyboard focus, select it when
+    pressing space.
+  * Move keyboard focus after a file has been removed
+  * Fix double-clicking half-shown items
+* Thumbnailing changes
+  * Never scale up any thumbnails
+  * Compose and scale thumbnails on the fly
+  * Speed up loading of large image files used as their own thumbnails
+  * Fix thumbnail regeneration
+
 Major changes in 2.22.3 are:
 * Use bilinear interpolation instead of hyperbolic. Massively speeds up thumbnailing.
 * Use single click policy in the sidebar
