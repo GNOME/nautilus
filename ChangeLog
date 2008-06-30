@@ -1,3 +1,26 @@
+2008-06-30  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c (thumbnail_done),
+	(thumbnail_loader_size_prepared), (get_pixbuf_for_content),
+	(thumbnail_start):
+	* libnautilus-private/nautilus-file.h:
+	Scale down huge pixbufs when loading. Massively speed up loading of
+	directories where the original image is used as thumbnail.
+	Also try to write the whole file at once rather than writing in chunks.
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_icon):
+	Rewrite some flaky parts of thumbnailing.
+
+	Never scale any thumbnails up.
+	Always compose thumbnail on the fly instead storing it once and
+	scaling it up and down.
+	Add flag to force that thumbnail size matches
+	the output icon size for tree view.
+
+	* src/file-manager/fm-list-model.c (fm_list_model_get_value):
+	Use this flag.
+
 2008-06-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-window.c: (nautilus_window_set_status):
