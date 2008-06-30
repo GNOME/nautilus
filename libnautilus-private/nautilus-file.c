@@ -3228,7 +3228,7 @@ get_custom_icon (NautilusFile *file)
 
 
 static int cached_thumbnail_limit;
-static int cached_thumbnail_size;
+int cached_thumbnail_size;
 static int show_image_thumbs;
 
 GFilesystemPreviewType
@@ -3387,51 +3387,52 @@ nautilus_file_get_icon (NautilusFile *file,
 		return icon;
 	}
 
-	modified_size = size * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD; 
+	if (flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE) {
+		modified_size = size;
+	} else {
+		modified_size = size * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD; 
+	}
 
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
 	    nautilus_file_should_show_thumbnail (file)) {
 		if (file->details->thumbnail) {
-			if (file->details->thumbnail_size == modified_size) {
-				scaled_pixbuf = g_object_ref (file->details->thumbnail);
+			int w, h, s;
+			double scale;
+
+			raw_pixbuf = g_object_ref (file->details->thumbnail);
+
+			w = gdk_pixbuf_get_width (raw_pixbuf);
+			h = gdk_pixbuf_get_height (raw_pixbuf);
+			
+			s = MAX (w, h);
+			scale = (double)modified_size / s;
+
+
+			if (scale > 0.99) {
+				/* never scale any thumbnails up */
+				scaled_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+								gdk_pixbuf_get_has_alpha (raw_pixbuf),
+								gdk_pixbuf_get_bits_per_sample (raw_pixbuf),
+								w * scale, h * scale);
+				gdk_pixbuf_fill (scaled_pixbuf, 0xffffff00);
+				gdk_pixbuf_copy_area (raw_pixbuf,
+						      0, 0, w, h,
+						      scaled_pixbuf,
+						      (gdk_pixbuf_get_width (scaled_pixbuf) - w) / 2,
+						      (gdk_pixbuf_get_height (scaled_pixbuf) - h) / 2);
 			} else {
-				int w, h, s;
-				double scale;
-				
-				if (file->details->thumbnail_size == 0) {
-					raw_pixbuf = g_object_ref (file->details->thumbnail);
-				} else {
-					raw_pixbuf = nautilus_thumbnail_unframe_image (file->details->thumbnail);
-				}
-
-				w = gdk_pixbuf_get_width (raw_pixbuf);
-				h = gdk_pixbuf_get_height (raw_pixbuf);
-				
-				s = MAX (w, h);
-				
-				scale = (double)modified_size / s;
-
-				/* These compensate for the size of the frame which will be added around the raw image */
 				scaled_pixbuf = gdk_pixbuf_scale_simple (raw_pixbuf,
-									 NAUTILUS_THUMBNAIL_FRAME_LEFT + w * scale + NAUTILUS_THUMBNAIL_FRAME_RIGHT,
-									 NAUTILUS_THUMBNAIL_FRAME_TOP + h * scale + NAUTILUS_THUMBNAIL_FRAME_BOTTOM,
+									 w * scale, h * scale,
 									 GDK_INTERP_BILINEAR);
-				nautilus_thumbnail_frame_image (&scaled_pixbuf);
-				
-				g_object_unref (raw_pixbuf);
+			}
+			nautilus_thumbnail_frame_image (&scaled_pixbuf);
+			g_object_unref (raw_pixbuf);
 
-				if (modified_size > file->details->thumbnail_size) {
-					/* Invalidate if we resize upward (and the
-					   loaded was not the original raw version, w/ size 0).
-					*/
-					if (file->details->thumbnail_size != 0 ||
-					    (modified_size > 128 && !file->details->thumbnail_tried_original)) {
-						nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL);
-					}
-					file->details->thumbnail_size = modified_size;
-					g_object_unref (file->details->thumbnail);
-					file->details->thumbnail = g_object_ref (scaled_pixbuf);
-				}
+			if (modified_size > 128 &&
+			    !file->details->thumbnail_wants_original) {
+				/* Invalidate if we resize upward */
+				file->details->thumbnail_wants_original = TRUE;
+				nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL);
 			}
 			
 			icon = nautilus_icon_info_new_for_pixbuf (scaled_pixbuf);

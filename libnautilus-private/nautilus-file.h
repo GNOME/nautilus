@@ -77,7 +77,9 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING = (1<<1),
 	NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT = (1<<2),
 	NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT = (1<<3),
-	NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER = (1<<4)
+	NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER = (1<<4),
+	/* whether the thumbnail size must match the display icon size */
+	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = (1<<5)
 } NautilusFileIconFlags;	
 
 /* Emblems sometimes displayed for NautilusFiles. Do not localize. */ 

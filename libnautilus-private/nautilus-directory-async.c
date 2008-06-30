@@ -3768,7 +3768,6 @@ thumbnail_done (NautilusDirectory *directory,
 		g_object_unref (file->details->thumbnail);
 		file->details->thumbnail = NULL;
 	}
-	file->details->thumbnail_size = 0;
 	if (pixbuf) {
 		thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
 		if (thumb_mtime_str) {
@@ -3838,6 +3837,35 @@ thumbnail_state_free (ThumbnailState *state)
 	g_free (state);
 }
 
+extern int cached_thumbnail_size;
+
+/* scale very large images down to the max. size we need */
+static void
+thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
+				int width,
+				int height,
+				gpointer user_data)
+{
+	int max_thumbnail_size;
+	double aspect_ratio;
+
+	aspect_ratio = ((double) width) / height;
+
+	/* cf. nautilus_file_get_icon() */
+	max_thumbnail_size = NAUTILUS_ICON_SIZE_LARGEST * cached_thumbnail_size / NAUTILUS_ICON_SIZE_STANDARD;
+	if (MAX (width, height) > max_thumbnail_size) {
+		if (width > height) {
+			width = max_thumbnail_size;
+			height = width / aspect_ratio;
+		} else {
+			height = max_thumbnail_size;
+			width = height * aspect_ratio;
+		}
+
+		gdk_pixbuf_loader_set_size (loader, width, height);
+	}
+}
+
 static GdkPixbuf *
 get_pixbuf_for_content (goffset file_len,
 			char *file_contents)
@@ -3849,11 +3877,14 @@ get_pixbuf_for_content (goffset file_len,
 	pixbuf = NULL;
 	
 	loader = gdk_pixbuf_loader_new ();
+	g_signal_connect (loader, "size-prepared",
+			  G_CALLBACK (thumbnail_loader_size_prepared),
+			  NULL);
 
 	/* For some reason we have to write in chunks, or gdk-pixbuf fails */
 	res = TRUE;
 	while (res && file_len > 0) {
-		chunk_len = MIN (32*1024, file_len);
+		chunk_len = file_len;
 		res = gdk_pixbuf_loader_write (loader, file_contents, chunk_len, NULL);
 		file_contents += chunk_len;
 		file_len -= chunk_len;
@@ -3959,7 +3990,7 @@ thumbnail_start (NautilusDirectory *directory,
 	state->file = file;
 	state->cancellable = g_cancellable_new ();
 
-	if (file->details->thumbnail_size > 128) {
+	if (file->details->thumbnail_wants_original) {
 		state->tried_original = TRUE;
 		state->trying_original = TRUE;
 		location = nautilus_file_get_location (file);

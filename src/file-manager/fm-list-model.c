@@ -286,7 +286,8 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
 			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
 
-			flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+			flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+				NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
 			if (model->details->drag_view != NULL) {
 				GtkTreePath *path_a, *path_b;
 				
