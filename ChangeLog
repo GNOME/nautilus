@@ -1,5 +1,14 @@
 2008-07-03  Wouter Bolsterlee  <wbolster@svn.gnome.org>
 
+	* libnautilus-private/nautilus-emblem-utils.c:
+	Include <glib/gstdio.h> to fix the build. Some cleanup
+	in header imports to improve code legibility.
+
+	* libnautilus-private/nautilus-file.c:
+	Include <glib/gstdio.h> here as well.
+
+2008-07-03  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
 	* configure.in: Don't reference
 	cut-n-paste-code/widgets/ directory since it was removed
 	in revision 14306.

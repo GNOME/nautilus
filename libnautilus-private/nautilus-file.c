@@ -56,6 +56,7 @@
 #include <grp.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <glib/gurifuncs.h>
 #include <libgnome/gnome-macros.h>
