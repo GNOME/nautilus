@@ -64,6 +64,7 @@
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>

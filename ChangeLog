@@ -1,5 +1,11 @@
 2008-07-03  Wouter Bolsterlee  <wbolster@svn.gnome.org>
 
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-file.c:
+	Include sys/stat.h to fix the build.
+
+2008-07-03  Wouter Bolsterlee  <wbolster@svn.gnome.org>
+
 	* configure.in: Don't reference
 	cut-n-paste-code/widgets/ directory since it was removed
 	in revision 14306.

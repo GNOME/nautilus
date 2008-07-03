@@ -24,6 +24,7 @@
 
 #include <config.h>
 
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <utime.h>
 #include <stdio.h>
