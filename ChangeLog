@@ -1,3 +1,17 @@
+2008-07-04  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-places-sidebar.c (add_place),
+	(clicked_eject_button), (check_unmount_and_eject),
+	(check_visibility), (rename_selected_bookmark), (do_unmount),
+	(do_unmount_selection), (unmount_shortcut_cb), (do_eject),
+	(eject_shortcut_cb), (eject_or_unmount_bookmark),
+	(eject_or_unmount_selection), (bookmarks_key_press_event_cb),
+	(bookmarks_button_press_event_cb), (nautilus_places_sidebar_init):
+	Add eject button to places sidebar. Use multiple cell renderers for
+	aligning the button with the items above the separator, but not below
+	it. Thanks to Stefano Teso, Cosimo Cecchi, Juan Dapena Paz and Ignacio
+	Casal Quinteiro. Fixes #343839.
+
 2008-07-04  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file-utilities.c:
