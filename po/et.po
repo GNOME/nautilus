@@ -20,7 +20,7 @@ msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-06-11 18:46+0000\n"
-"PO-Revision-Date: 2008-06-19 19:16+0300\n"
+"PO-Revision-Date: 2008-06-20 10:27+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -479,7 +479,7 @@ msgstr "Nimekirjavaate vaikimisi suurendus."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default compact view zoom level"
-msgstr "Kompaktse vaate vaikimisi suurendusaste"
+msgstr "Kompaktvaate vaikimisi suurendusaste"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default folder viewer"
@@ -628,7 +628,6 @@ msgstr ""
 "tühjendamist kinnitust."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
@@ -664,7 +663,6 @@ msgstr ""
 "ettevaatlikult."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
@@ -742,6 +740,8 @@ msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
 msgstr ""
+"Kui märgitud, siis on kompaktvaate kõik veerud sama laiusega. Vastasel juhul "
+"määratakse iga veeru laius eraldi."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
@@ -1064,7 +1064,7 @@ msgstr "Käsitsipaigutuse kasutamine uutes akendes"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid "Use tighter layout in new windows"
-msgstr "Kompaktse paigutuse kasutamine uutes akendes"
+msgstr "Tihepaigutuse kasutamine uutes akendes"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
 msgid "What to do with executable text files when activated"
@@ -1091,7 +1091,7 @@ msgstr ""
 "Kui ei ole määratud teisiti, siis kataloogi külastamisel kasutatakse "
 "vaatamiseks seda vaadet. Võimalikud väärtused on \"list_view"
 "\" (nimekirjavaade), \"icon_view\" (ikoonivaade) ja \"compact_view"
-"\" (kompaktne vaade)."
+"\" (kompaktvaade)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "When to show number of items in a folder"
@@ -1155,7 +1155,7 @@ msgstr "Ühtegi rakendust ei leitud"
 
 #: ../libnautilus-private/nautilus-autorun.c:351
 msgid "Ask what to do"
-msgstr "Küsimine, mida teha"
+msgstr "Küsitakse, mida teha"
 
 #: ../libnautilus-private/nautilus-autorun.c:367
 msgid "Do Nothing"
@@ -1164,13 +1164,13 @@ msgstr "Ei tehta midagi"
 #: ../libnautilus-private/nautilus-autorun.c:382
 #: ../nautilus-folder-handler.desktop.in.in.h:1
 msgid "Open Folder"
-msgstr "Kataloogi avamine"
+msgstr "Avatakse kataloog"
 
 #: ../libnautilus-private/nautilus-autorun.c:414
 #: ../src/nautilus-x-content-bar.c:122
 #, c-format
 msgid "Open %s"
-msgstr "Avamine: %s"
+msgstr "Avatakse: %s"
 
 #: ../libnautilus-private/nautilus-autorun.c:1084
 msgid "You have just inserted an Audio CD."
@@ -1217,16 +1217,14 @@ msgid "You have just inserted a Picture CD."
 msgstr "Sa sisestasid tühja pildi-CD."
 
 #: ../libnautilus-private/nautilus-autorun.c:1106
-#, fuzzy
 msgid "You have just inserted a medium with digital photos."
-msgstr "Sa sisestasid digipilte sisaldava meediumi."
+msgstr "Sa sisestasid digifotosid sisaldava meediumi."
 
 #: ../libnautilus-private/nautilus-autorun.c:1108
 msgid "You have just inserted a digital audio player."
 msgstr "Sa sisestasid digitaalse audioesitaja."
 
 #: ../libnautilus-private/nautilus-autorun.c:1110
-#, fuzzy
 msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
@@ -1236,7 +1234,6 @@ msgstr ""
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:1113
-#, fuzzy
 msgid "You have just inserted a medium."
 msgstr "Sa sisestasid meediumi."
 
@@ -2642,7 +2639,7 @@ msgstr "Ikoonivaade"
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-view.c:2948
 msgid "Compact View"
-msgstr "Kompaktne vaade"
+msgstr "Kompaktvaade"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -2966,15 +2963,15 @@ msgstr "Rakenduse lisamine"
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Tõrge avamisel, kas soovid valida mõnd teist rakendust?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:82
-#: ../libnautilus-private/nautilus-program-choosing.c:113
-#, fuzzy, c-format
-msgid ""
-"\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-"locations."
-msgstr ""
-"\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
-"asukohaga \"%s\"."
+##: ../libnautilus-private/nautilus-program-choosing.c:82
+##: ../libnautilus-private/nautilus-program-choosing.c:113
+##, fuzzy, c-format
+#msgid ""
+#"\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
+#"locations."
+#msgstr ""
+#"\"%s\" pole võimalik \"%s\" avada, sest \"%s\" pole võimalik ligi failidele "
+#"asukohaga \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:87
 msgid "Open Failed, would you like to choose another action?"
@@ -3221,7 +3218,7 @@ msgstr "Abiteabe kuvamisel tekkis viga."
 
 #: ../src/file-manager/fm-directory-view.c:1088
 msgid "Select Items Matching"
-msgstr "Vastavuses olevate kirjete avamine"
+msgstr "Kirjete valimine mustri järgi"
 
 #: ../src/file-manager/fm-directory-view.c:1106
 msgid "_Pattern:"
@@ -3616,7 +3613,7 @@ msgstr "Kõigi selles aknas olevate kirjete avamine"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6461
 msgid "Select I_tems Matching..."
-msgstr ""
+msgstr "Vali kirjed va_stavuse alusel..."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6462
@@ -3633,7 +3630,7 @@ msgstr "_Pööra valik"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6466
 msgid "Select all and only the items that are not currently selected"
-msgstr ""
+msgstr "Kõikide hetkel valimata kirjete valimine"
 
 #. name, stock id
 #. label, accelerator
@@ -3837,13 +3834,12 @@ msgstr "Selle kataloogi ettevalmistamine kopeerimiseks \"Aseta\" käsuga"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6566
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr ""
-"Eelnevalt käskudega Lõika/Kopeeri fail valitud failide valitud kataloogi "
-"ümbertõstmine või kopeerimine"
+"Eelnevalt \"Lõika\" või \"Kopeeri\" käskudega valitud failide ümbertõstmine "
+"või kopeerimine sellesse kataloogi"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6571
@@ -4206,7 +4202,7 @@ msgstr "Kompaktne _paigutus"
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1538
 msgid "Toggle using a tighter layout scheme"
-msgstr "Kompaktset paigutuse sisse- ja väljalülitamine"
+msgstr "Tihepaigutuse sisse- ja väljalülitamine"
 
 #. name, stock id
 #. label, accelerator
@@ -4291,15 +4287,15 @@ msgstr "_Kompaktne"
 
 #: ../src/file-manager/fm-icon-view.c:2951
 msgid "The compact view encountered an error."
-msgstr "Kompaktne vaade sattus veale."
+msgstr "Kompaktvaade sattus veale."
 
 #: ../src/file-manager/fm-icon-view.c:2952
 msgid "The compact view encountered an error while starting up."
-msgstr "Kompaktse vaate käivitamisel satuti veale."
+msgstr "Kompaktvaate käivitamisel satuti veale."
 
 #: ../src/file-manager/fm-icon-view.c:2953
 msgid "Display this location with the compact view."
-msgstr "Selle asukoha kuvamine kompaktse vaatena."
+msgstr "Selle asukoha kuvamine kompaktvaatena."
 
 #: ../src/file-manager/fm-list-model.c:377
 #: ../src/file-manager/fm-tree-model.c:1266
@@ -4747,13 +4743,12 @@ msgid ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"Nautilust pole praegu võimalik kasutada. Käsu \"bonobo-slay\" konsoolilt "
-"kävitamine võib selle olukorra lahendada. Kui probleem säilib, siis võib "
+"Nautilust pole praegu võimalik kasutada. Selle olukorra võib lahendada käsu "
+"\"bonobo-slay\" kävitamine konsoolilt. Kui probleem säilib, siis võib "
 "proovida arvuti alglaadimist või Nautiluse uuestipaigaldamist."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:602
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4773,13 +4768,14 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"Nautilust pole praegu võimalik kasutada. Käsu \"bonobo-slay\" konsoolilt "
-"kävitamine võib selle olukorra lahendada. Kui probleem säilib, siis võib "
+"Nautilust pole praegu võimalik kasutada. Selle olukorra võib lahendada käsu "
+"\"bonobo-slay\" kävitamine konsoolilt. Kui probleem säilib, siis võib "
 "proovida arvuti alglaadimist või Nautiluse uuestipaigaldamist.\n"
-"Bonobo ei suuda leida faili Nautilus_shell.server. Üks põhjus võib olla see, "
-"et LD_LIBRARY_PATH ei sisalda bonobo-activation teegi kataloogi. Teine "
-"põhjus võib olla see, et fail Nautilus_shell.server puudub vigase paigalduse "
-"tõttu.\n"
+"\n"
+"Bonobo'l pole võimalik leida faili Nautilus_shell.server. Üks põhjus võib "
+"olla see, et LD_LIBRARY_PATH ei sisalda bonobo-activation teegi kataloogi. "
+"Teine põhjus võib olla see, et fail Nautilus_Shell.server puudub vigase "
+"paigalduse tõttu.\n"
 "\n"
 "Käsk \"bonobo-slay\" kõrvaldab kõik Bonobo Aktiveerimise ja GConf'i "
 "protsessid, need aga võivad olla teistele rakendustele vajalikud.\n"
@@ -4805,35 +4801,33 @@ msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr "Ootamatu vea tõttu pole võimalik Nautilust praegu kasutada."
 
 #: ../src/nautilus-application.c:633
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
-"Nautilust pole võimalik praegu kasutada kuna failihalduri vaaturserveri "
+"Nautilust pole võimalik praegu kasutada, kuna failihalduri vaatamisserveri "
 "Bonobo'sse registreerimisel tekkis ootamatu viga."
 
 #: ../src/nautilus-application.c:651
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 "Nautilust pole hetkel võimalik Bonobo ootamatu vea tõttu kasutada. Viga "
-"tekkis factory asukoha tuvastamise katsel. Bonobo-activation-server'i "
-"kõrvaldamine ja Nautiluse taaskäivitamine võib aidata vea kõrvaldamisel."
+"tekkis factory asukoha tuvastamise katsel. Probleemi võib aidata lahendada "
+"Bonobo-activation-server'i kõrvaldamine ja Nautiluse taaskäivitamine."
 
 #: ../src/nautilus-application.c:658
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 "Nautilust pole hetkel võimalik Bonobo ootamatu vea tõttu kasutada. Viga "
-"tekkis kestobjekti asukoha määramise katsel. Bonobo-activation-server'i "
-"kõrvaldamine ja Nautiluse taaskäivitamine võib aidata vea kõrvaldamisel."
+"tekkis kestobjekti asukoha määramise katsel. Probleemi võib aidata "
+"lahendada Bonobo-activation-server'i kõrvaldamine ja Nautiluse "
+"taaskäivitamine."
 
 #: ../src/nautilus-application.c:1358 ../src/nautilus-places-sidebar.c:1460
 #: ../src/nautilus-places-sidebar.c:1483 ../src/nautilus-places-sidebar.c:1506
@@ -5038,7 +5032,7 @@ msgstr "Embleemi nimega '%s' pole võimalik ümber nimetada."
 
 #: ../src/nautilus-emblem-sidebar.c:280
 msgid "Rename Emblem"
-msgstr "Nimeta embleem ümber"
+msgstr "Muuda embleemi nime"
 
 #: ../src/nautilus-emblem-sidebar.c:299
 msgid "Enter a new name for the displayed emblem:"
@@ -5046,7 +5040,7 @@ msgstr "Sisesta embleemi uus nimi:"
 
 #: ../src/nautilus-emblem-sidebar.c:353
 msgid "Rename"
-msgstr "Nimeta ümber"
+msgstr "Muuda nime"
 
 #: ../src/nautilus-emblem-sidebar.c:528
 msgid "Add Emblems..."
@@ -5142,7 +5136,7 @@ msgstr "<b>Käitumine</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:18
 msgid "<b>Compact View Defaults</b>"
-msgstr "<b>Kompaktse vaate vaikeväärtused</b>"
+msgstr "<b>Kompaktvaate vaikeväärtused</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:19
 msgid "<b>Date</b>"
@@ -5210,7 +5204,7 @@ msgstr "Kõigile _veergudele sama laius"
 
 #: ../src/nautilus-file-management-properties.glade.h:35
 msgid "Acti_on:"
-msgstr "_Tegevus:"
+msgstr "T_egevus:"
 
 #: ../src/nautilus-file-management-properties.glade.h:36
 msgid ""
@@ -5219,7 +5213,7 @@ msgid ""
 "Never"
 msgstr ""
 "Alati\n"
-"Ainult kohalikel failidel\n"
+"Ainult kohalikele failidele\n"
 "Mitte kunagi"
 
 #: ../src/nautilus-file-management-properties.glade.h:39
@@ -5281,7 +5275,7 @@ msgstr "_Kirjete arvu loendatakse:"
 
 #: ../src/nautilus-file-management-properties.glade.h:53
 msgid "D_efault zoom level:"
-msgstr "Vaikimisi _suurendus:"
+msgstr "Vaikimisi suuren_dus:"
 
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Default _zoom level:"
@@ -5306,7 +5300,7 @@ msgid ""
 "List View"
 msgstr ""
 "Ikoonivaadet\n"
-"Kompaktset vaadet\n"
+"Kompaktvaadet\n"
 "Loendivaadet"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
@@ -5339,7 +5333,7 @@ msgstr "_Pisipilte näidatakse:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
 msgid "Show hidden and _backup files"
-msgstr "Peidetud- ja _varukoopiafailid on nähtaval"
+msgstr "Peidetud- ja varuk_oopiafailid on nähtaval"
 
 #: ../src/nautilus-file-management-properties.glade.h:69
 msgid "Show te_xt in icons:"
@@ -5384,7 +5378,7 @@ msgstr "_Muusikaesitaja:"
 #: ../src/nautilus-file-management-properties.glade.h:80
 msgid "_Never prompt or start programs on media insertion"
 msgstr ""
-"Mee_dia sisestamisel ei kävitata programme ega küsita programmide "
+"Meediumi sisestamisel ei kävitata _programme ega küsita programmide "
 "käivitamise kinnitust"
 
 #: ../src/nautilus-file-management-properties.glade.h:81
@@ -5541,9 +5535,8 @@ msgid "Use _Default Background"
 msgstr "Kasuta _vaikimisi tausta"
 
 #: ../src/nautilus-information-panel.c:494
-#, fuzzy
 msgid "You cannot assign more than one custom icon at a time."
-msgstr "Rohkem kui üht kohandatud ikooni korraga pole võimalik lisada"
+msgstr "Korraga pole võimalik rohkem kui üht kohandatud ikooni lisada."
 
 #: ../src/nautilus-information-panel.c:524
 msgid "You can only use images as custom icons."
@@ -5765,9 +5758,8 @@ msgstr "Siia menüüsse praeguse asukoha jaoks järjehoida lisamine"
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:493
 #: ../src/nautilus-spatial-window.c:890
-#, fuzzy
 msgid "_Edit Bookmarks..."
-msgstr "_Redigeeri järjehoidjaid"
+msgstr "_Redigeeri järjehoidjaid..."
 
 #: ../src/nautilus-navigation-window-menus.c:494
 #: ../src/nautilus-spatial-window.c:891
@@ -5896,7 +5888,7 @@ msgstr "Eemalda"
 
 #: ../src/nautilus-places-sidebar.c:1676
 msgid "Rename..."
-msgstr "Nimeta ümber..."
+msgstr "Muuda nime..."
 
 #: ../src/nautilus-places-sidebar.c:1688
 msgid "_Mount"
@@ -6002,9 +5994,8 @@ msgid "Please try again."
 msgstr "Palun proovi uuesti."
 
 #: ../src/nautilus-property-browser.c:1169
-#, fuzzy
 msgid "Sorry, but you cannot replace the reset image."
-msgstr "Vabandust, kuid lähtestamissümbolit pole võimalik asendada."
+msgstr "Vabandust, kuid lähtestamispilti pole võimalik asendada."
 
 #: ../src/nautilus-property-browser.c:1170
 msgid "Reset is a special image that cannot be deleted."
