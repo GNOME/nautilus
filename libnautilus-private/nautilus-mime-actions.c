@@ -30,8 +30,8 @@
 #include <eel/eel-string.h>
 #include <eel/eel-mount-operation.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
@@ -1081,7 +1081,7 @@ activate_files (ActivateParameters *parameters)
 	if (parameters->activation_directory &&
 	    (launch_files != NULL || launch_in_terminal_files != NULL)) {
 		old_working_dir = g_get_current_dir ();
-		chdir (parameters->activation_directory);
+		g_chdir (parameters->activation_directory);
 		
 	}
 
@@ -1127,7 +1127,7 @@ activate_files (ActivateParameters *parameters)
 	}
 
 	if (old_working_dir != NULL) {
-		chdir (old_working_dir);
+		g_chdir (old_working_dir);
 		g_free (old_working_dir);
 	}
 

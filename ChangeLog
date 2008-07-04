@@ -1,3 +1,17 @@
+2008-07-04  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_user_directory), (nautilus_get_desktop_directory),
+	(nautilus_create_templates_directory),
+	(nautilus_get_searches_directory):
+	* libnautilus-private/nautilus-metafile.c:
+	(construct_private_metafile_uri):
+	* libnautilus-private/nautilus-mime-actions.c: (activate_files):
+	* src/file-manager/fm-directory-view.c: (change_to_view_directory),
+	(run_script_callback):
+	Use g_mkdir() and g_chdir() instead of mkdir() and chdir() to fix
+	some warnings under GCC 4.3.1.
+
 2008-07-03  Wouter Bolsterlee  <wbolster@svn.gnome.org>
 
 	* libnautilus-private/nautilus-emblem-utils.c:

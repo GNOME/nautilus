@@ -52,6 +52,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-private/nautilus-recent.h>
@@ -83,7 +84,6 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-autorun.h>
 #include <libnautilus-private/nautilus-icon-names.h>
-#include <unistd.h>
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -4697,7 +4697,7 @@ change_to_view_directory (FMDirectoryView *view)
 
 	/* FIXME: What to do about non-local directories? */
 	if (path != NULL) {
-		chdir (path);
+		g_chdir (path);
 	}
 
 	g_free (path);
@@ -4905,7 +4905,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 
 	nautilus_file_list_free (selected_files);
 	unset_script_environment_variables ();
-	chdir (old_working_dir);		
+	g_chdir (old_working_dir);		
 	g_free (old_working_dir);
 	g_free (quoted_path);
 }

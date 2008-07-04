@@ -36,8 +36,9 @@
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>
 #include <libgnome/gnome-util.h>
+#include <glib.h>
 #include <glib/gi18n.h>
-#include <glib/gstrfuncs.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -98,7 +99,7 @@ nautilus_get_user_directory (void)
 					   NULL);
 	
 	if (!g_file_test (user_directory, G_FILE_TEST_EXISTS)) {
-		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+		g_mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		/* FIXME bugzilla.gnome.org 41286: 
 		 * How should we handle the case where this mkdir fails? 
 		 * Note that nautilus_application_startup will refuse to launch if this 
@@ -430,7 +431,7 @@ nautilus_get_desktop_directory (void)
 	/* Don't try to create a home directory */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
-			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
+			g_mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
 			 * How should we handle the case where this mkdir fails? 
 			 * Note that nautilus_application_startup will refuse to launch if this 
@@ -523,7 +524,7 @@ nautilus_create_templates_directory (void)
 
 	dir = nautilus_get_templates_directory ();
 	if (!g_file_test (dir, G_FILE_TEST_EXISTS)) {
-		mkdir (dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+		g_mkdir (dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 	}
 	g_free (dir);
 }
@@ -550,7 +551,7 @@ nautilus_get_searches_directory (void)
 	g_free (user_dir);
 	
 	if (!g_file_test (searches_dir, G_FILE_TEST_EXISTS))
-		mkdir (searches_dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+		g_mkdir (searches_dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 
 	return searches_dir;
 }

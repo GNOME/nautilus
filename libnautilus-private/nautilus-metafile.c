@@ -36,7 +36,8 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <glib/gurifuncs.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -224,7 +225,7 @@ construct_private_metafile_uri (const char *uri)
 	user_directory = nautilus_get_user_directory ();
 	metafiles_directory = g_build_filename (user_directory, METAFILES_DIRECTORY_NAME, NULL);
 	g_free (user_directory);
-	mkdir (metafiles_directory, 0700);
+	g_mkdir (metafiles_directory, 0700);
 
 	/* Construct a file name from the URI. */
 	escaped_uri = escape_slashes (uri);
