@@ -436,15 +436,80 @@ path_bar_location_changed_callback (GtkWidget *widget,
 }
 
 static void
+unset_focus_widget (NautilusNavigationWindow *window)
+{
+	if (window->details->last_focus_widget != NULL) {
+		g_object_remove_weak_pointer (G_OBJECT (window->details->last_focus_widget),
+					      (gpointer *) &window->details->last_focus_widget);
+		window->details->last_focus_widget = NULL;
+	}
+}
+
+static inline gboolean
+is_in_temporary_navigation_bar (GtkWidget *widget,
+				NautilusNavigationWindow *window)
+{
+	return gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_NAVIGATION_BAR) != NULL &&
+	       window->details->temporary_navigation_bar;
+}
+
+static inline gboolean
+is_in_temporary_search_bar (GtkWidget *widget,
+			    NautilusNavigationWindow *window)
+{
+	return gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_SEARCH_BAR) != NULL &&
+	       window->details->temporary_search_bar;
+}
+
+
+static void
+remember_focus_widget (NautilusNavigationWindow *window)
+{
+	NautilusNavigationWindow *navigation_window;
+	GtkWidget *focus_widget;
+
+	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
+
+	focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
+	if (focus_widget != NULL &&
+	    !is_in_temporary_navigation_bar (focus_widget, navigation_window) &&
+	    !is_in_temporary_search_bar (focus_widget, navigation_window)) {
+		unset_focus_widget (navigation_window);
+
+		navigation_window->details->last_focus_widget = focus_widget;
+		g_object_add_weak_pointer (G_OBJECT (focus_widget),
+					   (gpointer *) &(NAUTILUS_NAVIGATION_WINDOW (window)->details->last_focus_widget));
+	}
+}
+
+static void
+restore_focus_widget (NautilusNavigationWindow *window)
+{
+	if (window->details->last_focus_widget != NULL) {
+		if (NAUTILUS_IS_VIEW (window->details->last_focus_widget)) {
+			nautilus_view_grab_focus (NAUTILUS_VIEW (window->details->last_focus_widget));
+		} else {
+			gtk_widget_grab_focus (window->details->last_focus_widget);
+		}
+
+		unset_focus_widget (window);
+	}
+}
+
+static gboolean
 hide_temporary_bars (NautilusNavigationWindow *window)
 {
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+	gboolean success;
+
+	success = FALSE;
 
 	if (window->details->temporary_location_bar) {
 		if (nautilus_navigation_window_location_bar_showing (window)) {
 			nautilus_navigation_window_hide_location_bar (window, FALSE);
 		}
 		window->details->temporary_location_bar = FALSE;
+		success = TRUE;
 	}
 	if (window->details->temporary_navigation_bar) {
 		if (NAUTILUS_WINDOW (window)->details->search_mode) {
@@ -455,6 +520,7 @@ hide_temporary_bars (NautilusNavigationWindow *window)
 			}
 		}
 		window->details->temporary_navigation_bar = FALSE;
+		success = TRUE;
 	}
 	if (window->details->temporary_search_bar) {
 		if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY)) {
@@ -463,6 +529,18 @@ hide_temporary_bars (NautilusNavigationWindow *window)
 			nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_NAVIGATION);
 		}
 		window->details->temporary_search_bar = FALSE;
+		success = TRUE;
+	}
+
+	return success;
+}
+
+static void
+navigation_bar_cancel_callback (GtkWidget *widget,
+				NautilusNavigationWindow *window)
+{
+	if (hide_temporary_bars (window)) {
+		restore_focus_widget (window);
 	}
 }
 
@@ -473,17 +551,13 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 {
 	GFile *location;
 	
-	hide_temporary_bars (window);
+	if (hide_temporary_bars (window)) {
+		restore_focus_widget (window);
+	}
+
 	location = g_file_new_for_uri (uri);
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
 	g_object_unref (location);
-}
-
-static void
-navigation_bar_cancel_callback (GtkWidget *widget,
-				NautilusNavigationWindow *window)
-{
-	hide_temporary_bars (window);
 }
 
 static void
@@ -693,6 +767,8 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	NautilusNavigationWindow *window;
 	
 	window = NAUTILUS_NAVIGATION_WINDOW (object);
+
+	unset_focus_widget (window);
 
 	window->sidebar = NULL;
 	g_list_foreach (window->sidebar_panels, (GFunc)g_object_unref, NULL);
@@ -1115,6 +1191,8 @@ nautilus_navigation_window_show_navigation_bar_temporarily (NautilusNavigationWi
 static void
 real_prompt_for_location (NautilusWindow *window, const char *initial)
 {
+	remember_focus_widget (NAUTILUS_NAVIGATION_WINDOW (window));
+
 	nautilus_navigation_window_show_location_bar_temporarily (NAUTILUS_NAVIGATION_WINDOW (window));
 	nautilus_navigation_window_show_navigation_bar_temporarily (NAUTILUS_NAVIGATION_WINDOW (window));
 	
@@ -1165,13 +1243,17 @@ static void
 search_bar_cancel_callback (GtkWidget *widget,
 			    NautilusNavigationWindow *window)
 {
-	hide_temporary_bars (window);
+	if (hide_temporary_bars (window)) {
+		restore_focus_widget (window);
+	}
 }
 
 void 
 nautilus_navigation_window_show_search (NautilusNavigationWindow *window)
 {
 	if (!nautilus_navigation_window_search_bar_showing (window)) {
+		remember_focus_widget (window);
+
 		nautilus_navigation_window_show_location_bar_temporarily (window);
 		nautilus_navigation_window_set_bar_mode (window, NAUTILUS_BAR_SEARCH);
 		window->details->temporary_search_bar = TRUE;
@@ -1214,6 +1296,7 @@ real_set_search_mode (NautilusWindow *window, gboolean search_mode,
 	if (!search_mode) {
 		nav_window->details->temporary_search_bar = TRUE;
 		hide_temporary_bars (nav_window);
+		unset_focus_widget (nav_window);
 		return;
 	}
 

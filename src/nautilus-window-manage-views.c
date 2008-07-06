@@ -1248,6 +1248,7 @@ location_has_really_changed (NautilusWindow *window)
 			disconnect_view (window, window->content_view);
 			nautilus_window_set_content_view_widget (window, window->new_content_view);
 		}
+		nautilus_view_grab_focus (window->new_content_view);
 		g_object_unref (window->new_content_view);
 		window->new_content_view = NULL;
 	}

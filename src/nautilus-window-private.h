@@ -122,6 +122,9 @@ struct _NautilusNavigationWindowDetails {
         gboolean temporary_search_bar;
 
         GtkWidget *location_button;
+	/* focus widget before the location bar
+	 * has been shown temporarily */
+	GtkWidget *last_focus_widget;
 
         /* Side Pane */
         int side_pane_width;

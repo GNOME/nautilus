@@ -1,3 +1,21 @@
+2008-07-06  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-navigation-window.c (unset_focus_widget),
+	(is_in_temporary_navigation_bar), (is_in_temporary_search_bar),
+	(remember_focus_widget), (restore_focus_widget),
+	(hide_temporary_bars), (navigation_bar_cancel_callback),
+	(navigation_bar_location_changed_callback),
+	(nautilus_navigation_window_destroy), (real_prompt_for_location),
+	(search_bar_cancel_callback),
+	(nautilus_navigation_window_show_search), (real_set_search_mode):
+	* src/nautilus-window-manage-views.c (location_has_really_changed):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c (nautilus_window_set_content_view_widget):
+	Always grab view focus on location change, even if it the old view is
+	re-used. Remember last focus widget when temporarily showing a bar,
+	and re-focus it when hiding it. Fixes #500946. Thanks to Nelson
+	Benítez León.
+
 2008-07-04  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-places-sidebar.c (add_place),
