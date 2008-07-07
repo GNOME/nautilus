@@ -1,3 +1,10 @@
+2008-07-07  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-ui-utilities.c
+	(nautilus_toolbar_action_from_menu_item):
+	Use GTK_ICON_SIZE_LARGE_TOOLBAR instead of hard coding the icon size
+	to 48. Fixes #541527. Thanks to Gilles Dartiguelongue.
+
 2008-07-06  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-navigation-window.c (unset_focus_widget),

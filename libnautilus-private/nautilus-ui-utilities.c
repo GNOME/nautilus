@@ -187,6 +187,7 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 	GtkAction *action;
 	GdkPixbuf *pixbuf;
 	NautilusIconInfo *info;
+	int icon_size;
 	
 	g_object_get (G_OBJECT (item), 
 		      "name", &name, "label", &label, 
@@ -201,9 +202,10 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 				 icon_name);
 	
 	if (icon_name != NULL) {
-		info = nautilus_icon_info_lookup_from_name (icon_name, 24);
+		icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_LARGE_TOOLBAR);
+		info = nautilus_icon_info_lookup_from_name (icon_name, icon_size);
 
-		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, 24);
+		pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, icon_size);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
 						pixbuf,
