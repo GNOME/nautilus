@@ -153,10 +153,12 @@ void
 nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 {
 	NautilusBookmark *bookmark;
+	NautilusWindowSlot *slot;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	bookmark = window->current_location_bookmark;
+	slot = window->details->active_slot;
+	bookmark = slot->current_location_bookmark;
 
 	if (!nautilus_bookmark_list_contains (nautilus_get_bookmark_list (), bookmark)) {
 		nautilus_bookmark_list_append (nautilus_get_bookmark_list (), bookmark); 

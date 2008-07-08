@@ -237,14 +237,6 @@ realize (GtkWidget *widget)
 			  G_CALLBACK (nautilus_desktop_window_screen_size_changed), window);
 }
 
-static void
-real_add_current_location_to_history_list (NautilusWindow *window)
-{
-	/* Do nothing. The desktop window's location should not
-	 * show up in the history list.
-	 */
-}
-
 static char *
 real_get_title (NautilusWindow *window)
 {
@@ -252,7 +244,8 @@ real_get_title (NautilusWindow *window)
 }
 
 static NautilusIconInfo *
-real_get_icon (NautilusWindow *window)
+real_get_icon (NautilusWindow *window,
+	       NautilusWindowSlot *slot)
 {
 	return nautilus_icon_info_lookup_from_name (NAUTILUS_ICON_DESKTOP, 48);
 }
@@ -269,8 +262,6 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_DESKTOP;
 
-	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
-		= real_add_current_location_to_history_list;
 	NAUTILUS_WINDOW_CLASS (class)->get_title 
 		= real_get_title;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon

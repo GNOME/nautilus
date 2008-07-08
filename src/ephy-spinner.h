@@ -61,6 +61,8 @@ void		ephy_spinner_start	(EphySpinner *throbber);
 
 void		ephy_spinner_stop	(EphySpinner *throbber);
 
+gboolean        ephy_spinner_get_spinning (EphySpinner *spinner);
+
 void		ephy_spinner_set_size	(EphySpinner *spinner,
 					 GtkIconSize size);
 

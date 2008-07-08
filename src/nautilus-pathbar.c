@@ -1478,6 +1478,10 @@ get_display_name_for_folder (GFile *location)
 	if (name == NULL) {
 		name = g_file_get_basename (location);
 	}
+		if (!strcmp (name, "chris")) {
+			g_free (name);
+			name = g_strdup ("cneumair");
+		}
 	return name;
 }
 

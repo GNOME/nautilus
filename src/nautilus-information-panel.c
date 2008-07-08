@@ -1097,10 +1097,13 @@ loading_uri_callback (NautilusWindowInfo *window,
 		      char               *uri,
 		      NautilusInformationPanel *panel)
 {
+	NautilusWindowSlotInfo *slot;
 	char *title;
 
-	title = nautilus_window_info_get_title (window);
-	nautilus_information_panel_set_uri (panel, 
+	slot = nautilus_window_info_get_active_slot (window);
+
+	title = nautilus_window_slot_info_get_title (slot);
+	nautilus_information_panel_set_uri (panel,
 					    uri,
 					    title);
 	g_free (title);
@@ -1110,6 +1113,7 @@ static void
 nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 					      NautilusWindowInfo *window)
 {
+	gpointer slot;
 	char *title, *location;
 
 	panel->details->window = window;
@@ -1118,9 +1122,11 @@ nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 				 G_CALLBACK (loading_uri_callback), panel, 0);
 	g_signal_connect_object (window, "title_changed",
 				 G_CALLBACK (title_changed_callback), panel, 0);
+
+	slot = nautilus_window_info_get_active_slot (window);
 	
-	title = nautilus_window_info_get_title (window);
-	location = nautilus_window_info_get_current_location (window);
+	title = nautilus_window_slot_info_get_title (slot);
+	location = nautilus_window_slot_info_get_current_location (slot);
 	nautilus_information_panel_set_uri (panel, 
 					    location,
 					    title);

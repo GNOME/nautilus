@@ -37,6 +37,8 @@
 #include "nautilus-main.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-bookmarks.h"
+#include "nautilus-window-slot.h"
+#include "nautilus-navigation-window-slot.h"
 #include "nautilus-zoom-control.h"
 #include "nautilus-search-bar.h"
 #include <eel/eel-debug.h>
@@ -105,7 +107,7 @@ typedef struct  {
 	char *id;
 } ActivateViewData;
 
-static void cancel_view_as_callback         (NautilusWindow          *window);
+static void cancel_view_as_callback         (NautilusWindowSlot      *slot);
 static void nautilus_window_info_iface_init (NautilusWindowInfoIface *iface);
 static void action_view_as_callback         (GtkAction               *action,
 					     ActivateViewData        *data);
@@ -188,8 +190,6 @@ nautilus_window_init (NautilusWindow *window)
 
 	/* Keep the main event loop alive as long as the window exists */
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
-
-	nautilus_window_allow_stop (window, FALSE);
 }
 
 /* Unconditionally synchronize the GtkUIManager of WINDOW. */
@@ -201,8 +201,9 @@ nautilus_window_ui_update (NautilusWindow *window)
 	gtk_ui_manager_ensure_update (window->details->ui_manager);
 }
 
-void
-nautilus_window_set_status (NautilusWindow *window, const char *text)
+static void
+nautilus_window_push_status (NautilusWindow *window,
+			     const char *text)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -215,50 +216,73 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 }
 
 void
+nautilus_window_sync_status (NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+
+	slot = window->details->active_slot;
+	nautilus_window_push_status (window, slot->status_text);
+}
+
+void
 nautilus_window_go_to (NautilusWindow *window, GFile *location)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_open_location (window, location, FALSE);
+	nautilus_window_slot_go_to (window->details->active_slot, location, FALSE);
 }
-
 
 void
 nautilus_window_go_to_with_selection (NautilusWindow *window, GFile *location, GList *new_selection)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	nautilus_window_open_location_with_selection (window, location, new_selection, FALSE);
+	nautilus_window_slot_go_to_with_selection (window->details->active_slot, location, new_selection);
 }
 
 static gboolean
 nautilus_window_go_up_signal (NautilusWindow *window, gboolean close_behind)
 {
-	nautilus_window_go_up (window, close_behind);
+	nautilus_window_go_up (window, close_behind, FALSE);
 	return TRUE;
 }
 
 void
-nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
+nautilus_window_go_up (NautilusWindow *window, gboolean close_behind, gboolean new_tab)
 {
+	NautilusWindowSlot *slot;
 	GFile *parent;
 	GList *selection;
+	NautilusWindowOpenFlags flags;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	if (window->details->location == NULL) {
+	slot = window->details->active_slot;
+
+	if (slot->location == NULL) {
 		return;
 	}
 	
-	parent = g_file_get_parent (window->details->location);
+	parent = g_file_get_parent (slot->location);
 
 	if (parent == NULL) {
 		return;
 	}
 	
-	selection = g_list_prepend (NULL, g_object_ref (window->details->location));
+	selection = g_list_prepend (NULL, g_object_ref (slot->location));
 	
-	nautilus_window_open_location_with_selection (window, parent, selection, close_behind);
+	flags = 0;
+	if (close_behind) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
+	}
+	if (new_tab) {
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+	}
+
+	nautilus_window_slot_open_location_full (slot, parent, 
+						 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+						 flags,
+						 selection);
 	
 	g_object_unref (parent);
 	
@@ -293,9 +317,12 @@ nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 static void
 update_cursor (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	GdkCursor *cursor;
 
-	if (window->details->allow_stop) {
+	slot = window->details->active_slot;
+
+	if (slot->allow_stop) {
 		cursor = gdk_cursor_new (GDK_WATCH);
 		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
 		gdk_cursor_unref (cursor);
@@ -305,26 +332,31 @@ update_cursor (NautilusWindow *window)
 }
 
 void
-nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
+nautilus_window_sync_allow_stop (NautilusWindow *window,
+				 NautilusWindowSlot *slot)
 {
 	GtkAction *action;
-	
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	gboolean allow_stop;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	action = gtk_action_group_get_action (window->details->main_action_group,
 					      NAUTILUS_ACTION_STOP);
-	gtk_action_set_sensitive (action, allow);
+	allow_stop = gtk_action_get_sensitive (action);
 
-	if (window->details->allow_stop != allow) {
-		window->details->allow_stop = allow;
+	if (slot != window->details->active_slot ||
+	    allow_stop != slot->allow_stop) {
+		if (slot == window->details->active_slot) {
+			gtk_action_set_sensitive (action, slot->allow_stop);
+		}
 
 		if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
 			update_cursor (window);
 		}
+
+		EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+				 sync_allow_stop, (window, slot));
 	}
-	
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 set_throbber_active, (window, allow));
 }
 
 void
@@ -342,13 +374,9 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 void
 nautilus_window_go_home (NautilusWindow *window)
 {
-	GFile *home;
-
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	home = g_file_new_for_path (g_get_home_dir ());
-	nautilus_window_open_location (window, home, FALSE);
-	g_object_unref (home);
+	nautilus_window_slot_go_home (window->details->active_slot, FALSE);
 }
 
 void
@@ -361,49 +389,40 @@ nautilus_window_prompt_for_location (NautilusWindow *window,
                          prompt_for_location, (window, initial));
 }
 
-char *
+static char *
 nautilus_window_get_location_uri (NautilusWindow *window)
 {
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+	NautilusWindowSlot *slot;
 
-	if (window->details->location) {
-		return g_file_get_uri (window->details->location);
-	}
-	return NULL;
-}
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-GFile *
-nautilus_window_get_location (NautilusWindow *window)
-{
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+	slot = window->details->active_slot;
 
-	if (window->details->location != NULL) {
-		return g_object_ref (window->details->location);
+	if (slot->location) {
+		return g_file_get_uri (slot->location);
 	}
 	return NULL;
 }
 
 void
-nautilus_window_set_search_mode (NautilusWindow *window,
-				 gboolean search_mode,
-				 NautilusSearchDirectory *search_directory)
+nautilus_window_sync_search_widgets (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	window->details->search_mode = search_mode;
-
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 set_search_mode, (window, search_mode, search_directory));
+			 sync_search_widgets, (window));
 }
-
 
 void
 nautilus_window_zoom_in (NautilusWindow *window)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	NautilusWindowSlot *slot;
 
-	if (window->content_view != NULL) {
-		nautilus_view_bump_zoom_level (window->content_view, 1);
+	g_assert (window != NULL);
+
+	slot = window->details->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_bump_zoom_level (slot->content_view, 1);
 	}
 }
 
@@ -411,28 +430,39 @@ void
 nautilus_window_zoom_to_level (NautilusWindow *window,
 			       NautilusZoomLevel level)
 {
-	if (window->content_view != NULL) {
-		nautilus_view_zoom_to_level (window->content_view, level);
+	NautilusWindowSlot *slot;
+
+	g_assert (window != NULL);
+
+	slot = window->details->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_zoom_to_level (slot->content_view, level);
 	}
 }
 
 void
 nautilus_window_zoom_out (NautilusWindow *window)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	NautilusWindowSlot *slot;
 
-	if (window->content_view != NULL) {
-		nautilus_view_bump_zoom_level (window->content_view, -1);
+	g_assert (window != NULL);
+
+	slot = window->details->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_bump_zoom_level (slot->content_view, -1);
 	}
 }
 
 void
 nautilus_window_zoom_to_default (NautilusWindow *window)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	NautilusWindowSlot *slot;
 
-	if (window->content_view != NULL) {
-		nautilus_view_restore_default_zoom_level (window->content_view);
+	g_assert (window != NULL);
+
+	slot = window->details->active_slot;
+	if (slot->content_view != NULL) {
+		nautilus_view_restore_default_zoom_level (slot->content_view);
 	}
 }
 
@@ -564,25 +594,22 @@ static void
 nautilus_window_destroy (GtkObject *object)
 {
 	NautilusWindow *window;
-	GtkWidget *widget;
+	NautilusWindowSlot *slot;
+	GList *l, *slots;
 
 	window = NAUTILUS_WINDOW (object);
 
-	cancel_view_as_callback (window);
-	
+	nautilus_window_set_active_slot (window, NULL);
+
+	/* close all slots */
+	slots = g_list_copy (window->details->slots);
+	for (l = slots; l != NULL; l = l->next) {
+		slot = NAUTILUS_WINDOW_SLOT (l->data);
+		nautilus_window_close_slot (window, slot);
+	}
+	g_list_free (slots);
+
 	nautilus_window_manage_views_destroy (window);
-
-	if (window->content_view) {
-		g_object_unref (window->content_view);
-		window->content_view = NULL;
-	}
-
-	if (window->new_content_view) {
-		widget = nautilus_view_get_widget (window->new_content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (window->new_content_view);
-		window->new_content_view = NULL;
-	}
 
 	GTK_OBJECT_CLASS (nautilus_window_parent_class)->destroy (object);
 }
@@ -591,43 +618,17 @@ static void
 nautilus_window_finalize (GObject *object)
 {
 	NautilusWindow *window;
-	
+
 	window = NAUTILUS_WINDOW (object);
 
 	nautilus_window_remove_bookmarks_menu_callback (window);
-	
-	nautilus_window_manage_views_finalize (window);
-
-	nautilus_window_set_viewed_file (window, NULL);
-
-	nautilus_file_unref (window->details->viewed_file);
 
 	free_stored_viewers (window);
 
-	if (window->details->location) {
-		g_object_ref (window->details->location);
-	}
-	eel_g_list_free_deep (window->details->pending_selection);
-
-	if (window->current_location_bookmark != NULL) {
-		g_object_unref (window->current_location_bookmark);
-	}
-	if (window->last_location_bookmark != NULL) {
-		g_object_unref (window->last_location_bookmark);
-	}
+	/* nautilus_window_close() should have run */
+	g_assert (window->details->slots == NULL);
 
 	g_object_unref (window->details->ui_manager);
-
-	if (window->details->location_change_at_idle_id != 0) {
-		g_source_remove (window->details->location_change_at_idle_id);
-	}
-
-	g_free (window->details->title);
-
-	if (window->details->find_mount_cancellable != NULL) {
-		g_cancellable_cancel (window->details->find_mount_cancellable);
-		window->details->find_mount_cancellable = NULL;
-	}
 
 	G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
@@ -639,12 +640,16 @@ nautilus_window_constructor (GType type,
 {
 	GObject *object;
 	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 
 	object = (* G_OBJECT_CLASS (nautilus_window_parent_class)->constructor) (type,
 										 n_construct_properties,
 										 construct_params);
 
 	window = NAUTILUS_WINDOW (object);
+
+	slot = nautilus_window_open_slot (window, 0);
+	nautilus_window_set_active_slot (window, slot);
 
 	nautilus_window_initialize_menus_constructed (window);
 
@@ -654,19 +659,28 @@ nautilus_window_constructor (GType type,
 void
 nautilus_window_show_window (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
+	GList *l;
+
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
 			 show_window, (window));
 
-	nautilus_window_update_title (window);
-	nautilus_window_update_icon (window);
+	for (l = window->details->slots; l != NULL; l = l->next) {
+		slot = l->data;
+
+		nautilus_window_slot_update_title (slot);
+		nautilus_window_slot_update_icon (slot);
+	}
 
 	gtk_widget_show (GTK_WIDGET (window));
 
-	if (window->details->viewed_file) {
+	slot = window->details->active_slot;
+
+	if (slot->viewed_file) {
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_file_set_has_open_window (window->details->viewed_file, TRUE);
+			nautilus_file_set_has_open_window (slot->viewed_file, TRUE);
 		}
 	}
 }
@@ -680,6 +694,153 @@ nautilus_window_close (NautilusWindow *window)
 			 close, (window));
 	
 	gtk_widget_destroy (GTK_WIDGET (window));
+}
+
+NautilusWindowSlot *
+nautilus_window_open_slot (NautilusWindow *window,
+			   NautilusWindowOpenSlotFlags flags)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	slot = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
+						  open_slot, (window, flags));
+
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+	g_assert (window == slot->window);
+
+	window->details->slots = g_list_append (window->details->slots, slot);
+
+	return slot;
+}
+
+static void
+real_close_slot (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
+{
+	nautilus_window_manage_views_close_slot (window, slot);
+	cancel_view_as_callback (slot);
+	g_object_unref (slot);
+}
+
+void
+nautilus_window_close_slot (NautilusWindow *window,
+			    NautilusWindowSlot *slot)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
+	g_assert (window == slot->window);
+	g_assert (g_list_find (window->details->slots, slot) != NULL);
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 close_slot, (window, slot));
+
+	window->details->slots = g_list_remove (window->details->slots, slot);
+}
+
+void
+nautilus_window_set_active_slot (NautilusWindow *window,
+				 NautilusWindowSlot *new_slot)
+{
+	NautilusWindowSlot *old_slot;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (new_slot != NULL) {
+		g_assert (NAUTILUS_IS_WINDOW_SLOT (new_slot));
+		g_assert (window == new_slot->window);
+		g_assert (g_list_find (window->details->slots, new_slot) != NULL);
+	}
+
+	old_slot = window->details->active_slot;
+
+	if (old_slot == new_slot) {
+		return;
+	}
+
+	if (old_slot != NULL) {
+		/* inform window */
+		if (old_slot->content_view != NULL) {
+			nautilus_window_disconnect_content_view (window, old_slot->content_view);
+		}
+
+		/* inform slot & view */
+		g_signal_emit_by_name (old_slot, "inactive");
+	}
+
+	window->details->active_slot = new_slot;
+
+
+	if (new_slot != NULL) {
+		window->details->active_slots = g_list_remove (window->details->active_slots, new_slot);
+		window->details->active_slots = g_list_prepend (window->details->active_slots, new_slot);
+
+		/* inform sidebar panels */
+		nautilus_window_report_location_change (window);
+		/* TODO decide whether "selection-changed" should be emitted */
+
+		if (new_slot->content_view != NULL) {
+			/* inform window */
+			nautilus_window_connect_content_view (window, new_slot->content_view);
+		}
+
+		/* inform slot & view */
+		g_signal_emit_by_name (new_slot, "active");
+	}
+}
+
+static inline NautilusWindowSlot *
+get_last_active_slot (NautilusWindow *window)
+{
+	if (window->details->active_slots != NULL) {
+		return NAUTILUS_WINDOW_SLOT (window->details->active_slots->data);
+	}
+
+	return NULL;
+}
+
+static inline NautilusWindowSlot *
+get_first_inactive_slot (NautilusWindow *window)
+{
+	GList *l;
+	NautilusWindowSlot *slot;
+
+	for (l = window->details->slots; l != NULL; l = l->next) {
+		slot = NAUTILUS_WINDOW_SLOT (l->data);
+		if (slot != window->details->active_slot) {
+			return slot;
+		}
+	}
+
+	return NULL;
+}
+
+void
+nautilus_window_slot_close (NautilusWindowSlot *slot)
+{
+	NautilusWindow *window;
+	NautilusWindowSlot *next_slot;
+
+	window = slot->window;
+	if (window != NULL) {
+		window->details->active_slots = g_list_remove (window->details->active_slots, slot);
+
+		if (window->details->active_slot == slot) {
+			next_slot = get_last_active_slot (window);
+			if (next_slot == NULL) {
+				next_slot = get_first_inactive_slot (window);
+			}
+
+			nautilus_window_set_active_slot (window, next_slot);
+		}
+
+		nautilus_window_close_slot (window, slot);
+
+		if (g_list_length (window->details->slots) == 0) {
+			nautilus_window_close (window);
+		}
+	}
 }
 
 static void
@@ -784,9 +945,15 @@ static void
 action_view_as_callback (GtkAction *action,
 			 ActivateViewData *data)
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
+
+	window = data->window;
+
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		nautilus_window_set_content_view (data->window, 
-						  data->id);
+		slot = window->details->active_slot;
+		nautilus_window_slot_set_content_view (slot,
+						       data->id);
 	}
 }
 
@@ -914,9 +1081,12 @@ remove_extra_viewer_in_view_as_menus (NautilusWindow *window)
 static void
 replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	const char *id;
 
-	id = nautilus_window_get_content_view_id (window);
+	slot = window->details->active_slot;
+
+	id = nautilus_window_slot_get_content_view_id (slot);
 	update_extra_viewer_in_view_as_menus (window, id);
 }
 
@@ -932,6 +1102,7 @@ replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
 static void
 nautilus_window_synch_view_as_menus (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	int index;
 	char action_name[32];
 	GList *node;
@@ -939,13 +1110,15 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	if (window->content_view == NULL) {
+	slot = window->details->active_slot;
+
+	if (slot->content_view == NULL) {
 		return;
 	}
 	for (node = window->details->short_list_viewers, index = 1;
 	     node != NULL;
 	     node = node->next, ++index) {
-		if (nautilus_window_content_view_matches_iid (window, (char *)node->data)) {
+		if (nautilus_window_slot_content_view_matches_iid (slot, (char *)node->data)) {
 			break;
 		}
 	}
@@ -979,13 +1152,16 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 static void
 refresh_stored_viewers (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	GList *viewers;
 	char *uri, *mimetype;
 
-	uri = nautilus_file_get_uri (window->details->viewed_file);
-	mimetype = nautilus_file_get_mime_type (window->details->viewed_file);
+	slot = window->details->active_slot;
+
+	uri = nautilus_file_get_uri (slot->viewed_file);
+	mimetype = nautilus_file_get_mime_type (slot->viewed_file);
 	viewers = nautilus_view_factory_get_views_for_uri (uri,
-							   nautilus_file_get_file_type (window->details->viewed_file),
+							   nautilus_file_get_file_type (slot->viewed_file),
 							   mimetype);
 	g_free (uri);
 	g_free (mimetype);
@@ -997,9 +1173,12 @@ refresh_stored_viewers (NautilusWindow *window)
 static void
 real_load_view_as_menu (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	GList *node;
 	int index;
 	guint merge_id;
+
+	slot = window->details->active_slot;
 	
 	if (window->details->short_list_merge_id != 0) {
 		gtk_ui_manager_remove_ui (window->details->ui_manager,
@@ -1018,8 +1197,6 @@ real_load_view_as_menu (NautilusWindow *window)
 		window->details->view_as_action_group = NULL;
 	}
 
-	g_free (window->details->extra_viewer);
-	window->details->extra_viewer = NULL;
 	
 	refresh_stored_viewers (window);
 
@@ -1054,35 +1231,43 @@ load_view_as_menus_callback (NautilusFile *file,
 			    gpointer callback_data)
 {
 	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (callback_data);
-	
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-                         load_view_as_menu, (window));
+	NautilusWindowSlot *slot;
+
+	slot = callback_data;
+	window = NAUTILUS_WINDOW (slot->window);
+
+	if (slot == window->details->active_slot) {
+		/* slot may have changed in the meantime */
+		EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+				 load_view_as_menu, (window));
+	}
 }
 
 static void
-cancel_view_as_callback (NautilusWindow *window)
+cancel_view_as_callback (NautilusWindowSlot *slot)
 {
-	nautilus_file_cancel_call_when_ready (window->details->viewed_file, 
+	nautilus_file_cancel_call_when_ready (slot->viewed_file, 
 					      load_view_as_menus_callback,
-					      window);
+					      slot);
 }
 
 void
 nautilus_window_load_view_as_menus (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	NautilusFileAttributes attributes;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	attributes = nautilus_mime_actions_get_required_file_attributes ();
 
-	cancel_view_as_callback (window);
-	nautilus_file_call_when_ready (window->details->viewed_file,
+	slot = window->details->active_slot;
+
+	cancel_view_as_callback (slot);
+	nautilus_file_call_when_ready (slot->viewed_file,
 				       attributes, 
 				       load_view_as_menus_callback,
-				       window);
+				       slot);
 }
 
 void
@@ -1100,187 +1285,83 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 static char *
 real_get_title (NautilusWindow *window)
 {
-	char *title;
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	title = NULL;
-	
-	if (window->new_content_view != NULL) {
-                title = nautilus_view_get_title (window->new_content_view);
-        } else if (window->content_view != NULL) {
-                title = nautilus_view_get_title (window->content_view);
-        }
-        
-	if (title == NULL) {
-                title = nautilus_compute_title_for_location (window->details->location);
-        }
-
-	return title;
+	return nautilus_window_slot_get_title (window->details->active_slot);
 }
 
-static char *
-nautilus_window_get_cached_title (NautilusWindow *window)
+static void
+real_sync_title (NautilusWindow *window,
+		 NautilusWindowSlot *slot)
 {
-	return g_strdup (window->details->title);
-}
-
-static char *
-nautilus_window_get_title (NautilusWindow *window)
-{
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
-						  get_title, (window));
-}
-
-static gboolean
-real_set_title (NautilusWindow *window,
-		const char *title)
-{
-	gboolean changed;
 	char *copy;
 
-	changed = FALSE;
-
-	if (eel_strcmp (title, window->details->title) != 0) {
-		changed = TRUE;
-
-		g_free (window->details->title);
-		window->details->title = g_strdup (title);
-	}
-
-        if (eel_strlen (window->details->title) > 0 && window->current_location_bookmark &&
-            nautilus_bookmark_set_name (window->current_location_bookmark, window->details->title)) {
-		changed = TRUE;
-
-                /* Name of item in history list changed, tell listeners. */
-                nautilus_send_history_list_changed ();
-        }
-
-	if (changed) {
-		copy = g_strdup (window->details->title);
+	if (slot == window->details->active_slot) {
+		copy = g_strdup (slot->title);
 		g_signal_emit_by_name (window, "title_changed",
-				       copy);
+				       slot->title);
 		g_free (copy);
 	}
-
-	return changed;
 }
 
-/* Sets window->details->title, and the actual GtkWindow title which
- * might look a bit different (e.g. with "file browser:" added) */
-static void
-nautilus_window_set_title (NautilusWindow *window, 
-			   const char *title)
+void
+nautilus_window_sync_title (NautilusWindow *window,
+			    NautilusWindowSlot *slot)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-                         set_title, (window, title));
-
+			 sync_title, (window, slot));
 }
-
-/* update_title:
- * 
- * Re-calculate the window title.
- * Called when the location or view has changed.
- * @window: The NautilusWindow in question.
- * 
- */
-void
-nautilus_window_update_title (NautilusWindow *window)
-{
-	char *title;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	
-	title = nautilus_window_get_title (window);
-	nautilus_window_set_title (window, title);
-	
-	g_free (title);
-}
-
-/* nautilus_window_update_icon:
- * 
- * Re-calculate the window icon
- * Called when the location or view or icon set has changed.
- * @window: The NautilusWindow in question.
- * 
- */
-void
-nautilus_window_update_icon (NautilusWindow *window)
-{
-	NautilusIconInfo *info;
-	const char *icon_name;
-	GdkPixbuf *pixbuf;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	info = EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
-						 get_icon, (window));
-
-	icon_name = NULL;
-	if (info) {
-		icon_name = nautilus_icon_info_get_used_name (info);
-		if (icon_name != NULL) {
-			gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
-		} else {
-			pixbuf = nautilus_icon_info_get_pixbuf_nodefault (info);
-			
-			if (pixbuf) {
-				gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
-				g_object_unref (pixbuf);
-			} 
-		}
-		
-		g_object_unref (info);
-	}
-}
-
 
 static void
-real_set_content_view_widget (NautilusWindow *window,
-			      NautilusView *new_view)
+real_connect_content_view (NautilusWindow *window,
+			   NautilusView *view)
 {
-	GtkWidget *widget;
-	
+	NautilusWindowSlot *slot;
+
+	slot = window->details->active_slot;
+
+      /* Update displayed view in menu. Only do this if we're not switching
+       * locations though, because if we are switching locations we'll
+       * install a whole new set of views in the menu later (the current
+       * views in the menu are for the old location).
+       */
+	if (slot->pending_location == NULL) {
+		nautilus_window_load_view_as_menus (window);
+	}
+
+	nautilus_view_grab_focus (view);
+}
+
+static void
+real_disconnect_content_view (NautilusWindow *window,
+			      NautilusView *view)
+{
 	g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (new_view == NULL || NAUTILUS_IS_VIEW (new_view));
-	
-	if (new_view == window->content_view) {
-		return;
-	}
-	
-	if (window->content_view != NULL) {
-		widget = nautilus_view_get_widget (window->content_view);
-		gtk_widget_destroy (widget);
-		g_object_unref (window->content_view);
-		window->content_view = NULL;
-	}
+	g_assert (NAUTILUS_IS_VIEW (view));
 
-	if (new_view != NULL) {
-		widget = nautilus_view_get_widget (new_view);
-		gtk_widget_show (widget);
-	}
-
-	window->content_view = new_view;
-	g_object_ref (window->content_view);
-
-        /* Update displayed view in menu. Only do this if we're not switching
-         * locations though, because if we are switching locations we'll
-         * install a whole new set of views in the menu later (the current
-         * views in the menu are for the old location).
-         */
-	if (window->details->pending_location == NULL) {
-		nautilus_window_synch_view_as_menus (window);
-	}
+	/* nothing to do... */
 }
 
 void
-nautilus_window_set_content_view_widget (NautilusWindow *window,
-					 NautilusView *frame)
+nautilus_window_connect_content_view (NautilusWindow *window,
+				      NautilusView *view)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_VIEW (view));
+
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-                         set_content_view_widget, (window, frame));
+			 connect_content_view, (window, view));
+}
+
+void
+nautilus_window_disconnect_content_view (NautilusWindow *window,
+					 NautilusView *view)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_VIEW (view));
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 disconnect_content_view, (window, view));
 }
 
 /**
@@ -1311,37 +1392,40 @@ nautilus_window_get_ui_manager (NautilusWindow *window)
 }
 
 void
-nautilus_window_set_viewed_file (NautilusWindow *window,
-				 NautilusFile *file)
+nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
+				      NautilusFile *file)
 {
+	NautilusWindow *window;
 	NautilusFileAttributes attributes;
 
-	if (window->details->viewed_file == file) {
+	window = slot->window;
+
+	if (slot->viewed_file == file) {
 		return;
 	}
 
 	nautilus_file_ref (file);
 
-	cancel_view_as_callback (window);
+	cancel_view_as_callback (slot);
 
-	if (window->details->viewed_file != NULL) {
+	if (slot->viewed_file != NULL) {
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_file_set_has_open_window (window->details->viewed_file,
+			nautilus_file_set_has_open_window (slot->viewed_file,
 							   FALSE);
 		}
-		nautilus_file_monitor_remove (window->details->viewed_file,
-					      window);
+		nautilus_file_monitor_remove (slot->viewed_file,
+					      slot);
 	}
 
 	if (file != NULL) {
 		attributes =
 			NAUTILUS_FILE_ATTRIBUTE_INFO |
 			NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
-		nautilus_file_monitor_add (file, window, attributes);
+		nautilus_file_monitor_add (file, slot, attributes);
 	}
 
-	nautilus_file_unref (window->details->viewed_file);
-	window->details->viewed_file = file;
+	nautilus_file_unref (slot->viewed_file);
+	slot->viewed_file = file;
 }
 
 void
@@ -1383,8 +1467,8 @@ remove_from_history_list (NautilusBookmark *bookmark)
 	}
 }
 
-static gboolean
-add_to_history_list (NautilusBookmark *bookmark)
+gboolean
+nautilus_add_bookmark_to_history_list (NautilusBookmark *bookmark)
 {
 	/* Note that the history is shared amongst all windows so
 	 * this is not a NautilusNavigationWindow function. Perhaps it belongs
@@ -1446,35 +1530,54 @@ nautilus_add_to_history_list_no_notify (GFile *location,
 	gboolean ret;
 
 	bookmark = nautilus_bookmark_new_with_icon (location, name, has_custom_name, icon);
-	ret = add_to_history_list (bookmark);
+	ret = nautilus_add_bookmark_to_history_list (bookmark);
 	g_object_unref (bookmark);
 
 	return ret;
 }
 
-static void
-real_add_current_location_to_history_list (NautilusWindow *window)
+NautilusWindowSlot *
+nautilus_window_get_slot_for_view (NautilusWindow *window,
+				   NautilusView *view)
 {
-        g_assert (NAUTILUS_IS_WINDOW (window));
-                
-	if (add_to_history_list (window->current_location_bookmark)) {
-		nautilus_send_history_list_changed ();
+	NautilusWindowSlot *slot;
+	GList *l;
+
+	for (l = window->details->slots; l != NULL; l = l->next) {
+		slot = l->data;
+		if (slot->content_view == view ||
+		    slot->new_content_view == view) {
+			return slot;
+		}
 	}
+
+	return NULL;
 }
 
-void
-nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
+NautilusWindowSlot *
+nautilus_window_get_slot_for_content_box (NautilusWindow *window,
+					  GtkWidget *content_box)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	NautilusWindowSlot *slot;
+	GList *l;
 
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-                         add_current_location_to_history_list, (window));
+	for (l = window->details->slots; l != NULL; l = l->next) {
+		slot = NAUTILUS_WINDOW_SLOT (l->data);
+
+		if (slot->content_box == content_box) {
+			return slot;
+		}
+	}
+
+	return NULL;
 }
 
 void
 nautilus_forget_history (void) 
 {
-	GList *window_node;
+	NautilusWindowSlot *slot;
+	NautilusNavigationWindowSlot *navigation_slot;
+	GList *window_node, *l;
 
 	/* Clear out each window's back & forward lists. Also, remove 
 	 * each window's current location bookmark from history list 
@@ -1488,15 +1591,26 @@ nautilus_forget_history (void)
 			NautilusNavigationWindow *window;
 			
 			window = NAUTILUS_NAVIGATION_WINDOW (window_node->data);
-			
-			nautilus_navigation_window_clear_back_list (window);
-			nautilus_navigation_window_clear_forward_list (window);
-			
+
+			for (l = NAUTILUS_WINDOW (window_node->data)->details->slots;
+			     l != NULL; l = l->next) {
+				navigation_slot = l->data;
+
+				nautilus_navigation_window_slot_clear_back_list (navigation_slot);
+				nautilus_navigation_window_slot_clear_forward_list (navigation_slot);
+			}
+
 			nautilus_navigation_window_allow_back (window, FALSE);
 			nautilus_navigation_window_allow_forward (window, FALSE);
 		}
+
+		for (l = NAUTILUS_WINDOW (window_node->data)->details->slots;
+		     l != NULL; l = l->next) {
+			slot = l->data;
+			history_list = g_list_remove (history_list,
+						      slot->current_location_bookmark);
+		}
 			
-		history_list = g_list_remove (history_list, NAUTILUS_WINDOW (window_node->data)->current_location_bookmark);
 	}
 
 	/* Clobber history list. */
@@ -1507,9 +1621,14 @@ nautilus_forget_history (void)
 	     window_node != NULL;
 	     window_node = window_node->next) {
 		NautilusWindow *window;
-		
+		NautilusWindowSlot *slot;
+		GList *l;
+
 		window = NAUTILUS_WINDOW (window_node->data);
-		nautilus_window_add_current_location_to_history_list (NAUTILUS_WINDOW (window));
+		for (l = window->details->slots; l != NULL; l = l->next) {
+			slot = NAUTILUS_WINDOW_SLOT (l->data);
+			nautilus_window_slot_add_current_location_to_history_list (slot);
+		}
 	}
 }
 
@@ -1537,23 +1656,36 @@ nautilus_window_get_window_type (NautilusWindow *window)
 static int
 nautilus_window_get_selection_count (NautilusWindow *window)
 {
-	if (window->content_view != NULL) {
-		return nautilus_view_get_selection_count (window->content_view);
+	NautilusWindowSlot *slot;
+ 
+	g_assert (NAUTILUS_IS_WINDOW (window));
+ 
+	slot = window->details->active_slot;
+ 
+	if (slot->content_view != NULL) {
+		return nautilus_view_get_selection_count (slot->content_view);
 	}
+
 	return 0;
 }
 
 static GList *
 nautilus_window_get_selection (NautilusWindow *window)
 {
-	if (window->content_view != NULL) {
-		return nautilus_view_get_selection (window->content_view);
+	NautilusWindowSlot *slot;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	slot = window->details->active_slot;
+
+	if (slot->content_view != NULL) {
+		return nautilus_view_get_selection (slot->content_view);
 	}
 	return NULL;
 }
 
 static NautilusWindowShowHiddenFilesMode
-nautilus_window_get_hidden_files_mode (NautilusWindow *window)
+nautilus_window_get_hidden_files_mode (NautilusWindowInfo *window)
 {
 	return window->details->show_hidden_files_mode;
 }
@@ -1564,14 +1696,41 @@ nautilus_window_set_hidden_files_mode (NautilusWindowInfo *window,
 {
 	window->details->show_hidden_files_mode = mode;
 
-	g_signal_emit_by_name (window, "hidden_files_mode_changed",
-			       mode);
+	g_signal_emit_by_name (window, "hidden_files_mode_changed");
 }
 
 static NautilusBookmarkList *
-nautilus_window_get_bookmark_list (NautilusWindow *window)
+nautilus_window_get_bookmark_list (NautilusWindowInfo *window)
 {
   return nautilus_get_bookmark_list ();
+}
+
+static char *
+nautilus_window_get_cached_title (NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	slot = window->details->active_slot;
+
+	return g_strdup (slot->title);
+}
+
+NautilusWindowSlot *
+nautilus_window_get_active_slot (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	return window->details->active_slot;
+}
+
+GList *
+nautilus_window_get_slots (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	return g_list_copy (window->details->slots);
 }
 
 static void
@@ -1581,10 +1740,9 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->report_load_complete = nautilus_window_report_load_complete;
 	iface->report_selection_changed = nautilus_window_report_selection_changed;
 	iface->report_view_failed = nautilus_window_report_view_failed;
-	iface->open_location = nautilus_window_open_location_full;
 	iface->show_window = nautilus_window_show_window;
 	iface->close_window = nautilus_window_close;
-	iface->set_status = nautilus_window_set_status;
+	iface->push_status = nautilus_window_push_status;
 	iface->get_window_type = nautilus_window_get_window_type;
 	iface->get_title = nautilus_window_get_cached_title;
 	iface->get_history = nautilus_window_get_history;
@@ -1595,6 +1753,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->get_selection = nautilus_window_get_selection;
 	iface->get_hidden_files_mode = nautilus_window_get_hidden_files_mode;
 	iface->set_hidden_files_mode = nautilus_window_set_hidden_files_mode;
+	iface->get_active_slot = nautilus_window_get_active_slot;
 }
 
 static void
@@ -1611,12 +1770,13 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
-	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
 	class->get_title = real_get_title;
-	class->set_title = real_set_title;
-	class->set_content_view_widget = real_set_content_view_widget;
+	class->sync_title = real_sync_title;
+	class->connect_content_view = real_connect_content_view;
+	class->disconnect_content_view = real_disconnect_content_view;
 	class->load_view_as_menu = real_load_view_as_menu;
 	class->set_allow_up = real_set_allow_up;
+	class->close_slot = real_close_slot;
 
 	g_object_class_install_property (G_OBJECT_CLASS (class),
 					 ARG_APP,

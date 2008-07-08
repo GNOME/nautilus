@@ -92,6 +92,10 @@ nautilus_SOURCES = \
 	nautilus-navigation-window-menus.c      \
 	nautilus-navigation-window.c            \
 	nautilus-navigation-window.h            \
+	nautilus-navigation-window-slot.c	\
+	nautilus-navigation-window-slot.h	\
+	nautilus-notebook.c			\
+	nautilus-notebook.h			\
 	nautilus-notes-viewer.c			\
 	nautilus-notes-viewer.h			\
 	nautilus-pathbar.c			\
@@ -124,6 +128,8 @@ nautilus_SOURCES = \
 	nautilus-window-manage-views.h		\
 	nautilus-window-menus.c         	\
 	nautilus-window-private.h		\
+	nautilus-window-slot.c			\
+	nautilus-window-slot.h			\
 	nautilus-window-toolbars.c              \
 	nautilus-window.c			\
 	nautilus-window.h			\

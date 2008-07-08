@@ -1705,28 +1705,10 @@ fm_tree_model_set_show_hidden_files (FMTreeModel *model,
 		return;
 	}
 	model->details->show_hidden_files = show_hidden_files;
+	model->details->show_backup_files = show_hidden_files;
 	stop_monitoring (model);
 	if (!show_hidden_files) {
 		destroy_by_function (model, nautilus_file_is_hidden_file);
-	}
-	schedule_monitoring_update (model);
-}
-
-void
-fm_tree_model_set_show_backup_files (FMTreeModel *model,
-					   gboolean show_backup_files)
-{
-	g_return_if_fail (FM_IS_TREE_MODEL (model));
-	g_return_if_fail (show_backup_files == FALSE || show_backup_files == TRUE);
-
-	show_backup_files = show_backup_files != FALSE;
-	if (model->details->show_backup_files == show_backup_files) {
-		return;
-	}
-	model->details->show_backup_files = show_backup_files;
-	stop_monitoring (model);
-	if (!show_backup_files) {
-		destroy_by_function (model, nautilus_file_is_backup_file);
 	}
 	schedule_monitoring_update (model);
 }

@@ -66,8 +66,6 @@ GType              fm_tree_model_get_type                  (void);
 FMTreeModel *fm_tree_model_new                       (void);
 void               fm_tree_model_set_show_hidden_files     (FMTreeModel *model,
 							    gboolean           show_hidden_files);
-void               fm_tree_model_set_show_backup_files     (FMTreeModel *model,
-							    gboolean           show_backup_files);
 void               fm_tree_model_set_show_only_directories (FMTreeModel *model,
 							    gboolean           show_only_directories);
 NautilusFile *     fm_tree_model_iter_get_file             (FMTreeModel *model,

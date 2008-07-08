@@ -57,7 +57,7 @@ nautilus_view_factory_lookup (const char *id)
 
 NautilusView *
 nautilus_view_factory_create (const char *id,
-			      NautilusWindowInfo *window)
+			      NautilusWindowSlotInfo *slot)
 {
 	const NautilusViewInfo *view_info;
 
@@ -66,7 +66,7 @@ nautilus_view_factory_create (const char *id,
 		return NULL;
 	}
 
-	return view_info->create (window);
+	return view_info->create (slot);
 }
 
 gboolean

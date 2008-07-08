@@ -50,7 +50,8 @@ typedef enum {
 	/* used in spatial mode */
 	NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1<<0,
 	/* used in navigation mode */
-	NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1<<1
+	NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1<<1,
+	NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB = 1<<2
 } NautilusWindowOpenFlags;
 
 typedef	enum {
@@ -71,6 +72,13 @@ typedef	enum {
 typedef struct NautilusWindow          NautilusWindow;
 #endif
 
+#ifndef NAUTILUS_WINDOW_SLOT_DEFINED
+#define NAUTILUS_WINDOW_SLOT_DEFINED
+typedef struct NautilusWindowSlot      NautilusWindowSlot;
+#endif
+
+
+typedef NautilusWindowSlot              NautilusWindowSlotInfo;
 typedef NautilusWindow                  NautilusWindowInfo;
 
 typedef struct _NautilusWindowInfoIface NautilusWindowInfoIface;
@@ -115,7 +123,7 @@ struct _NautilusWindowInfoIface
 	GList *(* get_selection)      (NautilusWindowInfo    *window);
 
 	char * (* get_current_location)  (NautilusWindowInfo *window);
-	void   (* set_status)            (NautilusWindowInfo *window,
+	void   (* push_status)           (NautilusWindowInfo *window,
 					  const char *status);
 	char * (* get_title)             (NautilusWindowInfo *window);
 	GList *(* get_history)           (NautilusWindowInfo *window);
@@ -128,11 +136,8 @@ struct _NautilusWindowInfoIface
 	void   (* set_hidden_files_mode) (NautilusWindowInfo *window,
 				       NautilusWindowShowHiddenFilesMode mode);
 
-	void   (* open_location)      (NautilusWindowInfo *window,
-				       GFile *location,
-				       NautilusWindowOpenMode mode,
-				       NautilusWindowOpenFlags flags,
-				       GList *selection);
+	NautilusWindowSlotInfo * (* get_active_slot) (NautilusWindowInfo *window);
+
 	void   (* show_window)        (NautilusWindowInfo *window);
 	void   (* close_window)       (NautilusWindowInfo *window);
 	GtkUIManager *     (* get_ui_manager)   (NautilusWindowInfo *window);
@@ -146,14 +151,10 @@ void                              nautilus_window_info_report_load_complete     
 void                              nautilus_window_info_report_view_failed       (NautilusWindowInfo                *window,
 										 NautilusView                      *view);
 void                              nautilus_window_info_report_selection_changed (NautilusWindowInfo                *window);
-void                              nautilus_window_info_open_location            (NautilusWindowInfo                *window,
-										 GFile                             *location,
-										 NautilusWindowOpenMode             mode,
-										 NautilusWindowOpenFlags            flags,
-										 GList                             *selection);
+NautilusWindowSlotInfo *          nautilus_window_info_get_active_slot          (NautilusWindowInfo                *window);
 void                              nautilus_window_info_show_window              (NautilusWindowInfo                *window);
 void                              nautilus_window_info_close                    (NautilusWindowInfo                *window);
-void                              nautilus_window_info_set_status               (NautilusWindowInfo                *window,
+void                              nautilus_window_info_push_status              (NautilusWindowInfo                *window,
 										 const char                        *status);
 NautilusWindowType                nautilus_window_info_get_window_type          (NautilusWindowInfo                *window);
 char *                            nautilus_window_info_get_title                (NautilusWindowInfo                *window);

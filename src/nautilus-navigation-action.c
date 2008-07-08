@@ -31,6 +31,8 @@
 
 #include "nautilus-navigation-action.h"
 #include "nautilus-navigation-window.h"
+#include "nautilus-window-private.h"
+#include "nautilus-navigation-window-slot.h"
 
 #include <gtk/gtk.h>
 
@@ -82,6 +84,22 @@ nautilus_navigation_action_get_type (void)
 	return type;
 }
 
+static gboolean
+should_open_in_new_tab (void)
+{
+	/* FIXME this is duplicated */
+	GdkEvent *event;
+
+	event = gtk_get_current_event ();
+	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) {
+		return event->button.button == 2;
+	}
+
+	gdk_event_free (event);
+
+	return FALSE;
+}
+
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
 				    NautilusNavigationWindow *window,
@@ -94,7 +112,7 @@ activate_back_or_forward_menu_item (GtkMenuItem *menu_item,
 
 	index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
 
-	nautilus_navigation_window_back_or_forward (window, back, index);
+	nautilus_navigation_window_back_or_forward (window, back, index, should_open_in_new_tab ());
 }
 
 static void
@@ -114,13 +132,16 @@ fill_menu (NautilusNavigationWindow *window,
 	   GtkWidget *menu,
 	   gboolean back)
 {
+	NautilusNavigationWindowSlot *slot;
 	GtkWidget *menu_item;
 	int index;
 	GList *list;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
+
+	slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (NAUTILUS_WINDOW (window)->details->active_slot);
 	
-	list = back ? window->back_list : window->forward_list;
+	list = back ? slot->back_list : slot->forward_list;
 	index = 0;
 	while (list != NULL) {
 		menu_item = nautilus_bookmark_menu_item_new (NAUTILUS_BOOKMARK (list->data));
@@ -173,6 +194,30 @@ show_menu_callback (GtkMenuToolButton *button,
 	}
 }
 
+static gboolean
+proxy_button_press_event_cb (GtkButton *button,
+			     GdkEventButton *event,
+			     gpointer user_data)
+{
+	if (event->button == 2) {
+		gtk_button_pressed (button);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+proxy_button_release_event_cb (GtkButton *button,
+			       GdkEventButton *event,
+			       gpointer user_data)
+{
+	if (event->button == 2) {
+		gtk_button_released (button);
+	}
+
+	return FALSE;
+}
+
 static void
 connect_proxy (GtkAction *action, GtkWidget *proxy)
 {
@@ -180,6 +225,8 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 		NautilusNavigationAction *naction = NAUTILUS_NAVIGATION_ACTION (action);
 		GtkMenuToolButton *button = GTK_MENU_TOOL_BUTTON (proxy);
 		GtkWidget *menu;
+		GtkContainer *container;
+		GtkWidget *child;
 
 		/* set an empty menu, so the arrow button becomes sensitive */
 		menu = gtk_menu_new ();
@@ -190,6 +237,13 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 		
 		g_signal_connect (proxy, "show-menu",
 				  G_CALLBACK (show_menu_callback), action);
+
+		/* Make sure that middle click works. Note that there is some code duplication
+		 * between here and nautilus-window-menus.c */
+		container = GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
+		child = GTK_WIDGET (gtk_container_get_children (container)->data);
+		g_signal_connect (child, "button-press-event", G_CALLBACK (proxy_button_press_event_cb), NULL);
+		g_signal_connect (child, "button-release-event", G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}
 
 	(* GTK_ACTION_CLASS (parent_class)->connect_proxy) (action, proxy);
@@ -199,7 +253,15 @@ static void
 disconnect_proxy (GtkAction *action, GtkWidget *proxy)
 {
 	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
+		GtkContainer *container;
+		GtkWidget *child;
+		
 		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (show_menu_callback), action);
+
+		container = GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
+		child = GTK_WIDGET (gtk_container_get_children (container)->data);
+		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_press_event_cb), NULL);
+		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}
 
 	(* GTK_ACTION_CLASS (parent_class)->disconnect_proxy) (action, proxy);

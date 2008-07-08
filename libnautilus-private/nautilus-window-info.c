@@ -152,22 +152,6 @@ nautilus_window_info_report_selection_changed (NautilusWindowInfo      *window)
 }
 
 void
-nautilus_window_info_open_location (NautilusWindowInfo      *window,
-				    GFile                   *location,
-				    NautilusWindowOpenMode   mode,
-				    NautilusWindowOpenFlags  flags,
-				    GList                   *selection)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
-
-	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->open_location) (window,
-								  location,
-								  mode,
-								  flags,
-								  selection);
-}
-
-void
 nautilus_window_info_show_window (NautilusWindowInfo      *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
@@ -184,13 +168,13 @@ nautilus_window_info_close (NautilusWindowInfo      *window)
 }
 
 void
-nautilus_window_info_set_status (NautilusWindowInfo      *window,
-				 const char              *status)
+nautilus_window_info_push_status (NautilusWindowInfo      *window,
+				  const char              *status)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
 
-	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->set_status) (window,
-							       status);
+	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->push_status) (window,
+								  status);
 }
 
 NautilusWindowType
@@ -274,5 +258,13 @@ nautilus_window_info_get_ui_manager (NautilusWindowInfo *window)
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), NULL);
 	
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_ui_manager) (window);
+}
+
+NautilusWindowSlotInfo *
+nautilus_window_info_get_active_slot (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), NULL);
+
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_active_slot) (window);
 }
 

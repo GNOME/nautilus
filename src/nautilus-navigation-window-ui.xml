@@ -2,8 +2,10 @@
 <menubar name="MenuBar">
 	<menu action="File">
 		<placeholder name="New Items Placeholder">
+			<menuitem name="New Tab" action="New Tab"/>
 			<menuitem name="New Window" action="New Window"/>
 			<menuitem name="Folder Window" action="Folder Window"/>
+			<separator/>
 		</placeholder>
 		
 		<placeholder name="Close Items Placeholder">
@@ -44,6 +46,18 @@
 			<menuitem name="Edit Bookmark" action="Edit Bookmarks"/>
 			<separator/>
 			<placeholder name="Bookmarks Placeholder"/>
+		</menu>
+		<menu action="Tabs">
+			<menuitem name="TabsPreviousMenu" action="TabsPrevious"/>
+			<menuitem name="TabsNextMenu" action="TabsNext"/>
+			<separator name="TabsSep1"/>
+			<placeholder name="TabsMoveGroup">
+				<menuitem name="TabsMoveLeftMenu" action="TabsMoveLeft"/>
+				<menuitem name="TabsMoveRightMenu" action="TabsMoveRight"/>
+			</placeholder>
+			<placeholder name="TabsOpen">
+				<separator name="TabsSep2"/>
+			</placeholder>
 		</menu>
         </placeholder>
 </menubar>

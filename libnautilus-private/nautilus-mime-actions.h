@@ -29,6 +29,7 @@
 
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-window-info.h>
+#include <libnautilus-private/nautilus-window-slot-info.h>
 
 NautilusFileAttributes nautilus_mime_actions_get_required_file_attributes (void);
 
@@ -44,13 +45,14 @@ gboolean               nautilus_mime_has_any_applications_for_files       (GList
 gboolean               nautilus_mime_file_opens_in_view                   (NautilusFile            *file);
 gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
 void                   nautilus_mime_activate_files                       (GtkWindow               *parent_window,
-									   NautilusWindowInfo      *window_info,
+									   NautilusWindowSlotInfo  *slot_info,
 									   GList                   *files,
 									   const char              *launch_directory,
 									   NautilusWindowOpenMode   mode,
-									   NautilusWindowOpenFlags  flags);
+									   NautilusWindowOpenFlags  flags,
+									   gboolean                 user_confirmation);
 void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
-									   NautilusWindowInfo      *window_info,
+									   NautilusWindowSlotInfo  *slot_info,
 									   NautilusFile            *file,
 									   const char              *launch_directory,
 									   NautilusWindowOpenMode   mode,

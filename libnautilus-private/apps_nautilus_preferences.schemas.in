@@ -69,6 +69,36 @@
     </schema>
 
     <schema>
+      <key>/schemas/desktop/gnome/file_views/tabs_enable</key>
+      <applyto>/desktop/gnome/file_views/tabs_enable</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to enable tabs in Nautilus browser windows</short>
+         <long>
+          If set to true, then multiple views can be opened in one browser window,
+	  each in a separate tab.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/gnome/file_views/tabs_open_position</key>
+      <applyto>/desktop/gnome/file_views/tabs_open_position</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>after_current_tab</default>
+      <locale name="C">
+         <short>Where to position newly open tabs in browser windows.</short>
+         <long>
+          If set to "after_current_tab", then new tabs are inserted after the current tab.
+          If set to "end", then new tabs are appended to the end of the tab list.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/media_automount</key>
       <applyto>/apps/nautilus/preferences/media_automount</applyto>
       <owner>nautilus</owner>

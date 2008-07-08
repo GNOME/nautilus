@@ -199,6 +199,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 GtkWidget *
 nautilus_location_dialog_new (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	GtkWidget *dialog;
 	GFile *location;
 	char *formatted_location;
@@ -211,9 +212,10 @@ nautilus_location_dialog_new (NautilusWindow *window)
 				       gtk_window_get_screen (GTK_WINDOW (window)));
 		NAUTILUS_LOCATION_DIALOG (dialog)->details->window = window;
 	}
-	
 
-	location = nautilus_window_get_location (window);
+	slot = window->details->active_slot;
+
+	location = slot->location;
 	if (location != NULL) {
 		if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 			formatted_location = g_strdup_printf ("%s/", g_get_home_dir ());
@@ -224,7 +226,6 @@ nautilus_location_dialog_new (NautilusWindow *window)
 		gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, -1);
 		gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
 		g_free (formatted_location);
-		g_object_unref (location);
 	}
 	
 	gtk_widget_grab_focus (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry);

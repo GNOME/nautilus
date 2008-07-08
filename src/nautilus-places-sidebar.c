@@ -46,6 +46,8 @@
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-autorun.h>
+#include <libnautilus-private/nautilus-window-info.h>
+#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <gio/gio.h>
 
 #include "nautilus-bookmark-list.h"
@@ -146,7 +148,7 @@ static GType nautilus_places_sidebar_provider_get_type (void);
 static void  open_selected_bookmark                    (NautilusPlacesSidebar        *sidebar,
 							GtkTreeModel                 *model,
 							GtkTreePath                  *path,
-							gboolean                      open_in_new_window);
+							NautilusWindowOpenFlags flags);
 static void  nautilus_places_sidebar_style_set         (GtkWidget                    *widget,
 							GtkStyle                     *previous_style);
 static gboolean eject_or_unmount_bookmark              (NautilusPlacesSidebar *sidebar,
@@ -281,11 +283,13 @@ update_places (NautilusPlacesSidebar *sidebar)
 	char *location, *mount_uri, *name, *desktop_path;
 	GIcon *icon;
 	GFile *root;
-	
-		
+	NautilusWindowSlotInfo *slot;
+
 	selection = gtk_tree_view_get_selection (sidebar->tree_view);
 	gtk_list_store_clear (sidebar->store);
-	location = nautilus_window_info_get_current_location (sidebar->window);
+
+	slot = nautilus_window_info_get_active_slot (sidebar->window);
+	location = nautilus_window_slot_info_get_current_location (slot);
 
 	/* add built in bookmarks */
 	desktop_path = nautilus_get_desktop_directory ();
@@ -301,7 +305,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 				       mount_uri, NULL, NULL, NULL, 0);
 		g_object_unref (icon);
 		g_free (display_name);
-		if (strcmp (location, mount_uri) == 0) {
+		if (eel_strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}	
 		g_free (mount_uri);
@@ -313,7 +317,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			       _("Desktop"), icon,
 			       mount_uri, NULL, NULL, NULL, 0);
 	g_object_unref (icon);
-	if (strcmp (location, mount_uri) == 0) {
+	if (eel_strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}	
 	g_free (mount_uri);
@@ -325,7 +329,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			       _("File System"), icon,
 			       mount_uri, NULL, NULL, NULL, 0);
 	g_object_unref (icon);
-	if (strcmp (location, mount_uri) == 0) {
+	if (eel_strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}
 
@@ -361,7 +365,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 					last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
 							       name, icon, mount_uri,
 							       drive, volume, mount, 0);
-					if (strcmp (location, mount_uri) == 0) {
+					if (eel_strcmp (location, mount_uri) == 0) {
 						gtk_tree_selection_select_iter (selection, &last_iter);
 					}
 					g_object_unref (mount);
@@ -431,7 +435,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 			last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
 					       name, icon, mount_uri,
 					       NULL, volume, mount, 0);
-			if (strcmp (location, mount_uri) == 0) {
+			if (eel_strcmp (location, mount_uri) == 0) {
 				gtk_tree_selection_select_iter (selection, &last_iter);
 			}
 			g_object_unref (mount);
@@ -470,7 +474,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		last_iter = add_place (sidebar, PLACES_MOUNTED_VOLUME,
 				       name, icon, mount_uri,
 				       NULL, NULL, mount, 0);
-		if (strcmp (location, mount_uri) == 0) {
+		if (eel_strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
 		g_object_unref (mount);
@@ -485,7 +489,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 	last_iter = add_place (sidebar, PLACES_BUILT_IN,
 			       _("Trash"), icon, mount_uri,
 			       NULL, NULL, NULL, 0);
-	if (strcmp (location, mount_uri) == 0) {
+	if (eel_strcmp (location, mount_uri) == 0) {
 		gtk_tree_selection_select_iter (selection, &last_iter);
 	}
 	g_object_unref (icon);
@@ -513,7 +517,7 @@ update_places (NautilusPlacesSidebar *sidebar)
 		last_iter = add_place (sidebar, PLACES_BOOKMARK,
 				       name, icon, mount_uri,
 				       NULL, NULL, NULL, index);
-		if (strcmp (location, mount_uri) == 0) {
+		if (eel_strcmp (location, mount_uri) == 0) {
 			gtk_tree_selection_select_iter (selection, &last_iter);
 		}
 		g_free (name);
@@ -649,7 +653,7 @@ row_activated_callback (GtkTreeView *tree_view,
 	open_selected_bookmark (NAUTILUS_PLACES_SIDEBAR (user_data),
 				gtk_tree_view_get_model (tree_view),
 				path,
-				FALSE);
+				0);
 }
 
 static void
@@ -1340,8 +1344,9 @@ static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
 			GtkTreePath	      *path,
-			gboolean	      open_in_new_window)
+			NautilusWindowOpenFlags	      flags)
 {
+	NautilusWindowSlot *slot;
 	GtkTreeIter iter;
 	GFile *location;
 	char *uri;
@@ -1354,6 +1359,12 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 		return;
 	}
 
+	if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+		flags &= ~NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+	}
+
 	gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_URI, &uri, -1);
 
 	if (uri != NULL) {
@@ -1362,10 +1373,11 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 				    sidebar->window, uri);
 		location = g_file_new_for_uri (uri);
 		/* Navigate to the clicked location */
-		if (!open_in_new_window) {
-			nautilus_window_info_open_location (sidebar->window, location,
-							    NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
-							    0, NULL);
+		if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
+			slot = nautilus_window_info_get_active_slot (sidebar->window);
+			nautilus_window_slot_info_open_location (slot, location,
+								 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+								 flags, NULL);
 		} else {
 			NautilusWindow *cur, *new;
 			
@@ -1390,7 +1402,7 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 
 static void
 open_shortcut_from_menu (NautilusPlacesSidebar *sidebar,
-			 gboolean	       open_in_new_window)
+			 NautilusWindowOpenFlags	       flags)
 {
 	GtkTreeModel *model;
 	GtkTreePath *path;
@@ -1398,7 +1410,7 @@ open_shortcut_from_menu (NautilusPlacesSidebar *sidebar,
 	model = gtk_tree_view_get_model (sidebar->tree_view);
 	gtk_tree_view_get_cursor (sidebar->tree_view, &path, NULL);
 
-	open_selected_bookmark (sidebar, model, path, open_in_new_window);
+	open_selected_bookmark (sidebar, model, path, flags);
 
 	gtk_tree_path_free (path);
 }
@@ -1407,14 +1419,21 @@ static void
 open_shortcut_cb (GtkMenuItem		*item,
 		  NautilusPlacesSidebar	*sidebar)
 {
-	open_shortcut_from_menu (sidebar, FALSE);
+	open_shortcut_from_menu (sidebar, 0);
 }
 
 static void
 open_shortcut_in_new_window_cb (GtkMenuItem	      *item,
 				NautilusPlacesSidebar *sidebar)
 {
-	open_shortcut_from_menu (sidebar, TRUE);
+	open_shortcut_from_menu (sidebar, NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+}
+
+static void
+open_shortcut_in_new_tab_cb (GtkMenuItem	      *item,
+				NautilusPlacesSidebar *sidebar)
+{
+	open_shortcut_from_menu (sidebar, NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 /* Rename the selected bookmark */
@@ -1830,6 +1849,12 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
+	item = gtk_menu_item_new_with_mnemonic (_("Open in New _Tab"));
+	g_signal_connect (item, "activate",
+			  G_CALLBACK (open_shortcut_in_new_tab_cb), sidebar);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
 	item = gtk_menu_item_new_with_mnemonic (_("Open in New _Window"));
 	g_signal_connect (item, "activate",
 			  G_CALLBACK (open_shortcut_in_new_window_cb), sidebar);
@@ -1931,7 +1956,8 @@ bookmarks_popup_menu_cb (GtkWidget *widget,
 }
 
 /* Callback used when a button is pressed on the shortcuts list.  
- * We trap button 3 to bring up a popup menu.
+ * We trap button 3 to bring up a popup menu, and button 2 to
+ * open in a new tab.
  */
 static gboolean
 bookmarks_button_press_event_cb (GtkWidget             *widget,
@@ -1954,6 +1980,28 @@ bookmarks_button_press_event_cb (GtkWidget             *widget,
 
 	if (event->button == 3) {
 		bookmarks_popup_menu (sidebar, event);
+	} else if (event->button == 2) {
+		GtkTreeModel *model;
+		GtkTreePath *path;
+		GtkTreeView *tree_view;
+
+		tree_view = GTK_TREE_VIEW (widget);
+		g_assert (tree_view == sidebar->tree_view);
+
+		model = gtk_tree_view_get_model (tree_view);
+
+		gtk_tree_view_get_path_at_pos (tree_view, (int) event->x, (int) event->y, 
+					       &path, NULL, NULL, NULL);
+
+		open_selected_bookmark (sidebar, model, path,
+					event->state & GDK_CONTROL_MASK ?
+					NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW :
+					NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
+
+		if (path != NULL) {
+			gtk_tree_path_free (path);
+			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -2238,11 +2286,15 @@ nautilus_places_sidebar_iface_init (NautilusSidebarIface *iface)
 static void
 nautilus_places_sidebar_set_parent_window (NautilusPlacesSidebar *sidebar,
 					   NautilusWindowInfo *window)
-{	
+{
+	NautilusWindowSlotInfo *slot;
+
 	sidebar->window = window;
-	
+
+	slot = nautilus_window_info_get_active_slot (window);
+
 	sidebar->bookmarks = nautilus_window_info_get_bookmark_list (window);
-	sidebar->uri = nautilus_window_info_get_current_location (window);
+	sidebar->uri = nautilus_window_slot_info_get_current_location (slot);
 
 	g_signal_connect_object (sidebar->bookmarks, "contents_changed",
 				 G_CALLBACK (update_places),

@@ -78,6 +78,12 @@ typedef enum
 	NAUTILUS_DATE_FORMAT_INFORMAL
 } NautilusDateFormat;
 
+typedef enum
+{
+	NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB,
+	NAUTILUS_NEW_TAB_POSITION_END,
+} NautilusNewTabPosition;
+
 /* Sidebar panels  */
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
 
@@ -89,6 +95,8 @@ typedef enum
 
 /* Spatial or browser mode */
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER       		"preferences/always_use_browser"
+#define NAUTILUS_PREFERENCES_ENABLE_TABS       			"preferences/tabs_enable"
+#define NAUTILUS_PREFERENCES_NEW_TAB_POSITION       		"preferences/tabs_open_position"
 
 /* Which views should be displayed for new windows */
 #define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"

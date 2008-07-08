@@ -42,9 +42,11 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
+#include <eel/eel-preferences.h>
 #include <libgnomeui/gnome-help.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-module.h>
@@ -108,9 +110,26 @@ bookmark_holder_free_cover (gpointer callback_data, GClosure *closure)
 	bookmark_holder_free (callback_data);
 }
 
+static gboolean
+should_open_in_new_tab (void)
+{
+	/* FIXME this is duplicated */
+	GdkEvent *event;
+
+	event = gtk_get_current_event ();
+	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) {
+		return event->button.button == 2;
+	}
+
+	gdk_event_free (event);
+
+	return FALSE;
+}
+
 static void
 activate_bookmark_in_menu_item (GtkAction *action, gpointer user_data)
 {
+	NautilusWindowSlot *slot;
         BookmarkHolder *holder;
         GFile *location;
 
@@ -120,7 +139,10 @@ activate_bookmark_in_menu_item (GtkAction *action, gpointer user_data)
 		holder->failed_callback (holder->window, holder->bookmark);
 	} else {
 	        location = nautilus_bookmark_get_location (holder->bookmark);
-	        nautilus_window_go_to (holder->window, location);
+		slot = nautilus_window_get_active_slot (holder->window);
+	        nautilus_window_slot_go_to (slot, 
+					    location, 
+					    should_open_in_new_tab ());
 	        g_object_unref (location);
         }
 }
@@ -185,10 +207,16 @@ nautilus_menus_append_bookmark_to_menu (NautilusWindow *window,
 }
 
 static void
-action_close_window_callback (GtkAction *action, 
-			      gpointer user_data)
+action_close_window_slot_callback (GtkAction *action,
+				   gpointer user_data)
 {
-	nautilus_window_close (NAUTILUS_WINDOW (user_data));
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
+	nautilus_window_slot_close (slot);
 }
 
 static void
@@ -196,9 +224,12 @@ action_connect_to_server_callback (GtkAction *action,
 				   gpointer user_data)
 {
 	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+	NautilusWindowSlot *slot;
 	GtkWidget *dialog;
 	GFile *location;
-	location = nautilus_window_get_location (window);
+
+	slot = nautilus_window_get_active_slot (window);
+	location = nautilus_window_slot_get_location (slot);
 	dialog = nautilus_connect_server_dialog_new (window, location);
 	if (location) {
 		g_object_unref (location);
@@ -236,7 +267,13 @@ static void
 action_stop_callback (GtkAction *action, 
 		      gpointer user_data)
 {
-	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
+	nautilus_window_slot_stop_loading (slot);
 }
 
 static void
@@ -251,17 +288,31 @@ static void
 action_home_callback (GtkAction *action, 
 		      gpointer user_data) 
 {
-	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
+	nautilus_window_slot_go_home (slot, 
+				      should_open_in_new_tab ());
 }
 
 static void
 action_go_to_computer_callback (GtkAction *action, 
 				gpointer user_data) 
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	GFile *computer;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
 	computer = g_file_new_for_uri (COMPUTER_URI);
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       computer);
+	nautilus_window_slot_go_to (slot,
+				    computer,
+				    should_open_in_new_tab ());
 	g_object_unref (computer);
 }
 
@@ -269,10 +320,17 @@ static void
 action_go_to_network_callback (GtkAction *action, 
 				gpointer user_data) 
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	GFile *network;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
 	network = g_file_new_for_uri (NETWORK_URI);
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       network);
+	nautilus_window_slot_go_to (slot,
+				    network,
+				    should_open_in_new_tab ());
 	g_object_unref (network);
 }
 
@@ -280,14 +338,20 @@ static void
 action_go_to_templates_callback (GtkAction *action,
 				 gpointer user_data) 
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	char *path;
 	GFile *location;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
 
 	path = nautilus_get_templates_directory ();
 	location = g_file_new_for_path (path);
 	g_free (path);
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       location);
+	nautilus_window_slot_go_to (slot,
+				    location,
+				    should_open_in_new_tab ());
 	g_object_unref (location);
 }
 
@@ -295,10 +359,17 @@ static void
 action_go_to_trash_callback (GtkAction *action, 
 			     gpointer user_data) 
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	GFile *trash;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
 	trash = g_file_new_for_uri ("trash:///");
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       trash);
+	nautilus_window_slot_go_to (slot,
+				    trash,
+				    should_open_in_new_tab ());
 	g_object_unref (trash);
 }
 
@@ -306,10 +377,17 @@ static void
 action_go_to_burn_cd_callback (GtkAction *action,
 			       gpointer user_data) 
 {
+	NautilusWindow *window;
+	NautilusWindowSlot *slot;
 	GFile *burn;
+
+	window = NAUTILUS_WINDOW (user_data);
+	slot = nautilus_window_get_active_slot (window);
+
 	burn = g_file_new_for_uri (BURN_CD_URI);
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       burn);
+	nautilus_window_slot_go_to (slot,
+				    burn,
+				    should_open_in_new_tab ());
 	g_object_unref (burn);
 	
 }
@@ -340,6 +418,48 @@ action_zoom_normal_callback (GtkAction *action,
 			     gpointer user_data) 
 {
 	nautilus_window_zoom_to_default (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+action_show_hidden_files_callback (GtkAction *action, 
+				   gpointer callback_data)
+{
+	NautilusWindow *window;
+	NautilusWindowShowHiddenFilesMode mode;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE;
+	} else {
+		mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DISABLE;
+	}
+
+	nautilus_window_info_set_hidden_files_mode (window, mode);
+}
+
+static void
+show_hidden_files_preference_callback (gpointer callback_data)
+{
+	NautilusWindow *window;
+	GtkAction *action;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	if (window->details->show_hidden_files_mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
+		action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
+		g_assert (GTK_IS_ACTION (action));
+
+		/* update button */
+		g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, window);
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+					      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+		g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, window);
+
+		/* inform views */
+		nautilus_window_info_set_hidden_files_mode (window, NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT);
+
+	}
 }
 
 static void
@@ -467,7 +587,7 @@ static void
 action_up_callback (GtkAction *action, 
 		     gpointer user_data) 
 {
-	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE);
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE, should_open_in_new_tab ());
 }
 
 static void
@@ -534,18 +654,89 @@ menu_item_deselect_cb (GtkMenuItem *proxy,
 			   window->details->help_message_cid);
 }
 
+static GtkWidget *
+get_event_widget (GtkWidget *proxy)
+{
+	GtkWidget *widget;
+
+	/**
+	 * Finding the interesting widget requires internal knowledge of
+	 * the widgets in question. This can't be helped, but by keeping
+	 * the sneaky code in one place, it can easily be updated.
+	 */
+	if (GTK_IS_MENU_ITEM (proxy)) {
+		/* Menu items already forward middle clicks */
+		widget = NULL;
+	} else if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
+		/**
+		 * The menu tool button's button is the first child
+		 * of the child hbox.
+		 */
+		GtkContainer *container =
+			GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
+		widget = GTK_WIDGET (gtk_container_get_children (container)->data);
+	} else if (GTK_IS_TOOL_BUTTON (proxy)) {
+		/* The tool button's button is the direct child */
+		widget = gtk_bin_get_child (GTK_BIN (proxy));
+	} else if (GTK_IS_BUTTON (proxy)) {
+		widget = proxy;
+	} else {
+		/* Don't touch anything we don't know about */
+		widget = NULL;
+	}
+
+	return widget;
+}
+
+static gboolean
+proxy_button_press_event_cb (GtkButton *button,
+			     GdkEventButton *event,
+			     gpointer user_data)
+{
+	if (event->button == 2) {
+		gtk_button_pressed (button);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+proxy_button_release_event_cb (GtkButton *button,
+			       GdkEventButton *event,
+			       gpointer user_data)
+{
+	if (event->button == 2) {
+		gtk_button_released (button);
+	}
+
+	return FALSE;
+}
+
 static void
 disconnect_proxy_cb (GtkUIManager *manager,
 		     GtkAction *action,
 		     GtkWidget *proxy,
 		     NautilusWindow *window)
 {
+	GtkWidget *widget;
+
 	if (GTK_IS_MENU_ITEM (proxy)) {
 		g_signal_handlers_disconnect_by_func
 			(proxy, G_CALLBACK (menu_item_select_cb), window);
 		g_signal_handlers_disconnect_by_func
 			(proxy, G_CALLBACK (menu_item_deselect_cb), window);
 	}
+
+	widget = get_event_widget (proxy);
+	if (widget) {
+		g_signal_handlers_disconnect_by_func (widget,
+						      G_CALLBACK (proxy_button_press_event_cb),
+						      action);
+		g_signal_handlers_disconnect_by_func (widget,
+						      G_CALLBACK (proxy_button_release_event_cb),
+						      action);
+	}
+
 }
 
 static void
@@ -581,6 +772,15 @@ connect_proxy_cb (GtkUIManager *manager,
 		}
 	}
 	
+	widget = get_event_widget (proxy);
+	if (widget) {
+		g_signal_connect (widget, "button-press-event",
+				  G_CALLBACK (proxy_button_press_event_cb),
+				  action);
+		g_signal_connect (widget, "button-release-event",
+				  G_CALLBACK (proxy_button_release_event_cb),
+				  action);
+	}
 }
 
 static const GtkActionEntry main_entries[] = {
@@ -591,7 +791,7 @@ static const GtkActionEntry main_entries[] = {
   /* name, stock id */         { "Close", GTK_STOCK_CLOSE,
   /* label, accelerator */       N_("_Close"), "<control>W",
   /* tooltip */                  N_("Close this folder"),
-                                 G_CALLBACK (action_close_window_callback) },
+                                 G_CALLBACK (action_close_window_slot_callback) },
                                { "Backgrounds and Emblems", NULL,
                                  N_("_Backgrounds and Emblems..."),               
                                  NULL, N_("Display patterns, colors, and emblems that can be used to customize appearance"),
@@ -679,6 +879,14 @@ static const GtkActionEntry main_entries[] = {
                                  G_CALLBACK (action_go_to_burn_cd_callback) },
 };
 
+static const GtkToggleActionEntry main_toggle_entries[] = {
+  /* name, stock id */         { "Show Hidden Files", NULL,
+  /* label, accelerator */       N_("Show _Hidden Files"), "<control>H",
+  /* tooltip */                  N_("Toggle the display of hidden files in the current window"),
+                                 G_CALLBACK (action_show_hidden_files_callback),
+                                 TRUE },
+};
+
 /**
  * nautilus_window_initialize_menus
  * 
@@ -699,12 +907,26 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	gtk_action_group_add_actions (action_group, 
 				      main_entries, G_N_ELEMENTS (main_entries),
 				      window);
+	gtk_action_group_add_toggle_actions (action_group, 
+					     main_toggle_entries, G_N_ELEMENTS (main_toggle_entries),
+					     window);
 
 	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_UP);
 	g_object_set (action, "short_label", _("_Up"), NULL);
 
 	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_HOME);
 	g_object_set (action, "short_label", _("_Home"), NULL);
+
+	action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_SHOW_HIDDEN_FILES);
+	g_signal_handlers_block_by_func (action, action_show_hidden_files_callback, window);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
+				      eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+	g_signal_handlers_unblock_by_func (action, action_show_hidden_files_callback, window);
+
+
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						  show_hidden_files_preference_callback,
+						  window, G_OBJECT (window));
 
 	window->details->ui_manager = gtk_ui_manager_new ();
 	ui_manager = window->details->ui_manager;
@@ -744,12 +966,15 @@ nautilus_window_initialize_menus_constructed (NautilusWindow *window)
 static GList *
 get_extension_menus (NautilusWindow *window)
 {
+	NautilusWindowSlot *slot;
 	GList *providers;
 	GList *items;
 	GList *l;
 	
 	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
 	items = NULL;
+
+	slot = nautilus_window_get_active_slot (window);
 
 	for (l = providers; l != NULL; l = l->next) {
 		NautilusMenuProvider *provider;
@@ -758,7 +983,7 @@ get_extension_menus (NautilusWindow *window)
 		provider = NAUTILUS_MENU_PROVIDER (l->data);
 		file_items = nautilus_menu_provider_get_background_items (provider,
 									  GTK_WIDGET (window),
-									  window->details->viewed_file);
+									  slot->viewed_file);
 		items = g_list_concat (items, file_items);
 	}
 

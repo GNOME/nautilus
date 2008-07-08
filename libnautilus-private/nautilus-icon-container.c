@@ -3365,7 +3365,8 @@ keyboard_space (NautilusIconContainer *container,
 		keyboard_move_to (container,
 				  container->details->keyboard_focus,
 				  NULL, NULL);
-	} else if ((event->state & GDK_CONTROL_MASK) != 0) {
+	} else if ((event->state & GDK_CONTROL_MASK) != 0 &&
+		   (event->state & GDK_SHIFT_MASK) == 0) {
 		/* Control-space toggles the selection state of the current icon. */
 		if (container->details->keyboard_focus != NULL) {
 			icon_toggle_selected (container, container->details->keyboard_focus);

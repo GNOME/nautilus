@@ -171,6 +171,11 @@ static EelEnumerationEntry date_format_entries[] = {
 	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL }
 };
 
+static EelEnumerationEntry new_tab_position_entries[] = {
+	{ "after_current_tab",  "After Current Tab",	NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB },
+	{ "end",		"End",			NAUTILUS_NEW_TAB_POSITION_END }
+};
+
 /*
  * A callback which can be used to fetch dynamic fallback values.
  * For example, values that are dependent on the environment (such as user name) 
@@ -332,6 +337,16 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (FALSE)
+	},
+	{ NAUTILUS_PREFERENCES_ENABLE_TABS,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
+	{ NAUTILUS_PREFERENCES_NEW_TAB_POSITION,
+	  PREFERENCE_STRING,
+	  "after_current_tab",
+	  NULL, NULL,
+	  "new_tab_position"
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 	  PREFERENCE_BOOLEAN,
@@ -604,6 +619,9 @@ global_preferences_register_enumerations (void)
 	eel_enumeration_register ("date_format",
 				  date_format_entries,
 				  G_N_ELEMENTS (date_format_entries));
+	eel_enumeration_register ("new_tab_position",
+				  new_tab_position_entries,
+				  G_N_ELEMENTS (new_tab_position_entries));
 
 	/* Set the enumeration ids for preferences that need them */
 	for (i = 0; preference_defaults[i].name != NULL; i++) {

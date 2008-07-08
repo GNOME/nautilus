@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-query.h>
 #include <nautilus-search-bar.h>
+#include "nautilus-window-info.h"
 
 #define NAUTILUS_TYPE_QUERY_EDITOR (nautilus_query_editor_get_type ())
 #define NAUTILUS_QUERY_EDITOR(obj) GTK_CHECK_CAST (obj, NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditor)
@@ -54,7 +55,9 @@ GtkWidget* nautilus_query_editor_new          	   (gboolean start_hidden,
 						    gboolean is_indexed);
 GtkWidget* nautilus_query_editor_new_with_bar      (gboolean start_hidden,
 						    gboolean is_indexed,
-						    NautilusSearchBar *bar);
+						    gboolean start_attached,
+						    NautilusSearchBar *bar,
+						    NautilusWindowSlot *slot);
 void       nautilus_query_editor_set_default_query (NautilusQueryEditor *editor);
 
 void	   nautilus_query_editor_grab_focus (NautilusQueryEditor *editor);

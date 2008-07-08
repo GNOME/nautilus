@@ -278,3 +278,17 @@ nautilus_view_pop_up_location_context_menu (NautilusView   *view,
 		(* NAUTILUS_VIEW_GET_IFACE (view)->pop_up_location_context_menu) (view, event, location);
 	}
 }
+
+void
+nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
+					  GList                *uris,
+					  const char           *target_location,
+					  GdkDragAction         action)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+
+	if (NAUTILUS_VIEW_GET_IFACE (view)->drop_proxy_received_uris != NULL) {
+		(* NAUTILUS_VIEW_GET_IFACE (view)->drop_proxy_received_uris) (view, uris, target_location, action);
+	}
+}
+

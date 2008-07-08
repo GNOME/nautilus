@@ -194,6 +194,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view.h \
 	nautilus-window-info.c \
 	nautilus-window-info.h \
+	nautilus-window-slot-info.c \
+	nautilus-window-slot-info.h \
 	$(NULL)
 
 BEAGLE_SOURCES = \

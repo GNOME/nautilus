@@ -1660,7 +1660,7 @@ drag_drop_callback (GtkWidget *widget,
 
 	get_data_on_first_target_we_support (widget, context, time, x, y);
 	
-	return FALSE;
+	return TRUE;
 }
 
 void

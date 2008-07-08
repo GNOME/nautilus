@@ -36,6 +36,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-view.h>
 #include <libnautilus-private/nautilus-window-info.h>
+#include <libnautilus-private/nautilus-window-slot-info.h>
 #include <gio/gio.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
@@ -206,6 +207,7 @@ struct FMDirectoryViewClass {
          * If overridden, subclasses must call parent class's function.
          */
         void    (* merge_menus)         	(FMDirectoryView *view);
+        void    (* unmerge_menus)         	(FMDirectoryView *view);
 
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
@@ -330,6 +332,7 @@ GType               fm_directory_view_get_type                         (void);
 
 /* Functions callable from the user interface and elsewhere. */
 NautilusWindowInfo *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
+NautilusWindowSlotInfo *fm_directory_view_get_nautilus_window_slot     (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
@@ -371,6 +374,7 @@ void                fm_directory_view_move_copy_items                  (const GL
 									int               y,
 									FMDirectoryView  *view);
 GdkAtom	            fm_directory_view_get_copied_files_atom            (FMDirectoryView  *view);
+gboolean            fm_directory_view_get_active                       (FMDirectoryView  *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
@@ -388,15 +392,14 @@ gboolean            fm_directory_view_get_loading                      (FMDirect
 void                fm_directory_view_activate_files                   (FMDirectoryView        *view,
 									GList                  *files,
 									NautilusWindowOpenMode  mode,
-									NautilusWindowOpenFlags flags);
+									NautilusWindowOpenFlags flags,
+									gboolean                confirm_multiple);
 void                fm_directory_view_activate_file                    (FMDirectoryView        *view,
 									NautilusFile           *file,
 									NautilusWindowOpenMode  mode,
 									NautilusWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
-gboolean            fm_directory_view_confirm_multiple_windows         (GtkWindow        *parent_window,
-									int               window_count);
 void                fm_directory_view_queue_file_change                (FMDirectoryView  *view,
 									NautilusFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);

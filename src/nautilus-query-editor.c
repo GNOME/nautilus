@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include "nautilus-query-editor.h"
+#include "nautilus-window-slot.h"
 
 #include <string.h>
 #include <libnautilus-private/nautilus-marshal.h>
@@ -72,8 +73,10 @@ struct NautilusQueryEditorDetails {
 	GtkWidget *visible_vbox;
 
 	GList *rows;
+	char *last_set_query_text;
 	
 	NautilusSearchBar *bar;
+	NautilusWindowSlot *slot;
 };
 
 enum {
@@ -1174,11 +1177,16 @@ nautilus_query_editor_clear_query (NautilusQueryEditor *editor)
 {
 	editor->details->change_frozen = TRUE;
 	gtk_entry_set_text (GTK_ENTRY (editor->details->entry), "");
+
+	g_free (editor->details->last_set_query_text);
+	editor->details->last_set_query_text = g_strdup ("");
+
 	editor->details->change_frozen = FALSE;
 }
 
 GtkWidget *
-nautilus_query_editor_new (gboolean start_hidden, gboolean is_indexed)
+nautilus_query_editor_new (gboolean start_hidden,
+			   gboolean is_indexed)
 {
 	GtkWidget *editor;
 
@@ -1194,10 +1202,45 @@ nautilus_query_editor_new (gboolean start_hidden, gboolean is_indexed)
 	return editor;
 }
 
+static void
+detach_from_external_entry (NautilusQueryEditor *editor)
+{
+	if (editor->details->bar != NULL) {
+		nautilus_search_bar_return_entry (editor->details->bar);
+		g_signal_handlers_block_by_func (editor->details->entry,
+						 entry_activate_cb,
+						 editor);
+		g_signal_handlers_block_by_func (editor->details->entry,
+						 entry_changed_cb,
+						 editor);
+	}
+}
+
+static void
+attach_to_external_entry (NautilusQueryEditor *editor)
+{
+	if (editor->details->bar != NULL) {
+		nautilus_search_bar_borrow_entry (editor->details->bar);
+		g_signal_handlers_unblock_by_func (editor->details->entry,
+						   entry_activate_cb,
+						   editor);
+		g_signal_handlers_unblock_by_func (editor->details->entry,
+						   entry_changed_cb,
+						   editor);
+
+		editor->details->change_frozen = TRUE;
+		gtk_entry_set_text (GTK_ENTRY (editor->details->entry),
+				    editor->details->last_set_query_text);
+		editor->details->change_frozen = FALSE;
+	}
+}
+
 GtkWidget*
 nautilus_query_editor_new_with_bar (gboolean start_hidden,
 				    gboolean is_indexed,
-				    NautilusSearchBar *bar)
+				    gboolean start_attached,
+				    NautilusSearchBar *bar,
+				    NautilusWindowSlot *slot)
 {
 	GtkWidget *entry;
 	NautilusQueryEditor *editor;
@@ -1209,9 +1252,21 @@ nautilus_query_editor_new_with_bar (gboolean start_hidden,
 
 	editor->details->bar = bar;
 	eel_add_weak_pointer (&editor->details->bar);
-	
+
+	editor->details->slot = slot;
+
 	entry = nautilus_search_bar_borrow_entry (bar);
 	setup_external_entry (editor, entry);
+	if (!start_attached) {
+		detach_from_external_entry (editor);
+	}
+
+	g_signal_connect_object (slot, "active",
+				 G_CALLBACK (attach_to_external_entry),
+				 editor, G_CONNECT_SWAPPED);
+	g_signal_connect_object (slot, "inactive",
+				 G_CALLBACK (detach_from_external_entry),
+				 editor, G_CONNECT_SWAPPED);
 	
 	return GTK_WIDGET (editor);
 }
@@ -1220,7 +1275,7 @@ void
 nautilus_query_editor_set_query (NautilusQueryEditor *editor, NautilusQuery *query)
 {
 	NautilusQueryEditorRowType type;
-	const char *text;
+	char *text;
 
 	if (!query) {
 		nautilus_query_editor_clear_query (editor);
@@ -1228,8 +1283,9 @@ nautilus_query_editor_set_query (NautilusQueryEditor *editor, NautilusQuery *que
 	}
 
 	text = nautilus_query_get_text (query);
+
 	if (!text) {
-		text = "";
+		text = g_strdup ("");
 	}
 
 	editor->details->change_frozen = TRUE;
@@ -1240,4 +1296,7 @@ nautilus_query_editor_set_query (NautilusQueryEditor *editor, NautilusQuery *que
 	}
 	
 	editor->details->change_frozen = FALSE;
+
+	g_free (editor->details->last_set_query_text);
+	editor->details->last_set_query_text = text;
 }

@@ -822,6 +822,13 @@ ephy_spinner_set_timeout (EphySpinner *spinner,
 }
 #endif
 
+gboolean
+ephy_spinner_get_spinning (EphySpinner *spinner)
+{
+	EphySpinnerDetails *details = spinner->details;
+	return details->spinning;
+}
+
 static void
 ephy_spinner_size_request (GtkWidget *widget,
 			   GtkRequisition *requisition)

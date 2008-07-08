@@ -123,6 +123,11 @@ struct _NautilusViewIface
 							 GdkEventButton *event,
 							 const char     *location);
 
+	void           (* drop_proxy_received_uris)     (NautilusView         *view,
+							 GList                *uris,
+							 const char           *target_location,
+							 GdkDragAction         action);
+
 	/* Padding for future expansion */
 	void (*_reserved1) (void);
 	void (*_reserved2) (void);
@@ -162,6 +167,10 @@ void              nautilus_view_pop_up_location_context_menu (NautilusView    *v
 							      GdkEventButton  *event,
 							      const char      *location);
 void              nautilus_view_grab_focus                 (NautilusView      *view);
+void              nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
+							    GList                *uris,
+							    const char           *target_location,
+							    GdkDragAction         action);
 
 G_END_DECLS
 
