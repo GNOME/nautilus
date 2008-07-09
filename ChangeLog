@@ -1,5 +1,15 @@
 2008-07-09  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-places-sidebar.c (compute_drop_position),
+	(drag_motion_callback), (reorder_bookmarks),
+	(drag_data_received_callback), (nautilus_places_sidebar_init):
+	Bookmark DND fix galore. Properly handle reordering when non-existing
+	bookmarks are present. They are ignored by the view, but not by the
+	Nautilus bookmark list. Make DND indication consistent with the GTK+
+	file chooser.
+
+2008-07-09  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-window-slot-info.h:
 	Actually add it.
 
