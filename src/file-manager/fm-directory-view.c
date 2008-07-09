@@ -6529,7 +6529,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  NULL,
                                  G_CALLBACK (action_rename_select_all_callback) },
   /* name, stock id */         { "Trash", NAUTILUS_ICON_TRASH,
-  /* label, accelerator */       N_("Mo_ve to Trash"), "<control>T",
+  /* label, accelerator */       N_("Mo_ve to Trash"), NULL,
   /* tooltip */                  N_("Move each selected item to the Trash"),
                                  G_CALLBACK (action_trash_callback) },
   /* name, stock id */         { "Delete", NULL,
