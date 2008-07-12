@@ -1,6 +1,14 @@
 2008-07-12  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c
+	(button_press_event):
+	* libnautilus-private/nautilus-icon-private.h:
+	Completely rewrite button press detection. Finally fixes #542269
+	without any side effects.
+
+2008-07-12  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
 	(handle_icon_button_press):
 	Fix activation of previously selected icons (introduced when fixing
 	bug #347423). Fixes #542269. Thanks to Tomasz Sałaciński.
