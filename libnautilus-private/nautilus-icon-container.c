@@ -3288,7 +3288,12 @@ button_press_event (GtkWidget *widget,
 
 	/* Forget about where we began with the arrow keys now that we're mousing. */
 	container->details->arrow_key_axis = AXIS_NONE;
-	
+
+	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
+		/* We use our own double-click detection. */
+		return TRUE;
+	}
+
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	clicked_on_icon = GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
 	
@@ -3300,13 +3305,6 @@ button_press_event (GtkWidget *widget,
     	}
 
 	if (clicked_on_icon) {
-		return TRUE;
-	}
-
-	/* An item didn't take the press, so it's a background press.
-         * We ignore double clicks on the desktop for now.
-	 */
-	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
 		return TRUE;
 	}
 
@@ -5176,6 +5174,36 @@ typedef struct {
 	GdkEventButton	      *event;
 } ContextMenuParameters;
 
+static gboolean
+handle_icon_double_click (NautilusIconContainer *container,
+			  NautilusIcon *icon,
+			  GdkEventButton *event)
+{
+	NautilusIconContainerDetails *details;
+
+	details = container->details;
+
+	if (!details->single_click_mode &&
+	    clicked_within_double_click_interval(container) &&
+	    details->double_click_icon[0] == details->double_click_icon[1] &&
+	    details->double_click_button[0] == details->double_click_button[1]) {
+		if (!button_event_modifies_selection (event)) {
+			if (event->button == MIDDLE_BUTTON) {
+				activate_selected_items_alternate (container, NULL);
+			} else {
+				activate_selected_items (container);
+			}
+			return TRUE;
+		} else if (event->button == DRAG_BUTTON &&
+			   (event->state & GDK_SHIFT_MASK) != 0) {
+			activate_selected_items_alternate (container, icon);
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 /* NautilusIcon event handling.  */
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
@@ -5196,13 +5224,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	details = container->details;
 
-	if (event->type == GDK_3BUTTON_PRESS) {
-		return TRUE;
-	}
-
-	if (details->single_click_mode &&
-	    event->type == GDK_2BUTTON_PRESS) {
-		/* Don't care about double clicks in single click mode */
+	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
 		return TRUE;
 	}
 	
@@ -5217,32 +5239,21 @@ handle_icon_button_press (NautilusIconContainer *container,
 		/* The next double click has to be on this icon */
 		details->double_click_icon[1] = details->double_click_icon[0];
 		details->double_click_icon[0] = icon;
+
+		details->double_click_button[1] = details->double_click_button[0];
+		details->double_click_button[0] = event->button;
 	}
 
-	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON)
-	    && (!details->single_click_mode && clicked_within_double_click_interval(container) && details->icon_revealed)) {
+	if (handle_icon_double_click (container, icon, event)) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;
-		
-		if (icon == details->double_click_icon[1]) {
-			if (!button_event_modifies_selection (event)) {
-				if (event->button == MIDDLE_BUTTON) {
-					activate_selected_items_alternate (container, NULL);
-				} else {
-					activate_selected_items (container);
-				}
-			} else if (event->button == DRAG_BUTTON &&
-				   (event->state & GDK_SHIFT_MASK) != 0) {
-				activate_selected_items_alternate (container, icon);
-			}
-		}
-		details->icon_revealed = FALSE;
 		return TRUE;
 	}
+
 	if (event->button == DRAG_BUTTON
 	    || event->button == DRAG_MENU_BUTTON) {
-		details->drag_button = event->button;
+			details->drag_button = event->button;
 		details->drag_icon = icon;
 		details->drag_x = event->x;
 		details->drag_y = event->y;
@@ -5286,12 +5297,9 @@ handle_icon_button_press (NautilusIconContainer *container,
 				       signals[SELECTION_CHANGED], 0);
 		} else {
 			select_one_unselect_others (container, icon);
-			details->icon_revealed = TRUE;
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
-	} else {
-		details->icon_revealed = TRUE;
 	}
 
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
@@ -5321,7 +5329,6 @@ item_event_callback (EelCanvasItem *item,
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-	case GDK_2BUTTON_PRESS:
 		if (handle_icon_button_press (container, icon, &event->button)) {
 			/* Stop the event from being passed along further. Returning
 			 * TRUE ain't enough. 

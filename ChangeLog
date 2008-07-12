@@ -1,5 +1,17 @@
 2008-07-12  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(button_press_event), (handle_icon_double_click),
+	(handle_icon_button_press), (item_event_callback):
+	* libnautilus-private/nautilus-icon-container.h:
+	Completely rewrite button press detection. Finally fixes #542269
+	without any side effects.
+
+	NEWS:
+	Update for release.
+
+2008-07-12  Christian Neumair  <cneumair@gnome.org>
+
 	* configure.in:
 	Post release version bump.
 

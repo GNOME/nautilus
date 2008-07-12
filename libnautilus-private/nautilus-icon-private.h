@@ -170,6 +170,7 @@ struct NautilusIconContainerDetails {
 
 	gboolean icon_selected_on_button_down;
 	NautilusIcon *double_click_icon[2]; /* Both clicks in a double click need to be on the same icon */
+	guint double_click_button[2];
 
 	NautilusIcon *range_selection_base_icon;
 	
@@ -274,9 +275,6 @@ struct NautilusIconContainerDetails {
 	GtkWidget *search_entry;
 	guint search_entry_changed_id;
 	guint typeselect_flush_timeout;
-
-	/* Needed for dblclicking activation of partially shown icons, see bug #347423 */
-	gboolean icon_revealed;
 };
 
 /* Private functions shared by mutiple files. */
