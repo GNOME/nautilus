@@ -5570,7 +5570,7 @@ handle_icon_double_click (NautilusIconContainer *container,
 			if (event->button == MIDDLE_BUTTON) {
 				activate_selected_items_alternate (container, NULL);
 				return TRUE;
-			else if (event->button == DRAG_BUTTON) {
+			} else if (event->button == DRAG_BUTTON) {
 				activate_selected_items (container);
 				return TRUE;
 			}
