@@ -5669,6 +5669,8 @@ handle_icon_button_press (NautilusIconContainer *container,
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
+	} else {
+		details->icon_revealed = TRUE;
 	}
 
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
