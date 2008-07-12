@@ -1,5 +1,12 @@
 2008-07-12  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-properties-window.c (create_basic_page),
+	(create_simple_permissions), (create_advanced_permissions),
+	(create_permissions_page):
+	Use UTF-8 dash instead of "--". Fixes #542658. Thanks to Claude Paroz.
+
+2008-07-12  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(button_press_event):
 	* libnautilus-private/nautilus-icon-private.h:

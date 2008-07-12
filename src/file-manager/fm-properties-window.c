@@ -2427,6 +2427,9 @@ append_title_field (GtkTable *table, const char *title, GtkLabel **label)
 	return last_row;
 }
 
+#define INCONSISTENT_STATE_STRING \
+	"\xE2\x80\x92"
+
 static guint
 append_title_value_pair (FMPropertiesWindow *window,
 			 GtkTable *table,
@@ -3248,7 +3251,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_value_pair (window,
 					 table, _("Type:"), 
 					 "type",
-					 "--",
+					 INCONSISTENT_STATE_STRING,
 					 FALSE);
 	}
 
@@ -3256,7 +3259,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_and_ellipsizing_value (window, table, 
 						    _("Link target:"), 
 						    "link_target",
-						    _("--"),
+						    _(INCONSISTENT_STATE_STRING),
 						    FALSE);
 	}
 
@@ -3266,7 +3269,7 @@ create_basic_page (FMPropertiesWindow *window)
 	} else {
 		append_title_value_pair (window, table, _("Size:"), 
 					 "size_detail",
-					 "--",
+					 INCONSISTENT_STATE_STRING,
 					 FALSE);
 	}
 
@@ -3275,13 +3278,13 @@ create_basic_page (FMPropertiesWindow *window)
 	if (should_show_location_info (window)) {
 		append_title_and_ellipsizing_value (window, table, _("Location:"), 
 						    "where",
-						    "--",
+						    INCONSISTENT_STATE_STRING,
 						    TRUE);
 		
 		append_title_and_ellipsizing_value (window, table, 
 						    _("Volume:"), 
 						    "volume",
-						    "--",
+						    INCONSISTENT_STATE_STRING,
 						    FALSE);
 	}
 
@@ -3290,11 +3293,11 @@ create_basic_page (FMPropertiesWindow *window)
 
 		append_title_value_pair (window, table, _("Accessed:"), 
 					 "date_accessed",
-					 _("--"),
+					 INCONSISTENT_STATE_STRING,
 					 FALSE);
 		append_title_value_pair (window, table, _("Modified:"), 
 					 "date_modified",
-					 _("--"),
+					 INCONSISTENT_STATE_STRING,
 					 FALSE);
 	}
 
@@ -3303,7 +3306,7 @@ create_basic_page (FMPropertiesWindow *window)
 
 		append_title_value_pair (window, table, _("Free space:"), 
 					 "free_space",
-					 "--",
+					 INCONSISTENT_STATE_STRING,
 					 FALSE);
 	}
 
@@ -4353,7 +4356,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
-				    "--",
+				    INCONSISTENT_STATE_STRING,
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
@@ -4386,7 +4389,7 @@ create_simple_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, page_table, last_row, 
 				    VALUE_COLUMN, 
 				    "group",
-				    "--",
+				    INCONSISTENT_STATE_STRING,
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (group_label, value);
 	}
@@ -4559,7 +4562,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		value = attach_value_field (window, 
 				    page_table, last_row, VALUE_COLUMN,
 				    "owner",
-				    "--",
+				    INCONSISTENT_STATE_STRING,
 				    FALSE); 
 		gtk_label_set_mnemonic_widget (owner_label, value);
 	}
@@ -4581,7 +4584,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 		attach_value_field (window, page_table, last_row, 
 				    VALUE_COLUMN, 
 				    "group",
-				    "--",
+				    INCONSISTENT_STATE_STRING,
 				    FALSE); 
 	}
 
@@ -4616,7 +4619,7 @@ create_advanced_permissions (FMPropertiesWindow *window, GtkTable *page_table)
 	
 	append_title_value_pair
 		(window, page_table, _("Text view:"), 
-		 "permissions", "--",
+		 "permissions", INCONSISTENT_STATE_STRING,
 		 FALSE);
 }
 
@@ -4787,12 +4790,12 @@ create_permissions_page (FMPropertiesWindow *window)
 #ifdef HAVE_SELINUX
 		append_title_value_pair
 			(window, page_table, _("SELinux context:"), 
-			 "selinux_context", "--",
+			 "selinux_context", INCONSISTENT_STATE_STRING,
 			 FALSE);
 #endif
 		append_title_value_pair
 			(window, page_table, _("Last changed:"), 
-			 "date_permissions", "--",
+			 "date_permissions", INCONSISTENT_STATE_STRING,
 			 FALSE);
 	
 		if (window->details->has_recursive_apply) {
