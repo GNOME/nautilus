@@ -509,6 +509,22 @@ real_slot_info_get_current_location (NautilusWindowSlotInfo *info)
 	return NULL;
 }
 
+static NautilusView *
+real_slot_info_get_current_view (NautilusWindowSlotInfo *info)
+{
+	NautilusWindowSlot *slot;
+
+	slot = NAUTILUS_WINDOW_SLOT (info);
+
+	if (slot->content_view != NULL) {
+		return g_object_ref (slot->content_view);
+	} else if (slot->new_content_view) {
+		return g_object_ref (slot->new_content_view);
+	}
+
+	return NULL;
+}
+
 static void
 nautilus_window_slot_dispose (GObject *object)
 {
@@ -575,6 +591,7 @@ nautilus_window_slot_info_iface_init (NautilusWindowSlotInfoIface *iface)
 	iface->get_window = nautilus_window_slot_get_window;
 	iface->get_selection_count = nautilus_window_slot_get_selection_count;
 	iface->get_current_location = real_slot_info_get_current_location;
+	iface->get_current_view = real_slot_info_get_current_view;
 	iface->set_status = nautilus_window_slot_set_status;
 	iface->get_title = nautilus_window_slot_get_title;
 	iface->open_location = nautilus_window_slot_open_location_full;

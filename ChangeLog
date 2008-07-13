@@ -1,3 +1,13 @@
+2008-07-13  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-window-slot-info.c
+	(nautilus_window_slot_info_get_current_view):
+	* libnautilus-private/nautilus-window-slot-info.h:
+	* src/nautilus-window-slot.c (real_slot_info_get_current_view),
+	(nautilus_window_slot_info_iface_init):
+	Add nautilus_window_slot_info_get_window()
+	for getting current NautilusView (one ref count added).
+
 2008-07-12  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

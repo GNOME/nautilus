@@ -26,6 +26,7 @@
 #define NAUTILUS_WINDOW_SLOT_INFO_H
 
 #include "nautilus-window-info.h"
+#include "nautilus-view.h"
 
 
 #define NAUTILUS_TYPE_WINDOW_SLOT_INFO           (nautilus_window_slot_info_get_type ())
@@ -62,6 +63,7 @@ struct _NautilusWindowSlotInfoIface
 	GList *(* get_selection)      (NautilusWindowSlotInfo    *slot);
 
 	char * (* get_current_location)  (NautilusWindowSlotInfo *slot);
+	NautilusView * (* get_current_view) (NautilusWindowSlotInfo *slot);
 	void   (* set_status)            (NautilusWindowSlotInfo *slot,
 					  const char *status);
 	char * (* get_title)             (NautilusWindowSlotInfo *slot);
@@ -85,6 +87,7 @@ void                              nautilus_window_slot_info_set_status          
 										 const char *status);
 
 char *                            nautilus_window_slot_info_get_current_location (NautilusWindowSlotInfo           *slot);
+NautilusView *                    nautilus_window_slot_info_get_current_view     (NautilusWindowSlotInfo           *slot);
 int                               nautilus_window_slot_info_get_selection_count  (NautilusWindowSlotInfo           *slot);
 GList *                           nautilus_window_slot_info_get_selection        (NautilusWindowSlotInfo           *slot);
 char *                            nautilus_window_slot_info_get_title            (NautilusWindowSlotInfo           *slot);

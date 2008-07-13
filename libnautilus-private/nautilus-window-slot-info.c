@@ -129,6 +129,14 @@ nautilus_window_slot_info_get_current_location (NautilusWindowSlotInfo *slot)
 	return (* NAUTILUS_WINDOW_SLOT_INFO_GET_IFACE (slot)->get_current_location) (slot);
 }
 
+NautilusView *
+nautilus_window_slot_info_get_current_view (NautilusWindowSlotInfo *slot)
+{
+	g_assert (NAUTILUS_IS_WINDOW_SLOT_INFO (slot));
+	
+	return (* NAUTILUS_WINDOW_SLOT_INFO_GET_IFACE (slot)->get_current_view) (slot);
+}
+
 NautilusWindowInfo *
 nautilus_window_slot_info_get_window (NautilusWindowSlotInfo *slot)
 {
