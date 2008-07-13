@@ -1,5 +1,12 @@
 2008-07-13  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-emblem-utils.c:
+	Include sys/stat.h for struct stat and S_ISUID and other macros.
+	Thanks to Thadeu Lima de Souza Cascardo  <cascardo@minaslivre.org>.
+
+2008-07-13  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-dnd.c
 	(nautilus_drag_uri_array_from_selection_list),
 	(nautilus_drag_uri_list_from_selection_list),
