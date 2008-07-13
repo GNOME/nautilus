@@ -1,5 +1,17 @@
 2008-07-13  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-view.c
+	(nautilus_view_drop_proxy_received_netscape_url):
+	* libnautilus-private/nautilus-view.h:
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_init_view_iface),
+	(fm_directory_view_drop_proxy_received_uris),
+	(fm_directory_view_drop_proxy_received_netscape_url):
+	Add function for receiving netscape URLs, clear colliding clipboard
+	contents when receiving dropped URIs.
+
+2008-07-13  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-window-slot-info.c
 	(nautilus_window_slot_info_get_current_view):
 	* libnautilus-private/nautilus-window-slot-info.h:

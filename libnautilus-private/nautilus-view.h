@@ -127,6 +127,10 @@ struct _NautilusViewIface
 							 GList                *uris,
 							 const char           *target_location,
 							 GdkDragAction         action);
+	void           (* drop_proxy_received_netscape_url) (NautilusView         *view,
+							     const char           *source_url,
+							     const char           *target_location,
+							     GdkDragAction         action);
 
 	/* Padding for future expansion */
 	void (*_reserved1) (void);
@@ -171,6 +175,10 @@ void              nautilus_view_drop_proxy_received_uris   (NautilusView        
 							    GList                *uris,
 							    const char           *target_location,
 							    GdkDragAction         action);
+void              nautilus_view_drop_proxy_received_netscape_url (NautilusView         *view,
+								  const char           *source_url,
+								  const char           *target_location,
+								  GdkDragAction         action);
 
 G_END_DECLS
 

@@ -290,9 +290,13 @@ static void     fm_directory_view_load_location                (NautilusView    
 								const char           *location);
 static void     fm_directory_view_stop_loading                 (NautilusView         *nautilus_view);
 static void     fm_directory_view_drop_proxy_received_uris     (FMDirectoryView *view,
-								GList *uris,
+								const GList *source_uri_list,
 								const char *target_uri,
 								GdkDragAction action);
+static void     fm_directory_view_drop_proxy_received_netscape_url (FMDirectoryView *view,
+								    const char *netscape_url,
+								    const char *target_uri,
+								    GdkDragAction action);
 static void     clipboard_changed_callback                     (NautilusClipboardMonitor *monitor,
 								FMDirectoryView      *view);
 static void     open_one_in_new_window                         (gpointer              data,
@@ -1815,6 +1819,7 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
 
 	iface->pop_up_location_context_menu = (gpointer)fm_directory_view_pop_up_location_context_menu;
 	iface->drop_proxy_received_uris = (gpointer)fm_directory_view_drop_proxy_received_uris;
+	iface->drop_proxy_received_netscape_url = (gpointer)fm_directory_view_drop_proxy_received_netscape_url;
 }
 
 static void
@@ -7789,7 +7794,7 @@ fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view,
 
 static void 
 fm_directory_view_drop_proxy_received_uris (FMDirectoryView *view,
-					    GList *uris,
+					    const GList *source_uri_list,
 					    const char *target_uri,
 					    GdkDragAction action)
 {
@@ -7810,11 +7815,27 @@ fm_directory_view_drop_proxy_received_uris (FMDirectoryView *view,
 		}
 	}
 
-	fm_directory_view_move_copy_items (uris, NULL,
+	nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+						    source_uri_list,
+						    fm_directory_view_get_copied_files_atom (view));
+
+	fm_directory_view_move_copy_items (source_uri_list, NULL,
 					   target_uri != NULL ? target_uri : container_uri,
 					   action, 0, 0, view);
 
 	g_free (container_uri);
+}
+
+static void 
+fm_directory_view_drop_proxy_received_netscape_url (FMDirectoryView *view,
+						    const char *netscape_url,
+						    const char *target_uri,
+						    GdkDragAction action)
+{
+	fm_directory_view_handle_netscape_url_drop (view,
+						    netscape_url,
+						    target_uri,
+						    action, 0, 0);
 }
 
 static void

@@ -292,3 +292,17 @@ nautilus_view_drop_proxy_received_uris   (NautilusView         *view,
 	}
 }
 
+void
+nautilus_view_drop_proxy_received_netscape_url (NautilusView         *view,
+						const char           *source_url,
+						const char           *target_location,
+						GdkDragAction         action)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+
+	if (NAUTILUS_VIEW_GET_IFACE (view)->drop_proxy_received_netscape_url != NULL) {
+		(* NAUTILUS_VIEW_GET_IFACE (view)->drop_proxy_received_netscape_url) (view, source_url, target_location, action);
+	}
+}
+
+
