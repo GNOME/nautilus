@@ -255,8 +255,7 @@ notebook_tab_drag_data_received (GtkWidget *widget,
 	NautilusWindow *window;
 	NautilusNavigationWindow *navigation_window;
 	GtkWidget *notebook;
-	GList *uri_list, *selection_list, *l;
-	NautilusDragSelectionItem *selection_item;
+	GList *uri_list, *selection_list;
 	char **uris;
 	int i;
 
@@ -285,18 +284,7 @@ notebook_tab_drag_data_received (GtkWidget *widget,
 			return;
 		}
 
-		i = 0;
-
-		uris = g_new0 (char *, g_list_length (selection_list));
-		for (l = selection_list; l != NULL; l = l->next) {
-			selection_item = (NautilusDragSelectionItem *) l->data;
-
-			uris[i] = g_strdup (selection_item->uri);
-			if (uris[i] != NULL) {
-				i++;
-			}
-		}
-		uris[i] = NULL;
+		uris = nautilus_drag_uri_array_from_selection_list (selection_list);
 
 		nautilus_drag_destroy_selection_list (selection_list);
 	} else {

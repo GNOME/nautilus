@@ -1,5 +1,39 @@
 2008-07-13  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_uri_array_from_selection_list),
+	(nautilus_drag_uri_list_from_selection_list),
+	(nautilus_drag_uri_array_from_list),
+	(nautilus_drag_uri_list_from_array), (slot_proxy_drag_motion),
+	(drag_info_clear), (slot_proxy_drag_leave), (slot_proxy_drag_drop),
+	(slot_proxy_handle_drop), (slot_proxy_drag_data_received),
+	(nautilus_drag_slot_proxy_init):
+	* libnautilus-private/nautilus-dnd.h:
+	Add simple slot drop proxy API to libnautilus-private, centered
+	around nautilus_drag_slot_proxy_init().
+	The notebook tab label drop targets will later be ported to this API.
+
+	Add API for converting URI lists to URI arrays, and for constructing
+	URI lists and arrays from selection lists.
+
+	* src/nautilus-notebook.c (notebook_tab_drag_data_received):
+	Use nautilus_drag_uri_array_from_selection_list().
+
+	* src/nautilus-pathbar.c (slider_timeout),
+	(nautilus_path_bar_slider_drag_motion),
+	(nautilus_path_bar_slider_drag_leave), (nautilus_path_bar_init),
+	(nautilus_path_bar_finalize), (button_data_free),
+	(button_drag_data_get_cb), (setup_button_drag_source),
+	(make_directory_button):
+	* src/nautilus-pathbar.h:
+	Add path bar drop targets, use nautilus_drag_slot_proxy_init() for
+	setup.
+	Also offer GNOME icon lists as drag target.
+	Reveal hidden paths when hovering over the up/down sliders for some
+	time. Fixes #309842.
+
+2008-07-13  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-view.c
 	(nautilus_view_drop_proxy_received_netscape_url):
 	* libnautilus-private/nautilus-view.h:

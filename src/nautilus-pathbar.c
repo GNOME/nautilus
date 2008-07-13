@@ -32,7 +32,13 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-marshal.h>
+#include <libnautilus-private/nautilus-dnd.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
 #include "nautilus-pathbar.h"
+#include "nautilus-window.h"
+#include "nautilus-window-private.h"
+#include "nautilus-window-slot.h"
 
 enum {
         PATH_CLICKED,
@@ -78,6 +84,8 @@ struct _ButtonData
         GtkWidget *label;
         guint ignore_changes : 1;
         guint file_is_hidden : 1;
+
+	NautilusDragSlotProxyInfo drag_info;
 };
 
 /* This macro is used to check if a button can be used as a fake root.
@@ -217,6 +225,70 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
         g_object_unref (file);
 }
 
+static gboolean
+slider_timeout (gpointer user_data)
+{
+	NautilusPathBar *path_bar;
+
+	path_bar = NAUTILUS_PATH_BAR (user_data);
+
+	path_bar->drag_slider_timeout = 0;
+
+	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (path_bar))) {
+		if (path_bar->drag_slider_timeout_for_up_button) {
+			nautilus_path_bar_scroll_up (path_bar->up_slider_button, path_bar);
+		} else {
+			nautilus_path_bar_scroll_down (path_bar->down_slider_button, path_bar);
+		}
+	}
+
+	return FALSE;
+}
+
+static void
+nautilus_path_bar_slider_drag_motion (GtkWidget      *widget,
+				      GdkDragContext *context,
+				      int             x,
+				      int             y,
+				      unsigned int    time,
+				      gpointer        user_data)
+{
+	NautilusPathBar *path_bar;
+	GtkSettings *settings;
+	unsigned int timeout;
+
+	path_bar = NAUTILUS_PATH_BAR (user_data);
+
+	if (path_bar->drag_slider_timeout == 0) {
+		settings = gtk_widget_get_settings (widget);
+
+		g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
+		path_bar->drag_slider_timeout =
+			g_timeout_add (timeout,
+				       slider_timeout,
+				       path_bar);
+
+		path_bar->drag_slider_timeout_for_up_button =
+			widget == path_bar->up_slider_button;
+	}
+}
+
+static void
+nautilus_path_bar_slider_drag_leave (GtkWidget      *widget,
+				     GdkDragContext *context,
+				     unsigned int    time,
+				     gpointer        user_data)
+{
+	NautilusPathBar *path_bar;
+
+	path_bar = NAUTILUS_PATH_BAR (user_data);
+
+	if (path_bar->drag_slider_timeout != 0) {
+		g_source_remove (path_bar->drag_slider_timeout);
+		path_bar->drag_slider_timeout = 0;
+	}
+}
+
 static void
 nautilus_path_bar_init (NautilusPathBar *path_bar)
 {
@@ -249,6 +321,30 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
         g_signal_connect (path_bar->up_slider_button, "button_release_event", G_CALLBACK (nautilus_path_bar_slider_button_release), path_bar);
         g_signal_connect (path_bar->down_slider_button, "button_press_event", G_CALLBACK (nautilus_path_bar_slider_button_press), path_bar);
         g_signal_connect (path_bar->down_slider_button, "button_release_event", G_CALLBACK (nautilus_path_bar_slider_button_release), path_bar);
+
+	gtk_drag_dest_set (GTK_WIDGET (path_bar->up_slider_button),
+			   0, NULL, 0, 0);
+	gtk_drag_dest_set_track_motion (GTK_WIDGET (path_bar->up_slider_button), TRUE);
+	g_signal_connect (path_bar->up_slider_button,
+			  "drag-motion",
+			  G_CALLBACK (nautilus_path_bar_slider_drag_motion),
+			  path_bar);
+	g_signal_connect (path_bar->up_slider_button,
+			  "drag-leave",
+			  G_CALLBACK (nautilus_path_bar_slider_drag_leave),
+			  path_bar);
+
+	gtk_drag_dest_set (GTK_WIDGET (path_bar->down_slider_button),
+			   0, NULL, 0, 0);
+	gtk_drag_dest_set_track_motion (GTK_WIDGET (path_bar->up_slider_button), TRUE);
+	g_signal_connect (path_bar->down_slider_button,
+			  "drag-motion",
+			  G_CALLBACK (nautilus_path_bar_slider_drag_motion),
+			  path_bar);
+	g_signal_connect (path_bar->down_slider_button,
+			  "drag-leave",
+			  G_CALLBACK (nautilus_path_bar_slider_drag_leave),
+			  path_bar);
 
         g_signal_connect (nautilus_trash_monitor_get (),
                           "trash_state_changed",
@@ -313,6 +409,11 @@ nautilus_path_bar_finalize (GObject *object)
         path_bar = NAUTILUS_PATH_BAR (object);
 
 	nautilus_path_bar_stop_scrolling (path_bar);
+
+	if (path_bar->drag_slider_timeout != 0) {
+		g_source_remove (path_bar->drag_slider_timeout);
+		path_bar->drag_slider_timeout = 0;
+	}
 
         g_list_free (path_bar->button_list);
 	if (path_bar->root_path) {
@@ -1121,6 +1222,9 @@ button_data_free (ButtonData *button_data)
 		g_object_unref (button_data->custom_icon);
 	}
         g_free (button_data);
+
+	g_object_unref (button_data->drag_info.target_location);
+	button_data->drag_info.target_location = NULL;
 }
 
 static const char *
@@ -1281,22 +1385,53 @@ button_drag_data_get_cb (GtkWidget          *widget,
 			 GtkSelectionData   *selection_data,
 			 guint               info,
 			 guint               time_,
-			 gpointer            data)
+			 gpointer            user_data)
 {
         ButtonData *button_data;
-        char *uri_list;
-	char *uri;
+        char *uri_list[2];
+	char *tmp;
 
-        button_data = data;
-	uri = g_file_get_uri (button_data->path);
-        uri_list = g_strconcat (uri, "\r\n", NULL);
-	g_free (uri);
-        gtk_selection_data_set (selection_data,
-			  	selection_data->target,
-			  	8,
-			  	uri_list,
-			  	strlen (uri_list));
-        g_free (uri_list);
+	button_data = user_data;
+
+	uri_list[0] = g_file_get_uri (button_data->path);
+	uri_list[1] = NULL;
+
+	if (info == NAUTILUS_ICON_DND_GNOME_ICON_LIST) {
+		tmp = g_strdup_printf ("%s\r\n", uri_list[0]);
+		gtk_selection_data_set (selection_data, selection_data->target,
+					8, tmp, strlen (tmp));
+		g_free (tmp);
+	} else if (info == NAUTILUS_ICON_DND_URI_LIST) {
+		gtk_selection_data_set_uris (selection_data, uri_list);
+	}
+
+	g_free (uri_list[0]);
+}
+
+static void
+setup_button_drag_source (ButtonData *button_data)
+{
+	GtkTargetList *target_list;
+	const GtkTargetEntry targets[] = {
+		{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST }
+	};
+
+        gtk_drag_source_set (button_data->button,
+		       	     GDK_BUTTON1_MASK,
+		       	     NULL, 0,
+			     GDK_ACTION_MOVE |
+			     GDK_ACTION_COPY |
+			     GDK_ACTION_LINK |
+			     GDK_ACTION_ASK);
+
+	target_list = gtk_target_list_new (targets, G_N_ELEMENTS (targets));
+	gtk_target_list_add_uri_targets (target_list, NAUTILUS_ICON_DND_URI_LIST);
+	gtk_drag_source_set_target_list (button_data->button, target_list);
+	gtk_target_list_unref (target_list);
+
+        g_signal_connect (button_data->button, "drag-data-get",
+			  G_CALLBACK (button_drag_data_get_cb),
+			  button_data);
 }
 
 static ButtonData *
@@ -1307,10 +1442,6 @@ make_directory_button (NautilusPathBar  *path_bar,
 		       gboolean          base_dir,	
 		       gboolean          file_is_hidden)
 {
-        const GtkTargetEntry targets[] = {
-                { "text/uri-list", 0, 0 }
-        };
-
         GtkWidget *child;
         GtkWidget *label_alignment;
         ButtonData *button_data;
@@ -1325,6 +1456,8 @@ make_directory_button (NautilusPathBar  *path_bar,
         button_data->type = find_button_type (path_bar, path, button_data);
         button_data->button = gtk_toggle_button_new ();
 	gtk_button_set_focus_on_click (GTK_BUTTON (button_data->button), FALSE);
+
+	button_data->drag_info.target_location = g_object_ref (path);
 	
         switch (button_data->type) {
                 case ROOT_BUTTON:
@@ -1391,12 +1524,10 @@ make_directory_button (NautilusPathBar  *path_bar,
         g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
         g_object_weak_ref (G_OBJECT (button_data->button), (GWeakNotify) button_data_free, button_data);
 
-        gtk_drag_source_set (button_data->button,
-		       	     GDK_BUTTON1_MASK,
-		       	     targets,
-		             G_N_ELEMENTS (targets),
-		             GDK_ACTION_COPY);
-        g_signal_connect (button_data->button, "drag-data-get",G_CALLBACK (button_drag_data_get_cb), button_data);
+	setup_button_drag_source (button_data);
+
+	nautilus_drag_slot_proxy_init (button_data->button,
+				       &(button_data->drag_info));
 
         return button_data;
 }

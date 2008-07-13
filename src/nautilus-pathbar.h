@@ -61,6 +61,9 @@ struct _NautilusPathBar
 	guint slider_visible : 1;
 	guint need_timer : 1;
 	guint ignore_click : 1;
+
+	unsigned int drag_slider_timeout;
+	gboolean drag_slider_timeout_for_up_button;
 };
 
 struct _NautilusPathBarClass
