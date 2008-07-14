@@ -1,3 +1,11 @@
+2008-07-14  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-emblem-utils.c
+	(nautilus_emblem_install_custom_emblem),
+	(nautilus_emblem_can_remove_emblem):
+	Use the GLib gstdio functions here, suggested in bug 542819
+	by Thadeu Lima de Souza Cascardo.
+
 2008-07-13  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c:

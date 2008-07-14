@@ -307,7 +307,7 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	}
 
 	/* Touch the toplevel dir */
-	if (stat (stat_dir, &stat_buf) == 0) {
+	if (g_stat (stat_dir, &stat_buf) == 0) {
 		ubuf.actime = stat_buf.st_atime;
 		ubuf.modtime = time (NULL);
 		utime (stat_dir, &ubuf);
@@ -328,7 +328,7 @@ nautilus_emblem_can_remove_emblem (const char *keyword)
 	path = g_strdup_printf ("%s/.icons/hicolor/48x48/emblems/emblem-%s.png",
 				g_get_home_dir (), keyword);
 
-	if (access (path, F_OK|W_OK) != 0) {
+	if (g_access (path, F_OK|W_OK) != 0) {
 		ret = FALSE;
 	}
 
