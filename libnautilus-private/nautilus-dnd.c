@@ -1003,10 +1003,12 @@ slot_proxy_drag_motion (GtkWidget          *widget,
 			unsigned int        time,
 			gpointer            user_data)
 {
+	NautilusDragSlotProxyInfo *drag_info;
+	NautilusWindowSlotInfo *target_slot;
+	GtkWidget *window;
 	GdkAtom target;
 	int action;
 	char *target_uri;
-	NautilusDragSlotProxyInfo *drag_info;
 
 	drag_info = user_data;
 
@@ -1016,6 +1018,9 @@ slot_proxy_drag_motion (GtkWidget          *widget,
 		goto out;
 	}
 
+	window = gtk_widget_get_toplevel (widget);
+	g_assert (NAUTILUS_IS_WINDOW_INFO (window));
+
 	if (!drag_info->have_data) {
 		target = gtk_drag_dest_find_target (widget, context, NULL);
 		gtk_drag_get_data (widget, context, target, time);
@@ -1024,6 +1029,16 @@ slot_proxy_drag_motion (GtkWidget          *widget,
 	target_uri = NULL;
 	if (drag_info->target_location != NULL) {
 		target_uri = g_file_get_uri (drag_info->target_location);
+	} else {
+		if (drag_info->target_slot != NULL) {
+			target_slot = drag_info->target_slot;
+		} else {
+			target_slot = nautilus_window_info_get_active_slot (NAUTILUS_WINDOW_INFO (window));
+		}
+
+		if (target_slot != NULL) {
+			target_uri = nautilus_window_slot_info_get_current_location (target_slot);
+		}
 	}
 
 	if (drag_info->have_data &&
@@ -1252,8 +1267,6 @@ nautilus_drag_slot_proxy_init (GtkWidget *widget,
 			   GDK_ACTION_COPY |
 			   GDK_ACTION_LINK |
 			   GDK_ACTION_ASK);
-
-	gtk_drag_source_add_uri_targets (widget);
 
 	target_list = gtk_target_list_new (targets, G_N_ELEMENTS (targets));
 	gtk_target_list_add_uri_targets (target_list, NAUTILUS_ICON_DND_URI_LIST);

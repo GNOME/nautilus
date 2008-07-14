@@ -243,182 +243,6 @@ button_press_cb (NautilusNotebook *notebook,
 }
 
 static void
-notebook_tab_drag_data_received (GtkWidget *widget,
-				 GdkDragContext *context,
-				 int x,
-				 int y,
-				 GtkSelectionData *selection_data,
-				 unsigned int info,
-				 unsigned int time,
-				 NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	NautilusNavigationWindow *navigation_window;
-	GtkWidget *notebook;
-	GList *uri_list, *selection_list;
-	char **uris;
-	int i;
-
-	g_signal_stop_emission_by_name (widget, "drag_data_received");
-
-	if (selection_data->length <= 0 ||
-	    selection_data->data == NULL) {
-		return;
-	}
-
-	if (slot->window == NULL || slot->content_view == NULL) {
-		return;
-	}
-
-	window = slot->window;
-
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (window);
-
-	notebook = navigation_window->notebook;
-
-	if (selection_data->target == gdk_atom_intern (NAUTILUS_ICON_DND_URI_LIST_TYPE, FALSE)) {
-		uris = gtk_selection_data_get_uris (selection_data);
-	} else if (selection_data->target == gdk_atom_intern (NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, FALSE)) {
-		selection_list = nautilus_drag_build_selection_list (selection_data);
-		if (selection_list == NULL) {
-			return;
-		}
-
-		uris = nautilus_drag_uri_array_from_selection_list (selection_list);
-
-		nautilus_drag_destroy_selection_list (selection_list);
-	} else {
-		return;
-	}
-
-	if (uris == NULL || uris[0] == NULL) {
-		g_strfreev (uris);
-		return;
-	}
-
-	uri_list = NULL;
-	for (i = 0; uris[i] != NULL; i++) {
-		uri_list = g_list_prepend (uri_list, uris[i]);
-	}
-	uri_list = g_list_reverse (uri_list);
-
-	if (slot->content_view != NULL) {
-		nautilus_view_drop_proxy_received_uris (slot->content_view,
-							uri_list, NULL,
-							context->action);
-	}
-
-	g_list_free (uri_list);
-
-	g_strfreev (uris);
-}
-
-static inline GdkAtom 
-find_drop_target (GtkWidget *widget,
-		  GdkDragContext *context)
-{
-	GtkTargetList *target_list;
-
-	target_list = gtk_drag_dest_get_target_list (widget);
-	if (target_list != NULL) {
-		return gtk_drag_dest_find_target (widget, context, target_list);
-	}
-
-	return GDK_NONE;
-}
-
-static inline GdkDragAction
-get_drop_action (GtkWidget *drop_widget,
-		 GdkDragContext *context)
-{
-	if (!NAUTILUS_IS_NOTEBOOK (drop_widget)) {
-		if (context->suggested_action & GDK_ACTION_ASK) {
-			return context->suggested_action;
-		}
-
-		if (context->actions & GDK_ACTION_MOVE) {
-			return GDK_ACTION_MOVE;
-		}
-
-		if (context->actions & GDK_ACTION_COPY) {
-			return GDK_ACTION_COPY;
-		}
-	}
-
-	if (context->actions & GDK_ACTION_LINK) {
-		return GDK_ACTION_LINK;
-	}
-
-	return 0;
-}
-
-static gboolean
-notebook_tab_drag_motion (GtkWidget* widget,
-			  GdkDragContext *context,
-			  int x,
-			  int y, 
-			  unsigned int time,
-			  NautilusWindowSlot *slot)
-{
-
-	GdkDragAction action;
-	gboolean highlighted;
-
-	highlighted = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
-					"drop-highlight"));
-
-	action = 0;
-	if (find_drop_target (widget, context) != GDK_NONE) {
-		action = get_drop_action (widget, context);
-	}
-
-	if (action != 0 && !highlighted) {
-		gtk_drag_highlight (widget);
-		highlighted = TRUE;
-	}
-
-	gdk_drag_status (context, action, time);
-	g_object_set_data (G_OBJECT (widget), "drop-highlight",
-			   GUINT_TO_POINTER (highlighted));
-
-	return TRUE;
-}
-
-static void
-notebook_tab_drag_leave (GtkWidget* widget,
-			 GdkDragContext *context,
-			 unsigned int time,
-			 NautilusWindowSlot *slot)
-{
-	gtk_drag_unhighlight (widget);
-	g_object_set_data (G_OBJECT (widget), "drop-highlight",
-			   GUINT_TO_POINTER (FALSE));
-}
-
-
-static gboolean
-notebook_tab_drag_drop (GtkWidget *widget,
-			GdkDragContext *context,
-			int x,
-			int y,
-			unsigned int time,
-			G_GNUC_UNUSED gpointer user_data)
-{
-	GdkAtom target;
-
-	target = find_drop_target (widget, context);
-	if (target != GDK_NONE) {
-		gtk_drag_get_data (widget, context, target, time);
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		return TRUE;
-	} else {
-		gtk_drag_finish (context, FALSE, FALSE, time);
-		return FALSE;
-	}
-}
-
-
-static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
@@ -543,6 +367,7 @@ tab_label_style_set_cb (GtkWidget *hbox,
 static GtkWidget *
 build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 {
+	NautilusDragSlotProxyInfo *drag_info;
 	GtkWidget *hbox, *label, *close_button, *image, *spinner, *icon;
 
 	/* set hbox spacing and label padding (see below) so that there's an
@@ -593,21 +418,12 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 	g_signal_connect (hbox, "style-set",
 			  G_CALLBACK (tab_label_style_set_cb), NULL);
 
-	/* Set up drag-and-drop target */
-	g_signal_connect_object (hbox, "drag-data-received",
-				 G_CALLBACK (notebook_tab_drag_data_received), slot, 0);
-	g_signal_connect_object (hbox, "drag-motion",
-				 G_CALLBACK (notebook_tab_drag_motion), slot, 0);
-	g_signal_connect_object (hbox, "drag-leave",
-				 G_CALLBACK (notebook_tab_drag_leave), slot, 0);
-	g_signal_connect_object (hbox, "drag-drop",
-				 G_CALLBACK (notebook_tab_drag_drop), slot, 0);
+	drag_info = g_new0 (NautilusDragSlotProxyInfo, 1);
+	drag_info->target_slot = slot;
+	g_object_set_data_full (G_OBJECT (hbox), "proxy-drag-info",
+				drag_info, (GDestroyNotify) g_free);
 
-	gtk_drag_dest_set (hbox, 0,
-			   url_drag_types, G_N_ELEMENTS (url_drag_types),
-			   GDK_ACTION_MOVE | GDK_ACTION_COPY |
-			   GDK_ACTION_LINK | GDK_ACTION_ASK);
-	gtk_drag_dest_set_track_motion (hbox, TRUE);
+	nautilus_drag_slot_proxy_init (hbox, drag_info);
 
 	g_object_set_data (G_OBJECT (hbox), "label", label);
 	g_object_set_data (G_OBJECT (hbox), "spinner", spinner);
