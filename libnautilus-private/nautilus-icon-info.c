@@ -681,8 +681,10 @@ nautilus_icon_get_emblem_size_for_icon_size (guint size)
 		return 32;
 	if (size >= 48)
 		return 24;
-	if (size >= 32)
+	if (size >= 24)
 		return 16;
+	if (size >= 16)
+		return 12;
 	
 	return 0; /* no emblems for smaller sizes */
 }

@@ -336,11 +336,6 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
 			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
 			emblem_size = nautilus_icon_get_emblem_size_for_icon_size (icon_size);
-			/* Special case default icon size here. This works semi-ok, since we
-			   only show one emblem for the list view anyway */
-			if (emblem_size == 0 && icon_size >= 24) {
-				emblem_size = 16;
-			}
 			if (emblem_size != 0) {
 				emblem_pixbufs = nautilus_file_get_emblem_pixbufs (file,
 										   emblem_size,
