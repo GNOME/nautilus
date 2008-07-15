@@ -73,6 +73,8 @@ struct _ButtonData
         ButtonType type;
         char *dir_name;
         GFile *path;
+	NautilusFile *file;
+	unsigned int file_changed_signal_id;
 
 	/* custom icon */ 
 	GdkPixbuf *custom_icon;
@@ -1221,10 +1223,17 @@ button_data_free (ButtonData *button_data)
 	if (button_data->custom_icon) {
 		g_object_unref (button_data->custom_icon);
 	}
-        g_free (button_data);
+	if (button_data->file != NULL) {
+		g_signal_handler_disconnect (button_data->file,
+					     button_data->file_changed_signal_id);
+		nautilus_file_monitor_remove (button_data->file, button_data);
+		nautilus_file_unref (button_data->file);
+	}
 
 	g_object_unref (button_data->drag_info.target_location);
 	button_data->drag_info.target_location = NULL;
+
+        g_free (button_data);
 }
 
 static const char *
@@ -1434,17 +1443,44 @@ setup_button_drag_source (ButtonData *button_data)
 			  button_data);
 }
 
+static void
+button_data_file_changed (NautilusFile *file,
+			  ButtonData *button_data)
+{
+	char *display_name;
+	char *markup;
+
+	display_name = nautilus_file_get_display_name (file);
+	if (!eel_strcmp (display_name, button_data->dir_name)) {
+		g_free (button_data->dir_name);
+		button_data->dir_name = g_strdup (display_name);
+
+		/* keep in sync with nautilus_path_bar_update_button_appearance()
+		 */
+		if (gtk_label_get_use_markup (GTK_LABEL (button_data->label))) {
+	  		markup = g_markup_printf_escaped ("<b>%s</b>", button_data->dir_name);
+	  		gtk_label_set_markup (GTK_LABEL (button_data->label), markup);
+	  		g_free (markup);
+		} else {
+			gtk_label_set_text (GTK_LABEL (button_data->label), button_data->dir_name);
+		}
+	}
+	g_free (display_name);
+}
+
 static ButtonData *
 make_directory_button (NautilusPathBar  *path_bar,
-		       const char       *dir_name,
-		       GFile            *path,
+		       NautilusFile     *file,
 		       gboolean          current_dir,
 		       gboolean          base_dir,	
 		       gboolean          file_is_hidden)
 {
+	GFile *path;
         GtkWidget *child;
         GtkWidget *label_alignment;
         ButtonData *button_data;
+
+	path = nautilus_file_get_location (file);
 
 	child = NULL;
 	label_alignment = NULL;
@@ -1510,8 +1546,16 @@ make_directory_button (NautilusPathBar  *path_bar,
 	
 	/* do not set these for mounts */
 	if (button_data->type != MOUNT_BUTTON) {
-		button_data->dir_name = g_strdup (dir_name);
         	button_data->path = g_object_ref (path);
+		button_data->file = nautilus_file_ref (file);
+		button_data->dir_name = nautilus_file_get_display_name (file);
+		nautilus_file_monitor_add (button_data->file, button_data,
+					   NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
+		button_data->file_changed_signal_id = 
+			g_signal_connect (button_data->file, "changed",
+					  G_CALLBACK (button_data_file_changed),
+					  button_data);  
+					   
 	}
 
         button_data->file_is_hidden = file_is_hidden;
@@ -1528,6 +1572,8 @@ make_directory_button (NautilusPathBar  *path_bar,
 
 	nautilus_drag_slot_proxy_init (button_data->button,
 				       &(button_data->drag_info));
+
+	g_object_unref (path);
 
         return button_data;
 }
@@ -1587,37 +1633,10 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
         return FALSE;
 }
 
-static char *
-get_display_name_for_folder (GFile *location)
-{
-	GFileInfo *info;
-	char *name;
-
-	/* This does sync i/o, which isn't ideal.
-	 * It should probably use the NautilusFile machinery
-	 */
-	
-	name = NULL;
-	info = g_file_query_info (location,
-				  G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
-				  0, NULL, NULL);
-	if (info) {
-		name = g_strdup (g_file_info_get_display_name (info));
-		g_object_unref (info);
-	}
-
-	if (name == NULL) {
-		name = g_file_get_basename (location);
-	}
-	return name;
-}
-
-
 static gboolean
 nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 {
-        GFile *path, *parent_path;
-	char *name;
+	NautilusFile *file, *parent_file;
         gboolean first_directory, last_directory;
         gboolean result;
         GList *new_buttons, *l, *fake_root;
@@ -1626,26 +1645,21 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
         g_return_val_if_fail (NAUTILUS_IS_PATH_BAR (path_bar), FALSE);
         g_return_val_if_fail (file_path != NULL, FALSE);
 
-        name = NULL;
 	fake_root = NULL;
         result = TRUE;
-	parent_path = NULL;
 	first_directory = TRUE;
 	last_directory = FALSE;
 	new_buttons = NULL;
 
-        path = g_object_ref (file_path);
+	file = nautilus_file_get (file_path);
 
         gtk_widget_push_composite_child ();
 
-        while (path != NULL) {
-
-                parent_path = g_file_get_parent (path);
-                name = get_display_name_for_folder (path);	
-		last_directory = !parent_path;
-                button_data = make_directory_button (path_bar, name, path, first_directory, last_directory, FALSE);
-                g_object_unref (path);
-		g_free (name);
+        while (file != NULL) {
+		parent_file = nautilus_file_get_parent (file);
+		last_directory = !parent_file;
+		button_data = make_directory_button (path_bar, file, first_directory, last_directory, FALSE);
+		nautilus_file_unref (file);
 
                 new_buttons = g_list_prepend (new_buttons, button_data);
 
@@ -1653,7 +1667,7 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 			fake_root = new_buttons;
 		}
 		
-                path = parent_path;
+		file = parent_file;
                 first_directory = FALSE;
         }
 

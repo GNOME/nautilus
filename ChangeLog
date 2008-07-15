@@ -1,5 +1,13 @@
 2008-07-15  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-pathbar.c (button_data_free),
+	(button_data_file_changed), (make_directory_button),
+	(nautilus_path_bar_update_path):
+	Use NautilusFile instead of GFile for obtaining display name. Gets rid
+	of sync I/O.
+
+2008-07-15  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(button_press_event), (nautilus_icon_container_did_not_drag),
 	(handle_icon_double_click), (handle_icon_button_press):
