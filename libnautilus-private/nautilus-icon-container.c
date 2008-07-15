@@ -3687,7 +3687,7 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
+	if (event->button == DRAG_BUTTON &&
 	    event->type == GDK_BUTTON_PRESS) {
 		/* Clear the last click icon for double click */
 		container->details->double_click_icon[1] = container->details->double_click_icon[0];
@@ -3775,7 +3775,8 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 	} 
 	
 	if (details->drag_icon != NULL &&
-	    details->single_click_mode) {		
+	    (details->single_click_mode ||
+	     event->button == MIDDLE_BUTTON)) {
 		/* Determine click count */
 		g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))), 
 			      "gtk-double-click-time", &double_click_time,
@@ -5560,6 +5561,10 @@ handle_icon_double_click (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 
+	if (event->button != DRAG_BUTTON) {
+		return FALSE;
+	}
+
 	details = container->details;
 
 	if (!details->single_click_mode &&
@@ -5567,15 +5572,9 @@ handle_icon_double_click (NautilusIconContainer *container,
 	    details->double_click_icon[0] == details->double_click_icon[1] &&
 	    details->double_click_button[0] == details->double_click_button[1]) {
 		if (!button_event_modifies_selection (event)) {
-			if (event->button == MIDDLE_BUTTON) {
-				activate_selected_items_alternate (container, NULL);
-				return TRUE;
-			} else if (event->button == DRAG_BUTTON) {
-				activate_selected_items (container);
-				return TRUE;
-			}
-		} else if (event->button == DRAG_BUTTON &&
-	    		   (event->state & GDK_CONTROL_MASK) == 0 &&
+			activate_selected_items (container);
+			return TRUE;
+		} else if ((event->state & GDK_CONTROL_MASK) == 0 &&
 			   (event->state & GDK_SHIFT_MASK) != 0) {
 			activate_selected_items_alternate (container, icon);
 			return TRUE;
@@ -5615,7 +5614,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		return TRUE;
 	}
 
-	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
+	if ((event->button == DRAG_BUTTON) &&
 	    event->type == GDK_BUTTON_PRESS) {
 		/* The next double click has to be on this icon */
 		details->double_click_icon[1] = details->double_click_icon[0];

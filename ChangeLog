@@ -1,5 +1,13 @@
 2008-07-15  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(button_press_event), (nautilus_icon_container_did_not_drag),
+	(handle_icon_double_click), (handle_icon_button_press):
+	Only use double click for left mouse button. The middle mouse button
+	opens a new tab or window on one click. Fixes #543136.
+
+2008-07-15  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-info.c
 	(nautilus_icon_get_emblem_size_for_icon_size):
 	* src/file-manager/fm-list-model.c (fm_list_model_get_value):
