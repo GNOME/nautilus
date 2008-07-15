@@ -5,6 +5,16 @@
 	* src/file-manager/fm-list-model.c (fm_list_model_get_value):
 	Display emblems for small icon sizes, down to 16 pixels.
 
+2008-07-15  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-dnd.c (slot_proxy_drag_motion),
+	(nautilus_drag_slot_proxy_init):
+	Also support a mode where the target URI is NULL, and the target slot is
+	set.
+
+	* src/nautilus-notebook.c (build_tab_label):
+	Set up notebook labels as slot drag proxy, replace old DND code.
+
 2008-07-14  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-emblem-utils.c
