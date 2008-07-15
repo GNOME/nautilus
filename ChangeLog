@@ -1,3 +1,19 @@
+2008-07-16  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-pathbar.c (desktop_location_changed_callback),
+	(nautilus_path_bar_finalize), (reload_icons),
+	(get_custom_user_icon_info), (get_type_icon_info),
+	(nautilus_path_bar_update_button_appearance),
+	(nautilus_path_bar_update_button_state),
+	(button_data_file_changed), (make_directory_button),
+	(nautilus_path_bar_check_parent_path):
+	* src/nautilus-pathbar.h:
+	Dynamically update buttons on file changes instead of hard-coding them
+	once, both labels and icons. Refactor icon code.
+	Add TODO notice about reaction to XDG directory changes.
+	Comment out usage of custom icons for path bar buttons, due to
+	GDK pixbuf issues when scaling down large images #80925.
+
 2008-07-15  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-pathbar.c (button_data_free),

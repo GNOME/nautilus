@@ -43,10 +43,6 @@ struct _NautilusPathBar
 	GFile *home_path;
 	GFile *desktop_path;
 
-	GdkPixbuf *root_icon;
-	GdkPixbuf *home_icon;
-	GdkPixbuf *desktop_icon;
-
 	GList *button_list;
 	GList *first_scrolled_button;
 	GList *fake_root;
