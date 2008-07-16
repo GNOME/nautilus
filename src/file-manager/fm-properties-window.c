@@ -3259,7 +3259,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_and_ellipsizing_value (window, table, 
 						    _("Link target:"), 
 						    "link_target",
-						    _(INCONSISTENT_STATE_STRING),
+						    INCONSISTENT_STATE_STRING,
 						    FALSE);
 	}
 
