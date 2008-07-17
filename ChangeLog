@@ -1,3 +1,12 @@
+2008-07-17  Tomas Bzatek  <tbzatek@redhat.com>
+
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-metafile.c:
+	Include sys/stat.h for struct stat and S_ISUID and other macros.
+	Backported from trunk and slightly modified.
+
 2008-07-12  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #define METAFILE_XML_VERSION "1.0"
 #define METAFILE_PERMISSIONS 0600

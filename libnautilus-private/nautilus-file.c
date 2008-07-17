@@ -67,6 +67,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
