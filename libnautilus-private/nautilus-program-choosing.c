@@ -147,24 +147,35 @@ nautilus_launch_application (GAppInfo *application,
 			     GList *files,
 			     GtkWindow *parent_window)
 {
-	char            *uri_scheme;
-	GList           *locations, *l;
+	char            *uri, *uri_scheme;
+	GList           *locations, *uris, *l;
 	GFile *location;
 	NautilusFile    *file;
 	gboolean        result;
 	GError *error;
 	EelAppLaunchContext *launch_context;
 	NautilusIconInfo *icon;
+	int count, total;
 
 	g_assert (files != NULL);
 
+	/* count the number of uris with local paths */
+	count = 0;
+	total = g_list_length (files);
 	locations = NULL;
+	uris = NULL;
 	for (l = files; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		
 		location = nautilus_file_get_activation_location (file);
+		uri = nautilus_file_get_activation_uri (file);
+
+		if (g_file_is_native (location)) {
+			count++;
+		}
 
 		locations = g_list_prepend (locations, location);
+		uris = g_list_prepend (uris, uri);
 	}
 	locations = g_list_reverse (locations);
 
@@ -182,10 +193,23 @@ nautilus_launch_application (GAppInfo *application,
 	}
 	
 	error = NULL;
-	result = g_app_info_launch (application,
-				    locations,
-				    G_APP_LAUNCH_CONTEXT (launch_context),
-				    &error);
+
+	if (count == total) {
+		/* All files are local, so we can use g_app_info_launch () with
+		 * the file list we constructed before.
+		 */
+		result = g_app_info_launch (application,
+					    locations,
+					    G_APP_LAUNCH_CONTEXT (launch_context),
+					    &error);
+	} else {
+		/* Some files are non local, better use g_app_info_launch_uris ().
+		 */
+		result = g_app_info_launch_uris (application,
+						 uris,
+						 G_APP_LAUNCH_CONTEXT (launch_context),
+						 &error);
+	}
 
 	g_object_unref (launch_context);
 	
@@ -216,6 +240,7 @@ nautilus_launch_application (GAppInfo *application,
 	}
 
 	eel_g_object_list_free (locations);
+	eel_g_list_free_deep (uris);
 }
 
 /**
