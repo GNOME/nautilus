@@ -1,5 +1,12 @@
 2008-07-19  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-places-sidebar.c (add_place),
+	(nautilus_places_sidebar_init):
+	Only align eject icons with ejectable rows, instead of aligning them
+	with all icons above the seperator.
+
+2008-07-19  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file-operations.c
 	(mount_callback_data_notify), (volume_mount_cb),
 	(nautilus_file_operations_mount_volume),

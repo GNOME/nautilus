@@ -116,29 +116,9 @@ enum {
 	PLACES_SIDEBAR_COLUMN_ICON,
 	PLACES_SIDEBAR_COLUMN_INDEX,
 	PLACES_SIDEBAR_COLUMN_EJECT,
-
-	/* the rows for all items above
-	 * the separator use different
-	 * cell renderers from those below
-	 * the separator.
-	 *
-	 * This is required because an eject button
-	 * is added for mounted volumes, which requires
-	 * a non-gridded layout:
-	 *
-	 * [ volume name ...space... [button] ]
-	 *
-	 * while below the separator, we just use
-	 *
-	 * [ bookmark name ]
-	 *
-	 * If we used the same cell renderers for
-	 * the volume name and the bookmark name,
-	 * the button would be aligned both to
-	 * the volume names and to the bookmark names.
-	 */
-	PLACES_SIDEBAR_COLUMN_ABOVE_SEPARATOR,
-	PLACES_SIDEBAR_COLUMN_BELOW_SEPARATOR,
+	PLACES_SIDEBAR_COLUMN_NO_EJECT,
+	PLACES_SIDEBAR_COLUMN_BOOKMARK,
+	PLACES_SIDEBAR_COLUMN_NO_BOOKMARK,
 	
 	PLACES_SIDEBAR_COLUMN_COUNT
 };
@@ -260,8 +240,9 @@ add_place (NautilusPlacesSidebar *sidebar,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
 			    PLACES_SIDEBAR_COLUMN_INDEX, index,
 			    PLACES_SIDEBAR_COLUMN_EJECT, (show_unmount || show_eject),
-			    PLACES_SIDEBAR_COLUMN_ABOVE_SEPARATOR, (show_unmount || show_eject),
-			    PLACES_SIDEBAR_COLUMN_BELOW_SEPARATOR, !(show_unmount || show_eject),
+			    PLACES_SIDEBAR_COLUMN_NO_EJECT, !(show_unmount || show_eject),
+			    PLACES_SIDEBAR_COLUMN_BOOKMARK, place_type != PLACES_BOOKMARK,
+			    PLACES_SIDEBAR_COLUMN_NO_BOOKMARK, place_type == PLACES_BOOKMARK,
 			    -1);
 
 	if (pixbuf != NULL) {
@@ -2178,10 +2159,10 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 
 	
 	cell = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (col, cell, TRUE);
+	gtk_tree_view_column_pack_start (col, cell, FALSE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "text", PLACES_SIDEBAR_COLUMN_NAME,
-					     "visible", PLACES_SIDEBAR_COLUMN_ABOVE_SEPARATOR,
+					     "visible", PLACES_SIDEBAR_COLUMN_EJECT,
 					     NULL);
 
 
@@ -2194,17 +2175,18 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 		      "xalign", 1.0,
 		      "xpad", EJECT_BUTTON_XPAD,
 		      NULL);
-	gtk_tree_view_column_pack_end (col, cell, TRUE);
+	gtk_tree_view_column_pack_start (col, cell, TRUE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "visible", PLACES_SIDEBAR_COLUMN_EJECT,
 					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_end (col, cell, FALSE);
-	g_object_set (G_OBJECT (cell), "editable", FALSE, "editable-set", TRUE, NULL);
+	g_object_set (G_OBJECT (cell), "editable", FALSE, NULL);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "text", PLACES_SIDEBAR_COLUMN_NAME,
-					     "visible", PLACES_SIDEBAR_COLUMN_BELOW_SEPARATOR,
+					     "visible", PLACES_SIDEBAR_COLUMN_NO_EJECT,
+					     "editable-set", PLACES_SIDEBAR_COLUMN_BOOKMARK,
 					     NULL);
 
 	g_signal_connect (cell, "edited", 
@@ -2230,6 +2212,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 					     G_TYPE_STRING,
 					     GDK_TYPE_PIXBUF,
 					     G_TYPE_INT,
+					     G_TYPE_BOOLEAN,
 					     G_TYPE_BOOLEAN,
 					     G_TYPE_BOOLEAN,
 					     G_TYPE_BOOLEAN
