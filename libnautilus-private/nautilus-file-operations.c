@@ -2108,10 +2108,23 @@ nautilus_file_operations_unmount_mount (GtkWindow                      *parent_w
 }
 
 static void
+mount_callback_data_notify (gpointer data,
+			    GObject *object)
+{
+	GMountOperation *mount_op;
+
+	mount_op = G_MOUNT_OPERATION (data);
+	g_object_set_data (G_OBJECT (mount_op), "mount-callback", NULL);
+	g_object_set_data (G_OBJECT (mount_op), "mount-callback-data", NULL);
+}
+
+static void
 volume_mount_cb (GObject *source_object,
 		 GAsyncResult *res,
 		 gpointer user_data)
 {
+	NautilusMountCallback mount_callback;
+	GObject *mount_callback_data_object;
 	GMountOperation *mount_op = user_data;
 	GError *error;
 	char *primary;
@@ -2132,6 +2145,22 @@ volume_mount_cb (GObject *source_object,
 		g_error_free (error);
 	}
 
+	mount_callback = (NautilusMountCallback)
+		g_object_get_data (G_OBJECT (mount_op), "mount-callback");
+	mount_callback_data_object =
+		g_object_get_data (G_OBJECT (mount_op), "mount-callback-data");
+
+	if (mount_callback != NULL) {
+		(* mount_callback) (G_VOLUME (source_object),
+				    mount_callback_data_object);
+
+	    	if (mount_callback_data_object != NULL) {
+			g_object_weak_unref (mount_callback_data_object,
+					     mount_callback_data_notify,
+					     mount_op);
+		}
+	}
+
 	g_object_unref (mount_op);
 }
 
@@ -2141,14 +2170,38 @@ nautilus_file_operations_mount_volume (GtkWindow *parent_window,
 				       GVolume *volume,
 				       gboolean allow_autorun)
 {
+	nautilus_file_operations_mount_volume_full (parent_window, volume,
+						    allow_autorun, NULL, NULL);
+}
+
+void
+nautilus_file_operations_mount_volume_full (GtkWindow *parent_window,
+					    GVolume *volume,
+					    gboolean allow_autorun,
+					    NautilusMountCallback mount_callback,
+					    GObject *mount_callback_data_object)
+{
 	GMountOperation *mount_op;
-	
+
 	mount_op = eel_mount_operation_new (parent_window);
+	g_object_set_data (G_OBJECT (mount_op),
+			   "mount-callback",
+			   mount_callback);
+
+	if (mount_callback != NULL &&
+	    mount_callback_data_object != NULL) {
+		g_object_weak_ref (mount_callback_data_object,
+				   mount_callback_data_notify,
+				   mount_op);
+	}
+	g_object_set_data (G_OBJECT (mount_op),
+			   "mount-callback-data",
+			   mount_callback_data_object);
+
 	if (allow_autorun)
 		nautilus_allow_autorun_for_volume (volume);
 	g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, mount_op);
 }
-
 
 static void
 report_count_progress (CommonJob *job,

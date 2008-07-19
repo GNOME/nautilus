@@ -54,6 +54,8 @@
 #include "nautilus-places-sidebar.h"
 #include "nautilus-window.h"
 
+#define EJECT_BUTTON_XPAD 6
+
 #define NAUTILUS_PLACES_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
 #define NAUTILUS_IS_PLACES_SIDEBAR(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
 #define NAUTILUS_IS_PLACES_SIDEBAR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR))
@@ -85,6 +87,11 @@ typedef struct {
 	GtkWidget *popup_menu_rescan_item;
 	GtkWidget *popup_menu_format_item;
 	GtkWidget *popup_menu_empty_trash_item;
+
+	/* volume mounting - delayed open process */
+	gboolean mounting;
+	NautilusWindowSlotInfo *go_to_after_mount_slot;
+	NautilusWindowOpenFlags go_to_after_mount_flags;
 } NautilusPlacesSidebar;
 
 typedef struct {
@@ -253,8 +260,8 @@ add_place (NautilusPlacesSidebar *sidebar,
 			    PLACES_SIDEBAR_COLUMN_ROW_TYPE, place_type,
 			    PLACES_SIDEBAR_COLUMN_INDEX, index,
 			    PLACES_SIDEBAR_COLUMN_EJECT, (show_unmount || show_eject),
-			    PLACES_SIDEBAR_COLUMN_ABOVE_SEPARATOR, place_type != PLACES_BOOKMARK,
-			    PLACES_SIDEBAR_COLUMN_BELOW_SEPARATOR, place_type == PLACES_BOOKMARK,
+			    PLACES_SIDEBAR_COLUMN_ABOVE_SEPARATOR, (show_unmount || show_eject),
+			    PLACES_SIDEBAR_COLUMN_BELOW_SEPARATOR, !(show_unmount || show_eject),
 			    -1);
 
 	if (pixbuf != NULL) {
@@ -623,17 +630,26 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 	GdkEvent *event = gtk_get_current_event ();
 	GdkEventButton *button_event = (GdkEventButton *) event;
 	GtkTreeViewColumn *column;
-	int x, pos, width;
+	GtkSettings *settings;
+	int pos, renderer_width, eject_button_size;
+	int renderer_x2;
 
 	*path = NULL;
 
 	if (event->type == GDK_BUTTON_PRESS &&
 	    gtk_tree_view_get_path_at_pos (sidebar->tree_view,
 					   button_event->x, button_event->y,
-					   path, &column, &x, NULL) &&
+					   path, &column, NULL, NULL) &&
 	    gtk_tree_view_column_cell_get_position (column, sidebar->eject_cell_renderer,
-						    &pos, &width)) {
-		if (button_event->x > pos && button_event->x < pos + width) {
+						    &pos, &renderer_width)) {
+		renderer_x2 = MIN (pos + renderer_width, GTK_WIDGET (sidebar)->allocation.width);
+
+		settings = gtk_widget_get_settings (GTK_WIDGET (sidebar));
+		gtk_icon_size_lookup_for_settings (settings, GTK_ICON_SIZE_MENU,
+						   &eject_button_size, NULL);
+
+		if (button_event->x > renderer_x2 - (EJECT_BUTTON_XPAD + eject_button_size) &&
+		    button_event->x < renderer_x2 - EJECT_BUTTON_XPAD) {
 			return TRUE;
 		}
 	}
@@ -1363,12 +1379,52 @@ bookmarks_selection_changed_cb (GtkTreeSelection      *selection,
 }
 
 static void
+volume_mounted_cb (GVolume *volume,
+		   GObject *user_data)
+{
+	GMount *mount;
+	NautilusPlacesSidebar *sidebar;
+	GFile *location;
+
+	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
+
+	sidebar->mounting = FALSE;
+
+	mount = g_volume_get_mount (volume);
+	if (mount != NULL) {
+		location = g_mount_get_root (mount);
+
+		if (sidebar->go_to_after_mount_slot != NULL) {
+			if ((sidebar->go_to_after_mount_flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
+				nautilus_window_slot_info_open_location (sidebar->go_to_after_mount_slot, location,
+									 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+									 sidebar->go_to_after_mount_flags, NULL);
+			} else {
+				NautilusWindow *cur, *new;
+				
+				cur = NAUTILUS_WINDOW (sidebar->window);
+				new = nautilus_application_create_navigation_window (cur->application,
+										     NULL,
+										     gtk_window_get_screen (GTK_WINDOW (cur)));
+				nautilus_window_go_to (new, location);
+			}
+		}
+
+		g_object_unref (G_OBJECT (location));
+		g_object_unref (G_OBJECT (mount));
+	}
+
+	
+	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
+}
+
+static void
 open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 			GtkTreeModel	      *model,
 			GtkTreePath	      *path,
 			NautilusWindowOpenFlags	      flags)
 {
-	NautilusWindowSlot *slot;
+	NautilusWindowSlotInfo *slot;
 	GtkTreeIter iter;
 	GFile *location;
 	char *uri;
@@ -1414,9 +1470,22 @@ open_selected_bookmark (NautilusPlacesSidebar *sidebar,
 
 	} else {
 		GVolume *volume;
+		NautilusWindowSlot *slot;
 		gtk_tree_model_get (model, &iter, PLACES_SIDEBAR_COLUMN_VOLUME, &volume, -1);
-		if (volume != NULL) {
-			nautilus_file_operations_mount_volume (NULL, volume, FALSE);
+		if (volume != NULL && !sidebar->mounting) {
+			sidebar->mounting = TRUE;
+
+			g_assert (sidebar->go_to_after_mount_slot == NULL);
+
+			slot = nautilus_window_info_get_active_slot (sidebar->window);
+			sidebar->go_to_after_mount_slot = slot;
+			eel_add_weak_pointer (&(sidebar->go_to_after_mount_slot));
+
+			sidebar->go_to_after_mount_flags = flags;
+
+			nautilus_file_operations_mount_volume_full (NULL, volume, FALSE,
+								    volume_mounted_cb,
+								    G_OBJECT (sidebar));
 			g_object_unref (volume);
 		}
 	}
@@ -2123,7 +2192,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 		      "icon-name", "media-eject",
 		      "stock-size", GTK_ICON_SIZE_MENU,
 		      "xalign", 1.0,
-		      "xpad", 6,
+		      "xpad", EJECT_BUTTON_XPAD,
 		      NULL);
 	gtk_tree_view_column_pack_end (col, cell, TRUE);
 	gtk_tree_view_column_set_attributes (col, cell,
@@ -2252,6 +2321,8 @@ nautilus_places_sidebar_dispose (GObject *object)
 		g_object_unref (sidebar->volume_monitor);
 		sidebar->volume_monitor = NULL;
 	}
+
+	eel_remove_weak_pointer (&(sidebar->go_to_after_mount_slot));
 
 	G_OBJECT_CLASS (nautilus_places_sidebar_parent_class)->dispose (object);
 }

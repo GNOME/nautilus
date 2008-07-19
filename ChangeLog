@@ -1,3 +1,20 @@
+2008-07-19  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(mount_callback_data_notify), (volume_mount_cb),
+	(nautilus_file_operations_mount_volume),
+	(nautilus_file_operations_mount_volume_full):
+	* libnautilus-private/nautilus-file-operations.h:
+	Add nautilus_file_operations_mount_volume_full(), which
+	will issue a callback with an optional user data object,
+	if the object is still alive after mounting.
+
+	* src/nautilus-places-sidebar.c (add_place),
+	(clicked_eject_button), (volume_mounted_cb),
+	(open_selected_bookmark), (nautilus_places_sidebar_init),
+	(nautilus_places_sidebar_dispose):
+	Open files after mounting them.
+
 2008-07-17  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-program-choosing.c

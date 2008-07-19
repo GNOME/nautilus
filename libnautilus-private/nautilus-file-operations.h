@@ -38,6 +38,8 @@ typedef void (* NautilusOpCallback)        (gpointer    callback_data);
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
 					    gboolean    user_cancel,
 					    gpointer    callback_data);
+typedef void (* NautilusMountCallback)     (GVolume    *volume,
+					    GObject    *callback_data_object);
 
 /* FIXME: int copy_action should be an enum */
 
@@ -93,7 +95,11 @@ void nautilus_file_operations_unmount_mount (GtkWindow                      *par
 void nautilus_file_operations_mount_volume  (GtkWindow                      *parent_window,
 					     GVolume                        *volume,
 					     gboolean                        allow_autorun);
-								
+void nautilus_file_operations_mount_volume_full (GtkWindow                      *parent_window,
+						 GVolume                        *volume,
+						 gboolean                        allow_autorun,
+						 NautilusMountCallback           mount_callback,
+						 GObject                        *mount_callback_data_object);
 
 void nautilus_file_operations_copy      (GList                *files,
 					 GArray               *relative_item_points,
