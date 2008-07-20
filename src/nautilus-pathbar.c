@@ -1594,7 +1594,8 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
 	      			ButtonData *button_data;
 
 	      			button_data = list->data;
-	      			if (BUTTON_IS_FAKE_ROOT (button_data)) {
+	      			if (list->prev != NULL &&
+				    BUTTON_IS_FAKE_ROOT (button_data)) {
 		  			path_bar->fake_root = list;
 		  			break;
 				}
@@ -1646,7 +1647,8 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 
                 new_buttons = g_list_prepend (new_buttons, button_data);
 
-		if (BUTTON_IS_FAKE_ROOT (button_data)) {
+		if (parent_file != NULL &&
+		    BUTTON_IS_FAKE_ROOT (button_data)) {
 			fake_root = new_buttons;
 		}
 		

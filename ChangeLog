@@ -1,5 +1,12 @@
 2008-07-20  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-pathbar.c (nautilus_path_bar_check_parent_path),
+	(nautilus_path_bar_update_path):
+	Do not treat top-level mounts (i.e. sftp://server/) as fake roots, and
+	consequently do not display up slider.
+
+2008-07-20  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-pathbar.c (get_type_icon_info):
 	Use NautilusFile icon for normal buttons, rather than forcing folder
 	icon. Fixes special location icons like network:///, computer:/// etc.
