@@ -305,6 +305,7 @@ nautilus_notebook_sync_tab_label (NautilusNotebook *notebook,
 				  NautilusWindowSlot *slot)
 {
 	GtkWidget *hbox, *label;
+	char *location_name;
 
 	g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 	g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -318,10 +319,16 @@ nautilus_notebook_sync_tab_label (NautilusNotebook *notebook,
 
 	gtk_label_set_text (GTK_LABEL (label), slot->title);
 
-	/* Set the tooltip on the label's parent (the tab label hbox),
-	 * so it covers all of the tab label.
-	 */
-	gtk_widget_set_tooltip_text (label->parent, slot->title);
+	if (slot->location != NULL) {
+		/* Set the tooltip on the label's parent (the tab label hbox),
+		 * so it covers all of the tab label.
+		 */
+		location_name = g_file_get_parse_name (slot->location);
+		gtk_widget_set_tooltip_text (label->parent, location_name);
+		g_free (location_name);
+	} else {
+		gtk_widget_set_tooltip_text (label->parent, NULL);
+	}
 }
 
 static void
