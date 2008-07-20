@@ -225,6 +225,8 @@ void                    nautilus_file_set_attributes                    (Nautilu
 									 gpointer                        callback_data);
 GFilesystemPreviewType  nautilus_file_get_filesystem_use_preview        (NautilusFile *file);
 
+char *                  nautilus_file_get_filesystem_id                 (NautilusFile                   *file);
+
 /* Permissions. */
 gboolean                nautilus_file_can_get_permissions               (NautilusFile                   *file);
 gboolean                nautilus_file_can_set_permissions               (NautilusFile                   *file);

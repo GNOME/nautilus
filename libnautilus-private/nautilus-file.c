@@ -353,6 +353,9 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->mime_type = NULL;
 	g_free (file->details->selinux_context);
 	file->details->selinux_context = NULL;
+
+	eel_ref_str_unref (file->details->filesystem_id);
+	file->details->filesystem_id = NULL;
 }
 
 static NautilusFile *
@@ -674,6 +677,8 @@ finalize (GObject *object)
 	if (file->details->mount) {
 		g_object_unref (file->details->mount);
 	}
+
+	eel_ref_str_unref (file->details->filesystem_id);
 	
 	eel_g_list_free_deep (file->details->mime_list);
 
@@ -1555,6 +1560,7 @@ update_info_internal (NautilusFile *file,
 	GFile *old_activation_location;
 	const char *activation_uri;
 	const char *description;
+	const char *filesystem_id;
 	
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1818,6 +1824,13 @@ update_info_internal (NautilusFile *file,
 		changed = TRUE;
 		g_free (file->details->description);
 		file->details->description = g_strdup (description);
+	}
+
+	filesystem_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
+	if (eel_strcmp (file->details->filesystem_id, filesystem_id) != 0) {
+		changed = TRUE;
+		eel_ref_str_unref (file->details->filesystem_id);
+		file->details->filesystem_id = eel_ref_str_get_unique (filesystem_id);
 	}
 	
 	if (update_name) {
@@ -6123,6 +6136,12 @@ char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
 	return g_strdup (nautilus_file_peek_top_left_text (file, FALSE, NULL));
+}
+
+char *
+nautilus_file_get_filesystem_id (NautilusFile *file)
+{
+	return g_strdup (eel_ref_str_peek (file->details->filesystem_id));
 }
 
 

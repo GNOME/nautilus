@@ -46,7 +46,7 @@
 	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -114,6 +114,11 @@ struct NautilusFileDetails
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
 	char *custom_icon;
 	GFile *activation_location;
+
+	/* used during DND, for checking whether source and destination are on
+	 * the same file system.
+	 */
+	eel_ref_str filesystem_id;
 
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to

@@ -1,5 +1,17 @@
 2008-07-20  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-dnd.c (check_same_fs),
+	(nautilus_drag_default_drop_action_for_icons):
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c (nautilus_file_clear_info),
+	(finalize), (update_info_internal),
+	(nautilus_file_get_filesystem_id):
+	* libnautilus-private/nautilus-file.h:
+	Query filesystem ID, as referenced string. Use it to determine whether
+	two files are on the same FS during DND. Gets rid of synchronous I/O.
+
+2008-07-20  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-notebook.c (nautilus_notebook_sync_tab_label):
 	Use full location name as tab tooltip.
 

@@ -388,47 +388,27 @@ nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 }
 
 static gboolean
-check_same_fs (GFile *file1, GFile *file2)
+check_same_fs (NautilusFile *file1,
+	       NautilusFile *file2)
 {
-	GFileInfo *info1, *info2;
-	const char *id1, *id2;
-	gboolean res;
-	
-	info1 = g_file_query_info (file1,
-				   G_FILE_ATTRIBUTE_ID_FILESYSTEM,
-				   0, NULL, NULL);
+	char *id1, *id2;
+	gboolean result;
 
-	if (info1 == NULL) {
-		return FALSE;
+	result = FALSE;
+
+	if (file1 != NULL && file2 != NULL) {
+		id1 = nautilus_file_get_filesystem_id (file1);
+		id2 = nautilus_file_get_filesystem_id (file2);
+
+		if (id1 != NULL && id2 != NULL) {
+			result = (strcmp (id1, id2) == 0);
+		}
+
+		g_free (id1);
+		g_free (id2);
 	}
 
-	id1 = g_file_info_get_attribute_string (info1, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-	if (id1 == NULL) {
-		g_object_unref (info1);
-		return FALSE;
-	}
-	
-	info2 = g_file_query_info (file2,
-				   G_FILE_ATTRIBUTE_ID_FILESYSTEM,
-				   0, NULL, NULL);
-	if (info2 == NULL) {
-		g_object_unref (info1);
-		return FALSE;
-	}
-
-	id2 = g_file_info_get_attribute_string (info2, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-	if (id2 == NULL) {
-		g_object_unref (info1);
-		g_object_unref (info2);
-		return FALSE;
-	}
-
-	res = strcmp (id1, id2) == 0;
-	
-	g_object_unref (info1);
-	g_object_unref (info2);
-	
-	return res;
+	return result;
 }
 
 void
@@ -510,12 +490,13 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		target = g_file_new_for_uri (target_uri_string);
 	}
 
+	same_fs = check_same_fs (target_file, dropped_file);
+
 	nautilus_file_unref (dropped_file);
 	nautilus_file_unref (target_file);
 	
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped = g_file_new_for_uri (dropped_uri);
-	same_fs = check_same_fs (target, dropped);
 	target_is_source_parent = g_file_has_prefix (dropped, target);
 	
 	if (same_fs || target_is_source_parent ||
