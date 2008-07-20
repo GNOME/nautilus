@@ -1877,10 +1877,10 @@ unmount_mount_callback (GObject *source_object,
 
 	error = NULL;
 	if (data->eject) {
-		unmounted = g_mount_unmount_finish (G_MOUNT (source_object),
+		unmounted = g_mount_eject_finish (G_MOUNT (source_object),
 		      							res, &error);
 	} else {
-		unmounted = g_mount_eject_finish (G_MOUNT (source_object),
+		unmounted = g_mount_unmount_finish (G_MOUNT (source_object),
 		      							res, &error);
 	}
 	
