@@ -1,5 +1,11 @@
 2008-07-20  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-pathbar.c (get_type_icon_info):
+	Use NautilusFile icon for normal buttons, rather than forcing folder
+	icon. Fixes special location icons like network:///, computer:/// etc.
+
+2008-07-20  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file.c (update_info_internal):
 	Only update referenced MIME type if it actually changed.
 

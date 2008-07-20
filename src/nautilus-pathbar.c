@@ -1174,8 +1174,9 @@ get_type_icon_info (ButtonData *button_data)
 
                 case NORMAL_BUTTON:
 			if (button_data->is_base_dir) {
-				return nautilus_icon_info_lookup_from_name (NAUTILUS_ICON_FOLDER,
-									    NAUTILUS_PATH_BAR_ICON_SIZE);
+				return nautilus_file_get_icon (button_data->file,
+							       NAUTILUS_PATH_BAR_ICON_SIZE,
+							       NAUTILUS_FILE_ICON_FLAGS_NONE);
 			}
 
 	    	default:
