@@ -1,6 +1,13 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
 	* configure.in:
+	* src/file-manager/fm-properties-window.c
+	(value_field_update_internal):
+	Use C_() instead of Q_(). Require intltool 0.36.3.
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
+	* configure.in:
 	Allow to disable XMP support. Thanks to Mikel Olasagasti and Gilles
 	Dartiguelongue.
 
@@ -118,6 +125,14 @@
 	Pass textual URIs instead of GFiles to GAppInfo for remote files,
 	similar to nautilus_launch_desktop_file(). Fixes #543448.
 	Discovered by Kamil Páral.
+
+2008-07-16  A. Walton  <awalton@gnome.org>
+
+	* configure.in:
+	* src/file-manager/fm-properties-window.c
+	(value_field_update_internal):
+	Migrate to Msgctxt using C_() instead of Q_().
+	Nautilus now requires intltool 0.36.3 or better.
 
 2008-07-16  A. Walton  <awalton@gnome.org>
 
