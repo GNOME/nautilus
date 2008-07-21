@@ -89,9 +89,9 @@ static const int nautilus_zoom_control_accessible_action_signals[] = {
 };
 
 static const char * const nautilus_zoom_control_accessible_action_descriptions[] = {
-	N_("Show the contents in more detail"),
-	N_("Show the contents in less detail"),
-	N_("Show in the default detail level"),
+	N_("Increase the view size"),
+	N_("Decrease the view size"),
+	N_("Use the normal view size")
 };
 
 static GtkMenu *create_zoom_menu (NautilusZoomControl *zoom_control);
@@ -292,6 +292,8 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_out), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_out),
 			       GTK_RELIEF_NONE);
+	gtk_widget_set_tooltip_text (zoom_control->details->zoom_out,
+				     _("Decrease the view size"));
 	g_signal_connect (G_OBJECT (zoom_control->details->zoom_out),
 			  "clicked", G_CALLBACK (zoom_out_clicked),
 			  zoom_control);
@@ -303,6 +305,8 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_button), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_button),
 			       GTK_RELIEF_NONE);
+	gtk_widget_set_tooltip_text (zoom_control->details->zoom_button,
+				     _("Use the normal view size"));
 			       
 	gtk_widget_add_events (GTK_WIDGET (zoom_control->details->zoom_button),
 			       GDK_BUTTON_PRESS_MASK
@@ -339,6 +343,8 @@ nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 	gtk_button_set_focus_on_click (GTK_BUTTON (zoom_control->details->zoom_in), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (zoom_control->details->zoom_in),
 			       GTK_RELIEF_NONE);
+	gtk_widget_set_tooltip_text (zoom_control->details->zoom_in,
+				     _("Increase the view size"));
 	g_signal_connect (G_OBJECT (zoom_control->details->zoom_in),
 			  "clicked", G_CALLBACK (zoom_in_clicked),
 			  zoom_control);
