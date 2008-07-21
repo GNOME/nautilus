@@ -30,6 +30,7 @@
 #define FM_ACTION_OPEN_IN_NEW_TAB "OpenInNewTab"
 #define FM_ACTION_OPEN_FOLDER_WINDOW "OpenFolderWindow"
 #define FM_ACTION_LOCATION_OPEN_ALTERNATE "LocationOpenAlternate"
+#define FM_ACTION_LOCATION_OPEN_IN_NEW_TAB "LocationOpenInNewTab"
 #define FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW "LocationOpenFolderWindow"
 #define FM_ACTION_OTHER_APPLICATION1 "OtherApplication1"
 #define FM_ACTION_OTHER_APPLICATION2 "OtherApplication2"

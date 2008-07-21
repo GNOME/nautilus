@@ -6283,13 +6283,35 @@ action_location_open_alternate_callback (GtkAction *action,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	file = view->details->directory_as_file;
-	g_return_if_fail (file != NULL);
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
 
 	fm_directory_view_activate_file (view,
 					 file,
 					 NAUTILUS_WINDOW_OPEN_IN_NAVIGATION,
 					 0);
+}
+
+static void
+action_location_open_in_new_tab_callback (GtkAction *action,
+					  gpointer   callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	file = view->details->location_popup_directory_as_file;
+	if (file == NULL) {
+		return;
+	}
+
+	fm_directory_view_activate_file (view,
+					 file,
+					 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					 NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB);
 }
 
 static void
@@ -6697,6 +6719,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("Open in Navigation Window"), "",
   /* tooltip */                  N_("Open this folder in a navigation window"),
                                  G_CALLBACK (action_location_open_alternate_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_OPEN_IN_NEW_TAB, NULL,
+  /* label, accelerator */       N_("Open in New _Tab"), "",
+  /* tooltip */                  N_("Open this folder in a new tab"),
+                                 G_CALLBACK (action_location_open_in_new_tab_callback) },
 
   /* name, stock id */         { FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW, NULL,
   /* label, accelerator */       N_("Open in _Folder Window"), "",
@@ -7330,16 +7356,23 @@ real_update_location_menu (FMDirectoryView *view)
 	gboolean can_delete_file, show_delete;
 	gboolean show_separate_delete_command;
 	gboolean show_open_folder_window;
+	gboolean show_open_in_new_tab;
 	char *label;
 	char *tip;
 
 	show_open_folder_window = FALSE;
+	show_open_in_new_tab = FALSE;
+
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION) {
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			label = _("Open in New _Window");
 		} else {
 			label = _("Browse in New _Window");
 			show_open_folder_window = TRUE;
+		}
+
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+			show_open_in_new_tab = TRUE;
 		}
 	} else {
 		label = g_strdup (ngettext ("_Browse Folder",
@@ -7350,6 +7383,21 @@ real_update_location_menu (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      NULL);
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_OPEN_IN_NEW_TAB);
+	gtk_action_set_visible (action, show_open_in_new_tab);
+
+	if (show_open_in_new_tab) {
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			label = _("Open in New _Tab");
+		} else {
+			label = _("Browse in New _Tab");
+		}
+		g_object_set (action,
+			      "label", label,
+			      NULL);
+	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_OPEN_FOLDER_WINDOW);
@@ -7606,13 +7654,25 @@ real_update_menus (FMDirectoryView *view)
 	/* Open in New Tab action */
 	if (nautilus_window_info_get_window_type (view->details->window) == NAUTILUS_WINDOW_NAVIGATION &&
 	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
-		if (selection_count == 0 || selection_count == 1) {
-			label_with_underscore = g_strdup (_("Open in New _Tab"));
+
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+			if (selection_count == 0 || selection_count == 1) {
+				label_with_underscore = g_strdup (_("Open in New _Tab"));
+			} else {
+				label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Tab",
+										  "Open in %'d New _Tabs",
+										  selection_count), 
+									 selection_count);
+			}
 		} else {
-			label_with_underscore = g_strdup_printf (ngettext("Open in %'d New _Tab",
-									  "Open in %'d New _Tabs",
-									  selection_count), 
-								 selection_count);
+			if (selection_count == 0 || selection_count == 1) {
+				label_with_underscore = g_strdup (_("Browse in New _Tab"));
+			} else {
+				label_with_underscore = g_strdup_printf (ngettext("Browse in %'d New _Tab",
+										  "Browse in %'d New _Tabs",
+										  selection_count), 
+									 selection_count);
+			}
 		}
 		action = gtk_action_group_get_action (view->details->dir_action_group,
 						      FM_ACTION_OPEN_IN_NEW_TAB);

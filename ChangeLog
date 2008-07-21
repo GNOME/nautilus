@@ -1,5 +1,16 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c
+	(action_location_open_alternate_callback),
+	(action_location_open_in_new_tab_callback),
+	(real_update_location_menu), (real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Add "Open in New Tab" item to location popup, and consolidate labels in
+	case both spatial and browser mode are available.
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
 	* NEWS:
 	Update for release.
 
