@@ -1,3 +1,35 @@
+Major changes in 2.23.5 are:
+* Add tab support to browser mode
+* Add "restore from trash" functionality (only per item)
+* Path bar and notebooks can be used as fully functional URI drop targets
+* Places sidebar
+  * Add eject buttons to volumes
+  * Fix bookmark reordering
+  * Make DND indication consistent with GTK+ file chooser
+* Async I/O
+  * Use NautilusFile instead of GFile for path bar display name
+  * Use NautilusFile for DND "same FS" check
+* Fix navigation where window was inconsistently "stuck" between two
+  directories, i.e. the view was not completely changed.
+* Fix huge leak - status bar messages were never popped from the stack
+* Always grab focus on location change, even if view is reused
+* Icon view fixes
+  * If no icon is selected, but an icon has the keyboard focus, select it when
+    pressing space.
+  * Move keyboard focus after a file has been removed
+  * Fix double-clicking of half-shown items
+* Thumbnailing changes
+  * Never scale up any thumbnails
+  * Compose and scale thumbnails on the fly
+  * Speed up loading of large image files used as their own thumbnails
+* Display emblems for small icon sizes
+* Offer clipboard contents as text/uri-list
+* Use UTF-8 dash for properties window instead of "--"
+* Misc
+  * Allow to build without XMP
+  * Require beagle 0.2.4
+  * Require intltool 0.36.3.
+
 Major changes in 2.23.4 are:
 * Fix background extension submenus for background context menus
 * Fix thumbnailing
