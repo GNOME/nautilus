@@ -26,8 +26,8 @@
 
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-query.h>
+#include <libnautilus-private/nautilus-window-info.h>
 #include <nautilus-search-bar.h>
-#include "nautilus-window-info.h"
 
 #define NAUTILUS_TYPE_QUERY_EDITOR (nautilus_query_editor_get_type ())
 #define NAUTILUS_QUERY_EDITOR(obj) GTK_CHECK_CAST (obj, NAUTILUS_TYPE_QUERY_EDITOR, NautilusQueryEditor)
