@@ -60,6 +60,8 @@
 #define FM_ACTION_LOCATION_TRASH "LocationTrash"
 #define FM_ACTION_DELETE "Delete"
 #define FM_ACTION_LOCATION_DELETE "LocationDelete"
+#define FM_ACTION_RESTORE_FROM_TRASH "Restore From Trash"
+#define FM_ACTION_LOCATION_RESTORE_FROM_TRASH "LocationRestoreFromTrash"
 #define FM_ACTION_SHOW_HIDDEN_FILES "Show Hidden Files"
 #define FM_ACTION_CONNECT_TO_SERVER_LINK "Connect To Server Link"
 #define FM_ACTION_MOUNT_VOLUME "Mount Volume"

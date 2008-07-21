@@ -46,7 +46,7 @@
 	 GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS)
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -119,6 +119,8 @@ struct NautilusFileDetails
 	 * the same file system.
 	 */
 	eel_ref_str filesystem_id;
+
+	char *trash_orig_path;
 
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to

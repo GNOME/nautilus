@@ -281,6 +281,8 @@ static void     trash_or_delete_files                          (GtkWindow       
 								const GList          *files,
 								gboolean              delete_if_all_already_in_trash,
 								FMDirectoryView      *view);
+static void     restore_from_trash                             (NautilusFile         *file,
+								FMDirectoryView      *view);
 static void     load_directory                                 (FMDirectoryView      *view,
 								NautilusDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
@@ -996,6 +998,26 @@ action_delete_callback (GtkAction *action,
 			gpointer callback_data)
 {
         delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
+}
+
+static void
+action_restore_from_trash_callback (GtkAction *action,
+				    gpointer callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	GList *selection;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	selection = fm_directory_view_get_selection_for_file_transfer (view);
+	if (g_list_length (selection) == 1) {
+		file = NAUTILUS_FILE (selection->data);
+		restore_from_trash (file, view);
+	}
+
+	nautilus_file_list_free (selection);
+
 }
 
 static gboolean
@@ -6383,6 +6405,72 @@ action_location_delete_callback (GtkAction *action,
 }
 
 static void
+restore_from_trash (NautilusFile *file,
+		    FMDirectoryView *view)
+{
+	NautilusFile *original_file, *original_dir;
+	GFile *location, *original_dir_location;
+	GList list;
+	char *message, *file_name;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	original_file = nautilus_file_get_trash_original_file (file);
+	if (original_file == NULL) {
+		file_name = nautilus_file_get_display_name (file);
+		message = g_strdup_printf (_("Could not determine original location of \"%s\" "), file_name);
+		g_free (file_name);
+
+		eel_show_warning_dialog (message,
+					 _("The item cannot be restored from trash"),
+					 fm_directory_view_get_containing_window (view));
+		g_free (message);
+	}
+
+
+	original_dir = NULL;
+
+	if (original_file != NULL) {
+		original_dir = nautilus_file_get_parent (original_file);
+	}
+
+	if (original_dir != NULL) {
+		location = nautilus_file_get_location (file);
+		original_dir_location = nautilus_file_get_location (original_dir);
+
+		list.prev = NULL;
+		list.next = NULL;
+		list.data = location;
+
+		nautilus_file_operations_move
+			(&list, NULL, 
+			 original_dir_location,
+			 (GtkWindow *) view->details->window,
+			 NULL, NULL);
+
+		g_object_unref (location);
+		g_object_unref (original_dir_location);
+	}
+
+	nautilus_file_unref (original_file);
+	nautilus_file_unref (original_dir);
+}
+
+static void
+action_location_restore_from_trash_callback (GtkAction *action,
+					     gpointer callback_data)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	file = view->details->location_popup_directory_as_file;
+
+	restore_from_trash (file, view);
+}
+
+static void
 fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 {
 	NautilusWindowShowHiddenFilesMode mode;
@@ -6541,6 +6629,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Delete"), "<shift>Delete",
   /* tooltip */                  N_("Delete each selected item, without moving to the Trash"),
                                  G_CALLBACK (action_delete_callback) },
+  /* name, stock id */         { "Restore From Trash", NULL,
+  /* label, accelerator */       N_("_Restore"), NULL,
+				 NULL,
+                                 G_CALLBACK (action_restore_from_trash_callback) },
   /*
    * multiview-TODO: decide whether "Reset to Defaults" should
    * be window-wide, and not just view-wide.
@@ -6632,6 +6724,9 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Delete"), "",
   /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
                                  G_CALLBACK (action_location_delete_callback) },
+  /* name, stock id */         { FM_ACTION_LOCATION_RESTORE_FROM_TRASH, NULL,
+  /* label, accelerator */       N_("_Restore"), NULL, NULL,
+                                 G_CALLBACK (action_location_restore_from_trash_callback) },
 
   /* name, stock id */         { "Location Mount Volume", NULL,
   /* label, accelerator */       N_("_Mount Volume"), NULL,
@@ -7008,6 +7103,43 @@ file_should_show_self (NautilusFile *file,
 #endif
 }
 
+static void
+update_restore_from_trash_action (GtkAction *action,
+				  NautilusFile *file,
+				  gboolean is_self)
+{
+	NautilusFile *original_file;
+	GFile *original_location;
+	char *tooltip, *tmp;
+
+	if (file != NULL) {
+		original_file = nautilus_file_get_trash_original_file (file);
+		gtk_action_set_visible (action, original_file != NULL);
+
+		if (original_file != NULL) {
+			original_location = nautilus_file_get_location (original_file);
+
+			tmp = g_file_get_parse_name (original_location);
+			if (is_self) {
+				tooltip = g_strdup_printf (_("Move the open folder out of the trash to \"%s\""), tmp);
+			} else if (nautilus_file_is_directory (file)) {
+				tooltip = g_strdup_printf (_("Move the selected folder out of the trash to \"%s\""), tmp);
+			} else {
+				tooltip = g_strdup_printf (_("Move the selected file out of the trash to \"%s\""), tmp);
+			}
+			g_free (tmp);
+
+			g_object_set (action, "tooltip", tooltip, NULL);
+
+			g_object_unref (original_location);
+		}
+
+		nautilus_file_unref (original_file);
+	} else {
+		gtk_action_set_visible (action, FALSE);
+	}
+
+}
 
 static void
 real_update_menus_volumes (FMDirectoryView *view,
@@ -7195,7 +7327,7 @@ real_update_location_menu (FMDirectoryView *view)
 	NautilusFile *file;
 	gboolean is_special_link;
 	gboolean is_desktop_or_home_dir;
-	gboolean can_delete_file;
+	gboolean can_delete_file, show_delete;
 	gboolean show_separate_delete_command;
 	gboolean show_open_folder_window;
 	char *label;
@@ -7253,9 +7385,15 @@ real_update_location_menu (FMDirectoryView *view)
 				  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action),
 						   "can-paste-according-to-destination")));
 
+	show_delete = TRUE;
+
 	if (file != NULL &&
 	    nautilus_file_is_in_trash (file)) {
-		label = _("_Delete from Trash");
+		if (nautilus_file_is_self_owned (file)) {
+			show_delete = FALSE;
+		}
+
+		label = _("_Delete Permanently");
 		tip = _("Delete the open folder permanently");
 		show_separate_delete_command = FALSE;
 	} else {
@@ -7269,8 +7407,12 @@ real_update_location_menu (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
+		      "stock-id", (file != NULL &&
+				   nautilus_file_is_in_trash (file)) ?
+					NULL : NAUTILUS_ICON_TRASH,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_file);
+	gtk_action_set_visible (action, show_delete);
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_DELETE);
@@ -7278,6 +7420,10 @@ real_update_location_menu (FMDirectoryView *view)
 	if (show_separate_delete_command) {
 		gtk_action_set_sensitive (action, can_delete_file);
 	}
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_LOCATION_RESTORE_FROM_TRASH);
+	update_restore_from_trash_action (action, file, TRUE);
 
 	real_update_location_menu_volumes (view);
 
@@ -7493,7 +7639,7 @@ real_update_menus (FMDirectoryView *view)
 	reset_extension_actions_menu (view, selection);
 
 	if (all_selected_items_in_trash (view)) {
-		label = _("_Delete from Trash");
+		label = _("_Delete Permanently");
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
 	} else {
@@ -7507,6 +7653,8 @@ real_update_menus (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
+		      "stock-id", all_selected_items_in_trash (view) ?
+					NULL : NAUTILUS_ICON_TRASH,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_files);
 
@@ -7520,6 +7668,15 @@ real_update_menus (FMDirectoryView *view)
 			      NULL);
 	}
 	gtk_action_set_sensitive (action, can_delete_files);
+
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_RESTORE_FROM_TRASH);
+	if (selection_count == 1) {
+		update_restore_from_trash_action (action, selection->data, FALSE);
+	} else {
+		update_restore_from_trash_action (action, NULL, FALSE);
+	}
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DUPLICATE);

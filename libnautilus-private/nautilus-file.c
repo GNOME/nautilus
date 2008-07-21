@@ -1561,6 +1561,7 @@ update_info_internal (NautilusFile *file,
 	const char *activation_uri;
 	const char *description;
 	const char *filesystem_id;
+	const char *trash_orig_path;
 	
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1831,6 +1832,13 @@ update_info_internal (NautilusFile *file,
 		changed = TRUE;
 		eel_ref_str_unref (file->details->filesystem_id);
 		file->details->filesystem_id = eel_ref_str_get_unique (filesystem_id);
+	}
+
+	trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
+	if (eel_strcmp (file->details->trash_orig_path, trash_orig_path) != 0) {
+		changed = TRUE;
+		g_free (file->details->trash_orig_path);
+		file->details->trash_orig_path = g_strdup (trash_orig_path);
 	}
 	
 	if (update_name) {
@@ -6144,6 +6152,27 @@ nautilus_file_get_filesystem_id (NautilusFile *file)
 	return g_strdup (eel_ref_str_peek (file->details->filesystem_id));
 }
 
+NautilusFile *
+nautilus_file_get_trash_original_file (NautilusFile *file)
+{
+	GFile *location;
+	NautilusFile *original_file;
+	char *filename;
+
+	original_file = NULL;
+
+	if (file->details->trash_orig_path != NULL) {
+		/* file name is stored in URL encoding */
+		filename = g_uri_unescape_string (file->details->trash_orig_path, "");
+		location = g_file_new_for_path (filename);
+		original_file = nautilus_file_get (location);
+		g_object_unref (G_OBJECT (location));
+		g_free (filename);
+	}
+
+	return original_file;
+
+}
 
 void
 nautilus_file_mark_gone (NautilusFile *file)

@@ -1,5 +1,20 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c (update_info_internal),
+	(nautilus_file_get_trash_original_file):
+	* libnautilus-private/nautilus-file.h:
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c
+	(action_restore_from_trash_callback), (restore_from_trash),
+	(action_location_restore_from_trash_callback),
+	(update_restore_from_trash_action), (real_update_location_menu),
+	(real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Support restoring from trash (one item at a time).
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-window-menus.c:
 	* src/nautilus-zoom-control.c
 	(nautilus_zoom_control_instance_init):
