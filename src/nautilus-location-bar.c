@@ -305,6 +305,21 @@ set_position_and_selection_to_end (GtkEditable *editable)
 }
 
 static void
+editable_activate_callback (GtkEntry *entry,
+			    gpointer user_data)
+{
+	NautilusNavigationBar *bar;
+	const char *entry_text;
+
+	bar = NAUTILUS_NAVIGATION_BAR (user_data);
+
+	entry_text = gtk_entry_get_text (entry);
+	if (entry_text != NULL && *entry_text != '\0') {
+		nautilus_navigation_bar_location_changed (bar);
+	}
+}
+
+static void
 editable_event_after_callback (GtkEntry *entry,
 			       GdkEvent *event,
 			       gpointer user_data)
@@ -417,8 +432,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	entry = nautilus_location_entry_new ();
 	
 	g_signal_connect_object (entry, "activate",
-				 G_CALLBACK (nautilus_navigation_bar_location_changed),
-				 bar, G_CONNECT_SWAPPED);
+				 G_CALLBACK (editable_activate_callback), bar, 0);
 	g_signal_connect_object (entry, "event_after",
 				 G_CALLBACK (editable_event_after_callback), bar, G_CONNECT_AFTER);
 
