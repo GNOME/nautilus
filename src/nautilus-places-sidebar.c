@@ -79,6 +79,7 @@ typedef struct {
 	gboolean  drop_occured;
 
 	GtkWidget *popup_menu;
+	GtkWidget *popup_menu_open_in_new_tab_item;
 	GtkWidget *popup_menu_remove_item;
 	GtkWidget *popup_menu_rename_item;
 	GtkWidget *popup_menu_separator_item;
@@ -148,6 +149,8 @@ static void  check_unmount_and_eject                   (GMount *mount,
 							GDrive *drive,
 							gboolean *show_unmount,
 							gboolean *show_eject);
+
+static void bookmarks_check_popup_sensitivity          (NautilusPlacesSidebar *sidebar);
 
 /* Identifiers for target types */
 enum {
@@ -681,6 +684,16 @@ desktop_location_changed_callback (gpointer user_data)
 	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
 
 	update_places (sidebar);
+}
+
+static void
+enable_tabs_changed_callback (gpointer user_data)
+{
+	NautilusPlacesSidebar *sidebar;
+
+	sidebar = NAUTILUS_PLACES_SIDEBAR (user_data);
+
+	bookmarks_check_popup_sensitivity (sidebar);
 }
 
 static void
@@ -1344,6 +1357,12 @@ bookmarks_check_popup_sensitivity (NautilusPlacesSidebar *sidebar)
 				    -1);
 	}
 
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+		gtk_widget_show (sidebar->popup_menu_open_in_new_tab_item);
+	} else {
+		gtk_widget_hide (sidebar->popup_menu_open_in_new_tab_item);
+	}
+
 	gtk_widget_set_sensitive (sidebar->popup_menu_remove_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_rename_item, (type == PLACES_BOOKMARK));
 	gtk_widget_set_sensitive (sidebar->popup_menu_empty_trash_item, !nautilus_trash_monitor_is_empty ());
@@ -1941,6 +1960,7 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
 
 	item = gtk_menu_item_new_with_mnemonic (_("Open in New _Tab"));
+	sidebar->popup_menu_open_in_new_tab_item = item;
 	g_signal_connect (item, "activate",
 			  G_CALLBACK (open_shortcut_in_new_tab_cb), sidebar);
 	gtk_widget_show (item);
@@ -1951,6 +1971,8 @@ bookmarks_build_popup_menu (NautilusPlacesSidebar *sidebar)
 			  G_CALLBACK (open_shortcut_in_new_window_cb), sidebar);
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (sidebar->popup_menu), item);
+
+	eel_gtk_menu_append_separator (GTK_MENU (sidebar->popup_menu));
 
 	item = gtk_image_menu_item_new_with_label (_("Remove"));
 	sidebar->popup_menu_remove_item = item;
@@ -2298,6 +2320,11 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 						  desktop_location_changed_callback,
+						  sidebar,
+						  G_OBJECT (sidebar));
+
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ENABLE_TABS,
+						  enable_tabs_changed_callback,
 						  sidebar,
 						  G_OBJECT (sidebar));
 

@@ -1,5 +1,15 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-places-sidebar.c (enable_tabs_changed_callback),
+	(bookmarks_check_popup_sensitivity), (bookmarks_build_popup_menu),
+	(nautilus_places_sidebar_init):
+	Add separator after "Open in ..." popup menu items.
+
+	Only show "Open in New Tab" menu item if the preference is enabled.
+	Update popup menu sensitivity when tabs preference changes.
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-places-sidebar.c (clicked_eject_button),
 	(nautilus_places_sidebar_init):
 	Fix eject icon click detection, also make it work in RTL locales.
