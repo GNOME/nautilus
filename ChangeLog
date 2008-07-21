@@ -1,5 +1,16 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-icon-view.c (fm_icon_view_register),
+	(fm_compact_view_register):
+	* src/file-manager/fm-icon-view.h:
+	* src/nautilus-application.c (nautilus_application_instance_init):
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-file-management-properties.glade:
+	Display compact view after list view, rather than before it. Fixes
+	keybindings, and #543934. Thanks to Diego Escalante Urrelo.
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-location-bar.c (editable_activate_callback),
 	(nautilus_location_bar_init):
 	Do not emit "location-changed" if the entry is empty. Fixes #527552.

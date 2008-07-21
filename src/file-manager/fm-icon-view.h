@@ -116,5 +116,6 @@ void    fm_icon_view_filter_by_screen (FMIconView *icon_view, gboolean filter);
 gboolean fm_icon_view_is_compact   (FMIconView *icon_view);
 
 void    fm_icon_view_register       (void);
+void    fm_compact_view_register    (void);
 
 #endif /* FM_ICON_VIEW_H */

@@ -3023,7 +3023,12 @@ fm_icon_view_register (void)
 {
 	TRANSLATE_VIEW_INFO (fm_icon_view)
 	nautilus_view_factory_register (&fm_icon_view);
+}
 
+void
+fm_compact_view_register (void)
+{
 	TRANSLATE_VIEW_INFO (fm_compact_view)
 	nautilus_view_factory_register (&fm_compact_view);
 }
+
