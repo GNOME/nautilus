@@ -54,7 +54,7 @@
 #include "nautilus-places-sidebar.h"
 #include "nautilus-window.h"
 
-#define EJECT_BUTTON_XPAD 6
+#define EJECT_BUTTON_XPAD 5
 
 #define NAUTILUS_PLACES_SIDEBAR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PLACES_SIDEBAR, NautilusPlacesSidebarClass))
 #define NAUTILUS_IS_PLACES_SIDEBAR(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PLACES_SIDEBAR))
@@ -63,7 +63,8 @@
 typedef struct {
 	GtkScrolledWindow  parent;
 	GtkTreeView        *tree_view;
-	GtkCellRenderer    *eject_cell_renderer;
+	GtkCellRenderer    *icon_cell_renderer;
+	GtkCellRenderer    *eject_text_cell_renderer;
 	char 	           *uri;
 	GtkListStore       *store;
 	GtkTreeModel       *filter_model;
@@ -611,28 +612,46 @@ clicked_eject_button (NautilusPlacesSidebar *sidebar,
 	GdkEvent *event = gtk_get_current_event ();
 	GdkEventButton *button_event = (GdkEventButton *) event;
 	GtkTreeViewColumn *column;
-	GtkSettings *settings;
-	int pos, renderer_width, eject_button_size;
-	int renderer_x2;
+	GtkTextDirection direction;
+	int width, total_width;
+	int eject_button_size;
 
 	*path = NULL;
 
 	if (event->type == GDK_BUTTON_PRESS &&
 	    gtk_tree_view_get_path_at_pos (sidebar->tree_view,
 					   button_event->x, button_event->y,
-					   path, &column, NULL, NULL) &&
-	    gtk_tree_view_column_cell_get_position (column, sidebar->eject_cell_renderer,
-						    &pos, &renderer_width)) {
-		renderer_x2 = MIN (pos + renderer_width, GTK_WIDGET (sidebar)->allocation.width);
+					   path, &column, NULL, NULL)) {
+		total_width = 0;
 
-		settings = gtk_widget_get_settings (GTK_WIDGET (sidebar));
-		gtk_icon_size_lookup_for_settings (settings, GTK_ICON_SIZE_MENU,
-						   &eject_button_size, NULL);
+		gtk_widget_style_get (GTK_WIDGET (sidebar->tree_view),
+				      "horizontal-separator", &width,
+				      NULL);
+		total_width += width / 2;
 
-		if (button_event->x > renderer_x2 - (EJECT_BUTTON_XPAD + eject_button_size) &&
-		    button_event->x < renderer_x2 - EJECT_BUTTON_XPAD) {
+		direction = gtk_widget_get_direction (GTK_WIDGET (sidebar->tree_view));
+		if (direction != GTK_TEXT_DIR_RTL) {
+			gtk_tree_view_column_cell_get_position (column,
+								sidebar->icon_cell_renderer,
+								NULL, &width);
+			total_width += width;
+
+			gtk_tree_view_column_cell_get_position (column,
+								sidebar->eject_text_cell_renderer,
+								NULL, &width);
+			total_width += width;
+		}
+
+		total_width += EJECT_BUTTON_XPAD;
+
+		eject_button_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
+
+		if (button_event->x - total_width >= 0 &&
+		    button_event->x - total_width <= eject_button_size) {
 			return TRUE;
 		}
+	} else if (event->type == GDK_BUTTON_RELEASE) {
+		g_object_set_data (G_OBJECT (sidebar->tree_view), "myrect", NULL);
 	}
 
 	if (*path != NULL) {
@@ -2152,6 +2171,7 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 	col = GTK_TREE_VIEW_COLUMN (gtk_tree_view_column_new ());
 
 	cell = gtk_cell_renderer_pixbuf_new ();
+	sidebar->icon_cell_renderer = cell;
 	gtk_tree_view_column_pack_start (col, cell, FALSE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "pixbuf", PLACES_SIDEBAR_COLUMN_ICON,
@@ -2159,35 +2179,42 @@ nautilus_places_sidebar_init (NautilusPlacesSidebar *sidebar)
 
 	
 	cell = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (col, cell, FALSE);
+	sidebar->eject_text_cell_renderer = cell;
+	gtk_tree_view_column_pack_start (col, cell, TRUE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "text", PLACES_SIDEBAR_COLUMN_NAME,
 					     "visible", PLACES_SIDEBAR_COLUMN_EJECT,
 					     NULL);
+	g_object_set (cell,
+		      "ellipsize", PANGO_ELLIPSIZE_END,
+		      "ellipsize-set", TRUE,
+		      NULL);
 
 
 	cell = gtk_cell_renderer_pixbuf_new ();
-	sidebar->eject_cell_renderer = cell;
 	g_object_set (cell,
 		      "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
 		      "icon-name", "media-eject",
 		      "stock-size", GTK_ICON_SIZE_MENU,
-		      "xalign", 1.0,
 		      "xpad", EJECT_BUTTON_XPAD,
 		      NULL);
-	gtk_tree_view_column_pack_start (col, cell, TRUE);
+	gtk_tree_view_column_pack_start (col, cell, FALSE);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "visible", PLACES_SIDEBAR_COLUMN_EJECT,
 					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_end (col, cell, FALSE);
+	gtk_tree_view_column_pack_start (col, cell, TRUE);
 	g_object_set (G_OBJECT (cell), "editable", FALSE, NULL);
 	gtk_tree_view_column_set_attributes (col, cell,
 					     "text", PLACES_SIDEBAR_COLUMN_NAME,
 					     "visible", PLACES_SIDEBAR_COLUMN_NO_EJECT,
 					     "editable-set", PLACES_SIDEBAR_COLUMN_BOOKMARK,
 					     NULL);
+	g_object_set (cell,
+		      "ellipsize", PANGO_ELLIPSIZE_END,
+		      "ellipsize-set", TRUE,
+		      NULL);
 
 	g_signal_connect (cell, "edited", 
 			  G_CALLBACK (bookmarks_edited), sidebar);

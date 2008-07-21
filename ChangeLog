@@ -1,5 +1,12 @@
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-places-sidebar.c (clicked_eject_button),
+	(nautilus_places_sidebar_init):
+	Fix eject icon click detection, also make it work in RTL locales.
+	Ellipsize sidebar text. Slightly reduce eject icon xpad. 
+
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
 	* configure.in:
 	Post release version bump.
 
