@@ -1275,6 +1275,8 @@ action_save_search_as_callback (GtkAction *action,
 						      NULL);
 		save_button = gtk_dialog_add_button (GTK_DIALOG (dialog),
 						     GTK_STOCK_SAVE, GTK_RESPONSE_OK);
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+						 GTK_RESPONSE_OK);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
@@ -1292,6 +1294,7 @@ action_save_search_as_callback (GtkAction *action,
 		gtk_widget_show (label);
 		entry = gtk_entry_new ();
 		gtk_table_attach (GTK_TABLE (table), entry, 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
+		gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
 		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 		
 		gtk_widget_set_sensitive (save_button, FALSE);
