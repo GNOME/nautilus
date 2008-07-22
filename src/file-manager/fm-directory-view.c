@@ -329,6 +329,8 @@ static GdkDragAction ask_link_action                           (FMDirectoryView 
 static void     update_templates_directory                     (FMDirectoryView *view);
 static void     user_dirs_changed                              (FMDirectoryView *view);
 
+static gboolean file_list_all_are_folders                      (GList *file_list);
+
 static void action_open_scripts_folder_callback    (GtkAction *action,
 						    gpointer   callback_data);
 static void action_cut_files_callback              (GtkAction *action,
@@ -4400,6 +4402,12 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 
 
 	num_applications = g_list_length (applications);
+
+	if (file_list_all_are_folders (selection)) {
+		submenu_visible = (num_applications > 2);
+	} else {
+		submenu_visible = (num_applications > 3);
+	}
 	
 	for (node = applications, index = 0; node != NULL; node = node->next, index++) {
 		GAppInfo *application;
@@ -4412,7 +4420,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 			continue;
 		}
 
-		if (num_applications > 3) {
+		if (submenu_visible) {
 			menu_path = FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER;
 			popup_path = FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_SUBMENU_PLACEHOLDER;
 		} else {
@@ -4438,8 +4446,6 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 	if (default_app != NULL) {
 		g_object_unref (default_app);
 	}
-
-	submenu_visible = (num_applications > 3);
 
 	open_with_chooser_visible = other_applications_visible &&
 				    g_list_length (selection) == 1;
