@@ -1,3 +1,16 @@
+2008-07-22  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-spatial-window.c (save_window_geometry_timeout),
+	(nautilus_spatial_window_unrealize),
+	(nautilus_spatial_window_save_geometry),
+	(nautilus_spatial_window_save_scroll_position),
+	(nautilus_spatial_window_save_show_hidden_files_mode),
+	(real_close_slot), (nautilus_spatial_window_class_init):
+	* src/nautilus-spatial-window.h:
+	Make geomtry save methods per slot, rather than per window. The active
+	slot is set to NULL before they are closed. Fixes #542656.
+	Thanks to Frederic Peters.
+
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-places-sidebar.c (enable_tabs_changed_callback),
