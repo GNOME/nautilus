@@ -1360,7 +1360,7 @@ value_field_update_internal (GtkLabel *label,
 							    inconsistent_string);
 		if (strcmp (mime_type, inconsistent_string)) {
 			tmp = attribute_value;
-			attribute_value = g_strdup_printf (C_("MIME type description (MIME type)", "%s (%s)"), attribute_value, mime_type);
+			attribute_value = g_strdup_printf (Q_("MIME type description (MIME type)|%s (%s)"), attribute_value, mime_type);
 			g_free (tmp);
 		}
 		g_free (mime_type);

@@ -1,3 +1,11 @@
+2008-07-21  Christian Neumair  <cneumair@gnome.org>
+
+	* configure.in:
+	* src/file-manager/fm-properties-window.c
+	(value_field_update_internal):
+	Revert Q_() -> C_() migration due to an intltool bug.
+	Do not require intltool 0.36.3 (#542658).
+
 2008-07-22  Christian Neumair  <cneumair@gnome.org>
 
 	* NEWS:
@@ -204,14 +212,6 @@
 	Pass textual URIs instead of GFiles to GAppInfo for remote files,
 	similar to nautilus_launch_desktop_file(). Fixes #543448.
 	Discovered by Kamil Páral.
-
-2008-07-16  A. Walton  <awalton@gnome.org>
-
-	* configure.in:
-	* src/file-manager/fm-properties-window.c
-	(value_field_update_internal):
-	Migrate to Msgctxt using C_() instead of Q_().
-	Nautilus now requires intltool 0.36.3 or better.
 
 2008-07-16  A. Walton  <awalton@gnome.org>
 
