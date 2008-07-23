@@ -176,6 +176,17 @@ typedef struct {
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
 
+static gboolean
+is_all_button_text (const char *button_text)
+{
+	g_assert (button_text != NULL);
+
+	return !strcmp (button_text, SKIP_ALL) ||
+	       !strcmp (button_text, REPLACE_ALL) ||
+	       !strcmp (button_text, DELETE_ALL) ||
+	       !strcmp (button_text, MERGE_ALL);
+}
+
 static void scan_sources (GList *files,
 			  SourceInfo *source_info,
 			  CommonJob *job,
@@ -953,6 +964,7 @@ typedef struct {
 	const char *secondary_text;
 	const char *details_text;
 	const char **button_titles;
+	gboolean show_all;
 	
 	int result;
 } RunSimpleDialogData;
@@ -978,6 +990,10 @@ do_run_simple_dialog (gpointer _data)
 	     data->button_titles[response_id] != NULL;
 	     response_id++) {
 		button_title = data->button_titles[response_id];
+		if (!data->show_all && is_all_button_text (button_title)) {
+			continue;
+		}
+
 		gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
 		gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
 	}
@@ -1013,6 +1029,7 @@ run_simple_dialog_va (CommonJob *job,
 		      char *primary_text,
 		      char *secondary_text,
 		      const char *details_text,
+		      gboolean show_all,
 		      va_list varargs)
 {
 	RunSimpleDialogData *data;
@@ -1029,6 +1046,7 @@ run_simple_dialog_va (CommonJob *job,
 	data->primary_text = primary_text;
 	data->secondary_text = secondary_text;
 	data->details_text = details_text;
+	data->show_all = show_all;
 
 	ptr_array = g_ptr_array_new ();
 	while ((button_title = va_arg (varargs, const char *)) != NULL) {
@@ -1087,18 +1105,20 @@ run_error (CommonJob *job,
 	   char *primary_text,
 	   char *secondary_text,
 	   const char *details_text,
+	   gboolean show_all,
 	   ...)
 {
 	va_list varargs;
 	int res;
 
-	va_start (varargs, details_text);
+	va_start (varargs, show_all);
 	res = run_simple_dialog_va (job,
 				    FALSE,
 				    GTK_MESSAGE_ERROR,
 				    primary_text,
 				    secondary_text,
 				    details_text,
+				    show_all,
 				    varargs);
 	va_end (varargs);
 	return res;
@@ -1109,18 +1129,20 @@ run_warning (CommonJob *job,
 	     char *primary_text,
 	     char *secondary_text,
 	     const char *details_text,
+	     gboolean show_all,
 	     ...)
 {
 	va_list varargs;
 	int res;
 
-	va_start (varargs, details_text);
+	va_start (varargs, show_all);
 	res = run_simple_dialog_va (job,
 				    FALSE,
 				    GTK_MESSAGE_WARNING,
 				    primary_text,
 				    secondary_text,
 				    details_text,
+				    show_all,
 				    varargs);
 	va_end (varargs);
 	return res;
@@ -1131,18 +1153,20 @@ run_question (CommonJob *job,
 	      char *primary_text,
 	      char *secondary_text,
 	      const char *details_text,
+	      gboolean show_all,
 	      ...)
 {
 	va_list varargs;
 	int res;
 
-	va_start (varargs, details_text);
+	va_start (varargs, show_all);
 	res = run_simple_dialog_va (job,
 				    FALSE,
 				    GTK_MESSAGE_QUESTION,
 				    primary_text,
 				    secondary_text,
 				    details_text,
+				    show_all,
 				    varargs);
 	va_end (varargs);
 	return res;
@@ -1193,6 +1217,7 @@ confirm_delete_from_trash (CommonJob *job,
 				prompt,
 				f (_("If you delete an item, it will be permanently lost.")),
 				NULL,
+				FALSE,
 				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
 				NULL);
 	
@@ -1218,6 +1243,7 @@ confirm_empty_trash (CommonJob *job)
 				    "in it will be permanently lost. Please note "
 				    "that you can also delete them separately.")),
 				NULL,
+				FALSE,
 				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
 				NULL);
 
@@ -1259,6 +1285,7 @@ confirm_delete_directly (CommonJob *job,
 				prompt,
 				f (_("If you delete an item, it will be permanently lost.")),
 				NULL,
+				FALSE,
 				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
 				NULL);
 
@@ -1382,6 +1409,7 @@ delete_dir (CommonJob *job, GFile *dir,
 						primary,
 						secondary,
 						details,
+						FALSE,
 						GTK_STOCK_CANCEL, _("_Skip files"),
 						NULL);
 			
@@ -1414,6 +1442,7 @@ delete_dir (CommonJob *job, GFile *dir,
 					primary,
 					secondary,
 					details,
+					FALSE,
 					GTK_STOCK_CANCEL, SKIP, RETRY,
 					NULL);
 
@@ -1446,6 +1475,7 @@ delete_dir (CommonJob *job, GFile *dir,
 						primary,
 						secondary,
 						details,
+						(source_info->num_files - transfer_info->num_files) > 1,
 						GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 						NULL);
 			
@@ -1528,6 +1558,7 @@ delete_file (CommonJob *job, GFile *file,
 					primary,
 					secondary,
 					details,
+					(source_info->num_files - transfer_info->num_files) > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 
@@ -1663,6 +1694,7 @@ trash_files (CommonJob *job, GList *files, int *files_skipped)
 						 primary,
 						 secondary,
 						 details,
+						 (total_files - files_trashed) > 1,
 						 GTK_STOCK_CANCEL, SKIP_ALL, SKIP, DELETE_ALL, GTK_STOCK_DELETE,
 						 NULL);
 
@@ -2332,6 +2364,7 @@ scan_dir (GFile *dir,
 						primary,
 						secondary,
 						details,
+						FALSE,
 						GTK_STOCK_CANCEL, RETRY, SKIP,
 						NULL);
 
@@ -2365,11 +2398,14 @@ scan_dir (GFile *dir,
 			secondary = f (_("There was an error reading the folder \"%B\"."), dir);
 			details = error->message;
 		}
-		
+		/* set show_all to TRUE here, as we don't know how many
+		 * files we'll end up processing yet.
+		 */
 		response = run_warning (job,
 					primary,
 					secondary,
 					details,
+					TRUE,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP, RETRY,
 					NULL);
 		
@@ -2439,11 +2475,14 @@ scan_file (GFile *file,
 			secondary = f (_("There was an error getting information about \"%B\"."), file);
 			details = error->message;
 		}
-		
+		/* set show_all to TRUE here, as we don't know how many
+		 * files we'll end up processing yet.
+		 */
 		response = run_warning (job,
 					primary,
 					secondary,
 					details,
+					TRUE,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP, RETRY,
 					NULL);
 		
@@ -2547,6 +2586,7 @@ verify_destination (CommonJob *job,
 				      primary,
 				      secondary,
 				      details,
+				      FALSE,
 				      GTK_STOCK_CANCEL, RETRY,
 				      NULL);
 		
@@ -2581,6 +2621,7 @@ verify_destination (CommonJob *job,
 				      primary,
 				      secondary,
 				      NULL,
+				      FALSE,
 				      GTK_STOCK_CANCEL,
 				      NULL);
 		
@@ -2615,6 +2656,7 @@ verify_destination (CommonJob *job,
 						primary,
 						secondary,
 						details,
+						FALSE,
 						GTK_STOCK_CANCEL, RETRY,
 						NULL);
 			
@@ -2638,6 +2680,7 @@ verify_destination (CommonJob *job,
 				      primary,
 				      secondary,
 				      NULL,
+				      FALSE,
 				      GTK_STOCK_CANCEL,
 				      NULL);
 		
@@ -3050,6 +3093,7 @@ create_dest_dir (CommonJob *job,
 					primary,
 					secondary,
 					details,
+					FALSE,
 					GTK_STOCK_CANCEL, SKIP, RETRY,
 					NULL);
 
@@ -3150,6 +3194,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 						primary,
 						secondary,
 						details,
+						FALSE,
 						GTK_STOCK_CANCEL, _("_Skip files"),
 						NULL);
 			
@@ -3194,6 +3239,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 					primary,
 					secondary,
 					details,
+					FALSE,
 					GTK_STOCK_CANCEL, SKIP, RETRY,
 					NULL);
 
@@ -3233,6 +3279,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 						primary,
 						secondary,
 						details,
+						(source_info->num_files - transfer_info->num_files) > 1,
 						GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 						NULL);
 			
@@ -3310,11 +3357,15 @@ remove_target_recursively (CommonJob *job,
 		primary = f (_("Error while copying \"%B\"."), src);
 		secondary = f (_("Could not remove files from the already existing folder %F."), file);
 		details = error->message;
-		
+
+		/* set show_all to TRUE here, as we don't know how many
+		 * files we'll end up processing yet.
+		 */
 		response = run_warning (job,
 					primary,
 					secondary,
 					details,
+					TRUE,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 		
@@ -3347,11 +3398,15 @@ remove_target_recursively (CommonJob *job,
 		primary = f (_("Error while copying \"%B\"."), src);
 		secondary = f (_("Could not remove the already existing file %F."), file);
 		details = error->message;
-		
+
+		/* set show_all to TRUE here, as we don't know how many
+		 * files we'll end up processing yet.
+		 */
 		response = run_warning (job,
 					primary,
 					secondary,
 					details,
+					TRUE,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 		
@@ -3484,6 +3539,7 @@ copy_move_file (CopyMoveJob *copy_job,
 					primary,
 					secondary,
 					NULL,
+					(source_info->num_files - transfer_info->num_files) > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 
@@ -3614,6 +3670,7 @@ copy_move_file (CopyMoveJob *copy_job,
 					primary,
 					secondary,
 					NULL,
+					(source_info->num_files - transfer_info->num_files) > 1,
 					GTK_STOCK_CANCEL,
 					SKIP_ALL,
 					is_merge?MERGE_ALL:REPLACE_ALL,
@@ -3678,11 +3735,15 @@ copy_move_file (CopyMoveJob *copy_job,
 				}
 				secondary = f (_("Could not remove the already existing file with the same name in %F."), dest_dir);
 				details = error->message;
-				
+
+				/* setting TRUE on show_all here, as we could have
+				 * another error on the same file later.
+				 */
 				response = run_warning (job,
 							primary,
 							secondary,
 							details,
+							TRUE,
 							GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 							NULL);
 				
@@ -3746,6 +3807,7 @@ copy_move_file (CopyMoveJob *copy_job,
 					primary,
 					secondary,
 					details,
+					(source_info->num_files - transfer_info->num_files) > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 
@@ -4010,7 +4072,8 @@ move_file_prepare (CopyMoveJob *move_job,
 		   gboolean same_fs,
 		   GHashTable *debuting_files,
 		   GdkPoint *position,
-		   GList **fallback_files)
+		   GList **fallback_files,
+		   int files_left)
 {
 	GFile *dest;
 	GError *error;
@@ -4046,6 +4109,7 @@ move_file_prepare (CopyMoveJob *move_job,
 					primary,
 					secondary,
 					NULL,
+					files_left > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 		
@@ -4144,6 +4208,7 @@ move_file_prepare (CopyMoveJob *move_job,
 					primary,
 					secondary,
 					NULL,
+					files_left > 1,
 					GTK_STOCK_CANCEL,
 					SKIP_ALL,
 					is_merge?MERGE_ALL:REPLACE_ALL,
@@ -4201,6 +4266,7 @@ move_file_prepare (CopyMoveJob *move_job,
 					primary,
 					secondary,
 					details,
+					files_left > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 
@@ -4262,7 +4328,8 @@ move_files_prepare (CopyMoveJob *job,
 				   same_fs,
 				   job->debuting_files,
 				   point,
-				   fallbacks);
+				   fallbacks,
+				   left);
 		report_move_progress (job, total, --left);
 		i++;
 	}
@@ -4479,7 +4546,8 @@ static void
 link_file (CopyMoveJob *job,
 	   GFile *src, GFile *dest_dir,
 	   GHashTable *debuting_files,
-	   GdkPoint *position)
+	   GdkPoint *position,
+	   int files_left)
 {
 	GFile *dest;
 	int count;
@@ -4557,6 +4625,7 @@ link_file (CopyMoveJob *job,
 					primary,
 					secondary,
 					details,
+					files_left > 1,
 					GTK_STOCK_CANCEL, SKIP_ALL, SKIP,
 					NULL);
 
@@ -4651,7 +4720,7 @@ link_job (GIOSchedulerJob *io_job,
 		
 		link_file (job, src, job->destination,
 			   job->debuting_files,
-			   point);
+			   point, left);
 		report_link_progress (job, total, --left);
 		i++;
 		
@@ -5194,6 +5263,7 @@ create_job (GIOSchedulerJob *io_job,
 						primary,
 						secondary,
 						details,
+						FALSE,
 						GTK_STOCK_CANCEL, SKIP,
 						NULL);
 			

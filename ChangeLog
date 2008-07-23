@@ -1,3 +1,18 @@
+2008-07-24  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(is_all_button_text), (do_run_simple_dialog),
+	(run_simple_dialog_va), (run_error), (run_warning), (run_question),
+	(confirm_delete_from_trash), (confirm_empty_trash),
+	(confirm_delete_directly), (delete_dir), (delete_file),
+	(trash_files), (scan_dir), (scan_file), (verify_destination),
+	(create_dest_dir), (copy_move_directory),
+	(remove_target_recursively), (copy_move_file), (move_file_prepare),
+	(move_files_prepare), (link_file), (link_job), (create_job):
+	Show "All" buttons in the file operations dialogs only if more than one
+	file is involved in the process.
+	Initial patch by Christian Neumair (#518616).
+
 2008-07-21  Christian Neumair  <cneumair@gnome.org>
 
 	* configure.in:
