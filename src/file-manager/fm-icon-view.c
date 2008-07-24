@@ -234,8 +234,7 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 				   FMIconView *icon_view)
 {
 	char *position_string, *scale_string;
-	gboolean position_good, scale_good;
-	char *locale;
+	gboolean position_good;
 	char c;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -246,15 +245,6 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	if (!fm_icon_view_supports_manual_layout (icon_view)) {
 		return FALSE;
 	}
-
-	/* Doing parsing in the "C" locale instead of the one set
-	 * by the user ensures that data in the metafile is not in
-	 * a locale-specific format. It's only necessary for floating
-	 * point values since there aren't locale-specific formats for
-	 * integers in C stdio.
-	 */
-	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
-	setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
 	position_string = nautilus_file_get_metadata
@@ -269,17 +259,12 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
-	scale_good = sscanf
-		(scale_string, " %lf",
-		 &position->scale) == 1;
-	if (!scale_good) {
-		position->scale = 1.0;
-	}
+	position->scale = g_ascii_strtod (scale_string, NULL);
+	if (errno != 0) {
+ 		position->scale = 1.0;
+ 	}
 
 	g_free (scale_string);
-
-	setlocale (LC_NUMERIC, locale);
-	g_free (locale);
 	
 	return position_good;
 }
@@ -2267,21 +2252,11 @@ icon_position_changed_callback (NautilusIconContainer *container,
 				FMIconView *icon_view)
 {
 	char *position_string;
-	char *scale_string;
-	char *locale;
+	char scale_string[G_ASCII_DTOSTR_BUF_SIZE];
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (NAUTILUS_IS_FILE (file));
-
-	/* Doing formatting in the "C" locale instead of the one set
-	 * by the user ensures that data in the metafile is not in
-	 * a locale-specific format. It's only necessary for floating
-	 * point values since there aren't locale-specific formats for
-	 * integers in C stdio.
-	 */
-	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
-	setlocale (LC_NUMERIC, "C");
 
 	/* Schedule updating menus for the next idle. Doing it directly here
 	 * noticeably slows down icon stretching.  The other work here to
@@ -2307,18 +2282,11 @@ icon_position_changed_callback (NautilusIconContainer *container,
 		g_free (position_string);
 	}
 
-	/* FIXME bugzilla.gnome.org 40662: 
-	 * %.2f is not a good format for the scale factor. We'd like it to
-	 * say "2" or "2x" instead of "2.00".
-	 */
-	scale_string = g_strdup_printf ("%.2f", position->scale);
+
+	g_ascii_dtostr (scale_string, sizeof (scale_string), position->scale);
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE,
-		 "1.00", scale_string);
-	g_free (scale_string);
-
-	setlocale (LC_NUMERIC, locale);
-	g_free (locale);
+		 "1.0", scale_string);
 }
 
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */

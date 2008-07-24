@@ -1,5 +1,14 @@
 2008-07-24  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback),
+	(icon_position_changed_callback):
+	Don't use setlocale () just to printf a float, but use
+	g_ascii_dtostr () instead.
+	Initial patch by Christian Persch (#461804).
+
+2008-07-24  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(is_all_button_text), (do_run_simple_dialog),
 	(run_simple_dialog_va), (run_error), (run_warning), (run_question),
