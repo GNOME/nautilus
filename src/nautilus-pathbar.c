@@ -1421,7 +1421,8 @@ setup_button_drag_source (ButtonData *button_data)
 	};
 
         gtk_drag_source_set (button_data->button,
-		       	     GDK_BUTTON1_MASK,
+		       	     GDK_BUTTON1_MASK |
+			     GDK_BUTTON2_MASK,
 		       	     NULL, 0,
 			     GDK_ACTION_MOVE |
 			     GDK_ACTION_COPY |
