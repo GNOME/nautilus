@@ -1,3 +1,12 @@
+2008-07-28  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-navigation-window.c: (real_get_icon):
+	Use standard icon name, as gnome-icon-theme no longer ships
+	the "file-manager" icon.
+	Patch by Matthias Clasen (#545062).
+
 2008-07-24  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-pathbar.c: (setup_button_drag_source):

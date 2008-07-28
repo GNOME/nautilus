@@ -1221,7 +1221,7 @@ static NautilusIconInfo *
 real_get_icon (NautilusWindow *window,
 	       NautilusWindowSlot *slot)
 {
-	return nautilus_icon_info_lookup_from_name ("file-manager", 48);
+	return nautilus_icon_info_lookup_from_name ("system-file-manager", 48);
 }
 
 static void

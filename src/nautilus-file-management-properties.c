@@ -801,7 +801,7 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 			       (GClosureNotify)g_object_unref,
 			       0);
 
-	gtk_window_set_icon_name (GTK_WINDOW (dialog), "file-manager");
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "system-file-manager");
 
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog), gtk_window_get_screen(window));
