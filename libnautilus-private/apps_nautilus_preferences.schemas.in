@@ -147,16 +147,19 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_ask</key>
-      <applyto>/apps/nautilus/preferences/media_autorun_x_content_ask</applyto>
+      <key>/schemas/apps/nautilus/preferences/media_autorun_x_content_start_app</key>
+      <applyto>/apps/nautilus/preferences/media_autorun_x_content_start_app</applyto>
       <owner>nautilus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[]</default>
+      <default>[x-content/software]</default>
       <locale name="C">
-         <short>List of x-content/* types to ask the user what to do on insertion</short>
+         <short>List of x-content/* types where the preferred application will be launched</short>
          <long>
-           List of x-content/* types to ask the user what to do on insertion.
+           List of x-content/* types for which the user have chosen to
+           start an application in the preference capplet. The
+           preferred application for the given type will be started on
+           insertion on media matching these types.
          </long>
       </locale>
     </schema>
@@ -169,9 +172,12 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-         <short>List of x-content/* where to prompt the user on insertion</short>
+         <short>List of x-content/* types set to "Do Nothing"</short>
          <long>
-           List of x-content/* types to ask the user what to do on insertion.
+           List of x-content/* types for which the user have chosen
+           "Do Nothing" in the preference capplet. No prompt will be
+           shown nor will any matching application be started on
+           insertion of media matching these types.
          </long>
       </locale>
     </schema>
@@ -184,10 +190,11 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-         <short>List of x-content/* types where a folder window should be opened</short>
+         <short>List of x-content/* types set to "Open Folder"</short>
          <long>
-           List of x-content/* types where a folder window should be opened
-           on insertion.
+           List of x-content/* types for which the user have chosen
+           "Open Folder" in the preferences capplet. A folder window
+           will be opened on insertion of media matching these types.
          </long>
       </locale>
     </schema>

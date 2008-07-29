@@ -44,21 +44,6 @@
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 
-void _g_mount_guess_content_type_async (GMount              *mount,
-					gboolean             force_rescan,
-					GCancellable        *cancellable,
-					GAsyncReadyCallback  callback,
-					gpointer             user_data);
-
-char ** _g_mount_guess_content_type_finish (GMount              *mount,
-					    GAsyncResult        *result,
-					    GError             **error);
-
-char ** _g_mount_guess_content_type (GMount              *mount,
-				     gboolean             force_rescan,
-				     GError             **error);
-
-
 typedef void (*NautilusAutorunComboBoxChanged) (gboolean selected_ask,
 						gboolean selected_ignore,
 						gboolean selected_open_folder,
@@ -71,6 +56,7 @@ typedef void (*NautilusAutorunGetContent) (char **content, gpointer user_data);
 void nautilus_autorun_prepare_combo_box (GtkWidget *combo_box, 
 					 const char *x_content_type, 
 					 gboolean include_ask,
+					 gboolean include_open_with_other_app,
 					 gboolean update_settings,
 					 NautilusAutorunComboBoxChanged changed_cb,
 					 gpointer user_data);

@@ -52,7 +52,7 @@ G_BEGIN_DECLS
 
 /* Autorun options */
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_NEVER                "preferences/media_autorun_never"
-#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK        "preferences/media_autorun_x_content_ask"
+#define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP  "preferences/media_autorun_x_content_start_app"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE     "preferences/media_autorun_x_content_ignore"
 #define NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER "preferences/media_autorun_x_content_open_folder"
 

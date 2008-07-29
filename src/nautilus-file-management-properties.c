@@ -548,6 +548,7 @@ other_type_combo_box_changed (GtkComboBox *combo_box, GtkComboBox *action_combo_
 					    x_content_type,
 					    TRUE,
 					    TRUE,
+					    TRUE,
 					    NULL, NULL);
 out:
 	g_free (x_content_type);
@@ -573,7 +574,7 @@ nautilus_file_management_properties_dialog_setup_media_page (GladeXML *xml_dialo
 
 	for (n = 0; s[n*2] != NULL; n++) {
 		nautilus_autorun_prepare_combo_box (glade_xml_get_widget (xml_dialog, s[n*2]), s[n*2 + 1],
-						    TRUE, TRUE, NULL, NULL); 
+						    TRUE, TRUE, TRUE, NULL, NULL);
 	}
 
 	other_type_combo_box = glade_xml_get_widget (xml_dialog, "media_other_type_combobox");

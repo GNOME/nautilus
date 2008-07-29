@@ -50,6 +50,7 @@ enum
 	AUTORUN_APP,
 	AUTORUN_OPEN_FOLDER,
 	AUTORUN_SEP,
+	AUTORUN_OTHER_APP,
 };
 enum
 {
@@ -57,33 +58,35 @@ enum
 	COLUMN_AUTORUN_NAME,
 	COLUMN_AUTORUN_APP_INFO,
 	COLUMN_AUTORUN_X_CONTENT_TYPE,
-	COLUMN_AUTORUN_ITEM_TYPE,	
+	COLUMN_AUTORUN_ITEM_TYPE,
 };
 
 static gboolean should_autorun_mount (GMount *mount);
 
+static void nautilus_autorun_rebuild_combo_box (GtkWidget *combo_box);
+
 void
-nautilus_autorun_get_preferences (const char *x_content_type, 
-				  gboolean *pref_ask, 
-				  gboolean *pref_ignore, 
+nautilus_autorun_get_preferences (const char *x_content_type,
+				  gboolean *pref_start_app,
+				  gboolean *pref_ignore,
 				  gboolean *pref_open_folder)
 {
-	char **x_content_ask;
+	char **x_content_start_app;
 	char **x_content_ignore;
 	char **x_content_open_folder;
 
-	g_return_if_fail (pref_ask != NULL);
+	g_return_if_fail (pref_start_app != NULL);
 	g_return_if_fail (pref_ignore != NULL);
 	g_return_if_fail (pref_open_folder != NULL);
 
-	*pref_ask = FALSE;
+	*pref_start_app = FALSE;
 	*pref_ignore = FALSE;
 	*pref_open_folder = FALSE;
-	x_content_ask = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK);
+	x_content_start_app = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
 	x_content_ignore = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
 	x_content_open_folder = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
-	if (x_content_ask != NULL) {
-		*pref_ask = eel_g_strv_find (x_content_ask, x_content_type) != -1;
+	if (x_content_start_app != NULL) {
+		*pref_start_app = eel_g_strv_find (x_content_start_app, x_content_type) != -1;
 	}
 	if (x_content_ignore != NULL) {
 		*pref_ignore = eel_g_strv_find (x_content_ignore, x_content_type) != -1;
@@ -92,8 +95,8 @@ nautilus_autorun_get_preferences (const char *x_content_type,
 		*pref_open_folder = eel_g_strv_find (x_content_open_folder, x_content_type) != -1;
 	}
 	g_strfreev (x_content_ignore);
-	g_strfreev (x_content_ask);
-
+	g_strfreev (x_content_start_app);
+	g_strfreev (x_content_open_folder);
 }
 
 static void
@@ -129,21 +132,24 @@ add_elem_to_str_array (char **v, const char *s)
 
 
 void
-nautilus_autorun_set_preferences (const char *x_content_type, gboolean pref_ask, gboolean pref_ignore, gboolean pref_open_folder)
+nautilus_autorun_set_preferences (const char *x_content_type,
+				  gboolean pref_start_app,
+				  gboolean pref_ignore,
+				  gboolean pref_open_folder)
 {
-	char **x_content_ask;
+	char **x_content_start_app;
 	char **x_content_ignore;
 	char **x_content_open_folder;
 
-	x_content_ask = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK);
+	x_content_start_app = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
 	x_content_ignore = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
 	x_content_open_folder = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_OPEN_FOLDER);
 
-	remove_elem_from_str_array (x_content_ask, x_content_type);
-	if (pref_ask) {
-		x_content_ask = add_elem_to_str_array (x_content_ask, x_content_type);
+	remove_elem_from_str_array (x_content_start_app, x_content_type);
+	if (pref_start_app) {
+		x_content_start_app = add_elem_to_str_array (x_content_start_app, x_content_type);
 	}
-	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_ASK, x_content_ask);
+	eel_preferences_set_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP, x_content_start_app);
 
 	remove_elem_from_str_array (x_content_ignore, x_content_type);
 	if (pref_ignore) {
@@ -159,7 +165,7 @@ nautilus_autorun_set_preferences (const char *x_content_type, gboolean pref_ask,
 
 	g_strfreev (x_content_open_folder);
 	g_strfreev (x_content_ignore);
-	g_strfreev (x_content_ask);
+	g_strfreev (x_content_start_app);
 
 }
 
@@ -185,9 +191,15 @@ typedef struct
 	guint changed_signal_id;
 	GtkWidget *combo_box;
 
+	char *x_content_type;
+	gboolean include_ask;
+	gboolean include_open_with_other_app;
+
 	gboolean update_settings;
 	NautilusAutorunComboBoxChanged changed_cb;
 	gpointer user_data;
+
+	gboolean other_application_selected;
 } NautilusAutorunComboBoxData;
 
 static void 
@@ -197,7 +209,28 @@ nautilus_autorun_combobox_data_destroy (NautilusAutorunComboBoxData *data)
 	if (g_signal_handler_is_connected (G_OBJECT (data->combo_box), data->changed_signal_id)) {
 		g_signal_handler_disconnect (G_OBJECT (data->combo_box), data->changed_signal_id);
 	}
+	g_free (data->x_content_type);
 	g_free (data);
+}
+
+static void
+other_application_selected (NautilusOpenWithDialog *dialog,
+			    GAppInfo *app_info,
+			    NautilusAutorunComboBoxData *data)
+{
+	if (data->changed_cb != NULL) {
+		data->changed_cb (TRUE, FALSE, FALSE, app_info, data->user_data);
+	}
+	if (data->update_settings) {
+		nautilus_autorun_set_preferences (data->x_content_type, TRUE, FALSE, FALSE);
+		g_app_info_set_as_default_for_type (app_info,
+						    data->x_content_type,
+						    NULL);
+		data->other_application_selected = TRUE;
+	}
+
+	/* rebuild so we include and select the new application in the list */
+	nautilus_autorun_rebuild_combo_box (data->combo_box);
 }
 
 static void 
@@ -235,7 +268,7 @@ combo_box_changed (GtkComboBox *combo_box,
 			data->changed_cb (TRUE, FALSE, FALSE, NULL, data->user_data);
 		}
 		if (data->update_settings) {
-			nautilus_autorun_set_preferences (x_content_type, TRUE, FALSE, FALSE);
+			nautilus_autorun_set_preferences (x_content_type, FALSE, FALSE, FALSE);
 		}
 		break;
 	case AUTORUN_IGNORE:
@@ -254,17 +287,41 @@ combo_box_changed (GtkComboBox *combo_box,
 			nautilus_autorun_set_preferences (x_content_type, FALSE, FALSE, TRUE);
 		}
 		break;
+
 	case AUTORUN_APP:
 		if (data->changed_cb != NULL) {
-			data->changed_cb (FALSE, FALSE, FALSE, app_info, data->user_data);
+			/* TODO TODO?? */
+			data->changed_cb (TRUE, FALSE, FALSE, app_info, data->user_data);
 		}
 		if (data->update_settings) {
-			nautilus_autorun_set_preferences (x_content_type, FALSE, FALSE, FALSE);
+			nautilus_autorun_set_preferences (x_content_type, TRUE, FALSE, FALSE);
 			g_app_info_set_as_default_for_type (app_info,
 							    x_content_type,
 							    NULL);
 		}
 		break;
+
+	case AUTORUN_OTHER_APP:
+	{
+		GtkWidget *dialog;
+		int response;
+
+		data->other_application_selected = FALSE;
+
+		dialog = nautilus_add_application_dialog_new (NULL, x_content_type);
+		g_signal_connect (dialog, "application_selected",
+				  G_CALLBACK (other_application_selected),
+				  data);
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+		if (!data->other_application_selected) {
+			/* reset combo box so we don't linger on "Open with other Application..." */
+			nautilus_autorun_rebuild_combo_box (data->combo_box);
+		}
+		/* TODO: destroy dialog? */
+		break;
+	}
+
 	}
  
 out:
@@ -277,10 +334,71 @@ out:
 	g_free (x_content_type);
 }
 
+static void
+nautilus_autorun_rebuild_combo_box (GtkWidget *combo_box)
+{
+	NautilusAutorunComboBoxData *data;
+
+	data = g_object_get_data (G_OBJECT (combo_box), "nautilus_autorun_combobox_data");
+	if (data == NULL) {
+		g_warning ("no 'nautilus_autorun_combobox_data' data!");
+		return;
+	}
+
+	nautilus_autorun_prepare_combo_box (combo_box,
+					    data->x_content_type,
+					    data->include_ask,
+					    data->include_open_with_other_app,
+					    data->update_settings,
+					    data->changed_cb,
+					    data->user_data);
+}
+
+/* TODO: we need some kind of way to remove user-defined associations,
+ * e.g. the result of "Open with other Application...".
+ *
+ * However, this is a bit hard as
+ * g_app_info_can_remove_supports_type() will always return TRUE
+ * because we now have [Removed Applications] in the file
+ * ~/.local/share/applications/mimeapps.list.
+ *
+ * We need the API outlined in
+ *
+ *  http://bugzilla.gnome.org/show_bug.cgi?id=545350
+ *
+ * to do this.
+ *
+ * Now, there's also the question about what the UI would look like
+ * given this API. Ideally we'd include a small button on the right
+ * side of the combo box that the user can press to delete an
+ * association, e.g.:
+ *
+ *  +-------------------------------------+
+ *  | Ask what to do                      |
+ *  | Do Nothing                          |
+ *  | Open Folder                         |
+ *  +-------------------------------------+
+ *  | Open Rhythmbox Music Player         |
+ *  | Open Audio CD Extractor             |
+ *  | Open Banshee Media Player           |
+ *  | Open Frobnicator App            [x] |
+ *  +-------------------------------------+
+ *  | Open with other Application...      |
+ *  +-------------------------------------+
+ *
+ * where "Frobnicator App" have been set up using "Open with other
+ * Application...". However this is not accessible (which is a
+ * GTK+ issue) but probably not a big deal.
+ *
+ * And we only want show these buttons (e.g. [x]) for associations with
+ * GAppInfo instances that are deletable.
+ */
+
 void
-nautilus_autorun_prepare_combo_box (GtkWidget *combo_box, 
+nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 				    const char *x_content_type,
 				    gboolean include_ask,
+				    gboolean include_open_with_other_app,
 				    gboolean update_settings,
 				    NautilusAutorunComboBoxChanged changed_cb,
 				    gpointer user_data)
@@ -296,12 +414,14 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 	int n;
 	int num_apps;
 	gboolean pref_ask;
+	gboolean pref_start_app;
 	gboolean pref_ignore;
 	gboolean pref_open_folder;
 	NautilusAutorunComboBoxData *data;
 	GtkCellRenderer *renderer;
 
-	nautilus_autorun_get_preferences (x_content_type, &pref_ask, &pref_ignore, &pref_open_folder);
+	nautilus_autorun_get_preferences (x_content_type, &pref_start_app, &pref_ignore, &pref_open_folder);
+	pref_ask = !pref_start_app && !pref_ignore && !pref_open_folder;
 
 	icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
 
@@ -312,10 +432,10 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 	default_app_info = g_app_info_get_default_for_type (x_content_type, FALSE);
 	num_apps = g_list_length (app_info_list);
 
-	list_store = gtk_list_store_new (5, 
-					 GDK_TYPE_PIXBUF, 
-					 G_TYPE_STRING, 
-					 G_TYPE_APP_INFO, 
+	list_store = gtk_list_store_new (5,
+					 GDK_TYPE_PIXBUF,
+					 G_TYPE_STRING,
+					 G_TYPE_APP_INFO,
 					 G_TYPE_STRING,
 					 G_TYPE_INT);
 
@@ -432,6 +552,32 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 		}
 	}
 
+	if (include_open_with_other_app) {
+		gtk_list_store_append (list_store, &iter);
+		gtk_list_store_set (list_store, &iter,
+				    COLUMN_AUTORUN_PIXBUF, NULL,
+				    COLUMN_AUTORUN_NAME, NULL,
+				    COLUMN_AUTORUN_APP_INFO, NULL,
+				    COLUMN_AUTORUN_X_CONTENT_TYPE, NULL,
+				    COLUMN_AUTORUN_ITEM_TYPE, AUTORUN_SEP,
+				    -1);
+
+		gtk_list_store_append (list_store, &iter);
+		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+						   "application-x-executable",
+						   icon_size,
+						   0,
+						   NULL);
+		gtk_list_store_set (list_store, &iter,
+				    COLUMN_AUTORUN_PIXBUF, pixbuf,
+				    COLUMN_AUTORUN_NAME, _("Open with other Application..."),
+				    COLUMN_AUTORUN_APP_INFO, NULL,
+				    COLUMN_AUTORUN_X_CONTENT_TYPE, x_content_type,
+				    COLUMN_AUTORUN_ITEM_TYPE, AUTORUN_OTHER_APP,
+				    -1);
+		g_object_unref (pixbuf);
+	}
+
 	if (default_app_info != NULL) {
 		g_object_unref (default_app_info);
 	}
@@ -471,6 +617,9 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 		}
 
 		data = g_new0 (NautilusAutorunComboBoxData, 1);
+		data->x_content_type = g_strdup (x_content_type);
+		data->include_ask = include_ask;
+		data->include_open_with_other_app = include_open_with_other_app;
 		data->update_settings = update_settings;
 		data->changed_cb = changed_cb;
 		data->user_data = user_data;
@@ -506,355 +655,6 @@ is_shift_pressed (void)
 
 	return ret;
 }
-
-/*-- BEGIN MOVE TO GIO --*/
-
-static gboolean
-_check_nonempty_dir (GFile *mount_root, const char *dirname)
-{
-	GFile *file;
-	GFileInfo *file_info;
-	GFileEnumerator *file_enum;
-	gboolean ret;
-
-	ret = FALSE;
-
-	file = g_file_get_child (mount_root, dirname);
-	file_enum = g_file_enumerate_children (file,
-					       G_FILE_ATTRIBUTE_STANDARD_NAME,
-					       G_FILE_QUERY_INFO_NONE,
-					       NULL,
-					       NULL);
-	if (file_enum != NULL) {
-		file_info = g_file_enumerator_next_file (file_enum, NULL, NULL);
-		if (file_info != NULL) {
-			ret = TRUE;
-			g_object_unref (file_info);
-		}
-		g_object_unref (file_enum);
-	}
-	g_object_unref (file);
-
-	return ret;
-}
-
-static gboolean
-_check_file_common (GFile *file, gboolean must_be_executable)
-{
-	GFileInfo *file_info;
-	gboolean ret;
-
-	ret = FALSE;
-
-	file_info = g_file_query_info (file,
-				       G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE,
-				       G_FILE_QUERY_INFO_NONE,
-				       NULL,
-				       NULL);
-	if (file_info != NULL) {
-		if (must_be_executable) {
-			if (g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE))
-				ret = TRUE;
-		} else {
-			ret = TRUE;
-		}
-		g_object_unref (file_info);
-	}
-	g_object_unref (file);
-
-	return ret;
-}
-
-static gboolean
-_check_file (GFile *mount_root, const char *file_path,
-             gboolean must_be_executable)
-{
-	/* Unreffed in _check_file_common() */
-	GFile *file = g_file_get_child (mount_root, file_path);
-	return _check_file_common (file, must_be_executable);
-}
-
-#ifdef NAUTILUS_AUTORUN_SUPPORTS_AUTORUN_EXE
-static gboolean
-_check_file_case_insensitive (GFile *mount_root, const char *file_path,
-                              gboolean must_be_executable)
-{
-	/* Unreffed in _check_file_common() */
-	GFile *file = nautilus_find_file_insensitive (mount_root, file_path);
-	return _check_file_common (file, must_be_executable);
-}
-#endif
-
-/**
- * _g_mount_guess_content_type:
- * @mount: a #GMount.
- * @force_rescan: Whether to force a rescan of the content. Otherwise a cached result will be used if available.
- * @error: return location for error or %NULL to ignore.
- *
- * Tries to guess the type of content stored on @mount. Returns one or
- * more textual identifiers of well-known content types (typically
- * prefixed with "x-content/"). TODO: link to fd.o spec about this.
- *
- * This function may do I/O and thus may take a long time to
- * complete. For the async version, see
- * _g_mount_guess_content_type_async().
- *
- * Returns: a %NULL terminated array of content types or %NULL on
- * error. Caller should free this array with g_strfreev() when done
- * with it.
- **/
-char **
-_g_mount_guess_content_type (GMount              *mount,
-			     gboolean             force_rescan,
-			     GError             **error)
-{
-	unsigned int n;
-	char **ret;
-	GPtrArray *types;
-	GFile *root;
-	GVolume *volume;
-	char *disc_type = NULL;
-
-	/* TODO: This cache handling isn't really threadsafe.
-	 * I think this is ok for nautilus use, but not for general gio use
-	 */
-	ret = g_object_get_data (G_OBJECT (mount), "content-type-cache");
-	if (ret != NULL) {
-		return g_strdupv (ret);
-	}
-	
-	types = g_ptr_array_new ();
-
-	root = g_mount_get_root (mount);
-	volume = g_mount_get_volume (mount);
-
-	/* Take advantage of information from HAL's quirk lists that maps a given 
-	 * make/model of (what appears to be just) a storage device to it's intended
-	 * use.
-	 *
-	 * E.g. a mapping saying that a storage device is a music player, a digital
-	 * camera, a videocam, a video play back device, a gps reader.. and so on...
-	 */
-	if (volume != NULL) {
-		char **stor_device_caps;
-
-		/* See gvfs/hal/ghalvolume.c:do_update_from_hal()...
-		 *
-		 * This hack, using g_object_set|get_data() can be
-		 * removed once g_mount_guess_content_type() is in gio
-		 * and the actual code for probing media is in the
-		 * gvfs hal backend.
-		 */
-		stor_device_caps = (char **) g_object_get_data (G_OBJECT (volume), "hal-storage-device-capabilities");
-		if (stor_device_caps != NULL) {
-			for (n = 0; stor_device_caps[n] != NULL; n++) {
-				if (strcmp (stor_device_caps[n], "portable_audio_player") == 0) {
-					g_ptr_array_add (types, g_strdup ("x-content/audio-player"));
-				}
-				/* TODO: map other hal capabilities to x-content/ types */
-			}
-		}
-
-		disc_type = (char *) g_object_get_data (G_OBJECT (volume), "hal-volume.disc.type");
-	}
-	
-	if (g_file_has_uri_scheme (root, "cdda")) {
-		g_ptr_array_add (types, g_strdup ("x-content/audio-cdda"));
-		goto no_sniff;
-	}
-
-	if (g_file_has_uri_scheme (root, "burn")) {
-		if (disc_type != NULL) {
-			if (g_str_has_prefix (disc_type, "dvd")) {
-				g_ptr_array_add (types, g_strdup ("x-content/blank-dvd"));
-			} else if (g_str_has_prefix (disc_type, "hddvd")) {
-				g_ptr_array_add (types, g_strdup ("x-content/blank-hddvd"));
-			} else if (g_str_has_prefix (disc_type, "bd")) {
-				g_ptr_array_add (types, g_strdup ("x-content/blank-bd"));
-			} else {
-				/* assume CD */
-				g_ptr_array_add (types, g_strdup ("x-content/blank-cd"));
-			}
-		}
-		goto no_sniff;
-	}
-	
-	if (_check_nonempty_dir (root, "DCIM") ||
-	    _check_nonempty_dir (root, "dcim")) {
-		g_ptr_array_add (types, g_strdup ("x-content/image-dcf"));
-	}
-	
-	if (_check_nonempty_dir (root, "VIDEO_TS") && 
-	    disc_type != NULL) {
-		g_ptr_array_add (types, g_strdup ("x-content/video-dvd"));
-	}
-
-	if (_check_nonempty_dir (root, "AUDIO_TS") && 
-	    disc_type != NULL) {
-		g_ptr_array_add (types, g_strdup ("x-content/audio-dvd"));
-	}
-
-
-	/* see http://www.ccs.neu.edu/home/bchafy/cdb/info/info.html for various docs */
-
-	if (_check_nonempty_dir (root, "SVCD") && 
-	    _check_nonempty_dir (root, "EXT") &&
-	    _check_nonempty_dir (root, "MPEG-2") && 
-	    disc_type != NULL) {
-		/* http://everything2.com/index.pl?node_id=1009222 */
-		g_ptr_array_add (types, g_strdup ("x-content/video-svcd"));
-	}
-
-	if (_check_nonempty_dir (root, "VCD") && 
-	    _check_nonempty_dir (root, "MPEGAV") && 
-	    disc_type != NULL) {
-		/* http://www.herongyang.com/CD-DVD/VCD-Movie-File-Directory-Structure.html */
-		g_ptr_array_add (types, g_strdup ("x-content/video-vcd"));
-	}
-
-	if (_check_nonempty_dir (root, "BDAV") && 
-	    _check_nonempty_dir (root, "BDMV") && 
-	    disc_type != NULL) {
-		/* http://www.blu-raydisc.com/Section-13470/Section-13890/Index.html */
-		g_ptr_array_add (types, g_strdup ("x-content/video-bluray"));
-	}
-
-	if (_check_nonempty_dir (root, "HVDVD_TS") && /* not a typo; should really spell HVDVD_TS */
-	    disc_type != NULL) {
-		/* http://www.cdfreaks.com/reviews/CDFreaks--CES-2006/Page-5.html */
-		g_ptr_array_add (types, g_strdup ("x-content/video-hddvd"));
-	}
-
-	if (_check_nonempty_dir (root, "PICTURES") &&
-	    disc_type != NULL) {
-		/* http://www.re.org/kristin/picturecd.html */
-		g_ptr_array_add (types, g_strdup ("x-content/image-picturecd"));
-	}
-
-	if (g_file_is_native (root) &&
-	    (_check_file (root, ".autorun", TRUE) ||
-	     _check_file (root, "autorun", TRUE) ||
-	     _check_file (root, "autorun.sh", TRUE) ||
-#ifdef NAUTILUS_AUTORUN_SUPPORTS_AUTORUN_EXE
-	     /* TODO */
-	     _check_file_case_insensitive (root, "autorun.exe", TRUE) ||
-	     _check_file_case_insensitive (root, "autorun.inf", FALSE)))
-#else
-	    0))
-#endif
-	{
-		/* http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html */
-		
-		/* http://bugzilla.gnome.org/show_bug.cgi?id=509823#c3 for the autorun.exe and autorun.inf stuff */
-		g_ptr_array_add (types, g_strdup ("x-content/software"));
-	}
-
-no_sniff:
-	
-	g_ptr_array_add (types, NULL);
-	ret = (char **) g_ptr_array_free (types, FALSE);
-
-	if (volume != NULL) {
-		g_object_unref (volume);
-	}
-	g_object_unref (root);
-
-	g_object_set_data_full (G_OBJECT (mount),
-				"content-type-cache",
-				g_strdupv (ret),
-				(GDestroyNotify)g_strfreev);
-	
-	return ret;
-}
-
-typedef struct {
-	char **guessed_content_type;
-	gboolean force_rescan;
-} GuessContentData;
-
-static void
-guess_content_thread (GSimpleAsyncResult *res,
-                      GObject            *object,
-                      GCancellable       *cancellable)
-{
-	GuessContentData *op;
-	GError *error = NULL;
-	
-	op = g_simple_async_result_get_op_res_gpointer (res);
-
-	op->guessed_content_type = _g_mount_guess_content_type (G_MOUNT (object), op->force_rescan, &error);
-	
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
-	}
-}
-
-/**
- * _g_mount_guess_content_type_async:
- * @mount: a #GMount.
- * @force_rescan: Whether to force a rescan of the content. Otherwise a cached result will be used if available.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
- * @callback: a #GAsyncReadyCallback.
- * @user_data: user data passed to @callback.
- *
- * This is an asynchronous version of _g_mount_guess_content_type(),
- * and is finished by calling _g_mount_guess_content_type_finish() with
- * the @mount and #GAsyncResults data returned in the @callback.
- */
-void
-_g_mount_guess_content_type_async (GMount              *mount,
-				   gboolean             force_rescan,
-				   GCancellable        *cancellable,
-				   GAsyncReadyCallback  callback,
-				   gpointer             user_data)
-{
-	GSimpleAsyncResult *res;
-	GuessContentData *op;
-	
-	op = g_new0 (GuessContentData, 1);
-	op->force_rescan = force_rescan;
-	res = g_simple_async_result_new (G_OBJECT (mount), 
-					 callback, 
-					 user_data, 
-					 _g_mount_guess_content_type_async);
-	g_simple_async_result_set_op_res_gpointer (res, op, g_free);
-	
-	g_simple_async_result_run_in_thread (res, guess_content_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (res);
-}
-
-/**
- * _g_mount_guess_content_type_finish:
- * @mount: a #GMount.
- * @result: a #GAsyncResult.
- * @error: a #GError location to store the error occuring, or %NULL to 
- * ignore.
- * 
- * Finishes guessing content types of @mount. If any errors occured
- * during the operation, @error will be set to contain the errors and
- * %FALSE will be returned.
- * 
- * Returns: a %NULL terminated array of content types or %NULL on
- * error. Caller should free this array with g_strfreev() when done
- * with it.
- **/
-char **
-_g_mount_guess_content_type_finish (GMount              *mount,
-				    GAsyncResult        *result,
-				    GError             **error)
-{
-	GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
-	GuessContentData *op;
-	
-	g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == _g_mount_guess_content_type_async);
-	
-	op = g_simple_async_result_get_op_res_gpointer (simple);
-	return op->guessed_content_type;
-}
-
-
-/*- END MOVE TO GIO ---*/
 
 enum {
 	AUTORUN_DIALOG_RESPONSE_EJECT = 0
@@ -944,7 +744,7 @@ autorun_dialog_response (GtkDialog *dialog, gint response, AutorunDialogData *da
 
 		if (data->remember) {
 			/* make sure we don't ask again */
-			nautilus_autorun_set_preferences (data->x_content_type, FALSE, data->selected_ignore, data->selected_open_folder);
+			nautilus_autorun_set_preferences (data->x_content_type, TRUE, data->selected_ignore, data->selected_open_folder);
 			if (!data->selected_ignore && !data->selected_open_folder && data->selected_app != NULL) {
 				g_app_info_set_as_default_for_type (data->selected_app,
 								    data->x_content_type,
@@ -952,7 +752,7 @@ autorun_dialog_response (GtkDialog *dialog, gint response, AutorunDialogData *da
 			}
 		} else {
 			/* make sure we do ask again */
-			nautilus_autorun_set_preferences (data->x_content_type, TRUE, FALSE, FALSE);
+			nautilus_autorun_set_preferences (data->x_content_type, FALSE, FALSE, FALSE);
 		}
 
 		if (!data->selected_ignore && !data->selected_open_folder && data->selected_app != NULL) {
@@ -1014,6 +814,7 @@ do_autorun_for_content_type (GMount *mount, const char *x_content_type, Nautilus
 	int icon_size;
 	gboolean user_forced_dialog;
 	gboolean pref_ask;
+	gboolean pref_start_app;
 	gboolean pref_ignore;
 	gboolean pref_open_folder;
 	char *media_greeting;
@@ -1024,7 +825,8 @@ do_autorun_for_content_type (GMount *mount, const char *x_content_type, Nautilus
 
 	user_forced_dialog = is_shift_pressed ();
 
-	nautilus_autorun_get_preferences (x_content_type, &pref_ask, &pref_ignore, &pref_open_folder);
+	nautilus_autorun_get_preferences (x_content_type, &pref_start_app, &pref_ignore, &pref_open_folder);
+	pref_ask = !pref_start_app && !pref_ignore && !pref_open_folder;
 
 	if (user_forced_dialog) {
 		goto show_dialog;
@@ -1140,7 +942,7 @@ show_dialog:
 	data->user_data = user_data;
 
 	combo_box = gtk_combo_box_new ();
-	nautilus_autorun_prepare_combo_box (combo_box, x_content_type, FALSE, FALSE, autorun_combo_changed, data);
+	nautilus_autorun_prepare_combo_box (combo_box, x_content_type, FALSE, TRUE, FALSE, autorun_combo_changed, data);
 	gtk_box_pack_start_defaults (GTK_BOX (vbox), combo_box);
 
 	always_check_button = gtk_check_button_new_with_mnemonic (_("_Always perform this action"));
@@ -1213,7 +1015,11 @@ autorun_guessed_content_type_callback (GObject *source_object,
 	open_folder = FALSE;
 
 	error = NULL;
-	guessed_content_type = _g_mount_guess_content_type_finish (G_MOUNT (source_object), res, &error);
+	guessed_content_type = g_mount_guess_content_type_finish (G_MOUNT (source_object), res, &error);
+	g_object_set_data_full (source_object,
+				"nautilus-content-type-cache",
+				g_strdupv (guessed_content_type),
+				(GDestroyNotify)g_strfreev);
 	if (error != NULL) {
 		g_warning ("Unabled to guess content type for mount: %s", error->message);
 		g_error_free (error);
@@ -1252,21 +1058,16 @@ nautilus_autorun (GMount *mount, NautilusAutorunOpenWindow open_window_func, gpo
 		return;
 	}
 
-	/* Sniff the newly added mount to generate x-content/ types;
-	 * we do this asynchronously (in another thread) since it
-	 * requires doing I/O.
-	 */
-
 	data = g_new0 (AutorunData, 1);
 	data->mount = g_object_ref (mount);
 	data->open_window_func = open_window_func;
 	data->user_data = user_data;
 
-	_g_mount_guess_content_type_async (mount,
-					   TRUE,
-					   NULL,
-					   autorun_guessed_content_type_callback,
-					   data);
+	g_mount_guess_content_type (mount,
+				    FALSE,
+				    NULL,
+				    autorun_guessed_content_type_callback,
+				    data);
 }
 
 typedef struct {
@@ -1283,7 +1084,12 @@ get_types_cb (GObject *source_object,
 	char **types;
 
 	data = user_data;
-	types = _g_mount_guess_content_type_finish (G_MOUNT (source_object), res, NULL);
+	types = g_mount_guess_content_type_finish (G_MOUNT (source_object), res, NULL);
+
+	g_object_set_data_full (source_object,
+				"nautilus-content-type-cache",
+				g_strdupv (types),
+				(GDestroyNotify)g_strfreev);
 
 	if (data->callback) {
 		data->callback (types, data->user_data);
@@ -1308,7 +1114,7 @@ nautilus_autorun_get_x_content_types_for_mount_async (GMount *mount,
 		return;
 	}
 
-	cached = g_object_get_data (G_OBJECT (mount), "content-type-cache");
+	cached = g_object_get_data (G_OBJECT (mount), "nautilus-content-type-cache");
 	if (cached != NULL) {
 		if (callback) {
 			callback (cached, user_data);
@@ -1319,12 +1125,12 @@ nautilus_autorun_get_x_content_types_for_mount_async (GMount *mount,
 	data = g_new (GetContentTypesData, 1);
 	data->callback = callback;
 	data->user_data = user_data;
-	
-	_g_mount_guess_content_type_async (mount,
-					   FALSE,
-					   cancellable,
-					   get_types_cb,
-					   data);
+
+	g_mount_guess_content_type (mount,
+				    FALSE,
+				    cancellable,
+				    get_types_cb,
+				    data);
 }
 
 
@@ -1337,7 +1143,7 @@ nautilus_autorun_get_cached_x_content_types_for_mount (GMount      *mount)
 		return NULL;
 	}
 
-	cached = g_object_get_data (G_OBJECT (mount), "content-type-cache");
+	cached = g_object_get_data (G_OBJECT (mount), "nautilus-content-type-cache");
 	if (cached != NULL) {
 		return g_strdupv (cached);
 	}

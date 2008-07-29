@@ -1,3 +1,30 @@
+2008-07-29  David Zeuthen  <davidz@redhat.com>
+
+	* configure.in:
+	Require gio 2.17.5 for g_mount_guess_content_type().
+
+	* data/nautilus.xml.in:
+	Delete x-content/* definitions; these are in shared-mime-info 0.50
+	and greater.
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	Remove /apps/nautilus/preferences/media_autorun_x_content_ask
+	and add /apps/nautilus/preferences/media_autorun_x_content_start_app
+	instead since we're inverting the logic. Now, by default (except
+	for x-content/software for which we're shipping an app ourselves)
+	we default to asking the user what action to take.
+
+	* libnautilus-private/nautilus-autorun.c:
+	* libnautilus-private/nautilus-autorun.h:
+	Use g_mount_guess_content_type() instead of using our own
+	sniffing code. Also provide an option for the user to select
+	an application to use (#532474).
+
+	* src/nautilus-file-management-properties.c:
+	Catch up with API changes to nautilus_autorun_prepare_combo_box()
+
 2008-07-28  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-file-management-properties.c:
