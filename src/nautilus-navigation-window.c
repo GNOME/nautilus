@@ -1320,6 +1320,9 @@ path_bar_button_pressed_callback (GtkWidget *widget,
 	GFile *location;
 	char *uri;
 
+	g_object_set_data (G_OBJECT (widget), "handle-button-release",
+			   GINT_TO_POINTER (TRUE));
+
 	if (event->button == 3) {
 		slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
 		view = slot->content_view;
@@ -1337,9 +1340,63 @@ path_bar_button_pressed_callback (GtkWidget *widget,
 		}
 	}
 
+	return FALSE;
+}
+
+static gboolean
+path_bar_button_released_callback (GtkWidget *widget,
+				   GdkEventButton *event,
+				   NautilusNavigationWindow *window)
+{
+	NautilusWindowSlot *slot;
+	NautilusWindowOpenFlags flags;
+	GFile *location;
+	int mask;
+	gboolean handle_button_release;
+
+	mask = event->state & gtk_accelerator_get_default_mod_mask ();
+	flags = 0;
+
+	handle_button_release = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
+						  "handle-button-release"));
+
+	if (event->type == GDK_BUTTON_RELEASE && handle_button_release) {
+		location = nautilus_path_bar_get_path_for_button (NAUTILUS_PATH_BAR (window->path_bar), widget);
+
+		if (event->button == 2 && mask == 0) {
+			if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_TABS)) {
+				flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+			} else {
+				flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+			}
+		} else if (event->button == 1 && mask == GDK_CONTROL_MASK) {
+			flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+		}
+
+		if (flags != 0) {
+			slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
+			nautilus_window_slot_info_open_location (slot, location,
+								 NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+								 flags, NULL);
+			g_object_unref (location);
+			return TRUE;
+		}
+
+		g_object_unref (location);
+	}
 
 	return FALSE;
 }
+
+static void
+path_bar_button_drag_begin_callback (GtkWidget *widget,
+				     GdkEventButton *event,
+				     gpointer user_data)
+{
+	g_object_set_data (G_OBJECT (widget), "handle-button-release",
+			   GINT_TO_POINTER (FALSE));
+}
+
 
 static void
 path_bar_path_set_callback (GtkWidget *widget,
@@ -1365,6 +1422,12 @@ path_bar_path_set_callback (GtkWidget *widget,
 					    window)) {
 			g_signal_connect (child, "button-press-event",
 					  G_CALLBACK (path_bar_button_pressed_callback),
+					  window);
+			g_signal_connect (child, "button-release-event",
+					  G_CALLBACK (path_bar_button_released_callback),
+					  window);
+			g_signal_connect (child, "drag-begin",
+					  G_CALLBACK (path_bar_button_drag_begin_callback),
 					  window);
 		}
 	}

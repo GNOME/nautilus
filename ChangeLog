@@ -1,5 +1,15 @@
 2008-07-30  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-navigation-window.c
+	(path_bar_button_pressed_callback),
+	(path_bar_button_released_callback),
+	(path_bar_button_drag_begin_callback),
+	(path_bar_path_set_callback):
+	Open new window when control-clicking on a path bar button, open new
+	tab when middle-clicking on a path bar button. Fixes #545397.
+
+2008-07-30  Christian Neumair  <cneumair@gnome.org>
+
 	* nautilus.desktop.in.in:
 	Identify to GNOME session as file manager, and not as generic desktop
 	application. Fixes #525056. Matthias Clasen.
