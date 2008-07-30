@@ -192,7 +192,7 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
 		display_name = g_strdup (_("Search"));
 	}
 
-	changed = nautilus_file_set_display_name (file, display_name, NULL, FALSE);
+	changed = nautilus_file_set_display_name (file, display_name, NULL, TRUE);
 	if (changed) {
 		nautilus_file_emit_changed (file);
 	}
@@ -221,7 +221,7 @@ nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
 	file->details->got_directory_count = TRUE;
 	file->details->directory_count_is_up_to_date = TRUE;
 
-	nautilus_file_set_display_name (file, _("Search"), NULL, FALSE);
+	nautilus_file_set_display_name (file, _("Search"), NULL, TRUE);
 }
 
 static void

@@ -1,5 +1,13 @@
 2008-07-30  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-search-directory-file.c
+	(nautilus_search_directory_file_update_display_name),
+	(nautilus_search_directory_file_init):
+	Correctly claim that the display name for the search directory is a
+	custom one.
+
+2008-07-30  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file.c
 	(nautilus_file_clear_display_name), (nautilus_file_clear_info),
 	(update_info_internal), (update_name_internal):
