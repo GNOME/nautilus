@@ -1,5 +1,20 @@
 2008-07-30  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_clear_display_name), (nautilus_file_clear_info),
+	(update_info_internal), (update_name_internal):
+	When changing the file name, clear display name if it is not a custom
+	one. Custom means “not provided by GFileInfo”.
+
+2008-07-30  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-navigation-window-slot.c
+	* src/nautilus-window-slot.c (real_update_query_editor),
+	(nautilus_window_slot_update_query_editor):
+	Use weak pointer for being notified about query editor destruction.
+
+2008-07-30  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-navigation-window.c
 	(path_bar_button_pressed_callback),
 	(path_bar_button_released_callback),

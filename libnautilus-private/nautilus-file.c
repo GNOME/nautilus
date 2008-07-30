@@ -288,6 +288,18 @@ nautilus_file_set_display_name (NautilusFile *file,
 	return changed;
 }
 
+static void
+nautilus_file_clear_display_name (NautilusFile *file)
+{
+	eel_ref_str_unref (file->details->display_name);
+	file->details->display_name = NULL;
+	g_free (file->details->display_name_collation_key);
+	file->details->display_name_collation_key = NULL;
+	eel_ref_str_unref (file->details->edit_name);
+	file->details->edit_name = NULL;
+}
+
+
 void
 nautilus_file_clear_info (NautilusFile *file)
 {
@@ -301,12 +313,7 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
 
 	if (!file->details->got_custom_display_name) {
-		eel_ref_str_unref (file->details->display_name);
-		file->details->display_name = NULL;
-		g_free (file->details->display_name_collation_key);
-		file->details->display_name_collation_key = NULL;
-		eel_ref_str_unref (file->details->edit_name);
-		file->details->edit_name = NULL;
+		nautilus_file_clear_display_name (file);
 	}
 
 	if (!file->details->got_custom_activation_location &&
@@ -1845,6 +1852,8 @@ update_info_internal (NautilusFile *file,
 		name = g_file_info_get_name (info);
 		if (file->details->name == NULL ||
 		    strcmp (eel_ref_str_peek (file->details->name), name) != 0) {
+			changed = TRUE;
+
 			node = nautilus_directory_begin_file_name_change
 				(file->details->directory, file);
 			
@@ -1854,6 +1863,10 @@ update_info_internal (NautilusFile *file,
 				file->details->name = eel_ref_str_ref (file->details->display_name);
 			} else {
 				file->details->name = eel_ref_str_new (name);
+			}
+
+			if (!file->details->got_custom_display_name) {
+				nautilus_file_clear_display_name (file);
 			}
 
 			nautilus_directory_end_file_name_change
@@ -1909,7 +1922,11 @@ update_name_internal (NautilusFile *file,
 	
 	eel_ref_str_unref (file->details->name);
 	file->details->name = eel_ref_str_new (name);
-	
+
+	if (!file->details->got_custom_display_name) {
+		nautilus_file_clear_display_name (file);
+	}
+
 	if (in_directory) {
 		nautilus_directory_end_file_name_change
 			(file->details->directory, file, node);
