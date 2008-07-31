@@ -1,3 +1,12 @@
+2008-07-31  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-autorun.c
+	(remove_elem_from_str_array), (add_elem_to_str_array),
+	(nautilus_autorun_set_preferences), (combo_box_changed),
+	(nautilus_autorun_prepare_combo_box):
+	Handle NULL string arrays, and fix combo box model reference counting.
+	Fixes #545658.
+
 2008-07-20  David Zeuthen  <davidz@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c
