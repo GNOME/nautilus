@@ -197,6 +197,7 @@ set_widget_highlight (NautilusTreeViewDragDest *dest, gboolean highlight)
 		g_signal_handler_disconnect (dest->details->tree_view,
 					     dest->details->highlight_id);
 		dest->details->highlight_id = 0;
+		gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
 	}
 	
 	if (highlight && !dest->details->highlight_id) {
@@ -205,8 +206,8 @@ set_widget_highlight (NautilusTreeViewDragDest *dest, gboolean highlight)
 						 "expose_event",
 						 G_CALLBACK (highlight_expose),
 						 dest, 0);
+		gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
 	}
-	gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
 }
 
 static void

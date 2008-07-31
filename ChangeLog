@@ -1,3 +1,10 @@
+2008-07-31  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c
+	(set_widget_highlight):
+	Only queue a redraw if widget state actually changed. Fixes massive
+	flickering issues when dragging over list view. Fixes #524282.
+
 2008-07-30  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-search-directory-file.c
