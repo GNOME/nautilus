@@ -1,5 +1,14 @@
 2008-07-31  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-autorun.c
+	(remove_elem_from_str_array), (add_elem_to_str_array),
+	(nautilus_autorun_set_preferences), (combo_box_changed),
+	(nautilus_autorun_prepare_combo_box):
+	Handle NULL string arrays, and fix combo box model reference counting.
+	Fixes #545658.
+
+2008-07-31  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-tree-view-drag-dest.c
 	(set_widget_highlight):
 	Only queue a redraw if widget state actually changed. Fixes massive

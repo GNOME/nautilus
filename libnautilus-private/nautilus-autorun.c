@@ -103,6 +103,11 @@ static void
 remove_elem_from_str_array (char **v, const char *s)
 {
 	int n, m;
+
+	if (v == NULL) {
+		return;
+	}
+
 	for (n = 0; v[n] != NULL; n++) {
 		if (strcmp (v[n], s) == 0) {
 			for (m = n + 1; v[m] != NULL; m++) {
@@ -120,7 +125,7 @@ add_elem_to_str_array (char **v, const char *s)
 	guint len;
 	char **r;
 
-	len = g_strv_length (v);
+	len = v != NULL ? g_strv_length (v) : 0;
 	r = g_new0 (char *, len + 2);
 	memcpy (r, v, len * sizeof (char *));
 	r[len] = g_strdup (s);
@@ -140,6 +145,8 @@ nautilus_autorun_set_preferences (const char *x_content_type,
 	char **x_content_start_app;
 	char **x_content_ignore;
 	char **x_content_open_folder;
+
+	g_assert (x_content_type != NULL);
 
 	x_content_start_app = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_START_APP);
 	x_content_ignore = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_MEDIA_AUTORUN_X_CONTENT_IGNORE);
@@ -327,9 +334,6 @@ combo_box_changed (GtkComboBox *combo_box,
 out:
 	if (app_info != NULL) {
 		g_object_unref (app_info);
-	}
-	if (model != NULL) {
-		g_object_unref (model);
 	}
 	g_free (x_content_type);
 }
@@ -584,6 +588,7 @@ nautilus_autorun_prepare_combo_box (GtkWidget *combo_box,
 	eel_g_object_list_free (app_info_list);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo_box), GTK_TREE_MODEL (list_store));
+	g_object_unref (G_OBJECT (list_store));
 
 	gtk_cell_layout_clear (GTK_CELL_LAYOUT (combo_box));
 
