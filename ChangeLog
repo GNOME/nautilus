@@ -1,5 +1,14 @@
 2008-08-02  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-pathbar.c (update_button_types),
+	(button_data_file_changed), (nautilus_path_bar_check_parent_path),
+	(nautilus_path_bar_update_path), (nautilus_path_bar_set_path):
+	* src/nautilus-pathbar.h:
+	Handle moves in the path bar hierarchy. Fixes #545941.
+	Thanks to Diego Escalante Urrelo.
+
+2008-08-02  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(rubberband_timeout_callback), (realize),
 	(nautilus_icon_container_get_first_visible_icon),

@@ -139,7 +139,8 @@ static void     nautilus_path_bar_update_button_appearance (ButtonData      *but
 static void     nautilus_path_bar_update_button_state      (ButtonData      *button_data,
 							    gboolean         current_dir);
 static gboolean nautilus_path_bar_update_path              (NautilusPathBar *path_bar,
-							    GFile           *file_path);
+							    GFile           *file_path,
+							    gboolean         emit_signal);
 
 static GtkWidget *
 get_slider_button (NautilusPathBar  *path_bar,
@@ -175,7 +176,7 @@ update_button_types (NautilusPathBar *path_bar)
 		}
         }
 	if (path != NULL) {
-		nautilus_path_bar_update_path (path_bar, path);
+		nautilus_path_bar_update_path (path_bar, path, TRUE);
 	}
 }
 
@@ -1443,12 +1444,67 @@ static void
 button_data_file_changed (NautilusFile *file,
 			  ButtonData *button_data)
 {
-	GFile *location;
+	GFile *location, *current_location, *parent, *button_parent;
+	ButtonData *current_button_data;
 	char *display_name;
+	NautilusPathBar *path_bar;
+	gboolean renamed, child;
+
+	path_bar = (NautilusPathBar *) gtk_widget_get_ancestor (button_data->button,
+								NAUTILUS_TYPE_PATH_BAR);
+	if (path_bar == NULL) {
+		return;
+	}
+
+	g_assert (path_bar->current_path != NULL);
+	g_assert (path_bar->current_button_data != NULL);
+
+	current_button_data = path_bar->current_button_data;
 
 	location = nautilus_file_get_location (file);
 	if (!g_file_equal (button_data->path, location)) {
-		button_data->path = g_object_ref (location);
+		parent = g_file_get_parent (location);
+		button_parent = g_file_get_parent (button_data->path);
+
+		renamed = (parent != NULL && button_parent != NULL) &&
+			   g_file_equal (parent, button_parent);
+
+		if (parent != NULL) {
+			g_object_unref (parent);
+		}
+		if (button_parent != NULL) {
+			g_object_unref (button_parent);
+		}
+
+		if (renamed) {
+			button_data->path = g_object_ref (location);
+		} else {
+			/* the file has been moved.
+			 * If it was below the currently displayed location, remove it.
+			 * If it was not below the currently displayed location, update the path bar
+			 */
+			child = g_file_has_prefix (button_data->path,
+						   path_bar->current_path);
+
+			if (child) {
+				/* moved file inside current path hierarchy */
+				g_object_unref (location);
+				location = g_file_get_parent (button_data->path);
+				current_location = g_object_ref (path_bar->current_path);
+			} else {
+				/* moved current path, or file outside current path hierarchy.
+				 * Update path bar to new locations.
+				 */
+				current_location = nautilus_file_get_location (current_button_data->file);
+			}
+
+        		nautilus_path_bar_update_path (path_bar, location, FALSE);
+        		nautilus_path_bar_set_path (path_bar, current_location);
+			g_object_unref (location);
+			g_object_unref (current_location);
+			return;
+		}
+
 	}
 	g_object_unref (location);
 
@@ -1565,7 +1621,8 @@ make_directory_button (NautilusPathBar  *path_bar,
 
 static gboolean
 nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
-				     GFile *location)
+				     GFile *location,
+				     ButtonData **current_button_data)
 {
         GList *list;
         GList *current_path;
@@ -1574,12 +1631,20 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
 	current_path = NULL;
 	need_new_fake_root = FALSE;
 
+	if (current_button_data) {
+		*current_button_data = NULL;
+	}
+
         for (list = path_bar->button_list; list; list = list->next) {
                 ButtonData *button_data;
 
                 button_data = list->data;
                 if (g_file_equal (location, button_data->path)) {
 			current_path = list;
+
+			if (current_button_data) {
+				*current_button_data = button_data;
+			}
 		  	break;
 		}
 		if (list == path_bar->fake_root) {
@@ -1619,13 +1684,15 @@ nautilus_path_bar_check_parent_path (NautilusPathBar *path_bar,
 }
 
 static gboolean
-nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
+nautilus_path_bar_update_path (NautilusPathBar *path_bar,
+			       GFile *file_path,
+			       gboolean emit_signal)
 {
 	NautilusFile *file, *parent_file;
         gboolean first_directory, last_directory;
         gboolean result;
         GList *new_buttons, *l, *fake_root;
-        ButtonData *button_data;
+	ButtonData *button_data, *current_button_data;
 
         g_return_val_if_fail (NAUTILUS_IS_PATH_BAR (path_bar), FALSE);
         g_return_val_if_fail (file_path != NULL, FALSE);
@@ -1635,6 +1702,7 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 	first_directory = TRUE;
 	last_directory = FALSE;
 	new_buttons = NULL;
+	current_button_data = NULL;
 
 	file = nautilus_file_get (file_path);
 
@@ -1645,6 +1713,10 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 		last_directory = !parent_file;
 		button_data = make_directory_button (path_bar, file, first_directory, last_directory, FALSE);
 		nautilus_file_unref (file);
+
+		if (first_directory) {
+			current_button_data = button_data;
+		}
 
                 new_buttons = g_list_prepend (new_buttons, button_data);
 
@@ -1669,6 +1741,13 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 
         gtk_widget_pop_composite_child ();
 
+	if (path_bar->current_path != NULL) {
+		g_object_unref (path_bar->current_path);
+	}
+
+	path_bar->current_path = g_object_ref (file_path);
+	path_bar->current_button_data = current_button_data;
+
 	g_signal_emit (path_bar, path_bar_signals [PATH_SET], 0, file_path);
 
         return result;
@@ -1677,16 +1756,25 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar, GFile *file_path)
 gboolean
 nautilus_path_bar_set_path (NautilusPathBar *path_bar, GFile *file_path)
 {
+	ButtonData *button_data;
+
         g_return_val_if_fail (NAUTILUS_IS_PATH_BAR (path_bar), FALSE);
         g_return_val_if_fail (file_path != NULL, FALSE);
 	
         /* Check whether the new path is already present in the pathbar as buttons.
          * This could be a parent directory or a previous selected subdirectory. */
-        if (nautilus_path_bar_check_parent_path (path_bar, file_path)) {
+        if (nautilus_path_bar_check_parent_path (path_bar, file_path, &button_data)) {
+		if (path_bar->current_path != NULL) {
+			g_object_unref (path_bar->current_path);
+		}
+
+		path_bar->current_path = g_object_ref (file_path);
+		path_bar->current_button_data = button_data;
+
                 return TRUE;
 	}
 
-	return nautilus_path_bar_update_path (path_bar, file_path);
+	return nautilus_path_bar_update_path (path_bar, file_path, TRUE);
 }
 
 GFile *

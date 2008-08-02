@@ -43,6 +43,9 @@ struct _NautilusPathBar
 	GFile *home_path;
 	GFile *desktop_path;
 
+	GFile *current_path;
+	gpointer current_button_data;
+
 	GList *button_list;
 	GList *first_scrolled_button;
 	GList *fake_root;
