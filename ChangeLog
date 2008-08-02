@@ -1,5 +1,17 @@
 2008-08-02  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c (get_cmp_point_x),
+	(same_column_below_highest), (keyboard_move_to),
+	(keyboard_arrow_key), (is_rectangle_selection_event),
+	(keyboard_right), (keyboard_left), (keyboard_down), (keyboard_up):
+	Use linear selection instead of rectangular when pressing shift, use
+	rectangular selection using shift and control at the same time.
+	Do not wrap around vertically in horizontal layout mode, do not wrap
+	around horzontally in vertical layout mode, never wrap around during
+	rectangle selection. Fixes #338298 and #545493.
+
+2008-08-02  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-pathbar.c (update_button_types),
 	(button_data_file_changed), (nautilus_path_bar_check_parent_path),
 	(nautilus_path_bar_update_path), (nautilus_path_bar_set_path):

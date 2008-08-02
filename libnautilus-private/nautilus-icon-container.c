@@ -2554,7 +2554,8 @@ get_cmp_point_x (NautilusIconContainer *container,
 		 EelDRect icon_rect)
 {
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL) {
+		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL ||
+		    nautilus_icon_container_is_layout_vertical (container)) {
 			return icon_rect.x0;
 		} else {
 			return icon_rect.x1;
@@ -2919,6 +2920,12 @@ same_column_below_highest (NautilusIconContainer *container,
 		return FALSE;
 	}
 
+	/* In vertical layout, candidates on the left do not qualify. */
+	if (nautilus_icon_container_is_layout_vertical (container) &&
+	    container->details->arrow_key_start_x > item->x1) {
+		return FALSE;
+	}
+
 	if (best_so_far != NULL) {
 		/* Candidates on the start column are preferred. */
 		if (compare_with_start_column (container, candidate) != 0 &&
@@ -3107,13 +3114,17 @@ keyboard_move_to (NautilusIconContainer *container,
 		return;
 	}
 
-	if (event != NULL && (event->state & GDK_CONTROL_MASK) != 0) {
+	if (event != NULL &&
+	    (event->state & GDK_CONTROL_MASK) != 0 &&
+	    (event->state & GDK_SHIFT_MASK) == 0) {
 		/* Move the keyboard focus. Use Control modifier
 		 * rather than Alt to avoid Sawfish conflict.
 		 */
 		set_keyboard_focus (container, icon);
 		container->details->keyboard_rubberband_start = NULL;
-	} else if (event != NULL && (event->state & GDK_SHIFT_MASK) != 0) {
+	} else if (event != NULL &&
+		   (event->state & GDK_CONTROL_MASK) != 0 &&
+		   (event->state & GDK_SHIFT_MASK) != 0) {
 		/* Do rubberband selection */		
 		EelDRect rect;
 
@@ -3127,6 +3138,24 @@ keyboard_move_to (NautilusIconContainer *container,
 			rect = get_rubberband (container->details->keyboard_rubberband_start,
 					       icon);
 			rubberband_select (container, NULL, &rect);
+		}
+	} else if (event != NULL &&
+		   (event->state & GDK_CONTROL_MASK) == 0 &&
+		   (event->state & GDK_SHIFT_MASK) != 0) {
+		/* Select range */
+		NautilusIcon *start_icon;
+
+		start_icon = container->details->range_selection_base_icon;
+		if (start_icon == NULL || !start_icon->is_selected) {
+			start_icon = icon;
+			container->details->range_selection_base_icon = icon;
+		} 
+
+		set_keyboard_focus (container, icon);
+
+		if (select_range (container, start_icon, icon)) {
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
 		}
 	} else {
 		/* Select icons and get rid of the special keyboard focus. */
@@ -3278,7 +3307,6 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		 */
 		if (to == NULL &&
 		    better_destination_fallback_if_no_a11y != NULL &&
-		    container->details->auto_layout &&
 		    ATK_IS_NO_OP_OBJECT (gtk_widget_get_accessible (GTK_WIDGET (container)))) {
 			to = find_best_icon
 				(container, from,
@@ -3295,10 +3323,26 @@ keyboard_arrow_key (NautilusIconContainer *container,
 	keyboard_move_to (container, to, from, event);
 }
 
+static gboolean
+is_rectangle_selection_event (GdkEventKey *event)
+{
+	return (event->state & GDK_CONTROL_MASK) != 0 &&
+	       (event->state & GDK_SHIFT_MASK) != 0;
+}
+
 static void
 keyboard_right (NautilusIconContainer *container,
 		GdkEventKey *event)
 {
+	IsBetterIconFunction no_a11y;
+
+	no_a11y = NULL;
+	if (container->details->auto_layout &&
+	    !nautilus_icon_container_is_layout_vertical (container) &&
+	    !is_rectangle_selection_event (event)) {
+		no_a11y = next_row_leftmost;
+	}
+
 	/* Right selects the next icon in the same row.
 	 * Control-Right sets the keyboard focus to the next icon in the same row.
 	 */
@@ -3308,7 +3352,7 @@ keyboard_right (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
 			    same_row_right_side_leftmost,
-			    next_row_leftmost,
+			    no_a11y,
 			    closest_in_90_degrees);
 }
 
@@ -3316,6 +3360,15 @@ static void
 keyboard_left (NautilusIconContainer *container,
 	       GdkEventKey *event)
 {
+	IsBetterIconFunction no_a11y;
+
+	no_a11y = NULL;
+	if (container->details->auto_layout &&
+	    !nautilus_icon_container_is_layout_vertical (container) &&
+	    !is_rectangle_selection_event (event)) {
+		no_a11y = previous_row_rightmost;
+	}
+
 	/* Left selects the next icon in the same row.
 	 * Control-Left sets the keyboard focus to the next icon in the same row.
 	 */
@@ -3325,7 +3378,7 @@ keyboard_left (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
 			    same_row_left_side_rightmost,
-			    previous_row_rightmost,
+			    no_a11y,
 			    closest_in_90_degrees);
 }
 
@@ -3333,6 +3386,15 @@ static void
 keyboard_down (NautilusIconContainer *container,
 	       GdkEventKey *event)
 {
+	IsBetterIconFunction no_a11y;
+
+	no_a11y = NULL;
+	if (container->details->auto_layout &&
+	    nautilus_icon_container_is_layout_vertical (container) &&
+	    !is_rectangle_selection_event (event)) {
+		no_a11y = next_column_highest;
+	}
+
 	/* Down selects the next icon in the same column.
 	 * Control-Down sets the keyboard focus to the next icon in the same column.
 	 */
@@ -3342,7 +3404,7 @@ keyboard_down (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
 			    same_column_below_highest,
-			    next_column_highest,
+			    no_a11y,
 			    closest_in_90_degrees);
 }
 
@@ -3350,6 +3412,15 @@ static void
 keyboard_up (NautilusIconContainer *container,
 	     GdkEventKey *event)
 {
+	IsBetterIconFunction no_a11y;
+
+	no_a11y = NULL;
+	if (container->details->auto_layout &&
+	    nautilus_icon_container_is_layout_vertical (container) &&
+	    !is_rectangle_selection_event (event)) {
+		no_a11y = previous_column_lowest;
+	}
+
 	/* Up selects the next icon in the same column.
 	 * Control-Up sets the keyboard focus to the next icon in the same column.
 	 */
@@ -3359,7 +3430,7 @@ keyboard_up (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
 			    same_column_above_lowest,
-			    previous_column_lowest,
+			    no_a11y,
 			    closest_in_90_degrees);
 }
 
