@@ -83,6 +83,7 @@ typedef struct {
 
 	guint prev_x, prev_y;
 	EelDRect prev_rect;
+	int last_adj_x;
 	int last_adj_y;
 } NautilusIconRubberbandInfo;
 

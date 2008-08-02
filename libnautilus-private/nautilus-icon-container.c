@@ -199,6 +199,8 @@ static void          nautilus_icon_container_start_monitor_top_left (NautilusIco
 								     NautilusIconData      *data,
 								     gconstpointer          client,
 								     gboolean               large_text);
+static void          handle_hadjustment_changed                     (GtkAdjustment         *adjustment,
+								     NautilusIconContainer *container);
 static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
 								     NautilusIconContainer *container);
 static GList *       nautilus_icon_container_get_selected_icons (NautilusIconContainer *container);
@@ -2251,7 +2253,7 @@ rubberband_timeout_callback (gpointer data)
 	double x1, y1, x2, y2;
 	double world_x, world_y;
 	int x_scroll, y_scroll;
-	int adj_y;
+	int adj_x, adj_y;
 	gboolean adj_changed;
 	
 	EelDRect selection_rect;
@@ -2265,6 +2267,13 @@ rubberband_timeout_callback (gpointer data)
 		  EEL_IS_CANVAS_RECT (band_info->selection_rectangle));
 
 	adj_changed = FALSE;
+
+	adj_x = gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
+	if (adj_x != band_info->last_adj_x) {
+		band_info->last_adj_x = adj_x;
+		adj_changed = TRUE;
+	}
+
 	adj_y = gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
 	if (adj_y != band_info->last_adj_y) {
 		band_info->last_adj_y = adj_y;
@@ -3569,7 +3578,7 @@ realize (GtkWidget *widget)
 {
 	GtkWindow *window;
 	GdkBitmap *stipple;
-	GtkAdjustment *vadj;
+	GtkAdjustment *vadj, *hadj;
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
@@ -3587,6 +3596,10 @@ realize (GtkWidget *widget)
 			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
 
 	nautilus_icon_dnd_set_stipple (NAUTILUS_ICON_CONTAINER (widget), stipple);
+
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (widget));
+	g_signal_connect (hadj, "value_changed",
+			  G_CALLBACK (handle_hadjustment_changed), widget);
 
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (widget));
 	g_signal_connect (vadj, "value_changed",
@@ -5783,35 +5796,42 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 {
 	GList *l;
 	NautilusIcon *icon, *best_icon;
-	GtkAdjustment *vadj;
+	GtkAdjustment *hadj, *vadj;
 	double x, y;
 	double x1, y1, x2, y2;
-	double best_y1;
+	double *pos, best_pos;
+	gboolean better_icon;
 
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	eel_canvas_c2w (EEL_CANVAS (container),
-			0, vadj->value,
+			hadj->value, vadj->value,
 			&x, &y);
 
 	l = container->details->icons;
 	best_icon = NULL;
-	best_y1 = 0;
+	best_pos = 0;
 	while (l != NULL) {
 		icon = l->data;
 
 		if (icon_is_positioned (icon)) {
 			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
 						    &x1, &y1, &x2, &y2);
-			if (y2 > y) {
-				if (best_icon != NULL) {
-					if (best_y1 > y1) {
-						best_icon = icon;
-						best_y1 = y1;
-					}
-				} else {
+			if (nautilus_icon_container_is_layout_vertical (container)) {
+				pos = &x1;
+				better_icon = x2 > x;
+			} else {
+				pos = &y1;
+				better_icon = y2 > y;
+			}
+			if (better_icon) {
+				better_icon = (best_icon == NULL ||
+					       best_pos > *pos);
+
+				if (better_icon) {
 					best_icon = icon;
-					best_y1 = y1;
+					best_pos = *pos;
 				}
 			}
 		}
@@ -5829,11 +5849,12 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 {
 	GList *l;
 	NautilusIcon *icon;
-	GtkAdjustment *vadj;
+	GtkAdjustment *hadj, *vadj;
 	int x, y;
 	double x1, y1, x2, y2;
 	EelCanvasItem *item;
 
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	/* We need to force a relayout now if there are updates queued
@@ -5856,11 +5877,17 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 					x1, y1,
 					&x, &y);
 
-			y -= ICON_PAD_TOP;
+			if (nautilus_icon_container_is_layout_vertical (container)) {
+				x -= ICON_PAD_LEFT;
+				x = MAX (0, x);
 
-			y = MAX (0, y);
-			
-			eel_gtk_adjustment_set_value (vadj, y);
+				eel_gtk_adjustment_set_value (hadj, x);
+			} else {
+				y -= ICON_PAD_TOP;
+				y = MAX (0, y);
+				
+				eel_gtk_adjustment_set_value (vadj, y);
+			}
 		}
 		
 		l = l->next;
@@ -6122,22 +6149,27 @@ nautilus_icon_container_prioritize_thumbnailing (NautilusIconContainer *containe
 static void
 nautilus_icon_container_update_visible_icons (NautilusIconContainer *container)
 {
-	GtkAdjustment *vadj;
+	GtkAdjustment *vadj, *hadj;
 	double min_y, max_y;
+	double min_x, max_x;
 	double x0, y0, x1, y1;
 	GList *node;
 	NautilusIcon *icon;
+	gboolean visible;
 
-
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+
+	min_x = hadj->value;
+	max_x = min_x + GTK_WIDGET (container)->allocation.width;
 	
 	min_y = vadj->value;
 	max_y = min_y + GTK_WIDGET (container)->allocation.height;
 
 	eel_canvas_c2w (EEL_CANVAS (container),
-			0, min_y, NULL, &min_y);
+			min_x, min_y, &min_x, &min_y);
 	eel_canvas_c2w (EEL_CANVAS (container),
-			0, max_y, NULL, &max_y);
+			max_x, max_y, &max_x, &max_y);
 	
 	/* Do the iteration in reverse to get the render-order from top to
 	 * bottom for the prioritized thumbnails.
@@ -6157,7 +6189,14 @@ nautilus_icon_container_update_visible_icons (NautilusIconContainer *container)
 			eel_canvas_item_i2w (EEL_CANVAS_ITEM (icon->item)->parent,
 					     &x1,
 					     &y1);
-			if (y1 >= min_y && y0 <= max_y) {
+
+			if (nautilus_icon_container_is_layout_vertical (container)) {
+				visible = x1 >= min_x && x0 <= max_x;
+			} else {
+				visible = y1 >= min_y && y0 <= max_y;
+			}
+
+			if (visible) {
 				nautilus_icon_canvas_item_set_is_visible (icon->item, TRUE);
 				nautilus_icon_container_prioritize_thumbnailing (container,
 										 icon);
@@ -6172,8 +6211,20 @@ static void
 handle_vadjustment_changed (GtkAdjustment *adjustment,
 			    NautilusIconContainer *container)
 {
-	nautilus_icon_container_update_visible_icons (container);
+	if (!nautilus_icon_container_is_layout_vertical (container)) {
+		nautilus_icon_container_update_visible_icons (container);
+	}
 }
+
+static void
+handle_hadjustment_changed (GtkAdjustment *adjustment,
+			    NautilusIconContainer *container)
+{
+	if (nautilus_icon_container_is_layout_vertical (container)) {
+		nautilus_icon_container_update_visible_icons (container);
+	}
+}
+
 
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,

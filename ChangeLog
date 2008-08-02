@@ -1,3 +1,16 @@
+2008-08-02  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(rubberband_timeout_callback), (realize),
+	(nautilus_icon_container_get_first_visible_icon),
+	(nautilus_icon_container_scroll_to_icon),
+	(nautilus_icon_container_update_visible_icons),
+	(handle_vadjustment_changed), (handle_hadjustment_changed):
+	* libnautilus-private/nautilus-icon-private.h:
+	Implement visible icon handling for horizontal scrolling, i.e.
+	vertical icon layout. This will properly scroll to the last displayed
+	icons when reloading a directory in vertical layout.
+
 2008-07-31  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-autorun.c
