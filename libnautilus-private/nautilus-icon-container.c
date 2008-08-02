@@ -3123,7 +3123,8 @@ keyboard_move_to (NautilusIconContainer *container,
 		set_keyboard_focus (container, icon);
 		container->details->keyboard_rubberband_start = NULL;
 	} else if (event != NULL &&
-		   (event->state & GDK_CONTROL_MASK) != 0 &&
+		   ((event->state & GDK_CONTROL_MASK) != 0 ||
+		    !container->details->auto_layout) &&
 		   (event->state & GDK_SHIFT_MASK) != 0) {
 		/* Do rubberband selection */		
 		EelDRect rect;
