@@ -1,3 +1,23 @@
+Major changes in 2.23.6 are:
+* Support transferring files with reserved FAT characters to a FAT file system
+  Replace them with an underscore if neccessary
+* Use x-content/* MIME type to associate applications with hotpluggable media
+* Path bar
+  * enable control-left click and middle-click interaction for path bar buttons
+  * dynamically handle hierarchy changes in the path bar 
+* Icon view keyboard navigation
+  * Use linear selection instead of rectangle selection in when pressing shift
+  * Still offer rectangular selection when pressing ctrl and shift 
+  * Only wrap around horizontally in horizontal layout mode,
+  * Only wrap around vertically in vertical layout mode
+  * Never wrap around when in rectangle selection
+* Icon view now remembers last position when reloading in vertical layout
+* List view: Do not request mass redraw when dragging
+* Clear display name when changing file name
+* Only show "... All" actions ("Skip All", ...) in file operation dialogs if more
+  than one file is transferred
+* Identify to GNOME session as file manager, not as generic desktop application
+
 Major changes in 2.23.5.1 are:
 * Fix crasher in spatial mode when closing window with ctrl-w
 * Work around GTK+ tree view bug for sidebar eject button click area
