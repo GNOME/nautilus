@@ -1,3 +1,14 @@
+2008-08-03  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c (str_replace),
+	(make_file_name_valid_for_dest_fs), (get_unique_target_file),
+	(get_target_file_for_link), (get_target_file), (create_dest_dir),
+	(copy_move_directory), (query_fs_type), (copy_move_file),
+	(copy_files), (move_file_prepare), (move_files_prepare),
+	(move_files), (move_job), (link_file), (link_job), (create_job):
+	Support transfer of files with reserved characters to FAT. Auto-escape
+	them to the unreserved underscore character. Fixes #448148.
+
 2008-08-02  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c (keyboard_move_to):
