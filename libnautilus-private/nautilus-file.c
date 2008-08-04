@@ -1865,7 +1865,12 @@ update_info_internal (NautilusFile *file,
 				file->details->name = eel_ref_str_new (name);
 			}
 
-			if (!file->details->got_custom_display_name) {
+			if (!file->details->got_custom_display_name &&
+			    g_file_info_get_display_name (info) == NULL) {
+				/* If the file info's display name is NULL,
+				 * nautilus_file_set_display_name() did
+				 * not unset the display name.
+				 */
 				nautilus_file_clear_display_name (file);
 			}
 
