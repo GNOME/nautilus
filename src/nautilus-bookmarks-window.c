@@ -761,8 +761,9 @@ on_selection_changed (GtkTreeSelection *treeselection,
 		      gpointer user_data)
 {
 	NautilusBookmark *selected;
-	char *name = NULL, *uri = NULL;
-	
+	char *name = NULL, *entry_text = NULL;
+	GFile *location;
+
 	g_assert (GTK_IS_ENTRY (name_field));
 	g_assert (GTK_IS_ENTRY (uri_field));
 
@@ -770,7 +771,10 @@ on_selection_changed (GtkTreeSelection *treeselection,
 
 	if (selected) {
 		name = nautilus_bookmark_get_name (selected);
-		uri = nautilus_bookmark_get_uri (selected);
+		location = nautilus_bookmark_get_location (selected);
+		entry_text = g_file_get_parse_name (location);
+
+		g_object_unref (location);
 	}
 	
 	/* Set the sensitivity of widgets that require a selection */
@@ -786,14 +790,14 @@ on_selection_changed (GtkTreeSelection *treeselection,
 
 	g_signal_handler_block (uri_field, uri_field_changed_signal_id);
 	nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field),
-				 uri ? uri : "");
+				 entry_text ? entry_text : "");
 	g_signal_handler_unblock (uri_field, uri_field_changed_signal_id);
 
 	text_changed = FALSE;
 	name_text_changed = FALSE;
 
 	g_free (name);
-	g_free (uri);
+	g_free (entry_text);
 }
 
 
@@ -811,7 +815,8 @@ update_bookmark_from_text (void)
 		g_assert (GTK_IS_ENTRY (name_field));
 		g_assert (GTK_IS_ENTRY (uri_field));
 
-		location = g_file_new_for_uri (gtk_entry_get_text (GTK_ENTRY (uri_field)));
+		location = g_file_parse_name 
+			(gtk_entry_get_text (GTK_ENTRY (uri_field)));
 		
 		bookmark = nautilus_bookmark_new_with_icon (location, gtk_entry_get_text (GTK_ENTRY (name_field)),
 							    name_text_changed, NULL);
