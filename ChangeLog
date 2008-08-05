@@ -1,3 +1,9 @@
+2008-08-05  Jens Granseuer  <jensgr@gmx.net>
+
+	* src/nautilus-window.h: fix "parameter has incomplete type"
+	warning by moving the type declarations before the functions that
+	use them (#546310)
+
 2008-08-05  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-list-view.c: (create_column_editor):

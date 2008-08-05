@@ -60,6 +60,19 @@ typedef enum NautilusWindowOpenSlotFlags NautilusWindowOpenSlotFlags;
 
 GType          nautilus_window_slot_get_type (void);
 
+typedef enum {
+        NAUTILUS_WINDOW_NOT_SHOWN,
+        NAUTILUS_WINDOW_POSITION_SET,
+        NAUTILUS_WINDOW_SHOULD_SHOW
+} NautilusWindowShowState;
+
+enum NautilusWindowOpenSlotFlags {
+	NAUTILUS_WINDOW_OPEN_SLOT_NONE = 0,
+	NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1
+};
+
+typedef struct NautilusWindowDetails NautilusWindowDetails;
+
 typedef struct {
         GtkWindowClass parent_spot;
 
@@ -105,19 +118,6 @@ typedef struct {
         /* Signals used only for keybindings */
         gboolean (* go_up) (NautilusWindow *window, gboolean close);
 } NautilusWindowClass;
-
-typedef enum {
-        NAUTILUS_WINDOW_NOT_SHOWN,
-        NAUTILUS_WINDOW_POSITION_SET,
-        NAUTILUS_WINDOW_SHOULD_SHOW
-} NautilusWindowShowState;
-
-enum NautilusWindowOpenSlotFlags {
-	NAUTILUS_WINDOW_OPEN_SLOT_NONE = 0,
-	NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1
-};
-
-typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
         GtkWindow parent_object;
