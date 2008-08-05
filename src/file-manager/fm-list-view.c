@@ -2074,39 +2074,53 @@ create_column_editor (FMListView *view)
 	GtkWidget *label;
 	GtkWidget *box;
 	GtkWidget *column_chooser;
+	GtkWidget *alignment;
 	NautilusFile *file;
-	char *title;
+	char *str;
 	char *name;
+	const char *label_text;
 	
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
 	name = nautilus_file_get_display_name (file);
-	title = g_strdup_printf (_("%s Visible Columns"), name);
+	str = g_strdup_printf (_("%s Visible Columns"), name);
 	g_free (name);
 
-	window = gtk_dialog_new_with_buttons (title, 
+	window = gtk_dialog_new_with_buttons (str,
 					      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
-					      GTK_STOCK_CLOSE, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					      NULL);
-	g_free (title);
+	g_free (str);
 	g_signal_connect (window, "response", 
 			  G_CALLBACK (column_editor_response_callback), NULL);
 	
 	gtk_window_set_default_size (GTK_WINDOW (window), 300, 400);
 
-	box = gtk_vbox_new (FALSE, 6);
+	box = gtk_vbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 12);
 	gtk_widget_show (box);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (window)->vbox), box);
 
-	label = gtk_label_new (_("Choose the order of information to appear in this folder."));
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	label_text = _("Choose the order of information to appear in this folder:");
+	str = g_strconcat ("<b>", label_text, "</b>", NULL);
+	label = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (label), str);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 
+	g_free (str);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
+				   0, 0, 12, 0);
+	gtk_widget_show (alignment);
+	gtk_box_pack_start (GTK_BOX (box), alignment, TRUE, TRUE, 0);
+
 	column_chooser = nautilus_column_chooser_new ();
 	gtk_widget_show (column_chooser);
-	gtk_box_pack_start (GTK_BOX (box), column_chooser, TRUE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (alignment), column_chooser);
 
 	g_signal_connect (column_chooser, "changed",
 			  G_CALLBACK (column_chooser_changed_callback),
