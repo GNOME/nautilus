@@ -1225,78 +1225,6 @@ real_get_icon (NautilusWindow *window,
 }
 
 static void
-zoom_level_changed_callback (NautilusView *view,
-                             NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_WINDOW (window)->details->active_slot->content_view == view);
-
-        /* This is called each time the component successfully completed
-         * a zooming operation.
-         */
-        nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-                                              nautilus_view_get_zoom_level (view));
-}
-
-static void
-real_connect_content_view (NautilusWindow *nautilus_window,
-			   NautilusView *view)
-{
-	NautilusNavigationWindow *window;
-	NautilusWindowSlot *slot;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
-	slot = nautilus_window->details->active_slot;
-
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, 
-			 connect_content_view, 
-			 (nautilus_window, view));
-
-	g_signal_connect (view, "zoom_level_changed",
-			  G_CALLBACK (zoom_level_changed_callback),
-			  window);
-
-	if (nautilus_view_supports_zooming (view)) {
-		gtk_widget_show (window->zoom_control);
-	} else {
-		gtk_widget_hide (window->zoom_control);
-	}
-
-        /* Update displayed view in menu. Only do this if we're not switching
-         * locations though, because if we are switching locations we'll
-         * install a whole new set of views in the menu later (the current
-         * views in the menu are for the old location).
-         */
-	if (slot->pending_location == NULL) {
-		load_view_as_menu (nautilus_window);
-	}
-}
-
-static void
-real_disconnect_content_view (NautilusWindow *nautilus_window,
-			      NautilusView *view)
-{
-	NautilusNavigationWindow *window;
-
-	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
-
-	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, 
-			 disconnect_content_view, 
-			 (nautilus_window, view));
-
-	g_signal_handlers_disconnect_by_func
-		(view, 
-		 G_CALLBACK (zoom_level_changed_callback), 
-		 window);	
-
-	if (window->zoom_control != NULL) {
-		/* if we run in destroy(), the
- 		 * zoom control is already gone
-		 */
-		gtk_widget_hide (window->zoom_control);
-	}
-}
-
-static void
 real_sync_allow_stop (NautilusWindow *window,
 		      NautilusWindowSlot *slot)
 {
@@ -1560,6 +1488,50 @@ real_sync_search_widgets (NautilusWindow *window)
 	} else {
 		navigation_window->details->temporary_search_bar = TRUE;
 		hide_temporary_bars (navigation_window);
+	}
+}
+
+
+static void
+real_sync_zoom_widgets (NautilusWindow *nautilus_window)
+{
+	NautilusNavigationWindow *window;
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+	gboolean supports_zooming, can_zoom;
+
+	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
+
+	slot = nautilus_window->details->active_slot;
+	view = slot->content_view;
+
+	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
+			 sync_zoom_widgets, (nautilus_window));
+
+	if (view == NULL) {
+		/* don't toggle UI state at all. This might be
+		 * wrong, but it prevents flickering when opening
+		 * a new tab and immediately switching to it -
+		 * before view selection.
+		 */
+		return;
+	}
+
+	supports_zooming = nautilus_view_supports_zooming (view);
+	can_zoom = supports_zooming &&
+		   nautilus_view_get_zoom_level (view) != 0.0;
+
+	if (window->zoom_control != NULL) {
+		if (supports_zooming) {
+			gtk_widget_set_sensitive (window->zoom_control, can_zoom);
+			gtk_widget_show (window->zoom_control);
+			if (can_zoom) {
+				nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+								      nautilus_view_get_zoom_level (view));
+			}
+		} else {
+			gtk_widget_hide (window->zoom_control);
+		}
 	}
 }
 
@@ -2017,11 +1989,10 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->window_state_event = nautilus_navigation_window_state_event;
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_navigation_window_key_press_event;
 	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
-	NAUTILUS_WINDOW_CLASS (class)->connect_content_view = real_connect_content_view;
-	NAUTILUS_WINDOW_CLASS (class)->disconnect_content_view = real_disconnect_content_view;
 	NAUTILUS_WINDOW_CLASS (class)->sync_allow_stop = real_sync_allow_stop;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->sync_search_widgets = real_sync_search_widgets;
+	NAUTILUS_WINDOW_CLASS (class)->sync_zoom_widgets = real_sync_zoom_widgets;
 	NAUTILUS_WINDOW_CLASS (class)->sync_title = real_sync_title;
 	NAUTILUS_WINDOW_CLASS (class)->get_icon = real_get_icon;
 	NAUTILUS_WINDOW_CLASS (class)->get_default_size = real_get_default_size;

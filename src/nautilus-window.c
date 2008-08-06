@@ -762,7 +762,7 @@ nautilus_window_set_active_slot (NautilusWindow *window,
 	if (old_slot != NULL) {
 		/* inform window */
 		if (old_slot->content_view != NULL) {
-			nautilus_window_disconnect_content_view (window, old_slot->content_view);
+			nautilus_window_slot_disconnect_content_view (old_slot, old_slot->content_view);
 		}
 
 		/* inform slot & view */
@@ -782,7 +782,7 @@ nautilus_window_set_active_slot (NautilusWindow *window,
 
 		if (new_slot->content_view != NULL) {
 			/* inform window */
-			nautilus_window_connect_content_view (window, new_slot->content_view);
+			nautilus_window_slot_connect_content_view (new_slot, new_slot->content_view);
 		}
 
 		/* inform slot & view */
@@ -1313,12 +1313,86 @@ nautilus_window_sync_title (NautilusWindow *window,
 }
 
 static void
-real_connect_content_view (NautilusWindow *window,
-			   NautilusView *view)
+real_sync_zoom_widgets (NautilusWindow *window)
+{
+	NautilusWindowSlot *slot;
+	NautilusView *view;
+	GtkAction *action;
+	gboolean supports_zooming;
+	gboolean can_zoom, can_zoom_in, can_zoom_out;
+
+	slot = window->details->active_slot;
+	view = slot->content_view;
+
+	if (view != NULL) {
+		supports_zooming = nautilus_view_supports_zooming (view);
+		can_zoom = supports_zooming && nautilus_view_get_zoom_level (view) != 0.0;
+		can_zoom_in = can_zoom && nautilus_view_can_zoom_in (view);
+		can_zoom_out = can_zoom && nautilus_view_can_zoom_out (view);
+	} else {
+		supports_zooming = FALSE;
+		can_zoom = FALSE;
+		can_zoom_in = FALSE;
+		can_zoom_out = FALSE;
+	}
+
+	action = gtk_action_group_get_action (window->details->main_action_group,
+					      NAUTILUS_ACTION_ZOOM_IN);
+	gtk_action_set_visible (action, supports_zooming);
+	gtk_action_set_sensitive (action, can_zoom_in);
+	
+	action = gtk_action_group_get_action (window->details->main_action_group,
+					      NAUTILUS_ACTION_ZOOM_OUT);
+	gtk_action_set_visible (action, supports_zooming);
+	gtk_action_set_sensitive (action, can_zoom_out);
+
+	action = gtk_action_group_get_action (window->details->main_action_group,
+					      NAUTILUS_ACTION_ZOOM_NORMAL);
+	gtk_action_set_visible (action, supports_zooming);
+	gtk_action_set_sensitive (action, can_zoom);
+}
+
+void
+nautilus_window_sync_zoom_widgets (NautilusWindow *window)
+{
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 sync_zoom_widgets, (window));
+}
+
+static void
+zoom_level_changed_callback (NautilusView *view,
+                             NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* This is called each time the component in
+	 * the active slot successfully completed
+	 * a zooming operation.
+	 */
+	nautilus_window_sync_zoom_widgets (window);
+}
+
+
+/* These are called
+ *   A) when switching the view within the active slot
+ *   B) when switching the active slot
+ *   C) when closing the active slot (disconnect)
+*/
+void
+nautilus_window_connect_content_view (NautilusWindow *window,
+				      NautilusView *view)
 {
 	NautilusWindowSlot *slot;
 
-	slot = window->details->active_slot;
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_VIEW (view));
+
+	slot = nautilus_window_get_slot_for_view (window, view);
+	g_assert (slot == nautilus_window_get_active_slot (window));
+
+	g_signal_connect (view, "zoom-level-changed",
+			  G_CALLBACK (zoom_level_changed_callback),
+			  window);
 
       /* Update displayed view in menu. Only do this if we're not switching
        * locations though, because if we are switching locations we'll
@@ -1332,36 +1406,19 @@ real_connect_content_view (NautilusWindow *window,
 	nautilus_view_grab_focus (view);
 }
 
-static void
-real_disconnect_content_view (NautilusWindow *window,
-			      NautilusView *view)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (NAUTILUS_IS_VIEW (view));
-
-	/* nothing to do... */
-}
-
-void
-nautilus_window_connect_content_view (NautilusWindow *window,
-				      NautilusView *view)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (NAUTILUS_IS_VIEW (view));
-
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 connect_content_view, (window, view));
-}
-
 void
 nautilus_window_disconnect_content_view (NautilusWindow *window,
 					 NautilusView *view)
 {
+	NautilusWindowSlot *slot;
+
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_VIEW (view));
 
-	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 disconnect_content_view, (window, view));
+	slot = nautilus_window_get_slot_for_view (window, view);
+	g_assert (slot == nautilus_window_get_active_slot (window));
+
+	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (zoom_level_changed_callback), window);
 }
 
 /**
@@ -1772,8 +1829,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_WIDGET_CLASS (class)->key_press_event = nautilus_window_key_press_event;
 	class->get_title = real_get_title;
 	class->sync_title = real_sync_title;
-	class->connect_content_view = real_connect_content_view;
-	class->disconnect_content_view = real_disconnect_content_view;
+	class->sync_zoom_widgets = real_sync_zoom_widgets;
 	class->load_view_as_menu = real_load_view_as_menu;
 	class->set_allow_up = real_set_allow_up;
 	class->close_slot = real_close_slot;

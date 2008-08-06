@@ -82,10 +82,6 @@
  */
 #define MAX_URI_IN_DIALOG_LENGTH 60
 
-static void slot_connect_view                         (NautilusWindowSlot         *slot,
-						       NautilusView               *view);
-static void slot_disconnect_view                      (NautilusWindowSlot         *slot,
-						       NautilusView               *view);
 static void begin_location_change                     (NautilusWindowSlot         *slot,
 						       GFile                      *location,
 						       GList                      *new_selection,
@@ -110,8 +106,6 @@ static void load_new_location                         (NautilusWindowSlot       
 						       gboolean                    tell_new_content_view);
 static void location_has_really_changed               (NautilusWindowSlot         *slot);
 static void update_for_new_location                   (NautilusWindowSlot         *slot);
-static void zoom_parameters_changed_callback          (NautilusView               *view,
-						       NautilusWindowSlot         *window);
 
 void
 nautilus_window_report_selection_changed (NautilusWindowInfo *window)
@@ -1194,7 +1188,6 @@ create_content_view (NautilusWindowSlot *slot,
 	NautilusWindow *window;
         NautilusView *view;
 	GList *selection;
-	GtkAction *action;
 
 	window = slot->window;
 
@@ -1209,16 +1202,6 @@ create_content_view (NautilusWindowSlot *slot,
         	 */
 		view_id = NAUTILUS_DESKTOP_ICON_VIEW_IID;
 	} 
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_IN);
-	gtk_action_set_sensitive (action, FALSE);
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_OUT);
-	gtk_action_set_sensitive (action, FALSE);
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_NORMAL);
-	gtk_action_set_sensitive (action, FALSE);
         
         if (slot->content_view != NULL &&
 	    eel_strcmp (nautilus_view_get_view_id (slot->content_view),
@@ -1234,10 +1217,9 @@ create_content_view (NautilusWindowSlot *slot,
 
                 eel_accessibility_set_name (view, _("Content View"));
                 eel_accessibility_set_description (view, _("View of the current folder"));
-                
-                slot_connect_view (slot, view);
-		
+
                 slot->new_content_view = view;
+		nautilus_window_slot_connect_content_view (slot, slot->new_content_view);
         }
 
 	/* Actually load the pending location and selection: */
@@ -1395,7 +1377,9 @@ location_has_really_changed (NautilusWindowSlot *slot)
 		widget = nautilus_view_get_widget (slot->new_content_view);
 		/* Switch to the new content view. */
 		if (widget->parent == NULL) {
-			slot_disconnect_view (slot, slot->content_view);
+			if (slot->content_view != NULL) {
+				nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+			}
 			nautilus_window_slot_set_content_view_widget (slot, slot->new_content_view);
 		}
 		g_object_unref (slot->new_content_view);
@@ -1635,12 +1619,9 @@ update_for_new_location (NautilusWindowSlot *slot)
 		/* Check if we can go up. */
 		update_up_button (window);
 	}
-	
-	/* Set up the initial zoom levels */
-	zoom_parameters_changed_callback (slot->content_view,
-					  slot);
 
 	if (slot == window->details->active_slot) {
+		nautilus_window_sync_zoom_widgets (window);
 		/* Set up the content view menu for this new location. */
 		nautilus_window_load_view_as_menus (window);
 
@@ -1786,7 +1767,7 @@ free_location_change (NautilusWindowSlot *slot)
 		nautilus_view_stop_loading (slot->new_content_view);
 		window->details->temporarily_ignore_view_signals = FALSE;
 
-                slot_disconnect_view (slot, slot->new_content_view);
+		nautilus_window_slot_disconnect_content_view (slot, slot->new_content_view);
         	g_object_unref (slot->new_content_view);
                 slot->new_content_view = NULL;
         }
@@ -1839,7 +1820,7 @@ nautilus_window_report_view_failed (NautilusWindow *window,
 	fallback_load_location = NULL;
 	
 	if (view == slot->content_view) {
-                slot_disconnect_view (slot, slot->content_view);			
+		nautilus_window_slot_disconnect_content_view (slot, view);
                 nautilus_window_slot_set_content_view_widget (slot, NULL);
 
                 report_current_content_view_failure_to_user (slot);
@@ -2037,123 +2018,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
         create_content_view (slot, id);
 }
 
-static void
-zoom_level_changed_callback (NautilusView *view,
-                             NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-	GtkAction *action;
-	gboolean supports_zooming;
-
-	window = slot->window;
-        g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (slot != nautilus_window_get_active_slot (window)) {
-		return;
-	}
-
-        /* This is called each time the component successfully completed
-         * a zooming operation.
-         */
-
-	supports_zooming = nautilus_view_supports_zooming (view);
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_IN);
-	gtk_action_set_visible (action, supports_zooming);
-	gtk_action_set_sensitive (action,
-				  nautilus_view_can_zoom_in (view));
-	
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_OUT);
-	gtk_action_set_visible (action, supports_zooming);
-	gtk_action_set_sensitive (action,
-				  nautilus_view_can_zoom_out (view));
-
-	action = gtk_action_group_get_action (window->details->main_action_group,
-					      NAUTILUS_ACTION_ZOOM_NORMAL);
-	gtk_action_set_visible (action, supports_zooming);
-	gtk_action_set_sensitive (action, supports_zooming);
-}
-
-static void
-zoom_parameters_changed_callback (NautilusView *view,
-                                  NautilusWindowSlot *slot)
-{
-	NautilusWindow *window;
-        float zoom_level;
-	GtkAction *action;
-
-	window = slot->window;
-        g_assert (NAUTILUS_IS_WINDOW (window));
-
-	if (slot != window->details->active_slot) {
-		return;
-	}
-
-        /* The initial zoom level of a component is allowed to be 0.0 if
-         * there is no file loaded yet. In this case we need to set the
-         * commands insensitive but display the zoom control nevertheless
-         * (the component is just temporarily unable to zoom, but the
-         *  zoom control will "do the right thing" here).
-         */
-        zoom_level = nautilus_view_get_zoom_level (view);
-        if (zoom_level == 0.0) {
-		action = gtk_action_group_get_action (window->details->main_action_group,
-						      NAUTILUS_ACTION_ZOOM_IN);
-		gtk_action_set_sensitive (action, FALSE);
-		action = gtk_action_group_get_action (window->details->main_action_group,
-						      NAUTILUS_ACTION_ZOOM_OUT);
-		gtk_action_set_sensitive (action, FALSE);
-		action = gtk_action_group_get_action (window->details->main_action_group,
-						      NAUTILUS_ACTION_ZOOM_NORMAL);
-		gtk_action_set_sensitive (action, FALSE);
-
-                /* Don't attempt to set 0.0 as zoom level. */
-                return;
-        }
-
-        /* "zoom_parameters_changed" always implies "zoom_level_changed",
-         * but you won't get both signals, so we need to pass it down.
-         */
-        zoom_level_changed_callback (view, slot);
-}
-
-static void
-title_changed_callback (NautilusView *view,
-                        NautilusWindowSlot *slot)
-{
-        g_assert (NAUTILUS_IS_WINDOW (slot->window));
-
-        nautilus_window_slot_update_title (slot);
-	nautilus_window_slot_update_icon (slot);
-}
-
-static void
-slot_connect_view (NautilusWindowSlot         *slot,
-		   NautilusView               *view)
-{
-	g_signal_connect (view, "title_changed",
-			  G_CALLBACK (title_changed_callback), slot);
-	g_signal_connect (view, "zoom_level_changed",
-			  G_CALLBACK (zoom_level_changed_callback), slot);
-	g_signal_connect (view, "zoom_parameters_changed",
-			  G_CALLBACK (zoom_parameters_changed_callback), slot);
-}
-
-static void
-slot_disconnect_view (NautilusWindowSlot         *slot,
-		      NautilusView               *view)
-{
-	if (view == NULL) {
-		return;
-	}
-	
-	g_signal_handlers_disconnect_by_func (view, title_changed_callback, slot);
-	g_signal_handlers_disconnect_by_func (view, zoom_level_changed_callback, slot);
-	g_signal_handlers_disconnect_by_func (view, zoom_parameters_changed_callback, slot);
-}
-
 void
 nautilus_window_manage_views_destroy (NautilusWindow *window)
 {
@@ -2168,10 +2032,10 @@ nautilus_window_manage_views_destroy (NautilusWindow *window)
 		slot = l->data;
 
 		if (slot->content_view != NULL) {
-			slot_disconnect_view (slot, slot->content_view);
+			nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
 		}
 		if (slot->new_content_view != NULL) {
-			slot_disconnect_view (slot, slot->new_content_view);
+			nautilus_window_slot_disconnect_content_view (slot, slot->new_content_view);
 		}
 	}
 }
@@ -2180,6 +2044,9 @@ void
 nautilus_window_manage_views_close_slot (NautilusWindow *window,
 					 NautilusWindowSlot *slot)
 {
+	if (slot->content_view != NULL) {
+		nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
+	}
 
 	free_location_change (slot);
 	cancel_viewed_file_changed_callback (slot);

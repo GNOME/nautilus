@@ -142,6 +142,11 @@ const char	       *nautilus_window_slot_get_content_view_id      (NautilusWindow
 gboolean		nautilus_window_slot_content_view_matches_iid (NautilusWindowSlot	*slot,
 								       const char		*iid);
 
+void                    nautilus_window_slot_connect_content_view     (NautilusWindowSlot       *slot,
+								       NautilusView             *view);
+void                    nautilus_window_slot_disconnect_content_view  (NautilusWindowSlot       *slot,
+								       NautilusView             *view);
+
 #define nautilus_window_slot_go_to(slot,location, new_tab) \
 	nautilus_window_slot_open_location_full(slot, location, NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE, \
 						(new_tab ? NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB : 0), \

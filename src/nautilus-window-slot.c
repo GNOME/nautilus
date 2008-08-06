@@ -114,6 +114,7 @@ real_active (NautilusWindowSlot *slot)
 	nautilus_window_sync_status (window);
 	nautilus_window_sync_allow_stop (window, slot);
 	nautilus_window_sync_title (window, slot);
+	nautilus_window_sync_zoom_widgets (window);
 	nautilus_window_sync_location_widgets (window);
 	nautilus_window_sync_search_widgets (window);
 
@@ -359,24 +360,60 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 	}
 }
 
+static void
+title_changed_callback (NautilusView *view,
+			NautilusWindowSlot *slot)
+{
+        g_assert (NAUTILUS_IS_WINDOW (slot->window));
+
+        nautilus_window_slot_update_title (slot);
+	nautilus_window_slot_update_icon (slot);
+}
+
+
+void
+nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,
+					   NautilusView *view)
+{
+	NautilusWindow *window;
+
+	g_signal_connect (view, "title-changed",
+			  G_CALLBACK (title_changed_callback),
+			  slot);
+
+	window = slot->window;
+	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
+		nautilus_window_connect_content_view (window, view);
+	}
+}
+
+void
+nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
+					      NautilusView *view)
+{
+	NautilusWindow *window;
+
+	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (title_changed_callback), slot);
+
+	window = slot->window;
+	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
+		nautilus_window_disconnect_content_view (window, view);
+	}
+}
+
 void
 nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 					      NautilusView *new_view)
 {
 	NautilusWindow *window;
 	GtkWidget *widget;
-	gboolean inform_window;
 
 	window = slot->window;
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	inform_window = slot == window->details->active_slot;
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	if (slot->content_view != NULL) {
 		/* disconnect old view */
-		if (inform_window) {
-			nautilus_window_disconnect_content_view (window, slot->content_view);
-		}
+		nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
 
 		widget = nautilus_view_get_widget (slot->content_view);
 		gtk_widget_destroy (widget);
@@ -395,9 +432,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 		g_object_ref (slot->content_view);
 
 		/* connect new view */
-		if (inform_window) {
-			nautilus_window_connect_content_view (window, new_view);
-		}
+		nautilus_window_slot_connect_content_view (slot, new_view);
 	}
 }
 

@@ -1,3 +1,34 @@
+2008-08-06  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-navigation-window.c (real_sync_zoom_widgets),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-window-manage-views.c (create_content_view),
+	(location_has_really_changed), (update_for_new_location),
+	(free_location_change), (nautilus_window_report_view_failed),
+	(nautilus_window_manage_views_destroy),
+	(nautilus_window_manage_views_close_slot):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-slot.c (real_active),
+	(title_changed_callback),
+	(nautilus_window_slot_connect_content_view),
+	(nautilus_window_slot_disconnect_content_view),
+	(nautilus_window_slot_set_content_view_widget):
+	* src/nautilus-window-slot.h:
+	* src/nautilus-window.c (nautilus_window_set_active_slot),
+	(real_sync_zoom_widgets), (nautilus_window_sync_zoom_widgets),
+	(zoom_level_changed_callback),
+	(nautilus_window_connect_content_view),
+	(nautilus_window_disconnect_content_view),
+	(nautilus_window_class_init):
+	* src/nautilus-window.h:
+	Consolidate zoom handling. Add nautilus_window_sync_zoom_level(),
+	and sync_zoom_level() method to NautilusWindow. Use it to sync both
+	the menu state, and the toolbar state. Remove NautilusWindow's
+	(dis)connect_content_view(), and use unified code in
+	nautilus_window_(dis)connect_content_view(), wrapped by
+	nautilus_window_slot_(dis)connect_content_view(), which also handles
+	the (notebook) title sync. Fixes #546333.
+
 2008-08-06  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/nautilus-bookmarks-window.c: (on_selection_changed),

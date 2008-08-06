@@ -224,6 +224,7 @@ void nautilus_window_sync_allow_stop       (NautilusWindow *window,
 void nautilus_window_sync_title            (NautilusWindow *window,
 					    NautilusWindowSlot *slot);
 void nautilus_window_sync_location_widgets (NautilusWindow *window);
+void nautilus_window_sync_zoom_widgets     (NautilusWindow *window);
 
 /* Navigation window menus */
 void               nautilus_navigation_window_initialize_actions                    (NautilusNavigationWindow    *window);

@@ -89,21 +89,13 @@ typedef struct {
 
         void   (* load_view_as_menu) (NautilusWindow *window);
 
-	/* these are called
- 	 *   A) when switching the view within the active slot
- 	 *   B) when switching the active slot
- 	 */
-        void   (* connect_content_view) (NautilusWindow *window, 
-                                         NautilusView *new_view);
-        void   (* disconnect_content_view) (NautilusWindow *window, 
-                                            NautilusView *new_view);
-
         void   (* sync_allow_stop) (NautilusWindow *window,
 				    NautilusWindowSlot *slot);
 	void   (* set_allow_up) (NautilusWindow *window, gboolean allow);
 	void   (* reload)              (NautilusWindow *window);
         void   (* prompt_for_location) (NautilusWindow *window, const char *initial);
         void   (* sync_search_widgets) (NautilusWindow *window);
+        void   (* sync_zoom_widgets) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
         void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
