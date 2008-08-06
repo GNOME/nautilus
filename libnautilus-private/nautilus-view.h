@@ -51,8 +51,6 @@ struct _NautilusViewIface
 	/* emitted when the view-specific title as returned by get_title changes */
         void           (* title_changed)          (NautilusView          *view);
 
-	/* BONOBOTODO: remove this? */
-        void           (* zoom_parameters_changed)(NautilusView          *view);
         void           (* zoom_level_changed)     (NautilusView          *view);
 	
 	/* VTable: */

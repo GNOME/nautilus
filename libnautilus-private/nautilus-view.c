@@ -27,7 +27,6 @@
 
 enum {
 	TITLE_CHANGED,
-	ZOOM_PARAMETERS_CHANGED,
 	ZOOM_LEVEL_CHANGED,
 	LAST_SIGNAL
 };
@@ -48,16 +47,7 @@ nautilus_view_base_init (gpointer g_class)
 				      NULL, NULL,
 				      g_cclosure_marshal_VOID__VOID,
 				      G_TYPE_NONE, 0);
-		
-		nautilus_view_signals[ZOOM_PARAMETERS_CHANGED] =
-			g_signal_new ("zoom_parameters_changed",
-				      NAUTILUS_TYPE_VIEW,
-				      G_SIGNAL_RUN_LAST,
-				      G_STRUCT_OFFSET (NautilusViewIface, zoom_parameters_changed),
-				      NULL, NULL,
-				      g_cclosure_marshal_VOID__VOID,
-				      G_TYPE_NONE, 0);
-		
+
 		nautilus_view_signals[ZOOM_LEVEL_CHANGED] =
 			g_signal_new ("zoom_level_changed",
 				      NAUTILUS_TYPE_VIEW,
