@@ -6016,11 +6016,10 @@ nautilus_file_is_archive (NautilusFile *file)
 						     "application/x-java-archive",
 						     "application/x-war",
 						     "application/x-ear",
-						     "application/x-arj" };
-	/* TODO the following MIME types are ignored until file-roller supports to add
-	 * files to them via command line:
-	 *   application/x-gzip, application/x-bzip-compressed-tar, application/x-compressed-tar
-	 */
+						     "application/x-arj",
+						     "application/x-gzip",
+						     "application/x-bzip-compressed-tar",
+						     "application/x-compressed-tar" };
 
 	g_return_val_if_fail (file != NULL, FALSE);
 
