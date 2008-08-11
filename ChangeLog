@@ -1,3 +1,10 @@
+2008-08-11  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(nautilus_file_operations_copy_move):
+	Use g_file_has_uri_scheme() instead of rolling our own.
+	Fixes bug #539780.
+
 2008-08-07  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_is_archive):
