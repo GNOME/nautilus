@@ -102,6 +102,7 @@ struct FMTreeViewDetails {
 	GtkWidget *popup_properties;
 	GtkWidget *popup_unmount_separator;
 	GtkWidget *popup_unmount;
+	GtkWidget *popup_eject;
 	NautilusFile *popup_file;
 	
 	guint selection_changed_timer;
@@ -675,8 +676,8 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 	gboolean can_delete_file;
 
 	if (event->button == 3) {
-		gboolean unmount_is_eject = FALSE;
 		gboolean show_unmount = FALSE;
+		gboolean show_eject = FALSE;
 		GMount *mount = NULL;
 		
 		if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
@@ -728,22 +729,28 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		
 		mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, view->details->popup_file);
 		if (mount) {
-			show_unmount = g_mount_can_unmount (mount) || g_mount_can_eject (mount);
 			/* TODO: show both unmount and eject if there are more than one volume for the drive */
-			unmount_is_eject = g_mount_can_eject (mount);
+			show_unmount = g_mount_can_unmount (mount);
+			show_eject = g_mount_can_eject (mount);
 		} 
 		
-		gtk_label_set_text (GTK_LABEL (GTK_BIN (GTK_MENU_ITEM (view->details->popup_unmount))->child),
-				    unmount_is_eject? _("E_ject"):_("_Unmount Volume"));
-		gtk_label_set_use_underline (GTK_LABEL (GTK_BIN (GTK_MENU_ITEM (view->details->popup_unmount))->child),
-				    TRUE);
 		if (show_unmount) {
-			gtk_widget_show (view->details->popup_unmount_separator);
 			gtk_widget_show (view->details->popup_unmount);
 		} else {
-			gtk_widget_hide (view->details->popup_unmount_separator);
 			gtk_widget_hide (view->details->popup_unmount);
-		}		
+		}
+
+		if (show_eject) {
+			gtk_widget_show (view->details->popup_eject);
+		} else {
+			gtk_widget_hide (view->details->popup_eject);
+		}
+
+		if (show_unmount || show_eject) {
+			gtk_widget_show (view->details->popup_unmount_separator);
+		} else {
+			gtk_widget_hide (view->details->popup_unmount_separator);
+		}
 
 		g_object_ref (view);
 		
@@ -1125,8 +1132,26 @@ fm_tree_view_unmount_cb (GtkWidget *menu_item,
 	
 	if (mount != NULL) {
 		nautilus_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
-							mount,
-							g_mount_can_eject (mount), TRUE);
+							mount, FALSE, TRUE);
+	}
+}
+
+static void
+fm_tree_view_eject_cb (GtkWidget *menu_item,
+		       FMTreeView *view)
+{
+	NautilusFile *file = view->details->popup_file;
+	GMount *mount;
+	
+	if (file == NULL) {
+		return;
+	}
+
+	mount = fm_tree_model_get_mount_for_root_node_file (view->details->child_model, file);
+	
+	if (mount != NULL) {
+		nautilus_file_operations_unmount_mount (fm_tree_view_get_containing_window (view),
+							mount, TRUE, TRUE);
 	}
 }
 
@@ -1247,13 +1272,22 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
 	/* add the "Unmount" menu item */
-	menu_item = gtk_image_menu_item_new_with_label ("eject label");
+	menu_item = gtk_image_menu_item_new_with_mnemonic ("_Unmount");
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_unmount_cb),
 			  view);
 	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
 	view->details->popup_unmount = menu_item;
+
+	/* add the "Eject" menu item */
+	menu_item = gtk_image_menu_item_new_with_mnemonic ("E_ject");
+	g_signal_connect (menu_item, "activate",
+			  G_CALLBACK (fm_tree_view_eject_cb),
+			  view);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	view->details->popup_eject = menu_item;
 
 	/* add the unmount separator menu item */
 	view->details->popup_unmount_separator =

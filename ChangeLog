@@ -1,5 +1,17 @@
 2008-08-13  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-info.h:
+	* src/file-manager/fm-directory-view.c (file_should_show_foreach),
+	(file_should_show_self), (real_update_menus_volumes):
+	* src/file-manager/fm-tree-view.c (button_pressed_callback),
+	(fm_tree_view_unmount_cb), (fm_tree_view_eject_cb),
+	(create_popup_menu):
+	Make eject and unmount labels consistent between tree side pane and
+	places side pane, display both eject and unmount for volumes supporting
+	both. Partially fixes #547275.
+
+2008-08-13  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-dnd.c
 	(nautilus_drag_default_drop_action_for_icons):
 	Use correct target file for same filesystem check when dropping to

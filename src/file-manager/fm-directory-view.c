@@ -6687,7 +6687,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Unmount the selected volume"),
                                  G_CALLBACK (action_unmount_volume_callback) },
   /* name, stock id */         { "Eject Volume", NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
+  /* label, accelerator */       N_("_Eject Volume"), NULL,
   /* tooltip */                  N_("Eject the selected volume"),
                                  G_CALLBACK (action_eject_volume_callback) },
   /* name, stock id */         { "Format Volume", NULL,
@@ -6703,7 +6703,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Unmount the volume associated with the open folder"),
                                  G_CALLBACK (action_self_unmount_volume_callback) },
   /* name, stock id */         { "Self Eject Volume", NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
+  /* label, accelerator */       N_("_Eject Volume"), NULL,
   /* tooltip */                  N_("Eject the volume associated with the open folder"),
                                  G_CALLBACK (action_self_eject_volume_callback) },
   /* name, stock id */         { "Self Format Volume", NULL,
@@ -6772,7 +6772,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Unmount the volume associated with this folder"),
                                  G_CALLBACK (action_location_unmount_volume_callback) },
   /* name, stock id */         { "Location Eject Volume", NULL,
-  /* label, accelerator */       N_("_Eject"), NULL,
+  /* label, accelerator */       N_("_Eject Volume"), NULL,
   /* tooltip */                  N_("Eject the volume associated with this folder"),
                                  G_CALLBACK (action_location_eject_volume_callback) },
   /* name, stock id */         { "Location Format Volume", NULL,
@@ -7076,7 +7076,9 @@ file_should_show_foreach (NautilusFile *file,
 
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	} else if (nautilus_file_can_unmount (file)) {
+	}
+
+	if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
 
@@ -7123,7 +7125,9 @@ file_should_show_self (NautilusFile *file,
 	
 	if (nautilus_file_can_eject (file)) {
 		*show_eject = TRUE;
-	} else if (nautilus_file_can_unmount (file)) {
+	}
+
+	if (nautilus_file_can_unmount (file)) {
 		*show_unmount = TRUE;
 	}
 	
@@ -7223,12 +7227,6 @@ real_update_menus_volumes (FMDirectoryView *view,
 		show_eject &= show_eject_one;
 		show_connect &= show_connect_one;
 		show_format &= show_format_one;
-	}
-
-	/* We don't want both eject and unmount, since eject
-	   unmounts too */
-	if (show_eject) {
-		show_unmount = FALSE;
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
