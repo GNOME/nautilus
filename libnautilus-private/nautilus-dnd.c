@@ -469,6 +469,10 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		return;
 	} else if (eel_uri_is_desktop (target_uri_string)) {
 		target = nautilus_get_desktop_location ();
+
+		nautilus_file_unref (target_file);
+		target_file = nautilus_file_get (target);
+
 		if (eel_uri_is_desktop (dropped_uri)) {
 			/* Only move to Desktop icons */
 			if (actions & GDK_ACTION_MOVE) {
