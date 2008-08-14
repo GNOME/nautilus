@@ -23,11 +23,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 1.1.2\n"
+"Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-12 15:15+0300\n"
-"PO-Revision-Date: 2008-03-24 18:38+0200\n"
-"Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
+"POT-Creation-Date: 2008-08-14 10:05+0300\n"
+"PO-Revision-Date: 2008-08-14 09:00+0300\n"
+"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -509,8 +509,9 @@ msgid ""
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
 msgstr ""
-"Jos arvo on \"after_current_tab\", lisätään uudet välilehdet nykyisen jälkeen.  "
-"Jos arvo on \"end\", lisätään uudet välilehdet välilehtiluettelon loppuun."
+"Jos arvo on \"after_current_tab\", lisätään uudet välilehdet nykyisen "
+"jälkeen.  Jos arvo on \"end\", lisätään uudet välilehdet välilehtiluettelon "
+"loppuun."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -570,7 +571,6 @@ msgstr ""
 "tyhjennät roskakorin."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
@@ -605,13 +605,12 @@ msgstr ""
 "siirtämisen sijasta. Tätä käytettäessä kannattaa olla varovainen."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
 msgstr ""
-"Jos tosi, nautilus ei koskaan kysy automaattisesti käynnistettäviä ohjelmia, "
-"kun media liitetään."
+"Jos tosi, nautilus ei koskaan kysy automaattisesti käynnistettäviä ohjelmia "
+"liitettäessä media."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -652,7 +651,7 @@ msgstr ""
 msgid ""
 "If set to true, then multiple views can be opened in one browser window, "
 "each in a separate tab."
-msgstr ""
+msgstr "Jos tosi, samaan selainikkunaan voi avata välilehtiin useita näkymiä."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
@@ -691,6 +690,8 @@ msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
 msgstr ""
+"Jos tämä on asetettu, kaikki tiiviin näkymän sarakkeet ovat samanlevyisiä. "
+"Muussa tapauksessa kunkin sarakkeen leveys määritellään erikseen."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid ""
@@ -749,6 +750,9 @@ msgid ""
 "the preference capplet. No prompt will be shown nor will any matching "
 "application be started on insertion of media matching these types."
 msgstr ""
+"Luettelo x-content/*-tyypeistä, joille käyttäjä on valinnut arvon \"Älä tee "
+"mitään\" asetusohjelmasta. Käyttäjältä ei kysytä mitään eikä käsitteleviä "
+"ohjelmia käynnistetä liitettäessä näitä tiedostoja sisältävä media."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
@@ -756,6 +760,9 @@ msgid ""
 "the preferences capplet. A folder window will be opened on insertion of "
 "media matching these types."
 msgstr ""
+"Luettelo x-content/*-tyypeistä, joille käyttäjä on valinnut arvon \"Avaa "
+"kansio\" asetusohjelmasta. Selainikkuna avataan kohteeseen liitettäessä "
+"näitä tiedostoja sisältävä media."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
@@ -763,26 +770,22 @@ msgid ""
 "application in the preference capplet. The preferred application for the "
 "given type will be started on insertion on media matching these types."
 msgstr ""
+"Luettelo x-content/*-tyypeistä, joille käyttäjä on valinnut avaamiseen "
+"käytettävän ohjelman asetusohjelmasta. Valittu ohjelma käynnistetään "
+"liitettäessä näitä tiedostoja sisältävä media."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid "List of x-content/* types set to \"Do Nothing\""
-msgstr ""
-"Luottelo x-content/*-tyypeistä, joista käyttäjältä kysytään liitettäessä "
-"mitä tehdään"
+msgstr "Luottelo x-content/*-tyypeistä lipulla \"Älä tee mitään\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid "List of x-content/* types set to \"Open Folder\""
-msgstr ""
-"Luottelo x-content/*-tyypeistä, joista käyttäjältä kysytään liitettäessä "
-"mitä tehdään"
+msgstr "Luottelo x-content/*-tyypeistä lipulla \"Avaa Kansio\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-#, fuzzy
 msgid ""
 "List of x-content/* types where the preferred application will be launched"
-msgstr "Luottelo x-content/*-tyypeistä, joille avataan kansioikkuna"
+msgstr "Luottelo x-content/*-tyypeistä joille avataan haluttu ohjelma"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Maximum handled files in a folder"
@@ -817,11 +820,8 @@ msgid "Network servers icon name"
 msgstr "Verkkopalvelimien kuvakkeen nimi"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid "Never prompt or autorun/autostart programs when media are inserted"
-msgstr ""
-"Älä koskaan kysy mediaa liitettäessä automaattisesti suoritettavien "
-"ohjelmien suoritusta"
+msgstr "Älä koskaan kysy tai suorita automaattisia ohjelma liitettäessä media"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Only show folders in the tree side pane"
@@ -1043,15 +1043,14 @@ msgstr ""
 "valintaikkuna ja \"display\", eli tiedosto näytetään tekstitiedostona."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
-#, fuzzy
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\", "
 "\"icon_view\" and \"compact_view\"."
 msgstr ""
 "Kun kansio näytetään, tätä näkymää käytetään, jos muuta näkymää ei ole "
-"erikseen valittu kyseiselle kansiolle. Mahdollisia arvoja ovat \"list_view"
-"\" (luettelonäkymä) ja \"icon_view\" (kuvakenäkymä)."
+"erikseen valittu kyseiselle kansiolle. Kelvollisia arvoja ovat \"list_view"
+"\", \"icon_view\" ja \"compact_view\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "When to show number of items in a folder"
@@ -1066,9 +1065,8 @@ msgid "When to show thumbnails of image files"
 msgstr "Näkyvätkö kuvatiedostojen pienoiskuvat"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
-#, fuzzy
 msgid "Where to position newly open tabs in browser windows."
-msgstr "Avaa aina _selainikkunoissa"
+msgstr "Mihin uudet välilehdet sijoitetaan selainikkunoissa."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "Whether a custom default folder background has been set."
@@ -1098,7 +1096,7 @@ msgstr "Onko välitön poistaminen käytössä"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
 msgid "Whether to enable tabs in Nautilus browser windows"
-msgstr ""
+msgstr "Käytetäänkö nautiluksen selainikkunoissa välilehtiä"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
 msgid "Whether to preview sounds when mousing over an icon"
@@ -1188,7 +1186,6 @@ msgid "You have just inserted a Picture CD."
 msgstr "Laitoit Picture CD-levyn asemaan."
 
 #: ../libnautilus-private/nautilus-autorun.c:913
-#, fuzzy
 msgid "You have just inserted a medium with digital photos."
 msgstr "Liitit tietokoneeseen valokuvia sisältävän median."
 
@@ -1197,17 +1194,17 @@ msgid "You have just inserted a digital audio player."
 msgstr "Liitit tietokoneeseen musiikkisoittimen."
 
 #: ../libnautilus-private/nautilus-autorun.c:917
-#, fuzzy
 msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
-msgstr "Laitoit asemaan automaattisesti käynnistettäväksi tarkoitetun median."
+msgstr ""
+"Liitit tietokoneeseen median, joka sisältää automaattisesti "
+"käynnistettäväksi tarkoitetun ohjelman."
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:920
-#, fuzzy
 msgid "You have just inserted a medium."
-msgstr "Laitoit asemaan median."
+msgstr "Liitit tietokoneeseen uuden median."
 
 #: ../libnautilus-private/nautilus-autorun.c:922
 msgid "Choose what application to launch."
@@ -1226,12 +1223,7 @@ msgstr ""
 msgid "_Always perform this action"
 msgstr "_Suorita aina tämä toiminto"
 
-#. name, stock id
-#. label, accelerator
 #: ../libnautilus-private/nautilus-autorun.c:969
-#: ../src/file-manager/fm-directory-view.c:6690
-#: ../src/file-manager/fm-directory-view.c:6706
-#: ../src/file-manager/fm-directory-view.c:6775
 #: ../src/nautilus-places-sidebar.c:2012
 msgid "_Eject"
 msgstr "Poista _asemasta"
@@ -1409,32 +1401,32 @@ msgstr ""
 "Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" taltion "
 "kontekstivalikosta."
 
-#: ../libnautilus-private/nautilus-dnd.c:744
+#: ../libnautilus-private/nautilus-dnd.c:748
 msgid "_Move Here"
 msgstr "_Siirrä tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:749
+#: ../libnautilus-private/nautilus-dnd.c:753
 msgid "_Copy Here"
 msgstr "_Kopioi tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:754
+#: ../libnautilus-private/nautilus-dnd.c:758
 msgid "_Link Here"
 msgstr "_Linkitä tähän"
 
-#: ../libnautilus-private/nautilus-dnd.c:759
+#: ../libnautilus-private/nautilus-dnd.c:763
 msgid "Set as _Background"
 msgstr "Aseta _taustaksi"
 
-#: ../libnautilus-private/nautilus-dnd.c:766
-#: ../libnautilus-private/nautilus-dnd.c:819
+#: ../libnautilus-private/nautilus-dnd.c:770
+#: ../libnautilus-private/nautilus-dnd.c:823
 msgid "Cancel"
 msgstr "Peru"
 
-#: ../libnautilus-private/nautilus-dnd.c:807
+#: ../libnautilus-private/nautilus-dnd.c:811
 msgid "Set as background for _all folders"
 msgstr "Aseta _kaikkien kansioiden taustaksi"
 
-#: ../libnautilus-private/nautilus-dnd.c:812
+#: ../libnautilus-private/nautilus-dnd.c:816
 msgid "Set as background for _this folder"
 msgstr "Aseta _tämän kansion taustaksi"
 
@@ -1454,8 +1446,8 @@ msgstr "Uudelle tunnusmerkille pitää antaa avainsana."
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Valitettavasti tunnusmerkkien avainsanat voivat sisältää vain kirjaimia, "
-"tyhjää sekä numeroita."
+"Tunnusmerkkien avainsanat voivat sisältää vain kirjaimia, tyhjää sekä "
+"numeroita."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -1548,7 +1540,7 @@ msgstr[1] "arviolta %'d tuntia"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
 #: ../libnautilus-private/nautilus-file.c:5506
-#: ../src/file-manager/fm-directory-view.c:9173
+#: ../src/file-manager/fm-directory-view.c:9171
 #, c-format
 msgid "Link to %s"
 msgstr "Linkki kohteeseen %s"
@@ -1786,7 +1778,6 @@ msgid "There was an error reading the folder \"%B\"."
 msgstr "Virhe luettaessa kansiota \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1474
-#, fuzzy
 msgid "Could not remove the folder %B."
 msgstr "Kansiota %B ei voitu poistaa."
 
@@ -1834,7 +1825,6 @@ msgstr ""
 "tyhjentää. Kaikki taltion roskakorissa olevat tiedostot hukataan pysyvästi."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2074
-#, fuzzy
 msgid "Do not Empty Trash"
 msgstr "Älä tyhjennä roskakoria"
 
@@ -1928,9 +1918,8 @@ msgid "Error while copying to \"%B\"."
 msgstr "Virhe kohteeseen \"%B\" kopioinnissa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2582
-#, fuzzy
 msgid "You do not have permissions to access the destination folder."
-msgstr "Sinulla ei ole oikeuksia avata tai lukea kohdekansiota."
+msgstr "Sinulla ei ole oikeuksia avata kohdekansiota."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2584
 msgid "There was an error getting information about the destination."
@@ -2054,7 +2043,6 @@ msgid "Error while moving \"%B\"."
 msgstr "Virhe siirettäessä \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3390
-#, fuzzy
 msgid "Could not remove the source folder."
 msgstr "Lähdekansiota ei voitu poistaa."
 
@@ -2066,12 +2054,12 @@ msgid "Error while copying \"%B\"."
 msgstr "Virhe kopioitaessa \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3476
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Tiedostoja ei voitu poistaa jo olemassa olevasta kansiosta %F."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3517
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Ei voitu poistaa jo olemassaolevaa tiedostoa %F."
 
@@ -2138,7 +2126,7 @@ msgstr ""
 "vanhan sisällön."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3913
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "Aiempaa samannimistä tiedostoa kohteessa %F ei voitu poistaa."
 
@@ -2613,9 +2601,8 @@ msgstr "Kuvakenäkymä"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-view.c:2973
-#, fuzzy
 msgid "Compact View"
-msgstr "Sisältönäkymä"
+msgstr "Tiivis näkymä"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -2732,23 +2719,21 @@ msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Linkki \"%s\" on rikki. Haluatko siirtää sen roskakoriin?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:603
-#, fuzzy
 msgid "This link cannot be used, because it has no target."
 msgstr "Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:605
-#, fuzzy, c-format
+#, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
-msgstr ""
-"Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa."
+msgstr "Tätä linkkiä ei voi käyttää, koska kohdetta \"%s\" ei ole olemassa."
 
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:615
 #: ../src/file-manager/fm-directory-view.c:6656
 #: ../src/file-manager/fm-directory-view.c:6755
-#: ../src/file-manager/fm-directory-view.c:7457
-#: ../src/file-manager/fm-directory-view.c:7715
+#: ../src/file-manager/fm-directory-view.c:7455
+#: ../src/file-manager/fm-directory-view.c:7713
 msgid "Mo_ve to Trash"
 msgstr "Siirrä _roskakoriin"
 
@@ -2781,11 +2766,11 @@ msgid "Are you sure you want to open all files?"
 msgstr "Haluatko varmasti avata kaikki tiedostot?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:992
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
-msgstr[0] "Tämä avaisi yhden erillisen ikkunan."
-msgstr[1] "Tämä avaisi %d erillistä ikkunaa."
+msgstr[0] "Tämä avaa %d erillisen välilehteä."
+msgstr[1] "Tämä avaa %d erillistä välilehteä."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:995
 #: ../src/nautilus-location-bar.c:150
@@ -2802,7 +2787,7 @@ msgstr[1] "Tämä avaisi %d erillistä ikkunaa."
 #: ../src/nautilus-window-manage-views.c:1914
 #: ../src/nautilus-window-manage-views.c:1920
 #: ../src/nautilus-window-manage-views.c:1945
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\"."
 msgstr "Kohdetta \"%s\" ei voi näyttää."
 
@@ -2923,8 +2908,8 @@ msgstr "_Selaa..."
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
 #: ../src/file-manager/fm-directory-view.c:6574
-#: ../src/file-manager/fm-directory-view.c:7618
-#: ../src/file-manager/fm-tree-view.c:1149
+#: ../src/file-manager/fm-directory-view.c:7616
+#: ../src/file-manager/fm-tree-view.c:1174
 #: ../src/nautilus-places-sidebar.c:1954
 msgid "_Open"
 msgstr "_Avaa"
@@ -2950,13 +2935,13 @@ msgstr "Avaaminen epäonnistui. Haluatko valita toisen ohjelman?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:82
 #: ../libnautilus-private/nautilus-program-choosing.c:113
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 "locations."
 msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi käyttää tiedostoja "
-"\"%s\"-sijainneissa."
+"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi käsitellä tiedostoja "
+"\"%s\"-tyyppisissä sijainneissa."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:87
 msgid "Open Failed, would you like to choose another action?"
@@ -2964,13 +2949,13 @@ msgstr "Avaaminen epäonnistui. Haluatko valita toisen toiminnon?"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:88
 #: ../libnautilus-private/nautilus-program-choosing.c:120
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
 "\" locations."
 msgstr ""
 "Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi käyttää "
-"tiedostoja \"%s\"-sijainneissa."
+"tiedostoja \"%s\"-tyyppisissä sijainneissa."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:116
 msgid ""
@@ -2989,9 +2974,8 @@ msgstr ""
 "tiedoston koneellesi, niin saatat voida avata sen."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:308
-#, fuzzy
 msgid "Sorry, but you cannot execute commands from a remote site."
-msgstr "Turvallisuussyistä komentoja ei voi suorittaa etäsivustolta."
+msgstr "Turvallisuussyistä komentoja ei voi suorittaa etäpalvelimelta."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:310
 msgid "This is disabled due to security considerations."
@@ -3094,7 +3078,7 @@ msgstr "Muuta tiedostonhallinnan ikkunoiden toimintaa ja ulkoasua"
 msgid "File Management"
 msgstr "Tiedostonhallinta"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1302
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1336
 msgid "Home Folder"
 msgstr "Kotikansio"
 
@@ -3144,7 +3128,7 @@ msgstr "Tausta"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:679
 #: ../src/file-manager/fm-directory-view.c:6606
-#: ../src/file-manager/fm-directory-view.c:7784
+#: ../src/file-manager/fm-directory-view.c:7782
 msgid "E_mpty Trash"
 msgstr "T_yhjennä roskakori"
 
@@ -3189,11 +3173,11 @@ msgid "The desktop view encountered an error while starting up."
 msgstr "Työpöytänäkymää käynnistettäessä tapahtui virhe."
 
 #: ../src/file-manager/fm-directory-view.c:620
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
-msgstr[0] "Tämä avaa %'d erillisen ikkunan."
-msgstr[1] "Tämä avaa  %d erillistä ikkunaa."
+msgstr[0] "Tämä avaa %'d erillisen välilehden."
+msgstr[1] "Tämä avaa  %'d erillistä välilehteä."
 
 #: ../src/file-manager/fm-directory-view.c:623
 #, c-format
@@ -3210,9 +3194,8 @@ msgid "There was an error displaying help."
 msgstr "Virhe ohjeen näyttämisessä."
 
 #: ../src/file-manager/fm-directory-view.c:1157
-#, fuzzy
 msgid "Select Items Matching"
-msgstr "Valitse tämän ikkunan kaikki kohteet"
+msgstr "Valitse täsmäävät kohteet"
 
 #: ../src/file-manager/fm-directory-view.c:1175
 msgid "_Pattern:"
@@ -3396,13 +3379,13 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: nykyisen ikkunan sijainti ja koko"
 
 #: ../src/file-manager/fm-directory-view.c:5688
-#: ../src/file-manager/fm-tree-view.c:963
+#: ../src/file-manager/fm-tree-view.c:970
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" siirretään jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5692
-#: ../src/file-manager/fm-tree-view.c:967
+#: ../src/file-manager/fm-tree-view.c:974
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kopioidaan, jos annat \"liitä\"-komennon"
@@ -3424,7 +3407,7 @@ msgstr[0] "%'d valittu kohde kopioidaan, jos annat \"liitä\"-komennon"
 msgstr[1] "%'d valittua kohdetta kopioidaan, jos annat \"liitä\"-komennon"
 
 #: ../src/file-manager/fm-directory-view.c:5762
-#: ../src/file-manager/fm-tree-view.c:1006
+#: ../src/file-manager/fm-tree-view.c:1013
 msgid "There is nothing on the clipboard to paste."
 msgstr "Leikepöydällä ei ole mitään liitettävää."
 
@@ -3535,9 +3518,9 @@ msgstr "Avaa jokainen valittu kohde ikkunassa"
 #. add the "open in new tab" menu item
 #: ../src/file-manager/fm-directory-view.c:6586
 #: ../src/file-manager/fm-directory-view.c:6732
-#: ../src/file-manager/fm-directory-view.c:7402
-#: ../src/file-manager/fm-directory-view.c:7669
-#: ../src/file-manager/fm-tree-view.c:1160
+#: ../src/file-manager/fm-directory-view.c:7400
+#: ../src/file-manager/fm-directory-view.c:7667
+#: ../src/file-manager/fm-tree-view.c:1185
 #: ../src/nautilus-places-sidebar.c:1962
 msgid "Open in New _Tab"
 msgstr "Avaa uudessa _välilehdessä"
@@ -3612,7 +3595,7 @@ msgstr ""
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6624
 #: ../src/file-manager/fm-directory-view.c:6750
-#: ../src/file-manager/fm-tree-view.c:1212
+#: ../src/file-manager/fm-tree-view.c:1237
 msgid "_Paste Into Folder"
 msgstr "L_iitä tiedostoja kansioon"
 
@@ -3667,7 +3650,7 @@ msgstr "Monista valitut kohteet"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6644
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:7756
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "T_ee linkki"
@@ -3691,7 +3674,7 @@ msgstr "Nimeä valittu kohta uudelleen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6657
-#: ../src/file-manager/fm-directory-view.c:7716
+#: ../src/file-manager/fm-directory-view.c:7714
 msgid "Move each selected item to the Trash"
 msgstr "Siirrä jokainen valittu kohde roskakoriin"
 
@@ -3700,8 +3683,8 @@ msgstr "Siirrä jokainen valittu kohde roskakoriin"
 #. add the "delete" menu item
 #: ../src/file-manager/fm-directory-view.c:6660
 #: ../src/file-manager/fm-directory-view.c:6759
-#: ../src/file-manager/fm-directory-view.c:7736
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-directory-view.c:7734
+#: ../src/file-manager/fm-tree-view.c:1264
 msgid "_Delete"
 msgstr "P_oista"
 
@@ -3764,7 +3747,6 @@ msgstr "Liitä valittu taltio"
 #: ../src/file-manager/fm-directory-view.c:6686
 #: ../src/file-manager/fm-directory-view.c:6702
 #: ../src/file-manager/fm-directory-view.c:6771
-#: ../src/file-manager/fm-tree-view.c:737
 msgid "_Unmount Volume"
 msgstr "_Irrota taltio"
 
@@ -3772,6 +3754,14 @@ msgstr "_Irrota taltio"
 #: ../src/file-manager/fm-directory-view.c:6687
 msgid "Unmount the selected volume"
 msgstr "Irrota valittu taltio"
+
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6690
+#: ../src/file-manager/fm-directory-view.c:6706
+#: ../src/file-manager/fm-directory-view.c:6775
+msgid "_Eject Volume"
+msgstr "_Poista taltio asemasta"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6691
@@ -3847,9 +3837,8 @@ msgstr "Avaa tämä kansio selausikkunassa"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6733
-#, fuzzy
 msgid "Open this folder in a new tab"
-msgstr "Avaa tämä kansio kansionäkymässä"
+msgstr "Avaa tämä kansio uudessa välilehdessä"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6738
@@ -3872,13 +3861,12 @@ msgstr "Valmistele tämän kansion kopiointia \"liitä\"-komennolla"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6751
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr ""
 "Siirrä tai kopioi viimeksi \"leikkaa\"- tai \"kopioi\"-komennolla valitut "
-"tiedostot valittuun kansioon"
+"tiedostot tähän kansioon"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6756
@@ -3892,33 +3880,28 @@ msgstr "Poista tämä kansio siirtämättä roskakoriin"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6768
-#, fuzzy
 msgid "Mount the volume associated with this folder"
-msgstr "Liitä avoimeen kansioon liittyvä osio"
+msgstr "Liitä tähän kansioon liittyvä taltio"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6772
-#, fuzzy
 msgid "Unmount the volume associated with this folder"
-msgstr "Irrota avoimeen kansioon liittyvä osio"
+msgstr "Irrota tähän kansioon liittyvä taltio"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6776
-#, fuzzy
 msgid "Eject the volume associated with this folder"
-msgstr "Avaa kelkka avoimeen kansioon liittyvältä laitteelta"
+msgstr "Poista asemasta tähän kansioon liittyvä taltio"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6780
-#, fuzzy
 msgid "Format the volume associated with this folder"
-msgstr "Alusta avoimeen kansioon liittyvän osion tiedostojärjestelmä"
+msgstr "Alusta tähän kansioon liittyvä taltio"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6785
-#, fuzzy
 msgid "View or modify the properties of this folder"
-msgstr "Katsele tai muokkaa avatun kansion ominaisuuksia"
+msgstr "Näytä tai muokkaa tämän kansion ominaisuuksia"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6867
@@ -3931,129 +3914,129 @@ msgstr "Aja tai muokkaa kansion %s skriptejä"
 msgid "_Scripts"
 msgstr "Sk_riptit"
 
-#: ../src/file-manager/fm-directory-view.c:7159
-#, fuzzy, c-format
+#: ../src/file-manager/fm-directory-view.c:7163
+#, c-format
 msgid "Move the open folder out of the trash to \"%s\""
-msgstr "Siirrä valittu kansio roskakoriin"
+msgstr "Siirrä avoin kansio roskakorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7161
+#: ../src/file-manager/fm-directory-view.c:7165
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgstr "Siirrä valittu kansio pois roskokorista kohteeseen \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7167
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgstr "Siirrä valittu tiedosto pois roskokorista kohteeseen \"%s\""
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7377
-#: ../src/file-manager/fm-directory-view.c:7629
-#: ../src/file-manager/fm-tree-view.c:1169
+#: ../src/file-manager/fm-directory-view.c:7375
+#: ../src/file-manager/fm-directory-view.c:7627
+#: ../src/file-manager/fm-tree-view.c:1194
 #: ../src/nautilus-places-sidebar.c:1969
 msgid "Open in New _Window"
 msgstr "Avaa uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:7379
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7377
+#: ../src/file-manager/fm-directory-view.c:7636
 msgid "Browse in New _Window"
 msgstr "Selaa uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:7387
-#: ../src/file-manager/fm-directory-view.c:7648
+#: ../src/file-manager/fm-directory-view.c:7385
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Selaa kansiota"
 msgstr[1] "_Selaa kansioita"
 
-#: ../src/file-manager/fm-directory-view.c:7404
-#: ../src/file-manager/fm-directory-view.c:7678
+#: ../src/file-manager/fm-directory-view.c:7402
+#: ../src/file-manager/fm-directory-view.c:7676
 msgid "Browse in New _Tab"
 msgstr "Selaa uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:7453
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7451
+#: ../src/file-manager/fm-directory-view.c:7709
 msgid "_Delete Permanently"
 msgstr "Poista pysyvästi"
 
-#: ../src/file-manager/fm-directory-view.c:7454
+#: ../src/file-manager/fm-directory-view.c:7452
 msgid "Delete the open folder permanently"
 msgstr "Poistetaanko avoin kansio pysyvästi?"
 
-#: ../src/file-manager/fm-directory-view.c:7458
+#: ../src/file-manager/fm-directory-view.c:7456
 msgid "Move the open folder to the Trash"
 msgstr "Siirrä valittu kansio roskakoriin"
 
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7609
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Avaa ohjelmalla \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7629
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "Avaa %'d uudessa _ikkunassa"
 msgstr[1] "Avaa %'d uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:7640
+#: ../src/file-manager/fm-directory-view.c:7638
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "Selaa %'d uudessa _ikkunassa"
 msgstr[1] "Selaa %'d uudessa _ikkunassa"
 
-#: ../src/file-manager/fm-directory-view.c:7671
+#: ../src/file-manager/fm-directory-view.c:7669
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "Avaa %'d uudessa _välilehdessä"
 msgstr[1] "Avaa %'d uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7678
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "Selaa %'d uudessa _välilehdessä"
 msgstr[1] "Selaa %'d uudessa _välilehdessä"
 
-#: ../src/file-manager/fm-directory-view.c:7712
+#: ../src/file-manager/fm-directory-view.c:7710
 msgid "Delete all selected items permanently"
 msgstr "Poista kaikki valitut kohteet pysyvästi"
 
-#: ../src/file-manager/fm-directory-view.c:9017
+#: ../src/file-manager/fm-directory-view.c:9015
 msgid "Download location?"
 msgstr "Tallennetaanko sijainti verkosta?"
 
-#: ../src/file-manager/fm-directory-view.c:9020
+#: ../src/file-manager/fm-directory-view.c:9018
 msgid "You can download it or make a link to it."
 msgstr "Voit tallentaa sijainnin tai luoda siihen osoittavan linkin."
 
-#: ../src/file-manager/fm-directory-view.c:9023
+#: ../src/file-manager/fm-directory-view.c:9021
 msgid "Make a _Link"
 msgstr "Tee _linkki"
 
-#: ../src/file-manager/fm-directory-view.c:9027
+#: ../src/file-manager/fm-directory-view.c:9025
 msgid "_Download"
 msgstr "_Tallenna"
 
-#: ../src/file-manager/fm-directory-view.c:9089
-#: ../src/file-manager/fm-directory-view.c:9154
-#: ../src/file-manager/fm-directory-view.c:9259
+#: ../src/file-manager/fm-directory-view.c:9087
+#: ../src/file-manager/fm-directory-view.c:9152
+#: ../src/file-manager/fm-directory-view.c:9257
 msgid "Drag and drop is not supported."
 msgstr "Veto ja pudotus ei toimi."
 
-#: ../src/file-manager/fm-directory-view.c:9090
+#: ../src/file-manager/fm-directory-view.c:9088
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
 
-#: ../src/file-manager/fm-directory-view.c:9155
-#: ../src/file-manager/fm-directory-view.c:9260
+#: ../src/file-manager/fm-directory-view.c:9153
+#: ../src/file-manager/fm-directory-view.c:9258
 msgid "An invalid drag type was used."
 msgstr "Vetotyyppi oli väärä."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:9327
+#: ../src/file-manager/fm-directory-view.c:9325
 msgid "dropped text.txt"
 msgstr "raahattu teksti.txt"
 
@@ -4084,14 +4067,14 @@ msgstr ""
 "Sinulla ei ole kohteen tarvittavia oikeuksia \"%s\" sisällön katselemiseen."
 
 #: ../src/file-manager/fm-error-reporting.c:63
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" could not be found. Perhaps it has recently been deleted."
-msgstr "Kohdetta \"%s\" ei löydy. Ehkäpä se on poistettu äskettäin."
+msgstr "Kohdetta \"%s\" ei löydy. Se on ehkä poistettu äskettäin."
 
 #: ../src/file-manager/fm-error-reporting.c:67
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not display all the contents of \"%s\": %s"
-msgstr "Valitettavasti ei voitu näyttää koko kohteen \"%s\" sisältöä: %s"
+msgstr "Kaikkea kohteen \"%s\" sisältöä ei voitu näyttää: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:74
 msgid "The folder contents could not be displayed."
@@ -4131,9 +4114,9 @@ msgstr "Nimi \"%s.\" ei kelpaa.  Käytä toista nimeä."
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:137
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not rename \"%s\" to \"%s\": %s"
-msgstr "Valitettavasti kohdetta \"%s\" ei voitu nimetä nimelle \"%s\": %s"
+msgstr "Kohdetta \"%s\" ei voitu nimetä uudestaan nimelle \"%s\": %s"
 
 #: ../src/file-manager/fm-error-reporting.c:145
 msgid "The item could not be renamed."
@@ -4148,27 +4131,27 @@ msgstr ""
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:180
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the group of \"%s\": %s"
-msgstr "Valitettavasti kohteen \"%s\" ryhmää ei voitu vaihtaa: %s"
+msgstr "Kohteen \"%s\" ryhmää ei voitu vaihtaa: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:185
 msgid "The group could not be changed."
 msgstr "Ryhmän muuttaminen ei onnistunut."
 
 #: ../src/file-manager/fm-error-reporting.c:205
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the owner of \"%s\": %s"
-msgstr "Valitettavasti kohteen \"%s\" omistajaa ei voitu vaihtaa: %s"
+msgstr "Kohteen \"%s\" omistajaa ei voitu vaihtaa: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:207
 msgid "The owner could not be changed."
 msgstr "Omistajan muuttaminen ei onnistunut."
 
 #: ../src/file-manager/fm-error-reporting.c:227
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the permissions of \"%s\": %s"
-msgstr "Valitettavasti kohteen \"%s\" oikeuksia ei voitu muuttaa: %s"
+msgstr "Kohteen \"%s\" oikeuksia ei voitu muuttaa: %s"
 
 #: ../src/file-manager/fm-error-reporting.c:229
 msgid "The permissions could not be changed."
@@ -4386,7 +4369,8 @@ msgstr "%s: näkyvät sarakkeet"
 
 #: ../src/file-manager/fm-list-view.c:2104
 msgid "Choose the order of information to appear in this folder:"
-msgstr "Valitse tässä kansiossa näytettävien tietojen tietojen esitysjärjestys:"
+msgstr ""
+"Valitse tässä kansiossa näytettävien tietojen tietojen esitysjärjestys:"
 
 #. name, stock id
 #. label, accelerator
@@ -4737,33 +4721,29 @@ msgstr "Ominaisuusikkuna avautuu."
 msgid "Select Custom Icon"
 msgstr "_Valitse oma kuvake"
 
-#: ../src/file-manager/fm-tree-view.c:737
-msgid "E_ject"
-msgstr "Poista _asemasta"
-
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1180
+#: ../src/file-manager/fm-tree-view.c:1205
 msgid "Create Folder"
 msgstr "Luo kansio"
 
-#: ../src/file-manager/fm-tree-view.c:1228
+#: ../src/file-manager/fm-tree-view.c:1253
 msgid "Move to Trash"
 msgstr "Siirrä roskakoriin"
 
-#: ../src/file-manager/fm-tree-view.c:1306
+#: ../src/file-manager/fm-tree-view.c:1340
 #: ../src/nautilus-places-sidebar.c:322
 msgid "File System"
 msgstr "Tiedostojärjestelmä"
 
-#: ../src/file-manager/fm-tree-view.c:1310
+#: ../src/file-manager/fm-tree-view.c:1344
 msgid "Network Neighbourhood"
 msgstr "Verkkoympäristö"
 
-#: ../src/file-manager/fm-tree-view.c:1560
+#: ../src/file-manager/fm-tree-view.c:1594
 msgid "Tree"
 msgstr "Puu"
 
-#: ../src/file-manager/fm-tree-view.c:1566
+#: ../src/file-manager/fm-tree-view.c:1600
 msgid "Show Tree"
 msgstr "Näytä puu"
 
@@ -4804,7 +4784,6 @@ msgstr ""
 #. * since neither of the above causes explain it.
 #.
 #: ../src/nautilus-application.c:597
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4816,7 +4795,6 @@ msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:603
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4841,7 +4819,7 @@ msgstr ""
 "tai asentaa Nautilus uudelleen.\n"
 "\n"
 "Bonobo ei löytänyt tiedostoa Nautilus_Shell.server. Eräs mahdollinen syy on, "
-"että ympäristömuuttuja LD_LIBRARY_PATH ei sisällä Bonobo-aktivoinnin "
+"että ympäristömuuttuja LD_LIBRARY_PATH ei sisällä bonobo-aktivoinnin "
 "kirjastokansiota. Toinen mahdollinen syy on, että Nautilus on asennettu "
 "virheellisesti ja tiedosto Nautilus_Shell.server puuttuu.\n"
 "\n"
@@ -4851,7 +4829,7 @@ msgstr ""
 "Joskus prosessien bonobo-activation-server ja gconfd sulkeminen korjaa "
 "ongelman, mutta emme tiedä miksi.\n"
 "\n"
-"Tätä on tapahtunut myös, jos Bonobo-aktivoinnin versio on viallinen."
+"Tätä on tapahtunut myös, jos bonobo-aktivoinnin versio on viallinen."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -4864,40 +4842,37 @@ msgstr ""
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: ../src/nautilus-application.c:633 ../src/nautilus-application.c:651
 #: ../src/nautilus-application.c:658
-#, fuzzy
 msgid "Nautilus cannot be used now, due to an unexpected error."
-msgstr "Nautilusta ei voi käyttää nyt odottamattoman virheen takia."
+msgstr "Nautilusta ei voi käyttää juuri nyt odottamattoman virheen takia."
 
 #: ../src/nautilus-application.c:634
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
-"Nautilusta ei voi käyttää nyt, koska Bonobo ilmoitti odottamattomasta "
+"Nautilusta ei voi käyttää nyt, koska bonobo ilmoitti odottamattomasta "
 "virheestä tiedostonhallintanäkymäpalvelinta rekisteröidessä."
 
 #: ../src/nautilus-application.c:652
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"Nautilusta ei voi nyt käyttää, koska Bonobo palautti odottamattomasti "
-"virheen etsittäessä sen tehdasta. Ohjelman bonobo-activation-server "
-"sulkeminen ja Nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
+"Nautilusta ei voi nyt käyttää, koska bonobo palautti odottamattomasti "
+"virheen etsittäessä sopivaa tehdasta. Ohjelman bonobo-activation-server "
+"sulkeminen ja nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
 
 #: ../src/nautilus-application.c:659
-#, fuzzy
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"Nautilusta ei voi käyttää nyt, koska Bonobo ilmoitti odottamattomasti "
-"virheestä komentotulkkioliota paikantaessa. bonobo-activation-server'n "
-"sulkeminen ja Nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
+"Nautilusta ei voi käyttää nyt, koska bonobo ilmoitti odottamattomasti "
+"virheestä komentotulkkioliota paikantaessa. Prosessin bonobo-activation-"
+"server sulkeminen ja nautiluksen käynnistäminen uudelleen saattaa korjata "
+"ongelman."
 
 #: ../src/nautilus-application.c:1363 ../src/nautilus-places-sidebar.c:1682
 #: ../src/nautilus-places-sidebar.c:1705 ../src/nautilus-places-sidebar.c:1728
@@ -4929,17 +4904,17 @@ msgstr ""
 "automaattisesti. Haluatko suorittaa sen?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:196
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The software will run directly from the medium \"%s\". You should never run "
 "software that you don't trust.\n"
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
-"Ohjelma suoritetaan suoraan medialta \"%s\". Sinun ei tulisi koskaan "
-"suorittaa ohjelmia, joihin et voi luottaa.\n"
+"Ohjelma suoritetaan suoraan medialta \"%s\". Älä suorita koskaan ohjelmia, "
+"joihin et voi luottaa.\n"
 "\n"
-"Jos epäröit, paina nappia Peru."
+"Jos et ole varma, paina Peru."
 
 #: ../src/nautilus-bookmarks-window.c:160
 #: ../src/nautilus-file-management-properties.c:206
@@ -5369,7 +5344,6 @@ msgstr ""
 "Kuvakenäkymä\n"
 "Listanäkymä\n"
 "Tiivis näkymä"
-
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Less common media formats can be configured here"
@@ -6051,7 +6025,7 @@ msgstr "Lisää uusi..."
 #: ../src/nautilus-property-browser.c:941
 #, c-format
 msgid "Sorry, but pattern %s could not be deleted."
-msgstr "Valitettavasti kuviota %s ei voitu poistaa."
+msgstr "Kuviota %s ei voitu poistaa."
 
 #: ../src/nautilus-property-browser.c:942
 msgid "Check that you have permission to delete the pattern."
@@ -6060,7 +6034,7 @@ msgstr "Varmista, että sinulla on oikeudet poistaa kuvio."
 #: ../src/nautilus-property-browser.c:970
 #, c-format
 msgid "Sorry, but emblem %s could not be deleted."
-msgstr "Valitettavasti tunnusmerkkiä %s ei voitu poistaa."
+msgstr "Tunnusmerkkiä %s ei voitu poistaa."
 
 #: ../src/nautilus-property-browser.c:971
 msgid "Check that you have permission to delete the emblem."
@@ -6126,7 +6100,7 @@ msgstr "Palauta on erityinen kuva, jota ei voi poistaa."
 #: ../src/nautilus-property-browser.c:1200
 #, c-format
 msgid "Sorry, but the pattern %s could not be installed."
-msgstr "Valitettavasti kuviota %s ei voitu asentaa."
+msgstr "Kuviota %s ei voitu asentaa."
 
 #: ../src/nautilus-property-browser.c:1222
 msgid "Select an Image File to Add as a Pattern"
@@ -6466,8 +6440,8 @@ msgid ""
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr ""
 "GNU General Public Licence -lisenssin kopion tulisi olla toimitettuna "
-"Nautiluksen mukana. Jos näin ei ole, kirjoita Free Software Foundationille, "
-" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+"Nautiluksen mukana. Jos näin ei ole, kirjoita Free Software Foundationille,  "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
 #: ../src/nautilus-window-menus.c:562
 msgid ""
@@ -6798,1351 +6772,3 @@ msgstr "Mittakaava"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Aseta nykyisen näkymän mittakaava"
-
-#~ msgid "Blank Blu-Ray Disc"
-#~ msgstr "Tyhjä Blu-Ray-levy"
-
-#~ msgid "Blank CD Disc"
-#~ msgstr "Tyhjä CD-levy"
-
-#~ msgid "Blank DVD Disc"
-#~ msgstr "Tyhjä DVD-levy"
-
-#~ msgid "Blank HD DVD Disc"
-#~ msgstr "Tyhjä HD HVD-levy"
-
-#~ msgid "Blu-Ray Video"
-#~ msgstr "Blu-Ray-video"
-
-#~ msgid "Compact Disc Audio"
-#~ msgstr "CD-äänilevy"
-
-#~ msgid "DVD Audio"
-#~ msgstr "DVD Audio"
-
-#~ msgid "DVD Video"
-#~ msgstr "DVD-Video"
-
-#~ msgid "Digital Photos"
-#~ msgstr "Digitaaliset valokuvat"
-
-#~ msgid "HD DVD Video"
-#~ msgstr "HD DVD-video"
-
-#~ msgid "Picture CD"
-#~ msgstr "Picture CD"
-
-#~ msgid "Portable Audio Player"
-#~ msgstr "Kannettava musiikkisoitin"
-
-#~ msgid "Super Video CD"
-#~ msgstr "Super Video CD"
-
-#~ msgid "Video CD"
-#~ msgstr "Video CD"
-
-#~ msgid "List of x-content/* types to ask the user what to do on insertion."
-#~ msgstr ""
-#~ "Luottelo x-content/*-tyypeistä, joista käyttäjältä kysytään liitettäessä "
-#~ "mitä tehdään."
-
-#~ msgid ""
-#~ "List of x-content/* types where a folder window should be opened on "
-#~ "insertion."
-#~ msgstr ""
-#~ "Luottelo x-content/*-tyypeistä, joille avataan kansioikkuna liitettäessä "
-#~ "taltio."
-
-#~ msgid "List of x-content/* where to prompt the user on insertion"
-#~ msgstr ""
-#~ "Luottelo x-content/*-tyypeistä, joille tehtävää toimintoa kysytään "
-#~ "käyttäjältä liitettäessä"
-
-#~ msgid "_Show"
-#~ msgstr "_Näytä"
-
-#~ msgid "Hi_de"
-#~ msgstr "P_iilota"
-
-#~ msgid "View as Desktop"
-#~ msgstr "Näytä työpöytänä"
-
-#~ msgid "View as _Desktop"
-#~ msgstr "Näytä _työpöytänä"
-
-#~ msgid "Display this location with the desktop view."
-#~ msgstr "Näytä tämä sijainti työpöytänäkymänä."
-
-#~ msgid "Select Pattern"
-#~ msgstr "Valitse lausekkeella"
-
-#~ msgid "Select _Pattern"
-#~ msgstr "Valitse _lausekkeella"
-
-#~ msgid "Open in New Window"
-#~ msgstr "Avaa uudessa ikkunassa"
-
-#~ msgid "_Delete from Trash"
-#~ msgstr "Poista _roskakorista"
-
-#~ msgid "Link"
-#~ msgstr "Linkki"
-
-#~ msgid "Launcher"
-#~ msgstr "Käynnistin"
-
-#~ msgid "Icons"
-#~ msgstr "kuvakkeet"
-
-#~ msgid "View as Icons"
-#~ msgstr "Näytä kuvakkeina"
-
-#~ msgid "View as _Icons"
-#~ msgstr "Näytä _kuvakkeina"
-
-#~ msgid "List"
-#~ msgstr "luettelo"
-
-#~ msgid "View as List"
-#~ msgstr "Näytä luettelona"
-
-#~ msgid "View as _List"
-#~ msgstr "Näytä _luettelona"
-
-#~ msgid "MIME type:"
-#~ msgstr "MIME-tyyppi:"
-
-#~ msgid ""
-#~ "Existence of this file indicates that the Nautilus configuration druid\n"
-#~ "has been presented.\n"
-#~ "\n"
-#~ "You can manually erase this file to present the druid again.\n"
-#~ msgstr ""
-#~ "Tämän tiedoston olemassaolo ilmaisee, että Nautiluksen asetusvelho\n"
-#~ "on jo käyty läpi.\n"
-#~ "\n"
-#~ "Voit poistaa tämän tiedoston, jos haluat käydä velhon läpi uudestaan.\n"
-
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Näytä lisää tietoja sisällöstä"
-
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Näytä vähemmän tietoja sisällöstä"
-
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Näytä sisältö tavallisen kokoisena"
-
-#~ msgid "Show in the default detail level"
-#~ msgstr "Näytä oletusarvoisen tarkasti"
-
-#~ msgid "%s %ld of %ld %s"
-#~ msgstr "%s %ld / %ld %s"
-
-#~ msgid "(%d:%02d:%02d Remaining)"
-#~ msgstr "(%d:%02d:%02d jäljellä)"
-
-#~ msgid "(%d:%02d Remaining)"
-#~ msgstr "(%d:%02d jäljellä)"
-
-#~ msgid "From:"
-#~ msgstr "Lähde:"
-
-#~ msgid "To:"
-#~ msgstr "Kohde:"
-
-#~ msgid "\"%s\" cannot be moved because it is on a read-only disk."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi siirtää, koska se on levyllä, jota voi vain lukea."
-
-#~ msgid ""
-#~ "\"%s\" cannot be deleted because you do not have permissions to modify "
-#~ "its parent folder."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi poistaa, koska sinulla ei ole oikeuksia sen "
-#~ "yläkansion muuttamiseen."
-
-#~ msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi poistaa, koska se on levyllä, jota voi vain lukea."
-
-#~ msgid ""
-#~ "\"%s\" cannot be moved because you do not have permissions to change it "
-#~ "or its parent folder."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi siirtää, koska sinulla ei ole oikeuksia sen tai "
-#~ "sen yläkansion muuttamiseen."
-
-#~ msgid ""
-#~ "Cannot move \"%s\" because it or its parent folder are contained in the "
-#~ "destination."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi siirtää, koska se tai sen yläkansio ovat jo "
-#~ "kohteessa."
-
-#~ msgid ""
-#~ "Cannot move \"%s\" to the trash because you do not have permissions to "
-#~ "change it or its parent folder."
-#~ msgstr ""
-#~ "Kohdetta \"%s\" ei voi siirtää roskakoriin, koska sinulla ei ole "
-#~ "oikeuksia sen tai sen yläkansion muuttamiseen."
-
-#~ msgid "You do not have permissions to write to this folder."
-#~ msgstr "Sinulla ei ole kirjoitusoikeutta tähän kansioon."
-
-#~ msgid "Error while creating links in \"%s\"."
-#~ msgstr "Virhe linkkien luonnissa kohteessa \"%s\"."
-
-#~ msgid "Error \"%s\" while copying \"%s\"."
-#~ msgstr "Virhe \"%s\" kohteen \"%s\" kopioinnissa."
-
-#~ msgid "Would you like to continue?"
-#~ msgstr "Haluatko jatkaa?"
-
-#~ msgid "Error \"%s\" while moving \"%s\"."
-#~ msgstr "Virhe \"%s\" kohteen \"%s\" siirtämisessä."
-
-#~ msgid "Error \"%s\" while creating a link to \"%s\"."
-#~ msgstr "Virhe \"%s\" kohteeseen \"%s\" linkin luomisessa."
-
-#~ msgid "Error \"%s\" while deleting \"%s\"."
-#~ msgstr "Virhe \"%s\" kohteen \"%s\" poistamisessa."
-
-#~ msgid "Error \"%s\" while copying."
-#~ msgstr "Virhe \"%s\" kopioinnissa."
-
-#~ msgid "Error \"%s\" while moving."
-#~ msgstr "Virhe \"%s\" siirtämisessä."
-
-#~ msgid "Error \"%s\" while linking."
-#~ msgstr "Virhe \"%s\" linkittämisessä."
-
-#~ msgid "Error \"%s\" while deleting."
-#~ msgstr "Virhe \"%s\" poistamisessa."
-
-#~ msgid ""
-#~ "The name is already used for a special item that cannot be removed or "
-#~ "replaced.  If you still want to move the item, rename it and try again."
-#~ msgstr ""
-#~ "Nimi on jo käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei "
-#~ "voi nimetä uudelleen tai korvata.\n"
-#~ "\n"
-#~ "Jos haluat siirtää kohteen, nimeä se uudelleen ja yritä uudestaan."
-
-#~ msgid "Could not copy \"%s\" to the new location."
-#~ msgstr "Kohteen \"%s\" kopiointi uuteen sijaintiin epäonnistui."
-
-#~ msgid ""
-#~ "The name is already used for a special item that cannot be removed or "
-#~ "replaced.  If you still want to copy the item, rename it and try again."
-#~ msgstr ""
-#~ "Nimi on jo käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei "
-#~ "voi nimetä uudelleen tai korvata.\n"
-#~ "\n"
-#~ "Jos haluat kopioida kohteen \"%s\", nimeä se uudelleen ja yritä uudestaan."
-
-#~ msgid "Unknown GnomeVFSXferProgressStatus %d"
-#~ msgstr "Tuntematon GnomeVFSXferProgressStatus %d"
-
-#~ msgid "Throwing out file:"
-#~ msgstr "Poistetaan tiedosto: "
-
-#~ msgid "Moving"
-#~ msgstr "Siirtää"
-
-#~ msgid "Moving file:"
-#~ msgstr "Siirretään tiedosto:"
-
-#~ msgid "Finishing Move..."
-#~ msgstr "Viimeistellään siirtoa..."
-
-#~ msgid "Linking file:"
-#~ msgstr "Linkitetään tiedosto:"
-
-#~ msgid "Linking"
-#~ msgstr "Linkitetään"
-
-#~ msgid "Preparing to Create Links..."
-#~ msgstr "Valmistellaan linkkien luontia..."
-
-#~ msgid "Finishing Creating Links..."
-#~ msgstr "Viimeistellään linkkien luontia..."
-
-#~ msgid "Copying file:"
-#~ msgstr "Kopioidaan tiedosto:"
-
-#~ msgid "Copying"
-#~ msgstr "Kopioidaan"
-
-#~ msgid "Preparing To Copy..."
-#~ msgstr "Valmistellaan kopiointia"
-
-#~ msgid "You cannot copy items into the trash."
-#~ msgstr "Kohteita ei voi kopioida roskakoriin."
-
-#~ msgid "You cannot create links inside the trash."
-#~ msgstr "Roskakorissa ei voi luoda linkkejä."
-
-#~ msgid "Files and folders can only be moved into the trash."
-#~ msgstr "Tiedostoja ja kansioita voi vain siirtää roskakoriin."
-
-#~ msgid "You cannot move this trash folder."
-#~ msgstr "Et voi siirtää tätä roskakorikansiota."
-
-#~ msgid "You cannot copy this trash folder."
-#~ msgstr "Et voi kopioida tätä roskakorikansiota."
-
-#~ msgid "A trash folder is used for storing items moved to the trash."
-#~ msgstr "Roskakori säilyttää sinne siirretyt tiedostot tyhjentämiseen asti."
-
-#~ msgid "You cannot copy a file over itself."
-#~ msgstr "Et voi kopioida tiedostoa itseensä."
-
-#~ msgid "The destination and source are the same file."
-#~ msgstr "Kohde ja lähde ovat sama tiedosto."
-
-#~ msgid "There is no space on the destination."
-#~ msgstr "Levytilaa ei ole jäljellä kohteessa."
-
-#~ msgid "Error \"%s\" creating new folder."
-#~ msgstr "Virhe \"%s\" uutta kansiota luodessa."
-
-#~ msgid "Error creating new folder."
-#~ msgstr "Virhe uuden kansion luonnissa."
-
-#~ msgid "Error \"%s\" creating new document."
-#~ msgstr "Virhe \"%s\" uuden asiakirjan luonnissa."
-
-#~ msgid "Error creating new document."
-#~ msgstr "Virhe uuden asiakirjan luonnissa."
-
-#~ msgid "Files deleted:"
-#~ msgstr "Tiedostoja poistettu:"
-
-#~ msgid "Deleting"
-#~ msgstr "Poistaa"
-
-#~ msgid "Emptying the Trash"
-#~ msgstr "Tyhjennetään roskakori"
-
-#~ msgid "Preparing to Empty the Trash..."
-#~ msgstr "Valmistellaan roskakorin tyhjentämistä..."
-
-#~ msgid "_Empty Trash"
-#~ msgstr "_Tyhjennä roskakori"
-
-#~ msgid "Fonts"
-#~ msgstr "Kirjasimet"
-
-#~ msgid "Themes"
-#~ msgstr "Teemat"
-
-#~ msgid "CD/DVD Creator"
-#~ msgstr "CD/DVD-kirjoitin"
-
-#~ msgid "Windows Network"
-#~ msgstr "Windows-verkko"
-
-#~ msgid "Services in"
-#~ msgstr "Palvelut:"
-
-#~ msgid ""
-#~ "Can't find description even for \"x-directory/normal\". This probably "
-#~ "means that your gnome-vfs.keys file is in the wrong place or isn't being "
-#~ "found for some other reason."
-#~ msgstr ""
-#~ "Ei voi saada kuvausta edes tyypille \"x-directory/normal\". Tämä "
-#~ "tarkoittanee, että tiedosto gnome-vfs.keys on väärässä paikassa tai ei "
-#~ "löydy muusta syystä."
-
-#~ msgid ""
-#~ "No description found for mime type \"%s\" (file is \"%s\"), please tell "
-#~ "the gnome-vfs mailing list."
-#~ msgstr ""
-#~ "Mime-tyypillä \"%s\" (tiedosto on \"%s\") ei ole kuvausta. Ilmoita tästä "
-#~ "gnome-vfs:n postituslistalle."
-
-#~ msgid "The attempt to log in failed."
-#~ msgstr "Sisään kirjautuminen epäonnistui."
-
-#~ msgid "\"%s\" is not a valid location."
-#~ msgstr "\"%s\" ei ole kelvollinen sijainti."
-
-#~ msgid "Opening %d Item"
-#~ msgid_plural "Opening %d Items"
-#~ msgstr[0] "Avataan %d kohde"
-#~ msgstr[1] "Avataan %d kohdetta"
-
-#~ msgid "If you delete an item, it is permanently lost."
-#~ msgstr "Jos poistat kohteen, se häviää pysyvästi."
-
-#~ msgid "Cannot move items to trash, do you want to delete them immediately?"
-#~ msgstr "Kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
-
-#~ msgid "The selected item could not be moved to the Trash"
-#~ msgid_plural "The %d selected items could not be moved to the Trash"
-#~ msgstr[0] "Valittua kohdetta ei voitu siirtää roskakoriin"
-#~ msgstr[1] "Valittuja %d kohdetta ei voitu siirtää roskakoriin"
-
-#~ msgid ""
-#~ "Cannot move some items to trash, do you want to delete these immediately?"
-#~ msgstr ""
-#~ "Joitakin kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
-
-#~ msgid "%d of the selected items cannot be moved to the Trash"
-#~ msgstr "%d valituista kohteista ei voida siirtää roskakoriin"
-
-#~ msgid "Cannot open %s"
-#~ msgstr "Ei voi avata: %s"
-
-#~ msgid ""
-#~ "The filename \"%s\" indicates that this file is of type \"%s\". The "
-#~ "contents of the file indicate that the file is of type \"%s\". If you "
-#~ "open this file, the file might present a security risk to your system.\n"
-#~ "\n"
-#~ "Do not open the file unless you created the file yourself, or received "
-#~ "the file from a trusted source. To open the file, rename the file to the "
-#~ "correct extension for \"%s\", then open the file normally. Alternatively, "
-#~ "use the Open With menu to choose a specific application for the file. "
-#~ msgstr ""
-#~ "Tiedostonimi \"%s\" ilmaisee, että tiedoston tyyppi on \"%s\". Sisältö "
-#~ "kuitenkin ilmaisee, että tyyppi on \"%s\". Tämän tiedoston avaaminen "
-#~ "saattaa olla turvallisuusriski järjestelmällesi.\n"
-#~ "\n"
-#~ "Älä avaa tiedostoa, jollet ole joko tehnyt sitä itse tai saanut sitä "
-#~ "luotettavasta lähteestä. Tiedoston voi avata nimeämällä se uudestaan ja "
-#~ "vaihtamalla tiedostopäätteeksi \"%s\", jonka jälkeen sen voi avata "
-#~ "normaalisti. Vaihtoehtoisesti, tämän voi tehdä valitsemalla tiedoston "
-#~ "avaava sovellus \"Avaa sovelluksella\"-valikosta."
-
-#~ msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "Kohteen \"%s\" nimeä ei voitu muuttaa, koska kohde on levyllä, jota voi "
-#~ "vain lukea."
-
-#~ msgid ""
-#~ "Couldn't change the group of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "Kohteen \"%s\" ryhmää ei voitu muuttaa, koska kohde on levyllä, jota voi "
-#~ "vain lukea."
-
-#~ msgid ""
-#~ "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-#~ msgstr ""
-#~ "Kohteen \"%s\" omistajaa ei voitu muuttaa, koska kohde on levyllä, jota "
-#~ "voi vain lukea."
-
-#~ msgid ""
-#~ "Couldn't change the permissions of \"%s\" because it is on a read-only "
-#~ "disk"
-#~ msgstr ""
-#~ "Kohteen \"%s\" oikeuksia ei voitu muuttaa, koska kohde on levyllä, jota "
-#~ "voi vain lukea."
-
-#~ msgid "--"
-#~ msgstr "--"
-
-#~ msgid "Link To Old Desktop"
-#~ msgstr "Linkki vanhaan työpöytään"
-
-#~ msgid ""
-#~ "A link called \"Link To Old Desktop\" has been created on the desktop."
-#~ msgstr "Luettelo \"Linkki vanhaan työpöytään\" on ilmestynyt työpöydälle."
-
-#~ msgid ""
-#~ "The location of the desktop directory has changed in GNOME 2.4. You can "
-#~ "open the link and move over the files you want, then delete the link."
-#~ msgstr ""
-#~ "Työpöytäkansion sijainti on muuttunut Gnome 2.4:ssä. Voit avata linkin, "
-#~ "siirtää haluamasi tiedostot ja lopuksi poistaa sen."
-
-#~ msgid "Can't Connect to Server. \"%s\" is not a valid location."
-#~ msgstr "Palvelimeen ei saada yhteyttä. \"%s\" ei ole kelvollinen sijainti."
-
-#~ msgid "_Name to use for connection:"
-#~ msgstr "_Yhteydestä käytettävä nimi:"
-
-#~ msgid "Browse _Network"
-#~ msgstr "Selaa _verkkoa"
-
-#~ msgid "The dragged text was not a valid file location."
-#~ msgstr "Pudotettu teksti ei ollut kelvollinen tiedostosijainti."
-
-#~ msgid "    "
-#~ msgstr "    "
-
-#~ msgid "<span weight=\"bold\">Behavior</span>"
-#~ msgstr "<span weight=\"bold\">Toiminta</span>"
-
-#~ msgid "<span weight=\"bold\">Date</span>"
-#~ msgstr "<span weight=\"bold\">Päiväys</span>"
-
-#~ msgid "<span weight=\"bold\">Folders</span>"
-#~ msgstr "<span weight=\"bold\">Kansiot</span>"
-
-#~ msgid "<span weight=\"bold\">Icon Captions</span>"
-#~ msgstr "<span weight=\"bold\">Kuvaketekstit</span>"
-
-#~ msgid "<span weight=\"bold\">List Columns</span>"
-#~ msgstr "<span weight=\"bold\">Luettelon sarakkeet</span>"
-
-#~ msgid "<span weight=\"bold\">Text Files</span>"
-#~ msgstr "<span weight=\"bold\">Tekstitiedostot</span>"
-
-#~ msgid "<span weight=\"bold\">Trash</span>"
-#~ msgstr "<span weight=\"bold\">Roskakori</span>"
-
-#~ msgid "Check that your proxy settings are correct."
-#~ msgstr "Varmista, että välipalvelinasetukset ovat kunnossa."
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser."
-#~ msgstr ""
-#~ "Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei pystynyt ottamaan "
-#~ "yhteyttä SMB-pääselaimeen."
-
-#~ msgid "Check that an SMB server is running in the local network."
-#~ msgstr "Tarkista, että SMB-palvelin toimii paikallisessa verkossa."
-
-#~ msgid "Check if the service is available."
-#~ msgstr "Tarkista, onko palvelu käytettävissä."
-
-#~ msgid "Nautilus cannot display \"%s\"."
-#~ msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
-
-#~ msgid "None of the %d selected items can be moved to the Trash"
-#~ msgstr "Mitään valituista %d kohteesta ei voida siirtää roskakoriin"
-
-#~ msgid "Shutter Speed"
-#~ msgstr "Sulkimen nopeus"
-
-#~ msgid "\"%s\" selected (%s)"
-#~ msgstr "\"%s\" valittu (%s)"
-
-#~ msgid "Normal Alpha"
-#~ msgstr "Normaali peittävyys"
-
-#~ msgid "Opacity of the normal icons if frame_text is set"
-#~ msgstr "Normaalien kuvakkeiden peittävyys, jos frame_text on asetettu"
-
-#~ msgid "Prelight Alpha"
-#~ msgstr "Korostuksen peittävyys"
-
-#~ msgid "Opacity of the prelight icons if frame_text is set"
-#~ msgstr "Korostettujen kuvakkeiden peittävyys, jos frame_text on asetettu"
-
-#~ msgid "CD/_DVD"
-#~ msgstr "CD/_DVD"
-
-#~ msgid ""
-#~ "Browse all local and remote disks and folder accessible from this computer"
-#~ msgstr ""
-#~ "Selaa tältä tietokoneelta käytettävissä olevia paikallisia ja etäkansioita"
-
-#~ msgid "<b>Image Type:</b> %s (%s)\n"
-#~ msgstr "<b>Kuvan tyyppi:</b> %s (%s)\n"
-
-#~ msgid "_Write contents to CD"
-#~ msgstr "_Kirjoita sisältö CD:lle"
-
-#~ msgid "View your computer storage"
-#~ msgstr "Katsele tietokoneen tallennustilaa"
-
-#~ msgid "Change how files are managed"
-#~ msgstr "Muuta tiedostojen hallintatapaa"
-
-#~ msgid "View your home folder in the Nautilus file manager"
-#~ msgstr "Katsele kotikansiotasi Nautilus-tiedostonhallintaohjelmalla"
-
-#~ msgid "Set up a connection to a network server"
-#~ msgstr "Yhdistä tähän palvelimeen pysyvästi"
-
-#~ msgid "Go to the home folder"
-#~ msgstr "Siirry kotikansioon"
-
-#~ msgid "Go to the network location"
-#~ msgstr "Siirry sijaintiin verkossa"
-
-#~ msgid "Go to the trash folder"
-#~ msgstr "Siirry roskakorikansioon"
-
-#~ msgid "Go to the CD/DVD Creator"
-#~ msgstr "Siirry CD/DVD-kirjoittimeen"
-
-#~ msgid "View your network servers in the Nautilus file manager"
-#~ msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
-
-#~ msgid "Always use _text-entry location bar"
-#~ msgstr "Käytä aina _tekstikenttää sijaintipalkkina"
-
-#~ msgid "Enable 'special' flags in file preferences dialog"
-#~ msgstr "Näytä \"erityiset\" liput tiedoston asetusikkunassa"
-
-#~ msgid "If you replace an existing file, its contents will be overwritten."
-#~ msgstr "Tiedoston korvaaminen hävittää korvattavan tiedoston tiedot."
-
-#~ msgid ""
-#~ "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
-#~ "locations."
-#~ msgstr ""
-#~ "\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi käyttää "
-#~ "tiedostoja \"%s\"-sijainneissa."
-
-#~ msgid ""
-#~ "The default action can't open \"%s\" because it can't access files at \"%s"
-#~ "\".locations."
-#~ msgstr ""
-#~ "Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi käyttää "
-#~ "tiedostoja \"%s\"-sijainneissa."
-
-#~ msgid "File _owner:"
-#~ msgstr "Tiedoston _omistaja:"
-
-#~ msgid "File owner:"
-#~ msgstr "Tiedoston omistaja:"
-
-#~ msgid "_File group:"
-#~ msgstr "_Tiedoston ryhmä:"
-
-#~ msgid "File group:"
-#~ msgstr "Tiedoston ryhmä:"
-
-#~ msgid "Number view:"
-#~ msgstr "Numeronäkymä:"
-
-#~ msgid "Conflict While Copying"
-#~ msgstr "Ristiriita kopioinnissa"
-
-#~ msgid "Can't Change Trash Location"
-#~ msgstr "Roskakorin sijaintia ei voi muuttaa"
-
-#~ msgid "Can't Copy Trash"
-#~ msgstr "Roskakoria ei voi kopioida"
-
-#~ msgid "Can't Move Into Self"
-#~ msgstr "Ei voi siirtää itsensä sisälle"
-
-#~ msgid "Can't Copy Into Self"
-#~ msgstr "Ei voi kopioida itseensä"
-
-#~ msgid "Can't Copy Over Self"
-#~ msgstr "Ei voi kopioida itseensä"
-
-#~ msgid "Switch"
-#~ msgstr "Siirry"
-
-#~ msgid "Can't Open Location"
-#~ msgstr "Ei voi avata sijaintia"
-
-#~ msgid "_Revert"
-#~ msgstr "_Peru"
-
-#~ msgid "View in Multiple Windows?"
-#~ msgstr "Haluatko katsella useissa ikkunoissa?"
-
-#~ msgid "Art"
-#~ msgstr "Taide"
-
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Certified"
-#~ msgstr "Hyväksytty"
-
-#~ msgid "Cool"
-#~ msgstr "Viileä"
-
-#~ msgid "Danger"
-#~ msgstr "Vaara"
-
-#~ msgid "Distinguished"
-#~ msgstr "Erinomainen"
-
-#~ msgid "Draft"
-#~ msgstr "Luonnos"
-
-#~ msgid "Favorite"
-#~ msgstr "Suosikki"
-
-#~ msgid "Important"
-#~ msgstr "Tärkeä"
-
-#~ msgid "Mail"
-#~ msgstr "Posti"
-
-#~ msgid "New"
-#~ msgstr "Uusi"
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#~ msgid "Oh No"
-#~ msgstr "Voi ei"
-
-#~ msgid "Package"
-#~ msgstr "Paketti"
-
-#~ msgid "Personal"
-#~ msgstr "Henkilökohtainen"
-
-#~ msgid "Sound"
-#~ msgstr "Ääni"
-
-#~ msgid "Special"
-#~ msgstr "Erityinen"
-
-#~ msgid "Urgent"
-#~ msgstr "Kiireellinen"
-
-#~ msgid "Web"
-#~ msgstr "WWW"
-
-#~ msgid "Couldn't Install Emblem"
-#~ msgstr "Tunnusmerkin asentaminen epäonnistui"
-
-#~ msgid "Couldn't install emblem"
-#~ msgstr "Tunnusmerkkiä ei voitu asentaa"
-
-#~ msgid "Error While Copying"
-#~ msgstr "Virhe kopionnissa"
-
-#~ msgid "Error While Moving"
-#~ msgstr "Virhe siirtämisessä"
-
-#~ msgid "Error While Linking"
-#~ msgstr "Virhe linkittämisessä"
-
-#~ msgid "Error While Deleting"
-#~ msgstr "Virhe poistamisessa"
-
-#~ msgid "Error Creating New Folder"
-#~ msgstr "Virhe uuden kansion luonnissa"
-
-#~ msgid "Error Creating New Document"
-#~ msgstr "Virhe uuden asiakirjan luonnissa"
-
-#~ msgid "Can't Display Location"
-#~ msgstr "Sijaintia ei voi näyttää"
-
-#~ msgid "Can't Execute Remote Links"
-#~ msgstr "Etälinkkejä ei voi suorittaa"
-
-#~ msgid "Drop Target Only Supports Local Files"
-#~ msgstr "Kohtaan voi pudottaa vain paikallisia tiedostoja"
-
-#~ msgid "Delete?"
-#~ msgstr "Poistetaanko?"
-
-#~ msgid "Too Many Files"
-#~ msgstr "Liian monta tiedostoa"
-
-#~ msgid "Delete Immediately?"
-#~ msgstr "Poistetaanko heti?"
-
-#~ msgid "Delete From Trash?"
-#~ msgstr "Poistetaanko roskakorista?"
-
-#~ msgid "Run or Display?"
-#~ msgstr "Suorita vai näytä?"
-
-#~ msgid "About Scripts"
-#~ msgstr "Tietoja skripteistä"
-
-#~ msgid "Mount Error"
-#~ msgstr "Liittämisvirhe"
-
-#~ msgid "Unmount Error"
-#~ msgstr "Irrottamisvirhe"
-
-#~ msgid "Eject Error"
-#~ msgstr "Asemasta poistamisvirhe"
-
-#~ msgid "Broken Link"
-#~ msgstr "Rikkinäinen linkki"
-
-#~ msgid "Cancel Open?"
-#~ msgstr "Perutaanko avaaminen?"
-
-#~ msgid "Drag and Drop Error"
-#~ msgstr "Veto- ja pudotusvirhe"
-
-#~ msgid "Error Displaying Folder"
-#~ msgstr "Virhe näyttäessä kansiota"
-
-#~ msgid "Renaming Error"
-#~ msgstr "Uudelleennimeämisvirhe"
-
-#~ msgid "Error Setting Group"
-#~ msgstr "Virhe ryhmää asettaessa"
-
-#~ msgid "Error Setting Owner"
-#~ msgstr "Virhe omistajaa asettaessa"
-
-#~ msgid "Cancel Rename?"
-#~ msgstr "Perutaanko uudelleen nimeäminen?"
-
-#~ msgid "More Than One Image"
-#~ msgstr "Useampi kuin yksi kuva"
-
-#~ msgid "Local Images Only"
-#~ msgstr "Vain paikalliset kuvat"
-
-#~ msgid "Images Only"
-#~ msgstr "Vain kuvat"
-
-#~ msgid "Changing group."
-#~ msgstr "Ryhmä vaihtuu."
-
-#~ msgid "Changing owner."
-#~ msgstr "Omistajan vaihtuu."
-
-#~ msgid "Couldn't Show Help"
-#~ msgstr "Ohjetta ei voi näyttää"
-
-#~ msgid "Cancel Showing Properties Window?"
-#~ msgstr "Perutaanko ominaisuusikkunan näyttäminen?"
-
-#~ msgid "Couldn't Create Required Folders"
-#~ msgstr "Vaadittuja kansioita ei voitu luoda"
-
-#~ msgid "Migrated Old Desktop"
-#~ msgstr "Tuotu vanha työpöytä"
-
-#~ msgid "Can't Connect to Server"
-#~ msgstr "Palvelimeen ei voi yhdistää"
-
-#~ msgid "Couldn't Remove Emblem"
-#~ msgstr "Tunnusmerkin poisto epäonnistui"
-
-#~ msgid "Couldn't Rename Emblem"
-#~ msgstr "Tunnusmerkin nimen vaihtaminen epäonnistui"
-
-#~ msgid "Couldn't Add Emblems"
-#~ msgstr "Tunnusmerkkien lisääminen epäonnistui"
-
-#~ msgid "Couldn't Add Emblem"
-#~ msgstr "Tunnusmerkin lisääminen epäonnistui"
-
-#~ msgid "100 KB"
-#~ msgstr "100 kt"
-
-#~ msgid "500 KB"
-#~ msgstr "500 kt"
-
-#~ msgid "Always"
-#~ msgstr "Aina"
-
-#~ msgid "MIME type"
-#~ msgstr "MIME-tyyppi"
-
-#~ msgid "Never"
-#~ msgstr "Ei koskaan"
-
-#~ msgid "date accessed"
-#~ msgstr "käyttöpäivä"
-
-#~ msgid "date modified"
-#~ msgstr "muokkauspäivä"
-
-#~ msgid "group"
-#~ msgstr "ryhmä"
-
-#~ msgid "informal"
-#~ msgstr "epämuodollinen"
-
-#~ msgid "iso"
-#~ msgstr "ISO-standardin mukainen"
-
-#~ msgid "locale"
-#~ msgstr "maa-asetuston mukainen"
-
-#~ msgid "none"
-#~ msgstr "ei mikään"
-
-#~ msgid "owner"
-#~ msgstr "omistaja"
-
-#~ msgid "permissions"
-#~ msgstr "oikeudet"
-
-#~ msgid "size"
-#~ msgstr "koko"
-
-#~ msgid "type"
-#~ msgstr "tyyppi"
-
-#~ msgid "Can't Launch CD Burner"
-#~ msgstr "CD-kirjoitinta ei voi käynnistää"
-
-#~ msgid "Clear History"
-#~ msgstr "Tyhjennä kansiohistoria"
-
-#~ msgid "Home"
-#~ msgstr "Koti"
-
-#~ msgid "Couldn't Delete Pattern"
-#~ msgstr "Kuviota ei voitu poistaa"
-
-#~ msgid "Couldn't Delete Emblem"
-#~ msgstr "Tunnusmerkin poistaminen epäonnistui"
-
-#~ msgid "Couldn't Install Pattern"
-#~ msgstr "Kuvion asentaminen ei onnistunut"
-
-#~ msgid "Not an Image"
-#~ msgstr "Ei ole kuva"
-
-#~ msgid "Couldn't Install Color"
-#~ msgstr "Värin asentaminen ei onnistunut"
-
-#~ msgid "View Failed"
-#~ msgstr "Katselu epäonnistui"
-
-#~ msgid "Browse available software"
-#~ msgstr "Selaa saatavilla olevia ohjelmia"
-
-#~ msgid "Favorites"
-#~ msgstr "Suosikit"
-
-#~ msgid "An Eggplant variation of the Crux theme."
-#~ msgstr "Munakoison värinen Crux-teema."
-
-#~ msgid "Crux-Eggplant"
-#~ msgstr "Munakoiso-Crux"
-
-#~ msgid "A Teal variation of the Crux theme."
-#~ msgstr "Virheä Crux-teema."
-
-#~ msgid "Crux-Teal"
-#~ msgstr "Vihreä Crux"
-
-#~ msgid "Eazel"
-#~ msgstr "Eazel"
-
-#~ msgid "This is the default theme for Nautilus."
-#~ msgstr "Tämä on Nautiluksen oletusteema."
-
-#~ msgid "A theme designed to fit well with the classic GNOME environment."
-#~ msgstr "Klassiseen Gnome-ympäristöön sopimaan suunniteltu teema."
-
-#~ msgid "Sierra"
-#~ msgstr "Sierra"
-
-#~ msgid "Uses manila folders and gray-green backgrounds."
-#~ msgstr "Käyttää manillakansioita ja harmaanvihreitä taustoja."
-
-#~ msgid "Tahoe"
-#~ msgstr "Tahoe"
-
-#~ msgid "This theme uses photo-realistic folders."
-#~ msgstr "Tässä teemassa on todenmukaisen näköiset kansiot."
-
-#~ msgid "Name of the column"
-#~ msgstr "Sarakkeen nimi"
-
-#~ msgid "Attribute"
-#~ msgstr "Määre"
-
-#~ msgid "The attribute name to display"
-#~ msgstr "Näkyvän määreen nimi"
-
-#~ msgid "Label"
-#~ msgstr "Nimiö"
-
-#~ msgid "Label to display in the column"
-#~ msgstr "Sarakkeessa näkyvä nimiö"
-
-#~ msgid "A user-visible description of the column"
-#~ msgstr "Käyttäjälle näkyvä kuvaus sarakkeesta"
-
-#~ msgid "xalign"
-#~ msgstr "x-kohdistus"
-
-#~ msgid "The x-alignment of the column"
-#~ msgstr "Sarakkeen x-suuntainen kohdistus"
-
-#~ msgid "Name of the item"
-#~ msgstr "Kohteen nimi"
-
-#~ msgid "Label to display to the user"
-#~ msgstr "Käyttäjälle näkyvä nimiö"
-
-#~ msgid "Tip"
-#~ msgstr "Vinkki"
-
-#~ msgid "Tooltip for the menu item"
-#~ msgstr "Valikon kohdan vinkki"
-
-#~ msgid "Name of the icon to display in the menu item"
-#~ msgstr "Valikon kohdassa näkyvän kuvakkeen nimi"
-
-#~ msgid "Sensitive"
-#~ msgstr "Herkkä"
-
-#~ msgid "Whether the menu item is sensitive"
-#~ msgstr "Onko valikon kohta herkkä"
-
-#~ msgid "Priority"
-#~ msgstr "Tärkeys"
-
-#~ msgid "Show priority text in toolbars"
-#~ msgstr "Näytä tärkeysteksti työkalupalkeissa"
-
-#~ msgid "Name of the page"
-#~ msgstr "Sivun nimi"
-
-#~ msgid "Label widget to display in the notebook tab"
-#~ msgstr "Lehtiön välilehdessä näkyvä nimiö-säädin"
-
-#~ msgid "Page"
-#~ msgstr "Sivu"
-
-#~ msgid "Widget for the property page"
-#~ msgstr "Ominaisuussivun säädin"
-
-#~ msgid "Bring up a new window for every opened file"
-#~ msgstr "Avaa uusi ikkuna jokaista avattua tiedostoa kohden"
-
-#~ msgid "Cut _Text"
-#~ msgstr "_Leikkaa teksti"
-
-#~ msgid "_Copy Text"
-#~ msgstr "_Kopioi teksti"
-
-#~ msgid "_Paste Text"
-#~ msgstr "L_iitä tekstiä"
-
-#~ msgid "You cannot delete a volume icon."
-#~ msgstr "Taltion kuvaketta ei voi poistaa."
-
-#~ msgid "Can't Delete Volume"
-#~ msgstr "Taltiota ei voi poistaa"
-
-#~ msgid "editable text"
-#~ msgstr "muokattava teksti"
-
-#~ msgid "the editable label"
-#~ msgstr "muokattava nimiö"
-
-#~ msgid "additional text"
-#~ msgstr "lisäteksti"
-
-#~ msgid "some more text"
-#~ msgstr "hieman lisää tekstiä"
-
-#~ msgid "highlighted for selection"
-#~ msgstr "korostettu valittavaksi"
-
-#~ msgid "whether we are highlighted for a selection"
-#~ msgstr "onko korostettu valittavaksi"
-
-#~ msgid "highlighted as keyboard focus"
-#~ msgstr "korostettu näppäinkohdistuksena"
-
-#~ msgid "whether we are highlighted to render keyboard focus"
-#~ msgstr "onko korostettu piirtämään näppäimistökohdistus"
-
-#~ msgid "highlighted for drop"
-#~ msgstr "korostettu pudotusta varten"
-
-#~ msgid "whether we are highlighted for a D&D drop"
-#~ msgstr "onko korostettu vetämistä ja pudotusta varten"
-
-#~ msgid "Frame Text"
-#~ msgstr "Kehystä teksti"
-
-#~ msgid "Draw a frame around unselected text"
-#~ msgstr "Piirrä kehys valitsemattoman tekstin ympärille"
-
-#~ msgid "Selection Box Color"
-#~ msgstr "Valintalaatikon väri"
-
-#~ msgid "Color of the selection box"
-#~ msgstr "Valintalaatikon väri"
-
-#~ msgid "Selection Box Alpha"
-#~ msgstr "Valintalaatikon peittävyys"
-
-#~ msgid "Opacity of the selection box"
-#~ msgstr "Valintalaatikon värin peittävyys"
-
-#~ msgid "Opacity of the highlight for selected icons"
-#~ msgstr "Valittujen kuvakkeiden korostuksen peittävyys"
-
-#~ msgid "Light Info Color"
-#~ msgstr "Vaalea tiedoteväri"
-
-#~ msgid "Color used for information text against a dark background"
-#~ msgstr "Tummalla taustalla olevan tiedotetekstin väri"
-
-#~ msgid "Dark Info Color"
-#~ msgstr "Tumma tiedoteväri"
-
-#~ msgid "Color used for information text against a light background"
-#~ msgstr "Vaalealla taustalla olevan tiedotetekstin väri"
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave this item where you "
-#~ "dropped it? This will clobber the stored manual layout."
-#~ msgstr ""
-#~ "Haluatko asetella sisällön käsin ja jättää tämän kohteen siihen, mihin "
-#~ "pudotit sen? Tämä sotkee jo tallennetun käsin asettelun."
-
-#~ msgid "This folder uses automatic layout."
-#~ msgstr "Tämän kansion asettelu on automaattinen."
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave these items where you "
-#~ "dropped them? This will clobber the stored manual layout."
-#~ msgstr ""
-#~ "Haluatko asetella sisällön käsin ja jättää nämä kohteet siihen, mihin "
-#~ "pudotit ne? Tämä sotkee jo tallennetun käsin asettelun."
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave this item where you "
-#~ "dropped it?"
-#~ msgstr ""
-#~ "Haluatko asetella sisällön käsin ja jättää tämän kohteen siihen, mihin "
-#~ "pudotit sen?"
-
-#~ msgid ""
-#~ "Do you want to switch to manual layout and leave these items where you "
-#~ "dropped them?"
-#~ msgstr ""
-#~ "Haluatko asetella sisällön käsin ja jättää nämä kohteet siihen, mihin "
-#~ "pudotit ne?"
-
-#~ msgid "Open T_erminal"
-#~ msgstr "Avaa _pääte"
-
-#~ msgid "Open a new GNOME terminal window"
-#~ msgstr "Avaa uusi Gnome-pääteikkuna"
-
-#~ msgid "_Desktop"
-#~ msgstr "_Työpöytä"
-
-#~ msgid "Cu_t Files"
-#~ msgstr "_Leikkaa tiedostoja"
-
-#~ msgid "_Paste Files"
-#~ msgstr "L_iitä tiedostoja"
-
-#~ msgid "Select _All Files"
-#~ msgstr "Valitse k_aikki tiedostot"
-
-#~ msgid "_Browse Folders"
-#~ msgstr "_Selaa kansioita"
-
-#~ msgid "Ma_ke Links"
-#~ msgstr "T_ee linkit"
-
-#~ msgid "Cu_t File"
-#~ msgstr "_Leikkaa tiedosto"
-
-#~ msgid "_Copy File"
-#~ msgstr "_Kopioi tiedosto"
-
-#~ msgid "_Names:"
-#~ msgstr "_Nimet:"
-
-#~ msgid "Open"
-#~ msgstr "Avaa"
-
-#~ msgid "Cut Folder"
-#~ msgstr "Leikkaa kansio"
-
-#~ msgid "Copy Folder"
-#~ msgstr "Kopioi kansio"
-
-#~ msgid "Paste Files into Folder"
-#~ msgstr "Liitä tiedostoja kansioon"
-
-#~ msgid ""
-#~ "This is probably because the emblem is a permanent one, and not one you "
-#~ "added yourself."
-#~ msgstr ""
-#~ "Syynä luultavasti on, että tunnusmerkki on pysyvä, ei itse lisäämäsi."
-
-#~ msgid "View as %s"
-#~ msgstr "Näytä muotona %s"
-
-#~ msgid "The %s view encountered an error and can't continue."
-#~ msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä, ja se ei voi jatkaa."
-
-#~ msgid "The NautilusApplication associated with this window."
-#~ msgstr "Tähän ikkunaan kytketty NautilusApplication."
-
-#~ msgid "List Viewer"
-#~ msgstr "Luettelokatselin"
-
-#~ msgid "Nautilus Tree side pane"
-#~ msgstr "Nautiluksen puunäkymäsivupaneeli"
-
-#~ msgid "Nautilus file manager component that shows a scrollable list"
-#~ msgstr ""
-#~ "Nautiluksen tiedostonhallintakomponentti, joka näyttää vieritettävän "
-#~ "luettelon"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a scrollable list for search "
-#~ "results"
-#~ msgstr ""
-#~ "Nautiluksen tiedostonhallintakomponentti, joka näyttää vieritettävän "
-#~ "luettelon tuloksista"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a two-dimensional icon space"
-#~ msgstr ""
-#~ "Nautiluksen tiedostonhallintakomponentti, joka näyttää kaksiulotteisen "
-#~ "kuvaketilan"
-
-#~ msgid "Nautilus file manager component that shows icons on the desktop"
-#~ msgstr ""
-#~ "Nautiluksen tiedostonhallintakomponentti, joka näyttää työpöydän kuvakkeet"
-
-#~ msgid "Nautilus file manager desktop icon view"
-#~ msgstr "Nautiluksen-tiedostonhallintan työpöytäkuvakenäkymä"
-
-#~ msgid "Nautilus file manager icon view"
-#~ msgstr "Nautiluksen-tiedostonhallintan kuvakenäkymä"
-
-#~ msgid "Nautilus file manager list view"
-#~ msgstr "Nautiluksen-tiedostonhallintan luettelonäkymä"
-
-#~ msgid "Nautilus file manager search results list view"
-#~ msgstr "Nautiluksen-tiedostonhallintan hakutulosnäkymä"
-
-#~ msgid "Allaire"
-#~ msgstr "Allaire"
-
-#~ msgid "Binary Freedom"
-#~ msgstr "Binary Freedom"
-
-#~ msgid "Borland"
-#~ msgstr "Borland"
-
-#~ msgid "CNET Computers.com"
-#~ msgstr "CNET-tietokoneet.com"
-
-#~ msgid "CollabNet"
-#~ msgstr "CollabNet"
-
-#~ msgid "Conectiva"
-#~ msgstr "Conectiva"
-
-#~ msgid "Covalent"
-#~ msgstr "Covalent"
-
-#~ msgid "Debian.org"
-#~ msgstr "Debian.org"
-
-#~ msgid "Dell"
-#~ msgstr "Dell"
-
-#~ msgid "Freshmeat.net"
-#~ msgstr "Freshmeat.net"
-
-#~ msgid "GNOME.org"
-#~ msgstr "GNOME.org"
-
-#~ msgid "GNU.org"
-#~ msgstr "GNU.org"
-
-#~ msgid "Hardware"
-#~ msgstr "Laitteisto"
-
-#~ msgid "Linux Documentation Project"
-#~ msgstr "Linuxin ohjeprojekti"
-
-#~ msgid "Linux One"
-#~ msgstr "Linux One"
-
-#~ msgid "Linux Online"
-#~ msgstr "Linux linjoilla"
-
-#~ msgid "Linux Resources"
-#~ msgstr "Linux-voimavarat"
-
-#~ msgid "Linux Weekly News"
-#~ msgstr "Viikoittaiset Linux-uutiset"
-
-#~ msgid "LinuxNewbie.org"
-#~ msgstr "LinuxNewbie.org"
-
-#~ msgid "LinuxOrbit.com"
-#~ msgstr "LinuxOrbit.com"
-
-#~ msgid "MandrakeSoft"
-#~ msgstr "MandrakeSoft"
-
-#~ msgid "Netraverse"
-#~ msgstr "Netraverse"
-
-#~ msgid "News and Media"
-#~ msgstr "Uutiset ja tiedotusvälineet"
-
-#~ msgid "O'Reilly"
-#~ msgstr "O'Reilly"
-
-#~ msgid "OSDN"
-#~ msgstr "OSDN"
-
-#~ msgid "Open Source Asia"
-#~ msgstr "Open Source Asia"
-
-#~ msgid "OpenOffice"
-#~ msgstr "OpenOffice"
-
-#~ msgid "Penguin Computing"
-#~ msgstr "Penguin Computing"
-
-#~ msgid "Rackspace"
-#~ msgstr "Rackspace"
-
-#~ msgid "Red Hat"
-#~ msgstr "Red Hat"
-
-#~ msgid "Red Hat Network"
-#~ msgstr "Red Hat -verkko"
-
-#~ msgid "RedFlag Linux"
-#~ msgstr "RedFlag Linux"
-
-#~ msgid "SourceForge"
-#~ msgstr "SourceForge"
-
-#~ msgid "SuSE"
-#~ msgstr "SuSE"
-
-#~ msgid "Sun StarOffice"
-#~ msgstr "Sun StarOffice"
-
-#~ msgid "Sun Wah Linux"
-#~ msgstr "Sun Wah Linux"
-
-#~ msgid "Web Services"
-#~ msgstr "WWW-palvelut"
-
-#~ msgid "Ximian"
-#~ msgstr "Ximian"
-
-#~ msgid "ZDNet Linux Hardware Database"
-#~ msgstr "ZDNet Linux-laitteistokeskus"
-
-#~ msgid "ZDNet Linux Resource Center"
-#~ msgstr "ZDNet Linux-keskus"
-
-#~ msgid "Zero-Knowledge"
-#~ msgstr "Zero-Knowledge"
-
-#~ msgid "Files thrown out:"
-#~ msgstr "Tiedostoja heitetty pois:"
-
-#~ msgid "Files moved:"
-#~ msgstr "Tiedostoja siirtynyt:"
-
-#~ msgid "Files linked:"
-#~ msgstr "Tiedostoja linkittynyt:"
-
-#~ msgid "Files copied:"
-#~ msgstr "Tiedostoja kopioitunut:"
