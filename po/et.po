@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-22 15:49+0000\n"
-"PO-Revision-Date: 2008-08-07 16:15+0300\n"
+"POT-Creation-Date: 2008-08-13 11:40+0000\n"
+"PO-Revision-Date: 2008-08-15 13:00+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -302,84 +302,9 @@ msgstr "_Embleemid"
 msgid "_Patterns"
 msgstr "_Mustrid"
 
-#. http://en.wikipedia.org/wiki/Blu-ray_Disc
-#: ../data/nautilus.xml.in.h:2
-msgid "Blank Blu-Ray Disc"
-msgstr "Tühi Blu-Ray plaat"
-
-#. http://en.wikipedia.org/wiki/Compact_Disc
-#: ../data/nautilus.xml.in.h:4
-msgid "Blank CD Disc"
-msgstr "Tühi CD-plaat"
-
-#. http://en.wikipedia.org/wiki/DVD
-#: ../data/nautilus.xml.in.h:6
-msgid "Blank DVD Disc"
-msgstr "Tühi DVD-plaat"
-
-#. http://en.wikipedia.org/wiki/HD_DVD
-#: ../data/nautilus.xml.in.h:8
-msgid "Blank HD DVD Disc"
-msgstr "Tühi HD DVD plaat"
-
-#. http://en.wikipedia.org/wiki/Blu-ray_Disc
-#: ../data/nautilus.xml.in.h:10
-msgid "Blu-Ray Video"
-msgstr "Blu-Ray video"
-
-#. http://en.wikipedia.org/wiki/Red_Book_(audio_CD_standard)
-#: ../data/nautilus.xml.in.h:12
-msgid "Compact Disc Audio"
-msgstr "Audio-CD"
-
-#. http://en.wikipedia.org/wiki/DVD-Audio
-#: ../data/nautilus.xml.in.h:14
-msgid "DVD Audio"
-msgstr "Audio-DVD"
-
-#. http://en.wikipedia.org/wiki/DVD-Video
-#: ../data/nautilus.xml.in.h:16
-msgid "DVD Video"
-msgstr "DVD-video"
-
-#. http://en.wikipedia.org/wiki/Design_rule_for_Camera_File_system
-#: ../data/nautilus.xml.in.h:18
-msgid "Digital Photos"
-msgstr "Digifotod"
-
-#. http://en.wikipedia.org/wiki/HD_DVD
-#: ../data/nautilus.xml.in.h:20
-msgid "HD DVD Video"
-msgstr "HD DVD video"
-
-#. http://en.wikipedia.org/wiki/Picture_CD
-#: ../data/nautilus.xml.in.h:22
-msgid "Picture CD"
-msgstr "Pildi-CD"
-
-#. see fd.o hal spec
-#: ../data/nautilus.xml.in.h:24
-msgid "Portable Audio Player"
-msgstr "Kaasaskantav audioesitaja"
-
-#: ../data/nautilus.xml.in.h:25
+#: ../data/nautilus.xml.in.h:1
 msgid "Saved search"
 msgstr "Salvestatud otsing"
-
-#. http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
-#: ../data/nautilus.xml.in.h:27 ../src/nautilus-image-properties-page.c:250
-msgid "Software"
-msgstr "Tarkvara"
-
-#. http://en.wikipedia.org/wiki/Super_Video_CD
-#: ../data/nautilus.xml.in.h:29
-msgid "Super Video CD"
-msgstr "Super Video CD"
-
-#. http://en.wikipedia.org/wiki/Video_CD
-#: ../data/nautilus.xml.in.h:31
-msgid "Video CD"
-msgstr "Video-CD"
 
 #. Translators: date_modified - mtime, the last time file contents were changed
 #. date_changed  - ctime, the last time file meta-information changed
@@ -814,44 +739,62 @@ msgid "List of possible captions on icons"
 msgstr "Võimalike ikoonipealkirjade nimekiri"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-msgid "List of x-content/* types to ask the user what to do on insertion"
+msgid ""
+"List of x-content/* types for which the user have chosen \"Do Nothing\" in "
+"the preference capplet. No prompt will be shown nor will any matching "
+"application be started on insertion of media matching these types."
 msgstr ""
-"Nimekiri x-content/* liikidest, mille sisestamisel küsitakse kasutajalt "
-"juhendeid edasiste tegevuste kohta"
+"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+"rakendist valinud \"Ei tehta midagi\". Nendele liikidele vastava meediumi "
+"sisestamisel ei küsita kasutajalt mingit kinnitust ega käivitata ühtegi "
+"rakendust."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-msgid "List of x-content/* types to ask the user what to do on insertion."
+msgid ""
+"List of x-content/* types for which the user have chosen \"Open Folder\" in "
+"the preferences capplet. A folder window will be opened on insertion of "
+"media matching these types."
 msgstr ""
-"Nimekiri x-content/* liikidest, mille sisestamisel küsitakse kasutajalt "
-"juhendeid edasiste tegevuste kohta."
+"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+"rakendist valinud \"Avatakse kataloog\". Nendele liikidele vastava meediumi "
+"sisestamisel avatakse kataloogiaken."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-msgid "List of x-content/* types where a folder window should be opened"
-msgstr "Nimekiri x-content/* liikidest, mille puhul tuleb kataloogiaken avada"
+msgid ""
+"List of x-content/* types for which the user have chosen to start an "
+"application in the preference capplet. The preferred application for the "
+"given type will be started on insertion on media matching these types."
+msgstr ""
+"Nimekiri x-content/* liikidest, millede kohta kasutaja on eelistuste "
+"rakendist valinud käivitatava rakenduse. Nendele liikidele vastava meediumi "
+"sisestamisel käivitatakse eelistatud rakendus."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-msgid ""
-"List of x-content/* types where a folder window should be opened on "
-"insertion."
+msgid "List of x-content/* types set to \"Do Nothing\""
 msgstr ""
-"Nimekiri x-content/* liikidest, mille sisestamise puhul tuleb kataloogiaken "
-"avada."
+"Nimekiri x-content/* liikidest, milledele on määratud \"Ei tehta midagi\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-msgid "List of x-content/* where to prompt the user on insertion"
+msgid "List of x-content/* types set to \"Open Folder\""
 msgstr ""
-"Nimekiri x-content/* liikidest, mille sisestamise puhul tuleb kasutajalt "
-"edasiste tegevuste kohta kinnitust küsida"
+"Nimekiri x-content/* liikidest, milledele on määratud \"Avatakse kataloog\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+msgid ""
+"List of x-content/* types where the preferred application will be launched"
+msgstr ""
+"Nimekiri x-content/* liikidest, mille puhul tuleb käivitada eelistatav "
+"rakendus"
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Maximum handled files in a folder"
 msgstr "Suurim käidetavate failide arv kataloogi kohta"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Maximum image size for thumbnailing"
 msgstr "Pildifaili maksimaalne suurus pisipildi näitamiseks"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -859,33 +802,33 @@ msgstr ""
 "Nautiluse teema, mida kasutada. See on alates Nautiluse versioonist 2.2 "
 "aegunud, palun kasuta selle asemel ikooniteemat."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus näitab töölauda"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus kasutab kodukataloogi kui töölauda"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "Network Servers icon visible on the desktop"
 msgstr "Võrguserverite ikoon on töölaual nähtav"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Network servers icon name"
 msgstr "Võrguserverite ikooni nimi"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr ""
 "Automaatkäivitusega programmide käivitamise kohta ei küsita meediumi "
 "sisestamisel kinnitust"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Only show folders in the tree side pane"
 msgstr "Külgpaani puuvaates kuvatakse ainult katalooge"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -893,54 +836,54 @@ msgstr ""
 "Võimalikud väärtused on \"single\" failide ühe klõpsuga käivitamiseks, või "
 "\"double\" topeltklõpsuga käivitamiseks."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Put labels beside icons"
 msgstr "Sildid asetatakse ikoonide kõrvale"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Reverse sort order in new windows"
 msgstr "Uutes akendes järjestatakse kirjed pööratud järjestuses"
 
 #. Translators: please note this can choose the size. e.g.
 #. "Sans 15". Please do not change "Sans", only change the size if you need to. In
 #. most cases, this should be left alone.
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Sans 10"
 msgstr "Sans 10"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Laiendatud pääsuõiguste näitamine faili omaduste dialoogis"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "Show folders first in windows"
 msgstr "Akendes kataloogide esimesena näitamine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Show location bar in new windows"
 msgstr "Uutes akendes asukohariba näitamine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Show mounted volumes on the desktop"
 msgstr "Ühendatud kettaseadmete näitamine töölaual"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Show side pane in new windows"
 msgstr "Uutes akendes külgpaani näitamine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Show status bar in new windows"
 msgstr "Uutes akendes olekuriba näitamine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Show toolbar in new windows"
 msgstr "Uutes akendes tööriistariba näitamine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Side pane view"
 msgstr "Külgpaanivaade"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -953,7 +896,7 @@ msgstr ""
 "siis esitatakse heli ainult kohalike failide korral. Kui väärtuseks on "
 "\"never\", siis heli ei esitata."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -967,7 +910,7 @@ msgstr ""
 "\"local_only\", siis näidatakse eelvaadet ainult kohalike failide korral. "
 "Kui väärtuseks on \"never\", siis eelvaadet ei näidata."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -981,7 +924,7 @@ msgstr ""
 "on \"local_only\", siis näidatakse pisipilti ainult kohalike failide korral. "
 "Kui väärtuseks on \"never\", siis pisipilti ei näidata."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -994,11 +937,11 @@ msgstr ""
 "siis näidatakse kirjete arvu ainult kohalike failisüsteemide korral. Kui "
 "väärtuseks on \"never\", siis kirjete arvu ei näidata."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "Ikoonivaates oleva pisipildi ikooni vaikimisi suurus."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1007,7 +950,7 @@ msgstr ""
 "\"name\" (nimi), \"size\" (suurus), \"type\" (liik), \"modification_date"
 "\" (muutmisaeg), ja \"emblems\" (embleemid)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1016,15 +959,15 @@ msgstr ""
 "\"name\" (nime järgi), \"size\" (suuruse järgi), \"type\" (liigi järgi) ja "
 "\"modification_date\" (muutmisaja järgi)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "The default width of the side pane in new windows."
 msgstr "Külgpaani vaikimisi laius uutes akendes."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "The font description used for the icons on the desktop."
 msgstr "Töölaual kasutatav kirjastiil."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -1032,11 +975,11 @@ msgstr ""
 "Failiaegade vorming. Võimalikud väärtused on \"locale\", \"iso\", ja "
 "\"informal\"."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid "The side pane view to show in newly opened windows."
 msgstr "Külgpaanivaate kasutamine uutes akendes."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -1044,7 +987,7 @@ msgstr ""
 "See nimi määratakse juhul, kui soovitakse töölaual oleva arvutiikooni nime "
 "kohandada."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -1052,7 +995,7 @@ msgstr ""
 "See nimi määratakse juhul, kui soovitakse töölaual oleva kodukataloogiikooni "
 "nime kohandada."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -1060,7 +1003,7 @@ msgstr ""
 "See nimi määratakse juhul, kui soovitakse töölaual oleva võrguserverite "
 "ikooni nime kohandada."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1068,27 +1011,27 @@ msgstr ""
 "See nimi määratakse juhul, kui soovitakse töölaual oleva prügikastiikooni "
 "nime kohandada."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid "Trash icon visible on desktop"
 msgstr "Prügikastiikoon on töölaual nähtav"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
 msgid "Type of click used to launch/open files"
 msgstr "Hiireklõpsu liik, millega faile avatakse"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
 msgid "Use manual layout in new windows"
 msgstr "Käsitsipaigutuse kasutamine uutes akendes"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
 msgid "Use tighter layout in new windows"
 msgstr "Tihepaigutuse kasutamine uutes akendes"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "What to do with executable text files when activated"
 msgstr "Mida tehakse käivitatavate tekstifailidega neile klõpsamisel"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1100,7 +1043,7 @@ msgstr ""
 "käivitamiseks, \"ask\" küsimusedialoogi kuvamiseks ja \"display\" nende "
 "tekstifailina kuvamiseks."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\", "
@@ -1111,146 +1054,150 @@ msgstr ""
 "\" (nimekirjavaade), \"icon_view\" (ikoonivaade) ja \"compact_view"
 "\" (kompaktvaade)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "When to show number of items in a folder"
 msgstr "Kas kataloogis olevate kirjete arvu näidatakse või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
 msgid "When to show preview text in icons"
 msgstr "Kas ikoonide eelvaadet näidatakse või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid "When to show thumbnails of image files"
 msgstr "Kas pildifailidel näidatakse pisipilte või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
 msgid "Where to position newly open tabs in browser windows."
 msgstr "Kuhu paigutatakse sirvija akendes avatavad uued kaardid."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "Whether a custom default folder background has been set."
 msgstr "Kas kataloogi vaikimisi taust on seatud või mitte."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
 msgid "Whether a custom default side pane background has been set."
 msgstr "Kas külgpaani vaikimisi taust on seatud või mitte."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Kas failide kustutamisel ja prügikasti tühjendamisel küsitakse kinnitust või "
 "mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
 msgid "Whether to automatically mount media"
 msgstr "Kas ühendatav meedium haagitakse automaatselt külge või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
 msgid "Whether to automatically open a folder for automounted media"
 msgstr ""
 "Kas automaatselt külge haagitud meediumi kataloog avatakse automaatselt või "
 "mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
 msgid "Whether to enable immediate deletion"
 msgstr "Kas kohene kustutamine on lubatud"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
 msgid "Whether to enable tabs in Nautilus browser windows"
 msgstr "Kas Nautiluse sirvimisakendes on kaardid lubatud või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "Kas kursori liikumisel üle ikooni on eelvaatehääled lubatud"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
 msgid "Whether to show backup files"
 msgstr "Kas varufaile näidatakse või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
 msgid "Whether to show hidden files"
 msgstr "Kas peidetud faile näidatakse või mitte"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
 msgid "Width of the side pane"
 msgstr "Külgpaani laius"
 
-#: ../libnautilus-private/nautilus-autorun.c:335
+#: ../libnautilus-private/nautilus-autorun.c:459
 msgid "No applications found"
 msgstr "Ühtegi rakendust ei leitud"
 
-#: ../libnautilus-private/nautilus-autorun.c:351
+#: ../libnautilus-private/nautilus-autorun.c:475
 msgid "Ask what to do"
 msgstr "Küsitakse, mida teha"
 
-#: ../libnautilus-private/nautilus-autorun.c:367
+#: ../libnautilus-private/nautilus-autorun.c:491
 msgid "Do Nothing"
 msgstr "Ei tehta midagi"
 
-#: ../libnautilus-private/nautilus-autorun.c:382
+#: ../libnautilus-private/nautilus-autorun.c:506
 #: ../nautilus-folder-handler.desktop.in.in.h:1
 msgid "Open Folder"
 msgstr "Avatakse kataloog"
 
-#: ../libnautilus-private/nautilus-autorun.c:414
+#: ../libnautilus-private/nautilus-autorun.c:538
 #: ../src/nautilus-x-content-bar.c:122
 #, c-format
 msgid "Open %s"
 msgstr "Avatakse: %s"
 
-#: ../libnautilus-private/nautilus-autorun.c:1084
+#: ../libnautilus-private/nautilus-autorun.c:577
+msgid "Open with other Application..."
+msgstr "Ava mõne muu rakendusega..."
+
+#: ../libnautilus-private/nautilus-autorun.c:891
 msgid "You have just inserted an Audio CD."
 msgstr "Sa sisestasid audio-CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1086
+#: ../libnautilus-private/nautilus-autorun.c:893
 msgid "You have just inserted an Audio DVD."
 msgstr "Sa sisestasid audio-DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1088
+#: ../libnautilus-private/nautilus-autorun.c:895
 msgid "You have just inserted a Video DVD."
 msgstr "Sa sisestasid video-DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1090
+#: ../libnautilus-private/nautilus-autorun.c:897
 msgid "You have just inserted a Video CD."
 msgstr "Sa sisestasid video-CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1092
+#: ../libnautilus-private/nautilus-autorun.c:899
 msgid "You have just inserted a Super Video CD."
 msgstr "Sa sisestasid Super Video CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1094
+#: ../libnautilus-private/nautilus-autorun.c:901
 msgid "You have just inserted a blank CD."
 msgstr "Sa sisestasid tühja CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1096
+#: ../libnautilus-private/nautilus-autorun.c:903
 msgid "You have just inserted a blank DVD."
 msgstr "Sa sisestasid tühja DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1098
+#: ../libnautilus-private/nautilus-autorun.c:905
 msgid "You have just inserted a blank Blu-Ray disc."
 msgstr "Sa sisestasid tühja Blu-Ray plaadi."
 
-#: ../libnautilus-private/nautilus-autorun.c:1100
+#: ../libnautilus-private/nautilus-autorun.c:907
 msgid "You have just inserted a blank HD DVD."
 msgstr "Sa sisestasid tühja HD DVD-plaadi."
 
-#: ../libnautilus-private/nautilus-autorun.c:1102
+#: ../libnautilus-private/nautilus-autorun.c:909
 msgid "You have just inserted a Photo CD."
 msgstr "Sa sisestasid tühja foto-CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1104
+#: ../libnautilus-private/nautilus-autorun.c:911
 msgid "You have just inserted a Picture CD."
 msgstr "Sa sisestasid tühja pildi-CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:1106
+#: ../libnautilus-private/nautilus-autorun.c:913
 msgid "You have just inserted a medium with digital photos."
 msgstr "Sa sisestasid digifotosid sisaldava meediumi."
 
-#: ../libnautilus-private/nautilus-autorun.c:1108
+#: ../libnautilus-private/nautilus-autorun.c:915
 msgid "You have just inserted a digital audio player."
 msgstr "Sa sisestasid digitaalse audioesitaja."
 
-#: ../libnautilus-private/nautilus-autorun.c:1110
+#: ../libnautilus-private/nautilus-autorun.c:917
 msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
@@ -1259,15 +1206,15 @@ msgstr ""
 "käivitada."
 
 #. fallback to generic greeting
-#: ../libnautilus-private/nautilus-autorun.c:1113
+#: ../libnautilus-private/nautilus-autorun.c:920
 msgid "You have just inserted a medium."
 msgstr "Sa sisestasid meediumi."
 
-#: ../libnautilus-private/nautilus-autorun.c:1115
+#: ../libnautilus-private/nautilus-autorun.c:922
 msgid "Choose what application to launch."
 msgstr "Vali käivitatav rakendus."
 
-#: ../libnautilus-private/nautilus-autorun.c:1124
+#: ../libnautilus-private/nautilus-autorun.c:931
 #, c-format
 msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
@@ -1276,21 +1223,16 @@ msgstr ""
 "Vali, mismoodi tuleb \"%s\" käivitada ning kas ka tulevikus tuleb \"%s\"-"
 "liigilise meediumi korral sedasama teha."
 
-#: ../libnautilus-private/nautilus-autorun.c:1146
+#: ../libnautilus-private/nautilus-autorun.c:953
 msgid "_Always perform this action"
 msgstr "Seda tehakse _alati"
 
-#. name, stock id
-#. label, accelerator
-#: ../libnautilus-private/nautilus-autorun.c:1162
-#: ../src/file-manager/fm-directory-view.c:6690
-#: ../src/file-manager/fm-directory-view.c:6706
-#: ../src/file-manager/fm-directory-view.c:6775
+#: ../libnautilus-private/nautilus-autorun.c:969
 #: ../src/nautilus-places-sidebar.c:2012
 msgid "_Eject"
 msgstr "_Väljasta"
 
-#: ../libnautilus-private/nautilus-autorun.c:1173
+#: ../libnautilus-private/nautilus-autorun.c:980
 #: ../src/nautilus-places-sidebar.c:2005
 msgid "_Unmount"
 msgstr "_Ühenda lahti"
@@ -1463,32 +1405,32 @@ msgstr ""
 "Kui soovid kettaseadet lahti haakida, vali paremklikiga avanevast menüüst "
 "\"Haagi ketas lahti\"'."
 
-#: ../libnautilus-private/nautilus-dnd.c:744
+#: ../libnautilus-private/nautilus-dnd.c:748
 msgid "_Move Here"
 msgstr "_Tõsta siia"
 
-#: ../libnautilus-private/nautilus-dnd.c:749
+#: ../libnautilus-private/nautilus-dnd.c:753
 msgid "_Copy Here"
 msgstr "_Kopeeri siia"
 
-#: ../libnautilus-private/nautilus-dnd.c:754
+#: ../libnautilus-private/nautilus-dnd.c:758
 msgid "_Link Here"
 msgstr "L_ingi siia"
 
-#: ../libnautilus-private/nautilus-dnd.c:759
+#: ../libnautilus-private/nautilus-dnd.c:763
 msgid "Set as _Background"
 msgstr "Säti _taustapildiks"
 
-#: ../libnautilus-private/nautilus-dnd.c:766
-#: ../libnautilus-private/nautilus-dnd.c:819
+#: ../libnautilus-private/nautilus-dnd.c:770
+#: ../libnautilus-private/nautilus-dnd.c:823
 msgid "Cancel"
 msgstr "Loobu"
 
-#: ../libnautilus-private/nautilus-dnd.c:807
+#: ../libnautilus-private/nautilus-dnd.c:811
 msgid "Set as background for _all folders"
 msgstr "Säti taustapildiks _kõikidele kataloogidele"
 
-#: ../libnautilus-private/nautilus-dnd.c:812
+#: ../libnautilus-private/nautilus-dnd.c:816
 msgid "Set as background for _this folder"
 msgstr "Säti taustapildiks _sellele kataloogile"
 
@@ -1565,29 +1507,29 @@ msgstr "L_iida"
 msgid "Merge _All"
 msgstr "Liida _kõik"
 
-#: ../libnautilus-private/nautilus-file-operations.c:202
+#: ../libnautilus-private/nautilus-file-operations.c:216
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d sekund"
 msgstr[1] "%'d sekundit"
 
-#: ../libnautilus-private/nautilus-file-operations.c:207
-#: ../libnautilus-private/nautilus-file-operations.c:218
+#: ../libnautilus-private/nautilus-file-operations.c:221
+#: ../libnautilus-private/nautilus-file-operations.c:232
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d minut"
 msgstr[1] "%'d minutit"
 
-#: ../libnautilus-private/nautilus-file-operations.c:217
+#: ../libnautilus-private/nautilus-file-operations.c:231
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d tund"
 msgstr[1] "%'d tundi"
 
-#: ../libnautilus-private/nautilus-file-operations.c:225
+#: ../libnautilus-private/nautilus-file-operations.c:239
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
@@ -1599,15 +1541,15 @@ msgstr[1] "ligikaudu %'d tundi"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:297
-#: ../libnautilus-private/nautilus-file.c:5484
-#: ../src/file-manager/fm-directory-view.c:9173
+#: ../libnautilus-private/nautilus-file-operations.c:311
+#: ../libnautilus-private/nautilus-file.c:5506
+#: ../src/file-manager/fm-directory-view.c:9171
 #, c-format
 msgid "Link to %s"
 msgstr "Viit -> %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:301
+#: ../libnautilus-private/nautilus-file-operations.c:315
 #, c-format
 msgid "Another link to %s"
 msgstr "Veel üks viit -> %s"
@@ -1616,25 +1558,25 @@ msgstr "Veel üks viit -> %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:317
+#: ../libnautilus-private/nautilus-file-operations.c:331
 #, c-format
 msgid "%'dst link to %s"
 msgstr "%'d. viit failile %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:321
+#: ../libnautilus-private/nautilus-file-operations.c:335
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "%'d. viit failile %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:325
+#: ../libnautilus-private/nautilus-file-operations.c:339
 #, c-format
 msgid "%'drd link to %s"
 msgstr "%'d. viit failile %s"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:329
+#: ../libnautilus-private/nautilus-file-operations.c:343
 #, c-format
 msgid "%'dth link to %s"
 msgstr "%'d. viit failile %s"
@@ -1644,12 +1586,12 @@ msgstr "%'d. viit failile %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:368
+#: ../libnautilus-private/nautilus-file-operations.c:382
 msgid " (copy)"
 msgstr " (koopia)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:370
+#: ../libnautilus-private/nautilus-file-operations.c:384
 msgid " (another copy)"
 msgstr " (veel üks koopia)"
 
@@ -1657,36 +1599,36 @@ msgstr " (veel üks koopia)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:373
-#: ../libnautilus-private/nautilus-file-operations.c:375
-#: ../libnautilus-private/nautilus-file-operations.c:377
 #: ../libnautilus-private/nautilus-file-operations.c:387
+#: ../libnautilus-private/nautilus-file-operations.c:389
+#: ../libnautilus-private/nautilus-file-operations.c:391
+#: ../libnautilus-private/nautilus-file-operations.c:401
 msgid "th copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:380
+#: ../libnautilus-private/nautilus-file-operations.c:394
 msgid "st copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:382
+#: ../libnautilus-private/nautilus-file-operations.c:396
 msgid "nd copy)"
 msgstr ". koopia)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:384
+#: ../libnautilus-private/nautilus-file-operations.c:398
 msgid "rd copy)"
 msgstr ". koopia)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:401
+#: ../libnautilus-private/nautilus-file-operations.c:415
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (koopia)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:403
+#: ../libnautilus-private/nautilus-file-operations.c:417
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (veel üks koopia)%s"
@@ -1695,48 +1637,48 @@ msgstr "%s (veel üks koopia)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:406
-#: ../libnautilus-private/nautilus-file-operations.c:408
-#: ../libnautilus-private/nautilus-file-operations.c:410
-#: ../libnautilus-private/nautilus-file-operations.c:419
+#: ../libnautilus-private/nautilus-file-operations.c:420
+#: ../libnautilus-private/nautilus-file-operations.c:422
+#: ../libnautilus-private/nautilus-file-operations.c:424
+#: ../libnautilus-private/nautilus-file-operations.c:433
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:413
+#: ../libnautilus-private/nautilus-file-operations.c:427
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:415
+#: ../libnautilus-private/nautilus-file-operations.c:429
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:417
+#: ../libnautilus-private/nautilus-file-operations.c:431
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (%d. koopia)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:517
+#: ../libnautilus-private/nautilus-file-operations.c:531
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:525
+#: ../libnautilus-private/nautilus-file-operations.c:539
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1181
+#: ../libnautilus-private/nautilus-file-operations.c:1208
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgstr "Oled kindel, et soovid \"%B\" prügikastist jäädavalt kustutada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1184
+#: ../libnautilus-private/nautilus-file-operations.c:1211
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1749,16 +1691,16 @@ msgstr[0] ""
 msgstr[1] ""
 "Oled kindel, et soovid %'d valitud faili prügikastist jäädavalt kustutada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1194
-#: ../libnautilus-private/nautilus-file-operations.c:1260
+#: ../libnautilus-private/nautilus-file-operations.c:1221
+#: ../libnautilus-private/nautilus-file-operations.c:1289
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Kui kustutad kirje, on see jäädavalt kadunud."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1213
+#: ../libnautilus-private/nautilus-file-operations.c:1241
 msgid "Empty all of the items from the trash?"
 msgstr "Kas kustutada kõik kirjed prügikastist?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1217
+#: ../libnautilus-private/nautilus-file-operations.c:1245
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
@@ -1766,11 +1708,11 @@ msgstr ""
 "Kui otsustad prügikasti tühjendada, kaob selle sisu lõplikult. Faile "
 "prügikastis saab kustutada ka ühekaupa."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1248
+#: ../libnautilus-private/nautilus-file-operations.c:1277
 msgid "Are you sure you want to permanently delete \"%B\"?"
 msgstr "Oled kindel, et soovid \"%B\" jäädavalt kustutada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1251
+#: ../libnautilus-private/nautilus-file-operations.c:1280
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
@@ -1778,11 +1720,11 @@ msgid_plural ""
 msgstr[0] "Oled kindel, et soovid %'d valitud kirje jäädavalt kustutada?"
 msgstr[1] "Oled kindel, et soovid %'d valitud kirjet jäädavalt kustutada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1293
+#: ../libnautilus-private/nautilus-file-operations.c:1323
 msgid "Deleting files"
 msgstr "Failide kustutamine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1298
+#: ../libnautilus-private/nautilus-file-operations.c:1328
 #, c-format
 msgid "%'d file left to delete"
 msgid_plural "%'d files left to delete"
@@ -1790,21 +1732,21 @@ msgstr[0] "Kustutada jäänud on veel %'d fail"
 msgstr[1] "Kustutada jäänud on veel %'d faili"
 
 #. To translators: %T will expand to a time like "2 minutes"
-#: ../libnautilus-private/nautilus-file-operations.c:1309
+#: ../libnautilus-private/nautilus-file-operations.c:1339
 msgid "%'d file left to delete — %T left"
 msgid_plural "%'d files left to delete — %T left"
 msgstr[0] "Kustutada jäänud on veel %'d fail - %T"
 msgstr[1] "Kustutada jäänud on veel %'d faili - %T"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1370
-#: ../libnautilus-private/nautilus-file-operations.c:1403
-#: ../libnautilus-private/nautilus-file-operations.c:1441
-#: ../libnautilus-private/nautilus-file-operations.c:1523
-#: ../libnautilus-private/nautilus-file-operations.c:2268
+#: ../libnautilus-private/nautilus-file-operations.c:1400
+#: ../libnautilus-private/nautilus-file-operations.c:1434
+#: ../libnautilus-private/nautilus-file-operations.c:1473
+#: ../libnautilus-private/nautilus-file-operations.c:1556
+#: ../libnautilus-private/nautilus-file-operations.c:2303
 msgid "Error while deleting."
 msgstr "Viga kustutamisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1374
+#: ../libnautilus-private/nautilus-file-operations.c:1404
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
@@ -1812,19 +1754,19 @@ msgstr ""
 "Kaustas \"%B\" asuvaid faile pole võimalik kustutada kuna sul pole nende "
 "nägemiseks õiguseid."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1377
-#: ../libnautilus-private/nautilus-file-operations.c:2327
-#: ../libnautilus-private/nautilus-file-operations.c:3145
+#: ../libnautilus-private/nautilus-file-operations.c:1407
+#: ../libnautilus-private/nautilus-file-operations.c:2362
+#: ../libnautilus-private/nautilus-file-operations.c:3304
 msgid ""
 "There was an error getting information about the files in the folder \"%B\"."
 msgstr "Kataloogis \"%B\" asuvate failide andmete hankimisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1385
-#: ../libnautilus-private/nautilus-file-operations.c:3153
+#: ../libnautilus-private/nautilus-file-operations.c:1416
+#: ../libnautilus-private/nautilus-file-operations.c:3313
 msgid "_Skip files"
 msgstr "_Jäta failid vahele"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1406
+#: ../libnautilus-private/nautilus-file-operations.c:1437
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
@@ -1832,53 +1774,53 @@ msgstr ""
 "Kausta \"%B\" pole võimalik kustutada, kuna sul puuduvad selle õigused "
 "lugemiseks."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1409
-#: ../libnautilus-private/nautilus-file-operations.c:2365
-#: ../libnautilus-private/nautilus-file-operations.c:3189
+#: ../libnautilus-private/nautilus-file-operations.c:1440
+#: ../libnautilus-private/nautilus-file-operations.c:2401
+#: ../libnautilus-private/nautilus-file-operations.c:3349
 msgid "There was an error reading the folder \"%B\"."
 msgstr "Kataloogi \"%B\" lugemisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1442
+#: ../libnautilus-private/nautilus-file-operations.c:1474
 msgid "Could not remove the folder %B."
 msgstr "Kataloogi %B pole võimalik eemaldada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1524
+#: ../libnautilus-private/nautilus-file-operations.c:1557
 msgid "There was an error deleting %B."
 msgstr "%B kustutamisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1603
+#: ../libnautilus-private/nautilus-file-operations.c:1637
 msgid "Moving files to trash"
 msgstr "Failide prügikasti viskamine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1605
+#: ../libnautilus-private/nautilus-file-operations.c:1639
 #, c-format
 msgid "%'d file left to trash"
 msgid_plural "%'d files left to trash"
 msgstr[0] "Prügikasti on jäänud %'d fail"
 msgstr[1] "Prügikasti on jäänud %'d faili"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1655
+#: ../libnautilus-private/nautilus-file-operations.c:1689
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Faili pole võimalik prügikasti visata. Kas soovid seda koheselt kustutada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1656
+#: ../libnautilus-private/nautilus-file-operations.c:1690
 msgid "The file \"%B\" cannot be moved to the trash."
 msgstr "Faili \"%B\" pole võimalik prügikasti visata."
 
-#: ../libnautilus-private/nautilus-file-operations.c:1889
+#: ../libnautilus-private/nautilus-file-operations.c:1924
 msgid "Unable to eject %V"
 msgstr "%V väljastamine pole võimalik"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1891
+#: ../libnautilus-private/nautilus-file-operations.c:1926
 msgid "Unable to unmount %V"
 msgstr "%V lahtihaakimine pole võimalik"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2031
+#: ../libnautilus-private/nautilus-file-operations.c:2066
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "Kas soovid enne lahtihaakimist tühjendada prügikasti?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2033
+#: ../libnautilus-private/nautilus-file-operations.c:2068
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -1886,67 +1828,67 @@ msgstr ""
 "Sellele seadmele täiendava vaba ruumi tekitamiseks tuleks prügikast tühjaks "
 "teha. Kõik prügikastis olevad kirjed lähevad siis jäädavalt kaotsi. "
 
-#: ../libnautilus-private/nautilus-file-operations.c:2039
+#: ../libnautilus-private/nautilus-file-operations.c:2074
 msgid "Do not Empty Trash"
 msgstr "Ära tühjenda prügikasti"
 
 #. label, accelerator
-#: ../libnautilus-private/nautilus-file-operations.c:2041
+#: ../libnautilus-private/nautilus-file-operations.c:2076
 #: ../src/file-manager/fm-desktop-icon-view.c:705
 msgid "Empty Trash"
 msgstr "Tühjenda prügikast"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2138
+#: ../libnautilus-private/nautilus-file-operations.c:2173
 #, c-format
 msgid "Unable to mount %s"
 msgstr "%s ühendamine pole võimalik"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2215
+#: ../libnautilus-private/nautilus-file-operations.c:2250
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "Ettevalmistused %'d faili kopeerimiseks (%S)"
 msgstr[1] "Ettevalmistused %'d faili kopeerimiseks (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2221
+#: ../libnautilus-private/nautilus-file-operations.c:2256
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "Ettevalmistused %'d faili ümbertõstmiseks (%S)"
 msgstr[1] "Ettevalmistused %'d faili ümbertõstmiseks (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2227
+#: ../libnautilus-private/nautilus-file-operations.c:2262
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "Ettevalmistused %'d faili kustutamiseks (%S)"
 msgstr[1] "Ettevalmistused %'d faili kustutamiseks (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2233
+#: ../libnautilus-private/nautilus-file-operations.c:2268
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "Ettevalmistused %'d faili viskamiseks prügikasti"
 msgstr[1] "Ettevalmistused %'d faili viskamiseks prügikasti"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2264
-#: ../libnautilus-private/nautilus-file-operations.c:3038
-#: ../libnautilus-private/nautilus-file-operations.c:3137
-#: ../libnautilus-private/nautilus-file-operations.c:3181
+#: ../libnautilus-private/nautilus-file-operations.c:2299
+#: ../libnautilus-private/nautilus-file-operations.c:3173
+#: ../libnautilus-private/nautilus-file-operations.c:3296
+#: ../libnautilus-private/nautilus-file-operations.c:3341
 msgid "Error while copying."
 msgstr "Viga kopeerimisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2266
-#: ../libnautilus-private/nautilus-file-operations.c:3135
-#: ../libnautilus-private/nautilus-file-operations.c:3179
+#: ../libnautilus-private/nautilus-file-operations.c:2301
+#: ../libnautilus-private/nautilus-file-operations.c:3294
+#: ../libnautilus-private/nautilus-file-operations.c:3339
 msgid "Error while moving."
 msgstr "Viga ümbertõstmisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2270
+#: ../libnautilus-private/nautilus-file-operations.c:2305
 msgid "Error while moving files to trash."
 msgstr "Viga failide prügikasti viskamisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2324
+#: ../libnautilus-private/nautilus-file-operations.c:2359
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
@@ -1954,44 +1896,44 @@ msgstr ""
 "Kataloogis \"%B\" olevaid faile pole võimalik käsitleda, kuna sul puuduvad "
 "õigused nende nägemiseks."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2362
+#: ../libnautilus-private/nautilus-file-operations.c:2398
 msgid ""
 "The folder \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Kataloogi \"%B\" pole võimalik käsitleda, kuna sul pole õigust seda lugeda."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2436
+#: ../libnautilus-private/nautilus-file-operations.c:2475
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
 "Faili \"%B\" pole võimalik käsitleda, kuna sul pole õigust seda lugeda."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2439
+#: ../libnautilus-private/nautilus-file-operations.c:2478
 msgid "There was an error getting information about \"%B\"."
 msgstr "\"%B\" kohta andmete hankimisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2536
-#: ../libnautilus-private/nautilus-file-operations.c:2577
-#: ../libnautilus-private/nautilus-file-operations.c:2609
-#: ../libnautilus-private/nautilus-file-operations.c:2634
+#: ../libnautilus-private/nautilus-file-operations.c:2578
+#: ../libnautilus-private/nautilus-file-operations.c:2620
+#: ../libnautilus-private/nautilus-file-operations.c:2653
+#: ../libnautilus-private/nautilus-file-operations.c:2679
 msgid "Error while copying to \"%B\"."
 msgstr "Viga \"%B\" kopeerimisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2540
+#: ../libnautilus-private/nautilus-file-operations.c:2582
 msgid "You do not have permissions to access the destination folder."
 msgstr "Sul pole õigust sihtkataloogile ligi pääseda."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2542
+#: ../libnautilus-private/nautilus-file-operations.c:2584
 msgid "There was an error getting information about the destination."
 msgstr "Sihtkoha kohta andmete hankimisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2578
+#: ../libnautilus-private/nautilus-file-operations.c:2621
 msgid "The destination is not a folder."
 msgstr "Sihtkoht ei ole kataloog."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2610
+#: ../libnautilus-private/nautilus-file-operations.c:2654
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -1999,58 +1941,58 @@ msgstr ""
 "Sihtkohas ei ole piisavalt vaba ruumi. Lisaruumi tekitamiseks proovi "
 "võimalusel sealt mõned tarbetud failid kustutada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2612
+#: ../libnautilus-private/nautilus-file-operations.c:2656
 #, c-format
 msgid "There is %S available, but %S is required."
 msgstr " %S on saadaval, kui vajalik on %S."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2635
+#: ../libnautilus-private/nautilus-file-operations.c:2680
 msgid "The destination is read-only."
 msgstr "Sihtkoht on kirjutuskaitsega."
 
-#: ../libnautilus-private/nautilus-file-operations.c:2693
+#: ../libnautilus-private/nautilus-file-operations.c:2739
 msgid "Moving \"%B\" to \"%B\""
 msgstr "\"%B\" ümbernimetamine \"%B\"-ks"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2694
+#: ../libnautilus-private/nautilus-file-operations.c:2740
 msgid "Copying \"%B\" to \"%B\""
 msgstr "\"%B\" kopeerimine asukohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2699
+#: ../libnautilus-private/nautilus-file-operations.c:2745
 msgid "Duplicating \"%B\""
 msgstr "\"%B\" dubleerimine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2753
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d faili ümbertõstmine (asukohast \"%B\") sihtkohta \"%B\""
 msgstr[1] "%'d faili ümbertõstmine (asukohast \"%B\") sihtkohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2711
+#: ../libnautilus-private/nautilus-file-operations.c:2757
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
 msgstr[0] "%'d faili kopeerimine (asukohast \"%B\") sihtkohta \"%B\""
 msgstr[1] "%'d faili kopeerimine (asukohast \"%B\") sihtkohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2719
+#: ../libnautilus-private/nautilus-file-operations.c:2765
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
 msgstr[0] "%'d faili dubleerimine (asukohas \"%B\")"
 msgstr[1] "%'d faili dubleerimine (asukohas \"%B\")"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2729
+#: ../libnautilus-private/nautilus-file-operations.c:2775
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
 msgstr[0] "%'d faili ümbertõstmine sihtkohta \"%B\""
 msgstr[1] "%'d faili ümbertõstmine sihtkohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2733
+#: ../libnautilus-private/nautilus-file-operations.c:2779
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
 msgstr[0] "%'d faili kopeerimine sihtkohta \"%B\""
 msgstr[1] "%'d faili kopeerimine sihtkohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:2739
+#: ../libnautilus-private/nautilus-file-operations.c:2785
 #, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
@@ -2058,7 +2000,7 @@ msgstr[0] "%'d faili dubleerimine"
 msgstr[1] "%'d faili dubleerimine"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
-#: ../libnautilus-private/nautilus-file-operations.c:2759
+#: ../libnautilus-private/nautilus-file-operations.c:2805
 #, c-format
 msgid "%S of %S"
 msgstr "%S %S-st"
@@ -2066,11 +2008,11 @@ msgstr "%S %S-st"
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 #. * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:2768
+#: ../libnautilus-private/nautilus-file-operations.c:2814
 msgid "%S of %S — %T left (%S/sec)"
 msgstr "%S %S-st, jäänud %T (%S sekundis)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3042
+#: ../libnautilus-private/nautilus-file-operations.c:3177
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -2078,11 +2020,11 @@ msgstr ""
 "Kataloogi \"%B\" pole võimalik kopeerida, kuna sul puuduvad sihtkohas "
 "õigused selle loomiseks."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3045
+#: ../libnautilus-private/nautilus-file-operations.c:3180
 msgid "There was an error creating the folder \"%B\"."
 msgstr "Kataloogi \"%B\" loomisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3142
+#: ../libnautilus-private/nautilus-file-operations.c:3301
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -2090,58 +2032,58 @@ msgstr ""
 "Kataloogis \"%B\" olevaid faile pole võimalik kopeerida, kuna sul pole "
 "õigust neid näha."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3186
+#: ../libnautilus-private/nautilus-file-operations.c:3346
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
 msgstr ""
 "Kataloogi \"%B\" pole võimalik kopeerida, kuna sul pole õigust seda lugeda."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3228
-#: ../libnautilus-private/nautilus-file-operations.c:3675
-#: ../libnautilus-private/nautilus-file-operations.c:4196
+#: ../libnautilus-private/nautilus-file-operations.c:3389
+#: ../libnautilus-private/nautilus-file-operations.c:3909
+#: ../libnautilus-private/nautilus-file-operations.c:4469
 msgid "Error while moving \"%B\"."
 msgstr "Viga \"%B\" ümbertõstmisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3229
+#: ../libnautilus-private/nautilus-file-operations.c:3390
 msgid "Could not remove the source folder."
 msgstr "Lähtekataloogi pole võimalik eemaldada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3310
-#: ../libnautilus-private/nautilus-file-operations.c:3347
-#: ../libnautilus-private/nautilus-file-operations.c:3677
-#: ../libnautilus-private/nautilus-file-operations.c:3741
+#: ../libnautilus-private/nautilus-file-operations.c:3475
+#: ../libnautilus-private/nautilus-file-operations.c:3516
+#: ../libnautilus-private/nautilus-file-operations.c:3911
+#: ../libnautilus-private/nautilus-file-operations.c:3984
 msgid "Error while copying \"%B\"."
 msgstr "Viga \"%B\" kopeerimisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3311
+#: ../libnautilus-private/nautilus-file-operations.c:3476
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "Juba olemasolevast kataloogist %F pole võimalik faile eemaldada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3348
+#: ../libnautilus-private/nautilus-file-operations.c:3517
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "Juba olemasolevat faili %F pole võimalik eemaldada."
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:3479
-#: ../libnautilus-private/nautilus-file-operations.c:4041
+#: ../libnautilus-private/nautilus-file-operations.c:3687
+#: ../libnautilus-private/nautilus-file-operations.c:4295
 msgid "You cannot move a folder into itself."
 msgstr "Kataloogi pole võimalik iseenda alla tõsta."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3480
-#: ../libnautilus-private/nautilus-file-operations.c:4042
+#: ../libnautilus-private/nautilus-file-operations.c:3688
+#: ../libnautilus-private/nautilus-file-operations.c:4296
 msgid "You cannot copy a folder into itself."
 msgstr "Kataloogi pole võimalik iseenda alla kopeerida."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3481
-#: ../libnautilus-private/nautilus-file-operations.c:4043
+#: ../libnautilus-private/nautilus-file-operations.c:3689
+#: ../libnautilus-private/nautilus-file-operations.c:4297
 msgid "The destination folder is inside the source folder."
 msgstr "Sihtkataloog kuulub lähtekataloogi alla."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3574
-#: ../libnautilus-private/nautilus-file-operations.c:4106
+#: ../libnautilus-private/nautilus-file-operations.c:3807
+#: ../libnautilus-private/nautilus-file-operations.c:4378
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
@@ -2149,7 +2091,7 @@ msgstr ""
 "Kataloog nimega \"%B\" on juba olemas.  Kas soovid lähtekataloogi sellega "
 "liita?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3576
+#: ../libnautilus-private/nautilus-file-operations.c:3809
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2159,13 +2101,13 @@ msgstr ""
 "võimalike asendatavate failide kopeerimise kohta küsitakse kasutajalt "
 "kinnitust."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3581
-#: ../libnautilus-private/nautilus-file-operations.c:4113
+#: ../libnautilus-private/nautilus-file-operations.c:3814
+#: ../libnautilus-private/nautilus-file-operations.c:4385
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Kataloog nimega \"%B\" on juba olemas. Kas soovid seda asendada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3583
-#: ../libnautilus-private/nautilus-file-operations.c:4115
+#: ../libnautilus-private/nautilus-file-operations.c:3816
+#: ../libnautilus-private/nautilus-file-operations.c:4387
 #, c-format
 msgid ""
 "The folder already exists in \"%F\".  Replacing it will remove all files in "
@@ -2174,13 +2116,13 @@ msgstr ""
 "Kataloog on juba \"%F\" all olema.  Selle asendamisega eemaldatakse kõik "
 "selles kataloogis olevad failid."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3588
-#: ../libnautilus-private/nautilus-file-operations.c:4120
+#: ../libnautilus-private/nautilus-file-operations.c:3821
+#: ../libnautilus-private/nautilus-file-operations.c:4392
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "Fail nimega \"%B\" on juba olemas.  Kas soovid seda asendada?"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3590
-#: ../libnautilus-private/nautilus-file-operations.c:4122
+#: ../libnautilus-private/nautilus-file-operations.c:3823
+#: ../libnautilus-private/nautilus-file-operations.c:4394
 #, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
@@ -2188,28 +2130,28 @@ msgstr ""
 "Fail on juba \"%F\" all olema.  Selle asendamisega kirjutatakse faili sisu "
 "üle."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3679
+#: ../libnautilus-private/nautilus-file-operations.c:3913
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "%F all juba olemasolevat sama nimega faili pole võimalik eemaldada."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3742
+#: ../libnautilus-private/nautilus-file-operations.c:3985
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "Faili kopeerimisel %F alla tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:3954
+#: ../libnautilus-private/nautilus-file-operations.c:4204
 msgid "Preparing to Move to \"%B\""
 msgstr "Ettevalmistused ümbertõstmiseks sihtkohta \"%B\""
 
-#: ../libnautilus-private/nautilus-file-operations.c:3958
+#: ../libnautilus-private/nautilus-file-operations.c:4208
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Ettevalmistused %'d faili ümbertõstmiseks"
 msgstr[1] "Ettevalmistused %'d faili ümbertõstmiseks"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4108
+#: ../libnautilus-private/nautilus-file-operations.c:4380
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2219,93 +2161,93 @@ msgstr ""
 "võimalike asendatavate failide ümbertõstmise kohta küsitakse kasutajalt "
 "kinnitust."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4197
+#: ../libnautilus-private/nautilus-file-operations.c:4470
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "Faili ümbertõstmisel %F alla tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4466
+#: ../libnautilus-private/nautilus-file-operations.c:4745
 msgid "Creating links in \"%B\""
 msgstr "\"%B\" alla viitade loomine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4470
+#: ../libnautilus-private/nautilus-file-operations.c:4749
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d failile viida loomine"
 msgstr[1] "%'d failile viitade loomine"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4544
+#: ../libnautilus-private/nautilus-file-operations.c:4847
 msgid "Error while creating link to %B."
 msgstr "Viga viida loomisel sihtkohta %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4546
+#: ../libnautilus-private/nautilus-file-operations.c:4849
 msgid "Symbolic links only supported for local files"
 msgstr "Nimeviidad on toetatud ainult kohalike failide korral"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4549
+#: ../libnautilus-private/nautilus-file-operations.c:4852
 msgid "The target doesn't support symbolic links."
 msgstr "Sihtkoht ei toeta nimeviitasid."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4552
+#: ../libnautilus-private/nautilus-file-operations.c:4855
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "Nimeviida loomisel asukohas %F tekkis viga."
 
-#: ../libnautilus-private/nautilus-file-operations.c:4841
+#: ../libnautilus-private/nautilus-file-operations.c:5149
 msgid "Setting permissions"
 msgstr "Õiguste seadmine"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5088
+#: ../libnautilus-private/nautilus-file-operations.c:5395
 msgid "untitled folder"
 msgstr "nimetu kataloog"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5096
+#: ../libnautilus-private/nautilus-file-operations.c:5403
 msgid "new file"
 msgstr "uus fail"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5186
+#: ../libnautilus-private/nautilus-file-operations.c:5527
 msgid "Error while creating directory %B."
 msgstr "Viga kataloogi %B loomisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5188
+#: ../libnautilus-private/nautilus-file-operations.c:5529
 msgid "Error while creating file %B."
 msgstr "Viga faili %B loomisel."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5190
+#: ../libnautilus-private/nautilus-file-operations.c:5531
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "%F sisse kataloogi loomisel tekkis viga."
 
-#: ../libnautilus-private/nautilus-file.c:911
+#: ../libnautilus-private/nautilus-file.c:918
 #: ../libnautilus-private/nautilus-vfs-file.c:265
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "Seda faili pole võimalik külge haakida"
 
-#: ../libnautilus-private/nautilus-file.c:1323
+#: ../libnautilus-private/nautilus-file.c:1330
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Failinimedes pole kaldkriipsud lubatud"
 
-#: ../libnautilus-private/nautilus-file.c:1341
+#: ../libnautilus-private/nautilus-file.c:1348
 #, c-format
 msgid "File not found"
 msgstr "Faili ei leitud"
 
-#: ../libnautilus-private/nautilus-file.c:1367
+#: ../libnautilus-private/nautilus-file.c:1374
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Ülemise taseme failide nime pole võimalik muuta."
 
-#: ../libnautilus-private/nautilus-file.c:1384
+#: ../libnautilus-private/nautilus-file.c:1391
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Töölauaikooni nime pole võimalik muuta"
 
-#: ../libnautilus-private/nautilus-file.c:1416
+#: ../libnautilus-private/nautilus-file.c:1423
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Töölauafaili nime pole võimalik muuta"
@@ -2325,65 +2267,65 @@ msgstr "Töölauafaili nime pole võimalik muuta"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3585
+#: ../libnautilus-private/nautilus-file.c:3607
 msgid "today at 00:00:00 PM"
 msgstr "täna kell 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3586
+#: ../libnautilus-private/nautilus-file.c:3608
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "täna kell %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3588
+#: ../libnautilus-private/nautilus-file.c:3610
 msgid "today at 00:00 PM"
 msgstr "täna kell 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3589
+#: ../libnautilus-private/nautilus-file.c:3611
 msgid "today at %-I:%M %p"
 msgstr "täna kell %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3591
+#: ../libnautilus-private/nautilus-file.c:3613
 msgid "today, 00:00 PM"
 msgstr "täna, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3592
+#: ../libnautilus-private/nautilus-file.c:3614
 msgid "today, %-I:%M %p"
 msgstr "täna, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3594
-#: ../libnautilus-private/nautilus-file.c:3595
+#: ../libnautilus-private/nautilus-file.c:3616
+#: ../libnautilus-private/nautilus-file.c:3617
 msgid "today"
 msgstr "täna"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3604
+#: ../libnautilus-private/nautilus-file.c:3626
 msgid "yesterday at 00:00:00 PM"
 msgstr "eile kell 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3605
+#: ../libnautilus-private/nautilus-file.c:3627
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "eile kell %H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3607
+#: ../libnautilus-private/nautilus-file.c:3629
 msgid "yesterday at 00:00 PM"
 msgstr "eile kell 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3608
+#: ../libnautilus-private/nautilus-file.c:3630
 msgid "yesterday at %-I:%M %p"
 msgstr "eile kell %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3610
+#: ../libnautilus-private/nautilus-file.c:3632
 msgid "yesterday, 00:00 PM"
 msgstr "eile, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3611
+#: ../libnautilus-private/nautilus-file.c:3633
 msgid "yesterday, %-I:%M %p"
 msgstr "eile, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3613
-#: ../libnautilus-private/nautilus-file.c:3614
+#: ../libnautilus-private/nautilus-file.c:3635
+#: ../libnautilus-private/nautilus-file.c:3636
 msgid "yesterday"
 msgstr "eile"
 
@@ -2392,88 +2334,88 @@ msgstr "eile"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3625
+#: ../libnautilus-private/nautilus-file.c:3647
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Kolmapäev, 00. september 0000 kell 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3626
+#: ../libnautilus-private/nautilus-file.c:3648
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %B %Y kell %H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3628
+#: ../libnautilus-private/nautilus-file.c:3650
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "E, 00. okt 0000 kell 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3629
+#: ../libnautilus-private/nautilus-file.c:3651
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d. %b %Y kell %H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3631
+#: ../libnautilus-private/nautilus-file.c:3653
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "E, 00. okt 0000 kell 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3632
+#: ../libnautilus-private/nautilus-file.c:3654
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d. %b %Y kell %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3634
+#: ../libnautilus-private/nautilus-file.c:3656
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. okt 0000 kell 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3635
+#: ../libnautilus-private/nautilus-file.c:3657
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y kell %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3637
+#: ../libnautilus-private/nautilus-file.c:3659
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. okt 0000, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3638
+#: ../libnautilus-private/nautilus-file.c:3660
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3640
+#: ../libnautilus-private/nautilus-file.c:3662
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3641
+#: ../libnautilus-private/nautilus-file.c:3663
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%d.%m.%y, %H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3643
+#: ../libnautilus-private/nautilus-file.c:3665
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3644
+#: ../libnautilus-private/nautilus-file.c:3666
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: ../libnautilus-private/nautilus-file.c:4257
+#: ../libnautilus-private/nautilus-file.c:4279
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Õiguseid pole lubatud määrata"
 
-#: ../libnautilus-private/nautilus-file.c:4565
+#: ../libnautilus-private/nautilus-file.c:4587
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Omanikku pole lubatud määrata"
 
-#: ../libnautilus-private/nautilus-file.c:4583
+#: ../libnautilus-private/nautilus-file.c:4605
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Määratud omanikku '%s' pole olemas"
 
-#: ../libnautilus-private/nautilus-file.c:4847
+#: ../libnautilus-private/nautilus-file.c:4869
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Omanikgruppi pole lubatud määrata"
 
-#: ../libnautilus-private/nautilus-file.c:4865
+#: ../libnautilus-private/nautilus-file.c:4887
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Määratud gruppi '%s' pole olemas"
 
-#: ../libnautilus-private/nautilus-file.c:5008
+#: ../libnautilus-private/nautilus-file.c:5030
 #: ../src/file-manager/fm-directory-view.c:2204
 #, c-format
 msgid "%'u item"
@@ -2481,14 +2423,14 @@ msgid_plural "%'u items"
 msgstr[0] "%'u kirje"
 msgstr[1] "%'u kirjet"
 
-#: ../libnautilus-private/nautilus-file.c:5009
+#: ../libnautilus-private/nautilus-file.c:5031
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u kataloog"
 msgstr[1] "%'u kataloogi"
 
-#: ../libnautilus-private/nautilus-file.c:5010
+#: ../libnautilus-private/nautilus-file.c:5032
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2496,51 +2438,51 @@ msgstr[0] "%'u fail"
 msgstr[1] "%'u faili"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5089
+#: ../libnautilus-private/nautilus-file.c:5111
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5090
+#: ../libnautilus-private/nautilus-file.c:5112
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s baiti)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5394
-#: ../libnautilus-private/nautilus-file.c:5410
+#: ../libnautilus-private/nautilus-file.c:5416
+#: ../libnautilus-private/nautilus-file.c:5432
 msgid "? items"
 msgstr "? kirjet"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5400
+#: ../libnautilus-private/nautilus-file.c:5422
 msgid "? bytes"
 msgstr "? baiti"
 
-#: ../libnautilus-private/nautilus-file.c:5415
+#: ../libnautilus-private/nautilus-file.c:5437
 msgid "unknown type"
 msgstr "tundmatu liik"
 
-#: ../libnautilus-private/nautilus-file.c:5418
+#: ../libnautilus-private/nautilus-file.c:5440
 msgid "unknown MIME type"
 msgstr "tundmatu MIME-liik"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5424
+#: ../libnautilus-private/nautilus-file.c:5446
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "tundmatu"
 
-#: ../libnautilus-private/nautilus-file.c:5458
+#: ../libnautilus-private/nautilus-file.c:5480
 msgid "program"
 msgstr "programm"
 
-#: ../libnautilus-private/nautilus-file.c:5478
+#: ../libnautilus-private/nautilus-file.c:5500
 msgid "link"
 msgstr "link"
 
-#: ../libnautilus-private/nautilus-file.c:5500
+#: ../libnautilus-private/nautilus-file.c:5522
 msgid "link (broken)"
 msgstr "link (katkenud)"
 
@@ -2656,14 +2598,14 @@ msgstr "Otsi faile failinime ja failiomaduste järgi"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
 #: ../src/file-manager/fm-icon-container.c:582
-#: ../src/file-manager/fm-icon-view.c:2991
+#: ../src/file-manager/fm-icon-view.c:2959
 msgid "Icon View"
 msgstr "Ikoonivaade"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
-#: ../src/file-manager/fm-icon-view.c:3005
+#: ../src/file-manager/fm-icon-view.c:2973
 msgid "Compact View"
 msgstr "Kompaktvaade"
 
@@ -2671,7 +2613,7 @@ msgstr "Kompaktvaade"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
 #: ../src/file-manager/fm-list-view.c:1466
-#: ../src/file-manager/fm-list-view.c:2868
+#: ../src/file-manager/fm-list-view.c:2882
 msgid "List View"
 msgstr "Nimekirjavaade"
 
@@ -2762,7 +2704,7 @@ msgstr "Prügikast"
 msgid "Network Servers"
 msgstr "Võrguserverid"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2415
+#: ../libnautilus-private/nautilus-icon-container.c:2424
 msgid "The selection rectangle"
 msgstr "Valiku ristkülik"
 
@@ -2795,8 +2737,8 @@ msgstr ""
 #: ../libnautilus-private/nautilus-mime-actions.c:615
 #: ../src/file-manager/fm-directory-view.c:6656
 #: ../src/file-manager/fm-directory-view.c:6755
-#: ../src/file-manager/fm-directory-view.c:7457
-#: ../src/file-manager/fm-directory-view.c:7715
+#: ../src/file-manager/fm-directory-view.c:7455
+#: ../src/file-manager/fm-directory-view.c:7713
 msgid "Mo_ve to Trash"
 msgstr "_Viska prügikasti"
 
@@ -2844,12 +2786,12 @@ msgstr[0] "See avab %d eraldi akna."
 msgstr[1] "See avab %d eraldi akent."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1229
-#: ../src/nautilus-window-manage-views.c:1899
-#: ../src/nautilus-window-manage-views.c:1905
-#: ../src/nautilus-window-manage-views.c:1922
-#: ../src/nautilus-window-manage-views.c:1933
-#: ../src/nautilus-window-manage-views.c:1939
-#: ../src/nautilus-window-manage-views.c:1964
+#: ../src/nautilus-window-manage-views.c:1880
+#: ../src/nautilus-window-manage-views.c:1886
+#: ../src/nautilus-window-manage-views.c:1903
+#: ../src/nautilus-window-manage-views.c:1914
+#: ../src/nautilus-window-manage-views.c:1920
+#: ../src/nautilus-window-manage-views.c:1945
 #, c-format
 msgid "Could not display \"%s\"."
 msgstr "\"%s\" ei ole kuvatav."
@@ -2971,8 +2913,8 @@ msgstr "_Sirvi..."
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
 #: ../src/file-manager/fm-directory-view.c:6574
-#: ../src/file-manager/fm-directory-view.c:7618
-#: ../src/file-manager/fm-tree-view.c:1149
+#: ../src/file-manager/fm-directory-view.c:7616
+#: ../src/file-manager/fm-tree-view.c:1174
 #: ../src/nautilus-places-sidebar.c:1954
 msgid "_Open"
 msgstr "_Ava"
@@ -3141,7 +3083,7 @@ msgstr "Failihalduri akende käitumise ja välimuse muutmine"
 msgid "File Management"
 msgstr "Failihaldus"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1302
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1336
 msgid "Home Folder"
 msgstr "Kodukataloog"
 
@@ -3191,7 +3133,7 @@ msgstr "Taust"
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:679
 #: ../src/file-manager/fm-directory-view.c:6606
-#: ../src/file-manager/fm-directory-view.c:7784
+#: ../src/file-manager/fm-directory-view.c:7782
 msgid "E_mpty Trash"
 msgstr "_Tühjenda prügikast"
 
@@ -3441,13 +3383,13 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: käesoleva akna suurus ja asukoht"
 
 #: ../src/file-manager/fm-directory-view.c:5688
-#: ../src/file-manager/fm-tree-view.c:963
+#: ../src/file-manager/fm-tree-view.c:970
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "\"%s\" tõstetakse ümber, kui valid käsu \"Aseta\""
 
 #: ../src/file-manager/fm-directory-view.c:5692
-#: ../src/file-manager/fm-tree-view.c:967
+#: ../src/file-manager/fm-tree-view.c:974
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "\"%s\" kopeeritakse, kui valid käsu \"Aseta\""
@@ -3469,7 +3411,7 @@ msgstr[0] "%'d valitud kirje kopeeritakse, kui valid käsu \"Aseta\""
 msgstr[1] "%'d valitud kirjet kopeeritakse, kui valid käsu \"Aseta\""
 
 #: ../src/file-manager/fm-directory-view.c:5762
-#: ../src/file-manager/fm-tree-view.c:1006
+#: ../src/file-manager/fm-tree-view.c:1013
 msgid "There is nothing on the clipboard to paste."
 msgstr "Lõikelaualt ei ole midagi asetada."
 
@@ -3580,9 +3522,9 @@ msgstr "Kõikide navigatsiooniaknas valitud kirjete avamine"
 #. add the "open in new tab" menu item
 #: ../src/file-manager/fm-directory-view.c:6586
 #: ../src/file-manager/fm-directory-view.c:6732
-#: ../src/file-manager/fm-directory-view.c:7402
-#: ../src/file-manager/fm-directory-view.c:7669
-#: ../src/file-manager/fm-tree-view.c:1160
+#: ../src/file-manager/fm-directory-view.c:7400
+#: ../src/file-manager/fm-directory-view.c:7667
+#: ../src/file-manager/fm-tree-view.c:1185
 #: ../src/nautilus-places-sidebar.c:1962
 msgid "Open in New _Tab"
 msgstr "Ava uuel _kaardil"
@@ -3657,7 +3599,7 @@ msgstr ""
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6624
 #: ../src/file-manager/fm-directory-view.c:6750
-#: ../src/file-manager/fm-tree-view.c:1212
+#: ../src/file-manager/fm-tree-view.c:1237
 msgid "_Paste Into Folder"
 msgstr "_Aseta failid kataloogi"
 
@@ -3712,7 +3654,7 @@ msgstr "Kõigi valitud kirjete dubleerimine"
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6644
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:7756
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "Loo _viit"
@@ -3736,7 +3678,7 @@ msgstr "Valitud kirje ümbernimetamine"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6657
-#: ../src/file-manager/fm-directory-view.c:7716
+#: ../src/file-manager/fm-directory-view.c:7714
 msgid "Move each selected item to the Trash"
 msgstr "Kõigi märgitud kirjete prügikasti viskamine"
 
@@ -3745,8 +3687,8 @@ msgstr "Kõigi märgitud kirjete prügikasti viskamine"
 #. add the "delete" menu item
 #: ../src/file-manager/fm-directory-view.c:6660
 #: ../src/file-manager/fm-directory-view.c:6759
-#: ../src/file-manager/fm-directory-view.c:7736
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-directory-view.c:7734
+#: ../src/file-manager/fm-tree-view.c:1264
 msgid "_Delete"
 msgstr "Kust_uta"
 
@@ -3810,7 +3752,6 @@ msgstr "Valitud kettaseadme ühendamine"
 #: ../src/file-manager/fm-directory-view.c:6686
 #: ../src/file-manager/fm-directory-view.c:6702
 #: ../src/file-manager/fm-directory-view.c:6771
-#: ../src/file-manager/fm-tree-view.c:737
 msgid "_Unmount Volume"
 msgstr "_Ühenda kettaseade lahti"
 
@@ -3819,10 +3760,18 @@ msgstr "_Ühenda kettaseade lahti"
 msgid "Unmount the selected volume"
 msgstr "Ühenduse katkestamine valitud kettaseadmega"
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6690
+#: ../src/file-manager/fm-directory-view.c:6706
+#: ../src/file-manager/fm-directory-view.c:6775
+msgid "_Eject Volume"
+msgstr "_Väljasta andmekandja"
+
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6691
 msgid "Eject the selected volume"
-msgstr "Valitud seadme väljastamine"
+msgstr "Valitud andmekandja väljastamine"
 
 #. name, stock id
 #. label, accelerator
@@ -3971,129 +3920,129 @@ msgstr "Skriptide käivitamine või korrastamine kataloogis %s"
 msgid "_Scripts"
 msgstr "_Skriptid"
 
-#: ../src/file-manager/fm-directory-view.c:7159
+#: ../src/file-manager/fm-directory-view.c:7163
 #, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Avatud kataloogi väljatõstmine prügikastist asukohale \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7161
+#: ../src/file-manager/fm-directory-view.c:7165
 #, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgstr "Valitud kataloogi väljatõstmine prügikastist asukohale \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7167
 #, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgstr "Valitud faili väljatõstmine prügikastist asukohale \"%s\""
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7377
-#: ../src/file-manager/fm-directory-view.c:7629
-#: ../src/file-manager/fm-tree-view.c:1169
+#: ../src/file-manager/fm-directory-view.c:7375
+#: ../src/file-manager/fm-directory-view.c:7627
+#: ../src/file-manager/fm-tree-view.c:1194
 #: ../src/nautilus-places-sidebar.c:1969
 msgid "Open in New _Window"
 msgstr "Ava uues _aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7379
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7377
+#: ../src/file-manager/fm-directory-view.c:7636
 msgid "Browse in New _Window"
 msgstr "Sirvi uues _aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7387
-#: ../src/file-manager/fm-directory-view.c:7648
+#: ../src/file-manager/fm-directory-view.c:7385
+#: ../src/file-manager/fm-directory-view.c:7646
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "_Sirvi kataloogi"
 msgstr[1] "_Sirvi katalooge"
 
-#: ../src/file-manager/fm-directory-view.c:7404
-#: ../src/file-manager/fm-directory-view.c:7678
+#: ../src/file-manager/fm-directory-view.c:7402
+#: ../src/file-manager/fm-directory-view.c:7676
 msgid "Browse in New _Tab"
 msgstr "Sirvi uuel _kaardil"
 
-#: ../src/file-manager/fm-directory-view.c:7453
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7451
+#: ../src/file-manager/fm-directory-view.c:7709
 msgid "_Delete Permanently"
 msgstr "Kustuta _jäädavalt"
 
-#: ../src/file-manager/fm-directory-view.c:7454
+#: ../src/file-manager/fm-directory-view.c:7452
 msgid "Delete the open folder permanently"
 msgstr "Avatud kataloogi jäädavalt kustutamine"
 
-#: ../src/file-manager/fm-directory-view.c:7458
+#: ../src/file-manager/fm-directory-view.c:7456
 msgid "Move the open folder to the Trash"
 msgstr "Avatud kataloogi prügikasti viskamine"
 
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7609
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Ava rakendusega \"%s\""
 
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7629
 #, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "Ava uues _aknas"
 msgstr[1] "Ava %'d-s uues _aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7640
+#: ../src/file-manager/fm-directory-view.c:7638
 #, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "Sirvi uues _aknas"
 msgstr[1] "Sirvi %'d-s uues _aknas"
 
-#: ../src/file-manager/fm-directory-view.c:7671
+#: ../src/file-manager/fm-directory-view.c:7669
 #, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "Ava uuel _kaardil"
 msgstr[1] "Ava %'d-l uuel _kaardil"
 
-#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7678
 #, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "Sirvi uuel _kaardil"
 msgstr[1] "Sirvi %'d-l uuel _kaardil"
 
-#: ../src/file-manager/fm-directory-view.c:7712
+#: ../src/file-manager/fm-directory-view.c:7710
 msgid "Delete all selected items permanently"
 msgstr "Kõigi kirjete lõplik kustutamine"
 
-#: ../src/file-manager/fm-directory-view.c:9017
+#: ../src/file-manager/fm-directory-view.c:9015
 msgid "Download location?"
 msgstr "Kas laadida asukoht alla?"
 
-#: ../src/file-manager/fm-directory-view.c:9020
+#: ../src/file-manager/fm-directory-view.c:9018
 msgid "You can download it or make a link to it."
 msgstr "Sa võid selle alla laadida või sellele viida luua."
 
-#: ../src/file-manager/fm-directory-view.c:9023
+#: ../src/file-manager/fm-directory-view.c:9021
 msgid "Make a _Link"
 msgstr "Loo _viit"
 
-#: ../src/file-manager/fm-directory-view.c:9027
+#: ../src/file-manager/fm-directory-view.c:9025
 msgid "_Download"
 msgstr "_Laadi alla"
 
-#: ../src/file-manager/fm-directory-view.c:9089
-#: ../src/file-manager/fm-directory-view.c:9154
-#: ../src/file-manager/fm-directory-view.c:9259
+#: ../src/file-manager/fm-directory-view.c:9087
+#: ../src/file-manager/fm-directory-view.c:9152
+#: ../src/file-manager/fm-directory-view.c:9257
 msgid "Drag and drop is not supported."
 msgstr "Pukseerimine ei ole toetatud."
 
-#: ../src/file-manager/fm-directory-view.c:9090
+#: ../src/file-manager/fm-directory-view.c:9088
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Pukseerimine on võimalik vaid kohaliku failisüsteemi ulatuses."
 
-#: ../src/file-manager/fm-directory-view.c:9155
-#: ../src/file-manager/fm-directory-view.c:9260
+#: ../src/file-manager/fm-directory-view.c:9153
+#: ../src/file-manager/fm-directory-view.c:9258
 msgid "An invalid drag type was used."
 msgstr "Kasutati vale lohistamisliiki."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:9327
+#: ../src/file-manager/fm-directory-view.c:9325
 msgid "dropped text.txt"
 msgstr "hiirega lohistatud tekst.txt"
 
@@ -4221,7 +4170,7 @@ msgid "by _Name"
 msgstr "_nime järgi"
 
 #: ../src/file-manager/fm-icon-view.c:124
-#: ../src/file-manager/fm-icon-view.c:1554
+#: ../src/file-manager/fm-icon-view.c:1539
 msgid "Keep icons sorted by name in rows"
 msgstr "Ikooniridade sortimine nime järgi"
 
@@ -4230,7 +4179,7 @@ msgid "by _Size"
 msgstr "_suuruse järgi"
 
 #: ../src/file-manager/fm-icon-view.c:131
-#: ../src/file-manager/fm-icon-view.c:1558
+#: ../src/file-manager/fm-icon-view.c:1543
 msgid "Keep icons sorted by size in rows"
 msgstr "Ikooniridade sortimine suuruse järgi"
 
@@ -4239,7 +4188,7 @@ msgid "by _Type"
 msgstr "_tüübi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:138
-#: ../src/file-manager/fm-icon-view.c:1562
+#: ../src/file-manager/fm-icon-view.c:1547
 msgid "Keep icons sorted by type in rows"
 msgstr "Ikooniridade sortimine tüübi järgi"
 
@@ -4248,7 +4197,7 @@ msgid "by Modification _Date"
 msgstr "_muutmisaja järgi"
 
 #: ../src/file-manager/fm-icon-view.c:145
-#: ../src/file-manager/fm-icon-view.c:1566
+#: ../src/file-manager/fm-icon-view.c:1551
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Ikooniridade sortimine muutmisaja järgi"
 
@@ -4257,151 +4206,151 @@ msgid "by _Emblems"
 msgstr "_embleemi järgi"
 
 #: ../src/file-manager/fm-icon-view.c:152
-#: ../src/file-manager/fm-icon-view.c:1570
+#: ../src/file-manager/fm-icon-view.c:1555
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Ikooniridade sortimine embleemi järgi"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-icon-view.c:1514
+#: ../src/file-manager/fm-icon-view.c:1499
 msgid "Arran_ge Items"
 msgstr "_Korrasta elemendid"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1516
+#: ../src/file-manager/fm-icon-view.c:1501
 msgid "Stretc_h Icon..."
 msgstr "_Venita ikooni..."
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1517
+#: ../src/file-manager/fm-icon-view.c:1502
 msgid "Make the selected icon stretchable"
 msgstr "Valitud ikooni muutmine venitatavaks"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1520
-#: ../src/file-manager/fm-icon-view.c:1690
+#: ../src/file-manager/fm-icon-view.c:1505
+#: ../src/file-manager/fm-icon-view.c:1675
 msgid "Restore Icons' Original Si_zes"
 msgstr "Taasta ikoonide _algsed suurused"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1521
+#: ../src/file-manager/fm-icon-view.c:1506
 msgid "Restore each selected icon to its original size"
 msgstr "Kõigi valitud ikoonide algsete suuruste taastamine"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1524
+#: ../src/file-manager/fm-icon-view.c:1509
 msgid "Clean _Up by Name"
 msgstr "Järjesta _nime järgi"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1525
+#: ../src/file-manager/fm-icon-view.c:1510
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Aknas olevate ikoonide paremini korrastamine ning kattuvuse ärahoidmine"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1531
+#: ../src/file-manager/fm-icon-view.c:1516
 msgid "Compact _Layout"
 msgstr "Kompaktne _paigutus"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1532
+#: ../src/file-manager/fm-icon-view.c:1517
 msgid "Toggle using a tighter layout scheme"
 msgstr "Tihepaigutuse sisse- ja väljalülitamine"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1536
+#: ../src/file-manager/fm-icon-view.c:1521
 msgid "Re_versed Order"
 msgstr "Pööratud _järjestus"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1537
+#: ../src/file-manager/fm-icon-view.c:1522
 msgid "Display icons in the opposite order"
 msgstr "Ikoonide kuvamine pööratud järjestuses"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1541
+#: ../src/file-manager/fm-icon-view.c:1526
 msgid "_Keep Aligned"
 msgstr "_Hoia reastatult"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1542
+#: ../src/file-manager/fm-icon-view.c:1527
 msgid "Keep icons lined up on a grid"
 msgstr "Ikoonide hoidmine ridadesse järjestatuna"
 
-#: ../src/file-manager/fm-icon-view.c:1549
+#: ../src/file-manager/fm-icon-view.c:1534
 msgid "_Manually"
 msgstr "_Käsitsi"
 
-#: ../src/file-manager/fm-icon-view.c:1550
+#: ../src/file-manager/fm-icon-view.c:1535
 msgid "Leave icons wherever they are dropped"
 msgstr "Ikoonide jätmine sinna, kuhu nad lohistatakse"
 
-#: ../src/file-manager/fm-icon-view.c:1553
+#: ../src/file-manager/fm-icon-view.c:1538
 msgid "By _Name"
 msgstr "_Nime järgi"
 
-#: ../src/file-manager/fm-icon-view.c:1557
+#: ../src/file-manager/fm-icon-view.c:1542
 msgid "By _Size"
 msgstr "_Suuruse järgi"
 
-#: ../src/file-manager/fm-icon-view.c:1561
+#: ../src/file-manager/fm-icon-view.c:1546
 msgid "By _Type"
 msgstr "_Tüübi järgi"
 
-#: ../src/file-manager/fm-icon-view.c:1565
+#: ../src/file-manager/fm-icon-view.c:1550
 msgid "By Modification _Date"
 msgstr "_Muutmisaja järgi"
 
-#: ../src/file-manager/fm-icon-view.c:1569
+#: ../src/file-manager/fm-icon-view.c:1554
 msgid "By _Emblems"
 msgstr "_Embleemi järgi"
 
-#: ../src/file-manager/fm-icon-view.c:1691
+#: ../src/file-manager/fm-icon-view.c:1676
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Taasta ikooni algne suurus"
 
-#: ../src/file-manager/fm-icon-view.c:2113
+#: ../src/file-manager/fm-icon-view.c:2098
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "osutab kirjele \"%s\""
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:2993
+#: ../src/file-manager/fm-icon-view.c:2961
 msgid "_Icons"
 msgstr "_Ikoonid"
 
-#: ../src/file-manager/fm-icon-view.c:2994
+#: ../src/file-manager/fm-icon-view.c:2962
 msgid "The icon view encountered an error."
 msgstr "Ikoonivaade sattus veale."
 
-#: ../src/file-manager/fm-icon-view.c:2995
+#: ../src/file-manager/fm-icon-view.c:2963
 msgid "The icon view encountered an error while starting up."
 msgstr "Ikoonivaate käivitamisel satuti veale."
 
-#: ../src/file-manager/fm-icon-view.c:2996
+#: ../src/file-manager/fm-icon-view.c:2964
 msgid "Display this location with the icon view."
 msgstr "Selle asukoha kuvamine ikoonivaatena."
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:3007
+#: ../src/file-manager/fm-icon-view.c:2975
 msgid "_Compact"
 msgstr "_Kompaktne"
 
-#: ../src/file-manager/fm-icon-view.c:3008
+#: ../src/file-manager/fm-icon-view.c:2976
 msgid "The compact view encountered an error."
 msgstr "Kompaktvaade sattus veale."
 
-#: ../src/file-manager/fm-icon-view.c:3009
+#: ../src/file-manager/fm-icon-view.c:2977
 msgid "The compact view encountered an error while starting up."
 msgstr "Kompaktvaate käivitamisel satuti veale."
 
-#: ../src/file-manager/fm-icon-view.c:3010
+#: ../src/file-manager/fm-icon-view.c:2978
 msgid "Display this location with the compact view."
 msgstr "Selle asukoha kuvamine kompaktvaatena."
 
@@ -4411,44 +4360,44 @@ msgid "(Empty)"
 msgstr "(Tühi)"
 
 #: ../src/file-manager/fm-list-model.c:375
-#: ../src/file-manager/fm-tree-model.c:1266 ../src/nautilus-window-slot.c:190
+#: ../src/file-manager/fm-tree-model.c:1266 ../src/nautilus-window-slot.c:191
 msgid "Loading..."
 msgstr "Laadimine..."
 
-#: ../src/file-manager/fm-list-view.c:2083
+#: ../src/file-manager/fm-list-view.c:2085
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Kataloogis %s nähtavad veerud"
 
-#: ../src/file-manager/fm-list-view.c:2102
-msgid "Choose the order of information to appear in this folder."
-msgstr "Vali, mismoodi selles kataloogis andmeid järjestatakse"
+#: ../src/file-manager/fm-list-view.c:2104
+msgid "Choose the order of information to appear in this folder:"
+msgstr "Vali, mismoodi selles kataloogis andmeid järjestatakse:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2144
+#: ../src/file-manager/fm-list-view.c:2158
 msgid "Visible _Columns..."
 msgstr "Nähtavad _veerud..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2145
+#: ../src/file-manager/fm-list-view.c:2159
 msgid "Select the columns visible in this folder"
 msgstr "Valib veerud, mida selles kataloogis näidata"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2870
+#: ../src/file-manager/fm-list-view.c:2884
 msgid "_List"
 msgstr "_Nimekiri"
 
-#: ../src/file-manager/fm-list-view.c:2871
+#: ../src/file-manager/fm-list-view.c:2885
 msgid "The list view encountered an error."
 msgstr "Loendivaade sattus veale."
 
-#: ../src/file-manager/fm-list-view.c:2872
+#: ../src/file-manager/fm-list-view.c:2886
 msgid "The list view encountered an error while starting up."
 msgstr "Loendivaate käivitamisel satuti veale."
 
-#: ../src/file-manager/fm-list-view.c:2873
+#: ../src/file-manager/fm-list-view.c:2887
 msgid "Display this location with the list view."
 msgstr "Selle asukoha kuvamine nimekirjavaatena."
 
@@ -4773,33 +4722,29 @@ msgstr "Omaduste akna loomine"
 msgid "Select Custom Icon"
 msgstr "Kohandatud ikooni valimine"
 
-#: ../src/file-manager/fm-tree-view.c:737
-msgid "E_ject"
-msgstr "_Väljasta"
-
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1180
+#: ../src/file-manager/fm-tree-view.c:1205
 msgid "Create Folder"
 msgstr "Loo kataloog"
 
-#: ../src/file-manager/fm-tree-view.c:1228
+#: ../src/file-manager/fm-tree-view.c:1253
 msgid "Move to Trash"
 msgstr "Viska prügikasti"
 
-#: ../src/file-manager/fm-tree-view.c:1306
+#: ../src/file-manager/fm-tree-view.c:1340
 #: ../src/nautilus-places-sidebar.c:322
 msgid "File System"
 msgstr "Failisüsteem"
 
-#: ../src/file-manager/fm-tree-view.c:1310
+#: ../src/file-manager/fm-tree-view.c:1344
 msgid "Network Neighbourhood"
 msgstr "Võrgunaabrus"
 
-#: ../src/file-manager/fm-tree-view.c:1560
+#: ../src/file-manager/fm-tree-view.c:1594
 msgid "Tree"
 msgstr "Puu"
 
-#: ../src/file-manager/fm-tree-view.c:1566
+#: ../src/file-manager/fm-tree-view.c:1600
 msgid "Show Tree"
 msgstr "Näita kataloogipuud"
 
@@ -5108,7 +5053,7 @@ msgstr "_Lisa järjehoidja"
 msgid "C_onnect"
 msgstr "Ü_hendu"
 
-#: ../src/nautilus-desktop-window.c:243 ../src/nautilus-pathbar.c:1214
+#: ../src/nautilus-desktop-window.c:243 ../src/nautilus-pathbar.c:1215
 #: ../src/nautilus-places-sidebar.c:310
 msgid "Desktop"
 msgstr "Töölaud"
@@ -5570,6 +5515,10 @@ msgstr "Säritusprogramm"
 #: ../src/nautilus-image-properties-page.c:249
 msgid "Focal Length"
 msgstr "Fookuskaugus"
+
+#: ../src/nautilus-image-properties-page.c:250
+msgid "Software"
+msgstr "Tarkvara"
 
 #: ../src/nautilus-image-properties-page.c:309
 #: ../src/nautilus-query-editor.c:117
@@ -6134,7 +6083,7 @@ msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Vabandust, \"%s\" ei ole sobilik failinimi."
 
 #: ../src/nautilus-property-browser.c:1153
-#: ../src/nautilus-window-manage-views.c:1917
+#: ../src/nautilus-window-manage-views.c:1898
 msgid "Please check the spelling and try again."
 msgstr "Palun kontrolli õigekirja ja proovi uuesti."
 
@@ -6396,51 +6345,51 @@ msgstr ""
 msgid "Bookmark for Nonexistent Location"
 msgstr "Järjehodja olematusse asukohta"
 
-#: ../src/nautilus-window-manage-views.c:737
+#: ../src/nautilus-window-manage-views.c:731
 msgid "You can choose another view or go to a different location."
 msgstr "Valida võib uue vaate või liikuda teise asukohta"
 
-#: ../src/nautilus-window-manage-views.c:756
+#: ../src/nautilus-window-manage-views.c:750
 msgid "The location cannot be displayed with this viewer."
 msgstr "Asukohta ei ole võimalik selle vaatajaga kuvada."
 
-#: ../src/nautilus-window-manage-views.c:1235
+#: ../src/nautilus-window-manage-views.c:1218
 msgid "Content View"
 msgstr "Sisuvaade"
 
-#: ../src/nautilus-window-manage-views.c:1236
+#: ../src/nautilus-window-manage-views.c:1219
 msgid "View of the current folder"
 msgstr "Käesoleva kataloogi vaade"
 
-#: ../src/nautilus-window-manage-views.c:1902
+#: ../src/nautilus-window-manage-views.c:1883
 msgid "Nautilus has no installed viewer capable of displaying the folder."
 msgstr ""
 "Nautilusele ei ole paigaldatud vaatlemisprogrammi, millega saaks seda "
 "kataloogi kuvada."
 
-#: ../src/nautilus-window-manage-views.c:1908
+#: ../src/nautilus-window-manage-views.c:1889
 msgid "The location is not a folder."
 msgstr "Asukoht ei ole kataloog."
 
-#: ../src/nautilus-window-manage-views.c:1914
+#: ../src/nautilus-window-manage-views.c:1895
 #, c-format
 msgid "Could not find \"%s\"."
 msgstr "\"%s\" pole võimalik leida."
 
-#: ../src/nautilus-window-manage-views.c:1925
+#: ../src/nautilus-window-manage-views.c:1906
 #, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "Nautilusel pole võimalik \"%s\" asukohti käsitleda."
 
-#: ../src/nautilus-window-manage-views.c:1928
+#: ../src/nautilus-window-manage-views.c:1909
 msgid "Nautilus cannot handle this kind of locations."
 msgstr "Nautilusel pole võimalik sellist liiki asukohti käsitleda."
 
-#: ../src/nautilus-window-manage-views.c:1935
+#: ../src/nautilus-window-manage-views.c:1916
 msgid "Unable to mount the location."
 msgstr "Asukohta pole võimalik külge haakida."
 
-#: ../src/nautilus-window-manage-views.c:1941
+#: ../src/nautilus-window-manage-views.c:1922
 msgid "Access was denied."
 msgstr "Ligipääs oli keelatud."
 
@@ -6449,17 +6398,17 @@ msgstr "Ligipääs oli keelatud."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-manage-views.c:1950
+#: ../src/nautilus-window-manage-views.c:1931
 #, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr "Aadressi \"%s\" pole võimalik kuvada, kuna hosti pole võimalik leida."
 
-#: ../src/nautilus-window-manage-views.c:1952
+#: ../src/nautilus-window-manage-views.c:1933
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "Kontrolli, kas õigekiri ja proksi seaded on täpsed."
 
-#: ../src/nautilus-window-manage-views.c:1966
+#: ../src/nautilus-window-manage-views.c:1947
 #, c-format
 msgid ""
 "Error: %s\n"
@@ -6836,18 +6785,3 @@ msgstr "Suurendus"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
-
-#~ msgid "_Delete from Trash"
-#~ msgstr "Kustuta _prügikastist"
-
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Sisu näitamine üksikasjalisemalt"
-
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Sisu näitamine vähem üksikasjaliselt"
-
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Sisu näitamine tavasuuruses"
-
-#~ msgid "Show in the default detail level"
-#~ msgstr "Näitamine vaikimisi detailsusastmega"
