@@ -1,5 +1,12 @@
 2008-08-16  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-navigation-window.c (real_sync_zoom_widgets):
+	* src/nautilus-window.c (real_sync_zoom_widgets):
+	Properly calculate zoom level. Issue was imported from old
+	"zoom-parameters-change" cruft. Fixes #548036.
+
+2008-08-16  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c
 	(draw_or_measure_label_text), (nautilus_icon_canvas_item_event):
 	Also display whole icon text when hovering with the mouse over the

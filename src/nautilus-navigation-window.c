@@ -1519,7 +1519,8 @@ real_sync_zoom_widgets (NautilusWindow *nautilus_window)
 
 	supports_zooming = nautilus_view_supports_zooming (view);
 	can_zoom = supports_zooming &&
-		   nautilus_view_get_zoom_level (view) != 0.0;
+		   nautilus_view_get_zoom_level (view) >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+		   nautilus_view_get_zoom_level (view) <= NAUTILUS_ZOOM_LEVEL_LARGEST;
 
 	if (window->zoom_control != NULL) {
 		if (supports_zooming) {

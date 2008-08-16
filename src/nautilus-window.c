@@ -1326,7 +1326,9 @@ real_sync_zoom_widgets (NautilusWindow *window)
 
 	if (view != NULL) {
 		supports_zooming = nautilus_view_supports_zooming (view);
-		can_zoom = supports_zooming && nautilus_view_get_zoom_level (view) != 0.0;
+		can_zoom = supports_zooming &&
+			   nautilus_view_get_zoom_level (view) >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+			   nautilus_view_get_zoom_level (view) <= NAUTILUS_ZOOM_LEVEL_LARGEST;
 		can_zoom_in = can_zoom && nautilus_view_can_zoom_in (view);
 		can_zoom_out = can_zoom && nautilus_view_can_zoom_out (view);
 	} else {
