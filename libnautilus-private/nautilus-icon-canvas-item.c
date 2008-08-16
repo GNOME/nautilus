@@ -1010,6 +1010,9 @@ layout_get_full_size (PangoLayout *layout,
 	}
 }
 
+#define IS_COMPACT_VIEW(container) \
+        container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R && \
+        container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE
 
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
@@ -1095,9 +1098,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (have_editable) {
 		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
-		if (needs_highlight ||
-		    details->is_prelit ||
-		    container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		if (IS_COMPACT_VIEW (container)) {
+			pango_layout_set_height (editable_layout, -1);
+		} else if (needs_highlight ||
+			   details->is_prelit ||
+			   container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 			/* VOODOO-TODO, cf. compute_text_rectangle() */
 			pango_layout_set_height (editable_layout, G_MININT);
 		} else {
@@ -1898,10 +1903,6 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	(!g_ascii_isdigit (*p) || \
 	 (g_ascii_isdigit (*(p+1)) && \
 	  g_ascii_isdigit (*(p+2))))
-
-#define IS_COMPACT_VIEW(container) \
-        container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R && \
-        container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE
 
 
 static PangoLayout *
