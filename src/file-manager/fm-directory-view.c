@@ -281,8 +281,10 @@ static void     trash_or_delete_files                          (GtkWindow       
 								const GList          *files,
 								gboolean              delete_if_all_already_in_trash,
 								FMDirectoryView      *view);
-static void     restore_from_trash                             (NautilusFile         *file,
+static void     restore_from_trash                             (GList                *files,
 								FMDirectoryView      *view);
+static GHashTable * get_original_directories                   (GList *files,
+								GList **unhandled_files);
 static void     load_directory                                 (FMDirectoryView      *view,
 								NautilusDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
@@ -1007,16 +1009,12 @@ action_restore_from_trash_callback (GtkAction *action,
 				    gpointer callback_data)
 {
 	FMDirectoryView *view;
-	NautilusFile *file;
 	GList *selection;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	selection = fm_directory_view_get_selection_for_file_transfer (view);
-	if (g_list_length (selection) == 1) {
-		file = NAUTILUS_FILE (selection->data);
-		restore_from_trash (file, view);
-	}
+	restore_from_trash (selection, view);
 
 	nautilus_file_list_free (selection);
 
@@ -6435,20 +6433,39 @@ action_location_delete_callback (GtkAction *action,
 	eel_g_object_list_free (files);
 }
 
+static GList *
+locations_from_file_list (GList *file_list)
+{
+	NautilusFile *file;
+	GList *l, *ret;
+
+	ret = NULL;
+
+	for (l = file_list; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		ret = g_list_prepend (ret, nautilus_file_get_location (file));
+	}
+
+	return g_list_reverse (ret);
+}
+
 static void
-restore_from_trash (NautilusFile *file,
+restore_from_trash (GList *files,
 		    FMDirectoryView *view)
 {
-	NautilusFile *original_file, *original_dir;
-	GFile *location, *original_dir_location;
-	GList list;
+	NautilusFile *file, *original_dir;
+	GHashTable *original_dirs_hash;
+	GList *original_dirs, *unhandled_files;
+	GFile *original_dir_location;
+	GList *locations, *l;
 	char *message, *file_name;
 
-	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	original_file = nautilus_file_get_trash_original_file (file);
-	if (original_file == NULL) {
+	original_dirs_hash = get_original_directories (files, &unhandled_files);
+
+	for (l = unhandled_files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
 		file_name = nautilus_file_get_display_name (file);
 		message = g_strdup_printf (_("Could not determine original location of \"%s\" "), file_name);
 		g_free (file_name);
@@ -6459,33 +6476,30 @@ restore_from_trash (NautilusFile *file,
 		g_free (message);
 	}
 
+	if (original_dirs_hash != NULL) {
+		original_dirs = g_hash_table_get_keys (original_dirs_hash);
+		for (l = original_dirs; l != NULL; l = l->next) {
+			original_dir = NAUTILUS_FILE (l->data);
+			original_dir_location = nautilus_file_get_location (original_dir);
 
-	original_dir = NULL;
+			files = g_hash_table_lookup (original_dirs_hash, original_dir);
+			locations = locations_from_file_list (files);
 
-	if (original_file != NULL) {
-		original_dir = nautilus_file_get_parent (original_file);
+			nautilus_file_operations_move
+				(locations, NULL, 
+				 original_dir_location,
+				 (GtkWindow *) view->details->window,
+				 NULL, NULL);
+
+			eel_g_object_list_free (locations);
+			g_object_unref (original_dir_location);
+		}
+
+		g_list_free (original_dirs);
+		g_hash_table_destroy (original_dirs_hash);
 	}
 
-	if (original_dir != NULL) {
-		location = nautilus_file_get_location (file);
-		original_dir_location = nautilus_file_get_location (original_dir);
-
-		list.prev = NULL;
-		list.next = NULL;
-		list.data = location;
-
-		nautilus_file_operations_move
-			(&list, NULL, 
-			 original_dir_location,
-			 (GtkWindow *) view->details->window,
-			 NULL, NULL);
-
-		g_object_unref (location);
-		g_object_unref (original_dir_location);
-	}
-
-	nautilus_file_unref (original_file);
-	nautilus_file_unref (original_dir);
+	nautilus_file_list_unref (unhandled_files);
 }
 
 static void
@@ -6494,11 +6508,15 @@ action_location_restore_from_trash_callback (GtkAction *action,
 {
 	FMDirectoryView *view;
 	NautilusFile *file;
+	GList l;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	file = view->details->location_popup_directory_as_file;
 
-	restore_from_trash (file, view);
+	l.prev = NULL;
+	l.next = NULL;
+	l.data = file;
+	restore_from_trash (&l, view);
 }
 
 static void
@@ -7142,42 +7160,190 @@ file_should_show_self (NautilusFile *file,
 #endif
 }
 
+static GHashTable *
+get_original_directories (GList *files,
+			  GList **unhandled_files)
+{
+	GHashTable *directories;
+	NautilusFile *file, *original_file, *original_dir;
+	GList *l, *m;
+
+	directories = NULL;
+
+	if (unhandled_files != NULL) {
+		*unhandled_files = NULL;
+	}
+
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		original_file = nautilus_file_get_trash_original_file (file);
+
+		original_dir = NULL;
+		if (original_file != NULL) {
+			original_dir = nautilus_file_get_parent (original_file);
+		}
+
+		if (original_dir != NULL) {
+			if (directories == NULL) {
+				directories = g_hash_table_new_full (g_direct_hash, g_direct_equal,
+								     (GDestroyNotify) nautilus_file_unref,
+								     (GDestroyNotify) nautilus_file_list_unref);
+			}
+			nautilus_file_ref (original_dir);
+			m = g_hash_table_lookup (directories, original_dir);
+			if (m != NULL) {
+				g_hash_table_steal (directories, original_dir);
+				nautilus_file_unref (original_dir);
+			}
+			m = g_list_append (m, nautilus_file_ref (file));
+			g_hash_table_insert (directories, original_dir, m);
+		} else if (unhandled_files != NULL) {
+			*unhandled_files = g_list_append (*unhandled_files, nautilus_file_ref (file));
+		}
+
+		if (original_file != NULL) {
+			nautilus_file_unref (original_file);
+		}
+
+		if (original_dir != NULL) {
+			nautilus_file_unref (original_dir);
+		}
+	}
+
+	return directories;
+}
+
+static gboolean
+files_are_all_directories (GList *files)
+{
+	NautilusFile *file;
+	GList *l;
+	gboolean all_directories;
+
+	all_directories = TRUE;
+
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		all_directories &= nautilus_file_is_directory (file);
+	}
+
+	return all_directories;
+}
+
+static gboolean
+files_is_none_directory (GList *files)
+{
+	NautilusFile *file;
+	GList *l;
+	gboolean no_directory;
+
+	no_directory = TRUE;
+
+	for (l = files; l != NULL; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		no_directory &= !nautilus_file_is_directory (file);
+	}
+
+	return no_directory;
+}
+
 static void
 update_restore_from_trash_action (GtkAction *action,
-				  NautilusFile *file,
+				  GList *files,
 				  gboolean is_self)
 {
 	NautilusFile *original_file;
+	NautilusFile *original_dir;
+	GHashTable *original_dirs_hash;
+	GList *original_dirs;
 	GFile *original_location;
-	char *tooltip, *tmp;
+	char *tooltip, *original_name;
 
-	if (file != NULL) {
-		original_file = nautilus_file_get_trash_original_file (file);
-		gtk_action_set_visible (action, original_file != NULL);
+	original_file = NULL;
+	original_dir = NULL;
+	original_dirs = NULL;
+	original_dirs_hash = NULL;
+	original_location = NULL;
+	original_name = NULL;
+
+	if (files != NULL) {
+		if (g_list_length (files) == 1) {
+			original_file = nautilus_file_get_trash_original_file (files->data);
+		} else {
+			original_dirs_hash = get_original_directories (files, NULL);
+			original_dirs = g_hash_table_get_keys (original_dirs_hash);
+			if (original_dirs_hash != NULL && g_list_length (original_dirs) == 1) {
+				original_dir = nautilus_file_ref (NAUTILUS_FILE (original_dirs->data));
+			}
+		}
+	}
+
+	if (original_file != NULL || original_dirs != NULL) {
+		gtk_action_set_visible (action, TRUE);
 
 		if (original_file != NULL) {
 			original_location = nautilus_file_get_location (original_file);
-
-			tmp = g_file_get_parse_name (original_location);
-			if (is_self) {
-				tooltip = g_strdup_printf (_("Move the open folder out of the trash to \"%s\""), tmp);
-			} else if (nautilus_file_is_directory (file)) {
-				tooltip = g_strdup_printf (_("Move the selected folder out of the trash to \"%s\""), tmp);
-			} else {
-				tooltip = g_strdup_printf (_("Move the selected file out of the trash to \"%s\""), tmp);
-			}
-			g_free (tmp);
-
-			g_object_set (action, "tooltip", tooltip, NULL);
-
-			g_object_unref (original_location);
+		} else if (original_dir != NULL) {
+			original_location = nautilus_file_get_location (original_dir);
 		}
 
-		nautilus_file_unref (original_file);
+		if (original_location != NULL) {
+			original_name = g_file_get_parse_name (original_location);
+		}
+
+		if (is_self) {
+			g_assert (g_list_length (files) == 1);
+			g_assert (original_location != NULL);
+			tooltip = g_strdup_printf (_("Move the open folder out of the trash to \"%s\""), original_name);
+		} else if (files_are_all_directories (files)) {
+			if (original_name != NULL) {
+				tooltip = g_strdup_printf (ngettext ("Move the selected folder out of the trash to \"%s\"",
+								     "Move the selected folders out of the trash to \"%s\"",
+								     g_list_length (files)), original_name);
+			} else {
+				tooltip = g_strdup_printf (ngettext ("Move the selected folder out of the trash",
+								     "Move the selected folder out of the trash",
+								     g_list_length (files)));
+			}
+		} else if (files_is_none_directory (files)) {
+			if (original_name != NULL) {
+				tooltip = g_strdup_printf (ngettext ("Move the selected file out of the trash to \"%s\"",
+								     "Move the selected files out of the trash to \"%s\"",
+								     g_list_length (files)), original_name);
+			} else {
+				tooltip = g_strdup_printf (ngettext ("Move the selected file out of the trash",
+								     "Move the selected files out of the trash",
+								     g_list_length (files)));
+			}
+		} else {
+			if (original_name != NULL) {
+				tooltip = g_strdup_printf (ngettext ("Move the selected item out of the trash to \"%s\"",
+								     "Move the selected items out of the trash to \"%s\"",
+								     g_list_length (files)), original_name);
+			} else {
+				tooltip = g_strdup_printf (ngettext ("Move the selected item out of the trash",
+								     "Move the selected items out of the trash",
+								     g_list_length (files)));
+			}
+		}
+		g_free (original_name);
+
+		g_object_set (action, "tooltip", tooltip, NULL);
+
+		if (original_location != NULL) {
+			g_object_unref (original_location);
+		}
 	} else {
 		gtk_action_set_visible (action, FALSE);
 	}
 
+	nautilus_file_unref (original_file);
+	nautilus_file_unref (original_dir);
+	g_list_free (original_dirs);
+
+	if (original_dirs_hash != NULL) {
+		g_hash_table_destroy (original_dirs_hash);
+	}
 }
 
 static void
@@ -7364,6 +7530,7 @@ real_update_location_menu (FMDirectoryView *view)
 	gboolean show_separate_delete_command;
 	gboolean show_open_folder_window;
 	gboolean show_open_in_new_tab;
+	GList l;
 	char *label;
 	char *tip;
 
@@ -7478,7 +7645,10 @@ real_update_location_menu (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_LOCATION_RESTORE_FROM_TRASH);
-	update_restore_from_trash_action (action, file, TRUE);
+	l.prev = NULL;
+	l.next = NULL;
+	l.data = file;
+	update_restore_from_trash_action (action, &l, TRUE);
 
 	real_update_location_menu_volumes (view);
 
@@ -7739,11 +7909,7 @@ real_update_menus (FMDirectoryView *view)
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_RESTORE_FROM_TRASH);
-	if (selection_count == 1) {
-		update_restore_from_trash_action (action, selection->data, FALSE);
-	} else {
-		update_restore_from_trash_action (action, NULL, FALSE);
-	}
+	update_restore_from_trash_action (action, selection, FALSE);
 	
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_DUPLICATE);

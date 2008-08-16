@@ -1,5 +1,21 @@
 2008-08-16  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-directory-view.c
+	(action_restore_from_trash_callback), (locations_from_file_list),
+	(restore_from_trash),
+	(action_location_restore_from_trash_callback),
+	(get_original_directories), (files_are_all_directories),
+	(files_is_none_directory), (update_restore_from_trash_action),
+	(real_update_location_menu), (real_update_menus):
+	* src/nautilus-window-manage-views.c (begin_location_change),
+	(got_file_info_for_view_selection_callback),
+	(free_location_change):
+	Support restoring of multiple items from trash at once. Group them by
+	original directory, and start a file operation for each original
+	directory. Display appropriate tooltips. Fixes #547977.
+
+2008-08-16  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-pathbar.c (slider_timeout),
 	(nautilus_path_bar_init), (nautilus_path_bar_class_init),
 	(nautilus_path_bar_scroll), (nautilus_path_bar_scroll_down),
