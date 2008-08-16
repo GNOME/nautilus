@@ -1096,6 +1096,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	if (have_editable) {
 		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
 		if (needs_highlight ||
+		    details->is_prelit ||
 		    container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 			/* VOODOO-TODO, cf. compute_text_rectangle() */
 			pango_layout_set_height (editable_layout, G_MININT);
@@ -2050,6 +2051,7 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 	case GDK_ENTER_NOTIFY:
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
+			nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 			eel_canvas_item_request_update (item);
 			/* show a hand cursor */
 			if (in_single_click_mode ()) {
@@ -2098,6 +2100,7 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
+			nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 			eel_canvas_item_request_update (item);
 
 			/* show default cursor */
