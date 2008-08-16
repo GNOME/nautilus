@@ -79,7 +79,18 @@ struct NautilusIconCanvasItemDetails {
 	/* Size of the text at current font. */
 	int text_dx;
 	int text_width;
+	/* actual size required for rendering the entire text */
 	int text_height;
+	/* actual size needed for rendering a sane amount of text
+	 * “sane amount“ as of
+	 * + hard-coded to three lines in text-below-icon mode.
+	 * + unlimited in text-besides-icon mode (see VOODOO-TODO)
+	 *
+	 * This layout height is used by grid layout algorithms, even
+	 * though the actual icon may be larger and overlap adjacent
+	 * icons, if an icon is selected.
+	 */
+	int text_height_for_layout;
 	
 	/* preview state */
 	guint is_active : 1;
@@ -117,6 +128,7 @@ struct NautilusIconCanvasItemDetails {
 	EelIRect emblem_rect;
 
 	EelIRect bounds_cache;
+	EelIRect bounds_cache_for_layout;
 	
 	/* Accessibility bits */
 	GailTextUtil *text_util;
@@ -215,6 +227,7 @@ static void      draw_embedded_text                  (NautilusIconCanvasItem    
 						      int                            y);
 
 static GdkPixbuf *nautilus_icon_canvas_lighten_pixbuf (GdkPixbuf* src, guint lighten_value);
+static void       nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon_item);
 
 
 static NautilusIconCanvasItemClass *parent_class = NULL;
@@ -323,6 +336,7 @@ nautilus_icon_canvas_item_invalidate_label_size (NautilusIconCanvasItem *item)
 	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 	item->details->text_width = -1;
 	item->details->text_height = -1;
+	item->details->text_height_for_layout = -1;
 	if (item->details->editable_text_layout != NULL) {
 		g_object_unref (item->details->editable_text_layout);
 		item->details->editable_text_layout = NULL;
@@ -385,6 +399,7 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 			return;
 		}
 		details->is_highlighted_for_selection = g_value_get_boolean (value);
+		nautilus_icon_canvas_item_invalidate_label_size (item);
 		break;
          
         case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
@@ -715,20 +730,23 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 static EelIRect
 compute_text_rectangle (const NautilusIconCanvasItem *item,
 			EelIRect icon_rectangle,
-			gboolean canvas_coords)
+			gboolean canvas_coords,
+			gboolean for_layout)
 {
 	EelIRect text_rectangle;
 	double pixels_per_unit;
-	double text_width, text_height, text_dx;
+	double text_width, text_height, text_height_for_layout, real_text_height, text_dx;
 
 	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 	if (canvas_coords) {
 		text_width = item->details->text_width;
 		text_height = item->details->text_height;
+		text_height_for_layout = item->details->text_height_for_layout;
 		text_dx = item->details->text_dx;
 	} else {
 		text_width = item->details->text_width / pixels_per_unit;
 		text_height = item->details->text_height / pixels_per_unit;
+		text_height_for_layout = item->details->text_height_for_layout / pixels_per_unit;
 		text_dx = item->details->text_dx / pixels_per_unit;
 	}
 	
@@ -740,13 +758,37 @@ compute_text_rectangle (const NautilusIconCanvasItem *item,
                 	text_rectangle.x1 = icon_rectangle.x0;
                 	text_rectangle.x0 = text_rectangle.x1 - text_dx - text_width;
 		}
-                text_rectangle.y0 = (icon_rectangle.y0 + icon_rectangle.y1) / 2- (int) text_height / 2;
-                text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+
+		/* VOODOO-TODO */
+#if 0
+		if (for_layout) {
+			/* in this case, we should be more smart and calculate the size according to the maximum
+			 * number of lines fitting next to the icon. However, this requires a more complex layout logic.
+			 * It would mean that when measuring the label, the icon dimensions must be known already,
+			 * and we
+			 *   1. start with an unlimited layout
+			 *   2. measure how many lines of this layout fit next to the icon
+			 *   3. limit the number of lines to the given number of fitting lines
+			 */
+			real_text_height = VOODOO();
+		} else {
+#endif
+			real_text_height = text_height;
+#if 0
+		}
+#endif
+
+                text_rectangle.y0 = (icon_rectangle.y0 + icon_rectangle.y1) / 2- (int) real_text_height / 2;
+                text_rectangle.y1 = text_rectangle.y0 + real_text_height;
 	} else {
                 text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - (int) text_width / 2;
                 text_rectangle.y0 = icon_rectangle.y1;
                 text_rectangle.x1 = text_rectangle.x0 + text_width;
-                text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+		if (for_layout) {
+			text_rectangle.y1 = text_rectangle.y0 + text_height_for_layout + LABEL_OFFSET / pixels_per_unit;
+		} else {
+			text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+		}
         }
 
 	return text_rectangle;
@@ -793,7 +835,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 
 	/* Update canvas and text rect cache */
 	get_icon_canvas_rectangle (item, &item->details->canvas_rect);
-	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, TRUE);
+	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, TRUE, FALSE);
 	
 	/* Update emblem rect cache */
 	item->details->emblem_rect.x0 = 0;
@@ -931,16 +973,41 @@ static void
 layout_get_full_size (PangoLayout *layout,
 		      int         *width,
 		      int         *height,
+		      int         *height_for_for_layout,
 		      int         *dx)
 {
+	PangoLayoutIter *iter;
 	PangoRectangle logical_rect;
-	int total_width;
+	int total_width, i;
 	
 	pango_layout_get_extents (layout, NULL, &logical_rect);
 	*width = (logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
 	total_width = (logical_rect.x + logical_rect.width + PANGO_SCALE / 2) / PANGO_SCALE;
 	*dx = total_width - *width;
 	*height = (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
+
+	if (height_for_for_layout != NULL) {
+		/* only use the first three lines for the gridded auto layout */
+		if (pango_layout_get_line_count (layout) <= 3) {
+			*height_for_for_layout = *height;
+		} else {
+			*height_for_for_layout = 0;
+			iter = pango_layout_get_iter (layout);
+			/* VOODOO-TODO, determine number of lines based on the icon size for text besides icon.
+			 * cf. compute_text_rectangle() */
+			for (i = 0; i < 3; i++) {
+				pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
+				*height_for_for_layout += (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
+
+				if (!pango_layout_iter_next_line (iter)) {
+					break;
+				}
+
+				*height_for_for_layout += pango_layout_get_spacing (layout);
+			}
+			pango_layout_iter_free (iter);
+		}
+	}
 }
 
 
@@ -952,7 +1019,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
-	gint editable_height, editable_width, editable_dx;
+	gint editable_height, editable_for_layout_height, editable_width, editable_dx;
 	gint additional_height, additional_width, additional_dx;
 	EelCanvasItem *canvas_item;
 	PangoLayout *editable_layout;
@@ -978,6 +1045,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	/* No font or no text, then do no work. */
 	if (!have_editable && !have_additional) {
 		details->text_height = 0;
+		details->text_height_for_layout = 0;
 		details->text_width = 0;			
 		return;
 	}
@@ -986,6 +1054,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	/* don't do any drawing and fake out the width */
 	details->text_width = 80;
 	details->text_height = 20;
+	details->text_height_for_layout = 20;
 	return;
 #endif
 
@@ -994,6 +1063,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		/* fake out the width */
 		details->text_width = 80;
 		details->text_height = 20;
+		details->text_height_for_layout = 20;
 		return;
 	}
 #endif
@@ -1011,6 +1081,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	editable_width = 0;
 	editable_height = 0;
+	editable_for_layout_height = 0;
 	editable_dx = 0;
 	additional_width = 0;
 	additional_height = 0;
@@ -1024,12 +1095,19 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (have_editable) {
 		editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
-		layout_get_full_size (editable_layout, &editable_width, &editable_height, &editable_dx);
+		if (needs_highlight ||
+		    container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			/* VOODOO-TODO, cf. compute_text_rectangle() */
+			pango_layout_set_height (editable_layout, G_MININT);
+		} else {
+			pango_layout_set_height (editable_layout, -3);
+		}
+		layout_get_full_size (editable_layout, &editable_width, &editable_height, &editable_for_layout_height, &editable_dx);
 	}
 
 	if (have_additional) {
 		additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
-		layout_get_full_size (additional_layout, &additional_width, &additional_height, &additional_dx);
+		layout_get_full_size (additional_layout, &additional_width, &additional_height, NULL, &additional_dx);
 	}
 
 	if (editable_width > additional_width) {
@@ -1042,8 +1120,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (have_additional) {
 		details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
+		details->text_height_for_layout = editable_for_layout_height + LABEL_LINE_SPACING + additional_height;
 	} else {
 		details->text_height = editable_height;
+		details->text_height_for_layout = editable_for_layout_height;
 	}
 
 	/* add some extra space for highlighting even when we don't highlight so things won't move */
@@ -1051,6 +1131,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	text_back_padding_y = 1;
 	
 	details->text_height += text_back_padding_y*2; /* extra slop for nicer highlighting */
+	details->text_height_for_layout += text_back_padding_y*2; /* extra slop for nicer highlighting */
 	details->text_width += text_back_padding_x*2;  /* extra to make it look nicer */
 
 	/* if measuring, we are done */
@@ -1066,7 +1147,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		return;
 	}
 
-	text_rect = compute_text_rectangle (item, icon_rect, TRUE);
+	text_rect = compute_text_rectangle (item, icon_rect, TRUE, FALSE);
 
 	is_rtl_label_beside = nautilus_icon_container_is_layout_rtl (container) &&
 			      container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE;
@@ -1866,6 +1947,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 		pango_layout_set_width (layout, -1);
 	} else {
 		pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
+		pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
 	}
 			
 	pango_layout_set_auto_dir (layout, FALSE);
@@ -2156,6 +2238,35 @@ nautilus_icon_canvas_item_translate (EelCanvasItem *item, double dx, double dy)
 	details->x += dx;
 	details->y += dy;
 }
+
+void
+nautilus_icon_canvas_item_get_bounds_for_layout (NautilusIconCanvasItem *icon_item,
+						 double *x1, double *y1, double *x2, double *y2)
+{
+	NautilusIconCanvasItemDetails *details;
+	EelIRect *total_rect;
+
+	details = icon_item->details;
+
+	nautilus_icon_canvas_item_ensure_bounds_up_to_date (icon_item);
+	g_assert (details->bounds_cached);
+
+	total_rect = &details->bounds_cache_for_layout;
+
+	/* Return the result. */
+	if (x1 != NULL) {
+		*x1 = (int)details->x + total_rect->x0;
+	}
+	if (y1 != NULL) {
+		*y1 = (int)details->y + total_rect->y0;
+	}
+	if (x2 != NULL) {
+		*x2 = (int)details->x + total_rect->x1 + 1;
+	}
+	if (y2 != NULL) {
+		*y2 = (int)details->y + total_rect->y1 + 1;
+	}
+}
 	
 /* Bounds handler for the icon canvas item. */
 static void
@@ -2164,26 +2275,46 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 {
 	NautilusIconCanvasItem *icon_item;
 	NautilusIconCanvasItemDetails *details;
-	EelIRect icon_rect, text_rect, total_rect, emblem_rect;
-	double pixels_per_unit;
-	EmblemLayout emblem_layout;
-	GdkPixbuf *emblem_pixbuf;
-	gboolean is_rtl;
+	EelIRect *total_rect;
+
+	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
+	details = icon_item->details;
 
 	g_assert (x1 != NULL);
 	g_assert (y1 != NULL);
 	g_assert (x2 != NULL);
 	g_assert (y2 != NULL);
-	
-	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
-	details = icon_item->details;
 
-	if (details->bounds_cached) {
-		total_rect = details->bounds_cache;
-	} else {	
+	nautilus_icon_canvas_item_ensure_bounds_up_to_date (icon_item);
+	g_assert (details->bounds_cached);
+
+	total_rect = &details->bounds_cache;
+
+	/* Return the result. */
+	*x1 = (int)details->x + total_rect->x0;
+	*y1 = (int)details->y + total_rect->y0;
+	*x2 = (int)details->x + total_rect->x1 + 1;
+	*y2 = (int)details->y + total_rect->y1 + 1;
+}
+
+static void
+nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon_item)
+{
+	NautilusIconCanvasItemDetails *details;
+	EelIRect icon_rect, text_rect, text_rect_for_layout, total_rect, total_rect_for_layout, emblem_rect;
+	EelCanvasItem *item;
+	double pixels_per_unit;
+	EmblemLayout emblem_layout;
+	GdkPixbuf *emblem_pixbuf;
+	gboolean is_rtl;
+	
+	details = icon_item->details;
+	item = EEL_CANVAS_ITEM (icon_item);
+
+	if (!details->bounds_cached) {
 		measure_label_text (icon_item);
 
-		pixels_per_unit = item->canvas->pixels_per_unit;
+		pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 
 		/* Compute icon rectangle. */
 		icon_rect.x0 = 0;
@@ -2197,12 +2328,14 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 		}
 		
 		/* Compute text rectangle. */
-		text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE);
+		text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE, FALSE);
+		text_rect_for_layout = compute_text_rectangle (icon_item, icon_rect, FALSE, TRUE);
 		
 		is_rtl = nautilus_icon_container_is_layout_rtl (NAUTILUS_ICON_CONTAINER (item->canvas));
 
 		/* Compute total rectangle, adding in emblem rectangles. */
 		eel_irect_union (&total_rect, &icon_rect, &text_rect);
+		eel_irect_union (&total_rect_for_layout, &icon_rect, &text_rect_for_layout);
 		emblem_layout_reset (&emblem_layout, icon_item, icon_rect, is_rtl);
 		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect, is_rtl)) {
 			emblem_rect.x0 = floor (emblem_rect.x0 / pixels_per_unit);
@@ -2211,17 +2344,13 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 			emblem_rect.y1 = ceil (emblem_rect.y1 / pixels_per_unit);
 
 			eel_irect_union (&total_rect, &total_rect, &emblem_rect);
+			eel_irect_union (&total_rect_for_layout, &total_rect_for_layout, &emblem_rect);
 		}
 
 		details->bounds_cache = total_rect;
+		details->bounds_cache_for_layout = total_rect_for_layout;
 		details->bounds_cached = TRUE;
 	}
-        
-	/* Return the result. */
-	*x1 = (int)details->x + total_rect.x0;
-	*y1 = (int)details->y + total_rect.y0;
-	*x2 = (int)details->x + total_rect.x1 + 1;
-	*y2 = (int)details->y + total_rect.y1 + 1;
 }
 
 /* Get the rectangle of the icon only, in world coordinates. */
@@ -2254,7 +2383,8 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 }
 
 EelDRect
-nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item)
+nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item,
+					      gboolean for_layout)
 {
 	/* FIXME */
 	EelIRect icon_rectangle;
@@ -2275,7 +2405,8 @@ nautilus_icon_canvas_item_get_text_rectangle (NautilusIconCanvasItem *item)
 	icon_rectangle.y1 = icon_rectangle.y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf)) / pixels_per_unit;
 
 	measure_label_text (item);
-	text_rectangle = compute_text_rectangle (item, icon_rectangle, FALSE);
+
+	text_rectangle = compute_text_rectangle (item, icon_rectangle, FALSE, for_layout);
  
 	ret.x0 = text_rectangle.x0;
 	ret.y0 = text_rectangle.y0;

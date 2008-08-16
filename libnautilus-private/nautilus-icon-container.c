@@ -188,6 +188,11 @@ static void          icon_get_bounding_box                          (NautilusIco
 								     int                   *y1_return,
 								     int                   *x2_return,
 								     int                   *y2_return);
+static void          icon_get_bounding_box_for_layout               (NautilusIcon          *icon,
+								     int                   *x1_return,
+								     int                   *y1_return,
+								     int                   *x2_return,
+								     int                   *y2_return);
 static gboolean      is_renaming                                    (NautilusIconContainer *container);
 static gboolean      is_renaming_pending                            (NautilusIconContainer *container);
 static void          process_pending_icon_to_rename                 (NautilusIconContainer *container);
@@ -508,6 +513,22 @@ icon_get_bounding_box (NautilusIcon *icon,
 
 	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
 				      &x1, &y1, &x2, &y2);
+
+	*x1_return = x1;
+	*y1_return = y1;
+	*x2_return = x2;
+	*y2_return = y2;
+}
+
+static void
+icon_get_bounding_box_for_layout (NautilusIcon *icon,
+				  int *x1_return, int *y1_return,
+				  int *x2_return, int *y2_return)
+{
+	double x1, y1, x2, y2;
+
+	nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
+							 &x1, &y1, &x2, &y2);
 
 	*x1_return = x1;
 	*y1_return = y1;
@@ -1071,7 +1092,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	EelDRect bounds;
 	EelDRect icon_bounds;
 	EelDRect text_bounds;
-	EelCanvasItem *item;
 	double max_height_above, max_height_below;
 	double height_above, height_below;
 	double line_width;
@@ -1103,7 +1123,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 			max_icon_width = MAX (max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
 
-			text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+			text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 			max_text_width = MAX (max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
 		}
 
@@ -1124,16 +1144,13 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	for (p = icons; p != NULL; p = p->next) {
 		icon = p->data;
 
-		/* Get the width of the icon. */
-		item = EEL_CANVAS_ITEM (icon->item);
-		
 		/* Assume it's only one level hierarchy to avoid costly affine calculations */
-		eel_canvas_item_get_bounds (item,
-					    &bounds.x0, &bounds.y0,
-					    &bounds.x1, &bounds.y1);
+		nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
+								 &bounds.x0, &bounds.y0,
+								 &bounds.x1, &bounds.y1);
 
 		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 
 		if (gridded_layout) {
 			icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
@@ -1246,11 +1263,13 @@ get_max_icon_dimensions (GList *icon_start,
 		*max_icon_width = MAX (*max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
 		*max_icon_height = MAX (*max_icon_height, ceil (icon_bounds.y1 - icon_bounds.y0));
 
-		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 		*max_text_width = MAX (*max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
 		*max_text_height = MAX (*max_text_height, ceil (text_bounds.y1 - text_bounds.y0));
 
-		eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item), NULL, &y1, NULL, &y2);
+		nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
+								 NULL, &y1,
+								 NULL, &y2);
 		*max_bounds_height = MAX (*max_bounds_height, y2 - y1);
 	}
 }
@@ -1359,7 +1378,7 @@ lay_down_icons_vertical (NautilusIconContainer *container,
 		}
 
 		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 
 		max_width_in_column = MAX (max_width_in_column,
 					   ceil (icon_bounds.x1 - icon_bounds.x0) +
@@ -1566,9 +1585,9 @@ placement_grid_mark_icon (PlacementGrid *grid, NautilusIcon *icon)
 	EelIRect icon_pos;
 	EelIRect grid_pos;
 	
-	icon_get_bounding_box (icon, 
-			       &icon_pos.x0, &icon_pos.y0,
-			       &icon_pos.x1, &icon_pos.y1);
+	icon_get_bounding_box_for_layout (icon, 
+					  &icon_pos.x0, &icon_pos.y0,
+					  &icon_pos.x1, &icon_pos.y1);
 	canvas_position_to_grid_position (grid, 
 					  icon_pos,
 					  &grid_pos);
@@ -1595,9 +1614,9 @@ find_empty_location (NautilusIconContainer *container,
 	canvas_width  = CANVAS_WIDTH(container);
 	canvas_height = CANVAS_HEIGHT(container);
 
-	icon_get_bounding_box (icon, 
-			       &icon_position.x0, &icon_position.y0, 
-			       &icon_position.x1, &icon_position.y1);
+	icon_get_bounding_box_for_layout (icon,
+					  &icon_position.x0, &icon_position.y0,
+					  &icon_position.x1, &icon_position.y1);
 	icon_width = icon_position.x1 - icon_position.x0;
 	icon_height = icon_position.y1 - icon_position.y0;
 	
@@ -1808,7 +1827,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			/* Calculate max width for column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
-				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+				icon_get_bounding_box_for_layout (icon, &x1, &y1, &x2, &y2);
 				
 				icon_width = x2 - x1;
 				icon_height = y2 - y1;
@@ -1846,7 +1865,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			/* Lay out column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
-				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+				icon_get_bounding_box_for_layout (icon, &x1, &y1, &x2, &y2);
 				
 				icon_height = y2 - y1;
 				
@@ -2008,11 +2027,11 @@ reload_icon_positions (NautilusIconContainer *container)
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
 			item = EEL_CANVAS_ITEM (icon->item);
-			eel_canvas_item_get_bounds (item,
-						    &bounds.x0,
-						    &bounds.y0,
-						    &bounds.x1,
-						    &bounds.y1);
+			nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
+									 &bounds.x0,
+									 &bounds.y0,
+									 &bounds.x1,
+									 &bounds.y1);
 			eel_canvas_item_i2w (item->parent,
 					     &bounds.x0,
 					     &bounds.y0);
@@ -7615,7 +7634,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	pango_font_description_free (desc);
 	
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-	text_rect = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+	text_rect = nautilus_icon_canvas_item_get_text_rectangle (icon->item, TRUE);
 
 	if (nautilus_icon_container_is_layout_vertical (container) &&
 	    container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {

@@ -1,5 +1,26 @@
 2008-08-16  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_invalidate_label_size),
+	(nautilus_icon_canvas_item_set_property), (compute_text_rectangle),
+	(nautilus_icon_canvas_item_update_bounds), (layout_get_full_size),
+	(draw_or_measure_label_text), (create_label_layout),
+	(nautilus_icon_canvas_item_get_bounds_for_layout),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_ensure_bounds_up_to_date),
+	(nautilus_icon_canvas_item_get_text_rectangle):
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.c
+	(icon_get_bounding_box_for_layout), (lay_down_icons_horizontal),
+	(get_max_icon_dimensions), (lay_down_icons_vertical),
+	(placement_grid_mark_icon), (find_empty_location),
+	(lay_down_icons_vertical_desktop), (reload_icon_positions),
+	(nautilus_icon_container_start_renaming_selected_item):
+	Truncate icon label to three lines if it is not selected. Fixes
+	#84390, at least in text-below-icon mode. 
+
+2008-08-16  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-directory-view.c
 	(update_restore_from_trash_action):
 	Ensure that hash table is not NULL before getting keys if the
