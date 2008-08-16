@@ -1,6 +1,13 @@
 2008-08-16  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-directory-view.c
+	(update_restore_from_trash_action):
+	Ensure that hash table is not NULL before getting keys if the
+	selection does not contain exactly one item.
+
+2008-08-16  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
 	(action_restore_from_trash_callback), (locations_from_file_list),
 	(restore_from_trash),
 	(action_location_restore_from_trash_callback),

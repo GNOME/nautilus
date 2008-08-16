@@ -7271,9 +7271,11 @@ update_restore_from_trash_action (GtkAction *action,
 			original_file = nautilus_file_get_trash_original_file (files->data);
 		} else {
 			original_dirs_hash = get_original_directories (files, NULL);
-			original_dirs = g_hash_table_get_keys (original_dirs_hash);
-			if (original_dirs_hash != NULL && g_list_length (original_dirs) == 1) {
-				original_dir = nautilus_file_ref (NAUTILUS_FILE (original_dirs->data));
+			if (original_dirs_hash != NULL) {
+				original_dirs = g_hash_table_get_keys (original_dirs_hash);
+				if (g_list_length (original_dirs) == 1) {
+					original_dir = nautilus_file_ref (NAUTILUS_FILE (original_dirs->data));
+				}
 			}
 		}
 	}
