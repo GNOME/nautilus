@@ -115,10 +115,10 @@ static void     nautilus_path_bar_forall                   (GtkContainer    *con
 							    gboolean         include_internals,
 							    GtkCallback      callback,
 							    gpointer         callback_data);
-static void     nautilus_path_bar_scroll_up                (GtkWidget       *button,
-							    NautilusPathBar *path_bar);
-static void     nautilus_path_bar_scroll_down              (GtkWidget       *button,
-							    NautilusPathBar *path_bar);
+static void     nautilus_path_bar_scroll_up                (NautilusPathBar *path_bar);
+static void     nautilus_path_bar_scroll_down              (NautilusPathBar *path_bar);
+static gboolean nautilus_path_bar_scroll                   (GtkWidget       *path_bar,
+							    GdkEventScroll  *scroll);
 static void     nautilus_path_bar_stop_scrolling           (NautilusPathBar *path_bar);
 static gboolean nautilus_path_bar_slider_button_press      (GtkWidget       *widget,
 							    GdkEventButton  *event,
@@ -234,9 +234,9 @@ slider_timeout (gpointer user_data)
 
 	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (path_bar))) {
 		if (path_bar->drag_slider_timeout_for_up_button) {
-			nautilus_path_bar_scroll_up (path_bar->up_slider_button, path_bar);
+			nautilus_path_bar_scroll_up (path_bar);
 		} else {
-			nautilus_path_bar_scroll_down (path_bar->down_slider_button, path_bar);
+			nautilus_path_bar_scroll_down (path_bar);
 		}
 	}
 
@@ -312,8 +312,8 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
 						  path_bar,
 						  G_OBJECT (path_bar));
 
-        g_signal_connect (path_bar->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
-        g_signal_connect (path_bar->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
+        g_signal_connect_swapped (path_bar->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
+        g_signal_connect_swapped (path_bar->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
 
         g_signal_connect (path_bar->up_slider_button, "button_press_event", G_CALLBACK (nautilus_path_bar_slider_button_press), path_bar);
         g_signal_connect (path_bar->up_slider_button, "button_release_event", G_CALLBACK (nautilus_path_bar_slider_button_release), path_bar);
@@ -373,6 +373,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
         widget_class->screen_changed = nautilus_path_bar_screen_changed;
         widget_class->grab_notify = nautilus_path_bar_grab_notify;
         widget_class->state_changed = nautilus_path_bar_state_changed;
+	widget_class->scroll_event = nautilus_path_bar_scroll;
 
         container_class->add = nautilus_path_bar_add;
         container_class->forall = nautilus_path_bar_forall;
@@ -748,6 +749,30 @@ nautilus_path_bar_screen_changed (GtkWidget *widget,
         nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
 }
 
+static gboolean
+nautilus_path_bar_scroll (GtkWidget      *widget,
+			  GdkEventScroll *event)
+{
+	NautilusPathBar *path_bar;
+
+	path_bar = NAUTILUS_PATH_BAR (widget);
+
+	switch (event->direction) {
+		case GDK_SCROLL_RIGHT:
+		case GDK_SCROLL_DOWN:
+			nautilus_path_bar_scroll_down (path_bar);
+			return TRUE;
+
+		case GDK_SCROLL_LEFT:
+		case GDK_SCROLL_UP:
+			nautilus_path_bar_scroll_up (path_bar);
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 static void
 nautilus_path_bar_add (GtkContainer *container,
 		       GtkWidget    *widget)
@@ -829,7 +854,7 @@ nautilus_path_bar_forall (GtkContainer *container,
 }
 
 static void
-nautilus_path_bar_scroll_down (GtkWidget *button, NautilusPathBar *path_bar)
+nautilus_path_bar_scroll_down (NautilusPathBar *path_bar)
 {
         GList *list;
         GList *down_button;
@@ -860,6 +885,10 @@ nautilus_path_bar_scroll_down (GtkWidget *button, NautilusPathBar *path_bar)
 	  		break;
 		}
         }
+
+	if (down_button == NULL) {
+		return;
+	}
   
         /* Find the last visible button on the 'up' end */
         for (list = g_list_last (path_bar->button_list); list; list = list->prev) {
@@ -889,7 +918,7 @@ nautilus_path_bar_scroll_down (GtkWidget *button, NautilusPathBar *path_bar)
 }
 
 static void
-nautilus_path_bar_scroll_up (GtkWidget *button, NautilusPathBar *path_bar)
+nautilus_path_bar_scroll_up (NautilusPathBar *path_bar)
 {
         GList *list;
 
@@ -920,10 +949,10 @@ nautilus_path_bar_scroll_timeout (NautilusPathBar *path_bar)
 
         if (path_bar->timer) {
                 if (GTK_WIDGET_HAS_FOCUS (path_bar->up_slider_button)) {
-			nautilus_path_bar_scroll_up (path_bar->up_slider_button, path_bar);
+			nautilus_path_bar_scroll_up (path_bar);
 		} else {
 			if (GTK_WIDGET_HAS_FOCUS (path_bar->down_slider_button)) {
-				nautilus_path_bar_scroll_down (path_bar->down_slider_button, path_bar);
+				nautilus_path_bar_scroll_down (path_bar);
 			}
          	}
          	if (path_bar->need_timer) {
@@ -970,10 +999,10 @@ nautilus_path_bar_slider_button_press (GtkWidget       *widget,
         path_bar->ignore_click = FALSE;
 
         if (widget == path_bar->up_slider_button) {
-                nautilus_path_bar_scroll_up (path_bar->up_slider_button, path_bar);
+                nautilus_path_bar_scroll_up (path_bar);
 	} else {
 		if (widget == path_bar->down_slider_button) {
-                       nautilus_path_bar_scroll_down (path_bar->down_slider_button, path_bar);
+                       nautilus_path_bar_scroll_down (path_bar);
 		}
 	}
 

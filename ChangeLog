@@ -1,3 +1,12 @@
+2008-08-16  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-pathbar.c (slider_timeout),
+	(nautilus_path_bar_init), (nautilus_path_bar_class_init),
+	(nautilus_path_bar_scroll), (nautilus_path_bar_scroll_down),
+	(nautilus_path_bar_scroll_up), (nautilus_path_bar_scroll_timeout),
+	(nautilus_path_bar_slider_button_press):
+	Handle scroll events. Fixes #547990.
+
 2008-08-13  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-info.h:
