@@ -2054,6 +2054,9 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = TRUE;
 			nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 			eel_canvas_item_request_update (item);
+			eel_canvas_item_send_behind (item,
+						     NAUTILUS_ICON_CONTAINER (item->canvas)->details->rubberband_info.selection_rectangle);
+
 			/* show a hand cursor */
 			if (in_single_click_mode ()) {
 				cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
