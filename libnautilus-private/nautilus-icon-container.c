@@ -1011,7 +1011,8 @@ lay_down_one_line (NautilusIconContainer *container,
 		   GList *line_end,
 		   double y,
 		   double max_height,
-		   GArray *positions)
+		   GArray *positions,
+		   gboolean whole_text)
 {
 	GList *p;
 	NautilusIcon *icon;
@@ -1040,6 +1041,7 @@ lay_down_one_line (NautilusIconContainer *container,
 			(icon,
 			 is_rtl ? get_mirror_x_position (container, icon, x + position->x_offset) : x + position->x_offset,
 			 y + y_offset);
+		nautilus_icon_canvas_item_set_entire_text (icon->item, whole_text);
 
 		icon->saved_ltr_x = is_rtl ? get_mirror_x_position (container, icon, icon->x) : icon->x;
 
@@ -1175,7 +1177,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 				y += ICON_PAD_TOP + max_height_above;
 			}
 
-			lay_down_one_line (container, line_start, p, y, max_height_above, positions);
+			lay_down_one_line (container, line_start, p, y, max_height_above, positions, FALSE);
 			
 			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 				y += max_height_above + max_height_below + ICON_PAD_BOTTOM;
@@ -1229,7 +1231,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 				y += ICON_PAD_TOP + max_height_above;
 			}
 		
-		lay_down_one_line (container, line_start, NULL, y, max_height_above, positions);
+		lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, TRUE);
 		
 		/* Advance to next line. */
 		y += max_height_below + ICON_PAD_BOTTOM;

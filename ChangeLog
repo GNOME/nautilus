@@ -1,3 +1,13 @@
+2008-08-19  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text),
+	(nautilus_icon_canvas_item_set_entire_text):
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.c
+	(lay_down_one_line), (lay_down_icons_horizontal):
+	Never ellipsise text in last line of a line-wise layout.
+
 2008-08-18  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:

@@ -91,6 +91,11 @@ struct NautilusIconCanvasItemDetails {
 	 * icons, if an icon is selected.
 	 */
 	int text_height_for_layout;
+
+	/* whether the entire text must always be visible. In that case,
+	 * text_height_for_layout will always be equal to text_height.
+	 * Used for the last line of a line-wise icon layout. */
+	guint entire_text : 1;
 	
 	/* preview state */
 	guint is_active : 1;
@@ -1013,6 +1018,7 @@ layout_get_full_size (PangoLayout *layout,
 #define IS_COMPACT_VIEW(container) \
         container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R && \
         container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE
+#include "nautilus-file.h"
 
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
@@ -1102,6 +1108,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			pango_layout_set_height (editable_layout, -1);
 		} else if (needs_highlight ||
 			   details->is_prelit ||
+			   details->entire_text ||
 			   container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 			/* VOODOO-TODO, cf. compute_text_rectangle() */
 			pango_layout_set_height (editable_layout, G_MININT);
@@ -3363,6 +3370,19 @@ nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface)
 {
 	iface->get_text = nautilus_icon_canvas_item_get_text;
 }
+
+void
+nautilus_icon_canvas_item_set_entire_text (NautilusIconCanvasItem       *item,
+					   gboolean                      entire_text)
+{
+	if (item->details->entire_text != entire_text) {
+		item->details->entire_text = entire_text;
+
+		nautilus_icon_canvas_item_invalidate_label_size (item);
+		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+	}
+}
+
 
 /* Class initialization function for the icon canvas item. */
 static void

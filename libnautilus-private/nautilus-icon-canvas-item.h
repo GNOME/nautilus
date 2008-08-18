@@ -96,6 +96,9 @@ void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanv
 								double i2w_dx, double i2w_dy);
 void        nautilus_icon_canvas_item_set_is_visible           (NautilusIconCanvasItem       *item,
 								gboolean                      visible);
+/* whether the entire label text must be visible at all times */
+void        nautilus_icon_canvas_item_set_entire_text          (NautilusIconCanvasItem       *icon_item,
+								gboolean                      entire_text);
 
 G_END_DECLS
 
