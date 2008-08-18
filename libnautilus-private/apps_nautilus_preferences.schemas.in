@@ -701,6 +701,38 @@ most cases, this should be left alone. -->Sans 10</default>
       </locale>
     </schema>    
 
+    <schema>
+      <key>/schemas/apps/nautilus/icon_view/text_ellipsis_limit</key>
+      <applyto>/apps/nautilus/icon_view/text_ellipsis_limit</applyto>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[3]</default>
+      <locale name="C">
+         <short>Text Ellipsis Limit</short>
+         <long>
+	     A string specifying how parts of overlong file names
+	     should be replaced by ellipses, depending on the zoom
+	     level.
+	     Each of the list entries is of the form "Zoom Level:Integer".
+	     For each specified zoom level, if the given integer is
+	     larger than 0, the file name will not exceed the given number of lines.
+	     If the integer is 0 or smaller, no limit is imposed on the specified zoom level.
+	     A default entry of the form "Integer" without any specified zoom level
+	     is also allowed. It defines the maximum number of lines for all other zoom levels.
+	     Examples:
+	     0 - always display overlong file names;
+	     3 - shorten file names if they exceed three lines;
+	     smallest:5,smaller:4,0 - shorten file names if they exceed five lines
+	     for zoom level "smallest". Shorten file names if they exceed four lines
+	     for zoom level "smaller". Do not shorten file names for other zoom levels.
+
+	     Available zoom levels:
+	     smallest (33%), smaller (50%), small (66%), standard (100%), large (150%),
+	     larger (200%), largest (400%)
+         </long>
+      </locale>
+    </schema>
+
    <!-- Icon View -->
     <schema>
       <key>/schemas/apps/nautilus/compact_view/default_zoom_level</key>
@@ -1053,6 +1085,23 @@ most cases, this should be left alone. -->Sans 10</default>
          <long>
           This name can be set if you want a custom name
 	  for the network servers icon on the desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/desktop/text_ellipsis_limit</key>
+      <applyto>/apps/nautilus/desktop/text_ellipsis_limit</applyto>
+      <type>integer</type>
+      <default>3</default>
+      <locale name="C">
+         <short>Text Ellipsis Limit</short>
+         <long>
+	     An integer specifying how parts of overlong file names
+	     should be replaced by ellipses on the desktop.
+	     If the number is larger than 0, the file name will not exceed
+	     the given number of lines. If the number is 0 or smaller, no
+	     limit is imposed on the number of displayed lines.
          </long>
       </locale>
     </schema>

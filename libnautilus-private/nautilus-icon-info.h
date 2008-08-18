@@ -20,6 +20,8 @@ typedef enum {
 	NAUTILUS_ZOOM_LEVEL_LARGEST
 } NautilusZoomLevel;
 
+#define NAUTILUS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_ZOOM_LEVEL_LARGEST + 1)
+
 /* Nominal icon sizes for each Nautilus zoom level.
  * This scheme assumes that icons are designed to
  * fit in a square space, though each image needn't

@@ -1106,7 +1106,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			/* VOODOO-TODO, cf. compute_text_rectangle() */
 			pango_layout_set_height (editable_layout, G_MININT);
 		} else {
-			pango_layout_set_height (editable_layout, -3);
+			pango_layout_set_height (editable_layout,
+						 nautilus_icon_container_get_layout_height (container));
 		}
 		layout_get_full_size (editable_layout, &editable_width, &editable_height, &editable_for_layout_height, &editable_dx);
 	}

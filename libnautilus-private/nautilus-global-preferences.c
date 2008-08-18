@@ -432,7 +432,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (96)
 	},
-
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+	  PREFERENCE_STRING_ARRAY,
+	  "3",
+	  NULL,NULL,
+	  NULL,
+	},
 	/* Compact Icon View Default Preferences */
 	{ NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_STRING,
@@ -533,6 +538,10 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_STRING_ARRAY,
 	  "", NULL, NULL, NULL
 	},	
+	{ NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+	  PREFERENCE_INTEGER,
+	  GINT_TO_POINTER (3)
+	},
 	{ NULL }
 };
 

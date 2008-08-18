@@ -1,5 +1,29 @@
 2008-08-18  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	Add "icon_view/text_ellipsis_limit" and "desktop/text_ellipsis_limit".
+	They specify the maximum number of lines to display before the file
+	names should be ellipsized.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text):
+	* libnautilus-private/nautilus-icon-container.c
+	(text_ellipsis_limit_changed_container_callback),
+	(nautilus_icon_container_constructor),
+	(nautilus_icon_container_class_init),
+	(get_text_ellipsis_limit_for_zoom),
+	(text_ellipsis_limit_changed_callback),
+	(desktop_text_ellipsis_limit_changed_callback),
+	(nautilus_icon_container_instance_init),
+	(nautilus_icon_container_get_layout_height):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-info.h:
+	Connect icon container to text ellipsis limit preferences.
+
+2008-08-18  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c
 	(nautilus_icon_canvas_item_event):
 	Raise icon when hovering with the mouse over it.

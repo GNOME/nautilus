@@ -45,6 +45,8 @@
 #include <eel/eel-editable-label.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-string.h>
+#include <eel/eel-preferences.h>
+#include <eel/eel-enumeration.h>
 #include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-icon-item.h>
 #include <gdk/gdkkeysyms.h>
@@ -5099,6 +5101,41 @@ grab_notify_cb  (GtkWidget        *widget,
 	}
 }
 
+static void
+text_ellipsis_limit_changed_container_callback (gpointer callback_data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (callback_data);
+	invalidate_label_sizes (container);
+	schedule_redo_layout (container);
+}
+
+static GObject*
+nautilus_icon_container_constructor (GType                  type,
+				     guint                  n_construct_params,
+				     GObjectConstructParam *construct_params)
+{
+	NautilusIconContainer *container;
+	GObject *object;
+
+	object = G_OBJECT_CLASS (parent_class)->constructor (type,
+							     n_construct_params,
+							     construct_params);
+
+	container = NAUTILUS_ICON_CONTAINER (object);
+	if (nautilus_icon_container_get_is_desktop (container)) {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+					      text_ellipsis_limit_changed_container_callback,
+					      container);
+	} else {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+					      text_ellipsis_limit_changed_container_callback,
+					      container);
+	}
+
+	return object;
+}
 
 /* Initialization.  */
 
@@ -5109,6 +5146,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	EelCanvasClass *canvas_class;
 	GtkBindingSet *binding_set;
 
+	G_OBJECT_CLASS (class)->constructor = nautilus_icon_container_constructor;
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_OBJECT_CLASS (class)->destroy = destroy;
 
@@ -5611,11 +5649,88 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 	return FALSE;
 }
 
+
+static int text_ellipsis_limits[NAUTILUS_ZOOM_LEVEL_N_ENTRIES];
+static int desktop_text_ellipsis_limit;
+
+static gboolean
+get_text_ellipsis_limit_for_zoom (char **strs,
+				  const char *zoom_level,
+				  int *limit)
+{
+	char **p;
+	char *str;
+	gboolean success;
+
+	success = FALSE;
+
+	/* default */
+	*limit = 3;
+
+	if (zoom_level != NULL) {
+		str = g_strdup_printf ("%s:%%d", zoom_level);
+	} else {
+		str = g_strdup ("%d");
+	}
+
+	if (strs != NULL) {
+		for (p = strs; *p != NULL; p++) {
+			if (sscanf (*p, str, limit)) {
+				success = TRUE;
+			}
+		}
+	}
+
+	g_free (str);
+
+	return success;
+}
+
+static void
+text_ellipsis_limit_changed_callback (gpointer callback_data)
+{
+	char **pref;
+	unsigned int i;
+	int one_limit;
+	const EelEnumeration *eenum;
+	const EelEnumerationEntry *entry;
+
+	pref = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT);
+
+	/* set default */
+	get_text_ellipsis_limit_for_zoom (pref, NULL, &one_limit);
+	for (i = 0; i < NAUTILUS_ZOOM_LEVEL_N_ENTRIES; i++) {
+		text_ellipsis_limits[i] = one_limit;
+	}
+
+	/* override for each zoom level */
+	eenum = eel_enumeration_lookup ("default_zoom_level");
+	g_assert (eenum != NULL);
+	for (i = 0; i < eel_enumeration_get_length (eenum); i++) {
+		entry = eel_enumeration_get_nth_entry (eenum, i);
+		if (get_text_ellipsis_limit_for_zoom (pref, entry->name, &one_limit)) {
+			text_ellipsis_limits[entry->value] = one_limit;
+		}
+	}
+
+	g_strfreev (pref);
+}
+
+static void
+desktop_text_ellipsis_limit_changed_callback (gpointer callback_data)
+{
+	int pref;
+
+	pref = eel_preferences_get_integer (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT);
+	desktop_text_ellipsis_limit = pref;
+}
+
 static void
 nautilus_icon_container_instance_init (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	EelBackground *background;
+	static gboolean setup_prefs = FALSE;
 	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -5651,6 +5766,20 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 				      nautilus_icon_container_theme_changed,
 				      container);	
+
+	if (!setup_prefs) {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+					      text_ellipsis_limit_changed_callback,
+					      NULL);
+		text_ellipsis_limit_changed_callback (NULL);
+
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+					      desktop_text_ellipsis_limit_changed_callback,
+					      NULL);
+		desktop_text_ellipsis_limit_changed_callback (NULL);
+
+		setup_prefs = TRUE;
+	}
 }
 
 typedef struct {
@@ -8842,6 +8971,24 @@ nautilus_icon_container_is_layout_vertical (NautilusIconContainer *container)
 
 	return (container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R ||
 		container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L);
+}
+
+int
+nautilus_icon_container_get_layout_height (NautilusIconContainer  *container)
+{
+	int limit;
+
+	if (nautilus_icon_container_get_is_desktop (container)) {
+		limit = desktop_text_ellipsis_limit;
+	} else {
+		limit = text_ellipsis_limits[container->details->zoom_level];
+	}
+
+	if (limit <= 0) {
+		return G_MININT;
+	}
+
+	return -limit;
 }
 
 

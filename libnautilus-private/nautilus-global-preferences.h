@@ -153,6 +153,10 @@ enum
 /* The default size for thumbnail icons */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE			"icon_view/thumbnail_size"
 
+/* ellipsization preferences */
+#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"icon_view/text_ellipsis_limit"
+#define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"desktop/text_ellipsis_limit"
+
 /* Compact View */
 #define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"compact_view/default_zoom_level"
 #define NAUTILUS_PREFERENCES_COMPACT_VIEW_ALL_COLUMNS_SAME_WIDTH	"compact_view/all_columns_have_same_width"

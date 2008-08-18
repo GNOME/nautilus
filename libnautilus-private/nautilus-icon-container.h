@@ -252,6 +252,8 @@ void              nautilus_icon_container_set_label_position            (Nautilu
 void              nautilus_icon_container_sort                          (NautilusIconContainer  *container);
 void              nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer  *container);
 
+int               nautilus_icon_container_get_layout_height             (NautilusIconContainer  *container);
+
 
 /* operations on all icons */
 void              nautilus_icon_container_unselect_all                  (NautilusIconContainer  *view);
