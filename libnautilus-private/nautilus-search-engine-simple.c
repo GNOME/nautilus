@@ -256,7 +256,7 @@ visit_directory (GFile *dir, SearchThreadData *data)
 			hit = FALSE;
 			
 			for (l = data->mime_types; mime_type != NULL && l != NULL; l = l->next) {
-				if (g_content_type_equals (mime_type, l->data) == 0) {
+				if (g_content_type_equals (mime_type, l->data)) {
 					hit = TRUE;
 					break;
 				}
