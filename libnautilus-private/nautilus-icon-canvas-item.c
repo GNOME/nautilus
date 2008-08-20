@@ -976,9 +976,10 @@ draw_frame (NautilusIconCanvasItem *item,
  */
 static void
 layout_get_full_size (PangoLayout *layout,
+		      int          max_layout_line_count,
 		      int         *width,
 		      int         *height,
-		      int         *height_for_for_layout,
+		      int         *height_for_layout,
 		      int         *dx)
 {
 	PangoLayoutIter *iter;
@@ -991,24 +992,24 @@ layout_get_full_size (PangoLayout *layout,
 	*dx = total_width - *width;
 	*height = (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
 
-	if (height_for_for_layout != NULL) {
+	if (height_for_layout != NULL) {
 		/* only use the first three lines for the gridded auto layout */
-		if (pango_layout_get_line_count (layout) <= 3) {
-			*height_for_for_layout = *height;
+		if (pango_layout_get_line_count (layout) <= max_layout_line_count) {
+			*height_for_layout = *height;
 		} else {
-			*height_for_for_layout = 0;
+			*height_for_layout = 0;
 			iter = pango_layout_get_iter (layout);
 			/* VOODOO-TODO, determine number of lines based on the icon size for text besides icon.
 			 * cf. compute_text_rectangle() */
-			for (i = 0; i < 3; i++) {
+			for (i = 0; i < max_layout_line_count; i++) {
 				pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
-				*height_for_for_layout += (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
+				*height_for_layout += (logical_rect.height + PANGO_SCALE / 2) / PANGO_SCALE;
 
 				if (!pango_layout_iter_next_line (iter)) {
 					break;
 				}
 
-				*height_for_for_layout += pango_layout_get_spacing (layout);
+				*height_for_layout += pango_layout_get_spacing (layout);
 			}
 			pango_layout_iter_free (iter);
 		}
@@ -1115,14 +1116,18 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			pango_layout_set_height (editable_layout, G_MININT);
 		} else {
 			pango_layout_set_height (editable_layout,
-						 nautilus_icon_container_get_layout_height (container));
+						 nautilus_icon_container_get_max_layout_lines_for_pango (container));
 		}
-		layout_get_full_size (editable_layout, &editable_width, &editable_height, &editable_for_layout_height, &editable_dx);
+		layout_get_full_size (editable_layout,
+				      nautilus_icon_container_get_max_layout_lines (container),
+				      &editable_width, &editable_height, &editable_for_layout_height, &editable_dx);
 	}
 
 	if (have_additional) {
 		additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
-		layout_get_full_size (additional_layout, &additional_width, &additional_height, NULL, &additional_dx);
+		layout_get_full_size (additional_layout,
+				      nautilus_icon_container_get_max_layout_lines (container),
+				      &additional_width, &additional_height, NULL, &additional_dx);
 	}
 
 	if (editable_width > additional_width) {

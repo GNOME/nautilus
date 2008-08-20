@@ -1,3 +1,18 @@
+2008-08-21  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(layout_get_full_size), (draw_or_measure_label_text):
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_constructor),
+	(nautilus_icon_container_get_max_layout_lines_for_pango),
+	(nautilus_icon_container_get_max_layout_lines):
+	* libnautilus-private/nautilus-icon-container.h:
+	Add helper for getting max. number of layout lines, which does not use
+	the negative PangoLayout height convention. Use it in
+	layout_get_full_size() instead of hardcoding three lines.
+	Only connect GConf text ellipsis preferences container callbacks while
+	the containers are alive.
+
 2008-08-21  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-properties-window.c:

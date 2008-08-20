@@ -252,7 +252,8 @@ void              nautilus_icon_container_set_label_position            (Nautilu
 void              nautilus_icon_container_sort                          (NautilusIconContainer  *container);
 void              nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer  *container);
 
-int               nautilus_icon_container_get_layout_height             (NautilusIconContainer  *container);
+int               nautilus_icon_container_get_max_layout_lines           (NautilusIconContainer  *container);
+int               nautilus_icon_container_get_max_layout_lines_for_pango (NautilusIconContainer  *container);
 
 
 /* operations on all icons */

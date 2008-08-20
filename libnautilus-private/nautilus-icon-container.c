@@ -5127,13 +5127,13 @@ nautilus_icon_container_constructor (GType                  type,
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 	if (nautilus_icon_container_get_is_desktop (container)) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
-					      text_ellipsis_limit_changed_container_callback,
-					      container);
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT,
+							  text_ellipsis_limit_changed_container_callback,
+							  container, G_OBJECT (container));
 	} else {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
-					      text_ellipsis_limit_changed_container_callback,
-					      container);
+		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
+							  text_ellipsis_limit_changed_container_callback,
+							  container, G_OBJECT (container));
 	}
 
 	return object;
@@ -5767,7 +5767,7 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	nautilus_icon_container_theme_changed (container);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 				      nautilus_icon_container_theme_changed,
-				      container);	
+				      container);
 
 	if (!setup_prefs) {
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT,
@@ -8976,7 +8976,7 @@ nautilus_icon_container_is_layout_vertical (NautilusIconContainer *container)
 }
 
 int
-nautilus_icon_container_get_layout_height (NautilusIconContainer  *container)
+nautilus_icon_container_get_max_layout_lines_for_pango (NautilusIconContainer  *container)
 {
 	int limit;
 
@@ -8991,6 +8991,24 @@ nautilus_icon_container_get_layout_height (NautilusIconContainer  *container)
 	}
 
 	return -limit;
+}
+
+int
+nautilus_icon_container_get_max_layout_lines (NautilusIconContainer  *container)
+{
+	int limit;
+
+	if (nautilus_icon_container_get_is_desktop (container)) {
+		limit = desktop_text_ellipsis_limit;
+	} else {
+		limit = text_ellipsis_limits[container->details->zoom_level];
+	}
+
+	if (limit <= 0) {
+		return G_MAXINT;
+	}
+
+	return limit;
 }
 
 
