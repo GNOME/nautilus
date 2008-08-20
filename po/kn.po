@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD.kn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-13 11:40+0000\n"
-"PO-Revision-Date: 2008-08-19 17:51+0530\n"
+"PO-Revision-Date: 2008-08-20 01:05+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -322,7 +322,7 @@ msgstr "ಮಾರ್ಗಪಟ್ಟಿಯ ಬದಲು ಎಲ್ಲಾ ಸಮಯ
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Color for the default folder background. Only used if background_set is true."
 msgstr ""
-"ಫೋಲ್ಡರ್ ಹಿನ್ನಲೆಗಾಗಿನ ಡೀಫಾಲ್ಟ್‍ ಬಣ್ಣ. background_set ನಿಜ ಎಂದಾದಲ್ಲಿ ಮಾತ್ರ "
+"ಕಡತಕೋಶದ ಹಿನ್ನಲೆಗಾಗಿನ ಡೀಫಾಲ್ಟ್‍ ಬಣ್ಣ. background_set ನಿಜ ಎಂದಾದಲ್ಲಿ ಮಾತ್ರ "
 "ಬಳಸಲ್ಪಡುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
@@ -341,10 +341,8 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"Criteria when matching files searched for in the search bar. If set to "
-"\"search_by_text\", then Nautilus will Search for files by file name only. "
-"If set to \"search_by_text_and_properties\", then Nautilus will search for "
-"files by file name and file properties."
+"ಹುಡುಕು ಸ್ಥಳದಲ್ಲಿ ಕಡತಗಳನ್ನು ಹುಡುಕುವಾಗ ನೀಡ ಬೇಕಿರುವ . \"search_by_text\" ಎಂದು ಹೊಂದಿಸಿದಲ್ಲಿ, ನಾಟಿಲಸ್ ಕಡತಗಳನ್ನು ಕೇವಲ ಅವುಗಳ ಹೆಸರಿನ ಆಧಾರದಲ್ಲಿ ಹುಡುಕುತ್ತದೆ. "
+"\"search_by_text_and_properties\" ಎಂದು ಹೊಂದಿಸಿದಲ್ಲಿ, ನಾಟಿಲಸ್ ಕಡತಗಳನ್ನು ಅವುಗಳ ಹೆಸರು ಹಾಗು ಗುಣಗಳ ಆಧಾರದಲ್ಲಿ ಹುಡುಕುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Current Nautilus theme (deprecated)"
@@ -396,7 +394,7 @@ msgstr "ಡೀಫಾಲ್ಟ್‍ ಸಾಂದ್ರ ನೋಟದ ಹಿಗ್
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default folder viewer"
-msgstr "ಡೀಫಾಲ್ಟ್‍ ಫೋಲ್ಡರ್ ವೀಕ್ಷಕ"
+msgstr "ಡೀಫಾಲ್ಟ್‍ ಕಡತಕೋಶ ವೀಕ್ಷಕ"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default icon zoom level"
@@ -455,7 +453,7 @@ msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"ಡೀಫಾಲ್ಟ್‍ ಫೋಲ್ಡರ್ ಹಿನ್ನಲೆಗಾಗಿನ ಕಡತದ ಹೆಸರು. background_set ನಿಜ ಎಂದಾದಲ್ಲಿ ಮಾತ್ರ "
+"ಡೀಫಾಲ್ಟ್‍ ಕಡತಕೋಶದ ಹಿನ್ನಲೆಗಾಗಿನ ಕಡತದ ಹೆಸರು. background_set ನಿಜ ಎಂದಾದಲ್ಲಿ ಮಾತ್ರ "
 "ಬಳಸಲ್ಪಡುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
@@ -484,91 +482,92 @@ msgid ""
 "If set to \"after_current_tab\", then new tabs are inserted after the "
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
-msgstr ""
-"\"after_current_tab\" ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
+msgstr "\"after_current_tab\" ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ಹೊಸ ಹಾಳೆಗಳು ಈಗಿನ ಹಾಳೆಗಳ ನಂತರ ಸೇರಿಸಲ್ಪಡುತ್ತದೆ. \"end\" ಗೆಂ ಹೊಂದಿಸಿದಲ್ಲಿ, ಹೊಸ ಹಾಳೆಗಳು ಹಾಳೆ ಪಟ್ಟಿಯ ಕೊನೆಯಲ್ಲಿ ಸೇರಿಸಲ್ಪಡುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"ನಿಜ ಎಂದಾದಲ್ಲಿ, ನಾಟಿಲಸ್ ಫೋಲ್ಡರುಗಳನ್ನು ಕೇವಲ ವೃಕ್ಷ ನೋಟದಲ್ಲಿ ತೋರಿಸುತ್ತದೆ. ಇಲ್ಲದೆ ಹೋದಲ್ಲಿ "
-"ಫೋಲ್ಡರ್ ಹಾಗು ಕಡತಗಳೆರಡನ್ನೂ ತೋರಿಸುತ್ತದೆ."
+"ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ನಾಟಿಲಸ್ ಕಡತಕೋಶಗಳನ್ನು ಕೇವಲ ವೃಕ್ಷ ನೋಟದಲ್ಲಿ ತೋರಿಸುತ್ತದೆ. ಇಲ್ಲದೆ ಹೋದಲ್ಲಿ "
+"ಕಡತಕೋಶ ಹಾಗು ಕಡತಗಳೆರಡನ್ನೂ ತೋರಿಸುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "If set to true, newly opened windows will have the location bar visible."
-msgstr "ನಿಜ ಎಂದು ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಸ್ಥಳ ಪಟ್ಟಿಯು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಸ್ಥಳ ಪಟ್ಟಿಯು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "ನಿಜ ಎಂದು ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಬದಿಯ ಫಲಕವು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಬದಿಯ ಫಲಕವು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr "ನಿಜ ಎಂದು ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಸ್ಥಿತಿ ಪಟ್ಟಿಯು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಸ್ಥಿತಿ ಪಟ್ಟಿಯು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "ನಿಜ ಎಂದು ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಉಪಕರಣ ಪಟ್ಟಿಗಳು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ಹೊಸದಾಗಿ ತೆರೆಯಲಾದ ವಿಂಡೋಗಳ ಉಪಕರಣ ಪಟ್ಟಿಗಳು ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"ನಿಜ ಎಂದಾದಲ್ಲಿ, ನಾಟಿಲಸ್ ವೀಕ್ಷಕ ವಿಂಡೋಗಳು ಎಲ್ಲಾ ಸಮಯದಲ್ಲೂ ಪಠ್ಯಾತ್ಮಕ ಆದಾನ ನಮೂದಿಗೆ ಸ್ಥಳ "
+"ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ನಾಟಿಲಸ್ ವೀಕ್ಷಕ ವಿಂಡೋಗಳು ಎಲ್ಲಾ ಸಮಯದಲ್ಲೂ ಪಠ್ಯಾತ್ಮಕ ಆದಾನ ನಮೂದಿಗೆ ಸ್ಥಳ "
 "ಪಟ್ಟಿಯ ಬದಲು ಮಾರ್ಗ ಪಟ್ಟಿಯನ್ನು ಬಳಸುತ್ತವೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#, fuzzy
 msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದರೆ, ನಾಟಿಲಸ್ ಕಡತದ ಅನುಮತಿಗಳನ್ನು ಯುನಿಕ್ಸ್‍ ಮಾದರಿಯಲ್ಲಿ ಸಂಪಾದಿಸಲು ಹಾಗು ತೋರಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ, "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
+"ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ಕಡತಗಳನ್ನು ಚಿಹ್ನೆ ಹಾಗು ಪಟ್ಟಿ ನೋಟದಲ್ಲ್ಲಿ ತೋರಿಸುವ ಮೊದಲು ನಾಟಿಲಸ್ ಕಡತ "
+"ಕೋಶಗಳನ್ನು ತೋರಿಸುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ಕಡತಗಳನ್ನು ಅಳಿಸುವಾಗ, ಅಥವ ಕಸದಬುಟ್ಟಿಯನ್ನು ಖಾಲಿ ಮಾಡುವಾಗ ನೀವು ಹೊರಟಾಗ ನಾಟಿಲಸ್ ಖಚಿತಪಡಿಸಲು ಕೇಳುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ನಾಟಿಲಸ್ ಗಣಕವನ್ನು ಆರಂಭಿಸಿದಾಗ ಹಾಗು ಮಾಧ್ಯಮವನ್ನು ತೂರಿಸಿದಾಗ ತಾನಾಗಿಯೆ ಬಳಕೆದಾರರಿಗೆ ಕಾಣಿಸುವಂತಹ ಮಾಧ್ಯಮಗಳಾದ ಹಾರ್ಡ್ ಡಿಸ್ಕ್‍  ಹಾಗು ತೆಗೆಯ ಬಹುದಾದಂತಹ ಮಾಧ್ಯಮಗಳನ್ನು ಆರೋಹಿಸುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#, fuzzy
 msgid ""
 "If set to true, then Nautilus will automatically open a folder when media is "
 "automounted. This only applies to media where no known x-content/* type was "
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ಮಾಧ್ಯಮವು ತಾನಾಗಿಯೆ ಆರೋಹಿತಗೊಂಡಾಗ ನಾಟಿಲಸ್ ತಾನಾಗಿಯೆ ಒಂದು ಕಡತಕೋಶವನ್ನು ತೆರೆಯುತ್ತದೆ. "
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ನಾಟಿಲಸ್ ಗಣಕತೆರೆಯಲ್ಲಿ ಚಿಹ್ನೆಗಳನ್ನು ಎಳೆಯುತ್ತದೆ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ನಾಟಿಲಸ್ ಕಡತವನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ವರ್ಗಾಯಿಸದೆ, ತಕ್ಷಣ ಹಾಗು ಆ ಜಾಗದಲ್ಲೆ ಅಳಿಸಿ ಹಾಕುವ ಸವಲತ್ತನ್ನು ಹೊಂದಿರುತ್ತದೆ. ಈ ಸವಲತ್ತು ಅಪಾಯಕಾರಿಯಾಗಬಹುದು, ಆದ್ದರಿಂದ ಎಚ್ಚರದಿಂದಿರಿ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
-msgstr ""
+msgstr "ಟ್ರೂಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ, ಒಂದು ಮಾಧ್ಯಮವನ್ನು ತೂರಿಸಿದಾಗ ನಾಟಿಲಸ್ ಎಂದಿಗೂ ಅದರಲ್ಲಿರಬಹುದಾದ ಪ್ರೊಗ್ರಾಂ ಅನ್ನು ತೋರಿಸುವುದು ಅಥವ ಸ್ವಯಂಚಾಲನೆ/ಸ್ವಯಂಆರಂಭಗೊಳಿಸುವುದಿಲ್ಲ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1281,7 +1280,7 @@ msgstr "ಇಲ್ಲಿಗೆ ಸ್ಥಳಾಂತರಿಸು (_M)"
 
 #: ../libnautilus-private/nautilus-dnd.c:753
 msgid "_Copy Here"
-msgstr "ಇಲ್ಲಿಗೆ ನಕಲಿಸು(_C)"
+msgstr "ಇಲ್ಲಿಗೆ ಕಾಪಿ ಮಾಡು(_C)"
 
 #: ../libnautilus-private/nautilus-dnd.c:758
 msgid "_Link Here"
@@ -1458,12 +1457,12 @@ msgstr "%s (%s)"
 #. localizers: tag used to detect the first copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:382
 msgid " (copy)"
-msgstr " (ನಕಲು)"
+msgstr " (ನಕಲು ಪ್ರತಿ)"
 
 #. localizers: tag used to detect the second copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:384
 msgid " (another copy)"
-msgstr " (ಇನ್ನೊಂದು ನಕಲು)"
+msgstr " (ಇನ್ನೊಂದು ನಕಲು ಪ್ರತಿ)"
 
 #. localizers: tag used to detect the x11th copy of a file
 #. localizers: tag used to detect the x12th copy of a file
@@ -1474,28 +1473,28 @@ msgstr " (ಇನ್ನೊಂದು ನಕಲು)"
 #: ../libnautilus-private/nautilus-file-operations.c:391
 #: ../libnautilus-private/nautilus-file-operations.c:401
 msgid "th copy)"
-msgstr "ನೆಯ ನಕಲು)"
+msgstr "ನೆಯ ಪ್ರತಿ)"
 
 #. localizers: tag used to detect the x1st copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:394
 msgid "st copy)"
-msgstr "ನೆಯ ನಕಲು)"
+msgstr "ನೆಯ ಪ್ರತಿ)"
 
 #. localizers: tag used to detect the x2nd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:396
 msgid "nd copy)"
-msgstr "ನೆಯ ನಕಲು)"
+msgstr "ನೆಯ ಪ್ರತಿ)"
 
 #. localizers: tag used to detect the x3rd copy of a file
 #: ../libnautilus-private/nautilus-file-operations.c:398
 msgid "rd copy)"
-msgstr "ನೆಯ ನಕಲು)"
+msgstr "ನೆಯ ಪ್ರತಿ)"
 
 #. localizers: appended to first file copy
 #: ../libnautilus-private/nautilus-file-operations.c:415
 #, c-format
 msgid "%s (copy)%s"
-msgstr ""
+msgstr "%s (ನಕಲು ಪ್ರತಿ)%s"
 
 #. localizers: appended to second file copy
 #: ../libnautilus-private/nautilus-file-operations.c:417
@@ -1620,7 +1619,7 @@ msgstr "ಅಳಿಸುವಾಗ ದೋಷ."
 msgid ""
 "Files in the folder \"%B\" cannot be deleted because you do not have "
 "permissions to see them."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1407
 #: ../libnautilus-private/nautilus-file-operations.c:2362
@@ -1640,7 +1639,7 @@ msgstr "ಉಪೇಕ್ಷಿಸಿ (_S)"
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1440
 #: ../libnautilus-private/nautilus-file-operations.c:2401
@@ -1749,7 +1748,7 @@ msgstr[1] "ಕಡತಗಳನ್ನು ಅಳಿಸಲು ತಯಾರಾಗು�
 #: ../libnautilus-private/nautilus-file-operations.c:3296
 #: ../libnautilus-private/nautilus-file-operations.c:3341
 msgid "Error while copying."
-msgstr "ನಕಲಿಸುವಾಗ ದೋಷ."
+msgstr "ಕಾಪಿ ಮಾಡುವಾಗ ದೋಷ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2301
 #: ../libnautilus-private/nautilus-file-operations.c:3294
@@ -1763,11 +1762,10 @@ msgid "Error while moving files to trash."
 msgstr "ಸ್ಥಳಾಂತರಿಸುವಾದ ದೋಷ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2359
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be handled because you do not have "
 "permissions to see them."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2398
 #, fuzzy
@@ -1781,7 +1779,7 @@ msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿ�
 msgid ""
 "The file \"%B\" cannot be handled because you do not have permissions to "
 "read it."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2478
 #, fuzzy
@@ -1792,14 +1790,13 @@ msgstr "ಸಹಾಯವನ್ನು ತೋರಿಸುವಾಗ ಒಂದು ದ
 #: ../libnautilus-private/nautilus-file-operations.c:2620
 #: ../libnautilus-private/nautilus-file-operations.c:2653
 #: ../libnautilus-private/nautilus-file-operations.c:2679
-#, fuzzy
 msgid "Error while copying to \"%B\"."
-msgstr "\"%s\" ಗೆ ನಕಲಿಸುವಾಗ ದೋಷ."
+msgstr "\"%B\" ಗೆ ಕಾಪಿ ಮಾಡುವಾಗ ದೋಷ ಕಂಡುಬಂದಿದೆ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2582
 #, fuzzy
 msgid "You do not have permissions to access the destination folder."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2584
 #, fuzzy
@@ -1829,14 +1826,12 @@ msgid "The destination is read-only."
 msgstr "ತಾಣವು ಒಂದು ಕಡತಕೋಶವಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2739
-#, fuzzy
 msgid "Moving \"%B\" to \"%B\""
-msgstr "\"%s\" ಅನ್ನು \"%s\" ಎಂದು ಪುನರ್ ಹೆಸರಿಸಲಾಗುತ್ತಿದೆ."
+msgstr "\"%B\" ಅನ್ನು \"%B\" ಗೆ ವರ್ಗಾಯಿಸಲಾಗುತ್ತಿದೆ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2740
-#, fuzzy
 msgid "Copying \"%B\" to \"%B\""
-msgstr "\"%s\" ಅನ್ನು \"%s\" ಎಂದು ಪುನರ್ ಹೆಸರಿಸಲಾಗುತ್ತಿದೆ."
+msgstr "\"%B\" ಅನ್ನು \"%B\" ಗೆ ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2745
 #, fuzzy
@@ -1851,11 +1846,10 @@ msgstr[0] "ಕಡತಗಳ ಸ್ಥಳಾಂತರ"
 msgstr[1] "ಕಡತಗಳ ಸ್ಥಳಾಂತರ"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2757
-#, fuzzy
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
-msgstr[0] "ಕಡತವನ್ನು ನಕಲಿಸಲಾಗುತ್ತಿದೆ"
-msgstr[1] "ಕಡತವನ್ನು ನಕಲಿಸಲಾಗುತ್ತಿದೆ"
+msgstr[0] "%'d ಕಡತವನ್ನು \"%B\" ಗೆ ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ (\"%B\" ಯಲ್ಲಿ)"
+msgstr[1] "%'d ಕಡತಗಳನ್ನು \"%B\" ಗೆ ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ (\"%B\" ಯಲ್ಲಿ)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2765
 #, fuzzy
@@ -1872,11 +1866,10 @@ msgstr[0] "ಕಡತಗಳ ಸ್ಥಳಾಂತರ"
 msgstr[1] "ಕಡತಗಳ ಸ್ಥಳಾಂತರ"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2779
-#, fuzzy
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
-msgstr[0] "ಕಡತವನ್ನು ನಕಲಿಸಲಾಗುತ್ತಿದೆ"
-msgstr[1] "ಕಡತವನ್ನು ನಕಲಿಸಲಾಗುತ್ತಿದೆ"
+msgstr[0] "%'d ಕಡತವನ್ನು \"%B\" ಗೆ ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr[1] "%'d ಕಡತಗಳನ್ನು \"%B\" ಗೆ ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2785
 #, fuzzy, c-format
@@ -1940,9 +1933,8 @@ msgstr "ತಾಣವು ಒಂದು ಕಡತಕೋಶವಲ್ಲ."
 #: ../libnautilus-private/nautilus-file-operations.c:3516
 #: ../libnautilus-private/nautilus-file-operations.c:3911
 #: ../libnautilus-private/nautilus-file-operations.c:3984
-#, fuzzy
 msgid "Error while copying \"%B\"."
-msgstr "\"%s\" ಗೆ ನಕಲಿಸುವಾಗ ದೋಷ."
+msgstr "\"%B\" ಗೆ ಕಾಪಿ ಮಾಡುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3476
 #, c-format
@@ -1963,7 +1955,7 @@ msgstr "ಒಂದು ಕಡತಕೋಶವನ್ನು ಅದೇ ಕಡತಕೋ
 #: ../libnautilus-private/nautilus-file-operations.c:3688
 #: ../libnautilus-private/nautilus-file-operations.c:4296
 msgid "You cannot copy a folder into itself."
-msgstr "ಒಂದು ಕಡತಕೋಶವನ್ನು ಅದೇ ಕಡತಕೋಶಕ್ಕೆ ನೀವು ನಕಲು ಮಾಡಲಾಗುವುದಿಲ್ಲ."
+msgstr "ಒಂದು ಕಡತಕೋಶವನ್ನು ಅದೇ ಕಡತಕೋಶಕ್ಕೆ ನೀವು ಕಾಪಿ ಮಾಡಲಾಗುವುದಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3689
 #: ../libnautilus-private/nautilus-file-operations.c:4297
@@ -2073,9 +2065,8 @@ msgstr[0] "ಕಡತಗಳಿಗೆ ಕೊಂಡಿಯನ್ನು ನಿರ್�
 msgstr[1] "ಕಡತಗಳಿಗೆ ಕೊಂಡಿಯನ್ನು ನಿರ್ಮಿಸಲಾಗುತ್ತಿದೆ"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4847
-#, fuzzy
 msgid "Error while creating link to %B."
-msgstr "\"%s\" ಗೆ ನಕಲಿಸುವಾಗ ದೋಷ."
+msgstr "\"%B\" ಗೆ ಕೊಂಡಿ ರಚಿಸುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4849
 msgid "Symbolic links only supported for local files"
@@ -2217,7 +2208,7 @@ msgstr "ನಿನ್ನೆ %-I:%M %p ಹೊತ್ತಿಗೆ"
 
 #: ../libnautilus-private/nautilus-file.c:3632
 msgid "yesterday, 00:00 PM"
-msgstr ""
+msgstr "ನಿನ್ನೆ, 00:00 ಅಪರಾಹ್ನ"
 
 #: ../libnautilus-private/nautilus-file.c:3633
 msgid "yesterday, %-I:%M %p"
@@ -2235,7 +2226,7 @@ msgstr "ನಿನ್ನೆ"
 #.
 #: ../libnautilus-private/nautilus-file.c:3647
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "ಬುಧವಾರ, ಸಪ್ಟೆಂಬರ್ 00 0000 00:00:00 ಅಪರಾಹ್ನ"
 
 #: ../libnautilus-private/nautilus-file.c:3648
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
@@ -2274,9 +2265,8 @@ msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:3662
-#, fuzzy
 msgid "00/00/00, 00:00 PM"
-msgstr "೦೦/೦೦/೦೦, ೦೦:೦೦ "
+msgstr "೦೦/೦೦/೦೦, ೦೦:೦೦ ಅಪರಾಹ್ನ"
 
 #: ../libnautilus-private/nautilus-file.c:3663
 msgid "%m/%-d/%y, %-I:%M %p"
@@ -2291,19 +2281,19 @@ msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
 #: ../libnautilus-private/nautilus-file.c:4279
-#, fuzzy, c-format
+#, c-format
 msgid "Not allowed to set permissions"
-msgstr "ಕಡತ ಕೋಶ ಅನುಮತಿಗಳು:"
+msgstr "ಅನುಮತಿಗಳನ್ನು ಹೊಂದಿಸಲು ಅನುಮತಿ ಇಲ್ಲ"
 
 #: ../libnautilus-private/nautilus-file.c:4587
-#, fuzzy, c-format
+#, c-format
 msgid "Not allowed to set owner"
-msgstr "ಸಮೂಹವನ್ನು ರಚಿಸಲು ಅನುಮತಿ ಇಲ್ಲ"
+msgstr "ಮಾಲಿಕರನ್ನು ನೇಮಿಸಲು ಅನುಮತಿ ಇಲ್ಲ"
 
 #: ../libnautilus-private/nautilus-file.c:4605
-#, fuzzy, c-format
+#, c-format
 msgid "Specified owner '%s' doesn't exist"
-msgstr "ತಾಣ \"%s\" ವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ."
+msgstr "ಸೂಚಿಸಲಾದ ಮಾಲಿಕ \"%s\" ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ"
 
 #: ../libnautilus-private/nautilus-file.c:4869
 #, c-format
@@ -2317,25 +2307,25 @@ msgstr "ಸೂಚಿಸಲಾದ '%s' ಸಮೂಹವು ಅಸ್ತಿತ್�
 
 #: ../libnautilus-private/nautilus-file.c:5030
 #: ../src/file-manager/fm-directory-view.c:2204
-#, fuzzy, c-format
+#, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
-msgstr[0] "%u ಅಂಶ"
-msgstr[1] "%u ಅಂಶಗಳು"
+msgstr[0] "%'u ಅಂಶ"
+msgstr[1] "%'u ಅಂಶಗಳು"
 
 #: ../libnautilus-private/nautilus-file.c:5031
-#, fuzzy, c-format
+#, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
-msgstr[0] "%u ಕಡತಕೋಶ"
-msgstr[1] "%u ಕಡತಕೋಶಗಳು"
+msgstr[0] "%'u ಕಡತಕೋಶ"
+msgstr[1] "%'u ಕಡತಕೋಶಗಳು"
 
 #: ../libnautilus-private/nautilus-file.c:5032
-#, fuzzy, c-format
+#, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
-msgstr[0] "%u ಕಡತ"
-msgstr[1] "%u ಕಡತಗಳು"
+msgstr[0] "%'u ಕಡತ"
+msgstr[1] "%'u ಕಡತಗಳು"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
 #: ../libnautilus-private/nautilus-file.c:5111
@@ -2343,7 +2333,7 @@ msgid "%"
 msgstr "%"
 
 #: ../libnautilus-private/nautilus-file.c:5112
-#, fuzzy, c-format
+#, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s ಬೈಟುಗಳು)"
 
@@ -2443,36 +2433,35 @@ msgstr "೫೦೦ K"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:94
 msgid "1 MB"
-msgstr "೧ MB"
+msgstr "೧ ಎಮ್‌ಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:95
 msgid "3 MB"
-msgstr "೩ MB"
+msgstr "೩ ಎಮ್‌ಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:96
 msgid "5 MB"
-msgstr "೫ MB"
+msgstr "೫ ಎಮ್‌ಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:97
 msgid "10 MB"
-msgstr "೧೦ MB"
+msgstr "೧೦ ಎಮ್‌ಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:98
 msgid "100 MB"
-msgstr "೧೦೦ MB"
+msgstr "೧೦೦ ಎಮ್‌ಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:99
-#, fuzzy
 msgid "1 GB"
-msgstr "೧ MB"
+msgstr "೧ ಜಿಬಿ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:104
 msgid "Activate items with a _single click"
-msgstr ""
+msgstr "ಅಂಶಗಳನ್ನು ಒಂದು ಬಾರಿ ಕ್ಕಿಕ್ಕಿಸಿದಾಗ ಅವುಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು(_s)"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:108
 msgid "Activate items with a _double click"
-msgstr ""
+msgstr "ಅಂಶಗಳನ್ನು ಒಟ್ಟಿಗೆ ಎರಡುಬಾರಿ ಕ್ಕಿಕ್ಕಿಸಿದಾಗ ಅವುಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು(_d)"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:115
 msgid "E_xecute files when they are clicked"
@@ -2480,7 +2469,7 @@ msgstr "ಕಡತಗಳನ್ನು ಕ್ಲಿಕ್ಕಿಸಿದಾಗ ಅ�
 
 #: ../libnautilus-private/nautilus-global-preferences.c:119
 msgid "Display _files when they are clicked"
-msgstr ""
+msgstr "ಕಡತಗಳನ್ನು ಕ್ಕಿಕ್ ಮಾಡಿದಾಗ ಅವುಗಳನ್ನು ತೋರಿಸು(_f)"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:123
 #: ../src/nautilus-file-management-properties.glade.h:74
@@ -2507,9 +2496,8 @@ msgstr "ಲಾಂಛನ ನೋಟ"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-view.c:2973
-#, fuzzy
 msgid "Compact View"
-msgstr "ಒಳ ಅಂಶದ ನೋಟ"
+msgstr "ಸಾಂದ್ರ ನೋಟ"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -2541,7 +2529,7 @@ msgstr "ಮಾರ್ಪಡಿಸಲಾದ ದಿನಾಂಕದೊಂದಿಗ�
 
 #: ../libnautilus-private/nautilus-global-preferences.c:152
 msgid "By Emblems"
-msgstr ""
+msgstr "ಲಾಂಛನಗಳ ಮೇರೆಗೆ"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:156
 msgid "8"
@@ -2676,16 +2664,16 @@ msgstr "ನೀವು ಎಲ್ಲಾ ಕಡತಗಳನ್ನು ತೆರೆಯ
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ಇದು ಪ್ರತ್ಯೇಕ %d ಹಾಳೆಯನ್ನು ತೆರೆಯುತ್ತದೆ."
+msgstr[1] "ಇದು ಪ್ರತ್ಯೇಕ %d ಹಾಳೆಗಳನ್ನು ತೆರೆಯುತ್ತದೆ."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:995
 #: ../src/nautilus-location-bar.c:150
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ಇದು ಪ್ರತ್ಯೇಕ %d ವಿಂಡೋವನ್ನು ತೆರೆಯುತ್ತದೆ."
+msgstr[1] "ಇದು ಪ್ರತ್ಯೇಕ %d ವಿಂಡೋಗಳನ್ನು ತೆರೆಯುತ್ತದೆ."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1229
 #: ../src/nautilus-window-manage-views.c:1880
@@ -2694,9 +2682,9 @@ msgstr[1] ""
 #: ../src/nautilus-window-manage-views.c:1914
 #: ../src/nautilus-window-manage-views.c:1920
 #: ../src/nautilus-window-manage-views.c:1945
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\"."
-msgstr "\"%s\" ಅನ್ನು ಪ್ರದರ್ಶಿಸಲಾಗಿಲ್ಲ."
+msgstr "\"%s\" ಅನ್ನು ತೋರಿಸಲಾಗಿಲ್ಲ."
 
 #: ../libnautilus-private/nautilus-mime-actions.c:1235
 msgid "There is no application installed for this file type"
@@ -2716,8 +2704,8 @@ msgstr "\"%s\" ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ಅಂಶವನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
+msgstr[1] "%d ಅಂಶಗಳನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:167
 #: ../libnautilus-private/nautilus-open-with-dialog.c:255
@@ -2766,7 +2754,7 @@ msgstr "ಈ ಬಗೆಯ ಕಡತಕ್ಕೆ ಯಾವುದೆ ಅನ್ವ�
 #: ../libnautilus-private/nautilus-open-with-dialog.c:922
 #, c-format
 msgid "Open all files of type \"%s\" with:"
-msgstr ""
+msgstr "\"%s\" ಬಗೆಯ ಎಲ್ಲಾ ಕಡತಗಳನ್ನು ಇದರಿಂದ ತೆರೆ:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:145
 msgid "Could not run application"
@@ -2805,12 +2793,11 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:789
 msgid "_Use a custom command"
-msgstr ""
+msgstr "ಒಂದು ಕಸ್ಟಮ್ ಆಜ್ಞೆಯನ್ನು ಬಳಸು(_U)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:806
-#, fuzzy
 msgid "_Browse..."
-msgstr "ತೆಗೆದು ಹಾಕು(_R)..."
+msgstr "ವೀಕ್ಷಿಸು(_B)..."
 
 #. name, stock id
 #. label, accelerator
@@ -2907,9 +2894,8 @@ msgid "Details: "
 msgstr "ವಿವರಗಳು:"
 
 #: ../libnautilus-private/nautilus-progress-info.c:222
-#, fuzzy
 msgid "File Operations"
-msgstr "ಕಡತ ಅನುಮತಿಗಳು:"
+msgstr "ಕಡತ ಕಾರ್ಯಾಚರಣೆಗಳು"
 
 #: ../libnautilus-private/nautilus-progress-info.c:300
 #, fuzzy, c-format
@@ -2920,9 +2906,8 @@ msgstr[1] "ಕಡತ ಅನುಮತಿಗಳು:"
 
 #: ../libnautilus-private/nautilus-progress-info.c:493
 #: ../libnautilus-private/nautilus-progress-info.c:511
-#, fuzzy
 msgid "Preparing"
-msgstr "ಸ್ಥಳಾಂತರಕ್ಕೆ ತಯಾರಾಗುತ್ತಿದೆ..."
+msgstr "ತಯಾರಾಗುತ್ತಿದೆ"
 
 #: ../libnautilus-private/nautilus-query.c:135
 #: ../libnautilus-private/nautilus-search-directory-file.c:166
@@ -2968,7 +2953,7 @@ msgstr ""
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
-msgstr ""
+msgstr "ಕಡತ ವ್ಯವಸ್ಥಾಪಕ ವಿಂಡೋದ ವರ್ತನೆ ಹಾಗು ಗೋಚರಿಕೆಯನ್ನು ಬದಲಾಯಿಸು"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:2
 msgid "File Management"
@@ -2993,20 +2978,19 @@ msgstr "ಕಡತ ವೀಕ್ಷಕ"
 
 #: ../src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "ನಾಟಿಲಸ್ ಶೆಲ್ ಹಾಗು ಕಡತ ವ್ಯವಸ್ಥಾಪಕನಿಗಾಗಿನ ಫ್ಯಾಕ್ಟರಿ"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
-msgstr ""
+msgstr "ನಾಟಿಲಸ್ ಫ್ಯಾಕ್ಟರಿ"
 
 #: ../src/Nautilus_shell.server.in.h:3
-#, fuzzy
 msgid "Nautilus instance"
-msgstr "ನಾಟಿಲಸ್‍ ಜಾಲ ತಾಣ"
+msgstr "ನಾಟಿಲಸ್‍ ಇನ್‌ಸ್ಟೆನ್ಸ್"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus metafile factory"
-msgstr ""
+msgstr "ನಾಟಿಲಸ್ ಮೆಟಾಫೈಲ್ ಫ್ಯಾಕ್ಟರಿ"
 
 #: ../src/Nautilus_shell.server.in.h:5
 msgid "Nautilus operations that can be done from subsequent command-line invocations"
@@ -3014,7 +2998,7 @@ msgstr ""
 
 #: ../src/Nautilus_shell.server.in.h:6
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr ""
+msgstr "ನಾಟಿಲಸ್ ಮೆಟಾಡಾಟಾವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳುವ ಮೆಟಾಡಾಟಾ ವಸ್ತುಗಳನ್ನು ಉತ್ಪಾದಿಸುತ್ತದೆ"
 
 #: ../src/file-manager/fm-desktop-icon-view.c:616
 msgid "Background"
@@ -3034,13 +3018,13 @@ msgstr "ಕಸಬುಟ್ಟಿಯನ್ನು ಖಾಲಿಮಾಡು(_m)"
 #: ../src/file-manager/fm-desktop-icon-view.c:691
 #: ../src/file-manager/fm-directory-view.c:6570
 msgid "Create L_auncher..."
-msgstr ""
+msgstr "ಆರಂಭಕವನ್ನು ರಚಿಸಿ(_a)..."
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:693
 #: ../src/file-manager/fm-directory-view.c:6571
 msgid "Create a new launcher"
-msgstr ""
+msgstr "ಹೊಸ ಆರಂಭಕವನ್ನು ರಚಿಸಿ"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:698
@@ -3050,7 +3034,7 @@ msgstr "ಗಣಕತೆರೆಯ ಹಿನ್ನಲೆಯನ್ನು ಬದಲ�
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:700
 msgid "Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
+msgstr "ನಿಮ್ಮ ಗಣಕತೆರೆಯ ಹಿನ್ನಲೆಯ ವಿನ್ಯಾಸವನ್ನು ಅಥವ ಬಣ್ಣವನ್ನು ಬದಲಾಯಿಸಲು ಅನುವು ಮಾಡುವ ಒಂದು ವಿಂಡೋವನ್ನು ತೋರಿಸಲಾಗುತ್ತದೆ"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:707
@@ -3065,14 +3049,14 @@ msgstr "ಗಣಕತೆರೆ ನೋಟದಲ್ಲಿ ಒಂದು ದೋಷವ
 
 #: ../src/file-manager/fm-desktop-icon-view.c:801
 msgid "The desktop view encountered an error while starting up."
-msgstr ""
+msgstr "ಪ್ರಾರಂಭಿಸುವಾಗ ಗಣಕತೆರೆ ನೋಟದಲ್ಲಿ ಒಂದು ದೋಷವು ಎದುರಾಗಿದೆ."
 
 #: ../src/file-manager/fm-directory-view.c:620
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ಇದು ಪ್ರತ್ಯೇಕ %'d ಹಾಳೆಯನ್ನು ತೆರೆಯುತ್ತದೆ."
+msgstr[1] "ಇದು ಪ್ರತ್ಯೇಕ %'d ಹಾಳೆಗಳನ್ನು ತೆರೆಯುತ್ತದೆ."
 
 #: ../src/file-manager/fm-directory-view.c:623
 #, c-format
@@ -3089,9 +3073,8 @@ msgid "There was an error displaying help."
 msgstr "ಸಹಾಯವನ್ನು ತೋರಿಸುವಾಗ ಒಂದು ದೋಷ ಉಂಟಾಗಿದೆ."
 
 #: ../src/file-manager/fm-directory-view.c:1157
-#, fuzzy
 msgid "Select Items Matching"
-msgstr "ಈ ವಿಂಡೋದ ಎಲ್ಲಾ ಅಂಶಗಳನ್ನು ಆರಿಸು"
+msgstr "ತಾಳೆಯಾಗುವ ಅಂಶಗಳನ್ನು ಆರಿಸು"
 
 #: ../src/file-manager/fm-directory-view.c:1175
 msgid "_Pattern:"
@@ -3112,7 +3095,7 @@ msgstr "ಕಡತಕೋಶ(_F):"
 
 #: ../src/file-manager/fm-directory-view.c:1312
 msgid "Select Folder to Save Search In"
-msgstr ""
+msgstr "ಹುಡುಕಿದ್ದನ್ನು ಉಳಿಸಲು ಕಡತಕೋಶವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
 #: ../src/file-manager/fm-directory-view.c:2124
 #: ../src/file-manager/fm-directory-view.c:2161
@@ -3121,41 +3104,41 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
 
 #: ../src/file-manager/fm-directory-view.c:2126
-#, fuzzy, c-format
+#, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
-msgstr[0] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
-msgstr[1] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[0] "%'d ಕಡತಕೋಶವು ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[1] "%'d ಕಡತಕೋಶಗಳು ಆರಿಸಲ್ಪಟ್ಟಿವೆ"
 
 #: ../src/file-manager/fm-directory-view.c:2136
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
-msgstr[0] "\"%s\" ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
-msgstr[1] "\"%s\" ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
+msgstr[0] " (%'d ಅಂಶವನ್ನು ಹೊಂದಿದೆ)"
+msgstr[1] " (%'d ಅಂಶಗಳನ್ನು ಹೊಂದಿದೆ)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: ../src/file-manager/fm-directory-view.c:2147
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
-msgstr[0] "\"%s\" ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
-msgstr[1] "\"%s\" ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ."
+msgstr[0] " (ಒಟ್ಟು %'d ಅಂಶವನ್ನು ಹೊಂದಿದೆ)"
+msgstr[1] " (ಒಟ್ಟು %'d ಅಂಶಗಳನ್ನು ಹೊಂದಿದೆ)"
 
 #: ../src/file-manager/fm-directory-view.c:2164
-#, fuzzy, c-format
+#, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
-msgstr[0] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
-msgstr[1] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[0] "%'d ಅಂಶವು ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[1] "%'d ಅಂಶಗಳು ಆರಿಸಲ್ಪಟ್ಟಿವೆ"
 
 #. Folders selected also, use "other" terminology
 #: ../src/file-manager/fm-directory-view.c:2171
-#, fuzzy, c-format
+#, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
-msgstr[0] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
-msgstr[1] "\"%s\" ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[0] "%'d ಇತರೆ ಅಂಶವು ಆರಿಸಲ್ಪಟ್ಟಿದೆ"
+msgstr[1] "%'d ಇತರೆ ಅಂಶಗಳು ಆರಿಸಲ್ಪಟ್ಟಿವೆ"
 
 #. This is marked for translation in case a localiser
 #. * needs to use something other than parentheses. The
@@ -3255,32 +3238,32 @@ msgstr ""
 #: ../src/file-manager/fm-tree-view.c:970
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
-msgstr ""
+msgstr "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ \"%s\" ಸ್ಥಳಾಂತರ ಮಾಡಲ್ಪಡುತ್ತದೆ"
 
 #: ../src/file-manager/fm-directory-view.c:5692
 #: ../src/file-manager/fm-tree-view.c:974
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
-msgstr ""
+msgstr "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ \"%s\" ಕಾಪಿ ಮಾಡಲ್ಪಡುತ್ತದೆ"
 
 #: ../src/file-manager/fm-directory-view.c:5699
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural "The %'d selected items will be moved if you select the Paste command"
-msgstr[0] "ಕಡತ \"%s\" ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿಲ್ಲ."
-msgstr[1] "ಕಡತ \"%s\" ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿಲ್ಲ."
+msgstr[0] "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ ಆಯ್ಕೆ ಮಾಡಲಾದ %'d ಅಂಶವು ಸ್ಥಳಾಂತರಗೊಳ್ಳುತ್ತವೆ ಮಾಡಲ್ಪಡುತ್ತದೆ"
+msgstr[1] "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ ಆಯ್ಕೆ ಮಾಡಲಾದ %'d ಅಂಶಗಳು ಸ್ಥಳಾಂತರಗೊಳ್ಳುತ್ತವೆ ಮಾಡಲ್ಪಡುತ್ತವೆ"
 
 #: ../src/file-manager/fm-directory-view.c:5706
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural "The %'d selected items will be copied if you select the Paste command"
-msgstr[0] "ಕಡತ \"%s\" ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿಲ್ಲ."
-msgstr[1] "ಕಡತ \"%s\" ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿಲ್ಲ."
+msgstr[0] "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ ಆಯ್ಕೆ ಮಾಡಲಾದ %'d ಅಂಶವು ಕಾಪಿ ಮಾಡಲ್ಪಡುತ್ತದೆ"
+msgstr[1] "ಅಂಟಿಸು ಆಜ್ಞೆಯನ್ನು ನೀವು ಆರಿಸಿದಲ್ಲಿ ಆಯ್ಕೆ ಮಾಡಲಾದ %'d ಅಂಶಗಳು ಕಾಪಿ ಮಾಡಲ್ಪಡುತ್ತವೆ"
 
 #: ../src/file-manager/fm-directory-view.c:5762
 #: ../src/file-manager/fm-tree-view.c:1013
 msgid "There is nothing on the clipboard to paste."
-msgstr ""
+msgstr "ಅಂಟಿಸಲು ಕ್ಲಿಪ್‌ಬೋರ್ಡಿನಲ್ಲಿ ಏನೂ ಇಲ್ಲ."
 
 #: ../src/file-manager/fm-directory-view.c:6235
 #, c-format
@@ -3298,12 +3281,11 @@ msgstr "ಕೊಂಡಿಯ ಹೆಸರು(_n):"
 #: ../src/file-manager/fm-directory-view.c:6453
 #, c-format
 msgid "Could not determine original location of \"%s\" "
-msgstr ""
+msgstr "\"%s\" ಮೊದಲು ಇದ್ದ ಸ್ಥಳವನ್ನು ಕಂಡು ಹಿಡಿಯಲಾಗಿಲ್ಲ "
 
 #: ../src/file-manager/fm-directory-view.c:6457
-#, fuzzy
 msgid "The item cannot be restored from trash"
-msgstr "ಕಡತ \"%s\" ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿಲ್ಲ."
+msgstr "ಅಂಶವನ್ನು ಕಸದ ಬುಟ್ಟಿಯಿಂದ ಮರಳಿ ಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ."
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6544
@@ -3350,9 +3332,8 @@ msgstr "ಈ ಕಡತಕೋಶದಲ್ಲಿ ಒಂದು ಹೊಸ ಖಾಲ�
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6563
-#, fuzzy
 msgid "No templates installed"
-msgstr "ಯಾವುದೇ ನಮೂನೆಗಳು ಅನುಸ್ಥಾಪಿತವಾಗಿಲ್ಲ"
+msgstr "ಯಾವುದೇ ನಮೂನೆಗಳು ಅನುಸ್ಥಾಪಿತಗೊಂಡಿಲ್ಲ"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
@@ -3369,7 +3350,7 @@ msgstr "ಈ ಕಡತಕೋಶದಲ್ಲಿ ಒಂದು ಹೊಸ ಖಾಲ�
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6575
 msgid "Open the selected item in this window"
-msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
+msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಯೊಂದು ಅಂಶವನ್ನೂ ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
@@ -3379,12 +3360,12 @@ msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡ
 #: ../src/file-manager/fm-directory-view.c:6582
 #: ../src/file-manager/fm-directory-view.c:6728
 msgid "Open in Navigation Window"
-msgstr ""
+msgstr "ನ್ಯಾವಿಗೇಶನ್ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6583
 msgid "Open each selected item in a navigation window"
-msgstr ""
+msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಯೊಂದು ಅಂಶವನ್ನೂ ನ್ಯಾವಿಗೇಶನ್ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
@@ -3395,29 +3376,25 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:7667
 #: ../src/file-manager/fm-tree-view.c:1185
 #: ../src/nautilus-places-sidebar.c:1962
-#, fuzzy
 msgid "Open in New _Tab"
-msgstr "ಹೊಸ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ (_W)"
+msgstr "ಹೊಸ ಹಾಳೆಯಲ್ಲಿ ತೆರೆ (_T)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6587
-#, fuzzy
 msgid "Open each selected item in a new tab"
-msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
+msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಯೊಂದು ಅಂಶವನ್ನೂ ಹೊಸ ಹಾಳೆಯಲ್ಲಿ ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6590
 #: ../src/file-manager/fm-directory-view.c:6737
-#, fuzzy
 msgid "Open in _Folder Window"
-msgstr "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr "ಕಡತಕೋಶ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ(_F)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6591
-#, fuzzy
 msgid "Open each selected item in a folder window"
-msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
+msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಯೊಂದು ಅಂಶವನ್ನು ಒಂದು ಕಡತಕೋಶ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
@@ -3430,7 +3407,7 @@ msgstr "ಇತರೆ ಅನ್ವಯದೊಂದಿಗೆ ತೆರೆ(_A)..."
 #: ../src/file-manager/fm-directory-view.c:6595
 #: ../src/file-manager/fm-directory-view.c:6599
 msgid "Choose another application with which to open the selected item"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಅಂಶವನ್ನು ತೆರೆಯಲು ಬೇರೊಂದು ಅನ್ವಯವನ್ನು ಆರಿಸು"
 
 #. name, stock id
 #. label, accelerator
@@ -3440,29 +3417,30 @@ msgstr "ಸ್ಕ್ರಿಪ್ಟುಗಳ ಕಡತವನ್ನು ತೆರ�
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6603
+#, fuzzy
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr ""
+msgstr "ಈ ಮೆನುವಿನಲ್ಲಿ "
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6611
 msgid "Prepare the selected files to be moved with a Paste command"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು 'ಅಂಟಿಸು' ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಸ್ಥಳಾಂತರಿಸಲು ತಯಾರುಗೊಳಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6615
 msgid "Prepare the selected files to be copied with a Paste command"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು 'ಅಂಟಿಸು' ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಕಾಪಿ ಮಾಡಲು ತಯಾರುಗೊಳಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6619
 msgid "Move or copy files previously selected by a Cut or Copy command"
-msgstr ""
+msgstr "ಈ ಹಿಂದೆ ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು 'ಕತ್ತರಿಸು' ಅಥವ 'ಕಾಪಿ ಮಾಡು' ಆಜ್ಞೆಯಿಂದ ಸ್ಥಳಾಂತರಿಸು ಅಥವ ಕಾಪಿ ಮಾಡು"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
@@ -3479,7 +3457,7 @@ msgstr "ಕಡತಕೋಶಕ್ಕೆ ಅಂಟಿಸು(_P)"
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
-msgstr ""
+msgstr "ಈ ಹಿಂದೆ ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು 'ಕತ್ತರಿಸು' ಅಥವ 'ಕಾಪಿ ಮಾಡು' ಆಜ್ಞೆಯಿಂದ ಈ ಕಡತಕೋಶಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸು ಅಥವ ಕಾಪಿ ಮಾಡು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6629
@@ -3490,7 +3468,7 @@ msgstr "ಈ ವಿಂಡೋದ ಎಲ್ಲಾ ಅಂಶಗಳನ್ನು ಆ�
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6632
 msgid "Select I_tems Matching..."
-msgstr ""
+msgstr "ತಾಳೆಯಾಗುವ ಅಂಶಗಳನ್ನು ಆರಿಸಿ(_t)..."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6633
@@ -3525,8 +3503,8 @@ msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿ ಅಂಶದ ತದ್ರ
 #: ../src/file-manager/fm-directory-view.c:7756
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ಕೊಂಡಿಯನ್ನು ನಿರ್ಮಿಸು(_k)"
+msgstr[1] "ಕೊಂಡಿಗಳನ್ನು ನಿರ್ಮಿಸು(_k)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6645
@@ -3537,18 +3515,18 @@ msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಯೊಂದು ಅಂಶ�
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6648
 msgid "_Rename..."
-msgstr "ಪುನರ್ ಹೆಸರಿಸು(_R)..."
+msgstr "ಹೆಸರನ್ನು ಬದಲಾಯಿಸು(_R)..."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6649
 msgid "Rename selected item"
-msgstr "ಆರಿಸಲಾದ ಅಂಶವನ್ನು ಪುನರ್ ಹೆಸರಿಸು"
+msgstr "ಆರಿಸಲಾದ ಅಂಶದ ಹೆಸರನ್ನು ಬದಲಾಯಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6657
 #: ../src/file-manager/fm-directory-view.c:7714
 msgid "Move each selected item to the Trash"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಪ್ರತಿಯೊಂದು ಅಂಶವನ್ನೂ ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸು"
 
 #. name, stock id
 #. label, accelerator
@@ -3563,15 +3541,14 @@ msgstr "ಅಳಿಸು(_D)"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6661
 msgid "Delete each selected item, without moving to the Trash"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಅಂಶಗಳನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸದೆ ಅಳಿಸಿ ಹಾಕು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6664
 #: ../src/file-manager/fm-directory-view.c:6763
-#, fuzzy
 msgid "_Restore"
-msgstr "ಪುನಃ ಪ್ರಯತ್ನಿಸು(_R)"
+msgstr "ಮರುಸ್ಥಾಪಿಸು(_R)"
 
 #.
 #. * multiview-TODO: decide whether "Reset to Defaults" should
@@ -3583,7 +3560,7 @@ msgstr "ಪುನಃ ಪ್ರಯತ್ನಿಸು(_R)"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6674
 msgid "Reset View to _Defaults"
-msgstr ""
+msgstr "ನೋಟಗಳನ್ನು ಡೀಫಾಲ್ಟಿಗೆ ಮರು ಹೊಂದಿಸು(_D)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6675
@@ -3599,7 +3576,7 @@ msgstr "ಈ ಪರಿಚಾರಕಕ್ಕೆ ಸಂಪರ್ಕ ಕಲ್ಪಿ
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6679
 msgid "Make a permanent connection to this server"
-msgstr ""
+msgstr "ಈ ಪರಿಚಾರಕಕ್ಕೆ ಒಂದು ಶಾಶ್ವತವಾದ ಸಂಪರ್ಕವನ್ನು ಕಲ್ಪಿಸು"
 
 #. name, stock id
 #. label, accelerator
@@ -3607,12 +3584,12 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6698
 #: ../src/file-manager/fm-directory-view.c:6767
 msgid "_Mount Volume"
-msgstr ""
+msgstr "ಪರಿಮಾಣವನ್ನು ಆರೋಹಿಸು(_M)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6683
 msgid "Mount the selected volume"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಪರಿಮಾಣವನ್ನು ಅವರೋಹಿಸು"
 
 #. name, stock id
 #. label, accelerator
@@ -3620,21 +3597,20 @@ msgstr ""
 #: ../src/file-manager/fm-directory-view.c:6702
 #: ../src/file-manager/fm-directory-view.c:6771
 msgid "_Unmount Volume"
-msgstr ""
+msgstr "ಪರಿಮಾಣವನ್ನು ಅವರೋಹಿಸು(_U)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6687
 msgid "Unmount the selected volume"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಪರಿಮಾಣವನ್ನು ಅವರೋಹಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6690
 #: ../src/file-manager/fm-directory-view.c:6706
 #: ../src/file-manager/fm-directory-view.c:6775
-#, fuzzy
 msgid "_Eject Volume"
-msgstr "ಹೊರತಳ್ಳು(_Eject)"
+msgstr "ಪರಿಮಾಣವನ್ನು ಹೊರತಳ್ಳು(_Eject)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6691
@@ -3658,88 +3634,86 @@ msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಪರಿಮಾಣವನ್ನು ಫಾ�
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6699
 msgid "Mount the volume associated with the open folder"
-msgstr ""
+msgstr "ತೆರಯಲಾದ ಕಡತಕೋಶಕ್ಕೆ ಹೊಂದಿಕೊಂಡಿರುವ ಪರಿಮಾಣವನ್ನು ಆರೋಹಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6703
 msgid "Unmount the volume associated with the open folder"
-msgstr ""
+msgstr "ತೆರಯಲಾದ ಕಡತಕೋಶಕ್ಕೆ ಹೊಂದಿಕೊಂಡಿರುವ ಪರಿಮಾಣವನ್ನು ಅವರೋಹಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6707
 msgid "Eject the volume associated with the open folder"
-msgstr ""
+msgstr "ತೆರಯಲಾದ ಕಡತಕೋಶಕ್ಕೆ ಹೊಂದಿಕೊಂಡಿರುವ ಪರಿಮಾಣವನ್ನು ಹೊರ ತಳ್ಳು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6711
 msgid "Format the volume associated with the open folder"
-msgstr ""
+msgstr "ತೆರಯಲಾದ ಕಡತಕೋಶಕ್ಕೆ ಹೊಂದಿಕೊಂಡಿರುವ ಪರಿಮಾಣವನ್ನು ಫಾರ್ಮಾಟ್ ಮಾಡು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6714
 msgid "Open File and Close window"
-msgstr ""
+msgstr "ಕಡತವನ್ನು ತೆರೆ ಹಾಗು ವಿಂಡೋವನ್ನು ಮುಚ್ಚು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6718
 msgid "Sa_ve Search"
-msgstr ""
+msgstr "ಹುಡುಕಲಾಗಿದ್ದನ್ನು ಉಳಿಸು(_v)"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6719
 msgid "Save the edited search"
-msgstr ""
+msgstr "ಸಂಪಾದಿಸಲಾದ ಹುಡುಕನ್ನು ಉಳಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6722
 msgid "Sa_ve Search As..."
-msgstr ""
+msgstr "ಹುಡುಕಿದ್ದನ್ನು ಹೀಗೆ ಉಳಿಸು(_v)..."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6723
 msgid "Save the current search as a file"
-msgstr ""
+msgstr "ಈಗಿನ ಹುಡುಕನ್ನು ಒಂದು ಕಡತವಾಗಿ ಉಳಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6729
 msgid "Open this folder in a navigation window"
-msgstr ""
+msgstr "ಈ ಕಡತಕೋಶವನ್ನು ಒಂದು ನ್ಯಾವಿಗೇಶನ್ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6733
-#, fuzzy
 msgid "Open this folder in a new tab"
-msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
+msgstr "ಈ ಕಡತಕೋಶವನ್ನು ಒಂದು ಹೊಸ ಹಾಳೆಯಲ್ಲಿ ತೆರೆ"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6738
-#, fuzzy
 msgid "Open this folder in a folder window"
-msgstr "ಆರಿಸಲ್ಪಟ್ಟ ಅಂಶವನ್ನು ಈ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
+msgstr "ಈ ಕಡತಕೋಶವನ್ನು ಒಂದು ಕಡತಕೋಶ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6743
 msgid "Prepare this folder to be moved with a Paste command"
-msgstr ""
+msgstr "'ಅಂಟಿಸು' ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಸ್ಥಳಾಂತರಿಸಲು ಈ ಕಡತಕೋಶವನ್ನು ತಯಾರುಗೊಳಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6747
 msgid "Prepare this folder to be copied with a Paste command"
-msgstr ""
+msgstr "'ಅಂಟಿಸು' ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಕಾಪಿ ಮಾಡಲು ಈ ಕಡತಕೋಶವನ್ನು ತಯಾರುಗೊಳಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6751
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
-msgstr ""
+msgstr "ಈ ಹಿಂದೆ ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು 'ಕತ್ತರಿಸು' ಅಥವ 'ಕಾಪಿ ಮಾಡು' ಆಜ್ಞೆಯಿಂದ ಈ ಕಡತಕೋಶಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸು ಅಥವ ಕಾಪಿ ಮಾಡು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6756
@@ -3753,39 +3727,34 @@ msgstr "ಕಸದ ಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸದೆ,
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6768
-#, fuzzy
 msgid "Mount the volume associated with this folder"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
+msgstr "ಈ ಕಡತಕೋಶಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಪರಿಮಾಣವನ್ನು ಆರೋಹಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6772
-#, fuzzy
 msgid "Unmount the volume associated with this folder"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
+msgstr "ಈ ಕಡತಕೋಶಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಪರಿಮಾಣವನ್ನು ಅವರೋಹಿಸು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6776
-#, fuzzy
 msgid "Eject the volume associated with this folder"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
+msgstr "ಈ ಕಡತಕೋಶಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಪರಿಮಾಣವನ್ನು ಹೊರ ತೆಗೆ"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6780
-#, fuzzy
 msgid "Format the volume associated with this folder"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
+msgstr "ಈ ಕಡತಕೋಶಗಳಿಗೆ ಸಂಬಂಧಿತವಾದ ಪರಿಮಾಣವನ್ನು ಫಾರ್ಮಾಟ್ ಮಾಡು"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6785
-#, fuzzy
 msgid "View or modify the properties of this folder"
-msgstr "ತೆರೆಯಲ್ಪಟ್ಟ ಕಡತಕೋಶದ ಗುಣಲಕ್ಷಣಗಳನ್ನು ವೀಕ್ಷಿಸು ಅಥವ ಮಾರ್ಪಡಿಸು"
+msgstr "ಈ ಕಡತಕೋಶದ ಗುಣಲಕ್ಷಣಗಳನ್ನು ವೀಕ್ಷಿಸು ಅಥವ ಮಾರ್ಪಡಿಸು"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6867
 #, c-format
 msgid "Run or manage scripts from %s"
-msgstr ""
+msgstr "%s ಇಂದ ಸ್ಕ್ರಿಪ್ಟುಗಳನ್ನು ಚಲಾಯಿಸು ಅಥವ ನಿರ್ವಹಿಸು"
 
 #. Create a script action here specially because its tooltip is dynamic
 #: ../src/file-manager/fm-directory-view.c:6869
@@ -3793,19 +3762,19 @@ msgid "_Scripts"
 msgstr "ಸ್ಕ್ರಿಪ್ಟುಗಳು(_S)"
 
 #: ../src/file-manager/fm-directory-view.c:7163
-#, fuzzy, c-format
+#, c-format
 msgid "Move the open folder out of the trash to \"%s\""
-msgstr "ತೆರೆಯಲ್ಪಟ್ಟ ಕಡತಕೋಶವನ್ನು ಕಸದಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸು"
+msgstr "ತೆರೆಯಲಾದ ಕಡತಕೋಶಗಳನ್ನು ಕಸದಬುಟ್ಟಿಯಿಂದ \"%s\" ಗೆ ಸ್ಥಳಾಂತರಿಸು"
 
 #: ../src/file-manager/fm-directory-view.c:7165
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
-msgstr "ತೆರೆಯಲ್ಪಟ್ಟ ಕಡತಕೋಶವನ್ನು ಕಸದಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸು"
+msgstr "ಆರಿಸಲಾದ ಕಡತಕೋಶಗಳನ್ನು ಕಸದಬುಟ್ಟಿಯಿಂದ \"%s\" ಗೆ ಸ್ಥಳಾಂತರಿಸು"
 
 #: ../src/file-manager/fm-directory-view.c:7167
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected file out of the trash to \"%s\""
-msgstr "ತೆರೆಯಲ್ಪಟ್ಟ ಕಡತಕೋಶವನ್ನು ಕಸದಬುಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸು"
+msgstr "ಆರಿಸಲಾದ ಕಡತಗಳನ್ನು ಕಸದಬುಟ್ಟಿಯಿಂದ \"%s\" ಗೆ ಸ್ಥಳಾಂತರಿಸು"
 
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7375
@@ -3817,9 +3786,8 @@ msgstr "ಹೊಸ ವಿಂಡೋದಲ್ಲಿ ತೆರೆ (_W)"
 
 #: ../src/file-manager/fm-directory-view.c:7377
 #: ../src/file-manager/fm-directory-view.c:7636
-#, fuzzy
 msgid "Browse in New _Window"
-msgstr "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr "ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ವೀಕ್ಷಿಸು(_W)"
 
 #: ../src/file-manager/fm-directory-view.c:7385
 #: ../src/file-manager/fm-directory-view.c:7646
@@ -3830,9 +3798,8 @@ msgstr[1] "ಕಡತಕೋಶಗಳನ್ನು ವೀಕ್ಷಿಸು(_B)"
 
 #: ../src/file-manager/fm-directory-view.c:7402
 #: ../src/file-manager/fm-directory-view.c:7676
-#, fuzzy
 msgid "Browse in New _Tab"
-msgstr "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr "ಹೊಸ ಹಾಳೆಯಲ್ಲಿ ವೀಕ್ಷಿಸು(_T)"
 
 #: ../src/file-manager/fm-directory-view.c:7451
 #: ../src/file-manager/fm-directory-view.c:7709
@@ -3853,32 +3820,32 @@ msgid "_Open with \"%s\""
 msgstr "\"%s\"ನೊಂದಿಗೆ ತೆರೆ(_O)"
 
 #: ../src/file-manager/fm-directory-view.c:7629
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
-msgstr[0] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
-msgstr[1] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr[0] "ಹೊಸ %'d ವಿಂಡೊದಲ್ಲಿ ತೆರೆ(_W)"
+msgstr[1] "ಹೊಸ %'d ವಿಂಡೊಗಳಲ್ಲಿ ತೆರೆ(_W)"
 
 #: ../src/file-manager/fm-directory-view.c:7638
-#, fuzzy, c-format
+#, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
-msgstr[0] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
-msgstr[1] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr[0] "ಹೊಸ %'d ವಿಂಡೊದಲ್ಲಿ ವೀಕ್ಷಿಸು(_W)"
+msgstr[1] "ಹೊಸ %'d ವಿಂಡೊಗಳಲ್ಲಿ ವೀಕ್ಷಿಸು(_W)"
 
 #: ../src/file-manager/fm-directory-view.c:7669
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
-msgstr[0] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
-msgstr[1] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr[0] "ಹೊಸ %'d ಹಾಳೆಯಲ್ಲಿ ತೆರೆ(_T)"
+msgstr[1] "ಹೊಸ %'d ಹಾಳೆಗಳಲ್ಲಿ ತೆರೆ(_T)"
 
 #: ../src/file-manager/fm-directory-view.c:7678
-#, fuzzy, c-format
+#, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
-msgstr[0] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
-msgstr[1] "ಒಂದು ಹೊಸ ವಿಂಡೊದಲ್ಲಿ ತೆರೆ"
+msgstr[0] "ಹೊಸ %'d ಹಾಳೆಯಲ್ಲಿ ವೀಕ್ಷಿಸು(_T)"
+msgstr[1] "ಹೊಸ %'d ಹಾಳೆಗಳಲ್ಲಿ ವೀಕ್ಷಿಸು(_T)"
 
 #: ../src/file-manager/fm-directory-view.c:7710
 msgid "Delete all selected items permanently"
@@ -3890,7 +3857,7 @@ msgstr "ತಾಣವನ್ನು ಡೌನ್ ಲೋಡ್ ಮಾಡಬೇಕೆ
 
 #: ../src/file-manager/fm-directory-view.c:9018
 msgid "You can download it or make a link to it."
-msgstr ""
+msgstr "ನೀವದನ್ನು ಡೌನ್‌ಲೋಡ್‌ ಮಾಡಬಹುದು ಅಥವ ಅದಕ್ಕೆ ಲಿಂಕ್ ನೀಡಬಹುದು."
 
 #: ../src/file-manager/fm-directory-view.c:9021
 msgid "Make a _Link"
@@ -3904,16 +3871,16 @@ msgstr "ಡೌನ್ ಲೋಡ್(_D)"
 #: ../src/file-manager/fm-directory-view.c:9152
 #: ../src/file-manager/fm-directory-view.c:9257
 msgid "Drag and drop is not supported."
-msgstr ""
+msgstr "ಎಳೆದು ಸೇರಿಸುವಿಕೆಯು ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
 
 #: ../src/file-manager/fm-directory-view.c:9088
 msgid "Drag and drop is only supported on local file systems."
-msgstr ""
+msgstr "ಎಳೆದು ಸೇರಿಸುವಿಕೆಯು ಕೇವಲ ಸ್ಥಳೀಯ ಕಡತ ವ್ಯವಸ್ಥೆಗಳಲ್ಲಿ ಮಾತ್ರ ಬೆಂಬಲಿತವಾಗಿದೆ."
 
 #: ../src/file-manager/fm-directory-view.c:9153
 #: ../src/file-manager/fm-directory-view.c:9258
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "ಒಂದು ಸರಿಯಲ್ಲದ ರೀತಿಯ ಎಳೆಯುವಿಕೆಯನ್ನು ಬಳಸಲಾಗಿದೆ."
 
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/file-manager/fm-directory-view.c:9325
@@ -3971,7 +3938,7 @@ msgstr "ಈ ಕಡತದಲ್ಲಿ \"%s\" ವು ಇಲ್ಲ. ಬಹುಷಃ
 #: ../src/file-manager/fm-error-reporting.c:113
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
-msgstr "\"%s\" ಅನ್ನು ಪುನರ್ ಹೆಸರಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲು ನಿಮಗೆ ಅಗತ್ಯ ಅನುಮತಿಗಳಿಲ್ಲ."
 
 #: ../src/file-manager/fm-error-reporting.c:118
 #, c-format
@@ -3995,12 +3962,12 @@ msgstr "ಕ್ಷಮಿಸಿ, \"%s\" ನ ಹೆಸರನ್ನು \"%s\" ಎಂ
 
 #: ../src/file-manager/fm-error-reporting.c:145
 msgid "The item could not be renamed."
-msgstr ""
+msgstr "ಅಂಶದ ಹೆಸರನ್ನು ಬದಲಾಯಿಸಲಾಗಿಲ್ಲ."
 
 #: ../src/file-manager/fm-error-reporting.c:167
 #, c-format
 msgid "You do not have the permissions necessary to change the group of \"%s\"."
-msgstr ""
+msgstr "\"%s\" ನ ಸಮೂಹವನ್ನು ಬದಲಾಯಿಸಲು ಅಗತ್ಯವಿರುವ ಅನುಮತಿಗಳು ನಿಮ್ಮಲ್ಲಿಲ್ಲ ."
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:180
@@ -4033,58 +4000,57 @@ msgstr "ಅನುಮತಿಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗಲ�
 #: ../src/file-manager/fm-error-reporting.c:334
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "\"%s\" ಅನ್ನು \"%s\" ಎಂದು ಪುನರ್ ಹೆಸರಿಸಲಾಗುತ್ತಿದೆ."
+msgstr "\"%s\" ನ ಹೆಸರನ್ನು \"%s\" ಗೆ ಬದಲಾಯಿಸಲಾಗುತ್ತಿದೆ."
 
 #: ../src/file-manager/fm-icon-view.c:123
 msgid "by _Name"
-msgstr "ಹೆಸರಿನಿಂದ(_N)"
+msgstr "ಹೆಸರಿನ ಮೇರೆಗೆ(_N)"
 
 #: ../src/file-manager/fm-icon-view.c:124
 #: ../src/file-manager/fm-icon-view.c:1539
 msgid "Keep icons sorted by name in rows"
-msgstr ""
+msgstr "ಚಿಹ್ನೆಗಳನ್ನು ಅವುಗಳ ಹೆಸರಿನ ಮೇರೆಗೆ ಸಾಲುಗಳಲ್ಲಿ ಜೋಡಿಸಿ ಇಡು"
 
 #: ../src/file-manager/fm-icon-view.c:130
 msgid "by _Size"
-msgstr "ಗಾತ್ರದಿಂದ(_S)"
+msgstr "ಗಾತ್ರದ ಮೇರೆಗೆ(_S)"
 
 #: ../src/file-manager/fm-icon-view.c:131
 #: ../src/file-manager/fm-icon-view.c:1543
 msgid "Keep icons sorted by size in rows"
-msgstr ""
+msgstr "ಚಿಹ್ನೆಗಳನ್ನು ಅವುಗಳ ಗಾತ್ರದ ಮೇರೆಗೆ ಸಾಲುಗಳಲ್ಲಿ ಜೋಡಿಸಿ ಇಡು"
 
 #: ../src/file-manager/fm-icon-view.c:137
 msgid "by _Type"
-msgstr "ಬಗೆಯಿಂದ(_T)"
+msgstr "ಬಗೆಯ ಮೇರೆಗೆ(_T)"
 
 #: ../src/file-manager/fm-icon-view.c:138
 #: ../src/file-manager/fm-icon-view.c:1547
 msgid "Keep icons sorted by type in rows"
-msgstr ""
+msgstr "ಚಿಹ್ನೆಗಳನ್ನು ಅವುಗಳ ಬಗೆಯ ಮೇರೆಗೆ ಸಾಲುಗಳಲ್ಲಿ ಜೋಡಿಸಿ ಇಡು"
 
 #: ../src/file-manager/fm-icon-view.c:144
-#, fuzzy
 msgid "by Modification _Date"
-msgstr "ಗುರುತನ್ನು ಮಾರ್ಪಡಿಸು"
+msgstr "ಮಾರ್ಪಡಿಸಲಾದ ದಿನಾಂಕದ ಮೇರೆಗೆ(_M)"
 
 #: ../src/file-manager/fm-icon-view.c:145
 #: ../src/file-manager/fm-icon-view.c:1551
 msgid "Keep icons sorted by modification date in rows"
-msgstr ""
+msgstr "ಚಿಹ್ನೆಗಳನ್ನು ಮಾರ್ಪಡಿಸಲಾದ ದಿನಾಂಕದ ಆಧಾರ ಮೇಲೆ ಸಾಲುಗಳಲ್ಲಿ ಜೋಡಿಸಿ ಇಡು"
 
 #: ../src/file-manager/fm-icon-view.c:151
 msgid "by _Emblems"
-msgstr ""
+msgstr "ಲಾಂಛನಗಳ ಮೇರೆಗೆ(_E)"
 
 #: ../src/file-manager/fm-icon-view.c:152
 #: ../src/file-manager/fm-icon-view.c:1555
 msgid "Keep icons sorted by emblems in rows"
-msgstr ""
+msgstr "ಲಾಂಛನಗಳ ಮೇರೆಗೆ ಚಿಹ್ನೆಗಳನ್ನು ಸಾಲುಗಳಲ್ಲಿ ಜೋಡಿಸಿ ಇಡು"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-icon-view.c:1499
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "ಅಂಶಗಳನ್ನು ಜೋಡಿಸು(_g)"
 
 #. name, stock id
 #. label, accelerator
@@ -4094,26 +4060,27 @@ msgstr "ಲಾಂಛನವನ್ನು ಹಿಗ್ಗಿಸು(_h)..."
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1502
+#, fuzzy
 msgid "Make the selected icon stretchable"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಚಿಹ್ನೆಯನ್ನು "
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1505
 #: ../src/file-manager/fm-icon-view.c:1675
 msgid "Restore Icons' Original Si_zes"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಪ್ರತಿಯೊಂದು ಚಿಹ್ನೆಗಳನ್ನು ಅದರ ನಿಜವಾದ ಗಾತ್ರಗಳಿಗೆ ಮರಳಿಸು(_z)"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1506
 msgid "Restore each selected icon to its original size"
-msgstr ""
+msgstr "ಆರಿಸಲಾದ ಪ್ರತಿಯೊಂದು ಚಿಹ್ನೆಯನ್ನು ಅದರ ನಿಜವಾದ ಗಾತ್ರಕ್ಕೆ ಮರಳಿಸು"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-icon-view.c:1509
 msgid "Clean _Up by Name"
-msgstr ""
+msgstr "ಹೆಸರಿನ ಮೇರೆಗೆ ಸ್ವಚ್ಛಗೊಳಿಸು(_U)"
 
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1510
@@ -4217,14 +4184,12 @@ msgid "The compact view encountered an error."
 msgstr "ಸಾಂದ್ರ ನೋಟದಲ್ಲಿ ಒಂದು ದೋಷವು ಎದುರಾಗಿದೆ."
 
 #: ../src/file-manager/fm-icon-view.c:2977
-#, fuzzy
 msgid "The compact view encountered an error while starting up."
-msgstr "ಚಿಹ್ನೆಯ ನೋಟವು ಆರಂಭಗೊಳ್ಳುವಾಗ ಒಂದು ದೋಷವು ಎದುರಾಗಿದೆ."
+msgstr "ಸಾಂದ್ರ ನೋಟವು ಆರಂಭಗೊಳ್ಳುವಾಗ ಒಂದು ದೋಷವು ಎದುರಾಗಿದೆ."
 
 #: ../src/file-manager/fm-icon-view.c:2978
-#, fuzzy
 msgid "Display this location with the compact view."
-msgstr "ಈ ಚಿಹ್ನೆಯ ನೋಟದೊಂದಿಗೆ ಈ ತಾಣವನ್ನು ತೋರಿಸು."
+msgstr "ಈ ತಾಣವನ್ನು ಸಾಂದ್ರ ನೋಟದೊಂದಿಗೆ ತೋರಿಸು."
 
 #: ../src/file-manager/fm-list-model.c:373
 #: ../src/file-manager/fm-tree-model.c:1266
@@ -4243,7 +4208,7 @@ msgstr "%s ಗೋಚರಿಸುವ ಕಾಲಂಗಳು"
 
 #: ../src/file-manager/fm-list-view.c:2104
 msgid "Choose the order of information to appear in this folder:"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಕಾಣಿಸಬೇಕಿರುವ ಮಾಹಿತಿಯ ಅನುಕ್ರಮವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
+msgstr "ಈ ಕಡತಕೋಶದಲ್ಲಿ ಕಾಣಿಸಬೇಕಿರುವ ಮಾಹಿತಿಯ ಅನುಕ್ರಮವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ."
 
 #. name, stock id
 #. label, accelerator
@@ -4254,7 +4219,7 @@ msgstr "ಗೋಚರಿಸುವ ಕಾಲಂಗಳು(_C)..."
 #. tooltip
 #: ../src/file-manager/fm-list-view.c:2159
 msgid "Select the columns visible in this folder"
-msgstr "ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
+msgstr "ಈ ಕಡತಕೋಶದಲ್ಲಿ ಗೋಚರಿಸುವ ಕಾಲಂಗಳನು ಆರಿಸು"
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-list-view.c:2884
@@ -4371,7 +4336,6 @@ msgid "Total capacity:"
 msgstr "ಒಟ್ಟು ಸಾಮರ್ಥ್ಯ:"
 
 #: ../src/file-manager/fm-properties-window.c:3116
-#, fuzzy
 msgid "Filesystem type:"
 msgstr "ಕಡತವ್ಯವಸ್ಥೆಯ ಬಗೆ:"
 
@@ -4464,7 +4428,7 @@ msgstr "ನಿಲುಕಣೆ:"
 
 #: ../src/file-manager/fm-properties-window.c:4168
 msgid "Folder access:"
-msgstr "ಫೋಲ್ಡರ್ ನಿಲುಕಣೆ:"
+msgstr "ಕಡತಕೋಶದ ನಿಲುಕಣೆ:"
 
 #: ../src/file-manager/fm-properties-window.c:4170
 msgid "File access:"
@@ -4563,7 +4527,6 @@ msgid "Text view:"
 msgstr "ಪಠ್ಯ ನೋಟ:"
 
 #: ../src/file-manager/fm-properties-window.c:4768
-#, fuzzy
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "ನೀವು ಮಾಲಿಕರಲ್ಲ, ಆದ್ದರಿಂದ ಈ ಅನುಮತಿಗಳನ್ನು ನೀವು ಬದಲಾಯಿಸುವಂತಿಲ್ಲ."
 
@@ -4625,14 +4588,14 @@ msgstr "ವೃಕ್ಷವನ್ನು ತೋರಿಸು"
 #: ../src/nautilus-application.c:323
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "ನಾಟಿಲಸ್‍ಗೆ \"%s\" ಫೋಲ್ಡರನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
+msgstr "ನಾಟಿಲಸ್‍ಗೆ \"%s\" ಕಡತಕೋಶವನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
 #: ../src/nautilus-application.c:325
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"ನಾಟಿಲಸ್ ಅನ್ನು ಚಲಾಯಿಸುವ ಮೊದಲು, ದಯವಿಟ್ಟು ಈ ಫೋಲ್ಡರನ್ನು ನಿರ್ಮಿಸಿ, ಅಥವ ನಾಟಿಲಸ್‍ಗೆ ಅದನ್ನು "
+"ನಾಟಿಲಸ್ ಅನ್ನು ಚಲಾಯಿಸುವ ಮೊದಲು, ದಯವಿಟ್ಟು ಈ ಕಡತಕೋಶವನ್ನು ನಿರ್ಮಿಸಿ, ಅಥವ ನಾಟಿಲಸ್‍ಗೆ ಅದನ್ನು "
 "ನಿರ್ಮಿಸುವಂತೆ ಅನುಮತಿಗಳನ್ನು ಒದಗಿಸಿ."
 
 #: ../src/nautilus-application.c:328
@@ -4645,7 +4608,7 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"ನಾಟಿಲಸ್ ಅನ್ನು ಚಲಾಯಿಸುವ ಮೊದಲು, ದಯವಿಟ್ಟು ಈ ಫೋಲ್ಡರುಗಳನ್ನು ನಿರ್ಮಿಸಿ, ಅಥವ ನಾಟಿಲಸ್‍ಗೆ "
+"ನಾಟಿಲಸ್ ಅನ್ನು ಚಲಾಯಿಸುವ ಮೊದಲು, ದಯವಿಟ್ಟು ಈ ಕಡತಕೋಶಗಳನ್ನು ನಿರ್ಮಿಸಿ, ಅಥವ ನಾಟಿಲಸ್‍ಗೆ "
 "ಅವನ್ನು ನಿರ್ಮಿಸುವಂತೆ ಅನುಮತಿಗಳನ್ನು ಒದಗಿಸಿ."
 
 #. Can't register myself due to trouble locating the
@@ -4812,9 +4775,9 @@ msgid "Edit Bookmarks"
 msgstr "ಬುಕ್ಮಾರ್ಕುಗಳನ್ನು ಸಂಪಾದಿಸು"
 
 #: ../src/nautilus-connect-server-dialog-main.c:75
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot display location \"%s\""
-msgstr "\"%s\" ಅನ್ನು ಪ್ರದರ್ಶಿಸಲಾಗಿಲ್ಲ."
+msgstr "\"%s\" ಅನ್ನು ತೋರಿಸಲಾಗಿಲ್ಲ"
 
 #: ../src/nautilus-connect-server-dialog-main.c:172
 msgid "[URI]"
@@ -4823,17 +4786,18 @@ msgstr "[URI]"
 #. Translators: This is the --help description gor the connect to server app,
 #. the initial newlines are between the command line arg and the description
 #: ../src/nautilus-connect-server-dialog-main.c:183
-#, fuzzy
 msgid ""
 "\n"
 "\n"
 "Add connect to server mount"
-msgstr "%s ಪರಿಚಾರಕಕ್ಕೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸು"
+msgstr ""
+"\n"
+"\n"
+"ಪರಿಚಾರಕ ಆರೋಹಣಕ್ಕೆ ಸಂಪರ್ಕವನ್ನು ಸೇರಿಸಿ"
 
 #: ../src/nautilus-connect-server-dialog.c:114
-#, fuzzy
 msgid "Custom Location"
-msgstr "ತಾಣ"
+msgstr "ಕಸ್ಟಮ್ ತಾಣ"
 
 #: ../src/nautilus-connect-server-dialog.c:116
 msgid "SSH"
@@ -4860,19 +4824,16 @@ msgid "Secure WebDAV (HTTPS)"
 msgstr "ಸುರಕ್ಷಿತ WebDAV (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:194
-#, fuzzy
 msgid "Cannot Connect to Server. You must enter a name for the server."
-msgstr "ಕ್ಷಮಿಸಿ, \"%s\" ವು ಒಂದು ಮಾನ್ಯವಾದ ಕಡತದ ಹೆಸರಾಗಿಲ್ಲ."
+msgstr "ಕ್ಷಮಿಸಿ ಪರಿಚಾರಕಕ್ಕೆ ಸಂಪರ್ಕ ಜೋಡಿಸಲಾಗಿಲ್ಲ, ಪರಿಚಾರಕ್ಕೆ ಒಂದು ಹೆಸರನ್ನು ನಮೂದಿಸಬೇಕು."
 
 #: ../src/nautilus-connect-server-dialog.c:195
-#, fuzzy
 msgid "Please enter a name and try again."
-msgstr "ದಯವಿಟ್ಟಿ ಕಾಗುಣಿತವನ್ನು ಪರೀಕ್ಷಿಸಿ ಹಾಗು ನಂತರ ಪ್ರಯತ್ನಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು ಒಂದು ಹೆಸರನ್ನು ನಮೂದಿಸಿ ಹಾಗು ಇನ್ನೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ."
 
 #: ../src/nautilus-connect-server-dialog.c:426
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "ತಾಣ(_L):"
+msgstr "ತಾಣ(ಯುಆರ್ಐ)(_L):"
 
 #: ../src/nautilus-connect-server-dialog.c:448
 msgid "_Server:"
@@ -4949,7 +4910,7 @@ msgstr "ತೋರಿಸಲಾದ ಲಾಂಛನಕ್ಕಾಗಿ ಒಂದು 
 
 #: ../src/nautilus-emblem-sidebar.c:353
 msgid "Rename"
-msgstr "ಪುನರ್ ಹೆಸರಿಸು"
+msgstr "ಹೆಸರನ್ನು ಬದಲಾಯಿಸು"
 
 #: ../src/nautilus-emblem-sidebar.c:528
 msgid "Add Emblems..."
@@ -5011,14 +4972,14 @@ msgid ""
 "100 MB\n"
 "1 GB"
 msgstr ""
-"100 KB\n"
-"500 KB\n"
-"1 MB\n"
-"3 MB\n"
-"5 MB\n"
-"10 MB\n"
-"100 MB\n"
-"1 GB"
+"೧೦೦ ಕೆಬಿ\n"
+"೫೦೦ ಕೆಬಿ\n"
+"೧ ಎಮ್‌ಬಿ\n"
+"೩ ಎಮ್‌ಬಿ\n"
+"೫ ಎಮ್‌ಬಿ\n"
+"೧೦ ಎಮ್‌ಬಿ\n"
+"೧೦೦ ಎಮ್‌ಬಿ\n"
+"೧ ಜಿಬಿ"
 
 #: ../src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
@@ -5247,7 +5208,7 @@ msgstr "ಲಾಂಛನದಲ್ಲಿ ಪಠ್ಯವನ್ನು ತೋರಿ�
 
 #: ../src/nautilus-file-management-properties.glade.h:70
 msgid "Sort _folders before files"
-msgstr "ಕಡತಗಳಿಗೂ ಮೊದಲು ಫೋಲ್ಡರನ್ನು ವಿಂಗಡಿಸು(_f)"
+msgstr "ಕಡತಗಳಿಗೂ ಮೊದಲು ಕಡತಕೋಶಗಳನ್ನು ವಿಂಗಡಿಸು(_f)"
 
 #: ../src/nautilus-file-management-properties.glade.h:71
 msgid "View _new folders using:"
@@ -5626,7 +5587,7 @@ msgstr "ತೋರಿಸಲಾದ ಲಾಂಛನಕ್ಕಾಗಿ ಇನ್ನ�
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:799
 msgid "Open Folder W_indow"
-msgstr "ಫೋಲ್ಡರ್ ವಿಂಡೋವನ್ನು ತೆರೆ(_i)"
+msgstr "ಕಡತಕೋಶ ವಿಂಡೋವನ್ನು ತೆರೆ(_i)"
 
 #: ../src/nautilus-navigation-window-menus.c:800
 msgid "Open a folder window for the displayed location"
@@ -5842,7 +5803,7 @@ msgstr "ತೆಗೆದು ಹಾಕು"
 
 #: ../src/nautilus-places-sidebar.c:1986
 msgid "Rename..."
-msgstr "ಪುನರ್ ಹೆಸರಿಸು..."
+msgstr "ಹೆಸರನ್ನು ಬದಲಾಯಿಸು..."
 
 #: ../src/nautilus-places-sidebar.c:1998
 msgid "_Mount"
@@ -6161,11 +6122,11 @@ msgstr "ಸ್ಥಳವನ್ನು ತೆರೆ(_L)..."
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:893
 msgid "Close P_arent Folders"
-msgstr "ಮೂಲ ಫೋಲ್ಡರ್‍ಗಳನ್ನು ಮುಚ್ಚು(_a)"
+msgstr "ಮೂಲ ಕಡತಕೋಶವನ್ನು ಮುಚ್ಚು(_a)"
 
 #: ../src/nautilus-spatial-window.c:894
 msgid "Close this folder's parents"
-msgstr "ಈ ಫೋಲ್ಡರಿನ ಮೂಲ ಫೋಲ್ಡರ್‍ಗಳನ್ನು ಮುಚ್ಚು"
+msgstr "ಈ ಕಡತಕೋಶದ ಮೂಲ ಕಡತಕೋಶಗಳನ್ನು ಮುಚ್ಚು"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:896
@@ -6214,7 +6175,7 @@ msgstr "ಪ್ರಸ್ತುತ ಕಡತದ ನೋಟ"
 
 #: ../src/nautilus-window-manage-views.c:1883
 msgid "Nautilus has no installed viewer capable of displaying the folder."
-msgstr "ನಾಟಿಲಸ್‍ನಲ್ಲಿ ಈ ಫೋಲ್ಡರನ್ನು ತೋರಿಸುವಂತಹ ಯಾವುದೆ ಅನುಸ್ಥಾಪಿತ ವೀಕ್ಷಕವಿಲ್ಲ."
+msgstr "ನಾಟಿಲಸ್‍ನಲ್ಲಿ ಈ ಕಡತಕೋಶವನ್ನು ತೋರಿಸುವಂತಹ ಯಾವುದೆ ಅನುಸ್ಥಾಪಿತ ವೀಕ್ಷಕವಿಲ್ಲ."
 
 #: ../src/nautilus-window-manage-views.c:1889
 msgid "The location is not a folder."
@@ -6394,7 +6355,7 @@ msgstr "ಮೂಲವನ್ನು ತೆರೆ(_P)"
 
 #: ../src/nautilus-window-menus.c:807
 msgid "Open the parent folder"
-msgstr "ಮೂಲದ ಫೋಲ್ಡರನ್ನು ತೆರೆ"
+msgstr "ಮೂಲ ಕಡತಕೋಶವನ್ನು ತೆರೆ"
 
 #. name, stock id
 #. label, accelerator
