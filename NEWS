@@ -1,3 +1,18 @@
+Major changes in 2.23.90 are:
+* Truncate long item labels in the icon view and on the desktop
+   + icon_view/text_ellipsis_limit and desktop/text_ellipsis_limit GConf
+     preferences added (defaults to three lines)
+   + expand when hovering, or when selecting a file
+* Support restoring of multiple items from trash at once
+* Handle scroll events on the path bar
+* Fix “same file system” (i.e. copy vs. move) DND check for desktop
+* Fix search for content type in simple search backend
+* Fix running of scripts on the desktop
+* Use more archive file types for file-roller integration for remote locations
+* Consolidate zoom handling internals
+* Show file name instead of URI in the bookmark editor window for local files
+* Polish “Visible Columns“ list view dialog
+
 Major changes in 2.23.6.1 are:
 * Fix display name of computer:// icons
 
