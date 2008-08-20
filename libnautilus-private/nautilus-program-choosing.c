@@ -251,24 +251,77 @@ nautilus_launch_application (GAppInfo *application,
  * 
  * @command_string: The application to be launched, with any desired
  * command-line options.
- * @parameter: Passed as a parameter to the application as is.
+ * @...: Passed as parameters to the application after quoting each of them.
  */
 void
 nautilus_launch_application_from_command (GdkScreen  *screen,
 					  const char *name,
 					  const char *command_string, 
-					  const char *parameter, 
-					  gboolean use_terminal)
+					  gboolean use_terminal,
+					  ...)
 {
-	char *full_command;
+	char *full_command, *tmp;
 	char *quoted_parameter; 
+	char *parameter;
+	va_list ap;
 
-	if (parameter != NULL) {
+	full_command = g_strdup (command_string);
+
+	va_start (ap, use_terminal);
+
+	while ((parameter = va_arg (ap, char *)) != NULL) {
 		quoted_parameter = g_shell_quote (parameter);
-		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
+		tmp = g_strconcat (full_command, " ", quoted_parameter, NULL);
 		g_free (quoted_parameter);
+
+		g_free (full_command);
+		full_command = tmp;
+
+	}
+
+	va_end (ap);
+
+	if (use_terminal) {
+		eel_gnome_open_terminal_on_screen (full_command, screen);
 	} else {
-		full_command = g_strdup (command_string);
+	    	gdk_spawn_command_line_on_screen (screen, full_command, NULL);
+	}
+
+	g_free (full_command);
+}
+
+/**
+ * nautilus_launch_application_from_command:
+ * 
+ * Fork off a process to launch an application with a given uri as
+ * a parameter.
+ * 
+ * @command_string: The application to be launched, with any desired
+ * command-line options.
+ * @parameters: Passed as parameters to the application after quoting each of them.
+ */
+void
+nautilus_launch_application_from_command_array (GdkScreen  *screen,
+						const char *name,
+						const char *command_string,
+						gboolean use_terminal,
+						const char * const * parameters)
+{
+	char *full_command, *tmp;
+	char *quoted_parameter; 
+	const char * const *p;
+
+	full_command = g_strdup (command_string);
+
+	if (parameters != NULL) {
+		for (p = parameters; *p != NULL; p++) {
+			quoted_parameter = g_shell_quote (*p);
+			tmp = g_strconcat (full_command, " ", quoted_parameter, NULL);
+			g_free (quoted_parameter);
+
+			g_free (full_command);
+			full_command = tmp;
+		}
 	}
 
 	if (use_terminal) {

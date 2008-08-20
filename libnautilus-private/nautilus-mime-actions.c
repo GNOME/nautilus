@@ -1109,7 +1109,7 @@ activate_files (ActivateParameters *parameters)
 				    "directory view activate_callback launch_file window=%p: %s",
 				    parameters->parent_window, quoted_path);
 
-		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, FALSE);
+		nautilus_launch_application_from_command (screen, name, quoted_path, FALSE, NULL);
 		g_free (name);
 		g_free (quoted_path);
 		g_free (executable_path);
@@ -1130,7 +1130,7 @@ activate_files (ActivateParameters *parameters)
 				    "directory view activate_callback launch_in_terminal window=%p: %s",
 				    parameters->parent_window, quoted_path);
 
-		nautilus_launch_application_from_command (screen, name, quoted_path, NULL, TRUE);
+		nautilus_launch_application_from_command (screen, name, quoted_path, TRUE, NULL);
 		g_free (name);
 		g_free (quoted_path);
 		g_free (executable_path);

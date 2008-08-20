@@ -1,5 +1,30 @@
 2008-08-20  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-program-choosing.c
+	(nautilus_launch_application_from_command),
+	(nautilus_launch_application_from_command_array):
+	* libnautilus-private/nautilus-program-choosing.h:
+	Use vararg list for nautilus_launch_application_from_command().
+	Add nautilus_launch_application_from_command_array() which takes a
+	parameter string array. Quote each parameter separately.
+
+	* libnautilus-private/nautilus-mime-actions.c (activate_files):
+	* src/file-manager/fm-desktop-icon-view.c
+	(action_new_launcher_callback),
+	(action_change_background_callback):
+	* src/file-manager/fm-directory-view.c
+	(action_new_launcher_callback),
+	(get_file_names_as_parameter_array), (run_script_callback):
+	* src/file-manager/fm-tree-view.c (got_activation_uri_callback):
+	Pass each parameter separately to
+	nautilus_launch_application_from_command(_array)().
+	The _array() variant is used for running scripts, where the file names
+	of the selection are passed separately.
+
+	Fixes #341657. Thanks to Cosimo Cecchi.
+
+2008-08-20  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-search-engine-simple.c
 	(visit_directory):
 	Make content type search criterion useful, by fixing typo from GIO

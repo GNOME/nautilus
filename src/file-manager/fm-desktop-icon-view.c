@@ -599,9 +599,9 @@ action_new_launcher_callback (GtkAction *action, gpointer data)
 
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
 						  "gnome-desktop-item-edit", 
-						  "gnome-desktop-item-edit --create-new",
-						  desktop_directory, 
-						  FALSE);
+						  "gnome-desktop-item-edit",
+						  FALSE,
+						  "--create-new", desktop_directory, NULL);
 	g_free (desktop_directory);
 
 }
@@ -615,8 +615,8 @@ action_change_background_callback (GtkAction *action,
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
 						  _("Background"),
 						  "gnome-appearance-properties",
-						  "--show-page=background",
-						  FALSE);
+						  FALSE,
+						  "--show-page=background", NULL);
 }
 
 static void

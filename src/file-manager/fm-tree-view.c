@@ -369,7 +369,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 			nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
 					    "tree view launch_application_from_command window=%p: %s",
 					    view->details->window, file_uri);
-			nautilus_launch_application_from_command (screen, NULL, file_uri, NULL, FALSE);
+			nautilus_launch_application_from_command (screen, NULL, file_uri, FALSE, NULL);
 			g_free (file_uri);
 		}
 		   

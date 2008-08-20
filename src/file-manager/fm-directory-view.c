@@ -1397,9 +1397,9 @@ action_new_launcher_callback (GtkAction *action,
 			    "directory view create new launcher in window=%p: %s", window, parent_uri);
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
 						  "gnome-desktop-item-edit", 
-						  "gnome-desktop-item-edit --create-new",
-						  parent_uri, 
-						  FALSE);
+						  "gnome-desktop-item-edit",
+						  FALSE,
+						  "--create-new", parent_uri, NULL);
 
 	g_free (parent_uri);
 }
@@ -4778,28 +4778,37 @@ change_to_view_directory (FMDirectoryView *view)
 	return old_path;
 }
 
-static char *
-get_file_names_as_parameter_string (GList *selection)
+static char **
+get_file_names_as_parameter_array (GList *selection)
 {
-	char *name, *quoted_name;
-	char *result;
-	GString *parameter_string;
+	NautilusFile *file;
+	char *name;
+	char **parameters;
 	GList *node;
+	int i;
 
-	parameter_string = g_string_new ("");
-	for (node = selection; node != NULL; node = node->next) {
+	parameters = g_new (char *, g_list_length (selection) + 1);
+
+	for (node = selection, i = 0; node != NULL; node = node->next, i++) {
+		file = NAUTILUS_FILE (node->data);
+
+		if (!nautilus_file_is_local (file)) {
+			parameters[i] = NULL;
+			g_strfreev (parameters);
+			return NULL;
+		}
+
+		/* TODO get name with respect to base directory,
+		 * which may be different from file's parent directory
+		 * in list view with nested subdirectories.
+		 */
+
 		name = nautilus_file_get_name (NAUTILUS_FILE (node->data));
-		quoted_name = g_shell_quote (name);
-		g_string_append (parameter_string, quoted_name);
-		g_string_append (parameter_string, " ");
-		g_free (name);
-		g_free (quoted_name);
+		parameters[i] = name;
 	}
 
-	result = parameter_string->str;
-	g_string_free (parameter_string, FALSE);
-
-	return result;
+	parameters[i] = NULL;
+	return parameters;
 }
 
 static char *
@@ -4930,7 +4939,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	char *local_file_path;
 	char *quoted_path;
 	char *old_working_dir;
-	char *parameters, *command, *name;
+	char **parameters, *name;
 	GtkWindow *window;
 	
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
@@ -4948,21 +4957,7 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	selected_files = fm_directory_view_get_selection (launch_parameters->directory_view);
 	set_script_environment_variables (launch_parameters->directory_view, selected_files);
 	 
-	if (nautilus_directory_is_local (launch_parameters->directory_view->details->model)) {
-		parameters = get_file_names_as_parameter_string (selected_files);
-
-		/* FIXME: must append command and parameters here, because nautilus_launch_application_from_command
-		 * quotes all parameters as if they are a single parameter. Should add or change API in
-		 * nautilus-program-choosing.c to support multiple parameters.
-		 */
-		command = g_strconcat (quoted_path, " ", parameters, NULL);
-		g_free (parameters);
-	} else {
-		/* We pass no parameters in the remote case. It's up to scripts to be smart
-		 * and check the environment variables. 
-		 */
-		command = g_strdup (quoted_path);
-	}
+	parameters = get_file_names_as_parameter_array (selected_files);
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
@@ -4970,11 +4965,12 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
 	window = fm_directory_view_get_containing_window (launch_parameters->directory_view);
 	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
-			    "directory view run_script_callback, window=%p, name=\"%s\", command=\"%s\"",
-			    window, name, command);
-	nautilus_launch_application_from_command (screen, name, command, NULL, FALSE);
+			    "directory view run_script_callback, window=%p, name=\"%s\", script_path=\"%s\" (omitting script parameters)",
+			    window, name, local_file_path);
+	nautilus_launch_application_from_command_array (screen, name, quoted_path, FALSE,
+							(const char * const *) parameters);
 	g_free (name);
-	g_free (command);
+	g_strfreev (parameters);
 
 	nautilus_file_list_free (selected_files);
 	unset_script_environment_variables ();

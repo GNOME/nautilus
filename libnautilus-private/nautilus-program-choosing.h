@@ -39,8 +39,13 @@ void nautilus_launch_application                 (GAppInfo                      
 void nautilus_launch_application_from_command    (GdkScreen                         *screen,
 						  const char                        *name,
 						  const char                        *command_string,
-						  const char                        *parameter,
-						  gboolean                           use_terminal);
+						  gboolean                           use_terminal,
+						  ...) G_GNUC_NULL_TERMINATED;
+void nautilus_launch_application_from_command_array (GdkScreen                         *screen,
+						     const char                        *name,
+						     const char                        *command_string,
+						     gboolean                           use_terminal,
+						     const char * const *               parameters);
 void nautilus_launch_desktop_file		 (GdkScreen                         *screen,
 						  const char                        *desktop_file_uri,
 						  const GList                       *parameter_uris,
