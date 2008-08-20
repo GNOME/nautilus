@@ -1360,6 +1360,11 @@ value_field_update_internal (GtkLabel *label,
 							    inconsistent_string);
 		if (strcmp (mime_type, inconsistent_string)) {
 			tmp = attribute_value;
+			/* FIXME: we should use C_ () instead. See bug #542658.
+			 *
+			 * Translators: The text before the "|" is context to help you decide on
+			 * the correct translation. Only translate the part after the pipe.
+			 */
 			attribute_value = g_strdup_printf (Q_("MIME type description (MIME type)|%s (%s)"), attribute_value, mime_type);
 			g_free (tmp);
 		}
