@@ -1,5 +1,12 @@
 2008-08-20  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text):
+	Clear underlying items if text overlaps them when displaying full
+	PangoLayout.
+
+2008-08-20  Christian Neumair  <cneumair@gnome.org>
+
 	* configure.in:
 	Post release version bump.
 

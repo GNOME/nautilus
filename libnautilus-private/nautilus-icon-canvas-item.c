@@ -1041,6 +1041,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	GdkGC *gc;
 	EelIRect text_rect;
 	int text_back_padding_x, text_back_padding_y;
+	int height;
 	
 	icon_width = 0;
 	gc = NULL;
@@ -1177,6 +1178,16 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    text_rect.y0,
 			    is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0,
 			    text_rect.y1 - text_rect.y0);
+	} else if (!needs_highlight && !details->is_renaming &&
+		   details->text_height_for_layout != details->text_height &&
+		   details->text_width > 0 && details->text_height > 0) {
+		/* clear the underlying icons, where the text overlaps them. */
+		height = details->text_height - details->text_height_for_layout;
+		gdk_window_clear_area (EEL_CANVAS (container)->layout.bin_window,
+				       text_rect.x0,
+				       text_rect.y1 - height,
+				       text_rect.x1 - text_rect.x0,
+				       height);
 	}
 
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
