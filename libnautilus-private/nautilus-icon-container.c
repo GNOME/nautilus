@@ -189,12 +189,8 @@ static void          icon_get_bounding_box                          (NautilusIco
 								     int                   *x1_return,
 								     int                   *y1_return,
 								     int                   *x2_return,
-								     int                   *y2_return);
-static void          icon_get_bounding_box_for_layout               (NautilusIcon          *icon,
-								     int                   *x1_return,
-								     int                   *y1_return,
-								     int                   *x2_return,
-								     int                   *y2_return);
+								     int                   *y2_return,
+								     NautilusIconCanvasItemBoundsUsage usage);
 static gboolean      is_renaming                                    (NautilusIconContainer *container);
 static gboolean      is_renaming_pending                            (NautilusIconContainer *container);
 static void          process_pending_icon_to_rename                 (NautilusIconContainer *container);
@@ -506,36 +502,42 @@ icon_set_selected (NautilusIconContainer *container,
 	return TRUE;
 }
 
-static void
+static inline void
 icon_get_bounding_box (NautilusIcon *icon,
 		       int *x1_return, int *y1_return,
-		       int *x2_return, int *y2_return)
+		       int *x2_return, int *y2_return,
+		       NautilusIconCanvasItemBoundsUsage usage)
 {
 	double x1, y1, x2, y2;
 
-	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
-				      &x1, &y1, &x2, &y2);
+	if (usage == BOUNDS_USAGE_FOR_DISPLAY) {
+		eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
+					    &x1, &y1, &x2, &y2);
+	} else if (usage == BOUNDS_USAGE_FOR_LAYOUT) {
+		nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
+								 &x1, &y1, &x2, &y2);
+	} else if (usage == BOUNDS_USAGE_FOR_ENTIRE_ITEM) {
+		nautilus_icon_canvas_item_get_bounds_for_entire_item (icon->item,
+								      &x1, &y1, &x2, &y2);
+	} else {
+		g_assert_not_reached ();
+	}
 
-	*x1_return = x1;
-	*y1_return = y1;
-	*x2_return = x2;
-	*y2_return = y2;
-}
+	if (x1_return != NULL) {
+		*x1_return = x1;
+	}
 
-static void
-icon_get_bounding_box_for_layout (NautilusIcon *icon,
-				  int *x1_return, int *y1_return,
-				  int *x2_return, int *y2_return)
-{
-	double x1, y1, x2, y2;
+	if (y1_return != NULL) {
+		*y1_return = y1;
+	}
 
-	nautilus_icon_canvas_item_get_bounds_for_layout (icon->item,
-							 &x1, &y1, &x2, &y2);
+	if (x2_return != NULL) {
+		*x2_return = x2;
+	}
 
-	*x1_return = x1;
-	*y1_return = y1;
-	*x2_return = x2;
-	*y2_return = y2;
+	if (y2_return != NULL) {
+		*y2_return = y2;
+	}
 }
 
 /* Utility functions for NautilusIconContainer.  */
@@ -797,17 +799,129 @@ clear_keyboard_rubberband_start (NautilusIconContainer *container)
 	container->details->keyboard_rubberband_start = NULL;
 }
 
+/* carbon-copy of eel_canvas_group_bounds(), but
+ * for NautilusIconContainerItems it returns the
+ * bounds for the “entire item”.
+ */
+static void
+get_icon_bounds_for_canvas_bounds (EelCanvasGroup *group,
+				   double *x1, double *y1,
+				   double *x2, double *y2,
+				   NautilusIconCanvasItemBoundsUsage usage)
+{
+	EelCanvasItem *child;
+	GList *list;
+	double tx1, ty1, tx2, ty2;
+	double minx, miny, maxx, maxy;
+	int set;
+
+	/* Get the bounds of the first visible item */
+
+	child = NULL; /* Unnecessary but eliminates a warning. */
+
+	set = FALSE;
+
+	for (list = group->item_list; list; list = list->next) {
+		child = list->data;
+
+		if (child->object.flags & EEL_CANVAS_ITEM_MAPPED) {
+			set = TRUE;
+			if (!NAUTILUS_IS_ICON_CANVAS_ITEM (child) ||
+			    usage == BOUNDS_USAGE_FOR_DISPLAY) {
+				eel_canvas_item_get_bounds (child, &minx, &miny, &maxx, &maxy);
+			} else if (usage == BOUNDS_USAGE_FOR_LAYOUT) {
+				nautilus_icon_canvas_item_get_bounds_for_layout (NAUTILUS_ICON_CANVAS_ITEM (child),
+										 &minx, &miny, &maxx, &maxy);
+			} else if (usage == BOUNDS_USAGE_FOR_ENTIRE_ITEM) {
+				nautilus_icon_canvas_item_get_bounds_for_entire_item (NAUTILUS_ICON_CANVAS_ITEM (child),
+										      &minx, &miny, &maxx, &maxy);
+			} else {
+				g_assert_not_reached ();
+			}
+			break;
+		}
+	}
+
+	/* If there were no visible items, return an empty bounding box */
+
+	if (!set) {
+		*x1 = *y1 = *x2 = *y2 = 0.0;
+		return;
+	}
+
+	/* Now we can grow the bounds using the rest of the items */
+
+	list = list->next;
+
+	for (; list; list = list->next) {
+		child = list->data;
+
+		if (!(child->object.flags & EEL_CANVAS_ITEM_MAPPED))
+			continue;
+
+		if (!NAUTILUS_IS_ICON_CANVAS_ITEM (child) ||
+		    usage == BOUNDS_USAGE_FOR_DISPLAY) {
+			eel_canvas_item_get_bounds (child, &tx1, &ty1, &tx2, &ty2);
+		} else if (usage == BOUNDS_USAGE_FOR_LAYOUT) {
+			nautilus_icon_canvas_item_get_bounds_for_layout (NAUTILUS_ICON_CANVAS_ITEM (child),
+									 &tx1, &ty1, &tx2, &ty2);
+		} else if (usage == BOUNDS_USAGE_FOR_ENTIRE_ITEM) {
+			nautilus_icon_canvas_item_get_bounds_for_entire_item (NAUTILUS_ICON_CANVAS_ITEM (child),
+									      &tx1, &ty1, &tx2, &ty2);
+		} else {
+			g_assert_not_reached ();
+		}
+
+		if (tx1 < minx)
+			minx = tx1;
+
+		if (ty1 < miny)
+			miny = ty1;
+
+		if (tx2 > maxx)
+			maxx = tx2;
+
+		if (ty2 > maxy)
+			maxy = ty2;
+	}
+
+	/* Make the bounds be relative to our parent's coordinate system */
+
+	if (EEL_CANVAS_ITEM (group)->parent) {
+		minx += group->xpos;
+		miny += group->ypos;
+		maxx += group->xpos;
+		maxy += group->ypos;
+	}
+	
+	if (x1 != NULL) {
+		*x1 = minx;
+	}
+
+	if (y1 != NULL) {
+		*y1 = miny;
+	}
+
+	if (x2 != NULL) {
+		*x2 = maxx;
+	}
+
+	if (y2 != NULL) {
+		*y2 = maxy;
+	}
+}
+
 static void
 get_all_icon_bounds (NautilusIconContainer *container,
 		     double *x1, double *y1,
-		     double *x2, double *y2)
+		     double *x2, double *y2,
+		     NautilusIconCanvasItemBoundsUsage usage)
 {
 	/* FIXME bugzilla.gnome.org 42477: Do we have to do something about the rubberband
 	 * here? Any other non-icon items?
 	 */
-	eel_canvas_item_get_bounds
-		(EEL_CANVAS (container)->root,
-		 x1, y1, x2, y2);
+	get_icon_bounds_for_canvas_bounds (EEL_CANVAS_GROUP (EEL_CANVAS (container)->root),
+					   x1, y1, x2, y2, usage);
 }
 
 /* Don't preserve visible white space the next time the scroll region
@@ -888,7 +1002,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		container->details->reset_scroll_region_trigger = FALSE;
 	}
 
-	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);	
+	get_all_icon_bounds (container, &x1, &y1, &x2, &y2, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 
 	/* Auto-layout assumes a 0, 0 scroll origin */
 	if (nautilus_icon_container_is_auto_layout (container)) {
@@ -1465,9 +1579,11 @@ compare_icons_by_position (gconstpointer a, gconstpointer b)
 	icon_a = (NautilusIcon*)a;
 	icon_b = (NautilusIcon*)b;
 
-	icon_get_bounding_box (icon_a, &x1, &y1, &x2, &y2);
+	icon_get_bounding_box (icon_a, &x1, &y1, &x2, &y2,
+			       BOUNDS_USAGE_FOR_DISPLAY);
 	center_a = x1 + (x2 - x1) / 2;
-	icon_get_bounding_box (icon_b, &x1, &y1, &x2, &y2);
+	icon_get_bounding_box (icon_b, &x1, &y1, &x2, &y2,
+			       BOUNDS_USAGE_FOR_DISPLAY);
 	center_b = x1 + (x2 - x1) / 2;
 
 	return center_a == center_b ?
@@ -1589,9 +1705,10 @@ placement_grid_mark_icon (PlacementGrid *grid, NautilusIcon *icon)
 	EelIRect icon_pos;
 	EelIRect grid_pos;
 	
-	icon_get_bounding_box_for_layout (icon, 
-					  &icon_pos.x0, &icon_pos.y0,
-					  &icon_pos.x1, &icon_pos.y1);
+	icon_get_bounding_box (icon,
+			       &icon_pos.x0, &icon_pos.y0,
+			       &icon_pos.x1, &icon_pos.y1,
+			       BOUNDS_USAGE_FOR_LAYOUT);
 	canvas_position_to_grid_position (grid, 
 					  icon_pos,
 					  &grid_pos);
@@ -1610,6 +1727,7 @@ find_empty_location (NautilusIconContainer *container,
 	double icon_width, icon_height;
 	int canvas_width;
 	int canvas_height;
+	int y2_for_bound_check;
 	EelIRect icon_position;
 	EelDRect pixbuf_rect;
 	gboolean collision;
@@ -1618,12 +1736,16 @@ find_empty_location (NautilusIconContainer *container,
 	canvas_width  = CANVAS_WIDTH(container);
 	canvas_height = CANVAS_HEIGHT(container);
 
-	icon_get_bounding_box_for_layout (icon,
-					  &icon_position.x0, &icon_position.y0,
-					  &icon_position.x1, &icon_position.y1);
+	icon_get_bounding_box (icon,
+			       &icon_position.x0, &icon_position.y0,
+			       &icon_position.x1, &icon_position.y1,
+			       BOUNDS_USAGE_FOR_LAYOUT);
 	icon_width = icon_position.x1 - icon_position.x0;
 	icon_height = icon_position.y1 - icon_position.y0;
-	
+
+	icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
+			       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
+
 	pixbuf_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	
 	/* Start the icon on a grid location */
@@ -1636,6 +1758,7 @@ find_empty_location (NautilusIconContainer *container,
 
 	do {
 		EelIRect grid_position;
+		gboolean need_new_column;
 
 		collision = FALSE;
 		
@@ -1643,11 +1766,14 @@ find_empty_location (NautilusIconContainer *container,
 						  icon_position,
 						  &grid_position);
 
-		if (!placement_grid_position_is_free (grid, grid_position)) {
+		need_new_column = y2_for_bound_check + DESKTOP_PAD_VERTICAL > canvas_height;
+
+		if (need_new_column ||
+		    !placement_grid_position_is_free (grid, grid_position)) {
 			icon_position.y0 += SNAP_SIZE_Y;
 			icon_position.y1 = icon_position.y0 + icon_height;
 			
-			if (icon_position.y1 + DESKTOP_PAD_VERTICAL > canvas_height) {
+			if (need_new_column) {
 				/* Move to the next column */
 				icon_position.y0 = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (pixbuf_rect.y1 - pixbuf_rect.y0);
 				while (icon_position.y0 < DESKTOP_PAD_VERTICAL) {
@@ -1820,6 +1946,8 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 		while (icons != NULL) {
 			int center_x;
 			int baseline;
+			int icon_height_for_bound_check;
+			int y2_for_bound_check;
 			gboolean should_snap;
 			
 			should_snap = !(container->details->tighter_layout && !container->details->keep_aligned);
@@ -1831,10 +1959,14 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			/* Calculate max width for column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
-				icon_get_bounding_box_for_layout (icon, &x1, &y1, &x2, &y2);
+				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2,
+						       BOUNDS_USAGE_FOR_LAYOUT);
+				icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
+						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 				
 				icon_width = x2 - x1;
 				icon_height = y2 - y1;
+				icon_height_for_bound_check = y2_for_bound_check - y1;
 
 				if (should_snap) {
 					/* Snap the baseline to a grid position */
@@ -1845,7 +1977,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				}
 				    
 				/* Check and see if we need to move to a new column */
-				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
+				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height_for_bound_check) {
 					break;
 				}
 
@@ -1869,9 +2001,13 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			/* Lay out column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
-				icon_get_bounding_box_for_layout (icon, &x1, &y1, &x2, &y2);
+				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2,
+						       BOUNDS_USAGE_FOR_LAYOUT);
+				icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
+						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 				
 				icon_height = y2 - y1;
+				icon_height_for_bound_check = y2_for_bound_check - y1;
 				
 				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 
@@ -1882,7 +2018,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				}
 				
 				/* Check and see if we need to move to a new column */
-				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height &&
+				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height_for_bound_check &&
 				    /* Make sure we lay out at least one icon per column, to make progress */
 				    p != icons) {
 					x += column_width + DESKTOP_PAD_HORIZONTAL;
@@ -6668,7 +6804,7 @@ finish_adding_new_icons (NautilusIconContainer *container)
 		g_assert (!container->details->auto_layout);
 		
 		sort_icons (container, &no_position_icons);
-		get_all_icon_bounds (container, NULL, NULL, NULL, &bottom);		
+		get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
 		lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
 		g_list_free (no_position_icons);
 	}

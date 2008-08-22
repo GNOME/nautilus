@@ -55,6 +55,13 @@ struct NautilusIconCanvasItemClass {
 	EelCanvasItemClass parent_class;
 };
 
+/* not namespaced due to their length */
+typedef enum {
+	BOUNDS_USAGE_FOR_LAYOUT,
+	BOUNDS_USAGE_FOR_ENTIRE_ITEM,
+	BOUNDS_USAGE_FOR_DISPLAY
+} NautilusIconCanvasItemBoundsUsage;
+
 /* GObject */
 GType       nautilus_icon_canvas_item_get_type                 (void);
 
@@ -92,6 +99,8 @@ EelDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanv
 								gboolean                      for_layout);
 void        nautilus_icon_canvas_item_get_bounds_for_layout    (NautilusIconCanvasItem       *item,
 								double *x1, double *y1, double *x2, double *y2);
+void        nautilus_icon_canvas_item_get_bounds_for_entire_item (NautilusIconCanvasItem       *item,
+								  double *x1, double *y1, double *x2, double *y2);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item,
 								double i2w_dx, double i2w_dy);
 void        nautilus_icon_canvas_item_set_is_visible           (NautilusIconCanvasItem       *item,

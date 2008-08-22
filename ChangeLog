@@ -1,3 +1,41 @@
+2008-08-22  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_invalidate_label_size),
+	(nautilus_icon_canvas_item_set_property), (compute_text_rectangle),
+	(nautilus_icon_canvas_item_update_bounds), (layout_get_full_size),
+	(layout_get_size_for_layout), (prepare_pango_layout_width),
+	(prepare_pango_layout_for_measure_entire_text),
+	(prepare_pango_layout_for_draw), (measure_label_text),
+	(draw_label_text), (create_label_layout),
+	(nautilus_icon_canvas_item_get_bounds_for_entire_item),
+	(nautilus_icon_canvas_item_ensure_bounds_up_to_date),
+	(nautilus_icon_canvas_item_get_text_rectangle),
+	(nautilus_icon_canvas_item_accessible_get_offset_at_point):
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.c
+	(icon_get_bounding_box), (get_icon_bounds_for_canvas_bounds),
+	(get_all_icon_bounds),
+	(nautilus_icon_container_update_scroll_region),
+	(compare_icons_by_position), (placement_grid_mark_icon),
+	(find_empty_location), (lay_down_icons_vertical_desktop),
+	(finish_adding_new_icons):
+	Rework large chunks of canvas item text handling. Split text drawing
+	and measuring function.
+
+	Always calculate the size required to render the entire layout, then
+	limit the number of lines to the allowed maximum.
+
+	Introduce new bound calculation semantics. Introduce three item and
+	text size usage and calculation contexts:
+		layout: used for grid layout algorithms (ex. horizontal auto
+		layout)
+
+		entire text: for displaying the entire text (ex. canvas bound
+		calculation for scroll area)
+
+		display: actually used size (ex. text drawing)
+
 2008-08-21  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
