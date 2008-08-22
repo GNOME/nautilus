@@ -1,6 +1,13 @@
 2008-08-22  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c
+	(prepare_pango_layout_for_draw), (draw_label_text):
+	Always clear text background and display entire text
+	if an icon is prelit or has the keyboard focus.
+
+2008-08-22  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
 	(nautilus_icon_canvas_item_invalidate_label_size),
 	(nautilus_icon_canvas_item_set_property), (compute_text_rectangle),
 	(nautilus_icon_canvas_item_update_bounds), (layout_get_full_size),

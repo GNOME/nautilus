@@ -1110,6 +1110,7 @@ prepare_pango_layout_for_draw (NautilusIconCanvasItem *item,
 		pango_layout_set_height (layout, -1);
 	} else if (needs_highlight ||
 		   details->is_prelit ||
+		   details->is_highlighted_as_keyboard_focus ||
 		   details->entire_text ||
 		   container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
 		/* VOODOO-TODO, cf. compute_text_rectangle() */
@@ -1319,8 +1320,9 @@ draw_label_text (NautilusIconCanvasItem *item,
 			    is_rtl_label_beside ? text_rect.x1 - text_rect.x0 - item->details->text_dx : text_rect.x1 - text_rect.x0,
 			    text_rect.y1 - text_rect.y0);
 	} else if (!needs_highlight && !details->is_renaming &&
-		   details->text_height_for_layout != details->text_height) {
-		/* clear the underlying icons, where the text overlaps them. */
+		   (details->is_prelit ||
+		    details->is_highlighted_as_keyboard_focus)) {
+		/* clear the underlying icons, where the text or overlaps them. */
 		gdk_window_clear_area (EEL_CANVAS (container)->layout.bin_window,
 				       text_rect.x0,
 				       text_rect.y0,
