@@ -546,6 +546,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
 	nautilus_icon_container_set_is_desktop (icon_container, TRUE);
+	nautilus_icon_container_set_store_layout_timestamps (icon_container, TRUE);
 
 	/* Set allocation to be at 0, 0 */
 	allocation = &GTK_WIDGET (icon_container)->allocation;

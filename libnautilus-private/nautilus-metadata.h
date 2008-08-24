@@ -44,6 +44,7 @@
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"icon_view_sort_by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"icon_view_sort_reversed"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "icon_view_keep_aligned"
+#define NAUTILUS_METADATA_KEY_ICON_VIEW_LAYOUT_TIMESTAMP	"icon_view_layout_timestamp"
 
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL       	"list_view_zoom_level"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"list_view_sort_column"
@@ -69,6 +70,7 @@
 
 #define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_ICON_POSITION              	"icon_position"
+#define NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP		"icon_position_timestamp"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon_scale"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom_icon"
 #define NAUTILUS_METADATA_KEY_SCREEN				"screen"

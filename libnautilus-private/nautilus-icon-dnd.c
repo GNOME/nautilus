@@ -925,6 +925,7 @@ handle_local_move (NautilusIconContainer *container,
 	NautilusFile *file;
 	char screen_string[32];
 	GdkScreen *screen;
+	time_t now;
 
 	if (container->details->auto_layout) {
 		if (!confirm_switch_to_manual_layout (container)) {
@@ -933,6 +934,7 @@ handle_local_move (NautilusIconContainer *container,
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
 
+	time (&now);
 
 	/* Move and select the icons. */
 	moved_icons = NULL;
@@ -955,10 +957,10 @@ handle_local_move (NautilusIconContainer *container,
 			nautilus_file_set_metadata (file,
 					NAUTILUS_METADATA_KEY_SCREEN,
 					NULL, screen_string);
+			nautilus_file_set_time_metadata (file,
+							 NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP, now);
 
-			nautilus_icon_container_add (container,
-					NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					FALSE);
+			nautilus_icon_container_add (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 			
 			icon = nautilus_icon_container_get_icon_by_uri
 				(container, item->uri);

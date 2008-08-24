@@ -176,6 +176,24 @@ typedef struct {
 	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
 						   NautilusIconData *data);
 
+	/* If icon data is NULL, the layout timestamp of the container should be retrieved.
+	 * That is the time when the container displayed a fully loaded directory with
+	 * all icon positions assigned.
+	 *
+	 * If icon data is not NULL, the position timestamp of the icon should be retrieved.
+	 * That is the time when the file (i.e. icon data payload) was last displayed in a
+	 * fully loaded directory with all icon positions assigned.
+	 */
+	gboolean     (* get_stored_layout_timestamp) (NautilusIconContainer *container,
+						      NautilusIconData *data,
+						      time_t *time);
+	/* If icon data is NULL, the layout timestamp of the container should be stored.
+	 * If icon data is not NULL, the position timestamp of the container should be stored.
+	 */
+	gboolean     (* store_layout_timestamp) (NautilusIconContainer *container,
+						 NautilusIconData *data,
+						 const time_t *time);
+
 	/* Notifications for the whole container. */
 	void	     (* band_select_started)	  (NautilusIconContainer *container);
 	void	     (* band_select_ended)	  (NautilusIconContainer *container);
@@ -214,8 +232,7 @@ GtkWidget *       nautilus_icon_container_new                           (void);
 /* adding, removing, and managing icons */
 void              nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean          nautilus_icon_container_add                           (NautilusIconContainer  *view,
-									 NautilusIconData       *data,
-									 gboolean                has_lazy_position);
+									 NautilusIconData       *data);
 void              nautilus_icon_container_layout_now                    (NautilusIconContainer *container);
 gboolean          nautilus_icon_container_remove                        (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
@@ -232,9 +249,11 @@ NautilusIconData *nautilus_icon_container_get_first_visible_icon        (Nautilu
 void              nautilus_icon_container_scroll_to_icon                (NautilusIconContainer  *container,
 									 NautilusIconData       *data);
 
+void              nautilus_icon_container_begin_loading                 (NautilusIconContainer  *container);
+void              nautilus_icon_container_end_loading                   (NautilusIconContainer  *container,
+									 gboolean                all_icons_added);
+
 /* control the layout */
-void              nautilus_icon_container_set_is_reloading              (NautilusIconContainer  *container,
-									 gboolean                is_reloading);
 gboolean          nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_auto_layout               (NautilusIconContainer  *container,
 									 gboolean                auto_layout);
@@ -312,6 +331,10 @@ void		  nautilus_icon_container_set_all_columns_same_width	(NautilusIconContaine
 
 gboolean	  nautilus_icon_container_is_layout_rtl			(NautilusIconContainer  *container);
 gboolean	  nautilus_icon_container_is_layout_vertical		(NautilusIconContainer  *container);
+
+gboolean          nautilus_icon_container_get_store_layout_timestamps   (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_store_layout_timestamps   (NautilusIconContainer  *container,
+									 gboolean                store_layout);
 
 void              nautilus_icon_container_widget_to_file_operation_position (NautilusIconContainer *container,
 									     GdkPoint              *position);

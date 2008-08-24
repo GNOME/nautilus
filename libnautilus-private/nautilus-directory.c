@@ -1591,6 +1591,9 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 	const NautilusFileChangesQueuePosition *item;
 	NautilusFile *file;
 	char str[64];
+	time_t now;
+
+	time (&now);
 
 	for (p = position_setting_list; p != NULL; p = p->next) {
 		item = (NautilusFileChangesQueuePosition *) p->data;
@@ -1607,6 +1610,18 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 			 NAUTILUS_METADATA_KEY_ICON_POSITION,
 			 NULL,
 			 str);
+
+		if (item->set) {
+			nautilus_file_set_time_metadata
+				(file,
+				 NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP,
+				 now);
+		} else {
+			nautilus_file_set_time_metadata
+				(file,
+				 NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP,
+				 UNDEFINED_TIME);
+		}
 
 		if (item->set) {
 			g_snprintf (str, sizeof (str), "%d", item->screen);

@@ -2976,6 +2976,62 @@ nautilus_file_get_integer_metadata (NautilusFile *file,
 		 default_metadata);
 }
 
+static gboolean
+get_time_from_time_string (const char *time_string,
+			   time_t *time)
+{
+	long scanned_time;
+	char c;
+
+	g_assert (time != NULL);
+
+	/* Only accept string if it has one integer with nothing
+	 * afterwards.
+	 */
+	if (time_string == NULL ||
+	    sscanf (time_string, "%ld%c", &scanned_time, &c) != 1) {
+		return FALSE;
+	}
+	*time = (time_t) scanned_time;
+	return TRUE;
+}
+
+time_t
+nautilus_file_get_time_metadata (NautilusFile *file,
+				 const char   *key)
+{
+	time_t time;
+	char *time_string;
+
+	time_string = nautilus_file_get_metadata (file, key, NULL);
+	if (!get_time_from_time_string (time_string, &time)) {
+		time = UNDEFINED_TIME;
+	}
+	g_free (time_string);
+
+	return time;
+}
+
+void
+nautilus_file_set_time_metadata (NautilusFile *file,
+				 const char   *key,
+				 time_t        time)
+{
+	char time_str[21];
+	char *metadata;
+
+	if (time != UNDEFINED_TIME) {
+		/* 2^64 turns out to be 20 characters */
+		snprintf (time_str, 20, "%ld", time);
+		time_str[20] = '\0';
+		metadata = time_str;
+	} else {
+		metadata = NULL;
+	}
+
+	nautilus_file_set_metadata (file, key, NULL, metadata);
+}
+
 
 void
 nautilus_file_set_boolean_metadata (NautilusFile *file,

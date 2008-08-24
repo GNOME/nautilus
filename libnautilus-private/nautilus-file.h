@@ -330,6 +330,14 @@ void                    nautilus_file_set_integer_metadata              (Nautilu
 									 int                             default_metadata,
 									 int                             metadata);
 
+#define UNDEFINED_TIME ((time_t) (-1))
+
+time_t                  nautilus_file_get_time_metadata                 (NautilusFile                  *file,
+									 const char                    *key);
+void                    nautilus_file_set_time_metadata                 (NautilusFile                  *file,
+									 const char                    *key,
+									 time_t                         time);
+
 
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute              (NautilusFile                   *file,

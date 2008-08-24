@@ -152,6 +152,9 @@
 /* Copied from NautilusIconContainer */
 #define NAUTILUS_ICON_CONTAINER_SEARCH_DIALOG_TIMEOUT 5000
 
+/* Copied from NautilusFile */
+#define UNDEFINED_TIME ((time_t) (-1))
+
 enum {
 	ACTION_ACTIVATE,
 	ACTION_MENU,
@@ -216,6 +219,8 @@ static double	     get_mirror_x_position                     (NautilusIconContai
 								NautilusIcon *icon,
 								double x);
 
+static void store_layout_timestamps_now (NautilusIconContainer *container);
+
 static gpointer accessible_parent_class;
 
 static GQuark accessible_private_data_quark = 0;
@@ -251,6 +256,8 @@ enum {
 	GET_ICON_DROP_TARGET_URI,
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
+	GET_STORED_LAYOUT_TIMESTAMP,
+	STORE_LAYOUT_TIMESTAMP,
 	ICON_TEXT_CHANGED,
 	ICON_STRETCH_STARTED,
 	ICON_STRETCH_ENDED,
@@ -1925,7 +1932,6 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				/* Start the icon in the first column */
 				x = DESKTOP_PAD_HORIZONTAL + (SNAP_SIZE_X / 2) - ((icon_rect.x1 - icon_rect.x0) / 2);
 				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (icon_rect.y1 - icon_rect.y0);
-				g_message ("got rect y: %f", icon_rect.y1 - icon_rect.y0);
 
 				find_empty_location (container,
 						     grid,
@@ -5523,6 +5529,28 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_BOOLEAN, 2,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER);
+	signals[GET_STORED_LAYOUT_TIMESTAMP]
+		= g_signal_new ("get_stored_layout_timestamp",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 get_stored_layout_timestamp),
+		                NULL, NULL,
+		                eel_marshal_BOOLEAN__POINTER_POINTER,
+		                G_TYPE_BOOLEAN, 2,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
+	signals[STORE_LAYOUT_TIMESTAMP]
+		= g_signal_new ("store_layout_timestamp",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 store_layout_timestamp),
+		                NULL, NULL,
+		                eel_marshal_BOOLEAN__POINTER_POINTER,
+		                G_TYPE_BOOLEAN, 2,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[LAYOUT_CHANGED]
 		= g_signal_new ("layout_changed",
 		                G_TYPE_FROM_CLASS (class),
@@ -5877,6 +5905,7 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
 	details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
+	details->layout_timestamp = UNDEFINED_TIME;
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
@@ -6113,6 +6142,8 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	details = container->details;
+	details->layout_timestamp = UNDEFINED_TIME;
+	details->store_layout_timestamps_when_finishing_new_icons = FALSE;
 
 	if (details->icons == NULL) {
 		return;
@@ -6747,13 +6778,12 @@ finish_adding_new_icons (NautilusIconContainer *container)
 	no_position_icons = semi_position_icons = NULL;
 	for (p = new_icons; p != NULL; p = p->next) {
 		icon = p->data;
-                if (assign_icon_position (container, icon)) {
-                        if (!container->details->auto_layout && icon->has_lazy_position) {
-                                semi_position_icons = g_list_prepend (semi_position_icons, icon);
-                        }
-                } else {
-                        no_position_icons = g_list_prepend (no_position_icons, icon);
-                }
+		if (icon->has_lazy_position) {
+			assign_icon_position (container, icon);
+			semi_position_icons = g_list_prepend (semi_position_icons, icon);
+		} else if (!assign_icon_position (container, icon)) {
+			no_position_icons = g_list_prepend (no_position_icons, icon);
+		}
 
 		finish_adding_icon (container, icon);
 	}
@@ -6780,6 +6810,7 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 		for (p = semi_position_icons; p != NULL; p = p->next) {
 			NautilusIcon *icon;
+			NautilusIconPosition position;
 			int x, y;
 
 			icon = p->data;
@@ -6791,7 +6822,12 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 			icon_set_position (icon, x, y);
 
+			position.x = icon->x;
+			position.y = icon->y;
+			position.scale = icon->scale;
 			placement_grid_mark_icon (grid, icon);
+			g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
+				       icon->data, &position);
 
 			/* ensure that next time we run this code, the formerly semi-positioned
 			 * icons are treated as being positioned. */
@@ -6808,28 +6844,50 @@ finish_adding_new_icons (NautilusIconContainer *container)
 		g_assert (!container->details->auto_layout);
 		
 		sort_icons (container, &no_position_icons);
-		get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
-		lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+		if (nautilus_icon_container_get_is_desktop (container)) {
+			lay_down_icons (container, no_position_icons, CONTAINER_PAD_TOP);
+		} else {
+			get_all_icon_bounds (container, NULL, NULL, NULL, &bottom, BOUNDS_USAGE_FOR_LAYOUT);
+			lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+		}
 		g_list_free (no_position_icons);
 	}
+
+	if (container->details->store_layout_timestamps_when_finishing_new_icons) {
+		store_layout_timestamps_now (container);
+		container->details->store_layout_timestamps_when_finishing_new_icons = FALSE;
+	}
+}
+
+static gboolean
+is_old_or_unknown_icon_data (NautilusIconContainer *container,
+			     NautilusIconData *data)
+{
+	time_t timestamp;
+	gboolean success;
+
+	if (container->details->layout_timestamp == UNDEFINED_TIME) {
+		/* don't know */
+		return FALSE;
+	}
+
+	g_signal_emit (container,
+		       signals[GET_STORED_LAYOUT_TIMESTAMP], 0,
+		       data, &timestamp, &success);
+	return (!success || timestamp < container->details->layout_timestamp);
 }
 
 /**
  * nautilus_icon_container_add:
  * @container: A NautilusIconContainer
  * @data: Icon data.
- * @has_lazy_position: Whether the saved icon position should only be used
- * 		       if the previous icon position is free. If the position
- * 		       is occupied, another position near the last one will
- * 		       be used.
  * 
  * Add icon to represent @data to container.
  * Returns FALSE if there was already such an icon.
  **/
 gboolean
 nautilus_icon_container_add (NautilusIconContainer *container,
-			     NautilusIconData *data,
-			     gboolean has_lazy_position)
+			     NautilusIconData *data)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -6849,7 +6907,12 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->data = data;
 	icon->x = ICON_UNPOSITIONED_VALUE;
 	icon->y = ICON_UNPOSITIONED_VALUE;
-	icon->has_lazy_position = has_lazy_position;
+
+	/* Whether the saved icon position should only be used
+	 * if the previous icon position is free. If the position
+	 * is occupied, another position near the last one will
+	 */
+	icon->has_lazy_position = is_old_or_unknown_icon_data (container, data);
 	icon->scale = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
 		(eel_canvas_item_new (EEL_CANVAS_GROUP (EEL_CANVAS (container)->root),
@@ -9149,6 +9212,69 @@ nautilus_icon_container_get_max_layout_lines (NautilusIconContainer  *container)
 	}
 
 	return limit;
+}
+
+void
+nautilus_icon_container_begin_loading (NautilusIconContainer *container)
+{
+	gboolean dummy;
+
+	if (nautilus_icon_container_get_store_layout_timestamps (container)) {
+		container->details->layout_timestamp = UNDEFINED_TIME;
+		g_signal_emit (container,
+			       signals[GET_STORED_LAYOUT_TIMESTAMP], 0,
+			       NULL, &container->details->layout_timestamp, &dummy);
+	}
+}
+
+static void
+store_layout_timestamps_now (NautilusIconContainer *container)
+{
+	NautilusIcon *icon;
+	GList *p;
+	gboolean dummy;
+
+	container->details->layout_timestamp = time (NULL);
+	g_signal_emit (container,
+		       signals[STORE_LAYOUT_TIMESTAMP], 0,
+		       NULL, &container->details->layout_timestamp, &dummy);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		g_signal_emit (container,
+			       signals[STORE_LAYOUT_TIMESTAMP], 0,
+			       icon->data, &container->details->layout_timestamp, &dummy);
+	}
+}
+
+
+void
+nautilus_icon_container_end_loading (NautilusIconContainer *container,
+				     gboolean               all_icons_added)
+{
+	if (all_icons_added &&
+	    nautilus_icon_container_get_store_layout_timestamps (container)) {
+		if (container->details->new_icons == NULL) {
+			store_layout_timestamps_now (container);
+		} else {
+			container->details->store_layout_timestamps_when_finishing_new_icons = TRUE;
+		}
+	}
+}
+
+gboolean
+nautilus_icon_container_get_store_layout_timestamps (NautilusIconContainer *container)
+{
+	return container->details->store_layout_timestamps;
+}
+
+
+void
+nautilus_icon_container_set_store_layout_timestamps (NautilusIconContainer *container,
+						     gboolean               store_layout_timestamps)
+{
+	container->details->store_layout_timestamps = store_layout_timestamps;
 }
 
 

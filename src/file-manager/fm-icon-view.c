@@ -269,6 +269,7 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	return position_good;
 }
 
+
 static gboolean
 set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 {
@@ -495,28 +496,6 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file, NautilusDir
 	}
 }
 
-static gboolean
-file_has_lazy_position (FMDirectoryView *view,
-			NautilusFile *file)
-{
-	gboolean lazy_position;
-
-	/* For volumes (i.e. cdrom icon) we use lazy positioning so that when
-	 * an old cdrom gets re-mounted in a place that now has another
-	 * icon we don't overlap that one. We don't do this in general though,
-	 * as it can cause icons moving around.
-	 */
-	lazy_position = nautilus_file_can_unmount (file);
-	if (lazy_position && fm_directory_view_get_loading (view)) {
-		/* if volumes are loaded during directory load, don't mark them
-		 * as lazy. This is wrong for files that were mounted during user
-		 * log-off, but it is right for files that were mounted during login. */
-		lazy_position = FALSE;
-	}
-
-	return lazy_position;
-}
-
 static void
 fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirectory *directory)
 {
@@ -539,8 +518,7 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirect
 	}
 
 	if (nautilus_icon_container_add (icon_container,
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-					 file_has_lazy_position (view, file)))  {
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
 }
@@ -1128,6 +1106,8 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
+	nautilus_icon_container_begin_loading (NAUTILUS_ICON_CONTAINER (icon_container));
+
 	nautilus_icon_container_set_allow_moves (NAUTILUS_ICON_CONTAINER (icon_container),
 						 fm_directory_view_get_allow_moves (view));
 
@@ -1206,11 +1186,16 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 }
 
 static void
-fm_icon_view_end_loading (FMDirectoryView *view)
+fm_icon_view_end_loading (FMDirectoryView *view,
+			  gboolean all_files_seen)
 {
 	FMIconView *icon_view;
+	GtkWidget *icon_container;
 
 	icon_view = FM_ICON_VIEW (view);
+
+	icon_container = GTK_WIDGET (get_icon_container (icon_view));
+	nautilus_icon_container_end_loading (NAUTILUS_ICON_CONTAINER (icon_container), all_files_seen);
 }
 
 static NautilusZoomLevel
@@ -2180,8 +2165,7 @@ fm_icon_view_screen_changed (GtkWidget *widget,
 				fm_icon_view_remove_file (view, file, directory);
 			} else {
 				if (nautilus_icon_container_add (icon_container,
-								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-								 file_has_lazy_position (view, file))) {
+								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 					nautilus_file_ref (file);
 				}
 			}
@@ -2573,6 +2557,62 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
+static gboolean
+get_stored_layout_timestamp (NautilusIconContainer *container,
+			     NautilusIconData *icon_data,
+			     time_t *timestamp,
+			     FMIconView *view)
+{
+	NautilusFile *file;
+	NautilusDirectory *directory;
+
+	if (icon_data == NULL) {
+		directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (view));
+		if (directory == NULL) {
+			return FALSE;
+		}
+
+		file = nautilus_directory_get_corresponding_file (directory);
+		*timestamp = nautilus_file_get_time_metadata (file,
+							      NAUTILUS_METADATA_KEY_ICON_VIEW_LAYOUT_TIMESTAMP);
+		nautilus_file_unref (file);
+	} else {
+		*timestamp = nautilus_file_get_time_metadata (NAUTILUS_FILE (icon_data),
+							      NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+store_layout_timestamp (NautilusIconContainer *container,
+			NautilusIconData *icon_data,
+			const time_t *timestamp,
+			FMIconView *view)
+{
+	NautilusFile *file;
+	NautilusDirectory *directory;
+
+	if (icon_data == NULL) {
+		directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (view));
+		if (directory == NULL) {
+			return FALSE;
+		}
+
+		file = nautilus_directory_get_corresponding_file (directory);
+		nautilus_file_set_time_metadata (file,
+						 NAUTILUS_METADATA_KEY_ICON_VIEW_LAYOUT_TIMESTAMP,
+						 (time_t) *timestamp);
+		nautilus_file_unref (file);
+	} else {
+		nautilus_file_set_time_metadata (NAUTILUS_FILE (icon_data),
+						 NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP,
+						 (time_t) *timestamp);
+	}
+
+	return TRUE;
+}
+
 static NautilusIconContainer *
 create_icon_container (FMIconView *icon_view)
 {
@@ -2625,6 +2665,11 @@ create_icon_container (FMIconView *icon_view)
 	g_signal_connect_object (icon_container, "icon_stretch_ended",
 				 G_CALLBACK (fm_directory_view_update_menus), icon_view,
 				 G_CONNECT_SWAPPED);
+
+	g_signal_connect_object (icon_container, "get_stored_layout_timestamp",
+				 G_CALLBACK (get_stored_layout_timestamp), icon_view, 0);
+	g_signal_connect_object (icon_container, "store_layout_timestamp",
+				 G_CALLBACK (store_layout_timestamp), icon_view, 0);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));

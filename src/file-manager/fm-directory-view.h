@@ -108,8 +108,16 @@ struct FMDirectoryViewClass {
 	 * of a directory are added to the view. It can be replaced by a 
 	 * subclass to do any necessary clean-up. The default implementation 
 	 * does nothing.
+	 *
+	 * If all_files_seen is true, the handler may assume that
+	 * no load error ocurred, and all files of the underlying
+	 * directory were loaded.
+	 *
+	 * Otherwise, end_loading was emitted due to cancellation,
+	 * which usually means that not all files are available.
 	 */
-	void 	(* end_loading) 	 (FMDirectoryView *view);
+	void 	(* end_loading) 	 (FMDirectoryView *view,
+					  gboolean all_files_seen);
 
 	/* The 'load_error' signal is emitted when the directory model
 	 * reports an error in the process of monitoring the directory's
@@ -382,7 +390,8 @@ gboolean            fm_directory_view_get_active                       (FMDirect
  */
 void                fm_directory_view_clear                            (FMDirectoryView  *view);
 void                fm_directory_view_begin_loading                    (FMDirectoryView  *view);
-void                fm_directory_view_end_loading                      (FMDirectoryView  *view);
+void                fm_directory_view_end_loading                      (FMDirectoryView  *view,
+									gboolean          all_files_seen);
 
 gboolean            fm_directory_view_get_loading                      (FMDirectoryView  *view);
 

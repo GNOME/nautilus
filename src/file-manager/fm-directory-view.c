@@ -2343,7 +2343,8 @@ reveal_selection_idle_callback (gpointer data)
 }
 
 static void
-done_loading (FMDirectoryView *view)
+done_loading (FMDirectoryView *view,
+	      gboolean all_files_seen)
 {
 	GList *locations_selected, *selection;
 
@@ -2393,7 +2394,7 @@ done_loading (FMDirectoryView *view)
 		fm_directory_view_display_selection_info (view);
 	}
 
-	fm_directory_view_end_loading (view);
+	fm_directory_view_end_loading (view, all_files_seen);
 
 	view->details->loading = FALSE;
 }
@@ -2807,7 +2808,7 @@ display_pending_files (FMDirectoryView *view)
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)
 	    && g_hash_table_size (view->details->non_ready_files) == 0) {
-		done_loading (view);
+		done_loading (view, TRUE);
 	}
 }
 
@@ -3269,11 +3270,12 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
  * 
  **/
 void
-fm_directory_view_end_loading (FMDirectoryView *view)
+fm_directory_view_end_loading (FMDirectoryView *view,
+			       gboolean all_files_seen)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	g_signal_emit (view, signals[END_LOADING], 0);
+	g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
 }
 
 /**
@@ -8791,7 +8793,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
 	}
-	done_loading (view);
+	done_loading (view, FALSE);
 }
 
 gboolean
@@ -9689,8 +9691,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_loading),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
+		              g_cclosure_marshal_VOID__BOOLEAN,
+		              G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 	signals[FILE_CHANGED] =
 		g_signal_new ("file_changed",
 		              G_TYPE_FROM_CLASS (klass),

@@ -1,5 +1,49 @@
 2008-08-24  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_schedule_position_set):
+	* libnautilus-private/nautilus-file.c (get_time_from_time_string),
+	(nautilus_file_get_time_metadata),
+	(nautilus_file_set_time_metadata):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-container.c
+	(lay_down_icons_vertical_desktop),
+	(nautilus_icon_container_class_init),
+	(nautilus_icon_container_instance_init),
+	(nautilus_icon_container_clear), (finish_adding_new_icons),
+	(is_old_or_unknown_icon_data), (nautilus_icon_container_add),
+	(nautilus_icon_container_begin_loading),
+	(store_layout_timestamps_now),
+	(nautilus_icon_container_end_loading),
+	(nautilus_icon_container_get_store_layout_timestamps),
+	(nautilus_icon_container_set_store_layout_timestamps):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-dnd.c (handle_local_move):
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-metadata.h:
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_init):
+	* src/file-manager/fm-directory-view.c (done_loading),
+	(display_pending_files), (fm_directory_view_end_loading),
+	(fm_directory_view_stop), (fm_directory_view_class_init):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c (fm_icon_view_add_file),
+	(fm_icon_view_begin_loading), (fm_icon_view_end_loading),
+	(fm_icon_view_screen_changed), (get_stored_layout_timestamp),
+	(store_layout_timestamp), (create_icon_container):
+	No more overlapping desktop icons.
+
+	Implement a layout timestamp concept where each file on the desktop
+	and the desktop directory itself is timestamped when a full layout
+	happened. Iff files were not part of the last layout (or added more
+	recently, through DND), they are treated as being “semi-positioned“
+	(cf. 2005-11-07).
+	This means that they may be freely shifted around, starting from their
+	last position, until they don't overlap and fully laid out items.
+	Should inter alia fix #330298.
+
+2008-08-24  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(find_empty_location), (lay_down_icons_vertical_desktop):
 	Only use relative item measures for bounds check until absolute item
