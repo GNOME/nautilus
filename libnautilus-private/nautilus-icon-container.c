@@ -1727,7 +1727,7 @@ find_empty_location (NautilusIconContainer *container,
 	double icon_width, icon_height;
 	int canvas_width;
 	int canvas_height;
-	int y2_for_bound_check;
+	int height_for_bound_check;
 	EelIRect icon_position;
 	EelDRect pixbuf_rect;
 	gboolean collision;
@@ -1743,8 +1743,11 @@ find_empty_location (NautilusIconContainer *container,
 	icon_width = icon_position.x1 - icon_position.x0;
 	icon_height = icon_position.y1 - icon_position.y0;
 
-	icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
+	icon_get_bounding_box (icon,
+			       NULL, &icon_position.y0,
+			       NULL, &icon_position.y1,
 			       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
+	height_for_bound_check = icon_position.y1 - icon_position.y0;
 
 	pixbuf_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	
@@ -1766,7 +1769,7 @@ find_empty_location (NautilusIconContainer *container,
 						  icon_position,
 						  &grid_position);
 
-		need_new_column = y2_for_bound_check + DESKTOP_PAD_VERTICAL > canvas_height;
+		need_new_column = icon_position.y0 + height_for_bound_check + DESKTOP_PAD_VERTICAL > canvas_height;
 
 		if (need_new_column ||
 		    !placement_grid_position_is_free (grid, grid_position)) {
@@ -1922,6 +1925,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				/* Start the icon in the first column */
 				x = DESKTOP_PAD_HORIZONTAL + (SNAP_SIZE_X / 2) - ((icon_rect.x1 - icon_rect.x0) / 2);
 				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (icon_rect.y1 - icon_rect.y0);
+				g_message ("got rect y: %f", icon_rect.y1 - icon_rect.y0);
 
 				find_empty_location (container,
 						     grid,
@@ -1947,7 +1951,6 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			int center_x;
 			int baseline;
 			int icon_height_for_bound_check;
-			int y2_for_bound_check;
 			gboolean should_snap;
 			
 			should_snap = !(container->details->tighter_layout && !container->details->keep_aligned);
@@ -1959,14 +1962,15 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 			/* Calculate max width for column */
 			for (p = icons; p != NULL; p = p->next) {
 				icon = p->data;
+
 				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2,
 						       BOUNDS_USAGE_FOR_LAYOUT);
-				icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
-						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
-				
 				icon_width = x2 - x1;
 				icon_height = y2 - y1;
-				icon_height_for_bound_check = y2_for_bound_check - y1;
+
+				icon_get_bounding_box (icon, NULL, &y1, NULL, &y2,
+						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
+				icon_height_for_bound_check = y2 - y1;
 
 				if (should_snap) {
 					/* Snap the baseline to a grid position */
@@ -1977,7 +1981,7 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				}
 				    
 				/* Check and see if we need to move to a new column */
-				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height_for_bound_check) {
+				if (y != DESKTOP_PAD_VERTICAL && y + icon_height_for_bound_check > height) {
 					break;
 				}
 
@@ -2003,11 +2007,11 @@ lay_down_icons_vertical_desktop (NautilusIconContainer *container, GList *icons)
 				icon = p->data;
 				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2,
 						       BOUNDS_USAGE_FOR_LAYOUT);
-				icon_get_bounding_box (icon, NULL, NULL, NULL, &y2_for_bound_check,
-						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
-				
 				icon_height = y2 - y1;
-				icon_height_for_bound_check = y2_for_bound_check - y1;
+
+				icon_get_bounding_box (icon, NULL, &y1, NULL, &y2,
+						       BOUNDS_USAGE_FOR_ENTIRE_ITEM);
+				icon_height_for_bound_check = y2 - y1;
 				
 				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 

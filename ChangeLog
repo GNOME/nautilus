@@ -1,3 +1,10 @@
+2008-08-24  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(find_empty_location), (lay_down_icons_vertical_desktop):
+	Only use relative item measures for bounds check until absolute item
+	positions are figured out.
+
 2008-08-22  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c
