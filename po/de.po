@@ -39,8 +39,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-08 18:01+0200\n"
-"PO-Revision-Date: 2008-08-08 18:21+0200\n"
+"POT-Creation-Date: 2008-08-28 09:34+0200\n"
+"PO-Revision-Date: 2008-08-28 09:34+0200\n"
 "Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -344,31 +344,58 @@ msgstr ""
 "»permissions« (Zugriffsrechte), »octal_permissions« (oktale Zugriffsrechte) "
 "sowie »mime_type« (MIME-Typ)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
+#, no-c-format
+msgid ""
+"A string specifying how parts of overlong file names should be replaced by "
+"ellipses, depending on the zoom level. Each of the list entries is of the "
+"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
+"integer is larger than 0, the file name will not exceed the given number of "
+"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
+"zoom level. A default entry of the form \"Integer\" without any specified "
+"zoom level is also allowed. It defines the maximum number of lines for all "
+"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
+"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
+"shorten file names if they exceed five lines for zoom level \"smallest\". "
+"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
+"not shorten file names for other zoom levels. Available zoom levels: "
+"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
+"larger (200%), largest (400%)"
+msgstr ""
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
 msgstr ""
 
 # TODO
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Always use the location entry, instead of the pathbar"
 msgstr "Immer das Adressfeld anstatt der Pfadleiste verwenden"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
+msgid ""
+"An integer specifying how parts of overlong file names should be replaced by "
+"ellipses on the desktop. If the number is larger than 0, the file name will "
+"not exceed the given number of lines. If the number is 0 or smaller, no "
+"limit is imposed on the number of displayed lines."
+msgstr ""
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
 msgstr ""
 "Die Farbe des voreingestellten Ordnerhintergrunds. Dieser Schlüssel kommt "
 "ausschließlich zum Tragen, falls der Schlüssel »background_set« wahr ist."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Computer icon visible on desktop"
 msgstr "Computer-Symbol auf Desktop anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 msgid "Criteria for search bar searching"
 msgstr "Kriterien bei der Suche mit der Suchleiste"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
 "\"search_by_text\", then Nautilus will Search for files by file name only. "
@@ -380,115 +407,115 @@ msgstr ""
 "sowie »search_by_text_and_properties« (nach Dateinamen und Dateieigenschaften "
 "suchen)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Current Nautilus theme (deprecated)"
 msgstr "Derzeitiges Nautilus-Thema (veraltet)"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Custom Background"
 msgstr "Benutzerdefinierter Hintergrund"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Custom Side Pane Background Set"
 msgstr "Benutzerdefinierter Hintergrund für Seitenleiste festgelegt?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Date Format"
 msgstr "Datumsformat"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default Background Color"
 msgstr "Voreingestellte Hintergrundfarbe"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default Background Filename"
 msgstr "Dateiname des Vorgabehintergrunds"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default Side Pane Background Color"
 msgstr "Voreingestellte Hintergrundfarbe der Seitenleiste"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default Side Pane Background Filename"
 msgstr "Dateiname des voreingestellten Seitenleistenhintergrunds"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default Thumbnail Icon Size"
 msgstr "Voreingestellte Symbolgröße der Miniatur-Vorschaubilder"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default column order in the list view"
 msgstr "Voreingestellte Spaltenreihenfolge der Listenansicht"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default column order in the list view."
 msgstr "Voreingestellte Spaltenreihenfolge der Listenansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 #, fuzzy
 msgid "Default compact view zoom level"
 msgstr "Voreingestellte Symbolvergrößerungsstufe"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Default folder viewer"
 msgstr "Voreingestellte Ordneransicht"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Default icon zoom level"
 msgstr "Voreingestellte Symbolvergrößerungsstufe"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Default list of columns visible in the list view"
 msgstr "Vorgabeliste in der Listenansicht anzuzeigender Spalten"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Default list of columns visible in the list view."
 msgstr "Vorgabeliste in der Listenansicht anzuzeigender Spalten."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "Default list zoom level"
 msgstr "Voreingestellte Listenvergrößerungsstufe"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "Default sort order"
 msgstr "Voreingestellte Sortierreihenfolge"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 #, fuzzy
 msgid "Default zoom level used by the compact view."
 msgstr "Voreingestellte Vergrößerungsstufe der Symbolansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Default zoom level used by the icon view."
 msgstr "Voreingestellte Vergrößerungsstufe der Symbolansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Default zoom level used by the list view."
 msgstr "Voreingestellte Vergrößerungsstufe der Listenansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid "Desktop computer icon name"
 msgstr "Name des Desktop-Symbols »Computer«"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid "Desktop font"
 msgstr "Desktop-Schrift"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "Desktop home icon name"
 msgstr "Name des Desktop-Symbols »Personlicher Ordner«"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "Desktop trash icon name"
 msgstr "Name des Desktop-Müllsymbols"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr ""
 "Das klassische Nautilus-Verhalten aktivieren. Hierbei sind alle Fenster "
 "Browser"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
@@ -497,7 +524,7 @@ msgstr ""
 "kommt ausschließlich zum Tragen, falls der Schlüssel »background_set« wahr "
 "ist."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -506,7 +533,7 @@ msgstr ""
 "Schlüssel kommt ausschließlich zum Tragen, falls der Schlüssel "
 "»side_pane_background_set« wahr ist."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
@@ -521,18 +548,18 @@ msgstr ""
 "wird. Da Ordner in größeren Dateneinheiten eingelesen werden, ist dies ein "
 "Näherungswert."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "Home icon visible on desktop"
 msgstr "»Persönlicher Ordner«-Symbol auf Desktop anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If set to \"after_current_tab\", then new tabs are inserted after the "
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -541,33 +568,33 @@ msgstr ""
 "ausschließlich Ordner an. Andernfalls werden sowohl Ordner als auch Dateien "
 "angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
 "Adressleiste angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
 "Seitenleiste angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
 "Statusleiste angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neu geöffneten Fenstern die "
 "Werkzeugleiste angezeigt."
 
 # CHECK
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
@@ -575,7 +602,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, verwenden Nautilus Browser-Fenster immer "
 "ein Texteingabefeld für die Adressleiste anstatt der Pfadleiste."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
@@ -584,7 +611,7 @@ msgstr ""
 "die UNIX Art und Weise festlegen und bietet Zugriff auf die etwas "
 "komplexeren Einstellungen."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -592,7 +619,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, zeigt Nautilus in der Symbol- und "
 "Listenansicht Ordner vor Dateien an."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
@@ -600,7 +627,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, fragt Nautilus beim Versuch, Dateien zu "
 "löschen oder den Müll zu leeren, nach."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 #, fuzzy
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
@@ -609,7 +636,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, werden Datenträger wie Festplatten "
 "automatisch beim Hochfahren und Einlegen eingehängt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If set to true, then Nautilus will automatically open a folder when media is "
 "automounted. This only applies to media where no known x-content/* type was "
@@ -622,13 +649,13 @@ msgstr ""
 "ein bekannter Typ entdeckt, so wird die vom Benutzer eingestellte Aktion "
 "durchgeführt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, zeichnet Nautilus die Symbole auf dem "
 "Desktop."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
@@ -639,7 +666,7 @@ msgstr ""
 "wird. Diese Funktion kann Gefahren bergen, verwenden Sie sie daher mit "
 "Umsicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 #, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
@@ -648,7 +675,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, fragt Nautilus beim Einlegen eines "
 "Datenträgers nicht nach, ob automatisch Programme gestartet werden soll."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
@@ -656,7 +683,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, verwendet Nautilus den persönlichen Ordner "
 "des Benutzers als Desktop. Andernfalls wird »~/Desktop« als Desktop verwendet."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
@@ -666,7 +693,7 @@ msgstr ""
 "So verhielt sich Nautilus vor Version 2.6 und manche Anwender bevorzugen "
 "dieses Verhalten."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
@@ -676,7 +703,7 @@ msgstr ""
 "B. die von Emacs erstellten. Zurzeit werden ausschließlich auf eine Tilde "
 "(~) endende Dateien als Sicherungsdateien behandelt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
@@ -685,13 +712,13 @@ msgstr ""
 "angezeigt. Diese sind entweder dot-Dateien oder in der Datei ».hidden« des "
 "Ordners eingetragen."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid ""
 "If set to true, then multiple views can be opened in one browser window, "
 "each in a separate tab."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -699,7 +726,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Desktop eine Verknüpfung mit "
 "den Netzwerk-Servern angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
@@ -707,7 +734,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Desktop eine Verknüpfung mit "
 "dem Computer-Ort angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -715,7 +742,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Desktop eine Verknüpfung mit "
 "dem persönlichen Ordner angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -723,7 +750,7 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, wird auf dem Desktop eine Verknüpfung mit "
 "dem Müll angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -731,13 +758,13 @@ msgstr ""
 "Falls dieser Schlüssel wahr ist, werden auf dem Desktop Symbole angezeigt, "
 "die mit eingebundenen Datenträgern verknüpft sind."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -748,7 +775,7 @@ msgstr ""
 "werden, so werden die Dateien nicht von »a« nach »z«, sondern von »z« nach »a« "
 "angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -761,26 +788,26 @@ msgstr ""
 "angezeigt; falls sie der Größe nach sortiert werden, werden sie auf- statt "
 "absteigend angezeigt."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, werden Symbole in neu geöffneten Fenstern "
 "per Vorgabe enger angeordnet."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, werden Schriften neben Symbole und nicht "
 "unterhalb von ihnen platziert."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Falls dieser Schlüssel wahr ist, wird in neuen Fenstern per Vorgabe manuelle "
 "Anordnung verwendet."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -791,46 +818,46 @@ msgstr ""
 "Anlegen von Miniatur-Vorschaubildern großer Bilder zu verhindern, da dies "
 "lange Ladezeiten oder hohen Speicherverbrauch zur Folge hätte."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "List of possible captions on icons"
 msgstr "Liste zulässiger Symbolbeschriftungen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid ""
 "List of x-content/* types for which the user have chosen \"Do Nothing\" in "
 "the preference capplet. No prompt will be shown nor will any matching "
 "application be started on insertion of media matching these types."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
 "List of x-content/* types for which the user have chosen \"Open Folder\" in "
 "the preferences capplet. A folder window will be opened on insertion of "
 "media matching these types."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "List of x-content/* types for which the user have chosen to start an "
 "application in the preference capplet. The preferred application for the "
 "given type will be started on insertion on media matching these types."
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 #, fuzzy
 msgid "List of x-content/* types set to \"Do Nothing\""
 msgstr ""
 "Liste der »x-content/*«-Typen, bei denen der Benutzer beim Einlegen nach "
 "einer Aktion gefragt wird"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 #, fuzzy
 msgid "List of x-content/* types set to \"Open Folder\""
 msgstr ""
 "Liste der »x-content/*«-Typen, bei denen der Benutzer beim Einlegen nach "
 "einer Aktion gefragt wird"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 #, fuzzy
 msgid ""
 "List of x-content/* types where the preferred application will be launched"
@@ -838,15 +865,15 @@ msgstr ""
 "Liste der »x-content/*«-Typen, bei denen beim Einlegen ein Ordnerfenster "
 "geöffnet werden soll"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Maximum handled files in a folder"
 msgstr "Maximale Anzahl berücksichtigter Dateien je Ordner"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximale Bildgröße für Miniatur-Vorschaubilder"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -854,32 +881,32 @@ msgstr ""
 "Der Name des zu verwendenden Nautilus-Themas. Diese sind seit Nautilus 2.2 "
 "nicht mehr vorhanden. Bitte verwenden Sie stattdessen ein Symbolthema."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus verwenden, um den Desktop zu zeichnen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus verwendet den persönlichen Ordner als Desktop"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Network Servers icon visible on the desktop"
 msgstr "»Netzwerk-Server«-Symbol auf Desktop anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "Network servers icon name"
 msgstr "Name des Desktop-Symbols »Netzwerk-Server«"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 #, fuzzy
 msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr "Beim Einlegen von Datenträgern keine Aktion ausführen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Only show folders in the tree side pane"
 msgstr "Ausschließlich Ordner in der Baum-Seitenleiste anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -887,54 +914,54 @@ msgstr ""
 "Zulässige Werte: »single« (Dateien per Einzelklick starten) sowie "
 "»double« (Dateien per Doppelklick starten)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Put labels beside icons"
 msgstr "Beschriftungen neben Symbolen anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Reverse sort order in new windows"
 msgstr "Sortierreihenfolge in neu geöffneten Fenstern umkehren?"
 
 #. Translators: please note this can choose the size. e.g.
 #. "Sans 15". Please do not change "Sans", only change the size if you need to. In
 #. most cases, this should be left alone.
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Sans 10"
 msgstr "Sans 10"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Erweiterte Zugriffsrechte im Dateieigenschafts-Dialog anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Show folders first in windows"
 msgstr "Ordner in Fenstern zuerst anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Show location bar in new windows"
 msgstr "Adressleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Show mounted volumes on the desktop"
 msgstr "Eingebundene Datenträger auf dem Desktop anzeigen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Show side pane in new windows"
 msgstr "Seitenleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Show status bar in new windows"
 msgstr "Statusleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Show toolbar in new windows"
 msgstr "Werkzeugleiste in neu geöffneten Fenstern anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Side pane view"
 msgstr "Seitenleistenansicht"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -947,7 +974,7 @@ msgstr ""
 "befinden), »local_only« (nur wiedergeben, falls sie sich auf einem lokalen "
 "Dateisystem befinden) sowie »never« (keinesfalls wiedergeben)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -961,7 +988,7 @@ msgstr ""
 "anzeigen, falls sie sich auf einem lokalen Dateisystem befinden) sowie "
 "»never« (keinesfalls anzeigen)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -974,7 +1001,7 @@ msgstr ""
 "entfernten Server befinden), »local_only« (nur anlegen, falls sie sich auf "
 "einem lokalen Dateisystem befinden) sowie »never« (keinesfalls anlegen)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -986,13 +1013,17 @@ msgstr ""
 "einem entfernten Server befindet), »local_only« (nur anzeigen, falls er sich "
 "auf einem lokalen Dateisystem befindet) sowie »never« (keinesfalls anzeigen)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
+msgid "Text Ellipsis Limit"
+msgstr ""
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr ""
 "Die Standardgröße eines Symbols für ein Miniatur-Vorschaubild in der "
 "Symbolansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1001,7 +1032,7 @@ msgstr ""
 "Zulässige Werte: »name« (Name), »size« (Größe), »type« (Typ), "
 "»modification_date« (Änderungsdatum) sowie »emblems« (Embleme)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1010,26 +1041,26 @@ msgstr ""
 "Zulässige Werte: »name« (Name), »size« (Größe), »type« (Typ) sowie "
 "»modification_date« (Änderungsdatum)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid "The default width of the side pane in new windows."
 msgstr "Die Vorgabebreite der Seitenleiste in neu geöffneten Fenstern."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid "The font description used for the icons on the desktop."
 msgstr "Die von Symbolen auf dem Desktop zu verwendende Schriftbeschreibung."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
 "Das Format der Dateidaten. Zulässige Werte: »locale«, »iso« sowie »informal«."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid "The side pane view to show in newly opened windows."
 msgstr "Die in neu geöffneten Fenstern anzuzeigende Seitenleistenansicht."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -1037,7 +1068,7 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol "
 "»Persönlicher Ordner« auf dem Desktop fest."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -1045,7 +1076,7 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol "
 "»Persönlichen Ordner« auf dem Desktop fest."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -1053,7 +1084,7 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol »Netzwerk-"
 "Server« auf dem Desktop fest."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1061,29 +1092,29 @@ msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol »Müll« auf "
 "dem Desktop fest."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "Trash icon visible on desktop"
 msgstr "Müllsymbol auf Desktop anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
 msgid "Type of click used to launch/open files"
 msgstr "Klicktyp zum Ausführen/Öffnen von Dateien"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid "Use manual layout in new windows"
 msgstr "Manuelle Anordnung in neu geöffneten Fenster verwenden?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "Use tighter layout in new windows"
 msgstr "Engere Anordnung in neu geöffneten Fenster verwenden?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
 msgid "What to do with executable text files when activated"
 msgstr ""
 "Wie soll mit ausführbaren Textdateien verfahren werden, wenn sie aktiviert "
 "werden?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1095,7 +1126,7 @@ msgstr ""
 "»launch« (wie Anwendungen ausführen), »ask« (per Dialog rückfragen) sowie "
 "»display« (wie Textdateien anzeigen)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
 #, fuzzy
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
@@ -1105,74 +1136,74 @@ msgstr ""
 "Diese Ansicht wird als Vorgabe für das Anzeigen von Ordnern verwendet. "
 "Zulässige Werte: »list_view« (Listenansicht) sowie »icon_view« (Symbolansicht)."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "When to show number of items in a folder"
 msgstr "Wann die Anzahl der Objekte in einem Ordner angezeigt werden soll"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
 msgid "When to show preview text in icons"
 msgstr "Wann Vorschautext unter Symbolen angezeigt werden soll"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
 msgid "When to show thumbnails of image files"
 msgstr "Wann Miniatur-Vorschaubilder von Bilddateien angezeigt werden sollen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
 #, fuzzy
 msgid "Where to position newly open tabs in browser windows."
 msgstr "Immer in _Browser-Fenstern öffnen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
 msgid "Whether a custom default folder background has been set."
 msgstr ""
 "Legt fest, ob ein benutzerdefinierter, voreingestellter Ordnerhintergrund "
 "festgelegt wurde."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
 msgid "Whether a custom default side pane background has been set."
 msgstr ""
 "Legt fest, ob ein benutzerdefinierter, voreingestellter "
 "Seitenleistenhintergrund festgelegt wurde."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Legt fest, ob beim Löschen von Dateien oder beim Leeren des Mülls "
 "nachgefragt werden soll."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
 msgid "Whether to automatically mount media"
 msgstr "Legt fest, ob Datenträger automatisch eingehangen werden sollen"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
 msgid "Whether to automatically open a folder for automounted media"
 msgstr ""
 "Legt fest, ob für automatisch eingehängte Datenträger ein Ordnerfenster "
 "geöffnet werden soll"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
 msgid "Whether to enable immediate deletion"
 msgstr "Legt fest, ob das sofortige Löschen verwendet werden soll."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
 msgid "Whether to enable tabs in Nautilus browser windows"
 msgstr ""
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:140
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
 "Legt fest, ob eine Vorschau auf Audio-Dateien angezeigt werden soll, wenn "
 "die Maus sich über deren Symbol befindet."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:141
 msgid "Whether to show backup files"
 msgstr "Legt fest, ob Sicherungsdateien angezeigt werden sollen."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:142
 msgid "Whether to show hidden files"
 msgstr "Verborgene Dateien anzeigen?"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:143
 msgid "Width of the side pane"
 msgstr "Breite der Seitenleiste"
 
@@ -1289,12 +1320,7 @@ msgstr ""
 msgid "_Always perform this action"
 msgstr "I_mmer diese Aktion ausführen"
 
-#. name, stock id
-#. label, accelerator
 #: ../libnautilus-private/nautilus-autorun.c:969
-#: ../src/file-manager/fm-directory-view.c:6690
-#: ../src/file-manager/fm-directory-view.c:6706
-#: ../src/file-manager/fm-directory-view.c:6775
 #: ../src/nautilus-places-sidebar.c:2012
 msgid "_Eject"
 msgstr "Aus_werfen"
@@ -1328,7 +1354,7 @@ msgstr "Den in der Zwischenablage gespeicherten Text einfügen"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-clipboard.c:448
-#: ../src/file-manager/fm-directory-view.c:6628
+#: ../src/file-manager/fm-directory-view.c:6644
 msgid "Select _All"
 msgstr "Alles au_swählen"
 
@@ -1409,7 +1435,7 @@ msgid "The group of the file."
 msgstr "Die Dateigruppe."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4755
+#: ../src/file-manager/fm-properties-window.c:4760
 msgid "Permissions"
 msgstr "Zugriffsrechte"
 
@@ -1472,33 +1498,33 @@ msgstr ""
 "Verwenden Sie »Auswerfen« im Rechtsklick-Menü des Datenträgers, falls Sie ihn "
 "aushängen möchten."
 
-#: ../libnautilus-private/nautilus-dnd.c:744
+#: ../libnautilus-private/nautilus-dnd.c:748
 msgid "_Move Here"
 msgstr "Hierher _verschieben"
 
-#: ../libnautilus-private/nautilus-dnd.c:749
+#: ../libnautilus-private/nautilus-dnd.c:753
 msgid "_Copy Here"
 msgstr "Hierher _kopieren"
 
 # CHECK
-#: ../libnautilus-private/nautilus-dnd.c:754
+#: ../libnautilus-private/nautilus-dnd.c:758
 msgid "_Link Here"
 msgstr "_Verknüpfung erstellen"
 
-#: ../libnautilus-private/nautilus-dnd.c:759
+#: ../libnautilus-private/nautilus-dnd.c:763
 msgid "Set as _Background"
 msgstr "Als _Hintergrund verwenden"
 
-#: ../libnautilus-private/nautilus-dnd.c:766
-#: ../libnautilus-private/nautilus-dnd.c:819
+#: ../libnautilus-private/nautilus-dnd.c:770
+#: ../libnautilus-private/nautilus-dnd.c:823
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../libnautilus-private/nautilus-dnd.c:807
+#: ../libnautilus-private/nautilus-dnd.c:811
 msgid "Set as background for _all folders"
 msgstr "Als Hintergrund für _alle Ordner verwenden"
 
-#: ../libnautilus-private/nautilus-dnd.c:812
+#: ../libnautilus-private/nautilus-dnd.c:816
 msgid "Set as background for _this folder"
 msgstr "Als Hintergrund für _diesen Ordner verwenden"
 
@@ -1612,8 +1638,8 @@ msgstr[1] "circa %'d Stunden"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5506
-#: ../src/file-manager/fm-directory-view.c:9173
+#: ../libnautilus-private/nautilus-file.c:5562
+#: ../src/file-manager/fm-directory-view.c:9337
 #, c-format
 msgid "Link to %s"
 msgstr "Verknüpfung mit %s"
@@ -1915,7 +1941,7 @@ msgstr "Müll nicht leeren"
 
 #. label, accelerator
 #: ../libnautilus-private/nautilus-file-operations.c:2076
-#: ../src/file-manager/fm-desktop-icon-view.c:705
+#: ../src/file-manager/fm-desktop-icon-view.c:706
 msgid "Empty Trash"
 msgstr "Müll leeren"
 
@@ -2297,24 +2323,24 @@ msgid "Setting permissions"
 msgstr "Zugriffsrechte werden gesetzt"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5401
+#: ../libnautilus-private/nautilus-file-operations.c:5395
 msgid "untitled folder"
 msgstr "Namenloser Ordner"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5409
+#: ../libnautilus-private/nautilus-file-operations.c:5403
 msgid "new file"
 msgstr "neue Datei"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5533
+#: ../libnautilus-private/nautilus-file-operations.c:5527
 msgid "Error while creating directory %B."
 msgstr "Fehler beim Erstellen des Ordners »%B«."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5535
+#: ../libnautilus-private/nautilus-file-operations.c:5529
 msgid "Error while creating file %B."
 msgstr "Fehler beim Erstellen der Datei »%B«."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5537
+#: ../libnautilus-private/nautilus-file-operations.c:5531
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Beim Erstellen des Ordners in »%F« ist ein Fehler aufgetreten."
@@ -2365,65 +2391,65 @@ msgstr "Desktop-Datei konnte nicht umbenannt werden"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3607
+#: ../libnautilus-private/nautilus-file.c:3663
 msgid "today at 00:00:00 PM"
 msgstr "heute um 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3608
+#: ../libnautilus-private/nautilus-file.c:3664
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "heute um %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3610
+#: ../libnautilus-private/nautilus-file.c:3666
 msgid "today at 00:00 PM"
 msgstr "heute um 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3611
+#: ../libnautilus-private/nautilus-file.c:3667
 msgid "today at %-I:%M %p"
 msgstr "heute um %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3613
+#: ../libnautilus-private/nautilus-file.c:3669
 msgid "today, 00:00 PM"
 msgstr "heute, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3614
+#: ../libnautilus-private/nautilus-file.c:3670
 msgid "today, %-I:%M %p"
 msgstr "heute, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3616
-#: ../libnautilus-private/nautilus-file.c:3617
+#: ../libnautilus-private/nautilus-file.c:3672
+#: ../libnautilus-private/nautilus-file.c:3673
 msgid "today"
 msgstr "heute"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3626
+#: ../libnautilus-private/nautilus-file.c:3682
 msgid "yesterday at 00:00:00 PM"
 msgstr "gestern um 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3627
+#: ../libnautilus-private/nautilus-file.c:3683
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "gestern um %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3629
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "yesterday at 00:00 PM"
 msgstr "gestern um %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3630
+#: ../libnautilus-private/nautilus-file.c:3686
 msgid "yesterday at %-I:%M %p"
 msgstr "gestern um %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3632
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "yesterday, 00:00 PM"
 msgstr "gestern, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3633
+#: ../libnautilus-private/nautilus-file.c:3689
 msgid "yesterday, %-I:%M %p"
 msgstr "gestern, %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3635
-#: ../libnautilus-private/nautilus-file.c:3636
+#: ../libnautilus-private/nautilus-file.c:3691
+#: ../libnautilus-private/nautilus-file.c:3692
 msgid "yesterday"
 msgstr "gestern"
 
@@ -2432,103 +2458,103 @@ msgstr "gestern"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3647
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Donnerstag, 00. September 0000 um 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3648
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %B %Y um %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3650
+#: ../libnautilus-private/nautilus-file.c:3706
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Mon, 00. Okt 0000 um 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3651
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d. %b %Y um %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3653
+#: ../libnautilus-private/nautilus-file.c:3709
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Mon, 00. Okt 0000 um 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3654
+#: ../libnautilus-private/nautilus-file.c:3710
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d. %b %Y um %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3656
+#: ../libnautilus-private/nautilus-file.c:3712
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. Okt 0000 um 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3657
+#: ../libnautilus-private/nautilus-file.c:3713
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y um %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3659
+#: ../libnautilus-private/nautilus-file.c:3715
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. Okt 0000, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3660
+#: ../libnautilus-private/nautilus-file.c:3716
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d. %b %Y, %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3662
+#: ../libnautilus-private/nautilus-file.c:3718
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3663
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3665
+#: ../libnautilus-private/nautilus-file.c:3721
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3666
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: ../libnautilus-private/nautilus-file.c:4279
+#: ../libnautilus-private/nautilus-file.c:4335
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Setzen der Zugriffsrechte nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:4587
+#: ../libnautilus-private/nautilus-file.c:4643
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Setzen des Besitzers nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:4605
+#: ../libnautilus-private/nautilus-file.c:4661
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Der angegebene Besitzer »%s« existiert nicht"
 
-#: ../libnautilus-private/nautilus-file.c:4869
+#: ../libnautilus-private/nautilus-file.c:4925
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Setzen der Gruppe nicht erlaubt"
 
-#: ../libnautilus-private/nautilus-file.c:4887
+#: ../libnautilus-private/nautilus-file.c:4943
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Die angegebene Gruppe »%s« existiert nicht"
 
-#: ../libnautilus-private/nautilus-file.c:5030
-#: ../src/file-manager/fm-directory-view.c:2204
+#: ../libnautilus-private/nautilus-file.c:5086
+#: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u Objekt"
 msgstr[1] "%'u Objekte"
 
-#: ../libnautilus-private/nautilus-file.c:5031
+#: ../libnautilus-private/nautilus-file.c:5087
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u Ordner"
 msgstr[1] "%'u Ordner"
 
-#: ../libnautilus-private/nautilus-file.c:5032
+#: ../libnautilus-private/nautilus-file.c:5088
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2536,51 +2562,51 @@ msgstr[0] "%'u Datei"
 msgstr[1] "%'u Dateien"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5111
+#: ../libnautilus-private/nautilus-file.c:5167
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5112
+#: ../libnautilus-private/nautilus-file.c:5168
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s Bytes)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5416
-#: ../libnautilus-private/nautilus-file.c:5432
+#: ../libnautilus-private/nautilus-file.c:5472
+#: ../libnautilus-private/nautilus-file.c:5488
 msgid "? items"
 msgstr "? Objekte"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5422
+#: ../libnautilus-private/nautilus-file.c:5478
 msgid "? bytes"
 msgstr "? Bytes"
 
-#: ../libnautilus-private/nautilus-file.c:5437
+#: ../libnautilus-private/nautilus-file.c:5493
 msgid "unknown type"
 msgstr "unbekannter Typ"
 
-#: ../libnautilus-private/nautilus-file.c:5440
+#: ../libnautilus-private/nautilus-file.c:5496
 msgid "unknown MIME type"
 msgstr "unbekannter MIME-Typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5446
+#: ../libnautilus-private/nautilus-file.c:5502
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "unbekannt"
 
-#: ../libnautilus-private/nautilus-file.c:5480
+#: ../libnautilus-private/nautilus-file.c:5536
 msgid "program"
 msgstr "Programm"
 
-#: ../libnautilus-private/nautilus-file.c:5500
+#: ../libnautilus-private/nautilus-file.c:5556
 msgid "link"
 msgstr "Verknüpfung"
 
-#: ../libnautilus-private/nautilus-file.c:5522
+#: ../libnautilus-private/nautilus-file.c:5578
 msgid "link (broken)"
 msgstr "Verknüpfung (fehlerhaft)"
 
@@ -2697,14 +2723,14 @@ msgstr "Dateien nach Dateinamen und ihren Eigenschaften suchen"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
 #: ../src/file-manager/fm-icon-container.c:582
-#: ../src/file-manager/fm-icon-view.c:2959
+#: ../src/file-manager/fm-icon-view.c:3004
 msgid "Icon View"
 msgstr "Symbolansicht"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
-#: ../src/file-manager/fm-icon-view.c:2973
+#: ../src/file-manager/fm-icon-view.c:3018
 #, fuzzy
 msgid "Compact View"
 msgstr "Inhaltsansicht"
@@ -2786,26 +2812,26 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:550
+#: ../libnautilus-private/nautilus-global-preferences.c:559
 #, c-format
 msgid "%s's Home"
 msgstr "Persönlicher Ordner%.0s"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:556
+#: ../libnautilus-private/nautilus-global-preferences.c:565
 #: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Computer"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:562
+#: ../libnautilus-private/nautilus-global-preferences.c:571
 #: ../src/nautilus-places-sidebar.c:483 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "Müll"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:568
+#: ../libnautilus-private/nautilus-global-preferences.c:577
 msgid "Network Servers"
 msgstr "Netzwerk-Server"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2424
+#: ../libnautilus-private/nautilus-icon-container.c:2594
 msgid "The selection rectangle"
 msgstr "Das Auswähl-Rechteck"
 
@@ -2840,10 +2866,10 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-mime-actions.c:615
-#: ../src/file-manager/fm-directory-view.c:6656
-#: ../src/file-manager/fm-directory-view.c:6755
-#: ../src/file-manager/fm-directory-view.c:7457
-#: ../src/file-manager/fm-directory-view.c:7715
+#: ../src/file-manager/fm-directory-view.c:6672
+#: ../src/file-manager/fm-directory-view.c:6771
+#: ../src/file-manager/fm-directory-view.c:7622
+#: ../src/file-manager/fm-directory-view.c:7883
 msgid "Mo_ve to Trash"
 msgstr "In den _Müll verschieben"
 
@@ -2871,7 +2897,7 @@ msgid "_Run"
 msgstr "Aus_führen"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:990
-#: ../src/file-manager/fm-directory-view.c:618
+#: ../src/file-manager/fm-directory-view.c:620
 msgid "Are you sure you want to open all files?"
 msgstr "Sind Sie sicher, dass Sie alle Fenster öffnen wollen?"
 
@@ -2999,7 +3025,7 @@ msgid "Select an Application"
 msgstr "Wählen Sie eine Anwendung"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
-#: ../src/file-manager/fm-properties-window.c:5065
+#: ../src/file-manager/fm-properties-window.c:5070
 msgid "Open With"
 msgstr "Öffnen mit"
 
@@ -3018,9 +3044,9 @@ msgstr "A_uswählen …"
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
-#: ../src/file-manager/fm-directory-view.c:6574
-#: ../src/file-manager/fm-directory-view.c:7618
-#: ../src/file-manager/fm-tree-view.c:1149
+#: ../src/file-manager/fm-directory-view.c:6590
+#: ../src/file-manager/fm-directory-view.c:7786
+#: ../src/file-manager/fm-tree-view.c:1174
 #: ../src/nautilus-places-sidebar.c:1954
 msgid "_Open"
 msgstr "Ö_ffnen"
@@ -3086,35 +3112,35 @@ msgstr ""
 "Möglicherweise können Sie sie öffnen, wenn Sie sie auf Ihren Computer "
 "kopieren."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:308
+#: ../libnautilus-private/nautilus-program-choosing.c:361
 #, fuzzy
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr ""
 "Leider dürfen Sie keine Befehle von einer entfernten Gegenstelle aus "
 "ausführen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:310
+#: ../libnautilus-private/nautilus-program-choosing.c:363
 msgid "This is disabled due to security considerations."
 msgstr "Dies ist auf Grund von Sicherheitserwägungen deaktiviert."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:321
-#: ../libnautilus-private/nautilus-program-choosing.c:389
+#: ../libnautilus-private/nautilus-program-choosing.c:374
+#: ../libnautilus-private/nautilus-program-choosing.c:442
 msgid "There was an error launching the application."
 msgstr "Beim Ausführen der Anwendung ist ein Fehler aufgetreten."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:346
-#: ../libnautilus-private/nautilus-program-choosing.c:357
+#: ../libnautilus-private/nautilus-program-choosing.c:399
+#: ../libnautilus-private/nautilus-program-choosing.c:410
 msgid "This drop target only supports local files."
 msgstr "Dieses Ablegeziel unterstützt ausschließlich lokale Dateien."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:347
+#: ../libnautilus-private/nautilus-program-choosing.c:400
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Um nichtlokale Dateien zu öffnen, müssen Sie sie in einen lokalen Ordner "
 "kopieren und dann noch einmal hier ablegen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:358
+#: ../libnautilus-private/nautilus-program-choosing.c:411
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3123,7 +3149,7 @@ msgstr ""
 "kopieren und dann noch einmal hier ablegen. Die lokalen, abgelegten Dateien "
 "wurden bereits geöffnet."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:387
+#: ../libnautilus-private/nautilus-program-choosing.c:440
 msgid "Details: "
 msgstr "Details: "
 
@@ -3197,7 +3223,7 @@ msgstr "Legt das Verhalten und das Aussehen des Dateiverwalters fest"
 msgid "File Management"
 msgstr "Verwaltung von Dateien"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1302
+#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1336
 msgid "Home Folder"
 msgstr "Persönlicher Ordner"
 
@@ -3240,39 +3266,39 @@ msgstr ""
 msgid "Produces metafile objects for accessing Nautilus metadata"
 msgstr "Erzeugt Metadatei-Objekte, um auf Nautilus-Metadaten zuzugreifen"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:616
+#: ../src/file-manager/fm-desktop-icon-view.c:617
 msgid "Background"
 msgstr "Hintergrund"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:679
-#: ../src/file-manager/fm-directory-view.c:6606
-#: ../src/file-manager/fm-directory-view.c:7784
+#: ../src/file-manager/fm-desktop-icon-view.c:680
+#: ../src/file-manager/fm-directory-view.c:6622
+#: ../src/file-manager/fm-directory-view.c:7948
 msgid "E_mpty Trash"
 msgstr "Müll _leeren"
 
 #. label, accelerator
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:691
-#: ../src/file-manager/fm-directory-view.c:6570
+#: ../src/file-manager/fm-desktop-icon-view.c:692
+#: ../src/file-manager/fm-directory-view.c:6586
 msgid "Create L_auncher..."
 msgstr "_Starter anlegen …"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:693
-#: ../src/file-manager/fm-directory-view.c:6571
+#: ../src/file-manager/fm-desktop-icon-view.c:694
+#: ../src/file-manager/fm-directory-view.c:6587
 msgid "Create a new launcher"
 msgstr "Einen neuen Starter anlegen"
 
 #. label, accelerator
-#: ../src/file-manager/fm-desktop-icon-view.c:698
+#: ../src/file-manager/fm-desktop-icon-view.c:699
 msgid "Change Desktop _Background"
 msgstr "Desktop-_Hintergrund ändern"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:700
+#: ../src/file-manager/fm-desktop-icon-view.c:701
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
@@ -3280,82 +3306,82 @@ msgstr ""
 "eingestellt werden können"
 
 #. tooltip
-#: ../src/file-manager/fm-desktop-icon-view.c:707
-#: ../src/file-manager/fm-directory-view.c:6607
+#: ../src/file-manager/fm-desktop-icon-view.c:708
+#: ../src/file-manager/fm-directory-view.c:6623
 #: ../src/nautilus-trash-bar.c:132
 msgid "Delete all items in the Trash"
 msgstr "Alle Objekte im Müll löschen"
 
-#: ../src/file-manager/fm-desktop-icon-view.c:800
+#: ../src/file-manager/fm-desktop-icon-view.c:801
 msgid "The desktop view encountered an error."
 msgstr "Die Desktop-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-desktop-icon-view.c:801
+#: ../src/file-manager/fm-desktop-icon-view.c:802
 msgid "The desktop view encountered an error while starting up."
 msgstr "Die Desktop-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-directory-view.c:620
+#: ../src/file-manager/fm-directory-view.c:622
 #, fuzzy, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Dies würde %'d Einzelfenster öffnen."
 msgstr[1] "Dies würde %'d Einzelfenster öffnen."
 
-#: ../src/file-manager/fm-directory-view.c:623
+#: ../src/file-manager/fm-directory-view.c:625
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Dies würde %'d Einzelfenster öffnen."
 msgstr[1] "Dies würde %'d Einzelfenster öffnen."
 
-#: ../src/file-manager/fm-directory-view.c:1137
-#: ../src/file-manager/fm-properties-window.c:5413
+#: ../src/file-manager/fm-directory-view.c:1135
+#: ../src/file-manager/fm-properties-window.c:5418
 #: ../src/nautilus-connect-server-dialog.c:343
 #: ../src/nautilus-location-dialog.c:109
 msgid "There was an error displaying help."
 msgstr "Beim Anzeigen der Hilfe ist ein Fehler aufgetreten."
 
-#: ../src/file-manager/fm-directory-view.c:1157
+#: ../src/file-manager/fm-directory-view.c:1155
 #, fuzzy
 msgid "Select Items Matching"
 msgstr "Alle Objekte in diesem Fenster auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:1175
+#: ../src/file-manager/fm-directory-view.c:1173
 msgid "_Pattern:"
 msgstr "_Muster:"
 
-#: ../src/file-manager/fm-directory-view.c:1273
+#: ../src/file-manager/fm-directory-view.c:1271
 msgid "Save Search as"
 msgstr "Suche speichern unter"
 
 # CHECK
-#: ../src/file-manager/fm-directory-view.c:1293
+#: ../src/file-manager/fm-directory-view.c:1291
 msgid "Search _name:"
 msgstr "_Name der Suche:"
 
-#: ../src/file-manager/fm-directory-view.c:1307
+#: ../src/file-manager/fm-directory-view.c:1305
 #: ../src/nautilus-connect-server-dialog.c:520
 msgid "_Folder:"
 msgstr "_Ordner:"
 
-#: ../src/file-manager/fm-directory-view.c:1312
+#: ../src/file-manager/fm-directory-view.c:1310
 msgid "Select Folder to Save Search In"
 msgstr "Wählen Sie den Ordner, in dem die Suche gespeichert werden soll"
 
-#: ../src/file-manager/fm-directory-view.c:2124
-#: ../src/file-manager/fm-directory-view.c:2161
+#: ../src/file-manager/fm-directory-view.c:2122
+#: ../src/file-manager/fm-directory-view.c:2159
 #, c-format
 msgid "\"%s\" selected"
 msgstr "»%s« ausgewählt"
 
-#: ../src/file-manager/fm-directory-view.c:2126
+#: ../src/file-manager/fm-directory-view.c:2124
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d Ordner ausgewählt"
 msgstr[1] "%'d Ordner ausgewählt"
 
-#: ../src/file-manager/fm-directory-view.c:2136
+#: ../src/file-manager/fm-directory-view.c:2134
 #, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
@@ -3363,14 +3389,14 @@ msgstr[0] " (enthält %'d Objekt)"
 msgstr[1] " (enthält %'d Objekte)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/file-manager/fm-directory-view.c:2147
+#: ../src/file-manager/fm-directory-view.c:2145
 #, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (enthalten insgesamt %'d Objekt)"
 msgstr[1] " (enthalten insgesamt %'d Objekte)"
 
-#: ../src/file-manager/fm-directory-view.c:2164
+#: ../src/file-manager/fm-directory-view.c:2162
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3378,7 +3404,7 @@ msgstr[0] "%'d Objekt ausgewählt"
 msgstr[1] "%'d Objekte ausgewählt"
 
 #. Folders selected also, use "other" terminology
-#: ../src/file-manager/fm-directory-view.c:2171
+#: ../src/file-manager/fm-directory-view.c:2169
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3390,12 +3416,12 @@ msgstr[1] "%'d weitere Objekte ausgewählt"
 #. * first message gives the number of items selected;
 #. * the message in parentheses the size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2186
+#: ../src/file-manager/fm-directory-view.c:2184
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-directory-view.c:2208
+#: ../src/file-manager/fm-directory-view.c:2206
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, freier Speicherplatz: %s"
@@ -3407,7 +3433,7 @@ msgstr "%s, freier Speicherplatz: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/file-manager/fm-directory-view.c:2233
+#: ../src/file-manager/fm-directory-view.c:2231
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3416,14 +3442,14 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: ../src/file-manager/fm-directory-view.c:2315
+#: ../src/file-manager/fm-directory-view.c:2313
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Der Ordner »%s« enthält mehr Dateien, als Nautilus handhaben kann. Einige "
 "Dateien werden nicht angezeigt."
 
-#: ../src/file-manager/fm-directory-view.c:2321
+#: ../src/file-manager/fm-directory-view.c:2319
 msgid "Some files will not be displayed."
 msgstr "Einige Dateien werden nicht angezeigt."
 
@@ -3439,22 +3465,22 @@ msgid_plural "Use \"%s\" to open the selected items"
 msgstr[0] "»%s« verwenden, um das gewählte Objekt zu öffnen"
 msgstr[1] "»%s« verwenden, um die gewählten Objekte zu öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:5007
+#: ../src/file-manager/fm-directory-view.c:5003
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "»%s« mit allen gewählten Objekten ausführen"
 
-#: ../src/file-manager/fm-directory-view.c:5256
+#: ../src/file-manager/fm-directory-view.c:5252
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Dokument aus Vorlage »%s« anlegen"
 
-#: ../src/file-manager/fm-directory-view.c:5512
+#: ../src/file-manager/fm-directory-view.c:5508
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Alle ausführbaren Dateien in diesem Ordner erscheinen im Skriptmenü."
 
 # CHECK - Das - Bezug
-#: ../src/file-manager/fm-directory-view.c:5514
+#: ../src/file-manager/fm-directory-view.c:5510
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3462,7 +3488,7 @@ msgstr ""
 "Das aus diesem Menü gewählte Skript wird ausgeführt, wobei alle gewählten "
 "Objekte als Eingabe verwendet werden."
 
-#: ../src/file-manager/fm-directory-view.c:5516
+#: ../src/file-manager/fm-directory-view.c:5512
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3503,19 +3529,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: Position und Größe des aktuellen Fensters"
 
-#: ../src/file-manager/fm-directory-view.c:5688
-#: ../src/file-manager/fm-tree-view.c:963
+#: ../src/file-manager/fm-directory-view.c:5684
+#: ../src/file-manager/fm-tree-view.c:970
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste command"
 msgstr "»%s« wird verschoben, sobald Sie »Einfügen« auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:5692
-#: ../src/file-manager/fm-tree-view.c:967
+#: ../src/file-manager/fm-directory-view.c:5688
+#: ../src/file-manager/fm-tree-view.c:974
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste command"
 msgstr "»%s« wird kopiert, sobald Sie »Einfügen« auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:5699
+#: ../src/file-manager/fm-directory-view.c:5695
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
@@ -3525,7 +3551,7 @@ msgstr[0] ""
 msgstr[1] ""
 "Die %'d gewählten Objekte werden verschoben, sobald Sie »Einfügen« auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:5706
+#: ../src/file-manager/fm-directory-view.c:5702
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
 msgid_plural ""
@@ -3535,97 +3561,97 @@ msgstr[0] ""
 msgstr[1] ""
 "Die %'d gewählten Objekte werden kopiert, sobald Sie »Einfügen« auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:5762
-#: ../src/file-manager/fm-tree-view.c:1006
+#: ../src/file-manager/fm-directory-view.c:5758
+#: ../src/file-manager/fm-tree-view.c:1013
 msgid "There is nothing on the clipboard to paste."
 msgstr "In der Zwischenablage ist nichts zum Einfügen."
 
-#: ../src/file-manager/fm-directory-view.c:6235
+#: ../src/file-manager/fm-directory-view.c:6231
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Mit Server %s verbinden"
 
-#: ../src/file-manager/fm-directory-view.c:6240
+#: ../src/file-manager/fm-directory-view.c:6236
 msgid "_Connect"
 msgstr "_Verbinden"
 
-#: ../src/file-manager/fm-directory-view.c:6254
+#: ../src/file-manager/fm-directory-view.c:6250
 msgid "Link _name:"
 msgstr "Link-_Name:"
 
-#: ../src/file-manager/fm-directory-view.c:6453
+#: ../src/file-manager/fm-directory-view.c:6468
 #, c-format
 msgid "Could not determine original location of \"%s\" "
 msgstr ""
 
-#: ../src/file-manager/fm-directory-view.c:6457
+#: ../src/file-manager/fm-directory-view.c:6472
 #, fuzzy
 msgid "The item cannot be restored from trash"
 msgstr "Die Datei »%B« konnte nicht in den Müll verschoben werden."
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6544
+#: ../src/file-manager/fm-directory-view.c:6560
 msgid "Create _Document"
 msgstr "_Dokument anlegen"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6545
+#: ../src/file-manager/fm-directory-view.c:6561
 msgid "Open Wit_h"
 msgstr "Öffnen _mit"
 
-#: ../src/file-manager/fm-directory-view.c:6546
+#: ../src/file-manager/fm-directory-view.c:6562
 msgid "Choose a program with which to open the selected item"
 msgstr ""
 "Ein Programm auswählen, mit dem das gewählte Objekt geöffnet werden soll"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6548
-#: ../src/file-manager/fm-directory-view.c:6556
-#: ../src/file-manager/fm-directory-view.c:6784
+#: ../src/file-manager/fm-directory-view.c:6564
+#: ../src/file-manager/fm-directory-view.c:6572
+#: ../src/file-manager/fm-directory-view.c:6800
 msgid "_Properties"
 msgstr "Ei_genschaften"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6549
+#: ../src/file-manager/fm-directory-view.c:6565
 msgid "View or modify the properties of each selected item"
 msgstr "Die Eigenschaften aller gewählten Objekte anzeigen/ändern"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6557
+#: ../src/file-manager/fm-directory-view.c:6573
 msgid "View or modify the properties of the open folder"
 msgstr "Die Eigenschaften des aktuellen Ordners anzeigen/ändern"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6560
+#: ../src/file-manager/fm-directory-view.c:6576
 msgid "Create _Folder"
 msgstr "_Ordner anlegen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6561
+#: ../src/file-manager/fm-directory-view.c:6577
 msgid "Create a new empty folder inside this folder"
 msgstr "Einen neuen leeren Ordner in diesem Ordner anlegen"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-directory-view.c:6563
+#: ../src/file-manager/fm-directory-view.c:6579
 msgid "No templates installed"
 msgstr "Keine Vorlagen installiert"
 
 #. name, stock id
 #. translators: this is used to indicate that a file doesn't contain anything
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6566
+#: ../src/file-manager/fm-directory-view.c:6582
 msgid "_Empty File"
 msgstr "_Leere Datei"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6567
+#: ../src/file-manager/fm-directory-view.c:6583
 msgid "Create a new empty file inside this folder"
 msgstr "Ein neue leere Datei in diesem Ordner anlegen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6575
+#: ../src/file-manager/fm-directory-view.c:6591
 msgid "Open the selected item in this window"
 msgstr "Das gewählte Objekt in diesem Fenster öffnen"
 
@@ -3634,58 +3660,58 @@ msgstr "Das gewählte Objekt in diesem Fenster öffnen"
 #. Location-specific actions
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6582
-#: ../src/file-manager/fm-directory-view.c:6728
+#: ../src/file-manager/fm-directory-view.c:6598
+#: ../src/file-manager/fm-directory-view.c:6744
 msgid "Open in Navigation Window"
 msgstr "In Navigationsfenster öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6583
+#: ../src/file-manager/fm-directory-view.c:6599
 msgid "Open each selected item in a navigation window"
 msgstr "Jedes gewählte Objekt in einem einzelnen Navigationsfenster öffnen"
 
 #. name, stock id
 #. label, accelerator
 #. add the "open in new tab" menu item
-#: ../src/file-manager/fm-directory-view.c:6586
-#: ../src/file-manager/fm-directory-view.c:6732
-#: ../src/file-manager/fm-directory-view.c:7402
-#: ../src/file-manager/fm-directory-view.c:7669
-#: ../src/file-manager/fm-tree-view.c:1160
+#: ../src/file-manager/fm-directory-view.c:6602
+#: ../src/file-manager/fm-directory-view.c:6748
+#: ../src/file-manager/fm-directory-view.c:7567
+#: ../src/file-manager/fm-directory-view.c:7837
+#: ../src/file-manager/fm-tree-view.c:1185
 #: ../src/nautilus-places-sidebar.c:1962
 #, fuzzy
 msgid "Open in New _Tab"
 msgstr "In neuem _Fenster öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6587
+#: ../src/file-manager/fm-directory-view.c:6603
 #, fuzzy
 msgid "Open each selected item in a new tab"
 msgstr "Jedes gewählte Objekt in einem einzelnen Ordnerfenster öffnen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6590
-#: ../src/file-manager/fm-directory-view.c:6737
+#: ../src/file-manager/fm-directory-view.c:6606
+#: ../src/file-manager/fm-directory-view.c:6753
 #, fuzzy
 msgid "Open in _Folder Window"
 msgstr "In Ordnerfenster öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6591
+#: ../src/file-manager/fm-directory-view.c:6607
 msgid "Open each selected item in a folder window"
 msgstr "Jedes gewählte Objekt in einem einzelnen Ordnerfenster öffnen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6594
-#: ../src/file-manager/fm-directory-view.c:6598
+#: ../src/file-manager/fm-directory-view.c:6610
+#: ../src/file-manager/fm-directory-view.c:6614
 msgid "Open with Other _Application..."
 msgstr "Mit _anderer Anwendung öffnen …"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6595
-#: ../src/file-manager/fm-directory-view.c:6599
+#: ../src/file-manager/fm-directory-view.c:6611
+#: ../src/file-manager/fm-directory-view.c:6615
 msgid "Choose another application with which to open the selected item"
 msgstr ""
 "Eine andere Anwendung auswählen, mit der das gewählte Objekt geöffnet werden "
@@ -3693,12 +3719,12 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6602
+#: ../src/file-manager/fm-directory-view.c:6618
 msgid "_Open Scripts Folder"
 msgstr "Skript_ordner öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6603
+#: ../src/file-manager/fm-directory-view.c:6619
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr ""
 "Den Ordner anzeigen, der die in diesem Menü aufgeführten Skripte enthält"
@@ -3706,21 +3732,21 @@ msgstr ""
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6611
+#: ../src/file-manager/fm-directory-view.c:6627
 msgid "Prepare the selected files to be moved with a Paste command"
 msgstr "Die gewählten Dateien auf Verschieben mit »Einfügen« vorbereiten"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6615
+#: ../src/file-manager/fm-directory-view.c:6631
 msgid "Prepare the selected files to be copied with a Paste command"
 msgstr "Die gewählten Dateien auf Kopieren mit »Einfügen« vorbereiten"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6619
+#: ../src/file-manager/fm-directory-view.c:6635
 msgid "Move or copy files previously selected by a Cut or Copy command"
 msgstr ""
 "Zuvor durch »Ausschneiden« oder »Kopieren« gewählte Dateien verschieben oder "
@@ -3730,14 +3756,14 @@ msgstr ""
 #. accelerator for paste
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6624
-#: ../src/file-manager/fm-directory-view.c:6750
-#: ../src/file-manager/fm-tree-view.c:1212
+#: ../src/file-manager/fm-directory-view.c:6640
+#: ../src/file-manager/fm-directory-view.c:6766
+#: ../src/file-manager/fm-tree-view.c:1237
 msgid "_Paste Into Folder"
 msgstr "In Ordner e_infügen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6625
+#: ../src/file-manager/fm-directory-view.c:6641
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into the "
 "selected folder"
@@ -3746,18 +3772,18 @@ msgstr ""
 "Ordner verschieben oder kopieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6629
+#: ../src/file-manager/fm-directory-view.c:6645
 msgid "Select all items in this window"
 msgstr "Alle Objekte in diesem Fenster auswählen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6632
+#: ../src/file-manager/fm-directory-view.c:6648
 msgid "Select I_tems Matching..."
 msgstr ""
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6633
+#: ../src/file-manager/fm-directory-view.c:6649
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "Alle Objekte in diesem Fenster auswählen, die auf ein bestimmtes Muster "
@@ -3765,76 +3791,76 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6636
+#: ../src/file-manager/fm-directory-view.c:6652
 msgid "_Invert Selection"
 msgstr "Aus_wahl umkehren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6637
+#: ../src/file-manager/fm-directory-view.c:6653
 msgid "Select all and only the items that are not currently selected"
 msgstr "Alle Objekte auswählen, die momentan nicht ausgewählt sind"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6640
+#: ../src/file-manager/fm-directory-view.c:6656
 msgid "D_uplicate"
 msgstr "_Duplizieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6641
+#: ../src/file-manager/fm-directory-view.c:6657
 msgid "Duplicate each selected item"
 msgstr "Alle gewählten Objekte duplizieren"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6644
-#: ../src/file-manager/fm-directory-view.c:7758
+#: ../src/file-manager/fm-directory-view.c:6660
+#: ../src/file-manager/fm-directory-view.c:7922
 msgid "Ma_ke Link"
 msgid_plural "Ma_ke Links"
 msgstr[0] "_Verknüpfung anlegen"
 msgstr[1] "_Verknüpfungen anlegen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6645
+#: ../src/file-manager/fm-directory-view.c:6661
 msgid "Create a symbolic link for each selected item"
 msgstr "Eine symbolische Verknüpfung für jedes gewählte Objekt anlegen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6648
+#: ../src/file-manager/fm-directory-view.c:6664
 msgid "_Rename..."
 msgstr "_Umbenennen …"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6649
+#: ../src/file-manager/fm-directory-view.c:6665
 msgid "Rename selected item"
 msgstr "Ausgewähltes Objekt umbenennen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6657
-#: ../src/file-manager/fm-directory-view.c:7716
+#: ../src/file-manager/fm-directory-view.c:6673
+#: ../src/file-manager/fm-directory-view.c:7884
 msgid "Move each selected item to the Trash"
 msgstr "Jedes gewählte Objekt in den Müll verschieben"
 
 #. name, stock id
 #. label, accelerator
 #. add the "delete" menu item
-#: ../src/file-manager/fm-directory-view.c:6660
-#: ../src/file-manager/fm-directory-view.c:6759
-#: ../src/file-manager/fm-directory-view.c:7736
-#: ../src/file-manager/fm-tree-view.c:1239
+#: ../src/file-manager/fm-directory-view.c:6676
+#: ../src/file-manager/fm-directory-view.c:6775
+#: ../src/file-manager/fm-directory-view.c:7904
+#: ../src/file-manager/fm-tree-view.c:1264
 msgid "_Delete"
 msgstr "_Löschen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6661
+#: ../src/file-manager/fm-directory-view.c:6677
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Jedes gewählte Objekt löschen, ohne es in den Müll zu verschieben"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6664
-#: ../src/file-manager/fm-directory-view.c:6763
+#: ../src/file-manager/fm-directory-view.c:6680
+#: ../src/file-manager/fm-directory-view.c:6779
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
@@ -3846,12 +3872,12 @@ msgstr "_Wiederherstellen"
 #.
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6674
+#: ../src/file-manager/fm-directory-view.c:6690
 msgid "Reset View to _Defaults"
 msgstr "Ansicht auf _Vorgaben zurücksetzen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6675
+#: ../src/file-manager/fm-directory-view.c:6691
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Sortierreihenfolge und Vergrößerungsstufe auf Vorgaben für diese Ansicht "
@@ -3859,141 +3885,149 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6678
+#: ../src/file-manager/fm-directory-view.c:6694
 msgid "Connect To This Server"
 msgstr "Mit diesem Server verbinden"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6679
+#: ../src/file-manager/fm-directory-view.c:6695
 msgid "Make a permanent connection to this server"
 msgstr "Eine dauerhafte Verbindung mit diesem Server herstellen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6682
 #: ../src/file-manager/fm-directory-view.c:6698
-#: ../src/file-manager/fm-directory-view.c:6767
+#: ../src/file-manager/fm-directory-view.c:6714
+#: ../src/file-manager/fm-directory-view.c:6783
 msgid "_Mount Volume"
 msgstr "Datenträger _einhängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6683
+#: ../src/file-manager/fm-directory-view.c:6699
 msgid "Mount the selected volume"
 msgstr "Den gewählten Datenträger einhängen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6686
 #: ../src/file-manager/fm-directory-view.c:6702
-#: ../src/file-manager/fm-directory-view.c:6771
-#: ../src/file-manager/fm-tree-view.c:737
+#: ../src/file-manager/fm-directory-view.c:6718
+#: ../src/file-manager/fm-directory-view.c:6787
 msgid "_Unmount Volume"
 msgstr "_Datenträger aushängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6687
+#: ../src/file-manager/fm-directory-view.c:6703
 msgid "Unmount the selected volume"
 msgstr "Den gewählten Datenträger aushängen"
 
+#. name, stock id
+#. label, accelerator
+#: ../src/file-manager/fm-directory-view.c:6706
+#: ../src/file-manager/fm-directory-view.c:6722
+#: ../src/file-manager/fm-directory-view.c:6791
+#, fuzzy
+msgid "_Eject Volume"
+msgstr "Datenträger _einhängen"
+
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6691
+#: ../src/file-manager/fm-directory-view.c:6707
 msgid "Eject the selected volume"
 msgstr "Den gewählten Datenträger auswerfen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6694
 #: ../src/file-manager/fm-directory-view.c:6710
-#: ../src/file-manager/fm-directory-view.c:6779
+#: ../src/file-manager/fm-directory-view.c:6726
+#: ../src/file-manager/fm-directory-view.c:6795
 #: ../src/nautilus-places-sidebar.c:2026
 msgid "_Format"
 msgstr "_Formatieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6695
+#: ../src/file-manager/fm-directory-view.c:6711
 msgid "Format the selected volume"
 msgstr "Den gewählten Datenträger formatieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6699
+#: ../src/file-manager/fm-directory-view.c:6715
 msgid "Mount the volume associated with the open folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger einhängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6703
+#: ../src/file-manager/fm-directory-view.c:6719
 msgid "Unmount the volume associated with the open folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger aushängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6707
+#: ../src/file-manager/fm-directory-view.c:6723
 msgid "Eject the volume associated with the open folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger auswerfen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6711
+#: ../src/file-manager/fm-directory-view.c:6727
 msgid "Format the volume associated with the open folder"
 msgstr "Den mit dem geöffneten Ordner verbundene Datenträger formatieren"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6714
+#: ../src/file-manager/fm-directory-view.c:6730
 msgid "Open File and Close window"
 msgstr "Datei öffnen und Fenster schließen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6718
+#: ../src/file-manager/fm-directory-view.c:6734
 msgid "Sa_ve Search"
 msgstr "Suche _speichern"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6719
+#: ../src/file-manager/fm-directory-view.c:6735
 msgid "Save the edited search"
 msgstr "Die bearbeitete Suche speichern"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-directory-view.c:6722
+#: ../src/file-manager/fm-directory-view.c:6738
 msgid "Sa_ve Search As..."
 msgstr "S_uche speichern unter …"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6723
+#: ../src/file-manager/fm-directory-view.c:6739
 msgid "Save the current search as a file"
 msgstr "Die aktuelle Suche in einer Datei speichern"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6729
+#: ../src/file-manager/fm-directory-view.c:6745
 msgid "Open this folder in a navigation window"
 msgstr "Diesen Ordner in einem einzelnen Navigationsfenster öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6733
+#: ../src/file-manager/fm-directory-view.c:6749
 #, fuzzy
 msgid "Open this folder in a new tab"
 msgstr "Diesen Ordner in einem einzelnen Ordnerfenster öffnen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6738
+#: ../src/file-manager/fm-directory-view.c:6754
 msgid "Open this folder in a folder window"
 msgstr "Diesen Ordner in einem einzelnen Ordnerfenster öffnen"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6743
+#: ../src/file-manager/fm-directory-view.c:6759
 msgid "Prepare this folder to be moved with a Paste command"
 msgstr "Diesen Ordner auf Verschieben mit »Einfügen« vorbereiten"
 
 #. name, stock id
 #. label, accelerator
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6747
+#: ../src/file-manager/fm-directory-view.c:6763
 msgid "Prepare this folder to be copied with a Paste command"
 msgstr "Diesen Ordner auf Kopieren mit »Einfügen« vorbereiten"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6751
+#: ../src/file-manager/fm-directory-view.c:6767
 #, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
@@ -4003,184 +4037,216 @@ msgstr ""
 "Ordner verschieben oder kopieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6756
+#: ../src/file-manager/fm-directory-view.c:6772
 msgid "Move this folder to the Trash"
 msgstr "Diesen Ordner in den Müll verschieben"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6760
+#: ../src/file-manager/fm-directory-view.c:6776
 msgid "Delete this folder, without moving to the Trash"
 msgstr "Diesen Ordner löschen, ohne ihn in den Müll zu verschieben"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6768
+#: ../src/file-manager/fm-directory-view.c:6784
 #, fuzzy
 msgid "Mount the volume associated with this folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger einhängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6772
+#: ../src/file-manager/fm-directory-view.c:6788
 #, fuzzy
 msgid "Unmount the volume associated with this folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger aushängen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6776
+#: ../src/file-manager/fm-directory-view.c:6792
 #, fuzzy
 msgid "Eject the volume associated with this folder"
 msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger auswerfen"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6780
+#: ../src/file-manager/fm-directory-view.c:6796
 #, fuzzy
 msgid "Format the volume associated with this folder"
 msgstr "Den mit dem geöffneten Ordner verbundene Datenträger formatieren"
 
 #. tooltip
-#: ../src/file-manager/fm-directory-view.c:6785
+#: ../src/file-manager/fm-directory-view.c:6801
 #, fuzzy
 msgid "View or modify the properties of this folder"
 msgstr "Die Eigenschaften des aktuellen Ordners anzeigen/ändern"
 
 #. Translators: %s is a directory
-#: ../src/file-manager/fm-directory-view.c:6867
+#: ../src/file-manager/fm-directory-view.c:6883
 #, c-format
 msgid "Run or manage scripts from %s"
 msgstr "Skripte in %s ausführen/verwalten"
 
 #. Create a script action here specially because its tooltip is dynamic
-#: ../src/file-manager/fm-directory-view.c:6869
+#: ../src/file-manager/fm-directory-view.c:6885
 msgid "_Scripts"
 msgstr "S_kripte"
 
-#: ../src/file-manager/fm-directory-view.c:7159
+#: ../src/file-manager/fm-directory-view.c:7297
 #, fuzzy, c-format
 msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Den momentanen Ordner in den Müll verschieben"
 
-#: ../src/file-manager/fm-directory-view.c:7161
+#: ../src/file-manager/fm-directory-view.c:7300
 #, fuzzy, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
-msgstr "Den momentanen Ordner in den Müll verschieben"
+msgid_plural "Move the selected folders out of the trash to \"%s\""
+msgstr[0] "Den momentanen Ordner in den Müll verschieben"
+msgstr[1] "Den momentanen Ordner in den Müll verschieben"
 
-#: ../src/file-manager/fm-directory-view.c:7163
+#: ../src/file-manager/fm-directory-view.c:7304
+#, fuzzy, c-format
+msgid "Move the selected folder out of the trash"
+msgid_plural "Move the selected folder out of the trash"
+msgstr[0] "Den momentanen Ordner in den Müll verschieben"
+msgstr[1] "Den momentanen Ordner in den Müll verschieben"
+
+#: ../src/file-manager/fm-directory-view.c:7310
 #, fuzzy, c-format
 msgid "Move the selected file out of the trash to \"%s\""
-msgstr "Jedes gewählte Objekt in den Müll verschieben"
+msgid_plural "Move the selected files out of the trash to \"%s\""
+msgstr[0] "Jedes gewählte Objekt in den Müll verschieben"
+msgstr[1] "Jedes gewählte Objekt in den Müll verschieben"
+
+#: ../src/file-manager/fm-directory-view.c:7314
+#, fuzzy, c-format
+msgid "Move the selected file out of the trash"
+msgid_plural "Move the selected files out of the trash"
+msgstr[0] "Jedes gewählte Objekt in den Müll verschieben"
+msgstr[1] "Jedes gewählte Objekt in den Müll verschieben"
+
+#: ../src/file-manager/fm-directory-view.c:7320
+#, fuzzy, c-format
+msgid "Move the selected item out of the trash to \"%s\""
+msgid_plural "Move the selected items out of the trash to \"%s\""
+msgstr[0] "Jedes gewählte Objekt in den Müll verschieben"
+msgstr[1] "Jedes gewählte Objekt in den Müll verschieben"
+
+#: ../src/file-manager/fm-directory-view.c:7324
+#, fuzzy, c-format
+msgid "Move the selected item out of the trash"
+msgid_plural "Move the selected items out of the trash"
+msgstr[0] "Jedes gewählte Objekt in den Müll verschieben"
+msgstr[1] "Jedes gewählte Objekt in den Müll verschieben"
 
 #. add the "open in new window" menu item
-#: ../src/file-manager/fm-directory-view.c:7377
-#: ../src/file-manager/fm-directory-view.c:7629
-#: ../src/file-manager/fm-tree-view.c:1169
+#: ../src/file-manager/fm-directory-view.c:7542
+#: ../src/file-manager/fm-directory-view.c:7797
+#: ../src/file-manager/fm-tree-view.c:1194
 #: ../src/nautilus-places-sidebar.c:1969
 msgid "Open in New _Window"
 msgstr "In neuem _Fenster öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7379
-#: ../src/file-manager/fm-directory-view.c:7638
+#: ../src/file-manager/fm-directory-view.c:7544
+#: ../src/file-manager/fm-directory-view.c:7806
 #, fuzzy
 msgid "Browse in New _Window"
 msgstr "In neuem Fenster auswählen"
 
 # CHECK
-#: ../src/file-manager/fm-directory-view.c:7387
-#: ../src/file-manager/fm-directory-view.c:7648
+#: ../src/file-manager/fm-directory-view.c:7552
+#: ../src/file-manager/fm-directory-view.c:7816
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
 msgstr[0] "Mit Datei-_Browser öffnen"
 msgstr[1] "Mit Datei-_Browser öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7404
-#: ../src/file-manager/fm-directory-view.c:7678
+#: ../src/file-manager/fm-directory-view.c:7569
+#: ../src/file-manager/fm-directory-view.c:7846
 #, fuzzy
 msgid "Browse in New _Tab"
 msgstr "In neuem Fenster auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:7453
-#: ../src/file-manager/fm-directory-view.c:7711
+#: ../src/file-manager/fm-directory-view.c:7618
+#: ../src/file-manager/fm-directory-view.c:7879
 #, fuzzy
 msgid "_Delete Permanently"
 msgstr "Den momentanen Ordner dauerhaft löschen"
 
-#: ../src/file-manager/fm-directory-view.c:7454
+#: ../src/file-manager/fm-directory-view.c:7619
 msgid "Delete the open folder permanently"
 msgstr "Den momentanen Ordner dauerhaft löschen"
 
-#: ../src/file-manager/fm-directory-view.c:7458
+#: ../src/file-manager/fm-directory-view.c:7623
 msgid "Move the open folder to the Trash"
 msgstr "Den momentanen Ordner in den Müll verschieben"
 
-#: ../src/file-manager/fm-directory-view.c:7611
+#: ../src/file-manager/fm-directory-view.c:7779
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "Mit »%s« ö_ffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7631
+#: ../src/file-manager/fm-directory-view.c:7799
 #, fuzzy, c-format
 msgid "Open in %'d New _Window"
 msgid_plural "Open in %'d New _Windows"
 msgstr[0] "In %'d neuem Fenster öffnen"
 msgstr[1] "In %'d neuen Fenstern öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7640
+#: ../src/file-manager/fm-directory-view.c:7808
 #, fuzzy, c-format
 msgid "Browse in %'d New _Window"
 msgid_plural "Browse in %'d New _Windows"
 msgstr[0] "In %'d neuen Fenster auswählen"
 msgstr[1] "In %'d neuen Fenstern auswählen"
 
-#: ../src/file-manager/fm-directory-view.c:7671
+#: ../src/file-manager/fm-directory-view.c:7839
 #, fuzzy, c-format
 msgid "Open in %'d New _Tab"
 msgid_plural "Open in %'d New _Tabs"
 msgstr[0] "In %'d neuem Fenster öffnen"
 msgstr[1] "In %'d neuen Fenstern öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7680
+#: ../src/file-manager/fm-directory-view.c:7848
 #, fuzzy, c-format
 msgid "Browse in %'d New _Tab"
 msgid_plural "Browse in %'d New _Tabs"
 msgstr[0] "In %'d neuem Fenster öffnen"
 msgstr[1] "In %'d neuen Fenstern öffnen"
 
-#: ../src/file-manager/fm-directory-view.c:7712
+#: ../src/file-manager/fm-directory-view.c:7880
 msgid "Delete all selected items permanently"
 msgstr "Alle gewählten Objekte dauerhaft löschen"
 
-#: ../src/file-manager/fm-directory-view.c:9017
+#: ../src/file-manager/fm-directory-view.c:9181
 msgid "Download location?"
 msgstr "Link herunterladen?"
 
-#: ../src/file-manager/fm-directory-view.c:9020
+#: ../src/file-manager/fm-directory-view.c:9184
 msgid "You can download it or make a link to it."
 msgstr "Sie können ihn herunterladen oder eine Verknüpfung zu ihm erstellen."
 
-#: ../src/file-manager/fm-directory-view.c:9023
+#: ../src/file-manager/fm-directory-view.c:9187
 msgid "Make a _Link"
 msgstr "_Verknüpfung anlegen"
 
-#: ../src/file-manager/fm-directory-view.c:9027
+#: ../src/file-manager/fm-directory-view.c:9191
 msgid "_Download"
 msgstr "_Herunterladen"
 
-#: ../src/file-manager/fm-directory-view.c:9089
-#: ../src/file-manager/fm-directory-view.c:9154
-#: ../src/file-manager/fm-directory-view.c:9259
+#: ../src/file-manager/fm-directory-view.c:9253
+#: ../src/file-manager/fm-directory-view.c:9318
+#: ../src/file-manager/fm-directory-view.c:9423
 msgid "Drag and drop is not supported."
 msgstr "Ziehen und Ablegen wird nicht unterstützt."
 
-#: ../src/file-manager/fm-directory-view.c:9090
+#: ../src/file-manager/fm-directory-view.c:9254
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Ziehen und Ablegen wird ausschließlich auf lokalen Dateisystemen unterstützt."
 
-#: ../src/file-manager/fm-directory-view.c:9155
-#: ../src/file-manager/fm-directory-view.c:9260
+#: ../src/file-manager/fm-directory-view.c:9319
+#: ../src/file-manager/fm-directory-view.c:9424
 msgid "An invalid drag type was used."
 msgstr "Es wurde ein ungültiger Zieh-Typ verwendet."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:9327
+#: ../src/file-manager/fm-directory-view.c:9491
 msgid "dropped text.txt"
 msgstr "kopierter Text.txt"
 
@@ -4315,7 +4381,7 @@ msgid "by _Name"
 msgstr "nach _Name"
 
 #: ../src/file-manager/fm-icon-view.c:124
-#: ../src/file-manager/fm-icon-view.c:1539
+#: ../src/file-manager/fm-icon-view.c:1524
 msgid "Keep icons sorted by name in rows"
 msgstr "Symbole nach Name in Zeilen sortieren"
 
@@ -4324,7 +4390,7 @@ msgid "by _Size"
 msgstr "nach _Größe"
 
 #: ../src/file-manager/fm-icon-view.c:131
-#: ../src/file-manager/fm-icon-view.c:1543
+#: ../src/file-manager/fm-icon-view.c:1528
 msgid "Keep icons sorted by size in rows"
 msgstr "Symbole nach Größe in Zeilen sortieren"
 
@@ -4333,7 +4399,7 @@ msgid "by _Type"
 msgstr "nach _Typ"
 
 #: ../src/file-manager/fm-icon-view.c:138
-#: ../src/file-manager/fm-icon-view.c:1547
+#: ../src/file-manager/fm-icon-view.c:1532
 msgid "Keep icons sorted by type in rows"
 msgstr "Symbole nach Typ in Zeilen sortieren"
 
@@ -4342,7 +4408,7 @@ msgid "by Modification _Date"
 msgstr "nach Änderungs_datum"
 
 #: ../src/file-manager/fm-icon-view.c:145
-#: ../src/file-manager/fm-icon-view.c:1551
+#: ../src/file-manager/fm-icon-view.c:1536
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Symbole nach Änderungsdatum in Zeilen sortieren"
 
@@ -4351,47 +4417,47 @@ msgid "by _Emblems"
 msgstr "nach _Emblemen"
 
 #: ../src/file-manager/fm-icon-view.c:152
-#: ../src/file-manager/fm-icon-view.c:1555
+#: ../src/file-manager/fm-icon-view.c:1540
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Symbole nach Emblem in Zeilen sortieren"
 
 #. name, stock id, label
-#: ../src/file-manager/fm-icon-view.c:1499
+#: ../src/file-manager/fm-icon-view.c:1484
 msgid "Arran_ge Items"
 msgstr "Objekte _anordnen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1501
+#: ../src/file-manager/fm-icon-view.c:1486
 #, fuzzy
 msgid "Stretc_h Icon..."
 msgstr "Symbol _strecken"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1502
+#: ../src/file-manager/fm-icon-view.c:1487
 msgid "Make the selected icon stretchable"
 msgstr "Das gewählte Symbol dehnbar machen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1505
-#: ../src/file-manager/fm-icon-view.c:1675
+#: ../src/file-manager/fm-icon-view.c:1490
+#: ../src/file-manager/fm-icon-view.c:1660
 msgid "Restore Icons' Original Si_zes"
 msgstr "Symbolgrößen _zurücksetzen"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1506
+#: ../src/file-manager/fm-icon-view.c:1491
 msgid "Restore each selected icon to its original size"
 msgstr "Alle gewählten Symbole auf Originalgröße zurücksetzen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1509
+#: ../src/file-manager/fm-icon-view.c:1494
 msgid "Clean _Up by Name"
 msgstr "Nach Namen auf_räumen"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1510
+#: ../src/file-manager/fm-icon-view.c:1495
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Die Symbole neu anordnen, damit sie besser ins Fenster passen und sich nicht "
@@ -4399,109 +4465,109 @@ msgstr ""
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1516
+#: ../src/file-manager/fm-icon-view.c:1501
 msgid "Compact _Layout"
 msgstr "_Engere Anordnung"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1517
+#: ../src/file-manager/fm-icon-view.c:1502
 msgid "Toggle using a tighter layout scheme"
 msgstr "Engeres Anordnungsschema ein/aus"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1521
+#: ../src/file-manager/fm-icon-view.c:1506
 msgid "Re_versed Order"
 msgstr "Umge_kehrte Reihenfolge"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1522
+#: ../src/file-manager/fm-icon-view.c:1507
 msgid "Display icons in the opposite order"
 msgstr "Symbole in umgekehrter Reihenfolge anzeigen"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-icon-view.c:1526
+#: ../src/file-manager/fm-icon-view.c:1511
 msgid "_Keep Aligned"
 msgstr "Anordnung _fixieren"
 
 #. tooltip
-#: ../src/file-manager/fm-icon-view.c:1527
+#: ../src/file-manager/fm-icon-view.c:1512
 msgid "Keep icons lined up on a grid"
 msgstr "Symbole an einem Gitter ausrichten"
 
-#: ../src/file-manager/fm-icon-view.c:1534
+#: ../src/file-manager/fm-icon-view.c:1519
 msgid "_Manually"
 msgstr "_Manuell"
 
-#: ../src/file-manager/fm-icon-view.c:1535
+#: ../src/file-manager/fm-icon-view.c:1520
 msgid "Leave icons wherever they are dropped"
 msgstr "Symbole zurücklassen, wo sie abgelegt werden"
 
-#: ../src/file-manager/fm-icon-view.c:1538
+#: ../src/file-manager/fm-icon-view.c:1523
 msgid "By _Name"
 msgstr "Nach _Name"
 
-#: ../src/file-manager/fm-icon-view.c:1542
+#: ../src/file-manager/fm-icon-view.c:1527
 msgid "By _Size"
 msgstr "Nach _Größe"
 
-#: ../src/file-manager/fm-icon-view.c:1546
+#: ../src/file-manager/fm-icon-view.c:1531
 msgid "By _Type"
 msgstr "Nach _Typ"
 
-#: ../src/file-manager/fm-icon-view.c:1550
+#: ../src/file-manager/fm-icon-view.c:1535
 msgid "By Modification _Date"
 msgstr "Nach Änderungs_datum"
 
-#: ../src/file-manager/fm-icon-view.c:1554
+#: ../src/file-manager/fm-icon-view.c:1539
 msgid "By _Emblems"
 msgstr "Nach _Emblemen"
 
-#: ../src/file-manager/fm-icon-view.c:1676
+#: ../src/file-manager/fm-icon-view.c:1661
 msgid "Restore Icon's Original Si_ze"
 msgstr "Symbolgröße _zurücksetzen"
 
-#: ../src/file-manager/fm-icon-view.c:2098
+#: ../src/file-manager/fm-icon-view.c:2083
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "zeigt auf »%s«"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:2961
+#: ../src/file-manager/fm-icon-view.c:3006
 #, fuzzy
 msgid "_Icons"
 msgstr "Symbole"
 
-#: ../src/file-manager/fm-icon-view.c:2962
+#: ../src/file-manager/fm-icon-view.c:3007
 msgid "The icon view encountered an error."
 msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-icon-view.c:2963
+#: ../src/file-manager/fm-icon-view.c:3008
 msgid "The icon view encountered an error while starting up."
 msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-icon-view.c:2964
+#: ../src/file-manager/fm-icon-view.c:3009
 msgid "Display this location with the icon view."
 msgstr "Diesen Ort mit der Symbol-Ansicht anzeigen"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-icon-view.c:2975
+#: ../src/file-manager/fm-icon-view.c:3020
 #, fuzzy
 msgid "_Compact"
 msgstr "_Computer"
 
-#: ../src/file-manager/fm-icon-view.c:2976
+#: ../src/file-manager/fm-icon-view.c:3021
 #, fuzzy
 msgid "The compact view encountered an error."
 msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-icon-view.c:2977
+#: ../src/file-manager/fm-icon-view.c:3022
 #, fuzzy
 msgid "The compact view encountered an error while starting up."
 msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-icon-view.c:2978
+#: ../src/file-manager/fm-icon-view.c:3023
 #, fuzzy
 msgid "Display this location with the compact view."
 msgstr "Diesen Ort mit der Symbol-Ansicht anzeigen"
@@ -4605,35 +4671,40 @@ msgstr "Eigenschaften"
 msgid "%s Properties"
 msgstr "Eigenschaften von %s"
 
-#: ../src/file-manager/fm-properties-window.c:1363
+#. FIXME: we should use C_ () instead. See bug #542658.
+#. *
+#. * Translators: The text before the "|" is context to help you decide on
+#. * the correct translation. Only translate the part after the pipe.
+#.
+#: ../src/file-manager/fm-properties-window.c:1368
 #, c-format
 msgid "MIME type description (MIME type)|%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/file-manager/fm-properties-window.c:1580
+#: ../src/file-manager/fm-properties-window.c:1585
 msgid "Cancel Group Change?"
 msgstr "Gruppenwechsel abbrechen?"
 
-#: ../src/file-manager/fm-properties-window.c:1998
+#: ../src/file-manager/fm-properties-window.c:2003
 msgid "Cancel Owner Change?"
 msgstr "Besitzerwechsel abbrechen?"
 
-#: ../src/file-manager/fm-properties-window.c:2295
+#: ../src/file-manager/fm-properties-window.c:2300
 msgid "nothing"
 msgstr "nichts"
 
-#: ../src/file-manager/fm-properties-window.c:2297
+#: ../src/file-manager/fm-properties-window.c:2302
 msgid "unreadable"
 msgstr "unlesbar"
 
-#: ../src/file-manager/fm-properties-window.c:2307
+#: ../src/file-manager/fm-properties-window.c:2312
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d Objekt der Größe %s"
 msgstr[1] "%'d Objekte der Gesamtgröße %s"
 
-#: ../src/file-manager/fm-properties-window.c:2316
+#: ../src/file-manager/fm-properties-window.c:2321
 msgid "(some contents unreadable)"
 msgstr "(Teile des Inhalts unlesbar)"
 
@@ -4643,282 +4714,278 @@ msgstr "(Teile des Inhalts unlesbar)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2333
+#: ../src/file-manager/fm-properties-window.c:2338
 msgid "Contents:"
 msgstr "Inhalt:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3100
+#: ../src/file-manager/fm-properties-window.c:3105
 msgid "used"
 msgstr "benutzt"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3105
+#: ../src/file-manager/fm-properties-window.c:3110
 msgid "free"
 msgstr "frei"
 
-#: ../src/file-manager/fm-properties-window.c:3107
+#: ../src/file-manager/fm-properties-window.c:3112
 msgid "Total capacity:"
 msgstr "Gesamte Kapazität:"
 
-#: ../src/file-manager/fm-properties-window.c:3116
+#: ../src/file-manager/fm-properties-window.c:3121
 msgid "Filesystem type:"
 msgstr "Dateisystemtyp:"
 
-#: ../src/file-manager/fm-properties-window.c:3192
+#: ../src/file-manager/fm-properties-window.c:3197
 msgid "Basic"
 msgstr "Grundlegend"
 
-#: ../src/file-manager/fm-properties-window.c:3252
+#: ../src/file-manager/fm-properties-window.c:3257
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../src/file-manager/fm-properties-window.c:3260
+#: ../src/file-manager/fm-properties-window.c:3265
 msgid "Link target:"
 msgstr "Verknüpfungsziel:"
 
-#: ../src/file-manager/fm-properties-window.c:3270
+#: ../src/file-manager/fm-properties-window.c:3275
 msgid "Size:"
 msgstr "Größe:"
 
-#: ../src/file-manager/fm-properties-window.c:3279
+#: ../src/file-manager/fm-properties-window.c:3284
 #: ../src/nautilus-location-bar.c:57
 msgid "Location:"
 msgstr "Ort:"
 
-#: ../src/file-manager/fm-properties-window.c:3285
+#: ../src/file-manager/fm-properties-window.c:3290
 msgid "Volume:"
 msgstr "Datenträger:"
 
-#: ../src/file-manager/fm-properties-window.c:3294
+#: ../src/file-manager/fm-properties-window.c:3299
 msgid "Accessed:"
 msgstr "Zugegriffen:"
 
-#: ../src/file-manager/fm-properties-window.c:3298
+#: ../src/file-manager/fm-properties-window.c:3303
 msgid "Modified:"
 msgstr "Geändert:"
 
-#: ../src/file-manager/fm-properties-window.c:3307
+#: ../src/file-manager/fm-properties-window.c:3312
 msgid "Free space:"
 msgstr "Freier Speicherplatz:"
 
-#: ../src/file-manager/fm-properties-window.c:3417
+#: ../src/file-manager/fm-properties-window.c:3422
 #: ../src/nautilus-emblem-sidebar.c:1035
 msgid "Emblems"
 msgstr "Embleme"
 
-#: ../src/file-manager/fm-properties-window.c:3820
+#: ../src/file-manager/fm-properties-window.c:3825
 msgid "_Read"
 msgstr "_Lesen"
 
-#: ../src/file-manager/fm-properties-window.c:3822
+#: ../src/file-manager/fm-properties-window.c:3827
 msgid "_Write"
 msgstr "_Schreiben"
 
-#: ../src/file-manager/fm-properties-window.c:3824
+#: ../src/file-manager/fm-properties-window.c:3829
 msgid "E_xecute"
 msgstr "_Ausführen"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:4092
-#: ../src/file-manager/fm-properties-window.c:4103
-#: ../src/file-manager/fm-properties-window.c:4115
+#: ../src/file-manager/fm-properties-window.c:4097
+#: ../src/file-manager/fm-properties-window.c:4108
+#: ../src/file-manager/fm-properties-window.c:4120
 msgid "no "
 msgstr "nicht "
 
 # CHECK: Dateien anzeigen
-#: ../src/file-manager/fm-properties-window.c:4095
+#: ../src/file-manager/fm-properties-window.c:4100
 msgid "list"
 msgstr "auflisten"
 
-#: ../src/file-manager/fm-properties-window.c:4097
+#: ../src/file-manager/fm-properties-window.c:4102
 msgid "read"
 msgstr "lesen"
 
-#: ../src/file-manager/fm-properties-window.c:4106
+#: ../src/file-manager/fm-properties-window.c:4111
 msgid "create/delete"
 msgstr "erstellen/löschen"
 
-#: ../src/file-manager/fm-properties-window.c:4108
+#: ../src/file-manager/fm-properties-window.c:4113
 msgid "write"
 msgstr "schreiben"
 
 # CHECK: Dateien aufrufen, öffnen
-#: ../src/file-manager/fm-properties-window.c:4117
+#: ../src/file-manager/fm-properties-window.c:4122
 msgid "access"
 msgstr "zugreifen"
 
-#: ../src/file-manager/fm-properties-window.c:4166
+#: ../src/file-manager/fm-properties-window.c:4171
 msgid "Access:"
 msgstr "Zugriff:"
 
-#: ../src/file-manager/fm-properties-window.c:4168
+#: ../src/file-manager/fm-properties-window.c:4173
 msgid "Folder access:"
 msgstr "Ordnerzugriff:"
 
-#: ../src/file-manager/fm-properties-window.c:4170
+#: ../src/file-manager/fm-properties-window.c:4175
 msgid "File access:"
 msgstr "Dateizugriff:"
 
 # Spaltenname
-#: ../src/file-manager/fm-properties-window.c:4182
-#: ../src/file-manager/fm-properties-window.c:4193
+#: ../src/file-manager/fm-properties-window.c:4187
+#: ../src/file-manager/fm-properties-window.c:4198
 #: ../src/nautilus-file-management-properties.c:288
 msgid "None"
 msgstr "Keiner"
 
-#: ../src/file-manager/fm-properties-window.c:4185
+#: ../src/file-manager/fm-properties-window.c:4190
 msgid "List files only"
 msgstr "Dateien nur auflisten"
 
-#: ../src/file-manager/fm-properties-window.c:4187
+#: ../src/file-manager/fm-properties-window.c:4192
 msgid "Access files"
 msgstr "Auf Dateien zugreifen"
 
-#: ../src/file-manager/fm-properties-window.c:4189
+#: ../src/file-manager/fm-properties-window.c:4194
 msgid "Create and delete files"
 msgstr "Dateien erstellen und löschen"
 
-#: ../src/file-manager/fm-properties-window.c:4196
+#: ../src/file-manager/fm-properties-window.c:4201
 msgid "Read-only"
 msgstr "Nur lesen"
 
-#: ../src/file-manager/fm-properties-window.c:4198
+#: ../src/file-manager/fm-properties-window.c:4203
 msgid "Read and write"
 msgstr "Lesen und schreiben"
 
-#: ../src/file-manager/fm-properties-window.c:4263
+#: ../src/file-manager/fm-properties-window.c:4268
 msgid "Set _user ID"
 msgstr "_Benutzerkennung festlegen"
 
-#: ../src/file-manager/fm-properties-window.c:4265
+#: ../src/file-manager/fm-properties-window.c:4270
 msgid "Special flags:"
 msgstr "Besondere Attribute:"
 
-#: ../src/file-manager/fm-properties-window.c:4267
+#: ../src/file-manager/fm-properties-window.c:4272
 msgid "Set gro_up ID"
 msgstr "_Gruppenkennung festlegen"
 
-#: ../src/file-manager/fm-properties-window.c:4268
+#: ../src/file-manager/fm-properties-window.c:4273
 msgid "_Sticky"
 msgstr "_Klebrig"
 
-#: ../src/file-manager/fm-properties-window.c:4348
-#: ../src/file-manager/fm-properties-window.c:4552
+#: ../src/file-manager/fm-properties-window.c:4353
+#: ../src/file-manager/fm-properties-window.c:4557
 msgid "_Owner:"
 msgstr "_Besitzer:"
 
-#: ../src/file-manager/fm-properties-window.c:4354
-#: ../src/file-manager/fm-properties-window.c:4449
-#: ../src/file-manager/fm-properties-window.c:4560
+#: ../src/file-manager/fm-properties-window.c:4359
+#: ../src/file-manager/fm-properties-window.c:4454
+#: ../src/file-manager/fm-properties-window.c:4565
 msgid "Owner:"
 msgstr "Besitzer:"
 
-#: ../src/file-manager/fm-properties-window.c:4377
-#: ../src/file-manager/fm-properties-window.c:4572
+#: ../src/file-manager/fm-properties-window.c:4382
+#: ../src/file-manager/fm-properties-window.c:4577
 msgid "_Group:"
 msgstr "_Gruppe:"
 
-#: ../src/file-manager/fm-properties-window.c:4386
-#: ../src/file-manager/fm-properties-window.c:4450
-#: ../src/file-manager/fm-properties-window.c:4581
+#: ../src/file-manager/fm-properties-window.c:4391
+#: ../src/file-manager/fm-properties-window.c:4455
+#: ../src/file-manager/fm-properties-window.c:4586
 msgid "Group:"
 msgstr "Gruppe:"
 
-#: ../src/file-manager/fm-properties-window.c:4411
+#: ../src/file-manager/fm-properties-window.c:4416
 msgid "Others"
 msgstr "Andere"
 
-#: ../src/file-manager/fm-properties-window.c:4428
+#: ../src/file-manager/fm-properties-window.c:4433
 msgid "Execute:"
 msgstr "Ausführen"
 
-#: ../src/file-manager/fm-properties-window.c:4432
+#: ../src/file-manager/fm-properties-window.c:4437
 msgid "Allow _executing file as program"
 msgstr "Datei als Programm aus_führen"
 
-#: ../src/file-manager/fm-properties-window.c:4451
+#: ../src/file-manager/fm-properties-window.c:4456
 msgid "Others:"
 msgstr "Andere:"
 
-#: ../src/file-manager/fm-properties-window.c:4599
+#: ../src/file-manager/fm-properties-window.c:4604
 msgid "Folder Permissions:"
 msgstr "Zugriffsrechte für Ordner:"
 
-#: ../src/file-manager/fm-properties-window.c:4611
+#: ../src/file-manager/fm-properties-window.c:4616
 msgid "File Permissions:"
 msgstr "Zugriffsrechte für Dateien:"
 
-#: ../src/file-manager/fm-properties-window.c:4621
+#: ../src/file-manager/fm-properties-window.c:4626
 msgid "Text view:"
 msgstr "Textansicht:"
 
-#: ../src/file-manager/fm-properties-window.c:4768
+#: ../src/file-manager/fm-properties-window.c:4773
 #, fuzzy
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr ""
 "Gesamtkapazität:Sie sind nicht der Besitzer, daher können Sie die "
 "Zugriffsrechte nicht ändern."
 
-#: ../src/file-manager/fm-properties-window.c:4792
+#: ../src/file-manager/fm-properties-window.c:4797
 msgid "SELinux context:"
 msgstr "SELinux-Kontext:"
 
-#: ../src/file-manager/fm-properties-window.c:4797
+#: ../src/file-manager/fm-properties-window.c:4802
 msgid "Last changed:"
 msgstr "Zuletzt geändert:"
 
-#: ../src/file-manager/fm-properties-window.c:4811
+#: ../src/file-manager/fm-properties-window.c:4816
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Zugriffsrechte auf enthaltene Dateien übertragen"
 
-#: ../src/file-manager/fm-properties-window.c:4821
+#: ../src/file-manager/fm-properties-window.c:4826
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Die Zugriffsrechte auf »%s« konnten nicht ermittelt werden."
 
-#: ../src/file-manager/fm-properties-window.c:4824
+#: ../src/file-manager/fm-properties-window.c:4829
 msgid "The permissions of the selected file could not be determined."
 msgstr ""
 "Die Zugriffsrechte auf die gewählte Datei konnten nicht ermittelt werden."
 
-#: ../src/file-manager/fm-properties-window.c:5387
+#: ../src/file-manager/fm-properties-window.c:5392
 msgid "Creating Properties window."
 msgstr "Eigenschaftsfenster wird erzeugt."
 
-#: ../src/file-manager/fm-properties-window.c:5661
+#: ../src/file-manager/fm-properties-window.c:5666
 msgid "Select Custom Icon"
 msgstr "Benutzerdefiniertes Symbol wählen"
 
-#: ../src/file-manager/fm-tree-view.c:737
-msgid "E_ject"
-msgstr "Aus_werfen"
-
 #. add the "create folder" menu item
-#: ../src/file-manager/fm-tree-view.c:1180
+#: ../src/file-manager/fm-tree-view.c:1205
 msgid "Create Folder"
 msgstr "Ordner anlegen"
 
-#: ../src/file-manager/fm-tree-view.c:1228
+#: ../src/file-manager/fm-tree-view.c:1253
 msgid "Move to Trash"
 msgstr "In den Müll verschieben"
 
-#: ../src/file-manager/fm-tree-view.c:1306
+#: ../src/file-manager/fm-tree-view.c:1340
 #: ../src/nautilus-places-sidebar.c:322
 msgid "File System"
 msgstr "Dateisystem"
 
-#: ../src/file-manager/fm-tree-view.c:1310
+#: ../src/file-manager/fm-tree-view.c:1344
 msgid "Network Neighbourhood"
 msgstr "Netzwerkumgebung"
 
-#: ../src/file-manager/fm-tree-view.c:1560
+#: ../src/file-manager/fm-tree-view.c:1594
 msgid "Tree"
 msgstr "Baum"
 
-#: ../src/file-manager/fm-tree-view.c:1566
+#: ../src/file-manager/fm-tree-view.c:1600
 msgid "Show Tree"
 msgstr "Baum anzeigen"
 
@@ -5243,7 +5310,7 @@ msgstr "Lesezeichen _hinzufügen"
 msgid "C_onnect"
 msgstr "_Verbinden"
 
-#: ../src/nautilus-desktop-window.c:243 ../src/nautilus-pathbar.c:1215
+#: ../src/nautilus-desktop-window.c:243 ../src/nautilus-pathbar.c:1244
 #: ../src/nautilus-places-sidebar.c:310
 msgid "Desktop"
 msgstr "Desktop"
@@ -6523,7 +6590,7 @@ msgstr "_Orte"
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:890
 msgid "Open _Location..."
-msgstr "_Ort öffnen …"
+msgstr "O_rt öffnen …"
 
 #. name, stock id, label
 #: ../src/nautilus-spatial-window.c:893
@@ -7010,6 +7077,9 @@ msgstr "Vergrößerung"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Die Vergrößerungsstufe der aktuellen Ansicht festlegen"
+
+#~ msgid "E_ject"
+#~ msgstr "Aus_werfen"
 
 #~ msgid "Blank Blu-Ray Disc"
 #~ msgstr "Leere Blu-Ray-Disc"
