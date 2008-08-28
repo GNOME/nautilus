@@ -7302,7 +7302,7 @@ update_restore_from_trash_action (GtkAction *action,
 								     g_list_length (files)), original_name);
 			} else {
 				tooltip = g_strdup_printf (ngettext ("Move the selected folder out of the trash",
-								     "Move the selected folder out of the trash",
+								     "Move the selected folders out of the trash",
 								     g_list_length (files)));
 			}
 		} else if (files_is_none_directory (files)) {
