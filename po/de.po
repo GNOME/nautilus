@@ -39,8 +39,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-28 09:34+0200\n"
-"PO-Revision-Date: 2008-08-28 09:34+0200\n"
+"POT-Creation-Date: 2008-08-29 14:26+0200\n"
+"PO-Revision-Date: 2008-08-29 15:11+0200\n"
 "Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -452,9 +452,8 @@ msgid "Default column order in the list view."
 msgstr "Voreingestellte Spaltenreihenfolge der Listenansicht."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Default compact view zoom level"
-msgstr "Voreingestellte Symbolvergrößerungsstufe"
+msgstr "Voreingestellte Symbolvergrößerungsstufe für die engere Ansicht"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Default folder viewer"
@@ -481,9 +480,8 @@ msgid "Default sort order"
 msgstr "Voreingestellte Sortierreihenfolge"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
-#, fuzzy
 msgid "Default zoom level used by the compact view."
-msgstr "Voreingestellte Vergrößerungsstufe der Symbolansicht."
+msgstr "Voreingestellte Vergrößerungsstufe der engeren Ansicht."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Default zoom level used by the icon view."
@@ -628,13 +626,13 @@ msgstr ""
 "löschen oder den Müll zu leeren, nach."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
 msgstr ""
-"Falls dieser Schlüssel wahr ist, werden Datenträger wie Festplatten "
-"automatisch beim Hochfahren und Einlegen eingehängt."
+"Falls dieser Schlüssel wahr ist, werden Datenträger wie z.B. für den Benutzer "
+"sichtbare Festplatten oder Wechseldatenträger automatisch beim Hochfahren und "
+"Einlegen eingehängt."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -667,13 +665,12 @@ msgstr ""
 "Umsicht."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
 msgstr ""
-"Falls dieser Schlüssel wahr ist, fragt Nautilus beim Einlegen eines "
-"Datenträgers nicht nach, ob automatisch Programme gestartet werden soll."
+"Falls dieser Schlüssel wahr ist, werden beim Einlegen eines "
+"Datenträgers weder automatisch Programme gestartet noch deswegen nachgefragt."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
@@ -844,26 +841,19 @@ msgid ""
 msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-#, fuzzy
 msgid "List of x-content/* types set to \"Do Nothing\""
-msgstr ""
-"Liste der »x-content/*«-Typen, bei denen der Benutzer beim Einlegen nach "
-"einer Aktion gefragt wird"
+msgstr "Liste der »x-content/*«-Typen, bei denen »Nichts tun« ausgewählt wurde"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid "List of x-content/* types set to \"Open Folder\""
 msgstr ""
-"Liste der »x-content/*«-Typen, bei denen der Benutzer beim Einlegen nach "
-"einer Aktion gefragt wird"
+"Liste der »x-content/*«-Typen, bei denen »Ordner öffnen« ausgewählt wurde"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid ""
 "List of x-content/* types where the preferred application will be launched"
 msgstr ""
-"Liste der »x-content/*«-Typen, bei denen beim Einlegen ein Ordnerfenster "
-"geöffnet werden soll"
+"Liste der »x-content/*«-Typen, bei denen die bevorzugte Anwendung gestartet wird"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Maximum handled files in a folder"
@@ -1187,7 +1177,7 @@ msgstr "Legt fest, ob das sofortige Löschen verwendet werden soll."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
 msgid "Whether to enable tabs in Nautilus browser windows"
-msgstr ""
+msgstr "Legt fest, ob im Browser-Modus Reiter verwendet werden"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:140
 msgid "Whether to preview sounds when mousing over an icon"
@@ -1231,9 +1221,8 @@ msgid "Open %s"
 msgstr "%s öffnen"
 
 #: ../libnautilus-private/nautilus-autorun.c:577
-#, fuzzy
 msgid "Open with other Application..."
-msgstr "Mit _anderer Anwendung öffnen …"
+msgstr "Mit anderer Anwendung öffnen …"
 
 #: ../libnautilus-private/nautilus-autorun.c:891
 msgid "You have just inserted an Audio CD."
@@ -2731,9 +2720,8 @@ msgstr "Symbolansicht"
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-view.c:3018
-#, fuzzy
 msgid "Compact View"
-msgstr "Inhaltsansicht"
+msgstr "Engere Ansicht"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -3582,12 +3570,11 @@ msgstr "Link-_Name:"
 #: ../src/file-manager/fm-directory-view.c:6468
 #, c-format
 msgid "Could not determine original location of \"%s\" "
-msgstr ""
+msgstr "Ursprünglicher Ort von »%s« konnte nicht ermittelt werden"
 
 #: ../src/file-manager/fm-directory-view.c:6472
-#, fuzzy
 msgid "The item cannot be restored from trash"
-msgstr "Die Datei »%B« konnte nicht in den Müll verschoben werden."
+msgstr "Das Objekt kann aus dem Müll nicht wiederhergestellt werden"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6560
@@ -3925,9 +3912,8 @@ msgstr "Den gewählten Datenträger aushängen"
 #: ../src/file-manager/fm-directory-view.c:6706
 #: ../src/file-manager/fm-directory-view.c:6722
 #: ../src/file-manager/fm-directory-view.c:6791
-#, fuzzy
 msgid "_Eject Volume"
-msgstr "Datenträger _einhängen"
+msgstr "Datenträger aus_werfen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6707
@@ -3966,7 +3952,7 @@ msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger auswerfen"
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6727
 msgid "Format the volume associated with the open folder"
-msgstr "Den mit dem geöffneten Ordner verbundene Datenträger formatieren"
+msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger formatieren"
 
 #. name, stock id
 #. label, accelerator
@@ -4003,9 +3989,8 @@ msgstr "Diesen Ordner in einem einzelnen Navigationsfenster öffnen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6749
-#, fuzzy
 msgid "Open this folder in a new tab"
-msgstr "Diesen Ordner in einem einzelnen Ordnerfenster öffnen"
+msgstr "Diesen Ordner in einem neuen Reiter öffnen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6754
@@ -4028,12 +4013,11 @@ msgstr "Diesen Ordner auf Kopieren mit »Einfügen« vorbereiten"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6767
-#, fuzzy
 msgid ""
 "Move or copy files previously selected by a Cut or Copy command into this "
 "folder"
 msgstr ""
-"Zuvor durch »Ausschneiden« oder »Kopieren« gewählte Dateien in den gewählten "
+"Zuvor durch »Ausschneiden« oder »Kopieren« gewählte Dateien in diesen "
 "Ordner verschieben oder kopieren"
 
 #. tooltip
@@ -4048,33 +4032,28 @@ msgstr "Diesen Ordner löschen, ohne ihn in den Müll zu verschieben"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6784
-#, fuzzy
 msgid "Mount the volume associated with this folder"
-msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger einhängen"
+msgstr "Den mit diesem Ordner verbundenen Datenträger einhängen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6788
-#, fuzzy
 msgid "Unmount the volume associated with this folder"
-msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger aushängen"
+msgstr "Den mit diesem Ordner verbundenen Datenträger aushängen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6792
-#, fuzzy
 msgid "Eject the volume associated with this folder"
-msgstr "Den mit dem geöffneten Ordner verbundenen Datenträger auswerfen"
+msgstr "Den mit diesem Ordner verbundenen Datenträger auswerfen"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6796
-#, fuzzy
 msgid "Format the volume associated with this folder"
-msgstr "Den mit dem geöffneten Ordner verbundene Datenträger formatieren"
+msgstr "Den mit diesem Ordner verbundenen Datenträger formatieren"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6801
-#, fuzzy
 msgid "View or modify the properties of this folder"
-msgstr "Die Eigenschaften des aktuellen Ordners anzeigen/ändern"
+msgstr "Die Eigenschaften dieses Ordners anzeigen/ändern"
 
 #. Translators: %s is a directory
 #: ../src/file-manager/fm-directory-view.c:6883
@@ -4102,7 +4081,7 @@ msgstr[1] "Den momentanen Ordner in den Müll verschieben"
 #: ../src/file-manager/fm-directory-view.c:7304
 #, fuzzy, c-format
 msgid "Move the selected folder out of the trash"
-msgid_plural "Move the selected folder out of the trash"
+msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "Den momentanen Ordner in den Müll verschieben"
 msgstr[1] "Den momentanen Ordner in den Müll verschieben"
 
@@ -4553,24 +4532,20 @@ msgstr "Diesen Ort mit der Symbol-Ansicht anzeigen"
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:3020
-#, fuzzy
 msgid "_Compact"
-msgstr "_Computer"
+msgstr "_Enger"
 
 #: ../src/file-manager/fm-icon-view.c:3021
-#, fuzzy
 msgid "The compact view encountered an error."
-msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
+msgstr "Die engere Ansicht stieß beim Starten auf einen Fehler."
 
 #: ../src/file-manager/fm-icon-view.c:3022
-#, fuzzy
 msgid "The compact view encountered an error while starting up."
-msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
+msgstr "Die engere Ansicht stieß beim Starten auf einen Fehler."
 
 #: ../src/file-manager/fm-icon-view.c:3023
-#, fuzzy
 msgid "Display this location with the compact view."
-msgstr "Diesen Ort mit der Symbol-Ansicht anzeigen"
+msgstr "Diesen Ort mit der engeren Ansicht anzeigen"
 
 #: ../src/file-manager/fm-list-model.c:373
 #: ../src/file-manager/fm-tree-model.c:1266
@@ -5439,9 +5414,8 @@ msgid "<b>Behavior</b>"
 msgstr "<b>Verhalten</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:18
-#, fuzzy
 msgid "<b>Compact View Defaults</b>"
-msgstr "<b>Vorgaben für Symbolansicht</b>"
+msgstr "<b>Vorgaben für engere Ansicht</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:19
 msgid "<b>Date</b>"
@@ -5610,7 +5584,8 @@ msgid ""
 "Compact View"
 msgstr ""
 "Symbolansicht\n"
-"Listenansicht"
+"Listenansicht\n"
+"Engere Ansicht"
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Less common media formats can be configured here"
@@ -6657,18 +6632,18 @@ msgid "The location is not a folder."
 msgstr "Der angegebene Ort ist kein Ordner."
 
 #: ../src/nautilus-window-manage-views.c:1895
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find \"%s\"."
 msgstr "»%s« konnte nicht gefunden werden."
 
 #: ../src/nautilus-window-manage-views.c:1906
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
-msgstr "Nautilus kann nicht mit %s:-Orten umgehen."
+msgstr "»%s«-Orte können nicht verwendet werden."
 
 #: ../src/nautilus-window-manage-views.c:1909
 msgid "Nautilus cannot handle this kind of locations."
-msgstr "Nautilus kann nicht mit dieser Art von Orten umgehen."
+msgstr "Dieser Art von Orten kann nicht verwendet werden."
 
 #: ../src/nautilus-window-manage-views.c:1916
 msgid "Unable to mount the location."
@@ -6684,7 +6659,7 @@ msgstr "Der Zugriff wurde verweigert."
 #. * the proxy is set up wrong.
 #.
 #: ../src/nautilus-window-manage-views.c:1931
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr ""
 "»%s« konnte nicht angezeigt werden, da der Server nicht gefunden werden "
@@ -6735,7 +6710,6 @@ msgstr ""
 "Details finden Sie in der GNU General Public License."
 
 #: ../src/nautilus-window-menus.c:550
-#, fuzzy
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -6743,7 +6717,7 @@ msgid ""
 msgstr ""
 "Sie sollten ein Exemplar der GNU General Public License zusammen mit "
 "Nautilus erhalten haben. Falls nicht, schreiben Sie an die Free Software "
-"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA."
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307 USA."
 
 #: ../src/nautilus-window-menus.c:562
 msgid ""
@@ -6754,9 +6728,8 @@ msgstr ""
 "Dateien und den Rest des Systems zu verwalten."
 
 #: ../src/nautilus-window-menus.c:566
-#, fuzzy
 msgid "Copyright © 1999-2008 The Nautilus authors"
-msgstr "Copyright © 1999-2007 Die Nautilus-Autoren"
+msgstr "Copyright © 1999-2008 Die Nautilus-Autoren"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -6897,7 +6870,7 @@ msgstr "Ver_größern"
 #: ../src/nautilus-window-menus.c:830 ../src/nautilus-zoom-control.c:92
 #: ../src/nautilus-zoom-control.c:347
 msgid "Increase the view size"
-msgstr ""
+msgstr "Ansicht vergrößern"
 
 #. name, stock id
 #. label, accelerator
@@ -6909,7 +6882,7 @@ msgstr "Ver_kleinern"
 #: ../src/nautilus-window-menus.c:842 ../src/nautilus-zoom-control.c:93
 #: ../src/nautilus-zoom-control.c:296
 msgid "Decrease the view size"
-msgstr ""
+msgstr "Ansicht verkleinern"
 
 #. name, stock id
 #. label, accelerator
@@ -6921,7 +6894,7 @@ msgstr "_Normale Größe"
 #: ../src/nautilus-window-menus.c:850 ../src/nautilus-zoom-control.c:94
 #: ../src/nautilus-zoom-control.c:309
 msgid "Use the normal view size"
-msgstr ""
+msgstr "Die normale Ansichtsgröße verwenden"
 
 #. name, stock id
 #. label, accelerator
