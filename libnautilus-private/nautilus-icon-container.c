@@ -299,6 +299,7 @@ icon_is_positioned (const NautilusIcon *icon)
 	return icon->x != ICON_UNPOSITIONED_VALUE && icon->y != ICON_UNPOSITIONED_VALUE;
 }
 
+
 /* x, y are the top-left coordinates of the icon. */
 static void
 icon_set_position (NautilusIcon *icon,
@@ -2724,8 +2725,7 @@ get_cmp_point_x (NautilusIconContainer *container,
 		 EelDRect icon_rect)
 {
 	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
-		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL ||
-		    nautilus_icon_container_is_layout_vertical (container)) {
+		if (gtk_widget_get_direction (GTK_WIDGET (container)) == GTK_TEXT_DIR_RTL) {
 			return icon_rect.x0;
 		} else {
 			return icon_rect.x1;
@@ -2783,45 +2783,6 @@ compare_icons_horizontal_first (NautilusIconContainer *container,
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
 }
-
-static int
-compare_icons_vertical_first_reverse_horizontal (NautilusIconContainer *container,
-						 NautilusIcon *icon_a,
-						 NautilusIcon *icon_b)
-{
-	EelDRect world_rect;
-	int ax, ay, bx, by;
-
-	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
-	eel_canvas_w2c
-		(EEL_CANVAS (container),
-		 get_cmp_point_x (container, world_rect),
-		 get_cmp_point_y (container, world_rect),
-		 &ax,
-		 &ay);
-	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
-	eel_canvas_w2c
-		(EEL_CANVAS (container),
-		 get_cmp_point_x (container, world_rect),
-		 get_cmp_point_y (container, world_rect),
-		 &bx,
-		 &by);
-	
-	if (ay < by) {
-		return -1;
-	}
-	if (ay > by) {
-		return +1;
-	}
-	if (ax < bx) {
-		return (nautilus_icon_container_is_layout_rtl (container) ? -1 : +1);
-	}
-	if (ax > bx) {
-		return (nautilus_icon_container_is_layout_rtl (container) ? +1 : -1);
-	}
-	return compare_icons_by_uri (container, icon_a, icon_b);
-}
-
 
 static int
 compare_icons_vertical_first (NautilusIconContainer *container,
@@ -2895,10 +2856,10 @@ compare_with_start_row (NautilusIconContainer *container,
 
 	item = EEL_CANVAS_ITEM (icon->item);
 	
-	if (container->details->arrow_key_start < item->y1) {
+	if (container->details->arrow_key_start_y < item->y1) {
 		return -1;
 	}
-	if (container->details->arrow_key_start > item->y2) {
+	if (container->details->arrow_key_start_y > item->y2) {
 		return +1;
 	}
 	return 0;
@@ -2912,10 +2873,10 @@ compare_with_start_column (NautilusIconContainer *container,
 
 	item = EEL_CANVAS_ITEM (icon->item);
 	
-	if (container->details->arrow_key_start < item->x1) {
+	if (container->details->arrow_key_start_x < item->x1) {
 		return -1;
 	}
-	if (container->details->arrow_key_start > item->x2) {
+	if (container->details->arrow_key_start_x > item->x2) {
 		return +1;
 	}
 	return 0;
@@ -3014,6 +2975,66 @@ next_row_leftmost (NautilusIconContainer *container,
 }
 
 static gboolean
+next_row_rightmost (NautilusIconContainer *container,
+		    NautilusIcon *start_icon,
+		    NautilusIcon *best_so_far,
+		    NautilusIcon *candidate,
+		    void *data)
+{
+	/* sort out icons that are not below the current row */
+	if (compare_with_start_row (container, candidate) >= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) > 0) {
+			/* candidate is above best choice, but below the current row */
+			return TRUE;
+		}
+
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) < 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
+next_column_bottommost (NautilusIconContainer *container,
+			NautilusIcon *start_icon,
+			NautilusIcon *best_so_far,
+			NautilusIcon *candidate,
+			void *data)
+{
+	/* sort out icons that are not on the right of the current column */
+	if (compare_with_start_column (container, candidate) >= 0) {
+		return FALSE;
+	}
+
+	if (best_so_far != NULL) {
+		if (compare_icons_horizontal_first (container,
+						  best_so_far,
+						  candidate) > 0) {
+			/* candidate is above best choice, but below the current row */
+			return TRUE;
+		}
+
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) < 0) {
+			return TRUE;
+		}
+	}
+
+	return best_so_far == NULL;
+}
+
+static gboolean
 previous_row_rightmost (NautilusIconContainer *container,
 		        NautilusIcon *start_icon,
 			NautilusIcon *best_so_far,
@@ -3081,31 +3102,25 @@ same_column_below_highest (NautilusIconContainer *container,
 			   NautilusIcon *candidate,
 			   void *data)
 {
-	EelCanvasItem *item;
-
-	item = EEL_CANVAS_ITEM (candidate->item);
-
-	/* Candidates above or on the start row do not qualify. */
-	if (container->details->arrow_key_start_y >= item->y1) {
+	/* Candidates not on the start column do not qualify. */
+	if (compare_with_start_column (container, candidate) != 0) {
 		return FALSE;
 	}
 
-	/* In vertical layout, candidates on the left do not qualify. */
-	if (nautilus_icon_container_is_layout_vertical (container) &&
-	    container->details->arrow_key_start_x > item->x1) {
-		return FALSE;
-	}
-
+	/* Candidates that are lower lose out. */
 	if (best_so_far != NULL) {
-		/* Candidates on the start column are preferred. */
-		if (compare_with_start_column (container, candidate) != 0 &&
-		    compare_with_start_column (container, best_so_far) == 0) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) < 0) {
 			return FALSE;
 		}
-		/* Candidates that are lower or to the left lose out. */
-		if (compare_icons_vertical_first_reverse_horizontal (container, best_so_far, candidate) <= 0) {
-			return FALSE;
-		}
+	}
+
+	/* Candidates above the start do not qualify. */
+	if (compare_icons_vertical_first (container,
+					  candidate,
+					  start_icon) <= 0) {
+		return FALSE;
 	}
 
 	return TRUE;
@@ -3358,7 +3373,6 @@ keyboard_home (NautilusIconContainer *container,
 					NULL);
 	to = find_best_icon (container, NULL, leftmost_in_top_row, NULL);	
 
-	container->details->arrow_key_axis = AXIS_NONE;
 	keyboard_move_to (container, to, from, event);
 }
 
@@ -3381,7 +3395,6 @@ keyboard_end (NautilusIconContainer *container,
 			     rightmost_in_bottom_row,
 			     NULL);
 
-	container->details->arrow_key_axis = AXIS_NONE;
 	keyboard_move_to (container, to, from, event);
 }
 
@@ -3399,23 +3412,7 @@ record_arrow_key_start (NautilusIconContainer *container,
 		 get_cmp_point_y (container, world_rect),
 		 &container->details->arrow_key_start_x,
 		 &container->details->arrow_key_start_y);
-	
 	container->details->arrow_key_direction = direction;
-	
-	switch (container->details->arrow_key_direction) {
-	case GTK_DIR_UP:
-	case GTK_DIR_DOWN:
-		container->details->arrow_key_axis = AXIS_VERTICAL;
-		container->details->arrow_key_start = container->details->arrow_key_start_x;
-		break;
-	case GTK_DIR_LEFT:
-	case GTK_DIR_RIGHT:
-		container->details->arrow_key_axis = AXIS_HORIZONTAL;
-		container->details->arrow_key_start = container->details->arrow_key_start_y;
-		break;
-	default:
-		g_assert_not_reached();
-	}
 }
 
 static void
@@ -3426,6 +3423,7 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		    IsBetterIconFunction empty_start,
 		    IsBetterIconFunction better_destination,
 		    IsBetterIconFunction better_destination_fallback_if_no_a11y,
+		    IsBetterIconFunction better_destination_fallback_fallback,
 		    IsBetterIconFunction better_destination_manual)
 {
 	NautilusIcon *from;
@@ -3460,11 +3458,9 @@ keyboard_arrow_key (NautilusIconContainer *container,
 	 * If there is an icon, select the next icon based on the arrow direction.
 	 */
 	if (from == NULL) {
-		container->details->arrow_key_axis = AXIS_NONE;
 		to = from = find_best_icon
 			(container, NULL,
 			 empty_start, NULL);
-		
 	} else {
 		record_arrow_key_start (container, from, direction);
 		
@@ -3484,7 +3480,33 @@ keyboard_arrow_key (NautilusIconContainer *container,
 				 better_destination_fallback_if_no_a11y,
 				 &data);
 		}
-		
+
+		/* With a layout like
+		 * 1 2 3
+		 * 4
+		 * (horizontal layout)
+		 *
+		 * or
+		 *
+		 * 1 4
+		 * 2
+		 * 3 
+		 * (vertical layout)
+		 *
+		 * * pressing down for any of 1,2,3 (horizontal layout)
+		 * * pressing right for any of 1,2,3 (vertical layout)
+		 *
+		 * Should select 4.
+		 */
+		if (to == NULL &&
+		    container->details->auto_layout &&
+		    better_destination_fallback_fallback != NULL) {
+			to = find_best_icon
+				(container, from,
+				 better_destination_fallback_fallback,
+				 &data);
+		}
+
 		if (to == NULL) { 
 			to = from;
 		}
@@ -3506,12 +3528,18 @@ keyboard_right (NautilusIconContainer *container,
 		GdkEventKey *event)
 {
 	IsBetterIconFunction no_a11y;
+	IsBetterIconFunction next_column_fallback;
 
 	no_a11y = NULL;
 	if (container->details->auto_layout &&
 	    !nautilus_icon_container_is_layout_vertical (container) &&
 	    !is_rectangle_selection_event (event)) {
 		no_a11y = next_row_leftmost;
+	}
+
+	next_column_fallback = NULL;
+	if (nautilus_icon_container_is_layout_vertical (container)) {
+		next_column_fallback = next_column_bottommost;
 	}
 
 	/* Right selects the next icon in the same row.
@@ -3524,6 +3552,7 @@ keyboard_right (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    same_row_right_side_leftmost,
 			    no_a11y,
+			    next_column_fallback,
 			    closest_in_90_degrees);
 }
 
@@ -3550,6 +3579,7 @@ keyboard_left (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    same_row_left_side_rightmost,
 			    no_a11y,
+			    NULL, /* TODO RTL */
 			    closest_in_90_degrees);
 }
 
@@ -3558,12 +3588,18 @@ keyboard_down (NautilusIconContainer *container,
 	       GdkEventKey *event)
 {
 	IsBetterIconFunction no_a11y;
+	IsBetterIconFunction next_row_fallback;
 
 	no_a11y = NULL;
 	if (container->details->auto_layout &&
 	    nautilus_icon_container_is_layout_vertical (container) &&
 	    !is_rectangle_selection_event (event)) {
 		no_a11y = next_column_highest;
+	}
+
+	next_row_fallback = NULL;
+	if (!nautilus_icon_container_is_layout_vertical (container)) {
+		next_row_fallback = next_row_rightmost;
 	}
 
 	/* Down selects the next icon in the same column.
@@ -3576,6 +3612,7 @@ keyboard_down (NautilusIconContainer *container,
 			    leftmost_in_top_row,
 			    same_column_below_highest,
 			    no_a11y,
+			    next_row_fallback, /* TODO RTL */
 			    closest_in_90_degrees);
 }
 
@@ -3602,6 +3639,7 @@ keyboard_up (NautilusIconContainer *container,
 			    rightmost_in_bottom_row,
 			    same_column_above_lowest,
 			    no_a11y,
+			    NULL,
 			    closest_in_90_degrees);
 }
 
@@ -3919,9 +3957,6 @@ button_press_event (GtkWidget *widget,
         /* Forget about the old keyboard selection now that we've started mousing. */
         clear_keyboard_focus (container);
 	clear_keyboard_rubberband_start (container);
-
-	/* Forget about where we began with the arrow keys now that we're mousing. */
-	container->details->arrow_key_axis = AXIS_NONE;
 
 	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
 		/* We use our own double-click detection. */

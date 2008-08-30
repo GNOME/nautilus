@@ -214,10 +214,7 @@ struct NautilusIconContainerDetails {
 	GdkColor label_colors [LAST_LABEL_COLOR];
 	
 	/* State used so arrow keys don't wander if icons aren't lined up.
-	 * Keeps track of last axis arrow key was used on.
 	 */
-	Axis arrow_key_axis;
-	int arrow_key_start;
 	int arrow_key_start_x;
 	int arrow_key_start_y;
 	GtkDirectionType arrow_key_direction;

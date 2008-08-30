@@ -1,3 +1,33 @@
+2008-08-30  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c (get_cmp_point_x),
+	(compare_with_start_row), (compare_with_start_column),
+	(next_row_rightmost), (next_column_bottommost),
+	(same_column_below_highest), (keyboard_home), (keyboard_end),
+	(record_arrow_key_start), (keyboard_arrow_key), (keyboard_right),
+	(keyboard_left), (keyboard_down), (keyboard_up),
+	(button_press_event):
+	Split out fallback function that determine the rightmost icon on the
+	bottom row, which used to be inside same_column_below_highest().
+	Add a similar concept for the vertical layout.
+
+	Vertical layout: Move to the last item when pressing the right arrow
+			 key in the penultimate column, below the last item.
+				next_row_rightmost().
+
+	Horizontal layout: Move to the last item when pressing the down arrow
+			   key in the penultimate row, right to the last item.
+				next_column_bottommost().
+
+	Remove arrow_key_start, and use arrow_key_axis_x/_y, for
+	horizontal/vertical position constraints in
+	compare_with_start_column() and compare_with_start_row().
+
+	Fixes #549686, at least for LTR.
+
+	* libnautilus-private/nautilus-icon-private.h:
+	Remove unused arrow_key_axis and arrow_key_start variables.
+
 2008-08-28  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/file-manager/fm-directory-view.c:
