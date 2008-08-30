@@ -1,5 +1,10 @@
 2008-08-30  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-icon-view.c (fm_icon_view_set_property):
+	Set icon layout to T_B_R_L iff widget's text direction is RTL.
+
+2008-08-30  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c:
 	Add T_B_R_L to IS_COMPACT_VIEW() macro.
 
@@ -8,7 +13,6 @@
 	(compare_icons_vertical), (previous_column_highest),
 	(previous_column_lowest), (keyboard_right), (keyboard_left),
 	(keyboard_down), (keyboard_up):
-	* src/file-manager/fm-icon-view.c (fm_icon_view_set_property):
 	Support vertical icon container RTL layout. Make RTL keynav useful.
 	For wrap-around on pressing the down button in RTL mode
 	compare_icons_horizontal() and compare_icons_vertical() had to be

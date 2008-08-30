@@ -2762,6 +2762,8 @@ fm_icon_view_set_property (GObject         *object,
 			icon_view->details->compact = g_value_get_boolean (value);
 			if (icon_view->details->compact) {
 				nautilus_icon_container_set_layout_mode (get_icon_container (icon_view),
+									 gtk_widget_get_direction (GTK_WIDGET(icon_view)) == GTK_TEXT_DIR_RTL ?
+									 NAUTILUS_ICON_LAYOUT_T_B_R_L :
 									 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 				nautilus_icon_container_set_forced_icon_size (get_icon_container (icon_view),
 									      NAUTILUS_ICON_SIZE_SMALLEST);
