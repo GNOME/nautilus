@@ -1,5 +1,23 @@
 2008-08-30  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	Add T_B_R_L to IS_COMPACT_VIEW() macro.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(lay_down_one_column), (compare_icons_horizontal),
+	(compare_icons_vertical), (previous_column_highest),
+	(previous_column_lowest), (keyboard_right), (keyboard_left),
+	(keyboard_down), (keyboard_up):
+	* src/file-manager/fm-icon-view.c (fm_icon_view_set_property):
+	Support vertical icon container RTL layout. Make RTL keynav useful.
+	For wrap-around on pressing the down button in RTL mode
+	compare_icons_horizontal() and compare_icons_vertical() had to be
+	added for not breaking previous_column_highest(). I.e. consider both
+	coordinates separately. There is probably a sort algorithm bug involved
+	that only occurs in this situation.
+
+2008-08-30  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-icon-container.c (get_cmp_point_x),
 	(compare_with_start_row), (compare_with_start_column),
 	(next_row_rightmost), (next_column_bottommost),

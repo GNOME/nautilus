@@ -1056,7 +1056,8 @@ layout_get_size_for_layout (PangoLayout *layout,
 }
 
 #define IS_COMPACT_VIEW(container) \
-        (container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R && \
+        ((container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_L_R || \
+	  container->details->layout_mode == NAUTILUS_ICON_LAYOUT_T_B_R_L) && \
 	 container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE)
 
 #define TEXT_BACK_PADDING_X 4
