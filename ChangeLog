@@ -1,5 +1,11 @@
 2008-08-31  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-main.c (main):
+	Detect restart requests by the session manager (i.e. after crashes),
+	only show default window if no desktop window is shown. Fixes #99221.
+
+2008-08-31  Christian Neumair  <cneumair@gnome.org>
+
 	* src/file-manager/fm-directory-view.c
 	(get_file_names_as_parameter_array), (run_script_callback):
 	Get script file name as script parameter relative to current

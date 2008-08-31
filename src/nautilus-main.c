@@ -371,11 +371,13 @@ main (int argc, char *argv[])
 	gboolean browser_window;
 	gboolean no_desktop;
 	gboolean autostart_mode;
+	gboolean has_sm_argv;
 	const char *startup_id, *autostart_id;
 	char *startup_id_copy;
 	char *session_to_load;
 	gchar *geometry;
 	const gchar **remaining;
+	char **p;
 	gboolean perform_self_check;
 	GOptionContext *context;
 	NautilusApplication *application;
@@ -437,6 +439,14 @@ main (int argc, char *argv[])
 	if (autostart_id != NULL && *autostart_id != '\0') {
 		autostart_mode = TRUE;
         }
+
+	/* detect whether this is a restart request by the SM */
+	has_sm_argv = FALSE;
+	for (p = argv; p - argv < argc; p++) {
+		if (g_str_has_prefix (*p, "--sm-client-id")) {
+			has_sm_argv = TRUE;
+		}
+	}
 
 	/* we'll do it ourselves due to complicated factory setup */
 	gtk_window_set_auto_startup_notification (FALSE);
@@ -542,6 +552,11 @@ main (int argc, char *argv[])
 			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
+	}
+
+	if (has_sm_argv && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
+		/* we were restarted by the session manager. Don't show default window */
+		no_default_window = TRUE;
 	}
 	
 	bonobo_activate (); /* do now since we need it before main loop */
