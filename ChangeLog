@@ -1,5 +1,15 @@
 2008-08-31  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-names.h:
+	* src/file-manager/fm-directory-view.c (real_update_location_menu),
+	(real_update_menus):
+	* src/file-manager/fm-tree-view.c (create_popup_menu):
+	Use "edit-delete" icon for delete actions, and "user-trash-full" icon
+	for trash actions. Partially fixes #325945.
+	Also make some mnemonics consistent.
+
+2008-08-31  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-main.c (main):
 	Detect restart requests by the session manager (i.e. after crashes),
 	only show default window if no desktop window is shown. Fixes #99221.

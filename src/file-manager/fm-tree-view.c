@@ -1202,7 +1202,7 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
 	/* add the "create folder" menu item */
-	menu_item = gtk_image_menu_item_new_with_label (_("Create Folder"));
+	menu_item = gtk_image_menu_item_new_with_label (_("Create _Folder"));
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_create_folder_cb),
 			  view);
@@ -1247,10 +1247,10 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 	
 	/* add the "move to trash" menu item */
-	menu_image = gtk_image_new_from_icon_name (NAUTILUS_ICON_TRASH,
+	menu_image = gtk_image_new_from_icon_name (NAUTILUS_ICON_TRASH_FULL,
 						   GTK_ICON_SIZE_MENU);
 	gtk_widget_show (menu_image);
-	menu_item = gtk_image_menu_item_new_with_label (_("Move to Trash"));
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("Mo_ve to Trash"));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
 				       menu_image);
 	g_signal_connect (menu_item, "activate",
@@ -1261,7 +1261,12 @@ create_popup_menu (FMTreeView *view)
 	view->details->popup_trash = menu_item;
 	
 	/* add the "delete" menu item */
-	menu_item = gtk_menu_item_new_with_mnemonic (_("_Delete"));
+	menu_image = gtk_image_new_from_icon_name (NAUTILUS_ICON_DELETE,
+						   GTK_ICON_SIZE_MENU);
+	gtk_widget_show (menu_image);
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Delete"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
+				       menu_image);
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_delete_cb),
 			  view);

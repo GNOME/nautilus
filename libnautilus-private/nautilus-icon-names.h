@@ -13,6 +13,7 @@
 #define NAUTILUS_ICON_SEARCH		"system-search"
 #define NAUTILUS_ICON_TRASH		"user-trash"
 #define NAUTILUS_ICON_TRASH_FULL	"user-trash-full"
+#define NAUTILUS_ICON_DELETE		"edit-delete"
 
 /* Icons for emblems */
 #define NAUTILUS_ICON_EMBLEM_READONLY	"emblem-readonly"

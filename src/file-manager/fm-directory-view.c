@@ -6678,7 +6678,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       "RenameSelectAll", "<shift>F2",
   /* tooltip */                  NULL,
                                  G_CALLBACK (action_rename_select_all_callback) },
-  /* name, stock id */         { "Trash", NAUTILUS_ICON_TRASH,
+  /* name, stock id */         { "Trash", NULL,
   /* label, accelerator */       N_("Mo_ve to Trash"), NULL,
   /* tooltip */                  N_("Move each selected item to the Trash"),
                                  G_CALLBACK (action_trash_callback) },
@@ -6777,11 +6777,11 @@ static const GtkActionEntry directory_view_entries[] = {
   /* tooltip */                  N_("Move or copy files previously selected by a Cut or Copy command into this folder"),
                                  G_CALLBACK (action_location_paste_files_into_callback) },
 
-  /* name, stock id */         { FM_ACTION_LOCATION_TRASH, NAUTILUS_ICON_TRASH,
+  /* name, stock id */         { FM_ACTION_LOCATION_TRASH, NULL,
   /* label, accelerator */       N_("Mo_ve to Trash"), "",
   /* tooltip */                  N_("Move this folder to the Trash"),
                                  G_CALLBACK (action_location_trash_callback) },
-  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, NULL,
+  /* name, stock id */         { FM_ACTION_LOCATION_DELETE, NAUTILUS_ICON_DELETE,
   /* label, accelerator */       N_("_Delete"), "",
   /* tooltip */                  N_("Delete this folder, without moving to the Trash"),
                                  G_CALLBACK (action_location_delete_callback) },
@@ -7639,9 +7639,9 @@ real_update_location_menu (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
-		      "stock-id", (file != NULL &&
+		      "icon-name", (file != NULL &&
 				   nautilus_file_is_in_trash (file)) ?
-					NULL : NAUTILUS_ICON_TRASH,
+					NAUTILUS_ICON_DELETE : NAUTILUS_ICON_TRASH_FULL,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_file);
 	gtk_action_set_visible (action, show_delete);
@@ -7651,6 +7651,10 @@ real_update_location_menu (FMDirectoryView *view)
 	gtk_action_set_visible (action, show_separate_delete_command);
 	if (show_separate_delete_command) {
 		gtk_action_set_sensitive (action, can_delete_file);
+		g_object_set (action,
+			      "icon-name", NAUTILUS_ICON_DELETE,
+			      "sensitive", can_delete_file,
+			      NULL);
 	}
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
@@ -7900,8 +7904,8 @@ real_update_menus (FMDirectoryView *view)
 	g_object_set (action,
 		      "label", label,
 		      "tooltip", tip,
-		      "stock-id", all_selected_items_in_trash (view) ?
-					NULL : NAUTILUS_ICON_TRASH,
+		      "icon-name", all_selected_items_in_trash (view) ?
+					NAUTILUS_ICON_DELETE : NAUTILUS_ICON_TRASH_FULL,
 		      NULL);
 	gtk_action_set_sensitive (action, can_delete_files);
 
@@ -7912,6 +7916,7 @@ real_update_menus (FMDirectoryView *view)
 	if (show_separate_delete_command) {
 		g_object_set (action,
 			      "label", _("_Delete"),
+			      "icon-name", NAUTILUS_ICON_DELETE,
 			      NULL);
 	}
 	gtk_action_set_sensitive (action, can_delete_files);
