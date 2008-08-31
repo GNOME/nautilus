@@ -5326,6 +5326,8 @@ key_press_event (GtkWidget *widget,
 				return FALSE;
 			}
 		}
+
+		gdk_event_free (new_event);
 	}
 
 	return handled;
