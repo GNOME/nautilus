@@ -2356,18 +2356,20 @@ done_loading (FMDirectoryView *view,
 	 * is no NautilusWindowInfo any more.
 	 */
 	if (view->details->window != NULL) {
-		nautilus_window_info_report_load_complete (view->details->window, NAUTILUS_VIEW (view));
+		if (all_files_seen) {
+			nautilus_window_info_report_load_complete (view->details->window, NAUTILUS_VIEW (view));
+		}
+
 		schedule_update_menus (view);
 		schedule_update_status (view);
 		check_for_directory_hard_limit (view);
 		reset_update_interval (view);
 
 		locations_selected = view->details->pending_locations_selected;
-		if (locations_selected != NULL) {
+		if (locations_selected != NULL && all_files_seen) {
 			view->details->pending_locations_selected = NULL;
 			
 			selection = file_list_from_location_list (locations_selected);
-			eel_g_object_list_free (locations_selected);
 
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
@@ -2391,6 +2393,7 @@ done_loading (FMDirectoryView *view,
 				fm_directory_view_reveal_selection (view);
 			}
 		}
+		eel_g_object_list_free (locations_selected);
 		fm_directory_view_display_selection_info (view);
 	}
 
