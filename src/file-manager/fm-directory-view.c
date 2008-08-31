@@ -4781,15 +4781,23 @@ change_to_view_directory (FMDirectoryView *view)
 }
 
 static char **
-get_file_names_as_parameter_array (GList *selection)
+get_file_names_as_parameter_array (GList *selection,
+				   NautilusDirectory *model)
 {
 	NautilusFile *file;
-	char *name;
 	char **parameters;
 	GList *node;
+	GFile *file_location;
+	GFile *model_location;
 	int i;
 
+	if (model == NULL) {
+		return NULL;
+	}
+
 	parameters = g_new (char *, g_list_length (selection) + 1);
+
+	model_location = nautilus_directory_get_location (model);
 
 	for (node = selection, i = 0; node != NULL; node = node->next, i++) {
 		file = NAUTILUS_FILE (node->data);
@@ -4800,14 +4808,15 @@ get_file_names_as_parameter_array (GList *selection)
 			return NULL;
 		}
 
-		/* TODO get name with respect to base directory,
-		 * which may be different from file's parent directory
-		 * in list view with nested subdirectories.
-		 */
-
-		name = nautilus_file_get_name (NAUTILUS_FILE (node->data));
-		parameters[i] = name;
+		file_location = nautilus_file_get_location (NAUTILUS_FILE (node->data));
+		parameters[i] = g_file_get_relative_path (model_location, file_location);
+		if (parameters[i] == NULL) {
+			parameters[i] = g_file_get_path (file_location);
+		}
+		g_object_unref (file_location);
 	}
+
+	g_object_unref (model_location);
 
 	parameters[i] = NULL;
 	return parameters;
@@ -4959,7 +4968,8 @@ run_script_callback (GtkAction *action, gpointer callback_data)
 	selected_files = fm_directory_view_get_selection (launch_parameters->directory_view);
 	set_script_environment_variables (launch_parameters->directory_view, selected_files);
 	 
-	parameters = get_file_names_as_parameter_array (selected_files);
+	parameters = get_file_names_as_parameter_array (selected_files,
+						        launch_parameters->directory_view->details->model);
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 

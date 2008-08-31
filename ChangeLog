@@ -1,3 +1,10 @@
+2008-08-31  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(get_file_names_as_parameter_array), (run_script_callback):
+	Get script file name as script parameter relative to current
+	view directory. Fixes #320215.
+
 2008-08-30  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-icon-view.c (fm_icon_view_set_property):
