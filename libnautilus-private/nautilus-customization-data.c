@@ -35,6 +35,7 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -77,7 +78,6 @@ static char *            get_private_customization_path      (const char *custom
 static char *            get_file_path_for_mode              (const NautilusCustomizationData *data,
 							      const char *file_name);
 static char*             format_name_for_display             (NautilusCustomizationData *data, const char *name);
-static char*             strip_extension                     (const char* string_to_strip);
 static void		 load_name_map_hash_table	     (NautilusCustomizationData *data);
 
 
@@ -412,7 +412,7 @@ format_name_for_display (NautilusCustomizationData *data, const char* name)
 
 	/* map file names to display names using the mappings defined in the hash table */
 	
-	formatted_str = strip_extension (name);
+	formatted_str = eel_filename_strip_extension (name);
 	if (data->name_map_hash != NULL) {
 		mapped_name = g_hash_table_lookup (data->name_map_hash, formatted_str);
 		if (mapped_name) {
@@ -466,19 +466,4 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 			xmlFreeDoc (browser_data);
 		}		
 	}	
-}
-
-/* utility routine to strip the extension from the passed in string */
-static char*
-strip_extension (const char* string_to_strip)
-{
-	char *result_str, *temp_str;
-	if (string_to_strip == NULL)
-		return NULL;
-	
-	result_str = g_strdup(string_to_strip);
-	temp_str = strrchr(result_str, '.');
-	if (temp_str)
-		*temp_str = '\0';
-	return result_str;
 }

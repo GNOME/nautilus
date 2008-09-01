@@ -42,6 +42,7 @@
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <librsvg/rsvg.h>
 #include <libxml/parser.h>
@@ -165,7 +166,6 @@ static void     emblems_changed_callback                        (GObject        
 								 NautilusPropertyBrowser       *property_browser);
 
 /* misc utilities */
-static char *   strip_extension                                 (const char                    *string_to_strip);
 static void     element_clicked_callback                        (GtkWidget                     *image_table,
 								 GtkWidget                     *child,
 								 const EelImageTableEvent *event,
@@ -605,7 +605,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		is_reset = FALSE;
 		if (strcmp (property_browser->details->drag_type,
 			    "property/keyword") == 0) {
-			char* keyword_str = strip_extension(property_browser->details->dragged_file);
+			char *keyword_str = eel_filename_strip_extension(property_browser->details->dragged_file);
 		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
 			g_free(keyword_str);
 			return;	
@@ -1609,22 +1609,6 @@ element_clicked_callback (GtkWidget *image_table,
 	}
 }
 
-
-/* utility routine to strip the extension from the passed in string */
-static char*
-strip_extension (const char* string_to_strip)
-{
-	char *result_str, *temp_str;
-	if (string_to_strip == NULL)
-		return NULL;
-	
-	result_str = g_strdup(string_to_strip);
-	temp_str = strrchr(result_str, '.');
-	if (temp_str)
-		*temp_str = '\0';
-	return result_str;
-}
-
 static void
 labeled_image_configure (EelLabeledImage *labeled_image)
 {
@@ -1667,7 +1651,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	GList *icons, *l;
 	char *icon_name;
 	char *keyword;
-	char *extension;
 	GtkWidget *property_image;
 	GtkWidget *blank;
 	guint num_images;
@@ -1706,11 +1689,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			property_image = labeled_image_new (object_label, object_pixbuf, object_name, PANGO_SCALE_LARGE);
 			eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
-			keyword = g_strdup (object_name);
-			extension = strchr (keyword, '.');
-			if (extension) {
-				*extension = '\0';
-			}
+			keyword = eel_filename_strip_extension (object_name);
 			property_browser->details->keywords = g_list_prepend (property_browser->details->keywords,
 									      keyword);
 

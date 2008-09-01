@@ -1,5 +1,19 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-customization-data.c
+	(format_name_for_display), (load_name_map_hash_table):
+	* src/file-manager/fm-directory-view.c
+	(add_template_to_templates_menus):
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_drag_data_get),
+	(make_properties_from_directories):
+	* test/test-nautilus-wrap-table.c (main):
+	Strip extensions using eel_filename_strip_extension(). Fixes #309510.
+	Thanks to Paolo Borelli <pborelli@katamail.com> and Jared Moore
+	<jaredm@gmx.com>.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
 	* configure.in:
 	Require eel 2.23.91.
 

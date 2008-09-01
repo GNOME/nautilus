@@ -5251,24 +5251,20 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 				 const char *menu_path,
 				 const char *popup_bg_path)
 {
-	char *tip, *uri, *name;
-	char *dot, *escaped_label;
+	char *tmp, *tip, *uri, *name;
+	char *escaped_label;
 	GdkPixbuf *pixbuf;
 	char *action_name;
 	CreateTemplateParameters *parameters;
 	GtkUIManager *ui_manager;
 	GtkAction *action;
 
+	tmp = nautilus_file_get_display_name (file);
+	name = eel_filename_strip_extension (tmp);
+	g_free (tmp);
 
-	name = nautilus_file_get_display_name (file);
 	uri = nautilus_file_get_uri (file);
 	tip = g_strdup_printf (_("Create Document from template \"%s\""), name);
-
-	/* Remove extension */
-	dot = strrchr (name, '.');
-	if (dot != NULL) {
-		*dot = 0;
-	}
 
 	action_name = escape_action_name (uri, "template_");
 	escaped_label = eel_str_double_underscores (name);

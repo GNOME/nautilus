@@ -2,6 +2,7 @@
 
 #include <eel/eel-wrap-table.h>
 #include <eel/eel-labeled-image.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-icon-info.h>
 
@@ -11,7 +12,7 @@ main (int argc, char* argv[])
 	NautilusCustomizationData *customization_data;
 	GtkWidget *window;
 	GtkWidget *emblems_table, *button, *scroller;
-	char *emblem_name, *dot_pos;
+	char *emblem_name, *stripped_name;
 	GdkPixbuf *pixbuf;
 	char *label;
 
@@ -62,19 +63,16 @@ main (int argc, char* argv[])
 									 &pixbuf,
 									 &label) == GNOME_VFS_OK) {	
 
-		/* strip the suffix, if any */
-		dot_pos = strrchr(emblem_name, '.');
-		if (dot_pos) {
-			*dot_pos = '\0';
-		}
+		stripped_name = eel_filename_strip_extension (emblem_name);
+		g_free (emblem_name);
 		
-		if (strcmp (emblem_name, "erase") == 0) {
+		if (strcmp (stripped_name, "erase") == 0) {
 			g_object_unref (pixbuf);
 			g_free (label);
-			g_free (emblem_name);
+			g_free (stripped_name);
 			continue;
 		}
-		
+
 		button = eel_labeled_image_check_button_new (label, pixbuf);
 		g_free (label);
 		g_object_unref (pixbuf);
@@ -82,7 +80,7 @@ main (int argc, char* argv[])
 		/* Attach parameters and signal handler. */
 		g_object_set_data_full (G_OBJECT (button),
 					"nautilus_property_name",
-					emblem_name,
+					stripped_name,
 					(GDestroyNotify) g_free);
 				     
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
