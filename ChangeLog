@@ -1,6 +1,17 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_update_scroll_region),
+	(nautilus_icon_container_get_first_visible_icon),
+	(nautilus_icon_container_scroll_to_icon):
+	Adapt manual layout borders to auto layout borders, improve horizontal
+	RTL scrolling to items. Unfortunately, programmatical scrolling is
+	still somewhat broken due to subsequent relayouts as the horizontal
+	scroll bar is shown/hidden.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
 	(rightmost_in_top_row), (keyboard_right), (keyboard_left),
 	(keyboard_down), (keyboard_up):
 	In LTR mode, always jump to the top-left icon if no icon is selected.

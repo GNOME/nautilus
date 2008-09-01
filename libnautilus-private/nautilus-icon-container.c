@@ -1073,17 +1073,13 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 
 	/* Auto-layout assumes a 0, 0 scroll origin */
 	if (nautilus_icon_container_is_auto_layout (container)) {
-		if (nautilus_icon_container_is_layout_rtl (container)) {
-			allocation = &GTK_WIDGET (container)->allocation;
-			x2 = allocation->width;
-			y2 = allocation->height;
-		} else {
+		if (!nautilus_icon_container_is_layout_rtl (container)) {
 			x1 = 0;
-			y1 = 0;
 		}
+		y1 = 0;
 	} else {
-		x1 -= CONTAINER_PAD_LEFT;
-		y1 -= CONTAINER_PAD_TOP;
+		x1 -= ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
+		y1 -= ICON_PAD_TOP + CONTAINER_PAD_TOP;
 	}
 
 	x2 -= 1;
@@ -1099,6 +1095,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_is_layout_vertical (container)) {
 		if (nautilus_icon_container_is_layout_rtl (container)) {
+			x2 += ICON_PAD_LEFT + CONTAINER_PAD_LEFT;
 			x1 -= ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
 		} else {
 			x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
@@ -6444,8 +6441,16 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
+	if (nautilus_icon_container_is_layout_rtl (container)) {
+		x = hadj->value + hadj->page_size;
+		y = vadj->value;
+	} else {
+		x = hadj->value;
+		y = vadj->value;
+	}
+
 	eel_canvas_c2w (EEL_CANVAS (container),
-			hadj->value, vadj->value,
+			x, y,
 			&x, &y);
 
 	l = container->details->icons;
@@ -6457,12 +6462,17 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 		if (icon_is_positioned (icon)) {
 			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
 						    &x1, &y1, &x2, &y2);
+
 			if (nautilus_icon_container_is_layout_vertical (container)) {
 				pos = &x1;
-				better_icon = x2 > x;
+				if (nautilus_icon_container_is_layout_rtl (container)) {
+					better_icon = x1 < x + ICON_PAD_LEFT;
+				} else {
+					better_icon = x2 > x + ICON_PAD_LEFT;
+				}
 			} else {
 				pos = &y1;
-				better_icon = y2 > y;
+				better_icon = y2 > y + ICON_PAD_TOP;
 			}
 			if (better_icon) {
 				better_icon = (best_icon == NULL ||
@@ -6516,9 +6526,13 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 			}
 
 			if (nautilus_icon_container_is_layout_vertical (container)) {
-				eel_gtk_adjustment_set_value (hadj, bounds.x0);
+				if (nautilus_icon_container_is_layout_rtl (container)) {
+					eel_gtk_adjustment_set_value (hadj, bounds.x1 - GTK_WIDGET (container)->allocation.width);
+				} else {
+					eel_gtk_adjustment_set_value (hadj, bounds.x0);
+				}
 			} else {
-				eel_gtk_adjustment_set_value (vadj, bounds.x0);
+				eel_gtk_adjustment_set_value (vadj, bounds.y0);
 			}
 		}
 		
