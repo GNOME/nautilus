@@ -1,6 +1,14 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c
+	(rightmost_in_top_row), (keyboard_right), (keyboard_left),
+	(keyboard_down), (keyboard_up):
+	In LTR mode, always jump to the top-left icon if no icon is selected.
+	In RTL mode, always jump to the top-right icon if no icon is selected.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
 	(nautilus_icon_container_scroll_to_icon):
 	Also reveal entire rows/columns, and ensure a nice padding around icons.
 

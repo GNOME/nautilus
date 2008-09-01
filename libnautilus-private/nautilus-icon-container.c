@@ -2972,6 +2972,20 @@ leftmost_in_top_row (NautilusIconContainer *container,
 }
 
 static gboolean
+rightmost_in_top_row (NautilusIconContainer *container,
+		      NautilusIcon *start_icon,
+		      NautilusIcon *best_so_far,
+		      NautilusIcon *candidate,
+		      void *data)
+{
+	if (best_so_far == NULL) {
+		return TRUE;
+	}
+	return compare_icons_vertical (container, best_so_far, candidate) > 0;
+	return compare_icons_horizontal (container, best_so_far, candidate) < 0;
+}
+
+static gboolean
 rightmost_in_bottom_row (NautilusIconContainer *container,
 			 NautilusIcon *start_icon,
 			 NautilusIcon *best_so_far,
@@ -3717,7 +3731,8 @@ keyboard_right (NautilusIconContainer *container,
 			    event,
 			    GTK_DIR_RIGHT,
 			    rightmost_in_bottom_row,
-			    leftmost_in_top_row,
+			    nautilus_icon_container_is_layout_rtl (container) ?
+			    rightmost_in_top_row : leftmost_in_top_row,
 			    same_row_right_side_leftmost,
 			    no_a11y,
 			    next_column_fallback,
@@ -3750,8 +3765,9 @@ keyboard_left (NautilusIconContainer *container,
 	keyboard_arrow_key (container,
 			    event,
 			    GTK_DIR_LEFT,
-			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
+			    nautilus_icon_container_is_layout_rtl (container) ?
+			    rightmost_in_top_row : leftmost_in_top_row,
 			    same_row_left_side_rightmost,
 			    no_a11y,
 			    previous_column_fallback,
@@ -3792,7 +3808,8 @@ keyboard_down (NautilusIconContainer *container,
 			    event,
 			    GTK_DIR_DOWN,
 			    rightmost_in_bottom_row,
-			    leftmost_in_top_row,
+			    nautilus_icon_container_is_layout_rtl (container) ?
+			    rightmost_in_top_row : leftmost_in_top_row,
 			    same_column_below_highest,
 			    no_a11y,
 			    next_row_fallback,
@@ -3822,8 +3839,9 @@ keyboard_up (NautilusIconContainer *container,
 	keyboard_arrow_key (container,
 			    event,
 			    GTK_DIR_UP,
-			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
+			    nautilus_icon_container_is_layout_rtl (container) ?
+			    rightmost_in_top_row : leftmost_in_top_row,
 			    same_column_above_lowest,
 			    no_a11y,
 			    NULL,
