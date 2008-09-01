@@ -1247,7 +1247,7 @@ confirm_empty_trash (CommonJob *job)
 				    "that you can also delete them separately.")),
 				NULL,
 				FALSE,
-				GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
+				GTK_STOCK_CANCEL, _("Empty _Trash"),
 				NULL);
 
 	return (response == 1);
@@ -2071,9 +2071,9 @@ prompt_empty_trash (GtkWindow *parent_window)
 						    "All trashed items on the volume "
 						    "will be permanently lost."));
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
-	                        _("Do not Empty Trash"), GTK_RESPONSE_REJECT, 
+	                        _("Do _not Empty Trash"), GTK_RESPONSE_REJECT, 
 	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
-	                        _("Empty Trash"), GTK_RESPONSE_ACCEPT, NULL);
+	                        _("Empty _Trash"), GTK_RESPONSE_ACCEPT, NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
 	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
 	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);

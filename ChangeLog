@@ -1,5 +1,11 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c
+	(confirm_empty_trash), (prompt_empty_trash):
+	Use "Empty Trash" buttons in empty trash dialogs. Fixes #524020.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-customization-data.c
 	(format_name_for_display), (load_name_map_hash_table):
 	* src/file-manager/fm-directory-view.c
