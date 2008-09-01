@@ -5335,6 +5335,7 @@ key_press_event (GtkWidget *widget,
 	    event->keyval != GDK_BackSpace &&
 	    event->keyval != GDK_Delete) {
 		GdkEvent *new_event;
+		GdkWindow *window;
 		char *old_text;
 		const char *new_text;
 		gboolean retval;
@@ -5347,6 +5348,7 @@ key_press_event (GtkWidget *widget,
 		/* Make a copy of the current text */
 		old_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (container->details->search_entry)));
 		new_event = gdk_event_copy ((GdkEvent *) event);
+		window = ((GdkEventKey *) new_event)->window;
 		((GdkEventKey *) new_event)->window = container->details->search_entry->window;
 		gtk_widget_realize (container->details->search_window);
 
@@ -5385,6 +5387,7 @@ key_press_event (GtkWidget *widget,
 			}
 		}
 
+		((GdkEventKey *) new_event)->window = window;
 		gdk_event_free (new_event);
 	}
 
