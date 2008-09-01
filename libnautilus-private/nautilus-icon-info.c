@@ -352,25 +352,8 @@ nautilus_icon_info_lookup (GIcon *icon,
 					       size,
 					       NULL, NULL, NULL);
 		if (stream) {
-			GdkPixbuf *scaled_pixbuf;
-		        int w, h, s;
-			double scale;
-			
-			pixbuf = eel_gdk_pixbuf_load_from_stream (stream);
+			pixbuf = eel_gdk_pixbuf_load_from_stream_at_size (stream, size);
 			g_object_unref (stream);
-			
-			w = gdk_pixbuf_get_width (pixbuf);
-			h = gdk_pixbuf_get_height (pixbuf);
-			s = MAX (w, h);
-
-			if (size != s) {
-				scale = (double)size / s;
-				scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-									 w * scale, h * scale,
-									 GDK_INTERP_BILINEAR);
-				g_object_unref (pixbuf);
-				pixbuf = scaled_pixbuf;
-			}
 		}
 
 		icon_info = nautilus_icon_info_new_for_pixbuf (pixbuf);
