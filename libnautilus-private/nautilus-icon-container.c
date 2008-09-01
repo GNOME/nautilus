@@ -1073,8 +1073,14 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 
 	/* Auto-layout assumes a 0, 0 scroll origin */
 	if (nautilus_icon_container_is_auto_layout (container)) {
-		x1 = 0;
-		y1 = 0;
+		if (nautilus_icon_container_is_layout_rtl (container)) {
+			allocation = &GTK_WIDGET (container)->allocation;
+			x2 = allocation->width;
+			y2 = allocation->height;
+		} else {
+			x1 = 0;
+			y1 = 0;
+		}
 	} else {
 		x1 -= CONTAINER_PAD_LEFT;
 		y1 -= CONTAINER_PAD_TOP;
@@ -1092,7 +1098,11 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	 * which does not need a bottom border.
 	 */
 	if (nautilus_icon_container_is_layout_vertical (container)) {
-		x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
+		if (nautilus_icon_container_is_layout_rtl (container)) {
+			x1 -= ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
+		} else {
+			x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
+		}
 	} else {
 		y2 += ICON_PAD_BOTTOM + CONTAINER_PAD_BOTTOM;
 	}
