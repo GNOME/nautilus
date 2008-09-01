@@ -1,6 +1,12 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_scroll_to_icon):
+	Also reveal entire rows/columns, and ensure a nice padding around icons.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
 	(nautilus_icon_container_update_scroll_region):
 	Fix RTL scroll region calculation.
 

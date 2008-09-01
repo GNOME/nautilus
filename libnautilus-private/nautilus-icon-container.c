@@ -6471,9 +6471,8 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 	GList *l;
 	NautilusIcon *icon;
 	GtkAdjustment *hadj, *vadj;
-	int x, y;
-	double x1, y1, x2, y2;
 	EelCanvasItem *item;
+	EelIRect bounds;
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
@@ -6488,26 +6487,20 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 		
 		if (icon->data == data &&
 		    icon_is_positioned (icon)) {
+
 			item = EEL_CANVAS_ITEM (icon->item);
-			eel_canvas_item_get_bounds (item,
-						    &x1, &y1, &x2, &y2);
-			eel_canvas_item_i2w (item->parent,
-					     &x1,
-					     &y1);
-			eel_canvas_w2c (item->canvas,
-					x1, y1,
-					&x, &y);
+
+			if (nautilus_icon_container_is_auto_layout (container)) {
+				/* ensure that we reveal the entire row/column */
+				icon_get_row_and_column_bounds (container, icon, &bounds, TRUE);
+			} else {
+				item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds, TRUE);
+			}
 
 			if (nautilus_icon_container_is_layout_vertical (container)) {
-				x -= ICON_PAD_LEFT;
-				x = MAX (0, x);
-
-				eel_gtk_adjustment_set_value (hadj, x);
+				eel_gtk_adjustment_set_value (hadj, bounds.x0);
 			} else {
-				y -= ICON_PAD_TOP;
-				y = MAX (0, y);
-				
-				eel_gtk_adjustment_set_value (vadj, y);
+				eel_gtk_adjustment_set_value (vadj, bounds.x0);
 			}
 		}
 		
