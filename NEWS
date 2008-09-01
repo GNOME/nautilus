@@ -1,3 +1,21 @@
+Major changes in 2.23.91 are:
+* Make autorun work for blank media
+* No more pixelated SVGs displayed for desktop items with absolute icon SVG paths
+* Use consistent labels, mnemonics and icons for trash and delete actions
+* Icon container (i.e. icon view and compact view)
+  * RTL support for vertical layout
+  * Always reveal entire rows or columns of icons
+  * Nicer icon container bounds
+  * (Again) vastly improved keyboard navigation, especially in RTL mode
+  * No more overlapping desktop icons, when files are added or volumes mounted
+    while Nautilus is not running. This is implemented with metadata timestamps when
+    the desktop icons are laid out.
+  * Rewrite large chunks of icon canvas text size handling
+  * Clear underlying items if hovered or selected item overlaps them
+* List View
+  * Make scripts work when items in nested list view subdirectories are selected
+* Usual minor fix & polish galore
+
 Major changes in 2.23.90 are:
 * Truncate long item labels in the icon view and on the desktop
    + icon_view/text_ellipsis_limit and desktop/text_ellipsis_limit GConf
