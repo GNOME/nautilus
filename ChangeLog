@@ -1,5 +1,19 @@
 2008-09-01  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(item_get_canvas_bounds), (icon_get_row_and_column_bounds),
+	(reveal_icon), (nautilus_icon_container_update_scroll_region),
+	(lay_down_icons_horizontal):
+	Improve icon view and compact view appearance:
+
+	Always reveal entire rows and columns, i.e. ensure that all items
+	are displayed, and a little safety padding around them is displayed.
+
+	Increase vertical top and bottom container space for vertical layout,
+	and horizontal bottom container space for horizontal layout.
+
+2008-09-01  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-application.c (volume_added_callback):
 	Make autorun work for blank CDs. Fixes #548221. Thanks to Jerry Yu
 	<jijun.yu@sun.com>.

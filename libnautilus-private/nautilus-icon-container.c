@@ -216,6 +216,14 @@ static double	     get_mirror_x_position                     (NautilusIconContai
 								NautilusIcon *icon,
 								double x);
 
+static int compare_icons_horizontal (NautilusIconContainer *container,
+				     NautilusIcon *icon_a,
+				     NautilusIcon *icon_b);
+
+static int compare_icons_vertical (NautilusIconContainer *container,
+				   NautilusIcon *icon_a,
+				   NautilusIcon *icon_b);
+
 static void store_layout_timestamps_now (NautilusIconContainer *container);
 
 static gpointer accessible_parent_class;
@@ -621,7 +629,9 @@ set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon
 }
 
 static void
-item_get_canvas_bounds (EelCanvasItem *item, EelIRect *bounds)
+item_get_canvas_bounds (EelCanvasItem *item,
+			EelIRect *bounds,
+			gboolean safety_pad)
 {
 	EelDRect world_rect;
 	
@@ -636,6 +646,14 @@ item_get_canvas_bounds (EelCanvasItem *item, EelIRect *bounds)
 	eel_canvas_item_i2w (item->parent,
 			     &world_rect.x1,
 			     &world_rect.y1);
+	if (safety_pad) {
+		world_rect.x0 -= ICON_PAD_LEFT + ICON_PAD_RIGHT;
+		world_rect.x1 += ICON_PAD_LEFT + ICON_PAD_RIGHT;
+
+		world_rect.y0 -= ICON_PAD_TOP + ICON_PAD_BOTTOM;
+		world_rect.y1 += ICON_PAD_TOP + ICON_PAD_BOTTOM;
+	}
+
 	eel_canvas_w2c (item->canvas,
 			world_rect.x0,
 			world_rect.y0,
@@ -646,6 +664,41 @@ item_get_canvas_bounds (EelCanvasItem *item, EelIRect *bounds)
 			world_rect.y1,
 			&bounds->x1,
 			&bounds->y1);
+}
+
+static void
+icon_get_row_and_column_bounds (NautilusIconContainer *container,
+				NautilusIcon *icon,
+				EelIRect *bounds,
+				gboolean safety_pad)
+{
+	GList *p;
+	NautilusIcon *one_icon;
+	EelIRect one_bounds;
+
+	item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), bounds, safety_pad);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		one_icon = p->data;
+
+		if (icon == one_icon) {
+			continue;
+		}
+
+		if (compare_icons_horizontal (container, icon, one_icon) == 0) {
+			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds, safety_pad);
+			bounds->x0 = MIN (bounds->x0, one_bounds.x0);
+			bounds->x1 = MAX (bounds->x1, one_bounds.x1);
+		}
+
+		if (compare_icons_vertical (container, icon, one_icon) == 0) {
+			item_get_canvas_bounds (EEL_CANVAS_ITEM (one_icon->item), &one_bounds, safety_pad);
+			bounds->y0 = MIN (bounds->y0, one_bounds.y0);
+			bounds->y1 = MAX (bounds->y1, one_bounds.y1);
+		}
+	}
+
+
 }
 
 static void
@@ -670,7 +723,12 @@ reveal_icon (NautilusIconContainer *container,
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
-	item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds);
+	if (nautilus_icon_container_is_auto_layout (container)) {
+		/* ensure that we reveal the entire row/column */
+		icon_get_row_and_column_bounds (container, icon, &bounds, TRUE);
+	} else {
+		item_get_canvas_bounds (EEL_CANVAS_ITEM (icon->item), &bounds, TRUE);
+	}
 	if (bounds.y0 < vadj->value) {
 		eel_gtk_adjustment_set_value (vadj, bounds.y0);
 	} else if (bounds.y1 > vadj->value + allocation->height) {
@@ -1034,9 +1092,9 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	 * which does not need a bottom border.
 	 */
 	if (nautilus_icon_container_is_layout_vertical (container)) {
-		x2 += CONTAINER_PAD_RIGHT;
+		x2 += ICON_PAD_RIGHT + CONTAINER_PAD_RIGHT;
 	} else {
-		y2 += CONTAINER_PAD_BOTTOM;
+		y2 += ICON_PAD_BOTTOM + CONTAINER_PAD_BOTTOM;
 	}
 
 	if (reset_scroll_region) {
@@ -1266,7 +1324,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	
 	line_width = container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
 	line_start = icons;
-	y = start_y;
+	y = start_y + CONTAINER_PAD_TOP;
 	i = 0;
 	
 	max_height_above = 0;
