@@ -1345,6 +1345,12 @@ volume_added_callback (GVolumeMonitor *monitor,
 	    g_volume_should_automount (volume) &&
 	    g_volume_can_mount (volume)) {
 		nautilus_file_operations_mount_volume (NULL, volume, TRUE);
+	} else {
+		/* Allow nautilus_autorun() to run. When the mount is later
+		 * added programmatically (i.e. for a blank CD),
+		 * nautilus_autorun() will be called by mount_added_callback(). */
+		nautilus_allow_autorun_for_volume (volume);
+		nautilus_allow_autorun_for_volume_finish (volume);
 	}
 }
 
