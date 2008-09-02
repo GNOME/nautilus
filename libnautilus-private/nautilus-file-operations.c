@@ -5364,6 +5364,7 @@ create_job (GIOSchedulerJob *io_job,
 	char *data;
 	GFileOutputStream *out;
 	gboolean handled_invalid_filename;
+	int max_length;
 
 	job = user_data;
 	common = &job->common;
@@ -5376,7 +5377,9 @@ create_job (GIOSchedulerJob *io_job,
 	dest_fs_type = NULL;
 	filename = NULL;
 	dest = NULL;
-	
+
+	max_length = get_max_name_length (job->dest_dir);
+
 	verify_destination (common,
 			    job->dest_dir,
 			    NULL, -1);
@@ -5480,10 +5483,23 @@ create_job (GIOSchedulerJob *io_job,
 
 			g_object_unref (dest);
 
-			if (count > 1) {
+			if (count == 1) {
 				new_filename = g_strdup (filename);
+			} else if (job->make_dir) {
+				filename2 = g_strdup_printf ("%s %d", filename, count);
+
+				new_filename = NULL;
+				if (max_length > 0 && strlen (filename2) > max_length) {
+					new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
+				}
+
+				if (new_filename == NULL) {
+					new_filename = g_strdup (filename2);
+				}
+
+				g_free (filename2);
 			} else {
-				new_filename = g_strdup_printf ("%s %d", filename, count);
+				new_filename = get_duplicate_name (filename, count, max_length);
 			}
 
 			if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type)) {
@@ -5504,7 +5520,18 @@ create_job (GIOSchedulerJob *io_job,
 		} else if (IS_IO_ERROR (error, EXISTS)) {
 			g_object_unref (dest);
 			dest = NULL;
-			filename2 = g_strdup_printf ("%s %d", filename, ++count);
+			if (job->make_dir) {
+				filename2 = g_strdup_printf ("%s %d", filename, ++count);
+				if (max_length > 0 && strlen (filename2) > max_length) {
+					new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
+					if (new_filename != NULL) {
+						g_free (filename2);
+						filename2 = new_filename;
+					}
+				}
+			} else {
+				filename2 = get_duplicate_name (filename, count++, max_length);
+			}
 			make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
 			if (filename_is_utf8) {
 				dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);

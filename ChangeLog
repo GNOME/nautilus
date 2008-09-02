@@ -1,5 +1,11 @@
 2008-09-03  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file-operations.c (create_job):
+	Use file name duplication helper, unless we create directories. Also
+	consider maximal file name length. Fixes #240116.
+
+2008-09-03  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-navigation-window-menus.c
 	(forget_history_if_confirmed):
 	Remove scary secondary dialog message. Fixes #550567.
