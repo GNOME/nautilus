@@ -119,29 +119,10 @@ static void
 forget_history_if_confirmed (NautilusWindow *window)
 {
 	GtkDialog *dialog;
-	char *prompt;
-	char *detail;
 
-	/* Confirm before forgetting history because it's a rare operation that
-	 * is hard to recover from. We don't want people doing it accidentally
-	 * when they intended to choose another Go menu item.
-	 */
-	if ((rand() % 10) == 0) {
-		/* This is a little joke, shows up occasionally. I only
-		 * implemented this feature so I could use this joke. 
-		 */
-		prompt = _("Are you sure you want to forget history?");
-		/* Translators: This is part of a joke and is paired with "Are you sure you want to forget history?" */
-		detail = _("If you do, you will be doomed to repeat it.");
-	} else {
-		prompt = _("Are you sure you want to clear the list "
-			   "of locations you have visited?");
-		detail = _("If you clear the list of locations,"
-			   " they will be permanently deleted."); 
-	}
-					   
-	dialog = eel_create_question_dialog (prompt,
-					     detail,
+	dialog = eel_create_question_dialog (_("Are you sure you want to clear the list "
+					       "of locations you have visited?"),
+					     NULL,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
 					     GTK_WINDOW (window));
