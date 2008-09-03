@@ -57,6 +57,17 @@ static guint signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class = NULL;
 
+/**
+ * nautilus_menu_item_new:
+ * @name: the identifier for the menu item
+ * @label: the user-visible label of the menu item
+ * @tip: the tooltip of the menu item
+ * @icon: the name of the icon to display in the menu item
+ *
+ * Creates a new menu item that can be added to the toolbar or to a contextual menu.
+ *
+ * Returns: a newly create #NautilusMenuItem
+ */
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
 			const char *label,
@@ -79,12 +90,25 @@ nautilus_menu_item_new (const char *name,
 	return item;
 }
 
+/**
+ * nautilus_menu_item_activate:
+ * @item: pointer to a #NautilusMenuItem
+ *
+ * emits the activate signal.
+ */
 void
 nautilus_menu_item_activate (NautilusMenuItem *item)
 {
 	g_signal_emit (item, signals[ACTIVATE], 0);
 }
 
+/**
+ * nautilus_menu_item_set_submenu:
+ * @item: pointer to a #NautilusMenuItem
+ * @menu: pointer to a #NautilusMenu to attach to the button
+ *
+ * Attachs a menu to the given #NautilusMenuItem.
+ */
 void
 nautilus_menu_item_set_submenu (NautilusMenuItem *item, NautilusMenu *menu)
 {

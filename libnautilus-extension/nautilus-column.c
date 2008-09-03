@@ -47,6 +47,17 @@ struct _NautilusColumnDetails {
 
 static GObjectClass *parent_class = NULL;
 
+/**
+ * nautilus_column_new:
+ * @name: identifier of the column
+ * @attribute: the file attribute to be displayed in the column
+ * @label: the user-visible label for the column
+ * @description: a user-visible description of the column
+ *
+ * Creates a new column
+ *
+ * Returns: a newly created #NautilusColumn
+ */
 NautilusColumn *
 nautilus_column_new (const char *name,
 		     const char *attribute,

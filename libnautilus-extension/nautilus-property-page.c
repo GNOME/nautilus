@@ -43,6 +43,16 @@ struct _NautilusPropertyPageDetails {
 
 static GObjectClass *parent_class = NULL;
 
+/**
+ * nautilus_property_page_new:
+ * @name: the identifier for the property page
+ * @label: the user-visible label of the property page
+ * @page: the property page to display
+ *
+ * Creates a new #NautilusPropertyPage from page_widget.
+ *
+ * Returns: a newly created #NautilusPropertyPage
+ */
 NautilusPropertyPage *
 nautilus_property_page_new (const char *name,
 			    GtkWidget *label,
@@ -218,7 +228,7 @@ nautilus_property_page_get_type (void)
 		
 		type = g_type_register_static 
 			(G_TYPE_OBJECT, 
-			 "NautilusPropertPage",
+			 "NautilusPropertyPage",
 			 &info, 0);
 	}
 
