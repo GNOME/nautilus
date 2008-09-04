@@ -7044,6 +7044,8 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 	if (semi_position_icons != NULL) {
 		PlacementGrid *grid;
+		time_t now;
+		gboolean dummy;
 
 		g_assert (!container->details->auto_layout);
 
@@ -7060,6 +7062,8 @@ finish_adding_new_icons (NautilusIconContainer *container)
 				placement_grid_mark_icon (grid, icon);
 			}
 		}
+
+		now = time (NULL);
 
 		for (p = semi_position_icons; p != NULL; p = p->next) {
 			NautilusIcon *icon;
@@ -7081,6 +7085,8 @@ finish_adding_new_icons (NautilusIconContainer *container)
 			placement_grid_mark_icon (grid, icon);
 			g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
 				       icon->data, &position);
+			g_signal_emit (container, signals[STORE_LAYOUT_TIMESTAMP], 0,
+				       icon->data, &now, &dummy);
 
 			/* ensure that next time we run this code, the formerly semi-positioned
 			 * icons are treated as being positioned. */
