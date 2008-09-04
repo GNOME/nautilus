@@ -1,3 +1,12 @@
+2008-09-04  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* configure.in: Bump GTK+ required version to 2.13.0.
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_application), (nautilus_launch_desktop_file):
+	* src/nautilus-connect-server-dialog-main.c: (show_uri):
+	Use GdkAppLaunchContext instead of EelAppLaunchContext.
+	This also fixes bug #550864.
+
 2008-09-04  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c

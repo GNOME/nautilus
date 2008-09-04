@@ -36,7 +36,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
-#include <eel/eel-app-launch-context.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -153,7 +152,7 @@ nautilus_launch_application (GAppInfo *application,
 	NautilusFile    *file;
 	gboolean        result;
 	GError *error;
-	EelAppLaunchContext *launch_context;
+	GdkAppLaunchContext *launch_context;
 	NautilusIconInfo *icon;
 	int count, total;
 
@@ -179,15 +178,15 @@ nautilus_launch_application (GAppInfo *application,
 	}
 	locations = g_list_reverse (locations);
 
-	launch_context = eel_app_launch_context_new ();
+	launch_context = gdk_app_launch_context_new ();
 	if (parent_window)
-		eel_app_launch_context_set_screen (launch_context,
-						     gtk_window_get_screen (parent_window));
+		gdk_app_launch_context_set_screen (launch_context,
+						   gtk_window_get_screen (parent_window));
 
 	file = NAUTILUS_FILE (files->data);
 	icon = nautilus_file_get_icon (file, 48, 0);
 	if (icon) {
-		eel_app_launch_context_set_icon_name (launch_context,
+		gdk_app_launch_context_set_icon_name (launch_context,
 							nautilus_icon_info_get_used_name (icon));
 		g_object_unref (icon);
 	}
@@ -346,7 +345,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	int total, count;
 	GFile *file, *desktop_file;
 	GDesktopAppInfo *app_info;
-	EelAppLaunchContext *context;
+	GdkAppLaunchContext *context;
 
 	/* Don't allow command execution from remote locations
 	 * to partially mitigate the security
@@ -415,10 +414,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	}
 
 	error = NULL;
-	context = eel_app_launch_context_new ();
+	context = gdk_app_launch_context_new ();
 	/* TODO: Ideally we should accept a timestamp here instead of using GDK_CURRENT_TIME */
-	eel_app_launch_context_set_timestamp (context, GDK_CURRENT_TIME);
-	eel_app_launch_context_set_screen (context,
+	gdk_app_launch_context_set_timestamp (context, GDK_CURRENT_TIME);
+	gdk_app_launch_context_set_screen (context,
 					   gtk_window_get_screen (parent_window));
 	if (count == total) {
 		/* All files are local, so we can use g_app_info_launch () with

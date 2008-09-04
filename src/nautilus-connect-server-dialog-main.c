@@ -29,12 +29,12 @@
 #include <glib/gi18n.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
 
 #include <libgnome/gnome-program.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-authentication-manager.h>
 
-#include <eel/eel-app-launch-context.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-mount-operation.h>
@@ -94,10 +94,10 @@ show_uri (const char *uri,
 	  GtkWidget  *widget)
 {
 	GError    *error;
-	EelAppLaunchContext *launch_context;
+	GdkAppLaunchContext *launch_context;
 
-	launch_context = eel_app_launch_context_new ();
-	eel_app_launch_context_set_screen (launch_context,
+	launch_context = gdk_app_launch_context_new ();
+	gdk_app_launch_context_set_screen (launch_context,
 					   gtk_widget_get_screen (widget));
 
 	error = NULL;
