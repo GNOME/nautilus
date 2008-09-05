@@ -115,6 +115,7 @@ read_color (GConfClient *client, const char *key, GdkColor *color)
         if (tmp != NULL) {
                 if (!gdk_color_parse (tmp, color))
                         gdk_color_parse ("black", color);
+		g_free (tmp);
         }
         else {
                 gdk_color_parse ("black", color);
@@ -198,6 +199,7 @@ nautilus_file_background_read_desktop_settings (char **color,
         else {
                 *placement = EEL_BACKGROUND_CENTERED;
         }
+        g_free (tmp);
                 
         /* Get the color */
         tmp = gconf_client_get_string (client, BG_PREFERENCES_COLOR_SHADING_TYPE, NULL);
@@ -223,6 +225,7 @@ nautilus_file_background_read_desktop_settings (char **color,
                 use_gradient = FALSE;
                 is_horizontal = FALSE;
         }
+        g_free (tmp);
         
         read_color (client, BG_PREFERENCES_PRIMARY_COLOR, &primary);
         read_color (client, BG_PREFERENCES_SECONDARY_COLOR, &secondary);
