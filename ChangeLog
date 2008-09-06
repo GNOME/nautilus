@@ -1,3 +1,17 @@
+2008-09-06  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_is_date_sort_attribute_q):
+	* libnautilus-private/nautilus-file.h:
+	Add nautilus_file_is_date_sort_attribute_q().
+
+	* src/file-manager/fm-list-view.c
+	(sort_criterion_changes_due_to_user),
+	(sort_column_changed_callback):
+	When manually switching to a date column, or to the default column
+	with “default_sort_in_reverse_order” active, auto-reverse sort order.
+	Fixes #533189.
+
 2008-09-05  Matthias Clasen  <mclasen@redhat.com>
 
 	Bug 550009 – small leaks

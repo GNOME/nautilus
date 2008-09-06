@@ -5508,6 +5508,21 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	return nautilus_file_get_string_attribute_with_default_q (file, g_quark_from_string (attribute_name));
 }
 
+gboolean
+nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
+{
+	if (attribute_q == attribute_modification_date_q ||
+	    attribute_q == attribute_date_modified_q ||
+	    attribute_q == attribute_accessed_date_q ||
+	    attribute_q == attribute_date_accessed_q ||
+	    attribute_q == attribute_date_changed_q ||
+	    attribute_q == attribute_date_permissions_q) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 /**
  * get_description:
  * 

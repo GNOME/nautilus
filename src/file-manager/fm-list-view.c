@@ -40,6 +40,7 @@
 #include <gtk/gtk.h>
 #include <libegg/eggtreemultidnd.h>
 #include <glib/gi18n.h>
+#include <glib-object.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
@@ -103,6 +104,8 @@ struct FMListViewDetails {
 	NautilusFile *renaming_file;
 	gboolean rename_done;
 	guint renaming_file_activate_timeout;
+
+	GQuark last_sort_attr;
 };
 
 struct SelectionForeachData {
@@ -1005,12 +1008,34 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         nautilus_file_list_free (selection);
 }
 
+static gboolean
+sort_criterion_changes_due_to_user (GtkTreeView *tree_view)
+{
+	GList *columns, *p;
+	GtkTreeViewColumn *column;
+	GSignalInvocationHint *ihint;
+	unsigned int sort_signal_id;
+
+	sort_signal_id = g_signal_lookup ("clicked", gtk_tree_view_column_get_type ());
+
+	columns = gtk_tree_view_get_columns (tree_view);
+	for (p = columns; p != NULL; p = p->next) {
+		column = p->data;
+		ihint = g_signal_get_invocation_hint (column);
+		if (ihint != NULL) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 sort_column_changed_callback (GtkTreeSortable *sortable, 
 			      FMListView *view)
 {
 	NautilusFile *file;
-	gint sort_column_id;
+	gint sort_column_id, default_sort_column_id;
 	GtkSortType reversed;
 	GQuark sort_attr, default_sort_attr;
 	char *reversed_attr, *default_reversed_attr;
@@ -1018,21 +1043,46 @@ sort_column_changed_callback (GtkTreeSortable *sortable,
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
 
 	gtk_tree_sortable_get_sort_column_id (sortable, &sort_column_id, &reversed);
-
 	sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, sort_column_id);
-	sort_column_id = fm_list_model_get_sort_column_id_from_attribute (view->details->model,
-									  g_quark_from_string (default_sort_order_auto_value));
-	default_sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, sort_column_id);
+
+	default_sort_column_id = fm_list_model_get_sort_column_id_from_attribute (view->details->model,
+										  g_quark_from_string (default_sort_order_auto_value));
+	default_sort_attr = fm_list_model_get_attribute_from_sort_column_id (view->details->model, default_sort_column_id);
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 				    g_quark_to_string (default_sort_attr), g_quark_to_string (sort_attr));
 
 	default_reversed_attr = (default_sort_reversed_auto_value ? "true" : "false");
+
+	if (view->details->last_sort_attr != sort_attr &&
+	    sort_criterion_changes_due_to_user (view->details->tree_view)) {
+		/* at this point, the sort order is always GTK_SORT_ASCENDING, if the sort column ID
+		 * switched. Invert the sort order, if it's the default criterion with a reversed preference,
+		 * or if it makes sense for the attribute (i.e. date). */
+		if (sort_attr == default_sort_attr) {
+			/* use value from preferences */
+			reversed = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
+		} else {
+			reversed = nautilus_file_is_date_sort_attribute_q (sort_attr);
+		}
+
+		if (reversed) {
+			g_signal_handlers_block_by_func (sortable, sort_column_changed_callback, view);
+			gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (view->details->model),
+							      sort_column_id,
+							      GTK_SORT_DESCENDING);
+			g_signal_handlers_unblock_by_func (sortable, sort_column_changed_callback, view);
+		}
+	}
+
+
 	reversed_attr = (reversed ? "true" : "false");
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 				    default_reversed_attr, reversed_attr);
 				    
 	/* Make sure selected item(s) is visible after sort */
 	fm_list_view_reveal_selection (FM_DIRECTORY_VIEW (view));							      
+
+	view->details->last_sort_attr = sort_attr;
 }
 
 static void

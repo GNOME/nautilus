@@ -377,6 +377,8 @@ int                     nautilus_file_compare_for_sort_by_attribute_q   (Nautilu
 									 GQuark                          attribute,
 									 gboolean                        directories_first,
 									 gboolean                        reversed);
+gboolean                nautilus_file_is_date_sort_attribute_q          (GQuark                          attribute);
+
 int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
 									 const char                     *pattern);
 
