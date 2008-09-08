@@ -1,3 +1,11 @@
+2008-09-08  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c (select_range),
+	(keyboard_move_to), (handle_icon_button_press):
+	Allow to select range additively when pressing ctrl and shift, i.e.
+	don't unselect the old selection. Fixes #410497, at least for icon
+	view.
+
 2008-09-06  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-file.c

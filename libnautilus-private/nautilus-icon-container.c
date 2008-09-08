@@ -2297,7 +2297,8 @@ invalidate_label_sizes (NautilusIconContainer *container)
 static gboolean
 select_range (NautilusIconContainer *container,
 	      NautilusIcon *icon1,
-	      NautilusIcon *icon2)
+	      NautilusIcon *icon2,
+	      gboolean unselect_outside_range)
 {
 	gboolean selection_changed;
 	GList *p;
@@ -2322,8 +2323,10 @@ select_range (NautilusIconContainer *container,
 			}
 		}
 		
-		selection_changed |= icon_set_selected
-			(container, icon, select);
+		if (select || unselect_outside_range) {
+			selection_changed |= icon_set_selected
+				(container, icon, select);
+		}
 
 		if (unmatched_icon != NULL && icon == unmatched_icon) {
 			select = FALSE;
@@ -3517,7 +3520,7 @@ keyboard_move_to (NautilusIconContainer *container,
 
 		set_keyboard_focus (container, icon);
 
-		if (select_range (container, start_icon, icon)) {
+		if (select_range (container, start_icon, icon, TRUE)) {
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
@@ -6303,7 +6306,6 @@ handle_icon_button_press (NautilusIconContainer *container,
 	details->icon_selected_on_button_down = icon->is_selected;
 	
 	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
-	    (event->state & GDK_CONTROL_MASK) == 0 &&
 	    (event->state & GDK_SHIFT_MASK) != 0) {
 		NautilusIcon *start_icon;
 
@@ -6312,7 +6314,8 @@ handle_icon_button_press (NautilusIconContainer *container,
 			start_icon = icon;
 			details->range_selection_base_icon = icon;
 		} 
-		if (select_range (container, start_icon, icon)) {
+		if (select_range (container, start_icon, icon,
+				  (event->state & GDK_CONTROL_MASK) == 0)) {
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
