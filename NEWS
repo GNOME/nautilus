@@ -1,3 +1,14 @@
+Major changes in 2.23.92 are:
+* Icon/compact view:
+   * Allow to select range in addition to current selection, when pressing ctrl
+     and shift at once [not yet doable in list view]
+   * Fix layout timestamp storage when moving items around on desktop
+* List view:
+    Default to reverse sort order for date columns (i.e. recent to old)
+* Improve “Clear History” confirmation dialog
+* Use GdkAppLaunchContext instead of EelAppLaunchContext
+* Fix small leaks
+
 Major changes in 2.23.91 are:
 * Make autorun work for blank media
 * No more pixelated SVGs displayed for desktop items with absolute icon SVG paths
