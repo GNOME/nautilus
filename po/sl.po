@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-05 04:13+0000\n"
-"PO-Revision-Date: 2008-09-05 15:39+0100\n"
+"POT-Creation-Date: 2008-09-05 13:45+0000\n"
+"PO-Revision-Date: 2008-09-09 13:39+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -303,12 +303,12 @@ msgstr "Shranjeno iskanje"
 #. date_changed  - ctime, the last time file meta-information changed
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
-msgstr "Seznam oznak pod ikonami v pogledu ikon in na namizju. Dejansko število možnosti je odvisno od stopnje povečave. Možne vrednosti so: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" in \"mime_type\"."
+msgstr "Seznam oznak pod ikonami v pogledu ikon in na namizju. Dejansko število možnosti je odvisno od ravni povečave. Možne vrednosti so: \"velikost\", \"vrsta\", \"datum_spremembe\", \"datum_meta_spremembe\", \"datum_dostopa\", \"lastnik\", \"skupina\", \"dovoljenja\", \"osmiška_dovoljenja\" in \"mime_vrste\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 #, no-c-format
 msgid "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
-msgstr ""
+msgstr "Število, ki določa kako bodo predolga imena datotek prikazana na namizju v oglatih oklepajih glede na raven povečave. Vsak vnos seznama je v obliki \"Povečava:številka\". Za vsako določeno raven povečave velja, da je v primeru, da je številka večja od 0, ime datoteke ne bo prešlo določene vrednosti vrstic. V primeru, da je številka manjša ali enaka 0, pri dolžini imena ni omejitev. Privzeti vnos \"Številke\" brez določene vrednosti povečave je prav tako dovoljen. Določa namreč največje število vrstic za vse ostale vrednosti povečave. Primer: 0 - vedno prikaži polno ime datoteke; 3 - skrajšaj ime, če je daljše od treh vrstic; najmanjše:5,manjše:4,0 - skrči ime, če je daljše od petih vrstic pri povečavi \"najmanjše\". Skrči tudi imena datotek, če so daljša od štirih vrstic pri povečavi \"manjše\". Ne skrči pa imen datotek, za druge vrednosti povečav. Na voljo so ravni povečave: najmanjše (33%), manjše (50%), majhno (66%), običajno (100%), veliko (150%), večje (200%), največje (400%)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -320,7 +320,7 @@ msgstr "Vedno uporabi vnosno polje mesta namesto gumbov s potjo"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines."
-msgstr ""
+msgstr "Število, ki določa kako bodo predolga imena datotek prikazana na namizju v oglatih oklepajih. V primeru, da je številka večja od 0, ime ne bo daljše od določene vrednosti. V primeru, da je vrednost 0 ali pa manjša od 0, pa na dolžino imena ni omejitev."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Color for the default folder background. Only used if background_set is true."
@@ -392,7 +392,7 @@ msgstr "Privzet pogled mape"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Default icon zoom level"
-msgstr "Privzeta stopnja povečave ikon"
+msgstr "Privzeta raven povečave ikon"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Default list of columns visible in the list view"
@@ -404,7 +404,7 @@ msgstr "Privzet seznam stolpcev, ki so prikazani v pogledu seznama."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "Default list zoom level"
-msgstr "Privzeta stopnja povečave seznamov"
+msgstr "Privzeta raven povečave seznamov"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "Default sort order"
@@ -412,15 +412,15 @@ msgstr "Privzet vrstni red razvrščanja"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "Default zoom level used by the compact view."
-msgstr "Privzeta stopnja povečave, ki jo uporablja skrčen pogled."
+msgstr "Privzeta raven povečave, ki jo uporablja skrčen pogled."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Default zoom level used by the icon view."
-msgstr "Privzeta stopnja povečave, ki jo uporablja pogled ikon."
+msgstr "Privzeta raven povečave, ki jo uporablja pogled ikon."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Default zoom level used by the list view."
-msgstr "Privzeta stopnja povečave, ki jo uporablja pogled seznama."
+msgstr "Privzeta raven povečave, ki jo uporablja pogled seznama."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid "Desktop computer icon name"
@@ -592,30 +592,27 @@ msgstr "Seznam mogočih oznak na ikonah"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "List of x-content/* types for which the user have chosen \"Do Nothing\" in the preference capplet. No prompt will be shown nor will any matching application be started on insertion of media matching these types."
-msgstr ""
+msgstr "Seznam x-content/* vrste pri katerih bo uveljavljen ukaz \"Ne naredi ničesar\". S to izbiro onemogočite zagon programov in odpiranje oken. Možnost bo v veljavi vsakokrat, ko bo vstavljen medij z ustreznimi vrstami."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "List of x-content/* types for which the user have chosen \"Open Folder\" in the preferences capplet. A folder window will be opened on insertion of media matching these types."
-msgstr ""
+msgstr "Seznam x-content/* vrste pri katerih bo izveden ukaz \"Odpri mapo\". Okno mape se bo odprlo vsakokrat, ko bo vstavljen medij z ustreznimi vrstami."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "List of x-content/* types for which the user have chosen to start an application in the preference capplet. The preferred application for the given type will be started on insertion on media matching these types."
-msgstr ""
+msgstr "Seznam x-content/* vrste kjer bo zagnan prednostni program, ki ga je izbral uporabnik. Program bo zagnana vsakokrat, ko bo vstavljen medij z ustreznimi vrstami."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-#, fuzzy
 msgid "List of x-content/* types set to \"Do Nothing\""
-msgstr "Seznam x-content/* vrste za vprašanje kaj storiti ob zagonu."
+msgstr "Seznam x-content/* vrste pri katerih bo uveljavljen ukaz \"Ne naredi ničesar\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid "List of x-content/* types set to \"Open Folder\""
-msgstr "Seznam x-content/* vrste za vprašanje kaj storiti ob zagonu."
+msgstr "Seznam x-content/* vrste pri katerih bo izveden ukaz \"Odpri mapo\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "List of x-content/* types where the preferred application will be launched"
-msgstr "Seznam x-content/* vrste kjer bi se moralo odpreti okno mape."
+msgstr "Seznam x-content/* vrste kjer bo zagnan prednostni program."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Maximum handled files in a folder"
@@ -3603,58 +3600,58 @@ msgid "Move the open folder out of the trash to \"%s\""
 msgstr "Premakni izbrano mapo iz smeti v \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:7309
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
-msgstr[0] "Premakni izbrano sliko v mapo smeti"
-msgstr[1] "Premakni odprto mapo v Smeti"
-msgstr[2] "Premakni odprto mapo v Smeti"
-msgstr[3] "Premakni odprto mapo v Smeti"
+msgstr[0] "Prestavi izbrane mape iz smeti \"%s\""
+msgstr[1] "Prestavi izbrano mapo iz smeti \"%s\""
+msgstr[2] "Prestavi izbrani mapi iz smeti \"%s\""
+msgstr[3] "Prestavi izbrane mape iz smeti \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:7313
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
-msgstr[0] "Premakni izbrano sliko v mapo smeti"
-msgstr[1] "Premakni odprto mapo v Smeti"
-msgstr[2] "Premakni odprto mapo v Smeti"
-msgstr[3] "Premakni odprto mapo v Smeti"
+msgstr[0] "Prestavi izbrane mape iz smeti"
+msgstr[1] "Prestavi izbrano mapo iz smeti"
+msgstr[2] "Prestavi izbrani mapi iz smeti"
+msgstr[3] "Prestavi izbrane mape iz smeti"
 
 #: ../src/file-manager/fm-directory-view.c:7319
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
-msgstr[0] "Premakne izbrano datoteko ali mapo v smeti"
-msgstr[1] "Prestavi vsak izbran predmet v Smeti"
-msgstr[2] "Prestavi vsak izbran predmet v Smeti"
-msgstr[3] "Prestavi vsak izbran predmet v Smeti"
+msgstr[0] "Prestavi izbrane datoteke iz smeti \"%s\""
+msgstr[1] "Prestavi izbrano datoteko iz smeti \"%s\""
+msgstr[2] "Prestavi izbrani datoteki iz smeti \"%s\""
+msgstr[3] "Prestavi izbrane datoteke iz smeti \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:7323
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
-msgstr[0] "Premakne izbrano datoteko ali mapo v smeti"
-msgstr[1] "Prestavi vsak izbran predmet v Smeti"
-msgstr[2] "Prestavi vsak izbran predmet v Smeti"
-msgstr[3] "Prestavi vsak izbran predmet v Smeti"
+msgstr[0] "Prestavi izbrane datoteke iz smeti"
+msgstr[1] "Prestavi izbrano datoteko iz smeti"
+msgstr[2] "Prestavi izbrani datoteki iz smeti"
+msgstr[3] "Prestavi izbrane datoteke iz smeti"
 
 #: ../src/file-manager/fm-directory-view.c:7329
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
-msgstr[0] "Prestavi vsak izbran predmet v Smeti"
-msgstr[1] "Prestavi vsak izbran predmet v Smeti"
-msgstr[2] "Prestavi vsak izbran predmet v Smeti"
-msgstr[3] "Prestavi vsak izbran predmet v Smeti"
+msgstr[0] "Prestavi izbrane predmete iz smeti \"%s\""
+msgstr[1] "Prestavi izbran predmet iz smeti \"%s\""
+msgstr[2] "Prestavi izbrana predmeta iz smeti \"%s\""
+msgstr[3] "Prestavi izbrane predmete iz smeti \"%s\""
 
 #: ../src/file-manager/fm-directory-view.c:7333
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
-msgstr[0] "Prestavi vsak izbran predmet v Smeti"
-msgstr[1] "Prestavi vsak izbran predmet v Smeti"
-msgstr[2] "Prestavi vsak izbran predmet v Smeti"
-msgstr[3] "Prestavi vsak izbran predmet v Smeti"
+msgstr[0] "Prestavi izbrane predmete iz smeti"
+msgstr[1] "Prestavi izbran predmet iz smeti"
+msgstr[2] "Prestavi izbrana predmeta iz smeti"
+msgstr[3] "Prestavi izbrane predmete iz smeti"
 
 #. add the "open in new window" menu item
 #: ../src/file-manager/fm-directory-view.c:7551
@@ -4093,9 +4090,8 @@ msgid "%s Visible Columns"
 msgstr "%s vidni stolpci"
 
 #: ../src/file-manager/fm-list-view.c:2104
-#, fuzzy
 msgid "Choose the order of information to appear in this folder:"
-msgstr "Izberite vrstni red podatkov, ki naj se pojavijo v tej mapi."
+msgstr "Izberite vrstni red podatkov, ki naj se pojavijo v tej mapi:"
 
 #. name, stock id
 #. label, accelerator
@@ -4987,7 +4983,7 @@ msgstr "P_rivzeta raven povečave:"
 
 #: ../src/nautilus-file-management-properties.glade.h:54
 msgid "Default _zoom level:"
-msgstr "P_rivzeta stopnja povečave:"
+msgstr "P_rivzeta raven povečave:"
 
 #: ../src/nautilus-file-management-properties.glade.h:55
 msgid "Display"
@@ -5069,7 +5065,7 @@ msgstr "_DVD Video:"
 
 #: ../src/nautilus-file-management-properties.glade.h:76
 msgid "_Default zoom level:"
-msgstr "_Privzeta stopnja povečave:"
+msgstr "_Privzeta raven povečave:"
 
 #: ../src/nautilus-file-management-properties.glade.h:77
 msgid "_Double click to open items"
