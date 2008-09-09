@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-02 16:31-0400\n"
+"POT-Creation-Date: 2008-09-09 16:08-0400\n"
 "PO-Revision-Date: 2008-09-02 16:43-0400\n"
 "Last-Translator: Og Maciel <ogmaciel@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -1344,7 +1344,7 @@ msgstr "_Usar o padrão"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1411
+#: ../src/file-manager/fm-list-view.c:1461
 msgid "Name"
 msgstr "Nome"
 
@@ -1604,7 +1604,7 @@ msgstr[1] "aproximadamente %'d horas"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5562
+#: ../libnautilus-private/nautilus-file.c:5577
 #: ../src/file-manager/fm-directory-view.c:9351
 #, c-format
 msgid "Link to %s"
@@ -2270,24 +2270,24 @@ msgid "Setting permissions"
 msgstr "Definindo permissões"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:5395
+#: ../libnautilus-private/nautilus-file-operations.c:5398
 msgid "untitled folder"
 msgstr "pasta sem título"
 
 #. localizers: the initial name of a new empty file
-#: ../libnautilus-private/nautilus-file-operations.c:5403
+#: ../libnautilus-private/nautilus-file-operations.c:5406
 msgid "new file"
 msgstr "novo arquivo"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5527
+#: ../libnautilus-private/nautilus-file-operations.c:5554
 msgid "Error while creating directory %B."
 msgstr "Erro ao criar diretório %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5529
+#: ../libnautilus-private/nautilus-file-operations.c:5556
 msgid "Error while creating file %B."
 msgstr "Erro ao criar arquivo %B."
 
-#: ../libnautilus-private/nautilus-file-operations.c:5531
+#: ../libnautilus-private/nautilus-file-operations.c:5558
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "Houve um erro ao criar o diretório em %F."
@@ -2545,15 +2545,15 @@ msgstr "tipo MIME desconhecido"
 msgid "unknown"
 msgstr "desconhecido"
 
-#: ../libnautilus-private/nautilus-file.c:5536
+#: ../libnautilus-private/nautilus-file.c:5551
 msgid "program"
 msgstr "programa"
 
-#: ../libnautilus-private/nautilus-file.c:5556
+#: ../libnautilus-private/nautilus-file.c:5571
 msgid "link"
 msgstr "link"
 
-#: ../libnautilus-private/nautilus-file.c:5578
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link (broken)"
 msgstr "link (quebrado)"
 
@@ -2684,8 +2684,8 @@ msgstr "Visão compacta"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-list-view.c:1466
-#: ../src/file-manager/fm-list-view.c:2882
+#: ../src/file-manager/fm-list-view.c:1516
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "List View"
 msgstr "Visão de lista"
 
@@ -2776,7 +2776,7 @@ msgstr "Lixeira"
 msgid "Network Servers"
 msgstr "Servidores de rede"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2663
+#: ../libnautilus-private/nautilus-icon-container.c:2666
 msgid "The selection rectangle"
 msgstr "O retângulo da seleção"
 
@@ -3008,12 +3008,12 @@ msgstr "_Adicionar"
 msgid "Add Application"
 msgstr "Adicionar aplicativo"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:80
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Falha ao abrir, você gostaria de escolher outro aplicativo?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:82
-#: ../libnautilus-private/nautilus-program-choosing.c:113
+#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:112
 #, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
@@ -3022,12 +3022,12 @@ msgstr ""
 "\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:86
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Falha ao abrir, você gostaria de escolher outra ação?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:88
-#: ../libnautilus-private/nautilus-program-choosing.c:120
+#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:119
 #, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
@@ -3036,7 +3036,7 @@ msgstr ""
 "A ação padrão não pode abrir \"%s\" porque ela não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:116
+#: ../libnautilus-private/nautilus-program-choosing.c:115
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3044,7 +3044,7 @@ msgstr ""
 "Nenhum outro aplicativo está disponível para ver esse arquivo. Se você "
 "copiar este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:122
+#: ../libnautilus-private/nautilus-program-choosing.c:121
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3052,33 +3052,33 @@ msgstr ""
 "Nenhuma outra ação está disponível para ver este arquivo. Se você copiar "
 "este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:361
+#: ../libnautilus-private/nautilus-program-choosing.c:360
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr ""
 "Desculpe, mas não é possível executar comandos a partir de um site remoto."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:363
+#: ../libnautilus-private/nautilus-program-choosing.c:362
 msgid "This is disabled due to security considerations."
 msgstr "Desabilitado por questões de segurança."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:374
-#: ../libnautilus-private/nautilus-program-choosing.c:442
+#: ../libnautilus-private/nautilus-program-choosing.c:373
+#: ../libnautilus-private/nautilus-program-choosing.c:441
 msgid "There was an error launching the application."
 msgstr "Houve um erro ao lançar o aplicativo."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:399
-#: ../libnautilus-private/nautilus-program-choosing.c:410
+#: ../libnautilus-private/nautilus-program-choosing.c:398
+#: ../libnautilus-private/nautilus-program-choosing.c:409
 msgid "This drop target only supports local files."
 msgstr "Esse alvo só tem suporte para arquivos locais."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:400
+#: ../libnautilus-private/nautilus-program-choosing.c:399
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Para abrir arquivos externos, copie-os para uma pasta local e arraste-os "
 "novamente."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:411
+#: ../libnautilus-private/nautilus-program-choosing.c:410
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3086,7 +3086,7 @@ msgstr ""
 "Para abrir arquivos externos, copie-os para uma pasta local e arraste-os "
 "novamente. Os arquivos locais que você arrastou já foram abertos."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:440
+#: ../libnautilus-private/nautilus-program-choosing.c:439
 msgid "Details: "
 msgstr "Detalhes: "
 
@@ -4489,40 +4489,40 @@ msgstr "(Vazio)"
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: ../src/file-manager/fm-list-view.c:2085
+#: ../src/file-manager/fm-list-view.c:2135
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Colunas visíveis"
 
-#: ../src/file-manager/fm-list-view.c:2104
+#: ../src/file-manager/fm-list-view.c:2154
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Escolha a ordem na qual as informações aparecerão nesta pasta:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2158
+#: ../src/file-manager/fm-list-view.c:2208
 msgid "Visible _Columns..."
 msgstr "_Colunas visíveis..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2159
+#: ../src/file-manager/fm-list-view.c:2209
 msgid "Select the columns visible in this folder"
 msgstr "Seleciona as colunas visíveis nesta pasta"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2884
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:2885
+#: ../src/file-manager/fm-list-view.c:2935
 msgid "The list view encountered an error."
 msgstr "A visão de lista encontrou um erro."
 
-#: ../src/file-manager/fm-list-view.c:2886
+#: ../src/file-manager/fm-list-view.c:2936
 msgid "The list view encountered an error while starting up."
 msgstr "A visão de lista encontrou um erro ao iniciar."
 
-#: ../src/file-manager/fm-list-view.c:2887
+#: ../src/file-manager/fm-list-view.c:2937
 msgid "Display this location with the list view."
 msgstr "Exibir esta localização com a visão de lista."
 
@@ -5828,246 +5828,229 @@ msgstr "nautilus: --check não pode ser usado com outras opções.\n"
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry não pode ser usado com mais de uma URI.\n"
 
-#. This is a little joke, shows up occasionally. I only
-#. * implemented this feature so I could use this joke.
-#.
-#: ../src/nautilus-navigation-window-menus.c:133
-msgid "Are you sure you want to forget history?"
-msgstr "Você tem certeza que quer esquecer o histórico?"
-
-#. Translators: This is part of a joke and is paired with "Are you sure you want to forget history?"
-#: ../src/nautilus-navigation-window-menus.c:135
-msgid "If you do, you will be doomed to repeat it."
-msgstr "Se tiver, você estará condenado a repeti-lo."
-
-#: ../src/nautilus-navigation-window-menus.c:137
+#: ../src/nautilus-navigation-window-menus.c:123
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "Você tem certeza que quer limpar a lista de localizações que visitou?"
 
-#: ../src/nautilus-navigation-window-menus.c:139
-msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr ""
-"Se você limpar a lista de localizações, elas serão permanentemente excluídas."
-
-#: ../src/nautilus-navigation-window-menus.c:336
+#: ../src/nautilus-navigation-window-menus.c:317
 #: ../src/nautilus-window-bookmarks.c:98
 #, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "A localização \"%s\" não existe."
 
-#: ../src/nautilus-navigation-window-menus.c:338
+#: ../src/nautilus-navigation-window-menus.c:319
 msgid "The history location doesn't exist."
 msgstr "A localização do histórico não existe."
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:790
+#: ../src/nautilus-navigation-window-menus.c:771
 msgid "_Go"
 msgstr "_Ir"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:791
+#: ../src/nautilus-navigation-window-menus.c:772
 msgid "_Bookmarks"
 msgstr "_Marcadores"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:792
+#: ../src/nautilus-navigation-window-menus.c:773
 msgid "_Tabs"
 msgstr "A_bas"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:793
+#: ../src/nautilus-navigation-window-menus.c:774
 msgid "New _Window"
 msgstr "Nova _janela"
 
-#: ../src/nautilus-navigation-window-menus.c:794
+#: ../src/nautilus-navigation-window-menus.c:775
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Abre outra janela do Nautilus para a localização exibida"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:796
+#: ../src/nautilus-navigation-window-menus.c:777
 msgid "New _Tab"
 msgstr "Nova a_ba"
 
-#: ../src/nautilus-navigation-window-menus.c:797
+#: ../src/nautilus-navigation-window-menus.c:778
 msgid "Open another tab for the displayed location"
 msgstr "Abre outra aba para a localização exibida"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:799
+#: ../src/nautilus-navigation-window-menus.c:780
 msgid "Open Folder W_indow"
 msgstr "Abrir _janela de pasta"
 
-#: ../src/nautilus-navigation-window-menus.c:800
+#: ../src/nautilus-navigation-window-menus.c:781
 msgid "Open a folder window for the displayed location"
 msgstr "Abre uma janela de pasta para a localização exibida"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:802
+#: ../src/nautilus-navigation-window-menus.c:783
 msgid "Close _All Windows"
 msgstr "Fechar _todas as janelas"
 
-#: ../src/nautilus-navigation-window-menus.c:803
+#: ../src/nautilus-navigation-window-menus.c:784
 msgid "Close all Navigation windows"
 msgstr "Fecha todas as janelas de navegação"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:805
+#: ../src/nautilus-navigation-window-menus.c:786
 msgid "_Location..."
 msgstr "_Localização..."
 
-#: ../src/nautilus-navigation-window-menus.c:806
+#: ../src/nautilus-navigation-window-menus.c:787
 #: ../src/nautilus-spatial-window.c:891
 msgid "Specify a location to open"
 msgstr "Especifique uma localização para abrir"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:808
+#: ../src/nautilus-navigation-window-menus.c:789
 msgid "Clea_r History"
 msgstr "Limpa_r histórico"
 
-#: ../src/nautilus-navigation-window-menus.c:809
+#: ../src/nautilus-navigation-window-menus.c:790
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Limpa o conteúdo do menu Ir e das listas voltar/avançar"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:811
+#: ../src/nautilus-navigation-window-menus.c:792
 #: ../src/nautilus-spatial-window.c:899
 msgid "_Add Bookmark"
 msgstr "_Adicionar marcador"
 
-#: ../src/nautilus-navigation-window-menus.c:812
+#: ../src/nautilus-navigation-window-menus.c:793
 #: ../src/nautilus-spatial-window.c:900
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Inclui um marcador para a localização atual neste menu"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:814
+#: ../src/nautilus-navigation-window-menus.c:795
 #: ../src/nautilus-spatial-window.c:902
 msgid "_Edit Bookmarks..."
 msgstr "_Editar marcadores..."
 
-#: ../src/nautilus-navigation-window-menus.c:815
+#: ../src/nautilus-navigation-window-menus.c:796
 #: ../src/nautilus-spatial-window.c:903
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Exibe uma janela que permite editar os marcadores deste menu"
 
 #. name, stock id, label
-#: ../src/nautilus-navigation-window-menus.c:817
+#: ../src/nautilus-navigation-window-menus.c:798
 #: ../src/nautilus-spatial-window.c:905
 msgid "_Search for Files..."
 msgstr "_Pesquisar por arquivos..."
 
-#: ../src/nautilus-navigation-window-menus.c:818
+#: ../src/nautilus-navigation-window-menus.c:799
 #: ../src/nautilus-spatial-window.c:906
 msgid "Locate documents and folders on this computer by name or content"
 msgstr "Localiza documentos e pastas neste computador por nome ou conteúdo"
 
-#: ../src/nautilus-navigation-window-menus.c:821
+#: ../src/nautilus-navigation-window-menus.c:802
 msgid "_Previous Tab"
 msgstr "Aba a_nterior"
 
-#: ../src/nautilus-navigation-window-menus.c:822
+#: ../src/nautilus-navigation-window-menus.c:803
 msgid "Activate previous tab"
 msgstr "Ativa a aba anterior"
 
-#: ../src/nautilus-navigation-window-menus.c:824
+#: ../src/nautilus-navigation-window-menus.c:805
 msgid "_Next Tab"
 msgstr "_Próxima aba"
 
-#: ../src/nautilus-navigation-window-menus.c:825
+#: ../src/nautilus-navigation-window-menus.c:806
 msgid "Activate next tab"
 msgstr "Ativa a próxima aba"
 
-#: ../src/nautilus-navigation-window-menus.c:827
+#: ../src/nautilus-navigation-window-menus.c:808
 #: ../src/nautilus-navigation-window.c:265
 msgid "Move Tab _Left"
 msgstr "Mover aba para _esquerda"
 
-#: ../src/nautilus-navigation-window-menus.c:828
+#: ../src/nautilus-navigation-window-menus.c:809
 msgid "Move current tab to left"
 msgstr "Move a aba atual para a esquerda"
 
-#: ../src/nautilus-navigation-window-menus.c:830
+#: ../src/nautilus-navigation-window-menus.c:811
 #: ../src/nautilus-navigation-window.c:273
 msgid "Move Tab _Right"
 msgstr "Mover aba para _direita"
 
-#: ../src/nautilus-navigation-window-menus.c:831
+#: ../src/nautilus-navigation-window-menus.c:812
 msgid "Move current tab to right"
 msgstr "Move a aba atual para a direita"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:838
+#: ../src/nautilus-navigation-window-menus.c:819
 msgid "_Main Toolbar"
 msgstr "Barra de ferramentas _principal"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:839
+#: ../src/nautilus-navigation-window-menus.c:820
 msgid "Change the visibility of this window's main toolbar"
 msgstr "Altera a visibilidade da barra de ferramentas principal desta janela"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:843
+#: ../src/nautilus-navigation-window-menus.c:824
 msgid "_Side Pane"
 msgstr "Painel _lateral"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:844
+#: ../src/nautilus-navigation-window-menus.c:825
 msgid "Change the visibility of this window's side pane"
 msgstr "Alterar a visibilidade do painel lateral desta janela"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:848
+#: ../src/nautilus-navigation-window-menus.c:829
 msgid "Location _Bar"
 msgstr "_Barra de localização"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:849
+#: ../src/nautilus-navigation-window-menus.c:830
 msgid "Change the visibility of this window's location bar"
 msgstr "Altera a visibilidade da barra de localização desta janela"
 
 #. is_active
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-navigation-window-menus.c:853
+#: ../src/nautilus-navigation-window-menus.c:834
 msgid "St_atusbar"
 msgstr "Barra de _status"
 
 #. tooltip
-#: ../src/nautilus-navigation-window-menus.c:854
+#: ../src/nautilus-navigation-window-menus.c:835
 msgid "Change the visibility of this window's statusbar"
 msgstr "Altera a visibilidade da barra de status desta janela"
 
-#: ../src/nautilus-navigation-window-menus.c:878
+#: ../src/nautilus-navigation-window-menus.c:859
 msgid "_Back"
 msgstr "_Voltar"
 
-#: ../src/nautilus-navigation-window-menus.c:880
+#: ../src/nautilus-navigation-window-menus.c:861
 msgid "Go to the previous visited location"
 msgstr "Vai para a última localização visitada"
 
-#: ../src/nautilus-navigation-window-menus.c:881
+#: ../src/nautilus-navigation-window-menus.c:862
 msgid "Back history"
 msgstr "Voltar no histórico"
 
-#: ../src/nautilus-navigation-window-menus.c:895
+#: ../src/nautilus-navigation-window-menus.c:876
 msgid "_Forward"
 msgstr "_Avançar"
 
-#: ../src/nautilus-navigation-window-menus.c:897
+#: ../src/nautilus-navigation-window-menus.c:878
 msgid "Go to the next visited location"
 msgstr "Vai para a próxima localização visitada"
 
-#: ../src/nautilus-navigation-window-menus.c:898
+#: ../src/nautilus-navigation-window-menus.c:879
 msgid "Forward history"
 msgstr "Avançar no histórico"
 
-#: ../src/nautilus-navigation-window-menus.c:912
+#: ../src/nautilus-navigation-window-menus.c:893
 msgid "_Search"
 msgstr "_Pesquisa"
 
@@ -6666,7 +6649,7 @@ msgstr "Desfaz a última alteração de texto"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:806
 msgid "Open _Parent"
-msgstr "Abrir Pasta _Pai"
+msgstr "Abrir pasta _pai"
 
 #: ../src/nautilus-window-menus.c:807
 msgid "Open the parent folder"
@@ -6905,6 +6888,18 @@ msgstr "Zoom"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Define o nível de aproximação da visão atual"
+
+#~ msgid "Are you sure you want to forget history?"
+#~ msgstr "Você tem certeza que quer esquecer o histórico?"
+
+#~ msgid "If you do, you will be doomed to repeat it."
+#~ msgstr "Se tiver, você estará condenado a repeti-lo."
+
+#~ msgid ""
+#~ "If you clear the list of locations, they will be permanently deleted."
+#~ msgstr ""
+#~ "Se você limpar a lista de localizações, elas serão permanentemente "
+#~ "excluídas."
 
 #~ msgid "Create Folder"
 #~ msgstr "Criar pasta"
