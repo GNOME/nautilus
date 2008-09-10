@@ -187,25 +187,6 @@ fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
 	}
 }
 
-static void
-update_captions (GQuark **attributes_p)
-{
-	char **attribute_names;
-	int i;
-
-	attribute_names = eel_preferences_get_string_array (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
-
-	g_free (*attributes_p);
-	*attributes_p = g_new (GQuark, g_strv_length (attribute_names) + 1);
-
-	for (i = 0; attribute_names[i] != NULL; ++i) {
-		(*attributes_p)[i] = g_quark_from_string (attribute_names[i]);
-	}
-	(*attributes_p)[i] = 0;
-	
-	g_strfreev (attribute_names);
-}
-
 /*
  * Get the preference for which caption text should appear
  * beneath icons.
@@ -216,10 +197,8 @@ fm_icon_container_get_icon_text_attributes_from_preferences (void)
 	static GQuark *attributes = NULL;
 
 	if (attributes == NULL) {
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					      (EelPreferencesCallback)update_captions,
-					      &attributes);
-		update_captions (&attributes);
+		eel_preferences_add_auto_string_array_as_quarks (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+								 &attributes);
 	}
 	
 	/* We don't need to sanity check the attributes list even though it came

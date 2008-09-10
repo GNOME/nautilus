@@ -1,3 +1,15 @@
+2008-09-10  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-icon-container.c
+	(fm_icon_container_get_icon_text_attributes_from_preferences):
+	Use eel_preferences_add_auto_string_array_as_quarks(), instead of
+	registering a custom callback function - which is not guaranteed to be
+	run before other (instance) callbacks. Thanks to Cosimo Cecchi for the
+	problem analysis. Fixes #551576.
+
+	* configure.in:
+	Depend on eel 2.24.0.
+
 2008-09-08  Christian Neumair  <cneumair@gnome.org>
 
 	* configure.in: post-release bump to 2.24.0.
