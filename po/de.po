@@ -39,8 +39,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-03 20:37+0200\n"
-"PO-Revision-Date: 2008-09-03 20:38+0200\n"
+"POT-Creation-Date: 2008-09-11 08:27+0200\n"
+"PO-Revision-Date: 2008-09-11 08:27+0200\n"
 "Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1398,7 +1398,7 @@ msgstr "V_orgabe verwenden"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1411
+#: ../src/file-manager/fm-list-view.c:1461
 msgid "Name"
 msgstr "Name"
 
@@ -1659,7 +1659,7 @@ msgstr[1] "circa %'d Stunden"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5562
+#: ../libnautilus-private/nautilus-file.c:5577
 #: ../src/file-manager/fm-directory-view.c:9351
 #, c-format
 msgid "Link to %s"
@@ -2616,15 +2616,15 @@ msgstr "unbekannter MIME-Typ"
 msgid "unknown"
 msgstr "unbekannt"
 
-#: ../libnautilus-private/nautilus-file.c:5536
+#: ../libnautilus-private/nautilus-file.c:5551
 msgid "program"
 msgstr "Programm"
 
-#: ../libnautilus-private/nautilus-file.c:5556
+#: ../libnautilus-private/nautilus-file.c:5571
 msgid "link"
 msgstr "Verknüpfung"
 
-#: ../libnautilus-private/nautilus-file.c:5578
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link (broken)"
 msgstr "Verknüpfung (fehlerhaft)"
 
@@ -2739,7 +2739,7 @@ msgstr "Dateien nach Dateinamen und ihren Eigenschaften suchen"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
-#: ../src/file-manager/fm-icon-container.c:582
+#: ../src/file-manager/fm-icon-container.c:561
 #: ../src/file-manager/fm-icon-view.c:3006
 msgid "Icon View"
 msgstr "Symbolansicht"
@@ -2754,8 +2754,8 @@ msgstr "Engere Ansicht"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-list-view.c:1466
-#: ../src/file-manager/fm-list-view.c:2882
+#: ../src/file-manager/fm-list-view.c:1516
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "List View"
 msgstr "Listenansicht"
 
@@ -2847,7 +2847,7 @@ msgstr "Müll"
 msgid "Network Servers"
 msgstr "Netzwerk-Server"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2663
+#: ../libnautilus-private/nautilus-icon-container.c:2666
 msgid "The selection rectangle"
 msgstr "Das Auswähl-Rechteck"
 
@@ -3082,12 +3082,12 @@ msgstr "_Hinzufügen"
 msgid "Add Application"
 msgstr "Anwendung hinzufügen"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:80
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Öffnen gescheitert. Wollen Sie eine andere Anwendung wählen?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:82
-#: ../libnautilus-private/nautilus-program-choosing.c:113
+#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:112
 #, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
@@ -3096,12 +3096,12 @@ msgstr ""
 "»%s« kann »%s« nicht öffnen, da »%s« nicht auf Dateien an »%s«-Orten zugreifen "
 "kann."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:86
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Öffnen fehlgeschlagen. Möchten Sie eine andere Aktion ausführen?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:88
-#: ../libnautilus-private/nautilus-program-choosing.c:120
+#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:119
 #, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
@@ -3110,7 +3110,7 @@ msgstr ""
 "Die Vorgabeaktion kann »%s« nicht öffnen, da sie nicht auf Dateien an »%s«-"
 "Orten zugreifen kann."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:116
+#: ../libnautilus-private/nautilus-program-choosing.c:115
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3119,7 +3119,7 @@ msgstr ""
 "Möglicherweise können Sie sie öffnen, wenn Sie sie auf Ihren Computer "
 "kopieren."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:122
+#: ../libnautilus-private/nautilus-program-choosing.c:121
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3128,34 +3128,34 @@ msgstr ""
 "Möglicherweise können Sie sie öffnen, wenn Sie sie auf Ihren Computer "
 "kopieren."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:361
+#: ../libnautilus-private/nautilus-program-choosing.c:360
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr ""
 "Leider dürfen Sie keine Befehle von einer entfernten Gegenstelle aus "
 "ausführen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:363
+#: ../libnautilus-private/nautilus-program-choosing.c:362
 msgid "This is disabled due to security considerations."
 msgstr "Dies ist auf Grund von Sicherheitserwägungen deaktiviert."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:374
-#: ../libnautilus-private/nautilus-program-choosing.c:442
+#: ../libnautilus-private/nautilus-program-choosing.c:373
+#: ../libnautilus-private/nautilus-program-choosing.c:441
 msgid "There was an error launching the application."
 msgstr "Beim Ausführen der Anwendung ist ein Fehler aufgetreten."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:399
-#: ../libnautilus-private/nautilus-program-choosing.c:410
+#: ../libnautilus-private/nautilus-program-choosing.c:398
+#: ../libnautilus-private/nautilus-program-choosing.c:409
 msgid "This drop target only supports local files."
 msgstr "Dieses Ablegeziel unterstützt ausschließlich lokale Dateien."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:400
+#: ../libnautilus-private/nautilus-program-choosing.c:399
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Um nichtlokale Dateien zu öffnen, müssen Sie sie in einen lokalen Ordner "
 "kopieren und dann noch einmal hier ablegen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:411
+#: ../libnautilus-private/nautilus-program-choosing.c:410
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3164,7 +3164,7 @@ msgstr ""
 "kopieren und dann noch einmal hier ablegen. Die lokalen, abgelegten Dateien "
 "wurden bereits geöffnet."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:440
+#: ../libnautilus-private/nautilus-program-choosing.c:439
 msgid "Details: "
 msgstr "Details: "
 
@@ -4556,7 +4556,7 @@ msgstr "Diesen Ort mit der Symbol-Ansicht anzeigen"
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:3022
 msgid "_Compact"
-msgstr "Enge_r"
+msgstr "_Enger"
 
 #: ../src/file-manager/fm-icon-view.c:3023
 msgid "The compact view encountered an error."
@@ -4580,12 +4580,12 @@ msgstr "(Leer)"
 msgid "Loading..."
 msgstr "Ladevorgang …"
 
-#: ../src/file-manager/fm-list-view.c:2085
+#: ../src/file-manager/fm-list-view.c:2135
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s anzuzeigende Spalten"
 
-#: ../src/file-manager/fm-list-view.c:2104
+#: ../src/file-manager/fm-list-view.c:2154
 msgid "Choose the order of information to appear in this folder:"
 msgstr ""
 "Legen Sie die Reihenfolge fest, in der in diesem Ordner Informationen "
@@ -4594,29 +4594,29 @@ msgstr ""
 # CHECK
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2158
+#: ../src/file-manager/fm-list-view.c:2208
 msgid "Visible _Columns..."
 msgstr "Anzuzeigende _Spalten …"
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2159
+#: ../src/file-manager/fm-list-view.c:2209
 msgid "Select the columns visible in this folder"
 msgstr "Die in diesem Ordner anzuzeigenden Spalten festlegen"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2884
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "_List"
 msgstr "_Liste"
 
-#: ../src/file-manager/fm-list-view.c:2885
+#: ../src/file-manager/fm-list-view.c:2935
 msgid "The list view encountered an error."
 msgstr "Die Symbol-Ansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-list-view.c:2886
+#: ../src/file-manager/fm-list-view.c:2936
 msgid "The list view encountered an error while starting up."
 msgstr "Die Listenansicht stieß beim Starten auf einen Fehler."
 
-#: ../src/file-manager/fm-list-view.c:2887
+#: ../src/file-manager/fm-list-view.c:2937
 msgid "Display this location with the list view."
 msgstr "Diesen Ort mit der Listenansicht anzeigen"
 
