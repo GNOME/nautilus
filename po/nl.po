@@ -29,8 +29,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-03 04:27+0000\n"
-"PO-Revision-Date: 2008-09-07 23:49+0200\n"
+"POT-Creation-Date: 2008-09-07 21:51+0000\n"
+"PO-Revision-Date: 2008-09-11 14:42+0200\n"
 "Last-Translator: Reinout van Schouwen <reinouts@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
@@ -351,20 +351,21 @@ msgid ""
 "smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
 "larger (200%), largest (400%)"
 msgstr ""
-"Een tekenreeks die aangeeft hoe delen van zeer lange bestandsnamen vervangen dienen te worden door "
-"puntjes, afhankelijk van het zoomniveau. Elk item in de lijst is van de vorm "
-"\"Zoomniveau:Integer\". Voor elk aangegeven zoomniveau geldt dat als de gegeven "
-"integer groter is dan 0, zal de bestandsnaam het gegeven aantal regels niet overschrijden. "
-"Als de integer 0 of kleiner is, wordt er geen grens gesteld aan het aangegeven zoomniveau. "
-"Een standaarditem van de vorm \"Integer\" zonder enig aangegeven zoomniveau is ook toegestaan. "
-"Het definieert het maximum aantal regels voor alle andere zoomniveaus. "
-"Voorbeelden: 0 - te lange bestandsnamen altijd weergeven; 3 - bestandsnamen "
-"inkorten als ze drie regels overschrijden; smallest:5,smaller:4,0 - "
-"bestandsnamen inkorten als ze vijf regels voor zoomniveau \"smallest\" overschrijden. "
-"Bestandsnamen inkorten als ze vier regels overschrijden voor zoomniveau \"smaller\". "
-"Bestandsnamen niet inkorten voor andere zoomniveaus. Beschikbare zoomniveaus: "
-"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
-"larger (200%), largest (400%)"
+"Een tekenreeks die aangeeft hoe delen van zeer lange bestandsnamen vervangen "
+"dienen te worden door puntjes, afhankelijk van het zoomniveau. Elk item in "
+"de lijst is van de vorm \"Zoomniveau:Integer\". Voor elk aangegeven "
+"zoomniveau geldt dat als de gegeven integer groter is dan 0, zal de "
+"bestandsnaam het gegeven aantal regels niet overschrijden. Als de integer 0 "
+"of kleiner is, wordt er geen grens gesteld aan het aangegeven zoomniveau. "
+"Een standaarditem van de vorm \"Integer\" zonder enig aangegeven zoomniveau "
+"is ook toegestaan. Het definieert het maximum aantal regels voor alle andere "
+"zoomniveaus. Voorbeelden: 0 - te lange bestandsnamen altijd weergeven; 3 - "
+"bestandsnamen inkorten als ze drie regels overschrijden; smallest:5,"
+"smaller:4,0 - bestandsnamen inkorten als ze vijf regels voor zoomniveau "
+"\"smallest\" overschrijden. Bestandsnamen inkorten als ze vier regels "
+"overschrijden voor zoomniveau \"smaller\". Bestandsnamen niet inkorten voor "
+"andere zoomniveaus. Beschikbare zoomniveaus: smallest (33%), smaller (50%), "
+"small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -382,9 +383,10 @@ msgid ""
 "limit is imposed on the number of displayed lines."
 msgstr ""
 "Een integer die aangeeft hoe delen van zeer lange bestandsnamen vervangen "
-"dienen te worden door puntjes op het bureaublad. Als het getal groter is dan 0, "
-"dan zal de bestandsnaam het gegeven aantal regels niet overschrijden. Als het "
-"getal 0 of kleiner is, dan wordt geen grens gesteld aan het aantal weergegeven regels."
+"dienen te worden door puntjes op het bureaublad. Als het getal groter is dan "
+"0, dan zal de bestandsnaam het gegeven aantal regels niet overschrijden. Als "
+"het getal 0 of kleiner is, dan wordt geen grens gesteld aan het aantal "
+"weergegeven regels."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid ""
@@ -564,9 +566,9 @@ msgid ""
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
 msgstr ""
-"Als ingesteld op \"after_current_tab\" dan worden nieuwe tabbladen ingevoegd na "
-"het huidige tabblad. Als ingesteld op \"end\" dan worden nieuwe tabbladen toegevoegd "
-"aan het eind van de tabbladenlijst."
+"Als ingesteld op \"after_current_tab\" dan worden nieuwe tabbladen ingevoegd "
+"na het huidige tabblad. Als ingesteld op \"end\" dan worden nieuwe tabbladen "
+"toegevoegd aan het eind van de tabbladenlijst."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -831,6 +833,9 @@ msgid ""
 "the preference capplet. No prompt will be shown nor will any matching "
 "application be started on insertion of media matching these types."
 msgstr ""
+"Lijst van x-content/*-types waarvoor de gebruiker \"Do Nothing\" heeft gekozen in "
+"het voorkeurenvenster. Geen vraag zal getoond worden noch zal een corresponderende "
+"toepassing gestart worden bij het invoeren van media overeenkomstig aan deze types."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
@@ -838,6 +843,9 @@ msgid ""
 "the preferences capplet. A folder window will be opened on insertion of "
 "media matching these types."
 msgstr ""
+"Lijst van x-content/*-types waarvoor de gebruiker \"Map openen\" heeft gekozen in "
+"het voorkeurenvenster. Er zal een map geopend worden bij het invoeren van media "
+"overeenkomstig aan deze types."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -845,11 +853,14 @@ msgid ""
 "application in the preference capplet. The preferred application for the "
 "given type will be started on insertion on media matching these types."
 msgstr ""
+"Lijst van x-content/* types waarvoor de gebruiker een toepassing heeft gekozen om "
+"te starten in het voorkeurenvenster. De voorkeurstoepassing voor het gegeven type "
+"zal gestart worden bij het invoeren van media overeenkomstig aan deze types."
+
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "List of x-content/* types set to \"Do Nothing\""
-msgstr ""
-"Lijst met x-content/*-types ingesteld op \"Do Nothing\""
+msgstr "Lijst met x-content/*-types ingesteld op \"Do Nothing\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "List of x-content/* types set to \"Open Folder\""
@@ -859,7 +870,8 @@ msgstr "Lijst met x-content/*-types ingesteld op \"Open Folder\""
 msgid ""
 "List of x-content/* types where the preferred application will be launched"
 msgstr ""
-"Lijst met x-content/*-types waarbij de standaardtoepassing gestart moet worden"
+"Lijst met x-content/*-types waarbij de standaardtoepassing gestart moet "
+"worden"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Maximum handled files in a folder"
@@ -895,7 +907,9 @@ msgstr "Pictogramnaam van netwerkservers"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Never prompt or autorun/autostart programs when media are inserted"
-msgstr "Nooit vragen stellen, of programma's automatisch starten bij invoeren van media"
+msgstr ""
+"Nooit vragen stellen, of programma's automatisch starten bij invoeren van "
+"media"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Only show folders in the tree side pane"
@@ -1286,8 +1300,8 @@ msgid ""
 "You have just inserted a medium with software intended to be automatically "
 "started."
 msgstr ""
-"U heeft zojuist media ingevoerd met software die bedoeld is om "
-"automatisch te starten."
+"U heeft zojuist media ingevoerd met software die bedoeld is om automatisch "
+"te starten."
 
 # opslagmedium/media
 #. fallback to generic greeting
@@ -1371,7 +1385,7 @@ msgstr "S_tandaard gebruiken"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1411
+#: ../src/file-manager/fm-list-view.c:1461
 msgid "Name"
 msgstr "Naam"
 
@@ -1631,7 +1645,7 @@ msgstr[1] "ongeveer %'d uur"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5562
+#: ../libnautilus-private/nautilus-file.c:5577
 #: ../src/file-manager/fm-directory-view.c:9351
 #, c-format
 msgid "Link to %s"
@@ -1927,9 +1941,9 @@ msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
 msgstr ""
-"Om de vrije ruimte op dit apparaat terug te winnen, dient de "
-"prullenbak geleegd te worden. Alle weggegooide objecten op het volumen "
-"zullen definitief verloren gaan."
+"Om de vrije ruimte op dit apparaat terug te winnen, dient de prullenbak "
+"geleegd te worden. Alle weggegooide objecten op het volumen zullen "
+"definitief verloren gaan."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2074
 msgid "Do _not Empty Trash"
@@ -2577,15 +2591,15 @@ msgstr "onbekend MIME-type"
 msgid "unknown"
 msgstr "onbekend"
 
-#: ../libnautilus-private/nautilus-file.c:5536
+#: ../libnautilus-private/nautilus-file.c:5551
 msgid "program"
 msgstr "programma"
 
-#: ../libnautilus-private/nautilus-file.c:5556
+#: ../libnautilus-private/nautilus-file.c:5571
 msgid "link"
 msgstr "verwijzing"
 
-#: ../libnautilus-private/nautilus-file.c:5578
+#: ../libnautilus-private/nautilus-file.c:5593
 msgid "link (broken)"
 msgstr "verwijzing (gebroken)"
 
@@ -2718,8 +2732,8 @@ msgstr "Compact"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-list-view.c:1466
-#: ../src/file-manager/fm-list-view.c:2882
+#: ../src/file-manager/fm-list-view.c:1516
+#: ../src/file-manager/fm-list-view.c:2932
 msgid "List View"
 msgstr "Lijst"
 
@@ -3049,12 +3063,12 @@ msgstr "_Toevoegen"
 msgid "Add Application"
 msgstr "Toepassing toevoegen"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:80
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Openen is mislukt, wilt u een andere toepassing kiezen?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:82
-#: ../libnautilus-private/nautilus-program-choosing.c:113
+#: ../libnautilus-private/nautilus-program-choosing.c:81
+#: ../libnautilus-private/nautilus-program-choosing.c:112
 #, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
@@ -3063,12 +3077,12 @@ msgstr ""
 "‘%s’ kan ‘%s’ niet openen, want ‘%s’ kan bestanden op ‘%s’-locaties niet "
 "benaderen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:86
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Openen is mislukt, wilt u een andere actie kiezen?"
 
-#: ../libnautilus-private/nautilus-program-choosing.c:88
-#: ../libnautilus-private/nautilus-program-choosing.c:120
+#: ../libnautilus-private/nautilus-program-choosing.c:87
+#: ../libnautilus-private/nautilus-program-choosing.c:119
 #, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
@@ -3077,7 +3091,7 @@ msgstr ""
 "De standaardactie kan ‘%s’ niet openen omdat het bestanden op ‘%s’-locaties "
 "niet kan benaderen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:116
+#: ../libnautilus-private/nautilus-program-choosing.c:115
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3085,7 +3099,7 @@ msgstr ""
 "Er zijn geen andere toepassingen beschikbaar om dit bestand weer te geven. "
 "Wellicht kunt u het bestand wel openen als u het naar uw computer kopieert."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:122
+#: ../libnautilus-private/nautilus-program-choosing.c:121
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3094,32 +3108,32 @@ msgstr ""
 "Wellicht kunt u het bestand wel openen als u het naar uw computer kopieert."
 
 # 'Sorry but *you* cannot foobar' of 'Foobar is not possible'?
-#: ../libnautilus-private/nautilus-program-choosing.c:361
+#: ../libnautilus-private/nautilus-program-choosing.c:360
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr "U kunt geen opdrachten vanaf een locatie op afstand uitvoeren."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:363
+#: ../libnautilus-private/nautilus-program-choosing.c:362
 msgid "This is disabled due to security considerations."
 msgstr "Dit is uitgeschakeld vanuit veiligheidsoverwegingen."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:374
-#: ../libnautilus-private/nautilus-program-choosing.c:442
+#: ../libnautilus-private/nautilus-program-choosing.c:373
+#: ../libnautilus-private/nautilus-program-choosing.c:441
 msgid "There was an error launching the application."
 msgstr "Er is een fout opgetreden bij het starten van de toepassing."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:399
-#: ../libnautilus-private/nautilus-program-choosing.c:410
+#: ../libnautilus-private/nautilus-program-choosing.c:398
+#: ../libnautilus-private/nautilus-program-choosing.c:409
 msgid "This drop target only supports local files."
 msgstr "Dit sleepdoel accepteert alleen lokale bestanden."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:400
+#: ../libnautilus-private/nautilus-program-choosing.c:399
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Om niet-lokale bestanden te openen, dient u ze naar een lokale map te "
 "kopiëren en ze opnieuw neer te zetten."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:411
+#: ../libnautilus-private/nautilus-program-choosing.c:410
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3128,7 +3142,7 @@ msgstr ""
 "kopiëren en ze opnieuw neer te zetten. De lokale bestanden die u heeft "
 "gesleept zijn reeds geopend."
 
-#: ../libnautilus-private/nautilus-program-choosing.c:440
+#: ../libnautilus-private/nautilus-program-choosing.c:439
 msgid "Details: "
 msgstr "Details: "
 
@@ -4552,40 +4566,40 @@ msgstr "(Leeg)"
 msgid "Loading..."
 msgstr "Laden…"
 
-#: ../src/file-manager/fm-list-view.c:2085
+#: ../src/file-manager/fm-list-view.c:2135
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s zichtbare kolommen"
 
-#: ../src/file-manager/fm-list-view.c:2104
+#: ../src/file-manager/fm-list-view.c:2154
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Kies de volgorde waarin informatie in deze map verschijnt:"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2158
+#: ../src/file-manager/fm-list-view.c:2208
 msgid "Visible _Columns..."
 msgstr "Zichtbare _kolommen…"
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2159
+#: ../src/file-manager/fm-list-view.c:2209
 msgid "Select the columns visible in this folder"
 msgstr "De zichtbare kolommen in deze map selecteren"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2884
+#: ../src/file-manager/fm-list-view.c:2934
 msgid "_List"
 msgstr "_Lijst"
 
-#: ../src/file-manager/fm-list-view.c:2885
+#: ../src/file-manager/fm-list-view.c:2935
 msgid "The list view encountered an error."
 msgstr "De lijstweergave is op een fout gestuit."
 
-#: ../src/file-manager/fm-list-view.c:2886
+#: ../src/file-manager/fm-list-view.c:2936
 msgid "The list view encountered an error while starting up."
 msgstr "Er trad een fout op bij het starten van de lijstweergave."
 
-#: ../src/file-manager/fm-list-view.c:2887
+#: ../src/file-manager/fm-list-view.c:2937
 msgid "Display this location with the list view."
 msgstr "Deze locatie als lijst weergeven."
 
