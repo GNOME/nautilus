@@ -1,5 +1,22 @@
 2008-09-12  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_set_is_visible),
+	(nautilus_icon_canvas_item_invalidate_label):
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.c
+	(invalidate_labels), (nautilus_icon_container_set_layout_mode),
+	(nautilus_icon_container_set_label_position),
+	(nautilus_icon_container_set_font),
+	(nautilus_icon_container_set_font_size_table),
+	(nautilus_icon_container_set_all_columns_same_width):
+	Add nautilus_icon_canvas_item_invalidate_label(), which removes the
+	associated PangoLayout - used when resetting attributes, e.g. when the
+	zoom level changes or when switching from “text below” to “text
+	besides” mode. Fixes #551862.
+
+2008-09-12  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-directory.c
 	(nautilus_directory_is_local):
 	Always assume that directories in trash are local. Fixes #546353.

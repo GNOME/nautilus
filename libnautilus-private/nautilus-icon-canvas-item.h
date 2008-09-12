@@ -93,6 +93,7 @@ gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanv
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem       *item,
 								EelDPoint                     world_point,
 								GtkCornerType                *corner);
+void        nautilus_icon_canvas_item_invalidate_label         (NautilusIconCanvasItem       *item);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 EelDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
 EelDRect    nautilus_icon_canvas_item_get_text_rectangle       (NautilusIconCanvasItem       *item,

@@ -2294,6 +2294,20 @@ invalidate_label_sizes (NautilusIconContainer *container)
 	}
 }
 
+/* invalidate the entire labels (i.e. their attributes) for all the icons */
+static void
+invalidate_labels (NautilusIconContainer *container)
+{
+	GList *p;
+	NautilusIcon *icon;
+	
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		nautilus_icon_canvas_item_invalidate_label (icon->item);		
+	}
+}
+
 static gboolean
 select_range (NautilusIconContainer *container,
 	      NautilusIcon *icon1,
@@ -7985,7 +7999,7 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->layout_mode = mode;
-	invalidate_label_sizes (container);
+	invalidate_labels (container);
 
 	redo_layout (container);
 
@@ -8001,7 +8015,7 @@ nautilus_icon_container_set_label_position (NautilusIconContainer *container,
 	if (container->details->label_position != position) {
 		container->details->label_position = position;
 
-		invalidate_label_sizes (container);
+		invalidate_labels (container);
 		nautilus_icon_container_request_update_all (container);
 
 		schedule_redo_layout (container);
@@ -8715,7 +8729,7 @@ nautilus_icon_container_set_font (NautilusIconContainer *container,
 	g_free (container->details->font);
 	container->details->font = g_strdup (font);
 
-	invalidate_label_sizes (container);
+	invalidate_labels (container);
 	nautilus_icon_container_request_update_all (container);
 	gtk_widget_queue_draw (GTK_WIDGET (container));
 }
@@ -8739,7 +8753,7 @@ nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 	}
 
 	if (old_font_size != container->details->font_size_table[container->details->zoom_level]) {
-		invalidate_label_sizes (container);
+		invalidate_labels (container);
 		nautilus_icon_container_request_update_all (container);
 	}
 }
@@ -8806,7 +8820,7 @@ nautilus_icon_container_set_all_columns_same_width (NautilusIconContainer *conta
 	if (all_columns_same_width != container->details->all_columns_same_width) {
 		container->details->all_columns_same_width = all_columns_same_width;
 
-		invalidate_label_sizes (container);
+		invalidate_labels (container);
 		nautilus_icon_container_request_update_all (container);
 	}
 }

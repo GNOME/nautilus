@@ -1427,18 +1427,28 @@ nautilus_icon_canvas_item_set_is_visible (NautilusIconCanvasItem       *item,
 	item->details->is_visible = visible;
 
 	if (!visible) {
-		if (item->details->editable_text_layout) {
-			g_object_unref (item->details->editable_text_layout);
-			item->details->editable_text_layout = NULL;
-		}
-		if (item->details->additional_text_layout) {
-			g_object_unref (item->details->additional_text_layout);
-			item->details->additional_text_layout = NULL;
-		}
-		if (item->details->embedded_text_layout) {
-			g_object_unref (item->details->embedded_text_layout);
-			item->details->embedded_text_layout = NULL;
-		}
+		nautilus_icon_canvas_item_invalidate_label (item);
+	}
+}
+
+void
+nautilus_icon_canvas_item_invalidate_label (NautilusIconCanvasItem     *item)
+{
+	nautilus_icon_canvas_item_invalidate_label_size (item);
+
+	if (item->details->editable_text_layout) {
+		g_object_unref (item->details->editable_text_layout);
+		item->details->editable_text_layout = NULL;
+	}
+
+	if (item->details->additional_text_layout) {
+		g_object_unref (item->details->additional_text_layout);
+		item->details->additional_text_layout = NULL;
+	}
+
+	if (item->details->embedded_text_layout) {
+		g_object_unref (item->details->embedded_text_layout);
+		item->details->embedded_text_layout = NULL;
 	}
 }
 
