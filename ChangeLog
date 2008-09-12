@@ -1,3 +1,10 @@
+2008-09-12  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_is_local):
+	Always assume that directories in trash are local. Fixes #546353.
+	Thanks to lvaro Vilanova Vidal.
+
 2008-09-10  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-icon-container.c

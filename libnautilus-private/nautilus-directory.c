@@ -571,7 +571,9 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	if (directory->details->location == NULL) {
 		return TRUE;
 	}
-	return g_file_is_native (directory->details->location);
+
+	return nautilus_directory_is_in_trash (directory) ||
+	       g_file_is_native (directory->details->location);
 }
 
 gboolean
