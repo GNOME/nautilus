@@ -1,3 +1,10 @@
+2008-09-13  Christian Neumair  <cneumair@gnome.org>
+
+	* src/file-manager/fm-properties-window.c (file_has_prefix),
+	(directory_contents_value_field_update):
+	Don't count file size twice if a folder and a nested file is selected
+	at once. Fixes #552015.
+
 2008-09-12  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

@@ -2232,6 +2232,34 @@ append_row (GtkTable *table)
 	return new_row_count - 1;
 }
 
+static gboolean
+file_has_prefix (NautilusFile *file,
+		 GList *prefix_candidates)
+{
+	GList *p;
+	GFile *location, *candidate_location;
+
+	location = nautilus_file_get_location (file);
+
+	for (p = prefix_candidates; p != NULL; p = p->next) {
+		if (file == p->data) {
+			continue;
+		}
+
+		candidate_location = nautilus_file_get_location (NAUTILUS_FILE (p->data));
+		if (g_file_has_prefix (location, candidate_location)) {
+			g_object_unref (location);
+			g_object_unref (candidate_location);
+			return TRUE;
+		}
+		g_object_unref (candidate_location);
+	}
+
+	g_object_unref (location);
+
+	return FALSE;
+}
+
 static void
 directory_contents_value_field_update (FMPropertiesWindow *window)
 {
@@ -2258,6 +2286,12 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 
 	for (l = window->details->target_files; l; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
+
+		if (file_has_prefix (file, window->details->target_files)) {
+			/* don't count nested files twice */
+			continue;
+		}
+
 		if (nautilus_file_is_directory (file)) {
 			file_status = nautilus_file_get_deep_counts (file, 
 					 &directory_count,
