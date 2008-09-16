@@ -878,6 +878,7 @@ show_dialog:
 	/* also use the icon on the dialog */
 	gtk_window_set_title (GTK_WINDOW (dialog), mount_name);
 	gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 	g_object_unref (pixbuf);
 
 	vbox = gtk_vbox_new (FALSE, 12);
