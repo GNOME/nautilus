@@ -2503,7 +2503,8 @@ compare_by_full_path (NautilusFile *file_1, NautilusFile *file_2)
 static int
 nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 NautilusFile *file_2,
-					 gboolean directories_first)
+					 gboolean directories_first,
+					 gboolean reversed)
 {
 	gboolean is_directory_1, is_directory_2;
 
@@ -2521,9 +2522,9 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 	}
 
 	if (file_1->details->sort_order < file_2->details->sort_order) {
-		return -1;
+		return reversed ? 1 : -1;
 	} else if (file_1->details->sort_order > file_2->details->sort_order) {
-		return 1;
+		return reversed ? -1 : 1;
 	}
 
 	return 0;
@@ -2557,7 +2558,7 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 		return 0;
 	}
 	
-	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first);
+	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first, reversed);
 	
 	if (result == 0) {
 		switch (sort_type) {
@@ -2613,12 +2614,12 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 		default:
 			g_return_val_if_reached (0);
 		}
+
+		if (reversed) {
+			result = -result;
+		}
 	}
 
-	if (reversed) {
-		result = -result;
-	}
-	
 	return result;
 }
 
@@ -2672,7 +2673,7 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   
 	
 	/* it is a normal attribute, compare by strings */
 
-	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first);
+	result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first, reversed);
 	
 	if (result == 0) {
 		char *value_1;
@@ -2689,10 +2690,10 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile                   
 
 		g_free (value_1);
 		g_free (value_2);
-	}
 
-	if (reversed) {
-		result = -result;
+		if (reversed) {
+			result = -result;
+		}
 	}
 	
 	return result;

@@ -1,5 +1,14 @@
 2008-09-16  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_compare_for_sort_internal),
+	(nautilus_file_compare_for_sort),
+	(nautilus_file_compare_for_sort_by_attribute_q):
+	Also sort folders before files when the sort criterion is reversed.
+	Fixes #310919.
+
+2008-09-16  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-autorun.c
 	(do_autorun_for_content_type):
 	Center autorun dialog on screen.
