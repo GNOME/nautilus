@@ -1489,10 +1489,11 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		slot = node->data;
+		window = slot->window;
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			nautilus_window_slot_close (slot);
 		} else {
-			nautilus_window_go_home (slot->window);
+			nautilus_window_slot_go_home (slot, FALSE);
 		}
 	}
 

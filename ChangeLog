@@ -1,5 +1,11 @@
 2008-09-16  Christian Neumair  <cneumair@gnome.org>
 
+	* src/nautilus-application.c (mount_removed_callback):
+	Let navigation slot go home, instead of its window. Properly
+	initialize window variable.
+
+2008-09-16  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file.c
 	(nautilus_file_compare_for_sort_internal),
 	(nautilus_file_compare_for_sort),
