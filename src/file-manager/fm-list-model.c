@@ -855,10 +855,7 @@ fm_list_model_multi_drag_data_get (EggTreeMultiDragSource *drag_source,
 	context.path_list = path_list;
 
 	if (!drag_target_list) {
-		drag_target_list = gtk_target_list_new 
-			(drag_types, G_N_ELEMENTS (drag_types));
-		gtk_target_list_add_text_targets (
-			drag_target_list, NAUTILUS_ICON_DND_TEXT);
+		drag_target_list = fm_list_model_get_drag_target_list ();
 	}
 
 	if (gtk_target_list_find (drag_target_list,
@@ -1461,12 +1458,15 @@ fm_list_model_set_drag_view (FMListModel *model,
 	model->details->drag_begin_y = drag_begin_y;
 }
 
-void
-fm_list_model_get_drag_types (const GtkTargetEntry **entries,
-			      int *num_entries)
+GtkTargetList *
+fm_list_model_get_drag_target_list ()
 {
-	*entries = drag_types;
-	*num_entries = G_N_ELEMENTS (drag_types);
+	GtkTargetList *target_list;
+
+	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
+	gtk_target_list_add_text_targets (target_list, NAUTILUS_ICON_DND_TEXT);
+
+	return target_list;
 }
 
 int               

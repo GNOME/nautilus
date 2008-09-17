@@ -493,14 +493,7 @@ motion_notify_callback (GtkWidget *widget,
 
 	if (view->details->drag_button != 0) {
 		if (!source_target_list) {
-			const GtkTargetEntry *drag_types;
-			int n_drag_types;
-
-			fm_list_model_get_drag_types (&drag_types,
-						      &n_drag_types);
-
-			source_target_list = gtk_target_list_new (drag_types,
-								  n_drag_types);
+			source_target_list = fm_list_model_get_drag_target_list ();
 		}
 
 		if (gtk_drag_check_threshold (widget,

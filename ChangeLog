@@ -1,5 +1,14 @@
 2008-09-17  Christian Neumair  <cneumair@gnome.org>
 
+	* src/file-manager/fm-list-model.c
+	(fm_list_model_multi_drag_data_get),
+	(fm_list_model_get_drag_target_list):
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c (motion_notify_callback):
+	Enable text drag target for list view. Fixes #552474.
+
+2008-09-17  Christian Neumair  <cneumair@gnome.org>
+
 	* libnautilus-private/nautilus-file.c (nautilus_file_rename):
 	When deciding whether name actually changed, compare target
 	filename with display name for desktop files, and desktop icon
