@@ -1311,7 +1311,7 @@ nautilus_file_rename (NautilusFile *file,
 	NautilusFileOperation *op;
 	char *uri;
 	char *old_name;
-	gboolean success;
+	gboolean success, name_changed;
 	gboolean is_renameable_desktop_file;
 	GFile *location;
 	GError *error;
@@ -1355,7 +1355,9 @@ nautilus_file_rename (NautilusFile *file,
 	 * (1) rename returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
-	if (name_is (file, new_name)) {
+	if (!NAUTILUS_IS_DESKTOP_ICON_FILE (file) &&
+	    !is_renameable_desktop_file &&
+	    name_is (file, new_name)) {
 		(* callback) (file, NULL, NULL, callback_data);
 		return;
 	}
@@ -1382,9 +1384,15 @@ nautilus_file_rename (NautilusFile *file,
 		NautilusDesktopLink *link;
 
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-		
-		if (link != NULL &&
-		    nautilus_desktop_link_rename (link, new_name)) {
+		old_name = nautilus_file_get_display_name (file);
+
+		if ((old_name != NULL && strcmp (new_name, old_name) == 0)) {
+			success = TRUE;
+		} else {
+			success = (link != NULL && nautilus_desktop_link_rename (link, new_name));
+		}
+
+		if (success) {
 			(* callback) (file, NULL, NULL, callback_data);
 		} else {
 			error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
@@ -1392,7 +1400,8 @@ nautilus_file_rename (NautilusFile *file,
 			(* callback) (file, NULL, error, callback_data);
 			g_error_free (error);
 		}
-		
+
+		g_free (old_name);
 		g_object_unref (link);
 		return;
 	}
@@ -1406,16 +1415,20 @@ nautilus_file_rename (NautilusFile *file,
 		old_name = nautilus_link_local_get_text (uri);
 		if (old_name != NULL && strcmp (new_name, old_name) == 0) {
 			success = TRUE;
+			name_changed = FALSE;
 		} else {
 			success = nautilus_link_local_set_text (uri, new_name);
+			name_changed = TRUE;
 		}
 		g_free (old_name);
 		g_free (uri);
 
 		if (success) {
-			nautilus_file_invalidate_attributes (file,
-							     NAUTILUS_FILE_ATTRIBUTE_INFO |
-							     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+			if (name_changed) {
+				nautilus_file_invalidate_attributes (file,
+								     NAUTILUS_FILE_ATTRIBUTE_INFO |
+								     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+			}
 			(* callback) (file, NULL, NULL, callback_data);
 			return;
 		} else {

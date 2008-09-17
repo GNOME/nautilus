@@ -1,3 +1,11 @@
+2008-09-17  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_rename):
+	When deciding whether name actually changed, compare target
+	filename with display name for desktop files, and desktop icon
+	files, instead of comparing it with the filename.
+	Fixes #552112.
+
 2008-09-16  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-application.c (mount_removed_callback):
