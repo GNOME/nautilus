@@ -1,3 +1,9 @@
+2008-09-18  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file.c: (finalize),
+	(nautilus_file_invalidate_extension_info_internal):
+	Don't leak the list of pending info providers (#552310).
+
 2008-09-17  Christian Neumair  <cneumair@gnome.org>
 
 	* src/file-manager/fm-list-model.c

@@ -691,6 +691,7 @@ finalize (GObject *object)
 
 	eel_g_list_free_deep (file->details->pending_extension_emblems);
 	eel_g_list_free_deep (file->details->extension_emblems);	
+	eel_g_object_list_free (file->details->pending_info_providers);
 
 	if (file->details->pending_extension_attributes) {
 		g_hash_table_destroy (file->details->pending_extension_attributes);
@@ -6544,6 +6545,9 @@ invalidate_thumbnail (NautilusFile *file)
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
+	if (file->details->pending_info_providers)
+		eel_g_object_list_free (file->details->pending_info_providers);
+
 	file->details->pending_info_providers =
 		nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
 }
