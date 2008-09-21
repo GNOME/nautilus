@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-05 15:42+0200\n"
-"PO-Revision-Date: 2008-09-05 15:49+0100\n"
-"Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
+"POT-Creation-Date: 2008-09-21 19:44+0200\n"
+"PO-Revision-Date: 2008-09-21 19:59+0100\n"
+"Last-Translator: wadim dziedzic <wdziedzic@aviary,pl>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -310,7 +310,7 @@ msgstr "Lista podpisów pod ikoną w widoku ikon lub na pulpicie. Liczba wyświe
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 #, no-c-format
 msgid "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
-msgstr ""
+msgstr "Ciąg znaków określający jak w zależności od powiększenia zbyt długie nazwy plików będą zastępowane wielokropkiem. Dla każdej wartości powiększenia, jeśli dana liczba całkowita jest większa od 0 nazwa pliku nie przekroczy zadanej liczby linii. Wartość 0 lub mniejsza oznacza brak ograniczenia dla danego powiększenia. Dozwolona jest także domyślna wartość \"Integer\" bez podanego powiększenia. Określa ona maksymalną ilość linii dla wszystkich innych powiększeń. Na przykład: 0 - zawsze wyświetla zbyt długie nazwy plików; 3 - skraca nazwy plików jeśli przekraczają one trzy wiersze; smallest:5,smaller:4,0 - skraca nazwy plików jeśli przekraczają one pięć wierszy dla powiększenia \"najmniejsze\". Skraca nazwy plików jeśli przekraczają one cztery wiersze dla powiększenia \"mniejsze\". Nie skraca nazw plików dla innych powiększeń. Dostępne poziomy powiększenia: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -322,7 +322,7 @@ msgstr "Używanie wpisu położenia zamiast paska ścieżki"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines."
-msgstr ""
+msgstr "Liczba całkowita określająca jak zbyt długie nazwy plików na pulpicie będą skracane wielokropkiem. Jeśli liczba jest większa od 0, to nazwa pliku nie przekroczy zadanej liczby wierszy. Wartość 0 lub mniejsza oznacza brak ograniczenia ilości wyświetlanych wierszy."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Color for the default folder background. Only used if background_set is true."
@@ -721,7 +721,7 @@ msgstr "Ustawienie wydajności wyświetlania liczby elementów w katalogu. Jeże
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Text Ellipsis Limit"
-msgstr ""
+msgstr "Ograniczenie skracania nazw"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "The default size of an icon for a thumbnail in the icon view."
@@ -882,86 +882,86 @@ msgstr "Otwórz %s"
 msgid "Open with other Application..."
 msgstr "Otwórz za pomocą innego programu..."
 
-#: ../libnautilus-private/nautilus-autorun.c:891
+#: ../libnautilus-private/nautilus-autorun.c:892
 msgid "You have just inserted an Audio CD."
 msgstr "Wsunięto dźwiękową płyta CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:893
+#: ../libnautilus-private/nautilus-autorun.c:894
 msgid "You have just inserted an Audio DVD."
 msgstr "Wsunięto dźwiękową płytę DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:895
+#: ../libnautilus-private/nautilus-autorun.c:896
 msgid "You have just inserted a Video DVD."
 msgstr "Wsunięto płytę wideo DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:897
+#: ../libnautilus-private/nautilus-autorun.c:898
 msgid "You have just inserted a Video CD."
 msgstr "Wsunięto płytę Video CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:899
+#: ../libnautilus-private/nautilus-autorun.c:900
 msgid "You have just inserted a Super Video CD."
 msgstr "Wsunięto płytę Super Video CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:901
+#: ../libnautilus-private/nautilus-autorun.c:902
 msgid "You have just inserted a blank CD."
 msgstr "Wsunięto pustą płytę CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:903
+#: ../libnautilus-private/nautilus-autorun.c:904
 msgid "You have just inserted a blank DVD."
 msgstr "Wsunięto pustą płytę DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:905
+#: ../libnautilus-private/nautilus-autorun.c:906
 msgid "You have just inserted a blank Blu-Ray disc."
 msgstr "Wsunięto pustą płytę Blu-Ray."
 
-#: ../libnautilus-private/nautilus-autorun.c:907
+#: ../libnautilus-private/nautilus-autorun.c:908
 msgid "You have just inserted a blank HD DVD."
 msgstr "Wsunięto pustą płytę HD DVD."
 
-#: ../libnautilus-private/nautilus-autorun.c:909
+#: ../libnautilus-private/nautilus-autorun.c:910
 msgid "You have just inserted a Photo CD."
 msgstr "Wsunięto płytę Photo CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:911
+#: ../libnautilus-private/nautilus-autorun.c:912
 msgid "You have just inserted a Picture CD."
 msgstr "Wsunięto płytę Picture CD."
 
-#: ../libnautilus-private/nautilus-autorun.c:913
+#: ../libnautilus-private/nautilus-autorun.c:914
 msgid "You have just inserted a medium with digital photos."
 msgstr "Wsunięto nośnik z cyfrowymi zdjęciami."
 
-#: ../libnautilus-private/nautilus-autorun.c:915
+#: ../libnautilus-private/nautilus-autorun.c:916
 msgid "You have just inserted a digital audio player."
 msgstr "Wsunięto cyfrowy odtwarzacz muzyki."
 
-#: ../libnautilus-private/nautilus-autorun.c:917
+#: ../libnautilus-private/nautilus-autorun.c:918
 msgid "You have just inserted a medium with software intended to be automatically started."
 msgstr "Wsunięto nośnik z oprogramowaniem, które może być uruchomione automatycznie."
 
 #. fallback to generic greeting
-#: ../libnautilus-private/nautilus-autorun.c:920
+#: ../libnautilus-private/nautilus-autorun.c:921
 msgid "You have just inserted a medium."
 msgstr "Wsunięto nośnik."
 
-#: ../libnautilus-private/nautilus-autorun.c:922
+#: ../libnautilus-private/nautilus-autorun.c:923
 msgid "Choose what application to launch."
 msgstr "Proszę wybrać program do uruchomienia."
 
-#: ../libnautilus-private/nautilus-autorun.c:931
+#: ../libnautilus-private/nautilus-autorun.c:932
 #, c-format
 msgid "Select how to open \"%s\" and whether to perform this action in the future for other media of type \"%s\"."
 msgstr "Proszę określić jak otwierać nośnik\"%s\" i czy wykonywać te działanie w przyszłości dla innych nośników typu \"%s\"."
 
-#: ../libnautilus-private/nautilus-autorun.c:953
+#: ../libnautilus-private/nautilus-autorun.c:954
 msgid "_Always perform this action"
 msgstr "_Wykonywanie tego działania bez pytania"
 
-#: ../libnautilus-private/nautilus-autorun.c:969
+#: ../libnautilus-private/nautilus-autorun.c:970
 #: ../src/nautilus-places-sidebar.c:2012
 msgid "_Eject"
 msgstr "Wy_suń"
 
-#: ../libnautilus-private/nautilus-autorun.c:980
+#: ../libnautilus-private/nautilus-autorun.c:981
 #: ../src/nautilus-places-sidebar.c:2005
 msgid "_Unmount"
 msgstr "O_dmontuj"
@@ -1013,7 +1013,7 @@ msgstr "Użyj do_myślnych"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1411
+#: ../src/file-manager/fm-list-view.c:1454
 msgid "Name"
 msgstr "Nazwa"
 
@@ -1071,7 +1071,7 @@ msgid "The group of the file."
 msgstr "Grupa pliku."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:97
-#: ../src/file-manager/fm-properties-window.c:4760
+#: ../src/file-manager/fm-properties-window.c:4794
 msgid "Permissions"
 msgstr "Uprawnienia"
 
@@ -1264,7 +1264,7 @@ msgstr[2] "około %'d godzin"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5562
+#: ../libnautilus-private/nautilus-file.c:5592
 #: ../src/file-manager/fm-directory-view.c:9351
 #, c-format
 msgid "Link to %s"
@@ -1889,33 +1889,33 @@ msgstr "Błąd podczas tworzenia pliku %B."
 msgid "There was an error creating the directory in %F."
 msgstr "Wystąpił błąd podczas tworzenia katalogu w %F."
 
-#: ../libnautilus-private/nautilus-file.c:918
+#: ../libnautilus-private/nautilus-file.c:919
 #: ../libnautilus-private/nautilus-vfs-file.c:265
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "Tego pliku nie można zamontować."
 
-#: ../libnautilus-private/nautilus-file.c:1330
+#: ../libnautilus-private/nautilus-file.c:1331
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Ukośniki w nazwach plików nie są dozwolone"
 
-#: ../libnautilus-private/nautilus-file.c:1348
+#: ../libnautilus-private/nautilus-file.c:1349
 #, c-format
 msgid "File not found"
 msgstr "Nie znaleziono pliku"
 
-#: ../libnautilus-private/nautilus-file.c:1374
+#: ../libnautilus-private/nautilus-file.c:1377
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Nazw plików najwyższego poziomu nie można zmienić"
 
-#: ../libnautilus-private/nautilus-file.c:1391
+#: ../libnautilus-private/nautilus-file.c:1400
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Nie można zmienić nazwy ikony pulpitu"
 
-#: ../libnautilus-private/nautilus-file.c:1423
+#: ../libnautilus-private/nautilus-file.c:1437
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Nie można zmienić nazwy pliku pulpitu"
@@ -1935,65 +1935,65 @@ msgstr "Nie można zmienić nazwy pliku pulpitu"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3663
+#: ../libnautilus-private/nautilus-file.c:3678
 msgid "today at 00:00:00 PM"
 msgstr "dzisiaj o 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3664
+#: ../libnautilus-private/nautilus-file.c:3679
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "dzisiaj o %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3666
+#: ../libnautilus-private/nautilus-file.c:3681
 msgid "today at 00:00 PM"
 msgstr "dzisiaj o 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3667
+#: ../libnautilus-private/nautilus-file.c:3682
 msgid "today at %-I:%M %p"
 msgstr "dzisiaj o %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3669
+#: ../libnautilus-private/nautilus-file.c:3684
 msgid "today, 00:00 PM"
 msgstr "dzisiaj, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3670
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today, %-I:%M %p"
 msgstr "dzisiaj, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3672
-#: ../libnautilus-private/nautilus-file.c:3673
+#: ../libnautilus-private/nautilus-file.c:3687
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today"
 msgstr "dzisiaj"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3682
+#: ../libnautilus-private/nautilus-file.c:3697
 msgid "yesterday at 00:00:00 PM"
 msgstr "wczoraj o 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3683
+#: ../libnautilus-private/nautilus-file.c:3698
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "wczoraj o %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3685
+#: ../libnautilus-private/nautilus-file.c:3700
 msgid "yesterday at 00:00 PM"
 msgstr "wczoraj o 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3686
+#: ../libnautilus-private/nautilus-file.c:3701
 msgid "yesterday at %-I:%M %p"
 msgstr "wczoraj o %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3688
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "yesterday, 00:00 PM"
 msgstr "wczoraj, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3689
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday, %-I:%M %p"
 msgstr "wczoraj, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3691
-#: ../libnautilus-private/nautilus-file.c:3692
+#: ../libnautilus-private/nautilus-file.c:3706
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday"
 msgstr "wczoraj"
 
@@ -2002,88 +2002,88 @@ msgstr "wczoraj"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3703
+#: ../libnautilus-private/nautilus-file.c:3718
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Poniedziałek, 00 Październik 0000 o 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A %-d %B %Y o %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3706
+#: ../libnautilus-private/nautilus-file.c:3721
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pon, 00 Paź 0000 o 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y o %-H:%M:%S"
 
-#: ../libnautilus-private/nautilus-file.c:3709
+#: ../libnautilus-private/nautilus-file.c:3724
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pon, 00 Paź 0000 o 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3710
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y o %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3712
+#: ../libnautilus-private/nautilus-file.c:3727
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Paź 0000 o 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3713
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y o %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3715
+#: ../libnautilus-private/nautilus-file.c:3730
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Paź 0000, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3716
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y o %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3733
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y.%m.%-d %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3736
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4335
+#: ../libnautilus-private/nautilus-file.c:4350
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Zmiana uprawnień niedozwolona"
 
-#: ../libnautilus-private/nautilus-file.c:4643
+#: ../libnautilus-private/nautilus-file.c:4658
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Zmiana właściciela niedozwolona"
 
-#: ../libnautilus-private/nautilus-file.c:4661
+#: ../libnautilus-private/nautilus-file.c:4676
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Podany właściciel \"%s\" nie istnieje"
 
-#: ../libnautilus-private/nautilus-file.c:4925
+#: ../libnautilus-private/nautilus-file.c:4940
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Zmiana grupy niedozwolona"
 
-#: ../libnautilus-private/nautilus-file.c:4943
+#: ../libnautilus-private/nautilus-file.c:4958
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Podana grupa \"%s\" nie istnieje"
 
-#: ../libnautilus-private/nautilus-file.c:5086
+#: ../libnautilus-private/nautilus-file.c:5101
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
@@ -2092,7 +2092,7 @@ msgstr[0] "%'u element"
 msgstr[1] "%'u elementy"
 msgstr[2] "%'u elementów"
 
-#: ../libnautilus-private/nautilus-file.c:5087
+#: ../libnautilus-private/nautilus-file.c:5102
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -2100,7 +2100,7 @@ msgstr[0] "%'u katalog"
 msgstr[1] "%'u katalogi"
 msgstr[2] "%'u katalogów"
 
-#: ../libnautilus-private/nautilus-file.c:5088
+#: ../libnautilus-private/nautilus-file.c:5103
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2109,51 +2109,51 @@ msgstr[1] "%'u pliki"
 msgstr[2] "%'u plików"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5167
+#: ../libnautilus-private/nautilus-file.c:5182
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5168
+#: ../libnautilus-private/nautilus-file.c:5183
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s bajtów)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5472
-#: ../libnautilus-private/nautilus-file.c:5488
+#: ../libnautilus-private/nautilus-file.c:5487
+#: ../libnautilus-private/nautilus-file.c:5503
 msgid "? items"
 msgstr "? elementów"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5478
+#: ../libnautilus-private/nautilus-file.c:5493
 msgid "? bytes"
 msgstr "? bajtów"
 
-#: ../libnautilus-private/nautilus-file.c:5493
+#: ../libnautilus-private/nautilus-file.c:5508
 msgid "unknown type"
 msgstr "nieznany typ"
 
-#: ../libnautilus-private/nautilus-file.c:5496
+#: ../libnautilus-private/nautilus-file.c:5511
 msgid "unknown MIME type"
 msgstr "nieznany typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5502
+#: ../libnautilus-private/nautilus-file.c:5517
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "nieznane"
 
-#: ../libnautilus-private/nautilus-file.c:5536
+#: ../libnautilus-private/nautilus-file.c:5566
 msgid "program"
 msgstr "program"
 
-#: ../libnautilus-private/nautilus-file.c:5556
+#: ../libnautilus-private/nautilus-file.c:5586
 msgid "link"
 msgstr "dowiązanie"
 
-#: ../libnautilus-private/nautilus-file.c:5578
+#: ../libnautilus-private/nautilus-file.c:5608
 msgid "link (broken)"
 msgstr "dowiązanie (uszkodzone)"
 
@@ -2268,7 +2268,7 @@ msgstr "Wyszukiwanie plików według nazwy i właściwości"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:140
-#: ../src/file-manager/fm-icon-container.c:582
+#: ../src/file-manager/fm-icon-container.c:561
 #: ../src/file-manager/fm-icon-view.c:3006
 msgid "Icon View"
 msgstr "Widok ikon"
@@ -2283,8 +2283,8 @@ msgstr "Widok zwarty"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-list-view.c:1466
-#: ../src/file-manager/fm-list-view.c:2882
+#: ../src/file-manager/fm-list-view.c:1509
+#: ../src/file-manager/fm-list-view.c:2925
 msgid "List View"
 msgstr "Widok listy"
 
@@ -2376,7 +2376,7 @@ msgstr "Kosz"
 msgid "Network Servers"
 msgstr "Serwery sieciowe"
 
-#: ../libnautilus-private/nautilus-icon-container.c:2663
+#: ../libnautilus-private/nautilus-icon-container.c:2680
 msgid "The selection rectangle"
 msgstr "Prostokąt zaznaczenia"
 
@@ -2569,7 +2569,7 @@ msgstr "Wybór programu"
 
 # wd: Nazwa karty we właściwosciach pliku
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
-#: ../src/file-manager/fm-properties-window.c:5070
+#: ../src/file-manager/fm-properties-window.c:5104
 msgid "Open With"
 msgstr "Otwieranie"
 
@@ -2852,7 +2852,7 @@ msgstr[1] "Spowoduje to otwarcie %'d oddzielnych okien."
 msgstr[2] "Spowoduje to otwarcie %'d oddzielnych okien."
 
 #: ../src/file-manager/fm-directory-view.c:1135
-#: ../src/file-manager/fm-properties-window.c:5418
+#: ../src/file-manager/fm-properties-window.c:5452
 #: ../src/nautilus-connect-server-dialog.c:343
 #: ../src/nautilus-location-dialog.c:109
 msgid "There was an error displaying help."
@@ -4037,40 +4037,40 @@ msgstr "(Pusty)"
 msgid "Loading..."
 msgstr "Wczytywanie..."
 
-#: ../src/file-manager/fm-list-view.c:2085
+#: ../src/file-manager/fm-list-view.c:2128
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Widoczne kolumny %s"
 
-#: ../src/file-manager/fm-list-view.c:2104
+#: ../src/file-manager/fm-list-view.c:2147
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Kolejność wyświetlania informacji w tym katalogu: "
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2158
+#: ../src/file-manager/fm-list-view.c:2201
 msgid "Visible _Columns..."
 msgstr "Wido_czne kolumny..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2159
+#: ../src/file-manager/fm-list-view.c:2202
 msgid "Select the columns visible in this folder"
 msgstr "Zaznacza kolumny widoczne w tym katalogu"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2884
+#: ../src/file-manager/fm-list-view.c:2927
 msgid "_List"
 msgstr "_Lista"
 
-#: ../src/file-manager/fm-list-view.c:2885
+#: ../src/file-manager/fm-list-view.c:2928
 msgid "The list view encountered an error."
 msgstr "Napotkano błąd w widoku listy."
 
-#: ../src/file-manager/fm-list-view.c:2886
+#: ../src/file-manager/fm-list-view.c:2929
 msgid "The list view encountered an error while starting up."
 msgstr "Podczas uruchamiania widoku listy wystąpił błąd."
 
-#: ../src/file-manager/fm-list-view.c:2887
+#: ../src/file-manager/fm-list-view.c:2930
 msgid "Display this location with the list view."
 msgstr "Wyświetla położenie za pomocą widoku listy."
 
@@ -4134,15 +4134,15 @@ msgstr "Anulować zmianę grupy?"
 msgid "Cancel Owner Change?"
 msgstr "Anulować zmianę właściciela?"
 
-#: ../src/file-manager/fm-properties-window.c:2300
+#: ../src/file-manager/fm-properties-window.c:2334
 msgid "nothing"
 msgstr "nic"
 
-#: ../src/file-manager/fm-properties-window.c:2302
+#: ../src/file-manager/fm-properties-window.c:2336
 msgid "unreadable"
 msgstr "nieodczytywalny"
 
-#: ../src/file-manager/fm-properties-window.c:2312
+#: ../src/file-manager/fm-properties-window.c:2346
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4150,7 +4150,7 @@ msgstr[0] "%'d element o rozmiarze %s"
 msgstr[1] "%'d elementy o całkowitym rozmiarze %s"
 msgstr[2] "%'d elementów o całkowitym rozmiarze %s"
 
-#: ../src/file-manager/fm-properties-window.c:2321
+#: ../src/file-manager/fm-properties-window.c:2355
 msgid "(some contents unreadable)"
 msgstr "(część zawartości nieodczytywalna)"
 
@@ -4160,245 +4160,245 @@ msgstr "(część zawartości nieodczytywalna)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/file-manager/fm-properties-window.c:2338
+#: ../src/file-manager/fm-properties-window.c:2372
 msgid "Contents:"
 msgstr "Zawartość:"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3105
+#: ../src/file-manager/fm-properties-window.c:3139
 msgid "used"
 msgstr "użytych"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/file-manager/fm-properties-window.c:3110
+#: ../src/file-manager/fm-properties-window.c:3144
 msgid "free"
 msgstr "wolnych"
 
-#: ../src/file-manager/fm-properties-window.c:3112
+#: ../src/file-manager/fm-properties-window.c:3146
 msgid "Total capacity:"
 msgstr "Całkowita pojemność:"
 
-#: ../src/file-manager/fm-properties-window.c:3121
+#: ../src/file-manager/fm-properties-window.c:3155
 msgid "Filesystem type:"
 msgstr "Rodzaj systemu plików:"
 
-#: ../src/file-manager/fm-properties-window.c:3197
+#: ../src/file-manager/fm-properties-window.c:3231
 msgid "Basic"
 msgstr "Proste"
 
-#: ../src/file-manager/fm-properties-window.c:3257
+#: ../src/file-manager/fm-properties-window.c:3291
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../src/file-manager/fm-properties-window.c:3265
+#: ../src/file-manager/fm-properties-window.c:3299
 msgid "Link target:"
 msgstr "Cel dowiązania:"
 
-#: ../src/file-manager/fm-properties-window.c:3275
+#: ../src/file-manager/fm-properties-window.c:3309
 msgid "Size:"
 msgstr "Rozmiar:"
 
-#: ../src/file-manager/fm-properties-window.c:3284
+#: ../src/file-manager/fm-properties-window.c:3318
 #: ../src/nautilus-location-bar.c:57
 msgid "Location:"
 msgstr "Położenie:"
 
-#: ../src/file-manager/fm-properties-window.c:3290
+#: ../src/file-manager/fm-properties-window.c:3324
 msgid "Volume:"
 msgstr "Wolumin:"
 
-#: ../src/file-manager/fm-properties-window.c:3299
+#: ../src/file-manager/fm-properties-window.c:3333
 msgid "Accessed:"
 msgstr "Dostęp:"
 
-#: ../src/file-manager/fm-properties-window.c:3303
+#: ../src/file-manager/fm-properties-window.c:3337
 msgid "Modified:"
 msgstr "Zmieniono:"
 
-#: ../src/file-manager/fm-properties-window.c:3312
+#: ../src/file-manager/fm-properties-window.c:3346
 msgid "Free space:"
 msgstr "Wolna przestrzeń:"
 
-#: ../src/file-manager/fm-properties-window.c:3422
+#: ../src/file-manager/fm-properties-window.c:3456
 #: ../src/nautilus-emblem-sidebar.c:1035
 msgid "Emblems"
 msgstr "Symbole"
 
-#: ../src/file-manager/fm-properties-window.c:3825
+#: ../src/file-manager/fm-properties-window.c:3859
 msgid "_Read"
 msgstr "Od_czyt"
 
-#: ../src/file-manager/fm-properties-window.c:3827
+#: ../src/file-manager/fm-properties-window.c:3861
 msgid "_Write"
 msgstr "_Zapis"
 
-#: ../src/file-manager/fm-properties-window.c:3829
+#: ../src/file-manager/fm-properties-window.c:3863
 msgid "E_xecute"
 msgstr "_Wykonanie"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/file-manager/fm-properties-window.c:4097
-#: ../src/file-manager/fm-properties-window.c:4108
-#: ../src/file-manager/fm-properties-window.c:4120
+#: ../src/file-manager/fm-properties-window.c:4131
+#: ../src/file-manager/fm-properties-window.c:4142
+#: ../src/file-manager/fm-properties-window.c:4154
 msgid "no "
 msgstr "brak"
 
-#: ../src/file-manager/fm-properties-window.c:4100
+#: ../src/file-manager/fm-properties-window.c:4134
 msgid "list"
 msgstr "listy"
 
-#: ../src/file-manager/fm-properties-window.c:4102
+#: ../src/file-manager/fm-properties-window.c:4136
 msgid "read"
 msgstr "odczytu"
 
-#: ../src/file-manager/fm-properties-window.c:4111
+#: ../src/file-manager/fm-properties-window.c:4145
 msgid "create/delete"
 msgstr "utwórz/usuń"
 
-#: ../src/file-manager/fm-properties-window.c:4113
+#: ../src/file-manager/fm-properties-window.c:4147
 msgid "write"
 msgstr "zapisu"
 
-#: ../src/file-manager/fm-properties-window.c:4122
+#: ../src/file-manager/fm-properties-window.c:4156
 msgid "access"
 msgstr "dostępu"
 
-#: ../src/file-manager/fm-properties-window.c:4171
+#: ../src/file-manager/fm-properties-window.c:4205
 msgid "Access:"
 msgstr "Dostęp:"
 
-#: ../src/file-manager/fm-properties-window.c:4173
+#: ../src/file-manager/fm-properties-window.c:4207
 msgid "Folder access:"
 msgstr "Dostęp do katalogu:"
 
-#: ../src/file-manager/fm-properties-window.c:4175
+#: ../src/file-manager/fm-properties-window.c:4209
 msgid "File access:"
 msgstr "Dostęp do pliku:"
 
-#: ../src/file-manager/fm-properties-window.c:4187
-#: ../src/file-manager/fm-properties-window.c:4198
+#: ../src/file-manager/fm-properties-window.c:4221
+#: ../src/file-manager/fm-properties-window.c:4232
 #: ../src/nautilus-file-management-properties.c:288
 msgid "None"
 msgstr "Brak"
 
-#: ../src/file-manager/fm-properties-window.c:4190
+#: ../src/file-manager/fm-properties-window.c:4224
 msgid "List files only"
 msgstr "Tylko wyświetlanie plików"
 
-#: ../src/file-manager/fm-properties-window.c:4192
+#: ../src/file-manager/fm-properties-window.c:4226
 msgid "Access files"
 msgstr "Dostęp do plików"
 
-#: ../src/file-manager/fm-properties-window.c:4194
+#: ../src/file-manager/fm-properties-window.c:4228
 msgid "Create and delete files"
 msgstr "Tworzenie i usuwanie plików"
 
-#: ../src/file-manager/fm-properties-window.c:4201
+#: ../src/file-manager/fm-properties-window.c:4235
 msgid "Read-only"
 msgstr "Tylko do odczytu"
 
-#: ../src/file-manager/fm-properties-window.c:4203
+#: ../src/file-manager/fm-properties-window.c:4237
 msgid "Read and write"
 msgstr "Odczyt i zapis"
 
-#: ../src/file-manager/fm-properties-window.c:4268
+#: ../src/file-manager/fm-properties-window.c:4302
 msgid "Set _user ID"
 msgstr "Ustawianie ID _użytkownika"
 
-#: ../src/file-manager/fm-properties-window.c:4270
+#: ../src/file-manager/fm-properties-window.c:4304
 msgid "Special flags:"
 msgstr "Znaczniki specjalne:"
 
-#: ../src/file-manager/fm-properties-window.c:4272
+#: ../src/file-manager/fm-properties-window.c:4306
 msgid "Set gro_up ID"
 msgstr "Ustawianie ID g_rupy"
 
-#: ../src/file-manager/fm-properties-window.c:4273
+#: ../src/file-manager/fm-properties-window.c:4307
 msgid "_Sticky"
 msgstr "_Przyklejony"
 
-#: ../src/file-manager/fm-properties-window.c:4353
-#: ../src/file-manager/fm-properties-window.c:4557
+#: ../src/file-manager/fm-properties-window.c:4387
+#: ../src/file-manager/fm-properties-window.c:4591
 msgid "_Owner:"
 msgstr "_Właściciel:"
 
-#: ../src/file-manager/fm-properties-window.c:4359
-#: ../src/file-manager/fm-properties-window.c:4454
-#: ../src/file-manager/fm-properties-window.c:4565
+#: ../src/file-manager/fm-properties-window.c:4393
+#: ../src/file-manager/fm-properties-window.c:4488
+#: ../src/file-manager/fm-properties-window.c:4599
 msgid "Owner:"
 msgstr "Właściciel:"
 
-#: ../src/file-manager/fm-properties-window.c:4382
-#: ../src/file-manager/fm-properties-window.c:4577
+#: ../src/file-manager/fm-properties-window.c:4416
+#: ../src/file-manager/fm-properties-window.c:4611
 msgid "_Group:"
 msgstr "_Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4391
-#: ../src/file-manager/fm-properties-window.c:4455
-#: ../src/file-manager/fm-properties-window.c:4586
+#: ../src/file-manager/fm-properties-window.c:4425
+#: ../src/file-manager/fm-properties-window.c:4489
+#: ../src/file-manager/fm-properties-window.c:4620
 msgid "Group:"
 msgstr "Grupa:"
 
-#: ../src/file-manager/fm-properties-window.c:4416
+#: ../src/file-manager/fm-properties-window.c:4450
 msgid "Others"
 msgstr "Inni:"
 
-#: ../src/file-manager/fm-properties-window.c:4433
+#: ../src/file-manager/fm-properties-window.c:4467
 msgid "Execute:"
 msgstr "Wykonanie:"
 
-#: ../src/file-manager/fm-properties-window.c:4437
+#: ../src/file-manager/fm-properties-window.c:4471
 msgid "Allow _executing file as program"
 msgstr "Zezwolenie na _wykonanie pliku jako programu"
 
-#: ../src/file-manager/fm-properties-window.c:4456
+#: ../src/file-manager/fm-properties-window.c:4490
 msgid "Others:"
 msgstr "Inni:"
 
-#: ../src/file-manager/fm-properties-window.c:4604
+#: ../src/file-manager/fm-properties-window.c:4638
 msgid "Folder Permissions:"
 msgstr "Uprawnienia katalogu:"
 
-#: ../src/file-manager/fm-properties-window.c:4616
+#: ../src/file-manager/fm-properties-window.c:4650
 msgid "File Permissions:"
 msgstr "Uprawnienia pliku:"
 
-#: ../src/file-manager/fm-properties-window.c:4626
+#: ../src/file-manager/fm-properties-window.c:4660
 msgid "Text view:"
 msgstr "Zapis tekstowy:"
 
-#: ../src/file-manager/fm-properties-window.c:4773
+#: ../src/file-manager/fm-properties-window.c:4807
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Nie można zmienić tych uprawnień nie będąc właścicielem."
 
-#: ../src/file-manager/fm-properties-window.c:4797
+#: ../src/file-manager/fm-properties-window.c:4831
 msgid "SELinux context:"
 msgstr "Kontekst SELinux:"
 
-#: ../src/file-manager/fm-properties-window.c:4802
+#: ../src/file-manager/fm-properties-window.c:4836
 msgid "Last changed:"
 msgstr "Ostatnia zmiana:"
 
-#: ../src/file-manager/fm-properties-window.c:4816
+#: ../src/file-manager/fm-properties-window.c:4850
 msgid "Apply Permissions to Enclosed Files"
 msgstr "Zastosuj uprawnienia do zawartych plików"
 
-#: ../src/file-manager/fm-properties-window.c:4826
+#: ../src/file-manager/fm-properties-window.c:4860
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Nie można określić uprawnień \"%s\"."
 
-#: ../src/file-manager/fm-properties-window.c:4829
+#: ../src/file-manager/fm-properties-window.c:4863
 msgid "The permissions of the selected file could not be determined."
 msgstr "Nie można określić uprawnień wybranego pliku."
 
-#: ../src/file-manager/fm-properties-window.c:5392
+#: ../src/file-manager/fm-properties-window.c:5426
 msgid "Creating Properties window."
 msgstr "Tworzenie okna właściwości."
 
-#: ../src/file-manager/fm-properties-window.c:5666
+#: ../src/file-manager/fm-properties-window.c:5700
 msgid "Select Custom Icon"
 msgstr "Wybór własnej ikony"
 
@@ -6086,7 +6086,7 @@ msgstr "Cofa ostatnią zmianę tekstu"
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:806
 msgid "Open _Parent"
-msgstr "Otwórz _nadrzędny"
+msgstr "_Nadrzędny"
 
 #: ../src/nautilus-window-menus.c:807
 msgid "Open the parent folder"
