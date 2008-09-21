@@ -609,8 +609,6 @@ nautilus_window_destroy (GtkObject *object)
 	}
 	g_list_free (slots);
 
-	nautilus_window_manage_views_destroy (window);
-
 	GTK_OBJECT_CLASS (nautilus_window_parent_class)->destroy (object);
 }
 
@@ -737,6 +735,8 @@ nautilus_window_close_slot (NautilusWindow *window,
 			 close_slot, (window, slot));
 
 	window->details->slots = g_list_remove (window->details->slots, slot);
+	window->details->active_slots = g_list_remove (window->details->active_slots, slot);
+
 }
 
 void
@@ -791,16 +791,6 @@ nautilus_window_set_active_slot (NautilusWindow *window,
 }
 
 static inline NautilusWindowSlot *
-get_last_active_slot (NautilusWindow *window)
-{
-	if (window->details->active_slots != NULL) {
-		return NAUTILUS_WINDOW_SLOT (window->details->active_slots->data);
-	}
-
-	return NULL;
-}
-
-static inline NautilusWindowSlot *
 get_first_inactive_slot (NautilusWindow *window)
 {
 	GList *l;
@@ -824,10 +814,15 @@ nautilus_window_slot_close (NautilusWindowSlot *slot)
 
 	window = slot->window;
 	if (window != NULL) {
-		window->details->active_slots = g_list_remove (window->details->active_slots, slot);
-
 		if (window->details->active_slot == slot) {
-			next_slot = get_last_active_slot (window);
+			g_assert (window->details->active_slots != NULL);
+			g_assert (window->details->active_slots->data == slot);
+
+			next_slot = NULL;
+			if (window->details->active_slots->next != NULL) {
+				next_slot = NAUTILUS_WINDOW_SLOT (window->details->active_slots->next->data);
+			}
+
 			if (next_slot == NULL) {
 				next_slot = get_first_inactive_slot (window);
 			}

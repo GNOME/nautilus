@@ -2019,28 +2019,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
 }
 
 void
-nautilus_window_manage_views_destroy (NautilusWindow *window)
-{
-	NautilusWindowSlot *slot;
-	GList *l;
-
-	/* Disconnect view signals here so they don't trigger when
-	 * views are destroyed.
-         */
-
-	for (l = window->details->slots; l != NULL; l = l->next) {
-		slot = l->data;
-
-		if (slot->content_view != NULL) {
-			nautilus_window_slot_disconnect_content_view (slot, slot->content_view);
-		}
-		if (slot->new_content_view != NULL) {
-			nautilus_window_slot_disconnect_content_view (slot, slot->new_content_view);
-		}
-	}
-}
-
-void
 nautilus_window_manage_views_close_slot (NautilusWindow *window,
 					 NautilusWindowSlot *slot)
 {

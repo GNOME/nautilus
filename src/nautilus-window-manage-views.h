@@ -30,7 +30,6 @@
 #include "nautilus-window.h"
 #include "nautilus-navigation-window.h"
 
-void                    nautilus_window_manage_views_destroy          (NautilusWindow           *window);
 void                    nautilus_window_manage_views_close_slot       (NautilusWindow           *window,
 								       NautilusWindowSlot       *slot);
 

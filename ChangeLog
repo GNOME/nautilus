@@ -1,3 +1,14 @@
+2008-09-22  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window.c (nautilus_window_destroy),
+	(nautilus_window_close_slot), (nautilus_window_slot_close):
+	Remove nautilus_window_manage_views_destroy(), since everything it
+	does is achieved by nautilus_window_close_slot(). Also ensure that
+	slots are removed from the active slot history as they are closed.
+	Fixes #553081.
+
 2008-09-18  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-file.c: (finalize),
