@@ -1,5 +1,14 @@
 2008-09-22  Christian Neumair  <cneumair@gnome.org>
 
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_emblem_icons):
+	* libnautilus-private/nautilus-icon-info.c:
+	* libnautilus-private/nautilus-icon-info.h:
+	Support emblem file names that do not start with “emblem-”. Fixes
+	#350643.
+
+2008-09-22  Christian Neumair  <cneumair@gnome.org>
+
 	* src/nautilus-window-slot.c
 	(nautilus_window_slot_update_query_editor):
 	Add weak ref for query editor pointer.

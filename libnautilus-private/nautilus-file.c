@@ -5711,7 +5711,7 @@ nautilus_file_get_emblem_icons (NautilusFile *file,
 {
 	GList *keywords, *l;
 	GList *icons;
-	char *icon_name;
+	char *icon_names[2];
 	char *keyword;
 	int i;
 	GIcon *icon;
@@ -5753,9 +5753,12 @@ nautilus_file_get_emblem_icons (NautilusFile *file,
 			}
 		}
 		
-		icon_name = nautilus_icon_get_emblem_icon_by_name (keyword);
-		icon = g_themed_icon_new (icon_name);
-		g_free (icon_name);
+
+		icon_names[0] = g_strconcat ("emblem-", keyword, NULL);
+		icon_names[1] = keyword;
+		icon = g_themed_icon_new_from_names (icon_names, 2);
+		g_free (icon_names[0]);
+
 		icons = g_list_prepend (icons, icon);
 	}
 	

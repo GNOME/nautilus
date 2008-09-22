@@ -82,7 +82,6 @@ guint nautilus_icon_get_larger_icon_size             (guint              size);
 guint nautilus_icon_get_smaller_icon_size            (guint              size);
 
 gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
-char *nautilus_icon_get_emblem_icon_by_name          (const char        *emblem_name);
 guint nautilus_icon_get_emblem_size_for_icon_size    (guint              size);
 
 

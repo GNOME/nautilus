@@ -25,8 +25,6 @@
 #include <gio/gio.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 
-#define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"
-
 struct _NautilusIconInfo
 {
 	GObject parent;
@@ -644,16 +642,6 @@ nautilus_get_icon_size_for_stock_size (GtkIconSize size)
   return NAUTILUS_ZOOM_LEVEL_STANDARD;
 }
 
-
-char *
-nautilus_icon_get_emblem_icon_by_name (const char *emblem_name)
-{
-	char *name_with_prefix;
-
-	name_with_prefix = g_strconcat (NAUTILUS_EMBLEM_NAME_PREFIX, emblem_name, NULL);
-
-	return name_with_prefix;
-}
 
 guint
 nautilus_icon_get_emblem_size_for_icon_size (guint size)
