@@ -479,11 +479,13 @@ nautilus_window_slot_update_query_editor (NautilusWindowSlot *slot)
 {
 	if (slot->query_editor != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (slot->query_editor));
-		slot->query_editor = NULL;
+		g_assert (slot->query_editor == NULL);
 	}
 
         EEL_CALL_METHOD (NAUTILUS_WINDOW_SLOT_CLASS, slot,
                          update_query_editor, (slot));
+
+	eel_add_weak_pointer (&slot->query_editor);
 }
 
 static void
