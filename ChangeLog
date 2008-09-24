@@ -1,3 +1,12 @@
+2008-09-24  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* configure.in:
+	* libnautilus-private/nautilus-file-operations.c:
+	(copy_move_directory), (copy_move_file), (copy_files),
+	(move_files):
+	Revert latest commit, as we can't depend on GLib 2.19.0 before
+	branching.
+
 2008-09-22  Nelson Benítez León  <nbenitez@svn.gnome.org>
 
 	* libnautilus-private/nautilus-file-operations.c
