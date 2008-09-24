@@ -50,6 +50,8 @@
 #include "nautilus-main.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-navigation-window.h"
+#include "nautilus-window-slot.h"
+#include "nautilus-navigation-window-slot.h"
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
 #include "nautilus-window-bookmarks.h"
@@ -1446,6 +1448,40 @@ mount_added_callback (GVolumeMonitor *monitor,
 	nautilus_autorun (mount, autorun_show_window, application);
 }
 
+static inline int
+count_slots_of_windows (GList *window_list)
+{
+	NautilusWindow *window;
+	GList *slots, *l;
+	int count;
+
+	count = 0;
+
+	for (l = window_list; l != NULL; l = l->next) {
+		window = NAUTILUS_WINDOW (l->data);
+
+		slots = nautilus_window_get_slots (window);
+		count += g_list_length (slots);
+		g_list_free (slots);
+	}
+
+	return count;
+}
+
+static NautilusWindowSlot *
+get_first_navigation_slot (GList *slot_list)
+{
+	GList *l;
+
+	for (l = slot_list; l != NULL; l = l->next) {
+		if (NAUTILUS_IS_NAVIGATION_WINDOW_SLOT (l->data)) {
+			return l->data;
+		}
+	}
+
+	return NULL;
+}
+
 /* Called whenever a mount is unmounted. Check and see if there are
  * any windows open displaying contents on the mount. If there are,
  * close them.  It would also be cool to save open window and position
@@ -1461,9 +1497,11 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
 	NautilusWindowSlot *slot;
+	NautilusWindowSlot *force_no_close_slot;
 	GFile *root;
 
 	close_list = NULL;
+	force_no_close_slot = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted mount */
 	window_list = nautilus_application_get_window_list ();
@@ -1486,11 +1524,21 @@ mount_removed_callback (GVolumeMonitor *monitor,
 		}
 	}
 
+	if (nautilus_application_desktop_windows == NULL &&
+	    g_list_length (close_list) != 0 &&
+	    g_list_length (close_list) == count_slots_of_windows (window_list)) {
+		/* We are trying to close all open slots. Keep one navigation slot open. */
+		force_no_close_slot = get_first_navigation_slot (close_list);
+	}
+
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		slot = node->data;
 		window = slot->window;
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window) ||
+		    (nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot), mount) &&
+		     slot != force_no_close_slot)) {
 			nautilus_window_slot_close (slot);
 		} else {
 			nautilus_window_slot_go_home (slot, FALSE);

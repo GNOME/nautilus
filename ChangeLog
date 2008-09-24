@@ -1,3 +1,13 @@
+2008-09-24  Christian Neumair  <cneumair@gnome.org>
+
+	* src/nautilus-application.c (count_slots_of_windows),
+	(get_first_navigation_slot), (mount_removed_callback):
+	* src/nautilus-navigation-window-slot.c
+	(nautilus_navigation_window_slot_should_close_with_mount):
+	* src/nautilus-navigation-window-slot.h:
+	When unmounting, close all slots that only displayed locations on the
+	mount. Never close all open slots, though. 
+
 2008-09-24  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* configure.in:
