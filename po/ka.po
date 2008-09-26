@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ka\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-17 16:04+0200\n"
-"PO-Revision-Date: 2008-09-18 23:05+0200\n"
+"POT-Creation-Date: 2008-09-25 19:15+0200\n"
+"PO-Revision-Date: 2008-09-26 15:01+0200\n"
 "Last-Translator: Vladimer Sichinava  ვლადიმერ სიჭინავა <vsichi@gnome.org>\n"
 "Language-Team: Georgian <http://mail.gnome.org/mailman/listinfo/gnome-ge-"
 "list>\n"
@@ -370,9 +370,9 @@ msgid ""
 "files by file name and file properties."
 msgstr ""
 "ძიების კრიტერიუმი, როდესაც ძებნა ტარდება ძებნის ზოლის გამოყენებით. "
-"\"search_by_text\"-ის მონიშვნის შემთხვევაში, ნაუტილუსი ფაილებს სახელის "
+"\"search_by_text\"-ის მონიშვნის შემთხვევაში, ნაუტილუსი ფაილებს სახელწოდების "
 "მიხედვით მოძებნის. თუ მონიშნულია \"search_by_text_and_properties\", "
-"ნაუტილუსი ფაილებს სახელის და პარამეტრების მიხედვით მოძებნის."
+"ნაუტილუსი ფაილებს სახელწოდების და პარამეტრების მიხედვით მოძებნის."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Current Nautilus theme (deprecated)"
@@ -553,6 +553,9 @@ msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
 msgstr ""
+"თუ მონიშნულია, შესაძლებელი გახდება ნაუტილუსის მიერ ზოგიერთი \"ეზოთერიულ\" "
+"პარამეტრებზე წვდომა, ამის გარდა Unix სისტემების მაგვარად ფაილთა უფლებების "
+"რედაქტირება ან დათვალიერება."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -791,7 +794,6 @@ msgid "Network servers icon name"
 msgstr "ქსელის სერვერების პირტოგრამის სახელი"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
-#, fuzzy
 msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr ""
 "თუ მონიშნულია, ნაუტილუსი აღარ მოითხოვს კომპაქტ დისკიდან ავტო-გაშვებად "
@@ -912,7 +914,7 @@ msgstr ""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid "The default width of the side pane in new windows."
-msgstr "ახალ ფანჯრებში გვერდითა პანელის ნაგულისხმევი სიგანე"
+msgstr "ახალ ფანჯრებში გვერდითა პანელის ნაგულისხმევი სიგანე."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid "The font description used for the icons on the desktop."
@@ -933,23 +935,23 @@ msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
-"შესაძლებელია სახელის მინიჭება, თუ გნებავთ პიქტოგრამა \"კომპიუტერი\"-ს "
-"სახელის შეცვლა."
+"შესაძლებელია სახელწოდების მინიჭება, თუ გნებავთ პიქტოგრამა \"კომპიუტერი\"-ს "
+"სახელწოდების შეცვლა."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"შესაძლებელია სახელის მინიჭება, თუ გნებავთ პიქტოგრამა \"სახლი\"-ს სახელის "
-"შეცვლა."
+"შესაძლებელია სახელწოდების მინიჭება, თუ გნებავთ პიქტოგრამა \"სახლი\"-ს "
+"სახელწოდების შეცვლა."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
 msgstr ""
-"შესაძლებელია \"ქსელის სერვერები\".პიქტოგრამის სახელის შეცვლა და სამუშაო "
+"შესაძლებელია \"ქსელის სერვერები\".პიქტოგრამის სახელწოდების შეცვლა და სამუშაო "
 "მაგიდაზე გამოჩენა."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
@@ -957,8 +959,8 @@ msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
-"მოცემული სახელწოდების შეცვლა შესაძლებელია, მაგალითად პიქტოგრამა \"სანაგვე "
-"ყუთი\" სახელის შეცვლა."
+"მოცემული სახელწოდების შეცვლა შესაძლებელია, თუ გნებავთ \"სანაგვე ყუთის\" "
+"ხატულასთვის ალტერნატიული სახელწოდების მინიჭება."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "Trash icon visible on desktop"
@@ -1008,7 +1010,6 @@ msgid "When to show thumbnails of image files"
 msgstr "სურათების პიქტოგრამების ჩვენება არ ჩვენება"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
-#, fuzzy
 msgid "Where to position newly open tabs in browser windows."
 msgstr "ყოველთვის _ბროუზერის ფანჯარაში გახსნა"
 
@@ -1221,7 +1222,7 @@ msgstr "ნა_გულისხმევის მოხმარება"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
-#: ../src/file-manager/fm-list-view.c:1461
+#: ../src/file-manager/fm-list-view.c:1454
 msgid "Name"
 msgstr "სახელი"
 
@@ -1381,8 +1382,7 @@ msgstr "შეუძლებელია ემბლემის ჩადგ�
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:210
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"უკაცრავად, საჭიროა არაცარიელი სახელის მითითება თქვენი ახალი ემბლემისთვის."
+msgstr "უკაცრავად,ახალი ემბლემისთვის საჭიროა არაცარიელი სახელწოდების მინიჭება."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:215
 msgid ""
@@ -1410,7 +1410,8 @@ msgstr "უკაცრავად, შეუძლებელია ინდ
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:296
 msgid "Sorry, unable to save custom emblem name."
-msgstr "უკაცრავად, შეუძლებელია ინდივიდუალური ემბლემის სახელის დამახსოვრება."
+msgstr ""
+"უკაცრავად, შეუძლებელია ემბლემის ინდივიდუალური სახელწოდების დამახსოვრება."
 
 #: ../libnautilus-private/nautilus-file-operations.c:170
 msgid "_Skip"
@@ -1475,7 +1476,7 @@ msgstr[0] "მიახლოებით %'d საათი"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:311
-#: ../libnautilus-private/nautilus-file.c:5578
+#: ../libnautilus-private/nautilus-file.c:5592
 #: ../src/file-manager/fm-directory-view.c:9351
 #, c-format
 msgid "Link to %s"
@@ -1812,7 +1813,7 @@ msgstr "შეცდომა გადატანისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2305
 msgid "Error while moving files to trash."
-msgstr "დაიშვა შეცდომა ფაილების სანაგვე ყუთში გადატანის დროს."
+msgstr "დაიშვა შეცდომა ფაილების სანაგვე ყუთში გადატანისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2359
 msgid ""
@@ -1839,7 +1840,6 @@ msgstr ""
 "უფლებები."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2478
-#, fuzzy
 msgid "There was an error getting information about \"%B\"."
 msgstr "პროგრამის გაშვებისას წარმოიშვა შეცდომა."
 
@@ -1847,17 +1847,14 @@ msgstr "პროგრამის გაშვებისას წარმ�
 #: ../libnautilus-private/nautilus-file-operations.c:2620
 #: ../libnautilus-private/nautilus-file-operations.c:2653
 #: ../libnautilus-private/nautilus-file-operations.c:2679
-#, fuzzy
 msgid "Error while copying to \"%B\"."
 msgstr "შეცდომა \"%s\"ზე კოპირებისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2582
-#, fuzzy
 msgid "You do not have permissions to access the destination folder."
 msgstr "გაგაჩნიათ ჩაწერის უფლება ამ დანიშნულების მანძილზე."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2584
-#, fuzzy
 msgid "There was an error getting information about the destination."
 msgstr "ვერ მოინახა საკმარისი მანძილი დანიშნულების დასტაში."
 
@@ -1866,7 +1863,6 @@ msgid "The destination is not a folder."
 msgstr "დანიშნულება დასტას არ წარმოადგენს."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2654
-#, fuzzy
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -1882,13 +1878,12 @@ msgid "The destination is read-only."
 msgstr "დანიშნულება მხოლოდ-კითხვადი ტიპისაა."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2739
-#, fuzzy
 msgid "Moving \"%B\" to \"%B\""
-msgstr "\"%s\" -ის \"%s\" -ად გადარქმევა."
+msgstr "მიმდინარეობს \"%B\"-ს \"%B\"-ში გადატანა"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2740
 msgid "Copying \"%B\" to \"%B\""
-msgstr "მიმდინარეობს \"%B\"-ის ასლი \"%B\"-ში"
+msgstr "მიმდინარეობს \"%B\"-ს ასლის გადატანა \"%B\"-ში"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2745
 msgid "Duplicating \"%B\""
@@ -1897,51 +1892,48 @@ msgstr "დუბლირდება \"%B\""
 #: ../libnautilus-private/nautilus-file-operations.c:2753
 msgid "Moving %'d file (in \"%B\") to \"%B\""
 msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
-msgstr[0] "გადაადგილების პროცესშია %'d ფაილი (\"%B\" დან) - \"%B\"-ში"
+msgstr[0] "გადამაქვს %'d ფაილი (\"%B\" დან) - \"%B\"-ში"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2757
 msgid "Copying %'d file (in \"%B\") to \"%B\""
 msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
-msgstr[0] "%'d ფაილის ასლი (\"%B\" დან) - \"%B\"-ში"
+msgstr[0] "მიმდინარეობს %'d ფაილის ასლი (\"%B\" დან) - \"%B\"-ში"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2765
 msgid "Duplicating %'d file (in \"%B\")"
 msgid_plural "Duplicating %'d files (in \"%B\")"
-msgstr[0] "იქმნება %'d ფაილის დუპლიკატი (\"%B\" დან) - \"%B\"-ში"
+msgstr[0] "იქმნება %'d ფაილის დუპლიკატი (\"%B\"-ში)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2775
-#, fuzzy
 msgid "Moving %'d file to \"%B\""
 msgid_plural "Moving %'d files to \"%B\""
-msgstr[0] "მიმდინარეობს ფაილების გადატანა"
+msgstr[0] "გადამაქვს %'d ფაილი \"%B\"-ში"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2779
-#, fuzzy
 msgid "Copying %'d file to \"%B\""
 msgid_plural "Copying %'d files to \"%B\""
-msgstr[0] "მიმდინარეობს ფაილთა გადაწერა"
+msgstr[0] "მიმდინარეობს %'d ფაილის ასლის გადატანა \"%B\"-ში"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2785
-#, fuzzy, c-format
+#, c-format
 msgid "Duplicating %'d file"
 msgid_plural "Duplicating %'d files"
-msgstr[0] "ფაილების წაშლა"
+msgstr[0] "მიმდინარეობს %'d ფაილის დუპლიკაცია"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb of 4 MB"
 #: ../libnautilus-private/nautilus-file-operations.c:2805
-#, fuzzy, c-format
+#, c-format
 msgid "%S of %S"
-msgstr "%s - %s"
+msgstr "%S - %S -დან"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 #. * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:2814
 msgid "%S of %S — %T left (%S/sec)"
-msgstr "%S - %S დან — რჩება %T (%S/sec)"
+msgstr "%S - %S დან — დარჩენილია %T (%S/sec)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3177
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
@@ -1950,12 +1942,10 @@ msgstr ""
 "უფლებები."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3180
-#, fuzzy
 msgid "There was an error creating the folder \"%B\"."
 msgstr "დაიშვა შეცდომა დახმარების ჩვენებისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3301
-#, fuzzy
 msgid ""
 "Files in the folder \"%B\" cannot be copied because you do not have "
 "permissions to see them."
@@ -1964,7 +1954,6 @@ msgstr ""
 "უფლებები."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3346
-#, fuzzy
 msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "read it."
@@ -1975,12 +1964,10 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:3389
 #: ../libnautilus-private/nautilus-file-operations.c:3909
 #: ../libnautilus-private/nautilus-file-operations.c:4469
-#, fuzzy
 msgid "Error while moving \"%B\"."
 msgstr "შეცდომა \"%s\"ში გადატანისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3390
-#, fuzzy
 msgid "Could not remove the source folder."
 msgstr "შეუძლებელია სანაგვე ყუთის დასტის გადაადგილება."
 
@@ -1988,32 +1975,29 @@ msgstr "შეუძლებელია სანაგვე ყუთის 
 #: ../libnautilus-private/nautilus-file-operations.c:3516
 #: ../libnautilus-private/nautilus-file-operations.c:3911
 #: ../libnautilus-private/nautilus-file-operations.c:3984
-#, fuzzy
 msgid "Error while copying \"%B\"."
 msgstr "შეცდომა \"%s\"ზე კოპირებისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3476
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove files from the already existing folder %F."
-msgstr "შეუძლებელია ემბლემის მოშორება სახელად '%s'."
+msgstr "შეუძლებელია ფაილების მოშორება უკვე %F არსებული დასტიდან."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3517
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file %F."
-msgstr "შეუძლებელია ემბლემის მოშორება სახელად '%s'."
+msgstr "შეუძლებელია უკვე არსებული %F ფაილის მოშორება."
 
 #. the run_warning() frees all strings passed in automatically
 #: ../libnautilus-private/nautilus-file-operations.c:3687
 #: ../libnautilus-private/nautilus-file-operations.c:4295
-#, fuzzy
 msgid "You cannot move a folder into itself."
-msgstr "არ გაგაჩნიათ \"%s\"-ის სანაგვე ყუთში გადატანის უფლებები."
+msgstr "შეუძლებელია დასტის დასტაშივე გადატანა."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3688
 #: ../libnautilus-private/nautilus-file-operations.c:4296
-#, fuzzy
 msgid "You cannot copy a folder into itself."
-msgstr "შეგიძლიათ გადმოქაჩოთ ის, ან შექმნათ მასზე ბმული."
+msgstr "შეუძლებელია დასტის ასლის დასტაშივე გაკეთება."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3689
 #: ../libnautilus-private/nautilus-file-operations.c:4297
@@ -2022,14 +2006,12 @@ msgstr "დანიშნულების დასტა წყარო დ
 
 #: ../libnautilus-private/nautilus-file-operations.c:3807
 #: ../libnautilus-private/nautilus-file-operations.c:4378
-#, fuzzy
 msgid ""
 "A folder named \"%B\" already exists.  Do you want to merge the source "
 "folder?"
 msgstr "დასტა \"%s\" დასახელებით უკვე არსებობს.  გნებავთ მისი ჩანაცვლება?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3809
-#, fuzzy
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2040,7 +2022,6 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3814
 #: ../libnautilus-private/nautilus-file-operations.c:4385
-#, fuzzy
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
 msgstr "დასტა \"%s\" დასახელებით უკვე არსებობს.  გნებავთ მისი ჩანაცვლება?"
 
@@ -2056,42 +2037,39 @@ msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3821
 #: ../libnautilus-private/nautilus-file-operations.c:4392
-#, fuzzy
 msgid "A file named \"%B\" already exists.  Do you want to replace it?"
 msgstr "ფაილი სახელწოდებით \"%s\" უკვე არსებობს.  გნებავთ მისი ჩანაცვლება?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3823
 #: ../libnautilus-private/nautilus-file-operations.c:4394
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr ""
-"\"%s\"-ში უკვე არსებობს ფაილი ამ სახელით.  ფაილის ჩანაცვლებით დაიკარგება "
+"\"%F\"-ში უკვე არსებობს ფაილი ამ სახელით.  ფაილის ჩანაცვლებით დაიკარგება "
 "ძველი ფაილის შემადგენელი ინფორმაცია."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3913
-#, fuzzy, c-format
+#, c-format
 msgid "Could not remove the already existing file with the same name in %F."
-msgstr "შეუძლებელია ემბლემის მოშორება სახელად '%s'."
+msgstr ""
 
 #: ../libnautilus-private/nautilus-file-operations.c:3985
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error copying the file into %F."
-msgstr "პროგრამის გაშვებისას წარმოიშვა შეცდომა."
+msgstr "დაიშვა შეცდომა ფაილის ასლის %F-ში გადატანისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4204
-#, fuzzy
 msgid "Preparing to Move to \"%B\""
-msgstr "ვამზადებ სანაგვე ყუთში გადასატანად..."
+msgstr "ვემზადები \"%B\"-ში გადასატანად"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4208
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
-msgstr[0] "ფაილების წასაშლელად მზადება..."
+msgstr[0] "მიმდინარეობს მზადება %'d ფაილების გადასატანად"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4380
-#, fuzzy
 msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
@@ -2106,20 +2084,18 @@ msgid "There was an error moving the file into %F."
 msgstr "დაიშვა შეცდომა %F-ში ფაილების გადატანისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4745
-#, fuzzy
 msgid "Creating links in \"%B\""
 msgstr "ფაილთა ბმულების შექმნა"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4749
-#, fuzzy, c-format
+#, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
-msgstr[0] "ფაილთა ბმულების შექმნა"
+msgstr[0] "იქმნება ბმული %'d ფაილზე"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4847
-#, fuzzy
 msgid "Error while creating link to %B."
-msgstr "შეცდომა \"%s\"ში ლინკის შექმნისას"
+msgstr "დაიშვა შეცდომა %B ფაილზე ბმულის შექმნისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4849
 msgid "Symbolic links only supported for local files"
@@ -2130,12 +2106,11 @@ msgid "The target doesn't support symbolic links."
 msgstr "დანიშნულების ადგილს არ გააჩნია სიმბოლური ბმების მხარდაჭერა."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4855
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error creating the symlink in %F."
-msgstr "პროგრამის გაშვებისას წარმოიშვა შეცდომა."
+msgstr "დაიშვა შეცდომა %F -ში სიმბოლური ბმის შექმნისას."
 
 #: ../libnautilus-private/nautilus-file-operations.c:5149
-#, fuzzy
 msgid "Setting permissions"
 msgstr "უფლებების მომართვა"
 
@@ -2150,47 +2125,45 @@ msgid "new file"
 msgstr "ახალი ფაილი"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5554
-#, fuzzy
 msgid "Error while creating directory %B."
 msgstr "შეცდომა \"%s\"ში ლინკის შექმნისას"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5556
-#, fuzzy
 msgid "Error while creating file %B."
 msgstr "შეცდომა \"%s\"ში ლინკის შექმნისას"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5558
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error creating the directory in %F."
-msgstr "პროგრამის გაშვებისას წარმოიშვა შეცდომა."
+msgstr "დაიშვა შეცდომა დასტის %F-ში შექმნისას."
 
-#: ../libnautilus-private/nautilus-file.c:918
+#: ../libnautilus-private/nautilus-file.c:919
 #: ../libnautilus-private/nautilus-vfs-file.c:265
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "შეუძლებელია მოცემული ფაილის მონტაჟი"
 
-#: ../libnautilus-private/nautilus-file.c:1330
+#: ../libnautilus-private/nautilus-file.c:1331
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "დაუშვებელია სახელწოდებებში (/) ირიბის გამოყენება"
 
-#: ../libnautilus-private/nautilus-file.c:1348
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file.c:1349
+#, c-format
 msgid "File not found"
 msgstr "ფაილი ვერ მოიძებნა"
 
-#: ../libnautilus-private/nautilus-file.c:1374
-#, fuzzy, c-format
+#: ../libnautilus-private/nautilus-file.c:1377
+#, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "შეუძლებელია ელემენტის გადარქმევა."
 
-#: ../libnautilus-private/nautilus-file.c:1391
+#: ../libnautilus-private/nautilus-file.c:1400
 #, c-format
 msgid "Unable to rename desktop icon"
-msgstr "შეუძლებელია desktop-ხატულის სახელის გადარქმევა"
+msgstr "შეუძლებელია desktop-ხატულის სახელწოდების გადარქმევა"
 
-#: ../libnautilus-private/nautilus-file.c:1423
+#: ../libnautilus-private/nautilus-file.c:1437
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "შეუძლებელია desktop ფაილის გადარქმევა"
@@ -2210,65 +2183,65 @@ msgstr "შეუძლებელია desktop ფაილის გად�
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3664
+#: ../libnautilus-private/nautilus-file.c:3678
 msgid "today at 00:00:00 PM"
 msgstr "დღეს ·00:00:00·საათზე"
 
-#: ../libnautilus-private/nautilus-file.c:3665
+#: ../libnautilus-private/nautilus-file.c:3679
 #: ../src/nautilus-file-management-properties.c:467
 msgid "today at %-I:%M:%S %p"
 msgstr "დღეს დრო %-I:%M:%S·%p"
 
-#: ../libnautilus-private/nautilus-file.c:3667
+#: ../libnautilus-private/nautilus-file.c:3681
 msgid "today at 00:00 PM"
 msgstr "დღეს დრო 00:00·საათზე"
 
-#: ../libnautilus-private/nautilus-file.c:3668
+#: ../libnautilus-private/nautilus-file.c:3682
 msgid "today at %-I:%M %p"
 msgstr "დგეს დრო %-I:%M·%p საათზე"
 
-#: ../libnautilus-private/nautilus-file.c:3670
+#: ../libnautilus-private/nautilus-file.c:3684
 msgid "today, 00:00 PM"
 msgstr "დღეს, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3671
+#: ../libnautilus-private/nautilus-file.c:3685
 msgid "today, %-I:%M %p"
 msgstr "დღეს, %-I:%M·%p"
 
-#: ../libnautilus-private/nautilus-file.c:3673
-#: ../libnautilus-private/nautilus-file.c:3674
+#: ../libnautilus-private/nautilus-file.c:3687
+#: ../libnautilus-private/nautilus-file.c:3688
 msgid "today"
 msgstr "დღეს"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3683
+#: ../libnautilus-private/nautilus-file.c:3697
 msgid "yesterday at 00:00:00 PM"
 msgstr "გუშინ დრო 00:00:00·PM საათზე"
 
-#: ../libnautilus-private/nautilus-file.c:3684
+#: ../libnautilus-private/nautilus-file.c:3698
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "გუშინ დრო %-I:%M:%S·%p"
 
-#: ../libnautilus-private/nautilus-file.c:3686
+#: ../libnautilus-private/nautilus-file.c:3700
 msgid "yesterday at 00:00 PM"
 msgstr "გუშინ დრო 00:00·PM"
 
-#: ../libnautilus-private/nautilus-file.c:3687
+#: ../libnautilus-private/nautilus-file.c:3701
 msgid "yesterday at %-I:%M %p"
 msgstr "გუშინ დრო %-I:%M·%p"
 
-#: ../libnautilus-private/nautilus-file.c:3689
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "yesterday, 00:00 PM"
 msgstr "გუშინ, 00:00·PM"
 
-#: ../libnautilus-private/nautilus-file.c:3690
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "yesterday, %-I:%M %p"
 msgstr "გუშინ, %-I:%M·%p"
 
-#: ../libnautilus-private/nautilus-file.c:3692
-#: ../libnautilus-private/nautilus-file.c:3693
+#: ../libnautilus-private/nautilus-file.c:3706
+#: ../libnautilus-private/nautilus-file.c:3707
 msgid "yesterday"
 msgstr "გუშინ"
 
@@ -2277,152 +2250,152 @@ msgstr "გუშინ"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3718
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "ოთხშაბათი,·სექტემბერი 00 0000 00:00:00·PM"
 
-#: ../libnautilus-private/nautilus-file.c:3705
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y ში: %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:3707
+#: ../libnautilus-private/nautilus-file.c:3721
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "ორშ, 00 ოქტ 0000 დრო 00:00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3708
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y ში %-I:%M:%S %p"
 
-#: ../libnautilus-private/nautilus-file.c:3710
+#: ../libnautilus-private/nautilus-file.c:3724
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ორშ, 00 ოქტ 0000 დრო 00:00 შშ"
 
-#: ../libnautilus-private/nautilus-file.c:3711
+#: ../libnautilus-private/nautilus-file.c:3725
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a %-d %b %Y ში %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3713
+#: ../libnautilus-private/nautilus-file.c:3727
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ოქტ·00·0000·დრო·00:00·PM"
 
-#: ../libnautilus-private/nautilus-file.c:3714
+#: ../libnautilus-private/nautilus-file.c:3728
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y ში %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3716
+#: ../libnautilus-private/nautilus-file.c:3730
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 ოქტ 0000, 00:00"
 
-#: ../libnautilus-private/nautilus-file.c:3717
+#: ../libnautilus-private/nautilus-file.c:3731
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3719
+#: ../libnautilus-private/nautilus-file.c:3733
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00,·00:00·PM"
 
-#: ../libnautilus-private/nautilus-file.c:3720
+#: ../libnautilus-private/nautilus-file.c:3734
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: ../libnautilus-private/nautilus-file.c:3722
+#: ../libnautilus-private/nautilus-file.c:3736
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3723
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: ../libnautilus-private/nautilus-file.c:4336
+#: ../libnautilus-private/nautilus-file.c:4350
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "შეუძლებელია უფლებების განსაზღვრა"
 
-#: ../libnautilus-private/nautilus-file.c:4644
+#: ../libnautilus-private/nautilus-file.c:4658
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "შეუძლებელია მფლობელის განსაზღვრა"
 
-#: ../libnautilus-private/nautilus-file.c:4662
+#: ../libnautilus-private/nautilus-file.c:4676
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "მითითებული მფლობელი \"%s\" არ არსებობს"
 
-#: ../libnautilus-private/nautilus-file.c:4926
+#: ../libnautilus-private/nautilus-file.c:4940
 #, c-format
 msgid "Not allowed to set group"
 msgstr "შეუძლებელია ჯგუფის განსაზღვრა"
 
-#: ../libnautilus-private/nautilus-file.c:4944
+#: ../libnautilus-private/nautilus-file.c:4958
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "მითითებული ჯგუფი '%s' არ არსებობს"
 
-#: ../libnautilus-private/nautilus-file.c:5087
+#: ../libnautilus-private/nautilus-file.c:5101
 #: ../src/file-manager/fm-directory-view.c:2202
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u ელემენტი"
 
-#: ../libnautilus-private/nautilus-file.c:5088
+#: ../libnautilus-private/nautilus-file.c:5102
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u დასტა"
 
-#: ../libnautilus-private/nautilus-file.c:5089
+#: ../libnautilus-private/nautilus-file.c:5103
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%u ფაილი"
 
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5168
+#: ../libnautilus-private/nautilus-file.c:5182
 msgid "%"
 msgstr "%"
 
-#: ../libnautilus-private/nautilus-file.c:5169
+#: ../libnautilus-private/nautilus-file.c:5183
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s ბაიტი)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5473
-#: ../libnautilus-private/nautilus-file.c:5489
+#: ../libnautilus-private/nautilus-file.c:5487
+#: ../libnautilus-private/nautilus-file.c:5503
 msgid "? items"
 msgstr "? ელემენტი"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5479
+#: ../libnautilus-private/nautilus-file.c:5493
 msgid "? bytes"
 msgstr "? ბაიტი"
 
-#: ../libnautilus-private/nautilus-file.c:5494
+#: ../libnautilus-private/nautilus-file.c:5508
 msgid "unknown type"
 msgstr "უცნობი ტიპის"
 
-#: ../libnautilus-private/nautilus-file.c:5497
+#: ../libnautilus-private/nautilus-file.c:5511
 msgid "unknown MIME type"
 msgstr "უცნობი MIME ტიპი"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5503
+#: ../libnautilus-private/nautilus-file.c:5517
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "უცნობი"
 
-#: ../libnautilus-private/nautilus-file.c:5552
+#: ../libnautilus-private/nautilus-file.c:5566
 msgid "program"
 msgstr "პროგრამა"
 
-#: ../libnautilus-private/nautilus-file.c:5572
+#: ../libnautilus-private/nautilus-file.c:5586
 msgid "link"
 msgstr "ბმული"
 
-#: ../libnautilus-private/nautilus-file.c:5594
+#: ../libnautilus-private/nautilus-file.c:5608
 msgid "link (broken)"
 msgstr "ბმული (გაწყვეტილი)"
 
@@ -2528,11 +2501,11 @@ msgstr "_მკითხე ყოველ შემთხვევაში"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:130
 msgid "Search for files by file name only"
-msgstr "ფაილების ფაილის სახელის მიხედვით ძებნა"
+msgstr "ფაილების ფაილის სახელწოდების მიხედვით ძებნა"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:134
 msgid "Search for files by file name and file properties"
-msgstr "ფაილების სახელისა და პარამეტრების მიხედვით ძებნა"
+msgstr "ფაილების სახელწოდებისა და პარამეტრების მიხედვით ძებნა"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
@@ -2552,14 +2525,14 @@ msgstr "კომპაქტური ხედი"
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
 #: ../libnautilus-private/nautilus-global-preferences.c:142
-#: ../src/file-manager/fm-list-view.c:1516
-#: ../src/file-manager/fm-list-view.c:2932
+#: ../src/file-manager/fm-list-view.c:1509
+#: ../src/file-manager/fm-list-view.c:2925
 msgid "List View"
-msgstr "სიის მაგვარი ხედი"
+msgstr "სიისებრი ხედი"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:146
 msgid "Manually"
-msgstr "მანუალურად"
+msgstr "ხელოვნურად"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:148
 msgid "By Name"
@@ -2579,7 +2552,7 @@ msgstr "შეცვლის თარიღის მიხედვით"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:152
 msgid "By Emblems"
-msgstr "ემბლემის მიხედვით"
+msgstr "ემბლემების მიხედვით"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:156
 msgid "8"
@@ -2650,7 +2623,7 @@ msgstr "მონიშვნის არე"
 
 #: ../libnautilus-private/nautilus-icon-dnd.c:905
 msgid "Switch to Manual Layout?"
-msgstr "გნებავთ მანუალურ განლაგებაზე გადართვა?"
+msgstr "გნებავთ ხელოვნურ განლაგებაზე გადართვა?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:595
 #, c-format
@@ -2660,7 +2633,7 @@ msgstr "გაწყვეტილი ბმული \"%s\"."
 #: ../libnautilus-private/nautilus-mime-actions.c:597
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
-msgstr "ბმული \"%s\" გაწყვეტილია. მოვათავსოთ ის სანაგვე ყუთში ?"
+msgstr "ბმული \"%s\" გაწყვეტილია. გნებავთ მისი სანაგვე ყუთში მოთავსება?"
 
 #: ../libnautilus-private/nautilus-mime-actions.c:603
 msgid "This link cannot be used, because it has no target."
@@ -2814,7 +2787,6 @@ msgid "Could not find '%s'"
 msgstr "შეუძლებელია '%s' -ის პოვნა"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:160
-#, fuzzy
 msgid "Could not find application"
 msgstr "შეუძლებელია პროგრამის პოვნა"
 
@@ -2824,7 +2796,6 @@ msgid "Could not add application to the application database: %s"
 msgstr "შეუძლებელი გახდა პროგრამის, პროგრამების მონაცემთა ბაზაში დამატება: %s"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:235
-#, fuzzy
 msgid "Could not add application"
 msgstr "შეუძლებელია პროგრამის დამატება"
 
@@ -2880,7 +2851,7 @@ msgstr "გახსნა ვერ მოხერხდა, გნება�
 
 #: ../libnautilus-private/nautilus-program-choosing.c:81
 #: ../libnautilus-private/nautilus-program-choosing.c:112
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
 "locations."
@@ -2894,7 +2865,7 @@ msgstr "გახსნა ვერ მოხერხდა, გნება�
 
 #: ../libnautilus-private/nautilus-program-choosing.c:87
 #: ../libnautilus-private/nautilus-program-choosing.c:119
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
 "\" locations."
@@ -2907,15 +2878,19 @@ msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
+"ვერ მოიძებნა ამ ტიპის ფაილის დათვალიერებისთვის საჭირო პროგრამა.  ფაილის "
+"თქვენს კომპიუტერში გადაწერის შემთხვევაში, შესაძლოა შესაძლებელი გახდეს მისი "
+"გახსნა."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:121
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
+"არავითარი ხელმისაწვდომი ქმედება ამ ფაილის დათვალიერებისთვის.  ფაილის თქვენს "
+"კომპიუტერში გადაწერის შემთხვევაში, შესაძლოა შესაძლებელი გახდეს მისი გახსნა."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:360
-#, fuzzy
 msgid "Sorry, but you cannot execute commands from a remote site."
 msgstr ""
 "უკაცრავად, სამწუხაროდ თქვენ არ შეგიძლიათ დაშორებული კომპიუტერიდან "
@@ -2952,7 +2927,6 @@ msgid "Details: "
 msgstr "ვრცლას: "
 
 #: ../libnautilus-private/nautilus-progress-info.c:222
-#, fuzzy
 msgid "File Operations"
 msgstr "ფაილის უფლებები:"
 
@@ -2964,7 +2938,6 @@ msgstr[0] "ფაილებზე %'d ოპერაცია მიმდი
 
 #: ../libnautilus-private/nautilus-progress-info.c:493
 #: ../libnautilus-private/nautilus-progress-info.c:511
-#, fuzzy
 msgid "Preparing"
 msgstr "მომზადება"
 
@@ -3014,7 +2987,7 @@ msgstr ""
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
 msgid "Change the behaviour and appearance of file manager windows"
-msgstr ""
+msgstr "ფაილ მენჯერის ფანჯრის ქცევის და გაფორმების შეცვლა"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:2
 msgid "File Management"
@@ -3046,9 +3019,8 @@ msgid "Nautilus factory"
 msgstr "ნაუტილუსის ქარხანა"
 
 #: ../src/Nautilus_shell.server.in.h:3
-#, fuzzy
 msgid "Nautilus instance"
-msgstr "Nautilus ის შელი"
+msgstr "ნაუტილუსის ეგზემპლიარი"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus metafile factory"
@@ -3140,7 +3112,6 @@ msgid "There was an error displaying help."
 msgstr "დაიშვა შეცდომა დახმარების ჩვენებისას."
 
 #: ../src/file-manager/fm-directory-view.c:1155
-#, fuzzy
 msgid "Select Items Matching"
 msgstr "მოცემულ ფანჯარაში ყველა ელემენტის ამორჩევა"
 
@@ -3172,33 +3143,33 @@ msgid "\"%s\" selected"
 msgstr "მონიშნულია \"%s\" ელემენტი"
 
 #: ../src/file-manager/fm-directory-view.c:2124
-#, fuzzy, c-format
+#, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%d მონიშნული დასტა"
 
 #: ../src/file-manager/fm-directory-view.c:2134
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %'d item)"
 msgid_plural " (containing %'d items)"
 msgstr[0] " (მოიცავს %d ელემენტს)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: ../src/file-manager/fm-directory-view.c:2145
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %'d item)"
 msgid_plural " (containing a total of %'d items)"
 msgstr[0] " (სულ მოიცავს %d ელემენტს)"
 
 #: ../src/file-manager/fm-directory-view.c:2162
-#, fuzzy, c-format
+#, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%d მონიშნული ელემენტი"
 
 #. Folders selected also, use "other" terminology
 #: ../src/file-manager/fm-directory-view.c:2169
-#, fuzzy, c-format
+#, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
 msgstr[0] "%d სხვა მონიშნული ელემენტი"
@@ -3311,7 +3282,7 @@ msgid "\"%s\" will be copied if you select the Paste command"
 msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:5704
-#, fuzzy, c-format
+#, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
 msgid_plural ""
 "The %'d selected items will be moved if you select the Paste command"
@@ -3348,7 +3319,6 @@ msgid "Could not determine original location of \"%s\" "
 msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:6481
-#, fuzzy
 msgid "The item cannot be restored from trash"
 msgstr "შეუძლებელი გახდა \"%B\" ფაილის სანაგვე ყუთში გადატანა."
 
@@ -3399,7 +3369,6 @@ msgstr "მოცემულ დასტაში ახალი ცარი
 
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:6588
-#, fuzzy
 msgid "No templates installed"
 msgstr "არც ერთი დაყენებული შაბლონი"
 
@@ -3449,7 +3418,6 @@ msgstr "ახ_ალ ფანჯარაში გახსნა"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6612
-#, fuzzy
 msgid "Open each selected item in a new tab"
 msgstr "ყოველი ელემენტი ნავიგატორის ცალკე ფანჯარაში გახსნა"
 
@@ -3462,7 +3430,6 @@ msgstr "დასტის ფანჯარაში _გახსნა"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6616
-#, fuzzy
 msgid "Open each selected item in a folder window"
 msgstr "ყოველი ელემენტი ნავიგატორის ცალკე ფანჯარაში გახსნა"
 
@@ -3537,23 +3504,23 @@ msgstr "მოცემულ ფანჯარაში ყველა ელ
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6657
 msgid "Select I_tems Matching..."
-msgstr ""
+msgstr "მონიშვნა რომ_ელიც ემთხვევა..."
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6658
 msgid "Select items in this window matching a given pattern"
-msgstr ""
+msgstr "ელემენტების მონიშვნა რომლებიც გარკვეულ შაბლონს ემთხვევა"
 
 #. name, stock id
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6661
 msgid "_Invert Selection"
-msgstr ""
+msgstr "_უკუ მონიშვნა"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6662
 msgid "Select all and only the items that are not currently selected"
-msgstr ""
+msgstr "ყველა იმ ელემენტის მონიშვნა, რომელიც ამჟამად არ არის მონიშნული"
 
 #. name, stock id
 #. label, accelerator
@@ -3589,7 +3556,7 @@ msgstr "_გადარქმევა..."
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6674
 msgid "Rename selected item"
-msgstr "შერჩეული ელემენტის სახელის გადარქმევა"
+msgstr "შერჩეული ელემენტის სახელწოდების გადარქმევა"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6682
@@ -3677,7 +3644,6 @@ msgstr "შერჩეული ტომის მოხსნა"
 #: ../src/file-manager/fm-directory-view.c:6715
 #: ../src/file-manager/fm-directory-view.c:6731
 #: ../src/file-manager/fm-directory-view.c:6800
-#, fuzzy
 msgid "_Eject Volume"
 msgstr "ტომის _მიერთება"
 
@@ -3755,13 +3721,11 @@ msgstr "მოცემული დასტის ნავიგატორ�
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6758
-#, fuzzy
 msgid "Open this folder in a new tab"
 msgstr "მოცემული დასტის ნავიგატორის ფანჯარაში გახსნა"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6763
-#, fuzzy
 msgid "Open this folder in a folder window"
 msgstr "მოცემული დასტის ნავიგატორის ფანჯარაში გახსნა"
 
@@ -3798,7 +3762,6 @@ msgstr "მოცემული დასტის წაშლა, სან�
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6793
-#, fuzzy
 msgid "Mount the volume associated with this folder"
 msgstr "გახსნილ დასტასთან დაკავშირებული ტომის მიერთება"
 
@@ -3809,19 +3772,16 @@ msgstr "მოცემულ დასტასთან დაკავში�
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6801
-#, fuzzy
 msgid "Eject the volume associated with this folder"
 msgstr "გახსნილ დასტასთან დაკავშირებული ტომის გამოღება"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6805
-#, fuzzy
 msgid "Format the volume associated with this folder"
 msgstr "გახსნილ დასტასთან დაკავშირებული ტომის ფორმატირება"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6810
-#, fuzzy
 msgid "View or modify the properties of this folder"
 msgstr "მიმდინარე დასტის დათვალიერებახედი ის საქაღალდე"
 
@@ -3837,42 +3797,42 @@ msgid "_Scripts"
 msgstr "_სკრიპტები"
 
 #: ../src/file-manager/fm-directory-view.c:7306
-#, fuzzy, c-format
+#, c-format
 msgid "Move the open folder out of the trash to \"%s\""
-msgstr "გახსნილი დასტის სანაგვე ყუთში გადატანა"
+msgstr ""
 
 #: ../src/file-manager/fm-directory-view.c:7309
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected folder out of the trash to \"%s\""
 msgid_plural "Move the selected folders out of the trash to \"%s\""
-msgstr[0] "გახსნილი დასტის სანაგვე ყუთში გადატანა"
+msgstr[0] ""
 
 #: ../src/file-manager/fm-directory-view.c:7313
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected folder out of the trash"
 msgid_plural "Move the selected folders out of the trash"
 msgstr[0] "გახსნილი დასტის სანაგვე ყუთში გადატანა"
 
 #: ../src/file-manager/fm-directory-view.c:7319
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected file out of the trash to \"%s\""
 msgid_plural "Move the selected files out of the trash to \"%s\""
-msgstr[0] "მონიშნული ელემენტების სანაგვე ყუთში გადატანა"
+msgstr[0] ""
 
 #: ../src/file-manager/fm-directory-view.c:7323
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected file out of the trash"
 msgid_plural "Move the selected files out of the trash"
 msgstr[0] "მონიშნული ელემენტების სანაგვე ყუთში გადატანა"
 
 #: ../src/file-manager/fm-directory-view.c:7329
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected item out of the trash to \"%s\""
 msgid_plural "Move the selected items out of the trash to \"%s\""
-msgstr[0] "მონიშნული ელემენტების სანაგვე ყუთში გადატანა"
+msgstr[0] ""
 
 #: ../src/file-manager/fm-directory-view.c:7333
-#, fuzzy, c-format
+#, c-format
 msgid "Move the selected item out of the trash"
 msgid_plural "Move the selected items out of the trash"
 msgstr[0] "მონიშნული ელემენტების სანაგვე ყუთში გადატანა"
@@ -3894,7 +3854,7 @@ msgstr "ახალი ფა_ნჯრის დათვალიერებ
 #: ../src/file-manager/fm-directory-view.c:7829
 msgid "_Browse Folder"
 msgid_plural "_Browse Folders"
-msgstr[0] ""
+msgstr[0] "_დასტის დათვალიერება"
 
 #: ../src/file-manager/fm-directory-view.c:7578
 #: ../src/file-manager/fm-directory-view.c:7859
@@ -3903,7 +3863,6 @@ msgstr "ახალ _დაფაში დათვალიერება"
 
 #: ../src/file-manager/fm-directory-view.c:7627
 #: ../src/file-manager/fm-directory-view.c:7892
-#, fuzzy
 msgid "_Delete Permanently"
 msgstr "გახსნილი დასტის სამუდამოდ წაშლა"
 
@@ -4060,9 +4019,9 @@ msgstr "სახელი \"%s\" მიუღებელია. გთხო�
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:137
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not rename \"%s\" to \"%s\": %s"
-msgstr "უკაცრავად, შეუძლებელია \"%s\"-ის \"%s\"-ზე გადარქმევა."
+msgstr ""
 
 #: ../src/file-manager/fm-error-reporting.c:145
 msgid "The item could not be renamed."
@@ -4076,27 +4035,27 @@ msgstr ""
 
 #. fall through
 #: ../src/file-manager/fm-error-reporting.c:180
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the group of \"%s\": %s"
-msgstr "უკაცრავად, შეუძლებელია \"%s\"-ის მფლობელის შეცვლა."
+msgstr ""
 
 #: ../src/file-manager/fm-error-reporting.c:185
 msgid "The group could not be changed."
 msgstr "შეუძლებელია ჯგუფის შეცვლა."
 
 #: ../src/file-manager/fm-error-reporting.c:205
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the owner of \"%s\": %s"
-msgstr "უკაცრავად, შეუძლებელია \"%s\"-ის მფლობელის შეცვლა."
+msgstr ""
 
 #: ../src/file-manager/fm-error-reporting.c:207
 msgid "The owner could not be changed."
 msgstr "შეუძლებელია მფლობელის შეცვლა."
 
 #: ../src/file-manager/fm-error-reporting.c:227
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, could not change the permissions of \"%s\": %s"
-msgstr "უკაცრავად, შეუძლებელია \"%s\"-ის მფლობელის შეცვლა."
+msgstr ""
 
 #: ../src/file-manager/fm-error-reporting.c:229
 msgid "The permissions could not be changed."
@@ -4141,7 +4100,7 @@ msgstr "ცვლილების თარიღის მიხედვი�
 #: ../src/file-manager/fm-icon-view.c:145
 #: ../src/file-manager/fm-icon-view.c:1536
 msgid "Keep icons sorted by modification date in rows"
-msgstr ""
+msgstr "ხატულების ემბლემების რიგებად და შეცვლის თარიღის მიხედვით დალაგება"
 
 #: ../src/file-manager/fm-icon-view.c:151
 msgid "by _Emblems"
@@ -4150,7 +4109,7 @@ msgstr "_ემბლემის მიხედვით"
 #: ../src/file-manager/fm-icon-view.c:152
 #: ../src/file-manager/fm-icon-view.c:1540
 msgid "Keep icons sorted by emblems in rows"
-msgstr ""
+msgstr "ხატულების ემბლემების რიგებად დალაგება"
 
 #. name, stock id, label
 #: ../src/file-manager/fm-icon-view.c:1484
@@ -4189,7 +4148,7 @@ msgstr "ხაზზე _გასწორება"
 #. tooltip
 #: ../src/file-manager/fm-icon-view.c:1495
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
+msgstr "ხატულების ხელმეორე გადალაგება, ფანჯარაში უკეთესი გადანაწილებისთვის"
 
 #. name, stock id
 #. label, accelerator
@@ -4226,7 +4185,7 @@ msgstr "პიქტოგრამების ბადეზე განთ�
 
 #: ../src/file-manager/fm-icon-view.c:1519
 msgid "_Manually"
-msgstr "_მანუალურად"
+msgstr "ხე_ლოვნურად"
 
 #: ../src/file-manager/fm-icon-view.c:1520
 msgid "Leave icons wherever they are dropped"
@@ -4234,7 +4193,7 @@ msgstr "პიქტოგრამების პირველად პო�
 
 #: ../src/file-manager/fm-icon-view.c:1523
 msgid "By _Name"
-msgstr "სახელის მიხედვით"
+msgstr "სახელწოდების მიხედვით"
 
 #: ../src/file-manager/fm-icon-view.c:1527
 msgid "By _Size"
@@ -4263,9 +4222,8 @@ msgstr "მიანიშნებს \"%s\""
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:3008
-#, fuzzy
 msgid "_Icons"
-msgstr "პიქტოგრამები"
+msgstr "პ_იქტოგრამები"
 
 #: ../src/file-manager/fm-icon-view.c:3009
 msgid "The icon view encountered an error."
@@ -4281,22 +4239,18 @@ msgstr "მოცემული მდებარეობის პიქტ�
 
 #. translators: this is used in the view menu
 #: ../src/file-manager/fm-icon-view.c:3022
-#, fuzzy
 msgid "_Compact"
 msgstr "_კომპიუტერი"
 
 #: ../src/file-manager/fm-icon-view.c:3023
-#, fuzzy
 msgid "The compact view encountered an error."
 msgstr "\"პიქტოგრამული ხედი\"-ს დროს დაიშვა შეცდომა."
 
 #: ../src/file-manager/fm-icon-view.c:3024
-#, fuzzy
 msgid "The compact view encountered an error while starting up."
 msgstr "პიქტოგრამების დამთვალიერებლის ჩართვის დროს დაიშვა შეცდომა."
 
 #: ../src/file-manager/fm-icon-view.c:3025
-#, fuzzy
 msgid "Display this location with the compact view."
 msgstr "მოცემული მდებარეობის პიქტოგრამული ხედით ჩვენება."
 
@@ -4310,52 +4264,52 @@ msgstr "(ცარიელი)"
 msgid "Loading..."
 msgstr "იტვირთება..."
 
-#: ../src/file-manager/fm-list-view.c:2135
+#: ../src/file-manager/fm-list-view.c:2128
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ხილული სვეტი"
 
-#: ../src/file-manager/fm-list-view.c:2154
-#, fuzzy
+#: ../src/file-manager/fm-list-view.c:2147
 msgid "Choose the order of information to appear in this folder:"
 msgstr "სიურ ხედში მონაცემთა გამოჩენის მიმდევრობა."
 
 #. name, stock id
 #. label, accelerator
-#: ../src/file-manager/fm-list-view.c:2208
+#: ../src/file-manager/fm-list-view.c:2201
 msgid "Visible _Columns..."
-msgstr "ხილული _სვეტი"
+msgstr "ხილული _სვეტი..."
 
 #. tooltip
-#: ../src/file-manager/fm-list-view.c:2209
+#: ../src/file-manager/fm-list-view.c:2202
 msgid "Select the columns visible in this folder"
 msgstr "მოცემულ დასტაში, ხილული სვეტების ამორჩევა"
 
 #. translators: this is used in the view menu
-#: ../src/file-manager/fm-list-view.c:2934
+#: ../src/file-manager/fm-list-view.c:2927
 msgid "_List"
 msgstr "ს_ია"
 
-#: ../src/file-manager/fm-list-view.c:2935
+#: ../src/file-manager/fm-list-view.c:2928
 msgid "The list view encountered an error."
 msgstr "სიის სახით ჩვენების დროს დაიშვა შეცდომა."
 
-#: ../src/file-manager/fm-list-view.c:2936
+#: ../src/file-manager/fm-list-view.c:2929
 msgid "The list view encountered an error while starting up."
 msgstr "დაიშვა შეცდომა სიის სახით ჩვენების კომპონენტის გაშვების დროს."
 
-#: ../src/file-manager/fm-list-view.c:2937
+#: ../src/file-manager/fm-list-view.c:2930
 msgid "Display this location with the list view."
 msgstr "მოცემული მდებარეობის \"სიის სახით\" დათვალიერება."
 
 #: ../src/file-manager/fm-properties-window.c:511
 msgid "You cannot assign more than one custom icon at a time!"
-msgstr ""
+msgstr "შეუძლებელია ერთზე მეტი პერსონალური ხატულას მინიჭება!"
 
 #: ../src/file-manager/fm-properties-window.c:512
 #: ../src/nautilus-information-panel.c:495
 msgid "Please drag just one image to set a custom icon."
 msgstr ""
+"პერსონალური ხატულას მისათითებლად, შესაძლებელია მხოლოდ ერთი ხატულას გადათრევა."
 
 #: ../src/file-manager/fm-properties-window.c:523
 #: ../src/nautilus-information-panel.c:517
@@ -4367,6 +4321,8 @@ msgstr "თქვენს მიერ გადათრეული ფაი
 #: ../src/nautilus-information-panel.c:518
 msgid "You can only use local images as custom icons."
 msgstr ""
+"თქვენ შეგიძლიათ პერსონალურ ხატულებად მხოლოდ ლოკალური გამოსახულებების "
+"გამოყენება."
 
 #: ../src/file-manager/fm-properties-window.c:529
 #: ../src/nautilus-information-panel.c:523
@@ -4396,15 +4352,15 @@ msgstr "%s პარამეტრები"
 #: ../src/file-manager/fm-properties-window.c:1368
 #, c-format
 msgid "MIME type description (MIME type)|%s (%s)"
-msgstr ""
+msgstr "MIME ტიპის აღწერილობა (MIME ტიპი)|%s (%s)"
 
 #: ../src/file-manager/fm-properties-window.c:1585
 msgid "Cancel Group Change?"
-msgstr "ჯგუფის შეცვლის გაუქმება?"
+msgstr "გნებავთ ჯგუფის ცვლილების გაუქმება?"
 
 #: ../src/file-manager/fm-properties-window.c:2003
 msgid "Cancel Owner Change?"
-msgstr "გნებავთ მფლობელის შეცვლის გაუქმება?გაუქმება მფლობელი?"
+msgstr "გნებავთ მფლობელის ცვლილების გაუქმება?"
 
 #: ../src/file-manager/fm-properties-window.c:2334
 msgid "nothing"
@@ -4412,17 +4368,17 @@ msgstr "არაფერი"
 
 #: ../src/file-manager/fm-properties-window.c:2336
 msgid "unreadable"
-msgstr "ვერკითხვადი"
+msgstr "წაუკითხვადი"
 
 #: ../src/file-manager/fm-properties-window.c:2346
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
-msgstr[0] "%d ელემენტი, მისი ზომა %s"
+msgstr[0] "%d ელემენტი, ზომით %s"
 
 #: ../src/file-manager/fm-properties-window.c:2355
 msgid "(some contents unreadable)"
-msgstr "(ვერკითხვადი შინაარსის ფაილები)"
+msgstr "(წაუკითხვადი შინაარსის ფაილები)"
 
 #. Also set the title field here, with a trailing carriage return &
 #. * space if the value field has two lines. This is a hack to get the
@@ -4437,7 +4393,7 @@ msgstr "შემადგენლობა:"
 #. Translators: "used" refers to the capacity of the filesystem
 #: ../src/file-manager/fm-properties-window.c:3139
 msgid "used"
-msgstr "გამოყენებაშია"
+msgstr "გამოყეებულია"
 
 #. Translators: "free" refers to the capacity of the filesystem
 #: ../src/file-manager/fm-properties-window.c:3144
@@ -4454,7 +4410,7 @@ msgstr "ფაილური სისტემის ტიპი:"
 
 #: ../src/file-manager/fm-properties-window.c:3231
 msgid "Basic"
-msgstr "ზირითადი"
+msgstr "ძირითადი"
 
 #: ../src/file-manager/fm-properties-window.c:3291
 msgid "Type:"
@@ -4621,7 +4577,7 @@ msgstr "გაშვება:"
 
 #: ../src/file-manager/fm-properties-window.c:4471
 msgid "Allow _executing file as program"
-msgstr "ფაილის პროგრამის მაგვარად გაშვ_ების უფლების მიცემა"
+msgstr "ფაილის პროგრამის სახით გაშვ_ების ნების დართვა"
 
 #: ../src/file-manager/fm-properties-window.c:4490
 msgid "Others:"
@@ -4641,9 +4597,7 @@ msgstr "ტექსტის მიმოხილვა:"
 
 #: ../src/file-manager/fm-properties-window.c:4807
 msgid "You are not the owner, so you cannot change these permissions."
-msgstr ""
-"თქვენ არ ბრძანდებით მფლობელი, ამიტომაც არ შეგიძლიათ მოცემული უფლებების "
-"შეცვლა."
+msgstr "თქვენ არ ხართ მფლობელი, ამიტომ არ შეგიძლიათ მოცემული უფლებების შეცვლა."
 
 #: ../src/file-manager/fm-properties-window.c:4831
 msgid "SELinux context:"
@@ -4691,23 +4645,25 @@ msgstr "ხე"
 msgid "Show Tree"
 msgstr "ხის ჩვენება"
 
-#: ../src/nautilus-application.c:323
+#: ../src/nautilus-application.c:325
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "ნაუტილუსმა ვერ დააკმაყოფილა თქვენი მოთხოვნა, დასტა \"%s\" ვერ შეიქმნა."
+msgstr ""
+"ნაუტილუსმა ვერ დააკმაყოფილა თქვენი მოთხოვნა, შეუძლებელი გახდა \"%s\" დასტის "
+"შექმნა."
 
-#: ../src/nautilus-application.c:325
+#: ../src/nautilus-application.c:327
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
 
-#: ../src/nautilus-application.c:328
+#: ../src/nautilus-application.c:330
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr ""
 
-#: ../src/nautilus-application.c:330
+#: ../src/nautilus-application.c:332
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4723,7 +4679,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: ../src/nautilus-application.c:597
+#: ../src/nautilus-application.c:599
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4731,7 +4687,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: ../src/nautilus-application.c:603
+#: ../src/nautilus-application.c:605
 msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4761,39 +4717,36 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:633 ../src/nautilus-application.c:651
-#: ../src/nautilus-application.c:658
-#, fuzzy
+#: ../src/nautilus-application.c:635 ../src/nautilus-application.c:653
+#: ../src/nautilus-application.c:660
 msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr ""
-"nautilus: შეუძლებელია --geometry პარამეტრის გამოყენება URI-ს ერთზე მეტ "
-"მნიშვნელობასთან.\n"
 
-#: ../src/nautilus-application.c:634
+#: ../src/nautilus-application.c:636
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: ../src/nautilus-application.c:652
+#: ../src/nautilus-application.c:654
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: ../src/nautilus-application.c:659
+#: ../src/nautilus-application.c:661
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: ../src/nautilus-application.c:1369 ../src/nautilus-places-sidebar.c:1682
+#: ../src/nautilus-application.c:1371 ../src/nautilus-places-sidebar.c:1682
 #: ../src/nautilus-places-sidebar.c:1705 ../src/nautilus-places-sidebar.c:1728
 #, c-format
 msgid "Unable to eject %s"
-msgstr "შეუძლებელია %s -ს გამოღება "
+msgstr "შეუძლებელია გამოღება %s"
 
 #: ../src/nautilus-autorun-software.c:144
 #: ../src/nautilus-autorun-software.c:147
@@ -4875,7 +4828,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"სერვერთან დაკავშირების დამატება"
+"სერვერთან კავშირის დამატება"
 
 #: ../src/nautilus-connect-server-dialog.c:114
 msgid "Custom Location"
@@ -4891,7 +4844,7 @@ msgstr "Public FTP (საზოგადო FTP)"
 
 #: ../src/nautilus-connect-server-dialog.c:121
 msgid "FTP (with login)"
-msgstr "FTP (რეგისტრაციის გავლით)"
+msgstr "FTP (რეგისტრაციით)"
 
 #: ../src/nautilus-connect-server-dialog.c:124
 msgid "Windows share"
@@ -4907,7 +4860,7 @@ msgstr "დაცული WebDAV (HTTPS)"
 
 #: ../src/nautilus-connect-server-dialog.c:194
 msgid "Cannot Connect to Server. You must enter a name for the server."
-msgstr "შეუძლებელია სერვერთან დაკავშირება. საჭიროა სახელის მითითება."
+msgstr "შეუძლებელია სერვერთან დაკავშირება. საჭიროა სახელწოდების მითითება."
 
 #: ../src/nautilus-connect-server-dialog.c:195
 msgid "Please enter a name and try again."
@@ -5121,7 +5074,7 @@ msgstr "<b>სვეტების სია</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:26
 msgid "<b>List View Defaults</b>"
-msgstr "<b>სიის მაგვარი ხედი</b>"
+msgstr "<b>სიისებრი ხედი</b>"
 
 #: ../src/nautilus-file-management-properties.glade.h:27
 msgid "<b>Media Handling</b>"
@@ -5193,7 +5146,7 @@ msgid ""
 "By Modification Date\n"
 "By Emblems"
 msgstr ""
-"სახელის მიხედვით\n"
+"სახელწოდების მიხედვით\n"
 "ზომის მიხედვით\n"
 "ტიპის მიხედვით\n"
 "შეცვლის თარიღის მიხედვით\n"
@@ -5213,7 +5166,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:50
 msgid "Choose the order of information to appear in the list view."
-msgstr "სიის მაგვარი ხედისას ინფორმაციის გამოჩენის მიმდევრობის ამორჩევა."
+msgstr "სიისებრი ხედისას ინფორმაციის გამოჩენის მიმდევრობის ამორჩევა."
 
 #: ../src/nautilus-file-management-properties.glade.h:51
 msgid ""
@@ -5256,7 +5209,8 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:61
 msgid "Less common media formats can be configured here"
-msgstr "აქ შესაძლებელია ნაკლებად გავრცელებული მედია მოწყობილობების გამართვა"
+msgstr ""
+"ამ სექციაში შესაძლებელია ნაკლებად გავრცელებული მედია მოწყობილობების გამართვა"
 
 #: ../src/nautilus-file-management-properties.glade.h:62
 msgid "List Columns"
@@ -5284,7 +5238,7 @@ msgstr "მინიატურის _ჩვენება:"
 
 #: ../src/nautilus-file-management-properties.glade.h:68
 msgid "Show hidden and _backup files"
-msgstr "დამალული და სამარქაფო ფაილე_ბის ჩვენება"
+msgstr "ფარული და სამარქაფო ფაილე_ბის ჩვენება"
 
 #: ../src/nautilus-file-management-properties.glade.h:69
 msgid "Show te_xt in icons:"
@@ -5328,7 +5282,7 @@ msgstr "_მუსიკალური პლეერი:"
 
 #: ../src/nautilus-file-management-properties.glade.h:80
 msgid "_Never prompt or start programs on media insertion"
-msgstr ""
+msgstr "_არასოდეს გაუშვა ავტომატურად პროგრამები მედიის შეყვანისას"
 
 #: ../src/nautilus-file-management-properties.glade.h:81
 msgid "_Only for files smaller than:"
@@ -5487,7 +5441,7 @@ msgstr "სტანდარტული ფონის გამოყენ�
 
 #: ../src/nautilus-information-panel.c:494
 msgid "You cannot assign more than one custom icon at a time."
-msgstr ""
+msgstr "თქვენ არ შეგიძლიათ ერთდროულად ერთზე მეტი ხატულას მინიჭება."
 
 #: ../src/nautilus-information-panel.c:524
 msgid "You can only use images as custom icons."
@@ -5538,7 +5492,7 @@ msgstr ""
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
+msgstr "არ მართო სამუშაო მაგიდა (პარამეტრების იგნორირება)"
 
 #: ../src/nautilus-main.c:399
 msgid "open a browser window."
@@ -5592,13 +5546,13 @@ msgstr "ნაუტილუსი"
 #: ../src/nautilus-main.c:533
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "nautilus: შეუძლებელია %s-ის URI-თ გამოყენება.\n"
+msgstr "nautilus: შეუძლებელია %s პარამეტრის URI მისამართებით გამოყენება.\n"
 
 #: ../src/nautilus-main.c:524
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
-"nautilus: სხვა პარამეტრებთან ერთად შეუძლებელია პარამეტრ --check -ის "
+"nautilus: შეუძლებელია პარამეტრი --check-ის სხვა პარამეტრებთან ერთად "
 "გამოყენება.\n"
 
 #: ../src/nautilus-main.c:538
@@ -5621,7 +5575,7 @@ msgstr "მისამართი \"%s\" არ არსებობს."
 
 #: ../src/nautilus-navigation-window-menus.c:319
 msgid "The history location doesn't exist."
-msgstr "არ არსებული ისტორიის მისამართი."
+msgstr "ისტორიის მისამართი არ არსებობს."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:771
@@ -5653,7 +5607,6 @@ msgid "New _Tab"
 msgstr "ახალი _დაფა"
 
 #: ../src/nautilus-navigation-window-menus.c:778
-#, fuzzy
 msgid "Open another tab for the displayed location"
 msgstr "მოცემული მისამართისთვის დამატებითი ნაუტილუსის ფანჯრის გახსნა"
 
@@ -5663,7 +5616,6 @@ msgid "Open Folder W_indow"
 msgstr "დასტის ფანჯრ_ის გახსნა"
 
 #: ../src/nautilus-navigation-window-menus.c:781
-#, fuzzy
 msgid "Open a folder window for the displayed location"
 msgstr "მოცემული მისამართისთვის დამატებითი ნაუტილუსის ფანჯრის გახსნა"
 
@@ -5728,7 +5680,7 @@ msgstr "ფაილები_ს მოძებნა..."
 #: ../src/nautilus-navigation-window-menus.c:799
 #: ../src/nautilus-spatial-window.c:906
 msgid "Locate documents and folders on this computer by name or content"
-msgstr "დოკუმენტებისა და დასტების სახელის ან შიგთავსის მიხედვით ძებნა"
+msgstr "დოკუმენტებისა და დასტების სახელწოდების ან შიგთავსის მიხედვით ძებნა"
 
 #: ../src/nautilus-navigation-window-menus.c:802
 msgid "_Previous Tab"
@@ -5919,7 +5871,7 @@ msgstr "უკაცრავად, შეუძლებელია %s შა
 
 #: ../src/nautilus-property-browser.c:942
 msgid "Check that you have permission to delete the pattern."
-msgstr ""
+msgstr "დარწმუნდით, რომ გაქვთ მისი მოშორების უფლება."
 
 #: ../src/nautilus-property-browser.c:970
 #, c-format
@@ -5928,7 +5880,7 @@ msgstr "უკაცრავად, შეუძლებელია %s ემ
 
 #: ../src/nautilus-property-browser.c:971
 msgid "Check that you have permission to delete the emblem."
-msgstr ""
+msgstr "დარწმუნდით, რომ გაქვთი მისი მოშორების უფლება."
 
 #: ../src/nautilus-property-browser.c:1017
 msgid "Create a New Emblem"
@@ -5937,7 +5889,7 @@ msgstr "ახალი ემბლემის შექმნა"
 #. make the keyword label and field
 #: ../src/nautilus-property-browser.c:1039
 msgid "_Keyword:"
-msgstr "_საკვანძო სიტყვა:"
+msgstr "სა_კვანძო სიტყვა:"
 
 #. set up a gnome icon entry to pick the image file
 #: ../src/nautilus-property-browser.c:1058
@@ -5946,7 +5898,7 @@ msgstr "_სურათი:"
 
 #: ../src/nautilus-property-browser.c:1066
 msgid "Select an Image File for the New Emblem"
-msgstr ""
+msgstr "ახალი ემბლემისთვის ფაილის ამორჩევა"
 
 #: ../src/nautilus-property-browser.c:1091
 msgid "Create a New Color:"
@@ -5955,7 +5907,7 @@ msgstr "ახალი ფერის შექმნა:"
 #. make the name label and field
 #: ../src/nautilus-property-browser.c:1105
 msgid "Color _name:"
-msgstr "ფ_ერის დასახელება:"
+msgstr "ფ_ერის სახელწოდება:"
 
 #: ../src/nautilus-property-browser.c:1121
 msgid "Color _value:"
@@ -5980,7 +5932,6 @@ msgid "Please try again."
 msgstr "გთხოვთ სცადოთ ხელახლა"
 
 #: ../src/nautilus-property-browser.c:1169
-#, fuzzy
 msgid "Sorry, but you cannot replace the reset image."
 msgstr ""
 "უკაცრავად, სამწუხაროდ თქვენ არ შეგიძლიათ დაშორებული კომპიუტერიდან "
@@ -6259,12 +6210,11 @@ msgid "Could not find \"%s\"."
 msgstr "ვერ ვპოულობ \"%s\"."
 
 #: ../src/nautilus-window-manage-views.c:1906
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle \"%s\" locations."
 msgstr "ნაუტილუსმა ვერ დაამუშავა მდებარეობები: %s"
 
 #: ../src/nautilus-window-manage-views.c:1909
-#, fuzzy
 msgid "Nautilus cannot handle this kind of locations."
 msgstr "ნაუტილუსმა ვერ დაამუშავა მდებარეობები: %s"
 
@@ -6282,10 +6232,9 @@ msgstr "შესვლა აკრძალულია."
 #. * the proxy is set up wrong.
 #.
 #: ../src/nautilus-window-manage-views.c:1931
-#, fuzzy, c-format
+#, c-format
 msgid "Could not display \"%s\", because the host could not be found."
 msgstr ""
-"შეუძლებელია \"%s\" ის დათვალიერება, რადგანაც \"%s\" მისამართი ვერ მოიძებნა."
 
 #: ../src/nautilus-window-manage-views.c:1933
 msgid ""
@@ -6293,12 +6242,13 @@ msgid ""
 msgstr ""
 
 #: ../src/nautilus-window-manage-views.c:1947
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error: %s\n"
 "Please select another viewer and try again."
 msgstr ""
-"გთხოვთ ამოირჩიოთ სხვა პროგრამა დათვალიერებისთვის და ხელახლა სცადოთ.არჩება და."
+"შეცდომა: %s\n"
+"გეთაყვა ამოირჩიეთ სხვა დამთვალიერებელი ან სცადეთ ხელახლა."
 
 #: ../src/nautilus-window-menus.c:180
 msgid "Go to the location specified by this bookmark"
@@ -6330,7 +6280,6 @@ msgstr ""
 "License)."
 
 #: ../src/nautilus-window-menus.c:550
-#, fuzzy
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -6412,7 +6361,7 @@ msgstr "_პარამეტრები"
 
 #: ../src/nautilus-window-menus.c:801
 msgid "Edit Nautilus preferences"
-msgstr "შეცვალე Nautilus ის პარამეტრები."
+msgstr "ნაუტილუსის პარამეტრების შეცვლა"
 
 #. name, stock id, label
 #: ../src/nautilus-window-menus.c:803
@@ -6510,7 +6459,7 @@ msgstr "ნორმალურ _ზომაში"
 #: ../src/nautilus-window-menus.c:850 ../src/nautilus-zoom-control.c:94
 #: ../src/nautilus-zoom-control.c:309
 msgid "Use the normal view size"
-msgstr ""
+msgstr "ნორმალური ხედის გამოყენება"
 
 #. name, stock id
 #. label, accelerator
@@ -6584,16 +6533,16 @@ msgstr ""
 #. label, accelerator
 #: ../src/nautilus-window-menus.c:884
 msgid "Show _Hidden Files"
-msgstr "_დამალული ფაილების ჩვენება"
+msgstr "_ფარული ფაილების ჩვენება"
 
 #. tooltip
 #: ../src/nautilus-window-menus.c:885
 msgid "Toggle the display of hidden files in the current window"
-msgstr ""
+msgstr "მიმდინარე ფანჯარაში ფარული ფაილების ჩვენებაზე გადართვა"
 
 #: ../src/nautilus-window-menus.c:915
 msgid "_Up"
-msgstr "_მაღლა"
+msgstr "ზემ_ოთ"
 
 #: ../src/nautilus-window-menus.c:918
 msgid "_Home"
