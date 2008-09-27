@@ -1,3 +1,23 @@
+2008-09-27  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(link_info_got_data):
+	Pass link info's URI to
+	nautilus_link_get_link_info_given_file_contents().
+
+	* libnautilus-private/nautilus-link.c
+	(nautilus_link_get_link_uri_from_desktop),
+	(nautilus_link_get_link_info_given_file_contents):
+	* libnautilus-private/nautilus-link.h:
+	Add an input parameter for the link info's URI to
+	nautilus_link_get_link_info_given_file_contents().
+	In nautilus_link_get_link_uri_from_desktop(), when
+	a desktop icon has an "URI=filename" entry resolve
+	it like a symbolic link name relative to the link
+	info parent. Ideally, we'd have
+	g_file_parse_name_relative() which could do that for us,
+	but it would mangle URI's fragments and queries anyway.
+
 2008-09-24  Christian Neumair  <cneumair@gnome.org>
 
 	* src/nautilus-application.c (count_slots_of_windows),

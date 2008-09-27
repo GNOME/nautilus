@@ -298,8 +298,10 @@ nautilus_link_local_get_additional_text (const char *path)
 static char *
 nautilus_link_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 {
+	GFile *file, *parent;
 	const char *type;
 	char *retval;
+	char *scheme;
 
 	retval = NULL;
 
@@ -316,6 +318,28 @@ nautilus_link_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 		   (strcmp (type, NAUTILUS_LINK_TRASH_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_HOME_TAG) == 0)) {
 		retval = g_strdup (gnome_desktop_item_get_string (desktop_file, "URL"));
+	}
+
+	if (retval != NULL) {
+		/* Handle local file names.
+		 * Ideally, we'd be able to use
+		 * g_file_parse_name(), but it does not know how to resolve
+		 * relative file names, since the base directory is unknown.
+		 */
+		scheme = g_uri_parse_scheme (retval);
+		if (scheme == NULL) {
+			file = g_file_new_for_uri (gnome_desktop_item_get_location (desktop_file));
+			parent = g_file_get_parent (file);
+			g_object_unref (file);
+
+			if (parent != NULL) {
+				file = g_file_resolve_relative_path (parent, retval);
+				g_free (retval);
+				retval = g_file_get_uri (file);
+				g_object_unref (file);
+				g_object_unref (parent);
+			}
+		}
 	}
 
 	return retval;
@@ -409,6 +433,7 @@ nautilus_link_local_get_link_uri (const char *uri)
 void
 nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 int          link_file_size,
+						 const char  *file_uri,
 						 char       **uri,
 						 char       **name,
 						 char       **icon,
@@ -425,6 +450,8 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 	if (desktop_file == NULL) {
 		return; 
 	}
+
+	gnome_desktop_item_set_location (desktop_file, file_uri);
 
 	*uri = nautilus_link_get_link_uri_from_desktop (desktop_file);
 	*name = nautilus_link_get_link_name_from_desktop (desktop_file);

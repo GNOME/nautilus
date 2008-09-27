@@ -43,6 +43,7 @@ char *           nautilus_link_local_get_additional_text         (const char    
 char *           nautilus_link_local_get_link_uri                (const char        *uri);
 void             nautilus_link_get_link_info_given_file_contents (const char        *file_contents,
 								  int                link_file_size,
+								  const char        *file_uri,
 								  char             **uri,
 								  char             **name,
 								  char             **icon,

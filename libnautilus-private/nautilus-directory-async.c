@@ -3620,7 +3620,7 @@ link_info_got_data (NautilusDirectory *directory,
 		    goffset bytes_read,
 		    char *file_contents)
 {
-	char *uri, *name, *icon;
+	char *link_uri, *uri, *name, *icon;
 	gboolean is_launcher;
 
 	nautilus_directory_ref (directory);
@@ -3632,8 +3632,10 @@ link_info_got_data (NautilusDirectory *directory,
 	
 	/* Handle the case where we read the Nautilus link. */
 	if (result) {
-		nautilus_link_get_link_info_given_file_contents (file_contents, bytes_read,
+		link_uri = nautilus_file_get_uri (file);
+		nautilus_link_get_link_info_given_file_contents (file_contents, bytes_read, link_uri,
 								 &uri, &name, &icon, &is_launcher);
+		g_free (link_uri);
 	} else {
 		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
 	}
