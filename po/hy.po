@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-10-28 17:26+0000\n"
-"PO-Revision-Date: 2008-09-29 02:02+0400\n"
+"PO-Revision-Date: 2008-09-29 02:23+0400\n"
 "Last-Translator: Norayr Chilingaryan <chnorik@gmail.com>\n"
 "Language-Team:  <norik@freenet.am>\n"
 "MIME-Version: 1.0\n"
@@ -2081,7 +2081,7 @@ msgstr "Բացումը խափանվեց, ցանկանու՞մ եք ընտրել 
 #: ../libnautilus-private/nautilus-program-choosing.c:137
 #, c-format
 msgid "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" locations."
-msgstr ""
+msgstr "\"%s\" Հնարավոր չէ բացել \"%s\" որովհետև \"%s\" չի տեսնում ֆայլեր \"%s\" տեղանքներում."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:142
 msgid "Open Failed, would you like to choose another action?"
@@ -2652,6 +2652,17 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
+"Այս պանակի բոլոր ծրագրերը կհայտնվեն Սկրիպտեր ցանկում։ Այս ցանկից սկրիպտ ընտրելը այն կաշխատացնի։ \n"
+"Երբ լոկալ պանակից աշխատացվի, սկրիպտին կհաղորդվեն ընտրված ֆայլերի անունները։ Այն դեպքում, եթե աշխատացվի հեռակա պանակից(օրինակ պանակից, որն ցուցադրում է վեբ կամ ftp պանակի պարունակությունը), սկրիպտին ոչ մի բան չի հաղորդվի։\n"
+"Ամեն դեպքում, հետևյալ փոփոխականները կուղարկվեն Նաուտիլուսին սկրիպտերի համար։\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: ընտրված ֆայլերի տողադարցով ավարտվող ուղիներ (միայն լոկալ)\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: տողադարցով ավարտվող URI-ներ ընտրված ֆայլերի համար\n"
+"\n"
+"NAUTILUS_SCRIPT_CURRENT_URI: URI ընթացիկ տեղանքի համար\n"
+"\n"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ընթացիկ պատուհանի տեղն ու չափսը"
 
 #: ../src/file-manager/fm-directory-view.c:5481
 #: ../src/file-manager/fm-tree-view.c:901
