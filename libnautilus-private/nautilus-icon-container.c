@@ -7317,7 +7317,7 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	eel_canvas_set_pixels_per_unit (EEL_CANVAS (container), pixels_per_unit);
 
-	invalidate_label_sizes (container);
+	invalidate_labels (container);
 	nautilus_icon_container_request_update_all (container);
 }
 

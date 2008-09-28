@@ -1,3 +1,10 @@
+2008-09-28  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_set_zoom_level):
+	Invalidate label, rather than its allocated size. Fixes zoom level
+	changes not being applied to label sizes.
+
 2008-09-27  Christian Neumair  <cneumair@gnome.org>
 
 	* libnautilus-private/nautilus-directory-async.c
