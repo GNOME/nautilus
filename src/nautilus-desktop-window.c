@@ -36,6 +36,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <gio/gio.h>
+#include <glib/gi18n.h>
 
 struct NautilusDesktopWindowDetails {
 	int dummy;

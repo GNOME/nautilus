@@ -34,8 +34,6 @@
 #include "nautilus-application.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
-#include <bonobo-activation/bonobo-activation.h>
-#include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
 #include <signal.h>
 #include <eel/eel-debug.h>
@@ -113,15 +111,6 @@ event_loop_unregister (GtkObject *object)
 	}
 }
 
-static gboolean
-initial_event_loop_needed (gpointer data)
-{
-	if (!is_event_loop_needed ()) {
-		eel_gtk_main_quit_all ();
-	}
-	return FALSE;
-}
-
 void
 nautilus_main_event_loop_register (GtkObject *object)
 {
@@ -147,59 +136,6 @@ nautilus_main_event_loop_quit (gboolean explicit)
 	while (event_loop_registrants != NULL) {
 		gtk_object_destroy (event_loop_registrants->data);
 	}
-}
-
-/* Copied from libnautilus/nautilus-program-choosing.c; In this case,
- * though, it's really needed because we have no real alternative when
- * no DESKTOP_STARTUP_ID (with its accompanying timestamp) is
- * provided...
- */
-static Time
-slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
-{
-	Window xwindow;
-	XEvent event;
-	
-	{
-		XSetWindowAttributes attrs;
-		Atom atom_name;
-		Atom atom_type;
-		char* name;
-		
-		attrs.override_redirect = True;
-		attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
-		
-		xwindow =
-			XCreateWindow (xdisplay,
-				       RootWindow (xdisplay, 0),
-				       -100, -100, 1, 1,
-				       0,
-				       CopyFromParent,
-				       CopyFromParent,
-				       (Visual *)CopyFromParent,
-				       CWOverrideRedirect | CWEventMask,
-				       &attrs);
-		
-		atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
-		g_assert (atom_name != None);
-		atom_type = XInternAtom (xdisplay, "STRING", TRUE);
-		g_assert (atom_type != None);
-		
-		name = "Fake Window";
-		XChangeProperty (xdisplay, 
-				 xwindow, atom_name,
-				 atom_type,
-				 8, PropModeReplace, name, strlen (name));
-	}
-	
-	XWindowEvent (xdisplay,
-		      xwindow,
-		      PropertyChangeMask,
-		      &event);
-	
-	XDestroyWindow(xdisplay, xwindow);
-	
-	return event.xproperty.time;
 }
 
 static void
@@ -372,8 +308,7 @@ main (int argc, char *argv[])
 	gboolean no_desktop;
 	gboolean autostart_mode;
 	gboolean has_sm_argv;
-	const char *startup_id, *autostart_id;
-	char *startup_id_copy;
+	const char *autostart_id;
 	char *session_to_load;
 	gchar *geometry;
 	const gchar **remaining;
@@ -383,6 +318,11 @@ main (int argc, char *argv[])
 	NautilusApplication *application;
 	char **argv_copy;
 	GnomeProgram *program;
+	GFile *file;
+	char *uri;
+	char **uris;
+	GPtrArray *uris_array;
+	int i;
 	
 	const GOptionEntry options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -425,14 +365,6 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	startup_id = g_getenv ("DESKTOP_STARTUP_ID");
-	startup_id_copy = NULL;
-	if (startup_id != NULL && *startup_id != '\0') {
-		/* Clear the DESKTOP_STARTUP_ID, but make sure to copy it first */
-		startup_id_copy = g_strdup (startup_id);
-		g_unsetenv ("DESKTOP_STARTUP_ID");
-	}
-
 	autostart_mode = FALSE;
 
 	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
@@ -447,9 +379,6 @@ main (int argc, char *argv[])
 			has_sm_argv = TRUE;
 		}
 	}
-
-	/* we'll do it ourselves due to complicated factory setup */
-	gtk_window_set_auto_startup_notification (FALSE);
 
 	/* Get parameters. */
 	remaining = NULL;
@@ -496,24 +425,9 @@ main (int argc, char *argv[])
 		no_desktop = FALSE;
 	}
 
-	/* Do this here so that gdk_display is initialized */
-	if (startup_id_copy == NULL) {
-		/* Create a fake one containing a timestamp that we can use */
-		Time timestamp;
-		timestamp = slowly_and_stupidly_obtain_timestamp (gdk_display);
-		startup_id_copy = g_strdup_printf ("_TIME%lu",
-						   timestamp);
-	}
-
         /* Set default icon for all nautilus windows */
 	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
 	
-	/* Need to set this to the canonical DISPLAY value, since
-	   thats where we're registering per-display components */
-	bonobo_activation_set_activation_env_value ("DISPLAY",
-						    gdk_display_get_name (gdk_display_get_default()));
-	
-
 	if (perform_self_check && remaining != NULL) {
 		/* translators: %s is an option (e.g. --check) */
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
@@ -559,10 +473,8 @@ main (int argc, char *argv[])
 		no_default_window = TRUE;
 	}
 	
-	bonobo_activate (); /* do now since we need it before main loop */
-
 	application = NULL;
- 
+
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -577,29 +489,44 @@ main (int argc, char *argv[])
 		eel_exit_if_self_checks_failed ();
 #endif
 	} else {
+		/* Convert args to URIs */
+		uris = NULL;
+		if (remaining != NULL) {
+			uris_array = g_ptr_array_new ();
+			for (i = 0; remaining[i] != NULL; i++) {
+				file = g_file_new_for_commandline_arg (remaining[i]);
+				if (file != NULL) {
+					uri = g_file_get_uri (file);
+					g_object_unref (file);
+					if (uri) {
+						g_ptr_array_add (uris_array, uri);
+					}
+				}
+			}
+			uris = (char **)g_ptr_array_free (uris_array, FALSE);
+		}
+
+		
 		/* Run the nautilus application. */
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
 			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 browser_window,
-			 startup_id_copy,
 			 geometry,
 			 session_to_load,
-			 remaining);
-		g_free (startup_id_copy);
+			 uris);
+		g_strfreev (uris);
 
-		/* The application startup does things in an idle, so
-		   we need to check whether the main loop is needed in an idle
-		*/
-		g_idle_add (initial_event_loop_needed, NULL);
-		gtk_main ();
+		if (is_event_loop_needed ()) {
+			gtk_main ();
+		}
 	}
 
 	nautilus_icon_info_clear_caches ();
 	
 	if (application != NULL) {
-		bonobo_object_unref (application);
+		g_object_unref (application);
 	}
 
  	eel_debug_shut_down ();

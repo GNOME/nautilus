@@ -27,6 +27,7 @@
 
 #include "nautilus-window.h"
 #include "nautilus-query-editor.h"
+#include <glib/gi18n.h>
 
 #define NAUTILUS_TYPE_WINDOW_SLOT	 (nautilus_window_slot_get_type())
 #define NAUTILUS_WINDOW_SLOT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_WINDOW_SLOT, NautilusWindowSlotClass))

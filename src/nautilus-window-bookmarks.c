@@ -38,6 +38,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+#include <glib/gi18n.h>
 
 #define MENU_ITEM_MAX_WIDTH_CHARS 32
 

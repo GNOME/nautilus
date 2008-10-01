@@ -141,7 +141,7 @@ nautilus_undo_get_undo_manager (GObject *start_object)
 	GtkWindow *transient_parent;
 
 	if (start_object == NULL) {
-		return CORBA_OBJECT_NIL;
+		return NULL;
 	}
 
 	g_return_val_if_fail (G_IS_OBJECT (start_object), NULL);

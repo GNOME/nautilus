@@ -45,14 +45,7 @@ desktopdir = $(datadir)/gnome/network/
 schemedir = $(datadir)/applications
 scheme_DATA = network-scheme.desktop
 
-nautilus_shell_interface_idl_sources =		\
-	nautilus-shell-interface-stubs.c	\
-	nautilus-shell-interface-skels.c	\
-	nautilus-shell-interface.h		\
-	nautilus-shell-interface-common.c
-
 nautilus_SOURCES = \
-	$(nautilus_shell_interface_idl_sources)	\
 	ephy-spinner.h				\
 	ephy-spinner.c				\
 	nautilus-actions.h			\
@@ -110,8 +103,6 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
-	nautilus-shell.c			\
-	nautilus-shell.h			\
 	nautilus-side-pane.c                    \
 	nautilus-side-pane.h			\
 	nautilus-sidebar-title.c		\
@@ -159,18 +150,7 @@ nautilus_connect_server_SOURCES= \
 	nautilus-location-entry.h		\
 	$(NULL)
 
-$(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL)
-	$(ORBIT_IDL) $(CORE_IDL_INCLUDES) -I$(top_srcdir) $<
-	touch $@
-
-$(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
-
 TESTS=check-nautilus
-
-serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_shell.server.in
-server_DATA = $(server_in_files:.server.in=.server)
 
 @INTLTOOL_SERVER_RULE@
 
@@ -188,8 +168,6 @@ glade_DATA = \
 	$(NULL)
 
 CLEANFILES = \
-	$(nautilus_shell_interface_idl_sources)	\
-	nautilus_shell_interface_idl_stamp	\
 	$(desktop_files)			\
 	$(server_DATA)				\
 	$(NULL)
@@ -199,12 +177,10 @@ EXTRA_DIST =					\
 	$(glade_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
-	nautilus-shell-interface.idl		\
 	$(desktop_in_files)			\
 	$(NULL)
 
 BUILT_SOURCES = \
-	$(nautilus_shell_interface_idl_sources) \
 	$(NULL)
 
 dist-hook:

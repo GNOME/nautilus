@@ -33,9 +33,6 @@
 #include "nautilus-spatial-window.h"
 #include "nautilus-navigation-window.h"
 
-#include <bonobo/bonobo-ui-component.h>
-#include <bonobo/bonobo-ui-container.h>
-#include <bonobo/bonobo-ui-toolbar-button-item.h>
 #include <libnautilus-private/nautilus-directory.h>
 
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */

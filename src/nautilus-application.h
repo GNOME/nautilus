@@ -29,7 +29,7 @@
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
-#include <bonobo/bonobo-generic-factory.h>
+#include <unique/unique.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
@@ -53,16 +53,15 @@ typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
 typedef struct NautilusShell NautilusShell;
 
 typedef struct {
-	BonoboGenericFactory parent;
+	GObject parent;
+	UniqueApp *unique_app;
 	NautilusUndoManager *undo_manager;
-	NautilusShell *shell;
-	gboolean shell_registered;
 	GVolumeMonitor *volume_monitor;
 	unsigned int automount_idle_id;
 } NautilusApplication;
 
 typedef struct {
-	BonoboGenericFactoryClass parent_class;
+	GObjectClass parent_class;
 } NautilusApplicationClass;
 
 GType                nautilus_application_get_type          (void);
@@ -73,10 +72,9 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             no_default_window,
 							     gboolean             no_desktop,
 							     gboolean             browser_window,
-							     const char          *startup_id,
 							     const char          *default_geometry,
 							     const char          *session_to_load,
-							     const char          *urls[]);
+							     char               **urls);
 GList *              nautilus_application_get_window_list           (void);
 GList *              nautilus_application_get_spatial_window_list    (void);
 unsigned int         nautilus_application_get_n_windows            (void);

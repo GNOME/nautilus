@@ -26,7 +26,6 @@
 #ifndef NAUTILUS_UNDO_MANAGER_H
 #define NAUTILUS_UNDO_MANAGER_H
 
-#include <bonobo/bonobo-object.h>
 #include <libnautilus-private/nautilus-undo.h>
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \

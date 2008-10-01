@@ -1,5 +1,40 @@
 2008-10-01  Alexander Larsson  <alexl@redhat.com>
 
+        * configure.in:
+	Remove direct deps on bonobo, bonobo-activation, orbit2, startup-notification
+	Add dependency on libunique
+	
+        * src/Makefile.am:
+        * src/nautilus-shell-interface.idl:
+        * src/nautilus-shell.[ch]:
+	Remove NautilusShell
+	
+        * src/nautilus-application.[ch]:
+	Make NautilusApplication a normal GObject
+	Remove NautilusShell use.
+	Implement unique application functionallity using libunique
+	Remove manual startup notification handling (mostly handled by libunique)
+	
+        * src/nautilus-main.c:
+	Remove bonobo initialization
+	Remove manual startup notification handling
+	Move command line arg to uri parsing here
+	Remove weird idle handling now that we don't use bonobo anymore
+
+        * libnautilus-private/nautilus-undo-manager.c:
+        * libnautilus-private/nautilus-undo-manager.h:
+        * libnautilus-private/nautilus-undo.c:
+        * src/nautilus-window-private.h:
+	Remove all leftover spurious use of bonobo
+	
+        * src/nautilus-window-slot.h:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-location-dialog.c:
+        * src/nautilus-window-bookmarks.c:
+	Add required includes of gi18n.h
+	
+2008-10-01  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Bump version to 2.25.1.
 	Stable version lives on the gnome-2-24 branch.

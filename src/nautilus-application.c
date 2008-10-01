@@ -28,7 +28,6 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
@@ -52,8 +51,6 @@
 #include "nautilus-navigation-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-navigation-window-slot.h"
-#include "nautilus-shell-interface.h"
-#include "nautilus-shell.h"
 #include "nautilus-window-bookmarks.h"
 #include "libnautilus-private/nautilus-file-operations.h"
 #include "nautilus-window-private.h"
@@ -62,8 +59,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -81,22 +76,28 @@
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
-#include <bonobo-activation/bonobo-activation.h>
 #include <libnautilus-private/nautilus-autorun.h>
 
-#ifdef HAVE_STARTUP_NOTIFICATION
-#define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
-#include <libsn/sn-launchee.h>
-#endif
+enum
+{
+  COMMAND_0, /* unused: 0 is an invalid command */
+
+  COMMAND_RESTART,
+  COMMAND_START_DESKTOP,
+  COMMAND_STOP_DESKTOP,
+  COMMAND_OPEN_BROWSER,
+  COMMAND_LOAD_SESSION
+};
 
 /* Needed for the is_kdesktop_present check */
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
-#define FACTORY_IID	     "OAFIID:Nautilus_Factory"
-#define SEARCH_LIST_VIEW_IID "OAFIID:Nautilus_File_Manager_Search_List_View"
-#define SHELL_IID	     "OAFIID:Nautilus_Shell"
-#define TREE_VIEW_IID         "OAFIID:Nautilus_File_Manager_Tree_View"
+/* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
+#define APPLICATION_WINDOW_MIN_WIDTH	300
+#define APPLICATION_WINDOW_MIN_HEIGHT	100
+
+#define START_STATE_CONFIG "start-state"
 
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
@@ -127,26 +128,93 @@ static void     update_session                    (gpointer                  cal
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
 
-BONOBO_CLASS_BOILERPLATE (NautilusApplication, nautilus_application,
-			  BonoboGenericFactory, BONOBO_TYPE_GENERIC_FACTORY)
+G_DEFINE_TYPE (NautilusApplication, nautilus_application, G_TYPE_OBJECT);
 
-static CORBA_Object
-create_object (PortableServer_Servant servant,
-	       const CORBA_char *iid,
-	       CORBA_Environment *ev)
+static gboolean
+_unique_message_data_set_geometry_and_uris (UniqueMessageData  *message_data,
+					    const char *geometry,
+					    char **uris)
 {
-	BonoboObject *object;
-	NautilusApplication *application;
+  GString *list;
+  gint i;
+  gchar *result;
+  gsize length;
 
-	if (strcmp (iid, SHELL_IID) == 0) {
-		application = NAUTILUS_APPLICATION (bonobo_object_from_servant (servant));
-		object = BONOBO_OBJECT (nautilus_shell_new (application));
-	} else {
-		object = CORBA_OBJECT_NIL;
-	}
+  list = g_string_new (NULL);
+  if (geometry != NULL) {
+	  g_string_append (list, geometry);
+  }
+  g_string_append (list, "\r\n");
+  
+  for (i = 0; uris != NULL && uris[i]; i++) {
+	  g_string_append (list, uris[i]);
+	  g_string_append (list, "\r\n");
+  }
 
-	return CORBA_Object_duplicate (BONOBO_OBJREF (object), ev);
+  result = g_convert (list->str, list->len,
+                      "ASCII", "UTF-8",
+                      NULL, &length, NULL);
+  g_string_free (list, TRUE);
+  
+  if (result) {
+	  unique_message_data_set (message_data, (guchar *) result, length);
+	  g_free (result);
+	  return TRUE;
+  }
+  
+  return FALSE;
 }
+
+static gchar **
+_unique_message_data_get_geometry_and_uris (UniqueMessageData *message_data,
+					    char **geometry)
+{
+  gchar **result = NULL;
+
+  *geometry = NULL;
+  
+  gchar *text, *newline, *uris;
+  text = unique_message_data_get_text (message_data);
+  if (text) {
+	  newline = strchr (text, '\n');
+	  if (newline) {
+		  *geometry = g_strndup (text, newline-text);
+		  uris = newline+1;
+	  } else {
+		  uris = text;
+	  }
+	  
+	  result = g_uri_list_extract_uris (uris);
+	  g_free (text);
+  }
+  
+  return result;
+}
+
+/* This is a hack, because there is no unique_message_data_get()... */
+
+typedef struct {
+	guchar *data;
+	gint length;
+	
+	/* etc... */
+}  UniqueMessageDataInternal;
+
+static char *
+_unique_message_data_get_filename (UniqueMessageData *message_data)
+{
+	UniqueMessageDataInternal *internal;
+	internal = (UniqueMessageDataInternal *)message_data;
+	return g_strndup (internal->data, internal->length);
+}
+
+static void
+_unique_message_data_set_filename (UniqueMessageData *message_data,
+				   const char *filename)
+{
+	unique_message_data_set (message_data, filename, strlen (filename));
+}
+
 
 GList *
 nautilus_application_get_window_list (void)
@@ -208,12 +276,18 @@ automount_all_volumes (NautilusApplication *application)
 }
 
 static void
-nautilus_application_instance_init (NautilusApplication *application)
+nautilus_application_init (NautilusApplication *application)
 {
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 
-	application->shell = nautilus_shell_new (application);
+	application->unique_app = unique_app_new_with_commands ("org.gnome.Nautilus", NULL,
+								"restart", COMMAND_RESTART,
+								"start_desktop", COMMAND_START_DESKTOP,
+								"stop_desktop", COMMAND_STOP_DESKTOP,
+								"open_browser", COMMAND_OPEN_BROWSER,
+								"load_session", COMMAND_LOAD_SESSION,
+								NULL);
 	
 	/* register views */
 	fm_icon_view_register ();
@@ -239,19 +313,11 @@ nautilus_application_instance_init (NautilusApplication *application)
 NautilusApplication *
 nautilus_application_new (void)
 {
-	NautilusApplication *application;
-
-	application = g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
-	
-	bonobo_generic_factory_construct_noreg (BONOBO_GENERIC_FACTORY (application),
-						FACTORY_IID,
-						NULL);
-	
-	return application;
+	return g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
 }
 
 static void
-nautilus_application_destroy (BonoboObject *object)
+nautilus_application_finalize (GObject *object)
 {
 	NautilusApplication *application;
 
@@ -265,18 +331,15 @@ nautilus_application_destroy (BonoboObject *object)
 		g_object_unref (application->volume_monitor);
 		application->volume_monitor = NULL;
 	}
-	
-	if (application->shell_registered) {
-		bonobo_activation_unregister_active_server (SHELL_IID, BONOBO_OBJREF (application->shell));
-	}
-	bonobo_object_unref (application->shell);
+
+	g_object_unref (application->unique_app);
 
 	if (application->automount_idle_id != 0) {
 		g_source_remove (application->automount_idle_id);
 		application->automount_idle_id = 0;
 	}
 
-	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
+        G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -346,33 +409,6 @@ check_required_directories (NautilusApplication *application)
 	g_free (desktop_directory);
 
 	return ret;
-}
-
-static Nautilus_URIList *
-nautilus_make_uri_list_from_shell_strv (const char * const *strv)
-{
-	int length, i;
-	Nautilus_URIList *uri_list;
-	GFile *file;
-	char *translated_uri;
-
-	length = g_strv_length ((char **) strv);
-
-	uri_list = Nautilus_URIList__alloc ();
-	uri_list->_maximum = length;
-	uri_list->_length = length;
-	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
-	for (i = 0; i < length; i++) {
-		file = g_file_new_for_commandline_arg (strv[i]);
-		translated_uri = g_file_get_uri (file);
-		g_object_unref (file);
-		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
-		g_free (translated_uri);
-		translated_uri = NULL;
-	}
-	CORBA_sequence_set_release (uri_list, CORBA_TRUE);
-
-	return uri_list;
 }
 
 static void
@@ -514,21 +550,134 @@ initialize_kde_trash_hack (void)
 	g_free (desktop_dir);
 }
 
-
-static Bonobo_RegistrationResult
-nautilus_bonobo_activation_register_for_display (const char    *iid,
-						 Bonobo_Unknown ref)
+static void
+open_window (NautilusApplication *application,
+	     const char *startup_id,
+	     const char *uri, const char *geometry, gboolean browser_window)
 {
-	const char *display_name;
-	GSList *reg_env ;
-	Bonobo_RegistrationResult result;
+	GFile *location;
+	NautilusWindow *window;
+
+	if (browser_window ||
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
+		window = nautilus_application_create_navigation_window (application,
+									startup_id,
+									gdk_screen_get_default ());
+		if (uri == NULL) {
+			nautilus_window_go_home (window);
+		} else {
+			location = g_file_new_for_uri (uri);
+			nautilus_window_go_to (window, location);
+			g_object_unref (location);
+		}
+	} else {
+		if (uri == NULL) {
+			location = g_file_new_for_path (g_get_home_dir ());
+		} else {
+			location = g_file_new_for_uri (uri);
+		}
+		
+		window = nautilus_application_present_spatial_window (application,
+								      NULL,
+								      startup_id,
+								      location,
+								      gdk_screen_get_default ());
+		g_object_unref (location);
+	}
 	
-	display_name = gdk_display_get_name (gdk_display_get_default());
-	reg_env = bonobo_activation_registration_env_set (NULL,
-							  "DISPLAY", display_name);
-	result = bonobo_activation_register_active_server (iid, ref, reg_env);
-	bonobo_activation_registration_env_free (reg_env);
-	return result;
+	if (geometry != NULL && !GTK_WIDGET_VISIBLE (window)) {
+		/* never maximize windows opened from shell if a
+		 * custom geometry has been requested.
+		 */
+		gtk_window_unmaximize (GTK_WINDOW (window));
+		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
+								 geometry,
+								 APPLICATION_WINDOW_MIN_WIDTH,
+								 APPLICATION_WINDOW_MIN_HEIGHT,
+								 FALSE);
+	}
+}
+
+static void
+open_windows (NautilusApplication *application,
+	      const char *startup_id,
+	      char **uris,
+	      const char *geometry,
+	      gboolean browser_window)
+{
+	guint i;
+
+	if (uris == NULL || uris[0] == NULL) {
+		/* Open a window pointing at the default location. */
+		open_window (application, startup_id, NULL, geometry, browser_window);
+	} else {
+		/* Open windows at each requested location. */
+		for (i = 0; uris[i] != NULL; i++) {
+			open_window (application, startup_id, uris[i], geometry, browser_window);
+		}
+	}
+}
+
+static UniqueResponse
+message_received_cb (UniqueApp         *unique_app,
+                     UniqueCommand      command,
+                     UniqueMessageData *message,
+                     guint              time_,
+                     gpointer           user_data)
+{
+	NautilusApplication *application;
+	UniqueResponse res;
+	char *filename;
+	char **uris;
+	char *geometry;
+	
+	application =  user_data;
+	res = UNIQUE_RESPONSE_OK;
+	
+	switch (command) {
+	case UNIQUE_CLOSE:
+		res = UNIQUE_RESPONSE_OK;
+		nautilus_main_event_loop_quit (TRUE);
+		
+		break;
+	case COMMAND_RESTART:
+		filename = nautilus_application_save_session_to_file ();
+		if (filename != NULL) {
+			nautilus_main_event_loop_quit (TRUE);
+			g_setenv ("_NAUTILUS_RESTART_SESSION_FILENAME", filename, 1);
+			g_free (filename);
+		} else {
+			g_message ("Could not save session. Not restarting.");
+		}
+		break;
+	case UNIQUE_OPEN:
+	case COMMAND_OPEN_BROWSER:
+		uris = _unique_message_data_get_geometry_and_uris (message, &geometry);
+		open_windows (application,
+			      unique_message_data_get_startup_id (message),
+			      uris,
+			      geometry,
+			      command == COMMAND_OPEN_BROWSER);
+		g_strfreev (uris);
+		g_free (geometry);
+		break;
+	case COMMAND_START_DESKTOP:
+		nautilus_application_open_desktop (application);
+		break;
+	case COMMAND_STOP_DESKTOP:
+		nautilus_application_close_desktop ();
+		break;
+	case COMMAND_LOAD_SESSION:
+		filename = _unique_message_data_get_filename (message);
+		nautilus_application_load_session (application, filename);
+		g_free (filename);
+		break;
+	default:
+		res = UNIQUE_RESPONSE_PASSTHROUGH;
+		break;
+	}
+	
+	return res;
 }
 
 void
@@ -538,23 +687,12 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean no_default_window,
 			      gboolean no_desktop,
 			      gboolean browser_window,
-			      const char *startup_id,
 			      const char *geometry,
 			      const char *session_to_load,
-			      const char *urls[])
+			      char **urls)
 {
-	CORBA_Environment ev;
-	Nautilus_Shell shell;
-	Bonobo_RegistrationResult result;
-	const char *message, *detailed_message;
-	GtkDialog *dialog;
-	Nautilus_URIList *url_list;
-	const CORBA_char *corba_startup_id;
-	const CORBA_char *corba_geometry;
-	int num_failures;
-
-	num_failures = 0;
-
+	UniqueMessageData *message;
+	
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
@@ -564,120 +702,18 @@ nautilus_application_startup (NautilusApplication *application,
 
 	initialize_kde_trash_hack ();
 
-	CORBA_exception_init (&ev);
-
-	/* Start up the factory. */
-	while (TRUE) {
-		/* Try to register the file manager view factory. */
-		result = nautilus_bonobo_activation_register_for_display
-			(SHELL_IID, BONOBO_OBJREF (application->shell));
-
-		switch (result) {
-		case Bonobo_ACTIVATION_REG_SUCCESS:
-			/* We are registered and all is right with the world. */
-			application->shell_registered = TRUE;
-			finish_startup (application);
-			message = NULL;
-			detailed_message = NULL;
-			break;
-		case Bonobo_ACTIVATION_REG_ALREADY_ACTIVE:
-			/* Another copy of nautilus already is running and registered. */
-			message = NULL;
-			detailed_message = NULL;
-			break;
-		case Bonobo_ACTIVATION_REG_NOT_LISTED:
-			/* Can't register myself due to trouble locating the
-			 * Nautilus_Shell.server file. This has happened when you
-			 * launch Nautilus with an LD_LIBRARY_PATH that
-			 * doesn't include the directory containing the oaf
-			 * library. It could also happen if the
-			 * Nautilus_Shell.server file was not present for some
-			 * reason. Sometimes killing oafd and gconfd fixes
-			 * this problem but we don't exactly understand why,
-			 * since neither of the above causes explain it.
-			 */
-			message = _("Nautilus cannot be used now. "
-				    "Running the command \"bonobo-slay\""
-				    " from the console may fix the problem. If not,"
-				    " you can try rebooting the computer or"
-				    " installing Nautilus again.");
-			/* FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame. */
-			detailed_message = _("Nautilus cannot be used now. "
-					     "Running the command \"bonobo-slay\" "
-					     "from the console may fix the problem. If not, "
-					     "you can try rebooting the computer or "
-					     "installing Nautilus again.\n\n"
-					     "Bonobo could not locate the Nautilus_shell.server file. "
-					     "One cause of this seems to be an LD_LIBRARY_PATH "
-					     "that does not include the bonobo-activation library's directory. "
-					     "Another possible cause would be bad install "
-					     "with a missing Nautilus_Shell.server file.\n\n"
-					     "Running \"bonobo-slay\" will kill all "
-					     "Bonobo Activation and GConf processes, which may be needed by "
-					     "other applications.\n\n"
-					     "Sometimes killing bonobo-activation-server and gconfd fixes "
-					     "the problem, but we do not know why.\n\n"
-					     "We have also seen this error when a faulty "
-					     "version of bonobo-activation was installed.");
-			break;
-		default:
-			/* This should never happen. */
-			g_warning ("bad error code from bonobo_activation_active_server_register");
-		case Bonobo_ACTIVATION_REG_ERROR:
-			/* Some misc. error (can never happen with current
-			 * version of bonobo-activation). Show dialog and terminate the
-			 * program.
-			 */
-			/* FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
-			 * current OAF. I guess I read the code wrong. Need to figure out when and make a
-			 * good message.
-			 */
-			message = _("Nautilus cannot be used now, due to an unexpected error.");
-			detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
-					     "from Bonobo when attempting to register the file manager view server.");
-			break;
-		}
-
-		/* Get the shell object. */
-		if (message == NULL) {
-			shell = bonobo_activation_activate_from_id (SHELL_IID, Bonobo_ACTIVATION_FLAG_EXISTING_ONLY, NULL, NULL);
-			if (!CORBA_Object_is_nil (shell, &ev)) {
-				break;
-			}
-
-			/* If we couldn't find ourselves it's a bad problem so
-			 * we better stop looping.
-			 */
-			if (result == Bonobo_ACTIVATION_REG_SUCCESS) {
-				/* FIXME bugzilla.gnome.org 42538: When can this happen? */
-				message = _("Nautilus cannot be used now, due to an unexpected error.");
-				detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
-						     "from Bonobo when attempting to locate the factory. "
-						     "Killing bonobo-activation-server and restarting Nautilus may help fix the problem.");
-			} else {
-				num_failures++;
-				if (num_failures > 20) {
-					message = _("Nautilus cannot be used now, due to an unexpected error.");
-					detailed_message = _("Nautilus cannot be used now, due to an unexpected error "
-							     "from Bonobo when attempting to locate the shell object. "
-							     "Killing bonobo-activation-server and restarting Nautilus may help fix the problem.");
-					
-				}
-			}
-		}
-
-		if (message != NULL) {
-			dialog = eel_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
-			/* We need the main event loop so the user has a chance to see the dialog. */
-			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
-			goto out;
-		}
-	}
-
 	if (kill_shell) {
-		Nautilus_Shell_quit (shell, &ev);
+		if (unique_app_is_running (application->unique_app)) {
+			unique_app_send_message (application->unique_app,
+						 UNIQUE_CLOSE, NULL);
+			
+		}
 	} else if (restart_shell) {
-		Nautilus_Shell_restart (shell, &ev);
+		if (unique_app_is_running (application->unique_app)) {
+			unique_app_send_message (application->unique_app,
+						 COMMAND_RESTART, NULL);
+			
+		}
 	} else {
 		/* If KDE desktop is running, then force no_desktop */
 		if (is_kdesktop_present ()) {
@@ -685,7 +721,17 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 		
 		if (!no_desktop && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
-			Nautilus_Shell_start_desktop (shell, &ev);
+			if (unique_app_is_running (application->unique_app)) {
+				unique_app_send_message (application->unique_app,
+							 COMMAND_START_DESKTOP, NULL);
+			} else {
+				nautilus_application_open_desktop (application);
+			}
+		}
+
+		if (!unique_app_is_running (application->unique_app)) {
+			finish_startup (application);
+			g_signal_connect (application->unique_app, "message-received", G_CALLBACK (message_received_cb), application);			
 		}
 		
 		/* Monitor the preference to show or hide the desktop */
@@ -701,31 +747,46 @@ nautilus_application_startup (NautilusApplication *application,
 							  NULL,
 							  G_OBJECT (application));
 
-		/* CORBA C mapping doesn't allow NULL to be passed
-		   for string parameters */
-		corba_geometry   = (geometry   != NULL) ? geometry   : "";
-		corba_startup_id = (startup_id != NULL) ? startup_id : "";
-
 	  	/* Create the other windows. */
-		if (urls != NULL) {
-			url_list = nautilus_make_uri_list_from_shell_strv (urls);
-			Nautilus_Shell_open_windows (shell, url_list, corba_startup_id, corba_geometry, browser_window, &ev);
-			CORBA_free (url_list);
-		} else if (!no_default_window) {
-			g_assert (session_to_load == NULL);
-			Nautilus_Shell_open_default_window (shell, corba_startup_id, corba_geometry, browser_window, &ev);
+		if (urls != NULL || !no_default_window) {
+			if (urls == NULL) {
+				g_assert (session_to_load == NULL);
+			}
+
+			if (unique_app_is_running (application->unique_app)) {
+				message = unique_message_data_new ();
+				_unique_message_data_set_geometry_and_uris (message, geometry, urls);
+				if (browser_window) {
+					unique_app_send_message (application->unique_app,
+								 COMMAND_OPEN_BROWSER, message);
+				} else {
+					unique_app_send_message (application->unique_app,
+								 UNIQUE_OPEN, message);
+				}
+				unique_message_data_free (message);				
+			} else {
+				open_windows (application, NULL,
+					      urls,
+					      geometry,
+					      browser_window);
+			}
 		}
 
 		if (session_to_load != NULL) {
-			Nautilus_Shell_load_session (shell, session_to_load, &ev);
+			if (unique_app_is_running (application->unique_app)) {
+				message = unique_message_data_new ();
+				_unique_message_data_set_filename (message, session_to_load);
+				unique_app_send_message (application->unique_app,
+							 COMMAND_LOAD_SESSION, message);
+				unique_message_data_free (message);				
+			} else {
+				nautilus_application_load_session (application, session_to_load);
+			}
 		}
 		
 		/* Add ourselves to the session */
 		init_session ();
 	}
-
- out:
-	CORBA_exception_free (&ev);
 }
 
 
@@ -1031,6 +1092,11 @@ create_window (NautilusApplication *application,
 	/* Must be called after construction finished */
 	nautilus_window_constructed (window);
 
+	unique_app_watch_window (application->unique_app, GTK_WINDOW (window));
+	if (startup_id) {
+		gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
+	}
+	
 	g_signal_connect_data (window, "delete_event",
 			       G_CALLBACK (nautilus_window_delete_event_callback), NULL, NULL,
 			       G_CONNECT_AFTER);
@@ -1070,83 +1136,6 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 									   screen);
 }
 
-#ifdef HAVE_STARTUP_NOTIFICATION
-
-static void
-sn_error_trap_push (SnDisplay *display,
-                    Display   *xdisplay)
-{
-	gdk_error_trap_push ();
-}
-
-static void
-sn_error_trap_pop (SnDisplay *display,
-                   Display   *xdisplay)
-{
-	gdk_error_trap_pop ();
-}
-
-static void
-end_startup_notification (GtkWidget  *widget, 
-			  const char *startup_id)
-{
-	SnDisplay *sn_display;
-	SnLauncheeContext *context;
-	GdkDisplay *display;
-	GdkScreen  *screen;
-
-	if (startup_id == NULL) {
-		return;
-	}
-  
-	if (!GTK_WIDGET_REALIZED (widget)) {
-		gtk_widget_realize (widget);
-	}
-  
-	context = NULL;
-	sn_display = NULL;
-
-	/* Set up window for launch notification */
-	/* FIXME In principle all transient children of this
-	 * window should get the same startup_id
-	 */
-
-	screen = gtk_widget_get_screen (widget);
-	display = gdk_screen_get_display (screen);
-      
-	sn_display = sn_display_new (gdk_x11_display_get_xdisplay (display),
-				     sn_error_trap_push,
-				     sn_error_trap_pop);
-      
-	context = sn_launchee_context_new (sn_display,
-					   gdk_screen_get_number (screen),
-					   startup_id);
-
-	/* Handle the setup for the window if the startup_id is valid;
-	 * I don't think it can hurt to do this even if it was
-	 * invalid, but why do the extra work...
-	 */
-	if (strncmp (sn_launchee_context_get_startup_id (context), "_TIME", 5) != 0) {
-		sn_launchee_context_setup_window (context,
-						  GDK_WINDOW_XWINDOW (widget->window));
-	}
-
-	/* Now, set the _NET_WM_USER_TIME for the new window to the timestamp
-	 * that caused the window to be launched.
-	 */
-	if (sn_launchee_context_get_id_has_timestamp (context)) {
-		gulong startup_id_timestamp;
-		startup_id_timestamp = sn_launchee_context_get_timestamp (context);
-		gdk_x11_window_set_user_time (widget->window, startup_id_timestamp);
-	}
-  
-	sn_launchee_context_complete (context);
-	sn_launchee_context_unref (context);
-	sn_display_unref (sn_display);
-}
-
-#endif
-
 NautilusWindow *
 nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 							    NautilusWindow      *requesting_window,
@@ -1176,11 +1165,6 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		}
 		
 		if (g_file_equal (existing_location, location)) {
-#ifdef HAVE_STARTUP_NOTIFICATION
-			end_startup_notification (GTK_WIDGET (existing_window),
-						  startup_id);
-#endif
-
 			gtk_window_present (GTK_WINDOW (existing_window));
 			if (new_selection &&
 			    slot->content_view != NULL) {
@@ -1197,10 +1181,6 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 	}
 
 	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, startup_id, screen);
-#ifdef HAVE_STARTUP_NOTIFICATION
-	end_startup_notification (GTK_WIDGET (window),
-				  startup_id);
-#endif
 	if (requesting_window) {
 		/* Center the window over the requesting window by default */
 		int orig_x, orig_y, orig_width, orig_height;
@@ -1267,10 +1247,6 @@ nautilus_application_create_navigation_window (NautilusApplication *application,
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
-#ifdef HAVE_STARTUP_NOTIFICATION
-	end_startup_notification (GTK_WIDGET (window),
-				  startup_id);
-#endif
 
 	maximized = eel_preferences_get_boolean
 			(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_MAXIMIZED);
@@ -2131,6 +2107,8 @@ is_kdesktop_present (void)
 static void
 nautilus_application_class_init (NautilusApplicationClass *class)
 {
-	BONOBO_OBJECT_CLASS (class)->destroy = nautilus_application_destroy;
-	BONOBO_GENERIC_FACTORY_CLASS (class)->epv.createObject = create_object;
+        GObjectClass *object_class;
+
+        object_class = G_OBJECT_CLASS (class);
+        object_class->finalize = nautilus_application_finalize;
 }
