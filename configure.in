@@ -370,9 +370,10 @@ fi
 dnl ==========================================================================
 	
 dnl libegg
-LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
+LIBEGG_MODULES="gtk+-2.0  gthread-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
 AC_SUBST(LIBEGG_CFLAGS)
+AC_SUBST(LIBEGG_LIBS)
 
 dnl libnautilus-extension
 LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0"
@@ -461,6 +462,7 @@ nautilus-file-management-properties.desktop.in
 nautilus-home.desktop.in
 nautilus.desktop.in
 nautilus-folder-handler.desktop.in
+nautilus-browser.desktop.in
 nautilus-autorun-software.desktop.in
 po/Makefile.in
 src/Makefile

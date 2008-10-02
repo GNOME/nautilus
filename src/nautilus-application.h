@@ -30,6 +30,7 @@
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <unique/unique.h>
+#include <libegg/eggsmclient.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:Nautilus_File_Manager_Desktop_Icon_View"
@@ -55,6 +56,7 @@ typedef struct NautilusShell NautilusShell;
 typedef struct {
 	GObject parent;
 	UniqueApp *unique_app;
+        EggSMClient *smclient;
 	NautilusUndoManager *undo_manager;
 	GVolumeMonitor *volume_monitor;
 	unsigned int automount_idle_id;
@@ -68,12 +70,10 @@ GType                nautilus_application_get_type          (void);
 NautilusApplication *nautilus_application_new               (void);
 void                 nautilus_application_startup           (NautilusApplication *application,
 							     gboolean             kill_shell,
-							     gboolean             restart_shell,
 							     gboolean             no_default_window,
 							     gboolean             no_desktop,
 							     gboolean             browser_window,
 							     const char          *default_geometry,
-							     const char          *session_to_load,
 							     char               **urls);
 GList *              nautilus_application_get_window_list           (void);
 GList *              nautilus_application_get_spatial_window_list    (void);
@@ -100,7 +100,4 @@ void                 nautilus_application_close_parent_windows     (NautilusSpat
 void                 nautilus_application_close_all_spatial_windows  (void);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
-void                 nautilus_application_load_session      (NautilusApplication *application,
-							     const char *filename); 
-char *               nautilus_application_save_session_to_file (void);
 #endif /* NAUTILUS_APPLICATION_H */

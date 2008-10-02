@@ -39,6 +39,8 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
+#include <libegg/eggsmclient.h>
+#include <libegg/eggdesktopfile.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -130,8 +132,9 @@ nautilus_main_event_loop_quit (gboolean explicit)
 {
 	if (explicit) {
 		/* Explicit --quit, make sure we don't restart */
-		gnome_client_set_restart_style (gnome_master_client (),
-						GNOME_RESTART_IF_RUNNING);
+		/* TODO: With the old session we needed to set restart
+		   style to GNOME_RESTART_IF_RUNNING here, but i don't think we need
+		   that now since gnome-session doesn't restart apps except on startup. */
 	}
 	while (event_loop_registrants != NULL) {
 		gtk_object_destroy (event_loop_registrants->data);
@@ -302,26 +305,22 @@ int
 main (int argc, char *argv[])
 {
 	gboolean kill_shell;
-	gboolean restart_shell;
 	gboolean no_default_window;
 	gboolean browser_window;
 	gboolean no_desktop;
+	gboolean version;
 	gboolean autostart_mode;
-	gboolean has_sm_argv;
 	const char *autostart_id;
-	char *session_to_load;
 	gchar *geometry;
 	const gchar **remaining;
-	char **p;
 	gboolean perform_self_check;
-	GOptionContext *context;
 	NautilusApplication *application;
-	char **argv_copy;
-	GnomeProgram *program;
+	GOptionContext *context;
 	GFile *file;
 	char *uri;
 	char **uris;
 	GPtrArray *uris_array;
+	GError *error;
 	int i;
 	
 	const GOptionEntry options[] = {
@@ -329,6 +328,8 @@ main (int argc, char *argv[])
 		{ "check", 'c', 0, G_OPTION_ARG_NONE, &perform_self_check, 
 		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
+		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
+		  N_("Show the version of the progam."), NULL },
 		{ "geometry", 'g', 0, G_OPTION_ARG_STRING, &geometry,
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
 		{ "no-default-window", 'n', 0, G_OPTION_ARG_NONE, &no_default_window,
@@ -339,19 +340,12 @@ main (int argc, char *argv[])
 		  N_("open a browser window."), NULL },
 		{ "quit", 'q', 0, G_OPTION_ARG_NONE, &kill_shell, 
 		  N_("Quit Nautilus."), NULL },
-		{ "restart", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &restart_shell,
-		  N_("Restart Nautilus."), NULL },
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &remaining, NULL,  N_("[URI...]") },
-		{ "load-session", 'l', 0, G_OPTION_ARG_STRING, &session_to_load,
-		  /* Translators: --no-default-window is a nautilus command line parameter, don't modify it. */
-		  N_("Load a saved session from the specified file. Implies \"--no-default-window\"."), N_("FILENAME") },
 
 		{ NULL }
 	};
 
 	g_thread_init (NULL);
-
-	setlocale (LC_ALL, "");
 
 	/* This will be done by gtk+ later, but for now, force it to GNOME */
 	g_desktop_app_info_set_desktop_env ("GNOME");
@@ -372,50 +366,43 @@ main (int argc, char *argv[])
 		autostart_mode = TRUE;
         }
 
-	/* detect whether this is a restart request by the SM */
-	has_sm_argv = FALSE;
-	for (p = argv; p - argv < argc; p++) {
-		if (g_str_has_prefix (*p, "--sm-client-id")) {
-			has_sm_argv = TRUE;
-		}
-	}
-
 	/* Get parameters. */
 	remaining = NULL;
 	geometry = NULL;
-	session_to_load = NULL;
+	version = FALSE;
 	kill_shell = FALSE;
 	no_default_window = FALSE;
 	no_desktop = FALSE;
 	perform_self_check = FALSE;
-	restart_shell = FALSE;
 	browser_window = FALSE;
 
+	g_set_prgname ("nautilus");
 	g_set_application_name (_("File Manager"));
+        egg_set_desktop_file (DATADIR "/applications/nautilus.desktop");
+
 	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
+	g_option_context_add_main_entries (context, options, NULL);
+	
+	g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	g_option_context_add_group (context, egg_sm_client_get_option_group ());
+	
+	error = NULL;
+	if (!g_option_context_parse (context, &argc, &argv, &error)) {
+		g_printerr ("Could not parse arguments: %s\n", error->message);
+		g_error_free (error);
+		return 1;
+	}
 
-	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
-
+	if (version) {
+		g_print ("GNOME nautilus " PACKAGE_VERSION "\n");
+		return 0;
+	}
+	
 #ifdef HAVE_EXEMPI
 	xmp_init();
 #endif
 
-	program = gnome_program_init ("nautilus", VERSION,
-				      LIBGNOMEUI_MODULE, argc, argv,
-				      GNOME_PROGRAM_STANDARD_PROPERTIES,
-				      GNOME_PARAM_GOPTION_CONTEXT, context,
-				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
-				      NULL);
-
-	/* We do this after gnome_program_init(), since that function sets up
-	 * its own handler for SIGSEGV and others --- we want to chain to those
-	 * handlers.
-	 */
 	setup_debug_log ();
-
-	if (session_to_load != NULL) {
-		no_default_window = TRUE;
-	}
 
 	/* If in autostart mode (aka started by gnome-session), we need to ensure 
          * nautilus starts with the correct options.
@@ -425,27 +412,19 @@ main (int argc, char *argv[])
 		no_desktop = FALSE;
 	}
 
-        /* Set default icon for all nautilus windows */
-	gtk_window_set_default_icon_name (NAUTILUS_ICON_FOLDER);
-	
 	if (perform_self_check && remaining != NULL) {
 		/* translators: %s is an option (e.g. --check) */
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
 			"--check");
 		return EXIT_FAILURE;
 	}
-	if (perform_self_check && (kill_shell || restart_shell)) {
+	if (perform_self_check && kill_shell) {
 		fprintf (stderr, _("nautilus: --check cannot be used with other options.\n"));
 		return EXIT_FAILURE;
 	}
 	if (kill_shell && remaining != NULL) {
 		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
 			"--quit");
-		return EXIT_FAILURE;
-	}
-	if (restart_shell && remaining != NULL) {
-		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
-			"--restart");
 		return EXIT_FAILURE;
 	}
 	if (geometry != NULL && remaining != NULL && remaining[0] != NULL && remaining[1] != NULL) {
@@ -468,11 +447,6 @@ main (int argc, char *argv[])
 			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
 	}
 
-	if (has_sm_argv && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
-		/* we were restarted by the session manager. Don't show default window */
-		no_default_window = TRUE;
-	}
-	
 	application = NULL;
 
 	/* Do either the self-check or the real work. */
@@ -509,12 +483,16 @@ main (int argc, char *argv[])
 		
 		/* Run the nautilus application. */
 		application = nautilus_application_new ();
+
+		if (egg_sm_client_is_resumed (application->smclient)) {
+			no_default_window = TRUE;
+		}
+		
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell, no_default_window, no_desktop,
+			 kill_shell, no_default_window, no_desktop,
 			 browser_window,
 			 geometry,
-			 session_to_load,
 			 uris);
 		g_strfreev (uris);
 
@@ -531,25 +509,5 @@ main (int argc, char *argv[])
 
  	eel_debug_shut_down ();
 	
-	/* If told to restart, exec() myself again. This is used when
-	 * the program is told to restart with CORBA, for example when
-	 * an update takes place.
-	 */
-
-	if (g_getenv ("_NAUTILUS_RESTART_SESSION_FILENAME") != NULL) {
-		argv_copy = g_new0 (char *, 4);
-		argv_copy[0] = g_strdup (argv[0]);
-		argv_copy[1] = g_strdup ("--load-session");
-		argv_copy[2] = g_strdup (g_getenv ("_NAUTILUS_RESTART_SESSION_FILENAME"));
-
-		g_unsetenv ("_NAUTILUS_RESTART_SESSION_FILENAME");
-
-		execvp (argv[0], argv_copy);
-
-		g_strfreev (argv_copy);
-	}
-
-	g_object_unref (G_OBJECT (program));
-
 	return EXIT_SUCCESS;
 }

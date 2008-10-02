@@ -1,3 +1,38 @@
+2008-10-02  Alexander Larsson  <alexl@redhat.com>
+
+        * Makefile.am:
+        * nautilus-browser.desktop.in.in:
+        * nautilus.desktop.in.in:
+	Renamed nautilus.desktop to nautilus-browser.desktop
+	(this is what it does, launch a browser window with no desktop)
+	Created new NoDisplay nautilus.desktop file that is used
+	for autostarting nautilus from gnome-session.
+	
+        * configure.in:
+	Pull in the right cflags/libs for libegg
+	Add nautilus-browser.desktop.in to output
+	
+        * cut-n-paste-code/libegg/Makefile.am:
+        * cut-n-paste-code/libegg/eggdesktopfile.[ch]: Added.
+        * cut-n-paste-code/libegg/eggsmclient-private.h: Added.
+        * cut-n-paste-code/libegg/eggsmclient-xsmp.c: Added.
+        * cut-n-paste-code/libegg/eggsmclient.[ch]: Added.
+	Import eggsmclient from libegg.
+	Save data in desktop file instead of a separate file as per the
+	new gnome-session.
+	
+        * cut-n-paste-code/libegg/eggtreemultidnd.c:
+	Minor update from libegg
+	
+        * src/nautilus-application.[ch]:
+	Use eggsmclient for session handling instead of gnome-client.
+	
+        * src/nautilus-main.c:
+	Don't use gnome_program, instead use eggsmsession and
+	g_option_context_parse directly.
+	This removes support for some internal commandline arguments
+	that are not used anymore.
+
 2008-10-02  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-extension/libnautilus-extension-uninstalled.pc.in:

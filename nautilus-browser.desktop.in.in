@@ -1,17 +1,16 @@
 [Desktop Entry]
 Encoding=UTF-8
-_Name=File Manager
-Exec=nautilus
+_Name=File Browser
+_Comment=Browse the file system with the file manager
+TryExec=nautilus
+Exec=nautilus --no-desktop --browser %U
 Icon=system-file-manager
 Terminal=false
-Type=Application
 StartupNotify=true
-NoDisplay=true
+Type=Application
+Categories=GNOME;GTK;System;Utility;Core;
 OnlyShowIn=GNOME;
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=nautilus
 X-GNOME-Bugzilla-Component=general
 X-GNOME-Bugzilla-Version=@VERSION@
-X-GNOME-Autostart-Phase=Desktop
-X-GNOME-Autostart-Notify=true
-X-GNOME-Provides=filemanager
