@@ -1849,7 +1849,7 @@ update_info_internal (NautilusFile *file,
 	}
 
 	filesystem_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-	if (eel_strcmp (file->details->filesystem_id, filesystem_id) != 0) {
+	if (eel_strcmp (eel_ref_str_peek (file->details->filesystem_id), filesystem_id) != 0) {
 		changed = TRUE;
 		eel_ref_str_unref (file->details->filesystem_id);
 		file->details->filesystem_id = eel_ref_str_get_unique (filesystem_id);
