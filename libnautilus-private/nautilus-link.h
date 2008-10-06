@@ -26,7 +26,6 @@
 #define NAUTILUS_LINK_H
 
 #include <gdk/gdk.h>
-#include <libgnome/gnome-desktop-item.h>
 
 gboolean         nautilus_link_local_create                      (const char        *directory_uri,
 								  const char        *base_name,
@@ -38,6 +37,8 @@ gboolean         nautilus_link_local_create                      (const char    
 								  gboolean           unique_filename);
 gboolean         nautilus_link_local_set_text                    (const char        *uri,
 								 const char        *text);
+gboolean         nautilus_link_local_set_icon                    (const char        *uri,
+								  const char        *icon);
 char *           nautilus_link_local_get_text                    (const char        *uri);
 char *           nautilus_link_local_get_additional_text         (const char        *uri);
 char *           nautilus_link_local_get_link_uri                (const char        *uri);
@@ -48,9 +49,5 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  char             **name,
 								  char             **icon,
 								  gboolean          *is_launcher);
-void             nautilus_link_local_create_from_gnome_entry     (GnomeDesktopItem  *entry,
-								  const char        *dest_uri,
-								  const GdkPoint    *position,
-								  int                screen);
 
 #endif /* NAUTILUS_LINK_H */

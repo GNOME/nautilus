@@ -5583,7 +5583,6 @@ static void
 set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 {
 	NautilusFile *file;
-	GnomeDesktopItem *ditem;
 	char *file_uri;
 	char *icon_path;
 	char *real_icon_uri;
@@ -5602,16 +5601,7 @@ set_icon (const char* icon_uri, FMPropertiesWindow *properties_window)
 			file_uri = nautilus_file_get_uri (file);
 
 			if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
-				ditem = gnome_desktop_item_new_from_uri (file_uri,
-									 0,
-									 NULL);
-
-				if (ditem != NULL) {
-					gnome_desktop_item_set_string (ditem,
-								       GNOME_DESKTOP_ITEM_ICON,
-								       icon_path);
-					gnome_desktop_item_save (ditem, NULL, TRUE, NULL);
-					gnome_desktop_item_unref (ditem);
+				if (nautilus_link_local_set_icon (file_uri, icon_path)) {
 					nautilus_file_invalidate_attributes (file,
 									     NAUTILUS_FILE_ATTRIBUTE_INFO |
 									     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
