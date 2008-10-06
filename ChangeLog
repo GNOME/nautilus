@@ -2,6 +2,15 @@
 
 	Merged from trunk:
 
+	Bug 553084 – leaks content type description
+
+	* libnautilus-private/nautilus-open-with-dialog.c (set_uri_and_type):
+	Don't leak the content type description.
+
+2008-10-06  Matthias Clasen  <mclasen@redhat.com>
+
+	Merged from trunk:
+
 	Bug 553073 – invalid strcmp
 
 	* libnautilus-private/nautilus-file.c (update_info_internal):
