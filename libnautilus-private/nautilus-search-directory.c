@@ -32,7 +32,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libgnome/gnome-macros.h>
 #include <string.h>
 #include <sys/time.h>
 
@@ -74,8 +73,8 @@ typedef struct {
 	GHashTable *non_ready_hash;
 } SearchCallback;
 
-GNOME_CLASS_BOILERPLATE (NautilusSearchDirectory, nautilus_search_directory,
-			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
+G_DEFINE_TYPE (NautilusSearchDirectory, nautilus_search_directory,
+	       NAUTILUS_TYPE_DIRECTORY);
 
 static void search_engine_hits_added (NautilusSearchEngine *engine, GList *hits, NautilusSearchDirectory *search);
 static void search_engine_hits_subtracted (NautilusSearchEngine *engine, GList *hits, NautilusSearchDirectory *search);
@@ -702,7 +701,7 @@ search_dispose (GObject *object)
 		search->details->engine = NULL;
 	}
 	
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (nautilus_search_directory_parent_class)->dispose (object);
 }
 
 static void
@@ -716,11 +715,11 @@ search_finalize (GObject *object)
 	
 	g_free (search->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_search_directory_parent_class)->finalize (object);
 }
 
 static void
-nautilus_search_directory_instance_init (NautilusSearchDirectory *search)
+nautilus_search_directory_init (NautilusSearchDirectory *search)
 {
 	search->details = g_new0 (NautilusSearchDirectoryDetails, 1);
 }

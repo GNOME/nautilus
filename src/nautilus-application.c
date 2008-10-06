@@ -460,7 +460,7 @@ finish_startup (NautilusApplication *application)
 	GList *drives;
 
 	/* initialize nautilus modules */
-	nautilus_module_init ();
+	nautilus_module_setup ();
 
 	/* attach menu-provider module callback */
 	menu_provider_init_callback ();

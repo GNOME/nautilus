@@ -32,8 +32,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
-#include <libgnome/gnome-util.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-file.h>
 
@@ -64,8 +62,7 @@ struct NautilusBookmarkDetails
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
 
-GNOME_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark,
-			 GtkObject, GTK_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT);
 
 /* GtkObject methods.  */
 
@@ -88,7 +85,7 @@ nautilus_bookmark_finalize (GObject *object)
 	g_free (bookmark->details->scroll_file);
 	g_free (bookmark->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_bookmark_parent_class)->finalize (object);
 }
 
 /* Initialization.  */
@@ -119,7 +116,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 }
 
 static void
-nautilus_bookmark_instance_init (NautilusBookmark *bookmark)
+nautilus_bookmark_init (NautilusBookmark *bookmark)
 {
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }

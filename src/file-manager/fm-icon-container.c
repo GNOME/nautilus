@@ -24,7 +24,6 @@
 #include <config.h>
 
 #include <string.h>
-#include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -37,9 +36,7 @@
 #define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
 #define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
-GNOME_CLASS_BOILERPLATE (FMIconContainer, fm_icon_container,
-			 NautilusIconContainer,
-			 nautilus_icon_container_get_type ())
+G_DEFINE_TYPE (FMIconContainer, fm_icon_container, nautilus_icon_container_get_type ());
 
 static GQuark attribute_none_q;
 
@@ -517,7 +514,7 @@ fm_icon_container_dispose (GObject *object)
 
 	icon_container->view = NULL;
 
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+	G_OBJECT_CLASS (fm_icon_container_parent_class)->dispose (object);
 }
 
 static void
@@ -545,7 +542,7 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 }
 
 static void
-fm_icon_container_instance_init (FMIconContainer *icon_container)
+fm_icon_container_init (FMIconContainer *icon_container)
 {
 }
 

@@ -32,7 +32,6 @@
 
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-link.h"
@@ -67,14 +66,14 @@ enum {
 	LAST_SIGNAL
 };
 
-static void nautilus_tree_view_drag_dest_instance_init (NautilusTreeViewDragDest      *dest);
+static void nautilus_tree_view_drag_dest_init (NautilusTreeViewDragDest      *dest);
 static void nautilus_tree_view_drag_dest_class_init    (NautilusTreeViewDragDestClass *class);
 
 static guint signals[LAST_SIGNAL];
 
-GNOME_CLASS_BOILERPLATE (NautilusTreeViewDragDest,
-			 nautilus_tree_view_drag_dest,
-			 GObject, G_TYPE_OBJECT);
+G_DEFINE_TYPE (NautilusTreeViewDragDest, nautilus_tree_view_drag_dest,
+	       G_TYPE_OBJECT);
+#define parent_class nautilus_tree_view_drag_dest_parent_class
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -852,7 +851,7 @@ nautilus_tree_view_drag_dest_finalize (GObject *object)
 }
 
 static void
-nautilus_tree_view_drag_dest_instance_init (NautilusTreeViewDragDest *dest)
+nautilus_tree_view_drag_dest_init (NautilusTreeViewDragDest *dest)
 {
 	dest->details = g_new0 (NautilusTreeViewDragDestDetails, 1);
 }

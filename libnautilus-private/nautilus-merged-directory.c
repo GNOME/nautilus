@@ -30,8 +30,8 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
 
 struct NautilusMergedDirectoryDetails {
 	GList *directories;
@@ -68,8 +68,9 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-GNOME_CLASS_BOILERPLATE (NautilusMergedDirectory, nautilus_merged_directory,
-			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
+G_DEFINE_TYPE (NautilusMergedDirectory, nautilus_merged_directory,
+	       NAUTILUS_TYPE_DIRECTORY);
+#define parent_class nautilus_merged_directory_parent_class
 
 static guint
 merged_callback_hash (gconstpointer merged_callback_as_pointer)
@@ -401,7 +402,7 @@ merged_is_not_empty (NautilusDirectory *directory)
 static GList *
 merged_get_file_list (NautilusDirectory *directory)
 {
-	GList *dirs_file_list, *merged_dir_file_list;
+	GList *dirs_file_list, *merged_dir_file_list = NULL;
 	GList *dir_list;
 	GList *cur_node;
 
@@ -416,8 +417,8 @@ merged_get_file_list (NautilusDirectory *directory)
 						 nautilus_directory_get_file_list (cur_dir));
 	}
 
-	merged_dir_file_list = GNOME_CALL_PARENT_WITH_DEFAULT
-				(NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory), NULL);
+	merged_dir_file_list = EEL_CALL_PARENT_WITH_RETURN_VALUE
+				(NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory));
 
 	return g_list_concat (dirs_file_list, merged_dir_file_list);
 }
@@ -649,7 +650,7 @@ merged_finalize (GObject *object)
 }
 
 static void
-nautilus_merged_directory_instance_init (NautilusMergedDirectory *merged)
+nautilus_merged_directory_init (NautilusMergedDirectory *merged)
 {
 	merged->details = g_new0 (NautilusMergedDirectoryDetails, 1);
 	merged->details->callbacks = g_hash_table_new

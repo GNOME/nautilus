@@ -38,7 +38,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-marshal.h>
@@ -103,15 +102,14 @@ static GType nautilus_zoom_control_accessible_get_type (void);
 
 #define NUM_ACTIONS ((int)G_N_ELEMENTS (nautilus_zoom_control_accessible_action_names))
 
-GNOME_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control,
-			 GtkHBox, GTK_TYPE_HBOX)
+G_DEFINE_TYPE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_HBOX);
 
 static void
 nautilus_zoom_control_finalize (GObject *object)
 {
 	g_list_free (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_zoom_control_parent_class)->finalize (object);
 }
 
 static void 
@@ -268,7 +266,7 @@ label_style_set_callback (GtkWidget *label,
 }		  
 
 static void
-nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
+nautilus_zoom_control_init (NautilusZoomControl *zoom_control)
 {
 	GtkWidget *image;
 	int i;

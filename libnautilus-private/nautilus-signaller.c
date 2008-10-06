@@ -30,7 +30,6 @@
 #include "nautilus-signaller.h"
 
 #include <eel/eel-debug.h>
-#include <libgnome/gnome-macros.h>
 
 typedef GObject NautilusSignaller;
 typedef GObjectClass NautilusSignallerClass;
@@ -48,8 +47,7 @@ static guint signals[LAST_SIGNAL];
 
 static GType nautilus_signaller_get_type (void);
 
-GNOME_CLASS_BOILERPLATE (NautilusSignaller, nautilus_signaller,
-			 GObject, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusSignaller, nautilus_signaller, G_TYPE_OBJECT);
 
 GObject *
 nautilus_signaller_get_current (void)
@@ -65,7 +63,7 @@ nautilus_signaller_get_current (void)
 }
 
 static void
-nautilus_signaller_instance_init (NautilusSignaller *signaller)
+nautilus_signaller_init (NautilusSignaller *signaller)
 {
 }
 

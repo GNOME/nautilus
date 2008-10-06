@@ -32,7 +32,6 @@
 #include <gtk/gtk.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 #include <gio/gio.h>
@@ -44,11 +43,11 @@ struct NautilusDesktopWindowDetails {
 
 static void set_wmspec_desktop_hint (GdkWindow *window);
 
-GNOME_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window,
-			 NautilusSpatialWindow, NAUTILUS_TYPE_SPATIAL_WINDOW)
+G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window, 
+	       NAUTILUS_TYPE_SPATIAL_WINDOW);
 
 static void
-nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
+nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	GtkAction *action;
 	
@@ -149,14 +148,14 @@ finalize (GObject *object)
 
 	g_free (window->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->finalize (object);
 }
 
 static void
 map (GtkWidget *widget)
 {
 	/* Chain up to realize our children */
-	GTK_WIDGET_CLASS (parent_class)->map (widget);
+	GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->map (widget);
 	gdk_window_lower (widget->window);
 }
 
@@ -179,7 +178,7 @@ unrealize (GtkWidget *widget)
 					      G_CALLBACK (nautilus_desktop_window_screen_size_changed),
 					      window);
 		
-	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+	GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->unrealize (widget);
 }
 
 static void
@@ -227,7 +226,7 @@ realize (GtkWidget *widget)
 			      | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 			      
 	/* Do the work of realizing. */
-	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+	GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->realize (widget);
 
 	/* This is the new way to set up the desktop window */
 	set_wmspec_desktop_hint (widget->window);

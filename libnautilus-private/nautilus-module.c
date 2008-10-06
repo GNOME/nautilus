@@ -27,7 +27,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-debug.h>
 #include <gmodule.h>
-#include <libgnome/gnome-macros.h>
 
 #define NAUTILUS_TYPE_MODULE    	(nautilus_module_get_type ())
 #define NAUTILUS_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MODULE, NautilusModule))
@@ -57,14 +56,12 @@ struct _NautilusModuleClass {
 	GTypeModuleClass parent;	
 };
 
-static GType nautilus_module_get_type (void);
-
 static GList *module_objects = NULL;
 
-GNOME_CLASS_BOILERPLATE (NautilusModule,
-			 nautilus_module,
-			 GTypeModule,
-			 G_TYPE_TYPE_MODULE);
+static GType nautilus_module_get_type (void);
+
+G_DEFINE_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE);
+#define parent_class nautilus_module_parent_class
 
 static gboolean
 nautilus_module_load (GTypeModule *gmodule)
@@ -130,7 +127,7 @@ nautilus_module_finalize (GObject *object)
 }
 
 static void
-nautilus_module_instance_init (NautilusModule *module)
+nautilus_module_init (NautilusModule *module)
 {
 }
 
@@ -223,7 +220,7 @@ free_module_objects (void)
 }
 
 void
-nautilus_module_init (void)
+nautilus_module_setup (void)
 {
 	static gboolean initialized = FALSE;
 

@@ -1,5 +1,23 @@
 2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
 
+        * libnautilus-private/nautilus-bookmark.c:
+        * libnautilus-private/nautilus-desktop-directory.c:
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-merged-directory.c:
+        * libnautilus-private/nautilus-module.c:
+        * libnautilus-private/nautilus-module.h:
+        * libnautilus-private/nautilus-search-directory.c:
+        * libnautilus-private/nautilus-signaller.c:
+        * libnautilus-private/nautilus-tree-view-drag-dest.c:
+        * src/file-manager/fm-icon-container.c:
+        * src/nautilus-application.c:
+        * src/nautilus-desktop-window.c:
+        * src/nautilus-file-management-properties-main.c:
+        * src/nautilus-zoom-control.c:
+	Use G_DEFINE_TYPE instead of libgnome macros.
+
+2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
+
         * src/file-manager/fm-directory-view.c:
         * src/file-manager/fm-properties-window.c:
         * src/nautilus-bookmarks-window.c:

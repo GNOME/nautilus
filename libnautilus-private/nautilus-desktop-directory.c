@@ -33,8 +33,8 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
 
 struct NautilusDesktopDirectoryDetails {
 	NautilusDirectory *real_directory;
@@ -65,9 +65,9 @@ typedef struct {
 
 static void desktop_directory_changed_callback (gpointer data);
 
-GNOME_CLASS_BOILERPLATE (NautilusDesktopDirectory, nautilus_desktop_directory,
-			 NautilusDirectory, NAUTILUS_TYPE_DIRECTORY)
-
+G_DEFINE_TYPE (NautilusDesktopDirectory, nautilus_desktop_directory,
+	       NAUTILUS_TYPE_DIRECTORY);
+#define parent_class nautilus_desktop_directory_parent_class
 
 static gboolean
 desktop_contains_file (NautilusDirectory *directory,
@@ -397,11 +397,12 @@ desktop_is_not_empty (NautilusDirectory *directory)
 static GList *
 desktop_get_file_list (NautilusDirectory *directory)
 {
-	GList *real_dir_file_list, *desktop_dir_file_list;
+	GList *real_dir_file_list, *desktop_dir_file_list = NULL;
+	
 	real_dir_file_list = nautilus_directory_get_file_list
 				(NAUTILUS_DESKTOP_DIRECTORY (directory)->details->real_directory);
-	desktop_dir_file_list = GNOME_CALL_PARENT_WITH_DEFAULT
-				 (NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory), NULL);
+	desktop_dir_file_list = EEL_CALL_PARENT_WITH_RETURN_VALUE (NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory));
+
 	return g_list_concat (real_dir_file_list, desktop_dir_file_list);
 }
 
@@ -430,7 +431,7 @@ desktop_finalize (GObject *object)
 					 desktop_directory_changed_callback,
 					 desktop);
 	
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_desktop_directory_parent_class)->finalize (object);
 }
 
 static void
@@ -500,7 +501,7 @@ desktop_directory_changed_callback (gpointer data)
 }
 
 static void
-nautilus_desktop_directory_instance_init (NautilusDesktopDirectory *desktop)
+nautilus_desktop_directory_init (NautilusDesktopDirectory *desktop)
 {
 	desktop->details = g_new0 (NautilusDesktopDirectoryDetails, 1);
 

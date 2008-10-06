@@ -48,11 +48,9 @@
 #include <eel/eel-preferences.h>
 #include <eel/eel-enumeration.h>
 #include <eel/eel-canvas-rect-ellipse.h>
-#include <libgnomeui/gnome-icon-item.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-macros.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -242,8 +240,7 @@ static const char *nautilus_icon_container_accessible_action_descriptions[] = {
 	NULL
 };
 
-GNOME_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container,
-			 EelCanvas, EEL_TYPE_CANVAS)
+G_DEFINE_TYPE (NautilusIconContainer, nautilus_icon_container, EEL_TYPE_CANVAS);
 
 /* The NautilusIconContainer signals.  */
 enum {
@@ -3999,7 +3996,7 @@ destroy (GtkObject *object)
 	}
 
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	GTK_OBJECT_CLASS (nautilus_icon_container_parent_class)->destroy (object);
 }
 
 static void
@@ -4030,7 +4027,7 @@ finalize (GObject *object)
 
 	g_free (details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_icon_container_parent_class)->finalize (object);
 }
 
 /* GtkWidget methods.  */
@@ -4039,7 +4036,7 @@ static void
 size_request (GtkWidget *widget,
 	      GtkRequisition *requisition)
 {
-	GTK_WIDGET_CLASS (parent_class)->size_request (widget, requisition);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->size_request (widget, requisition);
 	requisition->width = 1;
 	requisition->height = 1;
 }
@@ -4063,7 +4060,7 @@ size_allocate (GtkWidget *widget,
 		need_layout_redone = TRUE;
 	}
 
-	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->size_allocate (widget, allocation);
 
 	container->details->has_been_allocated = TRUE;
 
@@ -4079,7 +4076,7 @@ realize (GtkWidget *widget)
 	GdkBitmap *stipple;
 	GtkAdjustment *vadj, *hadj;
 
-	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->realize (widget);
 
 	/* Set up DnD.  */
 	nautilus_icon_dnd_init (NAUTILUS_ICON_CONTAINER (widget), NULL);
@@ -4133,7 +4130,7 @@ unrealize (GtkWidget *widget)
 		container->details->typeselect_flush_timeout = 0;
 	}
 
-	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->unrealize (widget);
 }
 
 static void
@@ -4158,7 +4155,7 @@ style_set (GtkWidget *widget,
 		nautilus_icon_container_request_update_all (container);
 	}
 	
-	GTK_WIDGET_CLASS (parent_class)->style_set (widget, previous_style);
+	GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->style_set (widget, previous_style);
 }
 
 static gboolean
@@ -4183,7 +4180,7 @@ button_press_event (GtkWidget *widget,
 	}
 
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	clicked_on_icon = GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
+	clicked_on_icon = GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->button_press_event (widget, event);
 	
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
 	 * renaming mode)
@@ -4624,7 +4621,7 @@ button_release_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	return GTK_WIDGET_CLASS (parent_class)->button_release_event (widget, event);
+	return GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->button_release_event (widget, event);
 }
 
 static int
@@ -4694,7 +4691,7 @@ motion_notify_event (GtkWidget *widget,
 		}
 	}
 
-	return GTK_WIDGET_CLASS (parent_class)->motion_notify_event (widget, event);
+	return GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->motion_notify_event (widget, event);
 }
 
 static void
@@ -5366,7 +5363,7 @@ key_press_event (GtkWidget *widget,
 	}
 
 	if (!handled) {
-		handled = GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
+		handled = GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->key_press_event (widget, event);
 	}
 	
 	/* We pass the event to the search_entry.  If its text changes, then we
@@ -5471,7 +5468,7 @@ expose_event (GtkWidget      *widget,
 		   event->area.x, event->area.y,
 		   event->area.width, event->area.height); */
 	
-	return GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
+	return GTK_WIDGET_CLASS (nautilus_icon_container_parent_class)->expose_event (widget, event);
 }
 
 static AtkObject *
@@ -5527,9 +5524,10 @@ nautilus_icon_container_constructor (GType                  type,
 	NautilusIconContainer *container;
 	GObject *object;
 
-	object = G_OBJECT_CLASS (parent_class)->constructor (type,
-							     n_construct_params,
-							     construct_params);
+	object = G_OBJECT_CLASS (nautilus_icon_container_parent_class)->constructor
+		(type,
+		 n_construct_params,
+		 construct_params);
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 	if (nautilus_icon_container_get_is_desktop (container)) {
@@ -6156,7 +6154,7 @@ desktop_text_ellipsis_limit_changed_callback (gpointer callback_data)
 }
 
 static void
-nautilus_icon_container_instance_init (NautilusIconContainer *container)
+nautilus_icon_container_init (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	EelBackground *background;
