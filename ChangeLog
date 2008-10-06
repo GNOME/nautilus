@@ -1,3 +1,12 @@
+2008-10-06  Alexander Larsson  <alexl@redhat.com>
+
+	Based on patch from  Cosimo Cecchi
+	
+        * src/file-manager/fm-tree-view.c:
+        * src/nautilus-emblem-sidebar.c:
+	Use gtk_menu_popup instead of gnome_popup_menu_do_popup_modal
+	Don't use GNOME_PAD
+
 2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
 
         * libnautilus-private/nautilus-bookmark.c:

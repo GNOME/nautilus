@@ -44,8 +44,6 @@
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-popup-menu.h>
 #include <gconf/gconf-client.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
@@ -192,9 +190,9 @@ nautilus_emblem_sidebar_button_press_cb (GtkWidget *widget,
 				nautilus_emblem_can_rename_emblem (keyword));
 
 
-		gnome_popup_menu_do_popup_modal (emblem_sidebar->details->popup,
-						 NULL, NULL, event, NULL,
-						 widget);
+		gtk_menu_popup (GTK_MENU (emblem_sidebar->details->popup),
+				NULL, NULL, NULL, NULL, event->button,
+				event->time);
 	}
 
 	return TRUE;
@@ -299,15 +297,15 @@ create_rename_emblem_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	label = gtk_label_new (_("Enter a new name for the displayed emblem:"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
-			    FALSE, FALSE, GNOME_PAD);
+			    FALSE, FALSE, 8);
 	
 	
-	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, GNOME_PAD);
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 8);
 
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
 
-	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, FALSE, GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, FALSE, 8);
 	gtk_widget_show_all (hbox);
 
 	/* it would be nice to have the text selected, ready to be overwritten
@@ -317,7 +315,7 @@ create_rename_emblem_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	gtk_entry_set_text (GTK_ENTRY (entry), orig_name);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
-			    TRUE, TRUE, GNOME_PAD);
+			    TRUE, TRUE, 8);
 
 
 	return dialog;
@@ -548,12 +546,12 @@ create_add_emblems_dialog (NautilusEmblemSidebar *emblem_sidebar,
 	
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    label, FALSE, FALSE, GNOME_PAD);
+			    label, FALSE, FALSE, 8);
 	gtk_widget_show (label);
 	
 	scroller = eel_scrolled_wrap_table_new (TRUE, &table);
-	eel_wrap_table_set_x_spacing (EEL_WRAP_TABLE (table), GNOME_PAD);
-	eel_wrap_table_set_y_spacing (EEL_WRAP_TABLE (table), GNOME_PAD);
+	eel_wrap_table_set_x_spacing (EEL_WRAP_TABLE (table), 8);
+	eel_wrap_table_set_y_spacing (EEL_WRAP_TABLE (table), 8);
 	
 	num_emblems=0;
 	list = emblems;
@@ -586,9 +584,9 @@ create_add_emblems_dialog (NautilusEmblemSidebar *emblem_sidebar,
 		num_emblems++;
 	}
 
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 8);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    scroller, TRUE, TRUE, GNOME_PAD);
+			    scroller, TRUE, TRUE, 8);
 	gtk_widget_show_all (scroller);
 
 	gtk_widget_grab_focus (first_entry);
@@ -877,7 +875,7 @@ nautilus_emblem_sidebar_create_container (NautilusEmblemSidebar *emblem_sidebar)
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
 
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 8);
 
 	/* set up dnd for adding emblems */
 	gtk_drag_dest_set (scroller,

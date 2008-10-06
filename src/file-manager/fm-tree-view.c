@@ -43,8 +43,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-popup-menu.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
@@ -104,6 +102,7 @@ struct FMTreeViewDetails {
 	GtkWidget *popup_unmount;
 	GtkWidget *popup_eject;
 	NautilusFile *popup_file;
+	guint popup_file_idle_handler;
 	
 	guint selection_changed_timer;
 };
@@ -679,6 +678,10 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 		gboolean show_unmount = FALSE;
 		gboolean show_eject = FALSE;
 		GMount *mount = NULL;
+
+		if (view->details->popup_file != NULL) {
+			return FALSE; /* Already up, ignore */
+		}
 		
 		if (!gtk_tree_view_get_path_at_pos (treeview, event->x, event->y,
 						    &path, NULL, NULL, NULL)) {
@@ -752,19 +755,12 @@ button_pressed_callback (GtkTreeView *treeview, GdkEventButton *event,
 			gtk_widget_hide (view->details->popup_unmount_separator);
 		}
 
-		g_object_ref (view);
-		
-		gnome_popup_menu_do_popup_modal (view->details->popup,
-						 NULL, NULL, event, NULL,
-						 GTK_WIDGET (treeview));
-		
+		gtk_menu_popup (GTK_MENU (view->details->popup),
+				NULL, NULL, NULL, NULL,
+				event->button, event->time);
+
 		gtk_tree_view_set_cursor (view->details->tree_widget, cursor_path, NULL, FALSE);
 		gtk_tree_path_free (cursor_path);
-
-		nautilus_file_unref (view->details->popup_file);
-		view->details->popup_file = NULL;
-		
-		g_object_unref (view);
 
 		return TRUE;
 	} else if (event->button == 2 && event->type == GDK_BUTTON_PRESS) {
@@ -1155,6 +1151,39 @@ fm_tree_view_eject_cb (GtkWidget *menu_item,
 	}
 }
 
+static gboolean
+free_popup_file_in_idle_cb (gpointer data)
+{
+	FMTreeView *view;
+
+	view = FM_TREE_VIEW (data);
+
+	if (view->details->popup_file != NULL) {
+		nautilus_file_unref (view->details->popup_file);
+		view->details->popup_file = NULL;
+	}
+	view->details->popup_file_idle_handler = 0;
+	return FALSE;
+}
+
+static void
+popup_menu_deactivated (GtkMenuShell *menu_shell, gpointer data)
+{
+	FMTreeView *view;
+
+	view = FM_TREE_VIEW (data);
+
+	/* The popup menu is deactivated. (I.E. hidden)
+	   We want to free popup_file, but can't right away as it might immediately get
+	   used if we're deactivation due to activating a menu item. So, we free it in
+	   idle */
+	
+	if (view->details->popup_file != NULL &&
+	    view->details->popup_file_idle_handler == 0) {
+		view->details->popup_file_idle_handler = g_idle_add (free_popup_file_in_idle_cb, view);
+	}
+}
+
 static void
 create_popup_menu (FMTreeView *view)
 {
@@ -1166,6 +1195,11 @@ create_popup_menu (FMTreeView *view)
 	}
 	
 	popup = gtk_menu_new ();
+
+	g_signal_connect (popup, "deactivate",
+			  G_CALLBACK (popup_menu_deactivated),
+			  view);
+	
 	
 	/* add the "open" menu item */
 	menu_image = gtk_image_new_from_stock (GTK_STOCK_OPEN,
@@ -1543,6 +1577,11 @@ fm_tree_view_dispose (GObject *object)
 		view->details->popup = NULL;
 	}
 
+	if (view->details->popup_file_idle_handler != 0) {
+		g_source_remove (view->details->popup_file_idle_handler);
+		view->details->popup_file_idle_handler = 0;
+	}
+	
 	if (view->details->popup_file != NULL) {
 		nautilus_file_unref (view->details->popup_file);
 		view->details->popup_file = NULL;
