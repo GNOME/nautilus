@@ -64,9 +64,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-config.h>
-#include <libgnomeui/gnome-authentication-manager.h>
-#include <libgnomeui/gnome-client.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -504,55 +501,51 @@ finish_startup (NautilusApplication *application)
 static void
 initialize_kde_trash_hack (void)
 {
-	char *trash_dir;
 	char *desktop_dir, *desktop_uri, *kde_trash_dir;
 	char *dir, *basename;
-	char *kde_conf_file;
-	char *key;
-	gboolean def;
-	
-	trash_dir = NULL;
 
 	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
 	desktop_dir = g_filename_from_uri (desktop_uri, NULL, NULL);
 	g_free (desktop_uri);
-	
+
 	if (g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
+		gboolean res;
+		GKeyFile *keyfile;
+		char **dirs;
+
 		/* Look for trash directory */
-		kde_conf_file = g_build_filename (g_get_home_dir(), ".kde/share/config/kdeglobals", NULL);
-		key = g_strconcat ("=", kde_conf_file, "=/Paths/Trash", NULL);
-		kde_trash_dir = gnome_config_get_string_with_default (key, &def);
-		gnome_config_drop_file (kde_conf_file);
-		g_free (kde_conf_file);
-		g_free (key);
 
-		if (kde_trash_dir == NULL) {
-			kde_conf_file = "/usr/share/config/kdeglobals";
-			key = g_strconcat ("=", kde_conf_file, "=/Paths/Trash", NULL);
-			kde_trash_dir = gnome_config_get_string_with_default (key, &def);
-			gnome_config_drop_file (kde_conf_file);
-			g_free (key);
+		keyfile = g_key_file_new ();
+		dirs = g_new0 (char *, 3);
+		dirs[0] = g_build_filename (g_get_home_dir(), ".kde/share/config", NULL);
+		dirs[1] = g_strdup ("/usr/share/config");
+		dirs[2] = NULL;
+
+		res = g_key_file_load_from_dirs (keyfile, "kdeglobals",
+						 (const char **) dirs, NULL, 0, NULL);
+		if (res) {
+			kde_trash_dir = g_key_file_get_string (keyfile,
+							       "Paths", "Trash",
+							       NULL);
+			if (kde_trash_dir != NULL) {
+				basename = g_path_get_basename (kde_trash_dir);
+
+				dir = g_build_filename (desktop_dir, basename, NULL);
+
+				if (g_file_test (dir, G_FILE_TEST_IS_DIR)) {
+					nautilus_set_kde_trash_name (basename);
+				}
+
+				g_free (basename);
+				g_free (dir);
+				g_free (kde_trash_dir);
+			}
 		}
 
-		if (kde_trash_dir != NULL) {
-			basename = g_path_get_basename (kde_trash_dir);
-			g_free (kde_trash_dir);
-			
-			dir = g_build_filename (desktop_dir, basename, NULL);
-
-			if (g_file_test (dir, G_FILE_TEST_IS_DIR)) {
-				trash_dir = g_strdup (basename);
-			} 
-			g_free (basename);
-			g_free (dir);
-		} 
-
-		if (trash_dir != NULL) {
-			nautilus_set_kde_trash_name (trash_dir);
-		}
-
-		g_free (trash_dir);
+		g_key_file_free (keyfile);
+		g_strfreev (dirs);
 	}
+
 	g_free (desktop_dir);
 }
 

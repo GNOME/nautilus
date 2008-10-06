@@ -1,5 +1,11 @@
 2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
 
+        * src/nautilus-application.c:
+        (initialize_kde_trash_hack):
+	Replace GnomeConfig use with GKeyFile
+
+2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
+
         * src/nautilus-window-menus.c:
         (action_nautilus_manual_callback):
 	Use gtk_show_uri instead of gnome_help
