@@ -374,7 +374,6 @@ main (int argc, char *argv[])
 	browser_window = FALSE;
 
 	g_set_prgname ("nautilus");
-	g_set_application_name (_("File Manager"));
         egg_set_desktop_file (DATADIR "/applications/nautilus.desktop");
 
 	context = g_option_context_new (_("\n\nBrowse the file system with the file manager"));
