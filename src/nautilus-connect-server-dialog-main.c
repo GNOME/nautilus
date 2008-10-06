@@ -31,9 +31,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
-#include <libgnome/gnome-program.h>
-#include <libgnomeui/gnome-ui-init.h>
-#include <libgnomeui/gnome-authentication-manager.h>
+#include <stdlib.h>
 
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
@@ -163,11 +161,11 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 int
 main (int argc, char *argv[])
 {
-	GnomeProgram *program;
 	GtkWidget *dialog;
 	GOptionContext *context;
 	const char **args;
 	GFile *location;
+	GError *error;
 	const GOptionEntry options[] = {
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, NULL,  N_("[URI]") },
 		{ NULL }
@@ -178,19 +176,23 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 
 	args = NULL;
-	/* Translators: This is the --help description gor the connect to server app,
+	error = NULL;
+	/* Translators: This is the --help description for the connect to server app,
 	   the initial newlines are between the command line arg and the description */
 	context = g_option_context_new (N_("\n\nAdd connect to server mount"));
 	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
 
-	g_option_context_set_translation_domain(context, GETTEXT_PACKAGE);
+	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
+	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
-	program = gnome_program_init ("nautilus-connect-server", VERSION,
-				      LIBGNOMEUI_MODULE, argc, argv,
-				      GNOME_PARAM_GOPTION_CONTEXT, context,
-				      NULL);
+	if (!g_option_context_parse (context, &argc, &argv, &error)) {
+		g_critical ("Failed to parse arguments: %s", error->message);
+		g_error_free (error);
+		g_option_context_free (context);
+		exit (1);
+	}
 
-	gnome_authentication_manager_init ();
+	g_option_context_free (context);
 
 	eel_preferences_init ("/apps/nautilus");
 

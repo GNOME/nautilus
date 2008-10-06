@@ -43,7 +43,6 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <eel/eel-preferences.h>
-#include <libgnomeui/gnome-help.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -606,9 +605,9 @@ action_nautilus_manual_callback (GtkAction *action,
 			gtk_window_get_screen (GTK_WINDOW (window)),
 			"gnome-help", &error);
 	} else {
-		gnome_help_display_desktop_on_screen (
-			NULL, "user-guide", "user-guide.xml", "gosnautilus-1",
-			gtk_window_get_screen (GTK_WINDOW (window)), &error);
+		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (window)),
+			      "ghelp:user-guide#gosnautilus-1",
+			      gtk_get_current_event_time (), &error);
 	}
 
 	if (error) {

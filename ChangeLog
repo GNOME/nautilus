@@ -1,3 +1,20 @@
+2008-10-06  Cosimo Cecchi  <cosimoc@gnome.org>
+
+        * src/nautilus-window-menus.c:
+        (action_nautilus_manual_callback):
+	Use gtk_show_uri instead of gnome_help
+	
+        * src/nautilus-file-management-properties-main.c:
+        * src/nautilus-connect-server-dialog-main.c:
+        * src/nautilus-autorun-software.c:
+        * test/test-nautilus-mime-actions-set.c:
+        * test/test-nautilus-mime-actions.c:
+	Use GOption instead of GnomeProgram
+	
+        * src/nautilus-property-browser.c:
+	Use GtkColorButton instead of GnomeColorPicker
+	Use gtk_show_uri instead of gnome_help
+
 2008-10-02  Alexander Larsson  <alexl@redhat.com>
 
         * Makefile.am:

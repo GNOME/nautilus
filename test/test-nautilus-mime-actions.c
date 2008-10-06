@@ -24,7 +24,7 @@
 
 #include <config.h>
 
-#include <gnome.h>
+#include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <stdio.h>
 
@@ -103,8 +103,7 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	NautilusFileAttributes attributes;
 
-	gnome_program_init ("test-nautilus-mime-actions", "0.0",
-			    LIBGNOMEUI_MODULE, argc, argv, NULL);
+	gtk_init (&argc, &argv);
 
 	if (argc != 2) {
 		fprintf (stderr, "Usage: %s uri\n", *argv);

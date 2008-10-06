@@ -50,13 +50,8 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
-#include <libgnome/gnome-util.h>
-#include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <libgnomeui/gnome-icon-entry.h>
-#include <libgnomeui/gnome-help.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
@@ -791,11 +786,11 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 
 	color_square = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, COLOR_SQUARE_SIZE, COLOR_SQUARE_SIZE);
 	
-	eel_gdk_color_parse (color_spec, &color);
+	gdk_color_parse (color_spec, &color);
 	color.red >>= 8;
 	color.green >>= 8;
 	color.blue >>= 8;
-	
+ 
 	pixels = gdk_pixbuf_get_pixels (color_square);
 	stride = gdk_pixbuf_get_rowstride (color_square);
 	
@@ -1121,9 +1116,8 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	widget = gtk_label_new_with_mnemonic(_("Color _value:"));
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
- 
-	/* set up a gnome file entry to pick the image file */
-	property_browser->details->color_picker = gnome_color_picker_new ();
+
+	property_browser->details->color_picker = gtk_color_button_new ();
 	gtk_widget_show (property_browser->details->color_picker);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (widget), property_browser->details->color_picker);
 
@@ -1284,20 +1278,17 @@ add_color_to_file (NautilusPropertyBrowser *property_browser, const char *color_
 static void
 add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 {
-	char color_spec[8];
+	char * color_spec;
 	const char *color_name;
 	char *stripped_color_name;
 
-	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
 
 	if (which_button == GTK_RESPONSE_OK) {
-		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
-		g_snprintf (color_spec, sizeof (color_spec),
-			 "#%02X%02X%02X",
-			 (guint) (color[0] * 255.0 + 0.5),
-			 (guint) (color[1] * 255.0 + 0.5),
-			 (guint) (color[2] * 255.0 + 0.5));
+		GdkColor color;
+
+		gtk_color_button_get_color (GTK_COLOR_BUTTON (property_browser->details->color_picker), &color);
+		color_spec = gdk_color_to_string (&color);
 
 		color_name = gtk_entry_get_text (GTK_ENTRY (property_browser->details->color_name));
 		stripped_color_name = g_strstrip (g_strdup (color_name));
@@ -1311,6 +1302,7 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 			nautilus_property_browser_update_contents(property_browser);
 		}
 		g_free (stripped_color_name);
+		g_free (color_spec);
 	}
 	
 	gtk_widget_destroy(property_browser->details->colors_dialog);
@@ -1331,17 +1323,16 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	property_browser->details->colors_dialog = nautilus_color_selection_dialog_new (property_browser);		
 
 	/* set the color to the one picked by the selector */
-	gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (property_browser->details->color_picker), color.red, color.green, color.blue, 1.0);
-	
+	gtk_color_button_set_color (GTK_COLOR_BUTTON (property_browser->details->color_picker), &color);
+
 	/* connect the signals to the new dialog */
-	
+
 	eel_add_weak_pointer (&property_browser->details->colors_dialog);
 
 	g_signal_connect_object (property_browser->details->colors_dialog, "response",
 				 G_CALLBACK (add_color_to_browser), property_browser, 0);
 	gtk_window_set_position (GTK_WINDOW (property_browser->details->colors_dialog), GTK_WIN_POS_MOUSE);
 	gtk_widget_show (GTK_WIDGET(property_browser->details->colors_dialog));
-
 }
 
 
@@ -1515,9 +1506,9 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	gnome_help_display_desktop_on_screen (
-		NULL, "user-guide", "user-guide.xml", "gosnautilus-50",
-		gtk_window_get_screen (GTK_WINDOW (property_browser)), &error);
+	gtk_show_uri (gtk_widget_get_screen (property_browser),
+		      "ghelp:user-guide#gosnautilus-50",
+		      gtk_get_current_event_time (), &error);
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),

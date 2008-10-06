@@ -28,13 +28,12 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
 #include <glib/gi18n.h>
 
-#include <libgnome/gnome-program.h>
-#include <libgnomeui/gnome-ui-init.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-icon-info.h>
 
@@ -253,9 +252,7 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gnome_program_init ("nautilus-autorun-software", VERSION,
-			    LIBGNOMEUI_MODULE, argc, argv,
-			    NULL, NULL);
+	gtk_init (&argc, &argv);
 
         if (argc != 2) {
                 goto out;

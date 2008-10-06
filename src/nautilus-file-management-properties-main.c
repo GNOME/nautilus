@@ -25,12 +25,9 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 
-#include <libgnome/gnome-program.h>
-#include <libgnomeui/gnome-ui-init.h>
 #include <libnautilus-private/nautilus-module.h>
-
-#include <libintl.h>
 
 #include <eel/eel-preferences.h>
 
@@ -52,9 +49,7 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gnome_program_init ("file-managment-properties", VERSION,
-			    LIBGNOMEUI_MODULE, argc, argv,
-			    NULL, NULL);
+	gtk_init (&argc, &argv);
 
 	eel_preferences_init ("/apps/nautilus");
 
