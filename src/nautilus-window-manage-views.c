@@ -52,7 +52,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-icon-theme.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-file-attributes.h>

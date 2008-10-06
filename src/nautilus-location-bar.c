@@ -44,8 +44,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <stdio.h>
@@ -417,8 +415,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	event_box = gtk_event_box_new ();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
 	
-	gtk_container_set_border_width (GTK_CONTAINER (event_box),
-					GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (event_box), 4);
 	label = gtk_label_new (LOCATION_LABEL);
 	gtk_container_add   (GTK_CONTAINER (event_box), label);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
@@ -426,8 +423,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	g_signal_connect (label, "style_set", 
 			  G_CALLBACK (style_set_handler), NULL);
 
-	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE,
-			    GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE, 4);
 
 	entry = nautilus_location_entry_new ();
 	

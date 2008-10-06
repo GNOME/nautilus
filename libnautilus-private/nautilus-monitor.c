@@ -30,7 +30,6 @@
 #include "nautilus-file-utilities.h"
 
 #include <gio/gio.h>
-#include <libgnome/gnome-util.h>
 
 struct NautilusMonitor {
 	GFileMonitor *monitor;

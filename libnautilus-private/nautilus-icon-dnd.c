@@ -55,8 +55,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <eel/eel-canvas-rect-ellipse.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <stdio.h>

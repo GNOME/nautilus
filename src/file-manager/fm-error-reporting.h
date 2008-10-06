@@ -27,7 +27,6 @@
 #define FM_ERROR_REPORTING_H
 
 #include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-private/nautilus-file.h>
 
 void fm_report_error_loading_directory	 (NautilusFile   *file,

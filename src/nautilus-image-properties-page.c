@@ -27,7 +27,6 @@
 #include "nautilus-image-properties-page.h"
 
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <eel/eel-vfs-extensions.h>

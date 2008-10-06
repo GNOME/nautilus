@@ -41,7 +41,6 @@
 #include <libegg/eggtreemultidnd.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <libgnome/gnome-macros.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>

@@ -26,7 +26,6 @@
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
 #include <eel/eel-glib-extensions.h>
-#include <libgnomeui/gnome-icon-item.h>
 #include <libnautilus-private/nautilus-icon-canvas-item.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>

@@ -42,7 +42,6 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-util.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>

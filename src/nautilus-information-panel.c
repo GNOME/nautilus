@@ -38,7 +38,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
@@ -225,8 +224,8 @@ make_button_box (NautilusInformationPanel *information_panel)
 	gtk_box_pack_start_defaults (GTK_BOX (information_panel->details->container),
 			    	     GTK_WIDGET (information_panel->details->button_box_centerer));
 
-	information_panel->details->button_box = GTK_VBOX (nautilus_keep_last_vertical_box_new (GNOME_PAD_SMALL));
-	gtk_container_set_border_width (GTK_CONTAINER (information_panel->details->button_box), GNOME_PAD);				
+	information_panel->details->button_box = GTK_VBOX (nautilus_keep_last_vertical_box_new (4));
+	gtk_container_set_border_width (GTK_CONTAINER (information_panel->details->button_box), 8);				
 	gtk_widget_show (GTK_WIDGET (information_panel->details->button_box));
 	gtk_box_pack_start (GTK_BOX (information_panel->details->button_box_centerer),
 			    GTK_WIDGET (information_panel->details->button_box),
@@ -263,7 +262,7 @@ nautilus_information_panel_init (NautilusInformationPanel *information_panel)
 	gtk_widget_show (GTK_WIDGET (information_panel->details->title));
 	gtk_box_pack_start (GTK_BOX (information_panel->details->container),
 			    GTK_WIDGET (information_panel->details->title),
-			    FALSE, FALSE, GNOME_PAD);
+			    FALSE, FALSE, 8);
 	
 	/* allocate and install the command button container */
 	make_button_box (information_panel);

@@ -59,7 +59,6 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <glib/gurifuncs.h>
-#include <libgnome/gnome-macros.h>
 #include <glib/gfileutils.h>
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libxml/parser.h>

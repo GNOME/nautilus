@@ -31,9 +31,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-macros.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-popup-menu.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-bookmark.h>

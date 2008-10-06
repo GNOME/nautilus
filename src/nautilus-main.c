@@ -45,9 +45,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gdesktopappinfo.h>
-#include <libgnome/gnome-init.h>
-#include <libgnomeui/gnome-ui-init.h>
-#include <libgnomeui/gnome-client.h>
 #include <libnautilus-private/nautilus-debug-log.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

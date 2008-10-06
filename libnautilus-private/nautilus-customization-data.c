@@ -43,7 +43,6 @@
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-util.h>
 #include <libxml/parser.h>
 #include <stdlib.h>
 #include <string.h>

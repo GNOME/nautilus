@@ -40,7 +40,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <stdio.h>
 #include <string.h>

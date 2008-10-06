@@ -34,7 +34,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-util.h>
 
 /* Constants */
 #define STRING_ARRAY_DEFAULT_TOKENS_DELIMETER ","

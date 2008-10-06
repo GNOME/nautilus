@@ -57,6 +57,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-undo.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <cairo.h>
 
 #if HAVE_SYS_STATVFS_H

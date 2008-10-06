@@ -53,7 +53,6 @@
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
 #endif
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -409,7 +408,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	gtk_widget_show (hbox);
 
 	item = gtk_tool_item_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (item), GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (item), 4);
 	gtk_widget_show (GTK_WIDGET (item));
 	gtk_tool_item_set_expand (item, TRUE);
 	gtk_container_add (GTK_CONTAINER (item),  hbox);
@@ -454,11 +453,11 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 	/* Option menu for content view types; it's empty here, filled in when a uri is set.
 	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
 	 */
-	view_as_menu_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
+	view_as_menu_vbox = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show (view_as_menu_vbox);
 
 	item = gtk_tool_item_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (item), GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (item), 4);
 	gtk_widget_show (GTK_WIDGET (item));
 	gtk_container_add (GTK_CONTAINER (item), view_as_menu_vbox);
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),
@@ -489,7 +488,7 @@ nautilus_navigation_window_init (NautilusNavigationWindow *window)
 				 window, G_CONNECT_SWAPPED);
 	
 	item = gtk_tool_item_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (item), GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (item), 4);
 	gtk_widget_show (GTK_WIDGET (item));
 	gtk_container_add (GTK_CONTAINER (item),  window->zoom_control);
 	gtk_toolbar_insert (GTK_TOOLBAR (location_bar),

@@ -40,10 +40,9 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>

@@ -47,11 +47,7 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-help.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-about.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
