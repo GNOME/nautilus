@@ -907,10 +907,10 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 		description = g_content_type_get_description (mime_type);
 
 		if (description == NULL) {
-			description = _("Unknown");
+			description = g_strdup (_("Unknown"));
 		}
 
-		dialog->details->type_description = g_strdup (description);
+		dialog->details->type_description = description;
 	}
 	g_free (extension);
 
