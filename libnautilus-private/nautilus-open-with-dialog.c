@@ -877,8 +877,7 @@ set_uri_and_type (NautilusOpenWithDialog *dialog,
 	char *label;
 	char *emname;
 	char *name, *extension;
-	
-	const char *description;
+	char *description;
 	
 	name = NULL;
 	extension = NULL;
