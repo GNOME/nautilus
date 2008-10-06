@@ -36,8 +36,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gtk/gtk.h>
-#include <gnome.h>
-#include <libgnomeui/gnome-help.h>
+#include <gdk/gdkkeysyms.h>
 #include <glade/glade.h>
 
 /* Static variables to keep track of window state. If there were
@@ -147,9 +146,9 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 	if (response_id == GTK_RESPONSE_HELP) {
 		GError *error = NULL;
 
-		gnome_help_display_desktop_on_screen (
-			NULL, "user-guide", "user-guide.xml", "gosnautilus-36",
-			gtk_window_get_screen (GTK_WINDOW (dialog)), &error);
+		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
+			      "ghelp:user-guide#gosnautilus-36",
+			      gtk_get_current_event_time (), &error);
 
 		if (error) {
 			GtkWidget *err_dialog;

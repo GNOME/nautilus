@@ -28,7 +28,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
-#include <libgnomeui/gnome-help.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -335,10 +334,9 @@ response_callback (NautilusConnectServerDialog *dialog,
 		break;
 	case GTK_RESPONSE_HELP :
 		error = NULL;
-		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml",
-						      "nautilus-server-connect",
-						      gtk_window_get_screen (GTK_WINDOW (dialog)),
-						      &error);
+		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
+			      "ghelp:user-guide#nautilus-server-connect",
+			      gtk_get_current_event_time (), &error);
 		if (error) {
 			eel_show_error_dialog (_("There was an error displaying help."), error->message,
 					       GTK_WINDOW (dialog));

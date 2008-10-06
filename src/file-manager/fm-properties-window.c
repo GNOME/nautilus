@@ -39,12 +39,9 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-wrap-table.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-macros.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-thumbnail.h>
-#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
@@ -5445,9 +5442,10 @@ real_response (GtkDialog *dialog,
 
 	switch (response) {
 	case GTK_RESPONSE_HELP:
-		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
-						      gtk_window_get_screen (GTK_WINDOW (dialog)),
-						      &error);
+		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
+			      "ghelp:user-guide#gosnautilus-51",
+			      gtk_get_current_event_time (),
+			      &error);
 		if (error != NULL) {
 			eel_show_error_dialog (_("There was an error displaying help."), error->message,
 					       GTK_WINDOW (dialog));

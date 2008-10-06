@@ -27,7 +27,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-help.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
 #include "nautilus-desktop-window.h"
@@ -102,10 +101,9 @@ response_callback (NautilusLocationDialog *dialog,
 		break;
 	case GTK_RESPONSE_HELP :
 		error = NULL;
-		gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml",
-						      "nautilus-open-location",
-						      gtk_window_get_screen (GTK_WINDOW (dialog)),
-						      &error);
+		gtk_show_uri (gtk_window_get_screen (GTK_WINDOW (dialog)),
+			      "ghelp:user-guide#nautilus-open-location",
+			      gtk_get_current_event_time (), &error);
 		if (error) {
 			eel_show_error_dialog (_("There was an error displaying help."), error->message,
 					       GTK_WINDOW (dialog));

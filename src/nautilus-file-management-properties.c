@@ -31,7 +31,6 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#include <libgnome/gnome-help.h>
 #include <glib/gi18n.h>
 
 #include <glade/glade.h>
@@ -190,13 +189,17 @@ preferences_show_help (GtkWindow *parent,
 {
 	GError *error = NULL;
 	GtkWidget *dialog;
+	char *help_string;
 
 	g_assert (helpfile != NULL);
 	g_assert (sect_id != NULL);
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    helpfile, sect_id, &error);
+	help_string = g_strdup_printf ("ghelp:%s#%s", helpfile, sect_id);
+
+	gtk_show_uri (gtk_window_get_screen (parent),
+		      help_string, gtk_get_current_event_time (),
+		      &error);
+	g_free (help_string);
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
@@ -241,7 +244,7 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 		case 4:
 			section = "gosnautilus-60";
 		}
-		preferences_show_help (GTK_WINDOW (parent), "user-guide.xml", section);
+		preferences_show_help (GTK_WINDOW (parent), "user-guide", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		/* remove gconf monitors */
 		eel_gconf_monitor_remove ("/apps/nautilus/icon_view");
