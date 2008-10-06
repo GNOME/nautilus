@@ -33,7 +33,8 @@
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
-#include <libgnome/gnome-desktop-item.h>
+
+#define MAIN_GROUP "Desktop Entry"
 
 typedef struct ItemEntry {
 	const char *field;
@@ -50,6 +51,83 @@ static const GtkTargetEntry target_table[] = {
         { "text/uri-list",  0, TARGET_URI_LIST }
 };
 
+static gboolean
+_g_key_file_load_from_gfile (GKeyFile *key_file,
+			     GFile *file,
+			     GKeyFileFlags flags,
+			     GError **error)
+{
+	char *data;
+	gsize len;
+	gboolean res;
+	
+	if (!g_file_load_contents (file, NULL, &data, &len, NULL, error)) {
+		return FALSE;
+	}
+
+	res = g_key_file_load_from_data (key_file, data, len, flags, error);
+	
+	g_free (data);
+	
+	return res;
+}
+
+static gboolean
+_g_key_file_save_to_uri (GKeyFile *key_file,
+			 const char *uri,
+			 GError  **error)
+{
+	GFile *file;
+	char *data;
+	gsize len;
+
+	data = g_key_file_to_data (key_file, &len, error);
+	if (data == NULL) {
+		return FALSE;
+	}
+	file = g_file_new_for_uri (uri);
+	if (!g_file_replace_contents (file,
+				      data, len,
+				      NULL, FALSE,
+				      G_FILE_CREATE_NONE,
+				      NULL, NULL, error)) {
+		g_object_unref (file);
+		g_free (data);
+		return FALSE;
+	}
+	g_object_unref (file);
+	g_free (data);
+	return TRUE;
+}
+
+static GKeyFile *
+_g_key_file_new_from_file (GFile *file,
+			   GKeyFileFlags flags,
+			   GError **error)
+{
+	GKeyFile *key_file;
+	
+	key_file = g_key_file_new ();
+	if (!_g_key_file_load_from_gfile (key_file, file, flags, error)) {
+		g_key_file_free (key_file);
+		key_file = NULL;
+	}
+	return key_file;
+}
+
+static GKeyFile *
+_g_key_file_new_from_uri (const char *uri,
+			  GKeyFileFlags flags,
+			  GError **error)
+{
+	GKeyFile *key_file;
+	GFile *file;
+	
+	file = g_file_new_for_uri (uri);
+	key_file = _g_key_file_new_from_file (file, flags, error);
+	g_object_unref (file);
+	return key_file;
+}
 
 static ItemEntry *
 item_entry_new (const char *field,
@@ -114,9 +192,8 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 	char **uris;
 	gboolean exactly_one;
 	NautilusFile *file;
-	GnomeDesktopItem *item;
-	char *uri;
-	const char *exec;
+	GKeyFile *key_file;
+	char *uri, *type, *exec;
 	
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
         exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
@@ -132,23 +209,23 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 	
 	uri = nautilus_file_get_uri (file);
 	if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
-		item = gnome_desktop_item_new_from_uri (uri,
-							GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
-							NULL);
-		if (item != NULL &&
-		    gnome_desktop_item_get_entry_type (item) == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
-			
-			exec = gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_EXEC);
-			gtk_entry_set_text (entry,
-					    exec?exec:"");
-			gnome_desktop_item_unref (item);
-			
-			gtk_widget_grab_focus (GTK_WIDGET (entry));
+		key_file = _g_key_file_new_from_uri (uri, G_KEY_FILE_NONE, NULL);
+		if (key_file != NULL) {
+			type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
+			if (type != NULL && strcmp (type, "Application") == 0) {
+				exec = g_key_file_get_string (key_file, MAIN_GROUP, "Exec", NULL);
+				if (exec != NULL) {
+					g_free (uri);
+					uri = exec;
+				}
+			}
+			g_free (type);
+			g_key_file_free (key_file);
 		}
-	} else {
-		gtk_entry_set_text (entry,
-				    uri?uri:"");
-	}
+	} 
+	gtk_entry_set_text (entry,
+			    uri?uri:"");
+	gtk_widget_grab_focus (GTK_WIDGET (entry));
 	
 	g_free (uri);
 	
@@ -158,24 +235,26 @@ fm_ditem_page_exec_drag_data_received (GtkWidget *widget, GdkDragContext *contex
 }
 
 static void
-save_entry (GtkEntry *entry, GnomeDesktopItem *item)
+save_entry (GtkEntry *entry, GKeyFile *key_file, const char *uri)
 {
 	GError *error;
 	ItemEntry *item_entry;
 	const char *val;
+	gchar **languages;
 
 	item_entry = g_object_get_data (G_OBJECT (entry), "item_entry");
 	val = gtk_entry_get_text (entry);
 
 	if (item_entry->localized) {
-		gnome_desktop_item_set_localestring (item, item_entry->field, val);
+		languages = (gchar **) g_get_language_names ();
+		g_key_file_set_locale_string (key_file, MAIN_GROUP, item_entry->field, languages[0], val);
 	} else {
-		gnome_desktop_item_set_string (item, item_entry->field, val);
+		g_key_file_set_string (key_file, MAIN_GROUP, item_entry->field, val);
 	}
 
 	error = NULL;
 
-	if (!gnome_desktop_item_save (item, NULL, TRUE, &error)) {
+	if (!_g_key_file_save_to_uri (key_file, uri, &error)) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
@@ -183,29 +262,41 @@ save_entry (GtkEntry *entry, GnomeDesktopItem *item)
 
 static void
 entry_activate_cb (GtkWidget *entry,
-		    GnomeDesktopItem *item)
+		   GtkWidget *container)
 {
-	save_entry (GTK_ENTRY (entry), item);
+	const char *uri;
+	GKeyFile *key_file;
+	
+	uri = g_object_get_data (G_OBJECT (container), "uri");
+	key_file = g_object_get_data (G_OBJECT (container), "keyfile");
+	save_entry (GTK_ENTRY (entry), key_file, uri);
 }
 
 static gboolean
 entry_focus_out_cb (GtkWidget *entry,
 		    GdkEventFocus *event,
-		    GnomeDesktopItem *item)
+		    GtkWidget *container)
 {
-	save_entry (GTK_ENTRY (entry), item);
+	const char *uri;
+	GKeyFile *key_file;
+	
+	uri = g_object_get_data (G_OBJECT (container), "uri");
+	key_file = g_object_get_data (G_OBJECT (container), "keyfile");
+	save_entry (GTK_ENTRY (entry), key_file, uri);
 	return FALSE;
 }
 
 static GtkWidget *
-build_table (GnomeDesktopItem *item,
+build_table (GtkWidget *container,
+	     GKeyFile *key_file,
 	     GtkSizeGroup *label_size_group,
-	     GList *entries) {
+	     GList *entries)
+{
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *entry;
 	GList *l;
-	const char *val;
+	char *val;
 	int i;
 	
 	table = gtk_table_new (g_list_length (entries) + 1, 2, FALSE);
@@ -227,13 +318,19 @@ build_table (GnomeDesktopItem *item,
 		entry = gtk_entry_new ();
 
 		if (item_entry->localized) {
-			val = gnome_desktop_item_get_localestring (item,
-								   item_entry->field);
+			val = g_key_file_get_locale_string (key_file,
+							    MAIN_GROUP,
+							    item_entry->field,
+							    NULL, NULL);
 		} else {
-			val = gnome_desktop_item_get_string (item, item_entry->field);
+			val = g_key_file_get_string (key_file,
+						     MAIN_GROUP,
+						     item_entry->field,
+						     NULL);
 		}
 		
 		gtk_entry_set_text (GTK_ENTRY (entry), val?val:"");
+		g_free (val);
 
 		gtk_table_attach (GTK_TABLE (table), label,
 				  0, 1, i, i+1, GTK_FILL, GTK_FILL,
@@ -243,10 +340,10 @@ build_table (GnomeDesktopItem *item,
 				  0, 0);
 		g_signal_connect (entry, "activate",
 				  G_CALLBACK (entry_activate_cb),
-				  item);
+				  container);
 		g_signal_connect (entry, "focus_out_event",
 				  G_CALLBACK (entry_focus_out_cb),
-				  item);
+				  container);
 		
 		g_object_set_data_full (G_OBJECT (entry), "item_entry", item_entry,
 					(GDestroyNotify)item_entry_free);
@@ -260,8 +357,7 @@ build_table (GnomeDesktopItem *item,
 			g_signal_connect (entry, "drag_data_received",
 					  G_CALLBACK (fm_ditem_page_url_drag_data_received),
 					  entry);
-		} else if (strcmp (item_entry->field,
-				   GNOME_DESKTOP_ITEM_EXEC) == 0) {
+		} else if (strcmp (item_entry->field, "Exec") == 0) {
 			gtk_drag_dest_set (GTK_WIDGET (entry),
 					   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
 					   target_table, G_N_ELEMENTS (target_table),
@@ -288,47 +384,36 @@ build_table (GnomeDesktopItem *item,
 }
 
 static void
-box_weak_cb (gpointer user_data,
-	     GObject *box)
-{
-	GnomeDesktopItem *item;
-
-	item = (GnomeDesktopItem *) user_data;
-	gnome_desktop_item_unref (item);
-}
-
-
-static void
-create_page (GnomeDesktopItem *item, GtkWidget *box)
+create_page (GKeyFile *key_file, GtkWidget *box)
 {
 	GtkWidget *table;
 	GList *entries;
 	GtkSizeGroup *label_size_group;
-	GnomeDesktopItemType item_type;
+	char *type;
 	
 	entries = NULL;
 
-	item_type = gnome_desktop_item_get_entry_type (item);
+	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
 	
-	if (item_type == GNOME_DESKTOP_ITEM_TYPE_LINK) {
+	if (strcmp (type, "Link") == 0) {
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_COMMENT,
+					  item_entry_new ("Comment",
 							  _("Comment"), TRUE, FALSE));
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_URL,
+					  item_entry_new ("URL",
 							  _("URL"), FALSE, TRUE));
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_GENERIC_NAME,
+					  item_entry_new ("GenericName",
 							  _("Description"), TRUE, FALSE));
-	} else if (item_type == GNOME_DESKTOP_ITEM_TYPE_APPLICATION) {
+	} else if (strcmp (type, "Application") == 0) {
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_COMMENT,
+					  item_entry_new ("Comment",
 							  _("Comment"), TRUE, FALSE));
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_EXEC,
+					  item_entry_new ("Exec", 
 							  _("Command"), FALSE, FALSE));
 		entries = g_list_prepend (entries,
-					  item_entry_new (GNOME_DESKTOP_ITEM_GENERIC_NAME,
+					  item_entry_new ("GenericName",
 							  _("Description"), TRUE, FALSE));
 	} else {
 		/* we only handle launchers and links */
@@ -336,17 +421,12 @@ create_page (GnomeDesktopItem *item, GtkWidget *box)
 		/* ensure that we build an empty table with a dummy row at the end */
 		goto build_table;
 	}
-
-	gnome_desktop_item_ref (item);
-
-	g_object_weak_ref (G_OBJECT (box),
-			   box_weak_cb, item);
-
+	g_free (type);
 
 build_table:
 	label_size_group = g_object_get_data (G_OBJECT (box), "label-size-group");
 
-	table = build_table (item, label_size_group, entries);
+	table = build_table (box, key_file, label_size_group, entries);
 	g_list_free (entries);
 	
 	gtk_box_pack_start (GTK_BOX (box), table, FALSE, TRUE, 0);
@@ -359,7 +439,7 @@ ditem_read_cb (GObject *source_object,
 	       GAsyncResult *res,
 	       gpointer user_data)
 {
-	GnomeDesktopItem *item;
+	GKeyFile *key_file;
 	GtkWidget *box;
 	gsize file_size;
 	char *file_contents;
@@ -370,21 +450,13 @@ ditem_read_cb (GObject *source_object,
 					 res,
 					 &file_contents, &file_size,
 					 NULL, NULL)) {
-		item = gnome_desktop_item_new_from_string (g_object_get_data (G_OBJECT (box),
-									      "uri"),
-							   file_contents,
-							   file_size,
-							   0, NULL);
-		g_free (file_contents);
-		if (item == NULL) {
-			return;
+		key_file = g_key_file_new ();
+		g_object_set_data_full (G_OBJECT (box), "keyfile", key_file, (GDestroyNotify)g_key_file_free);
+		if (g_key_file_load_from_data (key_file, file_contents, file_size, 0, NULL)) {
+			create_page (key_file, box);
 		}
+		g_free (file_contents);
 		
-		/* for some reason, this isn't done automatically */
-		gnome_desktop_item_set_location (item, g_object_get_data (G_OBJECT (box), "uri"));
-		
-		create_page (item, box);
-		gnome_desktop_item_unref (item);
 	}
 	g_object_unref (box);
 }
