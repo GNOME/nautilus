@@ -35,7 +35,6 @@
 
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-mount-operation.h>
 
 #include <libnautilus-private/nautilus-icon-names.h>
 
@@ -150,12 +149,13 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 {
 	GMountOperation *op;
 
-	op = eel_mount_operation_new (GTK_WINDOW (widget));
+	op = gtk_mount_operation_new (GTK_WINDOW (widget));
 	g_file_mount_enclosing_volume (location,
 				       0, op,
 				       NULL,
 				       (GAsyncReadyCallback) mount_enclosing_ready_cb,
 				       widget);
+	g_object_unref (op);
 }
 
 int

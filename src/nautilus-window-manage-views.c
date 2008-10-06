@@ -48,7 +48,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-mount-operation.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
@@ -1042,7 +1041,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 	    !slot->tried_mount) {
 		slot->tried_mount = TRUE;
 
-		mount_op = eel_mount_operation_new (GTK_WINDOW (window));
+		mount_op = gtk_mount_operation_new (GTK_WINDOW (window));
 		location = nautilus_file_get_location (file);
 		data = g_new0 (MountNotMountedData, 1);
 		data->cancellable = g_cancellable_new ();

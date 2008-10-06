@@ -2218,7 +2218,7 @@ nautilus_file_operations_mount_volume_full (GtkWindow *parent_window,
 {
 	GMountOperation *mount_op;
 
-	mount_op = eel_mount_operation_new (parent_window);
+	mount_op = gtk_mount_operation_new (parent_window);
 	g_object_set_data (G_OBJECT (mount_op),
 			   "mount-callback",
 			   mount_callback);

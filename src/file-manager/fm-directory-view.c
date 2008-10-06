@@ -38,7 +38,6 @@
 #include "fm-properties-window.h"
 #include "libnautilus-private/nautilus-open-with-dialog.h"
 
-#include <eel/eel-mount-operation.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -5934,7 +5933,7 @@ action_mount_volume_callback (GtkAction *action,
 		file = NAUTILUS_FILE (l->data);
 		
 		if (nautilus_file_can_mount (file)) {
-			mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
+			mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 			nautilus_file_mount (file, mount_op, NULL,
 					     NULL, NULL);
 			g_object_unref (mount_op);
@@ -6023,7 +6022,7 @@ action_self_mount_volume_callback (GtkAction *action,
 		return;
 	}
 
-	mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
+	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
 	g_object_unref (mount_op);
 }
@@ -6098,7 +6097,7 @@ action_location_mount_volume_callback (GtkAction *action,
 		return;
 	}
 
-	mount_op = eel_mount_operation_new (fm_directory_view_get_containing_window (view));
+	mount_op = gtk_mount_operation_new (fm_directory_view_get_containing_window (view));
 	nautilus_file_mount (file, mount_op, NULL, NULL, NULL);
 	g_object_unref (mount_op);
 }

@@ -28,7 +28,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-mount-operation.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <string.h>
@@ -957,10 +956,14 @@ activation_start_timed_cancel (ActivateParameters *parameters)
 }
 
 static void
-activate_mount_op_active (EelMountOperation *operation,
-			  gboolean is_active,
+activate_mount_op_active (GtkMountOperation *operation,
+			  GParamSpec *pspec,
 			  ActivateParameters *parameters)
 {
+	gboolean is_active;
+
+	g_object_get (operation, "is-showing", &is_active, NULL);
+
 	if (is_active) {
 		if (parameters->timed_wait_active) {
 			eel_timed_wait_stop (cancel_activate_callback, parameters);
@@ -1312,8 +1315,9 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 
 	if (parameters->not_mounted != NULL) {
 		file = parameters->not_mounted->data;
-		mount_op = eel_mount_operation_new (parameters->parent_window);
-		g_signal_connect (mount_op, "active_changed", (GCallback)activate_mount_op_active, parameters);
+		mount_op = gtk_mount_operation_new (parameters->parent_window);
+		g_signal_connect_object (mount_op, "notify::is-showing",
+					 G_CALLBACK (activate_mount_op_active), parameters, 0);
 		location = nautilus_file_get_location (file);
 		g_file_mount_enclosing_volume (location, 0, mount_op, parameters->cancellable,
 					       activation_mount_not_mounted_callback, parameters);
@@ -1550,8 +1554,9 @@ activation_mount_mountables (ActivateParameters *parameters)
 
 	if (parameters->mountables != NULL) {
 		file = parameters->mountables->data;
-		mount_op = eel_mount_operation_new (parameters->parent_window);
-		g_signal_connect (mount_op, "active_changed", (GCallback)activate_mount_op_active, parameters);
+		mount_op = gtk_mount_operation_new (parameters->parent_window);
+		g_signal_connect_object (mount_op, "notify::is-showing",
+					 G_CALLBACK (activate_mount_op_active), parameters, 0);
 		nautilus_file_mount (file,
 				     mount_op,
 				     parameters->cancellable,
