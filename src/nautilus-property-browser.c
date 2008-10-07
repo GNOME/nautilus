@@ -1007,16 +1007,18 @@ update_preview_cb (GtkFileChooser *fc,
 	GdkPixbuf *pixbuf;
 
 	filename = gtk_file_chooser_get_preview_filename (fc);
-	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+	if (filename) {
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 
-	gtk_file_chooser_set_preview_widget_active (fc, pixbuf != NULL);
-
-	if (pixbuf) {
-		gtk_image_set_from_pixbuf (preview, pixbuf);
-		g_object_unref (pixbuf);
+		gtk_file_chooser_set_preview_widget_active (fc, pixbuf != NULL);
+		
+		if (pixbuf) {
+			gtk_image_set_from_pixbuf (preview, pixbuf);
+			g_object_unref (pixbuf);
+		}
+		
+		g_free (filename);
 	}
-
-	g_free (filename);
 }
 
 static void
@@ -1185,79 +1187,67 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 
 /* add the newly selected file to the browser images */
 static void
-add_pattern_to_browser (const char *path_name, gpointer *data)
+add_pattern_to_browser (GtkDialog *dialog, gint response_id, gpointer *data)
 {
-	char *directory_path, *source_file_name, *destination_name;
-	char *path_uri, *basename;
+	char *directory_path, *destination_name;
+	char *basename;
 	char *user_directory;	
-	GFile *src, *dest;
+	GFile *dest, *selected;
 	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
 
-	/* make sure that it's a valid path */
-	if (path_name == NULL || path_name[0] != '/') {
-		char *message;
-		char *detail;
-		if (path_name != NULL) {
-			message = g_strdup_printf (_("Sorry, but \"%s\" is not a valid file name."), path_name);
-			detail = _("Please check the spelling and try again.");
-		} else {
-			message = g_strdup (_("Sorry, but you did not supply a valid file name."));
-			detail = _("Please try again.");
-		}
-		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
-		g_free (message);
+	if (response_id != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_hide (GTK_WIDGET (dialog));
 		return;
 	}
 	
-	/* fetch the mime type and make sure that the file is an image */
-	path_uri = g_filename_to_uri (path_name, NULL, NULL);	
-
+	selected = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
+	
 	/* don't allow the user to change the reset image */
-	basename = g_path_get_basename (path_name);
+	basename = g_file_get_basename (selected);
 	if (basename && eel_strcmp (basename, RESET_IMAGE_NAME) == 0) {
 		eel_show_error_dialog (_("Sorry, but you cannot replace the reset image."), 
 		                       _("Reset is a special image that cannot be deleted."), 
 		                       NULL);
-		g_free (path_uri);
+		g_object_unref (selected);
 		g_free (basename);
 		return;
 	}
 		
-	g_free (path_uri);	
-	g_free (basename);
 		
 	user_directory = nautilus_get_user_directory ();
 		
 	/* copy the image file to the patterns directory */
 	directory_path = g_build_filename (user_directory, "patterns", NULL);
 	g_free (user_directory);
-	source_file_name = strrchr (path_name, '/');
-	destination_name = g_build_filename (directory_path, source_file_name + 1, NULL);
+	destination_name = g_build_filename (directory_path, basename, NULL);
 
 	/* make the directory if it doesn't exist */
 	if (!g_file_test (directory_path, G_FILE_TEST_EXISTS)) {
 		g_mkdir_with_parents (directory_path, 0775);
 	}
 		
+	dest = g_file_new_for_path (destination_name);
+	
+	g_free (destination_name);
 	g_free (directory_path);
 
-	src = g_file_new_for_path (path_name);
-	dest = g_file_new_for_path (destination_name);
-	if (!g_file_copy (src, dest,
+	if (!g_file_copy (selected, dest,
 			  0,
 			  NULL, NULL, NULL, NULL)) {
-		char *message = g_strdup_printf (_("Sorry, but the pattern %s could not be installed."), path_name);
+		char *message = g_strdup_printf (_("Sorry, but the pattern %s could not be installed."), basename);
 		eel_show_error_dialog (message, NULL, GTK_WINDOW (property_browser));
 		g_free (message);
 	}
-	g_object_unref (src);
+	g_object_unref (selected);
 	g_object_unref (dest);
+	g_free (basename);
 	
-	g_free (destination_name);
 	
 	/* update the property browser's contents to show the new one */
 	nautilus_property_browser_update_contents (property_browser);
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
 /* here's where we initiate adding a new pattern by putting up a file selector */
@@ -1265,16 +1255,40 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 static void
 add_new_pattern (NautilusPropertyBrowser *property_browser)
 {
+	GtkWidget *dialog;
+	GtkFileFilter *filter;
+	GtkWidget *preview;
+	
 	if (property_browser->details->patterns_dialog) {
 		gtk_window_present (GTK_WINDOW (property_browser->details->patterns_dialog));
 	} else {
-		property_browser->details->patterns_dialog = 
-			eel_gnome_icon_selector_new (_("Select an Image File to Add as a Pattern"),
-				DATADIR "/nautilus/patterns/",
-				GTK_WINDOW (property_browser),
-				(EelIconSelectionFunction) add_pattern_to_browser,
-				property_browser);						   
+		property_browser->details->patterns_dialog = dialog = 
+			gtk_file_chooser_dialog_new (_("Select an Image File to Add as a Pattern"),
+						     GTK_WINDOW (property_browser),
+						     GTK_FILE_CHOOSER_ACTION_OPEN, 
+						     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						     GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+						     NULL);
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
+						     DATADIR "/nautilus/patterns/");
+		filter = gtk_file_filter_new ();
+		gtk_file_filter_add_pixbuf_formats (filter);
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
 
+		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
+		
+		preview = gtk_image_new ();
+		gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (dialog),
+						     preview);
+		g_signal_connect (dialog, "update-preview",
+				  G_CALLBACK (update_preview_cb), preview);
+		
+		g_signal_connect (dialog, "response",
+				  G_CALLBACK (add_pattern_to_browser),
+				  property_browser);
+
+		gtk_widget_show (GTK_WIDGET (dialog));
+		
 		if (property_browser->details->patterns_dialog)
 			eel_add_weak_pointer (&property_browser->details->patterns_dialog);
 	}
