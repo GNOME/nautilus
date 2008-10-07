@@ -42,7 +42,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
 #include <gconf/gconf-client.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>

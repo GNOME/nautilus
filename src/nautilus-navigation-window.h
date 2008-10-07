@@ -30,7 +30,6 @@
 #ifndef NAUTILUS_NAVIGATION_WINDOW_H
 #define NAUTILUS_NAVIGATION_WINDOW_H
 
-#include <bonobo/bonobo-window.h>
 #include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>

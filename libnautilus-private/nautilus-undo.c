@@ -29,7 +29,6 @@
 #include "nautilus-undo-private.h"
 #include "nautilus-undo-transaction.h"
 #include <gtk/gtk.h>
-#include <libgnomecanvas/gnome-canvas.h>
 
 #define NAUTILUS_UNDO_MANAGER_DATA "Nautilus undo manager"
 
@@ -171,14 +170,6 @@ nautilus_undo_get_undo_manager (GObject *start_object)
 					return manager;
 				}
 			}
-		}
-	}
-	
-	/* In the case of a canvas item, try the canvas. */
-	if (GNOME_IS_CANVAS_ITEM (start_object)) {
-		manager = nautilus_undo_get_undo_manager (G_OBJECT (GNOME_CANVAS_ITEM (start_object)->canvas));
-		if (manager != NULL) {
-			return manager;
 		}
 	}
 	

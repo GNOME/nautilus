@@ -30,7 +30,6 @@
 #include "nautilus-file-private.h"
 #include "nautilus-autorun.h"
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-mount-operation.h>
 #include <glib/gi18n.h>
 
 static void nautilus_vfs_file_init       (gpointer   object,

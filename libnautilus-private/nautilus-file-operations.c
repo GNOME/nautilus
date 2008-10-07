@@ -32,6 +32,10 @@
 #include <stdarg.h>
 #include <locale.h>
 #include <math.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
 #include "nautilus-file-operations.h"
 
 #include "nautilus-debug-log.h"
@@ -46,10 +50,9 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-mount-operation.h>
 
+#include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <gnome.h>
 #include <gdk/gdkdnd.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>

@@ -37,7 +37,6 @@
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <glade/glade.h>
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or
@@ -250,20 +249,21 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	GtkWidget         *window;
 	GtkTreeViewColumn *col;
 	GtkCellRenderer   *rend;
-	GladeXML          *gui;
+	GtkBuilder        *builder;
 
 	bookmarks = list;
 
-	gui = eel_glade_get_file (GLADEDIR "/nautilus-bookmarks-window.glade",
-				  NULL, NULL,
-				  "bookmarks_dialog", &window,
-				  "bookmark_tree_view", &bookmark_list_widget,
-				  "bookmark_delete_button", &remove_button,
-                                  "bookmark_jump_button", &jump_button,
-				  NULL);
-	if (!gui) {
+	builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (builder,
+					UIDIR  "/nautilus-bookmarks-window.ui",
+					NULL)) {
 		return NULL;
 	}
+
+	window = (GtkWidget *)gtk_builder_get_object (builder, "bookmarks_dialog");
+	bookmark_list_widget = (GtkTreeView *)gtk_builder_get_object (builder, "bookmark_tree_view");
+	remove_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_delete_button");
+	jump_button = (GtkWidget *)gtk_builder_get_object (builder, "bookmark_jump_button");
 
 	application = NAUTILUS_WINDOW (undo_manager_source)->application;
 
@@ -282,7 +282,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	g_object_weak_ref (G_OBJECT (undo_manager_source), edit_bookmarks_dialog_reset_signals, 
 			   undo_manager_source);
 	
-	bookmark_list_widget = GTK_TREE_VIEW (glade_xml_get_widget (gui, "bookmark_tree_view"));
+	bookmark_list_widget = GTK_TREE_VIEW (gtk_builder_get_object (builder, "bookmark_tree_view"));
 
 	rend = gtk_cell_renderer_pixbuf_new ();
 	col = gtk_tree_view_column_new_with_attributes ("Icon", 
@@ -317,22 +317,22 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	name_field = nautilus_entry_new ();
 	
 	gtk_widget_show (name_field);
-	gtk_box_pack_start (GTK_BOX (glade_xml_get_widget (gui, "bookmark_name_placeholder")),
+	gtk_box_pack_start (GTK_BOX (gtk_builder_get_object (builder, "bookmark_name_placeholder")),
 			    name_field, TRUE, TRUE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 	
 	gtk_label_set_mnemonic_widget (
-		GTK_LABEL (glade_xml_get_widget (gui, "bookmark_name_label")),
+		GTK_LABEL (gtk_builder_get_object (builder, "bookmark_name_label")),
 		name_field);
 
 	uri_field = nautilus_entry_new ();
 	gtk_widget_show (uri_field);
-	gtk_box_pack_start (GTK_BOX (glade_xml_get_widget (gui, "bookmark_location_placeholder")),
+	gtk_box_pack_start (GTK_BOX (gtk_builder_get_object (builder, "bookmark_location_placeholder")),
 			    uri_field, TRUE, TRUE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (uri_field), TRUE);
 
 	gtk_label_set_mnemonic_widget (
-		GTK_LABEL (glade_xml_get_widget (gui, "bookmark_location_label")),
+		GTK_LABEL (gtk_builder_get_object (builder, "bookmark_location_label")),
 		uri_field);
 
 	bookmark_list_changed_signal_id =
@@ -394,7 +394,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();
 
-	g_object_unref (G_OBJECT (gui));
+	g_object_unref (builder);
 	
 	return GTK_WINDOW (window);
 }

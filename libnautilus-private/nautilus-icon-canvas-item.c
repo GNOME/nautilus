@@ -44,7 +44,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
 #include <eel/eel-canvas-util.h>
 #include <atk/atkimage.h>
@@ -1798,7 +1797,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 	char *audio_filename;
 	NautilusIconContainer *container;
 	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
-	double zoom;
+	int emblem_size;
 	guint render_mode, saturation, brightness, lighten;
 	
 	temp_pixbuf = icon_item->details->pixbuf;
@@ -1838,14 +1837,14 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 		/* if the icon is currently being previewed, superimpose an image to indicate that */
 		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
 		if (icon_item->details->is_active) {
-			zoom = (double) gdk_pixbuf_get_width (temp_pixbuf) / NAUTILUS_ICON_SIZE_STANDARD;
+			emblem_size = nautilus_icon_get_emblem_size_for_icon_size (gdk_pixbuf_get_width (temp_pixbuf));
 			/* Load the audio symbol. */
 			audio_filename = nautilus_pixmap_file ("audio.svg");
 			if (audio_filename != NULL) {
-				audio_pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (audio_filename, zoom, zoom,
-										       NAUTILUS_ICON_MAXIMUM_SIZE,
-										       NAUTILUS_ICON_MAXIMUM_SIZE,
-										       NULL);
+				audio_pixbuf = gdk_pixbuf_new_from_file_at_scale (audio_filename,
+										  emblem_size, emblem_size,
+										  TRUE,
+										  NULL);
 			} else {
 				audio_pixbuf = NULL;
 			}

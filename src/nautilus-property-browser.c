@@ -44,7 +44,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <librsvg/rsvg.h>
 #include <libxml/parser.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -743,13 +742,10 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		g_free (user_directory);	
 	}
 	
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
-	
-	if (orig_pixbuf == NULL) {
-		orig_pixbuf = rsvg_pixbuf_from_file_at_max_size (image_file_name,
-								 MAX_ICON_WIDTH, MAX_ICON_HEIGHT,
-								 NULL);
-	}
+	orig_pixbuf = gdk_pixbuf_new_from_file_at_scale (image_file_name,
+							 MAX_ICON_WIDTH, MAX_ICON_HEIGHT,
+							 TRUE,
+							 NULL);
 	
 	g_free (image_file_name);
 

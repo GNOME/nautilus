@@ -41,7 +41,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <glib/gi18n.h>
 #include <libxml/parser.h>
 #include <stdlib.h>
@@ -230,14 +229,11 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	image_file_name = get_file_path_for_mode (data,
 						  g_file_info_get_name (current_file_info));
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
-
-	if (orig_pixbuf == NULL) {
-		orig_pixbuf = rsvg_pixbuf_from_file_at_max_size (image_file_name,
-								 data->maximum_icon_width, 
-								 data->maximum_icon_height,
-								 NULL);
-	}
+	orig_pixbuf = gdk_pixbuf_new_from_file_at_scale (image_file_name,
+							 data->maximum_icon_width, 
+							 data->maximum_icon_height,
+							 TRUE,
+							 NULL);
 	g_free (image_file_name);
 
 	if (orig_pixbuf == NULL) {

@@ -19,7 +19,7 @@ INCLUDES =							\
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
-	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" 		\
+	-DUIDIR=\""$(datadir)/nautilus/ui"\" 		\
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\
 	-DPREFIX=\""$(prefix)"\" 				\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
@@ -158,13 +158,9 @@ uidir = $(datadir)/nautilus/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	nautilus-navigation-window-ui.xml       \
-	nautilus-spatial-window-ui.xml       \
-	$(NULL)
-
-gladedir = $(datadir)/nautilus/glade
-glade_DATA = \
-	nautilus-bookmarks-window.glade			\
-	nautilus-file-management-properties.glade	\
+	nautilus-spatial-window-ui.xml          \
+	nautilus-file-management-properties.ui	\
+	nautilus-bookmarks-window.ui		\
 	$(NULL)
 
 CLEANFILES = \
@@ -174,7 +170,6 @@ CLEANFILES = \
 
 EXTRA_DIST =					\
 	$(server_in_files)			\
-	$(glade_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
 	$(desktop_in_files)			\

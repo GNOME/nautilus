@@ -1,5 +1,50 @@
 2008-10-07  Alexander Larsson  <alexl@redhat.com>
 
+        * configure.in:
+	Require trunk eel.
+	Drop libgnome* and librsvg deps.
+	
+        * libnautilus-private/nautilus-customization-data.c:
+        (nautilus_customization_data_get_next_element_for_display):
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        (real_map_pixbuf):
+        * src/nautilus-property-browser.c:
+        (make_drag_image):
+	Use librsvg indirectly via gdk-pixbuf loader.
+	
+        * libnautilus-private/nautilus-thumbnails.c:
+	Use thumbnail factory from gnome-desktop.
+	
+        * libnautilus-private/nautilus-undo.c:
+        (nautilus_undo_get_undo_manager):
+	Kill references to gnome canvas.
+	
+        * libnautilus-private/nautilus-vfs-file.c:
+	Don't include removed eel-mount-operation.h header
+
+        * src/file-manager/fm-properties-window.c:
+        (update_preview_callback):
+	Use thumbnail utils from gnome-desktop.
+
+        * src/Makefile.am:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-bookmarks-window.glade: Removed.
+        * src/nautilus-bookmarks-window.ui: Added.
+        * src/nautilus-file-management-properties.c:
+        * src/nautilus-file-management-properties.glade: Removed.
+        * src/nautilus-file-management-properties.ui: Added.
+	Switch from libglade to gtkbuilder.
+
+        * libnautilus-private/nautilus-file-operations.c:
+        * src/nautilus-emblem-sidebar.c:
+        * src/nautilus-navigation-window.h:
+        * test/test-nautilus-wrap-table.c:
+        * test/test.c:
+        * test/test.h:
+	Drop old unused libgnome/librsvg includes
+
+2008-10-07  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-property-browser.c:
 	Don't use eel_gnome_icon_selector_new()
 	Instead just use file selector with preview.

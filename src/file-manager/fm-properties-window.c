@@ -26,6 +26,8 @@
 #include "fm-properties-window.h"
 #include "fm-ditem-page.h"
 
+#define GNOME_DESKTOP_USE_UNSTABLE_API
+
 #include "fm-error-reporting.h"
 #include "libnautilus-private/nautilus-mime-application-chooser.h"
 #include <eel/eel-accessibility.h>
@@ -41,7 +43,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/gnome-thumbnail.h>
+#include <libgnomeui/gnome-desktop-thumbnail.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-entry.h>
@@ -5649,7 +5651,7 @@ update_preview_callback (GtkFileChooser *icon_chooser,
 			scale = (double)gdk_pixbuf_get_height (pixbuf) /
 				gdk_pixbuf_get_width (pixbuf);
 
-			scaled_pixbuf = gnome_thumbnail_scale_down_pixbuf
+			scaled_pixbuf = gnome_desktop_thumbnail_scale_down_pixbuf
 				(pixbuf,
 				 PREVIEW_IMAGE_WIDTH,
 				 scale * PREVIEW_IMAGE_WIDTH);

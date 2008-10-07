@@ -1,4 +1,6 @@
 #include "test.h"
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <eel/eel-preferences.h>
 

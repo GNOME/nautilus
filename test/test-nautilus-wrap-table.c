@@ -26,7 +26,7 @@ main (int argc, char* argv[])
 	emblems_table = eel_wrap_table_new (TRUE);
 
 	gtk_widget_show (emblems_table);
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), 8);
 	
 	scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
@@ -61,7 +61,7 @@ main (int argc, char* argv[])
 	while (nautilus_customization_data_get_next_element_for_display (customization_data,
 									 &emblem_name,
 									 &pixbuf,
-									 &label) == GNOME_VFS_OK) {	
+									 &label)) {	
 
 		stripped_name = eel_filename_strip_extension (emblem_name);
 		g_free (emblem_name);

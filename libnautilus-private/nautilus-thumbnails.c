@@ -26,6 +26,8 @@
 #include <config.h>
 #include "nautilus-thumbnails.h"
 
+#define GNOME_DESKTOP_USE_UNSTABLE_API
+
 #include "nautilus-directory-notify.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-file-utilities.h"
@@ -35,7 +37,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
@@ -43,7 +44,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
-#include <libgnomeui/gnome-thumbnail.h>
+#include <libgnomeui/gnome-desktop-thumbnail.h>
 
 #include "nautilus-file-private.h"
 
@@ -112,7 +113,7 @@ static GHashTable *thumbnails_to_make_hash = NULL;
  * to avoid adding it again. Lock thumbnails_mutex when accessing this. */
 static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
-static GnomeThumbnailFactory *thumbnail_factory = NULL;
+static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
 static const char *types [] = {
 	"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
@@ -151,13 +152,13 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
 	g_free (info);
 }
 
-static GnomeThumbnailFactory *
+static GnomeDesktopThumbnailFactory *
 get_thumbnail_factory (void)
 {
-	static GnomeThumbnailFactory *thumbnail_factory = NULL;
+	static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
 	if (thumbnail_factory == NULL) {
-		thumbnail_factory = gnome_thumbnail_factory_new (GNOME_THUMBNAIL_SIZE_NORMAL);
+		thumbnail_factory = gnome_desktop_thumbnail_factory_new (GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL);
 	}
 
 	return thumbnail_factory;
@@ -211,10 +212,10 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 	char *old_thumbnail_path;
 	GdkPixbuf *pixbuf;
 	GFileInfo *file_info;
-	GnomeThumbnailFactory *factory;
+	GnomeDesktopThumbnailFactory *factory;
 	GFile *destination_file;
 	
-	old_thumbnail_path = gnome_thumbnail_path_for_uri (source_file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
+	old_thumbnail_path = gnome_desktop_thumbnail_path_for_uri (source_file_uri, GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL);
 	if (old_thumbnail_path != NULL &&
 	    g_file_test (old_thumbnail_path, G_FILE_TEST_EXISTS)) {
 		destination_file = g_file_new_for_uri (destination_file_uri);
@@ -223,12 +224,12 @@ nautilus_update_thumbnail_file_copied (const char *source_file_uri,
 		if (file_info != NULL) {
 			pixbuf = gdk_pixbuf_new_from_file (old_thumbnail_path, NULL);
 			
-			if (pixbuf && gnome_thumbnail_has_uri (pixbuf, source_file_uri)) {
+			if (pixbuf && gnome_desktop_thumbnail_has_uri (pixbuf, source_file_uri)) {
 				factory = get_thumbnail_factory ();
-				gnome_thumbnail_factory_save_thumbnail (factory,
-									pixbuf,
-									destination_file_uri,
-									g_file_info_get_attribute_uint64 (file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED));
+				gnome_desktop_thumbnail_factory_save_thumbnail (factory,
+										pixbuf,
+										destination_file_uri,
+										g_file_info_get_attribute_uint64 (file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED));
 			}
 			
 			if (pixbuf) {
@@ -254,7 +255,7 @@ nautilus_remove_thumbnail_for_file (const char *file_uri)
 {
 	char *thumbnail_path;
 	
-	thumbnail_path = gnome_thumbnail_path_for_uri (file_uri, GNOME_THUMBNAIL_SIZE_NORMAL);
+	thumbnail_path = gnome_desktop_thumbnail_path_for_uri (file_uri, GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL);
 	if (thumbnail_path != NULL) {
 		unlink (thumbnail_path);
 	}
@@ -769,7 +770,7 @@ nautilus_thumbnail_is_mimetype_limited_by_size (const char *mime_type)
 gboolean
 nautilus_can_thumbnail (NautilusFile *file)
 {
-	GnomeThumbnailFactory *factory;
+	GnomeDesktopThumbnailFactory *factory;
 	gboolean res;
 	char *uri;
 	time_t mtime;
@@ -780,10 +781,10 @@ nautilus_can_thumbnail (NautilusFile *file)
 	mtime = nautilus_file_get_mtime (file);
 	
 	factory = get_thumbnail_factory ();
-	res = gnome_thumbnail_factory_can_thumbnail (factory,
-						     uri,
-						     mime_type,
-						     mtime);
+	res = gnome_desktop_thumbnail_factory_can_thumbnail (factory,
+							     uri,
+							     mime_type,
+							     mtime);
 	g_free (mime_type);
 	g_free (uri);
 
@@ -793,14 +794,14 @@ nautilus_can_thumbnail (NautilusFile *file)
 gboolean
 nautilus_has_valid_failed_thumbnail (NautilusFile *file)
 {
-	GnomeThumbnailFactory *factory;
+	GnomeDesktopThumbnailFactory *factory;
 	char *uri;
 	gboolean res;
 
 	factory = get_thumbnail_factory ();
 
 	uri = nautilus_file_get_uri (file);
-	res = gnome_thumbnail_factory_has_valid_failed_thumbnail (factory, uri, file->details->mtime);
+	res = gnome_desktop_thumbnail_factory_has_valid_failed_thumbnail (factory, uri, file->details->mtime);
 	g_free (uri);
 
 	return res;
@@ -978,20 +979,20 @@ thumbnail_thread_start (gpointer data)
 			   info->image_uri);
 #endif
 
-		pixbuf = gnome_thumbnail_factory_generate_thumbnail (thumbnail_factory,
-								     info->image_uri,
-								     info->mime_type);
+		pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail (thumbnail_factory,
+									     info->image_uri,
+									     info->mime_type);
 
 		if (pixbuf) {
-			gnome_thumbnail_factory_save_thumbnail (thumbnail_factory,
-								pixbuf,
-								info->image_uri,
-								current_orig_mtime);
+			gnome_desktop_thumbnail_factory_save_thumbnail (thumbnail_factory,
+									pixbuf,
+									info->image_uri,
+									current_orig_mtime);
 			g_object_unref (pixbuf);
 		} else {
-			gnome_thumbnail_factory_create_failed_thumbnail (thumbnail_factory, 
-									 info->image_uri,
-									 current_orig_mtime);
+			gnome_desktop_thumbnail_factory_create_failed_thumbnail (thumbnail_factory, 
+										 info->image_uri,
+										 current_orig_mtime);
 		}
 		/* We need to call nautilus_file_changed(), but I don't think that is
 		   thread safe. So add an idle handler and do it from the main loop. */
