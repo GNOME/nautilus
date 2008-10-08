@@ -1,3 +1,11 @@
+2008-10-08  Christian Persch  <chpe@gnome.org>
+
+	* libnautilus-private/nautilus-mime-application-chooser.c:
+	(create_tree_view), (refresh_model): Put the GIcon in the tree model
+	and make the cell renderer display it directly instead of manually
+	resolving the GIcon to a pixbuf and putting that into the model. Bug
+	#552682.
+
 2008-10-07  Alexander Larsson  <alexl@redhat.com>
 
         * configure.in:

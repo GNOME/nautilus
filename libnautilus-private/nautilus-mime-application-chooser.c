@@ -234,11 +234,11 @@ create_tree_view (NautilusMimeApplicationChooser *chooser)
 	
 	treeview = gtk_tree_view_new ();
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
-	
+
 	store = gtk_list_store_new (NUM_COLUMNS,
 				    G_TYPE_APP_INFO,
 				    G_TYPE_BOOLEAN,
-				    GDK_TYPE_PIXBUF,
+				    G_TYPE_ICON,
 				    G_TYPE_STRING);
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
 					      COLUMN_NAME,
@@ -262,9 +262,10 @@ create_tree_view (NautilusMimeApplicationChooser *chooser)
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
+        g_object_set (renderer, "stock-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
 	column = gtk_tree_view_column_new_with_attributes (_("Icon"),
 							   renderer,
-							   "pixbuf",
+							   "gicon",
 							   COLUMN_ICON,
 							   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
@@ -432,43 +433,6 @@ get_extension (const char *basename)
 	}
 }
 
-static GdkPixbuf *
-get_pixbuf_for_icon (GIcon *icon)
-{
-	GdkPixbuf  *pixbuf;
-	char *filename;
-
-	pixbuf = NULL;
-	if (G_IS_FILE_ICON (icon)) {
-		filename = g_file_get_path (g_file_icon_get_file (G_FILE_ICON (icon)));
-		if (filename) {
-			pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 24, 24, NULL);
-		}
-		g_free (filename);
-	} else if (G_IS_THEMED_ICON (icon)) {
-		const char * const *names;
-		char *icon_no_extension;
-		char *p;
-		
-		names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-		
-		if (names != NULL && names[0] != NULL) {
-			icon_no_extension = g_strdup (names[0]);
-			p = strrchr (icon_no_extension, '.');
-			if (p &&
-			    (strcmp (p, ".png") == 0 ||
-			     strcmp (p, ".xpm") == 0 ||
-			     strcmp (p, ".svg") == 0)) {
-				*p = 0;
-			}
-			pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-							   icon_no_extension, 24, 0, NULL);
-			g_free (icon_no_extension);
-		}
-	}
-	return pixbuf;
-}
-
 static gboolean
 refresh_model_timeout (gpointer data)
 {
@@ -518,9 +482,6 @@ refresh_model (NautilusMimeApplicationChooser *chooser)
 		GAppInfo *application;
 		char *escaped;
 		GIcon *icon;
-		GdkPixbuf *pixbuf;
-
-		pixbuf = NULL;
 
 		application = l->data;
 		
@@ -530,22 +491,15 @@ refresh_model (NautilusMimeApplicationChooser *chooser)
 
 		icon = g_app_info_get_icon (application);
 
-		if (icon != NULL) {
-			pixbuf = get_pixbuf_for_icon (icon);
-		}
-
 		gtk_list_store_append (chooser->details->model, &iter);
 		gtk_list_store_set (chooser->details->model, &iter,
 				    COLUMN_APPINFO, application,
 				    COLUMN_DEFAULT, is_default,
-				    COLUMN_ICON, pixbuf,
+				    COLUMN_ICON, icon,
 				    COLUMN_NAME, escaped,
 				    -1);
 
 		g_free (escaped);
-		if (pixbuf != NULL) {
-			g_object_unref (pixbuf);
-		}
 	}
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->details->treeview));
