@@ -1,5 +1,14 @@
 2008-10-09  Alexander Larsson  <alexl@redhat.com>
 
+        * src/nautilus-spatial-window.c:
+        (real_window_close):
+        (nautilus_spatial_window_class_init):
+	Save spatial geometry on window close, not slot close.
+	Slot close is to late in the close by window destry case,
+	as the windows have then been unrealized.
+
+2008-10-09  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-main.c (main):
 	Make sure uri list is NULL terminated
 
