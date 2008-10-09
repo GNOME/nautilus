@@ -2,6 +2,17 @@
 
 	Merged from trunk:
 
+        * src/nautilus-spatial-window.c:
+        (real_window_close):
+        (nautilus_spatial_window_class_init):
+	Save spatial geometry on window close, not slot close.
+	Slot close is to late in the close by window destry case,
+	as the windows have then been unrealized.
+
+2008-10-09  Alexander Larsson  <alexl@redhat.com>
+
+	Merged from trunk:
+
         * libnautilus-private/nautilus-horizontal-splitter.c:
         (nautilus_horizontal_splitter_button_press):
         (nautilus_horizontal_splitter_button_release):

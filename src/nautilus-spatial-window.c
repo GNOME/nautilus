@@ -460,17 +460,24 @@ real_open_slot (NautilusWindow *window,
 }
 
 static void
-real_close_slot (NautilusWindow *window,
-		 NautilusWindowSlot *slot)
+real_window_close (NautilusWindow *window)
 {
-	g_assert (g_list_length (window->details->slots) == 1);
+	NautilusWindowSlot *slot;
 
-	nautilus_spatial_window_save_geometry (slot);
-	nautilus_spatial_window_save_scroll_position (slot);
-	nautilus_spatial_window_save_show_hidden_files_mode (slot);
+	/* We're closing the window, save the geometry. */
+	/* Note that we do this in window close, not slot close, because slot
+	   close is too late, by then the widgets have been unrealized. */
+	if (window->details->slots != NULL) {
 
+		slot = window->details->slots->data;
+		
+		nautilus_spatial_window_save_geometry (slot);
+		nautilus_spatial_window_save_scroll_position (slot);
+		nautilus_spatial_window_save_show_hidden_files_mode (slot);
+	}
+	
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
-			 close_slot, (window, slot));
+			 close, (window));
 }
 
 static void
@@ -1039,7 +1046,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 		real_set_allow_up;
 
 	NAUTILUS_WINDOW_CLASS (class)->open_slot = real_open_slot;
-	NAUTILUS_WINDOW_CLASS (class)->close_slot = real_close_slot;
+	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
 
 	binding_set = gtk_binding_set_by_class (class);
 	gtk_binding_entry_add_signal (binding_set, GDK_BackSpace, GDK_SHIFT_MASK,
