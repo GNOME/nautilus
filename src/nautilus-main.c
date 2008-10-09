@@ -473,6 +473,7 @@ main (int argc, char *argv[])
 					}
 				}
 			}
+			g_ptr_array_add (uris_array, NULL);
 			uris = (char **)g_ptr_array_free (uris_array, FALSE);
 		}
 
