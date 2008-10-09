@@ -189,6 +189,10 @@ static GOptionEntry entries[] = {
   { "sm-client-id", 0, 0,
     G_OPTION_ARG_STRING, &sm_client_id,
     N_("Specify session management ID"), N_("ID") },
+  /* Compatibility options */
+  { "sm-disable", 0, G_OPTION_FLAG_HIDDEN,
+    G_OPTION_ARG_NONE, &sm_client_disable,
+    NULL, NULL },
   { NULL }
 };
 
@@ -263,7 +267,7 @@ egg_sm_client_get_option_group (void)
  *    user is logging out, etc), but will request to not be
  *    automatically restarted with saved state in future sessions.
  *
- *    %EGG_SM_CLIENT_MODE_NORMAL: The default. #EggSMClient will
+ *    %EGG_SM_CLIENT_MODE_NORMAL: The default. #EggSMCLient will
  *    function normally.
  *
  * This must be called before the application's main loop begins.
@@ -314,16 +318,16 @@ egg_sm_client_get (void)
 #elif defined (GDK_WINDOWING_QUARTZ)
 	  global_client = egg_sm_client_osx_new ();
 #else
-	  /* If both D-Bus and XSMP are compiled in, try D-Bus first
-	   * and fall back to XSMP if D-Bus session management isn't
-	   * available.
+	  /* If both D-Bus and XSMP are compiled in, try XSMP first
+	   * (since it supports state saving) and fall back to D-Bus
+	   * if XSMP isn't available.
 	   */
-# ifdef EGG_SM_CLIENT_BACKEND_DBUS
-	  global_client = egg_sm_client_dbus_new ();
-# endif
 # ifdef EGG_SM_CLIENT_BACKEND_XSMP
+	  global_client = egg_sm_client_xsmp_new ();
+# endif
+# ifdef EGG_SM_CLIENT_BACKEND_DBUS
 	  if (!global_client)
-	    global_client = egg_sm_client_xsmp_new ();
+	    global_client = egg_sm_client_dbus_new ();
 # endif
 #endif
 	}

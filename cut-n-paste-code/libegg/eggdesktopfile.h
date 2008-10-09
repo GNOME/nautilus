@@ -48,12 +48,12 @@ EggDesktopFile     *egg_desktop_file_new_from_key_file  (GKeyFile     *key_file,
 
 void                egg_desktop_file_free               (EggDesktopFile  *desktop_file);
 
-const char         *egg_desktop_file_get_source         (EggDesktopFile  *desktop_file) G_GNUC_PURE;
+const char         *egg_desktop_file_get_source         (EggDesktopFile  *desktop_file);
 
-EggDesktopFileType  egg_desktop_file_get_desktop_file_type (EggDesktopFile  *desktop_file) G_GNUC_PURE;
+EggDesktopFileType  egg_desktop_file_get_desktop_file_type (EggDesktopFile  *desktop_file);
 
-const char         *egg_desktop_file_get_name           (EggDesktopFile  *desktop_file) G_GNUC_PURE;
-const char         *egg_desktop_file_get_icon           (EggDesktopFile  *desktop_file) G_GNUC_PURE;
+const char         *egg_desktop_file_get_name           (EggDesktopFile  *desktop_file);
+const char         *egg_desktop_file_get_icon           (EggDesktopFile  *desktop_file);
 
 gboolean            egg_desktop_file_can_launch         (EggDesktopFile  *desktop_file,
 							 const char      *desktop_environment);

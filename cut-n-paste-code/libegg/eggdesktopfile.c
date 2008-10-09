@@ -125,7 +125,7 @@ egg_desktop_file_new_from_dirs (const char  *desktop_file_path,
 
   key_file = g_key_file_new ();
   if (!g_key_file_load_from_dirs (key_file, desktop_file_path, search_dirs,
-				       &full_path, 0, error))
+				  &full_path, 0, error))
     {
       g_key_file_free (key_file);
       return NULL;
@@ -426,13 +426,9 @@ egg_desktop_file_get_numeric (EggDesktopFile  *desktop_file,
 			      const char      *key,
 			      GError         **error)
 {
-#if 0
   return g_key_file_get_double (desktop_file->key_file,
 				EGG_DESKTOP_FILE_GROUP, key,
 				error);
-#else
-  return 0.0;
-#endif
 }
 
 char **
@@ -913,7 +909,7 @@ parse_link (EggDesktopFile  *desktop_file,
   return TRUE;
 }
 
-#ifdef HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE
+#if GTK_CHECK_VERSION (2, 12, 0)
 static char *
 start_startup_notification (GdkDisplay     *display,
 			    EggDesktopFile *desktop_file,
@@ -1024,9 +1020,7 @@ set_startup_notification_timeout (GdkDisplay *display,
   g_timeout_add (EGG_DESKTOP_FILE_SN_TIMEOUT_LENGTH,
 		 startup_notification_timeout, sn_data);
 }
-#endif /* HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE */
-
-extern char **environ;
+#endif /* GTK 2.12 */
 
 static GPtrArray *
 array_putenv (GPtrArray *env, char *variable)
@@ -1035,10 +1029,20 @@ array_putenv (GPtrArray *env, char *variable)
 
   if (!env)
     {
+      char **envp;
+
       env = g_ptr_array_new ();
 
-      for (i = 0; environ[i]; i++)
-	g_ptr_array_add (env, g_strdup (environ[i]));
+      envp = g_listenv ();
+      for (i = 0; envp[i]; i++)
+        {
+          const char *value;
+
+          value = g_getenv (envp[i]);
+          g_ptr_array_add (env, g_strdup_printf ("%s=%s", envp[i],
+                                                 value ? value : ""));
+        }
+      g_strfreev (envp);
     }
 
   keylen = strcspn (variable, "=");
@@ -1068,7 +1072,7 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 			  GError **error)
 {
   EggDesktopFileLaunchOption option;
-  GSList *translated_documents = NULL, *docs;
+  GSList *translated_documents, *docs;
   char *command, **argv;
   int argc, i, screen_num;
   gboolean success, current_success;
@@ -1203,7 +1207,7 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 	}
       g_free (command);
 
-#ifdef HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE
+#if GTK_CHECK_VERSION (2, 12, 0)
       startup_id = start_startup_notification (display, desktop_file,
 					       argv[0], screen_num,
 					       workspace, launch_time);
@@ -1216,13 +1220,10 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 	}
 #else
       startup_id = NULL;
-#endif /* HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE */
+#endif /* GTK 2.12 */
 
       if (env != NULL)
-        {
-          /* Add NULL item in the end of array  */
-          g_ptr_array_add (env, NULL);
-        }
+	g_ptr_array_add (env, NULL);
 
       current_success =
 	g_spawn_async_with_pipes (directory,
@@ -1237,7 +1238,7 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 
       if (startup_id)
 	{
-#ifdef HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE
+#if GTK_CHECK_VERSION (2, 12, 0)
 	  if (current_success)
 	    {
 	      set_startup_notification_timeout (display, startup_id);
@@ -1248,7 +1249,7 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
 		g_free (startup_id);
 	    }
 	  else
-#endif /* HAVE_GDK_X11_DISPLAY_BROADCAST_STARTUP_MESSAGE */
+#endif /* GTK 2.12 */
 	    g_free (startup_id);
 	}
       else if (ret_startup_id)
@@ -1273,8 +1274,8 @@ egg_desktop_file_launchv (EggDesktopFile *desktop_file,
  out:
   if (env)
     {
-      g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-      g_ptr_array_free (env, TRUE);
+      g_strfreev ((char **)env->pdata);
+      g_ptr_array_free (env, FALSE);
     }
   free_document_list (translated_documents);
 
