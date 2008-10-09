@@ -1,5 +1,13 @@
 2008-10-09  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-horizontal-splitter.c:
+        (nautilus_horizontal_splitter_button_press):
+        (nautilus_horizontal_splitter_button_release):
+	Don't toggle the splitter when dragging (#555619)
+	Patch from Christoph Reiter
+	
+2008-10-09  Alexander Larsson  <alexl@redhat.com>
+
         * cut-n-paste-code/libegg/eggdesktopfile.c:
         * cut-n-paste-code/libegg/eggdesktopfile.h:
         * cut-n-paste-code/libegg/eggsmclient-xsmp.c:
