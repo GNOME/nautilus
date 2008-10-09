@@ -610,7 +610,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			
 			/* handle the "reset" case as an image */
 			if (eel_strcmp (property_browser->details->dragged_file, RESET_IMAGE_NAME) != 0) {
-				eel_gdk_color_parse (property_browser->details->dragged_file, &color);
+				gdk_color_parse (property_browser->details->dragged_file, &color);
 
 				colorArray[0] = color.red;
 				colorArray[1] = color.green;
