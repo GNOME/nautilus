@@ -29,7 +29,6 @@
 #include <stdlib.h>
 
 struct NautilusHorizontalSplitterDetails {
-	double press_x;
 	guint32 press_time;
 	int press_position;
 	int saved_size;
@@ -37,7 +36,7 @@ struct NautilusHorizontalSplitterDetails {
 
 #define CLOSED_THRESHOLD 4
 #define NOMINAL_SIZE 148
-#define SPLITTER_CLICK_SLOP 1
+#define SPLITTER_CLICK_SLOP 4
 #define SPLITTER_CLICK_TIMEOUT	400
 
 static void nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *horizontal_splitter_class);
@@ -193,7 +192,6 @@ nautilus_horizontal_splitter_button_press (GtkWidget *widget, GdkEventButton *ev
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	if (result) {
-		splitter->details->press_x = event->x;
 		splitter->details->press_time = event->time;
 		splitter->details->press_position = position;
 	}
@@ -207,14 +205,16 @@ nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *
 {
 	gboolean result;
 	NautilusHorizontalSplitter *splitter;
-	int delta, delta_time;
+	int position, delta, delta_time;
 	splitter = NAUTILUS_HORIZONTAL_SPLITTER (widget);
+
+	position = gtk_paned_get_position (GTK_PANED (widget));
 
 	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	if (result) {
-		delta = abs (event->x - splitter->details->press_x);
+		delta = abs (position - splitter->details->press_position);
 		delta_time = event->time - splitter->details->press_time;
 		if (delta < SPLITTER_CLICK_SLOP && delta_time < SPLITTER_CLICK_TIMEOUT)  {
 			nautilus_horizontal_splitter_toggle_position (splitter);

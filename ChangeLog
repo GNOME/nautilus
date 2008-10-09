@@ -1,3 +1,13 @@
+2008-10-09  Alexander Larsson  <alexl@redhat.com>
+
+	Merged from trunk:
+
+        * libnautilus-private/nautilus-horizontal-splitter.c:
+        (nautilus_horizontal_splitter_button_press):
+        (nautilus_horizontal_splitter_button_release):
+	Don't toggle the splitter when dragging (#555619)
+	Patch from Christoph Reiter
+	
 2008-10-06  Matthias Clasen  <mclasen@redhat.com>
 
 	* libnautilus-private/nautilus-open-with-dialog.c (set_uri_and_type):
