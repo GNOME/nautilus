@@ -1,3 +1,9 @@
+2008-10-11  Christian Neumair  <cneumair@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(make_file_name_valid_for_dest_fs):
+	Chop trailing space characters when moving to FAT file system. Fixes #555813.
+
 2008-10-09  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-spatial-window.c:
