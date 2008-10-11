@@ -2891,7 +2891,19 @@ make_file_name_valid_for_dest_fs (char *filename,
 		    !strcmp (dest_fs_type, "msdos") ||
 		    !strcmp (dest_fs_type, "msdosfs")) {
 			gboolean ret;
+			int i, old_len;
+
 			ret = str_replace (filename, FAT_FORBIDDEN_CHARACTERS, '_');
+
+			old_len = strlen (filename);
+			for (i = 0; i < old_len; i++) {
+				if (filename[i] != ' ') {
+					g_strchomp (filename);
+					ret |= (old_len != strlen (filename));
+					break;
+				}
+			}
+
 			return ret;
 		}
 	}
