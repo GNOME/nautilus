@@ -410,6 +410,24 @@ check_same_fs (NautilusFile *file1,
 	return result;
 }
 
+static gboolean
+source_is_deletable (GFile *file)
+{
+	NautilusFile *naut_file;
+	gboolean ret;
+
+	/* if there's no a cached NautilusFile, it returns NULL */
+	naut_file = nautilus_file_get_existing (file);
+	if (naut_file == NULL) {
+		return FALSE;
+	}
+	
+	ret = nautilus_file_can_delete (naut_file);
+	nautilus_file_unref (naut_file);
+
+	return ret;
+}
+
 void
 nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 					     const char *target_uri_string, const GList *items,
@@ -417,6 +435,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 {
 	gboolean same_fs;
 	gboolean target_is_source_parent;
+	gboolean source_deletable;
 	const char *dropped_uri;
 	GFile *target, *dropped;
 	GdkDragAction actions;
@@ -501,8 +520,9 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped = g_file_new_for_uri (dropped_uri);
 	target_is_source_parent = g_file_has_prefix (dropped, target);
-	
-	if (same_fs || target_is_source_parent ||
+	source_deletable = source_is_deletable (dropped);
+
+	if ((same_fs && source_deletable) || target_is_source_parent ||
 	    g_file_has_uri_scheme (dropped, "trash")) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;

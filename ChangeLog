@@ -1,5 +1,13 @@
 2008-10-12  Nelson Benítez León  <nbenitez@svn.gnome.org>
 
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_default_drop_action_for_icons):
+	Add new function source_is_deletable.
+	When DnD'ing, change the drop action to COPY instead of MOVE, when
+	the source is not deletable. Fixes #314139.
+
+2008-10-12  Nelson Benítez León  <nbenitez@svn.gnome.org>
+
 	* src/file-manager/fm-icon-view.c
 	(set_sort_criterion_by_sort_type)
 	(action_reversed_order_callback):
