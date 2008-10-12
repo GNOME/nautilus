@@ -167,6 +167,7 @@ static void                 fm_icon_view_set_directory_tighter_layout (FMIconVie
 								       NautilusFile         *file,
 								       gboolean              tighter_layout);
 static gboolean              fm_icon_view_supports_manual_layout      (FMIconView           *icon_view);
+static void                 fm_icon_view_reveal_selection             (FMDirectoryView      *view);
 static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusFileSortType  sort_type);
 static void                 set_sort_criterion_by_sort_type           (FMIconView           *icon_view,
 								       NautilusFileSortType  sort_type);
@@ -1381,6 +1382,7 @@ set_sort_criterion_by_sort_type (FMIconView *icon_view,
 
 	set_sort_criterion (icon_view, sort);
 	nautilus_icon_container_sort (get_icon_container (icon_view));
+	fm_icon_view_reveal_selection (FM_DIRECTORY_VIEW (icon_view));
 }
 
 
@@ -1395,6 +1397,7 @@ action_reversed_order_callback (GtkAction *action,
 	if (set_sort_reversed (icon_view,
 			       gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))) {
 		nautilus_icon_container_sort (get_icon_container (icon_view));
+		fm_icon_view_reveal_selection (FM_DIRECTORY_VIEW (icon_view));
 	}
 }
 
