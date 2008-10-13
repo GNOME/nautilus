@@ -338,6 +338,20 @@ remove_clicked_cb (GtkButton *button,
 }
 
 static void
+reset_clicked_cb (GtkButton *button,
+                  gpointer   user_data)
+{
+	NautilusMimeApplicationChooser *chooser;
+	
+	chooser = NAUTILUS_MIME_APPLICATION_CHOOSER (user_data);
+	
+	g_app_info_reset_type_associations (chooser->details->content_type);
+
+	g_signal_emit_by_name (nautilus_signaller_get_current (),
+			       "mime_data_changed");
+}
+
+static void
 mime_type_data_changed_cb (GObject *signaller,
 			   gpointer user_data)
 {
@@ -413,6 +427,14 @@ nautilus_mime_application_chooser_instance_init (NautilusMimeApplicationChooser 
 	
 	chooser->details->remove_button = button;
 
+	button = gtk_button_new_with_label (_("Reset"));
+	g_signal_connect (button, "clicked", 
+			  G_CALLBACK (reset_clicked_cb),
+			  chooser);
+	
+	gtk_widget_show (button);
+	gtk_container_add (GTK_CONTAINER (box), button);
+	
 	g_signal_connect (nautilus_signaller_get_current (),
 			  "mime_data_changed",
 			  G_CALLBACK (mime_type_data_changed_cb),
