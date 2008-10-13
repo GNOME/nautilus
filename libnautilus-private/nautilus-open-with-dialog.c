@@ -242,9 +242,9 @@ add_or_find_application (NautilusOpenWithDialog *dialog)
 
 
 	if (dialog->details->content_type) {
-		success = g_app_info_set_as_default_for_type (app,
-							      dialog->details->content_type,
-							      &error);
+		success = g_app_info_add_supports_type (app,
+							dialog->details->content_type,
+							&error);
 	} else {
 		success = g_app_info_set_as_default_for_extension (app,
 								   dialog->details->extension,
