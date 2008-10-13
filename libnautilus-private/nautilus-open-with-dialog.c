@@ -72,7 +72,8 @@ enum {
 };
 
 enum {
-	RESPONSE_OPEN
+	RESPONSE_OPEN,
+	RESPONSE_REMOVE
 };
 
 enum {
@@ -294,6 +295,33 @@ response_cb (NautilusOpenWithDialog *dialog,
 			}
 		}
 
+		break;
+	case RESPONSE_REMOVE:
+		if (dialog->details->selected_app_info != NULL) {
+			if (g_app_info_delete (dialog->details->selected_app_info)) {
+				GtkTreeModel *model;
+				GtkTreeIter iter;
+				GAppInfo *info, *selected;
+
+				selected = dialog->details->selected_app_info;
+				dialog->details->selected_app_info = NULL;
+
+				model = GTK_TREE_MODEL (dialog->details->program_list_store);
+				if (gtk_tree_model_get_iter_first (model, &iter)) {
+					do {
+						gtk_tree_model_get (model, &iter,
+			    					    COLUMN_APP_INFO, &info,
+			    					    -1);
+						if (g_app_info_equal (selected, info)) {
+							gtk_list_store_remove (dialog->details->program_list_store, &iter);
+							break;
+						}
+					} while (gtk_tree_model_iter_next (model, &iter));
+				}
+
+				g_object_unref (selected);
+			}
+		}
 		break;
 	case GTK_RESPONSE_NONE:
 	case GTK_RESPONSE_DELETE_EVENT:
@@ -655,6 +683,9 @@ program_list_selection_changed (GtkTreeSelection  *selection,
 		
 	if (!gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		gtk_widget_set_sensitive (dialog->details->button, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+					   	   RESPONSE_REMOVE,
+					   	   FALSE);
 		return;
 	}
 
@@ -672,6 +703,9 @@ program_list_selection_changed (GtkTreeSelection  *selection,
 	gtk_label_set_text (GTK_LABEL (dialog->details->desc_label),
 			    sure_string (g_app_info_get_description (info)));
 	gtk_widget_set_sensitive (dialog->details->button, TRUE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+					   RESPONSE_REMOVE,
+					   g_app_info_can_delete (info));
 
 	if (dialog->details->selected_app_info) {
 		g_object_unref (dialog->details->selected_app_info);
@@ -808,6 +842,13 @@ nautilus_open_with_dialog_instance_init (NautilusOpenWithDialog *dialog)
 			  G_CALLBACK (browse_clicked_cb), dialog);
 	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->button, FALSE, FALSE, 0);
 	gtk_widget_show (dialog->details->button);
+
+        gtk_dialog_add_button (GTK_DIALOG (dialog),
+                               GTK_STOCK_REMOVE,
+			       RESPONSE_REMOVE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+			       		   RESPONSE_REMOVE,
+					   FALSE);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,

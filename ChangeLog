@@ -1,5 +1,14 @@
 2008-10-13  Alexander Larsson  <alexl@redhat.com>
 
+        * configure.in:
+	Require glib 2.19.0
+	
+        * libnautilus-private/nautilus-open-with-dialog.c:
+	Allow removal of custom applications (#545354)
+	Patch from Matthias Clasen
+
+2008-10-13  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-open-with-dialog.c:
         (add_or_find_application):
 	Don't set default when opening with other app, just
