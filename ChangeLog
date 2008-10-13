@@ -1,3 +1,13 @@
+2008-10-13  Nelson Benítez León  <nbenitez@svn.gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(copy_move_file)
+	(copy_move_directory)
+	(copy_files):
+	Pass G_FILE_COPY_TARGET_DEFAULT_PERMS flag to copy
+	operations when the source file is in a readonly
+	filesystem (eg. CDROM). Fixes #550816.
+
 2008-10-13  Christian Persch  <chpe@gnome.org>
 
 	* src/nautilus-image-properties-page.c: Plug a mem leak. Bug #552691.

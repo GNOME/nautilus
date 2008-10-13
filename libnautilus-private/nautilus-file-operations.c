@@ -3128,7 +3128,8 @@ static void copy_move_file (CopyMoveJob *job,
 			    GHashTable *debuting_files,
 			    GdkPoint *point,
 			    gboolean overwrite,
-			    gboolean *skipped_file);
+			    gboolean *skipped_file,
+			    gboolean readonly_source_fs);
 
 typedef enum {
 	CREATE_DEST_DIR_RETRY,
@@ -3237,7 +3238,8 @@ copy_move_directory (CopyMoveJob *copy_job,
 		     SourceInfo *source_info,
 		     TransferInfo *transfer_info,
 		     GHashTable *debuting_files,
-		     gboolean *skipped_file)
+		     gboolean *skipped_file,
+		     gboolean readonly_source_fs)
 {
 	GFileInfo *info;
 	GError *error;
@@ -3249,6 +3251,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 	gboolean skip_error;
 	gboolean local_skipped_file;
 	CommonJob *job;
+	GFileCopyFlags flags;
 
 	job = (CommonJob *)copy_job;
 	
@@ -3295,7 +3298,8 @@ copy_move_directory (CopyMoveJob *copy_job,
 			src_file = g_file_get_child (src,
 						     g_file_info_get_name (info));
 			copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
-					source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file);
+					source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file,
+					readonly_source_fs);
 			g_object_unref (src_file);
 			g_object_unref (info);
 		}
@@ -3388,9 +3392,11 @@ copy_move_directory (CopyMoveJob *copy_job,
 	}
 
 	if (create_dest) {
+		flags = (readonly_source_fs) ? G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_TARGET_DEFAULT_PERMS 
+					     : G_FILE_COPY_NOFOLLOW_SYMLINKS;
 		/* Ignore errors here. Failure to copy metadata is not a hard error */
 		g_file_copy_attributes (src, *dest,
-					G_FILE_COPY_NOFOLLOW_SYMLINKS,
+					flags,
 					job->cancellable, NULL);
 	}
 
@@ -3654,7 +3660,8 @@ copy_move_file (CopyMoveJob *copy_job,
 		GHashTable *debuting_files,
 		GdkPoint *position,
 		gboolean overwrite,
-		gboolean *skipped_file)
+		gboolean *skipped_file,
+		gboolean readonly_source_fs)
 {
 	GFile *dest, *new_dest;
 	GError *error;
@@ -3731,6 +3738,10 @@ copy_move_file (CopyMoveJob *copy_job,
 	if (overwrite) {
 		flags |= G_FILE_COPY_OVERWRITE;
 	}
+	if (readonly_source_fs) {
+		flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
+	}
+
 	pdata.job = copy_job;
 	pdata.last_size = 0;
 	pdata.source_info = source_info;
@@ -3975,7 +3986,8 @@ copy_move_file (CopyMoveJob *copy_job,
 		if (!copy_move_directory (copy_job, src, &dest, same_fs,
 					  would_recurse, dest_fs_type,
 					  source_info, transfer_info,
-					  debuting_files, skipped_file)) {
+					  debuting_files, skipped_file,
+					  readonly_source_fs)) {
 			/* destination changed, since it was an invalid file name */
 			g_assert (*dest_fs_type != NULL);
 			handled_invalid_filename = TRUE;
@@ -4041,12 +4053,20 @@ copy_files (CopyMoveJob *job,
 	gboolean unique_names;
 	GFile *dest;
 	char *dest_fs_type;
+	GFileInfo *inf;
+	gboolean readonly_source_fs;
 
 	dest_fs_type = NULL;
+	readonly_source_fs = FALSE;
 
 	common = &job->common;
 
 	report_copy_progress (job, source_info, transfer_info);
+
+	inf = g_file_query_filesystem_info ((GFile *) job->files->data, "filesystem::readonly", NULL, NULL);
+	if (inf != NULL) {
+		readonly_source_fs = g_file_info_get_attribute_boolean (inf, "filesystem::readonly");
+	}
 
 	unique_names = (job->destination == NULL);
 	i = 0;
@@ -4080,13 +4100,15 @@ copy_files (CopyMoveJob *job,
 					&dest_fs_type,
 					source_info, transfer_info,
 					job->debuting_files,
-					point, FALSE, &skipped_file);
+					point, FALSE, &skipped_file,
+					readonly_source_fs);
 			g_object_unref (dest);
 		}
 		i++;
 	}
 
 	g_free (dest_fs_type);
+	g_object_unref (inf);
 }
 
 static gboolean
@@ -4608,7 +4630,7 @@ common = &job->common;
 				same_fs, FALSE, dest_fs_type,
 				source_info, transfer_info,
 				job->debuting_files,
-				point, fallback->overwrite, &skipped_file);
+				point, fallback->overwrite, &skipped_file, FALSE);
 		i++;
 	}
 }
