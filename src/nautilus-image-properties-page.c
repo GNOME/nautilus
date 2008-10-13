@@ -324,6 +324,10 @@ load_finished (NautilusImagePropertiesPage *page)
 	GString *str;
 
 	if (page->details->got_size) {
+#ifdef HAVE_EXIF
+                ExifData *exif_data;
+#endif
+
 		str = g_string_new (NULL);
 		format = gdk_pixbuf_loader_get_format (page->details->loader);
 	
@@ -343,7 +347,9 @@ load_finished (NautilusImagePropertiesPage *page)
 		g_free (desc);
 		
 #ifdef HAVE_EXIF
-		append_exifdata_string (exif_loader_get_data (page->details->exifldr), str);
+		exif_data = exif_loader_get_data (page->details->exifldr);
+                append_exifdata_string (exif_data, str);
+                exif_data_unref (exif_data);
 #endif /*HAVE_EXIF*/
 #ifdef HAVE_EXEMPI
 		append_xmpdata_string(page->details->xmp, str);
