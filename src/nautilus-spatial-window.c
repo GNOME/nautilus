@@ -290,7 +290,8 @@ nautilus_spatial_window_save_scroll_position (NautilusWindowSlot *slot)
 
 	window = NAUTILUS_WINDOW (slot->window);
 
-	if (slot->content_view == NULL) {
+	if (slot->content_view == NULL ||
+	    slot->viewed_file == NULL) {
 		return;
 	}
 	
@@ -309,6 +310,10 @@ nautilus_spatial_window_save_show_hidden_files_mode (NautilusWindowSlot *slot)
 	char *show_hidden_file_setting;
 	NautilusWindowShowHiddenFilesMode mode;
 
+	if (slot->viewed_file == NULL) {
+		return;
+	}
+	
 	window = NAUTILUS_WINDOW (slot->window);
 
 	mode = NAUTILUS_WINDOW (window)->details->show_hidden_files_mode;
@@ -470,7 +475,7 @@ real_window_close (NautilusWindow *window)
 	if (window->details->slots != NULL) {
 
 		slot = window->details->slots->data;
-		
+
 		nautilus_spatial_window_save_geometry (slot);
 		nautilus_spatial_window_save_scroll_position (slot);
 		nautilus_spatial_window_save_show_hidden_files_mode (slot);

@@ -1,3 +1,13 @@
+2008-10-17  Alexander Larsson  <alexl@redhat.com>
+
+	Merged from trunk:
+
+        * src/nautilus-spatial-window.c:
+        (nautilus_spatial_window_save_scroll_position):
+        (nautilus_spatial_window_save_show_hidden_files_mode):
+        (real_window_close):
+	Don't access NULL slot->viewed_file if its not been set yet.
+
 2008-10-13  Alexander Larsson  <alexl@redhat.com>
 
 	Merged from trunk:
