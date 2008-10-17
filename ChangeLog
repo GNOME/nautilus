@@ -1,5 +1,19 @@
 2008-10-17  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+        Add nautilus_directory_has_active_request_for_file which returns true
+	if monitoring or call_when_ready the file or all the files in the directory.
+        * libnautilus-private/nautilus-directory.c:
+        (nautilus_directory_add_file):
+	When adding a file to a directory, if there is an outstanding request
+	for the file, add it to the work queue so we make sure to do i/o on it.
+	Otherwise we could for instance block a call_when_ready with file=NULL
+	because we're waiting for something to happen on all files in the dir
+	but the newly added file never has any i/o happen to it.
+
+2008-10-17  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-bookmark.c:
         (bookmark_file_changed_callback):
 	Don't immediately recreate NautilusFile for the

@@ -633,6 +633,7 @@ void
 nautilus_directory_add_file (NautilusDirectory *directory, NautilusFile *file)
 {
 	GList *node;
+	gboolean add_to_work_queue;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -647,9 +648,19 @@ nautilus_directory_add_file (NautilusDirectory *directory, NautilusFile *file)
 
 	directory->details->confirmed_file_count++;
 
-	/* Ref if we are monitoring. */
+	add_to_work_queue = FALSE;
 	if (nautilus_directory_is_file_list_monitored (directory)) {
+		/* Ref if we are monitoring, since monitoring owns the file list. */
 		nautilus_file_ref (file);
+		add_to_work_queue = TRUE;
+	} else if (nautilus_directory_has_active_request_for_file (directory, file)) {
+		/* We're waiting for the file in a call_when_ready. Make sure
+		   we add the file to the work queue so that said waiter won't
+		   wait forever for e.g. all files in the directory to be done */
+		add_to_work_queue = TRUE;
+	}
+	
+	if (add_to_work_queue) {
 		nautilus_directory_add_file_to_work_queue (directory, file);
 	}
 }
