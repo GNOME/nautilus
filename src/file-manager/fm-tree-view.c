@@ -1202,7 +1202,7 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
 	/* add the "create folder" menu item */
-	menu_item = gtk_image_menu_item_new_with_label (_("Create _Folder"));
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("Create _Folder"));
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_create_folder_cb),
 			  view);
