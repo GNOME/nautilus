@@ -391,13 +391,19 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	if (nautilus_file_is_gone (file) ||
 	    nautilus_file_is_in_trash (file)) {
 		/* The file we were monitoring has been trashed, deleted,
-		 * or moved in a way that we didn't notice. Make 
+		 * or moved in a way that we didn't notice. We should make 
 		 * a spanking new NautilusFile object for this 
 		 * location so if a new file appears in this place 
-		 * we will notice.
+		 * we will notice. However, we can't immediately do so
+		 * because creating a new NautilusFile directly as a result
+		 * of noticing a file goes away may trigger i/o on that file
+		 * again, noticeing it is gone, leading to a loop.
+		 * So, the new NautilusFile is created when the bookmark
+		 * is used again. However, this is not really a problem, as
+		 * we don't want to change the icon or anything about the
+		 * bookmark just because its not there anymore.
 		 */
 		nautilus_bookmark_disconnect_file (bookmark);
-		should_emit_appearance_changed_signal = TRUE;		
 	} else if (nautilus_bookmark_update_icon (bookmark)) {
 		/* File hasn't gone away, but it has changed
 		 * in a way that affected its icon.

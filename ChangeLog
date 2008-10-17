@@ -2,6 +2,17 @@
 
 	Merged from trunk:
 
+        * libnautilus-private/nautilus-bookmark.c:
+        (bookmark_file_changed_callback):
+	Don't immediately recreate NautilusFile for the
+	bookmark when the file is deleted, as this can
+	cause loops if the file is monitored.
+	See https://bugzilla.redhat.com/show_bug.cgi?id=465479
+
+2008-10-17  Alexander Larsson  <alexl@redhat.com>
+
+	Merged from trunk:
+
 	* src/nautilus-window-manage-views.c
 	(nautilus_window_slot_open_location_full):
 	Don't unref NULL, which can happen if !do_load_location
