@@ -1,5 +1,11 @@
 2008-10-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_slot_open_location_full):
+	Don't unref NULL, which can happen if !do_load_location
+
+2008-10-17  Alexander Larsson  <alexl@redhat.com>
+
         * src/nautilus-spatial-window.c:
         (nautilus_spatial_window_save_scroll_position):
         (nautilus_spatial_window_save_show_hidden_files_mode):
