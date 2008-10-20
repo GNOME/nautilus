@@ -956,6 +956,24 @@ activation_start_timed_cancel (ActivateParameters *parameters)
 }
 
 static void
+pause_activation_timed_cancel (ActivateParameters *parameters)
+{
+	if (parameters->timed_wait_active) {
+		eel_timed_wait_stop (cancel_activate_callback, parameters);
+		parameters->timed_wait_active = FALSE;
+	}
+}
+
+static void
+unpause_activation_timed_cancel (ActivateParameters *parameters)
+{
+	if (!parameters->timed_wait_active) {
+		activation_start_timed_cancel (parameters);
+	}
+}
+
+
+static void
 activate_mount_op_active (GtkMountOperation *operation,
 			  GParamSpec *pspec,
 			  ActivateParameters *parameters)
@@ -965,14 +983,9 @@ activate_mount_op_active (GtkMountOperation *operation,
 	g_object_get (operation, "is-showing", &is_active, NULL);
 
 	if (is_active) {
-		if (parameters->timed_wait_active) {
-			eel_timed_wait_stop (cancel_activate_callback, parameters);
-			parameters->timed_wait_active = FALSE;
-		}
+		pause_activation_timed_cancel (parameters);
 	} else {
-		if (!parameters->timed_wait_active) {
-			activation_start_timed_cancel (parameters);
-		}
+		unpause_activation_timed_cancel (parameters);
 	}
 }
 
@@ -1051,7 +1064,9 @@ activate_files (ActivateParameters *parameters)
 			/* Special case for executable text files, since it might be
 			 * dangerous & unexpected to launch these.
 			 */
+			pause_activation_timed_cancel (parameters);
 			action = get_executable_text_file_action (parameters->parent_window, file);
+			unpause_activation_timed_cancel (parameters);
 		}
 
 		switch (action) {

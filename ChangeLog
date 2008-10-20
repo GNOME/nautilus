@@ -1,3 +1,13 @@
+2008-10-20  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-mime-actions.c:
+        (pause_activation_timed_cancel):
+        (unpause_activation_timed_cancel):
+        (activate_mount_op_active):
+        (activate_files):
+	Don't show timeout-based cancel when showing the "run or display"
+	dialog. (#539954)
+
 2008-10-18  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
