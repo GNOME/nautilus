@@ -1277,7 +1277,7 @@ create_popup_menu (FMTreeView *view)
 	eel_gtk_menu_append_separator (GTK_MENU (popup));
 
 	/* add the "Unmount" menu item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic ("_Unmount");
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Unmount"));
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_unmount_cb),
 			  view);
@@ -1286,7 +1286,7 @@ create_popup_menu (FMTreeView *view)
 	view->details->popup_unmount = menu_item;
 
 	/* add the "Eject" menu item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic ("E_ject");
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Eject"));
 	g_signal_connect (menu_item, "activate",
 			  G_CALLBACK (fm_tree_view_eject_cb),
 			  view);
