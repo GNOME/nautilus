@@ -1434,7 +1434,6 @@ create_tree (FMTreeView *view)
 	gtk_tree_view_column_set_attributes (column, cell,
 					     "text", FM_TREE_MODEL_DISPLAY_NAME_COLUMN,
 					     "style", FM_TREE_MODEL_FONT_STYLE_COLUMN,
-					     "weight", FM_TREE_MODEL_FONT_WEIGHT_COLUMN,
 					     NULL);
 
 	gtk_tree_view_append_column (view->details->tree_widget, column);

@@ -1133,8 +1133,6 @@ fm_tree_model_get_column_type (GtkTreeModel *model, int index)
 		return GDK_TYPE_PIXBUF;
 	case FM_TREE_MODEL_FONT_STYLE_COLUMN:
 		return PANGO_TYPE_STYLE;
-	case FM_TREE_MODEL_FONT_WEIGHT_COLUMN:
-		return PANGO_TYPE_WEIGHT;
 	default:
 		g_assert_not_reached ();
 	}
@@ -1286,14 +1284,6 @@ fm_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 			g_value_set_enum (value, PANGO_STYLE_ITALIC);
 		} else {
 			g_value_set_enum (value, PANGO_STYLE_NORMAL);
-		}
-		break;
-	case FM_TREE_MODEL_FONT_WEIGHT_COLUMN:
-		g_value_init (value, PANGO_TYPE_STYLE);
-		if (node != NULL && node->parent == NULL) {
-			g_value_set_enum (value, PANGO_WEIGHT_BOLD);
-		} else {
-			g_value_set_enum (value, PANGO_WEIGHT_NORMAL);
 		}
 		break;
 	default:
