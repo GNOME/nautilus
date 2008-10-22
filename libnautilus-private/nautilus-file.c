@@ -6009,7 +6009,9 @@ nautilus_file_get_volume_name (NautilusFile *file)
 char *
 nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 {
-        g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
+	if (!nautilus_file_is_symbolic_link (file)) {
+		g_warning ("File has symlink target, but  is not marked as symlink");
+	}
 
 	return g_strdup (file->details->symlink_name);
 }
@@ -6028,8 +6030,10 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
 {
 	GFile *location, *parent, *target;
 	char *target_uri;
-	
-        g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
+
+	if (!nautilus_file_is_symbolic_link (file)) {
+		g_warning ("File has symlink target, but  is not marked as symlink");
+	}
 
 	if (file->details->symlink_name == NULL) {
 		return NULL;

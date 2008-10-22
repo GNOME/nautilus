@@ -1,3 +1,11 @@
+2008-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_symbolic_link_target_uri/path):
+	Don't assert on symbolic links always marked as symlinks.
+	Some broken backends will give this (like the archive backend).
+	Fixes crash in #547468
+
 2008-10-22  A. Walton  <awalton@gnome.org>
 
 	* src/file-manager/fm-tree-model.c (fm_tree_model_get_column_type),
