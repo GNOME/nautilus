@@ -1,3 +1,12 @@
+2008-10-23  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-file.c:
+        * libnautilus-private/nautilus-icon-info.[ch]:
+	Manually fall back to default fallback icon for
+	files if not found. Goes with the corresponding
+	glib/gvfs change to not add the fallback icon to
+	the end of files icons. (#528320)
+
 2008-10-22  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file.c
