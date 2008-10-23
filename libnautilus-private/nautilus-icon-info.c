@@ -59,6 +59,12 @@ nautilus_icon_info_init (NautilusIconInfo *icon)
 	icon->sole_owner = TRUE;
 }
 
+gboolean
+nautilus_icon_info_is_fallback (NautilusIconInfo  *icon)
+{
+  return icon->pixbuf == NULL;
+}
+
 static void
 pixbuf_toggle_notify (gpointer      info,
 		      GObject      *object,

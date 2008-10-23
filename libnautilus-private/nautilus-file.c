@@ -3482,6 +3482,23 @@ nautilus_file_get_gicon (NautilusFile *file,
 	return g_themed_icon_new ("text-x-generic");
 }
 
+static GIcon *
+get_default_file_icon (NautilusFileIconFlags flags)
+{
+	static GIcon *fallback_icon = NULL;
+	static GIcon *fallback_icon_preview = NULL;
+	if (fallback_icon == NULL) {
+		fallback_icon = g_themed_icon_new ("text-x-generic");
+		fallback_icon_preview = g_themed_icon_new ("text-x-preview");
+		g_themed_icon_append_name (G_THEMED_ICON (fallback_icon_preview), "text-x-generic");
+	}
+	if (flags & NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT) {
+		return fallback_icon_preview;
+	} else {
+		return fallback_icon;
+	}
+}
+
 NautilusIconInfo *
 nautilus_file_get_icon (NautilusFile *file,
 			int size,
@@ -3573,11 +3590,15 @@ nautilus_file_get_icon (NautilusFile *file,
 	
 	if (gicon) {
 		icon = nautilus_icon_info_lookup (gicon, size);
+		if (nautilus_icon_info_is_fallback (icon)) {
+			g_object_unref (icon);
+			icon = nautilus_icon_info_lookup (get_default_file_icon (flags), size);
+		}
 		g_object_unref (gicon);
 		return icon;
+	} else {
+		return nautilus_icon_info_lookup (get_default_file_icon (flags), size);
 	}
-
-	return nautilus_icon_info_new_for_pixbuf (NULL);
 }
 
 GdkPixbuf *
