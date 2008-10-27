@@ -26,7 +26,7 @@
 #define NAUTILUS_PROPERTY_PAGE_H
 
 #include <glib-object.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS

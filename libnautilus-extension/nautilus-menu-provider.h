@@ -31,7 +31,7 @@
 #define NAUTILUS_MENU_PROVIDER_H
 
 #include <glib-object.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
 #include "nautilus-menu.h"

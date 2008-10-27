@@ -1,3 +1,11 @@
+2008-10-27  Christian Persch  <chpe@gnome.org>
+
+	* libnautilus-extension/nautilus-location-widget-provider.h:
+	* libnautilus-extension/nautilus-menu-provider.h:
+	* libnautilus-extension/nautilus-property-page.h: Only include
+	gtk/gtk.h, to allow extensions to build with
+	*_DISABLE_SINGLE_INCLKUDES. Bug #558070.
+
 2008-10-23  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-file.c:

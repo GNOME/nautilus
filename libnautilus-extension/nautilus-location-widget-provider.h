@@ -33,7 +33,7 @@
 #define NAUTILUS_LOCATION_WIDGET_PROVIDER_H
 
 #include <glib-object.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
