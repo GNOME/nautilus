@@ -42,7 +42,6 @@ nautilus-file-management-properties.desktop.in.in
 nautilus-folder-handler.desktop.in.in
 nautilus-home.desktop.in.in
 nautilus.desktop.in.in
-src/Nautilus_shell.server.in
 src/file-manager/fm-desktop-icon-view.c
 src/file-manager/fm-directory-view.c
 src/file-manager/fm-ditem-page.c
@@ -61,14 +60,14 @@ src/file-manager/nautilus-list-view-ui.xml
 src/nautilus-application.c
 src/nautilus-autorun-software.c
 src/nautilus-bookmarks-window.c
-src/nautilus-bookmarks-window.glade
+[type: gettext/glade]src/nautilus-bookmarks-window.ui
 src/nautilus-connect-server-dialog-main.c
 src/nautilus-connect-server-dialog.c
 src/nautilus-desktop-window.c
 src/nautilus-emblem-sidebar.c
 src/nautilus-file-management-properties-main.c
 src/nautilus-file-management-properties.c
-src/nautilus-file-management-properties.glade
+[type: gettext/glade]src/nautilus-file-management-properties.ui
 src/nautilus-history-sidebar.c
 src/nautilus-image-properties-page.c
 src/nautilus-information-panel.c
@@ -87,7 +86,6 @@ src/nautilus-property-browser.c
 src/nautilus-query-editor.c
 src/nautilus-search-bar.c
 src/nautilus-shell-ui.xml
-src/nautilus-shell.c
 src/nautilus-side-pane.c
 src/nautilus-sidebar-title.c
 src/nautilus-spatial-window-ui.xml
