@@ -558,10 +558,9 @@ action_about_nautilus_callback (GtkAction *action,
 	gtk_show_about_dialog (GTK_WINDOW (user_data),
 			       "program-name", _("Nautilus"),
 			       "version", VERSION,
-			       "comments", _("Nautilus is a graphical shell "
-					     "for GNOME that makes it "
-					     "easy to manage your files "
-					     "and the rest of your system."),
+			       "comments", _("Nautilus lets you organize "
+					     "files and folders, both on "
+					     "your computer and online."),
 			       "copyright", _("Copyright \xC2\xA9 1999-2008 "
 					      "The Nautilus authors"),
 			       "license", license_trans,
