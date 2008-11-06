@@ -5133,6 +5133,9 @@ nautilus_icon_container_ensure_interactive_directory (NautilusIconContainer *con
 	container->details->search_window = gtk_window_new (GTK_WINDOW_POPUP);
 
 	gtk_window_set_modal (GTK_WINDOW (container->details->search_window), TRUE);
+	gtk_window_set_type_hint (GTK_WINDOW (container->details->search_window),
+				  GDK_WINDOW_TYPE_HINT_COMBO);
+
 	g_signal_connect (container->details->search_window, "delete_event",
 			  G_CALLBACK (nautilus_icon_container_search_delete_event),
 			  container);
