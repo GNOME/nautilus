@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: nautilus.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-12 14:49+0000\n"
-"PO-Revision-Date: 2008-02-21 15:27+0200\n"
-"Last-Translator: Yair Hershkovitz <yairhr@gmail.com>\n"
+"PO-Revision-Date: 2008-11-11 15:56+0200\n"
+"Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -122,7 +122,8 @@ msgid "Envy"
 msgstr "ירוק"
 
 #. translators: this is the name of an emblem
-#: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:931
+#: ../data/browser.xml.h:28
+#: ../src/nautilus-emblem-sidebar.c:931
 #: ../src/nautilus-property-browser.c:1770
 msgid "Erase"
 msgstr "מחק"
@@ -298,51 +299,13 @@ msgstr "חיפוש שמור"
 #. Translators: date_modified - mtime, the last time file contents were changed
 #. date_changed  - ctime, the last time file meta-information changed
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
-msgid ""
-"A list of captions below an icon in the icon view and the desktop. The "
-"actual number of captions shown depends on the zoom level. Possible values "
-"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
-"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
-"\"mime_type\"."
-msgstr ""
-"A list of captions below an icon in the icon view and the desktop. The "
-"actual number of captions shown depends on the zoom level. Possible values "
-"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
-"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
-"\"mime_type\"."
+msgid "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
+msgstr "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 #, no-c-format
-msgid ""
-"A string specifying how parts of overlong file names should be replaced by "
-"ellipses, depending on the zoom level. Each of the list entries is of the "
-"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
-"integer is larger than 0, the file name will not exceed the given number of "
-"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
-"zoom level. A default entry of the form \"Integer\" without any specified "
-"zoom level is also allowed. It defines the maximum number of lines for all "
-"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
-"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
-"shorten file names if they exceed five lines for zoom level \"smallest\". "
-"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
-"not shorten file names for other zoom levels. Available zoom levels: "
-"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
-"larger (200%), largest (400%)"
-msgstr ""
-"A string specifying how parts of overlong file names should be replaced by "
-"ellipses, depending on the zoom level. Each of the list entries is of the "
-"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
-"integer is larger than 0, the file name will not exceed the given number of "
-"lines. If the integer is 0 or smaller, no limit is imposed on the specified "
-"zoom level. A default entry of the form \"Integer\" without any specified "
-"zoom level is also allowed. It defines the maximum number of lines for all "
-"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
-"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
-"shorten file names if they exceed five lines for zoom level \"smallest\". "
-"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
-"not shorten file names for other zoom levels. Available zoom levels: "
-"smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
-"larger (200%), largest (400%)"
+msgid "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
+msgstr "A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form \"Zoom Level:Integer\". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form \"Integer\" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level \"smallest\". Shorten file names if they exceed four lines for zoom level \"smaller\". Do not shorten file names for other zoom levels. Available zoom levels: smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), larger (200%), largest (400%)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -353,22 +316,12 @@ msgid "Always use the location entry, instead of the pathbar"
 msgstr "Always use the location entry, instead of the pathbar"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
-msgid ""
-"An integer specifying how parts of overlong file names should be replaced by "
-"ellipses on the desktop. If the number is larger than 0, the file name will "
-"not exceed the given number of lines. If the number is 0 or smaller, no "
-"limit is imposed on the number of displayed lines."
-msgstr ""
-"An integer specifying how parts of overlong file names should be replaced by "
-"ellipses on the desktop. If the number is larger than 0, the file name will "
-"not exceed the given number of lines. If the number is 0 or smaller, no "
-"limit is imposed on the number of displayed lines."
+msgid "An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines."
+msgstr "An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
-msgid ""
-"Color for the default folder background. Only used if background_set is true."
-msgstr ""
-"Color for the default folder background. Only used if background_set is true."
+msgid "Color for the default folder background. Only used if background_set is true."
+msgstr "Color for the default folder background. Only used if background_set is true."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Computer icon visible on desktop"
@@ -379,16 +332,8 @@ msgid "Criteria for search bar searching"
 msgstr "Criteria for search bar searching"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
-msgid ""
-"Criteria when matching files searched for in the search bar. If set to "
-"\"search_by_text\", then Nautilus will Search for files by file name only. "
-"If set to \"search_by_text_and_properties\", then Nautilus will search for "
-"files by file name and file properties."
-msgstr ""
-"Criteria when matching files searched for in the search bar. If set to "
-"\"search_by_text\", then Nautilus will Search for files by file name only. "
-"If set to \"search_by_text_and_properties\", then Nautilus will search for "
-"files by file name and file properties."
+msgid "Criteria when matching files searched for in the search bar. If set to \"search_by_text\", then Nautilus will Search for files by file name only. If set to \"search_by_text_and_properties\", then Nautilus will search for files by file name and file properties."
+msgstr "Criteria when matching files searched for in the search bar. If set to \"search_by_text\", then Nautilus will Search for files by file name only. If set to \"search_by_text_and_properties\", then Nautilus will search for files by file name and file properties."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Current Nautilus theme (deprecated)"
@@ -495,60 +440,32 @@ msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr "Enables the classic Nautilus behavior, where all windows are browsers"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid ""
-"Filename for the default folder background. Only used if background_set is "
-"true."
-msgstr ""
-"Filename for the default folder background. Only used if background_set is "
-"true."
+msgid "Filename for the default folder background. Only used if background_set is true."
+msgstr "Filename for the default folder background. Only used if background_set is true."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid ""
-"Filename for the default side pane background. Only used if "
-"side_pane_background_set is true."
-msgstr ""
-"Filename for the default side pane background. Only used if "
-"side_pane_background_set is true."
+msgid "Filename for the default side pane background. Only used if side_pane_background_set is true."
+msgstr "Filename for the default side pane background. Only used if side_pane_background_set is true."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid ""
-"Folders over this size will be truncated to around this size. The purpose of "
-"this is to avoid unintentionally blowing the heap and killing Nautilus on "
-"massive folders. A negative value denotes no limit. The limit is approximate "
-"due to the reading of folders chunk-wise."
-msgstr ""
-"Folders over this size will be truncated to around this size. The purpose of "
-"this is to avoid unintentionally blowing the heap and killing Nautilus on "
-"massive folders. A negative value denotes no limit. The limit is approximate "
-"due to the reading of folders chunk-wise."
+msgid "Folders over this size will be truncated to around this size. The purpose of this is to avoid unintentionally blowing the heap and killing Nautilus on massive folders. A negative value denotes no limit. The limit is approximate due to the reading of folders chunk-wise."
+msgstr "Folders over this size will be truncated to around this size. The purpose of this is to avoid unintentionally blowing the heap and killing Nautilus on massive folders. A negative value denotes no limit. The limit is approximate due to the reading of folders chunk-wise."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "Home icon visible on desktop"
 msgstr "Home icon visible on desktop"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
-msgid ""
-"If set to \"after_current_tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
-msgstr ""
-"If set to \"after_current_tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
+msgid "If set to \"after_current_tab\", then new tabs are inserted after the current tab. If set to \"end\", then new tabs are appended to the end of the tab list."
+msgstr "If set to \"after_current_tab\", then new tabs are inserted after the current tab. If set to \"end\", then new tabs are appended to the end of the tab list."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
-msgid ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
-msgstr ""
-"If set to true, Nautilus will only show folders in the tree side pane. "
-"Otherwise it will show both folders and files."
+msgid "If set to true, Nautilus will only show folders in the tree side pane. Otherwise it will show both folders and files."
+msgstr "If set to true, Nautilus will only show folders in the tree side pane. Otherwise it will show both folders and files."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
-msgstr ""
-"If set to true, newly opened windows will have the location bar visible."
+msgid "If set to true, newly opened windows will have the location bar visible."
+msgstr "If set to true, newly opened windows will have the location bar visible."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid "If set to true, newly opened windows will have the side pane visible."
@@ -563,250 +480,124 @@ msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr "If set to true, newly opened windows will have toolbars visible."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-msgid ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
-msgstr ""
-"If set to true, then Nautilus browser windows will always use a textual "
-"input entry for the location toolbar, instead of the pathbar."
+msgid "If set to true, then Nautilus browser windows will always use a textual input entry for the location toolbar, instead of the pathbar."
+msgstr "If set to true, then Nautilus browser windows will always use a textual input entry for the location toolbar, instead of the pathbar."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
-msgstr ""
-"If set to true, then Nautilus lets you edit and display file permissions in "
-"a more unix-like way, accessing some more esoteric options."
+msgid "If set to true, then Nautilus lets you edit and display file permissions in a more unix-like way, accessing some more esoteric options."
+msgstr "If set to true, then Nautilus lets you edit and display file permissions in a more unix-like way, accessing some more esoteric options."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
-msgid ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
-msgstr ""
-"If set to true, then Nautilus shows folders prior to showing files in the "
-"icon and list views."
+msgid "If set to true, then Nautilus shows folders prior to showing files in the icon and list views."
+msgstr "If set to true, then Nautilus shows folders prior to showing files in the icon and list views."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-msgid ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
-msgstr ""
-"If set to true, then Nautilus will ask for confirmation when you attempt to "
-"delete files, or empty the Trash."
+msgid "If set to true, then Nautilus will ask for confirmation when you attempt to delete files, or empty the Trash."
+msgstr "If set to true, then Nautilus will ask for confirmation when you attempt to delete files, or empty the Trash."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-msgid ""
-"If set to true, then Nautilus will automatically mount media such as user-"
-"visible hard disks and removable media on start-up and media insertion."
-msgstr ""
-"If set to true, then Nautilus will automatically mount media such as user-"
-"visible hard disks and removable media on start-up and media insertion."
+msgid "If set to true, then Nautilus will automatically mount media such as user-visible hard disks and removable media on start-up and media insertion."
+msgstr "If set to true, then Nautilus will automatically mount media such as user-visible hard disks and removable media on start-up and media insertion."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-msgid ""
-"If set to true, then Nautilus will automatically open a folder when media is "
-"automounted. This only applies to media where no known x-content/* type was "
-"detected; for media where a known x-content type is detected, the user "
-"configurable action will be taken instead."
-msgstr ""
-"If set to true, then Nautilus will automatically open a folder when media is "
-"automounted. This only applies to media where no known x-content/* type was "
-"detected; for media where a known x-content type is detected, the user "
-"configurable action will be taken instead."
+msgid "If set to true, then Nautilus will automatically open a folder when media is automounted. This only applies to media where no known x-content/* type was detected; for media where a known x-content type is detected, the user configurable action will be taken instead."
+msgstr "If set to true, then Nautilus will automatically open a folder when media is automounted. This only applies to media where no known x-content/* type was detected; for media where a known x-content type is detected, the user configurable action will be taken instead."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr "If set to true, then Nautilus will draw the icons on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
-msgid ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
-msgstr ""
-"If set to true, then Nautilus will have a feature allowing you to delete a "
-"file immediately and in-place, instead of moving it to the trash. This "
-"feature can be dangerous, so use caution."
+msgid "If set to true, then Nautilus will have a feature allowing you to delete a file immediately and in-place, instead of moving it to the trash. This feature can be dangerous, so use caution."
+msgstr "If set to true, then Nautilus will have a feature allowing you to delete a file immediately and in-place, instead of moving it to the trash. This feature can be dangerous, so use caution."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
-msgid ""
-"If set to true, then Nautilus will never prompt nor autorun/autostart "
-"programs when a medium is inserted."
-msgstr ""
-"If set to true, then Nautilus will never prompt nor autorun/autostart "
-"programs when a medium is inserted."
+msgid "If set to true, then Nautilus will never prompt nor autorun/autostart programs when a medium is inserted."
+msgstr "If set to true, then Nautilus will never prompt nor autorun/autostart programs when a medium is inserted."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
-msgid ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"If set to true, then Nautilus will use the user's home folder as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgid "If set to true, then Nautilus will use the user's home folder as the desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr "If set to true, then Nautilus will use the user's home folder as the desktop. If it is false, then it will use ~/Desktop as the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-msgid ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
-msgstr ""
-"If set to true, then all Nautilus windows will be browser windows. This is "
-"how Nautilus used to behave before version 2.6, and some people prefer this "
-"behavior."
+msgid "If set to true, then all Nautilus windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behavior."
+msgstr "If set to true, then all Nautilus windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behavior."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-msgid ""
-"If set to true, then backup files such as those created by Emacs are "
-"displayed. Currently, only files ending in a tilde (~) are considered backup "
-"files."
-msgstr ""
-"If set to true, then backup files such as those created by Emacs are "
-"displayed. Currently, only files ending in a tilde (~) are considered backup "
-"files."
+msgid "If set to true, then backup files such as those created by Emacs are displayed. Currently, only files ending in a tilde (~) are considered backup files."
+msgstr "If set to true, then backup files such as those created by Emacs are displayed. Currently, only files ending in a tilde (~) are considered backup files."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-msgid ""
-"If set to true, then hidden files are shown in the file manager. Hidden "
-"files are either dotfiles or are listed in the folder's .hidden file."
-msgstr ""
-"If set to true, then hidden files are shown in the file manager. Hidden "
-"files are either dotfiles or are listed in the folder's .hidden file."
+msgid "If set to true, then hidden files are shown in the file manager. Hidden files are either dotfiles or are listed in the folder's .hidden file."
+msgstr "If set to true, then hidden files are shown in the file manager. Hidden files are either dotfiles or are listed in the folder's .hidden file."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
-msgid ""
-"If set to true, then multiple views can be opened in one browser window, "
-"each in a separate tab."
-msgstr ""
-"If set to true, then multiple views can be opened in one browser window, "
-"each in a separate tab."
+msgid "If set to true, then multiple views can be opened in one browser window, each in a separate tab."
+msgstr "If set to true, then multiple views can be opened in one browser window, each in a separate tab."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
-msgstr ""
-"If this is set to true, an icon linking to the Network Servers view will be "
-"put on the desktop."
+msgid "If this is set to true, an icon linking to the Network Servers view will be put on the desktop."
+msgstr "If this is set to true, an icon linking to the Network Servers view will be put on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-msgid ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
-msgstr ""
-"If this is set to true, an icon linking to the computer location will be put "
-"on the desktop."
+msgid "If this is set to true, an icon linking to the computer location will be put on the desktop."
+msgstr "If this is set to true, an icon linking to the computer location will be put on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
-msgid ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
-msgstr ""
-"If this is set to true, an icon linking to the home folder will be put on "
-"the desktop."
+msgid "If this is set to true, an icon linking to the home folder will be put on the desktop."
+msgstr "If this is set to true, an icon linking to the home folder will be put on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
-msgid ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
-msgstr ""
-"If this is set to true, an icon linking to the trash will be put on the "
-"desktop."
+msgid "If this is set to true, an icon linking to the trash will be put on the desktop."
+msgstr "If this is set to true, an icon linking to the trash will be put on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
-msgid ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
-msgstr ""
-"If this is set to true, icons linking to mounted volumes will be put on the "
-"desktop."
+msgid "If this is set to true, icons linking to mounted volumes will be put on the desktop."
+msgstr "If this is set to true, icons linking to mounted volumes will be put on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
-msgstr ""
-"If this preference is set, all columns in the compact view have the same "
-"width. Otherwise, the width of each column is determined seperately."
+msgid "If this preference is set, all columns in the compact view have the same width. Otherwise, the width of each column is determined seperately."
+msgstr "If this preference is set, all columns in the compact view have the same width. Otherwise, the width of each column is determined seperately."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
-msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"."
-msgstr ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"."
+msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"."
+msgstr "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
-msgid ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
-msgstr ""
-"If true, files in new windows will be sorted in reverse order. ie, if sorted "
-"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
-"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
+msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"; if sorted by size, instead of being incrementally they will be sorted decrementally."
+msgstr "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"; if sorted by size, instead of being incrementally they will be sorted decrementally."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "If true, icons will be laid out tighter by default in new windows."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
-msgid ""
-"If true, labels will be placed beside icons rather than underneath them."
-msgstr ""
-"If true, labels will be placed beside icons rather than underneath them."
+msgid "If true, labels will be placed beside icons rather than underneath them."
+msgstr "If true, labels will be placed beside icons rather than underneath them."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "If true, new windows will use manual layout by default."
 msgstr "If true, new windows will use manual layout by default."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-msgid ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
-"setting is to avoid thumbnailing large images that may take a long time to "
-"load or use lots of memory."
-msgstr ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
-"setting is to avoid thumbnailing large images that may take a long time to "
-"load or use lots of memory."
+msgid "Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory."
+msgstr "Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "List of possible captions on icons"
 msgstr "List of possible captions on icons"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-msgid ""
-"List of x-content/* types for which the user have chosen \"Do Nothing\" in "
-"the preference capplet. No prompt will be shown nor will any matching "
-"application be started on insertion of media matching these types."
-msgstr ""
-"List of x-content/* types for which the user have chosen \"Do Nothing\" in "
-"the preference capplet. No prompt will be shown nor will any matching "
-"application be started on insertion of media matching these types."
+msgid "List of x-content/* types for which the user have chosen \"Do Nothing\" in the preference capplet. No prompt will be shown nor will any matching application be started on insertion of media matching these types."
+msgstr "List of x-content/* types for which the user have chosen \"Do Nothing\" in the preference capplet. No prompt will be shown nor will any matching application be started on insertion of media matching these types."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-msgid ""
-"List of x-content/* types for which the user have chosen \"Open Folder\" in "
-"the preferences capplet. A folder window will be opened on insertion of "
-"media matching these types."
-msgstr ""
-"List of x-content/* types for which the user have chosen \"Open Folder\" in "
-"the preferences capplet. A folder window will be opened on insertion of "
-"media matching these types."
+msgid "List of x-content/* types for which the user have chosen \"Open Folder\" in the preferences capplet. A folder window will be opened on insertion of media matching these types."
+msgstr "List of x-content/* types for which the user have chosen \"Open Folder\" in the preferences capplet. A folder window will be opened on insertion of media matching these types."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-msgid ""
-"List of x-content/* types for which the user have chosen to start an "
-"application in the preference capplet. The preferred application for the "
-"given type will be started on insertion on media matching these types."
-msgstr ""
-"List of x-content/* types for which the user have chosen to start an "
-"application in the preference capplet. The preferred application for the "
-"given type will be started on insertion on media matching these types."
+msgid "List of x-content/* types for which the user have chosen to start an application in the preference capplet. The preferred application for the given type will be started on insertion on media matching these types."
+msgstr "List of x-content/* types for which the user have chosen to start an application in the preference capplet. The preferred application for the given type will be started on insertion on media matching these types."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "List of x-content/* types set to \"Do Nothing\""
@@ -817,10 +608,8 @@ msgid "List of x-content/* types set to \"Open Folder\""
 msgstr "List of x-content/* types set to \"Open Folder\""
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-msgid ""
-"List of x-content/* types where the preferred application will be launched"
-msgstr ""
-"List of x-content/* types where the preferred application will be launched"
+msgid "List of x-content/* types where the preferred application will be launched"
+msgstr "List of x-content/* types where the preferred application will be launched"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Maximum handled files in a folder"
@@ -831,12 +620,8 @@ msgid "Maximum image size for thumbnailing"
 msgstr "Maximum image size for thumbnailing"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid ""
-"Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
-"2.2. Please use the icon theme instead."
-msgstr ""
-"Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
-"2.2. Please use the icon theme instead."
+msgid "Name of the Nautilus theme to use. This has been deprecated as of Nautilus 2.2. Please use the icon theme instead."
+msgstr "Name of the Nautilus theme to use. This has been deprecated as of Nautilus 2.2. Please use the icon theme instead."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Nautilus handles drawing the desktop"
@@ -863,12 +648,8 @@ msgid "Only show folders in the tree side pane"
 msgstr "Only show folders in the tree side pane"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
-msgid ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
-msgstr ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
+msgid "Possible values are \"single\" to launch files on a single click, or \"double\" to launch them on a double click."
+msgstr "Possible values are \"single\" to launch files on a single click, or \"double\" to launch them on a double click."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Put labels beside icons"
@@ -918,56 +699,20 @@ msgid "Side pane view"
 msgstr "Side pane view"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
-msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local_only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local_only\" then only plays previews on "
-"local file systems. If set to \"never\" then it never previews sound."
+msgid "Speed tradeoff for when to preview a sound file when mousing over a files icon. If set to \"always\" then always plays the sound, even if the file is on a remote server. If set to \"local_only\" then only plays previews on local file systems. If set to \"never\" then it never previews sound."
+msgstr "Speed tradeoff for when to preview a sound file when mousing over a files icon. If set to \"always\" then always plays the sound, even if the file is on a remote server. If set to \"local_only\" then only plays previews on local file systems. If set to \"never\" then it never previews sound."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
-msgid ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local_only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
-msgstr ""
-"Speed tradeoff for when to show a preview of text file contents in the "
-"file's icon. If set to \"always\" then always show previews, even if the "
-"folder is on a remote server. If set to \"local_only\" then only show "
-"previews for local file systems. If set to \"never\" then never bother to "
-"read preview data."
+msgid "Speed tradeoff for when to show a preview of text file contents in the file's icon. If set to \"always\" then always show previews, even if the folder is on a remote server. If set to \"local_only\" then only show previews for local file systems. If set to \"never\" then never bother to read preview data."
+msgstr "Speed tradeoff for when to show a preview of text file contents in the file's icon. If set to \"always\" then always show previews, even if the folder is on a remote server. If set to \"local_only\" then only show previews for local file systems. If set to \"never\" then never bother to read preview data."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
-msgid ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local_only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
-msgstr ""
-"Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the folder is on a remote server. "
-"If set to \"local_only\" then only show thumbnails for local file systems. "
-"If set to \"never\" then never bother to thumbnail images, just use a "
-"generic icon."
+msgid "Speed tradeoff for when to show an image file as a thumbnail. If set to \"always\" then always thumbnail, even if the folder is on a remote server. If set to \"local_only\" then only show thumbnails for local file systems. If set to \"never\" then never bother to thumbnail images, just use a generic icon."
+msgstr "Speed tradeoff for when to show an image file as a thumbnail. If set to \"always\" then always thumbnail, even if the folder is on a remote server. If set to \"local_only\" then only show thumbnails for local file systems. If set to \"never\" then never bother to thumbnail images, just use a generic icon."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
-msgid ""
-"Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local_only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
-"Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local_only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
+msgid "Speed tradeoff for when to show the number of items in a folder. If set to \"always\" then always show item counts, even if the folder is on a remote server. If set to \"local_only\" then only show counts for local file systems. If set to \"never\" then never bother to compute item counts."
+msgstr "Speed tradeoff for when to show the number of items in a folder. If set to \"always\" then always show item counts, even if the folder is on a remote server. If set to \"local_only\" then only show counts for local file systems. If set to \"never\" then never bother to compute item counts."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Text Ellipsis Limit"
@@ -978,20 +723,12 @@ msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr "The default size of an icon for a thumbnail in the icon view."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
-msgid ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
+msgid "The default sort-order for items in the icon view. Possible values are \"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
+msgstr "The default sort-order for items in the icon view. Possible values are \"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
-msgid ""
-"The default sort-order for the items in the list view. Possible values are "
-"\"name\", \"size\", \"type\", and \"modification_date\"."
-msgstr ""
-"The default sort-order for the items in the list view. Possible values are "
-"\"name\", \"size\", \"type\", and \"modification_date\"."
+msgid "The default sort-order for the items in the list view. Possible values are \"name\", \"size\", \"type\", and \"modification_date\"."
+msgstr "The default sort-order for the items in the list view. Possible values are \"name\", \"size\", \"type\", and \"modification_date\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid "The default width of the side pane in new windows."
@@ -1002,48 +739,28 @@ msgid "The font description used for the icons on the desktop."
 msgstr "The font description used for the icons on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
-msgid ""
-"The format of file dates. Possible values are \"locale\", \"iso\", and "
-"\"informal\"."
-msgstr ""
-"The format of file dates. Possible values are \"locale\", \"iso\", and "
-"\"informal\"."
+msgid "The format of file dates. Possible values are \"locale\", \"iso\", and \"informal\"."
+msgstr "The format of file dates. Possible values are \"locale\", \"iso\", and \"informal\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid "The side pane view to show in newly opened windows."
 msgstr "The side pane view to show in newly opened windows."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
-msgid ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
-msgstr ""
-"This name can be set if you want a custom name for the computer icon on the "
-"desktop."
+msgid "This name can be set if you want a custom name for the computer icon on the desktop."
+msgstr "This name can be set if you want a custom name for the computer icon on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
-msgid ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
-msgstr ""
-"This name can be set if you want a custom name for the home icon on the "
-"desktop."
+msgid "This name can be set if you want a custom name for the home icon on the desktop."
+msgstr "This name can be set if you want a custom name for the home icon on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
-msgid ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
-msgstr ""
-"This name can be set if you want a custom name for the network servers icon "
-"on the desktop."
+msgid "This name can be set if you want a custom name for the network servers icon on the desktop."
+msgstr "This name can be set if you want a custom name for the network servers icon on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
-msgid ""
-"This name can be set if you want a custom name for the trash icon on the "
-"desktop."
-msgstr ""
-"This name can be set if you want a custom name for the trash icon on the "
-"desktop."
+msgid "This name can be set if you want a custom name for the trash icon on the desktop."
+msgstr "This name can be set if you want a custom name for the trash icon on the desktop."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid "Trash icon visible on desktop"
@@ -1066,26 +783,12 @@ msgid "What to do with executable text files when activated"
 msgstr "What to do with executable text files when activated"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
-msgid ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
-msgstr ""
-"What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
+msgid "What to do with executable text files when they are activated (single or double clicked). Possible values are \"launch\" to launch them as programs, \"ask\" to ask what to do via a dialog, and \"display\" to display them as text files."
+msgstr "What to do with executable text files when they are activated (single or double clicked). Possible values are \"launch\" to launch them as programs, \"ask\" to ask what to do via a dialog, and \"display\" to display them as text files."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
-msgid ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list_view\", "
-"\"icon_view\" and \"compact_view\"."
-msgstr ""
-"When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list_view\", "
-"\"icon_view\" and \"compact_view\"."
+msgid "When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are \"list_view\", \"icon_view\" and \"compact_view\"."
+msgstr "When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are \"list_view\", \"icon_view\" and \"compact_view\"."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "When to show number of items in a folder"
@@ -1176,75 +879,59 @@ msgstr "פתח באמצעות יישום אחר..."
 
 #: ../libnautilus-private/nautilus-autorun.c:891
 msgid "You have just inserted an Audio CD."
-msgstr ""
-"תקליטור שמע הוכנס."
+msgstr "תקליטור שמע הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:893
 msgid "You have just inserted an Audio DVD."
-msgstr ""
-"תקליטור DVD שמע הוכנס."
+msgstr "תקליטור DVD שמע הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:895
 msgid "You have just inserted a Video DVD."
-msgstr ""
-"תקליטור DVD וידאו הוכנס."
+msgstr "תקליטור DVD וידאו הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:897
 msgid "You have just inserted a Video CD."
-msgstr ""
-"תקליטור וידאו הוכנס."
+msgstr "תקליטור וידאו הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:899
 msgid "You have just inserted a Super Video CD."
-msgstr ""
-"תקליטור סופר-וידאו הוכנס."
+msgstr "תקליטור סופר-וידאו הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:901
 msgid "You have just inserted a blank CD."
-msgstr ""
-"תקליטור ריק הוכנס."
+msgstr "תקליטור ריק הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:903
 msgid "You have just inserted a blank DVD."
-msgstr ""
-"תקליטור DVD ריק הוכנס."
+msgstr "תקליטור DVD ריק הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:905
 msgid "You have just inserted a blank Blu-Ray disc."
-msgstr ""
-"תקליטור Blu-Ray ריק הוכנס."
+msgstr "תקליטור Blu-Ray ריק הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:907
 msgid "You have just inserted a blank HD DVD."
-msgstr ""
-"תקליטור HD DVD ריק הוכנס."
+msgstr "תקליטור HD DVD ריק הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:909
 msgid "You have just inserted a Photo CD."
-msgstr ""
-"תקליטור תמונות הוכנס."
+msgstr "תקליטור תמונות הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:911
 msgid "You have just inserted a Picture CD."
-msgstr ""
-"תקליטור תמונות הוכנס."
+msgstr "תקליטור תמונות הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:913
 msgid "You have just inserted a medium with digital photos."
-msgstr ""
-"מדיה עם תמונות דיגיטליות הוכנסה."
+msgstr "מדיה עם תמונות דיגיטליות הוכנסה."
 
 #: ../libnautilus-private/nautilus-autorun.c:915
 msgid "You have just inserted a digital audio player."
-msgstr ""
-"נגן שמע דיגיטלי הוכנס."
+msgstr "נגן שמע דיגיטלי הוכנס."
 
 #: ../libnautilus-private/nautilus-autorun.c:917
-msgid ""
-"You have just inserted a medium with software intended to be automatically "
-"started."
-msgstr ""
-"מדיה עם תוכנה שאמורה לפעול אוטומטית הוכנסה."
+msgid "You have just inserted a medium with software intended to be automatically started."
+msgstr "מדיה עם תוכנה שאמורה לפעול אוטומטית הוכנסה."
 
 #. fallback to generic greeting
 #: ../libnautilus-private/nautilus-autorun.c:920
@@ -1257,12 +944,8 @@ msgstr "בחר איזה יישום לשגר."
 
 #: ../libnautilus-private/nautilus-autorun.c:931
 #, c-format
-msgid ""
-"Select how to open \"%s\" and whether to perform this action in the future "
-"for other media of type \"%s\"."
-msgstr ""
-"בחר איך לפתוח את \"%s\" ואם לבצע פעולה זו בעתיד עבור סוגי מדיה אחרים מסוג \"%"
-"s\"."
+msgid "Select how to open \"%s\" and whether to perform this action in the future for other media of type \"%s\"."
+msgstr "בחר איך לפתוח את \"%s\" ואם לבצע פעולה זו בעתיד עבור סוגי מדיה אחרים מסוג \"%s\"."
 
 #: ../libnautilus-private/nautilus-autorun.c:953
 msgid "_Always perform this action"
@@ -1428,20 +1111,14 @@ msgstr "על שולחן העבודה"
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:101
 #, c-format
 msgid "You cannot move the volume \"%s\" to the trash."
-msgstr ""
-"לא ניתן להעביר את הכרך \"%s\" לאשפה."
+msgstr "לא ניתן להעביר את הכרך \"%s\" לאשפה."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:111
-msgid ""
-"If you want to eject the volume, please use \"Eject\" in the popup menu of "
-"the volume."
-msgstr ""
-"אם אתה רוצה להוציא את הכרך, אנא השתמש ב\"הוצא\" בחלונית הקופצת של הכרך."
+msgid "If you want to eject the volume, please use \"Eject\" in the popup menu of the volume."
+msgstr "אם אתה רוצה להוציא את הכרך, אנא השתמש ב\"הוצא\" בחלונית הקופצת של הכרך."
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:120
-msgid ""
-"If you want to unmount the volume, please use \"Unmount Volume\" in the "
-"popup menu of the volume."
+msgid "If you want to unmount the volume, please use \"Unmount Volume\" in the popup menu of the volume."
 msgstr "אם אתה רוצה לנתק את הכרך, אנא השתמש ב\"נתק כרך\" בחלונית הקופצת של הכרך."
 
 #: ../libnautilus-private/nautilus-dnd.c:748
@@ -1486,8 +1163,7 @@ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "מצטער, אך אתה חייב לציין שם לא ריק לסמל החדש."
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:215
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr "מצטער, אך שם הסמל יכול להכיל רק אותיות רווחים ומספרים."
 
 #. this really should never happen, as a user has no idea
@@ -1717,12 +1393,8 @@ msgstr "האם אתה בטוח שברצונך למחוק לצמיתות את \"%
 
 #: ../libnautilus-private/nautilus-file-operations.c:1211
 #, c-format
-msgid ""
-"Are you sure you want to permanently delete the %'d selected item from the "
-"trash?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %'d selected items from the "
-"trash?"
+msgid "Are you sure you want to permanently delete the %'d selected item from the trash?"
+msgid_plural "Are you sure you want to permanently delete the %'d selected items from the trash?"
 msgstr[0] "האם למחוק לצמיתות את %'d הפריטים הנבחרים מהאשפה?"
 msgstr[1] "האם למחוק לצמיתות את %'d הפריטים הנבחרים מהאשפה?"
 
@@ -1743,17 +1415,14 @@ msgid "Empty all of the items from the trash?"
 msgstr "לרוקן את כל הפריטים מהאשפה?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1245
-msgid ""
-"If you choose to empty the trash, all items in it will be permanently lost. "
-"Please note that you can also delete them separately."
-msgstr ""
-"אם אתה בוחר לרוקן את האשפה, כל הפריטים יאבדו לצמיתות. שים לב שניתן למחוק "
-"אותם בנפרד."
+msgid "If you choose to empty the trash, all items in it will be permanently lost. Please note that you can also delete them separately."
+msgstr "אם אתה בוחר לרוקן את האשפה, כל הפריטים יאבדו לצמיתות. שים לב שניתן למחוק אותם בנפרד."
 
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1250
 #: ../libnautilus-private/nautilus-file-operations.c:2076
-#: ../src/nautilus-places-sidebar.c:2035 ../src/nautilus-trash-bar.c:125
+#: ../src/nautilus-places-sidebar.c:2035
+#: ../src/nautilus-trash-bar.c:125
 msgid "Empty _Trash"
 msgstr "רוקן _אשפה"
 
@@ -1764,8 +1433,7 @@ msgstr "אתה בטוח שברצונך למחוק לצמיתות את \"%B\"?"
 #: ../libnautilus-private/nautilus-file-operations.c:1280
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %'d selected items?"
+msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "אתה בטוח שברצונך למחוק לצמיתות את %'d הפריטים שנבחרו?"
 msgstr[1] "אתה בטוח שברצונך למחוק לצמיתות את %'d הפריטים שנבחרו?"
 
@@ -1796,16 +1464,13 @@ msgid "Error while deleting."
 msgstr "שגיאה במהלך מחיקה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1404
-msgid ""
-"Files in the folder \"%B\" cannot be deleted because you do not have "
-"permissions to see them."
+msgid "Files in the folder \"%B\" cannot be deleted because you do not have permissions to see them."
 msgstr "לא ניתן למחוק קבצים בתיקייה \"%B\" בגלל שאין לך הרשאות לראות אותם."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1407
 #: ../libnautilus-private/nautilus-file-operations.c:2362
 #: ../libnautilus-private/nautilus-file-operations.c:3304
-msgid ""
-"There was an error getting information about the files in the folder \"%B\"."
+msgid "There was an error getting information about the files in the folder \"%B\"."
 msgstr "ארעה שגיאה בקבלת מידע אודות הקבצים בתיקייה \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1416
@@ -1814,9 +1479,7 @@ msgid "_Skip files"
 msgstr "_דלג על הקבצים"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1437
-msgid ""
-"The folder \"%B\" cannot be deleted because you do not have permissions to "
-"read it."
+msgid "The folder \"%B\" cannot be deleted because you do not have permissions to read it."
 msgstr "לא ניתן למחוק את התיקייה \"%B\" כיון שאין לך הרשאת קריאה בה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1440
@@ -1850,7 +1513,7 @@ msgstr "לא יכול לזרוק קובץ לאשפה. האם ברצונך למח
 
 #: ../libnautilus-private/nautilus-file-operations.c:1690
 msgid "The file \"%B\" cannot be moved to the trash."
-msgstr "לא ניתן להעביר את הקובץ \"%s\" לאשפה."
+msgstr "לא ניתן להעביר את הקובץ \"%B\" לאשפה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1924
 msgid "Unable to eject %V"
@@ -1865,12 +1528,8 @@ msgid "Do you want to empty the trash before you unmount?"
 msgstr "האם לרוקן את האשפה לפני הניתוק?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2068
-msgid ""
-"In order to regain the free space on this volume the trash must be emptied. "
-"All trashed items on the volume will be permanently lost."
-msgstr ""
-"על מנת לקבל את המקום הפנוי בכרך זה יש לרוקן את האשפה. כל הפריטים באשפה "
-"יאבדו לצמיתות. "
+msgid "In order to regain the free space on this volume the trash must be emptied. All trashed items on the volume will be permanently lost."
+msgstr "על מנת לקבל את המקום הפנוי בכרך זה יש לרוקן את האשפה. כל הפריטים באשפה יאבדו לצמיתות. "
 
 #: ../libnautilus-private/nautilus-file-operations.c:2074
 msgid "Do _not Empty Trash"
@@ -1927,21 +1586,15 @@ msgid "Error while moving files to trash."
 msgstr "שגיאה במהלך העברת פריטים לאשפה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2359
-msgid ""
-"Files in the folder \"%B\" cannot be handled because you do not have "
-"permissions to see them."
+msgid "Files in the folder \"%B\" cannot be handled because you do not have permissions to see them."
 msgstr "לא ניתן לטפל בקבצים בתיקייה \"%B\" מכיוון שאין לך הרשאות לראות אותם."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2398
-msgid ""
-"The folder \"%B\" cannot be handled because you do not have permissions to "
-"read it."
+msgid "The folder \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr "לא ניתן לטפל בתיקייה \"%B\" מכיוון שאין לך הרשאות לקרוא אותה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2475
-msgid ""
-"The file \"%B\" cannot be handled because you do not have permissions to "
-"read it."
+msgid "The file \"%B\" cannot be handled because you do not have permissions to read it."
 msgstr "לא ניתן לטפל בקובץ \"%B\" מכיוון שאין לך הרשאות לקרוא אותו."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2478
@@ -1968,9 +1621,7 @@ msgid "The destination is not a folder."
 msgstr "היעד אינו תיקייה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2654
-msgid ""
-"There is not enough space on the destination. Try to remove files to make "
-"space."
+msgid "There is not enough space on the destination. Try to remove files to make space."
 msgstr "אין מספיק מקום פנוי ביעד. נסה לפנות קבצים כדי לפנות מקום."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2656
@@ -1984,7 +1635,7 @@ msgstr "היעד הוא לקריאה בלבד."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2739
 msgid "Moving \"%B\" to \"%B\""
-msgstr "מעביר מ-\"%s\" ל-\"%s\"."
+msgstr "מעביר מ-\"%B\" ל-\"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2740
 msgid "Copying \"%B\" to \"%B\""
@@ -2045,9 +1696,7 @@ msgid "%S of %S — %T left (%S/sec)"
 msgstr "‏%S מתוך %S ‏- %T נותרו (%S/שניות)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3177
-msgid ""
-"The folder \"%B\" cannot be copied because you do not have permissions to "
-"create it in the destination."
+msgid "The folder \"%B\" cannot be copied because you do not have permissions to create it in the destination."
 msgstr "‏לא ניתן להעתיק את התיקייה \"%B\" מכיון שאין לך הרשאות ליצור אותה ביעד."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3180
@@ -2055,16 +1704,11 @@ msgid "There was an error creating the folder \"%B\"."
 msgstr "ארעה שגיאה בעת יצירת התיקייה \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3301
-msgid ""
-"Files in the folder \"%B\" cannot be copied because you do not have "
-"permissions to see them."
-msgstr ""
-"לא ניתן להעתיק את הקבצים בתיקייה \"%B\" כיוון שאין לך הרשאות לראות אותם."
+msgid "Files in the folder \"%B\" cannot be copied because you do not have permissions to see them."
+msgstr "לא ניתן להעתיק את הקבצים בתיקייה \"%B\" כיוון שאין לך הרשאות לראות אותם."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3346
-msgid ""
-"The folder \"%B\" cannot be copied because you do not have permissions to "
-"read it."
+msgid "The folder \"%B\" cannot be copied because you do not have permissions to read it."
 msgstr "לא ניתן להעתיק את‏ התיקייה \"%B\" כיוון שאין לך הרשאות לקרוא אותה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3389
@@ -2112,31 +1756,22 @@ msgstr "תיקיית היעד היא בתוך תיקיית המקור."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3807
 #: ../libnautilus-private/nautilus-file-operations.c:4378
-msgid ""
-"A folder named \"%B\" already exists.  Do you want to merge the source "
-"folder?"
+msgid "A folder named \"%B\" already exists.  Do you want to merge the source folder?"
 msgstr "התיקייה \"%B\" כבר קיימת.  האם ברצונך למזג עם תיקיית המקור?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3809
-msgid ""
-"The source folder already exists in \"%B\".  Merging will ask for "
-"confirmation before replacing any files in the folder that conflict with the "
-"files being copied."
-msgstr ""
-"התיקייה כבר קיימת ב-\"%B\". בזמן המיזוג תתבקש לאשר כל החלפה של קובץ שכבר "
-"קיים בתיקייה."
+msgid "The source folder already exists in \"%B\".  Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
+msgstr "התיקייה כבר קיימת ב-\"%B\". בזמן המיזוג תתבקש לאשר כל החלפה של קובץ שכבר קיים בתיקייה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3814
 #: ../libnautilus-private/nautilus-file-operations.c:4385
 msgid "A folder named \"%B\" already exists.  Do you want to replace it?"
-msgstr "התיקייה \"%s\" כבר קיימת.  האם ברצונך להחליפה?"
+msgstr "התיקייה \"%B\" כבר קיימת.  האם ברצונך להחליפה?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3816
 #: ../libnautilus-private/nautilus-file-operations.c:4387
 #, c-format
-msgid ""
-"The folder already exists in \"%F\".  Replacing it will remove all files in "
-"the folder."
+msgid "The folder already exists in \"%F\".  Replacing it will remove all files in the folder."
 msgstr "התיקייה כבר קיימת ב-\"%F\". החלפתה תגרום להסרת כל הקבצים בה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3821
@@ -2147,8 +1782,7 @@ msgstr "הקובץ \"%B\" כבר קיים.  האם ברצונך להחליפו?"
 #: ../libnautilus-private/nautilus-file-operations.c:3823
 #: ../libnautilus-private/nautilus-file-operations.c:4394
 #, c-format
-msgid ""
-"The file already exists in \"%F\".  Replacing it will overwrite its content."
+msgid "The file already exists in \"%F\".  Replacing it will overwrite its content."
 msgstr "הקובץ כבר קיים ב-\"%F\". החלפתו תגרום לאבדן תוכנו."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3913
@@ -2173,13 +1807,8 @@ msgstr[0] "מתכונן להעברת קובץ אחד"
 msgstr[1] "מתכונן להעברת %'d קבצים"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4380
-msgid ""
-"The source folder already exists in \"%B\".  Merging will ask for "
-"confirmation before replacing any files in the folder that conflict with the "
-"files being moved."
-msgstr ""
-"התיקייה כבר קיימת ב-\"%B\". בזמן המיזוג תתבקש לאשר כל החלפה של קובץ שכבר "
-"קיים בתיקייה."
+msgid "The source folder already exists in \"%B\".  Merging will ask for confirmation before replacing any files in the folder that conflict with the files being moved."
+msgstr "התיקייה כבר קיימת ב-\"%B\". בזמן המיזוג תתבקש לאשר כל החלפה של קובץ שכבר קיים בתיקייה."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4470
 #, c-format
@@ -2716,7 +2345,8 @@ msgid "Computer"
 msgstr "מחשב"
 
 #: ../libnautilus-private/nautilus-global-preferences.c:571
-#: ../src/nautilus-places-sidebar.c:483 ../src/nautilus-trash-bar.c:121
+#: ../src/nautilus-places-sidebar.c:483
+#: ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "אשפה"
 
@@ -2961,12 +2591,8 @@ msgstr "פתיחה נכשלה, האם אתה רוצה לבחור יישום אח
 #: ../libnautilus-private/nautilus-program-choosing.c:81
 #: ../libnautilus-private/nautilus-program-choosing.c:112
 #, c-format
-msgid ""
-"\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" "
-"locations."
-msgstr ""
-"\"%s\" לא יכול לפתוח את \"%s\" כיוון ש-\"%s\" לא יכול לגשת לקבצים במיקומים "
-"\"%s\"."
+msgid "\"%s\" cannot open \"%s\" because \"%s\" cannot access files at \"%s\" locations."
+msgstr "\"%s\" לא יכול לפתוח את \"%s\" כיוון ש-\"%s\" לא יכול לגשת לקבצים במיקומים \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:86
 msgid "Open Failed, would you like to choose another action?"
@@ -2976,28 +2602,16 @@ msgstr "פתיחה נכשלה, האם ברצונך לבחור פעולה אחר�
 #: ../libnautilus-private/nautilus-program-choosing.c:87
 #: ../libnautilus-private/nautilus-program-choosing.c:119
 #, c-format
-msgid ""
-"The default action cannot open \"%s\" because it cannot access files at \"%s"
-"\" locations."
-msgstr ""
-"פעולת ברירת המחדל לא יכולה לפתוח את \"%s\" כיוון שהיא אינה יכולה לגשת לקבצים "
-"במיקומים \"%s\"."
+msgid "The default action cannot open \"%s\" because it cannot access files at \"%s\" locations."
+msgstr "פעולת ברירת המחדל לא יכולה לפתוח את \"%s\" כיוון שהיא אינה יכולה לגשת לקבצים במיקומים \"%s\"."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:115
-msgid ""
-"No other applications are available to view this file.  If you copy this "
-"file onto your computer, you may be able to open it."
-msgstr ""
-"אין יישום אחר הזמין להצגת קובץ זה.  אם תעתיק קובץ זה למחשב שלך, ייתכן ותוכל "
-"לפתוח אותו."
+msgid "No other applications are available to view this file.  If you copy this file onto your computer, you may be able to open it."
+msgstr "אין יישום אחר הזמין להצגת קובץ זה.  אם תעתיק קובץ זה למחשב שלך, ייתכן ותוכל לפתוח אותו."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:121
-msgid ""
-"No other actions are available to view this file.  If you copy this file "
-"onto your computer, you may be able to open it."
-msgstr ""
-"אין פעולות אחרות הזמינות להצגת קובץ זה.  אם תעתיק קובץ זה למחשב שלך, ייתכן "
-"ותוכל לפתוח אותו."
+msgid "No other actions are available to view this file.  If you copy this file onto your computer, you may be able to open it."
+msgstr "אין פעולות אחרות הזמינות להצגת קובץ זה.  אם תעתיק קובץ זה למחשב שלך, ייתכן ותוכל לפתוח אותו."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:360
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -3018,17 +2632,12 @@ msgid "This drop target only supports local files."
 msgstr "מטרת הזריקה תומכת רק בקבצים מקומיים."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:399
-msgid ""
-"To open non-local files copy them to a local folder and then drop them again."
+msgid "To open non-local files copy them to a local folder and then drop them again."
 msgstr "כדי לפתוח קבצים לא מקומיים העתק אותם לתיקייה מקומית ואז זרוק אותם שוב."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:410
-msgid ""
-"To open non-local files copy them to a local folder and then drop them "
-"again. The local files you dropped have already been opened."
-msgstr ""
-"כדי לפתוח קבצים לא מקומיים העתק אותם לתיקייה מקומית ואז זרוק אותם שוב. "
-"הקבצים המקומיים שזרקת כבר נפתחו."
+msgid "To open non-local files copy them to a local folder and then drop them again. The local files you dropped have already been opened."
+msgstr "כדי לפתוח קבצים לא מקומיים העתק אותם לתיקייה מקומית ואז זרוק אותם שוב. הקבצים המקומיים שזרקת כבר נפתחו."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:439
 msgid "Details: "
@@ -3088,9 +2697,9 @@ msgid "Autorun Prompt"
 msgstr "הפעלה אוטומטית"
 
 #. tooltip
-#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:862
-msgid ""
-"Browse all local and remote disks and folders accessible from this computer"
+#: ../nautilus-computer.desktop.in.in.h:1
+#: ../src/nautilus-window-menus.c:862
+msgid "Browse all local and remote disks and folders accessible from this computer"
 msgstr "עיין בכל התיקיות והדיסקים המקומיים והמרוחקים הנגישים ממחשב זה"
 
 #: ../nautilus-file-management-properties.desktop.in.in.h:1
@@ -3101,12 +2710,14 @@ msgstr "שנה את ההתנהגות והמראה של חלונות מנהל ה�
 msgid "File Management"
 msgstr "ניהול קבצים"
 
-#: ../nautilus-home.desktop.in.in.h:1 ../src/file-manager/fm-tree-view.c:1341
+#: ../nautilus-home.desktop.in.in.h:1
+#: ../src/file-manager/fm-tree-view.c:1341
 msgid "Home Folder"
 msgstr "תיקיית בית"
 
 #. tooltip
-#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:858
+#: ../nautilus-home.desktop.in.in.h:2
+#: ../src/nautilus-window-menus.c:858
 msgid "Open your personal folder"
 msgstr "פתח את התיקייה הפרטית שלך"
 
@@ -3135,10 +2746,8 @@ msgid "Nautilus metafile factory"
 msgstr "יצרן קבצי META של Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:5
-msgid ""
-"Nautilus operations that can be done from subsequent command-line invocations"
-msgstr ""
-"Nautilus operations that can be done from subsequent command-line invocations"
+msgid "Nautilus operations that can be done from subsequent command-line invocations"
+msgstr "Nautilus operations that can be done from subsequent command-line invocations"
 
 #: ../src/Nautilus_shell.server.in.h:6
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -3177,8 +2786,7 @@ msgstr "שנה את _רקע שולחן העבודה"
 
 #. tooltip
 #: ../src/file-manager/fm-desktop-icon-view.c:701
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr "מציג חלון המאפשר לך לקבוע את דוגמת רקע שולחן העבודה או צבעו"
 
 #. label, accelerator
@@ -3324,8 +2932,7 @@ msgstr "‏%s%s, %s"
 #: ../src/file-manager/fm-directory-view.c:2313
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr ""
-"התיקייה \"%s\" מכילה יותר קבצים ממספר הקבצים המקסימלי שבו יכול Nautilus לטפל."
+msgstr "התיקייה \"%s\" מכילה יותר קבצים ממספר הקבצים המקסימלי שבו יכול Nautilus לטפל."
 
 #: ../src/file-manager/fm-directory-view.c:2319
 msgid "Some files will not be displayed."
@@ -3358,25 +2965,18 @@ msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "כל קבצי ההפעלה בתיקייה זו יופיעו בתפריט התסריטים."
 
 #: ../src/file-manager/fm-directory-view.c:5519
-msgid ""
-"Choosing a script from the menu will run that script with any selected items "
-"as input."
+msgid "Choosing a script from the menu will run that script with any selected items as input."
 msgstr "בחירת תסריט מהתפריט תפעיל את התסריט עם כל קובץ נבחר כקלט."
 
 #: ../src/file-manager/fm-directory-view.c:5521
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. "
-"Choosing a script from the menu will run that script.\n"
+"All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
 "\n"
-"When executed from a local folder, scripts will be passed the selected file "
-"names. When executed from a remote folder (e.g. a folder showing web or ftp "
-"content), scripts will be passed no parameters.\n"
+"When executed from a local folder, scripts will be passed the selected file names. When executed from a remote folder (e.g. a folder showing web or ftp content), scripts will be passed no parameters.\n"
 "\n"
-"In all cases, the following environment variables will be set by Nautilus, "
-"which the scripts may use:\n"
+"In all cases, the following environment variables will be set by Nautilus, which the scripts may use:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
-"files (only if local)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
 "\n"
@@ -3384,20 +2984,14 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"כל קבצי ההפעלה בתיקייה זו יופיעו בתפריט התסריטים. בחירת תסריט מהתפריט תפעיל "
-"את התסריט הזה.\n"
+"כל קבצי ההפעלה בתיקייה זו יופיעו בתפריט התסריטים. בחירת תסריט מהתפריט תפעיל את התסריט הזה.\n"
 "\n"
-"כאשר זה מופעל מתיקייה מקומית, התסריטים יקבלו את שמות הקבצים הנבחרים. כאשר זה "
-"מופעל מתיקייה מרוחקת (לדוגמה, תיקייה המציגה תוכן רשת או FTP), התסריטים לא "
-"יקבלו אף פרמטר.\n"
+"כאשר זה מופעל מתיקייה מקומית, התסריטים יקבלו את שמות הקבצים הנבחרים. כאשר זה מופעל מתיקייה מרוחקת (לדוגמה, תיקייה המציגה תוכן רשת או FTP), התסריטים לא יקבלו אף פרמטר.\n"
 "\n"
-"בכל המקרים, משתני הסביבה הבאים יקבעו על-ידי Nautilus, ובהם התסריטים יכולים "
-"להשתמש:\n"
+"בכל המקרים, משתני הסביבה הבאים יקבעו על-ידי Nautilus, ובהם התסריטים יכולים להשתמש:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: נתיבים המורדים על-ידי שורה חדשה לקבצים "
-"הנבחרים (רק אם הם מקומיים)\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: כתובות המופרדות בשורה חדשה עבור הקבצים "
-"הנבחרים\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: נתיבים המורדים על-ידי שורה חדשה לקבצים הנבחרים (רק אם הם מקומיים)\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: כתובות המופרדות בשורה חדשה עבור הקבצים הנבחרים\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: כתובת המיקום הנוכחי\n"
 "\n"
@@ -3418,16 +3012,14 @@ msgstr "\"%s\" יועתק אם תבחר בפקודת הדבק"
 #: ../src/file-manager/fm-directory-view.c:5704
 #, c-format
 msgid "The %'d selected item will be moved if you select the Paste command"
-msgid_plural ""
-"The %'d selected items will be moved if you select the Paste command"
+msgid_plural "The %'d selected items will be moved if you select the Paste command"
 msgstr[0] "‏%'d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 msgstr[1] "‏%'d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 
 #: ../src/file-manager/fm-directory-view.c:5711
 #, c-format
 msgid "The %'d selected item will be copied if you select the Paste command"
-msgid_plural ""
-"The %'d selected items will be copied if you select the Paste command"
+msgid_plural "The %'d selected items will be copied if you select the Paste command"
 msgstr[0] "‏%'d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 msgstr[1] "‏%'d הפריטים הנבחרים יועברו אם תבחר בפקודה \"הדבק\""
 
@@ -3626,11 +3218,8 @@ msgstr "ה_דבק לתוך תיקייה"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6650
-msgid ""
-"Move or copy files previously selected by a Cut or Copy command into the "
-"selected folder"
-msgstr ""
-"מעביר או מעתיק קבצים שנבחרו מוקדם יותר על-ידי פקודת גזור או העתק לתוך התיקייה"
+msgid "Move or copy files previously selected by a Cut or Copy command into the selected folder"
+msgstr "מעביר או מעתיק קבצים שנבחרו מוקדם יותר על-ידי פקודת גזור או העתק לתוך התיקייה"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6654
@@ -3882,12 +3471,8 @@ msgstr "מכין את התיקייה להעתקה עם פקודת הדבק"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6776
-msgid ""
-"Move or copy files previously selected by a Cut or Copy command into this "
-"folder"
-msgstr ""
-"העבר או העתק קבצים שנבחרו מוקדם יותר על-ידי פקודת גזור או העתק לתוך תיקייה "
-"זאת"
+msgid "Move or copy files previously selected by a Cut or Copy command into this folder"
+msgstr "העבר או העתק קבצים שנבחרו מוקדם יותר על-ידי פקודת גזור או העתק לתוך תיקייה זאת"
 
 #. tooltip
 #: ../src/file-manager/fm-directory-view.c:6781
@@ -4114,8 +3699,7 @@ msgstr "פקודה"
 
 #: ../src/file-manager/fm-error-reporting.c:59
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "אין לך את ההרשאות הנדרשות כדי לראות את התוכן של \"%s\"."
 
 #: ../src/file-manager/fm-error-reporting.c:63
@@ -4134,14 +3718,12 @@ msgstr "לא ניתן להציג את תכני התיקייה."
 
 #: ../src/file-manager/fm-error-reporting.c:103
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr "השם \"%s\" כבר בשימוש בתיקייה הזו. אנא בחר שם אחר."
 
 #: ../src/file-manager/fm-error-reporting.c:108
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "אין \"%s\" בתיקייה הזו. אולי הוא הועבר או נמחק?"
 
 #: ../src/file-manager/fm-error-reporting.c:113
@@ -4151,9 +3733,7 @@ msgstr "אין לך את ההרשאות הדרושות לשינוי השם של 
 
 #: ../src/file-manager/fm-error-reporting.c:118
 #, c-format
-msgid ""
-"The name \"%s\" is not valid because it contains the character \"/\". Please "
-"use a different name."
+msgid "The name \"%s\" is not valid because it contains the character \"/\". Please use a different name."
 msgstr "השם \"%s\" אינו תיקני כיוון שהוא מכיל את התו \"/\". אנא השתמש בשם אחר."
 
 #: ../src/file-manager/fm-error-reporting.c:122
@@ -4173,8 +3753,7 @@ msgstr "לא ניתן לשנות את שם הפריט."
 
 #: ../src/file-manager/fm-error-reporting.c:167
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "אין לך את ההרשאות הדרושות לשינוי הקבוצה של \"%s\"."
 
 #. fall through
@@ -4404,7 +3983,8 @@ msgid "(Empty)"
 msgstr "(ריק)"
 
 #: ../src/file-manager/fm-list-model.c:375
-#: ../src/file-manager/fm-tree-model.c:1266 ../src/nautilus-window-slot.c:191
+#: ../src/file-manager/fm-tree-model.c:1266
+#: ../src/nautilus-window-slot.c:191
 msgid "Loading..."
 msgstr "טוען..."
 
@@ -4794,12 +4374,8 @@ msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus לא הצליח ליצור את התיקייה הדרושה \"%s\"."
 
 #: ../src/nautilus-application.c:325
-msgid ""
-"Before running Nautilus, please create the following folder, or set "
-"permissions such that Nautilus can create it."
-msgstr ""
-"לפני הפעלת Nautilus, אנא צור תיקייה זו, או שנה את ההרשאות כך ש-Nautilus יוכל "
-"ליצור אותה."
+msgid "Before running Nautilus, please create the following folder, or set permissions such that Nautilus can create it."
+msgstr "לפני הפעלת Nautilus, אנא צור תיקייה זו, או שנה את ההרשאות כך ש-Nautilus יוכל ליצור אותה."
 
 #: ../src/nautilus-application.c:328
 #, c-format
@@ -4807,12 +4383,8 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr "‏Nautilus לא הצליח ליצור את התיקיות הדרושות הבאות: %s"
 
 #: ../src/nautilus-application.c:330
-msgid ""
-"Before running Nautilus, please create these folders, or set permissions "
-"such that Nautilus can create them."
-msgstr ""
-"לפני הפעלת Nautilus, אנא צור תיקיות אלו, או שנה את ההרשאות כך ש-Nautilus "
-"יוכל ליצור אותן."
+msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
+msgstr "לפני הפעלת Nautilus, אנא צור תיקיות אלו, או שנה את ההרשאות כך ש-Nautilus יוכל ליצור אותן."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -4825,48 +4397,28 @@ msgstr ""
 #. * since neither of the above causes explain it.
 #.
 #: ../src/nautilus-application.c:597
-msgid ""
-"Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-"console may fix the problem. If not, you can try rebooting the computer or "
-"installing Nautilus again."
-msgstr ""
-"‏Nautilus לא יכול לפעול כרגע. הרצת הפקודה \"bonobo-slay\" מהמסוף עשויה לפתור "
-"את הבעיה. אם לא, אתה יכול לנסות להפעיל מחדש את המחשב או להתקין את Nautilus "
-"שוב."
+msgid "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again."
+msgstr "‏Nautilus לא יכול לפעול כרגע. הרצת הפקודה \"bonobo-slay\" מהמסוף עשויה לפתור את הבעיה. אם לא, אתה יכול לנסות להפעיל מחדש את המחשב או להתקין את Nautilus שוב."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:603
 msgid ""
-"Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-"console may fix the problem. If not, you can try rebooting the computer or "
-"installing Nautilus again.\n"
+"Nautilus cannot be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again.\n"
 "\n"
-"Bonobo could not locate the Nautilus_shell.server file. One cause of this "
-"seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation "
-"library's directory. Another possible cause would be bad install with a "
-"missing Nautilus_Shell.server file.\n"
+"Bonobo could not locate the Nautilus_shell.server file. One cause of this seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation library's directory. Another possible cause would be bad install with a missing Nautilus_Shell.server file.\n"
 "\n"
-"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, "
-"which may be needed by other applications.\n"
+"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, which may be needed by other applications.\n"
 "\n"
-"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but "
-"we do not know why.\n"
+"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but we do not know why.\n"
 "\n"
-"We have also seen this error when a faulty version of bonobo-activation was "
-"installed."
+"We have also seen this error when a faulty version of bonobo-activation was installed."
 msgstr ""
-"‏Nautilus לא יכול לפעול כרגע. הרצת הפקודה \"bonobo-slay\" מהמסוף עשויה לפתור "
-"את הבעיה. אם לא, אתה יכול לנסות להפעיל מחדש את המחשב או להתקין את Nautilus "
-"שוב.\n"
-"‏הקובץ Nautilus_shell.server לא נמצא. גורם אפשרי לזה יכול להיות ש "
-"LD_LIBRARY_PATH לא מכיל את תיקיית הספריות של bonobo-activation. גורם נוסף "
-"אחר יכול להיות התקנה גרועה ללא הקובץ Nautilus_Shell.server\n"
+"‏Nautilus לא יכול לפעול כרגע. הרצת הפקודה \"bonobo-slay\" מהמסוף עשויה לפתור את הבעיה. אם לא, אתה יכול לנסות להפעיל מחדש את המחשב או להתקין את Nautilus שוב.\n"
+"‏הקובץ Nautilus_shell.server לא נמצא. גורם אפשרי לזה יכול להיות ש LD_LIBRARY_PATH לא מכיל את תיקיית הספריות של bonobo-activation. גורם נוסף אחר יכול להיות התקנה גרועה ללא הקובץ Nautilus_Shell.server\n"
 "\n"
-"הפעלת \"bonobo-slay\" תהרוג את כל התהליכים של Bonobo Activation ו GConf, "
-"שעשויים להיות דרושים ליישומים אחרים.\n"
+"הפעלת \"bonobo-slay\" תהרוג את כל התהליכים של Bonobo Activation ו GConf, שעשויים להיות דרושים ליישומים אחרים.\n"
 "\n"
-"לפעמים הריגת שרת bonobo-activation ו gconfd מתקנת את הבעיה, אך איננו יודעים "
-"מדוע.\n"
+"לפעמים הריגת שרת bonobo-activation ו gconfd מתקנת את הבעיה, אך איננו יודעים מדוע.\n"
 "\n"
 "ראינו את השגיאה הזו מתרחשת גם כשהותקנה גירסה שגוייה של bonobo-activation."
 
@@ -4879,41 +4431,28 @@ msgstr ""
 #. * good message.
 #.
 #. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: ../src/nautilus-application.c:633 ../src/nautilus-application.c:651
+#: ../src/nautilus-application.c:633
+#: ../src/nautilus-application.c:651
 #: ../src/nautilus-application.c:658
 msgid "Nautilus cannot be used now, due to an unexpected error."
 msgstr "Nautilus לא יכול לפעול כרגע, בגלל שגיאה לא צפויה."
 
 #: ../src/nautilus-application.c:634
-msgid ""
-"Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-"attempting to register the file manager view server."
-msgstr ""
-"לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לרשום את "
-"שרת תצוגת מנהל הקבצים."
+msgid "Nautilus cannot be used now, due to an unexpected error from Bonobo when attempting to register the file manager view server."
+msgstr "לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לרשום את שרת תצוגת מנהל הקבצים."
 
 #: ../src/nautilus-application.c:652
-msgid ""
-"Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-"attempting to locate the factory. Killing bonobo-activation-server and "
-"restarting Nautilus may help fix the problem."
-msgstr ""
-"לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לאתר את "
-"המפעל. הריגת bonobo-activation-server והפעלת Nautilus מחדש עשויים לתקן את "
-"הבעיה."
+msgid "Nautilus cannot be used now, due to an unexpected error from Bonobo when attempting to locate the factory. Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
+msgstr "לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לאתר את המפעל. הריגת bonobo-activation-server והפעלת Nautilus מחדש עשויים לתקן את הבעיה."
 
 #: ../src/nautilus-application.c:659
-msgid ""
-"Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-"attempting to locate the shell object. Killing bonobo-activation-server and "
-"restarting Nautilus may help fix the problem."
-msgstr ""
-"לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לאתר את "
-"אובייקט המעטפת. הריגת שרת bonobo-activation והפעלת Nautilus מחדש עשויים לתקן "
-"את הבעיה."
+msgid "Nautilus cannot be used now, due to an unexpected error from Bonobo when attempting to locate the shell object. Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
+msgstr "לא ניתן להשתמש ב-Nautilus כרגע, עקב שגיאה לא צפויה מ Bonobo בניסיון לאתר את אובייקט המעטפת. הריגת שרת bonobo-activation והפעלת Nautilus מחדש עשויים לתקן את הבעיה."
 
-#: ../src/nautilus-application.c:1369 ../src/nautilus-places-sidebar.c:1682
-#: ../src/nautilus-places-sidebar.c:1705 ../src/nautilus-places-sidebar.c:1728
+#: ../src/nautilus-application.c:1369
+#: ../src/nautilus-places-sidebar.c:1682
+#: ../src/nautilus-places-sidebar.c:1705
+#: ../src/nautilus-places-sidebar.c:1728
 #, c-format
 msgid "Unable to eject %s"
 msgstr "לא יכול להוציא את %s"
@@ -4934,18 +4473,13 @@ msgid "<big><b>Error autorunning software</b></big>"
 msgstr "<big><b>שגיאה בהרצת התוכנה</b></big>"
 
 #: ../src/nautilus-autorun-software.c:194
-msgid ""
-"<big><b>This medium contains software intended to be automatically started. "
-"Would you like to run it?</b></big>"
-msgstr ""
-"<big><b>מדיה זו מכילה תוכנה שאמורה לפעול אוטומטית. להפעיל את התוכנה?</b></"
-"big>"
+msgid "<big><b>This medium contains software intended to be automatically started. Would you like to run it?</b></big>"
+msgstr "<big><b>מדיה זו מכילה תוכנה שאמורה לפעול אוטומטית. להפעיל את התוכנה?</b></big>"
 
 #: ../src/nautilus-autorun-software.c:196
 #, c-format
 msgid ""
-"The software will run directly from the medium \"%s\". You should never run "
-"software that you don't trust.\n"
+"The software will run directly from the medium \"%s\". You should never run software that you don't trust.\n"
 "\n"
 "If in doubt, press Cancel."
 msgstr ""
@@ -4955,7 +4489,8 @@ msgstr ""
 
 #: ../src/nautilus-bookmarks-window.c:160
 #: ../src/nautilus-file-management-properties.c:206
-#: ../src/nautilus-property-browser.c:1527 ../src/nautilus-window-menus.c:619
+#: ../src/nautilus-property-browser.c:1527
+#: ../src/nautilus-window-menus.c:619
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5089,7 +4624,8 @@ msgstr "_הוסף סימנייה"
 msgid "C_onnect"
 msgstr "ה_תחבר"
 
-#: ../src/nautilus-desktop-window.c:243 ../src/nautilus-pathbar.c:1244
+#: ../src/nautilus-desktop-window.c:243
+#: ../src/nautilus-pathbar.c:1244
 #: ../src/nautilus-places-sidebar.c:310
 msgid "Desktop"
 msgstr "שולחן עבודה"
@@ -5099,10 +4635,9 @@ msgstr "שולחן עבודה"
 msgid "Could not remove emblem with name '%s'."
 msgstr "לא ניתן להסיר את הסמל עם השם '%s'."
 
-#: ../src/nautilus-emblem-sidebar.c:227 ../src/nautilus-emblem-sidebar.c:261
-msgid ""
-"This is probably because the emblem is a permanent one, and not one that you "
-"added yourself."
+#: ../src/nautilus-emblem-sidebar.c:227
+#: ../src/nautilus-emblem-sidebar.c:261
+msgid "This is probably because the emblem is a permanent one, and not one that you added yourself."
 msgstr "זה כנראה כיוון שזהו סמל קבוע, ולא אחד שהוספת בעצמך."
 
 #: ../src/nautilus-emblem-sidebar.c:260
@@ -5127,22 +4662,19 @@ msgid "Add Emblems..."
 msgstr "הוסף סמלים..."
 
 #: ../src/nautilus-emblem-sidebar.c:544
-msgid ""
-"Enter a descriptive name next to each emblem.  This name will be used in "
-"other places to identify the emblem."
+msgid "Enter a descriptive name next to each emblem.  This name will be used in other places to identify the emblem."
 msgstr "הכנס שם מתאר ליד כל סמל.  שם זה יופיע במקומות שונים כדי לזהות את הסמל."
 
 #: ../src/nautilus-emblem-sidebar.c:546
-msgid ""
-"Enter a descriptive name next to the emblem.  This name will be used in "
-"other places to identify the emblem."
+msgid "Enter a descriptive name next to the emblem.  This name will be used in other places to identify the emblem."
 msgstr "הכנס שם מתאר ליד הסמל.  שם זה יופיע במקומות שונים כדי לזהות את הסמל."
 
 #: ../src/nautilus-emblem-sidebar.c:767
 msgid "Some of the files could not be added as emblems."
 msgstr "חלק מהקבצים לא יכלו להתווסף כסמלים."
 
-#: ../src/nautilus-emblem-sidebar.c:767 ../src/nautilus-emblem-sidebar.c:769
+#: ../src/nautilus-emblem-sidebar.c:767
+#: ../src/nautilus-emblem-sidebar.c:769
 msgid "The emblems do not appear to be valid images."
 msgstr "לא נראה כי הסמלים הם תמונות חוקיות."
 
@@ -5150,7 +4682,8 @@ msgstr "לא נראה כי הסמלים הם תמונות חוקיות."
 msgid "None of the files could be added as emblems."
 msgstr "אף אחת מהקבצים לא נוסף כסמל."
 
-#: ../src/nautilus-emblem-sidebar.c:806 ../src/nautilus-emblem-sidebar.c:861
+#: ../src/nautilus-emblem-sidebar.c:806
+#: ../src/nautilus-emblem-sidebar.c:861
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
 msgstr "הקובץ '%s' איננו תמונה תקנית."
@@ -5159,7 +4692,8 @@ msgstr "הקובץ '%s' איננו תמונה תקנית."
 msgid "The dragged file does not appear to be a valid image."
 msgstr "הקובץ הנגרר איננו תמונה תקנית."
 
-#: ../src/nautilus-emblem-sidebar.c:811 ../src/nautilus-emblem-sidebar.c:862
+#: ../src/nautilus-emblem-sidebar.c:811
+#: ../src/nautilus-emblem-sidebar.c:862
 msgid "The emblem cannot be added."
 msgstr "הסמל לא יכל להתווסף."
 
@@ -5327,9 +4861,7 @@ msgid "CD _Audio:"
 msgstr "‏תקליטור _מע:"
 
 #: ../src/nautilus-file-management-properties.glade.h:49
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
+msgid "Choose the order of information to appear beneath icon names. More information will appear when zooming in closer."
 msgstr ""
 "בחר את סדר המידע שיופיע מתחת לשמות האיקונים.\n"
 "יותר מידע יופיע ככל שתתקרב יותר."
@@ -5339,8 +4871,7 @@ msgid "Choose the order of information to appear in the list view."
 msgstr "בחר את סדר המידע שיופיע בתצוגת הרשימה."
 
 #: ../src/nautilus-file-management-properties.glade.h:51
-msgid ""
-"Choose what happens when inserting media or connecting devices to the system"
+msgid "Choose what happens when inserting media or connecting devices to the system"
 msgstr "בחר מה יקרה כשמוכנסת מדיה או בחיבור התקנים למערכת"
 
 #: ../src/nautilus-file-management-properties.glade.h:52
@@ -5431,8 +4962,7 @@ msgstr "_סדר פריטים:"
 
 #: ../src/nautilus-file-management-properties.glade.h:75
 msgid "_DVD Video:"
-msgstr ""
-"תקליטור _DVD וידאו:"
+msgstr "תקליטור _DVD וידאו:"
 
 #: ../src/nautilus-file-management-properties.glade.h:76
 msgid "_Default zoom level:"
@@ -5661,12 +5191,8 @@ msgid "Only create windows for explicitly specified URIs."
 msgstr "Only create windows for explicitly specified URIs."
 
 #: ../src/nautilus-main.c:397
-msgid ""
-"Do not manage the desktop (ignore the preference set in the preferences "
-"dialog)."
-msgstr ""
-"Do not manage the desktop (ignore the preference set in the preferences "
-"dialog)."
+msgid "Do not manage the desktop (ignore the preference set in the preferences dialog)."
+msgstr "Do not manage the desktop (ignore the preference set in the preferences dialog)."
 
 #: ../src/nautilus-main.c:399
 msgid "open a browser window."
@@ -5686,12 +5212,8 @@ msgstr "[URI...]"
 
 #. Translators: --no-default-window is a nautilus command line parameter, don't modify it.
 #: ../src/nautilus-main.c:407
-msgid ""
-"Load a saved session from the specified file. Implies \"--no-default-window"
-"\"."
-msgstr ""
-"Load a saved session from the specified file. Implies \"--no-default-window"
-"\"."
+msgid "Load a saved session from the specified file. Implies \"--no-default-window\"."
+msgstr "Load a saved session from the specified file. Implies \"--no-default-window\"."
 
 #: ../src/nautilus-main.c:407
 msgid "FILENAME"
@@ -5712,13 +5234,16 @@ msgstr ""
 "Browse the file system with the file manager"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:478 ../src/nautilus-spatial-window.c:389
-#: ../src/nautilus-window-menus.c:560 ../src/nautilus-window.c:154
+#: ../src/nautilus-main.c:478
+#: ../src/nautilus-spatial-window.c:389
+#: ../src/nautilus-window-menus.c:560
+#: ../src/nautilus-window.c:154
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:519 ../src/nautilus-main.c:528
+#: ../src/nautilus-main.c:519
+#: ../src/nautilus-main.c:528
 #: ../src/nautilus-main.c:533
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
@@ -5977,7 +5502,8 @@ msgstr "%s - דפדפן הקבצים"
 msgid "Close tab"
 msgstr "סגור לשונית"
 
-#: ../src/nautilus-notes-viewer.c:385 ../src/nautilus-notes-viewer.c:499
+#: ../src/nautilus-notes-viewer.c:385
+#: ../src/nautilus-notes-viewer.c:499
 msgid "Notes"
 msgstr "הערות"
 
@@ -5985,7 +5511,8 @@ msgstr "הערות"
 msgid "Show Notes"
 msgstr "הצג הערות"
 
-#: ../src/nautilus-places-sidebar.c:332 ../src/network-scheme.desktop.in.h:2
+#: ../src/nautilus-places-sidebar.c:332
+#: ../src/network-scheme.desktop.in.h:2
 msgid "Network"
 msgstr "רשת"
 
@@ -6338,9 +5865,7 @@ msgid "provides visual status"
 msgstr "מספק מצב נראה"
 
 #: ../src/nautilus-window-bookmarks.c:96
-msgid ""
-"Do you want to remove any bookmarks with the non-existing location from your "
-"list?"
+msgid "Do you want to remove any bookmarks with the non-existing location from your list?"
 msgstr "האם ברצונך להסיר כל סימנייה עם המיקום הלא קיים מהרשימה שלך?"
 
 #: ../src/nautilus-window-bookmarks.c:101
@@ -6404,8 +5929,7 @@ msgid "Could not display \"%s\", because the host could not be found."
 msgstr "לא יכול להציג את \"%s\", כיוון שהמארח לא נמצא."
 
 #: ../src/nautilus-window-manage-views.c:1933
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
+msgid "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "בדוק שהאיות נכון ושהגדרות המתווך נכונות."
 
 #: ../src/nautilus-window-manage-views.c:1947
@@ -6422,43 +5946,19 @@ msgid "Go to the location specified by this bookmark"
 msgstr "לך למיקום המצוין על-ידי הסימנייה"
 
 #: ../src/nautilus-window-menus.c:542
-msgid ""
-"Nautilus is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version."
-msgstr ""
-"Nautilus is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version."
+msgid "Nautilus is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Nautilus is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 
 #: ../src/nautilus-window-menus.c:546
-msgid ""
-"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
-msgstr ""
-"Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
+msgid "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 
 #: ../src/nautilus-window-menus.c:550
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301 USA"
-msgstr ""
-"You should have received a copy of the GNU General Public License along with "
-"Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgid "You should have received a copy of the GNU General Public License along with Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgstr "You should have received a copy of the GNU General Public License along with Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
 #: ../src/nautilus-window-menus.c:562
-msgid ""
-"Nautilus is a graphical shell for GNOME that makes it easy to manage your "
-"files and the rest of your system."
+msgid "Nautilus is a graphical shell for GNOME that makes it easy to manage your files and the rest of your system."
 msgstr "‏Nautilus הינו מעטפת גרפית עבור GNOME שמקלה את ניהול קבציך ושאר המערכת."
 
 #: ../src/nautilus-window-menus.c:566
@@ -6519,9 +6019,7 @@ msgid "_Backgrounds and Emblems..."
 msgstr "_רקעים וסמלים..."
 
 #: ../src/nautilus-window-menus.c:797
-msgid ""
-"Display patterns, colors, and emblems that can be used to customize "
-"appearance"
+msgid "Display patterns, colors, and emblems that can be used to customize appearance"
 msgstr "מציג דוגמאות, צבעים וסמלים שיכולים לשמש להתאמה אישית של המראה"
 
 #: ../src/nautilus-window-menus.c:800
@@ -6601,7 +6099,8 @@ msgid "Zoom _In"
 msgstr "הת_קרב"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:830 ../src/nautilus-zoom-control.c:92
+#: ../src/nautilus-window-menus.c:830
+#: ../src/nautilus-zoom-control.c:92
 #: ../src/nautilus-zoom-control.c:347
 msgid "Increase the view size"
 msgstr "הגדל את גודל התצוגה"
@@ -6613,7 +6112,8 @@ msgid "Zoom _Out"
 msgstr "הת_רחק"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:842 ../src/nautilus-zoom-control.c:93
+#: ../src/nautilus-window-menus.c:842
+#: ../src/nautilus-zoom-control.c:93
 #: ../src/nautilus-zoom-control.c:296
 msgid "Decrease the view size"
 msgstr "הקטן את גודל התצוגה"
@@ -6625,7 +6125,8 @@ msgid "Normal Si_ze"
 msgstr "גודל ר_גיל"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:850 ../src/nautilus-zoom-control.c:94
+#: ../src/nautilus-window-menus.c:850
+#: ../src/nautilus-zoom-control.c:94
 #: ../src/nautilus-zoom-control.c:309
 msgid "Use the normal view size"
 msgstr "השתמש בגודל התצוגה הרגיל"
@@ -6660,7 +6161,8 @@ msgid "_Network"
 msgstr "_רשת"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:866 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:866
+#: ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "עיין במיקומים מסומנים או מיקומים ברשת"
 
@@ -6695,8 +6197,7 @@ msgstr "יוצר _תקליטורים"
 #. tooltip
 #: ../src/nautilus-window-menus.c:878
 msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-msgstr ""
-"פתח תיקייה אליה ניתן לגרור קבצים לצריבה על גבי תקליטור"
+msgstr "פתח תיקייה אליה ניתן לגרור קבצים לצריבה על גבי תקליטור"
 
 #. name, stock id
 #. label, accelerator
@@ -6719,33 +6220,27 @@ msgstr "_בית"
 
 #: ../src/nautilus-x-content-bar.c:68
 msgid "These files are on an Audio CD."
-msgstr ""
-"קבצים אלה הם על תקליטור שמע."
+msgstr "קבצים אלה הם על תקליטור שמע."
 
 #: ../src/nautilus-x-content-bar.c:70
 msgid "These files are on an Audio DVD."
-msgstr ""
-"קבצים אלה הם על תקליטור DVD שמע."
+msgstr "קבצים אלה הם על תקליטור DVD שמע."
 
 #: ../src/nautilus-x-content-bar.c:72
 msgid "These files are on a Video DVD."
-msgstr ""
-"קבצים אלה הם על תקליטור DVD וידאו."
+msgstr "קבצים אלה הם על תקליטור DVD וידאו."
 
 #: ../src/nautilus-x-content-bar.c:74
 msgid "These files are on a Video CD."
-msgstr ""
-"קבצים אלה הם על תקליטור וידאו."
+msgstr "קבצים אלה הם על תקליטור וידאו."
 
 #: ../src/nautilus-x-content-bar.c:76
 msgid "These files are on a Super Video CD."
-msgstr ""
-"קבצים אלה הם על תקליטור סופר-וידאו."
+msgstr "קבצים אלה הם על תקליטור סופר-וידאו."
 
 #: ../src/nautilus-x-content-bar.c:78
 msgid "These files are on a Photo CD."
-msgstr ""
-"קבצים אלה הם על תקליטור תמונות."
+msgstr "קבצים אלה הם על תקליטור תמונות."
 
 #: ../src/nautilus-x-content-bar.c:80
 msgid "These files are on a Picture CD."
@@ -6791,144 +6286,99 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 
 #~ msgid "Blank Blu-Ray Disc"
 #~ msgstr "דיסק Blu-Ray ריק"
-
 #~ msgid "Blank CD Disc"
 #~ msgstr "דיסק CD ריק"
-
 #~ msgid "Blank DVD Disc"
 #~ msgstr "דיסק DVD ריק"
-
 #~ msgid "Blank HD DVD Disc"
 #~ msgstr "דיסק HD DVD ריק"
-
 #~ msgid "Blu-Ray Video"
 #~ msgstr "‏Blu-Ray וידאו"
-
 #~ msgid "Compact Disc Audio"
 #~ msgstr "‏CD אודיו"
-
 #~ msgid "DVD Audio"
 #~ msgstr "‏DVD אודיו"
-
 #~ msgid "DVD Video"
 #~ msgstr "‏DVD וידאו"
-
 #~ msgid "Digital Photos"
 #~ msgstr "תמונות דיגיטליות"
-
 #~ msgid "HD DVD Video"
 #~ msgstr "‏HD-DVD וידאו"
-
 #~ msgid "Picture CD"
 #~ msgstr "CD תמונות"
-
 #~ msgid "Portable Audio Player"
 #~ msgstr "נגן אודיו נייד"
-
 #~ msgid "Super Video CD"
 #~ msgstr "CD סופר-וידאו"
-
 #~ msgid "Video CD"
 #~ msgstr "CD וידאו"
-
 #~ msgid "List of x-content/* types to ask the user what to do on insertion."
 #~ msgstr "List of x-content/* types to ask the user what to do on insertion."
-
 #~ msgid ""
 #~ "List of x-content/* types where a folder window should be opened on "
 #~ "insertion."
 #~ msgstr ""
 #~ "List of x-content/* types where a folder window should be opened on "
 #~ "insertion."
-
 #~ msgid "List of x-content/* where to prompt the user on insertion"
 #~ msgstr "List of x-content/* where to prompt the user on insertion"
-
 #~ msgid "_Delete from Trash"
 #~ msgstr "_מחק מהאשפה"
-
 #~ msgid "E_ject"
 #~ msgstr "הו_צא"
-
 #~ msgid "Create Folder"
 #~ msgstr "צור תיקייה"
-
 #~ msgid "Move to Trash"
 #~ msgstr "זרוק לאשפה"
-
 #~ msgid "Are you sure you want to forget history?"
 #~ msgstr "אתה בטוח שברצונך לשכוח את ההיסטוריה?"
-
 #~ msgid "If you do, you will be doomed to repeat it."
 #~ msgstr "אם כן, אתה תינדן לחזור עליה."
-
 #~ msgid ""
 #~ "If you clear the list of locations, they will be permanently deleted."
 #~ msgstr "אם תנקה את רשימת המקומות, הם ימחקו לצמיתות."
-
 #~ msgid "Show the contents in more detail"
 #~ msgstr "הצג את התוכן ביתר פירוט"
-
 #~ msgid "Show the contents in less detail"
 #~ msgstr "הצג את התוכן בפחות פירוט"
-
 #~ msgid "Show the contents at the normal size"
 #~ msgstr "הצג את התוכן בגודל הרגיל"
-
 #~ msgid "Show in the default detail level"
 #~ msgstr "הצג בגודל ברירת המחדל"
-
 #~ msgid "Select Pattern"
 #~ msgstr "בחר דוגמה"
-
 #~ msgid "Select _Pattern"
 #~ msgstr "בחר _דוגמה"
-
 #~ msgid "Open in New Window"
 #~ msgstr "פתח בחלון חדש"
-
 #~ msgid "Link"
 #~ msgstr "קישור"
-
 #~ msgid "Launcher"
 #~ msgstr "משגר"
-
 #~ msgid "MIME type:"
 #~ msgstr "סוג MIME:"
-
 #~ msgid "_Show"
 #~ msgstr "ה_צג"
-
 #~ msgid "Hi_de"
 #~ msgstr "ה_סתר"
-
 #~ msgid "View as Desktop"
 #~ msgstr "הצג כשולחן עבודה"
-
 #~ msgid "View as _Desktop"
 #~ msgstr "הצג כ_שולחן עבודה"
-
 #~ msgid "Display this location with the desktop view."
 #~ msgstr "הצג מיקום זה בתצוגת שולחן עבודה"
-
 #~ msgid "Icons"
 #~ msgstr "סמלים"
-
 #~ msgid "View as Icons"
 #~ msgstr "הצג כסמלים"
-
 #~ msgid "View as _Icons"
 #~ msgstr "הצג כ_סמלים"
-
 #~ msgid "List"
 #~ msgstr "רשימה"
-
 #~ msgid "View as List"
 #~ msgstr "הצג כרשימה"
-
 #~ msgid "View as _List"
 #~ msgstr "הצג כ_רשימה"
-
 #~ msgid ""
 #~ "Existence of this file indicates that the Nautilus configuration druid\n"
 #~ "has been presented.\n"
@@ -6939,16 +6389,12 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 #~ "כבר הורץ.\n"
 #~ "\n"
 #~ "אתה יכול למחוק קובץ זה ידנית כדי להציג את האשף שוב.\n"
-
 #~ msgid "%s %ld of %ld %s"
 #~ msgstr "%s %ld מתוך %ld %s"
-
 #~ msgid "(%d:%02d:%02d Remaining)"
 #~ msgstr "(%d:%02d:%02d נותרו)"
-
 #~ msgid "(%d:%02d Remaining)"
 #~ msgstr "(נותרו %d:%02d)"
-
 #~ msgid ""
 #~ "Can't find description even for \"x-directory/normal\". This probably "
 #~ "means that your gnome-vfs.keys file is in the wrong place or isn't being "
@@ -6956,253 +6402,180 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 #~ msgstr ""
 #~ "לא הצלחתי למצוא הגדרה אפילו עבור \"x-directory/normal\". זה ככל הנראה "
 #~ "אומר שהקובץ gnome-vfs.keys נמצא במקום הלא נכון או לא נמצא בכלל מסיבה אחרת."
-
 #~ msgid ""
 #~ "No description found for mime type \"%s\" (file is \"%s\"), please tell "
 #~ "the gnome-vfs mailing list."
 #~ msgstr ""
 #~ "לא נמצא תיאור לטיפוס ה MIME \"%s\" (הקובץ הוא \"%s\"), אנא הודע לרשימת "
 #~ "הדיוור של gnome-vfs."
-
 #~ msgid "--"
 #~ msgstr "--"
-
 #~ msgid "    "
 #~ msgstr "    "
-
 #~ msgid "<span weight=\"bold\">Behavior</span>"
 #~ msgstr "<span weight=\"bold\">התנהגות</span>"
-
 #~ msgid "<span weight=\"bold\">Date</span>"
 #~ msgstr "<span weight=\"bold\">תאריך</span>"
-
 #~ msgid "<span weight=\"bold\">Folders</span>"
 #~ msgstr "<span weight=\"bold\">תיקיות</span>"
-
 #~ msgid "<span weight=\"bold\">Icon Captions</span>"
 #~ msgstr "<span weight=\"bold\">כותרות הסמלים</span>"
-
 #~ msgid "<span weight=\"bold\">List Columns</span>"
 #~ msgstr "<span weight=\"bold\">רשימת עמודות</span>"
-
 #~ msgid "<span weight=\"bold\">Text Files</span>"
 #~ msgstr "<span weight=\"bold\">קבצי טקסט</span>"
-
 #~ msgid "<span weight=\"bold\">Trash</span>"
 #~ msgstr "<span weight=\"bold\">אשפה</span>"
-
 #~ msgid "Link To Old Desktop"
 #~ msgstr "קישור לשולחן העבודה הישן"
-
 #~ msgid ""
 #~ "A link called \"Link To Old Desktop\" has been created on the desktop."
 #~ msgstr "קישור הנקרא \"קישור לשולחן העבודה הישן\" נוצר על שולחן העבודה."
-
 #~ msgid ""
 #~ "The location of the desktop directory has changed in GNOME 2.4. You can "
 #~ "open the link and move over the files you want, then delete the link."
 #~ msgstr ""
 #~ "המיקום של ספריית שולחן העבודה השתנה ב GNOME 2.4. אתה יכול לפתוח את הקישור "
 #~ "כדי להעביר את הקבצים שאתה רוצה, ולאחר-מכן למחוק את הקישור."
-
 #~ msgid "From:"
 #~ msgstr "מ:"
-
 #~ msgid "To:"
 #~ msgstr "ל:"
-
 #~ msgid "\"%s\" cannot be moved because it is on a read-only disk."
 #~ msgstr "\"%s\" לא ניתן להזזה כיוון שזהו דיסק לקריאה בלבד."
-
 #~ msgid ""
 #~ "\"%s\" cannot be deleted because you do not have permissions to modify "
 #~ "its parent folder."
 #~ msgstr ""
 #~ "‏\"%s\" לא ניתן למחיקה כיוון שאין לך הרשאות לערוך אותו את תיקיית ההורה שלו."
-
 #~ msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 #~ msgstr "‏\"%s\" לא ניתן למחיקה כיוון שזהו דיסק לקריאה בלבד."
-
 #~ msgid ""
 #~ "\"%s\" cannot be moved because you do not have permissions to change it "
 #~ "or its parent folder."
 #~ msgstr ""
 #~ "‏\"%s\" לא ניתן להזזה כיוון שאין לך הרשאות לערוך אותו או את תיקיית ההורה "
 #~ "שלו."
-
 #~ msgid ""
 #~ "Cannot move \"%s\" because it or its parent folder are contained in the "
 #~ "destination."
 #~ msgstr "לא ניתן להעביר את \"%s\" כיוון שהוא או תיקיית ההורה נמצאים ביעד."
-
 #~ msgid ""
 #~ "Cannot move \"%s\" to the trash because you do not have permissions to "
 #~ "change it or its parent folder."
 #~ msgstr ""
 #~ "לא ניתן להעביר את \"%s\" לאשפה כיוון שאין לך הרשאות לערוך אותו או את "
 #~ "תיקיית ההורה שלו."
-
 #~ msgid "You do not have permissions to write to this folder."
 #~ msgstr "אין לך הרשאות לכתוב לתיקייה זו."
-
 #~ msgid "Error while creating links in \"%s\"."
 #~ msgstr "שגיאה במהלך יצירת קישורים ב \"%s\"."
-
 #~ msgid "Error \"%s\" while copying \"%s\"."
 #~ msgstr "שגיאה \"%s\" במהלך העתקת \"%s\"."
-
 #~ msgid "Would you like to continue?"
 #~ msgstr "האם ברצונך להמשיך?"
-
 #~ msgid "Error \"%s\" while moving \"%s\"."
 #~ msgstr "שגיאה \"%s\" במהלך הזזת \"%s\"."
-
 #~ msgid "Error \"%s\" while creating a link to \"%s\"."
 #~ msgstr "שגיאה \"%s\" במהלך יצירת קישור ל \"%s\"."
-
 #~ msgid "Error \"%s\" while deleting \"%s\"."
 #~ msgstr "שגיאה \"%s\" במהלך מחיקת \"%s\"."
-
 #~ msgid "Error \"%s\" while copying."
 #~ msgstr "שגיאה \"%s\" במהלך העתקה."
-
 #~ msgid "Error \"%s\" while moving."
 #~ msgstr "שגיאה \"%s\" במהלך הזזה."
-
 #~ msgid "Error \"%s\" while linking."
 #~ msgstr "שגיאה \"%s\" במהלך קישור."
-
 #~ msgid "Error \"%s\" while deleting."
 #~ msgstr "שגיאה \"%s\" במהלך מחיקה."
-
 #~ msgid ""
 #~ "The name is already used for a special item that cannot be removed or "
 #~ "replaced.  If you still want to move the item, rename it and try again."
 #~ msgstr ""
 #~ "השם כבר בשימוש פריט מיוחד שלא יכול להתחלף או להימחק.  אם עדיין ברצונך "
 #~ "להעביר את הפריט, שנה את שמו ונסה שנית."
-
 #~ msgid "Could not copy \"%s\" to the new location."
 #~ msgstr "לא ניתן להעתיק את \"%s\" למיקום החדש."
-
 #~ msgid ""
 #~ "The name is already used for a special item that cannot be removed or "
 #~ "replaced.  If you still want to copy the item, rename it and try again."
 #~ msgstr ""
 #~ "השם כבר בשימוש פריט מיוחד שלא יכול להתחלף או להימחק.  אם עדיין ברצונך "
 #~ "להעתיק את הפריט, שנה את שמו ונסה שנית."
-
 #~ msgid "Unknown GnomeVFSXferProgressStatus %d"
 #~ msgstr "GnomeVFSXferProgressStatus לא ידוע %d"
-
 #~ msgid "Throwing out file:"
 #~ msgstr "זורק קובץ:"
-
 #~ msgid "Moving"
 #~ msgstr "מעביר"
-
 #~ msgid "Moving file:"
 #~ msgstr "מעביר קובץ:"
-
 #~ msgid "Finishing Move..."
 #~ msgstr "מסיים העברה..."
-
 #~ msgid "Linking file:"
 #~ msgstr "מקשר קובץ:"
-
 #~ msgid "Linking"
 #~ msgstr "מקשר"
-
 #~ msgid "Preparing to Create Links..."
 #~ msgstr "מתכונן ליצירת קישורים..."
-
 #~ msgid "Finishing Creating Links..."
 #~ msgstr "מסיים יצירת קישורים..."
-
 #~ msgid "Copying file:"
 #~ msgstr "מעתיק קובץ:"
-
 #~ msgid "Copying"
 #~ msgstr "מעתיק"
-
 #~ msgid "Preparing To Copy..."
 #~ msgstr "מתכונן להעתקה..."
-
 #~ msgid "You cannot copy items into the trash."
 #~ msgstr "לא ניתן להעתיק פריטים לאשפה."
-
 #~ msgid "You cannot create links inside the trash."
 #~ msgstr "לא ניתן ליצור קישורים באשפה."
-
 #~ msgid "Files and folders can only be moved into the trash."
 #~ msgstr "קבצים ותיקיות יכולים לזוז רק לאשפה."
-
 #~ msgid "You cannot move this trash folder."
 #~ msgstr "לא ניתן להעביר את תיקיית האשפה הזו."
-
 #~ msgid "You cannot copy this trash folder."
 #~ msgstr "אתה לא יכול להעתיק את תיקיית האשפה הזו."
-
 #~ msgid "A trash folder is used for storing items moved to the trash."
 #~ msgstr "תיקיית האשפה משמשת לשמירת פריטים שהועברו לאשפה."
-
 #~ msgid "You cannot copy a file over itself."
 #~ msgstr "אתה אל יכול להעתיק קובץ על עצמו."
-
 #~ msgid "The destination and source are the same file."
 #~ msgstr "היעד והמקור הם אותו קובץ."
-
 #~ msgid "There is no space on the destination."
 #~ msgstr "אין מספיק מקום פנוי ביעד."
-
 #~ msgid "Error \"%s\" creating new folder."
 #~ msgstr "שגיאה \"%s\" ביצירת תיקייה חדשה."
-
 #~ msgid "Error creating new folder."
 #~ msgstr "שגיאה ביצירת תיקייה חדשה."
-
 #~ msgid "Error \"%s\" creating new document."
 #~ msgstr "שגיאה \"%s\" ביצירת מסמך חדש."
-
 #~ msgid "Error creating new document."
 #~ msgstr "שגיאה ביצירת מסמך חדש."
-
 #~ msgid "Files deleted:"
 #~ msgstr "קבצים נמחקו:"
-
 #~ msgid "Deleting"
 #~ msgstr "מוחק"
-
 #~ msgid "Emptying the Trash"
 #~ msgstr "מרוקן את האשפה"
-
 #~ msgid "Preparing to Empty the Trash..."
 #~ msgstr "מתכונן לרוקן את האשפה..."
-
 #~ msgid "_Empty Trash"
 #~ msgstr "_רוקן את האשפה"
-
 #~ msgid "Fonts"
 #~ msgstr "גופנים"
-
 #~ msgid "Themes"
 #~ msgstr "ערכות נושא"
-
 #~ msgid "CD/DVD Creator"
 #~ msgstr "יוצר תקליטורים"
-
 #~ msgid "Windows Network"
 #~ msgstr "רשת חלונות"
-
 #~ msgid "Services in"
 #~ msgstr "שירותים ב "
-
 #~ msgid "The attempt to log in failed."
 #~ msgstr "הניסיון להתחבר נכשל."
-
 #~ msgid "\"%s\" is not a valid location."
 #~ msgstr "\"%s\" אינו מיקום תקני."
-
 #~ msgid "Opening %d Item"
 #~ msgid_plural "Opening %d Items"
 #~ msgstr[0] "פותח פריט %d"
@@ -7213,25 +6586,19 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 # msgstr "אתה בטוח שברצונך למחוק לצמיתות את הפריט ה-%d שנבחר?"
 #~ msgid "If you delete an item, it is permanently lost."
 #~ msgstr "אם אתה מוחק פריט, הוא אבוד לנצח."
-
 #~ msgid "Cannot move items to trash, do you want to delete them immediately?"
 #~ msgstr "לא יכול לזרוק פריטים לאשפה. האם ברצונך למחוק אותם מיידית?"
-
 #~ msgid "The selected item could not be moved to the Trash"
 #~ msgid_plural "The %d selected items could not be moved to the Trash"
 #~ msgstr[0] "אין אפשרות להעביר לאשפה את הפריט שנבחר"
 #~ msgstr[1] "אין אפשרות להעביר לאשפה את %d הפריטים שנבחרו"
-
 #~ msgid ""
 #~ "Cannot move some items to trash, do you want to delete these immediately?"
 #~ msgstr "אין אפשרות להזיז חלק מהפריטים לאשפה. האם ברצונך למחוק אותם מיידית?"
-
 #~ msgid "%d of the selected items cannot be moved to the Trash"
 #~ msgstr "אין אפשרות להזיז לאשפה %d מהפריטים שנבחרו"
-
 #~ msgid "Cannot open %s"
 #~ msgstr "לא ניתן לפתוח את %s"
-
 #~ msgid ""
 #~ "The filename \"%s\" indicates that this file is of type \"%s\". The "
 #~ "contents of the file indicate that the file is of type \"%s\". If you "
@@ -7250,66 +6617,48 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 #~ "לפתוח קובץ זה, שנה את שמו לסיומת הנכונה עבור \"%s\", ואז פתח את הקובץ "
 #~ "כרגיל. אפשרות נוספת היא להשתמש בתפריט פתח באמצעות כדי לבחור יישום מסויים "
 #~ "לקובץ. "
-
 #~ msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 #~ msgstr "לא ניתן לשנות את השם של \"%s\" כיוון שזהו דיסק לקריאה בלבד"
-
 #~ msgid ""
 #~ "Couldn't change the group of \"%s\" because it is on a read-only disk"
 #~ msgstr "לא ניתן לשנות את הקבוצה של \"%s\" כיוון שזהו דיסק לקריאה בלבד"
-
 #~ msgid ""
 #~ "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 #~ msgstr "לא ניתן לשנות את הבעלים של \"%s\" כיוון שזהו דיסק לקריאה בלבד"
-
 #~ msgid ""
 #~ "Couldn't change the permissions of \"%s\" because it is on a read-only "
 #~ "disk"
 #~ msgstr "לא ניתן לשנות את ההרשאות של \"%s\" כיוון שזהו דיסק לקריאה בלבד."
-
 #~ msgid "Can't Connect to Server. \"%s\" is not a valid location."
 #~ msgstr "לא ניתן להתחבר לשרת. \"%s\" אינו מיקום תיקני"
-
 #~ msgid "_Name to use for connection:"
 #~ msgstr "_שם לשימוש בהתחברות:"
-
 #~ msgid "Browse _Network"
 #~ msgstr "דפדף ב_רשת"
-
 #~ msgid "The dragged text was not a valid file location."
 #~ msgstr "הטקסט הנגרר איננו מיקום קובץ תקין."
-
 #~ msgid "Check that your proxy settings are correct."
 #~ msgstr "בדוק שהגדרות המתווך שלך נכונות."
-
 #~ msgid ""
 #~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 #~ "browser."
 #~ msgstr ""
 #~ "לא יכול להציג את \"%s\", כיוון שנאוטילוס לא יכולה ליצור קשר עם דפדפן ה "
 #~ "SMB הראשי."
-
 #~ msgid "Check that an SMB server is running in the local network."
 #~ msgstr "בדוק ששרת SMB מופעל ברשת המקומית."
-
 #~ msgid "Check if the service is available."
 #~ msgstr "בדוק האם השירות קיים."
-
 #~ msgid "Nautilus cannot display \"%s\"."
 #~ msgstr "נאוטילוס לא יכול להציג את \"%s\"."
-
 #~ msgid "None of the %d selected items can be moved to the Trash"
 #~ msgstr "אין אפשרות להזיז לאשפה אף אחד מ %d הפריטים שנבחרו"
-
 #~ msgid "Shutter Speed"
 #~ msgstr "מהירות צמצם"
-
 #~ msgid "Normal Alpha"
 #~ msgstr "אלפא רגילה"
-
 #~ msgid "Opacity of the normal icons if frame_text is set"
 #~ msgstr "אטימות של סמלים רגילים אם frame_text נקבע"
-
 #, fuzzy
 #~ msgid "Prelight Alpha"
 #~ msgstr "אלפא ההדגשה"
@@ -7317,665 +6666,457 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 #, fuzzy
 #~ msgid "Opacity of the prelight icons if frame_text is set"
 #~ msgstr "אטימות של סמלים רגילים אם frame_text נקבע"
-
 #~ msgid "\"%s\" selected (%s)"
 #~ msgstr "‏\"%s\" נבחר (%s)"
-
 #~ msgid "CD/_DVD"
 #~ msgstr "CD/_DVD"
-
 #~ msgid "View your computer storage"
 #~ msgstr "צפה באחסון המחשב שלך"
-
 #~ msgid "Change how files are managed"
 #~ msgstr "שנה את איך שהקבצים מנוהלים"
-
 #~ msgid "View your home folder in the Nautilus file manager"
 #~ msgstr "הצג את תיקיית הבית שלך במנהל הקבצים נאוטילוס"
-
 #~ msgid "<b>Image Type:</b> %s (%s)\n"
 #~ msgstr "‏<b>סוג תמונה:</b> %s (%s)\n"
-
 #~ msgid "_Write contents to CD"
 #~ msgstr "_כתוב תכנים לתקליטור"
-
 #~ msgid "Set up a connection to a network server"
 #~ msgstr "הגדר חיבור לשרת ברשת"
-
 #~ msgid "Go to the home folder"
 #~ msgstr "לך לתיקיית הבית"
-
 #~ msgid "Go to the network location"
 #~ msgstr "לך למיקום הרשת"
-
 #~ msgid "Go to the trash folder"
 #~ msgstr "מעבר לתיקיית האשפה"
-
 #~ msgid "Go to the CD/DVD Creator"
 #~ msgstr "לך ליוצר התקליטורים"
-
 #~ msgid "View your network servers in the Nautilus file manager"
 #~ msgstr "ראה את שרתי הרשת שלך במנהל הקבצים של נאוטילוס"
-
 #~ msgid "Enable 'special' flags in file preferences dialog"
 #~ msgstr "אפשר דגלים 'מיוחדים' בתיבת דו-השיח העדפות הקובץ"
-
 #~ msgid "If you replace an existing file, its contents will be overwritten."
 #~ msgstr "אם אתה מחליף קובץ קיים, התכנים שלו יכתבו מחדש."
-
 #~ msgid ""
 #~ "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 #~ "locations."
 #~ msgstr ""
 #~ "\"%s\" לא יכול לפתוח את \"%s\" כיוון ש \"%s\" לא יכול לגשת לקבצים "
 #~ "במיקומים \"%s\"."
-
 #~ msgid ""
 #~ "The default action can't open \"%s\" because it can't access files at \"%s"
 #~ "\".locations."
 #~ msgstr ""
 #~ "הפעולה ברירת המחדל לא יכולה לפתוח את \"%s\" כיוון שהיא אינה יכולה לגשת "
 #~ "לקבצים במיקומים \"%s\"."
-
 #~ msgid "File _owner:"
 #~ msgstr "_בעל הקובץ:"
-
 #~ msgid "File owner:"
 #~ msgstr "בעל הקובץ:"
-
 #~ msgid "_File group:"
 #~ msgstr "_קבוצת הקובץ:"
-
 #~ msgid "File group:"
 #~ msgstr "קבוצת הקובץ:"
-
 #~ msgid "Number view:"
 #~ msgstr "תצוגת מספר:"
-
 #~ msgid "Always use _text-entry location bar"
 #~ msgstr "השתמש תמיד בשורת מיקום _טקסטואלית"
-
 #~ msgid "Art"
 #~ msgstr "אומנות"
-
 #~ msgid "Camera"
 #~ msgstr "מצלמה"
-
 #~ msgid "Certified"
 #~ msgstr "מאושר"
-
 #~ msgid "Cool"
 #~ msgstr "מגניב"
-
 #~ msgid "Danger"
 #~ msgstr "סכנה"
-
 #~ msgid "Distinguished"
 #~ msgstr "מיוחד"
-
 #~ msgid "Draft"
 #~ msgstr "טיוטה"
-
 #~ msgid "Favorite"
 #~ msgstr "מועדף"
-
 #~ msgid "Important"
 #~ msgstr "חשוב"
-
 #~ msgid "Mail"
 #~ msgstr "דואר"
-
 #~ msgid "New"
 #~ msgstr "חדש"
-
 #~ msgid "OK"
 #~ msgstr "OK"
-
 #~ msgid "Oh No"
 #~ msgstr "הו לא"
-
 #~ msgid "Package"
 #~ msgstr "חבילה"
-
 #~ msgid "Personal"
 #~ msgstr "אישי"
-
 #~ msgid "Sound"
 #~ msgstr "קול"
-
 #~ msgid "Special"
 #~ msgstr "מיוחד"
-
 #~ msgid "Urgent"
 #~ msgstr "דחוף"
-
 #~ msgid "Web"
 #~ msgstr "רשת"
-
 #~ msgid "Couldn't Install Emblem"
 #~ msgstr "לא ניתן להתקין סמל"
-
 #~ msgid "Couldn't install emblem"
 #~ msgstr "לא הצליח להתקין סמל"
-
 #~ msgid "Error While Copying"
 #~ msgstr "שגיאה במהלך העתקה"
-
 #~ msgid "Error While Moving"
 #~ msgstr "שגיאה במהלך הזזה"
-
 #~ msgid "Error While Linking"
 #~ msgstr "שגיאה במהלך קישור"
-
 #~ msgid "Error While Deleting"
 #~ msgstr "שגיאה במהלך מחיקה"
-
 #~ msgid "Conflict While Copying"
 #~ msgstr "התנגשות בזמן העתקה"
-
 #~ msgid "Can't Change Trash Location"
 #~ msgstr "לא ניתן לשנות את מיקום האשפה"
-
 #~ msgid "Can't Copy Trash"
 #~ msgstr "לא ניתן להעתיק אשפה"
-
 #~ msgid "Can't Move Into Self"
 #~ msgstr "לא יכול לעבור לעצמו"
-
 #~ msgid "Can't Copy Into Self"
 #~ msgstr "לא יכול להיות מועתק לעצמו"
-
 #~ msgid "Can't Copy Over Self"
 #~ msgstr "לא יכול להיות מועתק על עצמו"
-
 #~ msgid "Error Creating New Folder"
 #~ msgstr "שגיאה ביצירת תיקייה חדשה"
-
 #~ msgid "Error Creating New Document"
 #~ msgstr "שגיאה ביצירת מסמך חדש"
-
 #~ msgid "Switch"
 #~ msgstr "החלף"
-
 #~ msgid "Can't Open Location"
 #~ msgstr "לא ניתן לפתוח מיקום"
-
 #~ msgid "Can't Display Location"
 #~ msgstr "לא ניתן להציג מיקום"
-
 #~ msgid "Can't Execute Remote Links"
 #~ msgstr "לא ניתן להפעיל קישורים מרוחקים"
-
 #~ msgid "Drop Target Only Supports Local Files"
 #~ msgstr "מטרת הזריקה תומכת רק בקבצים מקומיים"
-
 #~ msgid ""
 #~ "Are you sure you want to permanently delete the %d selected item?Are you "
 #~ "sure you want to permanently delete the %d selected items?"
 #~ msgstr "האם למחוק את הפריט הנבחר??"
-
 #~ msgid "Delete?"
 #~ msgstr "מחק?"
-
 #~ msgid "Too Many Files"
 #~ msgstr "יותר מידי קבצים"
-
 #~ msgid "Delete Immediately?"
 #~ msgstr "למחוק מיידית?"
-
 #~ msgid ""
 #~ "Are you sure you want to permanently delete the %d selected item from the "
 #~ "trash?Are you sure you want to permanently delete the %d selected items "
 #~ "from the trash?"
 #~ msgstr "האם למחוק את הפריט הנבחר מהאשפה לצמיתות?"
-
 #~ msgid "Delete From Trash?"
 #~ msgstr "למחוק מהאשפה?"
-
 #~ msgid "Run or Display?"
 #~ msgstr "הפעל או הצג?"
-
 #~ msgid "About Scripts"
 #~ msgstr "אודות התסריטים"
-
 #~ msgid ""
 #~ "The %d selected item will be moved if you select the Paste commandThe %d "
 #~ "selected items will be moved if you select the Paste command"
 #~ msgstr "הפריט הנבחר יועבר אם תבחר בפקודת הדבק"
-
 #~ msgid ""
 #~ "The %d selected item will be copied if you select the Paste commandThe %d "
 #~ "selected items will be copied if you select the Paste command"
 #~ msgstr "הפריט הנבחר יועתק אם תבחר בפקודת הדבק"
-
 #~ msgid "Mount Error"
 #~ msgstr "שגיאת Mount"
-
 #~ msgid "Unmount Error"
 #~ msgstr "שגיאת Unmount"
-
 #~ msgid "Eject Error"
 #~ msgstr "שגיאת הוצאה"
-
 #~ msgid "Broken Link"
 #~ msgstr "קישור שבור"
-
 #~ msgid "Cancel Open?"
 #~ msgstr "בטל פתיחה?"
-
 #~ msgid "Drag and Drop Error"
 #~ msgstr "שגיאת גרור וזרוק"
-
 #~ msgid "Error Displaying Folder"
 #~ msgstr "שגיאה בהצגת תיקייה"
-
 #~ msgid "Renaming Error"
 #~ msgstr "שגיאת שינוי-שם"
-
 #~ msgid "Error Setting Group"
 #~ msgstr "שגיאה בקביעת קבוצה"
-
 #~ msgid "Error Setting Owner"
 #~ msgstr "שגיאה בקביעת בעלים"
-
 #~ msgid "Cancel Rename?"
 #~ msgstr "בטל שינוי שם?"
-
 #~ msgid "More Than One Image"
 #~ msgstr "יותר מתמונה אחת"
-
 #~ msgid "Local Images Only"
 #~ msgstr "תמונות מקומיות בלבד"
-
 #~ msgid "Images Only"
 #~ msgstr "תמונות בלבד"
-
 #~ msgid "Changing group."
 #~ msgstr "משנה קבוצה."
-
 #~ msgid "Changing owner."
 #~ msgstr "משנה בעלים."
-
 #~ msgid "Couldn't Show Help"
 #~ msgstr "לא ניתן להציג עזרה"
-
 #~ msgid "Cancel Showing Properties Window?"
 #~ msgstr "בטל הצגת חלון מאפיינים?"
-
 #~ msgid "Couldn't Create Required Folders"
 #~ msgstr "לא הצליח ליצור תיקיות נדרשות"
-
 #~ msgid "Migrated Old Desktop"
 #~ msgstr "הגר שולחן עבודה ישן"
-
 #~ msgid "Can't Connect to Server"
 #~ msgstr "לא ניתן להתחבר לשרת"
-
 #~ msgid "Couldn't Remove Emblem"
 #~ msgstr "לא ניתן להסיר סמל"
-
 #~ msgid "Couldn't Rename Emblem"
 #~ msgstr "לא ניתן לשנות שם סמל"
-
 #~ msgid "Couldn't Add Emblems"
 #~ msgstr "לא ניתן להוסיף סמלים"
-
 #~ msgid "Couldn't Add Emblem"
 #~ msgstr "לא ניתן להוסיף סמל"
-
 #~ msgid "100 KB"
 #~ msgstr "100 KB"
-
 #~ msgid "500 KB"
 #~ msgstr "500 KB"
-
 #~ msgid "Always"
 #~ msgstr "תמיד"
-
 #~ msgid "MIME type"
 #~ msgstr "סוג MIME"
-
 #~ msgid "Never"
 #~ msgstr "לעולם לא"
-
 #~ msgid "date accessed"
 #~ msgstr "תאריך גישה"
-
 #~ msgid "date modified"
 #~ msgstr "תאריך שינוי"
-
 #~ msgid "group"
 #~ msgstr "קבוצה"
-
 #~ msgid "informal"
 #~ msgstr "לא רשמי"
-
 #~ msgid "iso"
 #~ msgstr "iso"
-
 #~ msgid "locale"
 #~ msgstr "מקום"
-
 #~ msgid "none"
 #~ msgstr "ללא"
-
 #~ msgid "owner"
 #~ msgstr "בעלים"
-
 #~ msgid "permissions"
 #~ msgstr "הרשאות"
-
 #~ msgid "size"
 #~ msgstr "גודל"
-
 #~ msgid "type"
 #~ msgstr "סוג"
-
 #~ msgid "Can't Launch CD Burner"
 #~ msgstr "לא ניתן להפעיל את צורב התקליטורים"
-
 #~ msgid "View in Multiple Windows?"
 #~ msgstr "הצג במספר חלונות?"
-
 #~ msgid "Clear History"
 #~ msgstr "נקה היסטוריה"
-
 #~ msgid "Home"
 #~ msgstr "בית"
-
 #~ msgid "Couldn't Delete Pattern"
 #~ msgstr "לא יכול למחוק דוגמה"
-
 #~ msgid "Couldn't Delete Emblem"
 #~ msgstr "לא ניתן למחוק סמל"
-
 #~ msgid "Couldn't Install Pattern"
 #~ msgstr "לא יכול להתקין דוגמה"
-
 #~ msgid "Not an Image"
 #~ msgstr "לא תמונה"
-
 #~ msgid "Couldn't Install Color"
 #~ msgstr "לא יכול להתקין צבע"
-
 #~ msgid "View Failed"
 #~ msgstr "תצוגה נכשלה"
-
 #~ msgid "Applications"
 #~ msgstr "יישומים"
-
 #~ msgid "Browse available software"
 #~ msgstr "דפדף בתוכנות הקיימות"
-
 #~ msgid "Favorites"
 #~ msgstr "מועדפים"
-
 #~ msgid "An Eggplant variation of the Crux theme."
 #~ msgstr "הגירסה החצילית של ערכת הנושא \"העיקר\"."
-
 #~ msgid "Crux-Eggplant"
 #~ msgstr "\"העיקר\" - חציל"
-
 #~ msgid "A Teal variation of the Crux theme."
 #~ msgstr "הגירסה הטורקיזית של ערכת הנושא \"העיקר\"."
-
 #~ msgid "Crux-Teal"
 #~ msgstr "\"העיקר\" - טורקיז"
-
 #~ msgid "Eazel"
 #~ msgstr "Eazel"
-
 #~ msgid "This is the default theme for Nautilus."
 #~ msgstr "זוהי ערכת הנושא ברירת המחדל לנאוטילוס."
-
 #~ msgid "A theme designed to fit well with the classic GNOME environment."
 #~ msgstr "ערכת נושא שתוכננה להתאים היטב עם סביבת GNOME הקלאסית."
-
 #~ msgid "Sierra"
 #~ msgstr "Sierra"
-
 #~ msgid "Uses manila folders and gray-green backgrounds."
 #~ msgstr "משתמש בתיקיות מנילה ורקעים אפורים-ירוקים."
-
 #~ msgid "Tahoe"
 #~ msgstr "Tahoe"
-
 #~ msgid "This theme uses photo-realistic folders."
 #~ msgstr "זוהי ערכת נושא שמשתמשת בתמונות תיקיות ריאליסטיות."
-
 #~ msgid "Name of the column"
 #~ msgstr "שם העמודה"
-
 #~ msgid "Attribute"
 #~ msgstr "מאפיין"
-
 #~ msgid "The attribute name to display"
 #~ msgstr "שם המאפיין להצגה"
-
 #~ msgid "Label"
 #~ msgstr "תווית"
-
 #~ msgid "Label to display in the column"
 #~ msgstr "תווית להצגה בעמודה"
-
 #~ msgid "A user-visible description of the column"
 #~ msgstr "תיאור הנראה למשתמש בעמודה"
-
 #~ msgid "xalign"
 #~ msgstr "יישור X"
-
 #~ msgid "The x-alignment of the column"
 #~ msgstr "יישור ציר ה X של העמודה"
-
 #~ msgid "Name of the item"
 #~ msgstr "שם הפריט"
-
 #~ msgid "Label to display to the user"
 #~ msgstr "תווית להצגה למשתמש"
-
 #~ msgid "Tip"
 #~ msgstr "עצה"
-
 #~ msgid "Tooltip for the menu item"
 #~ msgstr "תגית כלי לפריט התפריט"
-
 #~ msgid "Name of the icon to display in the menu item"
 #~ msgstr "שם הסמל להצגה בפריט התפריט"
-
 #~ msgid "Sensitive"
 #~ msgstr "רגיש"
-
 #~ msgid "Whether the menu item is sensitive"
 #~ msgstr "האם פריט התפריט רגיש"
-
 #~ msgid "Priority"
 #~ msgstr "עדיפות"
-
 #~ msgid "Show priority text in toolbars"
 #~ msgstr "הצג טקסט עדיפות בסרגלי הכלים"
-
 #~ msgid "Name of the page"
 #~ msgstr "שם העמוד"
-
 #~ msgid "Label widget to display in the notebook tab"
 #~ msgstr "פריט תווית לתצוגה בכרטיסיית המחברת"
-
 #~ msgid "Page"
 #~ msgstr "עמוד"
-
 #~ msgid "Widget for the property page"
 #~ msgstr "פריט למאפיין העמוד"
-
 #~ msgid "Bring up a new window for every opened file"
 #~ msgstr "הבא חלון חדש לכל קובץ נפתח"
-
 #~ msgid "Cut _Text"
 #~ msgstr "חתוך _טקסט"
-
 #~ msgid "_Copy Text"
 #~ msgstr "ה_עתק טקסט"
-
 #~ msgid "_Paste Text"
 #~ msgstr "ה_דבק טקסט"
-
 #~ msgid "You cannot delete a volume icon."
 #~ msgstr "אתה לא יכול למחוק סמל כרך."
-
 #~ msgid "Can't Delete Volume"
 #~ msgstr "לא ניתן למחוק כרך"
-
 #~ msgid "editable text"
 #~ msgstr "טקסט לעריכה"
-
 #~ msgid "the editable label"
 #~ msgstr "התווית לעריכה"
-
 #~ msgid "additional text"
 #~ msgstr "טקסט נוסף"
-
 #~ msgid "some more text"
 #~ msgstr "ועוד טקסט"
-
 #~ msgid "highlighted for selection"
 #~ msgstr "סומן לבחירה"
-
 #~ msgid "whether we are highlighted for a selection"
 #~ msgstr "מה שאנו מסמנים לבחירה"
-
 #~ msgid "highlighted as keyboard focus"
 #~ msgstr "מודגש כמוקד מקלדת"
-
 #~ msgid "whether we are highlighted to render keyboard focus"
 #~ msgstr "האם אנו מדגישים כדי לחולל מוקד מקלדת"
-
 #~ msgid "highlighted for drop"
 #~ msgstr "הדגשה לזריקה"
-
 #~ msgid "whether we are highlighted for a D&D drop"
 #~ msgstr "האם אנו מדגישים לזריקת גרור וזרוק"
-
 #~ msgid "Frame Text"
 #~ msgstr "מסגרת טקסט"
-
 #~ msgid "Draw a frame around unselected text"
 #~ msgstr "צייר מסגרת סביב טקסט שלא נבחר"
-
 #~ msgid "Selection Box Color"
 #~ msgstr "צבע תיבת הבחירה"
-
 #~ msgid "Color of the selection box"
 #~ msgstr "צבע תיבת הבחירה"
-
 #~ msgid "Selection Box Alpha"
 #~ msgstr "אלפא תיבת הבחירה"
-
 #~ msgid "Opacity of the selection box"
 #~ msgstr "שקיפות תיבת הבחירה"
-
 #~ msgid "Opacity of the highlight for selected icons"
 #~ msgstr "שקיפות להדגשה של סמלים נבחרים"
-
 #~ msgid "Light Info Color"
 #~ msgstr "צבע מידע בהיר"
-
 #~ msgid "Color used for information text against a dark background"
 #~ msgstr "הצבע המשמש לטקסט המידע מול רקע כהה"
-
 #~ msgid "Dark Info Color"
 #~ msgstr "צבע מידע כהה"
-
 #~ msgid "Color used for information text against a light background"
 #~ msgstr "הצבע המשמש לטקסט המידע מול רקע בהיר"
-
 #~ msgid ""
 #~ "Do you want to switch to manual layout and leave this item where you "
 #~ "dropped it? This will clobber the stored manual layout."
 #~ msgstr ""
 #~ "אתה רוצה להחליף לסידור ידני ולהשאיר את הפריט במקום שזרקת אותו? זה יחליף "
 #~ "את המיקום הידני השמור."
-
 #~ msgid "This folder uses automatic layout."
 #~ msgstr "תיקייה זו משתמשת בסידור אוטומטי."
-
 #~ msgid ""
 #~ "Do you want to switch to manual layout and leave these items where you "
 #~ "dropped them? This will clobber the stored manual layout."
 #~ msgstr ""
 #~ "אתה רוצה להחליף לסידור ידני ולהשאיר את הפריטים במקום שזרקת אותם? זה יחליף "
 #~ "את המיקום הידני השמור."
-
 #~ msgid ""
 #~ "Do you want to switch to manual layout and leave this item where you "
 #~ "dropped it?"
 #~ msgstr "אתה רוצה להחליף לסידור ידני ולהשאיר את הפריט במקום שזרקת אותו?"
-
 #~ msgid ""
 #~ "Do you want to switch to manual layout and leave these items where you "
 #~ "dropped them?"
 #~ msgstr "אתה רוצה להחליף לסידור ידני ולהשאיר את הפריטים במקום שזרקת אותם?"
-
 #~ msgid "Open T_erminal"
 #~ msgstr "פתח מ_סוף"
-
 #~ msgid "Open a new GNOME terminal window"
 #~ msgstr "פתח בחלון המסוף של GNOME"
-
 #~ msgid "_Desktop"
 #~ msgstr "_שולחן עבודה"
-
 #~ msgid ""
 #~ "The %d selected item will be moved if you select the Paste Files "
 #~ "commandThe %d selected items will be moved if you select the Paste Files "
 #~ "command"
 #~ msgstr "הפריט הנבחר יועבר אם תבחר בפקודת הדבק קבצים"
-
 #~ msgid ""
 #~ "The %d selected item will be copied if you select the Paste Files "
 #~ "commandThe %d selected items will be copied if you select the Paste Files "
 #~ "command"
 #~ msgstr "הפריט הנבחר יועתק אם תבחר בפקודת הדבק קבצים"
-
 #~ msgid "Cu_t Files"
 #~ msgstr "_גזור קבצים"
-
 #~ msgid "_Paste Files"
 #~ msgstr "ה_דבק קבצים"
-
 #~ msgid "Select _All Files"
 #~ msgstr "בחר את _כל הקבצים"
-
 #~ msgid "_Browse Folders"
 #~ msgstr "ד_פדף בתיקיות"
-
 #~ msgid "Ma_ke Links"
 #~ msgstr "_צור קישורים"
-
 #~ msgid "Cu_t File"
 #~ msgstr "_גזור קובץ"
-
 #~ msgid "_Copy File"
 #~ msgstr "ה_עתק קובץ"
-
 #~ msgid "_Names:"
 #~ msgstr "_שמות:"
-
 #~ msgid "Open"
 #~ msgstr "פתח"
-
 #~ msgid "Cut Folder"
 #~ msgstr "גזור תיקייה"
-
 #~ msgid "Copy Folder"
 #~ msgstr "העתק תיקייה"
-
 #~ msgid "Paste Files into Folder"
 #~ msgstr "הדבק קבצים לתוך התיקייה"
-
 #~ msgid ""
 #~ "This is probably because the emblem is a permanent one, and not one you "
 #~ "added yourself."
 #~ msgstr "זה כנראה כיוון שזהו סמל קבוע, ולא אחד שהוספת בעצמך."
-
 #~ msgid ""
 #~ "<b>Image Type:</b> %s (%s)\n"
 #~ "<b>Resolution:</b> %dx%d pixels\n"
@@ -7986,168 +7127,115 @@ msgstr "קבע את רמת הקירוב של התצוגה הנוכחית"
 #~ "<b>רזולוצייה:</b> %dx%d פיקסלים\n"
 #~ "<b>סוג תמונה:</b> %s (%s)\n"
 #~ "<b>רזולוצייה:</b> %dx%d פיקסלים\n"
-
 #~ msgid "View as %s"
 #~ msgstr "הצג כ %s"
-
 #~ msgid "The %s view encountered an error and can't continue."
 #~ msgstr "תצוגת ה%s נתקלה בשגיאה ולא יכולה להמשיך."
-
 #~ msgid "The NautilusApplication associated with this window."
 #~ msgstr "יישום הנאוטילוס משויך לחלון זה."
-
 #~ msgid "Allaire"
 #~ msgstr "Allaire"
-
 #~ msgid "Binary Freedom"
 #~ msgstr "חופשיות בינארית"
-
 #~ msgid "Borland"
 #~ msgstr "בורלנד"
-
 #~ msgid "CNET Computers.com"
 #~ msgstr "CNET Computers.com"
-
 #~ msgid "CollabNet"
 #~ msgstr "CollabNet"
-
 #~ msgid "Conectiva"
 #~ msgstr "Conectiva"
-
 #~ msgid "Covalent"
 #~ msgstr "Covalent"
-
 #~ msgid "Debian.org"
 #~ msgstr "Debian.org"
-
 #~ msgid "Dell"
 #~ msgstr "דל"
-
 #~ msgid "Freshmeat.net"
 #~ msgstr "Freshmeat.net"
-
 #~ msgid "GNOME.org"
 #~ msgstr "GNOME.org"
-
 #~ msgid "GNU.org"
 #~ msgstr "GNU.org"
-
 #~ msgid "Hardware"
 #~ msgstr "חומרה"
-
 #~ msgid "Linux Documentation Project"
 #~ msgstr "פרויקט תיעוד לינוקס"
-
 #~ msgid "Linux One"
 #~ msgstr "Linux One"
-
 #~ msgid "Linux Online"
 #~ msgstr "Linux Online"
-
 #~ msgid "Linux Resources"
 #~ msgstr "משאבי לינוקס"
-
 #~ msgid "Linux Weekly News"
 #~ msgstr "Linux Weekly News"
-
 #~ msgid "LinuxNewbie.org"
 #~ msgstr "LinuxNewbie.org"
-
 #~ msgid "LinuxOrbit.com"
 #~ msgstr "LinuxOrbit.com"
-
 #~ msgid "MandrakeSoft"
 #~ msgstr "MandrakeSoft"
-
 #~ msgid "Netraverse"
 #~ msgstr "Netraverse"
-
 #~ msgid "News and Media"
 #~ msgstr "חדשות ומדיה"
-
 #~ msgid "O'Reilly"
 #~ msgstr "O'Reilly"
-
 #~ msgid "OSDN"
 #~ msgstr "OSDN"
-
 #~ msgid "Open Source Asia"
 #~ msgstr "קוד פתוח אסיה"
-
 #~ msgid "OpenOffice"
 #~ msgstr "OpenOffice"
-
 #~ msgid "Penguin Computing"
 #~ msgstr "Penguin Computing"
-
 #~ msgid "Rackspace"
 #~ msgstr "Rackspace"
-
 #~ msgid "Red Hat"
 #~ msgstr "Red Hat"
-
 #~ msgid "Red Hat Network"
 #~ msgstr "Red Hat Network"
-
 #~ msgid "RedFlag Linux"
 #~ msgstr "RedFlag Linux"
-
 #~ msgid "SourceForge"
 #~ msgstr "SourceForge"
-
 #~ msgid "SuSE"
 #~ msgstr "SuSE"
-
 #~ msgid "Sun StarOffice"
 #~ msgstr "Sun StarOffice"
-
 #~ msgid "Sun Wah Linux"
 #~ msgstr "Sun Wah Linux"
-
 #~ msgid "Web Services"
 #~ msgstr "שירותי רשת"
-
 #~ msgid "Ximian"
 #~ msgstr "Ximian"
-
 #~ msgid "ZDNet Linux Hardware Database"
 #~ msgstr "מסד נתוני החומרה ללינוקס של ZDNet"
-
 #~ msgid "ZDNet Linux Resource Center"
 #~ msgstr "מרכז משאבי לינוקס של ZDNet"
-
 #~ msgid "Zero-Knowledge"
 #~ msgstr "Zero-Knowledge"
-
 #~ msgid "List Viewer"
 #~ msgstr "מציג רשימה"
-
 #~ msgid "Nautilus Tree side pane"
 #~ msgstr "חלונית צד עץ נאוטילוס"
-
 #~ msgid "Nautilus file manager component that shows a scrollable list"
 #~ msgstr "רכיב מנהל הקבצים של נאוטילוס המראה רשימת נגררת"
-
 #~ msgid ""
 #~ "Nautilus file manager component that shows a scrollable list for search "
 #~ "results"
 #~ msgstr "רכיב מנהל הקבצים של נאוטילוס המראה רשימת נגררת עבור תוצאות חיפוש"
-
 #~ msgid ""
 #~ "Nautilus file manager component that shows a two-dimensional icon space"
 #~ msgstr "רכיב מנהל הקבצים של נאוטילוס המראה חלל סמל דו-מימדי"
-
 #~ msgid "Nautilus file manager component that shows icons on the desktop"
 #~ msgstr "רכיב מנהל הקבצים של נאוטילוס המראה סמלים על שולחן העבודה"
-
 #~ msgid "Nautilus file manager desktop icon view"
 #~ msgstr "מנהל הקבצים של נאוטילוס תצוגת סמלים על שולחן העבודה"
-
 #~ msgid "Nautilus file manager icon view"
 #~ msgstr "מנהל הקבצים של נאוטילוס תצוגת סמלים"
-
 #~ msgid "Nautilus file manager list view"
 #~ msgstr "מנהל הקבצים של נאוטילוס תצוגת רשימה"
-
 #~ msgid "Nautilus file manager search results list view"
 #~ msgstr "מנהל הקבצים של נאוטילוס תצוגת סמלים של תוצאות חיפוש"
+
