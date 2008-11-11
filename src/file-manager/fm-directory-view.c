@@ -8540,7 +8540,6 @@ metadata_for_directory_as_file_ready_callback (NautilusFile *file,
 	g_assert (view->details->directory_as_file == file);
 	g_assert (view->details->metadata_for_directory_as_file_pending);
 
-	g_assert (view->details->metadata_for_directory_as_file_pending);
 	view->details->metadata_for_directory_as_file_pending = FALSE;
 	
 	finish_loading_if_all_metadata_loaded (view);
@@ -8559,7 +8558,6 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 	g_assert (view->details->model == directory);
 	g_assert (view->details->metadata_for_files_in_directory_pending);
 
-	g_assert (view->details->metadata_for_files_in_directory_pending);
 	view->details->metadata_for_files_in_directory_pending = FALSE;
 	
 	finish_loading_if_all_metadata_loaded (view);

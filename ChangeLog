@@ -1,3 +1,12 @@
+2008-11-11  A. Walton  <awalton@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(metadata_for_directory_as_file_ready_callback),
+	(metadata_for_files_in_directory_ready_callback):
+	Remove two duplicate asserts.
+	
+	Patch by Rui Matos (bug #555044).
+
 2008-11-06  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-icon-container.c:
