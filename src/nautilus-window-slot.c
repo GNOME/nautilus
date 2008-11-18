@@ -617,6 +617,9 @@ nautilus_window_slot_dispose (GObject *object)
 	g_free (slot->title);
 	slot->title = NULL;
 
+	g_free (slot->status_text);
+	slot->status_text = NULL;
+
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 

@@ -389,6 +389,8 @@ main (int argc, char *argv[])
 		return 1;
 	}
 
+	g_option_context_free (context);
+
 	if (version) {
 		g_print ("GNOME nautilus " PACKAGE_VERSION "\n");
 		return 0;
