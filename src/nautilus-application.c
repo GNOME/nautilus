@@ -328,7 +328,6 @@ nautilus_application_finalize (GObject *object)
 	nautilus_bookmarks_exiting ();
 	
 	g_object_unref (application->undo_manager);
-	g_object_unref (application->smclient);
 
 	if (application->volume_monitor) {
 		g_object_unref (application->volume_monitor);
