@@ -7,7 +7,6 @@ m4_define(glib_minver,                 2.19.0)
 m4_define(gnome_desktop_minver,        2.9.91)
 m4_define(pango_minver,                1.1.2)
 m4_define(gtk_minver,                  2.13.0)
-m4_define(rsvg_minver,                 2.0.1)
 m4_define(xml_minver,                  2.4.7)
 m4_define(exif_minver,                 0.5.12)
 m4_define(beagle_minver,               0.2.4)
@@ -38,7 +37,6 @@ AC_SUBST(GLIB_REQUIRED, [glib_minver])
 AC_SUBST(GNOME_DESKTOP_REQUIRED, [gnome_desktop_minver])
 AC_SUBST(PANGO_REQUIRED, [pango_minver])
 AC_SUBST(GTK_REQUIRED, [gtk_minver])
-AC_SUBST(RSVG_REQUIRED, [rsvg_minver])
 AC_SUBST(XML_REQUIRED, [xml_minver])
 
 dnl We need to decrement current by one in the calculation of the age because
@@ -68,7 +66,6 @@ PKG_CHECK_MODULES(ALL, [
 	libxml-2.0		>= xml_minver
 	unique-1.0
 ])
-#	librsvg-2.0		>= rsvg_minver
 dnl ==========================================================================
 
 GETTEXT_PACKAGE=nautilus
