@@ -1,3 +1,12 @@
+Major changes in 2.25.1 are:
+* Remove depencency on libgnome & gnome-vfs
+* Fix crashes
+* Chop trailing space characters when moving to FAT file system
+* When DnD'ing, COPY instead of MOVE, when the source is not deletable
+* Don't set default when opening with other app, just add to open with list.
+* Don't make copies of files from readonly source (e.g. CDROM) readonly
+* Don't show cancel dialog when showing the "run or display" dialog
+
 Major changes in 2.24.0 are:
 * Icon/compact view:
    * Follow run-time changes to set of icon text attributes to be displayed
