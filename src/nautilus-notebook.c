@@ -36,15 +36,7 @@
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkaccelgroup.h>
-#include <gtk/gtkiconfactory.h>
+#include <gtk/gtk.h>
 
 #define TAB_WIDTH_N_CHARS 15
 

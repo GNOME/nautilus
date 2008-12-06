@@ -25,7 +25,7 @@
 #include "nautilus-search-engine-simple.h"
 
 #include <string.h>
-#include <glib/gstrfuncs.h>
+#include <glib.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <gio/gio.h>

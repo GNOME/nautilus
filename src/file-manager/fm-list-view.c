@@ -35,7 +35,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <gdk/gdkcursor.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <libegg/eggtreemultidnd.h>

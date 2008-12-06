@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-dnd.h>
-#include <glib/gsequence.h>
+#include <glib.h>
 
 enum {
 	SUBDIRECTORY_UNLOADED,

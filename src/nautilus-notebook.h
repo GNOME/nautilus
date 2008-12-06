@@ -28,7 +28,7 @@
 #define NAUTILUS_NOTEBOOK_H
 
 #include <glib.h>
-#include <gtk/gtknotebook.h>
+#include <gtk/gtk.h>
 #include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS

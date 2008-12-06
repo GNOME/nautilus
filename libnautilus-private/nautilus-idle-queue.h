@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_IDLE_QUEUE_H
 #define NAUTILUS_IDLE_QUEUE_H
 
-#include <glib/gtypes.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 

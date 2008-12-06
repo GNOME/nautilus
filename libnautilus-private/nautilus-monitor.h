@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_MONITOR_H
 #define NAUTILUS_MONITOR_H
 
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <gio/gio.h>
 
 typedef struct NautilusMonitor NautilusMonitor;

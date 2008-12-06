@@ -27,7 +27,7 @@
 #ifndef NAUTILUS_EMBLEM_SIDEBAR_H
 #define NAUTILUS_EMBLEM_SIDEBAR_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_EMBLEM_SIDEBAR \
 	(nautilus_emblem_sidebar_get_type ())

@@ -3,7 +3,7 @@
 
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk/gdktypes.h>
+#include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 

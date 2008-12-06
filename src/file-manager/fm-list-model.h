@@ -23,7 +23,7 @@
 */
 
 #include <gtk/gtk.h>
-#include <gdk/gdkdnd.h>
+#include <gdk/gdk.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-extension/nautilus-column.h>

@@ -53,10 +53,10 @@
 
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <gdk/gdkdnd.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <glib/gurifuncs.h>
+#include <glib.h>
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
 #include "nautilus-desktop-icon-file.h"
