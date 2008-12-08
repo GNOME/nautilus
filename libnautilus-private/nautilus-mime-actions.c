@@ -1331,12 +1331,13 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 	if (parameters->not_mounted != NULL) {
 		file = parameters->not_mounted->data;
 		mount_op = gtk_mount_operation_new (parameters->parent_window);
-		g_signal_connect_object (mount_op, "notify::is-showing",
-					 G_CALLBACK (activate_mount_op_active), parameters, 0);
+		g_signal_connect (mount_op, "notify::is-showing",
+				  G_CALLBACK (activate_mount_op_active), parameters);
 		location = nautilus_file_get_location (file);
 		g_file_mount_enclosing_volume (location, 0, mount_op, parameters->cancellable,
 					       activation_mount_not_mounted_callback, parameters);
 		g_object_unref (location);
+		/* unref mount_op here - g_file_mount_enclosing_volume() does ref for itself */
 		g_object_unref (mount_op);
 		return;
 	}
