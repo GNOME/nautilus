@@ -1571,8 +1571,8 @@ activation_mount_mountables (ActivateParameters *parameters)
 	if (parameters->mountables != NULL) {
 		file = parameters->mountables->data;
 		mount_op = gtk_mount_operation_new (parameters->parent_window);
-		g_signal_connect_object (mount_op, "notify::is-showing",
-					 G_CALLBACK (activate_mount_op_active), parameters, 0);
+		g_signal_connect (mount_op, "notify::is-showing",
+				  G_CALLBACK (activate_mount_op_active), parameters);
 		nautilus_file_mount (file,
 				     mount_op,
 				     parameters->cancellable,
