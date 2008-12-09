@@ -1,6 +1,11 @@
 2008-12-09  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-global-preferences.c:
+	10GB overflows the uint, add 2 and 4 GB instead.
+
+2008-12-09  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-global-preferences.c:
 	Add 10GB size.
 
 2008-12-08  Tomas Bzatek  <tbzatek@redhat.com>
