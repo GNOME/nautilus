@@ -95,7 +95,8 @@ static EelEnumerationEntry file_size_enum_entries[] = {
 	{ "5242880",	    N_("5 MB"),		5242880 },
 	{ "10485760",	    N_("10 MB"),	10485760 },
 	{ "104857600",	    N_("100 MB"),	104857600 },
-	{ "1073741824",     N_("1 GB"),         1073741824 }
+	{ "1073741824",     N_("1 GB"),         1073741824 },
+ 	{ "10737418240",    N_("10 GB"),        10737418240 }
 };
 
 static EelEnumerationEntry click_policy_enum_entries[] = {
