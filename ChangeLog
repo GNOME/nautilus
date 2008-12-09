@@ -1,5 +1,11 @@
 2008-12-09  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations.c (copy_move_file):
+	Don't use G_FILE_COPY_ALL_METADATA, as we changed glib to
+	copy the file by default (#515777)
+
+2008-12-09  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-global-preferences.c:
 	10GB overflows the uint, add 2 and 4 GB instead.
 

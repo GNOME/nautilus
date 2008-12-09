@@ -3734,7 +3734,7 @@ copy_move_file (CopyMoveJob *copy_job,
  retry:
 	
 	error = NULL;
-	flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA;
+	flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
 	if (overwrite) {
 		flags |= G_FILE_COPY_OVERWRITE;
 	}
