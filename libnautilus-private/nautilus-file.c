@@ -3341,7 +3341,7 @@ get_custom_icon (NautilusFile *file)
 }
 
 
-static int cached_thumbnail_limit;
+static guint cached_thumbnail_limit;
 int cached_thumbnail_size;
 static int show_image_thumbs;
 
@@ -3380,7 +3380,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 	 */
 	if (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type) &&
 	    file->details->thumbnail_path == NULL &&
-	    nautilus_file_get_size (file) > (unsigned int)cached_thumbnail_limit) {
+	    nautilus_file_get_size (file) > cached_thumbnail_limit) {
 		return FALSE;
 	}
 
@@ -7086,7 +7086,7 @@ nautilus_extract_top_left_text (const char *text,
 static void
 thumbnail_limit_changed_callback (gpointer user_data)
 {
-	cached_thumbnail_limit = eel_preferences_get_integer (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
+	cached_thumbnail_limit = eel_preferences_get_uint (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
 
 	/* Tell the world that icons might have changed. We could invent a narrower-scope
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow

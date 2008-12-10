@@ -141,7 +141,7 @@ static const char * const executable_text_values[] = {
 	NULL
 };
 
-static const int thumbnail_limit_values[] = {
+static const guint thumbnail_limit_values[] = {
 	102400,
 	512000,
 	1048576,
@@ -150,7 +150,8 @@ static const int thumbnail_limit_values[] = {
 	10485760,
 	104857600,
 	1073741824,
-	-1
+	2147483648U,
+ 	4294967295U
 };
 
 static const char * const icon_captions_components[] = {
@@ -782,10 +783,11 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 								  NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 								  (const char **) executable_text_values);
 	
-	eel_preferences_builder_connect_int_enum (builder,
-						  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,
-						  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-						  (const int *) thumbnail_limit_values);
+	eel_preferences_builder_connect_uint_enum (builder,
+						   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET,
+						   NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+						   (const guint *) thumbnail_limit_values,
+						   G_N_ELEMENTS (thumbnail_limit_values));
 
 	nautilus_file_management_properties_dialog_setup_icon_caption_page (builder);
 	nautilus_file_management_properties_dialog_setup_list_column_page (builder);
