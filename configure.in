@@ -65,6 +65,7 @@ PKG_CHECK_MODULES(ALL, [
 	gtk+-2.0		>= gtk_minver
 	libxml-2.0		>= xml_minver
 	unique-1.0
+	dbus-glib-1
 ])
 dnl ==========================================================================
 
@@ -317,6 +318,17 @@ AM_CONDITIONAL(ENABLE_EMPTY_VIEW, test "x$ENABLE_EMPTY_VIEW" = "x1")
 
 dnl ==========================================================================
 
+AC_ARG_ENABLE(packagekit, 
+	AC_HELP_STRING([--disable-packagekit], 
+			[build without PackageKit support]))
+msg_packagekit=no
+if test "x$enable_packagekit" != "xno"; then
+	msg_packagekit=yes
+	AC_DEFINE(ENABLE_PACKAGEKIT, 1, [define to enable PackageKit mimetype installer])
+fi
+
+dnl ==========================================================================
+
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
 
 AC_ARG_ENABLE(more-warnings,
@@ -374,7 +386,7 @@ LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
 AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus
-CORE_MODULES="glib-2.0 eel-2.0 gnome-desktop-2.0 gio-2.0 gio-unix-2.0 unique-1.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="glib-2.0 eel-2.0 gnome-desktop-2.0 gio-2.0 gio-unix-2.0 unique-1.0 dbus-glib-1 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags $WARNING_CFLAGS"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $x_libs"
@@ -473,6 +485,7 @@ nautilus-$VERSION:
 	tracker support:	$msg_tracker
 	beagle support:		$msg_beagle
 	xmp support:		$msg_xmp
+	PackageKit support:     $msg_packagekit
 
 	profiling support:      ${profiling_support}
 	nautilus-extension documentation: ${enable_gtk_doc}

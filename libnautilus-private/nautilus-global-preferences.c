@@ -280,6 +280,10 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "executable_text_activation"
 	},
+	{ NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION,
+	  PREFERENCE_BOOLEAN,
+	  GINT_TO_POINTER (TRUE)
+	},
 	{ NAUTILUS_PREFERENCES_THEME,
 	  PREFERENCE_STRING,
 	  "default"

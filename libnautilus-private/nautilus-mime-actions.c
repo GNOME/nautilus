@@ -31,6 +31,8 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <string.h>
+#include <dbus/dbus-glib.h>
+#include <gdk/gdkx.h>
 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
@@ -1022,6 +1024,250 @@ confirm_multiple_windows (GtkWindow *parent_window,
 	return response == GTK_RESPONSE_YES;
 }
 
+typedef struct {
+	NautilusWindowSlotInfo *slot_info;
+	GtkWindow *parent_window;
+	NautilusFile *file;
+	GList *files;
+	NautilusWindowOpenMode mode;
+	NautilusWindowOpenFlags flags;
+	char *activation_directory;
+	gboolean user_confirmation;
+	gboolean got_reply;
+} ActivateParametersInstall;
+
+static void
+activate_parameters_install_free (ActivateParametersInstall *parameters_install)
+{
+	if (parameters_install->slot_info) {
+		g_object_remove_weak_pointer (G_OBJECT (parameters_install->slot_info), (gpointer *)&parameters_install->slot_info);
+	}
+	if (parameters_install->parent_window) {
+		g_object_remove_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
+	}
+	nautilus_file_list_free (parameters_install->files);
+	g_free (parameters_install->activation_directory);
+	g_free (parameters_install);
+}
+
+static void
+activate_parameters_install_free_with_error (ActivateParametersInstall *parameters_install)
+{
+	if (!parameters_install->got_reply) {
+		eel_show_error_dialog (_("Unable to search for application"),
+				       _("There was an internal error trying to search for applications"),
+				       parameters_install->parent_window);
+	}
+		
+	activate_parameters_install_free (parameters_install);
+}
+
+static void
+search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call, ActivateParametersInstall *parameters_install)
+{
+	gboolean ret;
+	GError *error = NULL;
+
+	parameters_install->got_reply = TRUE;
+	
+	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID);
+	if (!ret) {
+		eel_show_error_dialog (_("Unable to search for application"),
+				       _("There was an internal error trying to search for applications"),
+				       parameters_install->parent_window);
+		g_error_free (error);
+		return;
+	}
+
+	/* activate the file again */
+	nautilus_mime_activate_files (parameters_install->parent_window,
+				      parameters_install->slot_info,
+				      parameters_install->files,
+				      parameters_install->activation_directory,
+				      parameters_install->mode,
+				      parameters_install->flags,
+				      parameters_install->user_confirmation);
+
+	/* parameters_install freed by destroy notify */
+}
+
+static void
+search_for_application_mime_type (ActivateParametersInstall *parameters_install, const gchar *mime_type)
+{
+	DBusGConnection *connection;
+	DBusGProxy *proxy = NULL;
+	guint xid = 0;
+	GError *error = NULL;
+	DBusGProxyCall *call = NULL;
+	GtkWidget *dialog;
+	GdkWindow *window;
+
+	/* get bus */
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (connection == NULL) {
+		g_warning ("Could not connect to session bus: %s\n", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* get proxy - native clients for for KDE and GNOME */
+	proxy = dbus_g_proxy_new_for_name (connection,
+					   "org.freedesktop.PackageKit",
+					   "/org/freedesktop/PackageKit",
+					   "org.freedesktop.PackageKit");
+	if (proxy == NULL) {
+		g_warning ("Could not connect to PackageKit session service\n");
+		goto out;
+	}
+
+	/* get XID from parent window */
+	window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
+	if (window != NULL) {
+		xid = GDK_WINDOW_XID (window);
+	}
+
+	/* don't timeout, as dbus-glib sets the timeout ~25 seconds */
+	dbus_g_proxy_set_default_timeout (proxy, INT_MAX);
+
+	/* invoke the method */
+	call = dbus_g_proxy_begin_call (proxy, "InstallMimeType",
+					(DBusGProxyCallNotify) search_for_application_dbus_call_notify_cb,
+					parameters_install, activate_parameters_install_free_with_error,
+				        G_TYPE_UINT, xid,
+				        G_TYPE_UINT, 0,
+				        G_TYPE_STRING, mime_type,
+				        G_TYPE_INVALID);
+	if (call == NULL) {
+		dialog = gtk_message_dialog_new (NULL,
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("Could not use system package installer"));
+		g_signal_connect (G_OBJECT (dialog), "response",
+				  G_CALLBACK (gtk_widget_destroy), NULL);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		goto out;
+	}
+
+	nautilus_debug_log (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER,
+			    "InstallMimeType method invoked for %s", mime_type);
+out:
+	if (call == NULL) {
+		/* dbus method was not called, so we're not going to get the async dbus callback */
+		activate_parameters_install_free (parameters_install);
+	}
+	if (proxy != NULL) {
+		g_object_unref (proxy);
+	}
+}
+
+static void
+application_unhandled_file_install (GtkDialog *dialog, gint response_id, ActivateParametersInstall *parameters_install)
+{
+	char *mime_type;
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	if (response_id == GTK_RESPONSE_YES) {
+		mime_type = nautilus_file_get_mime_type (parameters_install->file);
+		search_for_application_mime_type (parameters_install, mime_type);
+		g_free (mime_type);
+	} else {
+		/* free as we're not going to get the async dbus callback */
+		activate_parameters_install_free (parameters_install);
+	}
+}
+
+static void
+application_unhandled_file (ActivateParameters *parameters, NautilusFile *file)
+{
+	GFile *location;
+	char *full_uri_for_display;
+	char *uri_for_display;
+	char *error_message;
+	gboolean show_install_mime;
+	GtkWidget *dialog;
+	char *mime_type;
+	char *text;
+	ActivateParametersInstall *parameters_install;
+
+	location = nautilus_file_get_location (file);
+	full_uri_for_display = g_file_get_parse_name (location);
+	g_object_unref (location);
+
+	/* Truncate the URI so it doesn't get insanely wide. Note that even
+	 * though the dialog uses wrapped text, if the URI doesn't contain
+	 * white space then the text-wrapping code is too stupid to wrap it.
+	 */
+	uri_for_display = eel_str_middle_truncate (full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
+	g_free (full_uri_for_display);
+
+	error_message = g_strdup_printf (_("Could not display \"%s\"."), uri_for_display);
+	
+	g_free (uri_for_display);
+
+	mime_type = nautilus_file_get_mime_type (file);
+	
+#ifdef ENABLE_PACKAGEKIT
+	/* allow an admin to disable the PackageKit search functionality */
+	show_install_mime = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION);
+#else
+	/* we have no install functionality */
+	show_install_mime = FALSE;
+#endif
+	/* There is no use trying to look for handlers of application/octet-stream */
+	if (g_content_type_is_unknown (mime_type)) {
+		show_install_mime = FALSE;
+	}
+	if (!show_install_mime) {
+		/* show an unhelpful dialog */
+		if (g_content_type_is_unknown (mime_type)) {
+			eel_show_error_dialog (error_message,
+					       _("The file is of an unknown type"),
+					       parameters->parent_window);
+		} else {
+			text = g_strdup_printf (_("There is no application installed for %s files"), g_content_type_get_description (mime_type));
+			eel_show_error_dialog (error_message,
+					       text,
+					       parameters->parent_window);
+			g_free (text);
+		}
+		goto out;
+	}
+
+	/* use a custom dialog to prompt the user to install new software */
+	dialog = gtk_message_dialog_new (NULL, 0,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_YES_NO,
+					 error_message);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("There is no application installed for %s files.\nDo you want to search for an application to open this file?"),
+						  g_content_type_get_description (mime_type));
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+
+	/* copy the parts of parameters we are interested in as the orignal will be unref'd */
+	parameters_install = g_new0 (ActivateParametersInstall, 1);
+	parameters_install->slot_info = parameters->slot_info;
+	g_object_add_weak_pointer (G_OBJECT (parameters_install->slot_info), (gpointer *)&parameters_install->slot_info);
+	if (parameters->parent_window) {
+		parameters_install->parent_window = parameters->parent_window;
+		g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *)&parameters_install->parent_window);
+	}
+	parameters_install->activation_directory = g_strdup (parameters->activation_directory);
+	parameters_install->file = nautilus_file_ref (file);
+	parameters_install->files = nautilus_file_list_copy (parameters->files);
+	parameters_install->mode = parameters->mode;
+	parameters_install->flags = parameters->flags;
+	parameters_install->user_confirmation = parameters->user_confirmation;
+
+	g_signal_connect (dialog, "response", G_CALLBACK (application_unhandled_file_install), parameters_install);
+	gtk_widget_show_all (dialog);
+out:
+	g_free (mime_type);
+	g_free (error_message);
+}
+
 static void
 activate_files (ActivateParameters *parameters)
 {
@@ -1225,34 +1471,10 @@ activate_files (ActivateParameters *parameters)
 	}
 
 	for (l = unhandled_open_in_app_files; l != NULL; l = l->next) {
-		GFile *location;
-		char *full_uri_for_display;
-		char *uri_for_display;
-		char *error_message;
-		
 		file = NAUTILUS_FILE (l->data);
 
-		location = nautilus_file_get_location (file);
-		full_uri_for_display = g_file_get_parse_name (location);
-		g_object_unref (location);
-
-		/* Truncate the URI so it doesn't get insanely wide. Note that even
-		 * though the dialog uses wrapped text, if the URI doesn't contain
-		 * white space then the text-wrapping code is too stupid to wrap it.
-		 */
-		uri_for_display = eel_str_middle_truncate
-			(full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
-		g_free (full_uri_for_display);
-	
-		error_message = g_strdup_printf (_("Could not display \"%s\"."),
-						 uri_for_display);
-		
-		g_free (uri_for_display);
-
-		eel_show_error_dialog (error_message,
-				       _("There is no application installed for this file type"),
-				       parameters->parent_window);
-		g_free (error_message);
+		/* this does not block */
+		application_unhandled_file (parameters, file);
 	}
 
 	window_info = NULL;

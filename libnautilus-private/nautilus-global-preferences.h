@@ -93,6 +93,9 @@ typedef enum
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
 
+/* Installing new packages when unknown mime type activated */
+#define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"preferences/install_mime_activation"
+
 /* Spatial or browser mode */
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER       		"preferences/always_use_browser"
 #define NAUTILUS_PREFERENCES_ENABLE_TABS       			"preferences/tabs_enable"

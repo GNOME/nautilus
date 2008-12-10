@@ -301,6 +301,21 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/install_mime_activation</key>
+      <applyto>/apps/nautilus/preferences/install_mime_activation</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>If to show the package installer for unknown mime types</short>
+         <long>
+        Whether to present the user a dialog to search using the package
+        installer for an application that can open an unknown mime type.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/theme</key>
       <applyto>/apps/nautilus/preferences/theme</applyto>
       <owner>nautilus</owner>
