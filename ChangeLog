@@ -1,3 +1,9 @@
+2008-12-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-mime-actions.c:
+	Ref the dbus proxy over the call, this means we actually get the callback, so
+	remove the got_reply stuff.
+
 2008-12-10  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-mime-actions.c:

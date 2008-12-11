@@ -1033,7 +1033,6 @@ typedef struct {
 	NautilusWindowOpenFlags flags;
 	char *activation_directory;
 	gboolean user_confirmation;
-	gboolean got_reply;
 } ActivateParametersInstall;
 
 static void
@@ -1051,25 +1050,11 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 }
 
 static void
-activate_parameters_install_free_with_error (ActivateParametersInstall *parameters_install)
-{
-	if (!parameters_install->got_reply) {
-		eel_show_error_dialog (_("Unable to search for application"),
-				       _("There was an internal error trying to search for applications"),
-				       parameters_install->parent_window);
-	}
-		
-	activate_parameters_install_free (parameters_install);
-}
-
-static void
 search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *call, ActivateParametersInstall *parameters_install)
 {
 	gboolean ret;
 	GError *error = NULL;
 
-	parameters_install->got_reply = TRUE;
-	
 	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID);
 	if (!ret) {
 		eel_show_error_dialog (_("Unable to search for application"),
@@ -1078,6 +1063,7 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 		g_error_free (error);
 		return;
 	}
+	g_object_unref (proxy);
 
 	/* activate the file again */
 	nautilus_mime_activate_files (parameters_install->parent_window,
@@ -1133,7 +1119,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 	call = dbus_g_proxy_begin_call (proxy, "InstallMimeType",
 					(DBusGProxyCallNotify) search_for_application_dbus_call_notify_cb,
 					parameters_install,
-					(GDestroyNotify) activate_parameters_install_free_with_error,
+					(GDestroyNotify) activate_parameters_install_free,
 				        G_TYPE_UINT, xid,
 				        G_TYPE_UINT, 0,
 				        G_TYPE_STRING, mime_type,
@@ -1157,9 +1143,6 @@ out:
 	if (call == NULL) {
 		/* dbus method was not called, so we're not going to get the async dbus callback */
 		activate_parameters_install_free (parameters_install);
-	}
-	if (proxy != NULL) {
-		g_object_unref (proxy);
 	}
 }
 
