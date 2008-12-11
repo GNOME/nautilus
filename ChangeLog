@@ -1,6 +1,12 @@
 2008-12-11  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-mime-actions.c:
+        (search_for_application_dbus_call_notify_cb):
+	Don't warn if we found no applications to install.
+	
+2008-12-11  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-mime-actions.c:
 	Ref the dbus proxy over the call, this means we actually get the callback, so
 	remove the got_reply stuff.
 

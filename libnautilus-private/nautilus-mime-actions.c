@@ -1054,12 +1054,19 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 {
 	gboolean ret;
 	GError *error = NULL;
+	const char *remote = NULL;
 
 	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID);
 	if (!ret) {
-		eel_show_error_dialog (_("Unable to search for application"),
-				       _("There was an internal error trying to search for applications"),
-				       parameters_install->parent_window);
+		if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
+			remote = dbus_g_error_get_name (error);
+		}
+		/* we already show an error in the installer if not found, just catch generic failure */
+		if (remote == NULL || strcmp (remote, "org.freedesktop.PackageKit.Failed") == 0) {
+			eel_show_error_dialog (_("Unable to search for application"),
+					       _("There was an internal error trying to search for applications"),
+					       parameters_install->parent_window);
+		}
 		g_error_free (error);
 		return;
 	}
