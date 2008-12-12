@@ -1231,7 +1231,7 @@ application_unhandled_file (ActivateParameters *parameters, NautilusFile *file)
 	dialog = gtk_message_dialog_new (NULL, 0,
 					 GTK_MESSAGE_ERROR,
 					 GTK_BUTTONS_YES_NO,
-					 error_message);
+					 "%s", error_message);
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("There is no application installed for %s files.\nDo you want to search for an application to open this file?"),
 						  g_content_type_get_description (mime_type));
