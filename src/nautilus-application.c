@@ -498,57 +498,6 @@ finish_startup (NautilusApplication *application)
 }
 
 static void
-initialize_kde_trash_hack (void)
-{
-	char *desktop_dir, *desktop_uri, *kde_trash_dir;
-	char *dir, *basename;
-
-	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
-	desktop_dir = g_filename_from_uri (desktop_uri, NULL, NULL);
-	g_free (desktop_uri);
-
-	if (g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
-		gboolean res;
-		GKeyFile *keyfile;
-		char **dirs;
-
-		/* Look for trash directory */
-
-		keyfile = g_key_file_new ();
-		dirs = g_new0 (char *, 3);
-		dirs[0] = g_build_filename (g_get_home_dir(), ".kde/share/config", NULL);
-		dirs[1] = g_strdup ("/usr/share/config");
-		dirs[2] = NULL;
-
-		res = g_key_file_load_from_dirs (keyfile, "kdeglobals",
-						 (const char **) dirs, NULL, 0, NULL);
-		if (res) {
-			kde_trash_dir = g_key_file_get_string (keyfile,
-							       "Paths", "Trash",
-							       NULL);
-			if (kde_trash_dir != NULL) {
-				basename = g_path_get_basename (kde_trash_dir);
-
-				dir = g_build_filename (desktop_dir, basename, NULL);
-
-				if (g_file_test (dir, G_FILE_TEST_IS_DIR)) {
-					nautilus_set_kde_trash_name (basename);
-				}
-
-				g_free (basename);
-				g_free (dir);
-				g_free (kde_trash_dir);
-			}
-		}
-
-		g_key_file_free (keyfile);
-		g_strfreev (dirs);
-	}
-
-	g_free (desktop_dir);
-}
-
-static void
 open_window (NautilusApplication *application,
 	     const char *startup_id,
 	     const char *uri, const char *geometry, gboolean browser_window)
@@ -679,8 +628,6 @@ nautilus_application_startup (NautilusApplication *application,
 	if (!kill_shell && !check_required_directories (application)) {
 		return;
 	}
-
-	initialize_kde_trash_hack ();
 
 	if (kill_shell) {
 		if (unique_app_is_running (application->unique_app)) {
