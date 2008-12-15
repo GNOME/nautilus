@@ -1,3 +1,4 @@
+# #-#-#-#-#  ro.po (nautilus.HEAD.ro)  #-#-#-#-#
 # translation of nautilus.HEAD.ro.po to Română
 # translation of nautilus.HEAD.ro.po to
 # nautilus RO translation
@@ -6,8 +7,17 @@
 #
 # Marius Andreiana <marius galuna.ro>, 2001, 2002, 2003.
 # Mugurel Tudor <mugurelu@gnome.ro>, 2003-2004, 2005, 2006, 2007.
+# #-#-#-#-#  ro.po (eel.HEAD.ro)  #-#-#-#-#
+# Romanian translation of eel.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# Marius Andreiana <mandreiana@yahoo.com>, 2001.
+# Mugurel Tudor <mugurelu@gnome.ro>, 2004.
+# Sebastian Ivan <sebastian.ivan@ubuntu.ro>, 2005.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  ro.po (nautilus.HEAD.ro)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-03 04:27+0000\n"
@@ -20,6 +30,16 @@ msgstr ""
 "Plural-Forms: nplurals=3;plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
 "2:1))\n"
 "X-Generator: KBabel 1.11.4\n"
+"#-#-#-#-#  ro.po (eel.HEAD.ro)  #-#-#-#-#\n"
+"Project-Id-Version: eel.HEAD.ro\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2006-03-09 21:17+0800\n"
+"Last-Translator: Sebastian Ivan <sebastian.ivan@ubuntu.ro>\n"
+"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1301,6 +1321,7 @@ msgstr "_Folosește implicit"
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
 #: ../src/file-manager/fm-list-view.c:1411
+#: eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Nume"
 
@@ -2919,12 +2940,19 @@ msgid "Could not set as default application"
 msgstr "Nu am putut muta „%s” către noua locație."
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#: eel/eel-mime-application-chooser.c:229
 msgid "Default"
 msgstr "Implicit"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:265
+#: eel/eel-mime-application-chooser.c:237
+#, fuzzy
 msgid "Icon"
-msgstr "Iconiță"
+msgstr ""
+"#-#-#-#-#  ro.po (nautilus.HEAD.ro)  #-#-#-#-#\n"
+"Iconiță\n"
+"#-#-#-#-#  ro.po (eel.HEAD.ro)  #-#-#-#-#\n"
+"Iconiţă"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:327
 #, fuzzy
@@ -2936,17 +2964,14 @@ msgstr "Nu am putut muta „%s” către noua locație."
 msgid "No applications selected"
 msgstr "%d element selectat"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:592
-#: ../libnautilus-private/nautilus-open-with-dialog.c:904
-#, fuzzy, c-format
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
 msgid "%s document"
-msgstr "Documente"
+msgstr "Document %s"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:599
-#: ../libnautilus-private/nautilus-open-with-dialog.c:910
-#, fuzzy
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
 msgid "Unknown"
-msgstr "necunoscut"
+msgstr "Necunoscut"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:632
 #, c-format
@@ -2959,59 +2984,58 @@ msgstr ""
 msgid "Open all files of type \"%s\" with:"
 msgstr "Deschide toate fișierele de tip „%s” cu:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:145
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
 msgid "Could not run application"
-msgstr ""
+msgstr "Nu am putut rula aplicaţia"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:157
-#, fuzzy, c-format
+#: eel/eel-open-with-dialog.c:187
+#, c-format
 msgid "Could not find '%s'"
-msgstr "Nu am putut găsi „%s”."
+msgstr "Nu am putut găsi „%s”"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:160
+#: eel/eel-open-with-dialog.c:190
 msgid "Could not find application"
-msgstr ""
+msgstr "Nu am putut găsi aplicaţia"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:234
 #, c-format
 msgid "Could not add application to the application database: %s"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:235
-#, fuzzy
+#: eel/eel-open-with-dialog.c:287
 msgid "Could not add application"
-msgstr "Transferați locația?"
+msgstr "Nu am putut adăuga aplicaţia"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:375
-#, fuzzy
+#: eel/eel-open-with-dialog.c:401
 msgid "Select an Application"
-msgstr "Selectează o categorie:"
+msgstr "Selectaţi o aplicaţie"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5070
+#: eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Deschide cu"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:764
+#: eel/eel-open-with-dialog.c:830
 msgid "Select an application to view its description."
-msgstr ""
+msgstr "Selectaţi o aplicaţie pentru a vizualiza descrierea sa."
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:789
+#: eel/eel-open-with-dialog.c:855
 msgid "_Use a custom command"
-msgstr ""
+msgstr "Foloseşte o _comandă personalizată"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:806
-#, fuzzy
+#: eel/eel-open-with-dialog.c:872
 msgid "_Browse..."
-msgstr "_Elimină..."
+msgstr "_Navighează..."
 
+#. #-#-#-#-#  ro.po (nautilus.HEAD.ro)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:1954
+#: ../src/nautilus-places-sidebar.c:1954 eel/eel-open-with-dialog.c:894
 msgid "_Open"
 msgstr "_Deschide"
 
@@ -3020,16 +3044,13 @@ msgstr "_Deschide"
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr "Deschide %s și alte fișiere de tip „%s” cu:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:955
-#: ../libnautilus-private/nautilus-open-with-dialog.c:970
+#: eel/eel-open-with-dialog.c:1017
 msgid "_Add"
-msgstr ""
+msgstr "_Adaugă"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:956
-#: ../libnautilus-private/nautilus-open-with-dialog.c:971
-#, fuzzy
+#: eel/eel-open-with-dialog.c:1018
 msgid "Add Application"
-msgstr "Apariție"
+msgstr "Adaugă aplicaţia"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:81
 msgid "Open Failed, would you like to choose another application?"
@@ -6968,6 +6989,170 @@ msgstr "Zoom"
 msgid "Set the zoom level of the current view"
 msgstr "Setează nivelul de zoom al vizualizării curente"
 
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Margine imagine/etichetă"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+"Lăţimea marginii din jurul etichetei şi imaginii din dialogul de alertă"
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Tipul de alertă"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Tipul alertei"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Butoane de alertă"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Butoanele afişate în dialogul de alertă"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Arată mai multe _detalii"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Text"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Textul etichetei."
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Aliniere"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Alinierea liniilor din textul etichetei relativ una la cealaltă. Asta NU "
+"afectează alinierea alocată a etichetei. Vezi GtkMisc::xalign pentru mai "
+"multe detalii."
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Formatare linie"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Dacă este setată, formatează liniile daca textul devine prea lung."
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Poziţie cursor"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Poziţia curentă a cursorului de inserare."
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Legătură de selecţie"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Poziţia capătului opus al selecţiei faţă de cursor."
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Selectează tot"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Metode de intrare"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Eroare GConf:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Eroare GConf: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Toate erorile următoare vor fi arătate doar în terminal."
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00 AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00 AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00 AM"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Nici o imagine nu a fost selectată."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Trebuie să faceţi clic pe o imagine pentru a o selecta."
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Nici o aplicaţie selectată</i>"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr ""
+"Selectaţi o aplicaţie pentru a deschide <i>%s</i> şi altele de tipul „%s”"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Nu am putut adăuga aplicaţia la baza de date a aplicaţiilor"
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Deschide <i>%s</i> şi alte fişiere de tipul „%s” cu:"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Puteţi opri această operaţie efectuând un clic pe anulare."
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (Unicode invalid)"
+
 #~ msgid "_Show"
 #~ msgstr "_Afișează"
 
@@ -7419,3 +7604,21 @@ msgstr "Setează nivelul de zoom al vizualizării curente"
 
 #~ msgid "Show in the default detail level"
 #~ msgstr "Afișează în nivelul de detaliu implicit"
+
+#~ msgid "GConf Error"
+#~ msgstr "Eroare GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Nici o selecţie nu a fost făcută"
+
+#~ msgid "Info"
+#~ msgstr "Info"
+
+#~ msgid "Warning"
+#~ msgstr "Avertizare"
+
+#~ msgid "Error"
+#~ msgstr "Eroare"
+
+#~ msgid "Question"
+#~ msgstr "Întrebare"

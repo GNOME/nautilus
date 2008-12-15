@@ -1,10 +1,20 @@
+# #-#-#-#-#  bn.po (Nautilus HEAD)  #-#-#-#-#
 # Bangla Translation of the Nautilus pot file.
 # Copyright (C) 2003-2006 The Nautilus Authors.
 # This file is distributed under the same license as the Nautilus package.
 # Progga <progga@BengaLinux.Org>, 2003-2006.
 #
+# #-#-#-#-#  bn.po (eel)  #-#-#-#-#
+# Bangla translation for eel.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the eel package.
+# Jamil Ahmed <jamil@bengalinux.org>, 2003.
+# Samia Niamatullah <mailsamia2001@yahoo.com>, 2005.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  bn.po (Nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-12 23:34+0100\n"
@@ -15,6 +25,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"#-#-#-#-#  bn.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-09-18 07:53+0100\n"
+"PO-Revision-Date: 2007-09-18 15:17+0600\n"
+"Last-Translator: Khandakar Mujahidul Islam <suzan@bengalinux.org>\n"
+"Language-Team: Bangla <gnome-translation@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 # Number of untranslated string = 1
 #: ../data/browser.xml.h:1
@@ -1015,6 +1035,7 @@ msgstr "ডিফল্ট ব্যবহার করো (_ব)"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../src/file-manager/fm-list-view.c:1310
+#: ../eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "নাম"
 
@@ -3039,12 +3060,18 @@ msgstr "ফাইল ফাঁকা করো (_ফ)"
 msgid "Create a new empty file inside this folder"
 msgstr "এই ফোল্ডারের ভেতর একটি নতুন ফাঁকা ফাইল তৈরি করো"
 
+#. #-#-#-#-#  bn.po (Nautilus HEAD)  #-#-#-#-#
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6621
 #: ../src/file-manager/fm-directory-view.c:7350
-#: ../src/file-manager/fm-tree-view.c:1103
+#: ../src/file-manager/fm-tree-view.c:1103 ../eel/eel-open-with-dialog.c:993
+#, fuzzy
 msgid "_Open"
-msgstr "খোলা (_খ)"
+msgstr ""
+"#-#-#-#-#  bn.po (Nautilus HEAD)  #-#-#-#-#\n"
+"খোলা (_খ)\n"
+"#-#-#-#-#  bn.po (eel)  #-#-#-#-#\n"
+"খোলা (_O)"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6622
@@ -4059,8 +4086,14 @@ msgid "There was an error displaying help."
 msgstr "সহায়িকা প্রদর্শনে সমস্যা: %s।"
 
 #: ../src/file-manager/fm-properties-window.c:3297
+#: ../eel/eel-open-with-dialog.c:892
+#, fuzzy
 msgid "Open With"
-msgstr "যে প্রোগ্রামের সাহায্যে খোলা হবে"
+msgstr ""
+"#-#-#-#-#  bn.po (Nautilus HEAD)  #-#-#-#-#\n"
+"যে প্রোগ্রামের সাহায্যে খোলা হবে\n"
+"#-#-#-#-#  bn.po (eel)  #-#-#-#-#\n"
+"এটি দিয়ে খুলুন"
 
 #: ../src/file-manager/fm-properties-window.c:3637
 msgid "Creating Properties window."
@@ -5834,6 +5867,208 @@ msgstr "বর্তমান দৃশ্যের জুম মাত্রা
 msgid "View your network servers in the Nautilus file manager"
 msgstr "আপনার ব্যবহৃত নেটওয়ার্ক সার্ভারগুলোকে নটিলাস ফাইল ব্যবস্থাপক থেকে দেখুন"
 
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "ইমেজ/লেবেলের বর্ডার"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "সতর্কীকরণ ডায়ালগে লেবেল এবং ইমেজের চারিদিকের বর্ডারের প্রস্থ "
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "সতর্কীকরণের ধরণ"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "সতর্কীকরণের ধরণ"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "সতর্কীকরণ বাটন "
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "সতর্কীকরণ ডায়ালগে প্রদর্শিত বাটন"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "আরও বিস্তারিত দেখাও (_d)"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "টেক্সট"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "লেবেলের টেক্সট।"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "বিন্যাস"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"লেবেলের টেক্সটগুলোর বাক্য বিন্যাস একে অপরের সাপেক্ষিক। এটা লেবেলের বন্টনের মাঝে এর "
+"বিন্যাসকে প্রভাবিত করবে না। এর জন্য GtkMisc::xalign দেখুন।"
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "বাক্য গুটানো"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "নির্বাচন করলে, অনেক বেশী শব্দের জন্য বাক্য গুটানো হবে।"
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "কার্সার এর অবস্থান"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "অক্ষরগুলোর মাঝে কার্সার এর বর্তমান অবস্থান।"
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "নির্বাচন সীমা"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "কার্সার থেকে নির্বাচিত অংশের অন্য প্রান্তের আক্ষরিক অবস্থান।"
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "সবকিছু নির্বাচন করো"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "ইনপুট পদ্ধতি"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf ত্রুটি:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf ত্রুটি: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "বাকি ত্রুটি গুলো শুধুমাত্র টার্মিনালে দেখানো হয়েছে।"
+
+#: ../eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "কোন ইমেজ নির্বাচন করা হয়নি।"
+
+#: ../eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "নির্বাচন করতে চাইলে ছবিটির উপর ক্লিক করতে হবে।"
+
+#: ../eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "ডিফল্ট"
+
+#: ../eel/eel-mime-application-chooser.c:237
+msgid "Icon"
+msgstr "আইকন"
+
+#: ../eel/eel-mime-application-chooser.c:479
+msgid "No applications selected"
+msgstr "অ্যাপ্লিকেশন নির্বাচন করা হয়নি"
+
+#: ../eel/eel-mime-application-chooser.c:528
+#: ../eel/eel-open-with-dialog.c:1067
+#, c-format
+msgid "%s document"
+msgstr "%s ডকুমেন্ট"
+
+#: ../eel/eel-mime-application-chooser.c:538
+#: ../eel/eel-open-with-dialog.c:1080
+msgid "Unknown"
+msgstr "অজানা"
+
+#: ../eel/eel-mime-application-chooser.c:546
+#, c-format
+msgid "Select an application to open %s and other files of type \"%s\""
+msgstr "%s ও \"%s\" প্রকৃতির অন্যান্য ফাইল খোলার জন্য একটি অ্যাপ্লিকেশন নির্বাচন করুন"
+
+#: ../eel/eel-open-with-dialog.c:175 ../eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "অ্যাপ্লিকেশন চালু করা সম্ভব হয়নি"
+
+#: ../eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "'%s' পাওয়া যায়নি"
+
+#: ../eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "অ্যাপ্লিকেশন পাওয়া যায়নি"
+
+#: ../eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "অ্যাপ্লিকেশন যোগ করা সম্ভব হয়নি"
+
+#: ../eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "অ্যাপ্লিকেশন ডাটাবেসে অ্যাপ্লিকেশন যোগ করা সম্ভব হয়নি"
+
+#: ../eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "একটি অ্যাপ্লিকেশন নির্বাচন করুন"
+
+#: ../eel/eel-open-with-dialog.c:929
+msgid "Select an application to view its description."
+msgstr "বিস্তারিত তথ্য জানতে চাইলে অ্যাপ্লিকেশনটি নির্বাচন করুন।  "
+
+#: ../eel/eel-open-with-dialog.c:954
+msgid "_Use a custom command"
+msgstr "নিজের পছন্দসই কমান্ড ব্যবহার করুন (_U)"
+
+#: ../eel/eel-open-with-dialog.c:971
+msgid "_Browse..."
+msgstr "ব্রাউজ... (_B)"
+
+#: ../eel/eel-open-with-dialog.c:1087
+#, c-format
+msgid "Open %s and other files of type \"%s\" with:"
+msgstr "%s ও \"%s\" প্রকৃতির অন্যান্য ফাইল খুলতে ব্যবহৃত হবে:"
+
+#: ../eel/eel-open-with-dialog.c:1119
+msgid "_Add"
+msgstr "যোগ (_A)"
+
+#: ../eel/eel-open-with-dialog.c:1120
+msgid "Add Application"
+msgstr "অ্যাপ্লিকেশন যোগ করুন"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "বাতিল ক্লিক করে এই কাজটি বন্ধ করতে পারেন।"
+
+#: ../eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (বাতিল ইউনিকোড)"
+
 #~ msgid "Art"
 #~ msgstr "শিল্প"
 
@@ -6156,3 +6391,30 @@ msgstr "আপনার ব্যবহৃত নেটওয়ার্ক সা
 
 #~ msgid "View Failed"
 #~ msgstr "প্রদর্শন করার যায় নি"
+
+#~ msgid "01/01/00, 01:00 AM"
+#~ msgstr "০১/০১/০০, ০১:০০ AM"
+
+#~ msgid "1/1/00, 1:00 AM"
+#~ msgstr "১/১/০০, ১:০০ AM"
+
+#~ msgid " 1/ 1/00,  1:00 AM"
+#~ msgstr " ১/ ১/০০,  ১:০০ AM"
+
+#~ msgid "GConf Error"
+#~ msgstr "GConf ত্রুটি"
+
+#~ msgid "No Selection Made"
+#~ msgstr "কিছুই নির্বাচন করা হয়নি"
+
+#~ msgid "Info"
+#~ msgstr "তথ্য"
+
+#~ msgid "Warning"
+#~ msgstr "সতর্কীকরণ"
+
+#~ msgid "Error"
+#~ msgstr "সমস্যা"
+
+#~ msgid "Question"
+#~ msgstr "প্রশ্ন"

@@ -1,3 +1,4 @@
+# #-#-#-#-#  fr.po (nautilus HEAD)  #-#-#-#-#
 # French translation of nautilus.
 # Copyright (C) 2000-2008 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
@@ -16,13 +17,39 @@
 # Bruno Brouard <annoa.b@gmail.com>, 2008.
 # Claude Paroz <claude@2xlibre.net>, 2008.
 #
+# #-#-#-#-#  fr.po (eel 2.15.91)  #-#-#-#-#
+# French translation of eel.
+# Copyright (C) 2000-2006 Free Software Foundation, Inc.
+# This file is distributed under the same license as the eel package.
+#
+# Christophe Merlet <redfox@redfoxcenter.org>, 2001-2006.
+# Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002.
+# Baptiste Mille-Mathias (crevette) <bmm80@free.fr>, 2004.
+# Yannick Tailliez <yannickta@yahoo.com>, 2005.
+# Laurent Richard <laurent.richard@ael.be>, 2006.
+# Robert-André Mauchin <zebob.m@pengzone.org>, 2006-2008.
+# Stéphane Raimbault <stephane.raimbault@gmail.com>, 2007.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  fr.po (nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-03 16:44+0200\n"
 "PO-Revision-Date: 2008-09-03 17:05+0200\n"
 "Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"#-#-#-#-#  fr.po (eel 2.15.91)  #-#-#-#-#\n"
+"Project-Id-Version: eel 2.15.91\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-08 18:17+0100\n"
+"PO-Revision-Date: 2008-02-08 18:18+0100\n"
+"Last-Translator: Robert-André Mauchin <zebob.m@pengzone.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -344,18 +371,19 @@ msgstr ""
 "Une chaîne indiquant la manière de raccourcir l'affichage de très longs noms "
 "de fichiers par des points de suspension, selon le niveau de zoom. Chaque "
 "élément de la liste est de la forme « Niveau de zoom:Nombre entier ». Pour "
-"chaque niveau de zoom indiqué, si le nombre entier correspondant est plus grand "
-"que 0, le nom de fichier ne dépassera pas ce nombre de lignes. Si le nombre est "
-"plus petit ou égal à 0, aucune limite ne s'applique au niveau de zoom indiqué. "
-"Il est permis d'ajouter un élément sous la forme « Nombre entier » sans préciser "
-"de niveau de zoom. Cela indique le nombre maximum de lignes pour tous les autres "
-"niveaux de zoom. Exemples : 0 - affiche toujours les noms en entier ; 3 - "
-"abrège les noms de fichiers s'ils dépassent trois lignes ; smallest:5, smaller:4"
-",0 - abrège les noms de fichiers s'ils dépassent respectivement cinq et quatre "
-"lignes pour les niveaux de zoom « smallest » et « smaller », mais n'abrège pas "
-"les noms de fichiers pour les autres niveaux de zoom. Les niveaux de zoom "
-"disponibles sont : smallest (33%), smaller (50%), small (66%), standard (100%), "
-"large (150%), larger (200%), largest (400%)"
+"chaque niveau de zoom indiqué, si le nombre entier correspondant est plus "
+"grand que 0, le nom de fichier ne dépassera pas ce nombre de lignes. Si le "
+"nombre est plus petit ou égal à 0, aucune limite ne s'applique au niveau de "
+"zoom indiqué. Il est permis d'ajouter un élément sous la forme « Nombre "
+"entier » sans préciser de niveau de zoom. Cela indique le nombre maximum de "
+"lignes pour tous les autres niveaux de zoom. Exemples : 0 - affiche toujours "
+"les noms en entier ; 3 - abrège les noms de fichiers s'ils dépassent trois "
+"lignes ; smallest:5, smaller:4,0 - abrège les noms de fichiers s'ils "
+"dépassent respectivement cinq et quatre lignes pour les niveaux de zoom "
+"« smallest » et « smaller », mais n'abrège pas les noms de fichiers pour les "
+"autres niveaux de zoom. Les niveaux de zoom disponibles sont : smallest "
+"(33%), smaller (50%), small (66%), standard (100%), large (150%), larger "
+"(200%), largest (400%)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -374,10 +402,11 @@ msgid ""
 "not exceed the given number of lines. If the number is 0 or smaller, no "
 "limit is imposed on the number of displayed lines."
 msgstr ""
-"Un nombre entier indiquant la manière de raccourcir l'affichage de très longs noms "
-"de fichiers par des points de suspension sur le bureau. Si le nombre est plus grand "
-"que 0, le nom de fichier ne dépassera pas ce nombre de lignes. Si le nombre est plus "
-"petit ou égal à 0, aucune limite n'est appliquée au nombre de lignes affichées."
+"Un nombre entier indiquant la manière de raccourcir l'affichage de très "
+"longs noms de fichiers par des points de suspension sur le bureau. Si le "
+"nombre est plus grand que 0, le nom de fichier ne dépassera pas ce nombre de "
+"lignes. Si le nombre est plus petit ou égal à 0, aucune limite n'est "
+"appliquée au nombre de lignes affichées."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid ""
@@ -6963,6 +6992,150 @@ msgstr "Zoom"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Définit le niveau de zoom de la vue actuelle"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Bordure de l'image/étiquette"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+"Largeur de la bordure autour de l'étiquette et de l'image dans la boîte de "
+"dialogue d'alerte"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Type d'alerte"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Le type d'alerte"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Boutons d'alerte"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Les boutons affichés dans la boîte de dialogue d'alerte"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Afficher plus de _détails"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Texte"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Le texte de l'étiquette."
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Justification"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"L'alignement des lignes dans le texte de l'étiquette relativement aux "
+"autres. Cela n'affecte pas l'alignement de l'étiquette à l'intérieur de son "
+"allocation. Voir GtkMisc::xalign pour cela."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Coupure des lignes"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Si défini, coupe les lignes si le texte devient trop grand."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Position du curseur"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "La position actuelle du curseur d'insertion, en caractères."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Limite de la sélection"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+"La position du coin opposé de la sélection depuis le curseur, en caractères."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "Méthodes de saisie"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Erreur GConf :\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Erreur GConf : %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Toutes les autres erreurs ne seront indiquées que dans le terminal."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "Aucune image n'a été sélectionnée."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "Vous devez cliquer sur une image pour la sélectionner."
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Vous pouvez arrêter cette opération en cliquant sur annuler."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (Unicode non valide)"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "Ouverture de %s"
+
+#: ../eel/eel-app-launch-context.c:407
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "Ouverture d'un élément"
+msgstr[1] "Ouverture de %d éléments"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "Saisissez le mot de passe"
 
 #~ msgid "Create Folder"
 #~ msgstr "Créer un dossier"

@@ -1,9 +1,17 @@
+# #-#-#-#-#  ms.po (Nautilus HEAD)  #-#-#-#-#
 # Nautilus Bahasa Melayu (ms)
 # Jika takut risiko, Jangan bicara tentang Perjuangan
 # Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>, 2002
 #
+# #-#-#-#-#  ms.po (eel HEAD)  #-#-#-#-#
+# Eazel Extensions Library Bahasa Melayu/ Malay (ms)
+# cepat cepat !!! borang satu jek 1. Sapa cepat dia dapat. 
+# Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>, 2001
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  ms.po (Nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-10 12:02+0100\n"
@@ -14,6 +22,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  ms.po (eel HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2004-08-12 02:04+0730\n"
+"Last-Translator: Hasbullah Bin Pit <sebol@my-penguin.org>\n"
+"Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -440,7 +458,7 @@ msgstr "Tema ini mengguna folder realistik-foto"
 #: libnautilus-extension/nautilus-menu-item.c:206
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1107 eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Nama"
 
@@ -4330,7 +4348,7 @@ msgstr "Terdapat ralat memapar bantuan."
 msgid "Couldn't Show Help"
 msgstr "Tak Dapat Memapar Bantuan"
 
-#: src/file-manager/fm-properties-window.c:3305
+#: src/file-manager/fm-properties-window.c:3305 eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Buka Dengan"
 
@@ -6023,6 +6041,223 @@ msgstr "Pelayan Rangkaian"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Lihat pelayan rangkaian pada pengurus fail Nautilus"
 
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Teks"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Sempadan imej/label"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Lebar bagi sempadan sekeliling label dan imej pada dialog amaran"
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Jenis Amaran"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Jenis bagi amaran"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Butang Amaran"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Butang dipaparkan pada dialog amaran"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Papar lebih _perician"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Teks bagi label."
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Justifikasi"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Jajaran baris pada teks label relatif semasa sendiri. Ini TIDAK memberi "
+"kesan pada jajaran label di dalam peruntukannya. Lihat GtkMisc::xalign untuk "
+"itu"
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Balutan baris"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Jika ditetapkan, balut baris jika teks terlalu lebar."
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Posisi Kursor"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "posisi semasa bagi penyelitan kursor pada aksara."
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Sempadan Pilihan"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Posisi hujung bertentangan pada pilihan daripada kursor dalam aksara."
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Pilih Semua"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Kaedah input"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Ralat GConf:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Ralat GConf: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Semua ralat lanjutan dipaparkan pada terminal"
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00 AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00 AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00 AM"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Tiada imej dipilih."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Anda mesti klik pada imej untuk memilihnya."
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Default"
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Tiada aplikasi dipilih</i>"
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr "Dokumen %s"
+
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
+msgid "Unknown"
+msgstr "Entah"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr "Pilih aplikasi untuk membuka  <i>%s</i> dan jenis \"%s\" yang lain"
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Tak dapat melaksanakan aplikasi"
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "Tak dapat menjumpai '%s'"
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Tidak menjumpai aplikasi"
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Tak dapat menambah aplikasi"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Tak dapat menambah aplikasi  ke pangkalan data aplikasi"
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Pilih Aplikasi"
+
+#: eel/eel-open-with-dialog.c:830
+#, fuzzy
+msgid "Select an application to view its description."
+msgstr "Pilih aplikasi untuk membuka  <i>%s</i> dan jenis \"%s\" yang lain"
+
+#: eel/eel-open-with-dialog.c:855
+msgid "_Use a custom command"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr "_Lungsur..."
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Buka <i>%s</i> dan jenis fail lain \"%s\" menggunakan:"
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr "_Tambah"
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr "Tambah Aplikasi"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Anda boleh menghentikan operasi ini dengan mengklik batal."
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (Unicode tidak sah)"
+
 #~ msgid "Allaire"
 #~ msgstr "Allaire"
 
@@ -6293,9 +6528,6 @@ msgstr "Lihat pelayan rangkaian pada pengurus fail Nautilus"
 #~ msgid "Factory for text view"
 #~ msgstr "Kilang untuk melihat teks"
 
-#~ msgid "Text"
-#~ msgstr "Teks"
-
 #~ msgid "Text Viewer"
 #~ msgstr "Pelihat Teks"
 
@@ -6504,3 +6736,21 @@ msgstr "Lihat pelayan rangkaian pada pengurus fail Nautilus"
 
 #~ msgid "Try to fit in window"
 #~ msgstr "Cuba supaya muat pada tetingkap"
+
+#~ msgid "GConf Error"
+#~ msgstr "Ralat GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Tiada Pilihan Dibuat"
+
+#~ msgid "Info"
+#~ msgstr "Maklumat"
+
+#~ msgid "Warning"
+#~ msgstr "Amaran"
+
+#~ msgid "Error"
+#~ msgstr "Ralat"
+
+#~ msgid "Question"
+#~ msgstr "Soalan"

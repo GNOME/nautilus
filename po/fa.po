@@ -1,3 +1,4 @@
+# #-#-#-#-#  fa.po (nautilus HEAD)  #-#-#-#-#
 # Persian translation of nautilus.
 # Copyright (C) 2003, 2004, 2005, 2008 Sharif FarsiWeb, Inc.
 # Roozbeh Pournader <roozbeh@farsiweb.info>, 2003, 2005.
@@ -5,8 +6,16 @@
 # Behnam Pournader <bp@farsiweb.info>, 2005.
 # Elnaz Sarbar <elnaz.s@gmail.com>, 2005, 2008.
 #
+# #-#-#-#-#  fa.po (eel HEAD)  #-#-#-#-#
+# Persian translation of eel.
+# Copyright (C) 2002, 2003, 2004, 2006 Sharif FarsiWeb, Inc.
+# Roozbeh Pournader <roozbeh@farsiweb.info>, 2002, 2003, 2006.
+# Meelad Zakaria <meelad@bamdad.org>, 2004, 2006.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  fa.po (nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-28 19:11+0000\n"
@@ -17,6 +26,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  fa.po (eel HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-09-03 07:17+0200\n"
+"PO-Revision-Date: 2006-09-04 16:57+0330\n"
+"Last-Translator: Roozbeh Pournader <roozbeh@farsiweb.info>\n"
+"Language-Team: Persian \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1312,6 +1331,7 @@ msgstr "استفاده از پیش‌فرض"
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
 #: ../src/file-manager/fm-list-view.c:1401
+#: ../eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "نام"
 
@@ -2848,33 +2868,37 @@ msgstr ""
 msgid "Could not set as default application"
 msgstr "جابه‌جایی «%s» به مکان جدید ممکن نیست."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:257
-#, fuzzy
+#: ../eel/eel-mime-application-chooser.c:229
 msgid "Default"
-msgstr "استفاده از پیش‌فرض"
+msgstr "پیش‌فرض"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:265
+#: ../eel/eel-mime-application-chooser.c:237
+#, fuzzy
 msgid "Icon"
-msgstr "شمایل‌"
+msgstr ""
+"#-#-#-#-#  fa.po (nautilus HEAD)  #-#-#-#-#\n"
+"شمایل‌\n"
+"#-#-#-#-#  fa.po (eel HEAD)  #-#-#-#-#\n"
+"شمایل"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:327
 #, fuzzy
 msgid "Could not remove application"
 msgstr "جابه‌جایی «%s» به مکان جدید ممکن نیست."
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:564
-#, fuzzy
+#: ../eel/eel-mime-application-chooser.c:479
 msgid "No applications selected"
-msgstr "برنامه‌های محبوب"
+msgstr "برنامه‌ای انتخاب نشد"
 
-#: ../libnautilus-private/nautilus-mime-application-chooser.c:592
-#: ../libnautilus-private/nautilus-open-with-dialog.c:904
-#, fuzzy, c-format
+#: ../eel/eel-mime-application-chooser.c:528 ../eel/eel-open-with-dialog.c:984
+#, c-format
 msgid "%s document"
-msgstr "نوشتارها"
+msgstr "%s نوشتار"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:599
 #: ../libnautilus-private/nautilus-open-with-dialog.c:910
+#: ../eel/eel-mime-application-chooser.c:538 ../eel/eel-open-with-dialog.c:997
 msgid "Unknown"
 msgstr "نامعلوم"
 
@@ -2889,80 +2913,73 @@ msgstr ""
 msgid "Open all files of type \"%s\" with:"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:145
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:175 ../eel/eel-open-with-dialog.c:220
 msgid "Could not run application"
-msgstr "برنامه‌های محبوب"
+msgstr "برنامه اجرا نشد"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:157
-#, fuzzy, c-format
+#: ../eel/eel-open-with-dialog.c:187
+#, c-format
 msgid "Could not find '%s'"
-msgstr "«%s» پیدا نشد."
+msgstr "'%s' پیدا نشد"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:160
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:190
 msgid "Could not find application"
-msgstr "خطا در راه‌اندازی برنامه"
+msgstr "برنامه پیدا نشد"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:234
 #, c-format
 msgid "Could not add application to the application database: %s"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:235
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:287
 msgid "Could not add application"
-msgstr "برنامه‌های محبوب"
+msgstr "افزودن برنامه ممکن نیست"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:375
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:401
 msgid "Select an Application"
-msgstr "یک شمایل انتخاب کنید"
+msgstr "یک برنامه انتخاب کنید"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5062
+#: ../eel/eel-open-with-dialog.c:809
 msgid "Open With"
 msgstr "باز کردن با"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:764
+#: ../eel/eel-open-with-dialog.c:846
 msgid "Select an application to view its description."
-msgstr ""
+msgstr "برنامه‌ای انتخاب کنید تا شرحش نمایش داده شود."
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:789
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:871
 msgid "_Use a custom command"
-msgstr "_حذف شمایل سفارشی"
+msgstr "است_فاده از فرمان سفارشی"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:806
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:888
 msgid "_Browse..."
-msgstr "_حذف..."
+msgstr "_مرور..."
 
+#. #-#-#-#-#  fa.po (nautilus HEAD)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
 #: ../src/file-manager/fm-directory-view.c:6411
 #: ../src/file-manager/fm-directory-view.c:7369
 #: ../src/file-manager/fm-tree-view.c:1067
-#: ../src/nautilus-places-sidebar.c:1653
+#: ../src/nautilus-places-sidebar.c:1653 ../eel/eel-open-with-dialog.c:910
 msgid "_Open"
 msgstr "_باز کردن"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:919
+#: ../eel/eel-open-with-dialog.c:1004
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
-msgstr ""
+msgstr "باز کردن %s و دیگر پرونده‌های نوع «%s» با:"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:955
-#: ../libnautilus-private/nautilus-open-with-dialog.c:970
+#: ../eel/eel-open-with-dialog.c:1036
 msgid "_Add"
-msgstr ""
+msgstr "ا_ضافه کردن"
 
-#: ../libnautilus-private/nautilus-open-with-dialog.c:956
-#: ../libnautilus-private/nautilus-open-with-dialog.c:971
-#, fuzzy
+#: ../eel/eel-open-with-dialog.c:1037
 msgid "Add Application"
-msgstr "برنامه"
+msgstr "اضافه کردن برنامه"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:81
 msgid "Open Failed, would you like to choose another application?"
@@ -5894,8 +5911,7 @@ msgstr "نشان دادن یادداشت"
 
 #: ../src/nautilus-places-sidebar.c:290 ../src/network-scheme.desktop.in.h:2
 msgid "Network"
-msgstr ""
-"شبکه"
+msgstr "شبکه"
 
 #: ../src/nautilus-places-sidebar.c:1565
 #, c-format
@@ -6734,6 +6750,158 @@ msgstr "زوم"
 #: ../src/nautilus-zoom-control.c:890
 msgid "Set the zoom level of the current view"
 msgstr "تنظیم سطح زوم نمای فعلی"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "متن"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "حاشیهٔ تصویر/برچسب"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "عرض حاشیهٔ دور برچسب و تصویر در محاورهٔ آژیر"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "نوع آژیر"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "نوع آژیر"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "دکمه‌های آژیر"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "دکمه‌های نشان داده شده در محاورهٔ آژیر"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "نشان دادن _جزئیات بیشتر"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "متن برچسب"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "تراز"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"ردیف سطرهای متن برچسب نسبت به یکدیگر. این گزینهٔ تأثیری بر ردیف کردن برچسب در "
+"فضای تخصیص یافته به آن ندارد. برای این کار GtkMisc::xalign را ببینید."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "پیچش سطرها"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "اگر یک شود، اگر سطرها خیلی عریض شوند می‌پیچند."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "موقعیت مکان‌نما"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "موقعیت فعلی مکان‌نمای درج در نویسه‌ها."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "محدودهٔ انتخاب"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "موقعیت طرف دیگر انتخاب نسبت به مکان‌نما به نویسه."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "انتخاب همه"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "روش‌های ورودی"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"خطای GConf:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "خطای GConf: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "همهٔ خطاهای بعدی فقط روی پایانه نمایش می‌یابند."
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: ../eel/eel-glib-extensions.c:1193
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00 AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: ../eel/eel-glib-extensions.c:1195
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00 AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: ../eel/eel-glib-extensions.c:1197
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00 AM"
+
+#: ../eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "تصویری انتخاب نشد."
+
+#: ../eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "برای انتخاب یک تصویر باید رویش کلیک کنید."
+
+#: ../eel/eel-mime-application-chooser.c:546
+#, c-format
+msgid "Select an application to open %s and others of type \"%s\""
+msgstr ""
+"برنامه‌ای برای باز کردن <i>%s</i> و دیگر پرونده‌های از نوع «%s» انتخاب کنید"
+
+#: ../eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "افزودن برنامه به پایگاه دادهٔ برنامه ممکن نیست"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "می‌توانید با کلیک کردن روی انصراف، این عملیات را متوقف کنید."
+
+#: ../eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (یونی‌کد نامعتبر)"
 
 #~ msgid "Art"
 #~ msgstr "هنر"
@@ -7863,9 +8031,6 @@ msgstr "تنظیم سطح زوم نمای فعلی"
 #~ msgid "Factory for text view"
 #~ msgstr "کارخانه‌ای برای نمایش متن"
 
-#~ msgid "Text"
-#~ msgstr "متن"
-
 #~ msgid "Text Viewer"
 #~ msgstr "نمایشگر متن"
 
@@ -8033,3 +8198,21 @@ msgstr "تنظیم سطح زوم نمای فعلی"
 
 #~ msgid "CD-ROM"
 #~ msgstr "سی‌دی"
+
+#~ msgid "GConf Error"
+#~ msgstr "خطای GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "انتخابی انجام نشد"
+
+#~ msgid "Info"
+#~ msgstr "اطلاعات"
+
+#~ msgid "Warning"
+#~ msgstr "هشدار"
+
+#~ msgid "Error"
+#~ msgstr "خطا"
+
+#~ msgid "Question"
+#~ msgstr "سؤال"

@@ -14,6 +14,7 @@ desktop_in_files = 					\
 	nautilus-autorun-software.desktop.in
 
 SUBDIRS =			\
+	eel			\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
 	libnautilus-private 	\

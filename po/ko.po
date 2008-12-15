@@ -1,3 +1,4 @@
+# #-#-#-#-#  ko.po (nautilus)  #-#-#-#-#
 # nautilus ko.po
 # Young-Ho Cha <ganadist@mizi.com>, 2000~2002, 2004, 2006~2008.
 # Eunju Kim <eukim@redhat.com>, 2007.
@@ -5,8 +6,16 @@
 # Changwoo Ryu <cwryu@debian.org>, 2007, 2008.
 #
 #
+# #-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#
+# eel ko.po
+# Young-ho, Cha <ganadist@dacome.co.kr>, 2000, 2001.
+# Changwoo Ryu <cwryu@debian.org>, 2002, 2004, 2005, 2006.
+# Young-Ho, Cha <ganadist@gmail.com> 2003, 2006, 2008
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-08 14:10+0900\n"
@@ -16,6 +25,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"Project-Id-Version: eel $VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-02 01:39+0900\n"
+"PO-Revision-Date: 2008-02-02 01:40+0900\n"
+"Last-Translator: Young-Ho Cha <ganadist@gmail.com>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/browser.xml.h:1
@@ -355,7 +375,10 @@ msgid ""
 "ellipses on the desktop. If the number is larger than 0, the file name will "
 "not exceed the given number of lines. If the number is 0 or smaller, no "
 "limit is imposed on the number of displayed lines."
-msgstr "바탕 화면에서 매우 긴 파일 이름의 일부분을 말줄임표로 바꾸도록 지정하는 정수값. 0보다 크면 파일 이름은 지정한 값까지 줄을 사용합니다. 0보다 작으면 표시줄에 제한이 없어집니다."
+msgstr ""
+"바탕 화면에서 매우 긴 파일 이름의 일부분을 말줄임표로 바꾸도록 지정하는 정수"
+"값. 0보다 크면 파일 이름은 지정한 값까지 줄을 사용합니다. 0보다 작으면 표시줄"
+"에 제한이 없어집니다."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid ""
@@ -2808,9 +2831,13 @@ msgid "Could not run application"
 msgstr "프로그램을 실행할 수 없습니다"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:157
-#, c-format
+#, fuzzy, c-format
 msgid "Could not find '%s'"
-msgstr "\"%s\"(을)를 찾을 수 없습니다"
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"\"%s\"(을)를 찾을 수 없습니다\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"'%s'을(를) 찾을 수 없습니다"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:160
 msgid "Could not find application"
@@ -2831,21 +2858,37 @@ msgstr "프로그램 선택"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5070
+#, fuzzy
 msgid "Open With"
-msgstr "다른 프로그램으로 열기"
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"다른 프로그램으로 열기\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"프로그램으로 열기"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:764
+#, fuzzy
 msgid "Select an application to view its description."
-msgstr "설명을 보기 위한 프로그램을 선택합니다."
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"설명을 보기 위한 프로그램을 선택합니다.\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"이 설명을 볼 때 사용할 프로그램을 선택하십시오."
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:789
+#, fuzzy
 msgid "_Use a custom command"
-msgstr "사용자 지정 명령 사용(_U)"
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"사용자 지정 명령 사용(_U)\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"사용자 설정 명령어 사용(_U)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:806
 msgid "_Browse..."
 msgstr "찾아보기(_B)..."
 
+#. #-#-#-#-#  ko.po (nautilus)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
@@ -2857,9 +2900,13 @@ msgid "_Open"
 msgstr "열기(_O)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:919
-#, c-format
+#, fuzzy, c-format
 msgid "Open %s and other files of type \"%s\" with:"
-msgstr "%s와(과) \"%s\" 형식의 다른 파일을 여는 프로그램:"
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"%s와(과) \"%s\" 형식의 다른 파일을 여는 프로그램:\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"%s 및 \"%s\" 종류의 기타 파일을 열 프로그램:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:955
 #: ../libnautilus-private/nautilus-open-with-dialog.c:970
@@ -2868,8 +2915,13 @@ msgstr "더하기(_A)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:956
 #: ../libnautilus-private/nautilus-open-with-dialog.c:971
+#, fuzzy
 msgid "Add Application"
-msgstr "프로그램 더하기"
+msgstr ""
+"#-#-#-#-#  ko.po (nautilus)  #-#-#-#-#\n"
+"프로그램 더하기\n"
+"#-#-#-#-#  ko.po (eel $VERSION)  #-#-#-#-#\n"
+"프로그램을 더합니다"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:80
 msgid "Open Failed, would you like to choose another application?"
@@ -6679,6 +6731,145 @@ msgstr "확대/축소"
 msgid "Set the zoom level of the current view"
 msgstr "현재 보기의 확대수준을 설정합니다"
 
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "그림/레이블 테두리"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "알림 대화 상자의 레이블 및 그림 주위의 테두리 너비"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "알림 종류"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "알림의 종류"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "알림 단추"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "알림 대화 상자에 표시할 단추"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "자세히 보기(_D)"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "글자"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "라벨의 글자."
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "칸 맞춤"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"라벨의 글자들은 서로 영향을 끼치면서 정렬됩니다.이는 이미 배치된 라벨 자체의 "
+"위치에는 영향을 주지 않습니다.이 부분에 대해서는 GtkMisc::xalign을 보십시오."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "줄 넘김"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "설정해두면, 줄이 너무 길어질 때 줄을 넘깁니다."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "커서 위치"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "입력 커서의 현재 위치 (char 단위)."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "선택 경계"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "글자에 있는 커서에서 선택 반대방향 끝의 위치."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "모두 선택"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "입력기"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf 오류:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf 오류: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "이후의 모든 오류 메세지는 터미널에서만 볼 수 있습니다."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "그림을 선택하지 않았습니다."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "그림을 눌러서 선택해야 합니다."
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "취소를 눌러 이 작업을 중단할 수 있습니다."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (잘못된 유니코드)"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "%s 여는 중"
+
+#: ../eel/eel-app-launch-context.c:407
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "%d개의 항목 여는 중"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "암호를 입력하십시오"
+
 #~ msgid "Create Folder"
 #~ msgstr "폴더 만들기"
 
@@ -6694,3 +6885,18 @@ msgstr "현재 보기의 확대수준을 설정합니다"
 #~ msgid ""
 #~ "If you clear the list of locations, they will be permanently deleted."
 #~ msgstr "위치 목록을 비우면 완전히 지워지게 됩니다."
+
+#~ msgid "01/01/00, 01:00 AM"
+#~ msgstr "00/01/01, 오전 01:00"
+
+#~ msgid "1/1/00, 1:00 AM"
+#~ msgstr "00/1/1, 오전 1:00"
+
+#~ msgid " 1/ 1/00,  1:00 AM"
+#~ msgstr "00/ 1/ 1, 오전  1:00"
+
+#~ msgid "Select an application to open %s and others of type \"%s\""
+#~ msgstr "%s 및 \"%s\" 종류의 다른 파일을 열 프로그램을 선택하십시오"
+
+#~ msgid "Could not add application to the application database"
+#~ msgstr "프로그램을 데이터베이스에 더할 수 없습니다"

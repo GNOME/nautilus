@@ -1,3 +1,4 @@
+# #-#-#-#-#  sr@latin.po (nautilus)  #-#-#-#-#
 # Serbian translation of nautilus
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006.
 #
@@ -6,8 +7,18 @@
 # Maintainer: Danilo Šegan <danilo@gnome.org>
 # Reviewed on 2005-07-09 by: Danilo Šegan <danilo@gnome.org>
 #
+# #-#-#-#-#  sr@latin.po (eel)  #-#-#-#-#
+# Serbian translation of eel
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006, 2007.
+# This file is distributed under the same license as the eel package.
+# Maintainer: Danilo Šegan <dsegan@gmx.net>
+# Danilo Šegan <danilo@prevod.org>, 2005.
+# Reviewed on 2005-07-16 by: Igor Nestorović <igor@prevod.org>
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  sr@latin.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-09 12:42+0100\n"
@@ -19,6 +30,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4;    plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"#-#-#-#-#  sr@latin.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-09-20 03:12+0200\n"
+"PO-Revision-Date: 2008-09-20 03:12+0100\n"
+"Last-Translator: Goran Rakić <grakic@devbase.net>\n"
+"Language-Team: Serbian (sr) <gnom@prevod.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 # note(danilo):
 # PAŽNJA: koristim 4 oblika za množinu kako bih slučaj za jedan jedini stavljao
@@ -339,17 +360,17 @@ msgid ""
 "larger (200%), largest (400%)"
 msgstr ""
 "Lista kao niska koja određuje kako će biti skraćena imena datoteka koja se "
-"preklapaju, zavisno od stepena uvećanja. Svaki unos u listi razdvojen zapetom "
-"je oblika „Uvećanje:Ceo broj“. Za svaki stepen uvećanja (najmanje "
+"preklapaju, zavisno od stepena uvećanja. Svaki unos u listi razdvojen "
+"zapetom je oblika „Uvećanje:Ceo broj“. Za svaki stepen uvećanja (najmanje "
 "„smallest“ /33%/, manje „smaller“ /50%/, malo „small“ /66%/, obično "
 "„standard“ /100%/, veliko „large“ /150%/, veće „larger“ /200%/ i najveće "
 "„largest“ /400%/) ako je broj veći od 0 ime datoteke neće preći taj broj "
-"redova. Ako je broj 0 ili manje neće postojati limit na tom uvećanju. Dozvoljen "
-"je i unos samo celog broja što će biti primenjeno kao podrazumevana vrednost "
-"za sve stepene uvećanja. Na primer: „0“ — uvek prikaži dugačko ime; „3“ — "
-"uvek skrati ime ako prelazi tri reda; „smallest:5, smaller:4“ — skrati ime "
-"ako prelazi pet redova na najmanjem uvećanju, četiri na manjem uvećanju, inače "
-"ne skraćuj."
+"redova. Ako je broj 0 ili manje neće postojati limit na tom uvećanju. "
+"Dozvoljen je i unos samo celog broja što će biti primenjeno kao "
+"podrazumevana vrednost za sve stepene uvećanja. Na primer: „0“ — uvek "
+"prikaži dugačko ime; „3“ — uvek skrati ime ako prelazi tri reda; "
+"„smallest:5, smaller:4“ — skrati ime ako prelazi pet redova na najmanjem "
+"uvećanju, četiri na manjem uvećanju, inače ne skraćuj."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "All columns have same width"
@@ -524,10 +545,10 @@ msgid ""
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
-"Fascikle veće od ovoga će biti odsečene na približno ovu veličinu. Cilj je da "
-"se izbegne slučajno prepunjavanje memorije i ubijanje Nautilusa u prevelikim "
-"fasciklama. Negativna vrednost označava da nema ograničenja. Granica je "
-"približna pošto se fascikle čitaju u blokovima."
+"Fascikle veće od ovoga će biti odsečene na približno ovu veličinu. Cilj je "
+"da se izbegne slučajno prepunjavanje memorije i ubijanje Nautilusa u "
+"prevelikim fasciklama. Negativna vrednost označava da nema ograničenja. "
+"Granica je približna pošto se fascikle čitaju u blokovima."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "Home icon visible on desktop"
@@ -606,16 +627,17 @@ msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
 msgstr ""
-"Ukoliko je postavljeno, Nautilus će tražiti odobrenje pri brisanju datoteka ili "
-"pražnjenju smeća."
+"Ukoliko je postavljeno, Nautilus će tražiti odobrenje pri brisanju datoteka "
+"ili pražnjenju smeća."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
 msgstr ""
-"Ukoliko je postavljeno, Nautilus će sam priključiti medijume kao što su čvrsti "
-"diskovi (dostupni korisniku) i uklonjivi medijumi nakon njihovog priključivanja."
+"Ukoliko je postavljeno, Nautilus će sam priključiti medijume kao što su "
+"čvrsti diskovi (dostupni korisniku) i uklonjivi medijumi nakon njihovog "
+"priključivanja."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -624,10 +646,10 @@ msgid ""
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
 msgstr ""
-"Ukoliko je postavljeno, Nautilus će sam otvoriti fasciklu nakon priključitava "
-"medijuma. Ovo se odnosi samo na medijume za koje se ne zna sadržaj (x-"
-"content/*), dok za medijume sa poznatim sadržajem morate postaviti željenu "
-"radnju."
+"Ukoliko je postavljeno, Nautilus će sam otvoriti fasciklu nakon "
+"priključitava medijuma. Ovo se odnosi samo na medijume za koje se ne zna "
+"sadržaj (x-content/*), dok za medijume sa poznatim sadržajem morate "
+"postaviti željenu radnju."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -668,8 +690,8 @@ msgid ""
 "behavior."
 msgstr ""
 "Ukoliko je postavljeno, onda su svi prozori Nautilusa razgledački prozori. "
-"Ovako se Nautilus ponašao pre izdanja 2.6, a neki ljudi više vole ovakav način "
-"rada."
+"Ovako se Nautilus ponašao pre izdanja 2.6, a neki ljudi više vole ovakav "
+"način rada."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid ""
@@ -695,8 +717,8 @@ msgid ""
 "If set to true, then multiple views can be opened in one browser window, "
 "each in a separate tab."
 msgstr ""
-"Ukoliko je postavljeno, možete otvoriti više listova u razgledaču sa zasebnim "
-"sadržajem."
+"Ukoliko je postavljeno, možete otvoriti više listova u razgledaču sa "
+"zasebnim sadržajem."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
@@ -735,8 +757,8 @@ msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
-"Ukoliko je ovo postavljeno, ikona koja ukazuje na priključene diskove će biti "
-"stavljena na radnu površinu."
+"Ukoliko je ovo postavljeno, ikona koja ukazuje na priključene diskove će "
+"biti stavljena na radnu površinu."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -778,7 +800,8 @@ msgstr ""
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
-"Ukoliko je postavljeno, oznake će biti smeštene pored ikona umesto ispod njih."
+"Ukoliko je postavljeno, oznake će biti smeštene pored ikona umesto ispod "
+"njih."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "If true, new windows will use manual layout by default."
@@ -791,9 +814,9 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"Za slike koje prelaze ovu veličinu (u bajtovima) neće biti prikazana umanjena "
-"slika. Svrha ovoga je da se izbegne umanjivanje velikih slika što može oduzeti "
-"mnogo vremena ili memorije."
+"Za slike koje prelaze ovu veličinu (u bajtovima) neće biti prikazana "
+"umanjena slika. Svrha ovoga je da se izbegne umanjivanje velikih slika što "
+"može oduzeti mnogo vremena ili memorije."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "List of possible captions on icons"
@@ -806,8 +829,8 @@ msgid ""
 "application be started on insertion of media matching these types."
 msgstr ""
 "Spisak vrsta sadržaja (x-content/*) za koje je izabrano „Ne radi ništa“ u "
-"postavkama. Nikakvo pitanje neće biti postavljeno niti će odgovarajući program "
-"biti pokrenut po ubacivanju medijuma sa ovim sadržajem."
+"postavkama. Nikakvo pitanje neće biti postavljeno niti će odgovarajući "
+"program biti pokrenut po ubacivanju medijuma sa ovim sadržajem."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -816,8 +839,8 @@ msgid ""
 "media matching these types."
 msgstr ""
 "Spisak vrsta sadržaja (x-content/*) za koje je izabrano „Otvori fasciklu“ u "
-"postavkama. Nakon ubacivanja ovakvog medijuma biće pokrenut prozor sa njegovim "
-"sadržajem."
+"postavkama. Nakon ubacivanja ovakvog medijuma biće pokrenut prozor sa "
+"njegovim sadržajem."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
@@ -946,10 +969,10 @@ msgid ""
 "local file systems. If set to \"never\" then it never previews sound."
 msgstr ""
 "Gubitak brzine radi pregleda zvučnih datoteka pri prelasku miša preko ikona "
-"datoteka. Ukoliko je postavljeno na „always“ uvek se pušta zvuk, čak i ako je "
-"datoteka na udaljenom računaru. Ukoliko je postavljeno na „local_only“, pušta "
-"se zvuk samo za lokalne datoteke. Ukoliko je postavljeno na „never“, nikad se "
-"ne pušta zvuk."
+"datoteka. Ukoliko je postavljeno na „always“ uvek se pušta zvuk, čak i ako "
+"je datoteka na udaljenom računaru. Ukoliko je postavljeno na „local_only“, "
+"pušta se zvuk samo za lokalne datoteke. Ukoliko je postavljeno na „never“, "
+"nikad se ne pušta zvuk."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid ""
@@ -973,11 +996,11 @@ msgid ""
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
 msgstr ""
-"Gubitak brzine radi pregleda umanjenih slika za slike. Ukoliko je postavljeno "
-"na „always“ uvek se prikazuje umanjena slika, čak i ako je fascikla na "
-"udaljenom računaru. Ukoliko je postavljeno na „local_only“, prikazuje se "
-"umanjena slika samo za lokalne datoteke. Ukoliko je postavljeno na „never“ "
-"koristi se opšta ikona."
+"Gubitak brzine radi pregleda umanjenih slika za slike. Ukoliko je "
+"postavljeno na „always“ uvek se prikazuje umanjena slika, čak i ako je "
+"fascikla na udaljenom računaru. Ukoliko je postavljeno na „local_only“, "
+"prikazuje se umanjena slika samo za lokalne datoteke. Ukoliko je postavljeno "
+"na „never“ koristi se opšta ikona."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid ""
@@ -989,8 +1012,8 @@ msgstr ""
 "Gubitak brzine radi prikazivanja broja stavki u fascikli. Ukoliko je "
 "postavljeno na „always“ uvek se prikazuje broj stavki, čak i ako je fascikla "
 "na udaljenom računaru. Ukoliko je postavljeno na „local_only“, prikazuje se "
-"broj stavki samo za lokalne fascikle. Ukoliko je postavljeno na „never“, onda "
-"se nikad ne prikazuje broj stavki."
+"broj stavki samo za lokalne fascikle. Ukoliko je postavljeno na „never“, "
+"onda se nikad ne prikazuje broj stavki."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid "Text Ellipsis Limit"
@@ -1094,10 +1117,10 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"Šta treba da uradi sa izvršnim tekstualnim datotekama pri njihovom aktiviranju "
-"(jednostruki ili dvostruki klik). Moguće vrednosti su „launch“ za pokretanje "
-"istih kao programa, „ask“ za postavljanje pitanja pomoću prozorčeta, i "
-"„display“ za prikazivanje kao tekstualnih datoteka."
+"Šta treba da uradi sa izvršnim tekstualnim datotekama pri njihovom "
+"aktiviranju (jednostruki ili dvostruki klik). Moguće vrednosti su „launch“ "
+"za pokretanje istih kao programa, „ask“ za postavljanje pitanja pomoću "
+"prozorčeta, i „display“ za prikazivanje kao tekstualnih datoteka."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid ""
@@ -1131,7 +1154,8 @@ msgstr "Da li je postavljena proizvoljna podrazumevana pozadina fascikle."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
 msgid "Whether a custom default side pane background has been set."
-msgstr "Da li je postavljena proizvoljna podrazumevana pozadina za bočnu površ."
+msgstr ""
+"Da li je postavljena proizvoljna podrazumevana pozadina za bočnu površ."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
@@ -1269,8 +1293,8 @@ msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
 "for other media of type \"%s\"."
 msgstr ""
-"Izaberite način za otvaranje „%s“ i da li da se ova radnja ponavlja za ostale „%"
-"s“ medijume."
+"Izaberite način za otvaranje „%s“ i da li da se ova radnja ponavlja za "
+"ostale „%s“ medijume."
 
 #: ../libnautilus-private/nautilus-autorun.c:954
 msgid "_Always perform this action"
@@ -1844,7 +1868,8 @@ msgstr "_Preskoči datoteke"
 msgid ""
 "The folder \"%B\" cannot be deleted because you do not have permissions to "
 "read it."
-msgstr "Ne mogu da obrišem fasciklu „%B“ jer nemate ovlašćenja za njeno čitanje."
+msgstr ""
+"Ne mogu da obrišem fasciklu „%B“ jer nemate ovlašćenja za njeno čitanje."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1443
 #: ../libnautilus-private/nautilus-file-operations.c:2404
@@ -2104,8 +2129,8 @@ msgid ""
 "The folder \"%B\" cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"Ne mogu da umnožim fasciklu „%B“ zato što nemate ovlašćenja da je napravite u "
-"odredištu."
+"Ne mogu da umnožim fasciklu „%B“ zato što nemate ovlašćenja da je napravite "
+"u odredištu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3196
 msgid "There was an error creating the folder \"%B\"."
@@ -2931,8 +2956,13 @@ msgid "Could not set as default application"
 msgstr "Ne mogu da postavim kao podrazumevani program"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#, fuzzy
 msgid "Default"
-msgstr "Podrazumevani"
+msgstr ""
+"#-#-#-#-#  sr@latin.po (nautilus)  #-#-#-#-#\n"
+"Podrazumevani\n"
+"#-#-#-#-#  sr@latin.po (eel)  #-#-#-#-#\n"
+"Podrazumevano"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:266
 msgid "Icon"
@@ -3236,8 +3266,8 @@ msgstr "Izmenite pozadinu _radne površine"
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
-"Prikazuje prozor koji omogućava da izbor obrasca za popunjavanja pozadine ili "
-"boju"
+"Prikazuje prozor koji omogućava da izbor obrasca za popunjavanja pozadine "
+"ili boju"
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:705
@@ -3467,8 +3497,8 @@ msgstr ""
 "datoteka kao parametre. Kada se izvrše iz udaljenih fascikli (npr. veb ili "
 "FTP), skripte neće dobiti nikakve parametre.\n"
 "\n"
-"U svim slučajevima, sledeće promenljive okruženja će postaviti Nautilus, koje "
-"skripte mogu koristiti:\n"
+"U svim slučajevima, sledeće promenljive okruženja će postaviti Nautilus, "
+"koje skripte mogu koristiti:\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: putanje izabranih datoteka u zasebnim "
 "redovima (samo ako je lokalno)\n"
@@ -6723,6 +6753,136 @@ msgstr "Uvećaj"
 msgid "Set the zoom level of the current view"
 msgstr "Postavi nivo uvećanja tekućeg pregleda"
 
+#: ../eel/eel-alert-dialog.c:109
+msgid "Image/label border"
+msgstr "Ivica slike/oznake"
+
+#: ../eel/eel-alert-dialog.c:110
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Širina ivice oko oznake i slike u prozorčetu upozorenja"
+
+#: ../eel/eel-alert-dialog.c:119
+msgid "Alert Type"
+msgstr "Vrsta upozorenja"
+
+#: ../eel/eel-alert-dialog.c:120
+msgid "The type of alert"
+msgstr "Vrsta upozorenja"
+
+#: ../eel/eel-alert-dialog.c:128
+msgid "Alert Buttons"
+msgstr "Dugmad upozorenja"
+
+#: ../eel/eel-alert-dialog.c:129
+msgid "The buttons shown in the alert dialog"
+msgstr "Dugmad prikazana u prozorčetu upozorenja"
+
+#: ../eel/eel-alert-dialog.c:193
+msgid "Show more _details"
+msgstr "Prikaži više _detalja"
+
+#: ../eel/eel-canvas.c:1219 ../eel/eel-canvas.c:1220
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1226 ../eel/eel-canvas.c:1227
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:353
+msgid "Text"
+msgstr "Tekst"
+
+#: ../eel/eel-editable-label.c:354
+msgid "The text of the label."
+msgstr "Sadržaj oznake."
+
+#: ../eel/eel-editable-label.c:360
+msgid "Justification"
+msgstr "Poravnanje"
+
+#: ../eel/eel-editable-label.c:361
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Poravnanje linija teksta oznake u međusobnom odnosu. Ovo ne utiče na "
+"poravnanje oznake na njoj dodeljenom prostoru. Pogledajte GtkMisc::xalign za "
+"to."
+
+#: ../eel/eel-editable-label.c:369
+msgid "Line wrap"
+msgstr "Prelom reda"
+
+#: ../eel/eel-editable-label.c:370
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+"Ukoliko je postavljeno, kada tekst postane preširok vršiće se prelom reda."
+
+#: ../eel/eel-editable-label.c:377
+msgid "Cursor Position"
+msgstr "Pozicija kurzora"
+
+#: ../eel/eel-editable-label.c:378
+msgid "The current position of the insertion cursor in chars."
+msgstr "Tekuća pozicija kurzora za unos kao broj znakova."
+
+#: ../eel/eel-editable-label.c:387
+msgid "Selection Bound"
+msgstr "Granica izbora"
+
+#: ../eel/eel-editable-label.c:388
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Pozicija suprotnog kraja izbora kao broj znakova od kurzora."
+
+#: ../eel/eel-editable-label.c:3217
+msgid "Select All"
+msgstr "Izaberi sve"
+
+#: ../eel/eel-editable-label.c:3228
+msgid "Input Methods"
+msgstr "Metode unosa"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GKonf greška:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GKonf greška: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Sve naredne greške se prikazuju samo na terminalu."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "Slika nije izabrana."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "Morate pritisnuti sliku da biste je izabrali."
+
+#: ../eel/eel-stock-dialogs.c:209
+msgid "You can stop this operation by clicking cancel."
+msgstr "Možete zaustaviti ovu operaciju pritiskom na „otkaži“."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (neispravan Unikod)"
+
+#: ../eel/eel-mount-operation.c:139
+msgid "Enter Password"
+msgstr "Unesite lozinku"
+
 #~ msgid "Browse the file system with the file manager"
 #~ msgstr "Razgledajte sistem datoteka pomoću upravljača datotekama"
 
@@ -6756,9 +6916,9 @@ msgstr "Postavi nivo uvećanja tekućeg pregleda"
 #~ "console may fix the problem. If not, you can try rebooting the computer "
 #~ "or installing Nautilus again."
 #~ msgstr ""
-#~ "Trenutno ne možete koristiti Nautilus. Izvršavanje naredbe „bonobo-slay“ u "
-#~ "Terminalu može otkloniti problem. Ukoliko to ne pomogne, ponovo pokrenite "
-#~ "računar ili ponovo instalirajte Nautilus."
+#~ "Trenutno ne možete koristiti Nautilus. Izvršavanje naredbe „bonobo-slay“ "
+#~ "u Terminalu može otkloniti problem. Ukoliko to ne pomogne, ponovo "
+#~ "pokrenite računar ili ponovo instalirajte Nautilus."
 
 #~ msgid ""
 #~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
@@ -6779,13 +6939,13 @@ msgstr "Postavi nivo uvećanja tekućeg pregleda"
 #~ "We have also seen this error when a faulty version of bonobo-activation "
 #~ "was installed."
 #~ msgstr ""
-#~ "Trenutno ne možete koristiti Nautilus. Izvršavanje naredbe „bonobo-slay“ u "
-#~ "Terminalu može otkloniti problem. Ukoliko to ne pomogne, ponovo pokrenite "
-#~ "računar ili ponovo instalirajte Nautilus.\n"
+#~ "Trenutno ne možete koristiti Nautilus. Izvršavanje naredbe „bonobo-slay“ "
+#~ "u Terminalu može otkloniti problem. Ukoliko to ne pomogne, ponovo "
+#~ "pokrenite računar ili ponovo instalirajte Nautilus.\n"
 #~ "\n"
 #~ "Bonobo ne može da pronađe datoteku Nautilus_shell.server. Jedan uzrok "
-#~ "ovoga je kada LD_LIBRARY_PATH ne uključuje direktorijum sa bibliotekama za "
-#~ "bonobo-activation. Drugi mogući uzrok je loša instalacija i nedostatak "
+#~ "ovoga je kada LD_LIBRARY_PATH ne uključuje direktorijum sa bibliotekama "
+#~ "za bonobo-activation. Drugi mogući uzrok je loša instalacija i nedostatak "
 #~ "Nautilus_Shell.server datoteke.\n"
 #~ "\n"
 #~ "Izvršavanje „bonobo-slay“ će ugasiti sve procese za Bonobo aktivaciju, i "
@@ -6822,8 +6982,8 @@ msgstr "Postavi nivo uvećanja tekućeg pregleda"
 #~ "and restarting Nautilus may help fix the problem."
 #~ msgstr ""
 #~ "Trenutno ne možete koristiti Nautilus, usled neočekivane greške Bonoba "
-#~ "pri pokušaju da pronađe objekat ljuske. Gašenje bonobo-activation-server-a "
-#~ "i ponovno pokretanje Nautilusa možda može otkloniti problem."
+#~ "pri pokušaju da pronađe objekat ljuske. Gašenje bonobo-activation-server-"
+#~ "a i ponovno pokretanje Nautilusa možda može otkloniti problem."
 
 #~ msgid ""
 #~ "100 KB\n"

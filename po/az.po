@@ -1,3 +1,4 @@
+# #-#-#-#-#  az.po (nautilus.HEAD.az)  #-#-#-#-#
 # translation of nautilus.HEAD.az.po to Azerbaijani
 # translation of nautilus.HEAD.po to Azerbaijani Turkish
 # Copyright (C) 2000,2003, 2004 Free Software Foundation, Inc.
@@ -5,8 +6,17 @@
 # Mətin Əmirov <metin@karegen.com>, 2003, 2004.
 # Metin Amiroff <metin@karegen.com>, 2004.
 #
+# #-#-#-#-#  az.po (eel.HEAD.az)  #-#-#-#-#
+# translation of eel.HEAD.az.po to Azerbaijani
+# translation of eel.HEAD.po to Azerbaijani Turkish
+# Copyright (C) 2000, 2003, 2004 Free Software Foundation, Inc.
+# Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2001.
+# Mətin Əmirov <metin@karegen.com>, 2003, 2004.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  az.po (nautilus.HEAD.az)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus.HEAD.az\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-10 12:02+0100\n"
@@ -18,6 +28,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "net>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
+"#-#-#-#-#  az.po (eel.HEAD.az)  #-#-#-#-#\n"
+"Project-Id-Version: eel.HEAD.az\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2004-08-18 19:48+0300\n"
+"Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"net>\n"
 "X-Generator: KBabel 1.3.1\n"
 
 #: data/applications.desktop.in.h:1
@@ -445,9 +467,14 @@ msgstr "Bu örtü fotoqrafik həqiqətdə qovluqlar işlədir."
 #: libnautilus-extension/nautilus-menu-item.c:206
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1107 eel/eel-mime-application-chooser.c:246
+#, fuzzy
 msgid "Name"
-msgstr "Proqramın Adı"
+msgstr ""
+"#-#-#-#-#  az.po (nautilus.HEAD.az)  #-#-#-#-#\n"
+"Proqramın Adı\n"
+"#-#-#-#-#  az.po (eel.HEAD.az)  #-#-#-#-#\n"
+"Ad"
 
 #: libnautilus-extension/nautilus-column.c:176
 msgid "Name of the column"
@@ -4402,7 +4429,7 @@ msgstr "Yardım göstərilərkən xəta oldu."
 msgid "Couldn't Show Help"
 msgstr "Yardım Göstərilə Bilmədi"
 
-#: src/file-manager/fm-properties-window.c:3305
+#: src/file-manager/fm-properties-window.c:3305 eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Fərqli Aç"
 
@@ -6111,6 +6138,225 @@ msgstr "Şəbəkə Vericiləri"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus fayl idarəçisində şəbəkə vericilərinizi görün"
 
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Mətn"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Rəsm/etiket kənarı"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Xəbərdarlıq dialoqunda rəsmin və etiketin ətrafındakı kənarın eni"
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Xəbərdarlıq Növü"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Xəbərdarlığın növü"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Xəbərdarlıq Düymələri"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Xəbərdarlıq dialoqunda göstərilən düymələr"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Daha çox _təfərruat göstər"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Etiketin mətni."
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "İki yönlü hizalama"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Etiket mətninin içindəki sətrlərin bir birinə səviyələməsi nisbidir. Bu "
+"etiketin öz yerindəki səviyələməsinə təsir göstərmir. Bunun üçün bax: "
+"GtkMisc::xalign."
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Sətri qırması"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Seçilibsə, mətn çox geniş olduğu zaman yazılar büküləcək."
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Ox Mövqeyi"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Xarakter ədədində oxun hazırkı mövqeyi "
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Seçilmək Üzrə"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Seçimin tam tərs tərəfinin oxdan xarakter ədədində mövqeyi"
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Hamısını Seç"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Giriş Üsulları"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf xətası:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf xətası: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Bütün başqa xətalar sadəcə olaraq terminalda göstəriləcəkdir."
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Heç bir rəsm seçilməyib."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Seçmək üçün rəsmi tıqlamalısınız."
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Ön Qurğulu"
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Heç bir proqram seçili deyil</i>"
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr "%s sənədi"
+
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
+msgid "Unknown"
+msgstr "Namə'lum"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr ""
+"<i>%s</i> faylını və \"%s\" növündəki digər faylları açmaq üçün program seç"
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Proqram işə salına bilmədi"
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "'%s' tapıla bilmədi"
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Proqram tapıla bilmədi"
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Proqram əlavə edilə bilmədi"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Proqram məlumat bazasına əlavə edilə bilmədi"
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Proqram Seç"
+
+#: eel/eel-open-with-dialog.c:830
+#, fuzzy
+msgid "Select an application to view its description."
+msgstr ""
+"<i>%s</i> faylını və \"%s\" növündəki digər faylları açmaq üçün program seç"
+
+#: eel/eel-open-with-dialog.c:855
+msgid "_Use a custom command"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr "_Gəz..."
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "<i>%s</i> faylını və \"%s\" növündəki digər faylları bununla aç: "
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr "Ə_lavə et"
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr "Proqram Əlavə Et"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Bu gedişatı ləğv düyməsinə basaraq dayandıra bilərsiniz."
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (hökmsüz Yunikod)"
+
 #~ msgid "Allaire"
 #~ msgstr "Allaire"
 
@@ -6382,9 +6628,6 @@ msgstr "Nautilus fayl idarəçisində şəbəkə vericilərinizi görün"
 #~ msgid "Factory for text view"
 #~ msgstr "Mətn nümayişi e'malatxanası"
 
-#~ msgid "Text"
-#~ msgstr "Mətn"
-
 #~ msgid "Text Viewer"
 #~ msgstr "Mətn Nümayişçisi"
 
@@ -6606,3 +6849,21 @@ msgstr "Nautilus fayl idarəçisində şəbəkə vericilərinizi görün"
 
 #~ msgid "Try to fit in window"
 #~ msgstr "Pəncərəyə yaraşdır"
+
+#~ msgid "GConf Error"
+#~ msgstr "GConf Xətası"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Heçnə Seçilməyib"
+
+#~ msgid "Info"
+#~ msgstr "Mə'lumat"
+
+#~ msgid "Warning"
+#~ msgstr "Xabərdarlıq"
+
+#~ msgid "Error"
+#~ msgstr "Xəta"
+
+#~ msgid "Question"
+#~ msgstr "Sual"

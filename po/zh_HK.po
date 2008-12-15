@@ -1,3 +1,4 @@
+# #-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#
 # Chinese (Hong Kong) translation for nautilus.
 # Copyright (C) 2000-07 Free Software Foundation, Inc.
 # Gong Yi LIAO <granziliao@sinamail.com>, 2000.
@@ -6,8 +7,19 @@
 # Woodman Tuen <wmtuen@gmail.com>, 2004-07.
 # Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2008
 #
+# #-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#
+# Chinese(Taiwan) translation of eel.
+# Copyright (C) 2000-06 Free Software Foundation, Inc.
+# Gong Yi LIAO <granziliao@sinamail.com>, 2000.
+# Joe Man <trmetal@yahoo.com.hk>, 2001.
+# Abel Cheung <abel@oaka.org>, 2002-2003.
+# Woodman Tuen <wmtuen@gmail.com>, 2004-2006.
+#
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus 2.24.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-18 12:08+0800\n"
@@ -18,6 +30,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"Project-Id-Version: eel 2.21.91\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-27 20:14+0800\n"
+"PO-Revision-Date: 2008-01-31 20:46+0800\n"
+"Last-Translator: Woodman Tuen <wmtuen@gmail.com>\n"
+"Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -309,7 +332,8 @@ msgid ""
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
 msgstr ""
-"這是在圖示顯示模式中，或者在桌面中，圖示下方附帶的一系列標題文字。實際會顯示的標題數目取決於圖示的縮放倍率。可接受的值為：\n"
+"這是在圖示顯示模式中，或者在桌面中，圖示下方附帶的一系列標題文字。實際會顯示"
+"的標題數目取決於圖示的縮放倍率。可接受的值為：\n"
 "“size”、“type”、“date_modified”、“date_changed”、“date_accessed”、“owner”、“group”、“permissions”、“octal_permissions”及“mime_type”。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
@@ -329,7 +353,17 @@ msgid ""
 "not shorten file names for other zoom levels. Available zoom levels: "
 "smallest (33%), smaller (50%), small (66%), standard (100%), large (150%), "
 "larger (200%), largest (400%)"
-msgstr "根據據縮放等級，決定過長的檔案名稱的一部分要以省略符號替換的字串值。每個清單項目的格式為 \"縮放等級:整數值\"。針對每個指定的縮放等級，如果所給的整數值大於 0，則檔案名稱的長度將不會超過該整數值的行數。如果該整數值小於或等於 0，表示對指定的縮放等級不予限制長度。若以 \"整數值\" 的格式不指定縮放等級也可以接受為項目的預設值，它將會定義所有未指定的縮放等級的最大行數。例如： 0 - 永遠完整顥示過長的檔案名稱：3 - 如果超過 3 行則截短檔案名稱：smallest:5,smaller:4,0 - 在縮放等級 \"smallest\" 中超過 5 行就截短檔案名稱；在縮放等級 \"smaller\" 中超過 4 行就截短檔案名稱；其他的縮放等級則不會截短檔案名稱。可用的縮放等級有：smallest (33%)、 smaller (50%)、 small (66%)、 standard (100%)、 large (150%)、 larger (200%)、 largest (400%)"
+msgstr ""
+"根據據縮放等級，決定過長的檔案名稱的一部分要以省略符號替換的字串值。每個清單"
+"項目的格式為 \"縮放等級:整數值\"。針對每個指定的縮放等級，如果所給的整數值大"
+"於 0，則檔案名稱的長度將不會超過該整數值的行數。如果該整數值小於或等於 0，表"
+"示對指定的縮放等級不予限制長度。若以 \"整數值\" 的格式不指定縮放等級也可以接"
+"受為項目的預設值，它將會定義所有未指定的縮放等級的最大行數。例如： 0 - 永遠完"
+"整顥示過長的檔案名稱：3 - 如果超過 3 行則截短檔案名稱：smallest:5,"
+"smaller:4,0 - 在縮放等級 \"smallest\" 中超過 5 行就截短檔案名稱；在縮放等級 "
+"\"smaller\" 中超過 4 行就截短檔案名稱；其他的縮放等級則不會截短檔案名稱。可用"
+"的縮放等級有：smallest (33%)、 smaller (50%)、 small (66%)、 standard "
+"(100%)、 large (150%)、 larger (200%)、 largest (400%)"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "All columns have same width"
@@ -345,12 +379,17 @@ msgid ""
 "ellipses on the desktop. If the number is larger than 0, the file name will "
 "not exceed the given number of lines. If the number is 0 or smaller, no "
 "limit is imposed on the number of displayed lines."
-msgstr "決定桌面上過長的檔案名稱的一部分要以省略符號替換的字串值。如果所給的整數值大於 0，則檔案名稱的長度將不會超過該整數值的行數。如果該整數值小於或等於 0，表示對指定的縮放等級不予限制長度。"
+msgstr ""
+"決定桌面上過長的檔案名稱的一部分要以省略符號替換的字串值。如果所給的整數值大"
+"於 0，則檔案名稱的長度將不會超過該整數值的行數。如果該整數值小於或等於 0，表"
+"示對指定的縮放等級不予限制長度。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid ""
 "Color for the default folder background. Only used if background_set is true."
-msgstr "預設資料夾背景圖案的顏色。只有在“background_set”設定為‘true’的時候，本選項方會生效。"
+msgstr ""
+"預設資料夾背景圖案的顏色。只有在“background_set”設定為‘true’的時候，本選項方"
+"會生效。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Computer icon visible on desktop"
@@ -366,7 +405,10 @@ msgid ""
 "\"search_by_text\", then Nautilus will Search for files by file name only. "
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
-msgstr "在搜尋列中搜尋符合條件的檔案的方式。如果設定為“search_by_text”，Nautilus 只會根據檔案名稱搜尋。如果設定為“search_by_text_and_properties”，則會同時根據檔案名稱和屬性來搜尋。"
+msgstr ""
+"在搜尋列中搜尋符合條件的檔案的方式。如果設定為“search_by_text”，Nautilus 只會"
+"根據檔案名稱搜尋。如果設定為“search_by_text_and_properties”，則會同時根據檔案"
+"名稱和屬性來搜尋。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Current Nautilus theme (deprecated)"
@@ -476,13 +518,17 @@ msgstr "啟用典型的 Nautilus 運作方式，那麼所有視窗都是瀏覽�
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
-msgstr "預設資料夾背景圖案的檔案名稱。只有在“background_set”設定為‘true’的時候，本選項方會生效。"
+msgstr ""
+"預設資料夾背景圖案的檔案名稱。只有在“background_set”設定為‘true’的時候，本選"
+"項方會生效。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
-msgstr "預設側面窗格背景圖案的檔案名稱。只有在“side_pane_background_set”設定為‘true’時，本選項方會生效。"
+msgstr ""
+"預設側面窗格背景圖案的檔案名稱。只有在“side_pane_background_set”設定"
+"為‘true’時，本選項方會生效。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -490,7 +536,10 @@ msgid ""
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
-msgstr "如果某些目錄中的檔案/子目錄數目太多，實際上顯示的數目會減少至大約這個數字。這樣做的意義是避免 Nautilus 因載入過大的目錄而不正常地結束。負數表示沒有限制。這個數字只是大約的數字，因為載入目錄時，每次讀取資料都是讀取多個項目的。"
+msgstr ""
+"如果某些目錄中的檔案/子目錄數目太多，實際上顯示的數目會減少至大約這個數字。這"
+"樣做的意義是避免 Nautilus 因載入過大的目錄而不正常地結束。負數表示沒有限制。"
+"這個數字只是大約的數字，因為載入目錄時，每次讀取資料都是讀取多個項目的。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "Home icon visible on desktop"
@@ -501,13 +550,17 @@ msgid ""
 "If set to \"after_current_tab\", then new tabs are inserted after the "
 "current tab. If set to \"end\", then new tabs are appended to the end of the "
 "tab list."
-msgstr "如果設為「after_current_tab」，則新的分頁會插入到目前分頁之後。如果設為「end」，則新的分頁會加到分頁清單的最後端。"
+msgstr ""
+"如果設為「after_current_tab」，則新的分頁會插入到目前分頁之後。如果設為"
+"「end」，則新的分頁會加到分頁清單的最後端。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
-msgstr "如設定為‘true’，Nautilus 只會在目錄樹側面窗格中顯示目錄，不然會同時顯示目錄和檔案。"
+msgstr ""
+"如設定為‘true’，Nautilus 只會在目錄樹側面窗格中顯示目錄，不然會同時顯示目錄和"
+"檔案。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -530,19 +583,25 @@ msgstr "如設定為‘true’，新開啟的視窗會顯示工具列。"
 msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
-msgstr "如設定為‘true’，Nautilus 瀏覽器視窗會使用輸入文字項目的位置工具列，而非路徑列。"
+msgstr ""
+"如設定為‘true’，Nautilus 瀏覽器視窗會使用輸入文字項目的位置工具列，而非路徑"
+"列。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "If set to true, then Nautilus lets you edit and display file permissions in "
 "a more unix-like way, accessing some more esoteric options."
-msgstr "如設定為‘true’，Nautilus 會讓你以較 unix 相似的形式修改及顯示檔案權限，存取一些較難懂的選項。"
+msgstr ""
+"如設定為‘true’，Nautilus 會讓你以較 unix 相似的形式修改及顯示檔案權限，存取一"
+"些較難懂的選項。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
-msgstr "如設定為‘true’，Nautilus 會在圖示顯示模式及清單顯示模式中先顯示目錄，然後才顯示檔案。"
+msgstr ""
+"如設定為‘true’，Nautilus 會在圖示顯示模式及清單顯示模式中先顯示目錄，然後才顯"
+"示檔案。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
@@ -554,7 +613,9 @@ msgstr "如設定為‘true’，Nautilus 會在你嘗試刪除檔案或清空�
 msgid ""
 "If set to true, then Nautilus will automatically mount media such as user-"
 "visible hard disks and removable media on start-up and media insertion."
-msgstr "如果設為「true」，Nautilus 會在啟動或插入媒體時自動掛載媒體（例如使用者看得到的硬碟和可攜式媒體）。"
+msgstr ""
+"如果設為「true」，Nautilus 會在啟動或插入媒體時自動掛載媒體（例如使用者看得到"
+"的硬碟和可攜式媒體）。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -562,7 +623,10 @@ msgid ""
 "automounted. This only applies to media where no known x-content/* type was "
 "detected; for media where a known x-content type is detected, the user "
 "configurable action will be taken instead."
-msgstr "如果設為 true，Nautilus 會在自動掛載媒體後自動開啟資料夾。這個選項只有在媒體中尚未偵測到已知的 x-content/* 類型時才會生效；若在媒體中偵測到已知的 x-content 類型，則會用使用者設定的動作來代替。"
+msgstr ""
+"如果設為 true，Nautilus 會在自動掛載媒體後自動開啟資料夾。這個選項只有在媒體"
+"中尚未偵測到已知的 x-content/* 類型時才會生效；若在媒體中偵測到已知的 x-"
+"content 類型，則會用使用者設定的動作來代替。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
@@ -573,39 +637,50 @@ msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
-msgstr "如設定為‘true’，Nautilus 會提供另一種功能，讓你即時刪除檔案，而不是將檔案丟進回收筒。本功能是比較危險，所以請小心使用。"
+msgstr ""
+"如設定為‘true’，Nautilus 會提供另一種功能，讓你即時刪除檔案，而不是將檔案丟進"
+"回收筒。本功能是比較危險，所以請小心使用。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid ""
 "If set to true, then Nautilus will never prompt nor autorun/autostart "
 "programs when a medium is inserted."
-msgstr "如設定為「true」，當插入媒體時 Nautilus 將不會提示或自動執行/啟動程式。"
+msgstr ""
+"如設定為「true」，當插入媒體時 Nautilus 將不會提示或自動執行/啟動程式。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "如設定為‘true’，Nautilus 會以使用者的個人資料夾作為桌面，如設定為‘false’，則會使用 ~/Desktop 作為桌面。"
+msgstr ""
+"如設定為‘true’，Nautilus 會以使用者的個人資料夾作為桌面，如設定為‘false’，則"
+"會使用 ~/Desktop 作為桌面。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
-msgstr "如設定為‘true’，那麼所有 Nautilus 視窗皆是瀏覽器視窗。這是 Nautilus 在 2.6 版前的運作方式，有些人比較喜歡這種運作方式。"
+msgstr ""
+"如設定為‘true’，那麼所有 Nautilus 視窗皆是瀏覽器視窗。這是 Nautilus 在 2.6 版"
+"前的運作方式，有些人比較喜歡這種運作方式。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
-msgstr "如設定為‘true’，則會顯示如 Emacs 等程式製作出來的備份檔。目前，只有檔案名稱末端為波浪符號 (~) 的才會當作是備份檔來處理。"
+msgstr ""
+"如設定為‘true’，則會顯示如 Emacs 等程式製作出來的備份檔。目前，只有檔案名稱末"
+"端為波浪符號 (~) 的才會當作是備份檔來處理。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
-msgstr "如設定為‘true’，所有隱藏檔案都會在檔案總管中顯示出來。所謂隱藏檔案即是任何第一個字符為一點‘.’的檔案，或者在某個資料夾的 .hidden 檔案內容之中。"
+msgstr ""
+"如設定為‘true’，所有隱藏檔案都會在檔案總管中顯示出來。所謂隱藏檔案即是任何第"
+"一個字符為一點‘.’的檔案，或者在某個資料夾的 .hidden 檔案內容之中。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid ""
@@ -647,14 +722,18 @@ msgstr "如設定為‘true’，則桌面上會出現連結到已掛載的檔�
 msgid ""
 "If this preference is set, all columns in the compact view have the same "
 "width. Otherwise, the width of each column is determined seperately."
-msgstr "如果此項偏好設定生效，在精簡檢視中所有欄位都會有相同的闊度。否則每個欄位的闊度都是個別決定的。"
+msgstr ""
+"如果此項偏好設定生效，在精簡檢視中所有欄位都會有相同的闊度。否則每個欄位的闊"
+"度都是個別決定的。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
-msgstr "如設定為‘true’，在新的視窗中檔案會以相反次序排列。譬如說，如果是以檔案名稱來排列，本來從“a”至“z”排列的檔案會改為從“z”至“a”排列。"
+msgstr ""
+"如設定為‘true’，在新的視窗中檔案會以相反次序排列。譬如說，如果是以檔案名稱來"
+"排列，本來從“a”至“z”排列的檔案會改為從“z”至“a”排列。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
@@ -662,7 +741,10 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
-msgstr "如設定為‘true’，在新的視窗中檔案會以相反次序排列。譬如說，如果是以檔案名稱來排列，本來從“a”至“z”排列的檔案會改為從“z”至“a”排列；如果是以檔案大小來排列，本來是遞增排列的，現在會變成遞減。"
+msgstr ""
+"如設定為‘true’，在新的視窗中檔案會以相反次序排列。譬如說，如果是以檔案名稱來"
+"排列，本來從“a”至“z”排列的檔案會改為從“z”至“a”排列；如果是以檔案大小來排列，"
+"本來是遞增排列的，現在會變成遞減。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "If true, icons will be laid out tighter by default in new windows."
@@ -682,7 +764,9 @@ msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
-msgstr "不會為超過指定大小（以位元組計算）的圖片產生縮圖。這個設定的目的是避免為太大的圖片產生縮圖，消耗過多的時間或記憶體。"
+msgstr ""
+"不會為超過指定大小（以位元組計算）的圖片產生縮圖。這個設定的目的是避免為太大"
+"的圖片產生縮圖，消耗過多的時間或記憶體。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "List of possible captions on icons"
@@ -693,21 +777,27 @@ msgid ""
 "List of x-content/* types for which the user have chosen \"Do Nothing\" in "
 "the preference capplet. No prompt will be shown nor will any matching "
 "application be started on insertion of media matching these types."
-msgstr "使用者在偏好設定 capplet 中選取「不做任何事」時的 x-content/* 類型清單。在插入符合這些類型的媒體時既不會顯示提示也不會啟動任何對應的應用程式。"
+msgstr ""
+"使用者在偏好設定 capplet 中選取「不做任何事」時的 x-content/* 類型清單。在插"
+"入符合這些類型的媒體時既不會顯示提示也不會啟動任何對應的應用程式。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
 "List of x-content/* types for which the user have chosen \"Open Folder\" in "
 "the preferences capplet. A folder window will be opened on insertion of "
 "media matching these types."
-msgstr "使用者在偏好設定 capplet 中選取「開啟資料夾」時的 x-content/* 類型清單。在插入符合這些類型的媒體時會開啟一個資料夾視窗。"
+msgstr ""
+"使用者在偏好設定 capplet 中選取「開啟資料夾」時的 x-content/* 類型清單。在插"
+"入符合這些類型的媒體時會開啟一個資料夾視窗。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "List of x-content/* types for which the user have chosen to start an "
 "application in the preference capplet. The preferred application for the "
 "given type will be started on insertion on media matching these types."
-msgstr "使用者在偏好設定 capplet 中選取要執行應用程式時的 x-content/* 類型清單。在插入符合這些類型的媒體時會啟動對應該類型的首選應用程式。"
+msgstr ""
+"使用者在偏好設定 capplet 中選取要執行應用程式時的 x-content/* 類型清單。在插"
+"入符合這些類型的媒體時會啟動對應該類型的首選應用程式。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "List of x-content/* types set to \"Do Nothing\""
@@ -734,7 +824,9 @@ msgstr "所產生的縮圖的圖片大小上限"
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
-msgstr "使用的 Nautilus 佈景主題名稱。自 Nautilus 2.2 起這個設定已經不再使用，請改為設定圖示主題。"
+msgstr ""
+"使用的 Nautilus 佈景主題名稱。自 Nautilus 2.2 起這個設定已經不再使用，請改為"
+"設定圖示主題。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Nautilus handles drawing the desktop"
@@ -823,7 +915,10 @@ msgid ""
 "icon. If set to \"always\" then always plays the sound, even if the file is "
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local file systems. If set to \"never\" then it never previews sound."
-msgstr "有關游標移至音效檔時是否試聽在速度方面的權衡。如果設定為“always”，即使是遠端檔案仍然必定會播放。如果設定為“local_only”則只會播放本機的音效檔。如果設定為“never”則一定不會播放。"
+msgstr ""
+"有關游標移至音效檔時是否試聽在速度方面的權衡。如果設定為“always”，即使是遠端"
+"檔案仍然必定會播放。如果設定為“local_only”則只會播放本機的音效檔。如果設定"
+"為“never”則一定不會播放。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid ""
@@ -832,7 +927,10 @@ msgid ""
 "folder is on a remote server. If set to \"local_only\" then only show "
 "previews for local file systems. If set to \"never\" then never bother to "
 "read preview data."
-msgstr "有關檔案的圖示是否顯示文字檔預覽內容在速度方面的權衡。如果設定為“always”，即使是遠端檔案仍然必定會顯示預覽圖示。如果設定為“local_only”則只會顯示本機檔案的預覽圖示。如果設定為“never”則一定不會顯示預覽圖示。"
+msgstr ""
+"有關檔案的圖示是否顯示文字檔預覽內容在速度方面的權衡。如果設定為“always”，即"
+"使是遠端檔案仍然必定會顯示預覽圖示。如果設定為“local_only”則只會顯示本機檔案"
+"的預覽圖示。如果設定為“never”則一定不會顯示預覽圖示。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid ""
@@ -841,7 +939,10 @@ msgid ""
 "If set to \"local_only\" then only show thumbnails for local file systems. "
 "If set to \"never\" then never bother to thumbnail images, just use a "
 "generic icon."
-msgstr "有關顯示圖片時是否以縮圖來代替在速度方面的權衡如果設定為“always”，即使是遠端檔案仍然一定會顯示縮圖。如果設定為“local_only”則只會顯示本機檔案的縮圖。如果設定為“never”則一定不會顯示縮圖，只會用一般的圖示代替。"
+msgstr ""
+"有關顯示圖片時是否以縮圖來代替在速度方面的權衡如果設定為“always”，即使是遠端"
+"檔案仍然一定會顯示縮圖。如果設定為“local_only”則只會顯示本機檔案的縮圖。如果"
+"設定為“never”則一定不會顯示縮圖，只會用一般的圖示代替。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid ""
@@ -849,7 +950,10 @@ msgid ""
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local_only\" then only show counts for local file "
 "systems. If set to \"never\" then never bother to compute item counts."
-msgstr "有關顯示目錄中的檔案數目在速度方面的權衡。如果設定為“always”，即使是遠端目錄仍然必定會顯示數目。如果設定為“local_only”則只會在本機目錄顯示數目。如果設定為“never”則一定不會計算數目。"
+msgstr ""
+"有關顯示目錄中的檔案數目在速度方面的權衡。如果設定為“always”，即使是遠端目錄"
+"仍然必定會顯示數目。如果設定為“local_only”則只會在本機目錄顯示數目。如果設定"
+"為“never”則一定不會計算數目。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid "Text Ellipsis Limit"
@@ -887,7 +991,8 @@ msgstr "桌面圖示所使用的字型。"
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
-msgstr "日期的格式。可接受的值為“locale”（本地）、“iso”及“informal”（非正式）。"
+msgstr ""
+"日期的格式。可接受的值為“locale”（本地）、“iso”及“informal”（非正式）。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid "The side pane view to show in newly opened windows."
@@ -944,7 +1049,8 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"當按下（按一下或連按兩下）可執行的文字檔時，會以哪一種方式處理。可接受的值為：\n"
+"當按下（按一下或連按兩下）可執行的文字檔時，會以哪一種方式處理。可接受的值"
+"為：\n"
 "“launch”會將它們當作程式來執行，\n"
 "“ask”會顯示對話盒詢問使用者，\n"
 "“display”會以文字檔方式顯示內容。"
@@ -954,7 +1060,9 @@ msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\", "
 "\"icon_view\" and \"compact_view\"."
-msgstr "當開啟資料夾時，除非特地為該資料夾選取了顯示模式，否則預設會使用這個顯示模式。可接受的值為「list_view」、「icon_view」及「compact_view」。"
+msgstr ""
+"當開啟資料夾時，除非特地為該資料夾選取了顯示模式，否則預設會使用這個顯示模"
+"式。可接受的值為「list_view」、「icon_view」及「compact_view」。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid "When to show number of items in a folder"
@@ -1115,7 +1223,8 @@ msgstr "選擇要執行的應用程式。"
 msgid ""
 "Select how to open \"%s\" and whether to perform this action in the future "
 "for other media of type \"%s\"."
-msgstr "選擇要如何開啟「%s」以及未來其他類型為「%s」的類型是否同樣執行這個動作。"
+msgstr ""
+"選擇要如何開啟「%s」以及未來其他類型為「%s」的類型是否同樣執行這個動作。"
 
 #: ../libnautilus-private/nautilus-autorun.c:954
 msgid "_Always perform this action"
@@ -1287,13 +1396,16 @@ msgstr "不可以將檔案系統“%s”丢進回收筒。"
 msgid ""
 "If you want to eject the volume, please use \"Eject\" in the popup menu of "
 "the volume."
-msgstr "如果想退出檔案系統，請在該檔案系統的圖示上按滑鼠右邊按鈕，然後選「退出」。"
+msgstr ""
+"如果想退出檔案系統，請在該檔案系統的圖示上按滑鼠右邊按鈕，然後選「退出」。"
 
 #: ../libnautilus-private/nautilus-desktop-link-monitor.c:120
 msgid ""
 "If you want to unmount the volume, please use \"Unmount Volume\" in the "
 "popup menu of the volume."
-msgstr "如果想卸載檔案系統，請在該檔案系統的圖示上按滑鼠右邊按鈕，然後選「卸載檔案系統」。"
+msgstr ""
+"如果想卸載檔案系統，請在該檔案系統的圖示上按滑鼠右邊按鈕，然後選「卸載檔案系"
+"統」。"
 
 #: ../libnautilus-private/nautilus-dnd.c:748
 msgid "_Move Here"
@@ -1590,7 +1702,8 @@ msgstr "確定要清理回收筒內的所有東西嗎？"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "如果要清理回收筒，所有項目將會被永遠地刪除。注意是可以將它們個別地刪除的。"
+msgstr ""
+"如果要清理回收筒，所有項目將會被永遠地刪除。注意是可以將它們個別地刪除的。"
 
 #. Empty Trash menu item
 #: ../libnautilus-private/nautilus-file-operations.c:1250
@@ -1961,7 +2074,9 @@ msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
 "files being copied."
-msgstr "來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被複製檔案發生衝突的檔案前先要求確認。"
+msgstr ""
+"來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被複製檔案發生"
+"衝突的檔案前先要求確認。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3814
 #: ../libnautilus-private/nautilus-file-operations.c:4385
@@ -2014,7 +2129,9 @@ msgid ""
 "The source folder already exists in \"%B\".  Merging will ask for "
 "confirmation before replacing any files in the folder that conflict with the "
 "files being moved."
-msgstr "來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被移動檔案發生衝突的檔案前先要求確認。"
+msgstr ""
+"來源資料夾已經存在於“%B”中。合併功能會在替換該資料夾中內任何與被移動檔案發生"
+"衝突的檔案前先要求確認。"
 
 #: ../libnautilus-private/nautilus-file-operations.c:4470
 #, c-format
@@ -2684,8 +2801,13 @@ msgid "Could not set as default application"
 msgstr "無法設定為預設的應用程式"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#, fuzzy
 msgid "Default"
-msgstr "預設值"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"預設值\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"預設"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:265
 msgid "Icon"
@@ -2696,8 +2818,13 @@ msgid "Could not remove application"
 msgstr "無法移除應用程式"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:564
+#, fuzzy
 msgid "No applications selected"
-msgstr "尚未選擇應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"尚未選擇應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"沒有選取任何程式"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:592
 #: ../libnautilus-private/nautilus-open-with-dialog.c:904
@@ -2722,17 +2849,31 @@ msgid "Open all files of type \"%s\" with:"
 msgstr "以此開啟所有類型為「%s」的檔案："
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:145
+#, fuzzy
 msgid "Could not run application"
-msgstr "無法執行應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"無法執行應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"無法執行程式"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:157
-#, c-format
+#, fuzzy, c-format
 msgid "Could not find '%s'"
-msgstr "找不到“%s”"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"找不到“%s”\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"無法找到‘%s’"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:160
+#, fuzzy
 msgid "Could not find application"
-msgstr "找不到應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"找不到應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"無法找到程式"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:234
 #, c-format
@@ -2740,30 +2881,51 @@ msgid "Could not add application to the application database: %s"
 msgstr "無法將程式加入應用程式資料庫：%s"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:235
+#, fuzzy
 msgid "Could not add application"
-msgstr "無法加入應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"無法加入應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"無法加入程式"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:375
+#, fuzzy
 msgid "Select an Application"
-msgstr "選擇一個應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"選擇一個應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"選取一個程式"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5104
+#, fuzzy
 msgid "Open With"
-msgstr "用指定軟件開啟"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"用指定軟件開啟\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"以其它應用程式開啟"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:764
 msgid "Select an application to view its description."
 msgstr "選取一程式來檢視它的描述。"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:789
+#, fuzzy
 msgid "_Use a custom command"
-msgstr "使用自選的指令(_U)"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"使用自選的指令(_U)\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"使用自訂指令(_U)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:806
 msgid "_Browse..."
 msgstr "瀏覽(_B)..."
 
+#. #-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
@@ -2775,19 +2937,33 @@ msgid "_Open"
 msgstr "開啟(_O)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:919
-#, c-format
+#, fuzzy, c-format
 msgid "Open %s and other files of type \"%s\" with:"
-msgstr "以此開啟 %s 及其他類型為「%s」的檔案："
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"以此開啟 %s 及其他類型為「%s」的檔案：\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"以其它程式開啟 %s 及類型為“%s”的檔案："
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:955
 #: ../libnautilus-private/nautilus-open-with-dialog.c:970
+#, fuzzy
 msgid "_Add"
-msgstr "新增(_A)"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"新增(_A)\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"加入(_A)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:956
 #: ../libnautilus-private/nautilus-open-with-dialog.c:971
+#, fuzzy
 msgid "Add Application"
-msgstr "加入應用程式"
+msgstr ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"加入應用程式\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"加入程式"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:80
 msgid "Open Failed, would you like to choose another application?"
@@ -2811,19 +2987,25 @@ msgstr "無法開啟，是否選擇其它處理方式？"
 msgid ""
 "The default action cannot open \"%s\" because it cannot access files at \"%s"
 "\" locations."
-msgstr "預設的處理方式無法開啟「%s」，因為它無法存取「%s」中的檔案。是否使用其他處理方式？"
+msgstr ""
+"預設的處理方式無法開啟「%s」，因為它無法存取「%s」中的檔案。是否使用其他處理"
+"方式？"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:115
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
-msgstr "目前沒有其它應用程式可以用來顯示該檔案。如果將該檔案複製至電腦中，也許可以開啟該檔案。"
+msgstr ""
+"目前沒有其它應用程式可以用來顯示該檔案。如果將該檔案複製至電腦中，也許可以開"
+"啟該檔案。"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:121
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
-msgstr "目前沒有其它處理方式可以用來顯示該檔案。如果將該檔案複製至電腦中，也許可以開啟該檔案。"
+msgstr ""
+"目前沒有其它處理方式可以用來顯示該檔案。如果將該檔案複製至電腦中，也許可以開"
+"啟該檔案。"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:360
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -2852,7 +3034,9 @@ msgstr "如果要開啟遠端的檔案，請先將檔案複製至本地的資料
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
-msgstr "如果要開啟遠端的檔案，請先將檔案複製至本地的資料夾才進行拖曳的動作。目的地已經有一個相同名稱的檔案正在開啟。"
+msgstr ""
+"如果要開啟遠端的檔案，請先將檔案複製至本地的資料夾才進行拖曳的動作。目的地已"
+"經有一個相同名稱的檔案正在開啟。"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:439
 msgid "Details: "
@@ -3183,7 +3367,8 @@ msgstr "所有此資料夾的可執行檔都會在「指令稿」選單中出現
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
-msgstr "在選單中選取其中一個指令稿會以所有已選取的項目作為輸入資料來執行該指令稿。"
+msgstr ""
+"在選單中選取其中一個指令稿會以所有已選取的項目作為輸入資料來執行該指令稿。"
 
 #: ../src/file-manager/fm-directory-view.c:5521
 msgid ""
@@ -3206,13 +3391,16 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"所有此資料夾的可執行檔都會在「指令稿」選單中出現。在選單中選取其中一個指令稿會執行該指令稿。\n"
+"所有此資料夾的可執行檔都會在「指令稿」選單中出現。在選單中選取其中一個指令稿"
+"會執行該指令稿。\n"
 "\n"
-"當在本機的資料夾中執行時，指令稿會以選取的檔案名稱作為參數。當在遠端的資料夾中執行時 (例如顯示網頁或 ftp 內容的資料夾)，執行指令稿時不會使用任何參數。\n"
+"當在本機的資料夾中執行時，指令稿會以選取的檔案名稱作為參數。當在遠端的資料夾"
+"中執行時 (例如顯示網頁或 ftp 內容的資料夾)，執行指令稿時不會使用任何參數。\n"
 "\n"
 "在任何情況下，指令稿都可以使用以下由 Nautilus 設定的環境變數：\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS：所選取的檔案，以 newline 字符分隔 (只適用於本機檔案)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS：所選取的檔案，以 newline 字符分隔 (只適"
+"用於本機檔案)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS：表示已選取的檔案的 URI，以 newline 字符分隔\n"
 "\n"
@@ -4611,7 +4799,9 @@ msgstr "Nautilus 無法建立所需的資料夾“%s”。"
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
-msgstr "執行 Nautilus 之前，請自行建立以下資料夾，或是設定正確的權限使 Nautilus 可以建立這些資料夾。"
+msgstr ""
+"執行 Nautilus 之前，請自行建立以下資料夾，或是設定正確的權限使 Nautilus 可以"
+"建立這些資料夾。"
 
 #: ../src/nautilus-application.c:328
 #, c-format
@@ -4622,7 +4812,9 @@ msgstr "Nautilus 無法新增以下的資料夾：%s。"
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
-msgstr "執行 Nautilus 之前，請自行建立這些資料夾，或是設定正確的權限使 Nautilus 可以建立這些資料夾。"
+msgstr ""
+"執行 Nautilus 之前，請自行建立這些資料夾，或是設定正確的權限使 Nautilus 可以"
+"建立這些資料夾。"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -4639,7 +4831,9 @@ msgid ""
 "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
-msgstr "現在無法使用 Nautilus。在主控台下執行「bonobo-slay」或許可以修正問題。否則，請重新啟動電腦或是重新安裝 Nautilus。"
+msgstr ""
+"現在無法使用 Nautilus。在主控台下執行「bonobo-slay」或許可以修正問題。否則，"
+"請重新啟動電腦或是重新安裝 Nautilus。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: ../src/nautilus-application.c:603
@@ -4662,11 +4856,15 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"現在無法使用 Nautilus。在主控台下執行「bonobo-slay」或許可以修正問題。否則，請重新啟動電腦或是重新安裝 Nautilus。\n"
+"現在無法使用 Nautilus。在主控台下執行「bonobo-slay」或許可以修正問題。否則，"
+"請重新啟動電腦或是重新安裝 Nautilus。\n"
 "\n"
-"Bonobo 找不到 Nautilus_shell.oaf 這個檔案。其中一個原因可能是因為 LD_LIBRARY_PATH 未包括 bonobo-activation 函式庫所在目錄。另一個可能性是安裝時出現錯誤導致沒有安裝 Nautilus_Shell.oaf 檔案。\n"
+"Bonobo 找不到 Nautilus_shell.oaf 這個檔案。其中一個原因可能是因為 "
+"LD_LIBRARY_PATH 未包括 bonobo-activation 函式庫所在目錄。另一個可能性是安裝時"
+"出現錯誤導致沒有安裝 Nautilus_Shell.oaf 檔案。\n"
 "\n"
-"執行「bonobo-slay」會終止所有的 Bonobo Activation 和 GConf 程序，這些程序有可能是其它應用程式需要使用的。\n"
+"執行「bonobo-slay」會終止所有的 Bonobo Activation 和 GConf 程序，這些程序有可"
+"能是其它應用程式需要使用的。\n"
 "\n"
 "有時終止 bonobo-activation-server 和 gconfd 會解決問題，但仍未找出原因。\n"
 "\n"
@@ -4690,21 +4888,27 @@ msgstr "Nautilus 因為預計之外的錯誤而無法使用。"
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
-msgstr "目前無法使用 Nautilus，因為當嘗試登記檔案總管顯示模式伺服器時，Bonobo 出現預計之外的錯誤。"
+msgstr ""
+"目前無法使用 Nautilus，因為當嘗試登記檔案總管顯示模式伺服器時，Bonobo 出現預"
+"計之外的錯誤。"
 
 #: ../src/nautilus-application.c:652
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
-msgstr "Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找工廠時出現預計之外的錯誤。強行中止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
+msgstr ""
+"Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找工廠時出現預計之外的錯誤。強行中"
+"止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
 
 #: ../src/nautilus-application.c:659
 msgid ""
 "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
-msgstr "Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找系統殼物件時發生預計之外的錯誤。強行中止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
+msgstr ""
+"Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找系統殼物件時發生預計之外的錯誤。"
+"強行中止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
 
 #: ../src/nautilus-application.c:1369 ../src/nautilus-places-sidebar.c:1682
 #: ../src/nautilus-places-sidebar.c:1705 ../src/nautilus-places-sidebar.c:1728
@@ -6234,13 +6438,17 @@ msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301 USA"
-msgstr "你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給：  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgstr ""
+"你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給：  "
+"the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
+"MA 02110-1301 USA"
 
 #: ../src/nautilus-window-menus.c:562
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
-msgstr "Nautilus 是一個適用於 GNOME 的圖形指令界面，令管理檔案及管理系統變得輕鬆。"
+msgstr ""
+"Nautilus 是一個適用於 GNOME 的圖形指令界面，令管理檔案及管理系統變得輕鬆。"
 
 #: ../src/nautilus-window-menus.c:566
 msgid "Copyright © 1999-2008 The Nautilus authors"
@@ -6563,6 +6771,152 @@ msgstr "縮放"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "設定本顯示模式的縮放倍率"
+
+#: ../eel/eel-app-launch-context.c:407
+#, fuzzy, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"正在開啟 %d 個項目\n"
+"#-#-#-#-#  zh_HK.po (eel 2.21.91)  #-#-#-#-#\n"
+"開啟 %d 個項目"
+msgstr[1] ""
+"#-#-#-#-#  zh_HK.po (nautilus 2.24.0)  #-#-#-#-#\n"
+"正在開啟 %d 個項目"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "圖片/標籤框"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "在警告對話視窗中，包圍標籤及圖片框線的闊度"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "警告類型"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "警告的類型"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "警告按鈕"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "出現在警告對話視窗中的按鈕"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "顯示更多訊息(_D)"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "文字"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "標籤中的文字。"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "對齊方式"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"文字在標籤中排列時的對齊方式。它不會影響標籤元件本身在空位內排列的位置。該方"
+"面的資料請參考 GtkMisc::xalign。"
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "換行"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "如選用本選項，當字句太長時會自動換行。"
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "游標位置"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "游標目前的位置，以字符表示。"
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "選擇範圍"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "從游標位置至選擇區域末端之間的字符數目。"
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "全部選取"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "輸入法"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf 錯誤：\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf 錯誤： %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "所有進一步的錯誤訊息只會在終端機中顯示。"
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "沒有選取任何圖片。"
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "請按下圖片來選取它。"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "你可以按下取消來停止這次操作。"
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr "（無效的統一碼）"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "開啟 %s"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "輸入密碼"
 
 #~ msgid "Create Folder"
 #~ msgstr "新增資料夾"
@@ -6930,11 +7284,6 @@ msgstr "設定本顯示模式的縮放倍率"
 #~ msgid "\"%s\" is not a valid location."
 #~ msgstr "“%s”這個位置無效。"
 
-#~ msgid "Opening %d Item"
-#~ msgid_plural "Opening %d Items"
-#~ msgstr[0] "正在開啟 %d 個項目"
-#~ msgstr[1] "正在開啟 %d 個項目"
-
 #~ msgid "If you delete an item, it is permanently lost."
 #~ msgstr "如果直接刪除本項目，它會無法還原。"
 
@@ -7059,3 +7408,18 @@ msgstr "設定本顯示模式的縮放倍率"
 
 #~ msgid "Nautilus cannot display \"%s\"."
 #~ msgstr "Nautilus 無法顯示“%s”。"
+
+#~ msgid "01/01/00, 01:00 AM"
+#~ msgstr "01/01/00, 01:00 上午"
+
+#~ msgid "1/1/00, 1:00 AM"
+#~ msgstr "1/1/00, 1:00 上午"
+
+#~ msgid " 1/ 1/00,  1:00 AM"
+#~ msgstr " 1/ 1/00,  1:00 上午"
+
+#~ msgid "Select an application to open %s and others of type \"%s\""
+#~ msgstr "選取一程式來開啟 %s 及類型為“%s”的檔案"
+
+#~ msgid "Could not add application to the application database"
+#~ msgstr "無法將程式加入程式資料庫中"

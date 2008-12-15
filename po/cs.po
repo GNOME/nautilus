@@ -1,3 +1,4 @@
+# #-#-#-#-#  cs.po (nautilus)  #-#-#-#-#
 # Czech translation of Nautilus.
 # Copyright (C) 2001, 2003, 2006, 2007, 2008 the author(s) of Nautilus.
 # Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>.
@@ -13,8 +14,18 @@
 # Petr Kovar <pknbe@volny.cz>, 2008.
 # Lukas Lommer <llommer@svn.gnome.org>, 2008.
 #
+# #-#-#-#-#  cs.po (eel)  #-#-#-#-#
+# Czech translation of eel.
+# Copyright (C) 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>.
+# George Lebl <jirka@5z.com>, 2001.
+# Miloslav Trmac <mitr@volny.cz>, 2004, 2005, 2006.
+# Lucas Lommer <llommer@svn.gnome.org>, 2008.
+# Petr Kovar <pknbe@volny.cz>, 2008.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  cs.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-09 21:01+0100\n"
@@ -26,6 +37,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: KBabel 1.11.4\n"
+"#-#-#-#-#  cs.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-11 19:33+0100\n"
+"PO-Revision-Date: 2008-02-11 19:31+0100\n"
+"Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
+"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -6657,6 +6679,147 @@ msgstr "Zvětšení"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Nastavit úroveň zvětšení aktuálního pohledu"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Okraj obrázku/jmenovky"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Šířka okraje okolo jmenovky a obrázku v dialogu upozornění"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Typ upozornění"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Typ upozornění"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Tlačítka upozornění"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Tlačítka zobrazovaná v dialogu upozornění"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Zobrazit více _detailů"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Text"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Text jmenovky."
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Zarovnání"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Relativní zarovnání řádků textu jmenovky navzájem. Toto NEMÁ vliv na "
+"zarovnání jmenovky v její alokaci. K tomu použijte GtkMisc::xalign."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Lámání řádků"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Je-li nastaveno, zalamovat řádky, je-li text příliš široký."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Pozice kurzoru"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Aktuální pozice vkládacího kurzoru ve znacích."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Hranice výběru"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Pozice konce výběru vzdálenějšího od kurzoru ve znacích."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "Vybrat vše"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "Vstupní metody"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Chyba GConf:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Chyba GConf: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Všechny další chyby jsou zobrazovány jen na terminálu."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "Nebyl vybrán žádný obrázek."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "Abyste vybrali obrázek, musíte na nějaký kliknout."
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Tuto operaci můžete zastavit kliknutím na Zrušit."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (neplatný Unicode)"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "Otevírám %s"
+
+#: ../eel/eel-app-launch-context.c:407
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "Otevírání %d položky"
+msgstr[1] "Otevírání %d položek"
+msgstr[2] "Otevírání %d položek"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "Vložte heslo"
 
 #~ msgid "Browse the file system with the file manager"
 #~ msgstr "Procházet systém souborů správcem souborů"

@@ -1,3 +1,4 @@
+# #-#-#-#-#  cy.po (nautilus)  #-#-#-#-#
 # nautilus yn Gymraeg.
 # This file is distributed under the same license as the nautilus package.
 # Chris Jackson <chris@www.linux.org.uk>, 2003.
@@ -43,8 +44,18 @@
 # [Newidiwyd gan rhysj]
 #
 #
+# #-#-#-#-#  cy.po (eel)  #-#-#-#-#
+# eel yn Gymraeg.
+# Copyright (C) 2003 gnome-cy translation team.
+# This file is distributed under the same license as the eel package.
+# Dafydd Harries <daf@muse.19inch.net>, 2003 2004.
+# Bryn Salisbury <bryn@randomlyevil.org.uk>, 2004.
+#
+# rhysj: Wedi gyrru'r cyfan drwy Cysill, 2005-08-22.
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  cy.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-28 13:39+0100\n"
@@ -55,6 +66,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1)?1:(n==2)?2:(n==8||n==11)?3:0;\n"
+"#-#-#-#-#  cy.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2006-03-02 12:06-0000\n"
+"Last-Translator: Bryn Salisbury <bryn@randomlyevil.org.uk>\n"
+"Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1038,6 +1059,7 @@ msgstr "_Defnyddio'r Rhagosodiad"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../src/file-manager/fm-list-view.c:1310
+#: eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Enw"
 
@@ -3118,12 +3140,18 @@ msgstr "Ffeil _Wag"
 msgid "Create a new empty file inside this folder"
 msgstr "Creu dogfen wag newydd o fewn y blygell hon"
 
+#. #-#-#-#-#  cy.po (nautilus)  #-#-#-#-#
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6643
 #: ../src/file-manager/fm-directory-view.c:7372
-#: ../src/file-manager/fm-tree-view.c:1103
+#: ../src/file-manager/fm-tree-view.c:1103 eel/eel-open-with-dialog.c:894
+#, fuzzy
 msgid "_Open"
-msgstr "_Agor"
+msgstr ""
+"#-#-#-#-#  cy.po (nautilus)  #-#-#-#-#\n"
+"_Agor\n"
+"#-#-#-#-#  cy.po (eel)  #-#-#-#-#\n"
+"A_gor"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6644
@@ -4130,6 +4158,7 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "Ni ellir pennu beth yw caniatadau'r ffeil sydd wedi'i dewis."
 
 #: ../src/file-manager/fm-properties-window.c:3297
+#: eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Agor Gyda"
 
@@ -5899,6 +5928,231 @@ msgstr "Gosod lefel chwyddo'r olwg gyfredol"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
 
+#: eel/eel-mime-application-chooser.c:237
+msgid "Icon"
+msgstr "Eicon"
+
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Testun"
+
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
+msgid "Unknown"
+msgstr "Anhysbys"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Amlinell delwedd/label"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Lled yr amlinell o gwmpas y label a'r ddelwedd yn y deialog hysbysiad"
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Math Hysbysiad"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Y math o hysbysiad"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Botymau Hysbysiad"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Y botymau a ddangosir yn y deialog hysbysiad"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Dangos mwy o _fanylion"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Testun y label."
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Unioni"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Cyfuniad y llinellau yn nhestun y label yn gymharol i'w gilydd. Dydy hyn "
+"DDIM yn effeithio ar gyfuniad y label o fewn ei ddyraniad. Gweler GtkMisc::"
+"xalign ar gyfer hynny."
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Amlapio llinellau"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Os gosodir, amlapio llinell os aiff y testun yn rhy llydan"
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Lleoliad y Cyrchwr"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Lleoliad cyfredol y cyrchwr mewnosod mewn nodau."
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Cyfwng y Dewis"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Lleoliad ochr pell y dewis o'r cyrchwr mewn nodau."
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Dewis Popeth"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Moddau Mewnbwn"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Gwall GConf:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Gwall GConf: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Pob gwall pellach wedi eu dangos ar y derfynell yn unig."
+
+# EFALLAI
+# %p doesn't seem to do anything
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00 "
+
+# EFALLAI
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00 "
+
+# EFALLAI
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1  1/00,  1:00 "
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Ni chafodd delwedd ei dewis."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Mae'n rhaid i chi glicio ar ddelwedd er mwyn ei dewis."
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Rhagosodiad"
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Dim rhaglenni wedi eu dewis</i>"
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr "dogfen %s"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr ""
+"Dewiswch raglen i'w ddefnyddio agor <i>%s</i> ac eraill o'r math \"%s\""
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Methwyd rhedeg y rhaglen"
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "Methwyd canfod '%s'"
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Methwyd canfod y rhaglen"
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Methwyd ychwanegu'r rhaglen"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Methwyd ychwanegu'r rhaglen i'r gronfa data rhaglenni"
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Dewis Rhaglen"
+
+#: eel/eel-open-with-dialog.c:830
+msgid "Select an application to view its description."
+msgstr "Dewiswch raglen i weld ei ddisgrifiad"
+
+#: eel/eel-open-with-dialog.c:855
+msgid "_Use a custom command"
+msgstr "Defnyddio gorchymyn _addasedig"
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr "_Pori..."
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Agor <i>%s</i> a ffeiliau eraill o'r math \"%s\" gyda:"
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr "_Ychwanegu"
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr "Ychwanegu Rhaglen"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Gallwch atal y weithred hon gan glicio \"Diddymu\"."
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (Unicode annilys)"
+
 # 48x48/emblems/emblem-art.icon.in.h:1
 #~ msgid "Art"
 #~ msgstr "Celf"
@@ -6269,9 +6523,6 @@ msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
 
 #~ msgid "Tooltip for the menu item"
 #~ msgstr "Awgrym ar gyfer yr eitem ddewislen"
-
-#~ msgid "Icon"
-#~ msgstr "Eicon"
 
 #~ msgid "Name of the icon to display in the menu item"
 #~ msgstr "Enw'r eicon i'w ddangos yn yr eitem ddewislen"
@@ -6808,9 +7059,6 @@ msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
 
 #~ msgid "Factory for text view"
 #~ msgstr "Ffatri ar gyfer golwg testun"
-
-#~ msgid "Text"
-#~ msgstr "Testun"
 
 #~ msgid "Text Viewer"
 #~ msgstr "Gwelydd Destun"
@@ -8398,9 +8646,6 @@ msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
 #~ msgid "Nautilus is searching your disks for trash folders."
 #~ msgstr "Mae Nautilus yn chwilio eich disgiau ar gyfer plygellau sbwriel."
 
-#~ msgid "Unknown"
-#~ msgstr "Anhysbys"
-
 #~ msgid "Floppy"
 #~ msgstr "Disgen Hyblyg"
 
@@ -8711,3 +8956,21 @@ msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
 
 #~ msgid "New _Window"
 #~ msgstr "_Ffenestr Newydd"
+
+#~ msgid "GConf Error"
+#~ msgstr "Gwall GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Dim Dewisiad Wedi ei Wneud"
+
+#~ msgid "Info"
+#~ msgstr "Gwybodaeth"
+
+#~ msgid "Warning"
+#~ msgstr "Rhybudd"
+
+#~ msgid "Error"
+#~ msgstr "Gwall"
+
+#~ msgid "Question"
+#~ msgstr "Cwestiwn"

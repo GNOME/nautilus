@@ -1,3 +1,4 @@
+# #-#-#-#-#  et.po (nautilus HEAD)  #-#-#-#-#
 # Nautiluse eesti tõlge.
 # Estonian translation of Nautilus.
 #
@@ -15,13 +16,39 @@
 # FIXME - selles tõlkes tuleks kontrollida, et failirekvisiitide "modified" ja
 # "changed" poleks omavahel sassi aetud.
 #
+# #-#-#-#-#  et.po (eel HEAD)  #-#-#-#-#
+# Eazel'i laiendusteegi eesti keele tõlge.
+# Estonian translation of Eazel Extensions Library.
+#
+# Copyright (C) 2002, 2003, 2005, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2007, 2008 The GNOME Project.
+# This file is distributed under the same license as the eel package.
+#
+# Ilmar Kerm <ikerm@hot.ee>, 2002.
+# Allan Sims <allsi@eau.ee>, 2003.
+# Priit Laes <amd store20.com>, 2005, 2006.
+# Ivar Smolin <okul@linux.ee>, 2005-2008.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  et.po (nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-01 12:20+0000\n"
 "PO-Revision-Date: 2008-10-25 11:01+0300\n"
 "Last-Translator: Priit Laes <plaes+gi18n@plaes.org>\n"
+"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  et.po (eel HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-12-06 19:03+0000\n"
+"PO-Revision-Date: 2008-02-23 11:43+0200\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6847,6 +6874,146 @@ msgstr "Suurendus"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "Praeguse vaate suurendusastme seadmine"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Pildi/sildi ääris"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Äärisjoone laius, mis ümbritseb hoiatusdialoogi silti ja pilti."
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Hoiatuse liik"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Hoiatuse liik"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Hoiatuse nupud"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Hoiatusdialoogi nupud"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "_Näita üksikasjalisemalt"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Tekst"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Sildi tekst"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Joondamine"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Sildi tekstis sõltuvad ridade joondused üksteisest. See EI mõjuta siltide "
+"paigutuse joondust. Tutvu GtkMisc::xalign'iga lähemalt."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Reamurdmine"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Vastava seade korral murtakse ridu, kui tekst on liiga pikk."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Kursori asukoht"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Sisestuskursori käesolev asukoht märkides."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Valiku piirid"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Vastasasukoht kursorist valiku lõpus tähtedes."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "Vali kõik"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "Sisestusmeetodid"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf'i viga:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf'i viga: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Edasised vead väljastatakse ainult terminali."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "Ühtegi pilti pole valitud."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "Pildi valimiseks pead sa sellel klõpsama."
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Seda tegevust saab peatada vajutades nupule \"Loobu\"."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (vigane Unicode)"
+
+#: ../eel/eel-app-launch-context.c:405
+#, c-format
+msgid "Opening %s"
+msgstr "Kirje %s avamine"
+
+#: ../eel/eel-app-launch-context.c:408
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "%d kirje avamine"
+msgstr[1] "%d kirje avamine"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "Sisesta parool"
 
 #~ msgid "Are you sure you want to forget history?"
 #~ msgstr "Oled kindel, et soovid ajaloo unustada?"

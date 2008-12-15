@@ -1,3 +1,4 @@
+# #-#-#-#-#  id.po (Nautilus HEAD)  #-#-#-#-#
 # Indonesia translation of Nautilus.
 # Copyright (C) 2004 THE Nautilus'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Nautilus package.
@@ -6,8 +7,17 @@
 # Ahmad Riza H Nst  <rizahnst@gnome.org>, 2006
 #
 #
+# #-#-#-#-#  id.po (eel HEAD)  #-#-#-#-#
+# Indonesia translation of eel.
+# Copyright (C) 2004 THE eel's COPYRIGHT HOLDER
+# This file is distributed under the same license as the eel package.
+# Mohammad DAMT <mdamt@bisnisweb.com>, 2004.
+#
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  id.po (Nautilus HEAD)  #-#-#-#-#\n"
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-28 19:38+0200\n"
@@ -19,6 +29,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1;plural=0;\n"
 "X-Poedit-Bookmarks: 1073,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
+"#-#-#-#-#  id.po (eel HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2005-03-01 21:40+0700\n"
+"Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
+"Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1032,6 +1052,7 @@ msgstr "Konfig_urasi Awal"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../src/file-manager/fm-list-view.c:1375
+#: eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Nama"
 
@@ -3094,11 +3115,12 @@ msgstr "B_erkas Kosong"
 msgid "Create a new empty file inside this folder"
 msgstr "Buat berkas kosong baru dalam folder ini"
 
+#. #-#-#-#-#  id.po (Nautilus HEAD)  #-#-#-#-#
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6921
 #: ../src/file-manager/fm-directory-view.c:7800
 #: ../src/file-manager/fm-tree-view.c:1253
-#: ../src/nautilus-places-sidebar.c:1448
+#: ../src/nautilus-places-sidebar.c:1448 eel/eel-open-with-dialog.c:894
 msgid "_Open"
 msgstr "_Buka"
 
@@ -4231,6 +4253,7 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "Ukuran berkas terpilih tidak bisa ditentukan."
 
 #: ../src/file-manager/fm-properties-window.c:4824
+#: eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Buka Dengan"
 
@@ -6062,6 +6085,227 @@ msgstr "Perbesaran"
 msgid "Set the zoom level of the current view"
 msgstr "Tetapkan tingkat perbesaran tampilan saat ini"
 
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Gambar/batas label"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Lebar batas disekeliling label dan gambar pada dialog peringatan"
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Jenis Peringatan"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "Jenis peringatan"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Tombol Peringatan"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Tombol yang ditampilkan pada dialog peringatan"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Tampilkan _detil"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Teks"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Teks untuk label"
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Rata"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Penyelarasan garis pada label teks saling relatif terhadap label lain. Ini "
+"tidak berpengaruh pada penyelarasan label pada letak label. Silakan baca "
+"GtkMisc::xalign untuk informasi lebih lanjut."
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Potong baris"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Jika ini diset, baris akan dipotong bila terlalu lebar."
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Posisi Kursor"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Posisi kursor saat kursor dimasukkan ke dalam kalimat."
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Batas Seleksi"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Posisi ujung seleksi sejak dari kursor pada kalimat."
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Pilih Semua"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Metode Input"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Error GConf:\n"
+" %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Error GConf: %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Error yang lain berikutnya akan ditampilkan pada terminal saja."
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00, 1:00"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Gambar belum dipilih."
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Anda harus mengklik pada gambar untuk memilihnya."
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Utama"
+
+#: eel/eel-mime-application-chooser.c:237
+msgid "Icon"
+msgstr "Icon"
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Tidak ada aplikasi yang dipilih</i>"
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr "%s dokumen"
+
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
+msgid "Unknown"
+msgstr "Tidak diketahui"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr "PIlih aplikasi untuk membuka <i>%s</i> file lainnya dari jenis \"%s\""
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Aplikasi tidak dapat dijalankan"
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "'%s' tidak dapat ditemukan"
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Aplikasi tidak dapat ditemukan"
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Aplikasi tidak dapat ditambahkan"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Aplikasi tidak dapat ditambahkan dalam basis data aplikasi"
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Pilih Aplikasi"
+
+#: eel/eel-open-with-dialog.c:830
+msgid "Select an application to view its description."
+msgstr "PIlih aplikasi untuk melihat penjelasannya."
+
+#: eel/eel-open-with-dialog.c:855
+#, fuzzy
+msgid "_Use a custom command"
+msgstr "Gunakan suatu perintah _custom"
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr "_Cari..."
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Buka <i>%s</i> dan file lainnya dari jenis \"%s\" dengan:"
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr "T_ambah"
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr "Tambah Aplikasi"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Anda dapat menghentikan operasi ini dengan menekan tombol batal."
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (Unicode tidak valid)"
+
 #~ msgid "Normal Alpha"
 #~ msgstr "Alfa Normal"
 
@@ -6116,3 +6360,21 @@ msgstr "Tetapkan tingkat perbesaran tampilan saat ini"
 
 #~ msgid "View your network servers in the Nautilus file manager"
 #~ msgstr "Lihat server jaringan Anda menggunakan pengatur berkas Nautilus"
+
+#~ msgid "GConf Error"
+#~ msgstr "Error GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Belum Ada yang Dipilih"
+
+#~ msgid "Info"
+#~ msgstr "Informasi"
+
+#~ msgid "Warning"
+#~ msgstr "Peringatan"
+
+#~ msgid "Error"
+#~ msgstr "Error"
+
+#~ msgid "Question"
+#~ msgstr "Pertanyaan"

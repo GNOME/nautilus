@@ -1,15 +1,33 @@
+# #-#-#-#-#  li.po (Nautilus)  #-#-#-#-#
 # Limburgish Translation of Nautilus
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Mathieu van Woerkom <mathieu@brabants.org>, 2003
 #
+# #-#-#-#-#  li.po (eel HEAD)  #-#-#-#-#
+# Limburgish Translation of Nautilus
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Mathieu van Woerkom <mathieu@brabants.org>, 2003.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  li.po (Nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-10 12:02+0100\n"
 "PO-Revision-Date: 2003-06-06 17:37+0000\n"
 "Last-Translator: Mathieu van Woerkom <mathieu@brabants.org>\n"
 "Language-Team: Limburgish <li@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"#-#-#-#-#  li.po (eel HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2003-06-05 12:05+0100\n"
+"Last-Translator: Mathieu van Woerkom <mathieu@brabants.org>\n"
+"Language-Team: Limburgish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -503,9 +521,13 @@ msgid "Tooltip for the menu item"
 msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:227
+#: eel/eel-mime-application-chooser.c:237
 #, fuzzy
 msgid "Icon"
-msgstr "Piktogramme"
+msgstr ""
+"#-#-#-#-#  li.po (Nautilus)  #-#-#-#-#\n"
+"Piktogramme\n"
+"#-#-#-#-#  li.po (eel HEAD)  #-#-#-#-#\n"
 
 #: libnautilus-extension/nautilus-menu-item.c:228
 msgid "Name of the icon to display in the menu item"
@@ -4725,10 +4747,13 @@ msgstr "'t goof eine faeler bie 't tuine van hulpteks: %s."
 msgid "Couldn't Show Help"
 msgstr "Kèn hulpteks neet tuine"
 
-#: src/file-manager/fm-properties-window.c:3305
+#: src/file-manager/fm-properties-window.c:3305 eel/eel-open-with-dialog.c:793
 #, fuzzy
 msgid "Open With"
-msgstr "Äöpene _mit"
+msgstr ""
+"#-#-#-#-#  li.po (Nautilus)  #-#-#-#-#\n"
+"Äöpene _mit\n"
+"#-#-#-#-#  li.po (eel HEAD)  #-#-#-#-#\n"
 
 #: src/file-manager/fm-properties-window.c:3643
 msgid "Cancel Showing Properties Window?"
@@ -6537,6 +6562,229 @@ msgstr "Netwirkservers"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Eure netwirkservers tuine mit Nautilus Besjtandjwirtsjaf"
 
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Teks"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:126
+#, fuzzy
+msgid "The type of alert"
+msgstr "De teks op 't label"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr ""
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "De teks op 't label"
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Oetliening"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"De oetliening van de regele teks van 't label relatief tót einanger. Dit "
+"haet geine invlood op de oetliening van 't label in zien toegeweze ruumde. "
+"Zuug hieveur: GtkMisc::xalign"
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Regeltrökloup"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Teks geit automatis wiejer op de naekste regel wen deze te lank weurt."
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Kursorposisie"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "De huijige posisie van de invoegkursor in booksjtaafteikes"
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Seleksiesjeit"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+"De posisie van 't angere ènj van de seleksie van de kursor, in "
+"booksjtaafteikes "
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Alles selektere"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Inveurmetodes"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf faeler:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, fuzzy, c-format
+msgid "GConf error: %s"
+msgstr ""
+"GConf faeler:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:90
+#, fuzzy
+msgid "All further errors shown only on terminal."
+msgstr ""
+"GConf faeler:\n"
+"  %s\n"
+"Alle naekste waere allein in ein terminal getuind"
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00 AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00 AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00 AM"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr ""
+
+#: eel/eel-gnome-extensions.c:285
+#, fuzzy
+msgid "You must click on an image to select it."
+msgstr ""
+"Gein aafbiljing geselekteerd. Klik op ein aafbiljing veur dees te selektere."
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr ""
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr ""
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr ""
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:830
+msgid "Select an application to view its description."
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:855
+msgid "_Use a custom command"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr ""
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr ""
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (óngeljige Unicode)"
+
 #~ msgid "Allaire"
 #~ msgstr "Allaire"
 
@@ -6810,9 +7058,6 @@ msgstr "Eure netwirkservers tuine mit Nautilus Besjtandjwirtsjaf"
 
 #~ msgid "Factory for text view"
 #~ msgstr "Febrik veur 't teksvinster"
-
-#~ msgid "Text"
-#~ msgstr "Teks"
 
 #~ msgid "Text Viewer"
 #~ msgstr "Teksweergaaf"
@@ -8662,3 +8907,22 @@ msgstr "Eure netwirkservers tuine mit Nautilus Besjtandjwirtsjaf"
 
 #~ msgid "Copy selected text to the clipboard"
 #~ msgstr "De geselekteerde tekst nao 't klaadbord kopjere"
+
+#~ msgid "GConf Error"
+#~ msgstr "GConf faeler"
+
+#, fuzzy
+#~ msgid "No Selection Made"
+#~ msgstr "Niks geselekteerd"
+
+#~ msgid "Info"
+#~ msgstr "Infermasie"
+
+#~ msgid "Warning"
+#~ msgstr "Waarsjoewing"
+
+#~ msgid "Error"
+#~ msgstr "Faeler"
+
+#~ msgid "Question"
+#~ msgstr "Vraog"

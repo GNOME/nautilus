@@ -1,21 +1,44 @@
+# #-#-#-#-#  ka.po (ka)  #-#-#-#-#
 # Copyright © 2007 Gnome i18n Project for Georgia, 2008.
 # Georgian Translation for Nautilus, 2008, 2008.
 #
 # Vladimer Sichinava  ვლადიმერ სიჭინავა <vsichi@gnome.org>, 2008.
+# #-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#
+# translation of eel.HEAD.po to Georgian
+# Copyright (C) 2006 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Vladimer Sichinava <alinux@siena.linux.it>, 2006.
+# Vladimer Sichinava <vlsichinava@gmail.com>, 2006.
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  ka.po (ka)  #-#-#-#-#\n"
 "Project-Id-Version: ka\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-02 22:36+0200\n"
 "PO-Revision-Date: 2008-10-20 21:18+0200\n"
 "Last-Translator: Vladimer Sichinava  ვლადიმერ სიჭინავა <vsichi@gnome.org>\n"
-"Language-Team: Georgian <http://mail.gnome.org/mailman/listinfo/gnome-ge-list>\n"
+"Language-Team: Georgian <http://mail.gnome.org/mailman/listinfo/gnome-ge-"
+"list>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: KBabel 1.11.4\n"
 "X-Rosetta-Export-Date: 2007-06-29 21:08:16+0000\n"
+"#-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-27 16:05+0200\n"
+"PO-Revision-Date: 2006-09-11 00:29+0200\n"
+"Last-Translator: Vladimer Sichinava <vlsichinava@gmail.com>\n"
+"Language-Team: Georgian <www.gia.ge>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: KBabel 1.11.2\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -1222,6 +1245,7 @@ msgstr "ნა_გულისხმევის მოხმარება"
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:274
 #: ../src/file-manager/fm-list-view.c:1454
+#: ../eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "სახელი"
 
@@ -2739,10 +2763,12 @@ msgid "Could not set as default application"
 msgstr "შეუძლებელია ნაგულისხმევ პროგრამად მითითება"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#: ../eel/eel-mime-application-chooser.c:229
 msgid "Default"
 msgstr "ნაგულისხმევი"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:265
+#: ../eel/eel-mime-application-chooser.c:237
 msgid "Icon"
 msgstr "ხატულა"
 
@@ -2751,17 +2777,29 @@ msgid "Could not remove application"
 msgstr "შეულებელია პროგრამის ამოღება"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:564
+#: ../eel/eel-mime-application-chooser.c:479
+#, fuzzy
 msgid "No applications selected"
-msgstr "არავითარი ამორჩეული პროგრამა"
+msgstr ""
+"#-#-#-#-#  ka.po (ka)  #-#-#-#-#\n"
+"არავითარი ამორჩეული პროგრამა\n"
+"#-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#\n"
+"<i>პროგრამა არ არის ამორჩეული</i>"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:592
 #: ../libnautilus-private/nautilus-open-with-dialog.c:904
-#, c-format
+#: ../eel/eel-mime-application-chooser.c:528 ../eel/eel-open-with-dialog.c:984
+#, fuzzy, c-format
 msgid "%s document"
-msgstr "%s დოკუმენტი"
+msgstr ""
+"#-#-#-#-#  ka.po (ka)  #-#-#-#-#\n"
+"%s დოკუმენტი\n"
+"#-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#\n"
+"%s "
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:599
 #: ../libnautilus-private/nautilus-open-with-dialog.c:910
+#: ../eel/eel-mime-application-chooser.c:538 ../eel/eel-open-with-dialog.c:997
 msgid "Unknown"
 msgstr "უცნობი"
 
@@ -2777,15 +2815,18 @@ msgid "Open all files of type \"%s\" with:"
 msgstr "ყველა \"%s\" ტიპის ფაილების გახსნა:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:145
+#: ../eel/eel-open-with-dialog.c:175 ../eel/eel-open-with-dialog.c:220
 msgid "Could not run application"
 msgstr "შეუძლებელია პროგრამის გაშვება"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:157
+#: ../eel/eel-open-with-dialog.c:187
 #, c-format
 msgid "Could not find '%s'"
 msgstr "შეუძლებელია '%s' -ის პოვნა"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:160
+#: ../eel/eel-open-with-dialog.c:190
 msgid "Could not find application"
 msgstr "შეუძლებელია პროგრამის პოვნა"
 
@@ -2795,52 +2836,72 @@ msgid "Could not add application to the application database: %s"
 msgstr "შეუძლებელი გახდა პროგრამის, პროგრამების მონაცემთა ბაზაში დამატება: %s"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:235
+#: ../eel/eel-open-with-dialog.c:287
 msgid "Could not add application"
 msgstr "შეუძლებელია პროგრამის დამატება"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:375
+#: ../eel/eel-open-with-dialog.c:401
 msgid "Select an Application"
 msgstr "პროგრამის ამორჩევა"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5104
+#: ../eel/eel-open-with-dialog.c:809
+#, fuzzy
 msgid "Open With"
-msgstr "პროგრამაში გახსნა"
+msgstr ""
+"#-#-#-#-#  ka.po (ka)  #-#-#-#-#\n"
+"პროგრამაში გახსნა\n"
+"#-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#\n"
+"გახსნა პროგრამით..."
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:764
+#: ../eel/eel-open-with-dialog.c:846
 msgid "Select an application to view its description."
 msgstr "შეარჩიეთ პროგრამა მისი აღწერილობის სანახავად."
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:789
+#: ../eel/eel-open-with-dialog.c:871
 msgid "_Use a custom command"
 msgstr "_საკუთარი ბრძანების გამოყენება"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:806
+#: ../eel/eel-open-with-dialog.c:888
 msgid "_Browse..."
 msgstr "_ნუსხა..."
 
+#. #-#-#-#-#  ka.po (ka)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
 #: ../src/file-manager/fm-directory-view.c:6599
 #: ../src/file-manager/fm-directory-view.c:7799
 #: ../src/file-manager/fm-tree-view.c:1174
-#: ../src/nautilus-places-sidebar.c:1954
+#: ../src/nautilus-places-sidebar.c:1954 ../eel/eel-open-with-dialog.c:910
 msgid "_Open"
 msgstr "_გახსნა"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:919
+#: ../eel/eel-open-with-dialog.c:1004
 #, c-format
 msgid "Open %s and other files of type \"%s\" with:"
 msgstr "გახსენი %s და სხვა ტიპის \"%s\" ფაილები კი:"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:955
 #: ../libnautilus-private/nautilus-open-with-dialog.c:970
+#: ../eel/eel-open-with-dialog.c:1036
+#, fuzzy
 msgid "_Add"
-msgstr "_დამატება"
+msgstr ""
+"#-#-#-#-#  ka.po (ka)  #-#-#-#-#\n"
+"_დამატება\n"
+"#-#-#-#-#  ka.po (eel.HEAD)  #-#-#-#-#\n"
+"_დაამატე"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:956
 #: ../libnautilus-private/nautilus-open-with-dialog.c:971
+#: ../eel/eel-open-with-dialog.c:1037
 msgid "Add Application"
 msgstr "პროგრამის დამატება"
 
@@ -6618,6 +6679,157 @@ msgstr "გადიდება"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "მიმდინარე ხედისთვის მაშტაბის შესაბამება"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "ნახატის/წარწერის კონტური"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "ჩარჩოს სიგანე წარწერისა და ნახატის გარშემო, განგაშის დიალოგ ფანჯარაში"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "გაფრთხილების ტიპი"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "განგაშის ტიპი"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "გაფრთხილების ღილაკები"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "ღილაკები რომლებიც ჩნდებიან განგაშის შეტყობინებებში"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "დამატებითი _დეტალების ჩვენება"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "ტექსტი"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "ეტიკეტის ტექსტი."
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "მორგება"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"წარწერის ტექსტის ურთიერთგანთავსება.  არ მოქმედებს წარწერის მისთვის გამოყოფილ "
+"ადგილას განთავსებაზე.  იხ. აგრეთვე, GtkMisc::x-განთავსება."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "სტრიქონების გადატანა"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "თუ ჩართულია, გადაიტანს ტექსტს თუ იგი ძალზედ განიერია."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "კურსორის პოზიცია"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "სიმბოლოების შეყვანის კურსორის მიმდინარე პოზიცია."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "მონიშნულის საზღვრები"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "ასოებში მონიშნულის უკიდურესობების მდებარეობა კურსორიდან."
+
+#: ../eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "ყველას მონიშვნა"
+
+#: ../eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "შეყვანის მეთოდები"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf შეცდომა:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GCont შეცდომა: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "დამატებითი შეცდომების გამონატანის ტერმინალში ჩვენება."
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: ../eel/eel-glib-extensions.c:1193
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00,·01:00·AM"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: ../eel/eel-glib-extensions.c:1195
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00,·1:00·AM"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: ../eel/eel-glib-extensions.c:1197
+msgid " 1/ 1/00,  1:00 AM"
+msgstr "·1/·1/00,··1:00·AM"
+
+#: ../eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "არავითარი ამორჩეული სურათი."
+
+#: ../eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "დაუწკაპუნეთ სურათს მონიშვნისთვის"
+
+#: ../eel/eel-mime-application-chooser.c:546
+#, c-format
+msgid "Select an application to open %s and others of type \"%s\""
+msgstr "გასახსნელი პროგრამის ამორჩევა %s და სხვა \"%s\" ტიპის"
+
+#: ../eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "ვერ ვამატებ პროგრამას, პროგრამათა მონაცემთა ბაზაში"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "თქვენ შეგიძლიათ შეწყვიტოთ"
+
+#: ../eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr "(მცდარი უნიკოდი)"
 
 #~ msgid "Create Folder"
 #~ msgstr "დასტის შექმნა"

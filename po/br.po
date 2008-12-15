@@ -1,10 +1,22 @@
+# #-#-#-#-#  br.po (nautilus)  #-#-#-#-#
 # Breton translation for nautilus
 # Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
 # This file is distributed under the same license as the nautilus package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2006.
 #
+# #-#-#-#-#  br.po (eel-HEAD)  #-#-#-#-#
+# Breton translation for eel.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-desktop package.
+# Jérémy Ar Floc'h <jeremy.lefloch@gmail.com>, 2006
+# Ubuntu translators <https://launchpad.net/distros/ubuntu/dapper/+lang/br>, 2006
+# Francis Tyers <francis.tyers@hp.com>, 2003.
+#
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  br.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-05-13 14:44-0500\n"
@@ -15,6 +27,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1\n"
+"#-#-#-#-#  br.po (eel-HEAD)  #-#-#-#-#\n"
+"Project-Id-Version: eel-HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-02-27 18:27+0100\n"
+"PO-Revision-Date: 2003-09-19 11:07+0100\n"
+"Last-Translator: Jérémy Ar Floc'h <jeremy.lefloch@gmail.com>\n"
+"Language-Team: GNOME Breton Team <jeremy.lefloch@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -890,6 +912,7 @@ msgstr "Implij an hini dre-ziouer"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../src/file-manager/fm-list-view.c:1310
+#: eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Anv"
 
@@ -2861,12 +2884,18 @@ msgstr "Restr _goullo"
 msgid "Create a new empty file inside this folder"
 msgstr "Krouiñ ur restr goullo nevez e-diabarzh ar renkell-mañ"
 
+#. #-#-#-#-#  br.po (nautilus)  #-#-#-#-#
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6767
 #: ../src/file-manager/fm-directory-view.c:7644
-#: ../src/file-manager/fm-tree-view.c:1104
+#: ../src/file-manager/fm-tree-view.c:1104 eel/eel-open-with-dialog.c:894
+#, fuzzy
 msgid "_Open"
-msgstr "_Digeriñ"
+msgstr ""
+"#-#-#-#-#  br.po (nautilus)  #-#-#-#-#\n"
+"_Digeriñ\n"
+"#-#-#-#-#  br.po (eel-HEAD)  #-#-#-#-#\n"
+"Digeriñ"
 
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:6768
@@ -3893,6 +3922,7 @@ msgid "The permissions of the selected file could not be determined."
 msgstr ""
 
 #: ../src/file-manager/fm-properties-window.c:3297
+#: eel/eel-open-with-dialog.c:793
 msgid "Open With"
 msgstr "Digeriñ gant"
 
@@ -5653,8 +5683,257 @@ msgstr "Dibab live zoom ar sell red"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Gwelout ho servijerioù rouedad"
 
+#: eel/eel-alert-dialog.c:115
+#, fuzzy
+msgid "Image/label border"
+msgstr "Skeudenn/mod ar bord"
+
+#: eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+
+#: eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Doare Diwall"
+
+#: eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "An doare diwall"
+
+#: eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Boutonioù Diwall"
+
+#: eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "Boutonioù diskouezet 'barzh ar skrammig diwall"
+
+#: eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "diskouez muioc'h a draouigoù"
+
+#: eel/eel-canvas.c:1222 eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1229 eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Skrid"
+
+#: eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "Testenn al label"
+
+#: eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Justifiañs"
+
+#: eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Skweraj al linennoù e testenn al label 'zo liammet an eil re gant ar re all. "
+"Ne vo KET kemmet skweraj al label en e ziabarzh. Sellit ouzh GtkMisc::xalign "
+"evit an dra se."
+
+#: eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Linennoù livet"
+
+#: eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+"Ma dibabet, lak liv war al linennoù ma krog an destenn da vezañ re stank"
+
+#: eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Lec'h ar Reder"
+
+#: eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "Lec'h a vremañ ar reder evit ouzhpennañ lizherennoù"
+
+#: eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Termenoù an dibab"
+
+#: eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Lec'h penn all an Dibab adalek ar reder el lizherennoù"
+
+#: eel/eel-editable-label.c:3042
+msgid "Select All"
+msgstr "Dibab An Holl draoù"
+
+#: eel/eel-editable-label.c:3053
+msgid "Input Methods"
+msgstr "Doare Seziz"
+
+#: eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Fazi GConf:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr ""
+"Fazi GConf:\n"
+"  %s"
+
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr ""
+"Holl fazioù da zont diskouzet nemet war termenell.\n"
+"  %s\n"
+"Holl fazi war termenell"
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
+#.
+#: eel/eel-glib-extensions.c:1259
+msgid "01/01/00, 01:00 AM"
+msgstr "%d/%m/%y, %I:%M %p"
+
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1261
+msgid "1/1/00, 1:00 AM"
+msgstr "%-d/%-m/%-y, %-I:%M %p"
+
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1263
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " %_d/%_m/%_y, %_I:%M %p"
+
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Skeudenn ebet bet dibabet"
+
+#: eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "Red eo klikañ war ur skeudenn 'benn dibab anezhi"
+
+#: eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Dre ziouer"
+
+#: eel/eel-mime-application-chooser.c:237
+msgid "Icon"
+msgstr "Arlun"
+
+#: eel/eel-mime-application-chooser.c:477
+msgid "<i>No applications selected</i>"
+msgstr "<i>Meziant dibabet ebet</i>"
+
+#: eel/eel-mime-application-chooser.c:522 eel/eel-open-with-dialog.c:967
+#, c-format
+msgid "%s document"
+msgstr "%s diell"
+
+#: eel/eel-mime-application-chooser.c:532 eel/eel-open-with-dialog.c:980
+msgid "Unknown"
+msgstr "Dianav"
+
+#. first %s is filename, second %s is mime-type description
+#: eel/eel-mime-application-chooser.c:539
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr ""
+"Dibab ur meziant 'benn digeriñ <i>%s</i> ha traoù all gant doare \"%s\""
+
+#: eel/eel-open-with-dialog.c:175 eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Dic'houest da gregiñ ar meziant"
+
+#: eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "Dic'houest da gavout '%s'"
+
+#: eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Dic'houest da gavout ar meziant"
+
+#: eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Dic'houest da ouzhpennañ ar meziant"
+
+#: eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Dic'houest da ouzhpennañ renkell elfennoù ar meziant gant ar meziant"
+
+#: eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Dibab ur meziant"
+
+#: eel/eel-open-with-dialog.c:830
+msgid "Select an application to view its description."
+msgstr "Dibab ur meziant 'benn gwelet e zanvez"
+
+#: eel/eel-open-with-dialog.c:855
+msgid "_Use a custom command"
+msgstr ""
+
+#: eel/eel-open-with-dialog.c:872
+msgid "_Browse..."
+msgstr "Furchal"
+
+#: eel/eel-open-with-dialog.c:986
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Digeriñ <i>%s</i> ha fichennaouegoù all gant doare \"%s\" gant:"
+
+#: eel/eel-open-with-dialog.c:1017
+msgid "_Add"
+msgstr "Ouzhpennañ"
+
+#: eel/eel-open-with-dialog.c:1018
+msgid "Add Application"
+msgstr "Ouzhpennañ ur meziant"
+
+#: eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "Tu 'zo ehanañ an urzh en ur klikañ nullañ"
+
+#: eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (Unikod direizh)"
+
 #~ msgid "Desktop documents icon name"
 #~ msgstr "Anv arlun dielloù ar burev"
 
 #~ msgid "Documents icon visible on desktop"
 #~ msgstr "Arlunioù an dielloù hewel war ar burev"
+
+#~ msgid "GConf Error"
+#~ msgstr "Fazi GConf"
+
+#~ msgid "No Selection Made"
+#~ msgstr "Dibab ebet"
+
+#~ msgid "Use a _custom command"
+#~ msgstr "Implij un urzh resis"
+
+#~ msgid "Info"
+#~ msgstr "Kel"
+
+#~ msgid "Warning"
+#~ msgstr "Diwall"
+
+#~ msgid "Error"
+#~ msgstr "Fazi"
+
+#~ msgid "Question"
+#~ msgstr "Goulenn"

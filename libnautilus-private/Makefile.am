@@ -30,6 +30,7 @@ libnautilus_private_la_LIBADD =		\
 	$(SELINUX_LIBS)			\
 	$(BEAGLE_LIBS)			\
 	$(TRACKER_LIBS)			\
+	$(top_builddir)/eel/libeel-2.la \
 	$(top_builddir)/libnautilus-extension/libnautilus-extension.la \
 	$(CORE_LIBS)			\
 	$(NULL)

@@ -1,17 +1,39 @@
+# #-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#
 # zh_CN translation for Nautilus.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # Wang Jian <lark@linux.net.cn>, 2001
 # Sarah Smith <sarahs@redhat.com>, 2002
 # Funda Wang <fundawang@linux.net.cn>, 2003
 #
+# #-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#
+# Simplified Chinese translation of eel.
+# Copyright (C) 2003-2008 Free Software Foundation, Inc.
+# Wang Jian <lark@linux.net.cn>, 2001
+# Funda Wang <fundawang@linux.net.cn>, 2003-2005
+# Ming Hua <minghua-guest@users.alioth.debian.org>, 2008
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-03 04:27+0000\n"
 "PO-Revision-Date: 2008-03-04 15:56+0800\n"
 "Last-Translator: Funda Wang <fundawang@gmail.com>\n"
 "Language-Team: Chinese i18n <i18n-zh@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-12-06 19:03+0000\n"
+"PO-Revision-Date: 2008-01-19 21:46+0800\n"
+"Last-Translator: Ming Hua <minghua-guest@users.alioth.debian.org>\n"
+"Language-Team: Simplified Chinese <translation-team-zh-cn@lists.sourceforge."
+"net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -729,8 +751,8 @@ msgid ""
 "the preference capplet. No prompt will be shown nor will any matching "
 "application be started on insertion of media matching these types."
 msgstr ""
-"用户在首选项小程序中设置为“不执行操作”的 x-content/* 类型列表。"
-"如果插入的介质与这些类型匹配，则既不会显示提示，也不会启动相应的应用程序。"
+"用户在首选项小程序中设置为“不执行操作”的 x-content/* 类型列表。如果插入的介质"
+"与这些类型匹配，则既不会显示提示，也不会启动相应的应用程序。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
@@ -738,8 +760,8 @@ msgid ""
 "the preferences capplet. A folder window will be opened on insertion of "
 "media matching these types."
 msgstr ""
-"用户在首选项小程序中设置为“打开文件夹”的 x-content/* 类型列表。"
-"如果插入的介质与这些类型匹配，则会打开一个文件夹窗口。"
+"用户在首选项小程序中设置为“打开文件夹”的 x-content/* 类型列表。如果插入的介质"
+"与这些类型匹配，则会打开一个文件夹窗口。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -747,8 +769,8 @@ msgid ""
 "application in the preference capplet. The preferred application for the "
 "given type will be started on insertion on media matching these types."
 msgstr ""
-"用户在首选项小程序中设置为“启动应用程序”的 x-content/* 类型列表。"
-"如果插入的介质与这些类型匹配，则会启动给定类型的首选应用程序。"
+"用户在首选项小程序中设置为“启动应用程序”的 x-content/* 类型列表。如果插入的介"
+"质与这些类型匹配，则会启动给定类型的首选应用程序。"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "List of x-content/* types set to \"Do Nothing\""
@@ -2723,8 +2745,13 @@ msgid "Could not remove application"
 msgstr "无法删除应用程序"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:564
+#, fuzzy
 msgid "No applications selected"
-msgstr "未选择应用程序"
+msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
+"未选择应用程序\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"没有选中应用程序"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:592
 #: ../libnautilus-private/nautilus-open-with-dialog.c:904
@@ -2738,9 +2765,13 @@ msgid "Unknown"
 msgstr "未知"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:632
-#, c-format
+#, fuzzy, c-format
 msgid "Select an application to open %s and other files of type \"%s\""
-msgstr "选择一个应用程序用来打开 %s 及“%s”类型的其它文件"
+msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
+"选择一个应用程序用来打开 %s 及“%s”类型的其它文件\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"选择用于打开 %s 和其它类型为“%s”的文件的应用程序"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:700
 #: ../libnautilus-private/nautilus-open-with-dialog.c:922
@@ -2771,8 +2802,13 @@ msgid "Could not add application"
 msgstr "无法添加应用程序"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:375
+#, fuzzy
 msgid "Select an Application"
-msgstr "选择一个应用程序"
+msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
+"选择一个应用程序\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"选择应用程序"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:727
 #: ../src/file-manager/fm-properties-window.c:5070
@@ -2780,8 +2816,13 @@ msgid "Open With"
 msgstr "打开方式"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:764
+#, fuzzy
 msgid "Select an application to view its description."
-msgstr "选择一个应用程序以查看其描述。"
+msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
+"选择一个应用程序以查看其描述。\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"选择一个应用程序，以便查看其描述。"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:789
 msgid "_Use a custom command"
@@ -2791,6 +2832,7 @@ msgstr "使用自定义命令(_U)"
 msgid "_Browse..."
 msgstr "浏览(_B)..."
 
+#. #-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#
 #. name, stock id
 #. label, accelerator
 #: ../libnautilus-private/nautilus-open-with-dialog.c:828
@@ -2802,9 +2844,13 @@ msgid "_Open"
 msgstr "打开(_O)"
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:919
-#, c-format
+#, fuzzy, c-format
 msgid "Open %s and other files of type \"%s\" with:"
-msgstr "用此应用程序打开 %s 及“%s”类型的其它文件："
+msgstr ""
+"#-#-#-#-#  zh_CN.po (nautilus)  #-#-#-#-#\n"
+"用此应用程序打开 %s 及“%s”类型的其它文件：\n"
+"#-#-#-#-#  zh_CN.po (eel)  #-#-#-#-#\n"
+"打开 %s 及类型为“%s”的其它文件的方式："
 
 #: ../libnautilus-private/nautilus-open-with-dialog.c:955
 #: ../libnautilus-private/nautilus-open-with-dialog.c:970
@@ -6584,3 +6630,156 @@ msgstr "缩放"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "设置当前视图的缩放级别"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "图像/标签边框"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "警告对话框中的图像和标签的边框宽度"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "警告类型"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "警告类型"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "警告按钮"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "显示在警告提示对话框中的按钮"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "显示更多细节(_D)"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "文字"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "标签上的文字。"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "调整"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"标签上的文字行之间的对齐方式。此设置并不影响标签自身的对齐。参看 GtkMisc::"
+"xalign 中的说明。"
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "自动换行"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "如果设定了此选项，当文本太宽时就自动折行。"
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "光标位置"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "插入点光标的当前位置，以字符数计。"
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "选择范围"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "选择区另一端的位置，从光标处以字符数计。"
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "全选"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "输入法"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf 错误：\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf 错误：%s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "以后的错误仅显示在终端中。"
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "没有选择图像。"
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "您必须点击图片以选择它。"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "你可以点击取消停止这个操作。"
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (无效的 Unicode)"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "正在打开 %s"
+
+#  The word "item" is translated as "文件" for now, as in most cases it's
+#  opening files.
+#: ../eel/eel-app-launch-context.c:407
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] "正在打开 %d 个文件"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "输入密码"
+
+#~ msgid "Could not add application to the application database"
+#~ msgstr "无法将应用程序添加到应用程序数据库"
+
+#~ msgid "01/01/00, 01:00 AM"
+#~ msgstr "01/01/00，01:00"
+
+#~ msgid "1/1/00, 1:00 AM"
+#~ msgstr "1/1/00，1:00"
+
+#~ msgid " 1/ 1/00,  1:00 AM"
+#~ msgstr " 1/ 1/00，1:00"

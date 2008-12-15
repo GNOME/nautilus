@@ -1,3 +1,4 @@
+# #-#-#-#-#  sr.po (nautilus)  #-#-#-#-#
 # Serbian translation of nautilus
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006.
 #
@@ -6,8 +7,18 @@
 # Maintainer: Данило Шеган <danilo@gnome.org>
 # Reviewed on 2005-07-09 by: Данило Шеган <danilo@gnome.org>
 #
+# #-#-#-#-#  sr.po (eel)  #-#-#-#-#
+# Serbian translation of eel
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006, 2007.
+# This file is distributed under the same license as the eel package.
+# Maintainer: Данило Шеган <dsegan@gmx.net>
+# Данило Шеган <danilo@prevod.org>, 2005.
+# Reviewed on 2005-07-16 by: Игор Несторовић <igor@prevod.org>
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  sr.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-09 12:42+0100\n"
@@ -19,6 +30,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4;    plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"#-#-#-#-#  sr.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-09-20 03:12+0200\n"
+"PO-Revision-Date: 2008-09-20 03:12+0100\n"
+"Last-Translator: Горан Ракић <grakic@devbase.net>\n"
+"Language-Team: Serbian (sr) <gnom@prevod.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 # note(danilo):
 # ПАЖЊА: користим 4 облика за множину како бих случај за један једини стављао
@@ -2931,8 +2952,13 @@ msgid "Could not set as default application"
 msgstr "Не могу да поставим као подразумевани програм"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:257
+#, fuzzy
 msgid "Default"
-msgstr "Подразумевани"
+msgstr ""
+"#-#-#-#-#  sr.po (nautilus)  #-#-#-#-#\n"
+"Подразумевани\n"
+"#-#-#-#-#  sr.po (eel)  #-#-#-#-#\n"
+"Подразумевано"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:266
 msgid "Icon"
@@ -6722,6 +6748,135 @@ msgstr "Увећај"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Постави ниво увећања текућег прегледа"
+
+#: ../eel/eel-alert-dialog.c:109
+msgid "Image/label border"
+msgstr "Ивица слике/ознаке"
+
+#: ../eel/eel-alert-dialog.c:110
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Ширина ивице око ознаке и слике у прозорчету упозорења"
+
+#: ../eel/eel-alert-dialog.c:119
+msgid "Alert Type"
+msgstr "Врста упозорења"
+
+#: ../eel/eel-alert-dialog.c:120
+msgid "The type of alert"
+msgstr "Врста упозорења"
+
+#: ../eel/eel-alert-dialog.c:128
+msgid "Alert Buttons"
+msgstr "Дугмад упозорења"
+
+#: ../eel/eel-alert-dialog.c:129
+msgid "The buttons shown in the alert dialog"
+msgstr "Дугмад приказана у прозорчету упозорења"
+
+#: ../eel/eel-alert-dialog.c:193
+msgid "Show more _details"
+msgstr "Прикажи више _детаља"
+
+#: ../eel/eel-canvas.c:1219 ../eel/eel-canvas.c:1220
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1226 ../eel/eel-canvas.c:1227
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:353
+msgid "Text"
+msgstr "Текст"
+
+#: ../eel/eel-editable-label.c:354
+msgid "The text of the label."
+msgstr "Садржај ознаке."
+
+#: ../eel/eel-editable-label.c:360
+msgid "Justification"
+msgstr "Поравнање"
+
+#: ../eel/eel-editable-label.c:361
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Поравнање линија текста ознаке у међусобном односу. Ово не утиче на "
+"поравнање ознаке на њој додељеном простору. Погледајте GtkMisc::xalign за то."
+
+#: ../eel/eel-editable-label.c:369
+msgid "Line wrap"
+msgstr "Прелом реда"
+
+#: ../eel/eel-editable-label.c:370
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+"Уколико је постављено, када текст постане преширок вршиће се прелом реда."
+
+#: ../eel/eel-editable-label.c:377
+msgid "Cursor Position"
+msgstr "Позиција курзора"
+
+#: ../eel/eel-editable-label.c:378
+msgid "The current position of the insertion cursor in chars."
+msgstr "Текућа позиција курзора за унос као број знакова."
+
+#: ../eel/eel-editable-label.c:387
+msgid "Selection Bound"
+msgstr "Граница избора"
+
+#: ../eel/eel-editable-label.c:388
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Позиција супротног краја избора као број знакова од курзора."
+
+#: ../eel/eel-editable-label.c:3217
+msgid "Select All"
+msgstr "Изабери све"
+
+#: ../eel/eel-editable-label.c:3228
+msgid "Input Methods"
+msgstr "Методе уноса"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"ГКонф грешка:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "ГКонф грешка: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Све наредне грешке се приказују само на терминалу."
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "Слика није изабрана."
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "Морате притиснути слику да бисте је изабрали."
+
+#: ../eel/eel-stock-dialogs.c:209
+msgid "You can stop this operation by clicking cancel."
+msgstr "Можете зауставити ову операцију притиском на „откажи“."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (неисправан Уникод)"
+
+#: ../eel/eel-mount-operation.c:139
+msgid "Enter Password"
+msgstr "Унесите лозинку"
 
 #~ msgid "Browse the file system with the file manager"
 #~ msgstr "Разгледајте систем датотека помоћу управљача датотекама"

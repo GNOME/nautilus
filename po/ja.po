@@ -1,3 +1,4 @@
+# #-#-#-#-#  ja.po (nautilus trunk)  #-#-#-#-#
 # nautilus ja.po.
 # Copyright (C) 2000-2008 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
@@ -8,12 +9,33 @@
 # KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2008.
 #
+# #-#-#-#-#  ja.po (eel trunk)  #-#-#-#-#
+# nautilus ja.po.
+# Copyright (C) 2000-2005,2007,2008 Free Software Foundation, Inc.
+# Akira TAGOH <tagoh@gnome.gr.jp>, 2000,2001.
+# Takuo Kitame <kitame@debian.org>, 2001.
+# Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
+# Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2005,2007,2008.
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  ja.po (nautilus trunk)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-20 23:08+0900\n"
 "PO-Revision-Date: 2008-09-20 22:50+0900\n"
+"Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  ja.po (eel trunk)  #-#-#-#-#\n"
+"Project-Id-Version: eel trunk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-03 18:27+0900\n"
+"PO-Revision-Date: 2008-02-03 18:27+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -6830,3 +6852,145 @@ msgstr "ズーム"
 #: ../src/nautilus-zoom-control.c:896
 msgid "Set the zoom level of the current view"
 msgstr "現在のビューのズーム・レベルを設定します"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "画像/ラベルの境界"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "警告ダイアログのラベルと画像の外側にある境界の幅"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "警告の種類"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "警告の種類です"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "警告ボタン"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "警告ダイアログの中に表示するボタンです"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "詳細を表示する(_D)"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "Ｘ"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Ｙ"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "文字列"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "ラベルの文字列です"
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "行端揃え"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"相互に関連するラベルのテキストの中にある行の調整です。これはラベルの中の調整"
+"には効果がありません。詳細は GtkMisc::xalign を参照して下さい。"
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "行ラップ"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+"これをセットした場合、テキストが長くなった場合に行を分割して残りを次の行に表"
+"示します"
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "カーソル位置"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "挿入カーソルの現在位置です"
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "選択範囲の境界線"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "カーソル位置から選択範囲の終点です"
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "全て選択"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "入力メソッド"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf エラー:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf エラー: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "更に多くのエラーは端末にのみ表示されます。"
+
+#: ../eel/eel-gnome-extensions.c:265
+msgid "No image was selected."
+msgstr "画像が選択されていません。"
+
+#: ../eel/eel-gnome-extensions.c:266
+msgid "You must click on an image to select it."
+msgstr "画像を選択する場合はその画像をクリックして下さい。"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "[キャンセル] をクリックすると、この操作を取り消せます。"
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (Unicode が正しくありません)"
+
+#: ../eel/eel-app-launch-context.c:404
+#, c-format
+msgid "Opening %s"
+msgstr "%s を開いています"
+
+#: ../eel/eel-app-launch-context.c:407
+#, c-format
+msgid "Opening %d Item"
+msgid_plural "Opening %d Items"
+msgstr[0] " %d個のアイテムを開いています"
+msgstr[1] " %d個のアイテムを開いています"
+
+#: ../eel/eel-mount-operation.c:126
+msgid "Enter Password"
+msgstr "パスワードの入力"

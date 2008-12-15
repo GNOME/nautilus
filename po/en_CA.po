@@ -1,15 +1,36 @@
+# #-#-#-#-#  en_CA.po (nautilus)  #-#-#-#-#
 # English/Canada translation of nautilus.
 # Copyright (C) 2004-2006 Adam Weinberger and the GNOME Foundation
 # This file is distributed under the same licence as the nautilus package.
 # Adam Weinberger <adamw@gnome.org>, 2004, 2005, 2006.
-# 
-# 
+#
+#
+# #-#-#-#-#  en_CA.po (eel)  #-#-#-#-#
+# English/Canada translations for eel
+# Copyright (C) 2004-2005 Adam Weinberger and the GNOME foundation
+# This file is distributed under the same licence as the eel package.
+# Adam Weinberger <adamw@gnome.org>, 2004, 2005.
+#
+#
+#, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  en_CA.po (nautilus)  #-#-#-#-#\n"
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-15 16:49-0400\n"
 "PO-Revision-Date: 2005-08-02 20:03-0400\n"
+"Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
+"Language-Team: Canadian English <adamw@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  en_CA.po (eel)  #-#-#-#-#\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-08-15 17:52-0400\n"
+"PO-Revision-Date: 2005-01-25 18:50-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1011,6 +1032,7 @@ msgstr "Use De_fault"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:43
 #: ../src/file-manager/fm-list-view.c:1375
+#: ../eel/eel-mime-application-chooser.c:246
 msgid "Name"
 msgstr "Name"
 
@@ -3063,11 +3085,12 @@ msgstr "_Empty File"
 msgid "Create a new empty file inside this folder"
 msgstr "Create a new empty file inside this folder"
 
+#. #-#-#-#-#  en_CA.po (nautilus)  #-#-#-#-#
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:6916
 #: ../src/file-manager/fm-directory-view.c:7795
 #: ../src/file-manager/fm-tree-view.c:1253
-#: ../src/nautilus-places-sidebar.c:1448
+#: ../src/nautilus-places-sidebar.c:1448 ../eel/eel-open-with-dialog.c:993
 msgid "_Open"
 msgstr "_Open"
 
@@ -4195,6 +4218,7 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "The permissions of the selected file could not be determined."
 
 #: ../src/file-manager/fm-properties-window.c:4824
+#: ../eel/eel-open-with-dialog.c:892
 msgid "Open With"
 msgstr "Open With"
 
@@ -6018,3 +6042,207 @@ msgstr "Zoom"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Set the zoom level of the current view"
+
+#: ../eel/eel-alert-dialog.c:115
+msgid "Image/label border"
+msgstr "Image/label border"
+
+#: ../eel/eel-alert-dialog.c:116
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Width of border around the label and image in the alert dialogue"
+
+#: ../eel/eel-alert-dialog.c:125
+msgid "Alert Type"
+msgstr "Alert Type"
+
+#: ../eel/eel-alert-dialog.c:126
+msgid "The type of alert"
+msgstr "The type of alert"
+
+#: ../eel/eel-alert-dialog.c:134
+msgid "Alert Buttons"
+msgstr "Alert Buttons"
+
+#: ../eel/eel-alert-dialog.c:135
+msgid "The buttons shown in the alert dialog"
+msgstr "The buttons shown in the alert dialogue"
+
+#: ../eel/eel-alert-dialog.c:199
+msgid "Show more _details"
+msgstr "Show more _details"
+
+#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:366
+msgid "Text"
+msgstr "Text"
+
+#: ../eel/eel-editable-label.c:367
+msgid "The text of the label."
+msgstr "The text of the label."
+
+#: ../eel/eel-editable-label.c:373
+msgid "Justification"
+msgstr "Justification"
+
+#: ../eel/eel-editable-label.c:374
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+
+#: ../eel/eel-editable-label.c:382
+msgid "Line wrap"
+msgstr "Line wrap"
+
+#: ../eel/eel-editable-label.c:383
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "If set, wrap lines if the text becomes too wide."
+
+#: ../eel/eel-editable-label.c:390
+msgid "Cursor Position"
+msgstr "Cursor Position"
+
+#: ../eel/eel-editable-label.c:391
+msgid "The current position of the insertion cursor in chars."
+msgstr "The current position of the insertion cursor in chars."
+
+#: ../eel/eel-editable-label.c:400
+msgid "Selection Bound"
+msgstr "Selection Bound"
+
+#: ../eel/eel-editable-label.c:401
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+"The position of the opposite end of the selection from the cursor in chars."
+
+#: ../eel/eel-editable-label.c:3049
+msgid "Select All"
+msgstr "Select All"
+
+#: ../eel/eel-editable-label.c:3060
+msgid "Input Methods"
+msgstr "Input Methods"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf error:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "GConf error: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "All further errors shown only on terminal."
+
+#: ../eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "No image was selected."
+
+#: ../eel/eel-gnome-extensions.c:285
+msgid "You must click on an image to select it."
+msgstr "You must click on an image to select it."
+
+#: ../eel/eel-mime-application-chooser.c:229
+msgid "Default"
+msgstr "Default"
+
+#: ../eel/eel-mime-application-chooser.c:237
+msgid "Icon"
+msgstr "Icon"
+
+#: ../eel/eel-mime-application-chooser.c:479
+msgid "No applications selected"
+msgstr "No applications selected"
+
+#: ../eel/eel-mime-application-chooser.c:528
+#: ../eel/eel-open-with-dialog.c:1067
+#, c-format
+msgid "%s document"
+msgstr "%s document"
+
+#: ../eel/eel-mime-application-chooser.c:538
+#: ../eel/eel-open-with-dialog.c:1080
+msgid "Unknown"
+msgstr "Unknown"
+
+#: ../eel/eel-mime-application-chooser.c:546
+#, c-format
+msgid "Select an application to open %s and other files of type \"%s\""
+msgstr "Select an application to open %s and other files of type \"%s\""
+
+#: ../eel/eel-open-with-dialog.c:175 ../eel/eel-open-with-dialog.c:220
+msgid "Could not run application"
+msgstr "Could not run application"
+
+#: ../eel/eel-open-with-dialog.c:187
+#, c-format
+msgid "Could not find '%s'"
+msgstr "Could not find '%s'"
+
+#: ../eel/eel-open-with-dialog.c:190
+msgid "Could not find application"
+msgstr "Could not find application"
+
+#: ../eel/eel-open-with-dialog.c:287
+msgid "Could not add application"
+msgstr "Could not add application"
+
+#: ../eel/eel-open-with-dialog.c:288
+msgid "Could not add application to the application database"
+msgstr "Could not add application to the application database"
+
+#: ../eel/eel-open-with-dialog.c:401
+msgid "Select an Application"
+msgstr "Select an Application"
+
+#: ../eel/eel-open-with-dialog.c:929
+msgid "Select an application to view its description."
+msgstr "Select an application to view its description."
+
+#: ../eel/eel-open-with-dialog.c:954
+msgid "_Use a custom command"
+msgstr "_Use a custom command"
+
+#: ../eel/eel-open-with-dialog.c:971
+msgid "_Browse..."
+msgstr "_Browse..."
+
+#: ../eel/eel-open-with-dialog.c:1087
+#, c-format
+msgid "Open %s and other files of type \"%s\" with:"
+msgstr "Open %s and other files of type \"%s\" with:"
+
+#: ../eel/eel-open-with-dialog.c:1119
+msgid "_Add"
+msgstr "_Add"
+
+#: ../eel/eel-open-with-dialog.c:1120
+msgid "Add Application"
+msgstr "Add Application"
+
+#: ../eel/eel-stock-dialogs.c:214
+msgid "You can stop this operation by clicking cancel."
+msgstr "You can stop this operation by clicking cancel."
+
+#: ../eel/eel-vfs-extensions.c:650
+msgid " (invalid Unicode)"
+msgstr " (invalid Unicode)"
