@@ -62,8 +62,6 @@ libeel_2_la_SOURCES =				\
 	eel-lib-self-check-functions.h		\
 	$(NULL)
 
-libeelincludedir = $(includedir)/eel-2/eel
-
 eel_headers =					\
 	eel-accessibility.h			\
 	eel-alert-dialog.h			\
@@ -100,12 +98,6 @@ eel_headers =					\
 	eel-wrap-table.h			\
 	eel-xml-extensions.h			\
 	eel.h					\
-	$(NULL)
-
-libeelinclude_HEADERS =				\
-	$(eel_headers)				\
-	eel-type-builtins.h			\
-	eel-marshal.h				\
 	$(NULL)
 
 marshal_sources = 				\
@@ -163,6 +155,9 @@ check_program_LDFLAGS =	$(check_program_DEPENDENCIES) -lm
 TESTS = check-eel
 
 EXTRA_DIST =					\
+	$(eel_headers)				\
+	eel-type-builtins.h			\
+	eel-marshal.h				\
 	check-eel				\
 	eelmarshal.list				\
 	makeenums.pl				\
