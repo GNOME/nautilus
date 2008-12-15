@@ -1540,6 +1540,7 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 	NautilusFile *file;
 	GFile *location;
 	GMountOperation *mount_op;
+	GList *l, *next;
 
 	if (parameters->not_mounted != NULL) {
 		file = parameters->not_mounted->data;
@@ -1560,6 +1561,14 @@ activation_mount_not_mounted (ActivateParameters *parameters)
 	if (parameters->files == NULL) {
 		activation_parameters_free (parameters);
 		return;
+	}
+	
+	/*  once the mount is finished, refresh all attributes        */
+	/*  - fixes new windows not appearing after successful mount  */
+	for (l = parameters->files; l != NULL; l = next) {
+		file = NAUTILUS_FILE (l->data);
+		next = l->next;
+		nautilus_file_invalidate_all_attributes (file);
 	}
 	
 	nautilus_file_list_call_when_ready
