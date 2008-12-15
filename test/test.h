@@ -4,17 +4,8 @@
 #include <config.h>
 #include <gtk/gtk.h>
 
-#include <eel/eel-art-extensions.h>
-#include <eel/eel-art-gtk-extensions.h>
-#include <eel/eel-background.h>
-#include <eel/eel-debug-drawing.h>
 #include <eel/eel-debug.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-string.h>
+#include <eel/eel.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 
 void       test_init                            (int                         *argc,
