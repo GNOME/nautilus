@@ -649,8 +649,6 @@ nautilus_window_constructor (GType type,
 	slot = nautilus_window_open_slot (window, 0);
 	nautilus_window_set_active_slot (window, slot);
 
-	nautilus_window_initialize_menus_constructed (window);
-
 	return object;
 }
 

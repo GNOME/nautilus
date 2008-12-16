@@ -237,31 +237,6 @@ action_connect_to_server_callback (GtkAction *action,
 	gtk_widget_show (dialog);
 }
 
-static gboolean
-have_burn_uri (void)
-{
-	static gboolean initialized = FALSE;
-	static gboolean res;
-	GVfs *vfs;
-	int i;
-	const gchar * const * supported_uri_schemes;
-
-	if (!initialized) {
-		vfs = g_vfs_get_default ();
-		supported_uri_schemes = g_vfs_get_supported_uri_schemes (vfs);
-
-		res = FALSE;
-		for (i = 0; supported_uri_schemes != NULL && supported_uri_schemes[i] != NULL; i++) {
-			if (strcmp ("burn", supported_uri_schemes[i]) == 0) {
-				res = TRUE;
-				break;
-			}
-		}
-		initialized = TRUE;
-	}
-	return res;
-}
-
 static void
 action_stop_callback (GtkAction *action, 
 		      gpointer user_data)
@@ -370,25 +345,6 @@ action_go_to_trash_callback (GtkAction *action,
 				    trash,
 				    should_open_in_new_tab ());
 	g_object_unref (trash);
-}
-
-static void
-action_go_to_burn_cd_callback (GtkAction *action,
-			       gpointer user_data) 
-{
-	NautilusWindow *window;
-	NautilusWindowSlot *slot;
-	GFile *burn;
-
-	window = NAUTILUS_WINDOW (user_data);
-	slot = nautilus_window_get_active_slot (window);
-
-	burn = g_file_new_for_uri (BURN_CD_URI);
-	nautilus_window_slot_go_to (slot,
-				    burn,
-				    should_open_in_new_tab ());
-	g_object_unref (burn);
-	
 }
 
 static void
@@ -871,10 +827,6 @@ static const GtkActionEntry main_entries[] = {
   /* label, accelerator */       N_("_Trash"), NULL,
   /* tooltip */                  N_("Open your personal trash folder"),
                                  G_CALLBACK (action_go_to_trash_callback) },
-  /* name, stock id */         { "Go to Burn CD", NAUTILUS_ICON_BURN,
-  /* label, accelerator */       N_("CD/_DVD Creator"), NULL,
-  /* tooltip */                  N_("Open a folder into which you can drag files to burn to a CD or DVD"),
-                                 G_CALLBACK (action_go_to_burn_cd_callback) },
 };
 
 static const GtkToggleActionEntry main_toggle_entries[] = {
@@ -943,22 +895,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	gtk_ui_manager_add_ui_from_string (ui_manager, ui, -1, NULL);
 
 	nautilus_window_initialize_bookmarks_menu (window);
-}
-
-void
-nautilus_window_initialize_menus_constructed (NautilusWindow *window)
-{
-	GtkAction *action;
-
-	/* Don't call have_burn_uri() for the desktop window, as this is a very
-	 * expensive operation during login (around 1 second) ---
-	 * have_burn_uri() has to create a "burn:///" URI, which causes
-	 * gnome-vfs to link in libmapping.so from nautilus-cd-burner.
-	 */
-	if (nautilus_window_has_menubar_and_statusbar (window) && !have_burn_uri ()) {
-		action = gtk_action_group_get_action (window->details->main_action_group, NAUTILUS_ACTION_GO_TO_BURN_CD);
- 		gtk_action_set_visible (action, FALSE);
- 	}
 }
 
 static GList *
