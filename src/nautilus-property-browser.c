@@ -942,21 +942,8 @@ remove_pattern(NautilusPropertyBrowser *property_browser, const char* pattern_na
 static void
 remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_name)
 {
-	/* build the pathname of the emblem */
-	char *emblem_path;
-	char *user_directory;
-
-	user_directory = nautilus_get_user_directory ();
-
-	emblem_path = g_build_filename (user_directory,
-					"emblems",
-					emblem_name,
-					NULL);
-
-	g_free (user_directory);
-
 	/* delete the emblem from the emblem directory */
-	if (g_unlink (emblem_path) != 0) {
+	if (nautilus_emblem_remove_emblem (emblem_name) == FALSE) {
 		char *message = g_strdup_printf (_("Sorry, but emblem %s could not be deleted."), emblem_name);
 		char *detail = _("Check that you have permission to delete the emblem.");
 		eel_show_error_dialog (message, detail, GTK_WINDOW (property_browser));
@@ -964,7 +951,6 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 	} else {
 		emit_emblems_changed_signal ();
 	}
-	g_free (emblem_path);
 }
 
 /* handle removing the passed in element */
@@ -1724,6 +1710,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 
 		icons = nautilus_emblem_list_available ();
 
+		property_browser->details->has_local = FALSE;
 		l = icons;
 		while (l != NULL) {
 			icon_name = (char *)l->data;
@@ -1732,7 +1719,14 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			if (!nautilus_emblem_should_show_in_list (icon_name)) {
 				continue;
 			}
+
 			object_name = nautilus_emblem_get_keyword_from_icon_name (icon_name);
+			if (nautilus_emblem_can_remove_emblem (object_name)) {
+				property_browser->details->has_local = TRUE;
+			} else if (property_browser->details->remove_mode) {
+				g_free (object_name);
+				continue;
+			}
 			info = nautilus_icon_info_lookup_from_name (icon_name, NAUTILUS_ICON_SIZE_STANDARD);
 			object_pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, NAUTILUS_ICON_SIZE_STANDARD);
 			object_label = g_strdup (nautilus_icon_info_get_display_name (info));
@@ -1759,7 +1753,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			}
 		}
 		eel_g_list_free_deep (icons);
-		property_browser->details->has_local = FALSE;
 	} else {
 		customization_data = nautilus_customization_data_new (property_browser->details->category,
 								      !property_browser->details->remove_mode,
