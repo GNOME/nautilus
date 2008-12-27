@@ -1,4 +1,3 @@
-# #-#-#-#-#  it.po (nautilus 2.23.x)  #-#-#-#-#
 # Italian translation of Nautilus
 # This file is distributed under the same license as nautilus package
 # Copyright (C) 2000-2008 Free Software Foundation, Inc.
@@ -6,38 +5,95 @@
 # Pier Luigi Fiorini      <plfiorini@supereva.it>, 2001-2002.
 # Luca Ferretti           <elle.uca@libero.it>,    2002-2008.
 #
-# #-#-#-#-#  it.po (eel 2.21.x)  #-#-#-#-#
-# Italian translation for EEL
-# This file is distributed under the same license as eel package
-# Copyright (C) 2000-2008 Free Software Foundation, Inc.
-# Christopher R. Gabriel <cgabriel@pluto.linux.it>, 2000
-# Luca Ferretti <elle.uca@libero.it>, 2003-2008.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"#-#-#-#-#  it.po (nautilus 2.23.x)  #-#-#-#-#\n"
-"Project-Id-Version: nautilus 2.23.x\n"
+"Project-Id-Version: nautilus 2.25.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-06 20:19+0100\n"
-"PO-Revision-Date: 2008-11-06 20:20+0100\n"
-"Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
-"Language-Team: Italiano <tp@lists.linux.it>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"#-#-#-#-#  it.po (eel 2.21.x)  #-#-#-#-#\n"
-"Project-Id-Version: eel 2.21.x\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-15 14:15+0100\n"
-"PO-Revision-Date: 2008-02-15 14:16+0100\n"
+"POT-Creation-Date: 2008-12-27 18:21+0100\n"
+"PO-Revision-Date: 2008-12-27 18:31+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:165
+#, c-format
+msgid "File is not a valid .desktop file"
+msgstr "Il file non è un file .desktop valido"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:188
+#, c-format
+msgid "Unrecognized desktop file Version '%s'"
+msgstr "Versione \"%s\" del file .destkop non riconosciuta"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:958
+#, c-format
+msgid "Starting %s"
+msgstr "Avvio di «%s»"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:1100
+#, c-format
+msgid "Application does not accept documents on command line"
+msgstr "L'applicazione non accetta documenti sulla riga di comando"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:1168
+#, c-format
+msgid "Unrecognized launch option: %d"
+msgstr "Opzione di lancio non riconosciuta: %d"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:1373
+#, c-format
+msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+msgstr "Impossibile passare URI di documenti a una desktop entry con \"Type=Link\""
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggdesktopfile.c:1392
+#, c-format
+msgid "Not a launchable item"
+msgstr "Non è un oggetto lanciabile"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:185
+msgid "Disable connection to session manager"
+msgstr "Disabilita la connessione al gestore di sessione"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:188
+msgid "Specify file containing saved configuration"
+msgstr "Specifica il file contenente la configurazione salvata"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:188
+msgid "FILE"
+msgstr "FILE"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:191
+msgid "Specify session management ID"
+msgstr "Specifica l'ID di gestione sessione"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:191
+msgid "ID"
+msgstr "ID"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:245
+msgid "Session Management Options"
+msgstr "Opzioni di gestione sessione"
+
+# GNOME-2-26
+#: ../cut-n-paste-code/libegg/eggsmclient.c:246
+msgid "Show Session Management options"
+msgstr "Mostra le opzioni di gestione sessione"
 
 #: ../data/browser.xml.h:1
 msgid "Apparition"
@@ -151,7 +207,7 @@ msgstr "Invidia"
 
 #. translators: this is the name of an emblem
 #: ../data/browser.xml.h:28 ../src/nautilus-emblem-sidebar.c:928
-#: ../src/nautilus-property-browser.c:1826
+#: ../src/nautilus-property-browser.c:1819
 msgid "Erase"
 msgstr "Cancella"
 
@@ -327,6 +383,126 @@ msgstr "_Motivi"
 #: ../data/nautilus.xml.in.h:1
 msgid "Saved search"
 msgstr "Ricerca salvata"
+
+#: ../eel/eel-alert-dialog.c:109
+msgid "Image/label border"
+msgstr "Bordo dell'immagine/etichetta"
+
+#: ../eel/eel-alert-dialog.c:110
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+"Larghezza del bordo intorno all'etichetta e all'immagine nella finestra di "
+"dialogo di allerta"
+
+#: ../eel/eel-alert-dialog.c:119
+msgid "Alert Type"
+msgstr "Tipo di allerta"
+
+#: ../eel/eel-alert-dialog.c:120
+msgid "The type of alert"
+msgstr "Il tipo di allerta"
+
+#: ../eel/eel-alert-dialog.c:128
+msgid "Alert Buttons"
+msgstr "Pulsanti di allerta"
+
+#: ../eel/eel-alert-dialog.c:129
+msgid "The buttons shown in the alert dialog"
+msgstr "I pulsanti mostrati nella finestra di dialogo di allerta"
+
+#: ../eel/eel-alert-dialog.c:193
+msgid "Show more _details"
+msgstr "Mostra maggiori _dettagli"
+
+#: ../eel/eel-canvas.c:1219 ../eel/eel-canvas.c:1220
+msgid "X"
+msgstr "X"
+
+#: ../eel/eel-canvas.c:1226 ../eel/eel-canvas.c:1227
+msgid "Y"
+msgstr "Y"
+
+#: ../eel/eel-editable-label.c:353
+msgid "Text"
+msgstr "Testo"
+
+#: ../eel/eel-editable-label.c:354
+msgid "The text of the label."
+msgstr "Il testo dell'etichetta."
+
+#: ../eel/eel-editable-label.c:360
+msgid "Justification"
+msgstr "Giustificazione"
+
+#: ../eel/eel-editable-label.c:361
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"L'allineamento reciproco delle righe nel testo dell'etichetta. NON influisce "
+"sull'allineamento dell'etichetta. Si veda GtkMisc::xalign per questo."
+
+#: ../eel/eel-editable-label.c:369
+msgid "Line wrap"
+msgstr "A capo automatico"
+
+#: ../eel/eel-editable-label.c:370
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Se impostato, va a capo se il testo diventa troppo lungo."
+
+#: ../eel/eel-editable-label.c:377
+msgid "Cursor Position"
+msgstr "Posizione cursore"
+
+#: ../eel/eel-editable-label.c:378
+msgid "The current position of the insertion cursor in chars."
+msgstr "La posizione attuale, in caratteri, del cursore di inserimento."
+
+#: ../eel/eel-editable-label.c:387
+msgid "Selection Bound"
+msgstr "Limite della selezione"
+
+#: ../eel/eel-editable-label.c:388
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+"La posizione, in caratteri, del lato opposto della selezione rispetto al "
+"cursore."
+
+#: ../eel/eel-editable-label.c:3217
+msgid "Select All"
+msgstr "Seleziona tutto"
+
+#: ../eel/eel-editable-label.c:3228
+msgid "Input Methods"
+msgstr "Metodi di input"
+
+#: ../eel/eel-gconf-extensions.c:83
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Errore GConf:\n"
+"  %s"
+
+#: ../eel/eel-gconf-extensions.c:87
+#, c-format
+msgid "GConf error: %s"
+msgstr "Errore GConf: %s"
+
+#: ../eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Tutti gli ulteriori errori sono mostrati solo su terminale."
+
+#: ../eel/eel-stock-dialogs.c:203
+msgid "You can stop this operation by clicking cancel."
+msgstr "È possibile fermare questa operazione facendo clic su «Annulla»."
+
+#: ../eel/eel-vfs-extensions.c:92
+msgid " (invalid Unicode)"
+msgstr " (Unicode non valido)"
 
 #. Translators: date_modified - mtime, the last time file contents were changed
 #. date_changed  - ctime, the last time file meta-information changed
@@ -814,8 +990,14 @@ msgstr ""
 "hanno la stessa larghezza. In caso contrario, la larghezza di ciascuna "
 "colonna è determinata separatamente."
 
-# GNOME-2-22
+# GNOME-2-26
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#, fuzzy
+msgid "If to show the package installer for unknown mime types"
+msgstr "Indica se mostrare l'installatore di pacchetti per tipi MIME sconosciuti"
+
+# GNOME-2-22
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -826,7 +1008,7 @@ msgstr ""
 "\"a\" alla \"z\", vengono ordinati dalla \"z\" alla \"a\"."
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -839,26 +1021,26 @@ msgstr ""
 "dimensione, invece che in ordine cresente saranno disposti in ordine "
 "decrescente."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Se impostata a VERO, le icone sono disposte più vicine l'una all'altra in "
 "modo predefinito nelle nuove finestre."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Se impostata a VERO, le etichette sono poste accanto alle icone invece che "
 "al di sotto."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Se impostata a VERO, nelle nuove finestre è usata in modo predefinito la "
 "disposizione manuale."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -869,13 +1051,13 @@ msgstr ""
 "creazione di miniature per immagini grandi; tale processo infatti può "
 "richiedere un lungo tempo di esecuzione o un consistente uso della memoria."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "List of possible captions on icons"
 msgstr "Lista di possibili didascalie delle icone"
 
 # GNOME-2-24
 # un po' libera, ma efficace
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "List of x-content/* types for which the user have chosen \"Do Nothing\" in "
 "the preference capplet. No prompt will be shown nor will any matching "
@@ -887,7 +1069,7 @@ msgstr ""
 "applicazione associata."
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "List of x-content/* types for which the user have chosen \"Open Folder\" in "
 "the preferences capplet. A folder window will be opened on insertion of "
@@ -898,7 +1080,7 @@ msgstr ""
 "tipi, viene aperta una finestra di cartella."
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "List of x-content/* types for which the user have chosen to start an "
 "application in the preference capplet. The preferred application for the "
@@ -911,33 +1093,33 @@ msgstr ""
 
 # GNOME-2-24
 # FIXME dovrebbe essere quella breve...
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid "List of x-content/* types set to \"Do Nothing\""
 msgstr "Lista di tipi x-content/* impostati a \"Nessuna azione\""
 
 # GNOME-2-24
 # FIXME dovrebbe essere quella breve...
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "List of x-content/* types set to \"Open Folder\""
 msgstr "Lista di tipi x-content/* impostati a \"Apri cartella\""
 
 # GNOME-2-24
 # FIXME dovrebbe essere quella breve...
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "List of x-content/* types where the preferred application will be launched"
 msgstr ""
 "Lista di tipi x-content/* per i quali viene lanciata l'applicazione preferita"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "Maximum handled files in a folder"
 msgstr "Numero massimo di file gestibili in una cartella"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Maximum image size for thumbnailing"
 msgstr "Dimensione massima per creare miniatura di una immagine"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -946,34 +1128,34 @@ msgstr ""
 "e superiori. Fare riferimento al tema della icone."
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus gestisce quanto presente sulla scrivania"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Usare la cartella home dell'utente in Nautilus come scrivania"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Network Servers icon visible on the desktop"
 msgstr "Icona Server di rete visibile sulla scrivania"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Network servers icon name"
 msgstr "Nome dell'icona Server di rete"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Never prompt or autorun/autostart programs when media are inserted"
 msgstr ""
 "Non chiedere conferma, né eseguire/avviare automaticamente i programmi "
 "quando i supporti sono inseriti"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Only show folders in the tree side pane"
 msgstr "Mostrare solo cartelle nel riquadro laterale"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -981,61 +1163,61 @@ msgstr ""
 "Valori ammessi sono \"single\" per lanciare i file con un singolo clic, o "
 "\"double\" per lanciarli con un doppio clic."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Put labels beside icons"
 msgstr "Porre etichette accanto alle icone"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Reverse sort order in new windows"
 msgstr "Ordine di disposizione invertito nelle nuove finestre"
 
 #. Translators: please note this can choose the size. e.g.
 #. "Sans 15". Please do not change "Sans", only change the size if you need to. In
 #. most cases, this should be left alone.
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Sans 10"
 msgstr "Sans 10"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Show advanced permissions in the file property dialog"
 msgstr "Mostrare permessi avanzati nel dialogo di proprietà del file"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Show folders first in windows"
 msgstr "Elencare le cartelle per prime nelle finestre"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Show location bar in new windows"
 msgstr "Mostrare la barra di posizione nelle nuove finestre"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Show mounted volumes on the desktop"
 msgstr "Volumi montati visibili sulla scrivania"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Show side pane in new windows"
 msgstr "Mostrare il riquadro laterale nelle nuove finestre"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Show status bar in new windows"
 msgstr "Mostrare la barra di stato nelle nuove finestre"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid "Show toolbar in new windows"
 msgstr "Mostrare la barra degli strumenti nelle nuove finestre"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
 msgid "Side pane view"
 msgstr "Vista nel riquadro laterale"
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:107
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1049,7 +1231,7 @@ msgstr ""
 "system locali. Se impostata a \"never\" allora in nessun caso è possibile "
 "ascoltare un'anteprima del suono."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1064,7 +1246,7 @@ msgstr ""
 "file system locali. Se impostata a \"never\" allora in nessun caso è "
 "possibile avere un'anteprima del contenuto."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:109
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1079,7 +1261,7 @@ msgstr ""
 "impostata a \"never\" allora in nessun caso è possibile avere una miniatura "
 "delle immagini, ma solo icone generiche."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:110
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1094,17 +1276,17 @@ msgstr ""
 "il conteggio degli oggetti."
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:111
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
 msgid "Text Ellipsis Limit"
 msgstr "Limite elisione testo"
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:112
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
 msgid "The default size of an icon for a thumbnail in the icon view."
 msgstr ""
 "La dimensione predefinita di un'icona per una miniatura nella vista a icone."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:113
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1113,7 +1295,7 @@ msgstr ""
 "Valori ammessi sono: \"name\", \"size\", \"type\", \"modification_date\", "
 "\"emblems\"."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:114
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1122,15 +1304,15 @@ msgstr ""
 "Valori ammessi sono: \"name\", \"size\", \"type\" e \"modification_date\""
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:115
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
 msgid "The default width of the side pane in new windows."
 msgstr "La larghezza predefinita del riquadro laterale nelle nuove finestre."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:116
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
 msgid "The font description used for the icons on the desktop."
 msgstr "Descrizione del tipo di carattere usato per le icone sulla scrivania."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:117
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -1138,12 +1320,12 @@ msgstr ""
 "Il formato delle date dei file. Valori ammessi sono: \"locale\", \"iso\" e "
 "\"informal\"."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:118
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
 msgid "The side pane view to show in newly opened windows."
 msgstr ""
 "La vista del riquadro laterale da mostrare nelle nuove finestre aperte."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:119
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
@@ -1151,7 +1333,7 @@ msgstr ""
 "Impostare questo nome se si vuole un nome personalizzato per l'icona del "
 "computer sulla scrivania."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:120
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -1159,7 +1341,7 @@ msgstr ""
 "Impostare questo nome se si vuole un nome personalizzato per l'icona della "
 "home sulla scrivania."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:121
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -1167,7 +1349,7 @@ msgstr ""
 "Impostare questo nome se si vuole un nome personalizzato per l'icona dei "
 "server di rete sulla scrivania."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:122
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1175,28 +1357,28 @@ msgstr ""
 "Impostare questo nome se si vuole un nome personalizzato per l'icona del "
 "cestino sulla scrivania."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:123
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
 msgid "Trash icon visible on desktop"
 msgstr "Icona del cestino visibile sulla scrivania"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:124
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
 msgid "Type of click used to launch/open files"
 msgstr "Tipo di clic usato per lanciare/aprire i file"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:125
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
 msgid "Use manual layout in new windows"
 msgstr "Usare disposizione manuale nelle nuove finestre"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:126
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
 msgid "Use tighter layout in new windows"
 msgstr "Usare disposizione stretta nelle nuove finestre"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:127
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
 msgid "What to do with executable text files when activated"
 msgstr "Azione all'attivazione di file di testo eseguibili"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:128
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1209,7 +1391,7 @@ msgstr ""
 "di dialogo, e \"display\" per visualizzarli come file di testo."
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:129
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\", "
@@ -1219,15 +1401,15 @@ msgstr ""
 "stata selezionata una vista diversa per una particolare cartella. Valori "
 "ammessi sono \"list_view\", \"icon_view\" e \"compact_view\"."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:130
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
 msgid "When to show number of items in a folder"
 msgstr "Quando mostrare il numero di oggetti in una cartella"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:131
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
 msgid "When to show preview text in icons"
 msgstr "Quando mostrare anteprima del testo nelle icone"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:132
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
 msgid "When to show thumbnails of image files"
 msgstr "Quando mostrare miniature dei file di immagine"
 
@@ -1235,59 +1417,67 @@ msgstr "Quando mostrare miniature dei file di immagine"
 #
 # la traduzione di newly è un po' infedele, ma coerente con 
 # cosa fa la chiave in questione.
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:133
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
 msgid "Where to position newly open tabs in browser windows."
 msgstr ""
 "Indica dove posizionare l'ultima scheda aperta nelle finestre di esplorazione"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:134
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
 msgid "Whether a custom default folder background has been set."
 msgstr "Indica se impostare uno sfondo personalizzato delle cartelle."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:135
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
 msgid "Whether a custom default side pane background has been set."
 msgstr "Indica se impostare uno sfondo personalizzato del riquadro laterale."
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:136
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
 msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgstr ""
 "Indica se confermare l'elimiazione dei file o lo svuotamento del cestino"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:137
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
 msgid "Whether to automatically mount media"
 msgstr "Indica se montare automaticamente i supporti"
 
 # GNOME-2-22
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:138
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
 msgid "Whether to automatically open a folder for automounted media"
 msgstr ""
 "Indica se aprire automaticamente una cartella per i supporti automontati"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:139
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:140
 msgid "Whether to enable immediate deletion"
 msgstr "Indica se abilitare l'eliminazione immediata"
 
 # GNOME-2-24
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:140
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:141
 msgid "Whether to enable tabs in Nautilus browser windows"
 msgstr ""
 "Indica se abilitare le schede nelle finestre di esplorazione di Nautilus"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:141
+# GNOME-2-26
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:142
+#, fuzzy
+msgid ""
+"Whether to present the user a dialog to search using the package installer "
+"for an application that can open an unknown mime type."
+msgstr "Indica se presentare all'utente un dialogo per cercare attraverso l'installatore di pacchetti un'applicazione che possa aprire un tipo MIME sconosciuto."
+
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:143
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
 "Indica se abilitare l'anteprima audio al passaggio del mouse sull'icona"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:142
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:144
 msgid "Whether to show backup files"
 msgstr "Indica se mostrare i file di backup"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:143
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:145
 msgid "Whether to show hidden files"
 msgstr "Indica se mostrare i file nascosti"
 
-#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:144
+#: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:146
 msgid "Width of the side pane"
 msgstr "Larghezza del riquadro laterale"
 
@@ -1577,7 +1767,7 @@ msgstr "Il contesto di sicurezza SELinux del file."
 
 #: ../libnautilus-private/nautilus-customization-data.c:405
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:430
-#: ../src/nautilus-property-browser.c:1870
+#: ../src/nautilus-property-browser.c:1863
 msgid "Reset"
 msgstr "Azzera"
 
@@ -1757,8 +1947,8 @@ msgstr[1] "circa %'d ore"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:314
-#: ../libnautilus-private/nautilus-file.c:5612
-#: ../src/file-manager/fm-directory-view.c:9347
+#: ../libnautilus-private/nautilus-file.c:5611
+#: ../src/file-manager/fm-directory-view.c:9345
 #, c-format
 msgid "Link to %s"
 msgstr "Collegamento a %s"
@@ -2540,38 +2730,38 @@ msgid "There was an error creating the directory in %F."
 msgstr "Si è verificato un errore nel creare la directory in «%F»."
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:918
+#: ../libnautilus-private/nautilus-file.c:917
 #: ../libnautilus-private/nautilus-vfs-file.c:264
 #, c-format
 msgid "This file cannot be mounted"
 msgstr "Questo file non può essere montato"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:1330
+#: ../libnautilus-private/nautilus-file.c:1329
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Nei nomi di file non è consentito l'uso di '/'"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:1348
+#: ../libnautilus-private/nautilus-file.c:1347
 #, c-format
 msgid "File not found"
 msgstr "File non trovato"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-file.c:1376
+#: ../libnautilus-private/nautilus-file.c:1375
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "I file di livello principale non possono essere rinominati"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:1399
+#: ../libnautilus-private/nautilus-file.c:1398
 #, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Impossibile rinominare l'icona desktop"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:1436
+#: ../libnautilus-private/nautilus-file.c:1435
 #, c-format
 msgid "Unable to rename desktop file"
 msgstr "Impossibile rinominare il file desktop"
@@ -2591,65 +2781,65 @@ msgstr "Impossibile rinominare il file desktop"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: ../libnautilus-private/nautilus-file.c:3698
+#: ../libnautilus-private/nautilus-file.c:3697
 msgid "today at 00:00:00 PM"
 msgstr "oggi alle 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3699
-#: ../src/nautilus-file-management-properties.c:470
+#: ../libnautilus-private/nautilus-file.c:3698
+#: ../src/nautilus-file-management-properties.c:471
 msgid "today at %-I:%M:%S %p"
 msgstr "oggi alle %-H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3701
+#: ../libnautilus-private/nautilus-file.c:3700
 msgid "today at 00:00 PM"
 msgstr "oggi alle 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3702
+#: ../libnautilus-private/nautilus-file.c:3701
 msgid "today at %-I:%M %p"
 msgstr "oggi alle %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3704
+#: ../libnautilus-private/nautilus-file.c:3703
 msgid "today, 00:00 PM"
 msgstr "oggi, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3705
+#: ../libnautilus-private/nautilus-file.c:3704
 msgid "today, %-I:%M %p"
 msgstr "oggi, %-H.%M"
 
+#: ../libnautilus-private/nautilus-file.c:3706
 #: ../libnautilus-private/nautilus-file.c:3707
-#: ../libnautilus-private/nautilus-file.c:3708
 msgid "today"
 msgstr "oggi"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: ../libnautilus-private/nautilus-file.c:3717
+#: ../libnautilus-private/nautilus-file.c:3716
 msgid "yesterday at 00:00:00 PM"
 msgstr "ieri alle 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3718
+#: ../libnautilus-private/nautilus-file.c:3717
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ieri alle %-H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3720
+#: ../libnautilus-private/nautilus-file.c:3719
 msgid "yesterday at 00:00 PM"
 msgstr "ieri alle 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3721
+#: ../libnautilus-private/nautilus-file.c:3720
 msgid "yesterday at %-I:%M %p"
 msgstr "ieri alle %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3723
+#: ../libnautilus-private/nautilus-file.c:3722
 msgid "yesterday, 00:00 PM"
 msgstr "ieri, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3724
+#: ../libnautilus-private/nautilus-file.c:3723
 msgid "yesterday, %-I:%M %p"
 msgstr "ieri, %-H.%M"
 
+#: ../libnautilus-private/nautilus-file.c:3725
 #: ../libnautilus-private/nautilus-file.c:3726
-#: ../libnautilus-private/nautilus-file.c:3727
 msgid "yesterday"
 msgstr "ieri"
 
@@ -2658,93 +2848,93 @@ msgstr "ieri"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: ../libnautilus-private/nautilus-file.c:3738
+#: ../libnautilus-private/nautilus-file.c:3737
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Mercoledì, 0 settembre 0000 alle 0.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3739
+#: ../libnautilus-private/nautilus-file.c:3738
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y alle %-H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3741
+#: ../libnautilus-private/nautilus-file.c:3740
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Lun, 00 ott 0000 alle 00.00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3742
+#: ../libnautilus-private/nautilus-file.c:3741
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y alle %-H.%M.%S"
 
-#: ../libnautilus-private/nautilus-file.c:3744
+#: ../libnautilus-private/nautilus-file.c:3743
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Lun, 00 ott 0000 alle 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3745
+#: ../libnautilus-private/nautilus-file.c:3744
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y alle %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3747
+#: ../libnautilus-private/nautilus-file.c:3746
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 ott 0000 alle 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3748
+#: ../libnautilus-private/nautilus-file.c:3747
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y alle %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3750
+#: ../libnautilus-private/nautilus-file.c:3749
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 ott 0000, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3751
+#: ../libnautilus-private/nautilus-file.c:3750
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3753
+#: ../libnautilus-private/nautilus-file.c:3752
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00.00"
 
-#: ../libnautilus-private/nautilus-file.c:3754
+#: ../libnautilus-private/nautilus-file.c:3753
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-H.%M"
 
-#: ../libnautilus-private/nautilus-file.c:3756
+#: ../libnautilus-private/nautilus-file.c:3755
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: ../libnautilus-private/nautilus-file.c:3757
+#: ../libnautilus-private/nautilus-file.c:3756
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-file.c:4370
+#: ../libnautilus-private/nautilus-file.c:4369
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Non è consentito impostare i permessi"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-file.c:4678
+#: ../libnautilus-private/nautilus-file.c:4677
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Non è consentito impostare l'utente"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:4696
+#: ../libnautilus-private/nautilus-file.c:4695
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "L'utente «%s» specificato non esiste"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-file.c:4960
+#: ../libnautilus-private/nautilus-file.c:4959
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Non è consentito impostare il gruppo"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:4978
+#: ../libnautilus-private/nautilus-file.c:4977
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Il gruppo «%s» specificato non esiste"
 
-#: ../libnautilus-private/nautilus-file.c:5121
+#: ../libnautilus-private/nautilus-file.c:5120
 #: ../src/file-manager/fm-directory-view.c:2198
 #, c-format
 msgid "%'u item"
@@ -2752,14 +2942,14 @@ msgid_plural "%'u items"
 msgstr[0] "%'u oggetto"
 msgstr[1] "%'u oggetti"
 
-#: ../libnautilus-private/nautilus-file.c:5122
+#: ../libnautilus-private/nautilus-file.c:5121
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u cartella"
 msgstr[1] "%'u cartelle"
 
-#: ../libnautilus-private/nautilus-file.c:5123
+#: ../libnautilus-private/nautilus-file.c:5122
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -2768,52 +2958,52 @@ msgstr[1] "%'u file"
 
 # GNOME-2-22
 #. Do this in a separate stage so that we don't have to put G_GUINT64_FORMAT in the translated string
-#: ../libnautilus-private/nautilus-file.c:5202
+#: ../libnautilus-private/nautilus-file.c:5201
 msgid "%"
 msgstr "%"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-file.c:5203
+#: ../libnautilus-private/nautilus-file.c:5202
 #, c-format
 msgid "%s (%s bytes)"
 msgstr "%s (%s byte)"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5507
-#: ../libnautilus-private/nautilus-file.c:5523
+#: ../libnautilus-private/nautilus-file.c:5506
+#: ../libnautilus-private/nautilus-file.c:5522
 msgid "? items"
 msgstr "? oggetti"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:5513
+#: ../libnautilus-private/nautilus-file.c:5512
 msgid "? bytes"
 msgstr "? byte"
 
-#: ../libnautilus-private/nautilus-file.c:5528
+#: ../libnautilus-private/nautilus-file.c:5527
 msgid "unknown type"
 msgstr "tipo sconosciuto"
 
-#: ../libnautilus-private/nautilus-file.c:5531
+#: ../libnautilus-private/nautilus-file.c:5530
 msgid "unknown MIME type"
 msgstr "tipo MIME sconosciuto"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:5537
+#: ../libnautilus-private/nautilus-file.c:5536
 #: ../src/file-manager/fm-properties-window.c:1322
 msgid "unknown"
 msgstr "sconosciuto"
 
-#: ../libnautilus-private/nautilus-file.c:5586
+#: ../libnautilus-private/nautilus-file.c:5585
 msgid "program"
 msgstr "programma"
 
-#: ../libnautilus-private/nautilus-file.c:5606
+#: ../libnautilus-private/nautilus-file.c:5605
 msgid "link"
 msgstr "collegamento"
 
-#: ../libnautilus-private/nautilus-file.c:5628
+#: ../libnautilus-private/nautilus-file.c:5627
 msgid "link (broken)"
 msgstr "collegamento (interrotto)"
 
@@ -2897,40 +3087,50 @@ msgstr "100 MB"
 msgid "1 GB"
 msgstr "1 GB"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:103
+# GNOME-2-26
+#: ../libnautilus-private/nautilus-global-preferences.c:99
+msgid "2 GB"
+msgstr "2 GB"
+
+# GNOME-2-26
+#: ../libnautilus-private/nautilus-global-preferences.c:100
+msgid "4 GB"
+msgstr "4 GB"
+
+#: ../libnautilus-private/nautilus-global-preferences.c:105
 msgid "Activate items with a _single click"
 msgstr "_Singolo clic per attivare gli oggetti"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:107
+#: ../libnautilus-private/nautilus-global-preferences.c:109
 msgid "Activate items with a _double click"
 msgstr "_Doppio clic per attivare gli oggetti"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-global-preferences.c:114
+#: ../libnautilus-private/nautilus-global-preferences.c:116
 msgid "E_xecute files when they are clicked"
 msgstr "Ese_guire i file quando si fa clic su di essi"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-global-preferences.c:118
+#: ../libnautilus-private/nautilus-global-preferences.c:120
 msgid "Display _files when they are clicked"
 msgstr "_Mostrare i file quando si fa clic su di essi"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:122
+#: ../libnautilus-private/nautilus-global-preferences.c:124
 #: ../src/nautilus-file-management-properties.ui.h:47
 msgid "_Ask each time"
 msgstr "C_hiedere ogni volta"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:129
+#: ../libnautilus-private/nautilus-global-preferences.c:131
 msgid "Search for files by file name only"
 msgstr "Cercare i file solo per nome"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:133
+#: ../libnautilus-private/nautilus-global-preferences.c:135
 msgid "Search for files by file name and file properties"
 msgstr "Cercare i file per nome e proprietà"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:139
+#: ../libnautilus-private/nautilus-global-preferences.c:141
 #: ../src/file-manager/fm-icon-container.c:558
 #: ../src/file-manager/fm-icon-view.c:3009
 msgid "Icon View"
@@ -2939,76 +3139,76 @@ msgstr "Vista a icone"
 # GNOME-2-24
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:140
+#: ../libnautilus-private/nautilus-global-preferences.c:142
 #: ../src/file-manager/fm-icon-view.c:3023
 msgid "Compact View"
 msgstr "Vista compatta"
 
 #. translators: this is used in the view selection dropdown
 #. * of navigation windows and in the preferences dialog
-#: ../libnautilus-private/nautilus-global-preferences.c:141
+#: ../libnautilus-private/nautilus-global-preferences.c:143
 #: ../src/file-manager/fm-list-view.c:1508
 #: ../src/file-manager/fm-list-view.c:2924
 msgid "List View"
 msgstr "Vista a elenco"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:145
+#: ../libnautilus-private/nautilus-global-preferences.c:147
 msgid "Manually"
 msgstr "Manualmente"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:147
+#: ../libnautilus-private/nautilus-global-preferences.c:149
 msgid "By Name"
 msgstr "Per nome"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:148
+#: ../libnautilus-private/nautilus-global-preferences.c:150
 msgid "By Size"
 msgstr "Per dimensione"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:149
+#: ../libnautilus-private/nautilus-global-preferences.c:151
 msgid "By Type"
 msgstr "Per tipo"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:150
+#: ../libnautilus-private/nautilus-global-preferences.c:152
 msgid "By Modification Date"
 msgstr "Per data di modifica"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:151
+#: ../libnautilus-private/nautilus-global-preferences.c:153
 msgid "By Emblems"
 msgstr "Per simbolo"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:155
+#: ../libnautilus-private/nautilus-global-preferences.c:157
 msgid "8"
 msgstr "8"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:156
+#: ../libnautilus-private/nautilus-global-preferences.c:158
 msgid "10"
 msgstr "10"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:157
+#: ../libnautilus-private/nautilus-global-preferences.c:159
 msgid "12"
 msgstr "12"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:158
+#: ../libnautilus-private/nautilus-global-preferences.c:160
 msgid "14"
 msgstr "14"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:159
+#: ../libnautilus-private/nautilus-global-preferences.c:161
 msgid "16"
 msgstr "16"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:160
+#: ../libnautilus-private/nautilus-global-preferences.c:162
 msgid "18"
 msgstr "18"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:161
+#: ../libnautilus-private/nautilus-global-preferences.c:163
 msgid "20"
 msgstr "20"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:162
+#: ../libnautilus-private/nautilus-global-preferences.c:164
 msgid "22"
 msgstr "22"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:163
+#: ../libnautilus-private/nautilus-global-preferences.c:165
 msgid "24"
 msgstr "24"
 
@@ -3020,22 +3220,22 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: ../libnautilus-private/nautilus-global-preferences.c:558
+#: ../libnautilus-private/nautilus-global-preferences.c:564
 #, c-format
 msgid "%s's Home"
 msgstr "Home di %s"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:564
+#: ../libnautilus-private/nautilus-global-preferences.c:570
 #: ../nautilus-computer.desktop.in.in.h:2
 msgid "Computer"
 msgstr "Computer"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:570
+#: ../libnautilus-private/nautilus-global-preferences.c:576
 #: ../src/nautilus-places-sidebar.c:481 ../src/nautilus-trash-bar.c:121
 msgid "Trash"
 msgstr "Cestino"
 
-#: ../libnautilus-private/nautilus-global-preferences.c:576
+#: ../libnautilus-private/nautilus-global-preferences.c:582
 msgid "Network Servers"
 msgstr "Server di rete"
 
@@ -3047,22 +3247,22 @@ msgstr "Il rettangolo di selezione"
 msgid "Switch to Manual Layout?"
 msgstr "Passare alla disposizione manuale?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:594
+#: ../libnautilus-private/nautilus-mime-actions.c:596
 #, c-format
 msgid "The Link \"%s\" is Broken."
 msgstr "Il collegamento «%s» è interrotto."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:596
+#: ../libnautilus-private/nautilus-mime-actions.c:598
 #, c-format
 msgid "The Link \"%s\" is Broken. Move it to Trash?"
 msgstr "Il collegamento «%s» è interrotto. Spostarlo nel cestino?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:602
+#: ../libnautilus-private/nautilus-mime-actions.c:604
 msgid "This link cannot be used, because it has no target."
 msgstr ""
 "Questo collegamento non può essere usato, perché non ha una destinazione."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:604
+#: ../libnautilus-private/nautilus-mime-actions.c:606
 #, c-format
 msgid "This link cannot be used, because its target \"%s\" doesn't exist."
 msgstr ""
@@ -3072,7 +3272,7 @@ msgstr ""
 # GNOME-2-22
 #. name, stock id
 #. label, accelerator
-#: ../libnautilus-private/nautilus-mime-actions.c:614
+#: ../libnautilus-private/nautilus-mime-actions.c:616
 #: ../src/file-manager/fm-directory-view.c:6677
 #: ../src/file-manager/fm-directory-view.c:6776
 #: ../src/file-manager/fm-directory-view.c:7627
@@ -3081,43 +3281,43 @@ msgstr ""
 msgid "Mo_ve to Trash"
 msgstr "Sposta _nel cestino"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:674
+#: ../libnautilus-private/nautilus-mime-actions.c:676
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Eseguire «%s» o mostrare il suo contenuto?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:676
+#: ../libnautilus-private/nautilus-mime-actions.c:678
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "«%s» è un file di testo eseguibile."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:682
+#: ../libnautilus-private/nautilus-mime-actions.c:684
 msgid "Run in _Terminal"
 msgstr "Esegui nel _terminale"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:683
+#: ../libnautilus-private/nautilus-mime-actions.c:685
 msgid "_Display"
 msgstr "_Mostra"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:686
+#: ../libnautilus-private/nautilus-mime-actions.c:688
 #: ../src/nautilus-autorun-software.c:229
 msgid "_Run"
 msgstr "_Esegui"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1006
+#: ../libnautilus-private/nautilus-mime-actions.c:1008
 #: ../src/file-manager/fm-directory-view.c:617
 msgid "Are you sure you want to open all files?"
 msgstr "Aprire veramente tutti i file?"
 
 # GNOME-2-24
-#: ../libnautilus-private/nautilus-mime-actions.c:1008
+#: ../libnautilus-private/nautilus-mime-actions.c:1010
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Verrà aperta %d scheda separata."
 msgstr[1] "Verranno aperte %d schede separate."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1011
+#: ../libnautilus-private/nautilus-mime-actions.c:1013
 #: ../src/nautilus-location-bar.c:148
 #, c-format
 msgid "This will open %d separate window."
@@ -3125,7 +3325,25 @@ msgid_plural "This will open %d separate windows."
 msgstr[0] "Verrà aperta %d finestra separata."
 msgstr[1] "Verranno aperte %d finestre separate."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1247
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1066
+msgid "Unable to search for application"
+msgstr "Impossibile cercare l'applicazione"
+
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1067
+msgid "There was an internal error trying to search for applications"
+msgstr "Si è verificato un errore interno nel tentativo di cercare le applicazioni."
+
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1139
+msgid "Could not use system package installer"
+msgstr "Impossibile usare l'installatore di pacchetti di sistema"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1197
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -3136,23 +3354,43 @@ msgstr[1] "Verranno aperte %d finestre separate."
 msgid "Could not display \"%s\"."
 msgstr "Non è possibile mostrare «%s»."
 
-# GNOME-2-22
-#: ../libnautilus-private/nautilus-mime-actions.c:1253
-msgid "There is no application installed for this file type"
-msgstr "Non risulta installata alcuna applicazione per questo tipo di file"
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1218
+#, fuzzy
+msgid "The file is of an unknown type"
+msgstr "Il file è di un tipo sconosciuto"
+
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1221
+#, c-format
+msgid "There is no application installed for %s files"
+msgstr "Non risulta installata alcuna applicazione per i file «%s»"
+
+# GNOME-2-26
+# PackageKit
+#: ../libnautilus-private/nautilus-mime-actions.c:1236
+#, c-format
+msgid ""
+"There is no application installed for %s files.\n"
+"Do you want to search for an application to open this file?"
+msgstr ""
+"Non risulta installata alcuna applicazione per i file «%s».\n"
+"Cercare un'applicazione capace di aprire questo file?"
 
 # GNOME-2-22
-#: ../libnautilus-private/nautilus-mime-actions.c:1301
-#: ../libnautilus-private/nautilus-mime-actions.c:1549
+#: ../libnautilus-private/nautilus-mime-actions.c:1514
+#: ../libnautilus-private/nautilus-mime-actions.c:1772
 msgid "Unable to mount location"
 msgstr "Impossibile montare la posizione"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1637
+#: ../libnautilus-private/nautilus-mime-actions.c:1860
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Apertura di «%s»."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1640
+#: ../libnautilus-private/nautilus-mime-actions.c:1863
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3443,8 +3681,16 @@ msgstr "Ripete la modifica"
 msgid "Autorun Prompt"
 msgstr "Conferma esecuzione automatica"
 
+#: ../nautilus-browser.desktop.in.in.h:1
+msgid "Browse the file system with the file manager"
+msgstr "Esplora il file system con il file manager"
+
+#: ../nautilus-browser.desktop.in.in.h:2
+msgid "File Browser"
+msgstr "Esplorazione file"
+
 #. tooltip
-#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:860
+#: ../nautilus-computer.desktop.in.in.h:1 ../src/nautilus-window-menus.c:816
 msgid ""
 "Browse all local and remote disks and folders accessible from this computer"
 msgstr ""
@@ -3466,7 +3712,7 @@ msgid "Home Folder"
 msgstr "Cartella home"
 
 #. tooltip
-#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:856
+#: ../nautilus-home.desktop.in.in.h:2 ../src/nautilus-window-menus.c:812
 msgid "Open your personal folder"
 msgstr "Apre la propria cartella personale"
 
@@ -4460,42 +4706,42 @@ msgstr[1] "Esplora in %'d nuove sc_hede"
 msgid "Delete all selected items permanently"
 msgstr "Elimina permanentemente tutti gli oggetti selezionati"
 
-#: ../src/file-manager/fm-directory-view.c:9191
+#: ../src/file-manager/fm-directory-view.c:9189
 msgid "Download location?"
 msgstr "Scaricare la posizione?"
 
-#: ../src/file-manager/fm-directory-view.c:9194
+#: ../src/file-manager/fm-directory-view.c:9192
 msgid "You can download it or make a link to it."
 msgstr "È possibile scaricare la posizione o creare un collegamento ad essa."
 
 # GNOME-2-22
-#: ../src/file-manager/fm-directory-view.c:9197
+#: ../src/file-manager/fm-directory-view.c:9195
 msgid "Make a _Link"
 msgstr "Crea un co_llegamento"
 
-#: ../src/file-manager/fm-directory-view.c:9201
+#: ../src/file-manager/fm-directory-view.c:9199
 msgid "_Download"
 msgstr "_Scarica"
 
-#: ../src/file-manager/fm-directory-view.c:9263
-#: ../src/file-manager/fm-directory-view.c:9328
-#: ../src/file-manager/fm-directory-view.c:9433
+#: ../src/file-manager/fm-directory-view.c:9261
+#: ../src/file-manager/fm-directory-view.c:9326
+#: ../src/file-manager/fm-directory-view.c:9431
 msgid "Drag and drop is not supported."
 msgstr "Il trascinamento non è supportato."
 
-#: ../src/file-manager/fm-directory-view.c:9264
+#: ../src/file-manager/fm-directory-view.c:9262
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Il trascinamento è supportato soltanto sui file system locali."
 
 # sorgente??
-#: ../src/file-manager/fm-directory-view.c:9329
-#: ../src/file-manager/fm-directory-view.c:9434
+#: ../src/file-manager/fm-directory-view.c:9327
+#: ../src/file-manager/fm-directory-view.c:9432
 msgid "An invalid drag type was used."
 msgstr "È stato usato un tipo non valido di trascinamento."
 
 # GNOME-2-22
 #. Translator: This is the filename used for when you dnd text to a directory
-#: ../src/file-manager/fm-directory-view.c:9501
+#: ../src/file-manager/fm-directory-view.c:9499
 msgid "dropped text.txt"
 msgstr "testo trascinato.txt"
 
@@ -5084,7 +5330,7 @@ msgstr "Accesso ai file:"
 # o nessuno?? per ora mi riferisco a didascalia
 #: ../src/file-manager/fm-properties-window.c:4221
 #: ../src/file-manager/fm-properties-window.c:4232
-#: ../src/nautilus-file-management-properties.c:290
+#: ../src/nautilus-file-management-properties.c:291
 msgid "None"
 msgstr "Nessuna"
 
@@ -5231,12 +5477,12 @@ msgstr "Albero"
 msgid "Show Tree"
 msgstr "Mostra l'albero"
 
-#: ../src/nautilus-application.c:391
+#: ../src/nautilus-application.c:390
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus non può creare la cartella necessaria «%s»."
 
-#: ../src/nautilus-application.c:393
+#: ../src/nautilus-application.c:392
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5244,12 +5490,12 @@ msgstr ""
 "Prima di eseguire Nautilus, creare la seguente cartella, o impostare i "
 "permessi in modo che Nautilus possa crearla."
 
-#: ../src/nautilus-application.c:396
+#: ../src/nautilus-application.c:395
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus non può creare le seguenti cartelle necessarie: %s."
 
-#: ../src/nautilus-application.c:398
+#: ../src/nautilus-application.c:397
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5258,7 +5504,7 @@ msgstr ""
 "modo che Nautilus possa crearle."
 
 # GNOME-2-22
-#: ../src/nautilus-application.c:1300 ../src/nautilus-places-sidebar.c:1680
+#: ../src/nautilus-application.c:1246 ../src/nautilus-places-sidebar.c:1680
 #: ../src/nautilus-places-sidebar.c:1703 ../src/nautilus-places-sidebar.c:1726
 #, c-format
 msgid "Unable to eject %s"
@@ -5306,8 +5552,8 @@ msgstr ""
 "Nel dubbio, premere «Annulla»."
 
 #: ../src/nautilus-bookmarks-window.c:158
-#: ../src/nautilus-file-management-properties.c:208
-#: ../src/nautilus-property-browser.c:1583 ../src/nautilus-window-menus.c:617
+#: ../src/nautilus-file-management-properties.c:209
+#: ../src/nautilus-property-browser.c:1569 ../src/nautilus-window-menus.c:573
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6011,7 +6257,7 @@ msgstr "Esce da Nautilus."
 msgid "[URI...]"
 msgstr "[URI...]"
 
-#: ../src/nautilus-main.c:379
+#: ../src/nautilus-main.c:381
 msgid ""
 "\n"
 "\n"
@@ -6022,17 +6268,17 @@ msgstr ""
 "Esplora il file system con il file manager"
 
 #. translators: %s is an option (e.g. --check)
-#: ../src/nautilus-main.c:413 ../src/nautilus-main.c:422
+#: ../src/nautilus-main.c:417 ../src/nautilus-main.c:426
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s non può essere usato con degli URI.\n"
 
-#: ../src/nautilus-main.c:418
+#: ../src/nautilus-main.c:422
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check non può essere usato con altre opzioni.\n"
 
-#: ../src/nautilus-main.c:427
+#: ../src/nautilus-main.c:431
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry non può essere usato con più di uno URI.\n"
@@ -6300,7 +6546,7 @@ msgstr "%s - Esplorazione file"
 
 # GNOME-2-24
 # tooltip
-#: ../src/nautilus-notebook.c:414
+#: ../src/nautilus-notebook.c:406
 msgid "Close tab"
 msgstr "Chiude la scheda"
 
@@ -6376,157 +6622,157 @@ msgid "Check that you have permission to delete the pattern."
 msgstr "Verificare di avere i permessi di eliminare il motivo."
 
 # GNOME-2-24
-#: ../src/nautilus-property-browser.c:960
+#: ../src/nautilus-property-browser.c:947
 #, c-format
 msgid "Sorry, but emblem %s could not be deleted."
 msgstr "Non è possibile eliminare il simbolo «%s»."
 
-#: ../src/nautilus-property-browser.c:961
+#: ../src/nautilus-property-browser.c:948
 msgid "Check that you have permission to delete the emblem."
 msgstr "Verificare di avere i permessi di eliminare il simbolo."
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:1029
+#: ../src/nautilus-property-browser.c:1015
 msgid "Select an Image File for the New Emblem"
 msgstr "Selezione file di immagine per il nuovo simbolo"
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:1069
+#: ../src/nautilus-property-browser.c:1055
 msgid "Create a New Emblem"
 msgstr "Crea un nuovo simbolo"
 
 #. make the keyword label and field
-#: ../src/nautilus-property-browser.c:1091
+#: ../src/nautilus-property-browser.c:1077
 msgid "_Keyword:"
 msgstr "_Parola chiave:"
 
 #. set up a file chooser to pick the image file
-#: ../src/nautilus-property-browser.c:1110
+#: ../src/nautilus-property-browser.c:1096
 msgid "_Image:"
 msgstr "_Immagine:"
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:1141
+#: ../src/nautilus-property-browser.c:1127
 msgid "Create a New Color:"
 msgstr "Creazione di un nuovo colore:"
 
 #. make the name label and field
-#: ../src/nautilus-property-browser.c:1155
+#: ../src/nautilus-property-browser.c:1141
 msgid "Color _name:"
 msgstr "_Nome del colore:"
 
-#: ../src/nautilus-property-browser.c:1171
+#: ../src/nautilus-property-browser.c:1157
 msgid "Color _value:"
 msgstr "_Valore del colore:"
 
 # GNOME-2-24
-#: ../src/nautilus-property-browser.c:1205
+#: ../src/nautilus-property-browser.c:1191
 msgid "Sorry, but you cannot replace the reset image."
 msgstr "Impossibile sostituire l'immagine «Azzera»."
 
 # GNOME-2-24
-#: ../src/nautilus-property-browser.c:1206
+#: ../src/nautilus-property-browser.c:1192
 msgid "Reset is a special image that cannot be deleted."
 msgstr "«Azzera» è un'immagine speciale che non può essere eliminata."
 
 # GNOME-2-24
-#: ../src/nautilus-property-browser.c:1234
+#: ../src/nautilus-property-browser.c:1220
 #, c-format
 msgid "Sorry, but the pattern %s could not be installed."
 msgstr "Non è possibile installare il motivo «%s»."
 
-#: ../src/nautilus-property-browser.c:1262
+#: ../src/nautilus-property-browser.c:1248
 msgid "Select an Image File to Add as a Pattern"
 msgstr "Selezionare un file di immagine da aggiungere come motivo"
 
 # GNOME-2-24
-#: ../src/nautilus-property-browser.c:1334
-#: ../src/nautilus-property-browser.c:1362
+#: ../src/nautilus-property-browser.c:1320
+#: ../src/nautilus-property-browser.c:1348
 msgid "The color cannot be installed."
 msgstr "Non è possibile installare il colore."
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:1335
+#: ../src/nautilus-property-browser.c:1321
 msgid "Sorry, but you must specify an unused color name for the new color."
 msgstr ""
 "È necessario specificare un nome di colore non in uso per il nuovo colore."
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:1363
+#: ../src/nautilus-property-browser.c:1349
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "È necessario specificare un nome non vuoto per il nuovo colore."
 
-#: ../src/nautilus-property-browser.c:1415
+#: ../src/nautilus-property-browser.c:1401
 msgid "Select a Color to Add"
 msgstr "Selezionare un colore da aggiungere"
 
-#: ../src/nautilus-property-browser.c:1452
-#: ../src/nautilus-property-browser.c:1469
+#: ../src/nautilus-property-browser.c:1438
+#: ../src/nautilus-property-browser.c:1455
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Il file «%s» non è un file di immagine usabile."
 
-#: ../src/nautilus-property-browser.c:1453
-#: ../src/nautilus-property-browser.c:1470
+#: ../src/nautilus-property-browser.c:1439
+#: ../src/nautilus-property-browser.c:1456
 msgid "The file is not an image."
 msgstr "Il file non è un'immagine."
 
-#: ../src/nautilus-property-browser.c:2156
+#: ../src/nautilus-property-browser.c:2149
 msgid "Select a Category:"
 msgstr "Seleziona una categoria:"
 
-#: ../src/nautilus-property-browser.c:2165
+#: ../src/nautilus-property-browser.c:2158
 msgid "C_ancel Remove"
 msgstr "_Annulla rimozione"
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:2171
+#: ../src/nautilus-property-browser.c:2164
 msgid "_Add a New Pattern..."
 msgstr "A_ggiungi un nuovo motivo..."
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:2174
+#: ../src/nautilus-property-browser.c:2167
 msgid "_Add a New Color..."
 msgstr "A_ggiungi un nuovo colore..."
 
 # GNOME-2-22
-#: ../src/nautilus-property-browser.c:2177
+#: ../src/nautilus-property-browser.c:2170
 msgid "_Add a New Emblem..."
 msgstr "A_ggiungi un nuovo simbolo..."
 
-#: ../src/nautilus-property-browser.c:2200
+#: ../src/nautilus-property-browser.c:2193
 msgid "Click on a pattern to remove it"
 msgstr "Fare clic su un motivo per rimuoverlo"
 
-#: ../src/nautilus-property-browser.c:2203
+#: ../src/nautilus-property-browser.c:2196
 msgid "Click on a color to remove it"
 msgstr "Fare clic su un colore per rimuoverlo"
 
-#: ../src/nautilus-property-browser.c:2206
+#: ../src/nautilus-property-browser.c:2199
 msgid "Click on an emblem to remove it"
 msgstr "Fare clic su un simbolo per rimuoverlo"
 
-#: ../src/nautilus-property-browser.c:2215
+#: ../src/nautilus-property-browser.c:2208
 msgid "Patterns:"
 msgstr "Motivi:"
 
-#: ../src/nautilus-property-browser.c:2218
+#: ../src/nautilus-property-browser.c:2211
 msgid "Colors:"
 msgstr "Colori:"
 
-#: ../src/nautilus-property-browser.c:2221
+#: ../src/nautilus-property-browser.c:2214
 msgid "Emblems:"
 msgstr "Simboli:"
 
-#: ../src/nautilus-property-browser.c:2241
+#: ../src/nautilus-property-browser.c:2234
 msgid "_Remove a Pattern..."
 msgstr "_Rimuovi un motivo..."
 
-#: ../src/nautilus-property-browser.c:2244
+#: ../src/nautilus-property-browser.c:2237
 msgid "_Remove a Color..."
 msgstr "_Rimuovi un colore..."
 
-#: ../src/nautilus-property-browser.c:2247
+#: ../src/nautilus-property-browser.c:2240
 msgid "_Remove an Emblem..."
 msgstr "_Rimuovi un simbolo..."
 
@@ -6633,7 +6879,7 @@ msgid "Close the side pane"
 msgstr "Chiude il riquadro laterale"
 
 #. Set initial window title
-#: ../src/nautilus-spatial-window.c:394 ../src/nautilus-window-menus.c:559
+#: ../src/nautilus-spatial-window.c:394 ../src/nautilus-window-menus.c:515
 #: ../src/nautilus-window.c:154
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6772,7 +7018,7 @@ msgstr ""
 msgid "Go to the location specified by this bookmark"
 msgstr "Va nella posizione specificata da questo segnalibro"
 
-#: ../src/nautilus-window-menus.c:541
+#: ../src/nautilus-window-menus.c:497
 msgid ""
 "Nautilus is free software; you can redistribute it and/or modify it under "
 "the terms of the GNU General Public License as published by the Free "
@@ -6784,7 +7030,7 @@ msgstr ""
 "dalla Free Software Foundation; versione 2 della licenza, o (a scelta) una "
 "versione più recente."
 
-#: ../src/nautilus-window-menus.c:545
+#: ../src/nautilus-window-menus.c:501
 msgid ""
 "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -6797,7 +7043,7 @@ msgstr ""
 "GNU General Public License."
 
 # GNOME-2-24
-#: ../src/nautilus-window-menus.c:549
+#: ../src/nautilus-window-menus.c:505
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Nautilus; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -6810,7 +7056,7 @@ msgstr ""
 "  02110-1301 USA"
 
 # GNOME-2-26
-#: ../src/nautilus-window-menus.c:561
+#: ../src/nautilus-window-menus.c:517
 msgid ""
 "Nautilus lets you organize files and folders, both on your computer and "
 "online."
@@ -6818,7 +7064,7 @@ msgstr ""
 "Nautilus consente di organizzare i propri file, sia sul proprio computer che "
 "in rete."
 
-#: ../src/nautilus-window-menus.c:564
+#: ../src/nautilus-window-menus.c:520
 msgid "Copyright © 1999-2008 The Nautilus authors"
 msgstr "Copyright © 1999-2008 Gli autori di Nautilus"
 
@@ -6826,7 +7072,7 @@ msgstr "Copyright © 1999-2008 Gli autori di Nautilus"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window-menus.c:574
+#: ../src/nautilus-window-menus.c:530
 msgid "translator-credits"
 msgstr ""
 "Luca Ferretti <elle.uca@infinito.it>\n"
@@ -6847,248 +7093,235 @@ msgstr ""
 "Per problemi riguardanti la traduzione di questo programma aprire un bug su "
 "http://bugzilla.gnome.org/ inviando una notifica per CC al traduttore."
 
-#: ../src/nautilus-window-menus.c:577
+#: ../src/nautilus-window-menus.c:533
 msgid "Nautilus Web Site"
 msgstr "Sito web di Nautilus"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:785
+#: ../src/nautilus-window-menus.c:741
 msgid "_File"
 msgstr "_File"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:786
+#: ../src/nautilus-window-menus.c:742
 msgid "_Edit"
 msgstr "_Modifica"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:787
+#: ../src/nautilus-window-menus.c:743
 msgid "_View"
 msgstr "_Visualizza"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:788
+#: ../src/nautilus-window-menus.c:744
 msgid "_Help"
 msgstr "A_iuto"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:790
+#: ../src/nautilus-window-menus.c:746
 msgid "_Close"
 msgstr "_Chiudi"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:791
+#: ../src/nautilus-window-menus.c:747
 msgid "Close this folder"
 msgstr "Chiude questa cartella"
 
-#: ../src/nautilus-window-menus.c:794
+#: ../src/nautilus-window-menus.c:750
 msgid "_Backgrounds and Emblems..."
 msgstr "Sfondi e sim_boli..."
 
-#: ../src/nautilus-window-menus.c:795
+#: ../src/nautilus-window-menus.c:751
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr "Mostra motivi, colori e simboli usabili per personalizzare l'aspetto"
 
-#: ../src/nautilus-window-menus.c:798
+#: ../src/nautilus-window-menus.c:754
 msgid "Prefere_nces"
 msgstr "Preferen_ze"
 
-#: ../src/nautilus-window-menus.c:799
+#: ../src/nautilus-window-menus.c:755
 msgid "Edit Nautilus preferences"
 msgstr "Modifica le preferenze di Nautilus"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:801
+#: ../src/nautilus-window-menus.c:757
 msgid "_Undo"
 msgstr "_Annulla"
 
-#: ../src/nautilus-window-menus.c:802
+#: ../src/nautilus-window-menus.c:758
 msgid "Undo the last text change"
 msgstr "Annulla l'ultima modifica al testo"
 
 #. name, stock id, label
-#: ../src/nautilus-window-menus.c:804
+#: ../src/nautilus-window-menus.c:760
 msgid "Open _Parent"
 msgstr "Apri _genitore"
 
-#: ../src/nautilus-window-menus.c:805
+#: ../src/nautilus-window-menus.c:761
 msgid "Open the parent folder"
 msgstr "Apre la cartella di livello superiore"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:811
+#: ../src/nautilus-window-menus.c:767
 msgid "_Stop"
 msgstr "_Ferma"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:812
+#: ../src/nautilus-window-menus.c:768
 msgid "Stop loading the current location"
 msgstr "Interrompe il caricamento della posizione attuale"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:815
+#: ../src/nautilus-window-menus.c:771
 msgid "_Reload"
 msgstr "_Aggiorna"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:816
+#: ../src/nautilus-window-menus.c:772
 msgid "Reload the current location"
 msgstr "Ricarica la posizione attuale"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:819
+#: ../src/nautilus-window-menus.c:775
 msgid "_Contents"
 msgstr "_Sommario"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:820
+#: ../src/nautilus-window-menus.c:776
 msgid "Display Nautilus help"
 msgstr "Mostra la guida di Nautilus"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:823
+#: ../src/nautilus-window-menus.c:779
 msgid "_About"
 msgstr "I_nformazioni"
 
 # GNOME-2-24
 #. tooltip
-#: ../src/nautilus-window-menus.c:824
+#: ../src/nautilus-window-menus.c:780
 msgid "Display credits for the creators of Nautilus"
 msgstr "Mostra i riconoscimenti per i creatori di Nautilus"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:827
+#: ../src/nautilus-window-menus.c:783
 msgid "Zoom _In"
 msgstr "Aum_enta ingrandimento"
 
 # GNOME-2-24
 #. tooltip
-#: ../src/nautilus-window-menus.c:828 ../src/nautilus-zoom-control.c:91
+#: ../src/nautilus-window-menus.c:784 ../src/nautilus-zoom-control.c:91
 #: ../src/nautilus-zoom-control.c:345
 msgid "Increase the view size"
 msgstr "Incrementa la dimensione della vista"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:839
+#: ../src/nautilus-window-menus.c:795
 msgid "Zoom _Out"
 msgstr "Rid_uci ingrandimento"
 
 # GNOME-2-24
 #. tooltip
-#: ../src/nautilus-window-menus.c:840 ../src/nautilus-zoom-control.c:92
+#: ../src/nautilus-window-menus.c:796 ../src/nautilus-zoom-control.c:92
 #: ../src/nautilus-zoom-control.c:294
 msgid "Decrease the view size"
 msgstr "Decrementa la dimensione della vista"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:847
+#: ../src/nautilus-window-menus.c:803
 msgid "Normal Si_ze"
 msgstr "Dimensione _normale"
 
 # GNOME-2-24
 #. tooltip
-#: ../src/nautilus-window-menus.c:848 ../src/nautilus-zoom-control.c:93
+#: ../src/nautilus-window-menus.c:804 ../src/nautilus-zoom-control.c:93
 #: ../src/nautilus-zoom-control.c:307
 msgid "Use the normal view size"
 msgstr "Usa la dimensione normale della vista"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:851
+#: ../src/nautilus-window-menus.c:807
 msgid "Connect to _Server..."
 msgstr "Connetti al _server..."
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:852
+#: ../src/nautilus-window-menus.c:808
 msgid "Connect to a remote computer or shared disk"
 msgstr "Connette a un computer remoto o disco condiviso"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:855
+#: ../src/nautilus-window-menus.c:811
 msgid "_Home Folder"
 msgstr "Cartella _home"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:859
+#: ../src/nautilus-window-menus.c:815
 msgid "_Computer"
 msgstr "C_omputer"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:863
+#: ../src/nautilus-window-menus.c:819
 msgid "_Network"
 msgstr "_Rete"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:864 ../src/network-scheme.desktop.in.h:1
+#: ../src/nautilus-window-menus.c:820 ../src/network-scheme.desktop.in.h:1
 msgid "Browse bookmarked and local network locations"
 msgstr "Esplora le posizioni di rete locali e nei segnalibri"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:867
+#: ../src/nautilus-window-menus.c:823
 msgid "T_emplates"
 msgstr "_Modelli"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:868
+#: ../src/nautilus-window-menus.c:824
 msgid "Open your personal templates folder"
 msgstr "Apre la propria cartella dei modelli"
 
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:871
+#: ../src/nautilus-window-menus.c:827
 msgid "_Trash"
 msgstr "_Cestino"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:872
+#: ../src/nautilus-window-menus.c:828
 msgid "Open your personal trash folder"
 msgstr "Apre la propria cartella del cestino"
-
-# Voce nel menù "Vai"
-#. name, stock id
-#. label, accelerator
-#: ../src/nautilus-window-menus.c:875
-msgid "CD/_DVD Creator"
-msgstr "Creazione CD/_DVD"
-
-#. tooltip
-#: ../src/nautilus-window-menus.c:876
-msgid "Open a folder into which you can drag files to burn to a CD or DVD"
-msgstr ""
-"Apre una cartella in cui trascinare i file da masterizzare su un CD o DVD"
 
 # GNOME-2-24
 #. name, stock id
 #. label, accelerator
-#: ../src/nautilus-window-menus.c:882
+#: ../src/nautilus-window-menus.c:834
 msgid "Show _Hidden Files"
 msgstr "M_ostra file nascosti"
 
 #. tooltip
-#: ../src/nautilus-window-menus.c:883
+#: ../src/nautilus-window-menus.c:835
 msgid "Toggle the display of hidden files in the current window"
 msgstr ""
 "Attiva/Disattiva la visualizzazione dei file nascosti in questa finestra"
 
-#: ../src/nautilus-window-menus.c:913
+#: ../src/nautilus-window-menus.c:865
 msgid "_Up"
 msgstr "_Su"
 
-#: ../src/nautilus-window-menus.c:916
+#: ../src/nautilus-window-menus.c:868
 msgid "_Home"
 msgstr "_Home"
 
@@ -7170,522 +7403,3 @@ msgstr "Ingrandimento"
 #: ../src/nautilus-zoom-control.c:894
 msgid "Set the zoom level of the current view"
 msgstr "Imposta il livello di ingrandimento della vista corrente"
-
-#: ../eel/eel-alert-dialog.c:115
-msgid "Image/label border"
-msgstr "Bordo dell'immagine/etichetta"
-
-#: ../eel/eel-alert-dialog.c:116
-msgid "Width of border around the label and image in the alert dialog"
-msgstr ""
-"Larghezza del bordo intorno all'etichetta e all'immagine nella finestra di "
-"dialogo di allerta"
-
-#: ../eel/eel-alert-dialog.c:125
-msgid "Alert Type"
-msgstr "Tipo di allerta"
-
-#: ../eel/eel-alert-dialog.c:126
-msgid "The type of alert"
-msgstr "Il tipo di allerta"
-
-#: ../eel/eel-alert-dialog.c:134
-msgid "Alert Buttons"
-msgstr "Pulsanti di allerta"
-
-#: ../eel/eel-alert-dialog.c:135
-msgid "The buttons shown in the alert dialog"
-msgstr "I pulsanti mostrati nella finestra di dialogo di allerta"
-
-#: ../eel/eel-alert-dialog.c:199
-msgid "Show more _details"
-msgstr "Mostra maggiori _dettagli"
-
-#: ../eel/eel-canvas.c:1222 ../eel/eel-canvas.c:1223
-msgid "X"
-msgstr "X"
-
-#: ../eel/eel-canvas.c:1229 ../eel/eel-canvas.c:1230
-msgid "Y"
-msgstr "Y"
-
-#: ../eel/eel-editable-label.c:366
-msgid "Text"
-msgstr "Testo"
-
-#: ../eel/eel-editable-label.c:367
-msgid "The text of the label."
-msgstr "Il testo dell'etichetta."
-
-#: ../eel/eel-editable-label.c:373
-msgid "Justification"
-msgstr "Giustificazione"
-
-#: ../eel/eel-editable-label.c:374
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"L'allineamento reciproco delle righe nel testo dell'etichetta. NON influisce "
-"sull'allineamento dell'etichetta. Si veda GtkMisc::xalign per questo."
-
-#: ../eel/eel-editable-label.c:382
-msgid "Line wrap"
-msgstr "A capo automatico"
-
-#: ../eel/eel-editable-label.c:383
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr "Se impostato, va a capo se il testo diventa troppo lungo."
-
-#: ../eel/eel-editable-label.c:390
-msgid "Cursor Position"
-msgstr "Posizione cursore"
-
-#: ../eel/eel-editable-label.c:391
-msgid "The current position of the insertion cursor in chars."
-msgstr "La posizione attuale, in caratteri, del cursore di inserimento."
-
-#: ../eel/eel-editable-label.c:400
-msgid "Selection Bound"
-msgstr "Limite della selezione"
-
-#: ../eel/eel-editable-label.c:401
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
-"La posizione, in caratteri, del lato opposto della selezione rispetto al "
-"cursore."
-
-#: ../eel/eel-editable-label.c:3054
-msgid "Select All"
-msgstr "Seleziona tutto"
-
-#: ../eel/eel-editable-label.c:3065
-msgid "Input Methods"
-msgstr "Metodi di input"
-
-#: ../eel/eel-gconf-extensions.c:83
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-"Errore GConf:\n"
-"  %s"
-
-#: ../eel/eel-gconf-extensions.c:87
-#, c-format
-msgid "GConf error: %s"
-msgstr "Errore GConf: %s"
-
-#: ../eel/eel-gconf-extensions.c:90
-msgid "All further errors shown only on terminal."
-msgstr "Tutti gli ulteriori errori sono mostrati solo su terminale."
-
-#: ../eel/eel-gnome-extensions.c:265
-msgid "No image was selected."
-msgstr "Non è stata selezionata alcuna immagine."
-
-#: ../eel/eel-gnome-extensions.c:266
-msgid "You must click on an image to select it."
-msgstr "Fare clic su un'immagine per selezionarla."
-
-#: ../eel/eel-stock-dialogs.c:214
-msgid "You can stop this operation by clicking cancel."
-msgstr "È possibile fermare questa operazione facendo clic su «Annulla»."
-
-#: ../eel/eel-vfs-extensions.c:92
-msgid " (invalid Unicode)"
-msgstr " (Unicode non valido)"
-
-# GNOME-2-22
-#: ../eel/eel-app-launch-context.c:404
-#, c-format
-msgid "Opening %s"
-msgstr "Apertura di «%s»"
-
-# GNOME-2-22
-#: ../eel/eel-app-launch-context.c:407
-#, c-format
-msgid "Opening %d Item"
-msgid_plural "Opening %d Items"
-msgstr[0] "Apertura di %d oggetto"
-msgstr[1] "Apertura di %d oggetti"
-
-# GNOME-2-22
-# titolo dialogo
-#: ../eel/eel-mount-operation.c:126
-msgid "Enter Password"
-msgstr "Inserimento password"
-
-#~ msgid "Browse the file system with the file manager"
-#~ msgstr "Esplora il file system con il file manager"
-
-#~ msgid "File Browser"
-#~ msgstr "Esplorazione file"
-
-#~ msgid "Factory for Nautilus shell and file manager"
-#~ msgstr "Fabbrica per la shell e file manager Nautilus"
-
-#~ msgid "Nautilus factory"
-#~ msgstr "Fabbrica di Nautilus"
-
-# GNOME-2-22
-#~ msgid "Nautilus instance"
-#~ msgstr "Istanza di Nautilus"
-
-#~ msgid "Nautilus metafile factory"
-#~ msgstr "Fabbrica di metafile per Nautilus"
-
-#~ msgid ""
-#~ "Nautilus operations that can be done from subsequent command-line "
-#~ "invocations"
-#~ msgstr ""
-#~ "Operazioni di Nautilus che possono essere fatte da invocazioni successive "
-#~ "dalla riga di comando"
-
-#~ msgid "Produces metafile objects for accessing Nautilus metadata"
-#~ msgstr ""
-#~ "Produce degli oggetti metafile per l'accesso ai metadati di Nautilus"
-
-# GNOME-2-22
-#~ msgid ""
-#~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-#~ "console may fix the problem. If not, you can try rebooting the computer "
-#~ "or installing Nautilus again."
-#~ msgstr ""
-#~ "Non è possibile usare Nautilus adesso. Per risolvere il problema, "
-#~ "potrebbe essere d'aiuto eseguire il comando «bonobo-slay» dalla console. "
-#~ "In caso contrario, provare a riavviare il computer o a reinstallare "
-#~ "Nautilus."
-
-# GNOME-2-22
-#~ msgid ""
-#~ "Nautilus cannot be used now. Running the command \"bonobo-slay\" from the "
-#~ "console may fix the problem. If not, you can try rebooting the computer "
-#~ "or installing Nautilus again.\n"
-#~ "\n"
-#~ "Bonobo could not locate the Nautilus_shell.server file. One cause of this "
-#~ "seems to be an LD_LIBRARY_PATH that does not include the bonobo-"
-#~ "activation library's directory. Another possible cause would be bad "
-#~ "install with a missing Nautilus_Shell.server file.\n"
-#~ "\n"
-#~ "Running \"bonobo-slay\" will kill all Bonobo Activation and GConf "
-#~ "processes, which may be needed by other applications.\n"
-#~ "\n"
-#~ "Sometimes killing bonobo-activation-server and gconfd fixes the problem, "
-#~ "but we do not know why.\n"
-#~ "\n"
-#~ "We have also seen this error when a faulty version of bonobo-activation "
-#~ "was installed."
-#~ msgstr ""
-#~ "Non è possibile usare Nautilus adesso. Per risolvere il problema, "
-#~ "potrebbe essere d'aiuto eseguire il comando «bonobo-slay» dalla console. "
-#~ "In caso contrario, provare a riavviare il computer o a reinstallare "
-#~ "Nautilus.\n"
-#~ "\n"
-#~ "Bonobo non può individuare il file «Nautilus_shell.server». Una delle "
-#~ "possibili cause è l'assenza nella variabile d'ambiente «LD_LIBRARY_PATH» "
-#~ "della directory contenente la libreria bonobo-activation. Un'altra causa "
-#~ "possibile può essere una non corretta installazione con un file "
-#~ "«Nautilus_shell.server» mancante.\n"
-#~ "\n"
-#~ "Eseguendo «bonobo-slay» tutti i processi figli di Bonobo Activation e "
-#~ "GConf, che possono essere necessari alle altre applicazioni, verranno "
-#~ "terminati.\n"
-#~ "\n"
-#~ "A volte terminare i processi «bonobo-activation-server» e «gconfd» risolve "
-#~ "il problema, ma non se ne conosce il motivo.\n"
-#~ "\n"
-#~ "Questo errore si presenta anche quando una versione difettosa di bonobo-"
-#~ "activation è stata installata."
-
-# GNOME-2-22
-#~ msgid "Nautilus cannot be used now, due to an unexpected error."
-#~ msgstr ""
-#~ "Non è possibile usare Nautilus adesso, a causa di un errore imprevisto."
-
-# GNOME-2-22
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to register the file manager view server."
-#~ msgstr ""
-#~ "Non è possibile usare Nautilus adesso, a causa di un errore imprevisto di "
-#~ "Bonobo durante il tentativo di registrazione del server per la vista del "
-#~ "file manager."
-
-# GNOME-2-22
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to locate the factory. Killing bonobo-activation-server and "
-#~ "restarting Nautilus may help fix the problem."
-#~ msgstr ""
-#~ "Non è possibile usare Nautilus adesso, a causa di un errore imprevisto di "
-#~ "Bonobo durante il tentativo di individuare la fabbrica. Per risolvere il "
-#~ "problema, potrebbe essere d'aiuto terminare il processo «bonobo-activation-"
-#~ "server» e riavviare Nautilus."
-
-# GNOME-2-22
-#~ msgid ""
-#~ "Nautilus cannot be used now, due to an unexpected error from Bonobo when "
-#~ "attempting to locate the shell object. Killing bonobo-activation-server "
-#~ "and restarting Nautilus may help fix the problem."
-#~ msgstr ""
-#~ "Nautilus non può essere usato ora, a causa di un errore imprevisto di "
-#~ "Bonobo durante il tentativo di individuare l'oggetto shell. Per risolvere "
-#~ "il problema, potrebbe essere d'aiuto terminare il processo «bonobo-"
-#~ "activation-server» e riavviare Nautilus."
-
-#~ msgid ""
-#~ "100 KB\n"
-#~ "500 KB\n"
-#~ "1 MB\n"
-#~ "3 MB\n"
-#~ "5 MB\n"
-#~ "10 MB\n"
-#~ "100 MB\n"
-#~ "1 GB"
-#~ msgstr ""
-#~ "100 kB\n"
-#~ "500 kB\n"
-#~ "1 MB\n"
-#~ "3 MB\n"
-#~ "5 MB\n"
-#~ "10 MB\n"
-#~ "100 MB\n"
-#~ "1 GB"
-
-#~ msgid ""
-#~ "33%\n"
-#~ "50%\n"
-#~ "66%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "400%"
-#~ msgstr ""
-#~ "33%\n"
-#~ "50%\n"
-#~ "66%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "400%"
-
-#~ msgid ""
-#~ "Always\n"
-#~ "Local Files Only\n"
-#~ "Never"
-#~ msgstr ""
-#~ "Sempre\n"
-#~ "Solo file locali\n"
-#~ "Mai"
-
-#~ msgid ""
-#~ "By Name\n"
-#~ "By Size\n"
-#~ "By Type\n"
-#~ "By Modification Date\n"
-#~ "By Emblems"
-#~ msgstr ""
-#~ "Per nome\n"
-#~ "Per dimensione\n"
-#~ "Per tipo\n"
-#~ "Per data di modifica\n"
-#~ "Per simbolo"
-
-# GNOME-2-24
-#~ msgid ""
-#~ "Icon View\n"
-#~ "List View\n"
-#~ "Compact View"
-#~ msgstr ""
-#~ "Vista a icone\n"
-#~ "Vista a elenco\n"
-#~ "Vista compatta"
-
-#~ msgid "Restart Nautilus."
-#~ msgstr "Riavvia Nautilus."
-
-#~ msgid ""
-#~ "Load a saved session from the specified file. Implies \"--no-default-"
-#~ "window\"."
-#~ msgstr ""
-#~ "Carica una sessione salvata dal file specificato. Implica \"--no-default-"
-#~ "window\"."
-
-#~ msgid "FILENAME"
-#~ msgstr "NOMEFILE"
-
-#~ msgid "Sorry, but \"%s\" is not a valid file name."
-#~ msgstr "La stringa «%s» non è un nome di file valido."
-
-#~ msgid "Sorry, but you did not supply a valid file name."
-#~ msgstr "Nome di file non valido."
-
-#~ msgid "Please try again."
-#~ msgstr "Provare di nuovo."
-
-#~ msgid ""
-#~ "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
-#~ "files and the rest of your system."
-#~ msgstr ""
-#~ "Nautilus è una shell grafica per GNOME che rende facile la gestione dei "
-#~ "propri file e del resto del sistema."
-
-#~ msgid "Emptying Trash"
-#~ msgstr "Svuota cestino"
-
-#~ msgid "Create Folder"
-#~ msgstr "Crea cartella"
-
-#~ msgid "Move to Trash"
-#~ msgstr "Sposta nel cestino"
-
-#~ msgid "Are you sure you want to forget history?"
-#~ msgstr "Volete dimenticare sul serio il passato?"
-
-#~ msgid "If you do, you will be doomed to repeat it."
-#~ msgstr "Se lo fate sarete condannati a ripeterlo."
-
-#~ msgid ""
-#~ "If you clear the list of locations, they will be permanently deleted."
-#~ msgstr ""
-#~ "Cancellando la lista delle posizioni, queste sono eliminate in modo "
-#~ "permanente."
-
-#~ msgid "E_ject"
-#~ msgstr "_Espelli"
-
-# GNOME-2-22
-# messo nella forma "disco vuoto" per elencarli uno accanto
-# all'altro
-#~ msgid "Blank Blu-Ray Disc"
-#~ msgstr "Disco vuoto Blu-Ray"
-
-# GNOME-2-22
-#~ msgid "Blank CD Disc"
-#~ msgstr "Disco vuoto CD"
-
-# GNOME-2-22
-#~ msgid "Blank DVD Disc"
-#~ msgstr "Disco vuoto DVD"
-
-# GNOME-2-22
-#~ msgid "Blank HD DVD Disc"
-#~ msgstr "Disco vuoto HD DVD"
-
-# GNOME-2-22
-#~ msgid "Blu-Ray Video"
-#~ msgstr "Video Blu-Ray"
-
-# GNOME-2-22
-#~ msgid "Compact Disc Audio"
-#~ msgstr "Compact Disc audio"
-
-# GNOME-2-22
-#~ msgid "DVD Audio"
-#~ msgstr "DVD audio"
-
-# GNOME-2-22
-#~ msgid "DVD Video"
-#~ msgstr "DVD video"
-
-# GNOME-2-22
-#~ msgid "Digital Photos"
-#~ msgstr "Foto digitali"
-
-# GNOME-2-22
-#~ msgid "HD DVD Video"
-#~ msgstr "Video HD DVD"
-
-# GNOME-2-22
-#~ msgid "Picture CD"
-#~ msgstr "Picture CD"
-
-# GNOME-2-22
-#~ msgid "Portable Audio Player"
-#~ msgstr "Lettore audio portabile"
-
-# GNOME-2-22
-#~ msgid "Super Video CD"
-#~ msgstr "Super Video CD"
-
-# GNOME-2-22
-#~ msgid "Video CD"
-#~ msgstr "Video CD"
-
-# GNOME-2-22
-#~ msgid "List of x-content/* types to ask the user what to do on insertion."
-#~ msgstr ""
-#~ "Lista di tipi x-content/* per i quali domandare all'utente cosa fare "
-#~ "all'inserimento."
-
-# GNOME-2-22
-#~ msgid ""
-#~ "List of x-content/* types where a folder window should be opened on "
-#~ "insertion."
-#~ msgstr ""
-#~ "Lista di tipi x-content/* per i quali si dovrebbe aprire una finesta "
-#~ "cartella all'inserimento."
-
-# GNOME-2-22
-# FIXME dovrebbe essere quella breve...
-#~ msgid "List of x-content/* where to prompt the user on insertion"
-#~ msgstr ""
-#~ "Lista di x-content/* per i quali chiedere conferma all'utente "
-#~ "all'inserimento"
-
-#~ msgid "_Delete from Trash"
-#~ msgstr "Eli_mina dal cestino"
-
-# GNOME-2-24
-# FIXME aggiungere suggerimento per traduttori
-#~ msgid "--"
-#~ msgstr "--"
-
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Mostra il contenuto con più dettagli"
-
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Mostra il contenuto con meno dettagli"
-
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Mostra il contenuto alla dimensione normale"
-
-#~ msgid "Show in the default detail level"
-#~ msgstr "Mostra con il livello di dettaglio predefinito"
-
-#~ msgid "Open in New Window"
-#~ msgstr "Apri in nuova finestra"
-
-#~ msgid "_Show"
-#~ msgstr "_Mostra"
-
-#~ msgid "Hi_de"
-#~ msgstr "_Nascondi"
-
-#~ msgid "View as Desktop"
-#~ msgstr "Vedi come scrivania"
-
-#~ msgid "View as _Desktop"
-#~ msgstr "Vedi come _scrivania"
-
-#~ msgid "Display this location with the desktop view."
-#~ msgstr "Mostra questa posizione con la vista a scrivania."
-
-#~ msgid "Select Pattern"
-#~ msgstr "Seleziona modello"
-
-#~ msgid "Select _Pattern"
-#~ msgstr "Seleziona _modello"
-
-#~ msgid "Link"
-#~ msgstr "Collegamento"
-
-#~ msgid "Launcher"
-#~ msgstr "Lanciatore"
-
-#~ msgid "View as Icons"
-#~ msgstr "Vedi come icone"
