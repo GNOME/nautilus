@@ -1,3 +1,10 @@
+2009-01-12  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (file_changed_callback):
+	Don't update emblems when trash dir changes.
+	It changes a lot (due to file count attribute) but never
+	changes writeability status.
+
 2009-01-12  A. Walton  <awalton@gnome.org>
 
 	* libnautilus-private/nautilus-file.c (prepend_automatic_keywords):
