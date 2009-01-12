@@ -1,5 +1,11 @@
 2009-01-12  A. Walton  <awalton@gnome.org>
 
+	* libnautilus-private/nautilus-file.c (prepend_automatic_keywords):
+	Trash files are automatically assumed read-only, 
+	so we shouldn't	add read-only emblems to files in the trash.
+
+2009-01-12  A. Walton  <awalton@gnome.org>
+
 	* libnautilus-private/nautilus-link.c
 	(nautilus_link_get_link_icon_from_desktop):
 	Fix last commit to actually patch the right part of the file.

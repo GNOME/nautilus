@@ -2313,7 +2313,11 @@ prepend_automatic_keywords (NautilusFile *file,
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_NOTE));
 	}
+
+	/* Trash files are assumed to be read-only, 
+	 * so we want to ignore them here. */
 	if (!nautilus_file_can_write (file) &&
+	    !nautilus_file_is_in_trash (file) &&
 	    (parent == NULL || nautilus_file_can_write (parent))) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
