@@ -462,7 +462,7 @@ nautilus_link_get_link_icon_from_desktop (GKeyFile *key_file)
 	}
 
 	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
-	if (strcmp (type, "Application") == 0) {
+	if (g_strcmp0 (type, "Application") == 0) {
 		icon = g_strdup ("gnome-fs-executable");
 	} else if (strcmp (type, "Link") == 0) {
 		icon = g_strdup ("gnome-dev-symlink");
