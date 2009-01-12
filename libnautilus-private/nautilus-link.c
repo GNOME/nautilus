@@ -534,8 +534,7 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 
 	*is_launcher = FALSE;
 	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
-	if (type != NULL &&
-	    strcmp (type, "Application") == 0 &&
+	if (g_strcmp0 (type, "Application") == 0 &&
 	    g_key_file_has_key (key_file, MAIN_GROUP, "Exec", NULL)) {
 		*is_launcher = TRUE;
 	}
