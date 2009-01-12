@@ -464,14 +464,14 @@ nautilus_link_get_link_icon_from_desktop (GKeyFile *key_file)
 	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
 	if (g_strcmp0 (type, "Application") == 0) {
 		icon = g_strdup ("gnome-fs-executable");
-	} else if (strcmp (type, "Link") == 0) {
+	} else if (g_strcmp0 (type, "Link") == 0) {
 		icon = g_strdup ("gnome-dev-symlink");
-	} else if (strcmp (type, "FSDevice") == 0) {
+	} else if (g_strcmp0 (type, "FSDevice") == 0) {
 		icon = g_strdup ("gnome-dev-harddisk");
-	} else if (strcmp (type, "Directory") == 0) {
+	} else if (g_strcmp0 (type, "Directory") == 0) {
 		icon = g_strdup (NAUTILUS_ICON_FOLDER);
-	} else if (strcmp (type, "Service") == 0 ||
-		   strcmp (type, "ServiceType") == 0) {
+	} else if (g_strcmp0 (type, "Service") == 0 ||
+		   g_strcmp0 (type, "ServiceType") == 0) {
 		icon = g_strdup ("gnome-fs-web");
 	} else {
 		icon = g_strdup ("gnome-fs-regular");
