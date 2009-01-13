@@ -146,6 +146,9 @@ struct NautilusIconContainerDetails {
 	guint keyboard_icon_reveal_timer_id;
 	NautilusIcon *keyboard_icon_to_reveal;
 
+	/* Used to coalesce selection changed signals in some cases */
+	guint selection_changed_id;
+	
 	/* If a request is made to reveal an unpositioned icon we remember
 	 * it and reveal it once it gets positioned (in relayout).
 	 */

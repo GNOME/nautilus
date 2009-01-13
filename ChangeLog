@@ -1,5 +1,11 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-icon-container.c:
+        * libnautilus-private/nautilus-icon-private.h:
+	Only send selection_changed once when removing lots of files.
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window-slot.c (nautilus_window_slot_update_icon): 
 	Only set window icon if it really changed.
 	

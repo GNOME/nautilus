@@ -3983,6 +3983,10 @@ destroy (GtkObject *object)
 		container->details->align_idle_id = 0;
 	}
 
+        if (container->details->selection_changed_id != 0) {
+		g_source_remove (container->details->selection_changed_id);
+		container->details->selection_changed_id = 0;
+	}
 
 	/* destroy interactive search dialog */
 	if (container->details->search_window) {
@@ -6591,6 +6595,20 @@ nautilus_icon_container_for_each (NautilusIconContainer *container,
 			call_icon_callback, &callback_and_data);
 }
 
+static int
+selection_changed_at_idle_callback (gpointer data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (data);
+	
+	g_signal_emit (container,
+		       signals[SELECTION_CHANGED], 0);
+
+	container->details->selection_changed_id = 0;
+	return FALSE;
+}
+
 /* utility routine to remove a single icon from the container */
 
 static void
@@ -6654,8 +6672,8 @@ icon_destroy (NautilusIconContainer *container,
 	icon_free (icon);
 
 	if (was_selected) {
-		g_signal_emit (container,
-				 signals[SELECTION_CHANGED], 0);
+		/* Coalesce multiple removals causing multiple selection_changed events */
+		details->selection_changed_id = g_idle_add (selection_changed_at_idle_callback, container);
 	}
 }
 
