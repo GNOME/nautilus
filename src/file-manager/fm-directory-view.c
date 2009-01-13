@@ -8318,12 +8318,15 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	selection = fm_directory_view_get_selection (view);
+	if (nautilus_debug_log_is_domain_enabled (NAUTILUS_DEBUG_LOG_DOMAIN_USER)) {
+		selection = fm_directory_view_get_selection (view);
 
-	window = fm_directory_view_get_containing_window (view);
-	nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, selection,
-					   "selection changed in window %p",
-					   window);
+		window = fm_directory_view_get_containing_window (view);
+		nautilus_debug_log_with_file_list (FALSE, NAUTILUS_DEBUG_LOG_DOMAIN_USER, selection,
+						   "selection changed in window %p",
+						   window);
+		nautilus_file_list_free (selection);
+	}
 
 	view->details->selection_was_removed = FALSE;
 
@@ -8350,8 +8353,6 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 		/* Schedule an update of menu item states to match selection */
 		schedule_update_menus (view);
 	}
-
-	nautilus_file_list_free (selection);
 }
 
 static void
