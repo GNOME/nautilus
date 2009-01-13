@@ -122,12 +122,14 @@ update_info_cb (GObject *source_object,
 					}
 				}
 			}
-			trash_monitor->details->empty = empty;
+			if (trash_monitor->details->empty != empty) {
+				trash_monitor->details->empty = empty;
 
-			/* trash got empty or full, notify everyone who cares */
-			g_signal_emit (trash_monitor, 
-				       signals[TRASH_STATE_CHANGED], 0,
-				       trash_monitor->details->empty);
+				/* trash got empty or full, notify everyone who cares */
+				g_signal_emit (trash_monitor, 
+					       signals[TRASH_STATE_CHANGED], 0,
+					       trash_monitor->details->empty);
+			}
 		}
 		g_object_unref (info);
 	}

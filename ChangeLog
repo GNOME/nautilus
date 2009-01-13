@@ -1,3 +1,10 @@
+2009-01-13  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 567460 – NautilusTrashMonitor emits trash-state-changed too often
+	
+	* libnautilus-private/nautilus-trash-monitor.c (update_info_cb):
+	Only emit ::trash-state-changed when the state actually changes.
+
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
         * src/nautilus-navigation-window-ui.xml:
