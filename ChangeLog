@@ -1,6 +1,12 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-debug-log.c:
+        (nautilus_debug_logv):
+	Make space for terminating zero
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-debug-log.c:
 	Limit nr of URIs in log to 20 to avoid huge
 	logs and bad performance for e.g. select all
 	in a large dir.

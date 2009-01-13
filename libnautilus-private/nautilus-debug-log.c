@@ -197,7 +197,7 @@ nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uri
 		}
 
 		debug_str_len = strlen (debug_str);
-		new_str = g_new (char, debug_str_len + 1 + uris_len); /* plus 1 for newline */
+		new_str = g_new (char, debug_str_len + 1 + uris_len + 1); /* plus 1 for newline & zero */
 
 		p = g_stpcpy (new_str, debug_str);
 		*p++ = '\n';
