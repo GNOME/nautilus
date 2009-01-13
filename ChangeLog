@@ -1,3 +1,14 @@
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-icon-container.c:
+        (get_icon_bounds_for_canvas_bounds):
+	When calculating bounds, don't ignore visible but unmapped items, becase
+	the root item is unmapped with the canvas, but we want to report the
+	same bounds independently on the canvas mapped state.
+	This caused problems when the canvas was unmapped due to being on an
+	invisible notebook page navigation tabs case, causing the
+	scrollbars to become invisible. (#542396)
+
 2009-01-13  Matthias Clasen  <mclasen@redhat.com>
 
 	Bug 567460 – NautilusTrashMonitor emits trash-state-changed too often
