@@ -1,6 +1,12 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-directory-async.c:
+	Don't need the want_foo calls, can just pass in
+	the request type directly now.
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
         * libnautilus-private/nautilus-directory-private.h:
 	Count all outstanding monitor and call_when_ready details
 
