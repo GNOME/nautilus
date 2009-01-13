@@ -172,7 +172,7 @@ typedef struct {
 	NautilusOperationResult result;
 } InfoProviderResponse;
 
-typedef gboolean (* RequestCheck) (const Request *);
+typedef gboolean (* RequestCheck) (Request);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
 /* Current number of async. jobs. */
@@ -190,7 +190,7 @@ static void     deep_count_load                               (DeepCountState   
 							       GFile                  *location);
 static gboolean request_is_satisfied                          (NautilusDirectory      *directory,
 							       NautilusFile           *file,
-							       Request                *request);
+							       Request                 request);
 static void     cancel_loading_attributes                     (NautilusDirectory      *directory,
 							       NautilusFileAttributes  file_attributes);
 static void     add_all_files_to_work_queue                   (NautilusDirectory      *directory);
@@ -594,51 +594,66 @@ remove_monitor (NautilusDirectory *directory,
 	remove_monitor_link (directory, find_monitor (directory, file, client));
 }
 
-void
-nautilus_directory_set_up_request (Request *request,
-				   NautilusFileAttributes file_attributes)
+Request
+nautilus_directory_set_up_request (NautilusFileAttributes file_attributes)
 {
-	memset (request, 0, sizeof (*request));
+	Request request;
+
+	request = 0;
 	
-	request->directory_count =
-		(file_attributes & NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT) != 0;
-	request->deep_count =
-		(file_attributes & NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS) != 0;
-	request->mime_list =
-		(file_attributes & NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES) != 0;
-	request->file_info = (file_attributes & NAUTILUS_FILE_ATTRIBUTE_INFO) != 0;
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_DIRECTORY_COUNT);
+	}
+	
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_DEEP_COUNT);
+	}
+
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_MIME_LIST);
+	}
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_INFO) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
+	}
 	
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_LINK_INFO) {
-		request->file_info = TRUE;
-		request->link_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
+		REQUEST_SET_TYPE (request, REQUEST_LINK_INFO);
 	}
 	
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT) {
-		request->top_left_text = TRUE;
-		request->file_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_TOP_LEFT_TEXT);
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
 	}
 	
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_LARGE_TOP_LEFT_TEXT) {
-		request->large_top_left_text = TRUE;
-		request->file_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_LARGE_TOP_LEFT_TEXT);
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
 	}
 
-	request->metafile |= (file_attributes & NAUTILUS_FILE_ATTRIBUTE_METADATA) != 0;
-	request->extension_info = (file_attributes & NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO) != 0;
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_METADATA) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_METAFILE);
+	}
+	
+	if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO) != 0) {
+		REQUEST_SET_TYPE (request, REQUEST_EXTENSION_INFO);
+	}
 
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL) {
-		request->thumbnail = TRUE;
-		request->file_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_THUMBNAIL);
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
 	}
 
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_MOUNT) {
-		request->mount = TRUE;
-		request->file_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_MOUNT);
+		REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
 	}
 
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO) {
-		request->filesystem_info = TRUE;
+		REQUEST_SET_TYPE (request, REQUEST_FILESYSTEM_INFO);
 	}
+
+	return request;
 }
 
 static void
@@ -681,9 +696,11 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	monitor->monitor_hidden_files = monitor_hidden_files;
 	monitor->monitor_backup_files = monitor_backup_files;
 	monitor->client = client;
-	nautilus_directory_set_up_request (&monitor->request, file_attributes);
+	monitor->request = nautilus_directory_set_up_request (file_attributes);
 
-	monitor->request.file_list = file == NULL;
+	if (file == NULL) {
+		REQUEST_SET_TYPE (monitor->request, REQUEST_FILE_LIST);
+	}
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
 
@@ -705,11 +722,13 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	/* We could just call update_metadata_monitors here, but we can be smarter
 	 * since we know what monitor was just added.
 	 */
-	if (monitor->request.metafile && !directory->details->metafile_monitored) {
+	if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_METAFILE) &&
+	    !directory->details->metafile_monitored) {
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
 
-	if (monitor->request.file_info && directory->details->mime_db_monitor == 0) {
+	if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_FILE_INFO) &&
+	    directory->details->mime_db_monitor == 0) {
 		directory->details->mime_db_monitor =
 			g_signal_connect_object (nautilus_signaller_get_current (),
 						 "mime_data_changed",
@@ -1076,14 +1095,14 @@ is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 
 	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->request.metafile) {
+		if (REQUEST_WANTS_TYPE (callback->request, REQUEST_METAFILE)) {
 			return TRUE;
 		}
 	}
 
 	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
 		monitor = node->data;
-		if (monitor->request.metafile) {
+		if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_METAFILE)) {
 			return TRUE;
 		}
 	}	
@@ -1262,7 +1281,8 @@ ready_callback_call (NautilusDirectory *directory,
 						     callback->callback_data);
 		}
 	} else if (callback->callback.directory != NULL) {
-		if (directory == NULL || !callback->request.file_list) {
+		if (directory == NULL ||
+		    !REQUEST_WANTS_TYPE (callback->request, REQUEST_FILE_LIST)) {
 			file_list = NULL;
 		} else {
 			file_list = nautilus_directory_get_file_list (directory);
@@ -1301,8 +1321,10 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		callback.callback.file = file_callback;
 	}
 	callback.callback_data = callback_data;
-	nautilus_directory_set_up_request (&callback.request, file_attributes);
-	callback.request.file_list = wait_for_file_list;
+	callback.request = nautilus_directory_set_up_request (file_attributes);
+	if (wait_for_file_list) {
+		REQUEST_SET_TYPE (callback.request, REQUEST_FILE_LIST);
+	}
 
 	/* Handle the NULL case. */
 	if (directory == NULL) {
@@ -1330,7 +1352,8 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	 * We could just call update_metadata_monitors here, but we can be smarter
 	 * since we know what was just added.
 	 */
-	if (callback.request.metafile && !directory->details->metafile_monitored) {
+	if (REQUEST_WANTS_TYPE (callback.request, REQUEST_METAFILE) &&
+	    !directory->details->metafile_monitored) {
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
 
@@ -1353,8 +1376,8 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	nautilus_directory_set_up_request (&request, file_attributes);
-	return request_is_satisfied (directory, file, &request);
+	request = nautilus_directory_set_up_request (file_attributes);
+	return request_is_satisfied (directory, file, request);
 }
 
 static void
@@ -1620,9 +1643,9 @@ should_get_directory_count_now (NautilusFile *file)
 }
 
 static gboolean
-wants_directory_count (const Request *request)
+wants_directory_count (Request request)
 {
-	return request->directory_count;
+	return REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT);
 }
 
 static gboolean
@@ -1634,9 +1657,9 @@ lacks_top_left (NautilusFile *file)
 }
 
 static gboolean
-wants_top_left (const Request *request)
+wants_top_left (Request request)
 {
-	return request->top_left_text;
+	return REQUEST_WANTS_TYPE (request, REQUEST_TOP_LEFT_TEXT);
 }
 
 static gboolean
@@ -1649,9 +1672,9 @@ lacks_large_top_left (NautilusFile *file)
 }
 
 static gboolean
-wants_large_top_left (const Request *request)
+wants_large_top_left (Request request)
 {
-	return request->large_top_left_text;
+	return REQUEST_WANTS_TYPE (request, REQUEST_LARGE_TOP_LEFT_TEXT);
 }
 
 static gboolean
@@ -1668,15 +1691,15 @@ lacks_filesystem_info (NautilusFile *file)
 }
 
 static gboolean
-wants_info (const Request *request)
+wants_info (Request request)
 {
-	return request->file_info;
+	return REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO);
 }
 
 static gboolean
-wants_filesystem_info (const Request *request)
+wants_filesystem_info (Request request)
 {
-	return request->filesystem_info;
+	return REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO);
 }
 
 static gboolean
@@ -1686,9 +1709,9 @@ lacks_deep_count (NautilusFile *file)
 }
 
 static gboolean
-wants_deep_count (const Request *request)
+wants_deep_count (Request request)
 {
-	return request->deep_count;
+	return REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT);
 }
 
 static gboolean
@@ -1705,9 +1728,9 @@ should_get_mime_list (NautilusFile *file)
 }
 
 static gboolean
-wants_mime_list (const Request *request)
+wants_mime_list (Request request)
 {
-	return request->mime_list;
+	return REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST);
 }
 static gboolean
 lacks_link_info (NautilusFile *file)
@@ -1726,9 +1749,9 @@ lacks_link_info (NautilusFile *file)
 }
 
 static gboolean
-wants_link_info (const Request *request)
+wants_link_info (Request request)
 {
-	return request->link_info;
+	return REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO);
 }
 
 static gboolean
@@ -1738,9 +1761,9 @@ lacks_extension_info (NautilusFile *file)
 }
 
 static gboolean
-wants_extension_info (const Request *request)
+wants_extension_info (Request request)
 {
-	return request->extension_info;
+	return REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO);
 }
 
 static gboolean
@@ -1752,9 +1775,9 @@ lacks_thumbnail (NautilusFile *file)
 }
 
 static gboolean
-wants_thumbnail (const Request *request)
+wants_thumbnail (Request request)
 {
-	return request->thumbnail;
+	return REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL);
 }
 
 static gboolean
@@ -1778,9 +1801,9 @@ lacks_mount (NautilusFile *file)
 }
 
 static gboolean
-wants_mount (const Request *request)
+wants_mount (Request request)
 {
-	return request->mount;
+	return REQUEST_WANTS_TYPE (request, REQUEST_MOUNT);
 }
 
 static gboolean
@@ -1804,72 +1827,74 @@ has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem
 static gboolean
 request_is_satisfied (NautilusDirectory *directory,
 		      NautilusFile *file,
-		      Request *request)
+		      Request request)
 {
-	if (request->metafile && !nautilus_directory_is_metadata_read (directory)) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_METAFILE) &&
+	    !nautilus_directory_is_metadata_read (directory)) {
 		return FALSE;
 	}
 
-	if (request->file_list && !(directory->details->directory_loaded &&
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_LIST) &&
+	    !(directory->details->directory_loaded &&
 				    directory->details->directory_loaded_sent_notification)) {
 		return FALSE;
 	}
 
-	if (request->directory_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT)) {
 		if (has_problem (directory, file, lacks_directory_count)) {
 			return FALSE;
 		}
 	}
 
-	if (request->file_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO)) {
 		if (has_problem (directory, file, lacks_info)) {
 			return FALSE;
 		}
 	}
 
-	if (request->filesystem_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO)) {
 		if (has_problem (directory, file, lacks_filesystem_info)) {
 			return FALSE;
 		}
 	}
 
-	if (request->top_left_text) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_TOP_LEFT_TEXT)) {
 		if (has_problem (directory, file, lacks_top_left)) {
 			return FALSE;
 		}
 	}
-	
-	if (request->large_top_left_text) {
+		
+	if (REQUEST_WANTS_TYPE (request, REQUEST_LARGE_TOP_LEFT_TEXT)) {
 		if (has_problem (directory, file, lacks_large_top_left)) {
 			return FALSE;
 		}
 	}
 
-	if (request->deep_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT)) {
 		if (has_problem (directory, file, lacks_deep_count)) {
 			return FALSE;
 		}
 	}
 
-	if (request->thumbnail) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL)) {
 		if (has_problem (directory, file, lacks_thumbnail)) {
 			return FALSE;
 		}
 	}
 	
-	if (request->mount) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT)) {
 		if (has_problem (directory, file, lacks_mount)) {
 			return FALSE;
 		}
 	}
 	
-	if (request->mime_list) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST)) {
 		if (has_problem (directory, file, lacks_mime_list)) {
 			return FALSE;
 		}
 	}
 
-	if (request->link_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO)) {
 		if (has_problem (directory, file, lacks_link_info)) {
 			return FALSE;
 		}
@@ -1951,7 +1976,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 		next = node->next;
 		callback = node->data;
 		if (callback->active &&
-		    request_is_satisfied (directory, callback->file, &callback->request)) {
+		    request_is_satisfied (directory, callback->file, callback->request)) {
 			callback->active = FALSE;
 			found_any = TRUE;
 		}
@@ -2005,7 +2030,7 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 	for (node = directory->details->call_when_ready_list;
 	     node != NULL; node = node->next) {
 		callback = node->data;
-		if (callback->request.file_list) {
+		if (REQUEST_WANTS_TYPE (callback->request, REQUEST_FILE_LIST)) {
 			return TRUE;
 		}
 	}
@@ -2013,7 +2038,7 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 	for (node = directory->details->monitor_list;
 	     node != NULL; node = node->next) {
 		monitor = node->data;
-		if (monitor->request.file_list) {
+		if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_FILE_LIST)) {
 			return TRUE;
 		}
 	}
@@ -2421,7 +2446,7 @@ is_needy (NautilusFile *file,
 	     node != NULL; node = node->next) {
 		callback = node->data;
 		if (callback->active &&
-		    (* check_wanted) (&callback->request)) {
+		    (* check_wanted) (callback->request)) {
 			if (callback->file == file) {
 				return TRUE;
 			}
@@ -2434,7 +2459,7 @@ is_needy (NautilusFile *file,
 	for (node = directory->details->monitor_list;
 	     node != NULL; node = node->next) {
 		monitor = node->data;
-		if ((* check_wanted) (&monitor->request)) {
+		if ((* check_wanted) (monitor->request)) {
 			if (monitor_includes_file (monitor, file)) {
 				return TRUE;
 			}
@@ -4755,40 +4780,39 @@ cancel_loading_attributes (NautilusDirectory *directory,
 {
 	Request request;
 	
-	nautilus_directory_set_up_request (&request,
-					   file_attributes);
+	request = nautilus_directory_set_up_request (file_attributes);
 
-	if (request.directory_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT)) {
 		directory_count_cancel (directory);
 	}
-	if (request.deep_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT)) {
 		deep_count_cancel (directory);
 	}
-	if (request.mime_list) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST)) {
 		mime_list_cancel (directory);
 	}
-	if (request.top_left_text) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_TOP_LEFT_TEXT)) {
 		top_left_cancel (directory);
 	}
-	if (request.file_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO)) {
 		file_info_cancel (directory);
 	}
-	if (request.filesystem_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO)) {
 		filesystem_info_cancel (directory);
 	}
-	if (request.link_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO)) {
 		link_info_cancel (directory);
 	}
 
-	if (request.extension_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO)) {
 		extension_info_cancel (directory);
 	}
 	
-	if (request.thumbnail) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL)) {
 		thumbnail_cancel (directory);
 	}
 
-	if (request.mount) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT)) {
 		mount_cancel (directory);
 	}
 	
@@ -4807,34 +4831,33 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
 	
 	nautilus_directory_remove_file_from_work_queue (directory, file);
 
-	nautilus_directory_set_up_request (&request,
-					   file_attributes);
+	request = nautilus_directory_set_up_request (file_attributes);
 
-	if (request.directory_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT)) {
 		cancel_directory_count_for_file (directory, file);
 	}
-	if (request.deep_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT)) {
 		cancel_deep_counts_for_file (directory, file);
 	}
-	if (request.mime_list) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST)) {
 		cancel_mime_list_for_file (directory, file);
 	}
-	if (request.top_left_text) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_TOP_LEFT_TEXT)) {
 		cancel_top_left_text_for_file (directory, file);
 	}
-	if (request.file_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO)) {
 		cancel_file_info_for_file (directory, file);
 	}
-	if (request.filesystem_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO)) {
 		cancel_filesystem_info_for_file (directory, file);
 	}
-	if (request.link_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO)) {
 		cancel_link_info_for_file (directory, file);
 	}
-	if (request.thumbnail) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL)) {
 		cancel_thumbnail_for_file (directory, file);
 	}
-	if (request.mount) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT)) {
 		cancel_mount_for_file (directory, file);
 	}
 

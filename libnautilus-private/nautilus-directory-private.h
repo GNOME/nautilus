@@ -119,22 +119,28 @@ struct NautilusDirectoryDetails
 	GHashTable *hidden_file_hash;
 };
 
+typedef enum {
+	REQUEST_LINK_INFO,
+	REQUEST_DEEP_COUNT,
+	REQUEST_DIRECTORY_COUNT,
+	REQUEST_FILE_INFO,
+	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
+	REQUEST_METAFILE,
+	REQUEST_MIME_LIST,
+	REQUEST_TOP_LEFT_TEXT,
+	REQUEST_LARGE_TOP_LEFT_TEXT,
+	REQUEST_EXTENSION_INFO,
+	REQUEST_THUMBNAIL,
+	REQUEST_MOUNT,
+	REQUEST_FILESYSTEM_INFO,
+	REQUEST_TYPE_LAST
+} RequestType;
+
 /* A request for information about one or more files. */
-typedef struct {
-	gboolean link_info;
-	gboolean deep_count;
-	gboolean directory_count;
-	gboolean file_info;
-	gboolean file_list; /* always FALSE if file != NULL */
-	gboolean metafile;
-	gboolean mime_list;
-	gboolean top_left_text;
-	gboolean large_top_left_text;
-	gboolean extension_info;
-	gboolean thumbnail;
-	gboolean mount;
-	gboolean filesystem_info;
-} Request;
+typedef guint32 Request;
+
+#define REQUEST_WANTS_TYPE(request, type) (request && (1<<type))
+#define REQUEST_SET_TYPE(request, type) request |= (1<<type)
 
 NautilusDirectory *nautilus_directory_get_existing                    (GFile                     *location);
 
@@ -201,8 +207,7 @@ void               nautilus_directory_emit_load_error                 (NautilusD
 NautilusDirectory *nautilus_directory_get_internal                    (GFile                     *location,
 								       gboolean                   create);
 char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
-void               nautilus_directory_set_up_request                  (Request                   *request,
-								       NautilusFileAttributes     file_attributes);
+Request            nautilus_directory_set_up_request                  (NautilusFileAttributes     file_attributes);
 
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,

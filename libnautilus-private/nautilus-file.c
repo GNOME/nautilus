@@ -6600,30 +6600,30 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 		return;
 	}
 	
-	nautilus_directory_set_up_request (&request, file_attributes);
+	request = nautilus_directory_set_up_request (file_attributes);
 
-	if (request.directory_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT)) {
 		invalidate_directory_count (file);
 	}
-	if (request.deep_count) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT)) {
 		invalidate_deep_counts (file);
 	}
-	if (request.mime_list) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST)) {
 		invalidate_mime_list (file);
 	}
-	if (request.file_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO)) {
 		invalidate_file_info (file);
 	}
-	if (request.top_left_text) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_TOP_LEFT_TEXT)) {
 		invalidate_top_left_text (file);
 	}
-	if (request.link_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO)) {
 		invalidate_link_info (file);
 	}
-	if (request.extension_info) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO)) {
 		nautilus_file_invalidate_extension_info_internal (file);
 	}
-	if (request.thumbnail) {
+	if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL)) {
 		invalidate_thumbnail (file);
 	}
 
