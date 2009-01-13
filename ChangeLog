@@ -1,3 +1,10 @@
+2009-01-13  A. Walton  <awalton@gnome.org>
+
+	* src/file-manager/fm-empty-view.c (fm_empty_view_end_loading),
+	(fm_empty_view_create), (fm_empty_view_register):
+	Unbreak build when building with --enable-empty-view.
+	Closes bug #558537. Patch by Emmanuel Fleury.
+
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-icon-container.c:

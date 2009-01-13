@@ -234,7 +234,8 @@ fm_empty_view_using_manual_layout (FMDirectoryView *view)
 }
 
 static void
-fm_empty_view_end_loading (FMDirectoryView *view)
+fm_empty_view_end_loading (FMDirectoryView *view,
+			   gboolean all_files_seen)
 {
 }
 
@@ -347,7 +348,6 @@ fm_empty_view_init (FMEmptyView *empty_view)
 static NautilusView *
 fm_empty_view_create (NautilusWindowSlotInfo *slot)
 {
-	NautilusWindowSlotInfo *slot;
 	FMEmptyView *view;
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT_INFO (slot));
@@ -387,7 +387,6 @@ static NautilusViewInfo fm_empty_view = {
 	"Empty View",
 	"_Empty View",
 	"The empty view encountered an error.",
-	"The empty view encountered an error while starting up.",
 	"Display this location with the empty view.",
 	fm_empty_view_create,
 	fm_empty_view_supports_uri
@@ -396,11 +395,10 @@ static NautilusViewInfo fm_empty_view = {
 void
 fm_empty_view_register (void)
 {
-	fm_empty_view.label = fm_empty_view.label;
-	fm_empty_view.view_as_label = fm_empty_view.view_as_label;
-	fm_empty_view.view_as_label_with_mnemonic = fm_empty_view.view_as_label_with_mnemonic;
+	fm_empty_view.id = fm_empty_view.id;
+	fm_empty_view.view_combo_label = fm_empty_view.view_combo_label;
+	fm_empty_view.view_menu_label_with_mnemonic = fm_empty_view.view_menu_label_with_mnemonic;
 	fm_empty_view.error_label = fm_empty_view.error_label;
-	fm_empty_view.startup_error_label = fm_empty_view.startup_error_label;
 	fm_empty_view.display_location_label = fm_empty_view.display_location_label;
 
 	nautilus_view_factory_register (&fm_empty_view);
