@@ -236,6 +236,12 @@ nautilus_debug_log_with_file_list (gboolean is_milestone, const char *domain, GL
 	GList *uris;
 	GList *l;
 
+	/* Avoid conversion if debugging disabled */
+	if (!(is_milestone ||
+	      nautilus_debug_log_is_domain_enabled (domain))) {
+		return;
+	}
+	
 	uris = NULL;
 
 	for (l = files; l; l = l->next) {

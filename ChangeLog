@@ -1,5 +1,11 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-debug-log.c (nautilus_debug_log_with_file_list):
+	Don't do conversion to uris unless debugging is enabled.
+	(For performance reasons)
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (fm_directory_view_notify_selection_changed):
 	Don't get selection unless debugging is really turned on.
 	(For performance reasons)
