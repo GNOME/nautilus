@@ -278,6 +278,32 @@ istr_set_destroy (GHashTable *table)
 	g_hash_table_destroy (table);
 }
 
+static void
+request_counter_add_request (RequestCounter counter,
+			     Request request)
+{
+	guint i;
+
+	for (i = 0; i < REQUEST_TYPE_LAST; i++) {
+		if (REQUEST_WANTS_TYPE (request, i)) {
+			counter[i]++;
+		}
+	}
+}
+
+static void
+request_counter_remove_request (RequestCounter counter,
+				Request request)
+{
+	guint i;
+
+	for (i = 0; i < REQUEST_TYPE_LAST; i++) {
+		if (REQUEST_WANTS_TYPE (request, i)) {
+			counter[i]++;
+		}
+	}
+}
+
 /* Start a job. This is really just a way of limiting the number of
  * async. requests that we issue at any given time. Without this, the
  * number of requests is unbounded.
@@ -578,10 +604,15 @@ static void
 remove_monitor_link (NautilusDirectory *directory,
 		     GList *link)
 {
+	Monitor *monitor;
+	
 	if (link != NULL) {
+		monitor = link->data;
+		request_counter_remove_request (directory->details->monitor_counters,
+						monitor->request);
 		directory->details->monitor_list =
 			g_list_remove_link (directory->details->monitor_list, link);
-		g_free (link->data);
+		g_free (monitor);
 		g_list_free_1 (link);
 	}
 }
@@ -703,6 +734,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	}
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
+	request_counter_add_request (directory->details->monitor_counters,
+				     monitor->request);
 
 	if (callback != NULL) {
 		file_list = nautilus_directory_get_file_list (directory);
@@ -1347,6 +1380,8 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	directory->details->call_when_ready_list = g_list_prepend
 		(directory->details->call_when_ready_list,
 		 g_memdup (&callback, sizeof (callback)));
+	request_counter_add_request (directory->details->call_when_ready_counters,
+				     callback.request);
 
 	/* When we change the ready list we need to sync up metadata monitors.
 	 * We could just call update_metadata_monitors here, but we can be smarter
@@ -1384,8 +1419,15 @@ static void
 remove_callback_link_keep_data (NautilusDirectory *directory,
 				GList *link)
 {
+	ReadyCallback *callback;
+
+	callback = link->data;
+	
 	directory->details->call_when_ready_list = g_list_remove_link
 		(directory->details->call_when_ready_list, link);
+	
+	request_counter_remove_request (directory->details->call_when_ready_counters,
+					callback->request);
 	g_list_free_1 (link);
 }
 
@@ -1393,8 +1435,11 @@ static void
 remove_callback_link (NautilusDirectory *directory,
 		      GList *link)
 {
-	g_free (link->data);
+	ReadyCallback *callback;
+	
+	callback = link->data;
 	remove_callback_link_keep_data (directory, link);
+	g_free (callback);
 }
 
 void

@@ -46,6 +46,30 @@ typedef struct ThumbnailState ThumbnailState;
 typedef struct MountState MountState;
 typedef struct FilesystemInfoState FilesystemInfoState;
 
+typedef enum {
+	REQUEST_LINK_INFO,
+	REQUEST_DEEP_COUNT,
+	REQUEST_DIRECTORY_COUNT,
+	REQUEST_FILE_INFO,
+	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
+	REQUEST_METAFILE,
+	REQUEST_MIME_LIST,
+	REQUEST_TOP_LEFT_TEXT,
+	REQUEST_LARGE_TOP_LEFT_TEXT,
+	REQUEST_EXTENSION_INFO,
+	REQUEST_THUMBNAIL,
+	REQUEST_MOUNT,
+	REQUEST_FILESYSTEM_INFO,
+	REQUEST_TYPE_LAST
+} RequestType;
+
+/* A request for information about one or more files. */
+typedef guint32 Request;
+typedef guint32 RequestCounter[REQUEST_TYPE_LAST];
+
+#define REQUEST_WANTS_TYPE(request, type) (request && (1<<type))
+#define REQUEST_SET_TYPE(request, type) request |= (1<<type)
+
 struct NautilusDirectoryDetails
 {
 	/* The location. */
@@ -65,7 +89,9 @@ struct NautilusDirectoryDetails
 	 * are going to get big, we can use hash tables instead.
 	 */
 	GList *call_when_ready_list;
+	RequestCounter call_when_ready_counters;
 	GList *monitor_list;
+	RequestCounter monitor_counters;
 	guint call_ready_idle_id;
 
 	NautilusMonitor *monitor;
@@ -118,29 +144,6 @@ struct NautilusDirectoryDetails
 
 	GHashTable *hidden_file_hash;
 };
-
-typedef enum {
-	REQUEST_LINK_INFO,
-	REQUEST_DEEP_COUNT,
-	REQUEST_DIRECTORY_COUNT,
-	REQUEST_FILE_INFO,
-	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
-	REQUEST_METAFILE,
-	REQUEST_MIME_LIST,
-	REQUEST_TOP_LEFT_TEXT,
-	REQUEST_LARGE_TOP_LEFT_TEXT,
-	REQUEST_EXTENSION_INFO,
-	REQUEST_THUMBNAIL,
-	REQUEST_MOUNT,
-	REQUEST_FILESYSTEM_INFO,
-	REQUEST_TYPE_LAST
-} RequestType;
-
-/* A request for information about one or more files. */
-typedef guint32 Request;
-
-#define REQUEST_WANTS_TYPE(request, type) (request && (1<<type))
-#define REQUEST_SET_TYPE(request, type) request |= (1<<type)
 
 NautilusDirectory *nautilus_directory_get_existing                    (GFile                     *location);
 

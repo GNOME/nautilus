@@ -2,6 +2,12 @@
 
         * libnautilus-private/nautilus-directory-async.c:
         * libnautilus-private/nautilus-directory-private.h:
+	Count all outstanding monitor and call_when_ready details
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
         * libnautilus-private/nautilus-file.c:
 	Convert Request from struct of gboolean to guin32 bitfield.
 	This is both smaller and faster, plus it allows some further optimizations to come.
