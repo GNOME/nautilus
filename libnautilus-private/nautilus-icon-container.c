@@ -891,7 +891,7 @@ get_icon_bounds_for_canvas_bounds (EelCanvasGroup *group,
 	for (list = group->item_list; list; list = list->next) {
 		child = list->data;
 
-		if (child->object.flags & EEL_CANVAS_ITEM_MAPPED) {
+		if (child->object.flags & EEL_CANVAS_ITEM_VISIBLE) {
 			set = TRUE;
 			if (!NAUTILUS_IS_ICON_CANVAS_ITEM (child) ||
 			    usage == BOUNDS_USAGE_FOR_DISPLAY) {
@@ -923,7 +923,7 @@ get_icon_bounds_for_canvas_bounds (EelCanvasGroup *group,
 	for (; list; list = list->next) {
 		child = list->data;
 
-		if (!(child->object.flags & EEL_CANVAS_ITEM_MAPPED))
+		if (!(child->object.flags & EEL_CANVAS_ITEM_VISIBLE))
 			continue;
 
 		if (!NAUTILUS_IS_ICON_CANVAS_ITEM (child) ||
