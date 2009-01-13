@@ -1,6 +1,11 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
         * libnautilus-private/nautilus-directory-async.c:
+	Fix typo in request_counter_remove_request (--, not ++)
+	
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
+        * libnautilus-private/nautilus-directory-async.c:
         * libnautilus-private/nautilus-directory-private.h:
 	Use the monitor and call_when_ready counts to avoid
 	iterating over the potentially long lists.
