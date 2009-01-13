@@ -1,5 +1,10 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-window-slot.c (nautilus_window_slot_update_icon): 
+	Only set window icon if it really changed.
+	
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-debug-log.c (nautilus_debug_log_with_file_list):
 	Don't do conversion to uris unless debugging is enabled.
 	(For performance reasons)

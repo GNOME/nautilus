@@ -346,7 +346,13 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 	if (info) {
 		icon_name = nautilus_icon_info_get_used_name (info);
 		if (icon_name != NULL) {
-			gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
+			/* Gtk+ doesn't short circuit this (yet), so avoid lots of work
+			 * if we're setting to the same icon. This happens a lot e.g. when
+			 * the trash directory changes due to the file count changing.
+			 */
+			if (g_strcmp0 (icon_name, gtk_window_get_icon_name (GTK_WINDOW (window))) != 0) {			
+				gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
+			}
 		} else {
 			pixbuf = nautilus_icon_info_get_pixbuf_nodefault (info);
 			
