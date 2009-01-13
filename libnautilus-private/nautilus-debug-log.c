@@ -37,6 +37,8 @@
 #define KEY_FILE_DOMAINS_KEY	"enable domains"
 #define KEY_FILE_MAX_LINES_KEY	"max lines"
 
+#define MAX_URI_COUNT 20
+
 static GStaticMutex log_mutex = G_STATIC_MUTEX_INIT;
 
 static GHashTable *domains_hash;
@@ -176,14 +178,22 @@ nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uri
 		const GList *l;
 		char *new_str;
 		char *p;
+		int count;
 
 		uris_len = 0;
 
+		count = 0;
 		for (l = uris; l; l = l->next) {
 			const char *uri;
 
 			uri = l->data;
 			uris_len += strlen (uri) + 2; /* plus 2 for a tab and the newline */
+
+			if (count++ > MAX_URI_COUNT) {
+				uris_len += 4; /* "...\n" */
+				break;
+			}
+			
 		}
 
 		debug_str_len = strlen (debug_str);
@@ -192,6 +202,7 @@ nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uri
 		p = g_stpcpy (new_str, debug_str);
 		*p++ = '\n';
 
+		count = 0;
 		for (l = uris; l; l = l->next) {
 			const char *uri;
 
@@ -203,6 +214,11 @@ nautilus_debug_logv (gboolean is_milestone, const char *domain, const GList *uri
 
 			if (l->next)
 				*p++ = '\n';
+
+			if (count++ > MAX_URI_COUNT) {
+				p = g_stpcpy (p, "...\n");
+				break;
+			}
 		}
 
 		g_free (debug_str);
@@ -235,6 +251,7 @@ nautilus_debug_log_with_file_list (gboolean is_milestone, const char *domain, GL
 	va_list args;
 	GList *uris;
 	GList *l;
+	int count;
 
 	/* Avoid conversion if debugging disabled */
 	if (!(is_milestone ||
@@ -244,6 +261,7 @@ nautilus_debug_log_with_file_list (gboolean is_milestone, const char *domain, GL
 	
 	uris = NULL;
 
+	count = 0;
 	for (l = files; l; l = l->next) {
 		NautilusFile *file;
 		char *uri;
@@ -262,6 +280,12 @@ nautilus_debug_log_with_file_list (gboolean is_milestone, const char *domain, GL
 			uri = new_uri;
 		}
 		uris = g_list_prepend (uris, uri);
+
+		/* Avoid doing to much work, more than MAX_URI_COUNT uris
+		   won't be shown anyway */
+		if (count++ > MAX_URI_COUNT + 1) {
+			break;
+		}
 	}
 
 	uris = g_list_reverse (uris);

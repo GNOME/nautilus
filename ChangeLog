@@ -1,5 +1,12 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-debug-log.c:
+	Limit nr of URIs in log to 20 to avoid huge
+	logs and bad performance for e.g. select all
+	in a large dir.
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-directory-async.c:
 	Fix typo in request_counter_remove_request (--, not ++)
 	
