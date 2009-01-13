@@ -1122,23 +1122,13 @@ directory_load_done (NautilusDirectory *directory,
 static gboolean
 is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 {
-	GList *node;
-	ReadyCallback *callback;
-	Monitor *monitor;	
-
-	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
-		callback = node->data;
-		if (REQUEST_WANTS_TYPE (callback->request, REQUEST_METAFILE)) {
-			return TRUE;
-		}
+	if (directory->details->call_when_ready_counters[REQUEST_METAFILE] > 0) {
+		return TRUE;
 	}
 
-	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
-		monitor = node->data;
-		if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_METAFILE)) {
-			return TRUE;
-		}
-	}	
+	if (directory->details->monitor_counters[REQUEST_METAFILE] > 0) {
+		return TRUE;
+	}
 
 	return FALSE;
 }
@@ -2002,24 +1992,12 @@ nautilus_directory_has_active_request_for_file (NautilusDirectory *directory,
 gboolean
 nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 {
-	GList *node;
-	ReadyCallback *callback;
-	Monitor *monitor;
-
-	for (node = directory->details->call_when_ready_list;
-	     node != NULL; node = node->next) {
-		callback = node->data;
-		if (REQUEST_WANTS_TYPE (callback->request, REQUEST_FILE_LIST)) {
-			return TRUE;
-		}
+	if (directory->details->call_when_ready_counters[REQUEST_FILE_LIST] > 0) {
+		return TRUE;
 	}
 
-	for (node = directory->details->monitor_list;
-	     node != NULL; node = node->next) {
-		monitor = node->data;
-		if (REQUEST_WANTS_TYPE (monitor->request, REQUEST_FILE_LIST)) {
-			return TRUE;
-		}
+	if (directory->details->monitor_counters[REQUEST_FILE_LIST] > 0) {
+		return TRUE;
 	}
 
 	return FALSE;
@@ -2421,26 +2399,31 @@ is_needy (NautilusFile *file,
 	}
 
 	directory = file->details->directory;
-	for (node = directory->details->call_when_ready_list;
-	     node != NULL; node = node->next) {
-		callback = node->data;
-		if (callback->active &&
-		    REQUEST_WANTS_TYPE (callback->request, request_type_wanted)) {
-			if (callback->file == file) {
-				return TRUE;
-			}
-			if (callback->file == NULL
-			    && file != directory->details->as_file) {
-				return TRUE;
+	if (directory->details->call_when_ready_counters[request_type_wanted] > 0) {
+		for (node = directory->details->call_when_ready_list;
+		     node != NULL; node = node->next) {
+			callback = node->data;
+			if (callback->active &&
+			    REQUEST_WANTS_TYPE (callback->request, request_type_wanted)) {
+				if (callback->file == file) {
+					return TRUE;
+				}
+				if (callback->file == NULL
+				    && file != directory->details->as_file) {
+					return TRUE;
+				}
 			}
 		}
 	}
-	for (node = directory->details->monitor_list;
-	     node != NULL; node = node->next) {
-		monitor = node->data;
-		if (REQUEST_WANTS_TYPE (monitor->request, request_type_wanted)) {
-			if (monitor_includes_file (monitor, file)) {
-				return TRUE;
+	
+	if (directory->details->monitor_counters[request_type_wanted] > 0) {
+		for (node = directory->details->monitor_list;
+		     node != NULL; node = node->next) {
+			monitor = node->data;
+			if (REQUEST_WANTS_TYPE (monitor->request, request_type_wanted)) {
+				if (monitor_includes_file (monitor, file)) {
+					return TRUE;
+				}
 			}
 		}
 	}

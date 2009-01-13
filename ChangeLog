@@ -1,5 +1,12 @@
 2009-01-13  Alexander Larsson  <alexl@redhat.com>
 
+        * libnautilus-private/nautilus-directory-async.c:
+        * libnautilus-private/nautilus-directory-private.h:
+	Use the monitor and call_when_ready counts to avoid
+	iterating over the potentially long lists.
+
+2009-01-13  Alexander Larsson  <alexl@redhat.com>
+
         * libnautilus-private/nautilus-directory-private.h:
 	Fixed type (& not &&).
 	Also add some paranthesises to args for macro safety.

@@ -65,7 +65,7 @@ typedef enum {
 
 /* A request for information about one or more files. */
 typedef guint32 Request;
-typedef guint32 RequestCounter[REQUEST_TYPE_LAST];
+typedef gint32 RequestCounter[REQUEST_TYPE_LAST];
 
 #define REQUEST_WANTS_TYPE(request, type) ((request) & (1<<(type)))
 #define REQUEST_SET_TYPE(request, type) (request) |= (1<<(type))
