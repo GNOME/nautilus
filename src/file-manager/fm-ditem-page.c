@@ -395,7 +395,7 @@ create_page (GKeyFile *key_file, GtkWidget *box)
 
 	type = g_key_file_get_string (key_file, MAIN_GROUP, "Type", NULL);
 	
-	if (strcmp (type, "Link") == 0) {
+	if (g_strcmp0 (type, "Link") == 0) {
 		entries = g_list_prepend (entries,
 					  item_entry_new ("Comment",
 							  _("Comment"), TRUE, FALSE));
@@ -405,7 +405,7 @@ create_page (GKeyFile *key_file, GtkWidget *box)
 		entries = g_list_prepend (entries,
 					  item_entry_new ("GenericName",
 							  _("Description"), TRUE, FALSE));
-	} else if (strcmp (type, "Application") == 0) {
+	} else if (g_strcmp0 (type, "Application") == 0) {
 		entries = g_list_prepend (entries,
 					  item_entry_new ("Comment",
 							  _("Comment"), TRUE, FALSE));
