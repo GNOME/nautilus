@@ -1054,6 +1054,7 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 {
 	gboolean ret;
 	GError *error = NULL;
+	char *message;
 	const char *remote = NULL;
 
 	ret = dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID);
@@ -1062,10 +1063,13 @@ search_for_application_dbus_call_notify_cb (DBusGProxy *proxy, DBusGProxyCall *c
 			remote = dbus_g_error_get_name (error);
 		}
 		/* we already show an error in the installer if not found, just catch generic failure */
-		if (remote == NULL || strcmp (remote, "org.freedesktop.PackageKit.Failed") == 0) {
-			eel_show_error_dialog (_("Unable to search for application"),
-					       _("There was an internal error trying to search for applications"),
+		if (remote == NULL || strcmp (remote, "org.freedesktop.PackageKit.Modify.Failed") == 0) {
+			message = g_strdup_printf ("%s\n%s",
+						   _("There was an internal error trying to search for applications:"),
+						   error->message);
+			eel_show_error_dialog (_("Unable to search for application"), message,
 					       parameters_install->parent_window);
+			g_free (message);
 		}
 		g_error_free (error);
 		return;
@@ -1094,6 +1098,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 	DBusGProxyCall *call = NULL;
 	GtkWidget *dialog;
 	GdkWindow *window;
+	const char *mime_types[2];
 
 	/* get bus */
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
@@ -1107,7 +1112,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 	proxy = dbus_g_proxy_new_for_name (connection,
 					   "org.freedesktop.PackageKit",
 					   "/org/freedesktop/PackageKit",
-					   "org.freedesktop.PackageKit");
+					   "org.freedesktop.PackageKit.Modify");
 	if (proxy == NULL) {
 		g_warning ("Could not connect to PackageKit session service\n");
 		goto out;
@@ -1123,13 +1128,15 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 	dbus_g_proxy_set_default_timeout (proxy, INT_MAX);
 
 	/* invoke the method */
-	call = dbus_g_proxy_begin_call (proxy, "InstallMimeType",
+	mime_types[0] = mime_type;
+	mime_types[1] = NULL;
+	call = dbus_g_proxy_begin_call (proxy, "InstallMimeTypes",
 					(DBusGProxyCallNotify) search_for_application_dbus_call_notify_cb,
 					parameters_install,
 					(GDestroyNotify) activate_parameters_install_free,
 				        G_TYPE_UINT, xid,
-				        G_TYPE_UINT, 0,
-				        G_TYPE_STRING, mime_type,
+				        G_TYPE_STRV, mime_types,
+				        G_TYPE_STRING, "hide-confirm-search",
 				        G_TYPE_INVALID);
 	if (call == NULL) {
 		dialog = gtk_message_dialog_new (NULL,

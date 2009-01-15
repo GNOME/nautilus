@@ -1,3 +1,17 @@
+2009-01-15  Richard Hughes  <richard@hughsie.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(search_for_application_dbus_call_notify_cb),
+	(search_for_application_mime_type):
+	We've been working with the KDE devs, and we've come up with a slightly
+	changed specification that can be adopted by KPackageKit and also have
+	room for expansion in the future. There's only a couple of things
+	already using the old interface, nautilus being one of them.
+
+	I've patched nautilus to convert from the old interface to the new
+	interface. The new interface does not have the double confirm problem,
+	and now respects the users session policy on interaction.
+
 2009-01-14  A. Walton  <awalton@gnome.org>
 
 	* src/file-manager/fm-ditem-page.c (create_page):
