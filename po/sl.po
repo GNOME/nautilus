@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus&component=general\n"
-"POT-Creation-Date: 2009-01-14 14:25+0000\n"
-"PO-Revision-Date: 2009-01-15 16:53+0100\n"
+"POT-Creation-Date: 2009-01-15 16:48+0000\n"
+"PO-Revision-Date: 2009-01-16 08:56+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1589,7 +1589,7 @@ msgstr " (%d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1211
 msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
-msgstr "Ali ste prepričani, da želite iz smeti trajno zbrisati \"%B\"?"
+msgstr "Ali ste prepričani, da želite iz smeti trajno izbrisati \"%B\"?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1214
 #, c-format
@@ -1623,16 +1623,16 @@ msgstr "Izprazni _Smeti"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1280
 msgid "Are you sure you want to permanently delete \"%B\"?"
-msgstr "Ali ste prepričani, da želite trajno zbrisati \"%B\"?"
+msgstr "Ali ste prepričani, da želite trajno izbrisati \"%B\"?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1283
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural "Are you sure you want to permanently delete the %'d selected items?"
-msgstr[0] "Ste prepričani, da želite trajno zbrisati %d izbranih predmetov?"
-msgstr[1] "Ste prepričani, da želite trajno zbrisati %d izbrani predmet?"
-msgstr[2] "Ste prepričani, da želite trajno zbrisati %d izbrana predmeta?"
-msgstr[3] "Ste prepričani, da želite trajno zbrisati %d izbrane predmete?"
+msgstr[0] "Ste prepričani, da želite trajno izbrisati %d izbranih predmetov?"
+msgstr[1] "Ste prepričani, da želite trajno izbrisati %d izbrani predmet?"
+msgstr[2] "Ste prepričani, da želite trajno izbrisati %d izbrana predmeta?"
+msgstr[3] "Ste prepričani, da želite trajno izbrisati %d izbrane predmete?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1326
 msgid "Deleting files"
@@ -1712,7 +1712,7 @@ msgstr[3] "%'d preostale datoteke za premikanje v smeti"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1692
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Datoteke ni mogoče premakniti v smeti. Jo želite zbrisati takoj?"
+msgstr "Datoteke ni mogoče premakniti v smeti. Jo želite izbrisati takoj?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1693
 msgid "The file \"%B\" cannot be moved to the trash."
@@ -2680,19 +2680,19 @@ msgstr[1] "To bo odprlo %d ločeno okno."
 msgstr[2] "To bo odprlo %d ločeni okni."
 msgstr[3] "To bo odprlo %d ločena okna."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1066
+#: ../libnautilus-private/nautilus-mime-actions.c:1068
+msgid "There was an internal error trying to search for applications:"
+msgstr "Prišlo je do napake med poskusom iskanjem programa:"
+
+#: ../libnautilus-private/nautilus-mime-actions.c:1070
 msgid "Unable to search for application"
 msgstr "Ni mogoče iskati programa"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1067
-msgid "There was an internal error trying to search for applications"
-msgstr "Prišlo je do napake med iskanjem programa"
-
-#: ../libnautilus-private/nautilus-mime-actions.c:1139
+#: ../libnautilus-private/nautilus-mime-actions.c:1146
 msgid "Could not use system package installer"
 msgstr "Ni mogoče uporabiti sistemskega nameščanja paketov."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1197
+#: ../libnautilus-private/nautilus-mime-actions.c:1204
 #: ../src/nautilus-window-manage-views.c:1880
 #: ../src/nautilus-window-manage-views.c:1886
 #: ../src/nautilus-window-manage-views.c:1903
@@ -2703,16 +2703,16 @@ msgstr "Ni mogoče uporabiti sistemskega nameščanja paketov."
 msgid "Could not display \"%s\"."
 msgstr "Ni mogoče prikazati \"%s\"."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1218
+#: ../libnautilus-private/nautilus-mime-actions.c:1225
 msgid "The file is of an unknown type"
 msgstr "Datoteka je neznane vrste"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1221
+#: ../libnautilus-private/nautilus-mime-actions.c:1228
 #, c-format
 msgid "There is no application installed for %s files"
 msgstr "Ni nameščenega programa, ki podpira %s vrsto datotek"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1236
+#: ../libnautilus-private/nautilus-mime-actions.c:1243
 #, c-format
 msgid ""
 "There is no application installed for %s files.\n"
@@ -2721,17 +2721,17 @@ msgstr ""
 "Ni nameščenega programa, ki podpira %s vrsto datoteke.\n"
 "Ali želite poiskati program, s katerim bi datoteko lahko odprli?"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1514
-#: ../libnautilus-private/nautilus-mime-actions.c:1772
+#: ../libnautilus-private/nautilus-mime-actions.c:1521
+#: ../libnautilus-private/nautilus-mime-actions.c:1779
 msgid "Unable to mount location"
 msgstr "Ni mogoče priklopiti mesta"
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1860
+#: ../libnautilus-private/nautilus-mime-actions.c:1867
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Odpiranje \"%s\"."
 
-#: ../libnautilus-private/nautilus-mime-actions.c:1863
+#: ../libnautilus-private/nautilus-mime-actions.c:1870
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4004,7 +4004,7 @@ msgstr "Nimate ustreznih dovoljenj za pogled vsebine \"%s\"."
 #: ../src/file-manager/fm-error-reporting.c:63
 #, c-format
 msgid "\"%s\" could not be found. Perhaps it has recently been deleted."
-msgstr "\"%s\" ni mogoče najti. Morda je bila datoteka nedavno zbrisana."
+msgstr "\"%s\" ni mogoče najti. Morda je bila datoteka nedavno izbrisana."
 
 #: ../src/file-manager/fm-error-reporting.c:67
 #, c-format
@@ -4023,7 +4023,7 @@ msgstr "Ime \"%s\" je v tej mapi že uporabljeno. Prosim uporabite drugačno ime
 #: ../src/file-manager/fm-error-reporting.c:108
 #, c-format
 msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "V tej mapi ni \"%s\". Morda je bila le prestavljena ali zbrisana?"
+msgstr "V tej mapi ni \"%s\". Morda je bila le prestavljena ali izbrisana?"
 
 #: ../src/file-manager/fm-error-reporting.c:113
 #, c-format
@@ -5763,7 +5763,7 @@ msgstr "Ni mogoče zamenjati slike za ponovni zagon."
 
 #: ../src/nautilus-property-browser.c:1192
 msgid "Reset is a special image that cannot be deleted."
-msgstr "Ponastavi je posebna slika, ki je ni mogoče zbrisati."
+msgstr "Ponastavi je posebna slika, ki je ni mogoče izbrisati."
 
 #: ../src/nautilus-property-browser.c:1220
 #, c-format
@@ -6003,7 +6003,7 @@ msgstr "nudi prikaz stanja"
 
 #: ../src/nautilus-window-bookmarks.c:97
 msgid "Do you want to remove any bookmarks with the non-existing location from your list?"
-msgstr "Želite zbrisati vse zaznamke neobstoječih lokacij z vašega seznama?"
+msgstr "Ali želite izbrisati vse zaznamke neobstoječih povezav z vašega seznama?"
 
 #: ../src/nautilus-window-bookmarks.c:102
 msgid "Bookmark for Nonexistent Location"
