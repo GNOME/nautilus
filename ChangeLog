@@ -1,3 +1,9 @@
+2009-01-20  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-window-slot.c: (nautilus_window_slot_dispose):
+	Fix a crash when closing a window before it's fully populated.
+	Part of bug #552859, patch by Ray Strode.
+
 2009-01-19  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

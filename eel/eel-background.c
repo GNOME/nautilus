@@ -53,6 +53,9 @@ static GdkPixmap *eel_background_get_pixmap_and_color      (EelBackground *backg
 							    gboolean      *changes_with_size);
 static void set_image_properties (EelBackground *background);
 
+static void init_fade (EelBackground *background, GtkWidget *widget);
+static void free_fade (EelBackground *background);
+
 EEL_CLASS_BOILERPLATE (EelBackground, eel_background, GTK_TYPE_OBJECT)
 
 enum {
@@ -73,10 +76,12 @@ struct EelBackgroundDetails {
 	char *color;
 	
 	GnomeBG *bg;
+	GtkWidget *widget;
 
 	/* Realized data: */
 	gboolean background_changes_with_size;
 	GdkPixmap *background_pixmap;
+	GnomeBGCrossfade *fade;
 	int background_entire_width;
 	int background_entire_height;
 	GdkColor default_color;
@@ -89,6 +94,7 @@ struct EelBackgroundDetails {
 	gulong screen_size_handler;
 	/* Can we use common pixmap for root window and desktop window */
 	gboolean use_common_pixmap;
+	guint change_idle_id;
 };
 
 static void
@@ -137,6 +143,15 @@ eel_background_class_init (gpointer klass)
 static void
 on_bg_changed (GnomeBG *bg, EelBackground *background)
 {
+	init_fade (background, background->details->widget);
+	g_signal_emit (G_OBJECT (background),
+		       signals[APPEARANCE_CHANGED], 0);
+}
+
+static void
+on_bg_transitioned (GnomeBG *bg, EelBackground *background)
+{
+	free_fade (background);
 	g_signal_emit (G_OBJECT (background),
 		       signals[APPEARANCE_CHANGED], 0);
 }
@@ -156,6 +171,8 @@ eel_background_init (gpointer object, gpointer klass)
 
 	g_signal_connect (background->details->bg, "changed",
 			  G_CALLBACK (on_bg_changed), background);
+	g_signal_connect (background->details->bg, "transitioned",
+			  G_CALLBACK (on_bg_transitioned), background);
 	
 }
 
@@ -174,6 +191,15 @@ eel_background_remove_current_image (EelBackground *background)
 }
 
 static void
+free_fade (EelBackground *background)
+{
+	if (background->details->fade != NULL) {
+		g_object_unref (background->details->fade);
+		background->details->fade = NULL;
+	}
+}
+
+static void
 eel_background_finalize (GObject *object)
 {
 	EelBackground *background;
@@ -187,6 +213,8 @@ eel_background_finalize (GObject *object)
 		g_object_unref (background->details->background_pixmap);
 		background->details->background_pixmap = NULL;
 	}
+
+	free_fade (background);
 
 	g_free (background->details);
 
@@ -610,11 +638,65 @@ eel_background_reset (EelBackground *background)
 }
 
 static void
+set_root_pixmap (EelBackground *background,
+                 GdkWindow     *window)
+{
+	GdkPixmap *pixmap, *root_pixmap;
+	GdkScreen *screen;
+	GdkColor color;
+	gboolean changes_with_size;
+
+	pixmap = eel_background_get_pixmap_and_color (background,
+						      window,
+						      &color,
+						      &changes_with_size);
+	screen = gdk_drawable_get_screen (window);
+
+	if (background->details->use_common_pixmap) {
+		root_pixmap = g_object_ref (pixmap);
+	} else {
+		root_pixmap = gnome_bg_create_pixmap (background->details->bg, window,
+						      gdk_screen_get_width (screen), gdk_screen_get_height (screen), TRUE);
+	}
+
+	gnome_bg_set_pixmap_as_root (screen, pixmap);
+
+	g_object_unref (pixmap);
+	g_object_unref (root_pixmap);
+}
+
+static gboolean
+fade_to_pixmap (EelBackground *background,
+		 GdkWindow     *window,
+		 GdkPixmap     *pixmap)
+{
+	if (background->details->fade == NULL) {
+		return FALSE;
+	}
+
+	if (!gnome_bg_crossfade_set_end_pixmap (background->details->fade,
+				                pixmap)) {
+		return FALSE;
+	}
+
+	if (!gnome_bg_crossfade_is_started (background->details->fade)) {
+		gnome_bg_crossfade_start (background->details->fade, window);
+		if (background->details->is_desktop) {
+			g_signal_connect_swapped (background->details->fade,
+					          "finished",
+						  G_CALLBACK (set_root_pixmap), background);
+		}
+	}
+
+	return gnome_bg_crossfade_is_started (background->details->fade);
+}
+
+
+static void
 eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 {
 	GtkStyle *style;
 	GdkPixmap *pixmap;
-	GdkPixmap *root_pixmap;
 	GdkColor color;
 	
 	int window_width;
@@ -622,6 +704,7 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	
 	GdkWindow *window;
 	gboolean changes_with_size;
+	gboolean in_fade;
 
 	if (!GTK_WIDGET_REALIZED (widget)) {
 		return;
@@ -644,30 +727,26 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 		window = widget->window;
 	}
 
+	if (background->details->fade != NULL) {
+		in_fade = fade_to_pixmap (background, window, pixmap);
+	} else {
+		in_fade = FALSE;
+	}
+
+	if (!in_fade) {
 	if (!changes_with_size || background->details->is_desktop) {
 		gdk_window_set_back_pixmap (window, pixmap, FALSE);
 	} else {
 		gdk_window_set_back_pixmap (window, NULL, FALSE);
 		gdk_window_set_background (window, &color);
 	}
+        }
 	
-
 	background->details->background_changes_with_size =
 		gnome_bg_changes_with_size (background->details->bg);
 	
-	if (background->details->is_desktop) {
-
-		root_pixmap = NULL;
-
-		if (background->details->use_common_pixmap) {
-			root_pixmap = g_object_ref (pixmap);
-		} else {
-			root_pixmap = gnome_bg_create_pixmap (background->details->bg, window,
-							      window_width, window_height, TRUE);
-		}
-
-		gnome_bg_set_pixmap_as_root (gdk_drawable_get_screen (window), root_pixmap);
-		g_object_unref (root_pixmap);
+	if (background->details->is_desktop && !in_fade) {
+		set_root_pixmap (background, window);
 	}
 	
 	if (pixmap) {
@@ -675,13 +754,73 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	}
 }
 
-static void
-eel_widget_background_changed (GtkWidget *widget, EelBackground *background)
+static gboolean
+on_background_changed (EelBackground *background)
 {
-	eel_background_unrealize (background);
-	eel_background_set_up_widget (background, widget);
+	if (background->details->change_idle_id == 0) {
+		return FALSE;
+	}
 
-	gtk_widget_queue_draw (widget);
+	background->details->change_idle_id = 0;
+
+	eel_background_unrealize (background);
+	eel_background_set_up_widget (background, background->details->widget);
+
+	gtk_widget_queue_draw (background->details->widget);
+
+	return FALSE;
+}
+
+static void
+init_fade (EelBackground *background, GtkWidget *widget)
+{
+	if (widget == NULL || !GTK_WIDGET_REALIZED (widget))
+		return;
+
+	if (background->details->fade == NULL) {
+		int old_width, old_height, width, height;
+
+		/* If this was the result of a screen size change,
+		 * we don't want to crossfade
+		 */
+		gdk_drawable_get_size (widget->window, &old_width, &old_height);
+		drawable_get_adjusted_size (background, widget->window,
+					    &width, &height);
+		if (old_width == width && old_height == height) {
+			background->details->fade = gnome_bg_crossfade_new (width, height);
+			g_signal_connect_swapped (background->details->fade,
+						"finished",
+						G_CALLBACK (free_fade),
+						background);
+		}
+	}
+
+	if (background->details->fade != NULL && !gnome_bg_crossfade_is_started (background->details->fade)) {
+		GdkPixmap *start_pixmap;
+
+		if (background->details->background_pixmap == NULL) {
+			start_pixmap = gnome_bg_get_pixmap_from_root (gtk_widget_get_screen (widget));
+		} else {
+			start_pixmap = g_object_ref (background->details->background_pixmap);
+		}
+		gnome_bg_crossfade_set_start_pixmap (background->details->fade,
+						     start_pixmap);
+                g_object_unref (start_pixmap);
+	}
+}
+
+static void
+eel_widget_queue_background_change (GtkWidget *widget)
+{
+	EelBackground *background;
+
+	background = eel_get_widget_background (widget);
+
+	if (background->details->change_idle_id > 0) {
+		return;
+	}
+
+	background->details->change_idle_id = g_idle_add ((GSourceFunc) on_background_changed, background);
 }
 
 /* Callback used when the style of a widget changes.  We have to regenerate its
@@ -694,7 +833,7 @@ widget_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, gpointer data)
 	
 	background = EEL_BACKGROUND (data);
 	
-	eel_widget_background_changed (widget, background);
+	eel_widget_queue_background_change (widget);
 }
 
 static void
@@ -733,6 +872,8 @@ widget_realized_setup (GtkWidget *widget, gpointer data)
 		} else {
 			background->details->use_common_pixmap = FALSE;
 		}
+
+		init_fade (background, widget);
 	}
 }
 
@@ -780,6 +921,17 @@ eel_background_is_desktop (EelBackground *background)
 	return background->details->is_desktop;
 }
 
+static void
+on_widget_destroyed (GtkWidget *widget, EelBackground *background)
+{
+	if (background->details->change_idle_id != 0) {
+		g_source_remove (background->details->change_idle_id);
+		background->details->change_idle_id = 0;
+	}
+
+	background->details->widget = NULL;
+}
+
 /* Gets the background attached to a widget.
 
    If the widget doesn't already have a EelBackground object,
@@ -815,11 +967,13 @@ eel_get_widget_background (GtkWidget *widget)
 	gtk_object_sink (GTK_OBJECT (background));
 	g_object_set_data_full (G_OBJECT (widget), "eel_background",
 				background, g_object_unref);
+	background->details->widget = widget;
+ 	g_signal_connect_object (widget, "destroy", G_CALLBACK (on_widget_destroyed), background, 0);
 
 	/* Arrange to get the signal whenever the background changes. */
 	g_signal_connect_object (background, "appearance_changed",
-				 G_CALLBACK (eel_widget_background_changed), widget, G_CONNECT_SWAPPED);
-	eel_widget_background_changed (widget, background);
+				 G_CALLBACK (eel_widget_queue_background_change), widget, G_CONNECT_SWAPPED);
+	eel_widget_queue_background_change (widget);
 
 	g_signal_connect_object (widget, "style_set",
 				 G_CALLBACK (widget_style_set_cb),

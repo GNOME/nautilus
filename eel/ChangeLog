@@ -1,3 +1,15 @@
+2009-01-20  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* eel-background.c: (on_bg_changed), (on_bg_transitioned),
+	(eel_background_init), (free_fade), (eel_background_finalize),
+	(set_root_pixmap), (fade_to_pixmap),
+	(eel_background_set_up_widget), (on_background_changed),
+	(init_fade), (eel_widget_queue_background_change),
+	(widget_style_set_cb), (widget_realized_setup),
+	(on_widget_destroyed), (eel_get_widget_background):
+	Support fading between backgrounds.
+	Bug #552859, patch by Ray Strode.
+
 === nautilus 2.25.2 ===
 
 2008-12-15  Alexander Larsson  <alexl@redhat.com>
