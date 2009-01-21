@@ -326,7 +326,7 @@ main (int argc, char *argv[])
 		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
 		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
-		  N_("Show the version of the progam."), NULL },
+		  N_("Show the version of the program."), NULL },
 		{ "geometry", 'g', 0, G_OPTION_ARG_STRING, &geometry,
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
 		{ "no-default-window", 'n', 0, G_OPTION_ARG_NONE, &no_default_window,
