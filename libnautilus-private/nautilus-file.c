@@ -669,6 +669,7 @@ finalize (GObject *object)
 	g_free (file->details->symlink_name);
 	eel_ref_str_unref (file->details->mime_type);
 	g_free (file->details->selinux_context);
+	g_free (file->details->description);
 	g_free (file->details->top_left_text);
 	g_free (file->details->custom_icon);
 	if (file->details->activation_location) {
