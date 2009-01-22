@@ -1,5 +1,11 @@
 2009-01-22  Cosimo Cecchi  <cosimoc@gnome.org>
 
+        * libnautilus-private/nautilus-icon-container.c:
+        (snap_position): make sure we don't snap icons to a grid marker which
+        is too near the right margin of the canvas (#527374).
+
+2009-01-22  Cosimo Cecchi  <cosimoc@gnome.org>
+
         * MAINTAINERS: fix a typo.
 
 2009-01-22  A. Walton  <awalton@gnome.org>
