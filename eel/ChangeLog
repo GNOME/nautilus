@@ -1,6 +1,11 @@
 2009-01-21  A. Walton  <awalton@gnome.org>
 
 	* eel-debug-drawing.c (eel_debug_show_pixbuf_in_external_viewer):
+	Really fix bug #568630, replace mktemp() with mkstemp().
+
+2009-01-21  A. Walton  <awalton@gnome.org>
+
+	* eel-debug-drawing.c (eel_debug_show_pixbuf_in_external_viewer):
 	Last commit is wrong; mkstemp is not a drop in replacement for 
 	mktemp.
 

@@ -285,15 +285,19 @@ eel_debug_show_pixbuf_in_external_viewer (const GdkPixbuf *pixbuf,
 	char *file_name;
 	gboolean save_result;
 	int ignore;
+	int fd;
 
 	g_return_if_fail (pixbuf != NULL);
 	g_return_if_fail (viewer_name != NULL);
 
 	file_name = g_strdup ("/tmp/eel-debug-png-file-XXXXXX");
 
-	if (mktemp (file_name) != file_name) {
+	fd = mkstemp (file_name); 
+	if (fd == -1) {
 		g_free (file_name);
 		file_name = g_strdup_printf ("/tmp/isis-debug-png-file-%d", getpid ());
+	} else {
+		close (fd);
 	}
 
 	save_result = eel_gdk_pixbuf_save_to_file (pixbuf, file_name);
