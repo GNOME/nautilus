@@ -358,6 +358,8 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->mime_type = NULL;
 	g_free (file->details->selinux_context);
 	file->details->selinux_context = NULL;
+	g_free (file->details->description);
+	file->details->description = NULL;
 
 	eel_ref_str_unref (file->details->filesystem_id);
 	file->details->filesystem_id = NULL;
