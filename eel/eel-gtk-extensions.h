@@ -111,6 +111,9 @@ void                  eel_gtk_menu_set_item_visibility                (GtkMenu  
 								       int                   index,
 								       gboolean              visible);
 
+/* GtkMenuToolButton */
+GtkWidget *           eel_gtk_menu_tool_button_get_button             (GtkMenuToolButton    *tool_button);
+
 /* GtkLabel */
 void                  eel_gtk_label_make_bold                         (GtkLabel             *label);
 void                  eel_gtk_label_set_scale                         (GtkLabel             *label,

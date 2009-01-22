@@ -436,6 +436,26 @@ eel_gtk_menu_set_item_visibility (GtkMenu *menu, int index, gboolean visible)
 	g_list_free (children);
 }
 
+GtkWidget *
+eel_gtk_menu_tool_button_get_button (GtkMenuToolButton *tool_button)
+{
+	GtkContainer *container;
+	GList *children;
+	GtkWidget *button;
+
+	g_return_val_if_fail (GTK_IS_MENU_TOOL_BUTTON (tool_button), NULL);
+
+	/* The menu tool button's button is the first child
+	 * of the child hbox. */
+	container = GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (tool_button)));
+	children = gtk_container_get_children (container);
+	button = GTK_WIDGET (children->data);
+
+	g_list_free (children);
+
+	return button;
+}
+
 gboolean
 eel_point_in_allocation (const GtkAllocation *allocation,
 			      int x, int y)

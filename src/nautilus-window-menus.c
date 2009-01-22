@@ -42,6 +42,7 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -622,13 +623,7 @@ get_event_widget (GtkWidget *proxy)
 		/* Menu items already forward middle clicks */
 		widget = NULL;
 	} else if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		/**
-		 * The menu tool button's button is the first child
-		 * of the child hbox.
-		 */
-		GtkContainer *container =
-			GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
-		widget = GTK_WIDGET (gtk_container_get_children (container)->data);
+		widget = eel_gtk_menu_tool_button_get_button (GTK_MENU_TOOL_BUTTON (proxy));
 	} else if (GTK_IS_TOOL_BUTTON (proxy)) {
 		/* The tool button's button is the direct child */
 		widget = gtk_bin_get_child (GTK_BIN (proxy));

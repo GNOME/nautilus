@@ -33,8 +33,8 @@
 #include "nautilus-navigation-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-navigation-window-slot.h"
-
 #include <gtk/gtk.h>
+#include <eel/eel-gtk-extensions.h>
 
 static void nautilus_navigation_action_init       (NautilusNavigationAction *action);
 static void nautilus_navigation_action_class_init (NautilusNavigationActionClass *class);
@@ -159,7 +159,6 @@ fill_menu (NautilusNavigationWindow *window,
 	}
 }
 
-
 static void
 show_menu_callback (GtkMenuToolButton *button,
 		    NautilusNavigationAction *action)
@@ -225,7 +224,6 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 		NautilusNavigationAction *naction = NAUTILUS_NAVIGATION_ACTION (action);
 		GtkMenuToolButton *button = GTK_MENU_TOOL_BUTTON (proxy);
 		GtkWidget *menu;
-		GtkContainer *container;
 		GtkWidget *child;
 
 		/* set an empty menu, so the arrow button becomes sensitive */
@@ -240,8 +238,7 @@ connect_proxy (GtkAction *action, GtkWidget *proxy)
 
 		/* Make sure that middle click works. Note that there is some code duplication
 		 * between here and nautilus-window-menus.c */
-		container = GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
-		child = GTK_WIDGET (gtk_container_get_children (container)->data);
+		child = eel_gtk_menu_tool_button_get_button (button);
 		g_signal_connect (child, "button-press-event", G_CALLBACK (proxy_button_press_event_cb), NULL);
 		g_signal_connect (child, "button-release-event", G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}
@@ -253,13 +250,11 @@ static void
 disconnect_proxy (GtkAction *action, GtkWidget *proxy)
 {
 	if (GTK_IS_MENU_TOOL_BUTTON (proxy)) {
-		GtkContainer *container;
 		GtkWidget *child;
 		
 		g_signal_handlers_disconnect_by_func (proxy, G_CALLBACK (show_menu_callback), action);
 
-		container = GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (proxy)));
-		child = GTK_WIDGET (gtk_container_get_children (container)->data);
+		child = eel_gtk_menu_tool_button_get_button (GTK_MENU_TOOL_BUTTON (proxy));
 		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_press_event_cb), NULL);
 		g_signal_handlers_disconnect_by_func (child, G_CALLBACK (proxy_button_release_event_cb), NULL);
 	}

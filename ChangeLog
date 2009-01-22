@@ -1,3 +1,13 @@
+2009-01-22  Paolo Borelli  <pborelli@katamail.com>
+
+	* eel/eel-gtk-extensions.[ch]: add utility function
+	to get a GtkMenuToolButton's button
+
+	* src/nautilus-window-menus.c:
+	* src/nautilus-navigation-action.c:
+	Use the above util function that doesn't leak the children
+	list.
+
 2009-01-20  A. Walton  <awalton@gnome.org>
 
 	* src/nautilus-main.c (main):
