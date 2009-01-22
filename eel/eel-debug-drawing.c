@@ -291,7 +291,7 @@ eel_debug_show_pixbuf_in_external_viewer (const GdkPixbuf *pixbuf,
 
 	file_name = g_strdup ("/tmp/eel-debug-png-file-XXXXXX");
 
-	if (mkstemp (file_name) != file_name) {
+	if (mktemp (file_name) != file_name) {
 		g_free (file_name);
 		file_name = g_strdup_printf ("/tmp/isis-debug-png-file-%d", getpid ());
 	}

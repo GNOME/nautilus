@@ -1,7 +1,13 @@
 2009-01-21  A. Walton  <awalton@gnome.org>
 
 	* eel-debug-drawing.c (eel_debug_show_pixbuf_in_external_viewer):
-	Bug #568630: eel should use mkstemp() instead of mktemp()
+	Last commit is wrong; mkstemp is not a drop in replacement for 
+	mktemp.
+
+2009-01-21  A. Walton  <awalton@gnome.org>
+
+	* eel-debug-drawing.c (eel_debug_show_pixbuf_in_external_viewer):
+	Bug 568630 eel should use mkstemp() instead of mktemp()
 	mktemp() is deprecated and should not be used.
 	Patch by Jasper Lievisse Adriaanse.
 
