@@ -812,7 +812,7 @@ nautilus_unique_temporary_file_name (void)
 
 	file_name = g_strdup_printf ("%sXXXXXX", prefix);
 
-	fd = mkstemp (file_name); 
+	fd = g_mkstemp (file_name); 
 	if (fd == -1) {
 		g_free (file_name);
 		file_name = NULL;

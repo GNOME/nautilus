@@ -1,3 +1,10 @@
+2009-01-22  A. Walton  <awalton@gnome.org>
+
+	* libnautilus-private/nautilus-file-utilities.c
+	(nautilus_unique_temporary_file_name):
+	* libnautilus-private/nautilus-metafile.c (metafile_write_local):
+	Use g_mkstemp() instead of mkstemp(). Pointed out by Paolo Borelli.
+
 2009-01-22  Paolo Borelli  <pborelli@katamail.com>
 
 	* eel/eel-gtk-extensions.[ch]: add utility function

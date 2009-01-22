@@ -292,7 +292,7 @@ eel_debug_show_pixbuf_in_external_viewer (const GdkPixbuf *pixbuf,
 
 	file_name = g_strdup ("/tmp/eel-debug-png-file-XXXXXX");
 
-	fd = mkstemp (file_name); 
+	fd = g_mkstemp (file_name); 
 	if (fd == -1) {
 		g_free (file_name);
 		file_name = g_strdup_printf ("/tmp/isis-debug-png-file-%d", getpid ());

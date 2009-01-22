@@ -1917,7 +1917,7 @@ metafile_write_local (NautilusMetafile *metafile,
 	temp_path = g_strconcat (metafile_path, "XXXXXX", NULL);
 	failed = FALSE;
 
-	fd = mkstemp (temp_path);
+	fd = g_mkstemp (temp_path);
 	if (fd == -1) {
 		failed = TRUE;
 	}
