@@ -1,3 +1,15 @@
+2009-01-28  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* data/icons/*:
+	Bring icon handling to the 21th century.
+	Add an emblem-note icon, this is copied from g-i-t "stock_note"
+	icon right now, but we might change this later.
+	* src/nautilus-application.c: (nautilus_application_init):
+	add a lookup path for custom themable icons.
+
+	This also fixes bug #569407. Thanks to Lapo Calamandrei for
+	the tips on icon naming.
+
 2009-01-27  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* nautilus.desktop.in.in: set X-GNOME-AutoRestart=true, to make

@@ -310,6 +310,10 @@ nautilus_application_init (NautilusApplication *application)
 
 	/* register property pages */
 	nautilus_image_properties_page_register ();
+
+	/* initialize search path for custom icons */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   NAUTILUS_DATADIR G_DIR_SEPARATOR_S "icons");
 }
 
 NautilusApplication *
