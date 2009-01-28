@@ -309,19 +309,16 @@ on_changed (GtkEditable *editable, NautilusNotesViewer *notes)
 static void
 nautilus_notes_viewer_init (NautilusNotesViewer *sidebar)
 {
-        char *image_path;
         NautilusNotesViewerDetails *details;
+	NautilusIconInfo *info;
         
         details = g_new0 (NautilusNotesViewerDetails, 1);
         sidebar->details = details;
         
         details->uri = g_strdup ("");
 
-        image_path = nautilus_pixmap_file ("note-indicator.png");
-        if (image_path) {
-                details->icon = gdk_pixbuf_new_from_file (image_path, NULL);
-                g_free (image_path);
-        }
+	info = nautilus_icon_info_lookup_from_name ("emblem-note", 16);
+	details->icon = nautilus_icon_info_get_pixbuf (info);
 
         /* create the text container */               
 	details->text_buffer = gtk_text_buffer_new (NULL);

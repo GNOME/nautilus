@@ -10,7 +10,6 @@ icon_DATA =\
 	emblems.png \
 	erase.png \
 	knob.png \
-	note-indicator.png \
 	thumbnail_frame.png \
 	$(NULL)
 
