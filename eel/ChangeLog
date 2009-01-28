@@ -1,3 +1,9 @@
+2009-01-28  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* eel-editable-label.c: (eel_editable_label_move_cursor):
+	make sure we take care about UTF-8/byte conversion when we move
+	around the cursor (#569165).
+
 2009-01-22  A. Walton  <awalton@gnome.org>
 
 	* eel-debug-drawing.c (eel_debug_show_pixbuf_in_external_viewer):

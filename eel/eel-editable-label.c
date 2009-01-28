@@ -2897,11 +2897,11 @@ eel_editable_label_move_cursor (EelEditableLabel    *label,
     }
 
   if (extend_selection)
-    eel_editable_label_select_region_index (label,
-					    label->selection_anchor,
-					    new_pos);
+    gtk_editable_select_region (GTK_EDITABLE (label),
+				label->selection_anchor,
+ 				new_pos);
   else
-    eel_editable_label_select_region_index (label, new_pos, new_pos);
+    gtk_editable_set_position (GTK_EDITABLE (label), new_pos);
 }
 
 static void
