@@ -1434,7 +1434,10 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 			nautilus_file_update_name_and_directory 
 				(file, name, new_directory);
 			g_free (name);
-			
+
+			/* Update file attributes */
+			nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_INFO);
+
 			hash_table_list_prepend (changed_lists,
 						 old_directory,
 						 file);

@@ -1,4 +1,11 @@
-2009-01-28  Cosimo Cecchi  <cosimoc@pluto>
+2009-01-28  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved):
+	Invalidate file attributes after it has been moved, so that
+	they are refreshed properly (#555234).
+
+2009-01-28  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* icons/Makefile.am:
 	* src/nautilus-notes-viewer.c: (nautilus_notes_viewer_init):
