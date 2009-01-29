@@ -1,3 +1,12 @@
+2009-01-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(seconds_count_format_time_units), (report_delete_progress),
+	(report_copy_progress): make sure to use the correct singular
+	or plural form for the time format when reporting a file operation
+	progress detail.
+	Thanks to Christian Neumair (#551222).
+
 2009-01-28  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-directory.c:

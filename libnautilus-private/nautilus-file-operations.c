@@ -203,6 +203,46 @@ static gboolean empty_trash_job (GIOSchedulerJob *io_job,
 static char * query_fs_type (GFile *file,
 			     GCancellable *cancellable);
 
+/* keep in time with format_time()
+ *
+ * This counts and outputs the number of “time units”
+ * formatted and displayed by format_time().
+ * For instance, if format_time outputs “3 hours, 4 minutes”
+ * it yields 7.
+ */
+static int
+seconds_count_format_time_units (int seconds)
+{
+	int minutes;
+	int hours;
+
+	if (seconds < 0) {
+		/* Just to make sure... */
+		seconds = 0;
+	}
+
+	if (seconds < 60) {
+		/* seconds */
+		return seconds;
+	}
+
+	if (seconds < 60*60) {
+		/* minutes */
+		minutes = (seconds + 30) / 60;
+		return minutes;
+	}
+
+	hours = seconds / (60*60);
+
+	if (seconds < 60*60*4) {
+		/* minutes + hours */
+		minutes = (seconds - hours * 60 * 60 + 30) / 60;
+		return minutes + hours;
+	}
+
+	return hours;
+}
+
 static char *
 format_time (int seconds)
 {
@@ -1338,11 +1378,23 @@ report_delete_progress (CommonJob *job,
 		transfer_rate = transfer_info->num_files / elapsed;
 		remaining_time = files_left / transfer_rate;
 
-		/* To translators: %T will expand to a time like "2 minutes" */		
-		s = f (ngettext ("%'d file left to delete \xE2\x80\x94 %T left",
-				 "%'d files left to delete \xE2\x80\x94 %T left",
-				 files_left),
-		       files_left, remaining_time);
+		if (files_left == 1) {
+			/* To translators: %T will expand to a time like "2 minutes". 
+ 			 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+ 			 */
+			s = f (ngettext ("%'d file left to delete \xE2\x80\x94 %T left",
+					 "%'d file left to delete \xE2\x80\x94 %T left",
+					 seconds_count_format_time_units (remaining_time)),
+			       files_left, remaining_time);
+		} else {
+			/* To translators: %T will expand to a time like "2 minutes".
+ 			 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+ 			 */
+			s = f (ngettext ("%'d files left to delete \xE2\x80\x94 %T left",
+					 "%'d files left to delete \xE2\x80\x94 %T left",
+					 seconds_count_format_time_units (remaining_time)),
+			       files_left, remaining_time);
+		}
 		nautilus_progress_info_take_details (job->progress, s);
 	}
 
@@ -2813,8 +2865,12 @@ report_copy_progress (CopyMoveJob *copy_job,
 
 		/* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
 		 * "2 minutes". So the whole thing will be something like "2 kb of 4 MB -- 2 hours left (4kb/sec)"
+		 *
+		 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 		 */		
-		s = f (_("%S of %S \xE2\x80\x94 %T left (%S/sec)"),
+		s = f (ngettext ("%S of %S \xE2\x80\x94 %T left (%S/sec)",
+				 "%S of %S \xE2\x80\x94 %T left (%S/sec)",
+				 seconds_count_format_time_units (remaining_time)),
 		       transfer_info->num_bytes, total_size,
 		       remaining_time,
 		       (goffset)transfer_rate);
