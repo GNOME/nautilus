@@ -1,5 +1,13 @@
 2009-01-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
+	* libnautilus-private/nautilus-autorun.c: (handle_dialog_closure),
+	(dialog_response_cb), (dialog_destroy_cb), (combo_box_changed):
+	Don't use gtk_dialog_run to show the NautilusOpenWithDialog.
+	That won't work, as we will spawn a GtkFileChooser later,
+	eating all the mouse events on it if we do (#569651).
+
+2009-01-29  Cosimo Cecchi  <cosimoc@gnome.org>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(seconds_count_format_time_units), (report_delete_progress),
 	(report_copy_progress): make sure to use the correct singular

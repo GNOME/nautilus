@@ -240,6 +240,30 @@ other_application_selected (NautilusOpenWithDialog *dialog,
 	nautilus_autorun_rebuild_combo_box (data->combo_box);
 }
 
+static void
+handle_dialog_closure (NautilusAutorunComboBoxData *data)
+{
+	if (!data->other_application_selected) {
+		/* reset combo box so we don't linger on "Open with other Application..." */
+		nautilus_autorun_rebuild_combo_box (data->combo_box);
+	}
+}
+
+static void
+dialog_response_cb (GtkDialog *dialog,
+                    gint response,
+                    NautilusAutorunComboBoxData *data)
+{
+	handle_dialog_closure (data);
+}
+
+static void
+dialog_destroy_cb (GtkObject *object,
+                   NautilusAutorunComboBoxData *data)
+{
+	handle_dialog_closure (data);
+}
+
 static void 
 combo_box_changed (GtkComboBox *combo_box,
                    NautilusAutorunComboBoxData *data)
@@ -311,21 +335,21 @@ combo_box_changed (GtkComboBox *combo_box,
 	case AUTORUN_OTHER_APP:
 	{
 		GtkWidget *dialog;
-		int response;
 
 		data->other_application_selected = FALSE;
 
 		dialog = nautilus_add_application_dialog_new (NULL, x_content_type);
+		gtk_window_set_transient_for (GTK_WINDOW (dialog),
+					      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (combo_box))));
 		g_signal_connect (dialog, "application_selected",
 				  G_CALLBACK (other_application_selected),
 				  data);
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		g_signal_connect (dialog, "response",
+				  G_CALLBACK (dialog_response_cb), data);
+		g_signal_connect (dialog, "destroy",
+				  G_CALLBACK (dialog_destroy_cb), data);
+		gtk_widget_show (GTK_WIDGET (dialog));
 
-		if (!data->other_application_selected) {
-			/* reset combo box so we don't linger on "Open with other Application..." */
-			nautilus_autorun_rebuild_combo_box (data->combo_box);
-		}
-		/* TODO: destroy dialog? */
 		break;
 	}
 
