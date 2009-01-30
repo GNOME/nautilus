@@ -30,6 +30,7 @@
 
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-window-pane.h"
 #include "nautilus-spatial-window.h"
 #include "nautilus-navigation-window.h"
 
@@ -79,6 +80,12 @@ struct NautilusWindowDetails
 	 * is cancelled
 	 */
 	gboolean temporarily_ignore_view_signals;
+
+        /* available panes, and active pane.
+         * Both of them may never be NULL.
+         */
+        GList *panes;
+        NautilusWindowPane *active_pane;
 };
 
 struct _NautilusNavigationWindowDetails {
@@ -199,6 +206,9 @@ GList *              nautilus_window_get_slots                           (Nautil
 NautilusWindowSlot * nautilus_window_get_active_slot                     (NautilusWindow    *window);
 void                 nautilus_window_set_active_slot                     (NautilusWindow     *window,
 									  NautilusWindowSlot *slot);
+void                 nautilus_window_set_active_pane                     (NautilusWindow *window,
+                                                                          NautilusWindowPane *new_pane);
+NautilusWindowPane * nautilus_window_get_active_pane                     (NautilusWindow *window);
 
 void               nautilus_send_history_list_changed                    (void);
 void               nautilus_remove_from_history_list_no_notify           (GFile             *location);

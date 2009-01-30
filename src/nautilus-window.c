@@ -740,6 +740,20 @@ nautilus_window_close_slot (NautilusWindow *window,
 
 }
 
+NautilusWindowPane*
+nautilus_window_get_active_pane (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	return window->details->active_pane;
+}
+
+void
+nautilus_window_set_active_pane (NautilusWindow *window,
+				 NautilusWindowPane *new_pane)
+{
+	/* hhb: TODO: not yet implemented */
+}
+
 void
 nautilus_window_set_active_slot (NautilusWindow *window,
 				 NautilusWindowSlot *new_slot)
