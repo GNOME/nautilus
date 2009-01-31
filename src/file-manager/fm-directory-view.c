@@ -233,6 +233,7 @@ struct FMDirectoryViewDetails
 
 	gboolean sort_directories_first;
 
+	gboolean show_foreign_files;
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
 	gboolean ignore_hidden_file_preferences;
@@ -1860,6 +1861,9 @@ fm_directory_view_init (FMDirectoryView *view)
 	}
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
+
+	/* Default to true; desktop-icon-view sets to false */
+	view->details->show_foreign_files = TRUE;
 
 	view->details->non_ready_files =
 		g_hash_table_new_full (file_and_directory_hash,
@@ -8891,7 +8895,8 @@ fm_directory_view_should_show_file (FMDirectoryView *view, NautilusFile *file)
 {
 	return nautilus_file_should_show (file, 
 					  view->details->show_hidden_files, 
-					  view->details->show_backup_files);
+					  view->details->show_backup_files,
+					  view->details->show_foreign_files);
 }
 
 static gboolean
@@ -9005,6 +9010,13 @@ fm_directory_view_ignore_hidden_file_preferences (FMDirectoryView *view)
 	view->details->show_hidden_files = FALSE;
 	view->details->show_backup_files = FALSE;
 	view->details->ignore_hidden_file_preferences = TRUE;
+}
+
+void
+fm_directory_view_set_show_foreign (FMDirectoryView *view,
+		                    gboolean show_foreign)
+{
+	view->details->show_foreign_files = show_foreign;
 }
 
 char *

@@ -330,6 +330,7 @@ nautilus_file_clear_info (NautilusFile *file)
 	file->details->thumbnailing_failed = FALSE;
 	
 	file->details->is_launcher = FALSE;
+	file->details->is_foreign_link = FALSE;
 	file->details->is_symlink = FALSE;
 	file->details->is_hidden = FALSE;
 	file->details->is_backup = FALSE;
@@ -2790,14 +2791,16 @@ is_file_hidden (NautilusFile *file)
 gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
-			   gboolean show_backup)
+			   gboolean show_backup,
+			   gboolean show_foreign)
 {
 	/* Never hide any files in trash. */
 	if (nautilus_file_is_in_trash (file)) {
 		return TRUE;
 	} else {
 		return (show_hidden || (!nautilus_file_is_hidden_file (file) && !is_file_hidden (file))) &&
-			(show_backup || !nautilus_file_is_backup_file (file));
+			(show_backup || !nautilus_file_is_backup_file (file)) &&
+			(show_foreign || !(nautilus_file_is_in_desktop (file) && nautilus_file_is_foreign_link (file)));
 	}
 }
 
@@ -2837,7 +2840,8 @@ filter_hidden_and_backup_partition_callback (gpointer data,
 
 	return nautilus_file_should_show (file, 
 					  options & SHOW_HIDDEN,
-					  options & SHOW_BACKUP);
+					  options & SHOW_BACKUP,
+					  TRUE);
 }
 
 GList *
@@ -3198,6 +3202,12 @@ gboolean
 nautilus_file_is_launcher (NautilusFile *file)
 {
 	return file->details->is_launcher;
+}
+
+gboolean
+nautilus_file_is_foreign_link (NautilusFile *file)
+{
+	return file->details->is_foreign_link;
 }
 
 gboolean

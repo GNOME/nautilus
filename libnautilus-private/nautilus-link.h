@@ -48,6 +48,7 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  char             **uri,
 								  char             **name,
 								  char             **icon,
-								  gboolean          *is_launcher);
+								  gboolean          *is_launcher,
+								  gboolean          *is_foreign);
 
 #endif /* NAUTILUS_LINK_H */

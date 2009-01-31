@@ -387,7 +387,8 @@ gboolean                nautilus_file_is_hidden_file                    (Nautilu
 gboolean                nautilus_file_is_backup_file                    (NautilusFile                   *file);
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
 									 gboolean                        show_hidden,
-									 gboolean                        show_backup);
+									 gboolean                        show_backup,
+									 gboolean                        show_foreign);
 GList                  *nautilus_file_list_filter_hidden_and_backup     (GList                          *files,
 									 gboolean                        show_hidden,
 									 gboolean                        show_backup);
@@ -397,6 +398,7 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
  * Getting this can require reading the contents of the file.
  */
 gboolean                nautilus_file_is_launcher                       (NautilusFile                   *file);
+gboolean                nautilus_file_is_foreign_link                   (NautilusFile                   *file);
 gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);

@@ -199,7 +199,8 @@ static void     link_info_done                                (NautilusDirectory
 							       const char             *uri,
 							       const char             *name,
 							       const char             *icon,
-							       gboolean                is_launcher);
+							       gboolean                is_launcher,
+							       gboolean                is_foreign);
 static void     move_file_to_low_priority_queue               (NautilusDirectory      *directory,
 							       NautilusFile           *file);
 static void     move_file_to_extension_queue                  (NautilusDirectory      *directory,
@@ -1733,7 +1734,7 @@ lacks_link_info (NautilusFile *file)
 		if (nautilus_file_is_nautilus_link (file)) {
 			return TRUE;
 		} else {
-			link_info_done (file->details->directory, file, NULL, NULL, NULL, FALSE);
+			link_info_done (file->details->directory, file, NULL, NULL, NULL, FALSE, FALSE);
 			return FALSE;
 		}
 	} else {
@@ -2381,7 +2382,8 @@ monitor_includes_file (const Monitor *monitor,
 	}
 	return nautilus_file_should_show (file,
 					  monitor->monitor_hidden_files,
-					  monitor->monitor_backup_files);
+					  monitor->monitor_backup_files,
+					  TRUE);
 }
 
 static gboolean
@@ -3575,7 +3577,8 @@ link_info_done (NautilusDirectory *directory,
 		const char *uri,
 		const char *name, 
 		const char *icon,
-		gboolean is_launcher)
+		gboolean is_launcher,
+		gboolean is_foreign)
 {
 	file->details->link_info_is_up_to_date = TRUE;
 
@@ -3593,6 +3596,7 @@ link_info_done (NautilusDirectory *directory,
 	}
 	file->details->custom_icon = g_strdup (icon);
 	file->details->is_launcher = is_launcher;
+	file->details->is_foreign_link = is_foreign;
 	
 	nautilus_directory_async_state_changed (directory);
 }
@@ -3639,6 +3643,7 @@ link_info_got_data (NautilusDirectory *directory,
 {
 	char *link_uri, *uri, *name, *icon;
 	gboolean is_launcher;
+	gboolean is_foreign;
 
 	nautilus_directory_ref (directory);
 
@@ -3646,19 +3651,20 @@ link_info_got_data (NautilusDirectory *directory,
 	name = NULL;
 	icon = NULL;
 	is_launcher = FALSE;
+	is_foreign = FALSE;
 	
 	/* Handle the case where we read the Nautilus link. */
 	if (result) {
 		link_uri = nautilus_file_get_uri (file);
 		nautilus_link_get_link_info_given_file_contents (file_contents, bytes_read, link_uri,
-								 &uri, &name, &icon, &is_launcher);
+								 &uri, &name, &icon, &is_launcher, &is_foreign);
 		g_free (link_uri);
 	} else {
 		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
 	}
 
 	nautilus_file_ref (file);
-	link_info_done (directory, file, uri, name, icon, is_launcher);
+	link_info_done (directory, file, uri, name, icon, is_launcher, is_foreign);
 	nautilus_file_changed (file);
 	nautilus_file_unref (file);
 	
@@ -3746,7 +3752,7 @@ link_info_start (NautilusDirectory *directory,
 	
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!nautilus_style_link) {
-		link_info_done (directory, file, NULL, NULL, NULL, FALSE);
+		link_info_done (directory, file, NULL, NULL, NULL, FALSE, FALSE);
 	} else if (should_read_link_info_sync (file)) {
 		result = g_file_load_contents (location, NULL, &file_contents, &file_size, NULL, NULL);
 		link_info_got_data (directory, file, result, file_size, file_contents);

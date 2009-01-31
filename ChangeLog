@@ -1,3 +1,28 @@
+2009-01-31  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c (lacks_link_info),
+	(monitor_includes_file), (link_info_done), (link_info_got_data),
+	(link_info_start):
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c (nautilus_file_clear_info),
+	(nautilus_file_should_show),
+	(filter_hidden_and_backup_partition_callback),
+	(nautilus_file_is_foreign_link):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-link.c (string_array_contains),
+	(nautilus_link_get_link_info_given_file_contents):
+	* libnautilus-private/nautilus-link.h:
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_init):
+	* src/file-manager/fm-directory-view.c (fm_directory_view_init),
+	(fm_directory_view_should_show_file),
+	(fm_directory_view_set_show_foreign):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-tree-model.c (should_show_file):
+	Follow the "OnlyShowIn" and "NotShowIn" == GNOME keys for
+	.desktop files,	when they are put on the desktop.
+	Thanks to Federico Mena Quintero and Jared Moore (#338933).
+
 2009-01-29  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* libnautilus-private/nautilus-autorun.c: (handle_dialog_closure),

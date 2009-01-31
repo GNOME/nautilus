@@ -502,6 +502,23 @@ nautilus_link_local_get_link_uri (const char *uri)
 	return retval;
 }
 
+static gboolean
+string_array_contains (char **array,
+		       const char *str)
+{
+	char **p;
+
+	if (!array)
+		return FALSE;
+
+	for (p = array; *p; p++)
+		if (g_ascii_strcasecmp (*p, str) == 0) {
+			return TRUE;
+		}
+
+	return FALSE;
+}
+
 void
 nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 int          link_file_size,
@@ -509,10 +526,13 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 						 char       **uri,
 						 char       **name,
 						 char       **icon,
-						 gboolean    *is_launcher)
+						 gboolean    *is_launcher,
+						 gboolean    *is_foreign)
 {
 	GKeyFile *key_file;
 	char *type;
+	char **only_show_in;
+	char **not_show_in;
 
 	if (!is_link_data (file_contents, link_file_size)) {
 		return;
@@ -539,6 +559,21 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
 		*is_launcher = TRUE;
 	}
 	g_free (type);
-	
+
+	*is_foreign = FALSE;
+	only_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
+						   "OnlyShowIn", NULL, NULL);
+	if (only_show_in && !string_array_contains (only_show_in, "GNOME")) {
+		*is_foreign = TRUE;
+	}
+	g_strfreev (only_show_in);
+
+	not_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
+						  "NotShowIn", NULL, NULL);
+	if (not_show_in && string_array_contains (not_show_in, "GNOME")) {
+		*is_foreign = TRUE;
+	}
+	g_strfreev (not_show_in);
+
 	g_key_file_free (key_file);
 }

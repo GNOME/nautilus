@@ -562,6 +562,9 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	fm_directory_view_ignore_hidden_file_preferences
 		(FM_DIRECTORY_VIEW (desktop_icon_view));
+
+	fm_directory_view_set_show_foreign (FM_DIRECTORY_VIEW (desktop_icon_view),
+			                    FALSE);
 	
 	/* Set our default layout mode */
 	nautilus_icon_container_set_layout_mode (icon_container,

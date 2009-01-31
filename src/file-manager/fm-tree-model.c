@@ -901,7 +901,8 @@ should_show_file (FMTreeModel *model, NautilusFile *file)
 
 	should = nautilus_file_should_show (file,
 					    model->details->show_hidden_files,
-					    model->details->show_backup_files);
+					    model->details->show_backup_files,
+					    TRUE);
 
 	if (should
 	    && model->details->show_only_directories

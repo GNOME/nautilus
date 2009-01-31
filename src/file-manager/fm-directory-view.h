@@ -436,6 +436,8 @@ void                fm_directory_view_new_file                         (FMDirect
 									const char       *parent_uri,
 									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
+void                fm_directory_view_set_show_foreign                 (FMDirectoryView  *view,
+		                                                        gboolean          show_foreign);
 void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
 void                fm_directory_view_handle_netscape_url_drop         (FMDirectoryView  *view,
 									const char       *encoded_url,
