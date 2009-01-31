@@ -762,7 +762,7 @@ nautilus_window_close_slot (NautilusWindow *window,
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	g_assert (window == slot->window);
+	g_assert (window == slot->pane->window);
 	g_assert (g_list_find (window->details->slots, slot) != NULL);
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
@@ -798,7 +798,7 @@ nautilus_window_set_active_slot (NautilusWindow *window,
 
 	if (new_slot != NULL) {
 		g_assert (NAUTILUS_IS_WINDOW_SLOT (new_slot));
-		g_assert (window == new_slot->window);
+		g_assert (window == new_slot->pane->window);
 		g_assert (g_list_find (window->details->slots, new_slot) != NULL);
 	}
 
@@ -861,7 +861,7 @@ nautilus_window_slot_close (NautilusWindowSlot *slot)
 	NautilusWindow *window;
 	NautilusWindowSlot *next_slot;
 
-	window = slot->window;
+	window = slot->pane->window;
 	if (window != NULL) {
 		if (window->details->active_slot == slot) {
 			g_assert (window->details->active_slots != NULL);
@@ -1281,7 +1281,7 @@ load_view_as_menus_callback (NautilusFile *file,
 	NautilusWindowSlot *slot;
 
 	slot = callback_data;
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	if (slot == window->details->active_slot) {
 		load_view_as_menu (window);
@@ -1502,7 +1502,7 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	NautilusFileAttributes attributes;
 
-	window = slot->window;
+	window = slot->pane->window;
 
 	if (slot->viewed_file == file) {
 		return;

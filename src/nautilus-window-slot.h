@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_WINDOW_SLOT_H
 #define NAUTILUS_WINDOW_SLOT_H
 
-#include "nautilus-window.h"
+#include "nautilus-window-pane.h"
 #include "nautilus-query-editor.h"
 #include <glib/gi18n.h>
 
@@ -65,7 +65,7 @@ struct NautilusWindowSlotClass {
 struct NautilusWindowSlot {
 	GObject parent;
 
-	NautilusWindow *window;
+	NautilusWindowPane *pane;
 
 	/* content_box contains
  	 *  1) an event box containing extra_location_widgets

@@ -261,7 +261,7 @@ nautilus_spatial_window_save_geometry (NautilusWindowSlot *slot)
 	NautilusFile *viewed_file;
 	char *geometry_string;
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	viewed_file = slot->viewed_file;
 
@@ -289,7 +289,7 @@ nautilus_spatial_window_save_scroll_position (NautilusWindowSlot *slot)
 	NautilusWindow *window;
 	char *scroll_string;
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	if (slot->content_view == NULL ||
 	    slot->viewed_file == NULL) {
@@ -315,7 +315,7 @@ nautilus_spatial_window_save_show_hidden_files_mode (NautilusWindowSlot *slot)
 		return;
 	}
 	
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	mode = NAUTILUS_WINDOW (window)->details->show_hidden_files_mode;
 	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
@@ -458,7 +458,7 @@ real_open_slot (NautilusWindow *window,
 	g_list_free (slots);
 
 	slot = g_object_new (NAUTILUS_TYPE_WINDOW_SLOT, NULL);
-	slot->window = window;
+	slot->pane = window->details->active_pane;
 	gtk_container_add (GTK_CONTAINER (NAUTILUS_SPATIAL_WINDOW (window)->details->content_box),
 			   slot->content_box);
 	gtk_widget_show (slot->content_box);

@@ -1664,7 +1664,7 @@ mount_removed_callback (GVolumeMonitor *monitor,
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		slot = node->data;
-		window = slot->window;
+		window = slot->pane->window;
 
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window) ||
 		    (nautilus_navigation_window_slot_should_close_with_mount (NAUTILUS_NAVIGATION_WINDOW_SLOT (slot), mount) &&

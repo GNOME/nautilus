@@ -108,7 +108,7 @@ real_active (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
 
-	window = slot->window;
+	window = slot->pane->window;
 
 	/* sync window to new slot */
 	nautilus_window_sync_status (window);
@@ -131,7 +131,7 @@ nautilus_window_slot_active (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 	g_assert (g_list_find (window->details->slots, slot) != NULL);
 	g_assert (slot == window->details->active_slot);
 
@@ -144,7 +144,7 @@ real_inactive (NautilusWindowSlot *slot)
 {
 	NautilusWindow *window;
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 	g_assert (slot == window->details->active_slot);
 }
 
@@ -155,7 +155,7 @@ nautilus_window_slot_inactive (NautilusWindowSlot *slot)
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 	g_assert (g_list_find (window->details->slots, slot) != NULL);
 	g_assert (slot == window->details->active_slot);
 
@@ -216,7 +216,7 @@ GFile *
 nautilus_window_slot_get_location (NautilusWindowSlot *slot)
 {
 	g_assert (slot != NULL);
-	g_assert (NAUTILUS_IS_WINDOW (slot->window));
+	g_assert (NAUTILUS_IS_WINDOW (slot->pane->window));
 
 	if (slot->location != NULL) {
 		return g_object_ref (slot->location);
@@ -260,7 +260,7 @@ static NautilusWindow *
 nautilus_window_slot_get_window (NautilusWindowSlot *slot)
 {
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-	return slot->window;
+	return slot->pane->window;
 }
 
 /* nautilus_window_slot_set_title:
@@ -278,7 +278,7 @@ nautilus_window_slot_set_title (NautilusWindowSlot *slot,
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 
 	changed = FALSE;
 
@@ -335,7 +335,7 @@ nautilus_window_slot_update_icon (NautilusWindowSlot *slot)
 	const char *icon_name;
 	GdkPixbuf *pixbuf;
 
-	window = slot->window;
+	window = slot->pane->window;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -370,7 +370,7 @@ static void
 title_changed_callback (NautilusView *view,
 			NautilusWindowSlot *slot)
 {
-        g_assert (NAUTILUS_IS_WINDOW (slot->window));
+        g_assert (NAUTILUS_IS_WINDOW (slot->pane->window));
 
         nautilus_window_slot_update_title (slot);
 	nautilus_window_slot_update_icon (slot);
@@ -387,7 +387,7 @@ nautilus_window_slot_connect_content_view (NautilusWindowSlot *slot,
 			  G_CALLBACK (title_changed_callback),
 			  slot);
 
-	window = slot->window;
+	window = slot->pane->window;
 	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
 		nautilus_window_connect_content_view (window, view);
 	}
@@ -401,7 +401,7 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot,
 
 	g_signal_handlers_disconnect_by_func (view, G_CALLBACK (title_changed_callback), slot);
 
-	window = slot->window;
+	window = slot->pane->window;
 	if (window != NULL && slot == nautilus_window_get_active_slot (window)) {
 		nautilus_window_disconnect_content_view (window, view);
 	}
@@ -414,7 +414,7 @@ nautilus_window_slot_set_content_view_widget (NautilusWindowSlot *slot,
 	NautilusWindow *window;
 	GtkWidget *widget;
 
-	window = slot->window;
+	window = slot->pane->window;
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	if (slot->content_view != NULL) {
@@ -452,7 +452,7 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *slot,
 
 	slot->allow_stop = allow;
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 	nautilus_window_sync_allow_stop (window, slot);
 }
 
@@ -467,7 +467,7 @@ nautilus_window_slot_set_status (NautilusWindowSlot *slot,
 	g_free (slot->status_text);
 	slot->status_text = g_strdup (status);
 
-	window = NAUTILUS_WINDOW (slot->window);
+	window = NAUTILUS_WINDOW (slot->pane->window);
 	if (slot == window->details->active_slot) {
 		nautilus_window_sync_status (window);
 	}
@@ -526,7 +526,7 @@ void
 nautilus_window_slot_add_current_location_to_history_list (NautilusWindowSlot *slot)
 {
 
-	if ((slot->window == NULL || !NAUTILUS_IS_DESKTOP_WINDOW (slot->window)) &&
+	if ((slot->pane->window == NULL || !NAUTILUS_IS_DESKTOP_WINDOW (slot->pane->window)) &&
 	    nautilus_add_bookmark_to_history_list (slot->current_location_bookmark)) {
 		nautilus_send_history_list_changed ();
 	}
@@ -618,7 +618,7 @@ nautilus_window_slot_dispose (GObject *object)
 		slot->find_mount_cancellable = NULL;
 	}
 
-	slot->window = NULL;
+	slot->pane = NULL;
 
 	g_free (slot->title);
 	slot->title = NULL;

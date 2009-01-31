@@ -214,7 +214,7 @@ notebook_tab_close_requested (NautilusNotebook *notebook,
 			      NautilusWindowSlot *slot,
 			      NautilusWindow *window)
 {
-	g_assert (slot->window == window);
+	g_assert (slot->pane->window == window);
 	nautilus_window_slot_close (slot);
 }
 
@@ -1858,7 +1858,8 @@ real_open_slot (NautilusWindow *window,
 	notebook = NAUTILUS_NOTEBOOK (navigation_window->notebook);
 
 	slot = (NautilusWindowSlot *) g_object_new (NAUTILUS_TYPE_NAVIGATION_WINDOW_SLOT, NULL);
-	slot->window = window;
+
+	slot->pane = window->details->active_pane;
 
 	g_signal_handlers_block_by_func (notebook,
 					 G_CALLBACK (notebook_switch_page_cb),

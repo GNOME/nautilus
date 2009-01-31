@@ -123,8 +123,8 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 	NautilusNavigationWindow *navigation_window;
 	GtkWidget *query_editor;
 
-	g_assert (slot->window != NULL);
-	navigation_window = NAUTILUS_NAVIGATION_WINDOW (slot->window);
+	g_assert (slot->pane->window != NULL);
+	navigation_window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 
 	query_editor = NULL;
 
@@ -138,7 +138,7 @@ nautilus_navigation_window_slot_update_query_editor (NautilusWindowSlot *slot)
 		} else {
 			query_editor = nautilus_query_editor_new_with_bar (FALSE,
 									   nautilus_search_directory_is_indexed (search_directory),
-									   slot->window->details->active_slot == slot,
+									   slot->pane->window->details->active_slot == slot,
 									   NAUTILUS_SEARCH_BAR (navigation_window->search_bar),
 									   slot);
 		}
@@ -175,7 +175,7 @@ nautilus_navigation_window_slot_active (NautilusWindowSlot *slot)
 	int page_num;
 
 	navigation_slot = NAUTILUS_NAVIGATION_WINDOW_SLOT (slot);
-	window = NAUTILUS_NAVIGATION_WINDOW (slot->window);
+	window = NAUTILUS_NAVIGATION_WINDOW (slot->pane->window);
 
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (window->notebook),
 					  slot->content_box);

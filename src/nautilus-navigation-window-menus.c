@@ -685,7 +685,7 @@ action_new_tab_callback (GtkAction *action,
 	current_slot = window->details->active_slot;
 	location = nautilus_window_slot_get_location (current_slot);
 
-	window = NAUTILUS_WINDOW (current_slot->window);
+	window = NAUTILUS_WINDOW (current_slot->pane->window);
 
 	if (location != NULL) {
 		flags = 0;
