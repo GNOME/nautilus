@@ -1347,6 +1347,7 @@ report_delete_progress (CommonJob *job,
 	double elapsed, transfer_rate;
 	int remaining_time;
 	guint64 now;
+	char *files_left_s;
 
 	now = g_thread_gettime ();
 	if (transfer_info->last_report_time != 0 &&
@@ -1362,41 +1363,38 @@ report_delete_progress (CommonJob *job,
 		files_left = 1;
 	}
 
+	files_left_s = f (ngettext ("%'d file left to delete",
+				    "%'d files left to delete",
+				    files_left),
+			  files_left);
+
 	nautilus_progress_info_take_status (job->progress,
 					    f (_("Deleting files")));
 
 	elapsed = g_timer_elapsed (job->time, NULL);
 	if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE) {
-		char *s;
-		s = f (ngettext ("%'d file left to delete",
-				 "%'d files left to delete",
-				 files_left),
-		       files_left);
-		nautilus_progress_info_take_details (job->progress, s);
+
+		nautilus_progress_info_set_details (job->progress, files_left_s);
 	} else {
-		char *s;
+		char *details, *time_left_s;
 		transfer_rate = transfer_info->num_files / elapsed;
 		remaining_time = files_left / transfer_rate;
 
-		if (files_left == 1) {
-			/* To translators: %T will expand to a time like "2 minutes". 
- 			 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
- 			 */
-			s = f (ngettext ("%'d file left to delete \xE2\x80\x94 %T left",
-					 "%'d file left to delete \xE2\x80\x94 %T left",
-					 seconds_count_format_time_units (remaining_time)),
-			       files_left, remaining_time);
-		} else {
-			/* To translators: %T will expand to a time like "2 minutes".
- 			 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
- 			 */
-			s = f (ngettext ("%'d files left to delete \xE2\x80\x94 %T left",
-					 "%'d files left to delete \xE2\x80\x94 %T left",
-					 seconds_count_format_time_units (remaining_time)),
-			       files_left, remaining_time);
-		}
-		nautilus_progress_info_take_details (job->progress, s);
+		/* To translators: %T will expand to a time like "2 minutes".
+ 		 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+ 		 */
+		time_left_s = f (ngettext ("%T left",
+					   "%T left",
+					   seconds_count_format_time_units (remaining_time)),
+				 remaining_time);
+
+		details = g_strconcat (files_left_s, "\xE2\x80\x94", time_left_s, NULL);
+		nautilus_progress_info_take_details (job->progress, details);
+
+		g_free (time_left_s);
 	}
+
+	g_free (files_left_s);
 
 	if (source_info->num_files != 0) {
 		nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);

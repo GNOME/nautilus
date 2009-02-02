@@ -1,3 +1,10 @@
+2009-02-02  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(report_delete_progress): better fix for the singular/plural issue
+	described in bug #551222; we now split the string into two parts,
+	use ngettext() on both and concatenate them (#570141).
+
 2009-02-01  Cosimo Cecchi  <cosimoc@gnome.org>
 
 	* src/Nautilus_shell.server.in: remove this, it's useless now that
