@@ -81,8 +81,8 @@ enum {
 	LAST_SIGNAL
 };
 
-static gpointer parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
+G_DEFINE_TYPE (NautilusOpenWithDialog, nautilus_open_with_dialog, GTK_TYPE_DIALOG); 
 
 static void
 nautilus_open_with_dialog_finalize (GObject *object)
@@ -108,13 +108,13 @@ nautilus_open_with_dialog_finalize (GObject *object)
 
 	g_free (dialog->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_open_with_dialog_parent_class)->finalize (object);
 }
 
 static void
 nautilus_open_with_dialog_destroy (GtkObject *object)
 {
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	GTK_OBJECT_CLASS (nautilus_open_with_dialog_parent_class)->destroy (object);
 }
 
 /* An application is valid if:
@@ -340,8 +340,6 @@ nautilus_open_with_dialog_class_init (NautilusOpenWithDialogClass *class)
 {
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = nautilus_open_with_dialog_finalize;
@@ -745,7 +743,7 @@ expander_toggled (GtkWidget *expander, NautilusOpenWithDialog *dialog)
 }
 
 static void
-nautilus_open_with_dialog_instance_init (NautilusOpenWithDialog *dialog)
+nautilus_open_with_dialog_init (NautilusOpenWithDialog *dialog)
 {
 	GtkWidget *hbox;
 	GtkWidget *vbox;
@@ -1013,28 +1011,3 @@ nautilus_add_application_dialog_new_for_multiple_files (const char *extension,
 	return GTK_WIDGET (dialog);
 }
 
-GType
-nautilus_open_with_dialog_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusOpenWithDialogClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)nautilus_open_with_dialog_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusOpenWithDialog),
-			0,
-			(GInstanceInitFunc)nautilus_open_with_dialog_instance_init,
-		};
-
-		type = g_type_register_static (GTK_TYPE_DIALOG,
-					       "NautilusOpenWithDialog",
-					       &info, 0);
-	}
-
-	return type;
-}

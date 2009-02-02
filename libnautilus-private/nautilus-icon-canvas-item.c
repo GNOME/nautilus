@@ -198,9 +198,11 @@ typedef struct {
 
 static int click_policy_auto_value;
 
-/* GtkObject */
-static void     nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass   *class);
-static void     nautilus_icon_canvas_item_init       (NautilusIconCanvasItem        *item);
+static void nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (NautilusIconCanvasItem, nautilus_icon_canvas_item, EEL_TYPE_CANVAS_ITEM,
+			 G_IMPLEMENT_INTERFACE (EEL_TYPE_ACCESSIBLE_TEXT,
+						nautilus_icon_canvas_item_text_interface_init));
 
 /* private */
 static void     draw_label_text                      (NautilusIconCanvasItem        *item,
@@ -245,7 +247,6 @@ static GdkPixbuf *nautilus_icon_canvas_lighten_pixbuf (GdkPixbuf* src, guint lig
 static void       nautilus_icon_canvas_item_ensure_bounds_up_to_date (NautilusIconCanvasItem *icon_item);
 
 
-static NautilusIconCanvasItemClass *parent_class = NULL;
 static gpointer accessible_parent_class = NULL;
 
 static GQuark accessible_private_data_quark = 0;
@@ -319,8 +320,8 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	}
 
 	g_free (details->embedded_text);
-	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+
+	G_OBJECT_CLASS (nautilus_icon_canvas_item_parent_class)->finalize (object);
 }
  
 /* Currently we require pixbufs in this format (for hit testing).
@@ -890,8 +891,7 @@ nautilus_icon_canvas_item_update (EelCanvasItem *item,
 
 	eel_canvas_item_request_redraw (EEL_CANVAS_ITEM (item));
 
-	EEL_CALL_PARENT (EEL_CANVAS_ITEM_CLASS, update,
-			 (item, i2w_dx, i2w_dy, flags));
+	EEL_CANVAS_ITEM_CLASS (nautilus_icon_canvas_item_parent_class)->update (item, i2w_dx, i2w_dy, flags);
 }
 
 /* Rendering */
@@ -3564,8 +3564,6 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	GObjectClass *object_class;
 	EelCanvasItemClass *item_class;
 
-	parent_class = g_type_class_peek_parent (class);
-
 	object_class = G_OBJECT_CLASS (class);
 	item_class = EEL_CANVAS_ITEM_CLASS (class);
 
@@ -3627,36 +3625,4 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	g_type_class_add_private (class, sizeof (NautilusIconCanvasItemDetails));
 }
 
-GType
-nautilus_icon_canvas_item_get_type (void)
-{
-	static GType type = 0;
 
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusIconCanvasItemClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) nautilus_icon_canvas_item_class_init,
-			NULL,		/* class_finalize */
-			NULL,               /* class_data */
-			sizeof (NautilusIconCanvasItem),
-			0,                  /* n_preallocs */
-			(GInstanceInitFunc) nautilus_icon_canvas_item_init,
-		};
-		const GInterfaceInfo eel_text_info = {
-			(GInterfaceInitFunc)
-			nautilus_icon_canvas_item_text_interface_init,
-			(GInterfaceFinalizeFunc) NULL,
-			NULL
-		};
-
-		type = g_type_register_static
-			(EEL_TYPE_CANVAS_ITEM, "NautilusIconCanvasItem", &info, 0);
-
-		g_type_add_interface_static
-			(type, EEL_TYPE_ACCESSIBLE_TEXT, &eel_text_info);
-	}
-
-	return type;
-}

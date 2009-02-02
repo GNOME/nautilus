@@ -1,3 +1,48 @@
+2009-02-02  Cosimo Cecchi  <cosimoc@pluto>
+
+	* libnautilus-extension/nautilus-column.c:
+	(nautilus_column_finalize), (nautilus_column_init),
+	(nautilus_column_class_init):
+	* libnautilus-extension/nautilus-menu.c: (nautilus_menu_finalize):
+	* libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.c:
+	(nautilus_cell_renderer_pixbuf_emblem_class_init),
+	(nautilus_cell_renderer_pixbuf_emblem_finalize):
+	* libnautilus-private/nautilus-cell-renderer-text-ellipsized.c:
+	(nautilus_cell_renderer_text_ellipsized_init),
+	(nautilus_cell_renderer_text_ellipsized_class_init),
+	(nautilus_cell_renderer_text_ellipsized_get_size):
+	* libnautilus-private/nautilus-entry.c: (nautilus_entry_finalize),
+	(nautilus_entry_key_press), (nautilus_entry_motion_notify),
+	(nautilus_entry_button_press), (nautilus_entry_button_release),
+	(nautilus_entry_selection_clear), (nautilus_entry_class_init):
+	* libnautilus-private/nautilus-file.c: (nautilus_file_init),
+	(nautilus_file_constructor), (finalize),
+	(nautilus_file_class_init):
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_update),
+	(nautilus_icon_canvas_item_class_init):
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_new):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-mime-application-chooser.c:
+	(nautilus_mime_application_chooser_finalize),
+	(nautilus_mime_application_chooser_destroy),
+	(nautilus_mime_application_chooser_class_init),
+	(nautilus_mime_application_chooser_init):
+	* libnautilus-private/nautilus-open-with-dialog.c:
+	(nautilus_open_with_dialog_finalize),
+	(nautilus_open_with_dialog_destroy),
+	(nautilus_open_with_dialog_class_init),
+	(nautilus_open_with_dialog_init):
+	* src/file-manager/fm-icon-container.c:
+	* src/file-manager/fm-list-model.c: (fm_list_model_dispose),
+	(fm_list_model_finalize), (fm_list_model_class_init):
+	* src/file-manager/fm-tree-model.c: (fm_tree_model_finalize),
+	(fm_tree_model_class_init):
+	Use G_DEFINE_TYPE_* instead of hand-written nautilus_foo_get_type()
+	functions where possible.
+
 2009-02-02  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

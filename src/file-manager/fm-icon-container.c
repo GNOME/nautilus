@@ -36,7 +36,7 @@
 #define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
 #define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
-G_DEFINE_TYPE (FMIconContainer, fm_icon_container, nautilus_icon_container_get_type ());
+G_DEFINE_TYPE (FMIconContainer, fm_icon_container, NAUTILUS_TYPE_ICON_CONTAINER);
 
 static GQuark attribute_none_q;
 

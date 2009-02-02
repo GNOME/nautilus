@@ -28,6 +28,7 @@
 #include <glib.h>
 
 #define NAUTILUS_MENU_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_MENU, NautilusMenuPrivate))
+G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
 
 struct _NautilusMenuPrivate {
 	GList *item_list;
@@ -70,13 +71,12 @@ static void
 nautilus_menu_finalize (GObject *object)
 {
 	NautilusMenu *this = NAUTILUS_MENU (object);
-	GObjectClass *parent_class = g_type_class_peek_parent (NAUTILUS_MENU_GET_CLASS (object));
-	
+
 	if (this->private->item_list) {
 		g_list_free (this->private->item_list);
 	}
 
-	parent_class->finalize (object);
+	G_OBJECT_CLASS (nautilus_menu_parent_class)->finalize (object);
 }
 
 static void
@@ -95,30 +95,6 @@ nautilus_menu_class_init (NautilusMenuClass *klass)
 	g_type_class_add_private (klass, sizeof (NautilusMenuPrivate));
 	
 	object_class->finalize = nautilus_menu_finalize;
-}
-
-GType
-nautilus_menu_get_type (void)
-{
-	static GType type = 0;
-
-	if(type == 0) {
-		const GTypeInfo info = {
-			sizeof (NautilusMenuClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) nautilus_menu_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,
-			sizeof (NautilusMenu),
-			0,
-			(GInstanceInitFunc) nautilus_menu_init,
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "NautilusMenu", &info, 0);
-	}
-
-	return type;
 }
 
 /* public constructors */

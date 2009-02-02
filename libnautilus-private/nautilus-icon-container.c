@@ -6406,7 +6406,7 @@ item_event_callback (EelCanvasItem *item,
 GtkWidget *
 nautilus_icon_container_new (void)
 {
-	return gtk_widget_new (nautilus_icon_container_get_type (), NULL);
+	return gtk_widget_new (NAUTILUS_TYPE_ICON_CONTAINER, NULL);
 }
 
 /* Clear all of the icons in the container. */

@@ -114,8 +114,6 @@ static int date_format_pref;
 
 static guint signals[LAST_SIGNAL];
 
-static GObjectClass *parent_class = NULL;
-
 static GHashTable *symbolic_links;
 
 static GQuark attribute_name_q,
@@ -145,9 +143,6 @@ static GQuark attribute_name_q,
 	attribute_volume_q,
 	attribute_free_space_q;
 
-
-static void     nautilus_file_instance_init                  (NautilusFile          *file);
-static void     nautilus_file_class_init                     (NautilusFileClass     *class);
 static void     nautilus_file_info_iface_init                (NautilusFileInfoIface *iface);
 static char *   nautilus_file_get_owner_as_string            (NautilusFile          *file,
 							      gboolean               include_real_name);
@@ -157,43 +152,12 @@ static gboolean update_info_and_name                         (NautilusFile      
 static const char * nautilus_file_peek_display_name (NautilusFile *file);
 static const char * nautilus_file_peek_display_name_collation_key (NautilusFile *file);
 
-GType
-nautilus_file_get_type (void)
-{
-	static GType type = 0;
-	
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusFileClass),
-			NULL, 
-			NULL,
-			(GClassInitFunc) nautilus_file_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusFile),
-			0,
-			(GInstanceInitFunc) nautilus_file_instance_init,
-		};
-		
-		const GInterfaceInfo file_info_iface_info = {
-			(GInterfaceInitFunc) nautilus_file_info_iface_init,
-			NULL,
-			NULL
-		};
-		
-		type = g_type_register_static (G_TYPE_OBJECT,
-					       "NautilusFile",
-					       &info, 0);
-		g_type_add_interface_static (type, 
-					     NAUTILUS_TYPE_FILE_INFO,
-					     &file_info_iface_info);
-	}
-	
-	return type;
-}
+G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
+						nautilus_file_info_iface_init));
 
 static void
-nautilus_file_instance_init (NautilusFile *file)
+nautilus_file_init (NautilusFile *file)
 {
 	file->details = G_TYPE_INSTANCE_GET_PRIVATE ((file), NAUTILUS_TYPE_FILE, NautilusFileDetails);
 
@@ -209,9 +173,9 @@ nautilus_file_constructor (GType                  type,
   GObject *object;
   NautilusFile *file;
 
-  object = (* G_OBJECT_CLASS (parent_class)->constructor) (type,
-							   n_construct_properties,
-							   construct_params);
+  object = (* G_OBJECT_CLASS (nautilus_file_parent_class)->constructor) (type,
+									 n_construct_properties,
+									 construct_params);
 
   file = NAUTILUS_FILE (object);
 
@@ -703,7 +667,7 @@ finalize (GObject *object)
 		g_hash_table_destroy (file->details->extension_attributes);
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_file_parent_class)->finalize (object);
 }
 
 NautilusFile *
@@ -7165,8 +7129,6 @@ nautilus_file_class_init (NautilusFileClass *class)
 {
 	GtkIconTheme *icon_theme;
 	
-	parent_class = g_type_class_peek_parent (class);
-
 	attribute_name_q = g_quark_from_static_string ("name");
 	attribute_size_q = g_quark_from_static_string ("size");
 	attribute_type_q = g_quark_from_static_string ("type");

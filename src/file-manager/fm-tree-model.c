@@ -116,13 +116,16 @@ typedef struct {
 	FMTreeModel *model;
 } DoneLoadingParameters;
 
-static GObjectClass *parent_class;
-
+static void fm_tree_model_tree_model_init (GtkTreeModelIface *iface);
 static void schedule_monitoring_update     (FMTreeModel *model);
 static void destroy_node_without_reporting (FMTreeModel *model,
 					    TreeNode          *node);
 static void report_node_contents_changed   (FMTreeModel *model,
 					    TreeNode          *node);
+
+G_DEFINE_TYPE_WITH_CODE (FMTreeModel, fm_tree_model, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL,
+						fm_tree_model_tree_model_init));
 
 static GtkTreeModelFlags 
 fm_tree_model_get_flags (GtkTreeModel *tree_model)
@@ -1845,14 +1848,12 @@ fm_tree_model_finalize (GObject *object)
 
 	g_free (model->details);
 
-	parent_class->finalize (object);
+	G_OBJECT_CLASS (fm_tree_model_parent_class)->finalize (object);
 }
 
 static void
 fm_tree_model_class_init (FMTreeModelClass *class)
 {
-	parent_class = g_type_class_peek_parent (class);
-
 	G_OBJECT_CLASS (class)->finalize = fm_tree_model_finalize;
 
 	tree_model_signals[ROW_LOADED] =
@@ -1885,35 +1886,4 @@ fm_tree_model_tree_model_init (GtkTreeModelIface *iface)
 	iface->unref_node = fm_tree_model_unref_node;
 }
 
-GType
-fm_tree_model_get_type (void)
-{
-	static GType object_type = 0;
 
-	if (object_type == 0) {
-		const GTypeInfo object_info = {
-			sizeof (FMTreeModelClass),
-			NULL,
-			NULL,
-			(GClassInitFunc) fm_tree_model_class_init,
-			NULL,
-			NULL,
-			sizeof (FMTreeModel),
-			0,
-			(GInstanceInitFunc) fm_tree_model_init,
-		};
-
-		const GInterfaceInfo tree_model_info = {
-			(GInterfaceInitFunc) fm_tree_model_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		object_type = g_type_register_static (G_TYPE_OBJECT, "FMTreeModel", &object_info, 0);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-	}
-
-	return object_type;
-}

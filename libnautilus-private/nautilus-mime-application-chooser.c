@@ -70,12 +70,12 @@ enum {
 	NUM_COLUMNS
 };
 
+G_DEFINE_TYPE (NautilusMimeApplicationChooser, nautilus_mime_application_chooser, GTK_TYPE_VBOX);
+
 static void refresh_model             (NautilusMimeApplicationChooser *chooser);
 static void refresh_model_soon        (NautilusMimeApplicationChooser *chooser);
 static void mime_type_data_changed_cb (GObject                        *signaller,
 				       gpointer                        user_data);
-
-static gpointer parent_class;
 
 static void
 nautilus_mime_application_chooser_finalize (GObject *object)
@@ -101,13 +101,13 @@ nautilus_mime_application_chooser_finalize (GObject *object)
 	
 	g_free (chooser->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_mime_application_chooser_parent_class)->finalize (object);
 }
 
 static void
 nautilus_mime_application_chooser_destroy (GtkObject *object)
 {
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	GTK_OBJECT_CLASS (nautilus_mime_application_chooser_parent_class)->destroy (object);
 }
 
 static void
@@ -115,8 +115,6 @@ nautilus_mime_application_chooser_class_init (NautilusMimeApplicationChooserClas
 {
 	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	gobject_class = G_OBJECT_CLASS (class);
 	gobject_class->finalize = nautilus_mime_application_chooser_finalize;
@@ -363,7 +361,7 @@ mime_type_data_changed_cb (GObject *signaller,
 }
 
 static void
-nautilus_mime_application_chooser_instance_init (NautilusMimeApplicationChooser *chooser)
+nautilus_mime_application_chooser_init (NautilusMimeApplicationChooser *chooser)
 {
 	GtkWidget *box;
 	GtkWidget *scrolled;
@@ -711,28 +709,3 @@ nautilus_mime_application_chooser_new_for_multiple_files (GList *uris,
 	return chooser;
 }
 
-GType
-nautilus_mime_application_chooser_get_type (void)
-{
-	static GType type = 0;
-	
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusMimeApplicationChooserClass),
-			NULL, 
-			NULL,
-			(GClassInitFunc)nautilus_mime_application_chooser_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusMimeApplicationChooser),
-			0,
-			(GInstanceInitFunc)nautilus_mime_application_chooser_instance_init,
-		};
-		
-		type = g_type_register_static (GTK_TYPE_VBOX, 
-					       "NautilusMimeApplicationChooser",
-					       &info, 0);
-	}
-	
-	return type;		       
-}

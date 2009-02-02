@@ -29,6 +29,8 @@
 #include <eel/eel-canvas.h>
 #include <libnautilus-private/nautilus-icon-info.h>
 
+#define NAUTILUS_TYPE_ICON_CONTAINER \
+	(nautilus_icon_container_get_type ())
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
 #define NAUTILUS_ICON_CONTAINER_CLASS(k) \

@@ -45,7 +45,7 @@ struct _NautilusColumnDetails {
 	float xalign;
 };
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
 
 /**
  * nautilus_column_new:
@@ -170,11 +170,11 @@ nautilus_column_finalize (GObject *object)
 
 	g_free (column->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (nautilus_column_parent_class)->finalize (object);
 }
 
 static void
-nautilus_column_instance_init (NautilusColumn *column)
+nautilus_column_init (NautilusColumn *column)
 {
 	column->details = g_new0 (NautilusColumnDetails, 1);
 	column->details->xalign = 0.0;
@@ -183,8 +183,6 @@ nautilus_column_instance_init (NautilusColumn *column)
 static void
 nautilus_column_class_init (NautilusColumnClass *class)
 {
-	parent_class = g_type_class_peek_parent (class);
-	
 	G_OBJECT_CLASS (class)->finalize = nautilus_column_finalize;
 	G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;
@@ -236,29 +234,3 @@ nautilus_column_class_init (NautilusColumnClass *class)
 							     G_PARAM_READWRITE));
 }
 
-GType 
-nautilus_column_get_type (void)
-{
-	static GType type = 0;
-	
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusColumnClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)nautilus_column_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusColumn),
-			0,
-			(GInstanceInitFunc)nautilus_column_instance_init
-		};
-		
-		type = g_type_register_static 
-			(G_TYPE_OBJECT, 
-			 "NautilusColumn",
-			 &info, 0);
-	}
-
-	return type;
-}

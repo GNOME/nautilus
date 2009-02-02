@@ -28,8 +28,6 @@
 
 #define ELLIPSIZE_PROP "ellipsize"
 
-static void nautilus_cell_renderer_text_ellipsized_init       (NautilusCellRendererTextEllipsizedClass	*cell);
-static void nautilus_cell_renderer_text_ellipsized_class_init (NautilusCellRendererTextEllipsizedClass	*klass);
 static void nautilus_cell_renderer_text_ellipsized_get_size   (GtkCellRenderer				*cell,
 							       GtkWidget				*widget,
 							       GdkRectangle				*rectangle,
@@ -38,38 +36,11 @@ static void nautilus_cell_renderer_text_ellipsized_get_size   (GtkCellRenderer		
 							       gint					*width,
 							       gint					*height);
 
-static gpointer parent_class;
-
-GType
-nautilus_cell_renderer_text_ellipsized_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		const GTypeInfo info =
-		{
-			sizeof (NautilusCellRendererTextEllipsizedClass),
-			NULL,
-			NULL,
-			(GClassInitFunc) nautilus_cell_renderer_text_ellipsized_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusCellRendererTextEllipsized),
-			0,
-			(GInstanceInitFunc) nautilus_cell_renderer_text_ellipsized_init
-		};
-
-		type = g_type_register_static (GTK_TYPE_CELL_RENDERER_TEXT,
-					       "NautilusCellRendererTextEllipsized",
-					       &info, 0);
-	}
-
-	return type;
-}
-
+G_DEFINE_TYPE (NautilusCellRendererTextEllipsized, nautilus_cell_renderer_text_ellipsized,
+	       GTK_TYPE_CELL_RENDERER_TEXT);
 
 static void
-nautilus_cell_renderer_text_ellipsized_init (NautilusCellRendererTextEllipsizedClass *cell)
+nautilus_cell_renderer_text_ellipsized_init (NautilusCellRendererTextEllipsized *cell)
 {
 	g_object_set (cell, ELLIPSIZE_PROP, PANGO_ELLIPSIZE_END, NULL);
 }
@@ -78,8 +49,6 @@ static void
 nautilus_cell_renderer_text_ellipsized_class_init (NautilusCellRendererTextEllipsizedClass *klass)
 {
 	GtkCellRendererClass *cell_class = GTK_CELL_RENDERER_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	cell_class->get_size = nautilus_cell_renderer_text_ellipsized_get_size;
 }
@@ -101,9 +70,10 @@ nautilus_cell_renderer_text_ellipsized_get_size (GtkCellRenderer *cell,
 {
 	g_object_set (cell, ELLIPSIZE_PROP, PANGO_ELLIPSIZE_NONE, NULL);
 
-	(* GTK_CELL_RENDERER_CLASS (parent_class)->get_size) (cell, widget, cell_area,
-							      x_offset, y_offset,
-							      width, height);
+	(* GTK_CELL_RENDERER_CLASS (nautilus_cell_renderer_text_ellipsized_parent_class)->get_size)
+			(cell, widget, cell_area,
+			 x_offset, y_offset,
+			 width, height);
 
 	g_object_set (cell, ELLIPSIZE_PROP, PANGO_ELLIPSIZE_END, NULL);
 }

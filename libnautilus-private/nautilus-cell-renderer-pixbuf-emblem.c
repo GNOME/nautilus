@@ -67,8 +67,6 @@ enum {
 	PROP_PIXBUF_EMBLEM
 };
 
-static gpointer parent_class;
-
 #define CELLINFO_KEY "nautilus-cell-renderer-pixbuf-emblem-info"
 
 typedef struct _NautilusCellRendererPixbufEmblemInfo NautilusCellRendererPixbufEmblemInfo;
@@ -79,32 +77,7 @@ struct _NautilusCellRendererPixbufEmblemInfo
 	gchar *stock_detail;
 };
 
-GType
-nautilus_cell_renderer_pixbuf_emblem_get_type (void)
-{
-	static GType cell_pixbuf_type = 0;
-
-	if (!cell_pixbuf_type) {
-		const GTypeInfo cell_pixbuf_info =
-		{
-			sizeof (NautilusCellRendererPixbufEmblemClass),
-			NULL,                                                     /* base_init */
-			NULL,                                                     /* base_finalize */
-			(GClassInitFunc) nautilus_cell_renderer_pixbuf_emblem_class_init,
-			NULL,                                                     /* class_finalize */
-			NULL,                                                     /* class_data */
-			sizeof (NautilusCellRendererPixbufEmblem),
-			0,                                                        /* n_preallocs */
-			(GInstanceInitFunc) nautilus_cell_renderer_pixbuf_emblem_init,
-		};
-
-		cell_pixbuf_type = g_type_register_static (GTK_TYPE_CELL_RENDERER,
-							   "NautilusCellRendererPixbufEmblem",
-							   &cell_pixbuf_info, 0);
-	}
-
-	return cell_pixbuf_type;
-}
+G_DEFINE_TYPE (NautilusCellRendererPixbufEmblem, nautilus_cell_renderer_pixbuf_emblem, GTK_TYPE_CELL_RENDERER);
 
 static void
 nautilus_cell_renderer_pixbuf_emblem_init (NautilusCellRendererPixbufEmblem *cellpixbuf)
@@ -121,8 +94,6 @@ nautilus_cell_renderer_pixbuf_emblem_class_init (NautilusCellRendererPixbufEmble
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkCellRendererClass *cell_class = GTK_CELL_RENDERER_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = nautilus_cell_renderer_pixbuf_emblem_finalize;
 
@@ -215,7 +186,7 @@ nautilus_cell_renderer_pixbuf_emblem_finalize (GObject *object)
 	g_free (cellinfo);
 	g_object_set_data (object, CELLINFO_KEY, NULL);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* G_OBJECT_CLASS (nautilus_cell_renderer_pixbuf_emblem_parent_class)->finalize) (object);
 }
 
 static void

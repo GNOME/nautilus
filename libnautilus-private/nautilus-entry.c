@@ -50,10 +50,12 @@ enum {
 };
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_entry_init       (NautilusEntry      *entry);
-static void nautilus_entry_class_init (NautilusEntryClass *class);
+static void nautilus_entry_editable_init (GtkEditableClass *iface);
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_CODE (NautilusEntry, nautilus_entry, GTK_TYPE_ENTRY,
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_EDITABLE,
+						nautilus_entry_editable_init));
+
 static GtkEditableClass *parent_editable_interface = NULL;
 
 static void
@@ -99,7 +101,7 @@ nautilus_entry_finalize (GObject *object)
 	
 	g_free (entry->details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (nautilus_entry_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -139,8 +141,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	
 	old_has = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 
-	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, key_press_event, (widget, event));
+	result = GTK_WIDGET_CLASS (nautilus_entry_parent_class)->key_press_event (widget, event);
 
 	/* Pressing a key usually changes the selection if there is a selection.
 	 * If there is not selection, we can save work by not emitting a signal.
@@ -170,8 +171,7 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 	old_had = gtk_editable_get_selection_bounds (editable, &old_start, &old_end);
 
-	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
+	result = GTK_WIDGET_CLASS (nautilus_entry_parent_class)->motion_notify_event (widget, event);
 
 	/* Send a signal if dragging the mouse caused the selection to change. */
 	if (result) {
@@ -279,8 +279,7 @@ nautilus_entry_button_press (GtkWidget *widget,
 {
 	gboolean result;
 
-	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
+	result = GTK_WIDGET_CLASS (nautilus_entry_parent_class)->button_press_event (widget, event);
 
 	if (result) {
 		g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
@@ -295,8 +294,7 @@ nautilus_entry_button_release (GtkWidget *widget,
 {
 	gboolean result;
 
-	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
+	result = GTK_WIDGET_CLASS (nautilus_entry_parent_class)->button_release_event (widget, event);
 
 	if (result) {
 		g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
@@ -358,8 +356,7 @@ nautilus_entry_selection_clear (GtkWidget *widget,
 		return FALSE;
 	}
 	
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, selection_clear_event, (widget, event));
+	return GTK_WIDGET_CLASS (nautilus_entry_parent_class)->selection_clear_event (widget, event);
 }
 
 static void
@@ -383,8 +380,6 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	GObjectClass *gobject_class;
-
-	parent_class = g_type_class_peek_parent (class);
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	gobject_class = G_OBJECT_CLASS (class);
@@ -429,36 +424,3 @@ nautilus_entry_set_special_tab_handling (NautilusEntry *entry,
 }
 
 
-GType
-nautilus_entry_get_type (void)
-{
-	static GType entry_type = 0;
-
-	if (entry_type == 0) {						
-		const GInterfaceInfo editable_info =
-		{
-			(GInterfaceInitFunc) nautilus_entry_editable_init,
-			NULL,
-			NULL
-		};
-
-		const GTypeInfo object_info = {
-		    sizeof (NautilusEntryClass),
-		    NULL,		/* base_init */
-		    NULL,		/* base_finalize */		
-		    (GClassInitFunc) nautilus_entry_class_init,
-		    NULL,		/* class_finalize */		
-		    NULL,               /* class_data */		
-		    sizeof (NautilusEntry),					
-		    0,                  /* n_preallocs */		
-		    (GInstanceInitFunc) nautilus_entry_init
-		};							
-		entry_type = g_type_register_static (
-			GTK_TYPE_ENTRY, "NautilusEntry",
-			&object_info, 0);
-		g_type_add_interface_static (
-			entry_type, GTK_TYPE_EDITABLE, &editable_info);
-	}
-			
-	return entry_type;						
-}

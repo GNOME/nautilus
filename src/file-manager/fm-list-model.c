@@ -54,8 +54,9 @@ static guint list_model_signals[LAST_SIGNAL] = { 0 };
 static int fm_list_model_file_entry_compare_func (gconstpointer a,
 						  gconstpointer b,
 						  gpointer      user_data);
-
-static GObjectClass *parent_class;
+static void fm_list_model_tree_model_init (GtkTreeModelIface *iface);
+static void fm_list_model_sortable_init (GtkTreeSortableIface *iface);
+static void fm_list_model_multi_drag_source_init (EggTreeMultiDragSourceIface *iface);
 
 struct FMListModelDetails {
 	GSequence *files;
@@ -93,6 +94,14 @@ struct FileEntry {
 	GSequenceIter *ptr;
 	guint loaded : 1;
 };
+
+G_DEFINE_TYPE_WITH_CODE (FMListModel, fm_list_model, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL,
+						fm_list_model_tree_model_init)
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_SORTABLE,
+						fm_list_model_sortable_init)
+			 G_IMPLEMENT_INTERFACE (EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
+						fm_list_model_multi_drag_source_init));
 
 static const GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -1532,8 +1541,8 @@ fm_list_model_dispose (GObject *object)
 		g_hash_table_destroy (model->details->directory_reverse_map);
 		model->details->directory_reverse_map = NULL;
 	}
-	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+
+	G_OBJECT_CLASS (fm_list_model_parent_class)->dispose (object);
 }
 
 static void
@@ -1544,8 +1553,8 @@ fm_list_model_finalize (GObject *object)
 	model = FM_LIST_MODEL (object);
 
 	g_free (model->details);
-	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+
+	G_OBJECT_CLASS (fm_list_model_parent_class)->finalize (object);
 }
 
 static void
@@ -1570,8 +1579,6 @@ fm_list_model_class_init (FMListModelClass *klass)
 	attribute_date_modified_q = g_quark_from_static_string ("date_modified");
 	
 	object_class = (GObjectClass *)klass;
-	parent_class = g_type_class_peek_parent (klass);
-
 	object_class->finalize = fm_list_model_finalize;
 	object_class->dispose = fm_list_model_dispose;
 
@@ -1617,57 +1624,6 @@ fm_list_model_multi_drag_source_init (EggTreeMultiDragSourceIface *iface)
 	iface->row_draggable = fm_list_model_multi_row_draggable;
 	iface->drag_data_get = fm_list_model_multi_drag_data_get;
 	iface->drag_data_delete = fm_list_model_multi_drag_data_delete;
-}
-
-GType
-fm_list_model_get_type (void)
-{
-	static GType object_type = 0;
-
-	if (object_type == 0) {
-		const GTypeInfo object_info = {
-			sizeof (FMListModelClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) fm_list_model_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
-			sizeof (FMListModel),
-			0,
-			(GInstanceInitFunc) fm_list_model_init,
-		};
-
-		const GInterfaceInfo tree_model_info = {
-			(GInterfaceInitFunc) fm_list_model_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		const GInterfaceInfo sortable_info = {
-			(GInterfaceInitFunc) fm_list_model_sortable_init,
-			NULL,
-			NULL
-		};
-
-		const GInterfaceInfo multi_drag_source_info = {
-			(GInterfaceInitFunc) fm_list_model_multi_drag_source_init,
-			NULL,
-			NULL
-		};
-		
-		object_type = g_type_register_static (G_TYPE_OBJECT, "FMListModel", &object_info, 0);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_SORTABLE,
-					     &sortable_info);
-		g_type_add_interface_static (object_type,
-					     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
-					     &multi_drag_source_info);
-	}
-	
-	return object_type;
 }
 
 void
