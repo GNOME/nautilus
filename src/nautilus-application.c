@@ -995,7 +995,6 @@ create_window (NautilusApplication *application,
 	/* Must be called after construction finished */
 	nautilus_window_constructed (window);
 
-	unique_app_watch_window (application->unique_app, GTK_WINDOW (window));
 	if (startup_id) {
 		gtk_window_set_startup_id (GTK_WINDOW (window), startup_id);
 	}

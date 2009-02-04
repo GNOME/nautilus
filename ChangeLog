@@ -1,3 +1,9 @@
+2009-02-04  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* src/nautilus-application.c: (create_window):
+	Don't use unique_app_watch_window(), as we don't have a default
+	window to present (#570377).
+
 2009-02-02  Cosimo Cecchi  <cosimoc@pluto>
 
 	* libnautilus-extension/nautilus-column.c:
