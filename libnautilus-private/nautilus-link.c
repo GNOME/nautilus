@@ -293,6 +293,22 @@ nautilus_link_local_create (const char     *directory_uri,
 	return TRUE;
 }
 
+static const char *
+get_language (void)
+{
+	const char * const *langs_pointer;
+	int i;
+
+	langs_pointer = g_get_language_names ();
+	for (i = 0; langs_pointer[i] != NULL; i++) {
+		/* find first without encoding */
+		if (strchr (langs_pointer[i], '.') == NULL) {
+		return langs_pointer[i];
+		}
+	}
+	return NULL;
+} 
+
 static gboolean
 nautilus_link_local_set_key (const char *uri,
 			     const char *key,
@@ -313,7 +329,8 @@ nautilus_link_local_set_key (const char *uri,
 	g_key_file_set_locale_string (key_file,
 				      MAIN_GROUP,
 				      key,
-				      NULL, value);
+				      get_language (), 
+				      value);
 	
 	
 	success = _g_key_file_save_to_gfile (key_file,  file, NULL);
