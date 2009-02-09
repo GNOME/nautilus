@@ -598,7 +598,7 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 	draw_label_text (item, GDK_DRAWABLE (pixmap), FALSE, icon_rect);
 	draw_label_text (item, GDK_DRAWABLE (*mask), TRUE, icon_rect);
 
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (pixbuf);
 
 	return pixmap;
 }

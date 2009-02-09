@@ -762,7 +762,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 	}
 
-	gdk_pixbuf_unref (orig_pixbuf);
+	g_object_unref (orig_pixbuf);
 
 	return pixbuf;
 }
@@ -806,7 +806,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 		ret = nautilus_customization_make_pattern_chit (color_square, 
 								property_browser->details->property_chit,
 								trim_edges, FALSE);
-		gdk_pixbuf_unref (color_square);
+		g_object_unref (color_square);
 	} else {
 		ret = color_square;
 	}

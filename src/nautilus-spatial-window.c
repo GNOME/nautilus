@@ -565,7 +565,7 @@ got_file_info_for_location_menu_callback (NautilusFile *file,
 
 	if (pixbuf != NULL) {
 		icon = gtk_image_new_from_pixbuf (pixbuf);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 	} else {
 		icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 	}
@@ -834,7 +834,7 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 
 			if (pixbuf != NULL) {
 				gtk_image_set_from_pixbuf (GTK_IMAGE (window->details->location_icon),  pixbuf);
-				gdk_pixbuf_unref (pixbuf);
+				g_object_unref (pixbuf);
 			} else {
 				gtk_image_set_from_stock (GTK_IMAGE (window->details->location_icon),
 							  GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);

@@ -857,7 +857,7 @@ update_bookmark_from_text (void)
 		g_signal_handler_unblock (bookmark_list_store,
 					  row_changed_signal_id);
 
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		g_free (name);
 	}
 }

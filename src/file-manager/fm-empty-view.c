@@ -66,7 +66,7 @@ fm_empty_view_add_file (FMDirectoryView *view, NautilusFile *file, NautilusDirec
 	elaps = g_timer_elapsed (timer, NULL);
 	g_timer_stop (timer);
 
-	gdk_pixbuf_unref (icon);
+	g_object_unref (icon);
 	
 	cumu += elaps;
 	g_message ("entire loading: %.3f, cumulative %.3f", elaps, cumu);

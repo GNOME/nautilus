@@ -549,7 +549,7 @@ async_thumbnail_read_image (GObject *source_object,
 			   pixbuf, scale_x, scale_y,
 			   handle->load_func_user_data);
 
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (pixbuf);
 
 	g_object_unref (handle->cancellable);
 	g_free (handle->file_path);
