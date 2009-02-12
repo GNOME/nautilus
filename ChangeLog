@@ -1,3 +1,10 @@
+2009-02-13  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	* configure.in: require intltool 0.40.1.
+	* src/file-manager/fm-properties-window.c
+	(value_field_update_internal): use C_() to handle translator
+	comments. Patch by A. Walton (#542658).
+
 2009-02-09  Thomas H.P. Andersen  <phomes@gmail.com>
 
 	* src/file-manager/fm-empty-view.c: (fm_empty_view_add_file):
